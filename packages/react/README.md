@@ -11,11 +11,22 @@ Lumen stylesheet.
 pnpm add @santi020k/lumen-react
 ```
 
+The adapter also exposes Lumen's discovery and diagnostics CLI:
+
+```bash
+pnpm exec lumen show Tabs
+pnpm exec lumen doctor
+```
+
 Load the shared stylesheet once from your app entry or global CSS.
 
 ```tsx
-import '@santi020k/lumen-react/styles.css'
+import "@santi020k/lumen-react/styles.css";
 ```
+
+For an essential application shell using forms, feedback, tabs, dialogs, calendar, and DataTable,
+import `@santi020k/lumen-react/styles/critical.css` instead. It is generated from the canonical
+stylesheet and remains materially smaller than the complete catalog.
 
 The stylesheet defaults `--ui-font` to `"Montserrat", "Avenir Next", "Segoe UI", sans-serif`.
 It declares the family stack but does not bundle or load font files. Load Montserrat once through
@@ -24,7 +35,7 @@ your preferred delivery path, or override `--ui-font` in application CSS.
 ## Usage
 
 ```tsx
-import { Button, Card, Input } from '@santi020k/lumen-react'
+import { Button, Card, Input } from "@santi020k/lumen-react";
 
 export function SubscribeForm() {
   return (
@@ -33,7 +44,7 @@ export function SubscribeForm() {
       <Input id="email" type="email" placeholder="you@example.com" />
       <Button>Subscribe</Button>
     </Card>
-  )
+  );
 }
 ```
 
@@ -61,8 +72,8 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from '@santi020k/lumen-react'
+  DropdownMenuTrigger,
+} from "@santi020k/lumen-react";
 
 <DropdownMenu>
   <DropdownMenuTrigger>Download</DropdownMenuTrigger>
@@ -70,9 +81,11 @@ import {
     <DropdownMenuItem>macOS</DropdownMenuItem>
     <DropdownMenuItem>Windows</DropdownMenuItem>
     <DropdownMenuSeparator />
-    <DropdownMenuItem disabled status="Soon">Android</DropdownMenuItem>
+    <DropdownMenuItem disabled status="Soon">
+      Android
+    </DropdownMenuItem>
   </DropdownMenuContent>
-</DropdownMenu>
+</DropdownMenu>;
 ```
 
 ## Language selection
@@ -125,6 +138,23 @@ without wrapping or changing the resolver contract.
 
 See the [forms guide](https://lumen.santi020k.com/docs/forms/react-hook-form) for typed examples.
 
+## Error states
+
+Use `ErrorState` as a visible fallback when a page or region cannot show its primary content. It can
+be rendered by an application or router error boundary, but Lumen does not catch exceptions, log
+diagnostics, or decide whether retrying is safe.
+
+```tsx
+<ErrorState
+  actions={<Button onClick={reload}>Try again</Button>}
+  description="Check your connection and try again."
+  title="Could not load projects"
+/>
+```
+
+See the repository [React error-handling guide](../../docs/error-handling.md#react) for the complete
+example, error-boundary ownership, announcement behavior, and verification guidance.
+
 For long articles, `Anchor` accepts optional `depth`, `index`, and `description` metadata plus an
 `activationOffset`. It synchronizes the current link on click and scroll. `ScrollProgress` tracks
 the document without requiring a separate hook.
@@ -143,7 +173,9 @@ Use `CopyButton` for clipboard actions on generated names, descriptions, message
 either a `value` or a `target` selector; `toast` opts into Lumen Toast feedback.
 
 ```tsx
-<CopyButton value="https://lumen.santi020k.com" toast>Copy link</CopyButton>
+<CopyButton value="https://lumen.santi020k.com" toast>
+  Copy link
+</CopyButton>
 ```
 
 ## Data visualization
@@ -178,7 +210,7 @@ the server runtime.
 
 ```tsx
 // app/page.tsx — this file remains a Server Component.
-import { Badge, Card } from '@santi020k/lumen-react'
+import { Badge, Card } from "@santi020k/lumen-react";
 
 export default function Page() {
   return (
@@ -186,12 +218,36 @@ export default function Page() {
       <Badge>Ready</Badge>
       Server-rendered page content
     </Card>
-  )
+  );
 }
 ```
 
 This boundary is specific to React environments that recognize the `"use client"` directive.
 Other React applications continue to consume the same package and exports normally.
+
+For stateless primitives that should execute directly in a React Server Component, use the
+server-safe entrypoint:
+
+```tsx
+import { Badge, Progress, Skeleton } from "@santi020k/lumen-react/server";
+
+export default function Status() {
+  return (
+    <section>
+      <Badge variant="success">Ready</Badge>
+      <Progress aria-label="Migration progress" value={72} />
+      <Skeleton aria-label="Loading activity" />
+    </section>
+  );
+}
+```
+
+The server entrypoint contains Badge, Card and its compound parts, Container, Direction, Grid,
+Input, Label, Progress, Separator, Skeleton, Spinner, Stack, Textarea, Typography, and
+VisuallyHidden plus the component-name metadata. The package root reuses those exact
+implementations and remains the full client catalog. Import interactive primitives, hooks, or
+stateless primitives that receive event handlers from the root entrypoint inside a Client
+Component.
 
 ## Compatibility wrappers
 
@@ -228,29 +284,35 @@ product, or workspace. Pass the stable selector or identity through `context` an
 related links with one independently named `NavigationMenu`. Long link sets scroll horizontally.
 
 ```tsx
-import { ContextNavigation, NativeSelect, NavigationMenu } from '@santi020k/lumen-react'
+import {
+  ContextNavigation,
+  NativeSelect,
+  NavigationMenu,
+} from "@santi020k/lumen-react";
 
 <ContextNavigation
-  context={(
+  context={
     <NativeSelect aria-label="Documentation platform" visualSize="sm">
       <option>Web</option>
       <option>Apple</option>
       <option>Android</option>
     </NativeSelect>
-  )}
+  }
 >
   <NavigationMenu aria-label="Web documentation" variant="unstyled">
-    <a href="/docs/web" aria-current="page">Overview</a>
+    <a href="/docs/web" aria-current="page">
+      Overview
+    </a>
     <a href="/docs/components">Components</a>
     <a href="/docs/web/playground">Playground</a>
   </NavigationMenu>
-</ContextNavigation>
+</ContextNavigation>;
 ```
 
 Use `Icon` for Lucide icons by name across framework adapters.
 
 ```tsx
-import { Button, Icon } from '@santi020k/lumen-react'
+import { Button, Icon } from "@santi020k/lumen-react";
 
 export function SettingsButton() {
   return (
@@ -258,7 +320,7 @@ export function SettingsButton() {
       <Icon name="wand-sparkles" decorative />
       Generate
     </Button>
-  )
+  );
 }
 ```
 
@@ -269,8 +331,8 @@ Next keeps control of image sizing, format negotiation, caching, placeholders, a
 Lumen supplies its presentation class.
 
 ```tsx
-import NextImage from 'next/image'
-import { Image as LumenImage } from '@santi020k/lumen-react'
+import NextImage from "next/image";
+import { Image as LumenImage } from "@santi020k/lumen-react";
 
 <LumenImage
   alt="Team collaborating around a table"
@@ -279,7 +341,7 @@ import { Image as LumenImage } from '@santi020k/lumen-react'
   sizes="(max-width: 768px) 100vw, 50vw"
   src="/team.jpg"
   width={1200}
-/>
+/>;
 ```
 
 Keep the default lazy loading for images below the fold. For the single likely LCP image, follow
@@ -290,13 +352,13 @@ artwork authored for light surfaces; leave it off for photos and colorful illust
 name on the SVG itself.
 
 ```tsx
-import { AnimatedLogo } from '@santi020k/lumen-react'
+import { AnimatedLogo } from "@santi020k/lumen-react";
 
-<AnimatedLogo style={{ height: '3rem' }}>
+<AnimatedLogo style={{ height: "3rem" }}>
   <svg aria-label="Acme" role="img" viewBox="0 0 120 32">
     {/* Your logo artwork */}
   </svg>
-</AnimatedLogo>
+</AnimatedLogo>;
 ```
 
 For a choreographed logo, set `animation="sequence"` and mark individual SVG layers with
@@ -314,8 +376,13 @@ drag/drop, controlled Kanban move requests, theme export and switching, resizabl
 toast controller semantics for React applications.
 `useRichTextEditor` also provides `getEditableProps`, value-bearing commands, common formatting
 shortcuts, active toolbar state, and `{ html, text }` change details.
-`DataTable` can render structured `columns` and `rows` with the same selectable/sortable data
-attributes, and `VirtualList` exposes the shared range sizing attributes for app-level adapters.
+`DataTable` can render structured `columns` and `rows`; sortable columns use native header buttons,
+update `aria-sort`, and order string or numeric values without mutating the supplied rows. The
+shared selectable/sortable data attributes remain available for app-level adapters, and
+`VirtualList` exposes the shared range sizing attributes.
+`useTabs` keeps the selected trigger visible when a narrow horizontal list scrolls. The package
+also exports `LumenTabsChangeDetail` and `LumenTabsChangeEvent` for integrations that consume the
+shared `ui:tabs-change` contract.
 
 ## Kanban boards
 

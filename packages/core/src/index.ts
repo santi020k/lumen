@@ -105,6 +105,15 @@ export {
   toggleDataViewSelection,
   unpinDataViewColumn } from './data.js'
 export {
+  type LumenErrorStateAnnouncement,
+  lumenErrorStateAnnouncements,
+  type LumenErrorStateContent,
+  type LumenErrorStateKind,
+  lumenErrorStateKinds,
+  type LumenErrorStateLayout,
+  lumenErrorStateLayouts
+} from './error-state.js'
+export {
   createFigmaVariableName,
   exportThemeDesignTokens,
   exportThemeFigmaVariables,
@@ -221,6 +230,11 @@ export {
   saveScheduleEvents,
   scheduleEventsOverlap,
   serializeScheduleEvents } from './schedule.js'
+export {
+  type LumenTabsChangeDetail,
+  type LumenTabsChangeEvent,
+  scrollLumenTabIntoView
+} from './tabs.js'
 export {
   createThemeFromHue,
   createThemePalette,

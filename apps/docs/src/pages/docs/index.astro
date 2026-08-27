@@ -6,11 +6,11 @@ import {
   Link,
   Marker
 } from '@santi020k/lumen-astro'
-import { lumenComponentNames } from '@santi020k/lumen-core'
 
 import DocsActionLink from '../../components/DocsActionLink.astro'
 import DocsPageHero from '../../components/DocsPageHero.astro'
 import { getPlatformGuide, productPlatformGuides } from '../../data/platforms'
+import { documentedComponentCount, primaryPageMetadata } from '../../data/site-metadata'
 import DocsLayout from '../../layouts/DocsLayout.astro'
 
 const foundations = getPlatformGuide('foundations')
@@ -45,8 +45,8 @@ const resources = [
 ---
 
 <DocsLayout
-  description="Choose the Lumen UI documentation for Web, React Native, Apple platforms, or Android, and explore their shared foundations."
-  title="Documentation - Lumen UI"
+  description={primaryPageMetadata.docs.description}
+  title={primaryPageMetadata.docs.title}
 >
   <div class="docs-gateway-page">
     <DocsPageHero
@@ -55,7 +55,7 @@ const resources = [
       stats={[
         { label: 'Platforms', value: productPlatformGuides.length },
         { label: 'Adapters', value: 6 },
-        { label: 'Web primitives', value: lumenComponentNames.length }
+        { label: 'Web primitives', value: documentedComponentCount }
       ]}
       title="One system, every platform."
     >
@@ -110,7 +110,6 @@ const resources = [
                 <span>{platformNumbers[index]}</span>
                 <div>
                   <Marker variant="success">{guide.status}</Marker>
-                  {guide.maturity && <Marker variant="warning">{guide.maturity}</Marker>}
                 </div>
               </div>
               <div>

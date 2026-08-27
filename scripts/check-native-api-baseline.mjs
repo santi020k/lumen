@@ -8,7 +8,9 @@ const repositoryRoot = resolve(import.meta.dirname, '..')
 const baselinePath = resolve(repositoryRoot, 'registry/native-api-baseline.json')
 const baseline = JSON.parse(await readFile(baselinePath, 'utf8'))
 const classifications = ['supported', 'experimental', 'deprecated']
-const maturities = new Set(['beta', 'stable'])
+const maturities = new Set(['stable'])
+const nativeApiAuditPath = resolve(repositoryRoot, 'docs/native-api-audit.md')
+const nativeApiAudit = await readFile(nativeApiAuditPath, 'utf8')
 
 const collectTypeScriptExports = (entrypoint, source) => {
   const sourceFile = ts.createSourceFile(
@@ -70,7 +72,7 @@ const validateClassification = (adapterName, adapter) => {
   return classifiedNames.sort()
 }
 
-assert.equal(baseline.schemaVersion, 1, 'Unsupported native API baseline schema version')
+assert.equal(baseline.schemaVersion, 2, 'Unsupported native API baseline schema version')
 
 assert.deepEqual(
   Object.keys(baseline.adapters),
@@ -90,7 +92,91 @@ for (const [adapterName, adapter] of Object.entries(baseline.adapters)) {
     `${adapterName} public exports changed; classify intentional additions and removals in ${baselinePath}`
   )
 
+  const entrypointClassifications = [adapter]
+  let exportCount = exportedNames.length
+
+  for (const [subpath, subpathContract] of Object.entries(adapter.subpaths ?? {})) {
+    const subpathLabel = `${adapterName}${subpath}`
+    const subpathClassifiedNames = validateClassification(subpathLabel, subpathContract)
+    const subpathSource = await readFile(resolve(repositoryRoot, subpathContract.entrypoint), 'utf8')
+    const subpathExportedNames = collectTypeScriptExports(subpathContract.entrypoint, subpathSource)
+
+    assert.deepEqual(
+      subpathClassifiedNames,
+      subpathExportedNames,
+      `${subpathLabel} public exports changed; classify intentional additions and removals in ${baselinePath}`
+    )
+
+    entrypointClassifications.push(subpathContract)
+
+    exportCount += subpathExportedNames.length
+  }
+
+  const allClassifiedNames = entrypointClassifications.flatMap(contract => (
+    classifications.flatMap(classification => contract[classification])
+  ))
+
+  assert.equal(
+    new Set(allClassifiedNames).size,
+    allClassifiedNames.length,
+    `${adapterName} exports the same public symbol from more than one stable entrypoint`
+  )
+
+  if (adapterName === 'reactNative') {
+    const expectedClassification = [
+      `${entrypointClassifications.reduce((count, contract) => count + contract.supported.length, 0)} Supported`,
+      `${entrypointClassifications.reduce((count, contract) => count + contract.experimental.length, 0)} Experimental phone exports`,
+      `${entrypointClassifications.reduce((count, contract) => count + contract.deprecated.length, 0)} Deprecated`
+    ].join('; ')
+
+    assert.ok(
+      nativeApiAudit.includes(expectedClassification),
+      `${nativeApiAuditPath} must derive the React Native classification summary from the reviewed baseline`
+    )
+  }
+
   process.stdout.write(
-    `Checked ${exportedNames.length} classified ${adapter.maturity} exports for ${adapterName}.\n`
+    `Checked ${exportCount} classified ${adapter.maturity} exports across ` +
+      `${entrypointClassifications.length} entrypoints for ${adapterName}.\n`
   )
 }
+
+const composePhoneSource = await readFile(
+  resolve(repositoryRoot, 'packages/compose/src/main/kotlin/com/santi020k/lumen/PhoneComponents.kt'),
+  'utf8'
+)
+
+if (composePhoneSource.includes('annotation class ExperimentalLumenPhoneApi')) {
+  assert.ok(
+    nativeApiAudit.includes('ExperimentalLumenPhoneApi'),
+    `${nativeApiAuditPath} must disclose the experimental Compose phone contract`
+  )
+
+  const nativeComponents = await readFile(
+    resolve(repositoryRoot, 'docs/native-components.md'),
+    'utf8'
+  )
+
+  const experimentalHeading = nativeComponents.indexOf('### Experimental shared surface')
+  const phoneContract = nativeComponents.indexOf('| Phone input')
+
+  assert.ok(
+    experimentalHeading >= 0 && phoneContract > experimentalHeading,
+    'docs/native-components.md must list Phone input under the Experimental shared surface'
+  )
+
+  const crossPlatform = await readFile(resolve(repositoryRoot, 'docs/cross-platform.md'), 'utf8')
+
+  assert.ok(
+    crossPlatform.includes('Experimental PhoneInput contracts'),
+    'docs/cross-platform.md must label the shared PhoneInput contract Experimental'
+  )
+}
+
+const playgrounds = await readFile(resolve(repositoryRoot, 'docs/playgrounds.md'), 'utf8')
+
+assert.doesNotMatch(
+  playgrounds,
+  /all \d+ contracts shared by every native adapter/,
+  'docs/playgrounds.md must derive contract totals instead of freezing a hand-maintained count'
+)

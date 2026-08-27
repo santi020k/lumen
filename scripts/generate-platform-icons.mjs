@@ -8,6 +8,8 @@ import {
 } from 'node:fs/promises'
 import { dirname, join, relative, resolve } from 'node:path'
 
+import { normalizeCoreSvgPathData } from './core-svg-path.mjs'
+
 const repositoryRoot = resolve(import.meta.dirname, '..')
 const catalogPath = join(repositoryRoot, 'icons/lumen.icons.json')
 const noticesPath = join(repositoryRoot, 'icons/THIRD_PARTY_NOTICES.md')
@@ -139,10 +141,20 @@ const svgAttribution = source => source === 'font-awesome-free-brands' ?
   '<!-- Font Awesome Free Brands: CC BY 4.0; converted by Lumen. -->' :
   '<!-- Lucide Icons: ISC License; converted by Lumen. -->'
 
-const renderSvgNode = ([tagName, rawAttributes]) => {
+// Xcode's CoreSVG parser rejects this icon's compact, spec-valid arc flags.
+// Keep the workaround scoped so unrelated generated assets do not churn.
+const coreSvgPathWorkarounds = new Set(['barrel'])
+
+const renderSvgNode = ([tagName, rawAttributes], normalizePathData) => {
   const attributes = Object.entries(rawAttributes)
     .filter(([name]) => name !== 'key')
-    .map(([name, value]) => `${svgAttributeName(name)}="${xmlEscape(String(value))}"`)
+    .map(([name, value]) => {
+      const normalizedValue = name === 'd' && normalizePathData ?
+        normalizeCoreSvgPathData(String(value)) :
+        String(value)
+
+      return `${svgAttributeName(name)}="${xmlEscape(normalizedValue)}"`
+    })
     .join(' ')
 
   return `  <${tagName}${attributes ? ` ${attributes}` : ''} />`
@@ -164,11 +176,12 @@ const renderSvg = icon => {
   const viewport = iconViewport(icon)
   const fill = icon.style === 'fill' ? '#000000' : 'none'
   const stroke = icon.style === 'stroke' ? '#000000' : 'none'
+  const normalizePathData = coreSvgPathWorkarounds.has(icon.publicName)
 
   return `<?xml version="1.0" encoding="UTF-8"?>
 ${svgAttribution(icon.source)}
 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="${viewport.minX} ${viewport.minY} ${viewport.dimension} ${viewport.dimension}" color="#000000" fill="${fill}" stroke="${stroke}" stroke-width="${icon.style === 'stroke' ? '2' : '0'}" stroke-linecap="round" stroke-linejoin="round">
-${icon.node.map(renderSvgNode).join('\n')}
+${icon.node.map(node => renderSvgNode(node, normalizePathData)).join('\n')}
 </svg>
 `
 }

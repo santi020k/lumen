@@ -19,9 +19,7 @@ const {
   ...rest
 } = Astro.props
 
-const legacyVisualSize = size === 'default' || size === 'lg' || size === 'sm' ? size : undefined
-const resolvedVisualSize = visualSize ?? legacyVisualSize ?? 'default'
-const nativeSize = legacyVisualSize ? undefined : size
+const resolvedVisualSize = visualSize ?? 'default'
 
 const { classList, passthrough } = resolveLumenAstroProps(rest, [
   'ui-input',
@@ -32,7 +30,7 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
 
 <input
   class:list={classList}
-  size={nativeSize}
+  size={size}
   type={type}
   {...passthrough}
 />

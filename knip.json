@@ -2,72 +2,39 @@
   "$schema": "https://unpkg.com/knip@6/schema.json",
   "workspaces": {
     ".": {
-      "ignoreBinaries": [
-        "infisical",
-        "pod",
-        "quality",
-        "swift"
-      ],
-      "project": [
-        "*.js",
-        "scripts/*.mjs"
-      ]
+      "entry": ["scripts/check-maven-pom-metadata.mjs"],
+      "ignoreBinaries": ["infisical", "pod", "quality", "swift"],
+      "project": ["*.js", "scripts/*.mjs"]
     },
     "apps/docs": {
-      "entry": [
-        "src/pages/**/*.astro",
-        "scripts/**/*.{js,mjs}"
-      ],
+      "entry": ["src/pages/**/*.astro", "scripts/**/*.{js,mjs}"],
       "ignoreDependencies": [
         "@santi020k/lumen",
+        "@santi020k/lumen-playground-react-native",
         "tailwindcss"
       ],
-      "project": [
-        "src/**/*.{astro,ts}",
-        "scripts/**/*.{js,mjs}"
-      ]
+      "project": ["src/**/*.{astro,ts,tsx}", "scripts/**/*.{js,mjs}"]
     },
     "packages/astro": {
-      "entry": [
-        "components/**/*.astro",
-        "strict-props.fixture.astro"
-      ],
-      "project": [
-        "**/*.{astro,ts}"
-      ]
+      "entry": ["components/**/*.astro", "strict-props.fixture.astro"],
+      "project": ["**/*.{astro,ts}"]
     },
     "packages/core": {
-      "project": [
-        "src/**/*.ts"
-      ]
+      "project": ["src/**/*.ts"]
     },
     "packages/elements": {
-      "project": [
-        "src/**/*.ts"
-      ]
+      "project": ["src/**/*.ts"]
     },
     "packages/lumen": {
-      "ignoreDependencies": [
-        "@types/react",
-        "react"
-      ],
-      "project": [
-        "bin/*.mjs",
-        "src/**/*.ts"
-      ]
+      "ignoreDependencies": ["@types/react", "react"],
+      "project": ["bin/*.mjs", "src/**/*.ts"]
     },
     "packages/mcp": {
-      "entry": [
-        "src/cloudflare-worker.ts"
-      ],
-      "project": [
-        "src/**/*.ts"
-      ]
+      "entry": ["src/cloudflare-worker.ts"],
+      "project": ["src/**/*.ts"]
     },
     "packages/react": {
-      "project": [
-        "src/**/*.{ts,tsx}"
-      ]
+      "project": ["src/**/*.{ts,tsx}"]
     }
   }
 }

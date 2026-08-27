@@ -1,15 +1,21 @@
 import {
   type ReactElement,
   type ReactNode,
+  useEffect,
   useMemo,
   useState
 } from 'react'
 import {
+  AccessibilityInfo,
   Linking,
+  PixelRatio,
   Platform,
   ScrollView,
+  type StyleProp,
   StyleSheet,
-  View
+  useColorScheme,
+  View,
+  type ViewStyle
 } from 'react-native'
 import {
   SafeAreaProvider,
@@ -18,6 +24,7 @@ import {
 
 import {
   createEmptyLumenPhoneNumber,
+  createLumenTheme,
   getLumenIconGraphic,
   getLumenPhoneCountry,
   LumenAlert,
@@ -36,13 +43,12 @@ import {
   LumenChip,
   LumenCollapsibleNavigationBar,
   LumenComboChart,
-  LumenDateField,
-  LumenDateRangeField,
-  type LumenDateRangeValue,
   LumenDisclosure,
   LumenDivider,
   LumenEmptyState,
+  LumenErrorState,
   LumenFieldGroup,
+  LumenGauge,
   LumenGraphic,
   LumenHeatmap,
   LumenIcon,
@@ -56,6 +62,7 @@ import {
   LumenNavigationBar,
   LumenPhoneInput,
   type LumenPhoneNumber,
+  LumenPicker,
   LumenPieChart,
   LumenProgress,
   LumenProvider,
@@ -70,6 +77,7 @@ import {
   LumenShareButton,
   LumenSheet,
   LumenSkeleton,
+  LumenSlider,
   LumenSparkline,
   LumenSpinner,
   LumenStat,
@@ -79,15 +87,93 @@ import {
   LumenText,
   LumenTextarea,
   LumenTextField,
+  type LumenTheme,
   LumenToast,
   LumenToggle,
   useLumenTheme
 } from '@santi020k/lumen-react-native'
+import {
+  LumenDateField,
+  LumenDateRangeField,
+  type LumenDateRangeValue
+} from '@santi020k/lumen-react-native/datetime'
 import { StatusBar as ExpoStatusBar } from 'expo-status-bar'
 
-type AppDestination = 'about' | 'components' | 'home'
+import {
+  type AppDestination,
+  componentCategories,
+  type ComponentCategory,
+  componentNames,
+  getComponentCategory,
+  getVisibleComponentNames,
+  isAppDestination,
+  isComponentCategory
+} from './playground-model'
 
 type ColorScheme = 'dark' | 'light' | 'system'
+
+type ThemePreset = 'lumen' | 'santi020k'
+
+const resolvePlaygroundScheme = (
+  preference: ColorScheme,
+  systemScheme: ReturnType<typeof useColorScheme>
+): 'dark' | 'light' => {
+  if (preference === 'dark' || preference === 'light') return preference
+
+  return systemScheme === 'dark' ? 'dark' : 'light'
+}
+
+const santi020kColorPalettes: Record<'dark' | 'light', LumenTheme['colors']> = {
+  light: {
+    canvas: '#FAF9FB',
+    surface: '#FFFFFF',
+    surfaceMuted: '#F5F3F7',
+    surfaceStrong: '#E5E2E9',
+    line: '#D6D0DC',
+    ink: '#332E38',
+    inkSoft: '#5B5463',
+    inkMuted: '#47434C',
+    brand: '#620AE6',
+    brandSolid: '#5709CE',
+    brandSoft: '#EEE7F9',
+    onBrand: '#FFFFFF',
+    accent: '#7D29FA',
+    success: '#16A249',
+    warning: '#F59F0A',
+    danger: '#EF4343',
+    onDanger: '#000000'
+  },
+  dark: {
+    canvas: '#110C1D',
+    surface: '#1C1528',
+    surfaceMuted: '#231D30',
+    surfaceStrong: '#322B40',
+    line: '#494158',
+    ink: '#DFDDE3',
+    inkSoft: '#B6B2BD',
+    inkMuted: '#8D8896',
+    brand: '#A56EF7',
+    brandSolid: '#6F16F3',
+    brandSoft: '#2A1943',
+    onBrand: '#FFFFFF',
+    accent: '#9F64F7',
+    success: '#21C45D',
+    warning: '#F6A823',
+    danger: '#F15B5B',
+    onDanger: '#110C1D'
+  }
+}
+
+const createPlaygroundTheme = (preset: ThemePreset, scheme: 'dark' | 'light'): LumenTheme => {
+  const theme = createLumenTheme(scheme)
+
+  if (preset === 'lumen') return theme
+
+  return {
+    ...theme,
+    colors: santi020kColorPalettes[scheme]
+  }
+}
 
 interface ComponentSectionProps {
   children: ReactNode
@@ -95,67 +181,8 @@ interface ComponentSectionProps {
   title: string
 }
 
-const componentNames = [
-  'Theme',
-  'Text',
-  'Surface',
-  'Icon',
-  'Icon button',
-  'Button',
-  'Button group',
-  'Text field',
-  'Textarea',
-  'Field group',
-  'Toggle',
-  'Settings row',
-  'Search field',
-  'Date field',
-  'Date range field',
-  'Phone input',
-  'Checkbox',
-  'Radio group',
-  'Segmented control',
-  'Tabs',
-  'Chip',
-  'Badge',
-  'Divider',
-  'Spinner',
-  'Card',
-  'Alert',
-  'Toast',
-  'Progress',
-  'Refresh control',
-  'Skeleton',
-  'Graphic',
-  'Backdrop',
-  'Illustration',
-  'Image',
-  'Sparkline',
-  'Line chart',
-  'Bar chart',
-  'Pie chart',
-  'Scatter chart',
-  'Heatmap',
-  'Range chart',
-  'Combo chart',
-  'Disclosure',
-  'Avatar',
-  'Empty state',
-  'List row',
-  'Banner',
-  'Stat',
-  'Section header',
-  'Status bar',
-  'Alert dialog',
-  'Sheet',
-  'Menu',
-  'Share button',
-  'Navigation bar',
-  'Navigation accessory',
-  'Collapsible navigation bar'
-]
-
 const componentIcon = getLumenIconGraphic('blocks')
+const examplesIcon = getLumenIconGraphic('layers')
 const homeIcon = getLumenIconGraphic('house')
 const settingsIcon = getLumenIconGraphic('settings')
 const updatesIcon = getLumenIconGraphic('bell')
@@ -169,8 +196,9 @@ const sampleImage = {
 
 const appNavigationItems = [
   { icon: homeIcon, label: 'Home', value: 'home' },
+  { icon: examplesIcon, label: 'Examples', value: 'examples' },
   { icon: componentIcon, label: 'Components', value: 'components' },
-  { icon: settingsIcon, label: 'About', value: 'about' }
+  { icon: settingsIcon, label: 'Settings', value: 'settings' }
 ] as const
 
 const demoNavigationItems = [
@@ -179,10 +207,46 @@ const demoNavigationItems = [
   { disabled: true, icon: settingsIcon, label: 'Settings', value: 'settings' }
 ] as const
 
-const getInitialComponentQuery = (): string => {
+const getWebQueryParameter = (name: string): string => {
   if (Platform.OS !== 'web' || typeof globalThis.location === 'undefined') return ''
 
-  return new URLSearchParams(globalThis.location.search).get('component') ?? ''
+  return new URLSearchParams(globalThis.location.search).get(name) ?? ''
+}
+
+const getInitialComponentQuery = (): string => getWebQueryParameter('component')
+const isEmbeddedPreview = (): boolean => getWebQueryParameter('embed') === 'true'
+
+const getInitialColorScheme = (): ColorScheme => {
+  const scheme = getWebQueryParameter('scheme')
+
+  return scheme === 'dark' || scheme === 'light' || scheme === 'system' ? scheme : 'system'
+}
+
+const getInitialThemePreset = (): ThemePreset => (
+  getWebQueryParameter('theme') === 'santi020k' ? 'santi020k' : 'lumen'
+)
+
+const getInitialDestination = (): AppDestination => {
+  if (isEmbeddedPreview() || getInitialComponentQuery()) return 'components'
+
+  const destination = getWebQueryParameter('destination')
+
+  return isAppDestination(destination) ? destination : 'home'
+}
+
+const updateWebQueryParameter = (name: string, value: string): void => {
+  if (
+    Platform.OS !== 'web' ||
+    typeof globalThis.history === 'undefined' ||
+    typeof globalThis.location === 'undefined'
+  ) return
+
+  const url = new URL(globalThis.location.href)
+
+  if (value) url.searchParams.set(name, value)
+  else url.searchParams.delete(name)
+
+  globalThis.history.replaceState(null, '', url)
 }
 
 const openExternalURL = (url: string): void => {
@@ -204,6 +268,23 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between'
   },
+  catalogPicker: {
+    gap: 12
+  },
+  categoryRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8
+  },
+  componentGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8
+  },
+  componentGridItem: {
+    flexBasis: 150,
+    flexGrow: 1
+  },
   content: {
     alignSelf: 'center',
     gap: 16,
@@ -211,6 +292,10 @@ const styles = StyleSheet.create({
     padding: 20,
     paddingBottom: 48,
     width: '100%'
+  },
+  embeddedContent: {
+    padding: 16,
+    paddingBottom: 16
   },
   examples: {
     display: 'flex'
@@ -289,6 +374,10 @@ const Visibility = ({ children, visible }: { children: ReactNode, visible: boole
   visible ? children : null
 )
 
+const getPlaygroundContentStyle = (embedded: boolean): StyleProp<ViewStyle> => (
+  embedded ? [styles.content, styles.embeddedContent] : styles.content
+)
+
 const ComponentSection = ({
   children,
   description,
@@ -322,20 +411,114 @@ const getThemeToggleState = (scheme: ColorScheme): {
   }
 }
 
-const isAppDestination = (value: string): value is AppDestination => (
-  value === 'about' || value === 'components' || value === 'home'
-)
-
 const isColorScheme = (value: string): value is ColorScheme => (
   value === 'dark' || value === 'light' || value === 'system'
 )
 
+const isThemePreset = (value: string): value is ThemePreset => (
+  value === 'lumen' || value === 'santi020k'
+)
+
+type ExampleState = 'empty' | 'error' | 'loading' | 'success'
+
+type PlaygroundLocale = 'en' | 'es'
+
+interface AccessibilitySnapshot {
+  fontScale: number
+  reduceMotion: boolean
+  screenReader: boolean
+}
+
+interface PlaygroundLocalizedCopy {
+  action: string
+  description: string
+  error: string
+  label: string
+  success: string
+}
+
+const playgroundLocalizedCopy: Record<PlaygroundLocale, PlaygroundLocalizedCopy> = {
+  en: {
+    action: 'Validate note',
+    description: 'Describe what changed for your users.',
+    error: 'A release note is required.',
+    label: 'Release note',
+    success: 'The release note is ready.'
+  },
+  es: {
+    action: 'Validar nota',
+    description: 'Describe qué cambió para tus usuarios.',
+    error: 'La nota de la versión es obligatoria.',
+    label: 'Nota de la versión',
+    success: 'La nota de la versión está lista.'
+  }
+}
+
+const isExampleState = (value: string): value is ExampleState => (
+  value === 'empty' || value === 'error' || value === 'loading' || value === 'success'
+)
+
+const useAccessibilitySnapshot = (): AccessibilitySnapshot => {
+  const [snapshot, setSnapshot] = useState<AccessibilitySnapshot>({
+    fontScale: PixelRatio.getFontScale(),
+    reduceMotion: false,
+    screenReader: false
+  })
+
+  useEffect(() => {
+    let active = true
+
+    const readAccessibilitySnapshot = async (): Promise<void> => {
+      const [reduceMotion, screenReader] = await Promise.all([
+        AccessibilityInfo.isReduceMotionEnabled(),
+        AccessibilityInfo.isScreenReaderEnabled()
+      ])
+
+      if (active) {
+        setSnapshot({
+          fontScale: PixelRatio.getFontScale(),
+          reduceMotion,
+          screenReader
+        })
+      }
+    }
+
+    readAccessibilitySnapshot().catch(() => undefined)
+
+    const reduceMotionSubscription = AccessibilityInfo.addEventListener(
+      'reduceMotionChanged',
+      reduceMotion => {
+        setSnapshot(previous => ({ ...previous, reduceMotion }))
+      }
+    )
+
+    const screenReaderSubscription = AccessibilityInfo.addEventListener(
+      'screenReaderChanged',
+      screenReader => {
+        setSnapshot(previous => ({ ...previous, screenReader }))
+      }
+    )
+
+    return () => {
+      active = false
+
+      reduceMotionSubscription.remove()
+
+      screenReaderSubscription.remove()
+    }
+  }, [])
+
+  return snapshot
+}
+
 const HomeScreen = ({
   onBrowse,
-  onOpenAbout
+  onOpenExamples,
+  onOpenSettings
 }: {
   onBrowse: () => void
-  onOpenAbout: () => void
+  onOpenExamples: () => void
+  onOpenSettings: () => void
 }): ReactElement => {
   const theme = useLumenTheme()
 
@@ -365,7 +548,7 @@ const HomeScreen = ({
           </View>
           <View style={styles.linkActions}>
             <LumenButton onPress={onBrowse}>Browse all components</LumenButton>
-            <LumenButton intent="secondary" onPress={onOpenAbout}>About this preview</LumenButton>
+            <LumenButton intent="secondary" onPress={onOpenExamples}>Open product examples</LumenButton>
           </View>
         </LumenCard>
 
@@ -404,10 +587,12 @@ const HomeScreen = ({
             <LumenDivider />
             <LumenListRow leading={<LumenIcon decorative name="accessibility" size="md" />}>
               <LumenText variant="label">Review native accessibility</LumenText>
-              <LumenText tone="muted">Inspect labels, states, touch targets, and contrast.</LumenText>
+              <LumenText tone="muted">Inspect live device settings, localized validation, and contrast.</LumenText>
             </LumenListRow>
           </View>
         </LumenCard>
+
+        <LumenButton intent="quiet" onPress={onOpenSettings}>Review appearance and accessibility</LumenButton>
 
         <LumenStatusBar
           message="Built with @santi020k/lumen-react-native"
@@ -419,96 +604,329 @@ const HomeScreen = ({
   )
 }
 
-const AboutScreen = ({
+const ExamplesScreen = (): ReactElement => {
+  const initialState = getWebQueryParameter('state')
+
+  const [exampleState, setExampleState] = useState<ExampleState>(
+    () => isExampleState(initialState) ? initialState : 'success'
+  )
+
+  const [approved, setApproved] = useState(false)
+
+  return (
+    <LumenSurface padding="none" radius="none" style={styles.screen} tone="canvas">
+      <ScrollView contentContainerStyle={styles.content}>
+        <View style={styles.heroCopy}>
+          <LumenBadge tone="accent">Product patterns</LumenBadge>
+          <LumenText variant="title">Examples</LumenText>
+          <LumenText tone="soft">
+            Exercise composed workflows and move them through meaningful loading, empty, error,
+            and success states.
+          </LumenText>
+        </View>
+
+        <LumenCard style={styles.section}>
+          <LumenSectionHeader
+            subtitle="The selected state remains explicit to assist visual and accessibility review."
+            title="Catalog synchronization"
+          />
+          <LumenSegmentedControl
+            label="Catalog state"
+            onValueChange={value => {
+              if (isExampleState(value)) {
+                setExampleState(value)
+
+                updateWebQueryParameter('state', value)
+              }
+            }}
+            options={[
+              { label: 'Loading', value: 'loading' },
+              { label: 'Empty', value: 'empty' },
+              { label: 'Error', value: 'error' },
+              { label: 'Success', value: 'success' }
+            ]}
+            value={exampleState}
+          />
+
+          {exampleState === 'loading' && (
+            <View accessibilityLiveRegion="polite" style={styles.stack}>
+              <LumenSpinner accessibilityLabel="Loading catalog synchronization" />
+              <LumenSkeleton shape="text" />
+              <LumenSkeleton shape="text" width="78%" />
+              <LumenSkeleton shape="text" width="56%" />
+              <LumenStatusBar message="Synchronizing the native catalog" tone="accent" />
+            </View>
+          )}
+          {exampleState === 'empty' && (
+            <LumenEmptyState
+              actions={(
+                <LumenButton onPress={() => {
+                  setExampleState('success')
+                }}
+                >
+                  Create sample entry
+                </LumenButton>
+              )}
+              description="Add a sample entry to review the completed catalog state."
+              graphic={<LumenIcon decorative name="blocks" size="lg" />}
+              title="No catalog entries yet"
+            />
+          )}
+          {exampleState === 'error' && (
+            <LumenErrorState
+              actions={(
+                <LumenButton onPress={() => {
+                  setExampleState('loading')
+                }}
+                >
+                  Retry synchronization
+                </LumenButton>
+              )}
+              description="The local example could not finish its simulated catalog refresh."
+              reference="PLAYGROUND-SYNC"
+              title="Catalog synchronization failed"
+            />
+          )}
+          {exampleState === 'success' && (
+            <LumenCard variant="success">
+              <LumenListRow
+                leading={<LumenIcon decorative name="circle-check" size="lg" />}
+                trailing={<LumenBadge tone="success">Ready</LumenBadge>}
+              >
+                <LumenText variant="label">Native catalog synchronized</LumenText>
+                <LumenText tone="muted">Examples and component metadata use the current workspace build.</LumenText>
+              </LumenListRow>
+            </LumenCard>
+          )}
+        </LumenCard>
+
+        <LumenCard style={styles.section}>
+          <LumenSectionHeader
+            subtitle="A safe local decision flow demonstrates selected, disabled, and completion feedback."
+            title="Accessibility review"
+          />
+          <LumenCheckbox
+            checked={approved}
+            label="Confirm labels, focus order, touch targets, and status announcements"
+            onCheckedChange={setApproved}
+          />
+          <LumenButton
+            disabled={!approved}
+            onPress={() => {
+              setApproved(false)
+            }}
+          >
+            Complete review
+          </LumenButton>
+          <LumenStatusBar
+            message={approved ? 'Accessibility review ready to complete' : 'Accessibility review requires confirmation'}
+            tone={approved ? 'success' : 'warning'}
+          />
+        </LumenCard>
+
+        <LumenStatusBar message="Examples use local, disposable state" tone="success" />
+      </ScrollView>
+    </LumenSurface>
+  )
+}
+
+const SettingsScreen = ({
   onSchemeChange,
-  scheme
+  onThemePresetChange,
+  scheme,
+  themePreset
 }: {
   onSchemeChange: (scheme: ColorScheme) => void
+  onThemePresetChange: (preset: ThemePreset) => void
   scheme: ColorScheme
-}): ReactElement => (
-  <LumenSurface padding="none" radius="none" style={styles.screen} tone="canvas">
-    <ScrollView contentContainerStyle={styles.content}>
-      <View style={styles.heroCopy}>
-        <LumenBadge tone="accent">Lumen Playground</LumenBadge>
-        <LumenText variant="title">About this preview</LumenText>
-        <LumenText tone="soft">
-          A public, account-free gallery for evaluating the real Lumen React Native package.
-        </LumenText>
-      </View>
+  themePreset: ThemePreset
+}): ReactElement => {
+  const accessibility = useAccessibilitySnapshot()
+  const [locale, setLocale] = useState<PlaygroundLocale>('en')
+  const [releaseNote, setReleaseNote] = useState('')
+  const [validated, setValidated] = useState(false)
+  const localizedCopy = playgroundLocalizedCopy[locale]
 
-      <LumenCard>
-        <LumenSectionHeader
-          subtitle="Follow the device or choose a fixed playground theme."
-          title="Appearance"
-        />
-        <LumenSegmentedControl
-          label="Playground appearance"
-          onValueChange={value => {
-            if (isColorScheme(value)) onSchemeChange(value)
-          }}
-          options={[
-            { label: 'System', value: 'system' },
-            { label: 'Light', value: 'light' },
-            { label: 'Dark', value: 'dark' }
-          ]}
-          value={scheme}
-        />
-      </LumenCard>
+  const validationMessage = validated && releaseNote.trim().length === 0 ?
+    localizedCopy.error :
+    undefined
 
-      <LumenAlert variant="success">
-        <LumenAlertTitle>Private by design</LumenAlertTitle>
-        <LumenAlertDescription>
-          The playground requires no account and does not collect, retain, or share personal data.
-          Interactive examples remain on your device.
-        </LumenAlertDescription>
-      </LumenAlert>
-
-      <LumenCard>
-        <LumenSectionHeader
-          subtitle="Documentation, source, support, and policies."
-          title="Learn more"
-        />
-        <View style={styles.linkActions}>
-          <LumenButton
-            onPress={() => {
-              openExternalURL('https://lumen.santi020k.com/docs/react-native')
-            }}
-          >
-            React Native documentation
-          </LumenButton>
-          <LumenButton
-            intent="secondary"
-            onPress={() => {
-              openExternalURL('https://github.com/santi020k/lumen')
-            }}
-          >
-            View source on GitHub
-          </LumenButton>
-          <LumenButton
-            intent="secondary"
-            onPress={() => {
-              openExternalURL('https://lumen.santi020k.com/support')
-            }}
-          >
-            Support
-          </LumenButton>
-          <LumenButton
-            intent="quiet"
-            onPress={() => {
-              openExternalURL('https://lumen.santi020k.com/privacy')
-            }}
-          >
-            Privacy policy
-          </LumenButton>
+  return (
+    <LumenSurface padding="none" radius="none" style={styles.screen} tone="canvas">
+      <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+        <View style={styles.heroCopy}>
+          <LumenBadge tone="accent">Local preferences</LumenBadge>
+          <LumenText variant="title">Settings</LumenText>
+          <LumenText tone="soft">
+            Preview appearance, inspect live accessibility context, and exercise localized validation.
+          </LumenText>
         </View>
-      </LumenCard>
 
-      <LumenText tone="muted" variant="caption">
-        Lumen UI · React Native playground 1.0.0 · Created by Santiago Molina
-      </LumenText>
-    </ScrollView>
-  </LumenSurface>
-)
+        <LumenCard style={styles.section}>
+          <LumenSectionHeader
+            subtitle="Follow the device or choose a fixed playground theme."
+            title="Appearance"
+          />
+          <LumenSegmentedControl
+            label="Playground theme"
+            onValueChange={value => {
+              if (isThemePreset(value)) onThemePresetChange(value)
+            }}
+            options={[
+              { label: 'Lumen', value: 'lumen' },
+              { label: 'santi020k', value: 'santi020k' }
+            ]}
+            value={themePreset}
+          />
+          <LumenSegmentedControl
+            label="Playground appearance"
+            onValueChange={value => {
+              if (isColorScheme(value)) onSchemeChange(value)
+            }}
+            options={[
+              { label: 'System', value: 'system' },
+              { label: 'Light', value: 'light' },
+              { label: 'Dark', value: 'dark' }
+            ]}
+            value={scheme}
+          />
+          <View style={styles.row}>
+            <LumenBadge tone="accent">{themePreset === 'lumen' ? 'Lumen' : 'santi020k'}</LumenBadge>
+            <LumenBadge tone="neutral">{scheme.charAt(0).toUpperCase() + scheme.slice(1)}</LumenBadge>
+          </View>
+        </LumenCard>
+
+        <LumenCard style={styles.section}>
+          <LumenSectionHeader
+            subtitle="Read-only values come from React Native and update when supported device settings change."
+            title="Accessibility lab"
+          />
+          <LumenSettingsRow
+            control={<LumenBadge tone={accessibility.screenReader ? 'success' : 'neutral'}>{accessibility.screenReader ? 'On' : 'Off'}</LumenBadge>}
+            description="VoiceOver, TalkBack, or the active web accessibility bridge"
+            title="Screen reader"
+          />
+          <LumenDivider />
+          <LumenSettingsRow
+            control={<LumenBadge tone={accessibility.reduceMotion ? 'success' : 'neutral'}>{accessibility.reduceMotion ? 'On' : 'Off'}</LumenBadge>}
+            description="System preference for quieter functional transitions"
+            title="Reduce motion"
+          />
+          <LumenDivider />
+          <LumenSettingsRow
+            control={(
+              <LumenBadge tone="neutral">
+                {accessibility.fontScale.toFixed(2)}
+                ×
+              </LumenBadge>
+            )}
+            description="Current React Native font scale"
+            title="Text scale"
+          />
+          <LumenAlert>
+            <LumenAlertTitle>Use the platform settings for authoritative testing</LumenAlertTitle>
+            <LumenAlertDescription>
+              The playground reports native preferences without pretending to replace VoiceOver,
+              TalkBack, keyboard, contrast, or device text-size verification.
+            </LumenAlertDescription>
+          </LumenAlert>
+        </LumenCard>
+
+        <LumenCard style={styles.section}>
+          <LumenSectionHeader
+            subtitle="Switch application-owned copy while the controls remain mounted."
+            title="Runtime localization"
+          />
+          <LumenSegmentedControl
+            label="Language"
+            onValueChange={value => {
+              if (value === 'en' || value === 'es') setLocale(value)
+            }}
+            options={[
+              { label: 'English', value: 'en' },
+              { label: 'Español', value: 'es' }
+            ]}
+            value={locale}
+          />
+          <LumenTextarea
+            description={localizedCopy.description}
+            errorMessage={validationMessage}
+            label={localizedCopy.label}
+            onChangeText={value => {
+              setReleaseNote(value)
+
+              setValidated(false)
+            }}
+            value={releaseNote}
+          />
+          <LumenButton onPress={() => {
+            setValidated(true)
+          }}
+          >
+            {localizedCopy.action}
+          </LumenButton>
+          {validated && validationMessage === undefined && (
+            <LumenAlert variant="success">
+              <LumenAlertTitle>{localizedCopy.success}</LumenAlertTitle>
+            </LumenAlert>
+          )}
+        </LumenCard>
+
+        <LumenAlert variant="success">
+          <LumenAlertTitle>Private by design</LumenAlertTitle>
+          <LumenAlertDescription>
+            The playground requires no account and does not collect, retain, or share personal data.
+            Interactive examples remain on your device.
+          </LumenAlertDescription>
+        </LumenAlert>
+
+        <LumenCard style={styles.section}>
+          <LumenSectionHeader
+            subtitle="Documentation, source, support, and policies."
+            title="Learn more"
+          />
+          <View style={styles.linkActions}>
+            <LumenButton
+              onPress={() => {
+                openExternalURL('https://lumen.santi020k.com/docs/react-native')
+              }}
+            >
+              React Native documentation
+            </LumenButton>
+            <LumenButton
+              intent="secondary"
+              onPress={() => {
+                openExternalURL('https://github.com/santi020k/lumen')
+              }}
+            >
+              View source on GitHub
+            </LumenButton>
+            <LumenButton
+              intent="secondary"
+              onPress={() => {
+                openExternalURL('https://lumen.santi020k.com/support')
+              }}
+            >
+              Support
+            </LumenButton>
+            <LumenButton
+              intent="quiet"
+              onPress={() => {
+                openExternalURL('https://lumen.santi020k.com/privacy')
+              }}
+            >
+              Privacy policy
+            </LumenButton>
+          </View>
+        </LumenCard>
+
+        <LumenText tone="muted" variant="caption">
+          Lumen UI · React Native playground · Created by Santiago Molina
+        </LumenText>
+      </ScrollView>
+    </LumenSurface>
+  )
+}
 
 const ChartExamples = ({
   isVisible
@@ -610,14 +1028,184 @@ const ChartExamples = ({
   </>
 )
 
+interface CatalogFocusPanelProps {
+  focusedComponent: string | undefined
+  onClear: () => void
+  onSelectComponent: (name: string) => void
+  showComponentPicker: boolean
+  visibleNames: readonly string[]
+}
+
+const CatalogFocusPanel = ({
+  focusedComponent,
+  onClear,
+  onSelectComponent,
+  showComponentPicker,
+  visibleNames
+}: CatalogFocusPanelProps): ReactElement => {
+  if (focusedComponent) {
+    const focusedCategory = getComponentCategory(focusedComponent)
+
+    return (
+      <LumenCard style={styles.catalogPicker} variant="accent">
+        <View style={styles.row}>
+          <LumenBadge tone="accent">Focused component</LumenBadge>
+          {focusedCategory ? <LumenBadge tone="neutral">{focusedCategory}</LumenBadge> : null}
+        </View>
+        <LumenText variant="title">{focusedComponent}</LumenText>
+        <LumenText tone="muted">
+          The gallery below focuses the component's realistic interactive composition and related state.
+        </LumenText>
+        <View style={styles.linkActions}>
+          <LumenButton intent="secondary" onPress={onClear}>Back to catalog</LumenButton>
+          <LumenButton
+            intent="quiet"
+            onPress={() => {
+              openExternalURL('https://lumen.santi020k.com/docs/react-native')
+            }}
+          >
+            Open React Native guidance
+          </LumenButton>
+        </View>
+      </LumenCard>
+    )
+  }
+
+  if (showComponentPicker) {
+    return (
+      <LumenCard style={styles.catalogPicker}>
+        <LumenSectionHeader
+          subtitle="Open one focused example without losing the selected category."
+          title="Choose a component"
+        />
+        <View style={styles.componentGrid}>
+          {visibleNames.map(name => (
+            <LumenButton
+              key={name}
+              intent="secondary"
+              onPress={() => {
+                onSelectComponent(name)
+              }}
+              size="sm"
+              style={styles.componentGridItem}
+            >
+              {name}
+            </LumenButton>
+          ))}
+        </View>
+      </LumenCard>
+    )
+  }
+
+  return (
+    <LumenCard variant="muted">
+      <LumenText variant="label">Choose a category or search by component name</LumenText>
+      <LumenText tone="muted">
+        Category filters reveal a compact index; selecting a name focuses its interactive composition.
+      </LumenText>
+    </LumenCard>
+  )
+}
+
+interface CatalogDiscoveryProps {
+  onCategoryChange: (category: ComponentCategory | 'all') => void
+  onClear: () => void
+  onQueryChange: (value: string) => void
+  onSchemeChange: (scheme: ColorScheme) => void
+  onSelectComponent: (name: string) => void
+  query: string
+  selectedCategory: ComponentCategory | 'all'
+  visibleNames: readonly string[]
+}
+
+const CatalogDiscovery = ({
+  onCategoryChange,
+  onClear,
+  onQueryChange,
+  onSchemeChange,
+  onSelectComponent,
+  query,
+  selectedCategory,
+  visibleNames
+}: CatalogDiscoveryProps): ReactElement => {
+  const theme = useLumenTheme()
+  const themeToggle = getThemeToggleState(theme.scheme)
+
+  const focusedComponent = componentNames.find(
+    name => name.toLowerCase() === query.trim().toLowerCase()
+  )
+
+  const showComponentPicker = query.trim().length > 0 || selectedCategory !== 'all'
+
+  return (
+    <>
+      <View style={styles.hero}>
+        <View style={styles.heroCopy}>
+          <LumenBadge tone="accent">{Platform.OS}</LumenBadge>
+          <LumenText variant="title">Lumen Playground</LumenText>
+          <LumenText tone="soft">
+            Explore every public primitive with real React Native state and behavior.
+          </LumenText>
+        </View>
+        <LumenIconButton
+          name={themeToggle.icon}
+          label={themeToggle.label}
+          onPress={() => {
+            onSchemeChange(themeToggle.scheme)
+          }}
+        />
+      </View>
+
+      <LumenSearchField
+        graphic={<LumenIcon decorative name="search" size="sm" />}
+        onChangeText={onQueryChange}
+        prompt="Search components"
+        value={query}
+      />
+
+      <View accessibilityLabel="Component categories" style={styles.categoryRow}>
+        <LumenChip label="All" onPress={onClear} selected={selectedCategory === 'all'} />
+        {componentCategories.map(category => (
+          <LumenChip
+            key={category.value}
+            label={category.label}
+            onPress={() => {
+              onCategoryChange(category.value)
+            }}
+            selected={selectedCategory === category.value}
+          />
+        ))}
+      </View>
+
+      <View style={styles.catalogMeta}>
+        <LumenText variant="label">
+          {visibleNames.length}
+          {' '}
+          components
+        </LumenText>
+        <LumenText tone="muted" variant="caption">Interactive web · iOS · Android</LumenText>
+      </View>
+
+      <CatalogFocusPanel
+        focusedComponent={focusedComponent}
+        onClear={onClear}
+        onSelectComponent={onSelectComponent}
+        showComponentPicker={showComponentPicker}
+        visibleNames={visibleNames}
+      />
+    </>
+  )
+}
+
 const Playground = ({
   onSchemeChange
 }: {
   onSchemeChange: (scheme: ColorScheme) => void
 }): ReactElement => {
   const theme = useLumenTheme()
-  const themeToggle = getThemeToggleState(theme.scheme)
   const initialComponent = getInitialComponentQuery()
+  const initialCategory = getWebQueryParameter('category')
+  const embedded = isEmbeddedPreview()
   const [email, setEmail] = useState('hello@lumen.dev')
   const [notes, setNotes] = useState('Native components now share one documented contract.')
   const [releaseDate, setReleaseDate] = useState<Date | null>(() => new Date(2026, 8, 15))
@@ -632,10 +1220,17 @@ const Playground = ({
   ))
 
   const [query, setQuery] = useState(initialComponent)
+
+  const [selectedCategory, setSelectedCategory] = useState<ComponentCategory | 'all'>(
+    () => isComponentCategory(initialCategory) ? initialCategory : 'all'
+  )
+
   const [saved, setSaved] = useState(false)
   const [notificationsEnabled, setNotificationsEnabled] = useState(true)
   const [termsAccepted, setTermsAccepted] = useState(false)
   const [profile, setProfile] = useState('balanced')
+  const [region, setRegion] = useState('americas')
+  const [minimumSpeed, setMinimumSpeed] = useState(2_400)
   const [density, setDensity] = useState('comfortable')
   const [detailsExpanded, setDetailsExpanded] = useState(true)
   const [showBanner, setShowBanner] = useState(true)
@@ -649,17 +1244,28 @@ const Playground = ({
   const [navigationVisible, setNavigationVisible] = useState(true)
   const [lastAction, setLastAction] = useState('No overlay action yet')
 
-  const visibleNames = useMemo(() => componentNames.filter(name => (
-    name.toLowerCase().includes(query.trim().toLowerCase())
-  )), [query])
+  const visibleNames = useMemo(
+    () => getVisibleComponentNames(query, selectedCategory, embedded),
+    [embedded, query, selectedCategory]
+  )
 
   const isVisible = (name: string) => visibleNames.includes(name)
   const isAnyVisible = (...names: string[]) => names.some(isVisible)
 
+  const clearCatalogFocus = (): void => {
+    setQuery('')
+
+    setSelectedCategory('all')
+
+    updateWebQueryParameter('component', '')
+
+    updateWebQueryParameter('category', '')
+  }
+
   return (
     <LumenSurface padding="none" radius="none" style={styles.screen} tone="canvas">
       <ScrollView
-        contentContainerStyle={styles.content}
+        contentContainerStyle={getPlaygroundContentStyle(embedded)}
         keyboardShouldPersistTaps="handled"
         refreshControl={(
           <LumenRefreshControl
@@ -675,38 +1281,38 @@ const Playground = ({
           />
         )}
       >
-        <View style={styles.hero}>
-          <View style={styles.heroCopy}>
-            <LumenBadge tone="accent">{Platform.OS}</LumenBadge>
-            <LumenText variant="title">Lumen Playground</LumenText>
-            <LumenText tone="soft">
-              Explore every public primitive with real React Native state and behavior.
-            </LumenText>
-          </View>
-          <LumenIconButton
-            name={themeToggle.icon}
-            label={themeToggle.label}
-            onPress={() => {
-              onSchemeChange(themeToggle.scheme)
+        <Visibility visible={!embedded}>
+          <CatalogDiscovery
+            onCategoryChange={category => {
+              setSelectedCategory(category)
+
+              setQuery('')
+
+              updateWebQueryParameter('category', category === 'all' ? '' : category)
+
+              updateWebQueryParameter('component', '')
             }}
+            onClear={clearCatalogFocus}
+            onQueryChange={value => {
+              setQuery(value)
+
+              setSelectedCategory('all')
+
+              updateWebQueryParameter('component', value)
+
+              updateWebQueryParameter('category', '')
+            }}
+            onSchemeChange={onSchemeChange}
+            onSelectComponent={name => {
+              setQuery(name)
+
+              updateWebQueryParameter('component', name)
+            }}
+            query={query}
+            selectedCategory={selectedCategory}
+            visibleNames={visibleNames}
           />
-        </View>
-
-        <LumenSearchField
-          graphic={<LumenIcon decorative name="search" size="sm" />}
-          onChangeText={setQuery}
-          prompt="Search components"
-          value={query}
-        />
-
-        <View style={styles.catalogMeta}>
-          <LumenText variant="label">
-            {visibleNames.length}
-            {' '}
-            components
-          </LumenText>
-          <LumenText tone="muted" variant="caption">Interactive web · iOS · Android</LumenText>
-        </View>
+        </Visibility>
 
         <Visibility visible={isAnyVisible('Theme', 'Text', 'Surface')}>
           <ComponentSection
@@ -729,9 +1335,7 @@ const Playground = ({
               <LumenIconButton
                 label="Search the catalog"
                 name="search"
-                onPress={() => {
-                  setQuery('')
-                }}
+                onPress={clearCatalogFocus}
               />
             </View>
           </ComponentSection>
@@ -739,7 +1343,7 @@ const Playground = ({
 
         <Visibility visible={isAnyVisible('Button', 'Button group', 'Chip')}>
           <ComponentSection description="Press each intent and inspect disabled and loading states." title="Buttons">
-            <LumenButtonGroup>
+            <LumenButtonGroup style={styles.row}>
               <LumenButton onPress={() => {
                 setSaved(true)
               }}
@@ -797,6 +1401,8 @@ const Playground = ({
             'Date field',
             'Date range field',
             'Phone input',
+            'Picker',
+            'Slider',
             'Checkbox',
             'Radio group',
             'Segmented control',
@@ -844,6 +1450,29 @@ const Playground = ({
               onValueChange={setPhoneNumber}
               value={phoneNumber}
             />
+            <View testID="component-picker">
+              <LumenPicker
+                label="Deployment region"
+                onValueChange={setRegion}
+                options={[
+                  { label: 'Americas', value: 'americas' },
+                  { label: 'Europe', value: 'europe' },
+                  { disabled: true, label: 'Asia Pacific (coming soon)', value: 'asia-pacific' }
+                ]}
+                value={region}
+              />
+            </View>
+            <View testID="component-slider">
+              <LumenSlider
+                label="Minimum speed"
+                max={5_000}
+                min={1_000}
+                onValueChange={setMinimumSpeed}
+                step={100}
+                value={minimumSpeed}
+                valueLabel={`${minimumSpeed} RPM`}
+              />
+            </View>
             <LumenFieldGroup
               description="These controls retain independent focus and labels."
               label="Publication checks"
@@ -1022,6 +1651,28 @@ const Playground = ({
           </ComponentSection>
         </Visibility>
 
+        <Visibility visible={isVisible('Error state')}>
+          <ComponentSection
+            description="A recoverable offline state with an application-owned action and safe support reference."
+            title="Error state"
+          >
+            <LumenErrorState
+              actions={(
+                <LumenButton
+                  intent="secondary"
+                  onPress={clearCatalogFocus}
+                >
+                  Try again
+                </LumenButton>
+              )}
+              description="Check your connection and try again."
+              kind="offline"
+              reference="REQ-4F82"
+              title="Could not load projects"
+            />
+          </ComponentSection>
+        </Visibility>
+
         <Visibility visible={isAnyVisible('Graphic', 'Backdrop', 'Illustration', 'Image')}>
           <ComponentSection
             description="Token-aware decorative foundations and semantic empty, success, error, and offline artwork."
@@ -1060,7 +1711,7 @@ const Playground = ({
         </Visibility>
 
         <Visibility
-          visible={isAnyVisible('Avatar', 'List row', 'Stat', 'Section header')}
+          visible={isAnyVisible('Avatar', 'List row', 'Stat', 'Section header', 'Gauge')}
         >
           <ComponentSection description="Identity, metrics, and structured rows compose into product content." title="Data display">
             <LumenSectionHeader
@@ -1094,6 +1745,14 @@ const Playground = ({
                 tone="success"
                 value="Passing"
               />
+              <View style={styles.statItem} testID="component-gauge">
+                <LumenGauge
+                  label="Platform readiness"
+                  tone="success"
+                  value={57}
+                  valueLabel="57 shared"
+                />
+              </View>
             </View>
             <LumenCard variant={saved ? 'success' : 'muted'}>
               <LumenListRow
@@ -1112,9 +1771,7 @@ const Playground = ({
             actions={(
               <LumenButton
                 intent="secondary"
-                onPress={() => {
-                  setQuery('')
-                }}
+                onPress={clearCatalogFocus}
               >
                 Clear search
               </LumenButton>
@@ -1272,17 +1929,19 @@ const Playground = ({
           </ComponentSection>
         </Visibility>
 
-        <LumenStatusBar
-          message={`Built with @santi020k/lumen-react-native · ${theme.scheme} theme`}
-          tone="success"
-          trailing={(
-            <LumenText tone="muted" variant="caption">
-              {componentNames.length}
-              {' '}
-              shared
-            </LumenText>
-          )}
-        />
+        <Visibility visible={!embedded}>
+          <LumenStatusBar
+            message={`Built with @santi020k/lumen-react-native · ${theme.scheme} theme`}
+            tone="success"
+            trailing={(
+              <LumenText tone="muted" variant="caption">
+                {componentNames.length}
+                {' '}
+                shared
+              </LumenText>
+            )}
+          />
+        </Visibility>
       </ScrollView>
     </LumenSurface>
   )
@@ -1290,16 +1949,32 @@ const Playground = ({
 
 const AppShell = ({
   onSchemeChange,
-  scheme
+  onThemePresetChange,
+  scheme,
+  themePreset
 }: {
   onSchemeChange: (scheme: ColorScheme) => void
+  onThemePresetChange: (preset: ThemePreset) => void
   scheme: ColorScheme
+  themePreset: ThemePreset
 }): ReactElement => {
   const theme = useLumenTheme()
+  const embedded = isEmbeddedPreview()
+  const [destination, setDestination] = useState<AppDestination>(getInitialDestination)
 
-  const [destination, setDestination] = useState<AppDestination>(() => (
-    getInitialComponentQuery() ? 'components' : 'home'
-  ))
+  const navigate = (value: AppDestination): void => {
+    setDestination(value)
+
+    updateWebQueryParameter('destination', value)
+
+    if (value !== 'components') {
+      updateWebQueryParameter('component', '')
+
+      updateWebQueryParameter('category', '')
+    }
+
+    if (value !== 'examples') updateWebQueryParameter('state', '')
+  }
 
   return (
     <>
@@ -1313,29 +1988,42 @@ const AppShell = ({
             {destination === 'home' && (
               <HomeScreen
                 onBrowse={() => {
-                  setDestination('components')
+                  navigate('components')
                 }}
-                onOpenAbout={() => {
-                  setDestination('about')
+                onOpenExamples={() => {
+                  navigate('examples')
+                }}
+                onOpenSettings={() => {
+                  navigate('settings')
                 }}
               />
             )}
+            {destination === 'examples' && <ExamplesScreen />}
             {destination === 'components' && (
               <Playground onSchemeChange={onSchemeChange} />
             )}
-            {destination === 'about' && (
-              <AboutScreen onSchemeChange={onSchemeChange} scheme={scheme} />
+            {destination === 'settings' && (
+              <SettingsScreen
+                onSchemeChange={onSchemeChange}
+                onThemePresetChange={onThemePresetChange}
+                scheme={scheme}
+                themePreset={themePreset}
+              />
             )}
           </View>
-          <LumenNavigationBar
-            accessibilityLabel="Playground navigation"
-            items={appNavigationItems}
-            onValueChange={value => {
-              if (isAppDestination(value)) setDestination(value)
-            }}
-            style={styles.appNavigation}
-            value={destination}
-          />
+          {!embedded && (
+            <LumenNavigationBar
+              accessibilityLabel="Playground navigation"
+              items={appNavigationItems}
+              onValueChange={value => {
+                if (isAppDestination(value)) {
+                  navigate(value)
+                }
+              }}
+              style={styles.appNavigation}
+              value={destination}
+            />
+          )}
         </LumenSurface>
       </SafeAreaView>
     </>
@@ -1343,12 +2031,25 @@ const AppShell = ({
 }
 
 const App = (): ReactElement => {
-  const [scheme, setScheme] = useState<ColorScheme>('system')
+  const [scheme, setScheme] = useState<ColorScheme>(getInitialColorScheme)
+  const [themePreset, setThemePreset] = useState<ThemePreset>(getInitialThemePreset)
+  const systemScheme = useColorScheme()
+  const resolvedScheme = resolvePlaygroundScheme(scheme, systemScheme)
+
+  const theme = useMemo(
+    () => createPlaygroundTheme(themePreset, resolvedScheme),
+    [resolvedScheme, themePreset]
+  )
 
   return (
     <SafeAreaProvider>
-      <LumenProvider scheme={scheme}>
-        <AppShell onSchemeChange={setScheme} scheme={scheme} />
+      <LumenProvider theme={theme}>
+        <AppShell
+          onSchemeChange={setScheme}
+          onThemePresetChange={setThemePreset}
+          scheme={scheme}
+          themePreset={themePreset}
+        />
       </LumenProvider>
     </SafeAreaProvider>
   )

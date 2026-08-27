@@ -8,8 +8,9 @@ Install the framework package directly:
 - `@santi020k/lumen-react`
 - `@santi020k/lumen-elements`
 
-Each adapter includes the shared foundation and exposes its own stylesheet entry. Install this
-umbrella package only when you want the framework-neutral CLI or registry APIs:
+Each adapter includes the shared foundation, exposes its own stylesheet entry, and makes the
+`lumen` CLI available to the consuming project. Install this umbrella package directly when you
+also want to import its framework-neutral registry or diagnostics APIs:
 
 ```bash
 pnpm add @santi020k/lumen
@@ -45,6 +46,7 @@ lumen audit-tokens ./src
 lumen doctor --json
 lumen doctor-native --json
 lumen init --framework astro --tailwind
+lumen migrate v2 --dry-run
 ```
 
 Use `lumen add <component>` for a local Astro wrapper, `--target react` for a React wrapper, or
@@ -55,20 +57,29 @@ Complete product recipes are also bundled for `analytics-dashboard`, `saas-admin
 `commerce-dashboard`, `project-workspace`, `auth-onboarding`, `docs-shell`, `marketing-shell`,
 `dashboard-shell`, and `validated-form`.
 
-Run `lumen doctor` to check adapter/style agreement, Tailwind layer order, Astro runtime mounts,
-and fragile internal selector dependencies. In a workspace, diagnostics are scoped to the nearest
-package boundary, generated build trees are ignored, and application-controlled Astro `Toggle`
-instances do not require the shared runtime. It also suggests matching Lumen primitives for likely
-hand-built dropdown, theme, dialog-focus, and keyboard-menu behavior. These suggestions stay
-advisory because product-specific composition can be intentional. Use `--json` for CI and rollout
-automation. `lumen init --framework <astro|react|elements> [--tailwind]` prints the canonical
-non-destructive setup.
+External registry manifests are treated as untrusted input. Inline recipe files must use unique,
+relative forward-slash paths and cannot traverse outside the selected `--cwd` or write through a
+symbolic-link path segment. `loadLumenRegistry` bounds local and remote manifests to 5 MiB by
+default; programmatic consumers can set `maxBytes` and `timeoutMs` for tighter deployment limits.
+
+Run `lumen doctor` to check adapter/style agreement, duplicate stylesheet entrypoints, Tailwind
+layer order, Astro runtime mounts, and fragile internal selector dependencies. In a workspace,
+diagnostics are scoped to the nearest package boundary, generated build trees are ignored, and
+application-controlled Astro `Toggle` instances do not require the shared runtime. It also suggests
+matching Lumen primitives for likely hand-built dropdown, theme, dialog-focus, and keyboard-menu
+behavior. These suggestions stay advisory because product-specific composition can be intentional.
+Use `--json` for CI and rollout automation. `lumen init --framework <astro|react|elements>
+[--tailwind]` prints the canonical non-destructive setup.
 
 Run `lumen doctor-native` in an Apple or Android consumer to report the resolved Swift package
 tag/revision or Compose artifact version, compare it with Lumen's bundled cross-platform release
-manifest, and audit public theme placement. Findings are suggestions or warnings: the command does
-not classify application-owned navigation or controls as migration failures. Pass `--manifest`
-to audit against a prerelease manifest and `--json` for CI.
+manifest, and audit public theme placement. It also groups likely direct SwiftUI and Compose
+primitives that have public Lumen equivalents; these remain non-authoritative suggestions and do
+not classify application-owned navigation or controls as failures. Android consumers receive a
+read-only preflight for the documented JDK, SDK, platform packages, optional NDK requirement, and
+compatible Gradle/AGP/Kotlin baseline before native compilation begins. Missing required toolchain
+pieces are failures, optional evidence and migration candidates are warnings or suggestions. Pass
+`--manifest` to audit against a prerelease manifest and `--json` for CI.
 
 The same machine-readable metadata is published as
 `@santi020k/lumen/release-manifest.json`. It records every npm package version and peer range, the
@@ -78,6 +89,33 @@ codemod availability.
 Run `lumen audit-tokens [path]` before incremental adoption when an existing stylesheet may already
 declare names such as `--surface`, `--ink`, or `--line`. The audit reports complete CSS colors that
 are incompatible with Lumen's HSL-channel token format and exits non-zero when it finds conflicts.
+
+## Lumen v2 migration preview
+
+Run `lumen migrate v2 [--cwd <path>]` to preview the candidate v2 source migrations. Previewing is
+the safe default; `--dry-run` makes that intent explicit, and `--json` emits a machine-readable
+report. The migrator currently:
+
+- moves `UIPrimitives` from the `@santi020k/lumen-astro` root barrel to the default export from
+  `@santi020k/lumen-astro/runtime`, including mixed and aliased named imports;
+- renames literal `sm`, `default`, and `lg` visual `size` aliases to `visualSize` on imported Astro
+  `Input` and `NativeSelect` components, and to `visual-size` on `lumen-input` and
+  `lumen-native-select` elements; and
+- rewrites `Sonner` and `SonnerProps` imports to the precise `ToastViewport` contract while
+  preserving local aliases, and renames `lumen-sonner` to `lumen-toast-viewport` without changing
+  placement, stack limits, or children;
+- moves React Native date-field imports to `@santi020k/lumen-react-native/datetime`, preserving
+  aliases and type-only imports; and
+- preserves numeric native `size` values while reporting dynamic, conflicting, and otherwise
+  ambiguous values for manual review.
+
+After reviewing the report and committing a recoverable baseline, write the deterministic changes:
+
+```bash
+lumen migrate v2 --apply
+```
+
+The transform is idempotent. Re-running it after a successful apply produces no further changes.
 
 ## Coordinated consumer rollout
 

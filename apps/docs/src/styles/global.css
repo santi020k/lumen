@@ -86,50 +86,18 @@
 :root,
 :root[data-theme="light"],
 :root[data-theme="lumen-light"] {
-  color-scheme: light;
   --app-font-sans: var(--santi020k-font-sans, "Montserrat", "Avenir Next", "Segoe UI", sans-serif);
   --app-font-display: var(--santi020k-font-display, "Montserrat", "Avenir Next", sans-serif);
-  --theme-bg: 210 24% 98%;
-  --canvas: 210 24% 98%;
-  --surface: 0 0% 100%;
-  --surface-muted: 210 22% 95%;
-  --surface-strong: 213 18% 88%;
-  --line: 214 17% 84%;
-  --ink: 216 28% 12%;
-  --ink-soft: 215 14% 35%;
-  --ink-muted: 215 10% 50%;
-  --brand: 201 96% 32%;
-  --brand-solid: 201 96% 28%;
-  --brand-soft: 198 64% 92%;
-  --accent: 169 78% 33%;
+  --theme-bg: var(--canvas);
   --glow: 38 92% 50%;
-  --success: 142 76% 36%;
-  --warning: 38 92% 50%;
-  --danger: 0 84% 60%;
 }
 
 :root[data-theme="dark"],
 :root[data-theme="lumen-dark"] {
-  color-scheme: dark;
   --app-font-sans: var(--santi020k-font-sans, "Montserrat", "Avenir Next", "Segoe UI", sans-serif);
   --app-font-display: var(--santi020k-font-display, "Montserrat", "Avenir Next", sans-serif);
-  --theme-bg: 224 24% 8%;
-  --canvas: 224 24% 8%;
-  --surface: 224 18% 11%;
-  --surface-muted: 223 16% 15%;
-  --surface-strong: 222 14% 22%;
-  --line: 222 14% 26%;
-  --ink: 210 20% 96%;
-  --ink-soft: 214 14% 77%;
-  --ink-muted: 216 10% 62%;
-  --brand: 199 91% 56%;
-  --brand-solid: 199 91% 36%;
-  --brand-soft: 199 84% 16%;
-  --accent: 166 76% 43%;
+  --theme-bg: var(--canvas);
   --glow: 199 91% 56%;
-  --success: 142 69% 45%;
-  --warning: 38 92% 55%;
-  --danger: 0 84% 65%;
 }
 
 @theme {
@@ -555,7 +523,7 @@ body {
   }
 }
 
-@media (max-width: 720px) {
+@media (max-width: 840px) {
   .docs-site-header {
     padding-inline: 0.75rem;
   }

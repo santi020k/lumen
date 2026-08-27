@@ -7,14 +7,15 @@ application that compiles the separate `lumen-compose-wear` artifact. The phone 
 adaptive destinations: Home, complete Examples, the searchable Components catalog, and Settings.
 Home presents the checked-in component and category totals as a release workspace. Examples includes
 interactive release-readiness, catalog-health, and profile patterns with representative product
-states. Normal Components launches add category discovery, while Settings groups theme,
-accessibility, platform, privacy, and support information. Wide windows use paired panes alongside
+states. Normal Components launches add category discovery, while Settings demonstrates Lumen and
+santi020k semantic theme presets, light and dark appearance, and groups accessibility, platform,
+privacy, and support information. Wide windows use paired panes alongside
 the adaptive navigation rail instead of stretching the phone layout.
 
 The Components destination preserves the complete basic and complex catalog: foundations, actions, forms,
 feedback, visual content, structured data, controlled overlays, Android sharing, bottom
 navigation, navigation accessories, and adaptive navigation. The Wear gallery renders every API
-in its intentionally smaller package, including the explicitly experimental metric and list-row
+in its intentionally smaller package, including the supported metric and list-row
 compositions.
 
 Open this directory, not the repository root, in Android Studio. Wait for Gradle sync, select an

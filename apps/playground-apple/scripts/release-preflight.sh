@@ -7,6 +7,7 @@ set -euo pipefail
 apple_root="${0:A:h:h}"
 repo_root="${apple_root:h:h}"
 cloud_script="$apple_root/ci_scripts/ci_post_clone.sh"
+toolchain_check="$apple_root/scripts/check-app-store-toolchain.sh"
 project="$apple_root/LumenApplePlayground.xcodeproj"
 scheme="$project/xcshareddata/xcschemes/LumenApplePlayground.xcscheme"
 mac_scheme="$project/xcshareddata/xcschemes/LumenMacPlayground.xcscheme"
@@ -27,7 +28,14 @@ if [[ ! -x "$cloud_script" ]]; then
     exit 1
 fi
 
+if [[ ! -x "$toolchain_check" ]]; then
+    print -u2 "The App Store toolchain check must be executable."
+    exit 1
+fi
+
 zsh -n "$cloud_script"
+zsh -n "$toolchain_check"
+"$toolchain_check"
 plutil -lint "$apple_root/Supporting/Info.plist"
 plutil -lint "$mac_info"
 plutil -lint "$mac_entitlements"

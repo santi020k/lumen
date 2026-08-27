@@ -1,6 +1,3 @@
-public abstract interface annotation class com/santi020k/lumen/ExperimentalLumenWearApi : java/lang/annotation/Annotation {
-}
-
 public final class com/santi020k/lumen/LumenWearTone : java/lang/Enum {
 	public static final field Accent Lcom/santi020k/lumen/LumenWearTone;
 	public static final field Brand Lcom/santi020k/lumen/LumenWearTone;

@@ -902,14 +902,28 @@ struct ComponentsCatalogView: View {
 
     @ViewBuilder
     private var emptyStateSection: some View {
-        if matches("Empty state") {
-            PlaygroundSection("Empty state", description: "Shared recovery structure preserves native SwiftUI behavior.") {
-                LumenEmptyState(
-                    "Everything is documented",
-                    systemName: "checkmark.circle",
-                    description: "Browse another category or try the native controls above."
-                ) {
-                    LumenButton("Explore components") { query = "" }
+        if matches("Empty state", "Error state") {
+            PlaygroundSection("Content outcomes", description: "Purpose-built empty and failure states preserve native SwiftUI behavior.") {
+                VStack(spacing: LumenSpacing.lg) {
+                    if matches("Empty state") {
+                        LumenEmptyState(
+                            "Everything is documented",
+                            systemName: "checkmark.circle",
+                            description: "Browse another category or try the native controls above."
+                        ) {
+                            LumenButton("Explore components") { query = "" }
+                        }
+                    }
+                    if matches("Error state") {
+                        LumenErrorState(
+                            "Could not load projects",
+                            description: "Check your connection and try again.",
+                            kind: .offline,
+                            reference: "REQ-4F82"
+                        ) {
+                            LumenButton("Try again", intent: .secondary, action: {})
+                        }
+                    }
                 }
                 .frame(minHeight: 240)
             }

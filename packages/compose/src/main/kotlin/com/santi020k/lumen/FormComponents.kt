@@ -24,6 +24,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberDateRangePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -258,7 +259,10 @@ private fun LumenDateFieldLayout(
             modifier = Modifier
                 .fillMaxWidth()
                 .heightIn(min = LumenButtonMetrics.resolve(LumenControlSize.Md).minHeight)
-                .semantics { contentDescription = "$label: $value" },
+                .semantics {
+                    contentDescription = "$label: $value"
+                    if (errorMessage != null) error(errorMessage)
+                },
             enabled = enabled,
             shape = RoundedCornerShape(LumenRadius.Sm)
         ) {
@@ -298,6 +302,10 @@ fun LumenDateField(
     var dialogVisible by remember { mutableStateOf(false) }
     val selectableDates = rememberLumenSelectableDates(minDateMillis, maxDateMillis)
 
+    LaunchedEffect(enabled) {
+        if (!enabled) dialogVisible = false
+    }
+
     LumenDateFieldLayout(
         label = label,
         value = formatLumenDateMillis(value) ?: placeholder,
@@ -308,7 +316,7 @@ fun LumenDateField(
         enabled = enabled
     )
 
-    if (dialogVisible) {
+    if (dialogVisible && enabled) {
         val state = rememberDatePickerState(
             initialSelectedDateMillis = value?.let {
                 clampLumenDateMillis(it, minDateMillis, maxDateMillis)
@@ -365,6 +373,10 @@ fun LumenDateRangeField(
     val end = formatLumenDateMillis(value.endDateMillis)
     val displayValue = if (start != null && end != null) "$start – $end" else placeholder
 
+    LaunchedEffect(enabled) {
+        if (!enabled) dialogVisible = false
+    }
+
     LumenDateFieldLayout(
         label = label,
         value = displayValue,
@@ -375,7 +387,7 @@ fun LumenDateRangeField(
         enabled = enabled
     )
 
-    if (dialogVisible) {
+    if (dialogVisible && enabled) {
         val initialStart = value.startDateMillis?.let {
             clampLumenDateMillis(it, minDateMillis, maxDateMillis)
         }

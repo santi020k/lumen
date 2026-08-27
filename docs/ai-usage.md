@@ -31,7 +31,7 @@ Use the framework requested by the user. Every adapter shares the same Lumen fou
 | React Hook Form composites | `@santi020k/lumen-react-hook-form`                                     | `@santi020k/lumen-react-hook-form`           | Uses React styles                      |
 | Web Components             | `@santi020k/lumen-elements`                                            | `@santi020k/lumen-elements/define`           | `@santi020k/lumen-elements/styles.css` |
 | React Native / Expo        | `@santi020k/lumen-react-native`                                        | `@santi020k/lumen-react-native`              | Not applicable                         |
-| Apple / SwiftUI            | Swift Package `https://github.com/santi020k/lumen`, pinned to `1.2.0`  | `LumenUI`                                    | Not applicable                         |
+| Apple / SwiftUI            | Swift Package `https://github.com/santi020k/lumen`, pinned to `1.7.0-rc.0`  | `LumenUI`                                    | Not applicable                         |
 | Android / Compose          | Maven Central `com.santi020k:lumen-compose:0.5.0`                       | `com.santi020k.lumen`                        | Not applicable                         |
 | Wear OS / Compose          | Maven Central `com.santi020k:lumen-compose-wear:0.5.0`                  | `com.santi020k.lumen`                        | Not applicable                         |
 | Package metadata           | `@santi020k/lumen-core`                                                | `@santi020k/lumen-core`                      | Not applicable                         |
@@ -45,6 +45,13 @@ Swift Package product to the application target, use an exact or compatible rele
 and apply `.lumenTheme(...)` near the root. For Compose, install
 `com.santi020k:lumen-compose:0.5.0` from Maven Central and wrap content in `LumenTheme`. Native
 adapters do not load CSS or the Astro runtime.
+
+React Native can use ordinary React hooks and platform-neutral application hooks. Import native
+Lumen controllers such as `useDialog`, `useTabs`, `useSelect`, `useLanguageToggle`,
+`useThemeToggle`, and `useToast` from `@santi020k/lumen-react-native`; their state semantics track
+the reusable React contracts while their returned props target native Lumen components. Never
+import DOM-dependent hooks from `@santi020k/lumen-react` into a native bundle. Share business state
+in an application workspace package and keep the Lumen rendering adapter at each app boundary.
 
 For watchOS, use the focused `LumenWatch*` contracts from the same Swift package. For Wear OS,
 install `com.santi020k:lumen-compose-wear:0.5.0` and wrap wearable content in `LumenWearTheme`
@@ -156,7 +163,7 @@ one root include enhances all matching `data-ui-*` markup on the page.
 
 ```astro
 ---
-import { UIPrimitives } from '@santi020k/lumen-astro'
+import UIPrimitives from '@santi020k/lumen-astro/runtime'
 ---
 
 <UIPrimitives />
@@ -202,11 +209,15 @@ The React package entry is a client boundary. In Next.js, it can be imported by 
 without evaluating Lumen's contexts and hooks in the React server runtime; the rendered Lumen
 subtree becomes a Client Component boundary. Vite and other client-rendered React applications use
 the same entry without additional setup.
+For stateless Badge, Card composition, layout, form-label, progress, loading, typography, and
+visually-hidden usage in a React Server Component, import from
+`@santi020k/lumen-react/server`. That entrypoint contains the implementations directly and avoids
+creating a client boundary. Keep event handlers, hooks, and interactive primitives on the package
+root inside a Client Component.
 `Button`, `Link`, `ButtonLink`, and `Input` accept React 19 DOM refs directly as props.
 `Button asChild` composes the button contract onto one child element. Across adapters, native
 numeric `size` remains available on `Input` and `NativeSelect`; use `visualSize` in Astro and React,
-or `visual-size` in Elements, for presentation. The pre-1.0 Astro and Elements `size="sm|lg"`
-visual alias is deprecated but remains available for incremental migration.
+or `visual-size` in Elements, for presentation.
 `Stat as` and `variant` follow the same semantic-root and visual guidance as the Astro component.
 
 ```tsx
@@ -258,6 +269,18 @@ select form participation, and the same toast controller events as the Astro run
 </lumen-card>
 ```
 
+For a surface that uses only Badge, Button, Card, and Combobox, import
+`@santi020k/lumen-elements/components/badge`, `/button`, `/card`, and `/combobox` and call their
+corresponding `defineLumenBadge`, `defineLumenButton`, `defineLumenCard`, and `defineLumenCombobox`
+functions. Those implementation-level entrypoints avoid the complete catalog bundle; the Combobox
+entrypoint includes its filtering and keyboard behavior. Continue using `defineLumenElements` for
+any component without a granular entrypoint.
+
+For a foundation-only custom-element surface, import `defineLumenFoundations` from
+`@santi020k/lumen-elements/components/foundations`. It registers Card compound parts, Container,
+Direction, Grid, Label, Separator, Skeleton, Spinner, Stack, Typography, and VisuallyHidden without
+pulling the complete catalog implementation.
+
 Put input elements inside a native `<form data-ui-form>`. Scalar Lumen controls participate in
 `FormData`, validity, disabled state, focus, and reset through form-associated custom-element
 behavior with a native-control fallback. Do not generate `<lumen-form>` as the submission
@@ -272,7 +295,7 @@ The shared catalog includes:
 `Carousel`, `Chart`, `Checkbox`, `CheckboxGroup`, `Collapsible`, `Code`, `Combobox`, `Command`,
 `Container`, `ColorPicker`,
 `ContextMenu`, `DataTable`, `DatePicker`, `DateRangePicker`, `Dialog`, `Direction`, `Drawer`,
-`DropdownMenu`, `Empty`, `ErrorSummary`, `Field`, `FieldError`, `Form`, `Grid`, `HoverCard`, `Icon`,
+`DropdownMenu`, `Empty`, `ErrorState`, `ErrorSummary`, `Field`, `FieldError`, `Form`, `Grid`, `HoverCard`, `Icon`,
 `Graphic`, `Backdrop`, `Illustration`, `Input`, `InputGroup`, `InputOTP`, `Item`, `KanbanBoard`, `KanbanColumn`, `Kbd`, `Label`, `LineChart`, `ListBox`, `Marker`, `Menubar`,
 `Message`, `MessageScroller`, `NativeSelect`, `ContextNavigation`, `NavigationMenu`, `NumberField`, `Pagination`,
 `PasswordField`, `PieChart`, `Popover`, `Progress`, `CopyButton`, `RadioGroup`, `Resizable`, `RichTextEditor`,
@@ -282,6 +305,14 @@ The shared catalog includes:
 `VirtualList`, and `VisuallyHidden`.
 
 ## Product Recipes
+
+- Follow [the error-handling guide](./error-handling.md) when a generated interface needs failure
+  feedback. Use `FieldError` and `ErrorSummary` for validation, `Alert` for persistent inline
+  problems, `Toast` for brief non-blocking failures, and `ErrorState` only when a page or region
+  cannot show its primary content. Keep exception capture, logging, retry policy, and safe message
+  mapping in application code. For React Native, SwiftUI, and Compose, follow the guide's native API
+  mapping and announcement rules; do not invent a cross-platform error manager inside the component
+  layer.
 
 - Start full product surfaces from the bundled `analytics-dashboard`, `saas-admin`,
   `commerce-dashboard`, `project-workspace`, or `auth-onboarding` recipe. Install with
@@ -422,8 +453,10 @@ uses these CustomEvents:
 ## Registry Helper
 
 `@santi020k/lumen` exports typed component, recipe, and documentation metadata from
-`@santi020k/lumen/registry`. The package also ships a small `lumen` binary. Individual components
-are addressable by name, including kebab-case aliases such as `data-table`:
+`@santi020k/lumen/registry`. The umbrella package and every web adapter expose the same small
+`lumen` binary, so projects that install Astro, React, or Elements can use discovery and diagnostics
+without another direct dependency. Individual components are addressable by name, including
+kebab-case aliases such as `data-table`:
 
 ```bash
 lumen list
@@ -450,10 +483,19 @@ lumen doctor-native --json
 lumen init --framework astro --tailwind
 ```
 
+`lumen doctor-native` emits the same adoption inventory and Android toolchain preflight in readable
+text or JSON. Treat direct-primitive matches as review suggestions, not rewrite instructions: first
+confirm whether a surface is product-owned and whether the public Lumen contract preserves its
+behavior. A failed JDK, SDK, platform-package, or required-NDK preflight should be fixed before
+starting Gradle so native compilation does not obscure the setup problem.
+
 `lumen add <component>` defaults to an Astro wrapper. Use `--target react` for a local React wrapper
 or `--target elements` for a custom-elements starter. Bundled recipes also accept `--target astro`,
 `--target react`, and `--target elements`; external registry inline files keep their authored paths
-and sources.
+and sources. Those paths must be unique, relative forward-slash paths: the installer rejects
+absolute paths, parent traversal, and symbolic-link path segments before writing any file. Registry
+manifests are limited to 5 MiB by default; programmatic `loadLumenRegistry` callers can lower the
+limit with `maxBytes` and control remote request time with `timeoutMs`.
 
 Before inventing a wrapper or custom class pattern, check the component source in
 `packages/astro/components`. Astro is the reference implementation for props, class names, data

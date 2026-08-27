@@ -255,18 +255,34 @@ const startsWithNumberPattern = /^\d/
 const startsWithCommentPattern = /^(?:#|--|\/[/*]|<!--)/
 const startsWithStringPattern = /^["'`]/
 
+const trimBlankEdgeLines = (lines: string[]): string[] => {
+  let start = 0
+  let end = lines.length
+
+  while (start < end && lines[start]?.trim() === '') start += 1
+
+  while (end > start && lines[end - 1]?.trim() === '') end -= 1
+
+  return lines.slice(start, end)
+}
+
+const getMinimumIndent = (lines: readonly string[]): number => {
+  let minimum = Number.POSITIVE_INFINITY
+
+  for (const line of lines) {
+    if (line.trim() === '') continue
+
+    const indent = leadingWhitespacePattern.exec(line)?.[0].length ?? 0
+
+    if (indent < minimum) minimum = indent
+  }
+
+  return Number.isFinite(minimum) ? minimum : 0
+}
+
 export const normalizeLumenCode = (code: string) => {
-  const lines = code.replaceAll(/\r\n?/g, '\n').split('\n')
-
-  while (lines[0]?.trim() === '') lines.shift()
-
-  while (lines.at(-1)?.trim() === '') lines.pop()
-
-  const indentation = lines
-    .filter(line => line.trim() !== '')
-    .map(line => leadingWhitespacePattern.exec(line)?.[0].length ?? 0)
-
-  const trimBy = indentation.length > 0 ? Math.min(...indentation) : 0
+  const lines = trimBlankEdgeLines(code.replaceAll(/\r\n?/g, '\n').split('\n'))
+  const trimBy = getMinimumIndent(lines)
 
   return lines.map(line => line.slice(trimBy)).join('\n')
 }

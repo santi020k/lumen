@@ -62,7 +62,7 @@ const readSourceDirectory = async directory => {
   return contents.flat().join('\n')
 }
 
-assert.equal(registry.schemaVersion, 4, 'Unsupported native contract schema version')
+assert.equal(registry.schemaVersion, 5, 'Unsupported native contract schema version')
 
 assert.deepEqual(Object.keys(registry.adapters).sort(), [...adapterNames].sort())
 
@@ -88,10 +88,11 @@ const sourceByAdapter = Object.fromEntries(await Promise.all(adapterNames.map(as
   ]
 })))
 
-const reactNativeIndex = await readFile(
-  join(repositoryRoot, registry.adapters.reactNative.sourceDirectory, 'index.ts'),
-  'utf8'
-)
+const reactNativePublicSource = (
+  await Promise.all((registry.adapters.reactNative.publicEntrypoints ?? ['index.ts']).map(entrypoint => (
+    readFile(join(repositoryRoot, registry.adapters.reactNative.sourceDirectory, entrypoint), 'utf8')
+  )))
+).join('\n')
 
 const ids = new Set()
 
@@ -104,6 +105,11 @@ for (const component of registry.components) {
 
   assert.ok(['shared', 'universal'].includes(component.tier), `Invalid tier for ${component.id}`)
 
+  assert.ok(
+    component.formFactor === undefined || component.formFactor === 'wearable',
+    `Invalid form factor for ${component.id}`
+  )
+
   assert.equal(typeof component.contract, 'string')
 
   assert.ok(component.contract.length > 0)
@@ -115,6 +121,18 @@ for (const component of registry.components) {
   const implementationEntries = Object.entries(component.symbols)
 
   assert.ok(implementationEntries.length > 0, `${component.id} must support at least one adapter`)
+
+  const expectedAdapters = component.formFactor === 'wearable'
+    ? ['compose', 'swiftUI']
+    : adapterNames
+
+  assert.deepEqual(
+    implementationEntries.map(([adapterName]) => adapterName).sort(),
+    [...expectedAdapters].sort(),
+    component.formFactor === 'wearable'
+      ? `${component.id} must support SwiftUI and Compose without adding wearable code to React Native`
+      : `${component.id} must support every native adapter`
+  )
 
   for (const [adapterName, symbol] of implementationEntries) {
     assert.ok(adapterNames.includes(adapterName), `${component.id} uses an unknown adapter ${adapterName}`)
@@ -131,7 +149,7 @@ for (const component of registry.components) {
 
     if (adapterName === 'reactNative') {
       assert.match(
-        reactNativeIndex,
+        reactNativePublicSource,
         new RegExp(`\\b${escapedSymbol}\\b`),
         `${component.id} claims React Native support, but ${symbol} is not publicly exported`
       )
@@ -162,7 +180,14 @@ for (const component of registry.components) {
   }
 }
 
-const nativePlatforms = new Set(['Android', 'iOS', 'macOS'])
+const nativePlatforms = new Set([
+  'Android',
+  'iOS',
+  'macOS',
+  'tvOS',
+  'visionOS',
+  'watchOS'
+])
 
 for (const component of registry.platformComponents) {
   assert.equal(typeof component.id, 'string')
@@ -195,7 +220,7 @@ for (const component of registry.platformComponents) {
 
   if (component.adapter === 'reactNative') {
     assert.match(
-      reactNativeIndex,
+      reactNativePublicSource,
       new RegExp(`\\b${escapedSymbol}\\b`),
       `${component.id} claims React Native support, but ${component.symbol} is not publicly exported`
     )

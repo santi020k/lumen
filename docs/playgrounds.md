@@ -1,15 +1,19 @@
 # Native playgrounds
 
 Lumen includes a native playground for each adapter. Use these apps to evaluate the real components,
-capture documentation screenshots, and prepare distributable marketing builds. The Apple and Android
-playgrounds are organized as polished reference applications with Home, Examples, Components, and
-Settings. Their Components destinations retain the searchable deterministic catalogs used by capture
-scripts, while normal launches add category discovery, interactive patterns, and adaptive layouts.
-Each gallery covers all 42 contracts shared by every native adapter, including semantic Card
-variants, multiline and grouped forms, chips, action groups, transient feedback, metrics, rows,
-empty states, and light/dark theme behavior. Compose and Apple additionally exercise Picker, Slider,
-and Gauge. The galleries also demonstrate React Native pull-to-refresh, the Compose floating action
-button, the Apple date field, and two intentionally macOS-specific controls.
+capture documentation screenshots, and prepare distributable marketing builds. The React Native,
+Apple, and Android playgrounds are organized as polished reference applications with Home, Examples,
+Components, and Settings. Their Components destinations retain the searchable deterministic catalogs
+used by capture scripts, while normal launches add category discovery, focused component views,
+interactive patterns, and adaptive layouts. React Native Settings also reports live screen-reader,
+reduced-motion, and font-scale context and provides an English/Spanish validation example.
+Each gallery is generated from the current shared and platform-specific contract registry rather
+than a hand-maintained component total. The galleries cover semantic Card variants, multiline and
+grouped forms, chips, action groups, transient feedback, metrics, rows, empty states, and light/dark
+theme behavior. Every phone gallery exercises Picker, Slider, Gauge, DateField, and DateRangeField
+through its platform implementation. The galleries also demonstrate React Native pull-to-refresh,
+the Compose floating action button and adaptive navigation scaffold, Apple tab accessories, and two
+intentionally macOS-specific controls.
 
 The native Apple and Android galleries are also prepared as one public **Lumen Playground** product.
 See [Publishing Lumen Playground](playground-publication.md) for listing copy, shared assets,
@@ -27,7 +31,9 @@ pnpm install
 ```
 
 Use Node.js 22.19 or newer. The Apple playground additionally needs macOS and Xcode. The Android
-playground needs Android Studio, Android SDK 37, and JDK 17 or newer.
+playground needs Android Studio, Android SDK 37, and JDK 21. The packed React Native Android smoke
+test also supports Android Studio's newer bundled JDK by enabling the native access required by
+Expo's CMake configuration step.
 
 Choose one platform below after the installation completes. You do not need an Expo, Apple
 Developer, or Google Play account to run the local galleries.
@@ -128,7 +134,7 @@ production build.
 
 1. In Xcode, choose File → Add Package Dependencies.
 2. Paste `https://github.com/santi020k/lumen` into the search field.
-3. Choose Exact Version and enter `1.2.0`. Use Up to Next Major Version from `1.2.0` only when the
+3. Choose Exact Version and enter `1.7.0-rc.0`. Use Up to Next Major Version from `1.7.0-rc.0` only when the
    application intentionally accepts compatible updates; reserve `main` for local evaluation.
 4. Select the `LumenUI` product and add it to your application target.
 5. Add `import LumenUI` to the SwiftUI view that uses Lumen components.

@@ -13,6 +13,8 @@ says otherwise:
 - state-changing components are controlled by the application; Lumen reports intent through a
   callback or binding and does not become the source of truth for product state;
 - disabled or loading actions do not invoke application callbacks;
+- disabling a control dismisses its adapter-owned transient selection UI, and re-enabling the
+  control does not reopen that UI without a new user action;
 - default visual values use the neutral or primary semantic role, medium control or artwork size,
   and a non-error, non-loading, enabled state;
 - determinate values are finite and clamped to their declared range; invalid maxima fall back to
@@ -35,7 +37,7 @@ animation, or host-language signatures.
 | --- | --- | --- |
 | Foundations and passive primitives | `theme`, `text`, `icon`, `surface`, `divider` | Aligned. Light/dark environment selection, semantic text and surface roles, medium icon sizing, decorative-by-default icons, and decorative separators are shared. Font metrics, color objects, image/vector escape hatches, and environment propagation stay native. |
 | Actions | `icon-button`, `button`, `button-group`, `share-button` | Aligned. Primary intent and medium size are the defaults; loading implies disabled action semantics. Groups only arrange independent controls. Share content is application-owned and presentation uses the operating-system share surface. |
-| Inputs and selection | `text-field`, `textarea`, `field-group`, `toggle`, `search-field`, `checkbox`, `radio-group`, `segmented-control`, `chip`, `picker`, `slider` | Aligned. Values and validation are controlled by the application. Error, supporting, selected, required, and disabled state is explicit. Native editors, switches, menus, pickers, keyboard configuration, and focus remain adapter concerns. |
+| Inputs and selection | `text-field`, `textarea`, `field-group`, `toggle`, `search-field`, `checkbox`, `radio-group`, `segmented-control`, `chip`, `picker`, `slider` | Aligned. Values and validation are controlled by the application. Error, supporting, selected, required, and disabled state is explicit. Empty picker collections are disabled. Disabling an open adapter-owned picker dismisses it without allowing a later re-enable to reopen stale UI. Native editors, switches, menus, pickers, keyboard configuration, and focus remain adapter concerns. |
 | Feedback and loading | `badge`, `spinner`, `alert`, `toast`, `progress`, `skeleton`, `banner`, `status-bar`, `gauge` | Aligned. Default or neutral tone is the baseline, semantic success/warning/danger roles agree, and progress or gauge values are clamped. Applications own toast timing, alert recovery, async work, and status lifecycle. Skeletons are decorative placeholders rather than status announcements. |
 | Content and structure | `card`, `graphic`, `backdrop`, `illustration`, `avatar`, `empty-state`, `list-row`, `stat`, `section-header`, `settings-row` | Aligned. Components provide semantic presentation and flexible content slots without taking ownership of navigation or product state. Optional actions retain independent native control semantics. Decorative graphics remain hidden unless labeled. |
 | Disclosure and overlays | `disclosure`, `alert-dialog`, `sheet`, `menu` | Aligned. Expanded or presented state is controlled, confirmation/loading/disabled states are explicit, and dismissal is reported to the application. Focus movement, escape/back behavior, anchoring, and platform presentation remain native. |
@@ -49,6 +51,8 @@ Availability is part of the supported contract, not an implementation detail:
 - SwiftUI declarations are supported only on the Apple targets where their underlying native types
   exist. `LumenTextarea` is unavailable on tvOS and watchOS, and system share or menu presentation
   must retain their source availability guards.
+- The shared application tier supports visionOS 1. WidgetKit presentation remains excluded on
+  visionOS for Lumen 2 because `widgetRenderingMode` is only available there from visionOS 26.
 - Wearable components are separate from the phone surface: watchOS declarations compile only for
   watchOS, and Compose consumers install `lumen-compose-wear` explicitly.
 - Material adaptive navigation, nested-scroll behavior, and floating actions remain Compose-only;
@@ -56,15 +60,20 @@ Availability is part of the supported contract, not an implementation detail:
   and symbol selection remain SwiftUI-only.
 
 The target-specific Swift symbol baseline and the separate Compose/Wear binary dumps enforce these
-boundaries. The published `v1.6.0` Swift tag predates the corrected tvOS guards and therefore cannot
-satisfy the clean tagged-consumer gate; the correction requires a new immutable patch tag.
+boundaries. The published `v1.6.0` Swift tag predates the corrected tvOS guards and cannot satisfy
+the clean tagged-consumer gate. Immutable prerelease tag `v1.7.0-rc.0` contains the correction and
+passed the clean macOS, iOS, tvOS, and watchOS consumer check on 2026-08-27.
+
+The Swift surface-scale expansion is the only reviewed source break from `v1.6.0`: exhaustive
+switches must account for the new semantic padding and radius cases. Published Card, StatusBar, and
+theme-modifier signatures remain source-compatible, and the release canary rejects any diagnostic
+outside the reviewed Lumen 2 contract.
 
 ## Remaining freeze evidence
 
 The semantic disposition is accepted as the review baseline. Native contract freeze still requires:
 
-1. migration notes for any further Beta correction;
-2. an immutable Swift patch release containing the target-availability correction;
-3. two consecutive prerelease iterations with unchanged Supported baselines; and
-4. consumer and physical-device evidence showing that the documented behavior holds in product
+1. migration notes for any further pre-2 correction;
+2. two consecutive ordinary-release stability iterations with unchanged Supported baselines; and
+3. consumer and physical-device evidence showing that the documented behavior holds in product
    flows.

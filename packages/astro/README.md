@@ -9,6 +9,13 @@ configuration is required to render the components.
 pnpm add @santi020k/lumen-astro
 ```
 
+The adapter also exposes Lumen's discovery and diagnostics CLI:
+
+```bash
+pnpm exec lumen show Tabs
+pnpm exec lumen doctor
+```
+
 Import the CSS once in your root layout and mount `UIPrimitives` once in that same app shell if you
 use interactive components such as dialogs, menus, popovers, tabs, carousels, toggles, command
 lists, or toasts. Do not add `UIPrimitives` beside each component instance; one root include
@@ -17,6 +24,11 @@ enhances all matching Lumen markup on the page.
 ```css
 @import "@santi020k/lumen-astro/styles.css";
 ```
+
+Applications using the essential forms, feedback, tabs, dialogs, calendar, and data-table surface
+can instead load `@santi020k/lumen-astro/styles/critical.css`. The generated entry is about 50 KiB
+raw versus 170 KiB for the complete catalog; switch to `styles.css` when using components outside
+that documented critical set.
 
 The stylesheet defaults `--ui-font` to `"Montserrat", "Avenir Next", "Segoe UI", sans-serif`.
 It declares the family stack but does not bundle or load font files. Load Montserrat once through
@@ -32,7 +44,7 @@ With Tailwind, keep the Lumen import in the same shared CSS entry:
 
 ```astro
 ---
-import { UIPrimitives } from '@santi020k/lumen-astro'
+import UIPrimitives from '@santi020k/lumen-astro/runtime'
 ---
 
 <UIPrimitives />
@@ -52,8 +64,7 @@ import { Button, Card, Input } from '@santi020k/lumen-astro'
 ```
 
 `Input` and `NativeSelect` preserve the native numeric `size` attribute. Use `visualSize="sm"` or
-`visualSize="lg"` for presentation. The pre-1.0 `size="sm|lg"` visual alias remains available for
-incremental migrations, but new code should keep native behavior and visual styling separate.
+`visualSize="lg"` for presentation so native behavior and visual styling remain separate.
 
 ```astro
 <Input size={32} visualSize="sm" />
@@ -65,6 +76,9 @@ incremental migrations, but new code should keep native behavior and visual styl
 metadata-backed validation, automatic country detection for pasted international numbers, and the
 `ui:phone-change` event with a `LumenPhoneNumber` detail.
 
+The phone metadata and normalization controller are selector-loaded only when a rendered page
+contains `PhoneInput`; pages without the component do not evaluate or download that controller.
+
 ```astro
 <PhoneInput countryValue="CO" locale="en-US" name="hospitalPhone" />
 ```
@@ -74,6 +88,10 @@ metadata-backed validation, automatic country detection for pasted international
 Popover, dropdown menu, tabs, and tooltip parts expose the DOM and ARIA contracts consumed by the
 shared progressive-enhancement runtime. Prefer these parts over recreating roles and `data-ui-*`
 attributes by hand.
+
+Tabs keep the selected trigger visible when a narrow tab list scrolls horizontally and emit a
+typed `ui:tabs-change` event. Import `LumenTabsChangeDetail` or `LumenTabsChangeEvent` from this
+package when application behavior follows the selected value.
 
 ```astro
 ---
@@ -179,6 +197,22 @@ const errors = result?.error && isInputError(result.error)
 ```
 
 See the [Astro Actions form guide](https://lumen.santi020k.com/docs/forms/astro-actions).
+
+## Error states
+
+Use `ErrorState` when a page or region cannot show its primary content. Pass recovery controls
+through the `actions` slot; the application still owns retry and logging behavior. Static states are
+not live regions by default, so set `announce="polite"` only when a newly rendered failure needs an
+announcement.
+
+```astro
+<ErrorState title="Could not load projects" description="Check your connection and try again.">
+  <Button slot="actions">Try again</Button>
+</ErrorState>
+```
+
+See the repository [Astro error-handling guide](../../docs/error-handling.md#astro) for the complete
+example, retry ownership, announcement behavior, and verification guidance.
 
 Use `Icon` for Lucide icons by name across framework adapters.
 

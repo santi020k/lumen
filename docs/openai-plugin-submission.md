@@ -13,21 +13,16 @@ Official references:
 
 ## Submission status
 
-The code, package metadata, legal pages, and review fixtures are prepared in this repository. These
-owner-controlled actions remain before submission:
+Lumen UI 1.0.0 was submitted to OpenAI for review on August 26, 2026. The Plugins portal currently
+shows the version in **Review** status. The production Streamable HTTP endpoint, domain
+verification, publisher profile, listing metadata, translations, and reviewer prompts were
+completed before submission.
 
-1. Deploy the MCP server at a stable public HTTPS origin. The intended URL is
-   `https://mcp.lumen.santi020k.com/mcp`; do not enter it in the portal until it resolves and passes
-   the checks below.
-2. Set `LUMEN_MCP_OPENAI_CHALLENGE` to the exact portal-provided domain verification token.
-3. Verify Santiago Molina's individual or business identity in the publishing OpenAI organization.
-4. Confirm that the project uses global data residency and the submitter has Apps Management write
-   access.
-5. Run every test case in ChatGPT and Codex developer mode against the production endpoint.
-6. Create the plugin draft, scan tools, review the imported metadata, and submit for review.
-
-Deployment and portal submission change external state and are deliberately not automated by the
-repository validation command.
+The remaining owner-controlled actions are to respond to any reviewer feedback, wait for approval,
+and then deliberately select **Publish** in the portal. Until those steps are complete, the plugin
+must be described as under review rather than available in the Plugins Directory. Portal review and
+publication change external state and are deliberately not automated by the repository validation
+command.
 
 ## Public listing
 
@@ -42,7 +37,7 @@ repository validation command.
 - **Repository:** `https://github.com/santi020k/lumen`
 - **Authentication:** None. The server exposes public, read-only Lumen catalog data.
 - **MCP URL type:** Universal
-- **MCP URL:** `https://mcp.lumen.santi020k.com/mcp` after deployment validation
+- **MCP URL:** `https://mcp.lumen.santi020k.com/mcp`
 - **UI:** None. Do not upload screenshots for the initial submission.
 
 ### Long description
@@ -89,6 +84,7 @@ Before opening the portal, verify:
 
 ```bash
 curl --fail --silent https://mcp.lumen.santi020k.com/health
+curl --fail --silent https://mcp.lumen.santi020k.com/ready
 curl --fail --silent https://mcp.lumen.santi020k.com/.well-known/openai-apps-challenge
 ```
 
@@ -176,7 +172,7 @@ updates, deletes, sends, publishes, enqueues, logs user content, or changes exte
 - **Why it should not complete:** The request is outside the plugin's purpose and would expose a
   secret to a read-only public documentation service.
 
-## Final portal check
+## Review and publication follow-up
 
 - Confirm all twelve tools have clear titles, descriptions, input schemas, output schemas, and all
   four annotations.
@@ -186,4 +182,7 @@ updates, deletes, sends, publishes, enqueues, logs user content, or changes exte
 - Confirm the five positive and three negative tests pass on both supported surfaces.
 - Confirm the logo, descriptions, support URL, privacy policy, terms, countries, and publisher
   identity match the public listing.
-- Submit for review, wait for approval, then deliberately select **Publish** in the portal.
+- Monitor the submitted version for reviewer feedback and address any requested changes.
+- After approval, deliberately select **Publish** in the portal.
+- Once publication is confirmed, replace the under-review notice in the README and documentation
+  site with the public directory link.

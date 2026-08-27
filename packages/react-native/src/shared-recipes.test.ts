@@ -5,7 +5,9 @@ import {
   resolveLumenAvatarSize,
   resolveLumenCardColor,
   resolveLumenCardColors,
-  resolveLumenProgressValue
+  resolveLumenProgressValue,
+  resolveLumenSurfacePadding,
+  resolveLumenSurfaceRadius
 } from './shared-recipes.js'
 import { lumenDarkTheme, lumenLightTheme } from './theme.js'
 
@@ -48,5 +50,21 @@ describe('Lumen React Native shared component recipes', () => {
     expect(resolveLumenAvatarSize('sm')).toBe(32)
     expect(resolveLumenAvatarSize('md')).toBe(40)
     expect(resolveLumenAvatarSize('lg')).toBe(56)
+  })
+
+  test('maps card padding and radius options to canonical theme tokens', () => {
+    expect(resolveLumenSurfacePadding(lumenLightTheme, 'none')).toBe(0)
+    expect(resolveLumenSurfacePadding(lumenLightTheme, 'sm')).toBe(lumenLightTheme.spacing.sm)
+    expect(resolveLumenSurfacePadding(lumenLightTheme, 'md')).toBe(lumenLightTheme.spacing.md)
+    expect(resolveLumenSurfacePadding(lumenLightTheme, 'lg')).toBe(lumenLightTheme.spacing.lg)
+    expect(resolveLumenSurfacePadding(lumenLightTheme, 'xl')).toBe(lumenLightTheme.spacing.xl)
+
+    expect(resolveLumenSurfaceRadius(lumenLightTheme, 'none')).toBe(0)
+    expect(resolveLumenSurfaceRadius(lumenLightTheme, 'sm')).toBe(lumenLightTheme.radii.sm)
+    expect(resolveLumenSurfaceRadius(lumenLightTheme, 'md')).toBe(lumenLightTheme.radii.md)
+    expect(resolveLumenSurfaceRadius(lumenLightTheme, 'lg')).toBe(lumenLightTheme.radii.lg)
+    expect(resolveLumenSurfaceRadius(lumenLightTheme, 'xl')).toBe(lumenLightTheme.radii.xl)
+    expect(resolveLumenSurfaceRadius(lumenLightTheme, '2xl')).toBe(lumenLightTheme.radii['2xl'])
+    expect(resolveLumenSurfaceRadius(lumenLightTheme, '3xl')).toBe(lumenLightTheme.radii['3xl'])
   })
 })

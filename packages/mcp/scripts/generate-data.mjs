@@ -361,12 +361,8 @@ const unwrapExpression = expression => {
   return current
 }
 
-const processElementConfigProperty = (property, sourceFile) => {
-  if (!ts.isPropertyAssignment(property) || !ts.isObjectLiteralExpression(property.initializer))
-    return null
-
-  const name = propertyName(property, sourceFile)
-  const config = property.initializer
+const processElementConfig = (name, config, sourceNode, sourceFile) => {
+  if (!name || !ts.isObjectLiteralExpression(config)) return null
 
   const tagNameProperty = config.properties.find(
     entry => ts.isPropertyAssignment(entry) && propertyName(entry, sourceFile) === 'tagName'
@@ -395,10 +391,50 @@ const processElementConfigProperty = (property, sourceFile) => {
   return {
     config: {
       attributes: [...new Set(attributes)].sort(),
-      source: property.getText(sourceFile),
+      source: sourceNode.getText(sourceFile),
       tagName
     },
     name
+  }
+}
+
+const processGranularElementDeclaration = (
+  declaration,
+  initializer,
+  sourceFile
+) => {
+  if (!ts.isIdentifier(declaration.name) || !initializer) return null
+
+  const name = /^lumen(.+)ElementConfig$/.exec(declaration.name.text)?.[1]
+
+  return processElementConfig(name, initializer, declaration, sourceFile)
+}
+
+const processElementConfigCollection = (
+  declaration,
+  initializer,
+  entries,
+  sourceFile
+) => {
+  if (
+    !ts.isIdentifier(declaration.name) ||
+    declaration.name.text !== 'elementConfigs' ||
+    !initializer ||
+    !ts.isObjectLiteralExpression(initializer)
+  )
+    return
+
+  for (const property of initializer.properties) {
+    if (!ts.isPropertyAssignment(property)) continue
+
+    const result = processElementConfig(
+      propertyName(property, sourceFile),
+      property.initializer,
+      property,
+      sourceFile
+    )
+
+    if (result) entries.set(result.name, result.config)
   }
 }
 
@@ -408,19 +444,24 @@ const processElementStatement = (statement, entries, sourceFile) => {
   for (const declaration of statement.declarationList.declarations) {
     const initializer = declaration.initializer && unwrapExpression(declaration.initializer)
 
-    if (
-      !ts.isIdentifier(declaration.name) ||
-      declaration.name.text !== 'elementConfigs' ||
-      !initializer ||
-      !ts.isObjectLiteralExpression(initializer)
+    const granularResult = processGranularElementDeclaration(
+      declaration,
+      initializer,
+      sourceFile
     )
+
+    if (granularResult) {
+      entries.set(granularResult.name, granularResult.config)
+
       continue
-
-    for (const property of initializer.properties) {
-      const result = processElementConfigProperty(property, sourceFile)
-
-      if (result) entries.set(result.name, result.config)
     }
+
+    processElementConfigCollection(
+      declaration,
+      initializer,
+      entries,
+      sourceFile
+    )
   }
 }
 
@@ -510,6 +551,8 @@ const reactExampleOverrides = {
     '<Combobox label="Framework" list="framework-options" options={["Astro", "React", "Vue"]} placeholder="Search package" />',
   CoverImage:
     '<CoverImage showBottomGradient><Image src="/cover.jpg" alt="Abstract purple forms" /></CoverImage>',
+  ErrorState:
+    '<ErrorState actions={<><Button size="sm">Try again</Button><ButtonLink href="/docs" variant="secondary">Open help</ButtonLink></>} description="Check your connection and try again." id="projects-error" reference="REQ-4F82" title="Could not load projects" />',
   Image: '<Image alt="Lumen UI logo" invertOnDark src="/logo.svg" />',
   PhoneInput:
     '<PhoneInput name="phone" defaultCountryValue="+1" countries={[{ label: "+1", value: "+1" }, { label: "+44", value: "+44" }]} placeholder="(555) 000-0000" />',
@@ -555,6 +598,20 @@ const reactHookByComponent = {
   ThemeBuilder: 'useThemeBuilder',
   Toast: 'useToast',
   Tooltip: 'useTooltip'
+}
+
+const elementsExampleOverrides = {
+  ErrorState: `<lumen-error-state id="projects-error" aria-labelledby="projects-error-title">
+  <lumen-illustration aria-hidden="true" data-slot="error-state-graphic" variant="error"></lumen-illustration>
+  <div data-slot="error-state-content">
+    <h2 data-slot="error-state-title" id="projects-error-title">Could not load projects</h2>
+    <p data-slot="error-state-description">Check your connection and try again.</p>
+    <p data-slot="error-state-reference">Reference: <code>REQ-4F82</code></p>
+  </div>
+  <div data-slot="error-state-actions">
+    <lumen-button size="sm">Try again</lumen-button>
+  </div>
+</lumen-error-state>`
 }
 
 const reactExampleForComponent = (name, hook, fallback) => {
@@ -699,7 +756,8 @@ const buildFrameworkDetails = ({
     hook = reactHooks.get(hookName)
   }
 
-  let elementsExample = toElementsExample(doc.example, elementComponents)
+  let elementsExample = Reflect.get(elementsExampleOverrides, name) ??
+    toElementsExample(doc.example, elementComponents)
 
   if (name === 'ScrollCue') {
     elementsExample = `<lumen-scroll-cue>
@@ -799,8 +857,18 @@ const loadWorkspaceFiles = async p => ({
   componentsSource: await readIfExists(p('packages/core/src/components.ts')),
   docsSource: await readIfExists(p('apps/docs/src/data/docs.ts')),
   nativeDocsSource: await readIfExists(p('apps/docs/src/data/native-components.ts')),
-  elementsSource: await readIfExists(p('packages/elements/src/define.ts')),
-  reactSource: await readIfExists(p('packages/react/src/components.tsx')),
+  elementsSource: [
+    await readIfExists(p('packages/elements/src/define.ts')),
+    await readIfExists(p('packages/elements/src/components/foundations.ts')),
+    await readIfExists(p('packages/elements/src/components/badge.ts')),
+    await readIfExists(p('packages/elements/src/components/button.ts')),
+    await readIfExists(p('packages/elements/src/components/card.ts')),
+    await readIfExists(p('packages/elements/src/components/combobox.ts'))
+  ].join('\n'),
+  reactSource: [
+    await readIfExists(p('packages/react/src/components.tsx')),
+    await readIfExists(p('packages/react/src/server-components.tsx'))
+  ].join('\n'),
   readme: await readIfExists(p('README.md')),
   rules: await readIfExists(p('llms.txt')),
   platformTokensSource: await readIfExists(p('tokens/lumen.tokens.json')),
@@ -860,6 +928,16 @@ const nativeImplementationOverrides = [
     setup:
       'Wrap wearable content in LumenWearTheme inside the application-owned Wear Material theme.',
     sourcePrefix: 'packages/compose/wear/'
+  },
+  {
+    importStatement: 'import LumenWidgetUI',
+    install:
+      'Add https://github.com/santi020k/lumen with Swift Package Manager and link the focused LumenWidgetUI product to the widget extension target.',
+    packageName: 'LumenWidgetUI',
+    platform: 'swiftui',
+    setup:
+      'Use LumenWidgetUI inside a WidgetKit extension. Keep timelines, App Intents, deep links, widget families, and container backgrounds application-owned.',
+    sourcePrefix: 'packages/swift-widget/'
   }
 ]
 
@@ -868,6 +946,8 @@ const extensionOf = fileName => {
 
   return index === -1 ? '' : fileName.slice(index)
 }
+
+const escapeRegExp = value => value.replaceAll(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
 const loadNativeSources = async (repoRoot, nativeRegistry) => {
   const sources = {}
@@ -895,7 +975,23 @@ const loadNativeSources = async (repoRoot, nativeRegistry) => {
 }
 
 const findNativeSourceFile = (sources, platform, symbol) => {
-  const match = Object.entries(sources[platform]).find(([, source]) => source.includes(symbol))
+  const escapedSymbol = escapeRegExp(symbol)
+  let declarationPattern
+
+  if (platform === 'react-native') {
+    declarationPattern = new RegExp(
+      `\\b(?:export\\s+)?(?:class|const|function)\\s+${escapedSymbol}\\b`
+    )
+  } else if (platform === 'swiftui') {
+    declarationPattern = new RegExp(`\\b(?:class|enum|func|struct)\\s+${escapedSymbol}\\b`)
+  } else {
+    declarationPattern = new RegExp(
+      '\\b(?:fun\\s+(?:<[^>]+>\\s*)?|(?:data\\s+|enum\\s+)?class\\s+|object\\s+)' +
+      `${escapedSymbol}\\b`
+    )
+  }
+
+  const match = Object.entries(sources[platform]).find(([, source]) => declarationPattern.test(source))
 
   if (!match) throw new Error(`Missing ${platform} source for native symbol ${symbol}.`)
 
@@ -916,7 +1012,7 @@ const buildNativeImplementation = ({ config, implementation, nativeRegistry, pla
     api: implementation.api,
     example: implementation.example,
     exportName: implementation.exportName,
-    importStatement: config.importStatement(symbol),
+    importStatement: implementationOverride?.importStatement ?? config.importStatement(symbol),
     install: implementationOverride?.install ?? config.install,
     language: implementation.language,
     maturity: implementation.maturity,

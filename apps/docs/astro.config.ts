@@ -14,6 +14,7 @@ export default defineConfig({
     { outDir: process.env.LUMEN_DOCS_OUT_DIR } :
     {}),
   site: process.env.PUBLIC_SITE_URL ?? 'https://lumen.santi020k.com',
+  trailingSlash: 'never',
   vite: {
     resolve: {
       alias: [

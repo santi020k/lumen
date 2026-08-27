@@ -18,7 +18,7 @@ in that adapter and prefer its native state, navigation, icon, and accessibility
 | Boolean or mode choice | `Checkbox`, `Switch`, `Toggle`, `ToggleGroup`, `RadioGroup` |
 | Compact metadata or status | `Badge`, `Marker`, `Pill`, `TagGroup` |
 | Inline guidance or feedback | `Alert`, `Callout`, `Note`, `Progress`, `ScrollProgress`, `Spinner`, `Skeleton` |
-| Transient feedback | `Sonner`, `Toast` |
+| Transient feedback | `Toast`, `ToastViewport` |
 | Blocking decision | `Dialog`, `AlertDialog` |
 | Supplemental side surface | `Drawer`, `Sheet` |
 | Anchored supplemental content | `Popover`, `HoverCard`, `Tooltip` |
@@ -31,6 +31,7 @@ in that adapter and prefer its native state, navigation, icon, and accessibility
 | Media or identity | `Avatar`, `Image`, `CoverImage`, `AspectRatio` |
 | Dense workspace layout | `Resizable`, `ScrollArea`, `Toolbar`, `Separator` |
 | Empty or first-run state | `Empty` with one clear next action |
+| Unavailable page or region | `ErrorState` with user-safe context and an application-owned recovery action |
 
 ## Common Product Compositions
 

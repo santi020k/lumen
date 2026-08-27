@@ -1,41 +1,9 @@
 {
   "generatorVersion": "1.1.1",
   "routes": {
-    "/": {
-      "alt": "Write it once. Ship it in any framework. — Lumen UI",
-      "description": "A multi-framework primitive UI system with 159 components for Astro, React, and Web Components.",
-      "images": [
-        {
-          "format": "webp",
-          "height": 630,
-          "output": "index.webp",
-          "primary": true,
-          "url": "/og/pages/index.webp",
-          "width": 1200
-        }
-      ],
-      "pathname": "/",
-      "title": "Write it once. Ship it in any framework."
-    },
-    "/docs": {
-      "alt": "One primitive system, three framework targets. — Lumen UI",
-      "description": "Install Lumen UI and use one semantic component contract across every target.",
-      "images": [
-        {
-          "format": "webp",
-          "height": 630,
-          "output": "docs.webp",
-          "primary": true,
-          "url": "/og/pages/docs.webp",
-          "width": 1200
-        }
-      ],
-      "pathname": "/docs",
-      "title": "One primitive system, three framework targets."
-    },
     "/docs/components": {
-      "alt": "Components — Lumen UI",
-      "description": "Browse 159 primitives with live previews for Astro, React, and Elements.",
+      "alt": "Components - Lumen UI — Lumen UI",
+      "description": "Browse all Lumen UI components with live previews and usage examples for Astro, React, and Elements.",
       "images": [
         {
           "format": "webp",
@@ -47,7 +15,39 @@
         }
       ],
       "pathname": "/docs/components",
-      "title": "Components"
+      "title": "Components - Lumen UI"
+    },
+    "/docs": {
+      "alt": "Documentation - Lumen UI — Lumen UI",
+      "description": "Choose the Lumen UI documentation for Web, React Native, Apple platforms, or Android, and explore their shared foundations.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs.webp",
+          "primary": true,
+          "url": "/og/pages/docs.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs",
+      "title": "Documentation - Lumen UI"
+    },
+    "/": {
+      "alt": "Lumen UI — Crafted primitives for web and native platforms — Lumen UI",
+      "description": "Lumen is a crafted multi-framework UI system with 161 accessible primitives for Web, React Native, Apple platforms, and Android.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "index.webp",
+          "primary": true,
+          "url": "/og/pages/index.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/",
+      "title": "Lumen UI — Crafted primitives for web and native platforms"
     },
     "/templates": {
       "alt": "Product-ready templates. Free and open source. — Lumen UI",
@@ -528,6 +528,22 @@
       ],
       "pathname": "/docs/react-native",
       "title": "React Native"
+    },
+    "/docs/react-native/hooks": {
+      "alt": "React Native hooks — Lumen UI",
+      "description": "Share React state and use behavior controllers adapted for Lumen React Native components.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--hooks.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--hooks.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/hooks",
+      "title": "React Native hooks"
     },
     "/docs/react-native/playground": {
       "alt": "React Native playground — Lumen UI",
@@ -1137,6 +1153,38 @@
       "pathname": "/docs/react-native/components/settings-row",
       "title": "Settings row"
     },
+    "/docs/react-native/components/picker": {
+      "alt": "Picker — Lumen UI",
+      "description": "Choose one controlled value through native or accessible menu presentation.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--picker.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--picker.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/picker",
+      "title": "Picker"
+    },
+    "/docs/react-native/components/slider": {
+      "alt": "Slider — Lumen UI",
+      "description": "Adjust a continuous or stepped numeric value with a visible formatted label.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--slider.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--slider.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/slider",
+      "title": "Slider"
+    },
     "/docs/react-native/components/search-field": {
       "alt": "Search field — Lumen UI",
       "description": "Filter native content with a density-aware search field and clear action.",
@@ -1265,6 +1313,22 @@
       "pathname": "/docs/react-native/components/empty-state",
       "title": "Empty state"
     },
+    "/docs/react-native/components/error-state": {
+      "alt": "Error state — Lumen UI",
+      "description": "Explain an unavailable region or page and offer application-owned recovery.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--error-state.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--error-state.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/error-state",
+      "title": "Error state"
+    },
     "/docs/react-native/components/list-row": {
       "alt": "List row — Lumen UI",
       "description": "Compose a flexible native row with leading identity, content, and trailing actions.",
@@ -1312,6 +1376,22 @@
       ],
       "pathname": "/docs/react-native/components/stat",
       "title": "Stat"
+    },
+    "/docs/react-native/components/gauge": {
+      "alt": "Gauge — Lumen UI",
+      "description": "Show a normalized circular native metric with a formatted accessible value.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--gauge.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--gauge.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/gauge",
+      "title": "Gauge"
     },
     "/docs/react-native/components/section-header": {
       "alt": "Section header — Lumen UI",
@@ -2067,7 +2147,7 @@
     },
     "/docs/apple/components/picker": {
       "alt": "Picker — Lumen UI",
-      "description": "Choose one value through native SwiftUI or Material selection presentation.",
+      "description": "Choose one controlled value through native or accessible menu presentation.",
       "images": [
         {
           "format": "webp",
@@ -2225,6 +2305,22 @@
       "pathname": "/docs/apple/components/empty-state",
       "title": "Empty state"
     },
+    "/docs/apple/components/error-state": {
+      "alt": "Error state — Lumen UI",
+      "description": "Explain an unavailable region or page and offer application-owned recovery.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--error-state.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--error-state.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/error-state",
+      "title": "Error state"
+    },
     "/docs/apple/components/list-row": {
       "alt": "List row — Lumen UI",
       "description": "Compose a flexible native row with leading identity, content, and trailing actions.",
@@ -2275,7 +2371,7 @@
     },
     "/docs/apple/components/gauge": {
       "alt": "Gauge — Lumen UI",
-      "description": "Show a normalized circular SwiftUI or Material metric with a formatted accessible value.",
+      "description": "Show a normalized circular native metric with a formatted accessible value.",
       "images": [
         {
           "format": "webp",
@@ -2352,6 +2448,70 @@
       ],
       "pathname": "/docs/apple/components/date-range-field",
       "title": "Date range field"
+    },
+    "/docs/apple/components/widget-text": {
+      "alt": "Widget text — Lumen UI",
+      "description": "Render focused WidgetKit text with native scaling and semantic rendering-mode color.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--widget-text.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--widget-text.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/widget-text",
+      "title": "Widget text"
+    },
+    "/docs/apple/components/widget-icon": {
+      "alt": "Widget icon — Lumen UI",
+      "description": "Render a labeled or decorative WidgetKit SF Symbol with semantic tone.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--widget-icon.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--widget-icon.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/widget-icon",
+      "title": "Widget icon"
+    },
+    "/docs/apple/components/widget-badge": {
+      "alt": "Widget badge — Lumen UI",
+      "description": "Present a compact rendering-mode-aware WidgetKit status badge.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--widget-badge.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--widget-badge.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/widget-badge",
+      "title": "Widget badge"
+    },
+    "/docs/apple/components/widget-compact-stat": {
+      "alt": "Widget compact stat — Lumen UI",
+      "description": "Compose a compact WidgetKit label and value with optional semantic icon.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--widget-compact-stat.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--widget-compact-stat.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/widget-compact-stat",
+      "title": "Widget compact stat"
     },
     "/docs/apple/components/link": {
       "alt": "Link — Lumen UI",
@@ -3155,7 +3315,7 @@
     },
     "/docs/android/components/picker": {
       "alt": "Picker — Lumen UI",
-      "description": "Choose one value through native SwiftUI or Material selection presentation.",
+      "description": "Choose one controlled value through native or accessible menu presentation.",
       "images": [
         {
           "format": "webp",
@@ -3313,6 +3473,22 @@
       "pathname": "/docs/android/components/empty-state",
       "title": "Empty state"
     },
+    "/docs/android/components/error-state": {
+      "alt": "Error state — Lumen UI",
+      "description": "Explain an unavailable region or page and offer application-owned recovery.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--error-state.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--error-state.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/error-state",
+      "title": "Error state"
+    },
     "/docs/android/components/list-row": {
       "alt": "List row — Lumen UI",
       "description": "Compose a flexible native row with leading identity, content, and trailing actions.",
@@ -3363,7 +3539,7 @@
     },
     "/docs/android/components/gauge": {
       "alt": "Gauge — Lumen UI",
-      "description": "Show a normalized circular SwiftUI or Material metric with a formatted accessible value.",
+      "description": "Show a normalized circular native metric with a formatted accessible value.",
       "images": [
         {
           "format": "webp",
@@ -4449,6 +4625,22 @@
       "pathname": "/docs/components/empty",
       "title": "Empty"
     },
+    "/docs/components/error-state": {
+      "alt": "ErrorState — Lumen UI",
+      "description": "Explains why primary content is unavailable and provides an application-owned recovery path. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--error-state.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--error-state.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/error-state",
+      "title": "ErrorState"
+    },
     "/docs/components/error-summary": {
       "alt": "ErrorSummary — Lumen UI",
       "description": "Summarizes form errors and links people back to invalid controls. Usage examples for Astro, React, and Elements.",
@@ -5456,6 +5648,22 @@
       ],
       "pathname": "/docs/components/toast",
       "title": "Toast"
+    },
+    "/docs/components/toast-viewport": {
+      "alt": "ToastViewport — Lumen UI",
+      "description": "Configures where transient toast notifications are announced and stacked. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--toast-viewport.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--toast-viewport.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/toast-viewport",
+      "title": "ToastViewport"
     },
     "/docs/components/toggle": {
       "alt": "Toggle — Lumen UI",

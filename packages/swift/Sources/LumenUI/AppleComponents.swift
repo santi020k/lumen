@@ -1,4 +1,4 @@
-#if os(iOS) || os(macOS)
+#if os(iOS) || os(macOS) || os(visionOS)
 import SwiftUI
 
 public enum LumenDateFieldComponents: Sendable {
@@ -80,6 +80,7 @@ public struct LumenDateField: View {
         VStack(alignment: .leading, spacing: LumenSpacing.sm) {
             datePicker
                 .tint(theme.colors.brandSolid)
+                .lumenAccessibilityHint(errorMessage ?? description)
 
             if let errorMessage {
                 Text(errorMessage)

@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "candidate": { "version": "2.0.0", "revision": null, "releaseManifestUrl": null },
+  "adapters": [
+    {
+      "id": "astro",
+      "status": "pending",
+      "consumer": { "name": "santi020k.com", "repository": "https://github.com/santi020k/website", "workflow": ".github/workflows/lumen-canary.yml" },
+      "upgrade": { "fromVersion": "1.6.0", "toVersion": "2.0.0", "revision": null },
+      "checks": { "exactCandidate": false, "installation": false, "migration": false, "typecheck": false, "lint": false, "tests": false, "build": false, "browser": false, "accessibility": false },
+      "evidence": [],
+      "blockingIssues": ["Run the maintained consumer canary against an immutable Lumen 2 release manifest and record its immutable workflow result."]
+    },
+    {
+      "id": "react",
+      "status": "pending",
+      "consumer": { "name": "aaronmgz web", "repository": "https://github.com/santi020k/aaronmgz", "workflow": ".github/workflows/lumen-canary.yml" },
+      "upgrade": { "fromVersion": "1.4.0", "toVersion": "2.0.0", "revision": null },
+      "checks": { "exactCandidate": false, "installation": false, "migration": false, "typecheck": false, "lint": false, "tests": false, "build": false, "browser": false, "accessibility": false },
+      "evidence": [],
+      "blockingIssues": ["Run the maintained consumer canary against an immutable Lumen 2 release manifest and record its immutable workflow result."]
+    },
+    {
+      "id": "elements",
+      "status": "pending",
+      "consumer": { "name": null, "repository": null, "workflow": null },
+      "upgrade": null,
+      "checks": { "exactCandidate": false, "installation": false, "migration": false, "typecheck": false, "lint": false, "tests": false, "build": false, "browser": false, "accessibility": false },
+      "evidence": [],
+      "blockingIssues": ["Identify an active application outside the Lumen repository that consumes @santi020k/lumen-elements and add an exact-candidate canary before Lumen 2 graduation."]
+    }
+  ]
+}

@@ -4,10 +4,12 @@ import { createMcpExpressApp } from '@modelcontextprotocol/sdk/server/express.js
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import { WebStandardStreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/webStandardStreamableHttp.js'
 import type {
+  NextFunction,
   Request as ExpressRequest,
   Response as ExpressResponse
 } from 'express'
 
+import { loadLumenData } from './data.js'
 import { createLumenServer } from './server.js'
 
 export type { LumenData } from './data.js'
@@ -211,15 +213,17 @@ const handleMcpRequest = async (
   options: LumenMcpHttpOptions,
   activeServers: Set<ReturnType<typeof createLumenServer>>
 ): Promise<void> => {
-  const mcpServer = createLumenServer()
-
-  const transport = new WebStandardStreamableHTTPServerTransport({
-    enableJsonResponse: true
-  })
-
-  activeServers.add(mcpServer)
+  let mcpServer: ReturnType<typeof createLumenServer> | undefined
 
   try {
+    mcpServer = createLumenServer()
+
+    const transport = new WebStandardStreamableHTTPServerTransport({
+      enableJsonResponse: true
+    })
+
+    activeServers.add(mcpServer)
+
     await mcpServer.connect(transport)
 
     const webRequest = toWebRequest(request, host, options)
@@ -240,10 +244,26 @@ const handleMcpRequest = async (
 
     response.end(JSON.stringify({ error: 'Lumen MCP HTTP request failed.' }))
   } finally {
-    if (mcpServer.isConnected()) await mcpServer.close()
+    if (mcpServer?.isConnected()) await mcpServer.close()
 
-    activeServers.delete(mcpServer)
+    if (mcpServer) activeServers.delete(mcpServer)
   }
+}
+
+const sendJson = (
+  response: ExpressResponse,
+  status: number,
+  data: unknown
+): void => {
+  response.setHeader('cache-control', 'no-store')
+
+  response.setHeader('referrer-policy', 'no-referrer')
+
+  response.setHeader('x-content-type-options', 'nosniff')
+
+  response.setHeader('x-frame-options', 'DENY')
+
+  response.status(status).type('application/json').send(JSON.stringify(data))
 }
 
 /** Start a self-hostable Streamable HTTP transport. Defaults to loopback for safety. */
@@ -270,6 +290,8 @@ export const startLumenMcpHttp = async (
 
     response.setHeader('x-content-type-options', 'nosniff')
 
+    response.setHeader('x-frame-options', 'DENY')
+
     next()
   })
 
@@ -293,9 +315,45 @@ export const startLumenMcpHttp = async (
   })
 
   app.get('/health', (_request: ExpressRequest, response: ExpressResponse) => {
-    response.setHeader('content-type', 'application/json')
+    sendJson(response, 200, { status: 'ok' })
+  })
 
-    response.end(JSON.stringify({ status: 'ok' }))
+  app.get('/ready', (_request: ExpressRequest, response: ExpressResponse) => {
+    try {
+      const data = loadLumenData()
+
+      sendJson(response, 200, {
+        catalogHash: data.meta.catalogHash,
+        serverVersion: data.meta.serverVersion,
+        status: 'ready'
+      })
+    } catch (error) {
+      options.onError?.(error)
+
+      sendJson(response, 503, { error: 'Lumen MCP catalog is unavailable.' })
+    }
+  })
+
+  app.use((
+    error: unknown,
+    _request: ExpressRequest,
+    response: ExpressResponse,
+    next: NextFunction
+  ) => {
+    options.onError?.(error)
+
+    if (response.headersSent) {
+      next(error)
+
+      return
+    }
+
+    const isTooLarge = typeof error === 'object' && error !== null &&
+      'type' in error && error.type === 'entity.too.large'
+
+    const status = isTooLarge ? 413 : 400
+
+    sendJson(response, status, { error: 'Invalid Lumen MCP HTTP request.' })
   })
 
   const httpServer = await new Promise<HttpServer>((resolve, reject) => {

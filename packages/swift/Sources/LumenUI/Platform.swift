@@ -4,7 +4,7 @@ import SwiftUI
 public enum LumenControlDensity: Equatable, Sendable {
     /// Compact controls sized for pointer-first macOS interfaces.
     case compact
-    /// Larger controls sized for touch-first iOS interfaces.
+    /// Regular controls sized for touch-first and spatial interfaces.
     case regular
 
     public static var platformDefault: LumenControlDensity {
@@ -28,7 +28,7 @@ public extension EnvironmentValues {
 }
 
 public extension View {
-    /// Overrides Lumen's automatic macOS or iOS control density for this view hierarchy.
+    /// Overrides Lumen's automatic Apple-platform control density for this view hierarchy.
     func lumenControlDensity(_ density: LumenControlDensity) -> some View {
         environment(\.lumenControlDensity, density)
     }

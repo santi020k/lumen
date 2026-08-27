@@ -10,11 +10,22 @@ This package registers standards-based custom elements for the shared Lumen prim
 pnpm add @santi020k/lumen-elements
 ```
 
+The adapter also exposes Lumen's discovery and diagnostics CLI:
+
+```bash
+pnpm exec lumen show Tabs
+pnpm exec lumen doctor
+```
+
 Load the shared stylesheet once from your app entry or global CSS.
 
 ```css
 @import "@santi020k/lumen-elements/styles.css";
 ```
+
+Pair granular registrations with `@santi020k/lumen-elements/styles/critical.css` when the product
+uses only the essential forms, feedback, tabs, dialogs, calendar, and data-table surface. Use the
+complete stylesheet for the full element catalog.
 
 The stylesheet defaults `--ui-font` to `"Montserrat", "Avenir Next", "Segoe UI", sans-serif`.
 It declares the family stack but does not bundle or load font files. Load Montserrat once through
@@ -39,6 +50,52 @@ independently from the document registry.
   <lumen-button>Subscribe</lumen-button>
 </lumen-card>
 ```
+
+To limit registration to the tags a scoped surface owns, pass their catalog names before an
+optional custom registry:
+
+```ts
+import { defineLumenElements } from '@santi020k/lumen-elements/define'
+
+defineLumenElements(['Card', 'Input', 'Button'])
+```
+
+The component-name list is typed, duplicate names are ignored, already-registered tags are
+preserved, and omitting it retains complete-catalog registration. This controls registry scope, but
+the `define` module still contains the complete implementation.
+
+For a small surface that uses only Badge, Button, Card, and Combobox, import their implementation-level
+entrypoints instead:
+
+```ts
+import { defineLumenBadge } from '@santi020k/lumen-elements/components/badge'
+import { defineLumenButton } from '@santi020k/lumen-elements/components/button'
+import { defineLumenCard } from '@santi020k/lumen-elements/components/card'
+import { defineLumenCombobox } from '@santi020k/lumen-elements/components/combobox'
+
+defineLumenBadge()
+defineLumenButton()
+defineLumenCard()
+defineLumenCombobox()
+```
+
+Each function accepts an optional custom-element registry, is idempotent, and registers the exact
+constructor used by the complete catalog. The Combobox entrypoint includes its filtering, keyboard,
+selection, dismissal, and focus behavior without importing the complete catalog. Other components
+still use `defineLumenElements`; do not replace the full entrypoint when the application needs a
+behavior-backed element that does not yet have a granular module.
+
+Foundation-only pages can register fifteen layout, composition, and accessibility elements as one
+small implementation-level bundle:
+
+```ts
+import { defineLumenFoundations } from '@santi020k/lumen-elements/components/foundations'
+
+defineLumenFoundations()
+```
+
+This bundle contains the Card compound parts, Container, Direction, Grid, Label, Separator,
+Skeleton, Spinner, Stack, Typography, and VisuallyHidden. It does not import the complete catalog.
 
 `lumen-phone-input` can generate its complete country and telephone controls. It exposes `value`,
 `valid`, and `e164`, and emits `ui:phone-change` with the normalized phone model. Country names and
@@ -98,8 +155,7 @@ internal native control provides the same contract when `ElementInternals` is un
 ```
 
 `lumen-input` forwards the numeric `size` attribute to its internal native input. Use
-`visual-size="sm"` or `visual-size="lg"` for presentation. The pre-1.0 `size="sm|lg"` visual alias
-remains available for incremental migrations.
+`visual-size="sm"` or `visual-size="lg"` for presentation.
 
 ```html
 <lumen-input name="code" size="12" visual-size="sm"></lumen-input>
@@ -232,6 +288,8 @@ their registered custom elements; no Astro runtime or host controller is require
 Rich text controls may provide `data-ui-editor-value` for commands such as `formatBlock` and
 `createLink`; editable surfaces emit `ui:editor-change` with both HTML and plain text, support common
 formatting shortcuts, and keep toggle controls synchronized through `aria-pressed`.
+`lumen-tabs` keeps the selected trigger visible in narrow horizontal lists and emits
+`ui:tabs-change`; import `LumenTabsChangeDetail` or `LumenTabsChangeEvent` for its typed detail.
 
 `<lumen-kanban-board>` and `<lumen-kanban-column value="…">` provide the same controlled board
 contract. Mark ordinary card items with `data-ui-kanban-item` and put `data-ui-kanban-handle` on a
@@ -263,6 +321,13 @@ mouse, and touch movement without moving DOM or application data. Use
 You can also use the shared document events: dispatch `ui:toast` to create, `ui:toast-update` to
 update, and `ui:toast-dismiss` to dismiss runtime toasts. Toast actions emit `ui:toast-action`
 unless an action supplies a custom event name.
+
+Use `<lumen-error-state>` when a region or page cannot show its primary content. Keep its visible
+heading, explanation, optional safe reference, and recovery actions in light DOM, label the region
+with `aria-labelledby`, and use the documented `data-slot="error-state-*"` hooks. Lumen presents the
+failure; application code owns exception capture, logging, and retry policy. See the repository
+[Web Components error-handling guide](../../docs/error-handling.md#web-components) for the complete
+light-DOM structure, ARIA ownership, retry boundary, and verification guidance.
 
 ## Motion
 

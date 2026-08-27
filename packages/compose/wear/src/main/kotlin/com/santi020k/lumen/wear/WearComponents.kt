@@ -47,14 +47,6 @@ enum class LumenWearTone {
     Warning
 }
 
-@RequiresOptIn(
-    level = RequiresOptIn.Level.WARNING,
-    message = "This Lumen Wear API is experimental and may change before the stable release."
-)
-@Retention(AnnotationRetention.BINARY)
-@Target(AnnotationTarget.FUNCTION)
-annotation class ExperimentalLumenWearApi
-
 internal data class LumenWearProgressValue(
     val maximum: Float,
     val value: Float
@@ -215,7 +207,6 @@ fun LumenWearStatus(
     }
 }
 
-@ExperimentalLumenWearApi
 @Composable
 fun LumenWearMetric(
     label: String,
@@ -247,7 +238,6 @@ fun LumenWearMetric(
     }
 }
 
-@ExperimentalLumenWearApi
 @Composable
 fun LumenWearListRow(
     modifier: Modifier = Modifier,

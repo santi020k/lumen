@@ -21,6 +21,12 @@ const selectedSource = sourceArgument?.slice('--source='.length)
 const visualTolerance = toleranceArgument ? Number(toleranceArgument.slice('--tolerance='.length)) : undefined
 const knownPlatforms = ['react-native', 'apple', 'android']
 
+const getComponentsWithCapturesForPlatform = platform => (
+  getNativeComponentsForPlatform(platform).filter(component => (
+    component.implementations[platform]?.packageName !== 'LumenWidgetUI'
+  ))
+)
+
 const chartSlugs = new Set([
   'sparkline',
   'line-chart',
@@ -175,7 +181,7 @@ if (checkOnly) {
 
   const expectedKeys = new Set(
     ['react-native', 'apple', 'android'].flatMap(platform => (
-      getNativeComponentsForPlatform(platform).map(component => `${platform}:${component.slug}`)
+      getComponentsWithCapturesForPlatform(platform).map(component => `${platform}:${component.slug}`)
     ))
   )
 
@@ -262,7 +268,7 @@ let comparedCount = 0
 if (!checkOnly) for (const platform of knownPlatforms) {
   if (selectedPlatform && platform !== selectedPlatform) continue
 
-  for (const component of getNativeComponentsForPlatform(platform)) {
+  for (const component of getComponentsWithCapturesForPlatform(platform)) {
     if (chartsOnly && !chartSlugs.has(component.slug)) continue
 
     if (selectedSource === 'default' && !isDefaultSource(platform, component.slug)) continue

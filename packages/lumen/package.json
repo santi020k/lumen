@@ -8,7 +8,8 @@
   "type": "module",
   "sideEffects": [
     "./layers.css",
-    "./styles.css"
+    "./styles.css",
+    "./styles/critical.css"
   ],
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -22,8 +23,10 @@
       "types": "./dist/registry.d.ts",
       "import": "./dist/registry.js"
     },
+    "./cli": "./dist/cli.js",
     "./release-manifest.json": "./release-manifest.json",
     "./styles.css": "./styles.css",
+    "./styles/critical.css": "./styles/critical.css",
     "./layers.css": "./layers.css",
     "./package.json": "./package.json"
   },
@@ -31,8 +34,10 @@
     "bin",
     "dist",
     "layers.css",
+    "native-components.json",
     "release-manifest.json",
     "styles.css",
+    "styles",
     "README.md",
     "LICENSE"
   ],

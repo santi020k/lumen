@@ -9,6 +9,7 @@
   "sideEffects": [
     "./layers.css",
     "./styles.css",
+    "./styles/critical.css",
     "./dist/define.js"
   ],
   "main": "./dist/index.js",
@@ -23,17 +24,43 @@
       "types": "./dist/define.d.ts",
       "import": "./dist/define.js"
     },
+    "./components/badge": {
+      "types": "./dist/components/badge.d.ts",
+      "import": "./dist/components/badge.js"
+    },
+    "./components/button": {
+      "types": "./dist/components/button.d.ts",
+      "import": "./dist/components/button.js"
+    },
+    "./components/card": {
+      "types": "./dist/components/card.d.ts",
+      "import": "./dist/components/card.js"
+    },
+    "./components/combobox": {
+      "types": "./dist/components/combobox.d.ts",
+      "import": "./dist/components/combobox.js"
+    },
+    "./components/foundations": {
+      "types": "./dist/components/foundations.d.ts",
+      "import": "./dist/components/foundations.js"
+    },
     "./styles.css": "./styles.css",
+    "./styles/critical.css": "./styles/critical.css",
     "./layers.css": "./layers.css",
     "./package.json": "./package.json"
   },
   "files": [
+    "bin",
     "dist",
     "layers.css",
     "styles.css",
+    "styles",
     "README.md",
     "LICENSE"
   ],
+  "bin": {
+    "lumen": "./bin/lumen.mjs"
+  },
   "scripts": {
     "build": "tsc -p tsconfig.build.json && node scripts/minify-build.mjs",
     "dev": "tsc -p tsconfig.build.json --watch --preserveWatchOutput",
@@ -42,6 +69,7 @@
     "test:coverage": "vitest run --config ../../vitest.config.ts --project elements --coverage",
     "lint": "eslint . --no-warn-ignored --max-warnings=0",
     "lint:fix": "eslint . --fix --no-warn-ignored --max-warnings=0",
+    "measure:registration": "pnpm run build && node scripts/measure-registration.mjs",
     "clean": "rm -rf dist coverage"
   },
   "dependencies": {

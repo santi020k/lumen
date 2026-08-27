@@ -8,8 +8,8 @@ import {
   NavigationMenu,
   ThemeToggle
 } from '@santi020k/lumen-astro'
-import { lumenComponentNames } from '@santi020k/lumen-core'
 
+import { documentedComponentCount } from '../data/site-metadata'
 import {
   getActiveSiteNavigationIndex,
   siteNavigationItems
@@ -23,7 +23,7 @@ import LumenLogo from './LumenLogo.astro'
 const currentPath = Astro.url.pathname
 const hasDocsContext = currentPath.startsWith('/docs') || currentPath === '/changelog'
 const activeIndex = getActiveSiteNavigationIndex(currentPath)
-const componentCount = lumenComponentNames.length
+const componentCount = documentedComponentCount
 ---
 
 <div class="docs-site-header">
@@ -70,7 +70,7 @@ const componentCount = lumenComponentNames.length
             class="docs-theme-select"
             data-theme-select
             aria-label="Theme family"
-            size="sm"
+            visualSize="sm"
           >
             <option value="lumen">Lumen</option>
             <option value="santi020k">Santi020k</option>

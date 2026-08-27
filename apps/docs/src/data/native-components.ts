@@ -8,7 +8,22 @@ export type NativeComponentCategory =
   'Foundations' |
   'Layout' |
   'Navigation' |
+  'WidgetKit' |
   'macOS utilities'
+
+type AppleEcosystemTargetId =
+  | 'ios' |
+  'ipad' |
+  'macos' |
+  'tvos' |
+  'visionos' |
+  'watchos'
+
+interface AppleEcosystemTarget {
+  id: AppleEcosystemTargetId
+  label: string
+  minimumVersion: string
+}
 
 interface NativeApiRow {
   defaultValue: string
@@ -19,10 +34,12 @@ interface NativeApiRow {
 
 interface NativeComponentImplementation {
   api: NativeApiRow[]
+  appleAvailability?: AppleEcosystemTarget[]
   example: string
   exportName: string
   language: 'kotlin' | 'swift' | 'tsx'
   maturity: 'Experimental' | 'Supported'
+  packageName?: 'LumenUI' | 'LumenWidgetUI'
   platform: NativePlatformId
 }
 
@@ -69,6 +86,111 @@ const platformLanguages: Record<
   'react-native': 'tsx'
 }
 
+const appleEcosystemTargets: Record<
+  AppleEcosystemTargetId,
+  AppleEcosystemTarget
+> = {
+  ios: { id: 'ios', label: 'iPhone', minimumVersion: 'iOS 16+' },
+  ipad: { id: 'ipad', label: 'iPad', minimumVersion: 'iPadOS 16+' },
+  macos: { id: 'macos', label: 'Mac', minimumVersion: 'macOS 13+' },
+  tvos: { id: 'tvos', label: 'Apple TV', minimumVersion: 'tvOS 16+' },
+  visionos: { id: 'visionos', label: 'Apple Vision', minimumVersion: 'visionOS 1+' },
+  watchos: { id: 'watchos', label: 'Apple Watch', minimumVersion: 'watchOS 9+' }
+}
+
+const appleApplicationTargets = [
+  appleEcosystemTargets.ios,
+  appleEcosystemTargets.ipad,
+  appleEcosystemTargets.macos,
+  appleEcosystemTargets.tvos,
+  appleEcosystemTargets.visionos,
+  appleEcosystemTargets.watchos
+]
+
+const applePhoneTabletAndMacTargets = [
+  appleEcosystemTargets.ios,
+  appleEcosystemTargets.ipad,
+  appleEcosystemTargets.macos,
+  appleEcosystemTargets.visionos
+]
+
+const applePhoneAndTabletTargets = [
+  appleEcosystemTargets.ios,
+  appleEcosystemTargets.ipad
+]
+
+const applePhoneTabletAndMacOnlySlugs = new Set([
+  'backdrop',
+  'checkbox',
+  'date-field',
+  'date-range-field',
+  'disclosure',
+  'graphic',
+  'illustration',
+  'link',
+  'phone-input',
+  'picker',
+  'radio-group',
+  'search-field',
+  'segmented-control',
+  'settings-row',
+  'skeleton',
+  'slider',
+  'tabs',
+  'textarea',
+  'toggle'
+])
+
+const appleWidgetSlugs = new Set([
+  'widget-badge',
+  'widget-compact-stat',
+  'widget-icon',
+  'widget-text'
+])
+
+const getAppleAvailability = (slug: string): AppleEcosystemTarget[] => {
+  if (slug === 'shortcut-recorder' || slug === 'symbol-picker') {
+    return [appleEcosystemTargets.macos]
+  }
+
+  if (slug.startsWith('wearable-')) {
+    return [appleEcosystemTargets.watchos]
+  }
+
+  if (appleWidgetSlugs.has(slug)) {
+    return [
+      appleEcosystemTargets.ios,
+      appleEcosystemTargets.ipad,
+      appleEcosystemTargets.macos,
+      appleEcosystemTargets.watchos
+    ]
+  }
+
+  if (slug === 'tab-accessory' || slug === 'tab-bar-minimization') {
+    return applePhoneAndTabletTargets
+  }
+
+  if (applePhoneTabletAndMacOnlySlugs.has(slug)) {
+    return applePhoneTabletAndMacTargets
+  }
+
+  if (slug === 'menu') {
+    return [
+      ...applePhoneTabletAndMacTargets,
+      { ...appleEcosystemTargets.tvos, minimumVersion: 'tvOS 17+' }
+    ]
+  }
+
+  if (slug === 'share-button') {
+    return [
+      ...applePhoneTabletAndMacTargets,
+      appleEcosystemTargets.watchos
+    ]
+  }
+
+  return appleApplicationTargets
+}
+
 const platformValue = (
   value: PlatformValue,
   platform: NativePlatformId
@@ -92,6 +214,22 @@ const createComponent = (
 
     if (!example || !exportName) continue
 
+    let appleFields: Required<Pick<
+      NativeComponentImplementation,
+      'appleAvailability' | 'packageName'
+    >> | Record<string, never> = {}
+
+    if (platform === 'apple') {
+      const packageName = appleWidgetSlugs.has(definition.slug) ?
+        'LumenWidgetUI' :
+        'LumenUI'
+
+      appleFields = {
+        appleAvailability: getAppleAvailability(definition.slug),
+        packageName
+      }
+    }
+
     implementations[platform] = {
       api: definition.properties.map(item => ({
         defaultValue: platformValue(item.defaultValue, platform),
@@ -99,6 +237,7 @@ const createComponent = (
         name: platformValue(item.name, platform),
         values: platformValue(item.values, platform)
       })),
+      ...appleFields,
       example,
       exportName,
       language: platformLanguages[platform],
@@ -1724,44 +1863,67 @@ const additionalDefinitions: ComponentDefinition[] = [
       apple: `LumenPicker("Profile", selection: $profile, style: .segmented) {
     Text("Quiet").tag(Profile.quiet)
     Text("Balanced").tag(Profile.balanced)
-}`
+}`,
+      'react-native': `<LumenPicker
+  label="Profile"
+  value={profile}
+  options={profileOptions}
+  onValueChange={setProfile}
+/>`
     },
-    exports: { android: 'LumenPicker', apple: 'LumenPicker' },
+    exports: {
+      android: 'LumenPicker',
+      apple: 'LumenPicker',
+      'react-native': 'LumenPicker'
+    },
     guidance:
       'Use native menu or picker presentation for a compact single choice. Use Segmented control when a small peer set should remain visible.',
     name: 'Picker',
     properties: [
       property(
-        { android: 'value', apple: 'selection' },
-        { android: 'T', apple: 'Binding<SelectionValue>' },
+        { android: 'value', apple: 'selection', 'react-native': 'value' },
+        {
+          android: 'T',
+          apple: 'Binding<SelectionValue>',
+          'react-native': 'Value extends string | number'
+        },
         'Required',
         'Stores the selected value.'
       ),
       property(
-        { android: 'options', apple: 'content' },
+        { android: 'options', apple: 'content', 'react-native': 'options' },
         {
           android: 'List<LumenPickerOption<T>>',
-          apple: '@ViewBuilder () -> Content'
+          apple: '@ViewBuilder () -> Content',
+          'react-native': 'readonly LumenPickerOption<Value>[]'
         },
         'Required',
         'Provides labeled native options.'
       ),
       property(
-        { android: 'onValueChange', apple: 'Binding setter' },
-        '(T) -> Unit',
+        { android: 'onValueChange', apple: 'Binding setter', 'react-native': 'onValueChange' },
+        {
+          android: '(T) -> Unit',
+          apple: 'Binding setter',
+          'react-native': '(value: Value) => void'
+        },
         'Required',
         'Updates the selected value.'
       ),
       property(
-        { android: 'enabled', apple: 'style' },
-        { android: 'Boolean', apple: 'automatic · menu · segmented' },
-        { android: 'true', apple: 'automatic' },
+        { android: 'enabled', apple: 'style', 'react-native': 'enabled' },
+        {
+          android: 'Boolean',
+          apple: 'automatic · menu · segmented',
+          'react-native': 'boolean'
+        },
+        { android: 'true', apple: 'automatic', 'react-native': 'true' },
         'Controls native availability or presentation.'
       )
     ],
     slug: 'picker',
     summary:
-      'Choose one value through native SwiftUI or Material selection presentation.'
+      'Choose one controlled value through native or accessible menu presentation.'
   },
   {
     accessibility:
@@ -1782,38 +1944,52 @@ const additionalDefinitions: ComponentDefinition[] = [
     in: 1_000...5_000,
     step: 100,
     valueLabel: "\\(Int(minimumSpeed)) RPM"
-)`
+)`,
+      'react-native': `<LumenSlider
+  label="Minimum speed"
+  value={minimumSpeed}
+  min={1_000}
+  max={5_000}
+  step={100}
+  valueLabel={String(minimumSpeed) + ' RPM'}
+  onValueChange={setMinimumSpeed}
+/>`
     },
-    exports: { android: 'LumenSlider', apple: 'LumenSlider' },
+    exports: {
+      android: 'LumenSlider',
+      apple: 'LumenSlider',
+      'react-native': 'LumenSlider'
+    },
     guidance:
       'Use for an approximate or continuously adjustable numeric value. Prefer TextField or Picker when exact entry is more important.',
     name: 'Slider',
     properties: [
       property(
         'value',
-        { android: 'Float', apple: 'Binding<Double>' },
+        { android: 'Float', apple: 'Binding<Double>', 'react-native': 'number' },
         'Required',
         'Stores the current numeric value.'
       ),
       property(
-        { android: 'valueRange', apple: 'bounds' },
+        { android: 'valueRange', apple: 'bounds', 'react-native': 'min / max' },
         {
           android: 'ClosedFloatingPointRange<Float>',
-          apple: 'ClosedRange<Double>'
+          apple: 'ClosedRange<Double>',
+          'react-native': 'number'
         },
         'Required',
         'Defines the valid range.'
       ),
       property(
-        { android: 'steps', apple: 'step' },
-        { android: 'Int', apple: 'Double?' },
-        { android: '0', apple: 'nil' },
+        { android: 'steps', apple: 'step', 'react-native': 'step' },
+        { android: 'Int', apple: 'Double?', 'react-native': 'number' },
+        { android: '0', apple: 'nil', 'react-native': '1% of range' },
         'Adds valid stepped increments when positive and finite.'
       ),
       property(
         'valueLabel',
-        'String?',
-        'nil',
+        { android: 'String', apple: 'String?', 'react-native': 'string' },
+        { android: 'value.toString()', apple: 'nil', 'react-native': 'String(value)' },
         'Shows a formatted current value.'
       )
     ],
@@ -1895,8 +2071,7 @@ const additionalDefinitions: ComponentDefinition[] = [
       'The country selector announces the localized country name and calling code. Flags supplement visible text and are never the only country identifier.',
     category: 'Forms',
     examples: {
-      android: `@OptIn(ExperimentalLumenPhoneApi::class)
-@Composable
+      android: `@Composable
 fun CareTeamPhoneField() {
     val defaultCountry = remember {
         requireNotNull(LumenPhoneCountries.forRegion("CO"))
@@ -1944,9 +2119,9 @@ const [phone, setPhone] = useState(() =>
     guidance:
       'Use for international phone entry that needs discoverable country selection and a validated E.164 result. Persist or dial e164 only when isValid is true.',
     maturity: {
-      android: 'Experimental',
-      apple: 'Experimental',
-      'react-native': 'Experimental'
+      android: 'Supported',
+      apple: 'Supported',
+      'react-native': 'Supported'
     },
     name: 'Phone input',
     properties: [
@@ -2473,6 +2648,98 @@ const [phone, setPhone] = useState(() =>
   },
   {
     accessibility:
+      'The title is a heading, recovery actions retain native focus order, and React Native and Compose expose configurable live-region behavior.',
+    category: 'Feedback',
+    examples: {
+      android: `LumenErrorState(
+    title = "Could not load projects",
+    description = "Check your connection and try again.",
+    kind = LumenErrorStateKind.Offline,
+    reference = "REQ-4F82",
+    actions = { LumenButton(onClick = ::retry) { Text("Try again") } }
+)`,
+      apple: `LumenErrorState(
+    "Could not load projects",
+    description: "Check your connection and try again.",
+    kind: .offline,
+    reference: "REQ-4F82"
+) {
+    LumenButton("Try again", action: retry)
+}`,
+      'react-native': `<LumenErrorState
+  kind="offline"
+  title="Could not load projects"
+  description="Check your connection and try again."
+  reference="REQ-4F82"
+  actions={<LumenButton onPress={retry}>Try again</LumenButton>}
+/>`
+    },
+    exports: {
+      android: 'LumenErrorState',
+      apple: 'LumenErrorState',
+      'react-native': 'LumenErrorState'
+    },
+    guidance:
+      'Use when a region or page cannot show its primary content. Keep retry and request policy in application state; use Banner when existing content remains useful.',
+    name: 'Error state',
+    properties: [
+      property(
+        'title',
+        {
+          android: 'String',
+          apple: 'LocalizedStringKey',
+          'react-native': 'string'
+        },
+        'Required',
+        'Names the unavailable content or failed operation.'
+      ),
+      property(
+        'kind',
+        {
+          android: 'LumenErrorStateKind',
+          apple: 'LumenErrorStateKind',
+          'react-native': 'error | offline'
+        },
+        'error',
+        'Selects error or offline context and its default illustration.'
+      ),
+      property(
+        'layout',
+        {
+          android: 'LumenErrorStateLayout',
+          apple: 'LumenErrorStateLayout',
+          'react-native': 'compact | default | page'
+        },
+        'default',
+        'Adapts spacing and whether the state fills its available page height.'
+      ),
+      property(
+        'reference',
+        {
+          android: 'String?',
+          apple: 'String?',
+          'react-native': 'string'
+        },
+        { android: 'null', apple: 'nil', 'react-native': 'undefined' },
+        'Shows a safe support reference without exposing technical details.'
+      ),
+      property(
+        'actions',
+        {
+          android: '(@Composable () -> Unit)?',
+          apple: '@ViewBuilder () -> Actions',
+          'react-native': 'ReactNode'
+        },
+        { android: 'null', apple: 'EmptyView', 'react-native': 'undefined' },
+        'Provides application-owned recovery actions.'
+      )
+    ],
+    slug: 'error-state',
+    summary:
+      'Explain an unavailable region or page and offer application-owned recovery.'
+  },
+  {
+    accessibility:
       'Leading identity, main content, and trailing actions remain contained while interactive descendants keep their own semantics.',
     category: 'Layout',
     examples: {
@@ -2720,34 +2987,44 @@ const [phone, setPhone] = useState(() =>
     valueLabel: "Fair",
     systemName: "thermometer.medium",
     tone: .warning
-)`
+)`,
+      'react-native': `<LumenGauge
+  label="Thermal pressure"
+  value={48}
+  valueLabel="Fair"
+  tone="warning"
+/>`
     },
-    exports: { android: 'LumenGauge', apple: 'LumenGauge' },
+    exports: {
+      android: 'LumenGauge',
+      apple: 'LumenGauge',
+      'react-native': 'LumenGauge'
+    },
     guidance:
       'Use for a current bounded metric, not task completion. Use Progress when the value represents work moving toward completion.',
     name: 'Gauge',
     properties: [
       property(
         'label',
-        { android: 'String', apple: 'LocalizedStringKey' },
+        { android: 'String', apple: 'LocalizedStringKey', 'react-native': 'string' },
         'Required',
         'Names the bounded metric.'
       ),
       property(
         'value',
-        { android: 'Float', apple: 'Double' },
+        { android: 'Float', apple: 'Double', 'react-native': 'number' },
         'Required',
         'Provides the current value.'
       ),
       property(
         'max',
-        { android: 'Float', apple: 'Double' },
+        { android: 'Float', apple: 'Double', 'react-native': 'number' },
         '100',
         'Provides the positive maximum.'
       ),
       property(
         'valueLabel',
-        'String',
+        { android: 'String', apple: 'String', 'react-native': 'string' },
         'Required',
         'Provides the visible and accessible formatted value.'
       ),
@@ -2760,7 +3037,7 @@ const [phone, setPhone] = useState(() =>
     ],
     slug: 'gauge',
     summary:
-      'Show a normalized circular SwiftUI or Material metric with a formatted accessible value.'
+      'Show a normalized circular native metric with a formatted accessible value.'
   },
   {
     accessibility:
@@ -3390,6 +3667,100 @@ Scaffold(
     slug: 'floating-action-button',
     summary:
       'Present a prominent Material-native action using Lumen semantic intent.'
+  },
+  {
+    accessibility:
+      'Localized or verbatim content preserves native Dynamic Type and adapts semantic tone to WidgetKit rendering modes.',
+    category: 'WidgetKit',
+    examples: {
+      apple: `LumenWidgetText(
+    .verbatim(statusTitle),
+    style: .title,
+    tone: .accent
+)`
+    },
+    exports: { apple: 'LumenWidgetText' },
+    guidance:
+      'Use in WidgetKit extensions that need semantic text without linking the complete LumenUI catalog. Keep family-specific layout in the widget.',
+    name: 'Widget text',
+    properties: [
+      property('content', 'LumenWidgetTextContent', 'Required', 'Preserves localized or verbatim text.'),
+      property('style', 'body · caption · label · metric · title', 'body', 'Uses a native semantic font.'),
+      property('tone', 'primary · secondary · accent · success · warning · danger', 'primary', 'Adapts color to the WidgetKit rendering mode.')
+    ],
+    slug: 'widget-text',
+    summary: 'Render focused WidgetKit text with native scaling and semantic rendering-mode color.'
+  },
+  {
+    accessibility:
+      'The SF Symbol is decorative without a label and exposes the supplied accessible name when it conveys meaning.',
+    category: 'WidgetKit',
+    examples: {
+      apple: `LumenWidgetIcon(
+    systemName: "timer",
+    label: .verbatim("Active timer"),
+    tone: .accent
+)`
+    },
+    exports: { apple: 'LumenWidgetIcon' },
+    guidance:
+      'Use for compact WidgetKit SF Symbols. Keep product artwork and asset catalogs in the application.',
+    name: 'Widget icon',
+    properties: [
+      property('systemName', 'String', 'Required', 'Selects an application-approved SF Symbol.'),
+      property('label', 'LumenWidgetTextContent?', 'nil', 'Names a meaningful icon.'),
+      property('tone', 'LumenWidgetTone', 'accent', 'Adapts the symbol across rendering modes.'),
+      property('size', 'CGFloat', '18', 'Sets the compact symbol dimension.')
+    ],
+    slug: 'widget-icon',
+    summary: 'Render a labeled or decorative WidgetKit SF Symbol with semantic tone.'
+  },
+  {
+    accessibility:
+      'Icon and text combine into one concise status, while increased contrast strengthens the visible outline.',
+    category: 'WidgetKit',
+    examples: {
+      apple: `LumenWidgetBadge(
+    .verbatim("Ready"),
+    iconSystemName: "checkmark.circle.fill",
+    tone: .success
+)`
+    },
+    exports: { apple: 'LumenWidgetBadge' },
+    guidance:
+      'Use for short WidgetKit status. Keep actions as native Button or App Intent interactions outside the badge.',
+    name: 'Widget badge',
+    properties: [
+      property('label', 'LumenWidgetTextContent', 'Required', 'Provides the compact status text.'),
+      property('iconSystemName', 'String?', 'nil', 'Adds a decorative SF Symbol.'),
+      property('tone', 'LumenWidgetTone', 'accent', 'Selects the semantic status treatment.')
+    ],
+    slug: 'widget-badge',
+    summary: 'Present a compact rendering-mode-aware WidgetKit status badge.'
+  },
+  {
+    accessibility:
+      'Label and value combine as one readable metric while native semantic fonts preserve accessibility text scaling.',
+    category: 'WidgetKit',
+    examples: {
+      apple: `LumenWidgetCompactStat(
+    label: .verbatim("Duration"),
+    value: .verbatim("01:15"),
+    iconSystemName: "timer"
+)`
+    },
+    exports: { apple: 'LumenWidgetCompactStat' },
+    guidance:
+      'Use for one compact label and value pair. Keep charts, timelines, and domain formatting application-owned.',
+    name: 'Widget compact stat',
+    properties: [
+      property('label', 'LumenWidgetTextContent', 'Required', 'Names the metric.'),
+      property('value', 'LumenWidgetTextContent', 'Required', 'Provides the formatted metric value.'),
+      property('iconSystemName', 'String?', 'nil', 'Adds a decorative semantic symbol.'),
+      property('tone', 'LumenWidgetTone', 'accent', 'Selects the value tone.')
+    ],
+    slug: 'widget-compact-stat',
+    summary: 'Compose a compact WidgetKit label and value with optional semantic icon.'
   },
   {
     accessibility:
@@ -4290,8 +4661,7 @@ Scaffold(
       'Combines label, value, and optional detail into one concise readable metric.',
     category: 'Data display',
     examples: {
-      android: `@OptIn(ExperimentalLumenWearApi::class)
-@Composable
+      android: `@Composable
 fun DurationMetric(elapsed: String) {
     LumenWearMetric(label = "Duration", value = elapsed, tone = LumenWearTone.Brand)
 }`,
@@ -4300,7 +4670,7 @@ fun DurationMetric(elapsed: String) {
     exports: { android: 'LumenWearMetric', apple: 'LumenWatchMetric' },
     guidance:
       'Use for one high-priority value with a short label. Avoid dashboard grids that overload small round screens.',
-    maturity: { android: 'Experimental' },
+    maturity: { android: 'Supported' },
     name: 'Wearable metric',
     properties: [
       property(
@@ -4332,8 +4702,7 @@ fun DurationMetric(elapsed: String) {
       'Preserves child actions and content in native traversal order without collapsing distinct controls.',
     category: 'Layout',
     examples: {
-      android: `@OptIn(ExperimentalLumenWearApi::class)
-@Composable
+      android: `@Composable
 fun TimerHistoryRow() {
     LumenWearListRow { TimerHistoryLabel() }
 }`,
@@ -4342,7 +4711,7 @@ fun TimerHistoryRow() {
     exports: { android: 'LumenWearListRow', apple: 'LumenWatchListRow' },
     guidance:
       'Use inside native wearable scrolling containers. Keep list state, selection, navigation, and rotary input in the application.',
-    maturity: { android: 'Experimental' },
+    maturity: { android: 'Supported' },
     name: 'Wearable list row',
     properties: [
       property(
@@ -4382,6 +4751,7 @@ export const nativeComponentCategories: NativeComponentCategory[] = [
   'Navigation',
   'Data display',
   'Feedback',
+  'WidgetKit',
   'macOS utilities'
 ]
 

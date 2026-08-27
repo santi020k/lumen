@@ -1,5 +1,7 @@
 name: Release
 
+# cspell:words mapfile mktemp
+
 on:
   push:
     branches: [main]
@@ -14,6 +16,7 @@ concurrency:
 jobs:
   release:
     name: Create release PR or publish
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     environment: npm
@@ -41,8 +44,25 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Verify approved Lumen 2 candidate
+        run: node scripts/check-approved-release-revision.mjs
+
+      - name: Verify graduated Lumen 2 release
+        run: node scripts/check-graduated-release-revision.mjs
+
       - name: Validate release packages
-        run: pnpm run check:release-manifest && pnpm run check:native-stable-readiness && pnpm run build && pnpm run check:security && pnpm run check:publish-dry-run
+        run: >-
+          pnpm run check:release-manifest &&
+          node scripts/check-lumen-2-contract.mjs &&
+          pnpm run check:react-native-peer-docs &&
+          pnpm run test:react-native-peer-docs &&
+          pnpm run check:swift-version &&
+          pnpm run check:web-consumer-evidence &&
+          pnpm run check:native-consumer-evidence &&
+          pnpm run check:native-stable-readiness &&
+          pnpm run build &&
+          pnpm run check:security &&
+          pnpm run check:publish-dry-run
 
       - name: Create release pull request or publish
         id: changesets
@@ -65,6 +85,35 @@ jobs:
         env:
           PUBLISHED_PACKAGES: ${{ steps.changesets.outputs['published-packages'] }}
         run: |
+          node scripts/check-published-package-family.mjs
+
+          release_audit_directory="$(mktemp -d)"
+          trap 'rm -rf "$release_audit_directory"' EXIT
+
+          mapfile -t published_package_specs < <(
+            jq -r '.[] | "\(.name)@\(.version)"' <<<"$PUBLISHED_PACKAGES"
+          )
+
+          (
+            cd "$release_audit_directory"
+            npm init --yes >/dev/null
+            npm install \
+              --ignore-scripts \
+              --legacy-peer-deps \
+              --no-audit \
+              --no-fund \
+              -- "${published_package_specs[@]}"
+          )
+
+          jq -r '.[] | [.name, .version] | @tsv' <<<"$PUBLISHED_PACKAGES" |
+            while IFS=$'\t' read -r package_name package_version; do
+              pnpm run check:npm-release-provenance -- \
+                --package "$package_name" \
+                --version "$package_version" \
+                --revision "$GITHUB_SHA" \
+                --lockfile "$release_audit_directory/package-lock.json"
+            done
+
           jq -r '.[] | [.name, .version] | @tsv' <<<"$PUBLISHED_PACKAGES" |
             while IFS=$'\t' read -r package_name package_version; do
               registry_version="$(npm view "$package_name@$package_version" version)"
@@ -90,7 +139,12 @@ jobs:
           fi
 
           if git ls-remote --exit-code --tags origin "refs/tags/v${VERSION}" >/dev/null 2>&1; then
-            echo "Tag v${VERSION} already exists; skipping."
+            node scripts/check-coordinated-release-revision.mjs \
+              --version "$VERSION" \
+              --candidate-ref HEAD \
+              --release-ref "v${VERSION}" \
+              --release-remote origin
+            echo "Tag v${VERSION} already exists at the publication commit; skipping."
             exit 0
           fi
 

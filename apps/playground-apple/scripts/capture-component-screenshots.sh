@@ -17,10 +17,14 @@ components=(
   "Chip" "Badge" "Link" "Divider" "Spinner" "Card" "Alert" "Alert dialog"
   "Toast" "Banner" "Progress" "Skeleton" "Graphic" "Backdrop" "Illustration" "Image"
   "Sparkline" "Line chart" "Bar chart" "Pie chart" "Scatter chart" "Heatmap" "Range chart" "Combo chart"
-  "Disclosure" "Avatar" "Empty state" "List row" "Stat" "Gauge" "Section header"
+  "Disclosure" "Avatar" "Empty state" "Error state" "List row" "Stat" "Gauge" "Section header"
   "Status bar" "Navigation bar" "Sheet" "Menu" "Share button" "Tab bar minimization"
   "Tab accessory"
 )
+
+if (( $# > 1 )); then
+  components=("${@:2}")
+fi
 
 device_id="${LUMEN_SIMULATOR_UDID:-}"
 if [[ -z "${device_id}" ]]; then
@@ -34,6 +38,7 @@ if [[ "${CI:-}" != "true" ]]; then
   open -a Simulator
 fi
 xcrun simctl bootstatus "${device_id}" -b
+xcrun simctl ui "${device_id}" appearance light
 
 xcodebuild \
   -project "${playground_dir}/LumenApplePlayground.xcodeproj" \

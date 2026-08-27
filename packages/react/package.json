@@ -8,7 +8,8 @@
   "type": "module",
   "sideEffects": [
     "./layers.css",
-    "./styles.css"
+    "./styles.css",
+    "./styles/critical.css"
   ],
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -18,17 +19,27 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
+    "./server": {
+      "types": "./dist/server.d.ts",
+      "import": "./dist/server.js"
+    },
     "./styles.css": "./styles.css",
+    "./styles/critical.css": "./styles/critical.css",
     "./layers.css": "./layers.css",
     "./package.json": "./package.json"
   },
   "files": [
+    "bin",
     "dist",
     "layers.css",
     "styles.css",
+    "styles",
     "README.md",
     "LICENSE"
   ],
+  "bin": {
+    "lumen": "./bin/lumen.mjs"
+  },
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "dev": "tsc -p tsconfig.build.json --watch --preserveWatchOutput",
@@ -46,9 +57,11 @@
   },
   "devDependencies": {
     "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
     "@vitest/coverage-v8": "catalog:",
     "jsdom": "catalog:",
     "react": "catalog:",
+    "react-dom": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:"
   },

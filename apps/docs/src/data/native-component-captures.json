@@ -192,6 +192,16 @@
       "width": 900
     },
     {
+      "alt": "Error state rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 1600,
+      "platform": "android",
+      "sha256": "70b6a151a3ced971c6ba7f6c64332fa070e949785e32142cb7a3a04de7966cd3",
+      "slug": "error-state",
+      "src": "/native-components/android/error-state.webp",
+      "width": 900
+    },
+    {
       "alt": "Field group rendered in the Android phone emulator Lumen playground",
       "device": "Android phone emulator",
       "height": 1600,
@@ -842,6 +852,16 @@
       "width": 900
     },
     {
+      "alt": "Error state rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "72e127a6a79878777d9ab95373452404a23fd06fcdef73d7cd29c2981a324095",
+      "slug": "error-state",
+      "src": "/native-components/apple/error-state.webp",
+      "width": 900
+    },
+    {
       "alt": "Field group rendered in the iPhone simulator Lumen playground",
       "device": "iPhone simulator",
       "height": 1957,
@@ -1336,7 +1356,7 @@
       "device": "Expo web renderer",
       "height": 633,
       "platform": "react-native",
-      "sha256": "87af5f81d9a4323a4e95c8c5fdb7c583c868de0b2622fb2e8ca576f022e77f76",
+      "sha256": "3e5cfd8def13a170cb462a9b6d1fc5b83ebce010904895a045945349758ca7e1",
       "slug": "alert",
       "src": "/native-components/react-native/alert.webp",
       "width": 900
@@ -1346,7 +1366,7 @@
       "device": "Expo web renderer",
       "height": 633,
       "platform": "react-native",
-      "sha256": "348b803b83557e4a0cb5247d83546646a3ccc3aac06ff27b45460eed28dfb0b8",
+      "sha256": "3a9dbd1fb2ee40e44bdad458d80c9fdbae9d99783b903845f77b69042f9341f0",
       "slug": "alert-dialog",
       "src": "/native-components/react-native/alert-dialog.webp",
       "width": 900
@@ -1356,7 +1376,7 @@
       "device": "Expo web renderer",
       "height": 633,
       "platform": "react-native",
-      "sha256": "3a4c520b06be88f8f2585ca9a6da0fc4bee175feacfb5cde57bfe0db0ad9d1d9",
+      "sha256": "62f8e59f9475f4c5d2b93424a73fbb5d76d18b4cc953b3f2264632c214839a9f",
       "slug": "avatar",
       "src": "/native-components/react-native/avatar.webp",
       "width": 900
@@ -1366,7 +1386,7 @@
       "device": "Expo web renderer",
       "height": 633,
       "platform": "react-native",
-      "sha256": "0e0ea3d00cb3dc9919449c249a1bc99f3e5f9737c1ed42fd7a9bde6c7b3042bc",
+      "sha256": "43c58abe0bed498c5d5400eb223752693fc6dfdd08554f61d102b8d02b106bc4",
       "slug": "backdrop",
       "src": "/native-components/react-native/backdrop.webp",
       "width": 900
@@ -1376,7 +1396,7 @@
       "device": "Expo web renderer",
       "height": 633,
       "platform": "react-native",
-      "sha256": "fea694def3f428a8984ceeca94a292b4061a3c9b25d05aada1bb03e0aca741ac",
+      "sha256": "1bb1c07b2638351e26eef01c453d6179f81492b643f1c29ea9fa27fa07366742",
       "slug": "badge",
       "src": "/native-components/react-native/badge.webp",
       "width": 900
@@ -1386,7 +1406,7 @@
       "device": "Expo web renderer",
       "height": 633,
       "platform": "react-native",
-      "sha256": "492c71977447565afe718d222f7dd15f7baf5b530c5ef6bf8b7b63b7c44d85e8",
+      "sha256": "b448e0fb733bb4b6fd91da18eb5afae7add5cd4ffe993f58ceeb5fb735d6a4f7",
       "slug": "banner",
       "src": "/native-components/react-native/banner.webp",
       "width": 900
@@ -1396,7 +1416,7 @@
       "device": "Expo web renderer",
       "height": 633,
       "platform": "react-native",
-      "sha256": "806a68bf0e7305c0d06f57328fe49dff59a22afe883b9255d772bd7a8dbc5a69",
+      "sha256": "f924c926048b5c93a4984565ed1cc50d16694f7e6698e9d8dbc31967217e737c",
       "slug": "bar-chart",
       "src": "/native-components/react-native/bar-chart.webp",
       "width": 900
@@ -1406,7 +1426,7 @@
       "device": "Expo web renderer",
       "height": 633,
       "platform": "react-native",
-      "sha256": "5777f9a6cd475bee88b7431e46b65c00e7d1a143b8346559b5f6c75b26f87ca4",
+      "sha256": "1913206c934f84d409102bb82ded02c6a8506daec8db0b3193dcdfc998656066",
       "slug": "button",
       "src": "/native-components/react-native/button.webp",
       "width": 900
@@ -1416,7 +1436,7 @@
       "device": "Expo web renderer",
       "height": 633,
       "platform": "react-native",
-      "sha256": "c000071f5fb1920fd489bd80c11828c029d0e2db1020cd6da19de420a3fb65ca",
+      "sha256": "dfb74fba0647a7abffb8e103c86512466e73cdb83e237d74f5d1621607862e94",
       "slug": "button-group",
       "src": "/native-components/react-native/button-group.webp",
       "width": 900
@@ -1426,7 +1446,7 @@
       "device": "Expo web renderer",
       "height": 633,
       "platform": "react-native",
-      "sha256": "d4b0eb4bcb57f96d8eae20a5cd25ab49af8ba15082d44abb1d528918de3bc52c",
+      "sha256": "965fefb2f5425351cd51c88092e725dc391925ea90088330e8bfa7b643388e98",
       "slug": "card",
       "src": "/native-components/react-native/card.webp",
       "width": 900
@@ -1436,7 +1456,7 @@
       "device": "Expo web renderer",
       "height": 633,
       "platform": "react-native",
-      "sha256": "a74c20124b8f4e7b02212321332532e12163a232b7c8de11981e438959888678",
+      "sha256": "ce7f1a929a60d75f7c56d68fb61d15fac8bcc96d74b70e80e4366eac02b092c0",
       "slug": "checkbox",
       "src": "/native-components/react-native/checkbox.webp",
       "width": 900
@@ -1446,7 +1466,7 @@
       "device": "Expo web renderer",
       "height": 633,
       "platform": "react-native",
-      "sha256": "fa1a285829e067b846594c7fde6a4f82ec3aea7ec9f36469285df4e821767959",
+      "sha256": "2e2027b309902e6d309abac265bf0a7618361cca844d00033864f62be593c3a8",
       "slug": "chip",
       "src": "/native-components/react-native/chip.webp",
       "width": 900
@@ -1456,7 +1476,7 @@
       "device": "Expo web renderer",
       "height": 633,
       "platform": "react-native",
-      "sha256": "52e4b1e197534040da22f3858786a57b0a0cd20f1ad5494cbbf6c956952ce86d",
+      "sha256": "7e43bcf4763fc6dc4732aca9cd1e7518be84b954a95ff244001f5b6a35e59478",
       "slug": "collapsible-navigation-bar",
       "src": "/native-components/react-native/collapsible-navigation-bar.webp",
       "width": 900
@@ -1466,7 +1486,7 @@
       "device": "Expo web renderer",
       "height": 633,
       "platform": "react-native",
-      "sha256": "11b907c746943d96206106d4f79f9fe7e860d4d8453fe04f37deb7698ced6efe",
+      "sha256": "5b516afcb0b81c052358a7ef2291c952051c3d2ee05b641b8b26008eba008559",
       "slug": "combo-chart",
       "src": "/native-components/react-native/combo-chart.webp",
       "width": 900
@@ -1476,7 +1496,7 @@
       "device": "Expo web renderer",
       "height": 633,
       "platform": "react-native",
-      "sha256": "d2d9af694d0e8e40b6c23210fd592795243fd6b0516843b228a448676952e645",
+      "sha256": "eaf264cae6c5bbe0140a9be793ba62e6bd6e590db0bd7592e1c40696756586c6",
       "slug": "date-field",
       "src": "/native-components/react-native/date-field.webp",
       "width": 900
@@ -1486,7 +1506,7 @@
       "device": "Expo web renderer",
       "height": 633,
       "platform": "react-native",
-      "sha256": "7cc58c0252c35b11b86c8dba931d7d433f1255a1300a22c90badca30543bebed",
+      "sha256": "6941cc58f5446b9fe00719cf6fcd55941a3cb4600e1a63b9c7080f4154b14cdc",
       "slug": "date-range-field",
       "src": "/native-components/react-native/date-range-field.webp",
       "width": 900
@@ -1496,7 +1516,7 @@
       "device": "Expo web renderer",
       "height": 633,
       "platform": "react-native",
-      "sha256": "ad73f4216527c6907b6b6e4125cae2ecf2dba9da49845eadb2d848d06807b3e4",
+      "sha256": "33f959ebaeb2809bc4bc0367aef236fb56f997a6af179d1c6841c29be49622f3",
       "slug": "disclosure",
       "src": "/native-components/react-native/disclosure.webp",
       "width": 900
@@ -1506,7 +1526,7 @@
       "device": "Expo web renderer",
       "height": 633,
       "platform": "react-native",
-      "sha256": "7a5275f344f2cbd76326bf3a98be213481b67e7a6c82e1d1db5938c936de5c3e",
+      "sha256": "a058eef62c0137e4ee629c11422058ba1e66ecb2e1a0849066e186075753f854",
       "slug": "divider",
       "src": "/native-components/react-native/divider.webp",
       "width": 900
@@ -1516,9 +1536,19 @@
       "device": "Expo web renderer",
       "height": 633,
       "platform": "react-native",
-      "sha256": "d71122e7e473dd6ced24f1c7b39fed0cec4d57af1b4bf7891200506929121be1",
+      "sha256": "63cbca85181471d85299d0336801e36c9c27fde4d2c2b4ca117aac380fe6abf9",
       "slug": "empty-state",
       "src": "/native-components/react-native/empty-state.webp",
+      "width": 900
+    },
+    {
+      "alt": "Error state rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 633,
+      "platform": "react-native",
+      "sha256": "f472f744b6601bf4022b838bdb13c5b41e977c0ba5066d0046c577e3b2d59878",
+      "slug": "error-state",
+      "src": "/native-components/react-native/error-state.webp",
       "width": 900
     },
     {
@@ -1526,9 +1556,19 @@
       "device": "Expo web renderer",
       "height": 633,
       "platform": "react-native",
-      "sha256": "4f8f67f288990ee2d2c99a0b2b1db27d86d06f6a9651802ff517ed541ecd4bb3",
+      "sha256": "65ebbf16c0be160045b4ac4ea9d1fcf263aae66238057b1f5ec7a4a3905a9af1",
       "slug": "field-group",
       "src": "/native-components/react-native/field-group.webp",
+      "width": 900
+    },
+    {
+      "alt": "Gauge rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 633,
+      "platform": "react-native",
+      "sha256": "b058100f1d7d5baf944a0783a256a1441d96958c3729fe47092dfc13ec2747d5",
+      "slug": "gauge",
+      "src": "/native-components/react-native/gauge.webp",
       "width": 900
     },
     {
@@ -1536,7 +1576,7 @@
       "device": "Expo web renderer",
       "height": 633,
       "platform": "react-native",
-      "sha256": "8b05417b87b6a0c0eba225726e7ef5506ef69350b2c49d2528f678ad4c5f2780",
+      "sha256": "54fb21e4ef1141012f820b2784a4e46f26818faff56eff4ac5061a722d83c685",
       "slug": "graphic",
       "src": "/native-components/react-native/graphic.webp",
       "width": 900
@@ -1546,7 +1586,7 @@
       "device": "Expo web renderer",
       "height": 633,
       "platform": "react-native",
-      "sha256": "47caf456bdc2391d8d48a6ff09475c4c8a72c0dee8c66ab3d305fdf608de32a9",
+      "sha256": "74f092906625bbd60defd5445ac6e1db9cc80d861f44bc67e6e68c7ec7510209",
       "slug": "heatmap",
       "src": "/native-components/react-native/heatmap.webp",
       "width": 900
@@ -1556,7 +1596,7 @@
       "device": "Expo web renderer",
       "height": 633,
       "platform": "react-native",
-      "sha256": "118668f2c9108c4dd7f0a663c53d30d6efbcadd85be94a0c10fccee078c81069",
+      "sha256": "50fab4498a7ce5a88021bb03063596b616262e11d9f07a358c1a524174c5b2b7",
       "slug": "icon",
       "src": "/native-components/react-native/icon.webp",
       "width": 900
@@ -1566,7 +1606,7 @@
       "device": "Expo web renderer",
       "height": 633,
       "platform": "react-native",
-      "sha256": "08643ab92da61534cdf0a39374c20daff25caf5ecfbba73ab58559ee7e22d565",
+      "sha256": "52059ccf6759fd6c2765fabb5496e5c521d05ec07e44dab54ab9056c824e8e3c",
       "slug": "icon-button",
       "src": "/native-components/react-native/icon-button.webp",
       "width": 900
@@ -1576,7 +1616,7 @@
       "device": "Expo web renderer",
       "height": 633,
       "platform": "react-native",
-      "sha256": "f6339c3ecf00c8fcc1f8d80b085d36960824d779238d19e6952639464a6e1a32",
+      "sha256": "a0395a1b9dd7768e3364b186a31e8ac9e2f35008e7fbeca64ccce92408685e11",
       "slug": "illustration",
       "src": "/native-components/react-native/illustration.webp",
       "width": 900
@@ -1586,7 +1626,7 @@
       "device": "Expo web renderer",
       "height": 633,
       "platform": "react-native",
-      "sha256": "2404f64dc8049e24c2c0992a60514e87317eb1f8b75edc69cc05889c0eeae29a",
+      "sha256": "0a07bef9842142d06553689545bc08c0043472b61ff5adfa1e1e37ee12cf50ed",
       "slug": "image",
       "src": "/native-components/react-native/image.webp",
       "width": 900
@@ -1596,7 +1636,7 @@
       "device": "Expo web renderer",
       "height": 633,
       "platform": "react-native",
-      "sha256": "1f261d54c014e1dc6f7377185f9571a5c04a28c57b36fd8ee7995ebfa8ccd262",
+      "sha256": "e75cfdd6fcce68de358b4786bb47b8cda3379a45721768b6bc15cff0a6c3b845",
       "slug": "line-chart",
       "src": "/native-components/react-native/line-chart.webp",
       "width": 900
@@ -1606,7 +1646,7 @@
       "device": "Expo web renderer",
       "height": 633,
       "platform": "react-native",
-      "sha256": "31fd39f0134a11a1dbf1576cc8fda686f3b0d4c294e355a98599584da82d555b",
+      "sha256": "6019e75412160f4b9445f83932a201ea514303d4f2c3b2048309be9cb9edbe3e",
       "slug": "list-row",
       "src": "/native-components/react-native/list-row.webp",
       "width": 900
@@ -1616,7 +1656,7 @@
       "device": "Expo web renderer",
       "height": 633,
       "platform": "react-native",
-      "sha256": "26e54d6ec9be8ad5003495ff187527744791518a9861031b9855a2444be932d9",
+      "sha256": "5af610035013e48a25b76385f03ebdcebf009ef42319dcabb8699ccec9b70ea5",
       "slug": "menu",
       "src": "/native-components/react-native/menu.webp",
       "width": 900
@@ -1626,7 +1666,7 @@
       "device": "Expo web renderer",
       "height": 633,
       "platform": "react-native",
-      "sha256": "89c42fec4146cc35e60ba9e9a14b490fb069b74d638854b9c31854fd1b2184da",
+      "sha256": "32840121e5a4df21948462ff2aff55d7e164edcdf285c516650ad726f1403bcd",
       "slug": "navigation-accessory",
       "src": "/native-components/react-native/navigation-accessory.webp",
       "width": 900
@@ -1636,7 +1676,7 @@
       "device": "Expo web renderer",
       "height": 633,
       "platform": "react-native",
-      "sha256": "66a45d39a2bf089014b02fec178e501fed01d68a51090bd76e884a6b728003d4",
+      "sha256": "e464bb416c308d871b972c36152e3030c8e53075dacf1f38fed5ee9566247b99",
       "slug": "navigation-bar",
       "src": "/native-components/react-native/navigation-bar.webp",
       "width": 900
@@ -1646,9 +1686,19 @@
       "device": "Expo web renderer",
       "height": 633,
       "platform": "react-native",
-      "sha256": "0e2a2db6ecddb4a6d9b743a1af7b9a785ff8b286dbe9be5e248a3be3763144b0",
+      "sha256": "fd642464516a78be963e0f9622a95c09773e3bf1da4c404319f3bedf1eadabc0",
       "slug": "phone-input",
       "src": "/native-components/react-native/phone-input.webp",
+      "width": 900
+    },
+    {
+      "alt": "Picker rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 633,
+      "platform": "react-native",
+      "sha256": "603d746536c1e4ad37cbb82c8347b546bb77eaf9a213feefcaa711ff4104fcad",
+      "slug": "picker",
+      "src": "/native-components/react-native/picker.webp",
       "width": 900
     },
     {
@@ -1656,7 +1706,7 @@
       "device": "Expo web renderer",
       "height": 633,
       "platform": "react-native",
-      "sha256": "4392350f5918617eb3104027b61599fb1703cceaa707fccad855cad8d22f20a9",
+      "sha256": "bc75badaa3e738032697c99a05fe8f197c8ecf0b8c6ef28ae6226b5277a53972",
       "slug": "pie-chart",
       "src": "/native-components/react-native/pie-chart.webp",
       "width": 900
@@ -1666,7 +1716,7 @@
       "device": "Expo web renderer",
       "height": 633,
       "platform": "react-native",
-      "sha256": "80ec59fa4fb1ad243c28cdde2075568d7c5b10ce86d56715f651b0945a2da8dc",
+      "sha256": "f34e0ad0b58e570f1e7e2c77f908b55479c21db218fde52b3e74ac83535d9e40",
       "slug": "progress",
       "src": "/native-components/react-native/progress.webp",
       "width": 900
@@ -1676,7 +1726,7 @@
       "device": "Expo web renderer",
       "height": 633,
       "platform": "react-native",
-      "sha256": "d28d5b3717ba5b380389d53d6f0626d50b734fb8471bc96d4bc7629565492c0a",
+      "sha256": "ed8dbb2bf5bb72557603e29fd3302e1803b879951c11aa19828aba4304101b01",
       "slug": "radio-group",
       "src": "/native-components/react-native/radio-group.webp",
       "width": 900
@@ -1686,7 +1736,7 @@
       "device": "Expo web renderer",
       "height": 633,
       "platform": "react-native",
-      "sha256": "80524df16dcc6a968a3b99f3f2ab758478b38a43f16893f23011125417df1d4b",
+      "sha256": "fd350d11f8a3c2b3c8cc455fc391f7ececb38107e38ed4a2d4c248dbeb1cd38f",
       "slug": "range-chart",
       "src": "/native-components/react-native/range-chart.webp",
       "width": 900
@@ -1696,7 +1746,7 @@
       "device": "Expo web renderer",
       "height": 633,
       "platform": "react-native",
-      "sha256": "d5e26bcdedfad03614f69d0c32aed5913ebf17a2096ab6f92a09b5f480e83859",
+      "sha256": "ee8e4a0de5241f3df568844c9a34ff7970ba985147de26d72fbedd53070ea6ad",
       "slug": "refresh-control",
       "src": "/native-components/react-native/refresh-control.webp",
       "width": 900
@@ -1706,7 +1756,7 @@
       "device": "Expo web renderer",
       "height": 633,
       "platform": "react-native",
-      "sha256": "424a76401fdb8cdde0a0f6eaa84a5b4a66081f98a93ec91eb11d2bdf93e59706",
+      "sha256": "c13021ff228fe9b4c0c62a7662812baf5f495b7fc37a3685c7f8b20620da95be",
       "slug": "scatter-chart",
       "src": "/native-components/react-native/scatter-chart.webp",
       "width": 900
@@ -1716,7 +1766,7 @@
       "device": "Expo web renderer",
       "height": 633,
       "platform": "react-native",
-      "sha256": "fa02d71292a7f989b01992547f55494af7b6f85eda588a776f996a0a6892a6cd",
+      "sha256": "331795b9aa9746f9a877e50e28cb1dd181888e783e3d549d2a08c0c902d0ec18",
       "slug": "search-field",
       "src": "/native-components/react-native/search-field.webp",
       "width": 900
@@ -1726,7 +1776,7 @@
       "device": "Expo web renderer",
       "height": 633,
       "platform": "react-native",
-      "sha256": "2d2c1ade0e926836e75edbb1d57e2111a39eb8da6e4f4f43ca4366b213a6a445",
+      "sha256": "6c71f322b2f6590d5c4588011a5e2032cd7f654c116d7cdf054e397f37bd6258",
       "slug": "section-header",
       "src": "/native-components/react-native/section-header.webp",
       "width": 900
@@ -1736,7 +1786,7 @@
       "device": "Expo web renderer",
       "height": 633,
       "platform": "react-native",
-      "sha256": "a64ebc5c2ec69290e8fa9294998d5e52b49179e33273fd64afc5f64904624a73",
+      "sha256": "ffa845fe36890718cf6058b522274aaccc27ef3fe098b7acde0707c405f44eed",
       "slug": "segmented-control",
       "src": "/native-components/react-native/segmented-control.webp",
       "width": 900
@@ -1746,7 +1796,7 @@
       "device": "Expo web renderer",
       "height": 633,
       "platform": "react-native",
-      "sha256": "5e8e6f39fc24981808d20474bf6bca6afd36b23cc3c143a39b04be485578498d",
+      "sha256": "9718ebd364c551c65080307ee4cc31dd39d98f39eecbd7a107f979c27012ed3d",
       "slug": "settings-row",
       "src": "/native-components/react-native/settings-row.webp",
       "width": 900
@@ -1756,7 +1806,7 @@
       "device": "Expo web renderer",
       "height": 633,
       "platform": "react-native",
-      "sha256": "2c4797ce58371bf66ecd28b5587a99568fb2780ba5c37984180fb50600a40dd0",
+      "sha256": "0fa88fbc2ee084ee93c92b5c720cda48b352e6d19eca13602250a3bdb71791b8",
       "slug": "share-button",
       "src": "/native-components/react-native/share-button.webp",
       "width": 900
@@ -1766,7 +1816,7 @@
       "device": "Expo web renderer",
       "height": 633,
       "platform": "react-native",
-      "sha256": "f934f5faab476cb7c542ed132dc314e34cce73ac278c257cd6567f737cd9ddfc",
+      "sha256": "75c9b85cbb68ad13c0fe61a2803eb8bdfc68a66f324b6af803084521e750ee01",
       "slug": "sheet",
       "src": "/native-components/react-native/sheet.webp",
       "width": 900
@@ -1776,9 +1826,19 @@
       "device": "Expo web renderer",
       "height": 633,
       "platform": "react-native",
-      "sha256": "6030bfb3718515c33664086391ac76eb7465f8bb1f95a6f1efb4001dde6d3701",
+      "sha256": "4d0a13dca58e96f9fa50d0a396ce36e7076d81f68c1e3008babfd3743881aaea",
       "slug": "skeleton",
       "src": "/native-components/react-native/skeleton.webp",
+      "width": 900
+    },
+    {
+      "alt": "Slider rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 633,
+      "platform": "react-native",
+      "sha256": "273ca5efdb0a30abaae67d43c4619ade9f75fa71d95fa539d42e98f7a8a6a2f9",
+      "slug": "slider",
+      "src": "/native-components/react-native/slider.webp",
       "width": 900
     },
     {
@@ -1786,7 +1846,7 @@
       "device": "Expo web renderer",
       "height": 633,
       "platform": "react-native",
-      "sha256": "c9893e6868748c0518016e5ae2df68075f6c395a5f7a18168a405ab3da25087c",
+      "sha256": "9c68055548509d862bd0d57c4c8589a348803d3749a665337959e9ce2422b7be",
       "slug": "sparkline",
       "src": "/native-components/react-native/sparkline.webp",
       "width": 900
@@ -1796,7 +1856,7 @@
       "device": "Expo web renderer",
       "height": 633,
       "platform": "react-native",
-      "sha256": "f4adae18057fdffb45173ce2d725e30e61aeb2e76120c3c41bb6566c0b5d0590",
+      "sha256": "5dca497708bef57114ac210396c2064e1dc74076c6d67be8ad5bc8fb0b205c50",
       "slug": "spinner",
       "src": "/native-components/react-native/spinner.webp",
       "width": 900
@@ -1806,7 +1866,7 @@
       "device": "Expo web renderer",
       "height": 633,
       "platform": "react-native",
-      "sha256": "2073a8040c28a37ade5d8befa6f87525e581663112c4840745982477a7d43f4d",
+      "sha256": "716a8353c628bdcd2cb7f32946edb16f38ebea84f3ed672a2dd6ed0bcbe17482",
       "slug": "stat",
       "src": "/native-components/react-native/stat.webp",
       "width": 900
@@ -1816,7 +1876,7 @@
       "device": "Expo web renderer",
       "height": 633,
       "platform": "react-native",
-      "sha256": "da04f4d674a4eeeb2270c3aab4dbd78bfc0371a652445433a3116a4737cba195",
+      "sha256": "f7131ca20871fdf4b5809a13120bace0644704ea7c474d86ebe32cb90410ae18",
       "slug": "status-bar",
       "src": "/native-components/react-native/status-bar.webp",
       "width": 900
@@ -1826,7 +1886,7 @@
       "device": "Expo web renderer",
       "height": 633,
       "platform": "react-native",
-      "sha256": "66998bad64e6f7bc8e309b2bdba7275b996446d704487094fa42b909d48a82a2",
+      "sha256": "06877dd87ad7edce3450e0f87a82824e5cc076fa22f7556c968c100552bc2331",
       "slug": "surface",
       "src": "/native-components/react-native/surface.webp",
       "width": 900
@@ -1836,7 +1896,7 @@
       "device": "Expo web renderer",
       "height": 633,
       "platform": "react-native",
-      "sha256": "9e8647626d7a4ddd10e2a4db86a08af1a09840e68c42b2fda0c0ac720575eb87",
+      "sha256": "e42268aefe13f24aff03723f0df0dc8ffd16ed1b124abd2874b0ac61ae55dcfa",
       "slug": "tabs",
       "src": "/native-components/react-native/tabs.webp",
       "width": 900
@@ -1846,7 +1906,7 @@
       "device": "Expo web renderer",
       "height": 633,
       "platform": "react-native",
-      "sha256": "81da4fa86027f8c5694950d0a69bec0fac017f841894f514a1501207d1d0077a",
+      "sha256": "467a349a8eaff0fd7e88e9f4ab33c477a3a3fcbd7cde337a22898e5680a6208b",
       "slug": "text",
       "src": "/native-components/react-native/text.webp",
       "width": 900
@@ -1856,7 +1916,7 @@
       "device": "Expo web renderer",
       "height": 633,
       "platform": "react-native",
-      "sha256": "d04aee50e40b900f643a8f7fe888af8053528b170c0df0b6814c84cdfa2bbb19",
+      "sha256": "142a2bad322c114c32b8dbd235641ff9e8c97393047fd3bcbb86fb2f9942b10d",
       "slug": "text-field",
       "src": "/native-components/react-native/text-field.webp",
       "width": 900
@@ -1866,7 +1926,7 @@
       "device": "Expo web renderer",
       "height": 633,
       "platform": "react-native",
-      "sha256": "6b5467e6f89cda71cd92695572276b12498f49e87ee3460a07b15ffe550786fe",
+      "sha256": "d350b986807433c0ac5c1e4ab423c52dbffd7256518b28027bcf3ea2bb29ab62",
       "slug": "textarea",
       "src": "/native-components/react-native/textarea.webp",
       "width": 900
@@ -1876,7 +1936,7 @@
       "device": "Expo web renderer",
       "height": 633,
       "platform": "react-native",
-      "sha256": "62da1fe2bffbf81be7301a3a409f6e7454abd3af0ce8f9890d539f6a996c6619",
+      "sha256": "e8a65772d9e800028ec5950c6a0a74b532b7b36a5ccdf1e33ef3bbdb9a5ef38e",
       "slug": "theme",
       "src": "/native-components/react-native/theme.webp",
       "width": 900
@@ -1886,7 +1946,7 @@
       "device": "Expo web renderer",
       "height": 633,
       "platform": "react-native",
-      "sha256": "ab82f4c7343a65a4d215075f85ea7e7d842db570391e84cceb7b063f058865b5",
+      "sha256": "17e0733c4f61e85f0c492f8b1324209fdf8785ceb559fa4643f3f648fef2c094",
       "slug": "toast",
       "src": "/native-components/react-native/toast.webp",
       "width": 900
@@ -1896,7 +1956,7 @@
       "device": "Expo web renderer",
       "height": 633,
       "platform": "react-native",
-      "sha256": "acfd020188a579fff8b4bd1585d0ee6bd24a79bc7f0efd0c852104a37bc581ea",
+      "sha256": "0251e6309e847b3fcc78c8e8cc80162def033e31f39904c96978c815905a39ac",
       "slug": "toggle",
       "src": "/native-components/react-native/toggle.webp",
       "width": 900

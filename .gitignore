@@ -25,6 +25,7 @@ out/
 .stylelintcache
 .cspellcache
 apps/docs/.og-cache.json
+apps/docs/public/native-previews/react-native-live/
 
 # Test output and coverage reports.
 coverage/

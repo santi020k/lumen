@@ -7,7 +7,8 @@ plugins {
 }
 
 group = "com.santi020k"
-version = providers.gradleProperty("lumenComposeVersion").get()
+val lumenComposeVersion = providers.gradleProperty("lumenComposeVersion").get()
+version = lumenComposeVersion
 
 android {
     namespace = "com.santi020k.lumen.wear"
@@ -16,6 +17,7 @@ android {
     defaultConfig {
         minSdk = 30
         consumerProguardFiles("consumer-rules.pro")
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildFeatures {
@@ -41,6 +43,13 @@ dependencies {
     implementation("androidx.compose.foundation:foundation")
     implementation("androidx.compose.runtime:runtime")
     implementation("androidx.compose.ui:ui")
+    androidTestImplementation(composeBom)
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4-accessibility")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.7.0")
+    androidTestImplementation("androidx.test.ext:junit:1.3.0")
+    androidTestImplementation("androidx.test:runner:1.7.0")
+    debugImplementation("androidx.compose.ui:ui-test-manifest")
     testImplementation("junit:junit:4.13.2")
 }
 
@@ -86,7 +95,8 @@ publishing {
                 scm {
                     connection.set("scm:git:https://github.com/santi020k/lumen.git")
                     developerConnection.set("scm:git:ssh://git@github.com/santi020k/lumen.git")
-                    url.set("https://github.com/santi020k/lumen")
+                    tag.set("compose-v$lumenComposeVersion")
+                    url.set("https://github.com/santi020k/lumen/tree/compose-v$lumenComposeVersion")
                 }
             }
         }

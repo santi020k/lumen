@@ -5,7 +5,6 @@ import {
   coerceThemeBuilderExportFormat,
   coerceThemeBuilderMode,
   coerceThemeBuilderScheme,
-  composeClassName,
   createLumenBarGeometry,
   createLumenHeatmapGeometry,
   createLumenKanbanMoveDetail,
@@ -43,6 +42,7 @@ import {
   type LumenRichTextChangeDetail,
   type LumenRichTextCommandDetail,
   type LumenScatterGeometryPoint,
+  type LumenTabsChangeDetail,
   type LumenThemeBuilderExportFormat,
   type LumenThemeBuilderScheme,
   type LumenThemeTokens,
@@ -55,10 +55,66 @@ import {
   resolveLumenPhoneNumber,
   scaleLumenChartValue,
   scoreThemeContrast,
+  scrollLumenTabIntoView,
   tuneThemeContrast
 } from '@santi020k/lumen-core'
 
-type AttributeClassMap = Record<string, Record<string, string>>
+import {
+  LumenBadgeElement as GranularLumenBadgeElement,
+  lumenBadgeElementConfig
+} from './components/badge.js'
+import {
+  LumenButtonElement as GranularLumenButtonElement,
+  lumenButtonElementConfig
+} from './components/button.js'
+import {
+  LumenCardElement as GranularLumenCardElement,
+  lumenCardElementConfig
+} from './components/card.js'
+import {
+  LumenComboboxElement as GranularLumenComboboxElement,
+  lumenComboboxElementConfig
+} from './components/combobox.js'
+import {
+  LumenCardContentElement as GranularLumenCardContentElement,
+  lumenCardContentElementConfig,
+  LumenCardDescriptionElement as GranularLumenCardDescriptionElement,
+  lumenCardDescriptionElementConfig,
+  LumenCardFooterElement as GranularLumenCardFooterElement,
+  lumenCardFooterElementConfig,
+  LumenCardHeaderElement as GranularLumenCardHeaderElement,
+  lumenCardHeaderElementConfig,
+  LumenCardTitleElement as GranularLumenCardTitleElement,
+  lumenCardTitleElementConfig,
+  LumenContainerElement as GranularLumenContainerElement,
+  lumenContainerElementConfig,
+  LumenDirectionElement as GranularLumenDirectionElement,
+  lumenDirectionElementConfig,
+  LumenGridElement as GranularLumenGridElement,
+  lumenGridElementConfig,
+  LumenLabelElement as GranularLumenLabelElement,
+  lumenLabelElementConfig,
+  LumenSeparatorElement as GranularLumenSeparatorElement,
+  lumenSeparatorElementConfig,
+  LumenSkeletonElement as GranularLumenSkeletonElement,
+  lumenSkeletonElementConfig,
+  LumenSpinnerElement as GranularLumenSpinnerElement,
+  lumenSpinnerElementConfig,
+  LumenStackElement as GranularLumenStackElement,
+  lumenStackElementConfig,
+  LumenTypographyElement as GranularLumenTypographyElement,
+  lumenTypographyElementConfig,
+  LumenVisuallyHiddenElement as GranularLumenVisuallyHiddenElement,
+  lumenVisuallyHiddenElementConfig
+} from './components/foundations.js'
+import {
+  createLumenElementClass as createStandaloneLumenElementClass,
+  LumenElement,
+  type LumenElementConfig,
+  type LumenElementConstructor
+} from './element-base.js'
+
+export { LumenElement } from './element-base.js'
 
 type ToastPlacement =
   | 'bottom-center' |
@@ -104,16 +160,6 @@ export interface ToastApi {
   dismiss: (id?: string) => void
   update: (id: string, detail: ToastDetail) => void
 }
-
-interface LumenElementConfig {
-  attributeClasses?: AttributeClassMap
-  baseClassName: string
-  defaults?: Record<string, string>
-  role?: string
-  tagName: string
-}
-
-const appliedClassNames = new WeakMap<HTMLElement, string[]>()
 
 const focusableSelector = [
   'a[href]',
@@ -206,12 +252,6 @@ const toastTimers = new WeakMap<
   }
 >()
 
-const mergeClassNames = (
-  ...classNames: (boolean | string | null | undefined)[]
-) => composeClassName(...classNames)
-  .split(/\s+/)
-  .filter(Boolean)
-
 const glassAttributeClasses = (className: string) => ({
   glass: {
     strong: `${className} ui-glass-strong`,
@@ -279,21 +319,7 @@ const elementConfigs = {
   },
   Avatar: { baseClassName: 'ui-avatar', tagName: 'lumen-avatar' },
   BackToTop: { baseClassName: 'ui-back-to-top', tagName: 'lumen-back-to-top' },
-  Badge: {
-    attributeClasses: {
-      variant: {
-        default: 'ui-badge--default',
-        destructive: 'ui-badge--destructive',
-        outline: 'ui-badge--outline',
-        secondary: 'ui-badge--secondary',
-        success: 'ui-badge--success',
-        warning: 'ui-badge--warning'
-      }
-    },
-    baseClassName: 'ui-badge',
-    defaults: { variant: 'default' },
-    tagName: 'lumen-badge'
-  },
+  Badge: lumenBadgeElementConfig,
   BarChart: {
     attributeClasses: {
       ...glassAttributeClasses('ui-chart--glass'),
@@ -318,36 +344,7 @@ const elementConfigs = {
     defaults: { from: 'assistant' },
     tagName: 'lumen-bubble'
   },
-  Button: {
-    attributeClasses: {
-      variant: {
-        default: 'ui-button--default',
-        destructive: 'ui-button--destructive',
-        ghost: 'ui-button--ghost',
-        link: 'ui-button--link',
-        outline: 'ui-button--outline',
-        secondary: 'ui-button--secondary'
-      },
-      size: {
-        default: 'ui-button--default-size',
-        icon: 'ui-button--icon',
-        lg: 'ui-button--lg',
-        sm: 'ui-button--sm'
-      },
-      disabled: { true: 'ui-button--disabled' },
-      loading: { true: 'ui-button--loading' }
-    },
-    baseClassName: 'ui-button',
-    defaults: {
-      'data-slot': 'button',
-      role: 'button',
-      size: 'default',
-      tabindex: '0',
-      variant: 'default'
-    },
-    role: 'button',
-    tagName: 'lumen-button'
-  },
+  Button: lumenButtonElementConfig,
   ButtonGroup: {
     baseClassName: 'ui-button-group',
     tagName: 'lumen-button-group'
@@ -359,49 +356,12 @@ const elementConfigs = {
     tagName: 'lumen-calendar'
   },
   Callout: { baseClassName: 'ui-callout', tagName: 'lumen-callout' },
-  Card: {
-    attributeClasses: {
-      glass: {
-        strong: 'ui-card--glass ui-glass-strong',
-        subtle: 'ui-card--glass ui-glass-subtle',
-        true: 'ui-card--glass'
-      },
-      variant: {
-        glass: 'ui-card--glass',
-        interactive: 'ui-card--interactive',
-        muted: 'ui-card--muted',
-        unstyled: 'ui-card--unstyled'
-      }
-    },
-    baseClassName: 'ui-card',
-    defaults: { 'data-slot': 'card', variant: 'default' },
-    tagName: 'lumen-card'
-  },
-  CardContent: {
-    baseClassName: 'ui-card__content',
-    defaults: { 'data-slot': 'card-content' },
-    tagName: 'lumen-card-content'
-  },
-  CardDescription: {
-    baseClassName: 'ui-card__description',
-    defaults: { 'data-slot': 'card-description' },
-    tagName: 'lumen-card-description'
-  },
-  CardFooter: {
-    baseClassName: 'ui-card__footer',
-    defaults: { 'data-slot': 'card-footer' },
-    tagName: 'lumen-card-footer'
-  },
-  CardHeader: {
-    baseClassName: 'ui-card__header',
-    defaults: { 'data-slot': 'card-header' },
-    tagName: 'lumen-card-header'
-  },
-  CardTitle: {
-    baseClassName: 'ui-card__title',
-    defaults: { 'data-slot': 'card-title' },
-    tagName: 'lumen-card-title'
-  },
+  Card: lumenCardElementConfig,
+  CardContent: lumenCardContentElementConfig,
+  CardDescription: lumenCardDescriptionElementConfig,
+  CardFooter: lumenCardFooterElementConfig,
+  CardHeader: lumenCardHeaderElementConfig,
+  CardTitle: lumenCardTitleElementConfig,
   Carousel: {
     attributeClasses: glassAttributeClasses('ui-carousel--glass'),
     baseClassName: 'ui-carousel',
@@ -469,24 +429,8 @@ const elementConfigs = {
     defaults: { 'data-slot': 'code-tabs', 'data-ui-tabs': '' },
     tagName: 'lumen-code-tabs'
   },
-  Combobox: {
-    baseClassName: 'ui-combobox',
-    defaults: { 'data-ui-combobox': '' },
-    tagName: 'lumen-combobox'
-  },
-  Container: {
-    attributeClasses: {
-      size: {
-        full: 'ui-container--full',
-        lg: 'ui-container--lg',
-        md: 'ui-container--md',
-        sm: 'ui-container--sm'
-      }
-    },
-    baseClassName: 'ui-container',
-    defaults: { 'data-ui-container': '', size: 'lg' },
-    tagName: 'lumen-container'
-  },
+  Combobox: lumenComboboxElementConfig,
+  Container: lumenContainerElementConfig,
   CopyButton: {
     baseClassName: 'ui-button ui-button--outline ui-copy-button',
     defaults: {
@@ -559,11 +503,7 @@ const elementConfigs = {
     defaults: { 'data-ui-dialog': '', layout: 'centered' },
     tagName: 'lumen-dialog'
   },
-  Direction: {
-    baseClassName: 'ui-direction',
-    defaults: { dir: 'ltr' },
-    tagName: 'lumen-direction'
-  },
+  Direction: lumenDirectionElementConfig,
   Drawer: {
     attributeClasses: {
       glass: {
@@ -597,6 +537,26 @@ const elementConfigs = {
     defaults: { variant: 'default' },
     tagName: 'lumen-empty'
   },
+  ErrorState: {
+    attributeClasses: {
+      kind: {
+        error: 'ui-error-state--error',
+        offline: 'ui-error-state--offline'
+      },
+      layout: {
+        compact: 'ui-error-state--compact',
+        default: 'ui-error-state--default',
+        page: 'ui-error-state--page'
+      }
+    },
+    baseClassName: 'ui-error-state',
+    defaults: {
+      'data-ui-error-state': '',
+      kind: 'error',
+      layout: 'default'
+    },
+    tagName: 'lumen-error-state'
+  },
   ErrorSummary: {
     baseClassName: 'ui-error-summary',
     defaults: { 'data-ui-error-summary': '', tabindex: '-1' },
@@ -627,29 +587,7 @@ const elementConfigs = {
     baseClassName: 'ui-formatted-date',
     tagName: 'lumen-formatted-date'
   },
-  Grid: {
-    attributeClasses: {
-      columns: {
-        1: 'ui-grid--columns-1',
-        2: 'ui-grid--columns-2',
-        3: 'ui-grid--columns-3',
-        4: 'ui-grid--columns-4',
-        6: 'ui-grid--columns-6',
-        12: 'ui-grid--columns-12',
-        auto: 'ui-grid--columns-auto'
-      },
-      gap: {
-        lg: 'ui-grid--gap-lg',
-        md: 'ui-grid--gap-md',
-        none: 'ui-grid--gap-none',
-        sm: 'ui-grid--gap-sm',
-        xl: 'ui-grid--gap-xl'
-      }
-    },
-    baseClassName: 'ui-grid',
-    defaults: { 'data-ui-grid': '', columns: 'auto', gap: 'md' },
-    tagName: 'lumen-grid'
-  },
+  Grid: lumenGridElementConfig,
   HoverCard: {
     attributeClasses: {
       glass: {
@@ -700,7 +638,6 @@ const elementConfigs = {
   },
   Input: {
     attributeClasses: {
-      size: { lg: 'ui-input--lg', sm: 'ui-input--sm' },
       'visual-size': { lg: 'ui-input--lg', sm: 'ui-input--sm' }
     },
     baseClassName: 'ui-input',
@@ -738,7 +675,7 @@ const elementConfigs = {
     tagName: 'lumen-kanban-column'
   },
   Kbd: { baseClassName: 'ui-kbd', tagName: 'lumen-kbd' },
-  Label: { baseClassName: 'ui-label', tagName: 'lumen-label' },
+  Label: lumenLabelElementConfig,
   Link: {
     attributeClasses: { variant: { inherit: 'ui-link--inherit' } },
     baseClassName: 'ui-link',
@@ -814,7 +751,6 @@ const elementConfigs = {
   },
   NativeSelect: {
     attributeClasses: {
-      size: { lg: 'ui-select--lg', sm: 'ui-select--sm' },
       'visual-size': { lg: 'ui-select--lg', sm: 'ui-select--sm' }
     },
     baseClassName: 'ui-select',
@@ -955,17 +891,7 @@ const elementConfigs = {
     baseClassName: 'ui-select',
     tagName: 'lumen-select'
   },
-  Separator: {
-    attributeClasses: {
-      orientation: {
-        horizontal: 'ui-separator--horizontal',
-        vertical: 'ui-separator--vertical'
-      }
-    },
-    baseClassName: 'ui-separator',
-    defaults: { orientation: 'horizontal' },
-    tagName: 'lumen-separator'
-  },
+  Separator: lumenSeparatorElementConfig,
   Sheet: {
     attributeClasses: {
       glass: {
@@ -991,20 +917,15 @@ const elementConfigs = {
     defaults: { 'data-slot': 'sidebar' },
     tagName: 'lumen-sidebar'
   },
-  Skeleton: { baseClassName: 'ui-skeleton', tagName: 'lumen-skeleton' },
+  Skeleton: lumenSkeletonElementConfig,
   SkipLink: { baseClassName: 'ui-skip-link', tagName: 'lumen-skip-link' },
   Slider: {
     baseClassName: 'ui-slider',
     defaults: { type: 'range' },
     tagName: 'lumen-slider'
   },
-  Sonner: {
-    baseClassName: 'ui-sonner',
-    defaults: { 'data-ui-sonner': '' },
-    tagName: 'lumen-sonner'
-  },
   Sparkline: { baseClassName: 'ui-sparkline', tagName: 'lumen-sparkline' },
-  Spinner: { baseClassName: 'ui-spinner', tagName: 'lumen-spinner' },
+  Spinner: lumenSpinnerElementConfig,
   Switch: {
     baseClassName: 'ui-switch',
     defaults: { role: 'switch', type: 'checkbox' },
@@ -1063,6 +984,11 @@ const elementConfigs = {
     defaults: { variant: 'default' },
     tagName: 'lumen-toast'
   },
+  ToastViewport: {
+    baseClassName: 'ui-tvp',
+    defaults: { 'data-ui-toast-viewport': '' },
+    tagName: 'lumen-toast-viewport'
+  },
   Toggle: {
     baseClassName: 'ui-toggle',
     defaults: {
@@ -1092,18 +1018,14 @@ const elementConfigs = {
     defaults: { role: 'treegrid' },
     tagName: 'lumen-tree-grid'
   },
-  Typography: { baseClassName: 'ui-typography', tagName: 'lumen-typography' },
+  Typography: lumenTypographyElementConfig,
   VirtualList: {
     attributeClasses: glassAttributeClasses('ui-virtual-list--glass'),
     baseClassName: 'ui-virtual-list',
     defaults: { 'data-ui-virtual-list': '' },
     tagName: 'lumen-virtual-list'
   },
-  VisuallyHidden: {
-    baseClassName: 'ui-visually-hidden',
-    defaults: { 'data-ui-visually-hidden': '' },
-    tagName: 'lumen-visually-hidden'
-  },
+  VisuallyHidden: lumenVisuallyHiddenElementConfig,
   LanguageToggle: {
     baseClassName: 'ui-language-toggle',
     defaults: { 'data-ui-language-toggle': '' },
@@ -1216,24 +1138,7 @@ const elementConfigs = {
     defaults: { 'data-slot': 'stat-value' },
     tagName: 'lumen-stat-value'
   },
-  Stack: {
-    attributeClasses: {
-      direction: {
-        horizontal: 'ui-stack--horizontal',
-        vertical: 'ui-stack--vertical'
-      },
-      gap: {
-        lg: 'ui-stack--gap-lg',
-        md: 'ui-stack--gap-md',
-        none: 'ui-stack--gap-none',
-        sm: 'ui-stack--gap-sm',
-        xl: 'ui-stack--gap-xl'
-      }
-    },
-    baseClassName: 'ui-stack',
-    defaults: { 'data-ui-stack': '', direction: 'vertical', gap: 'md' },
-    tagName: 'lumen-stack'
-  },
+  Stack: lumenStackElementConfig,
   Meter: { baseClassName: 'ui-meter', tagName: 'lumen-meter' },
   Note: {
     attributeClasses: {
@@ -4401,9 +4306,9 @@ const normalizeToastViewport = (
   viewport: HTMLElement,
   placement?: string
 ): void => {
-  viewport.classList.add('ui-sonner')
+  viewport.classList.add('ui-tvp')
 
-  viewport.dataset.uiSonner = ''
+  viewport.dataset.uiToastViewport = ''
 
   viewport.dataset.placement = getToastPlacement(
     placement ?? viewport.dataset.placement
@@ -4432,10 +4337,10 @@ const getToastViewport = (
 
   const existing =
     document.querySelector<HTMLElement>(
-      `[data-ui-sonner][data-placement="${resolvedPlacement}"]`
+      `[data-ui-toast-viewport][data-placement="${resolvedPlacement}"]`
     ) ??
     (shouldUseAnyViewport ?
-      document.querySelector<HTMLElement>('[data-ui-sonner]') :
+      document.querySelector<HTMLElement>('[data-ui-toast-viewport]') :
       null)
 
   if (existing) {
@@ -4446,10 +4351,13 @@ const getToastViewport = (
     return existing
   }
 
-  const tagName =
-    typeof customElements !== 'undefined' && customElements.get('lumen-sonner') ?
-      'lumen-sonner' :
-      'div'
+  let tagName = 'div'
+
+  if (typeof customElements !== 'undefined') {
+    if (customElements.get('lumen-toast-viewport')) {
+      tagName = 'lumen-toast-viewport'
+    }
+  }
 
   const viewport = document.createElement(tagName)
 
@@ -4740,7 +4648,7 @@ const installToastController = (): void => {
     LumenToast
 
   for (const viewport of document.querySelectorAll<HTMLElement>(
-    '[data-ui-sonner]'
+    '[data-ui-toast-viewport]'
   )) {
     normalizeToastViewport(viewport)
   }
@@ -4766,76 +4674,6 @@ const installToastController = (): void => {
 
     LumenToast.dismiss(detail.id)
   })
-}
-
-export class LumenElement extends HTMLElement {
-  static config: LumenElementConfig
-
-  static get observedAttributes() {
-    return observedAttributeNames
-  }
-
-  connectedCallback() {
-    this.applyDefaults()
-
-    this.applyClassNames()
-  }
-
-  disconnectedCallback() {
-    /* Subclasses clean up behavior listeners when needed. */
-  }
-
-  attributeChangedCallback(
-    _name?: string,
-    _previousValue?: string | null,
-    _value?: string | null
-  ) {
-    this.applyClassNames()
-  }
-
-  protected get config() {
-    return (this.constructor as typeof LumenElement).config
-  }
-
-  private applyDefaults() {
-    for (const [name, value] of Object.entries(this.config.defaults ?? {})) {
-      if (!this.hasAttribute(name)) {
-        this.setAttribute(name, value)
-      }
-    }
-
-    if (this.config.role && !this.hasAttribute('role')) {
-      this.setAttribute('role', this.config.role)
-    }
-  }
-
-  private applyClassNames() {
-    const previousClassNames = appliedClassNames.get(this) ?? []
-
-    for (const className of previousClassNames) {
-      this.classList.remove(className)
-    }
-
-    const classNames = mergeClassNames(this.config.baseClassName)
-
-    for (const [attributeName, classMap] of Object.entries(
-      this.config.attributeClasses ?? {}
-    )) {
-      const attributeValue = this.hasAttribute(attributeName) ?
-        this.getAttribute(attributeName) || 'true' :
-        this.config.defaults?.[attributeName]
-
-      const className = attributeValue ? classMap[attributeValue] : undefined
-
-      if (className) {
-        classNames.push(...mergeClassNames(className))
-      }
-    }
-
-    this.classList.add(...classNames)
-
-    appliedClassNames.set(this, classNames)
-  }
 }
 
 type LumenScalarNativeControl = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
@@ -6823,7 +6661,7 @@ class LumenTabsBehaviorElement extends LumenElement {
 
     if (!tabs.length || !panels.length) return
 
-    const activate = (tab: HTMLElement): void => {
+    const activate = (tab: HTMLElement, emit = true): void => {
       for (const item of tabs) {
         const selected = item === tab
         const panelId = item.getAttribute('aria-controls')
@@ -6837,11 +6675,29 @@ class LumenTabsBehaviorElement extends LumenElement {
           panel.hidden = !selected
         }
       }
+
+      if (!emit) return
+
+      scrollLumenTabIntoView(tab)
+
+      const detail: LumenTabsChangeDetail = {
+        value: tab.dataset.value ?? tab.id
+      }
+
+      const storageKey = this.dataset.storageKey
+
+      if (storageKey) detail.storageKey = storageKey
+
+      this.dispatchEvent(new CustomEvent<LumenTabsChangeDetail>('ui:tabs-change', {
+        bubbles: true,
+        detail
+      }))
     }
 
     activate(
       tabs.find(tab => tab.getAttribute('aria-selected') === 'true') ??
-      tabs[0]!
+      tabs[0]!,
+      false
     )
 
     for (const tab of tabs) {
@@ -8386,7 +8242,7 @@ class LumenTooltipBehaviorElement extends LumenElement {
   }
 }
 
-class LumenSonnerBehaviorElement extends LumenElement {
+class LumenToastViewportBehaviorElement extends LumenElement {
   override connectedCallback() {
     super.connectedCallback()
 
@@ -10577,15 +10433,21 @@ class LumenPhoneInputBehaviorElement extends LumenElement {
   }
 }
 
-const createLumenElementClass = (config: LumenElementConfig) => class extends LumenElement {
-  static override config = config
-}
+const withObservedAttributes = (
+  config: LumenElementConfig
+): LumenElementConfig => ({ ...config, observedAttributes: observedAttributeNames })
+
+const createLumenElementClass = (
+  config: LumenElementConfig
+): LumenElementConstructor => createStandaloneLumenElementClass(
+  withObservedAttributes(config)
+)
 
 const createLumenBehaviorElementClass = (
   BaseElement: typeof LumenElement,
   config: LumenElementConfig
 ) => class extends BaseElement {
-  static override config = config
+  static override config = withObservedAttributes(config)
 }
 
 const behaviorElementClasses: Partial<
@@ -10633,7 +10495,6 @@ const behaviorElementClasses: Partial<
   SearchField: LumenScalarFormControlElement,
   Select: LumenSelectBehaviorElement,
   Slider: LumenScalarFormControlElement,
-  Sonner: LumenSonnerBehaviorElement,
   Sparkline: LumenSparklineBehaviorElement,
   Switch: LumenScalarFormControlElement,
   Tabs: LumenTabsBehaviorElement,
@@ -10641,6 +10502,7 @@ const behaviorElementClasses: Partial<
   ThemeBuilder: LumenThemeBuilderBehaviorElement,
   ThemeToggle: LumenThemeToggleBehaviorElement,
   Toast: LumenToastBehaviorElement,
+  ToastViewport: LumenToastViewportBehaviorElement,
   TimeField: LumenScalarFormControlElement,
   Tour: LumenTourBehaviorElement,
   Transfer: LumenTransferBehaviorElement,
@@ -10649,8 +10511,36 @@ const behaviorElementClasses: Partial<
   VirtualList: LumenVirtualListBehaviorElement
 }
 
+const granularElementClasses: Partial<
+  Record<LumenComponentName, LumenElementConstructor>
+> = {
+  Badge: GranularLumenBadgeElement,
+  Button: GranularLumenButtonElement,
+  Card: GranularLumenCardElement,
+  CardContent: GranularLumenCardContentElement,
+  CardDescription: GranularLumenCardDescriptionElement,
+  CardFooter: GranularLumenCardFooterElement,
+  CardHeader: GranularLumenCardHeaderElement,
+  CardTitle: GranularLumenCardTitleElement,
+  Combobox: GranularLumenComboboxElement,
+  Container: GranularLumenContainerElement,
+  Direction: GranularLumenDirectionElement,
+  Grid: GranularLumenGridElement,
+  Label: GranularLumenLabelElement,
+  Separator: GranularLumenSeparatorElement,
+  Skeleton: GranularLumenSkeletonElement,
+  Spinner: GranularLumenSpinnerElement,
+  Stack: GranularLumenStackElement,
+  Typography: GranularLumenTypographyElement,
+  VisuallyHidden: GranularLumenVisuallyHiddenElement
+}
+
 const elementClasses = Object.fromEntries(
   lumenComponentNames.map(componentName => {
+    const granularClass = granularElementClasses[componentName]
+
+    if (granularClass) return [componentName, granularClass]
+
     const behaviorClass = behaviorElementClasses[componentName]
 
     if (behaviorClass) {
@@ -10667,13 +10557,27 @@ const elementClasses = Object.fromEntries(
       createLumenElementClass(elementConfigs[componentName])
     ]
   })
-) as Record<LumenComponentName, typeof LumenElement>
+) as Record<LumenComponentName, LumenElementConstructor>
 
 const elementDefinitions = lumenComponentNames.map(componentName => {
   const config = elementConfigs[componentName]
 
   return [config.tagName, elementClasses[componentName]] as const
 })
+
+type LumenCustomElementRegistry = Pick<CustomElementRegistry, 'define' | 'get'>
+
+const resolveCustomElementRegistry = (
+  registry: LumenCustomElementRegistry | undefined
+): LumenCustomElementRegistry | undefined => registry ?? (
+  typeof customElements === 'undefined' ?
+    undefined :
+    customElements
+)
+
+const isComponentNameList = (
+  value: LumenCustomElementRegistry | readonly LumenComponentName[] | undefined
+): value is readonly LumenComponentName[] => Array.isArray(value)
 
 export const enhanceLumenElements = (scope: ParentNode = document): void => {
   enhanceLumenDateRangePickers(scope)
@@ -10692,17 +10596,37 @@ export const enhanceLumenElements = (scope: ParentNode = document): void => {
 }
 
 export const defineLumenElements = (
-  customElementsRegistry:
-    Pick<CustomElementRegistry, 'define' | 'get'> | undefined =
-      typeof customElements === 'undefined' ?
-        undefined :
-        customElements
-) => {
+  componentNamesOrRegistry?:
+    LumenCustomElementRegistry | readonly LumenComponentName[],
+  suppliedRegistry?: LumenCustomElementRegistry
+): void => {
+  const componentNames = isComponentNameList(componentNamesOrRegistry) ?
+    componentNamesOrRegistry :
+    lumenComponentNames
+
+  const customElementsRegistry = resolveCustomElementRegistry(
+    isComponentNameList(componentNamesOrRegistry) ?
+      suppliedRegistry :
+      componentNamesOrRegistry
+  )
+
   if (!customElementsRegistry) return
 
-  for (const [name, element] of elementDefinitions) {
-    if (!customElementsRegistry.get(name)) {
-      customElementsRegistry.define(name, element)
+  for (const componentName of new Set(componentNames)) {
+    const config = (
+      elementConfigs as Readonly<Record<string, LumenElementConfig>>
+    )[componentName]
+
+    const element = (
+      elementClasses as Readonly<Record<string, LumenElementConstructor>>
+    )[componentName]
+
+    if (!config || !element) {
+      throw new TypeError(`Unknown Lumen component name: ${componentName}`)
+    }
+
+    if (!customElementsRegistry.get(config.tagName)) {
+      customElementsRegistry.define(config.tagName, element)
     }
   }
 
@@ -10778,6 +10702,7 @@ export const LumenDirectionElement = elementClasses.Direction
 export const LumenDrawerElement = elementClasses.Drawer
 export const LumenDropdownMenuElement = elementClasses.DropdownMenu
 export const LumenEmptyElement = elementClasses.Empty
+export const LumenErrorStateElement = elementClasses.ErrorState
 export const LumenFieldElement = elementClasses.Field
 export const LumenHoverCardElement = elementClasses.HoverCard
 export const LumenIconElement = elementClasses.Icon
@@ -10818,7 +10743,6 @@ export const LumenSheetElement = elementClasses.Sheet
 export const LumenSidebarElement = elementClasses.Sidebar
 export const LumenSkeletonElement = elementClasses.Skeleton
 export const LumenSliderElement = elementClasses.Slider
-export const LumenSonnerElement = elementClasses.Sonner
 export const LumenSparklineElement = elementClasses.Sparkline
 export const LumenSpinnerElement = elementClasses.Spinner
 export const LumenSwitchElement = elementClasses.Switch
@@ -10829,6 +10753,7 @@ export const LumenTextareaElement = elementClasses.Textarea
 export const LumenThemeBuilderElement = elementClasses.ThemeBuilder
 export const LumenTimeFieldElement = elementClasses.TimeField
 export const LumenToastElement = elementClasses.Toast
+export const LumenToastViewportElement = elementClasses.ToastViewport
 export const LumenToggleElement = elementClasses.Toggle
 export const LumenToggleGroupElement = elementClasses.ToggleGroup
 export const LumenTooltipElement = elementClasses.Tooltip

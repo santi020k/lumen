@@ -2,12 +2,13 @@
 import { Badge, Icon, Link } from '@santi020k/lumen-astro'
 
 import { componentCategories, componentDocs } from '../data/docs'
+import { sharedDocumentationLinks } from '../data/docs-context-navigation'
 import {
   getNativeComponentsForPlatform,
   nativeComponentCategories
 } from '../data/native-components'
 import type { DocsPlatformId } from '../data/platforms'
-import { getPlatformGuide } from '../data/platforms'
+import { getPlatformGuide, productPlatformGuides } from '../data/platforms'
 import { toSlug } from '../lib/routes'
 
 interface Props {
@@ -16,14 +17,15 @@ interface Props {
 }
 
 const { currentPath, platform } = Astro.props
+const platformLinks = productPlatformGuides.map(guide => [guide.label, guide.href] as const)
 
-const gettingStarted = [
-  ['Documentation home', '/docs'],
-  ['Figma', '/docs/figma'],
-  ['AI skill', '/docs/ai-skill'],
-  ['MCP server', '/docs/mcp'],
-  ['Changelog', '/changelog']
-] as const
+const sharedLinks = sharedDocumentationLinks.filter((_, index) => {
+  if (!platform) return true
+
+  if (platform === 'foundations') return index === 0
+
+  return index < 2
+})
 
 const frameworkLinks = [
   ['Web overview', '/docs/web'],
@@ -42,8 +44,7 @@ const formLinks = [
 const webFoundationLinks = [
   ['Icons', '/docs/icons'],
   ['Brand icons', '/docs/brand-icons'],
-  ['Theme playground', '/docs/theme-playground'],
-  ['Shared foundations', '/docs/foundations']
+  ['Theme playground', '/docs/theme-playground']
 ] as const
 
 const activeGuide = platform && platform !== 'web' ? getPlatformGuide(platform) : undefined
@@ -80,10 +81,23 @@ const isWebCategoryCurrent = (category: string) => componentDocs.some(component 
 ---
 
 <nav class="docs-sidebar__nav" data-docs-nav>
-  {!platform && (
+  <div class="docs-sidebar__group">
+    <p>{platform ? 'Across Lumen' : 'Shared project'}</p>
+    {sharedLinks.map(({ label, href }) => (
+      <Link
+        aria-current={isCurrent(href) ? 'page' : undefined}
+        class:list={{ 'docs-sidebar__link': true, 'is-current': isCurrent(href) }}
+        href={href}
+      >
+        <span>{label}</span>
+        {isCurrent(href) && <Icon decorative name="arrow-right" size="sm" />}
+      </Link>
+    ))}
+  </div>
+  {(!platform || platform === 'foundations') && (
     <div class="docs-sidebar__group">
-      <p>Start here</p>
-      {gettingStarted.map(([label, href]) => (
+      <p>Platform guides</p>
+      {platformLinks.map(([label, href]) => (
         <Link
           aria-current={isCurrent(href) ? 'page' : undefined}
           class:list={{ 'docs-sidebar__link': true, 'is-current': isCurrent(href) }}

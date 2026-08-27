@@ -1,4 +1,4 @@
-#if os(iOS) || os(macOS)
+#if os(iOS) || os(macOS) || os(visionOS)
 import Foundation
 import PhoneNumberKit
 import SwiftUI
@@ -365,6 +365,7 @@ public struct LumenPhoneInput: View {
                 .stroke(borderColor, lineWidth: 1)
         }
         .clipShape(RoundedRectangle(cornerRadius: LumenRadius.sm, style: .continuous))
+        .lumenAccessibilityHint(localizedError ?? localizedDescription)
         .accessibilityLabel(numberLabel)
 
         #if os(iOS)

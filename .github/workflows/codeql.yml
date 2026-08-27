@@ -3,6 +3,20 @@ name: CodeQL
 on:
   pull_request:
     branches: [main]
+    paths:
+      - "**/*.astro"
+      - "**/*.js"
+      - "**/*.mjs"
+      - "**/*.mts"
+      - "**/*.ts"
+      - "**/*.tsx"
+      - "apps/*/package.json"
+      - "packages/*/package.json"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - "pnpm-workspace.yaml"
+      - "tsconfig*.json"
+      - ".github/workflows/codeql.yml"
   schedule:
     - cron: "24 5 * * 3"
   workflow_dispatch: {}

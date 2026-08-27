@@ -53,6 +53,22 @@ import { Button, Form } from '@santi020k/lumen-astro'
     expect(elements).not.toContain('<lumen-form')
   })
 
+  test('uses framework-native ErrorState recovery composition', () => {
+    const example = `---
+import { Button, ErrorState } from '@santi020k/lumen-astro'
+---
+<ErrorState title="Could not load projects"><Button slot="actions">Try again</Button></ErrorState>`
+    const snippets = buildSnippets('ErrorState', example)
+    const react = snippets[1]?.code
+    const elements = snippets[2]?.code
+
+    expect(react).toContain('actions={(')
+    expect(react).not.toContain('slot="actions"')
+    expect(elements).toContain('aria-labelledby="projects-error-title"')
+    expect(elements).toContain('data-slot="error-state-actions"')
+    expect(elements).not.toContain('title="Could not load projects"')
+  })
+
   test('uses the canonical vector logo dimensions in framework examples', () => {
     const snippets = buildSnippets('Image', '<img src="/logo.svg" alt="Lumen UI logo" />')
     const react = snippets[1]?.code

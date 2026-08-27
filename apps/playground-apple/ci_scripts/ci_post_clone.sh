@@ -53,11 +53,14 @@ fi
 
 apple_root="${0:A:h:h}"
 project="$apple_root/LumenApplePlayground.xcodeproj"
+toolchain_check="$apple_root/scripts/check-app-store-toolchain.sh"
 
 if [[ ! -d "$project" ]]; then
     print -u2 "Required Xcode project is missing: $project"
     exit 1
 fi
+
+"$toolchain_check"
 
 cd "$apple_root"
 xcrun agvtool new-marketing-version "$marketing_version"

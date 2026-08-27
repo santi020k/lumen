@@ -50,7 +50,7 @@ export const lumenGlass = {
   edge: '0 0% 100% / 0.9',
   edgeSoft: '0 0% 100% / 0.34',
   highlight: '0 0% 100% / 0.85',
-  refraction: '221 83% 53% / 0.08',
+  refraction: '201 96% 32% / 0.08',
   saturate: '1.7',
   shade: '222 47% 11% / 0.07',
   shadow: '0 1px 2px hsl(222 47% 11% / 0.08), 0 12px 32px hsl(222 47% 11% / 0.12), 0 32px 80px hsl(222 47% 11% / 0.14)'

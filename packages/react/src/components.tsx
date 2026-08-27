@@ -59,6 +59,9 @@ import {
   type LumenCodeToken,
   lumenCodeTokenClassNames,
   type LumenComboSeries,
+  type LumenErrorStateAnnouncement,
+  type LumenErrorStateKind,
+  type LumenErrorStateLayout,
   type LumenFormErrorInput,
   type LumenFormStatus,
   type LumenHeatmapDatum,
@@ -72,6 +75,7 @@ import {
   type LumenPhoneNumber,
   type LumenPieChartVariant,
   type LumenRangeDatum,
+  type LumenTabsChangeDetail,
   normalizeLumenFormErrors,
   resolveLumenChartTone,
   resolveLumenPhoneNumber,
@@ -92,6 +96,7 @@ import {
   type SelectOptions,
   type TabsController,
   type TabsOptions,
+  type ToastPlacement,
   type TooltipController,
   type TooltipOptions,
   useCalendar,
@@ -109,19 +114,63 @@ import {
   resolveReactPhoneInputCountry,
   resolveReactPhoneInputValue
 } from './phone-recipes.js'
+import {
+  Input,
+  type InputProps,
+  Label
+} from './server-components.js'
+
+export {
+  Badge,
+  type BadgeProps,
+  Card,
+  CardContent,
+  type CardContentProps,
+  CardDescription,
+  type CardDescriptionProps,
+  CardFooter,
+  type CardFooterProps,
+  CardHeader,
+  type CardHeaderProps,
+  type CardProps,
+  CardTitle,
+  type CardTitleProps,
+  Container,
+  type ContainerProps,
+  Direction,
+  type DirectionProps,
+  Grid,
+  type GridProps,
+  Input,
+  type InputProps,
+  Label,
+  type LabelProps,
+  Progress,
+  type ProgressProps,
+  Separator,
+  type SeparatorProps,
+  Skeleton,
+  type SkeletonProps,
+  Spinner,
+  type SpinnerProps,
+  Stack,
+  type StackProps,
+  Textarea,
+  type TextareaProps,
+  Typography,
+  type TypographyProps,
+  VisuallyHidden,
+  type VisuallyHiddenProps
+} from './server-components.js'
 
 type AlertVariant = 'default' | 'destructive' | 'success' | 'warning'
 
 type AccordionVariant = 'default' | 'flush'
 
-type BadgeVariant = AlertVariant | 'outline' | 'secondary'
-
 type ButtonSize = 'default' | 'icon' | 'lg' | 'sm'
 
 type ButtonVariant =
   'default' | 'destructive' | 'ghost' | 'link' | 'outline' | 'secondary'
-
-type CardVariant = 'default' | 'glass' | 'interactive' | 'muted' | 'unstyled'
 
 type CodeTheme = 'auto' | 'lumen' | 'santi020k'
 
@@ -354,6 +403,25 @@ const getDataTableSortValue = (cell: DataTableCell): string | undefined => {
   return String(cell.sortValue)
 }
 
+const compareDataTableCells = (
+  left: DataTableCell,
+  right: DataTableCell,
+  sortType: DataTableColumn['sort']
+): number => {
+  const leftValue = getDataTableSortValue(left) ?? formatDataTableCell(left)
+  const rightValue = getDataTableSortValue(right) ?? formatDataTableCell(right)
+
+  if (sortType === 'number') {
+    return Number(leftValue.replaceAll(',', '')) -
+      Number(rightValue.replaceAll(',', ''))
+  }
+
+  return leftValue.localeCompare(rightValue, undefined, {
+    numeric: true,
+    sensitivity: 'base'
+  })
+}
+
 const getDataTableRowValue = (
   row: DataTableRow,
   index: number
@@ -580,22 +648,6 @@ export const Avatar = ({
   </span>
 )
 
-export interface BadgeProps extends ComponentPropsWithRef<'span'> {
-  variant?: BadgeVariant
-}
-
-export const Badge = ({
-  className,
-  variant = 'default',
-  ...props
-}: BadgeProps) => (
-  <span
-    className={composeClassName('ui-badge', `ui-badge--${variant}`, className)}
-    data-variant={variant}
-    {...props}
-  />
-)
-
 export type BreadcrumbProps = ComponentPropsWithoutRef<'nav'>
 export const Breadcrumb = ({
   'aria-label': ariaLabel = 'Breadcrumb',
@@ -789,103 +841,6 @@ export const Calendar = ({
     </div>
   )
 }
-
-export type CardProps<T extends ElementType = 'div'> =
-  LumenPrimitiveProps<T> & {
-    'data-variant'?: CardVariant
-    glass?: LumenGlassProp
-    variant?: CardVariant
-  }
-
-export const Card = <T extends ElementType = 'div'>({
-  as,
-  className,
-  glass = false,
-  variant = 'default',
-  ...props
-}: CardProps<T>) => (
-  <Primitive
-    {...(as ? { as } : {})}
-    className={composeClassName(
-      variant === 'muted' && 'ui-card--muted', variant === 'interactive' && 'ui-card--interactive', variant === 'unstyled' && 'ui-card--unstyled', (glass || variant === 'glass') &&
-      composeClassName('ui-card--glass', glassIntensityClass(glass)), className
-    )}
-    data-slot="card"
-    data-variant={variant}
-    {...props}
-    uiClassName="ui-card"
-  />
-)
-
-export type CardHeaderProps<T extends ElementType = 'div'> =
-  LumenPrimitiveProps<T>
-export const CardHeader = <T extends ElementType = 'div'>({
-  as,
-  ...props
-}: CardHeaderProps<T>) => (
-  <Primitive
-    {...(as ? { as } : {})}
-    data-slot="card-header"
-    {...props}
-    uiClassName="ui-card__header"
-  />
-)
-
-export type CardTitleProps<T extends ElementType = 'div'> =
-  LumenPrimitiveProps<T>
-export const CardTitle = <T extends ElementType = 'div'>({
-  as,
-  ...props
-}: CardTitleProps<T>) => (
-  <Primitive
-    {...(as ? { as } : {})}
-    data-slot="card-title"
-    {...props}
-    uiClassName="ui-card__title"
-  />
-)
-
-export type CardDescriptionProps<T extends ElementType = 'div'> =
-  LumenPrimitiveProps<T>
-export const CardDescription = <T extends ElementType = 'div'>({
-  as,
-  ...props
-}: CardDescriptionProps<T>) => (
-  <Primitive
-    {...(as ? { as } : {})}
-    data-slot="card-description"
-    {...props}
-    uiClassName="ui-card__description"
-  />
-)
-
-export type CardContentProps<T extends ElementType = 'div'> =
-  LumenPrimitiveProps<T>
-export const CardContent = <T extends ElementType = 'div'>({
-  as,
-  ...props
-}: CardContentProps<T>) => (
-  <Primitive
-    {...(as ? { as } : {})}
-    data-slot="card-content"
-    {...props}
-    uiClassName="ui-card__content"
-  />
-)
-
-export type CardFooterProps<T extends ElementType = 'div'> =
-  LumenPrimitiveProps<T>
-export const CardFooter = <T extends ElementType = 'div'>({
-  as,
-  ...props
-}: CardFooterProps<T>) => (
-  <Primitive
-    {...(as ? { as } : {})}
-    data-slot="card-footer"
-    {...props}
-    uiClassName="ui-card__footer"
-  />
-)
 
 export interface CarouselProps extends ComponentPropsWithoutRef<'section'> {
   glass?: LumenGlassProp
@@ -2186,6 +2141,7 @@ export const Combobox = ({
   ...props
 }: ComboboxProps) => {
   const inputId = id ?? `${list}-input`
+  const rootRef = useRef<HTMLDivElement>(null)
   const [open, setOpen] = useState(false)
   const [value, setValue] = useState(() => String(defaultValue ?? ''))
   const renderedValue = valueProp ?? value
@@ -2205,6 +2161,33 @@ export const Combobox = ({
     setOpen(false)
   }
 
+  const getVisibleOptions = (): HTMLButtonElement[] => [
+    ...(rootRef.current?.querySelectorAll<HTMLButtonElement>(
+      '[data-ui-combobox-option]:not([hidden]):not([disabled])'
+    ) ?? [])
+  ]
+
+  const focusInputEdgeOption = (key: 'ArrowDown' | 'ArrowUp') => {
+    const options = getVisibleOptions()
+
+    options[key === 'ArrowUp' ? options.length - 1 : 0]?.focus()
+  }
+
+  const focusOption = (option: HTMLButtonElement, key: string) => {
+    const options = getVisibleOptions()
+
+    if (!options.length) return
+
+    const currentIndex = Math.max(0, options.indexOf(option))
+    let nextIndex = (currentIndex - 1 + options.length) % options.length
+
+    if (key === 'Home') nextIndex = 0
+    else if (key === 'End') nextIndex = options.length - 1
+    else if (key === 'ArrowDown') nextIndex = (currentIndex + 1) % options.length
+
+    options[nextIndex]?.focus()
+  }
+
   return (
     <div
       className={composeClassName('ui-combobox', wrapperClassName)}
@@ -2216,6 +2199,7 @@ export const Combobox = ({
           setOpen(false)
         }
       }}
+      ref={rootRef}
     >
       {label && (
         <label className="ui-label" htmlFor={inputId}>
@@ -2251,6 +2235,18 @@ export const Combobox = ({
             setOpen(false)
           }
 
+          if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+            const key = event.key
+
+            event.preventDefault()
+
+            setOpen(true)
+
+            globalThis.queueMicrotask(() => {
+              focusInputEdgeOption(key)
+            })
+          }
+
           if (event.key === 'Enter' && visibleOptions[0]) {
             event.preventDefault()
 
@@ -2273,9 +2269,39 @@ export const Combobox = ({
             data-value={option}
             key={option}
             role="option"
+            tabIndex={-1}
             type="button"
             onClick={() => {
               selectOption(option)
+            }}
+            onKeyDown={event => {
+              if (event.key === 'Escape') {
+                setOpen(false)
+
+                rootRef.current?.querySelector<HTMLInputElement>(
+                  'input[role="combobox"]'
+                )?.focus()
+
+                return
+              }
+
+              if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault()
+
+                rootRef.current?.querySelector<HTMLInputElement>(
+                  'input[role="combobox"]'
+                )?.focus()
+
+                selectOption(option)
+
+                return
+              }
+
+              if (!['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) return
+
+              event.preventDefault()
+
+              focusOption(event.currentTarget, event.key)
             }}
             onMouseDown={event => {
               event.preventDefault()
@@ -2354,61 +2380,112 @@ export const DataTable = ({
   rows = emptyDataTableRows,
   selectable = false,
   ...props
-}: DataTableProps) => (
-  <div
-    className={composeClassName(
-      'ui-data-table', glassClass('ui-data-table', glass), className
-    )}
-    data-ui-datatable
-    data-ui-datatable-name={name}
-    data-ui-datatable-selectable={selectable ? 'true' : undefined}
-    data-ui-glass-track={glass ? true : undefined}
-    {...props}
-  >
-    {columns.length > 0 ?
-      (
-        <table>
-          <thead>
-            <tr>
-              {columns.map(column => (
-                <th
-                  data-ui-datatable-sort-type={column.sort}
-                  data-ui-datatable-sortable={
-                    column.sortable ? 'true' : undefined
-                  }
-                  key={column.key}
-                  scope="col"
-                >
-                  {column.header ?? column.label ?? column.key}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((row, rowIndex) => (
-              <tr
-                data-ui-datatable-row
-                data-value={getDataTableRowValue(row, rowIndex)}
-                key={getDataTableRowValue(row, rowIndex)}
-              >
-                {columns.map(column => (
-                  <td
-                    data-sort-value={getDataTableSortValue(row[column.key])}
-                    key={column.key}
-                  >
-                    {formatDataTableCell(row[column.key])}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      ) :
-      (
-        children
+}: DataTableProps) => {
+  const [sort, setSort] = useState<{
+    direction: 'ascending' | 'descending'
+    key: string
+  } | null>(null)
+
+  const sortedRows = useMemo(() => {
+    if (!sort) return rows
+
+    const column = columns.find(candidate => candidate.key === sort.key)
+
+    if (!column) return rows
+
+    const direction = sort.direction === 'ascending' ? 1 : -1
+
+    return [...rows].sort((left, right) => compareDataTableCells(
+      left[column.key], right[column.key], column.sort
+    ) * direction)
+  }, [columns, rows, sort])
+
+  const toggleSort = (column: DataTableColumn): void => {
+    setSort(current => ({
+      direction:
+        current?.key === column.key && current.direction === 'ascending' ?
+          'descending' :
+          'ascending',
+      key: column.key
+    }))
+  }
+
+  return (
+    <div
+      className={composeClassName(
+        'ui-data-table', glassClass('ui-data-table', glass), className
       )}
-  </div>
-)
+      data-ui-datatable
+      data-ui-datatable-name={name}
+      data-ui-datatable-selectable={selectable ? 'true' : undefined}
+      data-ui-glass-track={glass ? true : undefined}
+      {...props}
+    >
+      {columns.length > 0 ?
+        (
+          <table>
+            <thead>
+              <tr>
+                {columns.map(column => {
+                  const direction = sort?.key === column.key ?
+                    sort.direction :
+                    undefined
+
+                  const label = column.header ?? column.label ?? column.key
+
+                  return (
+                    <th
+                      aria-sort={direction ?? (column.sortable ? 'none' : undefined)}
+                      data-ui-datatable-sort-type={column.sort}
+                      data-ui-datatable-sortable={
+                        column.sortable ? 'true' : undefined
+                      }
+                      key={column.key}
+                      scope="col"
+                    >
+                      {column.sortable ?
+                        (
+                          <button
+                            className="ui-data-table__sort"
+                            data-ui-datatable-sort
+                            onClick={() => {
+                              toggleSort(column)
+                            }}
+                            type="button"
+                          >
+                            {label}
+                          </button>
+                        ) :
+                        label}
+                    </th>
+                  )
+                })}
+              </tr>
+            </thead>
+            <tbody>
+              {sortedRows.map((row, rowIndex) => (
+                <tr
+                  data-ui-datatable-row
+                  data-value={getDataTableRowValue(row, rowIndex)}
+                  key={getDataTableRowValue(row, rowIndex)}
+                >
+                  {columns.map(column => (
+                    <td
+                      data-sort-value={getDataTableSortValue(row[column.key])}
+                      key={column.key}
+                    >
+                      {formatDataTableCell(row[column.key])}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ) :
+        children}
+    </div>
+  )
+}
 
 export type DatePickerProps = Omit<
   ComponentPropsWithoutRef<'input'>,
@@ -2750,118 +2827,6 @@ export const Dialog = ({
   )
 }
 
-export type DirectionProps = ComponentPropsWithoutRef<'div'>
-export const Direction = ({
-  className,
-  dir = 'ltr',
-  ...props
-}: DirectionProps) => (
-  <div
-    className={composeClassName('ui-direction', className)}
-    dir={dir}
-    {...props}
-  />
-)
-
-export interface ContainerProps extends ComponentPropsWithRef<'div'> {
-  as?: ElementType
-  size?: 'full' | 'lg' | 'md' | 'sm'
-}
-
-export const Container = ({
-  as = 'div',
-  className,
-  size = 'lg',
-  ...props
-}: ContainerProps) => createElement(as, {
-  className: composeClassName(
-    'ui-container', `ui-container--${size}`, className
-  ),
-  'data-size': size,
-  'data-ui-container': true,
-  ...props
-})
-
-export interface GridProps extends ComponentPropsWithRef<'div'> {
-  as?: ElementType
-  columns?: 1 | 2 | 3 | 4 | 6 | 12 | 'auto'
-  gap?: 'lg' | 'md' | 'none' | 'sm' | 'xl'
-  minItemWidth?: string
-}
-
-type LumenCSSProperties = CSSProperties &
-  Record<`--ui-${string}`, number | string | undefined>
-
-export const Grid = ({
-  as = 'div',
-  className,
-  columns = 'auto',
-  gap = 'md',
-  minItemWidth,
-  style,
-  ...props
-}: GridProps) => {
-  const gridStyle: LumenCSSProperties = {
-    ...style,
-    '--ui-grid-min': minItemWidth
-  }
-
-  return createElement(as, {
-    className: composeClassName(
-      'ui-grid', `ui-grid--columns-${columns}`, `ui-grid--gap-${gap}`, className
-    ),
-    'data-columns': columns,
-    'data-ui-grid': true,
-    style: gridStyle,
-    ...props
-  })
-}
-
-export interface StackProps extends ComponentPropsWithRef<'div'> {
-  align?: 'center' | 'end' | 'start' | 'stretch'
-  as?: ElementType
-  direction?: Orientation
-  gap?: 'lg' | 'md' | 'none' | 'sm' | 'xl'
-  justify?: 'between' | 'center' | 'end' | 'start'
-  wrap?: boolean
-}
-
-export const Stack = ({
-  align = 'stretch',
-  as = 'div',
-  className,
-  direction = 'vertical',
-  gap = 'md',
-  justify = 'start',
-  wrap = false,
-  ...props
-}: StackProps) => createElement(as, {
-  className: composeClassName(
-    'ui-stack', `ui-stack--${direction}`, `ui-stack--gap-${gap}`, `ui-stack--align-${align}`, `ui-stack--justify-${justify}`, wrap && 'ui-stack--wrap', className
-  ),
-  'data-direction': direction,
-  'data-ui-stack': true,
-  ...props
-})
-
-export interface VisuallyHiddenProps extends ComponentPropsWithRef<'span'> {
-  focusable?: boolean
-}
-
-export const VisuallyHidden = ({
-  className,
-  focusable = false,
-  ...props
-}: VisuallyHiddenProps) => (
-  <span
-    className={composeClassName(
-      'ui-visually-hidden', focusable && 'ui-visually-hidden--focusable', className
-    )}
-    data-ui-visually-hidden
-    {...props}
-  />
-)
-
 export interface DrawerProps
   extends ComponentPropsWithoutRef<'dialog'>, SurfaceProps {}
 
@@ -3023,6 +2988,262 @@ export const Empty = ({
     {...props}
   />
 )
+
+export interface IllustrationProps extends ComponentPropsWithoutRef<'span'> {
+  label?: string
+  size?: 'lg' | 'md' | 'sm'
+  tone?: 'accent' | 'auto' | 'brand' | 'neutral'
+  variant?: 'empty' | 'error' | 'offline' | 'success'
+}
+
+const renderIllustrationElement = (
+  element: LumenIllustrationElement,
+  index: number
+): ReactNode => {
+  if (element.kind === 'circle') {
+    return <circle key={index} cx={element.cx} cy={element.cy} r={element.r} />
+  }
+
+  if (element.kind === 'rounded-rect') {
+    return (
+      <rect
+        key={index}
+        height={element.height}
+        rx={element.radius}
+        width={element.width}
+        x={element.x}
+        y={element.y}
+      />
+    )
+  }
+
+  const pointPairs: string[] = []
+
+  for (let pointIndex = 0; pointIndex < element.points.length; pointIndex += 2) {
+    const x = element.points[pointIndex]
+    const y = element.points[pointIndex + 1]
+
+    if (x === undefined || y === undefined) break
+
+    pointPairs.push(`${x},${y}`)
+  }
+
+  return createElement(element.kind, { key: index, points: pointPairs.join(' ') })
+}
+
+export const Illustration = ({
+  className,
+  label,
+  size = 'md',
+  tone = 'auto',
+  variant = 'empty',
+  ...props
+}: IllustrationProps) => (
+  <span
+    aria-hidden={label ? undefined : true}
+    aria-label={label}
+    className={composeClassName(
+      'ui-illustration',
+      `ui-illustration--${variant}`,
+      `ui-illustration--${tone}`,
+      `ui-illustration--${size}`,
+      className
+    )}
+    role={label ? 'img' : undefined}
+    {...props}
+  >
+    <svg aria-hidden="true" fill="none" viewBox="0 0 120 120">
+      <circle className="ui-illustration__wash" cx="60" cy="60" r="48" />
+      {lumenIllustrations[variant].elements.map(renderIllustrationElement)}
+    </svg>
+  </span>
+)
+
+type ErrorStateHeadingLevel = 1 | 2 | 3 | 4 | 5 | 6
+
+export interface ErrorStateProps
+  extends Omit<ComponentPropsWithoutRef<'section'>, 'title'> {
+  actions?: ReactNode
+  announce?: LumenErrorStateAnnouncement
+  description?: string
+  graphic?: false | ReactNode
+  headingLevel?: ErrorStateHeadingLevel
+  kind?: LumenErrorStateKind
+  layout?: LumenErrorStateLayout
+  reference?: string
+  referenceLabel?: string
+  title: string
+}
+
+interface ErrorStateAnnouncementProps {
+  'aria-live'?: 'assertive' | 'off' | 'polite'
+  role?: ComponentPropsWithoutRef<'section'>['role']
+}
+
+const resolveErrorStateAnnouncement = (
+  announce: LumenErrorStateAnnouncement,
+  ariaLive: ErrorStateAnnouncementProps['aria-live'],
+  role: ErrorStateAnnouncementProps['role']
+): ErrorStateAnnouncementProps => {
+  if (announce === 'assertive') {
+    return { 'aria-live': ariaLive ?? 'assertive', role: role ?? 'alert' }
+  }
+
+  if (announce === 'polite') {
+    return { 'aria-live': ariaLive ?? 'polite', role: role ?? 'status' }
+  }
+
+  return {
+    ...(ariaLive ? { 'aria-live': ariaLive } : {}),
+    ...(role ? { role } : {})
+  }
+}
+
+interface ErrorStateGraphicProps {
+  graphic: ErrorStateProps['graphic']
+  kind: LumenErrorStateKind
+  layout: LumenErrorStateLayout
+}
+
+const ErrorStateGraphic = ({ graphic, kind, layout }: ErrorStateGraphicProps) => {
+  if (graphic === false) return null
+
+  return (
+    <div
+      aria-hidden="true"
+      className="ui-error-state__graphic"
+      data-slot="error-state-graphic"
+    >
+      {graphic ?? (
+        <Illustration size={layout === 'compact' ? 'sm' : 'md'} variant={kind} />
+      )}
+    </div>
+  )
+}
+
+interface ErrorStateContentProps {
+  children: ReactNode
+  description: ErrorStateProps['description']
+  headingLevel: ErrorStateHeadingLevel
+  reference: ErrorStateProps['reference']
+  referenceLabel: string
+  title: string
+  titleId: string | undefined
+}
+
+const ErrorStateContent = ({
+  children,
+  description,
+  headingLevel,
+  reference,
+  referenceLabel,
+  title,
+  titleId
+}: ErrorStateContentProps) => (
+  <div className="ui-error-state__content" data-slot="error-state-content">
+    {createElement(
+      `h${headingLevel}`,
+      {
+        className: 'ui-error-state__title',
+        'data-slot': 'error-state-title',
+        id: titleId
+      },
+      title
+    )}
+    {description && (
+      <p className="ui-error-state__description" data-slot="error-state-description">
+        {description}
+      </p>
+    )}
+    {children && (
+      <div className="ui-error-state__details" data-slot="error-state-details">
+        {children}
+      </div>
+    )}
+    {reference && (
+      <p className="ui-error-state__reference" data-slot="error-state-reference">
+        <span>
+          {referenceLabel}
+          :
+        </span>
+        {' '}
+        <code>{reference}</code>
+      </p>
+    )}
+  </div>
+)
+
+const ErrorStateActions = ({ actions }: Pick<ErrorStateProps, 'actions'>) => actions ?
+  (
+    <div className="ui-error-state__actions" data-slot="error-state-actions">
+      {actions}
+    </div>
+  ) :
+  null
+
+export const ErrorState = ({
+  'aria-live': ariaLive,
+  actions,
+  announce,
+  children,
+  className,
+  description,
+  graphic,
+  headingLevel,
+  id,
+  kind,
+  layout,
+  reference,
+  referenceLabel,
+  role,
+  title,
+  ...props
+}: ErrorStateProps) => {
+  const resolvedAnnounce = announce ?? 'off'
+  const resolvedHeadingLevel = headingLevel ?? 2
+  const resolvedKind = kind ?? 'error'
+  const resolvedLayout = layout ?? 'default'
+  const resolvedReferenceLabel = referenceLabel ?? 'Reference'
+  const titleId = id ? `${id}-title` : undefined
+
+  const announcementProps = resolveErrorStateAnnouncement(
+    resolvedAnnounce,
+    ariaLive,
+    role
+  )
+
+  return (
+    <section
+      aria-label={titleId ? undefined : title}
+      aria-labelledby={titleId}
+      className={composeClassName(
+        'ui-error-state',
+        `ui-error-state--${resolvedKind}`,
+        `ui-error-state--${resolvedLayout}`,
+        className
+      )}
+      data-kind={resolvedKind}
+      data-layout={resolvedLayout}
+      data-ui-error-state
+      id={id}
+      {...announcementProps}
+      {...props}
+    >
+      <ErrorStateGraphic graphic={graphic} kind={resolvedKind} layout={resolvedLayout} />
+      <ErrorStateContent
+        description={description}
+        headingLevel={resolvedHeadingLevel}
+        reference={reference}
+        referenceLabel={resolvedReferenceLabel}
+        title={title}
+        titleId={titleId}
+      >
+        {children}
+      </ErrorStateContent>
+      <ErrorStateActions actions={actions} />
+    </section>
+  )
+}
 
 export type KanbanBoardProps = ComponentPropsWithoutRef<'section'>
 export const KanbanBoard = ({ className, tabIndex = 0, ...props }: KanbanBoardProps) => (
@@ -3239,31 +3460,6 @@ export const Icon = ({
     </span>
   )
 }
-
-export interface InputProps extends ComponentPropsWithRef<'input'> {
-  visualSize?: 'default' | 'lg' | 'sm'
-}
-export const Input = ({
-  className,
-  ref,
-  type = 'text',
-  visualSize = 'default',
-  ...props
-}: InputProps) => (
-  <input
-    className={composeClassName(
-      'ui-input', visualSize === 'sm' && 'ui-input--sm', visualSize === 'lg' && 'ui-input--lg', className
-    )}
-    ref={ref}
-    type={type}
-    {...props}
-  />
-)
-
-export type LabelProps = ComponentPropsWithRef<'label'>
-export const Label = ({ className, ...props }: LabelProps) => (
-  <label className={composeClassName('ui-label', className)} {...props} />
-)
 
 export interface PasswordFieldProps extends Omit<
   InputProps,
@@ -4087,39 +4283,6 @@ export const PopoverPanel = ({ onKeyDown, ...props }: PopoverPanelProps) => {
   )
 }
 
-export interface ProgressProps extends ComponentPropsWithoutRef<'div'> {
-  max?: number
-  value?: number
-}
-
-export const Progress = ({
-  className,
-  max = 100,
-  value = 0,
-  ...props
-}: ProgressProps) => {
-  const safeMax = max > 0 ? max : 100
-  const safeValue = Math.min(safeMax, Math.max(0, value))
-  const percentage = (safeValue / safeMax) * 100
-
-  return (
-    <div
-      aria-valuemax={safeMax}
-      aria-valuemin={0}
-      aria-valuenow={safeValue}
-      className={composeClassName('ui-progress', className)}
-      role="progressbar"
-      {...props}
-    >
-      <span
-        className="ui-progress__bar"
-        data-slot="progress-indicator"
-        style={{ width: `${percentage}%` }}
-      />
-    </div>
-  )
-}
-
 export type RadioGroupProps = ComponentPropsWithoutRef<'fieldset'>
 export const RadioGroup = ({ className, ...props }: RadioGroupProps) => (
   <fieldset
@@ -4928,25 +5091,6 @@ export const ListBox = (inputProps: ListBoxProps) => {
   )
 }
 
-export interface SeparatorProps extends ComponentPropsWithRef<'hr'> {
-  orientation?: Orientation
-}
-
-export const Separator = ({
-  className,
-  orientation = 'horizontal',
-  ...props
-}: SeparatorProps) => (
-  <hr
-    aria-orientation={orientation}
-    className={composeClassName(
-      'ui-separator', `ui-separator--${orientation}`, className
-    )}
-    data-orientation={orientation}
-    {...props}
-  />
-)
-
 export interface SheetProps
   extends ComponentPropsWithoutRef<'dialog'>, SurfaceProps {}
 
@@ -4987,11 +5131,6 @@ export const Sidebar = ({
   />
 )
 
-export type SkeletonProps = ComponentPropsWithRef<'div'>
-export const Skeleton = ({ className, ...props }: SkeletonProps) => (
-  <div className={composeClassName('ui-skeleton', className)} {...props} />
-)
-
 export type SliderProps = ComponentPropsWithRef<'input'>
 export const Slider = ({
   className,
@@ -5007,37 +5146,31 @@ export const Slider = ({
   />
 )
 
-export type SonnerProps = ComponentPropsWithoutRef<'div'>
-export const Sonner = ({ className, ...props }: SonnerProps) => (
+export interface ToastViewportProps extends ComponentPropsWithoutRef<'div'> {
+  maxCount?: number
+  placement?: ToastPlacement
+}
+
+export const ToastViewport = ({
+  'aria-atomic': ariaAtomic = 'false',
+  'aria-label': ariaLabel = 'Notifications',
+  'aria-live': ariaLive = 'polite',
+  className,
+  maxCount = 3,
+  placement = 'bottom-right',
+  ...props
+}: ToastViewportProps) => (
   <div
-    className={composeClassName('ui-sonner', className)}
-    data-ui-sonner
+    aria-atomic={ariaAtomic}
+    aria-label={ariaLabel}
+    aria-live={ariaLive}
+    className={composeClassName('ui-tvp', className)}
+    data-placement={placement}
+    data-ui-toast-viewport
+    data-ui-toast-max={maxCount}
     {...props}
   />
 )
-
-export type SpinnerProps = ComponentPropsWithoutRef<'span'>
-export const Spinner = ({
-  'aria-hidden': ariaHidden,
-  'aria-label': ariaLabel,
-  'aria-labelledby': ariaLabelledby,
-  className,
-  role,
-  ...props
-}: SpinnerProps) => {
-  const isAccessible = Boolean(ariaLabel || ariaLabelledby)
-
-  return (
-    <span
-      aria-hidden={ariaHidden ?? (isAccessible ? undefined : true)}
-      aria-label={ariaLabel}
-      aria-labelledby={ariaLabelledby}
-      className={composeClassName('ui-spinner', className)}
-      role={role ?? (isAccessible ? 'status' : undefined)}
-      {...props}
-    />
-  )
-}
 
 export type SwitchProps = Omit<ComponentPropsWithRef<'input'>, 'type'>
 export const Switch = ({
@@ -5174,7 +5307,7 @@ export const CodeTabs = ({
   useEffect(() => {
     const synchronize = (event: Event) => {
       const detail = (
-        event as CustomEvent<{ storageKey?: string, value?: string }>
+        event as CustomEvent<LumenTabsChangeDetail>
       ).detail
 
       if (
@@ -5206,7 +5339,7 @@ export const CodeTabs = ({
     }
 
     document.dispatchEvent(
-      new CustomEvent('ui:tabs-change', {
+      new CustomEvent<LumenTabsChangeDetail>('ui:tabs-change', {
         detail: { storageKey, value: nextValue }
       })
     )
@@ -5263,21 +5396,6 @@ export const TagGroup = ({
   <div
     className={composeClassName('ui-tag-group', className)}
     role={role}
-    {...props}
-  />
-)
-
-export type TextareaProps = ComponentPropsWithRef<'textarea'>
-export const Textarea = ({
-  className,
-  ref,
-  rows = 4,
-  ...props
-}: TextareaProps) => (
-  <textarea
-    className={composeClassName('ui-textarea', className)}
-    ref={ref}
-    rows={rows}
     {...props}
   />
 )
@@ -5448,11 +5566,6 @@ export const TreeGrid = ({
     role={role}
     {...props}
   />
-)
-
-export type TypographyProps = ComponentPropsWithoutRef<'div'>
-export const Typography = ({ className, ...props }: TypographyProps) => (
-  <div className={composeClassName('ui-typography', className)} {...props} />
 )
 
 export interface VirtualListProps extends ComponentPropsWithoutRef<'div'> {
@@ -6361,78 +6474,6 @@ export const Backdrop = ({
   >
     <div className="ui-backdrop__content">{children}</div>
   </div>
-)
-
-export interface IllustrationProps extends ComponentPropsWithoutRef<'span'> {
-  label?: string
-  size?: 'lg' | 'md' | 'sm'
-  tone?: 'accent' | 'auto' | 'brand' | 'neutral'
-  variant?: 'empty' | 'error' | 'offline' | 'success'
-}
-
-const renderIllustrationElement = (
-  element: LumenIllustrationElement,
-  index: number
-): ReactNode => {
-  if (element.kind === 'circle') {
-    return <circle key={index} cx={element.cx} cy={element.cy} r={element.r} />
-  }
-
-  if (element.kind === 'rounded-rect') {
-    return (
-      <rect
-        key={index}
-        height={element.height}
-        rx={element.radius}
-        width={element.width}
-        x={element.x}
-        y={element.y}
-      />
-    )
-  }
-
-  const pointPairs: string[] = []
-
-  for (let index = 0; index < element.points.length; index += 2) {
-    const x = element.points[index]
-    const y = element.points[index + 1]
-
-    if (x === undefined || y === undefined) break
-
-    pointPairs.push(`${x},${y}`)
-  }
-
-  return createElement(element.kind, { key: index, points: pointPairs.join(' ') })
-}
-
-export const Illustration = ({
-  className,
-  label,
-  size = 'md',
-  tone = 'auto',
-  variant = 'empty',
-  ...props
-}: IllustrationProps) => (
-  <span
-    aria-hidden={label ? undefined : true}
-    aria-label={label}
-    className={composeClassName(
-      'ui-illustration',
-      `ui-illustration--${variant}`,
-      `ui-illustration--${tone}`,
-      `ui-illustration--${size}`,
-      className
-    )}
-    role={label ? 'img' : undefined}
-    {...props}
-  >
-    <svg aria-hidden="true" fill="none" viewBox="0 0 120 120">
-      <circle className="ui-illustration__wash" cx="60" cy="60" r="48" />
-      {lumenIllustrations[variant].elements.map(
-        renderIllustrationElement
-      )}
-    </svg>
-  </span>
 )
 
 export type AnimatedPortraitProps = ComponentPropsWithoutRef<'div'>

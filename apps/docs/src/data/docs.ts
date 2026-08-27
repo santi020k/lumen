@@ -666,7 +666,8 @@ export const frameworkGuides = [
       'Use lumen add Component or lumen add recipe-name --target astro when you want local .astro starter files.'
     ],
     code: `---
-import { Button, Card, UIPrimitives } from '@santi020k/lumen-astro'
+import { Button, Card } from '@santi020k/lumen-astro'
+import UIPrimitives from '@santi020k/lumen-astro/runtime'
 import '@santi020k/lumen-astro/styles.css'
 ---
 
@@ -701,6 +702,7 @@ export function Actions() {
     body: [
       'Custom elements expose the shared class and data contract through lumen-* tags that work in plain HTML or any framework.',
       'Call defineLumenElements once before using the tags; behavior-backed elements include DataTable selection/sort, form validation, calendar grids, OTP segmentation, date range syncing, rich text commands, context menu triggers, schedule drag/drop and file drag/drop, tours, anchor scroll spy, transfer, mentions, cascader and tree selection, resizable pane sizing, ThemeBuilder export, VirtualList range events, overlays, tabs, tooltip, and toast.',
+      'For Badge, Button, and Card-only surfaces, use their @santi020k/lumen-elements/components/* entrypoints to avoid bundling the complete catalog.',
       'Use lumen add Component --target elements or lumen add recipe-name --target elements when you want local Elements starter files.'
     ],
     code: `<script type="module">
@@ -1607,6 +1609,32 @@ const apiReferenceByComponent = {
       'variant', '"compact" | "default"', '"default"', 'Uses the standard empty state or a denser treatment for bounded surfaces such as board columns.'
     )
   ],
+  ErrorState: [
+    apiRow(
+      'title', 'string', 'required', 'Names the content failure in user-safe language.'
+    ),
+    apiRow(
+      'description', 'string', '-', 'Explains the problem and the safest next step.'
+    ),
+    apiRow(
+      'kind', '"error" | "offline"', '"error"', 'Selects the known failure context and matching semantic illustration.'
+    ),
+    apiRow(
+      'layout', '"compact" | "default" | "page"', '"default"', 'Adapts the surface to a bounded region, ordinary section, or page-level fallback.'
+    ),
+    apiRow(
+      'actions / actions slot', 'rendered actions', '-', 'Provides application-owned recovery or navigation actions.'
+    ),
+    apiRow(
+      'announce', '"assertive" | "off" | "polite"', '"off"', 'Opts a dynamically inserted failure into the appropriate live-region behavior.'
+    ),
+    apiRow(
+      'reference, referenceLabel', 'string', '-', 'Shows a safe support reference without exposing raw exception details.'
+    ),
+    apiRow(
+      'headingLevel', '1 | 2 | 3 | 4 | 5 | 6', '2', 'Fits the visible title into the surrounding document hierarchy.'
+    )
+  ],
   Eyebrow: [
     apiRow(
       'children', 'phrasing content', 'required', 'Provides the short category or context label that precedes a heading.'
@@ -1731,7 +1759,7 @@ const apiReferenceByComponent = {
   Input: [
     apiRow('type', 'HTML input type', '"text"', 'Sets the native input type.'),
     apiRow(
-      'size', 'number', 'native default', 'Sets the native input width in characters. Astro and Elements continue to accept the deprecated pre-1.0 sm/lg visual alias.'
+      'size', 'number', 'native default', 'Sets the native input width in characters.'
     ),
     apiRow(
       'visualSize, visual-size', '"default" | "sm" | "lg"', '"default"', 'Controls field height and font size. Use visualSize in Astro/React and visual-size in Elements.'
@@ -1887,7 +1915,7 @@ const apiReferenceByComponent = {
     ),
     apiRow('placeholder', 'string', '-', 'Adds a disabled placeholder option.'),
     apiRow(
-      'size', 'number', 'native default', 'Sets the number of visible native options. Astro and Elements continue to accept the deprecated pre-1.0 sm/lg visual alias.'
+      'size', 'number', 'native default', 'Sets the number of visible native options.'
     ),
     apiRow(
       'visualSize, visual-size', '"default" | "sm" | "lg"', '"default"', 'Controls select height and font size. Use visualSize in Astro/React and visual-size in Elements.'
@@ -2143,7 +2171,7 @@ const apiReferenceByComponent = {
       'role', 'ARIA role', '"status" when labelled', 'Overrides the generated status role.'
     )
   ],
-  Sonner: [
+  ToastViewport: [
     apiRow(
       'placement', '"bottom-center" | "bottom-left" | "bottom-right" | "top-center" | "top-left" | "top-right"', '"bottom-right"', 'Positions the notification viewport.'
     ),
@@ -2214,6 +2242,12 @@ const apiReferenceByComponent = {
     ),
     apiRow(
       'storageKey', 'string', '-', 'Astro: persists selection and synchronizes tab groups that share this key.'
+    ),
+    apiRow(
+      'ui:tabs-change',
+      'CustomEvent<LumenTabsChangeDetail>',
+      '-',
+      'Astro and Elements: reports the selected value; narrow horizontal lists keep the active trigger visible.'
     )
   ],
   TagGroup: [
@@ -2777,6 +2811,11 @@ const componentGuidanceByName: Partial<Record<string, ComponentGuidance>> = {
     distinction:
       'Use Sheet for a secondary detail workflow and Dialog for a centered, blocking task.'
   },
+  ErrorState: {
+    when: 'Use when a page or region cannot show its primary content and needs a visible recovery path.',
+    distinction:
+      'Use FieldError or ErrorSummary for validation, Alert when content remains available, Toast for brief non-blocking feedback, and Empty for a successful result with no data.'
+  },
   Eyebrow: {
     when: 'Use as a short contextual label immediately above a heading.',
     distinction:
@@ -2916,6 +2955,11 @@ const componentGuidanceByName: Partial<Record<string, ComponentGuidance>> = {
     when: 'Use for brief, non-blocking feedback after an action or background event.',
     distinction:
       'Use Alert when the message must remain in the page. The toast runtime creates its notification viewport automatically when needed.'
+  },
+  ToastViewport: {
+    when: 'Use when an application needs an explicit toast viewport with a stable placement or stack limit.',
+    distinction:
+      'Use Toast for an individual notification and ToastProvider in React for application-managed notifications. The runtime creates a default viewport automatically when explicit configuration is unnecessary.'
   },
   Toggle: {
     when: 'Use for a control that keeps an active state, such as pin, mute, or formatting.',
@@ -3221,6 +3265,12 @@ export const componentDocs: ComponentDoc[] = (
       'Feedback',
       'Explains an empty state and next action.',
       '<Empty><h2>No projects yet</h2><p>Create your first workspace.</p></Empty>'
+    ],
+    [
+      'ErrorState',
+      'Feedback',
+      'Explains why primary content is unavailable and provides an application-owned recovery path.',
+      '<ErrorState id="projects-error" title="Could not load projects" description="Check your connection and try again." reference="REQ-4F82"><Button slot="actions">Try again</Button></ErrorState>'
     ],
     [
       'ErrorSummary',
@@ -3599,6 +3649,12 @@ export const componentDocs: ComponentDoc[] = (
       'Feedback',
       'Displays temporary feedback for background actions.',
       '<Toast><strong>Saved</strong><p>Your changes are live.</p></Toast>'
+    ],
+    [
+      'ToastViewport',
+      'Feedback',
+      'Configures where transient toast notifications are announced and stacked.',
+      '<ToastViewport placement="top-right" maxCount={5} />'
     ],
     [
       'Toggle',

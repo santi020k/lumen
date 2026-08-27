@@ -1,11 +1,64 @@
 import LumenUI
 import SwiftUI
 
+enum PlaygroundRuntimeLocale: String, CaseIterable, Identifiable {
+    case english = "en"
+    case spanish = "es"
+
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .english: "English"
+        case .spanish: "Español"
+        }
+    }
+
+    var copy: PlaygroundLocalizedCopy {
+        switch self {
+        case .english:
+            PlaygroundLocalizedCopy(
+                title: "Live localization",
+                description: "Application-owned locale state updates this view without recreating it.",
+                fieldLabel: "Release note",
+                fieldDescription: "Describe what changed for your users.",
+                validation: "A release note is required.",
+                action: "Validate note",
+                success: "The release note is ready."
+            )
+        case .spanish:
+            PlaygroundLocalizedCopy(
+                title: "Localización en vivo",
+                description: "El estado de idioma de la aplicación actualiza esta vista sin recrearla.",
+                fieldLabel: "Nota de la versión",
+                fieldDescription: "Describe qué cambió para tus usuarios.",
+                validation: "La nota de la versión es obligatoria.",
+                action: "Validar nota",
+                success: "La nota de la versión está lista."
+            )
+        }
+    }
+}
+
+struct PlaygroundLocalizedCopy: Equatable {
+    let title: String
+    let description: String
+    let fieldLabel: String
+    let fieldDescription: String
+    let validation: String
+    let action: String
+    let success: String
+}
+
 struct PlaygroundSettingsView: View {
     @Environment(\.accessibilityDifferentiateWithoutColor) private var differentiateWithoutColor
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Binding var themePreference: PlaygroundThemePreference
+    @Binding var themePreset: PlaygroundThemePreset
+    @State private var locale = PlaygroundRuntimeLocale.english
+    @State private var releaseNote = ""
+    @State private var releaseNoteWasValidated = false
     @State private var showThemeFeedback = false
 
     var body: some View {
@@ -18,6 +71,7 @@ struct PlaygroundSettingsView: View {
             } secondary: {
                 accessibilitySection
             }
+            localizationSection
             AdaptiveColumns {
                 appSection
             } secondary: {
@@ -32,12 +86,20 @@ struct PlaygroundSettingsView: View {
             description: "Choose a theme and preview the semantic surface hierarchy immediately."
         ) {
             VStack(alignment: .leading, spacing: LumenSpacing.md) {
-                LumenPicker("Theme", selection: $themePreference, style: .segmented) {
+                LumenPicker("Theme", selection: $themePreset, style: .segmented) {
+                    ForEach(PlaygroundThemePreset.allCases) { preset in
+                        Text(preset.title).tag(preset)
+                    }
+                }
+                LumenPicker("Appearance", selection: $themePreference, style: .segmented) {
                     ForEach(PlaygroundThemePreference.allCases) { preference in
                         Text(preference.title).tag(preference)
                     }
                 }
                 .onChange(of: themePreference) { _ in
+                    showThemeFeedback = true
+                }
+                .onChange(of: themePreset) { _ in
                     showThemeFeedback = true
                 }
                 themePreview
@@ -60,13 +122,13 @@ struct PlaygroundSettingsView: View {
                     VStack(alignment: .leading, spacing: LumenSpacing.xs) {
                         LumenText("Theme preview", variant: .label)
                         LumenText(
-                            "Semantic roles preserve hierarchy in \(themePreference.title.lowercased()) appearance.",
+                            "\(themePreset.title) semantic roles preserve hierarchy in \(themePreference.title.lowercased()) appearance.",
                             variant: .caption,
                             tone: .muted
                         )
                     }
                     Spacer()
-                    LumenBadge(LocalizedStringKey(themePreference.title), tone: .accent)
+                    LumenBadge("\(themePreset.title) · \(themePreference.title)", tone: .accent)
                 }
                 HStack(spacing: LumenSpacing.sm) {
                     previewSurface("Canvas", tone: .canvas)
@@ -148,6 +210,43 @@ struct PlaygroundSettingsView: View {
                 }
             }
         }
+    }
+
+    private var localizationSection: some View {
+        let copy = locale.copy
+        let validation = releaseNoteWasValidated && releaseNote.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+            ? LumenTextContent.verbatim(copy.validation)
+            : nil
+
+        return PlaygroundSection(
+            "Runtime localization",
+            description: "Switch application-owned English and Spanish copy while the controls remain mounted."
+        ) {
+            VStack(alignment: .leading, spacing: LumenSpacing.md) {
+                LumenPicker("Language", selection: $locale, style: .segmented) {
+                    ForEach(PlaygroundRuntimeLocale.allCases) { option in
+                        Text(verbatim: option.title).tag(option)
+                    }
+                }
+                LumenText(.verbatim(copy.title), variant: .label)
+                LumenText(.verbatim(copy.description), variant: .caption, tone: .muted)
+                LumenTextarea(
+                    .verbatim(copy.fieldLabel),
+                    text: $releaseNote,
+                    description: .verbatim(copy.fieldDescription),
+                    errorMessage: validation
+                )
+                LumenButton(.verbatim(copy.action)) {
+                    releaseNoteWasValidated = true
+                }
+                if releaseNoteWasValidated && validation == nil {
+                    LumenAlert(variant: .success) {
+                        LumenText(.verbatim(copy.success), variant: .label, tone: .success)
+                    }
+                }
+            }
+        }
+        .environment(\.locale, Locale(identifier: locale.rawValue))
     }
 
     private var resourcesSection: some View {

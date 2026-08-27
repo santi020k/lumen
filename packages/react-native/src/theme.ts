@@ -10,9 +10,17 @@ import {
   lumenRadii,
   lumenSpacing } from './tokens.generated.js'
 
+export type LumenChartColorPalette = {
+  [Name in keyof typeof lumenChartColorTokens.light]: string
+}
+
+export type LumenColorPalette = {
+  [Name in keyof typeof lumenColorTokens.light]: string
+}
+
 export interface LumenTheme {
-  chartColors: typeof lumenChartColorTokens.light | typeof lumenChartColorTokens.dark
-  colors: typeof lumenColorTokens.light | typeof lumenColorTokens.dark
+  chartColors: LumenChartColorPalette
+  colors: LumenColorPalette
   durations: typeof lumenDurations
   elevation: typeof lumenElevation
   fontFamilies: typeof lumenFontFamilies

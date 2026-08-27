@@ -16,7 +16,11 @@ import {
   type ViewProps
 } from 'react-native'
 
-import { resolveLumenButtonOpacity } from './recipes.js'
+import {
+  resolveLumenAriaInvalid,
+  resolveLumenButtonOpacity,
+  resolveLumenValidationHint
+} from './recipes.js'
 import { type LumenAlertVariant, resolveLumenAlertColors } from './shared-recipes.js'
 import { useLumenTheme } from './theme-context.js'
 
@@ -131,6 +135,9 @@ export interface LumenTextareaProps extends Omit<
 }
 
 export const LumenTextarea = ({
+  accessibilityHint,
+  accessibilityLabel,
+  accessibilityState,
   description,
   editable = true,
   errorMessage,
@@ -168,8 +175,10 @@ export const LumenTextarea = ({
       <TextInput
         ref={ref}
         {...props}
-        accessibilityHint={resolveOptional(errorMessage, description)}
-        accessibilityLabel={resolveOptional(props.accessibilityLabel, label)}
+        accessibilityHint={resolveLumenValidationHint(errorMessage, description, accessibilityHint)}
+        accessibilityLabel={accessibilityLabel ?? label}
+        accessibilityState={{ ...accessibilityState, disabled: !editable }}
+        aria-invalid={resolveLumenAriaInvalid(errorMessage)}
         editable={editable}
         multiline
         numberOfLines={numberOfLines}
@@ -243,6 +252,7 @@ export const LumenChip = ({
           <Pressable
             accessibilityLabel={removeLabel}
             accessibilityRole="button"
+            accessibilityState={{ disabled }}
             disabled={disabled}
             hitSlop={6}
             onPress={event => {
@@ -319,6 +329,7 @@ export const LumenFieldGroup = ({
   return (
     <View ref={ref} {...props} style={[{ gap: theme.spacing.sm }, style]}>
       <Text
+        accessibilityLabel={required ? `${label}, required` : undefined}
         style={{
           color: theme.colors.ink,
           fontSize: theme.fontSizes.sm,

@@ -39,8 +39,8 @@ Use sources in this order:
 | ------------------------------------------- | ------------------------------------------------------------------------------------------- |
 | Public component catalog                    | [`registry/lumen.registry.json`](../registry/lumen.registry.json)                           |
 | Figma component coverage and semantic roles | [`registry/figma-design-map.json`](../registry/figma-design-map.json)                       |
-| Lumen product theme values                  | [`apps/docs/src/styles/global.css`](../apps/docs/src/styles/global.css)                      |
-| Reusable package fallback theme             | [`packages/lumen/styles.css`](../packages/lumen/styles.css)                                 |
+| Canonical Lumen theme values                | [`tokens/lumen.tokens.json`](../tokens/lumen.tokens.json)                                   |
+| Web theme variables                         | [`packages/lumen/styles.css`](../packages/lumen/styles.css)                                 |
 | Astro component appearance and behavior     | [`packages/astro`](../packages/astro)                                                       |
 | Shared component contracts and metadata     | [`packages/core`](../packages/core)                                                         |
 | santi020k theme values                      | `../website/src/styles/partials/tokens.css`                                                 |
@@ -51,10 +51,11 @@ Never assume the parent website tokens are unchanged because they matched during
 release. Read the parent file again whenever syncing the `santi020k` modes. If the parent project
 has intentionally changed, report the drift before rewriting a released Figma theme.
 
-The Lumen Figma `Light` and `Dark` modes follow the product overrides in the docs app. The package
-stylesheet is a reusable fallback and must not overwrite those product modes. Before changing color
-variables, compare the registry contract, the resolved deployed theme, and Figma. Do not update the
-contract and its source together merely to make a mismatch disappear.
+The Lumen Figma `Light` and `Dark` modes follow the canonical cross-platform token document. The
+package stylesheet and docs app mirror those values, while named product themes override the same
+semantic roles at their theme boundary. Before changing color variables, compare the canonical
+tokens, registry contract, resolved deployed theme, and Figma. Do not update the contract and its
+source together merely to make a mismatch disappear.
 
 ## Release baseline
 
@@ -155,7 +156,8 @@ Use:
 
 ### Theme ownership
 
-- `Light` and `Dark` are the Lumen theme and must match `packages/lumen/styles.css`.
+- `Light` and `Dark` are the Lumen theme and must match `tokens/lumen.tokens.json` and
+  `packages/lumen/styles.css`.
 - `santi020k Light` and `santi020k Dark` must be checked against the parent website tokens.
 - Do not alias Lumen Light to a santi020k mode or leave it on an older palette.
 - Show all four color modes in Foundations with comparable preview cards.
@@ -376,7 +378,7 @@ Also audit:
 - `PageNode.backgrounds` cannot be bound to variables. Figma throws
   `page backgrounds cannot be bound to variables`. Set every library page background to the exact
   resolved `color/surface-muted` Light RGB value instead, and re-sync it whenever that token
-  changes. The first-release Light value is `#F3F4F6`; `#F5F5F5` is a stale canvas value.
+  changes. The canonical Light value is `#EFF2F5`.
 - Version-history snapshots and library publication must be completed through the Figma UI.
 - `figma.getNodeByIdAsync(id)` is file-wide. Calling it once for every page can produce duplicate
   audit output unless results are deduplicated.

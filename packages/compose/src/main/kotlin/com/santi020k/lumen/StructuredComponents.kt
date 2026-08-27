@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -31,6 +30,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -54,6 +55,31 @@ enum class LumenMetricTone {
     Warning
 }
 
+enum class LumenErrorStateAnnouncement {
+    Assertive,
+    Off,
+    Polite
+}
+
+enum class LumenErrorStateKind {
+    Error,
+    Offline
+}
+
+enum class LumenErrorStateLayout {
+    Compact,
+    Default,
+    Page
+}
+
+internal fun lumenErrorStateLiveRegion(
+    announcement: LumenErrorStateAnnouncement
+): LiveRegionMode? = when (announcement) {
+    LumenErrorStateAnnouncement.Assertive -> LiveRegionMode.Assertive
+    LumenErrorStateAnnouncement.Off -> null
+    LumenErrorStateAnnouncement.Polite -> LiveRegionMode.Polite
+}
+
 @Immutable
 data class LumenBannerPalette(
     val accent: Color,
@@ -68,6 +94,14 @@ fun lumenMetricColor(colors: LumenColorPalette, tone: LumenMetricTone): Color = 
     LumenMetricTone.Neutral -> colors.inkMuted
     LumenMetricTone.Success -> colors.success
     LumenMetricTone.Warning -> colors.warning
+}
+
+internal fun lumenStatusBarIconName(tone: LumenMetricTone): LumenIconName = when (tone) {
+    LumenMetricTone.Accent, LumenMetricTone.Brand -> LumenIconName.Info
+    LumenMetricTone.Danger -> LumenIconName.OctagonX
+    LumenMetricTone.Neutral -> LumenIconName.Circle
+    LumenMetricTone.Success -> LumenIconName.CircleCheck
+    LumenMetricTone.Warning -> LumenIconName.TriangleAlert
 }
 
 fun lumenBannerPalette(
@@ -136,6 +170,89 @@ fun LumenEmptyState(
                     text = description,
                     color = colors.inkMuted,
                     style = MaterialTheme.typography.bodyMedium,
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
+
+        actions?.invoke()
+    }
+}
+
+@Composable
+fun LumenErrorState(
+    title: String,
+    modifier: Modifier = Modifier,
+    description: String? = null,
+    kind: LumenErrorStateKind = LumenErrorStateKind.Error,
+    layout: LumenErrorStateLayout = LumenErrorStateLayout.Default,
+    announcement: LumenErrorStateAnnouncement = LumenErrorStateAnnouncement.Polite,
+    reference: String? = null,
+    referenceLabel: String = "Reference",
+    graphic: (@Composable () -> Unit)? = null,
+    actions: (@Composable () -> Unit)? = null
+) {
+    val colors = LocalLumenTheme.current.colors
+    val compact = layout == LumenErrorStateLayout.Compact
+    val liveRegionMode = lumenErrorStateLiveRegion(announcement)
+    val stateModifier = modifier
+        .fillMaxWidth()
+        .widthIn(max = 520.dp)
+        .then(if (layout == LumenErrorStateLayout.Page) Modifier.fillMaxHeight() else Modifier)
+        .then(
+            if (liveRegionMode == null) Modifier else Modifier.semantics {
+                liveRegion = liveRegionMode
+            }
+        )
+        .padding(if (compact) LumenSpacing.Lg else LumenSpacing.Xl)
+
+    Column(
+        modifier = stateModifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(
+            if (compact) LumenSpacing.Md else LumenSpacing.Lg,
+            Alignment.CenterVertically
+        )
+    ) {
+        if (graphic != null) {
+            graphic()
+        } else {
+            LumenIllustration(
+                variant = if (kind == LumenErrorStateKind.Error) {
+                    LumenIllustrationVariant.Error
+                } else {
+                    LumenIllustrationVariant.Offline
+                },
+                size = if (compact) LumenIllustrationSize.Sm else LumenIllustrationSize.Md
+            )
+        }
+
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(LumenSpacing.Sm)
+        ) {
+            Text(
+                text = title,
+                modifier = Modifier.semantics { heading() },
+                color = colors.ink,
+                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
+                textAlign = TextAlign.Center
+            )
+
+            if (description != null) {
+                Text(
+                    text = description,
+                    color = colors.inkMuted,
+                    style = MaterialTheme.typography.bodyMedium,
+                    textAlign = TextAlign.Center
+                )
+            }
+
+            if (reference != null) {
+                Text(
+                    text = "$referenceLabel: $reference",
+                    color = colors.inkSoft,
+                    style = MaterialTheme.typography.labelSmall,
                     textAlign = TextAlign.Center
                 )
             }
@@ -327,6 +444,7 @@ fun LumenStatusBar(
     message: String,
     modifier: Modifier = Modifier,
     tone: LumenMetricTone = LumenMetricTone.Neutral,
+    iconName: LumenIconName? = null,
     trailing: (@Composable () -> Unit)? = null
 ) {
     val colors = LocalLumenTheme.current.colors
@@ -340,11 +458,10 @@ fun LumenStatusBar(
         horizontalArrangement = Arrangement.spacedBy(LumenSpacing.Sm),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Spacer(
-            modifier = Modifier
-                .size(7.dp)
-                .clip(CircleShape)
-                .background(lumenMetricColor(colors, tone))
+        LumenIcon(
+            name = iconName ?: lumenStatusBarIconName(tone),
+            size = LumenIconSize.Sm,
+            tint = lumenMetricColor(colors, tone)
         )
         Text(
             text = message,

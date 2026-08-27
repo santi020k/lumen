@@ -129,6 +129,34 @@ describe('Lumen integration diagnostics', () => {
     }
   })
 
+  test('reports duplicate adapter styles across an application boundary', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'lumen-doctor-style-layout-'))
+
+    try {
+      await mkdir(join(root, 'src', 'layouts'), { recursive: true })
+      await mkdir(join(root, 'src', 'pages'), { recursive: true })
+      await writeFile(join(root, 'package.json'), '{"name":"site"}\n')
+      await writeFile(
+        join(root, 'src', 'layouts', 'Base.astro'),
+        'import "@santi020k/lumen-astro/styles.css"\n<slot />\n'
+      )
+      await writeFile(
+        join(root, 'src', 'pages', 'index.astro'),
+        'import "@santi020k/lumen-astro/styles.css"\nimport { Card } from \'@santi020k/lumen-astro\'\n<Card />\n'
+      )
+
+      const report = await inspectLumenIntegration(root)
+
+      expect(report.healthy).toBe(false)
+      expect(report.findings).toContainEqual(expect.objectContaining({
+        file: 'src/pages/index.astro',
+        rule: 'framework-style-duplicate'
+      }))
+    } finally {
+      await rm(root, { force: true, recursive: true })
+    }
+  })
+
   test('ignores generated output and package-name strings that are not imports', async () => {
     const root = await mkdtemp(join(tmpdir(), 'lumen-doctor-generated-'))
 

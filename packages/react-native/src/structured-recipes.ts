@@ -1,19 +1,19 @@
+import type { LumenIconName } from './icons.generated.js'
 import type { LumenTheme } from './theme.js'
 
 export type LumenBannerVariant =
-  | 'accent' |
-  'default' |
-  'destructive' |
-  'success' |
-  'warning'
+  'accent' | 'default' | 'destructive' | 'success' | 'warning'
 
 export type LumenMetricTone =
-  | 'accent' |
-  'brand' |
-  'danger' |
-  'neutral' |
-  'success' |
-  'warning'
+  'accent' | 'brand' | 'danger' | 'neutral' | 'success' | 'warning'
+
+export type LumenErrorStateAnnouncement = 'assertive' | 'off' | 'polite'
+export type LumenErrorStateKind = 'error' | 'offline'
+export type LumenErrorStateLayout = 'compact' | 'default' | 'page'
+
+export const resolveLumenErrorStateLiveRegion = (
+  announcement: LumenErrorStateAnnouncement
+): 'assertive' | 'none' | 'polite' => announcement === 'off' ? 'none' : announcement
 
 export const resolveLumenMetricColor = (
   colors: LumenTheme['colors'],
@@ -32,7 +32,23 @@ export const resolveLumenMetricColor = (
   return colors.inkMuted
 }
 
-const resolveLumenBannerTone = (variant: LumenBannerVariant): LumenMetricTone => {
+export const resolveLumenStatusBarIconName = (
+  tone: LumenMetricTone
+): LumenIconName => {
+  if (tone === 'accent' || tone === 'brand') return 'info'
+
+  if (tone === 'danger') return 'octagon-x'
+
+  if (tone === 'success') return 'circle-check'
+
+  if (tone === 'warning') return 'triangle-alert'
+
+  return 'circle'
+}
+
+const resolveLumenBannerTone = (
+  variant: LumenBannerVariant
+): LumenMetricTone => {
   if (variant === 'default') return 'brand'
 
   if (variant === 'destructive') return 'danger'
@@ -49,7 +65,8 @@ export const resolveLumenBannerColors = (
 
   return {
     accentColor,
-    backgroundColor: variant === 'default' ? colors.surface : `${accentColor}14`,
+    backgroundColor:
+      variant === 'default' ? colors.surface : `${accentColor}14`,
     borderColor: variant === 'default' ? colors.line : `${accentColor}52`
   }
 }

@@ -1,16 +1,21 @@
 ---
 import { Badge, Card, Icon } from '@santi020k/lumen-astro'
-import { lumenComponentNames } from '@santi020k/lumen-core'
 
+import CodeBlock from '../../components/CodeBlock.astro'
 import DocsActionLink from '../../components/DocsActionLink.astro'
 import DocsPageHero from '../../components/DocsPageHero.astro'
 import { nativeComponentDocs } from '../../data/native-components'
+import { documentedComponentCount } from '../../data/site-metadata'
 import DocsLayout from '../../layouts/DocsLayout.astro'
 
 const packageName = '@santi020k/lumen-mcp'
 const npmUrl = 'https://www.npmjs.com/package/@santi020k/lumen-mcp'
 const readmeUrl = 'https://github.com/santi020k/lumen/blob/main/packages/mcp/README.md'
 const pluginUrl = 'https://github.com/santi020k/lumen/tree/main/plugins/lumen-ui'
+const claudePluginGuideUrl = 'https://github.com/santi020k/lumen/blob/main/docs/claude-code-plugin.md'
+
+const claudePluginInstall = `/plugin marketplace add santi020k/lumen
+/plugin install lumen-ui@lumen`
 
 const tools = [
   [
@@ -145,7 +150,7 @@ const httpCommand = `npx -y --package @santi020k/lumen-mcp lumen-mcp-http
       stats={[
         { label: 'Tools', value: tools.length },
         { label: 'Resources', value: resources.length },
-        { label: 'Web components', value: lumenComponentNames.length },
+        { label: 'Web components', value: documentedComponentCount },
         { label: 'Native components', value: nativeComponentDocs.length }
       ]}
       title="Give agents the Lumen contract."
@@ -273,17 +278,33 @@ const httpCommand = `npx -y --package @santi020k/lumen-mcp lumen-mcp-http
 
     <Card as="section" class="mcp-file-card" aria-labelledby="plugin-title" glass="subtle">
       <div>
-        <Badge>Codex and ChatGPT plugin</Badge>
+        <Badge>Submitted for review</Badge>
         <h2 id="plugin-title">Skill plus live catalog</h2>
         <p>
-          The repository packages the Lumen workflow skill with the MCP server in the standard
-          plugin structure. Public directory submission requires a stable hosted endpoint and
-          OpenAI review; local users can inspect and test the package today.
+          Lumen UI 1.0.0 has been submitted to the OpenAI Plugins Directory for Codex and ChatGPT
+          and is currently under review. Until OpenAI approves it and the publisher completes
+          publication, install the portable skill or connect the MCP server directly; the plugin is
+          not yet available from the directory.
         </p>
       </div>
       <code>plugins/lumen-ui</code>
       <DocsActionLink href={pluginUrl} target="_blank" rel="noopener noreferrer">
         Inspect the plugin
+      </DocsActionLink>
+    </Card>
+
+    <Card as="section" class="mcp-file-card" aria-labelledby="claude-plugin-title" glass="subtle">
+      <div>
+        <Badge>Claude Code plugin</Badge>
+        <h2 id="claude-plugin-title">Install the skill and live catalog together</h2>
+        <p>
+          Add Lumen's repository marketplace, then install one plugin that bundles the portable
+          workflow skill with the latest published read-only MCP catalog.
+        </p>
+      </div>
+      <CodeBlock code={claudePluginInstall} lang="text" title="Claude Code" />
+      <DocsActionLink href={claudePluginGuideUrl} target="_blank" rel="noopener noreferrer">
+        Read the Claude Code guide
       </DocsActionLink>
     </Card>
 

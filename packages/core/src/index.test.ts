@@ -60,6 +60,7 @@ import {
   moveScheduleEvent,
   normalizeLumenCode,
   normalizeThemeBuilderHex,
+  paginateDataRecords,
   parseDataViewState,
   parseScheduleEvents,
   parseThemeCss,
@@ -89,6 +90,7 @@ describe('lumen core metadata', () => {
     expect(lumenComponentNames).toContain('Button')
     expect(lumenComponentNames).toContain('CodeTabs')
     expect(lumenComponentNames).toContain('ContextNavigation')
+    expect(lumenComponentNames).toContain('ErrorState')
     expect(lumenComponentNames).toContain('BarChart')
     expect(lumenComponentNames).toContain('Icon')
     expect(lumenComponentNames).toContain('LineChart')
@@ -224,6 +226,23 @@ describe('lumen code helpers', () => {
       const theme = "lumen";
       const accent = "hsl(var(--accent))";
     `)).toBe('const theme = "lumen";\nconst accent = "hsl(var(--accent))";')
+  })
+
+  test('normalizes adversarially long code without overflowing the call stack', () => {
+    // A spread-based `Math.min(...indentation)` throws RangeError once the
+    // argument count exceeds the engine's call-stack limit (around 100k),
+    // so this must stay well past that to guard against a regression.
+    const lineCount = 150_000
+    const source = Array.from(
+      { length: lineCount }, (_, index) => `  line${index}`
+    ).join('\n')
+
+    const normalized = normalizeLumenCode(source)
+    const normalizedLines = normalized.split('\n')
+
+    expect(normalizedLines).toHaveLength(lineCount)
+    expect(normalizedLines[0]).toBe('line0')
+    expect(normalizedLines.at(-1)).toBe(`line${lineCount - 1}`)
   })
 
   test('tokenizes and escapes lightweight JavaScript code', () => {
@@ -382,6 +401,57 @@ describe('lumen product helpers', () => {
     expect(resizeScheduleEvents([event], 'planning', '2026-07-04T11:30:00.000Z')[0]?.end).toBe('2026-07-04T11:30:00.000Z')
   })
 
+  test('enforces a resize min bound when no max is set', () => {
+    const event = {
+      end: '2026-07-04T11:00:00.000Z',
+      id: 'planning',
+      start: '2026-07-04T09:00:00.000Z',
+      title: 'Planning'
+    }
+    const resizedStart = resizeScheduleEvent(event, '2026-07-04T09:00:00.000Z', {
+      edge: 'start',
+      min: '2026-07-04T10:30:00.000Z',
+      snapMinutes: 15
+    })
+
+    expect(resizedStart.start).toBe('2026-07-04T10:30:00.000Z')
+  })
+
+  test('never resizes an end past max even when the event already starts beyond it', () => {
+    // The event's own start already sits after `max`, so the >=1 minute
+    // duration floor and the explicit `max` bound are in direct conflict.
+    // The explicit caller bound must win: `end` should never exceed `max`.
+    const event = {
+      end: '2026-07-04T11:00:00.000Z',
+      id: 'planning',
+      start: '2026-07-04T09:35:00.000Z',
+      title: 'Planning'
+    }
+    const resizedEnd = resizeScheduleEvent(event, '2026-07-04T09:00:00.000Z', {
+      edge: 'end',
+      max: '2026-07-04T09:30:00.000Z',
+      snapMinutes: 15
+    })
+
+    expect(resizedEnd.end).toBe('2026-07-04T09:30:00.000Z')
+  })
+
+  test('never resizes a start before min even when the event already ends before it', () => {
+    const event = {
+      end: '2026-07-04T09:35:00.000Z',
+      id: 'planning',
+      start: '2026-07-04T09:00:00.000Z',
+      title: 'Planning'
+    }
+    const resizedStart = resizeScheduleEvent(event, '2026-07-04T10:00:00.000Z', {
+      edge: 'start',
+      min: '2026-07-04T09:45:00.000Z',
+      snapMinutes: 15
+    })
+
+    expect(resizedStart.start).toBe('2026-07-04T09:45:00.000Z')
+  })
+
   test('persists schedule events through storage-like adapters', () => {
     const storage = new Map<string, string>()
     const key = createScheduleStorageKey('Production Calendar')
@@ -423,6 +493,32 @@ describe('lumen product helpers', () => {
       { id: '1', name: 'Docs', status: 'ready', updated: 2 },
       { id: '2', name: 'API', status: 'draft', updated: 1 }
     ], state).items).toEqual([{ id: '1', name: 'Docs', status: 'ready', updated: 2 }])
+  })
+
+  test('preserves structured sort keys and normalizes invalid pagination input', () => {
+    const state = createDataViewState({
+      page: Number.NaN,
+      pageSize: 0,
+      sort: { direction: 'desc', key: 'metadata:updatedAt' }
+    })
+    const parsed = parseDataViewState(
+      'page=1e309&pageSize=-10&sort=metadata:updatedAt:desc'
+    )
+
+    expect(state).toMatchObject({ page: 1, pageSize: 25 })
+    expect(parsed).toMatchObject({
+      page: 1,
+      pageSize: 25,
+      sort: { direction: 'desc', key: 'metadata:updatedAt' }
+    })
+    expect(
+      parseDataViewState(serializeDataViewState({
+        ...state,
+        sort: { direction: 'asc', key: 'metadata:updatedAt' }
+      })).sort
+    ).toEqual({ direction: 'asc', key: 'metadata:updatedAt' })
+    expect(paginateDataRecords(['one', 'two'], Number.POSITIVE_INFINITY, 0))
+      .toEqual({ items: ['one', 'two'], page: 1, pageCount: 1, total: 2 })
   })
 
   test('persists data view state through storage-like adapters', () => {
@@ -649,9 +745,9 @@ describe('lumen theme tokens', () => {
     expect(lumenDarkTheme).toBe('dark')
     expect(lumenLightTheme).toBe('light')
     expect(lumenColors.brand).toMatch(/^\d+ \d+% \d+%$/)
-    expect(lumenColors.brand).toBe('221 83% 53%')
+    expect(lumenColors.brand).toBe('201 96% 32%')
     expect(lumenDarkColors.brand).toBe('199 91% 56%')
-    expect(lumenColorTokens.light.brand).toBe('#2463EB')
+    expect(lumenColorTokens.light.brand).toBe('#0369A0')
     expect(lumenColorTokens.dark.brand).toBe('#29B4F5')
     expect(lumenSpacing.lg).toBe(16)
     expect(lumenGlass.blur).toBe('22px')

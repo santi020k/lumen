@@ -2,8 +2,8 @@
 
 <!-- cspell:words screencap -->
 
-> **Beta:** This package is ready for testing and early production adoption. Its public API may
-> evolve as it is validated in real applications; review release notes when upgrading.
+> **Supported for Lumen 2:** This package uses the frozen version 2 contract. The current artifact
+> remains a release candidate until publication, physical-device, and consumer-soak gates complete.
 
 This Android library provides native Compose foundations and primitives generated from Lumen's
 canonical design tokens. It follows the same semantic color roles, spacing, radii, typography, and
@@ -25,12 +25,16 @@ The version in `packages/compose/gradle.properties` is canonical. `pnpm sync:com
 updates every public installation example, and `pnpm check:compose-version` prevents release or
 documentation checks from passing with stale coordinates.
 
-The reviewed binary API baselines live in `api/lumen-compose.api` and `wear/api/wear.api`. Check
-both release artifacts before opening a change:
+The reviewed binary API baselines live in `api/lumen-compose.api` and `wear/api/wear.api`. Run the
+local release gate for both artifacts before opening a change:
 
 ```bash
-./gradlew apiCheck
+./gradlew test lint apiCheck assembleDebugAndroidTest verifyMavenPublication
 ```
+
+`assembleDebugAndroidTest` compiles the phone and Wear accessibility suites without claiming device
+evidence. Run `./gradlew connectedDebugAndroidTest` only with suitable Android and Wear OS targets
+connected; record physical-device results through the repository's native validation process.
 
 Run `./gradlew apiDump` only after reviewing an intentional public API change and updating its
 documentation, tests, classification, and migration notes. The root tasks include the separate Wear
@@ -120,7 +124,7 @@ a bottom bar and navigation rail. The Android-specific tier also includes
 `LumenFloatingActionButton`, with Material-native geometry, semantic intents, and optional hide or
 follow-navigation behavior.
 
-`LumenPhoneInput` is experimental and uses Google libphonenumber metadata to provide a searchable,
+`LumenPhoneInput` is supported and uses Google libphonenumber metadata to provide a searchable,
 localized country picker, calling codes, as-you-type formatting, validation, and normalized E.164
 output. Country flags supplement the visible country name and calling code; they are never the only
 country identifier.
@@ -187,8 +191,11 @@ LumenAdaptiveNavigationScaffold(
 }
 ```
 
-EmptyState, ListRow, Banner, Stat, SectionHeader, and StatusBar provide reusable product structure
+EmptyState, ErrorState, ListRow, Banner, Stat, SectionHeader, and StatusBar provide reusable product structure
 with native Compose slots for graphics, actions, and trailing content.
+`LumenCard` accepts shared `padding` and `radius` roles while preserving its extra-large/large
+defaults. `LumenStatusBar` uses a distinct decorative icon for every tone and accepts `iconName`
+when a product needs a more specific symbol, so visual status is not conveyed by color alone.
 
 ## Complete gallery and screenshots
 
@@ -214,6 +221,9 @@ assets.
 
 See the [native component reference](../../docs/native-components.md) for installation, the complete
 API matrix, native image mapping, and accessibility requirements.
+Use the shared [Compose error-handling guide](../../docs/error-handling.md#jetpack-compose) when
+integrating `LumenErrorState`; it covers error/offline classification, layouts, announcements, safe
+references, and loading-safe retries.
 Use the [native device validation matrix](../../docs/native-device-validation.md) when verifying
 TalkBack, font scaling, contrast, focus order, and reduced motion on hardware.
 

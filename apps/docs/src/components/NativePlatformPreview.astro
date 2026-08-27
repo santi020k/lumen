@@ -8,6 +8,8 @@ import {
 
 import type { DocsPlatformId, PlatformGuide } from '../data/platforms'
 
+import NativeLivePreview from './NativeLivePreview.astro'
+
 interface NativePreview {
   alt: string
   height: number
@@ -46,41 +48,100 @@ const nativePreviews: Partial<Record<DocsPlatformId, NativePreview>> = {
 
 const { guide } = Astro.props
 const preview = nativePreviews[guide.id]
+const hasInteractivePreview = guide.id === 'react-native'
 ---
 
 {preview && (
   <section class="native-preview docs-section" aria-labelledby="native-preview-title">
     <div class="docs-section-heading">
-      <p>Real platform output</p>
-      <h2 id="native-preview-title">Rendered by {guide.label}</h2>
-      <p>
-        This is a static capture from a native preview host using the package in this repository.
-        The controls are not HTML elements and their interaction continues inside the native app.
-      </p>
+      {hasInteractivePreview ?
+(
+        <>
+          <p>Interactive component gallery</p>
+          <h2 id="native-preview-title">Try Lumen on {guide.shortLabel}</h2>
+          <p>
+            Explore the React Native components and their interactive states directly in the browser.
+          </p>
+        </>
+      ) :
+(
+        <>
+          <p>Real platform output</p>
+          <h2 id="native-preview-title">Rendered by {guide.label}</h2>
+          <p>
+            This verified capture comes from the native preview host using the package in this repository.
+            The controls are rendered by {guide.shortLabel}, not by HTML.
+          </p>
+        </>
+      )}
     </div>
 
-    <Card class="native-preview__frame" variant="muted">
-      <div class="native-preview__toolbar">
-        <Badge variant="outline">Native capture</Badge>
-        <span><Icon decorative name="monitor" size="sm" />{preview.runtime}</span>
-      </div>
-      <div class="native-preview__canvas">
-        <Image
-          alt={preview.alt}
-          height={preview.height}
-          loading="eager"
-          src={preview.src}
-          width={preview.width}
-        />
-      </div>
-    </Card>
+    {hasInteractivePreview && (
+      <NativeLivePreview guide={guide as PlatformGuide & { id: 'react-native' }} />
+    )}
+
+    {hasInteractivePreview ?
+(
+      <details class="native-preview__evidence">
+        <summary>View verified {guide.shortLabel} runtime capture</summary>
+        <Card class="native-preview__frame" variant="muted">
+          <div class="native-preview__toolbar">
+            <Badge variant="outline">Native capture</Badge>
+            <span><Icon decorative name="monitor" size="sm" />{preview.runtime}</span>
+          </div>
+          <div class="native-preview__canvas">
+            <Image
+              alt={preview.alt}
+              height={preview.height}
+              loading="lazy"
+              src={preview.src}
+              width={preview.width}
+            />
+          </div>
+        </Card>
+      </details>
+    ) :
+(
+      <Card class="native-preview__frame" variant="muted">
+        <div class="native-preview__toolbar">
+          <Badge variant="outline">Native capture</Badge>
+          <span><Icon decorative name="monitor" size="sm" />{preview.runtime}</span>
+        </div>
+        <div class="native-preview__canvas">
+          <Image
+            alt={preview.alt}
+            height={preview.height}
+            loading="lazy"
+            src={preview.src}
+            width={preview.width}
+          />
+        </div>
+      </Card>
+    )}
   </section>
 )}
 
 <style>
   :global(.native-preview__frame) {
     overflow: hidden;
+    margin-top: 0.75rem;
     padding: 0;
+  }
+
+  .native-preview__evidence {
+    margin-top: 1rem;
+  }
+
+  .native-preview__evidence summary {
+    width: fit-content;
+    color: hsl(var(--ink-soft));
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 700;
+  }
+
+  .native-preview__evidence summary:hover {
+    color: hsl(var(--brand));
   }
 
   .native-preview__toolbar {

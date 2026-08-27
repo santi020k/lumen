@@ -61,6 +61,146 @@ public extension LumenEmptyState where Actions == EmptyView {
     }
 }
 
+public enum LumenErrorStateKind: Sendable {
+    case error
+    case offline
+}
+
+public enum LumenErrorStateLayout: Sendable {
+    case compact
+    case `default`
+    case page
+}
+
+/// A recoverable application or content failure.
+///
+/// The caller owns retry behavior and should post a platform accessibility announcement when
+/// replacing existing content with this state. The state itself keeps its title and recovery
+/// actions discoverable without posting repeated announcements during SwiftUI updates.
+public struct LumenErrorState<Graphic: View, Actions: View>: View {
+    @Environment(\.lumenTheme) private var theme
+
+    private let actions: Actions
+    private let description: LocalizedStringKey?
+    private let graphic: Graphic
+    private let kind: LumenErrorStateKind
+    private let layout: LumenErrorStateLayout
+    private let reference: String?
+    private let referenceLabel: LocalizedStringKey
+    private let title: LocalizedStringKey
+
+    public init(
+        _ title: LocalizedStringKey,
+        description: LocalizedStringKey? = nil,
+        kind: LumenErrorStateKind = .error,
+        layout: LumenErrorStateLayout = .default,
+        reference: String? = nil,
+        referenceLabel: LocalizedStringKey = "Reference",
+        @ViewBuilder graphic: () -> Graphic,
+        @ViewBuilder actions: () -> Actions
+    ) {
+        self.title = title
+        self.description = description
+        self.kind = kind
+        self.layout = layout
+        self.reference = reference
+        self.referenceLabel = referenceLabel
+        self.graphic = graphic()
+        self.actions = actions()
+    }
+
+    public var body: some View {
+        VStack(spacing: layout == .compact ? LumenSpacing.md : LumenSpacing.lg) {
+            graphic
+
+            VStack(spacing: LumenSpacing.sm) {
+                Text(title)
+                    .font(.headline)
+                    .foregroundStyle(theme.colors.ink)
+                    .accessibilityAddTraits(.isHeader)
+
+                if let description {
+                    Text(description)
+                        .font(.callout)
+                        .foregroundStyle(theme.colors.inkMuted)
+                        .multilineTextAlignment(.center)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+
+                if let reference {
+                    HStack(spacing: LumenSpacing.xs) {
+                        Text(referenceLabel)
+                        Text(verbatim: reference)
+                    }
+                    .font(.caption.monospaced())
+                    .foregroundStyle(theme.colors.inkSoft)
+                    #if os(iOS) || os(macOS) || os(visionOS)
+                    .textSelection(.enabled)
+                    #endif
+                }
+            }
+
+            actions
+        }
+        .multilineTextAlignment(.center)
+        .frame(maxWidth: 520, maxHeight: layout == .page ? .infinity : nil)
+        .padding(layout == .compact ? LumenSpacing.lg : LumenSpacing.xl)
+        .frame(maxWidth: .infinity, maxHeight: layout == .page ? .infinity : nil)
+        .accessibilityElement(children: .contain)
+    }
+}
+
+#if os(iOS) || os(macOS) || os(visionOS)
+public extension LumenErrorState where Graphic == LumenIllustration {
+    init(
+        _ title: LocalizedStringKey,
+        description: LocalizedStringKey? = nil,
+        kind: LumenErrorStateKind = .error,
+        layout: LumenErrorStateLayout = .default,
+        reference: String? = nil,
+        referenceLabel: LocalizedStringKey = "Reference",
+        @ViewBuilder actions: () -> Actions
+    ) {
+        self.init(
+            title,
+            description: description,
+            kind: kind,
+            layout: layout,
+            reference: reference,
+            referenceLabel: referenceLabel,
+            graphic: {
+                LumenIllustration(
+                    variant: kind == .error ? .error : .offline,
+                    size: layout == .compact ? .sm : .md
+                )
+            },
+            actions: actions
+        )
+    }
+}
+
+public extension LumenErrorState where Graphic == LumenIllustration, Actions == EmptyView {
+    init(
+        _ title: LocalizedStringKey,
+        description: LocalizedStringKey? = nil,
+        kind: LumenErrorStateKind = .error,
+        layout: LumenErrorStateLayout = .default,
+        reference: String? = nil,
+        referenceLabel: LocalizedStringKey = "Reference"
+    ) {
+        self.init(
+            title,
+            description: description,
+            kind: kind,
+            layout: layout,
+            reference: reference,
+            referenceLabel: referenceLabel,
+            actions: { EmptyView() }
+        )
+    }
+}
+#endif
+
 public struct LumenListRow<Leading: View, Content: View, Trailing: View>: View {
     private let content: Content
     private let leading: Leading
@@ -431,6 +571,7 @@ public struct LumenStatusBar<Trailing: View>: View {
     @Environment(\.lumenTheme) private var theme
 
     private let message: LocalizedStringKey
+    private let systemName: String?
     private let tone: LumenMetricTone
     private let trailing: Trailing
 
@@ -439,17 +580,28 @@ public struct LumenStatusBar<Trailing: View>: View {
         tone: LumenMetricTone = .neutral,
         @ViewBuilder trailing: () -> Trailing
     ) {
+        self.init(message, tone: tone, systemName: nil, trailing: trailing)
+    }
+
+    public init(
+        _ message: LocalizedStringKey,
+        tone: LumenMetricTone = .neutral,
+        systemName: String?,
+        @ViewBuilder trailing: () -> Trailing
+    ) {
         self.message = message
         self.tone = tone
+        self.systemName = systemName
         self.trailing = trailing()
     }
 
     public var body: some View {
         HStack(spacing: LumenSpacing.sm) {
-            Circle()
-                .fill(metricColor(tone, theme: theme))
-                .frame(width: 7, height: 7)
-                .accessibilityHidden(true)
+            LumenIcon(
+                systemName: systemName ?? defaultSystemName,
+                size: .sm,
+                color: metricColor(tone, theme: theme)
+            )
 
             Text(message)
                 .lineLimit(1)
@@ -465,11 +617,31 @@ public struct LumenStatusBar<Trailing: View>: View {
         .background(theme.colors.surfaceMuted)
         .accessibilityElement(children: .contain)
     }
+
+    private var defaultSystemName: String {
+        switch tone {
+        case .accent, .brand: "info.circle.fill"
+        case .danger: "xmark.octagon.fill"
+        case .neutral: "circle.fill"
+        case .success: "checkmark.circle.fill"
+        case .warning: "exclamationmark.triangle.fill"
+        }
+    }
 }
 
 public extension LumenStatusBar where Trailing == EmptyView {
     init(_ message: LocalizedStringKey, tone: LumenMetricTone = .neutral) {
         self.init(message, tone: tone) {
+            EmptyView()
+        }
+    }
+
+    init(
+        _ message: LocalizedStringKey,
+        tone: LumenMetricTone = .neutral,
+        systemName: String?
+    ) {
+        self.init(message, tone: tone, systemName: systemName) {
             EmptyView()
         }
     }

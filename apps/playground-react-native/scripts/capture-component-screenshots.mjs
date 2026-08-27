@@ -31,9 +31,21 @@ try {
 
     await page.getByText('Lumen Playground', { exact: true }).waitFor()
 
+    await page.evaluate(async () => {
+      await document.fonts.ready
+    })
+
     if (component.slug === 'menu') {
       await page.getByLabel('Component actions').click()
     }
+
+    const focusedExample = page.getByTestId(`component-${component.slug}`)
+
+    if (await focusedExample.count() === 1) {
+      await focusedExample.scrollIntoViewIfNeeded()
+    }
+
+    await page.waitForTimeout(500)
 
     await page.screenshot({
       fullPage: true,

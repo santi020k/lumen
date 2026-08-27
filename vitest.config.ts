@@ -62,7 +62,9 @@ export default defineConfig({
       project('lumen', 'packages/lumen'),
       project('mcp', 'packages/mcp'),
       project('react', 'packages/react'),
-      project('react-native', 'packages/react-native'),
+      project('react-native', 'packages/react-native', {
+        include: ['src/**/*.test.ts', 'src/**/*.test.tsx']
+      }),
       project('react-hook-form', 'packages/react-hook-form', {
         include: ['src/**/*.test.ts', 'src/**/*.test.tsx']
       }),

@@ -24,6 +24,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,6 +35,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.error
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.progressBarRangeInfo
 import androidx.compose.ui.semantics.ProgressBarRangeInfo
@@ -81,6 +83,11 @@ fun LumenFieldGroup(
     Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(LumenSpacing.Sm)) {
         Text(
             text = if (required) "$label *" else label,
+            modifier = if (required) {
+                Modifier.semantics { contentDescription = "$label, required" }
+            } else {
+                Modifier
+            },
             color = colors.ink,
             style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.SemiBold)
         )
@@ -91,7 +98,10 @@ fun LumenFieldGroup(
         if (errorMessage != null) {
             Text(
                 errorMessage,
-                modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite },
+                modifier = Modifier.semantics {
+                    error(errorMessage)
+                    liveRegion = LiveRegionMode.Polite
+                },
                 color = colors.danger,
                 style = MaterialTheme.typography.bodySmall
             )
@@ -115,7 +125,11 @@ fun LumenTextarea(
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .semantics {
+                if (errorMessage != null) error(errorMessage)
+            },
         enabled = enabled,
         isError = errorMessage != null,
         minLines = minLines.coerceAtLeast(2),
@@ -245,11 +259,16 @@ fun <T> LumenPicker(
 ) {
     var expanded by remember { mutableStateOf(false) }
     val selectedLabel = options.firstOrNull { it.value == value }?.label ?: value.toString()
+    val controlEnabled = enabled && options.isNotEmpty()
+
+    LaunchedEffect(controlEnabled) {
+        if (!controlEnabled) expanded = false
+    }
 
     Box(modifier = modifier) {
         Button(
             onClick = { expanded = true },
-            enabled = enabled,
+            enabled = controlEnabled,
             modifier = Modifier.semantics {
                 contentDescription = label
                 stateDescription = selectedLabel
@@ -257,11 +276,11 @@ fun <T> LumenPicker(
         ) {
             Text(selectedLabel)
         }
-        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+        DropdownMenu(expanded = expanded && controlEnabled, onDismissRequest = { expanded = false }) {
             options.forEach { option ->
                 DropdownMenuItem(
                     text = { Text(option.label) },
-                    enabled = option.enabled,
+                    enabled = controlEnabled && option.enabled,
                     onClick = {
                         onValueChange(option.value)
                         expanded = false

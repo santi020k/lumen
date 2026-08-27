@@ -85,11 +85,14 @@ Render one clear collection state at a time:
    loading once.
 2. Use `LumenEmptyState` when a successful request contains no items.
 3. Use `LumenBanner` for recoverable partial-data or disconnected states that coexist with content.
-4. Use `LumenAlert` or an error empty state when content cannot be shown.
+4. Use `LumenErrorState` when content cannot be shown, with one application-owned retry action.
 5. Render rows in the platform's native lazy or virtualized collection after loading succeeds.
 
 Do not let a presentation component start requests or decide retry policy. The application owns
 cancellation, refresh, caching, and stale-data rules.
+Follow the [error-handling guide](./error-handling.md) for error/offline classification, layout and
+announcement choices, safe support references, and loading-safe retry examples for every native
+adapter.
 
 ## Pattern: metric and status summary
 

@@ -200,6 +200,7 @@ describe('@santi020k/lumen-react', () => {
 
   test('exports shared metadata', () => {
     expect(lumenComponentNames).toContain('Button')
+    expect(lumenComponentNames).toContain('ErrorState')
   })
 
   test('exposes the shared motion vocabulary on React primitives', () => {
@@ -960,7 +961,7 @@ describe('@santi020k/lumen-react', () => {
   })
 
   test('renders data display runtime contracts', () => {
-    const table = DataTable({
+    const table = withHookDispatcher(() => DataTable({
       columns: [
         { key: 'name', sortable: true },
         { key: 'count', sort: 'number', sortable: true }
@@ -971,7 +972,7 @@ describe('@santi020k/lumen-react', () => {
         { count: { sortValue: 1, value: '1' }, id: 'alpha', name: 'Alpha' }
       ],
       selectable: true
-    }) as ReactElement
+    })) as ReactElement
     const tableProps = table.props as Record<string, unknown> & {
       children: ReactElement<Record<string, unknown>>
     }
@@ -1005,6 +1006,11 @@ describe('@santi020k/lumen-react', () => {
     expect(tableProps['data-ui-datatable-name']).toBe('rows')
     expect(tableProps['data-ui-datatable-selectable']).toBe('true')
     expect(headers[0]?.props['data-ui-datatable-sortable']).toBe('true')
+    const firstSortButton = headers[0]?.props.children as ReactElement<{
+      className?: string
+    }>
+
+    expect(firstSortButton.props.className).toBe('ui-data-table__sort')
     expect(headers[1]?.props['data-ui-datatable-sort-type']).toBe('number')
     expect(rows[0]?.props['data-value']).toBe('beta')
     expect(firstRowCells[1]?.props['data-sort-value']).toBe('2')
@@ -1360,6 +1366,7 @@ describe('@santi020k/lumen-react', () => {
 
   test('activates tabs through trigger clicks', () => {
     const changes: string[] = []
+    const scrollIntoView = vi.fn()
     const tabs = withHookDispatcher(() => useTabs({
       defaultValue: 'overview',
       onValueChange: value => {
@@ -1369,10 +1376,13 @@ describe('@santi020k/lumen-react', () => {
     const settings = tabs.getTriggerProps('settings')
 
     settings.onClick?.(
-      {} as Parameters<NonNullable<typeof settings.onClick>>[0]
+      { currentTarget: { scrollIntoView } } as unknown as Parameters<
+        NonNullable<typeof settings.onClick>
+      >[0]
     )
 
     expect(changes).toEqual(['settings'])
+    expect(scrollIntoView).toHaveBeenCalledWith({ block: 'nearest', inline: 'nearest' })
   })
 
   test('selects enabled options and ignores disabled ones', () => {

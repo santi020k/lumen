@@ -11,11 +11,17 @@ primary destinations are Home, Examples, Components, and Settings:
   including loading, empty, error, success, disabled, validation, and destructive states.
 - Components adds product-intent category discovery to the searchable catalog while preserving the
   deterministic launch filters used by screenshot automation.
-- Settings covers semantic theme preview and feedback, current Apple accessibility preferences,
+- Settings covers Lumen and santi020k semantic theme presets, system/light/dark appearance,
+  theme preview and feedback, current Apple accessibility preferences,
   platform and version details, documentation, privacy, and support.
 
 To run on iOS, open `LumenApplePlayground.xcodeproj`, select an iPhone simulator, and press
-`Command-R`. Simulator builds do not require an Apple Developer account.
+`Command-R`. Simulator builds do not require an Apple Developer account. The iOS application embeds
+the `LumenWidgetPlayground` extension, a small WidgetKit host for the public `LumenWidgetUI` product.
+After installing the application, add **Lumen Widget** from the Home Screen or Lock Screen widget
+gallery to verify full-color, accented, increased-contrast, and accessibility-text rendering on the
+actual device. The widget keeps its timeline, supported families, and container background in the
+playground rather than moving product policy into Lumen.
 
 Run the macOS gallery from the repository root as a Swift Package executable:
 

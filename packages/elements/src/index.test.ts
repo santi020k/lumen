@@ -36,6 +36,7 @@ import {
   LumenCardElement,
   type LumenElement,
   lumenElementDefinitions,
+  LumenErrorStateElement,
   LumenGraphicElement,
   LumenIconElement,
   LumenIllustrationElement,
@@ -51,6 +52,27 @@ const press = (element: Element, key: string, init: KeyboardEventInit = {}) => {
       ...init
     })
   )
+}
+
+const createMemoryStorage = (): Storage => {
+  const entries = new Map<string, string>()
+
+  return {
+    get length() {
+      return entries.size
+    },
+    clear: () => {
+      entries.clear()
+    },
+    getItem: key => entries.get(key) ?? null,
+    key: index => [...entries.keys()][index] ?? null,
+    removeItem: key => {
+      entries.delete(key)
+    },
+    setItem: (key, value) => {
+      entries.set(key, value)
+    }
+  }
 }
 
 const createDragEvent = (
@@ -84,6 +106,11 @@ const replaceElementFromPoint = (
 }
 
 beforeAll(() => {
+  Object.defineProperty(window, 'localStorage', {
+    configurable: true,
+    value: createMemoryStorage()
+  })
+
   Object.defineProperty(HTMLElement.prototype, 'checkVisibility', {
     configurable: true,
     value: () => true
@@ -154,6 +181,62 @@ describe('@santi020k/lumen-elements', () => {
       expect(firstRegistry.get(tagName)).toBe(element)
       expect(secondRegistry.get(tagName)).toBe(element)
     }
+  })
+
+  test('registers only an explicit component set in a supplied registry', () => {
+    const constructors = new Map<string, CustomElementConstructor>()
+    const registry = {
+      define: (name: string, constructor: CustomElementConstructor) => {
+        constructors.set(name, constructor)
+      },
+      get: (name: string) => constructors.get(name)
+    }
+
+    defineLumenElements(['Button', 'Card', 'Button'], registry)
+
+    expect([...constructors.keys()]).toEqual(['lumen-button', 'lumen-card'])
+    expect(registry.get('lumen-button')).toBe(LumenButtonElement)
+    expect(registry.get('lumen-card')).toBe(LumenCardElement)
+    expect(registry.get('lumen-dialog')).toBeUndefined()
+
+    defineLumenElements(['Button', 'Card'], registry)
+
+    expect(constructors).toHaveLength(2)
+  })
+
+  test('registers error states with semantic kind and layout hooks', () => {
+    const state = new LumenErrorStateElement()
+
+    document.body.appendChild(state)
+
+    expect(state.tagName).toBe('LUMEN-ERROR-STATE')
+    expect(state.getAttribute('kind')).toBe('error')
+    expect(state.getAttribute('layout')).toBe('default')
+    expect(state.hasAttribute('data-ui-error-state')).toBe(true)
+    expect(state.className).toContain('ui-error-state--error')
+    expect(state.className).toContain('ui-error-state--default')
+
+    state.setAttribute('kind', 'offline')
+    state.setAttribute('layout', 'page')
+
+    expect(state.className).toContain('ui-error-state--offline')
+    expect(state.className).toContain('ui-error-state--page')
+  })
+
+  test('rejects an unknown component name in the granular registration path', () => {
+    const registry = {
+      define: vi.fn(),
+      get: vi.fn()
+    }
+
+    expect(() => {
+      defineLumenElements(
+        ['NotAComponent' as unknown as (typeof lumenComponentNames)[number]],
+        registry
+      )
+    }).toThrow('Unknown Lumen component name: NotAComponent')
+
+    expect(registry.define).not.toHaveBeenCalled()
   })
 
   test('keeps graphics decorative until they receive a label', () => {
@@ -622,6 +705,7 @@ describe('@santi020k/lumen-elements', () => {
   })
 
   test('tabs use roving tabindex with arrow, Home, and End navigation', () => {
+    const changes: { value: string }[] = []
     document.body.innerHTML = `
       <lumen-tabs>
         <div role="tablist">
@@ -638,6 +722,13 @@ describe('@santi020k/lumen-elements', () => {
     const first = document.querySelector<HTMLButtonElement>('#tab-one')
     const second = document.querySelector<HTMLButtonElement>('#tab-two')
     const third = document.querySelector<HTMLButtonElement>('#tab-three')
+    const tabs = document.querySelector('lumen-tabs')
+    const scrollIntoView = vi.fn()
+
+    if (second) second.scrollIntoView = scrollIntoView
+    tabs?.addEventListener('ui:tabs-change', event => {
+      changes.push((event as CustomEvent<{ value: string }>).detail)
+    })
 
     press(first as HTMLElement, 'ArrowRight')
     expect(second?.getAttribute('aria-selected')).toBe('true')
@@ -645,6 +736,8 @@ describe('@santi020k/lumen-elements', () => {
     expect(document.querySelector<HTMLElement>('#panel-two')?.hidden).toBe(
       false
     )
+    expect(changes).toEqual([{ value: 'tab-two' }])
+    expect(scrollIntoView).toHaveBeenCalledWith({ block: 'nearest', inline: 'nearest' })
 
     press(second as HTMLElement, 'End')
     expect(third?.getAttribute('aria-selected')).toBe('true')
@@ -676,6 +769,67 @@ describe('@santi020k/lumen-elements', () => {
 
     press(second as HTMLElement, 'ArrowUp')
     expect(first?.getAttribute('aria-selected')).toBe('true')
+  })
+
+  test('combobox filters, traverses, commits, and dismisses options', () => {
+    document.body.innerHTML = `
+      <lumen-combobox>
+        <input aria-label="Framework" role="combobox" />
+        <div role="listbox">
+          <button data-value="astro" role="option">Astro</button>
+          <button data-value="react" role="option">React</button>
+          <button data-value="elements" role="option">Web Components</button>
+        </div>
+      </lumen-combobox>
+    `
+
+    const root = document.querySelector<HTMLElement>('lumen-combobox')!
+    const input = root.querySelector<HTMLInputElement>('input')!
+    const listbox = root.querySelector<HTMLElement>('[role="listbox"]')!
+    const options = [...root.querySelectorAll<HTMLButtonElement>('[role="option"]')]
+    const changes: string[] = []
+
+    input.addEventListener('change', () => changes.push(input.value))
+
+    expect(input.getAttribute('aria-controls')).toBe(listbox.id)
+    expect(input.getAttribute('aria-expanded')).toBe('false')
+    expect(listbox.hidden).toBe(true)
+    expect(options.map(option => option.tabIndex)).toEqual([-1, -1, -1])
+
+    input.focus()
+
+    expect(input.getAttribute('aria-expanded')).toBe('true')
+    expect(listbox.hidden).toBe(false)
+
+    input.value = 'rea'
+    input.dispatchEvent(new Event('input', { bubbles: true }))
+
+    expect(options.map(option => option.hidden)).toEqual([true, false, true])
+
+    press(input, 'ArrowDown')
+
+    expect(document.activeElement).toBe(options[1])
+
+    press(options[1]!, 'Enter')
+
+    expect(input.value).toBe('react')
+    expect(changes).toEqual(['react'])
+    expect(input.getAttribute('aria-expanded')).toBe('false')
+    expect(document.activeElement).toBe(input)
+
+    input.value = ''
+    input.dispatchEvent(new Event('input', { bubbles: true }))
+    press(input, 'ArrowUp')
+
+    expect(document.activeElement).toBe(options[2])
+
+    press(options[2]!, 'Home')
+
+    expect(document.activeElement).toBe(options[0])
+
+    document.body.dispatchEvent(new Event('pointerdown', { bubbles: true }))
+
+    expect(listbox.hidden).toBe(true)
   })
 
   test('select enhances native select markup with listbox keyboard interaction', () => {
@@ -1829,7 +1983,7 @@ describe('@santi020k/lumen-elements', () => {
     vi.useFakeTimers()
 
     document.body.innerHTML =
-      '<lumen-sonner data-placement="top-right" data-ui-toast-max="2"></lumen-sonner>'
+      '<lumen-toast-viewport data-placement="top-right" data-ui-toast-max="2"></lumen-toast-viewport>'
 
     const actionEvents: CustomEvent<{ id: string, value?: unknown }>[] = []
     document.body.addEventListener('ui:toast-action', event => {

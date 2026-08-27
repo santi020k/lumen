@@ -1,255 +1,390 @@
-import assert from 'node:assert/strict'
-import { spawnSync } from 'node:child_process'
-import { access, mkdir, mkdtemp, readdir, readFile, rm, writeFile } from 'node:fs/promises'
-import { tmpdir } from 'node:os'
-import { join, resolve } from 'node:path'
+import assert from "node:assert/strict";
+import { spawnSync } from "node:child_process";
+import {
+  access,
+  mkdir,
+  mkdtemp,
+  readdir,
+  readFile,
+  rm,
+  writeFile,
+} from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join, resolve } from "node:path";
 
-const repositoryRoot = resolve(import.meta.dirname, '..')
-const corePackageDirectory = join(repositoryRoot, 'packages', 'core')
-const packageDirectory = join(repositoryRoot, 'packages', 'react-native')
-const playgroundPackageName = '@santi020k/lumen-playground-react-native'
-const supportedPlatforms = new Set(['android', 'ios'])
-const requestedPlatform = process.argv[2]
+const repositoryRoot = resolve(import.meta.dirname, "..");
+const corePackageDirectory = join(repositoryRoot, "packages", "core");
+const packageDirectory = join(repositoryRoot, "packages", "react-native");
+const playgroundPackageName = "@santi020k/lumen-playground-react-native";
+const supportedPlatforms = new Set(["android", "ios"]);
+const requestedPlatform = process.argv[2];
 
-const readOption = name => {
-  const index = process.argv.indexOf(name)
+const readOption = (name) => {
+  const index = process.argv.indexOf(name);
 
-  if (index === -1) return undefined
+  if (index === -1) return undefined;
 
-  const value = process.argv[index + 1]
+  const value = process.argv[index + 1];
 
-  assert.ok(value && !value.startsWith('--'), `${name} requires a value`)
+  assert.ok(value && !value.startsWith("--"), `${name} requires a value`);
 
-  return value
-}
+  return value;
+};
 
-const releaseVersion = readOption('--version')
+const releaseVersion = readOption("--version");
+const releaseRevision = readOption("--revision");
+
+assert.equal(
+  Boolean(releaseVersion),
+  Boolean(releaseRevision),
+  "--version and --revision must be provided together",
+);
 
 assert.ok(
   requestedPlatform && supportedPlatforms.has(requestedPlatform),
-  'Pass exactly one native platform: android or ios'
-)
+  "Pass exactly one native platform: android or ios",
+);
 
 if (releaseVersion) {
   assert.match(
     releaseVersion,
     /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-[\da-z.-]+)?$/i,
-    '--version must be an exact semantic version'
-  )
+    "--version must be an exact semantic version",
+  );
+
+  assert.match(
+    releaseRevision,
+    /^[\da-f]{40}$/,
+    "--revision must be a full lowercase Git revision",
+  );
 }
 
-if (requestedPlatform === 'ios') {
-  assert.equal(process.platform, 'darwin', 'The iOS native package smoke test requires macOS')
+const [releaseMajor = 0, releaseMinor = 0] = releaseVersion
+  ? releaseVersion.split(".").map(Number)
+  : [];
+
+// These controls enter the public React Native line in the pending 0.6.0 minor.
+const supportsSharedValueControls =
+  releaseVersion === undefined || releaseMajor > 0 || releaseMinor >= 6;
+
+if (requestedPlatform === "ios") {
+  assert.equal(
+    process.platform,
+    "darwin",
+    "The iOS native package smoke test requires macOS",
+  );
 }
 
 const commandEnvironment = {
   ...process.env,
-  CI: '1',
-  COCOAPODS_DISABLE_STATS: 'true',
-  NODE_ENV: 'production'
+  CI: "1",
+  COCOAPODS_DISABLE_STATS: "true",
+  NODE_ENV: "production",
+};
+
+if (requestedPlatform === "android") {
+  const javaExecutable = commandEnvironment.JAVA_HOME
+    ? join(commandEnvironment.JAVA_HOME, "bin", "java")
+    : "java";
+
+  const javaProbe = spawnSync(javaExecutable, ["-version"], {
+    encoding: "utf8",
+    env: commandEnvironment,
+    stdio: "pipe",
+  });
+
+  const javaVersion = /version "(\d+)/.exec(
+    `${javaProbe.stdout}${javaProbe.stderr}`,
+  )?.[1];
+
+  if (javaProbe.status === 0 && javaVersion && Number(javaVersion) >= 24) {
+    commandEnvironment.JAVA_TOOL_OPTIONS = [
+      commandEnvironment.JAVA_TOOL_OPTIONS,
+      "--enable-native-access=ALL-UNNAMED",
+    ]
+      .filter(Boolean)
+      .join(" ");
+  }
 }
 
 const run = (command, arguments_, cwd = repositoryRoot) => {
   const result = spawnSync(command, arguments_, {
     cwd,
-    encoding: 'utf8',
+    encoding: "utf8",
     env: commandEnvironment,
     maxBuffer: 50 * 1024 * 1024,
-    stdio: 'pipe'
-  })
+    stdio: "pipe",
+  });
 
   if (result.status !== 0) {
-    process.stderr.write(result.stdout)
+    process.stderr.write(result.stdout);
 
-    process.stderr.write(result.stderr)
+    process.stderr.write(result.stderr);
 
-    throw new Error(`${command} ${arguments_.join(' ')} failed with status ${result.status}`)
+    throw new Error(
+      `${command} ${arguments_.join(" ")} failed with status ${result.status}`,
+    );
   }
 
-  return result.stdout
-}
+  return result.stdout;
+};
 
-if (requestedPlatform === 'ios') {
-  const podProbe = spawnSync('pod', ['--version'], {
-    encoding: 'utf8',
+if (requestedPlatform === "ios") {
+  const podProbe = spawnSync("pod", ["--version"], {
+    encoding: "utf8",
     env: commandEnvironment,
-    stdio: 'pipe'
-  })
+    stdio: "pipe",
+  });
 
   assert.equal(
     podProbe.status,
     0,
-    'CocoaPods is required for the packed iOS native package smoke test'
-  )
+    "CocoaPods is required for the packed iOS native package smoke test",
+  );
 }
 
-const temporaryRoot = await mkdtemp(join(tmpdir(), `lumen-react-native-${requestedPlatform}-`))
-const coreArchiveDirectory = join(temporaryRoot, 'core-archive')
-const packageArchiveDirectory = join(temporaryRoot, 'package-archive')
-const consumerDirectory = join(temporaryRoot, 'consumer')
+const temporaryRoot = await mkdtemp(
+  join(tmpdir(), `lumen-react-native-${requestedPlatform}-`),
+);
+
+const coreArchiveDirectory = join(temporaryRoot, "core-archive");
+const packageArchiveDirectory = join(temporaryRoot, "package-archive");
+const consumerDirectory = join(temporaryRoot, "consumer");
 
 const getResolvedPlaygroundDependencies = () => {
-  const output = run(
-    'pnpm',
-    ['--filter', playgroundPackageName, 'list', '--json', '--depth=0']
-  )
+  const output = run("pnpm", [
+    "--filter",
+    playgroundPackageName,
+    "list",
+    "--json",
+    "--depth=0",
+  ]);
 
-  const projects = JSON.parse(output)
+  const projects = JSON.parse(output);
 
-  assert.equal(projects.length, 1, 'Expected one React Native playground project')
+  assert.equal(
+    projects.length,
+    1,
+    "Expected one React Native playground project",
+  );
 
-  const project = projects[0]
+  const project = projects[0];
 
   const dependencyEntries = {
     ...project.dependencies,
-    ...project.devDependencies
-  }
+    ...project.devDependencies,
+  };
 
   const requiredNames = [
-    '@types/react',
-    'expo',
-    'react',
-    'react-native',
-    'react-native-svg',
-    'typescript'
-  ]
+    "@types/react",
+    "expo",
+    "react",
+    "react-native",
+    "react-native-svg",
+    "typescript",
+  ];
 
-  return Object.fromEntries(requiredNames.map(name => {
-    const dependency = dependencyEntries[name]
+  return Object.fromEntries(
+    requiredNames.map((name) => {
+      const dependency = dependencyEntries[name];
 
-    assert.equal(
-      typeof dependency?.version,
-      'string',
-      `Could not resolve the playground version for ${name}`
-    )
+      assert.equal(
+        typeof dependency?.version,
+        "string",
+        `Could not resolve the playground version for ${name}`,
+      );
 
-    return [name, dependency.version]
-  }))
-}
+      return [name, dependency.version];
+    }),
+  );
+};
 
 try {
   await Promise.all([
     mkdir(coreArchiveDirectory, { recursive: true }),
     mkdir(packageArchiveDirectory, { recursive: true }),
-    mkdir(consumerDirectory, { recursive: true })
-  ])
+    mkdir(consumerDirectory, { recursive: true }),
+  ]);
 
-  let corePackageReference
-  let packageReference
-  let packageSource
+  let corePackageReference;
+  let packageReference;
+  let packageSource;
 
   if (releaseVersion) {
-    packageReference = releaseVersion
+    packageReference = releaseVersion;
 
-    packageSource = 'Published'
+    packageSource = "Published";
   } else {
-    run('pnpm', ['--filter', '@santi020k/lumen-react-native...', 'run', 'build'])
+    run("pnpm", [
+      "--filter",
+      "@santi020k/lumen-react-native...",
+      "run",
+      "build",
+    ]);
 
-    run('pnpm', ['pack', '--pack-destination', coreArchiveDirectory], corePackageDirectory)
+    run(
+      "pnpm",
+      ["pack", "--pack-destination", coreArchiveDirectory],
+      corePackageDirectory,
+    );
 
-    run('pnpm', ['pack', '--pack-destination', packageArchiveDirectory], packageDirectory)
+    run(
+      "pnpm",
+      ["pack", "--pack-destination", packageArchiveDirectory],
+      packageDirectory,
+    );
 
-    const coreArchives = (await readdir(coreArchiveDirectory)).filter(name => name.endsWith('.tgz'))
-    const packageArchives = (await readdir(packageArchiveDirectory)).filter(name => name.endsWith('.tgz'))
+    const coreArchives = (await readdir(coreArchiveDirectory)).filter((name) =>
+      name.endsWith(".tgz"),
+    );
 
-    assert.equal(coreArchives.length, 1, 'Expected one Core package archive')
+    const packageArchives = (await readdir(packageArchiveDirectory)).filter(
+      (name) => name.endsWith(".tgz"),
+    );
 
-    assert.equal(packageArchives.length, 1, 'Expected one React Native package archive')
+    assert.equal(coreArchives.length, 1, "Expected one Core package archive");
 
-    corePackageReference = `file:${join(coreArchiveDirectory, coreArchives[0])}`
+    assert.equal(
+      packageArchives.length,
+      1,
+      "Expected one React Native package archive",
+    );
 
-    packageReference = `file:${join(packageArchiveDirectory, packageArchives[0])}`
+    corePackageReference = `file:${join(coreArchiveDirectory, coreArchives[0])}`;
 
-    packageSource = 'Packed'
+    packageReference = `file:${join(packageArchiveDirectory, packageArchives[0])}`;
+
+    packageSource = "Packed";
   }
 
-  const dependencies = getResolvedPlaygroundDependencies()
+  const dependencies = getResolvedPlaygroundDependencies();
 
   await writeFile(
-    join(consumerDirectory, 'package.json'),
+    join(consumerDirectory, "package.json"),
     `${JSON.stringify(
       {
         dependencies: {
           ...(corePackageReference
-            ? { '@santi020k/lumen-core': corePackageReference }
+            ? { "@santi020k/lumen-core": corePackageReference }
             : {}),
-          '@santi020k/lumen-react-native': packageReference,
+          "@santi020k/lumen-react-native": packageReference,
           expo: dependencies.expo,
           react: dependencies.react,
-          'react-native': dependencies['react-native'],
-          'react-native-svg': dependencies['react-native-svg']
+          "react-native": dependencies["react-native"],
+          "react-native-svg": dependencies["react-native-svg"],
         },
         devDependencies: {
-          '@types/react': dependencies['@types/react'],
-          typescript: dependencies.typescript
+          "@types/react": dependencies["@types/react"],
+          typescript: dependencies.typescript,
         },
-        main: 'index.ts',
-        name: 'lumen-packed-native-consumer',
+        main: "index.ts",
+        name: "lumen-packed-native-consumer",
         private: true,
-        version: '1.0.0'
+        version: "1.0.0",
       },
       null,
-      2
-    )}\n`
-  )
+      2,
+    )}\n`,
+  );
 
   await writeFile(
-    join(consumerDirectory, 'app.json'),
+    join(consumerDirectory, "app.json"),
     `${JSON.stringify(
       {
         expo: {
-          android: { package: 'com.santi020k.lumen.consumer' },
-          ios: { bundleIdentifier: 'com.santi020k.lumen.consumer' },
-          name: 'PackedLumen',
+          android: { package: "com.santi020k.lumen.consumer" },
+          ios: { bundleIdentifier: "com.santi020k.lumen.consumer" },
+          name: "PackedLumen",
           newArchEnabled: true,
-          slug: 'packed-lumen',
-          version: '1.0.0'
-        }
+          slug: "packed-lumen",
+          version: "1.0.0",
+        },
       },
       null,
-      2
-    )}\n`
-  )
+      2,
+    )}\n`,
+  );
 
   await writeFile(
-    join(consumerDirectory, 'tsconfig.json'),
+    join(consumerDirectory, "tsconfig.json"),
     `${JSON.stringify(
       {
         compilerOptions: {
           exactOptionalPropertyTypes: true,
-          jsx: 'react-jsx',
+          jsx: "react-jsx",
           noEmit: true,
           noUncheckedIndexedAccess: true,
           skipLibCheck: true,
-          strict: true
+          strict: true,
         },
-        extends: 'expo/tsconfig.base',
-        include: ['index.ts', 'src/**/*.tsx']
+        extends: "expo/tsconfig.base",
+        include: ["index.ts", "src/**/*.tsx"],
       },
       null,
-      2
-    )}\n`
-  )
+      2,
+    )}\n`,
+  );
 
   await writeFile(
-    join(consumerDirectory, 'index.ts'),
+    join(consumerDirectory, "index.ts"),
     `import { registerRootComponent } from 'expo'
 
 import App from './src/App'
 
 registerRootComponent(App)
-`
-  )
+`,
+  );
 
-  await mkdir(join(consumerDirectory, 'src'), { recursive: true })
+  await mkdir(join(consumerDirectory, "src"), { recursive: true });
+
+  const valueControlImports = supportsSharedValueControls
+    ? `  LumenGauge,
+  LumenPicker,
+  LumenSlider,
+`
+    : "";
+
+  const valueControlState = supportsSharedValueControls
+    ? `  const [region, setRegion] = useState('americas')
+  const [minimumSpeed, setMinimumSpeed] = useState(2_400)
+`
+    : "";
+
+  const valueControlMarkup = supportsSharedValueControls
+    ? `        <LumenPicker
+          label="Deployment region"
+          value={region}
+          options={[
+            { label: 'Americas', value: 'americas' },
+            { label: 'Europe', value: 'europe' }
+          ]}
+          onValueChange={setRegion}
+        />
+        <LumenSlider
+          label="Minimum speed"
+          value={minimumSpeed}
+          min={1_000}
+          max={5_000}
+          step={100}
+          valueLabel={\`\${minimumSpeed} RPM\`}
+          onValueChange={setMinimumSpeed}
+        />
+        <LumenGauge
+          label="Platform readiness"
+          value={57}
+          valueLabel="57 shared"
+          tone="success"
+        />
+`
+    : "";
 
   await writeFile(
-    join(consumerDirectory, 'src', 'App.tsx'),
+    join(consumerDirectory, "src", "App.tsx"),
     `import { type ReactElement, useState } from 'react'
 
 import {
   LumenButton,
-  LumenProvider,
+${valueControlImports}  LumenProvider,
   LumenSurface,
   LumenText,
   LumenTextField,
@@ -259,6 +394,7 @@ import {
 export default function App(): ReactElement {
   const [enabled, setEnabled] = useState(false)
   const [name, setName] = useState('')
+${valueControlState}
 
   return (
     <LumenProvider scheme="light">
@@ -271,74 +407,121 @@ export default function App(): ReactElement {
           onChangeText={setName}
         />
         <LumenToggle label="Enabled" value={enabled} onValueChange={setEnabled} />
-        <LumenButton onPress={() => setEnabled(true)}>Continue</LumenButton>
+${valueControlMarkup}        <LumenButton onPress={() => setEnabled(true)}>Continue</LumenButton>
       </LumenSurface>
     </LumenProvider>
   )
 }
-`
-  )
+`,
+  );
 
-  run('npm', ['install', '--no-audit', '--no-fund'], consumerDirectory)
+  run("npm", ["install", "--no-audit", "--no-fund"], consumerDirectory);
 
   const installedManifest = JSON.parse(
     await readFile(
-      join(consumerDirectory, 'node_modules', '@santi020k', 'lumen-react-native', 'package.json'),
-      'utf8'
-    )
-  )
+      join(
+        consumerDirectory,
+        "node_modules",
+        "@santi020k",
+        "lumen-react-native",
+        "package.json",
+      ),
+      "utf8",
+    ),
+  );
 
   if (releaseVersion) {
     assert.equal(
       installedManifest.version,
       releaseVersion,
-      'The clean consumer did not install the requested React Native release'
-    )
+      "The clean consumer did not install the requested React Native release",
+    );
+
+    run(
+      "pnpm",
+      [
+        "run",
+        "check:npm-release-provenance",
+        "--",
+        "--package",
+        "@santi020k/lumen-react-native",
+        "--version",
+        releaseVersion,
+        "--revision",
+        releaseRevision,
+        "--lockfile",
+        join(consumerDirectory, "package-lock.json"),
+      ],
+      repositoryRoot,
+    );
   }
 
   run(
     process.execPath,
-    [join(consumerDirectory, 'node_modules', 'typescript', 'bin', 'tsc')],
-    consumerDirectory
-  )
+    [join(consumerDirectory, "node_modules", "typescript", "bin", "tsc")],
+    consumerDirectory,
+  );
 
   run(
-    'npx',
-    ['expo', 'prebuild', '--clean', '--platform', requestedPlatform],
-    consumerDirectory
-  )
+    "npx",
+    ["expo", "prebuild", "--clean", "--platform", requestedPlatform],
+    consumerDirectory,
+  );
 
-  if (requestedPlatform === 'android') {
-    run(join(consumerDirectory, 'android', 'gradlew'), ['-p', 'android', 'assembleDebug'], consumerDirectory)
+  if (requestedPlatform === "android") {
+    run(
+      join(consumerDirectory, "android", "gradlew"),
+      ["-p", "android", "assembleDebug"],
+      consumerDirectory,
+    );
 
-    await access(join(consumerDirectory, 'android', 'app', 'build', 'outputs', 'apk', 'debug', 'app-debug.apk'))
+    await access(
+      join(
+        consumerDirectory,
+        "android",
+        "app",
+        "build",
+        "outputs",
+        "apk",
+        "debug",
+        "app-debug.apk",
+      ),
+    );
   } else {
-    const derivedDataPath = join(temporaryRoot, 'DerivedData')
+    const derivedDataPath = join(temporaryRoot, "DerivedData");
 
     run(
-      'xcodebuild',
+      "xcodebuild",
       [
-        '-workspace',
-        'ios/PackedLumen.xcworkspace',
-        '-scheme',
-        'PackedLumen',
-        '-destination',
-        'generic/platform=iOS Simulator',
-        '-derivedDataPath',
+        "-workspace",
+        "ios/PackedLumen.xcworkspace",
+        "-scheme",
+        "PackedLumen",
+        "-destination",
+        "generic/platform=iOS Simulator",
+        "-derivedDataPath",
         derivedDataPath,
-        'CODE_SIGNING_ALLOWED=NO',
-        'build'
+        "CODE_SIGNING_ALLOWED=NO",
+        "build",
       ],
-      consumerDirectory
-    )
+      consumerDirectory,
+    );
 
-    await access(join(derivedDataPath, 'Build', 'Products', 'Debug-iphonesimulator', 'PackedLumen.app'))
+    await access(
+      join(
+        derivedDataPath,
+        "Build",
+        "Products",
+        "Debug-iphonesimulator",
+        "PackedLumen.app",
+      ),
+    );
   }
 
   process.stdout.write(
-    `${packageSource} @santi020k/lumen-react-native@${installedManifest.version} produced a clean `
-      + `${requestedPlatform} native debug application.\n`
-  )
+    `${packageSource} @santi020k/lumen-react-native@${installedManifest.version} produced a clean ` +
+      `${requestedPlatform} native debug application.\n`,
+  );
 } finally {
-  await rm(temporaryRoot, { force: true, recursive: true })
+  await rm(temporaryRoot, { force: true, recursive: true });
 }

@@ -1,5 +1,23 @@
 ---
-import { Badge, ButtonLink, Card, Icon, Link } from '@santi020k/lumen-astro'
+import {
+  Alert,
+  Badge,
+  Button,
+  ButtonGroup,
+  ButtonLink,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  Icon,
+  Link,
+  Progress,
+  Tabs,
+  TabsList,
+  TabsPanel,
+  TabsTrigger
+} from '@santi020k/lumen-astro'
 
 import DocsLayout from '../../../layouts/DocsLayout.astro'
 
@@ -47,6 +65,105 @@ const playgrounds = [
     </div>
   </section>
 
+  <section class="web-framework-playground" aria-labelledby="framework-playground-title">
+    <div class="web-framework-playground__heading">
+      <div>
+        <Badge class="web-framework-playground__badge" variant="secondary">Runtime comparison</Badge>
+        <h2 id="framework-playground-title">Switch the real framework, not only the snippet</h2>
+        <p>
+          The same product scenario is rendered by the public Astro, React, and Web Component
+          adapters. Switch runtimes, advance state, and test the tab keyboard contract in place.
+        </p>
+      </div>
+      <ButtonGroup aria-label="Preview framework" role="group">
+        <Button aria-pressed="true" data-framework-select="astro" size="sm">Astro</Button>
+        <Button aria-pressed="false" data-framework-select="react" size="sm" variant="ghost">React</Button>
+        <Button aria-pressed="false" data-framework-select="elements" size="sm" variant="ghost">Elements</Button>
+      </ButtonGroup>
+    </div>
+
+    <p class="web-framework-playground__status" aria-live="polite" data-framework-status>
+      Rendering with Astro
+    </p>
+
+    <div class="web-framework-playground__viewport">
+      <section data-framework-panel="astro">
+        <div class="web-framework-preview__surface" data-framework-runtime="astro">
+          <div class="web-framework-preview__heading">
+            <div>
+              <Badge variant="secondary">Astro server output</Badge>
+              <h2>Release control</h2>
+              <p>Semantic HTML is enhanced by selector-loaded Astro controllers.</p>
+            </div>
+            <Button data-astro-advance>Advance</Button>
+          </div>
+          <Card>
+            <CardHeader>
+              <CardTitle>Web readiness</CardTitle>
+              <CardDescription>Interactive primitives with shared Lumen tokens.</CardDescription>
+            </CardHeader>
+            <CardContent class="web-framework-preview__stack">
+              <Progress aria-label="Astro web readiness" data-astro-progress value={64} />
+              <Alert data-astro-alert><span data-astro-status>64% verified</span></Alert>
+            </CardContent>
+          </Card>
+          <Tabs initialValue="behavior">
+            <TabsList aria-label="Astro playground details">
+              <TabsTrigger aria-controls="astro-behavior" aria-selected="true" id="astro-behavior-tab" value="behavior">Behavior</TabsTrigger>
+              <TabsTrigger aria-controls="astro-delivery" aria-selected="false" id="astro-delivery-tab" value="delivery">Delivery</TabsTrigger>
+            </TabsList>
+            <TabsPanel aria-labelledby="astro-behavior-tab" id="astro-behavior" value="behavior">
+              Keyboard navigation and focus use progressively enhanced HTML.
+            </TabsPanel>
+            <TabsPanel aria-labelledby="astro-delivery-tab" hidden id="astro-delivery" value="delivery">
+              Optional controllers load only when their selectors are present.
+            </TabsPanel>
+          </Tabs>
+        </div>
+      </section>
+
+      <section data-framework-panel="react" hidden>
+        <div data-react-web-playground></div>
+      </section>
+
+      <section data-framework-panel="elements" hidden>
+        <div class="web-framework-preview__surface" data-framework-runtime="elements">
+          <div class="web-framework-preview__heading">
+            <div>
+              <lumen-badge variant="secondary">Custom Elements</lumen-badge>
+              <h2>Release control</h2>
+              <p>Attributes and DOM events are owned by registered lumen-* elements.</p>
+            </div>
+            <lumen-button data-elements-advance>Advance</lumen-button>
+          </div>
+          <lumen-card>
+            <lumen-card-header>
+              <lumen-card-title>Web readiness</lumen-card-title>
+              <lumen-card-description>Interactive primitives with shared Lumen tokens.</lumen-card-description>
+            </lumen-card-header>
+            <lumen-card-content class="web-framework-preview__stack">
+              <lumen-progress aria-label="Elements web readiness" max="100" value="72"></lumen-progress>
+              <lumen-alert><span data-elements-status>72% verified</span></lumen-alert>
+            </lumen-card-content>
+          </lumen-card>
+          <lumen-tabs>
+            <div aria-label="Elements playground details" role="tablist">
+              <button aria-controls="elements-behavior" aria-selected="true" id="elements-behavior-tab" role="tab" type="button">Behavior</button>
+              <button aria-controls="elements-delivery" aria-selected="false" id="elements-delivery-tab" role="tab" type="button">Delivery</button>
+            </div>
+            <section aria-labelledby="elements-behavior-tab" id="elements-behavior" role="tabpanel">
+              Keyboard navigation and focus run through the registered element controller.
+            </section>
+            <section aria-labelledby="elements-delivery-tab" hidden id="elements-delivery" role="tabpanel">
+              This preview registers only its ten tags; implementation-level entrypoints reduce
+              download size further when the required components expose them.
+            </section>
+          </lumen-tabs>
+        </div>
+      </section>
+    </div>
+  </section>
+
   <div
     aria-label="Web playgrounds"
     class="
@@ -67,3 +184,263 @@ const playgrounds = [
     ))}
   </div>
 </DocsLayout>
+
+<script>
+  const frameworkLabels = {
+    astro: 'Astro',
+    elements: 'Elements',
+    react: 'React'
+  } as const
+
+  type FrameworkId = keyof typeof frameworkLabels
+
+  const initializeWebFrameworkPlayground = async () => {
+    const root = document.querySelector<HTMLElement>('.web-framework-playground')
+
+    if (!root || root.dataset.ready === 'true') return
+
+    root.dataset.ready = 'true'
+
+    const reactContainer = root.querySelector<HTMLElement>('[data-react-web-playground]')
+    const status = root.querySelector<HTMLElement>('[data-framework-status]')
+    const selectors = root.querySelectorAll<HTMLButtonElement>('[data-framework-select]')
+    const panels = root.querySelectorAll<HTMLElement>('[data-framework-panel]')
+    const viewport = root.querySelector<HTMLElement>('.web-framework-playground__viewport')
+    const astroProgress = root.querySelector<HTMLElement>('[data-astro-progress]')
+    const astroStatus = root.querySelector<HTMLElement>('[data-astro-status]')
+    const astroAlert = root.querySelector<HTMLElement>('[data-astro-alert]')
+    const elementsProgress = root.querySelector<HTMLElement>('lumen-progress')
+    const elementsStatus = root.querySelector<HTMLElement>('[data-elements-status]')
+    const elementsAlert = root.querySelector<HTMLElement>('lumen-alert')
+    const initializedFrameworks = new Set<FrameworkId>(['astro'])
+    let requestedFramework: FrameworkId = 'astro'
+
+    const initializeFrameworkRuntime = async (framework: FrameworkId): Promise<boolean> => {
+      if (initializedFrameworks.has(framework)) return true
+
+      try {
+        if (framework === 'react') {
+          if (!reactContainer) return false
+
+          const { mountReactWebPlayground } = await import('../../../lib/web-framework-playground')
+
+          mountReactWebPlayground(reactContainer)
+        }
+
+        if (framework === 'elements') {
+          const { defineLumenElements } = await import('@santi020k/lumen-elements/define')
+
+          defineLumenElements([
+            'Alert',
+            'Badge',
+            'Button',
+            'Card',
+            'CardContent',
+            'CardDescription',
+            'CardHeader',
+            'CardTitle',
+            'Progress',
+            'Tabs'
+          ])
+        }
+
+        initializedFrameworks.add(framework)
+
+        return true
+      } catch {
+        return false
+      }
+    }
+
+    const updateFrameworkStatus = (message: string) => {
+      if (status) status.textContent = message
+    }
+
+    const renderSelectedFramework = (framework: FrameworkId) => {
+      for (const panel of panels) {
+        panel.hidden = panel.dataset.frameworkPanel !== framework
+      }
+
+      for (const selector of selectors) {
+        const selected = selector.dataset.frameworkSelect === framework
+
+        selector.setAttribute('aria-pressed', String(selected))
+
+        selector.dataset.variant = selected ? 'default' : 'ghost'
+
+        selector.classList.toggle('ui-button--default', selected)
+
+        selector.classList.toggle('ui-button--ghost', !selected)
+      }
+
+      updateFrameworkStatus(`Rendering with ${frameworkLabels[framework]}`)
+    }
+
+    const selectFramework = async (framework: FrameworkId) => {
+      requestedFramework = framework
+
+      if (!initializedFrameworks.has(framework)) {
+        viewport?.setAttribute('aria-busy', 'true')
+
+        updateFrameworkStatus(`Loading ${frameworkLabels[framework]} preview…`)
+      }
+
+      const runtimeReady = await initializeFrameworkRuntime(framework)
+
+      if (requestedFramework !== framework) return
+
+      viewport?.removeAttribute('aria-busy')
+
+      if (!runtimeReady) {
+        updateFrameworkStatus(`${frameworkLabels[framework]} preview unavailable`)
+
+        return
+      }
+
+      renderSelectedFramework(framework)
+    }
+
+    for (const selector of selectors) {
+      selector.addEventListener('click', () => {
+        const framework = selector.dataset.frameworkSelect
+
+        if (framework && framework in frameworkLabels) {
+          void selectFramework(framework as FrameworkId)
+        }
+      })
+    }
+
+    root.querySelector('[data-astro-advance]')?.addEventListener('click', () => {
+      if (!astroProgress || !astroStatus) return
+
+      const current = Number(astroProgress.getAttribute('aria-valuenow'))
+      const next = current >= 96 ? 32 : current + 8
+      const indicator = astroProgress.querySelector<HTMLElement>('[data-slot="progress-indicator"]')
+
+      astroProgress.setAttribute('aria-valuenow', String(next))
+
+      if (indicator) indicator.style.width = `${next}%`
+
+      astroStatus.textContent = next >= 92 ? 'Ready for review.' : `${next}% verified`
+
+      astroAlert?.classList.toggle('ui-alert--success', next >= 92)
+    })
+
+    root.querySelector('[data-elements-advance]')?.addEventListener('click', () => {
+      if (!elementsProgress || !elementsStatus) return
+
+      const current = Number(elementsProgress.getAttribute('value'))
+      const next = current >= 96 ? 32 : current + 8
+
+      elementsProgress.setAttribute('value', String(next))
+
+      elementsStatus.textContent = next >= 92 ? 'Ready for review.' : `${next}% verified`
+
+      elementsAlert?.setAttribute('variant', next >= 92 ? 'success' : 'default')
+    })
+  }
+
+  void initializeWebFrameworkPlayground()
+
+  document.addEventListener('astro:page-load', () => {
+    void initializeWebFrameworkPlayground()
+  })
+</script>
+
+<style>
+  .web-framework-playground {
+    display: grid;
+    gap: 1rem;
+    margin-block: clamp(2rem, 5vw, 4rem);
+  }
+
+  .web-framework-playground__heading,
+  :global(.web-framework-preview__heading) {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .web-framework-playground__heading > div:first-child {
+    display: grid;
+    gap: 0.6rem;
+    max-width: 48rem;
+  }
+
+  .web-framework-playground__badge {
+    justify-self: start;
+  }
+
+  .web-framework-playground__heading h2,
+  .web-framework-playground__heading p,
+  :global(.web-framework-preview__heading h2),
+  :global(.web-framework-preview__heading p) {
+    margin: 0;
+  }
+
+  .web-framework-playground__heading h2 {
+    font-size: clamp(1.65rem, 3vw, 2.35rem);
+    line-height: 1.1;
+  }
+
+  .web-framework-playground__heading p,
+  :global(.web-framework-preview__heading p) {
+    color: hsl(var(--ink-soft));
+    line-height: 1.65;
+  }
+
+  .web-framework-playground__status {
+    margin: 0;
+    color: hsl(var(--ink-muted));
+    font-size: 0.85rem;
+  }
+
+  .web-framework-playground__viewport {
+    min-width: 0;
+  }
+
+  .web-framework-playground__viewport > [hidden] {
+    display: none;
+  }
+
+  :global(.web-framework-preview__surface) {
+    display: grid;
+    gap: 1rem;
+    max-width: 58rem;
+    margin-inline: auto;
+    border: 1px solid hsl(var(--line));
+    border-radius: 1rem;
+    background: hsl(var(--surface));
+    box-shadow: var(--ui-shadow-md);
+    padding: clamp(1rem, 3vw, 1.5rem);
+  }
+
+  :global(.web-framework-preview__heading h2) {
+    margin-top: 0.5rem;
+    font-size: 1.4rem;
+  }
+
+  :global(.web-framework-preview__stack) {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  :global(.web-framework-preview__surface [role="tabpanel"]) {
+    color: hsl(var(--ink-soft));
+    font-size: 0.9rem;
+    line-height: 1.6;
+    padding: 0.85rem 0.15rem 0;
+  }
+
+  @media (max-width: 640px) {
+    .web-framework-playground__heading :global(.ui-button-group) {
+      width: 100%;
+    }
+
+    .web-framework-playground__heading :global(.ui-button-group .ui-button) {
+      flex: 1;
+    }
+  }
+</style>

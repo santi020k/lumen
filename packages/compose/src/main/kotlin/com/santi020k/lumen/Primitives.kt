@@ -33,6 +33,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.error
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.font.FontWeight
@@ -86,14 +87,18 @@ enum class LumenSurfacePadding(val value: Dp) {
     None(0.dp),
     Sm(LumenSpacing.Sm),
     Md(LumenSpacing.Md),
-    Lg(LumenSpacing.Lg)
+    Lg(LumenSpacing.Lg),
+    Xl(LumenSpacing.Xl)
 }
 
 enum class LumenSurfaceRadius(val value: Dp) {
     None(0.dp),
     Sm(LumenRadius.Sm),
     Md(LumenRadius.Md),
-    Lg(LumenRadius.Lg)
+    Lg(LumenRadius.Lg),
+    Xl(LumenRadius.Xl),
+    Size2xl(LumenRadius.Size2xl),
+    Size3xl(LumenRadius.Size3xl)
 }
 
 enum class LumenSurfaceTone {
@@ -370,13 +375,18 @@ fun LumenTextField(
 ) {
     val colors = LocalLumenTheme.current.colors
     val metrics = LumenButtonMetrics.resolve(size)
+    val isInvalid = resolveLumenFieldError(error, errorMessage)
 
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
-        modifier = modifier.defaultMinSize(minHeight = metrics.minHeight),
+        modifier = modifier
+            .defaultMinSize(minHeight = metrics.minHeight)
+            .semantics {
+                if (isInvalid) error(errorMessage ?: "Invalid value")
+            },
         enabled = enabled,
-        isError = error,
+        isError = isInvalid,
         singleLine = true,
         label = { Text(label) },
         supportingText = errorMessage?.let { message -> ({ Text(message) }) },
@@ -395,6 +405,9 @@ fun LumenTextField(
         )
     )
 }
+
+internal fun resolveLumenFieldError(error: Boolean, errorMessage: String?): Boolean =
+    error || errorMessage != null
 
 enum class LumenBadgeTone {
     Accent,

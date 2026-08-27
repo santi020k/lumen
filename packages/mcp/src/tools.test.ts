@@ -240,6 +240,13 @@ describe('native component tools', () => {
     expect(wearable?.implementations.compose?.install).toContain('project(":wear")')
   })
 
+  test('resolves native source declarations instead of same-name icon references', () => {
+    for (const componentName of ['Gauge', 'Picker', 'Slider']) {
+      expect(resolveNativeComponent(componentName)?.implementations['react-native']?.sourceFile)
+        .toBe('packages/react-native/src/value-components.tsx')
+    }
+  })
+
   test('reports unavailable platform implementations clearly', () => {
     const result = getNativeComponent({ name: 'Symbol picker', platform: 'react-native' })
 

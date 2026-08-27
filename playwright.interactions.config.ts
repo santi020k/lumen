@@ -10,14 +10,16 @@ const requestedBrowsers = process.env.LUMEN_INTERACTION_BROWSERS
 
 const browserNames = requestedBrowsers ?? (
   process.platform === 'darwin' && !process.env.CI
-    ? ['chromium', 'webkit']
-    : ['chromium', 'firefox', 'webkit']
+    ? ['chromium', 'webkit', 'mobile-chromium', 'mobile-webkit']
+    : ['chromium', 'firefox', 'webkit', 'mobile-chromium', 'mobile-webkit']
 )
 
 const browserDevices = {
   chromium: devices['Desktop Chrome'],
   firefox: devices['Desktop Firefox'],
-  webkit: devices['Desktop Safari']
+  webkit: devices['Desktop Safari'],
+  'mobile-chromium': devices['Pixel 7'],
+  'mobile-webkit': devices['iPhone 15']
 } as const
 
 const projects = browserNames.map(name => {
@@ -50,7 +52,7 @@ export default defineConfig({
     baseURL
   },
   webServer: {
-    command: `pnpm --filter @santi020k/lumen-icons-brand... run build && LUMEN_DOCS_OUT_DIR=.astro/interactions-dist-${port} pnpm --filter @santi020k/lumen-docs exec astro build && ASTRO_PREVIEW_BACKGROUND=0 LUMEN_DOCS_OUT_DIR=.astro/interactions-dist-${port} pnpm --filter @santi020k/lumen-docs exec astro preview --host 127.0.0.1 --port ${port}`,
+    command: `pnpm --filter @santi020k/lumen-icons-brand... run build && pnpm --filter @santi020k/lumen-react run build && pnpm --filter @santi020k/lumen-elements run build && LUMEN_DOCS_OUT_DIR=.astro/interactions-dist-${port} pnpm --filter @santi020k/lumen-docs exec astro build && ASTRO_PREVIEW_BACKGROUND=0 LUMEN_DOCS_OUT_DIR=.astro/interactions-dist-${port} pnpm --filter @santi020k/lumen-docs exec astro preview --host 127.0.0.1 --port ${port}`,
     reuseExistingServer: false,
     url: baseURL
   }

@@ -19,7 +19,14 @@ import {
   type ViewProps
 } from 'react-native'
 
-import { resolveLumenButtonOpacity, resolveLumenPressableStyle } from './recipes.js'
+import {
+  type LumenSurfacePadding,
+  type LumenSurfaceRadius
+} from './primitives.js'
+import {
+  resolveLumenButtonOpacity,
+  resolveLumenPressableStyle
+} from './recipes.js'
 import {
   type LumenAlertVariant,
   type LumenAvatarSize,
@@ -27,12 +34,16 @@ import {
   resolveLumenAlertColors,
   resolveLumenAvatarSize,
   resolveLumenCardColors,
-  resolveLumenProgressValue
+  resolveLumenProgressValue,
+  resolveLumenSurfacePadding,
+  resolveLumenSurfaceRadius
 } from './shared-recipes.js'
 import { useLumenTheme } from './theme-context.js'
 
 export interface LumenCardProps extends Omit<PressableProps, 'children'> {
   children: ReactNode
+  padding?: LumenSurfacePadding
+  radius?: LumenSurfaceRadius
   ref?: Ref<HostInstance>
   variant?: LumenCardVariant
 }
@@ -44,6 +55,8 @@ export const LumenCard = ({
   disabled = false,
   onLongPress,
   onPress,
+  padding = 'xl',
+  radius = 'lg',
   ref,
   style,
   variant = 'default',
@@ -56,10 +69,10 @@ export const LumenCard = ({
   const cardStyle = {
     backgroundColor: colors.backgroundColor,
     borderColor: colors.borderColor,
-    borderRadius: theme.radii.lg,
+    borderRadius: resolveLumenSurfaceRadius(theme, radius),
     borderWidth: 1,
     gap: theme.spacing.lg,
-    padding: theme.spacing.xl
+    padding: resolveLumenSurfacePadding(theme, padding)
   }
 
   if (!interactive) {
@@ -84,7 +97,10 @@ export const LumenCard = ({
       ref={ref}
       {...props}
       accessibilityRole={accessibilityRole ?? 'button'}
-      accessibilityState={{ ...accessibilityState, disabled: disabled || undefined }}
+      accessibilityState={{
+        ...accessibilityState,
+        disabled: disabled || undefined
+      }}
       disabled={disabled}
       onLongPress={onLongPress}
       onPress={onPress}
@@ -113,7 +129,9 @@ interface LumenAlertContentColors {
   foreground: ColorValue
 }
 
-const LumenAlertColorContext = createContext<LumenAlertContentColors | null>(null)
+const LumenAlertColorContext = createContext<LumenAlertContentColors | null>(
+  null
+)
 
 export const LumenAlert = ({
   children,
@@ -144,7 +162,8 @@ export const LumenAlert = ({
     >
       <LumenAlertColorContext
         value={{
-          description: variant === 'default' ? theme.colors.inkSoft : colors.color,
+          description:
+            variant === 'default' ? theme.colors.inkSoft : colors.color,
           foreground: colors.color
         }}
       >
@@ -174,7 +193,9 @@ export const LumenAlertTitle = ({
         {
           color: colors?.foreground ?? theme.colors.ink,
           fontSize: theme.fontSizes.sm,
-          fontWeight: String(theme.fontWeights.semibold) as TextStyle['fontWeight']
+          fontWeight: String(
+            theme.fontWeights.semibold
+          ) as TextStyle['fontWeight']
         },
         style
       ]}
@@ -321,7 +342,9 @@ export const LumenAvatar = ({
             style={{
               color: theme.colors.ink,
               fontSize,
-              fontWeight: String(theme.fontWeights.bold) as TextStyle['fontWeight']
+              fontWeight: String(
+                theme.fontWeights.bold
+              ) as TextStyle['fontWeight']
             }}
           >
             {fallback}

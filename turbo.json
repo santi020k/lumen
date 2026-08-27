@@ -4,6 +4,7 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
+      "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/tsconfig*.json"],
       "outputs": ["dist/**", ".astro/**", ".next/**"],
       "outputLogs": "errors-only"
     },
@@ -13,10 +14,16 @@
     },
     "typecheck": {
       "dependsOn": ["^build"],
+      "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/tsconfig*.json"],
       "outputLogs": "errors-only"
     },
     "test": {
       "dependsOn": ["^build"],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "$TURBO_ROOT$/tsconfig*.json",
+        "$TURBO_ROOT$/vitest.config.ts"
+      ],
       "outputs": [],
       "outputLogs": "errors-only"
     },
@@ -27,6 +34,7 @@
     },
     "lint": {
       "dependsOn": ["^build"],
+      "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/eslint.config.js"],
       "outputLogs": "errors-only"
     },
     "lint:fix": {
@@ -59,6 +67,7 @@
     }
   },
   "futureFlags": {
+    "affectedUsingTaskInputs": true,
     "errorsOnlyShowHash": true
   }
 }

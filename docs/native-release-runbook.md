@@ -4,215 +4,255 @@ This runbook turns the [Lumen 2 readiness plan](lumen-2-readiness.md) into an ex
 sequence. It does not authorize publishing, tagging, merging, or changing physical devices. Each
 external action still requires the maintainer's explicit approval.
 
-## Release trains
+## Release policy
 
-Use three distinct trains. Do not count an artifact in more than one train.
+Continue publishing ordinary releases on the existing version lines while the supported Lumen 2
+contract gathers launch evidence. Do not create a separate version train solely for that evidence.
 
-| Train | React Native | SwiftUI repository tag | Compose and Wear | Purpose |
-| --- | --- | --- | --- | --- |
-| Corrective patch | `0.5.0` unchanged | `v1.6.1` | `0.5.0` unchanged | Repair the published SwiftUI tvOS availability contract |
-| Native RC 1 | `1.0.0-rc.0` | `v1.7.0-rc.0` | `1.0.0-rc.0` | First frozen-contract soak iteration |
-| Native RC 2 | `1.0.0-rc.1` | `v1.7.0-rc.1` | `1.0.0-rc.1` | Upgrade and second frozen-contract soak iteration |
-| Native stable | `1.0.0` | `v1.7.0` | `1.0.0` | Graduate the native adapters after every gate passes |
+| Stage                 | npm, SwiftUI, and WidgetKit repository                   | React Native                         | Compose and Wear                     | Purpose                                                       |
+| --------------------- | -------------------------------------------------------- | ------------------------------------ | ------------------------------------ | ------------------------------------------------------------- |
+| Current development   | Existing `1.x` package and repository releases           | Existing pre-2 releases              | Existing `0.x` releases              | Hold the supported v2 APIs and gather real-product evidence   |
+| Stability iteration 1 | Next approved ordinary `1.x` release                     | Next approved ordinary pre-2 release | Next approved ordinary `0.x` release | First frozen-contract public release and consumer validation  |
+| Stability iteration 2 | A later ordinary `1.x` release                           | A later ordinary pre-2 release       | A later ordinary `0.x` release       | Prove an upgrade without changing the supported API baselines |
+| Lumen 2               | Every public package at `2.0.0`; repository tag `v2.0.0` | `2.0.0`                              | `2.0.0`                              | Graduate every platform together                              |
 
-The Swift version follows the umbrella repository tag because Swift Package Manager consumes this
-repository. It is intentionally different from the independently versioned React Native and
-Compose artifacts. The `v1.6.1` patch is a distribution correction, not a prerelease soak
-iteration.
+Swift Package Manager consumes this repository, so SwiftUI continues to follow the umbrella Git
+tag. The mismatched pre-2.0 numbers describe distribution history, not different
+maturity promises. Lumen `2.0.0` is the first coordinated release where every public package and
+platform is production-supported under the same major version.
 
-Treat the version table as the proposed train until the corresponding version changes are reviewed
-in a release pull request. If another umbrella release lands first, advance the Swift tag train to
-the next available compatible minor without renumbering React Native or Compose.
+Version 2 may include reviewed breaking corrections, but the release must not manufacture web
+breakage merely to justify a major. Every actual breaking change still requires consumer evidence,
+migration notes, and an approved contract disposition.
 
-## 1. Publish and verify the Swift corrective patch
+## 1. Maintain a clean current release baseline
 
-The current changeset status calculates `@santi020k/lumen@1.6.1`. The repository release workflow
-creates `v1.6.1` only after that exact npm package publishes. Keep the availability fix, its
-changeset, and the generated version changes in the same release revision.
+Publish fixes and compatible improvements through the normal Changesets and Compose workflows.
+The repository tag, npm package family, Swift package reference, Compose artifacts, changelogs, and
+release manifest must describe the same intended source revision.
 
-Before merging the feature work:
+The published `v1.6.0` Swift package has incorrect tvOS availability boundaries. The existing tag
+was not moved or replaced. The source correction is published in immutable tag `v1.7.0-rc.0`, and
+the public tag passed the clean macOS, iOS, tvOS, and watchOS consumer check on 2026-08-27:
 
 ```bash
 pnpm exec changeset status
 pnpm run check:swift-package-candidate
 pnpm run check:release-manifest
+pnpm run check:swift-version
 pnpm run validate
+pnpm run check:swift-package-release -- --version 1.7.0-rc.0
 ```
 
-Then follow the normal Changesets flow in [Contributing](../CONTRIBUTING.md): merge the feature pull
-request, review the generated `changeset-release/main` pull request, and merge it only after its
-required checks pass. Do not create or move `v1.6.1` manually while the release workflow is
-running.
+The prerelease tag completes the corrective Swift distribution proof, but it is not an ordinary
+published release and therefore does not count as a stability-soak iteration.
 
-After the workflow reports a successful publish, resolve the public tag rather than trusting the
-workflow result alone:
+## 2. Freeze the supported native contracts
 
-```bash
-git ls-remote --exit-code --tags origin refs/tags/v1.6.1 refs/tags/v1.6.1^{}
-pnpm run check:swift-package-release -- --version 1.6.1
-```
+Before recording a stability iteration:
 
-Record the tag's peeled commit, the release workflow run, and the public consumer check in the
-release notes. Never move `v1.6.0` or `v1.6.1`; issue a new patch if another correction is needed.
+- every public declaration is classified as Supported, Experimental, deprecated, or internal;
+- every Supported API baseline passes without a change pending review;
+- pre-2 corrections include migration notes;
+- no release-blocking consumer finding remains open; and
+- the exact published revision passes the native package, API, distribution, and device-evidence
+  structural checks.
 
-## 2. Confirm the RC entry conditions
-
-Do not enter prerelease mode until all of these are true:
-
-- `v1.6.1` passes the public Swift package release check;
-- every Supported API baseline passes without a change that still needs review;
-- `pnpm run check:wear-api-classification` proves the consumer-validated Wear subset is Supported
-  and every remaining evaluation API is explicitly Experimental;
-- no release-blocking consumer finding remains open;
-- the candidate revision passes the release-canary workflow; and
-- the physical-device matrix has enough coverage to expose contract problems before RC 1. The full
-  matrix remains mandatory before stable graduation.
-
-Run the structural gates on the exact candidate revision:
+Run:
 
 ```bash
 pnpm run check:native-api-baseline
 pnpm run check:swift-api-baseline
+pnpm run check:compose-api-classification
 pnpm run check:wear-api-classification
-pnpm run check:native-prerelease-soak
+pnpm run check:web-consumer-evidence
+pnpm run check:native-consumer-evidence
+pnpm run check:native-stability-soak
 pnpm run check:native-device-evidence
 (cd packages/compose && ./gradlew apiCheck)
 ```
 
-Any intentional Supported API change requires review, migration notes, regenerated baselines, and a
-restart of the two-iteration soak. A newly added Experimental API does not silently become part of
-the stable contract.
+An intentional Supported API change requires review, migration notes, regenerated baselines, and a
+restart of the two-iteration stability soak. A newly added Experimental API does not silently join
+the stable surface.
 
-## 3. Prepare native RC 1
+The release-candidate workflow treats the contract, release manifest, frozen API baselines, and
+all four web and native evidence ledgers plus their validators as one graduation-decision surface. Changes to any
+of them select the canary job that validates the checked-in ledger structure before running the
+version-sensitive stable-readiness gate; pre-2 versions therefore cannot hide a malformed ledger
+behind the stable gate's expected early exit.
 
-Start from a clean revision after the corrective release. Create reviewed Changesets entries that:
+## 3. Record stability iteration 1
 
-- major-bump `@santi020k/lumen-react-native` to the `1.0.0` target;
-- minor-bump `@santi020k/lumen` to the `1.7.0` target for the Swift repository tag; and
-- explain native stability, remaining RC status, and migration from the last Beta releases.
+Use an ordinary published release; no `rc` suffix or prerelease mode is required. Record the
+iteration only after React Native, SwiftUI, WidgetKit, Compose, and Wear artifacts are available through their
+real consumer distribution channels and the selected active applications build against them. The
+recorded iteration date must have already occurred; future-dated soak evidence is rejected.
 
-Enter Changesets prerelease mode with `rc`, then let the repository's version script calculate the
-npm prerelease versions:
-
-```bash
-pnpm exec changeset pre enter rc
-pnpm run version-packages
-pnpm exec changeset status
-```
-
-The reviewed output must be `@santi020k/lumen-react-native@1.0.0-rc.0` and
-`@santi020k/lumen@1.7.0-rc.0`. Do not hand-edit npm versions to force that result. Set
-`lumenComposeVersion=1.0.0-rc.0`, run the canonical Compose version synchronizer and release-manifest
-generator, and review every generated documentation and lockfile change:
-
-```bash
-pnpm run sync:compose-version
-pnpm run generate:release-manifest
-pnpm run validate
-swift test
-(cd packages/compose && ./gradlew test lint apiCheck assembleDebugAndroidTest verifyMavenPublication)
-```
-
-The npm release uses the normal Changesets release pull request. Compose publishes only from an
-explicitly approved immutable `compose-v1.0.0-rc.0` tag or an explicitly approved manual workflow
-dispatch. Verify that the tag version equals `lumenComposeVersion` before publishing.
-
-After every public artifact resolves, run the packed/native consumer checks against the public
-versions, complete the selected real-application installs, and capture immutable workflow, tag,
-registry, Maven Central, and consumer evidence URLs.
-
-Dispatch `Verify published native release` with the full shared release revision and the exact
-React Native, Swift, and Compose versions. Its metadata job requires both repository tags to peel to
-that revision, matches the checked-out manifests, resolves npm and both Maven Central coordinates,
-and then builds clean public-artifact consumers on Android, iOS, every declared Apple platform,
-phone Compose, and Wear Compose. Use the successful workflow-run URL as one immutable soak-evidence
-entry; it does not replace the real-application or physical-device records.
-
-## 4. Record RC 1
-
-Add an iteration to `registry/native-prerelease-soak.json` only after all four public artifacts are
-available from their consumer distribution channels. Use a full 40-character repository revision,
-the exact versions from the table, the unchanged baseline hashes already stored in the ledger, and
-evidence links that a reviewer can open.
-
-The entry shape is:
+Add the following shape to `registry/native-stability-soak.json`:
 
 ```json
 {
-  "id": "native-rc.0",
+  "id": "native-soak.0",
   "date": "YYYY-MM-DD",
   "revision": "FULL_40_CHARACTER_GIT_REVISION",
   "versions": {
-    "compose": "1.0.0-rc.0",
-    "reactNative": "1.0.0-rc.0",
-    "swift": "1.7.0-rc.0",
-    "wear": "1.0.0-rc.0"
+    "compose": "CURRENT_0_X_VERSION",
+    "reactNative": "CURRENT_PRE_2_VERSION",
+    "swift": "CURRENT_1_X_VERSION",
+    "wear": "CURRENT_0_X_VERSION"
   },
   "baselines": {
     "compose": "COPY_FROM_LEDGER_BASELINES",
+    "composeClassification": "COPY_FROM_LEDGER_BASELINES",
     "reactNative": "COPY_FROM_LEDGER_BASELINES",
     "swiftUI": "COPY_FROM_LEDGER_BASELINES",
+    "swiftWidget": "COPY_FROM_LEDGER_BASELINES",
     "wear": "COPY_FROM_LEDGER_BASELINES",
     "wearClassification": "COPY_FROM_LEDGER_BASELINES"
   },
   "evidence": {
-    "releaseVerificationUrl": "https://github.com/santi020k/lumen/actions/runs/RUN_ID",
+    "release": {
+      "repository": "https://github.com/santi020k/lumen",
+      "revision": "FULL_40_CHARACTER_GIT_REVISION",
+      "revisionUrl": "https://github.com/santi020k/lumen/commit/FULL_40_CHARACTER_GIT_REVISION",
+      "verificationUrl": "https://github.com/santi020k/lumen/actions/runs/RUN_ID"
+    },
     "consumerValidation": {
-      "compose": "IMMUTABLE_COMPOSE_CONSUMER_EVIDENCE",
-      "reactNative": "IMMUTABLE_REACT_NATIVE_CONSUMER_EVIDENCE",
-      "swiftUI": "IMMUTABLE_SWIFT_CONSUMER_EVIDENCE",
-      "wear": "IMMUTABLE_WEAR_CONSUMER_EVIDENCE"
+      "compose": {
+        "repository": "EXTERNAL_COMPOSE_CONSUMER_REPOSITORY",
+        "revision": "FULL_40_CHARACTER_COMPOSE_CONSUMER_REVISION",
+        "revisionUrl": "EXACT_COMPOSE_CONSUMER_REVISION_URL",
+        "verificationUrl": "PERMANENT_COMPOSE_CONSUMER_WORKFLOW_OR_BUILD_URL"
+      },
+      "reactNative": {
+        "repository": "EXTERNAL_REACT_NATIVE_CONSUMER_REPOSITORY",
+        "revision": "FULL_40_CHARACTER_REACT_NATIVE_CONSUMER_REVISION",
+        "revisionUrl": "EXACT_REACT_NATIVE_CONSUMER_REVISION_URL",
+        "verificationUrl": "PERMANENT_REACT_NATIVE_CONSUMER_WORKFLOW_OR_BUILD_URL"
+      },
+      "swiftUI": {
+        "repository": "EXTERNAL_SWIFTUI_CONSUMER_REPOSITORY",
+        "revision": "FULL_40_CHARACTER_SWIFTUI_CONSUMER_REVISION",
+        "revisionUrl": "EXACT_SWIFTUI_CONSUMER_REVISION_URL",
+        "verificationUrl": "PERMANENT_SWIFTUI_CONSUMER_WORKFLOW_OR_BUILD_URL"
+      },
+      "swiftWidget": {
+        "repository": "EXTERNAL_WIDGETKIT_CONSUMER_REPOSITORY",
+        "revision": "FULL_40_CHARACTER_WIDGETKIT_CONSUMER_REVISION",
+        "revisionUrl": "EXACT_WIDGETKIT_CONSUMER_REVISION_URL",
+        "verificationUrl": "PERMANENT_WIDGETKIT_CONSUMER_WORKFLOW_OR_BUILD_URL"
+      },
+      "wear": {
+        "repository": "EXTERNAL_WEAR_CONSUMER_REPOSITORY",
+        "revision": "FULL_40_CHARACTER_WEAR_CONSUMER_REVISION",
+        "revisionUrl": "EXACT_WEAR_CONSUMER_REVISION_URL",
+        "verificationUrl": "PERMANENT_WEAR_CONSUMER_WORKFLOW_OR_BUILD_URL"
+      }
     }
   }
 }
 ```
 
-The published-native workflow URL must be the successful run for this exact iteration. Consumer
-entries identify the active application build, issue, pull request, or other immutable record for
-each adapter. RC 1 records the exact public-artifact installation; RC 2 records the upgrade from RC
-1. A playground or package smoke test is not a consumer-validation record.
+The Lumen release record must bind the iteration revision to the repository and its permanent
+verification run. Every consumer record must identify an external repository, its exact lowercase
+40-character consumer revision, an immutable URL for that revision, and a permanent workflow,
+pipeline, job, or build URL from the same repository. Mutable branches, workflow definitions,
+queries, fragments, Lumen-owned fixtures, playgrounds, and package smoke tests do not replace an
+active-consumer record. Validate the entry with
+`pnpm run check:native-stability-soak`; readiness remains incomplete with one iteration recorded.
 
-Validate the record with `pnpm run check:native-prerelease-soak`. The readiness form must still fail
-with one iteration remaining.
+## 4. Upgrade through stability iteration 2
 
-## 5. Upgrade through native RC 2
+Publish later ordinary versions on the same pre-2.0 lines. Every adapter version must be newer than
+its first stability-iteration version. Upgrade at least one active external consumer per adapter
+without source substitution, then record installation, build, runtime, accessibility, and migration
+findings as `native-soak.1`.
 
-Keep Changesets prerelease mode active. Add patch Changesets entries for the umbrella and React
-Native packages, advance Compose and Wear to `1.0.0-rc.1`, and run the same generation and validation
-sequence. The reviewed versions must be the RC 2 values in the table.
-
-Upgrade at least one active external consumer per adapter from RC 1 to RC 2 without source
-substitution. Record installation, build, runtime, accessibility, and migration findings. Resolve
-every release-blocking result before recording `native-rc.1` in the soak ledger.
-
-After recording RC 2, both commands must pass:
+Resolve every release-blocking result before both commands pass:
 
 ```bash
-pnpm run check:native-prerelease-readiness
+pnpm run check:native-stability-readiness
+pnpm run check:native-consumer-readiness
 pnpm run check:native-device-readiness
 ```
 
-`pnpm run check:native-stable-readiness` enforces these records before React Native `1.0.0`,
-Compose/Wear `1.0.0`, or the SwiftUI repository tag `v1.7.0` can be published through the canonical
-release workflows. Prerelease versions remain publishable so the two required RC iterations can be
-created.
+## 5. Prepare the coordinated Lumen 2 release
 
-## 6. Graduate native stable
+After the stability soak, real-consumer upgrades, distribution checks, and full physical-device
+matrix are complete:
 
-Exit Changesets prerelease mode only after the two soak iterations, real-consumer upgrades,
-distribution checks, and full physical-device matrix pass:
+1. add reviewed major Changesets entries for every public npm package;
+2. after applying Changesets, align every public npm package, Compose, and Wear to `2.0.0` (a
+   semantic major bump from a `0.x` or `1.0.0-rc` line may otherwise stop at `1.0.0`);
+3. set the umbrella package to `2.0.0`, which produces the Swift `v2.0.0` repository tag;
+4. regenerate the release manifest, synchronized platform installation guidance, MCP snapshot,
+   registry, platform outputs, and lockfile;
+5. verify every public surface describes the supported Lumen 2 contract and remaining evidence;
+6. run the complete release, consumer, compatibility, accessibility, and distribution gates; and
+7. approve the version 2 contract and migration notes, recording the approver, date, full candidate
+   revision reviewed after those gates, and immutable HTTPS approval evidence in
+   `registry/lumen-2-contract.json`.
 
-```bash
-pnpm exec changeset pre exit
-pnpm run version-packages
-pnpm exec changeset status
-```
+`pnpm run version-packages` applies the one-time public-package and Compose/Wear alignment
+immediately after Changesets, synchronizes Compose consumers and installation guidance, and then
+regenerates the lockfile and release manifest. It keeps each newly generated changelog heading
+aligned with its package manifest and fails closed if the expected release heading is missing. The
+synchronizer is a no-op for ordinary pre-2 releases and after the Lumen 2 graduation record exists.
 
-Review that the npm targets are `@santi020k/lumen-react-native@1.0.0` and
-`@santi020k/lumen@1.7.0`. Set Compose and Wear to `1.0.0`, regenerate the release metadata, remove
-the SwiftUI Beta label, publish the final migration notes, and run the complete release gates. Do
-not approve the stable release if either machine-readable readiness command fails.
+The reviewed candidate in step 7 must already contain steps 1 through 6. Commit the approval record
+separately after the review. Publication rejects any delta from the reviewed revision other than
+`registry/lumen-2-contract.json`; if another file changes, prepare a new candidate and approval
+instead of expanding an allowlist.
 
-After public publication, verify npm, the peeled `v1.7.0` tag, both Maven Central coordinates, every
-clean consumer build, and the upgraded real applications. Only then mark native stable release
-Complete in the readiness ledger and begin the separate Lumen 2 contract RFC.
+`pnpm run check:native-stable-readiness` rejects an uncoordinated version 2 launch, a draft or
+unattributed contract, unresolved contract candidates or investigations, and incomplete web
+consumer or native machine-readable evidence ledgers before any adapter can graduate. For the initial
+`2.0.0` launch it also requires the generated release manifest to list every public npm package at
+exactly `2.0.0`, together with the Compose coordinates and Swift tag. Later 2.x releases are not
+forced into package-family lockstep. A later stable major is rejected until it has its own explicit
+contract; it cannot inherit the Lumen 2 approval or evidence. The ordinary pre-2.0 validation path
+continues to accept the draft proposal while evidence is being gathered.
+
+## 6. Launch and verify Lumen 2
+
+Publish only through the repository's authorized npm, Maven Central, and repository-tag workflows.
+For the initial coordinated launch, publish the npm family from the approved release revision first;
+that workflow creates `v2.0.0` for Swift Package Manager. Create `compose-v2.0.0` only on that exact
+commit. The Compose publication workflow fetches and peels both refs, then rejects a missing or
+different `v2.0.0` commit before it reads publication credentials or uploads an artifact. This
+same-commit rule applies to the initial `2.0.0` milestone; verified post-graduation 2.x releases may
+version independently.
+
+The initial `2.0.0` publication guard also requires a completely clean Git working tree, including no
+untracked files. Matching the approved `HEAD` is insufficient when local changes could alter the
+npm tarballs or Compose artifacts after review.
+
+After publication, verify every npm package at `2.0.0`, the peeled `v2.0.0` Swift tag, both Compose
+coordinates at `2.0.0`, every clean consumer build, and the upgraded real applications.
+The npm workflow must verify that Changesets published the complete package family from the release
+manifest at `2.0.0` before it creates the repository tag; a successful umbrella package alone is not
+enough. If `v2.0.0` already exists remotely, the workflow peels it and requires the tag to resolve to
+the current publication commit instead of silently accepting a conflicting tag.
+Before tagging, the workflow also installs every reported package into a temporary clean npm
+consumer and verifies its registry signature, tarball integrity, signed SLSA source revision,
+repository, and release-workflow identity against the publication commit. The workflow refuses
+non-`main` dispatches, and the signed provenance must identify both `refs/heads/main` and its exact
+publication commit.
+The published-native workflow also runs npm's signature verification and requires the React Native
+package's signed SLSA subject digest, source repository, release workflow, and Git commit to match
+the installed tarball and requested release revision.
+For Compose and Wear, each published POM identifies the immutable `compose-v<version>` source tag.
+The workflow resolves that tag to the requested revision, verifies every primary artifact against
+its Maven Central SHA-512 checksum, requires the Central-validated PGP signature for each artifact,
+and builds clean phone and watch consumers from those exact coordinates.
+
+Record the successful graduation in `registry/lumen-2-contract.json` with the verifier, date,
+`2.0.0` release revision, and immutable HTTPS release evidence. This record unlocks ordinary
+post-graduation 2.x releases only when its release revision matches the peeled `v2.0.0` tag. Both
+publication workflows perform that identity check before credentials; without a verified record,
+the gate continues to require the exact coordinated `2.0.0` package family and rejects a direct
+jump to a later version.
+
+Only then mark the coordinated Lumen 2 release Complete in the readiness ledger. From that point,
+all Supported web and native APIs follow the stable compatibility policy.

@@ -4,10 +4,12 @@ import type {
   ReactNode
 } from 'react'
 import { isValidElement } from 'react'
+import { renderToStaticMarkup } from 'react-dom/server'
 
 import { registerLumenIconPack } from '@santi020k/lumen-core'
 import { describe, expect, test } from 'vitest'
 
+import * as LumenReact from './index.js'
 import {
   Accordion,
   Agenda,
@@ -44,6 +46,7 @@ import {
   Direction,
   Drawer,
   Empty,
+  ErrorState,
   Graphic,
   Heatmap,
   HoverCard,
@@ -77,7 +80,6 @@ import {
   Sidebar,
   Skeleton,
   Slider,
-  Sonner,
   Sparkline,
   Spinner,
   Stat,
@@ -92,6 +94,7 @@ import {
   ThemeBuilder,
   TimeField,
   Toast,
+  ToastViewport,
   Toggle,
   ToggleGroup,
   Typography
@@ -432,6 +435,44 @@ describe('@santi020k/lumen-react components', () => {
       .toBe('ui-message-scroller ui-message-scroller--glass ui-glass-subtle')
   })
 
+  test('renders a labelled recovery state with explicit announcement policy', () => {
+    const state = ErrorState({
+      actions: 'Try again',
+      announce: 'polite',
+      description: 'Check your connection.',
+      id: 'projects-error',
+      kind: 'offline',
+      layout: 'page',
+      reference: 'REQ-4F82',
+      title: 'Could not load projects'
+    }) as ReactElement
+    const props = propsOf(state)
+    const html = renderToStaticMarkup(state)
+
+    expect(props.className).toBe(
+      'ui-error-state ui-error-state--offline ui-error-state--page'
+    )
+    expect(props['aria-labelledby']).toBe('projects-error-title')
+    expect(props['aria-live']).toBe('polite')
+    expect(props.role).toBe('status')
+    expect(html).toContain('data-slot="error-state-actions"')
+    expect(html).toContain('data-slot="error-state-reference"')
+  })
+
+  test('keeps static error states out of live regions by default', () => {
+    const state = ErrorState({
+      graphic: false,
+      title: 'Could not load projects'
+    }) as ReactElement
+    const props = propsOf(state)
+    const html = renderToStaticMarkup(state)
+
+    expect(props['aria-label']).toBe('Could not load projects')
+    expect(props['aria-live']).toBeUndefined()
+    expect(props.role).toBeUndefined()
+    expect(html).not.toContain('data-slot="error-state-graphic"')
+  })
+
   test('builds native select with placeholder and normalized options', () => {
     const select = NativeSelect({
       options: ['Alpha', { label: 'Beta', value: 'b' }],
@@ -502,7 +543,12 @@ describe('@santi020k/lumen-react components', () => {
   test('marks marker variants and runtime data hooks', () => {
     expect(propsOf(Marker({}) as ReactElement).className).toBe('ui-marker')
     expect(propsOf(Marker({ variant: 'success' }) as ReactElement).className).toBe('ui-marker ui-marker--success')
-    expect(propsOf(Sonner({}) as ReactElement)['data-ui-sonner']).toBe(true)
+    const viewport = propsOf(ToastViewport({ placement: 'top-right' }) as ReactElement)
+
+    expect(viewport['data-ui-toast-viewport']).toBe(true)
+    expect(viewport['data-placement']).toBe('top-right')
+    expect(viewport['data-ui-toast-max']).toBe(3)
+    expect(Reflect.get(LumenReact, 'Sonner')).toBeUndefined()
     expect(propsOf(ThemeBuilder({}) as ReactElement)['data-ui-theme-builder']).toBe(true)
   })
 

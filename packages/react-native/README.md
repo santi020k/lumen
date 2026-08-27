@@ -1,7 +1,7 @@
 # @santi020k/lumen-react-native
 
-> **Beta:** This package is ready for testing and early production adoption. Its public API may
-> evolve as it is validated in real applications; review release notes when upgrading.
+> **Supported for Lumen 2:** This package uses the frozen version 2 contract. The current artifact
+> remains a release candidate until publication, physical-device, and consumer-soak gates complete.
 
 Maintainers can verify the exact packed package contents, peer installation, and strict external
 TypeScript consumption from the repository root with `pnpm run check:react-native-package`.
@@ -17,19 +17,29 @@ themes together with native Text, Icon, IconButton, Surface, Button, ButtonGroup
 Textarea, FieldGroup, Badge, Chip, Divider, Spinner, Card, Alert, Toast, Progress, Avatar, Toggle,
 SettingsRow, SearchField, DateField, DateRangeField, Checkbox, RadioGroup, SegmentedControl, Tabs, Skeleton, Graphic, Backdrop,
 Illustration, and Disclosure implementations.
-The structured tier also includes EmptyState, ListRow, Banner, Stat, SectionHeader, StatusBar, and a
+The structured tier also includes EmptyState, ErrorState, ListRow, Banner, Stat, SectionHeader, StatusBar, and a
 controlled NavigationBar for common product layouts without giving up native composition. `LumenRefreshControl` adds a
 React Native-specific pull-to-refresh indicator using the active semantic theme.
 `useLumenNavigationBarVisibility` and `LumenCollapsibleNavigationBar` add an optional scroll-
 responsive treatment for native lists without introducing an animation or navigation dependency.
 `LumenAlertDialog`, `LumenSheet`, `LumenMenu`, and `LumenShareButton` provide controlled native
 presentation and operating-system sharing without introducing a separate interaction dependency.
+Cards accept semantic `padding` and `radius` roles while preserving the extra-large/large defaults.
+Status bars use a distinct decorative icon for every tone and accept `iconName` when a product needs
+a more specific symbol, so visual status is not conveyed by color alone.
 
-Install the package and its native picker and SVG peers in an existing Expo or React Native application:
+Install the package and its SVG peer in an existing Expo or React Native application:
 
 ```bash
-pnpm add @santi020k/lumen-react-native @react-native-community/datetimepicker react-native-svg
-# or: npm install @santi020k/lumen-react-native @react-native-community/datetimepicker react-native-svg
+pnpm add @santi020k/lumen-react-native react-native-svg
+# or: npm install @santi020k/lumen-react-native react-native-svg
+```
+
+Date fields are an optional integration. Install the platform picker only when the application uses
+`@santi020k/lumen-react-native/datetime`:
+
+```bash
+pnpm add @react-native-community/datetimepicker
 ```
 
 React 19.2 and React Native 0.86.2 or newer are application-provided peer dependencies. Mount one
@@ -37,11 +47,13 @@ React 19.2 and React Native 0.86.2 or newer are application-provided peer depend
 
 ```ts
 import {
+  createLumenTheme,
   LumenButton,
   LumenIconButton,
   LumenProvider,
   LumenSurface,
-  LumenText
+  LumenText,
+  type LumenTheme
 } from '@santi020k/lumen-react-native'
 
 export function App() {
@@ -64,10 +76,81 @@ npx expo start
 # or: npx react-native start
 ```
 
+Applications can pass a custom color theme to `LumenProvider`. Start from
+`createLumenTheme(scheme)`, copy its `colors` or `chartColors`, and replace semantic roles such as
+`brand`, `brandSolid`, and `brandSoft`; components continue to consume the same named color contract
+without casts. `LumenColorPalette` and `LumenChartColorPalette` are available when a product keeps
+its palettes in separate modules. Pass either `theme` or `scheme`; when both are present, the
+explicit `theme` wins.
+
+```tsx
+const baseTheme = createLumenTheme('light')
+const productTheme: LumenTheme = {
+  ...baseTheme,
+  colors: {
+    ...baseTheme.colors,
+    brand: '#620AE6',
+    brandSolid: '#5709CE',
+    brandSoft: '#EEE7F9'
+  }
+}
+
+<LumenProvider theme={productTheme}>{children}</LumenProvider>
+```
+
+## React hooks
+
+React Native applications can use React's built-in hooks and platform-neutral application hooks
+normally. Lumen also exports native adaptations of reusable web behavior contracts:
+
+- `useDisclosure` and its `useDialog` alias control `LumenAlertDialog` and `LumenSheet` visibility;
+- `useTabs` connects controlled or local selection state to `LumenTabs`;
+- `useSelect` normalizes string or numeric options for `LumenPicker` and app-owned pickers;
+- `useLanguageToggle` cycles locale state without mutating the browser document or local storage;
+- `useThemeToggle` supplies explicit light/dark state that can be spread onto `LumenProvider`; and
+- `useToast` owns a bounded native notification queue rendered with `LumenToast`.
+
+The package also exports `useLumenTheme` for semantic theme access and
+`useLumenNavigationBarVisibility` for native scroll-responsive navigation. Browser-specific hooks
+from `@santi020k/lumen-react` must not be imported into React Native: DOM focus, ARIA attributes,
+CSS, browser storage, and keyboard behavior remain in the web adapter.
+
+```tsx
+const dialog = useDialog()
+const tabs = useTabs({ defaultValue: 'overview' })
+
+<LumenButton onPress={dialog.show}>Delete project</LumenButton>
+<LumenAlertDialog
+  {...dialog.dialogProps}
+  confirmLabel="Delete"
+  onConfirm={deleteProject}
+  title="Delete this project?"
+/>
+
+<LumenTabs
+  {...tabs.tabsProps}
+  label="Project sections"
+  options={projectTabs}
+>
+  <ProjectPanel value={tabs.value} />
+</LumenTabs>
+```
+
+Keep API access, schemas, business state, and platform-neutral custom hooks in a shared workspace
+package when one product has both React web and React Native applications. Each app should import
+the matching Lumen rendering adapter. See the
+[React Native hooks guide](https://lumen.santi020k.com/docs/react-native/hooks) for controller and
+composition examples.
+
 Date values remain controlled by the application. `LumenDateField` opens the system picker, while
 `LumenDateRangeField` coordinates two pickers and prevents the end from preceding the start:
 
 ```tsx
+import {
+  LumenDateRangeField,
+  type LumenDateRangeValue
+} from '@santi020k/lumen-react-native/datetime'
+
 const [range, setRange] = useState<LumenDateRangeValue>({ start: null, end: null })
 
 <LumenDateRangeField
@@ -90,6 +173,30 @@ the application supplies the active panel, so routing and data ownership stay ou
 >
   <WorkspaceTabPanel value={activeTab} />
 </LumenTabs>
+```
+
+Picker, Slider, and Gauge complete the shared phone control contract without adding another native
+dependency. Picker values remain controlled, Slider supports touch/drag plus screen-reader
+increment and decrement actions, and Gauge normalizes invalid ranges before exposing progress
+semantics:
+
+```tsx
+<LumenPicker
+  label="Deployment region"
+  value={region}
+  options={regionOptions}
+  onValueChange={setRegion}
+/>
+<LumenSlider
+  label="Minimum speed"
+  value={minimumSpeed}
+  min={1_000}
+  max={5_000}
+  step={100}
+  valueLabel={`${minimumSpeed} RPM`}
+  onValueChange={setMinimumSpeed}
+/>
+<LumenGauge label="Platform readiness" value={57} valueLabel="57 shared" tone="success" />
 ```
 
 Use `LumenNavigationBar` for a small set of peer app destinations. The application still owns the
@@ -181,7 +288,10 @@ Attach the refresh control to a native scroll container without replacing its sc
 ```
 
 See the [native component reference](../../docs/native-components.md) for the complete API matrix,
-state contracts, image-source mapping, and accessibility requirements.
+state contracts, image-source mapping, and accessibility requirements. Use the shared
+[React Native error-handling guide](../../docs/error-handling.md#react-native) when integrating
+`LumenErrorState`; it covers error/offline classification, layouts, announcements, safe references,
+and loading-safe retries.
 See the [native compatibility matrix](../../docs/native-compatibility.md) for React and React Native
 baselines, and use the [native device validation matrix](../../docs/native-device-validation.md) for
 VoiceOver and TalkBack evidence.

@@ -37,9 +37,10 @@ The shared token vocabulary is the brand contract:
 | Secondary accent | `accent` |
 | Status | `success`, `warning`, `danger` |
 
-Default Lumen themes lean crisp and product-focused: light surfaces, dark readable text, blue brand
-actions, teal accents, and warm status colors. The docs app may use the `santi020k-*` themes for a
-more personal violet expression.
+Default Lumen themes lean crisp and product-focused: cool light surfaces, dark readable text, a
+deep cyan brand, teal accents, and warm status colors. Every adapter uses this palette as its
+fallback, while applications can replace semantic roles at their theme boundary. The docs app may
+use the `santi020k-*` themes for a more personal violet expression.
 
 ## Logo
 

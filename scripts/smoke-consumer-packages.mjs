@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { spawnSync } from 'node:child_process'
-import { access, mkdir, mkdtemp, readdir, rm, writeFile } from 'node:fs/promises'
+import { access, mkdir, mkdtemp, readdir, readFile, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
 
@@ -19,10 +19,16 @@ const packageDirectories = [
   'icons-brand'
 ]
 
-const run = (command, args, cwd = repositoryRoot) => {
+const run = (
+  command,
+  args,
+  cwd = repositoryRoot,
+  environment = {}
+) => {
   const result = spawnSync(command, args, {
     cwd,
     encoding: 'utf8',
+    env: { ...process.env, ...environment },
     stdio: 'pipe'
   })
 
@@ -40,6 +46,7 @@ const run = (command, args, cwd = repositoryRoot) => {
 try {
   await Promise.all([
     mkdir(archiveDirectory, { recursive: true }),
+    mkdir(join(consumerDirectory, 'src', 'app'), { recursive: true }),
     mkdir(join(consumerDirectory, 'src', 'pages'), { recursive: true })
   ])
 
@@ -72,11 +79,16 @@ try {
       '--no-fund',
       ...archives,
       '@hookform/resolvers@5.7.1',
+      '@types/node@26.2.0',
+      '@types/react@19.2.18',
+      '@types/react-dom@19.2.5',
       'astro@7.1.3',
       'jsdom@29.1.1',
+      'next@16.3.2',
       'react@19.2.8',
       'react-dom@19.2.8',
       'react-hook-form@7.76.1',
+      'typescript@6.0.3',
       'yup@1.7.1',
       'zod@4.4.3'
     ],
@@ -95,6 +107,7 @@ import { lumen } from '@santi020k/lumen'
 import { lumenComponentNames, renderLumenIconSvg } from '@santi020k/lumen-core'
 import { registerLumenBrandIcons } from '@santi020k/lumen-icons-brand'
 import { Badge, Card } from '@santi020k/lumen-react'
+import { Badge as ServerBadge, Card as ServerCard } from '@santi020k/lumen-react/server'
 import {
   getLumenManagedFieldState,
   LumenSelectController
@@ -117,6 +130,14 @@ const html = renderToStaticMarkup(
 
 assert.match(html, /ui-card/)
 assert.match(html, /ui-badge/)
+assert.equal(
+  renderToStaticMarkup(createElement(ServerBadge, null, 'Server ready')),
+  '<span class="ui-badge ui-badge--default" data-variant="default">Server ready</span>'
+)
+assert.match(
+  renderToStaticMarkup(createElement(ServerCard, { as: 'article' }, 'Server card')),
+  /<article class="ui-card"/
+)
 
 const HookFormFixture = () => {
   const { control } = useForm({ defaultValues: { role: 'engineer' } })
@@ -189,11 +210,54 @@ Object.defineProperties(globalThis, {
 })
 
 const { defineLumenElements } = await import('@santi020k/lumen-elements/define')
+const { defineLumenBadge } = await import('@santi020k/lumen-elements/components/badge')
+const { defineLumenButton } = await import('@santi020k/lumen-elements/components/button')
+const { defineLumenCard } = await import('@santi020k/lumen-elements/components/card')
+const { defineLumenCombobox } = await import('@santi020k/lumen-elements/components/combobox')
+const { defineLumenFoundations } = await import('@santi020k/lumen-elements/components/foundations')
 
 defineLumenElements(dom.window.customElements)
 
 assert.ok(dom.window.customElements.get('lumen-card'))
 assert.ok(dom.window.customElements.get('lumen-dialog'))
+
+const selectedConstructors = new Map()
+const selectedRegistry = {
+  define: (name, constructor) => selectedConstructors.set(name, constructor),
+  get: name => selectedConstructors.get(name)
+}
+
+defineLumenElements(['Card', 'Button'], selectedRegistry)
+
+assert.deepEqual([...selectedConstructors.keys()], ['lumen-card', 'lumen-button'])
+assert.equal(selectedRegistry.get('lumen-dialog'), undefined)
+
+const granularConstructors = new Map()
+const granularRegistry = {
+  define: (name, constructor) => granularConstructors.set(name, constructor),
+  get: name => granularConstructors.get(name)
+}
+
+defineLumenBadge(granularRegistry)
+defineLumenButton(granularRegistry)
+defineLumenCard(granularRegistry)
+defineLumenCombobox(granularRegistry)
+
+assert.deepEqual(
+  [...granularConstructors.keys()],
+  ['lumen-badge', 'lumen-button', 'lumen-card', 'lumen-combobox']
+)
+
+const foundationConstructors = new Map()
+const foundationRegistry = {
+  define: (name, constructor) => foundationConstructors.set(name, constructor),
+  get: name => foundationConstructors.get(name)
+}
+
+defineLumenFoundations(foundationRegistry)
+
+assert.ok(foundationConstructors.has('lumen-grid'))
+assert.ok(foundationConstructors.has('lumen-visually-hidden'))
 `
   )
 
@@ -202,12 +266,88 @@ assert.ok(dom.window.customElements.get('lumen-dialog'))
     `---
 import { Badge, Card } from '@santi020k/lumen-astro'
 import '@santi020k/lumen-astro/styles.css'
+import '@santi020k/lumen-elements/styles.css'
 ---
 
 <Card>
   <Badge>Ready</Badge>
   <p>Packed Astro consumer</p>
 </Card>
+
+<lumen-card>
+  <lumen-badge variant="success">Granular elements ready</lumen-badge>
+  <lumen-button>Continue</lumen-button>
+</lumen-card>
+
+<lumen-grid columns="2">
+  <lumen-card-content>Foundation bundle ready</lumen-card-content>
+</lumen-grid>
+
+<script>
+  import { defineLumenBadge } from '@santi020k/lumen-elements/components/badge'
+  import { defineLumenButton } from '@santi020k/lumen-elements/components/button'
+  import { defineLumenCard } from '@santi020k/lumen-elements/components/card'
+  import { defineLumenCombobox } from '@santi020k/lumen-elements/components/combobox'
+  import { defineLumenFoundations } from '@santi020k/lumen-elements/components/foundations'
+
+  defineLumenBadge()
+  defineLumenButton()
+  defineLumenCard()
+  defineLumenCombobox()
+  defineLumenFoundations()
+</script>
+`
+  )
+
+  await writeFile(
+    join(consumerDirectory, 'src', 'app', 'layout.tsx'),
+    `import '@santi020k/lumen-react/styles.css'
+
+import type { ReactNode } from 'react'
+
+export default function Layout({ children }: Readonly<{ children: ReactNode }>) {
+  return <html lang="en"><body>{children}</body></html>
+}
+`
+  )
+
+  await writeFile(
+    join(consumerDirectory, 'src', 'app', 'client-panel.tsx'),
+    `'use client'
+
+import { useState } from 'react'
+
+import { Button } from '@santi020k/lumen-react'
+
+export function ClientPanel() {
+  const [saved, setSaved] = useState(false)
+
+  return (
+    <Button onClick={() => setSaved(true)}>{saved ? 'Saved' : 'Save'}</Button>
+  )
+}
+`
+  )
+
+  await writeFile(
+    join(consumerDirectory, 'src', 'app', 'page.tsx'),
+    `import { Card } from '@santi020k/lumen-react'
+import { Badge, Skeleton } from '@santi020k/lumen-react/server'
+
+import { ClientPanel } from './client-panel'
+
+export default function Page() {
+  return (
+    <main>
+      <Card>
+        <Badge>Ready</Badge>
+        <p>Packed React package imported by a Server Component.</p>
+        <Skeleton aria-label="Server-rendered placeholder" />
+        <ClientPanel />
+      </Card>
+    </main>
+  )
+}
 `
   )
 
@@ -219,15 +359,31 @@ import '@santi020k/lumen-astro/styles.css'
     consumerDirectory
   )
 
+  run(
+    process.execPath,
+    [join(consumerDirectory, 'node_modules', 'next', 'dist', 'bin', 'next'), 'build'],
+    consumerDirectory,
+    { NEXT_TELEMETRY_DISABLED: '1' }
+  )
+
   await Promise.all([
+    access(join(consumerDirectory, '.next', 'BUILD_ID')),
     access(join(consumerDirectory, 'dist', 'index.html')),
     access(join(consumerDirectory, 'node_modules', '@santi020k', 'lumen', 'styles.css')),
     access(join(consumerDirectory, 'node_modules', '@santi020k', 'lumen-elements', 'styles.css')),
     access(join(consumerDirectory, 'node_modules', '@santi020k', 'lumen-react', 'styles.css'))
   ])
 
+  const astroHtml = await readFile(join(consumerDirectory, 'dist', 'index.html'), 'utf8')
+
+  assert.match(astroHtml, /<lumen-card>/)
+
+  assert.match(astroHtml, /Granular elements ready/)
+
+  assert.match(astroHtml, /Foundation bundle ready/)
+
   process.stdout.write(
-    'Packed Core, umbrella, React, React Hook Form, Elements, Astro, and brand-icon packages passed clean-consumer smoke tests\n'
+    'Packed Core, umbrella, React, React Hook Form, Elements, Astro, Next.js, and brand-icon packages passed clean-consumer smoke tests\n'
   )
 } finally {
   await rm(temporaryRoot, { force: true, recursive: true })

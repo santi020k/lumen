@@ -1,0 +1,224 @@
+{
+  "schemaVersion": 1,
+  "status": "draft",
+  "targetVersion": "2.0.0",
+  "policy": {
+    "compatibility": "Every breaking change requires observed evidence, a replacement, an automated or documented migration, and consumer validation.",
+    "nativeGraduation": "Every public package and native adapter graduates together only after the readiness ledger is complete.",
+    "nonGoal": "Do not manufacture web breakage to justify the coordinated major release."
+  },
+  "releaseMigration": {
+    "codemod": "lumen migrate v2 --dry-run",
+    "deprecatedExports": [],
+    "removedExports": [
+      "@santi020k/lumen-astro#Sonner",
+      "@santi020k/lumen-astro#UIPrimitives",
+      "@santi020k/lumen-react#Sonner",
+      "@santi020k/lumen-react#SonnerProps",
+      "@santi020k/lumen-react-native#LumenDateField",
+      "@santi020k/lumen-react-native#LumenDateFieldProps",
+      "@santi020k/lumen-react-native#LumenDateRangeField",
+      "@santi020k/lumen-react-native#LumenDateRangeFieldProps",
+      "@santi020k/lumen-react-native#LumenDateRangeValue"
+    ],
+    "runtime": {
+      "astro": "Import UIPrimitives from @santi020k/lumen-astro/runtime and mount it once when an imported component declares the ui-primitives runtime.",
+      "elements": "Call defineLumenElements once before rendering lumen-* elements.",
+      "react": "Use the public React behavior hooks for behavior-heavy primitives."
+    }
+  },
+  "changes": [
+    {
+      "id": "astro-runtime-subpath",
+      "status": "approved",
+      "kind": "breaking",
+      "packages": [
+        "@santi020k/lumen-astro"
+      ],
+      "currentContract": "UIPrimitives is exported from the Astro root barrel, so an otherwise static root import can pull the progressive-enhancement runtime into the emitted module graph.",
+      "replacement": "Import UIPrimitives as the default export from @santi020k/lumen-astro/runtime; keep static components as named root imports or direct component imports.",
+      "migration": "The Lumen v2 migrator splits UIPrimitives from mixed Astro imports and rewrites it to the runtime subpath. The transform must be idempotent and support dry-run output.",
+      "evidence": [
+        "docs/import-and-icon-performance.md",
+        "packages/astro/index.ts",
+        "packages/astro/package.json"
+      ],
+      "docs": [
+        "README.md",
+        "docs/ai-usage.md",
+        "docs/migrating-to-lumen.md"
+      ],
+      "tests": [
+        "pnpm run measure:imports",
+        "pnpm run check:consumer-packages",
+        "pnpm --filter @santi020k/lumen-astro test"
+      ]
+    },
+    {
+      "id": "visual-size-alias-removal",
+      "status": "approved",
+      "kind": "breaking",
+      "packages": [
+        "@santi020k/lumen-astro",
+        "@santi020k/lumen-elements"
+      ],
+      "currentContract": "Astro and Elements still accept size=sm|default|lg as a pre-1.0 visual alias on Input and NativeSelect, colliding with the native numeric size attribute.",
+      "replacement": "Use visualSize in Astro and visual-size in Elements for visual sizing; reserve size for the native numeric attribute.",
+      "migration": "The Lumen v2 migrator rewrites only literal sm, default, and lg values on Lumen Input and NativeSelect usage. Dynamic values require a diagnostic and manual review.",
+      "evidence": [
+        "docs/ai-usage.md",
+        "docs/lumen-improvements-from-sibling-usage.md",
+        "packages/astro/components/Input.astro",
+        "packages/astro/components/NativeSelect.astro",
+        "packages/elements/src/define.ts"
+      ],
+      "docs": [
+        "docs/ai-usage.md",
+        "docs/migrating-to-lumen.md"
+      ],
+      "tests": [
+        "pnpm --filter @santi020k/lumen-astro test",
+        "pnpm --filter @santi020k/lumen-elements test",
+        "pnpm run check:consumer-packages"
+      ]
+    },
+    {
+      "id": "sonner-alias-removal",
+      "status": "approved",
+      "kind": "breaking",
+      "packages": [
+        "@santi020k/lumen-astro",
+        "@santi020k/lumen-react",
+        "@santi020k/lumen-elements",
+        "@santi020k/lumen-core"
+      ],
+      "currentContract": "Sonner is the public configurable toast viewport across Astro, React, and Elements, but its library-specific name obscures that distinct role and is easy to confuse with the Toast item contract.",
+      "replacement": "Use ToastViewport for explicit placement and stack configuration, Toast for individual notifications, and the framework-specific toast controller or provider for programmatic notification state. Sonner remains a deprecated 1.x compatibility alias before removal in v2.",
+      "migration": "The Lumen v2 migrator rewrites Sonner and SonnerProps imports to ToastViewport and ToastViewportProps while preserving local aliases, and renames lumen-sonner markup to lumen-toast-viewport without changing placement, maximum-count configuration, or children. Ambiguous imports require manual review.",
+      "evidence": [
+        "apps/docs/src/data/docs.test.ts",
+        "packages/astro/components/ToastViewport.astro",
+        "packages/core/src/components.ts",
+        "packages/react/src/components.tsx",
+        "packages/elements/src/define.ts",
+        "packages/lumen/src/v2-migration.ts"
+      ],
+      "docs": [
+        "docs/ai-usage.md",
+        "docs/migrating-to-lumen.md"
+      ],
+      "tests": [
+        "pnpm --filter @santi020k/lumen-astro test",
+        "pnpm --filter @santi020k/lumen-react test",
+        "pnpm --filter @santi020k/lumen-elements test",
+        "pnpm --filter @santi020k/lumen test",
+        "pnpm run check:consumer-packages"
+      ]
+    },
+    {
+      "id": "swift-surface-scale-expansion",
+      "status": "approved",
+      "kind": "breaking",
+      "packages": [
+        "LumenUI"
+      ],
+      "currentContract": "The published LumenSurfacePadding and LumenSurfaceRadius enums expose only small, medium, and large roles, so product-owned cards cannot use the complete shared native surface scale without literal values.",
+      "replacement": "Use the additive xl padding role and xl, size2xl, or size3xl radius roles. Existing cases and the published Card, StatusBar, and lumenTheme call signatures remain available.",
+      "migration": "Exhaustive switches over LumenSurfacePadding or LumenSurfaceRadius must handle the new roles or add an @unknown default branch. Ordinary component calls require no migration.",
+      "evidence": [
+        "docs/native-components.md",
+        "packages/swift/Sources/LumenUI/Primitives.swift",
+        "packages/swift/Sources/LumenUI/SharedComponents.swift",
+        "packages/swift/Tests/LumenUITests/LumenThemeTests.swift"
+      ],
+      "docs": [
+        "docs/lumen-2-contract.md",
+        "docs/native-contract-review.md",
+        "packages/swift/README.md"
+      ],
+      "tests": [
+        "pnpm run check:swift-source-compatibility",
+        "pnpm run check:swift-api-baseline",
+        "swift test"
+      ],
+      "swiftApiBreakages": [
+        "enumelement LumenSurfacePadding.xl has been added as a new enum case",
+        "enumelement LumenSurfaceRadius.size2xl has been added as a new enum case",
+        "enumelement LumenSurfaceRadius.size3xl has been added as a new enum case",
+        "enumelement LumenSurfaceRadius.xl has been added as a new enum case"
+      ]
+    },
+    {
+      "id": "react-native-datetime-subpath",
+      "status": "approved",
+      "kind": "breaking",
+      "packages": [
+        "@santi020k/lumen-react-native"
+      ],
+      "currentContract": "React Native date fields are exported from the package root and the datetime picker is a required peer, so consumers that never render a date field still inherit installation and native-linking requirements.",
+      "replacement": "Import LumenDateField, LumenDateRangeField, their props, and LumenDateRangeValue from @santi020k/lumen-react-native/datetime. Install @react-native-community/datetimepicker only in applications that use that subpath.",
+      "migration": "The Lumen v2 migrator splits date-field named imports from the React Native root into the datetime subpath while preserving aliases and type-only imports. An existing datetime-subpath import requires manual merging.",
+      "evidence": [
+        "packages/react-native/package.json",
+        "packages/react-native/src/index.ts",
+        "packages/react-native/src/datetime.ts",
+        "packages/react-native/src/datetime-components.tsx",
+        "registry/native-api-baseline.json"
+      ],
+      "docs": [
+        "docs/lumen-2-contract.md",
+        "docs/migrating-to-lumen.md",
+        "docs/native-components.md",
+        "packages/react-native/README.md"
+      ],
+      "tests": [
+        "pnpm --filter @santi020k/lumen-react-native test",
+        "pnpm run check:native-api-baseline",
+        "pnpm run check:react-native-package",
+        "pnpm --filter @santi020k/lumen test"
+      ]
+    }
+  ],
+  "investigations": [
+    {
+      "id": "react-server-client-boundaries",
+      "status": "resolved",
+      "decision": "retain",
+      "resolution": "Retain the React package root as the complete client catalog and add a server-safe entrypoint for stateless primitives. The root reuses the same implementations, while repeatable Next.js measurements and clean packed-package consumers prove the additive boundary without requiring a breaking v2 root change.",
+      "evidence": [
+        "packages/react/src/server-components.tsx",
+        "packages/react/package.json",
+        "apps/next-smoke/app/page.tsx",
+        "scripts/smoke-consumer-packages.mjs",
+        "scripts/measure-react-server-boundary.mjs",
+        "docs/import-and-icon-performance.md"
+      ]
+    },
+    {
+      "id": "elements-granular-registration",
+      "status": "resolved",
+      "decision": "retain",
+      "resolution": "Retain complete-catalog Elements registration and its typed component-set overload, while adding implementation-level Badge, Button, and Card entrypoints. The full catalog reuses the same constructors, and packed Astro consumer plus bundle evidence proves the additive granular path without requiring a breaking deprecation.",
+      "evidence": [
+        "packages/elements/src/components/badge.ts",
+        "packages/elements/src/components/button.ts",
+        "packages/elements/src/components/card.ts",
+        "packages/elements/package.json",
+        "packages/elements/scripts/measure-registration.mjs",
+        "scripts/smoke-consumer-packages.mjs",
+        "docs/import-and-icon-performance.md"
+      ]
+    },
+    {
+      "id": "umbrella-core-reexports",
+      "status": "resolved",
+      "decision": "retain",
+      "resolution": "Retain the framework-neutral Core reexports from the umbrella root in Lumen 2. The API baseline and consumer audit found no observed problem that justifies a breaking removal.",
+      "evidence": [
+        "docs/lumen-2-consumer-import-audit.md",
+        "registry/web-api-baseline.json",
+        "scripts/smoke-consumer-packages.mjs"
+      ]
+    }
+  ]
+}

@@ -1,8 +1,4 @@
-import {
-  type ReactElement,
-  type ReactNode,
-  type Ref
-} from 'react'
+import { type ReactElement, type ReactNode, type Ref } from 'react'
 import {
   type HostInstance,
   Pressable,
@@ -12,12 +8,19 @@ import {
   type ViewProps
 } from 'react-native'
 
-import { LumenBadge } from './primitives.js'
+import { LumenIllustration } from './content-components.js'
+import { type LumenIconName } from './icons.generated.js'
+import { LumenBadge, LumenIcon } from './primitives.js'
 import {
   type LumenBannerVariant,
+  type LumenErrorStateAnnouncement,
+  type LumenErrorStateKind,
+  type LumenErrorStateLayout,
   type LumenMetricTone,
   resolveLumenBannerColors,
-  resolveLumenMetricColor
+  resolveLumenErrorStateLiveRegion,
+  resolveLumenMetricColor,
+  resolveLumenStatusBarIconName
 } from './structured-recipes.js'
 import { useLumenTheme } from './theme-context.js'
 
@@ -80,7 +83,9 @@ export const LumenEmptyState = ({
           style={{
             color: theme.colors.ink,
             fontSize: theme.fontSizes.lg,
-            fontWeight: String(theme.fontWeights.semibold) as TextStyle['fontWeight'],
+            fontWeight: String(
+              theme.fontWeights.semibold
+            ) as TextStyle['fontWeight'],
             textAlign: 'center'
           }}
         >
@@ -102,6 +107,142 @@ export const LumenEmptyState = ({
           null}
         {children}
       </View>
+      {actions ? <View style={{ alignItems: 'center' }}>{actions}</View> : null}
+    </View>
+  )
+}
+
+export interface LumenErrorStateProps extends ViewProps {
+  actions?: ReactNode
+  announcement?: LumenErrorStateAnnouncement
+  description?: string
+  graphic?: ReactNode
+  kind?: LumenErrorStateKind
+  layout?: LumenErrorStateLayout
+  reference?: string
+  referenceLabel?: string
+  ref?: Ref<HostInstance>
+  title: string
+}
+
+const LumenErrorStateGraphic = ({
+  compact,
+  graphic,
+  kind
+}: {
+  compact: boolean
+  graphic: ReactNode | undefined
+  kind: LumenErrorStateKind
+}): ReactNode => {
+  if (graphic !== undefined) return graphic
+
+  return <LumenIllustration size={compact ? 'sm' : 'md'} variant={kind} />
+}
+
+const LumenErrorStateCopy = ({
+  description,
+  reference,
+  referenceLabel,
+  title
+}: {
+  description: string | undefined
+  reference: string | undefined
+  referenceLabel: string
+  title: string
+}): ReactElement => {
+  const theme = useLumenTheme()
+
+  return (
+    <View style={{ alignItems: 'center', gap: theme.spacing.sm }}>
+      <Text
+        accessibilityRole="header"
+        style={{
+          color: theme.colors.ink,
+          fontSize: theme.fontSizes.lg,
+          fontWeight: String(
+            theme.fontWeights.semibold
+          ) as TextStyle['fontWeight'],
+          textAlign: 'center'
+        }}
+      >
+        {title}
+      </Text>
+      {description ?
+        (
+          <Text
+            style={{
+              color: theme.colors.inkMuted,
+              fontSize: theme.fontSizes.sm,
+              lineHeight: 20,
+              textAlign: 'center'
+            }}
+          >
+            {description}
+          </Text>
+        ) :
+        null}
+      {reference ?
+        (
+          <Text
+            selectable
+            style={{
+              color: theme.colors.inkSoft,
+              fontFamily: 'monospace',
+              fontSize: theme.fontSizes.xs,
+              textAlign: 'center'
+            }}
+          >
+            {`${referenceLabel}: ${reference}`}
+          </Text>
+        ) :
+        null}
+    </View>
+  )
+}
+
+export const LumenErrorState = ({
+  actions,
+  announcement = 'polite',
+  description,
+  graphic,
+  kind = 'error',
+  layout = 'default',
+  reference,
+  referenceLabel = 'Reference',
+  ref,
+  style,
+  title,
+  ...props
+}: LumenErrorStateProps): ReactElement => {
+  const theme = useLumenTheme()
+  const compact = layout === 'compact'
+
+  return (
+    <View
+      ref={ref}
+      {...props}
+      accessibilityLiveRegion={resolveLumenErrorStateLiveRegion(announcement)}
+      accessibilityRole="summary"
+      style={[
+        {
+          alignItems: 'center',
+          flexGrow: layout === 'page' ? 1 : 0,
+          gap: compact ? theme.spacing.md : theme.spacing.lg,
+          justifyContent: 'center',
+          maxWidth: 520,
+          padding: compact ? theme.spacing.lg : theme.spacing.xl,
+          width: '100%'
+        },
+        style
+      ]}
+    >
+      <LumenErrorStateGraphic compact={compact} graphic={graphic} kind={kind} />
+      <LumenErrorStateCopy
+        description={description}
+        reference={reference}
+        referenceLabel={referenceLabel}
+        title={title}
+      />
       {actions ? <View style={{ alignItems: 'center' }}>{actions}</View> : null}
     </View>
   )
@@ -200,14 +341,21 @@ export const LumenBanner = ({
           style={{
             color: theme.colors.ink,
             fontSize: theme.fontSizes.sm,
-            fontWeight: String(theme.fontWeights.semibold) as TextStyle['fontWeight']
+            fontWeight: String(
+              theme.fontWeights.semibold
+            ) as TextStyle['fontWeight']
           }}
         >
           {title}
         </Text>
         {description ?
           (
-            <Text style={{ color: theme.colors.inkSoft, fontSize: theme.fontSizes.xs }}>
+            <Text
+              style={{
+                color: theme.colors.inkSoft,
+                fontSize: theme.fontSizes.xs
+              }}
+            >
               {description}
             </Text>
           ) :
@@ -221,13 +369,18 @@ export const LumenBanner = ({
             accessibilityRole="button"
             hitSlop={8}
             onPress={onDismiss}
-            style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1, padding: theme.spacing.sm })}
+            style={({ pressed }) => ({
+              opacity: pressed ? 0.7 : 1,
+              padding: theme.spacing.sm
+            })}
           >
             <Text
               style={{
                 color: colors.accentColor,
                 fontSize: theme.fontSizes.xs,
-                fontWeight: String(theme.fontWeights.semibold) as TextStyle['fontWeight']
+                fontWeight: String(
+                  theme.fontWeights.semibold
+                ) as TextStyle['fontWeight']
               }}
             >
               {dismissLabel}
@@ -295,13 +448,21 @@ export const LumenStat = ({
         style={{
           color: theme.colors.inkSoft,
           fontSize: theme.fontSizes.xs,
-          fontWeight: String(theme.fontWeights.semibold) as TextStyle['fontWeight']
+          fontWeight: String(
+            theme.fontWeights.semibold
+          ) as TextStyle['fontWeight']
         }}
       >
         {label}
       </Text>
       {detail ?
-        <Text style={{ color: theme.colors.inkMuted, fontSize: theme.fontSizes.xs }}>{detail}</Text> :
+        (
+          <Text
+            style={{ color: theme.colors.inkMuted, fontSize: theme.fontSizes.xs }}
+          >
+            {detail}
+          </Text>
+        ) :
         null}
     </View>
   )
@@ -331,18 +492,30 @@ export const LumenSectionHeader = ({
       ref={ref}
       {...props}
       style={[
-        { alignItems: 'flex-start', flexDirection: 'row', gap: theme.spacing.md },
+        {
+          alignItems: 'flex-start',
+          flexDirection: 'row',
+          gap: theme.spacing.md
+        },
         style
       ]}
     >
       <View style={{ flex: 1, gap: theme.spacing.xs }}>
-        <View style={{ alignItems: 'center', flexDirection: 'row', gap: theme.spacing.sm }}>
+        <View
+          style={{
+            alignItems: 'center',
+            flexDirection: 'row',
+            gap: theme.spacing.sm
+          }}
+        >
           <Text
             accessibilityRole="header"
             style={{
               color: theme.colors.ink,
               fontSize: theme.fontSizes.md,
-              fontWeight: String(theme.fontWeights.semibold) as TextStyle['fontWeight']
+              fontWeight: String(
+                theme.fontWeights.semibold
+              ) as TextStyle['fontWeight']
             }}
           >
             {title}
@@ -350,7 +523,16 @@ export const LumenSectionHeader = ({
           {count ? <LumenBadge>{count}</LumenBadge> : null}
         </View>
         {subtitle ?
-          <Text style={{ color: theme.colors.inkMuted, fontSize: theme.fontSizes.xs }}>{subtitle}</Text> :
+          (
+            <Text
+              style={{
+                color: theme.colors.inkMuted,
+                fontSize: theme.fontSizes.xs
+              }}
+            >
+              {subtitle}
+            </Text>
+          ) :
           null}
       </View>
       {actions}
@@ -359,6 +541,7 @@ export const LumenSectionHeader = ({
 }
 
 export interface LumenStatusBarProps extends ViewProps {
+  iconName?: LumenIconName
   message: string
   ref?: Ref<HostInstance>
   tone?: LumenMetricTone
@@ -366,6 +549,7 @@ export interface LumenStatusBarProps extends ViewProps {
 }
 
 export const LumenStatusBar = ({
+  iconName,
   message,
   ref,
   style,
@@ -391,17 +575,20 @@ export const LumenStatusBar = ({
         style
       ]}
     >
-      <View
-        accessibilityElementsHidden
-        importantForAccessibility="no"
-        style={{
-          backgroundColor: resolveLumenMetricColor(theme.colors, tone),
-          borderRadius: theme.radii.full,
-          height: 7,
-          width: 7
-        }}
+      <LumenIcon
+        color={resolveLumenMetricColor(theme.colors, tone)}
+        decorative
+        name={iconName ?? resolveLumenStatusBarIconName(tone)}
+        size="sm"
       />
-      <Text numberOfLines={1} style={{ color: theme.colors.inkSoft, flex: 1, fontSize: theme.fontSizes.xs }}>
+      <Text
+        numberOfLines={1}
+        style={{
+          color: theme.colors.inkSoft,
+          flex: 1,
+          fontSize: theme.fontSizes.xs
+        }}
+      >
         {message}
       </Text>
       {trailing}

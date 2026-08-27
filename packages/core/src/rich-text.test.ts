@@ -20,9 +20,17 @@ const shortcut = (
 describe('rich text helpers', () => {
   test('maps common formatting shortcuts', () => {
     expect(shortcut('b')).toBe('bold')
-    expect(shortcut('8', { shiftKey: true })).toBe('insertUnorderedList')
     expect(shortcut('z', { shiftKey: true })).toBe('redo')
     expect(shortcut('b', { altKey: true })).toBeUndefined()
+  })
+
+  test('maps list shortcuts from the physical digit key regardless of the shifted glyph', () => {
+    // A real KeyboardEvent for Ctrl+Shift+8 reports `key: '*'` (the shifted
+    // glyph on a US layout, and other symbols on other layouts) while `code`
+    // stays `'Digit8'` for the physical key across layouts.
+    expect(shortcut('*', { code: 'Digit8', shiftKey: true })).toBe('insertUnorderedList')
+    expect(shortcut('&', { code: 'Digit7', shiftKey: true })).toBe('insertOrderedList')
+    expect(shortcut('8', { shiftKey: true })).toBeUndefined()
   })
 
   test('identifies commands with pressed state', () => {

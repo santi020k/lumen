@@ -28,7 +28,11 @@ import {
   resolveLumenPhoneInputValue
 } from './phone-recipes.js'
 import { LumenIcon } from './primitives.js'
-import { resolveLumenButtonOpacity } from './recipes.js'
+import {
+  resolveLumenAriaInvalid,
+  resolveLumenButtonOpacity,
+  resolveLumenValidationHint
+} from './recipes.js'
 import { useLumenTheme } from './theme-context.js'
 
 export interface LumenPhoneInputProps extends Omit<ViewProps, 'children'> {
@@ -60,6 +64,7 @@ interface LumenPhoneInputLabels {
 interface LumenPhoneCountryPickerProps {
   countries: readonly LumenPhoneCountry[]
   dismiss: () => void
+  enabled: boolean
   labels: LumenPhoneInputLabels
   onSelect: (country: LumenPhoneCountry) => void
   query: string
@@ -108,9 +113,18 @@ const getPhoneError = (
   return invalidNumberMessage
 }
 
+const resolvePhoneCountryOpacity = (enabled: boolean, pressed: boolean): number => (
+  enabled ? resolveLumenButtonOpacity(false, pressed) : 0.52
+)
+
+const resolvePhonePickerVisible = (enabled: boolean, visible: boolean): boolean => (
+  enabled && visible
+)
+
 const LumenPhoneCountryPicker = ({
   countries,
   dismiss,
+  enabled,
   labels,
   onSelect,
   query,
@@ -128,6 +142,7 @@ const LumenPhoneCountryPicker = ({
     >
       <View style={{ gap: theme.spacing.md }}>
         <LumenSearchField
+          editable={enabled}
           onChangeText={setQuery}
           prompt={labels.countrySearchLabel}
           value={query}
@@ -143,7 +158,8 @@ const LumenPhoneCountryPicker = ({
               <Pressable
                 accessibilityLabel={`${country.displayName}, ${country.callingCode}`}
                 accessibilityRole="radio"
-                accessibilityState={{ selected }}
+                accessibilityState={{ disabled: !enabled, selected }}
+                disabled={!enabled}
                 onPress={() => {
                   onSelect(country)
                 }}
@@ -152,7 +168,7 @@ const LumenPhoneCountryPicker = ({
                   flexDirection: 'row',
                   justifyContent: 'space-between',
                   minHeight: 48,
-                  opacity: resolveLumenButtonOpacity(false, pressed),
+                  opacity: resolvePhoneCountryOpacity(enabled, pressed),
                   paddingHorizontal: theme.spacing.sm
                 })}
               >
@@ -178,7 +194,7 @@ const LumenPhoneCountryPicker = ({
 }
 
 /** A controlled international phone editor with searchable country metadata and E.164 output. */
-export const LumenPhoneInput = (props: LumenPhoneInputProps): ReactElement => {
+const LumenPhoneInputControl = (props: LumenPhoneInputProps): ReactElement => {
   const theme = useLumenTheme()
   const [countryQuery, setCountryQuery] = useState('')
   const [pickerVisible, setPickerVisible] = useState(false)
@@ -192,6 +208,10 @@ export const LumenPhoneInput = (props: LumenPhoneInputProps): ReactElement => {
     () => props.countries ?? getLumenPhoneCountries(phoneOptions),
     [phoneOptions, props.countries]
   )
+
+  const countrySelectorDisabled = !enabled || availableCountries.length === 0
+  const pickerEnabled = !countrySelectorDisabled
+  const pickerVisibleForState = resolvePhonePickerVisible(pickerEnabled, pickerVisible)
 
   const filteredCountries = useMemo(
     () => filterPhoneCountries(availableCountries, countryQuery),
@@ -259,9 +279,14 @@ export const LumenPhoneInput = (props: LumenPhoneInputProps): ReactElement => {
           <Pressable
             accessibilityLabel={`${labels.countrySelectorLabel}, ${value.country.displayName}, ${value.country.callingCode}`}
             accessibilityRole="button"
-            accessibilityState={{ disabled: !enabled, expanded: pickerVisible }}
-            disabled={!enabled || availableCountries.length === 0}
+            accessibilityState={{
+              disabled: countrySelectorDisabled,
+              expanded: pickerVisibleForState
+            }}
+            disabled={countrySelectorDisabled}
             onPress={() => {
+              setCountryQuery('')
+
               setPickerVisible(true)
             }}
             style={({ pressed }) => ({
@@ -273,7 +298,7 @@ export const LumenPhoneInput = (props: LumenPhoneInputProps): ReactElement => {
               flexDirection: 'row',
               gap: theme.spacing.xs,
               minHeight: 44,
-              opacity: enabled ? resolveLumenButtonOpacity(false, pressed) : 0.52,
+              opacity: countrySelectorDisabled ? 0.52 : resolveLumenButtonOpacity(false, pressed),
               paddingHorizontal: theme.spacing.md
             })}
           >
@@ -284,7 +309,10 @@ export const LumenPhoneInput = (props: LumenPhoneInputProps): ReactElement => {
             </Text>
           </Pressable>
           <TextInput
+            accessibilityHint={resolveLumenValidationHint(effectiveError, description)}
             accessibilityLabel={labels.numberLabel}
+            accessibilityState={{ disabled: !enabled }}
+            aria-invalid={resolveLumenAriaInvalid(effectiveError)}
             autoComplete="tel"
             editable={enabled}
             keyboardType="phone-pad"
@@ -319,13 +347,20 @@ export const LumenPhoneInput = (props: LumenPhoneInputProps): ReactElement => {
       <LumenPhoneCountryPicker
         countries={filteredCountries}
         dismiss={dismissPicker}
+        enabled={pickerEnabled}
         labels={labels}
         onSelect={selectCountry}
         query={countryQuery}
         selectedRegion={value.country.regionCode}
         setQuery={setCountryQuery}
-        visible={pickerVisible}
+        visible={pickerVisibleForState}
       />
     </View>
   )
+}
+
+export const LumenPhoneInput = (props: LumenPhoneInputProps): ReactElement => {
+  const pickerEnabled = (props.enabled ?? true) && (props.countries?.length ?? 1) > 0
+
+  return <LumenPhoneInputControl key={String(pickerEnabled)} {...props} />
 }

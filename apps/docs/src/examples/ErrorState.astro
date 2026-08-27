@@ -1,0 +1,19 @@
+---
+import {
+  Button,
+  ButtonLink,
+  ErrorState
+} from '@santi020k/lumen-astro'
+---
+
+<ErrorState
+  description="Check your connection and try again. Your existing projects are unchanged."
+  id="projects-error"
+  reference="REQ-4F82"
+  title="Could not load projects"
+>
+  <Button slot="actions" size="sm">Try again</Button>
+  <ButtonLink slot="actions" href="/docs" variant="secondary">
+    Open help
+  </ButtonLink>
+</ErrorState>

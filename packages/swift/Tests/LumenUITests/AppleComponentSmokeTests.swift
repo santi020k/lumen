@@ -1,4 +1,4 @@
-#if os(iOS) || os(macOS)
+#if os(iOS) || os(macOS) || os(visionOS)
 import SwiftUI
 import Testing
 @testable import LumenUI
@@ -33,6 +33,10 @@ private struct AppleComponentCatalogFixture: View {
     var body: some View {
         ScrollView {
             VStack(spacing: LumenSpacing.lg) {
+                LumenText(.localized(LocalizedStringResource("Runtime localized title")), variant: .title)
+                LumenText(.verbatim("Application-resolved runtime copy"))
+                LumenBadge(.localized(LocalizedStringKey("Localized badge")), tone: .accent)
+
                 LumenSettingsRow(
                     "Automatic behavior",
                     description: "Use the recommended native behavior.",
@@ -77,12 +81,20 @@ private struct AppleComponentCatalogFixture: View {
                     description: "Summarize the native release."
                 )
 
+                LumenTextarea(
+                    .verbatim("Runtime notes"),
+                    text: $notes,
+                    description: .localized(LocalizedStringResource("Runtime note guidance")),
+                    errorMessage: .verbatim("Application-resolved validation")
+                )
+
                 LumenFieldGroup("Publication checks", required: true) {
                     LumenCheckbox("Confirm accessibility review", isChecked: $isReviewed)
                 }
 
                 LumenButtonGroup {
                     LumenButton("Save", action: {})
+                    LumenButton(.localized(LocalizedStringResource("Publish")), action: {})
                     LumenButton("Cancel", intent: .secondary, action: {})
                     LumenChip("Design", selected: tagSelected, onPress: { tagSelected.toggle() })
                 }
@@ -207,6 +219,15 @@ private struct AppleComponentCatalogFixture: View {
                     description: "Create the first item to get started."
                 ) {
                     LumenButton("Create", action: {})
+                }
+
+                LumenErrorState(
+                    "Could not load projects",
+                    description: "Check your connection and try again.",
+                    kind: .offline,
+                    reference: "REQ-7F2A"
+                ) {
+                    LumenButton("Try again", action: {})
                 }
 
                 LumenListRow {

@@ -4,7 +4,7 @@ import { join } from 'node:path'
 
 import { describe, expect, test } from 'vitest'
 
-import { inspectNativeAdoption } from './native-audit.js'
+import { formatNativeAdoptionAudit, inspectNativeAdoption } from './native-audit.js'
 
 const releaseManifest = {
   release: {
@@ -97,6 +97,94 @@ fun App() { com.santi020k.lumen.LumenTheme {} }
       })
       expect(report.findings).not.toContainEqual(expect.objectContaining({
         rule: 'compose-resolution-missing'
+      }))
+    } finally {
+      await rm(root, { force: true, recursive: true })
+    }
+  })
+
+  test('inventories likely direct primitives and checks the Android toolchain before Gradle', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'lumen-compose-preflight-'))
+    const manifestPath = join(root, 'release-manifest.json')
+    const sdkRoot = join(root, 'android-sdk')
+    const javaHome = join(root, 'jdk')
+
+    try {
+      await Promise.all([
+        mkdir(join(root, 'app'), { recursive: true }),
+        mkdir(join(sdkRoot, 'platforms', 'android-37'), { recursive: true }),
+        mkdir(join(sdkRoot, 'platforms', 'android-35'), { recursive: true }),
+        mkdir(join(sdkRoot, 'platform-tools'), { recursive: true }),
+        mkdir(join(sdkRoot, 'build-tools'), { recursive: true }),
+        mkdir(javaHome, { recursive: true })
+      ])
+      await writeFile(manifestPath, `${JSON.stringify(releaseManifest)}\n`)
+      await writeFile(join(javaHome, 'release'), 'JAVA_VERSION="21.0.8"\n')
+      await writeFile(join(root, 'app', 'build.gradle.kts'), `
+android { compileSdk = 37 }
+dependencies { implementation("com.santi020k:lumen-compose:0.3.0") }
+`)
+      await writeFile(join(root, 'app', 'Screen.kt'), `
+fun App() = LumenTheme {
+    Text("Welcome")
+    Button(onClick = {}) { Text("Continue") }
+    OutlinedTextField(value = "", onValueChange = {})
+}
+`)
+
+      const report = await inspectNativeAdoption(root, manifestPath, undefined, {
+        ANDROID_HOME: sdkRoot,
+        JAVA_HOME: javaHome,
+        PATH: ''
+      })
+
+      expect(report.healthy).toBe(true)
+      expect(report.androidPreflight).toMatchObject({ healthy: true, sdkRoot })
+      expect(report.androidPreflight?.checks).toContainEqual(expect.objectContaining({ id: 'ndk', status: 'skipped' }))
+      expect(report.adoptionInventory.families).toContainEqual({ count: 1, family: 'actions' })
+      expect(report.adoptionInventory.suggestions).toContainEqual(expect.objectContaining({
+        lumenComponent: 'LumenTextField',
+        nativePrimitive: 'OutlinedTextField'
+      }))
+      expect(formatNativeAdoptionAudit(report)).toContain('[android-preflight] ready')
+      expect(JSON.parse(JSON.stringify(report))).toMatchObject({ healthy: true })
+    } finally {
+      await rm(root, { force: true, recursive: true })
+    }
+  })
+
+  test('reports a required but missing NDK as a preflight failure', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'lumen-compose-ndk-preflight-'))
+    const manifestPath = join(root, 'release-manifest.json')
+    const sdkRoot = join(root, 'android-sdk')
+    const javaHome = join(root, 'jdk')
+
+    try {
+      await Promise.all([
+        mkdir(join(sdkRoot, 'platforms', 'android-37'), { recursive: true }),
+        mkdir(join(sdkRoot, 'platforms', 'android-35'), { recursive: true }),
+        mkdir(join(sdkRoot, 'platform-tools'), { recursive: true }),
+        mkdir(join(sdkRoot, 'build-tools'), { recursive: true }),
+        mkdir(javaHome, { recursive: true })
+      ])
+      await writeFile(manifestPath, `${JSON.stringify(releaseManifest)}\n`)
+      await writeFile(join(javaHome, 'release'), 'JAVA_VERSION="21"\n')
+      await writeFile(join(root, 'build.gradle.kts'), `
+android { ndkVersion = "28.2.13676358" }
+dependencies { implementation("com.santi020k:lumen-compose:0.3.0") }
+fun App() { com.santi020k.lumen.LumenTheme {} }
+`)
+
+      const report = await inspectNativeAdoption(root, manifestPath, undefined, {
+        ANDROID_HOME: sdkRoot,
+        JAVA_HOME: javaHome,
+        PATH: ''
+      })
+
+      expect(report.healthy).toBe(false)
+      expect(report.androidPreflight?.checks).toContainEqual(expect.objectContaining({
+        id: 'ndk',
+        status: 'failure'
       }))
     } finally {
       await rm(root, { force: true, recursive: true })

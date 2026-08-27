@@ -15,6 +15,7 @@
     "ios": "expo start --ios",
     "lint": "eslint . --no-warn-ignored --max-warnings=0",
     "publish:expo-go": "pnpm dlx eas-cli@22.4.0 update --branch expo-go --environment production --platform all",
+    "test": "vitest run --config vitest.config.mts",
     "typecheck": "tsc --noEmit",
     "web": "expo start --web"
   },
@@ -36,6 +37,7 @@
   },
   "devDependencies": {
     "@types/react": "catalog:",
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "vitest": "catalog:"
   }
 }

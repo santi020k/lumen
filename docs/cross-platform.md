@@ -80,14 +80,14 @@ behavior, tests, and usage documentation exist in that adapter.
 See [Native component reference](native-components.md) for installation, the support matrix,
 platform mappings, accessibility requirements, and contribution checks.
 
-## Native beta policy
+## Native support policy
 
-The shared token foundation is stable. The React Native, SwiftUI, and Jetpack Compose component
-adapters are **Beta**: they are available for testing and early production adoption, but their
-public APIs may evolve as Lumen gathers evidence from real applications. Breaking changes must be
-documented in release notes with a practical migration path.
+The shared token foundation and the React Native, SwiftUI, Jetpack Compose, and Wear OS component
+contracts are **Supported for Lumen 2**. The current pre-2 artifacts are release candidates for that
+contract; publication, consumer-soak, and physical-device evidence remain launch gates. Breaking
+changes require release notes and a practical migration path.
 
-A native adapter graduates from Beta after it has:
+A native adapter is ready to publish as version 2 after it has:
 
 - at least one active consumer application;
 - accessibility and interaction testing on representative physical devices;
@@ -98,7 +98,7 @@ A native adapter graduates from Beta after it has:
 The measurable graduation gates, release sequence, and stable compatibility policy are tracked in
 [Lumen 2 readiness](lumen-2-readiness.md).
 
-Individual features that do not yet meet the adapter's Beta support bar should be labeled
+Future features that do not yet meet the supported contract bar should be labeled
 **Experimental** and must not be presented as part of the supported component surface.
 
 ## Current status
@@ -110,23 +110,26 @@ Individual features that do not yet meet the adapter's Beta support bar should b
 - Theme, Text, Icon, IconButton, Surface, Button, TextField, Badge, Divider, and Spinner are
   implemented in all three native adapters. The shared icon catalog renders the same Lumen-managed
   geometry across platforms while native icon escape hatches remain available.
-- ButtonGroup, Textarea, FieldGroup, Toggle, SettingsRow, SearchField, Checkbox, RadioGroup,
-  SegmentedControl, NavigationBar, Chip, Card, Alert, Toast, Progress, Skeleton, Graphic, Backdrop,
-  Illustration, Image, Disclosure,
-  Avatar, EmptyState, ListRow, Banner, Stat, SectionHeader, and StatusBar are also implemented in all three native
-  adapters with shared semantic contracts.
-- PhoneInput is available in React Native, SwiftUI on iOS and macOS, and Compose with a shared
-  country, national-number, validity, and E.164 contract. It is intentionally absent on wearable
-  and television surfaces.
-- Picker, Slider, Gauge, DateField, and DateRangeField are available in SwiftUI and Compose, where
-  stable dependency-free native controls exist. The platform tier includes RefreshControl for
-  React Native, FloatingActionButton for Compose, and ShortcutRecorder
-  and SymbolPicker on macOS.
+- ButtonGroup, Textarea, FieldGroup, Toggle, SettingsRow, SearchField, DateField, DateRangeField,
+  Picker, Slider, Checkbox, RadioGroup, SegmentedControl, Tabs, Chip, Card, Alert, Toast, Progress,
+  Skeleton, Graphic, Backdrop, Illustration, Image, Sparkline, LineChart, BarChart, PieChart,
+  ScatterChart, Heatmap, RangeChart, ComboChart, Disclosure, Avatar, EmptyState, ListRow, Banner,
+  Stat, SectionHeader, StatusBar, Gauge, AlertDialog, Sheet, Menu, ShareButton, and NavigationBar are
+  also implemented in all three native adapters with shared semantic contracts.
+- Supported PhoneInput contracts are available in React Native, SwiftUI on iOS and macOS, and
+  Compose with shared country, national-number, validity, and E.164 semantics. They remain
+  intentionally absent on wearable and television surfaces.
+- Picker, Slider, Gauge, DateField, and DateRangeField share controlled contracts across React
+  Native, SwiftUI, and Compose. The Apple and Android adapters use platform-native controls; React
+  Native provides dependency-free accessible semantics. The platform tier includes RefreshControl,
+  CollapsibleNavigationBar, and NavigationAccessory for React Native; FloatingActionButton,
+  NavigationBarAccessory, and AdaptiveNavigationScaffold for Compose; and ShortcutRecorder,
+  SymbolPicker, TabAccessory, and TabBarMinimization for Apple platforms.
 - NavigationBar provides controlled peer-destination selection. Navigation stacks, history, deep
   links, window scenes, sheets, popovers, and system menus remain application-owned.
 - The executable checks and manual hardware matrix live in
-  [Native device validation](native-device-validation.md). A platform remains Beta until the matrix
-  contains representative physical-device evidence.
+  [Native device validation](native-device-validation.md). Version 2 publication remains blocked
+  until the matrix contains representative physical-device evidence.
 - Declared minimum versions and verified toolchains live in the
   [native compatibility matrix](native-compatibility.md).
 

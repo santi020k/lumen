@@ -77,8 +77,8 @@ export const LumenText = ({
   )
 }
 
-export type LumenSurfacePadding = 'lg' | 'md' | 'none' | 'sm'
-export type LumenSurfaceRadius = 'lg' | 'md' | 'none' | 'sm'
+export type LumenSurfacePadding = 'lg' | 'md' | 'none' | 'sm' | 'xl'
+export type LumenSurfaceRadius = '2xl' | '3xl' | 'lg' | 'md' | 'none' | 'sm' | 'xl'
 export type LumenSurfaceTone = 'canvas' | 'muted' | 'strong' | 'surface'
 
 export interface LumenSurfaceProps extends ViewProps {
@@ -282,8 +282,8 @@ export const LumenButton = ({
   return (
     <Pressable
       ref={ref}
-      accessibilityRole="button"
       {...props}
+      accessibilityRole="button"
       accessibilityState={{
         ...accessibilityState,
         busy: loading,
@@ -329,6 +329,7 @@ export interface LumenTextFieldProps extends TextInputProps {
 }
 
 export const LumenTextField = ({
+  accessibilityState,
   editable = true,
   error = false,
   placeholderTextColor,
@@ -345,6 +346,7 @@ export const LumenTextField = ({
     <TextInput
       ref={ref}
       {...props}
+      accessibilityState={{ ...accessibilityState, disabled: !editable }}
       aria-invalid={error || undefined}
       editable={editable}
       placeholderTextColor={placeholderTextColor ?? theme.colors.inkMuted}

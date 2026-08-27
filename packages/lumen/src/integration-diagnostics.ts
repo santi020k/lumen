@@ -472,11 +472,26 @@ const collectFrameworkStyleFindings = (
     )]
   }
 
-  return references.flatMap(item => countOccurrences(item.source, styleImport) > 1 ?
+  const repeatedInFile = references.flatMap(item => countOccurrences(item.source, styleImport) > 1 ?
     [finding(
       relative(repositoryRoot, item.file), 'framework-style-duplicate', `The ${framework} stylesheet is loaded more than once in this file.`, 'Keep one stylesheet import in the application root.'
     )] :
     [])
+
+  const orderedReferences = [...references].sort((left, right) => {
+    const layoutDifference = Number(layoutFilePattern.test(right.file)) - Number(layoutFilePattern.test(left.file))
+
+    return layoutDifference || left.file.localeCompare(right.file)
+  })
+
+  const repeatedAcrossBoundary = orderedReferences.slice(1).map(item => finding(
+    relative(repositoryRoot, item.file),
+    'framework-style-duplicate',
+    `The ${framework} stylesheet is loaded from multiple files in this application boundary.`,
+    'Keep one stylesheet import in the application root.'
+  ))
+
+  return [...repeatedInFile, ...repeatedAcrossBoundary]
 })
 
 const collectAdapterMismatchFindings = (
@@ -595,7 +610,7 @@ export const createLumenSetup = (framework: 'astro' | 'elements' | 'react', tail
   const styles = tailwind ? setupByFramework[framework].tailwind : setupByFramework[framework].styles
 
   if (framework === 'astro') {
-    return `${styles}\n\n---\nimport { UIPrimitives } from '@santi020k/lumen-astro'\n---\n\n<UIPrimitives />`
+    return `${styles}\n\n---\nimport UIPrimitives from '@santi020k/lumen-astro/runtime'\n---\n\n<UIPrimitives />`
   }
 
   if (framework === 'elements') {

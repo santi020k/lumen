@@ -131,10 +131,13 @@ npx -y --package @santi020k/lumen-mcp lumen-mcp-http
 ```
 
 It binds to `127.0.0.1:3000` by default and exposes MCP at
-`http://127.0.0.1:3000/mcp` plus a health check at `/health`. Configure it with
+`http://127.0.0.1:3000/mcp`, a liveness check at `/health`, and a catalog readiness check at
+`/ready`. Readiness returns the loaded catalog hash and server version, or a safe 503 response when
+the catalog cannot initialize. Configure the transport with
 `LUMEN_MCP_HOST`, `LUMEN_MCP_PORT`, and a comma-separated
 `LUMEN_MCP_ALLOWED_HOSTS`. The transport applies safe response headers and a
-fixed-window request limit of 120 requests per minute by default.
+fixed-window request limit of 120 requests per minute by default. Malformed request bodies and
+initialization failures return bounded JSON errors without stack traces or local paths.
 
 Public deployments can also set:
 
@@ -148,13 +151,17 @@ The process listens over HTTP. Public hosting must terminate TLS, configure the 
 and add authentication when the deployed data or operating model requires it. The public Lumen
 catalog does not require user authentication.
 
-## OpenAI plugin package
+## AI plugin package
 
 The repository includes a submission-ready plugin package in [`plugins/lumen-ui`](../../plugins/lumen-ui).
-It combines the portable `lumen-ui` skill with this MCP server for local Codex and ChatGPT testing.
-The public Plugins Directory submission uses a hosted Streamable HTTP endpoint; see the
+It combines the portable `lumen-ui` skill with this MCP server for Codex, ChatGPT, and Claude Code.
+The public OpenAI Plugins Directory submission uses a hosted Streamable HTTP endpoint; see the
 [submission checklist](../../docs/openai-plugin-submission.md) for deployment requirements, listing
 copy, annotation justifications, and reviewer test cases.
+
+Claude Code uses the package's stdio configuration and the repository marketplace in
+[`.claude-plugin/marketplace.json`](../../.claude-plugin/marketplace.json). See the
+[Claude Code plugin guide](../../docs/claude-code-plugin.md) for installation and validation.
 
 ## Recommended agent workflow
 

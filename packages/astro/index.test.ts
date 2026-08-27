@@ -21,6 +21,21 @@ describe('@santi020k/lumen-astro package surface', () => {
     ).resolves.toHaveLength(lumenComponentNames.length)
   })
 
+  test('ships an accessible ErrorState recovery surface', async () => {
+    const [component, styles] = await Promise.all([
+      readFile(new URL('./components/ErrorState.astro', packageRoot), 'utf8'),
+      readFile(sharedStylesUrl, 'utf8')
+    ])
+
+    expect(component).toContain('data-ui-error-state')
+    expect(component).toContain('announce === \'assertive\'')
+    expect(component).toContain('slot name="actions"')
+    expect(component).toContain('referenceLabel = \'Reference\'')
+    expect(styles).toContain('.ui-error-state--offline')
+    expect(styles).toContain('.ui-error-state--page')
+    expect(styles).toContain('[data-slot="error-state-actions"]')
+  })
+
   test('documents every component export from the package index', async () => {
     const index = await readFile(new URL('./index.ts', packageRoot), 'utf8')
 
@@ -86,6 +101,9 @@ describe('@santi020k/lumen-astro package surface', () => {
       'TabsTrigger',
       'TooltipContent'
     ]) expect(index).toContain(`export { default as ${name} }`)
+
+    expect(index).toContain('LumenTabsChangeDetail')
+    expect(index).toContain('LumenTabsChangeEvent')
 
     expect(popoverTrigger).toContain('data-ui-trigger')
     expect(popoverPanel).toContain('[\'ui-popover__panel\']')
@@ -163,7 +181,8 @@ describe('@santi020k/lumen-astro package surface', () => {
   })
 
   test('aligns pie summaries and phone defaults with rendered options', async () => {
-    const [phoneInput, pie, runtime] = await Promise.all([
+    const [phoneController, phoneInput, pie, runtime] = await Promise.all([
+      readFile(new URL('./runtime/controllers/phone-input.ts', packageRoot), 'utf8'),
       readFile(new URL('./components/PhoneInput.astro', packageRoot), 'utf8'),
       readFile(new URL('./components/PieChart.astro', packageRoot), 'utf8'),
       readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8')
@@ -174,11 +193,50 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(phoneInput).toContain(')) ?? metadataCountries[0] ?? getLumenPhoneCountry')
     expect(phoneInput).toContain('const detectedCountryIsAllowed = metadataCountries.some')
     expect(phoneInput).toContain('if (detectedCountryIsAllowed) return detectedValue')
-    expect(runtime).toContain('const detectedCountryIsAllowed = Array.from(countrySelect.options)')
-    expect(runtime).toContain('detectedCountryIsAllowed ?')
-    expect(runtime).toContain('detectedPhoneNumber.nationalNumber.startsWith(\'+\') ?')
-    expect(runtime).toContain('detectedPhoneNumber.nationalNumber.slice(1)')
-    expect(runtime).not.toContain('resolveLumenPhoneNumber(country, numberInput.value, phoneOptions)\n\n      const hasInput')
+    expect(phoneController).toContain(
+      'const detectedCountryIsAllowed = Array.from(countrySelect.options)'
+    )
+    expect(phoneController).toContain('detectedCountryIsAllowed ?')
+    expect(phoneController).toContain(
+      'detectedPhoneNumber.nationalNumber.startsWith(\'+\') ?'
+    )
+    expect(phoneController).toContain('detectedPhoneNumber.nationalNumber.slice(1)')
+    expect(runtime).toContain('import(\'./controllers/phone-input.js\')')
+    expect(runtime).not.toContain('resolveLumenPhoneNumber')
+  })
+
+  test('loads dialog behavior only when an overlay contract is present', async () => {
+    const [dialogController, runtime] = await Promise.all([
+      readFile(new URL('./runtime/controllers/dialogs.ts', packageRoot), 'utf8'),
+      readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8')
+    ])
+
+    expect(runtime).toContain('import(\'./controllers/dialogs.js\')')
+    expect(runtime).not.toContain('const initDialogs =')
+    expect(dialogController).toContain(
+      'export const initDialogControllers = (scope: ParentNode): void =>'
+    )
+    expect(dialogController).toContain('dialog.showModal()')
+    expect(dialogController).toContain('trigger.focus({ preventScroll: true })')
+    expect(dialogController).toContain('dialog.hasAttribute(\'data-ui-alert-dialog\')')
+  })
+
+  test('loads document navigation only when its selectors are present', async () => {
+    const [documentNavigationController, runtime] = await Promise.all([
+      readFile(
+        new URL('./runtime/controllers/document-navigation.ts', packageRoot), 'utf8'
+      ),
+      readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8')
+    ])
+
+    expect(runtime).toContain('import(\'./controllers/document-navigation.js\')')
+    expect(runtime).not.toContain('const initAnchors =')
+    expect(runtime).not.toContain('const initScrollProgress =')
+    expect(documentNavigationController).toContain(
+      'export const initDocumentNavigationControllers = (scope: ParentNode): void =>'
+    )
+    expect(documentNavigationController).toContain('\'[data-ui-anchor]\'')
+    expect(documentNavigationController).toContain('\'[data-ui-scroll-progress]\'')
   })
 
   test('normalizes Astro Action field errors for fields and summaries', () => {
@@ -219,8 +277,9 @@ describe('@santi020k/lumen-astro package surface', () => {
 
     for (const component of [input, nativeSelect]) {
       expect(component).toContain('visualSize?: \'default\' | \'lg\' | \'sm\'')
-      expect(component).toContain('const nativeSize = legacyVisualSize ? undefined : size')
-      expect(component).toContain('size={nativeSize}')
+      expect(component).toContain('const resolvedVisualSize = visualSize ?? \'default\'')
+      expect(component).toContain('size={size}')
+      expect(component).not.toContain('legacyVisualSize')
     }
   })
 
@@ -270,12 +329,14 @@ describe('@santi020k/lumen-astro package surface', () => {
   })
 
   test('ships hierarchical anchors and document scroll progress', async () => {
-    const [anchor, scrollProgress, runtime, css] = await Promise.all([
+    const [anchor, documentNavigationController, scrollProgress, css] = await Promise.all([
       readFile(new URL('./components/Anchor.astro', packageRoot), 'utf8'),
+      readFile(
+        new URL('./runtime/controllers/document-navigation.ts', packageRoot), 'utf8'
+      ),
       readFile(
         new URL('./components/ScrollProgress.astro', packageRoot), 'utf8'
       ),
-      readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8'),
       readFile(sharedStylesUrl, 'utf8')
     ])
 
@@ -283,8 +344,8 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(anchor).toContain('data-depth={item.depth}')
     expect(scrollProgress).toContain('data-ui-scroll-progress')
     expect(scrollProgress).toContain('role="progressbar"')
-    expect(runtime).toContain('initScrollProgress(scope)')
-    expect(runtime).toContain('root.setAttribute(\'aria-valuenow\'')
+    expect(documentNavigationController).toContain('initScrollProgress(scope)')
+    expect(documentNavigationController).toContain('root.setAttribute(\'aria-valuenow\'')
     expect(css).toContain('.ui-scroll-progress')
     expect(css).toContain('.ui-scroll-progress--bottom')
     expect(css).toContain('.ui-anchor a[data-depth="3"]')
@@ -664,6 +725,8 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(styles).toContain('.ui-scroll-reveal.is-revealed')
     expect(styles).toContain('.ui-sr-only')
     expect(styles).toContain('[data-theme$="-dark"]')
+    expect(styles).toContain('[data-theme="lumen-light"]')
+    expect(styles).toContain('--brand: 201 96% 32%')
   })
 
   test('ships Select as a progressively enhanced listbox distinct from NativeSelect', async () => {
@@ -762,7 +825,7 @@ describe('@santi020k/lumen-astro package surface', () => {
     )
     expect(dropdownMenu).toContain('<div')
     expect(dropdownMenu).not.toContain('<menu')
-    expect(nativeSelectExample).toContain('size="lg"')
+    expect(nativeSelectExample).toContain('visualSize="lg"')
     expect(nativeSelectExample).toContain('disabled')
     expect(runtime).toContain(
       `trigger.setAttribute('aria-${'described' + 'by'}'`
@@ -997,17 +1060,18 @@ describe('@santi020k/lumen-astro package surface', () => {
   })
 
   test('ships mature toast runtime API, ARIA, and placement styles', async () => {
-    const [toast, sonner, runtime, styles] = await Promise.all([
+    const [toast, toastViewport, runtime, styles] = await Promise.all([
       readFile(new URL('./components/Toast.astro', packageRoot), 'utf8'),
-      readFile(new URL('./components/Sonner.astro', packageRoot), 'utf8'),
+      readFile(new URL('./components/ToastViewport.astro', packageRoot), 'utf8'),
       readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8'),
       readFile(sharedStylesUrl, 'utf8')
     ])
 
     expect(toast).toContain('data-ui-toast')
     expect(toast).toContain('variant === \'destructive\' ? \'alert\' : \'status\'')
-    expect(sonner).toContain('placement?:')
-    expect(sonner).toContain('maxCount?: number')
+    expect(toastViewport).toContain('placement?:')
+    expect(toastViewport).toContain('maxCount?: number')
+    expect(toastViewport).toContain('data-ui-toast-viewport')
     expect(runtime).toContain('type ToastApi =')
     expect(runtime).toContain('create: createToast')
     expect(runtime).toContain('dismiss: dismissToastById')
@@ -1018,8 +1082,8 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(runtime).toContain('\'ui:toast-action\'')
     expect(runtime).toContain('toast.addEventListener(\'mouseenter\', pause)')
     expect(runtime).toContain('event.key !== \'Escape\'')
-    expect(styles).toContain('.ui-sonner[data-placement^="top"]')
-    expect(styles).toContain('.ui-sonner[data-placement$="center"]')
+    expect(styles).toContain('.ui-tvp[data-placement^="top"]')
+    expect(styles).toContain('.ui-tvp[data-placement$="center"]')
     expect(styles).toContain('.ui-toast__action')
   })
 

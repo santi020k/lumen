@@ -62,10 +62,6 @@ export {
   type LumenIllustrationSize
 } from './content-recipes.js'
 export {
-  LumenDateField,
-  type LumenDateFieldProps,
-  LumenDateRangeField,
-  type LumenDateRangeFieldProps,
   LumenSearchField,
   type LumenSearchFieldProps,
   LumenSettingsRow,
@@ -73,7 +69,30 @@ export {
   LumenToggle,
   type LumenToggleProps
 } from './form-components.js'
-export { type LumenDateRangeValue } from './form-recipes.js'
+export {
+  type LumenDisclosureController,
+  type LumenDisclosureOptions,
+  type LumenLanguageToggleController,
+  type LumenLanguageToggleOptions,
+  type LumenSelectHookController,
+  type LumenSelectHookOptions,
+  type LumenSelectOption,
+  type LumenTabsHookController,
+  type LumenTabsHookOptions,
+  type LumenThemeToggleController,
+  type LumenThemeToggleOptions,
+  type LumenToastDetail,
+  type LumenToastHookController,
+  type LumenToastHookOptions,
+  type LumenToastRecord,
+  useDialog,
+  useDisclosure,
+  useLanguageToggle,
+  useSelect,
+  useTabs,
+  useThemeToggle,
+  useToast
+} from './hooks.js'
 export {
   getLumenIconGraphic,
   type LumenIconName,
@@ -195,6 +214,8 @@ export {
   type LumenBannerProps,
   LumenEmptyState,
   type LumenEmptyStateProps,
+  LumenErrorState,
+  type LumenErrorStateProps,
   LumenListRow,
   type LumenListRowProps,
   LumenSectionHeader,
@@ -206,10 +227,15 @@ export {
 } from './structured-components.js'
 export {
   type LumenBannerVariant,
+  type LumenErrorStateAnnouncement,
+  type LumenErrorStateKind,
+  type LumenErrorStateLayout,
   type LumenMetricTone
 } from './structured-recipes.js'
 export {
   createLumenTheme,
+  type LumenChartColorPalette,
+  type LumenColorPalette,
   lumenDarkTheme,
   lumenLightTheme,
   type LumenTheme
@@ -237,6 +263,15 @@ export {
   type LumenSemanticColor,
   lumenSpacing
 } from './tokens.generated.js'
+export {
+  LumenGauge,
+  type LumenGaugeProps,
+  LumenPicker,
+  type LumenPickerOption,
+  type LumenPickerProps,
+  LumenSlider,
+  type LumenSliderProps
+} from './value-components.js'
 export {
   createEmptyLumenPhoneNumber,
   getLumenPhoneCountries,

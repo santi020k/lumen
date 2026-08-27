@@ -28,12 +28,26 @@ import Testing
 @Test func foundationDimensionsUseNativePoints() {
     #expect(LumenSpacing.lg == 16)
     #expect(LumenRadius.md == 10)
+    #expect(LumenRadius.xl == 16)
+    #expect(LumenRadius.size2xl == 20)
+    #expect(LumenRadius.size3xl == 24)
+    #expect(LumenSurfacePadding.xl.value == LumenSpacing.xl)
+    #expect(LumenSurfaceRadius.size2xl.value == LumenRadius.size2xl)
+    #expect(LumenSurfaceRadius.size3xl.value == LumenRadius.size3xl)
     #expect(LumenMotion.standardDuration == 0.16)
     #expect(LumenMotion.standardEasing == LumenCubicBezier(x1: 0.32, y1: 0.72, x2: 0, y2: 1))
     #expect(LumenMotion.emphasizedEasing == LumenCubicBezier(x1: 0.22, y1: 1, x2: 0.36, y2: 1))
     #expect(LumenElevation.resting == 1)
     #expect(LumenElevation.raised == 3)
     #expect(LumenElevation.overlay == 6)
+}
+
+@Test func validationMessagesImplyInvalidStateWithoutReplacingFieldValues() {
+    #expect(!LumenValidationState.isInvalid(error: false, errorMessage: nil))
+    #expect(LumenValidationState.isInvalid(error: true, errorMessage: nil))
+    #expect(LumenValidationState.isInvalid(error: false, errorMessage: "Required"))
+    #expect(LumenValidationState.message(error: true, errorMessage: nil) == "Invalid value")
+    #expect(LumenValidationState.message(error: false, errorMessage: "Required") == "Required")
 }
 
 @Test func chartFoundationsMatchSharedLightAndDarkTokens() {
@@ -225,6 +239,20 @@ import Testing
     #expect(LumenButtonMetrics.resolve(.lg, density: .regular).minHeight == 52)
 }
 
+@MainActor
+@Test func cardsAndStatusBarsAcceptProductSurfaceConfiguration() {
+    _ = LumenCard(variant: .muted) {
+        Text("Compatible card")
+    }
+    _ = LumenCard(padding: .lg, radius: .size2xl) {
+        Text("Product card")
+    }
+    _ = LumenStatusBar("Compatible", tone: .neutral)
+    _ = LumenStatusBar("Ready", tone: .success, systemName: "checkmark.seal.fill")
+    _ = Text("Themed").lumenTheme(.light)
+    _ = Text("Product themed").lumenTheme(.light, applyTint: false)
+}
+
 @Test func iconMetricsStayConsistentAndAccessible() {
     #expect(LumenIconButtonMetrics.resolve(.sm, density: .compact).touchTarget == 28)
     #expect(LumenIconButtonMetrics.resolve(.md, density: .compact).touchTarget == 32)
@@ -312,7 +340,7 @@ import Testing
     #expect(LumenImageRadius.full.value == LumenRadius.full)
 }
 
-#if os(iOS) || os(macOS)
+#if os(iOS) || os(macOS) || os(visionOS)
 @Test func sliderConfigurationRejectsInvalidSteps() {
     let bounds = 0.0...100.0
 

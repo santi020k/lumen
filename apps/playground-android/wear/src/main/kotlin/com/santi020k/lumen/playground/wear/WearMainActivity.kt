@@ -21,7 +21,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.santi020k.lumen.ExperimentalLumenWearApi
 import com.santi020k.lumen.LocalLumenTheme
 import com.santi020k.lumen.LumenWearActionButton
 import com.santi020k.lumen.LumenWearListRow
@@ -46,7 +45,6 @@ class WearMainActivity : ComponentActivity() {
     }
 }
 
-@OptIn(ExperimentalLumenWearApi::class)
 @Composable
 private fun LumenWearGallery(initialComponent: String) {
     LumenWearTheme {
@@ -109,7 +107,6 @@ private fun WearProgressExample() {
     }
 }
 
-@OptIn(ExperimentalLumenWearApi::class)
 @Composable
 private fun WearMetricExample() {
     LumenWearMetric(
@@ -120,7 +117,6 @@ private fun WearMetricExample() {
     )
 }
 
-@OptIn(ExperimentalLumenWearApi::class)
 @Composable
 private fun WearListRowExample() {
     val colors = LocalLumenTheme.current.colors
@@ -138,7 +134,6 @@ private fun WearListRowExample() {
     }
 }
 
-@OptIn(ExperimentalLumenWearApi::class)
 @Composable
 private fun WearCatalogExample() {
     LumenWearStatus("Candidate ready", tone = LumenWearTone.Success)

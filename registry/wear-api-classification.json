@@ -2,16 +2,14 @@
   "schemaVersion": 1,
   "supported": [
     "LumenWearActionButton",
+    "LumenWearListRow",
+    "LumenWearMetric",
     "LumenWearProgressRing",
     "LumenWearStatus",
     "LumenWearTheme",
     "LumenWearTone"
   ],
-  "experimental": [
-    "ExperimentalLumenWearApi",
-    "LumenWearListRow",
-    "LumenWearMetric"
-  ],
+  "experimental": [],
   "internal": [
     "LumenWearActionMetrics",
     "lumenWearColor",

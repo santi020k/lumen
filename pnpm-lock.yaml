@@ -189,6 +189,9 @@ catalogs:
     tailwindcss:
       specifier: ^4.3.3
       version: 4.3.3
+    test-renderer:
+      specifier: 1.2.0
+      version: 1.2.0
     turbo:
       specifier: ^2.10.11
       version: 2.10.11
@@ -245,6 +248,11 @@ overrides:
   undici@>=7.0.0 <7.29.0: 7.29.0
   uuid@<11.1.1: 11.1.1
   yaml@>=2.0.0 <2.8.3: 2.8.3
+
+patchedDependencies:
+  image-size@1.2.1:
+    hash: 573a2535795eab4e3adef4ca500561c08935de5ee11e9f8de16a0e5d52c0fe0d
+    path: patches/image-size@1.2.1.patch
 
 importers:
 
@@ -358,9 +366,15 @@ importers:
       '@santi020k/lumen-core':
         specifier: workspace:^
         version: link:../../packages/core
+      '@santi020k/lumen-elements':
+        specifier: workspace:^
+        version: link:../../packages/elements
       '@santi020k/lumen-icons-brand':
         specifier: workspace:^
         version: link:../../packages/icons-brand
+      '@santi020k/lumen-react':
+        specifier: workspace:^
+        version: link:../../packages/react
       '@santi020k/lumen-templates':
         specifier: workspace:*
         version: link:../../packages/templates
@@ -373,6 +387,12 @@ importers:
       astro:
         specifier: 'catalog:'
         version: 7.2.6(@astrojs/markdown-remark@7.2.4)(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.3)(@types/node@26.2.0)(jiti@2.7.0)(terser@5.50.0)(yaml@2.8.3)
+      react:
+        specifier: 'catalog:'
+        version: 19.2.8
+      react-dom:
+        specifier: 'catalog:'
+        version: 19.2.8(react@19.2.8)
       tailwindcss:
         specifier: 'catalog:'
         version: 4.3.3
@@ -383,9 +403,18 @@ importers:
       '@astrojs/ts-plugin':
         specifier: 'catalog:'
         version: 1.10.11
+      '@santi020k/lumen-playground-react-native':
+        specifier: workspace:*
+        version: link:../playground-react-native
       '@santi020k/og':
         specifier: 'catalog:'
         version: 1.1.1(@types/node@26.2.0)
+      '@types/react':
+        specifier: 'catalog:'
+        version: 19.2.18
+      '@types/react-dom':
+        specifier: 'catalog:'
+        version: 19.2.5(@types/react@19.2.18)
       sharp:
         specifier: 'catalog:'
         version: 0.35.3(@types/node@26.2.0)
@@ -478,6 +507,9 @@ importers:
       typescript:
         specifier: 'catalog:'
         version: 6.0.3
+      vitest:
+        specifier: 'catalog:'
+        version: 4.1.11(@types/node@26.2.0)(@vitest/coverage-v8@4.1.11)(jsdom@29.1.1)(vite@8.2.2(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.50.0)(yaml@2.8.3))
 
   apps/templates:
     dependencies:
@@ -672,6 +704,9 @@ importers:
       '@types/react':
         specifier: 'catalog:'
         version: 19.2.18
+      '@types/react-dom':
+        specifier: 'catalog:'
+        version: 19.2.5(@types/react@19.2.18)
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 4.1.11(vitest@4.1.11)
@@ -681,6 +716,9 @@ importers:
       react:
         specifier: 'catalog:'
         version: 19.2.8
+      react-dom:
+        specifier: 'catalog:'
+        version: 19.2.8(react@19.2.8)
       typescript:
         specifier: 'catalog:'
         version: 6.0.3
@@ -736,6 +774,9 @@ importers:
       '@react-native-community/datetimepicker':
         specifier: 'catalog:'
         version: 9.1.0(expo@57.0.16)(react-native@0.87.0(@babel/core@7.29.7)(@types/react@19.2.18)(react@19.2.8))(react@19.2.8)
+      '@types/node':
+        specifier: 'catalog:'
+        version: 26.2.0
       '@types/react':
         specifier: 'catalog:'
         version: 19.2.18
@@ -751,6 +792,9 @@ importers:
       react-native-svg:
         specifier: catalog:expo
         version: 15.15.4(react-native@0.87.0(@babel/core@7.29.7)(@types/react@19.2.18)(react@19.2.8))(react@19.2.8)
+      test-renderer:
+        specifier: 'catalog:'
+        version: 1.2.0(@types/react@19.2.18)(react@19.2.8)
       typescript:
         specifier: 'catalog:'
         version: 6.0.3
@@ -4983,6 +5027,11 @@ packages:
     resolution: {integrity: sha512-fMPwH9v7r/pp43yUd2/Mbiex5KouJwwR3dzHkhLREUC6764VyDsqxhAxv6OFEYR1RhjOyD1naqba8ECDBe7ZQg==}
     peerDependencies:
       '@types/react': ^19.2.0
+
+  '@types/react-reconciler@0.33.0':
+    resolution: {integrity: sha512-HZOXsKT0tGI9LlUw2LuedXsVeB88wFa536vVL0M6vE8zN63nI+sSr1ByxmPToP5K5bukaVscyeCJcF9guVNJ1g==}
+    peerDependencies:
+      '@types/react': '*'
 
   '@types/react@19.2.18':
     resolution: {integrity: sha512-AnzbBERsrLKtk2XSfTbYRLjQPdy116Sty4q+T+Bp3IC4l6jNBvreVPAHmpq9qhXQM7CXZPjLVmGMw9sy+hxQ3w==}
@@ -9642,6 +9691,12 @@ packages:
       '@types/react':
         optional: true
 
+  react-reconciler@0.33.0:
+    resolution: {integrity: sha512-KetWRytFv1epdpJc3J4G75I4WrplZE5jOL7Yq0p34+OVOKF4Se7WrdIdVC45XsSSmUTlht2FM/fM1FZb1mfQeA==}
+    engines: {node: '>=0.10.0'}
+    peerDependencies:
+      react: ^19.2.0
+
   react-refresh@0.14.2:
     resolution: {integrity: sha512-jCvmsr+1IUSMUyzOkRcvnVbX3ZYC6g9TDrDbFuFmRDq7PD4yaGbLKNQL6k2jnArV8hjYxh7hVhAZB6s9HDGpZA==}
     engines: {node: '>=0.10.0'}
@@ -10344,6 +10399,11 @@ packages:
     resolution: {integrity: sha512-CN9BVxWhgS/hRxtUMjtC2uRWSTcSfQFHMDWma6sKKfIivCD91sM+FOPfvwoaRMqCSrUpe1nv3jDamd9eEQ4y+w==}
     engines: {node: '>=10'}
     hasBin: true
+
+  test-renderer@1.2.0:
+    resolution: {integrity: sha512-JYiEGbgBGtmHAWX8Kf99gGRL1HtjcRVHLrmJNTZL4vFs9XrnWcuL45Iszw/pO4094+JR7havSrN+ds6YTOpSQA==}
+    peerDependencies:
+      react: ^19.0.0
 
   throat@5.0.0:
     resolution: {integrity: sha512-fcwX4mndzpLQKBS1DVYhGAcYaYt7vsHNIvQV+WXMvnow5cgjPphq5CaayLaGsjRdSCKZFNGt7/GYAuXaNOiYCA==}
@@ -15816,13 +15876,17 @@ snapshots:
     dependencies:
       '@types/react': 19.2.18
 
+  '@types/react-reconciler@0.33.0(@types/react@19.2.18)':
+    dependencies:
+      '@types/react': 19.2.18
+
   '@types/react@19.2.18':
     dependencies:
       csstype: 3.2.3
 
   '@types/sax@1.2.7':
     dependencies:
-      '@types/node': 24.13.3
+      '@types/node': 26.2.0
 
   '@types/semver@7.8.0': {}
 
@@ -19575,7 +19639,7 @@ snapshots:
 
   ignore@7.0.6: {}
 
-  image-size@1.2.1:
+  image-size@1.2.1(patch_hash=573a2535795eab4e3adef4ca500561c08935de5ee11e9f8de16a0e5d52c0fe0d):
     dependencies:
       queue: 6.0.2
 
@@ -20781,7 +20845,7 @@ snapshots:
       flow-enums-runtime: 0.0.6
       graceful-fs: 4.2.11
       hermes-parser: 0.36.1
-      image-size: 1.2.1
+      image-size: 1.2.1(patch_hash=573a2535795eab4e3adef4ca500561c08935de5ee11e9f8de16a0e5d52c0fe0d)
       invariant: 2.2.4
       jest-worker: 29.7.0
       jsc-safe-url: 0.2.4
@@ -21983,6 +22047,11 @@ snapshots:
       - supports-color
       - utf-8-validate
 
+  react-reconciler@0.33.0(react@19.2.8):
+    dependencies:
+      react: 19.2.8
+      scheduler: 0.27.0
+
   react-refresh@0.14.2: {}
 
   react@19.2.3: {}
@@ -22912,6 +22981,14 @@ snapshots:
       acorn: 8.17.0
       commander: 2.20.3
       source-map-support: 0.5.21
+
+  test-renderer@1.2.0(@types/react@19.2.18)(react@19.2.8):
+    dependencies:
+      '@types/react-reconciler': 0.33.0(@types/react@19.2.18)
+      react: 19.2.8
+      react-reconciler: 0.33.0(react@19.2.8)
+    transitivePeerDependencies:
+      - '@types/react'
 
   throat@5.0.0: {}
 

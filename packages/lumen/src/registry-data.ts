@@ -38,6 +38,20 @@ export const lumenRegistry = {
       ]
     },
     {
+      name: 'error-handling',
+      type: 'recipe',
+      components: [
+        'Alert',
+        'ErrorState',
+        'ErrorSummary',
+        'FieldError',
+        'Toast'
+      ],
+      files: [
+        'docs/error-handling.md'
+      ]
+    },
+    {
       name: 'scheduler',
       type: 'recipe',
       components: [
@@ -909,6 +923,23 @@ export const lumenRegistry = {
       ]
     },
     {
+      name: 'ErrorState',
+      type: 'component',
+      description: 'Explains why primary content is unavailable and provides an application-owned recovery path.',
+      category: 'Feedback',
+      files: [
+        'packages/core/src/error-state.ts',
+        'packages/astro/components/ErrorState.astro',
+        'packages/astro/components/Illustration.astro',
+        'packages/astro/styles/lumen.css',
+        'docs/error-handling.md'
+      ],
+      dependencies: [
+        'Illustration',
+        'styles'
+      ]
+    },
+    {
       name: 'ErrorSummary',
       type: 'component',
       description: 'Summarizes form errors and links people back to invalid controls.',
@@ -1655,21 +1686,6 @@ export const lumenRegistry = {
       ]
     },
     {
-      name: 'Sonner',
-      type: 'component',
-      description: 'Provides the toast viewport for notifications.',
-      category: 'Feedback',
-      files: [
-        'packages/astro/components/Sonner.astro',
-        'packages/astro/styles/lumen.css',
-        'packages/astro/runtime/UIPrimitives.astro'
-      ],
-      dependencies: [
-        'styles',
-        'runtime'
-      ]
-    },
-    {
       name: 'Sparkline',
       type: 'component',
       description: 'Shows a compact, text-labelled trend beside an existing metric.',
@@ -1812,6 +1828,21 @@ export const lumenRegistry = {
       category: 'Feedback',
       files: [
         'packages/astro/components/Toast.astro',
+        'packages/astro/styles/lumen.css',
+        'packages/astro/runtime/UIPrimitives.astro'
+      ],
+      dependencies: [
+        'styles',
+        'runtime'
+      ]
+    },
+    {
+      name: 'ToastViewport',
+      type: 'component',
+      description: 'Provides the configurable viewport for transient toast notifications.',
+      category: 'Feedback',
+      files: [
+        'packages/astro/components/ToastViewport.astro',
         'packages/astro/styles/lumen.css',
         'packages/astro/runtime/UIPrimitives.astro'
       ],

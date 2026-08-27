@@ -70,6 +70,8 @@ fun lumenCardPalette(colors: LumenColorPalette, variant: LumenCardVariant): Lume
 fun LumenCard(
     modifier: Modifier = Modifier,
     variant: LumenCardVariant = LumenCardVariant.Default,
+    padding: LumenSurfacePadding = LumenSurfacePadding.Xl,
+    radius: LumenSurfaceRadius = LumenSurfaceRadius.Lg,
     onClick: (() -> Unit)? = null,
     enabled: Boolean = true,
     content: @Composable () -> Unit
@@ -86,10 +88,10 @@ fun LumenCard(
         modifier = modifier.then(interactionModifier),
         color = palette.background,
         contentColor = colors.ink,
-        shape = RoundedCornerShape(LumenRadius.Lg),
+        shape = RoundedCornerShape(radius.value),
         border = androidx.compose.foundation.BorderStroke(1.dp, palette.border)
     ) {
-        Box(modifier = Modifier.padding(LumenSpacing.Xl)) {
+        Box(modifier = Modifier.padding(padding.value)) {
             content()
         }
     }

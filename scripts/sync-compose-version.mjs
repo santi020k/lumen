@@ -18,6 +18,7 @@ const documentationPaths = [
 ].map(path => new URL(path, import.meta.url))
 
 const wearableDocumentationPaths = [
+  '../apps/docs/src/data/platforms.ts',
   '../docs/ai-usage.md',
   '../docs/native-components.md',
   '../packages/compose/README.md',

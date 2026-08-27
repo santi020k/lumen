@@ -36,6 +36,75 @@ enum PlaygroundThemePreference: String, CaseIterable, Identifiable {
     }
 }
 
+enum PlaygroundThemePreset: String, CaseIterable, Identifiable {
+    case lumen
+    case santi020k
+
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .lumen: "Lumen"
+        case .santi020k: "santi020k"
+        }
+    }
+
+    func theme(for scheme: LumenColorScheme) -> LumenTheme {
+        switch (self, scheme) {
+        case (.lumen, .light):
+            .light
+        case (.lumen, .dark):
+            .dark
+        case (.santi020k, .light):
+            LumenTheme(colors: Self.santi020kLight, scheme: .light)
+        case (.santi020k, .dark):
+            LumenTheme(colors: Self.santi020kDark, scheme: .dark)
+        }
+    }
+
+    private static let santi020kLight = palette(
+        canvas: 0xFAF9FB, surface: 0xFFFFFF, surfaceMuted: 0xF5F3F7,
+        surfaceStrong: 0xE5E2E9, line: 0xD6D0DC, ink: 0x332E38,
+        inkSoft: 0x5B5463, inkMuted: 0x47434C, brand: 0x620AE6,
+        brandSolid: 0x5709CE, brandSoft: 0xEEE7F9, accent: 0x7D29FA,
+        success: 0x16A249, warning: 0xF59F0A, danger: 0xEF4343,
+        onDanger: 0x000000
+    )
+
+    private static let santi020kDark = palette(
+        canvas: 0x110C1D, surface: 0x1C1528, surfaceMuted: 0x231D30,
+        surfaceStrong: 0x322B40, line: 0x494158, ink: 0xDFDDE3,
+        inkSoft: 0xB6B2BD, inkMuted: 0x8D8896, brand: 0xA56EF7,
+        brandSolid: 0x6F16F3, brandSoft: 0x2A1943, accent: 0x9F64F7,
+        success: 0x21C45D, warning: 0xF6A823, danger: 0xF15B5B,
+        onDanger: 0x110C1D
+    )
+
+    private static func palette(
+        canvas: UInt32, surface: UInt32, surfaceMuted: UInt32, surfaceStrong: UInt32,
+        line: UInt32, ink: UInt32, inkSoft: UInt32, inkMuted: UInt32,
+        brand: UInt32, brandSolid: UInt32, brandSoft: UInt32, accent: UInt32,
+        success: UInt32, warning: UInt32, danger: UInt32, onDanger: UInt32
+    ) -> LumenColorPalette {
+        LumenColorPalette(
+            canvas: color(canvas), surface: color(surface), surfaceMuted: color(surfaceMuted),
+            surfaceStrong: color(surfaceStrong), line: color(line), ink: color(ink),
+            inkSoft: color(inkSoft), inkMuted: color(inkMuted), brand: color(brand),
+            brandSolid: color(brandSolid), brandSoft: color(brandSoft), onBrand: .white,
+            accent: color(accent), success: color(success), warning: color(warning),
+            danger: color(danger), onDanger: color(onDanger)
+        )
+    }
+
+    private static func color(_ value: UInt32) -> Color {
+        Color(
+            red: Double((value >> 16) & 0xFF) / 255,
+            green: Double((value >> 8) & 0xFF) / 255,
+            blue: Double(value & 0xFF) / 255
+        )
+    }
+}
+
 enum PlaygroundComponentCategory: String, CaseIterable, Identifiable {
     case all
     case foundations
@@ -59,7 +128,7 @@ enum PlaygroundCatalog {
         "Textarea", "Field group", "Phone input", "Chip", "Badge", "Link",
         "Divider", "Spinner", "Card", "Alert", "Alert dialog", "Progress", "Skeleton", "Disclosure", "Avatar",
         "Toggle", "Settings row", "Checkbox", "Radio group", "Segmented control", "Tabs",
-        "Picker", "Slider", "Date field", "Date range field", "Search field", "Empty state", "List row", "Banner", "Toast", "Stat", "Gauge",
+        "Picker", "Slider", "Date field", "Date range field", "Search field", "Empty state", "Error state", "List row", "Banner", "Toast", "Stat", "Gauge",
         "Section header", "Status bar", "Graphic", "Backdrop", "Illustration", "Image", "Navigation bar",
         "Sparkline", "Line chart", "Bar chart", "Pie chart", "Scatter chart", "Heatmap", "Range chart", "Combo chart",
         "Sheet", "Menu", "Share button", "Tab bar minimization", "Tab accessory",
@@ -82,7 +151,7 @@ enum PlaygroundCatalog {
             .forms
         case "Badge", "Divider", "Spinner", "Alert", "Alert dialog", "Progress", "Skeleton", "Banner", "Toast":
             .feedback
-        case "Card", "Disclosure", "Avatar", "Empty state", "List row", "Stat", "Gauge", "Section header",
+        case "Card", "Disclosure", "Avatar", "Empty state", "Error state", "List row", "Stat", "Gauge", "Section header",
              "Status bar", "Sparkline", "Line chart", "Bar chart", "Pie chart", "Scatter chart", "Heatmap",
              "Range chart", "Combo chart":
             .content
@@ -142,6 +211,7 @@ struct PlaygroundRootView: View {
     @Environment(\.colorScheme) private var colorScheme
     @State private var destination: PlaygroundDestination
     @State private var themePreference: PlaygroundThemePreference
+    @State private var themePreset = PlaygroundThemePreset.lumen
 
     private let launchConfiguration: PlaygroundLaunchConfiguration
 
@@ -164,6 +234,7 @@ struct PlaygroundRootView: View {
             }
         }
         .lumenTheme(activeTheme, enforceColorScheme: themePreference != .system)
+        .tint(activeTheme.colors.brandSolid)
     }
 
     @ViewBuilder
@@ -201,12 +272,12 @@ struct PlaygroundRootView: View {
         case .components:
             ComponentsCatalogView(themePreference: $themePreference)
         case .settings:
-            PlaygroundSettingsView(themePreference: $themePreference)
+            PlaygroundSettingsView(themePreference: $themePreference, themePreset: $themePreset)
         }
     }
 
     private var activeTheme: LumenTheme {
-        switch themePreference {
+        let scheme: LumenColorScheme = switch themePreference {
         case .system:
             colorScheme == .dark ? .dark : .light
         case .light:
@@ -214,6 +285,7 @@ struct PlaygroundRootView: View {
         case .dark:
             .dark
         }
+        return themePreset.theme(for: scheme)
     }
 }
 

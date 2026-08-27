@@ -1,13 +1,14 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "adapters": [
     {
       "id": "react-native-ios",
       "adapter": "React Native",
       "platform": "iOS",
+      "minimumOperatingSystem": "iOS 15.1",
       "minimum": {
         "status": "pending",
-        "targetDescription": "Oldest supported iPhone and iOS",
+        "targetDescription": "iOS 15.1 physical iPhone",
         "environment": null,
         "date": null,
         "revision": null,
@@ -48,9 +49,10 @@
       "id": "react-native-android",
       "adapter": "React Native",
       "platform": "Android",
+      "minimumOperatingSystem": "Android API 24",
       "minimum": {
         "status": "pending",
-        "targetDescription": "API 23-class Android device",
+        "targetDescription": "Android API 24 physical device",
         "environment": null,
         "date": null,
         "revision": null,
@@ -91,6 +93,7 @@
       "id": "swiftui-ios",
       "adapter": "SwiftUI",
       "platform": "iOS",
+      "minimumOperatingSystem": "iOS 16",
       "minimum": {
         "status": "pending",
         "targetDescription": "iOS 16 physical device",
@@ -111,29 +114,36 @@
         "blockingIssues": []
       },
       "current": {
-        "status": "pending",
+        "status": "partial",
         "targetDescription": "Current iPhone and iOS",
-        "environment": null,
-        "date": null,
-        "revision": null,
-        "tester": null,
-        "evidence": [],
-        "checks": {
-          "screenReader": false,
-          "alternateInput": false,
-          "maximumTextScale": false,
-          "reducedMotion": false,
-          "increasedContrast": false,
-          "responsiveLayout": false,
-          "stateAndAnnouncements": false
+        "environment": {
+          "device": "iPhone 17 Pro Max (iPhone18,2)",
+          "osVersion": "iOS 27.0 (24A5418b)"
         },
-        "blockingIssues": []
+        "date": "2026-08-27",
+        "revision": "2210ba720836",
+        "tester": "Santiago Molina human VoiceOver pass with Codex-assisted deployment and visual inspection",
+        "evidence": ["docs/native-device-validation.md#swiftui-on-ios"],
+        "checks": {
+          "screenReader": true,
+          "alternateInput": false,
+          "maximumTextScale": true,
+          "reducedMotion": true,
+          "increasedContrast": true,
+          "responsiveLayout": true,
+          "stateAndAnnouncements": true
+        },
+        "blockingIssues": [
+          "A hardware-keyboard or switch-input pass remains required.",
+          "An iOS 16 minimum-version physical-device pass remains required."
+        ]
       }
     },
     {
       "id": "swiftui-macos",
       "adapter": "SwiftUI",
       "platform": "macOS",
+      "minimumOperatingSystem": "macOS 13",
       "minimum": {
         "status": "pending",
         "targetDescription": "macOS 13 physical Mac",
@@ -163,9 +173,7 @@
         "date": "2026-08-21",
         "revision": "128c97a",
         "tester": "Codex automated accessibility inspection",
-        "evidence": [
-          "docs/native-device-validation.md#swiftui-on-macos"
-        ],
+        "evidence": ["docs/native-device-validation.md#swiftui-on-macos"],
         "checks": {
           "screenReader": false,
           "alternateInput": true,
@@ -175,13 +183,17 @@
           "responsiveLayout": false,
           "stateAndAnnouncements": false
         },
-        "blockingIssues": []
+        "blockingIssues": [
+          "A human-assisted auditory VoiceOver pass remains required.",
+          "Maximum text scale, reduced motion, increased contrast, responsive layout, and state-announcement checks remain required."
+        ]
       }
     },
     {
       "id": "swiftui-watchos",
       "adapter": "SwiftUI",
       "platform": "watchOS",
+      "minimumOperatingSystem": "watchOS 9",
       "minimum": {
         "status": "pending",
         "targetDescription": "watchOS 9 physical Apple Watch",
@@ -222,12 +234,195 @@
       }
     },
     {
+      "id": "swiftui-visionos",
+      "adapter": "SwiftUI",
+      "platform": "visionOS",
+      "minimumOperatingSystem": "visionOS 1",
+      "minimum": {
+        "status": "pending",
+        "targetDescription": "visionOS 1 physical Apple Vision Pro",
+        "environment": null,
+        "date": null,
+        "revision": null,
+        "tester": null,
+        "evidence": [],
+        "checks": {
+          "screenReader": false,
+          "alternateInput": false,
+          "maximumTextScale": false,
+          "reducedMotion": false,
+          "increasedContrast": false,
+          "responsiveLayout": false,
+          "stateAndAnnouncements": false
+        },
+        "blockingIssues": []
+      },
+      "current": {
+        "status": "pending",
+        "targetDescription": "Current Apple Vision Pro and visionOS",
+        "environment": null,
+        "date": null,
+        "revision": null,
+        "tester": null,
+        "evidence": [],
+        "checks": {
+          "screenReader": false,
+          "alternateInput": false,
+          "maximumTextScale": false,
+          "reducedMotion": false,
+          "increasedContrast": false,
+          "responsiveLayout": false,
+          "stateAndAnnouncements": false
+        },
+        "blockingIssues": []
+      }
+    },
+    {
+      "id": "swift-widget-ios",
+      "adapter": "WidgetKit",
+      "platform": "iOS",
+      "minimumOperatingSystem": "iOS 16",
+      "minimum": {
+        "status": "pending",
+        "targetDescription": "iOS 16 physical iPhone with a WidgetKit extension",
+        "environment": null,
+        "date": null,
+        "revision": null,
+        "tester": null,
+        "evidence": [],
+        "checks": {
+          "screenReader": false,
+          "alternateInput": false,
+          "maximumTextScale": false,
+          "reducedMotion": false,
+          "increasedContrast": false,
+          "responsiveLayout": false,
+          "stateAndAnnouncements": false
+        },
+        "blockingIssues": []
+      },
+      "current": {
+        "status": "partial",
+        "targetDescription": "Current physical iPhone and iOS with a WidgetKit extension",
+        "environment": {
+          "device": "iPhone 17 Pro Max (iPhone18,2)",
+          "osVersion": "iOS 27.0 (24A5418b)"
+        },
+        "date": "2026-08-27",
+        "revision": "2210ba720836",
+        "tester": "Santiago Molina visual pass with Codex-assisted deployment",
+        "evidence": ["docs/native-device-validation.md#widgetkit-on-ios"],
+        "checks": {
+          "screenReader": false,
+          "alternateInput": false,
+          "maximumTextScale": false,
+          "reducedMotion": false,
+          "increasedContrast": false,
+          "responsiveLayout": true,
+          "stateAndAnnouncements": false
+        },
+        "blockingIssues": [
+          "VoiceOver, maximum accessibility text, Increase Contrast, accented rendering, and the small and accessory-family layouts remain required on the current physical iPhone.",
+          "An iOS 16 minimum-version physical-device pass remains required."
+        ]
+      }
+    },
+    {
+      "id": "swift-widget-macos",
+      "adapter": "WidgetKit",
+      "platform": "macOS",
+      "minimumOperatingSystem": "macOS 13",
+      "minimum": {
+        "status": "pending",
+        "targetDescription": "macOS 13 physical Mac with a WidgetKit extension",
+        "environment": null,
+        "date": null,
+        "revision": null,
+        "tester": null,
+        "evidence": [],
+        "checks": {
+          "screenReader": false,
+          "alternateInput": false,
+          "maximumTextScale": false,
+          "reducedMotion": false,
+          "increasedContrast": false,
+          "responsiveLayout": false,
+          "stateAndAnnouncements": false
+        },
+        "blockingIssues": []
+      },
+      "current": {
+        "status": "pending",
+        "targetDescription": "Current physical Mac and macOS with a WidgetKit extension",
+        "environment": null,
+        "date": null,
+        "revision": null,
+        "tester": null,
+        "evidence": [],
+        "checks": {
+          "screenReader": false,
+          "alternateInput": false,
+          "maximumTextScale": false,
+          "reducedMotion": false,
+          "increasedContrast": false,
+          "responsiveLayout": false,
+          "stateAndAnnouncements": false
+        },
+        "blockingIssues": []
+      }
+    },
+    {
+      "id": "swift-widget-watchos",
+      "adapter": "WidgetKit",
+      "platform": "watchOS",
+      "minimumOperatingSystem": "watchOS 9",
+      "minimum": {
+        "status": "pending",
+        "targetDescription": "watchOS 9 physical Apple Watch with a WidgetKit extension",
+        "environment": null,
+        "date": null,
+        "revision": null,
+        "tester": null,
+        "evidence": [],
+        "checks": {
+          "screenReader": false,
+          "alternateInput": false,
+          "maximumTextScale": false,
+          "reducedMotion": false,
+          "increasedContrast": false,
+          "responsiveLayout": false,
+          "stateAndAnnouncements": false
+        },
+        "blockingIssues": []
+      },
+      "current": {
+        "status": "pending",
+        "targetDescription": "Current physical Apple Watch and watchOS with a WidgetKit extension",
+        "environment": null,
+        "date": null,
+        "revision": null,
+        "tester": null,
+        "evidence": [],
+        "checks": {
+          "screenReader": false,
+          "alternateInput": false,
+          "maximumTextScale": false,
+          "reducedMotion": false,
+          "increasedContrast": false,
+          "responsiveLayout": false,
+          "stateAndAnnouncements": false
+        },
+        "blockingIssues": []
+      }
+    },
+    {
       "id": "compose-android",
       "adapter": "Compose",
       "platform": "Android",
+      "minimumOperatingSystem": "Android API 23",
       "minimum": {
         "status": "pending",
-        "targetDescription": "API 23-class Android device",
+        "targetDescription": "Android API 23 physical device",
         "environment": null,
         "date": null,
         "revision": null,
@@ -268,9 +463,10 @@
       "id": "compose-wear",
       "adapter": "Compose",
       "platform": "Wear OS",
+      "minimumOperatingSystem": "Wear OS API 30",
       "minimum": {
         "status": "pending",
-        "targetDescription": "API 30-class physical Wear OS watch",
+        "targetDescription": "Wear OS API 30 physical watch",
         "environment": null,
         "date": null,
         "revision": null,

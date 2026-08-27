@@ -7,11 +7,7 @@ export const componentNameToSlug = (name: LumenComponentName): string =>
     .replaceAll(/([a-z0-9])([A-Z])/g, '$1-$2')
     .toLowerCase()
 
-/**
- * Sonner is the viewport used by Toast rather than a separately documented
- * primitive. Its public surface is exercised on the Toast component page.
- */
-export const componentPageNames = lumenComponentNames.filter(name => name !== 'Sonner')
+export const componentPageNames = lumenComponentNames
 
 /**
  * Components whose Lumen runtime owns behavior beyond native HTML semantics.
@@ -78,7 +74,7 @@ export const runtimeBehaviorComponentNames = [
   'TreeGrid',
   'TreeSelect',
   'VirtualList',
-  'Sonner'
+  'ToastViewport'
 ] as const satisfies readonly LumenComponentName[]
 
 const runtimeNameSet = new Set<string>(runtimeBehaviorComponentNames)
