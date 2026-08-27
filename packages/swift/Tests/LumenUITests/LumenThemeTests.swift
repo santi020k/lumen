@@ -9,28 +9,18 @@ import Testing
 
 @Test func productPalettesAndAppearanceOwnershipRemainApplicationControlled() {
     let defaults = LumenColors.light
-    let productPalette = LumenColorPalette(
-        canvas: defaults.canvas,
-        surface: defaults.surface,
-        surfaceMuted: defaults.surfaceMuted,
-        surfaceStrong: defaults.surfaceStrong,
-        line: defaults.line,
-        ink: defaults.ink,
-        inkSoft: defaults.inkSoft,
-        inkMuted: defaults.inkMuted,
+    let productPalette = defaults.overriding(
         brand: .red,
-        brandSolid: defaults.brandSolid,
-        brandSoft: defaults.brandSoft,
-        onBrand: defaults.onBrand,
-        accent: defaults.accent,
-        success: defaults.success,
-        warning: defaults.warning,
-        danger: defaults.danger,
-        onDanger: defaults.onDanger
+        brandSolid: .purple,
+        brandSoft: .pink
     )
     let productTheme = LumenTheme(colors: productPalette, scheme: .light)
 
     #expect(productTheme.colors.brand == .red)
+    #expect(productTheme.colors.brandSolid == .purple)
+    #expect(productTheme.colors.brandSoft == .pink)
+    #expect(productTheme.colors.canvas == defaults.canvas)
+    #expect(productTheme.colors.danger == defaults.danger)
     #expect(productTheme.resolvedPreferredColorScheme(enforceColorScheme: true) == .light)
     #expect(productTheme.resolvedPreferredColorScheme(enforceColorScheme: false) == nil)
 }

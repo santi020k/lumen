@@ -18,6 +18,48 @@ public struct LumenTheme: Sendable {
     public static let dark = LumenTheme(colors: LumenColors.dark, scheme: .dark)
 }
 
+public extension LumenColorPalette {
+    func overriding(
+        canvas: Color? = nil,
+        surface: Color? = nil,
+        surfaceMuted: Color? = nil,
+        surfaceStrong: Color? = nil,
+        line: Color? = nil,
+        ink: Color? = nil,
+        inkSoft: Color? = nil,
+        inkMuted: Color? = nil,
+        brand: Color? = nil,
+        brandSolid: Color? = nil,
+        brandSoft: Color? = nil,
+        onBrand: Color? = nil,
+        accent: Color? = nil,
+        success: Color? = nil,
+        warning: Color? = nil,
+        danger: Color? = nil,
+        onDanger: Color? = nil
+    ) -> LumenColorPalette {
+        LumenColorPalette(
+            canvas: canvas ?? self.canvas,
+            surface: surface ?? self.surface,
+            surfaceMuted: surfaceMuted ?? self.surfaceMuted,
+            surfaceStrong: surfaceStrong ?? self.surfaceStrong,
+            line: line ?? self.line,
+            ink: ink ?? self.ink,
+            inkSoft: inkSoft ?? self.inkSoft,
+            inkMuted: inkMuted ?? self.inkMuted,
+            brand: brand ?? self.brand,
+            brandSolid: brandSolid ?? self.brandSolid,
+            brandSoft: brandSoft ?? self.brandSoft,
+            onBrand: onBrand ?? self.onBrand,
+            accent: accent ?? self.accent,
+            success: success ?? self.success,
+            warning: warning ?? self.warning,
+            danger: danger ?? self.danger,
+            onDanger: onDanger ?? self.onDanger
+        )
+    }
+}
+
 extension LumenTheme {
     func resolvedPreferredColorScheme(enforceColorScheme: Bool) -> ColorScheme? {
         guard enforceColorScheme else { return nil }

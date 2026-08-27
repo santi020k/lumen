@@ -15,3 +15,4 @@ rendered charts and disclosures. Keep pie disclosures aligned with positive rend
 exclude incomplete ranges from Compose chart domains.
 Preserve typed range categories in React fallback keys, and generate Swift-safe illustration case
 identifiers from kebab-case catalog names.
+Allow SwiftUI consumers to derive a product palette by overriding only selected semantic colors.
