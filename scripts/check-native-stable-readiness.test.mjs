@@ -7,6 +7,7 @@ import test from 'node:test'
 
 const repositoryRoot = resolve(import.meta.dirname, '..')
 const checkerPath = resolve(repositoryRoot, 'scripts', 'check-native-stable-readiness.mjs')
+const consumerLedgerPath = resolve(repositoryRoot, 'registry', 'native-consumer-evidence.json')
 const deviceLedgerPath = resolve(repositoryRoot, 'registry', 'native-device-evidence.json')
 const soakLedgerPath = resolve(repositoryRoot, 'registry', 'native-stability-soak.json')
 
@@ -60,15 +61,53 @@ const completeDevicePass = (pass, index) => {
   pass.blockingIssues = []
 }
 
+const completeConsumer = (consumer, index) => {
+  consumer.status = 'complete'
+
+  consumer.consumer.owner = `Product owner ${index}`
+
+  consumer.consumer.repository = `https://github.com/example/consumer-${index}`
+
+  consumer.minimumOperatingSystems = [`Platform ${index}.0`]
+
+  consumer.toolchain = `Native toolchain ${index}`
+
+  consumer.checks = Object.fromEntries(Object.keys(consumer.checks).map(check => [check, true]))
+
+  consumer.evidence = [
+    `https://github.com/example/consumer-${index}/commit/${consumer.upgrade.revision}`
+  ]
+
+  consumer.blockingIssues = []
+}
+
 const withCompleteLedgers = async callback => {
   const temporaryDirectory = await mkdtemp(resolve(tmpdir(), 'lumen-native-stable-'))
 
   try {
     const soakLedger = JSON.parse(await readFile(soakLedgerPath, 'utf8'))
+    const consumerLedger = JSON.parse(await readFile(consumerLedgerPath, 'utf8'))
     const deviceLedger = JSON.parse(await readFile(deviceLedgerPath, 'utf8'))
     let passIndex = 0
 
     soakLedger.iterations = [createSoakIteration(soakLedger, 0), createSoakIteration(soakLedger, 1)]
+
+    const versionKeys = {
+      compose: 'compose',
+      'react-native': 'reactNative',
+      swiftui: 'swift',
+      wear: 'wear'
+    }
+
+    for (const consumer of consumerLedger.adapters) {
+      const versionKey = versionKeys[consumer.id]
+
+      consumer.upgrade.fromVersion = soakLedger.iterations[0].versions[versionKey]
+
+      consumer.upgrade.toVersion = soakLedger.iterations[1].versions[versionKey]
+    }
+
+    consumerLedger.adapters.forEach(completeConsumer)
 
     for (const adapter of deviceLedger.adapters) {
       completeDevicePass(adapter.minimum, passIndex)
@@ -81,14 +120,20 @@ const withCompleteLedgers = async callback => {
     }
 
     const temporarySoakPath = resolve(temporaryDirectory, 'soak.json')
+    const temporaryConsumerPath = resolve(temporaryDirectory, 'consumers.json')
     const temporaryDevicePath = resolve(temporaryDirectory, 'devices.json')
 
     await Promise.all([
       writeFile(temporarySoakPath, `${JSON.stringify(soakLedger, null, 2)}\n`),
+      writeFile(temporaryConsumerPath, `${JSON.stringify(consumerLedger, null, 2)}\n`),
       writeFile(temporaryDevicePath, `${JSON.stringify(deviceLedger, null, 2)}\n`)
     ])
 
-    return callback({ deviceLedger: temporaryDevicePath, soakLedger: temporarySoakPath })
+    return callback({
+      consumerLedger: temporaryConsumerPath,
+      deviceLedger: temporaryDevicePath,
+      soakLedger: temporarySoakPath
+    })
   } finally {
     await rm(temporaryDirectory, { force: true, recursive: true })
   }
@@ -142,11 +187,12 @@ test('blocks a coordinated version 2 launch while evidence is incomplete', () =>
   assert.match(result.stderr, /Native stability soak is incomplete/)
 })
 
-test('allows a coordinated stable release after both evidence ledgers are complete', async () => {
+test('allows a coordinated stable release after every evidence ledger is complete', async () => {
   const result = await withCompleteLedgers(ledgers => runChecker([
     '--compose-version', '2.0.0',
     '--react-native-version', '2.0.0',
     '--swift-version', '2.0.0',
+    '--consumer-ledger', ledgers.consumerLedger,
     '--soak-ledger', ledgers.soakLedger,
     '--device-ledger', ledgers.deviceLedger
   ]))
@@ -155,7 +201,9 @@ test('allows a coordinated stable release after both evidence ledgers are comple
 
   assert.match(result.stdout, /Validated 2\/2 native stability soak iterations/)
 
-  assert.match(result.stdout, /14 native physical-device passes; 0 remain incomplete/)
+  assert.match(result.stdout, /4 native real-consumer records; 0 remain incomplete/)
+
+  assert.match(result.stdout, /14 native physical-device evidence slots; 0 remain incomplete/)
 
   assert.match(result.stdout, /Native stable release gates are complete/)
 })

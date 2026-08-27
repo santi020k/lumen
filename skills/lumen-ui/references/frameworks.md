@@ -12,7 +12,8 @@ pnpm add @santi020k/lumen-astro
 
 ```astro
 ---
-import { Button, Card, Field, Input, Label, UIPrimitives } from '@santi020k/lumen-astro'
+import { Button, Card, Field, Input, Label } from '@santi020k/lumen-astro'
+import UIPrimitives from '@santi020k/lumen-astro/runtime'
 import '@santi020k/lumen-astro/styles.css'
 ---
 

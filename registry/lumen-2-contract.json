@@ -10,7 +10,7 @@
   "changes": [
     {
       "id": "astro-runtime-subpath",
-      "status": "candidate",
+      "status": "approved",
       "kind": "breaking",
       "packages": [
         "@santi020k/lumen-astro"
@@ -36,7 +36,7 @@
     },
     {
       "id": "visual-size-alias-removal",
-      "status": "candidate",
+      "status": "approved",
       "kind": "breaking",
       "packages": [
         "@santi020k/lumen-astro",
@@ -64,7 +64,7 @@
     },
     {
       "id": "sonner-alias-removal",
-      "status": "candidate",
+      "status": "approved",
       "kind": "breaking",
       "packages": [
         "@santi020k/lumen-astro",
@@ -77,7 +77,6 @@
       "migration": "The Lumen v2 migrator rewrites Sonner and SonnerProps imports to ToastViewport and ToastViewportProps while preserving local aliases, and renames lumen-sonner markup to lumen-toast-viewport without changing placement, maximum-count configuration, or children. Ambiguous imports require manual review.",
       "evidence": [
         "apps/docs/src/data/docs.test.ts",
-        "packages/astro/components/Sonner.astro",
         "packages/astro/components/ToastViewport.astro",
         "packages/core/src/components.ts",
         "packages/react/src/components.tsx",
@@ -98,7 +97,7 @@
     },
     {
       "id": "swift-surface-scale-expansion",
-      "status": "candidate",
+      "status": "approved",
       "kind": "breaking",
       "packages": [
         "LumenUI"
@@ -127,6 +126,36 @@
         "enumelement LumenSurfaceRadius.size2xl has been added as a new enum case",
         "enumelement LumenSurfaceRadius.size3xl has been added as a new enum case",
         "enumelement LumenSurfaceRadius.xl has been added as a new enum case"
+      ]
+    },
+    {
+      "id": "react-native-datetime-subpath",
+      "status": "approved",
+      "kind": "breaking",
+      "packages": [
+        "@santi020k/lumen-react-native"
+      ],
+      "currentContract": "React Native date fields are exported from the package root and the datetime picker is a required peer, so consumers that never render a date field still inherit installation and native-linking requirements.",
+      "replacement": "Import LumenDateField, LumenDateRangeField, their props, and LumenDateRangeValue from @santi020k/lumen-react-native/datetime. Install @react-native-community/datetimepicker only in applications that use that subpath.",
+      "migration": "The Lumen v2 migrator splits date-field named imports from the React Native root into the datetime subpath while preserving aliases and type-only imports. An existing datetime-subpath import requires manual merging.",
+      "evidence": [
+        "packages/react-native/package.json",
+        "packages/react-native/src/index.ts",
+        "packages/react-native/src/datetime.ts",
+        "packages/react-native/src/datetime-components.tsx",
+        "registry/native-api-baseline.json"
+      ],
+      "docs": [
+        "docs/lumen-2-contract.md",
+        "docs/migrating-to-lumen.md",
+        "docs/native-components.md",
+        "packages/react-native/README.md"
+      ],
+      "tests": [
+        "pnpm --filter @santi020k/lumen-react-native test",
+        "pnpm run check:native-api-baseline",
+        "pnpm run check:react-native-package",
+        "pnpm --filter @santi020k/lumen test"
       ]
     }
   ],

@@ -1,0 +1,179 @@
+{
+  "schemaVersion": 1,
+  "adapters": [
+    {
+      "id": "react-native",
+      "adapter": "React Native",
+      "status": "partial",
+      "consumer": {
+        "name": "Roadscore mobile",
+        "owner": null,
+        "repository": null
+      },
+      "minimumOperatingSystems": [],
+      "toolchain": "Expo 57, React Native 0.86.2, and pnpm 10.34.3",
+      "platforms": ["Android", "iOS"],
+      "supportedComponents": [
+        "LumenButton",
+        "LumenCard",
+        "LumenErrorState",
+        "LumenProvider",
+        "LumenSegmentedControl",
+        "LumenTextField"
+      ],
+      "upgrade": {
+        "fromVersion": "0.4.0",
+        "toVersion": "0.5.0",
+        "revision": "8a954bc4aae51f0d28c000bb490118317775821a"
+      },
+      "checks": {
+        "accessibility": false,
+        "activeProduct": false,
+        "build": true,
+        "icons": false,
+        "installation": true,
+        "integration": true,
+        "signedArtifact": false,
+        "stateManagement": false,
+        "theming": true,
+        "upgrade": true
+      },
+      "compatibilityWorkarounds": [],
+      "evidence": ["docs/native-consumer-validation.md#roadscore-react-native-040"],
+      "blockingIssues": [
+        "Product owner confirmation is required.",
+        "A signed native application build and accessibility pass are required.",
+        "Minimum OS targets, icon integration, and state-management ownership require a qualifying record."
+      ]
+    },
+    {
+      "id": "swiftui",
+      "adapter": "SwiftUI",
+      "status": "partial",
+      "consumer": {
+        "name": "ContracTrack",
+        "owner": null,
+        "repository": null
+      },
+      "minimumOperatingSystems": [],
+      "toolchain": null,
+      "platforms": ["iOS", "macOS", "watchOS"],
+      "supportedComponents": [
+        "LumenGraphic",
+        "LumenTheme",
+        "LumenWatchActionButton",
+        "LumenWatchProgressRing",
+        "LumenWatchStatus"
+      ],
+      "upgrade": {
+        "fromVersion": "1.4.0",
+        "toVersion": "1.5.0",
+        "revision": "7327aaa8f68b88bb98fa29487c469170866b258d"
+      },
+      "checks": {
+        "accessibility": false,
+        "activeProduct": false,
+        "build": true,
+        "icons": true,
+        "installation": true,
+        "integration": true,
+        "signedArtifact": false,
+        "stateManagement": true,
+        "theming": true,
+        "upgrade": true
+      },
+      "compatibilityWorkarounds": [],
+      "evidence": ["docs/native-consumer-validation.md#contractrack-native-consumers"],
+      "blockingIssues": [
+        "Product owner confirmation is required.",
+        "Signed physical-device application evidence is required.",
+        "Minimum OS targets and the exact build toolchain require a qualifying record."
+      ]
+    },
+    {
+      "id": "compose",
+      "adapter": "Compose",
+      "status": "partial",
+      "consumer": {
+        "name": "ContracTrack Android",
+        "owner": null,
+        "repository": null
+      },
+      "minimumOperatingSystems": [],
+      "toolchain": "JDK 21 and the consumer repository Gradle wrapper",
+      "platforms": ["Android"],
+      "supportedComponents": [
+        "LumenNavigationBar",
+        "LumenNavigationItem",
+        "LumenTheme"
+      ],
+      "upgrade": {
+        "fromVersion": "0.4.0",
+        "toVersion": "0.5.0",
+        "revision": "7327aaa8f68b88bb98fa29487c469170866b258d"
+      },
+      "checks": {
+        "accessibility": false,
+        "activeProduct": false,
+        "build": true,
+        "icons": false,
+        "installation": true,
+        "integration": true,
+        "signedArtifact": false,
+        "stateManagement": true,
+        "theming": true,
+        "upgrade": true
+      },
+      "compatibilityWorkarounds": [],
+      "evidence": ["docs/native-consumer-validation.md#contractrack-native-consumers"],
+      "blockingIssues": [
+        "Product owner confirmation is required.",
+        "Signed physical-device application evidence is required.",
+        "Minimum OS targets and icon integration require a qualifying record."
+      ]
+    },
+    {
+      "id": "wear",
+      "adapter": "Wear OS",
+      "status": "partial",
+      "consumer": {
+        "name": "ContracTrack Wear",
+        "owner": null,
+        "repository": null
+      },
+      "minimumOperatingSystems": [],
+      "toolchain": "JDK 21 and the consumer repository Gradle wrapper",
+      "platforms": ["Wear OS"],
+      "supportedComponents": [
+        "LumenWearActionButton",
+        "LumenWearProgressRing",
+        "LumenWearStatus",
+        "LumenWearTheme"
+      ],
+      "upgrade": {
+        "fromVersion": "0.4.0",
+        "toVersion": "0.5.0",
+        "revision": "7327aaa8f68b88bb98fa29487c469170866b258d"
+      },
+      "checks": {
+        "accessibility": false,
+        "activeProduct": false,
+        "build": true,
+        "icons": false,
+        "installation": true,
+        "integration": true,
+        "signedArtifact": false,
+        "stateManagement": true,
+        "theming": true,
+        "upgrade": true
+      },
+      "compatibilityWorkarounds": [],
+      "evidence": ["docs/native-consumer-validation.md#contractrack-native-consumers"],
+      "blockingIssues": [
+        "Product owner confirmation is required.",
+        "Signed physical-watch application evidence is required.",
+        "Minimum OS targets and icon integration require a qualifying record."
+      ]
+    }
+  ]
+}

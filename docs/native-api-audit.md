@@ -26,17 +26,18 @@ the same way as handwritten exports; their generator remains the editing source 
 
 | Adapter | Public inventory | Classification | Compatibility enforcement | Remaining work |
 | --- | --- | --- | --- | --- |
-| React Native | 220 exports from `packages/react-native/src/index.ts` | 211 Supported; 9 Experimental phone exports; 0 Deprecated | `pnpm run check:native-api-baseline` compares the TypeScript entrypoint with `registry/native-api-baseline.json` | Retain the approved baseline across two ordinary stability iterations |
+| React Native | 242 exports across the package root and optional datetime entrypoint | 233 Supported; 9 Experimental phone exports; 0 Deprecated | `pnpm run check:native-api-baseline` compares both TypeScript entrypoints with `registry/native-api-baseline.json` | Retain the approved baseline across two ordinary stability iterations |
 | SwiftUI | Reviewed symbol graphs: 3,014 macOS, 2,991 iOS, 2,833 tvOS, and 2,853 watchOS symbols | macOS: 2,991 Supported and 23 Experimental; iOS: 2,968 Supported and 23 Experimental; tvOS/watchOS: every symbol Supported; 0 Deprecated or Unclassified | `pnpm run check:swift-api-baseline` rebuilds every declared platform; `pnpm run check:swift-source-compatibility` permits only the four reviewed Lumen 2 enum additions relative to `v1.6.0` | Retain the approved baseline across two ordinary stability iterations |
-| Compose | 70 public ABI blocks and 2,928 public members in `packages/compose/api/lumen-compose.api` | Supported surface plus the phone contract behind `ExperimentalLumenPhoneApi`; 0 Deprecated | `./gradlew apiCheck` compares the release artifact with the reviewed binary API dump | Add declaration-level machine-readable maturity classifications, then retain the approved baseline across two ordinary stability iterations |
+| Compose | 152 classified public declarations backed by 70 ABI blocks and 2,928 public members in `packages/compose/api/lumen-compose.api` | 146 Supported; 6 Experimental phone declarations; 0 Deprecated | `./gradlew apiCheck` compares the release artifact with the reviewed binary API dump; `pnpm run check:compose-api-classification` enforces declaration maturity and source opt-ins | Retain the approved baseline across two ordinary stability iterations |
 | Wear OS | 8 classified declarations in `packages/compose/wear/api/wear.api` | 5 Supported; 3 Experimental; 0 Deprecated; 3 implementation helpers made Internal | Root `./gradlew apiCheck` compares the separate artifact dump; `pnpm run check:wear-api-classification` enforces classifications and source opt-ins | Confirm active-product and physical-watch behavior, then retain the approved dump across two ordinary stability iterations |
 
 ## React Native baseline rules
 
 `registry/native-api-baseline.json` is reviewed API metadata, not generated output. Every named
-export must appear in exactly one classification, arrays remain sorted, and wildcard exports are
-rejected because they can bypass classification. An intentional API change updates implementation,
-types, documentation, tests, the baseline, and migration notes together.
+export from the root or an approved subpath must appear in exactly one classification, arrays remain
+sorted, and wildcard exports are rejected because they can bypass classification. Symbols cannot
+be duplicated across stable entrypoints. An intentional API change updates implementation, types,
+documentation, tests, the baseline, and migration notes together.
 
 The baseline check is part of `pnpm run validate`. A changed entrypoint therefore fails before a
 new symbol can be published without an explicit classification.
@@ -53,11 +54,12 @@ annotation itself is also classified Experimental. Sizing, progress-normalizatio
 helpers are Internal and absent from the public ABI.
 
 Both dumps are generated from each release classes JAR with JetBrains' binary compatibility
-validator. Android resource classes and compiler-generated Compose singleton holders are excluded;
-all remaining public ABI must be listed in `registry/wear-api-classification.json` when it belongs
-to the Wear artifact. `pnpm run check:wear-api-classification` rejects an unclassified declaration,
-an internal helper that leaks into the ABI, or an Experimental function without a visible source
-opt-in.
+validator. Android resource classes and compiler-generated Compose singleton holders are excluded.
+`registry/compose-api-classification.json` classifies every public phone/tablet declaration, while
+`registry/wear-api-classification.json` classifies every public Wear declaration and the reviewed
+implementation helpers that must remain internal. The classification checks reject an unclassified
+declaration, an internal Wear helper that leaks into the ABI, or an Experimental function without a
+visible source opt-in.
 
 Run `./gradlew apiCheck` from `packages/compose` to check both artifacts. Use `./gradlew apiDump`
 only after reviewing an intentional public API change and updating implementation, documentation,

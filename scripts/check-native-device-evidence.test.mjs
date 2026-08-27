@@ -67,7 +67,7 @@ test('accepts a complete physical-device matrix in readiness mode', async () => 
 
   assert.equal(result.status, 0, result.stderr)
 
-  assert.match(result.stdout, /14 native physical-device passes; 0 remain incomplete/)
+  assert.match(result.stdout, /14 native physical-device evidence slots; 0 remain incomplete/)
 })
 
 test('rejects a complete pass without an actual device environment', async () => {

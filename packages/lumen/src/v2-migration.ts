@@ -4,6 +4,8 @@ import { extname, relative, resolve } from 'node:path'
 const ASTRO_PACKAGE = '@santi020k/lumen-astro'
 const ASTRO_RUNTIME_PACKAGE = '@santi020k/lumen-astro/runtime'
 const REACT_PACKAGE = '@santi020k/lumen-react'
+const REACT_NATIVE_PACKAGE = '@santi020k/lumen-react-native'
+const REACT_NATIVE_DATETIME_PACKAGE = '@santi020k/lumen-react-native/datetime'
 const SOURCE_EXTENSIONS = new Set(['.astro', '.htm', '.html', '.js', '.jsx', '.ts', '.tsx'])
 
 const IGNORED_DIRECTORIES = new Set([
@@ -21,6 +23,7 @@ const VISUAL_SIZE_ALIASES = new Set(['default', 'lg', 'sm'])
 
 export type LumenV2MigrationKind =
   | 'astro-runtime-subpath' |
+  'react-native-datetime-subpath' |
   'sonner-alias-removal' |
   'visual-size-alias-removal'
 
@@ -773,6 +776,152 @@ const migrateSonnerImports = (
   return { changes, manualReview, source: applyEdits(source, edits) }
 }
 
+const REACT_NATIVE_DATETIME_EXPORTS = new Set([
+  'LumenDateField',
+  'LumenDateFieldProps',
+  'LumenDateRangeField',
+  'LumenDateRangeFieldProps',
+  'LumenDateRangeValue'
+])
+
+const createReactNativeDatetimeReview = (
+  source: string,
+  file: string,
+  statement: ImportStatement,
+  message: string
+): LumenV2MigrationFinding => createFinding(
+  source,
+  file,
+  statement.start,
+  'react-native-datetime-subpath',
+  message
+)
+
+type ReactNativeDatetimeImportPlan =
+  | { kind: 'irrelevant' } |
+  { kind: 'unsafe' } |
+  {
+    datetimeImports: NamedImport[]
+    kind: 'migrate'
+    remaining: NamedImport[]
+    typePrefix: string
+  }
+
+const isSafeReactNativeDatetimeClause = (
+  named: ParsedNamedImports | undefined,
+  prefix: string,
+  suffix: string
+): named is ParsedNamedImports => Boolean(
+  named?.complete && (prefix === '' || prefix === 'type') && suffix === ''
+)
+
+const planReactNativeDatetimeImport = (statement: ImportStatement): ReactNativeDatetimeImportPlan => {
+  const mentionsDatetime = [...REACT_NATIVE_DATETIME_EXPORTS]
+    .some(exportName => statement.clause.includes(exportName))
+
+  if (!mentionsDatetime) return { kind: 'irrelevant' }
+
+  const named = parseNamedImports(statement.clause)
+  const prefix = named ? statement.clause.slice(0, named.open).trim().replace(/,$/u, '').trim() : ''
+  const suffix = named ? statement.clause.slice(named.close + 1).trim() : ''
+
+  if (!isSafeReactNativeDatetimeClause(named, prefix, suffix)) return { kind: 'unsafe' }
+
+  const datetimeImports = named.imports.filter(item => REACT_NATIVE_DATETIME_EXPORTS.has(item.imported))
+
+  if (datetimeImports.length === 0) return { kind: 'irrelevant' }
+
+  return {
+    datetimeImports,
+    kind: 'migrate',
+    remaining: named.imports.filter(item => !REACT_NATIVE_DATETIME_EXPORTS.has(item.imported)),
+    typePrefix: prefix === 'type' ? 'type ' : ''
+  }
+}
+
+const migrateReactNativeDatetimeStatement = (
+  source: string,
+  file: string,
+  statement: ImportStatement,
+  datetimeSubpathImported: boolean
+): { changes: LumenV2MigrationFinding[], edit?: SourceEdit, review?: LumenV2MigrationFinding } => {
+  const plan = planReactNativeDatetimeImport(statement)
+
+  if (plan.kind === 'irrelevant') return { changes: [] }
+
+  if (plan.kind === 'unsafe') {
+    return {
+      changes: [],
+      review: createReactNativeDatetimeReview(
+        source,
+        file,
+        statement,
+        'React Native datetime exports are part of an import that cannot be rewritten safely.'
+      )
+    }
+  }
+
+  if (datetimeSubpathImported) {
+    return {
+      changes: [],
+      review: createReactNativeDatetimeReview(
+        source,
+        file,
+        statement,
+        'The datetime subpath is already imported; merge the remaining root datetime exports manually.'
+      )
+    }
+  }
+
+  const rootStatement = plan.remaining.length > 0 ?
+    `import ${plan.typePrefix}{ ${plan.remaining.map(item => item.source).join(', ')} } from ${statement.quote}${REACT_NATIVE_PACKAGE}${statement.quote}${statement.semicolon ? ';' : ''}` :
+    ''
+
+  const datetimeStatement = `import ${plan.typePrefix}{ ${plan.datetimeImports.map(item => item.source).join(', ')} } from ${statement.quote}${REACT_NATIVE_DATETIME_PACKAGE}${statement.quote}${statement.semicolon ? ';' : ''}`
+
+  return {
+    changes: plan.datetimeImports.map(item => createFinding(
+      source,
+      file,
+      statement.start,
+      'react-native-datetime-subpath',
+      `Move ${item.imported} to ${REACT_NATIVE_DATETIME_PACKAGE} while preserving the local name ${item.local}.`
+    )),
+    edit: {
+      end: statement.end,
+      replacement: [rootStatement, datetimeStatement].filter(Boolean).join('\n'),
+      start: statement.start
+    }
+  }
+}
+
+const migrateReactNativeDatetimeImports = (
+  source: string,
+  file: string
+): Pick<LumenV2SourceMigration, 'changes' | 'manualReview' | 'source'> => {
+  const changes: LumenV2MigrationFinding[] = []
+  const manualReview: LumenV2MigrationFinding[] = []
+  const edits: SourceEdit[] = []
+  const existingDatetimeImports = findImportStatements(source, REACT_NATIVE_DATETIME_PACKAGE)
+
+  for (const statement of findImportStatements(source, REACT_NATIVE_PACKAGE)) {
+    const result = migrateReactNativeDatetimeStatement(
+      source,
+      file,
+      statement,
+      existingDatetimeImports.length > 0
+    )
+
+    changes.push(...result.changes)
+
+    if (result.edit) edits.push(result.edit)
+
+    if (result.review) manualReview.push(result.review)
+  }
+
+  return { changes, manualReview, source: applyEdits(source, edits) }
+}
+
 const getRawElementEnd = (source: string, tagName: string, start: number): number => {
   if (tagName !== 'script' && tagName !== 'style') return start
 
@@ -839,28 +988,31 @@ export const migrateLumenV2Source = (source: string, file = '<source>'): LumenV2
   const astroComponents = astro ? collectAstroComponentNames(source) : new Map<string, 'Input' | 'NativeSelect'>()
   const runtime = astro ? migrateRuntimeImports(source, file) : { changes: [], manualReview: [], source }
   const sonnerImports = migrateSonnerImports(runtime.source, file)
+  const reactNativeDatetime = migrateReactNativeDatetimeImports(sonnerImports.source, file)
 
   if (!markup) {
     return {
-      changes: [...runtime.changes, ...sonnerImports.changes],
-      manualReview: [...runtime.manualReview, ...sonnerImports.manualReview],
-      source: sonnerImports.source
+      changes: [...runtime.changes, ...sonnerImports.changes, ...reactNativeDatetime.changes],
+      manualReview: [...runtime.manualReview, ...sonnerImports.manualReview, ...reactNativeDatetime.manualReview],
+      source: reactNativeDatetime.source
     }
   }
 
-  const visualSizes = migrateVisualSizes(sonnerImports.source, file, astroComponents)
+  const visualSizes = migrateVisualSizes(reactNativeDatetime.source, file, astroComponents)
   const sonnerElements = migrateSonnerElements(visualSizes.source, file)
 
   return {
     changes: [
       ...runtime.changes,
       ...sonnerImports.changes,
+      ...reactNativeDatetime.changes,
       ...visualSizes.changes,
       ...sonnerElements.changes
     ],
     manualReview: [
       ...runtime.manualReview,
       ...sonnerImports.manualReview,
+      ...reactNativeDatetime.manualReview,
       ...visualSizes.manualReview,
       ...sonnerElements.manualReview
     ],

@@ -16,7 +16,7 @@ considered supported.
 Install the package and mount one provider near the application root:
 
 ```bash
-pnpm add @santi020k/lumen-react-native @react-native-community/datetimepicker react-native-svg
+pnpm add @santi020k/lumen-react-native react-native-svg
 ```
 
 ```tsx
@@ -25,6 +25,20 @@ import { LumenProvider } from "@santi020k/lumen-react-native";
 export function App() {
   return <LumenProvider scheme="system">{/* application */}</LumenProvider>;
 }
+```
+
+React Native date fields use an optional native integration. Install the picker and import those
+components from their dedicated entrypoint only when the application needs them:
+
+```bash
+pnpm add @react-native-community/datetimepicker
+```
+
+```tsx
+import {
+  LumenDateField,
+  LumenDateRangeField
+} from '@santi020k/lumen-react-native/datetime'
 ```
 
 Shared icons use `name="search"`; applications can instead pass graphic components with `color`,
@@ -305,6 +319,21 @@ Picker, slider, gauge, date field, and date range field now share one controlled
 React Native, SwiftUI, and Compose. SwiftUI and Compose use their native controls. React Native uses
 dependency-free accessible menu, adjustable, and progress semantics so applications do not need a
 second control package for the common contract.
+
+### React Native behavior hooks
+
+React Native consumers can share ordinary React application hooks with a web app when those hooks
+remain platform-neutral. Lumen exports `useDisclosure` and `useDialog`, `useTabs`, `useSelect`,
+`useLanguageToggle`, `useThemeToggle`, and `useToast` from
+`@santi020k/lumen-react-native`. These preserve the controlled and uncontrolled state semantics of
+the corresponding reusable React behaviors while returning native component props instead of DOM,
+ARIA, CSS, or browser-event props. `useLumenTheme` and `useLumenNavigationBarVisibility` remain the
+native-only theme and scroll-visibility controllers.
+
+Do not import behavior hooks from `@santi020k/lumen-react` into a React Native bundle. Keep API
+access, schemas, domain state, and custom hooks in a shared application package, then connect web
+and native state to their matching Lumen rendering adapters. The complete controller examples live
+in the [React Native hooks guide](https://lumen.santi020k.com/docs/react-native/hooks).
 
 `LumenNavigationBar` covers a small set of peer app destinations while leaving the selected screen,
 navigation history, deep links, and restoration in application code. Continue using native routers,
@@ -658,6 +687,11 @@ LumenBanner(
 
 `LumenBanner` is inline presentation, not a live announcement. Applications decide whether a newly
 inserted message needs a platform accessibility announcement.
+
+See the [error-handling guide](./error-handling.md) for the complete cross-platform contract,
+layout selection, announcement policy, retry lifecycle, safe-reference rules, and React Native,
+SwiftUI, and Compose examples. `LumenErrorState` presents an application-classified failure; it
+does not catch exceptions, start requests, infer connectivity, or report diagnostics.
 
 SwiftUI disclosures accept either the concise title-and-description initializer or a custom label
 view. Use a custom label for application identity, metrics, badges, and independently meaningful

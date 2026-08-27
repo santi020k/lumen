@@ -217,6 +217,56 @@ import { Sonner /* configured viewport */ } from '@santi020k/lumen-astro'
     ])
   })
 
+  test('moves React Native datetime exports to the optional subpath and is idempotent', () => {
+    const source = `import {
+  Button,
+  LumenDateField as DateField,
+  type LumenDateRangeValue
+} from '@santi020k/lumen-react-native'
+
+export const value: LumenDateRangeValue = { start: undefined, end: undefined }
+void Button
+void DateField
+`
+    const first = migrateLumenV2Source(source, 'src/app.tsx')
+    const second = migrateLumenV2Source(first.source, 'src/app.tsx')
+
+    expect(first.source).toContain('import { Button } from \'@santi020k/lumen-react-native\'')
+    expect(first.source).toContain(
+      'import { LumenDateField as DateField, type LumenDateRangeValue } from \'@santi020k/lumen-react-native/datetime\''
+    )
+    expect(first.changes).toHaveLength(2)
+    expect(first.changes.every(change => change.kind === 'react-native-datetime-subpath')).toBe(true)
+    expect(first.manualReview).toEqual([])
+    expect(second).toEqual({ changes: [], manualReview: [], source: first.source })
+  })
+
+  test('preserves type-only React Native datetime imports', () => {
+    const result = migrateLumenV2Source(
+      'import type { LumenDateFieldProps, LumenDateRangeValue } from \'@santi020k/lumen-react-native\';\n',
+      'src/types.ts'
+    )
+
+    expect(result.source).toBe(
+      'import type { LumenDateFieldProps, LumenDateRangeValue } from \'@santi020k/lumen-react-native/datetime\';\n'
+    )
+    expect(result.changes).toHaveLength(2)
+    expect(result.manualReview).toEqual([])
+  })
+
+  test('reports an existing React Native datetime subpath import for manual review', () => {
+    const source = `import { LumenDateField } from '@santi020k/lumen-react-native/datetime'
+import { Button, LumenDateRangeField } from '@santi020k/lumen-react-native'
+`
+    const result = migrateLumenV2Source(source, 'src/app.tsx')
+
+    expect(result.source).toBe(source)
+    expect(result.changes).toEqual([])
+    expect(result.manualReview).toEqual([
+      expect.objectContaining({ kind: 'react-native-datetime-subpath' })
+    ])
+  })
+
   test('discovers nested sources, defaults to dry-run, and applies only when requested', async () => {
     const root = await mkdtemp(join(tmpdir(), 'lumen-v2-migration-'))
     const nestedFile = join(root, 'src', 'nested', 'form.astro')

@@ -4,7 +4,7 @@
   "baselines": {
     "reactNative": {
       "path": "registry/native-api-baseline.json",
-      "sha256": "a36f0a26627d8c949eef220d8dae184a121a1f15aad8bff2549806bf44c396b5"
+      "sha256": "91c84dab127ca7628e8ae30281dcd04c0f855f53cd4552f6d82598617d0235fa"
     },
     "swiftUI": {
       "path": "registry/swift-api-baseline.json",
@@ -13,6 +13,10 @@
     "compose": {
       "path": "packages/compose/api/lumen-compose.api",
       "sha256": "fdcf3b2204ab5cb2ebbb658fc05780666271c65cad3bd657e829a1d423e0771c"
+    },
+    "composeClassification": {
+      "path": "registry/compose-api-classification.json",
+      "sha256": "1c6a8453390e8b5419f9a2e96b9d5a99927c73118f718663e5d81307f384506e"
     },
     "wear": {
       "path": "packages/compose/wear/api/wear.api",

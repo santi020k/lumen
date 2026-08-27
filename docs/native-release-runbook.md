@@ -59,7 +59,9 @@ Run:
 ```bash
 pnpm run check:native-api-baseline
 pnpm run check:swift-api-baseline
+pnpm run check:compose-api-classification
 pnpm run check:wear-api-classification
+pnpm run check:native-consumer-evidence
 pnpm run check:native-stability-soak
 pnpm run check:native-device-evidence
 (cd packages/compose && ./gradlew apiCheck)
@@ -90,6 +92,7 @@ Add the following shape to `registry/native-stability-soak.json`:
   },
   "baselines": {
     "compose": "COPY_FROM_LEDGER_BASELINES",
+    "composeClassification": "COPY_FROM_LEDGER_BASELINES",
     "reactNative": "COPY_FROM_LEDGER_BASELINES",
     "swiftUI": "COPY_FROM_LEDGER_BASELINES",
     "wear": "COPY_FROM_LEDGER_BASELINES",
@@ -122,6 +125,7 @@ Resolve every release-blocking result before both commands pass:
 
 ```bash
 pnpm run check:native-stability-readiness
+pnpm run check:native-consumer-readiness
 pnpm run check:native-device-readiness
 ```
 

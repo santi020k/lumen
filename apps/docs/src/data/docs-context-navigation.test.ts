@@ -1,6 +1,10 @@
 import { describe, expect, test } from 'vitest'
 
-import { getDocsContextLinks, isDocsContextLinkCurrent } from './docs-context-navigation'
+import {
+  getDocsContextLinks,
+  isDocsContextLinkCurrent,
+  sharedDocumentationLinks
+} from './docs-context-navigation'
 
 describe('documentation context navigation', () => {
   test('gives every platform a focused overview and deeper navigation', () => {
@@ -10,6 +14,18 @@ describe('documentation context navigation', () => {
       expect(links[0]?.label).toBe('Overview')
       expect(links.length).toBeGreaterThan(3)
     }
+  })
+
+  test('keeps the project overview and shared foundations visible as global documentation', () => {
+    expect(sharedDocumentationLinks.slice(0, 2)).toEqual([
+      { href: '/docs', label: 'Project overview' },
+      { href: '/docs/foundations', label: 'Shared foundations' }
+    ])
+
+    expect(getDocsContextLinks(undefined).slice(0, 2)).toEqual([
+      { href: '/docs', label: 'Project overview', match: 'exact' },
+      { href: '/docs/foundations', label: 'Foundations', match: 'prefix' }
+    ])
   })
 
   test('keeps component detail routes within their platform section', () => {
@@ -32,5 +48,13 @@ describe('documentation context navigation', () => {
     const install = getDocsContextLinks('react-native').find(link => link.label === 'Install')
 
     expect(install && isDocsContextLinkCurrent(install, '/docs/react-native')).toBe(false)
+  })
+
+  test('links React Native to its native hook reference', () => {
+    const hooks = getDocsContextLinks('react-native').find(link => link.label === 'Hooks')
+
+    expect(hooks?.href).toBe('/docs/react-native/hooks')
+    expect(hooks && isDocsContextLinkCurrent(hooks, '/docs/react-native/hooks')).toBe(true)
+    expect(getDocsContextLinks('apple').some(link => link.label === 'Hooks')).toBe(false)
   })
 })

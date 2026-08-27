@@ -545,10 +545,10 @@ describe('@santi020k/lumen-react components', () => {
     expect(propsOf(Marker({ variant: 'success' }) as ReactElement).className).toBe('ui-marker ui-marker--success')
     const viewport = propsOf(ToastViewport({ placement: 'top-right' }) as ReactElement)
 
-    expect(viewport['data-ui-sonner']).toBe(true)
+    expect(viewport['data-ui-toast-viewport']).toBe(true)
     expect(viewport['data-placement']).toBe('top-right')
     expect(viewport['data-ui-toast-max']).toBe(3)
-    expect(Reflect.get(LumenReact, 'Sonner')).toBe(ToastViewport)
+    expect(Reflect.get(LumenReact, 'Sonner')).toBeUndefined()
     expect(propsOf(ThemeBuilder({}) as ReactElement)['data-ui-theme-builder']).toBe(true)
   })
 

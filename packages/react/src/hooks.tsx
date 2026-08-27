@@ -4041,9 +4041,9 @@ const ToastViewport = ({
     aria-atomic="false"
     aria-label="Notifications"
     aria-live="polite"
-    className="ui-sonner"
+    className="ui-tvp"
     data-placement={placement}
-    data-ui-sonner
+    data-ui-toast-viewport
     data-ui-toast-max={maxCount}
   >
     {toasts.map(toast => (

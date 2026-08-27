@@ -46,6 +46,13 @@ and apply `.lumenTheme(...)` near the root. For Compose, install
 `com.santi020k:lumen-compose:0.5.0` from Maven Central and wrap content in `LumenTheme`. Native
 adapters do not load CSS or the Astro runtime.
 
+React Native can use ordinary React hooks and platform-neutral application hooks. Import native
+Lumen controllers such as `useDialog`, `useTabs`, `useSelect`, `useLanguageToggle`,
+`useThemeToggle`, and `useToast` from `@santi020k/lumen-react-native`; their state semantics track
+the reusable React contracts while their returned props target native Lumen components. Never
+import DOM-dependent hooks from `@santi020k/lumen-react` into a native bundle. Share business state
+in an application workspace package and keep the Lumen rendering adapter at each app boundary.
+
 For watchOS, use the focused `LumenWatch*` contracts from the same Swift package. For Wear OS,
 install `com.santi020k:lumen-compose-wear:0.5.0` and wrap wearable content in `LumenWearTheme`
 inside the application-owned Wear Material theme. Keep complications, tiles, rotary input,
@@ -156,7 +163,7 @@ one root include enhances all matching `data-ui-*` markup on the page.
 
 ```astro
 ---
-import { UIPrimitives } from '@santi020k/lumen-astro'
+import UIPrimitives from '@santi020k/lumen-astro/runtime'
 ---
 
 <UIPrimitives />
@@ -209,8 +216,7 @@ interactive primitives on the package root inside a Client Component.
 `Button`, `Link`, `ButtonLink`, and `Input` accept React 19 DOM refs directly as props.
 `Button asChild` composes the button contract onto one child element. Across adapters, native
 numeric `size` remains available on `Input` and `NativeSelect`; use `visualSize` in Astro and React,
-or `visual-size` in Elements, for presentation. The pre-1.0 Astro and Elements `size="sm|lg"`
-visual alias is deprecated but remains available for incremental migration.
+or `visual-size` in Elements, for presentation.
 `Stat as` and `variant` follow the same semantic-root and visual guidance as the Astro component.
 
 ```tsx

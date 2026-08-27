@@ -88,10 +88,11 @@ const sourceByAdapter = Object.fromEntries(await Promise.all(adapterNames.map(as
   ]
 })))
 
-const reactNativeIndex = await readFile(
-  join(repositoryRoot, registry.adapters.reactNative.sourceDirectory, 'index.ts'),
-  'utf8'
-)
+const reactNativePublicSource = (
+  await Promise.all((registry.adapters.reactNative.publicEntrypoints ?? ['index.ts']).map(entrypoint => (
+    readFile(join(repositoryRoot, registry.adapters.reactNative.sourceDirectory, entrypoint), 'utf8')
+  )))
+).join('\n')
 
 const ids = new Set()
 
@@ -148,7 +149,7 @@ for (const component of registry.components) {
 
     if (adapterName === 'reactNative') {
       assert.match(
-        reactNativeIndex,
+        reactNativePublicSource,
         new RegExp(`\\b${escapedSymbol}\\b`),
         `${component.id} claims React Native support, but ${symbol} is not publicly exported`
       )
@@ -212,7 +213,7 @@ for (const component of registry.platformComponents) {
 
   if (component.adapter === 'reactNative') {
     assert.match(
-      reactNativeIndex,
+      reactNativePublicSource,
       new RegExp(`\\b${escapedSymbol}\\b`),
       `${component.id} claims React Native support, but ${component.symbol} is not publicly exported`
     )

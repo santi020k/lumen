@@ -130,8 +130,6 @@ export { default as Sidebar } from './components/Sidebar.astro'
 export { default as Skeleton } from './components/Skeleton.astro'
 export { default as SkipLink } from './components/SkipLink.astro'
 export { default as Slider } from './components/Slider.astro'
-/** @deprecated Use ToastViewport. */
-export { default as Sonner } from './components/Sonner.astro'
 export { default as Sparkline } from './components/Sparkline.astro'
 export { default as SpeedDial } from './components/SpeedDial.astro'
 export { default as Spinner } from './components/Spinner.astro'
@@ -177,7 +175,6 @@ export {
   type LumenControlIdMap,
   normalizeAstroActionErrors
 } from './forms.ts'
-export { default as UIPrimitives } from './runtime/UIPrimitives.astro'
 export type {
   LumenTabsChangeDetail,
   LumenTabsChangeEvent

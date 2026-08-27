@@ -62,8 +62,18 @@ jobs:
       - name: Validate documentation version
         run: node scripts/sync-compose-version.mjs --check
 
+      - name: Validate Compose API classifications
+        run: >-
+          node scripts/check-compose-api-classification.mjs &&
+          node --test scripts/check-compose-api-classification.test.mjs
+
       - name: Validate Wear API classifications
         run: node scripts/check-wear-api-classification.mjs
+
+      - name: Validate real-consumer evidence
+        run: >-
+          node scripts/check-native-consumer-evidence.mjs &&
+          node --test scripts/check-native-consumer-evidence.test.mjs
 
       - name: Enforce native stable release gates
         run: node scripts/check-native-stable-readiness.mjs

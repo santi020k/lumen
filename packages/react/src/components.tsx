@@ -5227,19 +5227,13 @@ export const ToastViewport = ({
     aria-atomic={ariaAtomic}
     aria-label={ariaLabel}
     aria-live={ariaLive}
-    className={composeClassName('ui-sonner ui-toast-viewport', className)}
+    className={composeClassName('ui-tvp', className)}
     data-placement={placement}
-    data-ui-sonner
+    data-ui-toast-viewport
     data-ui-toast-max={maxCount}
     {...props}
   />
 )
-
-/** @deprecated Use ToastViewport. Sonner remains as a 1.x compatibility alias. */
-export type SonnerProps = ToastViewportProps
-
-/** @deprecated Use ToastViewport. Sonner remains as a 1.x compatibility alias. */
-export const Sonner = ToastViewport
 
 export type SwitchProps = Omit<ComponentPropsWithRef<'input'>, 'type'>
 export const Switch = ({

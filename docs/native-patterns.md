@@ -90,6 +90,9 @@ Render one clear collection state at a time:
 
 Do not let a presentation component start requests or decide retry policy. The application owns
 cancellation, refresh, caching, and stale-data rules.
+Follow the [error-handling guide](./error-handling.md) for error/offline classification, layout and
+announcement choices, safe support references, and loading-safe retry examples for every native
+adapter.
 
 ## Pattern: metric and status summary
 

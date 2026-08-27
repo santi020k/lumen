@@ -24,6 +24,7 @@ const requireComplete = process.argv.includes('--require-complete')
 
 const expectedBaselines = {
   compose: 'packages/compose/api/lumen-compose.api',
+  composeClassification: 'registry/compose-api-classification.json',
   reactNative: 'registry/native-api-baseline.json',
   swiftUI: 'registry/swift-api-baseline.json',
   wear: 'packages/compose/wear/api/wear.api',

@@ -1686,21 +1686,6 @@ export const lumenRegistry = {
       ]
     },
     {
-      name: 'Sonner',
-      type: 'component',
-      description: 'Provides the toast viewport for notifications.',
-      category: 'Feedback',
-      files: [
-        'packages/astro/components/Sonner.astro',
-        'packages/astro/styles/lumen.css',
-        'packages/astro/runtime/UIPrimitives.astro'
-      ],
-      dependencies: [
-        'styles',
-        'runtime'
-      ]
-    },
-    {
       name: 'Sparkline',
       type: 'component',
       description: 'Shows a compact, text-labelled trend beside an existing metric.',

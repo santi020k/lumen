@@ -39,7 +39,7 @@ With Tailwind, keep the Lumen import in the same shared CSS entry:
 
 ```astro
 ---
-import { UIPrimitives } from '@santi020k/lumen-astro'
+import UIPrimitives from '@santi020k/lumen-astro/runtime'
 ---
 
 <UIPrimitives />
@@ -59,8 +59,7 @@ import { Button, Card, Input } from '@santi020k/lumen-astro'
 ```
 
 `Input` and `NativeSelect` preserve the native numeric `size` attribute. Use `visualSize="sm"` or
-`visualSize="lg"` for presentation. The pre-1.0 `size="sm|lg"` visual alias remains available for
-incremental migrations, but new code should keep native behavior and visual styling separate.
+`visualSize="lg"` for presentation so native behavior and visual styling remain separate.
 
 ```astro
 <Input size={32} visualSize="sm" />
@@ -204,8 +203,8 @@ announcement.
 </ErrorState>
 ```
 
-See the repository [error-handling guide](../../docs/error-handling.md) for the complete decision
-model and safe reference guidance.
+See the repository [Astro error-handling guide](../../docs/error-handling.md#astro) for the complete
+example, retry ownership, announcement behavior, and verification guidance.
 
 Use `Icon` for Lucide icons by name across framework adapters.
 

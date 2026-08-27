@@ -221,6 +221,9 @@ assets.
 
 See the [native component reference](../../docs/native-components.md) for installation, the complete
 API matrix, native image mapping, and accessibility requirements.
+Use the shared [Compose error-handling guide](../../docs/error-handling.md#jetpack-compose) when
+integrating `LumenErrorState`; it covers error/offline classification, layouts, announcements, safe
+references, and loading-safe retries.
 Use the [native device validation matrix](../../docs/native-device-validation.md) when verifying
 TalkBack, font scaling, contrast, focus order, and reduced motion on hardware.
 

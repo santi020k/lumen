@@ -6,6 +6,15 @@ export interface DocsContextLink {
   match?: 'exact' | 'prefix'
 }
 
+export const sharedDocumentationLinks = [
+  { href: '/docs', label: 'Project overview' },
+  { href: '/docs/foundations', label: 'Shared foundations' },
+  { href: '/docs/figma', label: 'Figma' },
+  { href: '/docs/ai-skill', label: 'AI skill' },
+  { href: '/docs/mcp', label: 'MCP server' },
+  { href: '/changelog', label: 'Changelog' }
+] as const
+
 const sharedNativeLinks = (platform: 'android' | 'apple' | 'react-native'): DocsContextLink[] => {
   const href = `/docs/${platform}`
 
@@ -13,6 +22,7 @@ const sharedNativeLinks = (platform: 'android' | 'apple' | 'react-native'): Docs
     { href, label: 'Overview', match: 'exact' },
     { href: `${href}#installation`, label: 'Install' },
     { href: `${href}/components`, label: 'Components', match: 'prefix' },
+    ...(platform === 'react-native' ? [{ href: `${href}/hooks`, label: 'Hooks', match: 'prefix' as const }] : []),
     { href: `${href}#theme`, label: 'Theme' },
     { href: `${href}/playground`, label: 'Playground', match: 'prefix' },
     { href: `${href}#ai-usage`, label: 'AI usage' },
@@ -22,7 +32,8 @@ const sharedNativeLinks = (platform: 'android' | 'apple' | 'react-native'): Docs
 
 const contextLinks: Record<DocsPlatformId | 'all', DocsContextLink[]> = {
   all: [
-    { href: '/docs', label: 'Overview', match: 'exact' },
+    { href: '/docs', label: 'Project overview', match: 'exact' },
+    { href: '/docs/foundations', label: 'Foundations', match: 'prefix' },
     { href: '/docs/figma', label: 'Figma', match: 'prefix' },
     { href: '/docs/ai-skill', label: 'AI skill', match: 'prefix' },
     { href: '/docs/mcp', label: 'MCP server', match: 'prefix' },

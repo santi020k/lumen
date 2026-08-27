@@ -240,6 +240,7 @@ pnpm playground:react-native`,
       }
     ],
     relatedLinks: [
+      { href: '/docs/react-native/hooks', label: 'React Native hooks' },
       { href: '/docs/foundations', label: 'Shared foundations' },
       { href: '/docs/icons#icon-catalog', label: 'Interface icon names' },
       { href: '/docs/brand-icons#brand-icon-catalog', label: 'Brand icon names' },

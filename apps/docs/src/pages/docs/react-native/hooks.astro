@@ -1,0 +1,224 @@
+---
+import { Breadcrumb, Card, Link, Table } from '@santi020k/lumen-astro'
+
+import CodeBlock from '../../../components/CodeBlock.astro'
+import DocsPageHero from '../../../components/DocsPageHero.astro'
+import DocsLayout from '../../../layouts/DocsLayout.astro'
+
+const dialogExample = `import {
+  LumenAlertDialog,
+  LumenButton,
+  useDialog
+} from '@santi020k/lumen-react-native'
+
+export function DeleteProject() {
+  const dialog = useDialog()
+
+  return (
+    <>
+      <LumenButton intent="danger" onPress={dialog.show}>
+        Delete project
+      </LumenButton>
+      <LumenAlertDialog
+        {...dialog.dialogProps}
+        confirmLabel="Delete"
+        destructive
+        onConfirm={() => {
+          deleteProject()
+          dialog.close()
+        }}
+        title="Delete this project?"
+      />
+    </>
+  )
+}`
+
+const tabsExample = `import {
+  LumenTabs,
+  useTabs
+} from '@santi020k/lumen-react-native'
+
+const options = [
+  { label: 'Overview', value: 'overview' },
+  { label: 'Activity', value: 'activity' }
+]
+
+export function ProjectTabs() {
+  const tabs = useTabs({ defaultValue: 'overview' })
+
+  return (
+    <LumenTabs
+      {...tabs.tabsProps}
+      label="Project sections"
+      options={options}
+    >
+      <ProjectPanel value={tabs.value} />
+    </LumenTabs>
+  )
+}`
+
+const toastExample = `import {
+  LumenButton,
+  LumenToast,
+  useToast
+} from '@santi020k/lumen-react-native'
+
+export function SaveProject() {
+  const notifications = useToast()
+
+  return (
+    <>
+      <LumenButton
+        onPress={() => notifications.create({
+          title: 'Project saved',
+          variant: 'success'
+        })}
+      >
+        Save
+      </LumenButton>
+      {notifications.toasts.map(toast => (
+        <LumenToast
+          key={toast.id}
+          {...notifications.getToastProps(toast)}
+        />
+      ))}
+    </>
+  )
+}`
+
+const sharedHookExample = `// packages/product-state/src/use-projects.ts
+import { useCallback, useState } from 'react'
+
+export function useProjects() {
+  const [selectedId, setSelectedId] = useState<string | null>(null)
+  const selectProject = useCallback((id: string) => setSelectedId(id), [])
+
+  return { selectProject, selectedId }
+}
+
+// Web imports @santi020k/lumen-react for rendering.
+// Native imports @santi020k/lumen-react-native for rendering.
+// Both apps import useProjects from the shared workspace package.`
+
+const hooks = [
+  ['useDisclosure / useDialog', 'Controlled or uncontrolled visibility', 'LumenAlertDialog, LumenSheet'],
+  ['useTabs', 'Controlled or uncontrolled selected value', 'LumenTabs'],
+  ['useSelect', 'Normalized options and selected value', 'LumenPicker or an app-owned picker'],
+  ['useLanguageToggle', 'Locale cycling without browser side effects', 'Application localization provider'],
+  ['useThemeToggle', 'Explicit light and dark selection', 'LumenProvider'],
+  ['useToast', 'Bounded notification queue and dismissal timers', 'LumenToast'],
+  ['useLumenTheme', 'Current semantic native theme', 'Custom native composition'],
+  ['useLumenNavigationBarVisibility', 'Scroll-responsive navigation visibility', 'LumenCollapsibleNavigationBar']
+] as const
+---
+
+<DocsLayout
+  description="Use React hooks with Lumen React Native, including native adaptations of reusable Lumen behavior controllers."
+  title="React Native hooks - Lumen UI"
+>
+  <div class="framework-page">
+    <Breadcrumb class="docs-breadcrumb">
+      <ol>
+        <li><Link href="/docs">Docs</Link></li>
+        <li><Link href="/docs/react-native">React Native</Link></li>
+        <li><span aria-current="page">Hooks</span></li>
+      </ol>
+    </Breadcrumb>
+
+    <DocsPageHero
+      description="Keep application state reusable across React targets, then connect it to controllers adapted for native components, events, and accessibility semantics."
+      eyebrow="React Native"
+      stats={[
+        { label: 'Public hooks', value: '8' },
+        { label: 'DOM runtime', value: 'None' },
+        { label: 'State mode', value: 'Controlled or local' }
+      ]}
+      title="Hooks built for native React"
+    />
+
+    <section class="docs-section space-y-5" aria-labelledby="model-title">
+      <div class="docs-section-heading">
+        <h2 class="text-2xl font-bold text-ink" id="model-title">What React and React Native share</h2>
+        <p class="max-w-3xl text-sm/7 text-ink-soft">
+          React Native supports React’s built-in hooks and application-defined hooks. Share data,
+          validation, domain state, and mutations in a platform-neutral workspace package. Render
+          that state with <code>@santi020k/lumen-react</code> on the web and
+          <code>@santi020k/lumen-react-native</code> in the native app.
+        </p>
+      </div>
+      <Card variant="muted">
+        <p class="text-sm/7 text-ink-soft">
+          Do not import the web hook implementation into React Native. Web controllers can depend
+          on DOM focus, ARIA attributes, browser storage, CSS, and keyboard events. Hooks with
+          portable state semantics have native adaptations from the React Native package instead.
+        </p>
+      </Card>
+      <CodeBlock code={sharedHookExample} lang="tsx" />
+    </section>
+
+    <section class="docs-section space-y-5" aria-labelledby="reference-title">
+      <div class="docs-section-heading">
+        <h2 class="text-2xl font-bold text-ink" id="reference-title">Native hook reference</h2>
+        <p class="max-w-3xl text-sm/7 text-ink-soft">
+          The adapted controllers preserve controlled and uncontrolled state ownership while
+          returning props shaped for native Lumen components.
+        </p>
+      </div>
+      <Table>
+        <table>
+          <caption>React Native hooks and their component connections</caption>
+          <thead>
+            <tr>
+              <th scope="col">Hook</th>
+              <th scope="col">Owns</th>
+              <th scope="col">Connects to</th>
+            </tr>
+          </thead>
+          <tbody>
+            {hooks.map(([hook, owns, target]) => (
+              <tr>
+                <td><code>{hook}</code></td>
+                <td>{owns}</td>
+                <td>{target}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </Table>
+    </section>
+
+    <section class="docs-section space-y-5" aria-labelledby="dialog-title">
+      <div class="docs-section-heading">
+        <h2 class="text-2xl font-bold text-ink" id="dialog-title">Disclosure and dialog state</h2>
+        <p class="max-w-3xl text-sm/7 text-ink-soft">
+          Spread <code>dialogProps</code> onto an alert dialog or sheet. The controller exposes
+          <code>show</code>, <code>close</code>, <code>toggle</code>, and <code>setOpen</code> for
+          application events.
+        </p>
+      </div>
+      <CodeBlock code={dialogExample} lang="tsx" />
+    </section>
+
+    <section class="docs-section space-y-5" aria-labelledby="tabs-title">
+      <div class="docs-section-heading">
+        <h2 class="text-2xl font-bold text-ink" id="tabs-title">Selection state</h2>
+        <p class="max-w-3xl text-sm/7 text-ink-soft">
+          <code>useTabs</code> and <code>useSelect</code> keep the value app-controllable. Native
+          components continue to own touch, accessibility, and rendering behavior.
+        </p>
+      </div>
+      <CodeBlock code={tabsExample} lang="tsx" />
+    </section>
+
+    <section class="docs-section space-y-5" aria-labelledby="toast-title">
+      <div class="docs-section-heading">
+        <h2 class="text-2xl font-bold text-ink" id="toast-title">Toast queue</h2>
+        <p class="max-w-3xl text-sm/7 text-ink-soft">
+          The queue is local to the component that calls <code>useToast</code>. Lift the hook to an
+          application provider when notifications must be created from multiple screens.
+        </p>
+      </div>
+      <CodeBlock code={toastExample} lang="tsx" />
+    </section>
+  </div>
+</DocsLayout>

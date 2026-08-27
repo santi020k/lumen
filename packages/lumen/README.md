@@ -94,7 +94,9 @@ report. The migrator currently:
   `lumen-native-select` elements; and
 - rewrites `Sonner` and `SonnerProps` imports to the precise `ToastViewport` contract while
   preserving local aliases, and renames `lumen-sonner` to `lumen-toast-viewport` without changing
-  placement, stack limits, or children; and
+  placement, stack limits, or children;
+- moves React Native date-field imports to `@santi020k/lumen-react-native/datetime`, preserving
+  aliases and type-only imports; and
 - preserves numeric native `size` values while reporting dynamic, conflicting, and otherwise
   ambiguous values for manual review.
 

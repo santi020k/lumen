@@ -42,7 +42,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Validate release packages
-        run: pnpm run check:release-manifest && pnpm run check:native-stable-readiness && pnpm run build && pnpm run check:security && pnpm run check:publish-dry-run
+        run: pnpm run check:release-manifest && pnpm run check:native-consumer-evidence && pnpm run check:native-stable-readiness && pnpm run build && pnpm run check:security && pnpm run check:publish-dry-run
 
       - name: Create release pull request or publish
         id: changesets

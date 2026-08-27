@@ -25,7 +25,7 @@ Default usage:
 ```astro
 ---
 import { Button, Card, Input } from '@santi020k/lumen-astro'
-import { UIPrimitives } from '@santi020k/lumen-astro'
+import UIPrimitives from '@santi020k/lumen-astro/runtime'
 import '@santi020k/lumen-astro/styles.css'
 ---
 

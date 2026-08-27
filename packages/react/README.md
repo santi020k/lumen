@@ -146,8 +146,8 @@ diagnostics, or decide whether retrying is safe.
 />
 ```
 
-See the repository [error-handling guide](../../docs/error-handling.md) for field, form, alert,
-toast, and error-state selection.
+See the repository [React error-handling guide](../../docs/error-handling.md#react) for the complete
+example, error-boundary ownership, announcement behavior, and verification guidance.
 
 For long articles, `Anchor` accepts optional `depth`, `index`, and `description` metadata plus an
 `activationOffset`. It synchronizes the current link on click and scroll. `ScrollProgress` tracks

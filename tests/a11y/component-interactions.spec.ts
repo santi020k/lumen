@@ -264,7 +264,7 @@ behaviorTest(['Schedule'], 'Schedule moves an event between slots', async ({ pag
   await expect(friday.locator('#schedule-planning')).toHaveCount(1)
 })
 
-behaviorTest(['Toast', 'Sonner'], 'Toast creates a live notification in the Sonner viewport', async ({ page }) => {
+behaviorTest(['Toast', 'ToastViewport'], 'Toast creates a live notification in the toast viewport', async ({ page }) => {
   await openPreview(page, 'toast')
 
   await page.locator('.component-doc-preview [data-ex-toast="success"]').click()

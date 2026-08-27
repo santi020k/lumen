@@ -210,6 +210,9 @@ LumenShortcutRecorder("Quick switch", shortcut: $shortcut) { candidate in
 
 See the [native component reference](../../docs/native-components.md) for the complete API matrix,
 state contracts, native image mapping, and accessibility requirements.
+Use the shared [SwiftUI error-handling guide](../../docs/error-handling.md#swiftui) when integrating
+`LumenErrorState`; it covers error/offline classification, layouts, safe references, retry
+ownership, and SwiftUI's application-owned announcement policy.
 See the [native compatibility matrix](../../docs/native-compatibility.md) for supported Apple OS,
 Swift, and Xcode baselines, and use the
 [native device validation matrix](../../docs/native-device-validation.md) for VoiceOver evidence.

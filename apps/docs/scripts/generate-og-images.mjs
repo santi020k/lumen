@@ -43,6 +43,7 @@ const supportingPages = [
   ['/docs/android', 'Android', 'Build native Android interfaces with Lumen Compose components.', 'Platform'],
   ['/docs/android/playground', 'Android playground', 'Explore Lumen Compose components in a native playground.', 'Playground'],
   ['/docs/react-native', 'React Native', 'Build native mobile interfaces with Lumen React Native components.', 'Platform'],
+  ['/docs/react-native/hooks', 'React Native hooks', 'Share React state and use behavior controllers adapted for Lumen React Native components.', 'Hooks'],
   ['/docs/react-native/playground', 'React Native playground', 'Explore Lumen React Native components in a native playground.', 'Playground'],
   ...['analytics-dashboard', 'auth-onboarding', 'commerce-dashboard', 'project-workspace', 'saas-admin'].map(slug => [
     `/templates/${slug}`,

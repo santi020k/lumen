@@ -610,7 +610,7 @@ export const createLumenSetup = (framework: 'astro' | 'elements' | 'react', tail
   const styles = tailwind ? setupByFramework[framework].tailwind : setupByFramework[framework].styles
 
   if (framework === 'astro') {
-    return `${styles}\n\n---\nimport { UIPrimitives } from '@santi020k/lumen-astro'\n---\n\n<UIPrimitives />`
+    return `${styles}\n\n---\nimport UIPrimitives from '@santi020k/lumen-astro/runtime'\n---\n\n<UIPrimitives />`
   }
 
   if (framework === 'elements') {

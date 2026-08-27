@@ -47,7 +47,7 @@ const exampleFileNames = readdirSync(examplesDirectory)
   .map(fileName => fileName.replace('.astro', ''))
 
 const sortByName = (names: readonly string[]) => [...names].sort((a, b) => a.localeCompare(b))
-const documentedComponentNames = lumenComponentNames.filter(name => name !== 'Sonner')
+const documentedComponentNames = lumenComponentNames
 
 describe('component docs snippets', () => {
   test('document every user-facing component exactly once', () => {
@@ -194,7 +194,6 @@ describe('component docs snippets', () => {
   test('keeps Toast as the single documented notification entry point', () => {
     const toastExample = readFileSync(join(examplesDirectory, 'Toast.astro'), 'utf8')
 
-    expect(componentDocs.some(component => component.name === 'Sonner')).toBe(false)
     expect(toastExample).toContain('LumenToast?.create(detail)')
     expect(toastExample).not.toContain('Sonner')
     expect(toastExample).not.toContain('new CustomEvent(\'ui:toast\'')

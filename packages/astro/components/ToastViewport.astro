@@ -21,14 +21,14 @@ const {
 } = Astro.props
 
 const { classList, passthrough } = resolveLumenAstroProps(rest, [
-  'ui-sonner ui-toast-viewport'
+  'ui-tvp'
 ], classProp, className)
 ---
 
 <div
   aria-atomic={ariaAtomic}
   aria-live={ariaLive}
-  data-ui-sonner
+  data-ui-toast-viewport
   data-ui-toast-max={maxCount}
   data-placement={placement}
   class:list={classList}

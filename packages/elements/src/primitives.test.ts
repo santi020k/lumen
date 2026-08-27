@@ -188,9 +188,9 @@ describe('@santi020k/lumen-elements primitives', () => {
       .toEqual(['ui-glass-subtle', 'ui-select', 'ui-select-field--glass'].sort())
   })
 
-  test('maps visual size while preserving the legacy size alias', () => {
+  test('maps visual size independently from native size', () => {
     expect(classesOf(connect('lumen-native-select'))).toEqual(['ui-select'])
-    expect(classesOf(connect('lumen-native-select', { size: 'sm' }))).toEqual(['ui-select', 'ui-select--sm'].sort())
+    expect(classesOf(connect('lumen-native-select', { size: 'sm' }))).toEqual(['ui-select'])
     expect(classesOf(connect('lumen-native-select', { 'visual-size': 'lg' })))
       .toEqual(['ui-select', 'ui-select--lg'].sort())
     expect(classesOf(connect('lumen-input', { 'visual-size': 'sm' })))

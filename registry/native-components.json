@@ -3,7 +3,11 @@
   "adapters": {
     "reactNative": {
       "package": "@santi020k/lumen-react-native",
-      "sourceDirectory": "packages/react-native/src"
+      "sourceDirectory": "packages/react-native/src",
+      "publicEntrypoints": [
+        "index.ts",
+        "datetime.ts"
+      ]
     },
     "swiftUI": {
       "package": "LumenUI",

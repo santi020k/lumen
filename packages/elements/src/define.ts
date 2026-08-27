@@ -664,7 +664,6 @@ const elementConfigs = {
   },
   Input: {
     attributeClasses: {
-      size: { lg: 'ui-input--lg', sm: 'ui-input--sm' },
       'visual-size': { lg: 'ui-input--lg', sm: 'ui-input--sm' }
     },
     baseClassName: 'ui-input',
@@ -778,7 +777,6 @@ const elementConfigs = {
   },
   NativeSelect: {
     attributeClasses: {
-      size: { lg: 'ui-select--lg', sm: 'ui-select--sm' },
       'visual-size': { lg: 'ui-select--lg', sm: 'ui-select--sm' }
     },
     baseClassName: 'ui-select',
@@ -962,11 +960,6 @@ const elementConfigs = {
     defaults: { type: 'range' },
     tagName: 'lumen-slider'
   },
-  Sonner: {
-    baseClassName: 'ui-sonner',
-    defaults: { 'data-ui-sonner': '' },
-    tagName: 'lumen-sonner'
-  },
   Sparkline: { baseClassName: 'ui-sparkline', tagName: 'lumen-sparkline' },
   Spinner: { baseClassName: 'ui-spinner', tagName: 'lumen-spinner' },
   Switch: {
@@ -1028,8 +1021,8 @@ const elementConfigs = {
     tagName: 'lumen-toast'
   },
   ToastViewport: {
-    baseClassName: 'ui-sonner ui-toast-viewport',
-    defaults: { 'data-ui-sonner': '' },
+    baseClassName: 'ui-tvp',
+    defaults: { 'data-ui-toast-viewport': '' },
     tagName: 'lumen-toast-viewport'
   },
   Toggle: {
@@ -4370,9 +4363,9 @@ const normalizeToastViewport = (
   viewport: HTMLElement,
   placement?: string
 ): void => {
-  viewport.classList.add('ui-sonner', 'ui-toast-viewport')
+  viewport.classList.add('ui-tvp')
 
-  viewport.dataset.uiSonner = ''
+  viewport.dataset.uiToastViewport = ''
 
   viewport.dataset.placement = getToastPlacement(
     placement ?? viewport.dataset.placement
@@ -4401,10 +4394,10 @@ const getToastViewport = (
 
   const existing =
     document.querySelector<HTMLElement>(
-      `[data-ui-sonner][data-placement="${resolvedPlacement}"]`
+      `[data-ui-toast-viewport][data-placement="${resolvedPlacement}"]`
     ) ??
     (shouldUseAnyViewport ?
-      document.querySelector<HTMLElement>('[data-ui-sonner]') :
+      document.querySelector<HTMLElement>('[data-ui-toast-viewport]') :
       null)
 
   if (existing) {
@@ -4420,8 +4413,6 @@ const getToastViewport = (
   if (typeof customElements !== 'undefined') {
     if (customElements.get('lumen-toast-viewport')) {
       tagName = 'lumen-toast-viewport'
-    } else if (customElements.get('lumen-sonner')) {
-      tagName = 'lumen-sonner'
     }
   }
 
@@ -4714,7 +4705,7 @@ const installToastController = (): void => {
     LumenToast
 
   for (const viewport of document.querySelectorAll<HTMLElement>(
-    '[data-ui-sonner]'
+    '[data-ui-toast-viewport]'
   )) {
     normalizeToastViewport(viewport)
   }
@@ -8308,7 +8299,7 @@ class LumenTooltipBehaviorElement extends LumenElement {
   }
 }
 
-class LumenSonnerBehaviorElement extends LumenElement {
+class LumenToastViewportBehaviorElement extends LumenElement {
   override connectedCallback() {
     super.connectedCallback()
 
@@ -10561,7 +10552,6 @@ const behaviorElementClasses: Partial<
   SearchField: LumenScalarFormControlElement,
   Select: LumenSelectBehaviorElement,
   Slider: LumenScalarFormControlElement,
-  Sonner: LumenSonnerBehaviorElement,
   Sparkline: LumenSparklineBehaviorElement,
   Switch: LumenScalarFormControlElement,
   Tabs: LumenTabsBehaviorElement,
@@ -10569,7 +10559,7 @@ const behaviorElementClasses: Partial<
   ThemeBuilder: LumenThemeBuilderBehaviorElement,
   ThemeToggle: LumenThemeToggleBehaviorElement,
   Toast: LumenToastBehaviorElement,
-  ToastViewport: LumenSonnerBehaviorElement,
+  ToastViewport: LumenToastViewportBehaviorElement,
   TimeField: LumenScalarFormControlElement,
   Tour: LumenTourBehaviorElement,
   Transfer: LumenTransferBehaviorElement,
@@ -10794,8 +10784,6 @@ export const LumenSheetElement = elementClasses.Sheet
 export const LumenSidebarElement = elementClasses.Sidebar
 export const LumenSkeletonElement = elementClasses.Skeleton
 export const LumenSliderElement = elementClasses.Slider
-/** @deprecated Use LumenToastViewportElement. */
-export const LumenSonnerElement = elementClasses.Sonner
 export const LumenSparklineElement = elementClasses.Sparkline
 export const LumenSpinnerElement = elementClasses.Spinner
 export const LumenSwitchElement = elementClasses.Switch

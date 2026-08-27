@@ -34,6 +34,7 @@ const reactNativeVersion = readArgument('--react-native-version') ?? reactNative
 const swiftVersion = readArgument('--swift-version') ?? umbrellaManifest.version
 const soakLedger = readArgument('--soak-ledger')
 const deviceLedger = readArgument('--device-ledger')
+const consumerLedger = readArgument('--consumer-ledger')
 
 const composeVersion = readArgument('--compose-version')
   ?? /^lumenComposeVersion=(.+)$/m.exec(gradleProperties)?.[1]
@@ -108,12 +109,18 @@ process.stdout.write(`Native stable readiness is required for ${stableAdapters.j
 
 for (const check of [
   { ledger: soakLedger, script: 'check-native-stability-soak.mjs' },
+  {
+    extraArguments: soakLedger ? ['--soak-ledger', soakLedger] : [],
+    ledger: consumerLedger,
+    script: 'check-native-consumer-evidence.mjs'
+  },
   { ledger: deviceLedger, script: 'check-native-device-evidence.mjs' }
 ]) {
   const arguments_ = [
     resolve(repositoryRoot, 'scripts', check.script),
     '--require-complete',
-    ...(check.ledger ? ['--ledger', check.ledger] : [])
+    ...(check.ledger ? ['--ledger', check.ledger] : []),
+    ...(check.extraArguments ?? [])
   ]
 
   const result = spawnSync(process.execPath, arguments_, {

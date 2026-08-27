@@ -40,9 +40,6 @@ import {
   LumenChip,
   LumenCollapsibleNavigationBar,
   LumenComboChart,
-  LumenDateField,
-  LumenDateRangeField,
-  type LumenDateRangeValue,
   LumenDisclosure,
   LumenDivider,
   LumenEmptyState,
@@ -92,6 +89,11 @@ import {
   LumenToggle,
   useLumenTheme
 } from '@santi020k/lumen-react-native'
+import {
+  LumenDateField,
+  LumenDateRangeField,
+  type LumenDateRangeValue
+} from '@santi020k/lumen-react-native/datetime'
 import { StatusBar as ExpoStatusBar } from 'expo-status-bar'
 
 type AppDestination = 'about' | 'components' | 'home'

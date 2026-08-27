@@ -20,6 +20,14 @@ A qualifying consumer must:
 The product owner must confirm active application status. Local source presence or a successful
 build does not by itself establish that the application is active or shipped.
 
+`registry/native-consumer-evidence.json` is the machine-readable qualification ledger. Run
+`pnpm run check:native-consumer-evidence` after updating a technical record and
+`pnpm run check:native-consumer-readiness` for the stable-release gate. A Complete entry requires
+an owner-confirmed active product, an immutable published-artifact upgrade, supported component
+usage, installation and theming review, accessibility and integration checks, a signed application
+artifact, immutable HTTPS evidence, and no blocking findings. Prose in this document cannot bypass
+that gate.
+
 ## Discovered candidates
 
 The local sibling-project scan on 2026-08-24 found the following candidates. No external repository

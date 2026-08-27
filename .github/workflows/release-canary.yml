@@ -9,13 +9,17 @@ on:
       - "apps/playground-apple/**"
       - "packages/**"
       - "registry/native-device-evidence.json"
+      - "registry/native-consumer-evidence.json"
       - "registry/native-stability-soak.json"
+      - "registry/compose-api-classification.json"
       - "registry/swift-api-baseline.json"
       - "registry/wear-api-classification.json"
       - "registry/release-manifest.json"
       - "scripts/check-swift-api-baseline.mjs"
+      - "scripts/check-compose-api-classification.mjs"
       - "scripts/check-wear-api-classification.mjs"
       - "scripts/check-native-device-evidence.mjs"
+      - "scripts/check-native-consumer-evidence.mjs"
       - "scripts/check-native-stability-soak.mjs"
       - "scripts/check-native-stable-readiness.mjs"
       - "scripts/generate-release-manifest.mjs"
@@ -66,7 +70,7 @@ jobs:
           else
             echo "swift=false" >> "$GITHUB_OUTPUT"
           fi
-          if grep -Eq '^(packages/(compose|tokens)/|apps/playground-android/|tokens/|registry/(native-device-evidence|native-stability-soak|wear-api-classification|release-manifest)\.json$|scripts/(check-native-device-evidence|check-native-stability-soak|check-native-stable-readiness|check-wear-api-classification|generate-platform-tokens|generate-release-manifest|smoke-react-native-native-package)\.mjs$|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|\.github/workflows/release-canary\.yml$)' <<< "$changed_files"; then
+          if grep -Eq '^(packages/(compose|tokens)/|apps/playground-android/|tokens/|registry/(compose-api-classification|native-consumer-evidence|native-device-evidence|native-stability-soak|wear-api-classification|release-manifest)\.json$|scripts/(check-compose-api-classification|check-native-consumer-evidence|check-native-device-evidence|check-native-stability-soak|check-native-stable-readiness|check-wear-api-classification|generate-platform-tokens|generate-release-manifest|smoke-react-native-native-package)\.mjs$|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|\.github/workflows/release-canary\.yml$)' <<< "$changed_files"; then
             echo "compose=true" >> "$GITHUB_OUTPUT"
           else
             echo "compose=false" >> "$GITHUB_OUTPUT"
@@ -143,7 +147,9 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: ./gradlew test lint apiCheck verifyMavenPublication
         working-directory: packages/compose
+      - run: pnpm run check:compose-api-classification && pnpm run test:compose-api-classification
       - run: node scripts/check-wear-api-classification.mjs
+      - run: pnpm run check:native-consumer-evidence && pnpm run test:native-consumer-evidence
       - run: >-
           ./packages/compose/gradlew -p apps/playground-android
           -PlumenComposeRepository=../../packages/compose/build/central-staging

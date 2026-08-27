@@ -136,8 +136,7 @@ internal native control provides the same contract when `ElementInternals` is un
 ```
 
 `lumen-input` forwards the numeric `size` attribute to its internal native input. Use
-`visual-size="sm"` or `visual-size="lg"` for presentation. The pre-1.0 `size="sm|lg"` visual alias
-remains available for incremental migrations.
+`visual-size="sm"` or `visual-size="lg"` for presentation.
 
 ```html
 <lumen-input name="code" size="12" visual-size="sm"></lumen-input>
@@ -308,7 +307,8 @@ Use `<lumen-error-state>` when a region or page cannot show its primary content.
 heading, explanation, optional safe reference, and recovery actions in light DOM, label the region
 with `aria-labelledby`, and use the documented `data-slot="error-state-*"` hooks. Lumen presents the
 failure; application code owns exception capture, logging, and retry policy. See the repository
-[error-handling guide](../../docs/error-handling.md) for the complete structure and decision model.
+[Web Components error-handling guide](../../docs/error-handling.md#web-components) for the complete
+light-DOM structure, ARIA ownership, retry boundary, and verification guidance.
 
 ## Motion
 

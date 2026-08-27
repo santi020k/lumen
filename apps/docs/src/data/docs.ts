@@ -666,7 +666,8 @@ export const frameworkGuides = [
       'Use lumen add Component or lumen add recipe-name --target astro when you want local .astro starter files.'
     ],
     code: `---
-import { Button, Card, UIPrimitives } from '@santi020k/lumen-astro'
+import { Button, Card } from '@santi020k/lumen-astro'
+import UIPrimitives from '@santi020k/lumen-astro/runtime'
 import '@santi020k/lumen-astro/styles.css'
 ---
 
@@ -1758,7 +1759,7 @@ const apiReferenceByComponent = {
   Input: [
     apiRow('type', 'HTML input type', '"text"', 'Sets the native input type.'),
     apiRow(
-      'size', 'number', 'native default', 'Sets the native input width in characters. Astro and Elements continue to accept the deprecated pre-1.0 sm/lg visual alias.'
+      'size', 'number', 'native default', 'Sets the native input width in characters.'
     ),
     apiRow(
       'visualSize, visual-size', '"default" | "sm" | "lg"', '"default"', 'Controls field height and font size. Use visualSize in Astro/React and visual-size in Elements.'
@@ -1914,7 +1915,7 @@ const apiReferenceByComponent = {
     ),
     apiRow('placeholder', 'string', '-', 'Adds a disabled placeholder option.'),
     apiRow(
-      'size', 'number', 'native default', 'Sets the number of visible native options. Astro and Elements continue to accept the deprecated pre-1.0 sm/lg visual alias.'
+      'size', 'number', 'native default', 'Sets the number of visible native options.'
     ),
     apiRow(
       'visualSize, visual-size', '"default" | "sm" | "lg"', '"default"', 'Controls select height and font size. Use visualSize in Astro/React and visual-size in Elements.'
@@ -2168,14 +2169,6 @@ const apiReferenceByComponent = {
     ),
     apiRow(
       'role', 'ARIA role', '"status" when labelled', 'Overrides the generated status role.'
-    )
-  ],
-  Sonner: [
-    apiRow(
-      'placement', '"bottom-center" | "bottom-left" | "bottom-right" | "top-center" | "top-left" | "top-right"', '"bottom-right"', 'Positions the notification viewport.'
-    ),
-    apiRow(
-      'maxCount', 'number', '3', 'Limits the number of simultaneously visible runtime toasts.'
     )
   ],
   ToastViewport: [

@@ -83,7 +83,7 @@ interactive Lumen markup on the page.
 ```astro
 ---
 import '@santi020k/lumen-astro/styles.css'
-import { UIPrimitives } from '@santi020k/lumen-astro'
+import UIPrimitives from '@santi020k/lumen-astro/runtime'
 ---
 
 <html lang="en">

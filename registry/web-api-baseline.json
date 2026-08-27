@@ -157,7 +157,6 @@
         "Skeleton",
         "SkipLink",
         "Slider",
-        "Sonner",
         "Sparkline",
         "SpeedDial",
         "Spinner",
@@ -195,7 +194,6 @@
         "TreeGrid",
         "TreeSelect",
         "Typography",
-        "UIPrimitives",
         "VirtualList",
         "VisuallyHidden",
         "Watermark",
@@ -375,16 +373,13 @@
         "TreeGrid",
         "TreeSelect",
         "Typography",
-        "UIPrimitives",
         "VirtualList",
         "VisuallyHidden",
         "Watermark",
         "normalizeAstroActionErrors"
       ],
       "experimental": [],
-      "deprecated": [
-        "Sonner"
-      ],
+      "deprecated": [],
       "unclassified": []
     },
     "core": {
@@ -1179,7 +1174,6 @@
         "LumenSkeletonElement",
         "LumenSkipLinkElement",
         "LumenSliderElement",
-        "LumenSonnerElement",
         "LumenSparklineElement",
         "LumenSpeedDialElement",
         "LumenSpinnerElement",
@@ -1423,9 +1417,7 @@
         "lumenElementDefinitions"
       ],
       "experimental": [],
-      "deprecated": [
-        "LumenSonnerElement"
-      ],
+      "deprecated": [],
       "unclassified": []
     },
     "lumen": {
@@ -2195,8 +2187,6 @@
         "SkipLinkProps",
         "Slider",
         "SliderProps",
-        "Sonner",
-        "SonnerProps",
         "Sparkline",
         "SparklineProps",
         "SpeedDial",
@@ -2754,10 +2744,7 @@
         "useTooltip"
       ],
       "experimental": [],
-      "deprecated": [
-        "Sonner",
-        "SonnerProps"
-      ],
+      "deprecated": [],
       "unclassified": []
     }
   }

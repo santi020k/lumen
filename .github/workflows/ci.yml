@@ -78,7 +78,7 @@ jobs:
           else
             echo "react-native-captures=false" >> "$GITHUB_OUTPUT"
           fi
-          if grep -Eq '^(apps/playground-(android|apple|react-native)/|packages/(compose|core|react-native|swift|tokens)/|tokens/|registry/(native-api-baseline|native-device-evidence|native-stability-soak|swift-api-baseline|wear-api-classification)\.json$|apps/docs/(public/native-components/|scripts/sync-native-component-captures\.mjs|src/data/native-component-captures\.json)|scripts/(check-native-device-evidence|check-native-stability-soak|check-wear-api-classification|check-(native|swift)-api-baseline|generate-platform-tokens)\.mjs$|Package\.swift$|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|\.github/workflows/(ci|publish-compose)\.yml$)' <<< "$changed_files"; then
+          if grep -Eq '^(apps/playground-(android|apple|react-native)/|packages/(compose|core|react-native|swift|tokens)/|tokens/|registry/(compose-api-classification|native-api-baseline|native-consumer-evidence|native-device-evidence|native-stability-soak|swift-api-baseline|wear-api-classification)\.json$|apps/docs/(public/native-components/|scripts/sync-native-component-captures\.mjs|src/data/native-component-captures\.json)|scripts/(check-compose-api-classification|check-native-consumer-evidence|check-native-device-evidence|check-native-stability-soak|check-wear-api-classification|check-(native|swift)-api-baseline|generate-platform-tokens)\.mjs$|Package\.swift$|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|\.github/workflows/(ci|publish-compose)\.yml$)' <<< "$changed_files"; then
             echo "native-contracts=true" >> "$GITHUB_OUTPUT"
           else
             echo "native-contracts=false" >> "$GITHUB_OUTPUT"
@@ -88,7 +88,7 @@ jobs:
           else
             echo "apple=false" >> "$GITHUB_OUTPUT"
           fi
-          if grep -Eq '^(apps/playground-android/|packages/(compose|tokens)/|tokens/|registry/(native-api-baseline|native-device-evidence|native-stability-soak|wear-api-classification)\.json$|apps/docs/(public/native-components/|scripts/sync-native-component-captures\.mjs|src/data/native-component-captures\.json)|scripts/(check-native-device-evidence|check-native-stability-soak|check-wear-api-classification|check-native-api-baseline|generate-platform-tokens)\.mjs$|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|\.github/workflows/(ci|publish-compose)\.yml$)' <<< "$changed_files"; then
+          if grep -Eq '^(apps/playground-android/|packages/(compose|tokens)/|tokens/|registry/(compose-api-classification|native-api-baseline|native-device-evidence|native-stability-soak|wear-api-classification)\.json$|apps/docs/(public/native-components/|scripts/sync-native-component-captures\.mjs|src/data/native-component-captures\.json)|scripts/(check-compose-api-classification|check-native-device-evidence|check-native-stability-soak|check-wear-api-classification|check-native-api-baseline|generate-platform-tokens)\.mjs$|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|\.github/workflows/(ci|publish-compose)\.yml$)' <<< "$changed_files"; then
             echo "android=true" >> "$GITHUB_OUTPUT"
           else
             echo "android=false" >> "$GITHUB_OUTPUT"
@@ -195,6 +195,9 @@ jobs:
       - name: Build and test Compose library
         working-directory: packages/compose
         run: ./gradlew test lint apiCheck assembleDebugAndroidTest verifyMavenPublication
+
+      - name: Check the Compose API classifications
+        run: pnpm run check:compose-api-classification && pnpm run test:compose-api-classification
 
       - name: Check the Wear API classifications
         run: node scripts/check-wear-api-classification.mjs
@@ -498,6 +501,8 @@ jobs:
           if [[ "${{ needs.classify.outputs.native-contracts }}" == "true" ]]; then
             pnpm run check:native-contracts
             pnpm run check:native-captures
+            pnpm run check:native-consumer-evidence
+            pnpm run test:native-consumer-evidence
             pnpm run check:platform-tokens
           fi
 

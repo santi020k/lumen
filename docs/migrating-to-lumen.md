@@ -37,7 +37,7 @@ For interactive primitives (Dialogs, Menus, Select, etc.), mount `UIPrimitives` 
 
 ```astro
 ---
-import { UIPrimitives } from '@santi020k/lumen-astro'
+import UIPrimitives from '@santi020k/lumen-astro/runtime'
 ---
 
 <html lang="en">
@@ -49,8 +49,8 @@ import { UIPrimitives } from '@santi020k/lumen-astro'
 </html>
 ```
 
-The dedicated runtime entry point is available in Lumen 1.x and becomes the required import in
-Lumen 2. Adopt it before the major upgrade while leaving static components on the root entry point:
+The dedicated runtime entry point is available in Lumen 1.x and required in Lumen 2. Keep static
+components on the root entry point:
 
 ```astro
 ---
@@ -108,10 +108,13 @@ The migration currently covers the accepted breaking-contract candidates:
 | Literal visual `size` aliases on `Input` and `NativeSelect` | `visualSize` in Astro or `visual-size` in Elements |
 | `Sonner` / `SonnerProps` | `ToastViewport` / `ToastViewportProps` |
 | `<lumen-sonner>` | `<lumen-toast-viewport>` |
+| React Native date exports from `@santi020k/lumen-react-native` | Import from `@santi020k/lumen-react-native/datetime` and install the optional datetime-picker peer only when used |
 
 The Sonner rename preserves placement, maximum-count configuration, and children because
 `ToastViewport` is the same viewport contract under a precise public name. Ambiguous imports and
 dynamic visual-size values remain manual-review findings instead of being rewritten speculatively.
+React Native datetime imports are split from mixed root imports while preserving aliases and
+type-only specifiers; an existing datetime-subpath import is left for manual merging.
 
 ## 4. Migrating from `private-website`
 

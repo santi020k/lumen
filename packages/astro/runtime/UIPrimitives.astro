@@ -4644,8 +4644,8 @@ const getToastViewport = (placement: string | undefined): HTMLElement => {
   const resolvedPlacement = getToastPlacement(placement)
   const shouldUseAnyViewport = placement === undefined
 
-  const existing = document.querySelector<HTMLElement>(`[data-ui-sonner][data-placement="${resolvedPlacement}"]`) ??
-    (shouldUseAnyViewport ? document.querySelector<HTMLElement>('[data-ui-sonner]') : null)
+  const existing = document.querySelector<HTMLElement>(`[data-ui-toast-viewport][data-placement="${resolvedPlacement}"]`) ??
+    (shouldUseAnyViewport ? document.querySelector<HTMLElement>('[data-ui-toast-viewport]') : null)
 
   if (existing) {
     existing.dataset.placement = existing.dataset.placement ?? resolvedPlacement
@@ -4659,9 +4659,9 @@ const getToastViewport = (placement: string | undefined): HTMLElement => {
 
   const viewport = document.createElement('div')
 
-  viewport.className = 'ui-sonner'
+  viewport.className = 'ui-tvp'
 
-  viewport.dataset.uiSonner = ''
+  viewport.dataset.uiToastViewport = ''
 
   viewport.dataset.placement = resolvedPlacement
 
@@ -4910,7 +4910,7 @@ const initToasts = (): void => {
 
     ;(window as Window & { LumenToast?: ToastApi }).LumenToast = api
 
-  for (const viewport of document.querySelectorAll<HTMLElement>('[data-ui-sonner]')) {
+  for (const viewport of document.querySelectorAll<HTMLElement>('[data-ui-toast-viewport]')) {
     viewport.dataset.placement = getToastPlacement(viewport.dataset.placement)
 
     viewport.setAttribute('aria-live', viewport.getAttribute('aria-live') ?? 'polite')

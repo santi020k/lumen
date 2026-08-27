@@ -237,8 +237,9 @@ describe('@santi020k/lumen-astro package surface', () => {
 
     for (const component of [input, nativeSelect]) {
       expect(component).toContain('visualSize?: \'default\' | \'lg\' | \'sm\'')
-      expect(component).toContain('const nativeSize = legacyVisualSize ? undefined : size')
-      expect(component).toContain('size={nativeSize}')
+      expect(component).toContain('const resolvedVisualSize = visualSize ?? \'default\'')
+      expect(component).toContain('size={size}')
+      expect(component).not.toContain('legacyVisualSize')
     }
   })
 
@@ -782,7 +783,7 @@ describe('@santi020k/lumen-astro package surface', () => {
     )
     expect(dropdownMenu).toContain('<div')
     expect(dropdownMenu).not.toContain('<menu')
-    expect(nativeSelectExample).toContain('size="lg"')
+    expect(nativeSelectExample).toContain('visualSize="lg"')
     expect(nativeSelectExample).toContain('disabled')
     expect(runtime).toContain(
       `trigger.setAttribute('aria-${'described' + 'by'}'`
@@ -1017,10 +1018,9 @@ describe('@santi020k/lumen-astro package surface', () => {
   })
 
   test('ships mature toast runtime API, ARIA, and placement styles', async () => {
-    const [toast, toastViewport, sonner, runtime, styles] = await Promise.all([
+    const [toast, toastViewport, runtime, styles] = await Promise.all([
       readFile(new URL('./components/Toast.astro', packageRoot), 'utf8'),
       readFile(new URL('./components/ToastViewport.astro', packageRoot), 'utf8'),
-      readFile(new URL('./components/Sonner.astro', packageRoot), 'utf8'),
       readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8'),
       readFile(sharedStylesUrl, 'utf8')
     ])
@@ -1029,8 +1029,7 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(toast).toContain('variant === \'destructive\' ? \'alert\' : \'status\'')
     expect(toastViewport).toContain('placement?:')
     expect(toastViewport).toContain('maxCount?: number')
-    expect(toastViewport).toContain('data-ui-sonner')
-    expect(sonner).toContain('@deprecated Use ToastViewport')
+    expect(toastViewport).toContain('data-ui-toast-viewport')
     expect(runtime).toContain('type ToastApi =')
     expect(runtime).toContain('create: createToast')
     expect(runtime).toContain('dismiss: dismissToastById')
@@ -1041,8 +1040,8 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(runtime).toContain('\'ui:toast-action\'')
     expect(runtime).toContain('toast.addEventListener(\'mouseenter\', pause)')
     expect(runtime).toContain('event.key !== \'Escape\'')
-    expect(styles).toContain('.ui-sonner[data-placement^="top"]')
-    expect(styles).toContain('.ui-sonner[data-placement$="center"]')
+    expect(styles).toContain('.ui-tvp[data-placement^="top"]')
+    expect(styles).toContain('.ui-tvp[data-placement$="center"]')
     expect(styles).toContain('.ui-toast__action')
   })
 

@@ -9,7 +9,11 @@ import {
 } from '@santi020k/lumen-astro'
 
 import { getDocsContextLinks, isDocsContextLinkCurrent } from '../data/docs-context-navigation'
-import { getDocsPlatform, platformGuides } from '../data/platforms'
+import {
+  getDocsPlatform,
+  getPlatformGuide,
+  productPlatformGuides
+} from '../data/platforms'
 
 interface Props {
   currentPath: string
@@ -17,7 +21,8 @@ interface Props {
 
 const { currentPath } = Astro.props
 const activePlatform = getDocsPlatform(currentPath)
-const activeGuide = activePlatform ? platformGuides.find(guide => guide.id === activePlatform) : undefined
+const activeGuide = activePlatform ? getPlatformGuide(activePlatform) : undefined
+const foundationsGuide = getPlatformGuide('foundations')
 const links = getDocsContextLinks(activePlatform)
 ---
 
@@ -30,17 +35,24 @@ const links = getDocsContextLinks(activePlatform)
     <div class="docs-context-navigation__platform" slot="context">
       <Icon decorative name="panels-top-left" size="sm" />
       <div>
-        <Label for="docs-context-platform-select">Documentation for</Label>
+        <Label for="docs-context-platform-select">Documentation scope</Label>
         <NativeSelect
           id="docs-context-platform-select"
-          aria-label="Choose documentation platform"
+          aria-label="Choose documentation scope"
           data-docs-platform-select
-          size="sm"
+          visualSize="sm"
         >
-          <option value="/docs" selected={!activePlatform}>All platforms</option>
-          {platformGuides.map(guide => (
-            <option value={guide.href} selected={activePlatform === guide.id}>{guide.shortLabel}</option>
-          ))}
+          <option value="/docs" selected={!activePlatform}>Project overview</option>
+          <optgroup label="Shared documentation">
+            <option value={foundationsGuide.href} selected={activePlatform === foundationsGuide.id}>
+              Shared foundations
+            </option>
+          </optgroup>
+          <optgroup label="Platform documentation">
+            {productPlatformGuides.map(guide => (
+              <option value={guide.href} selected={activePlatform === guide.id}>{guide.shortLabel}</option>
+            ))}
+          </optgroup>
         </NativeSelect>
       </div>
     </div>

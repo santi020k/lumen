@@ -72,7 +72,7 @@ const validateClassification = (adapterName, adapter) => {
   return classifiedNames.sort()
 }
 
-assert.equal(baseline.schemaVersion, 1, 'Unsupported native API baseline schema version')
+assert.equal(baseline.schemaVersion, 2, 'Unsupported native API baseline schema version')
 
 assert.deepEqual(
   Object.keys(baseline.adapters),
@@ -92,11 +92,41 @@ for (const [adapterName, adapter] of Object.entries(baseline.adapters)) {
     `${adapterName} public exports changed; classify intentional additions and removals in ${baselinePath}`
   )
 
+  const entrypointClassifications = [adapter]
+  let exportCount = exportedNames.length
+
+  for (const [subpath, subpathContract] of Object.entries(adapter.subpaths ?? {})) {
+    const subpathLabel = `${adapterName}${subpath}`
+    const subpathClassifiedNames = validateClassification(subpathLabel, subpathContract)
+    const subpathSource = await readFile(resolve(repositoryRoot, subpathContract.entrypoint), 'utf8')
+    const subpathExportedNames = collectTypeScriptExports(subpathContract.entrypoint, subpathSource)
+
+    assert.deepEqual(
+      subpathClassifiedNames,
+      subpathExportedNames,
+      `${subpathLabel} public exports changed; classify intentional additions and removals in ${baselinePath}`
+    )
+
+    entrypointClassifications.push(subpathContract)
+
+    exportCount += subpathExportedNames.length
+  }
+
+  const allClassifiedNames = entrypointClassifications.flatMap(contract => (
+    classifications.flatMap(classification => contract[classification])
+  ))
+
+  assert.equal(
+    new Set(allClassifiedNames).size,
+    allClassifiedNames.length,
+    `${adapterName} exports the same public symbol from more than one stable entrypoint`
+  )
+
   if (adapterName === 'reactNative') {
     const expectedClassification = [
-      `${adapter.supported.length} Supported`,
-      `${adapter.experimental.length} Experimental phone exports`,
-      `${adapter.deprecated.length} Deprecated`
+      `${entrypointClassifications.reduce((count, contract) => count + contract.supported.length, 0)} Supported`,
+      `${entrypointClassifications.reduce((count, contract) => count + contract.experimental.length, 0)} Experimental phone exports`,
+      `${entrypointClassifications.reduce((count, contract) => count + contract.deprecated.length, 0)} Deprecated`
     ].join('; ')
 
     assert.ok(
@@ -106,7 +136,8 @@ for (const [adapterName, adapter] of Object.entries(baseline.adapters)) {
   }
 
   process.stdout.write(
-    `Checked ${exportedNames.length} classified ${adapter.maturity} exports for ${adapterName}.\n`
+    `Checked ${exportCount} classified ${adapter.maturity} exports across ` +
+      `${entrypointClassifications.length} entrypoints for ${adapterName}.\n`
   )
 }
 

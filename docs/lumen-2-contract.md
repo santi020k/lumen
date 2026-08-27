@@ -1,6 +1,6 @@
 # Lumen 2 contract proposal
 
-**Status:** Draft
+**Status:** Draft release contract; five breaking changes approved
 
 **Target:** `2.0.0`
 **Machine-readable source:** [`registry/lumen-2-contract.json`](../registry/lumen-2-contract.json)
@@ -24,7 +24,7 @@ The machine-readable proposal is checked by `pnpm run check:lumen-2-contract`. A
 approved only after its migration and consumer evidence are present. Native Beta labels remain until
 every readiness gate passes; accepting a web change does not imply native graduation.
 
-## Candidate breaking changes
+## Approved breaking changes
 
 ### Isolate the Astro runtime
 
@@ -89,6 +89,25 @@ switch over `LumenSurfacePadding` or `LumenSurfaceRadius`: handle the new cases 
 `@unknown default` branch. The release canary compares Swift's diagnostics with the reviewed list in
 `registry/lumen-2-contract.json`, so a new removal or signature change cannot hide behind the
 accepted enum expansion.
+
+### Isolate the optional React Native datetime integration
+
+Move `LumenDateField`, `LumenDateRangeField`, their props, and `LumenDateRangeValue` from the React
+Native root to `@santi020k/lumen-react-native/datetime`. The package root no longer loads the native
+datetime picker, and `@react-native-community/datetimepicker` becomes an optional peer installed
+only by consumers of the subpath.
+
+```tsx
+import { LumenButton } from '@santi020k/lumen-react-native'
+import {
+  LumenDateField,
+  type LumenDateFieldProps
+} from '@santi020k/lumen-react-native/datetime'
+```
+
+The v2 migrator splits mixed named imports, preserves aliases and type-only imports, and is
+idempotent. When a file already imports the datetime subpath, it reports a manual merge rather than
+risk creating duplicate local bindings.
 
 ## Contract investigations
 

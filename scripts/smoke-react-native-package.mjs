@@ -82,13 +82,28 @@ try {
 
   assert.deepEqual(installedManifest.peerDependencies, sourceManifest.peerDependencies)
 
+  assert.deepEqual(installedManifest.peerDependenciesMeta, sourceManifest.peerDependenciesMeta)
+
+  assert.equal(
+    installedManifest.exports['./datetime'].import,
+    './dist/datetime.js'
+  )
+
   await Promise.all([
+    access(join(installedPackageDirectory, 'dist', 'datetime.d.ts')),
+    access(join(installedPackageDirectory, 'dist', 'datetime.js')),
     access(join(installedPackageDirectory, 'dist', 'index.js')),
     access(join(installedPackageDirectory, 'dist', 'index.d.ts')),
     access(join(installedPackageDirectory, 'LICENSE')),
     access(join(installedPackageDirectory, 'README.md')),
     access(join(installedPackageDirectory, 'THIRD_PARTY_NOTICES.md'))
   ])
+
+  await assert.rejects(
+    access(join(consumerDirectory, 'node_modules', '@react-native-community', 'datetimepicker', 'package.json')),
+    { code: 'ENOENT' },
+    'The root React Native consumer must not install the optional datetime picker'
+  )
 
   await writeFile(
     join(consumerDirectory, 'tsconfig.json'),
@@ -126,15 +141,17 @@ import {
   LumenTextField,
   LumenToggle
 } from '@santi020k/lumen-react-native'
+import { type LumenDateRangeValue } from '@santi020k/lumen-react-native/datetime'
 
 export function PackedConsumer(): ReactElement {
   const [enabled, setEnabled] = useState(false)
   const [name, setName] = useState('')
+  const range: LumenDateRangeValue = { end: null, start: null }
 
   return (
     <LumenProvider scheme="light">
       <LumenSurface padding="md">
-        <LumenText variant="title">Packed consumer</LumenText>
+        <LumenText variant="title">Packed consumer {range.start?.toISOString()}</LumenText>
         <LumenTextField
           accessibilityLabel="Name"
           placeholder="Name"

@@ -28,11 +28,18 @@ Cards accept semantic `padding` and `radius` roles while preserving the extra-la
 Status bars use a distinct decorative icon for every tone and accept `iconName` when a product needs
 a more specific symbol, so visual status is not conveyed by color alone.
 
-Install the package and its native picker and SVG peers in an existing Expo or React Native application:
+Install the package and its SVG peer in an existing Expo or React Native application:
 
 ```bash
-pnpm add @santi020k/lumen-react-native @react-native-community/datetimepicker react-native-svg
-# or: npm install @santi020k/lumen-react-native @react-native-community/datetimepicker react-native-svg
+pnpm add @santi020k/lumen-react-native react-native-svg
+# or: npm install @santi020k/lumen-react-native react-native-svg
+```
+
+Date fields are an optional integration. Install the platform picker only when the application uses
+`@santi020k/lumen-react-native/datetime`:
+
+```bash
+pnpm add @react-native-community/datetimepicker
 ```
 
 React 19.2 and React Native 0.86.2 or newer are application-provided peer dependencies. Mount one
@@ -91,10 +98,59 @@ const productTheme: LumenTheme = {
 <LumenProvider theme={productTheme}>{children}</LumenProvider>
 ```
 
+## React hooks
+
+React Native applications can use React's built-in hooks and platform-neutral application hooks
+normally. Lumen also exports native adaptations of reusable web behavior contracts:
+
+- `useDisclosure` and its `useDialog` alias control `LumenAlertDialog` and `LumenSheet` visibility;
+- `useTabs` connects controlled or local selection state to `LumenTabs`;
+- `useSelect` normalizes string or numeric options for `LumenPicker` and app-owned pickers;
+- `useLanguageToggle` cycles locale state without mutating the browser document or local storage;
+- `useThemeToggle` supplies explicit light/dark state that can be spread onto `LumenProvider`; and
+- `useToast` owns a bounded native notification queue rendered with `LumenToast`.
+
+The package also exports `useLumenTheme` for semantic theme access and
+`useLumenNavigationBarVisibility` for native scroll-responsive navigation. Browser-specific hooks
+from `@santi020k/lumen-react` must not be imported into React Native: DOM focus, ARIA attributes,
+CSS, browser storage, and keyboard behavior remain in the web adapter.
+
+```tsx
+const dialog = useDialog()
+const tabs = useTabs({ defaultValue: 'overview' })
+
+<LumenButton onPress={dialog.show}>Delete project</LumenButton>
+<LumenAlertDialog
+  {...dialog.dialogProps}
+  confirmLabel="Delete"
+  onConfirm={deleteProject}
+  title="Delete this project?"
+/>
+
+<LumenTabs
+  {...tabs.tabsProps}
+  label="Project sections"
+  options={projectTabs}
+>
+  <ProjectPanel value={tabs.value} />
+</LumenTabs>
+```
+
+Keep API access, schemas, business state, and platform-neutral custom hooks in a shared workspace
+package when one product has both React web and React Native applications. Each app should import
+the matching Lumen rendering adapter. See the
+[React Native hooks guide](https://lumen.santi020k.com/docs/react-native/hooks) for controller and
+composition examples.
+
 Date values remain controlled by the application. `LumenDateField` opens the system picker, while
 `LumenDateRangeField` coordinates two pickers and prevents the end from preceding the start:
 
 ```tsx
+import {
+  LumenDateRangeField,
+  type LumenDateRangeValue
+} from '@santi020k/lumen-react-native/datetime'
+
 const [range, setRange] = useState<LumenDateRangeValue>({ start: null, end: null })
 
 <LumenDateRangeField
@@ -232,7 +288,10 @@ Attach the refresh control to a native scroll container without replacing its sc
 ```
 
 See the [native component reference](../../docs/native-components.md) for the complete API matrix,
-state contracts, image-source mapping, and accessibility requirements.
+state contracts, image-source mapping, and accessibility requirements. Use the shared
+[React Native error-handling guide](../../docs/error-handling.md#react-native) when integrating
+`LumenErrorState`; it covers error/offline classification, layouts, announcements, safe references,
+and loading-safe retries.
 See the [native compatibility matrix](../../docs/native-compatibility.md) for React and React Native
 baselines, and use the [native device validation matrix](../../docs/native-device-validation.md) for
 VoiceOver and TalkBack evidence.

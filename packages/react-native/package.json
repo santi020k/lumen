@@ -15,6 +15,10 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
+    "./datetime": {
+      "types": "./dist/datetime.d.ts",
+      "import": "./dist/datetime.js"
+    },
     "./tokens": {
       "types": "./dist/tokens.generated.d.ts",
       "import": "./dist/tokens.generated.js"
@@ -42,11 +46,13 @@
   },
   "devDependencies": {
     "@react-native-community/datetimepicker": "catalog:",
+    "@types/node": "catalog:",
     "@types/react": "catalog:",
     "@vitest/coverage-v8": "catalog:",
     "react": "catalog:",
     "react-native": "catalog:",
     "react-native-svg": "catalog:expo",
+    "test-renderer": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:"
   },
@@ -55,6 +61,11 @@
     "react": ">=19.2",
     "react-native": ">=0.86.2",
     "react-native-svg": ">=12 <16"
+  },
+  "peerDependenciesMeta": {
+    "@react-native-community/datetimepicker": {
+      "optional": true
+    }
   },
   "engines": {
     "node": ">=22.12.0"
