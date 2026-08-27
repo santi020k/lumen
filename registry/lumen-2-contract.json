@@ -107,8 +107,14 @@
     },
     {
       "id": "umbrella-core-reexports",
-      "status": "deferred",
-      "decisionGate": "Create the web API baseline and complete a consumer import audit before removing umbrella reexports in favor of explicit core subpaths."
+      "status": "resolved",
+      "decision": "retain",
+      "resolution": "Retain the framework-neutral Core reexports from the umbrella root in Lumen 2. The API baseline and consumer audit found no observed problem that justifies a breaking removal.",
+      "evidence": [
+        "docs/lumen-2-consumer-import-audit.md",
+        "registry/web-api-baseline.json",
+        "scripts/smoke-consumer-packages.mjs"
+      ]
     }
   ]
 }

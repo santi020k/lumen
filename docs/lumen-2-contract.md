@@ -72,14 +72,16 @@ controller or provider. The 1.x line must deprecate direct Sonner use first. Aut
 safe only when placement and maximum-count configuration map directly; custom child content requires
 manual review.
 
-## Deferred investigations
+## Contract investigations
 
 - **React server/client boundaries:** first add and measure a compatible server-safe entrypoint,
   then validate both production-shaped Next.js consumers. Do not move the root contract on theory.
 - **Granular Elements registration:** first ship an additive per-component registration path and
   prove its output with a real consumer before deprecating full-catalog registration.
-- **Umbrella core reexports:** first establish a web API baseline and audit consumer imports before
-  moving algorithms and types to explicit `@santi020k/lumen-core/*` export paths.
+- **Umbrella Core re-exports — resolved, retain:** the web API baseline protects 202 umbrella
+  symbols, the clean consumer already demonstrates explicit Core usage, and the
+  [consumer import audit](lumen-2-consumer-import-audit.md) found no observed problem that justifies
+  a breaking removal. Lumen 2 keeps this compatibility surface.
 
 ## Foundations and approval gates
 

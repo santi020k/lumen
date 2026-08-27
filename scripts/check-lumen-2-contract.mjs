@@ -82,9 +82,25 @@ for (const [index, investigation] of (contract.investigations ?? []).entries()) 
 
   ids.add(investigation.id)
 
-  if (investigation.status !== 'deferred') failures.push(`${label}.status must be deferred.`)
+  if (!['deferred', 'resolved'].includes(investigation.status)) {
+    failures.push(`${label}.status must be deferred or resolved.`)
+  }
 
-  requireString(investigation.decisionGate, `${label}.decisionGate`)
+  if (investigation.status === 'deferred') {
+    requireString(investigation.decisionGate, `${label}.decisionGate`)
+  }
+
+  if (investigation.status === 'resolved') {
+    if (!['retain', 'change'].includes(investigation.decision)) {
+      failures.push(`${label}.decision must be retain or change.`)
+    }
+
+    requireString(investigation.resolution, `${label}.resolution`)
+
+    requireStringArray(investigation.evidence, `${label}.evidence`)
+
+    for (const file of investigation.evidence ?? []) referencedFiles.add(file)
+  }
 }
 
 for (const file of referencedFiles) {
@@ -100,5 +116,8 @@ if (failures.length > 0) {
 
   process.exitCode = 1
 } else {
-  console.log(`Lumen 2 contract check passed for ${contract.changes.length} breaking-change candidates and ${contract.investigations.length} deferred investigations.`)
+  const deferredCount = contract.investigations.filter(investigation => investigation.status === 'deferred').length
+  const resolvedCount = contract.investigations.filter(investigation => investigation.status === 'resolved').length
+
+  console.log(`Lumen 2 contract check passed for ${contract.changes.length} breaking-change candidates, ${resolvedCount} resolved investigation, and ${deferredCount} deferred investigations.`)
 }
