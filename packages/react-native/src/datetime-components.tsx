@@ -324,7 +324,13 @@ export const LumenDateRangeField = ({
   const sharedFieldProps = resolveSharedDateFieldProps(enabled, formatValue, maximumDate, placeholder)
 
   return (
-    <View {...props} accessibilityLabel={label} style={[{ gap: theme.spacing.sm }, style]}>
+    <View
+      {...props}
+      accessibilityHint={resolveLumenValidationHint(errorMessage, description, props.accessibilityHint)}
+      accessibilityLabel={props.accessibilityLabel ?? label}
+      aria-invalid={resolveLumenAriaInvalid(errorMessage)}
+      style={[{ gap: theme.spacing.sm }, style]}
+    >
       <Text
         style={{
           color: labelColor,

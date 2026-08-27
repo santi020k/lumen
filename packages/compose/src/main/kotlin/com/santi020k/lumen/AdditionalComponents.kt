@@ -34,6 +34,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.error
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.progressBarRangeInfo
 import androidx.compose.ui.semantics.ProgressBarRangeInfo
@@ -81,6 +82,11 @@ fun LumenFieldGroup(
     Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(LumenSpacing.Sm)) {
         Text(
             text = if (required) "$label *" else label,
+            modifier = if (required) {
+                Modifier.semantics { contentDescription = "$label, required" }
+            } else {
+                Modifier
+            },
             color = colors.ink,
             style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.SemiBold)
         )
@@ -91,7 +97,10 @@ fun LumenFieldGroup(
         if (errorMessage != null) {
             Text(
                 errorMessage,
-                modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite },
+                modifier = Modifier.semantics {
+                    error(errorMessage)
+                    liveRegion = LiveRegionMode.Polite
+                },
                 color = colors.danger,
                 style = MaterialTheme.typography.bodySmall
             )
@@ -115,7 +124,11 @@ fun LumenTextarea(
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .semantics {
+                if (errorMessage != null) error(errorMessage)
+            },
         enabled = enabled,
         isError = errorMessage != null,
         minLines = minLines.coerceAtLeast(2),

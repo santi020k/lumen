@@ -4,8 +4,8 @@ import { getLumenPhoneCountry } from '@santi020k/lumen-core'
 import { createRoot, type Root, type TestInstance } from 'test-renderer'
 import { afterEach, describe, expect, test, vi } from 'vitest'
 
-import { LumenChip, LumenTextarea } from './additional-components.js'
-import { LumenDateField } from './datetime-components.js'
+import { LumenChip, LumenFieldGroup, LumenTextarea } from './additional-components.js'
+import { LumenDateField, LumenDateRangeField } from './datetime-components.js'
 import { LumenSearchField } from './form-components.js'
 import { LumenPhoneInput } from './phone-components.js'
 import { resolveLumenPhoneInputValue } from './phone-recipes.js'
@@ -221,6 +221,30 @@ describe('Lumen React Native component behavior', () => {
     expect(readProp(textarea, 'accessibilityHint')).toBe('Project notes are required')
     expect(readProp(dateButton, 'aria-invalid')).toBe(true)
     expect(readProp(dateButton, 'accessibilityHint')).toBe('Choose a valid birthday')
+  })
+
+  test('grouped fields expose required and range validation context', async () => {
+    const fieldGroupRoot = await renderNative(
+      <LumenFieldGroup label="Project details" required>
+        <LumenText>Details</LumenText>
+      </LumenFieldGroup>
+    )
+    const dateRangeRoot = await renderNative(
+      <LumenDateRangeField
+        accessibilityHint="Consumer guidance"
+        errorMessage="Choose a valid schedule"
+        label="Schedule"
+        onValueChange={() => {}}
+        value={{ end: null, start: null }}
+      />
+    )
+
+    expect(findByAccessibilityLabel(fieldGroupRoot, 'Project details, required')).toBeDefined()
+
+    const dateRange = findByAccessibilityLabel(dateRangeRoot, 'Schedule')
+
+    expect(readProp(dateRange, 'aria-invalid')).toBe(true)
+    expect(readProp(dateRange, 'accessibilityHint')).toBe('Choose a valid schedule')
   })
 
   test('phone input exposes disabled state on both native controls', async () => {

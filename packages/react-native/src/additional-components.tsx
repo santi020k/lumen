@@ -329,6 +329,7 @@ export const LumenFieldGroup = ({
   return (
     <View ref={ref} {...props} style={[{ gap: theme.spacing.sm }, style]}>
       <Text
+        accessibilityLabel={required ? `${label}, required` : undefined}
         style={{
           color: theme.colors.ink,
           fontSize: theme.fontSizes.sm,

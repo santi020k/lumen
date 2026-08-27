@@ -118,6 +118,46 @@ class AccessibilityTest {
     }
 
     @Test
+    fun groupedAndMultilineFieldsExposeValidationContext() {
+        composeRule.setContent {
+            LumenTheme {
+                Column {
+                    LumenFieldGroup(
+                        label = "Project details",
+                        required = true,
+                        errorMessage = "Project details are required"
+                    ) {
+                        Text("Grouped control")
+                    }
+                    LumenTextarea(
+                        value = "Draft",
+                        onValueChange = {},
+                        label = "Project notes",
+                        modifier = Modifier.testTag("project-notes"),
+                        errorMessage = "Project notes are required"
+                    )
+                }
+            }
+        }
+
+        composeRule.onNodeWithContentDescription("Project details, required").assertExists()
+        composeRule.onNodeWithText("Project details are required")
+            .assert(
+                SemanticsMatcher.expectValue(
+                    SemanticsProperties.Error,
+                    "Project details are required"
+                )
+            )
+        composeRule.onNodeWithTag("project-notes")
+            .assert(
+                SemanticsMatcher.expectValue(
+                    SemanticsProperties.Error,
+                    "Project notes are required"
+                )
+            )
+    }
+
+    @Test
     fun alertDialogDisablesConfirmAndKeepsCancelReachableWhileLoading() {
         composeRule.setContent {
             LumenTheme {
