@@ -43,8 +43,8 @@ import {
   type LumenThemeBuilderResult,
   type LumenThemeBuilderScheme,
   type LumenThemeTokens,
-  normalizeLumenLocales
-} from '@santi020k/lumen-core'
+  normalizeLumenLocales,
+  scrollLumenTabIntoView } from '@santi020k/lumen-core'
 
 type ChangeHandler<T> = (value: T) => void
 
@@ -1153,8 +1153,10 @@ export const useTabs = ({
         'aria-controls': panelId,
         'aria-selected': selected,
         id: props.id ?? triggerId,
-        onClick: composeHandlers(props.onClick, () => {
+        onClick: composeHandlers(props.onClick, event => {
           activate(triggerValue)
+
+          scrollLumenTabIntoView(event.currentTarget)
         }),
         onKeyDown: composeHandlers(props.onKeyDown, event => {
           const keys = orientation === 'vertical' ?
@@ -1188,6 +1190,8 @@ export const useTabs = ({
           if (!nextTab || !nextValue) return
 
           activate(nextValue)
+
+          scrollLumenTabIntoView(nextTab)
 
           nextTab.focus()
         }),

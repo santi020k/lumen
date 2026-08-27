@@ -10,6 +10,13 @@ This package registers standards-based custom elements for the shared Lumen prim
 pnpm add @santi020k/lumen-elements
 ```
 
+The adapter also exposes Lumen's discovery and diagnostics CLI:
+
+```bash
+pnpm exec lumen show Tabs
+pnpm exec lumen doctor
+```
+
 Load the shared stylesheet once from your app entry or global CSS.
 
 ```css
@@ -263,6 +270,8 @@ their registered custom elements; no Astro runtime or host controller is require
 Rich text controls may provide `data-ui-editor-value` for commands such as `formatBlock` and
 `createLink`; editable surfaces emit `ui:editor-change` with both HTML and plain text, support common
 formatting shortcuts, and keep toggle controls synchronized through `aria-pressed`.
+`lumen-tabs` keeps the selected trigger visible in narrow horizontal lists and emits
+`ui:tabs-change`; import `LumenTabsChangeDetail` or `LumenTabsChangeEvent` for its typed detail.
 
 `<lumen-kanban-board>` and `<lumen-kanban-column value="…">` provide the same controlled board
 contract. Mark ordinary card items with `data-ui-kanban-item` and put `data-ui-kanban-handle` on a

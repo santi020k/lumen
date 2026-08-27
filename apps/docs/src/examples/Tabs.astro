@@ -11,11 +11,27 @@ import {
   <TabsList aria-label="Package targets">
     <TabsTrigger value="astro">Astro</TabsTrigger>
     <TabsTrigger value="react">React</TabsTrigger>
+    <TabsTrigger value="elements">Elements</TabsTrigger>
+    <TabsTrigger value="react-native">React Native</TabsTrigger>
+    <TabsTrigger value="swiftui">SwiftUI</TabsTrigger>
+    <TabsTrigger value="compose">Compose</TabsTrigger>
   </TabsList>
   <TabsPanel value="astro">
     <p>All primitives are available as Astro components.</p>
   </TabsPanel>
   <TabsPanel value="react">
     <p>The same API surface is available in React.</p>
+  </TabsPanel>
+  <TabsPanel value="elements">
+    <p>Standards-based custom elements bring Lumen to framework-neutral pages.</p>
+  </TabsPanel>
+  <TabsPanel value="react-native">
+    <p>React Native consumes the shared tokens and native component contracts.</p>
+  </TabsPanel>
+  <TabsPanel value="swiftui">
+    <p>SwiftUI provides native Apple-platform primitives.</p>
+  </TabsPanel>
+  <TabsPanel value="compose">
+    <p>Compose provides native Android and Wear OS primitives.</p>
   </TabsPanel>
 </Tabs>

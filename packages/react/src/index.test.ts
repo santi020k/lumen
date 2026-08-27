@@ -1360,6 +1360,7 @@ describe('@santi020k/lumen-react', () => {
 
   test('activates tabs through trigger clicks', () => {
     const changes: string[] = []
+    const scrollIntoView = vi.fn()
     const tabs = withHookDispatcher(() => useTabs({
       defaultValue: 'overview',
       onValueChange: value => {
@@ -1369,10 +1370,13 @@ describe('@santi020k/lumen-react', () => {
     const settings = tabs.getTriggerProps('settings')
 
     settings.onClick?.(
-      {} as Parameters<NonNullable<typeof settings.onClick>>[0]
+      { currentTarget: { scrollIntoView } } as unknown as Parameters<
+        NonNullable<typeof settings.onClick>
+      >[0]
     )
 
     expect(changes).toEqual(['settings'])
+    expect(scrollIntoView).toHaveBeenCalledWith({ block: 'nearest', inline: 'nearest' })
   })
 
   test('selects enabled options and ignores disabled ones', () => {

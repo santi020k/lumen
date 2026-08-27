@@ -2632,15 +2632,24 @@
 .ui-tabs [role="tablist"] {
   display: inline-flex;
   width: fit-content;
+  max-width: 100%;
   align-items: center;
   gap: 0.25rem;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
   border: 1px solid hsl(var(--line));
   border-radius: var(--ui-radius);
   background: hsl(var(--surface-muted));
   padding: 0.25rem;
+  scrollbar-width: thin;
+}
+
+.ui-tabs [role="tablist"][aria-orientation="vertical"] {
+  overflow-x: visible;
 }
 
 .ui-tabs [role="tab"] {
+  flex: 0 0 auto;
   border: 0;
   border-radius: var(--ui-radius-sm);
   background: transparent;

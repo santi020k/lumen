@@ -27,6 +27,7 @@
     "./package.json": "./package.json"
   },
   "files": [
+    "bin",
     "components",
     "runtime",
     "styles",
@@ -35,6 +36,9 @@
     "README.md",
     "LICENSE"
   ],
+  "bin": {
+    "lumen": "./bin/lumen.mjs"
+  },
   "scripts": {
     "build": "astro sync && tsc -p tsconfig.json --noEmit",
     "dev": "astro sync --watch",

@@ -222,6 +222,11 @@ export {
   scheduleEventsOverlap,
   serializeScheduleEvents } from './schedule.js'
 export {
+  type LumenTabsChangeDetail,
+  type LumenTabsChangeEvent,
+  scrollLumenTabIntoView
+} from './tabs.js'
+export {
   createThemeFromHue,
   createThemePalette,
   exportThemeCss,

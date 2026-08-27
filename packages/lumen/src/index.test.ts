@@ -71,6 +71,19 @@ describe('@santi020k/lumen umbrella package', () => {
     expect(lumenPackages.some(pkg => pkg.packageName === lumen.packageName)).toBe(true)
   })
 
+  test('exposes the Lumen CLI through every web adapter', async () => {
+    for (const adapter of ['astro', 'elements', 'react']) {
+      const adapterRoot = new URL(`../../${adapter}/`, import.meta.url)
+      const packageJson = JSON.parse(
+        await readFile(new URL('package.json', adapterRoot), 'utf8')
+      ) as { bin?: Record<string, string> }
+
+      expect(packageJson.bin?.lumen).toBe('./bin/lumen.mjs')
+      await expect(readFile(new URL('bin/lumen.mjs', adapterRoot), 'utf8'))
+        .resolves.toContain('import \'@santi020k/lumen/cli\'')
+    }
+  })
+
   test('exports registry recipes and components for product surfaces', () => {
     expect(lumenRegistry.items.map(item => item.name)).toEqual([
       'all-components',

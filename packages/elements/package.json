@@ -40,12 +40,16 @@
     "./package.json": "./package.json"
   },
   "files": [
+    "bin",
     "dist",
     "layers.css",
     "styles.css",
     "README.md",
     "LICENSE"
   ],
+  "bin": {
+    "lumen": "./bin/lumen.mjs"
+  },
   "scripts": {
     "build": "tsc -p tsconfig.build.json && node scripts/minify-build.mjs",
     "dev": "tsc -p tsconfig.build.json --watch --preserveWatchOutput",

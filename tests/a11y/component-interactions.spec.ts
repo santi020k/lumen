@@ -291,17 +291,33 @@ behaviorTest(['Tour'], 'Tour opens from its linked trigger and closes from its a
 })
 
 behaviorTest(['Tabs'], 'Tabs switches panels with arrow keys', async ({ page }) => {
+  await page.setViewportSize({ height: 720, width: 320 })
   await openPreview(page, 'tabs')
 
   const preview = page.locator('.component-doc-preview')
   const astroTab = preview.getByRole('tab', { name: 'Astro' })
-  const reactTab = preview.getByRole('tab', { name: 'React' })
+  const reactTab = preview.getByRole('tab', { exact: true, name: 'React' })
+  const composeTab = preview.getByRole('tab', { name: 'Compose' })
+  const tabList = preview.getByRole('tablist', { name: 'Package targets' })
 
   await astroTab.focus()
   await astroTab.press('ArrowRight')
 
   await expect(reactTab).toHaveAttribute('aria-selected', 'true')
-  await expect(preview.getByRole('tabpanel', { name: 'React' })).toBeVisible()
+  await expect(preview.getByRole('tabpanel', { exact: true, name: 'React' })).toBeVisible()
+
+  await reactTab.press('End')
+
+  await expect(composeTab).toHaveAttribute('aria-selected', 'true')
+  await expect.poll(() => tabList.evaluate(element => element.scrollLeft)).toBeGreaterThan(0)
+  await expect.poll(async () => {
+    const listBox = await tabList.boundingBox()
+    const tabBox = await composeTab.boundingBox()
+
+    if (!listBox || !tabBox) return false
+
+    return tabBox.x >= listBox.x && tabBox.x + tabBox.width <= listBox.x + listBox.width + 1
+  }).toBe(true)
 })
 
 behaviorTest(['CodeTabs'], 'CodeTabs switches examples and restores the persisted selection', async ({ page }) => {

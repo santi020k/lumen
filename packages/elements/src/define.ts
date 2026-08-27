@@ -42,6 +42,7 @@ import {
   type LumenRichTextChangeDetail,
   type LumenRichTextCommandDetail,
   type LumenScatterGeometryPoint,
+  type LumenTabsChangeDetail,
   type LumenThemeBuilderExportFormat,
   type LumenThemeBuilderScheme,
   type LumenThemeTokens,
@@ -54,6 +55,7 @@ import {
   resolveLumenPhoneNumber,
   scaleLumenChartValue,
   scoreThemeContrast,
+  scrollLumenTabIntoView,
   tuneThemeContrast
 } from '@santi020k/lumen-core'
 
@@ -6705,7 +6707,7 @@ class LumenTabsBehaviorElement extends LumenElement {
 
     if (!tabs.length || !panels.length) return
 
-    const activate = (tab: HTMLElement): void => {
+    const activate = (tab: HTMLElement, emit = true): void => {
       for (const item of tabs) {
         const selected = item === tab
         const panelId = item.getAttribute('aria-controls')
@@ -6719,11 +6721,29 @@ class LumenTabsBehaviorElement extends LumenElement {
           panel.hidden = !selected
         }
       }
+
+      if (!emit) return
+
+      scrollLumenTabIntoView(tab)
+
+      const detail: LumenTabsChangeDetail = {
+        value: tab.dataset.value ?? tab.id
+      }
+
+      const storageKey = this.dataset.storageKey
+
+      if (storageKey) detail.storageKey = storageKey
+
+      this.dispatchEvent(new CustomEvent<LumenTabsChangeDetail>('ui:tabs-change', {
+        bubbles: true,
+        detail
+      }))
     }
 
     activate(
       tabs.find(tab => tab.getAttribute('aria-selected') === 'true') ??
-      tabs[0]!
+      tabs[0]!,
+      false
     )
 
     for (const tab of tabs) {

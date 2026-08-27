@@ -7,6 +7,10 @@ Most consumers should install a framework package such as `@santi020k/lumen-astr
 The package exports `lumenColors` and `lumenGlass` for consumers that need to mirror Lumen theme
 tokens outside the shared stylesheet.
 
+It also publishes shared web behavior contracts such as `LumenTabsChangeDetail` and
+`LumenTabsChangeEvent`. Import them from the root or `@santi020k/lumen-core/tabs` when application
+code listens for `ui:tabs-change`.
+
 Cross-platform foundations originate in `tokens/lumen.tokens.json` and are published as
 `@santi020k/lumen-tokens`. Core also exports generated hexadecimal light/dark palettes and native
 numeric spacing, radius, typography, duration, easing, and elevation values. The legacy

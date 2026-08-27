@@ -685,6 +685,7 @@ describe('@santi020k/lumen-elements', () => {
   })
 
   test('tabs use roving tabindex with arrow, Home, and End navigation', () => {
+    const changes: { value: string }[] = []
     document.body.innerHTML = `
       <lumen-tabs>
         <div role="tablist">
@@ -701,6 +702,13 @@ describe('@santi020k/lumen-elements', () => {
     const first = document.querySelector<HTMLButtonElement>('#tab-one')
     const second = document.querySelector<HTMLButtonElement>('#tab-two')
     const third = document.querySelector<HTMLButtonElement>('#tab-three')
+    const tabs = document.querySelector('lumen-tabs')
+    const scrollIntoView = vi.fn()
+
+    if (second) second.scrollIntoView = scrollIntoView
+    tabs?.addEventListener('ui:tabs-change', event => {
+      changes.push((event as CustomEvent<{ value: string }>).detail)
+    })
 
     press(first as HTMLElement, 'ArrowRight')
     expect(second?.getAttribute('aria-selected')).toBe('true')
@@ -708,6 +716,8 @@ describe('@santi020k/lumen-elements', () => {
     expect(document.querySelector<HTMLElement>('#panel-two')?.hidden).toBe(
       false
     )
+    expect(changes).toEqual([{ value: 'tab-two' }])
+    expect(scrollIntoView).toHaveBeenCalledWith({ block: 'nearest', inline: 'nearest' })
 
     press(second as HTMLElement, 'End')
     expect(third?.getAttribute('aria-selected')).toBe('true')

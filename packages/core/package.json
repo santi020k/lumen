@@ -55,6 +55,10 @@
       "types": "./dist/schedule.d.ts",
       "import": "./dist/schedule.js"
     },
+    "./tabs": {
+      "types": "./dist/tabs.d.ts",
+      "import": "./dist/tabs.js"
+    },
     "./theme": {
       "types": "./dist/theme.d.ts",
       "import": "./dist/theme.js"

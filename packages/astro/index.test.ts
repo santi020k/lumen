@@ -87,6 +87,9 @@ describe('@santi020k/lumen-astro package surface', () => {
       'TooltipContent'
     ]) expect(index).toContain(`export { default as ${name} }`)
 
+    expect(index).toContain('LumenTabsChangeDetail')
+    expect(index).toContain('LumenTabsChangeEvent')
+
     expect(popoverTrigger).toContain('data-ui-trigger')
     expect(popoverPanel).toContain('[\'ui-popover__panel\']')
     expect(tabsList).toContain('role="tablist"')

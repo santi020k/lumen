@@ -177,3 +177,7 @@ export {
   normalizeAstroActionErrors
 } from './forms.ts'
 export { default as UIPrimitives } from './runtime/UIPrimitives.astro'
+export type {
+  LumenTabsChangeDetail,
+  LumenTabsChangeEvent
+} from '@santi020k/lumen-core'

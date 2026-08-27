@@ -432,8 +432,10 @@ uses these CustomEvents:
 ## Registry Helper
 
 `@santi020k/lumen` exports typed component, recipe, and documentation metadata from
-`@santi020k/lumen/registry`. The package also ships a small `lumen` binary. Individual components
-are addressable by name, including kebab-case aliases such as `data-table`:
+`@santi020k/lumen/registry`. The umbrella package and every web adapter expose the same small
+`lumen` binary, so projects that install Astro, React, or Elements can use discovery and diagnostics
+without another direct dependency. Individual components are addressable by name, including
+kebab-case aliases such as `data-table`:
 
 ```bash
 lumen list

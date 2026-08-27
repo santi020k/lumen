@@ -11,6 +11,13 @@ Lumen stylesheet.
 pnpm add @santi020k/lumen-react
 ```
 
+The adapter also exposes Lumen's discovery and diagnostics CLI:
+
+```bash
+pnpm exec lumen show Tabs
+pnpm exec lumen doctor
+```
+
 Load the shared stylesheet once from your app entry or global CSS.
 
 ```tsx
@@ -338,6 +345,9 @@ toast controller semantics for React applications.
 shortcuts, active toolbar state, and `{ html, text }` change details.
 `DataTable` can render structured `columns` and `rows` with the same selectable/sortable data
 attributes, and `VirtualList` exposes the shared range sizing attributes for app-level adapters.
+`useTabs` keeps the selected trigger visible when a narrow horizontal list scrolls. The package
+also exports `LumenTabsChangeDetail` and `LumenTabsChangeEvent` for integrations that consume the
+shared `ui:tabs-change` contract.
 
 ## Kanban boards
 

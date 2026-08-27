@@ -23,10 +23,12 @@ import {
   type LumenLocaleOption,
   type LumenRichTextChangeDetail,
   type LumenRichTextCommandDetail,
+  type LumenTabsChangeDetail,
   type LumenThemeTokens,
   lumenTokenNames,
   normalizeLumenLocales,
-  resolveLumenPhoneNumber } from '@santi020k/lumen-core'
+  resolveLumenPhoneNumber,
+  scrollLumenTabIntoView } from '@santi020k/lumen-core'
 
 /* eslint-disable complexity */
 /* Stateful DOM handlers stay local so Astro consumers do not need a framework runtime. */
@@ -1074,6 +1076,8 @@ const initTabs = (scope: ParentNode): void => {
 
       if (!emit || wasSelected) return
 
+      scrollLumenTabIntoView(tab)
+
       const storageKey = root.dataset.storageKey
 
       if (storageKey) {
@@ -1095,7 +1099,7 @@ const initTabs = (scope: ParentNode): void => {
         }
       }
 
-      root.dispatchEvent(new CustomEvent('ui:tabs-change', {
+      root.dispatchEvent(new CustomEvent<LumenTabsChangeDetail>('ui:tabs-change', {
         bubbles: true,
         detail: { storageKey, value }
       }))

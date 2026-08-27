@@ -72,6 +72,7 @@ import {
   type LumenPhoneNumber,
   type LumenPieChartVariant,
   type LumenRangeDatum,
+  type LumenTabsChangeDetail,
   normalizeLumenFormErrors,
   resolveLumenChartTone,
   resolveLumenPhoneNumber,
@@ -5116,7 +5117,7 @@ export const CodeTabs = ({
   useEffect(() => {
     const synchronize = (event: Event) => {
       const detail = (
-        event as CustomEvent<{ storageKey?: string, value?: string }>
+        event as CustomEvent<LumenTabsChangeDetail>
       ).detail
 
       if (
@@ -5148,7 +5149,7 @@ export const CodeTabs = ({
     }
 
     document.dispatchEvent(
-      new CustomEvent('ui:tabs-change', {
+      new CustomEvent<LumenTabsChangeDetail>('ui:tabs-change', {
         detail: { storageKey, value: nextValue }
       })
     )

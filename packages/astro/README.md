@@ -9,6 +9,13 @@ configuration is required to render the components.
 pnpm add @santi020k/lumen-astro
 ```
 
+The adapter also exposes Lumen's discovery and diagnostics CLI:
+
+```bash
+pnpm exec lumen show Tabs
+pnpm exec lumen doctor
+```
+
 Import the CSS once in your root layout and mount `UIPrimitives` once in that same app shell if you
 use interactive components such as dialogs, menus, popovers, tabs, carousels, toggles, command
 lists, or toasts. Do not add `UIPrimitives` beside each component instance; one root include
@@ -74,6 +81,10 @@ metadata-backed validation, automatic country detection for pasted international
 Popover, dropdown menu, tabs, and tooltip parts expose the DOM and ARIA contracts consumed by the
 shared progressive-enhancement runtime. Prefer these parts over recreating roles and `data-ui-*`
 attributes by hand.
+
+Tabs keep the selected trigger visible when a narrow tab list scrolls horizontally and emit a
+typed `ui:tabs-change` event. Import `LumenTabsChangeDetail` or `LumenTabsChangeEvent` from this
+package when application behavior follows the selected value.
 
 ```astro
 ---

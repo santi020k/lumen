@@ -8,8 +8,9 @@ Install the framework package directly:
 - `@santi020k/lumen-react`
 - `@santi020k/lumen-elements`
 
-Each adapter includes the shared foundation and exposes its own stylesheet entry. Install this
-umbrella package only when you want the framework-neutral CLI or registry APIs:
+Each adapter includes the shared foundation, exposes its own stylesheet entry, and makes the
+`lumen` CLI available to the consuming project. Install this umbrella package directly when you
+also want to import its framework-neutral registry or diagnostics APIs:
 
 ```bash
 pnpm add @santi020k/lumen
@@ -56,14 +57,14 @@ Complete product recipes are also bundled for `analytics-dashboard`, `saas-admin
 `commerce-dashboard`, `project-workspace`, `auth-onboarding`, `docs-shell`, `marketing-shell`,
 `dashboard-shell`, and `validated-form`.
 
-Run `lumen doctor` to check adapter/style agreement, Tailwind layer order, Astro runtime mounts,
-and fragile internal selector dependencies. In a workspace, diagnostics are scoped to the nearest
-package boundary, generated build trees are ignored, and application-controlled Astro `Toggle`
-instances do not require the shared runtime. It also suggests matching Lumen primitives for likely
-hand-built dropdown, theme, dialog-focus, and keyboard-menu behavior. These suggestions stay
-advisory because product-specific composition can be intentional. Use `--json` for CI and rollout
-automation. `lumen init --framework <astro|react|elements> [--tailwind]` prints the canonical
-non-destructive setup.
+Run `lumen doctor` to check adapter/style agreement, duplicate stylesheet entrypoints, Tailwind
+layer order, Astro runtime mounts, and fragile internal selector dependencies. In a workspace,
+diagnostics are scoped to the nearest package boundary, generated build trees are ignored, and
+application-controlled Astro `Toggle` instances do not require the shared runtime. It also suggests
+matching Lumen primitives for likely hand-built dropdown, theme, dialog-focus, and keyboard-menu
+behavior. These suggestions stay advisory because product-specific composition can be intentional.
+Use `--json` for CI and rollout automation. `lumen init --framework <astro|react|elements>
+[--tailwind]` prints the canonical non-destructive setup.
 
 Run `lumen doctor-native` in an Apple or Android consumer to report the resolved Swift package
 tag/revision or Compose artifact version, compare it with Lumen's bundled cross-platform release

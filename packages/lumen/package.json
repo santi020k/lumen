@@ -22,6 +22,7 @@
       "types": "./dist/registry.d.ts",
       "import": "./dist/registry.js"
     },
+    "./cli": "./dist/cli.js",
     "./release-manifest.json": "./release-manifest.json",
     "./styles.css": "./styles.css",
     "./layers.css": "./layers.css",

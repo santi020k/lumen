@@ -2223,6 +2223,12 @@ const apiReferenceByComponent = {
     ),
     apiRow(
       'storageKey', 'string', '-', 'Astro: persists selection and synchronizes tab groups that share this key.'
+    ),
+    apiRow(
+      'ui:tabs-change',
+      'CustomEvent<LumenTabsChangeDetail>',
+      '-',
+      'Astro and Elements: reports the selected value; narrow horizontal lists keep the active trigger visible.'
     )
   ],
   TagGroup: [

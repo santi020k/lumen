@@ -152,6 +152,8 @@ export {
   lumenSemanticColorTokenNames,
   type LumenSortDirection,
   lumenSpacing,
+  type LumenTabsChangeDetail,
+  type LumenTabsChangeEvent,
   lumenThemeAttribute,
   type LumenThemeBuilderExportFormat,
   type LumenThemeBuilderMode,
