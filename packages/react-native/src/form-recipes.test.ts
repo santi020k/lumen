@@ -2,6 +2,7 @@ import { describe, expect, test } from 'vitest'
 
 import {
   clampLumenDate,
+  formatLumenDateDisplayValue,
   formatLumenDateInputValue,
   parseLumenDateInputValue,
   resolveLumenDateBounds,
@@ -35,6 +36,14 @@ describe('Lumen React Native form component recipes', () => {
       maximumDate: maximum,
       minimumDate: maximum
     })
+    expect(resolveLumenDatePickerValue(new Date(Number.NaN), minimum, maximum, minimum)).toEqual(minimum)
+  })
+
+  test('uses the placeholder without formatting an invalid controlled date', () => {
+    const formatter = (date: Date): string => date.toISOString()
+
+    expect(formatLumenDateDisplayValue(new Date(Number.NaN), 'Select a date', formatter))
+      .toBe('Select a date')
   })
 
   test('keeps a controlled date range ordered as either boundary changes', () => {

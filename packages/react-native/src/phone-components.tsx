@@ -23,7 +23,10 @@ import {
 import { LumenFieldGroup } from './additional-components.js'
 import { LumenSearchField } from './form-components.js'
 import { LumenSheet } from './overlay-components.js'
-import { resolveLumenPhoneInputValue } from './phone-recipes.js'
+import {
+  resolveLumenPhoneControlledValue,
+  resolveLumenPhoneInputValue
+} from './phone-recipes.js'
 import { LumenIcon } from './primitives.js'
 import { resolveLumenButtonOpacity } from './recipes.js'
 import { useLumenTheme } from './theme-context.js'
@@ -195,11 +198,16 @@ export const LumenPhoneInput = (props: LumenPhoneInputProps): ReactElement => {
     [availableCountries, countryQuery]
   )
 
+  const value = useMemo(
+    () => resolveLumenPhoneControlledValue(availableCountries, props.value, phoneOptions),
+    [availableCountries, phoneOptions, props.value]
+  )
+
   const effectiveError = getPhoneError(
     props.errorMessage,
     labels.invalidNumberMessage,
     showValidationError,
-    props.value
+    value
   )
 
   const dismissPicker = (): void => {
@@ -212,7 +220,7 @@ export const LumenPhoneInput = (props: LumenPhoneInputProps): ReactElement => {
     props.onValueChange(resolveLumenPhoneInputValue(
       availableCountries,
       country,
-      props.value.nationalNumber,
+      value.nationalNumber,
       phoneOptions
     ))
 
@@ -235,7 +243,7 @@ export const LumenPhoneInput = (props: LumenPhoneInputProps): ReactElement => {
     required: _required,
     showValidationError: _showValidationError,
     style,
-    value,
+    value: _value,
     ...viewProps
   } = props
 

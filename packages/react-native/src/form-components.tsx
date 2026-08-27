@@ -30,7 +30,9 @@ import {
 
 import {
   clampLumenDate,
+  formatLumenDateDisplayValue,
   formatLumenDateInputValue,
+  isValidLumenDate,
   type LumenDateRangeValue,
   parseLumenDateInputValue,
   resolveLumenDateBounds,
@@ -38,8 +40,7 @@ import {
   resolveLumenDateRangeEndChange,
   resolveLumenDateRangeEndMinimum,
   resolveLumenDateRangeStartChange,
-  resolveLumenSearchFieldState
-} from './form-recipes.js'
+  resolveLumenSearchFieldState } from './form-recipes.js'
 import { resolveLumenButtonOpacity } from './recipes.js'
 import { useLumenTheme } from './theme-context.js'
 
@@ -69,10 +70,6 @@ if (!isNativeDatePickerComponent(nativeDatePickerCandidate)) {
 }
 
 const NativeDatePicker = nativeDatePickerCandidate
-
-const formatLumenDate = (value: Date | null, placeholder: string, formatter?: (date: Date) => string): string => (
-  value ? (formatter ?? defaultDateFormatter.format.bind(defaultDateFormatter))(value) : placeholder
-)
 
 interface DateSupportingTextProps {
   description?: string | undefined
@@ -177,8 +174,15 @@ export const LumenDateField = ({
 }: LumenDateFieldProps): ReactElement => {
   const theme = useLumenTheme()
   const [expanded, setExpanded] = useState(false)
+  const validValue = isValidLumenDate(value) ? value : null
   const pickerValue = resolveLumenDatePickerValue(value, minimumDate, maximumDate)
-  const displayValue = formatLumenDate(value, placeholder, formatValue)
+
+  const displayValue = formatLumenDateDisplayValue(
+    value,
+    placeholder,
+    formatValue ?? defaultDateFormatter.format.bind(defaultDateFormatter)
+  )
+
   const pickerBounds = resolveLumenDateBounds(minimumDate, maximumDate)
 
   const commitValue = (_event: DateTimePickerChangeEvent, selectedDate?: Date): void => {
@@ -235,7 +239,7 @@ export const LumenDateField = ({
       >
         <Text
           style={{
-            color: value ? theme.colors.ink : theme.colors.inkMuted,
+            color: validValue ? theme.colors.ink : theme.colors.inkMuted,
             flex: 1,
             fontSize: theme.fontSizes.sm
           }}
@@ -264,7 +268,7 @@ export const LumenDateField = ({
         onChange={commitValue}
         themeVariant={theme.scheme}
         value={pickerValue}
-        webValue={value}
+        webValue={validValue}
       />
       <DateSupportingText
         {...(description ? { description } : {})}
