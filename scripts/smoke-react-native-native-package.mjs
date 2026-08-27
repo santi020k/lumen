@@ -5,6 +5,7 @@ import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
 
 const repositoryRoot = resolve(import.meta.dirname, '..')
+const corePackageDirectory = join(repositoryRoot, 'packages', 'core')
 const packageDirectory = join(repositoryRoot, 'packages', 'react-native')
 const playgroundPackageName = '@santi020k/lumen-playground-react-native'
 const supportedPlatforms = new Set(['android', 'ios'])
@@ -113,7 +114,8 @@ if (requestedPlatform === 'ios') {
 }
 
 const temporaryRoot = await mkdtemp(join(tmpdir(), `lumen-react-native-${requestedPlatform}-`))
-const archiveDirectory = join(temporaryRoot, 'archive')
+const coreArchiveDirectory = join(temporaryRoot, 'core-archive')
+const packageArchiveDirectory = join(temporaryRoot, 'package-archive')
 const consumerDirectory = join(temporaryRoot, 'consumer')
 
 const getResolvedPlaygroundDependencies = () => {
@@ -157,10 +159,12 @@ const getResolvedPlaygroundDependencies = () => {
 
 try {
   await Promise.all([
-    mkdir(archiveDirectory, { recursive: true }),
+    mkdir(coreArchiveDirectory, { recursive: true }),
+    mkdir(packageArchiveDirectory, { recursive: true }),
     mkdir(consumerDirectory, { recursive: true })
   ])
 
+  let corePackageReference
   let packageReference
   let packageSource
 
@@ -171,13 +175,20 @@ try {
   } else {
     run('pnpm', ['--filter', '@santi020k/lumen-react-native...', 'run', 'build'])
 
-    run('pnpm', ['pack', '--pack-destination', archiveDirectory], packageDirectory)
+    run('pnpm', ['pack', '--pack-destination', coreArchiveDirectory], corePackageDirectory)
 
-    const archives = (await readdir(archiveDirectory)).filter(name => name.endsWith('.tgz'))
+    run('pnpm', ['pack', '--pack-destination', packageArchiveDirectory], packageDirectory)
 
-    assert.equal(archives.length, 1, 'Expected one React Native package archive')
+    const coreArchives = (await readdir(coreArchiveDirectory)).filter(name => name.endsWith('.tgz'))
+    const packageArchives = (await readdir(packageArchiveDirectory)).filter(name => name.endsWith('.tgz'))
 
-    packageReference = `file:${join(archiveDirectory, archives[0])}`
+    assert.equal(coreArchives.length, 1, 'Expected one Core package archive')
+
+    assert.equal(packageArchives.length, 1, 'Expected one React Native package archive')
+
+    corePackageReference = `file:${join(coreArchiveDirectory, coreArchives[0])}`
+
+    packageReference = `file:${join(packageArchiveDirectory, packageArchives[0])}`
 
     packageSource = 'Packed'
   }
@@ -189,6 +200,9 @@ try {
     `${JSON.stringify(
       {
         dependencies: {
+          ...(corePackageReference
+            ? { '@santi020k/lumen-core': corePackageReference }
+            : {}),
           '@santi020k/lumen-react-native': packageReference,
           expo: dependencies.expo,
           react: dependencies.react,
