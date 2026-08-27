@@ -221,6 +221,10 @@ The skill teaches agents how to select, compose, theme, and verify Lumen primiti
 [`@santi020k/lumen-mcp`](./packages/mcp) when an agent needs to search the live catalog or retrieve
 current source, props, tokens, and usage rules.
 
+> **OpenAI Plugins Directory status:** Lumen UI 1.0.0 has been submitted for review for Codex and
+> ChatGPT. Until OpenAI approves it and the publisher completes publication, install the portable
+> skill or connect the MCP server directly; directory availability is not yet guaranteed.
+
 Additional machine-readable surfaces include:
 
 - [`llms.txt`](./llms.txt) for a concise project map.
@@ -234,8 +238,10 @@ Additional machine-readable surfaces include:
 - [`registry/lumen.registry.json`](./registry/lumen.registry.json) for recipes and installable file
   groups.
 - [`docs/figma.md`](./docs/figma.md) for Figma variables and Code Connect workflows.
-- [`plugins/lumen-ui`](./plugins/lumen-ui) for the packaged Codex and ChatGPT plugin, with the
-  [public submission checklist](./docs/openai-plugin-submission.md).
+- [`plugins/lumen-ui`](./plugins/lumen-ui) for the packaged Codex and ChatGPT plugin, with its
+  [submission and review record](./docs/openai-plugin-submission.md).
+- [`.claude-plugin/marketplace.json`](./.claude-plugin/marketplace.json) for the Claude Code
+  marketplace, with its [installation and submission guide](./docs/claude-code-plugin.md).
 - [`docs/cross-platform.md`](./docs/cross-platform.md) for the native architecture, support tiers,
   and component-parity policy.
 - [`docs/native-patterns.md`](./docs/native-patterns.md) for developed native compositions and the

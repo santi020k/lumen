@@ -148,13 +148,17 @@ The process listens over HTTP. Public hosting must terminate TLS, configure the 
 and add authentication when the deployed data or operating model requires it. The public Lumen
 catalog does not require user authentication.
 
-## OpenAI plugin package
+## AI plugin package
 
 The repository includes a submission-ready plugin package in [`plugins/lumen-ui`](../../plugins/lumen-ui).
-It combines the portable `lumen-ui` skill with this MCP server for local Codex and ChatGPT testing.
-The public Plugins Directory submission uses a hosted Streamable HTTP endpoint; see the
+It combines the portable `lumen-ui` skill with this MCP server for Codex, ChatGPT, and Claude Code.
+The public OpenAI Plugins Directory submission uses a hosted Streamable HTTP endpoint; see the
 [submission checklist](../../docs/openai-plugin-submission.md) for deployment requirements, listing
 copy, annotation justifications, and reviewer test cases.
+
+Claude Code uses the package's stdio configuration and the repository marketplace in
+[`.claude-plugin/marketplace.json`](../../.claude-plugin/marketplace.json). See the
+[Claude Code plugin guide](../../docs/claude-code-plugin.md) for installation and validation.
 
 ## Recommended agent workflow
 

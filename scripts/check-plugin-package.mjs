@@ -49,19 +49,49 @@ await Promise.all(
   }),
 );
 
-const manifest = JSON.parse(
+const openAIManifest = JSON.parse(
   await readFile(join(pluginRoot, ".codex-plugin", "plugin.json"), "utf8"),
+);
+
+const claudeManifest = JSON.parse(
+  await readFile(join(pluginRoot, ".claude-plugin", "plugin.json"), "utf8"),
+);
+
+const claudeMarketplace = JSON.parse(
+  await readFile(
+    join(repositoryRoot, ".claude-plugin", "marketplace.json"),
+    "utf8",
+  ),
 );
 
 const mcpConfiguration = JSON.parse(
   await readFile(join(pluginRoot, ".mcp.json"), "utf8"),
 );
 
-assert.equal(manifest.name, "lumen-ui");
+assert.equal(openAIManifest.name, "lumen-ui");
 
-assert.equal(manifest.mcpServers, "./.mcp.json");
+assert.equal(openAIManifest.mcpServers, "./.mcp.json");
 
-assert.equal(manifest.skills, "./skills/");
+assert.equal(openAIManifest.skills, "./skills/");
+
+assert.equal(claudeManifest.name, openAIManifest.name);
+
+assert.equal(claudeManifest.displayName, openAIManifest.interface.displayName);
+
+assert.equal(claudeManifest.mcpServers, "./.mcp.json");
+
+assert.equal(claudeManifest.skills, "./skills/");
+
+assert.equal(claudeMarketplace.name, "lumen");
+
+assert.deepEqual(claudeMarketplace.plugins, [
+  {
+    description:
+      "Build accessible web and native interfaces with the Lumen workflow and live component catalog",
+    name: "lumen-ui",
+    source: "./plugins/lumen-ui",
+  },
+]);
 
 assert.deepEqual(mcpConfiguration, {
   mcpServers: {
@@ -83,4 +113,6 @@ assert.deepEqual(pluginIcon, canonicalIcon, "The packaged plugin icon is stale."
 
 assert.deepEqual(pluginLogo, canonicalLogo, "The packaged plugin logo is stale.");
 
-process.stdout.write("lumen-ui: plugin package is synchronized and valid\n");
+process.stdout.write(
+  "lumen-ui: OpenAI and Claude Code plugin packages are synchronized and valid\n",
+);
