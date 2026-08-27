@@ -12,12 +12,14 @@ import {
   type ViewProps
 } from 'react-native'
 
-import { LumenBadge } from './primitives.js'
+import { type LumenIconName } from './icons.generated.js'
+import { LumenBadge, LumenIcon } from './primitives.js'
 import {
   type LumenBannerVariant,
   type LumenMetricTone,
   resolveLumenBannerColors,
-  resolveLumenMetricColor
+  resolveLumenMetricColor,
+  resolveLumenStatusBarIconName
 } from './structured-recipes.js'
 import { useLumenTheme } from './theme-context.js'
 
@@ -359,6 +361,7 @@ export const LumenSectionHeader = ({
 }
 
 export interface LumenStatusBarProps extends ViewProps {
+  iconName?: LumenIconName
   message: string
   ref?: Ref<HostInstance>
   tone?: LumenMetricTone
@@ -366,6 +369,7 @@ export interface LumenStatusBarProps extends ViewProps {
 }
 
 export const LumenStatusBar = ({
+  iconName,
   message,
   ref,
   style,
@@ -391,15 +395,11 @@ export const LumenStatusBar = ({
         style
       ]}
     >
-      <View
-        accessibilityElementsHidden
-        importantForAccessibility="no"
-        style={{
-          backgroundColor: resolveLumenMetricColor(theme.colors, tone),
-          borderRadius: theme.radii.full,
-          height: 7,
-          width: 7
-        }}
+      <LumenIcon
+        color={resolveLumenMetricColor(theme.colors, tone)}
+        decorative
+        name={iconName ?? resolveLumenStatusBarIconName(tone)}
+        size="sm"
       />
       <Text numberOfLines={1} style={{ color: theme.colors.inkSoft, flex: 1, fontSize: theme.fontSizes.xs }}>
         {message}

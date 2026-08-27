@@ -1,8 +1,10 @@
 import { describe, expect, test } from 'vitest'
 
 import {
+  type LumenMetricTone,
   resolveLumenBannerColors,
-  resolveLumenMetricColor
+  resolveLumenMetricColor,
+  resolveLumenStatusBarIconName
 } from './structured-recipes.js'
 import { lumenDarkTheme, lumenLightTheme } from './theme.js'
 
@@ -32,5 +34,16 @@ describe('Lumen React Native structured component recipes', () => {
       backgroundColor: `${lumenLightTheme.colors.danger}14`,
       borderColor: `${lumenLightTheme.colors.danger}52`
     })
+  })
+
+  test.each<[LumenMetricTone, ReturnType<typeof resolveLumenStatusBarIconName>]>([
+    ['accent', 'info'],
+    ['brand', 'info'],
+    ['danger', 'octagon-x'],
+    ['neutral', 'circle'],
+    ['success', 'circle-check'],
+    ['warning', 'triangle-alert']
+  ])('maps the %s tone to a visible semantic icon', (tone, expected) => {
+    expect(resolveLumenStatusBarIconName(tone)).toBe(expected)
   })
 })

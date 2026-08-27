@@ -19,6 +19,7 @@ import {
   type ViewProps
 } from 'react-native'
 
+import { type LumenSurfacePadding, type LumenSurfaceRadius } from './primitives.js'
 import { resolveLumenButtonOpacity, resolveLumenPressableStyle } from './recipes.js'
 import {
   type LumenAlertVariant,
@@ -29,10 +30,23 @@ import {
   resolveLumenCardColors,
   resolveLumenProgressValue
 } from './shared-recipes.js'
+import type { LumenTheme } from './theme.js'
 import { useLumenTheme } from './theme-context.js'
+
+const resolveSurfacePadding = (
+  theme: LumenTheme,
+  padding: LumenSurfacePadding
+): number => padding === 'none' ? 0 : theme.spacing[padding]
+
+const resolveSurfaceRadius = (
+  theme: LumenTheme,
+  radius: LumenSurfaceRadius
+): number => radius === 'none' ? 0 : theme.radii[radius]
 
 export interface LumenCardProps extends Omit<PressableProps, 'children'> {
   children: ReactNode
+  padding?: LumenSurfacePadding
+  radius?: LumenSurfaceRadius
   ref?: Ref<HostInstance>
   variant?: LumenCardVariant
 }
@@ -44,6 +58,8 @@ export const LumenCard = ({
   disabled = false,
   onLongPress,
   onPress,
+  padding = 'xl',
+  radius = 'lg',
   ref,
   style,
   variant = 'default',
@@ -56,10 +72,10 @@ export const LumenCard = ({
   const cardStyle = {
     backgroundColor: colors.backgroundColor,
     borderColor: colors.borderColor,
-    borderRadius: theme.radii.lg,
+    borderRadius: resolveSurfaceRadius(theme, radius),
     borderWidth: 1,
     gap: theme.spacing.lg,
-    padding: theme.spacing.xl
+    padding: resolveSurfacePadding(theme, padding)
   }
 
   if (!interactive) {

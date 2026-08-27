@@ -1,3 +1,4 @@
+import type { LumenIconName } from './icons.generated.js'
 import type { LumenTheme } from './theme.js'
 
 export type LumenBannerVariant =
@@ -30,6 +31,18 @@ export const resolveLumenMetricColor = (
   if (tone === 'warning') return colors.warning
 
   return colors.inkMuted
+}
+
+export const resolveLumenStatusBarIconName = (tone: LumenMetricTone): LumenIconName => {
+  if (tone === 'accent' || tone === 'brand') return 'info'
+
+  if (tone === 'danger') return 'octagon-x'
+
+  if (tone === 'success') return 'circle-check'
+
+  if (tone === 'warning') return 'triangle-alert'
+
+  return 'circle'
 }
 
 const resolveLumenBannerTone = (variant: LumenBannerVariant): LumenMetricTone => {
