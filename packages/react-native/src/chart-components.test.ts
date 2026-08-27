@@ -93,7 +93,7 @@ const descendantsOf = (node: ReactNode): ReactElement[] => {
   return [element, ...descendantsOf(propsOf(element).children as ReactNode)]
 }
 
-const dataOutput = (element: ReactElement<ChartFrameOutputProps>): ChartDataOutputProps => {
+const dataOutputElement = (element: ReactElement<ChartFrameOutputProps>): ReactElement<ChartDataOutputProps> => {
   if (!isReactNodeList(element.props.children)) {
     throw new Error('Expected chart frame children')
   }
@@ -105,7 +105,22 @@ const dataOutput = (element: ReactElement<ChartFrameOutputProps>): ChartDataOutp
     throw new Error('Expected chart fallback data output')
   }
 
-  return candidate.props
+  return candidate
+}
+
+const dataOutput = (element: ReactElement<ChartFrameOutputProps>): ChartDataOutputProps => (
+  dataOutputElement(element).props
+)
+
+const isChartDataRenderer = (
+  value: unknown
+): value is (props: ChartDataOutputProps) => ReactNode => typeof value === 'function'
+
+const renderDataOutput = (element: ReactElement<ChartFrameOutputProps>): ReactNode => {
+  const output = dataOutputElement(element)
+  if (!isChartDataRenderer(output.type)) throw new Error('Expected chart fallback component')
+
+  return output.type(output.props)
 }
 
 describe('Lumen React Native chart components', () => {
@@ -205,6 +220,7 @@ describe('Lumen React Native chart components', () => {
       series: [{
         data: [
           { id: 'valid', size: 64, x: 1, y: 98 },
+          { id: 'negative-size', size: -64, x: 2, y: 96 },
           { id: 'invalid', size: 36, x: 'January', y: 95 }
         ],
         id: 'quality',
@@ -213,9 +229,12 @@ describe('Lumen React Native chart components', () => {
     }) as ReactElement<ChartFrameOutputProps>
     const fallback = dataOutput(scatter)
 
-    expect(scatter.props.summary).toContain('1 point')
+    expect(scatter.props.summary).toContain('2 points')
     expect(fallback.includeSize).toBe(true)
-    expect(fallback.series?.[0]?.data.map(datum => datum.id)).toEqual(['valid'])
+    expect(fallback.series?.[0]?.data.map(datum => datum.id)).toEqual(['valid', 'negative-size'])
+    expect(descendantsOf(renderDataOutput(scatter)).some(element => (
+      propsOf(element).children === '2, Quality: 96, Size: Not available'
+    ))).toBe(true)
   })
 
   test('shows empty states for invalid scatter coordinates and unavailable ranges', () => {

@@ -179,6 +179,20 @@ internal fun resolveLumenPhoneInputValue(
 }
 
 @OptIn(ExperimentalLumenPhoneApi::class)
+internal fun constrainLumenPhoneInputValue(
+    countries: List<LumenPhoneCountry>,
+    value: LumenPhoneNumber,
+    locale: Locale = Locale.getDefault()
+): LumenPhoneNumber {
+    val country = countries.firstOrNull { it.regionCode == value.country.regionCode }
+        ?: countries.firstOrNull()
+        ?: return value
+    if (country.regionCode == value.country.regionCode) return value
+
+    return resolveLumenPhoneNumber(country, value.nationalNumber, locale)
+}
+
+@OptIn(ExperimentalLumenPhoneApi::class)
 private fun formatLumenPhoneInput(
     country: LumenPhoneCountry,
     input: String,
@@ -223,9 +237,12 @@ fun LumenPhoneInput(
     var pickerVisible by rememberSaveable { mutableStateOf(false) }
     var countryQuery by rememberSaveable { mutableStateOf("") }
     val availableCountries = countries ?: remember(locale) { LumenPhoneCountries.all(locale) }
+    val displayValue = remember(availableCountries, locale, value) {
+        constrainLumenPhoneInputValue(availableCountries, value, locale)
+    }
     val effectiveError = errorMessage ?: invalidNumberMessage.takeIf {
         showValidationError &&
-        value.nationalNumber.isNotBlank() && !value.isValid
+        displayValue.nationalNumber.isNotBlank() && !displayValue.isValid
     }
     val filteredCountries = remember(availableCountries, countryQuery) {
         val query = countryQuery.trim()
@@ -257,21 +274,21 @@ fun LumenPhoneInput(
                 modifier = Modifier
                     .widthIn(min = 112.dp)
                     .semantics {
-                        contentDescription = "$countrySelectorLabel, ${value.country.displayName}, " +
-                            value.country.callingCode
+                        contentDescription = "$countrySelectorLabel, ${displayValue.country.displayName}, " +
+                            displayValue.country.callingCode
                     },
                 intent = LumenButtonIntent.Secondary,
                 enabled = enabled && availableCountries.isNotEmpty()
             ) {
-                Text("${value.country.flag} ${value.country.callingCode}")
+                Text("${displayValue.country.flag} ${displayValue.country.callingCode}")
             }
             OutlinedTextField(
-                value = value.nationalNumber,
+                value = displayValue.nationalNumber,
                 onValueChange = { input ->
                     onValueChange(
                         resolveLumenPhoneInputValue(
                             availableCountries,
-                            value.country,
+                            displayValue.country,
                             input,
                             locale
                         )
@@ -315,7 +332,7 @@ fun LumenPhoneInput(
             )
             LazyColumn(modifier = Modifier.fillMaxWidth().heightIn(max = 440.dp)) {
                 items(filteredCountries, key = LumenPhoneCountry::regionCode) { country ->
-                    val isSelected = country.regionCode == value.country.regionCode
+                    val isSelected = country.regionCode == displayValue.country.regionCode
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -326,7 +343,7 @@ fun LumenPhoneInput(
                                     onValueChange(
                                         resolveLumenPhoneNumber(
                                             country,
-                                            value.nationalNumber,
+                                            displayValue.nationalNumber,
                                             locale
                                         )
                                     )

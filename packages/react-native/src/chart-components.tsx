@@ -118,6 +118,10 @@ interface LumenChartDataListProps {
   series: readonly LumenChartSeries[]
 }
 
+const formatChartSize = (size: number | null | undefined, formatValue: (value: number) => string): string => (
+  size === null || size === undefined || !Number.isFinite(size) || size < 0 ? 'Not available' : formatValue(size)
+)
+
 const chartDatumLabel = (
   item: LumenChartSeries,
   datum: LumenChartSeries['data'][number],
@@ -131,9 +135,7 @@ const chartDatumLabel = (
     datum.y === null || !Number.isFinite(datum.y) ? 'Not available' : formatValue(datum.y)
   )
 
-  const size = datum.size === null || datum.size === undefined || !Number.isFinite(datum.size) ?
-    'Not available' :
-    formatValue(datum.size)
+  const size = formatChartSize(datum.size, formatValue)
 
   return `${category}, ${item.label}: ${value}${includeSize ? `, Size: ${size}` : ''}`
 }

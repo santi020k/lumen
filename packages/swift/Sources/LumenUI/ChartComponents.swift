@@ -422,9 +422,13 @@ func lumenChartDataLabel(
 ) -> String {
     let value = datum.label ?? datum.y.flatMap { $0.isFinite ? $0.formatted() : nil } ?? "Not available"
     let base = "\(datum.x.label), \(series.label): \(value)"
-    let size = datum.size.flatMap { $0.isFinite ? $0.formatted() : nil } ?? "Not available"
+    let size = datum.size.flatMap { $0.isFinite && $0 >= 0 ? $0.formatted() : nil } ?? "Not available"
 
     return includeSize ? "\(base), Size: \(size)" : base
+}
+
+func lumenScatterSymbolSize(_ size: Double?) -> Double {
+    size.flatMap { $0.isFinite && $0 >= 0 ? $0 : nil } ?? 36
 }
 
 private struct LumenChartDataRow: Identifiable {
@@ -698,15 +702,15 @@ public struct LumenScatterChart: View {
                             switch point.x {
                             case .category(let x):
                                 PointMark(x: .value("Category", x), y: .value(item.label, value))
-                                    .symbolSize(point.size ?? 36)
+                                    .symbolSize(lumenScatterSymbolSize(point.size))
                                     .foregroundStyle(color)
                             case .number(let x):
                                 PointMark(x: .value("X", x), y: .value(item.label, value))
-                                    .symbolSize(point.size ?? 36)
+                                    .symbolSize(lumenScatterSymbolSize(point.size))
                                     .foregroundStyle(color)
                             case .time(let x):
                                 PointMark(x: .value("Time", x), y: .value(item.label, value))
-                                    .symbolSize(point.size ?? 36)
+                                    .symbolSize(lumenScatterSymbolSize(point.size))
                                     .foregroundStyle(color)
                             }
                         }

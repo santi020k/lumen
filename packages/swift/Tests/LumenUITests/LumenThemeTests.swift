@@ -137,8 +137,15 @@ import Testing
 @Test func scatterDataLabelsExposeBubbleSize() {
     let series = LumenChartSeries(id: "quality", label: "Quality", data: [])
     let datum = LumenChartDatum(id: "aug", x: .number(1), y: 98, size: 64)
+    let negativeDatum = LumenChartDatum(id: "invalid-size", x: .number(2), y: 95, size: -64)
 
     #expect(lumenChartDataLabel(series: series, datum: datum, includeSize: true).contains("Size: 64"))
+    #expect(
+        lumenChartDataLabel(series: series, datum: negativeDatum, includeSize: true)
+            .contains("Size: Not available")
+    )
+    #expect(lumenScatterSymbolSize(64) == 64)
+    #expect(lumenScatterSymbolSize(-64) == 36)
 }
 
 @Test func lineAndRangeChartsSplitAtMissingCategories() {
