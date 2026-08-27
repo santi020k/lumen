@@ -304,6 +304,12 @@ You can also use the shared document events: dispatch `ui:toast` to create, `ui:
 update, and `ui:toast-dismiss` to dismiss runtime toasts. Toast actions emit `ui:toast-action`
 unless an action supplies a custom event name.
 
+Use `<lumen-error-state>` when a region or page cannot show its primary content. Keep its visible
+heading, explanation, optional safe reference, and recovery actions in light DOM, label the region
+with `aria-labelledby`, and use the documented `data-slot="error-state-*"` hooks. Lumen presents the
+failure; application code owns exception capture, logging, and retry policy. See the repository
+[error-handling guide](../../docs/error-handling.md) for the complete structure and decision model.
+
 ## Motion
 
 The elements adapter exposes the same motion vocabulary as Astro and React. Use

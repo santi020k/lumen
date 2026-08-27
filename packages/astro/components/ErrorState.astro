@@ -1,0 +1,118 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+import {
+  type LumenErrorStateAnnouncement,
+  type LumenErrorStateKind,
+  type LumenErrorStateLayout,
+  resolveLumenAstroProps
+} from '@santi020k/lumen-core'
+
+import Illustration from './Illustration.astro'
+
+type HeadingLevel = 1 | 2 | 3 | 4 | 5 | 6
+
+const headingTags = {
+  1: 'h1',
+  2: 'h2',
+  3: 'h3',
+  4: 'h4',
+  5: 'h5',
+  6: 'h6'
+} as const
+
+const resolveAnnouncementRole = (
+  announce: LumenErrorStateAnnouncement,
+  role: Props['role']
+): Props['role'] => {
+  if (role) return role
+
+  if (announce === 'assertive') return 'alert'
+
+  if (announce === 'polite') return 'status'
+
+  return undefined
+}
+
+interface Props extends HTMLAttributes<'section'> {
+  announce?: LumenErrorStateAnnouncement
+  class?: string | null
+  className?: string
+  description?: string
+  headingLevel?: HeadingLevel
+  kind?: LumenErrorStateKind
+  layout?: LumenErrorStateLayout
+  reference?: string
+  referenceLabel?: string
+  showGraphic?: boolean
+  title: string
+}
+
+const {
+  'aria-live': ariaLive,
+  announce = 'off',
+  class: classProp = '',
+  className = '',
+  description,
+  headingLevel = 2,
+  id,
+  kind = 'error',
+  layout = 'default',
+  reference,
+  referenceLabel = 'Reference',
+  role,
+  showGraphic = true,
+  title,
+  ...rest
+} = Astro.props
+
+const Heading = headingTags[headingLevel]
+const titleId = id ? `${id}-title` : undefined
+const resolvedLive = ariaLive ?? (announce === 'off' ? undefined : announce)
+const resolvedRole = resolveAnnouncementRole(announce, role)
+
+const { classList, passthrough } = resolveLumenAstroProps(rest, [
+  'ui-error-state',
+  `ui-error-state--${kind}`,
+  `ui-error-state--${layout}`
+], classProp, className)
+---
+
+<section
+  aria-label={titleId ? undefined : title}
+  aria-labelledby={titleId}
+  aria-live={resolvedLive}
+  class:list={classList}
+  data-kind={kind}
+  data-layout={layout}
+  data-ui-error-state
+  id={id}
+  role={resolvedRole}
+  {...passthrough}
+>
+  {showGraphic && (
+    <div class="ui-error-state__graphic" data-slot="error-state-graphic" aria-hidden="true">
+      {Astro.slots.has('graphic') ?
+        (<slot name="graphic" />) :
+        (
+          <Illustration
+            size={layout === 'compact' ? 'sm' : 'md'}
+            variant={kind}
+          />
+        )}
+    </div>
+  )}
+  <div class="ui-error-state__content" data-slot="error-state-content">
+    <Heading class="ui-error-state__title" data-slot="error-state-title" id={titleId}>{title}</Heading>
+    {description && <p class="ui-error-state__description" data-slot="error-state-description">{description}</p>}
+    {Astro.slots.has('default') && <div class="ui-error-state__details" data-slot="error-state-details"><slot /></div>}
+    {reference && (
+      <p class="ui-error-state__reference" data-slot="error-state-reference">
+        <span>{referenceLabel}:</span> <code>{reference}</code>
+      </p>
+    )}
+  </div>
+  {Astro.slots.has('actions') && (
+    <div class="ui-error-state__actions" data-slot="error-state-actions"><slot name="actions" /></div>
+  )}
+</section>

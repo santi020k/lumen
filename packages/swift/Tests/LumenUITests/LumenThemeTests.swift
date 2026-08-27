@@ -208,10 +208,16 @@ import Testing
 
 @MainActor
 @Test func cardsAndStatusBarsAcceptProductSurfaceConfiguration() {
+    _ = LumenCard(variant: .muted) {
+        Text("Compatible card")
+    }
     _ = LumenCard(padding: .lg, radius: .size2xl) {
         Text("Product card")
     }
+    _ = LumenStatusBar("Compatible", tone: .neutral)
     _ = LumenStatusBar("Ready", tone: .success, systemName: "checkmark.seal.fill")
+    _ = Text("Themed").lumenTheme(.light)
+    _ = Text("Product themed").lumenTheme(.light, applyTint: false)
 }
 
 @Test func iconMetricsStayConsistentAndAccessible() {

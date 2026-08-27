@@ -21,6 +21,21 @@ describe('@santi020k/lumen-astro package surface', () => {
     ).resolves.toHaveLength(lumenComponentNames.length)
   })
 
+  test('ships an accessible ErrorState recovery surface', async () => {
+    const [component, styles] = await Promise.all([
+      readFile(new URL('./components/ErrorState.astro', packageRoot), 'utf8'),
+      readFile(sharedStylesUrl, 'utf8')
+    ])
+
+    expect(component).toContain('data-ui-error-state')
+    expect(component).toContain('announce === \'assertive\'')
+    expect(component).toContain('slot name="actions"')
+    expect(component).toContain('referenceLabel = \'Reference\'')
+    expect(styles).toContain('.ui-error-state--offline')
+    expect(styles).toContain('.ui-error-state--page')
+    expect(styles).toContain('[data-slot="error-state-actions"]')
+  })
+
   test('documents every component export from the package index', async () => {
     const index = await readFile(new URL('./index.ts', packageRoot), 'utf8')
 

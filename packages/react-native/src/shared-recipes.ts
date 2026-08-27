@@ -1,3 +1,7 @@
+import type {
+  LumenSurfacePadding,
+  LumenSurfaceRadius
+} from './primitives.js'
 import type { LumenTheme } from './theme.js'
 
 export type LumenAlertVariant = 'default' | 'destructive' | 'success' | 'warning'
@@ -9,6 +13,16 @@ export type LumenCardVariant =
   'muted' |
   'success' |
   'warning'
+
+export const resolveLumenSurfacePadding = (
+  theme: LumenTheme,
+  padding: LumenSurfacePadding
+): number => (padding === 'none' ? 0 : theme.spacing[padding])
+
+export const resolveLumenSurfaceRadius = (
+  theme: LumenTheme,
+  radius: LumenSurfaceRadius
+): number => (radius === 'none' ? 0 : theme.radii[radius])
 
 export const resolveLumenAlertColors = (
   colors: LumenTheme['colors'],

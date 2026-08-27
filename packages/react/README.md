@@ -132,6 +132,23 @@ without wrapping or changing the resolver contract.
 
 See the [forms guide](https://lumen.santi020k.com/docs/forms/react-hook-form) for typed examples.
 
+## Error states
+
+Use `ErrorState` as a visible fallback when a page or region cannot show its primary content. It can
+be rendered by an application or router error boundary, but Lumen does not catch exceptions, log
+diagnostics, or decide whether retrying is safe.
+
+```tsx
+<ErrorState
+  actions={<Button onClick={reload}>Try again</Button>}
+  description="Check your connection and try again."
+  title="Could not load projects"
+/>
+```
+
+See the repository [error-handling guide](../../docs/error-handling.md) for field, form, alert,
+toast, and error-state selection.
+
 For long articles, `Anchor` accepts optional `depth`, `index`, and `description` metadata plus an
 `activationOffset`. It synchronizes the current link on click and scroll. `ScrollProgress` tracks
 the document without requiring a separate hook.

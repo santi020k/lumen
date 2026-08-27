@@ -150,6 +150,10 @@ Import the styles and register the elements once:
 See the [Web documentation](https://lumen.santi020k.com/docs/web) for installation, theming,
 component examples, and API details.
 
+For failure states, use the [error-handling guide](./docs/error-handling.md) to choose between field
+feedback, summaries, persistent alerts, transient toasts, and the `ErrorState` recovery surface.
+Lumen owns presentation and accessibility; applications retain logging, retry, and exception policy.
+
 For native applications, choose the [React Native](https://lumen.santi020k.com/docs/react-native),
 [Apple / SwiftUI](https://lumen.santi020k.com/docs/apple), or
 [Android / Compose](https://lumen.santi020k.com/docs/android) guide. The

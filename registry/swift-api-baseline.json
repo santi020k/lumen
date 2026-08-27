@@ -3437,7 +3437,16 @@
           "precise": "s:7LumenUI0A4CardV4bodyQrvp"
         },
         {
-          "declaration": "@MainActor init(variant: LumenCardVariant = .default, padding: LumenSurfacePadding = .xl, radius: LumenSurfaceRadius = .lg, action: (() -> Void)? = nil, @ViewBuilder content: () -> Content)",
+          "declaration": "@MainActor init(variant: LumenCardVariant = .default, action: (() -> Void)? = nil, @ViewBuilder content: () -> Content)",
+          "kind": "swift.init",
+          "path": [
+            "LumenCard",
+            "init(variant:action:content:)"
+          ],
+          "precise": "s:7LumenUI0A4CardV7variant6action7contentACyxGAA0aC7VariantO_yycSgxyXEtcfc"
+        },
+        {
+          "declaration": "@MainActor init(variant: LumenCardVariant = .default, padding: LumenSurfacePadding, radius: LumenSurfaceRadius, action: (() -> Void)? = nil, @ViewBuilder content: () -> Content)",
           "kind": "swift.init",
           "path": [
             "LumenCard",
@@ -26488,13 +26497,22 @@
           "precise": "s:7LumenUI0A9StatusBarV"
         },
         {
-          "declaration": "@MainActor init(_ message: LocalizedStringKey, tone: LumenMetricTone = .neutral, systemName: String? = nil, @ViewBuilder trailing: () -> Trailing)",
+          "declaration": "@MainActor init(_ message: LocalizedStringKey, tone: LumenMetricTone = .neutral, systemName: String?, @ViewBuilder trailing: () -> Trailing)",
           "kind": "swift.init",
           "path": [
             "LumenStatusBar",
             "init(_:tone:systemName:trailing:)"
           ],
           "precise": "s:7LumenUI0A9StatusBarV_4tone10systemName8trailingACyxG05SwiftB018LocalizedStringKeyV_AA0A10MetricToneOSSSgxyXEtcfc"
+        },
+        {
+          "declaration": "@MainActor init(_ message: LocalizedStringKey, tone: LumenMetricTone = .neutral, @ViewBuilder trailing: () -> Trailing)",
+          "kind": "swift.init",
+          "path": [
+            "LumenStatusBar",
+            "init(_:tone:trailing:)"
+          ],
+          "precise": "s:7LumenUI0A9StatusBarV_4tone8trailingACyxG05SwiftB018LocalizedStringKeyV_AA0A10MetricToneOxyXEtcfc"
         },
         {
           "declaration": "@MainActor var body: some View { get }",
@@ -26506,13 +26524,22 @@
           "precise": "s:7LumenUI0A9StatusBarV4bodyQrvp"
         },
         {
-          "declaration": "@MainActor init(_ message: LocalizedStringKey, tone: LumenMetricTone = .neutral, systemName: String? = nil)",
+          "declaration": "@MainActor init(_ message: LocalizedStringKey, tone: LumenMetricTone = .neutral, systemName: String?)",
           "kind": "swift.init",
           "path": [
             "LumenStatusBar",
             "init(_:tone:systemName:)"
           ],
           "precise": "s:7LumenUI0A9StatusBarVAA05SwiftB09EmptyViewVRszrlE_4tone10systemNameACyAFGAD18LocalizedStringKeyV_AA0A10MetricToneOSSSgtcfc"
+        },
+        {
+          "declaration": "@MainActor init(_ message: LocalizedStringKey, tone: LumenMetricTone = .neutral)",
+          "kind": "swift.init",
+          "path": [
+            "LumenStatusBar",
+            "init(_:tone:)"
+          ],
+          "precise": "s:7LumenUI0A9StatusBarVAA05SwiftB09EmptyViewVRszrlE_4toneACyAFGAD18LocalizedStringKeyV_AA0A10MetricToneOtcfc"
         },
         {
           "declaration": "@MainActor struct LumenTextField",
@@ -26648,13 +26675,22 @@
           "precise": "s:7SwiftUI4ViewP05LumenB0E10lumenSheet11isPresented5title11description9onDismiss7contentQrAA7BindingVySbG_AA18LocalizedStringKeyVSgAPyycqd__yXEtAaBRd__lF"
         },
         {
-          "declaration": "@ViewBuilder @MainActor func lumenTheme(_ theme: LumenTheme, enforceColorScheme: Bool = true, applyTint: Bool = true) -> some View\n",
+          "declaration": "@ViewBuilder @MainActor func lumenTheme(_ theme: LumenTheme, enforceColorScheme: Bool = true, applyTint: Bool) -> some View\n",
           "kind": "swift.method",
           "path": [
             "View",
             "lumenTheme(_:enforceColorScheme:applyTint:)"
           ],
           "precise": "s:7SwiftUI4ViewP05LumenB0E10lumenTheme_18enforceColorScheme9applyTintQrAD0dF0V_S2btF"
+        },
+        {
+          "declaration": "@MainActor func lumenTheme(_ theme: LumenTheme, enforceColorScheme: Bool = true) -> some View\n",
+          "kind": "swift.method",
+          "path": [
+            "View",
+            "lumenTheme(_:enforceColorScheme:)"
+          ],
+          "precise": "s:7SwiftUI4ViewP05LumenB0E10lumenTheme_18enforceColorSchemeQrAD0dF0V_SbtF"
         },
         {
           "declaration": "@MainActor func lumenAlertDialog(isPresented: Binding<Bool>, title: LocalizedStringKey, description: LocalizedStringKey? = nil, confirmLabel: LocalizedStringKey, cancelLabel: LocalizedStringKey = \"Cancel\", confirmRole: ButtonRole? = nil, confirmDisabled: Bool = false, confirmLoading: Bool = false, onConfirm: @escaping () -> Void) -> some View\n",
@@ -30184,7 +30220,16 @@
           "precise": "s:7LumenUI0A4CardV4bodyQrvp"
         },
         {
-          "declaration": "@MainActor init(variant: LumenCardVariant = .default, padding: LumenSurfacePadding = .xl, radius: LumenSurfaceRadius = .lg, action: (() -> Void)? = nil, @ViewBuilder content: () -> Content)",
+          "declaration": "@MainActor init(variant: LumenCardVariant = .default, action: (() -> Void)? = nil, @ViewBuilder content: () -> Content)",
+          "kind": "swift.init",
+          "path": [
+            "LumenCard",
+            "init(variant:action:content:)"
+          ],
+          "precise": "s:7LumenUI0A4CardV7variant6action7contentACyxGAA0aC7VariantO_yycSgxyXEtcfc"
+        },
+        {
+          "declaration": "@MainActor init(variant: LumenCardVariant = .default, padding: LumenSurfacePadding, radius: LumenSurfaceRadius, action: (() -> Void)? = nil, @ViewBuilder content: () -> Content)",
           "kind": "swift.init",
           "path": [
             "LumenCard",
@@ -53173,13 +53218,22 @@
           "precise": "s:7LumenUI0A9StatusBarV"
         },
         {
-          "declaration": "@MainActor init(_ message: LocalizedStringKey, tone: LumenMetricTone = .neutral, systemName: String? = nil, @ViewBuilder trailing: () -> Trailing)",
+          "declaration": "@MainActor init(_ message: LocalizedStringKey, tone: LumenMetricTone = .neutral, systemName: String?, @ViewBuilder trailing: () -> Trailing)",
           "kind": "swift.init",
           "path": [
             "LumenStatusBar",
             "init(_:tone:systemName:trailing:)"
           ],
           "precise": "s:7LumenUI0A9StatusBarV_4tone10systemName8trailingACyxG05SwiftB018LocalizedStringKeyV_AA0A10MetricToneOSSSgxyXEtcfc"
+        },
+        {
+          "declaration": "@MainActor init(_ message: LocalizedStringKey, tone: LumenMetricTone = .neutral, @ViewBuilder trailing: () -> Trailing)",
+          "kind": "swift.init",
+          "path": [
+            "LumenStatusBar",
+            "init(_:tone:trailing:)"
+          ],
+          "precise": "s:7LumenUI0A9StatusBarV_4tone8trailingACyxG05SwiftB018LocalizedStringKeyV_AA0A10MetricToneOxyXEtcfc"
         },
         {
           "declaration": "@MainActor var body: some View { get }",
@@ -53191,13 +53245,22 @@
           "precise": "s:7LumenUI0A9StatusBarV4bodyQrvp"
         },
         {
-          "declaration": "@MainActor init(_ message: LocalizedStringKey, tone: LumenMetricTone = .neutral, systemName: String? = nil)",
+          "declaration": "@MainActor init(_ message: LocalizedStringKey, tone: LumenMetricTone = .neutral, systemName: String?)",
           "kind": "swift.init",
           "path": [
             "LumenStatusBar",
             "init(_:tone:systemName:)"
           ],
           "precise": "s:7LumenUI0A9StatusBarVAA05SwiftB09EmptyViewVRszrlE_4tone10systemNameACyAFGAD18LocalizedStringKeyV_AA0A10MetricToneOSSSgtcfc"
+        },
+        {
+          "declaration": "@MainActor init(_ message: LocalizedStringKey, tone: LumenMetricTone = .neutral)",
+          "kind": "swift.init",
+          "path": [
+            "LumenStatusBar",
+            "init(_:tone:)"
+          ],
+          "precise": "s:7LumenUI0A9StatusBarVAA05SwiftB09EmptyViewVRszrlE_4toneACyAFGAD18LocalizedStringKeyV_AA0A10MetricToneOtcfc"
         },
         {
           "declaration": "@MainActor struct LumenTextField",
@@ -53333,13 +53396,22 @@
           "precise": "s:7SwiftUI4ViewP05LumenB0E10lumenSheet11isPresented5title11description9onDismiss7contentQrAA7BindingVySbG_AA18LocalizedStringKeyVSgAPyycqd__yXEtAaBRd__lF"
         },
         {
-          "declaration": "@ViewBuilder @MainActor func lumenTheme(_ theme: LumenTheme, enforceColorScheme: Bool = true, applyTint: Bool = true) -> some View\n",
+          "declaration": "@ViewBuilder @MainActor func lumenTheme(_ theme: LumenTheme, enforceColorScheme: Bool = true, applyTint: Bool) -> some View\n",
           "kind": "swift.method",
           "path": [
             "View",
             "lumenTheme(_:enforceColorScheme:applyTint:)"
           ],
           "precise": "s:7SwiftUI4ViewP05LumenB0E10lumenTheme_18enforceColorScheme9applyTintQrAD0dF0V_S2btF"
+        },
+        {
+          "declaration": "@MainActor func lumenTheme(_ theme: LumenTheme, enforceColorScheme: Bool = true) -> some View\n",
+          "kind": "swift.method",
+          "path": [
+            "View",
+            "lumenTheme(_:enforceColorScheme:)"
+          ],
+          "precise": "s:7SwiftUI4ViewP05LumenB0E10lumenTheme_18enforceColorSchemeQrAD0dF0V_SbtF"
         },
         {
           "declaration": "@MainActor func lumenAlertDialog(isPresented: Binding<Bool>, title: LocalizedStringKey, description: LocalizedStringKey? = nil, confirmLabel: LocalizedStringKey, cancelLabel: LocalizedStringKey = \"Cancel\", confirmRole: ButtonRole? = nil, confirmDisabled: Bool = false, confirmLoading: Bool = false, onConfirm: @escaping () -> Void) -> some View\n",
@@ -56004,7 +56076,16 @@
           "precise": "s:7LumenUI0A4CardV4bodyQrvp"
         },
         {
-          "declaration": "@MainActor init(variant: LumenCardVariant = .default, padding: LumenSurfacePadding = .xl, radius: LumenSurfaceRadius = .lg, action: (() -> Void)? = nil, @ViewBuilder content: () -> Content)",
+          "declaration": "@MainActor init(variant: LumenCardVariant = .default, action: (() -> Void)? = nil, @ViewBuilder content: () -> Content)",
+          "kind": "swift.init",
+          "path": [
+            "LumenCard",
+            "init(variant:action:content:)"
+          ],
+          "precise": "s:7LumenUI0A4CardV7variant6action7contentACyxGAA0aC7VariantO_yycSgxyXEtcfc"
+        },
+        {
+          "declaration": "@MainActor init(variant: LumenCardVariant = .default, padding: LumenSurfacePadding, radius: LumenSurfaceRadius, action: (() -> Void)? = nil, @ViewBuilder content: () -> Content)",
           "kind": "swift.init",
           "path": [
             "LumenCard",
@@ -78689,13 +78770,22 @@
           "precise": "s:7LumenUI0A9StatusBarV"
         },
         {
-          "declaration": "@MainActor init(_ message: LocalizedStringKey, tone: LumenMetricTone = .neutral, systemName: String? = nil, @ViewBuilder trailing: () -> Trailing)",
+          "declaration": "@MainActor init(_ message: LocalizedStringKey, tone: LumenMetricTone = .neutral, systemName: String?, @ViewBuilder trailing: () -> Trailing)",
           "kind": "swift.init",
           "path": [
             "LumenStatusBar",
             "init(_:tone:systemName:trailing:)"
           ],
           "precise": "s:7LumenUI0A9StatusBarV_4tone10systemName8trailingACyxG05SwiftB018LocalizedStringKeyV_AA0A10MetricToneOSSSgxyXEtcfc"
+        },
+        {
+          "declaration": "@MainActor init(_ message: LocalizedStringKey, tone: LumenMetricTone = .neutral, @ViewBuilder trailing: () -> Trailing)",
+          "kind": "swift.init",
+          "path": [
+            "LumenStatusBar",
+            "init(_:tone:trailing:)"
+          ],
+          "precise": "s:7LumenUI0A9StatusBarV_4tone8trailingACyxG05SwiftB018LocalizedStringKeyV_AA0A10MetricToneOxyXEtcfc"
         },
         {
           "declaration": "@MainActor var body: some View { get }",
@@ -78707,13 +78797,22 @@
           "precise": "s:7LumenUI0A9StatusBarV4bodyQrvp"
         },
         {
-          "declaration": "@MainActor init(_ message: LocalizedStringKey, tone: LumenMetricTone = .neutral, systemName: String? = nil)",
+          "declaration": "@MainActor init(_ message: LocalizedStringKey, tone: LumenMetricTone = .neutral, systemName: String?)",
           "kind": "swift.init",
           "path": [
             "LumenStatusBar",
             "init(_:tone:systemName:)"
           ],
           "precise": "s:7LumenUI0A9StatusBarVAA05SwiftB09EmptyViewVRszrlE_4tone10systemNameACyAFGAD18LocalizedStringKeyV_AA0A10MetricToneOSSSgtcfc"
+        },
+        {
+          "declaration": "@MainActor init(_ message: LocalizedStringKey, tone: LumenMetricTone = .neutral)",
+          "kind": "swift.init",
+          "path": [
+            "LumenStatusBar",
+            "init(_:tone:)"
+          ],
+          "precise": "s:7LumenUI0A9StatusBarVAA05SwiftB09EmptyViewVRszrlE_4toneACyAFGAD18LocalizedStringKeyV_AA0A10MetricToneOtcfc"
         },
         {
           "declaration": "@MainActor struct LumenTextField",
@@ -78849,13 +78948,22 @@
           "precise": "s:7SwiftUI4ViewP05LumenB0E10lumenSheet11isPresented5title11description9onDismiss7contentQrAA7BindingVySbG_AA18LocalizedStringKeyVSgAPyycqd__yXEtAaBRd__lF"
         },
         {
-          "declaration": "@ViewBuilder @MainActor func lumenTheme(_ theme: LumenTheme, enforceColorScheme: Bool = true, applyTint: Bool = true) -> some View\n",
+          "declaration": "@ViewBuilder @MainActor func lumenTheme(_ theme: LumenTheme, enforceColorScheme: Bool = true, applyTint: Bool) -> some View\n",
           "kind": "swift.method",
           "path": [
             "View",
             "lumenTheme(_:enforceColorScheme:applyTint:)"
           ],
           "precise": "s:7SwiftUI4ViewP05LumenB0E10lumenTheme_18enforceColorScheme9applyTintQrAD0dF0V_S2btF"
+        },
+        {
+          "declaration": "@MainActor func lumenTheme(_ theme: LumenTheme, enforceColorScheme: Bool = true) -> some View\n",
+          "kind": "swift.method",
+          "path": [
+            "View",
+            "lumenTheme(_:enforceColorScheme:)"
+          ],
+          "precise": "s:7SwiftUI4ViewP05LumenB0E10lumenTheme_18enforceColorSchemeQrAD0dF0V_SbtF"
         },
         {
           "declaration": "@MainActor func lumenAlertDialog(isPresented: Binding<Bool>, title: LocalizedStringKey, description: LocalizedStringKey? = nil, confirmLabel: LocalizedStringKey, cancelLabel: LocalizedStringKey = \"Cancel\", confirmRole: ButtonRole? = nil, confirmDisabled: Bool = false, confirmLoading: Bool = false, onConfirm: @escaping () -> Void) -> some View\n",
@@ -81525,7 +81633,16 @@
           "precise": "s:7LumenUI0A4CardV4bodyQrvp"
         },
         {
-          "declaration": "@MainActor init(variant: LumenCardVariant = .default, padding: LumenSurfacePadding = .xl, radius: LumenSurfaceRadius = .lg, action: (() -> Void)? = nil, @ViewBuilder content: () -> Content)",
+          "declaration": "@MainActor init(variant: LumenCardVariant = .default, action: (() -> Void)? = nil, @ViewBuilder content: () -> Content)",
+          "kind": "swift.init",
+          "path": [
+            "LumenCard",
+            "init(variant:action:content:)"
+          ],
+          "precise": "s:7LumenUI0A4CardV7variant6action7contentACyxGAA0aC7VariantO_yycSgxyXEtcfc"
+        },
+        {
+          "declaration": "@MainActor init(variant: LumenCardVariant = .default, padding: LumenSurfacePadding, radius: LumenSurfaceRadius, action: (() -> Void)? = nil, @ViewBuilder content: () -> Content)",
           "kind": "swift.init",
           "path": [
             "LumenCard",
@@ -104157,13 +104274,22 @@
           "precise": "s:7LumenUI0A9StatusBarV"
         },
         {
-          "declaration": "@MainActor init(_ message: LocalizedStringKey, tone: LumenMetricTone = .neutral, systemName: String? = nil, @ViewBuilder trailing: () -> Trailing)",
+          "declaration": "@MainActor init(_ message: LocalizedStringKey, tone: LumenMetricTone = .neutral, systemName: String?, @ViewBuilder trailing: () -> Trailing)",
           "kind": "swift.init",
           "path": [
             "LumenStatusBar",
             "init(_:tone:systemName:trailing:)"
           ],
           "precise": "s:7LumenUI0A9StatusBarV_4tone10systemName8trailingACyxG05SwiftB018LocalizedStringKeyV_AA0A10MetricToneOSSSgxyXEtcfc"
+        },
+        {
+          "declaration": "@MainActor init(_ message: LocalizedStringKey, tone: LumenMetricTone = .neutral, @ViewBuilder trailing: () -> Trailing)",
+          "kind": "swift.init",
+          "path": [
+            "LumenStatusBar",
+            "init(_:tone:trailing:)"
+          ],
+          "precise": "s:7LumenUI0A9StatusBarV_4tone8trailingACyxG05SwiftB018LocalizedStringKeyV_AA0A10MetricToneOxyXEtcfc"
         },
         {
           "declaration": "@MainActor var body: some View { get }",
@@ -104175,13 +104301,22 @@
           "precise": "s:7LumenUI0A9StatusBarV4bodyQrvp"
         },
         {
-          "declaration": "@MainActor init(_ message: LocalizedStringKey, tone: LumenMetricTone = .neutral, systemName: String? = nil)",
+          "declaration": "@MainActor init(_ message: LocalizedStringKey, tone: LumenMetricTone = .neutral, systemName: String?)",
           "kind": "swift.init",
           "path": [
             "LumenStatusBar",
             "init(_:tone:systemName:)"
           ],
           "precise": "s:7LumenUI0A9StatusBarVAA05SwiftB09EmptyViewVRszrlE_4tone10systemNameACyAFGAD18LocalizedStringKeyV_AA0A10MetricToneOSSSgtcfc"
+        },
+        {
+          "declaration": "@MainActor init(_ message: LocalizedStringKey, tone: LumenMetricTone = .neutral)",
+          "kind": "swift.init",
+          "path": [
+            "LumenStatusBar",
+            "init(_:tone:)"
+          ],
+          "precise": "s:7LumenUI0A9StatusBarVAA05SwiftB09EmptyViewVRszrlE_4toneACyAFGAD18LocalizedStringKeyV_AA0A10MetricToneOtcfc"
         },
         {
           "declaration": "@MainActor struct LumenTextField",
@@ -104317,13 +104452,22 @@
           "precise": "s:7SwiftUI4ViewP05LumenB0E10lumenSheet11isPresented5title11description9onDismiss7contentQrAA7BindingVySbG_AA18LocalizedStringKeyVSgAPyycqd__yXEtAaBRd__lF"
         },
         {
-          "declaration": "@ViewBuilder @MainActor func lumenTheme(_ theme: LumenTheme, enforceColorScheme: Bool = true, applyTint: Bool = true) -> some View\n",
+          "declaration": "@ViewBuilder @MainActor func lumenTheme(_ theme: LumenTheme, enforceColorScheme: Bool = true, applyTint: Bool) -> some View\n",
           "kind": "swift.method",
           "path": [
             "View",
             "lumenTheme(_:enforceColorScheme:applyTint:)"
           ],
           "precise": "s:7SwiftUI4ViewP05LumenB0E10lumenTheme_18enforceColorScheme9applyTintQrAD0dF0V_S2btF"
+        },
+        {
+          "declaration": "@MainActor func lumenTheme(_ theme: LumenTheme, enforceColorScheme: Bool = true) -> some View\n",
+          "kind": "swift.method",
+          "path": [
+            "View",
+            "lumenTheme(_:enforceColorScheme:)"
+          ],
+          "precise": "s:7SwiftUI4ViewP05LumenB0E10lumenTheme_18enforceColorSchemeQrAD0dF0V_SbtF"
         },
         {
           "declaration": "@MainActor func lumenAlertDialog(isPresented: Binding<Bool>, title: LocalizedStringKey, description: LocalizedStringKey? = nil, confirmLabel: LocalizedStringKey, cancelLabel: LocalizedStringKey = \"Cancel\", confirmRole: ButtonRole? = nil, confirmDisabled: Bool = false, confirmLoading: Bool = false, onConfirm: @escaping () -> Void) -> some View\n",

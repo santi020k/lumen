@@ -4,6 +4,7 @@ import type {
   ReactNode
 } from 'react'
 import { isValidElement } from 'react'
+import { renderToStaticMarkup } from 'react-dom/server'
 
 import { registerLumenIconPack } from '@santi020k/lumen-core'
 import { describe, expect, test } from 'vitest'
@@ -45,6 +46,7 @@ import {
   Direction,
   Drawer,
   Empty,
+  ErrorState,
   Graphic,
   Heatmap,
   HoverCard,
@@ -431,6 +433,44 @@ describe('@santi020k/lumen-react components', () => {
     expect(propsOf(ScrollArea({}) as ReactElement).className).toBe('ui-scroll-area')
     expect(propsOf(MessageScroller({ glass: 'subtle' }) as ReactElement).className)
       .toBe('ui-message-scroller ui-message-scroller--glass ui-glass-subtle')
+  })
+
+  test('renders a labelled recovery state with explicit announcement policy', () => {
+    const state = ErrorState({
+      actions: 'Try again',
+      announce: 'polite',
+      description: 'Check your connection.',
+      id: 'projects-error',
+      kind: 'offline',
+      layout: 'page',
+      reference: 'REQ-4F82',
+      title: 'Could not load projects'
+    }) as ReactElement
+    const props = propsOf(state)
+    const html = renderToStaticMarkup(state)
+
+    expect(props.className).toBe(
+      'ui-error-state ui-error-state--offline ui-error-state--page'
+    )
+    expect(props['aria-labelledby']).toBe('projects-error-title')
+    expect(props['aria-live']).toBe('polite')
+    expect(props.role).toBe('status')
+    expect(html).toContain('data-slot="error-state-actions"')
+    expect(html).toContain('data-slot="error-state-reference"')
+  })
+
+  test('keeps static error states out of live regions by default', () => {
+    const state = ErrorState({
+      graphic: false,
+      title: 'Could not load projects'
+    }) as ReactElement
+    const props = propsOf(state)
+    const html = renderToStaticMarkup(state)
+
+    expect(props['aria-label']).toBe('Could not load projects')
+    expect(props['aria-live']).toBeUndefined()
+    expect(props.role).toBeUndefined()
+    expect(html).not.toContain('data-slot="error-state-graphic"')
   })
 
   test('builds native select with placeholder and normalized options', () => {

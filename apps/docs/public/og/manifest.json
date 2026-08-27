@@ -35,7 +35,7 @@
     },
     "/": {
       "alt": "Lumen UI — Crafted primitives for web and native platforms — Lumen UI",
-      "description": "Lumen is a crafted multi-framework UI system with 160 accessible primitives for Web, React Native, Apple platforms, and Android.",
+      "description": "Lumen is a crafted multi-framework UI system with 161 accessible primitives for Web, React Native, Apple platforms, and Android.",
       "images": [
         {
           "format": "webp",
@@ -4496,6 +4496,22 @@
       ],
       "pathname": "/docs/components/empty",
       "title": "Empty"
+    },
+    "/docs/components/error-state": {
+      "alt": "ErrorState — Lumen UI",
+      "description": "Explains why primary content is unavailable and provides an application-owned recovery path. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--error-state.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--error-state.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/error-state",
+      "title": "ErrorState"
     },
     "/docs/components/error-summary": {
       "alt": "ErrorSummary — Lumen UI",

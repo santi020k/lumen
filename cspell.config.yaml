@@ -5,6 +5,7 @@ words:
   - swiftui
   - aaronmgz
   - activedescendant
+  - actool
   - aeiou
   - affordances
   - browsable
@@ -40,6 +41,7 @@ words:
   - cmdline
   - cocoapods
   - COCOAPODS
+  - CORESVG
   - commitizen
   - commitlint
   - commitprompt
@@ -68,6 +70,7 @@ words:
   - esac
   - Español
   - eslintcache
+  - enumelement
   - exclamationmark
   - fileupload
   - FileUpload
@@ -76,6 +79,7 @@ words:
   - geolocation
   - getprop
   - googlecode
+  - unreviewed
   - glassmorphism
   - gitlink
   - gradientdivider

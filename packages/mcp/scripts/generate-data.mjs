@@ -551,6 +551,8 @@ const reactExampleOverrides = {
     '<Combobox label="Framework" list="framework-options" options={["Astro", "React", "Vue"]} placeholder="Search package" />',
   CoverImage:
     '<CoverImage showBottomGradient><Image src="/cover.jpg" alt="Abstract purple forms" /></CoverImage>',
+  ErrorState:
+    '<ErrorState actions={<><Button size="sm">Try again</Button><ButtonLink href="/docs" variant="secondary">Open help</ButtonLink></>} description="Check your connection and try again." id="projects-error" reference="REQ-4F82" title="Could not load projects" />',
   Image: '<Image alt="Lumen UI logo" invertOnDark src="/logo.svg" />',
   PhoneInput:
     '<PhoneInput name="phone" defaultCountryValue="+1" countries={[{ label: "+1", value: "+1" }, { label: "+44", value: "+44" }]} placeholder="(555) 000-0000" />',
@@ -596,6 +598,20 @@ const reactHookByComponent = {
   ThemeBuilder: 'useThemeBuilder',
   Toast: 'useToast',
   Tooltip: 'useTooltip'
+}
+
+const elementsExampleOverrides = {
+  ErrorState: `<lumen-error-state id="projects-error" aria-labelledby="projects-error-title">
+  <lumen-illustration aria-hidden="true" data-slot="error-state-graphic" variant="error"></lumen-illustration>
+  <div data-slot="error-state-content">
+    <h2 data-slot="error-state-title" id="projects-error-title">Could not load projects</h2>
+    <p data-slot="error-state-description">Check your connection and try again.</p>
+    <p data-slot="error-state-reference">Reference: <code>REQ-4F82</code></p>
+  </div>
+  <div data-slot="error-state-actions">
+    <lumen-button size="sm">Try again</lumen-button>
+  </div>
+</lumen-error-state>`
 }
 
 const reactExampleForComponent = (name, hook, fallback) => {
@@ -740,7 +756,8 @@ const buildFrameworkDetails = ({
     hook = reactHooks.get(hookName)
   }
 
-  let elementsExample = toElementsExample(doc.example, elementComponents)
+  let elementsExample = Reflect.get(elementsExampleOverrides, name) ??
+    toElementsExample(doc.example, elementComponents)
 
   if (name === 'ScrollCue') {
     elementsExample = `<lumen-scroll-cue>

@@ -95,6 +95,39 @@
         "pnpm --filter @santi020k/lumen test",
         "pnpm run check:consumer-packages"
       ]
+    },
+    {
+      "id": "swift-surface-scale-expansion",
+      "status": "candidate",
+      "kind": "breaking",
+      "packages": [
+        "LumenUI"
+      ],
+      "currentContract": "The published LumenSurfacePadding and LumenSurfaceRadius enums expose only small, medium, and large roles, so product-owned cards cannot use the complete shared native surface scale without literal values.",
+      "replacement": "Use the additive xl padding role and xl, size2xl, or size3xl radius roles. Existing cases and the published Card, StatusBar, and lumenTheme call signatures remain available.",
+      "migration": "Exhaustive switches over LumenSurfacePadding or LumenSurfaceRadius must handle the new roles or add an @unknown default branch. Ordinary component calls require no migration.",
+      "evidence": [
+        "docs/native-components.md",
+        "packages/swift/Sources/LumenUI/Primitives.swift",
+        "packages/swift/Sources/LumenUI/SharedComponents.swift",
+        "packages/swift/Tests/LumenUITests/LumenThemeTests.swift"
+      ],
+      "docs": [
+        "docs/lumen-2-contract.md",
+        "docs/native-contract-review.md",
+        "packages/swift/README.md"
+      ],
+      "tests": [
+        "pnpm run check:swift-source-compatibility",
+        "pnpm run check:swift-api-baseline",
+        "swift test"
+      ],
+      "swiftApiBreakages": [
+        "enumelement LumenSurfacePadding.xl has been added as a new enum case",
+        "enumelement LumenSurfaceRadius.size2xl has been added as a new enum case",
+        "enumelement LumenSurfaceRadius.size3xl has been added as a new enum case",
+        "enumelement LumenSurfaceRadius.xl has been added as a new enum case"
+      ]
     }
   ],
   "investigations": [

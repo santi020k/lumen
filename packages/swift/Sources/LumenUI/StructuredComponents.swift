@@ -438,7 +438,15 @@ public struct LumenStatusBar<Trailing: View>: View {
     public init(
         _ message: LocalizedStringKey,
         tone: LumenMetricTone = .neutral,
-        systemName: String? = nil,
+        @ViewBuilder trailing: () -> Trailing
+    ) {
+        self.init(message, tone: tone, systemName: nil, trailing: trailing)
+    }
+
+    public init(
+        _ message: LocalizedStringKey,
+        tone: LumenMetricTone = .neutral,
+        systemName: String?,
         @ViewBuilder trailing: () -> Trailing
     ) {
         self.message = message
@@ -482,10 +490,16 @@ public struct LumenStatusBar<Trailing: View>: View {
 }
 
 public extension LumenStatusBar where Trailing == EmptyView {
+    init(_ message: LocalizedStringKey, tone: LumenMetricTone = .neutral) {
+        self.init(message, tone: tone) {
+            EmptyView()
+        }
+    }
+
     init(
         _ message: LocalizedStringKey,
         tone: LumenMetricTone = .neutral,
-        systemName: String? = nil
+        systemName: String?
     ) {
         self.init(message, tone: tone, systemName: systemName) {
             EmptyView()

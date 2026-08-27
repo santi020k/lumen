@@ -108,7 +108,7 @@ jobs:
           node-version: 22.x
       - run: pnpm install --frozen-lockfile
       - run: swift test
-      - run: swift package diagnose-api-breaking-changes v1.6.0 --products LumenUI
+      - run: pnpm run check:swift-source-compatibility
       - name: Check every target-specific Swift public API
         run: node scripts/check-swift-api-baseline.mjs
       - run: swift build --package-path apps/playground-apple

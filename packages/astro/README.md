@@ -191,6 +191,22 @@ const errors = result?.error && isInputError(result.error)
 
 See the [Astro Actions form guide](https://lumen.santi020k.com/docs/forms/astro-actions).
 
+## Error states
+
+Use `ErrorState` when a page or region cannot show its primary content. Pass recovery controls
+through the `actions` slot; the application still owns retry and logging behavior. Static states are
+not live regions by default, so set `announce="polite"` only when a newly rendered failure needs an
+announcement.
+
+```astro
+<ErrorState title="Could not load projects" description="Check your connection and try again.">
+  <Button slot="actions">Try again</Button>
+</ErrorState>
+```
+
+See the repository [error-handling guide](../../docs/error-handling.md) for the complete decision
+model and safe reference guidance.
+
 Use `Icon` for Lucide icons by name across framework adapters.
 
 ```astro

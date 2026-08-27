@@ -120,11 +120,14 @@ jobs:
       - name: Install workspace dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Compile Swift icon assets
+        run: pnpm run check:swift-assets
+
       - name: Build and test LumenUI for macOS
         run: swift test
 
-      - name: Check the SwiftUI public API against v1.6.0
-        run: swift package diagnose-api-breaking-changes v1.6.0 --products LumenUI
+      - name: Check reviewed SwiftUI source compatibility against v1.6.0
+        run: pnpm run check:swift-source-compatibility
 
       - name: Check every target-specific Swift public API
         run: node scripts/check-swift-api-baseline.mjs

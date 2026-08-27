@@ -282,7 +282,7 @@ The shared catalog includes:
 `Carousel`, `Chart`, `Checkbox`, `CheckboxGroup`, `Collapsible`, `Code`, `Combobox`, `Command`,
 `Container`, `ColorPicker`,
 `ContextMenu`, `DataTable`, `DatePicker`, `DateRangePicker`, `Dialog`, `Direction`, `Drawer`,
-`DropdownMenu`, `Empty`, `ErrorSummary`, `Field`, `FieldError`, `Form`, `Grid`, `HoverCard`, `Icon`,
+`DropdownMenu`, `Empty`, `ErrorState`, `ErrorSummary`, `Field`, `FieldError`, `Form`, `Grid`, `HoverCard`, `Icon`,
 `Graphic`, `Backdrop`, `Illustration`, `Input`, `InputGroup`, `InputOTP`, `Item`, `KanbanBoard`, `KanbanColumn`, `Kbd`, `Label`, `LineChart`, `ListBox`, `Marker`, `Menubar`,
 `Message`, `MessageScroller`, `NativeSelect`, `ContextNavigation`, `NavigationMenu`, `NumberField`, `Pagination`,
 `PasswordField`, `PieChart`, `Popover`, `Progress`, `CopyButton`, `RadioGroup`, `Resizable`, `RichTextEditor`,
@@ -292,6 +292,12 @@ The shared catalog includes:
 `VirtualList`, and `VisuallyHidden`.
 
 ## Product Recipes
+
+- Follow [the error-handling guide](./error-handling.md) when a generated interface needs failure
+  feedback. Use `FieldError` and `ErrorSummary` for validation, `Alert` for persistent inline
+  problems, `Toast` for brief non-blocking failures, and `ErrorState` only when a page or region
+  cannot show its primary content. Keep exception capture, logging, retry policy, and safe message
+  mapping in application code.
 
 - Start full product surfaces from the bundled `analytics-dashboard`, `saas-admin`,
   `commerce-dashboard`, `project-workspace`, or `auth-onboarding` recipe. Install with

@@ -1608,6 +1608,32 @@ const apiReferenceByComponent = {
       'variant', '"compact" | "default"', '"default"', 'Uses the standard empty state or a denser treatment for bounded surfaces such as board columns.'
     )
   ],
+  ErrorState: [
+    apiRow(
+      'title', 'string', 'required', 'Names the content failure in user-safe language.'
+    ),
+    apiRow(
+      'description', 'string', '-', 'Explains the problem and the safest next step.'
+    ),
+    apiRow(
+      'kind', '"error" | "offline"', '"error"', 'Selects the known failure context and matching semantic illustration.'
+    ),
+    apiRow(
+      'layout', '"compact" | "default" | "page"', '"default"', 'Adapts the surface to a bounded region, ordinary section, or page-level fallback.'
+    ),
+    apiRow(
+      'actions / actions slot', 'rendered actions', '-', 'Provides application-owned recovery or navigation actions.'
+    ),
+    apiRow(
+      'announce', '"assertive" | "off" | "polite"', '"off"', 'Opts a dynamically inserted failure into the appropriate live-region behavior.'
+    ),
+    apiRow(
+      'reference, referenceLabel', 'string', '-', 'Shows a safe support reference without exposing raw exception details.'
+    ),
+    apiRow(
+      'headingLevel', '1 | 2 | 3 | 4 | 5 | 6', '2', 'Fits the visible title into the surrounding document hierarchy.'
+    )
+  ],
   Eyebrow: [
     apiRow(
       'children', 'phrasing content', 'required', 'Provides the short category or context label that precedes a heading.'
@@ -2792,6 +2818,11 @@ const componentGuidanceByName: Partial<Record<string, ComponentGuidance>> = {
     distinction:
       'Use Sheet for a secondary detail workflow and Dialog for a centered, blocking task.'
   },
+  ErrorState: {
+    when: 'Use when a page or region cannot show its primary content and needs a visible recovery path.',
+    distinction:
+      'Use FieldError or ErrorSummary for validation, Alert when content remains available, Toast for brief non-blocking feedback, and Empty for a successful result with no data.'
+  },
   Eyebrow: {
     when: 'Use as a short contextual label immediately above a heading.',
     distinction:
@@ -3241,6 +3272,12 @@ export const componentDocs: ComponentDoc[] = (
       'Feedback',
       'Explains an empty state and next action.',
       '<Empty><h2>No projects yet</h2><p>Create your first workspace.</p></Empty>'
+    ],
+    [
+      'ErrorState',
+      'Feedback',
+      'Explains why primary content is unavailable and provides an application-owned recovery path.',
+      '<ErrorState id="projects-error" title="Could not load projects" description="Check your connection and try again." reference="REQ-4F82"><Button slot="actions">Try again</Button></ErrorState>'
     ],
     [
       'ErrorSummary',

@@ -105,6 +105,15 @@ export {
   toggleDataViewSelection,
   unpinDataViewColumn } from './data.js'
 export {
+  type LumenErrorStateAnnouncement,
+  lumenErrorStateAnnouncements,
+  type LumenErrorStateContent,
+  type LumenErrorStateKind,
+  lumenErrorStateKinds,
+  type LumenErrorStateLayout,
+  lumenErrorStateLayouts
+} from './error-state.js'
+export {
   createFigmaVariableName,
   exportThemeDesignTokens,
   exportThemeFigmaVariables,

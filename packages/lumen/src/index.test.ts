@@ -88,6 +88,7 @@ describe('@santi020k/lumen umbrella package', () => {
     expect(lumenRegistry.items.map(item => item.name)).toEqual([
       'all-components',
       'advanced-fields',
+      'error-handling',
       'scheduler',
       'context-navigation',
       'data-collections',

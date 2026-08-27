@@ -541,6 +541,26 @@ const elementConfigs = {
     defaults: { variant: 'default' },
     tagName: 'lumen-empty'
   },
+  ErrorState: {
+    attributeClasses: {
+      kind: {
+        error: 'ui-error-state--error',
+        offline: 'ui-error-state--offline'
+      },
+      layout: {
+        compact: 'ui-error-state--compact',
+        default: 'ui-error-state--default',
+        page: 'ui-error-state--page'
+      }
+    },
+    baseClassName: 'ui-error-state',
+    defaults: {
+      'data-ui-error-state': '',
+      kind: 'error',
+      layout: 'default'
+    },
+    tagName: 'lumen-error-state'
+  },
   ErrorSummary: {
     baseClassName: 'ui-error-summary',
     defaults: { 'data-ui-error-summary': '', tabindex: '-1' },
@@ -10733,6 +10753,7 @@ export const LumenDirectionElement = elementClasses.Direction
 export const LumenDrawerElement = elementClasses.Drawer
 export const LumenDropdownMenuElement = elementClasses.DropdownMenu
 export const LumenEmptyElement = elementClasses.Empty
+export const LumenErrorStateElement = elementClasses.ErrorState
 export const LumenFieldElement = elementClasses.Field
 export const LumenHoverCardElement = elementClasses.HoverCard
 export const LumenIconElement = elementClasses.Icon

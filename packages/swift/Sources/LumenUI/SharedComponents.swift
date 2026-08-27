@@ -20,8 +20,22 @@ public struct LumenCard<Content: View>: View {
 
     public init(
         variant: LumenCardVariant = .default,
-        padding: LumenSurfacePadding = .xl,
-        radius: LumenSurfaceRadius = .lg,
+        action: (() -> Void)? = nil,
+        @ViewBuilder content: () -> Content
+    ) {
+        self.init(
+            variant: variant,
+            padding: .xl,
+            radius: .lg,
+            action: action,
+            content: content
+        )
+    }
+
+    public init(
+        variant: LumenCardVariant = .default,
+        padding: LumenSurfacePadding,
+        radius: LumenSurfaceRadius,
         action: (() -> Void)? = nil,
         @ViewBuilder content: () -> Content
     ) {

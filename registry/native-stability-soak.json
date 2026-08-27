@@ -8,7 +8,7 @@
     },
     "swiftUI": {
       "path": "registry/swift-api-baseline.json",
-      "sha256": "d13326d124be9d7242604717474f922303fd393a55dc06579f91f7a3533c5003"
+      "sha256": "7d3959d2376588d1fafd4d3ca2bd225efe89f65d83f0c9551d71950ab72a7eef"
     },
     "compose": {
       "path": "packages/compose/api/lumen-compose.api",

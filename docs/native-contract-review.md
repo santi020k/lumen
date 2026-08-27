@@ -59,6 +59,11 @@ The target-specific Swift symbol baseline and the separate Compose/Wear binary d
 boundaries. The published `v1.6.0` Swift tag predates the corrected tvOS guards and therefore cannot
 satisfy the clean tagged-consumer gate; the correction requires a new immutable patch tag.
 
+The Swift surface-scale expansion is the only reviewed source break from `v1.6.0`: exhaustive
+switches must account for the new semantic padding and radius cases. Published Card, StatusBar, and
+theme-modifier signatures remain source-compatible, and the release canary rejects any diagnostic
+outside the reviewed Lumen 2 contract.
+
 ## Remaining freeze evidence
 
 The semantic disposition is accepted as the review baseline. Native contract freeze still requires:

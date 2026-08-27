@@ -200,6 +200,7 @@ describe('@santi020k/lumen-react', () => {
 
   test('exports shared metadata', () => {
     expect(lumenComponentNames).toContain('Button')
+    expect(lumenComponentNames).toContain('ErrorState')
   })
 
   test('exposes the shared motion vocabulary on React primitives', () => {

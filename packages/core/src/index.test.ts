@@ -89,6 +89,7 @@ describe('lumen core metadata', () => {
     expect(lumenComponentNames).toContain('Button')
     expect(lumenComponentNames).toContain('CodeTabs')
     expect(lumenComponentNames).toContain('ContextNavigation')
+    expect(lumenComponentNames).toContain('ErrorState')
     expect(lumenComponentNames).toContain('BarChart')
     expect(lumenComponentNames).toContain('Icon')
     expect(lumenComponentNames).toContain('LineChart')

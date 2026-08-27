@@ -76,6 +76,20 @@ The v2 migrator rewrites `Sonner` and `SonnerProps` imports to `ToastViewport` a
 configuration and children. It renames `lumen-sonner` to `lumen-toast-viewport` directly. Imports
 with comments or syntax that cannot be reconstructed safely remain explicit manual-review findings.
 
+### Expand the Swift surface scale without replacing component signatures
+
+Swift's exhaustive-enum source-compatibility rules classify new cases as breaking even when the
+cases only add visual options. Lumen 2 adds `xl` padding and `xl`, `size2xl`, and `size3xl` radius
+roles so product-owned SwiftUI cards can use the same semantic native surface scale as React Native
+and Compose. Existing cases remain unchanged.
+
+The published `LumenCard`, `LumenStatusBar`, and `lumenTheme` signatures remain available alongside
+the explicit product-configuration overloads. Consumers only need a migration when they exhaustively
+switch over `LumenSurfacePadding` or `LumenSurfaceRadius`: handle the new cases or add an
+`@unknown default` branch. The release canary compares Swift's diagnostics with the reviewed list in
+`registry/lumen-2-contract.json`, so a new removal or signature change cannot hide behind the
+accepted enum expansion.
+
 ## Contract investigations
 
 - **React server/client boundaries — resolved, retain:** keep the package root as the complete

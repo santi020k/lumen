@@ -68,6 +68,14 @@ for (const [index, change] of (contract.changes ?? []).entries()) {
 
   requireStringArray(change.tests, `${label}.tests`)
 
+  if (change.swiftApiBreakages !== undefined) {
+    requireStringArray(change.swiftApiBreakages, `${label}.swiftApiBreakages`)
+
+    if (change.id !== 'swift-surface-scale-expansion') {
+      failures.push(`${label}.swiftApiBreakages is only supported for the reviewed Swift surface change.`)
+    }
+  }
+
   for (const file of [...(change.evidence ?? []), ...(change.docs ?? [])]) {
     referencedFiles.add(file)
   }

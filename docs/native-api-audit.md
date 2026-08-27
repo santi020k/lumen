@@ -27,7 +27,7 @@ the same way as handwritten exports; their generator remains the editing source 
 | Adapter | Public inventory | Classification | Compatibility enforcement | Remaining work |
 | --- | --- | --- | --- | --- |
 | React Native | 215 exports from `packages/react-native/src/index.ts` | 206 Supported; 9 Experimental phone exports; 0 Deprecated | `pnpm run check:native-api-baseline` compares the TypeScript entrypoint with `registry/native-api-baseline.json` | Retain the approved baseline across two ordinary stability iterations |
-| SwiftUI | Reviewed symbol graphs: 2,990 macOS, 2,967 iOS, 2,811 tvOS, and 2,831 watchOS symbols | Every recorded symbol Supported; 0 Experimental; 0 Deprecated; 0 Unclassified | `pnpm run check:swift-api-baseline` rebuilds and compares every declared platform; CI also runs `swift package diagnose-api-breaking-changes v1.6.0 --products LumenUI` | Retain the approved baseline across two ordinary stability iterations |
+| SwiftUI | Reviewed symbol graphs: 3,002 macOS, 2,979 iOS, 2,823 tvOS, and 2,843 watchOS symbols | macOS: 2,979 Supported and 23 Experimental; iOS: 2,956 Supported and 23 Experimental; tvOS/watchOS: every symbol Supported; 0 Deprecated or Unclassified | `pnpm run check:swift-api-baseline` rebuilds every declared platform; `pnpm run check:swift-source-compatibility` permits only the four reviewed Lumen 2 enum additions relative to `v1.6.0` | Retain the approved baseline across two ordinary stability iterations |
 | Compose | 70 public ABI blocks and 2,928 public members in `packages/compose/api/lumen-compose.api` | Supported surface plus the phone contract behind `ExperimentalLumenPhoneApi`; 0 Deprecated | `./gradlew apiCheck` compares the release artifact with the reviewed binary API dump | Add declaration-level machine-readable maturity classifications, then retain the approved baseline across two ordinary stability iterations |
 | Wear OS | 8 classified declarations in `packages/compose/wear/api/wear.api` | 5 Supported; 3 Experimental; 0 Deprecated; 3 implementation helpers made Internal | Root `./gradlew apiCheck` compares the separate artifact dump; `pnpm run check:wear-api-classification` enforces classifications and source opt-ins | Confirm active-product and physical-watch behavior, then retain the approved dump across two ordinary stability iterations |
 
@@ -73,8 +73,10 @@ removed, added, changed, duplicated, or unclassified declarations. The update co
 existing classifications and places new identifiers in Unclassified for deliberate review.
 
 Swift Package Manager's API diagnostic separately compares the current `LumenUI` product with the
-immutable `v1.6.0` repository tag. Together, these checks cover semantic repository history and
-target-conditional APIs that a host-only package build cannot see.
+immutable `v1.6.0` repository tag. `pnpm run check:swift-source-compatibility` verifies that its
+output contains exactly the reviewed surface-scale enum additions in the Lumen 2 contract; removed
+signatures or another unreviewed break fail the canary. Together, these checks cover semantic
+repository history and target-conditional APIs that a host-only package build cannot see.
 
 ## Freeze exit conditions
 

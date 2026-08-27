@@ -36,6 +36,7 @@ import {
   LumenCardElement,
   type LumenElement,
   lumenElementDefinitions,
+  LumenErrorStateElement,
   LumenGraphicElement,
   LumenIconElement,
   LumenIllustrationElement,
@@ -201,6 +202,25 @@ describe('@santi020k/lumen-elements', () => {
     defineLumenElements(['Button', 'Card'], registry)
 
     expect(constructors).toHaveLength(2)
+  })
+
+  test('registers error states with semantic kind and layout hooks', () => {
+    const state = new LumenErrorStateElement()
+
+    document.body.appendChild(state)
+
+    expect(state.tagName).toBe('LUMEN-ERROR-STATE')
+    expect(state.getAttribute('kind')).toBe('error')
+    expect(state.getAttribute('layout')).toBe('default')
+    expect(state.hasAttribute('data-ui-error-state')).toBe(true)
+    expect(state.className).toContain('ui-error-state--error')
+    expect(state.className).toContain('ui-error-state--default')
+
+    state.setAttribute('kind', 'offline')
+    state.setAttribute('layout', 'page')
+
+    expect(state.className).toContain('ui-error-state--offline')
+    expect(state.className).toContain('ui-error-state--page')
   })
 
   test('rejects an unknown component name in the granular registration path', () => {

@@ -38,6 +38,20 @@ export const lumenRegistry = {
       ]
     },
     {
+      name: 'error-handling',
+      type: 'recipe',
+      components: [
+        'Alert',
+        'ErrorState',
+        'ErrorSummary',
+        'FieldError',
+        'Toast'
+      ],
+      files: [
+        'docs/error-handling.md'
+      ]
+    },
+    {
       name: 'scheduler',
       type: 'recipe',
       components: [
@@ -905,6 +919,23 @@ export const lumenRegistry = {
         'packages/astro/styles/lumen.css'
       ],
       dependencies: [
+        'styles'
+      ]
+    },
+    {
+      name: 'ErrorState',
+      type: 'component',
+      description: 'Explains why primary content is unavailable and provides an application-owned recovery path.',
+      category: 'Feedback',
+      files: [
+        'packages/core/src/error-state.ts',
+        'packages/astro/components/ErrorState.astro',
+        'packages/astro/components/Illustration.astro',
+        'packages/astro/styles/lumen.css',
+        'docs/error-handling.md'
+      ],
+      dependencies: [
+        'Illustration',
         'styles'
       ]
     },

@@ -80,11 +80,18 @@ public extension EnvironmentValues {
 }
 
 public extension View {
+    func lumenTheme(
+        _ theme: LumenTheme,
+        enforceColorScheme: Bool = true
+    ) -> some View {
+        lumenTheme(theme, enforceColorScheme: enforceColorScheme, applyTint: true)
+    }
+
     @ViewBuilder
     func lumenTheme(
         _ theme: LumenTheme,
         enforceColorScheme: Bool = true,
-        applyTint: Bool = true
+        applyTint: Bool
     ) -> some View {
         if applyTint {
             environment(\.lumenTheme, theme)

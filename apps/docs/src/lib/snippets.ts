@@ -138,6 +138,23 @@ export const Example = () => (
   <Code code={themeExample} copy label="theme.ts" language="ts" variant="block" />
 )
 `,
+  ErrorState: `import { Button, ButtonLink, ErrorState } from '@santi020k/lumen-react'
+
+export const Example = () => (
+  <ErrorState
+    actions={(
+      <>
+        <Button size="sm">Try again</Button>
+        <ButtonLink href="/docs" variant="secondary">Open help</ButtonLink>
+      </>
+    )}
+    description="Check your connection and try again. Your existing projects are unchanged."
+    id="projects-error"
+    reference="REQ-4F82"
+    title="Could not load projects"
+  />
+)
+`,
   Image: `import NextImage from 'next/image'
 import { Image as LumenImage } from '@santi020k/lumen-react'
 
@@ -171,6 +188,27 @@ const elementsOverrides: Record<string, string> = {
   <pre><code>const theme = "lumen";
 const accent = "hsl(var(--accent))";</code></pre>
 </lumen-code>
+`,
+  ErrorState: `${elementsHeader}
+
+<lumen-error-state id="projects-error" aria-labelledby="projects-error-title">
+  <lumen-illustration
+    aria-hidden="true"
+    data-slot="error-state-graphic"
+    variant="error"
+  ></lumen-illustration>
+  <div data-slot="error-state-content">
+    <h2 data-slot="error-state-title" id="projects-error-title">Could not load projects</h2>
+    <p data-slot="error-state-description">
+      Check your connection and try again. Your existing projects are unchanged.
+    </p>
+    <p data-slot="error-state-reference">Reference: <code>REQ-4F82</code></p>
+  </div>
+  <div data-slot="error-state-actions">
+    <lumen-button size="sm">Try again</lumen-button>
+    <a class="ui-button ui-button--secondary ui-button--sm" href="/docs">Open help</a>
+  </div>
+</lumen-error-state>
 `,
   Image: `<img
   alt="Lumen UI logo"

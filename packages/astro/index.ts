@@ -58,6 +58,7 @@ export { default as DropdownMenuItem } from './components/DropdownMenuItem.astro
 export { default as DropdownMenuSeparator } from './components/DropdownMenuSeparator.astro'
 export { default as DropdownMenuTrigger } from './components/DropdownMenuTrigger.astro'
 export { default as Empty } from './components/Empty.astro'
+export { default as ErrorState } from './components/ErrorState.astro'
 export { default as ErrorSummary } from './components/ErrorSummary.astro'
 export { default as Eyebrow } from './components/Eyebrow.astro'
 export { default as Field } from './components/Field.astro'

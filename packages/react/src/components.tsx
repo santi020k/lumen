@@ -59,6 +59,9 @@ import {
   type LumenCodeToken,
   lumenCodeTokenClassNames,
   type LumenComboSeries,
+  type LumenErrorStateAnnouncement,
+  type LumenErrorStateKind,
+  type LumenErrorStateLayout,
   type LumenFormErrorInput,
   type LumenFormStatus,
   type LumenHeatmapDatum,
@@ -3029,6 +3032,262 @@ export const Empty = ({
     {...props}
   />
 )
+
+export interface IllustrationProps extends ComponentPropsWithoutRef<'span'> {
+  label?: string
+  size?: 'lg' | 'md' | 'sm'
+  tone?: 'accent' | 'auto' | 'brand' | 'neutral'
+  variant?: 'empty' | 'error' | 'offline' | 'success'
+}
+
+const renderIllustrationElement = (
+  element: LumenIllustrationElement,
+  index: number
+): ReactNode => {
+  if (element.kind === 'circle') {
+    return <circle key={index} cx={element.cx} cy={element.cy} r={element.r} />
+  }
+
+  if (element.kind === 'rounded-rect') {
+    return (
+      <rect
+        key={index}
+        height={element.height}
+        rx={element.radius}
+        width={element.width}
+        x={element.x}
+        y={element.y}
+      />
+    )
+  }
+
+  const pointPairs: string[] = []
+
+  for (let pointIndex = 0; pointIndex < element.points.length; pointIndex += 2) {
+    const x = element.points[pointIndex]
+    const y = element.points[pointIndex + 1]
+
+    if (x === undefined || y === undefined) break
+
+    pointPairs.push(`${x},${y}`)
+  }
+
+  return createElement(element.kind, { key: index, points: pointPairs.join(' ') })
+}
+
+export const Illustration = ({
+  className,
+  label,
+  size = 'md',
+  tone = 'auto',
+  variant = 'empty',
+  ...props
+}: IllustrationProps) => (
+  <span
+    aria-hidden={label ? undefined : true}
+    aria-label={label}
+    className={composeClassName(
+      'ui-illustration',
+      `ui-illustration--${variant}`,
+      `ui-illustration--${tone}`,
+      `ui-illustration--${size}`,
+      className
+    )}
+    role={label ? 'img' : undefined}
+    {...props}
+  >
+    <svg aria-hidden="true" fill="none" viewBox="0 0 120 120">
+      <circle className="ui-illustration__wash" cx="60" cy="60" r="48" />
+      {lumenIllustrations[variant].elements.map(renderIllustrationElement)}
+    </svg>
+  </span>
+)
+
+type ErrorStateHeadingLevel = 1 | 2 | 3 | 4 | 5 | 6
+
+export interface ErrorStateProps
+  extends Omit<ComponentPropsWithoutRef<'section'>, 'title'> {
+  actions?: ReactNode
+  announce?: LumenErrorStateAnnouncement
+  description?: string
+  graphic?: false | ReactNode
+  headingLevel?: ErrorStateHeadingLevel
+  kind?: LumenErrorStateKind
+  layout?: LumenErrorStateLayout
+  reference?: string
+  referenceLabel?: string
+  title: string
+}
+
+interface ErrorStateAnnouncementProps {
+  'aria-live'?: 'assertive' | 'off' | 'polite'
+  role?: ComponentPropsWithoutRef<'section'>['role']
+}
+
+const resolveErrorStateAnnouncement = (
+  announce: LumenErrorStateAnnouncement,
+  ariaLive: ErrorStateAnnouncementProps['aria-live'],
+  role: ErrorStateAnnouncementProps['role']
+): ErrorStateAnnouncementProps => {
+  if (announce === 'assertive') {
+    return { 'aria-live': ariaLive ?? 'assertive', role: role ?? 'alert' }
+  }
+
+  if (announce === 'polite') {
+    return { 'aria-live': ariaLive ?? 'polite', role: role ?? 'status' }
+  }
+
+  return {
+    ...(ariaLive ? { 'aria-live': ariaLive } : {}),
+    ...(role ? { role } : {})
+  }
+}
+
+interface ErrorStateGraphicProps {
+  graphic: ErrorStateProps['graphic']
+  kind: LumenErrorStateKind
+  layout: LumenErrorStateLayout
+}
+
+const ErrorStateGraphic = ({ graphic, kind, layout }: ErrorStateGraphicProps) => {
+  if (graphic === false) return null
+
+  return (
+    <div
+      aria-hidden="true"
+      className="ui-error-state__graphic"
+      data-slot="error-state-graphic"
+    >
+      {graphic ?? (
+        <Illustration size={layout === 'compact' ? 'sm' : 'md'} variant={kind} />
+      )}
+    </div>
+  )
+}
+
+interface ErrorStateContentProps {
+  children: ReactNode
+  description: ErrorStateProps['description']
+  headingLevel: ErrorStateHeadingLevel
+  reference: ErrorStateProps['reference']
+  referenceLabel: string
+  title: string
+  titleId: string | undefined
+}
+
+const ErrorStateContent = ({
+  children,
+  description,
+  headingLevel,
+  reference,
+  referenceLabel,
+  title,
+  titleId
+}: ErrorStateContentProps) => (
+  <div className="ui-error-state__content" data-slot="error-state-content">
+    {createElement(
+      `h${headingLevel}`,
+      {
+        className: 'ui-error-state__title',
+        'data-slot': 'error-state-title',
+        id: titleId
+      },
+      title
+    )}
+    {description && (
+      <p className="ui-error-state__description" data-slot="error-state-description">
+        {description}
+      </p>
+    )}
+    {children && (
+      <div className="ui-error-state__details" data-slot="error-state-details">
+        {children}
+      </div>
+    )}
+    {reference && (
+      <p className="ui-error-state__reference" data-slot="error-state-reference">
+        <span>
+          {referenceLabel}
+          :
+        </span>
+        {' '}
+        <code>{reference}</code>
+      </p>
+    )}
+  </div>
+)
+
+const ErrorStateActions = ({ actions }: Pick<ErrorStateProps, 'actions'>) => actions ?
+  (
+    <div className="ui-error-state__actions" data-slot="error-state-actions">
+      {actions}
+    </div>
+  ) :
+  null
+
+export const ErrorState = ({
+  'aria-live': ariaLive,
+  actions,
+  announce,
+  children,
+  className,
+  description,
+  graphic,
+  headingLevel,
+  id,
+  kind,
+  layout,
+  reference,
+  referenceLabel,
+  role,
+  title,
+  ...props
+}: ErrorStateProps) => {
+  const resolvedAnnounce = announce ?? 'off'
+  const resolvedHeadingLevel = headingLevel ?? 2
+  const resolvedKind = kind ?? 'error'
+  const resolvedLayout = layout ?? 'default'
+  const resolvedReferenceLabel = referenceLabel ?? 'Reference'
+  const titleId = id ? `${id}-title` : undefined
+
+  const announcementProps = resolveErrorStateAnnouncement(
+    resolvedAnnounce,
+    ariaLive,
+    role
+  )
+
+  return (
+    <section
+      aria-label={titleId ? undefined : title}
+      aria-labelledby={titleId}
+      className={composeClassName(
+        'ui-error-state',
+        `ui-error-state--${resolvedKind}`,
+        `ui-error-state--${resolvedLayout}`,
+        className
+      )}
+      data-kind={resolvedKind}
+      data-layout={resolvedLayout}
+      data-ui-error-state
+      id={id}
+      {...announcementProps}
+      {...props}
+    >
+      <ErrorStateGraphic graphic={graphic} kind={resolvedKind} layout={resolvedLayout} />
+      <ErrorStateContent
+        description={description}
+        headingLevel={resolvedHeadingLevel}
+        reference={reference}
+        referenceLabel={resolvedReferenceLabel}
+        title={title}
+        titleId={titleId}
+      >
+        {children}
+      </ErrorStateContent>
+      <ErrorStateActions actions={actions} />
+    </section>
+  )
+}
 
 export type KanbanBoardProps = ComponentPropsWithoutRef<'section'>
 export const KanbanBoard = ({ className, tabIndex = 0, ...props }: KanbanBoardProps) => (
@@ -6289,78 +6548,6 @@ export const Backdrop = ({
   >
     <div className="ui-backdrop__content">{children}</div>
   </div>
-)
-
-export interface IllustrationProps extends ComponentPropsWithoutRef<'span'> {
-  label?: string
-  size?: 'lg' | 'md' | 'sm'
-  tone?: 'accent' | 'auto' | 'brand' | 'neutral'
-  variant?: 'empty' | 'error' | 'offline' | 'success'
-}
-
-const renderIllustrationElement = (
-  element: LumenIllustrationElement,
-  index: number
-): ReactNode => {
-  if (element.kind === 'circle') {
-    return <circle key={index} cx={element.cx} cy={element.cy} r={element.r} />
-  }
-
-  if (element.kind === 'rounded-rect') {
-    return (
-      <rect
-        key={index}
-        height={element.height}
-        rx={element.radius}
-        width={element.width}
-        x={element.x}
-        y={element.y}
-      />
-    )
-  }
-
-  const pointPairs: string[] = []
-
-  for (let index = 0; index < element.points.length; index += 2) {
-    const x = element.points[index]
-    const y = element.points[index + 1]
-
-    if (x === undefined || y === undefined) break
-
-    pointPairs.push(`${x},${y}`)
-  }
-
-  return createElement(element.kind, { key: index, points: pointPairs.join(' ') })
-}
-
-export const Illustration = ({
-  className,
-  label,
-  size = 'md',
-  tone = 'auto',
-  variant = 'empty',
-  ...props
-}: IllustrationProps) => (
-  <span
-    aria-hidden={label ? undefined : true}
-    aria-label={label}
-    className={composeClassName(
-      'ui-illustration',
-      `ui-illustration--${variant}`,
-      `ui-illustration--${tone}`,
-      `ui-illustration--${size}`,
-      className
-    )}
-    role={label ? 'img' : undefined}
-    {...props}
-  >
-    <svg aria-hidden="true" fill="none" viewBox="0 0 120 120">
-      <circle className="ui-illustration__wash" cx="60" cy="60" r="48" />
-      {lumenIllustrations[variant].elements.map(
-        renderIllustrationElement
-      )}
-    </svg>
-  </span>
 )
 
 export type AnimatedPortraitProps = ComponentPropsWithoutRef<'div'>

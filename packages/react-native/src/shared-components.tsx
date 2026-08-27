@@ -34,20 +34,11 @@ import {
   resolveLumenAlertColors,
   resolveLumenAvatarSize,
   resolveLumenCardColors,
-  resolveLumenProgressValue
+  resolveLumenProgressValue,
+  resolveLumenSurfacePadding,
+  resolveLumenSurfaceRadius
 } from './shared-recipes.js'
-import type { LumenTheme } from './theme.js'
 import { useLumenTheme } from './theme-context.js'
-
-const resolveSurfacePadding = (
-  theme: LumenTheme,
-  padding: LumenSurfacePadding
-): number => (padding === 'none' ? 0 : theme.spacing[padding])
-
-const resolveSurfaceRadius = (
-  theme: LumenTheme,
-  radius: LumenSurfaceRadius
-): number => (radius === 'none' ? 0 : theme.radii[radius])
 
 export interface LumenCardProps extends Omit<PressableProps, 'children'> {
   children: ReactNode
@@ -78,10 +69,10 @@ export const LumenCard = ({
   const cardStyle = {
     backgroundColor: colors.backgroundColor,
     borderColor: colors.borderColor,
-    borderRadius: resolveSurfaceRadius(theme, radius),
+    borderRadius: resolveLumenSurfaceRadius(theme, radius),
     borderWidth: 1,
     gap: theme.spacing.lg,
-    padding: resolveSurfacePadding(theme, padding)
+    padding: resolveLumenSurfacePadding(theme, padding)
   }
 
   if (!interactive) {
