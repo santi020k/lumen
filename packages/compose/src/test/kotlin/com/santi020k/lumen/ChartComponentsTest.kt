@@ -146,6 +146,31 @@ class ChartComponentsTest {
     }
 
     @Test
+    fun scatterChartsExcludeInvalidPointsAndNegativeBubbleSizes() {
+        val series = listOf(
+            LumenChartSeries(
+                id = "quality",
+                label = "Quality",
+                data = listOf(
+                    LumenChartDatum("valid", LumenChartX.Number(0.0), 1.0, size = 1.0),
+                    LumenChartDatum("invalid-x", LumenChartX.Number(Double.NaN), 1_000.0, size = 1_000.0),
+                    LumenChartDatum("negative-size", LumenChartX.Number(1.0), 2.0, size = -1_000.0),
+                    LumenChartDatum("large", LumenChartX.Number(2.0), 3.0, size = 2.0)
+                )
+            )
+        )
+        val available = lumenAvailableScatterSeries(series)
+
+        assertEquals(listOf("valid", "negative-size", "large"), available.single().data.map(LumenChartDatum::id))
+        assertEquals(listOf(1.0, 2.0), lumenScatterSizeValues(available))
+        assertTrue(lumenScatterSummary(series).contains("Values range from 1.0 to 3.0"))
+        assertTrue(
+            lumenChartDataLabel(series.single(), series.single().data[2], includeSize = true)
+                .endsWith("Size: Not available")
+        )
+    }
+
+    @Test
     fun pieAndRangeSummariesCountOnlyAvailableMarks() {
         val pie = LumenChartSeries(
             id = "share",

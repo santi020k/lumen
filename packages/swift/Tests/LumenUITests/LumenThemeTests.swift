@@ -88,6 +88,24 @@ import Testing
     #expect(empty.spokenDescription == "No chart data available.")
 }
 
+@Test func chartsExcludeNonfiniteNumericCategoriesFromMarksAndReadableData() {
+    let series = LumenChartSeries(
+        id: "quality",
+        label: "Quality",
+        data: [
+            LumenChartDatum(id: "finite", x: .number(1), y: 8),
+            LumenChartDatum(id: "nan", x: .number(.nan), y: 10),
+            LumenChartDatum(id: "infinite", x: .number(.infinity), y: 12)
+        ]
+    )
+    let summary = LumenChartSummary.resolve(series: [series])
+
+    #expect(lumenChartCategories([series]) == [.number(1)])
+    #expect(lumenDataWithValidX(series.data).map(\.id) == ["finite"])
+    #expect(summary.availablePointCount == 1)
+    #expect(summary.missingPointCount == 0)
+}
+
 @MainActor
 @Test func everyChartAcceptsMissingDataAndReadableFallbackConfiguration() {
     let series = LumenChartSeries(
@@ -133,8 +151,15 @@ import Testing
 @Test func scatterDataLabelsExposeBubbleSize() {
     let series = LumenChartSeries(id: "quality", label: "Quality", data: [])
     let datum = LumenChartDatum(id: "aug", x: .number(1), y: 98, size: 64)
+    let negativeDatum = LumenChartDatum(id: "invalid-size", x: .number(2), y: 95, size: -64)
 
     #expect(lumenChartDataLabel(series: series, datum: datum, includeSize: true).contains("Size: 64"))
+    #expect(
+        lumenChartDataLabel(series: series, datum: negativeDatum, includeSize: true)
+            .contains("Size: Not available")
+    )
+    #expect(lumenScatterSymbolSize(64) == 64)
+    #expect(lumenScatterSymbolSize(-64) == 36)
 }
 
 @Test func lineAndRangeChartsSplitAtMissingCategories() {

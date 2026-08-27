@@ -182,6 +182,23 @@ func resolveLumenPhoneInputValue(
     )
 }
 
+func constrainLumenPhoneInputValue(
+    countries: [LumenPhoneCountry],
+    value: LumenPhoneNumber,
+    locale: Locale = .current
+) -> LumenPhoneNumber {
+    guard let country = countries.first(where: { $0.regionCode == value.country.regionCode }) ?? countries.first else {
+        return value
+    }
+    guard country.regionCode != value.country.regionCode else { return value }
+
+    return resolveLumenPhoneNumber(
+        country: country,
+        input: value.nationalNumber,
+        locale: locale
+    )
+}
+
 /// A controlled international phone editor with searchable country metadata and E.164 output.
 public struct LumenPhoneInput: View {
     @Binding private var value: LumenPhoneNumber
@@ -262,7 +279,7 @@ public struct LumenPhoneInput: View {
         Button {
             pickerPresented = true
         } label: {
-            Text("\(value.country.flag) \(value.country.callingCode)")
+            Text("\(displayValue.country.flag) \(displayValue.country.callingCode)")
                 .foregroundStyle(theme.colors.ink)
                 .frame(minHeight: 44)
                 .padding(.horizontal, LumenSpacing.md)
@@ -279,7 +296,7 @@ public struct LumenPhoneInput: View {
     }
 
     private var countryButtonAccessibilityLabel: String {
-        "\(countrySelectorLabel), \(value.country.displayName), \(value.country.callingCode)"
+        "\(countrySelectorLabel), \(displayValue.country.displayName), \(displayValue.country.callingCode)"
     }
 
     private var borderColor: Color {
@@ -288,7 +305,7 @@ public struct LumenPhoneInput: View {
 
     private var effectiveError: String? {
         if let errorMessage { return errorMessage }
-        if showValidationError && !value.nationalNumber.isEmpty && !value.isValid {
+        if showValidationError && !displayValue.nationalNumber.isEmpty && !displayValue.isValid {
             return invalidNumberMessage
         }
 
@@ -305,6 +322,10 @@ public struct LumenPhoneInput: View {
                 country.regionCode.localizedCaseInsensitiveContains(query) ||
                 country.callingCode.contains(query)
         }
+    }
+
+    private var displayValue: LumenPhoneNumber {
+        constrainLumenPhoneInputValue(countries: countries, value: value, locale: locale)
     }
 
     private var isEnabled: Bool { enabled && isEnvironmentEnabled }
@@ -324,11 +345,11 @@ public struct LumenPhoneInput: View {
     @ViewBuilder
     private var phoneTextField: some View {
         let field = TextField(numberLabel, text: Binding(
-            get: { value.nationalNumber },
+            get: { displayValue.nationalNumber },
             set: { input in
                 value = resolveLumenPhoneInputValue(
                     countries: countries,
-                    country: value.country,
+                    country: displayValue.country,
                     input: input,
                     locale: locale
                 )
@@ -364,7 +385,7 @@ public struct LumenPhoneInput: View {
                     Button {
                         value = resolveLumenPhoneNumber(
                             country: country,
-                            input: value.nationalNumber,
+                            input: displayValue.nationalNumber,
                             locale: locale
                         )
                         pickerPresented = false
@@ -374,7 +395,7 @@ public struct LumenPhoneInput: View {
                             Text(country.pickerLabel)
                                 .foregroundStyle(theme.colors.ink)
                             Spacer()
-                            if country.regionCode == value.country.regionCode {
+                            if country.regionCode == displayValue.country.regionCode {
                                 LumenIcon(name: .check)
                                     .accessibilityHidden(true)
                             }
@@ -384,7 +405,7 @@ public struct LumenPhoneInput: View {
                     .buttonStyle(.plain)
                     .accessibilityLabel("\(country.displayName), \(country.callingCode)")
                     .accessibilityAddTraits(
-                        country.regionCode == value.country.regionCode ? .isSelected : []
+                        country.regionCode == displayValue.country.regionCode ? .isSelected : []
                     )
                 }
                 .listStyle(.plain)

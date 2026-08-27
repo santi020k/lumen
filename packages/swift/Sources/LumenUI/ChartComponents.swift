@@ -142,9 +142,21 @@ struct LumenRangeSegmentDatum: Identifiable {
     var id: String { "\(segmentID):\(point.id)" }
 }
 
+func isValidLumenChartX(_ value: LumenChartX) -> Bool {
+    if case .number(let number) = value {
+        return number.isFinite
+    }
+
+    return true
+}
+
+func lumenDataWithValidX(_ data: [LumenChartDatum]) -> [LumenChartDatum] {
+    data.filter { datum in isValidLumenChartX(datum.x) }
+}
+
 func lumenChartCategories(_ series: [LumenChartSeries]) -> [LumenChartX] {
     series.reduce(into: []) { categories, item in
-        item.data.forEach { datum in
+        lumenDataWithValidX(item.data).forEach { datum in
             if !categories.contains(datum.x) {
                 categories.append(datum.x)
             }
@@ -209,6 +221,8 @@ public struct LumenChartSummary: Equatable, Sendable {
 
         for item in series {
             for datum in item.data {
+                guard isValidLumenChartX(datum.x) else { continue }
+
                 if let value = datum.y, value.isFinite {
                     values.append(value)
                 } else {
@@ -372,7 +386,7 @@ private struct LumenChartDataList: View {
     private var dataRows: some View {
         VStack(alignment: .leading, spacing: LumenSpacing.sm) {
             ForEach(series) { item in
-                ForEach(item.data) { datum in
+                ForEach(lumenDataWithValidX(item.data)) { datum in
                     let label = lumenChartDataLabel(series: item, datum: datum, includeSize: includeSize)
 
                     if let selection, datum.y?.isFinite == true {
@@ -422,9 +436,13 @@ func lumenChartDataLabel(
 ) -> String {
     let value = datum.label ?? datum.y.flatMap { $0.isFinite ? $0.formatted() : nil } ?? "Not available"
     let base = "\(datum.x.label), \(series.label): \(value)"
-    let size = datum.size.flatMap { $0.isFinite ? $0.formatted() : nil } ?? "Not available"
+    let size = datum.size.flatMap { $0.isFinite && $0 >= 0 ? $0.formatted() : nil } ?? "Not available"
 
     return includeSize ? "\(base), Size: \(size)" : base
+}
+
+func lumenScatterSymbolSize(_ size: Double?) -> Double {
+    size.flatMap { $0.isFinite && $0 >= 0 ? $0 : nil } ?? 36
 }
 
 private struct LumenChartDataRow: Identifiable {
@@ -620,7 +638,7 @@ public struct LumenBarChart: View {
                 ForEach(Array(series.enumerated()), id: \.element.id) { index, item in
                     let color = theme.chartColor(resolvedLumenChartTone(item.tone, index: index))
 
-                    ForEach(item.data) { point in
+                    ForEach(lumenDataWithValidX(item.data)) { point in
                         lumenBarMark(
                             point: point,
                             series: item,
@@ -693,20 +711,20 @@ public struct LumenScatterChart: View {
                 ForEach(Array(series.enumerated()), id: \.element.id) { index, item in
                     let color = theme.chartColor(resolvedLumenChartTone(item.tone, index: index))
 
-                    ForEach(item.data) { point in
+                    ForEach(lumenDataWithValidX(item.data)) { point in
                         if let value = point.y, value.isFinite {
                             switch point.x {
                             case .category(let x):
                                 PointMark(x: .value("Category", x), y: .value(item.label, value))
-                                    .symbolSize(point.size ?? 36)
+                                    .symbolSize(lumenScatterSymbolSize(point.size))
                                     .foregroundStyle(color)
                             case .number(let x):
                                 PointMark(x: .value("X", x), y: .value(item.label, value))
-                                    .symbolSize(point.size ?? 36)
+                                    .symbolSize(lumenScatterSymbolSize(point.size))
                                     .foregroundStyle(color)
                             case .time(let x):
                                 PointMark(x: .value("Time", x), y: .value(item.label, value))
-                                    .symbolSize(point.size ?? 36)
+                                    .symbolSize(lumenScatterSymbolSize(point.size))
                                     .foregroundStyle(color)
                             }
                         }
@@ -822,7 +840,7 @@ private struct LumenPieSlice: Identifiable {
 
 func lumenAvailablePieData(_ data: [LumenChartDatum]) -> [LumenChartDatum] {
     data.filter { datum in
-        guard let value = datum.y else { return false }
+        guard isValidLumenChartX(datum.x), let value = datum.y else { return false }
 
         return value.isFinite && value > 0
     }
@@ -1066,7 +1084,7 @@ public struct LumenComboChart: View {
 
                     switch item.mark {
                     case .bar:
-                        ForEach(item.data) { point in
+                        ForEach(lumenDataWithValidX(item.data)) { point in
                             lumenBarMark(
                                 point: point,
                                 series: item,

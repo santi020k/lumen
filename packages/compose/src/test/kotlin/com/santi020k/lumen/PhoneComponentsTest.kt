@@ -64,6 +64,17 @@ class PhoneComponentsTest {
     }
 
     @Test
+    fun controlledRestrictedInputDisplaysAnAllowedCountry() {
+        val unitedStates = requireNotNull(LumenPhoneCountries.forRegion("US", Locale.US))
+        val externalValue = resolveLumenPhoneNumber(unitedStates, "2125550123", Locale.US)
+        val number = constrainLumenPhoneInputValue(listOf(colombia), externalValue, Locale.US)
+
+        assertEquals("CO", number.country.regionCode)
+        assertNull(number.e164)
+        assertEquals("2125550123", number.nationalNumber.filter(Char::isDigit))
+    }
+
+    @Test
     fun unsupportedRegionDoesNotCreateCountryMetadata() {
         assertNull(LumenPhoneCountries.forRegion("ZZ", Locale.US))
     }

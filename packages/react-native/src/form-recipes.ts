@@ -16,8 +16,8 @@ export interface LumenDateRangeValue {
   start: Date | null
 }
 
-export const isValidLumenDate = (value: Date | null): value is Date => (
-  value !== null && Number.isFinite(value.getTime())
+export const isValidLumenDate = (value: Date | null | undefined): value is Date => (
+  value !== null && value !== undefined && Number.isFinite(value.getTime())
 )
 
 const normalizeLumenDate = (value: Date): Date => (
@@ -64,9 +64,9 @@ export const resolveLumenDateBounds = (
 ): LumenDateBounds => {
   const bounds: LumenDateBounds = {}
 
-  if (minimumDate) bounds.minimumDate = normalizeLumenDate(minimumDate)
+  if (isValidLumenDate(minimumDate)) bounds.minimumDate = normalizeLumenDate(minimumDate)
 
-  if (maximumDate) bounds.maximumDate = normalizeLumenDate(maximumDate)
+  if (isValidLumenDate(maximumDate)) bounds.maximumDate = normalizeLumenDate(maximumDate)
 
   if (bounds.minimumDate && bounds.maximumDate && bounds.maximumDate < bounds.minimumDate) {
     bounds.maximumDate = bounds.minimumDate
