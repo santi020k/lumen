@@ -53,7 +53,7 @@ surface and apply one theme near the root:
 import SwiftUI
 import LumenUI
 
-struct AppRoot: View {
+struct AppContent: View {
     var body: some View {
         LumenSurface {
             LumenText("Welcome", variant: .title)
@@ -64,6 +64,12 @@ struct AppRoot: View {
                 action: openSearch
             )
         }
+    }
+}
+
+struct AppRoot: View {
+    var body: some View {
+        AppContent()
             .lumenTheme(.dark)
     }
 }
@@ -106,7 +112,7 @@ struct ThemedAppRoot: View {
     }
 
     var body: some View {
-        AppRoot()
+        AppContent()
             .lumenTheme(productTheme, enforceColorScheme: selectedAppearance != .system)
     }
 }
