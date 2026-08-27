@@ -36,6 +36,8 @@ describe('Lumen React Native form component recipes', () => {
       maximumDate: maximum,
       minimumDate: maximum
     })
+    expect(resolveLumenDateBounds(new Date(Number.NaN), maximum)).toEqual({ maximumDate: maximum })
+    expect(resolveLumenDateBounds(minimum, new Date(Number.NaN))).toEqual({ minimumDate: minimum })
     expect(resolveLumenDatePickerValue(new Date(Number.NaN), minimum, maximum, minimum)).toEqual(minimum)
   })
 

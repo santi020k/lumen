@@ -92,6 +92,24 @@ import Testing
     #expect(empty.spokenDescription == "No chart data available.")
 }
 
+@Test func chartsExcludeNonfiniteNumericCategoriesFromMarksAndReadableData() {
+    let series = LumenChartSeries(
+        id: "quality",
+        label: "Quality",
+        data: [
+            LumenChartDatum(id: "finite", x: .number(1), y: 8),
+            LumenChartDatum(id: "nan", x: .number(.nan), y: 10),
+            LumenChartDatum(id: "infinite", x: .number(.infinity), y: 12)
+        ]
+    )
+    let summary = LumenChartSummary.resolve(series: [series])
+
+    #expect(lumenChartCategories([series]) == [.number(1)])
+    #expect(lumenDataWithValidX(series.data).map(\.id) == ["finite"])
+    #expect(summary.availablePointCount == 1)
+    #expect(summary.missingPointCount == 0)
+}
+
 @MainActor
 @Test func everyChartAcceptsMissingDataAndReadableFallbackConfiguration() {
     let series = LumenChartSeries(
