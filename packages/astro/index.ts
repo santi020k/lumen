@@ -155,8 +155,6 @@ export { default as TimeField } from './components/TimeField.astro'
 export { default as Timeline } from './components/Timeline.astro'
 export { default as TimelineItem } from './components/TimelineItem.astro'
 export { default as Toast } from './components/Toast.astro'
-/** @deprecated Import ToastViewport instead. */
-export { default as Sonner } from './components/Sonner.astro'
 export { default as ToastViewport } from './components/ToastViewport.astro'
 export { default as Toggle } from './components/Toggle.astro'
 export { default as ToggleGroup } from './components/ToggleGroup.astro'
@@ -177,8 +175,6 @@ export {
   type LumenControlIdMap,
   normalizeAstroActionErrors
 } from './forms.ts'
-/** @deprecated Import the default export from @santi020k/lumen-astro/runtime instead. */
-export { default as UIPrimitives } from './runtime/UIPrimitives.astro'
 export type {
   LumenTabsChangeDetail,
   LumenTabsChangeEvent

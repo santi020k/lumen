@@ -62,12 +62,6 @@ export {
   type LumenIllustrationSize
 } from './content-recipes.js'
 export {
-  LumenDateField,
-  type LumenDateFieldProps,
-  LumenDateRangeField,
-  type LumenDateRangeFieldProps
-} from './datetime-components.js'
-export {
   LumenSearchField,
   type LumenSearchFieldProps,
   LumenSettingsRow,
@@ -75,7 +69,6 @@ export {
   LumenToggle,
   type LumenToggleProps
 } from './form-components.js'
-export { type LumenDateRangeValue } from './form-recipes.js'
 export {
   type LumenDisclosureController,
   type LumenDisclosureOptions,

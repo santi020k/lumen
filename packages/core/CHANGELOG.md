@@ -1,5 +1,40 @@
 # @santi020k/lumen-core
 
+## 1.8.0
+
+### Patch Changes
+
+- [#51](https://github.com/santi020k/lumen/pull/51) [`888187c`](https://github.com/santi020k/lumen/commit/888187c7f5f244f0bf14610a0fdb2e876dfe7082) Thanks [@santi020k](https://github.com/santi020k)! - Fix `normalizeLumenCode` (used by `tokenizeLumenCode`, `renderLumenCodeHtml`, and the `Code`
+  component's highlighting fallback) so it no longer throws `RangeError: Maximum call stack size
+  exceeded` on very large code blocks. It computed the shared indentation with
+  `Math.min(...indentation)`, which spreads one argument per line and overflows the call stack past
+  roughly 100,000 lines; it now finds the minimum with a linear scan and also trims leading/trailing
+  blank lines by index instead of repeated `Array#shift`/`pop`, avoiding quadratic behavior on inputs
+  with many blank lines.
+
+- [#51](https://github.com/santi020k/lumen/pull/51) [`3fb570d`](https://github.com/santi020k/lumen/commit/3fb570d7226780ce6d0d5ff09d2d22121bf1e7f0) Thanks [@santi020k](https://github.com/santi020k)! - Harden data-view state parsing and pagination against non-finite, non-positive, fractional, and
+  unsafe numeric values by normalizing them to the documented defaults. Preserve structured sort
+  keys containing colons across URL parsing and serialization instead of truncating the key at its
+  first separator.
+
+- [#51](https://github.com/santi020k/lumen/pull/51) [`888187c`](https://github.com/santi020k/lumen/commit/888187c7f5f244f0bf14610a0fdb2e876dfe7082) Thanks [@santi020k](https://github.com/santi020k)! - Fix `getLumenRichTextShortcut` so the `Ctrl/Cmd+Shift+7` (ordered list) and `Ctrl/Cmd+Shift+8`
+  (unordered list) shortcuts work in real browsers. The lookup matched the layout-dependent shifted
+  character reported in `KeyboardEvent.key` (for example `&`/`*` on a US layout), which never equals
+  the digit the code checked for, so the shortcuts silently did nothing. Matching now uses the
+  layout-independent physical key (`KeyboardEvent.code`) for these two shortcuts.
+
+- [#51](https://github.com/santi020k/lumen/pull/51) [`888187c`](https://github.com/santi020k/lumen/commit/888187c7f5f244f0bf14610a0fdb2e876dfe7082) Thanks [@santi020k](https://github.com/santi020k)! - Fix `resizeScheduleEvent` so the explicit `min`/`max` resize bound is never exceeded, even when the
+  event's fixed edge already sits outside that bound. The unconditional `>=1 minute` duration floor
+  previously took priority over the caller's bound (for example resizing an event's `end` could
+  return a value past `max` when the event's own `start` was already at or after `max`), silently
+  letting the result escape a caller-configured drag range. The explicit bound now always wins; the
+  duration floor is applied only when compatible with it.
+
+- [#51](https://github.com/santi020k/lumen/pull/51) [`888187c`](https://github.com/santi020k/lumen/commit/888187c7f5f244f0bf14610a0fdb2e876dfe7082) Thanks [@santi020k](https://github.com/santi020k)! - Fix `resizeScheduleEvent` so a `min` resize bound is enforced when no `max` bound is also given.
+  Previously, resizing an event's start earlier than a configured `min` (a common case, since start
+  edges are usually resized without a `max`) silently produced a time before `min` instead of
+  clamping to it.
+
 ## 1.7.0
 
 ### Minor Changes

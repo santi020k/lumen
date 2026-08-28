@@ -1,5 +1,24 @@
 # @santi020k/lumen
 
+## 1.8.0
+
+### Minor Changes
+
+- [#51](https://github.com/santi020k/lumen/pull/51) [`888187c`](https://github.com/santi020k/lumen/commit/888187c7f5f244f0bf14610a0fdb2e876dfe7082) Thanks [@santi020k](https://github.com/santi020k)! - Expand pay-only-for-use web delivery with selector-loaded Astro phone and overlay controllers, a grouped
+  granular Elements foundations entrypoint, and server-safe React Card, layout, typography, and
+  accessibility primitives that are shared with the full client catalog. Add accessible in-memory
+  string and numeric sorting to structured React DataTable columns. Publish a generated critical-web
+  stylesheet for the essential forms, feedback, navigation, overlay, and data-table surface.
+  Keep non-native custom-element dialogs above surrounding content so their controls remain operable on
+  mobile layouts.
+
+### Patch Changes
+
+- [#51](https://github.com/santi020k/lumen/pull/51) [`09fa666`](https://github.com/santi020k/lumen/commit/09fa666828dbae116b254445de1a33eaee7b54e8) Thanks [@santi020k](https://github.com/santi020k)! - Keep the Lumen v2 source migrator out of generated, cached, and vendored dependency trees, including
+  SwiftPM and Xcode build checkouts, CocoaPods, framework build output, and common web-tool caches.
+- Updated dependencies [[`888187c`](https://github.com/santi020k/lumen/commit/888187c7f5f244f0bf14610a0fdb2e876dfe7082), [`3fb570d`](https://github.com/santi020k/lumen/commit/3fb570d7226780ce6d0d5ff09d2d22121bf1e7f0), [`888187c`](https://github.com/santi020k/lumen/commit/888187c7f5f244f0bf14610a0fdb2e876dfe7082), [`888187c`](https://github.com/santi020k/lumen/commit/888187c7f5f244f0bf14610a0fdb2e876dfe7082), [`888187c`](https://github.com/santi020k/lumen/commit/888187c7f5f244f0bf14610a0fdb2e876dfe7082)]:
+  - @santi020k/lumen-core@1.8.0
+
 ## 1.7.0
 
 ### Minor Changes

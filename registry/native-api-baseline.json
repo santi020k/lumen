@@ -244,13 +244,7 @@
         "useToast"
       ],
       "experimental": [],
-      "deprecated": [
-        "LumenDateField",
-        "LumenDateFieldProps",
-        "LumenDateRangeField",
-        "LumenDateRangeFieldProps",
-        "LumenDateRangeValue"
-      ],
+      "deprecated": [],
       "subpaths": {
         "./datetime": {
           "maturity": "stable",

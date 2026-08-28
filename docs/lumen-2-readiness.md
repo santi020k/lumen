@@ -204,15 +204,15 @@ contract is the release reason; any actual breaking change still needs evidence 
 This ledger is the release decision record. Change a gate to Complete only when its linked evidence
 proves every exit condition above.
 
-| Gate                        | Status                                                   | Required record                                                                                                                                                                                                  |
-| --------------------------- | -------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Clean release baseline      | Complete (2026-08-24)                                    | [Release 1.6 baseline evidence](#release-16-baseline-evidence)                                                                                                                                                   |
-| Native contract freeze      | Supported and Experimental surfaces classified; soak 0/2 | [Native API audit](native-api-audit.md), [Native contract review](native-contract-review.md), [Native release runbook](native-release-runbook.md), and the stability soak ledger                                 |
-| Real consumer validation    | Native partial; web pending                              | [Native consumer validation](native-consumer-validation.md), [web consumer validation](web-consumer-validation.md), and their machine-readable ledgers: immutable active-consumer qualification remains required |
-| Physical-device validation  | Incomplete                                               | Completed native device matrix with evidence links; exact package minimums and explicit Partial blockers are machine-enforced                                                                                    |
-| Distribution validation     | Complete (2026-08-27)                                    | Packed and public React Native native builds, exact-candidate and public Compose/Wear consumers, and the immutable public Swift `v1.7.0-rc.0` tag pass their clean consumer checks                               |
-| Coordinated Lumen 2 release | Blocked by prior gates                                   | Every public package and platform at `2.0.0`, documentation, and migration notes                                                                                                                                 |
-| Version 2 contract approval | Draft; 3/3 investigations resolved                       | [Lumen 2 contract proposal](lumen-2-contract.md) with tested migrations and no manufactured web breakage                                                                                                         |
+| Gate                        | Status                                                   | Required record                                                                                                                                                                                                                      |
+| --------------------------- | -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Clean release baseline      | Complete (2026-08-24)                                    | [Release 1.6 baseline evidence](#release-16-baseline-evidence)                                                                                                                                                                       |
+| Native contract freeze      | Supported and Experimental surfaces classified; soak 0/2 | [Native API audit](native-api-audit.md), [Native contract review](native-contract-review.md), [Native release runbook](native-release-runbook.md), and the stability soak ledger                                                     |
+| Real consumer validation    | Native partial; web pending                              | [Native consumer validation](native-consumer-validation.md), [web consumer validation](web-consumer-validation.md), and their machine-readable ledgers: immutable active-consumer qualification remains required                     |
+| Physical-device validation  | Incomplete                                               | Completed native device matrix with evidence links; exact package minimums and explicit Partial blockers are machine-enforced                                                                                                        |
+| Distribution validation     | Complete (2026-08-27)                                    | [Published-native run 33139186529](https://github.com/santi020k/lumen/actions/runs/33139186529) verifies the exact ordinary-release npm, Swift, Compose, and Wear artifacts from revision `a3f3c7a05ba7f9fe30554b32d67c86f3aa5dfd46` |
+| Coordinated Lumen 2 release | Blocked by prior gates                                   | Every public package and platform at `2.0.0`, documentation, and migration notes                                                                                                                                                     |
+| Version 2 contract approval | Draft; 3/3 investigations resolved                       | [Lumen 2 contract proposal](lumen-2-contract.md) with tested migrations and no manufactured web breakage                                                                                                                             |
 
 ### Release 1.6 baseline evidence
 
@@ -240,3 +240,18 @@ from an independent SwiftPM consumer, verified its peeled revision, notices, and
 and built macOS, iOS, tvOS, and watchOS on 2026-08-27. This completes the Swift artifact-distribution
 proof. Because it is a prerelease, it does not count as either required ordinary stability-soak
 iteration.
+
+### First ordinary stability-release distribution evidence
+
+The first ordinary pre-2 release was published from revision
+`a3f3c7a05ba7f9fe30554b32d67c86f3aa5dfd46`. The immutable `v1.7.0` Swift and npm release tag,
+`compose-v0.6.0` Maven source tag, npm package versions in `registry/release-manifest.json`, and both
+Maven Central coordinates resolve to that revision.
+
+[Published-native run 33139186529](https://github.com/santi020k/lumen/actions/runs/33139186529)
+then verified the public release rather than workspace substitutions: it matched registry
+signatures, provenance, checksums, PGP signatures, tags, and source revision before building clean
+SwiftUI consumers for every declared Apple platform, React Native consumers for iOS and Android,
+and separate Compose phone and Wear consumers. This closes distribution proof for the first
+ordinary release. It does not replace active external-consumer, signed-current-application,
+accessibility, physical-device, or stability-soak evidence.

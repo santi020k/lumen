@@ -5172,18 +5172,6 @@ export const ToastViewport = ({
   />
 )
 
-/** @deprecated Use ToastViewportProps instead. */
-export type SonnerProps = ToastViewportProps
-
-/** @deprecated Use ToastViewport instead. */
-export const Sonner = ({ className, ...props }: ToastViewportProps) => (
-  <ToastViewport
-    className={composeClassName('ui-sonner', className)}
-    data-ui-sonner
-    {...props}
-  />
-)
-
 export type SwitchProps = Omit<ComponentPropsWithRef<'input'>, 'type'>
 export const Switch = ({
   className,

@@ -22,8 +22,8 @@ The Swift release version follows the umbrella version in `registry/release-mani
 `pnpm run check:swift-version` prevents release validation from passing with a stale tag or pin.
 
 In Xcode, choose **File → Add Package Dependencies**, paste
-`https://github.com/santi020k/lumen`, and use **Exact Version** `1.7.0` for a reproducible production
-build. Choose **Up to Next Major Version** from `1.7.0` when the application intentionally accepts
+`https://github.com/santi020k/lumen`, and use **Exact Version** `1.8.0` for a reproducible production
+build. Choose **Up to Next Major Version** from `1.8.0` when the application intentionally accepts
 compatible Lumen updates. Reserve the `main` branch for local evaluation. Add the `LumenUI` product
 to your application target. The package manifest lives at the repository root, so the Git
 dependency works directly; no npm package, CocoaPod, or copied source is required.
@@ -34,7 +34,7 @@ For a project managed with `Package.swift`, add the package and product explicit
 dependencies: [
     .package(
         url: "https://github.com/santi020k/lumen",
-        exact: "1.7.0"
+        exact: "1.8.0"
     )
 ],
 targets: [
@@ -47,11 +47,11 @@ targets: [
 ]
 ```
 
-Use `.package(url: "https://github.com/santi020k/lumen", from: "1.7.0")` instead when the
+Use `.package(url: "https://github.com/santi020k/lumen", from: "1.8.0")` instead when the
 application's update policy accepts later compatible releases. Commit `Package.resolved` for
-applications, generated Xcode projects, and CI builds, then verify its `version` is `1.7.0` and its
-`revision` matches the `v1.7.0` tag before shipping. XcodeGen projects use the same policy in
-`project.yml` with `version: 1.7.0` for compatible updates or `exactVersion: 1.7.0` for an exact
+applications, generated Xcode projects, and CI builds, then verify its `version` is `1.8.0` and its
+`revision` matches the `v1.8.0` tag before shipping. XcodeGen projects use the same policy in
+`project.yml` with `version: 1.8.0` for compatible updates or `exactVersion: 1.8.0` for an exact
 pin. Deterministic project generators should declare the requirement in their checked-in source
 and regenerate the project instead of patching the generated `.xcodeproj`.
 

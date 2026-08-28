@@ -68,7 +68,6 @@ try {
       '--no-fund',
       join(coreArchiveDirectory, coreArchives[0]),
       join(packageArchiveDirectory, packageArchives[0]),
-      '@react-native-community/datetimepicker@9.1.0',
       '@types/react@19.2.18',
       'react@19.2.3',
       'react-native@0.86.2',
@@ -118,8 +117,10 @@ try {
     access(join(installedPackageDirectory, 'THIRD_PARTY_NOTICES.md'))
   ])
 
-  await access(
-    join(consumerDirectory, 'node_modules', '@react-native-community', 'datetimepicker', 'package.json')
+  await assert.rejects(
+    access(join(consumerDirectory, 'node_modules', '@react-native-community', 'datetimepicker', 'package.json')),
+    { code: 'ENOENT' },
+    'The root React Native consumer must not install the optional datetime picker'
   )
 
   await writeFile(

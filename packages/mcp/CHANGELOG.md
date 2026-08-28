@@ -1,5 +1,11 @@
 # @santi020k/lumen-mcp
 
+## 1.8.0
+
+### Patch Changes
+
+- [#51](https://github.com/santi020k/lumen/pull/51) [`888187c`](https://github.com/santi020k/lumen/commit/888187c7f5f244f0bf14610a0fdb2e876dfe7082) Thanks [@santi020k](https://github.com/santi020k)! - Bring Combobox keyboard behavior into parity across web adapters. Registered Elements comboboxes now filter, traverse, commit, dismiss, and restore input focus, while React combobox options support the same roving Arrow, Home, End, Escape, Enter, and Space interactions.
+
 ## 1.7.0
 
 ### Minor Changes

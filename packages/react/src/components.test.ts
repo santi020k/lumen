@@ -103,9 +103,6 @@ import {
 type Props = Record<string, unknown>
 
 const propsOf = (element: ReactElement | undefined): Props => (element?.props ?? {}) as Props
-const isToastViewportComponent = (value: unknown): value is typeof ToastViewport => (
-  typeof value === 'function'
-)
 const descendantsOf = (node: ReactNode): ReactElement[] => {
   if (Array.isArray(node)) return node.flatMap(descendantsOf)
   if (!isValidElement(node)) return []
@@ -551,21 +548,7 @@ describe('@santi020k/lumen-react components', () => {
     expect(viewport['data-ui-toast-viewport']).toBe(true)
     expect(viewport['data-placement']).toBe('top-right')
     expect(viewport['data-ui-toast-max']).toBe(3)
-    const sonnerCompatibility: unknown = Reflect.get(LumenReact, 'Sonner')
-
-    expect(isToastViewportComponent(sonnerCompatibility)).toBe(true)
-    if (!isToastViewportComponent(sonnerCompatibility)) {
-      throw new TypeError('Expected the Sonner compatibility export to be a component')
-    }
-
-    const legacyViewport = renderToStaticMarkup(
-      sonnerCompatibility({ className: 'consumer-sonner', placement: 'top-left' })
-    )
-
-    expect(legacyViewport).toContain('class="ui-tvp ui-sonner consumer-sonner"')
-    expect(legacyViewport).toContain('data-ui-sonner="true"')
-    expect(legacyViewport).toContain('data-ui-toast-viewport="true"')
-    expect(legacyViewport).toContain('data-placement="top-left"')
+    expect(Reflect.get(LumenReact, 'Sonner')).toBeUndefined()
     expect(propsOf(ThemeBuilder({}) as ReactElement)['data-ui-theme-builder']).toBe(true)
   })
 
