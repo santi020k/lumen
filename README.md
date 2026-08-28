@@ -162,9 +162,10 @@ and component contract; repository contributors can also use the
 [cross-platform architecture](./docs/cross-platform.md) and
 [native component reference](./docs/native-components.md).
 
-> **Native platform status: Supported for Lumen 2.** React Native, SwiftUI, Compose, and Wear OS
-> now use the frozen supported contract planned for version 2. Publication, physical-device, and
-> consumer-soak evidence remain release gates; review release notes when upgrading.
+> **Native platform status for Lumen 2.** React Native, SwiftUI, Compose, and Wear OS use the frozen
+> supported contract. Package, migration, build, security, artifact, and stability checks gate the
+> initial release. The incomplete external-consumer and physical-device matrices remain published
+> as post-release qualification work; review them before choosing a production adapter.
 
 ## Native playgrounds
 

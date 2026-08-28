@@ -4,11 +4,12 @@ Lumen 2 is the program for making the Lumen package family a production-supporte
 design system. It is not permission to manufacture breaking web changes or to declare native
 stability from component count alone.
 
-Lumen 2 is one coordinated publication milestone. Continue publishing the existing web and Swift
-`1.x` lines and the independently versioned native pre-2 lines while the supported Lumen 2 contract
-completes its release-candidate evidence. When all readiness gates pass, publish every public npm
-package, React Native, Compose, and Wear at `2.0.0`, and create the Swift-compatible `v2.0.0`
-repository tag from the same revision.
+Lumen 2 is one coordinated publication milestone. Every public npm package, React Native, Compose,
+and Wear publishes at `2.0.0`, with the Swift-compatible `v2.0.0` repository tag created from the
+same revision. For the initial launch, package, migration, build, security, published-artifact, and
+two-release stability checks remain mandatory. The maintainer explicitly deferred incomplete
+external-consumer and physical-device evidence until after publication; those ledgers remain
+visible and must not be represented as complete.
 
 ## Current baseline
 
@@ -73,7 +74,7 @@ semantics, ownership boundaries, and intentional platform differences.
 No new shared primitive should enter the stable native surface after the freeze unless it closes a
 documented consumer blocker. Other new work remains Experimental until after the stable release.
 
-### 2. Validate real consumer applications
+### 2. Continue validating real consumer applications after launch
 
 Each native adapter needs at least one active application that is not a Lumen playground or a test
 fixture. A single product may cover multiple adapters only when it genuinely ships and exercises
@@ -88,10 +89,11 @@ For every consumer, record:
 - any compatibility wrappers or application-owned workarounds; and
 - the issue or pull request that resolves each release-blocking finding.
 
-At least one consumer per adapter must complete an upgrade between two stability iterations. This
-proves the release and migration path rather than only a clean initial installation.
+At least one consumer per adapter should complete an upgrade between two stability iterations. This
+proves the release and migration path rather than only a clean initial installation. Missing
+consumer evidence is post-release qualification work for the initial 2.0.0 publication.
 
-### 3. Complete physical-device accessibility validation
+### 3. Complete physical-device accessibility validation after launch
 
 Complete every required entry in the [native device validation
 matrix](native-device-validation.md). Simulator, emulator, snapshot, unit, and accessibility-tree
@@ -110,11 +112,10 @@ Each matrix entry must also include:
 - rotation, compact layouts, and round-screen clipping where applicable; and
 - an evidence link plus resolved issues for every blocking failure.
 
-No adapter can graduate while any web consumer or required native matrix entry is Pending or Partial.
-`pnpm run check:native-device-readiness` enforces that condition against the machine-readable
-physical-device evidence ledger. `pnpm run check:native-stable-readiness` combines the device and
-stability-soak gates with complete Astro, React, and Elements consumer qualification, rejects an
-uncoordinated version 2 launch, and is run by the npm and Compose publication workflows.
+Pending and Partial entries remain genuine gaps. `pnpm run check:native-device-readiness` and
+`pnpm run check:native-stable-readiness` continue to report the full qualification state, but the
+initial npm and Compose publication workflows do not use them as launch gates. They remain the
+completion target for post-release platform qualification.
 
 ### 4. Prove distribution and upgrade paths
 
@@ -128,10 +129,17 @@ Test the artifacts that consumers actually install, not only workspace source bu
 | Compose      | Resolve signed published artifacts through the intended Maven workflow in a clean Android consumer and verify phone, tablet, and publication metadata                     |
 | Wear OS      | Resolve the separate Wear artifact in a clean watch consumer and verify that phone applications do not acquire wearable-only dependencies                                 |
 
-The exact release under validation must also pass:
+The exact release candidate must also pass the mandatory package and platform-build checks:
 
 ```bash
-pnpm run validate
+pnpm run build
+pnpm run typecheck
+pnpm run test
+pnpm run lint
+pnpm run check:security
+pnpm run check:publish-dry-run
+pnpm run check:consumer-packages
+pnpm run check:native-stability-soak
 swift test
 (cd packages/compose && ./gradlew test lint apiCheck assembleDebugAndroidTest verifyMavenPublication)
 pnpm run playground:apple:build
@@ -139,12 +147,13 @@ pnpm run playground:android:build
 ```
 
 Run the packed consumer and release-canary workflows against the exact published revision. Record
-commands that require signing credentials or physical devices as release evidence rather than
-weakening or skipping them silently.
+commands that require signing credentials or physical devices as post-release qualification
+evidence rather than marking them complete without a real result.
 
-### 5. Launch Lumen 2 and graduate every adapter
+### 5. Launch the coordinated Lumen 2 package family
 
-When gates 1 through 4 are complete:
+When the frozen contracts, package validation, published-artifact proof, and two stability
+iterations are complete:
 
 - publish every public npm package, including `@santi020k/lumen-react-native`, at `2.0.0`;
 - publish `lumen-compose` and `lumen-compose-wear` at `2.0.0`;
@@ -186,15 +195,15 @@ Version 2 is approved only when:
 
 - the machine-readable contract is marked `approved` with an attributable approval record tied to
   the reviewed release candidate revision and immutable HTTPS evidence;
-- complete web-consumer and physical-device evidence references that same reviewed candidate
-  revision;
 - every breaking change solves an observed consumer, accessibility, performance, or maintainability
   problem;
-- affected in-repository and recorded external consumers have a tested migration;
+- affected in-repository consumers have a tested migration, while incomplete external-consumer
+  results remain accurately recorded;
 - the release manifest lists all deprecations, removals, runtime changes, and any codemod;
 - package READMEs, `docs/ai-usage.md`, registry metadata, MCP snapshots, examples, and templates agree
   on the new contracts; and
-- the exact release revision passes the complete validation and consumer matrix.
+- the exact release revision passes the mandatory package, migration, build, security,
+  compatibility, artifact, and stability checks.
 
 Do not invent breaking web changes to justify the major. The coordinated production-support
 contract is the release reason; any actual breaking change still needs evidence and migration notes.
@@ -277,4 +286,4 @@ passed for
 [Between Contractions](https://github.com/santi020k/betweencontractions/actions/runs/33152073534)
 at revision `4ac465a13b7ac338aceebaff2cb68ef19719043b`. This completes the required two-release native
 stability soak and cross-iteration build evidence. Signed-current applications, accessibility, and
-the physical-device matrix remain separate blockers for the coordinated 2.0.0 launch.
+the physical-device matrix remain explicit post-release qualification work.

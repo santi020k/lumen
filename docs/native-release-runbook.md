@@ -177,7 +177,7 @@ its first stability-iteration version. Upgrade at least one active external cons
 without source substitution, then record installation, build, runtime, accessibility, and migration
 findings as `native-soak.1`.
 
-Resolve every release-blocking result before both commands pass:
+Use these commands to inspect the post-release platform qualification backlog:
 
 ```bash
 pnpm run check:native-stability-readiness
@@ -187,8 +187,7 @@ pnpm run check:native-device-readiness
 
 ## 5. Prepare the coordinated Lumen 2 release
 
-After the stability soak, real-consumer upgrades, distribution checks, and full physical-device
-matrix are complete:
+After the two-release stability soak and distribution checks are complete:
 
 1. add reviewed major Changesets entries for every public npm package;
 2. after applying Changesets, align every public npm package, Compose, and Wear to `2.0.0` (a
@@ -197,7 +196,7 @@ matrix are complete:
 4. regenerate the release manifest, synchronized platform installation guidance, MCP snapshot,
    registry, platform outputs, and lockfile;
 5. verify every public surface describes the supported Lumen 2 contract and remaining evidence;
-6. run the complete release, consumer, compatibility, accessibility, and distribution gates; and
+6. run the package, compatibility, migration, security, stability, and distribution gates; and
 7. approve the version 2 contract and migration notes, recording the approver, date, full candidate
    revision reviewed after those gates, and immutable HTTPS approval evidence in
    `registry/lumen-2-contract.json`.
@@ -213,14 +212,13 @@ separately after the review. Publication rejects any delta from the reviewed rev
 `registry/lumen-2-contract.json`; if another file changes, prepare a new candidate and approval
 instead of expanding an allowlist.
 
-`pnpm run check:native-stable-readiness` rejects an uncoordinated version 2 launch, a draft or
-unattributed contract, unresolved contract candidates or investigations, and incomplete web
-consumer or native machine-readable evidence ledgers before any adapter can graduate. For the initial
-`2.0.0` launch it also requires the generated release manifest to list every public npm package at
-exactly `2.0.0`, together with the Compose coordinates and Swift tag. Later 2.x releases are not
-forced into package-family lockstep. A later stable major is rejected until it has its own explicit
-contract; it cannot inherit the Lumen 2 approval or evidence. The ordinary pre-2.0 validation path
-continues to accept the draft proposal while evidence is being gathered.
+`pnpm run check:native-stable-readiness` remains the full platform-qualification report. The
+maintainer explicitly deferred incomplete external-consumer and physical-device results until after
+the initial `2.0.0` publication, so npm and Compose publishing enforce the completed stability
+soak plus structural evidence validation instead. The generated release manifest must still list
+every public npm package at exactly `2.0.0`, together with the Compose coordinates and Swift tag.
+Later 2.x releases are not forced into package-family lockstep. A later stable major requires its
+own explicit contract.
 
 ## 6. Launch and verify Lumen 2
 

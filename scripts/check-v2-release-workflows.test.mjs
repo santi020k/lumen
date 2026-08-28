@@ -245,7 +245,7 @@ test("WidgetKit changes select the Swift canary and validate both Swift API base
   );
 });
 
-test("npm publication validates the contract before stable readiness", () => {
+test("npm publication validates the contract and completed stability soak", () => {
   assert.ok(
     npmWorkflow.includes("if: github.ref == 'refs/heads/main'"),
     "npm publication must refuse manual dispatches outside main",
@@ -256,8 +256,14 @@ test("npm publication validates the contract before stable readiness", () => {
     "node scripts/check-graduated-release-revision.mjs",
     "node scripts/check-lumen-2-contract.mjs",
     "pnpm run check:web-consumer-evidence",
-    "pnpm run check:native-stable-readiness",
+    "pnpm run check:native-consumer-evidence",
+    "pnpm run check:native-stability-readiness",
   ]);
+
+  assert.ok(
+    !npmWorkflow.includes("pnpm run check:native-stable-readiness"),
+    "initial npm publication must keep deferred platform qualification advisory",
+  );
 });
 
 test("initial npm publication verifies the complete family before tagging", () => {
@@ -282,12 +288,17 @@ test("initial npm publication verifies the complete family before tagging", () =
   ]);
 });
 
-test("Compose publication validates the contract before stable readiness", () => {
+test("Compose publication validates the contract and completed stability soak", () => {
   assertOrderedCommands(composeWorkflow, "Compose publication", [
     "node scripts/check-graduated-release-revision.mjs",
     "node scripts/check-lumen-2-contract.mjs",
-    "node scripts/check-native-stable-readiness.mjs",
+    "node scripts/check-native-stability-soak.mjs --require-complete",
   ]);
+
+  assert.ok(
+    !composeWorkflow.includes("node scripts/check-native-stable-readiness.mjs"),
+    "initial Compose publication must keep deferred platform qualification advisory",
+  );
 });
 
 test("initial Compose publication verifies the shared release commit before credentials", () => {
@@ -343,7 +354,8 @@ test("canonical package commands enforce graduation identity before publication"
     [
       "node scripts/check-approved-release-revision.mjs",
       "pnpm run check:graduated-release-revision",
-      "pnpm run check:native-stable-readiness",
+      "pnpm run check:native-consumer-evidence",
+      "pnpm run check:native-stability-readiness",
       "changeset publish",
     ],
   );
