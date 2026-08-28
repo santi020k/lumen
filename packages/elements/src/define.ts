@@ -638,6 +638,7 @@ const elementConfigs = {
   },
   Input: {
     attributeClasses: {
+      size: { lg: 'ui-input--lg', sm: 'ui-input--sm' },
       'visual-size': { lg: 'ui-input--lg', sm: 'ui-input--sm' }
     },
     baseClassName: 'ui-input',
@@ -751,6 +752,7 @@ const elementConfigs = {
   },
   NativeSelect: {
     attributeClasses: {
+      size: { lg: 'ui-select--lg', sm: 'ui-select--sm' },
       'visual-size': { lg: 'ui-select--lg', sm: 'ui-select--sm' }
     },
     baseClassName: 'ui-select',
@@ -4306,7 +4308,9 @@ const normalizeToastViewport = (
   viewport: HTMLElement,
   placement?: string
 ): void => {
-  viewport.classList.add('ui-tvp')
+  viewport.classList.add('ui-sonner', 'ui-tvp')
+
+  viewport.dataset.uiSonner = ''
 
   viewport.dataset.uiToastViewport = ''
 
@@ -4335,13 +4339,14 @@ const getToastViewport = (
   const resolvedPlacement = getToastPlacement(placement)
   const shouldUseAnyViewport = placement === undefined
 
-  const existing =
+  const existing = document.querySelector<HTMLElement>(
+    `[data-ui-toast-viewport][data-placement="${resolvedPlacement}"], ` +
+    `[data-ui-sonner][data-placement="${resolvedPlacement}"]`
+  ) ?? (shouldUseAnyViewport ?
     document.querySelector<HTMLElement>(
-      `[data-ui-toast-viewport][data-placement="${resolvedPlacement}"]`
-    ) ??
-    (shouldUseAnyViewport ?
-      document.querySelector<HTMLElement>('[data-ui-toast-viewport]') :
-      null)
+      '[data-ui-toast-viewport], [data-ui-sonner]'
+    ) :
+    null)
 
   if (existing) {
     normalizeToastViewport(
@@ -4648,7 +4653,7 @@ const installToastController = (): void => {
     LumenToast
 
   for (const viewport of document.querySelectorAll<HTMLElement>(
-    '[data-ui-toast-viewport]'
+    '[data-ui-toast-viewport], [data-ui-sonner]'
   )) {
     normalizeToastViewport(viewport)
   }
@@ -10565,6 +10570,17 @@ const elementDefinitions = lumenComponentNames.map(componentName => {
   return [config.tagName, elementClasses[componentName]] as const
 })
 
+const lumenSonnerElementConfig: LumenElementConfig = {
+  baseClassName: 'ui-sonner',
+  defaults: { 'data-ui-sonner': '' },
+  tagName: 'lumen-sonner'
+}
+
+const LumenSonnerElementClass: LumenElementConstructor = createLumenBehaviorElementClass(
+  LumenToastViewportBehaviorElement,
+  lumenSonnerElementConfig
+)
+
 type LumenCustomElementRegistry = Pick<CustomElementRegistry, 'define' | 'get'>
 
 const resolveCustomElementRegistry = (
@@ -10630,6 +10646,16 @@ export const defineLumenElements = (
     }
   }
 
+  if (
+    componentNames.includes('ToastViewport') &&
+    !customElementsRegistry.get(lumenSonnerElementConfig.tagName)
+  ) {
+    customElementsRegistry.define(
+      lumenSonnerElementConfig.tagName,
+      LumenSonnerElementClass
+    )
+  }
+
   installToastController()
 
   installFormController()
@@ -10659,7 +10685,10 @@ export const installLumenControllers = (): void => {
   installInputOtpController()
 }
 
-export const lumenElementDefinitions = elementDefinitions
+export const lumenElementDefinitions = [
+  ...elementDefinitions,
+  [lumenSonnerElementConfig.tagName, LumenSonnerElementClass] as const
+]
 
 export const LumenAccordionElement = elementClasses.Accordion
 export const LumenAlertElement = elementClasses.Alert
@@ -10743,6 +10772,8 @@ export const LumenSheetElement = elementClasses.Sheet
 export const LumenSidebarElement = elementClasses.Sidebar
 export const LumenSkeletonElement = elementClasses.Skeleton
 export const LumenSliderElement = elementClasses.Slider
+/** @deprecated Use LumenToastViewportElement instead. */
+export const LumenSonnerElement = LumenSonnerElementClass
 export const LumenSparklineElement = elementClasses.Sparkline
 export const LumenSpinnerElement = elementClasses.Spinner
 export const LumenSwitchElement = elementClasses.Switch

@@ -754,7 +754,11 @@ test("rejects invalid migration removal records", async (t) => {
       const result = await withTemporaryContract(
         contractCase.mutate,
         (temporaryContractPath) =>
-          runContractChecker(["--contract", temporaryContractPath]),
+          runContractChecker([
+            "--contract",
+            temporaryContractPath,
+            "--require-removed-exports",
+          ]),
       );
 
       assert.equal(result.status, 1);

@@ -6,7 +6,7 @@
         "com.santi020k:lumen-compose",
         "com.santi020k:lumen-compose-wear"
       ],
-      "version": "0.5.0"
+      "version": "0.6.0"
     },
     "npm": {
       "packages": {
