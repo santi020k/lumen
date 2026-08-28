@@ -112,6 +112,12 @@ Add the following shape to `registry/native-stability-soak.json`:
     "wearClassification": "COPY_FROM_LEDGER_BASELINES"
   },
   "evidence": {
+    "artifactVerification": {
+      "repository": "https://github.com/santi020k/lumen",
+      "revision": "FULL_40_CHARACTER_GIT_REVISION",
+      "revisionUrl": "https://github.com/santi020k/lumen/commit/FULL_40_CHARACTER_GIT_REVISION",
+      "verificationUrl": "https://github.com/santi020k/lumen/actions/runs/PUBLISHED_NATIVE_RUN_ID"
+    },
     "release": {
       "repository": "https://github.com/santi020k/lumen",
       "revision": "FULL_40_CHARACTER_GIT_REVISION",
@@ -154,12 +160,14 @@ Add the following shape to `registry/native-stability-soak.json`:
 }
 ```
 
-The Lumen release record must bind the iteration revision to the repository and its permanent
-verification run. Every consumer record must identify an external repository, its exact lowercase
-40-character consumer revision, an immutable URL for that revision, and a permanent workflow,
-pipeline, job, or build URL from the same repository. Mutable branches, workflow definitions,
-queries, fragments, Lumen-owned fixtures, playgrounds, and package smoke tests do not replace an
-active-consumer record. Validate the entry with
+The Lumen release and published-artifact verification records must bind the iteration revision to
+the repository and permanent workflow runs. The artifact run must execute
+`verify-native-release.yml` against the exact public versions and build clean React Native iOS and
+Android, Swift package, Compose, and Wear consumers. Every consumer record must identify an external
+repository, its exact lowercase 40-character consumer revision, an immutable URL for that revision,
+and a permanent workflow, pipeline, job, or build URL from the same repository. Mutable branches,
+workflow definitions, queries, fragments, Lumen-owned fixtures, playgrounds, and package smoke tests
+do not replace an active-consumer record. Validate the entry with
 `pnpm run check:native-stability-soak`; readiness remains incomplete with one iteration recorded.
 
 ## 4. Upgrade through stability iteration 2

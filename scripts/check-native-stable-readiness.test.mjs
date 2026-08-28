@@ -245,6 +245,11 @@ const createSoakIteration = (ledger, index) => {
       ]),
     ),
     evidence: {
+      artifactVerification: createSoakEvidenceRecord(
+        "https://github.com/santi020k/lumen",
+        revision,
+        `native-${index + 1}`,
+      ),
       release: createSoakEvidenceRecord(
         "https://github.com/santi020k/lumen",
         revision,

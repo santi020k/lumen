@@ -41,14 +41,14 @@ was changed during discovery.
 
 | Adapter      | Candidate            | Current evidence                                                                                                                                                                                                                          | Qualification status                                                                                                                                |
 | ------------ | -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| React Native | Roadscore mobile     | Expo 57 and React Native 0.86.2 application upgraded from `@santi020k/lumen-react-native@0.4.0` to `1.0.0`; its merged immutable consumer canary passes exact package resolution, lint, typecheck, build, and iOS/Android/web Expo export | Owner-confirmed active product with immutable upgrade evidence; a signed native EAS build, accessibility pass, and physical-device evidence remain  |
-| SwiftUI      | ContracTrack         | Exact Lumen upgrade from 1.5.0 to 1.7.0 across iOS, macOS, and watchOS; all three application and widget graphs build against the resolved tag                                                                                            | Owner-confirmed active product with an immutable upgrade and earlier signed archive; accessibility and current physical-device confirmation remain  |
+| React Native | Roadscore mobile     | Expo 57 and React Native 0.86.2 application upgraded across both ordinary stability releases, ending at `@santi020k/lumen-react-native@1.1.0`; its merged immutable consumer canary passes exact package resolution, lint, typecheck, build, and iOS/Android/web Expo export | Owner-confirmed active product with immutable cross-iteration upgrade evidence; a signed native EAS build, accessibility pass, and physical-device evidence remain  |
+| SwiftUI      | ContracTrack         | Exact Lumen upgrade from 1.7.0 to 1.8.0 across iOS, macOS, and watchOS; all three application and widget graphs build against the resolved release revision                                                                                | Owner-confirmed active product with immutable cross-iteration upgrade evidence and an earlier signed archive; accessibility and current physical-device confirmation remain  |
 | SwiftUI      | Workscene            | Exact Lumen 1.5.0 dependency in a macOS application with multiple Lumen-backed feature and settings views                                                                                                                                 | Candidate; build, active-product confirmation, findings, and upgrade evidence remain                                                                |
 | SwiftUI      | Coolstead            | Pending exact 1.4.0 to 1.5.0 upgrade in a macOS application; strict formatting, warning-as-error builds, release-metadata validation, and 42 tests pass                                                                                   | Technical build and upgrade validation complete for the pending 1.5.0 integration; active-product confirmation and physical-product evidence remain |
 | SwiftUI      | PostLens             | Exact Lumen 1.5.0 dependency in an iOS application with multiple Lumen-backed product flows; simulator build, standalone type-check, smoke checks, and 434 tests pass                                                                     | Technical build validation complete for 1.5.0; upgrade, active-product confirmation, and physical-device evidence remain                            |
-| WidgetKit    | ContracTrack widgets | Maintained iOS, macOS, and watchOS widget extensions consume `LumenWidgetUI`; all three widget graphs build from the exact 1.7.0 tag in the immutable consumer workflow                                                                   | Owner-confirmed active product with immutable adoption and upgrade evidence; signed extensions and physical-device accessibility evidence remain    |
-| Compose      | ContracTrack Android | Exact upgrade from `com.santi020k:lumen-compose:0.4.0` to 0.6.0; dependency isolation, unit tests, lint, and the debug application build pass in the immutable consumer workflow                                                          | Owner-confirmed active product with an earlier signed Play artifact; physical-device and accessibility evidence for the current release remain      |
-| Wear OS      | ContracTrack Wear    | Exact upgrade from `com.santi020k:lumen-compose-wear:0.4.0` to 0.6.0; dependency isolation, unit tests, lint, and the separate watch application build pass in the immutable consumer workflow                                            | Owner-confirmed active product; signed current watch artifact, accessibility pass, and physical-watch confirmation remain                           |
+| WidgetKit    | ContracTrack widgets | Maintained iOS, macOS, and watchOS widget extensions consume `LumenWidgetUI`; all three widget graphs build from the exact 1.8.0 release revision in the immutable consumer workflow                                                      | Owner-confirmed active product with immutable cross-iteration upgrade evidence; signed extensions and physical-device accessibility evidence remain    |
+| Compose      | ContracTrack Android | Exact cross-iteration upgrade from `com.santi020k:lumen-compose:0.6.0` to 0.7.0; dependency isolation, unit tests, lint, and the debug application build pass in the immutable consumer workflow                                         | Owner-confirmed active product with an earlier signed Play artifact; physical-device and accessibility evidence for the current release remain      |
+| Wear OS      | ContracTrack Wear    | Exact cross-iteration upgrade from `com.santi020k:lumen-compose-wear:0.6.0` to 0.7.0; dependency isolation, unit tests, lint, and the separate watch application build pass in the immutable consumer workflow                           | Owner-confirmed active product; signed current watch artifact, accessibility pass, and physical-watch confirmation remain                           |
 
 ## Owner confirmation and current workspace audit
 
@@ -63,8 +63,9 @@ The same-day sibling-repository audit found:
 - Roadscore now has a maintained external repository. Merge commit
   `9a44c078f55eda882151a0d92dca0b43876e6743` upgrades the active application from React Native
   adapter 0.4.0 to 1.0.0 and provides an immutable HTTPS consumer record.
-- ContracTrack's current dirty working tree advances SwiftUI from 1.5.0 to 1.6.0 and Compose/Wear
-  from 0.4.0 to 0.5.0. Those changes are useful candidate evidence but remain mutable.
+- Between Contractions merged the second stability upgrade at exact revision
+  `4ac465a13b7ac338aceebaff2cb68ef19719043b`: SwiftUI and WidgetKit moved from 1.7.0 to 1.8.0,
+  while Compose and Wear moved from 0.6.0 to 0.7.0.
 - PostLens resolves SwiftUI 1.7.0-rc.0 at revision
   `63abc0443f8e9f72dc8a010b4c5f89d3ee34c576` on remote branch `feat/lumen-1-2-ios`. The remote
   consumer record is immutable, but a release candidate cannot qualify as an ordinary stability
@@ -112,6 +113,15 @@ against the immutable Lumen 1.7.0 release manifest at revision
 iOS, macOS, and watchOS applications and widgets, then validated the Compose phone and Wear
 dependency graphs, tests, lint, and debug builds at 0.6.0. It is immutable build evidence, not a
 physical-device, signed-current-artifact, or accessibility result.
+
+The second merged-main workflow passed on 2026-08-28 at exact consumer revision
+[`4ac465a13b7ac338aceebaff2cb68ef19719043b`](https://github.com/santi020k/betweencontractions/commit/4ac465a13b7ac338aceebaff2cb68ef19719043b)
+against Lumen release revision `623e3fadf036dab79dc25cf04c5e2e4e4d1734a9`. The permanent
+[workflow run](https://github.com/santi020k/betweencontractions/actions/runs/33152073534) resolved the
+exact Swift revision and built the iOS, macOS, watchOS, and WidgetKit graphs, then built and
+resolved the exact Compose and Wear candidate artifacts before passing type/API tests, unit tests,
+lint, and debug assemblies. This completes the second build-based consumer iteration; it does not
+claim physical-device, signed-current-artifact, or accessibility evidence.
 
 ## Validation records
 
@@ -204,6 +214,16 @@ passed the repository's zero-warning lint, builds, and type checks, and exported
 Hermes bundles plus the web routes. This closes the immutable repository and first-iteration
 consumer-build gaps. It does not claim a signed EAS application, accessibility review, or
 physical-device result; those checks remain release blockers.
+
+Roadscore then merged the second ordinary-release upgrade from React Native 1.0.0 to 1.1.0 at
+exact revision
+[`0eb508cd651d7a3b5688d55011cd8e41ac13a31d`](https://github.com/santi020k/roadscore/commit/0eb508cd651d7a3b5688d55011cd8e41ac13a31d).
+The permanent merged-main
+[consumer run](https://github.com/santi020k/roadscore/actions/runs/33151107060) consumed Lumen release
+revision `623e3fadf036dab79dc25cf04c5e2e4e4d1734a9`, verified exact React Native 1.1.0 and Core 1.8.0
+resolution, passed the complete repository gate, and exported iOS, Android, and web bundles. This
+completes Roadscore's cross-iteration build evidence while leaving signed EAS, accessibility, and
+physical-device checks open.
 
 ### ContracTrack native consumers
 

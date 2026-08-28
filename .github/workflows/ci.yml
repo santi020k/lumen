@@ -498,6 +498,7 @@ jobs:
 
           if [[ "${{ needs.classify.outputs.compatibility }}" == "true" ]]; then
             pnpm exec turbo run //#lint:knip //#check:registry
+            pnpm run build
             pnpm run check:bundle-size
             pnpm run check:framework-contracts
             pnpm run check:publish-dry-run

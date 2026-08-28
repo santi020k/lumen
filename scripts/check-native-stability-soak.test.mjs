@@ -33,6 +33,11 @@ const createIteration = (ledger, index) => {
       Object.entries(ledger.baselines).map(([adapter, baseline]) => [adapter, baseline.sha256])
     ),
     evidence: {
+      artifactVerification: createEvidenceRecord(
+        'https://github.com/santi020k/lumen',
+        revision,
+        `native-${index + 1}`
+      ),
       release: createEvidenceRecord(
         'https://github.com/santi020k/lumen',
         revision,
@@ -158,6 +163,29 @@ test('rejects release evidence for a different soak revision', async () => {
     ledger.iterations[0].evidence.release.revision = 'f'.repeat(40)
 
     ledger.iterations[0].evidence.release.revisionUrl =
+      `https://github.com/santi020k/lumen/commit/${'f'.repeat(40)}`
+  })
+
+  assert.equal(result.status, 1)
+
+  assert.match(result.stderr, /revision must match the soak iteration revision/)
+})
+
+test('requires a dedicated published-artifact verification record', async () => {
+  const result = await runLedger(ledger => {
+    delete ledger.iterations[1].evidence.artifactVerification
+  })
+
+  assert.equal(result.status, 1)
+
+  assert.match(result.stderr, /must record release, published-artifact verification/)
+})
+
+test('rejects published-artifact verification for a different soak revision', async () => {
+  const result = await runLedger(ledger => {
+    ledger.iterations[1].evidence.artifactVerification.revision = 'f'.repeat(40)
+
+    ledger.iterations[1].evidence.artifactVerification.revisionUrl =
       `https://github.com/santi020k/lumen/commit/${'f'.repeat(40)}`
   })
 

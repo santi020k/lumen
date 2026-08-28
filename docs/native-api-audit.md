@@ -93,6 +93,6 @@ The native contract-freeze gate remains In progress until:
 The machine-readable soak record is `registry/native-stability-soak.json`.
 `pnpm run check:native-stability-soak` verifies that its recorded hashes still match every reviewed
 API baseline and the Wear classification registry. `pnpm run check:native-stability-readiness`
-remains failing until two chronological
-release iterations record their full revision, native artifact versions, baseline hashes, and
-immutable release and active-consumer evidence URLs.
+passes after two chronological release iterations recorded their full revision, native artifact
+versions, baseline hashes, and immutable release and active-consumer evidence URLs. Consumer
+completeness and device readiness remain separate gates.

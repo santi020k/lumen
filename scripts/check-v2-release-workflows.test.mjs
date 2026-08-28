@@ -169,6 +169,15 @@ test("the web canary executes every v2 release gate", () => {
   ]);
 });
 
+test("pull-request compatibility checks build bundle-size inputs deterministically", () => {
+  assertOrderedCommands(ciWorkflow, "pull-request compatibility checks", [
+    "pnpm run build",
+    "pnpm run check:bundle-size",
+    "pnpm run check:publish-dry-run",
+    "pnpm run check:consumer-packages",
+  ]);
+});
+
 test("coordinated revision checks select both release decision canaries", () => {
   for (const input of [
     "scripts/check-approved-release-revision.mjs",
