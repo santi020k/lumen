@@ -171,8 +171,10 @@ test("the web canary executes every v2 release gate", () => {
 
 test("pull-request compatibility checks build bundle-size inputs deterministically", () => {
   assertOrderedCommands(ciWorkflow, "pull-request compatibility checks", [
-    "pnpm exec turbo run build --filter=@santi020k/lumen-react --filter=@santi020k/lumen-elements",
+    "pnpm run build",
     "pnpm run check:bundle-size",
+    "pnpm run check:publish-dry-run",
+    "pnpm run check:consumer-packages",
   ]);
 });
 

@@ -498,7 +498,7 @@ jobs:
 
           if [[ "${{ needs.classify.outputs.compatibility }}" == "true" ]]; then
             pnpm exec turbo run //#lint:knip //#check:registry
-            pnpm exec turbo run build --filter=@santi020k/lumen-react --filter=@santi020k/lumen-elements
+            pnpm run build
             pnpm run check:bundle-size
             pnpm run check:framework-contracts
             pnpm run check:publish-dry-run
