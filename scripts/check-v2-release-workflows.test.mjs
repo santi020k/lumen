@@ -320,6 +320,20 @@ test("canonical package commands enforce graduation identity before publication"
     await readFile(resolve(repositoryRoot, "package.json"), "utf8"),
   );
 
+  assert.ok(
+    packageManifest.scripts.validate.includes(
+      "pnpm run check:native-stability-readiness",
+    ),
+    "canonical validation must require the completed two-iteration stability soak",
+  );
+
+  assert.ok(
+    !packageManifest.scripts.validate.includes(
+      "pnpm run check:native-stable-readiness",
+    ),
+    "canonical validation must keep deferred external and device qualification advisory",
+  );
+
   assertOrderedCommands(packageManifest.scripts.validate, "validation", [
     "pnpm run check:graduated-release-revision",
     "pnpm run test:graduated-release-revision",
