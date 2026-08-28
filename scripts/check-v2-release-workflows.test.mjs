@@ -168,6 +168,13 @@ test("the web canary executes every v2 release gate", () => {
   ]);
 });
 
+test("the Swift canary allows the native iOS consumer build to finish", () => {
+  assert.match(
+    canaryWorkflow,
+    /swift:\n[\s\S]*?name: Swift package consumer[\s\S]*?timeout-minutes: 55[\s\S]*?\n {2}compose:/u,
+  );
+});
+
 test("pull-request compatibility checks build bundle-size inputs deterministically", () => {
   assertOrderedCommands(ciWorkflow, "pull-request compatibility checks", [
     "pnpm run build",
@@ -318,6 +325,20 @@ test("initial Compose publication verifies the shared release commit before cred
 test("canonical package commands enforce graduation identity before publication", async () => {
   const packageManifest = JSON.parse(
     await readFile(resolve(repositoryRoot, "package.json"), "utf8"),
+  );
+
+  assert.ok(
+    packageManifest.scripts.validate.includes(
+      "pnpm run check:native-stability-readiness",
+    ),
+    "canonical validation must require the completed two-iteration stability soak",
+  );
+
+  assert.ok(
+    !packageManifest.scripts.validate.includes(
+      "pnpm run check:native-stable-readiness",
+    ),
+    "canonical validation must keep deferred external and device qualification advisory",
   );
 
   assertOrderedCommands(packageManifest.scripts.validate, "validation", [
