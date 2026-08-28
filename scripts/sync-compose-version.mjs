@@ -11,6 +11,7 @@ const consumerGradlePropertiesPath = new URL(
 
 const documentationPaths = [
   '../apps/docs/src/data/platforms.ts',
+  '../apps/docs/src/data/platforms.test.ts',
   '../docs/ai-usage.md',
   '../docs/native-components.md',
   '../docs/playgrounds.md',
@@ -19,6 +20,7 @@ const documentationPaths = [
 
 const wearableDocumentationPaths = [
   '../apps/docs/src/data/platforms.ts',
+  '../apps/docs/src/data/platforms.test.ts',
   '../docs/ai-usage.md',
   '../docs/native-components.md',
   '../packages/compose/README.md',

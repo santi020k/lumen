@@ -1,5 +1,18 @@
 # @santi020k/lumen-react-native
 
+## 1.1.0
+
+### Minor Changes
+
+- [#51](https://github.com/santi020k/lumen/pull/51) [`a57df97`](https://github.com/santi020k/lumen/commit/a57df97fc15c317ba90851cb7fc5f989d1a19c09) Thanks [@santi020k](https://github.com/santi020k)! - Publish the second ordinary React Native stability iteration from the frozen supported API
+  baseline. This release carries the reviewed v2 contract corrections through a real consumer
+  upgrade without changing the supported surface.
+
+### Patch Changes
+
+- Updated dependencies [[`888187c`](https://github.com/santi020k/lumen/commit/888187c7f5f244f0bf14610a0fdb2e876dfe7082), [`3fb570d`](https://github.com/santi020k/lumen/commit/3fb570d7226780ce6d0d5ff09d2d22121bf1e7f0), [`888187c`](https://github.com/santi020k/lumen/commit/888187c7f5f244f0bf14610a0fdb2e876dfe7082), [`888187c`](https://github.com/santi020k/lumen/commit/888187c7f5f244f0bf14610a0fdb2e876dfe7082), [`888187c`](https://github.com/santi020k/lumen/commit/888187c7f5f244f0bf14610a0fdb2e876dfe7082)]:
+  - @santi020k/lumen-core@1.8.0
+
 ## 1.0.0
 
 ### Minor Changes
