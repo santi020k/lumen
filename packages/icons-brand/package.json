@@ -1,6 +1,6 @@
 {
   "name": "@santi020k/lumen-icons-brand",
-  "version": "1.0.3-rc.0",
+  "version": "1.0.3",
   "publishConfig": {
     "access": "public"
   },

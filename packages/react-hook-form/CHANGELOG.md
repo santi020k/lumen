@@ -1,5 +1,7 @@
 # @santi020k/lumen-react-hook-form
 
+## 1.0.2
+
 ## 1.0.2-rc.0
 
 ### Patch Changes

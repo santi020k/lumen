@@ -1,6 +1,6 @@
 {
   "name": "@santi020k/lumen-mcp",
-  "version": "1.7.0-rc.0",
+  "version": "1.7.0",
   "publishConfig": {
     "access": "public"
   },

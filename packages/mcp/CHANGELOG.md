@@ -1,5 +1,38 @@
 # @santi020k/lumen-mcp
 
+## 1.7.0
+
+### Minor Changes
+
+- [#41](https://github.com/santi020k/lumen/pull/41) [`9b1542a`](https://github.com/santi020k/lumen/commit/9b1542a850392c8dd7d2d8dc63aba19fcdc09c92) Thanks [@santi020k](https://github.com/santi020k)! - Expand Lumen data visualization with generated cross-platform chart tokens, numeric and time
+  scales, validation, summaries, downsampling and live-window helpers, conformance fixtures, and
+  accessible scatter, bubble, heatmap, range, and combo renderers. Add native chart families for
+  React Native, SwiftUI, and Compose, plus semantic summaries and fallback data across adapters.
+
+### Patch Changes
+
+- [#43](https://github.com/santi020k/lumen/pull/43) [`b318703`](https://github.com/santi020k/lumen/commit/b318703196b134d08c9c58c04ed5c743c8b6c105) Thanks [@santi020k](https://github.com/santi020k)! - Bring Combobox keyboard behavior into parity across web adapters. Registered Elements comboboxes now filter, traverse, commit, dismiss, and restore input focus, while React combobox options support the same roving Arrow, Home, End, Escape, Enter, and Space interactions.
+
+- [#43](https://github.com/santi020k/lumen/pull/43) [`b318703`](https://github.com/santi020k/lumen/commit/b318703196b134d08c9c58c04ed5c743c8b6c105) Thanks [@santi020k](https://github.com/santi020k)! - Align React Native and Compose cards with the shared native surface scale, and give status bars
+  tone-specific icons with product-level overrides so status is not communicated by color alone.
+
+- [#43](https://github.com/santi020k/lumen/pull/43) [`b318703`](https://github.com/santi020k/lumen/commit/b318703196b134d08c9c58c04ed5c743c8b6c105) Thanks [@santi020k](https://github.com/santi020k)! - Harden external registry loading and installation with bounded manifest reads, strict manifest
+  metadata, relative inline-file paths, duplicate-path rejection, and symbolic-link escape protection.
+  Keep self-hosted and Worker MCP transports behind safe JSON error boundaries, expose catalog
+  readiness, and fail closed when abuse protection is unavailable. Freeze the MCP, React Hook Form,
+  and brand-icon public exports in the reviewed web API baseline alongside the rendering packages.
+
+- [#43](https://github.com/santi020k/lumen/pull/43) [`b318703`](https://github.com/santi020k/lumen/commit/b318703196b134d08c9c58c04ed5c743c8b6c105) Thanks [@santi020k](https://github.com/santi020k)! - Add the canonical `ToastViewport` contract across web adapters, retain `Sonner` as a deprecated
+  1.x compatibility alias, and teach the Lumen 2 migrator to rename imports and custom elements
+  without losing viewport configuration or children.
+
+- [#41](https://github.com/santi020k/lumen/pull/41) [`9b1542a`](https://github.com/santi020k/lumen/commit/9b1542a850392c8dd7d2d8dc63aba19fcdc09c92) Thanks [@santi020k](https://github.com/santi020k)! - Add a canonical generated illustration catalog, shared graphics tokens, and cross-platform image
+  presentation contracts with native React Native, SwiftUI, and Jetpack Compose implementations.
+  Web images also gain shared contain or cover fitting and semantic corner-radius options.
+
+- [#40](https://github.com/santi020k/lumen/pull/40) [`909483d`](https://github.com/santi020k/lumen/commit/909483df12f71eca7df403d6ccd4147f7f272beb) Thanks [@santi020k](https://github.com/santi020k)! - Harden the Streamable HTTP transport for public plugin hosting with complete tool annotations,
+  bounded request rates, safe error responses, security headers, and OpenAI domain verification.
+
 ## 1.7.0-rc.0
 
 ### Minor Changes
