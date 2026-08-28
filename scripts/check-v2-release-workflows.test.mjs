@@ -357,6 +357,11 @@ test("published React Native consumers bind signed npm provenance to the release
   );
 
   assert.ok(
+    !publishedNativeWorkflow.includes("ref: ${{ inputs.revision }}"),
+    "published-release verification must use current hardened tooling instead of executing scripts from an older release",
+  );
+
+  assert.ok(
     nativeSmokeSource.includes("check:npm-release-provenance"),
     "the published npm consumer must validate provenance",
   );
