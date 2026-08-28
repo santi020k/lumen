@@ -164,6 +164,9 @@ runCheck({
   arguments: [
     "--require-approved",
     ...(contractArgument ? ["--contract", contractArgument] : []),
+    ...(releaseManifestPath
+      ? ["--release-manifest", releaseManifestPath]
+      : []),
   ],
   script: "check-lumen-2-contract.mjs",
 });

@@ -128,19 +128,19 @@ export const platformGuides: PlatformGuide[] = [
   {
     codeExamples: [
       {
-        code: 'pnpm add @santi020k/lumen-react-native react-native-svg',
+        code: 'pnpm add @santi020k/lumen-react-native react-native-svg @react-native-community/datetimepicker',
         label: 'pnpm',
         language: 'bash',
         value: 'pnpm'
       },
       {
-        code: 'npm install @santi020k/lumen-react-native react-native-svg',
+        code: 'npm install @santi020k/lumen-react-native react-native-svg @react-native-community/datetimepicker',
         label: 'npm',
         language: 'bash',
         value: 'npm'
       },
       {
-        code: `# Optional: only when importing from @santi020k/lumen-react-native/datetime
+        code: `# Required until Lumen 2 removes the deprecated root date exports
 pnpm add @react-native-community/datetimepicker`,
         label: 'Date & time',
         language: 'bash',

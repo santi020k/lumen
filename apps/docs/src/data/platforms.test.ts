@@ -47,8 +47,11 @@ describe('platform documentation', () => {
   test('documents complete React Native peer installation and only working playground paths', () => {
     const guide = getPlatformGuide('react-native')
     const examples = guide.codeExamples.map(example => example.code).join('\n')
+    const npmInstall = guide.codeExamples.find(example => example.value === 'npm')?.code
+    const pnpmInstall = guide.codeExamples.find(example => example.value === 'pnpm')?.code
 
-    expect(examples).toContain('@santi020k/lumen-react-native react-native-svg')
+    expect(npmInstall).toContain('@santi020k/lumen-react-native react-native-svg @react-native-community/datetimepicker')
+    expect(pnpmInstall).toContain('@santi020k/lumen-react-native react-native-svg @react-native-community/datetimepicker')
     expect(examples).toContain('@react-native-community/datetimepicker')
     expect(guide.playgroundLaunch).toBeUndefined()
     expect(guide.playgroundCommands?.[0]?.value).toBe('web')

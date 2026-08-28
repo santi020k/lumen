@@ -202,6 +202,23 @@ describe('@santi020k/lumen-elements primitives', () => {
       .toEqual(['ui-select', 'ui-select--lg'].sort())
   })
 
+  test('gives explicit visual size precedence over legacy aliases', () => {
+    const input = connect('lumen-input', { size: 'lg', 'visual-size': 'sm' })
+    const nativeSelect = connect('lumen-native-select', {
+      size: 'sm',
+      'visual-size': 'lg'
+    })
+
+    expect(classesOf(input)).toEqual(['ui-input', 'ui-input--sm'].sort())
+    expect(classesOf(nativeSelect)).toEqual(['ui-select', 'ui-select--lg'].sort())
+
+    input.removeAttribute('visual-size')
+    nativeSelect.removeAttribute('visual-size')
+
+    expect(classesOf(input)).toEqual(['ui-input', 'ui-input--lg'].sort())
+    expect(classesOf(nativeSelect)).toEqual(['ui-select', 'ui-select--sm'].sort())
+  })
+
   test('reapplies modifier classes when attributes change', () => {
     const badge = connect('lumen-badge', { variant: 'secondary' })
 

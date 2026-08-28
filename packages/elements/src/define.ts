@@ -637,6 +637,7 @@ const elementConfigs = {
     tagName: 'lumen-image'
   },
   Input: {
+    attributeClassAliases: { size: 'visual-size' },
     attributeClasses: {
       size: { lg: 'ui-input--lg', sm: 'ui-input--sm' },
       'visual-size': { lg: 'ui-input--lg', sm: 'ui-input--sm' }
@@ -751,6 +752,7 @@ const elementConfigs = {
     tagName: 'lumen-message-scroller'
   },
   NativeSelect: {
+    attributeClassAliases: { size: 'visual-size' },
     attributeClasses: {
       size: { lg: 'ui-select--lg', sm: 'ui-select--sm' },
       'visual-size': { lg: 'ui-select--lg', sm: 'ui-select--sm' }

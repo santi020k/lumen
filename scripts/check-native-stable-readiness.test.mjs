@@ -64,6 +64,7 @@ const webConsumerLedgerPath = resolve(
 
 const contractTemplate = JSON.parse(await readFile(contractPath, "utf8"));
 const approvedCandidateRevision = "a".repeat(40);
+const appliedRemovalFixture = "@santi020k/lumen-astro#default";
 
 const pre2VersionArguments = [
   "--compose-version",
@@ -106,6 +107,16 @@ const approveContract = (contract) => {
     ],
     reviewedRevision: approvedCandidateRevision,
   };
+};
+
+const approveContractWithAppliedRemovals = (contract) => {
+  approveContract(contract);
+
+  contract.releaseMigration.removedExports = [appliedRemovalFixture];
+};
+
+const completeManifestRemovals = (manifest) => {
+  manifest.migration.removedExports = [appliedRemovalFixture];
 };
 
 const graduateContract = (contract) => {
@@ -506,9 +517,9 @@ const withValidEmptySoakLedger = async (callback) => {
 };
 
 const runCompleteStableRelease = (mutateLedgers = () => {}) =>
-  withTemporaryContract(approveContract, (temporaryContractPath) =>
+  withTemporaryContract(approveContractWithAppliedRemovals, (temporaryContractPath) =>
     withTemporaryReleaseManifest(
-      () => {},
+      completeManifestRemovals,
       (temporaryManifestPath) =>
         withCompleteLedgers(
           (ledgers) =>
@@ -768,12 +779,41 @@ test("rejects invalid migration removal records", async (t) => {
   }
 });
 
-test("rejects an initial Lumen 2 launch with a lagging public npm package", async () => {
+test("forwards a coordinated candidate manifest into the removed-export check", async () => {
   const result = await withTemporaryContract(
     approveContract,
     (temporaryContractPath) =>
       withTemporaryReleaseManifest(
+        () => {},
+        (temporaryManifestPath) =>
+          runChecker([
+            "--compose-version",
+            "2.0.0",
+            "--react-native-version",
+            "2.0.0",
+            "--swift-version",
+            "2.0.0",
+            "--contract",
+            temporaryContractPath,
+            "--release-manifest",
+            temporaryManifestPath,
+          ]),
+      ),
+  );
+
+  assert.equal(result.status, 1);
+
+  assert.match(result.stderr, /is still exported from the current package root/);
+});
+
+test("rejects an initial Lumen 2 launch with a lagging public npm package", async () => {
+  const result = await withTemporaryContract(
+    approveContractWithAppliedRemovals,
+    (temporaryContractPath) =>
+      withTemporaryReleaseManifest(
         (manifest) => {
+          completeManifestRemovals(manifest);
+
           manifest.release.npm.packages["@santi020k/lumen-tokens"].version =
             "1.9.0";
         },
@@ -803,10 +843,12 @@ test("rejects an initial Lumen 2 launch with a lagging public npm package", asyn
 
 test("rejects an initial Lumen 2 launch with an omitted public npm package", async () => {
   const result = await withTemporaryContract(
-    approveContract,
+    approveContractWithAppliedRemovals,
     (temporaryContractPath) =>
       withTemporaryReleaseManifest(
         (manifest) => {
+          completeManifestRemovals(manifest);
+
           delete manifest.release.npm.packages["@santi020k/lumen-tokens"];
         },
         (temporaryManifestPath) =>
@@ -835,7 +877,7 @@ test("rejects an initial Lumen 2 launch with an omitted public npm package", asy
 
 test("rejects an initial Lumen 2 launch without the approved migration metadata", async () => {
   const result = await withTemporaryContract(
-    approveContract,
+    approveContractWithAppliedRemovals,
     (temporaryContractPath) =>
       withTemporaryReleaseManifest(
         (manifest) => {
@@ -869,10 +911,10 @@ test("rejects an initial Lumen 2 launch without the approved migration metadata"
 
 test("blocks an approved coordinated version 2 launch while evidence is incomplete", async () => {
   const result = await withTemporaryContract(
-    approveContract,
+    approveContractWithAppliedRemovals,
     (temporaryContractPath) =>
       withTemporaryReleaseManifest(
-        () => {},
+        completeManifestRemovals,
         (temporaryManifestPath) =>
           withValidEmptySoakLedger((temporarySoakPath) =>
             runChecker([
@@ -900,10 +942,10 @@ test("blocks an approved coordinated version 2 launch while evidence is incomple
 
 test("blocks a coordinated version 2 launch while web consumer evidence is incomplete", async () => {
   const result = await withTemporaryContract(
-    approveContract,
+    approveContractWithAppliedRemovals,
     (temporaryContractPath) =>
       withTemporaryReleaseManifest(
-        () => {},
+        completeManifestRemovals,
         (temporaryManifestPath) =>
           withCompleteLedgers((ledgers) =>
             runChecker([
