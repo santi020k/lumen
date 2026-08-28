@@ -16,7 +16,7 @@ considered supported.
 Install the package and mount one provider near the application root:
 
 ```bash
-pnpm add @santi020k/lumen-react-native react-native-svg
+pnpm add @santi020k/lumen-react-native react-native-svg @react-native-community/datetimepicker
 ```
 
 ```tsx
@@ -27,8 +27,9 @@ export function App() {
 }
 ```
 
-React Native date fields use an optional native integration. Install the picker and import those
-components from their dedicated entrypoint only when the application needs them:
+The pre-v2 stability releases keep the picker peer required because they retain deprecated root date
+exports. Import date components from their dedicated entrypoint; in Lumen 2, consumers that do not
+use this entrypoint can omit the picker:
 
 ```bash
 pnpm add @react-native-community/datetimepicker
@@ -140,7 +141,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.santi020k:lumen-compose:0.5.0")
+    implementation("com.santi020k:lumen-compose:0.6.0")
 }
 ```
 
@@ -198,7 +199,7 @@ contracts:
 
 ```kotlin
 dependencies {
-    implementation("com.santi020k:lumen-compose-wear:0.5.0")
+    implementation("com.santi020k:lumen-compose-wear:0.6.0")
 }
 ```
 

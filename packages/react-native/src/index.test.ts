@@ -23,21 +23,21 @@ vi.mock('react-native-svg', () => ({
 }))
 
 describe('Lumen React Native foundations', () => {
-  test('keeps the optional datetime integration outside the root entrypoint', async () => {
+  test('keeps deprecated root datetime exports during the pre-v2 stability releases', async () => {
     const [rootSource, datetimeSource, packageManifest] = await Promise.all([
       readFile(new URL('./index.ts', import.meta.url), 'utf8'),
       readFile(new URL('./datetime.ts', import.meta.url), 'utf8'),
       readFile(new URL('../package.json', import.meta.url), 'utf8').then(source => JSON.parse(source) as {
         exports: Record<string, unknown>
-        peerDependenciesMeta: Record<string, { optional?: boolean }>
+        peerDependenciesMeta?: Record<string, { optional?: boolean }>
       })
     ])
 
-    expect(rootSource).not.toContain('LumenDateField')
-    expect(rootSource).not.toContain('@react-native-community/datetimepicker')
+    expect(rootSource).toContain('LumenDateField')
+    expect(rootSource).toContain('from \'./datetime-components.js\'')
     expect(datetimeSource).toContain('LumenDateField')
     expect(packageManifest.exports).toHaveProperty('./datetime')
-    expect(packageManifest.peerDependenciesMeta['@react-native-community/datetimepicker']?.optional).toBe(true)
+    expect(packageManifest.peerDependenciesMeta?.['@react-native-community/datetimepicker']?.optional).not.toBe(true)
   })
 
   test('provides matching semantic roles for light and dark themes', () => {

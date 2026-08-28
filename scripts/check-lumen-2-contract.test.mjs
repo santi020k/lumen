@@ -8,6 +8,7 @@ import test from 'node:test'
 const repositoryRoot = resolve(import.meta.dirname, '..')
 const checkerPath = resolve(repositoryRoot, 'scripts', 'check-lumen-2-contract.mjs')
 const sourceContractPath = resolve(repositoryRoot, 'registry', 'lumen-2-contract.json')
+const sourceReleaseManifestPath = resolve(repositoryRoot, 'registry', 'release-manifest.json')
 const reviewedRevision = 'a'.repeat(40)
 const releaseRevision = 'b'.repeat(40)
 
@@ -38,7 +39,7 @@ const graduateContract = contract => {
   }
 }
 
-const runContract = async mutate => {
+const runContract = async (mutate, { targetVersions = false } = {}) => {
   const temporaryDirectory = await mkdtemp(resolve(tmpdir(), 'lumen-v2-contract-'))
 
   try {
@@ -49,12 +50,30 @@ const runContract = async mutate => {
     mutate(contract)
 
     const contractPath = resolve(temporaryDirectory, 'contract.json')
+    const releaseManifestPath = resolve(temporaryDirectory, 'release-manifest.json')
 
     await writeFile(contractPath, `${JSON.stringify(contract, null, 2)}\n`)
 
+    const releaseManifest = JSON.parse(await readFile(sourceReleaseManifestPath, 'utf8'))
+
+    if (targetVersions) {
+      releaseManifest.release.version = contract.targetVersion
+
+      for (const packageDefinition of Object.values(releaseManifest.release.npm.packages)) {
+        packageDefinition.version = contract.targetVersion
+      }
+    }
+
+    await writeFile(releaseManifestPath, `${JSON.stringify(releaseManifest, null, 2)}\n`)
+
     return spawnSync(
       process.execPath,
-      [checkerPath, '--contract', contractPath, '--require-approved'],
+      [
+        checkerPath,
+        '--contract', contractPath,
+        '--release-manifest', releaseManifestPath,
+        '--require-approved'
+      ],
       { cwd: repositoryRoot, encoding: 'utf8' }
     )
   } finally {
@@ -68,6 +87,16 @@ test('accepts approval bound to the reviewed revision and a permanent decision r
   assert.equal(result.status, 0, result.stderr)
 
   assert.match(result.stdout, /Lumen 2 approved contract check passed/)
+})
+
+test('rejects reviewed removed exports once package manifests reach version 2', async () => {
+  const result = await runContract(() => {}, { targetVersions: true })
+
+  assert.equal(result.status, 1)
+
+  assert.match(result.stderr, /Sonner is still exported from the current package root/)
+
+  assert.match(result.stderr, /LumenDateField is still exported from the current package root/)
 })
 
 test('rejects an approval date in the future', async () => {

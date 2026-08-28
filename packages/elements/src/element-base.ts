@@ -6,6 +6,7 @@ export type LumenCustomElementRegistry = Pick<
 >
 
 export interface LumenElementConfig {
+  attributeClassAliases?: Record<string, string>
   attributeClasses?: Record<string, Record<string, string>>
   baseClassName: string
   defaults?: Record<string, string>
@@ -25,6 +26,23 @@ const mergeClassNames = (
 ) => composeClassName(...classNames)
   .split(/\s+/)
   .filter(Boolean)
+
+const resolveAttributeClassName = (
+  element: HTMLElement,
+  config: LumenElementConfig,
+  attributeName: string,
+  classMap: Record<string, string>
+): string | undefined => {
+  const canonicalAttribute = config.attributeClassAliases?.[attributeName]
+
+  if (canonicalAttribute && element.hasAttribute(canonicalAttribute)) return undefined
+
+  const attributeValue = element.hasAttribute(attributeName) ?
+    element.getAttribute(attributeName) || 'true' :
+    config.defaults?.[attributeName]
+
+  return attributeValue ? classMap[attributeValue] : undefined
+}
 
 export class LumenElement extends HTMLElement {
   static config: LumenElementConfig
@@ -81,11 +99,12 @@ export class LumenElement extends HTMLElement {
     for (const [attributeName, classMap] of Object.entries(
       this.config.attributeClasses ?? {}
     )) {
-      const attributeValue = this.hasAttribute(attributeName) ?
-        this.getAttribute(attributeName) || 'true' :
-        this.config.defaults?.[attributeName]
-
-      const className = attributeValue ? classMap[attributeValue] : undefined
+      const className = resolveAttributeClassName(
+        this,
+        this.config,
+        attributeName,
+        classMap
+      )
 
       if (className) {
         classNames.push(...mergeClassNames(className))

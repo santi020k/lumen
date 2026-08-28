@@ -188,15 +188,35 @@ describe('@santi020k/lumen-elements primitives', () => {
       .toEqual(['ui-glass-subtle', 'ui-select', 'ui-select-field--glass'].sort())
   })
 
-  test('maps visual size independently from native size', () => {
+  test('keeps legacy visual-size aliases alongside explicit visual size', () => {
     expect(classesOf(connect('lumen-native-select'))).toEqual(['ui-select'])
-    expect(classesOf(connect('lumen-native-select', { size: 'sm' }))).toEqual(['ui-select'])
+    expect(classesOf(connect('lumen-native-select', { size: 'sm' })))
+      .toEqual(['ui-select', 'ui-select--sm'].sort())
     expect(classesOf(connect('lumen-native-select', { 'visual-size': 'lg' })))
       .toEqual(['ui-select', 'ui-select--lg'].sort())
     expect(classesOf(connect('lumen-input', { 'visual-size': 'sm' })))
       .toEqual(['ui-input', 'ui-input--sm'].sort())
+    expect(classesOf(connect('lumen-input', { size: 'lg' })))
+      .toEqual(['ui-input', 'ui-input--lg'].sort())
     expect(classesOf(connect('lumen-select', { size: 'lg' })))
       .toEqual(['ui-select', 'ui-select--lg'].sort())
+  })
+
+  test('gives explicit visual size precedence over legacy aliases', () => {
+    const input = connect('lumen-input', { size: 'lg', 'visual-size': 'sm' })
+    const nativeSelect = connect('lumen-native-select', {
+      size: 'sm',
+      'visual-size': 'lg'
+    })
+
+    expect(classesOf(input)).toEqual(['ui-input', 'ui-input--sm'].sort())
+    expect(classesOf(nativeSelect)).toEqual(['ui-select', 'ui-select--lg'].sort())
+
+    input.removeAttribute('visual-size')
+    nativeSelect.removeAttribute('visual-size')
+
+    expect(classesOf(input)).toEqual(['ui-input', 'ui-input--lg'].sort())
+    expect(classesOf(nativeSelect)).toEqual(['ui-select', 'ui-select--sm'].sort())
   })
 
   test('reapplies modifier classes when attributes change', () => {

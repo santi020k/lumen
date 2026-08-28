@@ -25,7 +25,7 @@ the same way as handwritten exports; their generator remains the editing source 
 
 | Adapter | Public inventory | Classification | Compatibility enforcement | Remaining work |
 | --- | --- | --- | --- | --- |
-| React Native | 242 exports across the package root and optional datetime entrypoint | 242 Supported; 0 Experimental phone exports; 0 Deprecated | `pnpm run check:native-api-baseline` compares both TypeScript entrypoints with `registry/native-api-baseline.json` | Retain the approved baseline across two ordinary stability iterations |
+| React Native | 247 exports across the package root and datetime entrypoint | 242 Supported; 0 Experimental phone exports; 5 Deprecated | `pnpm run check:native-api-baseline` compares both TypeScript entrypoints with `registry/native-api-baseline.json` | Retain the approved baseline across two ordinary stability iterations |
 | SwiftUI | Reviewed symbol graphs: 3,027 macOS, 3,004 iOS, 2,845 tvOS, 3,004 visionOS, and 2,865 watchOS symbols | Every reviewed symbol is Supported on each platform; 0 Experimental, Deprecated, or Unclassified | `pnpm run check:swift-api-baseline` rebuilds every declared platform, requires a Stable baseline with no Experimental symbols, and compares it with `registry/swift-api-baseline.json`; `pnpm run check:swift-source-compatibility` permits only the four reviewed Lumen 2 enum additions relative to `v1.6.0` | Retain the approved baseline across two ordinary stability iterations |
 | WidgetKit | Reviewed `LumenWidgetUI` symbol graphs: 71 each on macOS, iOS, and watchOS | 71 Supported; 0 Experimental, Deprecated, or Unclassified on every supported widget platform | `pnpm run check:swift-api-baseline` rebuilds both Swift products and compares `registry/swift-widget-api-baseline.json` | Keep the focused product independent from the complete `LumenUI` catalog and PhoneNumberKit |
 | Compose | 151 classified public declarations in `packages/compose/api/lumen-compose.api` | 151 Supported; 0 Experimental or Deprecated | `./gradlew apiCheck` compares the release artifact with the reviewed binary API dump; `pnpm run check:compose-api-classification` enforces declaration maturity | Retain the approved baseline across two ordinary stability iterations |
@@ -34,10 +34,11 @@ the same way as handwritten exports; their generator remains the editing source 
 ## React Native baseline rules
 
 `registry/native-api-baseline.json` is reviewed API metadata, not generated output. Every named
-export from the root or an approved subpath must appear in exactly one classification, arrays remain
-sorted, and wildcard exports are rejected because they can bypass classification. Symbols cannot
-be duplicated across stable entrypoints. An intentional API change updates implementation, types,
-documentation, tests, the baseline, and migration notes together.
+export from the root or an approved subpath must appear in exactly one classification per entrypoint,
+arrays remain sorted, and wildcard exports are rejected because they can bypass classification. A
+symbol may appear across two stable entrypoints only as one Supported replacement and one Deprecated
+migration alias. An intentional API change updates implementation, types, documentation, tests, the
+baseline, and migration notes together.
 
 The baseline check is part of `pnpm run validate`. A changed entrypoint therefore fails before a
 new symbol can be published without an explicit classification.

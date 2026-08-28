@@ -637,7 +637,9 @@ const elementConfigs = {
     tagName: 'lumen-image'
   },
   Input: {
+    attributeClassAliases: { size: 'visual-size' },
     attributeClasses: {
+      size: { lg: 'ui-input--lg', sm: 'ui-input--sm' },
       'visual-size': { lg: 'ui-input--lg', sm: 'ui-input--sm' }
     },
     baseClassName: 'ui-input',
@@ -750,7 +752,9 @@ const elementConfigs = {
     tagName: 'lumen-message-scroller'
   },
   NativeSelect: {
+    attributeClassAliases: { size: 'visual-size' },
     attributeClasses: {
+      size: { lg: 'ui-select--lg', sm: 'ui-select--sm' },
       'visual-size': { lg: 'ui-select--lg', sm: 'ui-select--sm' }
     },
     baseClassName: 'ui-select',
@@ -4306,7 +4310,9 @@ const normalizeToastViewport = (
   viewport: HTMLElement,
   placement?: string
 ): void => {
-  viewport.classList.add('ui-tvp')
+  viewport.classList.add('ui-sonner', 'ui-tvp')
+
+  viewport.dataset.uiSonner = ''
 
   viewport.dataset.uiToastViewport = ''
 
@@ -4335,13 +4341,14 @@ const getToastViewport = (
   const resolvedPlacement = getToastPlacement(placement)
   const shouldUseAnyViewport = placement === undefined
 
-  const existing =
+  const existing = document.querySelector<HTMLElement>(
+    `[data-ui-toast-viewport][data-placement="${resolvedPlacement}"], ` +
+    `[data-ui-sonner][data-placement="${resolvedPlacement}"]`
+  ) ?? (shouldUseAnyViewport ?
     document.querySelector<HTMLElement>(
-      `[data-ui-toast-viewport][data-placement="${resolvedPlacement}"]`
-    ) ??
-    (shouldUseAnyViewport ?
-      document.querySelector<HTMLElement>('[data-ui-toast-viewport]') :
-      null)
+      '[data-ui-toast-viewport], [data-ui-sonner]'
+    ) :
+    null)
 
   if (existing) {
     normalizeToastViewport(
@@ -4648,7 +4655,7 @@ const installToastController = (): void => {
     LumenToast
 
   for (const viewport of document.querySelectorAll<HTMLElement>(
-    '[data-ui-toast-viewport]'
+    '[data-ui-toast-viewport], [data-ui-sonner]'
   )) {
     normalizeToastViewport(viewport)
   }
@@ -10565,7 +10572,20 @@ const elementDefinitions = lumenComponentNames.map(componentName => {
   return [config.tagName, elementClasses[componentName]] as const
 })
 
+const lumenSonnerElementConfig: LumenElementConfig = {
+  baseClassName: 'ui-sonner',
+  defaults: { 'data-ui-sonner': '' },
+  tagName: 'lumen-sonner'
+}
+
+const LumenSonnerElementClass: LumenElementConstructor = createLumenBehaviorElementClass(
+  LumenToastViewportBehaviorElement,
+  lumenSonnerElementConfig
+)
+
 type LumenCustomElementRegistry = Pick<CustomElementRegistry, 'define' | 'get'>
+
+type LumenElementRegistrationName = LumenComponentName | 'Sonner'
 
 const resolveCustomElementRegistry = (
   registry: LumenCustomElementRegistry | undefined
@@ -10576,8 +10596,11 @@ const resolveCustomElementRegistry = (
 )
 
 const isComponentNameList = (
-  value: LumenCustomElementRegistry | readonly LumenComponentName[] | undefined
-): value is readonly LumenComponentName[] => Array.isArray(value)
+  value:
+    LumenCustomElementRegistry |
+    readonly LumenElementRegistrationName[] |
+    undefined
+): value is readonly LumenElementRegistrationName[] => Array.isArray(value)
 
 export const enhanceLumenElements = (scope: ParentNode = document): void => {
   enhanceLumenDateRangePickers(scope)
@@ -10597,15 +10620,19 @@ export const enhanceLumenElements = (scope: ParentNode = document): void => {
 
 export const defineLumenElements = (
   componentNamesOrRegistry?:
-    LumenCustomElementRegistry | readonly LumenComponentName[],
+    LumenCustomElementRegistry | readonly LumenElementRegistrationName[],
   suppliedRegistry?: LumenCustomElementRegistry
 ): void => {
-  const componentNames = isComponentNameList(componentNamesOrRegistry) ?
+  const hasSelectiveComponentNames = isComponentNameList(
+    componentNamesOrRegistry
+  )
+
+  const componentNames = hasSelectiveComponentNames ?
     componentNamesOrRegistry :
     lumenComponentNames
 
   const customElementsRegistry = resolveCustomElementRegistry(
-    isComponentNameList(componentNamesOrRegistry) ?
+    hasSelectiveComponentNames ?
       suppliedRegistry :
       componentNamesOrRegistry
   )
@@ -10613,13 +10640,17 @@ export const defineLumenElements = (
   if (!customElementsRegistry) return
 
   for (const componentName of new Set(componentNames)) {
-    const config = (
-      elementConfigs as Readonly<Record<string, LumenElementConfig>>
-    )[componentName]
+    const config = componentName === 'Sonner' ?
+      lumenSonnerElementConfig :
+      (elementConfigs as Partial<Record<string, LumenElementConfig>>)[componentName]
 
-    const element = (
-      elementClasses as Readonly<Record<string, LumenElementConstructor>>
-    )[componentName]
+    const element = componentName === 'Sonner' ?
+      LumenSonnerElementClass :
+      (
+        elementClasses as Partial<
+          Record<string, LumenElementConstructor>
+        >
+      )[componentName]
 
     if (!config || !element) {
       throw new TypeError(`Unknown Lumen component name: ${componentName}`)
@@ -10628,6 +10659,16 @@ export const defineLumenElements = (
     if (!customElementsRegistry.get(config.tagName)) {
       customElementsRegistry.define(config.tagName, element)
     }
+  }
+
+  if (
+    !hasSelectiveComponentNames &&
+    !customElementsRegistry.get(lumenSonnerElementConfig.tagName)
+  ) {
+    customElementsRegistry.define(
+      lumenSonnerElementConfig.tagName,
+      LumenSonnerElementClass
+    )
   }
 
   installToastController()
@@ -10659,7 +10700,10 @@ export const installLumenControllers = (): void => {
   installInputOtpController()
 }
 
-export const lumenElementDefinitions = elementDefinitions
+export const lumenElementDefinitions = [
+  ...elementDefinitions,
+  [lumenSonnerElementConfig.tagName, LumenSonnerElementClass] as const
+]
 
 export const LumenAccordionElement = elementClasses.Accordion
 export const LumenAlertElement = elementClasses.Alert
@@ -10743,6 +10787,8 @@ export const LumenSheetElement = elementClasses.Sheet
 export const LumenSidebarElement = elementClasses.Sidebar
 export const LumenSkeletonElement = elementClasses.Skeleton
 export const LumenSliderElement = elementClasses.Slider
+/** @deprecated Use LumenToastViewportElement instead. */
+export const LumenSonnerElement = LumenSonnerElementClass
 export const LumenSparklineElement = elementClasses.Sparkline
 export const LumenSpinnerElement = elementClasses.Spinner
 export const LumenSwitchElement = elementClasses.Switch

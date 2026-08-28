@@ -112,15 +112,29 @@ for (const [adapterName, adapter] of Object.entries(baseline.adapters)) {
     exportCount += subpathExportedNames.length
   }
 
-  const allClassifiedNames = entrypointClassifications.flatMap(contract => (
-    classifications.flatMap(classification => contract[classification])
-  ))
+  const stableEntrypointClassifications = new Map()
 
-  assert.equal(
-    new Set(allClassifiedNames).size,
-    allClassifiedNames.length,
-    `${adapterName} exports the same public symbol from more than one stable entrypoint`
-  )
+  for (const contract of entrypointClassifications) {
+    for (const classification of classifications) {
+      for (const name of contract[classification]) {
+        const occurrences = stableEntrypointClassifications.get(name) ?? []
+
+        occurrences.push(classification)
+
+        stableEntrypointClassifications.set(name, occurrences)
+      }
+    }
+  }
+
+  for (const [name, occurrences] of stableEntrypointClassifications) {
+    if (occurrences.length === 1) continue
+
+    assert.deepEqual(
+      [...occurrences].sort(),
+      ['deprecated', 'supported'],
+      `${adapterName}.${name} may span stable entrypoints only as one deprecated alias and one supported replacement`
+    )
+  }
 
   if (adapterName === 'reactNative') {
     const expectedClassification = [

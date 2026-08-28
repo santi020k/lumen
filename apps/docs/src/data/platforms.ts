@@ -61,8 +61,8 @@ export interface PlatformGuide {
   title: string
 }
 
-const lumenComposeCoordinate = 'com.santi020k:lumen-compose:0.5.0'
-const lumenComposeWearCoordinate = 'com.santi020k:lumen-compose-wear:0.5.0'
+const lumenComposeCoordinate = 'com.santi020k:lumen-compose:0.6.0'
+const lumenComposeWearCoordinate = 'com.santi020k:lumen-compose-wear:0.6.0'
 const nativeComponentNames = (platform: 'android' | 'apple' | 'react-native'): string[] => getNativeComponentsForPlatform(platform).map(component => component.name)
 
 export const platformGuides: PlatformGuide[] = [
@@ -128,19 +128,19 @@ export const platformGuides: PlatformGuide[] = [
   {
     codeExamples: [
       {
-        code: 'pnpm add @santi020k/lumen-react-native react-native-svg',
+        code: 'pnpm add @santi020k/lumen-react-native react-native-svg @react-native-community/datetimepicker',
         label: 'pnpm',
         language: 'bash',
         value: 'pnpm'
       },
       {
-        code: 'npm install @santi020k/lumen-react-native react-native-svg',
+        code: 'npm install @santi020k/lumen-react-native react-native-svg @react-native-community/datetimepicker',
         label: 'npm',
         language: 'bash',
         value: 'npm'
       },
       {
-        code: `# Optional: only when importing from @santi020k/lumen-react-native/datetime
+        code: `# Required until Lumen 2 removes the deprecated root date exports
 pnpm add @react-native-community/datetimepicker`,
         label: 'Date & time',
         language: 'bash',
@@ -186,7 +186,7 @@ npx react-native start`,
     href: '/docs/react-native',
     id: 'react-native',
     installNote:
-      'Install Lumen with its required react-native-svg peer, then mount one LumenProvider near the application root. Add @react-native-community/datetimepicker only when using the optional /datetime entrypoint.',
+      'Install Lumen with its required react-native-svg and datetime-picker peers, then mount one LumenProvider near the application root. The deprecated root date exports keep the datetime picker required for the pre-v2 stability releases; Lumen 2 makes it optional for consumers that use no /datetime imports.',
     label: 'React Native',
     packageName: '@santi020k/lumen-react-native',
     playgroundCommands: [
