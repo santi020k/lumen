@@ -361,6 +361,12 @@ test("published React Native consumers bind signed npm provenance to the release
     "published-release verification must use current hardened tooling instead of executing scripts from an older release",
   );
 
+  assert.match(
+    publishedNativeWorkflow,
+    /react-native-ios:[\s\S]*?runs-on: macos-26[\s\S]*?check:react-native-native-release:ios/u,
+    "the published iOS consumer must use the Swift 6.2-or-newer runner required by Expo",
+  );
+
   assert.ok(
     nativeSmokeSource.includes("check:npm-release-provenance"),
     "the published npm consumer must validate provenance",
