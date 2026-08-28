@@ -130,7 +130,9 @@ describe('@santi020k/lumen-astro package surface', () => {
     const index = await readFile(new URL('./index.ts', packageRoot), 'utf8')
 
     expect(index).toContain('export { default as UIPrimitives }')
-    expect(index).toContain('export { default as Sonner }')
+    expect(index).toContain(
+      'export { default as Sonner } from \'./components/Sonner.astro\''
+    )
 
     await expect(
       readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8')
