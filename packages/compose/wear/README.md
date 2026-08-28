@@ -7,7 +7,7 @@ Install the dedicated artifact alongside the Wear Compose version selected by th
 
 ```kotlin
 dependencies {
-    implementation("com.santi020k:lumen-compose-wear:0.7.0")
+    implementation("com.santi020k:lumen-compose-wear:2.0.0")
 }
 ```
 

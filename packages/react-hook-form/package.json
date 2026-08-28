@@ -1,6 +1,6 @@
 {
   "name": "@santi020k/lumen-react-hook-form",
-  "version": "1.0.2",
+  "version": "2.0.0",
   "publishConfig": {
     "access": "public"
   },
@@ -47,7 +47,7 @@
     "zod": "catalog:"
   },
   "peerDependencies": {
-    "@santi020k/lumen-react": "^1.7.0",
+    "@santi020k/lumen-react": "^2.0.0",
     "react": ">=19",
     "react-hook-form": ">=7.76.0 <8"
   },
