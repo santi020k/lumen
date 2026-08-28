@@ -1,11 +1,11 @@
-# Lumen 2 contract proposal
+# Lumen 2 contract
 
-**Status:** Draft release contract; five breaking changes approved
+**Status:** Approved and graduated on 2026-08-28; five breaking changes approved
 
 **Target:** `2.0.0`
 **Machine-readable source:** [`registry/lumen-2-contract.json`](../registry/lumen-2-contract.json)
 
-This proposal turns the [Lumen 2 readiness program](lumen-2-readiness.md) into an explicit public
+This contract turns the [Lumen 2 readiness program](lumen-2-readiness.md) into an explicit public
 contract. Lumen 2 is a coordinated production-support milestone for web and native platforms. It is
 not permission to rename healthy APIs or manufacture migration work.
 
@@ -20,12 +20,13 @@ A breaking change can enter Lumen 2 only when it has:
    the same decision; and
 5. passing production-shaped consumer and package validation.
 
-The machine-readable proposal is checked by `pnpm run check:lumen-2-contract`. A candidate becomes
-approved only after its migration and consumer evidence are present. Version 2 publication remains blocked until
-every readiness gate passes; accepting a web change does not imply native graduation.
+The machine-readable contract is checked by `pnpm run check:lumen-2-contract`. The coordinated
+`2.0.0` artifacts were published from revision `c8ebda903f64d116635227a3e49017c84b4af6f1` after the
+mandatory package, migration, build, security, artifact, and stability gates passed. External
+consumer and physical-device qualification remains transparent post-release work.
 
-The proposal remains `draft` during the stability iterations. Before the coordinated `2.0.0`
-revision, the release owner changes it to `approved` and records an `approval` object with the
+The proposal remained `draft` during the stability iterations. Before the coordinated `2.0.0`
+revision, the release owner changed it to `approved` and recorded an `approval` object with the
 approver, approval date, full lowercase 40-character reviewed candidate revision, and evidence that
 includes both the exact Lumen commit URL and a permanent Lumen pull request, issue, discussion, or
 verification-run record. Mutable branches, query strings, fragments, and unrelated revisions do
