@@ -119,7 +119,7 @@
     "changeset": "changeset",
     "version-packages": "changeset version && pnpm run sync:coordinated-v2-versions && pnpm run sync:compose-version && pnpm install --lockfile-only && pnpm run generate:release-manifest && pnpm run sync:swift-version && pnpm --filter @santi020k/lumen-mcp run generate",
     "release": "pnpm run validate && node scripts/check-approved-release-revision.mjs && changeset publish",
-    "publish-packages": "node scripts/check-approved-release-revision.mjs && pnpm run check:graduated-release-revision && pnpm run check:native-consumer-evidence && pnpm run check:native-stability-soak && pnpm run build && changeset publish",
+    "publish-packages": "node scripts/check-approved-release-revision.mjs && pnpm run check:graduated-release-revision && pnpm run check:native-consumer-evidence && pnpm run check:native-stability-readiness && pnpm run build && changeset publish",
     "docs:dev": "pnpm --filter @santi020k/lumen-docs dev",
     "docs:build": "turbo run build --filter=@santi020k/lumen-docs",
     "docs:preview": "pnpm --filter @santi020k/lumen-docs preview",

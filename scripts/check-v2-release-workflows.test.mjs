@@ -257,7 +257,7 @@ test("npm publication validates the contract and completed stability soak", () =
     "node scripts/check-lumen-2-contract.mjs",
     "pnpm run check:web-consumer-evidence",
     "pnpm run check:native-consumer-evidence",
-    "pnpm run check:native-stability-soak",
+    "pnpm run check:native-stability-readiness",
   ]);
 
   assert.ok(
@@ -355,7 +355,7 @@ test("canonical package commands enforce graduation identity before publication"
       "node scripts/check-approved-release-revision.mjs",
       "pnpm run check:graduated-release-revision",
       "pnpm run check:native-consumer-evidence",
-      "pnpm run check:native-stability-soak",
+      "pnpm run check:native-stability-readiness",
       "changeset publish",
     ],
   );
