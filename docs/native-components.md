@@ -140,7 +140,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.santi020k:lumen-compose:0.5.0")
+    implementation("com.santi020k:lumen-compose:0.6.0")
 }
 ```
 
@@ -198,7 +198,7 @@ contracts:
 
 ```kotlin
 dependencies {
-    implementation("com.santi020k:lumen-compose-wear:0.5.0")
+    implementation("com.santi020k:lumen-compose-wear:0.6.0")
 }
 ```
 

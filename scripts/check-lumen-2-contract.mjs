@@ -20,7 +20,9 @@ const readArgument = name => {
 }
 
 const requireApproved = process.argv.includes('--require-approved')
+const requireRemovedExports = process.argv.includes('--require-removed-exports')
 const contractArgument = readArgument('--contract')
+const releaseManifestArgument = readArgument('--release-manifest')
 
 const contractPath = contractArgument
   ? path.resolve(root, contractArgument)
@@ -28,6 +30,12 @@ const contractPath = contractArgument
 
 const contract = JSON.parse(await readFile(contractPath, 'utf8'))
 const currentDate = new Date().toISOString().slice(0, 10)
+
+const releaseManifestPath = releaseManifestArgument
+  ? path.resolve(root, releaseManifestArgument)
+  : path.join(root, 'registry/release-manifest.json')
+
+const releaseManifest = JSON.parse(await readFile(releaseManifestPath, 'utf8'))
 
 const nativeApiBaseline = JSON.parse(
   await readFile(path.join(root, 'registry/native-api-baseline.json'), 'utf8')
@@ -252,6 +260,9 @@ const removedExports = Array.isArray(contract.releaseMigration?.removedExports)
   ? contract.releaseMigration.removedExports
   : []
 
+const targetMajor = Number.parseInt(contract.targetVersion?.split('.')[0] ?? '', 10)
+const npmReleasePackages = releaseManifest.release?.npm?.packages ?? {}
+
 if (new Set(removedExports).size !== removedExports.length) {
   failures.push('releaseMigration.removedExports must not contain duplicates.')
 }
@@ -278,7 +289,13 @@ for (const entry of removedExports) {
 
   if (!rootExports) {
     failures.push(`${entry} references a package without an authoritative root API baseline.`)
-  } else if (rootExports.has(symbol)) {
+  } else if (
+    rootExports.has(symbol)
+    && (
+      requireRemovedExports
+      || Number.parseInt(npmReleasePackages[packageName]?.version?.split('.')[0] ?? '', 10) >= targetMajor
+    )
+  ) {
     failures.push(`${entry} is still exported from the current package root.`)
   }
 

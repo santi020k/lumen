@@ -62,8 +62,8 @@ describe('platform documentation', () => {
     const guide = getPlatformGuide('android')
     const examples = guide.codeExamples.map(example => example.code).join('\n')
 
-    expect(examples).toContain('com.santi020k:lumen-compose:0.5.0')
-    expect(examples).toContain('com.santi020k:lumen-compose-wear:0.5.0')
+    expect(examples).toContain('com.santi020k:lumen-compose:0.6.0')
+    expect(examples).toContain('com.santi020k:lumen-compose-wear:0.6.0')
     expect(guide.installNote).toContain('only to a Wear OS module')
     expect(guide.prerequisites).toContain('Android Studio with JDK 21 or newer')
   })

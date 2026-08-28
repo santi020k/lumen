@@ -127,6 +127,11 @@ describe('@santi020k/lumen-astro package surface', () => {
     )
     expect(packageJson.exports['./styles.css']).toBe('./styles/lumen.css')
 
+    const index = await readFile(new URL('./index.ts', packageRoot), 'utf8')
+
+    expect(index).toContain('export { default as UIPrimitives }')
+    expect(index).toContain('export { default as Sonner }')
+
     await expect(
       readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8')
     ).resolves.toContain('<script>')
@@ -269,7 +274,7 @@ describe('@santi020k/lumen-astro package surface', () => {
     })
   })
 
-  test('keeps native form-control size separate from visual size', async () => {
+  test('keeps legacy visual-size aliases while preserving numeric native size', async () => {
     const [input, nativeSelect] = await Promise.all([
       readFile(new URL('./components/Input.astro', packageRoot), 'utf8'),
       readFile(new URL('./components/NativeSelect.astro', packageRoot), 'utf8')
@@ -277,9 +282,9 @@ describe('@santi020k/lumen-astro package surface', () => {
 
     for (const component of [input, nativeSelect]) {
       expect(component).toContain('visualSize?: \'default\' | \'lg\' | \'sm\'')
-      expect(component).toContain('const resolvedVisualSize = visualSize ?? \'default\'')
-      expect(component).toContain('size={size}')
-      expect(component).not.toContain('legacyVisualSize')
+      expect(component).toContain('const legacyVisualSize = size === \'default\'')
+      expect(component).toContain('const resolvedVisualSize = visualSize ?? legacyVisualSize ?? \'default\'')
+      expect(component).toContain('size={nativeSize}')
     }
   })
 

@@ -548,7 +548,7 @@ describe('@santi020k/lumen-react components', () => {
     expect(viewport['data-ui-toast-viewport']).toBe(true)
     expect(viewport['data-placement']).toBe('top-right')
     expect(viewport['data-ui-toast-max']).toBe(3)
-    expect(Reflect.get(LumenReact, 'Sonner')).toBeUndefined()
+    expect(Reflect.get(LumenReact, 'Sonner')).toBe(ToastViewport)
     expect(propsOf(ThemeBuilder({}) as ReactElement)['data-ui-theme-builder']).toBe(true)
   })
 
