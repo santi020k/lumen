@@ -129,6 +129,22 @@ const run = (command, arguments_, cwd = repositoryRoot) => {
   return result.stdout;
 };
 
+const runStreaming = (command, arguments_, cwd = repositoryRoot) => {
+  const result = spawnSync(command, arguments_, {
+    cwd,
+    env: commandEnvironment,
+    stdio: "inherit",
+  });
+
+  if (result.status !== 0) {
+    const outcome = result.error?.message ?? result.signal ?? result.status;
+
+    throw new Error(
+      `${command} ${arguments_.join(" ")} failed with ${outcome}`,
+    );
+  }
+};
+
 if (requestedPlatform === "ios") {
   const podProbe = spawnSync("pod", ["--version"], {
     encoding: "utf8",
@@ -490,7 +506,7 @@ ${valueControlMarkup}        <LumenButton onPress={() => setEnabled(true)}>Conti
   } else {
     const derivedDataPath = join(temporaryRoot, "DerivedData");
 
-    run(
+    runStreaming(
       "xcodebuild",
       [
         "-workspace",

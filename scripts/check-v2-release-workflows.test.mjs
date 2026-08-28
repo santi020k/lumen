@@ -361,6 +361,17 @@ test("published React Native consumers bind signed npm provenance to the release
     "the published npm consumer must validate provenance",
   );
 
+  assert.match(
+    nativeSmokeSource,
+    /runStreaming\(\s*"xcodebuild"/u,
+    "the iOS consumer must stream verbose xcodebuild output without a fixed buffer",
+  );
+
+  assert.ok(
+    nativeSmokeSource.includes('stdio: "inherit"'),
+    "the native smoke test must expose streamed build diagnostics",
+  );
+
   assert.ok(
     npmProvenanceSource.includes('["audit", "signatures", "--json"]'),
     "the provenance checker must verify npm signatures",
