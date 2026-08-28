@@ -207,10 +207,10 @@ proves every exit condition above.
 | Gate                        | Status                                                   | Required record                                                                                                                                                                                                                      |
 | --------------------------- | -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | Clean release baseline      | Complete (2026-08-24)                                    | [Release 1.6 baseline evidence](#release-16-baseline-evidence)                                                                                                                                                                       |
-| Native contract freeze      | Supported and Experimental surfaces classified; soak 0/2 | [Native API audit](native-api-audit.md), [Native contract review](native-contract-review.md), [Native release runbook](native-release-runbook.md), and the stability soak ledger                                                     |
+| Native contract freeze      | Complete; soak 2/2 (2026-08-28)                         | [Native API audit](native-api-audit.md), [Native contract review](native-contract-review.md), [Native release runbook](native-release-runbook.md), and the stability soak ledger                                                     |
 | Real consumer validation    | Native partial; web pending                              | [Native consumer validation](native-consumer-validation.md), [web consumer validation](web-consumer-validation.md), and their machine-readable ledgers: immutable active-consumer qualification remains required                     |
 | Physical-device validation  | Incomplete                                               | Completed native device matrix with evidence links; exact package minimums and explicit Partial blockers are machine-enforced                                                                                                        |
-| Distribution validation     | Complete (2026-08-27)                                    | [Published-native run 33139186529](https://github.com/santi020k/lumen/actions/runs/33139186529) verifies the exact ordinary-release npm, Swift, Compose, and Wear artifacts from revision `a3f3c7a05ba7f9fe30554b32d67c86f3aa5dfd46` |
+| Distribution validation     | Complete (2026-08-28)                                    | The first [published-native run](https://github.com/santi020k/lumen/actions/runs/33139186529), second [npm/Swift release](https://github.com/santi020k/lumen/actions/runs/33149488101), and second [Maven release](https://github.com/santi020k/lumen/actions/runs/33149826124) verify both ordinary-release iterations |
 | Coordinated Lumen 2 release | Blocked by prior gates                                   | Every public package and platform at `2.0.0`, documentation, and migration notes                                                                                                                                                     |
 | Version 2 contract approval | Draft; 3/3 investigations resolved                       | [Lumen 2 contract proposal](lumen-2-contract.md) with tested migrations and no manufactured web breakage                                                                                                                             |
 
@@ -255,3 +255,22 @@ SwiftUI consumers for every declared Apple platform, React Native consumers for 
 and separate Compose phone and Wear consumers. This closes distribution proof for the first
 ordinary release. It does not replace active external-consumer, signed-current-application,
 accessibility, physical-device, or stability-soak evidence.
+
+### Second ordinary stability-release distribution evidence
+
+The second ordinary pre-2 release was published from revision
+`623e3fadf036dab79dc25cf04c5e2e4e4d1734a9`. The immutable `v1.8.0` Swift and npm release tag,
+`compose-v0.7.0` Maven source tag, npm package versions in `registry/release-manifest.json`, and both
+Maven Central coordinates resolve to that revision.
+
+[Release run 33149488101](https://github.com/santi020k/lumen/actions/runs/33149488101) validated and
+published the npm family and created `v1.8.0`.
+[Maven run 33149826124](https://github.com/santi020k/lumen/actions/runs/33149826124) validated the
+unchanged native API baselines, built the signed Central bundle, uploaded Compose and Wear 0.7.0,
+and reached the published state. Merged-main consumer runs then passed for
+[Roadscore](https://github.com/santi020k/roadscore/actions/runs/33151107060) at revision
+`0eb508cd651d7a3b5688d55011cd8e41ac13a31d` and
+[Between Contractions](https://github.com/santi020k/betweencontractions/actions/runs/33152073534)
+at revision `4ac465a13b7ac338aceebaff2cb68ef19719043b`. This completes the required two-release native
+stability soak and cross-iteration build evidence. Signed-current applications, accessibility, and
+the physical-device matrix remain separate blockers for the coordinated 2.0.0 launch.

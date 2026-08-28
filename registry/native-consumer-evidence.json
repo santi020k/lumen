@@ -22,9 +22,9 @@
         "LumenTextField"
       ],
       "upgrade": {
-        "fromVersion": "0.4.0",
-        "toVersion": "1.0.0",
-        "revision": "9a44c078f55eda882151a0d92dca0b43876e6743"
+        "fromVersion": "1.0.0",
+        "toVersion": "1.1.0",
+        "revision": "0eb508cd651d7a3b5688d55011cd8e41ac13a31d"
       },
       "checks": {
         "accessibility": false,
@@ -41,8 +41,8 @@
       "compatibilityWorkarounds": [],
       "evidence": [
         "docs/native-consumer-validation.md#roadscore-react-native-040-to-100",
-        "https://github.com/santi020k/roadscore/commit/9a44c078f55eda882151a0d92dca0b43876e6743",
-        "https://github.com/santi020k/roadscore/actions/runs/33144521047"
+        "https://github.com/santi020k/roadscore/commit/0eb508cd651d7a3b5688d55011cd8e41ac13a31d",
+        "https://github.com/santi020k/roadscore/actions/runs/33151107060"
       ],
       "blockingIssues": [
         "A signed native application build, physical-device validation, and accessibility pass are required."
@@ -68,9 +68,9 @@
         "LumenWatchStatus"
       ],
       "upgrade": {
-        "fromVersion": "1.5.0",
-        "toVersion": "1.7.0",
-        "revision": "c959890466d3c6e4b4c0f266251378e3eff7bd42"
+        "fromVersion": "1.7.0",
+        "toVersion": "1.8.0",
+        "revision": "4ac465a13b7ac338aceebaff2cb68ef19719043b"
       },
       "checks": {
         "accessibility": false,
@@ -87,8 +87,8 @@
       "compatibilityWorkarounds": [],
       "evidence": [
         "docs/native-consumer-validation.md#contractrack-native-consumers",
-        "https://github.com/santi020k/betweencontractions/commit/c959890466d3c6e4b4c0f266251378e3eff7bd42",
-        "https://github.com/santi020k/betweencontractions/actions/runs/33138045527"
+        "https://github.com/santi020k/betweencontractions/commit/4ac465a13b7ac338aceebaff2cb68ef19719043b",
+        "https://github.com/santi020k/betweencontractions/actions/runs/33152073534"
       ],
       "blockingIssues": [
         "Physical-device application evidence and accessibility review are required."
@@ -112,9 +112,9 @@
         "LumenTheme"
       ],
       "upgrade": {
-        "fromVersion": "0.4.0",
-        "toVersion": "0.6.0",
-        "revision": "c959890466d3c6e4b4c0f266251378e3eff7bd42"
+        "fromVersion": "0.6.0",
+        "toVersion": "0.7.0",
+        "revision": "4ac465a13b7ac338aceebaff2cb68ef19719043b"
       },
       "checks": {
         "accessibility": false,
@@ -131,8 +131,8 @@
       "compatibilityWorkarounds": [],
       "evidence": [
         "docs/native-consumer-validation.md#contractrack-native-consumers",
-        "https://github.com/santi020k/betweencontractions/commit/c959890466d3c6e4b4c0f266251378e3eff7bd42",
-        "https://github.com/santi020k/betweencontractions/actions/runs/33138045527"
+        "https://github.com/santi020k/betweencontractions/commit/4ac465a13b7ac338aceebaff2cb68ef19719043b",
+        "https://github.com/santi020k/betweencontractions/actions/runs/33152073534"
       ],
       "blockingIssues": [
         "Physical-device application evidence and accessibility review are required."
@@ -157,9 +157,9 @@
         "LumenWidgetText"
       ],
       "upgrade": {
-        "fromVersion": "1.5.0",
-        "toVersion": "1.7.0",
-        "revision": "c959890466d3c6e4b4c0f266251378e3eff7bd42"
+        "fromVersion": "1.7.0",
+        "toVersion": "1.8.0",
+        "revision": "4ac465a13b7ac338aceebaff2cb68ef19719043b"
       },
       "checks": {
         "accessibility": false,
@@ -176,8 +176,8 @@
       "compatibilityWorkarounds": [],
       "evidence": [
         "docs/native-consumer-validation.md#contractrack-native-consumers",
-        "https://github.com/santi020k/betweencontractions/commit/c959890466d3c6e4b4c0f266251378e3eff7bd42",
-        "https://github.com/santi020k/betweencontractions/actions/runs/33138045527"
+        "https://github.com/santi020k/betweencontractions/commit/4ac465a13b7ac338aceebaff2cb68ef19719043b",
+        "https://github.com/santi020k/betweencontractions/actions/runs/33152073534"
       ],
       "blockingIssues": [
         "Signed physical-device WidgetKit accessibility evidence is required on iOS, macOS, and watchOS."
@@ -202,9 +202,9 @@
         "LumenWearTheme"
       ],
       "upgrade": {
-        "fromVersion": "0.4.0",
-        "toVersion": "0.6.0",
-        "revision": "c959890466d3c6e4b4c0f266251378e3eff7bd42"
+        "fromVersion": "0.6.0",
+        "toVersion": "0.7.0",
+        "revision": "4ac465a13b7ac338aceebaff2cb68ef19719043b"
       },
       "checks": {
         "accessibility": false,
@@ -221,8 +221,8 @@
       "compatibilityWorkarounds": [],
       "evidence": [
         "docs/native-consumer-validation.md#contractrack-native-consumers",
-        "https://github.com/santi020k/betweencontractions/commit/c959890466d3c6e4b4c0f266251378e3eff7bd42",
-        "https://github.com/santi020k/betweencontractions/actions/runs/33138045527"
+        "https://github.com/santi020k/betweencontractions/commit/4ac465a13b7ac338aceebaff2cb68ef19719043b",
+        "https://github.com/santi020k/betweencontractions/actions/runs/33152073534"
       ],
       "blockingIssues": [
         "Signed physical-watch application evidence and accessibility review are required."
