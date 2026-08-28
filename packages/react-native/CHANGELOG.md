@@ -1,5 +1,95 @@
 # @santi020k/lumen-react-native
 
+## 1.0.0
+
+### Minor Changes
+
+- [#43](https://github.com/santi020k/lumen/pull/43) [`b318703`](https://github.com/santi020k/lumen/commit/b318703196b134d08c9c58c04ed5c743c8b6c105) Thanks [@santi020k](https://github.com/santi020k)! - Add dependency-free controlled Picker, adjustable Slider, and accessible Gauge components so the
+  shared phone control contract is available across React Native, SwiftUI, and Compose.
+
+- [#43](https://github.com/santi020k/lumen/pull/43) [`b318703`](https://github.com/santi020k/lumen/commit/b318703196b134d08c9c58c04ed5c743c8b6c105) Thanks [@santi020k](https://github.com/santi020k)! - Add a shared ErrorState contract and accessible recovery surface for unavailable regions and pages,
+  with error and offline contexts, compact and page layouts, explicit live-region policy, safe support
+  references, application-owned actions, and an error-handling decision guide.
+
+- [#43](https://github.com/santi020k/lumen/pull/43) [`b318703`](https://github.com/santi020k/lumen/commit/b318703196b134d08c9c58c04ed5c743c8b6c105) Thanks [@santi020k](https://github.com/santi020k)! - Expand shared surface radii for app-owned mobile cards and media, and improve SwiftUI product
+  adaptation with palette overrides, optional tint ownership, configurable card geometry, and
+  status icons that do not communicate state through color alone.
+
+- [#43](https://github.com/santi020k/lumen/pull/43) [`b318703`](https://github.com/santi020k/lumen/commit/b318703196b134d08c9c58c04ed5c743c8b6c105) Thanks [@santi020k](https://github.com/santi020k)! - Align React Native and Compose cards with the shared native surface scale, and give status bars
+  tone-specific icons with product-level overrides so status is not communicated by color alone.
+
+- [#43](https://github.com/santi020k/lumen/pull/43) [`b318703`](https://github.com/santi020k/lumen/commit/b318703196b134d08c9c58c04ed5c743c8b6c105) Thanks [@santi020k](https://github.com/santi020k)! - Add native hook controllers for disclosure and dialog visibility, tabs, selection, language,
+  themes, and toast queues. The hooks preserve reusable React state semantics while returning props
+  adapted to React Native Lumen components without DOM or browser-runtime dependencies.
+
+- [#41](https://github.com/santi020k/lumen/pull/41) [`9b1542a`](https://github.com/santi020k/lumen/commit/9b1542a850392c8dd7d2d8dc63aba19fcdc09c92) Thanks [@santi020k](https://github.com/santi020k)! - Add a canonical generated illustration catalog, shared graphics tokens, and cross-platform image
+  presentation contracts with native React Native, SwiftUI, and Jetpack Compose implementations.
+  Web images also gain shared contain or cover fitting and semantic corner-radius options.
+
+- [#41](https://github.com/santi020k/lumen/pull/41) [`9b1542a`](https://github.com/santi020k/lumen/commit/9b1542a850392c8dd7d2d8dc63aba19fcdc09c92) Thanks [@santi020k](https://github.com/santi020k)! - Freeze the supported React Native component surface for the first ordinary pre-2 stability
+  iteration alongside the SwiftUI and Jetpack Compose adapters. Newly added experimental APIs remain
+  explicitly outside the frozen contract.
+
+- [#41](https://github.com/santi020k/lumen/pull/41) [`9b1542a`](https://github.com/santi020k/lumen/commit/9b1542a850392c8dd7d2d8dc63aba19fcdc09c92) Thanks [@santi020k](https://github.com/santi020k)! - Add controlled native date and date-range fields across React Native, SwiftUI, and Jetpack Compose,
+  with system picker behavior, bounds, coordinated range values, and validation context.
+
+- [#40](https://github.com/santi020k/lumen/pull/40) [`909483d`](https://github.com/santi020k/lumen/commit/909483df12f71eca7df403d6ccd4147f7f272beb) Thanks [@santi020k](https://github.com/santi020k)! - Add a controlled, accessible `LumenTabs` primitive to the React Native, SwiftUI, and Jetpack
+  Compose adapters, with native gallery examples and shared documentation.
+
+- [#41](https://github.com/santi020k/lumen/pull/41) [`9b1542a`](https://github.com/santi020k/lumen/commit/9b1542a850392c8dd7d2d8dc63aba19fcdc09c92) Thanks [@santi020k](https://github.com/santi020k)! - Expand Lumen data visualization with generated cross-platform chart tokens, numeric and time
+  scales, validation, summaries, downsampling and live-window helpers, conformance fixtures, and
+  accessible scatter, bubble, heatmap, range, and combo renderers. Add native chart families for
+  React Native, SwiftUI, and Compose, plus semantic summaries and fallback data across adapters.
+
+- [#41](https://github.com/santi020k/lumen/pull/41) [`9b1542a`](https://github.com/santi020k/lumen/commit/9b1542a850392c8dd7d2d8dc63aba19fcdc09c92) Thanks [@santi020k](https://github.com/santi020k)! - Add cross-platform phone input contracts for web, React Native, SwiftUI, and Jetpack Compose with
+  localized country metadata, supplementary flags, calling codes, as-you-type formatting,
+  metadata-backed validation, and E.164 output.
+
+### Patch Changes
+
+- [#43](https://github.com/santi020k/lumen/pull/43) [`b318703`](https://github.com/santi020k/lumen/commit/b318703196b134d08c9c58c04ed5c743c8b6c105) Thanks [@santi020k](https://github.com/santi020k)! - Make the authored Lumen light palette the canonical default across web, React Native, SwiftUI, and
+  Compose, keep semantic theme overrides intact, and allow built-in web themes on nested boundaries.
+
+- [#43](https://github.com/santi020k/lumen/pull/43) [`b318703`](https://github.com/santi020k/lumen/commit/b318703196b134d08c9c58c04ed5c743c8b6c105) Thanks [@santi020k](https://github.com/santi020k)! - Allow application-defined semantic color values in the public React Native theme contract so
+  consumer themes can be passed to `LumenProvider` without unsafe casts.
+
+- [#43](https://github.com/santi020k/lumen/pull/43) [`b318703`](https://github.com/santi020k/lumen/commit/b318703196b134d08c9c58c04ed5c743c8b6c105) Thanks [@santi020k](https://github.com/santi020k)! - Expose meaningful required-field labels and exact validation context across native grouped,
+  multiline, and date-range controls without replacing consumer-supplied accessibility guidance.
+
+- [#43](https://github.com/santi020k/lumen/pull/43) [`b318703`](https://github.com/santi020k/lumen/commit/b318703196b134d08c9c58c04ed5c743c8b6c105) Thanks [@santi020k](https://github.com/santi020k)! - Expose disabled accessibility state consistently from React Native text fields, textareas, search
+  fields, chip removal actions, and phone inputs, including country selectors with an empty allow-list.
+  Preserve caller-supplied accessibility state and prevent buttons from being assigned a non-button
+  accessibility role. Run rendered TSX component behavior tests in the standard React Native package
+  suite so these semantics remain covered in CI. Announce validation context from React Native date,
+  phone, and multiline controls without dropping consumer accessibility props, and keep SwiftUI
+  textarea values distinct from their validation hints.
+  Dismiss React Native date, generic, and phone-country pickers when their controls become disabled,
+  keep them closed after re-enabling until the next user action, and disable generic pickers with no
+  available options.
+
+- [#43](https://github.com/santi020k/lumen/pull/43) [`b318703`](https://github.com/santi020k/lumen/commit/b318703196b134d08c9c58c04ed5c743c8b6c105) Thanks [@santi020k](https://github.com/santi020k)! - Graduate the React Native phone contract and the Compose phone and Wear compositions into the
+  supported Lumen 2 surface. Remove obsolete Kotlin opt-in annotations, publish accurate React Native
+  peer-install guidance, document the separate Wear OS artifact, and replace the incompatible public
+  Expo Go launch link with supported browser and local-native playground paths. Restart the two-release
+  stability soak from the newly frozen stable baselines.
+
+  Declare visionOS 1 support for the SwiftUI application product, include visionOS in API-baseline
+  and clean-consumer verification, and keep the WidgetKit product on its accurate iOS, iPadOS,
+  macOS, and watchOS contract until its visionOS 26 rendering dependency can be adopted deliberately.
+
+- [#41](https://github.com/santi020k/lumen/pull/41) [`9b1542a`](https://github.com/santi020k/lumen/commit/9b1542a850392c8dd7d2d8dc63aba19fcdc09c92) Thanks [@santi020k](https://github.com/santi020k)! - Deliver native date selections through the platform picker's supported event contract, keep
+  invalid controlled dates from reaching formatters, and ignore invalid optional date bounds. Keep
+  restricted phone inputs within their
+  configured country allow-list across native adapters, including externally supplied values, and
+  exclude invalid scatter coordinates, non-finite numeric categories, and negative bubble sizes from
+  rendered charts and disclosures. Keep pie disclosures aligned with positive rendered slices and
+  exclude incomplete ranges from Compose chart domains.
+  Preserve typed range categories in React fallback keys, and generate Swift-safe illustration case
+  identifiers from kebab-case catalog names.
+  Allow SwiftUI consumers to derive a product palette by overriding only selected semantic colors.
+- Updated dependencies [[`b318703`](https://github.com/santi020k/lumen/commit/b318703196b134d08c9c58c04ed5c743c8b6c105), [`b318703`](https://github.com/santi020k/lumen/commit/b318703196b134d08c9c58c04ed5c743c8b6c105), [`b318703`](https://github.com/santi020k/lumen/commit/b318703196b134d08c9c58c04ed5c743c8b6c105), [`b318703`](https://github.com/santi020k/lumen/commit/b318703196b134d08c9c58c04ed5c743c8b6c105), [`b318703`](https://github.com/santi020k/lumen/commit/b318703196b134d08c9c58c04ed5c743c8b6c105), [`b318703`](https://github.com/santi020k/lumen/commit/b318703196b134d08c9c58c04ed5c743c8b6c105), [`b318703`](https://github.com/santi020k/lumen/commit/b318703196b134d08c9c58c04ed5c743c8b6c105), [`b318703`](https://github.com/santi020k/lumen/commit/b318703196b134d08c9c58c04ed5c743c8b6c105), [`b318703`](https://github.com/santi020k/lumen/commit/b318703196b134d08c9c58c04ed5c743c8b6c105), [`b318703`](https://github.com/santi020k/lumen/commit/b318703196b134d08c9c58c04ed5c743c8b6c105), [`9b1542a`](https://github.com/santi020k/lumen/commit/9b1542a850392c8dd7d2d8dc63aba19fcdc09c92), [`9b1542a`](https://github.com/santi020k/lumen/commit/9b1542a850392c8dd7d2d8dc63aba19fcdc09c92), [`9b1542a`](https://github.com/santi020k/lumen/commit/9b1542a850392c8dd7d2d8dc63aba19fcdc09c92), [`9b1542a`](https://github.com/santi020k/lumen/commit/9b1542a850392c8dd7d2d8dc63aba19fcdc09c92)]:
+  - @santi020k/lumen-core@1.7.0
+
 ## 1.0.0-rc.0
 
 ### Major Changes

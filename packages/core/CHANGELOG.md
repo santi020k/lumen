@@ -1,5 +1,85 @@
 # @santi020k/lumen-core
 
+## 1.7.0
+
+### Minor Changes
+
+- [#43](https://github.com/santi020k/lumen/pull/43) [`b318703`](https://github.com/santi020k/lumen/commit/b318703196b134d08c9c58c04ed5c743c8b6c105) Thanks [@santi020k](https://github.com/santi020k)! - Add a shared ErrorState contract and accessible recovery surface for unavailable regions and pages,
+  with error and offline contexts, compact and page layouts, explicit live-region policy, safe support
+  references, application-owned actions, and an error-handling decision guide.
+
+- [#43](https://github.com/santi020k/lumen/pull/43) [`b318703`](https://github.com/santi020k/lumen/commit/b318703196b134d08c9c58c04ed5c743c8b6c105) Thanks [@santi020k](https://github.com/santi020k)! - Expand shared surface radii for app-owned mobile cards and media, and improve SwiftUI product
+  adaptation with palette overrides, optional tint ownership, configurable card geometry, and
+  status icons that do not communicate state through color alone.
+
+- [#43](https://github.com/santi020k/lumen/pull/43) [`b318703`](https://github.com/santi020k/lumen/commit/b318703196b134d08c9c58c04ed5c743c8b6c105) Thanks [@santi020k](https://github.com/santi020k)! - Export typed Tabs change-event contracts, keep selected tabs visible in horizontally overflowing
+  lists, expose the Lumen CLI through every web adapter, and detect duplicate stylesheet entrypoints
+  across an application boundary.
+
+- [#41](https://github.com/santi020k/lumen/pull/41) [`9b1542a`](https://github.com/santi020k/lumen/commit/9b1542a850392c8dd7d2d8dc63aba19fcdc09c92) Thanks [@santi020k](https://github.com/santi020k)! - Add a canonical generated illustration catalog, shared graphics tokens, and cross-platform image
+  presentation contracts with native React Native, SwiftUI, and Jetpack Compose implementations.
+  Web images also gain shared contain or cover fitting and semantic corner-radius options.
+
+- [#41](https://github.com/santi020k/lumen/pull/41) [`9b1542a`](https://github.com/santi020k/lumen/commit/9b1542a850392c8dd7d2d8dc63aba19fcdc09c92) Thanks [@santi020k](https://github.com/santi020k)! - Expand Lumen data visualization with generated cross-platform chart tokens, numeric and time
+  scales, validation, summaries, downsampling and live-window helpers, conformance fixtures, and
+  accessible scatter, bubble, heatmap, range, and combo renderers. Add native chart families for
+  React Native, SwiftUI, and Compose, plus semantic summaries and fallback data across adapters.
+
+- [#41](https://github.com/santi020k/lumen/pull/41) [`9b1542a`](https://github.com/santi020k/lumen/commit/9b1542a850392c8dd7d2d8dc63aba19fcdc09c92) Thanks [@santi020k](https://github.com/santi020k)! - Add cross-platform phone input contracts for web, React Native, SwiftUI, and Jetpack Compose with
+  localized country metadata, supplementary flags, calling codes, as-you-type formatting,
+  metadata-backed validation, and E.164 output.
+
+### Patch Changes
+
+- [#43](https://github.com/santi020k/lumen/pull/43) [`b318703`](https://github.com/santi020k/lumen/commit/b318703196b134d08c9c58c04ed5c743c8b6c105) Thanks [@santi020k](https://github.com/santi020k)! - Fix `normalizeLumenCode` (used by `tokenizeLumenCode`, `renderLumenCodeHtml`, and the `Code`
+  component's highlighting fallback) so it no longer throws `RangeError: Maximum call stack size
+  exceeded` on very large code blocks. It computed the shared indentation with
+  `Math.min(...indentation)`, which spreads one argument per line and overflows the call stack past
+  roughly 100,000 lines; it now finds the minimum with a linear scan and also trims leading/trailing
+  blank lines by index instead of repeated `Array#shift`/`pop`, avoiding quadratic behavior on inputs
+  with many blank lines.
+
+- [#43](https://github.com/santi020k/lumen/pull/43) [`b318703`](https://github.com/santi020k/lumen/commit/b318703196b134d08c9c58c04ed5c743c8b6c105) Thanks [@santi020k](https://github.com/santi020k)! - Make the authored Lumen light palette the canonical default across web, React Native, SwiftUI, and
+  Compose, keep semantic theme overrides intact, and allow built-in web themes on nested boundaries.
+
+- [#43](https://github.com/santi020k/lumen/pull/43) [`b318703`](https://github.com/santi020k/lumen/commit/b318703196b134d08c9c58c04ed5c743c8b6c105) Thanks [@santi020k](https://github.com/santi020k)! - Harden data-view state parsing and pagination against non-finite, non-positive, fractional, and
+  unsafe numeric values by normalizing them to the documented defaults. Preserve structured sort
+  keys containing colons across URL parsing and serialization instead of truncating the key at its
+  first separator.
+
+- [#43](https://github.com/santi020k/lumen/pull/43) [`b318703`](https://github.com/santi020k/lumen/commit/b318703196b134d08c9c58c04ed5c743c8b6c105) Thanks [@santi020k](https://github.com/santi020k)! - Fix `getLumenRichTextShortcut` so the `Ctrl/Cmd+Shift+7` (ordered list) and `Ctrl/Cmd+Shift+8`
+  (unordered list) shortcuts work in real browsers. The lookup matched the layout-dependent shifted
+  character reported in `KeyboardEvent.key` (for example `&`/`*` on a US layout), which never equals
+  the digit the code checked for, so the shortcuts silently did nothing. Matching now uses the
+  layout-independent physical key (`KeyboardEvent.code`) for these two shortcuts.
+
+- [#43](https://github.com/santi020k/lumen/pull/43) [`b318703`](https://github.com/santi020k/lumen/commit/b318703196b134d08c9c58c04ed5c743c8b6c105) Thanks [@santi020k](https://github.com/santi020k)! - Fix `resizeScheduleEvent` so the explicit `min`/`max` resize bound is never exceeded, even when the
+  event's fixed edge already sits outside that bound. The unconditional `>=1 minute` duration floor
+  previously took priority over the caller's bound (for example resizing an event's `end` could
+  return a value past `max` when the event's own `start` was already at or after `max`), silently
+  letting the result escape a caller-configured drag range. The explicit bound now always wins; the
+  duration floor is applied only when compatible with it.
+
+- [#43](https://github.com/santi020k/lumen/pull/43) [`b318703`](https://github.com/santi020k/lumen/commit/b318703196b134d08c9c58c04ed5c743c8b6c105) Thanks [@santi020k](https://github.com/santi020k)! - Fix `resizeScheduleEvent` so a `min` resize bound is enforced when no `max` bound is also given.
+  Previously, resizing an event's start earlier than a configured `min` (a common case, since start
+  edges are usually resized without a `max`) silently produced a time before `min` instead of
+  clamping to it.
+
+- [#43](https://github.com/santi020k/lumen/pull/43) [`b318703`](https://github.com/santi020k/lumen/commit/b318703196b134d08c9c58c04ed5c743c8b6c105) Thanks [@santi020k](https://github.com/santi020k)! - Add the canonical `ToastViewport` contract across web adapters, retain `Sonner` as a deprecated
+  1.x compatibility alias, and teach the Lumen 2 migrator to rename imports and custom elements
+  without losing viewport configuration or children.
+
+- [#41](https://github.com/santi020k/lumen/pull/41) [`9b1542a`](https://github.com/santi020k/lumen/commit/9b1542a850392c8dd7d2d8dc63aba19fcdc09c92) Thanks [@santi020k](https://github.com/santi020k)! - Deliver native date selections through the platform picker's supported event contract, keep
+  invalid controlled dates from reaching formatters, and ignore invalid optional date bounds. Keep
+  restricted phone inputs within their
+  configured country allow-list across native adapters, including externally supplied values, and
+  exclude invalid scatter coordinates, non-finite numeric categories, and negative bubble sizes from
+  rendered charts and disclosures. Keep pie disclosures aligned with positive rendered slices and
+  exclude incomplete ranges from Compose chart domains.
+  Preserve typed range categories in React fallback keys, and generate Swift-safe illustration case
+  identifiers from kebab-case catalog names.
+  Allow SwiftUI consumers to derive a product palette by overriding only selected semantic colors.
+
 ## 1.7.0-rc.0
 
 ### Minor Changes
