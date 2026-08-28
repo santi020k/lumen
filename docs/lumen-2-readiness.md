@@ -267,7 +267,11 @@ Maven Central coordinates resolve to that revision.
 published the npm family and created `v1.8.0`.
 [Maven run 33149826124](https://github.com/santi020k/lumen/actions/runs/33149826124) validated the
 unchanged native API baselines, built the signed Central bundle, uploaded Compose and Wear 0.7.0,
-and reached the published state. Merged-main consumer runs then passed for
+and reached the published state. The dedicated
+[published-native run 33156420758](https://github.com/santi020k/lumen/actions/runs/33156420758)
+resolved every immutable coordinate to that revision and built clean React Native iOS and Android,
+Swift package, Compose, and Wear consumers from the public artifacts. Merged-main consumer runs then
+passed for
 [Roadscore](https://github.com/santi020k/roadscore/actions/runs/33151107060) at revision
 `0eb508cd651d7a3b5688d55011cd8e41ac13a31d` and
 [Between Contractions](https://github.com/santi020k/betweencontractions/actions/runs/33152073534)

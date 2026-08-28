@@ -282,14 +282,23 @@ for (const [iterationIndex, iteration] of ledger.iterations.entries()) {
 
   assert.deepEqual(
     Object.keys(iteration.evidence).sort(),
-    ['consumerValidation', 'release'],
-    `${iteration.id} evidence must record release and consumer validation`
+    ['artifactVerification', 'consumerValidation', 'release'],
+    `${iteration.id} evidence must record release, published-artifact verification, and consumer validation`
   )
 
   validateEvidenceRecord(iteration.evidence.release, `${iteration.id}.release`, {
     expectedRepository: lumenRepository,
     expectedRevision: iteration.revision
   })
+
+  validateEvidenceRecord(
+    iteration.evidence.artifactVerification,
+    `${iteration.id}.artifactVerification`,
+    {
+      expectedRepository: lumenRepository,
+      expectedRevision: iteration.revision
+    }
+  )
 
   assert.ok(
     isRecord(iteration.evidence.consumerValidation),

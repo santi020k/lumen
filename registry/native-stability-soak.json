@@ -52,6 +52,12 @@
         "wearClassification": "12a324da782c208d3b8135d1ed74eb2f6e0f8e038ccb724908a23624d0231049"
       },
       "evidence": {
+        "artifactVerification": {
+          "repository": "https://github.com/santi020k/lumen",
+          "revision": "a3f3c7a05ba7f9fe30554b32d67c86f3aa5dfd46",
+          "revisionUrl": "https://github.com/santi020k/lumen/commit/a3f3c7a05ba7f9fe30554b32d67c86f3aa5dfd46",
+          "verificationUrl": "https://github.com/santi020k/lumen/actions/runs/33139186529"
+        },
         "release": {
           "repository": "https://github.com/santi020k/lumen",
           "revision": "a3f3c7a05ba7f9fe30554b32d67c86f3aa5dfd46",
@@ -112,6 +118,12 @@
         "wearClassification": "12a324da782c208d3b8135d1ed74eb2f6e0f8e038ccb724908a23624d0231049"
       },
       "evidence": {
+        "artifactVerification": {
+          "repository": "https://github.com/santi020k/lumen",
+          "revision": "623e3fadf036dab79dc25cf04c5e2e4e4d1734a9",
+          "revisionUrl": "https://github.com/santi020k/lumen/commit/623e3fadf036dab79dc25cf04c5e2e4e4d1734a9",
+          "verificationUrl": "https://github.com/santi020k/lumen/actions/runs/33156420758"
+        },
         "release": {
           "repository": "https://github.com/santi020k/lumen",
           "revision": "623e3fadf036dab79dc25cf04c5e2e4e4d1734a9",
