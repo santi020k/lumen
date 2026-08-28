@@ -31,5 +31,66 @@
       "sha256": "12a324da782c208d3b8135d1ed74eb2f6e0f8e038ccb724908a23624d0231049"
     }
   },
-  "iterations": []
+  "iterations": [
+    {
+      "id": "native-soak.0",
+      "date": "2026-08-28",
+      "revision": "a3f3c7a05ba7f9fe30554b32d67c86f3aa5dfd46",
+      "versions": {
+        "compose": "0.6.0",
+        "reactNative": "1.0.0",
+        "swift": "1.7.0",
+        "wear": "0.6.0"
+      },
+      "baselines": {
+        "reactNative": "9f64a0ce3dba98edcf7716ea5ee02c2d92e36e7c4b1cf02abd4ddb4ac5c0b904",
+        "swiftUI": "82905a4f3854aacfd6f93664e5b8a4c84dd18d0408ab6acdc787228745f13a48",
+        "swiftWidget": "fcb0bc6015d1044d3f0c3d155f99b58e6a58acc906fb55b02bc190b25caebdbe",
+        "compose": "f038e883b732f82d29de7270245b22054478d554d85f92af51d61f76669a49d7",
+        "composeClassification": "0eb2fe098caefd50564a03d967404ca14716ab76d166f647027f7624d4f8338c",
+        "wear": "9db7ecb2c00943a53b81f7872d091db8f13261d6d9347c7b648d18cc13a9919b",
+        "wearClassification": "12a324da782c208d3b8135d1ed74eb2f6e0f8e038ccb724908a23624d0231049"
+      },
+      "evidence": {
+        "release": {
+          "repository": "https://github.com/santi020k/lumen",
+          "revision": "a3f3c7a05ba7f9fe30554b32d67c86f3aa5dfd46",
+          "revisionUrl": "https://github.com/santi020k/lumen/commit/a3f3c7a05ba7f9fe30554b32d67c86f3aa5dfd46",
+          "verificationUrl": "https://github.com/santi020k/lumen/actions/runs/33139186529"
+        },
+        "consumerValidation": {
+          "reactNative": {
+            "repository": "https://github.com/santi020k/roadscore",
+            "revision": "9a44c078f55eda882151a0d92dca0b43876e6743",
+            "revisionUrl": "https://github.com/santi020k/roadscore/commit/9a44c078f55eda882151a0d92dca0b43876e6743",
+            "verificationUrl": "https://github.com/santi020k/roadscore/actions/runs/33144521047"
+          },
+          "swiftUI": {
+            "repository": "https://github.com/santi020k/betweencontractions",
+            "revision": "c959890466d3c6e4b4c0f266251378e3eff7bd42",
+            "revisionUrl": "https://github.com/santi020k/betweencontractions/commit/c959890466d3c6e4b4c0f266251378e3eff7bd42",
+            "verificationUrl": "https://github.com/santi020k/betweencontractions/actions/runs/33138045527"
+          },
+          "swiftWidget": {
+            "repository": "https://github.com/santi020k/betweencontractions",
+            "revision": "c959890466d3c6e4b4c0f266251378e3eff7bd42",
+            "revisionUrl": "https://github.com/santi020k/betweencontractions/commit/c959890466d3c6e4b4c0f266251378e3eff7bd42",
+            "verificationUrl": "https://github.com/santi020k/betweencontractions/actions/runs/33138045527"
+          },
+          "compose": {
+            "repository": "https://github.com/santi020k/betweencontractions",
+            "revision": "c959890466d3c6e4b4c0f266251378e3eff7bd42",
+            "revisionUrl": "https://github.com/santi020k/betweencontractions/commit/c959890466d3c6e4b4c0f266251378e3eff7bd42",
+            "verificationUrl": "https://github.com/santi020k/betweencontractions/actions/runs/33138045527"
+          },
+          "wear": {
+            "repository": "https://github.com/santi020k/betweencontractions",
+            "revision": "c959890466d3c6e4b4c0f266251378e3eff7bd42",
+            "revisionUrl": "https://github.com/santi020k/betweencontractions/commit/c959890466d3c6e4b4c0f266251378e3eff7bd42",
+            "verificationUrl": "https://github.com/santi020k/betweencontractions/actions/runs/33138045527"
+          }
+        }
+      }
+    }
+  ]
 }

@@ -39,16 +39,16 @@ Lumen's own fixtures cannot qualify an adapter.
 The local sibling-project scan on 2026-08-24 found the following candidates. No external repository
 was changed during discovery.
 
-| Adapter      | Candidate            | Current evidence                                                                                                                                                                                                                           | Qualification status                                                                                                                                |
-| ------------ | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| React Native | Roadscore mobile     | Expo 57 and React Native 0.86.2 application upgraded from `@santi020k/lumen-react-native@0.3.0` to `0.4.0`; frozen install, direct lint/typecheck, and iOS/Android/web Expo export pass; a disposable 0.5.0 upgrade passes the same checks | Owner-confirmed active product; an immutable repository record, signed native EAS build, accessibility pass, and physical-device evidence remain    |
-| SwiftUI      | ContracTrack         | Exact Lumen upgrade from 1.5.0 to 1.7.0 across iOS, macOS, and watchOS; all three application and widget graphs build against the resolved tag                                                                                             | Owner-confirmed active product with an immutable upgrade and earlier signed archive; accessibility and current physical-device confirmation remain  |
-| SwiftUI      | Workscene            | Exact Lumen 1.5.0 dependency in a macOS application with multiple Lumen-backed feature and settings views                                                                                                                                  | Candidate; build, active-product confirmation, findings, and upgrade evidence remain                                                                |
-| SwiftUI      | Coolstead            | Pending exact 1.4.0 to 1.5.0 upgrade in a macOS application; strict formatting, warning-as-error builds, release-metadata validation, and 42 tests pass                                                                                    | Technical build and upgrade validation complete for the pending 1.5.0 integration; active-product confirmation and physical-product evidence remain |
-| SwiftUI      | PostLens             | Exact Lumen 1.5.0 dependency in an iOS application with multiple Lumen-backed product flows; simulator build, standalone type-check, smoke checks, and 434 tests pass                                                                      | Technical build validation complete for 1.5.0; upgrade, active-product confirmation, and physical-device evidence remain                            |
-| WidgetKit    | ContracTrack widgets | Maintained iOS, macOS, and watchOS widget extensions consume `LumenWidgetUI`; all three widget graphs build from the exact 1.7.0 tag in the immutable consumer workflow                                                                    | Owner-confirmed active product with immutable adoption and upgrade evidence; signed extensions and physical-device accessibility evidence remain    |
-| Compose      | ContracTrack Android | Exact upgrade from `com.santi020k:lumen-compose:0.4.0` to 0.6.0; dependency isolation, unit tests, lint, and the debug application build pass in the immutable consumer workflow                                                           | Owner-confirmed active product with an earlier signed Play artifact; physical-device and accessibility evidence for the current release remain      |
-| Wear OS      | ContracTrack Wear    | Exact upgrade from `com.santi020k:lumen-compose-wear:0.4.0` to 0.6.0; dependency isolation, unit tests, lint, and the separate watch application build pass in the immutable consumer workflow                                             | Owner-confirmed active product; signed current watch artifact, accessibility pass, and physical-watch confirmation remain                           |
+| Adapter      | Candidate            | Current evidence                                                                                                                                                                                                                          | Qualification status                                                                                                                                |
+| ------------ | -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| React Native | Roadscore mobile     | Expo 57 and React Native 0.86.2 application upgraded from `@santi020k/lumen-react-native@0.4.0` to `1.0.0`; its merged immutable consumer canary passes exact package resolution, lint, typecheck, build, and iOS/Android/web Expo export | Owner-confirmed active product with immutable upgrade evidence; a signed native EAS build, accessibility pass, and physical-device evidence remain  |
+| SwiftUI      | ContracTrack         | Exact Lumen upgrade from 1.5.0 to 1.7.0 across iOS, macOS, and watchOS; all three application and widget graphs build against the resolved tag                                                                                            | Owner-confirmed active product with an immutable upgrade and earlier signed archive; accessibility and current physical-device confirmation remain  |
+| SwiftUI      | Workscene            | Exact Lumen 1.5.0 dependency in a macOS application with multiple Lumen-backed feature and settings views                                                                                                                                 | Candidate; build, active-product confirmation, findings, and upgrade evidence remain                                                                |
+| SwiftUI      | Coolstead            | Pending exact 1.4.0 to 1.5.0 upgrade in a macOS application; strict formatting, warning-as-error builds, release-metadata validation, and 42 tests pass                                                                                   | Technical build and upgrade validation complete for the pending 1.5.0 integration; active-product confirmation and physical-product evidence remain |
+| SwiftUI      | PostLens             | Exact Lumen 1.5.0 dependency in an iOS application with multiple Lumen-backed product flows; simulator build, standalone type-check, smoke checks, and 434 tests pass                                                                     | Technical build validation complete for 1.5.0; upgrade, active-product confirmation, and physical-device evidence remain                            |
+| WidgetKit    | ContracTrack widgets | Maintained iOS, macOS, and watchOS widget extensions consume `LumenWidgetUI`; all three widget graphs build from the exact 1.7.0 tag in the immutable consumer workflow                                                                   | Owner-confirmed active product with immutable adoption and upgrade evidence; signed extensions and physical-device accessibility evidence remain    |
+| Compose      | ContracTrack Android | Exact upgrade from `com.santi020k:lumen-compose:0.4.0` to 0.6.0; dependency isolation, unit tests, lint, and the debug application build pass in the immutable consumer workflow                                                          | Owner-confirmed active product with an earlier signed Play artifact; physical-device and accessibility evidence for the current release remain      |
+| Wear OS      | ContracTrack Wear    | Exact upgrade from `com.santi020k:lumen-compose-wear:0.4.0` to 0.6.0; dependency isolation, unit tests, lint, and the separate watch application build pass in the immutable consumer workflow                                            | Owner-confirmed active product; signed current watch artifact, accessibility pass, and physical-watch confirmation remain                           |
 
 ## Owner confirmation and current workspace audit
 
@@ -60,8 +60,9 @@ recorded separately.
 
 The same-day sibling-repository audit found:
 
-- Roadscore remains a local-only repository whose working tree upgrades React Native from 0.3.0 to
-  0.4.0. Without an origin remote, it still cannot provide an immutable HTTPS consumer record.
+- Roadscore now has a maintained external repository. Merge commit
+  `9a44c078f55eda882151a0d92dca0b43876e6743` upgrades the active application from React Native
+  adapter 0.4.0 to 1.0.0 and provides an immutable HTTPS consumer record.
 - ContracTrack's current dirty working tree advances SwiftUI from 1.5.0 to 1.6.0 and Compose/Wear
   from 0.4.0 to 0.5.0. Those changes are useful candidate evidence but remain mutable.
 - PostLens resolves SwiftUI 1.7.0-rc.0 at revision
@@ -114,7 +115,7 @@ physical-device, signed-current-artifact, or accessibility result.
 
 ## Validation records
 
-### Roadscore React Native 0.4.0
+### Roadscore React Native 0.4.0 to 1.0.0
 
 Validated on 2026-08-24 at repository revision
 `8a954bc4aae51f0d28c000bb490118317775821a`, preserving the candidate's existing uncommitted source
@@ -192,9 +193,17 @@ iOS icon catalog and Android foreground, background, monochrome, and adaptive ic
 Product navigation stays in Expo Router, while the application owns game state and persistence
 through a typed Zustand store backed by AsyncStorage. `LumenProvider` remains the presentation
 boundary and does not own navigation, persistence, or product lifecycle. These facts complete the
-technical icon and state-management checks. Active-product confirmation, an accessibility review,
-a signed EAS application, and an immutable repository record remain outstanding; the local
-Roadscore repository has no configured origin remote.
+technical icon and state-management checks.
+
+The maintained Roadscore repository then merged the 0.4.0 to 1.0.0 adoption at exact revision
+[`9a44c078f55eda882151a0d92dca0b43876e6743`](https://github.com/santi020k/roadscore/commit/9a44c078f55eda882151a0d92dca0b43876e6743).
+The permanent merged-main
+[consumer run](https://github.com/santi020k/roadscore/actions/runs/33144521047) resolved the exact
+React Native 1.0.0 and Core 1.7.0 packages from the immutable first stability-release manifest,
+passed the repository's zero-warning lint, builds, and type checks, and exported iOS and Android
+Hermes bundles plus the web routes. This closes the immutable repository and first-iteration
+consumer-build gaps. It does not claim a signed EAS application, accessibility review, or
+physical-device result; those checks remain release blockers.
 
 ### ContracTrack native consumers
 

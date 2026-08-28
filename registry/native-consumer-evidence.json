@@ -8,7 +8,7 @@
       "consumer": {
         "name": "Roadscore mobile",
         "owner": "Santiago Molina",
-        "repository": null
+        "repository": "https://github.com/santi020k/roadscore.git"
       },
       "minimumOperatingSystems": ["Android API 24", "iOS 16.4"],
       "toolchain": "Node.js 22.19 or newer, pnpm 10.34.3, Expo 57, React Native 0.86.2, React 19.2.3, and TypeScript 6.0.3",
@@ -23,8 +23,8 @@
       ],
       "upgrade": {
         "fromVersion": "0.4.0",
-        "toVersion": "0.5.0",
-        "revision": "8a954bc4aae51f0d28c000bb490118317775821a"
+        "toVersion": "1.0.0",
+        "revision": "9a44c078f55eda882151a0d92dca0b43876e6743"
       },
       "checks": {
         "accessibility": false,
@@ -39,10 +39,13 @@
         "upgrade": true
       },
       "compatibilityWorkarounds": [],
-      "evidence": ["docs/native-consumer-validation.md#roadscore-react-native-040"],
+      "evidence": [
+        "docs/native-consumer-validation.md#roadscore-react-native-040-to-100",
+        "https://github.com/santi020k/roadscore/commit/9a44c078f55eda882151a0d92dca0b43876e6743",
+        "https://github.com/santi020k/roadscore/actions/runs/33144521047"
+      ],
       "blockingIssues": [
-        "A signed native application build and accessibility pass are required.",
-        "An immutable consumer repository record is unavailable because the local repository has no configured origin remote."
+        "A signed native application build, physical-device validation, and accessibility pass are required."
       ]
     },
     {
