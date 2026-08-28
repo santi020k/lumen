@@ -83,17 +83,22 @@ platform mappings, accessibility requirements, and contribution checks.
 ## Native support policy
 
 The shared token foundation and the React Native, SwiftUI, Jetpack Compose, and Wear OS component
-contracts are **Supported for Lumen 2**. The current pre-2 artifacts are release candidates for that
-contract; publication, consumer-soak, and physical-device evidence remain launch gates. Breaking
-changes require release notes and a practical migration path.
+contracts are **Supported for Lumen 2**. Package, migration, build, security, published-artifact,
+and two-release stability checks gate the initial publication. External-consumer and
+physical-device evidence remains visible as post-release qualification work. Breaking changes
+require release notes and a practical migration path.
 
-A native adapter is ready to publish as version 2 after it has:
+A native adapter enters version 2 after it has:
 
-- at least one active consumer application;
-- accessibility and interaction testing on representative physical devices;
+- a frozen, reviewed public API and migration path;
+- clean package, build, compatibility, and published-artifact validation;
 - a documented platform and toolchain compatibility matrix;
 - component contracts that remain stable across multiple releases; and
 - a documented deprecation policy for future API changes.
+
+Active-consumer upgrades and representative physical-device accessibility checks remain required
+qualification evidence, but the maintainer explicitly deferred their completion until after the
+initial 2.0.0 publication. Pending entries must not be described as completed.
 
 The measurable graduation gates, release sequence, and stable compatibility policy are tracked in
 [Lumen 2 readiness](lumen-2-readiness.md).
@@ -128,8 +133,8 @@ Future features that do not yet meet the supported contract bar should be labele
 - NavigationBar provides controlled peer-destination selection. Navigation stacks, history, deep
   links, window scenes, sheets, popovers, and system menus remain application-owned.
 - The executable checks and manual hardware matrix live in
-  [Native device validation](native-device-validation.md). Version 2 publication remains blocked
-  until the matrix contains representative physical-device evidence.
+  [Native device validation](native-device-validation.md). Pending entries are tracked
+  transparently after the initial publication.
 - Declared minimum versions and verified toolchains live in the
   [native compatibility matrix](native-compatibility.md).
 
