@@ -1,7 +1,16 @@
 {
   "schemaVersion": 1,
-  "status": "draft",
+  "status": "approved",
   "targetVersion": "2.0.0",
+  "approval": {
+    "approver": "Santiago Molina (release owner)",
+    "date": "2026-08-28",
+    "reviewedRevision": "d72c29a487418d58fd1373959f52fb54711fc72a",
+    "evidence": [
+      "https://github.com/santi020k/lumen/commit/d72c29a487418d58fd1373959f52fb54711fc72a",
+      "https://github.com/santi020k/lumen/pull/59"
+    ]
+  },
   "policy": {
     "compatibility": "Every breaking change requires observed evidence, a replacement, an automated or documented migration, and consumer validation.",
     "nativeGraduation": "Every public package and native adapter versions together at 2.0.0 after package, contract, migration, build, security, artifact, and two-release stability checks pass. External consumer and physical-device matrices remain transparent post-release qualification work and do not block the initial publication.",
