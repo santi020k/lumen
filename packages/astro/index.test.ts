@@ -1079,7 +1079,12 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(toastViewport).toContain('maxCount?: number')
     expect(toastViewport).toContain('data-ui-toast-viewport')
     expect(sonner).toContain('\'ui-sonner\'')
+    expect(sonner).toContain('\'ui-tvp\'')
     expect(sonner).toContain('data-ui-sonner')
+    expect(sonner).toContain('data-ui-toast-viewport')
+    expect(runtime).toContain(
+      'document.querySelector<HTMLElement>(\'[data-ui-toast-viewport]\')'
+    )
     expect(runtime).toContain('type ToastApi =')
     expect(runtime).toContain('create: createToast')
     expect(runtime).toContain('dismiss: dismissToastById')
