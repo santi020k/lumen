@@ -205,6 +205,21 @@ describe('@santi020k/lumen-elements', () => {
     expect(constructors).toHaveLength(2)
   })
 
+  test('accepts the deprecated Sonner name in selective registration', () => {
+    const constructors = new Map<string, CustomElementConstructor>()
+    const registry = {
+      define: (name: string, constructor: CustomElementConstructor) => {
+        constructors.set(name, constructor)
+      },
+      get: (name: string) => constructors.get(name)
+    }
+
+    defineLumenElements(['Sonner'], registry)
+
+    expect([...constructors.keys()]).toEqual(['lumen-sonner'])
+    expect(registry.get('lumen-sonner')).toBeDefined()
+  })
+
   test('registers error states with semantic kind and layout hooks', () => {
     const state = new LumenErrorStateElement()
 

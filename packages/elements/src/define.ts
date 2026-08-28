@@ -10585,6 +10585,8 @@ const LumenSonnerElementClass: LumenElementConstructor = createLumenBehaviorElem
 
 type LumenCustomElementRegistry = Pick<CustomElementRegistry, 'define' | 'get'>
 
+type LumenElementRegistrationName = LumenComponentName | 'Sonner'
+
 const resolveCustomElementRegistry = (
   registry: LumenCustomElementRegistry | undefined
 ): LumenCustomElementRegistry | undefined => registry ?? (
@@ -10594,8 +10596,11 @@ const resolveCustomElementRegistry = (
 )
 
 const isComponentNameList = (
-  value: LumenCustomElementRegistry | readonly LumenComponentName[] | undefined
-): value is readonly LumenComponentName[] => Array.isArray(value)
+  value:
+    LumenCustomElementRegistry |
+    readonly LumenElementRegistrationName[] |
+    undefined
+): value is readonly LumenElementRegistrationName[] => Array.isArray(value)
 
 export const enhanceLumenElements = (scope: ParentNode = document): void => {
   enhanceLumenDateRangePickers(scope)
@@ -10615,7 +10620,7 @@ export const enhanceLumenElements = (scope: ParentNode = document): void => {
 
 export const defineLumenElements = (
   componentNamesOrRegistry?:
-    LumenCustomElementRegistry | readonly LumenComponentName[],
+    LumenCustomElementRegistry | readonly LumenElementRegistrationName[],
   suppliedRegistry?: LumenCustomElementRegistry
 ): void => {
   const componentNames = isComponentNameList(componentNamesOrRegistry) ?
@@ -10631,13 +10636,17 @@ export const defineLumenElements = (
   if (!customElementsRegistry) return
 
   for (const componentName of new Set(componentNames)) {
-    const config = (
-      elementConfigs as Readonly<Record<string, LumenElementConfig>>
-    )[componentName]
+    const config = componentName === 'Sonner' ?
+      lumenSonnerElementConfig :
+      (elementConfigs as Partial<Record<string, LumenElementConfig>>)[componentName]
 
-    const element = (
-      elementClasses as Readonly<Record<string, LumenElementConstructor>>
-    )[componentName]
+    const element = componentName === 'Sonner' ?
+      LumenSonnerElementClass :
+      (
+        elementClasses as Partial<
+          Record<string, LumenElementConstructor>
+        >
+      )[componentName]
 
     if (!config || !element) {
       throw new TypeError(`Unknown Lumen component name: ${componentName}`)
