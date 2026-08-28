@@ -609,15 +609,27 @@ for (const release of [
   });
 }
 
-test("blocks a coordinated version 2 launch while its contract is draft", () => {
-  const result = runChecker([
-    "--compose-version",
-    "2.0.0",
-    "--react-native-version",
-    "2.0.0",
-    "--swift-version",
-    "2.0.0",
-  ]);
+test("blocks a coordinated version 2 launch while its contract is draft", async () => {
+  const result = await withTemporaryContract(
+    (contract) => {
+      contract.status = "draft";
+
+      delete contract.approval;
+
+      delete contract.graduation;
+    },
+    (temporaryContractPath) =>
+      runChecker([
+        "--compose-version",
+        "2.0.0",
+        "--react-native-version",
+        "2.0.0",
+        "--swift-version",
+        "2.0.0",
+        "--contract",
+        temporaryContractPath,
+      ]),
+  );
 
   assert.equal(result.status, 1);
 
@@ -633,6 +645,8 @@ test("rejects an approved contract without attributable approval evidence", asyn
   const result = await withTemporaryContract(
     (contract) => {
       contract.status = "approved";
+
+      delete contract.approval;
     },
     (temporaryContractPath) =>
       runChecker([
