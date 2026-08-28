@@ -168,6 +168,13 @@ test("the web canary executes every v2 release gate", () => {
   ]);
 });
 
+test("the Swift canary allows the native iOS consumer build to finish", () => {
+  assert.match(
+    canaryWorkflow,
+    /swift:\n[\s\S]*?name: Swift package consumer[\s\S]*?timeout-minutes: 55[\s\S]*?\n {2}compose:/u,
+  );
+});
+
 test("pull-request compatibility checks build bundle-size inputs deterministically", () => {
   assertOrderedCommands(ciWorkflow, "pull-request compatibility checks", [
     "pnpm run build",
