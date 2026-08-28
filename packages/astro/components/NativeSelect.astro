@@ -32,15 +32,13 @@ const {
 
 const hasValue = Object.hasOwn(rest, 'value')
 const normalizedOptions = options.map(option => typeof option === 'string' ? { label: option, value: option } : option)
-const legacyVisualSize = size === 'default' || size === 'lg' || size === 'sm' ? size : undefined
-const resolvedVisualSize = visualSize ?? legacyVisualSize ?? 'default'
-const nativeSize = legacyVisualSize ? undefined : size
+const resolvedVisualSize = visualSize ?? 'default'
 
 const { classList, passthrough } = resolveLumenAstroProps(rest, ['ui-select', resolvedVisualSize === 'sm' && 'ui-select--sm', resolvedVisualSize === 'lg' && 'ui-select--lg'
 ], classProp, className)
 ---
 
-<select class:list={classList} size={nativeSize} {...passthrough}>
+<select class:list={classList} size={size} {...passthrough}>
   {placeholder && <option disabled selected={!hasValue} value="">{placeholder}</option>}
   <slot />
   {normalizedOptions.map(option => (

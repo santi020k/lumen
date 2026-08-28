@@ -73,7 +73,7 @@
     "Icon": "7f1b500a9788432bb51fca1da7d2defa6fbbebc2d2f745038c5532e52b76e38f",
     "Illustration": "77e9dc132bcee5218ea35c13e5bcbbdec632d55d2ffa8b7574ab04e7149b64f6",
     "Image": "33a2c4f666963faffbf1c6a6183901f07867abf950fa2acd1895425141629c29",
-    "Input": "30049a14e64b4f83f3eeb07695f39b83612edd48fcf62b188c68d2474cd7d3dc",
+    "Input": "34b776884e958a371e7711439d2b28718d97139a9e9e3caa06171d1dada3c22f",
     "InputGroup": "f791475cbbebd076a87472123bceffb73ab019431d520ee30b7df2da1e3f677d",
     "InputOTP": "98716a167fc628eccbd8e17b09691cfd48f356097bc9cc14052f5782958926ca",
     "Item": "62517c6eafc36509f3f79281552188da799dc7e9246567e2e59737fd5f8e6d44",
@@ -91,7 +91,7 @@
     "Message": "0e981ff747a53eaaabd62f7858a1f599832807f30fb910eed08485e544520453",
     "MessageScroller": "75adc34c29efca8f4529a238111637dc5a2703a9ea27fa1b0ee4ce232325e9eb",
     "Meter": "24c87efd240f2c0e230144ae44f2227293c81aa9ad7537a315f1bdf04c6a8d63",
-    "NativeSelect": "ecd7207a3b80a7e1adfc50dbaca52ea7790604d6145a7ba6d9c9fc1c6fde970e",
+    "NativeSelect": "6f159a5a52800e764555870ee8e454d4f232c014120d8cf73e0b78e2d865c3d2",
     "NavigationMenu": "67dfa5534cb5dd05abb595053043b430a7d95e8723a2cb17ec71c5e83dd0fc5a",
     "Note": "f2d1b9cbcc93028eaa870f8fb51a0bcf5fa31d35bac93c81630e427e9691b1d0",
     "NumberField": "e6dca1577aacf0c8d8d57f08829d9e7a9cd29e4d669defac0ea18a2f393794f7",
@@ -321,7 +321,6 @@
         "Skeleton",
         "SkipLink",
         "Slider",
-        "Sonner",
         "Sparkline",
         "SpeedDial",
         "Spinner",
@@ -359,7 +358,6 @@
         "TreeGrid",
         "TreeSelect",
         "Typography",
-        "UIPrimitives",
         "VirtualList",
         "VisuallyHidden",
         "Watermark",
@@ -545,10 +543,7 @@
         "normalizeAstroActionErrors"
       ],
       "experimental": [],
-      "deprecated": [
-        "Sonner",
-        "UIPrimitives"
-      ],
+      "deprecated": [],
       "unclassified": []
     },
     "core": {
@@ -1352,7 +1347,6 @@
         "LumenSkeletonElement",
         "LumenSkipLinkElement",
         "LumenSliderElement",
-        "LumenSonnerElement",
         "LumenSparklineElement",
         "LumenSpeedDialElement",
         "LumenSpinnerElement",
@@ -1596,9 +1590,7 @@
         "lumenElementDefinitions"
       ],
       "experimental": [],
-      "deprecated": [
-        "LumenSonnerElement"
-      ],
+      "deprecated": [],
       "unclassified": []
     },
     "iconsBrand": {
@@ -2484,8 +2476,6 @@
         "SkipLinkProps",
         "Slider",
         "SliderProps",
-        "Sonner",
-        "SonnerProps",
         "Sparkline",
         "SparklineProps",
         "SpeedDial",
@@ -3043,10 +3033,7 @@
         "useTooltip"
       ],
       "experimental": [],
-      "deprecated": [
-        "Sonner",
-        "SonnerProps"
-      ],
+      "deprecated": [],
       "unclassified": []
     },
     "reactHookForm": {

@@ -127,13 +127,6 @@ describe('@santi020k/lumen-astro package surface', () => {
     )
     expect(packageJson.exports['./styles.css']).toBe('./styles/lumen.css')
 
-    const index = await readFile(new URL('./index.ts', packageRoot), 'utf8')
-
-    expect(index).toContain('export { default as UIPrimitives }')
-    expect(index).toContain(
-      'export { default as Sonner } from \'./components/Sonner.astro\''
-    )
-
     await expect(
       readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8')
     ).resolves.toContain('<script>')
@@ -276,7 +269,7 @@ describe('@santi020k/lumen-astro package surface', () => {
     })
   })
 
-  test('keeps legacy visual-size aliases while preserving numeric native size', async () => {
+  test('keeps native form-control size separate from visual size', async () => {
     const [input, nativeSelect] = await Promise.all([
       readFile(new URL('./components/Input.astro', packageRoot), 'utf8'),
       readFile(new URL('./components/NativeSelect.astro', packageRoot), 'utf8')
@@ -284,9 +277,9 @@ describe('@santi020k/lumen-astro package surface', () => {
 
     for (const component of [input, nativeSelect]) {
       expect(component).toContain('visualSize?: \'default\' | \'lg\' | \'sm\'')
-      expect(component).toContain('const legacyVisualSize = size === \'default\'')
-      expect(component).toContain('const resolvedVisualSize = visualSize ?? legacyVisualSize ?? \'default\'')
-      expect(component).toContain('size={nativeSize}')
+      expect(component).toContain('const resolvedVisualSize = visualSize ?? \'default\'')
+      expect(component).toContain('size={size}')
+      expect(component).not.toContain('legacyVisualSize')
     }
   })
 
@@ -1067,8 +1060,7 @@ describe('@santi020k/lumen-astro package surface', () => {
   })
 
   test('ships mature toast runtime API, ARIA, and placement styles', async () => {
-    const [sonner, toast, toastViewport, runtime, styles] = await Promise.all([
-      readFile(new URL('./components/Sonner.astro', packageRoot), 'utf8'),
+    const [toast, toastViewport, runtime, styles] = await Promise.all([
       readFile(new URL('./components/Toast.astro', packageRoot), 'utf8'),
       readFile(new URL('./components/ToastViewport.astro', packageRoot), 'utf8'),
       readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8'),
@@ -1080,13 +1072,6 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(toastViewport).toContain('placement?:')
     expect(toastViewport).toContain('maxCount?: number')
     expect(toastViewport).toContain('data-ui-toast-viewport')
-    expect(sonner).toContain('\'ui-sonner\'')
-    expect(sonner).toContain('\'ui-tvp\'')
-    expect(sonner).toContain('data-ui-sonner')
-    expect(sonner).toContain('data-ui-toast-viewport')
-    expect(runtime).toContain(
-      'document.querySelector<HTMLElement>(\'[data-ui-toast-viewport]\')'
-    )
     expect(runtime).toContain('type ToastApi =')
     expect(runtime).toContain('create: createToast')
     expect(runtime).toContain('dismiss: dismissToastById')

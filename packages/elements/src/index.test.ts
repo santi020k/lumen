@@ -134,8 +134,8 @@ afterEach(() => {
 })
 
 describe('@santi020k/lumen-elements', () => {
-  test('registers the shared catalog and deprecated Sonner alias', () => {
-    expect(lumenElementDefinitions).toHaveLength(lumenComponentNames.length + 1)
+  test('registers one custom element for every shared catalog name', () => {
+    expect(lumenElementDefinitions).toHaveLength(lumenComponentNames.length)
 
     for (const [tagName, element] of lumenElementDefinitions) {
       expect(customElements.get(tagName)).toBe(element)
@@ -158,7 +158,6 @@ describe('@santi020k/lumen-elements', () => {
     expect(customElements.get('lumen-graphic')).toBe(LumenGraphicElement)
     expect(customElements.get('lumen-icon')).toBe(LumenIconElement)
     expect(customElements.get('lumen-illustration')).toBe(LumenIllustrationElement)
-    expect(customElements.get('lumen-sonner')).toBeDefined()
   })
 
   test('registers the complete catalog independently in each supplied registry', () => {
@@ -203,35 +202,6 @@ describe('@santi020k/lumen-elements', () => {
     defineLumenElements(['Button', 'Card'], registry)
 
     expect(constructors).toHaveLength(2)
-  })
-
-  test('accepts the deprecated Sonner name in selective registration', () => {
-    const constructors = new Map<string, CustomElementConstructor>()
-    const registry = {
-      define: (name: string, constructor: CustomElementConstructor) => {
-        constructors.set(name, constructor)
-      },
-      get: (name: string) => constructors.get(name)
-    }
-
-    defineLumenElements(['Sonner'], registry)
-
-    expect([...constructors.keys()]).toEqual(['lumen-sonner'])
-    expect(registry.get('lumen-sonner')).toBeDefined()
-  })
-
-  test('does not add the Sonner alias to selective ToastViewport registration', () => {
-    const constructors = new Map<string, CustomElementConstructor>()
-    const registry = {
-      define: (name: string, constructor: CustomElementConstructor) => {
-        constructors.set(name, constructor)
-      },
-      get: (name: string) => constructors.get(name)
-    }
-
-    defineLumenElements(['ToastViewport'], registry)
-
-    expect([...constructors.keys()]).toEqual(['lumen-toast-viewport'])
   })
 
   test('registers error states with semantic kind and layout hooks', () => {
@@ -2085,16 +2055,5 @@ describe('@santi020k/lumen-elements', () => {
     expect(document.querySelector<HTMLElement>('#fourth')?.dataset.state).toBe(
       'closed'
     )
-  })
-
-  test('keeps the legacy Sonner viewport wired to the toast controller', () => {
-    document.body.innerHTML =
-      '<lumen-sonner data-placement="top-right" data-ui-toast-max="2"></lumen-sonner>'
-
-    const viewport = document.querySelector<HTMLElement>('lumen-sonner')
-
-    expect(viewport?.classList.contains('ui-tvp')).toBe(true)
-    expect(viewport?.hasAttribute('data-ui-sonner')).toBe(true)
-    expect(viewport?.hasAttribute('data-ui-toast-viewport')).toBe(true)
   })
 })
