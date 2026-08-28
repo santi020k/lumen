@@ -1065,7 +1065,8 @@ describe('@santi020k/lumen-astro package surface', () => {
   })
 
   test('ships mature toast runtime API, ARIA, and placement styles', async () => {
-    const [toast, toastViewport, runtime, styles] = await Promise.all([
+    const [sonner, toast, toastViewport, runtime, styles] = await Promise.all([
+      readFile(new URL('./components/Sonner.astro', packageRoot), 'utf8'),
       readFile(new URL('./components/Toast.astro', packageRoot), 'utf8'),
       readFile(new URL('./components/ToastViewport.astro', packageRoot), 'utf8'),
       readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8'),
@@ -1077,6 +1078,8 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(toastViewport).toContain('placement?:')
     expect(toastViewport).toContain('maxCount?: number')
     expect(toastViewport).toContain('data-ui-toast-viewport')
+    expect(sonner).toContain('\'ui-sonner\'')
+    expect(sonner).toContain('data-ui-sonner')
     expect(runtime).toContain('type ToastApi =')
     expect(runtime).toContain('create: createToast')
     expect(runtime).toContain('dismiss: dismissToastById')

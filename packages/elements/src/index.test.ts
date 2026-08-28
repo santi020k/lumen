@@ -220,6 +220,20 @@ describe('@santi020k/lumen-elements', () => {
     expect(registry.get('lumen-sonner')).toBeDefined()
   })
 
+  test('does not add the Sonner alias to selective ToastViewport registration', () => {
+    const constructors = new Map<string, CustomElementConstructor>()
+    const registry = {
+      define: (name: string, constructor: CustomElementConstructor) => {
+        constructors.set(name, constructor)
+      },
+      get: (name: string) => constructors.get(name)
+    }
+
+    defineLumenElements(['ToastViewport'], registry)
+
+    expect([...constructors.keys()]).toEqual(['lumen-toast-viewport'])
+  })
+
   test('registers error states with semantic kind and layout hooks', () => {
     const state = new LumenErrorStateElement()
 

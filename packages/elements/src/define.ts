@@ -10623,12 +10623,16 @@ export const defineLumenElements = (
     LumenCustomElementRegistry | readonly LumenElementRegistrationName[],
   suppliedRegistry?: LumenCustomElementRegistry
 ): void => {
-  const componentNames = isComponentNameList(componentNamesOrRegistry) ?
+  const hasSelectiveComponentNames = isComponentNameList(
+    componentNamesOrRegistry
+  )
+
+  const componentNames = hasSelectiveComponentNames ?
     componentNamesOrRegistry :
     lumenComponentNames
 
   const customElementsRegistry = resolveCustomElementRegistry(
-    isComponentNameList(componentNamesOrRegistry) ?
+    hasSelectiveComponentNames ?
       suppliedRegistry :
       componentNamesOrRegistry
   )
@@ -10658,7 +10662,7 @@ export const defineLumenElements = (
   }
 
   if (
-    componentNames.includes('ToastViewport') &&
+    !hasSelectiveComponentNames &&
     !customElementsRegistry.get(lumenSonnerElementConfig.tagName)
   ) {
     customElementsRegistry.define(
