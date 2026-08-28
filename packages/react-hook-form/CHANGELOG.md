@@ -1,5 +1,18 @@
 # @santi020k/lumen-react-hook-form
 
+## 2.0.0
+
+### Major Changes
+
+- [#43](https://github.com/santi020k/lumen/pull/43) [`b318703`](https://github.com/santi020k/lumen/commit/b318703196b134d08c9c58c04ed5c743c8b6c105) Thanks [@santi020k](https://github.com/santi020k)! - Align the remaining public npm packages at the coordinated Lumen 2 production-support milestone.
+  This keeps the initial package family on `2.0.0` while preserving independent semantic versioning
+  for later 2.x releases.
+
+### Patch Changes
+
+- Updated dependencies [[`b318703`](https://github.com/santi020k/lumen/commit/b318703196b134d08c9c58c04ed5c743c8b6c105)]:
+  - @santi020k/lumen-react@2.0.0
+
 ## 1.0.2
 
 ## 1.0.2-rc.0

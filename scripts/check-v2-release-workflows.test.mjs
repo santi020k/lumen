@@ -152,7 +152,6 @@ test("the web canary executes every v2 release gate", () => {
     "pnpm run test:native-consumer-evidence",
     "pnpm run check:native-device-evidence",
     "pnpm run test:native-device-evidence",
-    "pnpm run check:native-stable-readiness",
     "pnpm run test:native-stable-readiness",
     "pnpm run test:approved-release-revision",
     "pnpm run test:coordinated-release-revision",

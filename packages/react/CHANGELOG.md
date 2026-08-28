@@ -1,5 +1,21 @@
 # @santi020k/lumen-react
 
+## 2.0.0
+
+### Major Changes
+
+- [#43](https://github.com/santi020k/lumen/pull/43) [`b318703`](https://github.com/santi020k/lumen/commit/b318703196b134d08c9c58c04ed5c743c8b6c105) Thanks [@santi020k](https://github.com/santi020k)! - Finalize the Lumen 2 breaking contracts: import the Astro runtime from its dedicated subpath,
+  replace the deprecated Sonner viewport name with ToastViewport, reserve native `size` for numeric
+  form-control sizing, and move React Native date fields to the optional `datetime` subpath. The v2
+  migrator automates the supported source changes, while the Swift surface enums gain the reviewed
+  larger semantic roles.
+
+### Patch Changes
+
+- Updated dependencies [[`b318703`](https://github.com/santi020k/lumen/commit/b318703196b134d08c9c58c04ed5c743c8b6c105)]:
+  - @santi020k/lumen@2.0.0
+  - @santi020k/lumen-core@2.0.0
+
 ## 1.8.0
 
 ### Minor Changes
