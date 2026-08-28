@@ -97,6 +97,8 @@ const runContractChecker = (arguments_) =>
 const approveContract = (contract) => {
   contract.status = "approved";
 
+  delete contract.graduation;
+
   contract.approval = {
     approver: "Lumen release owner",
     date: "2026-08-24",
