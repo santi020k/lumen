@@ -492,6 +492,15 @@ limitation in `LumenRadioGroup`: each App Store plan needs a selection mark, pla
 recommendation badge, offer or billing detail, optional value framing, and a trailing localized
 price. Flattening that card into a title and description would discard purchase context.
 
+Rendered PostLens testing later exposed the layout consequence of that gap: the fixed horizontal
+adjustment row collapsed Light, Color, and Detail into abbreviations at accessibility Dynamic Type
+even though their accessibility names remained complete. The consumer moved the container and
+selection styling onto `LumenSurface`, `surface`, `brand`, `brandSoft`, `brandSolid`, `onBrand`,
+Lumen spacing, and `LumenRadius.xl`, while retaining the three semantic buttons and live count
+values. It now keeps the compact row at standard sizes and stacks full-width choices at
+accessibility sizes. Before-and-after screenshots and interaction coverage verify readable visible
+labels, minimum 44-point targets, selected traits, and content changes after activation.
+
 Between Contractions confirmed a useful partial-adoption pattern on macOS: action-backed
 `LumenCard` instances can own the pressed and selected surfaces for rich feedback, notification,
 and theme choices, while a zero-padding non-action card can contain a selectable pregnancy row and
@@ -526,6 +535,15 @@ explicit accessible name and hint because its visible title and subtitle otherwi
 unstable label. Its deterministic preview originally supplied a no-op action, which could prove
 only appearance; wiring the real callback and asserting the presented Supporter destination turned
 the same fixture into interaction evidence.
+
+The Studio workflow preview then replaced three repeated destination-format backgrounds with muted
+`LumenSurface` instances inside one non-action `LumenCard`. `.sm` padding and `.lg` radius map the
+compact preview rows closely while Lumen owns the tertiary semantic color instead of the consumer
+repeating grouped-background values. The gradient format thumbnail remains product content, and the
+checkmark remains decorative because the outer preview already exposes one deliberate combined
+description. Rendered standard and accessibility-text states confirmed that these peer summaries
+need lower-level surfaces rather than three nested cards: the surfaces add hierarchy without card
+borders, new actions, or duplicate accessibility stops.
 
 PostLens then removed the editor's remaining generic `cardStyle()` modifier by moving ten filter,
 adjustment, crop, creation, progress, unavailable, and review panels to non-action `LumenCard`
@@ -562,6 +580,13 @@ Acceptance criteria:
   targets when rich labels are used.
 - Verify short and long localized labels, zero and multi-digit counts, larger accessibility text,
   and narrow iPhone widths.
+- Provide an accessibility layout policy that can stack full-width options, or another documented
+  strategy that keeps every visible label readable instead of truncating all choices in a fixed
+  horizontal row.
+- Keep normal-size density compact while allowing accessibility layouts to grow vertically rather
+  than shrinking text or hiding labels.
+- Style rich selection recipes with semantic surface and brand tokens, including contrast-aware
+  `brandSolid` and `onBrand` for compact count badges.
 - Document when consumers should use a segmented control, radio group, tabs, or an
   application-owned domain selector.
 - Document the action-backed `LumenCard` bridge for rich standalone choices, including explicit
@@ -588,6 +613,9 @@ Acceptance criteria:
 - Add a compound readiness example with one non-action outer card, muted nested surfaces for peer
   signals, a verbatim context badge, progress indicators, and one accent result card; document why
   every nested tile should not become another card.
+- Include a compact workflow-preview example with repeated rich metadata rows in muted surfaces;
+  keep product-owned thumbnails inside the surfaces and let the host define one combined summary
+  when the rows are explanatory rather than independently actionable.
 - Document that non-action `LumenCard` and `LumenSurface` provide visual structure but do not infer
   accessibility grouping, labels, values, headings, or data relationships from arbitrary content.
 - Verify the compound example exposes informative static groups rather than buttons, preserves the
@@ -603,18 +631,37 @@ text-only and accepts only `LocalizedStringKey`. Replacing either rich pill woul
 visual context or route already-resolved in-app English/Spanish copy back through system-locale
 lookup.
 
+PostLens migrated four text-only mobile pills to `LumenBadge`: Saved creation counts, destination
+format counts, the selected caption style, and live filter intensity. The existing neutral and
+accent recipes already matched Lumen's tone, shape, type scale, and padding closely. Runtime numbers,
+formatted percentages, and titles already resolved through the app's language setting must use
+`LumenTextContent.verbatim`; passing them through the localized-string initializer would incorrectly
+perform a second lookup against the system locale. Applying SwiftUI's `monospacedDigit()` to the
+badge preserves stable numeric widths without requiring a parallel capsule implementation.
+
+Rendered before-and-after iPhone states confirmed that the shared badge keeps accent metadata quiet
+inside cards and gives section counts that previously lacked a border a consistent muted backing. The
+destination header also showed that a badge's visual text should not be its container's accidental
+accessibility contract: the host group now exposes the destination as its label and the localized
+format count as its value, while individual format rows remain independent actions.
+
 Acceptance criteria:
 
 - Allow `LumenBadge` to accept optional leading icon content while keeping a stable localized or
   verbatim accessible name.
 - Add `LumenTextContent` support to `LumenChip` without breaking its existing localized-string
   initializer.
+- Document verbatim badge content for runtime counts, formatted measurements, and copy already
+  resolved through an in-app locale; include a numeric example using `monospacedDigit()`.
 - Keep icon, label, tone, selected state, disabled state, and remove action understandable without
   relying on color alone.
+- Verify a text badge inside a host-defined accessibility group does not obscure the group's
+  explicit label and value or merge adjacent actions into the same element.
 - Support a non-interactive badge or chip as a `LumenMenu` label without creating nested buttons or
   obscuring the menu's accessible name.
 - Test text-only and icon-bearing badges plus static, selectable, removable, and menu-label chips
-  on macOS and iOS with opposite system and in-app locales.
+  on macOS and iOS with opposite system and in-app locales, including changing numeric content at
+  standard and accessibility text sizes.
 
 ## Native spinner color in nested actions
 
@@ -752,6 +799,66 @@ Acceptance criteria:
   groups, light and dark themes, and high-contrast settings.
 - Continue requiring native `Divider` inside system menus even after visual orientation support is
   added.
+
+## SwiftUI pinned browser surfaces with independent controls
+
+PostLens replaced one shared manual `.bar` background with
+`LumenSurface(tone: .surface, padding: .none, radius: .none)` for pinned Gallery, Studio, and
+Collections browser controls. Lumen can own the app-rendered semantic surface and bottom
+`LumenDivider`, while the host retains safe-area placement, exact directional insets, scroll
+lifecycle, and the feature-specific segmented pickers, menus, and selection actions. Keeping the
+surface at zero padding and zero radius preserved the existing compact strip instead of imposing a
+card layout on navigation-adjacent controls.
+
+The shared wrapper deliberately does not combine its children into one accessibility element.
+Rendered Gallery and Studio fixtures verified that the surface stays within the phone viewport
+while the All / Top Picks filter, view-options menu, and Best Photos / Moments workflow choices
+remain separate interactive elements. A stable identifier can describe the boundary for geometry
+tests, but it must not replace the names, values, selected states, or activation behavior of those
+children.
+
+A follow-up migrated PostLens's root Saved-library selector into the same surface. That strip is
+conditionally present only when more than one Photos, Collections, or Creations destination is
+available, and its established 12-point horizontal and 8-point vertical insets differ from the
+Gallery and Studio defaults. The consumer therefore kept those exact values through configurable
+wrapper insets expressed as `LumenSpacing.md` and `LumenSpacing.sm`; `LumenSurface` still owns no
+padding. Rendered evidence confirmed that the conditional three-way segmented picker keeps one
+selected option, exposes every available destination independently, and preserves its original
+height and root-navigation density.
+
+The first geometry assertion also showed that a SwiftUI accessibility identifier attached after a
+composed surface and bottom-divider overlay may resolve to the one-point overlay child rather than
+the painted surface. The same identifier happened to resolve to the complete wrapper in simpler
+Gallery and Studio compositions, so its element type and frame are not a portable boundary
+contract. PostLens kept the identifier for discovery but verifies independently named controls and
+uses same-state rendering for the surface geometry. Examples should avoid promising that an
+identifier on a visual wrapper always creates one measurable semantic container; consumers that
+need that contract must create a deliberate container without combining or hiding child controls.
+
+This recipe applies only to opaque, application-owned browser strips. Native material remains the
+correct boundary when translucency communicates content passing beneath a system bar or when a
+control is overlaid directly on photo or camera media. A migration should compare the surface over
+real scrolling content in both themes instead of treating every `.bar` or material background as
+an interchangeable manual primitive.
+
+Acceptance criteria:
+
+- Document a pinned browser-bar recipe using a zero-radius, zero-padding `LumenSurface` and a
+  boundary `LumenDivider`, with safe-area placement and scrolling owned by the host.
+- Preserve consumer-owned directional insets and compact control density rather than forcing card
+  padding into navigation-adjacent strips.
+- Allow one shared wrapper recipe to accept consumer-owned directional inset values so peer browser
+  strips can share surface semantics without silently normalizing intentionally different density.
+- Keep segmented choices, menus, filters, and selection actions as independent accessibility
+  elements with their own names, values, selected states, disabled states, and activation results.
+- Do not group the complete strip into one accessibility element merely to expose a surface-level
+  identifier or summary.
+- Document that SwiftUI wrapper identifiers can propagate to overlay or child elements and are not
+  a stable geometry contract unless the consumer deliberately creates a semantic container.
+- Explain the opaque-surface versus native-material boundary, including media overlays and system
+  bars where translucency is functional rather than decorative.
+- Test real scrolling content, pinned geometry, light and dark themes, long localized labels,
+  right-to-left layout, Accessibility text sizes, keyboard focus, and VoiceOver traversal.
 
 ## SwiftUI disclosure and nested-action ownership
 
@@ -892,6 +999,20 @@ action. The SwiftUI implementation forces the message to one line, so narrow res
 longer Spanish copy, and larger Accessibility text can truncate essential status information when
 a trailing action is present.
 
+PostLens exposed the related persistent-progress composition inside a collection detail. The
+application replaced a manual top safe-area bar with
+`LumenSurface(tone: .surface, padding: .none, radius: .none)`, `LumenDivider`, and the existing
+`LumenProgress`, while retaining the safe-area inset, preparation lifecycle, resolved count-aware
+copy, and one frequently-updating accessibility status in the host. `LumenStatusBar` was not the
+right substitute: this surface needs a rich title, a separate completed-count value, a progress
+track, and explanatory detail rather than one message plus an optional action.
+
+Rendered accessibility evidence also found that a fixed horizontal title-and-count row can remain
+technically in bounds while compressing both labels into narrow columns. A consumer-owned
+`ViewThatFits` keeps the compact row when it fits and stacks the count below the title when it does
+not. The progress region remains one accessibility element so its visible label, count, track, and
+detail do not produce competing announcements.
+
 Acceptance criteria:
 
 - Allow SwiftUI, Compose, and React Native status messages to wrap when one line does not fit.
@@ -899,6 +1020,14 @@ Acceptance criteria:
 - Reflow the message and trailing action without overlap, clipping, or horizontal scrolling.
 - Keep representative Spanish copy readable at 200% text scaling.
 - Preserve accessibility order from status message to its related action.
+- Document a persistent-progress recipe composed from a zero-radius `LumenSurface`, boundary
+  `LumenDivider`, and `LumenProgress`, with safe-area placement and task lifecycle left to the host.
+- Include rich title, separate count, progress, and detail content rather than requiring consumers
+  to force that hierarchy into `LumenStatusBar`'s message-and-action contract.
+- Reflow title and count vertically before either is compressed into an unreadable column, and
+  test narrow phones, long localized copy, right-to-left layout, and Accessibility text sizes.
+- Keep the complete persistent status as one frequently-updating accessibility region with a
+  stable resolved label and value, without separately announcing decorative progress children.
 
 ## SwiftUI compact stat density
 
@@ -1106,6 +1235,543 @@ Acceptance criteria:
   light and dark appearances, right-to-left layout, and long translated copy.
 - Verify that membership links and plan actions remain reachable by scrolling and retain 44-point
   targets without making surrounding informational content interactive.
+
+## SwiftUI control-rich scheduling cards and nested action targets
+
+PostLens migrated the three grouped regions in its posting calendar to non-action `LumenCard`
+surfaces: a horizontally scrolling set of upcoming-date buttons, a graphical `DatePicker`, and a
+planned-post group containing navigation and menu controls. The rendered result confirms that a
+presentation-only card can own the shared surface while every nested control keeps its native role,
+selection state, and focus stop. `.md` padding preserves the graphical calendar's useful width;
+`.lg` padding gives the surrounding summary groups a clearer hierarchy.
+
+The migration also exposed an accessibility defect that changing only the container would not fix.
+The text-only Today button reported an 18-point accessibility frame before it was replaced by the
+consumer's Lumen-backed button adapter; the focused UI test now requires a 44-point target. Card
+migration guidance should explicitly audit nested actions because a non-action `LumenCard` neither
+shrinks nor enlarges the controls supplied by its content closure.
+
+PostLens retained a plain SwiftUI header composition rather than adopting `LumenSectionHeader` for
+the selected date. The title is an already-resolved, locale-aware formatted date, while the current
+section-header contract accepts only `LocalizedStringKey`. Converting the resolved date back into a
+localized key risks a second lookup and makes the component unsafe for apps whose selected locale
+differs from the system locale.
+
+Acceptance criteria:
+
+- Add a SwiftUI scheduling-card example containing a graphical date picker, horizontal date
+  choices, a section action, and a row with independent navigation and menu controls.
+- Document that an `action: nil` card preserves nested control semantics but does not guarantee
+  minimum targets for those controls.
+- Require every nested action in the example, including compact text-only header actions, to expose
+  a 44-point accessibility frame.
+- Add a `LumenTextContent` or equivalent verbatim-versus-localized title contract to
+  `LumenSectionHeader` so formatted dates and app-locale copy are not localized twice.
+- Cover the populated and compact-empty variants so the empty state delegates outer spacing to the
+  card without introducing a second full inset.
+- Test date selection, Today reset, horizontal scrolling, row navigation, menus, VoiceOver order,
+  large Dynamic Type, right-to-left layout, and long localized dates.
+- Render at a narrow iPhone width in light and dark appearances and verify that the graphical
+  calendar remains usable without horizontal clipping.
+
+## SwiftUI result cards with independent score and picker controls
+
+PostLens migrated the summary, sorting, and guidance regions in Collection Picks from manual
+18-point grouped panels to non-action `LumenCard` surfaces with `.lg` padding and a `.size2xl`
+radius. The top result card contains both an independently focusable score-details button and a
+primary Edit Top Pick action. Leaving the card's `action` nil is essential: wrapping the complete
+result in Lumen's interactive-card path would create a button around existing buttons and obscure
+which action VoiceOver should activate.
+
+The sorting card provides a second useful composition. A nested `LumenPicker` remains independently
+operable after the surface migration; the focused consumer test opens its menu, selects Most detail,
+and verifies that the explanatory copy changes. The ranked photo grid deliberately remains
+consumer-owned, edge-to-edge media UI because its image crops, score overlays, rank badges, and
+candidate navigation are domain behavior rather than generic card presentation.
+
+This use also reinforces a localization gap in the released picker contract. PostLens resolves the
+picker's accessible title through its in-app locale, but `LumenPicker` accepts only
+`LocalizedStringKey`. Reconstructing a dynamic localized key from already-resolved copy risks a
+second lookup when the selected app language differs from the system language.
+
+Acceptance criteria:
+
+- Add a SwiftUI result-card example with two independent nested actions, such as score details and
+  a primary workflow action, while the outer `LumenCard` remains non-interactive.
+- Document that cards containing buttons, links, pickers, menus, or navigation controls must not use
+  the whole-card `action` initializer.
+- Verify that the static result and sorting headings do not acquire button traits or duplicate focus
+  stops when nested controls are present.
+- Add `LumenTextContent` or equivalent localized-versus-verbatim support to the `LumenPicker` title
+  while preserving its existing source-compatible initializer.
+- Test picker activation, option selection, updated explanatory content, disabled state, and
+  VoiceOver order inside a non-action card.
+- Keep edge-to-edge media grids outside generic cards when their cropping, overlays, and per-item
+  navigation are product-owned; document this as a valid selective-adoption boundary.
+- Render the result card, sorting card, media grid, and below-grid guidance at narrow widths, large
+  Dynamic Type, light and dark appearances, right-to-left layout, and an app locale different from
+  the system locale.
+
+## SwiftUI action cards with independent overlaid accessories
+
+PostLens migrated the reusable rows in Saved Creations from a manual `Button` plus grouped-card
+background to `LumenCard(action:)` with `.md` padding and a `.size2xl` radius. Each row has one clear
+primary action—opening the saved Carousel or Layout—so the interactive-card contract is appropriate.
+The media thumbnail remains consumer-owned because its rendered crop and score placement are
+product data rather than generic card decoration.
+
+Each row also exposes a separate `PhotoScoreButton` over the thumbnail. Placing that score control
+inside the card content would nest a button inside Lumen's generated button. PostLens instead
+attaches the score control as an overlay after constructing the actionable `LumenCard`. Focused UI
+coverage confirms that the overlay remains a separate 44-point button, opens score details without
+opening the creation, and leaves the card action able to enter the editor afterward. This modifier
+ordering is subtle enough that Lumen should provide a documented accessory composition instead of
+requiring every consumer to rediscover it.
+
+Acceptance criteria:
+
+- Document that `LumenCard(action:)` is for one primary card action and that independent controls
+  must not be placed inside its content builder.
+- Add a SwiftUI action-card example with a product-owned media thumbnail and an independently
+  focusable overlaid accessory button.
+- Consider a public overlay or accessory slot that keeps secondary controls outside the generated
+  card button while preserving alignment, hit testing, disabled state, and VoiceOver order.
+- Verify that activating the accessory never triggers the card action, then activating the card
+  still performs its primary navigation.
+- Test loading and disabled card states with a trailing `LumenSpinner` so the label remains stable
+  and the independent accessory does not become misleadingly active.
+- Render compact media rows at narrow widths, large Dynamic Type, light and dark appearances, and
+  right-to-left layout while retaining the consumer-defined thumbnail crop.
+
+## SwiftUI zero-padding cards as grouped selection rows
+
+PostLens migrated its canonical destination-and-format sheet from manual grouped backgrounds to
+two non-action Lumen compositions. The current-target summary uses `LumenCard` with `.lg` padding,
+while every destination's format list uses `LumenCard(padding: .none, radius: .size2xl)` around
+native 62-point selection buttons separated by `LumenDivider`. The zero-padding contract is
+important: it lets selected-row backgrounds reach the card edges and allows the card's clipping to
+own the first and last rounded corners without shrinking the row hit targets.
+
+The group card must keep `action` nil because it contains several mutually exclusive buttons.
+Focused consumer coverage verifies that the current-selection summary remains static, every format
+stays independently focusable, the selected value is announced, and choosing a new target dismisses
+the sheet and updates its originating control. A same-simulator comparison also confirmed that the
+Lumen border does not reduce the number of visible destinations or introduce horizontal clipping.
+
+PostLens subsequently replaced each row's manual three-column `HStack` with `LumenListRow` inside
+the existing native `Button` label. The primitive's leading, content, and trailing slots map to the
+format glyph, localized destination copy, and selection mark, and its semantic horizontal and
+vertical padding preserves the existing 62-point row density. `LumenListRow` remains non-actionable;
+the outer button still owns dismissal, the stable identifier, localized label, selected value, and
+selected trait. Applying `brandSoft` after the list row lets the outer zero-padding card clip the
+selected background at group edges. Standard and accessibility tests confirmed one button per
+target, unchanged activation, no extra container action, and no horizontal clipping.
+
+Acceptance criteria:
+
+- Document `LumenCard(padding: .none)` as a supported grouped-row composition when the card itself
+  is non-interactive and its children own every action.
+- Add a SwiftUI example with multiple minimum-44-point selection rows, `LumenDivider` separators,
+  an explicit selected value, and first/last selected backgrounds clipped by the outer card.
+- Demonstrate `LumenListRow` as the non-interactive label layout inside each native row button, with
+  leading, content, and trailing slots but no competing activation.
+- Keep identifiers, labels, values, selected traits, disabled state, and navigation or dismissal on
+  the outer button; verify the row resolves to exactly one accessibility button.
+- Document the fixed semantic insets used by `LumenListRow` so consumers can confirm that its
+  density matches an existing row before replacing directional application padding.
+- Warn against adding a whole-card action to a card containing row buttons, toggles, pickers, links,
+  or menus.
+- Verify VoiceOver order, selected traits, row activation, disabled rows, and that activating one row
+  never triggers another row or a container action.
+- Test narrow widths, large Dynamic Type, right-to-left layout, light and dark appearances, and a
+  long localized destination or format name without reducing the row hit target.
+- Consider a grouped-row recipe or primitive only if it can preserve native button semantics and
+  consumer-owned row content without duplicating list selection state.
+
+## SwiftUI responsive informational cards with a concise accessibility summary
+
+PostLens migrated the Publishing Studio workflow preview from a manual 18-point grouped-card shell
+to a non-action `LumenCard` with `.lg` padding and a `.size2xl` radius. The card explains how one
+photo becomes three destination-specific drafts; its source thumbnail, format previews, and flow
+indicator remain consumer-owned because they visualize product behavior rather than generic card
+presentation.
+
+The consumer also retains responsibility for responsive composition. At standard Dynamic Type the
+illustration flows horizontally, while accessibility sizes use a vertical sequence with a downward
+indicator. Applying `accessibilityElement(children: .combine)` and a concise custom label after the
+non-action card produces one static summary without a button trait, while the separate supporter
+workflow action remains independently focusable below it. The custom summary must convey the same
+meaning as the visible illustration rather than describing decorative geometry.
+
+Acceptance criteria:
+
+- Document a non-action informational-card recipe with consumer-owned illustration content and a
+  concise custom accessibility summary applied after `LumenCard`.
+- Add a SwiftUI example whose content switches from a horizontal standard-size layout to a vertical
+  accessibility-size layout without changing the card contract.
+- Verify one focus stop, label parity with the visible information, no button trait, and independent
+  focus and activation for any workflow action outside the card.
+- Keep responsive illustration layout in the consumer unless Lumen can offer a generic primitive
+  without owning product-specific meaning, state, or artwork.
+- Render narrow widths, accessibility Dynamic Type, right-to-left layout, and light and dark
+  appearances, checking that content remains reachable without clipping.
+- Distinguish a static workflow illustration from an actionable workflow card so consumers do not
+  select `LumenCard(action:)` merely because a related action appears nearby.
+
+## SwiftUI non-action cards with nested controls in a partial sheet
+
+PostLens migrated the Caption Assistant suggestion and style-picker panels from manual 18-point
+grouped-card shells to non-action `LumenCard` surfaces with `.lg` padding and a `.size2xl` radius.
+The suggestion card remains static text, while the style card contains four independent tone
+buttons and a separate retry action. Cached tone selection still updates only the suggestion, and
+the sheet's independent Keep Original and Use Suggestion actions remain outside both cards.
+
+Deterministic UI coverage uncovered an accessibility-testing trap: applying
+`.accessibilityIdentifier` to a SwiftUI card container can propagate that identifier into its
+descendants. On the style card this made a nested tone button appear to have the container's
+identity; on the suggestion card it overwrote the existing leaf identifier used for the generated
+text. The consumer removed both container identifiers and verifies leaf roles, 44-point hit areas,
+and behavior instead. Lumen documentation and examples should not recommend container identifiers
+on cards that preserve meaningful descendant semantics.
+
+Acceptance criteria:
+
+- Add a non-action SwiftUI card example containing several independently actionable rows and a
+  secondary action, with the card itself exposing no button trait or action.
+- Document that accessibility and UI-test identifiers belong on meaningful leaf elements unless a
+  card deliberately combines or replaces all descendant semantics.
+- Add regression coverage proving a card-level modifier does not require or encourage identifiers
+  that mask nested button, link, toggle, picker, or generated-content identifiers.
+- Verify that changing a cached selection updates the informational card without triggering retry,
+  acceptance, dismissal, or another row action.
+- Render the two-card composition in a partial scrolling sheet at standard and accessibility
+  Dynamic Type, ensuring every nested action is reachable above an independent safe-area action
+  surface.
+- Include loading, generated-content, selected, cached-ready, disabled, retry, and empty states in
+  the example without moving product state into `LumenCard`.
+
+## SwiftUI grouped cards above a persistent action bar
+
+PostLens migrated the Post readiness and Caption groups in a scrolling Posting Plan detail screen
+from manual 16-point, 20-radius grouped surfaces to non-action
+`LumenCard(padding: .lg, radius: .size2xl)` containers. Those public Lumen tokens resolve to the
+same 16-point inset and 20-point radius, so the migration preserved card geometry while adding the
+theme-owned surface and line treatment. The score button, Copy action, optional Add Caption action,
+selectable caption text, and persistent Save and Share bar remain consumer-owned and independent.
+
+Focused UI coverage found that the score button's accessible name intentionally matches the
+visible `Post readiness` heading. A role-and-label query therefore finds the real nested button and
+cannot prove that the outer card is static. Tests should identify the nested control by its stable
+leaf identifier, assert that exactly one such button exists, and separately verify the visible
+heading as static text. At accessibility Dynamic Type the persistent bottom action bar becomes
+substantially taller, so reachability must be proven by scrolling each nested control into a
+hittable position rather than requiring both cards to fit in one screenshot.
+
+Acceptance criteria:
+
+- Document exact SwiftUI surface-token values or provide an inspection path so consumers can map
+  an existing inset and radius without visual drift.
+- Add a non-action card example with a heading whose text also names a nested score or details
+  button, and keep the button as the only actionable element with its stable leaf identity.
+- Include a second non-action card that switches between selectable text plus Copy and empty-state
+  guidance plus Add, without moving either action onto the card container.
+- Verify standard and accessibility Dynamic Type in a scroll view above a persistent safe-area
+  action bar; every nested action must scroll fully into a hittable position without clipping.
+- Test nested controls by role, stable leaf identifier, exact count, and behavior; do not infer a
+  duplicate card action from a deliberate accessible-label collision.
+- Render light and dark appearances, narrow and regular widths, long localized headings and
+  captions, empty and populated captions, loading and unavailable scores, and reduced-motion
+  behavior where scrolling or score updates animate.
+
+## SwiftUI cards inside native navigation links
+
+PostLens migrated its Saved Collections summary from a manual 14-point, 22-radius grouped surface
+to `LumenCard(padding: .md, radius: .size2xl)` inside the existing value-based `NavigationLink`.
+The outer link remains the only navigation action and continues to own the destructive context
+menu. The inner Lumen card deliberately has no `action`; using `LumenCard(action:)` here would nest
+one button inside another, duplicate activation semantics, and risk breaking native navigation and
+context-menu behavior. The consumer normalized the compact surface to Lumen's 12-point padding and
+20-point radius tokens while keeping its thumbnail, metadata, and disclosure indicator.
+
+The fixed horizontal row also exposed an accessibility-size composition problem: the 88-point
+thumbnail and disclosure indicator left the sort label in a narrow column, forcing ordinary words
+into fragments. At accessibility Dynamic Type the consumer now places thumbnail and disclosure in
+a top row and gives the name, item count, and sort description the full card width below. SwiftUI
+still exposes one combined button label in content order, and the same link remains hittable and
+navigates normally. Long press continues to reveal the outer link's Remove Collection context menu.
+
+Acceptance criteria:
+
+- Document a SwiftUI recipe for a non-action `LumenCard` used as the label of a native
+  `NavigationLink`, including value-based navigation and consumer-owned context menus.
+- Warn against placing `LumenCard(action:)`, `Button`, or another interactive card wrapper inside
+  an existing link or button.
+- Add a compact media-summary example whose content switches from a horizontal row to a vertical
+  accessibility-size composition without changing the outer navigation contract.
+- Verify exactly one button is exposed with a useful combined label, a minimum 44-point hit area,
+  working tap navigation, and an independently reachable long-press context menu.
+- Test long localized names and metadata, accessibility Dynamic Type, right-to-left layout, light
+  and dark appearances, placeholder and loaded thumbnails, and enough rows to exercise scrolling.
+- Document intentional normalization when a consumer's ad hoc padding or radius falls between
+  public Lumen tokens, and require before-and-after visual inspection for the density tradeoff.
+
+## SwiftUI grouped cards containing independent controls
+
+PostLens migrated all four Publishing Set shells from a shared manual 18-point, 20-radius grouped
+style to non-action `LumenCard(padding: .lg, radius: .size2xl)` containers. The same wrapper now
+covers the selection introduction, the multi-format picker, the review introduction, and each
+destination preview. Lumen's public tokens normalize the former 18-point inset to 16 points while
+preserving the 20-point radius and adding the theme-owned surface and line treatment.
+
+The content determines the interaction contract, not the shared visual wrapper. The introduction
+cards are purely informational. The picker card contains several independent format buttons, while
+each destination preview contains its own Adjust crop button. Giving any outer `LumenCard` an
+`action` would turn the grouping surface into a button, nest existing buttons, and blur which
+format or crop the user selected. A small consumer helper can wrap arbitrary content in a static
+Lumen card, but its name should describe a card container rather than an ad hoc visual style.
+
+Focused testing also showed why assertions should derive from the live domain contract: Instagram
+currently exposes four format choices, and the deterministic fixture may preselect any one of
+them. Tests should locate an unselected choice by its accessibility value, activate it, and assert
+that the selected count increases instead of depending on array order or a remembered format.
+At accessibility Dynamic Type, verify the independently identified crop action after scrolling it
+above the persistent export bar; the card border must not mask or merge that leaf action.
+
+Acceptance criteria:
+
+- Add a non-action SwiftUI `LumenCard` example that separately demonstrates informational content,
+  a group of independent choice buttons, and media content with a secondary action.
+- Warn that a shared grouping wrapper must not gain `action` merely because some of its call sites
+  contain controls; interaction stays on the meaningful leaf buttons.
+- Document how to replace a reusable padding/background/clip modifier with a semantic static-card
+  helper while preserving arbitrary consumer content.
+- Verify the outer cards expose no button action, every choice and crop control retains its stable
+  accessible identity, and all touch targets remain at least 44 points.
+- Test choice sets by accessible state and resulting selection count rather than fixed ordering or
+  remembered option counts.
+- Render selection and review states at standard and accessibility Dynamic Type above persistent
+  action bars, including loading previews, long localized labels, light and dark appearances,
+  narrow and regular widths, and reduced motion.
+- Document and visually compare normalization when an existing inset falls between Lumen's public
+  spacing tokens.
+
+## SwiftUI single-action selection cards inside a static group
+
+PostLens migrated Caption Assistant's four manual tone buttons to
+`LumenCard(action:)` using `.md` padding and `.xl` radius. Those public tokens exactly preserve the
+former 12-point inset and 16-point radius. The selected tone uses the `.accent` variant and the
+remaining tones use `.muted`; a visible checkmark or Ready label continues to communicate state
+without relying on color. The surrounding style-picker card remains a non-action `LumenCard`, so
+each tone is still the only button for its own row and the parent grouping surface never becomes an
+interactive ancestor.
+
+Selection state should be explicit at the card boundary. PostLens now applies the selected trait and
+an accessibility value of Selected or Ready to each actionable card instead of depending on
+SwiftUI to concatenate a child checkmark label or trailing status. Stable identifiers remain on the
+action cards, allowing tests to prove there is exactly one button per tone, that selecting a cached
+tone updates both values, and that every row retains a 44-point target.
+
+A loading preview that exercises only the entry icon is insufficient for disabled-card evidence.
+The consumer added a deterministic review-generating fixture with an existing session, visible
+review sheet, and `isGenerating` set at launch. It proves all tone cards, dismissal, retry, and final
+actions are disabled while the current suggestion exposes progress. This also avoids relying on a
+real Foundation Models response to hold the UI in a transient state long enough for inspection.
+
+Acceptance criteria:
+
+- Add a SwiftUI selection-list example with one non-action parent card and multiple independent
+  `LumenCard(action:)` children; never give the parent an action.
+- Show selected, ready or cached, default, pressed, and disabled child-card states using semantic
+  variants plus visible text or symbols rather than tint alone.
+- Document exact padding and radius token values so compact action rows can migrate without density
+  drift.
+- Expose selected state through the selected trait and an explicit accessibility value on the
+  actionable card, while keeping one stable identifier and one button per option.
+- Verify selection by activating an unselected or cached option and asserting both the underlying
+  result and the old and new accessibility states.
+- Provide a deterministic generating fixture that opens the completed review composition without a
+  live model request and proves every conflicting action is disabled.
+- Render standard and accessibility Dynamic Type, long localized labels, light and dark themes,
+  selected and ready combinations, reduced motion, and the disabled generating state above a
+  persistent bottom action surface.
+
+## SwiftUI action cards with sibling overlay controls
+
+PostLens migrated Posting Plan's saved-content rows from a manual plain button with an 8-point
+inset and 16-point radius to `LumenCard(padding: .sm, radius: .xl, action:)`. Those public tokens
+exactly preserve the compact row density while moving surface color, border, clipping, and pressed
+feedback into Lumen. The existing score control remains a sibling in the row's `ZStack`, with
+reserved trailing space in the card content, because putting it inside the actionable card would
+create nested buttons and an ambiguous activation target.
+
+Disabled state belongs to the action that is unavailable, not automatically to every sibling in
+the visual composition. A carousel that exceeds the Posting Plan's remaining capacity disables and
+dims only its `LumenCard` action. Its readiness score stays enabled, visible, and independently
+focusable so the user can still open improvement tips. Applying `.disabled` or `.opacity` to the
+outer `ZStack` silently removes that recovery and guidance path even though the score itself is
+still meaningful.
+
+Each primary card and score button needs a distinct stable accessibility identifier. Deterministic
+fixtures should include both an exactly-at-capacity item and an over-capacity item, and should avoid
+names that encode a stale item count. Focused UI coverage can then prove row disabled state, score
+availability, score-tip presentation, enabled-row navigation, and 44-point targets at standard and
+accessibility Dynamic Type without depending on generated content or external photo access.
+
+Acceptance criteria:
+
+- Add a SwiftUI example combining one `LumenCard(action:)` with an independent sibling control
+  overlaid in a `ZStack`; reserve enough content space to prevent visual overlap.
+- Warn against placing the sibling control inside the action card, which would create nested
+  interactive elements and unclear activation semantics.
+- Document that disabled state, opacity, hints, and progress ownership should be applied to the
+  unavailable leaf action rather than an outer composition when sibling actions remain useful.
+- Give the action card and every sibling control separate stable accessibility identifiers and
+  verify each resolves to exactly one element.
+- Exercise enabled, exactly-at-capacity, and over-capacity fixtures; prove a constrained card is
+  disabled while its score or guidance control remains enabled and opens its destination.
+- Verify the primary and sibling controls retain at least 44-point targets at standard and
+  accessibility Dynamic Type, with long localized titles, light and dark appearances, and narrow
+  widths.
+- Keep fixture names independent of mutable item counts, or derive displayed counts from the same
+  data used to determine capacity, so regression evidence cannot silently contradict its setup.
+
+## SwiftUI selection cards with directional consumer padding
+
+PostLens migrated Publishing Set's destination-format rows from manual buttons to
+`LumenCard(variant:padding:radius:action:)`. Selected rows use `.accent`, unselected rows use
+`.muted`, and `.xl` preserves the former 16-point radius. The card uses `.none` padding while its
+content retains 14-point horizontal and 10-point vertical insets, because Lumen's public
+`LumenSurfacePadding` contract supports only one uniform spacing value. Replacing that density with
+uniform `.md` or `.lg` padding would either narrow the horizontal breathing room or make every row
+taller in a long, scroll-sensitive selection workflow.
+
+This pattern is a legitimate migration boundary rather than a reason to keep a manual surface:
+Lumen can still own the button semantics, theme colors, border, clipping, and pressed feedback while
+the consumer owns directional layout. A future additive directional-inset contract would reduce
+that remaining consumer styling, especially for compact rows whose horizontal and vertical density
+serve different purposes. The consumer also removed an unused intrinsic-width mode because
+`LumenCard` is intentionally full width and the actual component contract is a multi-target row.
+
+Maximum-count behavior needs state-specific disabled testing. Once five formats are selected,
+only unselected cards become disabled; selected cards must remain enabled so a person can deselect
+one and recover. Each card now derives a stable accessibility identifier from the destination-format
+domain identifier, while its explicit Selected or Not selected value and visible checkmark preserve
+selection meaning independently of accent color. Standard, maximum-count, and accessibility text
+fixtures verify 44-point targets and the persistent bottom action surface together.
+
+Acceptance criteria:
+
+- Document `LumenCard(padding: .none)` as the supported escape hatch when a consumer must preserve
+  directional insets while adopting Lumen's semantic action surface.
+- Consider an additive SwiftUI directional-inset API that accepts horizontal and vertical semantic
+  spacing independently without exposing arbitrary internal view styling.
+- Include a full-width multi-select card example using `.accent` and `.muted` variants with a
+  visible checkmark and explicit accessibility value.
+- Derive stable card identifiers from domain values rather than array positions or translated
+  labels.
+- Exercise maximum-count behavior and prove only unselected choices disable while selected choices
+  remain actionable for recovery.
+- Verify standard and accessibility Dynamic Type with a persistent bottom action surface, long
+  localized destination and format labels, narrow and regular widths, light and dark appearances,
+  and at least 44-point targets.
+- Remove unused compact or intrinsic-width modes when the real consumer contract is full width;
+  do not add layout workarounds solely to preserve dead branches during migration.
+
+## SwiftUI non-action surfaces inside existing menu buttons
+
+PostLens migrated its full-width destination-format menu label from a manual tertiary grouped
+background to `LumenSurface(tone: .muted, padding: .none, radius: .xl)`. The existing
+`PublishingTargetMenu` remains the sole `Button` that presents the selection sheet. Using
+`LumenCard(action:)` for the label would create a button inside a button, while replacing the outer
+menu button would move sheet-presentation ownership into a purely visual primitive. A non-action
+Lumen surface is the correct composition when an established control already owns activation.
+
+The consumer keeps 14-point horizontal padding and a 52-point minimum height inside the surface.
+Lumen's uniform padding tokens cannot express that directional layout without changing density,
+so `.none` lets Lumen own theme color and clipping while the menu label owns its content geometry.
+The former private 14-point corner radius normalized to the nearest public semantic token, `.xl`
+at 16 points. Same-state before-and-after rendering showed no meaningful composition regression.
+
+Accessibility belongs on the outer menu button, not the visual surface. The control keeps one
+stable identifier, a destination-and-format label, the current target as its value, and a hint that
+describes the sheet. Focused UI coverage should assert that the identifier resolves to exactly one
+button, the target remains at least 44 points tall, the value updates after selection, and the sheet
+still opens at accessibility Dynamic Type. This catches both accidental nested actions and labels
+that look correct but no longer expose the current selection.
+
+Acceptance criteria:
+
+- Add a SwiftUI example that places `LumenSurface` inside an existing `Button`, `Menu`, or custom
+  presentation control when that outer control must remain the sole owner of activation.
+- Warn against using `LumenCard(action:)` as the label of another interactive control; nested
+  buttons produce ambiguous hit testing and accessibility semantics.
+- Document `.muted`, `.none`, and a semantic radius as the migration path for a themed menu label
+  that retains directional consumer padding.
+- Keep accessibility label, value, hint, identifier, disabled state, and presentation behavior on
+  the outer control; the inner surface should remain visual and non-focusable.
+- Verify that the stable identifier resolves to exactly one button, its value changes after a
+  selection, and its presented destination still appears.
+- Exercise standard and accessibility Dynamic Type, long localized destination and format labels,
+  narrow and regular widths, light and dark appearances, and a minimum 44-point target.
+- Compare the same deterministic state before and after radius-token normalization rather than
+  assuming a nearby semantic radius is visually equivalent.
+
+## SwiftUI compact selected date tiles
+
+PostLens kept its compact upcoming-date tiles as native `Button` values because the current SwiftUI
+Lumen contracts do not preserve this horizontal calendar density. `LumenButton` adds standard
+horizontal padding and uses the small button radius, while `LumenCard(action:)` is intentionally
+full width. Either substitution would widen a scroll-sensitive strip or change its visual role.
+The consumer instead moved its custom `ButtonStyle` onto public Lumen contracts:
+`brandSolid` and `onBrand` for the selected tile, `brand` and `brandSoft` for unselected tiles,
+`LumenRadius.xl`, and Lumen's 0.84 pressed opacity.
+
+The token migration exposed two correctness improvements. `onBrand` resolved to black for the
+coral theme, producing stronger contrast than the former hardcoded white, and the selected tile
+needed an explicit state beyond its solid fill. PostLens now shows a checkmark beside the selected
+month and applies the accessibility selected trait. Standard, accessibility Dynamic Type, and dark
+appearance rendering confirm the compact tiles remain reachable inside the horizontal scroller and
+that selection no longer depends on color alone.
+
+Acceptance criteria:
+
+- Consider an additive SwiftUI compact-selection style or tile primitive whose caller supplies the
+  label hierarchy while Lumen owns selected and unselected theme colors, radius, and pressed state.
+- Allow directional consumer padding and a minimum width without forcing the standard
+  `LumenButton` horizontal padding or `LumenCard` full-width layout.
+- Expose selected styling through `brandSolid` and `onBrand`, with `brandSoft` and `brand` for the
+  unselected state, so custom accent themes retain their contrast-aware foreground.
+- Require a visible checkmark, border, or Selected label plus the accessibility selected trait;
+  solid versus soft brand color is not sufficient selection communication.
+- Exercise several adjacent values in a horizontal scroller at standard and accessibility Dynamic
+  Type, including long localized counts, light and dark appearances, and 44-point targets.
+- Verify the selected state moves after activation and clears when an external Today or reset
+  action changes the bound value.
+
+## SwiftUI non-enforcing themes must preserve caller appearance
+
+PostLens's deterministic preview modifier applied `.preferredColorScheme(.dark)` before
+`.lumenTheme(..., enforceColorScheme: false)`, but the rendered app remained light. The current
+SwiftUI implementation handles `false` by applying `.preferredColorScheme(nil)`, which is still an
+environment write and can clear an explicit preference earlier in the modifier chain. Reordering
+the consumer modifiers so the explicit appearance is applied last restored real dark rendering.
+
+`enforceColorScheme: false` should mean Lumen does not write the preferred color-scheme environment
+at all. Consumers should not have to know that a non-enforcing theme can erase an app, preview,
+window, or test-level preference depending on modifier order.
+
+Acceptance criteria:
+
+- Change the SwiftUI `lumenTheme` modifier so `enforceColorScheme: false` omits
+  `.preferredColorScheme` instead of applying it with `nil`.
+- Preserve the existing enforcing behavior for light and dark Lumen themes.
+- Add modifier-order tests with the caller's `.preferredColorScheme(.dark)` both before and after a
+  non-enforcing Lumen theme; both orders must remain dark.
+- Add the inverse light test and a system-inherited test where no caller preference is present.
+- Verify theme colors still resolve from the supplied Lumen scheme without taking ownership of the
+  host app's appearance preference.
+- Document that the host controls appearance when enforcement is disabled, including previews,
+  multi-window apps, and deterministic screenshot fixtures.
 
 ## Compose sheet locale and form presentation
 
