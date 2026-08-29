@@ -2161,11 +2161,11 @@ export const CopyButton = ({
       variant={variant}
       {...props}
     >
-      <span aria-hidden="true" data-slot="copy-idle">{children}</span>
-      <span aria-hidden="true" data-slot="copy-copied">
+      <span aria-hidden="true" data-slot="copy-idle" hidden={state !== 'idle'}>{children}</span>
+      <span aria-hidden="true" data-slot="copy-copied" hidden={state !== 'copied'}>
         {resolveCopyFeedback(copiedContent, copiedLabel)}
       </span>
-      <span aria-hidden="true" data-slot="copy-error">
+      <span aria-hidden="true" data-slot="copy-error" hidden={state !== 'error'}>
         {resolveCopyFeedback(errorContent, errorLabel)}
       </span>
     </Button>

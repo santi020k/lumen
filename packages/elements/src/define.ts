@@ -1381,9 +1381,11 @@ const observedAttributeNames = [
   'autocomplete',
   'border-position',
   'caption',
+  'category-label',
   'center-label',
   'center-value',
   'checked',
+  'column-label',
   'columns',
   'country',
   'country-name',
@@ -1395,17 +1397,21 @@ const observedAttributeNames = [
   'direction',
   'disabled',
   'duration',
+  'empty-label',
   'from',
   'form',
   'gap',
   'glass',
   'heading',
+  'high-label',
   'hover',
   'intensity',
   'label',
   'label-template',
+  'legend-label',
   'locale',
   'locales',
+  'low-label',
   'layout',
   'markers',
   'max',
@@ -1414,6 +1420,7 @@ const observedAttributeNames = [
   'minlength',
   'multiple',
   'name',
+  'not-available-label',
   'orientation',
   'pattern',
   'position',
@@ -1421,15 +1428,18 @@ const observedAttributeNames = [
   'readonly',
   'required',
   'rows',
+  'row-label',
   'prefix',
   'pressed',
   'reference-value',
   'series',
+  'series-label',
   'shape',
   'show-endpoint',
   'show-legend',
   'show-table',
   'size',
+  'size-label',
   'surface',
   'stagger',
   'summary',
@@ -1440,9 +1450,12 @@ const observedAttributeNames = [
   'tone',
   'type',
   'value',
+  'value-label',
   'values',
   'variant',
-  'visual-size'
+  'view-data-label',
+  'visual-size',
+  'x-label'
 ]
 
 const hasDocument = (): boolean => typeof document !== 'undefined'
@@ -8499,6 +8512,8 @@ class LumenCopyButtonBehaviorElement extends LumenElement {
 
     this.ensureStateContent()
 
+    this.updateStateContent('idle')
+
     this.abortController?.abort()
 
     this.abortController = new AbortController()
@@ -8563,6 +8578,19 @@ class LumenCopyButtonBehaviorElement extends LumenElement {
     }
   }
 
+  private updateStateContent(state: 'copied' | 'error' | 'idle') {
+    const slots = {
+      copied: 'copy-copied',
+      error: 'copy-error',
+      idle: 'copy-idle'
+    } as const
+
+    for (const [contentState, slot] of Object.entries(slots)) {
+      this.querySelector<HTMLElement>(`[data-slot="${slot}"]`)
+        ?.toggleAttribute('hidden', contentState !== state)
+    }
+  }
+
   private copy = async () => {
     const label = this.getAttribute('label') ?? 'Copy to clipboard'
 
@@ -8591,6 +8619,8 @@ class LumenCopyButtonBehaviorElement extends LumenElement {
 
       this.dataset.state = 'copied'
 
+      this.updateStateContent('copied')
+
       this.setAttribute('aria-label', copiedLabel)
 
       this.dispatchEvent(new CustomEvent('ui:copy-success', {
@@ -8605,6 +8635,8 @@ class LumenCopyButtonBehaviorElement extends LumenElement {
       }
     } catch (error) {
       this.dataset.state = 'error'
+
+      this.updateStateContent('error')
 
       this.setAttribute('aria-label', errorLabel)
 
@@ -8630,6 +8662,8 @@ class LumenCopyButtonBehaviorElement extends LumenElement {
 
     this.resetTimer = globalThis.setTimeout(() => {
       this.dataset.state = 'idle'
+
+      this.updateStateContent('idle')
 
       this.setAttribute('aria-label', label)
     }, resetAfter)

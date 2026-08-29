@@ -12,6 +12,9 @@
 
 ### Patch Changes
 
+- Keep inactive CopyButton feedback hidden and rerender charts when localized label attributes
+  change.
+
 - Updated dependencies [`da315f0`, `da315f0`, `42b9f27`]:
   - @santi020k/lumen@2.1.0
   - @santi020k/lumen-core@2.1.0

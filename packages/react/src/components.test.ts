@@ -128,8 +128,8 @@ describe('@santi020k/lumen-react components', () => {
     expect(html).toContain('ui-button--default')
     expect(html).toContain('ui-button--sm')
     expect(html).toContain('data-slot="copy-idle"')
-    expect(html).toContain('data-slot="copy-copied">Done</span>')
-    expect(html).toContain('data-slot="copy-error"')
+    expect(html).toContain('data-slot="copy-copied" hidden="">Done</span>')
+    expect(html).toContain('data-slot="copy-error" hidden=""')
   })
   test('composes structural container classes', () => {
     expect(propsOf(Accordion({ className: 'x' }) as ReactElement).className).toBe('ui-accordion x')
