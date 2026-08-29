@@ -1289,10 +1289,12 @@ and verifies that the explanatory copy changes. The ranked photo grid deliberate
 consumer-owned, edge-to-edge media UI because its image crops, score overlays, rank badges, and
 candidate navigation are domain behavior rather than generic card presentation.
 
-This use also reinforces a localization gap in the released picker contract. PostLens resolves the
-picker's accessible title through its in-app locale, but `LumenPicker` accepts only
-`LocalizedStringKey`. Reconstructing a dynamic localized key from already-resolved copy risks a
-second lookup when the selected app language differs from the system language.
+This use also reinforces the existing rich-label picker path for application-owned localization.
+PostLens resolves the picker's accessible title through its in-app locale, so it should pass
+`Text(verbatim: resolvedTitle)` through `LumenPicker`'s public `label` view builder and supply the
+selected value through `currentValueLabel`. Reconstructing a dynamic `LocalizedStringKey` from
+already-resolved copy would risk a second lookup when the selected app language differs from the
+system language.
 
 Acceptance criteria:
 
@@ -1302,8 +1304,8 @@ Acceptance criteria:
   the whole-card `action` initializer.
 - Verify that the static result and sorting headings do not acquire button traits or duplicate focus
   stops when nested controls are present.
-- Add `LumenTextContent` or equivalent localized-versus-verbatim support to the `LumenPicker` title
-  while preserving its existing source-compatible initializer.
+- Document `Text(verbatim:)` in the existing rich-label `LumenPicker` initializer for app-resolved
+  titles, alongside an independently supplied current-value label.
 - Test picker activation, option selection, updated explanatory content, disabled state, and
   VoiceOver order inside a non-action card.
 - Keep edge-to-edge media grids outside generic cards when their cropping, overlays, and per-item
