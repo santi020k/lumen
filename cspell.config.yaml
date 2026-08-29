@@ -47,6 +47,7 @@ words:
   - browsable
   - targetable
   - textformat
+  - tsdoc
   - trianglepath
   - affix
   - Affix

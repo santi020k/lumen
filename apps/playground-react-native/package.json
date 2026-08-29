@@ -32,7 +32,7 @@
     "react": "catalog:expo",
     "react-dom": "catalog:expo",
     "react-native": "catalog:expo",
-    "react-native-safe-area-context": "catalog:",
+    "react-native-safe-area-context": "catalog:expo",
     "react-native-svg": "catalog:expo",
     "react-native-web": "catalog:"
   },

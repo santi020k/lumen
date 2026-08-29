@@ -64,8 +64,8 @@
     "@types/semver": "catalog:",
     "@vitest/coverage-v8": "catalog:",
     "react": "catalog:",
-    "typescript": "catalog:",
     "tailwindcss": "catalog:",
+    "typescript": "catalog:",
     "vitest": "catalog:"
   },
   "engines": {
