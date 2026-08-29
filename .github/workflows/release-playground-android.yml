@@ -1,0 +1,122 @@
+name: Release Android playground beta
+
+# cspell:ignore adkll jarsigner
+
+on:
+  workflow_dispatch:
+    inputs:
+      version_name:
+        description: Google Play version name, for example 1.0.0
+        required: true
+        type: string
+      version_code:
+        description: Unique, increasing Google Play version code
+        required: true
+        type: number
+
+concurrency:
+  group: lumen-playground-google-play-beta
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  closed-beta:
+    name: Build and publish closed beta
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    environment:
+      name: google-play
+      url: https://play.google.com/console/u/0/developers/6020575981106755904/app/4973036052942240040/tracks/4700854162309905635
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Fetch Android release secrets from Infisical
+        uses: Infisical/secrets-action@6cd3f7c0e4cc0d2395ee4ef414eb6eeb5d3e73db # v1.0.17
+        with:
+          method: oidc
+          identity-id: ${{ vars.INFISICAL_IDENTITY_ID }}
+          project-slug: ${{ vars.INFISICAL_PROJECT_SLUG }}
+          env-slug: prod
+          secret-path: /playground/google-play
+
+      - name: Verify release request and credentials
+        shell: bash
+        env:
+          LUMEN_PLAYGROUND_VERSION_NAME: ${{ inputs.version_name }}
+          LUMEN_PLAYGROUND_VERSION_CODE: ${{ inputs.version_code }}
+        run: |
+          set -euo pipefail
+
+          if [[ ! "$LUMEN_PLAYGROUND_VERSION_NAME" =~ ^[0-9]+(\.[0-9]+){1,2}$ ]]; then
+            echo "::error title=Invalid version name::Use a version such as 1.0 or 1.0.0."
+            exit 1
+          fi
+          if [[ ! "$LUMEN_PLAYGROUND_VERSION_CODE" =~ ^[0-9]+$ ]] ||
+            (( LUMEN_PLAYGROUND_VERSION_CODE < 1 || LUMEN_PLAYGROUND_VERSION_CODE > 2100000000 )); then
+            echo "::error title=Invalid version code::Use a unique integer from 1 through 2100000000."
+            exit 1
+          fi
+
+          missing=()
+          [[ -n "${LUMEN_PLAYGROUND_KEYSTORE_BASE64:-}" ]] || missing+=(LUMEN_PLAYGROUND_KEYSTORE_BASE64)
+          [[ -n "${LUMEN_PLAYGROUND_KEYSTORE_PASSWORD:-}" ]] || missing+=(LUMEN_PLAYGROUND_KEYSTORE_PASSWORD)
+          [[ -n "${LUMEN_PLAYGROUND_KEY_ALIAS:-}" ]] || missing+=(LUMEN_PLAYGROUND_KEY_ALIAS)
+          [[ -n "${LUMEN_PLAYGROUND_KEY_PASSWORD:-}" ]] || missing+=(LUMEN_PLAYGROUND_KEY_PASSWORD)
+          [[ -n "${GOOGLE_PLAY_SERVICE_ACCOUNT_JSON:-}" ]] || missing+=(GOOGLE_PLAY_SERVICE_ACCOUNT_JSON)
+          if (( ${#missing[@]} )); then
+            echo "::error title=Missing Android release credentials::Configure ${missing[*]} in Infisical prod:/playground/google-play."
+            exit 1
+          fi
+
+      - name: Set up Java
+        uses: actions/setup-java@dd06d9cba3e5552c54d9f8ea23572deb30010f7c # v6.0.0
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: gradle
+
+      - name: Build signed release bundle
+        env:
+          LUMEN_PLAYGROUND_VERSION_NAME: ${{ inputs.version_name }}
+          LUMEN_PLAYGROUND_VERSION_CODE: ${{ inputs.version_code }}
+        run: apps/playground-android/scripts/build-signed-bundle.sh
+
+      - name: Test and lint release candidate
+        env:
+          LUMEN_PLAYGROUND_VERSION_NAME: ${{ inputs.version_name }}
+          LUMEN_PLAYGROUND_VERSION_CODE: ${{ inputs.version_code }}
+        run: |
+          ./packages/compose/gradlew -p apps/playground-android \
+            test lint :app:verifyLumenArtifactIsolation
+
+      - name: Verify bundle signature
+        run: jarsigner -verify apps/playground-android/app/build/outputs/bundle/release/app-release.aab
+
+      - name: Upload signed bundle artifact
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: lumen-playground-android-${{ inputs.version_name }}-${{ inputs.version_code }}
+          path: apps/playground-android/app/build/outputs/bundle/release/app-release.aab
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Publish to Google Play closed beta
+        uses: r0adkll/upload-google-play@e738b9dd8f2476ea806d921b64aacd24f34515a5 # v1.1.5
+        with:
+          serviceAccountJsonPlainText: ${{ env.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
+          packageName: com.santi020k.lumen.playground.compose
+          releaseFiles: apps/playground-android/app/build/outputs/bundle/release/app-release.aab
+          tracks: alpha
+          status: completed
+          releaseName: ${{ inputs.version_name }} (${{ inputs.version_code }}) closed beta
+
+      - name: Remove temporary signing material
+        if: always()
+        run: |
+          if [[ -n "${LUMEN_PLAYGROUND_KEYSTORE_PATH:-}" ]]; then
+            rm -f "$LUMEN_PLAYGROUND_KEYSTORE_PATH"
+          fi

@@ -4,6 +4,20 @@ plugins {
 }
 
 val lumenComposeVersion = providers.gradleProperty("lumenComposeVersion")
+val releaseVersionCode = providers
+    .environmentVariable("LUMEN_PLAYGROUND_VERSION_CODE")
+    .orElse("1")
+    .map { value ->
+        value.toIntOrNull()?.takeIf { it in 1..2_100_000_000 }
+            ?: error("LUMEN_PLAYGROUND_VERSION_CODE must be an integer from 1 through 2100000000.")
+    }
+val releaseVersionName = providers
+    .environmentVariable("LUMEN_PLAYGROUND_VERSION_NAME")
+    .orElse("1.0.0")
+    .map { value ->
+        value.takeIf { it.matches(Regex("^[0-9]+(\\.[0-9]+){1,2}$")) }
+            ?: error("LUMEN_PLAYGROUND_VERSION_NAME must use a version such as 1.0 or 1.0.0.")
+    }
 val uploadKeystorePath = providers.environmentVariable("LUMEN_PLAYGROUND_KEYSTORE_PATH").orNull
 val uploadKeystorePassword = providers.environmentVariable("LUMEN_PLAYGROUND_KEYSTORE_PASSWORD").orNull
 val uploadKeyAlias = providers.environmentVariable("LUMEN_PLAYGROUND_KEY_ALIAS").orNull
@@ -23,8 +37,8 @@ android {
         applicationId = "com.santi020k.lumen.playground.compose"
         minSdk = 23
         targetSdk = 37
-        versionCode = 1
-        versionName = "1.0.0"
+        versionCode = releaseVersionCode.get()
+        versionName = releaseVersionName.get()
     }
 
     buildFeatures {
