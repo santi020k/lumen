@@ -55,7 +55,7 @@ describe('Lumen integration diagnostics', () => {
         )
         await writeFile(
           join(applicationRoot, 'src', 'pages', 'index.astro'),
-          'import { Dialog, UIPrimitives } from \'@santi020k/lumen-astro\'\n<Dialog /><UIPrimitives />\n'
+          'import { Dialog } from \'@santi020k/lumen-astro\'\nimport UIPrimitives from \'@santi020k/lumen-astro/runtime\'\n<Dialog /><UIPrimitives />\n'
         )
       }
 
@@ -86,7 +86,7 @@ describe('Lumen integration diagnostics', () => {
       for (const page of ['index', 'gallery']) {
         await writeFile(
           join(root, 'src', 'pages', `${page}.astro`),
-          'import { Dialog, UIPrimitives } from \'@santi020k/lumen-astro\'\n<Dialog /><UIPrimitives />\n'
+          'import { Dialog } from \'@santi020k/lumen-astro\'\nimport UIPrimitives from \'@santi020k/lumen-astro/runtime\'\n<Dialog /><UIPrimitives />\n'
         )
       }
 
@@ -110,11 +110,11 @@ describe('Lumen integration diagnostics', () => {
       )
       await writeFile(
         join(root, 'src', 'layouts', 'Base.astro'),
-        'import { UIPrimitives } from \'@santi020k/lumen-astro\'\n<UIPrimitives />\n'
+        'import UIPrimitives from \'@santi020k/lumen-astro/runtime\'\n<UIPrimitives />\n'
       )
       await writeFile(
         join(root, 'src', 'pages', 'index.astro'),
-        'import { Dialog, UIPrimitives } from \'@santi020k/lumen-astro\'\n<Dialog /><UIPrimitives />\n'
+        'import { Dialog } from \'@santi020k/lumen-astro\'\nimport UIPrimitives from \'@santi020k/lumen-astro/runtime\'\n<Dialog /><UIPrimitives />\n'
       )
 
       const report = await inspectLumenIntegration(root)
@@ -152,6 +152,104 @@ describe('Lumen integration diagnostics', () => {
         file: 'src/pages/index.astro',
         rule: 'framework-style-duplicate'
       }))
+    } finally {
+      await rm(root, { force: true, recursive: true })
+    }
+  })
+
+  test('propagates shared package requirements to Astro and React application boundaries', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'lumen-doctor-shared-ui-'))
+
+    try {
+      await writeFile(join(root, 'package.json'), '{"name":"workspace","private":true}\n')
+
+      const astroLibrary = join(root, 'packages', 'astro-ui')
+      const reactLibrary = join(root, 'packages', 'react-ui')
+      const astroApplication = join(root, 'apps', 'docs')
+      const reactApplication = join(root, 'apps', 'dashboard')
+
+      await mkdir(join(astroLibrary, 'src'), { recursive: true })
+      await mkdir(join(reactLibrary, 'src'), { recursive: true })
+      await mkdir(join(astroApplication, 'src', 'layouts'), { recursive: true })
+      await mkdir(join(reactApplication, 'src', 'app'), { recursive: true })
+      await writeFile(
+        join(astroLibrary, 'package.json'),
+        '{"name":"@example/astro-ui","peerDependencies":{"@santi020k/lumen-astro":"^2.0.0"}}\n'
+      )
+      await writeFile(
+        join(reactLibrary, 'package.json'),
+        '{"name":"@example/react-ui","peerDependencies":{"@santi020k/lumen-react":"^2.0.0"}}\n'
+      )
+      await writeFile(
+        join(astroLibrary, 'src', 'Dialog.astro'),
+        'import { Dialog } from \'@santi020k/lumen-astro\'\n<Dialog />\n'
+      )
+      await writeFile(
+        join(reactLibrary, 'src', 'Card.tsx'),
+        'import { Card } from \'@santi020k/lumen-react\'\nexport const SharedCard = () => <Card />\n'
+      )
+      await writeFile(
+        join(astroApplication, 'package.json'),
+        '{"name":"docs","private":true,"dependencies":{"@example/astro-ui":"workspace:*"}}\n'
+      )
+      await writeFile(
+        join(reactApplication, 'package.json'),
+        '{"name":"dashboard","private":true,"dependencies":{"@example/react-ui":"workspace:*"}}\n'
+      )
+      await writeFile(
+        join(astroApplication, 'src', 'layouts', 'Base.astro'),
+        'import UIPrimitives from \'@santi020k/lumen-astro/runtime\'\nimport \'@santi020k/lumen-astro/styles.css\'\n<UIPrimitives /><slot />\n'
+      )
+      await writeFile(
+        join(reactApplication, 'src', 'app', 'layout.tsx'),
+        'import \'@santi020k/lumen-react/styles.css\'\nexport default function Layout({ children }: { children: React.ReactNode }) { return children }\n'
+      )
+
+      const report = await inspectLumenIntegration(root)
+
+      expect(report.healthy).toBe(true)
+      expect(report.frameworks).toEqual(expect.arrayContaining(['astro', 'react']))
+      expect(report.findings).not.toContainEqual(expect.objectContaining({
+        rule: 'framework-style-missing'
+      }))
+
+      await writeFile(
+        join(reactLibrary, 'src', 'styles.css'),
+        '@import "@santi020k/lumen-react/styles.css";\n'
+      )
+
+      const styleReport = await inspectLumenIntegration(root)
+
+      expect(styleReport.healthy).toBe(true)
+      expect(styleReport.findings).toContainEqual(expect.objectContaining({
+        rule: 'shared-library-adapter-style',
+        severity: 'advisory'
+      }))
+    } finally {
+      await rm(root, { force: true, recursive: true })
+    }
+  })
+
+  test('blocks the removed Astro runtime root import with an exact migration', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'lumen-doctor-runtime-export-'))
+
+    try {
+      await mkdir(join(root, 'src'), { recursive: true })
+      await writeFile(join(root, 'package.json'), '{"name":"site"}\n')
+      await writeFile(
+        join(root, 'src', 'page.astro'),
+        'import { UIPrimitives } from \'@santi020k/lumen-astro\'\n<UIPrimitives />\n'
+      )
+      await writeFile(
+        join(root, 'src', 'global.css'),
+        '@import "@santi020k/lumen-astro/styles.css";\n'
+      )
+
+      const report = await inspectLumenIntegration(root)
+      const removedRootExport = report.findings.find(finding => finding.rule === 'removed-root-export')
+
+      expect(report.healthy).toBe(false)
+      expect(removedRootExport?.remediation).toContain('@santi020k/lumen-astro/runtime')
     } finally {
       await rm(root, { force: true, recursive: true })
     }
@@ -307,6 +405,75 @@ describe('Lumen integration diagnostics', () => {
       const report = await inspectLumenIntegration(root)
 
       expect(report.findings.filter(item => item.rule === 'internal-selector')).toHaveLength(1)
+    } finally {
+      await rm(root, { force: true, recursive: true })
+    }
+  })
+
+  test('provides component-aware internal selector remediation for Astro', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'lumen-doctor-astro-selectors-'))
+
+    try {
+      await mkdir(join(root, 'src'), { recursive: true })
+      await writeFile(join(root, 'package.json'), '{"name":"site"}\n')
+      await writeFile(
+        join(root, 'src', 'page.astro'),
+        'import { Badge, Card } from \'@santi020k/lumen-astro\'\n<Badge /><Card />\n'
+      )
+      await writeFile(
+        join(root, 'src', 'global.css'),
+        '.ui-badge {}\n.ui-card--glass {}\n.ui-card__header {}\n.ui-private {}\n'
+      )
+
+      const findings = (await inspectLumenIntegration(root)).findings
+        .filter(item => item.rule === 'internal-selector')
+      const badge = findings.find(item => item.message.includes('.ui-badge'))
+      const cardModifier = findings.find(item => item.message.includes('.ui-card--glass'))
+      const cardPart = findings.find(item => item.message.includes('.ui-card__header'))
+      const unknown = findings.find(item => item.message.includes('.ui-private'))
+
+      expect(badge?.message).toContain('Badge component')
+      expect(badge?.remediation).toContain('public class prop in Astro')
+      expect(badge?.remediation).not.toContain('[data-slot=')
+      expect(cardModifier?.remediation).toContain('[data-slot="card"]')
+      expect(cardPart?.remediation).toContain('[data-slot="card-header"]')
+      expect(unknown?.message).not.toContain('most likely targets')
+      expect(unknown?.remediation).not.toContain('[data-slot=')
+    } finally {
+      await rm(root, { force: true, recursive: true })
+    }
+  })
+
+  test.each([
+    {
+      expected: 'public className prop in React',
+      packageName: '@santi020k/lumen-react',
+      sourceFile: 'component.tsx'
+    },
+    {
+      expected: 'class attribute on the Elements host',
+      packageName: '@santi020k/lumen-elements/define',
+      sourceFile: 'elements.ts'
+    }
+  ])('uses adapter-specific class guidance for $packageName', async fixture => {
+    const root = await mkdtemp(join(tmpdir(), 'lumen-doctor-adapter-selectors-'))
+
+    try {
+      await mkdir(join(root, 'src'), { recursive: true })
+      await writeFile(join(root, 'package.json'), '{"name":"site"}\n')
+      await writeFile(
+        join(root, 'src', fixture.sourceFile),
+        `import { Icon } from '${fixture.packageName}'\nvoid Icon\n`
+      )
+      await writeFile(join(root, 'src', 'global.css'), '.ui-icon {}\n')
+
+      const icon = (await inspectLumenIntegration(root)).findings.find(
+        item => item.rule === 'internal-selector'
+      )
+
+      expect(icon?.message).toContain('Icon component')
+      expect(icon?.remediation).toContain(fixture.expected)
+      expect(icon?.remediation).not.toContain('[data-slot=')
     } finally {
       await rm(root, { force: true, recursive: true })
     }

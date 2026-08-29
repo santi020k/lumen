@@ -144,7 +144,9 @@ describe('@santi020k/lumen-astro package surface', () => {
     )
 
     expect(scatter).toContain('const hasData = geometry.points.length > 0')
-    expect(scatter).toContain('formatLumenChartSummary(projectedSeries, formatValue)')
+    expect(scatter).toContain(
+      'formatLumenChartSummary(projectedSeries, formatValue, resolvedLabels)'
+    )
     expect(scatter).toContain('data: geometry.points.filter(point => point.seriesId === item.id)')
     expect(scatter).toContain('filter(item => item.data.length > 0)')
     expect(scatter).not.toContain('hasLumenChartData')
@@ -155,7 +157,7 @@ describe('@santi020k/lumen-astro package surface', () => {
       new URL('./components/RangeChart.astro', packageRoot), 'utf8'
     )
 
-    expect(range).toContain('`${geometry.points.length} available ranges.`')
+    expect(range).toContain('resolvedLabels.formatRangeSummary(geometry.points.length)')
     expect(range).not.toContain('data.filter(item => item.low !== null')
   })
 
@@ -167,7 +169,9 @@ describe('@santi020k/lumen-astro package surface', () => {
       readFile(new URL('./components/ScatterChart.astro', packageRoot), 'utf8')
     ])
 
-    expect(bars).toContain('value === null || !Number.isFinite(value) ? \'Not available\'')
+    expect(bars).toContain(
+      'value === null || !Number.isFinite(value) ? resolvedLabels.notAvailable'
+    )
 
     for (const chart of [combo, line]) {
       expect(chart).toContain(
@@ -361,12 +365,17 @@ describe('@santi020k/lumen-astro package surface', () => {
 
     expect(copyButton).toContain('data-ui-copy-button')
     expect(copyButton).toContain('data-copy-target={target}')
+    expect(copyButton).toContain('variant = \'outline\'')
+    expect(copyButton).toContain('data-slot="copy-idle"')
+    expect(copyButton).toContain('data-slot="copy-copied"')
+    expect(copyButton).toContain('data-slot="copy-error"')
     expect(item).toContain('as: Tag = \'div\'')
     expect(item).toContain('data-slot="item"')
     expect(progress).toContain('data-slot="progress-indicator"')
     expect(runtime).toContain('root.addEventListener(\'ui:progress-change\'')
     expect(runtime).toContain('new CustomEvent(\'ui:copy-success\'')
     expect(runtime).toContain('new CustomEvent(\'ui:copy-error\'')
+    expect(runtime).toContain('setCopyButtonState(\'copied\')')
   })
 
   test('aligns image and fallback avatars consistently in inline groups', async () => {
@@ -611,9 +620,13 @@ describe('@santi020k/lumen-astro package surface', () => {
     ])
 
     expect(scrollReveal).toContain('duration?: \'fast\' | \'standard\' | \'slow\'')
+    expect(scrollReveal).toContain('as?: \'article\' | \'div\' | \'section\'')
+    expect(scrollReveal).toContain('<Tag')
     expect(scrollReveal).toContain('once?: boolean')
     expect(scrollReveal).toContain('threshold?: number')
     expect(revealGroup).toContain('stagger?: number')
+    expect(revealGroup).toContain('as?: \'div\' | \'ol\' | \'section\' | \'ul\'')
+    expect(revealGroup).toContain('<Tag')
     expect(revealGroup).toContain('data-ui-reveal-group')
     expect(animatedNumber).toContain('data-ui-animated-number-output')
     expect(animatedNumber).toContain('class="ui-sr-only"')
@@ -698,7 +711,7 @@ describe('@santi020k/lumen-astro package surface', () => {
       'particle.className = \'ui-particles__particle\''
     )
     expect(particles).toContain('document.addEventListener(\'astro:after-swap\'')
-    expect(scrollReveal).toContain('<div')
+    expect(scrollReveal).toContain('<Tag')
     expect(scrollReveal).not.toContain('<lumen-scroll-reveal')
     const motionController = await readFile(
       new URL('./runtime/controllers/motion.ts', packageRoot), 'utf8'
@@ -1101,16 +1114,16 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(chart).toContain('heading?: string')
     expect(chart).toContain('ui-chart__heading')
     expect(barChart).toContain('createLumenBarGeometry')
-    expect(barChart).toContain('View chart data')
+    expect(barChart).toContain('resolvedLabels.viewData')
     expect(barChart).toContain('layout = \'grouped\'')
     expect(lineChart).toContain('createLumenLineGeometry')
     expect(lineChart).toContain('hasLumenChartData')
     expect(lineChart).toContain('referenceValue?: number')
-    expect(lineChart).toContain('Not available')
+    expect(lineChart).toContain('resolvedLabels.notAvailable')
     expect(pieChart).toContain('createLumenPieGeometry')
     expect(pieChart).toContain('variant = \'donut\'')
     expect(pieChart).toContain('centerValue?: string')
-    expect(pieChart).toContain('View chart data')
+    expect(pieChart).toContain('resolvedLabels.viewData')
     expect(sparkline).toContain('label: string')
     expect(sparkline).toContain('role="img"')
     expect(styles).toContain('--chart-series-8')

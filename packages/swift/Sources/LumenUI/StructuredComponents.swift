@@ -1,10 +1,17 @@
 import SwiftUI
 
+public enum LumenEmptyStateLayout: Sendable {
+    case compact
+    case `default`
+    case page
+}
+
 public struct LumenEmptyState<Actions: View>: View {
     @Environment(\.lumenTheme) private var theme
 
     private let actions: Actions
     private let description: LocalizedStringKey?
+    private let layout: LumenEmptyStateLayout
     private let systemName: String
     private let title: LocalizedStringKey
 
@@ -12,16 +19,18 @@ public struct LumenEmptyState<Actions: View>: View {
         _ title: LocalizedStringKey,
         systemName: String,
         description: LocalizedStringKey? = nil,
+        layout: LumenEmptyStateLayout = .default,
         @ViewBuilder actions: () -> Actions
     ) {
         self.title = title
         self.systemName = systemName
         self.description = description
+        self.layout = layout
         self.actions = actions()
     }
 
     public var body: some View {
-        VStack(spacing: LumenSpacing.lg) {
+        VStack(spacing: layout == .compact ? LumenSpacing.md : LumenSpacing.lg) {
             LumenIcon(systemName: systemName, size: .lg, color: theme.colors.inkMuted)
                 .padding(LumenSpacing.md)
                 .background(theme.colors.surfaceMuted, in: Circle())
@@ -42,9 +51,9 @@ public struct LumenEmptyState<Actions: View>: View {
 
             actions
         }
-        .frame(maxWidth: 440)
-        .padding(LumenSpacing.xl)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .frame(maxWidth: layout == .page ? 520 : 440)
+        .padding(layout == .compact ? LumenSpacing.lg : LumenSpacing.xl)
+        .frame(maxWidth: .infinity, maxHeight: layout == .compact ? nil : .infinity)
         .accessibilityElement(children: .contain)
     }
 }
@@ -53,9 +62,10 @@ public extension LumenEmptyState where Actions == EmptyView {
     init(
         _ title: LocalizedStringKey,
         systemName: String,
-        description: LocalizedStringKey? = nil
+        description: LocalizedStringKey? = nil,
+        layout: LumenEmptyStateLayout = .default
     ) {
-        self.init(title, systemName: systemName, description: description) {
+        self.init(title, systemName: systemName, description: description, layout: layout) {
             EmptyView()
         }
     }
@@ -280,7 +290,28 @@ public struct LumenBanner<Actions: View>: View {
     }
 
     public var body: some View {
-        HStack(alignment: .center, spacing: LumenSpacing.md) {
+        ViewThatFits(in: .horizontal) {
+            horizontalContent
+            verticalContent
+        }
+        .padding(.horizontal, LumenSpacing.lg)
+        .padding(.vertical, LumenSpacing.md)
+        .background(backgroundColor)
+        .overlay(alignment: .leading) {
+            Rectangle()
+                .fill(accentColor)
+                .frame(width: 3)
+        }
+        .overlay {
+            RoundedRectangle(cornerRadius: LumenRadius.md, style: .continuous)
+                .stroke(borderColor, lineWidth: 1)
+        }
+        .clipShape(RoundedRectangle(cornerRadius: LumenRadius.md, style: .continuous))
+        .accessibilityElement(children: .contain)
+    }
+
+    private var message: some View {
+        HStack(alignment: .top, spacing: LumenSpacing.md) {
             LumenIcon(
                 systemName: systemName ?? defaultSystemName,
                 size: .md,
@@ -300,9 +331,11 @@ public struct LumenBanner<Actions: View>: View {
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
+        }
+    }
 
-            actions
-
+    private var dismissButton: some View {
+        Group {
             if let onDismiss {
                 LumenIconButton(
                     systemName: "xmark",
@@ -313,20 +346,24 @@ public struct LumenBanner<Actions: View>: View {
                 )
             }
         }
-        .padding(.horizontal, LumenSpacing.lg)
-        .padding(.vertical, LumenSpacing.md)
-        .background(backgroundColor)
-        .overlay(alignment: .leading) {
-            Rectangle()
-                .fill(accentColor)
-                .frame(width: 3)
+    }
+
+    private var horizontalContent: some View {
+        HStack(alignment: .center, spacing: LumenSpacing.md) {
+            message
+            actions
+            dismissButton
         }
-        .overlay {
-            RoundedRectangle(cornerRadius: LumenRadius.md, style: .continuous)
-                .stroke(borderColor, lineWidth: 1)
+    }
+
+    private var verticalContent: some View {
+        VStack(alignment: .leading, spacing: LumenSpacing.md) {
+            HStack(alignment: .top, spacing: LumenSpacing.sm) {
+                message
+                dismissButton
+            }
+            actions
         }
-        .clipShape(RoundedRectangle(cornerRadius: LumenRadius.md, style: .continuous))
-        .accessibilityElement(children: .contain)
     }
 
     private var accentColor: Color {
@@ -387,10 +424,16 @@ public enum LumenMetricTone: Sendable {
     case warning
 }
 
+public enum LumenStatDensity: Sendable {
+    case compact
+    case `default`
+}
+
 public struct LumenStat: View {
     @Environment(\.lumenTheme) private var theme
 
     private let detail: LocalizedStringKey?
+    private let density: LumenStatDensity
     private let label: LocalizedStringKey
     private let systemName: String?
     private let tone: LumenMetricTone
@@ -400,24 +443,26 @@ public struct LumenStat: View {
         _ label: LocalizedStringKey,
         value: String,
         detail: LocalizedStringKey? = nil,
+        density: LumenStatDensity = .default,
         systemName: String? = nil,
         tone: LumenMetricTone = .brand
     ) {
         self.label = label
         self.value = value
         self.detail = detail
+        self.density = density
         self.systemName = systemName
         self.tone = tone
     }
 
     public var body: some View {
-        VStack(alignment: .leading, spacing: LumenSpacing.sm) {
+        VStack(alignment: .leading, spacing: density == .compact ? LumenSpacing.xs : LumenSpacing.sm) {
             if let systemName {
                 LumenIcon(systemName: systemName, size: .sm, color: accentColor)
             }
 
             Text(value)
-                .font(.title2.weight(.bold))
+                .font(density == .compact ? .headline.weight(.bold) : .title2.weight(.bold))
                 .monospacedDigit()
                 .foregroundStyle(theme.colors.ink)
 
@@ -432,7 +477,7 @@ public struct LumenStat: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(LumenSpacing.lg)
+        .padding(density == .compact ? LumenSpacing.md : LumenSpacing.lg)
         .background(accentColor.opacity(0.06))
         .overlay {
             RoundedRectangle(cornerRadius: LumenRadius.md, style: .continuous)

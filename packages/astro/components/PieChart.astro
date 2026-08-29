@@ -7,9 +7,10 @@ import {
   getLumenChartToneClassName,
   getLumenPieChartVariantClassName,
   hasLumenPieData,
+  type LumenChartLabels,
   type LumenChartSeries,
-  type LumenPieChartVariant
-} from '@santi020k/lumen-core'
+  type LumenPieChartVariant,
+  resolveLumenChartLabels } from '@santi020k/lumen-core'
 
 import Chart from './Chart.astro'
 
@@ -22,6 +23,7 @@ interface Props extends HTMLAttributes<'figure'> {
   description?: string
   glass?: boolean | 'subtle' | 'strong'
   heading?: string
+  labels?: Partial<LumenChartLabels>
   series: LumenChartSeries
   showLegend?: boolean
   showTable?: boolean
@@ -39,6 +41,7 @@ const {
   description,
   glass = false,
   heading,
+  labels,
   series,
   showLegend = true,
   showTable = true,
@@ -49,6 +52,7 @@ const {
 } = Astro.props
 
 const geometry = createLumenPieGeometry(series.data, { variant })
+const resolvedLabels = resolveLumenChartLabels(labels)
 const hasData = hasLumenPieData(series.data)
 
 const renderedSeries = {
@@ -56,7 +60,7 @@ const renderedSeries = {
   data: series.data.filter(datum => datum.y !== null && Number.isFinite(datum.y) && datum.y > 0)
 }
 
-const summary = summaryProp ?? formatLumenChartSummary([renderedSeries], valueFormatter)
+const summary = summaryProp ?? formatLumenChartSummary([renderedSeries], valueFormatter, resolvedLabels)
 
 const percentageFor = (percentage: number) => new Intl.NumberFormat(undefined, {
   maximumFractionDigits: percentage < 0.01 ? 1 : 0,
@@ -75,7 +79,7 @@ const percentageFor = (percentage: number) => new Intl.NumberFormat(undefined, {
 >
   {
     showLegend && hasData && (
-      <ul class="ui-chart__legend" aria-label="Chart legend">
+      <ul class="ui-chart__legend" aria-label={resolvedLabels.chartLegend}>
         {geometry.slices.map(slice => (
           <li class={getLumenChartToneClassName(slice.tone)}>
             <span aria-hidden="true" />
@@ -85,7 +89,7 @@ const percentageFor = (percentage: number) => new Intl.NumberFormat(undefined, {
       </ul>
     )
   }
-  {!hasData && <p class="ui-chart__empty" role="status">No chart data available.</p>}
+  {!hasData && <p class="ui-chart__empty" role="status">{resolvedLabels.empty}</p>}
   <div class="ui-chart__plot ui-pie-chart__plot" hidden={!hasData}>
     <svg
       aria-hidden="true"
@@ -125,13 +129,13 @@ const percentageFor = (percentage: number) => new Intl.NumberFormat(undefined, {
   {
     showTable && hasData && (
       <details class="ui-chart__data">
-        <summary>View chart data</summary>
+        <summary>{resolvedLabels.viewData}</summary>
         <div>
           <table>
             <thead>
               <tr>
-                <th scope="col">Category</th>
-                <th scope="col">Value</th>
+                <th scope="col">{resolvedLabels.category}</th>
+                <th scope="col">{resolvedLabels.value}</th>
                 <th scope="col">Share</th>
               </tr>
             </thead>

@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
@@ -72,6 +73,17 @@ enum class LumenErrorStateLayout {
     Page
 }
 
+enum class LumenEmptyStateLayout {
+    Compact,
+    Default,
+    Page
+}
+
+enum class LumenStatDensity {
+    Compact,
+    Default
+}
+
 internal fun lumenErrorStateLiveRegion(
     announcement: LumenErrorStateAnnouncement
 ): LiveRegionMode? = when (announcement) {
@@ -129,6 +141,7 @@ fun LumenEmptyState(
     title: String,
     modifier: Modifier = Modifier,
     description: String? = null,
+    layout: LumenEmptyStateLayout = LumenEmptyStateLayout.Default,
     graphic: (@Composable () -> Unit)? = null,
     actions: (@Composable () -> Unit)? = null
 ) {
@@ -137,10 +150,12 @@ fun LumenEmptyState(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .widthIn(max = 440.dp)
-            .padding(LumenSpacing.Xl),
+            .widthIn(max = if (layout == LumenEmptyStateLayout.Page) 520.dp else 440.dp)
+            .padding(if (layout == LumenEmptyStateLayout.Compact) LumenSpacing.Lg else LumenSpacing.Xl),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(LumenSpacing.Lg)
+        verticalArrangement = Arrangement.spacedBy(
+            if (layout == LumenEmptyStateLayout.Compact) LumenSpacing.Md else LumenSpacing.Lg
+        )
     ) {
         if (graphic != null) {
             Box(
@@ -318,19 +333,13 @@ fun LumenBanner(
                     .fillMaxHeight()
                     .background(palette.accent)
             )
-            Row(
+            BoxWithConstraints(
                 modifier = Modifier
                     .weight(1f)
-                    .padding(horizontal = LumenSpacing.Lg, vertical = LumenSpacing.Md),
-                horizontalArrangement = Arrangement.spacedBy(LumenSpacing.Md),
-                verticalAlignment = Alignment.CenterVertically
+                    .padding(horizontal = LumenSpacing.Lg, vertical = LumenSpacing.Md)
             ) {
-                graphic?.invoke()
-
-                Column(
-                    modifier = Modifier.weight(1f),
-                    verticalArrangement = Arrangement.spacedBy(LumenSpacing.Xs)
-                ) {
+                val message: @Composable () -> Unit = {
+                    Column(verticalArrangement = Arrangement.spacedBy(LumenSpacing.Xs)) {
                     Text(
                         text = title,
                         color = colors.ink,
@@ -345,12 +354,30 @@ fun LumenBanner(
                         )
                     }
                 }
+                }
 
-                actions?.invoke()
-
-                if (onDismiss != null) {
-                    TextButton(onClick = onDismiss) {
-                        Text(dismissLabel, color = palette.accent)
+                if (maxWidth < 520.dp) {
+                    Column(verticalArrangement = Arrangement.spacedBy(LumenSpacing.Md)) {
+                        Row(horizontalArrangement = Arrangement.spacedBy(LumenSpacing.Md)) {
+                            graphic?.invoke()
+                            Box(modifier = Modifier.weight(1f)) { message() }
+                        }
+                        actions?.invoke()
+                        if (onDismiss != null) {
+                            TextButton(onClick = onDismiss) { Text(dismissLabel, color = palette.accent) }
+                        }
+                    }
+                } else {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(LumenSpacing.Md),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        graphic?.invoke()
+                        Box(modifier = Modifier.weight(1f)) { message() }
+                        actions?.invoke()
+                        if (onDismiss != null) {
+                            TextButton(onClick = onDismiss) { Text(dismissLabel, color = palette.accent) }
+                        }
                     }
                 }
             }
@@ -364,6 +391,7 @@ fun LumenStat(
     value: String,
     modifier: Modifier = Modifier,
     detail: String? = null,
+    density: LumenStatDensity = LumenStatDensity.Default,
     tone: LumenMetricTone = LumenMetricTone.Brand,
     graphic: (@Composable () -> Unit)? = null
 ) {
@@ -376,15 +404,21 @@ fun LumenStat(
             .semantics(mergeDescendants = true) { contentDescription = accessibleText }
             .background(accent.copy(alpha = 0.06f), RoundedCornerShape(LumenRadius.Md))
             .border(1.dp, accent.copy(alpha = 0.18f), RoundedCornerShape(LumenRadius.Md))
-            .padding(LumenSpacing.Lg),
-        verticalArrangement = Arrangement.spacedBy(LumenSpacing.Sm)
+            .padding(if (density == LumenStatDensity.Compact) LumenSpacing.Md else LumenSpacing.Lg),
+        verticalArrangement = Arrangement.spacedBy(
+            if (density == LumenStatDensity.Compact) LumenSpacing.Xs else LumenSpacing.Sm
+        )
     ) {
         graphic?.invoke()
 
         Text(
             text = value,
             color = colors.ink,
-            style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold)
+            style = (if (density == LumenStatDensity.Compact) {
+                MaterialTheme.typography.titleMedium
+            } else {
+                MaterialTheme.typography.headlineSmall
+            }).copy(fontWeight = FontWeight.Bold)
         )
         Text(
             text = label,

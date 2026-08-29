@@ -159,6 +159,7 @@ public enum LumenButtonIntent: Sendable {
     case primary
     case quiet
     case secondary
+    case success
 }
 
 public enum LumenControlSize: Sendable {
@@ -288,6 +289,7 @@ public struct LumenIconButtonStyle: ButtonStyle {
         case .primary: theme.colors.brandSolid
         case .quiet: .clear
         case .secondary: theme.colors.surfaceMuted
+        case .success: theme.colors.success
         }
     }
 
@@ -297,6 +299,7 @@ public struct LumenIconButtonStyle: ButtonStyle {
         case .primary: theme.colors.brandSolid
         case .quiet: .clear
         case .secondary: theme.colors.line
+        case .success: theme.colors.success
         }
     }
 }
@@ -372,6 +375,7 @@ public struct LumenIconButton: View {
         case .primary: theme.colors.onBrand
         case .quiet: theme.colors.inkSoft
         case .secondary: theme.colors.ink
+        case .success: theme.colors.onBrand
         }
     }
 }
@@ -440,6 +444,7 @@ public struct LumenButtonStyle: ButtonStyle {
         case .primary: theme.colors.brandSolid
         case .quiet: .clear
         case .secondary: theme.colors.surfaceMuted
+        case .success: theme.colors.success
         }
     }
 
@@ -449,6 +454,7 @@ public struct LumenButtonStyle: ButtonStyle {
         case .primary: theme.colors.brandSolid
         case .quiet: .clear
         case .secondary: theme.colors.line
+        case .success: theme.colors.success
         }
     }
 
@@ -458,6 +464,7 @@ public struct LumenButtonStyle: ButtonStyle {
         case .primary: theme.colors.onBrand
         case .quiet: theme.colors.inkSoft
         case .secondary: theme.colors.ink
+        case .success: theme.colors.onBrand
         }
     }
 }
@@ -468,12 +475,14 @@ public struct LumenButton<Label: View>: View {
     private let intent: LumenButtonIntent
     private let label: Label
     private let loading: Bool
+    private let loadingAccessibilityValue: LumenTextContent
     private let size: LumenControlSize
 
     public init(
         intent: LumenButtonIntent = .primary,
         size: LumenControlSize = .md,
         loading: Bool = false,
+        loadingAccessibilityValue: LumenTextContent = .localizedKey("Loading"),
         disabled: Bool = false,
         action: @escaping () -> Void,
         @ViewBuilder label: () -> Label
@@ -483,6 +492,7 @@ public struct LumenButton<Label: View>: View {
         self.intent = intent
         self.label = label()
         self.loading = loading
+        self.loadingAccessibilityValue = loadingAccessibilityValue
         self.size = size
     }
 
@@ -502,7 +512,7 @@ public struct LumenButton<Label: View>: View {
         }
         .buttonStyle(LumenButtonStyle(intent: intent, size: size))
         .disabled(disabled || loading)
-        .accessibilityValue(loading ? "Loading" : "")
+        .accessibilityValue(loading ? loadingAccessibilityValue.text : Text(""))
     }
 }
 
@@ -512,6 +522,7 @@ public extension LumenButton where Label == Text {
         intent: LumenButtonIntent = .primary,
         size: LumenControlSize = .md,
         loading: Bool = false,
+        loadingAccessibilityValue: LumenTextContent = .localizedKey("Loading"),
         disabled: Bool = false,
         action: @escaping () -> Void
     ) {
@@ -519,6 +530,7 @@ public extension LumenButton where Label == Text {
             intent: intent,
             size: size,
             loading: loading,
+            loadingAccessibilityValue: loadingAccessibilityValue,
             disabled: disabled,
             action: action
         ) {
@@ -531,6 +543,7 @@ public extension LumenButton where Label == Text {
         intent: LumenButtonIntent = .primary,
         size: LumenControlSize = .md,
         loading: Bool = false,
+        loadingAccessibilityValue: LumenTextContent = .localizedKey("Loading"),
         disabled: Bool = false,
         action: @escaping () -> Void
     ) {
@@ -538,6 +551,7 @@ public extension LumenButton where Label == Text {
             intent: intent,
             size: size,
             loading: loading,
+            loadingAccessibilityValue: loadingAccessibilityValue,
             disabled: disabled,
             action: action
         ) {

@@ -1921,6 +1921,17 @@
   color: hsl(var(--danger));
 }
 
+.ui-copy-button [data-slot^="copy-"] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: inherit;
+}
+
+.ui-copy-button [hidden] {
+  display: none;
+}
+
 .ui-skeleton {
   min-height: 1rem;
   border-radius: var(--ui-radius-sm);

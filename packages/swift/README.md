@@ -101,13 +101,37 @@ LumenTextarea(
     errorMessage: note.isEmpty ? .verbatim(copy.noteRequired) : nil
 )
 
-LumenButton(.verbatim(copy.saveAction), action: save)
+LumenButton(
+    .verbatim(copy.saveAction),
+    loading: isSaving,
+    loadingAccessibilityValue: .verbatim(copy.savingAction),
+    action: save
+)
 ```
 
 `LumenText`, `LumenBadge`, `LumenSpinner`, text buttons, `LumenTextField`, `LumenTextarea`, and
 `LumenFieldGroup` accept the contract where runtime bridges are commonly needed. Locale selection,
 translation dictionaries, and persistence remain application-owned; changing the SwiftUI locale
 environment or application copy state updates mounted views normally.
+
+Rich native form composition remains controlled by the application:
+
+```swift
+LumenPicker(selection: $accent, style: .menu) {
+    Label("Accent", systemImage: "paintpalette")
+} currentValueLabel: {
+    HStack { Circle().fill(accent.color).frame(width: 12, height: 12); Text(accent.name) }
+} content: {
+    ForEach(Accent.allCases) { option in Text(option.name).tag(option) }
+}
+
+LumenTextarea("Caption", text: $caption, lineLimit: 2...6) {
+    LumenButton("Assist", intent: .quiet, size: .sm, action: suggestCaption)
+}
+```
+
+Use `LumenSlider(..., onEditingChanged:)` to begin and end an application-owned undo group. Keep
+haptics, persistence, caption generation, and other domain workflows outside Lumen.
 
 Applications can construct `LumenColorPalette` directly when they already own light and dark
 product palettes. If a stored System/Light/Dark preference is application-owned, inject the chosen
@@ -298,6 +322,10 @@ Swift, and Xcode baselines, and use the
 preserving the iOS 16 baseline. Data charts provide native mark accessibility, a factual summary,
 and a readable disclosure list. See the shared
 [data-visualization guide](../../docs/data-visualization.md).
+
+Pass `labels` for localized support copy. A finite zero remains valid data. Line charts also accept
+`reference: LumenChartReference(...)`; set a datum's `tone` and `toneLabel` together so an
+intensity or status encoding is never communicated by color alone.
 
 From the repository root, check the reviewed public API for every declared Apple platform with:
 

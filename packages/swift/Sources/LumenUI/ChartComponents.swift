@@ -18,6 +18,40 @@ public enum LumenChartTone: String, CaseIterable, Sendable {
     case warning
 }
 
+public struct LumenChartLabels: Sendable {
+    public let empty: String
+    public let notAvailable: String
+    public let size: String
+    public let viewData: String
+    public let formatHeatmapSummary: @Sendable (Int) -> String
+    public let formatRangeSummary: @Sendable (Int) -> String
+    public let formatSummary: @Sendable (LumenChartSummary) -> String
+
+    public init(
+        empty: String = "No chart data available.",
+        notAvailable: String = "Not available",
+        size: String = "Size",
+        viewData: String = "View chart data",
+        formatHeatmapSummary: @escaping @Sendable (Int) -> String = { count in
+            count == 0 ? "No chart data available." : "\(count) heatmap \(count == 1 ? "cell" : "cells")."
+        },
+        formatRangeSummary: @escaping @Sendable (Int) -> String = { count in
+            count == 0 ? "No chart data available." : "\(count) \(count == 1 ? "range" : "ranges")."
+        },
+        formatSummary: @escaping @Sendable (LumenChartSummary) -> String = { $0.spokenDescription }
+    ) {
+        self.empty = empty
+        self.notAvailable = notAvailable
+        self.size = size
+        self.viewData = viewData
+        self.formatHeatmapSummary = formatHeatmapSummary
+        self.formatRangeSummary = formatRangeSummary
+        self.formatSummary = formatSummary
+    }
+
+    public static let english = LumenChartLabels()
+}
+
 public enum LumenChartX: Hashable, Sendable {
     case category(String)
     case number(Double)
@@ -36,6 +70,8 @@ public struct LumenChartDatum: Identifiable, Sendable {
     public let id: String
     public let label: String?
     public let size: Double?
+    public let tone: LumenChartTone?
+    public let toneLabel: String?
     public let x: LumenChartX
     public let y: Double?
 
@@ -44,13 +80,29 @@ public struct LumenChartDatum: Identifiable, Sendable {
         x: LumenChartX,
         y: Double?,
         label: String? = nil,
-        size: Double? = nil
+        size: Double? = nil,
+        tone: LumenChartTone? = nil,
+        toneLabel: String? = nil
     ) {
         self.id = id
         self.x = x
         self.y = y
         self.label = label
         self.size = size
+        self.tone = tone
+        self.toneLabel = toneLabel
+    }
+}
+
+public struct LumenChartReference: Sendable {
+    public let label: String
+    public let tone: LumenChartTone
+    public let value: Double
+
+    public init(label: String, value: Double, tone: LumenChartTone = .neutral) {
+        self.label = label
+        self.value = value
+        self.tone = tone
     }
 }
 
@@ -348,6 +400,23 @@ private func lumenLineMark(
 }
 
 @ChartContentBuilder
+private func lumenLineToneMark(point: LumenChartDatum, color: Color) -> some ChartContent {
+    if let value = point.y, value.isFinite, point.tone != nil {
+        switch point.x {
+        case .category(let x):
+            PointMark(x: .value("Category", x), y: .value("Value", value))
+                .foregroundStyle(color)
+        case .number(let x):
+            PointMark(x: .value("X", x), y: .value("Value", value))
+                .foregroundStyle(color)
+        case .time(let x):
+            PointMark(x: .value("Time", x), y: .value("Value", value))
+                .foregroundStyle(color)
+        }
+    }
+}
+
+@ChartContentBuilder
 private func lumenBarMark(
     point: LumenChartDatum,
     series: LumenChartSeries,
@@ -378,6 +447,7 @@ private func lumenBarMark(
 private struct LumenChartDataList: View {
     @Environment(\.lumenTheme) private var theme
 
+    let labels: LumenChartLabels
     let selection: Binding<LumenChartSelection?>?
     let series: [LumenChartSeries]
     var includeSize = false
@@ -387,7 +457,12 @@ private struct LumenChartDataList: View {
         VStack(alignment: .leading, spacing: LumenSpacing.sm) {
             ForEach(series) { item in
                 ForEach(lumenDataWithValidX(item.data)) { datum in
-                    let label = lumenChartDataLabel(series: item, datum: datum, includeSize: includeSize)
+                    let label = lumenChartDataLabel(
+                        series: item,
+                        datum: datum,
+                        labels: labels,
+                        includeSize: includeSize
+                    )
 
                     if let selection, datum.y?.isFinite == true {
                         Button(label) {
@@ -415,13 +490,13 @@ private struct LumenChartDataList: View {
     var body: some View {
         #if os(tvOS) || os(watchOS)
         VStack(alignment: .leading, spacing: LumenSpacing.sm) {
-            Text("View chart data")
+            Text(labels.viewData)
                 .font(.headline)
                 .foregroundStyle(theme.colors.brand)
             dataRows
         }
         #else
-        DisclosureGroup("View chart data") {
+        DisclosureGroup(labels.viewData) {
             dataRows
         }
         .tint(theme.colors.brand)
@@ -432,13 +507,14 @@ private struct LumenChartDataList: View {
 func lumenChartDataLabel(
     series: LumenChartSeries,
     datum: LumenChartDatum,
+    labels: LumenChartLabels = .english,
     includeSize: Bool = false
 ) -> String {
-    let value = datum.label ?? datum.y.flatMap { $0.isFinite ? $0.formatted() : nil } ?? "Not available"
-    let base = "\(datum.x.label), \(series.label): \(value)"
-    let size = datum.size.flatMap { $0.isFinite && $0 >= 0 ? $0.formatted() : nil } ?? "Not available"
+    let value = datum.label ?? datum.y.flatMap { $0.isFinite ? $0.formatted() : nil } ?? labels.notAvailable
+    let base = "\(datum.x.label), \(series.label): \(value)\(datum.toneLabel.map { ", \($0)" } ?? "")"
+    let size = datum.size.flatMap { $0.isFinite && $0 >= 0 ? $0.formatted() : nil } ?? labels.notAvailable
 
-    return includeSize ? "\(base), Size: \(size)" : base
+    return includeSize ? "\(base), \(labels.size): \(size)" : base
 }
 
 func lumenScatterSymbolSize(_ size: Double?) -> Double {
@@ -453,6 +529,7 @@ private struct LumenChartDataRow: Identifiable {
 private struct LumenStructuredChartDataList: View {
     @Environment(\.lumenTheme) private var theme
 
+    let labels: LumenChartLabels
     let rows: [LumenChartDataRow]
 
     @ViewBuilder
@@ -471,13 +548,13 @@ private struct LumenStructuredChartDataList: View {
     var body: some View {
         #if os(tvOS) || os(watchOS)
         VStack(alignment: .leading, spacing: LumenSpacing.sm) {
-            Text("View chart data")
+            Text(labels.viewData)
                 .font(.headline)
                 .foregroundStyle(theme.colors.brand)
             dataRows
         }
         #else
-        DisclosureGroup("View chart data") {
+        DisclosureGroup(labels.viewData) {
             dataRows
         }
         .tint(theme.colors.brand)
@@ -543,6 +620,8 @@ public struct LumenLineChart: View {
     private let description: String?
     private let heading: String?
     private let label: String
+    private let labels: LumenChartLabels
+    private let reference: LumenChartReference?
     private let selection: Binding<LumenChartSelection?>?
     private let series: [LumenChartSeries]
     private let showData: Bool
@@ -554,18 +633,25 @@ public struct LumenLineChart: View {
         heading: String? = nil,
         description: String? = nil,
         summary: String? = nil,
+        labels: LumenChartLabels = .english,
         area: Bool = false,
+        reference: LumenChartReference? = nil,
         showData: Bool = true,
         selection: Binding<LumenChartSelection?>? = nil
     ) {
         self.label = label
+        self.labels = labels
         self.series = series
         self.heading = heading
         self.description = description
         self.area = area
+        self.reference = reference
         self.showData = showData
         self.selection = selection
-        self.summary = summary ?? LumenChartSummary.resolve(series: series).spokenDescription
+        let baseSummary = labels.formatSummary(LumenChartSummary.resolve(series: series))
+        self.summary = summary ?? reference.map {
+            "\(baseSummary) \($0.label): \($0.value.formatted())."
+        } ?? baseSummary
     }
 
     public var body: some View {
@@ -578,6 +664,16 @@ public struct LumenLineChart: View {
             summary: summary
         ) {
             Chart {
+                if let reference {
+                    RuleMark(y: .value(reference.label, reference.value))
+                        .foregroundStyle(theme.chartColor(reference.tone))
+                        .lineStyle(StrokeStyle(lineWidth: 1, dash: [6, 4]))
+                        .annotation(position: .top, alignment: .leading) {
+                            Text(reference.label)
+                                .font(.caption)
+                                .foregroundStyle(theme.chartColor(reference.tone))
+                        }
+                }
                 ForEach(Array(series.enumerated()), id: \.element.id) { index, item in
                     let color = theme.chartColor(resolvedLumenChartTone(item.tone, index: index))
 
@@ -589,13 +685,17 @@ public struct LumenLineChart: View {
                             area: area,
                             segmentID: segmented.segmentID
                         )
+                        lumenLineToneMark(
+                            point: segmented.point,
+                            color: theme.chartColor(segmented.point.tone ?? item.tone ?? .series1)
+                        )
                     }
                 }
             }
             .frame(minHeight: 220)
 
             if showData {
-                LumenChartDataList(selection: selection, series: series)
+                LumenChartDataList(labels: labels, selection: selection, series: series)
             }
         }
     }
@@ -610,6 +710,7 @@ public struct LumenBarChart: View {
     @Environment(\.lumenTheme) private var theme
 
     private let label: String
+    private let labels: LumenChartLabels
     private let layout: LumenBarChartLayout
     private let selection: Binding<LumenChartSelection?>?
     private let series: [LumenChartSeries]
@@ -621,15 +722,17 @@ public struct LumenBarChart: View {
         series: [LumenChartSeries],
         layout: LumenBarChartLayout = .grouped,
         summary: String? = nil,
+        labels: LumenChartLabels = .english,
         showData: Bool = true,
         selection: Binding<LumenChartSelection?>? = nil
     ) {
         self.label = label
+        self.labels = labels
         self.series = series
         self.layout = layout
         self.showData = showData
         self.selection = selection
-        self.summary = summary ?? LumenChartSummary.resolve(series: series).spokenDescription
+        self.summary = summary ?? labels.formatSummary(LumenChartSummary.resolve(series: series))
     }
 
     public var body: some View {
@@ -651,7 +754,7 @@ public struct LumenBarChart: View {
             .frame(minHeight: 220)
 
             if showData {
-                LumenChartDataList(selection: selection, series: series)
+                LumenChartDataList(labels: labels, selection: selection, series: series)
             }
         }
     }
@@ -686,6 +789,7 @@ public struct LumenScatterChart: View {
     @Environment(\.lumenTheme) private var theme
 
     private let label: String
+    private let labels: LumenChartLabels
     private let selection: Binding<LumenChartSelection?>?
     private let series: [LumenChartSeries]
     private let showData: Bool
@@ -695,14 +799,16 @@ public struct LumenScatterChart: View {
         label: String,
         series: [LumenChartSeries],
         summary: String? = nil,
+        labels: LumenChartLabels = .english,
         showData: Bool = true,
         selection: Binding<LumenChartSelection?>? = nil
     ) {
         self.label = label
+        self.labels = labels
         self.series = series
         self.showData = showData
         self.selection = selection
-        self.summary = summary ?? LumenChartSummary.resolve(series: series).spokenDescription
+        self.summary = summary ?? labels.formatSummary(LumenChartSummary.resolve(series: series))
     }
 
     public var body: some View {
@@ -734,7 +840,7 @@ public struct LumenScatterChart: View {
             .frame(minHeight: 220)
 
             if showData {
-                LumenChartDataList(selection: selection, series: series, includeSize: true)
+                LumenChartDataList(labels: labels, selection: selection, series: series, includeSize: true)
             }
         }
     }
@@ -745,6 +851,7 @@ public struct LumenRangeChart: View {
 
     private let data: [LumenRangeDatum]
     private let label: String
+    private let labels: LumenChartLabels
     private let showData: Bool
     private let summary: String
     private let tone: LumenChartTone
@@ -753,15 +860,15 @@ public struct LumenRangeChart: View {
         label: String,
         data: [LumenRangeDatum],
         summary: String? = nil,
+        labels: LumenChartLabels = .english,
         tone: LumenChartTone = .series1,
         showData: Bool = true
     ) {
         self.label = label
+        self.labels = labels
         self.data = data
         let availableRangeCount = lumenAvailableRangeData(data).count
-        self.summary = summary ?? (
-            availableRangeCount == 0 ? "No chart data available." : "\(availableRangeCount) ranges."
-        )
+        self.summary = summary ?? labels.formatRangeSummary(availableRangeCount)
         self.tone = tone
         self.showData = showData
     }
@@ -771,7 +878,7 @@ public struct LumenRangeChart: View {
 
         LumenChartFrame(label: label, heading: nil, description: nil, summary: summary) {
             if segmentedData.isEmpty {
-                Text("No chart data available.")
+                Text(labels.empty)
                     .foregroundStyle(theme.colors.inkMuted)
             } else {
                 Chart(segmentedData) { segmented in
@@ -810,9 +917,9 @@ public struct LumenRangeChart: View {
             }
 
             if showData {
-                LumenStructuredChartDataList(rows: data.map { datum in
-                    let low = datum.low?.isFinite == true ? datum.low?.formatted() ?? "Not available" : "Not available"
-                    let high = datum.high?.isFinite == true ? datum.high?.formatted() ?? "Not available" : "Not available"
+                LumenStructuredChartDataList(labels: labels, rows: data.map { datum in
+                    let low = datum.low?.isFinite == true ? datum.low?.formatted() ?? labels.notAvailable : labels.notAvailable
+                    let high = datum.high?.isFinite == true ? datum.high?.formatted() ?? labels.notAvailable : labels.notAvailable
 
                     return LumenChartDataRow(
                         id: datum.id,
@@ -922,6 +1029,7 @@ public struct LumenPieChart: View {
     @Environment(\.lumenTheme) private var theme
 
     private let label: String
+    private let labels: LumenChartLabels
     private let selection: Binding<LumenChartSelection?>?
     private let series: LumenChartSeries
     private let showData: Bool
@@ -933,10 +1041,12 @@ public struct LumenPieChart: View {
         series: LumenChartSeries,
         variant: LumenPieChartVariant = .donut,
         summary: String? = nil,
+        labels: LumenChartLabels = .english,
         showData: Bool = true,
         selection: Binding<LumenChartSelection?>? = nil
     ) {
         self.label = label
+        self.labels = labels
         self.series = series
         self.variant = variant
         self.showData = showData
@@ -947,7 +1057,7 @@ public struct LumenPieChart: View {
             data: lumenAvailablePieData(series.data),
             tone: series.tone
         )
-        self.summary = summary ?? LumenChartSummary.resolve(series: [availableSeries]).spokenDescription
+        self.summary = summary ?? labels.formatSummary(LumenChartSummary.resolve(series: [availableSeries]))
     }
 
     public var body: some View {
@@ -961,7 +1071,7 @@ public struct LumenPieChart: View {
 
         LumenChartFrame(label: label, heading: nil, description: nil, summary: summary) {
             if slices.isEmpty {
-                Text("No chart data available.")
+                Text(labels.empty)
                     .foregroundStyle(theme.colors.inkMuted)
             } else {
                 Canvas { context, size in
@@ -987,7 +1097,7 @@ public struct LumenPieChart: View {
             }
 
             if showData {
-                LumenChartDataList(selection: selection, series: [availableSeries])
+                LumenChartDataList(labels: labels, selection: selection, series: [availableSeries])
             }
         }
     }
@@ -998,13 +1108,21 @@ public struct LumenHeatmap: View {
 
     private let data: [LumenHeatmapDatum]
     private let label: String
+    private let labels: LumenChartLabels
     private let showData: Bool
     private let summary: String
 
-    public init(label: String, data: [LumenHeatmapDatum], summary: String? = nil, showData: Bool = true) {
+    public init(
+        label: String,
+        data: [LumenHeatmapDatum],
+        summary: String? = nil,
+        labels: LumenChartLabels = .english,
+        showData: Bool = true
+    ) {
         self.label = label
+        self.labels = labels
         self.data = data
-        self.summary = summary ?? "\(lumenAvailableHeatmapData(data).count) heatmap cells."
+        self.summary = summary ?? labels.formatHeatmapSummary(lumenAvailableHeatmapData(data).count)
         self.showData = showData
     }
 
@@ -1016,7 +1134,7 @@ public struct LumenHeatmap: View {
 
         LumenChartFrame(label: label, heading: nil, description: nil, summary: summary) {
             if availableData.isEmpty {
-                Text("No chart data available.")
+                Text(labels.empty)
                     .foregroundStyle(theme.colors.inkMuted)
             } else {
                 Chart(availableData) { datum in
@@ -1030,16 +1148,16 @@ public struct LumenHeatmap: View {
                         )
                     )
                     .accessibilityLabel(datum.label ?? "\(datum.column), \(datum.row)")
-                    .accessibilityValue(datum.value?.formatted() ?? "Not available")
+                    .accessibilityValue(datum.value?.formatted() ?? labels.notAvailable)
                 }
                 .frame(minHeight: 220)
             }
 
             if showData {
-                LumenStructuredChartDataList(rows: data.map { datum in
+                LumenStructuredChartDataList(labels: labels, rows: data.map { datum in
                     let value = datum.value?.isFinite == true
-                        ? datum.value?.formatted() ?? "Not available"
-                        : "Not available"
+                        ? datum.value?.formatted() ?? labels.notAvailable
+                        : labels.notAvailable
 
                     return LumenChartDataRow(
                         id: datum.id,
@@ -1061,6 +1179,7 @@ public struct LumenComboChart: View {
     @Environment(\.lumenTheme) private var theme
 
     private let label: String
+    private let labels: LumenChartLabels
     private let selection: Binding<LumenChartSelection?>?
     private let series: [LumenChartSeries]
     private let showData: Bool
@@ -1070,14 +1189,16 @@ public struct LumenComboChart: View {
         label: String,
         series: [LumenChartSeries],
         summary: String? = nil,
+        labels: LumenChartLabels = .english,
         showData: Bool = true,
         selection: Binding<LumenChartSelection?>? = nil
     ) {
         self.label = label
+        self.labels = labels
         self.series = series
         self.showData = showData
         self.selection = selection
-        self.summary = summary ?? LumenChartSummary.resolve(series: series).spokenDescription
+        self.summary = summary ?? labels.formatSummary(LumenChartSummary.resolve(series: series))
     }
 
     public var body: some View {
@@ -1124,7 +1245,7 @@ public struct LumenComboChart: View {
             .frame(minHeight: 220)
 
             if showData {
-                LumenChartDataList(selection: selection, series: series)
+                LumenChartDataList(labels: labels, selection: selection, series: series)
             }
         }
     }

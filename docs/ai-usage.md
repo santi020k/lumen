@@ -329,6 +329,10 @@ The shared catalog includes:
   low-to-high intervals, and `ComboChart` only when mixed marks share a meaningful domain. Use
   `Chart` as the custom SVG/canvas escape hatch. Preserve `null` gaps and the default accessible
   summary and fallback data. See `docs/data-visualization.md` for the full contract.
+  Pass `labels` to replace every library-owned visible and assistive phrase. Finite zero is valid
+  data, while an empty chart has no finite values; do not silently reinterpret an all-zero series
+  as missing. Set `showTable={false}` (`showData={false}` on native adapters) only when an
+  equivalent accessible table or scoreboard is adjacent.
   Keep stable identity in `datum.x` and put display text in `datum.xLabel`. Use `formatCategory`
   and `formatValue` for localized axes, SVG titles, and data tables. Choose
   `presentation="bare"` inside an existing Card, `categoryWidth` for long horizontal labels,

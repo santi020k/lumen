@@ -1,4 +1,4 @@
-import { act, type ReactElement } from 'react'
+import { act, type ReactElement, type Ref, useState } from 'react'
 
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker'
 import { getLumenPhoneCountry } from '@santi020k/lumen-core'
@@ -20,17 +20,26 @@ Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true })
 const nativePlatform = vi.hoisted(() => ({ OS: 'ios' }))
 
 vi.mock('react-native', async () => {
-  const { createElement } = await import('react')
+  const { createElement, useImperativeHandle } = await import('react')
   const hostComponent = (name: string) => (
     props: Record<string, unknown>
   ): ReactElement => createElement(name, props)
+  type FocusablePressableProps = Record<string, unknown> & {
+    ref?: Ref<{ focus: () => void }>
+  }
+  const FocusablePressable = ({ ref, ...props }: FocusablePressableProps): ReactElement => {
+    useImperativeHandle(ref, () => ({ focus: vi.fn() }))
+
+    return createElement('Pressable', props)
+  }
 
   return {
     ActivityIndicator: hostComponent('ActivityIndicator'),
     FlatList: hostComponent('FlatList'),
     Modal: hostComponent('Modal'),
     Platform: nativePlatform,
-    Pressable: hostComponent('Pressable'),
+    Pressable: FocusablePressable,
+    ScrollView: hostComponent('ScrollView'),
     Share: { share: () => Promise.resolve({ action: 'sharedAction' }) },
     Switch: hostComponent('Switch'),
     Text: hostComponent('Text'),
@@ -93,6 +102,19 @@ const callAction = (value: unknown, missingActionMessage: string): void => {
   if (typeof value !== 'function') throw new Error(missingActionMessage)
 
   Reflect.apply(value, undefined, [])
+}
+
+const callKeyboardAction = (value: unknown, key: string): ReturnType<typeof vi.fn> => {
+  if (typeof value !== 'function') throw new Error('Tab is missing its keyboard action.')
+
+  const preventDefault = vi.fn()
+
+  Reflect.apply(value, undefined, [{
+    nativeEvent: { code: key, key },
+    preventDefault
+  }])
+
+  return preventDefault
 }
 
 const findByAccessibilityRole = (root: Root, role: string): TestInstance => {
@@ -261,6 +283,34 @@ describe('Lumen React Native component behavior', () => {
 
     expect(readProp(dateRange, 'aria-invalid')).toBe(true)
     expect(readProp(dateRange, 'accessibilityHint')).toBe('Choose a valid schedule')
+  })
+
+  test('field groups provide inherited native and web relationships without overriding inputs', async () => {
+    const root = await renderNative(
+      <LumenFieldGroup
+        description="Shown on the public profile"
+        errorMessage="Choose a unique name"
+        label="Project name"
+        required
+      >
+        <LumenText>Nested row content</LumenText>
+        <LumenTextField />
+        <LumenTextField accessibilityLabel="Short project name" />
+      </LumenFieldGroup>
+    )
+    const inputs = root.container.queryAll(instance => instance.type === 'TextInput')
+    const inherited = inputs[0]
+    const explicit = inputs[1]
+
+    if (!inherited || !explicit) throw new Error('Expected two grouped text fields.')
+
+    expect(readProp(inherited, 'accessibilityLabel')).toBe('Project name')
+    expect(readProp(inherited, 'aria-labelledby')).toMatch(/-label$/u)
+    expect(readProp(inherited, 'aria-describedby')).toMatch(/-description .*?-error$/u)
+    expect(readProp(inherited, 'aria-required')).toBe(true)
+    expect(readProp(inherited, 'aria-invalid')).toBe(true)
+    expect(readProp(explicit, 'accessibilityLabel')).toBe('Short project name')
+    expect(readProp(explicit, 'aria-labelledby')).toBeUndefined()
   })
 
   test('phone input exposes disabled state on both native controls', async () => {
@@ -640,5 +690,83 @@ describe('Lumen React Native component behavior', () => {
     })
 
     expect(onValueChange).toHaveBeenCalledExactlyOnceWith('overview')
+  })
+
+  test('tabs support directional keyboard navigation without selecting disabled tabs', async () => {
+    const onValueChange = vi.fn<(value: string) => void>()
+    const KeyboardTabsFixture = (): ReactElement => {
+      const [value, setValue] = useState('overview')
+
+      return (
+        <LumenTabs
+          label="Workspace views"
+          onValueChange={nextValue => {
+            onValueChange(nextValue)
+            setValue(nextValue)
+          }}
+          options={[
+            { label: 'Overview', value: 'overview' },
+            { label: 'Activity', value: 'activity' },
+            { disabled: true, label: 'Billing', value: 'billing' }
+          ]}
+          value={value}
+        >
+          <LumenText>Current workspace health</LumenText>
+        </LumenTabs>
+      )
+    }
+    const root = await renderNative(<KeyboardTabsFixture />)
+    const pressTabKey = async (optionIndex: number, key: string): Promise<void> => {
+      const tab = root.container.queryAll(
+        instance => readProp(instance, 'accessibilityRole') === 'tab'
+      )[optionIndex]
+
+      if (!tab) throw new Error(`Expected tab fixture at index ${optionIndex}.`)
+
+      let prevented = false
+
+      await act(async () => {
+        const preventDefault = callKeyboardAction(readProp(tab, 'onKeyDown'), key)
+
+        prevented = preventDefault.mock.calls.length > 0
+
+        await Promise.resolve()
+      })
+
+      expect(prevented).toBe(true)
+    }
+
+    await pressTabKey(0, 'ArrowRight')
+    expect(onValueChange).toHaveBeenLastCalledWith('activity')
+
+    await pressTabKey(1, 'ArrowRight')
+    expect(onValueChange).toHaveBeenLastCalledWith('overview')
+    expect(onValueChange).not.toHaveBeenCalledWith('billing')
+  })
+
+  test('tabs do not reselect the current tab when every alternative is disabled', async () => {
+    const onValueChange = vi.fn<(value: string) => void>()
+    const root = await renderNative(
+      <LumenTabs
+        label="Workspace views"
+        onValueChange={onValueChange}
+        options={[
+          { label: 'Overview', value: 'overview' },
+          { disabled: true, label: 'Activity', value: 'activity' }
+        ]}
+        value="overview"
+      >
+        <LumenText>Current workspace health</LumenText>
+      </LumenTabs>
+    )
+    const overviewTab = root.container.queryAll(
+      instance => readProp(instance, 'accessibilityRole') === 'tab'
+    )[0]
+
+    if (!overviewTab) throw new Error('Expected the selected tab fixture.')
+
+    expect(callKeyboardAction(readProp(overviewTab, 'onKeyDown'), 'ArrowRight'))
+      .toHaveBeenCalledOnce()
+    expect(onValueChange).not.toHaveBeenCalled()
   })
 })

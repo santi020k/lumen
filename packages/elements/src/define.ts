@@ -27,6 +27,7 @@ import {
   hasLumenChartData,
   hasLumenPieData,
   isLumenRichTextToggleCommand,
+  type LumenChartLabels,
   type LumenChartSeries,
   type LumenChartTone,
   lumenChartTones,
@@ -51,6 +52,7 @@ import {
   parseThemeCss,
   renderLumenIconSvg,
   renderLumenIllustrationSvg,
+  resolveLumenChartLabels,
   resolveLumenChartTone,
   resolveLumenPhoneNumber,
   scaleLumenChartValue,
@@ -5300,22 +5302,49 @@ const chartCaptionHtml = (element: HTMLElement): string => {
   return caption ? `<figcaption>${escapeChartHtml(caption)}</figcaption>` : ''
 }
 
+const chartLabelsFor = (element: HTMLElement): Readonly<LumenChartLabels> => {
+  const defaults = resolveLumenChartLabels(undefined)
+
+  return {
+    ...defaults,
+    category: element.getAttribute('category-label') ?? defaults.category,
+    chartLegend: element.getAttribute('legend-label') ?? defaults.chartLegend,
+    column: element.getAttribute('column-label') ?? defaults.column,
+    empty: element.getAttribute('empty-label') ?? defaults.empty,
+    high: element.getAttribute('high-label') ?? defaults.high,
+    low: element.getAttribute('low-label') ?? defaults.low,
+    notAvailable: element.getAttribute('not-available-label') ?? defaults.notAvailable,
+    row: element.getAttribute('row-label') ?? defaults.row,
+    series: element.getAttribute('series-label') ?? defaults.series,
+    size: element.getAttribute('size-label') ?? defaults.size,
+    value: element.getAttribute('value-label') ?? defaults.value,
+    viewData: element.getAttribute('view-data-label') ?? defaults.viewData,
+    x: element.getAttribute('x-label') ?? defaults.x
+  }
+}
+
 const chartSummaryHtml = (
   element: HTMLElement,
   series: readonly LumenChartSeries[]
 ): string => {
-  const summary = element.getAttribute('summary') ?? formatLumenChartSummary(series)
+  const summary = element.getAttribute('summary') ?? formatLumenChartSummary(
+    series, String, chartLabelsFor(element)
+  )
 
   return `<p class="ui-sr-only" data-ui-chart-summary>${escapeChartHtml(summary)}</p>`
 }
 
-const chartLegendHtml = (series: readonly LumenChartSeries[]): string => `<ul class="ui-chart__legend" aria-label="Chart legend">${series.map((item, index) => `<li class="ui-chart-tone--${resolveLumenChartTone(item.tone, index)}"><span aria-hidden="true"></span>${escapeChartHtml(item.label)}</li>`).join('')}</ul>`
+const chartLegendHtml = (
+  series: readonly LumenChartSeries[],
+  labels: Readonly<LumenChartLabels>
+): string => `<ul class="ui-chart__legend" aria-label="${escapeChartHtml(labels.chartLegend)}">${series.map((item, index) => `<li class="ui-chart-tone--${resolveLumenChartTone(item.tone, index)}"><span aria-hidden="true"></span>${escapeChartHtml(item.label)}</li>`).join('')}</ul>`
 
 const chartDataTableHtml = (
   categories: readonly (number | string)[],
   series: readonly LumenChartSeries[],
   formatCategory: (category: number | string) => string = String,
-  formatValue: (value: number) => string = String
+  formatValue: (value: number) => string = String,
+  labels: Readonly<LumenChartLabels>
 ): string => {
   const headers = series
     .map(item => `<th scope="col">${escapeChartHtml(item.label)}</th>`)
@@ -5330,7 +5359,7 @@ const chartDataTableHtml = (
           const value =
             datum?.label ??
             (datum?.y === undefined || datum.y === null || !Number.isFinite(datum.y) ?
-              'Not available' :
+              labels.notAvailable :
               formatValue(datum.y))
 
           return `<td>${escapeChartHtml(value)}</td>`
@@ -5348,8 +5377,8 @@ const chartDataTableHtml = (
     .join('')
 
   return [
-    '<details class="ui-chart__data"><summary>View chart data</summary>',
-    '<div><table><thead><tr><th scope="col">Category</th>',
+    `<details class="ui-chart__data"><summary>${escapeChartHtml(labels.viewData)}</summary>`,
+    `<div><table><thead><tr><th scope="col">${escapeChartHtml(labels.category)}</th>`,
     `${headers}</tr></thead><tbody>${rows}</tbody></table></div></details>`
   ].join('')
 }
@@ -5357,33 +5386,36 @@ const chartDataTableHtml = (
 const scatterDataTableHtml = (
   points: readonly LumenScatterGeometryPoint[],
   formatCategory: (category: number | string) => string = String,
-  formatValue: (value: number) => string = String
+  formatValue: (value: number) => string = String,
+  labels: Readonly<LumenChartLabels>
 ): string => {
   const rows = points
     .map(point => [
       `<tr><th scope="row">${escapeChartHtml(point.xLabel ?? formatCategory(point.x))}</th>`,
       `<td>${escapeChartHtml(point.seriesLabel)}</td>`,
       `<td>${escapeChartHtml(point.label ?? formatValue(point.y ?? 0))}</td>`,
-      `<td>${escapeChartHtml(point.size === undefined || point.size === null || !Number.isFinite(point.size) ? 'Not available' : formatValue(point.size))}</td></tr>`
+      `<td>${escapeChartHtml(point.size === undefined || point.size === null || !Number.isFinite(point.size) ? labels.notAvailable : formatValue(point.size))}</td></tr>`
     ].join(''))
     .join('')
 
   return [
-    '<details class="ui-chart__data"><summary>View chart data</summary>',
-    '<div><table><thead><tr><th scope="col">X</th>',
-    '<th scope="col">Series</th><th scope="col">Value</th>',
-    '<th scope="col">Size</th></tr></thead>',
+    `<details class="ui-chart__data"><summary>${escapeChartHtml(labels.viewData)}</summary>`,
+    `<div><table><thead><tr><th scope="col">${escapeChartHtml(labels.x)}</th>`,
+    `<th scope="col">${escapeChartHtml(labels.series)}</th><th scope="col">${escapeChartHtml(labels.value)}</th>`,
+    `<th scope="col">${escapeChartHtml(labels.size)}</th></tr></thead>`,
     `<tbody>${rows}</tbody></table></div></details>`
   ].join('')
 }
 
-const heatmapDataTableHtml = (data: readonly LumenHeatmapDatum[]): string => {
+const heatmapDataTableHtml = (
+  data: readonly LumenHeatmapDatum[], labels: Readonly<LumenChartLabels>
+): string => {
   const rows = data
     .map(cell => {
       const value =
         cell.label ??
         (cell.value === null || !Number.isFinite(cell.value) ?
-          'Not available' :
+          labels.notAvailable :
           String(cell.value))
 
       return [
@@ -5395,26 +5427,28 @@ const heatmapDataTableHtml = (data: readonly LumenHeatmapDatum[]): string => {
     .join('')
 
   return [
-    '<details class="ui-chart__data"><summary>View chart data</summary>',
-    '<div><table><thead><tr><th scope="col">Column</th>',
-    '<th scope="col">Row</th><th scope="col">Value</th></tr></thead>',
+    `<details class="ui-chart__data"><summary>${escapeChartHtml(labels.viewData)}</summary>`,
+    `<div><table><thead><tr><th scope="col">${escapeChartHtml(labels.column)}</th>`,
+    `<th scope="col">${escapeChartHtml(labels.row)}</th><th scope="col">${escapeChartHtml(labels.value)}</th></tr></thead>`,
     `<tbody>${rows}</tbody></table></div></details>`
   ].join('')
 }
 
-const rangeDataTableHtml = (data: readonly LumenRangeDatum[]): string => {
+const rangeDataTableHtml = (
+  data: readonly LumenRangeDatum[], labels: Readonly<LumenChartLabels>
+): string => {
   const rows = data
     .map(item => [
       `<tr><th scope="row">${escapeChartHtml(item.xLabel ?? item.x)}</th>`,
-      `<td>${escapeChartHtml(item.low ?? 'Not available')}</td>`,
-      `<td>${escapeChartHtml(item.high ?? 'Not available')}</td></tr>`
+      `<td>${escapeChartHtml(item.low ?? labels.notAvailable)}</td>`,
+      `<td>${escapeChartHtml(item.high ?? labels.notAvailable)}</td></tr>`
     ].join(''))
     .join('')
 
   return [
-    '<details class="ui-chart__data"><summary>View chart data</summary>',
-    '<div><table><thead><tr><th scope="col">Category</th>',
-    '<th scope="col">Low</th><th scope="col">High</th></tr></thead>',
+    `<details class="ui-chart__data"><summary>${escapeChartHtml(labels.viewData)}</summary>`,
+    `<div><table><thead><tr><th scope="col">${escapeChartHtml(labels.category)}</th>`,
+    `<th scope="col">${escapeChartHtml(labels.low)}</th><th scope="col">${escapeChartHtml(labels.high)}</th></tr></thead>`,
     `<tbody>${rows}</tbody></table></div></details>`
   ].join('')
 }
@@ -5583,10 +5617,11 @@ class LumenSparklineBehaviorElement extends LumenElement {
 class LumenBarChartBehaviorElement extends LumenDataChartBehaviorElement {
   protected renderChart() {
     const series = this.series
+    const chartLabels = chartLabelsFor(this)
 
     if (!hasLumenChartData(series)) {
       const emptyLabel =
-        this.getAttribute('empty-label') ?? 'No chart data available.'
+        this.getAttribute('empty-label') ?? chartLabels.empty
 
       this.innerHTML = chartEmptyStateHtml(this, emptyLabel)
 
@@ -5686,17 +5721,18 @@ class LumenBarChartBehaviorElement extends LumenDataChartBehaviorElement {
     const showTable = chartBooleanAttribute(this, 'show-table', true)
     const categories = geometry.categories.map(category => category.category)
 
-    this.innerHTML = `${chartHeaderHtml(this)}${chartSummaryHtml(this, series)}${showLegend ? chartLegendHtml(series) : ''}<div class="ui-chart__plot"><svg aria-hidden="true" preserveAspectRatio="xMidYMid meet" viewBox="0 0 ${geometry.width} ${geometry.height}"><g class="ui-chart__grid">${grid}</g><g class="ui-chart__axis-labels">${labels}</g><g class="ui-bar-chart__marks">${marks}</g></svg></div>${showTable ? chartDataTableHtml(categories, series, this.categoryFormatter, this.valueFormatter) : ''}${chartCaptionHtml(this)}`
+    this.innerHTML = `${chartHeaderHtml(this)}${chartSummaryHtml(this, series)}${showLegend ? chartLegendHtml(series, chartLabels) : ''}<div class="ui-chart__plot"><svg aria-hidden="true" preserveAspectRatio="xMidYMid meet" viewBox="0 0 ${geometry.width} ${geometry.height}"><g class="ui-chart__grid">${grid}</g><g class="ui-chart__axis-labels">${labels}</g><g class="ui-bar-chart__marks">${marks}</g></svg></div>${showTable ? chartDataTableHtml(categories, series, this.categoryFormatter, this.valueFormatter, chartLabels) : ''}${chartCaptionHtml(this)}`
   }
 }
 
 class LumenLineChartBehaviorElement extends LumenDataChartBehaviorElement {
   protected renderChart() {
     const series = this.series
+    const chartLabels = chartLabelsFor(this)
 
     if (!hasLumenChartData(series)) {
       const emptyLabel =
-        this.getAttribute('empty-label') ?? 'No chart data available.'
+        this.getAttribute('empty-label') ?? chartLabels.empty
 
       this.innerHTML = chartEmptyStateHtml(this, emptyLabel)
 
@@ -5840,14 +5876,14 @@ class LumenLineChartBehaviorElement extends LumenDataChartBehaviorElement {
     this.innerHTML = [
       chartHeaderHtml(this),
       chartSummaryHtml(this, series),
-      showLegend ? chartLegendHtml(series) : '',
+      showLegend ? chartLegendHtml(series, chartLabels) : '',
       '<div class="ui-chart__plot"><svg aria-hidden="true"',
       ` preserveAspectRatio="xMidYMid meet" viewBox="0 0 ${width} ${height}">`,
       `<g class="ui-chart__grid">${grid}</g>`,
       `<g class="ui-chart__axis-labels">${labels}</g>`,
       `${reference}${paths}</svg></div>`,
       showTable ?
-        chartDataTableHtml(categories, series, this.categoryFormatter, this.valueFormatter) :
+        chartDataTableHtml(categories, series, this.categoryFormatter, this.valueFormatter, chartLabels) :
         '',
       chartCaptionHtml(this)
     ].join('')
@@ -5857,9 +5893,10 @@ class LumenLineChartBehaviorElement extends LumenDataChartBehaviorElement {
 class LumenPieChartBehaviorElement extends LumenDataChartBehaviorElement {
   protected renderChart() {
     const series = this.series[0]
+    const chartLabels = chartLabelsFor(this)
 
     if (!series || !hasLumenPieData(series.data)) {
-      this.innerHTML = chartEmptyStateHtml(this, 'No chart data available.')
+      this.innerHTML = chartEmptyStateHtml(this, chartLabels.empty)
 
       return
     }
@@ -5881,7 +5918,7 @@ class LumenPieChartBehaviorElement extends LumenDataChartBehaviorElement {
     ].join('')).join('')
 
     const legend = showLegend ?
-      `<ul class="ui-chart__legend" aria-label="Chart legend">${legendItems}</ul>` :
+      `<ul class="ui-chart__legend" aria-label="${escapeChartHtml(chartLabels.chartLegend)}">${legendItems}</ul>` :
       ''
 
     const slices = geometry.slices
@@ -5906,7 +5943,7 @@ class LumenPieChartBehaviorElement extends LumenDataChartBehaviorElement {
         `<div class="ui-pie-chart__center" aria-hidden="true">${centerValue ? `<strong>${escapeChartHtml(centerValue)}</strong>` : ''}${centerLabel ? `<span>${escapeChartHtml(centerLabel)}</span>` : ''}</div>` :
         ''
 
-    const table = showTable ? this.pieDataTable(geometry.slices) : ''
+    const table = showTable ? this.pieDataTable(geometry.slices, chartLabels) : ''
 
     this.innerHTML = [
       chartHeaderHtml(this),
@@ -5921,7 +5958,9 @@ class LumenPieChartBehaviorElement extends LumenDataChartBehaviorElement {
     ].join('')
   }
 
-  private pieDataTable(slices: readonly LumenPieGeometrySlice[]): string {
+  private pieDataTable(
+    slices: readonly LumenPieGeometrySlice[], labels: Readonly<LumenChartLabels>
+  ): string {
     const rows = slices
       .map(slice => [
         `<tr><th scope="row">${escapeChartHtml(slice.label)}</th>`,
@@ -5931,9 +5970,9 @@ class LumenPieChartBehaviorElement extends LumenDataChartBehaviorElement {
       .join('')
 
     return [
-      '<details class="ui-chart__data"><summary>View chart data</summary>',
-      '<div><table><thead><tr><th scope="col">Category</th>',
-      '<th scope="col">Value</th><th scope="col">Share</th></tr></thead>',
+      `<details class="ui-chart__data"><summary>${escapeChartHtml(labels.viewData)}</summary>`,
+      `<div><table><thead><tr><th scope="col">${escapeChartHtml(labels.category)}</th>`,
+      `<th scope="col">${escapeChartHtml(labels.value)}</th><th scope="col">Share</th></tr></thead>`,
       `<tbody>${rows}</tbody></table></div></details>`
     ].join('')
   }
@@ -5942,6 +5981,7 @@ class LumenPieChartBehaviorElement extends LumenDataChartBehaviorElement {
 class LumenScatterChartBehaviorElement extends LumenDataChartBehaviorElement {
   protected renderChart() {
     const series = this.series
+    const chartLabels = chartLabelsFor(this)
     const geometry = createLumenScatterGeometry(series)
 
     const renderedSeries = series.map(item => ({
@@ -5950,7 +5990,7 @@ class LumenScatterChartBehaviorElement extends LumenDataChartBehaviorElement {
     })).filter(item => item.data.length > 0)
 
     if (geometry.points.length === 0) {
-      this.innerHTML = chartEmptyStateHtml(this, 'No chart data available.')
+      this.innerHTML = chartEmptyStateHtml(this, chartLabels.empty)
 
       return
     }
@@ -5965,12 +6005,12 @@ class LumenScatterChartBehaviorElement extends LumenDataChartBehaviorElement {
     this.innerHTML = [
       chartHeaderHtml(this),
       chartSummaryHtml(this, renderedSeries),
-      chartBooleanAttribute(this, 'show-legend', series.length > 1) ? chartLegendHtml(series) : '',
+      chartBooleanAttribute(this, 'show-legend', series.length > 1) ? chartLegendHtml(series, chartLabels) : '',
       `<div class="ui-chart__plot"><svg aria-hidden="true" viewBox="0 0 ${geometry.width} ${geometry.height}">`,
       `<g class="ui-scatter-chart__marks">${marks}</g></svg></div>`,
       chartBooleanAttribute(this, 'show-table', true) ?
         scatterDataTableHtml(
-          geometry.points, this.categoryFormatter, this.valueFormatter
+          geometry.points, this.categoryFormatter, this.valueFormatter, chartLabels
         ) :
         '',
       chartCaptionHtml(this)
@@ -5980,6 +6020,8 @@ class LumenScatterChartBehaviorElement extends LumenDataChartBehaviorElement {
 
 class LumenComboChartBehaviorElement extends LumenDataChartBehaviorElement {
   protected renderChart() {
+    const chartLabels = chartLabelsFor(this)
+
     const series = this.series.map(item => {
       const mark =
         'mark' in item &&
@@ -5991,7 +6033,7 @@ class LumenComboChartBehaviorElement extends LumenDataChartBehaviorElement {
     })
 
     if (!hasLumenChartData(series)) {
-      this.innerHTML = chartEmptyStateHtml(this, 'No chart data available.')
+      this.innerHTML = chartEmptyStateHtml(this, chartLabels.empty)
 
       return
     }
@@ -6073,11 +6115,11 @@ class LumenComboChartBehaviorElement extends LumenDataChartBehaviorElement {
     this.innerHTML = [
       chartHeaderHtml(this),
       chartSummaryHtml(this, series),
-      chartBooleanAttribute(this, 'show-legend', true) ? chartLegendHtml(series) : '',
+      chartBooleanAttribute(this, 'show-legend', true) ? chartLegendHtml(series, chartLabels) : '',
       `<div class="ui-chart__plot"><svg aria-hidden="true" viewBox="0 0 ${width} ${height}">`,
       `<g class="ui-bar-chart__marks">${barMarks}</g>${lineMarks}</svg></div>`,
       chartBooleanAttribute(this, 'show-table', true) ?
-        chartDataTableHtml(categories, series, this.categoryFormatter, this.valueFormatter) :
+        chartDataTableHtml(categories, series, this.categoryFormatter, this.valueFormatter, chartLabels) :
         '',
       chartCaptionHtml(this)
     ].join('')
@@ -6106,6 +6148,7 @@ abstract class LumenStructuredChartBehaviorElement extends LumenElement {
 
 class LumenHeatmapBehaviorElement extends LumenStructuredChartBehaviorElement {
   protected renderChart() {
+    const chartLabels = chartLabelsFor(this)
     const data = parseHeatmapData(this.getAttribute('data'))
     const geometry = createLumenHeatmapGeometry(data)
 
@@ -6118,19 +6161,19 @@ class LumenHeatmapBehaviorElement extends LumenStructuredChartBehaviorElement {
       ` width="${Math.max(0, cell.width - 2)}" x="${cell.xCoordinate + 1}"`,
       ` y="${cell.yCoordinate + 1}"><title>${escapeChartHtml(cell.xLabel ?? cell.x)} · `,
       `${escapeChartHtml(cell.yLabel ?? cell.y)}: `,
-      `${escapeChartHtml(cell.label ?? cell.value ?? 'Not available')}</title></rect>`
+      `${escapeChartHtml(cell.label ?? cell.value ?? chartLabels.notAvailable)}</title></rect>`
     ].join('')).join('')
 
     const summary =
       this.getAttribute('summary') ??
-      `${availableCells.length} available heatmap cells.`
+      chartLabels.formatHeatmapSummary(availableCells.length)
 
     const plot = availableCells.length === 0 ?
-      '<p class="ui-chart__empty" role="status">No chart data available.</p>' :
+      `<p class="ui-chart__empty" role="status">${escapeChartHtml(chartLabels.empty)}</p>` :
       `<div class="ui-chart__plot"><svg aria-hidden="true" viewBox="0 0 ${geometry.width} ${geometry.height}"><g class="ui-heatmap__cells">${cells}</g></svg></div>`
 
     const table = chartBooleanAttribute(this, 'show-table', true) ?
-      heatmapDataTableHtml(data) :
+      heatmapDataTableHtml(data, chartLabels) :
       ''
 
     this.innerHTML = `${chartHeaderHtml(this)}<p class="ui-sr-only" data-ui-chart-summary>${escapeChartHtml(summary)}</p>${plot}${table}${chartCaptionHtml(this)}`
@@ -6139,6 +6182,7 @@ class LumenHeatmapBehaviorElement extends LumenStructuredChartBehaviorElement {
 
 class LumenRangeChartBehaviorElement extends LumenStructuredChartBehaviorElement {
   protected renderChart() {
+    const chartLabels = chartLabelsFor(this)
     const data = parseRangeData(this.getAttribute('data'))
     const geometry = createLumenRangeGeometry(data)
 
@@ -6149,14 +6193,14 @@ class LumenRangeChartBehaviorElement extends LumenStructuredChartBehaviorElement
       `${escapeChartHtml(point.label ?? `${point.low ?? 0}–${point.high ?? 0}`)}</title></line>`
     ].join('')).join('')
 
-    const summary = this.getAttribute('summary') ?? `${geometry.points.length} available ranges.`
+    const summary = this.getAttribute('summary') ?? chartLabels.formatRangeSummary(geometry.points.length)
 
     const plot = geometry.points.length === 0 ?
-      '<p class="ui-chart__empty" role="status">No chart data available.</p>' :
+      `<p class="ui-chart__empty" role="status">${escapeChartHtml(chartLabels.empty)}</p>` :
       `<div class="ui-chart__plot"><svg aria-hidden="true" viewBox="0 0 640 320"><path class="ui-range-chart__area" d="${geometry.areaPath}"></path>${intervals}</svg></div>`
 
     const table = chartBooleanAttribute(this, 'show-table', true) ?
-      rangeDataTableHtml(data) :
+      rangeDataTableHtml(data, chartLabels) :
       ''
 
     this.innerHTML = `${chartHeaderHtml(this)}<p class="ui-sr-only" data-ui-chart-summary>${escapeChartHtml(summary)}</p>${plot}${table}${chartCaptionHtml(this)}`

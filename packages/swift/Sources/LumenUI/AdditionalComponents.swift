@@ -100,21 +100,26 @@ public struct LumenTextarea: View {
 
     private let description: LumenTextContent?
     private let errorMessage: LumenTextContent?
+    private let lineLimit: ClosedRange<Int>?
     private let minHeight: CGFloat
     private let title: LumenTextContent
+    private let trailingAccessory: AnyView?
 
     public init(
         _ title: LocalizedStringKey,
         text: Binding<String>,
         description: LocalizedStringKey? = nil,
         errorMessage: LocalizedStringKey? = nil,
-        minHeight: CGFloat = 112
+        minHeight: CGFloat = 112,
+        lineLimit: ClosedRange<Int>? = nil
     ) {
         self.title = .localized(title)
         _text = text
         self.description = description.map(LumenTextContent.localized)
         self.errorMessage = errorMessage.map(LumenTextContent.localized)
         self.minHeight = minHeight
+        self.lineLimit = lineLimit
+        trailingAccessory = nil
     }
 
     public init(
@@ -122,13 +127,34 @@ public struct LumenTextarea: View {
         text: Binding<String>,
         description: LumenTextContent? = nil,
         errorMessage: LumenTextContent? = nil,
-        minHeight: CGFloat = 112
+        minHeight: CGFloat = 112,
+        lineLimit: ClosedRange<Int>? = nil
     ) {
         self.title = title
         _text = text
         self.description = description
         self.errorMessage = errorMessage
         self.minHeight = minHeight
+        self.lineLimit = lineLimit
+        trailingAccessory = nil
+    }
+
+    public init<Accessory: View>(
+        _ title: LumenTextContent,
+        text: Binding<String>,
+        description: LumenTextContent? = nil,
+        errorMessage: LumenTextContent? = nil,
+        minHeight: CGFloat = 72,
+        lineLimit: ClosedRange<Int>? = 2...6,
+        @ViewBuilder trailingAccessory: () -> Accessory
+    ) {
+        self.title = title
+        _text = text
+        self.description = description
+        self.errorMessage = errorMessage
+        self.minHeight = minHeight
+        self.lineLimit = lineLimit
+        self.trailingAccessory = AnyView(trailingAccessory())
     }
 
     public var body: some View {
@@ -136,11 +162,14 @@ public struct LumenTextarea: View {
             title.text
                 .font(.callout.weight(.semibold))
                 .foregroundStyle(theme.colors.ink)
-            TextEditor(text: $text)
-                .scrollContentBackground(.hidden)
-                .font(.callout)
-                .foregroundStyle(theme.colors.ink)
-                .frame(minHeight: minHeight)
+            HStack(alignment: .bottom, spacing: LumenSpacing.sm) {
+                editor
+
+                if let trailingAccessory {
+                    trailingAccessory
+                        .frame(minWidth: 44, minHeight: 44)
+                }
+            }
                 .padding(LumenSpacing.sm)
                 .background(theme.colors.surface)
                 .overlay {
@@ -149,15 +178,26 @@ public struct LumenTextarea: View {
                 }
                 .clipShape(RoundedRectangle(cornerRadius: LumenRadius.sm, style: .continuous))
                 .opacity(isEnabled ? 1 : 0.52)
-                .lumenAccessibilityHint(errorMessage ?? description)
-                .accessibilityLabel(title.text)
-                .accessibilityValue(Text(verbatim: text))
             if let errorMessage {
                 errorMessage.text.font(.caption).foregroundStyle(theme.colors.danger)
             } else if let description {
                 description.text.font(.caption).foregroundStyle(theme.colors.inkMuted)
             }
         }
+    }
+
+    @ViewBuilder
+    private var editor: some View {
+        let editor = TextEditor(text: $text)
+            .scrollContentBackground(.hidden)
+            .font(.callout)
+            .foregroundStyle(theme.colors.ink)
+            .frame(minHeight: minHeight)
+            .lumenAccessibilityHint(errorMessage ?? description)
+            .accessibilityLabel(title.text)
+            .accessibilityValue(Text(verbatim: text))
+
+        if let lineLimit { editor.lineLimit(lineLimit) } else { editor }
     }
 }
 #endif

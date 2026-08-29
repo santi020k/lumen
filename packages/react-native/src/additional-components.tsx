@@ -1,7 +1,8 @@
 import {
   type ReactElement,
   type ReactNode,
-  type Ref
+  type Ref,
+  useId
 } from 'react'
 import {
   type HostInstance,
@@ -16,6 +17,7 @@ import {
   type ViewProps
 } from 'react-native'
 
+import { LumenFieldContext } from './field-context.js'
 import {
   resolveLumenAriaInvalid,
   resolveLumenButtonOpacity,
@@ -325,32 +327,55 @@ export const LumenFieldGroup = ({
   ...props
 }: LumenFieldGroupProps): ReactElement => {
   const theme = useLumenTheme()
+  const fieldId = useId().replaceAll(':', '')
+  const labelId = `${fieldId}-label`
+  const descriptionId = description ? `${fieldId}-description` : undefined
+  const errorId = errorMessage ? `${fieldId}-error` : undefined
 
   return (
-    <View ref={ref} {...props} style={[{ gap: theme.spacing.sm }, style]}>
-      <Text
-        accessibilityLabel={required ? `${label}, required` : undefined}
-        style={{
-          color: theme.colors.ink,
-          fontSize: theme.fontSizes.sm,
-          fontWeight: String(theme.fontWeights.semibold) as TextStyle['fontWeight']
-        }}
-      >
-        {label}
-        {required ? ' *' : ''}
-      </Text>
-      {description ?
-        <Text style={{ color: theme.colors.inkMuted, fontSize: theme.fontSizes.xs }}>{description}</Text> :
-        null}
-      {children}
-      {errorMessage ?
-        (
-          <Text accessibilityRole="alert" style={{ color: theme.colors.danger, fontSize: theme.fontSizes.xs }}>
-            {errorMessage}
-          </Text>
-        ) :
-        null}
-    </View>
+    <LumenFieldContext value={{
+      ...(descriptionId ? { descriptionId } : {}),
+      error: Boolean(errorMessage),
+      ...(errorId ? { errorId } : {}),
+      label,
+      labelId,
+      required
+    }}
+    >
+      <View ref={ref} {...props} style={[{ gap: theme.spacing.sm }, style]}>
+        <Text
+          accessibilityLabel={required ? `${label}, required` : undefined}
+          nativeID={labelId}
+          style={{
+            color: theme.colors.ink,
+            fontSize: theme.fontSizes.sm,
+            fontWeight: String(theme.fontWeights.semibold) as TextStyle['fontWeight']
+          }}
+        >
+          {label}
+          {required ? ' *' : ''}
+        </Text>
+        {description ?
+          (
+            <Text nativeID={descriptionId} style={{ color: theme.colors.inkMuted, fontSize: theme.fontSizes.xs }}>
+              {description}
+            </Text>
+          ) :
+          null}
+        {children}
+        {errorMessage ?
+          (
+            <Text
+              accessibilityRole="alert"
+              nativeID={errorId}
+              style={{ color: theme.colors.danger, fontSize: theme.fontSizes.xs }}
+            >
+              {errorMessage}
+            </Text>
+          ) :
+          null}
+      </View>
+    </LumenFieldContext>
   )
 }
 

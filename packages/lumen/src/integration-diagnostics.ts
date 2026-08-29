@@ -5,7 +5,9 @@ import { extname, join, relative, resolve, sep } from 'node:path'
 import {
   lumenComponentBehavior,
   type LumenComponentName,
+  lumenComponentNames,
   lumenGlobalBehaviors,
+  type LumenStylingContract,
   lumenStylingContracts
 } from '@santi020k/lumen-core'
 
@@ -48,8 +50,22 @@ const ignoredDirectories = new Set([
   'out'
 ])
 
+const stylingContracts: Partial<Readonly<Record<LumenComponentName, LumenStylingContract>>> =
+  lumenStylingContracts
+
 const publicRootSlots: ReadonlySet<string> = new Set(
-  Object.values(lumenStylingContracts).flatMap(contract => [contract.rootSlot, ...contract.parts])
+  Object.values(stylingContracts).flatMap(contract => [contract.rootSlot, ...contract.parts])
+)
+
+const componentClassName = (name: LumenComponentName): string => name
+  .replace(/([a-z\d])([A-Z])/gu, '$1-$2')
+  .toLowerCase()
+
+const componentByClassName: ReadonlyMap<string, LumenComponentName> = new Map(
+  lumenComponentNames.map((name): readonly [string, LumenComponentName] => [
+    componentClassName(name),
+    name
+  ])
 )
 
 interface DiscoveredProject {
@@ -115,8 +131,23 @@ interface SourceEntry {
 }
 
 interface ApplicationBoundary {
+  dependencies: readonly string[]
+  kind: 'application' | 'library' | 'workspace'
+  packageName?: string
   root: string
   sources: SourceEntry[]
+}
+
+interface PackageManifest {
+  dependencies?: Readonly<Record<string, string>>
+  devDependencies?: Readonly<Record<string, string>>
+  lumen?: {
+    integrationBoundary?: 'application' | 'library' | 'workspace'
+  }
+  name?: string
+  peerDependencies?: Readonly<Record<string, string>>
+  private?: boolean
+  scripts?: Readonly<Record<string, string>>
 }
 
 const packageNamePattern = String.raw`@santi020k\/lumen-(?:astro|elements|react)(?:\/[^'"]*)?`
@@ -168,11 +199,73 @@ const getBoundaryRoot = (file: string, packageRoots: string[], fallback: string)
   .filter(packageRoot => file === packageRoot || file.startsWith(`${packageRoot}${sep}`))
   .sort((left, right) => right.length - left.length)[0] ?? fallback
 
-const createBoundaries = (
+const readPackageManifest = async (root: string): Promise<PackageManifest | undefined> => {
+  try {
+    return JSON.parse(await readFile(join(root, 'package.json'), 'utf8')) as PackageManifest
+  } catch {
+    return undefined
+  }
+}
+
+const isPublishablePackageBoundary = (
+  repositoryPath: readonly string[],
+  manifest: PackageManifest | undefined
+): boolean => repositoryPath.includes('packages') && manifest?.private !== true
+
+const hasApplicationSource = (
+  boundaryRoot: string,
+  sources: readonly SourceEntry[]
+): boolean => sources.some(item => /(?:^|\/)(?:app|pages|routes|layouts?)(?:\/|$)/iu.test(
+  relative(boundaryRoot, item.file)
+))
+
+const hasApplicationScript = (manifest: PackageManifest | undefined): boolean => {
+  if (manifest?.private !== true) return false
+
+  return Boolean(manifest.scripts?.dev ?? manifest.scripts?.start)
+}
+
+const isWorkspaceBoundary = (
+  repositoryRoot: string,
+  boundaryRoot: string,
+  packageRootCount: number
+): boolean => boundaryRoot === repositoryRoot && packageRootCount > 1
+
+const getFallbackBoundaryKind = (
+  manifest: PackageManifest | undefined
+): ApplicationBoundary['kind'] => manifest?.private === false ? 'library' : 'application'
+
+const classifyBoundary = (
+  repositoryRoot: string,
+  boundaryRoot: string,
+  manifest: PackageManifest | undefined,
+  sources: readonly SourceEntry[],
+  packageRootCount: number
+): ApplicationBoundary['kind'] => {
+  const declaredKind = manifest?.lumen?.integrationBoundary
+
+  if (declaredKind) return declaredKind
+
+  const repositoryPath = relative(repositoryRoot, boundaryRoot).split(sep)
+
+  if (repositoryPath.includes('apps')) return 'application'
+
+  if (isPublishablePackageBoundary(repositoryPath, manifest)) return 'library'
+
+  if (hasApplicationSource(boundaryRoot, sources)) return 'application'
+
+  if (hasApplicationScript(manifest)) return 'application'
+
+  if (isWorkspaceBoundary(repositoryRoot, boundaryRoot, packageRootCount)) return 'workspace'
+
+  return getFallbackBoundaryKind(manifest)
+}
+
+const createBoundaries = async (
   root: string,
   packageRoots: string[],
   sources: SourceEntry[]
-): ApplicationBoundary[] => {
+): Promise<ApplicationBoundary[]> => {
   const grouped = new Map<string, SourceEntry[]>()
 
   for (const source of sources) {
@@ -184,10 +277,55 @@ const createBoundaries = (
     grouped.set(boundaryRoot, entries)
   }
 
-  return [...grouped].map(([boundaryRoot, boundarySources]) => ({
-    root: boundaryRoot,
-    sources: boundarySources
+  return Promise.all([...grouped].map(async ([boundaryRoot, boundarySources]) => {
+    const manifest = await readPackageManifest(boundaryRoot)
+
+    const dependencies = [
+      ...Object.keys(manifest?.dependencies ?? {}),
+      ...Object.keys(manifest?.devDependencies ?? {}),
+      ...Object.keys(manifest?.peerDependencies ?? {})
+    ]
+
+    return {
+      dependencies,
+      kind: classifyBoundary(root, boundaryRoot, manifest, boundarySources, packageRoots.length),
+      ...(manifest?.name ? { packageName: manifest.name } : {}),
+      root: boundaryRoot,
+      sources: boundarySources
+    }
   }))
+}
+
+const getApplicationSources = (
+  application: ApplicationBoundary,
+  boundaries: readonly ApplicationBoundary[]
+): SourceEntry[] => {
+  const byName = new Map(boundaries.flatMap(boundary => boundary.packageName ?
+    [[boundary.packageName, boundary] as const] :
+    []))
+
+  const sources = [...application.sources]
+  const visited = new Set<string>()
+
+  const includeDependencies = (boundary: ApplicationBoundary): void => {
+    for (const dependencyName of boundary.dependencies) {
+      if (visited.has(dependencyName)) continue
+
+      visited.add(dependencyName)
+
+      const dependency = byName.get(dependencyName)
+
+      if (dependency?.kind !== 'library') continue
+
+      sources.push(...dependency.sources)
+
+      includeDependencies(dependency)
+    }
+  }
+
+  includeDependencies(application)
+
+  return sources
 }
 
 const collectCompatibilityFindings = (
@@ -206,6 +344,15 @@ const collectCompatibilityFindings = (
   if (item.source.includes('ui:datatable-selection-change')) {
     findings.push(finding(
       file, 'deprecated-datatable-event', 'The ui:datatable-selection-change event alias is deprecated.', 'Rename it to ui:data-table-selection-change.', 'advisory'
+    ))
+  }
+
+  if (importedNames(item.source, '@santi020k/lumen-astro').includes('UIPrimitives')) {
+    findings.push(finding(
+      file,
+      'removed-root-export',
+      'UIPrimitives is no longer exported from the @santi020k/lumen-astro package root.',
+      'Import the default runtime from @santi020k/lumen-astro/runtime, or run lumen migrate-v2.'
     ))
   }
 
@@ -269,6 +416,57 @@ const duplicatedBehaviorRules: readonly DuplicatedBehaviorRule[] = [
     message: 'A raw menu with arrow-key handling may duplicate Lumen menu behavior.',
     remediation: 'Review DropdownMenu, Menubar, or NavigationMenu before maintaining a separate keyboard controller.',
     rule: 'hand-built-menu-keyboard'
+  },
+  {
+    detects: (source, sourceLower) => (
+      source.includes('scrollY') || sourceLower.includes('scrolltop')
+    ) && (
+      sourceLower.includes('scrollheight') || sourceLower.includes('scrollprogress')
+    ) && (
+      source.includes('addEventListener(\'scroll\'') || source.includes('addEventListener("scroll"') ||
+      sourceLower.includes('onscroll')
+    ),
+    imports: ['ScrollProgress'],
+    message: 'Custom document scroll progress may duplicate Lumen ScrollProgress behavior.',
+    remediation: 'Review ScrollProgress before maintaining viewport measurement and progress synchronization.',
+    rule: 'hand-built-scroll-progress'
+  },
+  {
+    detects: (_source, sourceLower) => (
+      sourceLower.includes('href="#main') || sourceLower.includes('href=\'#main')
+    ) && sourceLower.includes('skip'),
+    imports: ['SkipLink'],
+    message: 'A custom skip-to-content link may duplicate Lumen SkipLink behavior.',
+    remediation: 'Review SkipLink for its stable slot and fixed-position accessibility contract.',
+    rule: 'hand-built-skip-link'
+  },
+  {
+    detects: (source, sourceLower) => (
+      source.includes('@radix-ui/react-slot') || sourceLower.includes('<slot')
+    ) && sourceLower.includes('aschild'),
+    imports: ['Button'],
+    message: 'A Radix Slot or asChild branch may duplicate Lumen Button composition.',
+    remediation: 'Review Button asChild before retaining a separate polymorphic action wrapper.',
+    rule: 'hand-built-polymorphic-button'
+  },
+  {
+    detects: (source, sourceLower) => sourceLower.includes('<input') &&
+      /\bsize\s*=\s*\{(?:size|props\.size)\}/u.test(source) &&
+      !source.includes('visualSize'),
+    imports: ['Input'],
+    message: 'A native input size passthrough may confuse HTML character width with Lumen visual sizing.',
+    remediation: 'Review Input visualSize and keep the native size attribute only when character width is intentional.',
+    rule: 'native-input-size-fallback'
+  },
+  {
+    detects: (source, sourceLower) => sourceLower.includes('card') &&
+      sourceLower.includes('card-header') &&
+      sourceLower.includes('card-content') &&
+      !source.includes('CardHeader'),
+    imports: ['Card'],
+    message: 'A hand-built card section hierarchy may duplicate Lumen Card compound parts.',
+    remediation: 'Review CardHeader, CardContent, and CardFooter while keeping domain-specific card content application-owned.',
+    rule: 'hand-built-card-structure'
   }
 ]
 
@@ -424,9 +622,78 @@ const styleImportByFramework = {
 
 const countOccurrences = (source: string, value: string): number => source.split(value).length - 1
 
-const collectCssFindings = (root: string, sources: SourceEntry[]): LumenDiagnosticFinding[] => sources
-  .filter(item => item.file.endsWith('.css'))
-  .flatMap(item => {
+interface InternalSelectorContract {
+  component?: LumenComponentName
+  slot?: string
+}
+
+const getInternalSelectorContract = (selector: string): InternalSelectorContract => {
+  const [componentClass = ''] = selector.split(/--|__/u, 1)
+  const component = componentByClassName.get(componentClass)
+
+  if (!component) return {}
+
+  const contract = stylingContracts[component]
+
+  if (!contract) return { component }
+
+  if (selector.includes('__')) {
+    const partName = selector.split('__', 2)[1]?.replaceAll('_', '-') ?? ''
+    const slot = `${contract.rootSlot}-${partName}`
+
+    return contract.parts.includes(slot) ? { component, slot } : { component }
+  }
+
+  return { component, slot: contract.rootSlot }
+}
+
+const consumerClassGuidance = (frameworks: readonly LumenFramework[]): string => {
+  const detectedFrameworks = new Set(frameworks)
+
+  const adapters = [
+    detectedFrameworks.has('astro') && 'the public class prop in Astro',
+    detectedFrameworks.has('react') && 'the public className prop in React',
+    detectedFrameworks.has('elements') && 'a class attribute on the Elements host'
+  ].filter((value): value is string => Boolean(value))
+
+  if (adapters.length === 0) {
+    return 'Pass a consumer-owned class through the adapter\'s public class API.'
+  }
+
+  return `Pass a consumer-owned class through ${adapters.join(', ')}.`
+}
+
+const internalSelectorFinding = (
+  file: string,
+  selector: string,
+  frameworks: readonly LumenFramework[]
+): LumenDiagnosticFinding => {
+  const contract = getInternalSelectorContract(selector)
+
+  const componentContext = contract.component ?
+    ` It most likely targets the ${contract.component} component.` :
+    ''
+
+  const stableSlotGuidance = contract.slot ?
+    ` For a library-owned hook, use [data-slot="${contract.slot}"].` :
+    ''
+
+  return finding(
+    file,
+    'internal-selector',
+    `Selector .ui-${selector} is not a documented stable hook.${componentContext}`,
+    `${consumerClassGuidance(frameworks)} Prefer semantic tokens and documented custom properties.${stableSlotGuidance}`,
+    'advisory'
+  )
+}
+
+const collectCssFindings = (
+  root: string,
+  boundaries: ApplicationBoundary[]
+): LumenDiagnosticFinding[] => boundaries.flatMap(boundary => {
+  const frameworks = getFrameworks(boundary.sources)
+
+  return boundary.sources.filter(item => item.file.endsWith('.css')).flatMap(item => {
     const layerIndex = item.source.search(/^\s*@import\s+(?:url\(\s*)?["'][^"']*\/layers\.css["']/mu)
     const tailwindIndex = item.source.search(/^\s*@import\s+(?:url\(\s*)?["']tailwindcss["']/mu)
     const styleIndex = item.source.search(/^\s*@import\s+(?:url\(\s*)?["'][^"']*\/styles\.css["']/mu)
@@ -442,18 +709,17 @@ const collectCssFindings = (root: string, sources: SourceEntry[]): LumenDiagnost
       ))
     }
 
-    for (const match of item.source.matchAll(/\.ui-([a-z0-9-]+)/g)) {
+    for (const match of item.source.matchAll(/\.ui-([a-z0-9_-]+)/g)) {
       const selector = match[1] ?? ''
 
       if (!publicRootSlots.has(selector)) {
-        findings.push(finding(
-          relative(root, item.file), 'internal-selector', `Selector .ui-${selector} is not a documented stable root hook.`, 'Prefer component props, semantic tokens, documented custom properties, or [data-slot].', 'advisory'
-        ))
+        findings.push(internalSelectorFinding(relative(root, item.file), selector, frameworks))
       }
     }
 
     return findings
   })
+})
 
 const collectFrameworkStyleFindings = (
   repositoryRoot: string,
@@ -514,6 +780,20 @@ const collectAdapterMismatchFindings = (
     ))
 }
 
+const collectSharedLibraryStyleFindings = (
+  repositoryRoot: string,
+  boundary: ApplicationBoundary
+): LumenDiagnosticFinding[] => Object.entries(styleImportByFramework)
+  .flatMap(([framework, styleImport]) => boundary.sources
+    .filter(item => item.source.includes(styleImport))
+    .map(item => finding(
+      relative(repositoryRoot, item.file),
+      'shared-library-adapter-style',
+      `A shared library loads the ${framework} adapter stylesheet, which can duplicate application-owned setup.`,
+      'Remove the adapter stylesheet from the shared package and load it once in each consuming application root.',
+      'advisory'
+    )))
+
 const uniqueFindings = (findings: LumenDiagnosticFinding[]): LumenDiagnosticFinding[] => [
   ...new Map(findings.map(item => [
     `${item.file}\u0000${item.rule}\u0000${item.message}`,
@@ -533,23 +813,37 @@ export const inspectLumenIntegration = async (repository: string): Promise<Lumen
     source: await readFile(file, 'utf8')
   })))
 
-  const boundaries = createBoundaries(root, discovered.packageRoots, sources)
-  const frameworks = [...new Set(boundaries.flatMap(boundary => getFrameworks(boundary.sources)))]
+  const boundaries = await createBoundaries(root, discovered.packageRoots, sources)
+  const applicationBoundaries = boundaries.filter(boundary => boundary.kind === 'application')
+
+  const frameworks = [...new Set(applicationBoundaries.flatMap(boundary => getFrameworks(
+    getApplicationSources(boundary, boundaries)
+  )))]
+
   const runtimeComponents = new Set<string>()
 
   const findings = [
     ...collectCompatibilityFindings(root, sources),
-    ...collectCssFindings(root, sources)
+    ...collectCssFindings(root, boundaries)
   ]
 
-  for (const boundary of boundaries) {
-    const boundaryFrameworks = getFrameworks(boundary.sources)
-    const runtime = collectRuntimeFindings(root, boundary)
+  for (const boundary of boundaries.filter(item => item.kind === 'library')) {
+    findings.push(...collectSharedLibraryStyleFindings(root, boundary))
+  }
+
+  for (const boundary of applicationBoundaries) {
+    const effectiveBoundary = {
+      ...boundary,
+      sources: getApplicationSources(boundary, boundaries)
+    }
+
+    const boundaryFrameworks = getFrameworks(effectiveBoundary.sources)
+    const runtime = collectRuntimeFindings(root, effectiveBoundary)
 
     runtime.runtimeComponents.forEach(component => runtimeComponents.add(component))
 
     findings.push(
-      ...collectDuplicatedBehaviorFindings(root, boundary.sources),
+      ...collectDuplicatedBehaviorFindings(root, effectiveBoundary.sources),
       ...runtime.findings,
       ...collectFrameworkStyleFindings(root, boundary, boundaryFrameworks),
       ...collectAdapterMismatchFindings(root, boundary, boundaryFrameworks)

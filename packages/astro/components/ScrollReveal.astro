@@ -5,6 +5,7 @@ import { resolveLumenAstroProps } from '@santi020k/lumen-core'
 
 interface Props extends HTMLAttributes<'div'> {
   animation?: 'fade' | 'slide-up' | 'scale'
+  as?: 'article' | 'div' | 'section'
   class?: string | null
   className?: string
   delay?: number
@@ -15,6 +16,7 @@ interface Props extends HTMLAttributes<'div'> {
 
 const {
   animation = 'fade',
+  as: Tag = 'div',
   class: classProp = '',
   className = '',
   delay = 0,
@@ -40,7 +42,7 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
 ], classProp, className)
 ---
 
-<div
+<Tag
   class:list={classList}
   data-ui-reveal-once={String(once)}
   data-ui-reveal-threshold={safeThreshold}
@@ -49,4 +51,4 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
   {...passthrough}
 >
   <slot />
-</div>
+</Tag>

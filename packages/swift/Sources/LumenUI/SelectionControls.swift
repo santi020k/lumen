@@ -197,36 +197,46 @@ public struct LumenTabs<Value: Hashable, Content: View>: View {
 
     public var body: some View {
         VStack(alignment: .leading, spacing: LumenSpacing.md) {
-            HStack(spacing: LumenSpacing.xs) {
-                ForEach(options) { option in
-                    let isSelected = selection == option.id
+            ScrollViewReader { proxy in
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: LumenSpacing.xs) {
+                        ForEach(options) { option in
+                            let isSelected = selection == option.id
 
-                    Button { selection = option.id } label: {
-                        Text(option.title)
-                            .font(.callout.weight(isSelected ? .bold : .semibold))
-                            .foregroundStyle(isSelected ? theme.colors.brand : theme.colors.inkSoft)
-                            .frame(minHeight: 44)
-                            .padding(.horizontal, LumenSpacing.md)
-                            .overlay(alignment: .bottom) {
-                                Rectangle()
-                                    .fill(isSelected ? theme.colors.brandSolid : .clear)
-                                    .frame(height: 2)
+                            Button { selection = option.id } label: {
+                                Text(option.title)
+                                    .font(.callout.weight(isSelected ? .bold : .semibold))
+                                    .fixedSize(horizontal: true, vertical: false)
+                                    .foregroundStyle(isSelected ? theme.colors.brand : theme.colors.inkSoft)
+                                    .frame(minHeight: 44)
+                                    .padding(.horizontal, LumenSpacing.md)
+                                    .overlay(alignment: .bottom) {
+                                        Rectangle()
+                                            .fill(isSelected ? theme.colors.brandSolid : .clear)
+                                            .frame(height: 2)
+                                    }
                             }
+                            .buttonStyle(.plain)
+                            .disabled(option.isDisabled)
+                            .opacity(option.isDisabled ? 0.52 : 1)
+                            .id(option.id)
+                            .accessibilityLabel(Text(option.title))
+                            .accessibilityValue(Text(isSelected ? "Selected" : "Not selected"))
+                            .accessibilityAddTraits(isSelected ? .isSelected : [])
+                        }
                     }
-                    .buttonStyle(.plain)
-                    .disabled(option.isDisabled)
-                    .opacity(option.isDisabled ? 0.52 : 1)
-                    .accessibilityLabel(Text(option.title))
-                    .accessibilityValue(Text(isSelected ? "Selected" : "Not selected"))
-                    .accessibilityAddTraits(isSelected ? .isSelected : [])
+                    .overlay(alignment: .bottom) {
+                        Rectangle().fill(theme.colors.line).frame(height: 1)
+                    }
+                    .accessibilityElement(children: .contain)
+                    .accessibilityLabel(Text(label))
                 }
-                Spacer(minLength: 0)
+                .onChange(of: selection) { selected in
+                    withAnimation(.easeInOut(duration: 0.2)) {
+                        proxy.scrollTo(selected, anchor: .center)
+                    }
+                }
             }
-            .overlay(alignment: .bottom) {
-                Rectangle().fill(theme.colors.line).frame(height: 1)
-            }
-            .accessibilityElement(children: .contain)
-            .accessibilityLabel(Text(label))
 
             content(selection)
                 .frame(maxWidth: .infinity, alignment: .leading)

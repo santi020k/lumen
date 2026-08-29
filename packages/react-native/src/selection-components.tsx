@@ -1,12 +1,17 @@
 import {
+  type ComponentRef,
   type ReactElement,
   type ReactNode,
-  type Ref
+  type Ref,
+  useEffect,
+  useId,
+  useRef
 } from 'react'
 import {
   type HostInstance,
   Pressable,
   type PressableProps,
+  ScrollView,
   Text,
   type TextStyle,
   View,
@@ -152,6 +157,8 @@ export const LumenRadioGroup = ({
 
         return (
           <Pressable
+            aria-checked={selected}
+            aria-disabled={state.disabled}
             key={option.value}
             accessibilityRole="radio"
             accessibilityState={{ checked: selected, disabled: state.disabled }}
@@ -257,6 +264,8 @@ export const LumenSegmentedControl = ({
 
           return (
             <Pressable
+              aria-checked={selected}
+              aria-disabled={state.disabled}
               key={option.value}
               accessibilityLabel={option.label}
               accessibilityRole="radio"
@@ -318,31 +327,115 @@ export const LumenTabs = ({
 }: LumenTabsProps): ReactElement => {
   const theme = useLumenTheme()
   const selectedOption = options.find(option => option.value === value)
+  const selectedIndex = options.findIndex(option => option.value === value)
+  const tabsId = useId().replaceAll(':', '')
+  const pendingFocusValueRef = useRef<string | undefined>(undefined)
+  const tabInstancesRef = useRef<(HostInstance | null)[]>([])
+  const tabLayoutsRef = useRef(new Map<number, { width: number, x: number }>())
+  const tabListRef = useRef<ComponentRef<typeof ScrollView>>(null)
+  const viewportWidthRef = useRef(0)
+
+  const scrollTabIntoView = (index: number, animated: boolean): void => {
+    const layout = tabLayoutsRef.current.get(index)
+
+    if (!layout) return
+
+    const centeredOffset = layout.x - Math.max(0, (viewportWidthRef.current - layout.width) / 2)
+
+    tabListRef.current?.scrollTo({ animated, x: Math.max(0, centeredOffset) })
+  }
+
+  useEffect(() => {
+    if (selectedIndex < 0) return
+
+    scrollTabIntoView(selectedIndex, true)
+
+    if (pendingFocusValueRef.current === value) {
+      tabInstancesRef.current[selectedIndex]?.focus()
+
+      pendingFocusValueRef.current = undefined
+    }
+  }, [selectedIndex, value])
+
+  const selectTab = (optionIndex: number): boolean => {
+    const option = options[optionIndex]
+
+    if (!option || option.disabled) return false
+
+    if (option.value === value) {
+      tabInstancesRef.current[optionIndex]?.focus()
+
+      return true
+    }
+
+    pendingFocusValueRef.current = option.value
+
+    onValueChange(option.value)
+
+    return true
+  }
+
+  const moveSelection = (currentIndex: number, direction: -1 | 1): void => {
+    for (let offset = 1; offset < options.length; offset += 1) {
+      const nextIndex = (currentIndex + direction * offset + options.length) % options.length
+
+      if (selectTab(nextIndex)) return
+    }
+  }
 
   return (
     <View ref={ref} {...props} style={[{ gap: theme.spacing.md }, style]}>
-      <View
+      <ScrollView
         accessibilityLabel={label}
         accessibilityRole="tablist"
-        style={{
-          borderBottomColor: theme.colors.line,
-          borderBottomWidth: 1,
-          flexDirection: 'row',
-          gap: theme.spacing.xs
+        contentContainerStyle={{ gap: theme.spacing.xs }}
+        horizontal
+        onLayout={event => {
+          viewportWidthRef.current = event.nativeEvent.layout.width
+
+          if (selectedIndex >= 0) scrollTabIntoView(selectedIndex, false)
         }}
+        ref={tabListRef}
+        showsHorizontalScrollIndicator={false}
+        style={{ borderBottomColor: theme.colors.line, borderBottomWidth: 1 }}
       >
-        {options.map(option => {
+        {options.map((option, optionIndex) => {
           const selected = option.value === value
           const state = resolveLumenSelectionState(selected, option.disabled ?? false)
+          const tabId = `${tabsId}-tab-${optionIndex}`
 
           return (
             <Pressable
-              key={option.value}
+              aria-disabled={state.disabled}
+              aria-selected={selected}
               accessibilityRole="tab"
               accessibilityState={{ disabled: state.disabled, selected }}
               disabled={state.disabled}
+              key={option.value}
+              nativeID={tabId}
+              onKeyDown={event => {
+                const key = event.nativeEvent.key || event.nativeEvent.code
+
+                if (key === 'ArrowLeft') {
+                  event.preventDefault()
+
+                  moveSelection(optionIndex, -1)
+                } else if (key === 'ArrowRight') {
+                  event.preventDefault()
+
+                  moveSelection(optionIndex, 1)
+                }
+              }}
+              onLayout={event => {
+                tabLayoutsRef.current.set(optionIndex, event.nativeEvent.layout)
+
+                if (selected) scrollTabIntoView(optionIndex, false)
+              }}
               onPress={() => {
                 onValueChange(option.value)
+              }}
+              ref={instance => {
+                tabInstancesRef.current[optionIndex] = instance
               }}
               style={({ pressed }) => ({
                 borderBottomColor: selected ? theme.colors.brandSolid : 'transparent',
@@ -367,10 +460,12 @@ export const LumenTabs = ({
             </Pressable>
           )
         })}
-      </View>
+      </ScrollView>
       <View
+        aria-labelledby={selectedIndex >= 0 ? `${tabsId}-tab-${selectedIndex}` : undefined}
         accessibilityLabel={`${selectedOption?.label ?? value} tab panel`}
         accessibilityLiveRegion="polite"
+        role="tabpanel"
       >
         {children}
       </View>

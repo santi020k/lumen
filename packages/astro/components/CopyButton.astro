@@ -10,9 +10,11 @@ interface Props extends HTMLAttributes<'button'> {
   errorLabel?: string
   label?: string
   resetAfter?: number
+  size?: 'default' | 'sm' | 'lg' | 'icon'
   target?: string
   toast?: boolean
   value?: string
+  variant?: 'default' | 'destructive' | 'ghost' | 'link' | 'outline' | 'secondary'
 }
 
 const {
@@ -22,16 +24,22 @@ const {
   errorLabel = 'Could not copy to clipboard',
   label = 'Copy to clipboard',
   resetAfter = 2000,
+  size = 'default',
   target,
   toast = false,
   type = 'button',
   value,
+  variant = 'outline',
   ...rest
 } = Astro.props
 
 const { classList, passthrough } = resolveLumenAstroProps(rest, [
   'ui-button',
-  'ui-button--outline',
+  `ui-button--${variant}`,
+  size === 'default' && 'ui-button--default-size',
+  size === 'sm' && 'ui-button--sm',
+  size === 'lg' && 'ui-button--lg',
+  size === 'icon' && 'ui-button--icon',
   'ui-copy-button'
 ], classProp, className)
 ---
@@ -46,10 +54,19 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
   data-copy-target={target}
   data-copy-toast={toast ? 'true' : undefined}
   data-copy-value={value}
+  data-size={size}
+  data-slot="copy-button"
   data-state="idle"
   data-ui-copy-button
+  data-variant={variant}
   type={type}
   {...passthrough}
 >
-  <slot>Copy</slot>
+  <span data-slot="copy-idle"><slot>Copy</slot></span>
+  <span aria-hidden="true" data-slot="copy-copied" hidden>
+    <slot name="copied">{copiedLabel}</slot>
+  </span>
+  <span aria-hidden="true" data-slot="copy-error" hidden>
+    <slot name="error">{errorLabel}</slot>
+  </span>
 </button>

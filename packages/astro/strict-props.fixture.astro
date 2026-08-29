@@ -3,6 +3,8 @@ import type { HTMLAttributes } from 'astro/types'
 
 import FormattedDate from './components/FormattedDate.astro'
 import Link from './components/Link.astro'
+import RevealGroup from './components/RevealGroup.astro'
+import ScrollReveal from './components/ScrollReveal.astro'
 
 const timeAttributes: HTMLAttributes<'time'> = {
   class: null,
@@ -17,3 +19,5 @@ const anchorAttributes: HTMLAttributes<'a'> = {
 
 <FormattedDate {...timeAttributes}>July 24, 2026</FormattedDate>
 <Link {...anchorAttributes}>Documentation</Link>
+<RevealGroup as="ul"><li>One</li></RevealGroup>
+<ScrollReveal as="article">Details</ScrollReveal>

@@ -827,10 +827,19 @@ behaviorTest(['CopyButton'], 'CopyButton copies its target and exposes completio
 
   const button = page.locator('.component-doc-preview [data-ui-copy-button]').first()
 
+  const successEvent = page.evaluate(() => new Promise<string>(resolve => {
+    document.querySelector('[data-ui-copy-button]')?.addEventListener('ui:copy-success', event => {
+      resolve((event as CustomEvent<{ value: string }>).detail.value)
+    }, { once: true })
+  }))
+
   await button.click()
 
+  expect(await successEvent).toContain('Join the Lumen workspace')
   await expect(button).toHaveAttribute('data-state', 'copied')
   await expect(button).toHaveAttribute('aria-label', 'Copied to clipboard')
+  await expect(button.locator('[data-slot="copy-idle"]')).toBeHidden()
+  await expect(button.locator('[data-slot="copy-copied"]')).toBeVisible()
   await expect.poll(() => page.evaluate(() => navigator.clipboard.readText()))
     .toContain('Join the Lumen workspace')
 })
@@ -932,6 +941,7 @@ behaviorTest(['RevealGroup'], 'RevealGroup reveals all children immediately with
 
   const group = page.locator('.component-doc-preview [data-ui-reveal-group]')
 
+  await expect(group).toHaveJSProperty('tagName', 'UL')
   await expect(group).toHaveAttribute('data-ui-scroll-reveal-bound', 'true')
   await expect(group).toHaveClass(/is-revealed/)
   await expect(group.locator(':scope > *').nth(2)).toHaveCSS('--ui-reveal-index', '2')

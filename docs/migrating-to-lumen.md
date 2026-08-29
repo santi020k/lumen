@@ -116,6 +116,25 @@ dynamic visual-size values remain manual-review findings instead of being rewrit
 React Native datetime imports are split from mixed root imports while preserving aliases and
 type-only specifiers; an existing datetime-subpath import is left for manual merging.
 
+For mixed Astro and React workspaces, migrate each package at its own integration boundary. Load
+`@santi020k/lumen-astro/styles.css` once in the Astro layout, mount the default runtime from
+`@santi020k/lumen-astro/runtime` only where Astro interaction needs it, and import React components
+from `@santi020k/lumen-react`. A shared UI library should declare Lumen as its own dependency or
+peer while each application remains responsible for loading its adapter stylesheet and runtime.
+`lumen doctor` follows shared-library dependencies to the consuming apps and reports setup errors
+separately from advisory adoption opportunities.
+
+After the source migration, verify the actual page at phone and desktop widths:
+
+```bash
+pnpm run check:rendered-migration -- --url http://127.0.0.1:4321 --route / --route /settings
+```
+
+This rendered check reports horizontal overflow and browser console failures without changing the
+source-only doctor contract. Exclude a stable Lumen slot such as `[data-slot="skip-link"]` from
+broad host selectors; fixed accessibility primitives must retain their computed position,
+transform, focus visibility, and activation under consumer CSS.
+
 ## 4. Migrating from `private-website`
 
 If you are migrating the `private-website` project to Lumen, you must map your existing CSS custom properties to Lumen's token contract.

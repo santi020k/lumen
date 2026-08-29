@@ -71,6 +71,21 @@ enum class LumenChartTone {
     Warning
 }
 
+@Immutable
+data class LumenChartLabels(
+    val chartData: String = "Chart data",
+    val empty: String = "No chart data available.",
+    val notAvailable: String = "Not available",
+    val size: String = "Size",
+    val formatHeatmapSummary: (Int) -> String = { count ->
+        if (count == 0) "No chart data available." else "$count heatmap ${if (count == 1) "cell" else "cells"}."
+    },
+    val formatRangeSummary: (Int) -> String = { count ->
+        if (count == 0) "No chart data available." else "$count ${if (count == 1) "range" else "ranges"}."
+    },
+    val formatSummary: (LumenChartSummary) -> String = LumenChartSummary::spokenDescription
+)
+
 enum class LumenComboMark {
     Area,
     Bar,
@@ -83,7 +98,16 @@ data class LumenChartDatum(
     val x: LumenChartX,
     val y: Double?,
     val label: String? = null,
-    val size: Double? = null
+    val size: Double? = null,
+    val tone: LumenChartTone? = null,
+    val toneLabel: String? = null
+)
+
+@Immutable
+data class LumenChartReference(
+    val label: String,
+    val value: Double,
+    val tone: LumenChartTone = LumenChartTone.Neutral
 )
 
 @Immutable
@@ -401,6 +425,7 @@ private fun LumenChartDataList(
     series: List<LumenChartSeries>,
     selection: LumenChartSelection?,
     onSelectionChange: ((LumenChartSelection) -> Unit)?,
+    labels: LumenChartLabels,
     includeSize: Boolean = false
 ) {
     val colors = LocalLumenTheme.current.colors
@@ -412,11 +437,11 @@ private fun LumenChartDataList(
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(LumenSpacing.Xs)
     ) {
-        Text("Chart data", color = colors.ink, fontWeight = FontWeight.Bold)
+        Text(labels.chartData, color = colors.ink, fontWeight = FontWeight.Bold)
 
         for (item in series) {
             for (datum in item.data) {
-                val label = lumenChartDataLabel(item, datum, includeSize)
+                val label = lumenChartDataLabel(item, datum, labels, includeSize)
                 val next = LumenChartSelection(item.id, datum.x)
 
                 if (onSelectionChange == null || datum.y?.isFinite() != true) {
@@ -440,19 +465,23 @@ private fun LumenChartDataList(
 internal fun lumenChartDataLabel(
     series: LumenChartSeries,
     datum: LumenChartDatum,
+    labels: LumenChartLabels = LumenChartLabels(),
     includeSize: Boolean = false
 ): String {
-    val value = datum.y?.takeIf(Double::isFinite)?.toString() ?: "Not available"
-    val base = "${datum.x.label}, ${series.label}: ${datum.label ?: value}"
-    val size = datum.size?.takeIf { it.isFinite() && it >= 0 }?.toString() ?: "Not available"
+    val value = datum.y?.takeIf(Double::isFinite)?.toString() ?: labels.notAvailable
+    val base = "${datum.x.label}, ${series.label}: ${datum.label ?: value}${datum.toneLabel?.let { ", $it" } ?: ""}"
+    val size = datum.size?.takeIf { it.isFinite() && it >= 0 }?.toString() ?: labels.notAvailable
 
-    return if (includeSize) "$base, Size: $size" else base
+    return if (includeSize) "$base, ${labels.size}: $size" else base
 }
 
 private data class LumenStructuredChartDataRow(val id: String, val label: String)
 
 @Composable
-private fun LumenStructuredChartDataList(rows: List<LumenStructuredChartDataRow>) {
+private fun LumenStructuredChartDataList(
+    rows: List<LumenStructuredChartDataRow>,
+    labels: LumenChartLabels
+) {
     val colors = LocalLumenTheme.current.colors
 
     Column(
@@ -462,7 +491,7 @@ private fun LumenStructuredChartDataList(rows: List<LumenStructuredChartDataRow>
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(LumenSpacing.Xs)
     ) {
-        Text("Chart data", color = colors.ink, fontWeight = FontWeight.Bold)
+        Text(labels.chartData, color = colors.ink, fontWeight = FontWeight.Bold)
         rows.forEach { row ->
             Text(
                 row.label,
@@ -573,26 +602,53 @@ fun LumenLineChart(
     modifier: Modifier = Modifier,
     heading: String? = null,
     description: String? = null,
-    summary: String = LumenChartSummary.resolve(series).spokenDescription,
+    summary: String? = null,
+    labels: LumenChartLabels = LumenChartLabels(),
     area: Boolean = false,
+    reference: LumenChartReference? = null,
     showData: Boolean = true,
     selection: LumenChartSelection? = null,
     onSelectionChange: ((LumenChartSelection) -> Unit)? = null
 ) {
     val theme = LocalLumenTheme.current
-    val domain = lumenChartDomain(series.flatMap { item -> item.data.map { it.y } })
+    val domain = lumenChartDomain(
+        series.flatMap { item -> item.data.map { it.y } } + listOf(reference?.value)
+    )
     val categories = lumenChartCategories(series)
 
-    LumenChartFrame(label, summary, modifier, heading, description) {
+    val baseSummary = labels.formatSummary(LumenChartSummary.resolve(series))
+    val resolvedSummary = summary ?: reference?.let {
+        "$baseSummary ${it.label}: ${it.value}."
+    } ?: baseSummary
+
+    LumenChartFrame(label, resolvedSummary, modifier, heading, description) {
+        if (reference != null) {
+            Text(
+                "${reference.label}: ${reference.value}",
+                color = theme.chartColor(reference.tone),
+                style = MaterialTheme.typography.labelSmall
+            )
+        }
         Canvas(
             Modifier
                 .fillMaxWidth()
                 .height(240.dp)
-                .clearAndSetSemantics { contentDescription = "$label. $summary" }
+                .clearAndSetSemantics { contentDescription = "$label. $resolvedSummary" }
         ) {
             val padding = 20.dp.toPx()
 
             drawLumenChartGrid(domain, padding, theme.chartColors.grid)
+            if (reference != null) {
+                val referenceY = lumenChartScale(
+                    reference.value, domain, size.height - padding, padding
+                )
+                drawLine(
+                    color = theme.chartColor(reference.tone),
+                    start = Offset(padding, referenceY),
+                    end = Offset(size.width - padding, referenceY),
+                    strokeWidth = LumenChartMetrics.ReferenceStrokeWidth.toPx()
+                )
+            }
             series.forEachIndexed { index, item ->
                 drawLumenLineSeries(
                     item,
@@ -602,10 +658,29 @@ fun LumenLineChart(
                     padding,
                     categories
                 )
+                val plotWidth = size.width - padding * 2
+                item.data.forEach { datum ->
+                    val datumTone = datum.tone ?: return@forEach
+                    val datumIndex = categories.indexOf(datum.x)
+                    val datumValue = datum.y?.takeIf(Double::isFinite) ?: return@forEach
+
+                    drawCircle(
+                        color = theme.chartColor(datumTone),
+                        radius = 4.dp.toPx(),
+                        center = Offset(
+                            padding + lumenChartCategoryPosition(
+                                datumIndex, categories.size, false
+                            ) * plotWidth,
+                            lumenChartScale(
+                                datumValue, domain, size.height - padding, padding
+                            )
+                        )
+                    )
+                }
             }
         }
 
-        if (showData) LumenChartDataList(series, selection, onSelectionChange)
+        if (showData) LumenChartDataList(series, selection, onSelectionChange, labels)
     }
 }
 
@@ -674,7 +749,8 @@ fun LumenBarChart(
     label: String,
     modifier: Modifier = Modifier,
     layout: LumenBarChartLayout = LumenBarChartLayout.Grouped,
-    summary: String = LumenChartSummary.resolve(series).spokenDescription,
+    summary: String? = null,
+    labels: LumenChartLabels = LumenChartLabels(),
     showData: Boolean = true,
     selection: LumenChartSelection? = null,
     onSelectionChange: ((LumenChartSelection) -> Unit)? = null
@@ -683,12 +759,14 @@ fun LumenBarChart(
     val values = series.flatMap { item -> item.data.map { it.y } }
     val domain = lumenChartDomain(values, includeZero = true)
 
-    LumenChartFrame(label, summary, modifier) {
+    val resolvedSummary = summary ?: labels.formatSummary(LumenChartSummary.resolve(series))
+
+    LumenChartFrame(label, resolvedSummary, modifier) {
         Canvas(
             Modifier
                 .fillMaxWidth()
                 .height(240.dp)
-                .clearAndSetSemantics { contentDescription = "$label. $summary" }
+                .clearAndSetSemantics { contentDescription = "$label. $resolvedSummary" }
         ) {
             val padding = 20.dp.toPx()
 
@@ -696,7 +774,7 @@ fun LumenBarChart(
             drawLumenBars(series, domain, theme, layout, padding)
         }
 
-        if (showData) LumenChartDataList(series, selection, onSelectionChange)
+        if (showData) LumenChartDataList(series, selection, onSelectionChange, labels)
     }
 }
 
@@ -711,7 +789,8 @@ fun LumenPieChart(
     label: String,
     modifier: Modifier = Modifier,
     variant: LumenPieChartVariant = LumenPieChartVariant.Donut,
-    summary: String = lumenPieSummary(series),
+    summary: String? = null,
+    labels: LumenChartLabels = LumenChartLabels(),
     showData: Boolean = true,
     selection: LumenChartSelection? = null,
     onSelectionChange: ((LumenChartSelection) -> Unit)? = null
@@ -721,15 +800,19 @@ fun LumenPieChart(
     val available = availableData.map { datum -> datum to (datum.y ?: 0.0) }
     val total = available.sumOf { it.second }
 
-    LumenChartFrame(label, summary, modifier) {
+    val resolvedSummary = summary ?: labels.formatSummary(
+        LumenChartSummary.resolve(listOf(series.copy(data = availableData)))
+    )
+
+    LumenChartFrame(label, resolvedSummary, modifier) {
         if (available.isEmpty()) {
-            Text("No chart data available.", color = theme.colors.inkMuted)
+            Text(labels.empty, color = theme.colors.inkMuted)
         } else {
             Canvas(
                 Modifier
                     .fillMaxWidth()
                     .height(240.dp)
-                    .clearAndSetSemantics { contentDescription = "$label. $summary" }
+                    .clearAndSetSemantics { contentDescription = "$label. $resolvedSummary" }
             ) {
                 var startAngle = -90f
                 val strokeWidth = min(size.width, size.height) * 0.21f
@@ -769,7 +852,8 @@ fun LumenPieChart(
             LumenChartDataList(
                 listOf(series.copy(data = availableData)),
                 selection,
-                onSelectionChange
+                onSelectionChange,
+                labels
             )
         }
     }
@@ -780,7 +864,8 @@ fun LumenScatterChart(
     series: List<LumenChartSeries>,
     label: String,
     modifier: Modifier = Modifier,
-    summary: String = lumenScatterSummary(series),
+    summary: String? = null,
+    labels: LumenChartLabels = LumenChartLabels(),
     showData: Boolean = true,
     selection: LumenChartSelection? = null,
     onSelectionChange: ((LumenChartSelection) -> Unit)? = null
@@ -792,7 +877,9 @@ fun LumenScatterChart(
     val yDomain = lumenChartDomain(points.map { it.y })
     val sizeDomain = lumenChartDomain(lumenScatterSizeValues(availableSeries))
 
-    LumenChartFrame(label, summary, modifier) {
+    val resolvedSummary = summary ?: labels.formatSummary(LumenChartSummary.resolve(availableSeries))
+
+    LumenChartFrame(label, resolvedSummary, modifier) {
         Canvas(Modifier.fillMaxWidth().height(240.dp)) {
             val padding = 20.dp.toPx()
 
@@ -817,7 +904,9 @@ fun LumenScatterChart(
             }
         }
 
-        if (showData) LumenChartDataList(availableSeries, selection, onSelectionChange, includeSize = true)
+        if (showData) {
+            LumenChartDataList(availableSeries, selection, onSelectionChange, labels, includeSize = true)
+        }
     }
 }
 
@@ -826,7 +915,8 @@ fun LumenRangeChart(
     data: List<LumenRangeDatum>,
     label: String,
     modifier: Modifier = Modifier,
-    summary: String = lumenRangeSummary(data),
+    summary: String? = null,
+    labels: LumenChartLabels = LumenChartLabels(),
     tone: LumenChartTone = LumenChartTone.Series1,
     showData: Boolean = true
 ) {
@@ -834,9 +924,11 @@ fun LumenRangeChart(
     val segments = lumenRangeValueSegments(data)
     val domain = lumenChartDomain(lumenRangeDomainValues(data))
 
-    LumenChartFrame(label, summary, modifier) {
+    val resolvedSummary = summary ?: labels.formatRangeSummary(segments.sumOf(List<LumenIndexedRangeValue>::size))
+
+    LumenChartFrame(label, resolvedSummary, modifier) {
         if (segments.isEmpty()) {
-            Text("No chart data available.", color = theme.colors.inkMuted)
+            Text(labels.empty, color = theme.colors.inkMuted)
         } else Canvas(Modifier.fillMaxWidth().height(240.dp)) {
             val padding = 20.dp.toPx()
             val denominator = max(1, data.lastIndex)
@@ -868,14 +960,15 @@ fun LumenRangeChart(
         if (showData) {
             LumenStructuredChartDataList(
                 data.map { datum ->
-                    val low = datum.low?.takeIf(Double::isFinite)?.toString() ?: "Not available"
-                    val high = datum.high?.takeIf(Double::isFinite)?.toString() ?: "Not available"
+                    val low = datum.low?.takeIf(Double::isFinite)?.toString() ?: labels.notAvailable
+                    val high = datum.high?.takeIf(Double::isFinite)?.toString() ?: labels.notAvailable
 
                     LumenStructuredChartDataRow(
                         datum.id,
                         "${datum.label ?: datum.x.label}: $low to $high"
                     )
-                }
+                },
+                labels
             )
         }
     }
@@ -886,7 +979,8 @@ fun LumenHeatmap(
     data: List<LumenHeatmapDatum>,
     label: String,
     modifier: Modifier = Modifier,
-    summary: String = lumenHeatmapSummary(data),
+    summary: String? = null,
+    labels: LumenChartLabels = LumenChartLabels(),
     showData: Boolean = true
 ) {
     val theme = LocalLumenTheme.current
@@ -895,9 +989,11 @@ fun LumenHeatmap(
     val domain = lumenChartDomain(data.map { it.value })
     val availableData = lumenAvailableHeatmapData(data)
 
-    LumenChartFrame(label, summary, modifier) {
+    val resolvedSummary = summary ?: labels.formatHeatmapSummary(availableData.size)
+
+    LumenChartFrame(label, resolvedSummary, modifier) {
         if (availableData.isEmpty()) {
-            Text("No chart data available.", color = theme.colors.inkMuted)
+            Text(labels.empty, color = theme.colors.inkMuted)
         } else Canvas(Modifier.fillMaxWidth().height(240.dp)) {
             val cellWidth = size.width / max(1, columns.size)
             val cellHeight = size.height / max(1, rows.size)
@@ -923,13 +1019,14 @@ fun LumenHeatmap(
         if (showData) {
             LumenStructuredChartDataList(
                 data.map { datum ->
-                    val value = datum.value?.takeIf(Double::isFinite)?.toString() ?: "Not available"
+                    val value = datum.value?.takeIf(Double::isFinite)?.toString() ?: labels.notAvailable
 
                     LumenStructuredChartDataRow(
                         datum.id,
                         "${datum.label ?: "${datum.column}, ${datum.row}"}: $value"
                     )
-                }
+                },
+                labels
             )
         }
     }
@@ -940,7 +1037,8 @@ fun LumenComboChart(
     series: List<LumenChartSeries>,
     label: String,
     modifier: Modifier = Modifier,
-    summary: String = LumenChartSummary.resolve(series).spokenDescription,
+    summary: String? = null,
+    labels: LumenChartLabels = LumenChartLabels(),
     showData: Boolean = true,
     selection: LumenChartSelection? = null,
     onSelectionChange: ((LumenChartSelection) -> Unit)? = null
@@ -951,7 +1049,9 @@ fun LumenComboChart(
     val domain = lumenChartDomain(series.flatMap { item -> item.data.map { it.y } }, includeZero = true)
     val categories = lumenChartCategories(series)
 
-    LumenChartFrame(label, summary, modifier) {
+    val resolvedSummary = summary ?: labels.formatSummary(LumenChartSummary.resolve(series))
+
+    LumenChartFrame(label, resolvedSummary, modifier) {
         Canvas(Modifier.fillMaxWidth().height(240.dp)) {
             val padding = 20.dp.toPx()
 
@@ -971,6 +1071,6 @@ fun LumenComboChart(
         }
 
 
-        if (showData) LumenChartDataList(series, selection, onSelectionChange)
+        if (showData) LumenChartDataList(series, selection, onSelectionChange, labels)
     }
 }

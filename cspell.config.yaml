@@ -12,16 +12,28 @@ words:
   - xros
   - xrsimulator
   - actualiza
+  - Actividad
   - aplicación
   - cambió
+  - Calidad
+  - celdas
+  - Datos
+  - datos
+  - disponible
+  - disponibles
   - esta
   - estado
   - está
+  - gráfico
   - idioma
   - lista
   - Localización
+  - networkidle
+  - paintpalette
   - obligatoria
+  - puntos
   - recrearla
+  - Tamaño
   - usuarios
   - Validar
   - versión
@@ -41,6 +53,7 @@ words:
   - AnimatedPortrait
   - androidx
   - astrojs
+  - aschild
   - archivebox
   - autobuild
   - Autobuild
@@ -68,6 +81,9 @@ words:
   - contenteditable
   - ContracTrack
   - Roadscore
+  - scrollheight
+  - scrollprogress
+  - scrolltop
   - coverimage
   - CoverImage
   - Coolstead
@@ -157,6 +173,7 @@ words:
   - npx
   - nums
   - overscan
+  - paintpalette
   - phonenumbers
   - pipefail
   - popconfirm

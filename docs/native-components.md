@@ -646,9 +646,22 @@ LumenSlider(
     value: $minimumSpeed,
     in: 1_000...5_000,
     step: 100,
-    valueLabel: "\(Int(minimumSpeed)) RPM"
+    valueLabel: "\(Int(minimumSpeed)) RPM",
+    onEditingChanged: { editing in
+        editing ? undoManager.beginUndoGrouping() : undoManager.endUndoGrouping()
+    }
 )
 ```
+
+SwiftUI pickers also accept rich label and current-value builders, so a product can preserve an
+icon-bearing setting label and a color-swatch selection without replacing the native picker. The
+concise text initializer remains the default. `LumenTextarea` accepts a compact line range and an
+independently focusable trailing accessory for actions such as caption assistance. Undo grouping,
+haptic detents, and the assistant workflow remain application-owned.
+
+Native peer tabs scroll horizontally at narrow widths and bring the controlled selection into
+view. Keep labels concise, retain the 44-point target, and prefer a picker for long or numerous
+choices and a segmented control for a small mutually exclusive set.
 
 ### Shared empty, row, and feedback states
 
@@ -740,6 +753,19 @@ LumenLink(
     showsExternalIndicator: true
 )
 ```
+
+Use `.compact` empty-state layout and stat density in constrained sidebars or three-column phone
+summaries; use the defaults for ordinary cards and `.page` for a page-level empty state. Banner
+actions adapt from a row to a vertical stack when width or text size makes the row unsafe. A
+`success` button communicates a positive semantic outcome; `primary` remains the single default
+call to action for hierarchy.
+
+All native chart adapters accept replaceable chart labels. Finite zero is valid data; an all-zero
+series is therefore not empty, although an application may choose a scoreboard instead when the
+chart adds no value. Set `showData` to `false` only when the same values are already available in a
+nearby accessible table. Native line charts accept an optional labeled reference rule and
+per-datum `tone` plus `toneLabel`; always provide the visible or spoken tone label so color is not
+the only encoding.
 
 ### Metrics and dense desktop structure
 

@@ -90,6 +90,8 @@ public struct LumenPicker<SelectionValue: Hashable, Content: View>: View {
     @Environment(\.lumenTheme) private var theme
 
     private let content: Content
+    private let currentValueLabel: AnyView?
+    private let richLabel: AnyView?
     private let showsLabel: Bool
     private let style: LumenPickerStyle
     private let title: LocalizedStringKey
@@ -102,9 +104,27 @@ public struct LumenPicker<SelectionValue: Hashable, Content: View>: View {
         @ViewBuilder content: () -> Content
     ) {
         self.title = title
+        currentValueLabel = nil
+        richLabel = nil
         _selection = selection
         self.style = style
         self.showsLabel = showsLabel
+        self.content = content()
+    }
+
+    public init<Label: View, CurrentValueLabel: View>(
+        selection: Binding<SelectionValue>,
+        style: LumenPickerStyle = .automatic,
+        @ViewBuilder label: () -> Label,
+        @ViewBuilder currentValueLabel: () -> CurrentValueLabel,
+        @ViewBuilder content: () -> Content
+    ) {
+        title = ""
+        _selection = selection
+        self.style = style
+        showsLabel = true
+        richLabel = AnyView(label())
+        self.currentValueLabel = AnyView(currentValueLabel())
         self.content = content()
     }
 
@@ -131,14 +151,27 @@ public struct LumenPicker<SelectionValue: Hashable, Content: View>: View {
 
     @ViewBuilder
     private var picker: some View {
-        let picker = Picker(title, selection: $selection) {
-            content
-        }
+        if #available(iOS 18, macOS 15, tvOS 18, watchOS 11, visionOS 2, *) {
+            let picker = Picker(selection: $selection) {
+                content
+            } label: {
+                if let richLabel { richLabel } else { Text(title) }
+            } currentValueLabel: {
+                if let currentValueLabel { currentValueLabel }
+            }
 
-        if showsLabel {
-            picker
+            if showsLabel { picker } else { picker.labelsHidden() }
         } else {
-            picker.labelsHidden()
+            let picker = Picker(selection: $selection) {
+                content
+            } label: {
+                HStack(spacing: LumenSpacing.sm) {
+                    if let richLabel { richLabel } else { Text(title) }
+                    if let currentValueLabel { currentValueLabel }
+                }
+            }
+
+            if showsLabel { picker } else { picker.labelsHidden() }
         }
     }
 }
@@ -165,6 +198,7 @@ public struct LumenSlider: View {
 
     private let configuration: LumenSliderConfiguration
     private let label: LocalizedStringKey
+    private let onEditingChanged: (Bool) -> Void
     private let valueLabel: String?
 
     public init(
@@ -172,12 +206,14 @@ public struct LumenSlider: View {
         value: Binding<Double>,
         in bounds: ClosedRange<Double>,
         step: Double? = nil,
-        valueLabel: String? = nil
+        valueLabel: String? = nil,
+        onEditingChanged: @escaping (Bool) -> Void = { _ in }
     ) {
         self.label = label
         _value = value
         configuration = LumenSliderConfiguration.resolve(bounds: bounds, step: step)
         self.valueLabel = valueLabel
+        self.onEditingChanged = onEditingChanged
     }
 
     public var body: some View {
@@ -208,12 +244,14 @@ public struct LumenSlider: View {
                 value: $value,
                 in: configuration.bounds,
                 step: step,
+                onEditingChanged: onEditingChanged,
                 label: { Text(label) }
             )
         } else {
             Slider(
                 value: $value,
                 in: configuration.bounds,
+                onEditingChanged: onEditingChanged,
                 label: { Text(label) }
             )
         }

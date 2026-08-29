@@ -1456,6 +1456,20 @@ const initCopyButtons = (scope: ParentNode): void => {
 
     let resetTimer = 0
 
+    const setCopyButtonState = (state: 'copied' | 'error' | 'idle'): void => {
+      button.dataset.state = state
+
+      for (const part of button.querySelectorAll<HTMLElement>('[data-slot^="copy-"]')) {
+        const isActive = part.dataset.slot === `copy-${state}`
+
+        part.hidden = !isActive
+
+        part.setAttribute('aria-hidden', String(!isActive))
+      }
+    }
+
+    setCopyButtonState('idle')
+
     button.addEventListener('click', async () => {
       const label = button.dataset.copyLabel ?? 'Copy to clipboard'
 
@@ -1474,7 +1488,7 @@ const initCopyButtons = (scope: ParentNode): void => {
 
         await navigator.clipboard.writeText(value)
 
-        button.dataset.state = 'copied'
+        setCopyButtonState('copied')
 
         button.setAttribute('aria-label', copiedLabel)
 
@@ -1491,7 +1505,7 @@ const initCopyButtons = (scope: ParentNode): void => {
           }))
         }
       } catch (error) {
-        button.dataset.state = 'error'
+        setCopyButtonState('error')
 
         button.setAttribute('aria-label', errorLabel)
 
@@ -1518,7 +1532,7 @@ const initCopyButtons = (scope: ParentNode): void => {
         2000
 
       resetTimer = window.setTimeout(() => {
-        button.dataset.state = 'idle'
+        setCopyButtonState('idle')
 
         button.setAttribute('aria-label', label)
 

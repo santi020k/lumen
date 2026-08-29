@@ -1186,6 +1186,16 @@ const main = async () => {
     return { astroSource, hasAstro, parsed }
   }
 
+  const getComponentDataDefaults = (doc, registryComponent, recipes) => ({
+    contract: registryComponent.contract ?? null,
+    dependencies: registryComponent.dependencies ?? [],
+    files: registryComponent.files ?? [],
+    guidance: doc.guidance ?? null,
+    keyboardInteractions: doc.keyboardInteractions ?? [],
+    recipes: recipes ?? [],
+    runtimeEvents: doc.runtimeEvents ?? []
+  })
+
   const buildComponentData = async (name, ctx) => {
     const { astroSource, hasAstro, parsed } = await getAstroProps(name, ctx)
     const kebab = toKebab(name)
@@ -1193,6 +1203,12 @@ const main = async () => {
     const doc = getDocDefaults(name, ctx, registryComponent)
     const behavior = ctx.componentBehavior.get(name)
     const collections = ctx.docsData.componentCollections.filter(collection => collection.names.includes(name))
+
+    const defaults = getComponentDataDefaults(
+      doc,
+      registryComponent,
+      ctx.recipesByComponent.get(name)
+    )
 
     const frameworkDetails = buildFrameworkDetails({
       astroSource,
@@ -1214,25 +1230,26 @@ const main = async () => {
       astroSource,
       category: doc.category,
       collections: collections.map(collection => collection.title),
-      dependencies: registryComponent.dependencies ?? [],
+      contract: defaults.contract,
+      dependencies: defaults.dependencies,
       description: doc.summary,
       behavior,
-      files: registryComponent.files ?? [],
+      files: defaults.files,
       frameworkDetails,
       frameworks: {
         astro: hasAstro,
         elements: frameworkDetails.elements.available,
         react: frameworkDetails.react.available
       },
-      guidance: doc.guidance ?? null,
+      guidance: defaults.guidance,
       kebab,
-      keyboardInteractions: doc.keyboardInteractions ?? [],
+      keyboardInteractions: defaults.keyboardInteractions,
       keywords: keywordsForComponent(doc, collections),
       name,
       props: parsed.props,
       propsExtends: parsed.extends,
-      recipes: ctx.recipesByComponent.get(name) ?? [],
-      runtimeEvents: doc.runtimeEvents ?? []
+      recipes: defaults.recipes,
+      runtimeEvents: defaults.runtimeEvents
     }
   }
 

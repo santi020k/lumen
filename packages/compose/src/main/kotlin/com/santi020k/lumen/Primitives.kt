@@ -142,7 +142,8 @@ enum class LumenButtonIntent {
     Danger,
     Primary,
     Quiet,
-    Secondary
+    Secondary,
+    Success
 }
 
 enum class LumenControlSize {
@@ -305,6 +306,7 @@ private fun buttonPalette(
     LumenButtonIntent.Primary -> LumenButtonPalette(colors.brandSolid, colors.brandSolid, colors.onBrand)
     LumenButtonIntent.Quiet -> LumenButtonPalette(Color.Transparent, Color.Transparent, colors.inkSoft)
     LumenButtonIntent.Secondary -> LumenButtonPalette(colors.surfaceMuted, colors.line, colors.ink)
+    LumenButtonIntent.Success -> LumenButtonPalette(colors.success, colors.success, colors.onBrand)
 }
 
 @Composable
@@ -314,13 +316,14 @@ fun LumenButton(
     intent: LumenButtonIntent = LumenButtonIntent.Primary,
     size: LumenControlSize = LumenControlSize.Md,
     loading: Boolean = false,
+    loadingLabel: String = "Loading",
     enabled: Boolean = true,
     content: @Composable RowScope.() -> Unit
 ) {
     val palette = buttonPalette(LocalLumenTheme.current.colors, intent)
     val metrics = LumenButtonMetrics.resolve(size)
     val semanticsModifier = if (loading) {
-        Modifier.semantics { stateDescription = "Loading" }
+        Modifier.semantics { stateDescription = loadingLabel }
     } else {
         Modifier
     }

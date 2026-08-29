@@ -2,11 +2,11 @@
 import { ScrollReveal } from '@santi020k/lumen-astro'
 ---
 
-<ScrollReveal animation="slide-up" duration="slow" threshold={0.2}>
-  <article style="max-width: 28rem;">
+<ScrollReveal as="section" animation="slide-up" duration="slow" threshold={0.2}>
+  <div style="max-width: 28rem;">
     <strong>Progressive by default</strong>
     <p style="margin-top: 0.35rem; color: hsl(var(--ink-soft));">
       Content remains readable when motion is reduced or JavaScript is unavailable.
     </p>
-  </article>
+  </div>
 </ScrollReveal>
