@@ -22,7 +22,8 @@ Use this map to find the source of truth before changing code or docs.
 | Update Astro behavior | `packages/astro` | `packages/astro/index.test.ts`, docs examples |
 | Improve AI consumption guidance | `docs/ai-usage.md` | package READMEs, `AGENTS.md` |
 | Update docs navigation | `apps/docs/src/lib/routes.ts` | `apps/docs/src/data/docs.ts` |
-| Change release behavior | `.github/workflows`, `.changeset` | `scripts/check-publish-dry-run.mjs` |
+| Change CI or release selection | `scripts/classify-workflow-paths.mjs`, `.github/workflows` | `scripts/workflow-scope.test.mjs` |
+| Change npm publication behavior | `scripts/release-scope.mjs`, `.changeset` | `scripts/publish-packages.mjs`, `scripts/check-publish-dry-run.mjs` |
 
 ## Docs Sources
 

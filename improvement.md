@@ -99,7 +99,20 @@ an accessibility element removed native Button discoverability. The consumer ret
 button semantic, Lumen icon and public style, and verified activation behavior plus the rendered
 composition. Lumen should make the semantic button element own the advertised target rectangle so
 VoiceOver, Switch Control, XCTest, and visual hit testing agree without consumer accessibility
-reconstruction.
+reconstruction. The Photo Editor's styled Prepare post action reproduced this with a 34-point
+material-circle label: the public small icon style still exposed the inner circle's frame until the
+consumer put its explicit 44-point semantic minimum inside the label rather than outside the style.
+Its adjacent Compare action added a responsive composition case: `ViewThatFits` changes the same
+command from a labeled material capsule to an icon-only material circle. PostLens had to style the
+labeled native button through its Lumen intent adapter, style the compact branch with
+`LumenIconButtonStyle`, and repeat one identifier, accessible name, hint, and 44-point target across
+both branches. Responsive component guidance should require a stable semantic leaf across visual
+representations and verify that the unselected fallback does not surface as a duplicate control.
+Rendered accessibility-text evidence also showed that swapping the label for an icon was not enough:
+the system-owned destination menu still consumed the row and pushed the icon partly off-screen, even
+though XCTest could find and tap it. The consumer needed a third, vertically stacked fallback and
+viewport/intersection assertions. A responsive component recipe cannot substitute for container
+reflow under large text.
 
 The same consumer exposed a full-width composition boundary when migrating its primary `Adjust
 Crop` action. `LumenButton(size: .lg)` was valid inside the SwiftUI `List`, but the initial media
@@ -109,14 +122,22 @@ consumer layout by using its compact preview geometry for Crop and Sequence pane
 that the rendered button ends above the export bar before exercising the handoff. Lumen guidance
 should make clear that component metrics cannot reserve space across sibling scroll and safe-area
 containers; migration evidence must cover the final composed viewport, not only component presence.
+The compact Carousel Reorder/Done header repeated that evidence trap: XCTest could report a 44-point
+frame and activate the control while a screenshot of the current viewport still did not contain it.
+The workspace also had a sibling horizontal thumbnail collection before its vertical list, so a
+generic first-match swipe moved the wrong container, while a full list swipe could virtualize the
+header past the opposite edge. UI guidance should require consumers to identify the owning scroll
+container and position the exact row in view before treating a screenshot as visual proof.
 
 PostLens also confirmed that Lumen's semantic types do not carry control metrics through a
 consumer-owned native-treatment adapter. Mapping `LumenControlSize.md` to SwiftUI's `.regular`
 control size produced a roughly 35-point bordered button in the accessibility tree until the
 adapter explicitly applied the app's 44-point minimum target. This is valid composition, but the
 API shape can make intent and size mapping look more complete than it is; adapter guidance should
-require consumers to map both the visual recipe and platform hit-target policy. The posting-plan
-composer also confirmed that the adapter must be applicable as a style to a system-owned `Menu`,
+require consumers to map both the visual recipe and platform hit-target policy. Carousel and Layout
+then migrated their compact Reorder/Done section-header actions with the `.sm` visual recipe while
+the same adapter independently preserved a 44-point interactive frame through both label states.
+The posting-plan composer also confirmed that a system-owned `Menu` needs the adapter as a style,
 while the adjacent app-owned Reorder action can use the composed button. Wrapping the menu in a
 replacement button would transfer disclosure ownership and change behavior. The editor review and
 carousel readiness surfaces further showed that an app-owned composed action must accept structured
@@ -132,7 +153,32 @@ destructive semantics are independent from visual intent: a consumer may need a 
 treatment while still forwarding `.cancel` or `.destructive` to the native `Button`. A UI-system
 fixture also showed that applying one accessibility identifier to a composite SwiftUI root can
 overwrite every descendant identifier, even when the adapter applies its identifier directly to the
-native button. Stable identifiers belong on the smallest semantic element, not a screen container.
+native button. The same issue recurred on PostLens's real editor root: Undo and Redo retained their
+accessible names but inherited the screen identifier, making XCTest re-resolve them through the
+composite container. Moving the screen marker onto the editor's segmented control restored distinct
+button identities. Stable identifiers belong on the smallest semantic element, not a screen
+container.
+PostLens then migrated the compact Save Recipe and Save Kit header commands while retaining their
+system-owned SwiftUI alerts, text fields, cancel roles, and confirmation actions. This boundary lets
+Lumen own the trigger's intent and size without transferring presentation state or form semantics.
+The Recipe trigger and its `Save Adjustment Recipe` alert intentionally use different accessible
+names, so a migration test must verify the leaf trigger and the presented dialog independently
+rather than assuming the button label is also the presentation title.
+The Gallery's compact Find More action exposed a separate async ownership boundary. Its domain
+model already replaces the trigger with a progress status while a bounded on-device scan runs, then
+removes the action when no candidates remain. Setting `LumenButton.loading` as a second busy source
+would keep stale button semantics mounted and risk state drift. Guidance should distinguish actions
+that remain mounted and legitimately use component loading from triggers whose parent state machine
+replaces them with a richer progress or completion surface. The On-device Scoring settings screen
+showed that the same rule also applies to synchronous recovery state: applying a session-only
+low-battery override immediately replaces Continue Slowly with an ongoing status. Button-local
+loading would be inaccurate even briefly, so the interaction test should assert the old trigger
+leaves the accessibility tree and the model-owned status appears.
+Finally, Smart Crop is an action that becomes selected after applying a verified suggestion and
+returns to unselected when Reset is used. The consumer can switch between primary and secondary
+intent and write a `Selected` accessibility value, but that conflates emphasis with state and does
+not add a first-class selected contract. Loading, selected, disabled, and intent need to remain
+orthogonal so the same action can announce preparation and then selection without changing its name.
 
 Acceptance criteria:
 
@@ -158,12 +204,22 @@ Acceptance criteria:
   `safeAreaInset` action bar, and assert that the rendered frames do not overlap at compact heights.
 - Document that accessibility-tree presence does not prove a migrated control is visible or
   hittable when sibling previews, scroll containers, and safe-area bars divide the viewport.
+- For virtualized lists with sibling scroll views, identify the owning scroll container, position
+  the intended row without overshooting it, and assert that its frame intersects the visible
+  viewport before capturing visual evidence.
 - Add native-treatment adapter guidance that maps `LumenButtonIntent` and `LumenControlSize` while
   explicitly preserving the platform minimum interactive target, with an accessibility-frame test
   and a system-owned `Menu` beside an app-owned composed action.
 - Include a full-width card-row example whose composed label has leading content and a trailing
   disclosure cue, and verify that activation, semantic intent, and the minimum target remain owned
   by the button.
+- Add a SwiftUI example where a compact Lumen-styled trigger presents an application-owned native
+  naming alert; verify the trigger frame and accessible name separately from the alert title, text
+  field, cancel role, and confirmation action.
+- Document async ownership for actions whose domain state replaces the trigger with progress or
+  completion content; do not require button-local loading when it would duplicate the source of
+  truth. Cover both async work and synchronous recovery transitions by testing that the old trigger
+  leaves the accessibility tree and the model-owned status appears.
 - Define a native accessibility-frame assertion tolerance no larger than one physical pixel so a
   nominal 44-point target passes despite platform floating-point rounding, while materially smaller
   targets still fail.
@@ -176,8 +232,108 @@ Acceptance criteria:
 - Add SwiftUI testing guidance that assigns identifiers to leaf semantic controls and avoids one
   identifier on a composite ancestor; verify that sibling button identifiers remain distinct in the
   accessibility tree.
+- Test a `ViewThatFits` action that changes between labeled-button and icon-button representations
+  at standard and accessibility text sizes, preserving one identifier, name, hint, target, and
+  activation result without exposing the unselected fallback. Require the selected representation's
+  full frame to remain inside the viewport and clear of adjacent controls, with a stacked fallback
+  when icon compaction alone cannot satisfy those constraints.
+- Define a SwiftUI selected-action contract or documented composition for `LumenButton` that keeps
+  intent independent, exposes selected semantics to assistive technology, and preserves the button's
+  accessible name through loading, selected, reset, and disabled transitions.
 - Document when a consumer must retain a native compact control because the surrounding system
   container owns hit testing or presentation.
+
+## SwiftUI picker rich label and current-value content
+
+PostLens evaluated the released SwiftUI `LumenPicker` 2.0.0 contract for two app-owned settings:
+the app Accent row presents a branded swatch beside the current accent name, and the publishing
+reminder row presents a clock icon beside `Notify me`. The released initializer accepts only a
+text title, selection, style, label visibility, and option content. Replacing either native
+`Picker` with that contract compiles only after discarding its rich label; rendered verification
+of the reminder migration visibly lost the clock icon. The sibling Lumen source now contains a
+richer label and `currentValueLabel` initializer, but a maintained consumer cannot adopt an
+unreleased checkout API or sacrifice existing information to appear migrated. Both controls
+therefore remain native until the richer contract ships and can be verified from the consumer's
+resolved package version.
+
+Acceptance criteria:
+
+- Release a source-compatible SwiftUI picker initializer with custom label content and an optional
+  custom current-value label.
+- Preserve the existing text-title initializer and automatic, menu, segmented, and inline styles.
+- Add examples matching a Settings accent row with a swatch and a reminder row with a clock icon,
+  while keeping the option selection and current value accessible.
+- Test compact and regular layouts, long localized values, Dynamic Type, VoiceOver, disabled state,
+  and light and dark themes.
+- Version-qualify migration documentation so consumers can distinguish released package contracts
+  from APIs present only on Lumen's development branch.
+
+## SwiftUI date-field verbatim and custom-label content
+
+PostLens migrated both its create and edit posting-plan forms to the released SwiftUI
+`LumenDateField` 2.0.0 contract with date-and-time components and a lower bound at the current
+moment. Its separate graphical posting calendar remains a native `DatePicker`: that control owns
+calendar navigation rather than a form field, and `LumenDateField` intentionally does not expose a
+graphical style. This is a useful component boundary, not an incomplete migration.
+
+The form migration exposed two content limitations. PostLens resolves copy through an in-app
+language setting, but `LumenDateField` accepts only `LocalizedStringKey` for its title, description,
+and error message. It cannot receive already-localized text as verbatim content like
+`LumenTextarea` can. The create form also previously used a structured label with a calendar icon;
+adopting the shared Lumen field required dropping that icon because the component has no custom-label
+initializer. The consistent create/edit field was preferable to retaining two treatments, but a
+consumer should not need to discard useful label content to adopt Lumen.
+
+Focused XCTest inspection exposed a related semantic gap in the released implementation. The
+visible title appears as a separate `StaticText`, while the native picker is found only by the
+generic `Date and Time Picker` label; querying the picker by `Post at` fails. The picker reports a
+36-point accessibility frame inside a 66-point form row, so accessibility-tree geometry alone also
+does not prove that the complete row is an interactive target. Lumen should verify and document the
+programmatic label relationship and the effective hit region instead of relying on visual proximity.
+
+Acceptance criteria:
+
+- Accept `LumenTextContent` for the title, description, and error message while preserving the
+  source-compatible `LocalizedStringKey` initializer.
+- Provide a custom-label initializer that retains the native `DatePicker` selection, component,
+  bounds, validation, focus, and accessibility behavior.
+- Document that graphical calendar navigation remains platform-owned unless Lumen deliberately adds
+  a separate calendar component rather than overloading the form-field contract.
+- Test date, time, and date-and-time variants with closed, lower, upper, and unbounded ranges.
+- Test an in-app locale that differs from the system locale, structured icon labels, long text,
+  Dynamic Type, VoiceOver, validation messages, and light and dark themes.
+- Verify that the visible title programmatically labels the picker, that automation can identify the
+  control by the field title rather than a generic system label, and that the effective interactive
+  target meets the platform minimum without synthesizing replacement semantics.
+
+## SwiftUI slider gesture and composition contract
+
+PostLens evaluated every remaining native editor slider against released `LumenSlider` 2.0.0. Its
+complete labeled stack works for a conventional settings field, but the photo editor needs lower-
+level composition: look intensity and manual adjustments use `onEditingChanged` to group a drag
+into one undoable history entry; crop zoom places a reset action, slider, and percentage on one row;
+and Layout Builder switches between inline and stacked labels at accessibility Dynamic Type sizes
+while binding `CGFloat` geometry. Layout Builder has since migrated the containing expansion control
+to `LumenDisclosure`, but its shared `PhotoLayoutValueSlider` still keeps native sliders with explicit
+localized names and percentage values. This preserves the domain bindings and adaptive layout while
+letting Lumen own the surrounding disclosure. `LumenSlider` accepts only `Binding<Double>`, owns the
+visible label/value stack, and does not expose the native editing callback. Migrating these controls
+would either break history semantics or duplicate and distort their established layouts, so they
+remain native while continuing to use the app's Lumen theme and spacing around the control.
+
+Acceptance criteria:
+
+- Expose the native editing-state callback, or an equivalent drag-began/drag-ended contract, so a
+  consumer can create exactly one undo record per gesture.
+- Provide a style or lower-level slider primitive that can omit Lumen's visible label/value row
+  while retaining its tint, disabled, focus, and accessibility treatment.
+- Support floating-point bindings beyond `Double`, including `CGFloat`, without requiring an
+  unsynchronized second source of truth.
+- Preserve the current fully labeled initializer as the source-compatible default.
+- Document inline crop, manual-adjustment-with-reset, and Dynamic Type-reflow examples, including
+  accessible names and values when the visible label is composed outside the primitive.
+- Test keyboard and accessibility increments, touch and pointer drags, Reduce Motion, disabled
+  state, undo grouping, and regular versus accessibility text sizes.
 
 ## SwiftUI icon-button loading state
 
@@ -186,6 +342,21 @@ animated while an on-device caption request is running. `LumenButton` owns a loa
 `LumenIconButton` accepts only a fixed icon and disabled state. The consumer can apply the public
 `LumenIconButtonStyle` to a native button to retain its existing spinner, but then it must recreate
 the icon foreground treatment and loading semantics that the composed component normally owns.
+The Photo Editor's Prepare post action confirmed the same boundary for a non-generative workflow:
+it keeps a compact material circle beside a system-owned destination menu, swaps the sparkle for a
+domain spinner without moving the control, and must retain `Prepare post` as its accessible name
+while announcing a localized loading value. Applying the released public style supplied the visual
+recipe, but XCTest still reported only the 34-point inner material circle until the consumer added
+an explicit 44-point semantic frame inside the styled label. The consumer also still owns all
+dynamic content and semantics until the composed loading contract ships.
+PostLens's Caption Assistant exposed why loading must be separate from the command name even when
+the styled native button already swaps its icon correctly. Its initial implementation changed the
+accessible label from `Improve with AI` to `Improving…`, which removed the stable command identity
+exactly while the disabled control was reporting progress. The consumer now keeps the command name,
+publishes localized `Loading` as the value, and places its 44-point minimum inside the dynamic label
+so the Lumen-styled semantic leaf owns the measured frame. A deterministic busy-state fixture also
+proved that exactly one button remains in the accessibility tree while the spinner occupies the
+same slot beside a multiline field.
 
 Acceptance criteria:
 
@@ -196,6 +367,11 @@ Acceptance criteria:
 - Keep the button's dimensions stable when switching between the icon and spinner.
 - Test primary, secondary, quiet, and danger intents in light and dark themes, including Reduce
   Motion and larger accessibility text settings.
+- Test a compact loading icon action beside a system-owned menu, preserving its spatial slot,
+  accessible name, localized loading value, and 44-point target through the transition.
+- Test a loading icon action beside multiline input content, requiring one semantic button whose
+  command name remains stable, whose localized loading value changes independently, and whose full
+  accessibility frame stays at least 44 by 44 points without moving the adjacent text layout.
 - Document when a styled native button remains appropriate for dynamic content that the composed
   icon-button contract does not yet support.
 
@@ -264,6 +440,15 @@ route it back through the system locale and makes the contract inconsistent with
 label receives the resolved string, so PostLens could migrate the recovery action without giving
 Lumen ownership of the application language setting.
 
+PostLens also migrated the empty Recently Deleted collection inside a native inset `List` from
+`ContentUnavailableView` to `LumenEmptyState`. The Lumen composition preserved the title and
+retention explanation and provided a consistent token-aware icon treatment, while the surrounding
+list continued to own navigation and row chrome. The consumer supplied a finite minimum row height;
+`LumenEmptyState` otherwise requests the maximum available height, which is appropriate for a page
+state but does not define a useful intrinsic row size inside a list. List integration guidance
+should distinguish page-filling, section-row, and compact empty states without forcing arbitrary
+consumer geometry.
+
 Acceptance criteria:
 
 - Add `LumenTextContent` initializers for `LumenEmptyState` and `LumenErrorState` title,
@@ -273,6 +458,8 @@ Acceptance criteria:
 - Preserve generic action and graphic slots so consumer-owned recovery behavior remains intact.
 - Test English selected in-app on a Spanish system and Spanish selected in-app on an English
   system, including compact and page layouts.
+- Provide a documented native `List`/`Form` recipe or an explicit section-row layout that has a
+  bounded intrinsic height while preserving the existing page-filling default.
 
 ## SwiftUI icon-button verbatim accessibility labels
 
@@ -312,6 +499,59 @@ its separate native destructive action. Rendered accessibility still requires th
 the binding, selection marker, selected trait or value, grouping, and option-specific content. This
 bridge reduces duplicate surface styling, but it is not a typed selection-control replacement.
 
+PostLens confirmed the complementary non-action composition on iOS. A `LumenCard` with public
+padding and radius options now contains the Studio heading plus its canonical destination-format
+menu. Lumen owns only the semantic surface, line, spacing, and corner treatment; the nested native
+button retains its accessible name and current-value announcement, presents the selection sheet,
+and updates the consumer-owned ranking binding. Making the card action-backed would create nested
+button semantics and incorrectly transfer activation from the labeled menu. Rendered tests covered
+both the initial Instagram 3:4 value and a successful switch to Pinterest 2:3 without changing that
+interaction boundary.
+
+The prepared-draft review card extends that pattern to media and multiple actions. Its non-action
+`LumenCard` contains an application-owned preview image, a readiness-score button, explanatory
+metadata, and a separate Review & publish button. Lumen can own the card surface and spacing, but it
+must not infer the preview's fit, crop, background, privacy behavior, or accessible description, and
+it must not merge the score dialog with the editor-navigation action. The deterministic iOS test
+verifies that the preview, score, and review controls remain independently discoverable and that
+the review action opens the prepared draft in the editor. An action-backed card would introduce
+nested buttons and an ambiguous activation target.
+
+PostLens also removed its final Studio-specific card modifier by placing an adaptive Supporter hero
+and a divided benefits list in separate non-action `LumenCard` instances. The hero continues to
+switch from a horizontal to a vertical application-owned layout at accessibility text sizes, and
+the list keeps independently readable benefit rows separated by `LumenDivider`; the card does not
+need to understand either composition. The separately rendered rich Supporter button needed an
+explicit accessible name and hint because its visible title and subtitle otherwise merged into one
+unstable label. Its deterministic preview originally supplied a no-op action, which could prove
+only appearance; wiring the real callback and asserting the presented Supporter destination turned
+the same fixture into interaction evidence.
+
+PostLens then removed the editor's remaining generic `cardStyle()` modifier by moving ten filter,
+adjustment, crop, creation, progress, unavailable, and review panels to non-action `LumenCard`
+surfaces with explicit public padding and radius tokens. The same contract safely contains sliders,
+toggles, disclosures, menu buttons, progress semantics, and multiple independent actions because
+the card itself does not add activation. This broad replacement also demonstrated why migration
+evidence must cover the whole screen composition: at an accessibility text size, the fixed photo
+preview and vertically expanded bottom `LumenButtonGroup` left too little gesture space to reach a
+nested slider even though every individual Lumen component was valid. Making the application-owned
+preview yield height restored reachability; changing card padding or weakening the test would not
+have addressed the root cause. The regression test begins its scroll in the remaining content
+viewport rather than over the safe-area action dock, then verifies that the nested slider is
+hittable and remains within the screen bounds.
+
+The shared PostLens readiness hierarchy added a useful distinction between cards and lower-level
+surfaces. Each score explanation is one non-action `LumenCard`, while repeated measured-signal tiles
+use muted `LumenSurface` instances so the composition does not accumulate nested card borders or
+suggest that every datum is independently actionable. The derived readiness result alone uses an
+accent card, and its already-resolved destination-format context uses a verbatim `LumenBadge`.
+Neither `LumenCard` nor `LumenSurface` adds semantic grouping without an action, so the host retains
+the deliberate combined label and value for a score hero and each measured row. Focused UI coverage
+therefore verifies that score labels remain readable static content rather than becoming buttons,
+and that the larger card metrics remain scroll-reachable at an accessibility text size. Lumen's
+composition guidance should explain this visual-versus-semantic boundary instead of implying that a
+shared surface automatically supplies an accessible group.
+
 Acceptance criteria:
 
 - Allow each SwiftUI segmented or radio option to supply rich label content without weakening the typed
@@ -326,6 +566,32 @@ Acceptance criteria:
   application-owned domain selector.
 - Document the action-backed `LumenCard` bridge for rich standalone choices, including explicit
   selected semantics and the non-action-card pattern when a row contains a separate native action.
+- Include a non-action card example containing a heading and independently labeled menu button;
+  verify that VoiceOver exposes the menu's current value and that the card adds no competing action.
+- Include a media-card example with an application-owned preview and at least two independent
+  controls; document that Lumen does not infer media fit, crop, privacy, or description semantics.
+- Verify VoiceOver order from preview through score, metadata, explanations, and primary action,
+  independent activation of each control, larger accessibility text, and narrow iPhone widths.
+- Include an adaptive non-action-card example whose application-owned content changes axis at an
+  accessibility text size and another example that composes independently readable rows with
+  `LumenDivider`.
+- Keep a rich CTA outside informational cards, document explicit accessible names and hints for
+  title-plus-subtitle labels, and verify its destination rather than relying on screenshot-only or
+  no-op preview actions.
+- Include a non-action `LumenCard` composition containing several independently interactive native
+  or Lumen controls, and verify that the card contributes no merged or competing activation target.
+- Document that fixed media previews and safe-area action groups remain host-owned layout regions;
+  when actions reflow vertically at an accessibility text size, the preview must yield enough space
+  for the card's scrollable controls to remain reachable.
+- Add rendered native coverage that scrolls from the actual content viewport, not through a fixed
+  action dock, and asserts a nested control is both hittable and within horizontal screen bounds.
+- Add a compound readiness example with one non-action outer card, muted nested surfaces for peer
+  signals, a verbatim context badge, progress indicators, and one accent result card; document why
+  every nested tile should not become another card.
+- Document that non-action `LumenCard` and `LumenSurface` provide visual structure but do not infer
+  accessibility grouping, labels, values, headings, or data relationships from arbitrary content.
+- Verify the compound example exposes informative static groups rather than buttons, preserves the
+  host's combined score labels and values, and remains scroll-reachable at accessibility text sizes.
 
 ## SwiftUI badge accessory and verbatim content
 
@@ -455,6 +721,111 @@ Acceptance criteria:
 - Keep consumer examples visually themed around the system container instead of wrapping native
   commands in unsupported custom presentation.
 
+## SwiftUI divider orientation and contrast contract
+
+PostLens migrated ordinary horizontal separators in its Gallery and Studio selection bars, saved-
+photo picker, destination cards, editor review, and multi-photo readiness sheet to `LumenDivider`.
+Those surfaces can use the theme's line token while preserving consumer-owned leading insets and
+row spacing. The remaining native dividers are not unfinished equivalents: SwiftUI's `Divider`
+automatically becomes vertical inside the editor, Carousel, and Layout split panes and between the
+compact Undo and Redo controls, while `LumenDivider` is a fixed full-width rectangle with a one-
+point height. Giving it a taller outer frame does not turn it into a vertical separator. The live
+camera control deck also needs a low-opacity light separator on black media chrome, which the fixed
+theme-line treatment cannot express without a consumer color override. Native dividers inside
+`Menu` and `contextMenu` builders remain platform-owned semantic separators as documented above.
+
+A deterministic PostLens readiness fixture verified the horizontal migration with three scored
+rows in the same medium sheet before and after the change. The separators remained decorative and
+the row names and values kept their accessibility order; this is the representative contract that
+fits the released component today.
+
+Acceptance criteria:
+
+- Let `LumenDivider` declare horizontal or vertical orientation, with an adaptive option matching
+  SwiftUI stack context when that behavior can be implemented reliably.
+- Preserve the one-point horizontal recipe and source compatibility for existing callers.
+- Support a semantic contrast treatment suitable for dark media chrome without requiring raw
+  consumer colors or weakening the normal theme line token.
+- Keep every visual divider hidden from accessibility while preserving the order and grouping of
+  adjacent semantic content.
+- Test leading-inset row separators, top and bottom overlays, vertical split panes, compact toolbar
+  groups, light and dark themes, and high-contrast settings.
+- Continue requiring native `Divider` inside system menus even after visual orientation support is
+  added.
+
+## SwiftUI disclosure and nested-action ownership
+
+PostLens migrated the Image Playground explanation from a native `DisclosureGroup` with a custom
+card modifier to `LumenDisclosure`'s released custom-label initializer. The Lumen component can own
+the themed surface, border, expansion indicator, and expansion binding while the application keeps
+its localized icon-and-status label, privacy explanation, availability fallback, and Apple consent
+handoff. The expanded content also contains its own full-width Lumen action. This works because
+`LumenDisclosure` keeps the disclosure header as the toggle and renders expanded content beside it
+in the semantic hierarchy; wrapping the same composition in an action-backed `LumenCard` would
+create an outer button around another button and transfer activation away from the disclosure.
+
+Rendered available and unavailable fixtures confirmed that the migration leaves exactly one
+`Image Playground, Optional` disclosure button with at least a 44-point target, exposes the nested
+`Edit with Image Playground` action independently after expansion, and preserves the native consent
+alert and disabled fallback. This is a useful boundary for any disclosure whose body contains links,
+buttons, or other application-owned controls. The first rendered assertion also exposed that the
+component's card padding does not enlarge the `DisclosureGroup` button reported to accessibility:
+the custom label measured only 28.7 points high until PostLens supplied a 44-point minimum frame and
+rectangular content shape.
+
+A follow-up migration covered three related creation workflows that had shared one app-styled card
+with native disclosure rows and dividers. Because released `LumenDisclosure` always owns its surface,
+border, radius, and padding, placing those components inside the old card would have produced nested
+surfaces and duplicate chrome. PostLens instead removed the wrapper and dividers and rendered the
+three disclosures as sibling Lumen surfaces. The result is coherent and accessible, but less compact
+than the grouped native composition. This reveals a separate component gap: Lumen needs either a
+documented disclosure-group composition or a public grouped/flush surface style when several related
+disclosures should share one visual container. The locked fixture also showed that a visible SF
+Symbol lock in a custom label was not included reliably in the disclosure button's accessible name.
+PostLens hid the decorative symbol and supplied an explicit localized “Opens PostLens Supporter”
+label suffix, so the premium state is conveyed without depending on symbol-derived semantics. Its
+first locked-state fixture also mounted the disclosure view without the host-owned Supporter sheet;
+the nested action changed application state but nothing appeared. Disclosure examples and preview
+fixtures must include the host presentation boundary when proving nested navigation or modal actions.
+
+Layout Builder then migrated its last production-native disclosure, an expanded fine-tune surface
+containing three independently adjustable geometry sliders. The released component preserved the
+external expansion binding and cleanly separated the toggle from the sliders, but using its owned
+surface inside an inset `List` required the consumer to clear the native row background, separator,
+and insets. Without that integration recipe, a consumer gets nested row chrome around Lumen's border
+and padding. A deterministic fixture verified one 44-point toggle, separately named zoom, horizontal,
+and vertical sliders with localized percentage values, stable collapse and re-expansion, and a real
+zoom edit. The sliders remain host-owned for the `CGFloat` and Dynamic Type reasons above.
+
+Acceptance criteria:
+
+- Document `LumenDisclosure` as the preferred surface when expanded content contains independent
+  controls, and warn against wrapping that composition in an action-backed card.
+- Keep one disclosure toggle with a stable accessible name, expanded state, focus position, and
+  minimum target when a custom label contains icons or status text.
+- Make `LumenDisclosure` guarantee that 44-point minimum target itself for both its standard and
+  custom-label initializers so consumers do not need to repair the component's interactive frame.
+- Document that standalone `LumenDisclosure` instances must not be nested inside another card merely
+  to group them; use sibling surfaces until a supported grouped composition exists.
+- Provide a documented `List` and `Form` integration recipe or public row style that removes native
+  row background, separator, and insets without requiring every consumer to rediscover the complete
+  modifier set.
+- Evaluate a `LumenDisclosureGroup` or public grouped/flush surface style that preserves one outer
+  container, row dividers, rounded first and last rows, and independent disclosure semantics without
+  asking consumers to recreate Lumen's border and padding internals.
+- Keep buttons, links, and form controls in expanded content as separate semantic elements with
+  their own names, disabled states, roles, and activation results.
+- In custom-label examples, treat status icons as decorative and demonstrate an explicit localized
+  accessible label or value for locked, unavailable, warning, and completion states.
+- Keep navigation, sheets, alerts, and external handoffs owned by the host application, but make
+  disclosure integration fixtures mount those presentation boundaries before claiming the nested
+  action is covered end to end.
+- Test collapsed and expanded states inside standalone stacks, `List`, and `Form`; keyboard and
+  VoiceOver activation; focus return after nested dialogs; large localized labels; Dynamic Type;
+  and available versus unavailable content.
+- Provide an example where the nested action opens a platform-owned consent alert without making
+  Lumen responsible for the alert or external handoff.
+
 ## SwiftUI text-input character-limit contract
 
 A complete export audit corrected an earlier consumer assumption: released SwiftUI Lumen already
@@ -464,17 +835,37 @@ feedback details editors. The feedback form still owns a separate `0/2,000` coun
 PostLens exposes the same gap across both Lumen text primitives: its support form must separately
 truncate a 120-character subject, 2,000-character details field, and 254-character email address
 after each binding change because neither `LumenTextField` nor `LumenTextarea` accepts a limit.
+Its production posting-plan editor now also shares one domain wrapper around `LumenTextarea` across
+the create and edit flows. Lumen owns the persistent label, bordered surface, local-only description,
+and field accessibility, while PostLens owns the 2,200-character policy, live count, AI caption
+action, and persistence. Consumers with an in-app locale must pass already-resolved textarea copy as
+`.verbatim(L10n.string(...))`; rebuilding that string as a localization key can incorrectly look it
+up again in the host bundle. `LumenTextField` differs usefully: its public `String` initializer
+already maps the title and error message to verbatim content, so consumers do not need an explicit
+wrapper unless they want the content mode visible at the call site.
+
+The posting-plan migration also exposed a composition gap. Placing the AI action over the editor
+would compete with text, selection controls, right-to-left layout, and larger Dynamic Type, but
+`LumenTextarea` has no supported header or trailing-accessory slot. PostLens therefore keeps the AI
+action in a separate footer row beside the count. The underlying `TextEditor` also changes XCTest's
+element type from `textFields` to `textViews`, so integration tests should prefer a stable semantic
+identifier over a placeholder query or an assumed native control class.
 
 Acceptance criteria:
 
 - Accept an optional maximum length on `LumenTextField` and `LumenTextarea` without changing
   existing unlimited behavior.
 - Provide a localized visible count or a composable count slot owned by the same field contract.
+- Evaluate a header or trailing-accessory slot that keeps actions outside the editable text region,
+  preserves a stable accessibility order, and reflows without overlap at large text sizes and in
+  right-to-left layouts.
 - Define whether excess input is rejected, truncated, or reported, and expose that behavior to
   assistive technology instead of silently changing the bound text.
 - Keep helper and error messages readable alongside the count at narrow widths and large text.
-- Test keyboard input, paste, dictation, VoiceOver announcements, and boundary values on macOS and
-  iOS.
+- Keep semantic identifiers attached to the editable control and document that SwiftUI textarea UI
+  tests surface it as a text view rather than a text field.
+- Test empty and filled values, keyboard input, paste, dictation, programmatic AI updates, undo,
+  VoiceOver announcements, right-to-left layout, Dynamic Type, and boundary values on macOS and iOS.
 
 ## SwiftUI phone-input in-app localization
 
@@ -526,6 +917,195 @@ Acceptance criteria:
   truncating short English or Spanish labels.
 - Test compact and regular metrics in light and dark themes, at larger accessibility text sizes,
   and with unusually long values.
+
+## SwiftUI skeleton theme inheritance and media composition
+
+PostLens uses `LumenSkeleton` for generic text bars and badge-shaped placeholders while its gallery
+and Studio libraries load. An early wrapper selected `LumenTheme.light` or `.dark` from the local
+color scheme for every bar. That made the placeholder appear adaptive, but it silently replaced the
+branded `PostLensLumenTheme` already installed at the application root. Removing the leaf override
+lets every skeleton inherit the same semantic surface color as the rest of the product, including
+custom accent themes and future theme changes that are not reducible to light versus dark.
+
+The migration also clarified the boundary of the primitive. Lumen's circle shape cleanly replaces
+generic score or action-badge placeholders, and its text shape owns generic metadata bars. Photo
+panels remain host-owned because they mirror the eventual media grid, aspect ratios, multi-photo
+carousel anatomy, and recognizable photo glyphs. Treating the entire media card as one rectangle
+skeleton would make the loading layout less representative rather than more consistent.
+
+Each loading region owns one localized progress status. The individual `LumenSkeleton` instances
+remain unlabeled and accessibility-hidden so a grid containing many placeholders does not flood
+assistive technology with duplicate loading announcements. Visible copy may still repeat when it
+reserves the exact space of a pinned header; tests should verify the named progress region and
+rendered geometry instead of counting every matching visible string as an announcement defect.
+
+Acceptance criteria:
+
+- Document that `LumenSkeleton` inherits `lumenTheme` from the nearest composition root and warn
+  against installing generic light or dark themes on individual placeholders.
+- Provide a branded-theme example containing text, circle, and rectangle shapes in both color
+  schemes so custom semantic surface colors are visibly exercised.
+- Keep an unlabeled skeleton decorative and accessibility-hidden; allow an explicit label only when
+  the skeleton itself is the single progress region rather than a child of one.
+- Document the composition boundary between generic placeholder geometry and domain-specific media
+  anatomy, including a gallery card that keeps host-owned aspect ratio and photo affordances.
+- Test nested skeleton grids with one parent progress announcement, large Dynamic Type, right-to-left
+  layout, reduced motion, light and dark appearances, and a non-default branded theme.
+- Keep circle sizing deterministic when only height is supplied so badge and avatar placeholders do
+  not require a redundant width or a raw `Circle` fallback.
+
+## SwiftUI transient status actions and resolved localization
+
+PostLens migrated Publishing Studio's temporary removal-and-undo bar to a `LumenAlert` contained
+inside the app's bottom safe-area material. The generic alert content closure was the right released
+contract because it lets the consumer render an already-resolved plural string with `Text` and keep
+the Undo command as a separate 44-point button. Lumen now owns the semantic surface color, border,
+radius, and padding, while PostLens continues to own bottom placement, the eight-second lifetime,
+task cancellation when state changes, and the domain operation that restores the hidden picks.
+
+`LumenBanner` and `LumenToast` initially look more specific for this composition, but their SwiftUI
+initializers accept only `LocalizedStringKey` titles and descriptions. PostLens selects English or
+Spanish in-app and resolves count-aware copy before rendering, independently of the system locale.
+Reconstructing a localization key from that result would re-enter SwiftUI localization and makes the
+language boundary ambiguous. The generic `LumenAlert` avoids that correctness risk, but consumers
+should not have to choose a less specific component solely to preserve verbatim or prelocalized
+content.
+
+The rendered migration also confirmed that the safe-area host and the alert are separate layers.
+The full-width material prevents scrolling photography from showing through the home-indicator area;
+the inset, rounded Lumen surface communicates the temporary result and groups it with Undo. Moving
+the material or timeout into `LumenAlert` would incorrectly couple a reusable status primitive to
+application navigation and lifecycle policy.
+
+PostLens then reused the same generic alert contract for the persistent hidden-picks summary. Its
+plural count and destination-scoped explanation remain consumer-localized, and Review remains an
+independent command that opens the platform-owned recovery sheet. The migration removed a custom
+card without moving navigation, restoration state, or photo-library policy into Lumen. It also
+confirmed a composition boundary: PostLens's shared button contract, rather than the generic alert,
+continues to guarantee the Review action's minimum hit target. Rendered XCTest reports that 44-point
+frame as 43.67 points on a 3x simulator because coordinates are quantized to physical pixels, so the
+assertion allows one pixel of tolerance. Lumen cannot guarantee the hit target or adaptive layout of
+arbitrary content supplied to its generic closure.
+
+Acceptance criteria:
+
+- Add `LumenTextContent` or equivalent localized-versus-verbatim overloads for SwiftUI
+  `LumenBanner` and `LumenToast` titles and descriptions while preserving existing initializers.
+- Document `LumenAlert` as a generic contained status surface whose content closure can preserve
+  already-resolved plural copy and independent action semantics.
+- Keep safe-area placement, auto-dismiss timing, cancellation, undo state, and domain recovery owned
+  by the host application rather than the visual primitive.
+- Provide a status-with-action example where a bottom safe-area host contains one alert, a wrapping
+  count-aware message, and a separately focusable 44-point Undo button.
+- Add a persistent status-with-recovery example where the alert preserves dynamic plural copy and
+  the host owns navigation to a review sheet plus Restore and Restore All behavior.
+- Test singular and plural copy, an in-app locale opposite the system locale, narrow widths, large
+  Dynamic Type, right-to-left layout, VoiceOver order, timeout cancellation, and successful Undo.
+- Require composed alert actions to retain a 44-point hit target and reflow before text or controls
+  compress at narrow widths and large Dynamic Type.
+- Ensure banner and toast action layouts reflow vertically before localized content or controls
+  truncate, overlap, or leave the viewport.
+
+## SwiftUI informational card migration boundaries
+
+PostLens migrated the five repeated containers on its About screen from a hand-built secondary
+grouped background, 20-point corner radius, and 18-point inset to `LumenCard` with `.lg` padding
+and a `.size2xl` radius. The rendered comparison made the contract change visible: Lumen replaces
+approximate host values with its tokenized 16-point inset and adds the standard subtle card border.
+That is a deliberate design-system normalization rather than pixel parity, so migration guidance
+should tell consumers to compare hierarchy, wrapping, and rhythm instead of reproducing every old
+number around the component.
+
+The migration preserved an important semantic and ownership boundary. Each card is informational;
+its heading remains static text and the container does not acquire a button trait. Branded app-icon
+masking and the small tinted feature-symbol plaques stayed host-owned because they identify the
+product and individual concepts rather than representing generic surface structure. Lumen owns the
+repeated container treatment without absorbing app identity or flattening the accessibility tree.
+
+Acceptance criteria:
+
+- Add a SwiftUI migration example that replaces a manual grouped-background card with
+  `LumenCard(padding: .lg, radius: .size2xl)` and calls out intentional token normalization.
+- Document that `LumenCard` is a non-interactive presentation container and does not add button or
+  link semantics to its title or content.
+- Explain that branded imagery, app-icon masks, and concept-specific icon plaques can remain
+  consumer-owned children even when Lumen owns the repeated outer surface.
+- Include a rendered before-and-after check at a narrow iPhone width so long informational copy
+  retains readable wrapping and consistent vertical rhythm.
+- Test VoiceOver traversal, large Dynamic Type, light and dark appearances, and right-to-left layout
+  with links and dividers nested in informational cards.
+- Keep the content closure's existing accessibility elements independently discoverable unless the
+  consumer explicitly combines them.
+
+## SwiftUI sheet cards and scroll-to-action reachability
+
+PostLens also migrated Gallery Score's selection snapshot, pending explanation, and Quick Prepare
+groups from manual 14-point white panels to non-action `LumenCard` containers using `.md` padding
+and an `.xl` radius. A compact sheet benefits from the tokenized 12-point inset because its
+destination picker and primary action gain usable width, while the standard border keeps adjacent
+cards legible on the grouped canvas. The action stays a separate `PostLensButton` child; omitting
+the card's `action` closure prevents the entire explanatory group from acquiring button semantics.
+
+The focused UI check caught a testing and documentation boundary. In the medium sheet detent,
+Quick Prepare exists in the accessibility hierarchy before it is visible or hittable. Treating
+existence as reachability would miss a clipped or non-scrollable composition. The consumer test now
+scrolls until the action is hittable, verifies its minimum target, captures the bottom-sheet state,
+and then completes the action. Lumen examples that place controls below explanatory content should
+prove the same path instead of assuming that a successful layout at the large detent is sufficient.
+
+Acceptance criteria:
+
+- Add a compact SwiftUI sheet example with multiple non-action cards and one independently
+  focusable primary action nested in the final card.
+- Document that an `action: nil` card may contain controls without making the outer surface an
+  additional button, link, or accessibility stop.
+- Show when `.md` padding and `.xl` radius are appropriate for nested sheet cards, while framing
+  the token choice as hierarchy and density rather than legacy pixel matching.
+- Test both ready and pending content variants so conditional state does not fall back to a manual
+  background or change the card's semantic role.
+- At the medium detent, scroll until the final action is visible and hittable, verify a 44-point
+  target, activate it, and assert the sheet dismisses or advances as intended.
+- Repeat the composition at the large detent, accessibility text sizes, and a long translated copy
+  set so card spacing does not make the final action unreachable.
+
+## SwiftUI membership information cards and selection boundaries
+
+PostLens migrated its Supporter status, included-benefits, fairness, workflow-preview, and loading
+containers from hand-built rounded backgrounds to non-action `LumenCard` surfaces. The active
+membership card still contains an independently focusable `LumenLink`; keeping the outer card
+non-interactive avoids nested-button semantics while allowing the link to retain its destination
+and external indicator. Branded hero artwork and tinted feature plaques remain consumer-owned
+children because they express PostLens identity rather than generic card structure.
+
+The remaining subscription option rows are an intentional boundary, not an incomplete mechanical
+migration. They combine selected and unselected state, pricing, a recommended marker, disabled and
+purchasing behavior, and radio-like mutual exclusion. Treating those rows as ordinary action cards
+would underspecify their selection semantics. Lumen would benefit from a selectable-card or
+radio-card contract that makes state, grouping, focus, and activation explicit across SwiftUI and
+the other framework adapters.
+
+The unavailable-plans path exposed a second composition gap. `LumenEmptyState` already owns a
+24-point inset and a bounded height, so wrapping it in `LumenCard` can create a visibly double-padded
+surface. Consumers need either a contained presentation option for the empty state or guidance for
+placing it directly on a grouped canvas without adding another generic card solely for background
+treatment.
+
+Acceptance criteria:
+
+- Add a SwiftUI example with a non-action membership card that contains an independently focusable
+  `LumenLink`, and verify that the outer card does not acquire button or link traits.
+- Define a selectable-card or radio-card contract with selected, unselected, recommended, disabled,
+  loading, and mutually exclusive group states.
+- Expose selection state through native accessibility values and traits without creating nested
+  controls or duplicate activation stops.
+- Document that branded heroes and concept-specific tinted plaques remain valid consumer-owned
+  content inside Lumen-managed surfaces.
+- Provide an empty-state containment option or documented grouped-canvas recipe that avoids stacking
+  `LumenEmptyState`'s inset inside an additional card inset.
+- Test active, loading, unavailable, and plan-selection states at narrow widths, large Dynamic Type,
+  light and dark appearances, right-to-left layout, and long translated copy.
+- Verify that membership links and plan actions remain reachable by scrolling and retain 44-point
+  targets without making surrounding informational content interactive.
 
 ## Compose sheet locale and form presentation
 

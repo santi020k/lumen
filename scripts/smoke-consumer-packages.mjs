@@ -10,14 +10,20 @@ const archiveDirectory = join(temporaryRoot, 'archives')
 const consumerDirectory = join(temporaryRoot, 'consumer')
 
 const packageDirectories = [
-  'lumen',
-  'core',
-  'astro',
-  'react',
-  'react-hook-form',
-  'elements',
-  'icons-brand'
+  { directory: 'lumen', name: '@santi020k/lumen' },
+  { directory: 'core', name: '@santi020k/lumen-core' },
+  { directory: 'astro', name: '@santi020k/lumen-astro' },
+  { directory: 'react', name: '@santi020k/lumen-react' },
+  { directory: 'react-hook-form', name: '@santi020k/lumen-react-hook-form' },
+  { directory: 'elements', name: '@santi020k/lumen-elements' },
+  { directory: 'icons-brand', name: '@santi020k/lumen-icons-brand' }
 ]
+
+const requestedPackagesSource = process.env.LUMEN_RELEASE_PACKAGES
+
+const requestedPackages = requestedPackagesSource
+  ? new Set(JSON.parse(requestedPackagesSource))
+  : undefined
 
 const run = (
   command,
@@ -50,11 +56,23 @@ try {
     mkdir(join(consumerDirectory, 'src', 'pages'), { recursive: true })
   ])
 
-  for (const packageDirectory of packageDirectories) {
+  const publishedPackageSpecs = []
+
+  for (const package_ of packageDirectories) {
+    if (requestedPackages && !requestedPackages.has(package_.name)) {
+      const manifest = JSON.parse(
+        await readFile(join(repositoryRoot, 'packages', package_.directory, 'package.json'), 'utf8')
+      )
+
+      publishedPackageSpecs.push(`${package_.name}@${manifest.version}`)
+
+      continue
+    }
+
     run(
       'pnpm',
       ['pack', '--pack-destination', archiveDirectory],
-      join(repositoryRoot, 'packages', packageDirectory)
+      join(repositoryRoot, 'packages', package_.directory)
     )
   }
 
@@ -62,7 +80,11 @@ try {
     .filter(name => name.endsWith('.tgz'))
     .map(name => join(archiveDirectory, name))
 
-  assert.equal(archives.length, packageDirectories.length)
+  const expectedArchiveCount = requestedPackages
+    ? packageDirectories.filter(package_ => requestedPackages.has(package_.name)).length
+    : packageDirectories.length
+
+  assert.equal(archives.length, expectedArchiveCount)
 
   await writeFile(
     join(consumerDirectory, 'package.json'),
@@ -78,6 +100,7 @@ try {
       '--no-audit',
       '--no-fund',
       ...archives,
+      ...publishedPackageSpecs,
       '@hookform/resolvers@5.7.1',
       '@types/node@26.2.0',
       '@types/react@19.2.18',
