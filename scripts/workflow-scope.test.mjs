@@ -27,7 +27,12 @@ test('CI delegates path decisions and keeps package-family gates independent', (
 
   assert.match(
     ci,
-    /consumer-packages[\s\S]*?pnpm run build:release-scope\n\s+pnpm run check:consumer-packages/u
+    /bundle-size[\s\S]*?consumer-packages[\s\S]*?pnpm run build:release-scope[\s\S]*?pnpm run check:bundle-size/u
+  )
+
+  assert.match(
+    ci,
+    /consumer-packages[\s\S]*?pnpm run check:consumer-packages/u
   )
 
   assert.doesNotMatch(
