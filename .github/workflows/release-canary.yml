@@ -182,7 +182,7 @@ jobs:
           if [[ "$GITHUB_EVENT_NAME" == "workflow_dispatch" ]]; then
             pnpm run build
           else
-            pnpm run build:affected
+            pnpm run build:release-scope
           fi
       - name: Install the release-candidate browser
         if: needs.classify.outputs.browser == 'true'

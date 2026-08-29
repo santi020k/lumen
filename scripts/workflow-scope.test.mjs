@@ -41,7 +41,7 @@ test('release canaries keep manual full-matrix coverage and scope pull requests'
 
   assert.match(canary, /node scripts\/classify-workflow-paths\.mjs canary/u)
 
-  assert.match(canary, /pnpm run build:affected/u)
+  assert.match(canary, /pnpm run build:release-scope/u)
 
   assert.match(canary, /needs\.classify\.outputs\.browser/u)
 
