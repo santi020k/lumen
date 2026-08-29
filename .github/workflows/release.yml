@@ -59,7 +59,7 @@ jobs:
           pnpm run check:swift-version &&
           pnpm run check:web-consumer-evidence &&
           pnpm run check:native-consumer-evidence &&
-          pnpm run check:native-stability-readiness &&
+          pnpm run check:native-stability-soak &&
           pnpm run build &&
           pnpm run check:security &&
           pnpm run check:publish-dry-run

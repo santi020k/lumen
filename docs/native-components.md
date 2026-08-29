@@ -48,8 +48,8 @@ Shared icons use `name="search"`; applications can instead pass graphic componen
 ### SwiftUI
 
 In Xcode, choose **File → Add Package Dependencies**, paste
-`https://github.com/santi020k/lumen`, and choose **Exact Version** `2.0.0` for a reproducible
-production build. Use **Up to Next Major Version** from `2.0.0` only when the application accepts
+`https://github.com/santi020k/lumen`, and choose **Exact Version** `2.1.0` for a reproducible
+production build. Use **Up to Next Major Version** from `2.1.0` only when the application accepts
 compatible updates, and reserve `main` for local evaluation. Add the `LumenUI` product to the
 application target. The repository-root `Package.swift` is the public package entry point; no
 CocoaPod or npm package is involved.
@@ -60,12 +60,12 @@ Projects with their own Swift package manifest can declare the dependency direct
 dependencies: [
     .package(
         url: "https://github.com/santi020k/lumen",
-        exact: "2.0.0"
+        exact: "2.1.0"
     )
 ]
 ```
 
-Use `from: "2.0.0"` instead of `exact: "2.0.0"` for a compatible-version policy. Commit
+Use `from: "2.1.0"` instead of `exact: "2.1.0"` for a compatible-version policy. Commit
 `Package.resolved` for application and CI builds and verify that its version and revision match the
 intended release tag. XcodeGen and other deterministic project generators should keep the package
 requirement in their checked-in configuration and regenerate project files from that source.
@@ -141,7 +141,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.santi020k:lumen-compose:2.0.0")
+    implementation("com.santi020k:lumen-compose:2.1.0")
 }
 ```
 
@@ -199,7 +199,7 @@ contracts:
 
 ```kotlin
 dependencies {
-    implementation("com.santi020k:lumen-compose-wear:2.0.0")
+    implementation("com.santi020k:lumen-compose-wear:2.1.0")
 }
 ```
 

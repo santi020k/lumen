@@ -2066,21 +2066,19 @@ const dispatchCopyToast = (
   }))
 }
 
-const getCopyButtonLabel = (
-  state: 'copied' | 'error' | 'idle',
-  copiedLabel: string,
-  errorLabel: string,
-  label: string
-): string => ({ copied: copiedLabel, error: errorLabel, idle: label })[state]
+const resolveCopyText = (target: string | undefined, value: string | undefined): string | undefined => {
+  if (value !== undefined) return value
 
-const copyButtonSizeClassNames = {
-  default: 'ui-button--default-size',
-  icon: 'ui-button--icon',
-  lg: 'ui-button--lg',
-  sm: 'ui-button--sm'
-} as const satisfies Record<NonNullable<CopyButtonProps['size']>, string>
+  if (!target) return undefined
 
-const getCopyButtonContent = (content: ReactNode | undefined, label: string): ReactNode => content ?? label
+  const targetElement = document.querySelector<HTMLElement>(target)
+
+  return targetElement?.innerText ?? targetElement?.textContent ?? undefined
+}
+
+const resolveCopyFeedback = (content: ReactNode | undefined, fallback: string): ReactNode => (
+  content ?? fallback
+)
 
 export const CopyButton = ({
   children = 'Copy',
@@ -2095,7 +2093,6 @@ export const CopyButton = ({
   size = 'default',
   target,
   toast = false,
-  type = 'button',
   value,
   variant = 'outline',
   ...props
@@ -2113,8 +2110,7 @@ export const CopyButton = ({
     if (event.defaultPrevented) return
 
     const button = event.currentTarget
-    const targetElement = target ? document.querySelector<HTMLElement>(target) : null
-    const text = value ?? targetElement?.innerText ?? targetElement?.textContent
+    const text = resolveCopyText(target, value)
 
     try {
       if (text === undefined) throw new Error(errorLabel)
@@ -2147,27 +2143,32 @@ export const CopyButton = ({
     }, resetAfter)
   }
 
-  const accessibleLabel = getCopyButtonLabel(
-    state, copiedLabel, errorLabel, label
-  )
+  const accessibleLabel = {
+    copied: copiedLabel,
+    error: errorLabel,
+    idle: label
+  }[state]
 
   return (
-    <button
+    <Button
       aria-label={accessibleLabel}
-      className={composeClassName(
-        'ui-button', `ui-button--${variant}`, copyButtonSizeClassNames[size], 'ui-copy-button', className
-      )}
+      className={composeClassName('ui-copy-button', className)}
       data-slot="copy-button"
       data-state={state}
       data-ui-copy-button
       onClick={handleClick}
-      type={type}
+      size={size}
+      variant={variant}
       {...props}
     >
       <span aria-hidden="true" data-slot="copy-idle">{children}</span>
-      <span aria-hidden="true" data-slot="copy-copied">{getCopyButtonContent(copiedContent, copiedLabel)}</span>
-      <span aria-hidden="true" data-slot="copy-error">{getCopyButtonContent(errorContent, errorLabel)}</span>
-    </button>
+      <span aria-hidden="true" data-slot="copy-copied">
+        {resolveCopyFeedback(copiedContent, copiedLabel)}
+      </span>
+      <span aria-hidden="true" data-slot="copy-error">
+        {resolveCopyFeedback(errorContent, errorLabel)}
+      </span>
+    </Button>
   )
 }
 

@@ -176,12 +176,15 @@ struct PlaygroundRootView: View {
         TabView(selection: $destination) {
             ForEach(PlaygroundDestination.allCases) { item in
                 destinationView(item)
+                    .background(activeTheme.colors.canvas.ignoresSafeArea())
                     .tabItem {
                         Label(item.title, systemImage: item.systemName)
                     }
                     .tag(item)
             }
         }
+        .toolbarBackground(activeTheme.colors.canvas, for: .tabBar)
+        .toolbarBackground(.visible, for: .tabBar)
         #endif
     }
 

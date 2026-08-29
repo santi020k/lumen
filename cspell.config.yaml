@@ -48,6 +48,7 @@ words:
   - targetable
   - textformat
   - tsdoc
+  - subviews
   - trianglepath
   - affix
   - Affix

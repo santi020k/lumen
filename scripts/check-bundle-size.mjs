@@ -7,7 +7,7 @@ const budgets = [
   { file: 'packages/astro/runtime/controllers/dialogs.ts', gzip: 2_000, raw: 6_000 },
   { file: 'packages/astro/runtime/controllers/document-navigation.ts', gzip: 1_500, raw: 5_000 },
   { file: 'packages/lumen/styles.css', gzip: 28_500, raw: 172_000 },
-  { file: 'packages/react/dist/components.js', gzip: 33_000, raw: 160_000 },
+  { file: 'packages/react/dist/components.js', gzip: 33_100, raw: 160_000 },
   { file: 'packages/react/dist/hooks.js', gzip: 20_000, raw: 100_000 },
   { file: 'packages/elements/dist/define.js', gzip: 43_000, raw: 250_000 }
 ]

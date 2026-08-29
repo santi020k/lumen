@@ -91,6 +91,16 @@ narrow iPhone, with every action fully visible above the bottom safe-area inset.
 would help consumers understand that the component supplies control metrics while the container
 still owns column count and reflow.
 
+PostLens's focused crop editor exposed a semantic mismatch in the same metrics. Medium
+`LumenIconButtonStyle` controls rendered and accepted taps at the intended 44-point size, but XCTest
+reported only the inner SF Symbol's 19–21-point accessibility frame. Applying another 44-point frame
+outside the styled button did not expand the reported frame, while forcing the outer view to become
+an accessibility element removed native Button discoverability. The consumer retained the native
+button semantic, Lumen icon and public style, and verified activation behavior plus the rendered
+composition. Lumen should make the semantic button element own the advertised target rectangle so
+VoiceOver, Switch Control, XCTest, and visual hit testing agree without consumer accessibility
+reconstruction.
+
 The same consumer exposed a full-width composition boundary when migrating its primary `Adjust
 Crop` action. `LumenButton(size: .lg)` was valid inside the SwiftUI `List`, but the initial media
 preview left the 52-point row underneath a persistent `safeAreaInset` export bar. The accessibility
@@ -115,6 +125,11 @@ Acceptance criteria:
 - Add an adaptive-grid example that combines medium buttons, a consumer-defined minimum column
   width, and an explicit 44-point-or-larger target, then verify reflow at narrow iPhone widths and
   accessibility text sizes.
+- Assert the accessibility frame as well as the rendered and interactive frame for every regular-
+  density `LumenIconButton` size and for native buttons using `LumenIconButtonStyle`; medium and
+  small controls must expose at least 44 by 44 points on iOS.
+- Keep the expanded semantic frame on the native Button element. Do not require consumers to hide
+  its children, synthesize a replacement button trait, or duplicate activation actions.
 - Add a SwiftUI media-workspace example with a large button in a `List` above a persistent
   `safeAreaInset` action bar, and assert that the rendered frames do not overlap at compact heights.
 - Document that accessibility-tree presence does not prove a migrated control is visible or

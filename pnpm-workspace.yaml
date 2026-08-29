@@ -64,7 +64,6 @@ catalog:
   react-dom: ^19.2.8
   react-hook-form: ^7.86.0
   react-native: ^0.87.1
-  react-native-safe-area-context: ~5.9.1
   react-native-web: ^0.21.2
   semver: ^7.8.5
   sharp: ^0.35.4

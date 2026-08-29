@@ -266,7 +266,7 @@ import Testing
 @Test func sharedIconCatalogHasStableUniqueNames() {
     let icons = LumenIconName.allCases
 
-    #expect(icons.count == 2_350)
+    #expect(icons.count == 2_363)
     #expect(Set(icons.map(\.rawValue)).count == icons.count)
     #expect(icons.filter { $0.rawValue.hasPrefix("brand:") }.count == 573)
     #expect(icons.contains(.search))
