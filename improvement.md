@@ -124,7 +124,9 @@ row content—a leading label, flexible space, and trailing disclosure icon—wi
 semantic intent, full-width layout, or minimum target. XCTest also reported a nominal 44-point
 accessibility frame as `43.99999999999994`; conformance tests should compare native geometry with a
 subpixel or display-scale tolerance instead of treating floating-point representation as a product
-failure.
+failure. PostLens could migrate its compact Carousel and Layout edit strips by retaining the
+adapter's medium semantic size and adding the explicit target; adopting Lumen semantics should not
+implicitly shrink an established control to `.sm`, especially when the localized label already fits.
 
 Acceptance criteria:
 
@@ -159,6 +161,9 @@ Acceptance criteria:
 - Define a native accessibility-frame assertion tolerance no larger than one physical pixel so a
   nominal 44-point target passes despite platform floating-point rounding, while materially smaller
   targets still fail.
+- Tell adapter consumers to preserve the established visual size during semantic migration and to
+  choose `.sm` only after localized labels and target spacing are verified in the real compact
+  composition.
 - Document when a consumer must retain a native compact control because the surrounding system
   container owns hit testing or presentation.
 
