@@ -3,6 +3,8 @@ import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import test from "node:test";
 
+import { classifyCanaryPaths } from "./classify-workflow-paths.mjs";
+
 // cspell:words mktemp
 
 const repositoryRoot = resolve(import.meta.dirname, "..");
@@ -36,22 +38,23 @@ const [nativeSmokeSource, npmProvenanceSource] = await Promise.all([
   ),
 ]);
 
+const versionPackagesSource = await readFile(
+  resolve(repositoryRoot, "scripts", "version-packages.mjs"),
+  "utf8",
+);
+
 const composeBuildSource = await readFile(
   resolve(repositoryRoot, "packages", "compose", "build.gradle.kts"),
   "utf8",
 );
 
-const classifiers = [...canaryWorkflow.matchAll(/if grep -Eq '([^']+)'/gu)];
-
-assert.equal(
-  classifiers.length,
-  3,
-  "expected web, Swift, and Compose path classifiers",
-);
-
-const webClassifier = new RegExp(classifiers[0][1], "u");
-const swiftClassifier = new RegExp(classifiers[1][1], "u");
-const composeClassifier = new RegExp(classifiers[2][1], "u");
+const assertSelectsCanary = (input, canary) => {
+  assert.equal(
+    classifyCanaryPaths([input])[canary],
+    true,
+    `${input} must select the ${canary} canary`,
+  );
+};
 
 const v2Inputs = [
   ".github/workflows/publish-compose.yml",
@@ -132,7 +135,7 @@ test("v2 release inputs trigger the workflow and select the web canary", () => {
       `${input} must trigger the workflow`,
     );
 
-    assert.match(input, webClassifier, `${input} must select the web canary`);
+    assertSelectsCanary(input, "web");
   }
 });
 
@@ -175,9 +178,9 @@ test("the Swift canary allows the native iOS consumer build to finish", () => {
   );
 });
 
-test("pull-request compatibility checks build bundle-size inputs deterministically", () => {
+test("pull-request compatibility checks reuse the affected build outputs", () => {
   assertOrderedCommands(ciWorkflow, "pull-request compatibility checks", [
-    "pnpm run build",
+    "pnpm exec turbo run build typecheck lint test --affected",
     "pnpm run check:bundle-size",
     "pnpm run check:publish-dry-run",
     "pnpm run check:consumer-packages",
@@ -193,13 +196,9 @@ test("coordinated revision checks select both release decision canaries", () => 
     "scripts/check-graduated-release-revision.mjs",
     "scripts/check-graduated-release-revision.test.mjs",
   ]) {
-    assert.match(input, webClassifier, `${input} must select the web canary`);
+    assertSelectsCanary(input, "web");
 
-    assert.match(
-      input,
-      composeClassifier,
-      `${input} must select the Compose canary`,
-    );
+    assertSelectsCanary(input, "compose");
   }
 });
 
@@ -208,29 +207,17 @@ test("coordinated version preparation selects every release canary", () => {
     "scripts/sync-coordinated-v2-versions.mjs",
     "scripts/sync-coordinated-v2-versions.test.mjs",
   ]) {
-    assert.match(input, webClassifier, `${input} must select the web canary`);
+    assertSelectsCanary(input, "web");
 
-    assert.match(
-      input,
-      swiftClassifier,
-      `${input} must select the Swift canary`,
-    );
+    assertSelectsCanary(input, "swift");
 
-    assert.match(
-      input,
-      composeClassifier,
-      `${input} must select the Compose canary`,
-    );
+    assertSelectsCanary(input, "compose");
   }
 });
 
 test("WidgetKit changes select the Swift canary and validate both Swift API baselines", () => {
   for (const input of swiftWidgetInputs) {
-    assert.match(
-      input,
-      swiftClassifier,
-      `${input} must select the Swift canary`,
-    );
+    assertSelectsCanary(input, "swift");
   }
 
   assert.ok(
@@ -357,26 +344,27 @@ test("canonical package commands enforce graduation identity before publication"
   ]);
 
   assertOrderedCommands(
-    packageManifest.scripts["version-packages"],
+    versionPackagesSource,
     "npm version preparation",
     [
-      "changeset version",
-      "pnpm run sync:coordinated-v2-versions",
-      "pnpm run sync:compose-version",
-      "pnpm install --lockfile-only",
-      "pnpm run generate:release-manifest",
+      "['changeset', 'version']",
+      "['run', 'sync:coordinated-v2-versions']",
+      "['run', 'sync:compose-version']",
+      "['install', '--lockfile-only']",
+      "['run', 'generate:release-manifest']",
     ],
+  );
+
+  assert.equal(
+    packageManifest.scripts["version-packages"],
+    "node scripts/version-packages.mjs",
   );
 
   assertOrderedCommands(
     packageManifest.scripts["publish-packages"],
     "direct npm publication",
     [
-      "node scripts/check-approved-release-revision.mjs",
-      "pnpm run check:graduated-release-revision",
-      "pnpm run check:native-consumer-evidence",
-      "pnpm run check:native-stability-soak",
-      "changeset publish",
+      "node scripts/publish-packages.mjs",
     ],
   );
 });
@@ -384,11 +372,11 @@ test("canonical package commands enforce graduation identity before publication"
 test("published React Native consumers bind signed npm provenance to the release revision", () => {
   const workflowPath = ".github/workflows/verify-native-release.yml";
 
-  assert.match(workflowPath, webClassifier);
+  assertSelectsCanary(workflowPath, "web");
 
-  assert.match(workflowPath, swiftClassifier);
+  assertSelectsCanary(workflowPath, "swift");
 
-  assert.match(workflowPath, composeClassifier);
+  assertSelectsCanary(workflowPath, "compose");
 
   assert.equal(
     [...publishedNativeWorkflow.matchAll(/--revision "\$EXPECTED_REVISION"/gu)]

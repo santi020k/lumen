@@ -1,6 +1,6 @@
 import { spawnSync } from 'node:child_process'
 
-const packages = [
+const allPackages = [
   '@santi020k/lumen',
   '@santi020k/lumen-core',
   '@santi020k/lumen-astro',
@@ -12,6 +12,17 @@ const packages = [
   '@santi020k/lumen-mcp',
   '@santi020k/lumen-tokens'
 ]
+
+const requestedPackagesSource = process.env.LUMEN_RELEASE_PACKAGES
+const packages = requestedPackagesSource ? JSON.parse(requestedPackagesSource) : allPackages
+
+if (!Array.isArray(packages) || packages.some(packageName => typeof packageName !== 'string')) {
+  throw new TypeError('LUMEN_RELEASE_PACKAGES must be a JSON array of package names')
+}
+
+for (const packageName of packages) {
+  if (!allPackages.includes(packageName)) throw new Error(`Unknown publish package ${packageName}`)
+}
 
 for (const packageName of packages) {
   const result = spawnSync(

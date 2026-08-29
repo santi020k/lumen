@@ -124,6 +124,9 @@ words:
   - getprop
   - googlecode
   - unreviewed
+  - undoable
+  - prelocalized
+  - underspecify
   - glassmorphism
   - gitlink
   - gradientdivider

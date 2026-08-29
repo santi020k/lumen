@@ -7,7 +7,7 @@
   "scripts": {
     "predev": "pnpm --filter @santi020k/lumen-playground-react-native run build && pnpm run prepare:native-live-previews",
     "dev": "astro dev",
-    "prebuild": "pnpm --filter @santi020k/lumen-playground-react-native run build && pnpm run prepare:native-live-previews",
+    "prebuild": "pnpm run prepare:native-live-previews",
     "build": "santi-og generate --config scripts/generate-og-images.mjs && astro build",
     "postbuild": "santi-og audit",
     "generate:og": "santi-og generate --config scripts/generate-og-images.mjs",
