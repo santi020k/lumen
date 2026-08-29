@@ -1,7 +1,9 @@
 package com.santi020k.lumen
 
 import androidx.activity.ComponentActivity
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.lightColorScheme
@@ -27,6 +29,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.tryPerformAccessibilityChecks
+import androidx.compose.ui.unit.dp
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
@@ -81,6 +84,25 @@ class AccessibilityTest {
 
         composeRule.enableAccessibilityChecks()
         composeRule.onRoot().tryPerformAccessibilityChecks()
+    }
+
+    @Test
+    fun bannerRendersAtCompactWidthWithoutIntrinsicMeasurement() {
+        composeRule.setContent {
+            LumenTheme {
+                Box(modifier = Modifier.width(320.dp)) {
+                    LumenBanner(
+                        title = "Native structured feedback",
+                        description = "Dismiss this notice to exercise local state.",
+                        onDismiss = {}
+                    )
+                }
+            }
+        }
+
+        composeRule.onNodeWithText("Native structured feedback").assertExists()
+        composeRule.onNodeWithText("Dismiss this notice to exercise local state.").assertExists()
+        composeRule.onNodeWithText("Dismiss").assertHasClickAction()
     }
 
     @Test

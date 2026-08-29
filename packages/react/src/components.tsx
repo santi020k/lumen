@@ -52,6 +52,7 @@ import {
   hasLumenPieData,
   type LumenBarChartLayout,
   type LumenChartDatum,
+  type LumenChartLabels,
   type LumenChartOrientation,
   type LumenChartScaleType,
   type LumenChartSeries,
@@ -77,6 +78,7 @@ import {
   type LumenRangeDatum,
   type LumenTabsChangeDetail,
   normalizeLumenFormErrors,
+  resolveLumenChartLabels,
   resolveLumenChartTone,
   resolveLumenPhoneNumber,
   scaleLumenChartValue,
@@ -913,11 +915,12 @@ export const Chart = ({
 )
 
 interface ChartLegendProps {
+  label?: string
   series: readonly LumenChartSeries[]
 }
 
-const ChartLegend = ({ series }: ChartLegendProps) => (
-  <ul aria-label="Chart legend" className="ui-chart__legend">
+const ChartLegend = ({ label = 'Chart legend', series }: ChartLegendProps) => (
+  <ul aria-label={label} className="ui-chart__legend">
     {series.map((item, index) => (
       <li
         className={getLumenChartToneClassName(item.tone, index)}
@@ -934,6 +937,7 @@ interface ChartDataTableProps {
   categories: readonly (number | string)[]
   formatCategory?: (category: number | string) => string
   formatValue?: (value: number) => string
+  labels?: Partial<LumenChartLabels>
   series: readonly LumenChartSeries[]
 }
 
@@ -941,49 +945,54 @@ const ChartDataTable = ({
   categories,
   formatCategory = String,
   formatValue = String,
+  labels,
   series
-}: ChartDataTableProps) => (
-  <details className="ui-chart__data">
-    <summary>View chart data</summary>
-    <div>
-      <table>
-        <thead>
-          <tr>
-            <th scope="col">Category</th>
-            {series.map(item => (
-              <th key={item.id} scope="col">
-                {item.label}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {categories.map(category => (
-            <tr key={getChartCategoryKey(category)}>
-              <th scope="row">
-                {series
-                  .flatMap(item => item.data)
-                  .find(datum => datum.x === category)?.xLabel ??
-                  formatCategory(category)}
-              </th>
-              {series.map(item => {
-                const datum = item.data.find(
-                  candidate => candidate.x === category
-                )
+}: ChartDataTableProps) => {
+  const resolvedLabels = resolveLumenChartLabels(labels)
 
-                return (
-                  <td key={item.id}>
-                    {datum?.label ?? formatReactChartTableValue(datum?.y, formatValue)}
-                  </td>
-                )
-              })}
+  return (
+    <details className="ui-chart__data">
+      <summary>{resolvedLabels.viewData}</summary>
+      <div>
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">{resolvedLabels.category}</th>
+              {series.map(item => (
+                <th key={item.id} scope="col">
+                  {item.label}
+                </th>
+              ))}
             </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  </details>
-)
+          </thead>
+          <tbody>
+            {categories.map(category => (
+              <tr key={getChartCategoryKey(category)}>
+                <th scope="row">
+                  {series
+                    .flatMap(item => item.data)
+                    .find(datum => datum.x === category)?.xLabel ??
+                    formatCategory(category)}
+                </th>
+                {series.map(item => {
+                  const datum = item.data.find(
+                    candidate => candidate.x === category
+                  )
+
+                  return (
+                    <td key={item.id}>
+                      {datum?.label ?? formatReactChartTableValue(datum?.y, formatValue, resolvedLabels.notAvailable)}
+                    </td>
+                  )
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </details>
+  )
+}
 
 const formatChartPercentage = (percentage: number) => new Intl.NumberFormat(undefined, {
   maximumFractionDigits: percentage < 0.01 ? 1 : 0,
@@ -1052,6 +1061,7 @@ export interface BarChartProps extends Omit<ChartProps, 'children'> {
   formatCategory?: (category: number | string) => string
   formatValue?: (value: number) => string
   layout?: LumenBarChartLayout
+  labels?: Partial<LumenChartLabels>
   orientation?: LumenChartOrientation
   series?: readonly LumenChartSeries[]
   showLegend?: boolean
@@ -1062,10 +1072,11 @@ export interface BarChartProps extends Omit<ChartProps, 'children'> {
 export const BarChart = ({
   categoryWidth,
   className,
-  emptyLabel = 'No chart data available.',
+  emptyLabel,
   formatCategory = String,
   formatValue = String,
   layout = 'grouped',
+  labels,
   orientation = 'vertical',
   series = emptyChartSeries,
   showLegend = series.length > 1,
@@ -1073,6 +1084,8 @@ export const BarChart = ({
   summary,
   ...props
 }: BarChartProps) => {
+  const resolvedLabels = resolveLumenChartLabels(labels)
+
   const geometry = createLumenBarGeometry(series, {
     ...(categoryWidth === undefined ? {} : { categoryWidth }),
     layout,
@@ -1096,13 +1109,13 @@ export const BarChart = ({
   return (
     <Chart
       className={composeClassName('ui-bar-chart', className)}
-      summary={summary ?? formatLumenChartSummary(series, formatValue)}
+      summary={summary ?? formatLumenChartSummary(series, formatValue, resolvedLabels)}
       {...props}
     >
-      {showLegend && hasData && <ChartLegend series={series} />}
+      {showLegend && hasData && <ChartLegend label={resolvedLabels.chartLegend} series={series} />}
       {!hasData && (
         <p className="ui-chart__empty" role="status">
-          {emptyLabel}
+          {emptyLabel ?? resolvedLabels.empty}
         </p>
       )}
       <div className="ui-chart__plot" hidden={!hasData}>
@@ -1187,6 +1200,7 @@ export const BarChart = ({
           categories={categories}
           formatCategory={formatCategory}
           formatValue={formatValue}
+          labels={resolvedLabels}
           series={series}
         />
       )}
@@ -1199,6 +1213,7 @@ export interface LineChartProps extends Omit<ChartProps, 'children'> {
   emptyLabel?: ReactNode
   formatCategory?: (category: number | string) => string
   formatValue?: (value: number) => string
+  labels?: Partial<LumenChartLabels>
   markers?: 'all' | 'auto' | 'none' | boolean | number
   referenceValue?: number
   series?: readonly LumenChartSeries[]
@@ -1222,9 +1237,10 @@ const getLineChartMarkerStep = (
 export const LineChart = ({
   area = false,
   className,
-  emptyLabel = 'No chart data available.',
+  emptyLabel,
   formatCategory = String,
   formatValue = String,
+  labels,
   markers = 'auto',
   referenceValue,
   series = emptyChartSeries,
@@ -1233,6 +1249,7 @@ export const LineChart = ({
   summary,
   ...props
 }: LineChartProps) => {
+  const resolvedLabels = resolveLumenChartLabels(labels)
   const width = 640
   const height = 320
   const padding = 44
@@ -1271,13 +1288,13 @@ export const LineChart = ({
   return (
     <Chart
       className={composeClassName('ui-line-chart', className)}
-      summary={summary ?? formatLumenChartSummary(series, formatValue)}
+      summary={summary ?? formatLumenChartSummary(series, formatValue, resolvedLabels)}
       {...props}
     >
-      {showLegend && hasData && <ChartLegend series={series} />}
+      {showLegend && hasData && <ChartLegend label={resolvedLabels.chartLegend} series={series} />}
       {!hasData && (
         <p className="ui-chart__empty" role="status">
-          {emptyLabel}
+          {emptyLabel ?? resolvedLabels.empty}
         </p>
       )}
       <div className="ui-chart__plot" hidden={!hasData}>
@@ -1379,6 +1396,7 @@ export const LineChart = ({
           categories={categories}
           formatCategory={formatCategory}
           formatValue={formatValue}
+          labels={resolvedLabels}
           series={series}
         />
       )}
@@ -1389,6 +1407,7 @@ export const LineChart = ({
 export interface PieChartProps extends Omit<ChartProps, 'children'> {
   centerLabel?: ReactNode
   centerValue?: ReactNode
+  labels?: Partial<LumenChartLabels>
   series?: LumenChartSeries
   showLegend?: boolean
   showTable?: boolean
@@ -1400,6 +1419,7 @@ export const PieChart = ({
   centerLabel,
   centerValue,
   className,
+  labels,
   series = emptyPieSeries,
   showLegend = true,
   showTable = true,
@@ -1408,6 +1428,7 @@ export const PieChart = ({
   variant = 'donut',
   ...props
 }: PieChartProps) => {
+  const resolvedLabels = resolveLumenChartLabels(labels)
   const geometry = createLumenPieGeometry(series.data, { variant })
   const hasData = hasLumenPieData(series.data)
 
@@ -1424,11 +1445,11 @@ export const PieChart = ({
       className={composeClassName(
         'ui-pie-chart', getLumenPieChartVariantClassName(variant), className
       )}
-      summary={summary ?? formatLumenChartSummary([renderedSeries], valueFormatter)}
+      summary={summary ?? formatLumenChartSummary([renderedSeries], valueFormatter, resolvedLabels)}
       {...props}
     >
       {showLegend && hasData && (
-        <ul aria-label="Chart legend" className="ui-chart__legend">
+        <ul aria-label={resolvedLabels.chartLegend} className="ui-chart__legend">
           {geometry.slices.map(slice => (
             <li
               className={getLumenChartToneClassName(slice.tone)}
@@ -1442,7 +1463,7 @@ export const PieChart = ({
       )}
       {!hasData && (
         <p className="ui-chart__empty" role="status">
-          No chart data available.
+          {resolvedLabels.empty}
         </p>
       )}
       <div className="ui-chart__plot ui-pie-chart__plot" hidden={!hasData}>
@@ -1482,13 +1503,13 @@ export const PieChart = ({
       </div>
       {showTable && hasData && (
         <details className="ui-chart__data">
-          <summary>View chart data</summary>
+          <summary>{resolvedLabels.viewData}</summary>
           <div>
             <table>
               <thead>
                 <tr>
-                  <th scope="col">Category</th>
-                  <th scope="col">Value</th>
+                  <th scope="col">{resolvedLabels.category}</th>
+                  <th scope="col">{resolvedLabels.value}</th>
                   <th scope="col">Share</th>
                 </tr>
               </thead>
@@ -1511,6 +1532,7 @@ export const PieChart = ({
 
 export interface ScatterChartProps extends Omit<ChartProps, 'children'> {
   formatValue?: (value: number) => string
+  labels?: Partial<LumenChartLabels>
   series?: readonly LumenChartSeries[]
   showLegend?: boolean
   showTable?: boolean
@@ -1520,6 +1542,7 @@ export interface ScatterChartProps extends Omit<ChartProps, 'children'> {
 export const ScatterChart = ({
   className,
   formatValue = String,
+  labels,
   series = emptyChartSeries,
   showLegend = series.length > 1,
   showTable = true,
@@ -1527,6 +1550,7 @@ export const ScatterChart = ({
   xScale = 'linear',
   ...props
 }: ScatterChartProps) => {
+  const resolvedLabels = resolveLumenChartLabels(labels)
   const geometry = createLumenScatterGeometry(series, { xScale })
 
   const renderedSeries = series.map(item => ({
@@ -1537,9 +1561,9 @@ export const ScatterChart = ({
   const hasData = geometry.points.length > 0
 
   return (
-    <Chart className={composeClassName('ui-scatter-chart', className)} summary={summary ?? formatLumenChartSummary(renderedSeries, formatValue)} {...props}>
-      {showLegend && hasData && <ChartLegend series={series} />}
-      {!hasData && <p className="ui-chart__empty" role="status">No chart data available.</p>}
+    <Chart className={composeClassName('ui-scatter-chart', className)} summary={summary ?? formatLumenChartSummary(renderedSeries, formatValue, resolvedLabels)} {...props}>
+      {showLegend && hasData && <ChartLegend label={resolvedLabels.chartLegend} series={series} />}
+      {!hasData && <p className="ui-chart__empty" role="status">{resolvedLabels.empty}</p>}
       <div className="ui-chart__plot" hidden={!hasData}>
         <svg aria-hidden="true" viewBox={`0 0 ${geometry.width} ${geometry.height}`}>
           <g className="ui-scatter-chart__marks">
@@ -1553,15 +1577,15 @@ export const ScatterChart = ({
       </div>
       {showTable && hasData && (
         <details className="ui-chart__data">
-          <summary>View chart data</summary>
+          <summary>{resolvedLabels.viewData}</summary>
           <div>
             <table>
               <thead>
                 <tr>
-                  <th scope="col">X</th>
-                  <th scope="col">Series</th>
-                  <th scope="col">Value</th>
-                  <th scope="col">Size</th>
+                  <th scope="col">{resolvedLabels.x}</th>
+                  <th scope="col">{resolvedLabels.series}</th>
+                  <th scope="col">{resolvedLabels.value}</th>
+                  <th scope="col">{resolvedLabels.size}</th>
                 </tr>
               </thead>
               <tbody>
@@ -1571,7 +1595,7 @@ export const ScatterChart = ({
                     <td>{point.seriesLabel}</td>
                     <td>{point.label ?? formatValue(point.y ?? 0)}</td>
                     <td>
-                      {formatReactChartTableValue(point.size, formatValue)}
+                      {formatReactChartTableValue(point.size, formatValue, resolvedLabels.notAvailable)}
                     </td>
                   </tr>
                 ))}
@@ -1587,6 +1611,7 @@ export const ScatterChart = ({
 export interface HeatmapProps extends Omit<ChartProps, 'children'> {
   data?: readonly LumenHeatmapDatum[]
   formatValue?: (value: number) => string
+  labels?: Partial<LumenChartLabels>
   showTable?: boolean
 }
 
@@ -1594,17 +1619,19 @@ export const Heatmap = ({
   className,
   data = emptyHeatmapData,
   formatValue = String,
+  labels,
   showTable = true,
   summary,
   ...props
 }: HeatmapProps) => {
+  const resolvedLabels = resolveLumenChartLabels(labels)
   const geometry = createLumenHeatmapGeometry(data)
   const availableCells = geometry.cells.filter(cell => cell.value !== null && Number.isFinite(cell.value))
   const hasData = availableCells.length > 0
 
   return (
-    <Chart className={composeClassName('ui-heatmap', className)} summary={summary ?? `${availableCells.length} available heatmap cells.`} {...props}>
-      {!hasData && <p className="ui-chart__empty" role="status">No chart data available.</p>}
+    <Chart className={composeClassName('ui-heatmap', className)} summary={summary ?? resolvedLabels.formatHeatmapSummary(availableCells.length)} {...props}>
+      {!hasData && <p className="ui-chart__empty" role="status">{resolvedLabels.empty}</p>}
       <div className="ui-chart__plot" hidden={!hasData}>
         <svg aria-hidden="true" viewBox={`0 0 ${geometry.width} ${geometry.height}`}>
           <g className="ui-heatmap__cells">
@@ -1614,14 +1641,14 @@ export const Heatmap = ({
       </div>
       {showTable && (
         <details className="ui-chart__data">
-          <summary>View chart data</summary>
+          <summary>{resolvedLabels.viewData}</summary>
           <div>
             <table>
               <thead>
                 <tr>
-                  <th scope="col">Column</th>
-                  <th scope="col">Row</th>
-                  <th scope="col">Value</th>
+                  <th scope="col">{resolvedLabels.column}</th>
+                  <th scope="col">{resolvedLabels.row}</th>
+                  <th scope="col">{resolvedLabels.value}</th>
                 </tr>
               </thead>
               <tbody>
@@ -1629,7 +1656,13 @@ export const Heatmap = ({
                   <tr key={cell.id ?? `${getChartCategoryKey(cell.x)}:${getChartCategoryKey(cell.y)}`}>
                     <th scope="row">{cell.xLabel ?? cell.x}</th>
                     <td>{cell.yLabel ?? cell.y}</td>
-                    <td>{cell.label ?? (cell.value === null || !Number.isFinite(cell.value) ? 'Not available' : formatValue(cell.value))}</td>
+                    <td>
+                      {cell.label ?? (
+                        cell.value === null || !Number.isFinite(cell.value) ?
+                          resolvedLabels.notAvailable :
+                          formatValue(cell.value)
+                      )}
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -1644,6 +1677,7 @@ export const Heatmap = ({
 export interface RangeChartProps extends Omit<ChartProps, 'children'> {
   data?: readonly LumenRangeDatum[]
   formatValue?: (value: number) => string
+  labels?: Partial<LumenChartLabels>
   showTable?: boolean
   tone?: LumenChartTone
 }
@@ -1652,19 +1686,21 @@ export const RangeChart = ({
   className,
   data = emptyRangeData,
   formatValue = String,
+  labels,
   showTable = true,
   summary,
   tone = 'series-1',
   ...props
 }: RangeChartProps) => {
+  const resolvedLabels = resolveLumenChartLabels(labels)
   const width = 640
   const height = 320
   const padding = 44
   const geometry = createLumenRangeGeometry(data, { height, padding, width })
 
   return (
-    <Chart className={composeClassName('ui-range-chart', getLumenChartToneClassName(tone), className)} summary={summary ?? (geometry.points.length === 0 ? 'No chart data available.' : `${geometry.points.length} available ranges.`)} {...props}>
-      {geometry.points.length === 0 && <p className="ui-chart__empty" role="status">No chart data available.</p>}
+    <Chart className={composeClassName('ui-range-chart', getLumenChartToneClassName(tone), className)} summary={summary ?? resolvedLabels.formatRangeSummary(geometry.points.length)} {...props}>
+      {geometry.points.length === 0 && <p className="ui-chart__empty" role="status">{resolvedLabels.empty}</p>}
       <div className="ui-chart__plot" hidden={geometry.points.length === 0}>
         <svg aria-hidden="true" viewBox={`0 0 ${width} ${height}`}>
           <path className="ui-range-chart__area" d={geometry.areaPath} />
@@ -1684,22 +1720,30 @@ export const RangeChart = ({
       </div>
       {showTable && (
         <details className="ui-chart__data">
-          <summary>View chart data</summary>
+          <summary>{resolvedLabels.viewData}</summary>
           <div>
             <table>
               <thead>
                 <tr>
-                  <th scope="col">Category</th>
-                  <th scope="col">Low</th>
-                  <th scope="col">High</th>
+                  <th scope="col">{resolvedLabels.category}</th>
+                  <th scope="col">{resolvedLabels.low}</th>
+                  <th scope="col">{resolvedLabels.high}</th>
                 </tr>
               </thead>
               <tbody>
                 {data.map(item => (
                   <tr key={item.id ?? getChartCategoryKey(item.x)}>
                     <th scope="row">{item.xLabel ?? item.x}</th>
-                    <td>{item.low === null || !Number.isFinite(item.low) ? 'Not available' : formatValue(item.low)}</td>
-                    <td>{item.high === null || !Number.isFinite(item.high) ? 'Not available' : formatValue(item.high)}</td>
+                    <td>
+                      {item.low === null || !Number.isFinite(item.low) ?
+                        resolvedLabels.notAvailable :
+                        formatValue(item.low)}
+                    </td>
+                    <td>
+                      {item.high === null || !Number.isFinite(item.high) ?
+                        resolvedLabels.notAvailable :
+                        formatValue(item.high)}
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -1713,6 +1757,7 @@ export const RangeChart = ({
 
 export interface ComboChartProps extends Omit<ChartProps, 'children'> {
   formatValue?: (value: number) => string
+  labels?: Partial<LumenChartLabels>
   series?: readonly LumenComboSeries[]
   showLegend?: boolean
   showTable?: boolean
@@ -1721,12 +1766,14 @@ export interface ComboChartProps extends Omit<ChartProps, 'children'> {
 export const ComboChart = ({
   className,
   formatValue = String,
+  labels,
   series = emptyComboSeries,
   showLegend = true,
   showTable = true,
   summary,
   ...props
 }: ComboChartProps) => {
+  const resolvedLabels = resolveLumenChartLabels(labels)
   const width = 640
   const height = 320
   const padding = 44
@@ -1778,9 +1825,9 @@ export const ComboChart = ({
   const hasData = hasLumenChartData(series)
 
   return (
-    <Chart className={composeClassName('ui-combo-chart', className)} summary={summary ?? formatLumenChartSummary(series, formatValue)} {...props}>
-      {showLegend && hasData && <ChartLegend series={series} />}
-      {!hasData && <p className="ui-chart__empty" role="status">No chart data available.</p>}
+    <Chart className={composeClassName('ui-combo-chart', className)} summary={summary ?? formatLumenChartSummary(series, formatValue, resolvedLabels)} {...props}>
+      {showLegend && hasData && <ChartLegend label={resolvedLabels.chartLegend} series={series} />}
+      {!hasData && <p className="ui-chart__empty" role="status">{resolvedLabels.empty}</p>}
       <div className="ui-chart__plot" hidden={!hasData}>
         <svg aria-hidden="true" viewBox={`0 0 ${width} ${height}`}>
           <g className="ui-bar-chart__marks">{bars.marks.map(mark => <rect className={getLumenChartToneClassName(mark.tone)} height={mark.height} key={`${mark.seriesId}:${getChartCategoryKey(mark.category)}`} rx="4" width={mark.width} x={mark.x} y={mark.y}><title>{`${mark.seriesLabel}: ${formatValue(mark.value)}`}</title></rect>)}</g>
@@ -1809,7 +1856,14 @@ export const ComboChart = ({
           })}
         </svg>
       </div>
-      {showTable && hasData && <ChartDataTable categories={categories} formatValue={formatValue} series={series} />}
+      {showTable && hasData && (
+        <ChartDataTable
+          categories={categories}
+          formatValue={formatValue}
+          labels={resolvedLabels}
+          series={series}
+        />
+      )}
     </Chart>
   )
 }
@@ -1987,13 +2041,17 @@ export const Code = ({
 }
 
 export interface CopyButtonProps extends ComponentPropsWithoutRef<'button'> {
+  copiedContent?: ReactNode
   copiedLabel?: string
+  errorContent?: ReactNode
   errorLabel?: string
   label?: string
   resetAfter?: number
   target?: string
   toast?: boolean
   value?: string
+  variant?: 'default' | 'destructive' | 'ghost' | 'link' | 'outline' | 'secondary'
+  size?: 'default' | 'icon' | 'lg' | 'sm'
 }
 
 const dispatchCopyToast = (
@@ -2008,25 +2066,35 @@ const dispatchCopyToast = (
   }))
 }
 
-const getCopyButtonLabel = (
-  state: 'copied' | 'error' | 'idle',
-  copiedLabel: string,
-  errorLabel: string,
-  label: string
-): string => ({ copied: copiedLabel, error: errorLabel, idle: label })[state]
+const resolveCopyText = (target: string | undefined, value: string | undefined): string | undefined => {
+  if (value !== undefined) return value
+
+  if (!target) return undefined
+
+  const targetElement = document.querySelector<HTMLElement>(target)
+
+  return targetElement?.innerText ?? targetElement?.textContent ?? undefined
+}
+
+const resolveCopyFeedback = (content: ReactNode | undefined, fallback: string): ReactNode => (
+  content ?? fallback
+)
 
 export const CopyButton = ({
   children = 'Copy',
   className,
+  copiedContent,
   copiedLabel = 'Copied to clipboard',
+  errorContent,
   errorLabel = 'Could not copy to clipboard',
   label = 'Copy to clipboard',
   onClick,
   resetAfter = 2000,
+  size = 'default',
   target,
   toast = false,
-  type = 'button',
   value,
+  variant = 'outline',
   ...props
 }: CopyButtonProps) => {
   const [state, setState] = useState<'copied' | 'error' | 'idle'>('idle')
@@ -2042,8 +2110,7 @@ export const CopyButton = ({
     if (event.defaultPrevented) return
 
     const button = event.currentTarget
-    const targetElement = target ? document.querySelector<HTMLElement>(target) : null
-    const text = value ?? targetElement?.innerText ?? targetElement?.textContent
+    const text = resolveCopyText(target, value)
 
     try {
       if (text === undefined) throw new Error(errorLabel)
@@ -2076,24 +2143,32 @@ export const CopyButton = ({
     }, resetAfter)
   }
 
-  const accessibleLabel = getCopyButtonLabel(
-    state, copiedLabel, errorLabel, label
-  )
+  const accessibleLabel = {
+    copied: copiedLabel,
+    error: errorLabel,
+    idle: label
+  }[state]
 
   return (
-    <button
+    <Button
       aria-label={accessibleLabel}
-      className={composeClassName(
-        'ui-button ui-button--outline ui-copy-button', className
-      )}
+      className={composeClassName('ui-copy-button', className)}
+      data-slot="copy-button"
       data-state={state}
       data-ui-copy-button
       onClick={handleClick}
-      type={type}
+      size={size}
+      variant={variant}
       {...props}
     >
-      {children}
-    </button>
+      <span aria-hidden="true" data-slot="copy-idle" hidden={state !== 'idle'}>{children}</span>
+      <span aria-hidden="true" data-slot="copy-copied" hidden={state !== 'copied'}>
+        {resolveCopyFeedback(copiedContent, copiedLabel)}
+      </span>
+      <span aria-hidden="true" data-slot="copy-error" hidden={state !== 'error'}>
+        {resolveCopyFeedback(errorContent, errorLabel)}
+      </span>
+    </Button>
   )
 }
 

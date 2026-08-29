@@ -9,6 +9,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.selection.toggleable
@@ -21,6 +24,7 @@ import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -241,12 +245,18 @@ fun LumenTabs(
 ) {
     val colors = LocalLumenTheme.current.colors
     val selectedLabel = options.firstOrNull { it.value == value }?.label ?: value
+    val selectedIndex = options.indexOfFirst { it.value == value }
+    val tabListState = rememberLazyListState()
+
+    LaunchedEffect(selectedIndex) {
+        if (selectedIndex >= 0) tabListState.animateScrollToItem(selectedIndex)
+    }
 
     Column(
         modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(LumenSpacing.Md)
     ) {
-        Row(
+        LazyRow(
             modifier = Modifier
                 .fillMaxWidth()
                 .drawBehind {
@@ -260,9 +270,10 @@ fun LumenTabs(
                 .selectableGroup()
                 .semantics { contentDescription = label },
             horizontalArrangement = Arrangement.spacedBy(LumenSpacing.Xs),
+            state = tabListState,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            options.forEach { option ->
+            itemsIndexed(options, key = { _, option -> option.value }) { _, option ->
                 val selected = option.value == value
 
                 Box(

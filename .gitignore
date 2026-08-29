@@ -18,6 +18,7 @@ out/
 .gradle/
 .build/
 .swiftpm/
+apps/docs/native-previews/apple/Package.resolved
 *.tsbuildinfo
 
 # Tool-specific caches.

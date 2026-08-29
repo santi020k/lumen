@@ -6,6 +6,7 @@ import { isSafeRegistryFilePath } from './registry-path.js'
 import type {
   LumenRegistry,
   LumenRegistryComponent,
+  LumenRegistryComponentContract,
   LumenRegistryEntry,
   LumenRegistryFile,
   LumenRegistryItem,
@@ -17,6 +18,7 @@ export { lumenRegistry }
 export type {
   LumenRegistry,
   LumenRegistryComponent,
+  LumenRegistryComponentContract,
   LumenRegistryEntry,
   LumenRegistryFile,
   LumenRegistryItem,

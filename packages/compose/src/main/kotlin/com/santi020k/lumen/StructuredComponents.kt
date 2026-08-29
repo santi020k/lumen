@@ -5,16 +5,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -27,6 +25,8 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.heading
@@ -35,7 +35,6 @@ import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 
 enum class LumenBannerVariant {
@@ -70,6 +69,17 @@ enum class LumenErrorStateLayout {
     Compact,
     Default,
     Page
+}
+
+enum class LumenEmptyStateLayout {
+    Compact,
+    Default,
+    Page
+}
+
+enum class LumenStatDensity {
+    Compact,
+    Default
 }
 
 internal fun lumenErrorStateLiveRegion(
@@ -129,6 +139,7 @@ fun LumenEmptyState(
     title: String,
     modifier: Modifier = Modifier,
     description: String? = null,
+    layout: LumenEmptyStateLayout = LumenEmptyStateLayout.Default,
     graphic: (@Composable () -> Unit)? = null,
     actions: (@Composable () -> Unit)? = null
 ) {
@@ -137,10 +148,12 @@ fun LumenEmptyState(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .widthIn(max = 440.dp)
-            .padding(LumenSpacing.Xl),
+            .widthIn(max = if (layout == LumenEmptyStateLayout.Page) 520.dp else 440.dp)
+            .padding(if (layout == LumenEmptyStateLayout.Compact) LumenSpacing.Lg else LumenSpacing.Xl),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(LumenSpacing.Lg)
+        verticalArrangement = Arrangement.spacedBy(
+            if (layout == LumenEmptyStateLayout.Compact) LumenSpacing.Md else LumenSpacing.Lg
+        )
     ) {
         if (graphic != null) {
             Box(
@@ -275,7 +288,7 @@ fun LumenListRow(
             .heightIn(min = 56.dp)
             .padding(horizontal = LumenSpacing.Lg, vertical = LumenSpacing.Md),
         horizontalArrangement = Arrangement.spacedBy(LumenSpacing.Md),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.Top
     ) {
         leading?.invoke()
 
@@ -309,28 +322,20 @@ fun LumenBanner(
         shape = shape,
         border = BorderStroke(1.dp, palette.border)
     ) {
-        Row(
-            modifier = Modifier.height(IntrinsicSize.Min)
+        Box(
+            modifier = Modifier.drawBehind {
+                drawRect(
+                    color = palette.accent,
+                    size = Size(width = 3.dp.toPx(), height = size.height)
+                )
+            }
         ) {
-            Box(
+            BoxWithConstraints(
                 modifier = Modifier
-                    .width(3.dp)
-                    .fillMaxHeight()
-                    .background(palette.accent)
-            )
-            Row(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(horizontal = LumenSpacing.Lg, vertical = LumenSpacing.Md),
-                horizontalArrangement = Arrangement.spacedBy(LumenSpacing.Md),
-                verticalAlignment = Alignment.CenterVertically
+                    .padding(horizontal = LumenSpacing.Lg, vertical = LumenSpacing.Md)
             ) {
-                graphic?.invoke()
-
-                Column(
-                    modifier = Modifier.weight(1f),
-                    verticalArrangement = Arrangement.spacedBy(LumenSpacing.Xs)
-                ) {
+                val message: @Composable () -> Unit = {
+                    Column(verticalArrangement = Arrangement.spacedBy(LumenSpacing.Xs)) {
                     Text(
                         text = title,
                         color = colors.ink,
@@ -345,12 +350,30 @@ fun LumenBanner(
                         )
                     }
                 }
+                }
 
-                actions?.invoke()
-
-                if (onDismiss != null) {
-                    TextButton(onClick = onDismiss) {
-                        Text(dismissLabel, color = palette.accent)
+                if (maxWidth < 520.dp) {
+                    Column(verticalArrangement = Arrangement.spacedBy(LumenSpacing.Md)) {
+                        Row(horizontalArrangement = Arrangement.spacedBy(LumenSpacing.Md)) {
+                            graphic?.invoke()
+                            Box(modifier = Modifier.weight(1f)) { message() }
+                        }
+                        actions?.invoke()
+                        if (onDismiss != null) {
+                            TextButton(onClick = onDismiss) { Text(dismissLabel, color = palette.accent) }
+                        }
+                    }
+                } else {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(LumenSpacing.Md),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        graphic?.invoke()
+                        Box(modifier = Modifier.weight(1f)) { message() }
+                        actions?.invoke()
+                        if (onDismiss != null) {
+                            TextButton(onClick = onDismiss) { Text(dismissLabel, color = palette.accent) }
+                        }
                     }
                 }
             }
@@ -364,6 +387,7 @@ fun LumenStat(
     value: String,
     modifier: Modifier = Modifier,
     detail: String? = null,
+    density: LumenStatDensity = LumenStatDensity.Default,
     tone: LumenMetricTone = LumenMetricTone.Brand,
     graphic: (@Composable () -> Unit)? = null
 ) {
@@ -376,15 +400,21 @@ fun LumenStat(
             .semantics(mergeDescendants = true) { contentDescription = accessibleText }
             .background(accent.copy(alpha = 0.06f), RoundedCornerShape(LumenRadius.Md))
             .border(1.dp, accent.copy(alpha = 0.18f), RoundedCornerShape(LumenRadius.Md))
-            .padding(LumenSpacing.Lg),
-        verticalArrangement = Arrangement.spacedBy(LumenSpacing.Sm)
+            .padding(if (density == LumenStatDensity.Compact) LumenSpacing.Md else LumenSpacing.Lg),
+        verticalArrangement = Arrangement.spacedBy(
+            if (density == LumenStatDensity.Compact) LumenSpacing.Xs else LumenSpacing.Sm
+        )
     ) {
         graphic?.invoke()
 
         Text(
             text = value,
             color = colors.ink,
-            style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold)
+            style = (if (density == LumenStatDensity.Compact) {
+                MaterialTheme.typography.titleMedium
+            } else {
+                MaterialTheme.typography.headlineSmall
+            }).copy(fontWeight = FontWeight.Bold)
         )
         Text(
             text = label,
@@ -467,8 +497,6 @@ fun LumenStatusBar(
             text = message,
             modifier = Modifier.weight(1f),
             color = colors.inkSoft,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
             style = MaterialTheme.typography.bodySmall
         )
         trailing?.invoke()

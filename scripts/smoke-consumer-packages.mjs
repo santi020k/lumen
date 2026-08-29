@@ -264,15 +264,20 @@ assert.ok(foundationConstructors.has('lumen-visually-hidden'))
   await writeFile(
     join(consumerDirectory, 'src', 'pages', 'index.astro'),
     `---
-import { Badge, Card } from '@santi020k/lumen-astro'
+import { Badge, Card, CopyButton, RevealGroup, ScrollReveal, Stat } from '@santi020k/lumen-astro'
+import UIPrimitives from '@santi020k/lumen-astro/runtime'
 import '@santi020k/lumen-astro/styles.css'
 import '@santi020k/lumen-elements/styles.css'
 ---
 
 <Card>
   <Badge>Ready</Badge>
+  <CopyButton value="Packed copy value" />
+  <RevealGroup as="ul"><ScrollReveal as="li"><Stat label="Checks" value="4" /></ScrollReveal></RevealGroup>
   <p>Packed Astro consumer</p>
 </Card>
+
+<UIPrimitives />
 
 <lumen-card>
   <lumen-badge variant="success">Granular elements ready</lumen-badge>

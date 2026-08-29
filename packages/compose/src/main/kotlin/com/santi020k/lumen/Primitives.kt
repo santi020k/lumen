@@ -142,7 +142,8 @@ enum class LumenButtonIntent {
     Danger,
     Primary,
     Quiet,
-    Secondary
+    Secondary,
+    Success
 }
 
 enum class LumenControlSize {
@@ -227,7 +228,7 @@ fun LumenIconButton(
         colors = IconButtonDefaults.iconButtonColors(
             containerColor = palette.background,
             contentColor = palette.foreground,
-            disabledContainerColor = palette.background.copy(alpha = 0.52f),
+            disabledContainerColor = lumenDisabledButtonContainerColor(palette.background),
             disabledContentColor = palette.foreground.copy(alpha = 0.52f)
         )
     ) {
@@ -264,7 +265,7 @@ fun LumenIconButton(
         colors = IconButtonDefaults.iconButtonColors(
             containerColor = palette.background,
             contentColor = palette.foreground,
-            disabledContainerColor = palette.background.copy(alpha = 0.52f),
+            disabledContainerColor = lumenDisabledButtonContainerColor(palette.background),
             disabledContentColor = palette.foreground.copy(alpha = 0.52f)
         )
     ) {
@@ -305,7 +306,11 @@ private fun buttonPalette(
     LumenButtonIntent.Primary -> LumenButtonPalette(colors.brandSolid, colors.brandSolid, colors.onBrand)
     LumenButtonIntent.Quiet -> LumenButtonPalette(Color.Transparent, Color.Transparent, colors.inkSoft)
     LumenButtonIntent.Secondary -> LumenButtonPalette(colors.surfaceMuted, colors.line, colors.ink)
+    LumenButtonIntent.Success -> LumenButtonPalette(colors.success, colors.success, colors.onBrand)
 }
+
+internal fun lumenDisabledButtonContainerColor(background: Color): Color =
+    if (background.alpha == 0f) Color.Transparent else background.copy(alpha = 0.52f)
 
 @Composable
 fun LumenButton(
@@ -314,13 +319,14 @@ fun LumenButton(
     intent: LumenButtonIntent = LumenButtonIntent.Primary,
     size: LumenControlSize = LumenControlSize.Md,
     loading: Boolean = false,
+    loadingLabel: String = "Loading",
     enabled: Boolean = true,
     content: @Composable RowScope.() -> Unit
 ) {
     val palette = buttonPalette(LocalLumenTheme.current.colors, intent)
     val metrics = LumenButtonMetrics.resolve(size)
     val semanticsModifier = if (loading) {
-        Modifier.semantics { stateDescription = "Loading" }
+        Modifier.semantics { stateDescription = loadingLabel }
     } else {
         Modifier
     }
@@ -336,7 +342,7 @@ fun LumenButton(
         colors = ButtonDefaults.buttonColors(
             containerColor = palette.background,
             contentColor = palette.foreground,
-            disabledContainerColor = palette.background.copy(alpha = 0.52f),
+            disabledContainerColor = lumenDisabledButtonContainerColor(palette.background),
             disabledContentColor = palette.foreground.copy(alpha = 0.52f)
         ),
         contentPadding = PaddingValues(
@@ -463,10 +469,21 @@ fun LumenSpinner(
     modifier: Modifier = Modifier,
     label: String = "Loading"
 ) {
+    LumenSpinner(modifier = modifier, label = label, tint = null)
+}
+
+@Composable
+fun LumenSpinner(
+    modifier: Modifier = Modifier,
+    label: String = "Loading",
+    tint: Color?
+) {
     val colors = LocalLumenTheme.current.colors
 
     CircularProgressIndicator(
         modifier = modifier.semantics { contentDescription = label },
-        color = colors.brand
+        color = lumenSpinnerColor(colors, tint)
     )
 }
+
+internal fun lumenSpinnerColor(colors: LumenColorPalette, tint: Color?): Color = tint ?: colors.brand

@@ -287,6 +287,9 @@ describe('Lumen chart helpers', () => {
     expect(formatLumenChartSummary(series)).toBe(
       '1 series, 2 points. Values range from 2 to 8. 1 missing value.'
     )
+    expect(formatLumenChartSummary(series, String, {
+      formatSummary: summary => `${summary.availablePointCount} puntos disponibles.`
+    })).toBe('2 puntos disponibles.')
   })
 
   test('reduces large datasets while preserving endpoints and missing gaps', () => {

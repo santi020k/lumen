@@ -6,6 +6,12 @@
 `LumenUI` is Lumen's native SwiftUI package. Its foundations are generated from the same canonical
 design tokens as the web, React Native, and Compose adapters.
 
+`LumenPhoneInput` is implemented entirely inside `LumenUI`; consumers do not resolve or link a
+separate phone-number package. Lumen ships a compact generated metadata resource and owns the Swift
+parsing, validation, E.164, country-detection, formatting, and picker behavior. Maintainers refresh
+that resource with `pnpm run generate:swift-phone-metadata` when the workspace phone metadata is
+updated.
+
 Widget extensions that only need semantic presentation should link the separate `LumenWidgetUI`
 product documented in [`packages/swift-widget`](../swift-widget). It avoids linking the complete
 application component catalog and keeps timelines, App Intents, deep links, and backgrounds owned
@@ -22,8 +28,8 @@ The Swift release version follows the umbrella version in `registry/release-mani
 `pnpm run check:swift-version` prevents release validation from passing with a stale tag or pin.
 
 In Xcode, choose **File → Add Package Dependencies**, paste
-`https://github.com/santi020k/lumen`, and use **Exact Version** `2.0.0` for a reproducible production
-build. Choose **Up to Next Major Version** from `2.0.0` when the application intentionally accepts
+`https://github.com/santi020k/lumen`, and use **Exact Version** `2.1.0` for a reproducible production
+build. Choose **Up to Next Major Version** from `2.1.0` when the application intentionally accepts
 compatible Lumen updates. Reserve the `main` branch for local evaluation. Add the `LumenUI` product
 to your application target. The package manifest lives at the repository root, so the Git
 dependency works directly; no npm package, CocoaPod, or copied source is required.
@@ -34,7 +40,7 @@ For a project managed with `Package.swift`, add the package and product explicit
 dependencies: [
     .package(
         url: "https://github.com/santi020k/lumen",
-        exact: "2.0.0"
+        exact: "2.1.0"
     )
 ],
 targets: [
@@ -47,11 +53,11 @@ targets: [
 ]
 ```
 
-Use `.package(url: "https://github.com/santi020k/lumen", from: "2.0.0")` instead when the
+Use `.package(url: "https://github.com/santi020k/lumen", from: "2.1.0")` instead when the
 application's update policy accepts later compatible releases. Commit `Package.resolved` for
-applications, generated Xcode projects, and CI builds, then verify its `version` is `2.0.0` and its
-`revision` matches the `v2.0.0` tag before shipping. XcodeGen projects use the same policy in
-`project.yml` with `version: 2.0.0` for compatible updates or `exactVersion: 2.0.0` for an exact
+applications, generated Xcode projects, and CI builds, then verify its `version` is `2.1.0` and its
+`revision` matches the `v2.1.0` tag before shipping. XcodeGen projects use the same policy in
+`project.yml` with `version: 2.1.0` for compatible updates or `exactVersion: 2.1.0` for an exact
 pin. Deterministic project generators should declare the requirement in their checked-in source
 and regenerate the project instead of patching the generated `.xcodeproj`.
 
@@ -101,13 +107,37 @@ LumenTextarea(
     errorMessage: note.isEmpty ? .verbatim(copy.noteRequired) : nil
 )
 
-LumenButton(.verbatim(copy.saveAction), action: save)
+LumenButton(
+    .verbatim(copy.saveAction),
+    loading: isSaving,
+    loadingAccessibilityValue: .verbatim(copy.savingAction),
+    action: save
+)
 ```
 
 `LumenText`, `LumenBadge`, `LumenSpinner`, text buttons, `LumenTextField`, `LumenTextarea`, and
 `LumenFieldGroup` accept the contract where runtime bridges are commonly needed. Locale selection,
 translation dictionaries, and persistence remain application-owned; changing the SwiftUI locale
 environment or application copy state updates mounted views normally.
+
+Rich native form composition remains controlled by the application:
+
+```swift
+LumenPicker(selection: $accent, style: .menu) {
+    Label("Accent", systemImage: "paintpalette")
+} currentValueLabel: {
+    HStack { Circle().fill(accent.color).frame(width: 12, height: 12); Text(accent.name) }
+} content: {
+    ForEach(Accent.allCases) { option in Text(option.name).tag(option) }
+}
+
+LumenTextarea("Caption", text: $caption, lineLimit: 2...6) {
+    LumenButton("Assist", intent: .quiet, size: .sm, action: suggestCaption)
+}
+```
+
+Use `LumenSlider(..., onEditingChanged:)` to begin and end an application-owned undo group. Keep
+haptics, persistence, caption generation, and other domain workflows outside Lumen.
 
 Applications can construct `LumenColorPalette` directly when they already own light and dark
 product palettes. If a stored System/Light/Dark preference is application-owned, inject the chosen
@@ -232,11 +262,34 @@ struct AccountActions: View {
     var body: some View {
         HStack {
             LumenButton("Save", action: save)
-            LumenIconButton(name: .settings, label: "Settings", action: openSettings)
+            LumenButton(
+                "Remove account",
+                intent: .secondary,
+                role: .destructive,
+                action: removeAccount
+            )
+            LumenIconButton(
+                name: .sparkles,
+                label: "Generate caption",
+                loading: isGeneratingCaption,
+                loadingAccessibilityValue: .verbatim(generatingCaptionStatus),
+                action: generateCaption
+            )
         }
     }
 }
 ```
+
+Button `role` and visual `intent` are independent. Supply `.destructive` or `.cancel` whenever the
+action has that platform meaning, even when a quieter visual intent is appropriate. Keep native
+SwiftUI buttons as the direct actions of `toolbar`, `alert`, and `confirmationDialog` content so
+those system containers continue to own placement and presentation; apply `LumenButtonStyle` or
+`LumenIconButtonStyle` when a Lumen visual recipe is appropriate there.
+
+When `loading` is true, `LumenIconButton` keeps its accessible name and touch target, replaces the
+icon with a progress indicator using the selected intent's foreground color, and disables repeat
+activation. Use a styled native button when its visual content must change beyond that fixed
+icon-to-progress transition.
 
 Use `.lumenControlDensity(.regular)` or `.lumenControlDensity(.compact)` on a view hierarchy only
 when a project intentionally needs to override the platform default.
@@ -298,6 +351,10 @@ Swift, and Xcode baselines, and use the
 preserving the iOS 16 baseline. Data charts provide native mark accessibility, a factual summary,
 and a readable disclosure list. See the shared
 [data-visualization guide](../../docs/data-visualization.md).
+
+Pass `labels` for localized support copy. A finite zero remains valid data. Line charts also accept
+`reference: LumenChartReference(...)`; set a datum's `tone` and `toneLabel` together so an
+intensity or status encoding is never communicated by color alone.
 
 From the repository root, check the reviewed public API for every declared Apple platform with:
 

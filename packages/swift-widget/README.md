@@ -2,7 +2,7 @@
 
 `LumenWidgetUI` is a focused Swift Package product for WidgetKit presentation. It contains generated
 semantic colors, spacing, and radii plus text, SF Symbol, badge, and compact-stat treatments. It does
-not link `LumenUI`, PhoneNumberKit, application controls, timelines, App Intents, deep links, or
+not link `LumenUI`, application controls, timelines, App Intents, deep links, or
 container-background policy.
 
 Add the `LumenWidgetUI` product to an iOS, macOS, or watchOS widget extension:

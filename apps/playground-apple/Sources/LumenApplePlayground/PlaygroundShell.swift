@@ -2,6 +2,14 @@ import Foundation
 import LumenUI
 import SwiftUI
 
+let playgroundBottomScrollClearance: CGFloat = {
+    #if os(iOS)
+    LumenSpacing.size3xl
+    #else
+    0
+    #endif
+}()
+
 enum PlaygroundDestination: String, CaseIterable, Identifiable {
     case home
     case examples
@@ -105,83 +113,6 @@ enum PlaygroundThemePreset: String, CaseIterable, Identifiable {
     }
 }
 
-enum PlaygroundComponentCategory: String, CaseIterable, Identifiable {
-    case all
-    case foundations
-    case actions
-    case forms
-    case feedback
-    case content
-    case navigation
-
-    var id: String { rawValue }
-    var title: String { rawValue.capitalized }
-
-    func contains(_ component: String) -> Bool {
-        self == .all || PlaygroundCatalog.category(for: component) == self
-    }
-}
-
-enum PlaygroundCatalog {
-    static let componentNames = [
-        "Theme", "Text", "Surface", "Icon", "Icon button", "Button", "Button group", "Text field",
-        "Textarea", "Field group", "Phone input", "Chip", "Badge", "Link",
-        "Divider", "Spinner", "Card", "Alert", "Alert dialog", "Progress", "Skeleton", "Disclosure", "Avatar",
-        "Toggle", "Settings row", "Checkbox", "Radio group", "Segmented control", "Tabs",
-        "Picker", "Slider", "Date field", "Date range field", "Search field", "Empty state", "Error state", "List row", "Banner", "Toast", "Stat", "Gauge",
-        "Section header", "Status bar", "Graphic", "Backdrop", "Illustration", "Image", "Navigation bar",
-        "Sparkline", "Line chart", "Bar chart", "Pie chart", "Scatter chart", "Heatmap", "Range chart", "Combo chart",
-        "Sheet", "Menu", "Share button", "Tab bar minimization", "Tab accessory",
-        "Shortcut recorder", "Symbol picker"
-    ]
-
-    static func count(in category: PlaygroundComponentCategory) -> Int {
-        componentNames.filter(category.contains).count
-    }
-
-    static func category(for component: String) -> PlaygroundComponentCategory {
-        switch component {
-        case "Theme", "Text", "Surface", "Icon", "Graphic", "Backdrop", "Illustration", "Image":
-            .foundations
-        case "Icon button", "Button", "Button group", "Chip", "Link", "Menu", "Share button":
-            .actions
-        case "Text field", "Textarea", "Field group", "Phone input", "Toggle", "Settings row", "Checkbox", "Radio group",
-             "Segmented control", "Tabs", "Picker", "Slider", "Date field", "Date range field", "Search field",
-             "Shortcut recorder", "Symbol picker":
-            .forms
-        case "Badge", "Divider", "Spinner", "Alert", "Alert dialog", "Progress", "Skeleton", "Banner", "Toast":
-            .feedback
-        case "Card", "Disclosure", "Avatar", "Empty state", "Error state", "List row", "Stat", "Gauge", "Section header",
-             "Status bar", "Sparkline", "Line chart", "Bar chart", "Pie chart", "Scatter chart", "Heatmap",
-             "Range chart", "Combo chart":
-            .content
-        case "Navigation bar", "Sheet", "Tab bar minimization", "Tab accessory":
-            .navigation
-        default:
-            .content
-        }
-    }
-
-    static var categoryChartSeries: [LumenChartSeries] {
-        let categories = PlaygroundComponentCategory.allCases.filter { $0 != .all }
-        return [
-            LumenChartSeries(
-                id: "components",
-                label: "Components",
-                data: categories.map { category in
-                    LumenChartDatum(
-                        id: category.rawValue,
-                        x: .category(category.title),
-                        y: Double(count(in: category))
-                    )
-                },
-                tone: .brand,
-                mark: .bar
-            )
-        ]
-    }
-}
-
 struct PlaygroundLaunchConfiguration: Equatable {
     let componentFilter: String?
     let destination: PlaygroundDestination
@@ -253,6 +184,8 @@ struct PlaygroundRootView: View {
         TabView(selection: $destination) {
             ForEach(PlaygroundDestination.allCases) { item in
                 destinationView(item)
+                    .background(activeTheme.colors.canvas.ignoresSafeArea())
+                    .ignoresSafeArea(.container, edges: .bottom)
                     .tabItem {
                         Label(item.title, systemImage: item.systemName)
                     }
@@ -319,6 +252,7 @@ struct PlaygroundPage<Content: View>: View {
                 .frame(maxWidth: 1040)
                 .padding(.horizontal, horizontalSizeClass == .compact ? LumenSpacing.lg : LumenSpacing.xl)
                 .padding(.vertical, LumenSpacing.lg)
+                .padding(.bottom, playgroundBottomScrollClearance)
                 .frame(maxWidth: .infinity)
             }
         }

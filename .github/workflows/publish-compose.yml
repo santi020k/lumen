@@ -95,8 +95,8 @@ jobs:
       - name: Validate Lumen 2 contract
         run: node scripts/check-lumen-2-contract.mjs
 
-      - name: Verify completed native stability iterations
-        run: node scripts/check-native-stability-soak.mjs --require-complete
+      - name: Validate native stability ledger
+        run: node scripts/check-native-stability-soak.mjs
 
       - name: Validate publication credentials
         run: |

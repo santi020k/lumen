@@ -2214,9 +2214,9 @@ const LumenAsteriskIconGraphic = ({
     viewBox="0 0 24 24"
     width={size}
   >
-      <Path d="M12 6v12" />
-      <Path d="M17.196 9 6.804 15" />
-      <Path d="m6.804 9 10.392 6" />
+      <Path d="M12 5v14" />
+      <Path d="m18.065 8.496-12.125 7" />
+      <Path d="m5.94 8.504 12.125 7" />
   </Svg>
 )
 
@@ -2576,7 +2576,7 @@ const LumenBadgeCheckIconGraphic = ({
     width={size}
   >
       <Path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z" />
-      <Path d="m9 12 2 2 4-4" />
+      <Path d="m16 9-5.5 5.5L8 12" />
   </Svg>
 )
 
@@ -3534,7 +3534,7 @@ const LumenBeefIconGraphic = ({
     width={size}
   >
       <Path d="M16.4 13.7A6.5 6.5 0 1 0 6.28 6.6c-1.1 3.13-.78 3.9-3.18 6.08A3 3 0 0 0 5 18c4 0 8.4-1.8 11.4-4.3" />
-      <Path d="m18.5 6 2.19 4.5a6.48 6.48 0 0 1-2.29 7.2C15.4 20.2 11 22 7 22a3 3 0 0 1-2.68-1.66L2.4 16.5" />
+      <Path d="m18.5 6 1.754 3.5a6.48 6.48 0 0 1-1.854 8.2C15.4 20.2 11 22 7 22a3 3 0 0 1-2.68-1.66L2.4 16.5" />
       <Circle cx="12.5" cy="8.5" r="2.5" />
   </Svg>
 )
@@ -4095,8 +4095,8 @@ const LumenBlendIconGraphic = ({
     viewBox="0 0 24 24"
     width={size}
   >
-      <Circle cx="9" cy="9" r="7" />
-      <Circle cx="15" cy="15" r="7" />
+      <Circle cx="15" cy="9" r="7" />
+      <Circle cx="9" cy="15" r="7" />
   </Svg>
 )
 
@@ -4945,9 +4945,9 @@ const LumenBookXIconGraphic = ({
     viewBox="0 0 24 24"
     width={size}
   >
-      <Path d="m14.5 7-5 5" />
+      <Path d="m14.5 7.5-5 5" />
       <Path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20" />
-      <Path d="m9.5 7 5 5" />
+      <Path d="m9.5 7.5 5 5" />
   </Svg>
 )
 
@@ -20099,7 +20099,7 @@ const LumenCircleCheckIconGraphic = ({
     width={size}
   >
       <Circle cx="12" cy="12" r="10" />
-      <Path d="m9 12 2 2 4-4" />
+      <Path d="m16 9-5.5 5.5L8 12" />
   </Svg>
 )
 
@@ -20296,8 +20296,8 @@ const LumenCircleDotIconGraphic = ({
     viewBox="0 0 24 24"
     width={size}
   >
-      <Circle cx="12" cy="12" r="10" />
       <Circle cx="12" cy="12" r="1" />
+      <Circle cx="12" cy="12" r="10" />
   </Svg>
 )
 
@@ -21253,8 +21253,8 @@ const LumenClipboardXIconGraphic = ({
   >
       <Rect width="8" height="4" x="8" y="2" rx="1" ry="1" />
       <Path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
-      <Path d="m15 11-6 6" />
-      <Path d="m9 11 6 6" />
+      <Path d="m14.5 11.5-5 5" />
+      <Path d="m9.5 11.5 5 5" />
   </Svg>
 )
 
@@ -21662,9 +21662,9 @@ const LumenClockCheckIconGraphic = ({
     viewBox="0 0 24 24"
     width={size}
   >
+      <Path d="M21.95 13a10 10 0 1 0-8.685 8.92" />
       <Path d="M12 6v6l4 2" />
-      <Path d="M22 12a10 10 0 1 0-11 9.95" />
-      <Path d="m22 16-5.5 5.5L14 19" />
+      <Path d="m16 19 2 2 4-4" />
   </Svg>
 )
 
@@ -22937,10 +22937,10 @@ const LumenCopyXIconGraphic = ({
     viewBox="0 0 24 24"
     width={size}
   >
-      <Line x1="12" x2="18" y1="12" y2="18" />
-      <Line x1="12" x2="18" y1="18" y2="12" />
-      <Rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
-      <Path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+      <Path d="M4 16a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2" />
+      <Rect x="8" y="8" width="14" height="14" rx="2" />
+      <Path d="m12.5 12.5 5 5" />
+      <Path d="m12.5 17.5 5-5" />
   </Svg>
 )
 
@@ -23227,6 +23227,96 @@ const LumenCreditCardIconGraphic = ({
   >
       <Rect width="20" height="14" x="2" y="5" rx="2" />
       <Line x1="2" x2="22" y1="10" y2="10" />
+  </Svg>
+)
+
+const LumenCreditCardCheckIconGraphic = ({
+  color = 'currentColor',
+  size = 24,
+  strokeWidth = 2
+}: LumenIconGraphicProps): ReactElement => (
+  <Svg
+    fill={'none'}
+    focusable={false}
+    height={size}
+    stroke={color}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    strokeWidth={strokeWidth}
+    viewBox="0 0 24 24"
+    width={size}
+  >
+      <Path d="M12.5 19H4a2 2 0 01-2-2V7a2 2 0 012-2h16a2 2 0 012 2v4" />
+      <Path d="m16 17 2 2 4-4" />
+      <Path d="M2 10h20" />
+  </Svg>
+)
+
+const LumenCreditCardMinusIconGraphic = ({
+  color = 'currentColor',
+  size = 24,
+  strokeWidth = 2
+}: LumenIconGraphicProps): ReactElement => (
+  <Svg
+    fill={'none'}
+    focusable={false}
+    height={size}
+    stroke={color}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    strokeWidth={strokeWidth}
+    viewBox="0 0 24 24"
+    width={size}
+  >
+      <Path d="M16 17h6" />
+      <Path d="M22 10H2" />
+      <Path d="M22 13V7a2 2 0 00-2-2H4a2 2 0 00-2 2v10a2 2 0 002 2h8.536" />
+  </Svg>
+)
+
+const LumenCreditCardPlusIconGraphic = ({
+  color = 'currentColor',
+  size = 24,
+  strokeWidth = 2
+}: LumenIconGraphicProps): ReactElement => (
+  <Svg
+    fill={'none'}
+    focusable={false}
+    height={size}
+    stroke={color}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    strokeWidth={strokeWidth}
+    viewBox="0 0 24 24"
+    width={size}
+  >
+      <Path d="M16 17h6" />
+      <Path d="M19 14v6" />
+      <Path d="M22 10H2" />
+      <Path d="M22 11.354V7a2 2 0 00-2-2H4a2 2 0 00-2 2v10a2 2 0 002 2h8.536" />
+  </Svg>
+)
+
+const LumenCreditCardXIconGraphic = ({
+  color = 'currentColor',
+  size = 24,
+  strokeWidth = 2
+}: LumenIconGraphicProps): ReactElement => (
+  <Svg
+    fill={'none'}
+    focusable={false}
+    height={size}
+    stroke={color}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    strokeWidth={strokeWidth}
+    viewBox="0 0 24 24"
+    width={size}
+  >
+      <Path d="M12.5 19H4a2 2 0 01-2-2V7a2 2 0 012-2h16a2 2 0 012 2v3.5" />
+      <Path d="m16.5 14.5 5 5" />
+      <Path d="M2 10h20" />
+      <Path d="m21.5 14.5-5 5" />
   </Svg>
 )
 
@@ -25275,11 +25365,11 @@ const LumenFaceAngryIconGraphic = ({
     viewBox="0 0 24 24"
     width={size}
   >
-      <Path d="M15 11V9.416" />
-      <Path d="M17 9a5 5 0 00-3 1" />
-      <Path d="M7 9a5 5 0 013 1" />
-      <Path d="M9 11V9.416" />
-      <Path d="M9 16a5 5 0 016.001 0" />
+      <Path d="M15 12v-1.584" />
+      <Path d="M17 10a5 5 0 00-3 1" />
+      <Path d="M7 10a5 5 0 013 1" />
+      <Path d="M9 12v-1.584" />
+      <Path d="M9 17a5 5 0 016.001 0" />
       <Circle cx="12" cy="12" r="10" />
   </Svg>
 )
@@ -28406,6 +28496,30 @@ const LumenFunnelXIconGraphic = ({
   </Svg>
 )
 
+const LumenGalaxyIconGraphic = ({
+  color = 'currentColor',
+  size = 24,
+  strokeWidth = 2
+}: LumenIconGraphicProps): ReactElement => (
+  <Svg
+    fill={'none'}
+    focusable={false}
+    height={size}
+    stroke={color}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    strokeWidth={strokeWidth}
+    viewBox="0 0 24 24"
+    width={size}
+  >
+      <Path d="M16.005 15.108a5.041 6.52 28.25 00-8.008-6.217 5.041 6.52 28.25 008.008 6.217A11.884 7.288-60.76 014.029 7.001" />
+      <Path d="M17 21h.01" />
+      <Path d="M7 3h.01" />
+      <Path d="M7.997 8.891a11.885 7.288-60.756 0111.977 8.107" />
+      <Circle cx="12" cy="12" r="1" fill={color} />
+  </Svg>
+)
+
 const LumenGalleryHorizontalIconGraphic = ({
   color = 'currentColor',
   size = 24,
@@ -28695,9 +28809,9 @@ const LumenGhostIconGraphic = ({
     viewBox="0 0 24 24"
     width={size}
   >
-      <Path d="M9 10h.01" />
-      <Path d="M15 10h.01" />
-      <Path d="M12 2a8 8 0 0 0-8 8v12l3-3 2.5 2.5L12 19l2.5 2.5L17 19l3 3V10a8 8 0 0 0-8-8z" />
+      <Path d="M15 10v1" />
+      <Path d="M7.528 20.472a1.6 1.6 0 012.277 0l1.057 1.056a1.6 1.6 0 002.276 0l1.057-1.056a1.6 1.6 0 012.277 0l1.114 1.114a1.4 1.4 0 002.414-1V10a8 8 0 00-16 0v10.586a1.4 1.4 0 002.414 1z" />
+      <Path d="M9 10v1" />
   </Svg>
 )
 
@@ -28975,8 +29089,8 @@ const LumenGitMergeConflictIconGraphic = ({
   >
       <Path d="M12 6h4a2 2 0 0 1 2 2v7" />
       <Path d="M6 12v9" />
-      <Path d="M9 3 3 9" />
-      <Path d="M9 9 3 3" />
+      <Path d="m8.5 3.5-5 5" />
+      <Path d="m8.5 8.5-5-5" />
       <Circle cx="18" cy="18" r="3" />
   </Svg>
 )
@@ -29044,12 +29158,12 @@ const LumenGitPullRequestClosedIconGraphic = ({
     viewBox="0 0 24 24"
     width={size}
   >
-      <Circle cx="6" cy="6" r="3" />
+      <Path d="m15.5 3.5 5 5" />
+      <Path d="m15.5 8.5 5-5" />
+      <Path d="M18 11.62V15" />
       <Path d="M6 9v12" />
-      <Path d="m21 3-6 6" />
-      <Path d="m21 9-6-6" />
-      <Path d="M18 11.5V15" />
       <Circle cx="18" cy="18" r="3" />
+      <Circle cx="6" cy="6" r="3" />
   </Svg>
 )
 
@@ -29463,8 +29577,8 @@ const LumenGrid2x2XIconGraphic = ({
     width={size}
   >
       <Path d="M12 3v17a1 1 0 0 1-1 1H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6a1 1 0 0 1-1 1H3" />
-      <Path d="m16 16 5 5" />
-      <Path d="m16 21 5-5" />
+      <Path d="m16.5 16.5 5 5" />
+      <Path d="m16.5 21.5 5-5" />
   </Svg>
 )
 
@@ -31499,9 +31613,9 @@ const LumenKeyIconGraphic = ({
     viewBox="0 0 24 24"
     width={size}
   >
-      <Path d="m15.5 7.5 2.3 2.3a1 1 0 0 0 1.4 0l2.1-2.1a1 1 0 0 0 0-1.4L19 4" />
-      <Path d="m21 2-9.6 9.6" />
-      <Circle cx="7.5" cy="15.5" r="5.5" />
+      <Path d="m2 21 9.6-9.6" />
+      <Path d="m7.5 15.5 2.3 2.3a1 1 0 0 1 0 1.4l-2.1 2.1a1 1 0 0 1-1.4 0L4 19" />
+      <Circle cx="15.5" cy="7.5" r="5.5" />
   </Svg>
 )
 
@@ -33847,10 +33961,10 @@ const LumenMailXIconGraphic = ({
     viewBox="0 0 24 24"
     width={size}
   >
-      <Path d="M22 13V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v12c0 1.1.9 2 2 2h9" />
-      <Path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
-      <Path d="m17 17 4 4" />
-      <Path d="m21 17-4 4" />
+      <Path d="M22 12.532V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8.792" />
+      <Path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7" />
+      <Path d="m16.5 16.5 5 5" />
+      <Path d="m21.5 16.5-5 5" />
   </Svg>
 )
 
@@ -34574,7 +34688,7 @@ const LumenMessageCircleCheckIconGraphic = ({
     width={size}
   >
       <Path d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719" />
-      <Path d="m9 12 2 2 4-4" />
+      <Path d="m16 9-5.5 5.5L8 12" />
   </Svg>
 )
 
@@ -34624,6 +34738,34 @@ const LumenMessageCircleDashedIconGraphic = ({
       <Path d="M21.818 10.1a10 10 0 0 1 0 3.8" />
       <Path d="M3.721 6.391a10 10 0 0 1 2.7-2.69" />
       <Path d="m6.163 21.117-2.906.85a1 1 0 0 1-1.236-1.169l.965-2.98" />
+  </Svg>
+)
+
+const LumenMessageCircleDashedCheckIconGraphic = ({
+  color = 'currentColor',
+  size = 24,
+  strokeWidth = 2
+}: LumenIconGraphicProps): ReactElement => (
+  <Svg
+    fill={'none'}
+    focusable={false}
+    height={size}
+    stroke={color}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    strokeWidth={strokeWidth}
+    viewBox="0 0 24 24"
+    width={size}
+  >
+      <Path d="M10.1 2.182a10 10 0 013.8 0" />
+      <Path d="M13.9 21.818a10 10 0 01-3.8 0" />
+      <Path d="M17.609 3.72a10 10 0 012.69 2.7" />
+      <Path d="M2.182 13.9a10 10 0 010-3.8" />
+      <Path d="M20.28 17.61a10 10 0 01-2.7 2.69" />
+      <Path d="M21.818 10.1a10 10 0 010 3.8" />
+      <Path d="M3.721 6.391a10 10 0 012.7-2.69" />
+      <Path d="m6.163 21.117-2.906.85a1 1 0 01-1.236-1.169l.965-2.98" />
+      <Path d="m16 9-5.5 5.5L8 12" />
   </Svg>
 )
 
@@ -37641,9 +37783,9 @@ const LumenPandaIconGraphic = ({
   >
       <Path d="M11.25 17.25h1.5L12 18z" />
       <Path d="m15 12 2 2" />
-      <Path d="M18 6.5a.5.5 0 0 0-.5-.5" />
-      <Path d="M20.69 9.67a4.5 4.5 0 1 0-7.04-5.5 8.35 8.35 0 0 0-3.3 0 4.5 4.5 0 1 0-7.04 5.5C2.49 11.2 2 12.88 2 14.5 2 19.47 6.48 22 12 22s10-2.53 10-7.5c0-1.62-.48-3.3-1.3-4.83" />
-      <Path d="M6 6.5a.495.495 0 0 1 .5-.5" />
+      <Path d="M17.902 6.599a8 8 0 0 0-.5-.5" />
+      <Path d="M2 14.5C2 19.47 6.48 22 12 22s10-2.53 10-7.5a10 10 0 0 0-1.3-4.83 4.5 4.5 0 1 0-7.05-5.5 8 8 0 0 0-3.3 0 4.5 4.5 0 1 0-7.04 5.5A10 10 0 0 0 2 14.5" />
+      <Path d="M6.099 6.599a8 8 0 0 1 .5-.5" />
       <Path d="m9 12-2 2" />
   </Svg>
 )
@@ -38831,12 +38973,12 @@ const LumenPianoIconGraphic = ({
     viewBox="0 0 24 24"
     width={size}
   >
-      <Path d="M18.5 8c-1.4 0-2.6-.8-3.2-2A6.87 6.87 0 0 0 2 9v11a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-8.5C22 9.6 20.4 8 18.5 8" />
-      <Path d="M2 14h20" />
-      <Path d="M6 14v4" />
-      <Path d="M10 14v4" />
-      <Path d="M14 14v4" />
-      <Path d="M18 14v4" />
+      <Path d="M10 13v4" />
+      <Path d="M14 13v4" />
+      <Path d="M18 13v4" />
+      <Path d="M2 13h20" />
+      <Path d="M22 11.5A3.5 3.5 0 0018.5 8a3.52 3.52 0 01-3.173-2A7 7 0 002 9v10a2 2 0 002 2h16a2 2 0 002-2z" />
+      <Path d="M6 13v4" />
   </Svg>
 )
 
@@ -39234,6 +39376,71 @@ const LumenPlayOffIconGraphic = ({
       <Path d="m10.215 4.56 9.79 5.71a2 2 0 0 1 .003 3.458l-.393.23" />
       <Path d="m16.042 16.042-8.034 4.686A2 2 0 0 1 5 19V5" />
       <Path d="m2 2 20 20" />
+  </Svg>
+)
+
+const LumenPlayingCardIconGraphic = ({
+  color = 'currentColor',
+  size = 24,
+  strokeWidth = 2
+}: LumenIconGraphicProps): ReactElement => (
+  <Svg
+    fill={'none'}
+    focusable={false}
+    height={size}
+    stroke={color}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    strokeWidth={strokeWidth}
+    viewBox="0 0 24 24"
+    width={size}
+  >
+      <Path d="M12.832 8.445a1 1 0 00-1.589-.098l-2.075 3.098a1 1 0 000 1.11l2 3a1 1 0 001.664 0l2-3a1 1 0 000-1.11z" />
+      <Rect x="5" y="2" width="14" height="20" rx="2" />
+  </Svg>
+)
+
+const LumenPlayingCardsIconGraphic = ({
+  color = 'currentColor',
+  size = 24,
+  strokeWidth = 2
+}: LumenIconGraphicProps): ReactElement => (
+  <Svg
+    fill={'none'}
+    focusable={false}
+    height={size}
+    stroke={color}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    strokeWidth={strokeWidth}
+    viewBox="0 0 24 24"
+    width={size}
+  >
+      <Path d="M14.832 8.445a1 1 0 00-1.589-.098l-2.075 3.098a1 1 0 000 1.11l2 3a1 1 0 001.664 0l2-3a1 1 0 000-1.11z" />
+      <Path d="m7.18 20.827-5-11a2 2 0 01.993-2.647L7 5.44" />
+      <Rect x="7" y="2" width="14" height="20" rx="2" />
+  </Svg>
+)
+
+const LumenPlayingCardsFanIconGraphic = ({
+  color = 'currentColor',
+  size = 24,
+  strokeWidth = 2
+}: LumenIconGraphicProps): ReactElement => (
+  <Svg
+    fill={'none'}
+    focusable={false}
+    height={size}
+    stroke={color}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    strokeWidth={strokeWidth}
+    viewBox="0 0 24 24"
+    width={size}
+  >
+      <Path d="M12.65 7.65a2 2 0 012.629-1.046l5.51 2.374a2 2 0 011.046 2.628l-3.957 9.184a2 2 0 01-2.628 1.046l-5.51-2.374a2 2 0 01-1.046-2.628z" />
+      <Path d="M18 7.777V4a2 2 0 00-2-2h-6a2 2 0 00-2 2v10a2 2 0 001.137 1.805" />
+      <Path d="m8 4.389-4.364.809a2 2 0 00-1.602 2.33l1.822 9.833a2 2 0 002.331 1.602l2.542-.47" />
   </Svg>
 )
 
@@ -40890,6 +41097,58 @@ const LumenRoadIconGraphic = ({
       <Path d="M12 5V3" />
       <Path d="M12 9v3" />
       <Path d="M2.077 18.449A2 2 0 0 0 4 21h16a2 2 0 0 0 1.924-2.55l-4-14A2 2 0 0 0 16 3H8a2 2 0 0 0-1.924 1.45z" />
+  </Svg>
+)
+
+const LumenRobotArmIconGraphic = ({
+  color = 'currentColor',
+  size = 24,
+  strokeWidth = 2
+}: LumenIconGraphicProps): ReactElement => (
+  <Svg
+    fill={'none'}
+    focusable={false}
+    height={size}
+    stroke={color}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    strokeWidth={strokeWidth}
+    viewBox="0 0 24 24"
+    width={size}
+  >
+      <Path d="M12 21 7.5 8.322" />
+      <Path d="m14 7 1.75-3.767a.5.5 0 0 1 .662-.172L20 5.005" />
+      <Path d="m20 8.998-3.588 1.944a.5.5 0 0 1-.662-.172L14 7H8" />
+      <Path d="M3.486 21h10" />
+      <Path d="M5 21V8.732" />
+      <Circle cx="6" cy="7" r="2" />
+  </Svg>
+)
+
+const LumenRobotVacuumIconGraphic = ({
+  color = 'currentColor',
+  size = 24,
+  strokeWidth = 2
+}: LumenIconGraphicProps): ReactElement => (
+  <Svg
+    fill={'none'}
+    focusable={false}
+    height={size}
+    stroke={color}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    strokeWidth={strokeWidth}
+    viewBox="0 0 24 24"
+    width={size}
+  >
+      <Path d="M11 17h2" />
+      <Path d="M12 12h.01" />
+      <Path d="M17 12a5 5 0 00-10 0" />
+      <Path d="M19 2v2.8" />
+      <Path d="M2 5h2.8" />
+      <Path d="M22 5h-2.8" />
+      <Path d="M5 2v2.8" />
+      <Circle cx="12" cy="12" r="10" />
   </Svg>
 )
 
@@ -43173,11 +43432,35 @@ const LumenShipIconGraphic = ({
     viewBox="0 0 24 24"
     width={size}
   >
-      <Path d="M12 10.189V14" />
-      <Path d="M12 2v3" />
-      <Path d="M19 13V7a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v6" />
-      <Path d="M19.38 20A11.6 11.6 0 0 0 21 14l-8.188-3.639a2 2 0 0 0-1.624 0L3 14a11.6 11.6 0 0 0 2.81 7.76" />
-      <Path d="M2 21c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1s1.2 1 2.5 1c2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1" />
+      <Path d="M12 2v2" />
+      <Path d="M12 9.189V13" />
+      <Path d="M19 12V6a2 2 0 00-2-2H7a2 2 0 00-2 2v6" />
+      <Path d="M19.38 19A11.6 11.6 0 0021 13l-8.188-3.639a2 2 0 00-1.624 0L3 13.001a11.6 11.6 0 002.81 7.76" />
+      <Path d="M2 20c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1s1.2 1 2.5 1c2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1" />
+  </Svg>
+)
+
+const LumenShipCargoIconGraphic = ({
+  color = 'currentColor',
+  size = 24,
+  strokeWidth = 2
+}: LumenIconGraphicProps): ReactElement => (
+  <Svg
+    fill={'none'}
+    focusable={false}
+    height={size}
+    stroke={color}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    strokeWidth={strokeWidth}
+    viewBox="0 0 24 24"
+    width={size}
+  >
+      <Path d="M12 15v-3" />
+      <Path d="M12 2v2" />
+      <Path d="M16.5 12V9a1 1 0 011-1h1a1 1 0 001-1V5a1 1 0 00-1-1h-13a1 1 0 00-1 1v2a1 1 0 001 1h1a1 1 0 011 1v3" />
+      <Path d="M19.38 19c1.076-1.815 1.636-4.89 1.628-6.008a1 1 0 00-1-.992H3.984a1 1 0 00-1 .984c-.03 1.86.97 5.621 2.826 7.776" />
+      <Path d="M2 20c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1s1.2 1 2.5 1c2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1" />
   </Svg>
 )
 
@@ -43294,9 +43577,10 @@ const LumenShoppingCartIconGraphic = ({
     viewBox="0 0 24 24"
     width={size}
   >
-      <Circle cx="8" cy="21" r="1" />
-      <Circle cx="19" cy="21" r="1" />
-      <Path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
+      <Path d="m2.05 2.05 1.099-.028a1 1 0 0 1 1.008.815l2.69 14.347A1 1 0 0 0 7.83 18H18" />
+      <Path d="M4.563 5h16.435a1 1 0 0 1 .981 1.204l-1.026 6.226A2 2 0 0 1 18.962 14H6.25" />
+      <Circle cx="18" cy="20" r="2" />
+      <Circle cx="8" cy="20" r="2" />
   </Svg>
 )
 
@@ -44217,9 +44501,9 @@ const LumenSpellCheckIconGraphic = ({
     viewBox="0 0 24 24"
     width={size}
   >
-      <Path d="m6 16 6-12 6 12" />
-      <Path d="M8 12h8" />
-      <Path d="m16 20 2 2 4-4" />
+      <Path d="m20 15-5.5 5.5L12 18" />
+      <Path d="m4 16 6-12 5.115 10.23" />
+      <Path d="M6 12h8" />
   </Svg>
 )
 
@@ -44920,7 +45204,7 @@ const LumenSquareCheckIconGraphic = ({
     width={size}
   >
       <Rect width="18" height="18" x="3" y="3" rx="2" />
-      <Path d="m9 12 2 2 4-4" />
+      <Path d="m16 9-5.5 5.5L8 12" />
   </Svg>
 )
 
@@ -45864,9 +46148,9 @@ const LumenSquareSplitHorizontalIconGraphic = ({
     viewBox="0 0 24 24"
     width={size}
   >
-      <Path d="M8 19H5c-1 0-2-1-2-2V7c0-1 1-2 2-2h3" />
-      <Path d="M16 5h3c1 0 2 1 2 2v10c0 1-1 2-2 2h-3" />
-      <Line x1="12" x2="12" y1="4" y2="20" />
+      <Path d="M12 2v20" />
+      <Path d="M16 3h3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-3" />
+      <Path d="M8 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3" />
   </Svg>
 )
 
@@ -45886,9 +46170,9 @@ const LumenSquareSplitVerticalIconGraphic = ({
     viewBox="0 0 24 24"
     width={size}
   >
-      <Path d="M5 8V5c0-1 1-2 2-2h10c1 0 2 1 2 2v3" />
-      <Path d="M19 16v3c0 1-1 2-2 2H7c-1 0-2-1-2-2v-3" />
-      <Line x1="4" x2="20" y1="12" y2="12" />
+      <Path d="M2 12h20" />
+      <Path d="M21 16v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-3" />
+      <Path d="M3 8V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v3" />
   </Svg>
 )
 
@@ -47127,7 +47411,7 @@ const LumenSwordIconGraphic = ({
       <Path d="m11 19-6-6" />
       <Path d="m5 21-2-2" />
       <Path d="m8 16-4 4" />
-      <Path d="M9.5 17.5 21 6V3h-3L6.5 14.5" />
+      <Path d="M9.5 17.5 20.414 6.586A2 2 0 0021 5.172V3h-2.172a2 2 0 00-1.414.586L6.5 14.5" />
   </Svg>
 )
 
@@ -47147,14 +47431,14 @@ const LumenSwordsIconGraphic = ({
     viewBox="0 0 24 24"
     width={size}
   >
-      <Polyline points="14.5 17.5 3 6 3 3 6 3 17.5 14.5" />
-      <Line x1="13" x2="19" y1="19" y2="13" />
-      <Line x1="16" x2="20" y1="16" y2="20" />
-      <Line x1="19" x2="21" y1="21" y2="19" />
-      <Polyline points="14.5 6.5 18 3 21 3 21 6 17.5 9.5" />
-      <Line x1="5" x2="9" y1="14" y2="18" />
-      <Line x1="7" x2="4" y1="17" y2="20" />
-      <Line x1="3" x2="5" y1="19" y2="21" />
+      <Path d="m13 19 6-6" />
+      <Path d="M14.5 17.5 3.586 6.586A2 2 0 013 5.172V3h2.172a2 2 0 011.414.586L17.5 14.5" />
+      <Path d="m14.828 6.172 2.586-2.586A2 2 0 0118.828 3H21v2.172a2 2 0 01-.586 1.414l-2.586 2.586" />
+      <Path d="m16 16 4 4" />
+      <Path d="m19 21 2-2" />
+      <Path d="m5 14 4 4" />
+      <Path d="m5 21-2-2" />
+      <Path d="M7.5 16.5 4 20" />
   </Svg>
 )
 
@@ -48848,6 +49132,31 @@ const LumenTrafficConeIconGraphic = ({
   </Svg>
 )
 
+const LumenTrailerIconGraphic = ({
+  color = 'currentColor',
+  size = 24,
+  strokeWidth = 2
+}: LumenIconGraphicProps): ReactElement => (
+  <Svg
+    fill={'none'}
+    focusable={false}
+    height={size}
+    stroke={color}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    strokeWidth={strokeWidth}
+    viewBox="0 0 24 24"
+    width={size}
+  >
+      <Path d="M10 11.341V10" />
+      <Path d="M14 13v-3" />
+      <Path d="M18 17V8a2 2 0 00-2-2H4a2 2 0 00-2 2v7a2 2 0 002 2h2" />
+      <Path d="M22 15v1a1 1 0 01-1 1H10" />
+      <Path d="M6 11.341V10" />
+      <Circle cx="8" cy="17" r="2" />
+  </Svg>
+)
+
 const LumenTrainFrontIconGraphic = ({
   color = 'currentColor',
   size = 24,
@@ -50300,10 +50609,10 @@ const LumenUserRoundXIconGraphic = ({
     viewBox="0 0 24 24"
     width={size}
   >
-      <Path d="M2 21a8 8 0 0 1 11.873-7" />
+      <Path d="m16.5 16.5 5 5" />
+      <Path d="M2 21a8 8 0 0 1 11.531-7.18" />
+      <Path d="m21.5 16.5-5 5" />
       <Circle cx="10" cy="8" r="5" />
-      <Path d="m17 17 5 5" />
-      <Path d="m22 17-5 5" />
   </Svg>
 )
 
@@ -50992,9 +51301,9 @@ const LumenVolumeXIconGraphic = ({
     viewBox="0 0 24 24"
     width={size}
   >
-      <Path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z" />
-      <Line x1="22" x2="16" y1="9" y2="15" />
-      <Line x1="16" x2="22" y1="9" y2="15" />
+      <Path d="M11 4.702a.7.7 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.7.7 0 0 0 11 19.298z" />
+      <Path d="m16.5 14.5 5-5" />
+      <Path d="m16.5 9.5 5 5" />
   </Svg>
 )
 
@@ -53462,6 +53771,10 @@ export const lumenIcons = {
   'cpu': LumenCpuIconGraphic,
   'creative-commons': LumenCreativeCommonsIconGraphic,
   'credit-card': LumenCreditCardIconGraphic,
+  'credit-card-check': LumenCreditCardCheckIconGraphic,
+  'credit-card-minus': LumenCreditCardMinusIconGraphic,
+  'credit-card-plus': LumenCreditCardPlusIconGraphic,
+  'credit-card-x': LumenCreditCardXIconGraphic,
   'croissant': LumenCroissantIconGraphic,
   'crop': LumenCropIconGraphic,
   'cross': LumenCrossIconGraphic,
@@ -53687,6 +54000,7 @@ export const lumenIcons = {
   'funnel': LumenFunnelIconGraphic,
   'funnel-plus': LumenFunnelPlusIconGraphic,
   'funnel-x': LumenFunnelXIconGraphic,
+  'galaxy': LumenGalaxyIconGraphic,
   'gallery-horizontal': LumenGalleryHorizontalIconGraphic,
   'gallery-horizontal-end': LumenGalleryHorizontalEndIconGraphic,
   'gallery-thumbnails': LumenGalleryThumbnailsIconGraphic,
@@ -53957,6 +54271,7 @@ export const lumenIcons = {
   'message-circle-check': LumenMessageCircleCheckIconGraphic,
   'message-circle-code': LumenMessageCircleCodeIconGraphic,
   'message-circle-dashed': LumenMessageCircleDashedIconGraphic,
+  'message-circle-dashed-check': LumenMessageCircleDashedCheckIconGraphic,
   'message-circle-heart': LumenMessageCircleHeartIconGraphic,
   'message-circle-more': LumenMessageCircleMoreIconGraphic,
   'message-circle-off': LumenMessageCircleOffIconGraphic,
@@ -54160,6 +54475,9 @@ export const lumenIcons = {
   'plane-takeoff': LumenPlaneTakeoffIconGraphic,
   'play': LumenPlayIconGraphic,
   'play-off': LumenPlayOffIconGraphic,
+  'playing-card': LumenPlayingCardIconGraphic,
+  'playing-cards': LumenPlayingCardsIconGraphic,
+  'playing-cards-fan': LumenPlayingCardsFanIconGraphic,
   'plug': LumenPlugIconGraphic,
   'plug-2': LumenPlug2IconGraphic,
   'plug-zap': LumenPlugZapIconGraphic,
@@ -54232,6 +54550,8 @@ export const lumenIcons = {
   'rewind': LumenRewindIconGraphic,
   'ribbon': LumenRibbonIconGraphic,
   'road': LumenRoadIconGraphic,
+  'robot-arm': LumenRobotArmIconGraphic,
+  'robot-vacuum': LumenRobotVacuumIconGraphic,
   'rocket': LumenRocketIconGraphic,
   'rocking-chair': LumenRockingChairIconGraphic,
   'roller-coaster': LumenRollerCoasterIconGraphic,
@@ -54330,6 +54650,7 @@ export const lumenIcons = {
   'shield-user': LumenShieldUserIconGraphic,
   'shield-x': LumenShieldXIconGraphic,
   'ship': LumenShipIconGraphic,
+  'ship-cargo': LumenShipCargoIconGraphic,
   'ship-wheel': LumenShipWheelIconGraphic,
   'shirt': LumenShirtIconGraphic,
   'shopping-bag': LumenShoppingBagIconGraphic,
@@ -54576,6 +54897,7 @@ export const lumenIcons = {
   'toy-brick': LumenToyBrickIconGraphic,
   'tractor': LumenTractorIconGraphic,
   'traffic-cone': LumenTrafficConeIconGraphic,
+  'trailer': LumenTrailerIconGraphic,
   'train-front': LumenTrainFrontIconGraphic,
   'train-front-tunnel': LumenTrainFrontTunnelIconGraphic,
   'train-track': LumenTrainTrackIconGraphic,

@@ -142,6 +142,8 @@ const LumenNavigationDestination = ({
 
   return (
     <Pressable
+      aria-disabled={item.disabled}
+      aria-selected={selected}
       accessibilityLabel={item.label}
       accessibilityRole="tab"
       accessibilityState={{ disabled: item.disabled, selected }}

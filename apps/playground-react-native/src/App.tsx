@@ -421,6 +421,8 @@ const isThemePreset = (value: string): value is ThemePreset => (
 
 type ExampleState = 'empty' | 'error' | 'loading' | 'success'
 
+type ExamplePattern = 'health' | 'profile' | 'release'
+
 type PlaygroundLocale = 'en' | 'es'
 
 interface AccessibilitySnapshot {
@@ -456,6 +458,10 @@ const playgroundLocalizedCopy: Record<PlaygroundLocale, PlaygroundLocalizedCopy>
 
 const isExampleState = (value: string): value is ExampleState => (
   value === 'empty' || value === 'error' || value === 'loading' || value === 'success'
+)
+
+const isExamplePattern = (value: string): value is ExamplePattern => (
+  value === 'health' || value === 'profile' || value === 'release'
 )
 
 const useAccessibilitySnapshot = (): AccessibilitySnapshot => {
@@ -604,14 +610,106 @@ const HomeScreen = ({
   )
 }
 
+const ExampleStatePreview = ({
+  onStateChange,
+  state
+}: {
+  onStateChange: (state: ExampleState) => void
+  state: ExampleState
+}): ReactElement => (
+  <LumenCard style={styles.section}>
+    <LumenSectionHeader
+      subtitle="Inspect explicit loading, empty, error, and success outcomes."
+      title="State preview"
+    />
+    <LumenSegmentedControl
+      label="Reference state"
+      onValueChange={value => {
+        if (isExampleState(value)) onStateChange(value)
+      }}
+      options={[
+        { label: 'Loading', value: 'loading' },
+        { label: 'Empty', value: 'empty' },
+        { label: 'Error', value: 'error' },
+        { label: 'Success', value: 'success' }
+      ]}
+      value={state}
+    />
+    {state === 'loading' && (
+      <View accessibilityLiveRegion="polite" style={styles.stack}>
+        <LumenSpinner accessibilityLabel="Loading reference data" />
+        <LumenSkeleton shape="text" />
+        <LumenSkeleton shape="text" width="78%" />
+        <LumenStatusBar message="Synchronizing the native catalog" tone="accent" />
+      </View>
+    )}
+    {state === 'empty' && (
+      <LumenEmptyState
+        actions={(
+          <LumenButton onPress={() => {
+            onStateChange('success')
+          }}
+          >
+            Create sample entry
+          </LumenButton>
+        )}
+        description="Add a sample entry to review the completed state."
+        graphic={<LumenIcon decorative name="blocks" size="lg" />}
+        title="Nothing needs attention"
+      />
+    )}
+    {state === 'error' && (
+      <LumenErrorState
+        actions={(
+          <LumenButton onPress={() => {
+            onStateChange('loading')
+          }}
+          >
+            Retry synchronization
+          </LumenButton>
+        )}
+        description="The local example could not finish its simulated refresh."
+        reference="PLAYGROUND-SYNC"
+        title="Catalog synchronization failed"
+      />
+    )}
+    {state === 'success' && (
+      <LumenCard variant="success">
+        <LumenListRow
+          leading={<LumenIcon decorative name="circle-check" size="lg" />}
+          trailing={<LumenBadge tone="success">Ready</LumenBadge>}
+        >
+          <LumenText variant="label">Reference is current</LumenText>
+          <LumenText tone="muted">Local example data is ready to inspect.</LumenText>
+        </LumenListRow>
+      </LumenCard>
+    )}
+  </LumenCard>
+)
+
 const ExamplesScreen = (): ReactElement => {
   const initialState = getWebQueryParameter('state')
+  const initialPattern = getWebQueryParameter('pattern')
 
   const [exampleState, setExampleState] = useState<ExampleState>(
     () => isExampleState(initialState) ? initialState : 'success'
   )
 
+  const [pattern, setPattern] = useState<ExamplePattern>(
+    () => isExamplePattern(initialPattern) ? initialPattern : 'release'
+  )
+
   const [approved, setApproved] = useState(false)
+  const [profileName, setProfileName] = useState('Lumen Contributor')
+  const [profileRole, setProfileRole] = useState('developer')
+  const [updatesEnabled, setUpdatesEnabled] = useState(true)
+  const [profileSaved, setProfileSaved] = useState(false)
+
+  const updateExampleState = (state: ExampleState): void => {
+    setExampleState(state)
+
+    updateWebQueryParameter('state', state)
+  }
 
   return (
     <LumenSurface padding="none" radius="none" style={styles.screen} tone="canvas">
@@ -620,109 +718,153 @@ const ExamplesScreen = (): ReactElement => {
           <LumenBadge tone="accent">Product patterns</LumenBadge>
           <LumenText variant="title">Examples</LumenText>
           <LumenText tone="soft">
-            Exercise composed workflows and move them through meaningful loading, empty, error,
-            and success states.
+            Switch among complete release, catalog-health, and contributor-profile patterns.
           </LumenText>
         </View>
 
-        <LumenCard style={styles.section}>
-          <LumenSectionHeader
-            subtitle="The selected state remains explicit to assist visual and accessibility review."
-            title="Catalog synchronization"
-          />
-          <LumenSegmentedControl
-            label="Catalog state"
-            onValueChange={value => {
-              if (isExampleState(value)) {
-                setExampleState(value)
+        <LumenTabs
+          label="Example pattern"
+          onValueChange={value => {
+            if (isExamplePattern(value)) {
+              setPattern(value)
 
-                updateWebQueryParameter('state', value)
-              }
-            }}
-            options={[
-              { label: 'Loading', value: 'loading' },
-              { label: 'Empty', value: 'empty' },
-              { label: 'Error', value: 'error' },
-              { label: 'Success', value: 'success' }
-            ]}
-            value={exampleState}
-          />
-
-          {exampleState === 'loading' && (
-            <View accessibilityLiveRegion="polite" style={styles.stack}>
-              <LumenSpinner accessibilityLabel="Loading catalog synchronization" />
-              <LumenSkeleton shape="text" />
-              <LumenSkeleton shape="text" width="78%" />
-              <LumenSkeleton shape="text" width="56%" />
-              <LumenStatusBar message="Synchronizing the native catalog" tone="accent" />
+              updateWebQueryParameter('pattern', value)
+            }
+          }}
+          options={[
+            { label: 'Release', value: 'release' },
+            { label: 'Health', value: 'health' },
+            { label: 'Profile', value: 'profile' }
+          ]}
+          value={pattern}
+        >
+          {pattern === 'release' && (
+            <View style={styles.stack}>
+              <LumenCard style={styles.section}>
+                <LumenSectionHeader
+                  subtitle="Prepare a local package review with explicit validation and completion feedback."
+                  title="Release checklist"
+                />
+                <LumenCheckbox
+                  checked={approved}
+                  description="Review labels, focus order, touch targets, and status announcements."
+                  label="Accessibility review complete"
+                  onCheckedChange={setApproved}
+                />
+                <LumenButton
+                  disabled={!approved}
+                  onPress={() => {
+                    updateExampleState('success')
+                  }}
+                >
+                  Prepare release
+                </LumenButton>
+                <LumenStatusBar
+                  message={approved ? 'Release ready for final review' : 'Accessibility review required'}
+                  tone={approved ? 'success' : 'warning'}
+                />
+              </LumenCard>
+              <ExampleStatePreview state={exampleState} onStateChange={updateExampleState} />
             </View>
           )}
-          {exampleState === 'empty' && (
-            <LumenEmptyState
-              actions={(
-                <LumenButton onPress={() => {
-                  setExampleState('success')
-                }}
-                >
-                  Create sample entry
-                </LumenButton>
-              )}
-              description="Add a sample entry to review the completed catalog state."
-              graphic={<LumenIcon decorative name="blocks" size="lg" />}
-              title="No catalog entries yet"
-            />
-          )}
-          {exampleState === 'error' && (
-            <LumenErrorState
-              actions={(
-                <LumenButton onPress={() => {
-                  setExampleState('loading')
-                }}
-                >
-                  Retry synchronization
-                </LumenButton>
-              )}
-              description="The local example could not finish its simulated catalog refresh."
-              reference="PLAYGROUND-SYNC"
-              title="Catalog synchronization failed"
-            />
-          )}
-          {exampleState === 'success' && (
-            <LumenCard variant="success">
-              <LumenListRow
-                leading={<LumenIcon decorative name="circle-check" size="lg" />}
-                trailing={<LumenBadge tone="success">Ready</LumenBadge>}
-              >
-                <LumenText variant="label">Native catalog synchronized</LumenText>
-                <LumenText tone="muted">Examples and component metadata use the current workspace build.</LumenText>
-              </LumenListRow>
-            </LumenCard>
-          )}
-        </LumenCard>
 
-        <LumenCard style={styles.section}>
-          <LumenSectionHeader
-            subtitle="A safe local decision flow demonstrates selected, disabled, and completion feedback."
-            title="Accessibility review"
-          />
-          <LumenCheckbox
-            checked={approved}
-            label="Confirm labels, focus order, touch targets, and status announcements"
-            onCheckedChange={setApproved}
-          />
-          <LumenButton
-            disabled={!approved}
-            onPress={() => {
-              setApproved(false)
-            }}
-          >
-            Complete review
-          </LumenButton>
-          <LumenStatusBar
-            message={approved ? 'Accessibility review ready to complete' : 'Accessibility review requires confirmation'}
-            tone={approved ? 'success' : 'warning'}
-          />
-        </LumenCard>
+          {pattern === 'health' && (
+            <View style={styles.stack}>
+              <View style={styles.statGrid}>
+                <LumenStat
+                  detail="Current public catalog"
+                  label="Components"
+                  style={styles.statItem}
+                  tone="accent"
+                  value={String(componentNames.length)}
+                />
+                <LumenStat
+                  detail="Shared discovery structure"
+                  label="Categories"
+                  style={styles.statItem}
+                  tone="success"
+                  value={String(componentCategories.length)}
+                />
+              </View>
+              <LumenBarChart
+                heading="Catalog distribution"
+                label="React Native components by category"
+                series={[{
+                  data: componentCategories.map(category => ({
+                    x: category.label,
+                    y: category.names.length
+                  })),
+                  id: 'catalog',
+                  label: 'Components'
+                }]}
+              />
+              <ExampleStatePreview state={exampleState} onStateChange={updateExampleState} />
+            </View>
+          )}
+
+          {pattern === 'profile' && (
+            <View style={styles.stack}>
+              <LumenCard style={styles.section}>
+                <LumenSectionHeader
+                  subtitle="Profile details and local preferences remain editable and recoverable."
+                  title="Contributor onboarding"
+                />
+                <LumenTextarea
+                  errorMessage={profileName.trim().length === 0 ? 'Enter a display name.' : undefined}
+                  label="Display name"
+                  onChangeText={value => {
+                    setProfileName(value)
+
+                    setProfileSaved(false)
+                  }}
+                  value={profileName}
+                />
+                <LumenSegmentedControl
+                  label="Primary role"
+                  onValueChange={value => {
+                    setProfileRole(value)
+
+                    setProfileSaved(false)
+                  }}
+                  options={[
+                    { label: 'Design', value: 'designer' },
+                    { label: 'Develop', value: 'developer' },
+                    { label: 'Review', value: 'reviewer' }
+                  ]}
+                  value={profileRole}
+                />
+                <LumenToggle
+                  description="This changes local demonstration state only."
+                  label="Show release update examples"
+                  onValueChange={value => {
+                    setUpdatesEnabled(value)
+
+                    setProfileSaved(false)
+                  }}
+                  value={updatesEnabled}
+                />
+                <LumenButton
+                  disabled={profileName.trim().length === 0}
+                  onPress={() => {
+                    setProfileSaved(true)
+                  }}
+                >
+                  Save profile
+                </LumenButton>
+                {profileSaved && (
+                  <LumenToast
+                    description={`${profileName} is ready to ${profileRole}.`}
+                    onDismiss={() => {
+                      setProfileSaved(false)
+                    }}
+                    title="Contributor profile saved"
+                    variant="success"
+                  />
+                )}
+              </LumenCard>
+            </View>
+          )}
+        </LumenTabs>
 
         <LumenStatusBar message="Examples use local, disposable state" tone="success" />
       </ScrollView>
@@ -799,7 +941,7 @@ const SettingsScreen = ({
         <LumenCard style={styles.section}>
           <LumenSectionHeader
             subtitle="Read-only values come from React Native and update when supported device settings change."
-            title="Accessibility lab"
+            title="Accessibility"
           />
           <LumenSettingsRow
             control={<LumenBadge tone={accessibility.screenReader ? 'success' : 'neutral'}>{accessibility.screenReader ? 'On' : 'Off'}</LumenBadge>}
@@ -872,6 +1014,30 @@ const SettingsScreen = ({
           )}
         </LumenCard>
 
+        <LumenCard style={styles.section}>
+          <LumenSectionHeader
+            subtitle="Reference build details stay visible for support and review checks."
+            title="App and platform"
+          />
+          <LumenSettingsRow
+            control={<LumenBadge tone="success">Native</LumenBadge>}
+            description="React Native with Expo"
+            title="Platform"
+          />
+          <LumenDivider />
+          <LumenSettingsRow
+            control={<LumenBadge tone="neutral">{componentNames.length}</LumenBadge>}
+            description="Generated playground entries"
+            title="Catalog"
+          />
+          <LumenDivider />
+          <LumenSettingsRow
+            control={<LumenBadge tone="success">None</LumenBadge>}
+            description="No account, analytics, or remote storage"
+            title="Data collection"
+          />
+        </LumenCard>
+
         <LumenAlert variant="success">
           <LumenAlertTitle>Private by design</LumenAlertTitle>
           <LumenAlertDescription>
@@ -883,7 +1049,7 @@ const SettingsScreen = ({
         <LumenCard style={styles.section}>
           <LumenSectionHeader
             subtitle="Documentation, source, support, and policies."
-            title="Learn more"
+            title="Privacy and resources"
           />
           <View style={styles.linkActions}>
             <LumenButton

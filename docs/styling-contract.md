@@ -27,12 +27,13 @@ uses the same record when it audits consumer CSS.
 | Table | `--ui-table-cell-padding` |
 | ThemeToggle | `--ui-theme-toggle-size` |
 
-`Code` also exposes its documented color variables, including `--ui-code-bg`, `--ui-code-border`,
+`CopyButton` exposes stable `copy-idle`, `copy-copied`, and `copy-error` parts
+for visible state presentation. `Code` also exposes its documented color variables, including `--ui-code-bg`, `--ui-code-border`,
 `--ui-code-fg`, `--ui-code-header-bg`, and `--ui-code-muted`.
 
 ## Stable parts
 
-The foundational roots use `data-slot="button"`, `button-link`, `card`, `code`, `code-tabs`, `link`,
+The foundational roots use `data-slot="button"`, `button-link`, `card`, `code`, `code-tabs`, `copy-button`, `link`,
 `context-navigation`, `navigation-menu`, `sidebar`, `stat`, `table`, and `theme-toggle`.
 
 Card additionally exposes `card-header`, `card-title`, `card-description`, `card-content`, and

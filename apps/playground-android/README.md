@@ -14,7 +14,8 @@ the adaptive navigation rail instead of stretching the phone layout.
 
 The Components destination preserves the complete basic and complex catalog: foundations, actions, forms,
 feedback, visual content, structured data, controlled overlays, Android sharing, bottom
-navigation, navigation accessories, and adaptive navigation. The Wear gallery renders every API
+navigation, navigation accessories, and adaptive navigation within the same six discovery categories
+used by the other phone playgrounds. The Wear gallery renders every API
 in its intentionally smaller package, including the supported metric and list-row
 compositions.
 

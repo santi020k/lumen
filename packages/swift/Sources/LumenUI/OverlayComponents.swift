@@ -8,6 +8,7 @@ private struct LumenAlertDialogModifier: ViewModifier {
     let confirmDisabled: Bool
     let confirmLabel: LocalizedStringKey
     let confirmLoading: Bool
+    let confirmLoadingAccessibilityValue: LumenTextContent
     let confirmRole: ButtonRole?
     let description: LocalizedStringKey?
     let onConfirm: () -> Void
@@ -30,7 +31,7 @@ private struct LumenAlertDialogModifier: ViewModifier {
                 }
             }
             .disabled(confirmDisabled || confirmLoading)
-            .accessibilityValue(confirmLoading ? Text("Loading") : Text(""))
+            .accessibilityValue(confirmLoading ? confirmLoadingAccessibilityValue.text : Text(""))
         } message: {
             if let description {
                 Text(description)
@@ -52,6 +53,33 @@ public extension View {
         confirmLoading: Bool = false,
         onConfirm: @escaping () -> Void
     ) -> some View {
+        lumenAlertDialog(
+            isPresented: isPresented,
+            title: title,
+            description: description,
+            confirmLabel: confirmLabel,
+            cancelLabel: cancelLabel,
+            confirmRole: confirmRole,
+            confirmDisabled: confirmDisabled,
+            confirmLoading: confirmLoading,
+            confirmLoadingAccessibilityValue: .localizedKey("Loading"),
+            onConfirm: onConfirm
+        )
+    }
+
+    /// Presents a controlled native confirmation alert with explicit cancel and confirm actions.
+    func lumenAlertDialog(
+        isPresented: Binding<Bool>,
+        title: LocalizedStringKey,
+        description: LocalizedStringKey? = nil,
+        confirmLabel: LocalizedStringKey,
+        cancelLabel: LocalizedStringKey = "Cancel",
+        confirmRole: ButtonRole? = nil,
+        confirmDisabled: Bool = false,
+        confirmLoading: Bool = false,
+        confirmLoadingAccessibilityValue: LumenTextContent = .localizedKey("Loading"),
+        onConfirm: @escaping () -> Void
+    ) -> some View {
         modifier(
             LumenAlertDialogModifier(
                 isPresented: isPresented,
@@ -59,6 +87,7 @@ public extension View {
                 confirmDisabled: confirmDisabled,
                 confirmLabel: confirmLabel,
                 confirmLoading: confirmLoading,
+                confirmLoadingAccessibilityValue: confirmLoadingAccessibilityValue,
                 confirmRole: confirmRole,
                 description: description,
                 onConfirm: onConfirm,

@@ -34,9 +34,16 @@ export interface LumenChartDatum {
   label?: string
   size?: number | null
   tone?: LumenChartTone
+  toneLabel?: string
   x: number | string
   xLabel?: string
   y: number | null
+}
+
+export interface LumenChartReference {
+  label: string
+  tone?: LumenChartTone
+  value: number
 }
 
 export interface LumenChartSeries {
@@ -79,6 +86,70 @@ export interface LumenChartSummary {
   missingPointCount: number
   seriesCount: number
 }
+
+export interface LumenChartLabels {
+  category: string
+  chartData: string
+  chartLegend: string
+  column: string
+  empty: string
+  high: string
+  low: string
+  notAvailable: string
+  row: string
+  series: string
+  size: string
+  value: string
+  viewData: string
+  x: string
+  formatHeatmapSummary: (count: number) => string
+  formatRangeSummary: (count: number) => string
+  formatSummary: (
+    summary: Readonly<LumenChartSummary>,
+    formatValue: (value: number) => string
+  ) => string
+}
+
+const formatDefaultLumenChartSummary: LumenChartLabels['formatSummary'] = (summary, formatValue) => {
+  if (summary.availablePointCount === 0) return 'No chart data available.'
+
+  const pointLabel = summary.availablePointCount === 1 ? 'point' : 'points'
+
+  const missing = summary.missingPointCount === 0 ?
+    '' :
+    ` ${summary.missingPointCount} missing ${summary.missingPointCount === 1 ? 'value' : 'values'}.`
+
+  return `${summary.seriesCount} series, ${summary.availablePointCount} ${pointLabel}. ` +
+    `Values range from ${formatValue(summary.minimum ?? 0)} to ${formatValue(summary.maximum ?? 0)}.${missing}`
+}
+
+export const lumenChartLabels: Readonly<LumenChartLabels> = Object.freeze({
+  category: 'Category',
+  chartData: 'Chart data',
+  chartLegend: 'Chart legend',
+  column: 'Column',
+  empty: 'No chart data available.',
+  formatHeatmapSummary: (count: number) => count === 0 ?
+    'No chart data available.' :
+    `${count} available heatmap ${count === 1 ? 'cell' : 'cells'}.`,
+  formatRangeSummary: (count: number) => count === 0 ?
+    'No chart data available.' :
+    `${count} available ${count === 1 ? 'range' : 'ranges'}.`,
+  formatSummary: formatDefaultLumenChartSummary,
+  high: 'High',
+  low: 'Low',
+  notAvailable: 'Not available',
+  row: 'Row',
+  series: 'Series',
+  size: 'Size',
+  value: 'Value',
+  viewData: 'View chart data',
+  x: 'X'
+})
+
+export const resolveLumenChartLabels = (
+  labels: Partial<LumenChartLabels> | undefined
+): Readonly<LumenChartLabels> => ({ ...lumenChartLabels, ...labels })
 
 export interface LumenChartDomain {
   max: number
@@ -1004,21 +1075,13 @@ export const summarizeLumenChart = (
 
 export const formatLumenChartSummary = (
   series: readonly LumenChartSeries[],
-  formatValue: (value: number) => string = String
+  formatValue: (value: number) => string = String,
+  labels?: Partial<LumenChartLabels>
 ): string => {
   const summary = summarizeLumenChart(series)
+  const resolvedLabels = resolveLumenChartLabels(labels)
 
-  if (summary.availablePointCount === 0) return 'No chart data available.'
-
-  const pointLabel = summary.availablePointCount === 1 ? 'point' : 'points'
-
-  const missing =
-    summary.missingPointCount === 0 ?
-      '' :
-      ` ${summary.missingPointCount} missing ${summary.missingPointCount === 1 ? 'value' : 'values'}.`
-
-  return `${summary.seriesCount} series, ${summary.availablePointCount} ${pointLabel}. ` +
-    `Values range from ${formatValue(summary.minimum ?? 0)} to ${formatValue(summary.maximum ?? 0)}.${missing}`
+  return resolvedLabels.formatSummary(summary, formatValue)
 }
 
 interface LumenChartDatumValidationContext {

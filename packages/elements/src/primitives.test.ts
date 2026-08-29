@@ -26,6 +26,11 @@ const connect = (tagName: string, attributes: Record<string, string> = {}): HTML
 }
 
 const classesOf = (element: HTMLElement): string[] => [...element.classList].sort()
+const requiredElement = <ElementType extends Element>(element: ElementType | null): ElementType => {
+  if (!element) throw new Error('Expected the rendered element to exist.')
+
+  return element
+}
 
 describe('@santi020k/lumen-elements primitives', () => {
   test('applies base classes for presentational primitives', () => {
@@ -165,7 +170,11 @@ describe('@santi020k/lumen-elements primitives', () => {
       value: { writeText }
     })
 
-    const copyButton = connect('lumen-copy-button', { value: 'Invite link' })
+    const copyButton = document.createElement('lumen-copy-button')
+
+    copyButton.setAttribute('value', 'Invite link')
+    copyButton.textContent = 'Copy invite'
+    document.body.append(copyButton)
 
     copyButton.click()
 
@@ -174,6 +183,23 @@ describe('@santi020k/lumen-elements primitives', () => {
     expect(writeText).toHaveBeenCalledWith('Invite link')
     expect(copyButton.dataset.state).toBe('copied')
     expect(copyButton.getAttribute('aria-label')).toBe('Copied to clipboard')
+    expect(copyButton.dataset.slot).toBe('copy-button')
+    expect(copyButton.querySelector('[data-slot="copy-idle"]')?.textContent)
+      .toBe('Copy invite')
+    expect(copyButton.querySelector('[data-slot="copy-idle"]')?.hasAttribute('hidden')).toBe(true)
+    expect(copyButton.querySelector('[data-slot="copy-copied"]')?.textContent)
+      .toBe('Copied to clipboard')
+    expect(copyButton.querySelector('[data-slot="copy-copied"]')?.hasAttribute('hidden')).toBe(false)
+    expect(copyButton.querySelector('[data-slot="copy-error"]')?.textContent)
+      .toBe('Could not copy to clipboard')
+    expect(copyButton.querySelector('[data-slot="copy-error"]')?.hasAttribute('hidden')).toBe(true)
+    expect(classesOf(connect('lumen-copy-button', { size: 'sm', variant: 'default' })))
+      .toEqual([
+        'ui-button',
+        'ui-button--default',
+        'ui-button--sm',
+        'ui-copy-button'
+      ].sort())
   })
 
   test('resolves glass intensity classes on structural surfaces', () => {
@@ -237,7 +263,8 @@ describe('@santi020k/lumen-elements primitives', () => {
     const bars = connect('lumen-bar-chart', {
       heading: 'Package downloads',
       orientation: 'horizontal',
-      series
+      series,
+      'show-legend': ''
     })
     const line = connect('lumen-line-chart', {
       'reference-value': '6',
@@ -304,6 +331,17 @@ describe('@santi020k/lumen-elements primitives', () => {
     expect(range.querySelector('.ui-range-chart__area')).not.toBeNull()
     expect(combo.querySelector('.ui-bar-chart__marks rect')).not.toBeNull()
     expect(combo.querySelector('.ui-line-chart__line')).not.toBeNull()
+
+    bars.setAttribute('legend-label', 'Localized legend')
+    bars.setAttribute('category-label', 'Localized category')
+    bars.setAttribute('view-data-label', 'Localized data action')
+
+    expect(requiredElement(bars.querySelector('.ui-chart__legend')).getAttribute('aria-label'))
+      .toBe('Localized legend')
+    expect(requiredElement(bars.querySelector('details summary')).textContent)
+      .toBe('Localized data action')
+    expect(requiredElement(bars.querySelector('details thead th')).textContent)
+      .toBe('Localized category')
   })
 
   test('renders the empty state when chart series contain no usable data', () => {

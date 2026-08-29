@@ -23,6 +23,10 @@ import {
 } from 'react-native'
 
 import {
+  type LumenFieldContextValue,
+  useLumenFieldContext
+} from './field-context.js'
+import {
   getLumenIconGraphic,
   type LumenIconName
 } from './icons.generated.js'
@@ -110,7 +114,7 @@ export const LumenSurface = ({
   )
 }
 
-export type LumenButtonIntent = 'danger' | 'primary' | 'quiet' | 'secondary'
+export type LumenButtonIntent = 'danger' | 'primary' | 'quiet' | 'secondary' | 'success'
 export type LumenControlSize = 'lg' | 'md' | 'sm'
 export type LumenIconSize = 'lg' | 'md' | 'sm'
 
@@ -323,12 +327,69 @@ export const LumenButton = ({
 }
 
 export interface LumenTextFieldProps extends TextInputProps {
+  'aria-describedby'?: string
+  'aria-required'?: boolean
   error?: boolean
   ref?: Ref<TextInputInstance>
   size?: LumenControlSize
 }
 
+const hasExplicitLumenTextFieldLabel = (
+  props: Pick<LumenTextFieldProps, 'accessibilityLabel' | 'aria-label' | 'aria-labelledby'>
+): boolean => [
+  props.accessibilityLabel,
+  props['aria-label'],
+  props['aria-labelledby']
+].some(value => value !== undefined)
+
+const resolveLumenTextFieldDescribedBy = (
+  ariaDescribedBy: string | undefined,
+  field: LumenFieldContextValue | null
+): string | undefined => {
+  const inheritedDescription = [field?.descriptionId, field?.errorId]
+    .filter((value): value is string => Boolean(value))
+    .join(' ')
+
+  return ariaDescribedBy ?? (inheritedDescription || undefined)
+}
+
+const resolveLumenTextFieldFontSize = (
+  size: LumenControlSize,
+  mediumFontSize: number,
+  smallFontSize: number
+): number => size === 'lg' ? mediumFontSize : smallFontSize
+
+const resolveLumenTextFieldBorderColor = (
+  isInvalid: boolean,
+  dangerColor: ColorValue,
+  lineColor: ColorValue
+): ColorValue => isInvalid ? dangerColor : lineColor
+
+const resolveLumenTextFieldOpacity = (editable: boolean): number => editable ? 1 : 0.52
+
+interface LumenTextFieldAccessibility {
+  label: string | undefined
+  labelledBy: string | undefined
+  required: boolean | undefined
+}
+
+const resolveLumenTextFieldAccessibility = (
+  props: LumenTextFieldProps,
+  field: LumenFieldContextValue | null,
+  ariaRequired: boolean | undefined
+): LumenTextFieldAccessibility => {
+  const hasExplicitLabel = hasExplicitLumenTextFieldLabel(props)
+
+  return {
+    label: hasExplicitLabel ? props.accessibilityLabel : field?.label,
+    labelledBy: hasExplicitLabel ? props['aria-labelledby'] : field?.labelId,
+    required: ariaRequired ?? field?.required
+  }
+}
+
 export const LumenTextField = ({
+  'aria-describedby': ariaDescribedBy,
+  'aria-required': ariaRequired,
   accessibilityState,
   editable = true,
   error = false,
@@ -339,27 +400,42 @@ export const LumenTextField = ({
   ...props
 }: LumenTextFieldProps): ReactElement => {
   const theme = useLumenTheme()
+  const field = useLumenFieldContext()
   const minHeight = resolveLumenControlMinHeight(size)
-  const fontSize = size === 'lg' ? theme.fontSizes.md : theme.fontSizes.sm
+  const fontSize = resolveLumenTextFieldFontSize(size, theme.fontSizes.md, theme.fontSizes.sm)
+  const accessibility = resolveLumenTextFieldAccessibility(props, field, ariaRequired)
+  const describedBy = resolveLumenTextFieldDescribedBy(ariaDescribedBy, field)
+  const isInvalid = error || (field?.error ?? false)
 
   return (
     <TextInput
       ref={ref}
       {...props}
-      accessibilityState={{ ...accessibilityState, disabled: !editable }}
-      aria-invalid={error || undefined}
+      accessibilityLabel={accessibility.label}
+      accessibilityState={{
+        ...accessibilityState,
+        disabled: !editable
+      }}
+      aria-describedby={describedBy}
+      aria-invalid={isInvalid || undefined}
+      aria-labelledby={accessibility.labelledBy}
+      aria-required={accessibility.required}
       editable={editable}
       placeholderTextColor={placeholderTextColor ?? theme.colors.inkMuted}
       style={[
         {
           backgroundColor: theme.colors.surface,
-          borderColor: error ? theme.colors.danger : theme.colors.line,
+          borderColor: resolveLumenTextFieldBorderColor(
+            isInvalid,
+            theme.colors.danger,
+            theme.colors.line
+          ),
           borderRadius: theme.radii.sm,
           borderWidth: 1,
           color: theme.colors.ink,
           fontSize,
           minHeight,
-          opacity: editable ? 1 : 0.52,
+          opacity: resolveLumenTextFieldOpacity(editable),
           paddingHorizontal: theme.spacing.md,
           paddingVertical: theme.spacing.sm
         },

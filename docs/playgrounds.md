@@ -2,13 +2,18 @@
 
 Lumen includes a native playground for each adapter. Use these apps to evaluate the real components,
 capture documentation screenshots, and prepare distributable marketing builds. The React Native,
-Apple, and Android playgrounds are organized as polished reference applications with Home, Examples,
-Components, and Settings. Their Components destinations retain the searchable deterministic catalogs
-used by capture scripts, while normal launches add category discovery, focused component views,
-interactive patterns, and adaptive layouts. React Native Settings also reports live screen-reader,
-reduced-motion, and font-scale context and provides an English/Spanish validation example.
-Each gallery is generated from the current shared and platform-specific contract registry rather
-than a hand-maintained component total. The galleries cover semantic Card variants, multiline and
+Apple, and Android playgrounds are organized as polished reference applications with the same Home,
+Examples, Components, and Settings destinations. Examples exposes the same Release, Health, and
+Profile patterns with loading, empty, error, and success states. Settings consistently covers
+Appearance, Accessibility, Runtime localization, App and platform, and Privacy and resources.
+Their Components destinations retain the searchable deterministic catalogs used by capture scripts,
+while normal launches add category discovery, focused component views, interactive patterns, and
+adaptive layouts. Each catalog is generated from `registry/native-playground-catalog.json`, which
+maps every shared phone component from the native contract registry into the same six discovery
+categories and appends only genuine platform-specific entries. Run
+`pnpm run generate:native-playground-catalogs` after changing that source and
+`pnpm run check:native-playground-structure` to verify the shared application structure.
+The galleries cover semantic Card variants, multiline and
 grouped forms, chips, action groups, transient feedback, metrics, rows, empty states, and light/dark
 theme behavior. Every phone gallery exercises Picker, Slider, Gauge, DateField, and DateRangeField
 through its platform implementation. The galleries also demonstrate React Native pull-to-refresh,
@@ -134,7 +139,7 @@ production build.
 
 1. In Xcode, choose File → Add Package Dependencies.
 2. Paste `https://github.com/santi020k/lumen` into the search field.
-3. Choose Exact Version and enter `2.0.0`. Use Up to Next Major Version from `2.0.0` only when the
+3. Choose Exact Version and enter `2.1.0`. Use Up to Next Major Version from `2.1.0` only when the
    application intentionally accepts compatible updates; reserve `main` for local evaluation.
 4. Select the `LumenUI` product and add it to your application target.
 5. Add `import LumenUI` to the SwiftUI view that uses Lumen components.
@@ -246,7 +251,7 @@ link the platform package differently:
 - React Native installs `@santi020k/lumen-react-native` from npm and mounts one `LumenProvider`.
 - Apple applications add `https://github.com/santi020k/lumen` through Swift Package Manager and
   select the `LumenUI` product.
-- Android applications install `com.santi020k:lumen-compose:2.0.0` from Maven Central. The repository
+- Android applications install `com.santi020k:lumen-compose:2.1.0` from Maven Central. The repository
   playground intentionally references the local module so it can exercise unreleased changes.
 
 See the corresponding React Native, Apple, or Android documentation page for complete application

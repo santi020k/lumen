@@ -11,7 +11,9 @@ import {
   getLumenChartToneClassName,
   hasLumenChartData,
   type LumenChartDatum,
+  type LumenChartLabels,
   type LumenComboSeries,
+  resolveLumenChartLabels,
   resolveLumenChartTone } from '@santi020k/lumen-core'
 
 import Chart from './Chart.astro'
@@ -23,13 +25,16 @@ interface Props extends HTMLAttributes<'figure'> {
   description?: string
   formatValue?: (value: number) => string
   heading?: string
+  labels?: Partial<LumenChartLabels>
   series: readonly LumenComboSeries[]
   showLegend?: boolean
   showTable?: boolean
   summary?: string
 }
 
-const { caption, class: classProp = '', className = '', description, formatValue = String, heading, series, showLegend = true, showTable = true, summary = formatLumenChartSummary(series, formatValue), ...rest } = Astro.props
+const { caption, class: classProp = '', className = '', description, formatValue = String, heading, labels, series, showLegend = true, showTable = true, summary: summaryProp, ...rest } = Astro.props
+const resolvedLabels = resolveLumenChartLabels(labels)
+const summary = summaryProp ?? formatLumenChartSummary(series, formatValue, resolvedLabels)
 const width = 640
 const height = 320
 const padding = 44
@@ -82,8 +87,8 @@ const hasData = hasLumenChartData(series)
 ---
 
 <Chart class:list={['ui-combo-chart', classProp, className]} {caption} {description} {heading} {summary} {...rest}>
-  {showLegend && hasData && <ul class="ui-chart__legend" aria-label="Chart legend">{series.map((item, index) => <li class={getLumenChartToneClassName(item.tone, index)}><span aria-hidden="true" />{item.label}</li>)}</ul>}
-  {!hasData && <p class="ui-chart__empty" role="status">No chart data available.</p>}
+  {showLegend && hasData && <ul class="ui-chart__legend" aria-label={resolvedLabels.chartLegend}>{series.map((item, index) => <li class={getLumenChartToneClassName(item.tone, index)}><span aria-hidden="true" />{item.label}</li>)}</ul>}
+  {!hasData && <p class="ui-chart__empty" role="status">{resolvedLabels.empty}</p>}
   <div class="ui-chart__plot" hidden={!hasData}><svg aria-hidden="true" viewBox={`0 0 ${width} ${height}`}><g class="
     ui-bar-chart__marks
   "
@@ -107,11 +112,11 @@ d={geometry.path}
 )
 })}</svg></div>
   {showTable && hasData && (
-<details class="ui-chart__data"><summary>View chart data</summary><div><table><thead><tr><th scope="col">Category</th>{series.map(item => <th scope="col">{item.label}</th>)}</tr></thead><tbody>{categories.map(category => (
+<details class="ui-chart__data"><summary>{resolvedLabels.viewData}</summary><div><table><thead><tr><th scope="col">{resolvedLabels.category}</th>{series.map(item => <th scope="col">{item.label}</th>)}</tr></thead><tbody>{categories.map(category => (
 <tr><th scope="row">{String(category)}</th>{series.map(item => {
  const datum = item.data.find(point => point.x === category)
 
- return <td>{datum?.label ?? (datum?.y === undefined || datum.y === null || !Number.isFinite(datum.y) ? 'Not available' : formatValue(datum.y))}</td>
+ return <td>{datum?.label ?? (datum?.y === undefined || datum.y === null || !Number.isFinite(datum.y) ? resolvedLabels.notAvailable : formatValue(datum.y))}</td>
 })}</tr>
 ))}</tbody></table></div></details>
 )}

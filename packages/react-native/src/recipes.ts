@@ -87,6 +87,10 @@ export const resolveLumenButtonColors = (
     return { backgroundColor: colors.surfaceMuted, borderColor: colors.line, color: colors.ink }
   }
 
+  if (intent === 'success') {
+    return { backgroundColor: colors.success, borderColor: colors.success, color: colors.onBrand }
+  }
+
   return { backgroundColor: colors.brandSolid, borderColor: colors.brandSolid, color: colors.onBrand }
 }
 

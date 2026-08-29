@@ -6,8 +6,10 @@ import {
   formatLumenChartSummary,
   getLumenChartTicks,
   getLumenChartToneClassName,
+  type LumenChartLabels,
   type LumenChartScaleType,
   type LumenChartSeries,
+  resolveLumenChartLabels,
   scaleLumenChartValue } from '@santi020k/lumen-core'
 
 import Chart from './Chart.astro'
@@ -20,6 +22,7 @@ interface Props extends HTMLAttributes<'figure'> {
   emptyLabel?: string
   formatValue?: (value: number) => string
   heading?: string
+  labels?: Partial<LumenChartLabels>
   series: readonly LumenChartSeries[]
   showLegend?: boolean
   showTable?: boolean
@@ -32,9 +35,10 @@ const {
   class: classProp = '',
   className = '',
   description,
-  emptyLabel = 'No chart data available.',
+  emptyLabel,
   formatValue = String,
   heading,
+  labels,
   series,
   showLegend = series.length > 1,
   showTable = true,
@@ -44,6 +48,7 @@ const {
 } = Astro.props
 
 const geometry = createLumenScatterGeometry(series, { xScale })
+const resolvedLabels = resolveLumenChartLabels(labels)
 
 const projectedSeries = series.map(item => ({
   ...item,
@@ -51,14 +56,14 @@ const projectedSeries = series.map(item => ({
 })).filter(item => item.data.length > 0)
 
 const hasData = geometry.points.length > 0
-const summary = summaryProp ?? formatLumenChartSummary(projectedSeries, formatValue)
+const summary = summaryProp ?? formatLumenChartSummary(projectedSeries, formatValue, resolvedLabels)
 const xTicks = getLumenChartTicks(geometry.xDomain)
 const yTicks = getLumenChartTicks(geometry.domain)
 ---
 
 <Chart class:list={['ui-scatter-chart', classProp, className]} {caption} {description} {heading} {summary} {...rest}>
-  {showLegend && hasData && <ul class="ui-chart__legend" aria-label="Chart legend">{series.map((item, index) => <li class={getLumenChartToneClassName(item.tone, index)}><span aria-hidden="true" />{item.label}</li>)}</ul>}
-  {!hasData && <p class="ui-chart__empty" role="status">{emptyLabel}</p>}
+  {showLegend && hasData && <ul class="ui-chart__legend" aria-label={resolvedLabels.chartLegend}>{series.map((item, index) => <li class={getLumenChartToneClassName(item.tone, index)}><span aria-hidden="true" />{item.label}</li>)}</ul>}
+  {!hasData && <p class="ui-chart__empty" role="status">{emptyLabel ?? resolvedLabels.empty}</p>}
   <div class="ui-chart__plot" hidden={!hasData}>
     <svg aria-hidden="true" viewBox={`0 0 ${geometry.width} ${geometry.height}`}>
       <g class="ui-chart__grid">{yTicks.map(tick => {
@@ -74,5 +79,5 @@ const yTicks = getLumenChartTicks(geometry.domain)
       <g class="ui-scatter-chart__marks">{geometry.points.map(point => <circle class={getLumenChartToneClassName(point.tone)} cx={point.xCoordinate} cy={point.yCoordinate} r={point.radius}><title>{`${point.xLabel ?? point.x} · ${point.seriesLabel}: ${point.label ?? formatValue(point.y ?? 0)}`}</title></circle>)}</g>
     </svg>
   </div>
-  {showTable && hasData && <details class="ui-chart__data"><summary>View chart data</summary><div><table><thead><tr><th scope="col">X</th><th scope="col">Series</th><th scope="col">Value</th><th scope="col">Size</th></tr></thead><tbody>{geometry.points.map(point => <tr><th scope="row">{point.xLabel ?? point.x}</th><td>{point.seriesLabel}</td><td>{point.label ?? formatValue(point.y ?? 0)}</td><td>{point.size === undefined || point.size === null || !Number.isFinite(point.size) ? 'Not available' : formatValue(point.size)}</td></tr>)}</tbody></table></div></details>}
+  {showTable && hasData && <details class="ui-chart__data"><summary>{resolvedLabels.viewData}</summary><div><table><thead><tr><th scope="col">{resolvedLabels.x}</th><th scope="col">{resolvedLabels.series}</th><th scope="col">{resolvedLabels.value}</th><th scope="col">{resolvedLabels.size}</th></tr></thead><tbody>{geometry.points.map(point => <tr><th scope="row">{point.xLabel ?? point.x}</th><td>{point.seriesLabel}</td><td>{point.label ?? formatValue(point.y ?? 0)}</td><td>{point.size === undefined || point.size === null || !Number.isFinite(point.size) ? resolvedLabels.notAvailable : formatValue(point.size)}</td></tr>)}</tbody></table></div></details>}
 </Chart>

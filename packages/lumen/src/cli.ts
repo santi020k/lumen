@@ -21,6 +21,7 @@ import {
   type LumenAddTarget,
   type LumenRegistry,
   lumenRegistry,
+  type LumenRegistryComponentContract,
   type LumenRegistryEntry
 } from './registry.js'
 import { auditLumenTokenCss, type LumenTokenAuditFinding } from './token-audit.js'
@@ -129,6 +130,40 @@ const getRegistryItemDependencies = (item: LumenRegistryEntry): string | undefin
   `dependencies: ${item.dependencies.join(', ')}` :
   undefined
 
+const formatContractProp = (
+  prop: NonNullable<LumenRegistryComponentContract['props']>[number]
+): string => `${prop.name}: ${prop.type}${prop.required ? ' (required)' : ''}${prop.default ? ` = ${prop.default}` : ''}`
+
+const formatContractList = (
+  label: string,
+  values: readonly string[] | undefined,
+  separator: string
+): string | undefined => values?.length ? `${label}: ${values.join(separator)}` : undefined
+
+const getRegistryItemContract = (item: LumenRegistryEntry): string[] => {
+  if (item.type !== 'component') return []
+
+  const contract = item.contract
+
+  if (!contract) return []
+
+  const optionalLines = [
+    formatContractList('props', contract.props?.map(formatContractProp), '; '),
+    formatContractList('composition', contract.composition, ' '),
+    formatContractList('events', contract.events, ', '),
+    formatContractList('slots', contract.slots, ', '),
+    contract.runtime ? `runtime: ${contract.runtime}` : undefined,
+    formatContractList('styling parts', contract.stylingParts, ', '),
+    formatContractList('tokens', contract.tokens, ', ')
+  ].filter((line): line is string => Boolean(line))
+
+  return [
+    ...Object.entries(contract.imports).map(([framework, value]) => `import (${framework}): ${value}`),
+    ...Object.entries(contract.usage).map(([framework, value]) => `usage (${framework}): ${value}`),
+    ...optionalLines
+  ]
+}
+
 const formatItem = (itemName: string, registry: LumenRegistry = lumenRegistry) => {
   const item: LumenRegistryEntry | undefined =
     getLumenRegistryItem(itemName, registry)
@@ -144,7 +179,8 @@ const formatItem = (itemName: string, registry: LumenRegistry = lumenRegistry) =
     getRegistryItemDescription(item),
     getRegistryItemCategory(item),
     getRegistryItemComponents(item),
-    getRegistryItemDependencies(item)
+    getRegistryItemDependencies(item),
+    ...getRegistryItemContract(item)
   ]
 
   const files = getRegistryItemFiles(item)
@@ -343,7 +379,11 @@ const run = async () => {
     }
 
     case 'show': {
-      if (name) output = formatItem(name, registry)
+      if (name) {
+        const item = getLumenRegistryItem(name, registry)
+
+        output = json && item ? JSON.stringify(item, undefined, 2) : formatItem(name, registry)
+      }
 
       break
     }

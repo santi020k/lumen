@@ -1,6 +1,6 @@
 {
   "name": "@santi020k/lumen",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "publishConfig": {
     "access": "public"
   },
@@ -64,8 +64,8 @@
     "@types/semver": "catalog:",
     "@vitest/coverage-v8": "catalog:",
     "react": "catalog:",
-    "typescript": "catalog:",
     "tailwindcss": "catalog:",
+    "typescript": "catalog:",
     "vitest": "catalog:"
   },
   "engines": {

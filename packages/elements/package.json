@@ -1,6 +1,6 @@
 {
   "name": "@santi020k/lumen-elements",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "publishConfig": {
     "access": "public"
   },
@@ -78,11 +78,11 @@
   },
   "devDependencies": {
     "@vitest/coverage-v8": "catalog:",
+    "axe-core": "catalog:",
     "esbuild": "catalog:",
     "jsdom": "catalog:",
     "typescript": "catalog:",
-    "vitest": "catalog:",
-    "axe-core": "catalog:"
+    "vitest": "catalog:"
   },
   "engines": {
     "node": ">=22.12.0"

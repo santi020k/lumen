@@ -192,7 +192,7 @@ describe('Lumen React Native chart components', () => {
 
     const descendants = descendantsOf(heatmap)
 
-    expect(heatmap.props.summary).toBe('0 available heatmap cells.')
+    expect(heatmap.props.summary).toBe('No chart data available.')
     expect(descendants.some(element => (
       propsOf(element).children === 'No chart data available.'
     ))).toBe(true)
@@ -213,6 +213,36 @@ describe('Lumen React Native chart components', () => {
     expect(pie.props.summary).toContain('1 point')
     expect(pie.props.summary).toContain('8 to 8')
     expect(dataOutput(pie).series?.[0]?.data.map(datum => datum.x)).toEqual(['Available'])
+  })
+
+  test('localizes every library-owned chart support phrase', () => {
+    const labels = {
+      chartData: 'Datos del gráfico',
+      empty: 'No hay datos.',
+      formatHeatmapSummary: (count: number) => `${count} celdas disponibles.`,
+      notAvailable: 'No disponible',
+      size: 'Tamaño'
+    }
+    const heatmap = LumenHeatmap({
+      data: [{ value: null, x: 'Lunes', y: 'Mañana' }],
+      label: 'Actividad',
+      labels
+    }) as ReactElement<ChartFrameOutputProps>
+    const scatter = LumenScatterChart({
+      label: 'Calidad',
+      labels,
+      series: [{
+        data: [{ size: null, x: 1, y: 4 }],
+        id: 'quality',
+        label: 'Calidad'
+      }]
+    }) as ReactElement<ChartFrameOutputProps>
+
+    expect(heatmap.props.summary).toBe('0 celdas disponibles.')
+    expect(dataOutput(heatmap).rows?.[0]?.label).toBe('Lunes, Mañana: No disponible')
+    expect(descendantsOf(renderDataOutput(scatter)).some(element => (
+      propsOf(element).children === '1, Calidad: 4, Tamaño: No disponible'
+    ))).toBe(true)
   })
 
   test('exposes scatter bubble sizes and omits points with invalid coordinates', () => {

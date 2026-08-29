@@ -12,16 +12,33 @@ words:
   - xros
   - xrsimulator
   - actualiza
+  - Actividad
+  - análisis
   - aplicación
   - cambió
+  - Calidad
+  - celdas
+  - Datos
+  - datos
+  - disponible
+  - disponibles
+  - dispositivo
   - esta
   - estado
   - está
+  - gráfico
   - idioma
   - lista
   - Localización
+  - networkidle
+  - paintpalette
   - obligatoria
+  - puntos
+  - permanece
+  - privacidad
+  - proteger
   - recrearla
+  - Tamaño
   - usuarios
   - Validar
   - versión
@@ -30,6 +47,8 @@ words:
   - browsable
   - targetable
   - textformat
+  - tsdoc
+  - subviews
   - trianglepath
   - affix
   - Affix
@@ -41,6 +60,7 @@ words:
   - AnimatedPortrait
   - androidx
   - astrojs
+  - aschild
   - archivebox
   - autobuild
   - Autobuild
@@ -68,6 +88,9 @@ words:
   - contenteditable
   - ContracTrack
   - Roadscore
+  - scrollheight
+  - scrollprogress
+  - scrolltop
   - coverimage
   - CoverImage
   - Coolstead
@@ -124,7 +147,6 @@ words:
   - lede
   - largecircle
   - libphonenumber
-  - phonenumberkit
   - linecap
   - linejoin
   - VectorPath
@@ -157,6 +179,7 @@ words:
   - npx
   - nums
   - overscan
+  - paintpalette
   - phonenumbers
   - pipefail
   - popconfirm
@@ -256,10 +279,12 @@ words:
   - eeef
   - fbca
   - appletvsimulator
+  - subrange
   - APPL
 ignoreRegExpList:
   - luQW2pTQ3jGGxSFPAAsfa9
 ignorePaths:
+  - .eslint-config-snapshot.json
   - node_modules
   - dist
   - coverage

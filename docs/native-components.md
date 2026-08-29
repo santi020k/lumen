@@ -48,8 +48,8 @@ Shared icons use `name="search"`; applications can instead pass graphic componen
 ### SwiftUI
 
 In Xcode, choose **File → Add Package Dependencies**, paste
-`https://github.com/santi020k/lumen`, and choose **Exact Version** `2.0.0` for a reproducible
-production build. Use **Up to Next Major Version** from `2.0.0` only when the application accepts
+`https://github.com/santi020k/lumen`, and choose **Exact Version** `2.1.0` for a reproducible
+production build. Use **Up to Next Major Version** from `2.1.0` only when the application accepts
 compatible updates, and reserve `main` for local evaluation. Add the `LumenUI` product to the
 application target. The repository-root `Package.swift` is the public package entry point; no
 CocoaPod or npm package is involved.
@@ -60,12 +60,12 @@ Projects with their own Swift package manifest can declare the dependency direct
 dependencies: [
     .package(
         url: "https://github.com/santi020k/lumen",
-        exact: "2.0.0"
+        exact: "2.1.0"
     )
 ]
 ```
 
-Use `from: "2.0.0"` instead of `exact: "2.0.0"` for a compatible-version policy. Commit
+Use `from: "2.1.0"` instead of `exact: "2.1.0"` for a compatible-version policy. Commit
 `Package.resolved` for application and CI builds and verify that its version and revision match the
 intended release tag. XcodeGen and other deterministic project generators should keep the package
 requirement in their checked-in configuration and regenerate project files from that source.
@@ -141,7 +141,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.santi020k:lumen-compose:2.0.0")
+    implementation("com.santi020k:lumen-compose:2.1.0")
 }
 ```
 
@@ -199,7 +199,7 @@ contracts:
 
 ```kotlin
 dependencies {
-    implementation("com.santi020k:lumen-compose-wear:2.0.0")
+    implementation("com.santi020k:lumen-compose-wear:2.1.0")
 }
 ```
 
@@ -219,27 +219,27 @@ owned.
 | Theme             | `LumenProvider`         | `.lumenTheme`            | `LumenTheme`            | Light, dark, and semantic tokens                                              |
 | Text              | `LumenText`             | `LumenText`              | `LumenText`             | Body, caption, label, and title roles                                         |
 | Icon              | `LumenIcon`             | `LumenIcon`              | `LumenIcon`             | Shared names, native escape hatches, 16/20/24 sizes; decorative by default    |
-| Icon button       | `LumenIconButton`       | `LumenIconButton`        | `LumenIconButton`       | Required label, shared intents, 44 point mobile or compact Mac target         |
+| Icon button       | `LumenIconButton`       | `LumenIconButton`        | `LumenIconButton`       | Required label and shared intents; SwiftUI adds semantic roles and loading    |
 | Surface           | `LumenSurface`          | `LumenSurface`           | `LumenSurface`          | Semantic surface, padding, and radius roles                                   |
-| Button            | `LumenButton`           | `LumenButton`            | `LumenButton`           | Primary, secondary, quiet, danger, loading, disabled                          |
+| Button            | `LumenButton`           | `LumenButton`            | `LumenButton`           | Semantic intents, loading, disabled; SwiftUI keeps platform role independent  |
 | Button group      | `LumenButtonGroup`      | `LumenButtonGroup`       | `LumenButtonGroup`      | Horizontal or vertical layout for related actions                             |
 | Text field        | `LumenTextField`        | `LumenTextField`         | `LumenTextField`        | Error and disabled states with native input behavior                          |
 | Textarea          | `LumenTextarea`         | `LumenTextarea`          | `LumenTextarea`         | Multiline native editing with supporting and error states                     |
 | Field group       | `LumenFieldGroup`       | `LumenFieldGroup`        | `LumenFieldGroup`       | Shared label, guidance, required state, and validation message                |
-| Toggle            | `LumenToggle`           | `LumenToggle`            | `LumenToggle`           | Native switch behavior with visible label and disabled state                  |
-| Settings row      | `LumenSettingsRow`      | `LumenSettingsRow`       | `LumenSettingsRow`      | Supporting copy, optional graphic, and trailing native control                |
-| Search field      | `LumenSearchField`      | `LumenSearchField`       | `LumenSearchField`      | Native search entry with labeled clear action                                 |
+| Toggle            | `LumenToggle`           | `LumenToggle`            | `LumenToggle`           | Full-row switch with visible label, supporting guidance, and disabled state   |
+| Settings row      | `LumenSettingsRow`      | `LumenSettingsRow`       | `LumenSettingsRow`      | Supporting copy and trailing control in a minimum 56-unit row                 |
+| Search field      | `LumenSearchField`      | `LumenSearchField`       | `LumenSearchField`      | Native search entry with a labeled, density-aware clear action                |
 | Date field        | `LumenDateField`        | `LumenDateField`         | `LumenDateField`        | Native date selection with bounds and validation context                      |
 | Date range field  | `LumenDateRangeField`   | `LumenDateRangeField`    | `LumenDateRangeField`   | Inclusive native range selection with coordinated start and end values        |
-| Checkbox          | `LumenCheckbox`         | `LumenCheckbox`          | `LumenCheckbox`         | Controlled Boolean selection with label and supporting text                   |
-| Radio group       | `LumenRadioGroup`       | `LumenRadioGroup`        | `LumenRadioGroup`       | Named single selection with disabled option support                           |
+| Checkbox          | `LumenCheckbox`         | `LumenCheckbox`          | `LumenCheckbox`         | Controlled Boolean selection with a density-aware full-row target             |
+| Radio group       | `LumenRadioGroup`       | `LumenRadioGroup`        | `LumenRadioGroup`       | Named single selection with density-aware rows and disabled options           |
 | Segmented control | `LumenSegmentedControl` | `LumenSegmentedControl`  | `LumenSegmentedControl` | Compact single selection from a small peer set                                |
 | Tabs              | `LumenTabs`             | `LumenTabs`              | `LumenTabs`             | Named tab list with controlled selection and an active content panel          |
 | Navigation bar    | `LumenNavigationBar`    | `LumenNavigationBar`     | `LumenNavigationBar`    | Controlled destinations, re-selection, badges, and disabled states            |
-| Chip              | `LumenChip`             | `LumenChip`              | `LumenChip`             | Compact display, selection, and separately labeled removal                    |
+| Chip              | `LumenChip`             | `LumenChip`              | `LumenChip`             | Compact selection with a labeled removal action and 24-unit minimum target    |
 | Badge             | `LumenBadge`            | `LumenBadge`             | `LumenBadge`            | Neutral, accent, success, warning, and danger tones                           |
 | Divider           | `LumenDivider`          | `LumenDivider`           | `LumenDivider`          | Semantic line color and decorative semantics                                  |
-| Spinner           | `LumenSpinner`          | `LumenSpinner`           | `LumenSpinner`          | Brand color and accessible loading label                                      |
+| Spinner           | `LumenSpinner`          | `LumenSpinner`           | `LumenSpinner`          | Brand default, optional semantic tint, and accessible loading label           |
 | Card              | `LumenCard`             | `LumenCard`              | `LumenCard`             | Neutral and semantic surfaces; optional native action                         |
 | Alert             | `LumenAlert`            | `LumenAlert`             | `LumenAlert`            | Default, destructive, success, and warning variants                           |
 | Alert dialog      | `LumenAlertDialog`      | `lumenAlertDialog`       | `LumenAlertDialog`      | Controlled confirmation with destructive, disabled, and loading states        |
@@ -266,7 +266,7 @@ owned.
 | Banner            | `LumenBanner`           | `LumenBanner`            | `LumenBanner`           | Semantic notice with optional actions and dismissal                           |
 | Stat              | `LumenStat`             | `LumenStat`              | `LumenStat`             | Compact semantic metric with label, value, and detail                         |
 | Section header    | `LumenSectionHeader`    | `LumenSectionHeader`     | `LumenSectionHeader`    | Section identity, optional count, and trailing actions                        |
-| Status bar        | `LumenStatusBar`        | `LumenStatusBar`         | `LumenStatusBar`        | Compact textual status and optional trailing content                          |
+| Status bar        | `LumenStatusBar`        | `LumenStatusBar`         | `LumenStatusBar`        | Wrapping status message with ordered trailing content at its intrinsic size     |
 | Picker            | `LumenPicker`           | `LumenPicker`            | `LumenPicker`           | Controlled single-value selection with native or accessible menu presentation |
 | Slider            | `LumenSlider`           | `LumenSlider`            | `LumenSlider`           | Native or dependency-free continuous and stepped range input                  |
 | Gauge             | `LumenGauge`            | `LumenGauge`             | `LumenGauge`            | Clamped circular metric with a formatted accessible value                     |
@@ -646,9 +646,22 @@ LumenSlider(
     value: $minimumSpeed,
     in: 1_000...5_000,
     step: 100,
-    valueLabel: "\(Int(minimumSpeed)) RPM"
+    valueLabel: "\(Int(minimumSpeed)) RPM",
+    onEditingChanged: { editing in
+        editing ? undoManager.beginUndoGrouping() : undoManager.endUndoGrouping()
+    }
 )
 ```
+
+SwiftUI pickers also accept rich label and current-value builders, so a product can preserve an
+icon-bearing setting label and a color-swatch selection without replacing the native picker. The
+concise text initializer remains the default. `LumenTextarea` accepts a compact line range and an
+independently focusable trailing accessory for actions such as caption assistance. Undo grouping,
+haptic detents, and the assistant workflow remain application-owned.
+
+Native peer tabs scroll horizontally at narrow widths and bring the controlled selection into
+view. Keep labels concise, retain the 44-point target, and prefer a picker for long or numerous
+choices and a segmented control for a small mutually exclusive set.
 
 ### Shared empty, row, and feedback states
 
@@ -740,6 +753,19 @@ LumenLink(
     showsExternalIndicator: true
 )
 ```
+
+Use `.compact` empty-state layout and stat density in constrained sidebars or three-column phone
+summaries; use the defaults for ordinary cards and `.page` for a page-level empty state. Banner
+actions adapt from a row to a vertical stack when width or text size makes the row unsafe. A
+`success` button communicates a positive semantic outcome; `primary` remains the single default
+call to action for hierarchy.
+
+All native chart adapters accept replaceable chart labels. Finite zero is valid data; an all-zero
+series is therefore not empty, although an application may choose a scoreboard instead when the
+chart adds no value. Set `showData` to `false` only when the same values are already available in a
+nearby accessible table. Native line charts accept an optional labeled reference rule and
+per-datum `tone` plus `toneLabel`; always provide the visible or spoken tone label so color is not
+the only encoding.
 
 ### Metrics and dense desktop structure
 
@@ -877,7 +903,9 @@ LumenCard(
 - Interactive cards expose button semantics and must have an understandable accessible name from
   their content or an explicit label.
 - Alerts do not interrupt screen readers merely because they are visually styled as alerts.
-- Toasts use native live feedback semantics while their action and dismissal remain independently labeled.
+- Toasts use native live feedback semantics while their action and dismissal remain independently
+  labeled and fully operable.
+- Field-group validation updates use native live feedback without merging their child controls.
 - Progress exposes minimum, maximum, and current values after normalization.
 - Skeletons are decorative unless explicitly labeled as an indeterminate loading state.
 - Disclosure triggers expose their current expanded or collapsed state, and hidden content is not

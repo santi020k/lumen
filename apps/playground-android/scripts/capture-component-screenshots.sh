@@ -135,6 +135,12 @@ for component in "${components[@]}"; do
         "Adaptive navigation scaffold") scroll_count=2 ;;
     esac
 
+    # Long catalog runs can outlive the emulator's display timeout. Keep each
+    # capture deterministic even when an earlier accessibility suite left the
+    # device locked or the screen turned off.
+    $adb shell input keyevent 224
+    $adb shell wm dismiss-keyguard
+    sleep 0.5
     $adb shell am force-stop com.santi020k.lumen.playground.compose
     $adb shell am start -W -n "$phone_activity" --es component "\"$component\"" >/dev/null
     for ((index = 0; index < scroll_count; index += 1)); do

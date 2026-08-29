@@ -1,6 +1,7 @@
 export const formatReactChartTableValue = (
   value: number | null | undefined,
-  formatValue: (value: number) => string
+  formatValue: (value: number) => string,
+  notAvailable = 'Not available'
 ): string => value === null || value === undefined || !Number.isFinite(value) ?
-  'Not available' :
+  notAvailable :
   formatValue(value)

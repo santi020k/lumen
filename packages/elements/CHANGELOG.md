@@ -1,5 +1,24 @@
 # @santi020k/lumen-elements
 
+## 2.1.0
+
+### Minor Changes
+
+- Complete the v2 consumer-improvement contracts: localizable chart support copy, semantic native
+  chart references and datum tones, richer SwiftUI form composition, adaptive native layouts,
+  success actions, contextual React Native fields, complete CopyButton and reveal semantics,
+  component-aware diagnostics, explicit shared-library integration boundaries, packed Astro runtime
+  coverage, rendered migration checks, and adoption-ready registry output.
+
+### Patch Changes
+
+- Keep inactive CopyButton feedback hidden and rerender charts when localized label attributes
+  change.
+
+- Updated dependencies [`da315f0`, `da315f0`, `42b9f27`]:
+  - @santi020k/lumen@2.1.0
+  - @santi020k/lumen-core@2.1.0
+
 ## 2.0.0
 
 ### Major Changes

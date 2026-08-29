@@ -231,6 +231,14 @@ const validatePlatformBaseline = (platformName, platformBaseline) => {
 
 const describeSymbol = symbol => `${symbol.path.join('.')} — ${symbol.declaration}`
 
+const comparableSymbol = symbol => ({
+  ...symbol,
+  // Xcode 26 includes @Sendable in declaration fragments while Xcode 16 omits it even though the
+  // precise symbol identifier retains the Sendable contract. Compare the stable identifier for
+  // that semantic distinction and normalize the toolchain-only presentation difference.
+  declaration: symbol.declaration.replaceAll('@Sendable ', '')
+})
+
 const compareSymbols = (platformName, expected, actual) => {
   const expectedByIdentifier = new Map(expected.map(symbol => [symbol.precise, symbol]))
   const actualByIdentifier = new Map(actual.map(symbol => [symbol.precise, symbol]))
@@ -240,7 +248,8 @@ const compareSymbols = (platformName, expected, actual) => {
   const changed = actual.filter(symbol => {
     const expectedSymbol = expectedByIdentifier.get(symbol.precise)
 
-    return expectedSymbol && JSON.stringify(expectedSymbol) !== JSON.stringify(symbol)
+    return expectedSymbol &&
+      JSON.stringify(comparableSymbol(expectedSymbol)) !== JSON.stringify(comparableSymbol(symbol))
   })
 
   if (removed.length === 0 && added.length === 0 && changed.length === 0) return

@@ -36,6 +36,7 @@ private struct AppleComponentCatalogFixture: View {
                 LumenText(.localized(LocalizedStringResource("Runtime localized title")), variant: .title)
                 LumenText(.verbatim("Application-resolved runtime copy"))
                 LumenBadge(.localized(LocalizedStringKey("Localized badge")), tone: .accent)
+                LumenSpinner(.verbatim("Synchronizing"), tint: .primary)
 
                 LumenSettingsRow(
                     "Automatic behavior",
@@ -96,6 +97,33 @@ private struct AppleComponentCatalogFixture: View {
                     LumenButton("Save", action: {})
                     LumenButton(.localized(LocalizedStringResource("Publish")), action: {})
                     LumenButton("Cancel", intent: .secondary, action: {})
+                    LumenButton(
+                        "Remove",
+                        intent: .secondary,
+                        role: .destructive,
+                        action: {}
+                    )
+                    LumenIconButton(
+                        name: .x,
+                        label: "Cancel",
+                        role: .cancel,
+                        action: {}
+                    )
+                    LumenIconButton(
+                        name: .sparkles,
+                        label: "Generate caption",
+                        intent: .primary,
+                        loading: true,
+                        loadingAccessibilityValue: .verbatim("Generating caption"),
+                        action: {}
+                    )
+                    LumenIconButton(
+                        systemName: "arrow.clockwise",
+                        label: "Refresh",
+                        intent: .secondary,
+                        loading: true,
+                        action: {}
+                    )
                     LumenChip("Design", selected: tagSelected, onPress: { tagSelected.toggle() })
                 }
 
@@ -272,8 +300,11 @@ private struct AppleComponentCatalogFixture: View {
                     )
                 }
 
-                LumenStatusBar("Ready", tone: .success) {
-                    Text("Updated now")
+                LumenStatusBar(
+                    "El análisis permanece en el dispositivo para proteger tu privacidad.",
+                    tone: .success
+                ) {
+                    LumenButton("Analyze", intent: .quiet, size: .sm, action: {})
                 }
 
                 LumenMenu(

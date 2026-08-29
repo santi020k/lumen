@@ -17,6 +17,7 @@ export interface LumenComponentSnapshot {
   astroSource: string
   category: string
   collections: string[]
+  contract: null | Record<string, unknown>
   dependencies: string[]
   description: string
   files: unknown[]

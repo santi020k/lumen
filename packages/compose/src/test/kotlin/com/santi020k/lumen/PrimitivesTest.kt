@@ -93,6 +93,49 @@ class PrimitivesTest {
     }
 
     @Test
+    fun disabledQuietButtonContainersStayTransparentAcrossThemes() {
+        assertEquals(Color.Transparent, lumenDisabledButtonContainerColor(Color.Transparent))
+        assertEquals(
+            Color.Transparent,
+            lumenDisabledButtonContainerColor(LumenColors.Light.canvas.copy(alpha = 0f))
+        )
+        assertEquals(
+            Color.Transparent,
+            lumenDisabledButtonContainerColor(LumenColors.Dark.canvas.copy(alpha = 0f))
+        )
+    }
+
+    @Test
+    fun disabledFilledButtonContainersKeepTheirSemanticColorAtReducedOpacity() {
+        listOf(
+            LumenColors.Light.brandSolid,
+            LumenColors.Light.surfaceMuted,
+            LumenColors.Light.danger,
+            LumenColors.Light.success,
+            LumenColors.Dark.brandSolid,
+            LumenColors.Dark.surfaceMuted,
+            LumenColors.Dark.danger,
+            LumenColors.Dark.success
+        ).forEach { background ->
+            assertEquals(background.copy(alpha = 0.52f), lumenDisabledButtonContainerColor(background))
+        }
+    }
+
+    @Test
+    fun spinnersUseBrandByDefaultAndHonorNestedSemanticTints() {
+        assertEquals(LumenColors.Light.brand, lumenSpinnerColor(LumenColors.Light, tint = null))
+        assertEquals(LumenColors.Dark.brand, lumenSpinnerColor(LumenColors.Dark, tint = null))
+        assertEquals(
+            LumenColors.Light.onBrand,
+            lumenSpinnerColor(LumenColors.Light, tint = LumenColors.Light.onBrand)
+        )
+        assertEquals(
+            LumenColors.Dark.onDanger,
+            lumenSpinnerColor(LumenColors.Dark, tint = LumenColors.Dark.onDanger)
+        )
+    }
+
+    @Test
     fun iconMetricsStayConsistentAndAccessible() {
         assertEquals(LumenIconSize.Sm, LumenIconButtonMetrics.resolve(LumenControlSize.Sm).iconSize)
         assertEquals(44.dp, LumenIconButtonMetrics.resolve(LumenControlSize.Sm).touchTarget)
@@ -104,7 +147,7 @@ class PrimitivesTest {
     fun sharedIconCatalogHasStableUniqueNames() {
         val icons = LumenIconName.entries
 
-        assertEquals(2_350, icons.size)
+        assertEquals(2_363, icons.size)
         assertEquals(icons.size, icons.map { it.rawValue }.toSet().size)
         assertEquals(573, icons.count { it.rawValue.startsWith("brand:") })
         assertEquals(true, LumenIconName.Search in icons)

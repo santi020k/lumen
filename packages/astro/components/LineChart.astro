@@ -10,7 +10,9 @@ import {
   getLumenChartTicks,
   getLumenChartToneClassName,
   hasLumenChartData,
+  type LumenChartLabels,
   type LumenChartSeries,
+  resolveLumenChartLabels,
   resolveLumenChartTone,
   scaleLumenChartValue
 } from '@santi020k/lumen-core'
@@ -28,6 +30,7 @@ interface Props extends HTMLAttributes<'figure'> {
   formatValue?: (value: number) => string
   glass?: boolean | 'subtle' | 'strong'
   heading?: string
+  labels?: Partial<LumenChartLabels>
   markers?: 'all' | 'auto' | 'none' | boolean | number
   presentation?: 'bare' | 'default'
   referenceValue?: number
@@ -43,20 +46,23 @@ const {
   class: classProp = '',
   className = '',
   description,
-  emptyLabel = 'No chart data available.',
+  emptyLabel,
   formatCategory = String,
   formatValue = String,
   glass = false,
   heading,
+  labels,
   markers = 'auto',
   referenceValue,
   series,
   showLegend = series.length > 1,
   showTable = true,
-  summary = formatLumenChartSummary(series, formatValue),
+  summary: summaryProp,
   ...rest
 } = Astro.props
 
+const resolvedLabels = resolveLumenChartLabels(labels)
+const summary = summaryProp ?? formatLumenChartSummary(series, formatValue, resolvedLabels)
 const width = 640
 const height = 320
 const padding = 44
@@ -107,7 +113,7 @@ const referenceY =
 >
   {
     showLegend && hasData && (
-      <ul class="ui-chart__legend" aria-label="Chart legend">
+      <ul class="ui-chart__legend" aria-label={resolvedLabels.chartLegend}>
         {series.map((item, index) => (
           <li class={getLumenChartToneClassName(item.tone, index)}>
             <span aria-hidden="true" />
@@ -117,7 +123,7 @@ const referenceY =
       </ul>
     )
   }
-  {!hasData && <p class="ui-chart__empty" role="status">{emptyLabel}</p>}
+  {!hasData && <p class="ui-chart__empty" role="status">{emptyLabel ?? resolvedLabels.empty}</p>}
   <div class="ui-chart__plot" hidden={!hasData}>
     <svg
       aria-hidden="true"
@@ -212,12 +218,12 @@ const referenceY =
   {
     showTable && hasData && (
       <details class="ui-chart__data">
-        <summary>View chart data</summary>
+        <summary>{resolvedLabels.viewData}</summary>
         <div>
           <table>
             <thead>
               <tr>
-                <th scope="col">Category</th>
+                <th scope="col">{resolvedLabels.category}</th>
                 {series.map(item => <th scope="col">{item.label}</th>)}
               </tr>
             </thead>
@@ -232,7 +238,7 @@ const referenceY =
                       <td>
                         {datum?.label ??
                           (datum?.y === undefined || datum.y === null || !Number.isFinite(datum.y) ?
-                            'Not available' :
+                            resolvedLabels.notAvailable :
                             formatValue(datum.y))}
                       </td>
                     )

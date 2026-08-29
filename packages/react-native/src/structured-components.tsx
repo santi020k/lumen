@@ -52,7 +52,7 @@ export const LumenEmptyState = ({
       accessibilityRole="summary"
       style={[
         {
-          alignItems: 'center',
+          alignItems: 'flex-start',
           gap: theme.spacing.lg,
           justifyContent: 'center',
           maxWidth: 440,
@@ -370,6 +370,10 @@ export const LumenBanner = ({
             hitSlop={8}
             onPress={onDismiss}
             style={({ pressed }) => ({
+              alignItems: 'center',
+              justifyContent: 'center',
+              minHeight: 44,
+              minWidth: 44,
               opacity: pressed ? 0.7 : 1,
               padding: theme.spacing.sm
             })}
@@ -582,16 +586,16 @@ export const LumenStatusBar = ({
         size="sm"
       />
       <Text
-        numberOfLines={1}
         style={{
           color: theme.colors.inkSoft,
           flex: 1,
+          flexShrink: 1,
           fontSize: theme.fontSizes.xs
         }}
       >
         {message}
       </Text>
-      {trailing}
+      {trailing == null ? null : <View style={{ flexShrink: 0 }}>{trailing}</View>}
     </View>
   )
 }

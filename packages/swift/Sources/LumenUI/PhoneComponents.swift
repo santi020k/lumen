@@ -1,16 +1,56 @@
 #if os(iOS) || os(macOS) || os(visionOS)
 import Foundation
-import PhoneNumberKit
 import SwiftUI
 
 private let lumenRegionalIndicatorA = 0x1F1E6
+private let lumenMaximumNationalPhoneDigits = 15
+
+private struct LumenPhoneFormatMetadata: Decodable, Sendable {
+    let leadingDigits: [String]
+    let nationalPrefixFormattingRule: String?
+    let pattern: String
+    let template: String
+}
+
+private struct LumenPhoneRegionMetadata: Decodable, Sendable {
+    let callingCode: String
+    let formats: [LumenPhoneFormatMetadata]
+    let leadingDigits: String?
+    let nationalPattern: String
+    let nationalPrefixForParsing: String?
+    let nationalPrefixTransformRule: String?
+    let possibleLengths: [Int]
+    let regionCode: String
+    let typePatterns: [String]
+}
+
+private struct LumenPhoneMetadataDocument: Decodable, Sendable {
+    let callingCodeRegions: [String: [String]]
+    let countries: [LumenPhoneRegionMetadata]
+}
 
 private final class LumenPhoneMetadata: @unchecked Sendable {
     static let shared = LumenPhoneMetadata()
 
-    let utility = PhoneNumberUtility()
+    let callingCodeRegions: [String: [String]]
+    let countries: [LumenPhoneRegionMetadata]
+    let countriesByRegion: [String: LumenPhoneRegionMetadata]
 
-    private init() {}
+    private init() {
+        guard let resourceURL = Bundle.module.url(
+            forResource: "LumenPhoneMetadata",
+            withExtension: "json"
+        ), let data = try? Data(contentsOf: resourceURL),
+              let document = try? JSONDecoder().decode(LumenPhoneMetadataDocument.self, from: data) else {
+            preconditionFailure("Lumen phone metadata is missing or invalid.")
+        }
+
+        callingCodeRegions = document.callingCodeRegions
+        countries = document.countries
+        countriesByRegion = Dictionary(
+            uniqueKeysWithValues: document.countries.map { ($0.regionCode, $0) }
+        )
+    }
 }
 
 /// Localized metadata for one ISO region in the phone-country picker.
@@ -74,8 +114,8 @@ public struct LumenPhoneNumber: Equatable, Sendable {
 /// Metadata-backed country choices for `LumenPhoneInput`.
 public enum LumenPhoneCountries {
     public static func all(locale: Locale = .current) -> [LumenPhoneCountry] {
-        LumenPhoneMetadata.shared.utility.allCountries().compactMap { regionCode in
-            forRegion(regionCode, locale: locale)
+        LumenPhoneMetadata.shared.countries.compactMap { metadata in
+            forRegion(metadata.regionCode, locale: locale)
         }.sorted { left, right in
             left.displayName.localizedStandardCompare(right.displayName) == .orderedAscending
         }
@@ -86,20 +126,21 @@ public enum LumenPhoneCountries {
         locale: Locale = .current
     ) -> LumenPhoneCountry? {
         let normalizedRegion = regionCode.uppercased()
-        let utility = LumenPhoneMetadata.shared.utility
 
         guard normalizedRegion.unicodeScalars.count == 2,
               normalizedRegion.unicodeScalars.allSatisfy({ 65...90 ~= $0.value }) else {
             return nil
         }
 
-        guard let countryCode = utility.countryCode(for: normalizedRegion) else { return nil }
+        guard let metadata = LumenPhoneMetadata.shared.countriesByRegion[normalizedRegion] else {
+            return nil
+        }
 
         let displayName = locale.localizedString(forRegionCode: normalizedRegion) ?? normalizedRegion
 
         return LumenPhoneCountry(
             regionCode: normalizedRegion,
-            callingCode: "+\(countryCode)",
+            callingCode: "+\(metadata.callingCode)",
             displayName: displayName
         )
     }
@@ -119,6 +160,139 @@ public func sanitizeLumenPhoneInput(_ input: String) -> String {
     return normalized
 }
 
+private func lumenPhoneRegularExpression(_ pattern: String) -> NSRegularExpression? {
+    try? NSRegularExpression(pattern: pattern)
+}
+
+private func lumenPhoneMatches(_ value: String, pattern: String) -> Bool {
+    guard let expression = lumenPhoneRegularExpression("^(?:\(pattern))$") else { return false }
+    let range = NSRange(value.startIndex..<value.endIndex, in: value)
+    return expression.firstMatch(in: value, range: range) != nil
+}
+
+private func lumenPhoneStartsWith(_ value: String, pattern: String) -> Bool {
+    guard let expression = lumenPhoneRegularExpression("^(?:\(pattern))") else { return false }
+    let range = NSRange(value.startIndex..<value.endIndex, in: value)
+    return expression.firstMatch(in: value, range: range) != nil
+}
+
+private func isValidLumenPhoneNumber(
+    _ nationalNumber: String,
+    metadata: LumenPhoneRegionMetadata
+) -> Bool {
+    guard nationalNumber.count <= lumenMaximumNationalPhoneDigits,
+          metadata.possibleLengths.contains(nationalNumber.count),
+          lumenPhoneMatches(nationalNumber, pattern: metadata.nationalPattern) else {
+        return false
+    }
+
+    return metadata.typePatterns.isEmpty || metadata.typePatterns.contains { pattern in
+        lumenPhoneMatches(nationalNumber, pattern: pattern)
+    }
+}
+
+private func extractLumenNationalNumber(
+    _ digits: String,
+    metadata: LumenPhoneRegionMetadata
+) -> String {
+    guard digits.count <= lumenMaximumNationalPhoneDigits + 3,
+          let prefixPattern = metadata.nationalPrefixForParsing,
+          let expression = lumenPhoneRegularExpression("^(?:\(prefixPattern))") else {
+        return digits
+    }
+
+    let range = NSRange(digits.startIndex..<digits.endIndex, in: digits)
+    guard let match = expression.firstMatch(in: digits, range: range) else { return digits }
+
+    let hasCapturedGroups = expression.numberOfCaptureGroups > 0 &&
+        match.range(at: expression.numberOfCaptureGroups).location != NSNotFound
+    let extracted: String
+
+    if let transformRule = metadata.nationalPrefixTransformRule, hasCapturedGroups {
+        extracted = expression.stringByReplacingMatches(
+            in: digits,
+            range: match.range,
+            withTemplate: transformRule
+        )
+    } else {
+        guard let matchedRange = Range(match.range, in: digits) else { return digits }
+        extracted = String(digits[matchedRange.upperBound...])
+    }
+
+    guard extracted != digits,
+          metadata.possibleLengths.contains(extracted.count),
+          !(lumenPhoneMatches(digits, pattern: metadata.nationalPattern) &&
+              !lumenPhoneMatches(extracted, pattern: metadata.nationalPattern)) else {
+        return digits
+    }
+
+    return extracted
+}
+
+private func formatLumenNationalNumber(
+    _ digits: String,
+    metadata: LumenPhoneRegionMetadata
+) -> String {
+    guard digits.count <= lumenMaximumNationalPhoneDigits else { return digits }
+
+    for format in metadata.formats {
+        if let leadingPattern = format.leadingDigits.last,
+           !lumenPhoneStartsWith(digits, pattern: leadingPattern) {
+            continue
+        }
+        guard let expression = lumenPhoneRegularExpression("^(?:\(format.pattern))$"),
+              expression.firstMatch(
+                in: digits,
+                range: NSRange(digits.startIndex..<digits.endIndex, in: digits)
+              ) != nil else {
+            continue
+        }
+
+        var template = format.template
+        if let prefixRule = format.nationalPrefixFormattingRule,
+           let firstGroup = template.range(of: #"\$\d"#, options: .regularExpression) {
+            template.replaceSubrange(firstGroup, with: prefixRule)
+        }
+
+        return expression.stringByReplacingMatches(
+            in: digits,
+            range: NSRange(digits.startIndex..<digits.endIndex, in: digits),
+            withTemplate: template
+        )
+    }
+
+    return digits
+}
+
+private func resolveLumenInternationalMetadata(
+    _ digits: String
+) -> (metadata: LumenPhoneRegionMetadata, nationalNumber: String)? {
+    let store = LumenPhoneMetadata.shared
+
+    for callingCodeLength in stride(from: min(3, digits.count), through: 1, by: -1) {
+        let callingCode = String(digits.prefix(callingCodeLength))
+        guard let regionCodes = store.callingCodeRegions[callingCode] else { continue }
+
+        let nationalNumber = String(digits.dropFirst(callingCodeLength))
+        let candidates = regionCodes.compactMap { store.countriesByRegion[$0] }
+        if nationalNumber.count > lumenMaximumNationalPhoneDigits,
+           let metadata = candidates.first {
+            return (metadata, nationalNumber)
+        }
+        let leadingCandidates = candidates.filter { metadata in
+            metadata.leadingDigits.map { lumenPhoneStartsWith(nationalNumber, pattern: $0) } ?? true
+        }
+        let selectedCandidates = leadingCandidates.isEmpty ? candidates : leadingCandidates
+        let metadata = selectedCandidates.first { candidate in
+            isValidLumenPhoneNumber(nationalNumber, metadata: candidate)
+        } ?? selectedCandidates.first
+
+        if let metadata { return (metadata, nationalNumber) }
+    }
+
+    return nil
+}
+
 /// Formats and validates `input` for `country`, returning E.164 only when valid.
 public func resolveLumenPhoneNumber(
     country: LumenPhoneCountry,
@@ -131,33 +305,33 @@ public func resolveLumenPhoneNumber(
         return .empty(country: country)
     }
 
-    let utility = LumenPhoneMetadata.shared.utility
-    let formatter = PartialFormatter(
-        utility: utility,
-        defaultRegion: country.regionCode,
-        withPrefix: normalized.hasPrefix("+")
-    )
-    let formattedInput = formatter.formatPartial(normalized)
+    let metadata: LumenPhoneRegionMetadata
+    let nationalNumber: String
 
-    guard let parsed = try? utility.parse(normalized, withRegion: country.regionCode) else {
+    if normalized.hasPrefix("+"),
+       let international = resolveLumenInternationalMetadata(String(normalized.dropFirst())) {
+        metadata = international.metadata
+        nationalNumber = international.nationalNumber
+    } else if let localMetadata = LumenPhoneMetadata.shared.countriesByRegion[country.regionCode] {
+        metadata = localMetadata
+        nationalNumber = extractLumenNationalNumber(normalized, metadata: localMetadata)
+    } else {
         return LumenPhoneNumber(
             country: country,
-            nationalNumber: formattedInput,
+            nationalNumber: normalized,
             e164: nil,
             isValid: false
         )
     }
 
-    let parsedRegion = utility.getRegionCode(of: parsed)
-    let resolvedCountry = normalized.hasPrefix("+") ?
-        parsedRegion.flatMap { LumenPhoneCountries.forRegion($0, locale: locale) } ?? country :
-        country
+    let resolvedCountry = LumenPhoneCountries.forRegion(metadata.regionCode, locale: locale) ?? country
+    let isValid = isValidLumenPhoneNumber(nationalNumber, metadata: metadata)
 
     return LumenPhoneNumber(
         country: resolvedCountry,
-        nationalNumber: utility.format(parsed, toType: .national),
-        e164: utility.format(parsed, toType: .e164),
-        isValid: true
+        nationalNumber: formatLumenNationalNumber(nationalNumber, metadata: metadata),
+        e164: isValid ? "+\(metadata.callingCode)\(nationalNumber)" : nil,
+        isValid: isValid
     )
 }
 

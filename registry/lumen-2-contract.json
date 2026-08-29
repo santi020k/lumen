@@ -142,11 +142,12 @@
       "packages": [
         "LumenUI"
       ],
-      "currentContract": "The published LumenSurfacePadding and LumenSurfaceRadius enums expose only small, medium, and large roles, so product-owned cards cannot use the complete shared native surface scale without literal values.",
-      "replacement": "Use the additive xl padding role and xl, size2xl, or size3xl radius roles. Existing cases and the published Card, StatusBar, and lumenTheme call signatures remain available.",
-      "migration": "Exhaustive switches over LumenSurfacePadding or LumenSurfaceRadius must handle the new roles or add an @unknown default branch. Ordinary component calls require no migration.",
+      "currentContract": "The published Swift enums expose only the original surface scale, button intents, and shared icon names, so consumers cannot use the complete native surface scale, success button treatment, or newly synchronized icons without literal values.",
+      "replacement": "Use the additive xl padding role, xl through size3xl radius roles, success button intent, and synchronized LumenIconName cases. Existing cases and the published component call signatures remain available.",
+      "migration": "Exhaustive switches over LumenSurfacePadding, LumenSurfaceRadius, LumenButtonIntent, or LumenIconName must handle the new cases or add an @unknown default branch. Ordinary component calls require no migration.",
       "evidence": [
         "docs/native-components.md",
+        "packages/swift/Sources/LumenUI/Icons.generated.swift",
         "packages/swift/Sources/LumenUI/Primitives.swift",
         "packages/swift/Sources/LumenUI/SharedComponents.swift",
         "packages/swift/Tests/LumenUITests/LumenThemeTests.swift"
@@ -162,6 +163,20 @@
         "swift test"
       ],
       "swiftApiBreakages": [
+        "enumelement LumenButtonIntent.success has been added as a new enum case",
+        "enumelement LumenIconName.creditCardCheck has been added as a new enum case",
+        "enumelement LumenIconName.creditCardMinus has been added as a new enum case",
+        "enumelement LumenIconName.creditCardPlus has been added as a new enum case",
+        "enumelement LumenIconName.creditCardX has been added as a new enum case",
+        "enumelement LumenIconName.galaxy has been added as a new enum case",
+        "enumelement LumenIconName.messageCircleDashedCheck has been added as a new enum case",
+        "enumelement LumenIconName.playingCard has been added as a new enum case",
+        "enumelement LumenIconName.playingCards has been added as a new enum case",
+        "enumelement LumenIconName.playingCardsFan has been added as a new enum case",
+        "enumelement LumenIconName.robotArm has been added as a new enum case",
+        "enumelement LumenIconName.robotVacuum has been added as a new enum case",
+        "enumelement LumenIconName.shipCargo has been added as a new enum case",
+        "enumelement LumenIconName.trailer has been added as a new enum case",
         "enumelement LumenSurfacePadding.xl has been added as a new enum case",
         "enumelement LumenSurfaceRadius.size2xl has been added as a new enum case",
         "enumelement LumenSurfaceRadius.size3xl has been added as a new enum case",

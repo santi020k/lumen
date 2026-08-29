@@ -78,9 +78,12 @@ struct PlaygroundCatalogTests {
     @Test("normal catalog categories preserve deterministic launch entries")
     func deterministicEntriesRemainCategorized() {
         #expect(PlaygroundComponentCategory.actions.contains("Button"))
-        #expect(PlaygroundComponentCategory.feedback.contains("Alert dialog"))
+        #expect(PlaygroundComponentCategory.navigation.contains("Alert dialog"))
         #expect(PlaygroundComponentCategory.navigation.contains("Sheet"))
-        #expect(PlaygroundComponentCategory.content.contains("Line chart"))
+        #expect(PlaygroundComponentCategory.data.contains("Line chart"))
+        #expect(PlaygroundComponentCategory.allCases.map(\.title) == [
+            "All", "Foundations", "Actions", "Forms", "Feedback", "Data", "Navigation"
+        ])
     }
 }
 

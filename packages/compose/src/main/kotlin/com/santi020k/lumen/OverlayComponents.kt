@@ -36,7 +36,8 @@ fun LumenAlertDialog(
     cancelLabel: String = "Cancel",
     destructive: Boolean = false,
     confirmEnabled: Boolean = true,
-    confirmLoading: Boolean = false
+    confirmLoading: Boolean = false,
+    confirmLoadingLabel: String = "Loading"
 ) {
     if (!visible) return
 
@@ -50,6 +51,7 @@ fun LumenAlertDialog(
                 onClick = onConfirm,
                 intent = if (destructive) LumenButtonIntent.Danger else LumenButtonIntent.Primary,
                 loading = confirmLoading,
+                loadingLabel = confirmLoadingLabel,
                 enabled = confirmEnabled
             ) {
                 Text(confirmLabel)

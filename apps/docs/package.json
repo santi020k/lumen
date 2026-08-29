@@ -46,8 +46,8 @@
   "devDependencies": {
     "@astrojs/check": "catalog:",
     "@astrojs/ts-plugin": "catalog:",
-    "@santi020k/og": "catalog:",
     "@santi020k/lumen-playground-react-native": "workspace:*",
+    "@santi020k/og": "catalog:",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
     "sharp": "catalog:",

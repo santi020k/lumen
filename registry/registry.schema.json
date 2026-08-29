@@ -115,6 +115,9 @@
           "type": "string",
           "minLength": 1
         },
+        "contract": {
+          "$ref": "#/definitions/componentContract"
+        },
         "files": {
           "type": "array",
           "minItems": 1,
@@ -130,6 +133,35 @@
             "minLength": 1
           }
         }
+      }
+    },
+    "componentContract": {
+      "type": "object",
+      "required": ["imports", "usage"],
+      "additionalProperties": false,
+      "properties": {
+        "imports": { "type": "object", "additionalProperties": { "type": "string" } },
+        "usage": { "type": "object", "additionalProperties": { "type": "string" } },
+        "props": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name", "type"],
+            "additionalProperties": false,
+            "properties": {
+              "name": { "type": "string" },
+              "type": { "type": "string" },
+              "default": { "type": "string" },
+              "required": { "type": "boolean" }
+            }
+          }
+        },
+        "composition": { "type": "array", "items": { "type": "string" } },
+        "events": { "type": "array", "items": { "type": "string" } },
+        "runtime": { "type": "string" },
+        "slots": { "type": "array", "items": { "type": "string" } },
+        "stylingParts": { "type": "array", "items": { "type": "string" } },
+        "tokens": { "type": "array", "items": { "type": "string" } }
       }
     }
   }

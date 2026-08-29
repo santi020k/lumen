@@ -326,6 +326,7 @@ jobs:
       - name: Regenerate and compare React Native component captures
         run: |
           pnpm --filter @santi020k/lumen-react-native... run build
+          node scripts/prepare-packed-react-native-canary.mjs
           CI=1 pnpm --filter @santi020k/lumen-playground-react-native exec \
             expo start --web --port 8081 > "$RUNNER_TEMP/lumen-expo.log" 2>&1 &
           expo_pid=$!
@@ -340,6 +341,7 @@ jobs:
             cat "$RUNNER_TEMP/lumen-expo.log" >&2
             exit 1
           }
+          LUMEN_REQUIRE_PACKED=1 pnpm run playground:react-native:test:a11y
           pnpm run playground:react-native:capture
           pnpm --filter @santi020k/lumen-docs exec node --experimental-strip-types \
             scripts/sync-native-component-captures.mjs \

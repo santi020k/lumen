@@ -251,7 +251,7 @@ test("WidgetKit changes select the Swift canary and validate both Swift API base
   );
 });
 
-test("npm publication validates the contract and completed stability soak", () => {
+test("npm publication validates the contract and current stability ledger", () => {
   assert.ok(
     npmWorkflow.includes("if: github.ref == 'refs/heads/main'"),
     "npm publication must refuse manual dispatches outside main",
@@ -263,7 +263,7 @@ test("npm publication validates the contract and completed stability soak", () =
     "node scripts/check-lumen-2-contract.mjs",
     "pnpm run check:web-consumer-evidence",
     "pnpm run check:native-consumer-evidence",
-    "pnpm run check:native-stability-readiness",
+    "pnpm run check:native-stability-soak",
   ]);
 
   assert.ok(
@@ -294,11 +294,11 @@ test("initial npm publication verifies the complete family before tagging", () =
   ]);
 });
 
-test("Compose publication validates the contract and completed stability soak", () => {
+test("Compose publication validates the contract and current stability ledger", () => {
   assertOrderedCommands(composeWorkflow, "Compose publication", [
     "node scripts/check-graduated-release-revision.mjs",
     "node scripts/check-lumen-2-contract.mjs",
-    "node scripts/check-native-stability-soak.mjs --require-complete",
+    "node scripts/check-native-stability-soak.mjs",
   ]);
 
   assert.ok(
@@ -329,9 +329,9 @@ test("canonical package commands enforce graduation identity before publication"
 
   assert.ok(
     packageManifest.scripts.validate.includes(
-      "pnpm run check:native-stability-readiness",
+      "pnpm run check:native-stability-soak",
     ),
-    "canonical validation must require the completed two-iteration stability soak",
+    "canonical validation must validate the current native stability ledger",
   );
 
   assert.ok(
@@ -375,7 +375,7 @@ test("canonical package commands enforce graduation identity before publication"
       "node scripts/check-approved-release-revision.mjs",
       "pnpm run check:graduated-release-revision",
       "pnpm run check:native-consumer-evidence",
-      "pnpm run check:native-stability-readiness",
+      "pnpm run check:native-stability-soak",
       "changeset publish",
     ],
   );

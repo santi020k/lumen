@@ -68,6 +68,9 @@ diagnostics are scoped to the nearest package boundary, generated build trees ar
 application-controlled Astro `Toggle` instances do not require the shared runtime. It also suggests
 matching Lumen primitives for likely hand-built dropdown, theme, dialog-focus, and keyboard-menu
 behavior. These suggestions stay advisory because product-specific composition can be intentional.
+Publishable shared UI libraries are not required to load global styles. Private wrapper packages
+can declare `"lumen": { "styleOwnership": "consumer" }` when their applications own adapter CSS,
+or `"application"` when the package itself owns setup.
 Use `--json` for CI and rollout automation. `lumen init --framework <astro|react|elements>
 [--tailwind]` prints the canonical non-destructive setup.
 

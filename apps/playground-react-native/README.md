@@ -4,10 +4,11 @@
 
 An Expo reference app for every public component in `@santi020k/lumen-react-native`. It runs on
 web, iOS, and Android with four focused destinations: Home, Examples, Components, and Settings.
-Examples provides switchable loading, empty, error, and success workflows. Components combines
+Examples provides Release, Health, and Profile patterns with switchable loading, empty, error, and
+success states. Components combines
 search, product-intent categories, and focused component detail views. Settings includes Lumen and
-santi020k theme presets, system/light/dark appearance, live accessibility context, and an
-English/Spanish validation example.
+santi020k theme presets, system/light/dark appearance, live accessibility context, runtime
+localization, app details, privacy, and resources.
 
 Install the repository dependencies once from the repository root:
 
@@ -73,13 +74,15 @@ same names as the public API matrix and keeps every example interactive.
 
 On web, add `?component=<name>` to open a screenshot-ready focused view. Use `category=<name>` for
 category discovery, `destination=home|examples|components|settings` to open an application
-destination, and `state=loading|empty|error|success` to prepare the Examples state lab. For example:
+destination, `pattern=release|health|profile` to select an Examples pattern, and
+`state=loading|empty|error|success` to prepare its state lab. For example:
 
 ```text
 http://localhost:8081/?component=Alert%20dialog
 http://localhost:8081/?component=Illustration
 http://localhost:8081/?component=Navigation%20bar
 http://localhost:8081/?destination=examples&state=error
+http://localhost:8081/?destination=examples&pattern=profile
 http://localhost:8081/?destination=components&category=forms
 ```
 

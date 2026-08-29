@@ -81,6 +81,7 @@ import com.santi020k.lumen.LumenText
 import com.santi020k.lumen.LumenTextField
 import com.santi020k.lumen.LumenTextTone
 import com.santi020k.lumen.LumenTextVariant
+import com.santi020k.lumen.LumenTextarea
 import com.santi020k.lumen.LumenToast
 import com.santi020k.lumen.LumenToggle
 
@@ -89,6 +90,7 @@ internal data class CatalogCategorySummary(val name: String, val componentCount:
 private enum class PlaygroundDestination { Home, Examples, Components, Settings }
 private enum class ExamplePattern(val label: String) { Release("Release"), Health("Health"), Profile("Profile") }
 private enum class ExampleState { Loading, Empty, Error, Success }
+private enum class PlaygroundLocale(val label: String) { English("English"), Spanish("Español") }
 
 @Composable
 internal fun LumenReferenceApplication(
@@ -678,38 +680,59 @@ private fun SettingsScreen(
             DestinationHeader("Local", "Settings", "Preview theme, accessibility context, and application details.")
         }
         item {
-            ThemePreview(darkTheme, themePreset, onThemePresetChange, onToggleTheme) { status = it }
-        }
-        item {
             if (wide) {
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(20.dp)) {
                     Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                        AppearanceSettings(reduceMotion) {
-                            reduceMotion = it
-                            status = if (it) "Decorative motion reduced" else "Standard motion restored"
-                        }
-                        ApplicationSettings()
+                        AppearanceSettings(
+                            darkTheme,
+                            themePreset,
+                            reduceMotion,
+                            onThemePresetChange,
+                            onToggleTheme,
+                            onMotionChange = {
+                                reduceMotion = it
+                                status = if (it) "Decorative motion reduced" else "Standard motion restored"
+                            },
+                            onStatus = { status = it }
+                        )
                     }
                     Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(16.dp)) {
                         AccessibilitySettings(showHints) {
                             showHints = it
                             status = if (it) "Accessibility guidance shown" else "Guidance hidden"
                         }
-                        ResourceSettings(uriHandler)
                     }
                 }
             } else {
                 Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
-                    AppearanceSettings(reduceMotion) {
-                        reduceMotion = it
-                        status = if (it) "Decorative motion reduced" else "Standard motion restored"
-                    }
+                    AppearanceSettings(
+                        darkTheme,
+                        themePreset,
+                        reduceMotion,
+                        onThemePresetChange,
+                        onToggleTheme,
+                        onMotionChange = {
+                            reduceMotion = it
+                            status = if (it) "Decorative motion reduced" else "Standard motion restored"
+                        },
+                        onStatus = { status = it }
+                    )
                     AccessibilitySettings(showHints) {
                         showHints = it
                         status = if (it) "Accessibility guidance shown" else "Guidance hidden"
                     }
+                    RuntimeLocalizationSettings()
                     ApplicationSettings()
                     ResourceSettings(uriHandler)
+                }
+            }
+        }
+        if (wide) {
+            item { RuntimeLocalizationSettings() }
+            item {
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(20.dp)) {
+                    Column(modifier = Modifier.weight(1f)) { ApplicationSettings() }
+                    Column(modifier = Modifier.weight(1f)) { ResourceSettings(uriHandler) }
                 }
             }
         }
@@ -784,8 +807,18 @@ private fun ThemePreview(
 }
 
 @Composable
-private fun AppearanceSettings(reduceMotion: Boolean, onMotionChange: (Boolean) -> Unit) {
+private fun AppearanceSettings(
+    darkTheme: Boolean,
+    themePreset: PlaygroundThemePreset,
+    reduceMotion: Boolean,
+    onThemePresetChange: (PlaygroundThemePreset) -> Unit,
+    onToggleTheme: () -> Unit,
+    onMotionChange: (Boolean) -> Unit,
+    onStatus: (String) -> Unit
+) {
     SettingsGroup("Appearance", "Motion and platform preferences") {
+        ThemePreview(darkTheme, themePreset, onThemePresetChange, onToggleTheme, onStatus)
+        LumenDivider()
         LumenSettingsRow(title = "Reduce decorative motion", description = "Keep transitions quiet and functional") {
             LumenToggle(
                 label = "Reduce decorative motion",
@@ -827,8 +860,58 @@ private fun AccessibilitySettings(showHints: Boolean, onHintsChange: (Boolean) -
 }
 
 @Composable
+private fun RuntimeLocalizationSettings() {
+    var locale by remember { mutableStateOf(PlaygroundLocale.English) }
+    var releaseNote by remember { mutableStateOf("") }
+    var validated by remember { mutableStateOf(false) }
+    val spanish = locale == PlaygroundLocale.Spanish
+    val errorMessage = if (validated && releaseNote.isBlank()) {
+        if (spanish) "La nota de la versión es obligatoria." else "A release note is required."
+    } else {
+        null
+    }
+
+    SettingsGroup("Runtime localization", "Switch application-owned English and Spanish copy") {
+        LumenSegmentedControl(
+            label = "Language",
+            options = PlaygroundLocale.entries.map { LumenSelectionOption(it.name, it.label) },
+            value = locale.name,
+            onValueChange = { value ->
+                locale = PlaygroundLocale.valueOf(value)
+                validated = false
+            }
+        )
+        LumenTextarea(
+            value = releaseNote,
+            onValueChange = {
+                releaseNote = it
+                validated = false
+            },
+            label = if (spanish) "Nota de la versión" else "Release note",
+            description = if (spanish) {
+                "Describe qué cambió para tus usuarios."
+            } else {
+                "Describe what changed for your users."
+            },
+            errorMessage = errorMessage
+        )
+        LumenButton(onClick = { validated = true }) {
+            Text(if (spanish) "Validar nota" else "Validate note")
+        }
+        if (validated && errorMessage == null) {
+            LumenAlert(variant = LumenAlertVariant.Success) {
+                LumenText(
+                    if (spanish) "La nota de la versión está lista." else "The release note is ready.",
+                    tone = LumenTextTone.Success
+                )
+            }
+        }
+    }
+}
+
+@Composable
 private fun ApplicationSettings() {
-    SettingsGroup("Application", "Platform, build, and privacy") {
+    SettingsGroup("App and platform", "Platform, build, and privacy") {
         LumenSettingsRow(title = "Platform", description = "Android · Jetpack Compose") {
             LumenBadge("Native", tone = LumenBadgeTone.Success)
         }
@@ -845,7 +928,7 @@ private fun ApplicationSettings() {
 
 @Composable
 private fun ResourceSettings(uriHandler: UriHandler) {
-    SettingsGroup("Resources", "Documentation, privacy, and support") {
+    SettingsGroup("Privacy and resources", "Documentation, privacy, and support") {
         ResourceButton("Android documentation") { uriHandler.openUri("https://lumen.santi020k.com/docs/android") }
         ResourceButton("Privacy") { uriHandler.openUri("https://lumen.santi020k.com/privacy") }
         ResourceButton("Support") { uriHandler.openUri("https://lumen.santi020k.com/support") }

@@ -33,6 +33,7 @@ export interface LumenToggleProps extends Omit<SwitchProps, 'onValueChange' | 'v
 }
 
 export const LumenToggle = ({
+  accessibilityHint,
   description,
   disabled = false,
   label,
@@ -46,7 +47,15 @@ export const LumenToggle = ({
   const theme = useLumenTheme()
 
   return (
-    <View
+    <Pressable
+      accessibilityHint={accessibilityHint ?? description}
+      accessibilityLabel={label}
+      accessibilityRole="switch"
+      accessibilityState={{ checked: value, disabled }}
+      disabled={disabled}
+      onPress={() => {
+        if (!disabled) onValueChange(!value)
+      }}
       style={{
         alignItems: 'center',
         flexDirection: 'row',
@@ -75,16 +84,17 @@ export const LumenToggle = ({
       <Switch
         ref={ref}
         {...props}
-        accessibilityLabel={label}
+        accessibilityElementsHidden
         disabled={disabled}
+        importantForAccessibility="no-hide-descendants"
         ios_backgroundColor={theme.colors.surfaceStrong}
-        onValueChange={onValueChange}
+        pointerEvents="none"
         style={[{ opacity: disabled ? 0.52 : 1 }, style]}
         thumbColor={value ? theme.colors.onBrand : theme.colors.surface}
         trackColor={{ false: theme.colors.surfaceStrong, true: theme.colors.brandSolid }}
         value={value}
       />
-    </View>
+    </Pressable>
   )
 }
 
@@ -218,8 +228,12 @@ export const LumenSearchField = ({
               onChangeText('')
             }}
             style={({ pressed }) => ({
+              alignItems: 'center',
+              justifyContent: 'center',
+              minHeight: 44,
+              minWidth: 44,
               opacity: resolveLumenButtonOpacity(false, pressed),
-              padding: theme.spacing.sm
+              paddingHorizontal: theme.spacing.sm
             })}
           >
             <Text

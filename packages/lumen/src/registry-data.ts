@@ -733,6 +733,66 @@ export const lumenRegistry = {
       type: 'component',
       description: 'Copies arbitrary text or the content of another element with accessible feedback.',
       category: 'Actions',
+      contract: {
+        imports: {
+          astro: 'import { CopyButton } from \'@santi020k/lumen-astro\''
+        },
+        usage: {
+          astro: '<CopyButton value="https://example.com" variant="default">Copy link<span slot="copied">Copied!</span><span slot="error">Try again</span></CopyButton>'
+        },
+        props: [
+          {
+            name: 'value',
+            type: 'string'
+          },
+          {
+            name: 'target',
+            type: 'string'
+          },
+          {
+            name: 'variant',
+            type: 'Button variant',
+            default: 'outline'
+          },
+          {
+            name: 'size',
+            type: 'default | sm | lg | icon',
+            default: 'default'
+          },
+          {
+            name: 'resetAfter',
+            type: 'number',
+            default: '2000'
+          },
+          {
+            name: 'toast',
+            type: 'boolean',
+            default: 'false'
+          }
+        ],
+        events: [
+          'ui:copy-success',
+          'ui:copy-error'
+        ],
+        slots: [
+          'default (idle)',
+          'copied',
+          'error'
+        ],
+        runtime: 'Mount the default export from @santi020k/lumen-astro/runtime once above the component.',
+        stylingParts: [
+          'copy-button',
+          'copy-idle',
+          'copy-copied',
+          'copy-error'
+        ],
+        tokens: [
+          'brand-solid',
+          'line',
+          'surface-muted',
+          'ink'
+        ]
+      },
       files: [
         'packages/astro/components/CopyButton.astro',
         'packages/astro/styles/lumen.css',
@@ -1991,6 +2051,50 @@ export const lumenRegistry = {
       type: 'component',
       category: 'Layout',
       description: 'Reveals a group of direct children with tokenized, reduced-motion-aware staggering.',
+      contract: {
+        imports: {
+          astro: 'import { RevealGroup } from \'@santi020k/lumen-astro\''
+        },
+        usage: {
+          astro: '<RevealGroup as="ul"><li>First</li><li>Second</li></RevealGroup>'
+        },
+        props: [
+          {
+            name: 'as',
+            type: 'div | ul | ol | section',
+            default: 'div'
+          },
+          {
+            name: 'animation',
+            type: 'fade | slide-up | scale',
+            default: 'slide-up'
+          },
+          {
+            name: 'duration',
+            type: 'fast | standard | slow',
+            default: 'slow'
+          },
+          {
+            name: 'stagger',
+            type: 'number',
+            default: '80'
+          },
+          {
+            name: 'once',
+            type: 'boolean',
+            default: 'true'
+          }
+        ],
+        composition: [
+          'Children remain direct children of the selected semantic root.'
+        ],
+        runtime: 'Mount the Astro runtime once; content remains readable before JavaScript and with reduced motion.',
+        tokens: [
+          'motion-duration-fast',
+          'motion-duration-standard',
+          'motion-duration-slow'
+        ]
+      },
       files: [
         'packages/astro/components/RevealGroup.astro',
         'packages/astro/runtime/UIPrimitives.astro',
@@ -2023,6 +2127,54 @@ export const lumenRegistry = {
       type: 'component',
       category: 'Data display',
       description: 'A stat component.',
+      contract: {
+        imports: {
+          astro: 'import { Stat, StatLabel, StatValue } from \'@santi020k/lumen-astro\'',
+          react: 'import { Stat, StatLabel, StatValue } from \'@santi020k/lumen-react\''
+        },
+        usage: {
+          astro: '<Stat as="article"><StatLabel>Revenue</StatLabel><StatValue>$12,400</StatValue></Stat>',
+          react: '<Stat as="article"><StatLabel>Revenue</StatLabel><StatValue>$12,400</StatValue></Stat>'
+        },
+        props: [
+          {
+            name: 'as',
+            type: 'article | div | section',
+            default: 'div'
+          },
+          {
+            name: 'variant',
+            type: 'accent | bare | default | glass',
+            default: 'default'
+          },
+          {
+            name: 'label',
+            type: 'string'
+          },
+          {
+            name: 'value',
+            type: 'string'
+          }
+        ],
+        composition: [
+          'Prefer StatLabel, StatValue, StatDescription, StatIcon, and StatTrend for structured content.'
+        ],
+        stylingParts: [
+          'stat',
+          'stat-label',
+          'stat-value',
+          'stat-description',
+          'stat-icon',
+          'stat-trend'
+        ],
+        tokens: [
+          'surface',
+          'line',
+          'ink',
+          'ink-muted',
+          'brand-soft'
+        ]
+      },
       files: [
         'packages/astro/components/Stat.astro',
         'packages/react/src/components.tsx'

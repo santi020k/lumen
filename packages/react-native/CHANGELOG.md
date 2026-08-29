@@ -1,5 +1,31 @@
 # @santi020k/lumen-react-native
 
+## 2.1.0
+
+### Minor Changes
+
+- Complete the v2 consumer-improvement contracts: localizable chart support copy, semantic native
+  chart references and datum tones, richer SwiftUI form composition, adaptive native layouts,
+  success actions, contextual React Native fields, complete CopyButton and reveal semantics,
+  component-aware diagnostics, explicit shared-library integration boundaries, packed Astro runtime
+  coverage, rendered migration checks, and adoption-ready registry output.
+
+### Patch Changes
+
+- Improve native control semantics and accessibility: preserve semantic SwiftUI button roles,
+  expose loading icon buttons and spinner tints, keep disabled quiet Compose buttons transparent,
+  allow status messages to reflow, make the full React Native toggle row interactive, preserve its
+  supporting guidance, and give native selection rows and search actions density-aware targets.
+  Keep compact chip removal independently operable with an explicit WCAG-sized target, and ensure
+  React Native toast and banner dismissal controls meet native touch-target guidance. Align native
+  live feedback for toast and field-group validation updates, and keep Compose required labels to one
+  unambiguous accessibility description.
+
+- Keep long native tab lists horizontally reachable, expose complete web tab semantics, and support
+  Arrow-key navigation while skipping disabled tabs.
+- Updated dependencies [`da315f0`]:
+  - @santi020k/lumen-core@2.1.0
+
 ## 2.0.0
 
 ### Major Changes

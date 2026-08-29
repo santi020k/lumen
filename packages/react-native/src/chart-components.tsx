@@ -6,7 +6,7 @@ import {
   View,
   type ViewProps
 } from 'react-native'
-import { Circle, Line, Path, Rect, Svg } from 'react-native-svg'
+import { Circle, Line, Path, Rect, Svg, Text as SvgText } from 'react-native-svg'
 
 import {
   alignLumenChartSeries,
@@ -24,12 +24,15 @@ import {
   hasLumenPieData,
   type LumenBarChartLayout,
   type LumenChartDatum,
+  type LumenChartLabels,
+  type LumenChartReference,
   type LumenChartSeries,
   type LumenChartTone,
   type LumenComboSeries,
   type LumenHeatmapDatum,
   type LumenPieChartVariant,
   type LumenRangeDatum,
+  resolveLumenChartLabels,
   resolveLumenChartTone,
   scaleLumenChartValue
 } from '@santi020k/lumen-core'
@@ -112,14 +115,19 @@ interface LumenChartDataListProps {
   formatCategory: (value: number | string) => string
   formatValue: (value: number) => string
   includeSize?: boolean
+  labels: Readonly<LumenChartLabels>
   onSelect?: (seriesId: string, x: number | string) => void
   selectedSeriesId?: string
   selectedX?: number | string
   series: readonly LumenChartSeries[]
 }
 
-const formatChartSize = (size: number | null | undefined, formatValue: (value: number) => string): string => (
-  size === null || size === undefined || !Number.isFinite(size) || size < 0 ? 'Not available' : formatValue(size)
+const formatChartSize = (
+  size: number | null | undefined,
+  formatValue: (value: number) => string,
+  labels: Readonly<LumenChartLabels>
+): string => (
+  size === null || size === undefined || !Number.isFinite(size) || size < 0 ? labels.notAvailable : formatValue(size)
 )
 
 const chartDatumLabel = (
@@ -127,23 +135,25 @@ const chartDatumLabel = (
   datum: LumenChartSeries['data'][number],
   formatCategory: (value: number | string) => string,
   formatValue: (value: number) => string,
+  labels: Readonly<LumenChartLabels>,
   includeSize = false
 ): string => {
   const category = datum.xLabel ?? formatCategory(datum.x)
 
   const value = datum.label ?? (
-    datum.y === null || !Number.isFinite(datum.y) ? 'Not available' : formatValue(datum.y)
+    datum.y === null || !Number.isFinite(datum.y) ? labels.notAvailable : formatValue(datum.y)
   )
 
-  const size = formatChartSize(datum.size, formatValue)
+  const size = formatChartSize(datum.size, formatValue, labels)
 
-  return `${category}, ${item.label}: ${value}${includeSize ? `, Size: ${size}` : ''}`
+  return `${category}, ${item.label}: ${value}${datum.toneLabel ? `, ${datum.toneLabel}` : ''}${includeSize ? `, ${labels.size}: ${size}` : ''}`
 }
 
 const LumenChartDataList = ({
   formatCategory,
   formatValue,
   includeSize = false,
+  labels,
   onSelect,
   selectedSeriesId,
   selectedX,
@@ -153,9 +163,9 @@ const LumenChartDataList = ({
 
   return (
     <View accessibilityRole="list" style={{ gap: theme.spacing.xs }}>
-      <Text style={{ color: theme.colors.ink, fontWeight: '700' }}>Chart data</Text>
+      <Text style={{ color: theme.colors.ink, fontWeight: '700' }}>{labels.chartData}</Text>
       {series.flatMap(item => item.data.map((datum, datumIndex) => {
-        const label = chartDatumLabel(item, datum, formatCategory, formatValue, includeSize)
+        const label = chartDatumLabel(item, datum, formatCategory, formatValue, labels, includeSize)
         const selected = selectedSeriesId === item.id && selectedX === datum.x
         const key = `${item.id}:${datum.id ?? `${typeof datum.x}:${String(datum.x)}:${datumIndex}`}`
 
@@ -194,17 +204,19 @@ const LumenChartDataList = ({
 }
 
 interface LumenChartStructuredDataListProps {
+  labels: Readonly<LumenChartLabels>
   rows: readonly { id: string, label: string }[]
 }
 
 const LumenChartStructuredDataList = ({
+  labels,
   rows
 }: LumenChartStructuredDataListProps): ReactElement => {
   const theme = useLumenTheme()
 
   return (
     <View accessibilityRole="list" style={{ gap: theme.spacing.xs }}>
-      <Text style={{ color: theme.colors.ink, fontWeight: '700' }}>Chart data</Text>
+      <Text style={{ color: theme.colors.ink, fontWeight: '700' }}>{labels.chartData}</Text>
       {rows.map(row => (
         <Text key={row.id} style={{ color: theme.colors.inkSoft, fontSize: theme.fontSizes.sm }}>
           {row.label}
@@ -252,6 +264,7 @@ interface LumenDataChartProps extends Omit<ViewProps, 'children'> {
   formatValue?: (value: number) => string
   heading?: string
   label: string
+  labels?: Partial<LumenChartLabels>
   onSelectionChange?: (seriesId: string, x: number | string) => void
   selectedSeriesId?: string
   selectedX?: number | string
@@ -321,15 +334,73 @@ export const LumenSparkline = ({
 
 export interface LumenLineChartProps extends LumenDataChartProps {
   area?: boolean
+  reference?: LumenChartReference
   series: readonly LumenChartSeries[]
 }
+
+interface LumenChartReferenceRuleProps {
+  domain: Readonly<{ max: number, min: number }>
+  height: number
+  padding: number
+  reference?: LumenChartReference
+  width: number
+}
+
+const LumenChartReferenceRule = ({
+  domain,
+  height,
+  padding,
+  reference,
+  width
+}: LumenChartReferenceRuleProps): ReactElement | null => {
+  const theme = useLumenTheme()
+
+  if (!reference) return null
+
+  const y = scaleLumenChartValue(reference.value, domain, height - padding, padding)
+  const color = lumenChartToneColor(resolveLumenChartTone(reference.tone), theme)
+
+  return (
+    <Fragment>
+      <Line stroke={color} strokeDasharray="6 4" strokeWidth={lumenChartStrokeWidths.reference} x1={padding} x2={width - padding} y1={y} y2={y} />
+      <SvgText fill={color} fontSize="12" transform={`translate(${padding + 4} ${Math.max(12, y - 5)})`}>{reference.label}</SvgText>
+    </Fragment>
+  )
+}
+
+const resolveLineChartSummary = (
+  series: readonly LumenChartSeries[],
+  valueFormatter: (value: number) => string,
+  labels: Readonly<LumenChartLabels>,
+  reference: LumenChartReference | undefined,
+  summary: string | undefined
+): string => {
+  if (summary !== undefined) return summary
+
+  const baseSummary = formatLumenChartSummary(series, valueFormatter, labels)
+
+  return reference ? `${baseSummary} ${reference.label}: ${valueFormatter(reference.value)}.` : baseSummary
+}
+
+const getLumenLineChartDomain = (
+  series: readonly LumenChartSeries[],
+  reference: LumenChartReference | undefined
+): ReturnType<typeof getLumenChartDomain> => getLumenChartDomain(
+  [
+    ...series.flatMap(item => item.data.map(datum => datum.y)),
+    reference?.value ?? null
+  ],
+  false
+)
 
 export const LumenLineChart = ({
   area = false,
   formatCategory,
   formatValue,
   label,
+  labels,
   onSelectionChange,
+  reference,
   selectedSeriesId,
   selectedX,
   series,
@@ -340,18 +411,18 @@ export const LumenLineChart = ({
   const theme = useLumenTheme()
   const categoryFormatter = resolveLumenChartCategoryFormatter(formatCategory)
   const valueFormatter = resolveLumenChartValueFormatter(formatValue)
+  const chartLabels = resolveLumenChartLabels(labels)
   const width = 640
   const height = 320
   const padding = 44
   const categories = getLumenChartCategories(series)
   const aligned = series.map(item => alignLumenChartSeries(item, categories))
-
-  const domain = getLumenChartDomain(
-    aligned.flatMap(item => item.data.map(datum => datum.y)), false
-  )
-
+  const domain = getLumenLineChartDomain(aligned, reference)
   const ticks = getLumenChartTicks(domain)
-  const resolvedSummary = summary ?? formatLumenChartSummary(series, valueFormatter)
+
+  const resolvedSummary = resolveLineChartSummary(
+    series, valueFormatter, chartLabels, reference, summary
+  )
 
   return (
     <LumenChartFrame label={label} summary={resolvedSummary} {...props}>
@@ -359,6 +430,13 @@ export const LumenLineChart = ({
         (
           <ScrollView horizontal>
             <Svg height={height} viewBox={`0 0 ${width} ${height}`} width={width}>
+              <LumenChartReferenceRule
+                domain={domain}
+                height={height}
+                padding={padding}
+                {...(reference ? { reference } : {})}
+                width={width}
+              />
               {ticks.map(tick => {
                 const y = scaleLumenChartValue(tick, domain, height - padding, padding)
 
@@ -403,18 +481,28 @@ export const LumenLineChart = ({
                       stroke={color}
                       strokeWidth={lumenChartStrokeWidths.series}
                     />
+                    {geometry.points.filter(point => point.tone).map(point => (
+                      <Circle
+                        cx={point.xCoordinate}
+                        cy={point.yCoordinate}
+                        fill={lumenChartToneColor(resolveLumenChartTone(point.tone), theme)}
+                        key={point.id ?? `${typeof point.x}:${String(point.x)}`}
+                        r="4"
+                      />
+                    ))}
                   </Fragment>
                 )
               })}
             </Svg>
           </ScrollView>
         ) :
-        <Text style={{ color: theme.colors.inkMuted }}>No chart data available.</Text>}
+        <Text style={{ color: theme.colors.inkMuted }}>{chartLabels.empty}</Text>}
       {showData ?
         (
           <LumenChartDataList
             formatCategory={categoryFormatter}
             formatValue={valueFormatter}
+            labels={chartLabels}
             series={series}
             {...(onSelectionChange ? { onSelect: onSelectionChange } : {})}
             {...(selectedSeriesId === undefined ? {} : { selectedSeriesId })}
@@ -435,6 +523,7 @@ export const LumenBarChart = ({
   formatCategory,
   formatValue,
   label,
+  labels,
   layout = 'grouped',
   onSelectionChange,
   selectedSeriesId,
@@ -447,8 +536,9 @@ export const LumenBarChart = ({
   const theme = useLumenTheme()
   const categoryFormatter = resolveLumenChartCategoryFormatter(formatCategory)
   const valueFormatter = resolveLumenChartValueFormatter(formatValue)
+  const chartLabels = resolveLumenChartLabels(labels)
   const geometry = createLumenBarGeometry(series, { layout })
-  const resolvedSummary = summary ?? formatLumenChartSummary(series, valueFormatter)
+  const resolvedSummary = summary ?? formatLumenChartSummary(series, valueFormatter, chartLabels)
 
   return (
     <LumenChartFrame label={label} summary={resolvedSummary} {...props}>
@@ -473,12 +563,13 @@ export const LumenBarChart = ({
             </Svg>
           </ScrollView>
         ) :
-        <Text style={{ color: theme.colors.inkMuted }}>No chart data available.</Text>}
+        <Text style={{ color: theme.colors.inkMuted }}>{chartLabels.empty}</Text>}
       {showData ?
         (
           <LumenChartDataList
             formatCategory={categoryFormatter}
             formatValue={valueFormatter}
+            labels={chartLabels}
             series={series}
             {...(onSelectionChange ? { onSelect: onSelectionChange } : {})}
             {...(selectedSeriesId === undefined ? {} : { selectedSeriesId })}
@@ -499,6 +590,7 @@ export const LumenPieChart = ({
   formatCategory,
   formatValue,
   label,
+  labels,
   onSelectionChange,
   selectedSeriesId,
   selectedX,
@@ -511,6 +603,7 @@ export const LumenPieChart = ({
   const theme = useLumenTheme()
   const categoryFormatter = resolveLumenChartCategoryFormatter(formatCategory)
   const valueFormatter = resolveLumenChartValueFormatter(formatValue)
+  const chartLabels = resolveLumenChartLabels(labels)
   const geometry = createLumenPieGeometry(series.data, { size: 320, variant })
 
   const renderedSeries = {
@@ -518,7 +611,7 @@ export const LumenPieChart = ({
     data: series.data.filter(datum => datum.y !== null && Number.isFinite(datum.y) && datum.y > 0)
   }
 
-  const resolvedSummary = summary ?? formatLumenChartSummary([renderedSeries], valueFormatter)
+  const resolvedSummary = summary ?? formatLumenChartSummary([renderedSeries], valueFormatter, chartLabels)
 
   return (
     <LumenChartFrame label={label} summary={resolvedSummary} {...props}>
@@ -537,12 +630,13 @@ export const LumenPieChart = ({
             ))}
           </Svg>
         ) :
-        <Text style={{ color: theme.colors.inkMuted }}>No chart data available.</Text>}
+        <Text style={{ color: theme.colors.inkMuted }}>{chartLabels.empty}</Text>}
       {showData ?
         (
           <LumenChartDataList
             formatCategory={categoryFormatter}
             formatValue={valueFormatter}
+            labels={chartLabels}
             series={[renderedSeries]}
             {...(onSelectionChange ? { onSelect: onSelectionChange } : {})}
             {...(selectedSeriesId === undefined ? {} : { selectedSeriesId })}
@@ -562,6 +656,7 @@ export const LumenScatterChart = ({
   formatCategory,
   formatValue,
   label,
+  labels,
   onSelectionChange,
   selectedSeriesId,
   selectedX,
@@ -573,6 +668,7 @@ export const LumenScatterChart = ({
   const theme = useLumenTheme()
   const categoryFormatter = resolveLumenChartCategoryFormatter(formatCategory)
   const valueFormatter = resolveLumenChartValueFormatter(formatValue)
+  const chartLabels = resolveLumenChartLabels(labels)
   const geometry = createLumenScatterGeometry(series)
 
   const renderedSeries = series.map(item => ({
@@ -586,7 +682,7 @@ export const LumenScatterChart = ({
   })).filter(item => item.data.length > 0)
 
   const hasData = geometry.points.length > 0
-  const resolvedSummary = summary ?? formatLumenChartSummary(renderedSeries, valueFormatter)
+  const resolvedSummary = summary ?? formatLumenChartSummary(renderedSeries, valueFormatter, chartLabels)
 
   return (
     <LumenChartFrame label={label} summary={resolvedSummary} {...props}>
@@ -606,13 +702,14 @@ export const LumenScatterChart = ({
             </Svg>
           </ScrollView>
         ) :
-        <Text style={{ color: theme.colors.inkMuted }}>No chart data available.</Text>}
+        <Text style={{ color: theme.colors.inkMuted }}>{chartLabels.empty}</Text>}
       {showData && hasData ?
         (
           <LumenChartDataList
             formatCategory={categoryFormatter}
             formatValue={valueFormatter}
             includeSize
+            labels={chartLabels}
             series={renderedSeries}
             {...(onSelectionChange ? { onSelect: onSelectionChange } : {})}
             {...(selectedSeriesId === undefined ? {} : { selectedSeriesId })}
@@ -629,6 +726,7 @@ export interface LumenHeatmapProps extends Omit<ViewProps, 'children'> {
   formatCategory?: (value: number | string) => string
   formatValue?: (value: number) => string
   label: string
+  labels?: Partial<LumenChartLabels>
   showData?: boolean
   summary?: string
 }
@@ -638,6 +736,7 @@ export const LumenHeatmap = ({
   formatCategory,
   formatValue,
   label,
+  labels,
   showData = true,
   style,
   summary,
@@ -647,7 +746,8 @@ export const LumenHeatmap = ({
   const geometry = createLumenHeatmapGeometry(data)
   const availableCells = geometry.cells.filter(cell => cell.value !== null && Number.isFinite(cell.value))
   const hasData = availableCells.length > 0
-  const resolvedSummary = summary ?? `${availableCells.length} available heatmap cells.`
+  const chartLabels = resolveLumenChartLabels(labels)
+  const resolvedSummary = summary ?? chartLabels.formatHeatmapSummary(availableCells.length)
   const categoryFormatter = resolveLumenChartCategoryFormatter(formatCategory)
   const valueFormatter = resolveLumenChartValueFormatter(formatValue)
 
@@ -671,17 +771,19 @@ export const LumenHeatmap = ({
             </Svg>
           </ScrollView>
         ) :
-        <Text style={{ color: theme.colors.inkMuted }}>No chart data available.</Text>}
+        <Text style={{ color: theme.colors.inkMuted }}>{chartLabels.empty}</Text>}
       {showData ?
         (
-          <LumenChartStructuredDataList rows={data.map(datum => ({
-            id: datum.id ?? `${typeof datum.x}:${String(datum.x)}:${typeof datum.y}:${String(datum.y)}`,
-            label: `${categoryFormatter(datum.x)}, ${categoryFormatter(datum.y)}: ${
-              datum.value === null || !Number.isFinite(datum.value) ?
-                'Not available' :
-                valueFormatter(datum.value)
-            }`
-          }))}
+          <LumenChartStructuredDataList
+            labels={chartLabels}
+            rows={data.map(datum => ({
+              id: datum.id ?? `${typeof datum.x}:${String(datum.x)}:${typeof datum.y}:${String(datum.y)}`,
+              label: `${categoryFormatter(datum.x)}, ${categoryFormatter(datum.y)}: ${
+                datum.value === null || !Number.isFinite(datum.value) ?
+                  chartLabels.notAvailable :
+                  valueFormatter(datum.value)
+              }`
+            }))}
           />
         ) :
         null}
@@ -694,6 +796,7 @@ export interface LumenRangeChartProps extends Omit<ViewProps, 'children'> {
   formatCategory?: (value: number | string) => string
   formatValue?: (value: number) => string
   label: string
+  labels?: Partial<LumenChartLabels>
   showData?: boolean
   summary?: string
   tone?: LumenChartTone
@@ -704,6 +807,7 @@ export const LumenRangeChart = ({
   formatCategory,
   formatValue,
   label,
+  labels,
   showData = true,
   style,
   summary,
@@ -713,13 +817,8 @@ export const LumenRangeChart = ({
   const theme = useLumenTheme()
   const geometry = createLumenRangeGeometry(data)
   const hasData = geometry.points.length > 0
-
-  const resolvedSummary = summary ?? (
-    geometry.points.length === 0 ?
-      'No chart data available.' :
-      `${geometry.points.length} ${geometry.points.length === 1 ? 'range' : 'ranges'}.`
-  )
-
+  const chartLabels = resolveLumenChartLabels(labels)
+  const resolvedSummary = summary ?? chartLabels.formatRangeSummary(geometry.points.length)
   const color = lumenChartToneColor(resolveLumenChartTone(tone), theme)
   const categoryFormatter = resolveLumenChartCategoryFormatter(formatCategory)
   const valueFormatter = resolveLumenChartValueFormatter(formatValue)
@@ -740,21 +839,23 @@ export const LumenRangeChart = ({
             </Svg>
           </ScrollView>
         ) :
-        <Text style={{ color: theme.colors.inkMuted }}>No chart data available.</Text>}
+        <Text style={{ color: theme.colors.inkMuted }}>{chartLabels.empty}</Text>}
       {showData ?
         (
-          <LumenChartStructuredDataList rows={data.map(datum => ({
-            id: datum.id ?? `${typeof datum.x}:${String(datum.x)}`,
-            label: `${datum.xLabel ?? categoryFormatter(datum.x)}: ${
-              datum.low === null || !Number.isFinite(datum.low) ?
-                'Not available' :
-                valueFormatter(datum.low)
-            } to ${
-              datum.high === null || !Number.isFinite(datum.high) ?
-                'Not available' :
-                valueFormatter(datum.high)
-            }`
-          }))}
+          <LumenChartStructuredDataList
+            labels={chartLabels}
+            rows={data.map(datum => ({
+              id: datum.id ?? `${typeof datum.x}:${String(datum.x)}`,
+              label: `${datum.xLabel ?? categoryFormatter(datum.x)}: ${
+                datum.low === null || !Number.isFinite(datum.low) ?
+                  chartLabels.notAvailable :
+                  valueFormatter(datum.low)
+              } to ${
+                datum.high === null || !Number.isFinite(datum.high) ?
+                  chartLabels.notAvailable :
+                  valueFormatter(datum.high)
+              }`
+            }))}
           />
         ) :
         null}
@@ -770,6 +871,7 @@ export const LumenComboChart = ({
   formatCategory,
   formatValue,
   label,
+  labels,
   onSelectionChange,
   selectedSeriesId,
   selectedX,
@@ -781,6 +883,7 @@ export const LumenComboChart = ({
   const theme = useLumenTheme()
   const categoryFormatter = resolveLumenChartCategoryFormatter(formatCategory)
   const valueFormatter = resolveLumenChartValueFormatter(formatValue)
+  const chartLabels = resolveLumenChartLabels(labels)
   const width = 640
   const height = 320
   const padding = 44
@@ -827,7 +930,7 @@ export const LumenComboChart = ({
       })
   }
 
-  const resolvedSummary = summary ?? formatLumenChartSummary(series, valueFormatter)
+  const resolvedSummary = summary ?? formatLumenChartSummary(series, valueFormatter, chartLabels)
 
   return (
     <LumenChartFrame label={label} summary={resolvedSummary} {...props}>
@@ -879,12 +982,13 @@ export const LumenComboChart = ({
             </Svg>
           </ScrollView>
         ) :
-        <Text style={{ color: theme.colors.inkMuted }}>No chart data available.</Text>}
+        <Text style={{ color: theme.colors.inkMuted }}>{chartLabels.empty}</Text>}
       {showData ?
         (
           <LumenChartDataList
             formatCategory={categoryFormatter}
             formatValue={valueFormatter}
+            labels={chartLabels}
             series={series}
             {...(onSelectionChange ? { onSelect: onSelectionChange } : {})}
             {...(selectedSeriesId === undefined ? {} : { selectedSeriesId })}
