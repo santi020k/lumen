@@ -27,17 +27,31 @@ try {
     run('pnpm', ['pack', '--pack-destination', temporaryDirectory], join(repositoryRoot, 'packages', packageName))
   }
 
-  const archives = (await readdir(temporaryDirectory))
-    .filter(name => name.endsWith('.tgz'))
-    .map(name => join(temporaryDirectory, name))
+  const archiveNames = (await readdir(temporaryDirectory)).filter(name => name.endsWith('.tgz'))
 
-  assert.equal(archives.length, 2, 'Expected packed Core and React Native archives')
+  assert.equal(archiveNames.length, 2, 'Expected packed Core and React Native archives')
 
-  run(
-    'pnpm',
-    ['add', '--ignore-scripts', '--lockfile=false', '--save-prod', ...archives],
-    playgroundDirectory
-  )
+  const coreArchiveName = archiveNames.find(name => name.includes('lumen-core-'))
+  const reactNativeArchiveName = archiveNames.find(name => name.includes('lumen-react-native-'))
+
+  assert.ok(coreArchiveName, 'Expected a packed Core archive')
+
+  assert.ok(reactNativeArchiveName, 'Expected a packed React Native archive')
+
+  for (const archiveName of [coreArchiveName, reactNativeArchiveName]) {
+    run(
+      'pnpm',
+      [
+        'add',
+        '--config.link-workspace-packages=deep',
+        '--ignore-scripts',
+        '--lockfile=false',
+        '--save-prod',
+        join(temporaryDirectory, archiveName),
+      ],
+      playgroundDirectory
+    )
+  }
 } finally {
   await writeFile(manifestPath, originalManifest)
 
