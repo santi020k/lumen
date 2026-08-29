@@ -7,6 +7,12 @@ on:
       - ".github/workflows/release.yml"
       - ".github/workflows/publish-compose.yml"
       - ".github/workflows/verify-native-release.yml"
+      - ".github/workflows/release-playground-apple.yml"
+      - ".github/workflows/monitor-playground-apple.yml"
+      - ".github/workflows/release-playground-macos.yml"
+      - ".github/workflows/monitor-playground-macos.yml"
+      - ".github/scripts/monitor-xcode-cloud.mjs"
+      - ".github/scripts/monitor-xcode-cloud.test.mjs"
       - "Package.swift"
       - "apps/playground-android/**"
       - "apps/playground-apple/**"
@@ -67,6 +73,8 @@ on:
       - "scripts/check-web-consumer-evidence.test.mjs"
       - "scripts/check-playground-eas-version.mjs"
       - "scripts/check-playground-eas-version.test.mjs"
+      - "scripts/check-playground-apple-release.mjs"
+      - "scripts/check-playground-apple-release.test.mjs"
       - "scripts/check-react-native-peer-docs.mjs"
       - "scripts/check-react-native-peer-docs.test.mjs"
       - "scripts/generate-release-manifest.mjs"
@@ -77,6 +85,13 @@ on:
       - "scripts/sync-coordinated-v2-versions.test.mjs"
       - "scripts/smoke-react-native-native-package.mjs"
       - "scripts/smoke-swift-package-candidate.mjs"
+      - "scripts/classify-workflow-paths.mjs"
+      - "scripts/classify-workflow-paths.test.mjs"
+      - "scripts/release-scope.mjs"
+      - "scripts/release-scope.test.mjs"
+      - "scripts/publish-packages.mjs"
+      - "scripts/workflow-scope.test.mjs"
+      - "scripts/version-packages.mjs"
   workflow_dispatch: {}
 
 permissions:
@@ -92,9 +107,15 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     outputs:
+      browser: ${{ steps.paths.outputs.browser }}
       compose: ${{ steps.paths.outputs.compose }}
+      consumer-packages: ${{ steps.paths.outputs.consumer-packages }}
+      native: ${{ steps.paths.outputs.native }}
+      npm-packages: ${{ steps.paths.outputs.npm-packages }}
+      react-native: ${{ steps.paths.outputs.react-native }}
       swift: ${{ steps.paths.outputs.swift }}
       web: ${{ steps.paths.outputs.web }}
+      web-contracts: ${{ steps.paths.outputs.web-contracts }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -105,28 +126,11 @@ jobs:
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
-        run: |
-          if [[ "$GITHUB_EVENT_NAME" == "workflow_dispatch" ]]; then
-            printf 'web=true\nswift=true\ncompose=true\n' >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
-          changed_files="$(git diff --name-only "$BASE_SHA" "$HEAD_SHA")"
-          if grep -Eq '^(packages/(astro|core|elements|icons-brand|lumen|mcp|react|react-hook-form|react-native|templates|tokens)/|apps/(docs|next-smoke|playground-react-native|templates)/|docs/(native-compatibility|native-device-validation|playgrounds|web-consumer-validation)\.md$|registry/(compose-api-classification|lumen-2-contract|native-api-baseline|native-consumer-evidence|native-device-evidence|native-stability-soak|release-manifest|swift-api-baseline|swift-widget-api-baseline|wear-api-classification|web-api-baseline|web-consumer-evidence)\.json$|scripts/(check-approved-release-revision(\.test)?|check-coordinated-release-revision(\.test)?|check-graduated-release-revision(\.test)?|check-lumen-2-contract(\.test)?|check-maven-(pom-metadata|release-artifacts)(\.test)?|maven-pom-metadata|check-npm-release-provenance(\.test)?|check-published-package-family(\.test)?|check-native-consumer-evidence(\.test)?|check-native-device-evidence(\.test)?|check-native-stability-soak(\.test)?|check-native-stable-readiness(\.test)?|check-playground-eas-version(\.test)?|check-react-native-peer-docs(\.test)?|check-v2-release-workflows\.test|check-web-api-baseline(\.test)?|check-web-consumer-evidence(\.test)?|generate-release-manifest(\.test)?|smoke-consumer-packages|smoke-react-native-native-package|sync-coordinated-v2-versions(\.test)?)\.mjs$|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|turbo\.json$|\.github/workflows/(publish-compose|release|release-canary|verify-native-release)\.yml$)' <<< "$changed_files"; then
-            echo "web=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "web=false" >> "$GITHUB_OUTPUT"
-          fi
-          if grep -Eq '^(Package\.swift$|packages/(swift|swift-widget|tokens)/|apps/playground-apple/|apps/docs/src/data/platforms\.ts$|docs/(ai-usage|native-components|playgrounds)\.md$|tokens/|registry/(native-device-evidence|native-stability-soak|swift-api-baseline|swift-widget-api-baseline|release-manifest)\.json$|scripts/(check-native-device-evidence|check-native-stability-soak|check-native-stable-readiness|check-swift-api-baseline|generate-platform-tokens|generate-release-manifest|smoke-react-native-native-package|smoke-swift-package-candidate|sync-coordinated-v2-versions(\.test)?|sync-swift-version(\.test)?)\.mjs$|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|\.github/workflows/(release-canary|verify-native-release)\.yml$)' <<< "$changed_files"; then
-            echo "swift=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "swift=false" >> "$GITHUB_OUTPUT"
-          fi
-          if grep -Eq '^(packages/(compose|tokens)/|apps/playground-android/|tokens/|registry/(compose-api-classification|native-consumer-evidence|native-device-evidence|native-stability-soak|wear-api-classification|release-manifest)\.json$|scripts/(check-approved-release-revision(\.test)?|check-compose-api-classification|check-coordinated-release-revision(\.test)?|check-graduated-release-revision(\.test)?|check-maven-(pom-metadata|release-artifacts)(\.test)?|maven-pom-metadata|check-native-consumer-evidence|check-native-device-evidence|check-native-stability-soak|check-native-stable-readiness|check-wear-api-classification|generate-platform-tokens|generate-release-manifest|smoke-react-native-native-package|sync-coordinated-v2-versions(\.test)?)\.mjs$|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|\.github/workflows/(release-canary|verify-native-release)\.yml$)' <<< "$changed_files"; then
-            echo "compose=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "compose=false" >> "$GITHUB_OUTPUT"
-          fi
+        run: >-
+          node scripts/classify-workflow-paths.mjs canary
+          --base "$BASE_SHA"
+          --head "$HEAD_SHA"
+          --output "$GITHUB_OUTPUT"
 
   web:
     name: Packed npm consumer
@@ -134,6 +138,10 @@ jobs:
     if: needs.classify.outputs.web == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    env:
+      LUMEN_RELEASE_PACKAGES: ${{ needs.classify.outputs.npm-packages }}
+      TURBO_SCM_BASE: ${{ github.event.pull_request.base.sha }}
+      TURBO_SCM_HEAD: ${{ github.event.pull_request.head.sha }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -147,11 +155,17 @@ jobs:
       - run: pnpm run check:release-manifest
       - run: node --test scripts/generate-release-manifest.test.mjs
       - run: pnpm run check:web-api-baseline && pnpm run test:web-api-baseline
+        if: needs.classify.outputs.web-contracts == 'true'
       - run: pnpm run check:web-consumer-evidence && pnpm run test:web-consumer-evidence
-      - name: Enforce the Lumen 2 contract and coordinated stable release gates
+        if: needs.classify.outputs.web-contracts == 'true'
+      - name: Enforce the Lumen 2 contract
+        if: needs.classify.outputs.web-contracts == 'true' || needs.classify.outputs.native == 'true'
         run: >-
           pnpm run check:lumen-2-contract &&
-          pnpm run test:lumen-2-contract &&
+          pnpm run test:lumen-2-contract
+      - name: Enforce coordinated native release gates
+        if: needs.classify.outputs.native == 'true'
+        run: >-
           pnpm run check:native-stability-soak &&
           pnpm run test:native-stability-soak &&
           pnpm run check:native-consumer-evidence &&
@@ -168,18 +182,31 @@ jobs:
           pnpm run test:published-package-family &&
           pnpm run test:v2-release-workflows
       - run: pnpm run check:playground-eas-version && pnpm run test:playground-eas-version
+        if: needs.classify.outputs.react-native == 'true'
       - run: pnpm run check:react-native-peer-docs && pnpm run test:react-native-peer-docs
-      - run: pnpm run build
+        if: needs.classify.outputs.react-native == 'true'
+      - name: Build the selected release packages
+        run: |
+          if [[ "$GITHUB_EVENT_NAME" == "workflow_dispatch" ]]; then
+            pnpm run build
+          else
+            pnpm run build:release-scope
+          fi
       - name: Install the release-candidate browser
+        if: needs.classify.outputs.browser == 'true'
         run: pnpm exec playwright install --with-deps chromium
       - name: Verify release-candidate accessibility
+        if: needs.classify.outputs.browser == 'true'
         run: pnpm run test:a11y
       - name: Verify release-candidate framework behavior
+        if: needs.classify.outputs.browser == 'true'
         env:
           LUMEN_FRAMEWORK_CONFORMANCE_PROJECTS: chromium
         run: pnpm run test:framework-conformance
       - run: pnpm run check:consumer-packages
+        if: needs.classify.outputs.consumer-packages == 'true'
       - run: pnpm run check:react-native-package
+        if: needs.classify.outputs.react-native == 'true'
 
   swift:
     name: Swift package consumer
@@ -197,6 +224,7 @@ jobs:
           cache: pnpm
           node-version: 22.x
       - run: pnpm install --frozen-lockfile
+      - run: pnpm run check:playground-apple-release && pnpm run test:playground-apple-release
       - run: pnpm run check:swift-version && pnpm run test:swift-version
       - run: swift test
       - run: pnpm run check:swift-source-compatibility

@@ -1,14 +1,12 @@
 name: Launch Apple playground release
 
-# cspell:ignore pipefail
-
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - apps/playground-apple/release.json
   workflow_dispatch:
-    inputs:
-      version:
-        description: App Store marketing version, for example 1.0.0
-        required: true
-        type: string
 
 concurrency:
   group: lumen-playground-app-store-release
@@ -25,21 +23,23 @@ jobs:
     environment:
       name: app-store
       url: https://appstoreconnect.apple.com/apps/6805250815
+    outputs:
+      release_tag: ${{ steps.release.outputs.tag }}
     steps:
       - name: Check out source
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           fetch-depth: 0
 
       - name: Verify release request
         id: release
         shell: bash
-        env:
-          RELEASE_VERSION: ${{ inputs.version }}
         run: |
           set -euo pipefail
 
-          if [[ ! "$RELEASE_VERSION" =~ ^[0-9]+\.[0-9]+(\.[0-9]+)?$ ]]; then
+          node scripts/check-playground-apple-release.mjs
+          release_version="$(node -p "require('./apps/playground-apple/release.json').version")"
+          if [[ ! "$release_version" =~ ^[0-9]+\.[0-9]+(\.[0-9]+)?$ ]]; then
             echo "::error title=Invalid version::Use a version such as 1.0 or 1.0.0."
             exit 1
           fi
@@ -48,7 +48,8 @@ jobs:
             exit 1
           fi
 
-          release_tag="playground-ios-v${RELEASE_VERSION}-r${GITHUB_RUN_NUMBER}"
+
+          release_tag="playground-ios-v${release_version}-r${GITHUB_RUN_NUMBER}"
           if git ls-remote --exit-code --tags origin "refs/tags/$release_tag" >/dev/null 2>&1; then
             echo "::error title=Release already exists::$release_tag already exists and release tags are immutable."
             exit 1
@@ -74,8 +75,40 @@ jobs:
           RELEASE_TAG: ${{ steps.release.outputs.tag }}
         run: |
           {
-            echo "## Apple playground release launched"
+            echo "## iOS release launched"
             echo
             echo "Created \`$RELEASE_TAG\` at \`$GITHUB_SHA\`."
-            echo "The Xcode Cloud App Store Release workflow will archive, sign, and upload this tag to App Store Connect."
+            echo "The Xcode Cloud App Store Release workflow will validate, test, archive, sign, and upload this tag to App Store Connect."
           } >> "$GITHUB_STEP_SUMMARY"
+
+  monitor:
+    name: Monitor Xcode Cloud release
+    needs: launch
+    runs-on: ubuntu-24.04
+    timeout-minutes: 160
+    environment:
+      name: app-store
+      url: https://appstoreconnect.apple.com/apps/6805250815
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Check out status monitor
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Fetch Apple release-monitoring secrets from Infisical
+        uses: Infisical/secrets-action@77ab1f4ccd183a543cb5b42435fbd181189f4995 # v1.0.16
+        with:
+          method: oidc
+          identity-id: ${{ vars.INFISICAL_IDENTITY_ID }}
+          project-slug: ${{ vars.INFISICAL_PROJECT_SLUG }}
+          env-slug: prod
+          secret-path: /playground/apple
+
+      - name: Wait for Xcode Cloud
+        env:
+          XCODE_CLOUD_PRODUCT_ID: ${{ vars.XCODE_CLOUD_PRODUCT_ID }}
+          XCODE_CLOUD_WORKFLOW_NAME: App Store Release
+          SOURCE_COMMIT_SHA: ${{ github.sha }}
+          RELEASE_TAG: ${{ needs.launch.outputs.release_tag }}
+        run: APP_STORE_CONNECT_PRIVATE_KEY="$APP_STORE_CONNECT_API_KEY_P8" node .github/scripts/monitor-xcode-cloud.mjs

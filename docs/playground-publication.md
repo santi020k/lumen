@@ -73,14 +73,21 @@ signed command fails before bundling when any credential is absent or the decode
 the shorter `playground:android:bundle` command intentionally remains available for local unsigned
 release checks only.
 
-For Apple distribution, run `pnpm playground:apple:release-preflight`, then manually dispatch the
-matching GitHub Actions workflow from `main` with the App Store marketing version:
+For Apple distribution, update `apps/playground-apple/release.json` and every `MARKETING_VERSION`
+in `apps/playground-apple/project.yml`, then run `pnpm playground:apple:release-preflight`. Xcode
+Cloud stamps the checked-in project with the version from the immutable release tag. Merging that
+synchronized version change to `main`
+automatically launches both GitHub Actions workflows. Either workflow can also be dispatched
+manually from `main` to create another immutable candidate for the committed version:
 
 - **Launch Apple playground release** creates `playground-ios-v<version>-r<run>` for iOS.
 - **Launch Mac playground release** creates `playground-macos-v<version>-r<run>` for macOS.
 
 Repeated attempts for the same marketing version receive distinct tags, while Xcode Cloud supplies
-the monotonically increasing `CI_BUILD_NUMBER`. Because App Store Connect already received iOS build
+the monotonically increasing `CI_BUILD_NUMBER`. Each launcher monitors the matching Xcode Cloud
+workflow through completion, and the standalone **Check Apple playground release status** and
+**Check Mac playground release status** workflows can resume monitoring for an existing tag.
+Because App Store Connect already received iOS build
 `1` of version `1.0.0` before Xcode Cloud was enabled, the cloud script offsets only the iOS counter
 by one. The macOS workflow uses its own Xcode Cloud build counter directly.
 
@@ -124,6 +131,13 @@ GitHub environment is only an approval boundary for creating the tag.
 The app declares that it uses no non-exempt encryption; re-audit that declaration if a future
 dependency adds cryptography. Signing identity and App Store Connect access remain account-owned
 state.
+
+GitHub monitors Apple builds through the App Store Connect API. The `app-store` environment must
+define `INFISICAL_IDENTITY_ID`, `INFISICAL_PROJECT_SLUG`, and `XCODE_CLOUD_PRODUCT_ID`. The identity
+must be restricted to this repository and granted read access to the Lumen Infisical project's
+`prod` environment at `/playground/apple`, where `APP_STORE_CONNECT_ISSUER_ID`,
+`APP_STORE_CONNECT_KEY_ID`, and `APP_STORE_CONNECT_API_KEY_P8` are stored. The private key remains in
+Infisical and is injected only for the monitor job.
 
 ## Release gates
 

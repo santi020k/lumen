@@ -44,25 +44,51 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Resolve packages pending publication
+        id: scope
+        run: node scripts/release-scope.mjs --github-output
+
       - name: Verify approved Lumen 2 candidate
         run: node scripts/check-approved-release-revision.mjs
 
       - name: Verify graduated Lumen 2 release
         run: node scripts/check-graduated-release-revision.mjs
 
-      - name: Validate release packages
+      - name: Validate shared release metadata
+        if: steps.scope.outputs.has-packages == 'true'
         run: >-
           pnpm run check:release-manifest &&
-          node scripts/check-lumen-2-contract.mjs &&
+          node scripts/check-lumen-2-contract.mjs
+
+      - name: Validate web release contracts
+        if: steps.scope.outputs.web == 'true'
+        run: pnpm run check:web-consumer-evidence
+
+      - name: Validate React Native release contracts
+        if: steps.scope.outputs.react-native == 'true'
+        run: >-
           pnpm run check:react-native-peer-docs &&
           pnpm run test:react-native-peer-docs &&
           pnpm run check:swift-version &&
-          pnpm run check:web-consumer-evidence &&
           pnpm run check:native-consumer-evidence &&
-          pnpm run check:native-stability-soak &&
-          pnpm run build &&
+          pnpm run check:native-stability-soak
+
+      - name: Build and inspect packages pending publication
+        if: steps.scope.outputs.has-packages == 'true'
+        env:
+          LUMEN_RELEASE_PACKAGES: ${{ steps.scope.outputs.packages }}
+        run: >-
+          pnpm run build:release-scope &&
           pnpm run check:security &&
           pnpm run check:publish-dry-run
+
+      - name: Validate MCP release contracts
+        if: steps.scope.outputs.mcp == 'true'
+        run: pnpm run check:mcp-snapshot
+
+      - name: Validate packed MCP release
+        if: steps.scope.outputs.mcp-package == 'true'
+        run: pnpm run check:mcp-package
 
       - name: Create release pull request or publish
         id: changesets
@@ -76,6 +102,8 @@ jobs:
           create-github-releases: true
         env:
           HUSKY: 0
+          LUMEN_RELEASE_PACKAGES: ${{ steps.scope.outputs.packages }}
+          LUMEN_RELEASE_PREPARED: "true"
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_CONFIG_PROVENANCE: "true"

@@ -47,6 +47,12 @@ on one kind of check.
 Use `pnpm run validate` for broad cross-package changes, release work, and final confidence before
 publishing. It intentionally remains exhaustive.
 
+Pull request CI classifies changed paths before starting platform jobs. Web packages, React Native,
+SwiftUI, Compose, browser suites, playground captures, MCP checks, package smoke tests, and bundle
+budgets run only when their owning sources or shared foundations changed. The release canary uses
+the same package boundaries; dispatch it manually when an explicit full web, Swift, and Compose
+qualification run is required.
+
 ## Release Notes
 
 Add a changeset when a package consumer can observe the change: new components, changed props,
@@ -81,6 +87,9 @@ All work merges into `main`; contributors do not create or merge a separate rele
 3. Merge that automated pull request when the accumulated changes are ready to publish.
 4. The merge publishes the packages and creates the GitHub releases automatically.
 
-The feature pull request runs the complete validation suite. The automated release pull request runs
-only package build and publish dry-run checks because its generated changes are limited to versions,
-changelogs, synchronized installation guidance, the lockfile, and the MCP snapshot.
+Feature pull requests run affected package checks plus the platform and integration gates selected
+from their changed paths. The automated release pull request resolves the exact Changesets package
+set and runs only its builds and publish dry-runs because its generated changes are limited to
+versions, changelogs, synchronized installation guidance, the lockfile, and the MCP snapshot. The
+publication run resolves the same scope from pending Changesets or unpublished local versions and
+retains package-family, native, and MCP release gates only when that scope requires them.
