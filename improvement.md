@@ -127,6 +127,12 @@ subpixel or display-scale tolerance instead of treating floating-point represent
 failure. PostLens could migrate its compact Carousel and Layout edit strips by retaining the
 adapter's medium semantic size and adding the explicit target; adopting Lumen semantics should not
 implicitly shrink an established control to `.sm`, especially when the localized label already fits.
+The same adapter initially omitted the `ButtonRole` that `LumenButton` already supports. Cancel and
+destructive semantics are independent from visual intent: a consumer may need a secondary bordered
+treatment while still forwarding `.cancel` or `.destructive` to the native `Button`. A UI-system
+fixture also showed that applying one accessibility identifier to a composite SwiftUI root can
+overwrite every descendant identifier, even when the adapter applies its identifier directly to the
+native button. Stable identifiers belong on the smallest semantic element, not a screen container.
 
 Acceptance criteria:
 
@@ -164,6 +170,12 @@ Acceptance criteria:
 - Tell adapter consumers to preserve the established visual size during semantic migration and to
   choose `.sm` only after localized labels and target spacing are verified in the real compact
   composition.
+- Document that native-treatment adapters must mirror `LumenButton`'s optional `ButtonRole` rather
+  than inferring cancel or destructive semantics from `LumenButtonIntent`; test role-sensitive
+  actions through cancellation and destructive recovery behavior.
+- Add SwiftUI testing guidance that assigns identifiers to leaf semantic controls and avoids one
+  identifier on a composite ancestor; verify that sibling button identifiers remain distinct in the
+  accessibility tree.
 - Document when a consumer must retain a native compact control because the surrounding system
   container owns hit testing or presentation.
 
