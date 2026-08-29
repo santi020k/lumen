@@ -284,6 +284,7 @@ words:
 ignoreRegExpList:
   - luQW2pTQ3jGGxSFPAAsfa9
 ignorePaths:
+  - .eslint-config-snapshot.json
   - node_modules
   - dist
   - coverage
