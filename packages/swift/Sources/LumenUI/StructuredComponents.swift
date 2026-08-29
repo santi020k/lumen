@@ -641,7 +641,7 @@ public struct LumenStatusBar<Trailing: View>: View {
     }
 
     public var body: some View {
-        HStack(spacing: LumenSpacing.sm) {
+        HStack(alignment: .top, spacing: LumenSpacing.sm) {
             LumenIcon(
                 systemName: systemName ?? defaultSystemName,
                 size: .sm,
@@ -649,11 +649,12 @@ public struct LumenStatusBar<Trailing: View>: View {
             )
 
             Text(message)
-                .lineLimit(1)
-
-            Spacer(minLength: LumenSpacing.md)
+                .fixedSize(horizontal: false, vertical: true)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .layoutPriority(1)
 
             trailing
+                .fixedSize(horizontal: true, vertical: false)
         }
         .font(.caption)
         .foregroundStyle(theme.colors.inkSoft)

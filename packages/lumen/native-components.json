@@ -70,8 +70,8 @@
     {
       "id": "icon-button",
       "tier": "universal",
-      "contract": "Shared intent and native touch target",
-      "accessibility": "Requires an action label",
+      "contract": "Shared intent and native touch target; SwiftUI supports semantic roles and loading",
+      "accessibility": "Requires an action label; SwiftUI loading preserves the name and disables repeat activation",
       "symbols": {
         "reactNative": "LumenIconButton",
         "swiftUI": "LumenIconButton",
@@ -92,7 +92,7 @@
     {
       "id": "button",
       "tier": "universal",
-      "contract": "Intent, size, loading, and disabled states",
+      "contract": "Intent, size, loading, and disabled states; SwiftUI supports semantic button roles",
       "accessibility": "Exposes native button and state semantics",
       "symbols": {
         "reactNative": "LumenButton",
@@ -126,7 +126,7 @@
       "id": "field-group",
       "tier": "shared",
       "contract": "Label, description, required state, control content, and validation message",
-      "accessibility": "Keeps child control semantics independent while presenting readable field context",
+      "accessibility": "Keeps child control semantics independent, presents readable field context, and announces validation updates",
       "symbols": {
         "reactNative": "LumenFieldGroup",
         "swiftUI": "LumenFieldGroup",
@@ -136,8 +136,8 @@
     {
       "id": "toggle",
       "tier": "shared",
-      "contract": "Native switch behavior with visible label and disabled state",
-      "accessibility": "Exposes native switch state and a readable label",
+      "contract": "Full-row native switch behavior with visible label and disabled state",
+      "accessibility": "Exposes one labeled switch whose full row toggles the controlled state and preserves supporting guidance",
       "symbols": {
         "reactNative": "LumenToggle",
         "swiftUI": "LumenToggle",
@@ -147,7 +147,7 @@
     {
       "id": "settings-row",
       "tier": "shared",
-      "contract": "Title, supporting text, optional graphic, and trailing control",
+      "contract": "Title, supporting text, optional graphic, trailing control, and 56-unit minimum row height",
       "accessibility": "Contains the native control without merging its interaction",
       "symbols": {
         "reactNative": "LumenSettingsRow",
@@ -158,7 +158,7 @@
     {
       "id": "search-field",
       "tier": "shared",
-      "contract": "Native search input with semantic surface and clear action",
+      "contract": "Native search input with semantic surface and a density-aware clear action",
       "accessibility": "Labels the input and clear action while preserving native editing",
       "symbols": {
         "reactNative": "LumenSearchField",
@@ -202,7 +202,7 @@
     {
       "id": "checkbox",
       "tier": "shared",
-      "contract": "Controlled Boolean selection with visible label and optional supporting text",
+      "contract": "Controlled Boolean selection with visible label, optional supporting text, and density-aware row target",
       "accessibility": "Exposes native checkbox state, disabled state, and a readable label",
       "symbols": {
         "reactNative": "LumenCheckbox",
@@ -213,7 +213,7 @@
     {
       "id": "radio-group",
       "tier": "shared",
-      "contract": "Single selection from labeled options with optional supporting text",
+      "contract": "Single selection from labeled options with optional supporting text and density-aware row targets",
       "accessibility": "Exposes a named native radio group and selected or disabled option states",
       "symbols": {
         "reactNative": "LumenRadioGroup",
@@ -246,7 +246,7 @@
     {
       "id": "chip",
       "tier": "shared",
-      "contract": "Compact display, selection, and removal with semantic selected and disabled states",
+      "contract": "Compact display, selection, and removal with semantic states and a 24-unit minimum remove target",
       "accessibility": "Separates selection and removal actions while exposing selected and disabled state",
       "symbols": {
         "reactNative": "LumenChip",
@@ -290,7 +290,7 @@
     {
       "id": "spinner",
       "tier": "universal",
-      "contract": "Brand-colored indeterminate activity",
+      "contract": "Brand-default indeterminate activity with an optional semantic tint",
       "accessibility": "Exposes a loading label",
       "symbols": {
         "reactNative": "LumenSpinner",
@@ -324,7 +324,7 @@
       "id": "toast",
       "tier": "shared",
       "contract": "App-controlled transient feedback with semantic tone, optional action, and dismissal",
-      "accessibility": "Announces concise status while preserving independent action and dismissal controls",
+      "accessibility": "Uses native live feedback semantics while preserving independently labeled, full-target action and dismissal controls",
       "symbols": {
         "reactNative": "LumenToast",
         "swiftUI": "LumenToast",
@@ -544,7 +544,7 @@
       "id": "banner",
       "tier": "shared",
       "contract": "Semantic notice with optional actions and dismissal",
-      "accessibility": "Does not announce automatically and labels dismissal",
+      "accessibility": "Does not announce automatically and exposes a labeled, full-target dismissal control",
       "symbols": {
         "reactNative": "LumenBanner",
         "swiftUI": "LumenBanner",
@@ -576,8 +576,8 @@
     {
       "id": "status-bar",
       "tier": "shared",
-      "contract": "Compact semantic status with optional trailing content",
-      "accessibility": "Status meaning remains present in text, not color alone",
+      "contract": "Compact semantic status that wraps beside fixed optional trailing content",
+      "accessibility": "Status meaning remains present in text before independently operable trailing content",
       "symbols": {
         "reactNative": "LumenStatusBar",
         "swiftUI": "LumenStatusBar",

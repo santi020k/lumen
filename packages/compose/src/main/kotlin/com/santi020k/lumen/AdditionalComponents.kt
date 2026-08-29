@@ -34,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.error
 import androidx.compose.ui.semantics.liveRegion
@@ -84,7 +85,7 @@ fun LumenFieldGroup(
         Text(
             text = if (required) "$label *" else label,
             modifier = if (required) {
-                Modifier.semantics { contentDescription = "$label, required" }
+                Modifier.clearAndSetSemantics { contentDescription = "$label, required" }
             } else {
                 Modifier
             },

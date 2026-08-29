@@ -75,6 +75,7 @@ public struct LumenSettingsRow<Control: View>: View {
             control
                 .fixedSize(horizontal: true, vertical: false)
         }
+        .frame(minHeight: 56)
         .accessibilityElement(children: .contain)
     }
 }
@@ -280,14 +281,13 @@ public struct LumenSearchField: View {
                 .foregroundStyle(theme.colors.ink)
 
             if !text.isEmpty {
-                Button {
+                LumenIconButton(
+                    systemName: "xmark.circle.fill",
+                    label: "Clear search",
+                    size: .sm
+                ) {
                     text = ""
-                } label: {
-                    Image(systemName: "xmark.circle.fill")
-                        .foregroundStyle(theme.colors.inkMuted)
                 }
-                .buttonStyle(.plain)
-                .accessibilityLabel("Clear search")
             }
         }
         .frame(minHeight: LumenButtonMetrics.resolve(.md, density: density).minHeight)

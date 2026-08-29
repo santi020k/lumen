@@ -256,11 +256,34 @@ struct AccountActions: View {
     var body: some View {
         HStack {
             LumenButton("Save", action: save)
-            LumenIconButton(name: .settings, label: "Settings", action: openSettings)
+            LumenButton(
+                "Remove account",
+                intent: .secondary,
+                role: .destructive,
+                action: removeAccount
+            )
+            LumenIconButton(
+                name: .sparkles,
+                label: "Generate caption",
+                loading: isGeneratingCaption,
+                loadingAccessibilityValue: .verbatim(generatingCaptionStatus),
+                action: generateCaption
+            )
         }
     }
 }
 ```
+
+Button `role` and visual `intent` are independent. Supply `.destructive` or `.cancel` whenever the
+action has that platform meaning, even when a quieter visual intent is appropriate. Keep native
+SwiftUI buttons as the direct actions of `toolbar`, `alert`, and `confirmationDialog` content so
+those system containers continue to own placement and presentation; apply `LumenButtonStyle` or
+`LumenIconButtonStyle` when a Lumen visual recipe is appropriate there.
+
+When `loading` is true, `LumenIconButton` keeps its accessible name and touch target, replaces the
+icon with a progress indicator using the selected intent's foreground color, and disables repeat
+activation. Use a styled native button when its visual content must change beyond that fixed
+icon-to-progress transition.
 
 Use `.lumenControlDensity(.regular)` or `.lumenControlDensity(.compact)` on a view hierarchy only
 when a project intentionally needs to override the platform default.

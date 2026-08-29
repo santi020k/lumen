@@ -312,7 +312,10 @@ public struct LumenIconButton: View {
     private let disabled: Bool
     private let intent: LumenButtonIntent
     private let label: LocalizedStringKey
+    private let loading: Bool
+    private let loadingAccessibilityValue: LumenTextContent
     private let name: LumenIconName?
+    private let role: ButtonRole?
     private let size: LumenControlSize
     private let systemName: String?
 
@@ -324,11 +327,58 @@ public struct LumenIconButton: View {
         disabled: Bool = false,
         action: @escaping () -> Void
     ) {
+        self.init(
+            name: name,
+            label: label,
+            intent: intent,
+            size: size,
+            role: nil,
+            loading: false,
+            disabled: disabled,
+            action: action
+        )
+    }
+
+    public init(
+        name: LumenIconName,
+        label: LocalizedStringKey,
+        intent: LumenButtonIntent = .quiet,
+        size: LumenControlSize = .md,
+        role: ButtonRole?,
+        disabled: Bool = false,
+        action: @escaping () -> Void
+    ) {
+        self.init(
+            name: name,
+            label: label,
+            intent: intent,
+            size: size,
+            role: role,
+            loading: false,
+            disabled: disabled,
+            action: action
+        )
+    }
+
+    public init(
+        name: LumenIconName,
+        label: LocalizedStringKey,
+        intent: LumenButtonIntent = .quiet,
+        size: LumenControlSize = .md,
+        role: ButtonRole? = nil,
+        loading: Bool,
+        loadingAccessibilityValue: LumenTextContent = .localizedKey("Loading"),
+        disabled: Bool = false,
+        action: @escaping () -> Void
+    ) {
         self.name = name
         self.systemName = nil
         self.label = label
         self.intent = intent
         self.size = size
+        self.role = role
+        self.loading = loading
+        self.loadingAccessibilityValue = loadingAccessibilityValue
         self.disabled = disabled
         self.action = action
     }
@@ -341,11 +391,58 @@ public struct LumenIconButton: View {
         disabled: Bool = false,
         action: @escaping () -> Void
     ) {
+        self.init(
+            systemName: systemName,
+            label: label,
+            intent: intent,
+            size: size,
+            role: nil,
+            loading: false,
+            disabled: disabled,
+            action: action
+        )
+    }
+
+    public init(
+        systemName: String,
+        label: LocalizedStringKey,
+        intent: LumenButtonIntent = .quiet,
+        size: LumenControlSize = .md,
+        role: ButtonRole?,
+        disabled: Bool = false,
+        action: @escaping () -> Void
+    ) {
+        self.init(
+            systemName: systemName,
+            label: label,
+            intent: intent,
+            size: size,
+            role: role,
+            loading: false,
+            disabled: disabled,
+            action: action
+        )
+    }
+
+    public init(
+        systemName: String,
+        label: LocalizedStringKey,
+        intent: LumenButtonIntent = .quiet,
+        size: LumenControlSize = .md,
+        role: ButtonRole? = nil,
+        loading: Bool,
+        loadingAccessibilityValue: LumenTextContent = .localizedKey("Loading"),
+        disabled: Bool = false,
+        action: @escaping () -> Void
+    ) {
         self.name = nil
         self.systemName = systemName
         self.label = label
         self.intent = intent
         self.size = size
+        self.role = role
+        self.loading = loading
+        self.loadingAccessibilityValue = loadingAccessibilityValue
         self.disabled = disabled
         self.action = action
     }
@@ -353,12 +450,29 @@ public struct LumenIconButton: View {
     public var body: some View {
         let metrics = LumenIconButtonMetrics.resolve(size, density: density)
 
-        Button(action: action) {
-            icon(size: metrics.iconSize)
+        Button(role: role, action: action) {
+            buttonContent(size: metrics.iconSize)
+                .frame(width: metrics.iconSize.dimension, height: metrics.iconSize.dimension)
         }
         .buttonStyle(LumenIconButtonStyle(intent: intent, size: size))
-        .disabled(disabled)
+        .disabled(disabled || loading)
         .accessibilityLabel(label)
+        .accessibilityValue(loading ? loadingAccessibilityValue.text : Text(""))
+    }
+
+    @ViewBuilder private func buttonContent(size: LumenIconSize) -> some View {
+        if loading {
+#if os(tvOS)
+            ProgressView()
+                .tint(foregroundColor)
+#else
+            ProgressView()
+                .controlSize(.small)
+                .tint(foregroundColor)
+#endif
+        } else {
+            icon(size: size)
+        }
     }
 
     @ViewBuilder private func icon(size: LumenIconSize) -> some View {
@@ -470,12 +584,15 @@ public struct LumenButtonStyle: ButtonStyle {
 }
 
 public struct LumenButton<Label: View>: View {
+    @Environment(\.lumenTheme) private var theme
+
     private let action: () -> Void
     private let disabled: Bool
     private let intent: LumenButtonIntent
     private let label: Label
     private let loading: Bool
     private let loadingAccessibilityValue: LumenTextContent
+    private let role: ButtonRole?
     private let size: LumenControlSize
 
     public init(
@@ -487,24 +604,49 @@ public struct LumenButton<Label: View>: View {
         action: @escaping () -> Void,
         @ViewBuilder label: () -> Label
     ) {
+        self.init(
+            intent: intent,
+            size: size,
+            loading: loading,
+            loadingAccessibilityValue: loadingAccessibilityValue,
+            role: nil,
+            disabled: disabled,
+            action: action,
+            label: label
+        )
+    }
+
+    public init(
+        intent: LumenButtonIntent = .primary,
+        size: LumenControlSize = .md,
+        loading: Bool = false,
+        loadingAccessibilityValue: LumenTextContent = .localizedKey("Loading"),
+        role: ButtonRole?,
+        disabled: Bool = false,
+        action: @escaping () -> Void,
+        @ViewBuilder label: () -> Label
+    ) {
         self.action = action
         self.disabled = disabled
         self.intent = intent
         self.label = label()
         self.loading = loading
         self.loadingAccessibilityValue = loadingAccessibilityValue
+        self.role = role
         self.size = size
     }
 
     public var body: some View {
-        Button(action: action) {
+        Button(role: role, action: action) {
             HStack(spacing: LumenSpacing.sm) {
                 if loading {
 #if os(tvOS)
                     ProgressView()
+                        .tint(foregroundColor)
 #else
                     ProgressView()
                         .controlSize(.small)
+                        .tint(foregroundColor)
 #endif
                 }
                 label
@@ -513,6 +655,16 @@ public struct LumenButton<Label: View>: View {
         .buttonStyle(LumenButtonStyle(intent: intent, size: size))
         .disabled(disabled || loading)
         .accessibilityValue(loading ? loadingAccessibilityValue.text : Text(""))
+    }
+
+    private var foregroundColor: Color {
+        switch intent {
+        case .danger: theme.colors.onDanger
+        case .primary: theme.colors.onBrand
+        case .quiet: theme.colors.inkSoft
+        case .secondary: theme.colors.ink
+        case .success: theme.colors.onBrand
+        }
     }
 }
 
@@ -527,10 +679,33 @@ public extension LumenButton where Label == Text {
         action: @escaping () -> Void
     ) {
         self.init(
+            title,
             intent: intent,
             size: size,
             loading: loading,
             loadingAccessibilityValue: loadingAccessibilityValue,
+            role: nil,
+            disabled: disabled,
+            action: action
+        )
+    }
+
+    init(
+        _ title: LocalizedStringKey,
+        intent: LumenButtonIntent = .primary,
+        size: LumenControlSize = .md,
+        loading: Bool = false,
+        loadingAccessibilityValue: LumenTextContent = .localizedKey("Loading"),
+        role: ButtonRole?,
+        disabled: Bool = false,
+        action: @escaping () -> Void
+    ) {
+        self.init(
+            intent: intent,
+            size: size,
+            loading: loading,
+            loadingAccessibilityValue: loadingAccessibilityValue,
+            role: role,
             disabled: disabled,
             action: action
         ) {
@@ -548,10 +723,33 @@ public extension LumenButton where Label == Text {
         action: @escaping () -> Void
     ) {
         self.init(
+            title,
             intent: intent,
             size: size,
             loading: loading,
             loadingAccessibilityValue: loadingAccessibilityValue,
+            role: nil,
+            disabled: disabled,
+            action: action
+        )
+    }
+
+    init(
+        _ title: LumenTextContent,
+        intent: LumenButtonIntent = .primary,
+        size: LumenControlSize = .md,
+        loading: Bool = false,
+        loadingAccessibilityValue: LumenTextContent = .localizedKey("Loading"),
+        role: ButtonRole?,
+        disabled: Bool = false,
+        action: @escaping () -> Void
+    ) {
+        self.init(
+            intent: intent,
+            size: size,
+            loading: loading,
+            loadingAccessibilityValue: loadingAccessibilityValue,
+            role: role,
             disabled: disabled,
             action: action
         ) {
@@ -696,18 +894,29 @@ public struct LumenSpinner: View {
     @Environment(\.lumenTheme) private var theme
 
     private let label: LumenTextContent
+    private let tint: Color?
 
     public init(_ label: LocalizedStringKey = "Loading") {
+        self.init(label, tint: nil)
+    }
+
+    public init(_ label: LocalizedStringKey = "Loading", tint: Color?) {
         self.label = .localized(label)
+        self.tint = tint
     }
 
     public init(_ label: LumenTextContent) {
+        self.init(label, tint: nil)
+    }
+
+    public init(_ label: LumenTextContent, tint: Color?) {
         self.label = label
+        self.tint = tint
     }
 
     public var body: some View {
         ProgressView()
-            .tint(theme.colors.brand)
+            .tint(tint ?? theme.colors.brand)
             .accessibilityLabel(label.text)
     }
 }

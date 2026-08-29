@@ -47,9 +47,12 @@ as a completed physical-device pass.
 
 ## SwiftUI semantic button roles
 
-PostLens could migrate ordinary primary, secondary, and quiet content actions to `LumenButton`,
-and it could apply the public `LumenButtonStyle` to a `PhotosPicker` without wrapping or replacing
-the system picker. Destructive and cancel actions could not migrate with the same confidence:
+PostLens migrated ordinary primary, secondary, and quiet content actions to `LumenButton`, and it
+applied the public `LumenButtonStyle` to `PhotosPicker` actions in both onboarding and the Photos
+permission screen without wrapping or replacing the system picker. `LumenButtonGroup` can contain
+that styled system control alongside a composed `LumenButton`, which keeps the action hierarchy and
+spacing consistent without taking ownership of photo-selection behavior. Destructive and cancel
+actions could not migrate with the same confidence:
 `LumenButton` and `LumenIconButton` create an inner `Button(action:)` without accepting SwiftUI's
 `ButtonRole`. A danger intent supplies the visual recipe, but it does not preserve the semantic role
 that menus, dialogs, accessibility, and platform styling can use.
@@ -63,6 +66,48 @@ Acceptance criteria:
 - Test destructive and cancel roles in standalone content, menus, and dialog-compatible contexts.
 - Document when consumers should retain native system buttons, especially toolbar, alert, and
   confirmation-dialog actions.
+
+## SwiftUI compact button hit targets
+
+PostLens migrated Publishing Studio's primary creation, recovery, and restoration actions to
+`LumenButton` while retaining the adjacent native destructive action and the system-owned sheet
+toolbar. The hidden-pick rows need a visually compact Restore action, but `LumenButton(size: .sm)`
+has a 36-point regular-density minimum height and a 28-point compact-density minimum height. Those
+metrics do not independently meet the app's 44-point touch-target requirement, so the consumer had
+to use the medium button size even though the small visual recipe better fits the row.
+
+Carousel Builder confirmed the other side of that tradeoff on a narrow iPhone: the medium secondary
+button preserves the 44-point target but its horizontal padding truncates the trailing `Edit Cover`
+label in a score-summary row. The small recipe fits visually but would reduce the hit target, so the
+consumer retained the native bordered row action.
+
+The same consumer exposed a full-width composition boundary when migrating its primary `Adjust
+Crop` action. `LumenButton(size: .lg)` was valid inside the SwiftUI `List`, but the initial media
+preview left the 52-point row underneath a persistent `safeAreaInset` export bar. The accessibility
+tree still contained the action even though a person could not see or tap it. PostLens fixed the
+consumer layout by using its compact preview geometry for Crop and Sequence panels, then asserted
+that the rendered button ends above the export bar before exercising the handoff. Lumen guidance
+should make clear that component metrics cannot reserve space across sibling scroll and safe-area
+containers; migration evidence must cover the final composed viewport, not only component presence.
+
+Acceptance criteria:
+
+- Keep the small button's visible shape compact while providing a platform-appropriate minimum hit
+  target, including at least 44 by 44 points on iOS.
+- Keep compact label padding proportional enough for common trailing row actions at narrow iPhone
+  widths without forcing avoidable truncation.
+- Define how expanded hit regions behave when compact buttons sit beside other row actions so
+  targets do not overlap or steal gestures.
+- Preserve the current medium and large visual metrics and source-compatible size cases.
+- Apply the same target policy to `LumenIconButton`, or document any intentional difference.
+- Test small text buttons and icon buttons in lists, cards, toolbars, and dense action groups with
+  touch, pointer, keyboard, Switch Control, and VoiceOver.
+- Add a SwiftUI media-workspace example with a large button in a `List` above a persistent
+  `safeAreaInset` action bar, and assert that the rendered frames do not overlap at compact heights.
+- Document that accessibility-tree presence does not prove a migrated control is visible or
+  hittable when sibling previews, scroll containers, and safe-area bars divide the viewport.
+- Document when a consumer must retain a native compact control because the surrounding system
+  container owns hit testing or presentation.
 
 ## SwiftUI icon-button loading state
 
@@ -84,6 +129,157 @@ Acceptance criteria:
 - Document when a styled native button remains appropriate for dynamic content that the composed
   icon-button contract does not yet support.
 
+## SwiftUI button loading accessibility content
+
+PostLens migrated the shared Save and Share dock used by its photo editor, Carousel Builder,
+Layout Builder, Publishing Set, and publishing plan to `LumenButton`. The component
+unconditionally sets its loading accessibility value to the `LocalizedStringKey` literal
+`Loading`. A consumer that has already resolved copy through its own localization layer cannot
+supply an action-specific or verbatim progress value, and must override the modifier after
+composing the Lumen button to avoid an untranslated English value in the accessibility tree.
+
+The shared PostLens selection dock confirmed a related composition need. Its busy state is already
+represented by a blocking workflow overlay, so the action must become unavailable and announce
+localized progress without inserting a second spinner or replacing its contextual label. The
+consumer must currently pass the busy state through `disabled`, then separately override
+`accessibilityValue`. The single `loading` flag conflates visual progress, interaction locking, and
+the accessibility announcement even when those responsibilities belong to a surrounding workflow.
+
+PostLens's publishing-plan Schedule action confirmed the same boundary for inline progress. The
+button must keep its verb-specific, in-app-localized `Scheduling…` label and existing contrast-aware
+progress icon while preventing another activation. The released component's `loading` flag would
+also prepend its built-in spinner and announce the fixed `Loading` value, so the consumer migrated
+the primary surface but still has to express the busy state through its label and `disabled` input.
+
+Acceptance criteria:
+
+- Accept optional localized or verbatim loading accessibility content on `LumenButton` while
+  preserving the current default for source compatibility.
+- Keep the visible label stable and expose the supplied busy value only while loading.
+- Allow consumers to expose a busy interaction state without forcing the built-in spinner, or make
+  spinner visibility independently configurable from loading semantics.
+- Do not perform a second localization lookup when the consumer supplies already-resolved copy.
+- Preserve the disabled loading state and prevent repeated activation.
+- Test system-localized and in-app-localized English and Spanish values in the rendered iOS and
+  macOS accessibility trees.
+
+## SwiftUI accent-derived theme bridge
+
+PostLens initially overrode Lumen's `brand`, `brandSoft`, and `accent` colors with its selected app
+accent, but `LumenButton(intent: .primary)` paints with the separate `brandSolid` and `onBrand`
+tokens. The first migrated controls therefore remained Lumen's default blue while the surrounding
+native controls were violet, coral, or another selected accent. Correcting `brandSolid` alone is
+not sufficient: several adaptive dark-appearance accents need dark foreground content to retain
+WCAG text contrast instead of the default white `onBrand`.
+
+Acceptance criteria:
+
+- Provide a documented SwiftUI helper or recipe for deriving a coherent brand palette that updates
+  `brand`, `brandSolid`, `brandSoft`, `onBrand`, and `accent` together.
+- Allow consumers to provide an explicit solid color and foreground when their brand system already
+  owns those decisions.
+- Offer or document a contrast-safe foreground derivation for adaptive light and dark colors.
+- Keep individual token overrides available for advanced themes without silently coupling them.
+- Test primary buttons and other solid-brand components across adaptive consumer accents in light,
+  dark, disabled, pressed, and loading states.
+
+## SwiftUI structured-state verbatim content
+
+PostLens uses an in-app English, Spanish, or System language setting and resolves workflow copy
+before constructing its shared empty and unavailable states. `LumenEmptyState` and
+`LumenErrorState` accept `LocalizedStringKey` for their title, description, and reference label,
+but not `LumenTextContent`. Passing an already-resolved string through a dynamic localized key can
+route it back through the system locale and makes the contract inconsistent with `LumenButton` and
+`LumenBadge`. The generic action slot does compose correctly with a `LumenButton` whose `Text`
+label receives the resolved string, so PostLens could migrate the recovery action without giving
+Lumen ownership of the application language setting.
+
+Acceptance criteria:
+
+- Add `LumenTextContent` initializers for `LumenEmptyState` and `LumenErrorState` title,
+  description, and reference-label content while preserving current localized-key initializers.
+- Render verbatim content without a second localization lookup and keep localized content using
+  the system localization environment.
+- Preserve generic action and graphic slots so consumer-owned recovery behavior remains intact.
+- Test English selected in-app on a Spanish system and Spanish selected in-app on an English
+  system, including compact and page layouts.
+
+## SwiftUI icon-button verbatim accessibility labels
+
+Between Contractions localizes its macOS interface with an in-app English/Spanish toggle that is
+independent of the system locale. `LumenButton` and `LumenBadge` accept `LumenTextContent`, so the
+consumer can pass already-resolved copy with `.verbatim(...)`. `LumenIconButton` accepts only
+`LocalizedStringKey`, forcing an already-localized accessible name back through SwiftUI's string-
+key path. The menu-bar Quit action can use the dynamic-key fallback, but the contract is
+inconsistent and does not explicitly preserve verbatim consumer copy.
+
+Acceptance criteria:
+
+- Add a `LumenTextContent` initializer for both named and SF Symbol icon buttons while preserving
+  the existing `LocalizedStringKey` initializers.
+- Pass the supplied content to the underlying button's accessibility label without a second
+  localization lookup.
+- Keep source compatibility for applications that rely on SwiftUI's system-locale lookup.
+- Test localized and verbatim labels in the macOS and iOS accessibility trees.
+- Verify an English system with Spanish selected in-app, then the inverse.
+
+## SwiftUI selection-control rich option content
+
+PostLens groups manual photo adjustments into Light, Color, and Detail & Focus. Each segment pairs
+an SF Symbol with its localized title, shows a live count only when that group contains changes,
+and announces the count as the option's accessibility value. `LumenSegmentedControl` accepts
+`LumenSelectionOption` values with a plain string title, so migrating this selector would remove
+useful visual and assistive state. The consumer must retain a custom segmented selector even though
+Lumen owns the corresponding selection recipe. The Supporter purchase screen exposes the same
+limitation in `LumenRadioGroup`: each App Store plan needs a selection mark, plan name, optional
+recommendation badge, offer or billing detail, optional value framing, and a trailing localized
+price. Flattening that card into a title and description would discard purchase context.
+
+Between Contractions confirmed a useful partial-adoption pattern on macOS: action-backed
+`LumenCard` instances can own the pressed and selected surfaces for rich feedback, notification,
+and theme choices, while a zero-padding non-action card can contain a selectable pregnancy row and
+its separate native destructive action. Rendered accessibility still requires the consumer to own
+the binding, selection marker, selected trait or value, grouping, and option-specific content. This
+bridge reduces duplicate surface styling, but it is not a typed selection-control replacement.
+
+Acceptance criteria:
+
+- Allow each SwiftUI segmented or radio option to supply rich label content without weakening the typed
+  selection contract.
+- Keep a stable localized accessible name separate from decorative icons and visible accessories.
+- Allow dynamic state such as a count or status to be exposed as the option's accessibility value.
+- Preserve selected and disabled semantics, focus order, keyboard operation, and full-segment hit
+  targets when rich labels are used.
+- Verify short and long localized labels, zero and multi-digit counts, larger accessibility text,
+  and narrow iPhone widths.
+- Document when consumers should use a segmented control, radio group, tabs, or an
+  application-owned domain selector.
+- Document the action-backed `LumenCard` bridge for rich standalone choices, including explicit
+  selected semantics and the non-action-card pattern when a row contains a separate native action.
+
+## SwiftUI badge accessory and verbatim content
+
+Between Contractions migrated simple macOS ready, active, count, and connection-state metadata to
+`LumenBadge`. Two compact pills still need application-owned content: the Live Sync header pairs an
+SF Symbol with a localized status, and the History scope menu trigger pairs a heart with its current
+scope. `LumenBadge` accepts localized or verbatim text but no leading content; `LumenChip` is also
+text-only and accepts only `LocalizedStringKey`. Replacing either rich pill would remove useful
+visual context or route already-resolved in-app English/Spanish copy back through system-locale
+lookup.
+
+Acceptance criteria:
+
+- Allow `LumenBadge` to accept optional leading icon content while keeping a stable localized or
+  verbatim accessible name.
+- Add `LumenTextContent` support to `LumenChip` without breaking its existing localized-string
+  initializer.
+- Keep icon, label, tone, selected state, disabled state, and remove action understandable without
+  relying on color alone.
+- Support a non-interactive badge or chip as a `LumenMenu` label without creating nested buttons or
+  obscuring the menu's accessible name.
+- Test text-only and icon-bearing badges plus static, selectable, removable, and menu-label chips
+  on macOS and iOS with opposite system and in-app locales.
+
 ## Native spinner color in nested actions
 
 Between Contractions migrated its Android and macOS Partner Sync actions to `LumenButton` while
@@ -93,32 +289,42 @@ primary brand button can remove the contrast needed to perceive progress. Androi
 Material progress indicator, while macOS cannot safely expose the same nested loading treatment,
 even though Lumen otherwise owns the action recipes.
 
+PostLens confirmed the same gap in the composed SwiftUI button. `LumenButton(loading: true)` inserts
+a native `ProgressView`, but does not tint it with the intent's semantic foreground. Rendered light,
+dark, and Accessibility Text editor states showed the default indicator becoming low-contrast
+inside the disabled primary Share action. The consumer can use the public Lumen button surface, but
+must retain its contrast-aware loading icon in the custom label until the component owns this state.
+
 Acceptance criteria:
 
 - `LumenSpinner` inherits the surrounding content color by default or accepts a semantic tint.
 - A spinner remains visible inside primary, secondary, quiet, and danger buttons in light and dark
   themes without consumer-owned color overrides.
+- `LumenButton` applies the selected intent's semantic foreground to its built-in progress
+  indicator before disabled-state opacity.
 - Standalone use on canvas and surface backgrounds retains the existing brand treatment by default.
 - The caller can provide a localized progress label without changing visual color behavior.
 - Compose and SwiftUI screenshots and semantics tests cover both standalone and nested use.
 
 ## Native button hierarchy and semantic tone
 
-Partner Sync has two destructive actions at different levels of emphasis. Ending the whole shared
-group belongs in a prominent danger button behind confirmation, while removing one device is a
-compact trailing row action. The released native danger intent always produces the filled danger
-recipe, and the quiet and secondary intents cannot carry a danger tone. The row action therefore
-cannot migrate without becoming visually dominant or losing its destructive meaning.
+Between Contractions exposes semantic actions at different levels of emphasis. Ending a whole
+Partner Sync group belongs in a prominent danger button behind confirmation, removing one device
+is a compact trailing destructive action, and calling the configured care team is a positive
+primary action. The released native danger intent always produces the filled danger recipe, quiet
+and secondary intents cannot carry a danger tone, and no hierarchy can opt into a success tone.
+Those actions therefore cannot all migrate without becoming visually dominant or losing meaning.
 
 Acceptance criteria:
 
-- Primary, secondary, and quiet hierarchies can opt into destructive semantics.
+- Primary, secondary, and quiet hierarchies can opt into destructive or success presentation
+  independently of the platform button role.
 - Foreground, background, border, pressed, disabled, focus, and loading states retain contrast.
 - A compact trailing destructive action fits a native list row without competing with the page
   action.
 - Assistive technology receives the same accessible name and button role at every hierarchy.
-- SwiftUI, Compose, and React Native document both a confirmed page-level delete and a row-level
-  remove example.
+- SwiftUI, Compose, and React Native document a confirmed page-level delete, a row-level remove,
+  and a positive primary action such as Call or Connect.
 
 ## Compose disabled quiet-button background
 
@@ -153,23 +359,70 @@ Acceptance criteria:
 - Test English and Spanish names in the rendered macOS accessibility tree.
 - Document text, icon-plus-text, and icon-only label recipes.
 
-## SwiftUI multiline text input contract
+## SwiftUI system-container boundary guidance
 
-Between Contractions could migrate the subject and optional email controls in its macOS feedback
-form to `LumenTextField`, but the detailed report still needs a consumer-styled `TextEditor`.
-SwiftUI Lumen has no multiline field contract that can own the visible label, helper or validation
-message, character limit, and platform focus treatment as one accessible component.
+Between Contractions can use `LumenDivider` between rows and sections rendered in application
+content, but a SwiftUI `Menu` or `contextMenu` requires the native `Divider` to create a semantic
+system-menu separator. Substituting Lumen's visual rectangle compiles, yet it does not carry the
+platform role or guarantee native menu presentation. The same distinction applies to other system-
+owned containers where custom views and native semantic elements are not interchangeable.
+
+PostLens confirmed the same boundary in its optional Image Playground handoff. A full-width
+`LumenButton` can own the application-rendered entry action and disabled availability state, while
+the per-use privacy disclosure remains a native SwiftUI alert and the generative experience remains
+Apple's public system sheet. Lumen should theme the transition point without wrapping, replacing,
+or implying ownership of the system consent and handoff surfaces.
 
 Acceptance criteria:
 
-- Add a public multiline text-input component with localized and verbatim label support.
-- Support helper text, error text, disabled and read-only states, and an optional character limit.
-- Keep the visible count and maximum-length behavior synchronized without silently truncating text.
-- Preserve native selection, scrolling, keyboard shortcuts, focus indication, and spell checking on
-  macOS and iOS.
-- Test VoiceOver naming, validation announcements, large text, long unbroken input, and light/dark
-  themes in a real form.
-- Document when a native `TextEditor` remains appropriate for rich or product-specific editing.
+- Document that `LumenDivider` is for application-rendered layouts, not system menu command groups.
+- Provide SwiftUI examples that retain native `Divider`, `Section`, button roles, and toolbar or
+  alert actions inside their platform-owned containers.
+- Identify comparable boundaries for Compose and React Native where a Lumen visual primitive does
+  not replace navigation, menu, dialog, or accessibility semantics.
+- Add a migration checklist that asks whether a primitive is being placed in ordinary view content
+  or a platform-owned result-builder/container before recommending replacement.
+- Keep consumer examples visually themed around the system container instead of wrapping native
+  commands in unsupported custom presentation.
+
+## SwiftUI text-input character-limit contract
+
+A complete export audit corrected an earlier consumer assumption: released SwiftUI Lumen already
+provides `LumenTextarea`, so Between Contractions migrated both its contraction notes and macOS
+feedback details editors. The feedback form still owns a separate `0/2,000` counter and truncating
+`onChange` handler because the component has no maximum-length or character-count contract.
+PostLens exposes the same gap across both Lumen text primitives: its support form must separately
+truncate a 120-character subject, 2,000-character details field, and 254-character email address
+after each binding change because neither `LumenTextField` nor `LumenTextarea` accepts a limit.
+
+Acceptance criteria:
+
+- Accept an optional maximum length on `LumenTextField` and `LumenTextarea` without changing
+  existing unlimited behavior.
+- Provide a localized visible count or a composable count slot owned by the same field contract.
+- Define whether excess input is rejected, truncated, or reported, and expose that behavior to
+  assistive technology instead of silently changing the bound text.
+- Keep helper and error messages readable alongside the count at narrow widths and large text.
+- Test keyboard input, paste, dictation, VoiceOver announcements, and boundary values on macOS and
+  iOS.
+
+## SwiftUI phone-input in-app localization
+
+Between Contractions can supply localized labels, descriptions, validation text, country-picker
+titles, and search labels to `LumenPhoneInput`, but its country sheet still hard-codes `Done` as a
+`LocalizedStringKey`. The app deliberately switches English and Spanish independently of the
+system locale, so that final system-locale string prevents a faithful migration of the care-team
+phone field even though the parsing and E.164 contract otherwise fits.
+
+Acceptance criteria:
+
+- Accept a localized or verbatim country-picker completion label through the public initializer.
+- Audit all internal phone-input strings so none bypass a consumer-controlled in-app locale.
+- Keep default labels source-compatible for applications that follow the system locale.
+- Test English and Spanish in-app locale overrides while macOS and iOS use the opposite system
+  locale.
+- Document a complete bilingual initializer example, including invalid-number guidance and country
+  search.
 
 ## Native status-bar message reflow
 
@@ -185,6 +438,48 @@ Acceptance criteria:
 - Reflow the message and trailing action without overlap, clipping, or horizontal scrolling.
 - Keep representative Spanish copy readable at 200% text scaling.
 - Preserve accessibility order from status message to its related action.
+
+## SwiftUI compact stat density
+
+Between Contractions uses a 360-point macOS menu-bar window with two small metrics side by side.
+`LumenStat` always uses title typography, large padding, and a vertically stacked icon regardless
+of `lumenControlDensity`, making the released metric contract too tall for this compact surface.
+The consumer can reuse a muted `LumenCard`, spacing, and semantic colors, but it must keep its own
+compact metric content instead of adopting the complete stat primitive.
+
+Acceptance criteria:
+
+- Make `LumenStat` respond to `LumenControlDensity` or accept an explicit compact presentation.
+- Preserve the current regular layout and typography as the source-compatible default.
+- Keep value, label, optional icon, and optional detail combined into one accessible metric.
+- Fit two representative compact stats side by side in a 360-point macOS menu-bar window without
+  truncating short English or Spanish labels.
+- Test compact and regular metrics in light and dark themes, at larger accessibility text sizes,
+  and with unusually long values.
+
+## Compose sheet locale and form presentation
+
+Between Contractions split Android Partner Sync into a subscription overview and separate create
+and join sheets. In rendered testing, a longer `LumenSheet` opened at the partial detent with its
+restore and debug actions below the viewport, but the public contract provides no sheet-state,
+expanded-detent, or scrolling policy. The same test also found that `stringResource` calls made
+inside the sheet content could use the device's English locale while the app and sheet header were
+Spanish. Resolving every string before entering the overlay corrected the consumer, but makes the
+modal an unsafe boundary for apps with an in-app locale override. The consumer therefore retains a
+full-height, vertically scrollable Material sheet while continuing to use Lumen controls inside it.
+
+Acceptance criteria:
+
+- Preserve consumer composition locals, including a context-backed in-app locale override, across
+  the sheet header, content, and action slots.
+- Allow callers to require an expanded initial state or provide a supported sheet-state contract.
+- Provide a documented vertically scrollable form recipe that keeps actions reachable above the
+  keyboard and system insets.
+- Keep short sheets compact while long sheets remain usable at small heights and large font scales.
+- Test an English device with Spanish selected in-app, then the inverse, with localized strings
+  resolved both outside and inside the sheet content lambda.
+- Add rendered Compose coverage for short content, long forms, the IME, and partial versus expanded
+  presentation.
 
 ## Completion rule
 

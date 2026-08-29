@@ -228,7 +228,7 @@ fun LumenIconButton(
         colors = IconButtonDefaults.iconButtonColors(
             containerColor = palette.background,
             contentColor = palette.foreground,
-            disabledContainerColor = palette.background.copy(alpha = 0.52f),
+            disabledContainerColor = lumenDisabledButtonContainerColor(palette.background),
             disabledContentColor = palette.foreground.copy(alpha = 0.52f)
         )
     ) {
@@ -265,7 +265,7 @@ fun LumenIconButton(
         colors = IconButtonDefaults.iconButtonColors(
             containerColor = palette.background,
             contentColor = palette.foreground,
-            disabledContainerColor = palette.background.copy(alpha = 0.52f),
+            disabledContainerColor = lumenDisabledButtonContainerColor(palette.background),
             disabledContentColor = palette.foreground.copy(alpha = 0.52f)
         )
     ) {
@@ -309,6 +309,9 @@ private fun buttonPalette(
     LumenButtonIntent.Success -> LumenButtonPalette(colors.success, colors.success, colors.onBrand)
 }
 
+internal fun lumenDisabledButtonContainerColor(background: Color): Color =
+    if (background.alpha == 0f) Color.Transparent else background.copy(alpha = 0.52f)
+
 @Composable
 fun LumenButton(
     onClick: () -> Unit,
@@ -339,7 +342,7 @@ fun LumenButton(
         colors = ButtonDefaults.buttonColors(
             containerColor = palette.background,
             contentColor = palette.foreground,
-            disabledContainerColor = palette.background.copy(alpha = 0.52f),
+            disabledContainerColor = lumenDisabledButtonContainerColor(palette.background),
             disabledContentColor = palette.foreground.copy(alpha = 0.52f)
         ),
         contentPadding = PaddingValues(
@@ -466,10 +469,21 @@ fun LumenSpinner(
     modifier: Modifier = Modifier,
     label: String = "Loading"
 ) {
+    LumenSpinner(modifier = modifier, label = label, tint = null)
+}
+
+@Composable
+fun LumenSpinner(
+    modifier: Modifier = Modifier,
+    label: String = "Loading",
+    tint: Color?
+) {
     val colors = LocalLumenTheme.current.colors
 
     CircularProgressIndicator(
         modifier = modifier.semantics { contentDescription = label },
-        color = colors.brand
+        color = lumenSpinnerColor(colors, tint)
     )
 }
+
+internal fun lumenSpinnerColor(colors: LumenColorPalette, tint: Color?): Color = tint ?: colors.brand

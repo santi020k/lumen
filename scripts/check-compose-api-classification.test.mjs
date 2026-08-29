@@ -65,7 +65,7 @@ test('accepts the reviewed Compose API maturity classification', async () => {
 
   assert.equal(result.status, 0, result.stderr)
 
-  assert.match(result.stdout, /Validated 151 Supported, 0 Experimental/)
+  assert.match(result.stdout, /Validated 155 Supported, 0 Experimental/)
 })
 
 test('rejects an unclassified Compose declaration', async () => {

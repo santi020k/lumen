@@ -156,12 +156,6 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-private data class PlaygroundSection(
-    val description: String,
-    val names: Set<String>,
-    val title: String
-)
-
 internal enum class PlaygroundThemePreset(val label: String) {
     Lumen("Lumen"),
     Santi020k("santi020k");
@@ -214,85 +208,6 @@ internal enum class PlaygroundThemePreset(val label: String) {
     }
 }
 
-private val sections = listOf(
-    PlaygroundSection(
-        title = "Foundations",
-        description = "Theme, text, surfaces, and Material icons use shared semantic roles.",
-        names = setOf("Theme", "Text", "Surface", "Icon", "Icon button")
-    ),
-    PlaygroundSection(
-        title = "Actions",
-        description = "Buttons expose intent, loading, enabled, and pressed states.",
-        names = setOf("Button", "Button group", "Chip", "Floating action button")
-    ),
-    PlaygroundSection(
-        title = "Forms",
-        description = "Text, toggles, and selection controls retain native behavior.",
-        names = setOf(
-            "Text field",
-            "Textarea",
-            "Field group",
-            "Toggle",
-            "Settings row",
-            "Search field",
-            "Phone input",
-            "Date field",
-            "Date range field",
-            "Checkbox",
-            "Radio group",
-            "Segmented control",
-            "Tabs",
-            "Picker",
-            "Slider"
-        )
-    ),
-    PlaygroundSection(
-        title = "Feedback",
-        description = "Badges, banners, alerts, progress, and status communicate outcomes.",
-        names = setOf("Badge", "Divider", "Spinner", "Alert", "Progress", "Banner", "Toast", "Status bar")
-    ),
-    PlaygroundSection(
-        title = "Content states",
-        description = "Loading placeholders and disclosures preserve native semantics.",
-        names = setOf("Skeleton", "Disclosure")
-    ),
-    PlaygroundSection(
-        title = "Visual content",
-        description = "Graphics, backdrops, and illustrations use semantic tokens and optional labels.",
-        names = setOf("Graphic", "Backdrop", "Illustration", "Image")
-    ),
-    PlaygroundSection(
-        title = "Data display",
-        description = "Cards, avatars, metrics, headers, and rows compose into product content.",
-        names = setOf(
-            "Card", "Avatar", "Empty state", "Error state", "List row", "Stat", "Gauge", "Section header"
-        )
-    ),
-    PlaygroundSection(
-        title = "Data visualization",
-        description = "Tokenized plots include a factual accessibility summary and readable fallback data.",
-        names = setOf(
-            "Sparkline", "Line chart", "Bar chart", "Pie chart",
-            "Scatter chart", "Heatmap", "Range chart", "Combo chart"
-        )
-    ),
-    PlaygroundSection(
-        title = "Overlays and sharing",
-        description = "Controlled Material overlays and Android sharing keep application state host-owned.",
-        names = setOf("Alert dialog", "Sheet", "Menu", "Share button")
-    ),
-    PlaygroundSection(
-        title = "Navigation",
-        description = "Bottom and adaptive navigation expose controlled selection, badges, and re-selection.",
-        names = setOf(
-            "Navigation bar",
-            "Navigation bar scroll behavior",
-            "Navigation bar accessory",
-            "Adaptive navigation scaffold"
-        )
-    )
-)
-
 @Composable
 private fun LumenAndroidPlayground(initialComponent: String, initialDarkTheme: Boolean) {
     var darkTheme by remember(initialDarkTheme) { mutableStateOf(initialDarkTheme) }
@@ -312,7 +227,7 @@ private fun LumenAndroidPlayground(initialComponent: String, initialDarkTheme: B
                 themePreset = themePreset,
                 onThemePresetChange = { themePreset = it },
                 onToggleTheme = { darkTheme = !darkTheme },
-                catalog = sections.map { section ->
+                catalog = playgroundSections.map { section ->
                     CatalogCategorySummary(section.title, section.names.size)
                 },
                 components = {
@@ -345,9 +260,9 @@ private fun PlaygroundContent(
     var saved by remember { mutableStateOf(false) }
     var showBanner by remember { mutableStateOf(true) }
     var selectedCategory by remember(enhancedDiscovery) {
-        mutableStateOf(if (enhancedDiscovery) sections.first().title else ALL_CATEGORIES)
+        mutableStateOf(if (enhancedDiscovery) playgroundSections.first().title else ALL_CATEGORIES)
     }
-    val visibleSections = sections.filter { section ->
+    val visibleSections = playgroundSections.filter { section ->
         (selectedCategory == ALL_CATEGORIES || section.title == selectedCategory) &&
             (query.isBlank() || section.names.any { it.contains(query, ignoreCase = true) })
     }
@@ -394,7 +309,7 @@ private fun PlaygroundContent(
             if (enhancedDiscovery) {
                 item {
                     LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        items(listOf(ALL_CATEGORIES) + sections.map { it.title }) { category ->
+                        items(listOf(ALL_CATEGORIES) + playgroundSections.map { it.title }) { category ->
                             LumenChip(
                                 label = category,
                                 selected = category == selectedCategory,
@@ -425,8 +340,14 @@ private fun PlaygroundContent(
             items(visibleSections, key = { it.title }) { section ->
                 ComponentSection(section) {
                     when (section.title) {
-                        "Foundations" -> FoundationsExample()
-                        "Actions" -> ActionsExample()
+                        "Foundations" -> Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                            FoundationsExample()
+                            VisualContentExample()
+                        }
+                        "Actions" -> Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                            ActionsExample()
+                            SystemActionsExample()
+                        }
                         "Forms" -> FormsExample(
                             email = email,
                             onEmailChange = { email = it },
@@ -439,23 +360,29 @@ private fun PlaygroundContent(
                             density = density,
                             onDensityChange = { density = it }
                         )
-                        "Feedback" -> FeedbackExample(
-                            showBanner = showBanner,
-                            onBannerVisibilityChange = { showBanner = it }
-                        )
-                        "Content states" -> ContentStatesExample(
-                            expanded = disclosureExpanded,
-                            onExpandedChange = { disclosureExpanded = it }
-                        )
-                        "Visual content" -> VisualContentExample()
-                        "Data display" -> DataExample(saved = saved, onToggleSaved = { saved = !saved })
-                        "Data visualization" -> ChartExample(
-                            section.names.filterTo(mutableSetOf()) { name ->
-                                query.isBlank() || name.contains(query, ignoreCase = true)
-                            }
-                        )
-                        "Overlays and sharing" -> OverlayExample(initialComponent)
-                        "Navigation" -> NavigationExample(initialComponent)
+                        "Feedback" -> Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                            FeedbackExample(
+                                showBanner = showBanner,
+                                onBannerVisibilityChange = { showBanner = it }
+                            )
+                            FeedbackStatesExample()
+                        }
+                        "Data" -> Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                            DataExample(saved = saved, onToggleSaved = { saved = !saved })
+                            DisclosureExample(
+                                expanded = disclosureExpanded,
+                                onExpandedChange = { disclosureExpanded = it }
+                            )
+                            ChartExample(
+                                section.names.filterTo(mutableSetOf()) { name ->
+                                    query.isBlank() || name.contains(query, ignoreCase = true)
+                                }
+                            )
+                        }
+                        "Navigation" -> Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                            NavigationOverlaysExample(initialComponent)
+                            NavigationExample(initialComponent)
+                        }
                     }
                 }
             }
@@ -490,7 +417,7 @@ private fun PlaygroundContent(
                     tone = LumenMetricTone.Success,
                     trailing = {
                         LumenText(
-                            "${sections.flatMap { it.names }.toSet().size} components",
+                            "${playgroundSections.flatMap { it.names }.toSet().size} components",
                             variant = LumenTextVariant.Caption,
                             tone = LumenTextTone.Muted
                         )
@@ -852,7 +779,7 @@ private fun FormsExample(
 }
 
 @Composable
-private fun ContentStatesExample(expanded: Boolean, onExpandedChange: (Boolean) -> Unit) {
+private fun FeedbackStatesExample() {
     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -868,14 +795,44 @@ private fun ContentStatesExample(expanded: Boolean, onExpandedChange: (Boolean) 
                 LumenSkeleton(width = 120.dp, height = 12.dp)
             }
         }
-        LumenDisclosure(
-            title = "Implementation notes",
-            description = "Tap the header to verify native expanded state.",
-            expanded = expanded,
-            onExpandedChange = onExpandedChange
-        ) {
-            LumenText("Each adapter owns its native rendering and focus behavior.", tone = LumenTextTone.Soft)
-        }
+        LumenEmptyState(
+            title = "No pending reviews",
+            description = "Every Compose component has an owner and verification state.",
+            graphic = {
+                LumenIllustration(
+                    variant = LumenIllustrationVariant.Success,
+                    size = LumenIllustrationSize.Sm
+                )
+            },
+            actions = {
+                LumenButton(onClick = {}, intent = LumenButtonIntent.Secondary) {
+                    Text("View release")
+                }
+            }
+        )
+        LumenErrorState(
+            title = "Could not load projects",
+            description = "Check your connection and try again.",
+            kind = LumenErrorStateKind.Offline,
+            reference = "REQ-4F82",
+            actions = {
+                LumenButton(onClick = {}, intent = LumenButtonIntent.Secondary) {
+                    Text("Try again")
+                }
+            }
+        )
+    }
+}
+
+@Composable
+private fun DisclosureExample(expanded: Boolean, onExpandedChange: (Boolean) -> Unit) {
+    LumenDisclosure(
+        title = "Implementation notes",
+        description = "Tap the header to verify native expanded state.",
+        expanded = expanded,
+        onExpandedChange = onExpandedChange
+    ) {
+        LumenText("Each adapter owns its native rendering and focus behavior.", tone = LumenTextTone.Soft)
     }
 }
 
@@ -940,27 +897,11 @@ private fun VisualContentExample() {
 }
 
 @Composable
-private fun OverlayExample(initialComponent: String) {
-    var showDialog by remember(initialComponent) {
-        mutableStateOf(initialComponent.equals("Alert dialog", ignoreCase = true))
-    }
-    var showSheet by remember(initialComponent) {
-        mutableStateOf(initialComponent.equals("Sheet", ignoreCase = true))
-    }
-    var showMenu by remember(initialComponent) {
-        mutableStateOf(initialComponent.equals("Menu", ignoreCase = true))
-    }
-    var lastAction by remember { mutableStateOf("No overlay action selected") }
+private fun SystemActionsExample() {
+    var showMenu by remember { mutableStateOf(false) }
+    var lastAction by remember { mutableStateOf("No system action selected") }
 
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        LumenButtonGroup {
-            LumenButton(onClick = { showDialog = true }, intent = LumenButtonIntent.Danger) {
-                Text("Delete dialog")
-            }
-            LumenButton(onClick = { showSheet = true }, intent = LumenButtonIntent.Secondary) {
-                Text("Open sheet")
-            }
-        }
         Box {
             LumenIconButton(
                 name = LumenIconName.EllipsisVertical,
@@ -989,6 +930,29 @@ private fun OverlayExample(initialComponent: String) {
             chooserTitle = "Share Lumen Compose",
             label = "Share component gallery"
         )
+        LumenText(lastAction, variant = LumenTextVariant.Caption, tone = LumenTextTone.Muted)
+    }
+}
+
+@Composable
+private fun NavigationOverlaysExample(initialComponent: String) {
+    var showDialog by remember(initialComponent) {
+        mutableStateOf(initialComponent.equals("Alert dialog", ignoreCase = true))
+    }
+    var showSheet by remember(initialComponent) {
+        mutableStateOf(initialComponent.equals("Sheet", ignoreCase = true))
+    }
+    var lastAction by remember { mutableStateOf("No overlay action selected") }
+
+    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        LumenButtonGroup {
+            LumenButton(onClick = { showDialog = true }, intent = LumenButtonIntent.Danger) {
+                Text("Delete dialog")
+            }
+            LumenButton(onClick = { showSheet = true }, intent = LumenButtonIntent.Secondary) {
+                Text("Open sheet")
+            }
+        }
         LumenText(lastAction, variant = LumenTextVariant.Caption, tone = LumenTextTone.Muted)
     }
 
@@ -1224,32 +1188,6 @@ private fun DataExample(saved: Boolean, onToggleSaved: () -> Unit) {
                 }
             }
         }
-        LumenEmptyState(
-            title = "No pending reviews",
-            description = "Every Compose component has an owner and verification state.",
-            graphic = {
-                LumenIllustration(
-                    variant = LumenIllustrationVariant.Success,
-                    size = LumenIllustrationSize.Sm
-                )
-            },
-            actions = {
-                LumenButton(onClick = {}, intent = LumenButtonIntent.Secondary) {
-                    Text("View release")
-                }
-            }
-        )
-        LumenErrorState(
-            title = "Could not load projects",
-            description = "Check your connection and try again.",
-            kind = LumenErrorStateKind.Offline,
-            reference = "REQ-4F82",
-            actions = {
-                LumenButton(onClick = {}, intent = LumenButtonIntent.Secondary) {
-                    Text("Try again")
-                }
-            }
-        )
     }
 }
 

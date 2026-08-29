@@ -23,6 +23,7 @@ public struct LumenSelectionOption<Value: Hashable>: Identifiable {
 public struct LumenCheckbox: View {
     @Binding private var isChecked: Bool
     @Environment(\.isEnabled) private var isEnabled
+    @Environment(\.lumenControlDensity) private var density
     @Environment(\.lumenTheme) private var theme
 
     private let description: String?
@@ -54,6 +55,10 @@ public struct LumenCheckbox: View {
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
+            .frame(
+                minHeight: LumenButtonMetrics.resolve(.md, density: density).minHeight,
+                alignment: .topLeading
+            )
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
@@ -65,6 +70,7 @@ public struct LumenCheckbox: View {
 
 public struct LumenRadioGroup<Value: Hashable>: View {
     @Binding private var selection: Value
+    @Environment(\.lumenControlDensity) private var density
     @Environment(\.lumenTheme) private var theme
 
     private let label: String
@@ -100,6 +106,10 @@ public struct LumenRadioGroup<Value: Hashable>: View {
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
                     }
+                    .frame(
+                        minHeight: LumenButtonMetrics.resolve(.md, density: density).minHeight,
+                        alignment: .topLeading
+                    )
                     .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
@@ -231,11 +241,19 @@ public struct LumenTabs<Value: Hashable, Content: View>: View {
                     .accessibilityElement(children: .contain)
                     .accessibilityLabel(Text(label))
                 }
+                #if os(visionOS)
+                .onChange(of: selection) { _, selected in
+                    withAnimation(.easeInOut(duration: 0.2)) {
+                        proxy.scrollTo(selected, anchor: .center)
+                    }
+                }
+                #else
                 .onChange(of: selection) { selected in
                     withAnimation(.easeInOut(duration: 0.2)) {
                         proxy.scrollTo(selected, anchor: .center)
                     }
                 }
+                #endif
             }
 
             content(selection)

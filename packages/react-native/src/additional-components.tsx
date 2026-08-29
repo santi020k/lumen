@@ -74,6 +74,7 @@ export const LumenToast = ({
     <View
       ref={ref}
       {...props}
+      accessibilityLiveRegion="polite"
       accessibilityRole="alert"
       style={[
         {
@@ -112,6 +113,10 @@ export const LumenToast = ({
             accessibilityRole="button"
             onPress={onDismiss}
             style={({ pressed }) => ({
+              alignItems: 'center',
+              justifyContent: 'center',
+              minHeight: 44,
+              minWidth: 44,
               opacity: resolveLumenButtonOpacity(false, pressed),
               padding: theme.spacing.sm
             })}
@@ -262,6 +267,12 @@ export const LumenChip = ({
 
               onRemove()
             }}
+            style={{
+              alignItems: 'center',
+              justifyContent: 'center',
+              minHeight: 24,
+              minWidth: 24
+            }}
           >
             <Text style={{ color: theme.colors.inkMuted, fontSize: theme.fontSizes.xs }}>×</Text>
           </Pressable>
@@ -366,6 +377,7 @@ export const LumenFieldGroup = ({
         {errorMessage ?
           (
             <Text
+              accessibilityLiveRegion="polite"
               accessibilityRole="alert"
               nativeID={errorId}
               style={{ color: theme.colors.danger, fontSize: theme.fontSizes.xs }}

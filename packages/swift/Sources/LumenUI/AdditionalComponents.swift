@@ -86,6 +86,7 @@ public struct LumenFieldGroup<Content: View>: View {
                 errorMessage.text
                     .font(.caption)
                     .foregroundStyle(theme.colors.danger)
+                    .accessibilityAddTraits(.updatesFrequently)
             }
         }
         .accessibilityElement(children: .contain)
@@ -233,6 +234,7 @@ public struct LumenChip: View {
                     Text(label).font(.caption.weight(.semibold))
                 }
                 .buttonStyle(.plain)
+                .frame(minHeight: 24)
                 .accessibilityAddTraits(selected ? .isSelected : [])
             } else {
                 Text(label).font(.caption.weight(.semibold))
@@ -242,6 +244,7 @@ public struct LumenChip: View {
                     Image(systemName: "xmark").font(.caption2.weight(.bold))
                 }
                 .buttonStyle(.plain)
+                .frame(minWidth: 24, minHeight: 24)
                 .accessibilityLabel(removeLabel)
             }
         }
@@ -310,6 +313,7 @@ public struct LumenToast<Actions: View>: View {
         }
         .clipShape(RoundedRectangle(cornerRadius: LumenRadius.md, style: .continuous))
         .accessibilityElement(children: .contain)
+        .accessibilityAddTraits(.updatesFrequently)
     }
 
     private var accentColor: Color {

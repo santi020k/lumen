@@ -14,6 +14,7 @@
 		3B161D679836623944870272 /* LumenWidgetPlayground.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 399D6F6E9C693782368B32EC /* LumenWidgetPlayground.appex */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		3F78C1BF0A31445B3A1BC333 /* PlaygroundExamplesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A61F6D18637F340320DB6A5D /* PlaygroundExamplesView.swift */; };
 		59CD3BCA61AEB946FF7A2882 /* PlaygroundExamplesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A61F6D18637F340320DB6A5D /* PlaygroundExamplesView.swift */; };
+		5A3B1829F40443C5D5FA6EC2 /* PlaygroundCatalog.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 665A7EE097F09530030DCF0D /* PlaygroundCatalog.generated.swift */; };
 		5BDA6D9FDFA3F1856259D5AA /* LumenApplePlaygroundApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE69F938031E87BABC3FCC66 /* LumenApplePlaygroundApp.swift */; };
 		6DBE1F8EBA5B6F1940CC680D /* LumenWidgetUI in Frameworks */ = {isa = PBXBuildFile; productRef = 49116D2CBE1F880540653F3E /* LumenWidgetUI */; };
 		A0279D955040FE673FB268D5 /* PlaygroundSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB065D953EB7775096F372DB /* PlaygroundSettingsView.swift */; };
@@ -24,6 +25,7 @@
 		DB50ECBEE184BDB2D1838CE8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 63BB1942FA8B6D286F1A9EBE /* Assets.xcassets */; };
 		E04C7AB2BD18952D8710CCB0 /* PlaygroundSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB065D953EB7775096F372DB /* PlaygroundSettingsView.swift */; };
 		E6E453BDD94FE3ED53037917 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 63BB1942FA8B6D286F1A9EBE /* Assets.xcassets */; };
+		EA8330549EDCCDB72343C25B /* PlaygroundCatalog.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 665A7EE097F09530030DCF0D /* PlaygroundCatalog.generated.swift */; };
 		EB0BAF57DA9822940D2A710A /* LumenWatchPlaygroundApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DB685E8C1D6ED87B7329F1E /* LumenWatchPlaygroundApp.swift */; };
 		F8E4ABC1A336A6607D841E29 /* PlaygroundShell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 581FE601DC8DCCAACDE42246 /* PlaygroundShell.swift */; };
 /* End PBXBuildFile section */
@@ -58,6 +60,7 @@
 		581FE601DC8DCCAACDE42246 /* PlaygroundShell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaygroundShell.swift; sourceTree = "<group>"; };
 		5DB685E8C1D6ED87B7329F1E /* LumenWatchPlaygroundApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LumenWatchPlaygroundApp.swift; sourceTree = "<group>"; };
 		63BB1942FA8B6D286F1A9EBE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		665A7EE097F09530030DCF0D /* PlaygroundCatalog.generated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaygroundCatalog.generated.swift; sourceTree = "<group>"; };
 		7DE2955684DB72950680BA1F /* LumenApplePlayground.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = LumenApplePlayground.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9D8A29BB3FCB9C15B321E3AE /* LumenMacPlayground.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LumenMacPlayground.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A61F6D18637F340320DB6A5D /* PlaygroundExamplesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaygroundExamplesView.swift; sourceTree = "<group>"; };
@@ -165,6 +168,7 @@
 			isa = PBXGroup;
 			children = (
 				EE69F938031E87BABC3FCC66 /* LumenApplePlaygroundApp.swift */,
+				665A7EE097F09530030DCF0D /* PlaygroundCatalog.generated.swift */,
 				A61F6D18637F340320DB6A5D /* PlaygroundExamplesView.swift */,
 				B19CC216C8A44A82EF86293B /* PlaygroundHomeView.swift */,
 				AB065D953EB7775096F372DB /* PlaygroundSettingsView.swift */,
@@ -340,6 +344,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5BDA6D9FDFA3F1856259D5AA /* LumenApplePlaygroundApp.swift in Sources */,
+				EA8330549EDCCDB72343C25B /* PlaygroundCatalog.generated.swift in Sources */,
 				59CD3BCA61AEB946FF7A2882 /* PlaygroundExamplesView.swift in Sources */,
 				3720CAC58F48F17F4380823C /* PlaygroundHomeView.swift in Sources */,
 				A0279D955040FE673FB268D5 /* PlaygroundSettingsView.swift in Sources */,
@@ -352,6 +357,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1AD09D6BAD61D64C9559FF33 /* LumenApplePlaygroundApp.swift in Sources */,
+				5A3B1829F40443C5D5FA6EC2 /* PlaygroundCatalog.generated.swift in Sources */,
 				3F78C1BF0A31445B3A1BC333 /* PlaygroundExamplesView.swift in Sources */,
 				C6CEF83F16EE8556EC3DBD9E /* PlaygroundHomeView.swift in Sources */,
 				E04C7AB2BD18952D8710CCB0 /* PlaygroundSettingsView.swift in Sources */,

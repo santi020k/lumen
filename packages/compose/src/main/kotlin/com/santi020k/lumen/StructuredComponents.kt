@@ -36,7 +36,6 @@ import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 
 enum class LumenBannerVariant {
@@ -290,7 +289,7 @@ fun LumenListRow(
             .heightIn(min = 56.dp)
             .padding(horizontal = LumenSpacing.Lg, vertical = LumenSpacing.Md),
         horizontalArrangement = Arrangement.spacedBy(LumenSpacing.Md),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.Top
     ) {
         leading?.invoke()
 
@@ -501,8 +500,6 @@ fun LumenStatusBar(
             text = message,
             modifier = Modifier.weight(1f),
             color = colors.inkSoft,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
             style = MaterialTheme.typography.bodySmall
         )
         trailing?.invoke()

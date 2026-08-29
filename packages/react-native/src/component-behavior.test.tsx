@@ -5,14 +5,15 @@ import { getLumenPhoneCountry } from '@santi020k/lumen-core'
 import { createRoot, type Root, type TestInstance } from 'test-renderer'
 import { afterEach, describe, expect, test, vi } from 'vitest'
 
-import { LumenChip, LumenFieldGroup, LumenTextarea } from './additional-components.js'
+import { LumenChip, LumenFieldGroup, LumenTextarea, LumenToast } from './additional-components.js'
 import { LumenDateField, LumenDateRangeField } from './datetime-components.js'
-import { LumenSearchField } from './form-components.js'
+import { LumenSearchField, LumenToggle } from './form-components.js'
 import { LumenPhoneInput } from './phone-components.js'
 import { resolveLumenPhoneInputValue } from './phone-recipes.js'
 import { LumenButton, LumenText, LumenTextField } from './primitives.js'
 import { LumenProvider } from './provider.js'
 import { LumenCheckbox, LumenTabs } from './selection-components.js'
+import { LumenBanner, LumenStatusBar } from './structured-components.js'
 import { LumenPicker } from './value-components.js'
 
 Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true })
@@ -311,6 +312,19 @@ describe('Lumen React Native component behavior', () => {
     expect(readProp(inherited, 'aria-invalid')).toBe(true)
     expect(readProp(explicit, 'accessibilityLabel')).toBe('Short project name')
     expect(readProp(explicit, 'aria-labelledby')).toBeUndefined()
+
+    const validationMessages = root.container.queryAll(
+      instance => readProp(instance, 'children') === 'Choose a unique name'
+    )
+
+    expect(validationMessages).toHaveLength(1)
+
+    const validationMessage = validationMessages[0]
+
+    if (!validationMessage) throw new Error('Expected the grouped validation message.')
+
+    expect(readProp(validationMessage, 'accessibilityLiveRegion')).toBe('polite')
+    expect(readProp(validationMessage, 'accessibilityRole')).toBe('alert')
   })
 
   test('phone input exposes disabled state on both native controls', async () => {
@@ -619,6 +633,133 @@ describe('Lumen React Native component behavior', () => {
     expect(readProp(removeButton, 'accessibilityRole')).toBe('button')
     expect(readProp(removeButton, 'disabled')).toBe(true)
     expect(readProp(removeButton, 'accessibilityState')).toEqual({ disabled: true })
+    expect(readProp(removeButton, 'style')).toMatchObject({
+      alignItems: 'center',
+      justifyContent: 'center',
+      minHeight: 24,
+      minWidth: 24
+    })
+  })
+
+  test('toast announces politely and keeps dismissal independently operable', async () => {
+    const onDismiss = vi.fn<() => void>()
+    const root = await renderNative(
+      <LumenToast dismissLabel="Close update" onDismiss={onDismiss} title="Changes saved" />
+    )
+    const alert = findByAccessibilityRole(root, 'alert')
+    const dismissButton = findByAccessibilityLabel(root, 'Close update')
+    const style = readProp(dismissButton, 'style')
+
+    expect(readProp(alert, 'accessibilityLiveRegion')).toBe('polite')
+    expect(readProp(dismissButton, 'accessibilityRole')).toBe('button')
+    expect(style).toBeTypeOf('function')
+
+    if (typeof style !== 'function') throw new Error('Toast dismissal is missing its pressable style.')
+
+    const restingStyle: unknown = Reflect.apply(style, undefined, [{ pressed: false }])
+
+    expect(restingStyle).toMatchObject({
+      alignItems: 'center',
+      justifyContent: 'center',
+      minHeight: 44,
+      minWidth: 44
+    })
+
+    await act(async () => {
+      callAction(readProp(dismissButton, 'onPress'), 'Toast dismissal is missing its press action.')
+      await Promise.resolve()
+    })
+
+    expect(onDismiss).toHaveBeenCalledOnce()
+  })
+
+  test('banner dismissal has a full independent touch target', async () => {
+    const root = await renderNative(
+      <LumenBanner dismissLabel="Close notice" onDismiss={() => {}} title="Maintenance soon" />
+    )
+    const dismissButton = findByAccessibilityLabel(root, 'Close notice')
+    const style = readProp(dismissButton, 'style')
+
+    expect(readProp(dismissButton, 'accessibilityRole')).toBe('button')
+    expect(style).toBeTypeOf('function')
+
+    if (typeof style !== 'function') throw new Error('Banner dismissal is missing its pressable style.')
+
+    const restingStyle: unknown = Reflect.apply(style, undefined, [{ pressed: false }])
+
+    expect(restingStyle).toMatchObject({
+      alignItems: 'center',
+      justifyContent: 'center',
+      minHeight: 44,
+      minWidth: 44
+    })
+  })
+
+  test('status bars allow long messages to wrap without shrinking trailing content', async () => {
+    const message = 'El análisis permanece en el dispositivo para proteger tu privacidad.'
+    const root = await renderNative(
+      <LumenProvider>
+        <LumenStatusBar
+          message={message}
+          trailing={<LumenText>Analyze</LumenText>}
+        />
+      </LumenProvider>
+    )
+    const messageNodes = root.container.queryAll(
+      instance => instance.type === 'Text' && readProp(instance, 'children') === message
+    )
+
+    expect(messageNodes).toHaveLength(1)
+
+    const messageNode = messageNodes[0]
+
+    if (!messageNode) throw new Error('Expected the status message fixture.')
+
+    expect(readProp(messageNode, 'numberOfLines')).toBeUndefined()
+    expect(readProp(messageNode, 'style')).toMatchObject({ flex: 1, flexShrink: 1 })
+
+    const fixedTrailingContainers = root.container.queryAll(instance => {
+      const style = readProp(instance, 'style')
+
+      return instance.type === 'View' && typeof style === 'object' && style !== null &&
+        Reflect.get(style, 'flexShrink') === 0
+    })
+
+    expect(fixedTrailingContainers).toHaveLength(1)
+  })
+
+  test('search clear action preserves its label and full touch target', async () => {
+    const onChangeText = vi.fn<(value: string) => void>()
+    const root = await renderNative(
+      <LumenSearchField
+        clearLabel="Clear query"
+        onChangeText={onChangeText}
+        value="lumen"
+      />
+    )
+    const clearButton = findByAccessibilityLabel(root, 'Clear query')
+    const style = readProp(clearButton, 'style')
+
+    expect(readProp(clearButton, 'accessibilityRole')).toBe('button')
+    expect(style).toBeTypeOf('function')
+
+    if (typeof style !== 'function') throw new Error('Clear action is missing its pressable style.')
+
+    const restingStyle: unknown = Reflect.apply(style, undefined, [{ pressed: false }])
+
+    expect(restingStyle).toMatchObject({
+      alignItems: 'center',
+      justifyContent: 'center',
+      minHeight: 44,
+      minWidth: 44
+    })
+
+    await act(async () => {
+      callAction(readProp(clearButton, 'onPress'), 'Clear action is missing its native press action.')
+      await Promise.resolve()
+    })
+
+    expect(onChangeText).toHaveBeenCalledExactlyOnceWith('')
   })
 
   test('checkbox announces state and emits the next controlled value', async () => {
@@ -645,6 +786,86 @@ describe('Lumen React Native component behavior', () => {
     })
 
     expect(onCheckedChange).toHaveBeenCalledExactlyOnceWith(true)
+  })
+
+  test('toggle makes the full labeled row the single interactive switch', async () => {
+    const onValueChange = vi.fn<(value: boolean) => void>()
+    const root = await renderNative(
+      <LumenToggle
+        description="Receive product and security updates"
+        label="Automatic updates"
+        onValueChange={onValueChange}
+        value={false}
+      />
+    )
+    const toggle = findByAccessibilityRole(root, 'switch')
+    const onPress = readProp(toggle, 'onPress')
+    const nativeSwitches = root.container.queryAll(instance => instance.type === 'Switch')
+
+    expect(readProp(toggle, 'accessibilityLabel')).toBe('Automatic updates')
+    expect(readProp(toggle, 'accessibilityHint')).toBe('Receive product and security updates')
+    expect(readProp(toggle, 'accessibilityState')).toEqual({
+      checked: false,
+      disabled: false
+    })
+    expect(nativeSwitches).toHaveLength(1)
+
+    const nativeSwitch = nativeSwitches[0]
+
+    if (!nativeSwitch) throw new Error('Expected the decorative native switch.')
+
+    expect(readProp(nativeSwitch, 'accessibilityElementsHidden')).toBe(true)
+    expect(readProp(nativeSwitch, 'importantForAccessibility')).toBe('no-hide-descendants')
+    expect(readProp(nativeSwitch, 'pointerEvents')).toBe('none')
+    expect(readProp(nativeSwitch, 'onValueChange')).toBeUndefined()
+
+    await act(async () => {
+      callAction(onPress, 'Toggle row is missing its press action.')
+      await Promise.resolve()
+    })
+
+    expect(onValueChange).toHaveBeenCalledExactlyOnceWith(true)
+  })
+
+  test('toggle preserves a consumer accessibility hint over supporting copy', async () => {
+    const root = await renderNative(
+      <LumenToggle
+        accessibilityHint="Changes how updates are installed"
+        description="Receive product and security updates"
+        label="Automatic updates"
+        onValueChange={() => {}}
+        value={false}
+      />
+    )
+
+    expect(readProp(findByAccessibilityRole(root, 'switch'), 'accessibilityHint'))
+      .toBe('Changes how updates are installed')
+  })
+
+  test('disabled toggle row cannot emit a value change', async () => {
+    const onValueChange = vi.fn<(value: boolean) => void>()
+    const root = await renderNative(
+      <LumenToggle
+        disabled
+        label="Automatic updates"
+        onValueChange={onValueChange}
+        value
+      />
+    )
+    const toggle = findByAccessibilityRole(root, 'switch')
+
+    expect(readProp(toggle, 'accessibilityState')).toEqual({
+      checked: true,
+      disabled: true
+    })
+    expect(readProp(toggle, 'disabled')).toBe(true)
+
+    await act(async () => {
+      callAction(readProp(toggle, 'onPress'), 'Disabled toggle row is missing its guarded press action.')
+      await Promise.resolve()
+    })
+
+    expect(onValueChange).not.toHaveBeenCalled()
   })
 
   test('tabs preserve selected and disabled semantics while emitting enabled selection', async () => {

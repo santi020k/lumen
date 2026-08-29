@@ -1,0 +1,173 @@
+{
+  "schemaVersion": 1,
+  "categories": [
+    {
+      "id": "foundations",
+      "label": "Foundations",
+      "description": "Theme, type, surfaces, icons, and visual treatments.",
+      "componentIds": [
+        "theme",
+        "text",
+        "surface",
+        "icon",
+        "icon-button",
+        "graphic",
+        "backdrop",
+        "illustration",
+        "image"
+      ]
+    },
+    {
+      "id": "actions",
+      "label": "Actions",
+      "description": "Buttons, chips, menus, and operating-system actions.",
+      "componentIds": [
+        "button",
+        "button-group",
+        "chip",
+        "menu",
+        "share-button"
+      ]
+    },
+    {
+      "id": "forms",
+      "label": "Forms",
+      "description": "Editable values, choices, validation, and date input.",
+      "componentIds": [
+        "text-field",
+        "textarea",
+        "field-group",
+        "toggle",
+        "settings-row",
+        "search-field",
+        "date-field",
+        "date-range-field",
+        "phone-input",
+        "checkbox",
+        "radio-group",
+        "segmented-control",
+        "tabs",
+        "picker",
+        "slider"
+      ]
+    },
+    {
+      "id": "feedback",
+      "label": "Feedback",
+      "description": "Progress, alerts, loading, recovery, and transient status.",
+      "componentIds": [
+        "badge",
+        "divider",
+        "spinner",
+        "alert",
+        "toast",
+        "progress",
+        "skeleton",
+        "empty-state",
+        "error-state",
+        "banner"
+      ]
+    },
+    {
+      "id": "data",
+      "label": "Data",
+      "description": "Cards, charts, rows, metrics, disclosure, and identity.",
+      "componentIds": [
+        "card",
+        "sparkline",
+        "line-chart",
+        "bar-chart",
+        "pie-chart",
+        "scatter-chart",
+        "heatmap",
+        "range-chart",
+        "combo-chart",
+        "disclosure",
+        "avatar",
+        "list-row",
+        "stat",
+        "section-header",
+        "status-bar",
+        "gauge"
+      ]
+    },
+    {
+      "id": "navigation",
+      "label": "Navigation",
+      "description": "Dialogs, sheets, destination bars, and accessories.",
+      "componentIds": [
+        "alert-dialog",
+        "sheet",
+        "navigation-bar"
+      ]
+    }
+  ],
+  "platformComponents": {
+    "reactNative": [
+      {
+        "id": "refresh-control",
+        "label": "Refresh control",
+        "category": "feedback"
+      },
+      {
+        "id": "navigation-accessory",
+        "label": "Navigation accessory",
+        "category": "navigation"
+      },
+      {
+        "id": "collapsible-navigation-bar",
+        "label": "Collapsible navigation bar",
+        "category": "navigation"
+      }
+    ],
+    "swiftUI": [
+      {
+        "id": "link",
+        "label": "Link",
+        "category": "actions"
+      },
+      {
+        "id": "tab-bar-minimization",
+        "label": "Tab bar minimization",
+        "category": "navigation"
+      },
+      {
+        "id": "tab-accessory",
+        "label": "Tab accessory",
+        "category": "navigation"
+      },
+      {
+        "id": "shortcut-recorder",
+        "label": "Shortcut recorder",
+        "category": "forms"
+      },
+      {
+        "id": "symbol-picker",
+        "label": "Symbol picker",
+        "category": "forms"
+      }
+    ],
+    "compose": [
+      {
+        "id": "floating-action-button",
+        "label": "Floating action button",
+        "category": "actions"
+      },
+      {
+        "id": "navigation-bar-scroll-behavior",
+        "label": "Navigation bar scroll behavior",
+        "category": "navigation"
+      },
+      {
+        "id": "navigation-bar-accessory",
+        "label": "Navigation bar accessory",
+        "category": "navigation"
+      },
+      {
+        "id": "adaptive-navigation-scaffold",
+        "label": "Adaptive navigation scaffold",
+        "category": "navigation"
+      }
+    ]
+  }
+}

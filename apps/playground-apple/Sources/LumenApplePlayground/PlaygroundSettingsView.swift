@@ -154,7 +154,7 @@ struct PlaygroundSettingsView: View {
 
     private var accessibilitySection: some View {
         PlaygroundSection(
-            "Accessibility context",
+            "Accessibility",
             description: "Read-only values reflect current Apple settings; Lumen responds through SwiftUI environments."
         ) {
             VStack(spacing: LumenSpacing.md) {
