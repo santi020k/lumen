@@ -25,6 +25,11 @@ test('CI delegates path decisions and keeps package-family gates independent', (
 
   assert.match(ci, /needs\.classify\.outputs\.consumer-packages/u)
 
+  assert.match(
+    ci,
+    /consumer-packages[\s\S]*?pnpm run build:release-scope\n\s+pnpm run check:consumer-packages/u
+  )
+
   assert.doesNotMatch(
     ci,
     /if \[\[ "\$\{\{ needs\.classify\.outputs\.compatibility \}\}" == "true" \]\]; then\n[\s\S]*?pnpm run build\n/u
