@@ -25,9 +25,11 @@ export const classifyChangedNpmPackages = paths => {
   const packages = new Set()
 
   const requiresEveryPackage = matchesAny(paths, [
+    sharedConfiguration,
     /^package\.json$/u,
     /^pnpm-workspace\.yaml$/u,
     /^turbo\.json$/u,
+    /^scripts\/(check-bundle-size|smoke-consumer-packages)\.mjs$/u,
     /^scripts\/(check-publish-dry-run|sync-registry|validate-registry)\.mjs$/u,
     /^\.github\/workflows\/ci\.yml$/u
   ])

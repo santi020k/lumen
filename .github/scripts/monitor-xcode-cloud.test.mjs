@@ -162,6 +162,34 @@ test("retries transient network failures", async (context) => {
   assert.match(result.output, /release succeeded/);
 });
 
+test("retries malformed successful response bodies", async (context) => {
+  const { privateKey } = generateKeyPairSync("ec", { namedCurve: "P-256" });
+  let requestCount = 0;
+
+  const server = createServer((_request, response) => {
+    requestCount += 1;
+
+    response.setHeader("Content-Type", "application/json");
+
+    response.end(requestCount === 1 ? '{"data":' : JSON.stringify(successfulBuildDocument));
+  });
+
+  await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
+
+  context.after(() => server.close());
+
+  const address = server.address();
+  const result = await runMonitor(monitorEnvironment(privateKey, address.port));
+
+  assert.equal(result.code, 0, result.output);
+
+  assert.equal(requestCount, 2);
+
+  assert.match(result.output, /response JSON failed/);
+
+  assert.match(result.output, /release succeeded/);
+});
+
 test("fails immediately for permanent App Store Connect responses", async (context) => {
   const { privateKey } = generateKeyPairSync("ec", { namedCurve: "P-256" });
   let requestCount = 0;

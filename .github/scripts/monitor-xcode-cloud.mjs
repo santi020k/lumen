@@ -117,11 +117,9 @@ const findReleaseBuild = (document) => {
   return (document.data ?? []).find((build) => matchesRelease(build, includedById));
 };
 
-const fetchBuilds = async () => {
-  let response;
-
+const requestBuilds = async () => {
   try {
-    response = await fetch(buildsUrl(), {
+    return await fetch(buildsUrl(), {
       headers: {
         Accept: "application/json",
         Authorization: `Bearer ${authorizationToken()}`,
@@ -132,9 +130,33 @@ const fetchBuilds = async () => {
 
     throw new RetryableRequestError(`App Store Connect request failed: ${reason}`);
   }
+};
+
+const readResponseBody = async (response) => {
+  try {
+    return await response.text();
+  } catch (error) {
+    const reason = error instanceof Error ? error.message : String(error);
+
+    throw new RetryableRequestError(`App Store Connect response body failed: ${reason}`);
+  }
+};
+
+const parseResponseBody = (responseBody) => {
+  try {
+    return JSON.parse(responseBody);
+  } catch (error) {
+    const reason = error instanceof Error ? error.message : String(error);
+
+    throw new RetryableRequestError(`App Store Connect response JSON failed: ${reason}`);
+  }
+};
+
+const fetchBuilds = async () => {
+  const response = await requestBuilds();
+  const responseBody = await readResponseBody(response);
 
   if (!response.ok) {
-    const responseBody = await response.text();
     const isRetryable = response.status === 429 || response.status >= 500;
 
     if (isRetryable) {
@@ -153,7 +175,7 @@ const fetchBuilds = async () => {
     throw new Error(`App Store Connect returned ${response.status}: ${responseBody}`);
   }
 
-  return response.json();
+  return parseResponseBody(responseBody);
 };
 
 const wait = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds));

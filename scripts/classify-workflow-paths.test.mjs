@@ -131,6 +131,14 @@ test('publish dry runs target only changed packages unless shared tooling change
   )
 
   assert.equal(classifyChangedNpmPackages(['package.json']).length, 10)
+
+  for (const path of [
+    'scripts/check-bundle-size.mjs',
+    'scripts/smoke-consumer-packages.mjs',
+    'scripts/classify-workflow-paths.mjs'
+  ]) {
+    assert.equal(classifyChangedNpmPackages([path]).length, 10, path)
+  }
 })
 
 test('MCP changes skip unrelated bundle, browser, and packed UI consumer gates', () => {
