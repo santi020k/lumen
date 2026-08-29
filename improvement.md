@@ -639,6 +639,14 @@ formatted percentages, and titles already resolved through the app's language se
 perform a second lookup against the system locale. Applying SwiftUI's `monospacedDigit()` to the
 badge preserves stable numeric widths without requiring a parallel capsule implementation.
 
+The photo editor's Tune selector extended that migration to live per-group adjustment counts. Each
+count is display-only metadata inside an independently selectable Light, Color, or Detail button,
+so `LumenBadge(.verbatim(...), tone: .accent)` can own the capsule while the host button keeps the
+localized label, selected trait, 44-point target, and explicit "changes" accessibility value. The
+badge stays hidden from accessibility to avoid announcing the same count twice. A deterministic
+fixture with active Light and Color adjustments was necessary to verify the component in its real
+compact selector; neutral-only fixtures can make a completed badge migration visually invisible.
+
 Rendered before-and-after iPhone states confirmed that the shared badge keeps accent metadata quiet
 inside cards and gives section counts that previously lacked a border a consistent muted backing. The
 destination header also showed that a badge's visual text should not be its container's accidental
@@ -657,6 +665,8 @@ Acceptance criteria:
   relying on color alone.
 - Verify a text badge inside a host-defined accessibility group does not obscure the group's
   explicit label and value or merge adjacent actions into the same element.
+- Include a compact selectable-control example where a display-only badge is hidden from
+  accessibility and the parent control exposes the count through an explicit localized value.
 - Support a non-interactive badge or chip as a `LumenMenu` label without creating nested buttons or
   obscuring the menu's accessible name.
 - Test text-only and icon-bearing badges plus static, selectable, removable, and menu-label chips
@@ -1213,11 +1223,19 @@ would underspecify their selection semantics. Lumen would benefit from a selecta
 radio-card contract that makes state, grouping, focus, and activation explicit across SwiftUI and
 the other framework adapters.
 
-The unavailable-plans path exposed a second composition gap. `LumenEmptyState` already owns a
-24-point inset and a bounded height, so wrapping it in `LumenCard` can create a visibly double-padded
-surface. Consumers need either a contained presentation option for the empty state or guidance for
-placing it directly on a grouped canvas without adding another generic card solely for background
-treatment.
+The unavailable-plans path exposed a second composition boundary. `LumenEmptyState` already owns a
+24-point inset and a bounded height, so wrapping it in `LumenCard` creates a visibly double-padded
+surface. PostLens instead wrapped its canonical unavailable state in
+`LumenSurface(tone: .surface, padding: .none, radius: .size2xl)`. Lumen now owns the grouped color and
+corner treatment without adding another content inset, while the empty state keeps its symbol,
+resolved recovery copy, and independent primary action. This is a viable released containment
+recipe, but it is not discoverable from the empty-state contract itself.
+
+A deterministic no-catalog Supporter fixture made that distinction testable without depending on
+App Store availability. Rendered standard and accessibility-text states confirmed the contained
+surface stays within the phone viewport, preserves the adjacent card hierarchy, and keeps Try Again
+reachable as the only recovery action. A fixture that only renders loading or populated membership
+states cannot prove the empty-state composition even when the source type-checks.
 
 Acceptance criteria:
 
@@ -1229,8 +1247,8 @@ Acceptance criteria:
   controls or duplicate activation stops.
 - Document that branded heroes and concept-specific tinted plaques remain valid consumer-owned
   content inside Lumen-managed surfaces.
-- Provide an empty-state containment option or documented grouped-canvas recipe that avoids stacking
-  `LumenEmptyState`'s inset inside an additional card inset.
+- Document a zero-padding `LumenSurface` containment recipe for `LumenEmptyState`, or provide a
+  contained presentation option that avoids stacking another card inset around the empty state.
 - Test active, loading, unavailable, and plan-selection states at narrow widths, large Dynamic Type,
   light and dark appearances, right-to-left layout, and long translated copy.
 - Verify that membership links and plan actions remain reachable by scrolling and retain 44-point
@@ -1289,10 +1307,12 @@ and verifies that the explanatory copy changes. The ranked photo grid deliberate
 consumer-owned, edge-to-edge media UI because its image crops, score overlays, rank badges, and
 candidate navigation are domain behavior rather than generic card presentation.
 
-This use also reinforces a localization gap in the released picker contract. PostLens resolves the
-picker's accessible title through its in-app locale, but `LumenPicker` accepts only
-`LocalizedStringKey`. Reconstructing a dynamic localized key from already-resolved copy risks a
-second lookup when the selected app language differs from the system language.
+This use also reinforces the existing rich-label picker path for application-owned localization.
+PostLens resolves the picker's accessible title through its in-app locale, so it should pass
+`Text(verbatim: resolvedTitle)` through `LumenPicker`'s public `label` view builder and supply the
+selected value through `currentValueLabel`. Reconstructing a dynamic `LocalizedStringKey` from
+already-resolved copy would risk a second lookup when the selected app language differs from the
+system language.
 
 Acceptance criteria:
 
@@ -1302,8 +1322,8 @@ Acceptance criteria:
   the whole-card `action` initializer.
 - Verify that the static result and sorting headings do not acquire button traits or duplicate focus
   stops when nested controls are present.
-- Add `LumenTextContent` or equivalent localized-versus-verbatim support to the `LumenPicker` title
-  while preserving its existing source-compatible initializer.
+- Document `Text(verbatim:)` in the existing rich-label `LumenPicker` initializer for app-resolved
+  titles, alongside an independently supplied current-value label.
 - Test picker activation, option selection, updated explanatory content, disabled state, and
   VoiceOver order inside a non-action card.
 - Keep edge-to-edge media grids outside generic cards when their cropping, overlays, and per-item
