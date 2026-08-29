@@ -118,11 +118,13 @@ const findReleaseBuild = (document) => {
 };
 
 const requestBuilds = async () => {
+  const token = authorizationToken();
+
   try {
     return await fetch(buildsUrl(), {
       headers: {
         Accept: "application/json",
-        Authorization: `Bearer ${authorizationToken()}`,
+        Authorization: `Bearer ${token}`,
       },
     });
   } catch (error) {
@@ -160,9 +162,12 @@ const fetchBuilds = async () => {
     const isRetryable = response.status === 429 || response.status >= 500;
 
     if (isRetryable) {
-      const retryAfterSeconds = Number(response.headers.get("retry-after"));
+      const retryAfterHeader = response.headers.get("retry-after");
+      const retryAfterSeconds = retryAfterHeader === null ? undefined : Number(retryAfterHeader);
 
-      const retryAfterMs = Number.isFinite(retryAfterSeconds) && retryAfterSeconds >= 0
+      const retryAfterMs = retryAfterSeconds !== undefined
+        && Number.isFinite(retryAfterSeconds)
+        && retryAfterSeconds >= 0
         ? retryAfterSeconds * 1_000
         : undefined;
 

@@ -128,6 +128,43 @@ test("retries transient App Store Connect responses", async (context) => {
   assert.match(result.output, /release succeeded/);
 });
 
+test("uses exponential backoff when Retry-After is absent", async (context) => {
+  const { privateKey } = generateKeyPairSync("ec", { namedCurve: "P-256" });
+  let requestCount = 0;
+
+  const server = createServer((_request, response) => {
+    requestCount += 1;
+
+    if (requestCount === 1) {
+      response.statusCode = 503;
+
+      response.end("temporarily unavailable");
+
+      return;
+    }
+
+    response.setHeader("Content-Type", "application/json");
+
+    response.end(JSON.stringify(successfulBuildDocument));
+  });
+
+  await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
+
+  context.after(() => server.close());
+
+  const address = server.address();
+
+  const result = await runMonitor(monitorEnvironment(privateKey, address.port, {
+    POLL_INTERVAL_SECONDS: "0.05",
+  }));
+
+  assert.equal(result.code, 0, result.output);
+
+  assert.equal(requestCount, 2);
+
+  assert.match(result.output, /Retrying in 0\.05 seconds/);
+});
+
 test("retries transient network failures", async (context) => {
   const { privateKey } = generateKeyPairSync("ec", { namedCurve: "P-256" });
   let requestCount = 0;
@@ -214,4 +251,18 @@ test("fails immediately for permanent App Store Connect responses", async (conte
   assert.equal(requestCount, 1);
 
   assert.match(result.output, /App Store Connect returned 401/);
+});
+
+test("fails immediately when the signing key is malformed", async () => {
+  const { privateKey } = generateKeyPairSync("ec", { namedCurve: "P-256" });
+
+  const result = await runMonitor(monitorEnvironment(privateKey, 1, {
+    APP_STORE_CONNECT_PRIVATE_KEY: "not-a-private-key",
+  }));
+
+  assert.equal(result.code, 1, result.output);
+
+  assert.doesNotMatch(result.output, /Retrying in/);
+
+  assert.match(result.output, /private key|DECODER|unsupported/i);
 });
