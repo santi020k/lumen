@@ -19,6 +19,21 @@ public struct LumenEmptyState<Actions: View>: View {
         _ title: LocalizedStringKey,
         systemName: String,
         description: LocalizedStringKey? = nil,
+        @ViewBuilder actions: () -> Actions
+    ) {
+        self.init(
+            title,
+            systemName: systemName,
+            description: description,
+            layout: .default,
+            actions: actions
+        )
+    }
+
+    public init(
+        _ title: LocalizedStringKey,
+        systemName: String,
+        description: LocalizedStringKey? = nil,
         layout: LumenEmptyStateLayout = .default,
         @ViewBuilder actions: () -> Actions
     ) {
@@ -59,6 +74,16 @@ public struct LumenEmptyState<Actions: View>: View {
 }
 
 public extension LumenEmptyState where Actions == EmptyView {
+    init(
+        _ title: LocalizedStringKey,
+        systemName: String,
+        description: LocalizedStringKey? = nil
+    ) {
+        self.init(title, systemName: systemName, description: description, layout: .default) {
+            EmptyView()
+        }
+    }
+
     init(
         _ title: LocalizedStringKey,
         systemName: String,
@@ -438,6 +463,23 @@ public struct LumenStat: View {
     private let systemName: String?
     private let tone: LumenMetricTone
     private let value: String
+
+    public init(
+        _ label: LocalizedStringKey,
+        value: String,
+        detail: LocalizedStringKey? = nil,
+        systemName: String? = nil,
+        tone: LumenMetricTone = .brand
+    ) {
+        self.init(
+            label,
+            value: value,
+            detail: detail,
+            density: .default,
+            systemName: systemName,
+            tone: tone
+        )
+    }
 
     public init(
         _ label: LocalizedStringKey,

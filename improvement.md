@@ -110,6 +110,22 @@ that the rendered button ends above the export bar before exercising the handoff
 should make clear that component metrics cannot reserve space across sibling scroll and safe-area
 containers; migration evidence must cover the final composed viewport, not only component presence.
 
+PostLens also confirmed that Lumen's semantic types do not carry control metrics through a
+consumer-owned native-treatment adapter. Mapping `LumenControlSize.md` to SwiftUI's `.regular`
+control size produced a roughly 35-point bordered button in the accessibility tree until the
+adapter explicitly applied the app's 44-point minimum target. This is valid composition, but the
+API shape can make intent and size mapping look more complete than it is; adapter guidance should
+require consumers to map both the visual recipe and platform hit-target policy. The posting-plan
+composer also confirmed that the adapter must be applicable as a style to a system-owned `Menu`,
+while the adjacent app-owned Reorder action can use the composed button. Wrapping the menu in a
+replacement button would transfer disclosure ownership and change behavior. The editor review and
+carousel readiness surfaces further showed that an app-owned composed action must accept structured
+row content—a leading label, flexible space, and trailing disclosure icon—without losing the
+semantic intent, full-width layout, or minimum target. XCTest also reported a nominal 44-point
+accessibility frame as `43.99999999999994`; conformance tests should compare native geometry with a
+subpixel or display-scale tolerance instead of treating floating-point representation as a product
+failure.
+
 Acceptance criteria:
 
 - Keep the small button's visible shape compact while providing a platform-appropriate minimum hit
@@ -134,6 +150,15 @@ Acceptance criteria:
   `safeAreaInset` action bar, and assert that the rendered frames do not overlap at compact heights.
 - Document that accessibility-tree presence does not prove a migrated control is visible or
   hittable when sibling previews, scroll containers, and safe-area bars divide the viewport.
+- Add native-treatment adapter guidance that maps `LumenButtonIntent` and `LumenControlSize` while
+  explicitly preserving the platform minimum interactive target, with an accessibility-frame test
+  and a system-owned `Menu` beside an app-owned composed action.
+- Include a full-width card-row example whose composed label has leading content and a trailing
+  disclosure cue, and verify that activation, semantic intent, and the minimum target remain owned
+  by the button.
+- Define a native accessibility-frame assertion tolerance no larger than one physical pixel so a
+  nominal 44-point target passes despite platform floating-point rounding, while materially smaller
+  targets still fail.
 - Document when a consumer must retain a native compact control because the surrounding system
   container owns hit testing or presentation.
 

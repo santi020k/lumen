@@ -119,6 +119,7 @@ struct ComponentsCatalogView: View {
             }
                 .frame(maxWidth: 1040)
                 .padding(isDeterministicFilter ? LumenSpacing.xl : LumenSpacing.lg)
+                .padding(.bottom, playgroundBottomScrollClearance)
                 .frame(maxWidth: .infinity)
             }
         }

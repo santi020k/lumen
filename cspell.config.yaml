@@ -147,7 +147,6 @@ words:
   - lede
   - largecircle
   - libphonenumber
-  - phonenumberkit
   - linecap
   - linejoin
   - VectorPath
@@ -280,6 +279,7 @@ words:
   - eeef
   - fbca
   - appletvsimulator
+  - subrange
   - APPL
 ignoreRegExpList:
   - luQW2pTQ3jGGxSFPAAsfa9

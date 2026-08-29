@@ -207,6 +207,23 @@ public struct LumenSlider: View {
         value: Binding<Double>,
         in bounds: ClosedRange<Double>,
         step: Double? = nil,
+        valueLabel: String? = nil
+    ) {
+        self.init(
+            label,
+            value: value,
+            in: bounds,
+            step: step,
+            valueLabel: valueLabel,
+            onEditingChanged: { _ in }
+        )
+    }
+
+    public init(
+        _ label: LocalizedStringKey,
+        value: Binding<Double>,
+        in bounds: ClosedRange<Double>,
+        step: Double? = nil,
         valueLabel: String? = nil,
         onEditingChanged: @escaping (Bool) -> Void = { _ in }
     ) {

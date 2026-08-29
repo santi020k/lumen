@@ -2,6 +2,14 @@ import Foundation
 import LumenUI
 import SwiftUI
 
+let playgroundBottomScrollClearance: CGFloat = {
+    #if os(iOS)
+    LumenSpacing.size3xl
+    #else
+    0
+    #endif
+}()
+
 enum PlaygroundDestination: String, CaseIterable, Identifiable {
     case home
     case examples
@@ -177,14 +185,13 @@ struct PlaygroundRootView: View {
             ForEach(PlaygroundDestination.allCases) { item in
                 destinationView(item)
                     .background(activeTheme.colors.canvas.ignoresSafeArea())
+                    .ignoresSafeArea(.container, edges: .bottom)
                     .tabItem {
                         Label(item.title, systemImage: item.systemName)
                     }
                     .tag(item)
             }
         }
-        .toolbarBackground(activeTheme.colors.canvas, for: .tabBar)
-        .toolbarBackground(.visible, for: .tabBar)
         #endif
     }
 
@@ -245,6 +252,7 @@ struct PlaygroundPage<Content: View>: View {
                 .frame(maxWidth: 1040)
                 .padding(.horizontal, horizontalSizeClass == .compact ? LumenSpacing.lg : LumenSpacing.xl)
                 .padding(.vertical, LumenSpacing.lg)
+                .padding(.bottom, playgroundBottomScrollClearance)
                 .frame(maxWidth: .infinity)
             }
         }

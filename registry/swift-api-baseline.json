@@ -234,6 +234,15 @@
           "precise": "s:7LumenUI0A10EmptyStateV_10systemName11description6layout7actionsACyxG05SwiftB018LocalizedStringKeyV_SSAKSgAA0acD6LayoutOxyXEtcfc"
         },
         {
+          "declaration": "@MainActor init(_ title: LocalizedStringKey, systemName: String, description: LocalizedStringKey? = nil, @ViewBuilder actions: () -> Actions)",
+          "kind": "swift.init",
+          "path": [
+            "LumenEmptyState",
+            "init(_:systemName:description:actions:)"
+          ],
+          "precise": "s:7LumenUI0A10EmptyStateV_10systemName11description7actionsACyxG05SwiftB018LocalizedStringKeyV_SSAJSgxyXEtcfc"
+        },
+        {
           "declaration": "@MainActor var body: some View { get }",
           "kind": "swift.property",
           "path": [
@@ -250,6 +259,15 @@
             "init(_:systemName:description:layout:)"
           ],
           "precise": "s:7LumenUI0A10EmptyStateVAA05SwiftB00C4ViewVRszrlE_10systemName11description6layoutACyAFGAD18LocalizedStringKeyV_SSALSgAA0acD6LayoutOtcfc"
+        },
+        {
+          "declaration": "@MainActor init(_ title: LocalizedStringKey, systemName: String, description: LocalizedStringKey? = nil)",
+          "kind": "swift.init",
+          "path": [
+            "LumenEmptyState",
+            "init(_:systemName:description:)"
+          ],
+          "precise": "s:7LumenUI0A10EmptyStateVAA05SwiftB00C4ViewVRszrlE_10systemName11descriptionACyAFGAD18LocalizedStringKeyV_SSAKSgtcfc"
         },
         {
           "declaration": "@MainActor struct LumenErrorState<Graphic, Actions> where Graphic : View, Actions : View",
@@ -4237,6 +4255,15 @@
           "precise": "s:7LumenUI0A4StatV"
         },
         {
+          "declaration": "@MainActor init(_ label: LocalizedStringKey, value: String, detail: LocalizedStringKey? = nil, systemName: String? = nil, tone: LumenMetricTone = .brand)",
+          "kind": "swift.init",
+          "path": [
+            "LumenStat",
+            "init(_:value:detail:systemName:tone:)"
+          ],
+          "precise": "s:7LumenUI0A4StatV_5value6detail10systemName4toneAC05SwiftB018LocalizedStringKeyV_SSAJSgSSSgAA0A10MetricToneOtcfc"
+        },
+        {
           "declaration": "@MainActor init(_ label: LocalizedStringKey, value: String, detail: LocalizedStringKey? = nil, density: LumenStatDensity = .default, systemName: String? = nil, tone: LumenMetricTone = .brand)",
           "kind": "swift.init",
           "path": [
@@ -4613,6 +4640,15 @@
           "precise": "s:7LumenUI0A6ButtonV6intent4size7loading0F18AccessibilityValue8disabled6action5labelACyxGAA0aC6IntentO_AA0A11ControlSizeOSbAA0A11TextContentOSbyycxyXEtcfc"
         },
         {
+          "declaration": "@MainActor init(intent: LumenButtonIntent = .primary, size: LumenControlSize = .md, loading: Bool = false, disabled: Bool = false, action: @escaping () -> Void, @ViewBuilder label: () -> Label)",
+          "kind": "swift.init",
+          "path": [
+            "LumenButton",
+            "init(intent:size:loading:disabled:action:label:)"
+          ],
+          "precise": "s:7LumenUI0A6ButtonV6intent4size7loading8disabled6action5labelACyxGAA0aC6IntentO_AA0A11ControlSizeOS2byycxyXEtcfc"
+        },
+        {
           "declaration": "@MainActor init(_ title: LumenTextContent, intent: LumenButtonIntent = .primary, size: LumenControlSize = .md, loading: Bool = false, loadingAccessibilityValue: LumenTextContent = .localizedKey(\"Loading\"), role: ButtonRole?, disabled: Bool = false, action: @escaping () -> Void)",
           "kind": "swift.init",
           "path": [
@@ -4647,6 +4683,15 @@
             "init(_:intent:size:loading:loadingAccessibilityValue:disabled:action:)"
           ],
           "precise": "s:7LumenUI0A6ButtonVAA05SwiftB04TextVRszrlE_6intent4size7loading0H18AccessibilityValue8disabled6actionACyAFGAD18LocalizedStringKeyV_AA0aC6IntentOAA0A11ControlSizeOSbAA0aE7ContentOSbyyctcfc"
+        },
+        {
+          "declaration": "@MainActor init(_ title: LocalizedStringKey, intent: LumenButtonIntent = .primary, size: LumenControlSize = .md, loading: Bool = false, disabled: Bool = false, action: @escaping () -> Void)",
+          "kind": "swift.init",
+          "path": [
+            "LumenButton",
+            "init(_:intent:size:loading:disabled:action:)"
+          ],
+          "precise": "s:7LumenUI0A6ButtonVAA05SwiftB04TextVRszrlE_6intent4size7loading8disabled6actionACyAFGAD18LocalizedStringKeyV_AA0aC6IntentOAA0A11ControlSizeOS2byyctcfc"
         },
         {
           "declaration": "enum LumenChartX",
@@ -4893,6 +4938,15 @@
             "init(_:value:in:step:valueLabel:onEditingChanged:)"
           ],
           "precise": "s:7LumenUI0A6SliderV_5value2in4step0D5Label16onEditingChangedAC05SwiftB018LocalizedStringKeyV_AI7BindingVySdGSNySdGSdSgSSSgySbctcfc"
+        },
+        {
+          "declaration": "@MainActor init(_ label: LocalizedStringKey, value: Binding<Double>, in bounds: ClosedRange<Double>, step: Double? = nil, valueLabel: String? = nil)",
+          "kind": "swift.init",
+          "path": [
+            "LumenSlider",
+            "init(_:value:in:step:valueLabel:)"
+          ],
+          "precise": "s:7LumenUI0A6SliderV_5value2in4step0D5LabelAC05SwiftB018LocalizedStringKeyV_AH7BindingVySdGSNySdGSdSgSSSgtcfc"
         },
         {
           "declaration": "@MainActor var body: some View { get }",
@@ -8302,6 +8356,15 @@
           "precise": "s:7LumenUI0A8IconNameO11columns3CogyA2CmF"
         },
         {
+          "declaration": "case creditCardX",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "creditCardX"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO11creditCardXyA2CmF"
+        },
+        {
           "declaration": "case databaseZap",
           "kind": "swift.enum.case",
           "path": [
@@ -8806,6 +8869,15 @@
           "precise": "s:7LumenUI0A8IconNameO11pilcrowLeftyA2CmF"
         },
         {
+          "declaration": "case playingCard",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "playingCard"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO11playingCardyA2CmF"
+        },
+        {
           "declaration": "case pocketKnife",
           "kind": "swift.enum.case",
           "path": [
@@ -8849,6 +8921,15 @@
             "receiptText"
           ],
           "precise": "s:7LumenUI0A8IconNameO11receiptTextyA2CmF"
+        },
+        {
+          "declaration": "case robotVacuum",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "robotVacuum"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO11robotVacuumyA2CmF"
         },
         {
           "declaration": "case scanBarcode",
@@ -10577,6 +10658,15 @@
             "planeTakeoff"
           ],
           "precise": "s:7LumenUI0A8IconNameO12planeTakeoffyA2CmF"
+        },
+        {
+          "declaration": "case playingCards",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "playingCards"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO12playingCardsyA2CmF"
         },
         {
           "declaration": "case presentation",
@@ -12919,6 +13009,15 @@
           "precise": "s:7LumenUI0A8IconNameO14cornerLeftDownyA2CmF"
         },
         {
+          "declaration": "case creditCardPlus",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "creditCardPlus"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO14creditCardPlusyA2CmF"
+        },
+        {
           "declaration": "case databaseBackup",
           "kind": "swift.enum.case",
           "path": [
@@ -14062,6 +14161,24 @@
           "precise": "s:7LumenUI0A8IconNameO15creativeCommonsyA2CmF"
         },
         {
+          "declaration": "case creditCardCheck",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "creditCardCheck"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO15creditCardCheckyA2CmF"
+        },
+        {
+          "declaration": "case creditCardMinus",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "creditCardMinus"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO15creditCardMinusyA2CmF"
+        },
+        {
           "declaration": "case databaseArrowUp",
           "kind": "swift.enum.case",
           "path": [
@@ -14240,6 +14357,15 @@
             "panelRightClose"
           ],
           "precise": "s:7LumenUI0A8IconNameO15panelRightCloseyA2CmF"
+        },
+        {
+          "declaration": "case playingCardsFan",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "playingCardsFan"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO15playingCardsFanyA2CmF"
         },
         {
           "declaration": "case rectangleCircle",
@@ -17563,6 +17689,15 @@
           "precise": "s:7LumenUI0A8IconNameO24brandYandexInternationalyA2CmF"
         },
         {
+          "declaration": "case messageCircleDashedCheck",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "messageCircleDashedCheck"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO24messageCircleDashedCheckyA2CmF"
+        },
+        {
           "declaration": "case squareDashedMousePointer",
           "kind": "swift.enum.case",
           "path": [
@@ -20515,6 +20650,15 @@
           "precise": "s:7LumenUI0A8IconNameO6funnelyA2CmF"
         },
         {
+          "declaration": "case galaxy",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "galaxy"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO6galaxyyA2CmF"
+        },
+        {
           "declaration": "case globeX",
           "kind": "swift.enum.case",
           "path": [
@@ -22513,6 +22657,15 @@
           "precise": "s:7LumenUI0A8IconNameO7tractoryA2CmF"
         },
         {
+          "declaration": "case trailer",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "trailer"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO7traileryA2CmF"
+        },
+        {
           "declaration": "case undoDot",
           "kind": "swift.enum.case",
           "path": [
@@ -24050,6 +24203,15 @@
             "replyAll"
           ],
           "precise": "s:7LumenUI0A8IconNameO8replyAllyA2CmF"
+        },
+        {
+          "declaration": "case robotArm",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "robotArm"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO8robotArmyA2CmF"
         },
         {
           "declaration": "case rotate3d",
@@ -26246,6 +26408,15 @@
             "shieldOff"
           ],
           "precise": "s:7LumenUI0A8IconNameO9shieldOffyA2CmF"
+        },
+        {
+          "declaration": "case shipCargo",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "shipCargo"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO9shipCargoyA2CmF"
         },
         {
           "declaration": "case shipWheel",
@@ -26807,6 +26978,15 @@
           "precise": "s:7LumenUI0A8TextareaV_4text11description12errorMessage9minHeight9lineLimitAcA0A11TextContentO_05SwiftB07BindingVySSGAJSgAO14CoreFoundation7CGFloatVSNySiGSgtcfc"
         },
         {
+          "declaration": "@MainActor init(_ title: LocalizedStringKey, text: Binding<String>, description: LocalizedStringKey? = nil, errorMessage: LocalizedStringKey? = nil, minHeight: CGFloat = 112)",
+          "kind": "swift.init",
+          "path": [
+            "LumenTextarea",
+            "init(_:text:description:errorMessage:minHeight:)"
+          ],
+          "precise": "s:7LumenUI0A8TextareaV_4text11description12errorMessage9minHeightAC05SwiftB018LocalizedStringKeyV_AH7BindingVySSGAJSgAN14CoreFoundation7CGFloatVtcfc"
+        },
+        {
           "declaration": "@MainActor var body: some View { get }",
           "kind": "swift.property",
           "path": [
@@ -27442,6 +27622,15 @@
             "lumenAlertDialog(isPresented:title:description:confirmLabel:cancelLabel:confirmRole:confirmDisabled:confirmLoading:confirmLoadingAccessibilityValue:onConfirm:)"
           ],
           "precise": "s:7SwiftUI4ViewP05LumenB0E16lumenAlertDialog11isPresented5title11description12confirmLabel06cancelM00L4Role0L8Disabled0L7Loading0lQ18AccessibilityValue9onConfirmQrAA7BindingVySbG_AA18LocalizedStringKeyVATSgA2tA06ButtonO0VSgS2bAD0D11TextContentOyyctF"
+        },
+        {
+          "declaration": "@MainActor func lumenAlertDialog(isPresented: Binding<Bool>, title: LocalizedStringKey, description: LocalizedStringKey? = nil, confirmLabel: LocalizedStringKey, cancelLabel: LocalizedStringKey = \"Cancel\", confirmRole: ButtonRole? = nil, confirmDisabled: Bool = false, confirmLoading: Bool = false, onConfirm: @escaping () -> Void) -> some View\n",
+          "kind": "swift.method",
+          "path": [
+            "View",
+            "lumenAlertDialog(isPresented:title:description:confirmLabel:cancelLabel:confirmRole:confirmDisabled:confirmLoading:onConfirm:)"
+          ],
+          "precise": "s:7SwiftUI4ViewP05LumenB0E16lumenAlertDialog11isPresented5title11description12confirmLabel06cancelM00L4Role0L8Disabled0L7Loading9onConfirmQrAA7BindingVySbG_AA18LocalizedStringKeyVASSgA2sA06ButtonO0VSgS2byyctF"
         },
         {
           "declaration": "@MainActor func lumenControlDensity(_ density: LumenControlDensity) -> some View\n",
@@ -27697,6 +27886,15 @@
           "precise": "s:7LumenUI0A10EmptyStateV_10systemName11description6layout7actionsACyxG05SwiftB018LocalizedStringKeyV_SSAKSgAA0acD6LayoutOxyXEtcfc"
         },
         {
+          "declaration": "@MainActor init(_ title: LocalizedStringKey, systemName: String, description: LocalizedStringKey? = nil, @ViewBuilder actions: () -> Actions)",
+          "kind": "swift.init",
+          "path": [
+            "LumenEmptyState",
+            "init(_:systemName:description:actions:)"
+          ],
+          "precise": "s:7LumenUI0A10EmptyStateV_10systemName11description7actionsACyxG05SwiftB018LocalizedStringKeyV_SSAJSgxyXEtcfc"
+        },
+        {
           "declaration": "@MainActor var body: some View { get }",
           "kind": "swift.property",
           "path": [
@@ -27713,6 +27911,15 @@
             "init(_:systemName:description:layout:)"
           ],
           "precise": "s:7LumenUI0A10EmptyStateVAA05SwiftB00C4ViewVRszrlE_10systemName11description6layoutACyAFGAD18LocalizedStringKeyV_SSALSgAA0acD6LayoutOtcfc"
+        },
+        {
+          "declaration": "@MainActor init(_ title: LocalizedStringKey, systemName: String, description: LocalizedStringKey? = nil)",
+          "kind": "swift.init",
+          "path": [
+            "LumenEmptyState",
+            "init(_:systemName:description:)"
+          ],
+          "precise": "s:7LumenUI0A10EmptyStateVAA05SwiftB00C4ViewVRszrlE_10systemName11descriptionACyAFGAD18LocalizedStringKeyV_SSAKSgtcfc"
         },
         {
           "declaration": "@MainActor struct LumenErrorState<Graphic, Actions> where Graphic : View, Actions : View",
@@ -31560,6 +31767,15 @@
           "precise": "s:7LumenUI0A4StatV"
         },
         {
+          "declaration": "@MainActor init(_ label: LocalizedStringKey, value: String, detail: LocalizedStringKey? = nil, systemName: String? = nil, tone: LumenMetricTone = .brand)",
+          "kind": "swift.init",
+          "path": [
+            "LumenStat",
+            "init(_:value:detail:systemName:tone:)"
+          ],
+          "precise": "s:7LumenUI0A4StatV_5value6detail10systemName4toneAC05SwiftB018LocalizedStringKeyV_SSAJSgSSSgAA0A10MetricToneOtcfc"
+        },
+        {
           "declaration": "@MainActor init(_ label: LocalizedStringKey, value: String, detail: LocalizedStringKey? = nil, density: LumenStatDensity = .default, systemName: String? = nil, tone: LumenMetricTone = .brand)",
           "kind": "swift.init",
           "path": [
@@ -31936,6 +32152,15 @@
           "precise": "s:7LumenUI0A6ButtonV6intent4size7loading0F18AccessibilityValue8disabled6action5labelACyxGAA0aC6IntentO_AA0A11ControlSizeOSbAA0A11TextContentOSbyycxyXEtcfc"
         },
         {
+          "declaration": "@MainActor init(intent: LumenButtonIntent = .primary, size: LumenControlSize = .md, loading: Bool = false, disabled: Bool = false, action: @escaping () -> Void, @ViewBuilder label: () -> Label)",
+          "kind": "swift.init",
+          "path": [
+            "LumenButton",
+            "init(intent:size:loading:disabled:action:label:)"
+          ],
+          "precise": "s:7LumenUI0A6ButtonV6intent4size7loading8disabled6action5labelACyxGAA0aC6IntentO_AA0A11ControlSizeOS2byycxyXEtcfc"
+        },
+        {
           "declaration": "@MainActor init(_ title: LumenTextContent, intent: LumenButtonIntent = .primary, size: LumenControlSize = .md, loading: Bool = false, loadingAccessibilityValue: LumenTextContent = .localizedKey(\"Loading\"), role: ButtonRole?, disabled: Bool = false, action: @escaping () -> Void)",
           "kind": "swift.init",
           "path": [
@@ -31970,6 +32195,15 @@
             "init(_:intent:size:loading:loadingAccessibilityValue:disabled:action:)"
           ],
           "precise": "s:7LumenUI0A6ButtonVAA05SwiftB04TextVRszrlE_6intent4size7loading0H18AccessibilityValue8disabled6actionACyAFGAD18LocalizedStringKeyV_AA0aC6IntentOAA0A11ControlSizeOSbAA0aE7ContentOSbyyctcfc"
+        },
+        {
+          "declaration": "@MainActor init(_ title: LocalizedStringKey, intent: LumenButtonIntent = .primary, size: LumenControlSize = .md, loading: Bool = false, disabled: Bool = false, action: @escaping () -> Void)",
+          "kind": "swift.init",
+          "path": [
+            "LumenButton",
+            "init(_:intent:size:loading:disabled:action:)"
+          ],
+          "precise": "s:7LumenUI0A6ButtonVAA05SwiftB04TextVRszrlE_6intent4size7loading8disabled6actionACyAFGAD18LocalizedStringKeyV_AA0aC6IntentOAA0A11ControlSizeOS2byyctcfc"
         },
         {
           "declaration": "enum LumenChartX",
@@ -32216,6 +32450,15 @@
             "init(_:value:in:step:valueLabel:onEditingChanged:)"
           ],
           "precise": "s:7LumenUI0A6SliderV_5value2in4step0D5Label16onEditingChangedAC05SwiftB018LocalizedStringKeyV_AI7BindingVySdGSNySdGSdSgSSSgySbctcfc"
+        },
+        {
+          "declaration": "@MainActor init(_ label: LocalizedStringKey, value: Binding<Double>, in bounds: ClosedRange<Double>, step: Double? = nil, valueLabel: String? = nil)",
+          "kind": "swift.init",
+          "path": [
+            "LumenSlider",
+            "init(_:value:in:step:valueLabel:)"
+          ],
+          "precise": "s:7LumenUI0A6SliderV_5value2in4step0D5LabelAC05SwiftB018LocalizedStringKeyV_AH7BindingVySdGSNySdGSdSgSSSgtcfc"
         },
         {
           "declaration": "@MainActor var body: some View { get }",
@@ -35625,6 +35868,15 @@
           "precise": "s:7LumenUI0A8IconNameO11columns3CogyA2CmF"
         },
         {
+          "declaration": "case creditCardX",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "creditCardX"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO11creditCardXyA2CmF"
+        },
+        {
           "declaration": "case databaseZap",
           "kind": "swift.enum.case",
           "path": [
@@ -36129,6 +36381,15 @@
           "precise": "s:7LumenUI0A8IconNameO11pilcrowLeftyA2CmF"
         },
         {
+          "declaration": "case playingCard",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "playingCard"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO11playingCardyA2CmF"
+        },
+        {
           "declaration": "case pocketKnife",
           "kind": "swift.enum.case",
           "path": [
@@ -36172,6 +36433,15 @@
             "receiptText"
           ],
           "precise": "s:7LumenUI0A8IconNameO11receiptTextyA2CmF"
+        },
+        {
+          "declaration": "case robotVacuum",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "robotVacuum"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO11robotVacuumyA2CmF"
         },
         {
           "declaration": "case scanBarcode",
@@ -37900,6 +38170,15 @@
             "planeTakeoff"
           ],
           "precise": "s:7LumenUI0A8IconNameO12planeTakeoffyA2CmF"
+        },
+        {
+          "declaration": "case playingCards",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "playingCards"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO12playingCardsyA2CmF"
         },
         {
           "declaration": "case presentation",
@@ -40242,6 +40521,15 @@
           "precise": "s:7LumenUI0A8IconNameO14cornerLeftDownyA2CmF"
         },
         {
+          "declaration": "case creditCardPlus",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "creditCardPlus"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO14creditCardPlusyA2CmF"
+        },
+        {
           "declaration": "case databaseBackup",
           "kind": "swift.enum.case",
           "path": [
@@ -41385,6 +41673,24 @@
           "precise": "s:7LumenUI0A8IconNameO15creativeCommonsyA2CmF"
         },
         {
+          "declaration": "case creditCardCheck",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "creditCardCheck"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO15creditCardCheckyA2CmF"
+        },
+        {
+          "declaration": "case creditCardMinus",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "creditCardMinus"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO15creditCardMinusyA2CmF"
+        },
+        {
           "declaration": "case databaseArrowUp",
           "kind": "swift.enum.case",
           "path": [
@@ -41563,6 +41869,15 @@
             "panelRightClose"
           ],
           "precise": "s:7LumenUI0A8IconNameO15panelRightCloseyA2CmF"
+        },
+        {
+          "declaration": "case playingCardsFan",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "playingCardsFan"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO15playingCardsFanyA2CmF"
         },
         {
           "declaration": "case rectangleCircle",
@@ -44886,6 +45201,15 @@
           "precise": "s:7LumenUI0A8IconNameO24brandYandexInternationalyA2CmF"
         },
         {
+          "declaration": "case messageCircleDashedCheck",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "messageCircleDashedCheck"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO24messageCircleDashedCheckyA2CmF"
+        },
+        {
           "declaration": "case squareDashedMousePointer",
           "kind": "swift.enum.case",
           "path": [
@@ -47838,6 +48162,15 @@
           "precise": "s:7LumenUI0A8IconNameO6funnelyA2CmF"
         },
         {
+          "declaration": "case galaxy",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "galaxy"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO6galaxyyA2CmF"
+        },
+        {
           "declaration": "case globeX",
           "kind": "swift.enum.case",
           "path": [
@@ -49836,6 +50169,15 @@
           "precise": "s:7LumenUI0A8IconNameO7tractoryA2CmF"
         },
         {
+          "declaration": "case trailer",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "trailer"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO7traileryA2CmF"
+        },
+        {
           "declaration": "case undoDot",
           "kind": "swift.enum.case",
           "path": [
@@ -51373,6 +51715,15 @@
             "replyAll"
           ],
           "precise": "s:7LumenUI0A8IconNameO8replyAllyA2CmF"
+        },
+        {
+          "declaration": "case robotArm",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "robotArm"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO8robotArmyA2CmF"
         },
         {
           "declaration": "case rotate3d",
@@ -53571,6 +53922,15 @@
           "precise": "s:7LumenUI0A8IconNameO9shieldOffyA2CmF"
         },
         {
+          "declaration": "case shipCargo",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "shipCargo"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO9shipCargoyA2CmF"
+        },
+        {
           "declaration": "case shipWheel",
           "kind": "swift.enum.case",
           "path": [
@@ -54066,6 +54426,15 @@
             "init(_:text:description:errorMessage:minHeight:lineLimit:)"
           ],
           "precise": "s:7LumenUI0A8TextareaV_4text11description12errorMessage9minHeight9lineLimitAcA0A11TextContentO_05SwiftB07BindingVySSGAJSgAO14CoreFoundation7CGFloatVSNySiGSgtcfc"
+        },
+        {
+          "declaration": "@MainActor init(_ title: LocalizedStringKey, text: Binding<String>, description: LocalizedStringKey? = nil, errorMessage: LocalizedStringKey? = nil, minHeight: CGFloat = 112)",
+          "kind": "swift.init",
+          "path": [
+            "LumenTextarea",
+            "init(_:text:description:errorMessage:minHeight:)"
+          ],
+          "precise": "s:7LumenUI0A8TextareaV_4text11description12errorMessage9minHeightAC05SwiftB018LocalizedStringKeyV_AH7BindingVySSGAJSgAN14CoreFoundation7CGFloatVtcfc"
         },
         {
           "declaration": "@MainActor var body: some View { get }",
@@ -54705,6 +55074,15 @@
           "precise": "s:7SwiftUI4ViewP05LumenB0E16lumenAlertDialog11isPresented5title11description12confirmLabel06cancelM00L4Role0L8Disabled0L7Loading0lQ18AccessibilityValue9onConfirmQrAA7BindingVySbG_AA18LocalizedStringKeyVATSgA2tA06ButtonO0VSgS2bAD0D11TextContentOyyctF"
         },
         {
+          "declaration": "@MainActor func lumenAlertDialog(isPresented: Binding<Bool>, title: LocalizedStringKey, description: LocalizedStringKey? = nil, confirmLabel: LocalizedStringKey, cancelLabel: LocalizedStringKey = \"Cancel\", confirmRole: ButtonRole? = nil, confirmDisabled: Bool = false, confirmLoading: Bool = false, onConfirm: @escaping () -> Void) -> some View\n",
+          "kind": "swift.method",
+          "path": [
+            "View",
+            "lumenAlertDialog(isPresented:title:description:confirmLabel:cancelLabel:confirmRole:confirmDisabled:confirmLoading:onConfirm:)"
+          ],
+          "precise": "s:7SwiftUI4ViewP05LumenB0E16lumenAlertDialog11isPresented5title11description12confirmLabel06cancelM00L4Role0L8Disabled0L7Loading9onConfirmQrAA7BindingVySbG_AA18LocalizedStringKeyVASSgA2sA06ButtonO0VSgS2byyctF"
+        },
+        {
           "declaration": "@MainActor func lumenControlDensity(_ density: LumenControlDensity) -> some View\n",
           "kind": "swift.method",
           "path": [
@@ -54889,6 +55267,15 @@
           "precise": "s:7LumenUI0A10EmptyStateV_10systemName11description6layout7actionsACyxG05SwiftB018LocalizedStringKeyV_SSAKSgAA0acD6LayoutOxyXEtcfc"
         },
         {
+          "declaration": "@MainActor init(_ title: LocalizedStringKey, systemName: String, description: LocalizedStringKey? = nil, @ViewBuilder actions: () -> Actions)",
+          "kind": "swift.init",
+          "path": [
+            "LumenEmptyState",
+            "init(_:systemName:description:actions:)"
+          ],
+          "precise": "s:7LumenUI0A10EmptyStateV_10systemName11description7actionsACyxG05SwiftB018LocalizedStringKeyV_SSAJSgxyXEtcfc"
+        },
+        {
           "declaration": "@MainActor var body: some View { get }",
           "kind": "swift.property",
           "path": [
@@ -54905,6 +55292,15 @@
             "init(_:systemName:description:layout:)"
           ],
           "precise": "s:7LumenUI0A10EmptyStateVAA05SwiftB00C4ViewVRszrlE_10systemName11description6layoutACyAFGAD18LocalizedStringKeyV_SSALSgAA0acD6LayoutOtcfc"
+        },
+        {
+          "declaration": "@MainActor init(_ title: LocalizedStringKey, systemName: String, description: LocalizedStringKey? = nil)",
+          "kind": "swift.init",
+          "path": [
+            "LumenEmptyState",
+            "init(_:systemName:description:)"
+          ],
+          "precise": "s:7LumenUI0A10EmptyStateVAA05SwiftB00C4ViewVRszrlE_10systemName11descriptionACyAFGAD18LocalizedStringKeyV_SSAKSgtcfc"
         },
         {
           "declaration": "@MainActor struct LumenErrorState<Graphic, Actions> where Graphic : View, Actions : View",
@@ -57702,6 +58098,15 @@
           "precise": "s:7LumenUI0A4StatV"
         },
         {
+          "declaration": "@MainActor init(_ label: LocalizedStringKey, value: String, detail: LocalizedStringKey? = nil, systemName: String? = nil, tone: LumenMetricTone = .brand)",
+          "kind": "swift.init",
+          "path": [
+            "LumenStat",
+            "init(_:value:detail:systemName:tone:)"
+          ],
+          "precise": "s:7LumenUI0A4StatV_5value6detail10systemName4toneAC05SwiftB018LocalizedStringKeyV_SSAJSgSSSgAA0A10MetricToneOtcfc"
+        },
+        {
           "declaration": "@MainActor init(_ label: LocalizedStringKey, value: String, detail: LocalizedStringKey? = nil, density: LumenStatDensity = .default, systemName: String? = nil, tone: LumenMetricTone = .brand)",
           "kind": "swift.init",
           "path": [
@@ -58052,6 +58457,15 @@
           "precise": "s:7LumenUI0A6ButtonV6intent4size7loading0F18AccessibilityValue8disabled6action5labelACyxGAA0aC6IntentO_AA0A11ControlSizeOSbAA0A11TextContentOSbyycxyXEtcfc"
         },
         {
+          "declaration": "@MainActor init(intent: LumenButtonIntent = .primary, size: LumenControlSize = .md, loading: Bool = false, disabled: Bool = false, action: @escaping () -> Void, @ViewBuilder label: () -> Label)",
+          "kind": "swift.init",
+          "path": [
+            "LumenButton",
+            "init(intent:size:loading:disabled:action:label:)"
+          ],
+          "precise": "s:7LumenUI0A6ButtonV6intent4size7loading8disabled6action5labelACyxGAA0aC6IntentO_AA0A11ControlSizeOS2byycxyXEtcfc"
+        },
+        {
           "declaration": "@MainActor init(_ title: LumenTextContent, intent: LumenButtonIntent = .primary, size: LumenControlSize = .md, loading: Bool = false, loadingAccessibilityValue: LumenTextContent = .localizedKey(\"Loading\"), role: ButtonRole?, disabled: Bool = false, action: @escaping () -> Void)",
           "kind": "swift.init",
           "path": [
@@ -58086,6 +58500,15 @@
             "init(_:intent:size:loading:loadingAccessibilityValue:disabled:action:)"
           ],
           "precise": "s:7LumenUI0A6ButtonVAA05SwiftB04TextVRszrlE_6intent4size7loading0H18AccessibilityValue8disabled6actionACyAFGAD18LocalizedStringKeyV_AA0aC6IntentOAA0A11ControlSizeOSbAA0aE7ContentOSbyyctcfc"
+        },
+        {
+          "declaration": "@MainActor init(_ title: LocalizedStringKey, intent: LumenButtonIntent = .primary, size: LumenControlSize = .md, loading: Bool = false, disabled: Bool = false, action: @escaping () -> Void)",
+          "kind": "swift.init",
+          "path": [
+            "LumenButton",
+            "init(_:intent:size:loading:disabled:action:)"
+          ],
+          "precise": "s:7LumenUI0A6ButtonVAA05SwiftB04TextVRszrlE_6intent4size7loading8disabled6actionACyAFGAD18LocalizedStringKeyV_AA0aC6IntentOAA0A11ControlSizeOS2byyctcfc"
         },
         {
           "declaration": "enum LumenChartX",
@@ -61567,6 +61990,15 @@
           "precise": "s:7LumenUI0A8IconNameO11columns3CogyA2CmF"
         },
         {
+          "declaration": "case creditCardX",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "creditCardX"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO11creditCardXyA2CmF"
+        },
+        {
           "declaration": "case databaseZap",
           "kind": "swift.enum.case",
           "path": [
@@ -62071,6 +62503,15 @@
           "precise": "s:7LumenUI0A8IconNameO11pilcrowLeftyA2CmF"
         },
         {
+          "declaration": "case playingCard",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "playingCard"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO11playingCardyA2CmF"
+        },
+        {
           "declaration": "case pocketKnife",
           "kind": "swift.enum.case",
           "path": [
@@ -62114,6 +62555,15 @@
             "receiptText"
           ],
           "precise": "s:7LumenUI0A8IconNameO11receiptTextyA2CmF"
+        },
+        {
+          "declaration": "case robotVacuum",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "robotVacuum"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO11robotVacuumyA2CmF"
         },
         {
           "declaration": "case scanBarcode",
@@ -63842,6 +64292,15 @@
             "planeTakeoff"
           ],
           "precise": "s:7LumenUI0A8IconNameO12planeTakeoffyA2CmF"
+        },
+        {
+          "declaration": "case playingCards",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "playingCards"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO12playingCardsyA2CmF"
         },
         {
           "declaration": "case presentation",
@@ -66184,6 +66643,15 @@
           "precise": "s:7LumenUI0A8IconNameO14cornerLeftDownyA2CmF"
         },
         {
+          "declaration": "case creditCardPlus",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "creditCardPlus"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO14creditCardPlusyA2CmF"
+        },
+        {
           "declaration": "case databaseBackup",
           "kind": "swift.enum.case",
           "path": [
@@ -67327,6 +67795,24 @@
           "precise": "s:7LumenUI0A8IconNameO15creativeCommonsyA2CmF"
         },
         {
+          "declaration": "case creditCardCheck",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "creditCardCheck"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO15creditCardCheckyA2CmF"
+        },
+        {
+          "declaration": "case creditCardMinus",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "creditCardMinus"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO15creditCardMinusyA2CmF"
+        },
+        {
           "declaration": "case databaseArrowUp",
           "kind": "swift.enum.case",
           "path": [
@@ -67505,6 +67991,15 @@
             "panelRightClose"
           ],
           "precise": "s:7LumenUI0A8IconNameO15panelRightCloseyA2CmF"
+        },
+        {
+          "declaration": "case playingCardsFan",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "playingCardsFan"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO15playingCardsFanyA2CmF"
         },
         {
           "declaration": "case rectangleCircle",
@@ -70828,6 +71323,15 @@
           "precise": "s:7LumenUI0A8IconNameO24brandYandexInternationalyA2CmF"
         },
         {
+          "declaration": "case messageCircleDashedCheck",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "messageCircleDashedCheck"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO24messageCircleDashedCheckyA2CmF"
+        },
+        {
           "declaration": "case squareDashedMousePointer",
           "kind": "swift.enum.case",
           "path": [
@@ -73780,6 +74284,15 @@
           "precise": "s:7LumenUI0A8IconNameO6funnelyA2CmF"
         },
         {
+          "declaration": "case galaxy",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "galaxy"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO6galaxyyA2CmF"
+        },
+        {
           "declaration": "case globeX",
           "kind": "swift.enum.case",
           "path": [
@@ -75778,6 +76291,15 @@
           "precise": "s:7LumenUI0A8IconNameO7tractoryA2CmF"
         },
         {
+          "declaration": "case trailer",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "trailer"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO7traileryA2CmF"
+        },
+        {
           "declaration": "case undoDot",
           "kind": "swift.enum.case",
           "path": [
@@ -77315,6 +77837,15 @@
             "replyAll"
           ],
           "precise": "s:7LumenUI0A8IconNameO8replyAllyA2CmF"
+        },
+        {
+          "declaration": "case robotArm",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "robotArm"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO8robotArmyA2CmF"
         },
         {
           "declaration": "case rotate3d",
@@ -79513,6 +80044,15 @@
           "precise": "s:7LumenUI0A8IconNameO9shieldOffyA2CmF"
         },
         {
+          "declaration": "case shipCargo",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "shipCargo"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO9shipCargoyA2CmF"
+        },
+        {
           "declaration": "case shipWheel",
           "kind": "swift.enum.case",
           "path": [
@@ -80549,6 +81089,15 @@
             "lumenAlertDialog(isPresented:title:description:confirmLabel:cancelLabel:confirmRole:confirmDisabled:confirmLoading:confirmLoadingAccessibilityValue:onConfirm:)"
           ],
           "precise": "s:7SwiftUI4ViewP05LumenB0E16lumenAlertDialog11isPresented5title11description12confirmLabel06cancelM00L4Role0L8Disabled0L7Loading0lQ18AccessibilityValue9onConfirmQrAA7BindingVySbG_AA18LocalizedStringKeyVATSgA2tA06ButtonO0VSgS2bAD0D11TextContentOyyctF"
+        },
+        {
+          "declaration": "@MainActor func lumenAlertDialog(isPresented: Binding<Bool>, title: LocalizedStringKey, description: LocalizedStringKey? = nil, confirmLabel: LocalizedStringKey, cancelLabel: LocalizedStringKey = \"Cancel\", confirmRole: ButtonRole? = nil, confirmDisabled: Bool = false, confirmLoading: Bool = false, onConfirm: @escaping () -> Void) -> some View\n",
+          "kind": "swift.method",
+          "path": [
+            "View",
+            "lumenAlertDialog(isPresented:title:description:confirmLabel:cancelLabel:confirmRole:confirmDisabled:confirmLoading:onConfirm:)"
+          ],
+          "precise": "s:7SwiftUI4ViewP05LumenB0E16lumenAlertDialog11isPresented5title11description12confirmLabel06cancelM00L4Role0L8Disabled0L7Loading9onConfirmQrAA7BindingVySbG_AA18LocalizedStringKeyVASSgA2sA06ButtonO0VSgS2byyctF"
         },
         {
           "declaration": "@MainActor func lumenControlDensity(_ density: LumenControlDensity) -> some View\n",
@@ -80804,6 +81353,15 @@
           "precise": "s:7LumenUI0A10EmptyStateV_10systemName11description6layout7actionsACyxG05SwiftB018LocalizedStringKeyV_SSAKSgAA0acD6LayoutOxyXEtcfc"
         },
         {
+          "declaration": "@MainActor init(_ title: LocalizedStringKey, systemName: String, description: LocalizedStringKey? = nil, @ViewBuilder actions: () -> Actions)",
+          "kind": "swift.init",
+          "path": [
+            "LumenEmptyState",
+            "init(_:systemName:description:actions:)"
+          ],
+          "precise": "s:7LumenUI0A10EmptyStateV_10systemName11description7actionsACyxG05SwiftB018LocalizedStringKeyV_SSAJSgxyXEtcfc"
+        },
+        {
           "declaration": "@MainActor var body: some View { get }",
           "kind": "swift.property",
           "path": [
@@ -80820,6 +81378,15 @@
             "init(_:systemName:description:layout:)"
           ],
           "precise": "s:7LumenUI0A10EmptyStateVAA05SwiftB00C4ViewVRszrlE_10systemName11description6layoutACyAFGAD18LocalizedStringKeyV_SSALSgAA0acD6LayoutOtcfc"
+        },
+        {
+          "declaration": "@MainActor init(_ title: LocalizedStringKey, systemName: String, description: LocalizedStringKey? = nil)",
+          "kind": "swift.init",
+          "path": [
+            "LumenEmptyState",
+            "init(_:systemName:description:)"
+          ],
+          "precise": "s:7LumenUI0A10EmptyStateVAA05SwiftB00C4ViewVRszrlE_10systemName11descriptionACyAFGAD18LocalizedStringKeyV_SSAKSgtcfc"
         },
         {
           "declaration": "@MainActor struct LumenErrorState<Graphic, Actions> where Graphic : View, Actions : View",
@@ -84667,6 +85234,15 @@
           "precise": "s:7LumenUI0A4StatV"
         },
         {
+          "declaration": "@MainActor init(_ label: LocalizedStringKey, value: String, detail: LocalizedStringKey? = nil, systemName: String? = nil, tone: LumenMetricTone = .brand)",
+          "kind": "swift.init",
+          "path": [
+            "LumenStat",
+            "init(_:value:detail:systemName:tone:)"
+          ],
+          "precise": "s:7LumenUI0A4StatV_5value6detail10systemName4toneAC05SwiftB018LocalizedStringKeyV_SSAJSgSSSgAA0A10MetricToneOtcfc"
+        },
+        {
           "declaration": "@MainActor init(_ label: LocalizedStringKey, value: String, detail: LocalizedStringKey? = nil, density: LumenStatDensity = .default, systemName: String? = nil, tone: LumenMetricTone = .brand)",
           "kind": "swift.init",
           "path": [
@@ -85043,6 +85619,15 @@
           "precise": "s:7LumenUI0A6ButtonV6intent4size7loading0F18AccessibilityValue8disabled6action5labelACyxGAA0aC6IntentO_AA0A11ControlSizeOSbAA0A11TextContentOSbyycxyXEtcfc"
         },
         {
+          "declaration": "@MainActor init(intent: LumenButtonIntent = .primary, size: LumenControlSize = .md, loading: Bool = false, disabled: Bool = false, action: @escaping () -> Void, @ViewBuilder label: () -> Label)",
+          "kind": "swift.init",
+          "path": [
+            "LumenButton",
+            "init(intent:size:loading:disabled:action:label:)"
+          ],
+          "precise": "s:7LumenUI0A6ButtonV6intent4size7loading8disabled6action5labelACyxGAA0aC6IntentO_AA0A11ControlSizeOS2byycxyXEtcfc"
+        },
+        {
           "declaration": "@MainActor init(_ title: LumenTextContent, intent: LumenButtonIntent = .primary, size: LumenControlSize = .md, loading: Bool = false, loadingAccessibilityValue: LumenTextContent = .localizedKey(\"Loading\"), role: ButtonRole?, disabled: Bool = false, action: @escaping () -> Void)",
           "kind": "swift.init",
           "path": [
@@ -85077,6 +85662,15 @@
             "init(_:intent:size:loading:loadingAccessibilityValue:disabled:action:)"
           ],
           "precise": "s:7LumenUI0A6ButtonVAA05SwiftB04TextVRszrlE_6intent4size7loading0H18AccessibilityValue8disabled6actionACyAFGAD18LocalizedStringKeyV_AA0aC6IntentOAA0A11ControlSizeOSbAA0aE7ContentOSbyyctcfc"
+        },
+        {
+          "declaration": "@MainActor init(_ title: LocalizedStringKey, intent: LumenButtonIntent = .primary, size: LumenControlSize = .md, loading: Bool = false, disabled: Bool = false, action: @escaping () -> Void)",
+          "kind": "swift.init",
+          "path": [
+            "LumenButton",
+            "init(_:intent:size:loading:disabled:action:)"
+          ],
+          "precise": "s:7LumenUI0A6ButtonVAA05SwiftB04TextVRszrlE_6intent4size7loading8disabled6actionACyAFGAD18LocalizedStringKeyV_AA0aC6IntentOAA0A11ControlSizeOS2byyctcfc"
         },
         {
           "declaration": "enum LumenChartX",
@@ -85323,6 +85917,15 @@
             "init(_:value:in:step:valueLabel:onEditingChanged:)"
           ],
           "precise": "s:7LumenUI0A6SliderV_5value2in4step0D5Label16onEditingChangedAC05SwiftB018LocalizedStringKeyV_AI7BindingVySdGSNySdGSdSgSSSgySbctcfc"
+        },
+        {
+          "declaration": "@MainActor init(_ label: LocalizedStringKey, value: Binding<Double>, in bounds: ClosedRange<Double>, step: Double? = nil, valueLabel: String? = nil)",
+          "kind": "swift.init",
+          "path": [
+            "LumenSlider",
+            "init(_:value:in:step:valueLabel:)"
+          ],
+          "precise": "s:7LumenUI0A6SliderV_5value2in4step0D5LabelAC05SwiftB018LocalizedStringKeyV_AH7BindingVySdGSNySdGSdSgSSSgtcfc"
         },
         {
           "declaration": "@MainActor var body: some View { get }",
@@ -88732,6 +89335,15 @@
           "precise": "s:7LumenUI0A8IconNameO11columns3CogyA2CmF"
         },
         {
+          "declaration": "case creditCardX",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "creditCardX"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO11creditCardXyA2CmF"
+        },
+        {
           "declaration": "case databaseZap",
           "kind": "swift.enum.case",
           "path": [
@@ -89236,6 +89848,15 @@
           "precise": "s:7LumenUI0A8IconNameO11pilcrowLeftyA2CmF"
         },
         {
+          "declaration": "case playingCard",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "playingCard"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO11playingCardyA2CmF"
+        },
+        {
           "declaration": "case pocketKnife",
           "kind": "swift.enum.case",
           "path": [
@@ -89279,6 +89900,15 @@
             "receiptText"
           ],
           "precise": "s:7LumenUI0A8IconNameO11receiptTextyA2CmF"
+        },
+        {
+          "declaration": "case robotVacuum",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "robotVacuum"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO11robotVacuumyA2CmF"
         },
         {
           "declaration": "case scanBarcode",
@@ -91007,6 +91637,15 @@
             "planeTakeoff"
           ],
           "precise": "s:7LumenUI0A8IconNameO12planeTakeoffyA2CmF"
+        },
+        {
+          "declaration": "case playingCards",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "playingCards"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO12playingCardsyA2CmF"
         },
         {
           "declaration": "case presentation",
@@ -93349,6 +93988,15 @@
           "precise": "s:7LumenUI0A8IconNameO14cornerLeftDownyA2CmF"
         },
         {
+          "declaration": "case creditCardPlus",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "creditCardPlus"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO14creditCardPlusyA2CmF"
+        },
+        {
           "declaration": "case databaseBackup",
           "kind": "swift.enum.case",
           "path": [
@@ -94492,6 +95140,24 @@
           "precise": "s:7LumenUI0A8IconNameO15creativeCommonsyA2CmF"
         },
         {
+          "declaration": "case creditCardCheck",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "creditCardCheck"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO15creditCardCheckyA2CmF"
+        },
+        {
+          "declaration": "case creditCardMinus",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "creditCardMinus"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO15creditCardMinusyA2CmF"
+        },
+        {
           "declaration": "case databaseArrowUp",
           "kind": "swift.enum.case",
           "path": [
@@ -94670,6 +95336,15 @@
             "panelRightClose"
           ],
           "precise": "s:7LumenUI0A8IconNameO15panelRightCloseyA2CmF"
+        },
+        {
+          "declaration": "case playingCardsFan",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "playingCardsFan"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO15playingCardsFanyA2CmF"
         },
         {
           "declaration": "case rectangleCircle",
@@ -97993,6 +98668,15 @@
           "precise": "s:7LumenUI0A8IconNameO24brandYandexInternationalyA2CmF"
         },
         {
+          "declaration": "case messageCircleDashedCheck",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "messageCircleDashedCheck"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO24messageCircleDashedCheckyA2CmF"
+        },
+        {
           "declaration": "case squareDashedMousePointer",
           "kind": "swift.enum.case",
           "path": [
@@ -100945,6 +101629,15 @@
           "precise": "s:7LumenUI0A8IconNameO6funnelyA2CmF"
         },
         {
+          "declaration": "case galaxy",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "galaxy"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO6galaxyyA2CmF"
+        },
+        {
           "declaration": "case globeX",
           "kind": "swift.enum.case",
           "path": [
@@ -102943,6 +103636,15 @@
           "precise": "s:7LumenUI0A8IconNameO7tractoryA2CmF"
         },
         {
+          "declaration": "case trailer",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "trailer"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO7traileryA2CmF"
+        },
+        {
           "declaration": "case undoDot",
           "kind": "swift.enum.case",
           "path": [
@@ -104480,6 +105182,15 @@
             "replyAll"
           ],
           "precise": "s:7LumenUI0A8IconNameO8replyAllyA2CmF"
+        },
+        {
+          "declaration": "case robotArm",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "robotArm"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO8robotArmyA2CmF"
         },
         {
           "declaration": "case rotate3d",
@@ -106678,6 +107389,15 @@
           "precise": "s:7LumenUI0A8IconNameO9shieldOffyA2CmF"
         },
         {
+          "declaration": "case shipCargo",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "shipCargo"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO9shipCargoyA2CmF"
+        },
+        {
           "declaration": "case shipWheel",
           "kind": "swift.enum.case",
           "path": [
@@ -107173,6 +107893,15 @@
             "init(_:text:description:errorMessage:minHeight:lineLimit:)"
           ],
           "precise": "s:7LumenUI0A8TextareaV_4text11description12errorMessage9minHeight9lineLimitAcA0A11TextContentO_05SwiftB07BindingVySSGAJSgAO14CoreFoundation7CGFloatVSNySiGSgtcfc"
+        },
+        {
+          "declaration": "@MainActor init(_ title: LocalizedStringKey, text: Binding<String>, description: LocalizedStringKey? = nil, errorMessage: LocalizedStringKey? = nil, minHeight: CGFloat = 112)",
+          "kind": "swift.init",
+          "path": [
+            "LumenTextarea",
+            "init(_:text:description:errorMessage:minHeight:)"
+          ],
+          "precise": "s:7LumenUI0A8TextareaV_4text11description12errorMessage9minHeightAC05SwiftB018LocalizedStringKeyV_AH7BindingVySSGAJSgAN14CoreFoundation7CGFloatVtcfc"
         },
         {
           "declaration": "@MainActor var body: some View { get }",
@@ -107812,6 +108541,15 @@
           "precise": "s:7SwiftUI4ViewP05LumenB0E16lumenAlertDialog11isPresented5title11description12confirmLabel06cancelM00L4Role0L8Disabled0L7Loading0lQ18AccessibilityValue9onConfirmQrAA7BindingVySbG_AA18LocalizedStringKeyVATSgA2tA06ButtonO0VSgS2bAD0D11TextContentOyyctF"
         },
         {
+          "declaration": "@MainActor func lumenAlertDialog(isPresented: Binding<Bool>, title: LocalizedStringKey, description: LocalizedStringKey? = nil, confirmLabel: LocalizedStringKey, cancelLabel: LocalizedStringKey = \"Cancel\", confirmRole: ButtonRole? = nil, confirmDisabled: Bool = false, confirmLoading: Bool = false, onConfirm: @escaping () -> Void) -> some View\n",
+          "kind": "swift.method",
+          "path": [
+            "View",
+            "lumenAlertDialog(isPresented:title:description:confirmLabel:cancelLabel:confirmRole:confirmDisabled:confirmLoading:onConfirm:)"
+          ],
+          "precise": "s:7SwiftUI4ViewP05LumenB0E16lumenAlertDialog11isPresented5title11description12confirmLabel06cancelM00L4Role0L8Disabled0L7Loading9onConfirmQrAA7BindingVySbG_AA18LocalizedStringKeyVASSgA2sA06ButtonO0VSgS2byyctF"
+        },
+        {
           "declaration": "@MainActor func lumenControlDensity(_ density: LumenControlDensity) -> some View\n",
           "kind": "swift.method",
           "path": [
@@ -107996,6 +108734,15 @@
           "precise": "s:7LumenUI0A10EmptyStateV_10systemName11description6layout7actionsACyxG05SwiftB018LocalizedStringKeyV_SSAKSgAA0acD6LayoutOxyXEtcfc"
         },
         {
+          "declaration": "@MainActor init(_ title: LocalizedStringKey, systemName: String, description: LocalizedStringKey? = nil, @ViewBuilder actions: () -> Actions)",
+          "kind": "swift.init",
+          "path": [
+            "LumenEmptyState",
+            "init(_:systemName:description:actions:)"
+          ],
+          "precise": "s:7LumenUI0A10EmptyStateV_10systemName11description7actionsACyxG05SwiftB018LocalizedStringKeyV_SSAJSgxyXEtcfc"
+        },
+        {
           "declaration": "@MainActor var body: some View { get }",
           "kind": "swift.property",
           "path": [
@@ -108012,6 +108759,15 @@
             "init(_:systemName:description:layout:)"
           ],
           "precise": "s:7LumenUI0A10EmptyStateVAA05SwiftB00C4ViewVRszrlE_10systemName11description6layoutACyAFGAD18LocalizedStringKeyV_SSALSgAA0acD6LayoutOtcfc"
+        },
+        {
+          "declaration": "@MainActor init(_ title: LocalizedStringKey, systemName: String, description: LocalizedStringKey? = nil)",
+          "kind": "swift.init",
+          "path": [
+            "LumenEmptyState",
+            "init(_:systemName:description:)"
+          ],
+          "precise": "s:7LumenUI0A10EmptyStateVAA05SwiftB00C4ViewVRszrlE_10systemName11descriptionACyAFGAD18LocalizedStringKeyV_SSAKSgtcfc"
         },
         {
           "declaration": "@MainActor struct LumenErrorState<Graphic, Actions> where Graphic : View, Actions : View",
@@ -110963,6 +111719,15 @@
           "precise": "s:7LumenUI0A4StatV"
         },
         {
+          "declaration": "@MainActor init(_ label: LocalizedStringKey, value: String, detail: LocalizedStringKey? = nil, systemName: String? = nil, tone: LumenMetricTone = .brand)",
+          "kind": "swift.init",
+          "path": [
+            "LumenStat",
+            "init(_:value:detail:systemName:tone:)"
+          ],
+          "precise": "s:7LumenUI0A4StatV_5value6detail10systemName4toneAC05SwiftB018LocalizedStringKeyV_SSAJSgSSSgAA0A10MetricToneOtcfc"
+        },
+        {
           "declaration": "@MainActor init(_ label: LocalizedStringKey, value: String, detail: LocalizedStringKey? = nil, density: LumenStatDensity = .default, systemName: String? = nil, tone: LumenMetricTone = .brand)",
           "kind": "swift.init",
           "path": [
@@ -111313,6 +112078,15 @@
           "precise": "s:7LumenUI0A6ButtonV6intent4size7loading0F18AccessibilityValue8disabled6action5labelACyxGAA0aC6IntentO_AA0A11ControlSizeOSbAA0A11TextContentOSbyycxyXEtcfc"
         },
         {
+          "declaration": "@MainActor init(intent: LumenButtonIntent = .primary, size: LumenControlSize = .md, loading: Bool = false, disabled: Bool = false, action: @escaping () -> Void, @ViewBuilder label: () -> Label)",
+          "kind": "swift.init",
+          "path": [
+            "LumenButton",
+            "init(intent:size:loading:disabled:action:label:)"
+          ],
+          "precise": "s:7LumenUI0A6ButtonV6intent4size7loading8disabled6action5labelACyxGAA0aC6IntentO_AA0A11ControlSizeOS2byycxyXEtcfc"
+        },
+        {
           "declaration": "@MainActor init(_ title: LumenTextContent, intent: LumenButtonIntent = .primary, size: LumenControlSize = .md, loading: Bool = false, loadingAccessibilityValue: LumenTextContent = .localizedKey(\"Loading\"), role: ButtonRole?, disabled: Bool = false, action: @escaping () -> Void)",
           "kind": "swift.init",
           "path": [
@@ -111347,6 +112121,15 @@
             "init(_:intent:size:loading:loadingAccessibilityValue:disabled:action:)"
           ],
           "precise": "s:7LumenUI0A6ButtonVAA05SwiftB04TextVRszrlE_6intent4size7loading0H18AccessibilityValue8disabled6actionACyAFGAD18LocalizedStringKeyV_AA0aC6IntentOAA0A11ControlSizeOSbAA0aE7ContentOSbyyctcfc"
+        },
+        {
+          "declaration": "@MainActor init(_ title: LocalizedStringKey, intent: LumenButtonIntent = .primary, size: LumenControlSize = .md, loading: Bool = false, disabled: Bool = false, action: @escaping () -> Void)",
+          "kind": "swift.init",
+          "path": [
+            "LumenButton",
+            "init(_:intent:size:loading:disabled:action:)"
+          ],
+          "precise": "s:7LumenUI0A6ButtonVAA05SwiftB04TextVRszrlE_6intent4size7loading8disabled6actionACyAFGAD18LocalizedStringKeyV_AA0aC6IntentOAA0A11ControlSizeOS2byyctcfc"
         },
         {
           "declaration": "enum LumenChartX",
@@ -114828,6 +115611,15 @@
           "precise": "s:7LumenUI0A8IconNameO11columns3CogyA2CmF"
         },
         {
+          "declaration": "case creditCardX",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "creditCardX"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO11creditCardXyA2CmF"
+        },
+        {
           "declaration": "case databaseZap",
           "kind": "swift.enum.case",
           "path": [
@@ -115332,6 +116124,15 @@
           "precise": "s:7LumenUI0A8IconNameO11pilcrowLeftyA2CmF"
         },
         {
+          "declaration": "case playingCard",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "playingCard"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO11playingCardyA2CmF"
+        },
+        {
           "declaration": "case pocketKnife",
           "kind": "swift.enum.case",
           "path": [
@@ -115375,6 +116176,15 @@
             "receiptText"
           ],
           "precise": "s:7LumenUI0A8IconNameO11receiptTextyA2CmF"
+        },
+        {
+          "declaration": "case robotVacuum",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "robotVacuum"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO11robotVacuumyA2CmF"
         },
         {
           "declaration": "case scanBarcode",
@@ -117103,6 +117913,15 @@
             "planeTakeoff"
           ],
           "precise": "s:7LumenUI0A8IconNameO12planeTakeoffyA2CmF"
+        },
+        {
+          "declaration": "case playingCards",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "playingCards"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO12playingCardsyA2CmF"
         },
         {
           "declaration": "case presentation",
@@ -119445,6 +120264,15 @@
           "precise": "s:7LumenUI0A8IconNameO14cornerLeftDownyA2CmF"
         },
         {
+          "declaration": "case creditCardPlus",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "creditCardPlus"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO14creditCardPlusyA2CmF"
+        },
+        {
           "declaration": "case databaseBackup",
           "kind": "swift.enum.case",
           "path": [
@@ -120588,6 +121416,24 @@
           "precise": "s:7LumenUI0A8IconNameO15creativeCommonsyA2CmF"
         },
         {
+          "declaration": "case creditCardCheck",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "creditCardCheck"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO15creditCardCheckyA2CmF"
+        },
+        {
+          "declaration": "case creditCardMinus",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "creditCardMinus"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO15creditCardMinusyA2CmF"
+        },
+        {
           "declaration": "case databaseArrowUp",
           "kind": "swift.enum.case",
           "path": [
@@ -120766,6 +121612,15 @@
             "panelRightClose"
           ],
           "precise": "s:7LumenUI0A8IconNameO15panelRightCloseyA2CmF"
+        },
+        {
+          "declaration": "case playingCardsFan",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "playingCardsFan"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO15playingCardsFanyA2CmF"
         },
         {
           "declaration": "case rectangleCircle",
@@ -124089,6 +124944,15 @@
           "precise": "s:7LumenUI0A8IconNameO24brandYandexInternationalyA2CmF"
         },
         {
+          "declaration": "case messageCircleDashedCheck",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "messageCircleDashedCheck"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO24messageCircleDashedCheckyA2CmF"
+        },
+        {
           "declaration": "case squareDashedMousePointer",
           "kind": "swift.enum.case",
           "path": [
@@ -127041,6 +127905,15 @@
           "precise": "s:7LumenUI0A8IconNameO6funnelyA2CmF"
         },
         {
+          "declaration": "case galaxy",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "galaxy"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO6galaxyyA2CmF"
+        },
+        {
           "declaration": "case globeX",
           "kind": "swift.enum.case",
           "path": [
@@ -129039,6 +129912,15 @@
           "precise": "s:7LumenUI0A8IconNameO7tractoryA2CmF"
         },
         {
+          "declaration": "case trailer",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "trailer"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO7traileryA2CmF"
+        },
+        {
           "declaration": "case undoDot",
           "kind": "swift.enum.case",
           "path": [
@@ -130576,6 +131458,15 @@
             "replyAll"
           ],
           "precise": "s:7LumenUI0A8IconNameO8replyAllyA2CmF"
+        },
+        {
+          "declaration": "case robotArm",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "robotArm"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO8robotArmyA2CmF"
         },
         {
           "declaration": "case rotate3d",
@@ -132774,6 +133665,15 @@
           "precise": "s:7LumenUI0A8IconNameO9shieldOffyA2CmF"
         },
         {
+          "declaration": "case shipCargo",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "shipCargo"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO9shipCargoyA2CmF"
+        },
+        {
           "declaration": "case shipWheel",
           "kind": "swift.enum.case",
           "path": [
@@ -133810,6 +134710,15 @@
             "lumenAlertDialog(isPresented:title:description:confirmLabel:cancelLabel:confirmRole:confirmDisabled:confirmLoading:confirmLoadingAccessibilityValue:onConfirm:)"
           ],
           "precise": "s:7SwiftUI4ViewP05LumenB0E16lumenAlertDialog11isPresented5title11description12confirmLabel06cancelM00L4Role0L8Disabled0L7Loading0lQ18AccessibilityValue9onConfirmQrAA7BindingVySbG_AA18LocalizedStringKeyVATSgA2tA06ButtonO0VSgS2bAD0D11TextContentOyyctF"
+        },
+        {
+          "declaration": "@MainActor func lumenAlertDialog(isPresented: Binding<Bool>, title: LocalizedStringKey, description: LocalizedStringKey? = nil, confirmLabel: LocalizedStringKey, cancelLabel: LocalizedStringKey = \"Cancel\", confirmRole: ButtonRole? = nil, confirmDisabled: Bool = false, confirmLoading: Bool = false, onConfirm: @escaping () -> Void) -> some View\n",
+          "kind": "swift.method",
+          "path": [
+            "View",
+            "lumenAlertDialog(isPresented:title:description:confirmLabel:cancelLabel:confirmRole:confirmDisabled:confirmLoading:onConfirm:)"
+          ],
+          "precise": "s:7SwiftUI4ViewP05LumenB0E16lumenAlertDialog11isPresented5title11description12confirmLabel06cancelM00L4Role0L8Disabled0L7Loading9onConfirmQrAA7BindingVySbG_AA18LocalizedStringKeyVASSgA2sA06ButtonO0VSgS2byyctF"
         },
         {
           "declaration": "@MainActor func lumenControlDensity(_ density: LumenControlDensity) -> some View\n",

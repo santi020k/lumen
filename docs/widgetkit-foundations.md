@@ -2,7 +2,7 @@
 
 `LumenWidgetUI` is the small WidgetKit-safe presentation product in the repository-root Swift
 package. It exists separately from `LumenUI` so a widget extension does not acquire the complete
-application component catalog or PhoneNumberKit.
+application component catalog or its resources.
 
 The contract threshold was met by an August 2026 audit of maintained Between Contractions widgets:
 

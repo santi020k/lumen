@@ -599,6 +599,25 @@ public struct LumenButton<Label: View>: View {
         intent: LumenButtonIntent = .primary,
         size: LumenControlSize = .md,
         loading: Bool = false,
+        disabled: Bool = false,
+        action: @escaping () -> Void,
+        @ViewBuilder label: () -> Label
+    ) {
+        self.init(
+            intent: intent,
+            size: size,
+            loading: loading,
+            loadingAccessibilityValue: .localizedKey("Loading"),
+            disabled: disabled,
+            action: action,
+            label: label
+        )
+    }
+
+    public init(
+        intent: LumenButtonIntent = .primary,
+        size: LumenControlSize = .md,
+        loading: Bool = false,
         loadingAccessibilityValue: LumenTextContent = .localizedKey("Loading"),
         disabled: Bool = false,
         action: @escaping () -> Void,
@@ -669,6 +688,25 @@ public struct LumenButton<Label: View>: View {
 }
 
 public extension LumenButton where Label == Text {
+    init(
+        _ title: LocalizedStringKey,
+        intent: LumenButtonIntent = .primary,
+        size: LumenControlSize = .md,
+        loading: Bool = false,
+        disabled: Bool = false,
+        action: @escaping () -> Void
+    ) {
+        self.init(
+            title,
+            intent: intent,
+            size: size,
+            loading: loading,
+            loadingAccessibilityValue: .localizedKey("Loading"),
+            disabled: disabled,
+            action: action
+        )
+    }
+
     init(
         _ title: LocalizedStringKey,
         intent: LumenButtonIntent = .primary,

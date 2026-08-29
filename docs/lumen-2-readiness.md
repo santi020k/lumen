@@ -125,7 +125,7 @@ Test the artifacts that consumers actually install, not only workspace source bu
 | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | React Native | Pack the npm tarball, install it into a clean supported Expo/React Native application, build iOS and Android, and verify the declared peer range                          |
 | SwiftUI      | Resolve an immutable semantic repository tag in a clean Xcode and Swift Package Manager consumer, build every declared platform, and verify resources and license notices |
-| WidgetKit    | Resolve `LumenWidgetUI` from the same immutable tag in a clean consumer and build its focused macOS, iOS, and watchOS targets without linking `LumenUI` or PhoneNumberKit |
+| WidgetKit    | Resolve `LumenWidgetUI` from the same immutable tag in a clean consumer and build its focused macOS, iOS, and watchOS targets without linking `LumenUI`                    |
 | Compose      | Resolve signed published artifacts through the intended Maven workflow in a clean Android consumer and verify phone, tablet, and publication metadata                     |
 | Wear OS      | Resolve the separate Wear artifact in a clean watch consumer and verify that phone applications do not acquire wearable-only dependencies                                 |
 

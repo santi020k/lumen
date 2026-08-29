@@ -36,6 +36,9 @@ and visual guidance.
 - Treat `registry/native-playground-catalog.json` as the canonical phone-playground category map.
   Run `pnpm run generate:native-playground-catalogs` after changing it and commit the generated
   React Native, SwiftUI, and Compose catalogs.
+- Treat the installed `libphonenumber-js` max metadata as the source for Lumen's dependency-free
+  Swift phone engine. Run `pnpm run generate:swift-phone-metadata` after upgrading it and commit the
+  generated Swift package resource.
 - Share semantic roles and behavior contracts across native adapters, but use SwiftUI, Compose, and
   React Native conventions instead of reproducing DOM APIs.
 - Treat Astro as the reference surface unless the task explicitly targets another framework.

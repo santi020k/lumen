@@ -11,29 +11,6 @@ source migrator reported no pending changes after the runtime import moved to
 `@santi020k/lumen-astro/runtime`, `lumen doctor` finished healthy after the integration findings
 below were addressed, and the consumer's complete lint, build, test, and type-check gate passed.
 
-### Make native phone support pay only for use
-
-**Observed:** Coolstead does not render `LumenPhoneInput`, but resolving and building `LumenUI`
-`2.0.0` still added PhoneNumberKit `5.0.7`, copied its metadata resource, and compiled the package.
-The repository-root Swift package currently makes PhoneNumberKit a dependency of the complete
-`LumenUI` target, so every SwiftUI consumer pays the dependency-resolution and clean-build cost.
-
-**Improve:** Investigate an optional `LumenPhoneUI` product and target, comparable to the existing
-`LumenWidgetUI` boundary and the React Native `datetime` subpath. Keep the current Lumen 2 API
-compatible while measuring the clean-build and artifact effect. If making phone support truly
-optional requires removing `LumenPhoneInput` from `LumenUI`, stage the additive product in 2.x and
-reserve the removal for the next approved major migration.
-
-**Acceptance evidence:**
-
-- A Swift package consumer that imports only `LumenUI` does not resolve, build, link, or copy
-  PhoneNumberKit resources.
-- A consumer of the optional phone product retains the current formatting, validation, country
-  restriction, accessibility, and localization behavior.
-- Package smoke tests cover both products from clean packed or tagged dependencies.
-- Documentation and the native MCP contract state which product owns phone input and provide a
-  versioned migration path before any removal.
-
 ### Make internal-selector diagnostics directly actionable
 
 **Observed:** `lumen doctor` correctly reported Coolstead selectors such as `.ui-badge` and

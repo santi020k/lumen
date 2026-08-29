@@ -111,6 +111,23 @@ public struct LumenTextarea: View {
         text: Binding<String>,
         description: LocalizedStringKey? = nil,
         errorMessage: LocalizedStringKey? = nil,
+        minHeight: CGFloat = 112
+    ) {
+        self.init(
+            title,
+            text: text,
+            description: description,
+            errorMessage: errorMessage,
+            minHeight: minHeight,
+            lineLimit: nil
+        )
+    }
+
+    public init(
+        _ title: LocalizedStringKey,
+        text: Binding<String>,
+        description: LocalizedStringKey? = nil,
+        errorMessage: LocalizedStringKey? = nil,
         minHeight: CGFloat = 112,
         lineLimit: ClosedRange<Int>? = nil
     ) {

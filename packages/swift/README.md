@@ -6,6 +6,12 @@
 `LumenUI` is Lumen's native SwiftUI package. Its foundations are generated from the same canonical
 design tokens as the web, React Native, and Compose adapters.
 
+`LumenPhoneInput` is implemented entirely inside `LumenUI`; consumers do not resolve or link a
+separate phone-number package. Lumen ships a compact generated metadata resource and owns the Swift
+parsing, validation, E.164, country-detection, formatting, and picker behavior. Maintainers refresh
+that resource with `pnpm run generate:swift-phone-metadata` when the workspace phone metadata is
+updated.
+
 Widget extensions that only need semantic presentation should link the separate `LumenWidgetUI`
 product documented in [`packages/swift-widget`](../swift-widget). It avoids linking the complete
 application component catalog and keeps timelines, App Intents, deep links, and backgrounds owned

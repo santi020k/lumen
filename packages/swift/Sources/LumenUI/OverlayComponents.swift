@@ -51,6 +51,32 @@ public extension View {
         confirmRole: ButtonRole? = nil,
         confirmDisabled: Bool = false,
         confirmLoading: Bool = false,
+        onConfirm: @escaping () -> Void
+    ) -> some View {
+        lumenAlertDialog(
+            isPresented: isPresented,
+            title: title,
+            description: description,
+            confirmLabel: confirmLabel,
+            cancelLabel: cancelLabel,
+            confirmRole: confirmRole,
+            confirmDisabled: confirmDisabled,
+            confirmLoading: confirmLoading,
+            confirmLoadingAccessibilityValue: .localizedKey("Loading"),
+            onConfirm: onConfirm
+        )
+    }
+
+    /// Presents a controlled native confirmation alert with explicit cancel and confirm actions.
+    func lumenAlertDialog(
+        isPresented: Binding<Bool>,
+        title: LocalizedStringKey,
+        description: LocalizedStringKey? = nil,
+        confirmLabel: LocalizedStringKey,
+        cancelLabel: LocalizedStringKey = "Cancel",
+        confirmRole: ButtonRole? = nil,
+        confirmDisabled: Bool = false,
+        confirmLoading: Bool = false,
         confirmLoadingAccessibilityValue: LumenTextContent = .localizedKey("Loading"),
         onConfirm: @escaping () -> Void
     ) -> some View {
