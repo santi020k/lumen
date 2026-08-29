@@ -2041,13 +2041,17 @@ export const Code = ({
 }
 
 export interface CopyButtonProps extends ComponentPropsWithoutRef<'button'> {
+  copiedContent?: ReactNode
   copiedLabel?: string
+  errorContent?: ReactNode
   errorLabel?: string
   label?: string
   resetAfter?: number
   target?: string
   toast?: boolean
   value?: string
+  variant?: 'default' | 'destructive' | 'ghost' | 'link' | 'outline' | 'secondary'
+  size?: 'default' | 'icon' | 'lg' | 'sm'
 }
 
 const dispatchCopyToast = (
@@ -2069,18 +2073,31 @@ const getCopyButtonLabel = (
   label: string
 ): string => ({ copied: copiedLabel, error: errorLabel, idle: label })[state]
 
+const copyButtonSizeClassNames = {
+  default: 'ui-button--default-size',
+  icon: 'ui-button--icon',
+  lg: 'ui-button--lg',
+  sm: 'ui-button--sm'
+} as const satisfies Record<NonNullable<CopyButtonProps['size']>, string>
+
+const getCopyButtonContent = (content: ReactNode | undefined, label: string): ReactNode => content ?? label
+
 export const CopyButton = ({
   children = 'Copy',
   className,
+  copiedContent,
   copiedLabel = 'Copied to clipboard',
+  errorContent,
   errorLabel = 'Could not copy to clipboard',
   label = 'Copy to clipboard',
   onClick,
   resetAfter = 2000,
+  size = 'default',
   target,
   toast = false,
   type = 'button',
   value,
+  variant = 'outline',
   ...props
 }: CopyButtonProps) => {
   const [state, setState] = useState<'copied' | 'error' | 'idle'>('idle')
@@ -2138,15 +2155,18 @@ export const CopyButton = ({
     <button
       aria-label={accessibleLabel}
       className={composeClassName(
-        'ui-button ui-button--outline ui-copy-button', className
+        'ui-button', `ui-button--${variant}`, copyButtonSizeClassNames[size], 'ui-copy-button', className
       )}
+      data-slot="copy-button"
       data-state={state}
       data-ui-copy-button
       onClick={handleClick}
       type={type}
       {...props}
     >
-      {children}
+      <span aria-hidden="true" data-slot="copy-idle">{children}</span>
+      <span aria-hidden="true" data-slot="copy-copied">{getCopyButtonContent(copiedContent, copiedLabel)}</span>
+      <span aria-hidden="true" data-slot="copy-error">{getCopyButtonContent(errorContent, errorLabel)}</span>
     </button>
   )
 }

@@ -165,7 +165,11 @@ describe('@santi020k/lumen-elements primitives', () => {
       value: { writeText }
     })
 
-    const copyButton = connect('lumen-copy-button', { value: 'Invite link' })
+    const copyButton = document.createElement('lumen-copy-button')
+
+    copyButton.setAttribute('value', 'Invite link')
+    copyButton.textContent = 'Copy invite'
+    document.body.append(copyButton)
 
     copyButton.click()
 
@@ -174,6 +178,20 @@ describe('@santi020k/lumen-elements primitives', () => {
     expect(writeText).toHaveBeenCalledWith('Invite link')
     expect(copyButton.dataset.state).toBe('copied')
     expect(copyButton.getAttribute('aria-label')).toBe('Copied to clipboard')
+    expect(copyButton.dataset.slot).toBe('copy-button')
+    expect(copyButton.querySelector('[data-slot="copy-idle"]')?.textContent)
+      .toBe('Copy invite')
+    expect(copyButton.querySelector('[data-slot="copy-copied"]')?.textContent)
+      .toBe('Copied to clipboard')
+    expect(copyButton.querySelector('[data-slot="copy-error"]')?.textContent)
+      .toBe('Could not copy to clipboard')
+    expect(classesOf(connect('lumen-copy-button', { size: 'sm', variant: 'default' })))
+      .toEqual([
+        'ui-button',
+        'ui-button--default',
+        'ui-button--sm',
+        'ui-copy-button'
+      ].sort())
   })
 
   test('resolves glass intensity classes on structural surfaces', () => {

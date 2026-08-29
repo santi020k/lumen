@@ -34,7 +34,7 @@
       "CodeTabs": "eb616dae0ccedc706edd4002d4ef0a4651f3813eefa6def70c87fb51d22bde88",
       "Combobox": "fce73278c7d01b3e60a25e1427f9efb62e2967b98df07ca82618690da86c9357",
       "Container": "f9d6be3c966fc8ffc0f75baf89e4f9748c114e8d7665d4ae09dd1f2939357667",
-      "CopyButton": "3143ac859664e7a15c15e1f2dc230f745dbc59ccd25ee1047f30dc4705b7b74b",
+      "CopyButton": "e5e7fb3bc83fe5c94d3e393556485cef5e83b61eaca0b564593b03b74ca6d210",
       "Command": "4e987eb7d56197214de2ea20f6f964110c8eafc9b035a1ade69e755ee584f5dc",
       "ContextNavigation": "cb3b2b1ed4fa6e52f30d57b3217da7929ee218f8d00d1c31192d0604fed77e3f",
       "ContextMenu": "8b9b5b009deb7c99fb367bf68216d9fe144163b8cb759c46154e3d0bbaed5048",
@@ -122,8 +122,8 @@
       "LanguageToggle": "ff65170382ae5b1241ce142b670a32bb708e92fbfbeeac6a285bd39b13c612b6",
       "Particles": "74334a8aa6578b86f01da2ab63a96ce6c8d888e99f3bcc3ab9845667eb97d27e",
       "AnimatedNumber": "78ff8b23b83cc24f5f1c0af0d5058db323c51287921c8a7478f43f26140b26f5",
-      "RevealGroup": "d5f5943ed8d8bd05d2f84661367e5c3d2054bafddf7461e283f3a25499f494a1",
-      "ScrollReveal": "aee6a3c2aa86cbb581ea1f2562363061967497af4100b5556a00f9fd7b1ce849",
+      "RevealGroup": "771ea6a3b9cadd97e2658f3c702c1706b054a5c9c025e53f5a6be449f1e642b4",
+      "ScrollReveal": "f9ae24209a7cc92b48053b0864721584ce68bdef6b3932e583a72ad96df62828",
       "Stat": "24d2d45bd11ec7dc2dcc1b00475f095c943d38b240acecfa32bb399c9c3398bb",
       "StatDescription": "bcaea522ed8065b705e55ca8e8deef23a98ba3b28156a37015628c88de5e3ced",
       "StatIcon": "30ac2c9950be183bd45d9d65d3954c1796e34af3d74642d8a629954d809906c0",
@@ -7128,6 +7128,24 @@
           "values": "boolean"
         },
         {
+          "attribute": "variant",
+          "defaultValue": "\"outline\"",
+          "description": "Uses the same default, destructive, ghost, link, outline, and secondary treatments as Button.",
+          "values": "Button variant"
+        },
+        {
+          "attribute": "size",
+          "defaultValue": "\"default\"",
+          "description": "Uses the shared Button sizing and touch-target contract.",
+          "values": "\"default\" | \"sm\" | \"lg\" | \"icon\""
+        },
+        {
+          "attribute": "copiedContent, errorContent",
+          "defaultValue": "localized labels",
+          "description": "Customizes visible React feedback while label props remain the accessible announcement.",
+          "values": "ReactNode"
+        },
+        {
           "attribute": "class, className",
           "defaultValue": "\"\"",
           "description": "Merges custom classes with the generated ui-* root classes.",
@@ -7293,15 +7311,19 @@
         "elements": {
           "attributes": [
             "aria-label",
+            "data-slot",
             "data-state",
             "data-ui-copy-button",
             "role",
+            "size",
             "tabindex",
+            "variant",
             "value",
             "target",
             "label, copiedLabel, errorLabel",
             "resetAfter",
             "toast",
+            "copiedContent, errorContent",
             "class, className",
             "...native attributes"
           ],
@@ -7317,7 +7339,7 @@
           "props": [],
           "propsExtends": "HTMLElement attributes",
           "registration": "defineLumenElements()",
-          "source": "CopyButton: {\n    baseClassName: 'ui-button ui-button--outline ui-copy-button',\n    defaults: {\n      'aria-label': 'Copy to clipboard',\n      'data-state': 'idle',\n      'data-ui-copy-button': '',\n      role: 'button',\n      tabindex: '0'\n    },\n    tagName: 'lumen-copy-button'\n  }",
+          "source": "CopyButton: {\n    attributeClasses: {\n      size: {\n        default: 'ui-button--default-size',\n        icon: 'ui-button--icon',\n        lg: 'ui-button--lg',\n        sm: 'ui-button--sm'\n      },\n      variant: {\n        default: 'ui-button--default',\n        destructive: 'ui-button--destructive',\n        ghost: 'ui-button--ghost',\n        link: 'ui-button--link',\n        outline: 'ui-button--outline',\n        secondary: 'ui-button--secondary'\n      }\n    },\n    baseClassName: 'ui-button ui-copy-button',\n    defaults: {\n      'aria-label': 'Copy to clipboard',\n      'data-slot': 'copy-button',\n      'data-state': 'idle',\n      'data-ui-copy-button': '',\n      role: 'button',\n      size: 'default',\n      variant: 'outline',\n      tabindex: '0'\n    },\n    tagName: 'lumen-copy-button'\n  }",
           "styleImport": "import '@santi020k/lumen-elements/styles.css'",
           "tagName": "lumen-copy-button"
         },
@@ -7333,9 +7355,19 @@
           "packageName": "@santi020k/lumen-react",
           "props": [
             {
+              "name": "copiedContent",
+              "optional": true,
+              "type": "ReactNode"
+            },
+            {
               "name": "copiedLabel",
               "optional": true,
               "type": "string"
+            },
+            {
+              "name": "errorContent",
+              "optional": true,
+              "type": "ReactNode"
             },
             {
               "name": "errorLabel",
@@ -7366,10 +7398,20 @@
               "name": "value",
               "optional": true,
               "type": "string"
+            },
+            {
+              "name": "variant",
+              "optional": true,
+              "type": "'default' | 'destructive' | 'ghost' | 'link' | 'outline' | 'secondary'"
+            },
+            {
+              "name": "size",
+              "optional": true,
+              "type": "'default' | 'icon' | 'lg' | 'sm'"
             }
           ],
           "propsExtends": "ComponentPropsWithoutRef<'button'>",
-          "source": "export interface CopyButtonProps extends ComponentPropsWithoutRef<'button'> {\n  copiedLabel?: string\n  errorLabel?: string\n  label?: string\n  resetAfter?: number\n  target?: string\n  toast?: boolean\n  value?: string\n}\n\nexport const CopyButton = ({\n  children = 'Copy',\n  className,\n  copiedLabel = 'Copied to clipboard',\n  errorLabel = 'Could not copy to clipboard',\n  label = 'Copy to clipboard',\n  onClick,\n  resetAfter = 2000,\n  target,\n  toast = false,\n  type = 'button',\n  value,\n  ...props\n}: CopyButtonProps) => {\n  const [state, setState] = useState<'copied' | 'error' | 'idle'>('idle')\n  const resetTimerRef = useRef<ReturnType<typeof globalThis.setTimeout>>(undefined)\n\n  useEffect(() => () => {\n    globalThis.clearTimeout(resetTimerRef.current)\n  }, [])\n\n  const handleClick = async (event: ReactMouseEvent<HTMLButtonElement>) => {\n    onClick?.(event)\n\n    if (event.defaultPrevented) return\n\n    const button = event.currentTarget\n    const targetElement = target ? document.querySelector<HTMLElement>(target) : null\n    const text = value ?? targetElement?.innerText ?? targetElement?.textContent\n\n    try {\n      if (text === undefined) throw new Error(errorLabel)\n\n      await navigator.clipboard.writeText(text)\n\n      setState('copied')\n\n      button.dispatchEvent(new CustomEvent('ui:copy-success', {\n        bubbles: true,\n        detail: { value: text }\n      }))\n\n      dispatchCopyToast(toast, copiedLabel, 'success')\n    } catch (error) {\n      setState('error')\n\n      button.dispatchEvent(new CustomEvent('ui:copy-error', {\n        bubbles: true,\n        detail: { error }\n      }))\n\n      dispatchCopyToast(toast, errorLabel, 'destructive')\n    }\n\n    globalThis.clearTimeout(resetTimerRef.current)\n\n    resetTimerRef.current = globalThis.setTimeout(() => {\n      setState('idle')\n    }, resetAfter)\n  }\n\n  const accessibleLabel = getCopyButtonLabel(\n    state, copiedLabel, errorLabel, label\n  )\n\n  return (\n    <button\n      aria-label={accessibleLabel}\n      className={composeClassName(\n        'ui-button ui-button--outline ui-copy-button', className\n      )}\n      data-state={state}\n      data-ui-copy-button\n      onClick={handleClick}\n      type={type}\n      {...props}\n    >\n      {children}\n    </button>\n  )\n}",
+          "source": "export interface CopyButtonProps extends ComponentPropsWithoutRef<'button'> {\n  copiedContent?: ReactNode\n  copiedLabel?: string\n  errorContent?: ReactNode\n  errorLabel?: string\n  label?: string\n  resetAfter?: number\n  target?: string\n  toast?: boolean\n  value?: string\n  variant?: 'default' | 'destructive' | 'ghost' | 'link' | 'outline' | 'secondary'\n  size?: 'default' | 'icon' | 'lg' | 'sm'\n}\n\nexport const CopyButton = ({\n  children = 'Copy',\n  className,\n  copiedContent,\n  copiedLabel = 'Copied to clipboard',\n  errorContent,\n  errorLabel = 'Could not copy to clipboard',\n  label = 'Copy to clipboard',\n  onClick,\n  resetAfter = 2000,\n  size = 'default',\n  target,\n  toast = false,\n  type = 'button',\n  value,\n  variant = 'outline',\n  ...props\n}: CopyButtonProps) => {\n  const [state, setState] = useState<'copied' | 'error' | 'idle'>('idle')\n  const resetTimerRef = useRef<ReturnType<typeof globalThis.setTimeout>>(undefined)\n\n  useEffect(() => () => {\n    globalThis.clearTimeout(resetTimerRef.current)\n  }, [])\n\n  const handleClick = async (event: ReactMouseEvent<HTMLButtonElement>) => {\n    onClick?.(event)\n\n    if (event.defaultPrevented) return\n\n    const button = event.currentTarget\n    const targetElement = target ? document.querySelector<HTMLElement>(target) : null\n    const text = value ?? targetElement?.innerText ?? targetElement?.textContent\n\n    try {\n      if (text === undefined) throw new Error(errorLabel)\n\n      await navigator.clipboard.writeText(text)\n\n      setState('copied')\n\n      button.dispatchEvent(new CustomEvent('ui:copy-success', {\n        bubbles: true,\n        detail: { value: text }\n      }))\n\n      dispatchCopyToast(toast, copiedLabel, 'success')\n    } catch (error) {\n      setState('error')\n\n      button.dispatchEvent(new CustomEvent('ui:copy-error', {\n        bubbles: true,\n        detail: { error }\n      }))\n\n      dispatchCopyToast(toast, errorLabel, 'destructive')\n    }\n\n    globalThis.clearTimeout(resetTimerRef.current)\n\n    resetTimerRef.current = globalThis.setTimeout(() => {\n      setState('idle')\n    }, resetAfter)\n  }\n\n  const accessibleLabel = getCopyButtonLabel(\n    state, copiedLabel, errorLabel, label\n  )\n\n  return (\n    <button\n      aria-label={accessibleLabel}\n      className={composeClassName(\n        'ui-button', `ui-button--${variant}`, copyButtonSizeClassNames[size], 'ui-copy-button', className\n      )}\n      data-slot=\"copy-button\"\n      data-state={state}\n      data-ui-copy-button\n      onClick={handleClick}\n      type={type}\n      {...props}\n    >\n      <span aria-hidden=\"true\" data-slot=\"copy-idle\">{children}</span>\n      <span aria-hidden=\"true\" data-slot=\"copy-copied\">{getCopyButtonContent(copiedContent, copiedLabel)}</span>\n      <span aria-hidden=\"true\" data-slot=\"copy-error\">{getCopyButtonContent(errorContent, errorLabel)}</span>\n    </button>\n  )\n}",
           "styleImport": "import '@santi020k/lumen-react/styles.css'"
         }
       },
@@ -26570,6 +26612,12 @@
     {
       "apiReference": [
         {
+          "attribute": "as",
+          "defaultValue": "\"div\"",
+          "description": "Preserves list or section semantics without adding a wrapper.",
+          "values": "\"div\" | \"ol\" | \"section\" | \"ul\""
+        },
+        {
           "attribute": "animation",
           "defaultValue": "\"slide-up\"",
           "description": "Sets the shared entrance treatment for direct children.",
@@ -26749,6 +26797,7 @@
             "duration",
             "once",
             "threshold",
+            "as",
             "stagger",
             "delay",
             "class, className",
@@ -26894,6 +26943,12 @@
     {
       "apiReference": [
         {
+          "attribute": "as",
+          "defaultValue": "\"div\"",
+          "description": "Preserves the semantic root without changing reveal behavior.",
+          "values": "\"article\" | \"div\" | \"section\""
+        },
+        {
           "attribute": "animation",
           "defaultValue": "\"fade\"",
           "description": "Sets the reveal transition. UIPrimitives observes the element and reveals it as it enters the viewport.",
@@ -27019,6 +27074,7 @@
             "duration",
             "once",
             "threshold",
+            "as",
             "delay",
             "class, className",
             "...native attributes"
@@ -35240,7 +35296,7 @@
     "readme": "<p align=\"center\">\n  <a href=\"https://lumen.santi020k.com\">\n    <img src=\"./apps/docs/public/logo.svg\" alt=\"Lumen UI\" width=\"233\" height=\"60\">\n  </a>\n</p>\n\n<h1 align=\"center\">Lumen UI</h1>\n\n<p align=\"center\">\n  A cross-platform UI system with 150+ web primitives and shared native foundations.\n</p>\n\n<p align=\"center\">\n  <a href=\"https://lumen.santi020k.com\">Documentation</a>\n  ·\n  <a href=\"https://lumen.santi020k.com/docs/components\">Components</a>\n  ·\n  <a href=\"https://www.figma.com/community/file/1662337342676541513\">Figma library</a>\n  ·\n  <a href=\"https://github.com/santi020k/lumen/issues\">Issues</a>\n</p>\n\n<p align=\"center\">\n  <a href=\"https://github.com/santi020k/lumen/actions\"><img alt=\"GitHub Actions\" src=\"https://img.shields.io/github/actions/workflow/status/santi020k/lumen/ci.yml?branch=main&style=flat-square\"></a>\n  <a href=\"https://github.com/santi020k/lumen/actions/workflows/codeql.yml\"><img alt=\"CodeQL\" src=\"https://github.com/santi020k/lumen/actions/workflows/codeql.yml/badge.svg\"></a>\n  <a href=\"https://www.npmjs.com/package/@santi020k/lumen-astro\"><img alt=\"npm version\" src=\"https://img.shields.io/npm/v/@santi020k/lumen-astro?style=flat-square&label=npm\"></a>\n  <a href=\"./LICENSE\"><img alt=\"MIT license\" src=\"https://img.shields.io/badge/license-MIT-111827?style=flat-square\"></a>\n</p>\n\nLumen gives applications a consistent visual language without tying them to one rendering model.\nIts packages share tokens, component contracts, styles, and interaction patterns while keeping each\nframework and platform's native authoring experience.\n\n- **Framework native:** Astro components, React primitives, and standards-based custom elements.\n- **Native foundations:** generated React Native, SwiftUI, and Jetpack Compose tokens plus the\n  complete shared interface and namespaced brand icon catalogs preserve the same semantic roles and\n  artwork without introducing DOM or CSS assumptions.\n- **Accessible by default:** semantic markup, keyboard paths, focus management, and reduced-motion\n  support are built into the primitives.\n- **Standalone CSS:** no Tailwind configuration is required. Tailwind users get an explicit layer\n  integration.\n- **Progressively enhanced:** Astro interactions use a small client runtime instead of requiring an\n  application framework.\n- **Ready for design and AI workflows:** published Figma resources, a portable agent skill, an MCP\n  server, `llms.txt`, a machine-readable registry, and a cross-platform release manifest ship\n  alongside the component system.\n- **Product-ready templates:** five responsive dashboard and application families are available as\n  live previews and installable Astro, React, and Elements recipes.\n\n## Dashboards and templates\n\nExplore the [template gallery](https://lumen.santi020k.com/templates) for complete analytics,\nSaaS admin, commerce, project workspace, and authentication/onboarding experiences. Each family\nuses public Lumen primitives and semantic tokens, includes responsive and accessibility coverage,\nand ships through the CLI for all three framework targets:\n\n```bash\nlumen add analytics-dashboard\nlumen add commerce-dashboard --target react\nlumen add auth-onboarding --target elements\n```\n\n## Web quick start\n\nInstall the package for your framework:\n\n```bash\n# Astro\npnpm add @santi020k/lumen-astro\n\n# React\npnpm add @santi020k/lumen-react\n\n# Web Components\npnpm add @santi020k/lumen-elements\n```\n\n### Astro\n\nImport the stylesheet and mount `UIPrimitives` once in your root layout. The runtime enhances all\ninteractive Lumen markup on the page.\n\n```astro\n---\nimport '@santi020k/lumen-astro/styles.css'\nimport UIPrimitives from '@santi020k/lumen-astro/runtime'\n---\n\n<html lang=\"en\">\n  <body>\n    <slot />\n    <UIPrimitives />\n  </body>\n</html>\n```\n\n```astro\n---\nimport { Button, Card, Input } from '@santi020k/lumen-astro'\n---\n\n<Card>\n  <label for=\"email\">Email</label>\n  <Input id=\"email\" name=\"email\" type=\"email\" placeholder=\"you@example.com\" />\n  <Button>Subscribe</Button>\n</Card>\n```\n\n### React\n\nLoad the stylesheet once from your app entry or global CSS:\n\n```tsx\nimport '@santi020k/lumen-react/styles.css'\nimport { Button, Card, Input } from '@santi020k/lumen-react'\n\nexport function SubscribeForm() {\n  return (\n    <Card>\n      <label htmlFor=\"email\">Email</label>\n      <Input id=\"email\" name=\"email\" type=\"email\" placeholder=\"you@example.com\" />\n      <Button>Subscribe</Button>\n    </Card>\n  )\n}\n```\n\n### Web Components\n\nImport the styles and register the elements once:\n\n```html\n<style>\n  @import \"@santi020k/lumen-elements/styles.css\";\n</style>\n\n<script type=\"module\">\n  import { defineLumenElements } from '@santi020k/lumen-elements/define'\n\n  defineLumenElements()\n</script>\n\n<lumen-card>\n  <label for=\"email\">Email</label>\n  <lumen-input id=\"email\" name=\"email\" type=\"email\" placeholder=\"you@example.com\"></lumen-input>\n  <lumen-button>Subscribe</lumen-button>\n</lumen-card>\n```\n\nSee the [Web documentation](https://lumen.santi020k.com/docs/web) for installation, theming,\ncomponent examples, and API details.\n\nFor failure states, use the [error-handling guide](./docs/error-handling.md) to choose between field\nfeedback, summaries, persistent alerts, transient toasts, and the `ErrorState` recovery surface.\nLumen owns presentation and accessibility; applications retain logging, retry, and exception policy.\n\nFor native applications, choose the [React Native](https://lumen.santi020k.com/docs/react-native),\n[Apple / SwiftUI](https://lumen.santi020k.com/docs/apple), or\n[Android / Compose](https://lumen.santi020k.com/docs/android) guide. The\n[shared foundations](https://lumen.santi020k.com/docs/foundations) explain the cross-platform token\nand component contract; repository contributors can also use the\n[cross-platform architecture](./docs/cross-platform.md) and\n[native component reference](./docs/native-components.md).\n\n> **Native platform status for Lumen 2.** React Native, SwiftUI, Compose, and Wear OS use the frozen\n> supported contract. Package, migration, build, security, artifact, and stability checks gate the\n> initial release. The incomplete external-consumer and physical-device matrices remain published\n> as post-release qualification work; review them before choosing a production adapter.\n\n## Native playgrounds\n\nThe repository includes three searchable, interactive galleries built from the real native\npackages:\n\n- [`apps/playground-react-native`](./apps/playground-react-native) runs through Expo on the web,\n  iOS, and Android and includes EAS profiles for TestFlight, Android App Bundles, and APKs.\n- [`apps/playground-apple`](./apps/playground-apple) builds as an iOS Xcode app for devices and\n  TestFlight, or as a macOS Swift Package executable for local exploration.\n- [`apps/playground-android`](./apps/playground-android) builds a native Compose application and a\n  directly installable debug APK.\n\nSee the [playground workflow](./docs/playgrounds.md) for run, capture, and distribution commands.\n\n## Tailwind CSS\n\nKeep the layer prelude, Tailwind import, and Lumen stylesheet in the same shared CSS entry. Replace\n`lumen-astro` with the package for your framework.\n\n```css\n@import \"@santi020k/lumen-astro/layers.css\";\n@import \"tailwindcss\";\n@import \"@santi020k/lumen-astro/styles.css\";\n```\n\nThis order places Tailwind base styles before Lumen components and Tailwind utilities above Lumen\ncomponent defaults.\n\n## Packages\n\n| Package | Purpose |\n| --- | --- |\n| [`@santi020k/lumen-astro`](./packages/astro) | Reference implementation, Astro components, and progressive-enhancement runtime |\n| [`@santi020k/lumen-react`](./packages/react) | React components and behavior hooks |\n| [`@santi020k/lumen-react-hook-form`](./packages/react-hook-form) | Optional React Hook Form adapters for composite controls |\n| [`@santi020k/lumen-elements`](./packages/elements) | Standards-based Web Components |\n| [`@santi020k/lumen-core`](./packages/core) | Shared tokens, metadata, class helpers, and behavior contracts |\n| [`@santi020k/lumen-tokens`](./packages/tokens) | Canonical platform-neutral design token source |\n| [`@santi020k/lumen-react-native`](./packages/react-native) | React Native foundations and native primitives |\n| [`LumenUI`](./packages/swift) | Swift Package for iOS, iPadOS, macOS, tvOS, visionOS, and watchOS foundations and native primitives |\n| [`LumenWidgetUI`](./packages/swift-widget) | Focused WidgetKit-safe semantic text, icon, badge, and compact-stat foundations |\n| [`lumen-compose`](./packages/compose) | Android library for Jetpack Compose foundations and native primitives |\n| [`lumen-compose-wear`](./packages/compose/wear) | Focused Wear OS primitives for at-a-glance round-screen actions, progress, status, metrics, and rows |\n| [`@santi020k/lumen-icons-brand`](./packages/icons-brand) | Optional namespaced brand icons for web `Icon` adapters  |\n| [`@santi020k/lumen`](./packages/lumen) | Umbrella package, CLI, registry metadata, and public package map |\n| [`@santi020k/lumen-mcp`](./packages/mcp) | MCP server for component discovery and source retrieval |\n\n## AI and design workflows\n\nInstall the portable Lumen skill in Codex, Claude Code, Cursor, Windsurf, and other compatible\ncoding agents:\n\n```bash\nnpx skills add santi020k/lumen --skill lumen-ui\n```\n\nThe skill teaches agents how to select, compose, theme, and verify Lumen primitives. Pair it with\n[`@santi020k/lumen-mcp`](./packages/mcp) when an agent needs to search the live catalog or retrieve\ncurrent source, props, tokens, and usage rules.\n\n> **OpenAI Plugins Directory status:** Lumen UI 1.0.0 has been submitted for review for Codex and\n> ChatGPT. Until OpenAI approves it and the publisher completes publication, install the portable\n> skill or connect the MCP server directly; directory availability is not yet guaranteed.\n\nAdditional machine-readable surfaces include:\n\n- [`llms.txt`](./llms.txt) for a concise project map.\n- [`docs/ai-usage.md`](./docs/ai-usage.md) for downstream generation examples.\n- [`docs/styling-contract.md`](./docs/styling-contract.md) for stable parts and component variables.\n- [`docs/import-and-icon-performance.md`](./docs/import-and-icon-performance.md) for repeatable import and icon evidence.\n- [`docs/graphics.md`](./docs/graphics.md) for portable decorative artwork across web and native platforms.\n- [`docs/consumer-regression-fixtures.md`](./docs/consumer-regression-fixtures.md) for production-shaped local coverage.\n- [`docs/project-adoption.md`](./docs/project-adoption.md) for the sibling-project audit and staged\n  web and native migration strategy.\n- [`registry/lumen.registry.json`](./registry/lumen.registry.json) for recipes and installable file\n  groups.\n- [`docs/figma.md`](./docs/figma.md) for Figma variables and Code Connect workflows.\n- [`plugins/lumen-ui`](./plugins/lumen-ui) for the packaged Codex and ChatGPT plugin, with its\n  [submission and review record](./docs/openai-plugin-submission.md).\n- [`.claude-plugin/marketplace.json`](./.claude-plugin/marketplace.json) for the Claude Code\n  marketplace, with its [installation and submission guide](./docs/claude-code-plugin.md).\n- [`docs/cross-platform.md`](./docs/cross-platform.md) for the native architecture, support tiers,\n  and component-parity policy.\n- [`docs/native-patterns.md`](./docs/native-patterns.md) for developed native compositions and the\n  boundary between Lumen presentation and platform-owned application structure.\n\n## Contributing\n\nLumen is a pnpm workspace. Astro is the reference implementation; shared contracts belong in\n`packages/core`, while framework-specific behavior stays in its adapter package.\n\n```bash\npnpm install\npnpm run dev\npnpm run validate\n```\n\nRead [`CONTRIBUTING.md`](./CONTRIBUTING.md) before opening a pull request. User-visible package\nchanges require a changeset.\n\n## Community\n\nLumen is free and MIT licensed while the project focuses on adoption, public examples, and\nreal-world feedback.\n\n- Explore task-oriented [guides](https://lumen.santi020k.com/guides).\n- Share a public project in the [community showcase](https://lumen.santi020k.com/community).\n- Evaluate the system with the open [team adoption path](https://lumen.santi020k.com/teams).\n- Tell us what would improve your next build through the\n  [adoption survey](https://github.com/santi020k/lumen/issues/new?template=adoption-feedback.yml).\n\nMaintainers can use the [exposure playbook](./docs/exposure-playbook.md) for publishing cadence,\ncampaign measurement, video scripts, and launch copy.\n\n## License\n\nLumen's original code and artwork are available under the [MIT License](./LICENSE). Generated\ninterface icons retain the Lucide ISC or Feather MIT terms, and generated brand icons retain Font\nAwesome Free's CC BY 4.0 terms. The native packages include the required attribution and license\nnotices; see [`icons/THIRD_PARTY_NOTICES.md`](./icons/THIRD_PARTY_NOTICES.md).\n"
   },
   "meta": {
-    "catalogHash": "0539c1c66ce15152e6023a466b65bd209682e50170d96d4e53e7e9474f5aff2e",
+    "catalogHash": "1cb865b0fa9f62d10eb2aec23528e9acac4b268516598df9363b69a70e1fcf23",
     "componentCount": 161,
     "nativeComponentCount": 79,
     "packages": [

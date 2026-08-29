@@ -253,8 +253,16 @@ non-code content `Code` semantics.
 
 ```astro
 <p id="invite">Join the Lumen workspace</p>
-<CopyButton target="#invite" toast>Copy invite</CopyButton>
+<CopyButton size="sm" target="#invite" toast variant="default">
+  Copy invite
+  <span slot="copied">Invite copied</span>
+  <span slot="error">Copy failed</span>
+</CopyButton>
 ```
+
+`CopyButton` accepts the same presentation `variant` and `size` vocabulary as `Button`. Its stable
+`copy-idle`, `copy-copied`, and `copy-error` slots keep visible feedback in
+sync with the accessible label; free-form default children remain the idle presentation.
 
 ## Data visualization
 
@@ -374,14 +382,14 @@ animates a formatted metric while preserving a stable accessible value. All thre
 content readable without JavaScript and honor reduced-motion preferences.
 
 ```astro
-<ScrollReveal animation="slide-up" duration="slow">
+<ScrollReveal animation="slide-up" as="section" duration="slow">
   <h2>Release highlights</h2>
 </ScrollReveal>
 
-<RevealGroup stagger={80}>
-  <Card>Plan</Card>
-  <Card>Build</Card>
-  <Card>Ship</Card>
+<RevealGroup as="ul" stagger={80}>
+  <li><Card>Plan</Card></li>
+  <li><Card>Build</Card></li>
+  <li><Card>Ship</Card></li>
 </RevealGroup>
 
 <AnimatedNumber decimals={1} suffix="%" value={99.8} />

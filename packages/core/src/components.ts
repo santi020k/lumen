@@ -414,6 +414,12 @@ export const lumenStylingContracts = {
     rootSlot: 'code-tabs',
     stability: 'stable'
   },
+  CopyButton: {
+    customProperties: [],
+    parts: ['copy-idle', 'copy-copied', 'copy-error'],
+    rootSlot: 'copy-button',
+    stability: 'stable'
+  },
   ContextNavigation: {
     customProperties: [
       '--ui-context-navigation-gap',

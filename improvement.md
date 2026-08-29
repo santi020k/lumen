@@ -48,11 +48,14 @@ as a completed physical-device pass.
 ## SwiftUI semantic button roles
 
 PostLens migrated ordinary primary, secondary, and quiet content actions to `LumenButton`, and it
-applied the public `LumenButtonStyle` to `PhotosPicker` actions in both onboarding and the Photos
-permission screen without wrapping or replacing the system picker. `LumenButtonGroup` can contain
-that styled system control alongside a composed `LumenButton`, which keeps the action hierarchy and
-spacing consistent without taking ownership of photo-selection behavior. Destructive and cancel
-actions could not migrate with the same confidence:
+applied the public `LumenButtonStyle` to `PhotosPicker` actions in onboarding, the Photos permission
+screen, and its internal treatment-calibration tool without wrapping or replacing the system
+picker. `LumenButtonGroup` can contain that styled system control alongside a composed
+`LumenButton`, which keeps the action hierarchy and spacing consistent without taking ownership of
+photo-selection behavior. This also established a useful migration rule: prefer the public style
+when a system control owns selection or presentation, and prefer the composed component when the
+application owns activation. Destructive and cancel actions could not migrate with the same
+confidence:
 `LumenButton` and `LumenIconButton` create an inner `Button(action:)` without accepting SwiftUI's
 `ButtonRole`. A danger intent supplies the visual recipe, but it does not preserve the semantic role
 that menus, dialogs, accessibility, and platform styling can use.
@@ -81,6 +84,13 @@ button preserves the 44-point target but its horizontal padding truncates the tr
 label in a score-summary row. The small recipe fits visually but would reduce the hit target, so the
 consumer retained the native bordered row action.
 
+The treatment-calibration tool confirmed that medium Lumen buttons can still support a dense
+adaptive choice grid when the consumer owns the grid minimum width and gives each label a 48-point
+minimum height. Seven one-character choices rendered as five columns plus a wrapped second row on a
+narrow iPhone, with every action fully visible above the bottom safe-area inset. A reusable example
+would help consumers understand that the component supplies control metrics while the container
+still owns column count and reflow.
+
 The same consumer exposed a full-width composition boundary when migrating its primary `Adjust
 Crop` action. `LumenButton(size: .lg)` was valid inside the SwiftUI `List`, but the initial media
 preview left the 52-point row underneath a persistent `safeAreaInset` export bar. The accessibility
@@ -102,6 +112,9 @@ Acceptance criteria:
 - Apply the same target policy to `LumenIconButton`, or document any intentional difference.
 - Test small text buttons and icon buttons in lists, cards, toolbars, and dense action groups with
   touch, pointer, keyboard, Switch Control, and VoiceOver.
+- Add an adaptive-grid example that combines medium buttons, a consumer-defined minimum column
+  width, and an explicit 44-point-or-larger target, then verify reflow at narrow iPhone widths and
+  accessibility text sizes.
 - Add a SwiftUI media-workspace example with a large button in a `List` above a persistent
   `safeAreaInset` action bar, and assert that the rendered frames do not overlap at compact heights.
 - Document that accessibility-tree presence does not prove a migrated control is visible or

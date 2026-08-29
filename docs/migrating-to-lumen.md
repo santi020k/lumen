@@ -124,6 +124,20 @@ peer while each application remains responsible for loading its adapter styleshe
 `lumen doctor` follows shared-library dependencies to the consuming apps and reports setup errors
 separately from advisory adoption opportunities.
 
+When a private wrapper package cannot be classified from its layout or scripts, declare the
+integration boundary explicitly:
+
+```json
+{
+  "lumen": {
+    "integrationBoundary": "library"
+  }
+}
+```
+
+Use `"application"` only for a runnable boundary that owns its adapter stylesheet and runtime
+setup. Use `"workspace"` for an orchestration-only root that owns neither.
+
 After the source migration, verify the actual page at phone and desktop widths:
 
 ```bash

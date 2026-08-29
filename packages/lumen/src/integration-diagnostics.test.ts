@@ -230,6 +230,29 @@ describe('Lumen integration diagnostics', () => {
     }
   })
 
+  test('supports an explicit library boundary for private wrapper packages', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'lumen-doctor-private-library-'))
+
+    try {
+      await mkdir(join(root, 'src'), { recursive: true })
+      await writeFile(
+        join(root, 'package.json'),
+        '{"name":"@example/private-ui","private":true,"lumen":{"integrationBoundary":"library"}}\n'
+      )
+      await writeFile(
+        join(root, 'src', 'index.tsx'),
+        'export { Card } from "@santi020k/lumen-react"\n'
+      )
+
+      const report = await inspectLumenIntegration(root)
+
+      expect(report.healthy).toBe(true)
+      expect(report.findings).toEqual([])
+    } finally {
+      await rm(root, { force: true, recursive: true })
+    }
+  })
+
   test('blocks the removed Astro runtime root import with an exact migration', async () => {
     const root = await mkdtemp(join(tmpdir(), 'lumen-doctor-runtime-export-'))
 

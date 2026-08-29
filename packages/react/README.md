@@ -173,10 +173,20 @@ Use `CopyButton` for clipboard actions on generated names, descriptions, message
 either a `value` or a `target` selector; `toast` opts into Lumen Toast feedback.
 
 ```tsx
-<CopyButton value="https://lumen.santi020k.com" toast>
+<CopyButton
+  copiedContent="Link copied"
+  size="sm"
+  value="https://lumen.santi020k.com"
+  variant="default"
+  toast
+>
   Copy link
 </CopyButton>
 ```
+
+`CopyButton` shares `Button` presentation variants and sizes. `copiedContent` and `errorContent`
+customize its visible feedback while the localized label props remain the accessible announcement.
+Stable `data-slot` hooks expose the idle, copied, and error parts.
 
 ## Data visualization
 

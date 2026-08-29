@@ -11,4 +11,5 @@
 Complete the v2 consumer-improvement contracts: localizable chart support copy, semantic native
 chart references and datum tones, richer SwiftUI form composition, adaptive native layouts,
 success actions, contextual React Native fields, complete CopyButton and reveal semantics,
-component-aware diagnostics, rendered migration checks, and adoption-ready registry output.
+component-aware diagnostics, explicit shared-library integration boundaries, packed Astro runtime
+coverage, rendered migration checks, and adoption-ready registry output.

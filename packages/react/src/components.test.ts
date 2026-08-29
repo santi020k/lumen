@@ -3,7 +3,7 @@ import type {
   ReactElement,
   ReactNode
 } from 'react'
-import { isValidElement } from 'react'
+import { createElement, isValidElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 
 import { registerLumenIconPack } from '@santi020k/lumen-core'
@@ -43,6 +43,7 @@ import {
   Command,
   ContextMenu,
   ContextNavigation,
+  CopyButton,
   Direction,
   Drawer,
   Empty,
@@ -114,6 +115,22 @@ const descendantsOf = (node: ReactNode): ReactElement[] => {
 const OptimizedImage = (_props: ComponentPropsWithoutRef<'img'> & { preload?: boolean }) => null
 
 describe('@santi020k/lumen-react components', () => {
+  test('renders CopyButton presentation variants and stable feedback slots', () => {
+    const html = renderToStaticMarkup(
+      createElement(CopyButton, {
+        copiedContent: 'Done',
+        size: 'sm',
+        value: 'Invite',
+        variant: 'default'
+      }, 'Copy invite')
+    )
+
+    expect(html).toContain('ui-button--default')
+    expect(html).toContain('ui-button--sm')
+    expect(html).toContain('data-slot="copy-idle"')
+    expect(html).toContain('data-slot="copy-copied">Done</span>')
+    expect(html).toContain('data-slot="copy-error"')
+  })
   test('composes structural container classes', () => {
     expect(propsOf(Accordion({ className: 'x' }) as ReactElement).className).toBe('ui-accordion x')
     expect(propsOf(ButtonGroup({}) as ReactElement).className).toBe('ui-button-group')

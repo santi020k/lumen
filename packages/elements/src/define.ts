@@ -434,12 +434,31 @@ const elementConfigs = {
   Combobox: lumenComboboxElementConfig,
   Container: lumenContainerElementConfig,
   CopyButton: {
-    baseClassName: 'ui-button ui-button--outline ui-copy-button',
+    attributeClasses: {
+      size: {
+        default: 'ui-button--default-size',
+        icon: 'ui-button--icon',
+        lg: 'ui-button--lg',
+        sm: 'ui-button--sm'
+      },
+      variant: {
+        default: 'ui-button--default',
+        destructive: 'ui-button--destructive',
+        ghost: 'ui-button--ghost',
+        link: 'ui-button--link',
+        outline: 'ui-button--outline',
+        secondary: 'ui-button--secondary'
+      }
+    },
+    baseClassName: 'ui-button ui-copy-button',
     defaults: {
       'aria-label': 'Copy to clipboard',
+      'data-slot': 'copy-button',
       'data-state': 'idle',
       'data-ui-copy-button': '',
       role: 'button',
+      size: 'default',
+      variant: 'outline',
       tabindex: '0'
     },
     tagName: 'lumen-copy-button'
@@ -8478,6 +8497,8 @@ class LumenCopyButtonBehaviorElement extends LumenElement {
   override connectedCallback() {
     super.connectedCallback()
 
+    this.ensureStateContent()
+
     this.abortController?.abort()
 
     this.abortController = new AbortController()
@@ -8503,6 +8524,43 @@ class LumenCopyButtonBehaviorElement extends LumenElement {
     this.abortController = undefined
 
     globalThis.clearTimeout(this.resetTimer)
+  }
+
+  private ensureStateContent() {
+    let idleContent = this.querySelector<HTMLElement>('[data-slot="copy-idle"]')
+
+    if (!idleContent) {
+      idleContent = document.createElement('span')
+
+      idleContent.dataset.slot = 'copy-idle'
+
+      idleContent.setAttribute('aria-hidden', 'true')
+
+      const existingContent = [...this.childNodes]
+
+      idleContent.append(...existingContent)
+
+      this.append(idleContent)
+    }
+
+    const stateContent = [
+      ['copy-copied', this.getAttribute('copied-label') ?? 'Copied to clipboard'],
+      ['copy-error', this.getAttribute('error-label') ?? 'Could not copy to clipboard']
+    ] as const
+
+    for (const [slot, label] of stateContent) {
+      if (this.querySelector(`[data-slot="${slot}"]`)) continue
+
+      const content = document.createElement('span')
+
+      content.dataset.slot = slot
+
+      content.setAttribute('aria-hidden', 'true')
+
+      content.textContent = label
+
+      this.append(content)
+    }
   }
 
   private copy = async () => {

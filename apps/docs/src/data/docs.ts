@@ -1470,6 +1470,15 @@ const apiReferenceByComponent = {
     ),
     apiRow(
       'toast', 'boolean', 'false', 'Also dispatches a Lumen Toast notification for copy success or failure.'
+    ),
+    apiRow(
+      'variant', 'Button variant', '"outline"', 'Uses the same default, destructive, ghost, link, outline, and secondary treatments as Button.'
+    ),
+    apiRow(
+      'size', '"default" | "sm" | "lg" | "icon"', '"default"', 'Uses the shared Button sizing and touch-target contract.'
+    ),
+    apiRow(
+      'copiedContent, errorContent', 'ReactNode', 'localized labels', 'Customizes visible React feedback while label props remain the accessible announcement.'
     )
   ],
   Collapsible: [
@@ -2378,6 +2387,9 @@ const apiReferenceByComponent = {
   ],
   RevealGroup: [
     apiRow(
+      'as', '"div" | "ol" | "section" | "ul"', '"div"', 'Preserves list or section semantics without adding a wrapper.'
+    ),
+    apiRow(
       'animation', '"fade" | "slide-up" | "scale"', '"slide-up"', 'Sets the shared entrance treatment for direct children.'
     ),
     apiRow(
@@ -2395,6 +2407,9 @@ const apiReferenceByComponent = {
     )
   ],
   ScrollReveal: [
+    apiRow(
+      'as', '"article" | "div" | "section"', '"div"', 'Preserves the semantic root without changing reveal behavior.'
+    ),
     apiRow(
       'animation', '"fade" | "slide-up" | "scale"', '"fade"', 'Sets the reveal transition. UIPrimitives observes the element and reveals it as it enters the viewport.'
     ),
