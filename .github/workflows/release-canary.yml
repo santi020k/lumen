@@ -7,6 +7,12 @@ on:
       - ".github/workflows/release.yml"
       - ".github/workflows/publish-compose.yml"
       - ".github/workflows/verify-native-release.yml"
+      - ".github/workflows/release-playground-apple.yml"
+      - ".github/workflows/monitor-playground-apple.yml"
+      - ".github/workflows/release-playground-macos.yml"
+      - ".github/workflows/monitor-playground-macos.yml"
+      - ".github/scripts/monitor-xcode-cloud.mjs"
+      - ".github/scripts/monitor-xcode-cloud.test.mjs"
       - "Package.swift"
       - "apps/playground-android/**"
       - "apps/playground-apple/**"
@@ -67,6 +73,8 @@ on:
       - "scripts/check-web-consumer-evidence.test.mjs"
       - "scripts/check-playground-eas-version.mjs"
       - "scripts/check-playground-eas-version.test.mjs"
+      - "scripts/check-playground-apple-release.mjs"
+      - "scripts/check-playground-apple-release.test.mjs"
       - "scripts/check-react-native-peer-docs.mjs"
       - "scripts/check-react-native-peer-docs.test.mjs"
       - "scripts/generate-release-manifest.mjs"
@@ -216,6 +224,7 @@ jobs:
           cache: pnpm
           node-version: 22.x
       - run: pnpm install --frozen-lockfile
+      - run: pnpm run check:playground-apple-release && pnpm run test:playground-apple-release
       - run: pnpm run check:swift-version && pnpm run test:swift-version
       - run: swift test
       - run: pnpm run check:swift-source-compatibility

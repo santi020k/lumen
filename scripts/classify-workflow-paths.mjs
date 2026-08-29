@@ -106,9 +106,10 @@ export const classifyCiPaths = (paths, { releasePullRequest = false } = {}) => {
     /^tokens\//u,
     /^registry\/(native-api-baseline|native-device-evidence|native-stability-soak|swift-api-baseline|swift-widget-api-baseline)\.json$/u,
     /^apps\/docs\/(public\/native-components\/|scripts\/sync-native-component-captures\.mjs|src\/data\/native-component-captures\.json)/u,
-    /^scripts\/(check-native-device-evidence|check-native-stability-soak|check-(native|swift)-api-baseline|generate-platform-tokens)\.mjs$/u,
+    /^scripts\/(check-native-device-evidence|check-native-stability-soak|check-(native|swift)-api-baseline|check-playground-apple-release(?:\.test)?|generate-platform-tokens)\.mjs$/u,
+    /^\.github\/scripts\/monitor-xcode-cloud(?:\.test)?\.mjs$/u,
     /^Package\.swift$/u,
-    /^\.github\/workflows\/ci\.yml$/u,
+    /^\.github\/workflows\/(ci|monitor-playground-(apple|macos)|release-playground-(apple|macos))\.yml$/u,
     sharedConfiguration
   ])
 
@@ -190,8 +191,9 @@ export const classifyCanaryPaths = (paths, { manual = false } = {}) => {
     /^docs\/(ai-usage|native-components|playgrounds)\.md$/u,
     /^tokens\//u,
     /^registry\/(native-device-evidence|native-stability-soak|swift-api-baseline|swift-widget-api-baseline|release-manifest)\.json$/u,
-    /^scripts\/(check-native-device-evidence|check-native-stability-soak|check-native-stable-readiness|check-swift-api-baseline|generate-platform-tokens|generate-release-manifest|smoke-react-native-native-package|smoke-swift-package-candidate|sync-coordinated-v2-versions(?:\.test)?|sync-swift-version(?:\.test)?)\.mjs$/u,
-    /^\.github\/workflows\/(release-canary|verify-native-release)\.yml$/u,
+    /^scripts\/(check-native-device-evidence|check-native-stability-soak|check-native-stable-readiness|check-playground-apple-release(?:\.test)?|check-swift-api-baseline|generate-platform-tokens|generate-release-manifest|smoke-react-native-native-package|smoke-swift-package-candidate|sync-coordinated-v2-versions(?:\.test)?|sync-swift-version(?:\.test)?)\.mjs$/u,
+    /^\.github\/scripts\/monitor-xcode-cloud(?:\.test)?\.mjs$/u,
+    /^\.github\/workflows\/(monitor-playground-(apple|macos)|release-canary|release-playground-(apple|macos)|verify-native-release)\.yml$/u,
     sharedConfiguration
   ])
 

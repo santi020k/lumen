@@ -49,6 +49,23 @@ test('each playground selects only its owning expensive surface', () => {
   assert.equal(reactNative.android, false)
 })
 
+test('Apple release automation selects its dedicated CI and canary coverage', () => {
+  for (const path of [
+    'scripts/check-playground-apple-release.mjs',
+    'scripts/check-playground-apple-release.test.mjs',
+    '.github/scripts/monitor-xcode-cloud.mjs',
+    '.github/scripts/monitor-xcode-cloud.test.mjs',
+    '.github/workflows/release-playground-apple.yml',
+    '.github/workflows/monitor-playground-apple.yml',
+    '.github/workflows/release-playground-macos.yml',
+    '.github/workflows/monitor-playground-macos.yml'
+  ]) {
+    assert.equal(classifyCiPaths([path]).apple, true, path)
+
+    assert.equal(classifyCanaryPaths([path]).swift, true, path)
+  }
+})
+
 test('a version-only release lockfile does not fan out to platforms', () => {
   const classification = classifyCiPaths(
     ['packages/react/package.json', 'pnpm-lock.yaml'],
