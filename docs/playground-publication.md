@@ -52,9 +52,15 @@ For an unsigned Android release candidate:
 pnpm playground:android:bundle
 ```
 
-For a signed upload bundle, keep the upload key and passwords in the configured Infisical project
-under the `dev` environment and `/playground/google-play` path. Store the keystore as base64 using
-the following four secret names:
+For a Google Play closed-beta release, dispatch **Release Android playground beta** from `main`
+with the public version name and the next unused, monotonically increasing version code. The
+workflow builds and signature-verifies the AAB, runs the Android tests and lint, retains the exact
+bundle as a workflow artifact, and publishes it to the existing `alpha` closed-testing track.
+
+For a local signed upload bundle, keep the upload key and passwords in the configured Infisical
+project under the `dev` environment and `/playground/google-play` path. CI uses the matching `prod`
+path plus `GOOGLE_PLAY_SERVICE_ACCOUNT_JSON`; the service account must have release access only to
+Lumen Playground. Store the keystore as base64 using the following four secret names:
 
 ```bash
 LUMEN_PLAYGROUND_KEYSTORE_BASE64
