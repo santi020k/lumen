@@ -26,6 +26,17 @@ const maximumWaitMs = Number(process.env.MAXIMUM_WAIT_MINUTES ?? "150") * 60_000
 const apiOrigin = process.env.APP_STORE_CONNECT_API_ORIGIN ?? "https://api.appstoreconnect.apple.com";
 const startedAt = Date.now();
 const base64Url = (value) => Buffer.from(value).toString("base64url");
+const maximumRetryDelayMs = 60_000;
+
+class RetryableRequestError extends Error {
+  constructor(message, retryAfterMs) {
+    super(message);
+
+    this.name = "RetryableRequestError";
+
+    this.retryAfterMs = retryAfterMs;
+  }
+}
 
 const authorizationToken = () => {
   const issuedAt = Math.floor(Date.now() / 1_000);
@@ -107,15 +118,37 @@ const findReleaseBuild = (document) => {
 };
 
 const fetchBuilds = async () => {
-  const response = await fetch(buildsUrl(), {
-    headers: {
-      Accept: "application/json",
-      Authorization: `Bearer ${authorizationToken()}`,
-    },
-  });
+  let response;
+
+  try {
+    response = await fetch(buildsUrl(), {
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${authorizationToken()}`,
+      },
+    });
+  } catch (error) {
+    const reason = error instanceof Error ? error.message : String(error);
+
+    throw new RetryableRequestError(`App Store Connect request failed: ${reason}`);
+  }
 
   if (!response.ok) {
     const responseBody = await response.text();
+    const isRetryable = response.status === 429 || response.status >= 500;
+
+    if (isRetryable) {
+      const retryAfterSeconds = Number(response.headers.get("retry-after"));
+
+      const retryAfterMs = Number.isFinite(retryAfterSeconds) && retryAfterSeconds >= 0
+        ? retryAfterSeconds * 1_000
+        : undefined;
+
+      throw new RetryableRequestError(
+        `App Store Connect returned retryable status ${response.status}: ${responseBody}`,
+        retryAfterMs,
+      );
+    }
 
     throw new Error(`App Store Connect returned ${response.status}: ${responseBody}`);
   }
@@ -152,9 +185,34 @@ const writeSummary = async (build, outcome) => {
 };
 
 let lastReportedState;
+let consecutiveRequestFailures = 0;
 
 while (Date.now() - startedAt < maximumWaitMs) {
-  const document = await fetchBuilds();
+  let document;
+
+  try {
+    document = await fetchBuilds();
+
+    consecutiveRequestFailures = 0;
+  } catch (error) {
+    if (!(error instanceof RetryableRequestError)) throw error;
+
+    consecutiveRequestFailures += 1;
+
+    const exponentialDelayMs = pollIntervalMs * (2 ** Math.min(consecutiveRequestFailures - 1, 6));
+
+    const retryDelayMs = Math.min(
+      error.retryAfterMs ?? exponentialDelayMs,
+      maximumRetryDelayMs,
+    );
+
+    console.warn(`${error.message} Retrying in ${retryDelayMs / 1_000} seconds.`);
+
+    await wait(retryDelayMs);
+
+    continue;
+  }
+
   const build = findReleaseBuild(document);
 
   if (!build) {
