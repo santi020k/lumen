@@ -373,7 +373,7 @@ const applePlaygroundSource = await readFile(
 
 assert.doesNotMatch(
   applePlaygroundSource,
-  /"(?:Billing|Paid|Premium|Purchases?|Subscriptions?)"/u,
+  /"[^"\n]*\b(?:billing|paid|premium|purchases?|subscriptions?)\b[^"\n]*"/iu,
   "Apple playground demo copy must not imply unavailable monetized features",
 );
 
