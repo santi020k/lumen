@@ -71,47 +71,81 @@ const collectFiles = async (directory, extension) => {
   return files;
 };
 
+const readSwiftStringOpening = (source, index) => {
+  let hashCount = 0;
+
+  while (source[index + hashCount] === "#") {
+    hashCount += 1;
+  }
+
+  const quoteIndex = index + hashCount;
+
+  if (source[quoteIndex] !== '"') return undefined;
+
+  const delimiter = source.startsWith('"""', quoteIndex) ? '"""' : '"';
+
+  return {
+    closingDelimiter: `${delimiter}${"#".repeat(hashCount)}`,
+    delimiter,
+    hashCount,
+    valueIndex: quoteIndex + delimiter.length,
+  };
+};
+
+const readSwiftStringLiteral = (source, opening) => {
+  let index = opening.valueIndex;
+  let literal = "";
+
+  while (index < source.length) {
+    if (source.startsWith(opening.closingDelimiter, index)) {
+      return {
+        literal,
+        nextIndex: index + opening.closingDelimiter.length,
+      };
+    }
+
+    if (
+      opening.hashCount === 0 &&
+      source[index] === "\\" &&
+      index + 1 < source.length
+    ) {
+      literal += source.slice(index, index + 2);
+
+      index += 2;
+
+      continue;
+    }
+
+    if (opening.delimiter === '"' && source[index] === "\n") {
+      return { literal: undefined, nextIndex: index };
+    }
+
+    literal += source[index];
+
+    index += 1;
+  }
+
+  return { literal: undefined, nextIndex: index };
+};
+
 const collectSwiftStringLiterals = (source) => {
   const literals = [];
   let index = 0;
 
   while (index < source.length) {
-    if (source[index] !== '"') {
+    const opening = readSwiftStringOpening(source, index);
+
+    if (!opening) {
       index += 1;
 
       continue;
     }
 
-    const delimiter = source.startsWith('"""', index) ? '"""' : '"';
-    let literal = "";
+    const result = readSwiftStringLiteral(source, opening);
 
-    index += delimiter.length;
+    if (result.literal !== undefined) literals.push(result.literal);
 
-    while (index < source.length) {
-      if (source.startsWith(delimiter, index)) {
-        literals.push(literal);
-
-        index += delimiter.length;
-
-        break;
-      }
-
-      if (source[index] === "\\" && index + 1 < source.length) {
-        literal += source.slice(index, index + 2);
-
-        index += 2;
-
-        continue;
-      }
-
-      if (delimiter === '"' && source[index] === "\n") {
-        break;
-      }
-
-      literal += source[index];
-
-      index += 1;
-    }
+    index = result.nextIndex;
   }
 
   return literals;
@@ -430,7 +464,6 @@ const applePlaygroundSourceDirectory = join(
   "apps",
   "playground-apple",
   "Sources",
-  "LumenApplePlayground",
 );
 
 const applePlaygroundSourceFiles = await collectFiles(
@@ -440,7 +473,7 @@ const applePlaygroundSourceFiles = await collectFiles(
 
 assert.ok(
   applePlaygroundSourceFiles.length > 0,
-  "Apple playground target must contain Swift sources",
+  "Apple playground targets must contain Swift sources",
 );
 
 for (const path of applePlaygroundSourceFiles) {
@@ -459,13 +492,31 @@ const multilineMonetizationLabel = collectSwiftStringLiterals(
   'Text("""\nPremium plan\n""")',
 );
 
+const rawMonetizationLabel = collectSwiftStringLiterals(
+  'Text(#"The "premium" option"#)',
+);
+
+const rawMultilineMonetizationLabel = collectSwiftStringLiterals(
+  'Text(#"""\nPremium "plan"\n"""#)',
+);
+
 assert.deepEqual(multilineMonetizationLabel, ["\nPremium plan\n"]);
 
-assert.match(
+assert.deepEqual(rawMonetizationLabel, ['The "premium" option']);
+
+assert.deepEqual(rawMultilineMonetizationLabel, ['\nPremium "plan"\n']);
+
+for (const label of [
   multilineMonetizationLabel[0],
-  monetizationLabelPattern,
-  "Swift multiline demo labels must be checked for monetization wording",
-);
+  rawMonetizationLabel[0],
+  rawMultilineMonetizationLabel[0],
+]) {
+  assert.match(
+    label,
+    monetizationLabelPattern,
+    "Swift demo labels must be checked for monetization wording",
+  );
+}
 
 assert.ok(
   appleInfo.includes("$(MARKETING_VERSION)"),
