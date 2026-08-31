@@ -71,86 +71,6 @@ const collectFiles = async (directory, extension) => {
   return files;
 };
 
-const readSwiftStringOpening = (source, index) => {
-  let hashCount = 0;
-
-  while (source[index + hashCount] === "#") {
-    hashCount += 1;
-  }
-
-  const quoteIndex = index + hashCount;
-
-  if (source[quoteIndex] !== '"') return undefined;
-
-  const delimiter = source.startsWith('"""', quoteIndex) ? '"""' : '"';
-
-  return {
-    closingDelimiter: `${delimiter}${"#".repeat(hashCount)}`,
-    delimiter,
-    hashCount,
-    valueIndex: quoteIndex + delimiter.length,
-  };
-};
-
-const readSwiftStringLiteral = (source, opening) => {
-  let index = opening.valueIndex;
-  let literal = "";
-
-  while (index < source.length) {
-    if (source.startsWith(opening.closingDelimiter, index)) {
-      return {
-        literal,
-        nextIndex: index + opening.closingDelimiter.length,
-      };
-    }
-
-    if (
-      opening.hashCount === 0 &&
-      source[index] === "\\" &&
-      index + 1 < source.length
-    ) {
-      literal += source.slice(index, index + 2);
-
-      index += 2;
-
-      continue;
-    }
-
-    if (opening.delimiter === '"' && source[index] === "\n") {
-      return { literal: undefined, nextIndex: index };
-    }
-
-    literal += source[index];
-
-    index += 1;
-  }
-
-  return { literal: undefined, nextIndex: index };
-};
-
-const collectSwiftStringLiterals = (source) => {
-  const literals = [];
-  let index = 0;
-
-  while (index < source.length) {
-    const opening = readSwiftStringOpening(source, index);
-
-    if (!opening) {
-      index += 1;
-
-      continue;
-    }
-
-    const result = readSwiftStringLiteral(source, opening);
-
-    if (result.literal !== undefined) literals.push(result.literal);
-
-    index = result.nextIndex;
-  }
-
-  return literals;
-};
-
 const assertPng = async (path, width, height, colorType = 2) => {
   const png = await readFile(path);
   const signature = Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]);
@@ -479,44 +399,18 @@ assert.ok(
 for (const path of applePlaygroundSourceFiles) {
   const source = await readFile(path, "utf8");
 
-  for (const literal of collectSwiftStringLiterals(source)) {
-    assert.doesNotMatch(
-      literal,
-      monetizationLabelPattern,
-      `${path} must not imply unavailable monetized features`,
-    );
-  }
-}
-
-const multilineMonetizationLabel = collectSwiftStringLiterals(
-  'Text("""\nPremium plan\n""")',
-);
-
-const rawMonetizationLabel = collectSwiftStringLiterals(
-  'Text(#"The "premium" option"#)',
-);
-
-const rawMultilineMonetizationLabel = collectSwiftStringLiterals(
-  'Text(#"""\nPremium "plan"\n"""#)',
-);
-
-assert.deepEqual(multilineMonetizationLabel, ["\nPremium plan\n"]);
-
-assert.deepEqual(rawMonetizationLabel, ['The "premium" option']);
-
-assert.deepEqual(rawMultilineMonetizationLabel, ['\nPremium "plan"\n']);
-
-for (const label of [
-  multilineMonetizationLabel[0],
-  rawMonetizationLabel[0],
-  rawMultilineMonetizationLabel[0],
-]) {
-  assert.match(
-    label,
+  assert.doesNotMatch(
+    source,
     monetizationLabelPattern,
-    "Swift demo labels must be checked for monetization wording",
+    `${path} must not imply unavailable monetized features`,
   );
 }
+
+assert.match(
+  'Text("Plan: \\(enabled ? "Premium" : "Standard")")',
+  monetizationLabelPattern,
+  "Swift source must be checked without relying on string-literal parsing",
+);
 
 assert.ok(
   appleInfo.includes("$(MARKETING_VERSION)"),
