@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readFile, stat } from "node:fs/promises";
+import { readdir, readFile, stat } from "node:fs/promises";
 import { join, resolve } from "node:path";
 
 // cspell:words appiconset
@@ -49,6 +49,23 @@ const assertFile = async (path) => {
   assert.ok(file.isFile(), `${path} must be a file`);
 
   assert.ok(file.size > 0, `${path} must not be empty`);
+};
+
+const collectFiles = async (directory, extension) => {
+  const entries = await readdir(directory, { withFileTypes: true });
+  const files = [];
+
+  for (const entry of entries) {
+    const path = join(directory, entry.name);
+
+    if (entry.isDirectory()) {
+      files.push(...(await collectFiles(path, extension)));
+    } else if (entry.isFile() && entry.name.endsWith(extension)) {
+      files.push(path);
+    }
+  }
+
+  return files;
 };
 
 const assertPng = async (path, width, height, colorType = 2) => {
@@ -359,23 +376,33 @@ const macAppleEntitlements = await readFile(
   "utf8",
 );
 
-const applePlaygroundSource = await readFile(
-  join(
-    repositoryRoot,
-    "apps",
-    "playground-apple",
-    "Sources",
-    "LumenApplePlayground",
-    "LumenApplePlaygroundApp.swift",
-  ),
-  "utf8",
+const applePlaygroundSourceDirectory = join(
+  repositoryRoot,
+  "apps",
+  "playground-apple",
+  "Sources",
+  "LumenApplePlayground",
 );
 
-assert.doesNotMatch(
-  applePlaygroundSource,
-  /"[^"\n]*\b(?:billing|paid|premium|purchases?|subscriptions?)\b[^"\n]*"/iu,
-  "Apple playground demo copy must not imply unavailable monetized features",
+const applePlaygroundSourceFiles = await collectFiles(
+  applePlaygroundSourceDirectory,
+  ".swift",
 );
+
+assert.ok(
+  applePlaygroundSourceFiles.length > 0,
+  "Apple playground target must contain Swift sources",
+);
+
+for (const path of applePlaygroundSourceFiles) {
+  const source = await readFile(path, "utf8");
+
+  assert.doesNotMatch(
+    source,
+    /"[^"\n]*\b(?:billing|paid|premium|purchases?|subscriptions?)\b[^"\n]*"/iu,
+    `${path} must not imply unavailable monetized features`,
+  );
+}
 
 assert.ok(
   appleInfo.includes("$(MARKETING_VERSION)"),
