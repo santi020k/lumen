@@ -1,3 +1,12 @@
-Lumen Playground is an interactive developer reference catalog. It requires no account or special review access and its complete functionality is available offline.
+Lumen Playground is a free interactive developer reference catalog. It requires no account, purchase, subscription, license key, or special review access, and its complete functionality is bundled with the app and available offline.
+
+BUSINESS MODEL
+The app does not sell, unlock, or provide access to paid digital content or services. There are no In-App Purchases, external purchases, subscriptions, paid accounts, trials, or premium features.
+
+Answers to the Guideline 2.1(b) questions:
+1. No users access paid content in the app because the app contains no paid content.
+2. Users cannot purchase content for the app in the app or elsewhere.
+3. The app does not recognize an account or provide access to previously purchased content.
+4. No paid content, subscriptions, or features are unlocked in the app, with or without In-App Purchase.
 
 The controls labeled as demonstrations intentionally exercise component states; they do not register for notifications, download updates, submit form content, or persist personal information. Documentation, Support, and Privacy open public HTTPS pages in the system browser.

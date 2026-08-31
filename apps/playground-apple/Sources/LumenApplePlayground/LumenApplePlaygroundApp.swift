@@ -566,7 +566,7 @@ struct ComponentsCatalogView: View {
                             options: [
                                 LumenSelectionOption("Overview", value: "overview"),
                                 LumenSelectionOption("Activity", value: "activity"),
-                                LumenSelectionOption("Billing", value: "billing", isDisabled: true)
+                                LumenSelectionOption("Archive", value: "archive", isDisabled: true)
                             ]
                         ) { selected in
                             LumenSurface(tone: .muted, padding: .md) {

@@ -12,6 +12,9 @@ support URL, and privacy policy while proving the package native to their platfo
   utility rather than store-listing decoration.
 - Example preferences and forms are explicitly labeled as demonstrations. They do not register for
   notifications, download updates, submit content, or imply persistence.
+- Disabled-state examples use neutral developer-workspace language. Do not label demo-only controls
+  with billing, purchase, subscription, paid, or premium terms that could imply unavailable
+  monetized features during store review.
 - The applications contain no advertising, analytics, tracking, account system, or sensitive
   permissions. Re-audit this statement whenever dependencies or application behavior change.
 - Documentation, support, and privacy links open the public Lumen website in the system browser.
