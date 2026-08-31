@@ -6,6 +6,9 @@ import { join, resolve } from "node:path";
 
 const repositoryRoot = resolve(import.meta.dirname, "..");
 
+const monetizationLabelPattern =
+  /\b(?:billing|paid|premium|purchases?|subscriptions?)\b/iu;
+
 const appleStore = join(
   repositoryRoot,
   "apps",
@@ -66,6 +69,52 @@ const collectFiles = async (directory, extension) => {
   }
 
   return files;
+};
+
+const collectSwiftStringLiterals = (source) => {
+  const literals = [];
+  let index = 0;
+
+  while (index < source.length) {
+    if (source[index] !== '"') {
+      index += 1;
+
+      continue;
+    }
+
+    const delimiter = source.startsWith('"""', index) ? '"""' : '"';
+    let literal = "";
+
+    index += delimiter.length;
+
+    while (index < source.length) {
+      if (source.startsWith(delimiter, index)) {
+        literals.push(literal);
+
+        index += delimiter.length;
+
+        break;
+      }
+
+      if (source[index] === "\\" && index + 1 < source.length) {
+        literal += source.slice(index, index + 2);
+
+        index += 2;
+
+        continue;
+      }
+
+      if (delimiter === '"' && source[index] === "\n") {
+        break;
+      }
+
+      literal += source[index];
+
+      index += 1;
+    }
+  }
+
+  return literals;
 };
 
 const assertPng = async (path, width, height, colorType = 2) => {
@@ -397,12 +446,26 @@ assert.ok(
 for (const path of applePlaygroundSourceFiles) {
   const source = await readFile(path, "utf8");
 
-  assert.doesNotMatch(
-    source,
-    /"[^"\n]*\b(?:billing|paid|premium|purchases?|subscriptions?)\b[^"\n]*"/iu,
-    `${path} must not imply unavailable monetized features`,
-  );
+  for (const literal of collectSwiftStringLiterals(source)) {
+    assert.doesNotMatch(
+      literal,
+      monetizationLabelPattern,
+      `${path} must not imply unavailable monetized features`,
+    );
+  }
 }
+
+const multilineMonetizationLabel = collectSwiftStringLiterals(
+  'Text("""\nPremium plan\n""")',
+);
+
+assert.deepEqual(multilineMonetizationLabel, ["\nPremium plan\n"]);
+
+assert.match(
+  multilineMonetizationLabel[0],
+  monetizationLabelPattern,
+  "Swift multiline demo labels must be checked for monetization wording",
+);
 
 assert.ok(
   appleInfo.includes("$(MARKETING_VERSION)"),
