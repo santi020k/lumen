@@ -741,7 +741,7 @@ private fun FormsExample(
             options = listOf(
                 LumenSelectionOption("overview", "Overview"),
                 LumenSelectionOption("activity", "Activity"),
-                LumenSelectionOption("billing", "Billing", enabled = false)
+                LumenSelectionOption("archive", "Archive", enabled = false)
             ),
             value = activeTab,
             onValueChange = { activeTab = it }

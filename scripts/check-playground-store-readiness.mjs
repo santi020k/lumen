@@ -33,6 +33,15 @@ const androidStore = join(
   "Store",
 );
 
+const androidPlaygroundSourceDirectory = join(
+  repositoryRoot,
+  "apps",
+  "playground-android",
+  "app",
+  "src",
+  "main",
+);
+
 const readStoreText = async (path, maximumLength, label) => {
   const value = (await readFile(path, "utf8")).trim();
 
@@ -397,6 +406,26 @@ assert.ok(
 );
 
 for (const path of applePlaygroundSourceFiles) {
+  const source = await readFile(path, "utf8");
+
+  assert.doesNotMatch(
+    source,
+    monetizationLabelPattern,
+    `${path} must not imply unavailable monetized features`,
+  );
+}
+
+const androidPlaygroundSourceFiles = [
+  ...(await collectFiles(androidPlaygroundSourceDirectory, ".kt")),
+  ...(await collectFiles(androidPlaygroundSourceDirectory, ".xml")),
+];
+
+assert.ok(
+  androidPlaygroundSourceFiles.length > 0,
+  "Android playground target must contain Kotlin or XML sources",
+);
+
+for (const path of androidPlaygroundSourceFiles) {
   const source = await readFile(path, "utf8");
 
   assert.doesNotMatch(
