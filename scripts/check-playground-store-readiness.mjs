@@ -359,6 +359,24 @@ const macAppleEntitlements = await readFile(
   "utf8",
 );
 
+const applePlaygroundSource = await readFile(
+  join(
+    repositoryRoot,
+    "apps",
+    "playground-apple",
+    "Sources",
+    "LumenApplePlayground",
+    "LumenApplePlaygroundApp.swift",
+  ),
+  "utf8",
+);
+
+assert.doesNotMatch(
+  applePlaygroundSource,
+  /"(?:Billing|Paid|Premium|Purchases?|Subscriptions?)"/u,
+  "Apple playground demo copy must not imply unavailable monetized features",
+);
+
 assert.ok(
   appleInfo.includes("$(MARKETING_VERSION)"),
   "Apple marketing version is not configurable",
