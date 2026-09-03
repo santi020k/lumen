@@ -419,6 +419,10 @@ jobs:
             pnpm exec turbo run //#lint:knip //#check:registry
           fi
 
+          if [[ "${{ needs.classify.outputs.bundle-size }}" == "true" || "${{ needs.classify.outputs.consumer-packages }}" == "true" ]]; then
+            pnpm run build:release-scope
+          fi
+
           if [[ "${{ needs.classify.outputs.bundle-size }}" == "true" ]]; then
             pnpm run check:bundle-size
           fi

@@ -224,6 +224,7 @@ test("Apple checks run in Xcode Cloud and GitHub uses no macOS runners", () => {
 test("pull-request compatibility checks reuse the affected build outputs", () => {
   assertOrderedCommands(ciWorkflow, "pull-request compatibility checks", [
     "pnpm exec turbo run build typecheck lint test --affected",
+    "pnpm run build:release-scope",
     "pnpm run check:bundle-size",
     "pnpm run check:publish-dry-run",
     "pnpm run check:consumer-packages",

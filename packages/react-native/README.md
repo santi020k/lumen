@@ -43,8 +43,9 @@ New code should import date fields from `@santi020k/lumen-react-native/datetime`
 root date exports remain available only for 1.x compatibility; Lumen 2 removes them and makes the
 datetime picker optional for consumers that do not use the subpath.
 
-React 19.2, React Native 0.86.2 or newer, and `react-native-safe-area-context` 5.7 or newer are
-application-provided peer dependencies. Mount one `SafeAreaProvider` above the `LumenProvider` near
+React 19.2 and React Native 0.86.2 or newer are application-provided peer dependencies.
+`react-native-safe-area-context` 5.7 or newer is also application-provided. Mount one
+`SafeAreaProvider` above the `LumenProvider` near
 the application root; no stylesheet or web runtime is required:
 
 ```ts

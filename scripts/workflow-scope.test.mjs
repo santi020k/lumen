@@ -25,6 +25,16 @@ test('CI delegates path decisions and keeps package-family gates independent', (
 
   assert.match(ci, /needs\.classify\.outputs\.consumer-packages/u)
 
+  assert.match(
+    ci,
+    /bundle-size[\s\S]*?consumer-packages[\s\S]*?pnpm run build:release-scope[\s\S]*?pnpm run check:bundle-size/u
+  )
+
+  assert.match(
+    ci,
+    /consumer-packages[\s\S]*?pnpm run check:consumer-packages/u
+  )
+
   assert.doesNotMatch(
     ci,
     /if \[\[ "\$\{\{ needs\.classify\.outputs\.compatibility \}\}" == "true" \]\]; then\n[\s\S]*?pnpm run build\n/u
@@ -36,7 +46,7 @@ test('release canaries keep manual full-matrix coverage and scope pull requests'
 
   assert.match(canary, /node scripts\/classify-workflow-paths\.mjs canary/u)
 
-  assert.match(canary, /pnpm run build:affected/u)
+  assert.match(canary, /pnpm run build:release-scope/u)
 
   assert.match(canary, /needs\.classify\.outputs\.browser/u)
 
