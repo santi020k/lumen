@@ -73,6 +73,11 @@ const composeBuildSource = await readFile(
   "utf8",
 );
 
+const applePlaygroundPackage = await readFile(
+  resolve(repositoryRoot, "apps", "playground-apple", "Package.swift"),
+  "utf8",
+);
+
 const assertSelectsCanary = (input, canary) => {
   assert.equal(
     classifyCanaryPaths([input])[canary],
@@ -206,6 +211,11 @@ test("Apple checks run in Xcode Cloud and GitHub uses no macOS runners", () => {
   assert.doesNotMatch(ciWorkflow, /visual-regression:/u);
 
   assert.doesNotMatch(canaryWorkflow, /^ {2}swift:/mu);
+
+  assert.match(
+    applePlaygroundPackage,
+    /\.package\(name: "lumen", path: "\.\.\/\.\."\)/u,
+  );
 
   assertOrderedCommands(xcodeCloudChecks, "Xcode Cloud pull-request checks", [
     "git fetch --no-tags --depth=1 origin",

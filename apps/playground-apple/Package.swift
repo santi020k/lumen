@@ -5,7 +5,7 @@ let package = Package(
     name: "LumenApplePlayground",
     platforms: [.macOS(.v13)],
     dependencies: [
-        .package(path: "../..")
+        .package(name: "lumen", path: "../..")
     ],
     targets: [
         .executableTarget(
