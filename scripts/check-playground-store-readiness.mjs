@@ -273,19 +273,51 @@ await assertPng(join(androidStore, "icon-512.png"), 512, 512);
 
 await assertPng(join(androidStore, "feature-graphic.png"), 1024, 500);
 
-await assertPng(
-  join(
-    repositoryRoot,
-    "apps",
-    "playground-apple",
-    "Store",
-    "Screenshots",
-    "iphone-catalog-light.png",
-  ),
-  1242,
-  2688,
-  2,
-);
+const storeScreenshotNames = [
+  "01-home-light.png",
+  "02-examples-light.png",
+  "03-components-light.png",
+  "04-components-dark.png",
+  "05-settings-light.png",
+  "06-examples-dark.png",
+];
+
+for (const name of storeScreenshotNames) {
+  await assertPng(
+    join(
+      repositoryRoot,
+      "apps",
+      "playground-apple",
+      "Store",
+      "Screenshots",
+      `iphone-${name}`,
+    ),
+    1320,
+    2868,
+    2,
+  );
+
+  await assertPng(
+    join(
+      repositoryRoot,
+      "apps",
+      "playground-apple",
+      "Store",
+      "Screenshots",
+      `ipad-${name}`,
+    ),
+    2064,
+    2752,
+    2,
+  );
+
+  await assertPng(
+    join(androidStore, "Screenshots", `phone-${name}`),
+    2160,
+    3840,
+    2,
+  );
+}
 
 await assertPng(
   join(
@@ -314,62 +346,6 @@ await assertPng(
   ),
   1280,
   800,
-  2,
-);
-
-await assertPng(
-  join(
-    repositoryRoot,
-    "apps",
-    "playground-apple",
-    "Store",
-    "Screenshots",
-    "iphone-catalog-dark.png",
-  ),
-  1242,
-  2688,
-  2,
-);
-
-await assertPng(
-  join(
-    repositoryRoot,
-    "apps",
-    "playground-apple",
-    "Store",
-    "Screenshots",
-    "ipad-catalog-light.png",
-  ),
-  2048,
-  2732,
-  2,
-);
-
-await assertPng(
-  join(
-    repositoryRoot,
-    "apps",
-    "playground-apple",
-    "Store",
-    "Screenshots",
-    "ipad-catalog-dark.png",
-  ),
-  2048,
-  2732,
-  2,
-);
-
-await assertPng(
-  join(androidStore, "Screenshots", "phone-catalog-light.png"),
-  1080,
-  1920,
-  2,
-);
-
-await assertPng(
-  join(androidStore, "Screenshots", "phone-catalog-dark.png"),
-  1080,
-  1920,
   2,
 );
 

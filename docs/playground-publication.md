@@ -154,9 +154,10 @@ Infisical and is injected only for the monitor job.
 2. Complete the relevant physical-device accessibility matrix in `docs/native-device-validation.md`
    for minimum and current supported devices. Resolve blocking findings before public release.
 3. Capture current phone, tablet, and Mac screenshots from the exact release candidate in both light
-   and dark appearances. Export store PNGs without an alpha channel, as required by App Store
-   Connect. Mac screenshots use an accepted 16:10 size. Do not use the React Native web render as
-   native store evidence.
+   and dark appearances. Use `pnpm playground:apple:capture-store` for the ordered 6.9-inch iPhone
+   and 13-inch iPad sets, and `pnpm playground:android:capture-store` for the 9:16 phone set. Export
+   store PNGs without an alpha channel, as required by App Store Connect. Mac screenshots use an
+   accepted 16:10 size. Do not use the React Native web render as native store evidence.
 4. Verify that privacy URLs are live, the in-app links work, no unexpected permissions appear in
    the final manifests, and store privacy answers match every bundled SDK.
 5. Distribute the exact candidate through TestFlight and Google Play closed testing. Exercise

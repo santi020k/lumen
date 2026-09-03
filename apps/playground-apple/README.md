@@ -101,3 +101,13 @@ review notes, and phone, tablet, and Mac screenshot candidates live in `Store`; 
 icon is generated from the shared Lumen mark with `scripts/generate-app-icons.sh`. Follow
 [`docs/playground-publication.md`](../../docs/playground-publication.md) before building a signed
 TestFlight or App Store archive.
+
+Capture the ordered App Store set from Apple's current highest-resolution required iPhone and iPad
+simulator classes with:
+
+```bash
+pnpm playground:apple:capture-store
+```
+
+The command produces six 1320×2868 iPhone screenshots and six 2064×2752 iPad screenshots across
+Home, Examples, Components, and Settings, including light and dark appearances.

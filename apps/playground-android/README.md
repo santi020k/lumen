@@ -80,3 +80,12 @@ closed-testing or production bundle. Use `pnpm playground:android:bundle:signed`
 candidate. The command injects the four upload-key values from Infisical path
 `dev:/playground/google-play`, decodes the keystore only for the duration of the build, and fails
 unless every signing value is present and valid.
+
+With the phone app installed on a booted emulator, capture the ordered Google Play set with:
+
+```bash
+pnpm playground:android:capture-store
+```
+
+The command temporarily configures a 2160×3840 9:16 viewport, captures six native Home, Examples,
+Components, and Settings screens in light and dark appearances, and restores the emulator display.
