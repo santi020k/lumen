@@ -162,10 +162,12 @@ Add the following shape to `registry/native-stability-soak.json`:
 
 The Lumen release and published-artifact verification records must bind the iteration revision to
 the repository and permanent workflow runs. The artifact run must execute
-`verify-native-release.yml` against the exact public versions and build clean React Native iOS and
-Android, Swift package, Compose, and Wear consumers. Every consumer record must identify an external
-repository, its exact lowercase 40-character consumer revision, an immutable URL for that revision,
-and a permanent workflow, pipeline, job, or build URL from the same repository. Mutable branches,
+`verify-native-release.yml` against the exact public versions. GitHub builds clean React Native
+Android, Compose, and Wear consumers; its Linux launcher tag delegates the React Native iOS and
+Swift package consumers to Xcode Cloud's **Published Native Release Checks** workflow. Every
+consumer record must identify an external repository, its exact lowercase 40-character consumer
+revision, an immutable URL for that revision, and a permanent workflow, pipeline, job, or build URL
+from the same repository. Mutable branches,
 workflow definitions, queries, fragments, Lumen-owned fixtures, playgrounds, and package smoke tests
 do not replace an active-consumer record. Validate the entry with
 `pnpm run check:native-stability-soak`; readiness remains incomplete with one iteration recorded.

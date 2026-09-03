@@ -200,33 +200,6 @@ jobs:
       - run: pnpm run check:react-native-package
         if: needs.classify.outputs.react-native == 'true'
 
-  swift:
-    name: Swift package consumer
-    needs: classify
-    if: needs.classify.outputs.swift == 'true'
-    runs-on: macos-26
-    timeout-minutes: 55
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          fetch-depth: 0
-      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6.2.0
-        with:
-          cache: pnpm
-          node-version: 22.x
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm run check:swift-version && pnpm run test:swift-version
-      - run: swift test
-      - run: pnpm run check:swift-source-compatibility
-      - name: Check every target-specific Swift public API
-        run: pnpm run check:swift-api-baseline
-      - run: swift build --package-path apps/playground-apple
-      - name: Resolve a clean consumer from a tagged Swift package candidate
-        run: pnpm run check:swift-package-candidate
-      - name: Build a native iOS consumer from the packed React Native package
-        run: pnpm run check:react-native-native-package:ios
-
   compose:
     name: Compose source and app consumer
     needs: classify

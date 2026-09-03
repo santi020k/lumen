@@ -12,6 +12,9 @@ support URL, and privacy policy while proving the package native to their platfo
   utility rather than store-listing decoration.
 - Example preferences and forms are explicitly labeled as demonstrations. They do not register for
   notifications, download updates, submit content, or imply persistence.
+- Disabled-state examples use neutral developer-workspace language. Do not label demo-only controls
+  with billing, purchase, subscription, paid, or premium terms that could imply unavailable
+  monetized features during store review.
 - The applications contain no advertising, analytics, tracking, account system, or sensitive
   permissions. Re-audit this statement whenever dependencies or application behavior change.
 - Documentation, support, and privacy links open the public Lumen website in the system browser.
@@ -120,6 +123,25 @@ Before changing versions, it verifies that the build uses stable Xcode 26, the i
 non-beta macOS image. Other Xcode Cloud workflows retain the committed development versions. GitHub
 holds no Apple certificates, provisioning profiles, or App Store Connect keys; the `app-store`
 GitHub environment is only an approval boundary for creating the tag.
+
+Apple-native validation also runs in Xcode Cloud so GitHub Actions never allocates a macOS runner.
+Keep these additional workflows attached to the same project:
+
+- **Pull Request Native Checks** starts for pull requests targeting `main` when Apple sources,
+  native contracts, generated assets, or Apple CI scripts change. Use the latest stable Xcode and
+  macOS environment, cancel superseded builds, and add a required iOS Simulator build action for
+  `LumenApplePlayground`. The post-clone script runs the Swift package, API, clean-consumer, React
+  Native iOS, and component-capture checks before Xcode builds the app.
+- **Published Native Release Checks** starts for tags matching `xcode-native-verify-rn-*`. Use the
+  same stable environment and an iOS Simulator build action for `LumenApplePlayground`. The
+  `verify-native-release.yml` dispatcher creates that tag only after the public version and
+  revision metadata pass; the post-clone script then builds the exact public React Native iOS and
+  Swift artifacts.
+
+The browser-only visual-regression suite stays in GitHub Actions on `ubuntu-latest`. Treat the Xcode
+Cloud check as a required pull-request status and the published verification build as part of the
+release evidence. Do not add a `runs-on: macos-*` job as a fallback; use Xcode Cloud's rerun controls
+or a manual build of the matching workflow.
 
 The app declares that it uses no non-exempt encryption; re-audit that declaration if a future
 dependency adds cryptography. Signing identity and App Store Connect access remain account-owned

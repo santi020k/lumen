@@ -18,7 +18,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     outputs:
-      apple: ${{ steps.paths.outputs.apple }}
       android: ${{ steps.paths.outputs.android }}
       bundle-size: ${{ steps.paths.outputs.bundle-size }}
       compatibility: ${{ steps.paths.outputs.compatibility }}
@@ -66,62 +65,6 @@ jobs:
           --base "$BASE_SHA"
           --head "$HEAD_SHA"
           --output "$GITHUB_OUTPUT"
-
-  native-apple:
-    name: SwiftUI package
-    needs: classify
-    if: needs.classify.outputs.apple == 'true'
-    runs-on: macos-15
-    timeout-minutes: 45
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          fetch-depth: 0
-
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6.2.0
-        with:
-          node-version: 22.x
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
-
-      - name: Install workspace dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Compile Swift icon assets
-        run: pnpm run check:swift-assets
-
-      - name: Build and test LumenUI for macOS
-        run: swift test
-
-      - name: Check reviewed SwiftUI source compatibility against v1.6.0
-        run: pnpm run check:swift-source-compatibility
-
-      - name: Check every target-specific Swift public API
-        run: pnpm run check:swift-api-baseline
-
-      - name: Regenerate and compare iPhone component captures
-        id: apple-captures
-        continue-on-error: true
-        env:
-          CI: true
-        run: |
-          apps/playground-apple/scripts/capture-component-screenshots.sh
-          pnpm --filter @santi020k/lumen-docs exec node --experimental-strip-types \
-            scripts/sync-native-component-captures.mjs \
-            --compare --platform=apple --source=default --tolerance=0.12
-
-      - name: Upload Apple capture diagnostics
-        if: steps.apple-captures.outcome == 'failure'
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-        with:
-          name: apple-capture-diagnostics
-          path: apps/playground-apple/Screenshots
-          if-no-files-found: error
-
-      - name: Fail on Apple capture regression
-        if: steps.apple-captures.outcome == 'failure'
-        run: exit 1
 
   native-android:
     name: Compose library
@@ -319,7 +262,7 @@ jobs:
     name: Visual regression
     needs: classify
     if: needs.classify.outputs.release-pr != 'true' && needs.classify.outputs.playwright == 'true'
-    runs-on: macos-14
+    runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.0
@@ -337,7 +280,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Install Playwright Chromium
-        run: pnpm exec playwright install chromium
+        run: pnpm exec playwright install --with-deps chromium
 
       - name: Run visual regression suite
         id: visual-regression
