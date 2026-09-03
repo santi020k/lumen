@@ -201,9 +201,9 @@ test("Apple checks run in Xcode Cloud and GitHub uses no macOS runners", () => {
     assert.doesNotMatch(workflow, /runs-on: macos-/u);
   }
 
-  assert.match(ciWorkflow, /visual-regression:[\s\S]*?runs-on: ubuntu-latest/u);
-
   assert.doesNotMatch(ciWorkflow, /native-apple:/u);
+
+  assert.doesNotMatch(ciWorkflow, /visual-regression:/u);
 
   assert.doesNotMatch(canaryWorkflow, /^ {2}swift:/mu);
 
@@ -218,6 +218,9 @@ test("Apple checks run in Xcode Cloud and GitHub uses no macOS runners", () => {
     "pnpm run check:swift-package-candidate",
     "pnpm run check:react-native-native-package:ios",
     "capture-component-screenshots.sh",
+    "pnpm exec playwright install chromium",
+    "pnpm run test:visual",
+    "pnpm run test:framework-visual",
   ]);
 });
 

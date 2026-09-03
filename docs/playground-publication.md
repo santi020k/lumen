@@ -144,14 +144,15 @@ Keep these additional workflows attached to the same project:
   native contracts, generated assets, or Apple CI scripts change. Use the latest stable Xcode and
   macOS environment, cancel superseded builds, and add a required iOS Simulator build action for
   `LumenApplePlayground`. The post-clone script runs the Swift package, API, clean-consumer, React
-  Native iOS, and component-capture checks before Xcode builds the app.
+  Native iOS, component-capture, and browser visual-regression checks before Xcode builds the app.
 - **Published Native Release Checks** starts for tags matching `xcode-native-verify-rn-*`. Use the
   same stable environment and an iOS Simulator build action for `LumenApplePlayground`. The
   `verify-native-release.yml` dispatcher creates that tag only after the public version and
   revision metadata pass; the post-clone script then builds the exact public React Native iOS and
   Swift artifacts.
 
-The browser-only visual-regression suite stays in GitHub Actions on `ubuntu-latest`. Treat the Xcode
+The browser visual-regression suite uses its existing macOS baselines inside **Pull Request Native
+Checks**, avoiding a duplicate GitHub runner and platform-specific baseline set. Treat the Xcode
 Cloud check as a required pull-request status and the published verification build as part of the
 release evidence. Do not add a `runs-on: macos-*` job as a fallback; use Xcode Cloud's rerun controls
 or a manual build of the matching workflow.

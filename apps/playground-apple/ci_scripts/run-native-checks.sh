@@ -48,6 +48,9 @@ case "$mode" in
         pnpm --filter @santi020k/lumen-docs exec node --experimental-strip-types \
             scripts/sync-native-component-captures.mjs \
             --compare --platform=apple --source=default --tolerance=0.12
+        pnpm exec playwright install chromium
+        pnpm run test:visual
+        pnpm run test:framework-visual
         ;;
     published)
         react_native_version="${2:-}"
