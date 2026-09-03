@@ -1,0 +1,93 @@
+---
+import { Badge, ButtonLink, Card, Icon } from '@santi020k/lumen-astro'
+
+import type { PlatformStoreAvailability as StoreAvailability } from '../data/platforms'
+
+interface Props {
+  availability: StoreAvailability
+  headingLevel?: 'h2' | 'h3'
+}
+
+const { availability, headingLevel = 'h2' } = Astro.props
+const isAvailable = availability.status === 'available'
+const Heading = headingLevel
+---
+
+<Card
+  as="section"
+  class="platform-store-availability"
+  variant="muted"
+  aria-labelledby={`platform-store-${availability.status}-title`}
+>
+  <div class="platform-store-availability__icon" aria-hidden="true">
+    <Icon decorative name={isAvailable ? 'apple' : 'clock-3'} size="lg" />
+  </div>
+  <div class="platform-store-availability__copy">
+    <Badge variant={isAvailable ? 'success' : 'warning'}>{availability.badge}</Badge>
+    <Heading id={`platform-store-${availability.status}-title`}>{availability.title}</Heading>
+    <p>{availability.description}</p>
+  </div>
+  {availability.href && availability.linkLabel && (
+    <ButtonLink
+      href={availability.href}
+      rel="noopener noreferrer"
+      target="_blank"
+      variant="secondary"
+    >
+      {availability.linkLabel}
+    </ButtonLink>
+  )}
+</Card>
+
+<style>
+  .platform-store-availability {
+    align-items: center;
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    margin-block: 1.5rem;
+    padding: 1.25rem;
+  }
+
+  .platform-store-availability__icon {
+    align-items: center;
+    background: hsl(var(--surface));
+    border: 1px solid hsl(var(--line));
+    border-radius: var(--ui-radius-lg);
+    color: hsl(var(--ink));
+    display: flex;
+    height: 3.25rem;
+    justify-content: center;
+    width: 3.25rem;
+  }
+
+  .platform-store-availability__copy {
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .platform-store-availability__copy :is(h2, h3),
+  .platform-store-availability__copy p {
+    margin: 0;
+  }
+
+  .platform-store-availability__copy :is(h2, h3) {
+    font-size: 1.125rem;
+  }
+
+  .platform-store-availability__copy p {
+    color: hsl(var(--ink-soft));
+  }
+
+  @media (max-width: 42rem) {
+    .platform-store-availability {
+      align-items: start;
+      grid-template-columns: auto minmax(0, 1fr);
+    }
+
+    .platform-store-availability > :global(.ui-button-link) {
+      grid-column: 1 / -1;
+      justify-self: stretch;
+    }
+  }
+</style>

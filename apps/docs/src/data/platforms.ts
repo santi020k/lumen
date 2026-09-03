@@ -29,6 +29,15 @@ interface PlatformSetupStep {
   title: string
 }
 
+export interface PlatformStoreAvailability {
+  badge: string
+  description: string
+  href?: string
+  linkLabel?: string
+  status: 'available' | 'pending'
+  title: string
+}
+
 interface PlatformThemeGuide {
   description: string
   examples: PlatformCodeExample[]
@@ -56,6 +65,7 @@ export interface PlatformGuide {
   relatedLinks: PlatformLink[]
   shortLabel: string
   status: string
+  storeAvailability?: PlatformStoreAvailability
   summary: string
   theme?: PlatformThemeGuide
   title: string
@@ -449,6 +459,15 @@ swift run --package-path apps/playground-apple LumenApplePlayground`,
     ],
     shortLabel: 'Apple',
     status: 'SwiftUI package',
+    storeAvailability: {
+      badge: 'Available on the App Store',
+      description:
+        'Version 1.0 is available for iPhone, iPad, and Mac. The same listing installs the native gallery for the Apple device you are using.',
+      href: 'https://apps.apple.com/app/id6805250815',
+      linkLabel: 'View on the App Store',
+      status: 'available',
+      title: 'Take the Lumen Playground with you'
+    },
     summary:
       'Share a Lumen design language across iPhone, iPad, Mac, Apple TV, and Apple Watch while keeping SwiftUI behavior native.',
     theme: {
@@ -617,6 +636,13 @@ pnpm playground:android:build`,
     ],
     shortLabel: 'Android',
     status: 'Compose module',
+    storeAvailability: {
+      badge: 'Google Play · pending',
+      description:
+        'The Android release is still awaiting Google Play approval. Until it is approved, run the local Compose playground or build the debug APK from the repository.',
+      status: 'pending',
+      title: 'Android store release is under review'
+    },
     summary:
       'Use the shared Lumen foundations through Jetpack Compose and Material 3 while preserving Android interaction and accessibility conventions.',
     theme: {

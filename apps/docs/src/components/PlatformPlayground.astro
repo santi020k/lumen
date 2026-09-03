@@ -5,6 +5,7 @@ import type { PlatformGuide } from '../data/platforms'
 import DocsLayout from '../layouts/DocsLayout.astro'
 
 import PlatformShipping from './PlatformShipping.astro'
+import PlatformStoreAvailability from './PlatformStoreAvailability.astro'
 
 interface Props {
   guide: PlatformGuide
@@ -42,6 +43,10 @@ const commands = guide.playgroundCommands ?? []
       </p>
     </Card>
   </section>
+
+  {guide.storeAvailability && (
+    <PlatformStoreAvailability availability={guide.storeAvailability} />
+  )}
 
   <section class="docs-section" id="run" aria-labelledby="run-title">
     <div class="docs-section-heading">
