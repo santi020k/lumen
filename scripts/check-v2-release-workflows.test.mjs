@@ -218,6 +218,8 @@ test("Apple checks run in Xcode Cloud and GitHub uses no macOS runners", () => {
   );
 
   assertOrderedCommands(xcodeCloudChecks, "Xcode Cloud pull-request checks", [
+    "corepack_command\" enable --install-directory",
+    "export PATH=\"$corepack_bin:$PATH\"",
     "git fetch --no-tags --depth=1 origin",
     "pnpm run check:swift-assets",
     "pnpm run check:swift-version",

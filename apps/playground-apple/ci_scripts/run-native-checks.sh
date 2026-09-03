@@ -24,6 +24,11 @@ if [[ -z "$corepack_command" ]]; then
     corepack_command="$corepack_root/node_modules/.bin/corepack"
 fi
 
+corepack_bin="${TMPDIR:-/tmp}/lumen-corepack-bin-${CI_BUILD_NUMBER:-local}"
+mkdir -p "$corepack_bin"
+"$corepack_command" enable --install-directory "$corepack_bin"
+export PATH="$corepack_bin:$PATH"
+
 pnpm() {
     "$corepack_command" pnpm "$@"
 }
