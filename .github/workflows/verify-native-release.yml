@@ -144,44 +144,73 @@ jobs:
           --version "$REACT_NATIVE_VERSION"
           --revision "$EXPECTED_REVISION"
 
-  react-native-ios:
-    name: Published React Native iOS consumer
+  apple-cloud:
+    name: Launch published Apple consumers
     needs: metadata
-    runs-on: macos-26
-    timeout-minutes: 35
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      verification-tag: ${{ steps.launch.outputs.tag }}
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6.2.0
         with:
-          cache: pnpm
-          node-version: 22.x
-      - run: pnpm install --frozen-lockfile
-      - name: Require CocoaPods
-        run: pod --version
-      - name: Build the exact public npm artifact for iOS
+          fetch-depth: 0
+
+      - name: Launch Xcode Cloud verification
+        id: launch
         env:
           EXPECTED_REVISION: ${{ inputs.revision }}
           REACT_NATIVE_VERSION: ${{ inputs.react-native-version }}
-        run: >-
-          pnpm run check:react-native-native-release:ios --
-          --version "$REACT_NATIVE_VERSION"
-          --revision "$EXPECTED_REVISION"
-
-  swift:
-    name: Published Swift package consumers
-    needs: metadata
-    runs-on: macos-15
-    timeout-minutes: 25
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: Build every platform from the exact public tag
-        env:
           SWIFT_VERSION: ${{ inputs.swift-version }}
+        run: |
+          verification_tag="xcode-native-verify-rn-${REACT_NATIVE_VERSION}--swift-${SWIFT_VERSION}--rev-${EXPECTED_REVISION}--run-${GITHUB_RUN_NUMBER}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -a "$verification_tag" -m "Verify published Apple consumers"
+          git push origin "refs/tags/$verification_tag"
+          echo "tag=$verification_tag" >> "$GITHUB_OUTPUT"
+          {
+            echo "Xcode Cloud will verify the published React Native iOS and Swift artifacts."
+            echo
+            echo "- Tag: \`$verification_tag\`"
+            echo "- Workflow: \`Published Native Release Checks\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  monitor-apple-cloud:
+    name: Monitor published Apple consumers
+    needs: apple-cloud
+    runs-on: ubuntu-latest
+    timeout-minutes: 160
+    environment:
+      name: app-store
+      url: https://appstoreconnect.apple.com/apps/6805250815
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Check out status monitor
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Fetch Apple verification secrets from Infisical
+        uses: Infisical/secrets-action@77ab1f4ccd183a543cb5b42435fbd181189f4995 # v1.0.16
+        with:
+          method: oidc
+          identity-id: ${{ vars.INFISICAL_IDENTITY_ID }}
+          project-slug: ${{ vars.INFISICAL_PROJECT_SLUG }}
+          env-slug: prod
+          secret-path: /playground/apple
+
+      - name: Wait for Xcode Cloud
+        env:
+          XCODE_CLOUD_PRODUCT_ID: ${{ vars.XCODE_CLOUD_PRODUCT_ID }}
+          XCODE_CLOUD_WORKFLOW_NAME: Published Native Release Checks
+          SOURCE_COMMIT_SHA: ${{ github.sha }}
+          RELEASE_TAG: ${{ needs.apple-cloud.outputs.verification-tag }}
         run: >-
-          node scripts/smoke-swift-package-candidate.mjs
-          --url https://github.com/santi020k/lumen
-          --version "$SWIFT_VERSION"
+          APP_STORE_CONNECT_PRIVATE_KEY="$APP_STORE_CONNECT_API_KEY_P8"
+          node .github/scripts/monitor-xcode-cloud.mjs
 
   compose:
     name: Published Compose and Wear consumers

@@ -51,6 +51,7 @@
     "@vitest/coverage-v8": "catalog:",
     "react": "catalog:",
     "react-native": "catalog:",
+    "react-native-safe-area-context": "catalog:expo",
     "react-native-svg": "catalog:expo",
     "test-renderer": "catalog:",
     "typescript": "catalog:",
@@ -60,6 +61,7 @@
     "@react-native-community/datetimepicker": ">=9.1 <10",
     "react": ">=19.2",
     "react-native": ">=0.86.2",
+    "react-native-safe-area-context": ">=5.7 <6",
     "react-native-svg": ">=12 <16"
   },
   "peerDependenciesMeta": {

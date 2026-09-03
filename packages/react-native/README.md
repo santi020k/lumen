@@ -23,7 +23,9 @@ React Native-specific pull-to-refresh indicator using the active semantic theme.
 `useLumenNavigationBarVisibility` and `LumenCollapsibleNavigationBar` add an optional scroll-
 responsive treatment for native lists without introducing an animation or navigation dependency.
 `LumenAlertDialog`, `LumenSheet`, `LumenMenu`, and `LumenShareButton` provide controlled native
-presentation and operating-system sharing without introducing a separate interaction dependency.
+presentation and operating-system sharing. Overlay actions consume safe-area insets, and sheets
+scroll application content by default so actions remain reachable with large text and short
+viewports. Set `scrollable={false}` when the child is already a virtualized scrolling container.
 Cards accept semantic `padding` and `radius` roles while preserving the extra-large/large defaults.
 Status bars use a distinct decorative icon for every tone and accept `iconName` when a product needs
 a more specific symbol, so visual status is not conveyed by color alone.
@@ -33,16 +35,18 @@ datetime picker remains required throughout the pre-v2 stability releases becaus
 root date exports still load it:
 
 ```bash
-pnpm add @santi020k/lumen-react-native react-native-svg @react-native-community/datetimepicker
-# or: npm install @santi020k/lumen-react-native react-native-svg @react-native-community/datetimepicker
+pnpm add @santi020k/lumen-react-native react-native-svg react-native-safe-area-context @react-native-community/datetimepicker
+# or: npm install @santi020k/lumen-react-native react-native-svg react-native-safe-area-context @react-native-community/datetimepicker
 ```
 
 New code should import date fields from `@santi020k/lumen-react-native/datetime`. The deprecated
 root date exports remain available only for 1.x compatibility; Lumen 2 removes them and makes the
 datetime picker optional for consumers that do not use the subpath.
 
-React 19.2 and React Native 0.86.2 or newer are application-provided peer dependencies. Mount one
-`LumenProvider` near the application root; no stylesheet or web runtime is required:
+React 19.2 and React Native 0.86.2 or newer are application-provided peer dependencies.
+`react-native-safe-area-context` 5.7 or newer is also application-provided. Mount one
+`SafeAreaProvider` above the `LumenProvider` near
+the application root; no stylesheet or web runtime is required:
 
 ```ts
 import {
@@ -54,16 +58,19 @@ import {
   LumenText,
   type LumenTheme
 } from '@santi020k/lumen-react-native'
+import { SafeAreaProvider } from 'react-native-safe-area-context'
 
 export function App() {
   return (
-    <LumenProvider scheme="system">
-      <LumenSurface>
-        <LumenText variant="title">Welcome</LumenText>
-        <LumenButton onPress={() => {}}>Continue</LumenButton>
-        <LumenIconButton name="search" label="Search" onPress={() => {}} />
-      </LumenSurface>
-    </LumenProvider>
+    <SafeAreaProvider>
+      <LumenProvider scheme="system">
+        <LumenSurface>
+          <LumenText variant="title">Welcome</LumenText>
+          <LumenButton onPress={() => {}}>Continue</LumenButton>
+          <LumenIconButton name="search" label="Search" onPress={() => {}} />
+        </LumenSurface>
+      </LumenProvider>
+    </SafeAreaProvider>
   )
 }
 ```

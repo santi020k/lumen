@@ -137,6 +137,26 @@ non-beta macOS image. Other Xcode Cloud workflows retain the committed developme
 holds no Apple certificates, provisioning profiles, or App Store Connect keys; the `app-store`
 GitHub environment is only an approval boundary for creating the tag.
 
+Apple-native validation also runs in Xcode Cloud so GitHub Actions never allocates a macOS runner.
+Keep these additional workflows attached to the same project:
+
+- **Pull Request Native Checks** starts for pull requests targeting `main` when Apple sources,
+  native contracts, generated assets, or Apple CI scripts change. Use the latest stable Xcode and
+  macOS environment, cancel superseded builds, and add a required iOS Simulator build action for
+  `LumenApplePlayground`. The post-clone script runs the Swift package, API, clean-consumer, React
+  Native iOS, component-capture, and browser visual-regression checks before Xcode builds the app.
+- **Published Native Release Checks** starts for tags matching `xcode-native-verify-rn-*`. Use the
+  same stable environment and an iOS Simulator build action for `LumenApplePlayground`. The
+  `verify-native-release.yml` dispatcher creates that tag only after the public version and
+  revision metadata pass; the post-clone script then builds the exact public React Native iOS and
+  Swift artifacts.
+
+The browser visual-regression suite uses its existing macOS baselines inside **Pull Request Native
+Checks**, avoiding a duplicate GitHub runner and platform-specific baseline set. Treat the Xcode
+Cloud check as a required pull-request status and the published verification build as part of the
+release evidence. Do not add a `runs-on: macos-*` job as a fallback; use Xcode Cloud's rerun controls
+or a manual build of the matching workflow.
+
 The app declares that it uses no non-exempt encryption; re-audit that declaration if a future
 dependency adds cryptography. Signing identity and App Store Connect access remain account-owned
 state.

@@ -137,6 +137,7 @@ const LumenPhoneCountryPicker = ({
   return (
     <LumenSheet
       onDismiss={dismiss}
+      scrollable={false}
       title={labels.countryPickerTitle}
       visible={visible}
     >

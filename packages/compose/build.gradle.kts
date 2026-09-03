@@ -6,7 +6,7 @@ import org.gradle.api.tasks.bundling.Zip
 plugins {
     id("com.android.library")
     id("maven-publish")
-    id("org.jetbrains.kotlinx.binary-compatibility-validator") version "0.18.1"
+    id("org.jetbrains.kotlinx.binary-compatibility-validator") version "0.18.2"
     id("org.jetbrains.dokka-javadoc") version "2.2.0"
     id("org.jetbrains.kotlin.plugin.compose")
     id("signing")
