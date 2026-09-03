@@ -174,10 +174,11 @@ packages:
 
 - [`apps/playground-react-native`](./apps/playground-react-native) runs through Expo on the web,
   iOS, and Android and includes EAS profiles for TestFlight, Android App Bundles, and APKs.
-- [`apps/playground-apple`](./apps/playground-apple) builds as an iOS Xcode app for devices and
-  TestFlight, or as a macOS Swift Package executable for local exploration.
+- [`apps/playground-apple`](./apps/playground-apple) is available on the
+  [App Store](https://apps.apple.com/app/id6805250815) for iPhone, iPad, and Mac. It also builds as
+  an iOS Xcode app or macOS Swift Package executable for local exploration.
 - [`apps/playground-android`](./apps/playground-android) builds a native Compose application and a
-  directly installable debug APK.
+  directly installable debug APK. Its Google Play release is awaiting approval.
 
 See the [playground workflow](./docs/playgrounds.md) for run, capture, and distribution commands.
 

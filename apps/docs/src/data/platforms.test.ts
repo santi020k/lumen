@@ -71,6 +71,21 @@ describe('platform documentation', () => {
     expect(guide.prerequisites).toContain('Android Studio with JDK 21 or newer')
   })
 
+  test('publishes Apple store access without claiming Android approval', () => {
+    expect(getPlatformGuide('apple').storeAvailability).toEqual(
+      expect.objectContaining({
+        href: 'https://apps.apple.com/app/id6805250815',
+        status: 'available'
+      })
+    )
+    expect(getPlatformGuide('android').storeAvailability).toEqual(
+      expect.objectContaining({
+        status: 'pending'
+      })
+    )
+    expect(getPlatformGuide('android').storeAvailability?.href).toBeUndefined()
+  })
+
   test('links every native guide to both searchable icon-name catalogs', () => {
     for (const guide of productPlatformGuides.filter(
       candidate => candidate.id !== 'web'

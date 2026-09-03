@@ -16,6 +16,7 @@ import DocsLayout from '../layouts/DocsLayout.astro'
 import CodeBlock from './CodeBlock.astro'
 import NativePlatformPreview from './NativePlatformPreview.astro'
 import PlatformShipping from './PlatformShipping.astro'
+import PlatformStoreAvailability from './PlatformStoreAvailability.astro'
 
 interface Props {
   guide: PlatformGuide
@@ -144,6 +145,9 @@ const nativeGuideLinks = hasNativeCatalog ?
         <h2 id="playground-title">Run the {guide.shortLabel} playground</h2>
         <p>{guide.playgroundNote}</p>
       </div>
+      {guide.storeAvailability && (
+        <PlatformStoreAvailability availability={guide.storeAvailability} />
+      )}
       {guide.playgroundLaunch && (
         <Card as="section" class="platform-playground-launch" variant="muted" aria-labelledby="playground-launch-title">
           <div class="platform-playground-launch__copy">
