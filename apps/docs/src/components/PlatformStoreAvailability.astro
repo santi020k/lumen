@@ -5,10 +5,12 @@ import type { PlatformStoreAvailability as StoreAvailability } from '../data/pla
 
 interface Props {
   availability: StoreAvailability
+  headingLevel?: 'h2' | 'h3'
 }
 
-const { availability } = Astro.props
+const { availability, headingLevel = 'h2' } = Astro.props
 const isAvailable = availability.status === 'available'
+const Heading = headingLevel
 ---
 
 <Card
@@ -22,7 +24,7 @@ const isAvailable = availability.status === 'available'
   </div>
   <div class="platform-store-availability__copy">
     <Badge variant={isAvailable ? 'success' : 'warning'}>{availability.badge}</Badge>
-    <h2 id={`platform-store-${availability.status}-title`}>{availability.title}</h2>
+    <Heading id={`platform-store-${availability.status}-title`}>{availability.title}</Heading>
     <p>{availability.description}</p>
   </div>
   {availability.href && availability.linkLabel && (
@@ -64,12 +66,12 @@ const isAvailable = availability.status === 'available'
     gap: 0.5rem;
   }
 
-  .platform-store-availability__copy h2,
+  .platform-store-availability__copy :is(h2, h3),
   .platform-store-availability__copy p {
     margin: 0;
   }
 
-  .platform-store-availability__copy h2 {
+  .platform-store-availability__copy :is(h2, h3) {
     font-size: 1.125rem;
   }
 

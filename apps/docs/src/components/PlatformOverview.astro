@@ -146,7 +146,7 @@ const nativeGuideLinks = hasNativeCatalog ?
         <p>{guide.playgroundNote}</p>
       </div>
       {guide.storeAvailability && (
-        <PlatformStoreAvailability availability={guide.storeAvailability} />
+        <PlatformStoreAvailability availability={guide.storeAvailability} headingLevel="h3" />
       )}
       {guide.playgroundLaunch && (
         <Card as="section" class="platform-playground-launch" variant="muted" aria-labelledby="playground-launch-title">
