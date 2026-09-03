@@ -87,13 +87,24 @@ import com.santi020k.lumen.LumenToggle
 
 internal data class CatalogCategorySummary(val name: String, val componentCount: Int)
 
-private enum class PlaygroundDestination { Home, Examples, Components, Settings }
+internal enum class PlaygroundDestination {
+    Home,
+    Examples,
+    Components,
+    Settings;
+
+    companion object {
+        fun fromLaunchValue(value: String): PlaygroundDestination =
+            entries.firstOrNull { it.name.equals(value, ignoreCase = true) } ?: Home
+    }
+}
 private enum class ExamplePattern(val label: String) { Release("Release"), Health("Health"), Profile("Profile") }
 private enum class ExampleState { Loading, Empty, Error, Success }
 private enum class PlaygroundLocale(val label: String) { English("English"), Spanish("Español") }
 
 @Composable
 internal fun LumenReferenceApplication(
+    initialDestination: PlaygroundDestination,
     darkTheme: Boolean,
     themePreset: PlaygroundThemePreset,
     onThemePresetChange: (PlaygroundThemePreset) -> Unit,
@@ -101,7 +112,7 @@ internal fun LumenReferenceApplication(
     catalog: List<CatalogCategorySummary>,
     components: @Composable () -> Unit
 ) {
-    var destination by remember { mutableStateOf(PlaygroundDestination.Home) }
+    var destination by remember(initialDestination) { mutableStateOf(initialDestination) }
     val navigationItems = remember {
         listOf(
             LumenNavigationItem(PlaygroundDestination.Home, "Home", Icons.Default.Home),

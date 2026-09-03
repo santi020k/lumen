@@ -145,7 +145,10 @@ class MainActivity : ComponentActivity() {
         setContent {
             LumenAndroidPlayground(
                 initialDarkTheme = intent.getBooleanExtra(DARK_THEME_EXTRA, false),
-                initialComponent = intent.getStringExtra(COMPONENT_EXTRA).orEmpty()
+                initialComponent = intent.getStringExtra(COMPONENT_EXTRA).orEmpty(),
+                initialDestination = PlaygroundDestination.fromLaunchValue(
+                    intent.getStringExtra(DESTINATION_EXTRA).orEmpty()
+                )
             )
         }
     }
@@ -153,6 +156,7 @@ class MainActivity : ComponentActivity() {
     private companion object {
         const val COMPONENT_EXTRA = "component"
         const val DARK_THEME_EXTRA = "darkTheme"
+        const val DESTINATION_EXTRA = "destination"
     }
 }
 
@@ -209,7 +213,11 @@ internal enum class PlaygroundThemePreset(val label: String) {
 }
 
 @Composable
-private fun LumenAndroidPlayground(initialComponent: String, initialDarkTheme: Boolean) {
+private fun LumenAndroidPlayground(
+    initialComponent: String,
+    initialDarkTheme: Boolean,
+    initialDestination: PlaygroundDestination
+) {
     var darkTheme by remember(initialDarkTheme) { mutableStateOf(initialDarkTheme) }
     var themePreset by remember { mutableStateOf(PlaygroundThemePreset.Lumen) }
 
@@ -223,6 +231,7 @@ private fun LumenAndroidPlayground(initialComponent: String, initialDarkTheme: B
             )
         } else {
             LumenReferenceApplication(
+                initialDestination = initialDestination,
                 darkTheme = darkTheme,
                 themePreset = themePreset,
                 onThemePresetChange = { themePreset = it },

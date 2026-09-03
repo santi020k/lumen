@@ -26,7 +26,7 @@ targets:
         DEVELOPMENT_TEAM: BY4995HQ3J
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         GENERATE_INFOPLIST_FILE: NO
-        MARKETING_VERSION: 1.0.0
+        MARKETING_VERSION: 1.0.1
         PRODUCT_BUNDLE_IDENTIFIER: com.santi020k.lumen.playground.apple
         SWIFT_VERSION: 6.0
         TARGETED_DEVICE_FAMILY: "1,2"
@@ -65,7 +65,7 @@ targets:
         DEVELOPMENT_TEAM: BY4995HQ3J
         ENABLE_HARDENED_RUNTIME: YES
         GENERATE_INFOPLIST_FILE: NO
-        MARKETING_VERSION: 1.0.0
+        MARKETING_VERSION: 1.0.1
         PRODUCT_BUNDLE_IDENTIFIER: com.santi020k.lumen.playground.apple
         PRODUCT_NAME: Lumen Playground
         SWIFT_VERSION: 6.0
@@ -104,7 +104,7 @@ targets:
         CURRENT_PROJECT_VERSION: 1
         DEVELOPMENT_TEAM: BY4995HQ3J
         GENERATE_INFOPLIST_FILE: NO
-        MARKETING_VERSION: 1.0.0
+        MARKETING_VERSION: 1.0.1
         PRODUCT_BUNDLE_IDENTIFIER: com.santi020k.lumen.playground.apple.widget
         SWIFT_VERSION: 6.0
         TARGETED_DEVICE_FAMILY: "1,2"
@@ -126,7 +126,7 @@ targets:
         INFOPLIST_KEY_ITSAppUsesNonExemptEncryption: false
         INFOPLIST_KEY_WKApplication: true
         INFOPLIST_KEY_WKWatchOnly: true
-        MARKETING_VERSION: 1.0.0
+        MARKETING_VERSION: 1.0.1
         PRODUCT_BUNDLE_IDENTIFIER: com.santi020k.lumen.playground.watch
         SWIFT_VERSION: 6.0
         TARGETED_DEVICE_FAMILY: "4"
