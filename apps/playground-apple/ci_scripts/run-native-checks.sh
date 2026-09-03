@@ -35,6 +35,12 @@ pnpm install --frozen-lockfile
 
 case "$mode" in
     pull-request)
+        swift_compatibility_baseline="v1.6.0"
+        if ! git rev-parse --verify --quiet "${swift_compatibility_baseline}^{commit}" >/dev/null; then
+            git fetch --no-tags --depth=1 origin \
+                "+refs/tags/${swift_compatibility_baseline}:refs/tags/${swift_compatibility_baseline}"
+        fi
+
         pnpm run check:swift-assets
         pnpm run check:swift-version
         pnpm run test:swift-version

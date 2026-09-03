@@ -208,6 +208,7 @@ test("Apple checks run in Xcode Cloud and GitHub uses no macOS runners", () => {
   assert.doesNotMatch(canaryWorkflow, /^ {2}swift:/mu);
 
   assertOrderedCommands(xcodeCloudChecks, "Xcode Cloud pull-request checks", [
+    "git fetch --no-tags --depth=1 origin",
     "pnpm run check:swift-assets",
     "pnpm run check:swift-version",
     "pnpm run test:swift-version",
