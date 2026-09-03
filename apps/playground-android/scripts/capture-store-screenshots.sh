@@ -9,6 +9,7 @@ adb="${sdk_root}/platform-tools/adb"
 output_directory="${1:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/Store/Screenshots}"
 activity="com.santi020k.lumen.playground.compose/.MainActivity"
 package="com.santi020k.lumen.playground.compose"
+capture_directory="$(mktemp -d "${TMPDIR:-/tmp}/lumen-android-store-screenshots.XXXXXX")"
 
 destinations=(home examples components components settings examples)
 appearances=(light light light dark light dark)
@@ -35,22 +36,30 @@ if [[ -z "$(${adb} devices | sed -n '2p')" ]]; then
   exit 1
 fi
 
-mkdir -p "${output_directory}"
-rm -f "${output_directory}"/phone-*.png
-
 original_size="$(${adb} shell wm size | tr -d '\r')"
 original_density="$(${adb} shell wm density | tr -d '\r')"
 original_demo_allowed="$(${adb} shell settings get global sysui_demo_allowed | tr -d '\r')"
+original_size_override="$(printf '%s\n' "${original_size}" | sed -n 's/^Override size: //p')"
+original_density_override="$(printf '%s\n' "${original_density}" | sed -n 's/^Override density: //p')"
 
 restore_display() {
   ${adb} shell am broadcast -a com.android.systemui.demo -e command exit >/dev/null
-  ${adb} shell wm size reset >/dev/null
-  ${adb} shell wm density reset >/dev/null
+  if [[ -n "${original_size_override}" ]]; then
+    ${adb} shell wm size "${original_size_override}" >/dev/null
+  else
+    ${adb} shell wm size reset >/dev/null
+  fi
+  if [[ -n "${original_density_override}" ]]; then
+    ${adb} shell wm density "${original_density_override}" >/dev/null
+  else
+    ${adb} shell wm density reset >/dev/null
+  fi
   if [[ "${original_demo_allowed}" == "null" ]]; then
     ${adb} shell settings delete global sysui_demo_allowed >/dev/null
   else
     ${adb} shell settings put global sysui_demo_allowed "${original_demo_allowed}" >/dev/null
   fi
+  rm -rf "${capture_directory}"
 }
 trap restore_display EXIT
 
@@ -79,9 +88,15 @@ for index in "${!destinations[@]}"; do
     --es destination "${destination}" \
     --ez darkTheme "${dark}" >/dev/null
   sleep 2
-  screenshot_path="${output_directory}/phone-${sequence}-${destination}-${appearance}.png"
+  screenshot_path="${capture_directory}/phone-${sequence}-${destination}-${appearance}.png"
   ${adb} exec-out screencap -p > "${screenshot_path}"
   strip_alpha "${screenshot_path}"
+done
+
+mkdir -p "${output_directory}"
+rm -f "${output_directory}"/phone-*.png
+for screenshot_path in "${capture_directory}"/*.png; do
+  mv "${screenshot_path}" "${output_directory}/"
 done
 
 printf 'Captured six 2160x3840 Google Play screenshots in %s.\n' "${output_directory}"

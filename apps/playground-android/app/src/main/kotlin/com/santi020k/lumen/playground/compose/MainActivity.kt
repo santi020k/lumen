@@ -3,6 +3,7 @@ package com.santi020k.lumen.playground.compose
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.core.view.WindowCompat
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -142,9 +143,14 @@ import com.santi020k.lumen.rememberLumenNavigationBarScrollState
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val initialDarkTheme = intent.getBooleanExtra(DARK_THEME_EXTRA, false)
+        WindowCompat.getInsetsController(window, window.decorView).apply {
+            isAppearanceLightStatusBars = !initialDarkTheme
+            isAppearanceLightNavigationBars = !initialDarkTheme
+        }
         setContent {
             LumenAndroidPlayground(
-                initialDarkTheme = intent.getBooleanExtra(DARK_THEME_EXTRA, false),
+                initialDarkTheme = initialDarkTheme,
                 initialComponent = intent.getStringExtra(COMPONENT_EXTRA).orEmpty(),
                 initialDestination = PlaygroundDestination.fromLaunchValue(
                     intent.getStringExtra(DESTINATION_EXTRA).orEmpty()
