@@ -29,7 +29,7 @@ apiValidation {
 
 fun Project.configureBinaryApiValidation() {
     pluginManager.withPlugin("com.android.library") {
-        dependencies.add("bcv-rt-jvm-cp", "org.jetbrains.kotlin:kotlin-metadata-jvm:2.4.10")
+        dependencies.add("bcv-rt-jvm-cp", "org.jetbrains.kotlin:kotlin-metadata-jvm:2.4.20")
 
         val generatedApi = layout.buildDirectory.file("api/${project.name}.api")
         val referenceApi = layout.projectDirectory.file("api/${project.name}.api")
@@ -114,7 +114,7 @@ dependencies {
     implementation("androidx.compose.material3:material3-adaptive-navigation-suite")
     implementation("androidx.compose.runtime:runtime")
     implementation("androidx.compose.ui:ui")
-    implementation("com.googlecode.libphonenumber:libphonenumber:9.0.38")
+    implementation("com.googlecode.libphonenumber:libphonenumber:9.0.40")
     androidTestImplementation(composeBom)
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4-accessibility")
