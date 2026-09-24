@@ -16,7 +16,7 @@
     },
     "compose": {
       "path": "packages/compose/api/lumen-compose.api",
-      "sha256": "f60a8a5533103c4d4d3c8e1383c1ff1157e1e188e374bb46ef5df1b90e6a5bc0"
+      "sha256": "919638d93a4960114fe72a737fe3c91e2f3633cb3afda47406fd3400f22b0ae1"
     },
     "composeClassification": {
       "path": "registry/compose-api-classification.json",
