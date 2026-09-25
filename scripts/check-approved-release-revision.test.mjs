@@ -189,6 +189,92 @@ test("accepts the initial Lumen 3 approval record", async () => {
   }
 });
 
+test("accepts a squash-equivalent publication and fetches the reviewed revision", async () => {
+  const { directory, reviewedRevision } = await createCandidate(3);
+
+  const remoteParent = await mkdtemp(
+    resolve(tmpdir(), "lumen-approved-release-remote-"),
+  );
+
+  const cloneParent = await mkdtemp(
+    resolve(tmpdir(), "lumen-approved-release-clone-"),
+  );
+
+  const remote = resolve(remoteParent, "origin.git");
+  const publication = resolve(cloneParent, "publication");
+
+  try {
+    await approveCandidate(directory, reviewedRevision, 3);
+
+    const approvedContract = await readFile(
+      resolve(directory, "registry", "lumen-3-contract.json"),
+      "utf8",
+    );
+
+    assert.equal(
+      run("git", ["switch", "--orphan", "squashed-publication"], directory)
+        .status,
+      0,
+    );
+
+    await mkdir(resolve(directory, "registry"), { recursive: true });
+
+    await Promise.all([
+      writeFile(
+        resolve(directory, "registry", "lumen-3-contract.json"),
+        approvedContract,
+      ),
+      writeFile(resolve(directory, "source.txt"), "reviewed source\n"),
+    ]);
+
+    commit(directory, "chore(release): squash reviewed candidate");
+
+    assert.equal(run("git", ["clone", "--bare", directory, remote]).status, 0);
+
+    assert.equal(
+      run(
+        "git",
+        [
+          "clone",
+          "--depth=1",
+          "--branch",
+          "squashed-publication",
+          `file://${remote}`,
+          publication,
+        ],
+      ).status,
+      0,
+    );
+
+    assert.notEqual(
+      run("git", ["cat-file", "-e", `${reviewedRevision}^{commit}`], publication)
+        .status,
+      0,
+    );
+
+    const result = runChecker(publication, [], 3);
+
+    assert.equal(result.status, 0, result.stderr);
+
+    assert.match(
+      result.stdout,
+      /Approved Lumen 3 candidate .*lumen-3-contract\.json approval delta/,
+    );
+
+    assert.equal(
+      run("git", ["cat-file", "-e", `${reviewedRevision}^{commit}`], publication)
+        .status,
+      0,
+    );
+  } finally {
+    await rm(directory, { force: true, recursive: true });
+
+    await rm(remoteParent, { force: true, recursive: true });
+
+    await rm(cloneParent, { force: true, recursive: true });
+  }
+});
+
 test("rejects an uncommitted tracked change in the publication working tree", async () => {
   const { directory, reviewedRevision } = await createCandidate();
 
@@ -296,7 +382,7 @@ test("rejects non-approval contract changes after the reviewed candidate", async
   }
 });
 
-test("rejects an approved revision outside the publication ancestry", async () => {
+test("rejects an unrelated reviewed revision with different content", async () => {
   const { directory, reviewedRevision } = await createCandidate();
 
   try {
@@ -320,10 +406,7 @@ test("rejects an approved revision outside the publication ancestry", async () =
 
     assert.equal(result.status, 1);
 
-    assert.match(
-      result.stderr,
-      /must be an ancestor of the publication commit/,
-    );
+    assert.match(result.stderr, /Only the contract approval record may change/);
 
     assert.notEqual(unrelatedRevision, reviewedRevision);
   } finally {
