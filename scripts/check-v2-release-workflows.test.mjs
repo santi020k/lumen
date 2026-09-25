@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
+import { readdir, readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import test from "node:test";
 
@@ -12,6 +12,12 @@ const workflowDirectory = resolve(repositoryRoot, ".github", "workflows");
 
 const readWorkflow = (name) =>
   readFile(resolve(workflowDirectory, name), "utf8");
+
+const allWorkflowSources = await Promise.all(
+  (await readdir(workflowDirectory))
+    .filter((name) => name.endsWith(".yml") || name.endsWith(".yaml"))
+    .map(readWorkflow),
+);
 
 const [
   canaryWorkflow,
@@ -27,13 +33,32 @@ const [
   readWorkflow("verify-native-release.yml"),
 ]);
 
-const [nativeSmokeSource, npmProvenanceSource] = await Promise.all([
+const [
+  nativeSmokeSource,
+  npmProvenanceSource,
+  xcodeCloudChecks,
+  xcodeCloudMonitor,
+] = await Promise.all([
   readFile(
     resolve(repositoryRoot, "scripts", "smoke-react-native-native-package.mjs"),
     "utf8",
   ),
   readFile(
     resolve(repositoryRoot, "scripts", "check-npm-release-provenance.mjs"),
+    "utf8",
+  ),
+  readFile(
+    resolve(
+      repositoryRoot,
+      "apps",
+      "playground-apple",
+      "ci_scripts",
+      "run-native-checks.sh",
+    ),
+    "utf8",
+  ),
+  readFile(
+    resolve(repositoryRoot, ".github", "scripts", "monitor-xcode-cloud.mjs"),
     "utf8",
   ),
 ]);
@@ -45,6 +70,11 @@ const versionPackagesSource = await readFile(
 
 const composeBuildSource = await readFile(
   resolve(repositoryRoot, "packages", "compose", "build.gradle.kts"),
+  "utf8",
+);
+
+const applePlaygroundPackage = await readFile(
+  resolve(repositoryRoot, "apps", "playground-apple", "Package.swift"),
   "utf8",
 );
 
@@ -171,11 +201,40 @@ test("the web canary executes every v2 release gate", () => {
   ]);
 });
 
-test("the Swift canary allows the native iOS consumer build to finish", () => {
+test("Apple checks run in Xcode Cloud and GitHub uses no macOS runners", () => {
+  for (const workflow of allWorkflowSources) {
+    assert.doesNotMatch(workflow, /runs-on: macos-/u);
+  }
+
+  assert.doesNotMatch(ciWorkflow, /native-apple:/u);
+
+  assert.doesNotMatch(ciWorkflow, /visual-regression:/u);
+
+  assert.doesNotMatch(canaryWorkflow, /^ {2}swift:/mu);
+
   assert.match(
-    canaryWorkflow,
-    /swift:\n[\s\S]*?name: Swift package consumer[\s\S]*?timeout-minutes: 55[\s\S]*?\n {2}compose:/u,
+    applePlaygroundPackage,
+    /\.package\(name: "lumen", path: "\.\.\/\.\."\)/u,
   );
+
+  assertOrderedCommands(xcodeCloudChecks, "Xcode Cloud pull-request checks", [
+    "corepack_command\" enable --install-directory",
+    "export PATH=\"$corepack_bin:$PATH\"",
+    "git fetch --no-tags --depth=1 origin",
+    "pnpm run check:swift-assets",
+    "pnpm run check:swift-version",
+    "pnpm run test:swift-version",
+    "swift test",
+    "pnpm run check:swift-source-compatibility",
+    "pnpm run check:swift-api-baseline",
+    "swift build --package-path apps/playground-apple",
+    "pnpm run check:swift-package-candidate",
+    "pnpm run check:react-native-native-package:ios",
+    "capture-component-screenshots.sh",
+    "pnpm exec playwright install chromium",
+    "pnpm run test:visual",
+    "pnpm run test:framework-visual",
+  ]);
 });
 
 test("pull-request compatibility checks reuse the affected build outputs", () => {
@@ -229,13 +288,8 @@ test("WidgetKit changes select the Swift canary and validate both Swift API base
   );
 
   assert.ok(
-    canaryWorkflow.includes("run: pnpm run check:swift-api-baseline"),
-    "the Swift canary must validate both Swift package products",
-  );
-
-  assert.ok(
-    ciWorkflow.includes("run: pnpm run check:swift-api-baseline"),
-    "pull-request CI must validate both Swift package products",
+    xcodeCloudChecks.includes("pnpm run check:swift-api-baseline"),
+    "Xcode Cloud must validate both Swift package products",
   );
 });
 
@@ -344,17 +398,13 @@ test("canonical package commands enforce graduation identity before publication"
     "changeset publish",
   ]);
 
-  assertOrderedCommands(
-    versionPackagesSource,
-    "npm version preparation",
-    [
-      "['changeset', 'version']",
-      "['run', 'sync:coordinated-v2-versions']",
-      "['run', 'sync:compose-version']",
-      "['install', '--lockfile-only']",
-      "['run', 'generate:release-manifest']",
-    ],
-  );
+  assertOrderedCommands(versionPackagesSource, "npm version preparation", [
+    "['changeset', 'version']",
+    "['run', 'sync:coordinated-v2-versions']",
+    "['run', 'sync:compose-version']",
+    "['install', '--lockfile-only']",
+    "['run', 'generate:release-manifest']",
+  ]);
 
   assert.equal(
     packageManifest.scripts["version-packages"],
@@ -364,9 +414,7 @@ test("canonical package commands enforce graduation identity before publication"
   assertOrderedCommands(
     packageManifest.scripts["publish-packages"],
     "direct npm publication",
-    [
-      "node scripts/publish-packages.mjs",
-    ],
+    ["node scripts/publish-packages.mjs"],
   );
 });
 
@@ -382,8 +430,8 @@ test("published React Native consumers bind signed npm provenance to the release
   assert.equal(
     [...publishedNativeWorkflow.matchAll(/--revision "\$EXPECTED_REVISION"/gu)]
       .length,
-    2,
-    "Android and iOS consumers must pass the requested revision",
+    1,
+    "the Android consumer must pass the requested revision in GitHub",
   );
 
   assert.ok(
@@ -393,9 +441,25 @@ test("published React Native consumers bind signed npm provenance to the release
 
   assert.match(
     publishedNativeWorkflow,
-    /react-native-ios:[\s\S]*?runs-on: macos-26[\s\S]*?check:react-native-native-release:ios/u,
-    "the published iOS consumer must use the Swift 6.2-or-newer runner required by Expo",
+    /apple-cloud:[\s\S]*?runs-on: ubuntu-latest[\s\S]*?xcode-native-verify-rn-/u,
+    "published Apple verification must launch Xcode Cloud from Linux",
   );
+
+  assert.match(
+    publishedNativeWorkflow,
+    /monitor-apple-cloud:[\s\S]*?XCODE_CLOUD_WORKFLOW_NAME: Published Native Release Checks[\s\S]*?monitor-xcode-cloud\.mjs/u,
+    "published Apple verification must wait for the matching Xcode Cloud build",
+  );
+
+  assert.ok(
+    xcodeCloudMonitor.includes('completionStatus === "SUCCEEDED"'),
+    "the Xcode Cloud monitor must fail closed on unsuccessful builds",
+  );
+
+  assertOrderedCommands(xcodeCloudChecks, "published Xcode Cloud checks", [
+    "check:react-native-native-release:ios",
+    "smoke-swift-package-candidate.mjs",
+  ]);
 
   assert.ok(
     nativeSmokeSource.includes("check:npm-release-provenance"),

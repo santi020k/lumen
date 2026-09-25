@@ -30,4 +30,40 @@ describe('React Native overlay recipes', () => {
       windowWidth: 390
     })).toEqual({ left: 16, top: 524 })
   })
+
+  test('keeps anchored menus inside safe-area insets', () => {
+    expect(resolveLumenMenuPosition({
+      anchorHeight: 44,
+      anchorWidth: 44,
+      anchorX: 350,
+      anchorY: 700,
+      bottomInset: 34,
+      itemCount: 3,
+      leftInset: 8,
+      margin: 16,
+      menuWidth: 240,
+      rightInset: 12,
+      topInset: 20,
+      windowHeight: 800,
+      windowWidth: 390
+    })).toEqual({ left: 122, top: 524 })
+  })
+
+  test('pins oversized menus to the safe-area origin', () => {
+    expect(resolveLumenMenuPosition({
+      anchorHeight: 44,
+      anchorWidth: 44,
+      anchorX: 12,
+      anchorY: 12,
+      bottomInset: 34,
+      itemCount: 20,
+      leftInset: 8,
+      margin: 16,
+      menuWidth: 500,
+      rightInset: 12,
+      topInset: 20,
+      windowHeight: 500,
+      windowWidth: 390
+    })).toEqual({ left: 24, top: 36 })
+  })
 })

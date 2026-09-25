@@ -101,7 +101,7 @@
     "test:maven-release-artifacts": "node --test scripts/check-maven-pom-metadata.test.mjs scripts/check-maven-release-artifacts.test.mjs",
     "check:npm-release-provenance": "node scripts/check-npm-release-provenance.mjs",
     "test:npm-release-provenance": "node --test scripts/check-npm-release-provenance.test.mjs",
-    "test:v2-release-workflows": "node --test scripts/check-v2-release-workflows.test.mjs scripts/classify-workflow-paths.test.mjs scripts/release-scope.test.mjs scripts/workflow-scope.test.mjs",
+    "test:v2-release-workflows": "node --test scripts/check-v2-release-workflows.test.mjs scripts/classify-workflow-paths.test.mjs scripts/release-scope.test.mjs scripts/workflow-scope.test.mjs .github/scripts/monitor-xcode-cloud.test.mjs",
     "test:platform-identifiers": "node --test scripts/platform-identifiers.test.mjs",
     "generate:swift-api-baseline": "node scripts/check-swift-api-baseline.mjs --update && node scripts/check-swift-api-baseline.mjs --module LumenWidgetUI --update",
     "check:swift-api-baseline": "node scripts/check-swift-api-baseline.mjs && node scripts/check-swift-api-baseline.mjs --module LumenWidgetUI",

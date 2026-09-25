@@ -270,7 +270,7 @@ owned.
 | Picker            | `LumenPicker`           | `LumenPicker`            | `LumenPicker`           | Controlled single-value selection with native or accessible menu presentation |
 | Slider            | `LumenSlider`           | `LumenSlider`            | `LumenSlider`           | Native or dependency-free continuous and stepped range input                  |
 | Gauge             | `LumenGauge`            | `LumenGauge`             | `LumenGauge`            | Clamped circular metric with a formatted accessible value                     |
-| Sheet             | `LumenSheet`            | `lumenSheet`             | `LumenSheet`            | Controlled supplemental surface with native modal dismissal                   |
+| Sheet             | `LumenSheet`            | `lumenSheet`             | `LumenSheet`            | Safe-area-aware supplemental surface with reachable actions                   |
 | Menu              | `LumenMenu`             | `LumenMenu`              | `LumenMenu`             | Anchored actions with disabled and destructive item states                    |
 | Share button      | `LumenShareButton`      | `LumenShareButton`       | `LumenShareButton`      | Token-aware action backed by the operating system share surface               |
 | Wearable action   | —                       | `LumenWatchActionButton` | `LumenWearActionButton` | Round essential action with semantic intent and wearable-safe bounds          |
@@ -451,7 +451,9 @@ LumenNavigationBar(
 Overlay state and application data remain controlled by the host. Lumen supplies consistent action
 roles, spacing, and accessibility while each adapter uses its native modal and share presentation.
 SwiftUI exposes alert and sheet presentation as view modifiers so focus restoration remains attached
-to the presenting view.
+to the presenting view. React Native applications mount `SafeAreaProvider` above `LumenProvider`;
+their sheets scroll content by default, while `scrollable={false}` lets an existing `FlatList` or
+other virtualized child own scrolling.
 
 ```swift
 LumenButton("Delete report") { showConfirmation = true }

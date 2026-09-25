@@ -22,6 +22,7 @@ import {
   View,
   type ViewStyle
 } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import {
   type LumenMenuPosition,
@@ -57,6 +58,7 @@ export const LumenAlertDialog = ({
   visible
 }: LumenAlertDialogProps): ReactElement => {
   const theme = useLumenTheme()
+  const insets = useSafeAreaInsets()
 
   return (
     <Modal
@@ -72,19 +74,26 @@ export const LumenAlertDialog = ({
           backgroundColor: '#00000080',
           flex: 1,
           justifyContent: 'center',
-          padding: theme.spacing.xl
+          paddingBottom: theme.spacing.xl + insets.bottom,
+          paddingLeft: theme.spacing.xl + insets.left,
+          paddingRight: theme.spacing.xl + insets.right,
+          paddingTop: theme.spacing.xl + insets.top
         }}
       >
-        <View
+        <ScrollView
           accessibilityRole="alert"
+          contentContainerStyle={{
+            gap: theme.spacing.lg,
+            padding: theme.spacing.xl
+          }}
+          keyboardShouldPersistTaps="handled"
           style={{
             backgroundColor: theme.colors.surface,
             borderColor: theme.colors.line,
             borderRadius: theme.radii.lg,
             borderWidth: 1,
-            gap: theme.spacing.lg,
+            maxHeight: '100%',
             maxWidth: 440,
-            padding: theme.spacing.xl,
             width: '100%'
           }}
         >
@@ -126,7 +135,7 @@ export const LumenAlertDialog = ({
               {confirmLabel}
             </LumenButton>
           </View>
-        </View>
+        </ScrollView>
       </View>
     </Modal>
   )
@@ -335,6 +344,7 @@ export const LumenMenu = ({
   trigger
 }: LumenMenuProps): ReactElement => {
   const theme = useLumenTheme()
+  const insets = useSafeAreaInsets()
   const triggerRef = useRef<ComponentRef<typeof Pressable>>(null)
   const { height: windowHeight, width: windowWidth } = useWindowDimensions()
 
@@ -352,9 +362,13 @@ export const LumenMenu = ({
         anchorWidth: width,
         anchorX: x,
         anchorY: y,
+        bottomInset: insets.bottom,
         itemCount: items.length,
+        leftInset: insets.left,
         margin: theme.spacing.lg,
         menuWidth,
+        rightInset: insets.right,
+        topInset: insets.top,
         windowHeight,
         windowWidth
       }))

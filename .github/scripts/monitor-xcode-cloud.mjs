@@ -1,5 +1,7 @@
 import { sign } from "node:crypto";
 
+// cspell:words appstoreconnect
+
 const requiredEnvironment = [
   "APP_STORE_CONNECT_ISSUER_ID",
   "APP_STORE_CONNECT_KEY_ID",
@@ -11,19 +13,33 @@ const requiredEnvironment = [
 ];
 
 for (const name of requiredEnvironment) {
-  if (!process.env[name]) throw new Error(`Missing required environment variable: ${name}`);
+  if (!process.env[name])
+    throw new Error(`Missing required environment variable: ${name}`);
 }
 
 const issuerId = process.env.APP_STORE_CONNECT_ISSUER_ID;
 const keyId = process.env.APP_STORE_CONNECT_KEY_ID;
-const privateKey = process.env.APP_STORE_CONNECT_PRIVATE_KEY.replace(/\\n/g, "\n");
+
+const privateKey = process.env.APP_STORE_CONNECT_PRIVATE_KEY.replace(
+  /\\n/g,
+  "\n",
+);
+
 const productId = process.env.XCODE_CLOUD_PRODUCT_ID;
 const workflowName = process.env.XCODE_CLOUD_WORKFLOW_NAME;
 const sourceCommitSha = process.env.SOURCE_COMMIT_SHA.toLowerCase();
 const releaseTag = process.env.RELEASE_TAG;
-const pollIntervalMs = Number(process.env.POLL_INTERVAL_SECONDS ?? "30") * 1_000;
-const maximumWaitMs = Number(process.env.MAXIMUM_WAIT_MINUTES ?? "150") * 60_000;
-const apiOrigin = process.env.APP_STORE_CONNECT_API_ORIGIN ?? "https://api.appstoreconnect.apple.com";
+
+const pollIntervalMs =
+  Number(process.env.POLL_INTERVAL_SECONDS ?? "30") * 1_000;
+
+const maximumWaitMs =
+  Number(process.env.MAXIMUM_WAIT_MINUTES ?? "150") * 60_000;
+
+const apiOrigin =
+  process.env.APP_STORE_CONNECT_API_ORIGIN ??
+  "https://api.appstoreconnect.apple.com";
+
 const startedAt = Date.now();
 const base64Url = (value) => Buffer.from(value).toString("base64url");
 const maximumRetryDelayMs = 60_000;
@@ -40,14 +56,19 @@ class RetryableRequestError extends Error {
 
 const authorizationToken = () => {
   const issuedAt = Math.floor(Date.now() / 1_000);
-  const header = base64Url(JSON.stringify({ alg: "ES256", kid: keyId, typ: "JWT" }));
 
-  const payload = base64Url(JSON.stringify({
-    aud: "appstoreconnect-v1",
-    exp: issuedAt + 15 * 60,
-    iat: issuedAt,
-    iss: issuerId,
-  }));
+  const header = base64Url(
+    JSON.stringify({ alg: "ES256", kid: keyId, typ: "JWT" }),
+  );
+
+  const payload = base64Url(
+    JSON.stringify({
+      aud: "appstoreconnect-v1",
+      exp: issuedAt + 15 * 60,
+      iat: issuedAt,
+      iss: issuerId,
+    }),
+  );
 
   const unsignedToken = `${header}.${payload}`;
 
@@ -92,17 +113,28 @@ const matchesTag = (sourceReference) => {
   if (!sourceReference) return true;
 
   const attributes = sourceReference.attributes ?? {};
-  const referenceNames = new Set([attributes.name, attributes.canonicalName].filter(Boolean));
 
-  return referenceNames.size === 0
-    || referenceNames.has(releaseTag)
-    || referenceNames.has(`refs/tags/${releaseTag}`);
+  const referenceNames = new Set(
+    [attributes.name, attributes.canonicalName].filter(Boolean),
+  );
+
+  return (
+    referenceNames.size === 0 ||
+    referenceNames.has(releaseTag) ||
+    referenceNames.has(`refs/tags/${releaseTag}`)
+  );
 };
 
 const matchesRelease = (build, includedById) => {
   const commit = build.attributes?.sourceCommit?.commitSha;
   const workflow = relatedResource(build, "workflow", includedById);
-  const sourceReference = relatedResource(build, "sourceBranchOrTag", includedById);
+
+  const sourceReference = relatedResource(
+    build,
+    "sourceBranchOrTag",
+    includedById,
+  );
+
   const commitMatches = commit?.toLowerCase() === sourceCommitSha;
   const workflowMatches = workflow?.attributes?.name === workflowName;
 
@@ -111,10 +143,15 @@ const matchesRelease = (build, includedById) => {
 
 const findReleaseBuild = (document) => {
   const includedById = new Map(
-    (document.included ?? []).map((resource) => [`${resource.type}:${resource.id}`, resource]),
+    (document.included ?? []).map((resource) => [
+      `${resource.type}:${resource.id}`,
+      resource,
+    ]),
   );
 
-  return (document.data ?? []).find((build) => matchesRelease(build, includedById));
+  return (document.data ?? []).find((build) =>
+    matchesRelease(build, includedById),
+  );
 };
 
 const requestBuilds = async () => {
@@ -130,7 +167,9 @@ const requestBuilds = async () => {
   } catch (error) {
     const reason = error instanceof Error ? error.message : String(error);
 
-    throw new RetryableRequestError(`App Store Connect request failed: ${reason}`);
+    throw new RetryableRequestError(
+      `App Store Connect request failed: ${reason}`,
+    );
   }
 };
 
@@ -140,7 +179,9 @@ const readResponseBody = async (response) => {
   } catch (error) {
     const reason = error instanceof Error ? error.message : String(error);
 
-    throw new RetryableRequestError(`App Store Connect response body failed: ${reason}`);
+    throw new RetryableRequestError(
+      `App Store Connect response body failed: ${reason}`,
+    );
   }
 };
 
@@ -150,7 +191,9 @@ const parseResponseBody = (responseBody) => {
   } catch (error) {
     const reason = error instanceof Error ? error.message : String(error);
 
-    throw new RetryableRequestError(`App Store Connect response JSON failed: ${reason}`);
+    throw new RetryableRequestError(
+      `App Store Connect response JSON failed: ${reason}`,
+    );
   }
 };
 
@@ -163,13 +206,16 @@ const fetchBuilds = async () => {
 
     if (isRetryable) {
       const retryAfterHeader = response.headers.get("retry-after");
-      const retryAfterSeconds = retryAfterHeader === null ? undefined : Number(retryAfterHeader);
 
-      const retryAfterMs = retryAfterSeconds !== undefined
-        && Number.isFinite(retryAfterSeconds)
-        && retryAfterSeconds >= 0
-        ? retryAfterSeconds * 1_000
-        : undefined;
+      const retryAfterSeconds =
+        retryAfterHeader === null ? undefined : Number(retryAfterHeader);
+
+      const retryAfterMs =
+        retryAfterSeconds !== undefined &&
+        Number.isFinite(retryAfterSeconds) &&
+        retryAfterSeconds >= 0
+          ? retryAfterSeconds * 1_000
+          : undefined;
 
       throw new RetryableRequestError(
         `App Store Connect returned retryable status ${response.status}: ${responseBody}`,
@@ -177,13 +223,16 @@ const fetchBuilds = async () => {
       );
     }
 
-    throw new Error(`App Store Connect returned ${response.status}: ${responseBody}`);
+    throw new Error(
+      `App Store Connect returned ${response.status}: ${responseBody}`,
+    );
   }
 
   return parseResponseBody(responseBody);
 };
 
-const wait = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds));
+const wait = (milliseconds) =>
+  new Promise((resolve) => setTimeout(resolve, milliseconds));
 
 const writeSummary = async (build, outcome) => {
   if (!process.env.GITHUB_STEP_SUMMARY) return;
@@ -200,13 +249,20 @@ const writeSummary = async (build, outcome) => {
     `- Result: **${outcome}**`,
   ];
 
-  if (attributes.number !== undefined) lines.push(`- Xcode Cloud build: ${attributes.number}`);
+  if (attributes.number !== undefined)
+    lines.push(`- Xcode Cloud build: ${attributes.number}`);
 
-  if (attributes.startedDate) lines.push(`- Started: ${attributes.startedDate}`);
+  if (attributes.startedDate)
+    lines.push(`- Started: ${attributes.startedDate}`);
 
-  if (attributes.finishedDate) lines.push(`- Finished: ${attributes.finishedDate}`);
+  if (attributes.finishedDate)
+    lines.push(`- Finished: ${attributes.finishedDate}`);
 
-  lines.push("", "Open App Store Connect only when logs or distribution controls are needed.", "");
+  lines.push(
+    "",
+    "Open App Store Connect only when logs or distribution controls are needed.",
+    "",
+  );
 
   await appendFile(process.env.GITHUB_STEP_SUMMARY, `${lines.join("\n")}\n`);
 };
@@ -226,14 +282,17 @@ while (Date.now() - startedAt < maximumWaitMs) {
 
     consecutiveRequestFailures += 1;
 
-    const exponentialDelayMs = pollIntervalMs * (2 ** Math.min(consecutiveRequestFailures - 1, 6));
+    const exponentialDelayMs =
+      pollIntervalMs * 2 ** Math.min(consecutiveRequestFailures - 1, 6);
 
     const retryDelayMs = Math.min(
       error.retryAfterMs ?? exponentialDelayMs,
       maximumRetryDelayMs,
     );
 
-    console.warn(`${error.message} Retrying in ${retryDelayMs / 1_000} seconds.`);
+    console.warn(
+      `${error.message} Retrying in ${retryDelayMs / 1_000} seconds.`,
+    );
 
     await wait(retryDelayMs);
 
@@ -244,7 +303,9 @@ while (Date.now() - startedAt < maximumWaitMs) {
 
   if (!build) {
     if (lastReportedState !== "WAITING_FOR_BUILD") {
-      console.log(`Waiting for ${workflowName} to discover ${releaseTag} at ${sourceCommitSha}...`);
+      console.log(
+        `Waiting for ${workflowName} to discover ${releaseTag} at ${sourceCommitSha}...`,
+      );
 
       lastReportedState = "WAITING_FOR_BUILD";
     }
@@ -259,7 +320,9 @@ while (Date.now() - startedAt < maximumWaitMs) {
   const state = `${progress}:${completionStatus ?? "IN_PROGRESS"}`;
 
   if (state !== lastReportedState) {
-    console.log(`Xcode Cloud build ${build.attributes?.number ?? build.id}: ${state}`);
+    console.log(
+      `Xcode Cloud build ${build.attributes?.number ?? build.id}: ${state}`,
+    );
 
     lastReportedState = state;
   }
@@ -278,9 +341,13 @@ while (Date.now() - startedAt < maximumWaitMs) {
     process.exit(0);
   }
 
-  throw new Error(`Xcode Cloud release finished with status ${completionStatus ?? "UNKNOWN"}.`);
+  throw new Error(
+    `Xcode Cloud release finished with status ${completionStatus ?? "UNKNOWN"}.`,
+  );
 }
 
 await writeSummary(undefined, "TIMED OUT");
 
-throw new Error(`Timed out after ${maximumWaitMs / 60_000} minutes waiting for ${releaseTag}.`);
+throw new Error(
+  `Timed out after ${maximumWaitMs / 60_000} minutes waiting for ${releaseTag}.`,
+);

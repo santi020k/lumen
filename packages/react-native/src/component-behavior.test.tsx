@@ -8,7 +8,7 @@ import { afterEach, describe, expect, test, vi } from 'vitest'
 import { LumenChip, LumenFieldGroup, LumenTextarea, LumenToast } from './additional-components.js'
 import { LumenDateField, LumenDateRangeField } from './datetime-components.js'
 import { LumenSearchField, LumenToggle } from './form-components.js'
-import { LumenSheet } from './overlay-components.js'
+import { LumenAlertDialog, LumenSheet } from './overlay-components.js'
 import { LumenPhoneInput } from './phone-components.js'
 import { resolveLumenPhoneInputValue } from './phone-recipes.js'
 import { LumenButton, LumenText, LumenTextField } from './primitives.js'
@@ -22,6 +22,12 @@ Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true })
 const nativePlatform = vi.hoisted(() => ({ OS: 'ios' }))
 const nativeMotion = vi.hoisted(() => ({ enabled: false }))
 const nativeWindow = vi.hoisted(() => ({ fontScale: 1, height: 800, scale: 2, width: 400 }))
+const safeAreaInsets = vi.hoisted(() => ({
+  bottom: 34,
+  left: 8,
+  right: 12,
+  top: 20
+}))
 
 vi.mock('react-native', async () => {
   const { createElement, useImperativeHandle } = await import('react')
@@ -70,6 +76,10 @@ vi.mock('@react-native-community/datetimepicker', async () => {
     default: NativeDatePicker
   }
 })
+
+vi.mock('react-native-safe-area-context', () => ({
+  useSafeAreaInsets: () => safeAreaInsets
+}))
 
 vi.mock('react-native-svg', async () => {
   const { createElement } = await import('react')
@@ -176,6 +186,77 @@ afterEach(async () => {
 })
 
 describe('Lumen React Native component behavior', () => {
+  test('keeps alert actions inside safe areas and makes oversized content scrollable', async () => {
+    const root = await renderNative(
+      <LumenAlertDialog
+        confirmLabel="Delete"
+        onConfirm={() => {}}
+        onDismiss={() => {}}
+        title="Delete project?"
+        visible
+      />
+    )
+    const modalContainer = root.container.queryAll(
+      instance => readProp(instance, 'accessibilityViewIsModal') === true
+    )[0]
+
+    if (!modalContainer) throw new Error('Expected the alert modal container.')
+
+    expect(readProp(modalContainer, 'style')).toMatchObject({
+      paddingBottom: 58,
+      paddingLeft: 32,
+      paddingRight: 36,
+      paddingTop: 44
+    })
+    expect(readProp(findByAccessibilityRole(root, 'alert'), 'style')).toMatchObject({
+      maxHeight: '100%'
+    })
+  })
+
+  test('keeps sheet actions above the bottom inset and scrolls application content', async () => {
+    const root = await renderNative(
+      <LumenSheet
+        actions={<LumenButton>Save</LumenButton>}
+        onDismiss={() => {}}
+        safeAreaInsets={safeAreaInsets}
+        scrollable
+        title="Settings"
+        visible
+      >
+        <LumenText>Sheet content</LumenText>
+      </LumenSheet>
+    )
+    const keyboardSurface = root.container.queryAll(
+      instance => instance.type === 'KeyboardAvoidingView'
+    )[0]
+    const sheetPanel = root.container.queryAll(instance => {
+      const style = readProp(instance, 'style')
+
+      return typeof style === 'object' && style !== null && style.paddingBottom === 34
+    })[0]
+
+    if (!keyboardSurface || !sheetPanel) throw new Error('Expected the sheet surfaces.')
+
+    expect(readProp(keyboardSurface, 'style')).toMatchObject({
+      paddingBottom: 0,
+      paddingLeft: 8,
+      paddingRight: 12,
+      paddingTop: 20
+    })
+    expect(readProp(sheetPanel, 'style')).toMatchObject({ paddingBottom: 34 })
+    expect(root.container.queryAll(instance => instance.type === 'ScrollView')).toHaveLength(1)
+  })
+
+  test('lets virtualized sheet content own scrolling', async () => {
+    const root = await renderNative(
+      <LumenSheet onDismiss={() => {}} scrollable={false} visible>
+        <LumenText>Virtualized content</LumenText>
+      </LumenSheet>
+    )
+
+    expect(root.container.queryAll(instance => instance.type === 'ScrollView')).toHaveLength(0)
+  })
+
   test('button exposes loading as busy and disabled native state', async () => {
     const root = await renderNative(<LumenButton loading>Save changes</LumenButton>)
     const button = findByAccessibilityRole(root, 'button')
