@@ -3,7 +3,8 @@ import test from 'node:test'
 
 import {
   classifyReleasePackages,
-  mergeReleasePackageNames
+  mergeReleasePackageNames,
+  selectPendingReleaseNames
 } from './release-scope.mjs'
 
 test('release scope merges pending and unpublished packages deterministically', () => {
@@ -17,6 +18,16 @@ test('release scope merges pending and unpublished packages deterministically', 
       '@santi020k/lumen-elements',
       '@santi020k/lumen-react'
     ]
+  )
+})
+
+test('release scope ignores private packages Changesets reports as unchanged', () => {
+  assert.deepEqual(
+    selectPendingReleaseNames([
+      { name: '@santi020k/lumen-core', type: 'minor' },
+      { name: '@santi020k/lumen-docs', type: 'none' }
+    ]),
+    ['@santi020k/lumen-core']
   )
 })
 

@@ -76,6 +76,12 @@ surface; React and Web Components expose the same class and data contracts.
   hosts, and `CopyButton` copies arbitrary values or referenced content with event and Toast
   feedback across Astro, React, and Elements.
 
+## Consumer-driven improvements
+
+See [consumer UI recipes](consumer-ui-recipes.md) for the static React icon entrypoint, opt-in
+responsive record tables across web adapters, and React Native sheet composition controls.
+Editor layouts, whole-unit amount fields, and asynchronous workflows remain consumer recipes.
+
 ## Next
 
 - Execute the [Lumen 2 readiness plan](lumen-2-readiness.md): stabilize and graduate the native

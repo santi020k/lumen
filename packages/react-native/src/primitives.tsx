@@ -2,19 +2,16 @@ import {
   type ComponentType,
   createElement,
   type ReactElement,
-  type ReactNode,
-  type Ref
+  type ReactNode
 } from 'react'
 import {
   ActivityIndicator,
   type ActivityIndicatorProps,
   type ColorValue,
-  type HostInstance,
   Pressable,
   type PressableProps,
   Text,
   TextInput,
-  type TextInputInstance,
   type TextInputProps,
   type TextProps,
   type TextStyle,
@@ -30,6 +27,12 @@ import {
   getLumenIconGraphic,
   type LumenIconName
 } from './icons.generated.js'
+import type {
+  LumenActivityIndicatorRef,
+  LumenTextInputRef,
+  LumenTextRef,
+  LumenViewRef
+} from './native-ref-types.js'
 import {
   resolveLumenButtonColors,
   resolveLumenButtonOpacity,
@@ -54,7 +57,7 @@ export type LumenTextTone =
 export type LumenTextVariant = 'body' | 'caption' | 'label' | 'title'
 
 export interface LumenTextProps extends TextProps {
-  ref?: Ref<HostInstance>
+  ref?: LumenTextRef
   tone?: LumenTextTone
   variant?: LumenTextVariant
 }
@@ -88,7 +91,7 @@ export type LumenSurfaceTone = 'canvas' | 'muted' | 'strong' | 'surface'
 export interface LumenSurfaceProps extends ViewProps {
   padding?: LumenSurfacePadding
   radius?: LumenSurfaceRadius
-  ref?: Ref<HostInstance>
+  ref?: LumenViewRef
   tone?: LumenSurfaceTone
 }
 
@@ -130,7 +133,7 @@ interface LumenIconBaseProps extends Omit<ViewProps, 'children'> {
   color?: ColorValue
   decorative?: boolean
   label?: string
-  ref?: Ref<HostInstance>
+  ref?: LumenViewRef
   size?: LumenIconSize
   strokeWidth?: number
 }
@@ -200,7 +203,7 @@ export const LumenIcon = ({
 interface LumenIconButtonBaseProps extends Omit<PressableProps, 'children'> {
   intent?: LumenButtonIntent
   label: string
-  ref?: Ref<HostInstance>
+  ref?: LumenViewRef
   size?: LumenControlSize
   strokeWidth?: number
 }
@@ -221,6 +224,7 @@ export const LumenIconButton = ({
   ...props
 }: LumenIconButtonProps): ReactElement => {
   const theme = useLumenTheme()
+  const isDisabled = disabled === true
   const colors = resolveLumenButtonColors(theme.colors, intent)
   const metrics = resolveLumenIconButtonSize(size)
   const graphic = resolveIconGraphic(icon, name)
@@ -231,8 +235,8 @@ export const LumenIconButton = ({
       {...props}
       accessibilityLabel={label}
       accessibilityRole="button"
-      accessibilityState={{ ...accessibilityState, disabled }}
-      disabled={disabled}
+      accessibilityState={{ ...accessibilityState, disabled: isDisabled }}
+      disabled={isDisabled}
       style={state => [
         {
           alignItems: 'center',
@@ -242,7 +246,7 @@ export const LumenIconButton = ({
           borderWidth: 1,
           height: metrics.touchTarget,
           justifyContent: 'center',
-          opacity: resolveLumenButtonOpacity(disabled, state.pressed),
+          opacity: resolveLumenButtonOpacity(isDisabled, state.pressed),
           width: metrics.touchTarget
         },
         resolveLumenPressableStyle(style, state)
@@ -263,7 +267,7 @@ export interface LumenButtonProps extends Omit<PressableProps, 'children'> {
   children: ReactNode
   intent?: LumenButtonIntent
   loading?: boolean
-  ref?: Ref<HostInstance>
+  ref?: LumenViewRef
   size?: LumenControlSize
 }
 
@@ -281,7 +285,7 @@ export const LumenButton = ({
   const theme = useLumenTheme()
   const colors = resolveLumenButtonColors(theme.colors, intent)
   const dimensions = resolveLumenButtonSize(theme, size)
-  const isDisabled = disabled || loading
+  const isDisabled = disabled === true || loading
 
   return (
     <Pressable
@@ -330,7 +334,7 @@ export interface LumenTextFieldProps extends TextInputProps {
   'aria-describedby'?: string
   'aria-required'?: boolean
   error?: boolean
-  ref?: Ref<TextInputInstance>
+  ref?: LumenTextInputRef
   size?: LumenControlSize
 }
 
@@ -447,7 +451,7 @@ export const LumenTextField = ({
 
 export interface LumenBadgeProps extends ViewProps {
   children: ReactNode
-  ref?: Ref<HostInstance>
+  ref?: LumenViewRef
   tone?: 'accent' | 'danger' | 'neutral' | 'success' | 'warning'
 }
 
@@ -485,7 +489,7 @@ export const LumenBadge = ({
 }
 
 export interface LumenDividerProps extends ViewProps {
-  ref?: Ref<HostInstance>
+  ref?: LumenViewRef
 }
 
 export const LumenDivider = ({
@@ -507,7 +511,7 @@ export const LumenDivider = ({
 }
 
 export interface LumenSpinnerProps extends ActivityIndicatorProps {
-  ref?: Ref<HostInstance>
+  ref?: LumenActivityIndicatorRef
 }
 
 export const LumenSpinner = ({

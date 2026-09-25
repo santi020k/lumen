@@ -34,7 +34,7 @@ fi
 
 mkdir -p "${output_dir}"
 xcrun simctl boot "${device_id}" 2>/dev/null || true
-if [[ "${CI:-}" != "true" ]]; then
+if [[ "${CI:-}" != "true" && "${CI:-}" != "TRUE" && -z "${CI_XCODE_CLOUD:-}" ]]; then
   open -a Simulator
 fi
 xcrun simctl bootstatus "${device_id}" -b

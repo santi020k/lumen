@@ -10,6 +10,11 @@ test('separates compact SVG arc flags for CoreSVG', () => {
     ),
     'M16.997 21a2 2 0 0 0 1.68-.92 15.25 15.25 0 0 0 0-16.16 2 2 0 0 0 -1.68-.92z'
   )
+
+  assert.equal(
+    normalizeCoreSvgPathData('M10 13a3 3 0 01-2.121-5.121'),
+    'M10 13a3 3 0 0 1 -2.121-5.121'
+  )
 })
 
 test('preserves ordinary path formatting', () => {

@@ -10,7 +10,9 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -325,7 +327,15 @@ fun <Value> LumenAdaptiveNavigationScaffold(
         modifier = modifier,
         containerColor = colors.canvas,
         contentColor = colors.ink,
-        content = content
+        content = {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .navigationBarsPadding()
+            ) {
+                content()
+            }
+        }
     )
 }
 

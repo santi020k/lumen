@@ -1,6 +1,5 @@
-import { type ReactElement, type Ref } from 'react'
+import { type ReactElement } from 'react'
 import {
-  type HostInstance,
   Image,
   type ImageProps,
   type ImageSourcePropType,
@@ -10,6 +9,7 @@ import {
   resolveLumenImageAspectRatio,
   resolveLumenImageRadius
 } from './media-recipes.js'
+import type { LumenImageRef } from './native-ref-types.js'
 import { useLumenTheme } from './theme-context.js'
 
 export type LumenImageFit = 'contain' | 'cover'
@@ -24,7 +24,7 @@ export interface LumenImageProps extends Omit<
   fit?: LumenImageFit
   label?: string
   radius?: LumenImageRadius
-  ref?: Ref<HostInstance>
+  ref?: LumenImageRef
   source: ImageSourcePropType
 }
 

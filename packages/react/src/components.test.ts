@@ -386,16 +386,16 @@ describe('@santi020k/lumen-react components', () => {
   })
 
   test('treats icons as decorative unless labelled', () => {
-    const decorative = Icon({ children: 'x' }) as ReactElement
-    const labelled = Icon({ label: 'Menu', size: 'sm' }) as ReactElement
+    const decorative = renderToStaticMarkup(createElement(Icon, null, 'x'))
+    const labelled = renderToStaticMarkup(createElement(Icon, { label: 'Menu', size: 'sm' }))
 
-    expect(propsOf(decorative)['aria-hidden']).toBe(true)
-    expect(propsOf(decorative).role).toBeUndefined()
-    expect(propsOf(decorative).children).toBe('x')
-    expect(propsOf(labelled)['aria-label']).toBe('Menu')
-    expect(propsOf(labelled).role).toBe('img')
-    expect(propsOf(labelled)['aria-hidden']).toBeUndefined()
-    expect(propsOf(labelled).className).toBe('ui-icon ui-icon--sm')
+    expect(decorative).toContain('aria-hidden="true"')
+    expect(decorative).not.toContain('role=')
+    expect(decorative).toContain('>x</span>')
+    expect(labelled).toContain('aria-label="Menu"')
+    expect(labelled).toContain('role="img"')
+    expect(labelled).not.toContain('aria-hidden=')
+    expect(labelled).toContain('class="ui-icon ui-icon--sm"')
   })
 
   test('renders registered filled icon packs through the shared Icon API', () => {
@@ -410,12 +410,10 @@ describe('@santi020k/lumen-react components', () => {
       }
     })
 
-    const icon = Icon({ name: 'brand-test:mark' }) as ReactElement
-    const svg = propsOf(icon).children as ReactElement
-
-    expect(propsOf(svg).className).toBe('ui-icon__svg brand-test-mark')
-    expect(propsOf(svg).fill).toBe('currentColor')
-    expect(propsOf(svg).stroke).toBe('none')
+    const markup = renderToStaticMarkup(createElement(Icon, { name: 'brand-test:mark' }))
+    expect(markup).toContain('class="ui-icon__svg brand-test-mark"')
+    expect(markup).toContain('fill="currentColor"')
+    expect(markup).toContain('stroke="none"')
   })
 
   test('resolves surface data attributes on glass-aware surfaces', () => {

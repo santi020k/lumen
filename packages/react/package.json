@@ -1,6 +1,6 @@
 {
   "name": "@santi020k/lumen-react",
-  "version": "2.1.0",
+  "version": "3.0.0",
   "publishConfig": {
     "access": "public"
   },
@@ -26,7 +26,11 @@
     "./styles.css": "./styles.css",
     "./styles/critical.css": "./styles/critical.css",
     "./layers.css": "./layers.css",
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./icons": {
+      "types": "./dist/icons.d.ts",
+      "import": "./dist/icons.js"
+    }
   },
   "files": [
     "bin",

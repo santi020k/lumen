@@ -202,6 +202,7 @@ value class LumenIconName private constructor(val rawValue: String) {
         val BookA: LumenIconName get() = LumenIconName("book-a")
         val BookAlert: LumenIconName get() = LumenIconName("book-alert")
         val BookAudio: LumenIconName get() = LumenIconName("book-audio")
+        val BookBookmark: LumenIconName get() = LumenIconName("book-bookmark")
         val BookCheck: LumenIconName get() = LumenIconName("book-check")
         val BookCopy: LumenIconName get() = LumenIconName("book-copy")
         val BookDashed: LumenIconName get() = LumenIconName("book-dashed")
@@ -819,10 +820,12 @@ value class LumenIconName private constructor(val rawValue: String) {
         val BrickWall: LumenIconName get() = LumenIconName("brick-wall")
         val BrickWallFire: LumenIconName get() = LumenIconName("brick-wall-fire")
         val BrickWallShield: LumenIconName get() = LumenIconName("brick-wall-shield")
+        val Bridge: LumenIconName get() = LumenIconName("bridge")
         val Briefcase: LumenIconName get() = LumenIconName("briefcase")
         val BriefcaseBusiness: LumenIconName get() = LumenIconName("briefcase-business")
         val BriefcaseConveyorBelt: LumenIconName get() = LumenIconName("briefcase-conveyor-belt")
         val BriefcaseMedical: LumenIconName get() = LumenIconName("briefcase-medical")
+        val BriefcasePlus: LumenIconName get() = LumenIconName("briefcase-plus")
         val BringToFront: LumenIconName get() = LumenIconName("bring-to-front")
         val Broccoli: LumenIconName get() = LumenIconName("broccoli")
         val Broom: LumenIconName get() = LumenIconName("broom")
@@ -835,6 +838,8 @@ value class LumenIconName private constructor(val rawValue: String) {
         val BugPlay: LumenIconName get() = LumenIconName("bug-play")
         val Building: LumenIconName get() = LumenIconName("building")
         val Building2: LumenIconName get() = LumenIconName("building-2")
+        val BuildingComplex: LumenIconName get() = LumenIconName("building-complex")
+        val BuildingComplexPlus: LumenIconName get() = LumenIconName("building-complex-plus")
         val Bus: LumenIconName get() = LumenIconName("bus")
         val BusFront: LumenIconName get() = LumenIconName("bus-front")
         val Cable: LumenIconName get() = LumenIconName("cable")
@@ -848,6 +853,7 @@ value class LumenIconName private constructor(val rawValue: String) {
         val CalendarArrowUp: LumenIconName get() = LumenIconName("calendar-arrow-up")
         val CalendarCheck: LumenIconName get() = LumenIconName("calendar-check")
         val CalendarCheck2: LumenIconName get() = LumenIconName("calendar-check-2")
+        val CalendarChevronsRight: LumenIconName get() = LumenIconName("calendar-chevrons-right")
         val CalendarClock: LumenIconName get() = LumenIconName("calendar-clock")
         val CalendarCog: LumenIconName get() = LumenIconName("calendar-cog")
         val CalendarDays: LumenIconName get() = LumenIconName("calendar-days")
@@ -866,6 +872,8 @@ value class LumenIconName private constructor(val rawValue: String) {
         val Calendars: LumenIconName get() = LumenIconName("calendars")
         val Camera: LumenIconName get() = LumenIconName("camera")
         val CameraOff: LumenIconName get() = LumenIconName("camera-off")
+        val Can: LumenIconName get() = LumenIconName("can")
+        val CanSoda: LumenIconName get() = LumenIconName("can-soda")
         val Candy: LumenIconName get() = LumenIconName("candy")
         val CandyCane: LumenIconName get() = LumenIconName("candy-cane")
         val CandyOff: LumenIconName get() = LumenIconName("candy-off")
@@ -880,6 +888,8 @@ value class LumenIconName private constructor(val rawValue: String) {
         val Caravan: LumenIconName get() = LumenIconName("caravan")
         val CardSim: LumenIconName get() = LumenIconName("card-sim")
         val Carrot: LumenIconName get() = LumenIconName("carrot")
+        val Carton: LumenIconName get() = LumenIconName("carton")
+        val CartonOff: LumenIconName get() = LumenIconName("carton-off")
         val CaseLower: LumenIconName get() = LumenIconName("case-lower")
         val CaseSensitive: LumenIconName get() = LumenIconName("case-sensitive")
         val CaseUpper: LumenIconName get() = LumenIconName("case-upper")
@@ -958,6 +968,7 @@ value class LumenIconName private constructor(val rawValue: String) {
         val CircleChevronRight: LumenIconName get() = LumenIconName("circle-chevron-right")
         val CircleChevronUp: LumenIconName get() = LumenIconName("circle-chevron-up")
         val CircleDashed: LumenIconName get() = LumenIconName("circle-dashed")
+        val CircleDashedCheck: LumenIconName get() = LumenIconName("circle-dashed-check")
         val CircleDivide: LumenIconName get() = LumenIconName("circle-divide")
         val CircleDollarSign: LumenIconName get() = LumenIconName("circle-dollar-sign")
         val CircleDot: LumenIconName get() = LumenIconName("circle-dot")
@@ -991,6 +1002,9 @@ value class LumenIconName private constructor(val rawValue: String) {
         val CircuitBoard: LumenIconName get() = LumenIconName("circuit-board")
         val Citrus: LumenIconName get() = LumenIconName("citrus")
         val Clapperboard: LumenIconName get() = LumenIconName("clapperboard")
+        val ClefAlto: LumenIconName get() = LumenIconName("clef-alto")
+        val ClefBass: LumenIconName get() = LumenIconName("clef-bass")
+        val ClefTreble: LumenIconName get() = LumenIconName("clef-treble")
         val Clipboard: LumenIconName get() = LumenIconName("clipboard")
         val ClipboardCheck: LumenIconName get() = LumenIconName("clipboard-check")
         val ClipboardClock: LumenIconName get() = LumenIconName("clipboard-clock")
@@ -1093,6 +1107,7 @@ value class LumenIconName private constructor(val rawValue: String) {
         val CreditCardCheck: LumenIconName get() = LumenIconName("credit-card-check")
         val CreditCardMinus: LumenIconName get() = LumenIconName("credit-card-minus")
         val CreditCardPlus: LumenIconName get() = LumenIconName("credit-card-plus")
+        val CreditCardReader: LumenIconName get() = LumenIconName("credit-card-reader")
         val CreditCardX: LumenIconName get() = LumenIconName("credit-card-x")
         val Croissant: LumenIconName get() = LumenIconName("croissant")
         val Crop: LumenIconName get() = LumenIconName("crop")
@@ -1101,6 +1116,7 @@ value class LumenIconName private constructor(val rawValue: String) {
         val Crown: LumenIconName get() = LumenIconName("crown")
         val Cuboid: LumenIconName get() = LumenIconName("cuboid")
         val CupSoda: LumenIconName get() = LumenIconName("cup-soda")
+        val Cupcake: LumenIconName get() = LumenIconName("cupcake")
         val Currency: LumenIconName get() = LumenIconName("currency")
         val Cylinder: LumenIconName get() = LumenIconName("cylinder")
         val Dam: LumenIconName get() = LumenIconName("dam")
@@ -1141,10 +1157,13 @@ value class LumenIconName private constructor(val rawValue: String) {
         val Dock: LumenIconName get() = LumenIconName("dock")
         val Dog: LumenIconName get() = LumenIconName("dog")
         val DollarSign: LumenIconName get() = LumenIconName("dollar-sign")
+        val Dome: LumenIconName get() = LumenIconName("dome")
         val Donut: LumenIconName get() = LumenIconName("donut")
         val DoorClosed: LumenIconName get() = LumenIconName("door-closed")
         val DoorClosedLocked: LumenIconName get() = LumenIconName("door-closed-locked")
+        val DoorClosedPackage: LumenIconName get() = LumenIconName("door-closed-package")
         val DoorOpen: LumenIconName get() = LumenIconName("door-open")
+        val DoorStairwell: LumenIconName get() = LumenIconName("door-stairwell")
         val Dot: LumenIconName get() = LumenIconName("dot")
         val Download: LumenIconName get() = LumenIconName("download")
         val DraftingCompass: LumenIconName get() = LumenIconName("drafting-compass")
@@ -1169,8 +1188,10 @@ value class LumenIconName private constructor(val rawValue: String) {
         val Ellipse: LumenIconName get() = LumenIconName("ellipse")
         val Ellipsis: LumenIconName get() = LumenIconName("ellipsis")
         val EllipsisVertical: LumenIconName get() = LumenIconName("ellipsis-vertical")
+        val Engine: LumenIconName get() = LumenIconName("engine")
         val Equal: LumenIconName get() = LumenIconName("equal")
         val EqualApproximately: LumenIconName get() = LumenIconName("equal-approximately")
+        val EqualApproximatelyNot: LumenIconName get() = LumenIconName("equal-approximately-not")
         val EqualNot: LumenIconName get() = LumenIconName("equal-not")
         val Eraser: LumenIconName get() = LumenIconName("eraser")
         val EthernetPort: LumenIconName get() = LumenIconName("ethernet-port")
@@ -1192,6 +1213,7 @@ value class LumenIconName private constructor(val rawValue: String) {
         val Factory: LumenIconName get() = LumenIconName("factory")
         val Fan: LumenIconName get() = LumenIconName("fan")
         val FastForward: LumenIconName get() = LumenIconName("fast-forward")
+        val Faucet: LumenIconName get() = LumenIconName("faucet")
         val Feather: LumenIconName get() = LumenIconName("feather")
         val Fence: LumenIconName get() = LumenIconName("fence")
         val FerrisWheel: LumenIconName get() = LumenIconName("ferris-wheel")
@@ -1328,10 +1350,14 @@ value class LumenIconName private constructor(val rawValue: String) {
         val Gamepad: LumenIconName get() = LumenIconName("gamepad")
         val Gamepad2: LumenIconName get() = LumenIconName("gamepad-2")
         val GamepadDirectional: LumenIconName get() = LumenIconName("gamepad-directional")
+        val GapHorizontal: LumenIconName get() = LumenIconName("gap-horizontal")
+        val GapVertical: LumenIconName get() = LumenIconName("gap-vertical")
         val Gauge: LumenIconName get() = LumenIconName("gauge")
         val Gavel: LumenIconName get() = LumenIconName("gavel")
         val Gem: LumenIconName get() = LumenIconName("gem")
         val GeorgianLari: LumenIconName get() = LumenIconName("georgian-lari")
+        val Germ: LumenIconName get() = LumenIconName("germ")
+        val GermOff: LumenIconName get() = LumenIconName("germ-off")
         val Ghost: LumenIconName get() = LumenIconName("ghost")
         val Gift: LumenIconName get() = LumenIconName("gift")
         val GitBranch: LumenIconName get() = LumenIconName("git-branch")
@@ -1355,6 +1381,7 @@ value class LumenIconName private constructor(val rawValue: String) {
         val Glasses: LumenIconName get() = LumenIconName("glasses")
         val Globe: LumenIconName get() = LumenIconName("globe")
         val GlobeCheck: LumenIconName get() = LumenIconName("globe-check")
+        val GlobeCode: LumenIconName get() = LumenIconName("globe-code")
         val GlobeLock: LumenIconName get() = LumenIconName("globe-lock")
         val GlobeOff: LumenIconName get() = LumenIconName("globe-off")
         val GlobeX: LumenIconName get() = LumenIconName("globe-x")
@@ -1422,11 +1449,14 @@ value class LumenIconName private constructor(val rawValue: String) {
         val Hospital: LumenIconName get() = LumenIconName("hospital")
         val Hotel: LumenIconName get() = LumenIconName("hotel")
         val Hourglass: LumenIconName get() = LumenIconName("hourglass")
+        val HourglassCog: LumenIconName get() = LumenIconName("hourglass-cog")
         val House: LumenIconName get() = LumenIconName("house")
+        val HouseCog: LumenIconName get() = LumenIconName("house-cog")
         val HouseHeart: LumenIconName get() = LumenIconName("house-heart")
         val HousePlug: LumenIconName get() = LumenIconName("house-plug")
         val HousePlus: LumenIconName get() = LumenIconName("house-plus")
         val HouseWifi: LumenIconName get() = LumenIconName("house-wifi")
+        val Houses: LumenIconName get() = LumenIconName("houses")
         val IceCreamBowl: LumenIconName get() = LumenIconName("ice-cream-bowl")
         val IceCreamCone: LumenIconName get() = LumenIconName("ice-cream-cone")
         val IdCard: LumenIconName get() = LumenIconName("id-card")
@@ -1449,6 +1479,7 @@ value class LumenIconName private constructor(val rawValue: String) {
         val Italic: LumenIconName get() = LumenIconName("italic")
         val IterationCcw: LumenIconName get() = LumenIconName("iteration-ccw")
         val IterationCw: LumenIconName get() = LumenIconName("iteration-cw")
+        val IvBag: LumenIconName get() = LumenIconName("iv-bag")
         val JapaneseYen: LumenIconName get() = LumenIconName("japanese-yen")
         val Joystick: LumenIconName get() = LumenIconName("joystick")
         val Kanban: LumenIconName get() = LumenIconName("kanban")
@@ -1459,6 +1490,7 @@ value class LumenIconName private constructor(val rawValue: String) {
         val Keyboard: LumenIconName get() = LumenIconName("keyboard")
         val KeyboardMusic: LumenIconName get() = LumenIconName("keyboard-music")
         val KeyboardOff: LumenIconName get() = LumenIconName("keyboard-off")
+        val Lambda: LumenIconName get() = LumenIconName("lambda")
         val Lamp: LumenIconName get() = LumenIconName("lamp")
         val LampCeiling: LumenIconName get() = LumenIconName("lamp-ceiling")
         val LampDesk: LumenIconName get() = LumenIconName("lamp-desk")
@@ -1481,6 +1513,8 @@ value class LumenIconName private constructor(val rawValue: String) {
         val LayersArrowUp: LumenIconName get() = LumenIconName("layers-arrow-up")
         val LayersMinus: LumenIconName get() = LumenIconName("layers-minus")
         val LayersPlus: LumenIconName get() = LumenIconName("layers-plus")
+        val LayoutArrowDown: LumenIconName get() = LumenIconName("layout-arrow-down")
+        val LayoutArrowRight: LumenIconName get() = LumenIconName("layout-arrow-right")
         val LayoutDashboard: LumenIconName get() = LumenIconName("layout-dashboard")
         val LayoutFreeform: LumenIconName get() = LumenIconName("layout-freeform")
         val LayoutGrid: LumenIconName get() = LumenIconName("layout-grid")
@@ -1499,7 +1533,11 @@ value class LumenIconName private constructor(val rawValue: String) {
         val Ligature: LumenIconName get() = LumenIconName("ligature")
         val Lightbulb: LumenIconName get() = LumenIconName("lightbulb")
         val LightbulbOff: LumenIconName get() = LumenIconName("lightbulb-off")
+        val Lighthouse: LumenIconName get() = LumenIconName("lighthouse")
+        val LineDotBottomVertical: LumenIconName get() = LumenIconName("line-dot-bottom-vertical")
+        val LineDotLeftHorizontal: LumenIconName get() = LumenIconName("line-dot-left-horizontal")
         val LineDotRightHorizontal: LumenIconName get() = LumenIconName("line-dot-right-horizontal")
+        val LineDotTopVertical: LumenIconName get() = LumenIconName("line-dot-top-vertical")
         val LineSquiggle: LumenIconName get() = LumenIconName("line-squiggle")
         val LineStyle: LumenIconName get() = LumenIconName("line-style")
         val Link: LumenIconName get() = LumenIconName("link")
@@ -1551,6 +1589,7 @@ value class LumenIconName private constructor(val rawValue: String) {
         val MailClock: LumenIconName get() = LumenIconName("mail-clock")
         val MailMinus: LumenIconName get() = LumenIconName("mail-minus")
         val MailOpen: LumenIconName get() = LumenIconName("mail-open")
+        val MailPen: LumenIconName get() = LumenIconName("mail-pen")
         val MailPlus: LumenIconName get() = LumenIconName("mail-plus")
         val MailQuestionMark: LumenIconName get() = LumenIconName("mail-question-mark")
         val MailSearch: LumenIconName get() = LumenIconName("mail-search")
@@ -1616,6 +1655,7 @@ value class LumenIconName private constructor(val rawValue: String) {
         val MessageSquareText: LumenIconName get() = LumenIconName("message-square-text")
         val MessageSquareWarning: LumenIconName get() = LumenIconName("message-square-warning")
         val MessageSquareX: LumenIconName get() = LumenIconName("message-square-x")
+        val MessagesCircle: LumenIconName get() = LumenIconName("messages-circle")
         val MessagesSquare: LumenIconName get() = LumenIconName("messages-square")
         val Metronome: LumenIconName get() = LumenIconName("metronome")
         val Mic: LumenIconName get() = LumenIconName("mic")
@@ -1643,6 +1683,7 @@ value class LumenIconName private constructor(val rawValue: String) {
         val MonitorDown: LumenIconName get() = LumenIconName("monitor-down")
         val MonitorOff: LumenIconName get() = LumenIconName("monitor-off")
         val MonitorPause: LumenIconName get() = LumenIconName("monitor-pause")
+        val MonitorPc: LumenIconName get() = LumenIconName("monitor-pc")
         val MonitorPlay: LumenIconName get() = LumenIconName("monitor-play")
         val MonitorSmartphone: LumenIconName get() = LumenIconName("monitor-smartphone")
         val MonitorSpeaker: LumenIconName get() = LumenIconName("monitor-speaker")
@@ -1666,6 +1707,8 @@ value class LumenIconName private constructor(val rawValue: String) {
         val MousePointerBan: LumenIconName get() = LumenIconName("mouse-pointer-ban")
         val MousePointerClick: LumenIconName get() = LumenIconName("mouse-pointer-click")
         val MouseRight: LumenIconName get() = LumenIconName("mouse-right")
+        val Mouth: LumenIconName get() = LumenIconName("mouth")
+        val MouthOff: LumenIconName get() = LumenIconName("mouth-off")
         val Move: LumenIconName get() = LumenIconName("move")
         val Move3d: LumenIconName get() = LumenIconName("move-3d")
         val MoveDiagonal: LumenIconName get() = LumenIconName("move-diagonal")
@@ -1688,11 +1731,13 @@ value class LumenIconName private constructor(val rawValue: String) {
         val Navigation2: LumenIconName get() = LumenIconName("navigation-2")
         val Navigation2Off: LumenIconName get() = LumenIconName("navigation-2-off")
         val NavigationOff: LumenIconName get() = LumenIconName("navigation-off")
+        val NepaliRupee: LumenIconName get() = LumenIconName("nepali-rupee")
         val Network: LumenIconName get() = LumenIconName("network")
         val Newspaper: LumenIconName get() = LumenIconName("newspaper")
         val Nfc: LumenIconName get() = LumenIconName("nfc")
         val NonBinary: LumenIconName get() = LumenIconName("non-binary")
         val Notebook: LumenIconName get() = LumenIconName("notebook")
+        val NotebookDot: LumenIconName get() = LumenIconName("notebook-dot")
         val NotebookPen: LumenIconName get() = LumenIconName("notebook-pen")
         val NotebookTabs: LumenIconName get() = LumenIconName("notebook-tabs")
         val NotebookText: LumenIconName get() = LumenIconName("notebook-text")
@@ -1748,6 +1793,7 @@ value class LumenIconName private constructor(val rawValue: String) {
         val Paperclip: LumenIconName get() = LumenIconName("paperclip")
         val Parasol: LumenIconName get() = LumenIconName("parasol")
         val Parentheses: LumenIconName get() = LumenIconName("parentheses")
+        val Park: LumenIconName get() = LumenIconName("park")
         val ParkingMeter: LumenIconName get() = LumenIconName("parking-meter")
         val PartyPopper: LumenIconName get() = LumenIconName("party-popper")
         val Pause: LumenIconName get() = LumenIconName("pause")
@@ -1792,6 +1838,7 @@ value class LumenIconName private constructor(val rawValue: String) {
         val Plane: LumenIconName get() = LumenIconName("plane")
         val PlaneLanding: LumenIconName get() = LumenIconName("plane-landing")
         val PlaneTakeoff: LumenIconName get() = LumenIconName("plane-takeoff")
+        val PlantPot: LumenIconName get() = LumenIconName("plant-pot")
         val Play: LumenIconName get() = LumenIconName("play")
         val PlayOff: LumenIconName get() = LumenIconName("play-off")
         val PlayingCard: LumenIconName get() = LumenIconName("playing-card")
@@ -1881,6 +1928,7 @@ value class LumenIconName private constructor(val rawValue: String) {
         val RotateCcwKey: LumenIconName get() = LumenIconName("rotate-ccw-key")
         val RotateCcwSquare: LumenIconName get() = LumenIconName("rotate-ccw-square")
         val RotateCw: LumenIconName get() = LumenIconName("rotate-cw")
+        val RotateCwClock: LumenIconName get() = LumenIconName("rotate-cw-clock")
         val RotateCwFadingClock: LumenIconName get() = LumenIconName("rotate-cw-fading-clock")
         val RotateCwSquare: LumenIconName get() = LumenIconName("rotate-cw-square")
         val Route: LumenIconName get() = LumenIconName("route")
@@ -1975,10 +2023,13 @@ value class LumenIconName private constructor(val rawValue: String) {
         val ShoppingBag: LumenIconName get() = LumenIconName("shopping-bag")
         val ShoppingBasket: LumenIconName get() = LumenIconName("shopping-basket")
         val ShoppingCart: LumenIconName get() = LumenIconName("shopping-cart")
+        val ShoppingCartMinus: LumenIconName get() = LumenIconName("shopping-cart-minus")
+        val ShoppingCartPlus: LumenIconName get() = LumenIconName("shopping-cart-plus")
         val Shovel: LumenIconName get() = LumenIconName("shovel")
         val ShowerHead: LumenIconName get() = LumenIconName("shower-head")
         val Shredder: LumenIconName get() = LumenIconName("shredder")
         val Shrimp: LumenIconName get() = LumenIconName("shrimp")
+        val ShrimpOff: LumenIconName get() = LumenIconName("shrimp-off")
         val Shrink: LumenIconName get() = LumenIconName("shrink")
         val Shrub: LumenIconName get() = LumenIconName("shrub")
         val Shuffle: LumenIconName get() = LumenIconName("shuffle")
@@ -2041,6 +2092,7 @@ value class LumenIconName private constructor(val rawValue: String) {
         val SquareArrowUpLeft: LumenIconName get() = LumenIconName("square-arrow-up-left")
         val SquareArrowUpRight: LumenIconName get() = LumenIconName("square-arrow-up-right")
         val SquareAsterisk: LumenIconName get() = LumenIconName("square-asterisk")
+        val SquareBookmark: LumenIconName get() = LumenIconName("square-bookmark")
         val SquareBottomDashedScissors: LumenIconName get() = LumenIconName("square-bottom-dashed-scissors")
         val SquareCenterlineDashedHorizontal: LumenIconName get() = LumenIconName("square-centerline-dashed-horizontal")
         val SquareCenterlineDashedVertical: LumenIconName get() = LumenIconName("square-centerline-dashed-vertical")
@@ -2057,12 +2109,16 @@ value class LumenIconName private constructor(val rawValue: String) {
         val SquareDashedBottomCode: LumenIconName get() = LumenIconName("square-dashed-bottom-code")
         val SquareDashedKanban: LumenIconName get() = LumenIconName("square-dashed-kanban")
         val SquareDashedMousePointer: LumenIconName get() = LumenIconName("square-dashed-mouse-pointer")
+        val SquareDashedPlus: LumenIconName get() = LumenIconName("square-dashed-plus")
         val SquareDashedText: LumenIconName get() = LumenIconName("square-dashed-text")
         val SquareDashedTopSolid: LumenIconName get() = LumenIconName("square-dashed-top-solid")
+        val SquareDashedX: LumenIconName get() = LumenIconName("square-dashed-x")
+        val SquareDashedXCorner: LumenIconName get() = LumenIconName("square-dashed-x-corner")
         val SquareDimensions: LumenIconName get() = LumenIconName("square-dimensions")
         val SquareDivide: LumenIconName get() = LumenIconName("square-divide")
         val SquareDot: LumenIconName get() = LumenIconName("square-dot")
         val SquareEqual: LumenIconName get() = LumenIconName("square-equal")
+        val SquareExclamationPoint: LumenIconName get() = LumenIconName("square-exclamation-point")
         val SquareFunction: LumenIconName get() = LumenIconName("square-function")
         val SquareKanban: LumenIconName get() = LumenIconName("square-kanban")
         val SquareLibrary: LumenIconName get() = LumenIconName("square-library")
@@ -2086,6 +2142,7 @@ value class LumenIconName private constructor(val rawValue: String) {
         val SquareScissors: LumenIconName get() = LumenIconName("square-scissors")
         val SquareSigma: LumenIconName get() = LumenIconName("square-sigma")
         val SquareSlash: LumenIconName get() = LumenIconName("square-slash")
+        val SquareSparkles: LumenIconName get() = LumenIconName("square-sparkles")
         val SquareSplitHorizontal: LumenIconName get() = LumenIconName("square-split-horizontal")
         val SquareSplitVertical: LumenIconName get() = LumenIconName("square-split-vertical")
         val SquareSquare: LumenIconName get() = LumenIconName("square-square")
@@ -2189,6 +2246,7 @@ value class LumenIconName private constructor(val rawValue: String) {
         val ThermometerSun: LumenIconName get() = LumenIconName("thermometer-sun")
         val ThumbsDown: LumenIconName get() = LumenIconName("thumbs-down")
         val ThumbsUp: LumenIconName get() = LumenIconName("thumbs-up")
+        val TicTacToe: LumenIconName get() = LumenIconName("tic-tac-toe")
         val Ticket: LumenIconName get() = LumenIconName("ticket")
         val TicketCheck: LumenIconName get() = LumenIconName("ticket-check")
         val TicketMinus: LumenIconName get() = LumenIconName("ticket-minus")
@@ -2207,6 +2265,8 @@ value class LumenIconName private constructor(val rawValue: String) {
         val Toilet: LumenIconName get() = LumenIconName("toilet")
         val ToolCase: LumenIconName get() = LumenIconName("tool-case")
         val Toolbox: LumenIconName get() = LumenIconName("toolbox")
+        val Toothbrush: LumenIconName get() = LumenIconName("toothbrush")
+        val ToothbrushSparkles: LumenIconName get() = LumenIconName("toothbrush-sparkles")
         val Tornado: LumenIconName get() = LumenIconName("tornado")
         val Torus: LumenIconName get() = LumenIconName("torus")
         val Touchpad: LumenIconName get() = LumenIconName("touchpad")
@@ -2224,6 +2284,7 @@ value class LumenIconName private constructor(val rawValue: String) {
         val Transgender: LumenIconName get() = LumenIconName("transgender")
         val Trash: LumenIconName get() = LumenIconName("trash")
         val Trash2: LumenIconName get() = LumenIconName("trash-2")
+        val TrashOff: LumenIconName get() = LumenIconName("trash-off")
         val TreeDeciduous: LumenIconName get() = LumenIconName("tree-deciduous")
         val TreePalm: LumenIconName get() = LumenIconName("tree-palm")
         val TreePine: LumenIconName get() = LumenIconName("tree-pine")
@@ -2235,9 +2296,12 @@ value class LumenIconName private constructor(val rawValue: String) {
         val TriangleAlert: LumenIconName get() = LumenIconName("triangle-alert")
         val TriangleDashed: LumenIconName get() = LumenIconName("triangle-dashed")
         val TriangleRight: LumenIconName get() = LumenIconName("triangle-right")
+        val TrianglesCenterlineDashedHorizontal: LumenIconName get() = LumenIconName("triangles-centerline-dashed-horizontal")
+        val TrianglesCenterlineDashedVertical: LumenIconName get() = LumenIconName("triangles-centerline-dashed-vertical")
         val Trophy: LumenIconName get() = LumenIconName("trophy")
         val Truck: LumenIconName get() = LumenIconName("truck")
         val TruckElectric: LumenIconName get() = LumenIconName("truck-electric")
+        val TubeLotion: LumenIconName get() = LumenIconName("tube-lotion")
         val TurkishLira: LumenIconName get() = LumenIconName("turkish-lira")
         val Turntable: LumenIconName get() = LumenIconName("turntable")
         val Turtle: LumenIconName get() = LumenIconName("turtle")
@@ -2265,6 +2329,7 @@ value class LumenIconName private constructor(val rawValue: String) {
         val User: LumenIconName get() = LumenIconName("user")
         val UserCheck: LumenIconName get() = LumenIconName("user-check")
         val UserCog: LumenIconName get() = LumenIconName("user-cog")
+        val UserGroup: LumenIconName get() = LumenIconName("user-group")
         val UserKey: LumenIconName get() = LumenIconName("user-key")
         val UserLock: LumenIconName get() = LumenIconName("user-lock")
         val UserMinus: LumenIconName get() = LumenIconName("user-minus")
@@ -2274,6 +2339,7 @@ value class LumenIconName private constructor(val rawValue: String) {
         val UserRoundArrowLeft: LumenIconName get() = LumenIconName("user-round-arrow-left")
         val UserRoundCheck: LumenIconName get() = LumenIconName("user-round-check")
         val UserRoundCog: LumenIconName get() = LumenIconName("user-round-cog")
+        val UserRoundGroup: LumenIconName get() = LumenIconName("user-round-group")
         val UserRoundKey: LumenIconName get() = LumenIconName("user-round-key")
         val UserRoundMinus: LumenIconName get() = LumenIconName("user-round-minus")
         val UserRoundPen: LumenIconName get() = LumenIconName("user-round-pen")
@@ -2292,6 +2358,7 @@ value class LumenIconName private constructor(val rawValue: String) {
         val Van: LumenIconName get() = LumenIconName("van")
         val Variable: LumenIconName get() = LumenIconName("variable")
         val Vault: LumenIconName get() = LumenIconName("vault")
+        val VectorPolygon: LumenIconName get() = LumenIconName("vector-polygon")
         val VectorSquare: LumenIconName get() = LumenIconName("vector-square")
         val Vegan: LumenIconName get() = LumenIconName("vegan")
         val VenetianMask: LumenIconName get() = LumenIconName("venetian-mask")
@@ -2303,6 +2370,8 @@ value class LumenIconName private constructor(val rawValue: String) {
         val VideoOff: LumenIconName get() = LumenIconName("video-off")
         val Videotape: LumenIconName get() = LumenIconName("videotape")
         val View: LumenIconName get() = LumenIconName("view")
+        val Virus: LumenIconName get() = LumenIconName("virus")
+        val VirusOff: LumenIconName get() = LumenIconName("virus-off")
         val Voicemail: LumenIconName get() = LumenIconName("voicemail")
         val Volleyball: LumenIconName get() = LumenIconName("volleyball")
         val Volume: LumenIconName get() = LumenIconName("volume")
@@ -2334,6 +2403,7 @@ value class LumenIconName private constructor(val rawValue: String) {
         val WeightTilde: LumenIconName get() = LumenIconName("weight-tilde")
         val Wheat: LumenIconName get() = LumenIconName("wheat")
         val WheatOff: LumenIconName get() = LumenIconName("wheat-off")
+        val Whistle: LumenIconName get() = LumenIconName("whistle")
         val WholeWord: LumenIconName get() = LumenIconName("whole-word")
         val Wifi: LumenIconName get() = LumenIconName("wifi")
         val WifiCog: LumenIconName get() = LumenIconName("wifi-cog")
@@ -2591,6 +2661,7 @@ value class LumenIconName private constructor(val rawValue: String) {
             LumenIconName("book-a"),
             LumenIconName("book-alert"),
             LumenIconName("book-audio"),
+            LumenIconName("book-bookmark"),
             LumenIconName("book-check"),
             LumenIconName("book-copy"),
             LumenIconName("book-dashed"),
@@ -2754,11 +2825,11 @@ value class LumenIconName private constructor(val rawValue: String) {
             LumenIconName("brand:dev"),
             LumenIconName("brand:deviantart"),
             LumenIconName("brand:devpost"),
-            LumenIconName("brand:dhl"),
-            LumenIconName("brand:diaspora")
+            LumenIconName("brand:dhl")
         )
 
         private fun entries2(): List<LumenIconName> = listOf(
+            LumenIconName("brand:diaspora"),
             LumenIconName("brand:digg"),
             LumenIconName("brand:digital-ocean"),
             LumenIconName("brand:discord"),
@@ -2937,11 +3008,11 @@ value class LumenIconName private constructor(val rawValue: String) {
             LumenIconName("brand:modx"),
             LumenIconName("brand:monero"),
             LumenIconName("brand:napster"),
-            LumenIconName("brand:neos"),
-            LumenIconName("brand:nextcloud")
+            LumenIconName("brand:neos")
         )
 
         private fun entries3(): List<LumenIconName> = listOf(
+            LumenIconName("brand:nextcloud"),
             LumenIconName("brand:nfc-directional"),
             LumenIconName("brand:nfc-symbol"),
             LumenIconName("brand:nimblr"),
@@ -3120,11 +3191,11 @@ value class LumenIconName private constructor(val rawValue: String) {
             LumenIconName("brand:tex"),
             LumenIconName("brand:the-red-yeti"),
             LumenIconName("brand:themeco"),
-            LumenIconName("brand:themeisle"),
-            LumenIconName("brand:think-peaks")
+            LumenIconName("brand:themeisle")
         )
 
         private fun entries4(): List<LumenIconName> = listOf(
+            LumenIconName("brand:think-peaks"),
             LumenIconName("brand:threads"),
             LumenIconName("brand:threema"),
             LumenIconName("brand:tidal"),
@@ -3217,10 +3288,12 @@ value class LumenIconName private constructor(val rawValue: String) {
             LumenIconName("brick-wall"),
             LumenIconName("brick-wall-fire"),
             LumenIconName("brick-wall-shield"),
+            LumenIconName("bridge"),
             LumenIconName("briefcase"),
             LumenIconName("briefcase-business"),
             LumenIconName("briefcase-conveyor-belt"),
             LumenIconName("briefcase-medical"),
+            LumenIconName("briefcase-plus"),
             LumenIconName("bring-to-front"),
             LumenIconName("broccoli"),
             LumenIconName("broom"),
@@ -3233,6 +3306,8 @@ value class LumenIconName private constructor(val rawValue: String) {
             LumenIconName("bug-play"),
             LumenIconName("building"),
             LumenIconName("building-2"),
+            LumenIconName("building-complex"),
+            LumenIconName("building-complex-plus"),
             LumenIconName("bus"),
             LumenIconName("bus-front"),
             LumenIconName("cable"),
@@ -3246,6 +3321,7 @@ value class LumenIconName private constructor(val rawValue: String) {
             LumenIconName("calendar-arrow-up"),
             LumenIconName("calendar-check"),
             LumenIconName("calendar-check-2"),
+            LumenIconName("calendar-chevrons-right"),
             LumenIconName("calendar-clock"),
             LumenIconName("calendar-cog"),
             LumenIconName("calendar-days"),
@@ -3264,6 +3340,8 @@ value class LumenIconName private constructor(val rawValue: String) {
             LumenIconName("calendars"),
             LumenIconName("camera"),
             LumenIconName("camera-off"),
+            LumenIconName("can"),
+            LumenIconName("can-soda"),
             LumenIconName("candy"),
             LumenIconName("candy-cane"),
             LumenIconName("candy-off"),
@@ -3278,6 +3356,8 @@ value class LumenIconName private constructor(val rawValue: String) {
             LumenIconName("caravan"),
             LumenIconName("card-sim"),
             LumenIconName("carrot"),
+            LumenIconName("carton"),
+            LumenIconName("carton-off"),
             LumenIconName("case-lower"),
             LumenIconName("case-sensitive"),
             LumenIconName("case-upper"),
@@ -3294,7 +3374,10 @@ value class LumenIconName private constructor(val rawValue: String) {
             LumenIconName("chart-bar-increasing"),
             LumenIconName("chart-bar-stacked"),
             LumenIconName("chart-candlestick"),
-            LumenIconName("chart-column"),
+            LumenIconName("chart-column")
+        )
+
+        private fun entries5(): List<LumenIconName> = listOf(
             LumenIconName("chart-column-big"),
             LumenIconName("chart-column-decreasing"),
             LumenIconName("chart-column-increasing"),
@@ -3304,10 +3387,7 @@ value class LumenIconName private constructor(val rawValue: String) {
             LumenIconName("chart-network"),
             LumenIconName("chart-no-axes-column"),
             LumenIconName("chart-no-axes-column-decreasing"),
-            LumenIconName("chart-no-axes-column-increasing")
-        )
-
-        private fun entries5(): List<LumenIconName> = listOf(
+            LumenIconName("chart-no-axes-column-increasing"),
             LumenIconName("chart-no-axes-combined"),
             LumenIconName("chart-no-axes-gantt"),
             LumenIconName("chart-pie"),
@@ -3359,6 +3439,7 @@ value class LumenIconName private constructor(val rawValue: String) {
             LumenIconName("circle-chevron-right"),
             LumenIconName("circle-chevron-up"),
             LumenIconName("circle-dashed"),
+            LumenIconName("circle-dashed-check"),
             LumenIconName("circle-divide"),
             LumenIconName("circle-dollar-sign"),
             LumenIconName("circle-dot"),
@@ -3392,6 +3473,9 @@ value class LumenIconName private constructor(val rawValue: String) {
             LumenIconName("circuit-board"),
             LumenIconName("citrus"),
             LumenIconName("clapperboard"),
+            LumenIconName("clef-alto"),
+            LumenIconName("clef-bass"),
+            LumenIconName("clef-treble"),
             LumenIconName("clipboard"),
             LumenIconName("clipboard-check"),
             LumenIconName("clipboard-clock"),
@@ -3473,7 +3557,10 @@ value class LumenIconName private constructor(val rawValue: String) {
             LumenIconName("cookie"),
             LumenIconName("cooking-pot"),
             LumenIconName("copy"),
-            LumenIconName("copy-check"),
+            LumenIconName("copy-check")
+        )
+
+        private fun entries6(): List<LumenIconName> = listOf(
             LumenIconName("copy-minus"),
             LumenIconName("copy-plus"),
             LumenIconName("copy-slash"),
@@ -3487,16 +3574,14 @@ value class LumenIconName private constructor(val rawValue: String) {
             LumenIconName("corner-right-down"),
             LumenIconName("corner-right-up"),
             LumenIconName("corner-up-left"),
-            LumenIconName("corner-up-right")
-        )
-
-        private fun entries6(): List<LumenIconName> = listOf(
+            LumenIconName("corner-up-right"),
             LumenIconName("cpu"),
             LumenIconName("creative-commons"),
             LumenIconName("credit-card"),
             LumenIconName("credit-card-check"),
             LumenIconName("credit-card-minus"),
             LumenIconName("credit-card-plus"),
+            LumenIconName("credit-card-reader"),
             LumenIconName("credit-card-x"),
             LumenIconName("croissant"),
             LumenIconName("crop"),
@@ -3505,6 +3590,7 @@ value class LumenIconName private constructor(val rawValue: String) {
             LumenIconName("crown"),
             LumenIconName("cuboid"),
             LumenIconName("cup-soda"),
+            LumenIconName("cupcake"),
             LumenIconName("currency"),
             LumenIconName("cylinder"),
             LumenIconName("dam"),
@@ -3545,10 +3631,13 @@ value class LumenIconName private constructor(val rawValue: String) {
             LumenIconName("dock"),
             LumenIconName("dog"),
             LumenIconName("dollar-sign"),
+            LumenIconName("dome"),
             LumenIconName("donut"),
             LumenIconName("door-closed"),
             LumenIconName("door-closed-locked"),
+            LumenIconName("door-closed-package"),
             LumenIconName("door-open"),
+            LumenIconName("door-stairwell"),
             LumenIconName("dot"),
             LumenIconName("download"),
             LumenIconName("drafting-compass"),
@@ -3573,8 +3662,10 @@ value class LumenIconName private constructor(val rawValue: String) {
             LumenIconName("ellipse"),
             LumenIconName("ellipsis"),
             LumenIconName("ellipsis-vertical"),
+            LumenIconName("engine"),
             LumenIconName("equal"),
             LumenIconName("equal-approximately"),
+            LumenIconName("equal-approximately-not"),
             LumenIconName("equal-not"),
             LumenIconName("eraser"),
             LumenIconName("ethernet-port"),
@@ -3596,6 +3687,7 @@ value class LumenIconName private constructor(val rawValue: String) {
             LumenIconName("factory"),
             LumenIconName("fan"),
             LumenIconName("fast-forward"),
+            LumenIconName("faucet"),
             LumenIconName("feather"),
             LumenIconName("fence"),
             LumenIconName("ferris-wheel"),
@@ -3648,7 +3740,10 @@ value class LumenIconName private constructor(val rawValue: String) {
             LumenIconName("file-text"),
             LumenIconName("file-type"),
             LumenIconName("file-type-corner"),
-            LumenIconName("file-up"),
+            LumenIconName("file-up")
+        )
+
+        private fun entries7(): List<LumenIconName> = listOf(
             LumenIconName("file-user"),
             LumenIconName("file-video-camera"),
             LumenIconName("file-volume"),
@@ -3670,10 +3765,7 @@ value class LumenIconName private constructor(val rawValue: String) {
             LumenIconName("flame"),
             LumenIconName("flame-kindling"),
             LumenIconName("flashlight"),
-            LumenIconName("flashlight-off")
-        )
-
-        private fun entries7(): List<LumenIconName> = listOf(
+            LumenIconName("flashlight-off"),
             LumenIconName("flask-conical"),
             LumenIconName("flask-conical-off"),
             LumenIconName("flask-round"),
@@ -3735,10 +3827,14 @@ value class LumenIconName private constructor(val rawValue: String) {
             LumenIconName("gamepad"),
             LumenIconName("gamepad-2"),
             LumenIconName("gamepad-directional"),
+            LumenIconName("gap-horizontal"),
+            LumenIconName("gap-vertical"),
             LumenIconName("gauge"),
             LumenIconName("gavel"),
             LumenIconName("gem"),
             LumenIconName("georgian-lari"),
+            LumenIconName("germ"),
+            LumenIconName("germ-off"),
             LumenIconName("ghost"),
             LumenIconName("gift"),
             LumenIconName("git-branch"),
@@ -3762,6 +3858,7 @@ value class LumenIconName private constructor(val rawValue: String) {
             LumenIconName("glasses"),
             LumenIconName("globe"),
             LumenIconName("globe-check"),
+            LumenIconName("globe-code"),
             LumenIconName("globe-lock"),
             LumenIconName("globe-off"),
             LumenIconName("globe-x"),
@@ -3826,14 +3923,20 @@ value class LumenIconName private constructor(val rawValue: String) {
             LumenIconName("highlighter"),
             LumenIconName("hop"),
             LumenIconName("hop-off"),
-            LumenIconName("hospital"),
+            LumenIconName("hospital")
+        )
+
+        private fun entries8(): List<LumenIconName> = listOf(
             LumenIconName("hotel"),
             LumenIconName("hourglass"),
+            LumenIconName("hourglass-cog"),
             LumenIconName("house"),
+            LumenIconName("house-cog"),
             LumenIconName("house-heart"),
             LumenIconName("house-plug"),
             LumenIconName("house-plus"),
             LumenIconName("house-wifi"),
+            LumenIconName("houses"),
             LumenIconName("ice-cream-bowl"),
             LumenIconName("ice-cream-cone"),
             LumenIconName("id-card"),
@@ -3853,12 +3956,10 @@ value class LumenIconName private constructor(val rawValue: String) {
             LumenIconName("infinity"),
             LumenIconName("info"),
             LumenIconName("inspection-panel"),
-            LumenIconName("italic")
-        )
-
-        private fun entries8(): List<LumenIconName> = listOf(
+            LumenIconName("italic"),
             LumenIconName("iteration-ccw"),
             LumenIconName("iteration-cw"),
+            LumenIconName("iv-bag"),
             LumenIconName("japanese-yen"),
             LumenIconName("joystick"),
             LumenIconName("kanban"),
@@ -3869,6 +3970,7 @@ value class LumenIconName private constructor(val rawValue: String) {
             LumenIconName("keyboard"),
             LumenIconName("keyboard-music"),
             LumenIconName("keyboard-off"),
+            LumenIconName("lambda"),
             LumenIconName("lamp"),
             LumenIconName("lamp-ceiling"),
             LumenIconName("lamp-desk"),
@@ -3891,6 +3993,8 @@ value class LumenIconName private constructor(val rawValue: String) {
             LumenIconName("layers-arrow-up"),
             LumenIconName("layers-minus"),
             LumenIconName("layers-plus"),
+            LumenIconName("layout-arrow-down"),
+            LumenIconName("layout-arrow-right"),
             LumenIconName("layout-dashboard"),
             LumenIconName("layout-freeform"),
             LumenIconName("layout-grid"),
@@ -3909,7 +4013,11 @@ value class LumenIconName private constructor(val rawValue: String) {
             LumenIconName("ligature"),
             LumenIconName("lightbulb"),
             LumenIconName("lightbulb-off"),
+            LumenIconName("lighthouse"),
+            LumenIconName("line-dot-bottom-vertical"),
+            LumenIconName("line-dot-left-horizontal"),
             LumenIconName("line-dot-right-horizontal"),
+            LumenIconName("line-dot-top-vertical"),
             LumenIconName("line-squiggle"),
             LumenIconName("line-style"),
             LumenIconName("link"),
@@ -3961,6 +4069,7 @@ value class LumenIconName private constructor(val rawValue: String) {
             LumenIconName("mail-clock"),
             LumenIconName("mail-minus"),
             LumenIconName("mail-open"),
+            LumenIconName("mail-pen"),
             LumenIconName("mail-plus"),
             LumenIconName("mail-question-mark"),
             LumenIconName("mail-search"),
@@ -3997,7 +4106,10 @@ value class LumenIconName private constructor(val rawValue: String) {
             LumenIconName("menu"),
             LumenIconName("merge"),
             LumenIconName("message-circle"),
-            LumenIconName("message-circle-check"),
+            LumenIconName("message-circle-check")
+        )
+
+        private fun entries9(): List<LumenIconName> = listOf(
             LumenIconName("message-circle-code"),
             LumenIconName("message-circle-dashed"),
             LumenIconName("message-circle-dashed-check"),
@@ -4026,6 +4138,7 @@ value class LumenIconName private constructor(val rawValue: String) {
             LumenIconName("message-square-text"),
             LumenIconName("message-square-warning"),
             LumenIconName("message-square-x"),
+            LumenIconName("messages-circle"),
             LumenIconName("messages-square"),
             LumenIconName("metronome"),
             LumenIconName("mic"),
@@ -4036,10 +4149,7 @@ value class LumenIconName private constructor(val rawValue: String) {
             LumenIconName("microchip"),
             LumenIconName("microscope"),
             LumenIconName("microwave"),
-            LumenIconName("midi-port")
-        )
-
-        private fun entries9(): List<LumenIconName> = listOf(
+            LumenIconName("midi-port"),
             LumenIconName("milestone"),
             LumenIconName("milk"),
             LumenIconName("milk-off"),
@@ -4056,6 +4166,7 @@ value class LumenIconName private constructor(val rawValue: String) {
             LumenIconName("monitor-down"),
             LumenIconName("monitor-off"),
             LumenIconName("monitor-pause"),
+            LumenIconName("monitor-pc"),
             LumenIconName("monitor-play"),
             LumenIconName("monitor-smartphone"),
             LumenIconName("monitor-speaker"),
@@ -4079,6 +4190,8 @@ value class LumenIconName private constructor(val rawValue: String) {
             LumenIconName("mouse-pointer-ban"),
             LumenIconName("mouse-pointer-click"),
             LumenIconName("mouse-right"),
+            LumenIconName("mouth"),
+            LumenIconName("mouth-off"),
             LumenIconName("move"),
             LumenIconName("move-3d"),
             LumenIconName("move-diagonal"),
@@ -4101,11 +4214,13 @@ value class LumenIconName private constructor(val rawValue: String) {
             LumenIconName("navigation-2"),
             LumenIconName("navigation-2-off"),
             LumenIconName("navigation-off"),
+            LumenIconName("nepali-rupee"),
             LumenIconName("network"),
             LumenIconName("newspaper"),
             LumenIconName("nfc"),
             LumenIconName("non-binary"),
             LumenIconName("notebook"),
+            LumenIconName("notebook-dot"),
             LumenIconName("notebook-pen"),
             LumenIconName("notebook-tabs"),
             LumenIconName("notebook-text"),
@@ -4161,6 +4276,7 @@ value class LumenIconName private constructor(val rawValue: String) {
             LumenIconName("paperclip"),
             LumenIconName("parasol"),
             LumenIconName("parentheses"),
+            LumenIconName("park"),
             LumenIconName("parking-meter"),
             LumenIconName("party-popper"),
             LumenIconName("pause"),
@@ -4173,7 +4289,10 @@ value class LumenIconName private constructor(val rawValue: String) {
             LumenIconName("pencil"),
             LumenIconName("pencil-line"),
             LumenIconName("pencil-off"),
-            LumenIconName("pencil-ruler"),
+            LumenIconName("pencil-ruler")
+        )
+
+        private fun entries10(): List<LumenIconName> = listOf(
             LumenIconName("pencil-sparkles"),
             LumenIconName("pentagon"),
             LumenIconName("percent"),
@@ -4205,6 +4324,7 @@ value class LumenIconName private constructor(val rawValue: String) {
             LumenIconName("plane"),
             LumenIconName("plane-landing"),
             LumenIconName("plane-takeoff"),
+            LumenIconName("plant-pot"),
             LumenIconName("play"),
             LumenIconName("play-off"),
             LumenIconName("playing-card"),
@@ -4219,10 +4339,7 @@ value class LumenIconName private constructor(val rawValue: String) {
             LumenIconName("pointer"),
             LumenIconName("pointer-off"),
             LumenIconName("popcorn"),
-            LumenIconName("popsicle")
-        )
-
-        private fun entries10(): List<LumenIconName> = listOf(
+            LumenIconName("popsicle"),
             LumenIconName("pound-sterling"),
             LumenIconName("power"),
             LumenIconName("power-off"),
@@ -4297,6 +4414,7 @@ value class LumenIconName private constructor(val rawValue: String) {
             LumenIconName("rotate-ccw-key"),
             LumenIconName("rotate-ccw-square"),
             LumenIconName("rotate-cw"),
+            LumenIconName("rotate-cw-clock"),
             LumenIconName("rotate-cw-fading-clock"),
             LumenIconName("rotate-cw-square"),
             LumenIconName("route"),
@@ -4354,7 +4472,10 @@ value class LumenIconName private constructor(val rawValue: String) {
             LumenIconName("send-horizontal"),
             LumenIconName("send-to-back"),
             LumenIconName("separator-horizontal"),
-            LumenIconName("separator-vertical"),
+            LumenIconName("separator-vertical")
+        )
+
+        private fun entries11(): List<LumenIconName> = listOf(
             LumenIconName("server"),
             LumenIconName("server-cog"),
             LumenIconName("server-crash"),
@@ -4391,10 +4512,13 @@ value class LumenIconName private constructor(val rawValue: String) {
             LumenIconName("shopping-bag"),
             LumenIconName("shopping-basket"),
             LumenIconName("shopping-cart"),
+            LumenIconName("shopping-cart-minus"),
+            LumenIconName("shopping-cart-plus"),
             LumenIconName("shovel"),
             LumenIconName("shower-head"),
             LumenIconName("shredder"),
             LumenIconName("shrimp"),
+            LumenIconName("shrimp-off"),
             LumenIconName("shrink"),
             LumenIconName("shrub"),
             LumenIconName("shuffle"),
@@ -4402,10 +4526,7 @@ value class LumenIconName private constructor(val rawValue: String) {
             LumenIconName("signal"),
             LumenIconName("signal-high"),
             LumenIconName("signal-low"),
-            LumenIconName("signal-medium")
-        )
-
-        private fun entries11(): List<LumenIconName> = listOf(
+            LumenIconName("signal-medium"),
             LumenIconName("signal-zero"),
             LumenIconName("signature"),
             LumenIconName("signpost"),
@@ -4460,6 +4581,7 @@ value class LumenIconName private constructor(val rawValue: String) {
             LumenIconName("square-arrow-up-left"),
             LumenIconName("square-arrow-up-right"),
             LumenIconName("square-asterisk"),
+            LumenIconName("square-bookmark"),
             LumenIconName("square-bottom-dashed-scissors"),
             LumenIconName("square-centerline-dashed-horizontal"),
             LumenIconName("square-centerline-dashed-vertical"),
@@ -4476,12 +4598,16 @@ value class LumenIconName private constructor(val rawValue: String) {
             LumenIconName("square-dashed-bottom-code"),
             LumenIconName("square-dashed-kanban"),
             LumenIconName("square-dashed-mouse-pointer"),
+            LumenIconName("square-dashed-plus"),
             LumenIconName("square-dashed-text"),
             LumenIconName("square-dashed-top-solid"),
+            LumenIconName("square-dashed-x"),
+            LumenIconName("square-dashed-x-corner"),
             LumenIconName("square-dimensions"),
             LumenIconName("square-divide"),
             LumenIconName("square-dot"),
             LumenIconName("square-equal"),
+            LumenIconName("square-exclamation-point"),
             LumenIconName("square-function"),
             LumenIconName("square-kanban"),
             LumenIconName("square-library"),
@@ -4505,6 +4631,7 @@ value class LumenIconName private constructor(val rawValue: String) {
             LumenIconName("square-scissors"),
             LumenIconName("square-sigma"),
             LumenIconName("square-slash"),
+            LumenIconName("square-sparkles"),
             LumenIconName("square-split-horizontal"),
             LumenIconName("square-split-vertical"),
             LumenIconName("square-square"),
@@ -4528,7 +4655,10 @@ value class LumenIconName private constructor(val rawValue: String) {
             LumenIconName("star-check"),
             LumenIconName("star-half"),
             LumenIconName("star-minus"),
-            LumenIconName("star-off"),
+            LumenIconName("star-off")
+        )
+
+        private fun entries12(): List<LumenIconName> = listOf(
             LumenIconName("star-plus"),
             LumenIconName("star-x"),
             LumenIconName("step-back"),
@@ -4585,10 +4715,7 @@ value class LumenIconName private constructor(val rawValue: String) {
             LumenIconName("tally-5"),
             LumenIconName("tangent"),
             LumenIconName("target"),
-            LumenIconName("telescope")
-        )
-
-        private fun entries12(): List<LumenIconName> = listOf(
+            LumenIconName("telescope"),
             LumenIconName("tent"),
             LumenIconName("tent-tree"),
             LumenIconName("terminal"),
@@ -4611,6 +4738,7 @@ value class LumenIconName private constructor(val rawValue: String) {
             LumenIconName("thermometer-sun"),
             LumenIconName("thumbs-down"),
             LumenIconName("thumbs-up"),
+            LumenIconName("tic-tac-toe"),
             LumenIconName("ticket"),
             LumenIconName("ticket-check"),
             LumenIconName("ticket-minus"),
@@ -4629,6 +4757,8 @@ value class LumenIconName private constructor(val rawValue: String) {
             LumenIconName("toilet"),
             LumenIconName("tool-case"),
             LumenIconName("toolbox"),
+            LumenIconName("toothbrush"),
+            LumenIconName("toothbrush-sparkles"),
             LumenIconName("tornado"),
             LumenIconName("torus"),
             LumenIconName("touchpad"),
@@ -4646,6 +4776,7 @@ value class LumenIconName private constructor(val rawValue: String) {
             LumenIconName("transgender"),
             LumenIconName("trash"),
             LumenIconName("trash-2"),
+            LumenIconName("trash-off"),
             LumenIconName("tree-deciduous"),
             LumenIconName("tree-palm"),
             LumenIconName("tree-pine"),
@@ -4657,9 +4788,12 @@ value class LumenIconName private constructor(val rawValue: String) {
             LumenIconName("triangle-alert"),
             LumenIconName("triangle-dashed"),
             LumenIconName("triangle-right"),
+            LumenIconName("triangles-centerline-dashed-horizontal"),
+            LumenIconName("triangles-centerline-dashed-vertical"),
             LumenIconName("trophy"),
             LumenIconName("truck"),
             LumenIconName("truck-electric"),
+            LumenIconName("tube-lotion"),
             LumenIconName("turkish-lira"),
             LumenIconName("turntable"),
             LumenIconName("turtle"),
@@ -4687,6 +4821,7 @@ value class LumenIconName private constructor(val rawValue: String) {
             LumenIconName("user"),
             LumenIconName("user-check"),
             LumenIconName("user-cog"),
+            LumenIconName("user-group"),
             LumenIconName("user-key"),
             LumenIconName("user-lock"),
             LumenIconName("user-minus"),
@@ -4696,13 +4831,17 @@ value class LumenIconName private constructor(val rawValue: String) {
             LumenIconName("user-round-arrow-left"),
             LumenIconName("user-round-check"),
             LumenIconName("user-round-cog"),
+            LumenIconName("user-round-group"),
             LumenIconName("user-round-key"),
             LumenIconName("user-round-minus"),
             LumenIconName("user-round-pen"),
             LumenIconName("user-round-plus"),
             LumenIconName("user-round-search"),
             LumenIconName("user-round-x"),
-            LumenIconName("user-search"),
+            LumenIconName("user-search")
+        )
+
+        private fun entries13(): List<LumenIconName> = listOf(
             LumenIconName("user-shield"),
             LumenIconName("user-star"),
             LumenIconName("user-x"),
@@ -4714,6 +4853,7 @@ value class LumenIconName private constructor(val rawValue: String) {
             LumenIconName("van"),
             LumenIconName("variable"),
             LumenIconName("vault"),
+            LumenIconName("vector-polygon"),
             LumenIconName("vector-square"),
             LumenIconName("vegan"),
             LumenIconName("venetian-mask"),
@@ -4725,6 +4865,8 @@ value class LumenIconName private constructor(val rawValue: String) {
             LumenIconName("video-off"),
             LumenIconName("videotape"),
             LumenIconName("view"),
+            LumenIconName("virus"),
+            LumenIconName("virus-off"),
             LumenIconName("voicemail"),
             LumenIconName("volleyball"),
             LumenIconName("volume"),
@@ -4756,6 +4898,7 @@ value class LumenIconName private constructor(val rawValue: String) {
             LumenIconName("weight-tilde"),
             LumenIconName("wheat"),
             LumenIconName("wheat-off"),
+            LumenIconName("whistle"),
             LumenIconName("whole-word"),
             LumenIconName("wifi"),
             LumenIconName("wifi-cog"),
@@ -4768,10 +4911,7 @@ value class LumenIconName private constructor(val rawValue: String) {
             LumenIconName("wind"),
             LumenIconName("wind-arrow-down"),
             LumenIconName("wine"),
-            LumenIconName("wine-off")
-        )
-
-        private fun entries13(): List<LumenIconName> = listOf(
+            LumenIconName("wine-off"),
             LumenIconName("workflow"),
             LumenIconName("worm"),
             LumenIconName("wrench"),
@@ -4875,9 +5015,11 @@ private fun lumenIconResourceId0(name: String): Int = when (name) {
         "brand:windows" -> R.drawable.lumen_icon_brand_windows
         "brand:youtube" -> R.drawable.lumen_icon_brand_youtube
         "brick-wall-shield" -> R.drawable.lumen_icon_brick_wall_shield
+        "building-complex-plus" -> R.drawable.lumen_icon_building_complex_plus
         "bus" -> R.drawable.lumen_icon_bus
         "calendar-fold" -> R.drawable.lumen_icon_calendar_fold
         "calendar-off" -> R.drawable.lumen_icon_calendar_off
+        "can" -> R.drawable.lumen_icon_can
         "car-front" -> R.drawable.lumen_icon_car_front
         "chart-no-axes-combined" -> R.drawable.lumen_icon_chart_no_axes_combined
         "chart-spline" -> R.drawable.lumen_icon_chart_spline
@@ -4952,11 +5094,15 @@ private fun lumenIconResourceId0(name: String): Int = when (name) {
         "shield-question-mark" -> R.drawable.lumen_icon_shield_question_mark
         "signpost-big" -> R.drawable.lumen_icon_signpost_big
         "spray-can" -> R.drawable.lumen_icon_spray_can
+        "square-exclamation-point" -> R.drawable.lumen_icon_square_exclamation_point
         "square-minus" -> R.drawable.lumen_icon_square_minus
         "tally-1" -> R.drawable.lumen_icon_tally_1
         "toggle-left" -> R.drawable.lumen_icon_toggle_left
+        "triangles-centerline-dashed-vertical" -> R.drawable.lumen_icon_triangles_centerline_dashed_vertical
         "trophy" -> R.drawable.lumen_icon_trophy
+        "tube-lotion" -> R.drawable.lumen_icon_tube_lotion
         "undo-dot" -> R.drawable.lumen_icon_undo_dot
+        "vector-polygon" -> R.drawable.lumen_icon_vector_polygon
         "wand" -> R.drawable.lumen_icon_wand
         "whole-word" -> R.drawable.lumen_icon_whole_word
         "wifi-zero" -> R.drawable.lumen_icon_wifi_zero
@@ -5012,6 +5158,7 @@ private fun lumenIconResourceId1(name: String): Int = when (name) {
         "brand:usb" -> R.drawable.lumen_icon_brand_usb
         "brand:vimeo" -> R.drawable.lumen_icon_brand_vimeo
         "calendar-minus" -> R.drawable.lumen_icon_calendar_minus
+        "carton-off" -> R.drawable.lumen_icon_carton_off
         "cassette-tape" -> R.drawable.lumen_icon_cassette_tape
         "chart-no-axes-column" -> R.drawable.lumen_icon_chart_no_axes_column
         "chevrons-down-up" -> R.drawable.lumen_icon_chevrons_down_up
@@ -5066,6 +5213,7 @@ private fun lumenIconResourceId1(name: String): Int = when (name) {
         "message-circle-check" -> R.drawable.lumen_icon_message_circle_check
         "message-circle-plus" -> R.drawable.lumen_icon_message_circle_plus
         "message-circle-x" -> R.drawable.lumen_icon_message_circle_x
+        "messages-circle" -> R.drawable.lumen_icon_messages_circle
         "moon" -> R.drawable.lumen_icon_moon
         "move" -> R.drawable.lumen_icon_move
         "move-diagonal" -> R.drawable.lumen_icon_move_diagonal
@@ -5086,6 +5234,7 @@ private fun lumenIconResourceId1(name: String): Int = when (name) {
         "scan-eye" -> R.drawable.lumen_icon_scan_eye
         "scooter" -> R.drawable.lumen_icon_scooter
         "server-cog" -> R.drawable.lumen_icon_server_cog
+        "shrimp-off" -> R.drawable.lumen_icon_shrimp_off
         "sliders-vertical" -> R.drawable.lumen_icon_sliders_vertical
         "spline" -> R.drawable.lumen_icon_spline
         "spline-pointer" -> R.drawable.lumen_icon_spline_pointer
@@ -5179,6 +5328,7 @@ private fun lumenIconResourceId2(name: String): Int = when (name) {
         "circle-pound-sterling" -> R.drawable.lumen_icon_circle_pound_sterling
         "circuit-board" -> R.drawable.lumen_icon_circuit_board
         "citrus" -> R.drawable.lumen_icon_citrus
+        "clef-bass" -> R.drawable.lumen_icon_clef_bass
         "clipboard-pen" -> R.drawable.lumen_icon_clipboard_pen
         "clock-1" -> R.drawable.lumen_icon_clock_1
         "cloud-lightning" -> R.drawable.lumen_icon_cloud_lightning
@@ -5192,6 +5342,7 @@ private fun lumenIconResourceId2(name: String): Int = when (name) {
         "crosshair" -> R.drawable.lumen_icon_crosshair
         "donut" -> R.drawable.lumen_icon_donut
         "ellipsis-vertical" -> R.drawable.lumen_icon_ellipsis_vertical
+        "engine" -> R.drawable.lumen_icon_engine
         "ev-charger" -> R.drawable.lumen_icon_ev_charger
         "file-badge" -> R.drawable.lumen_icon_file_badge
         "file-output" -> R.drawable.lumen_icon_file_output
@@ -5231,6 +5382,7 @@ private fun lumenIconResourceId2(name: String): Int = when (name) {
         "ruler-dimension-line" -> R.drawable.lumen_icon_ruler_dimension_line
         "search-code" -> R.drawable.lumen_icon_search_code
         "shapes" -> R.drawable.lumen_icon_shapes
+        "shopping-cart-plus" -> R.drawable.lumen_icon_shopping_cart_plus
         "slice" -> R.drawable.lumen_icon_slice
         "snowflake" -> R.drawable.lumen_icon_snowflake
         "soap-dispenser-droplet" -> R.drawable.lumen_icon_soap_dispenser_droplet
@@ -5245,12 +5397,14 @@ private fun lumenIconResourceId2(name: String): Int = when (name) {
         "table-properties" -> R.drawable.lumen_icon_table_properties
         "tally-3" -> R.drawable.lumen_icon_tally_3
         "thumbs-down" -> R.drawable.lumen_icon_thumbs_down
+        "toothbrush" -> R.drawable.lumen_icon_toothbrush
         "toy-brick" -> R.drawable.lumen_icon_toy_brick
         "tv" -> R.drawable.lumen_icon_tv
         "vault" -> R.drawable.lumen_icon_vault
         "wallpaper" -> R.drawable.lumen_icon_wallpaper
         "waves-arrow-up" -> R.drawable.lumen_icon_waves_arrow_up
         "waypoints" -> R.drawable.lumen_icon_waypoints
+        "whistle" -> R.drawable.lumen_icon_whistle
         "zodiac-aquarius" -> R.drawable.lumen_icon_zodiac_aquarius
         "zodiac-scorpio" -> R.drawable.lumen_icon_zodiac_scorpio
     else -> error("Unknown Lumen icon: $name")
@@ -5322,6 +5476,7 @@ private fun lumenIconResourceId3(name: String): Int = when (name) {
         "credit-card-plus" -> R.drawable.lumen_icon_credit_card_plus
         "diamond-plus" -> R.drawable.lumen_icon_diamond_plus
         "dock" -> R.drawable.lumen_icon_dock
+        "dome" -> R.drawable.lumen_icon_dome
         "eye-off" -> R.drawable.lumen_icon_eye_off
         "fan" -> R.drawable.lumen_icon_fan
         "feather" -> R.drawable.lumen_icon_feather
@@ -5338,11 +5493,13 @@ private fun lumenIconResourceId3(name: String): Int = when (name) {
         "graduation-cap" -> R.drawable.lumen_icon_graduation_cap
         "hand-helping" -> R.drawable.lumen_icon_hand_helping
         "heart-crack" -> R.drawable.lumen_icon_heart_crack
+        "houses" -> R.drawable.lumen_icon_houses
         "land-plot" -> R.drawable.lumen_icon_land_plot
         "layout-freeform" -> R.drawable.lumen_icon_layout_freeform
         "layout-panel-left" -> R.drawable.lumen_icon_layout_panel_left
         "list-start" -> R.drawable.lumen_icon_list_start
         "loader" -> R.drawable.lumen_icon_loader
+        "mail-pen" -> R.drawable.lumen_icon_mail_pen
         "map-pin-plus" -> R.drawable.lumen_icon_map_pin_plus
         "message-circle-dashed-check" -> R.drawable.lumen_icon_message_circle_dashed_check
         "message-circle-reply" -> R.drawable.lumen_icon_message_circle_reply
@@ -5355,6 +5512,7 @@ private fun lumenIconResourceId3(name: String): Int = when (name) {
         "panel-right" -> R.drawable.lumen_icon_panel_right
         "panels-left-bottom" -> R.drawable.lumen_icon_panels_left_bottom
         "party-popper" -> R.drawable.lumen_icon_party_popper
+        "plant-pot" -> R.drawable.lumen_icon_plant_pot
         "plug-2" -> R.drawable.lumen_icon_plug_2
         "recycle" -> R.drawable.lumen_icon_recycle
         "redo-2" -> R.drawable.lumen_icon_redo_2
@@ -5474,6 +5632,7 @@ private fun lumenIconResourceId4(name: String): Int = when (name) {
         "credit-card" -> R.drawable.lumen_icon_credit_card
         "database-backup" -> R.drawable.lumen_icon_database_backup
         "diamond" -> R.drawable.lumen_icon_diamond
+        "door-closed-package" -> R.drawable.lumen_icon_door_closed_package
         "egg-fried" -> R.drawable.lumen_icon_egg_fried
         "equal" -> R.drawable.lumen_icon_equal
         "face-grinning" -> R.drawable.lumen_icon_face_grinning
@@ -5540,6 +5699,7 @@ private fun lumenIconResourceId4(name: String): Int = when (name) {
         "tent-tree" -> R.drawable.lumen_icon_tent_tree
         "test-tubes" -> R.drawable.lumen_icon_test_tubes
         "text-initial" -> R.drawable.lumen_icon_text_initial
+        "tic-tac-toe" -> R.drawable.lumen_icon_tic_tac_toe
         "ticket-percent" -> R.drawable.lumen_icon_ticket_percent
         "touchpad" -> R.drawable.lumen_icon_touchpad
         "train-front" -> R.drawable.lumen_icon_train_front
@@ -5639,6 +5799,7 @@ private fun lumenIconResourceId5(name: String): Int = when (name) {
         "import" -> R.drawable.lumen_icon_import
         "layers-minus" -> R.drawable.lumen_icon_layers_minus
         "layers-plus" -> R.drawable.lumen_icon_layers_plus
+        "layout-arrow-right" -> R.drawable.lumen_icon_layout_arrow_right
         "list-todo" -> R.drawable.lumen_icon_list_todo
         "log-out" -> R.drawable.lumen_icon_log_out
         "mars" -> R.drawable.lumen_icon_mars
@@ -5653,6 +5814,7 @@ private fun lumenIconResourceId5(name: String): Int = when (name) {
         "mouse" -> R.drawable.lumen_icon_mouse
         "mouse-pointer" -> R.drawable.lumen_icon_mouse_pointer
         "music" -> R.drawable.lumen_icon_music
+        "nepali-rupee" -> R.drawable.lumen_icon_nepali_rupee
         "notepad-text-dashed" -> R.drawable.lumen_icon_notepad_text_dashed
         "octagon" -> R.drawable.lumen_icon_octagon
         "option" -> R.drawable.lumen_icon_option
@@ -5773,8 +5935,10 @@ private fun lumenIconResourceId6(name: String): Int = when (name) {
         "brand:zoom" -> R.drawable.lumen_icon_brand_zoom
         "brick-wall" -> R.drawable.lumen_icon_brick_wall
         "bug-off" -> R.drawable.lumen_icon_bug_off
+        "calendar-chevrons-right" -> R.drawable.lumen_icon_calendar_chevrons_right
         "calendar-days" -> R.drawable.lumen_icon_calendar_days
         "calendar-minus-2" -> R.drawable.lumen_icon_calendar_minus_2
+        "can-soda" -> R.drawable.lumen_icon_can_soda
         "caravan" -> R.drawable.lumen_icon_caravan
         "cat" -> R.drawable.lumen_icon_cat
         "chess-rook" -> R.drawable.lumen_icon_chess_rook
@@ -5785,6 +5949,7 @@ private fun lumenIconResourceId6(name: String): Int = when (name) {
         "clock-5" -> R.drawable.lumen_icon_clock_5
         "cloud-fog" -> R.drawable.lumen_icon_cloud_fog
         "club" -> R.drawable.lumen_icon_club
+        "cupcake" -> R.drawable.lumen_icon_cupcake
         "cylinder" -> R.drawable.lumen_icon_cylinder
         "database-check" -> R.drawable.lumen_icon_database_check
         "database-x" -> R.drawable.lumen_icon_database_x
@@ -5810,6 +5975,7 @@ private fun lumenIconResourceId6(name: String): Int = when (name) {
         "hdmi-port" -> R.drawable.lumen_icon_hdmi_port
         "heading-1" -> R.drawable.lumen_icon_heading_1
         "heart" -> R.drawable.lumen_icon_heart
+        "hourglass-cog" -> R.drawable.lumen_icon_hourglass_cog
         "image-play" -> R.drawable.lumen_icon_image_play
         "inbox" -> R.drawable.lumen_icon_inbox
         "japanese-yen" -> R.drawable.lumen_icon_japanese_yen
@@ -5821,6 +5987,7 @@ private fun lumenIconResourceId6(name: String): Int = when (name) {
         "map-pin-plus-inside" -> R.drawable.lumen_icon_map_pin_plus_inside
         "message-circle" -> R.drawable.lumen_icon_message_circle
         "monitor-dot" -> R.drawable.lumen_icon_monitor_dot
+        "monitor-pc" -> R.drawable.lumen_icon_monitor_pc
         "motorbike" -> R.drawable.lumen_icon_motorbike
         "move-diagonal-2" -> R.drawable.lumen_icon_move_diagonal_2
         "move-down-left" -> R.drawable.lumen_icon_move_down_left
@@ -5845,6 +6012,9 @@ private fun lumenIconResourceId6(name: String): Int = when (name) {
         "sparkle" -> R.drawable.lumen_icon_sparkle
         "square-arrow-down" -> R.drawable.lumen_icon_square_arrow_down
         "square-arrow-out-up-left" -> R.drawable.lumen_icon_square_arrow_out_up_left
+        "square-bookmark" -> R.drawable.lumen_icon_square_bookmark
+        "square-dashed-plus" -> R.drawable.lumen_icon_square_dashed_plus
+        "square-dashed-x-corner" -> R.drawable.lumen_icon_square_dashed_x_corner
         "square-pause" -> R.drawable.lumen_icon_square_pause
         "sticky-note" -> R.drawable.lumen_icon_sticky_note
         "summary" -> R.drawable.lumen_icon_summary
@@ -5923,6 +6093,7 @@ private fun lumenIconResourceId7(name: String): Int = when (name) {
         "brand:web-awesome" -> R.drawable.lumen_icon_brand_web_awesome
         "brand:yarn" -> R.drawable.lumen_icon_brand_yarn
         "bubbles" -> R.drawable.lumen_icon_bubbles
+        "building-complex" -> R.drawable.lumen_icon_building_complex
         "calendar-heart" -> R.drawable.lumen_icon_calendar_heart
         "calendar-search" -> R.drawable.lumen_icon_calendar_search
         "camera-off" -> R.drawable.lumen_icon_camera_off
@@ -5936,6 +6107,7 @@ private fun lumenIconResourceId7(name: String): Int = when (name) {
         "circle-equal" -> R.drawable.lumen_icon_circle_equal
         "circle-plus" -> R.drawable.lumen_icon_circle_plus
         "circle-question-mark" -> R.drawable.lumen_icon_circle_question_mark
+        "clef-treble" -> R.drawable.lumen_icon_clef_treble
         "clipboard-clock" -> R.drawable.lumen_icon_clipboard_clock
         "clock-6" -> R.drawable.lumen_icon_clock_6
         "cloud-off" -> R.drawable.lumen_icon_cloud_off
@@ -5974,6 +6146,7 @@ private fun lumenIconResourceId7(name: String): Int = when (name) {
         "iteration-ccw" -> R.drawable.lumen_icon_iteration_ccw
         "kanban" -> R.drawable.lumen_icon_kanban
         "keyboard" -> R.drawable.lumen_icon_keyboard
+        "lambda" -> R.drawable.lumen_icon_lambda
         "lamp-floor" -> R.drawable.lumen_icon_lamp_floor
         "layers-2" -> R.drawable.lumen_icon_layers_2
         "lectern" -> R.drawable.lumen_icon_lectern
@@ -5988,7 +6161,9 @@ private fun lumenIconResourceId7(name: String): Int = when (name) {
         "monitor-play" -> R.drawable.lumen_icon_monitor_play
         "mouse-off" -> R.drawable.lumen_icon_mouse_off
         "mouse-pointer-ban" -> R.drawable.lumen_icon_mouse_pointer_ban
+        "mouth" -> R.drawable.lumen_icon_mouth
         "move-up" -> R.drawable.lumen_icon_move_up
+        "notebook-dot" -> R.drawable.lumen_icon_notebook_dot
         "notebook-pen" -> R.drawable.lumen_icon_notebook_pen
         "paintbrush-vertical" -> R.drawable.lumen_icon_paintbrush_vertical
         "panel-left-open" -> R.drawable.lumen_icon_panel_left_open
@@ -6001,6 +6176,7 @@ private fun lumenIconResourceId7(name: String): Int = when (name) {
         "radio-tower" -> R.drawable.lumen_icon_radio_tower
         "regex" -> R.drawable.lumen_icon_regex
         "rotate-ccw-key" -> R.drawable.lumen_icon_rotate_ccw_key
+        "rotate-cw-clock" -> R.drawable.lumen_icon_rotate_cw_clock
         "scaling" -> R.drawable.lumen_icon_scaling
         "scissors" -> R.drawable.lumen_icon_scissors
         "search-alert" -> R.drawable.lumen_icon_search_alert
@@ -6107,12 +6283,14 @@ private fun lumenIconResourceId8(name: String): Int = when (name) {
         "cpu" -> R.drawable.lumen_icon_cpu
         "cup-soda" -> R.drawable.lumen_icon_cup_soda
         "database-arrow-down" -> R.drawable.lumen_icon_database_arrow_down
+        "door-stairwell" -> R.drawable.lumen_icon_door_stairwell
         "download" -> R.drawable.lumen_icon_download
         "drone" -> R.drawable.lumen_icon_drone
         "ear-off" -> R.drawable.lumen_icon_ear_off
         "equal-approximately" -> R.drawable.lumen_icon_equal_approximately
         "eye-closed" -> R.drawable.lumen_icon_eye_closed
         "face-slightly-smiling" -> R.drawable.lumen_icon_face_slightly_smiling
+        "faucet" -> R.drawable.lumen_icon_faucet
         "file-pen" -> R.drawable.lumen_icon_file_pen
         "file-video-camera" -> R.drawable.lumen_icon_file_video_camera
         "fish" -> R.drawable.lumen_icon_fish
@@ -6131,6 +6309,7 @@ private fun lumenIconResourceId8(name: String): Int = when (name) {
         "id-card-lanyard" -> R.drawable.lumen_icon_id_card_lanyard
         "images" -> R.drawable.lumen_icon_images
         "infinity" -> R.drawable.lumen_icon_infinity
+        "iv-bag" -> R.drawable.lumen_icon_iv_bag
         "lamp" -> R.drawable.lumen_icon_lamp
         "lamp-ceiling" -> R.drawable.lumen_icon_lamp_ceiling
         "landmark" -> R.drawable.lumen_icon_landmark
@@ -6157,6 +6336,7 @@ private fun lumenIconResourceId8(name: String): Int = when (name) {
         "send" -> R.drawable.lumen_icon_send
         "settings-2" -> R.drawable.lumen_icon_settings_2
         "shield-alert" -> R.drawable.lumen_icon_shield_alert
+        "shopping-cart-minus" -> R.drawable.lumen_icon_shopping_cart_minus
         "signal" -> R.drawable.lumen_icon_signal
         "signature" -> R.drawable.lumen_icon_signature
         "solar-panel" -> R.drawable.lumen_icon_solar_panel
@@ -6172,6 +6352,7 @@ private fun lumenIconResourceId8(name: String): Int = when (name) {
         "sticky-note-off" -> R.drawable.lumen_icon_sticky_note_off
         "text-align-justify" -> R.drawable.lumen_icon_text_align_justify
         "text-search" -> R.drawable.lumen_icon_text_search
+        "toothbrush-sparkles" -> R.drawable.lumen_icon_toothbrush_sparkles
         "trash" -> R.drawable.lumen_icon_trash
         "triangle" -> R.drawable.lumen_icon_triangle
         "unlink-2" -> R.drawable.lumen_icon_unlink_2
@@ -6243,6 +6424,7 @@ private fun lumenIconResourceId9(name: String): Int = when (name) {
         "brand:wordpress-simple" -> R.drawable.lumen_icon_brand_wordpress_simple
         "brand:xrpl" -> R.drawable.lumen_icon_brand_xrpl
         "brand:yoast" -> R.drawable.lumen_icon_brand_yoast
+        "bridge" -> R.drawable.lumen_icon_bridge
         "building-2" -> R.drawable.lumen_icon_building_2
         "calendar-check" -> R.drawable.lumen_icon_calendar_check
         "calendar-plus" -> R.drawable.lumen_icon_calendar_plus
@@ -6254,8 +6436,10 @@ private fun lumenIconResourceId9(name: String): Int = when (name) {
         "cherry" -> R.drawable.lumen_icon_cherry
         "chevron-left" -> R.drawable.lumen_icon_chevron_left
         "circle-arrow-out-up-left" -> R.drawable.lumen_icon_circle_arrow_out_up_left
+        "circle-dashed-check" -> R.drawable.lumen_icon_circle_dashed_check
         "circle-pause" -> R.drawable.lumen_icon_circle_pause
         "circle-user-round" -> R.drawable.lumen_icon_circle_user_round
+        "clef-alto" -> R.drawable.lumen_icon_clef_alto
         "clipboard-minus" -> R.drawable.lumen_icon_clipboard_minus
         "clock-8" -> R.drawable.lumen_icon_clock_8
         "clock-arrow-right" -> R.drawable.lumen_icon_clock_arrow_right
@@ -6283,6 +6467,7 @@ private fun lumenIconResourceId9(name: String): Int = when (name) {
         "folder-x" -> R.drawable.lumen_icon_folder_x
         "gauge" -> R.drawable.lumen_icon_gauge
         "georgian-lari" -> R.drawable.lumen_icon_georgian_lari
+        "germ" -> R.drawable.lumen_icon_germ
         "hamburger" -> R.drawable.lumen_icon_hamburger
         "hand-metal" -> R.drawable.lumen_icon_hand_metal
         "handbag" -> R.drawable.lumen_icon_handbag
@@ -6294,6 +6479,7 @@ private fun lumenIconResourceId9(name: String): Int = when (name) {
         "keyboard-off" -> R.drawable.lumen_icon_keyboard_off
         "lamp-wall-up" -> R.drawable.lumen_icon_lamp_wall_up
         "laptop-minimal-check" -> R.drawable.lumen_icon_laptop_minimal_check
+        "layout-arrow-down" -> R.drawable.lumen_icon_layout_arrow_down
         "layout-grid" -> R.drawable.lumen_icon_layout_grid
         "layout-panel-top" -> R.drawable.lumen_icon_layout_panel_top
         "list-check" -> R.drawable.lumen_icon_list_check
@@ -6302,6 +6488,7 @@ private fun lumenIconResourceId9(name: String): Int = when (name) {
         "locate-fixed" -> R.drawable.lumen_icon_locate_fixed
         "map-pinned" -> R.drawable.lumen_icon_map_pinned
         "mic-off" -> R.drawable.lumen_icon_mic_off
+        "mouth-off" -> R.drawable.lumen_icon_mouth_off
         "navigation-2" -> R.drawable.lumen_icon_navigation_2
         "newspaper" -> R.drawable.lumen_icon_newspaper
         "notepad-text" -> R.drawable.lumen_icon_notepad_text
@@ -6376,6 +6563,7 @@ private fun lumenIconResourceId10(name: String): Int = when (name) {
         "bell-ring" -> R.drawable.lumen_icon_bell_ring
         "biohazard" -> R.drawable.lumen_icon_biohazard
         "bluetooth-connected" -> R.drawable.lumen_icon_bluetooth_connected
+        "book-bookmark" -> R.drawable.lumen_icon_book_bookmark
         "brand:500px" -> R.drawable.lumen_icon_brand_500px
         "brand:amilia" -> R.drawable.lumen_icon_brand_amilia
         "brand:aws" -> R.drawable.lumen_icon_brand_aws
@@ -6449,6 +6637,7 @@ private fun lumenIconResourceId10(name: String): Int = when (name) {
         "laptop" -> R.drawable.lumen_icon_laptop
         "lasso" -> R.drawable.lumen_icon_lasso
         "layers-arrow-up" -> R.drawable.lumen_icon_layers_arrow_up
+        "lighthouse" -> R.drawable.lumen_icon_lighthouse
         "link" -> R.drawable.lumen_icon_link
         "list-checks" -> R.drawable.lumen_icon_list_checks
         "loader-circle" -> R.drawable.lumen_icon_loader_circle
@@ -6465,6 +6654,7 @@ private fun lumenIconResourceId10(name: String): Int = when (name) {
         "panel-bottom-dashed" -> R.drawable.lumen_icon_panel_bottom_dashed
         "panels-right-bottom" -> R.drawable.lumen_icon_panels_right_bottom
         "parentheses" -> R.drawable.lumen_icon_parentheses
+        "park" -> R.drawable.lumen_icon_park
         "pc-case" -> R.drawable.lumen_icon_pc_case
         "phone-missed" -> R.drawable.lumen_icon_phone_missed
         "picture-in-picture-2" -> R.drawable.lumen_icon_picture_in_picture_2
@@ -6499,6 +6689,7 @@ private fun lumenIconResourceId10(name: String): Int = when (name) {
         "telescope" -> R.drawable.lumen_icon_telescope
         "text-align-start" -> R.drawable.lumen_icon_text_align_start
         "text-wrap" -> R.drawable.lumen_icon_text_wrap
+        "trash-off" -> R.drawable.lumen_icon_trash_off
         "trending-down" -> R.drawable.lumen_icon_trending_down
         "type" -> R.drawable.lumen_icon_type
         "user-round-cog" -> R.drawable.lumen_icon_user_round_cog
@@ -6595,6 +6786,8 @@ private fun lumenIconResourceId11(name: String): Int = when (name) {
         "folder-closed" -> R.drawable.lumen_icon_folder_closed
         "folder-input" -> R.drawable.lumen_icon_folder_input
         "fullscreen" -> R.drawable.lumen_icon_fullscreen
+        "gap-horizontal" -> R.drawable.lumen_icon_gap_horizontal
+        "germ-off" -> R.drawable.lumen_icon_germ_off
         "globe-lock" -> R.drawable.lumen_icon_globe_lock
         "grape" -> R.drawable.lumen_icon_grape
         "heading-6" -> R.drawable.lumen_icon_heading_6
@@ -6607,6 +6800,8 @@ private fun lumenIconResourceId11(name: String): Int = when (name) {
         "layer-arrow-up" -> R.drawable.lumen_icon_layer_arrow_up
         "library" -> R.drawable.lumen_icon_library
         "ligature" -> R.drawable.lumen_icon_ligature
+        "line-dot-bottom-vertical" -> R.drawable.lumen_icon_line_dot_bottom_vertical
+        "line-dot-top-vertical" -> R.drawable.lumen_icon_line_dot_top_vertical
         "lock" -> R.drawable.lumen_icon_lock
         "lollipop" -> R.drawable.lumen_icon_lollipop
         "map-plus" -> R.drawable.lumen_icon_map_plus
@@ -6725,6 +6920,7 @@ private fun lumenIconResourceId12(name: String): Int = when (name) {
         "cloud-rain" -> R.drawable.lumen_icon_cloud_rain
         "coffee" -> R.drawable.lumen_icon_coffee
         "copyleft" -> R.drawable.lumen_icon_copyleft
+        "credit-card-reader" -> R.drawable.lumen_icon_credit_card_reader
         "database-plus" -> R.drawable.lumen_icon_database_plus
         "diamond-percent" -> R.drawable.lumen_icon_diamond_percent
         "dice-2" -> R.drawable.lumen_icon_dice_2
@@ -6781,6 +6977,7 @@ private fun lumenIconResourceId12(name: String): Int = when (name) {
         "shield-minus" -> R.drawable.lumen_icon_shield_minus
         "ship" -> R.drawable.lumen_icon_ship
         "square-centerline-dashed-horizontal" -> R.drawable.lumen_icon_square_centerline_dashed_horizontal
+        "square-dashed-x" -> R.drawable.lumen_icon_square_dashed_x
         "square-terminal" -> R.drawable.lumen_icon_square_terminal
         "square-user-round" -> R.drawable.lumen_icon_square_user_round
         "squircle" -> R.drawable.lumen_icon_squircle
@@ -6854,6 +7051,7 @@ private fun lumenIconResourceId13(name: String): Int = when (name) {
         "brand:xing" -> R.drawable.lumen_icon_brand_xing
         "brand:yahoo" -> R.drawable.lumen_icon_brand_yahoo
         "brick-wall-fire" -> R.drawable.lumen_icon_brick_wall_fire
+        "briefcase-plus" -> R.drawable.lumen_icon_briefcase_plus
         "broccoli" -> R.drawable.lumen_icon_broccoli
         "broom" -> R.drawable.lumen_icon_broom
         "broom-sparkles" -> R.drawable.lumen_icon_broom_sparkles
@@ -6888,11 +7086,13 @@ private fun lumenIconResourceId13(name: String): Int = when (name) {
         "forklift" -> R.drawable.lumen_icon_forklift
         "frame" -> R.drawable.lumen_icon_frame
         "gallery-horizontal-end" -> R.drawable.lumen_icon_gallery_horizontal_end
+        "gap-vertical" -> R.drawable.lumen_icon_gap_vertical
         "git-branch" -> R.drawable.lumen_icon_git_branch
         "git-compare-arrows" -> R.drawable.lumen_icon_git_compare_arrows
         "git-fork" -> R.drawable.lumen_icon_git_fork
         "git-merge" -> R.drawable.lumen_icon_git_merge
         "globe" -> R.drawable.lumen_icon_globe
+        "globe-code" -> R.drawable.lumen_icon_globe_code
         "hard-drive-download" -> R.drawable.lumen_icon_hard_drive_download
         "heater" -> R.drawable.lumen_icon_heater
         "image-off" -> R.drawable.lumen_icon_image_off
@@ -6900,6 +7100,7 @@ private fun lumenIconResourceId13(name: String): Int = when (name) {
         "image-upscale" -> R.drawable.lumen_icon_image_upscale
         "kayak" -> R.drawable.lumen_icon_kayak
         "layout-template" -> R.drawable.lumen_icon_layout_template
+        "line-dot-left-horizontal" -> R.drawable.lumen_icon_line_dot_left_horizontal
         "list-tree" -> R.drawable.lumen_icon_list_tree
         "lock-keyhole" -> R.drawable.lumen_icon_lock_keyhole
         "mail-badge" -> R.drawable.lumen_icon_mail_badge
@@ -6942,6 +7143,7 @@ private fun lumenIconResourceId13(name: String): Int = when (name) {
         "square-dimensions" -> R.drawable.lumen_icon_square_dimensions
         "square-m" -> R.drawable.lumen_icon_square_m
         "square-slash" -> R.drawable.lumen_icon_square_slash
+        "square-sparkles" -> R.drawable.lumen_icon_square_sparkles
         "square-square" -> R.drawable.lumen_icon_square_square
         "square-text" -> R.drawable.lumen_icon_square_text
         "star-check" -> R.drawable.lumen_icon_star_check
@@ -6956,11 +7158,13 @@ private fun lumenIconResourceId13(name: String): Int = when (name) {
         "text-align-center" -> R.drawable.lumen_icon_text_align_center
         "toilet" -> R.drawable.lumen_icon_toilet
         "trash-2" -> R.drawable.lumen_icon_trash_2
+        "user-group" -> R.drawable.lumen_icon_user_group
         "user-key" -> R.drawable.lumen_icon_user_key
         "user-lock" -> R.drawable.lumen_icon_user_lock
         "venus" -> R.drawable.lumen_icon_venus
         "video-off" -> R.drawable.lumen_icon_video_off
         "videotape" -> R.drawable.lumen_icon_videotape
+        "virus" -> R.drawable.lumen_icon_virus
         "wallet-minimal" -> R.drawable.lumen_icon_wallet_minimal
         "washing-machine" -> R.drawable.lumen_icon_washing_machine
         "webcam-off" -> R.drawable.lumen_icon_webcam_off
@@ -7042,6 +7246,7 @@ private fun lumenIconResourceId14(name: String): Int = when (name) {
         "droplet-off" -> R.drawable.lumen_icon_droplet_off
         "earth-lock" -> R.drawable.lumen_icon_earth_lock
         "ellipse" -> R.drawable.lumen_icon_ellipse
+        "equal-approximately-not" -> R.drawable.lumen_icon_equal_approximately_not
         "file-code" -> R.drawable.lumen_icon_file_code
         "file-key" -> R.drawable.lumen_icon_file_key
         "file-scan" -> R.drawable.lumen_icon_file_scan
@@ -7052,6 +7257,7 @@ private fun lumenIconResourceId14(name: String): Int = when (name) {
         "gamepad-directional" -> R.drawable.lumen_icon_gamepad_directional
         "git-pull-request-arrow" -> R.drawable.lumen_icon_git_pull_request_arrow
         "hash" -> R.drawable.lumen_icon_hash
+        "house-cog" -> R.drawable.lumen_icon_house_cog
         "image-minus" -> R.drawable.lumen_icon_image_minus
         "info" -> R.drawable.lumen_icon_info
         "lamp-desk" -> R.drawable.lumen_icon_lamp_desk
@@ -7100,8 +7306,10 @@ private fun lumenIconResourceId14(name: String): Int = when (name) {
         "stretch-vertical" -> R.drawable.lumen_icon_stretch_vertical
         "switch-camera" -> R.drawable.lumen_icon_switch_camera
         "table" -> R.drawable.lumen_icon_table
+        "triangles-centerline-dashed-horizontal" -> R.drawable.lumen_icon_triangles_centerline_dashed_horizontal
         "university" -> R.drawable.lumen_icon_university
         "user-minus" -> R.drawable.lumen_icon_user_minus
+        "user-round-group" -> R.drawable.lumen_icon_user_round_group
         "user-round-key" -> R.drawable.lumen_icon_user_round_key
         "volume-1" -> R.drawable.lumen_icon_volume_1
     else -> error("Unknown Lumen icon: $name")
@@ -7159,6 +7367,7 @@ private fun lumenIconResourceId15(name: String): Int = when (name) {
         "brand:wirsindhandwerk" -> R.drawable.lumen_icon_brand_wirsindhandwerk
         "calendar-clock" -> R.drawable.lumen_icon_calendar_clock
         "captions-off" -> R.drawable.lumen_icon_captions_off
+        "carton" -> R.drawable.lumen_icon_carton
         "cast" -> R.drawable.lumen_icon_cast
         "chart-column-stacked" -> R.drawable.lumen_icon_chart_column_stacked
         "chart-network" -> R.drawable.lumen_icon_chart_network
@@ -7242,6 +7451,7 @@ private fun lumenIconResourceId15(name: String): Int = when (name) {
         "type-outline" -> R.drawable.lumen_icon_type_outline
         "user-round-minus" -> R.drawable.lumen_icon_user_round_minus
         "vibrate" -> R.drawable.lumen_icon_vibrate
+        "virus-off" -> R.drawable.lumen_icon_virus_off
         "volume-2" -> R.drawable.lumen_icon_volume_2
         "wallet-cards" -> R.drawable.lumen_icon_wallet_cards
         "watch" -> R.drawable.lumen_icon_watch

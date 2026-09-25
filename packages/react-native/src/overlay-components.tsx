@@ -2,12 +2,17 @@ import {
   type ComponentRef,
   type ReactElement,
   type ReactNode,
+  useEffect,
   useRef,
   useState
 } from 'react'
 import {
+  AccessibilityInfo,
+  KeyboardAvoidingView,
   Modal,
+  Platform,
   Pressable,
+  ScrollView,
   Share,
   type ShareContent,
   type ShareOptions,
@@ -25,6 +30,16 @@ import {
 import { LumenButton } from './primitives.js'
 import { useLumenTheme } from './theme-context.js'
 
+export interface LumenSafeAreaInsets {
+  bottom?: number
+  left?: number
+  right?: number
+  top?: number
+}
+
+const safeInset = (value: number | undefined): number => Number.isFinite(value) ? Math.max(0, value ?? 0) : 0
+const emptySafeAreaInsets: LumenSafeAreaInsets = Object.freeze({})
+
 export interface LumenAlertDialogProps {
   cancelLabel?: string
   confirmDisabled?: boolean
@@ -34,6 +49,8 @@ export interface LumenAlertDialogProps {
   description?: string
   onConfirm: () => void
   onDismiss: () => void
+  /** Pass insets from the application's safe-area integration when needed. */
+  safeAreaInsets?: LumenSafeAreaInsets
   title: string
   visible: boolean
 }
@@ -48,6 +65,7 @@ export const LumenAlertDialog = ({
   description,
   onConfirm,
   onDismiss,
+  safeAreaInsets = emptySafeAreaInsets,
   title,
   visible
 }: LumenAlertDialogProps): ReactElement => {
@@ -67,19 +85,26 @@ export const LumenAlertDialog = ({
           backgroundColor: '#00000080',
           flex: 1,
           justifyContent: 'center',
-          padding: theme.spacing.xl
+          paddingBottom: theme.spacing.xl + safeInset(safeAreaInsets.bottom),
+          paddingLeft: theme.spacing.xl + safeInset(safeAreaInsets.left),
+          paddingRight: theme.spacing.xl + safeInset(safeAreaInsets.right),
+          paddingTop: theme.spacing.xl + safeInset(safeAreaInsets.top)
         }}
       >
-        <View
+        <ScrollView
           accessibilityRole="alert"
+          contentContainerStyle={{
+            gap: theme.spacing.lg,
+            padding: theme.spacing.xl
+          }}
+          keyboardShouldPersistTaps="handled"
           style={{
             backgroundColor: theme.colors.surface,
             borderColor: theme.colors.line,
             borderRadius: theme.radii.lg,
             borderWidth: 1,
-            gap: theme.spacing.lg,
+            maxHeight: '100%',
             maxWidth: 440,
-            padding: theme.spacing.xl,
             width: '100%'
           }}
         >
@@ -121,85 +146,187 @@ export const LumenAlertDialog = ({
               {confirmLabel}
             </LumenButton>
           </View>
-        </View>
+        </ScrollView>
       </View>
     </Modal>
   )
 }
 
 export interface LumenSheetProps {
+  /** Names sheets without a title; defaults to the visible title. */
+  accessibilityLabel?: string
   actions?: ReactNode
+  /** Opt in when the sheet contains editable fields. */
+  avoidKeyboard?: boolean
   children: ReactNode
   description?: string
+  /** Controls backdrop taps and the platform back/dismiss action. */
+  dismissible?: boolean
+  keyboardVerticalOffset?: number
   onDismiss: () => void
+  /** Adaptive presentation centers a bounded dialog on windows at least 768 points wide. */
+  presentation?: 'adaptive' | 'sheet'
+  /** Pass insets from the application's existing safe-area provider. */
+  safeAreaInsets?: LumenSafeAreaInsets
+  /** Scrolls the body while keeping the heading and actions outside the scroll region. */
+  scrollable?: boolean
   title?: string
   visible: boolean
 }
 
-/** A controlled bottom sheet that preserves native modal focus and dismissal behavior. */
-export const LumenSheet = ({
-  actions,
-  children,
-  description,
-  onDismiss,
-  title,
-  visible
-}: LumenSheetProps): ReactElement => {
+const getSheetContainerStyle = (centered: boolean, spacing: number, insets: LumenSheetProps['safeAreaInsets'] = {}): ViewStyle => {
+  const margin = centered ? spacing : 0
+
+  return {
+    alignItems: centered ? 'center' : 'stretch',
+    flex: 1,
+    justifyContent: centered ? 'center' : 'flex-end',
+    paddingLeft: safeInset(insets.left) + margin,
+    paddingRight: safeInset(insets.right) + margin,
+    paddingTop: safeInset(insets.top),
+    paddingBottom: centered ? safeInset(insets.bottom) : 0
+  }
+}
+
+const SheetHeading = ({ title, description }: Pick<LumenSheetProps, 'title' | 'description'>) => {
   const theme = useLumenTheme()
+
+  if (!title && !description) return null
+
+  return (
+    <View style={{ gap: theme.spacing.sm, flexShrink: 0 }}>
+      {title ?
+        (
+          <Text accessibilityRole="header" style={{ color: theme.colors.ink, fontSize: theme.fontSizes.lg, fontWeight: String(theme.fontWeights.semibold) as TextStyle['fontWeight'] }}>
+            {title}
+          </Text>
+        ) :
+        null}
+      {description ? <Text style={{ color: theme.colors.inkSoft }}>{description}</Text> : null}
+    </View>
+  )
+}
+
+const SheetBody = ({ children, scrollable }: Pick<LumenSheetProps, 'children' | 'scrollable'>) => scrollable ?
+  (
+    <ScrollView
+      keyboardDismissMode={Platform.OS === 'ios' ? 'interactive' : 'on-drag'}
+      keyboardShouldPersistTaps="handled"
+      style={{ flexShrink: 1, minHeight: 0 }}
+    >
+      {children}
+    </ScrollView>
+  ) :
+  children
+
+const SheetPanel = ({ actions, children, centered, safeAreaInsets, ...heading }: Pick<LumenSheetProps, 'actions' | 'children' | 'title' | 'description'> & { centered: boolean, safeAreaInsets: LumenSheetProps['safeAreaInsets'] }) => {
+  const theme = useLumenTheme()
+  const bottomRadius = centered ? theme.radii.lg : 0
+
+  return (
+    <View style={{
+      backgroundColor: theme.colors.surface,
+      borderColor: theme.colors.line,
+      borderTopLeftRadius: theme.radii.lg,
+      borderTopRightRadius: theme.radii.lg,
+      borderBottomLeftRadius: bottomRadius,
+      borderBottomRightRadius: bottomRadius,
+      borderWidth: 1,
+      gap: theme.spacing.lg,
+      maxHeight: '90%',
+      maxWidth: centered ? 560 : undefined,
+      minHeight: 0,
+      padding: theme.spacing.xl,
+      paddingBottom: centered ? theme.spacing.xl : Math.max(theme.spacing.xl, safeInset(safeAreaInsets?.bottom)),
+      width: '100%'
+    }}
+    >
+      <SheetHeading {...heading} />
+      {children}
+      {actions ? <View style={{ alignItems: 'flex-end', flexShrink: 0 }}>{actions}</View> : null}
+    </View>
+  )
+}
+
+const useSheetReducedMotion = (visible: boolean): boolean => {
+  const [reduced, setReduced] = useState(true)
+
+  useEffect(() => {
+    if (!visible) return
+
+    let active = true
+    let changed = false
+
+    const subscription = AccessibilityInfo.addEventListener('reduceMotionChanged', value => {
+      changed = true
+
+      setReduced(value)
+    })
+
+    void AccessibilityInfo.isReduceMotionEnabled().then(value => {
+      if (active && !changed) setReduced(value)
+
+      return undefined
+    }).catch(() => { /* Keep the conservative no-animation fallback. */ })
+
+    return () => {
+      active = false
+
+      subscription.remove()
+    }
+  }, [visible])
+
+  return reduced
+}
+
+const getSheetAnimation = (centered: boolean, reducedMotion: boolean) => {
+  if (reducedMotion) return 'none'
+
+  return centered ? 'fade' : 'slide'
+}
+
+/** A controlled sheet with optional keyboard avoidance and an independently scrolling body. */
+export const LumenSheet = (props: LumenSheetProps): ReactElement => {
+  const theme = useLumenTheme()
+  const { width } = useWindowDimensions()
+  const reducedMotion = useSheetReducedMotion(props.visible)
+  const { actions, children, onDismiss, safeAreaInsets, visible, ...options } = props
+  const { avoidKeyboard = false, dismissible = true, keyboardVerticalOffset = 0, presentation = 'sheet', scrollable = true, ...heading } = options
+  const centered = presentation === 'adaptive' && width >= 768
+
+  const dismiss = () => {
+    if (dismissible) onDismiss()
+  }
 
   return (
     <Modal
-      animationType="slide"
-      onRequestClose={onDismiss}
+      accessibilityLabel={props.accessibilityLabel ?? props.title}
+      animationType={getSheetAnimation(centered, reducedMotion)}
+      onRequestClose={dismiss}
       transparent
       visible={visible}
     >
-      <View accessibilityViewIsModal style={{ flex: 1, justifyContent: 'flex-end' }}>
+      <KeyboardAvoidingView
+        accessibilityViewIsModal
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        enabled={avoidKeyboard}
+        keyboardVerticalOffset={safeInset(keyboardVerticalOffset)}
+        style={getSheetContainerStyle(centered, theme.spacing.xl, safeAreaInsets)}
+      >
         <Pressable
           accessibilityElementsHidden
+          accessible={false}
+          aria-hidden
+          tabIndex={-1}
+          disabled={!dismissible}
           importantForAccessibility="no-hide-descendants"
-          onPress={onDismiss}
-          style={{ backgroundColor: '#00000066', flex: 1 }}
+          onPress={dismiss}
+          style={{ backgroundColor: '#00000066', position: 'absolute', inset: 0 }}
         />
-        <View
-          style={{
-            backgroundColor: theme.colors.surface,
-            borderColor: theme.colors.line,
-            borderTopLeftRadius: theme.radii.lg,
-            borderTopRightRadius: theme.radii.lg,
-            borderWidth: 1,
-            gap: theme.spacing.lg,
-            maxHeight: '90%',
-            padding: theme.spacing.xl
-          }}
-        >
-          {title || description ?
-            (
-              <View style={{ gap: theme.spacing.sm }}>
-                {title ?
-                  (
-                    <Text
-                      accessibilityRole="header"
-                      style={{
-                        color: theme.colors.ink,
-                        fontSize: theme.fontSizes.lg,
-                        fontWeight: String(theme.fontWeights.semibold) as TextStyle['fontWeight']
-                      }}
-                    >
-                      {title}
-                    </Text>
-                  ) :
-                  null}
-                {description ?
-                  <Text style={{ color: theme.colors.inkSoft }}>{description}</Text> :
-                  null}
-              </View>
-            ) :
-            null}
-          {children}
-          {actions ? <View style={{ alignItems: 'flex-end' }}>{actions}</View> : null}
-        </View>
-      </View>
+        <SheetPanel {...heading} actions={actions} centered={centered} safeAreaInsets={safeAreaInsets}>
+          <SheetBody scrollable={scrollable}>{children}</SheetBody>
+        </SheetPanel>
+      </KeyboardAvoidingView>
     </Modal>
   )
 }
@@ -214,6 +341,8 @@ export interface LumenMenuItem {
 export interface LumenMenuProps {
   accessibilityLabel: string
   items: readonly LumenMenuItem[]
+  /** Pass insets from the application's safe-area integration when needed. */
+  safeAreaInsets?: LumenSafeAreaInsets
   trigger: ReactNode
 }
 
@@ -223,6 +352,7 @@ const menuWidth = 240
 export const LumenMenu = ({
   accessibilityLabel,
   items,
+  safeAreaInsets = emptySafeAreaInsets,
   trigger
 }: LumenMenuProps): ReactElement => {
   const theme = useLumenTheme()
@@ -243,9 +373,13 @@ export const LumenMenu = ({
         anchorWidth: width,
         anchorX: x,
         anchorY: y,
+        bottomInset: safeInset(safeAreaInsets.bottom),
         itemCount: items.length,
+        leftInset: safeInset(safeAreaInsets.left),
         margin: theme.spacing.lg,
         menuWidth,
+        rightInset: safeInset(safeAreaInsets.right),
+        topInset: safeInset(safeAreaInsets.top),
         windowHeight,
         windowWidth
       }))

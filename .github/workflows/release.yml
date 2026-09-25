@@ -21,6 +21,7 @@ jobs:
     timeout-minutes: 20
     environment: npm
     permissions:
+      actions: write
       contents: write
       id-token: write
       pull-requests: write
@@ -41,7 +42,7 @@ jobs:
         id: scope
         run: node scripts/release-scope.mjs --github-output
 
-      - name: Verify approved Lumen 2 candidate
+      - name: Verify approved release candidate
         run: node scripts/check-approved-release-revision.mjs
 
       - name: Verify graduated Lumen 2 release
@@ -51,7 +52,8 @@ jobs:
         if: steps.scope.outputs.has-packages == 'true'
         run: >-
           pnpm run check:release-manifest &&
-          node scripts/check-lumen-2-contract.mjs
+          node scripts/check-lumen-2-contract.mjs &&
+          pnpm run check:lumen-3-contract -- --require-approved
 
       - name: Validate web release contracts
         if: steps.scope.outputs.web == 'true'
@@ -85,7 +87,7 @@ jobs:
 
       - name: Create release pull request or publish
         id: changesets
-        uses: changesets/action@8488615a623b1b9c987934bb89eae8af6a946ac1 # v2.1.1
+        uses: changesets/action@ae32849d5ba541f9ae29e40e22a623bc13562f51 # v2.1.2
         with:
           github-token: ${{ secrets.CHANGESETS_TOKEN || github.token }}
           publish-script: pnpm run publish-packages
@@ -145,31 +147,113 @@ jobs:
             done
 
       - name: Create repository version tag
-        if: steps.changesets.outputs.published == 'true'
-        env:
-          PUBLISHED_PACKAGES: ${{ steps.changesets.outputs['published-packages'] }}
         run: |
           VERSION=$(node -p "require('./packages/lumen/package.json').version")
 
-          if ! jq -e \
-            --arg version "$VERSION" \
-            '.[] | select(.name == "@santi020k/lumen" and .version == $version)' \
-            <<<"$PUBLISHED_PACKAGES" >/dev/null; then
-            echo "@santi020k/lumen@${VERSION} was not published; skipping repository tag."
+          if git ls-remote --exit-code --tags origin "refs/tags/v${VERSION}" >/dev/null 2>&1; then
+            git fetch --force origin "refs/tags/v${VERSION}:refs/tags/v${VERSION}"
+            release_commit="$(git rev-list -n 1 "v${VERSION}")"
+
+            if [[ "$release_commit" == "$GITHUB_SHA" ]]; then
+              echo "Tag v${VERSION} already exists at the publication commit; skipping."
+            else
+              echo "Tag v${VERSION} belongs to ${release_commit}; no repository release is pending at ${GITHUB_SHA}."
+            fi
+
             exit 0
           fi
 
-          if git ls-remote --exit-code --tags origin "refs/tags/v${VERSION}" >/dev/null 2>&1; then
-            node scripts/check-coordinated-release-revision.mjs \
-              --version "$VERSION" \
-              --candidate-ref HEAD \
-              --release-ref "v${VERSION}" \
-              --release-remote origin
-            echo "Tag v${VERSION} already exists at the publication commit; skipping."
+          if ! registry_version="$(npm view "@santi020k/lumen@${VERSION}" version 2>/dev/null)"; then
+            echo "@santi020k/lumen@${VERSION} is not published; skipping repository tag."
             exit 0
           fi
+
+          if [[ "$registry_version" != "$VERSION" ]]; then
+            echo "@santi020k/lumen expected ${VERSION} but npm returned ${registry_version}." >&2
+            exit 1
+          fi
+
+          repository_tag_audit_directory="$(mktemp -d)"
+          trap 'rm -rf "$repository_tag_audit_directory"' EXIT
+
+          (
+            cd "$repository_tag_audit_directory"
+            npm init --yes >/dev/null
+            npm install \
+              --ignore-scripts \
+              --legacy-peer-deps \
+              --no-audit \
+              --no-fund \
+              -- "@santi020k/lumen@${VERSION}"
+          )
+
+          pnpm run check:npm-release-provenance -- \
+            --package "@santi020k/lumen" \
+            --version "$VERSION" \
+            --revision "$GITHUB_SHA" \
+            --lockfile "$repository_tag_audit_directory/package-lock.json"
 
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git tag -a "v${VERSION}" -m "Release v${VERSION}"
           git push origin "v${VERSION}"
+
+      - name: Create and launch Compose release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION="$(node -p "require('./packages/lumen/package.json').version")"
+
+          if ! git ls-remote --exit-code --tags origin "refs/tags/v${VERSION}" >/dev/null 2>&1; then
+            echo "Tag v${VERSION} is not published; skipping Compose release."
+            exit 0
+          fi
+
+          git fetch --force origin "refs/tags/v${VERSION}:refs/tags/v${VERSION}"
+          release_commit="$(git rev-list -n 1 "v${VERSION}")"
+
+          if [[ "$release_commit" != "$GITHUB_SHA" ]]; then
+            echo "Tag v${VERSION} belongs to ${release_commit}; no Compose release is pending at ${GITHUB_SHA}."
+            exit 0
+          fi
+
+          COMPOSE_VERSION="$(sed -n 's/^lumenComposeVersion=//p' packages/compose/gradle.properties)"
+          COMPOSE_TAG="compose-v${COMPOSE_VERSION}"
+
+          if git ls-remote --exit-code --tags origin "refs/tags/${COMPOSE_TAG}" >/dev/null 2>&1; then
+            git fetch --force origin "refs/tags/${COMPOSE_TAG}:refs/tags/${COMPOSE_TAG}"
+            existing_commit="$(git rev-list -n 1 "$COMPOSE_TAG")"
+
+            if [[ "$existing_commit" != "$GITHUB_SHA" ]]; then
+              if git diff --quiet "$COMPOSE_TAG" "$GITHUB_SHA" -- packages/compose; then
+                echo "Tag ${COMPOSE_TAG} contains the unchanged Compose source; checking publication status."
+              else
+                echo "Tag ${COMPOSE_TAG} already exists at ${existing_commit}, not ${GITHUB_SHA}." >&2
+                exit 1
+              fi
+            fi
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git tag -a "$COMPOSE_TAG" -m "Release ${COMPOSE_TAG}"
+            git push origin "$COMPOSE_TAG"
+          fi
+
+          active_or_successful_runs="$(
+            gh run list \
+              --workflow publish-compose.yml \
+              --branch "$COMPOSE_TAG" \
+              --limit 20 \
+              --json status,conclusion \
+              --jq '[.[] | select(.status != "completed" or .conclusion == "success")] | length'
+          )"
+
+          if [[ "$active_or_successful_runs" != "0" ]]; then
+            echo "Compose publication already active or successful for ${COMPOSE_TAG}; skipping dispatch."
+            exit 0
+          fi
+
+          # A tag pushed with GITHUB_TOKEN does not trigger another workflow run.
+          gh workflow run publish-compose.yml \
+            --ref "$COMPOSE_TAG" \
+            --field publishing-type=AUTOMATIC

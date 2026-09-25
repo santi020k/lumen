@@ -1,5 +1,18 @@
 # @santi020k/lumen-mcp
 
+## 3.0.0
+
+### Major Changes
+
+- Coordinate Lumen 3 across web and native packages. Swift consumers with exhaustive
+  `LumenIconName` switches must handle the synchronized icon cases or add an `@unknown default`
+  branch; existing component calls and existing icon cases remain available.
+
+### Patch Changes
+
+- [#73](https://github.com/santi020k/lumen/pull/73) [`95300bd`](https://github.com/santi020k/lumen/commit/95300bd00a5b4e6d1507015f3052c033b975beb2) Thanks [@santi020k](https://github.com/santi020k)! - Keep adaptive Compose content and React Native overlay actions clear of Android system navigation,
+  and make React Native alert and sheet content reachable in constrained viewports.
+
 ## 2.1.0
 
 ### Patch Changes

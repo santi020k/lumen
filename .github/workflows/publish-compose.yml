@@ -67,7 +67,7 @@ jobs:
           --version "$LUMEN_COMPOSE_VERSION"
           --candidate-ref "$GITHUB_SHA"
 
-      - name: Verify approved Lumen 2 candidate
+      - name: Verify approved release candidate
         run: >-
           node scripts/check-approved-release-revision.mjs
           --version "$LUMEN_COMPOSE_VERSION"
@@ -92,8 +92,10 @@ jobs:
           node scripts/check-native-consumer-evidence.mjs &&
           node --test scripts/check-native-consumer-evidence.test.mjs
 
-      - name: Validate Lumen 2 contract
-        run: node scripts/check-lumen-2-contract.mjs
+      - name: Validate release contracts
+        run: >-
+          node scripts/check-lumen-2-contract.mjs &&
+          node scripts/check-lumen-3-contract.mjs --require-approved
 
       - name: Validate native stability ledger
         run: node scripts/check-native-stability-soak.mjs
@@ -112,7 +114,7 @@ jobs:
           done
 
       - name: Setup Java
-        uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5
+        uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
         with:
           distribution: temurin
           java-version: 21

@@ -1,6 +1,24 @@
 version: "0.2"
 language: en
 words:
+  - Gantt
+  - Pilcrow
+  - Squircle
+  - Ungroup
+  - Importe
+  - Próximos
+  - cobros
+  - Cliente
+  - Vence
+  - Acciones
+  - Abrir
+  - registro
+  - Parcial
+  - Pendiente
+  - Ingresa
+  - enteros
+  - separadores
+  - entero
   - appstoreconnect
   - SAMEORIGIN
   - SLSA
@@ -158,6 +176,7 @@ words:
   - llms
   - kotlinx
   - lucide
+  - lumenui
   - magnifyingglass
   - macwindow
   - Marmelstein
@@ -273,6 +292,8 @@ words:
   - xcodeproj
   - xcassets
   - reactnative
+  - reactjs
+  - webdev
   - ratelimits
   - temurin
   - sdkmanager

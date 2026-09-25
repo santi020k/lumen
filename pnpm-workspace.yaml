@@ -9,74 +9,79 @@ allowBuilds:
 catalog:
   "@astrojs/check": ^0.9.10
   "@astrojs/compiler": ^4.0.0
-  "@astrojs/mdx": ^7.0.8
-  "@astrojs/sitemap": ^3.7.3
-  "@astrojs/ts-plugin": ^1.10.11
-  "@changesets/changelog-github": ^1.0.0
-  "@changesets/cli": ^3.0.1
-  "@commitlint/cli": ^21.2.2
-  "@commitlint/config-conventional": ^21.2.2
-  "@expo/metro-runtime": ^57.0.14
+  "@astrojs/mdx": ^8.0.2
+  "@astrojs/sitemap": ^3.7.4
+  "@astrojs/ts-plugin": ^1.10.12
+  "@changesets/changelog-github": ^1.0.1
+  "@changesets/cli": ^3.0.3
+  "@commitlint/cli": ^21.2.3
+  "@commitlint/config-conventional": ^21.2.3
+  "@expo/metro-runtime": ^57.0.16
   "@fortawesome/free-brands-svg-icons": ^7.3.1
   "@hookform/resolvers": ^5.9.1
-  "@lucide/icons": ^1.37.0
-  "@modelcontextprotocol/sdk": ^1.30.0
-  "@playwright/test": 1.62.1
-  "@react-native-community/datetimepicker": ^9.1.0
+  "@lucide/icons": ^1.48.0
+  "@modelcontextprotocol/sdk": ^1.30.1
+  "@playwright/test": 1.63.0
+  "@react-native-community/datetimepicker": 9.1.0
   "@santi020k/commitprompt": ^1.1.0
-  "@santi020k/eslint-config-astro": ^3.1.2
-  "@santi020k/eslint-config-basic": ^3.5.1
-  "@santi020k/eslint-config-expo": ^3.1.0
-  "@santi020k/eslint-config-extensions": ^3.1.1
-  "@santi020k/eslint-config-formats": ^3.1.1
-  "@santi020k/eslint-config-libraries": ^3.1.1
-  "@santi020k/eslint-config-next": ^3.1.0
-  "@santi020k/eslint-config-react": ^3.1.0
-  "@santi020k/eslint-config-testing": ^3.1.1
-  "@santi020k/eslint-config-tools": ^3.1.1
+  "@santi020k/eslint-config-astro": ^3.1.4
+  "@santi020k/eslint-config-basic": ^3.5.4
+  "@santi020k/eslint-config-expo": ^3.1.2
+  "@santi020k/eslint-config-extensions": ^3.1.3
+  "@santi020k/eslint-config-formats": ^3.1.3
+  "@santi020k/eslint-config-libraries": ^3.1.3
+  "@santi020k/eslint-config-next": ^3.1.2
+  "@santi020k/eslint-config-react": ^3.1.2
+  "@santi020k/eslint-config-testing": ^3.1.3
+  "@santi020k/eslint-config-tools": ^3.1.3
   "@santi020k/og": 1.1.1
   "@santi020k/theme": ^1.3.0
   "@tailwindcss/vite": ^4.3.3
   "@types/express": ^5.0.6
-  "@types/node": ^26.4.0
-  "@types/react": ^19.2.18
-  "@types/react-dom": ^19.2.5
+  "@types/node": ^26.6.2
+  "@types/react": ~19.2.4
+  "@types/react-dom": ~19.2.5
   "@types/semver": ^7.8.0
-  "@vitest/coverage-v8": ^4.1.11
+  "@vitest/coverage-v8": ^5.0.1
   ajv: ^8.20.0
-  astro: ^7.2.9
+  astro: ^7.3.5
   axe-core: ^4.13.0
-  cspell: ^10.1.1
+  cspell: ^10.3.3
   esbuild: ^0.28.2
-  eslint: ^10.9.1
-  expo: ^57.0.18
-  expo-splash-screen: ~57.0.8
+  eslint: ^10.11.0
+  expo: ^57.0.25
+  expo-splash-screen: ~57.0.9
   expo-status-bar: ~57.0.1
-  expo-system-ui: ~57.0.3
-  expo-updates: ~57.0.19
-  jsdom: ^30.0.1
-  knip: ^6.33.0
-  libphonenumber-js: ^1.13.12
-  lint-staged: ^17.4.1
-  next: ^16.3.3
-  oxlint: ^1.80.0
-  react: ^19.2.8
-  react-dom: ^19.2.8
-  react-hook-form: ^7.86.0
-  react-native: ^0.87.1
+  expo-system-ui: ~57.0.4
+  expo-updates: ~57.0.23
+  jsdom: ^30.1.1
+  knip: ^6.38.0
+  libphonenumber-js: ^1.13.14
+  lint-staged: ^17.5.1
+  next: ^16.3.6
+  oxlint: ^1.85.0
+  react: 19.2.3
+  react-dom: 19.2.3
+  react-hook-form: ^7.88.0
+  react-native: 0.86.3
   react-native-web: ^0.21.2
   semver: ^7.8.5
   sharp: ^0.35.4
   tailwindcss: ^4.3.3
   test-renderer: 1.2.0
-  turbo: ^2.10.12
-  typescript: ^6.0.3
+  turbo: ^2.11.3
+  # TypeScript 7 is held until the current Astro and ESLint peer ranges support it.
+  typescript: ~6.0.3
   uqr: ^0.1.3
-  vitest: ^4.1.11
-  wrangler: ^4.127.1
+  vite: 8.3.1
+  vitest: ^5.0.1
+  wrangler: ^4.138.0
   yup: ^1.7.1
-  zod: ^4.5.2
+  zod: ^4.6.5
 catalogs:
+  # Keep this group aligned with `expo install --check` for SDK 57.
+  # React 19.3, React Native 0.87, and their matching renderer/types are not
+  # compatible with the current Expo SDK and must move together in a later SDK upgrade.
   expo:
     react: 19.2.3
     react-dom: 19.2.3
@@ -91,31 +96,32 @@ ignoredBuiltDependencies:
 minimumReleaseAgeExclude:
   - "@santi020k/og"
   - "@santi020k/eslint-config-typescript"
+minimumReleaseAgeStrict: true
 overrides:
-  "eslint-plugin-tsdoc>@typescript-eslint/utils": 8.68.0
   "@hono/node-server": 2.0.12
   ajv@>=8.0.0 <8.18.0: 8.20.0
   brace-expansion@2.1.3: 2.1.4
   brace-expansion@<2.0.0: 1.1.18
   brace-expansion@>=4.0.0 <5.0.9: 5.0.9
+  "eslint-plugin-tsdoc>@typescript-eslint/utils": 8.68.0
   fast-uri@3: 3.1.6
-  hono: 4.12.34
+  hono: 4.13.8
   ip-address@10: 10.4.0
   joi@>=17.0.0 <17.13.4: 17.13.6
-  js-yaml@4: 4.3.1
+  js-yaml@4: 4.3.2
   js-yaml@>=3.0.0 <3.15.1: 3.15.1
   minimatch@>=5.0.0 <5.1.8: 5.1.8
   nanoid@3: 3.3.18
   postcss@8: 8.5.23
   qs@6: 6.16.0
-  svgo@4: 4.0.2
+  react: 19.2.3
+  react-dom: 19.2.3
+  svgo@4: 4.1.0
   tar@>=7.0.0 <7.5.21: 7.5.22
   ts-deepmerge@<8.0.0: 8.0.0
   undici@>=7.0.0 <7.29.0: 7.29.0
   uuid@<11.1.1: 11.1.1
   yaml@>=2.0.0 <2.8.3: 2.8.3
-patchedDependencies:
-  image-size@1.2.1: patches/image-size@1.2.1.patch
 peerDependencyRules:
   allowedVersions:
     eslint: "10"

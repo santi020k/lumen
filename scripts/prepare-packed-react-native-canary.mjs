@@ -1,13 +1,11 @@
 import assert from 'node:assert/strict'
 import { spawnSync } from 'node:child_process'
-import { mkdtemp, readdir, readFile, rm, writeFile } from 'node:fs/promises'
+import { cp, mkdir, mkdtemp, readdir, readFile, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
-import { join, resolve } from 'node:path'
+import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path'
 
 const repositoryRoot = resolve(import.meta.dirname, '..')
 const playgroundDirectory = join(repositoryRoot, 'apps', 'playground-react-native')
-const manifestPath = join(playgroundDirectory, 'package.json')
-const originalManifest = await readFile(manifestPath, 'utf8')
 const temporaryDirectory = await mkdtemp(join(tmpdir(), 'lumen-packed-rn-canary-'))
 
 const run = (command, args, cwd) => {
@@ -38,23 +36,96 @@ try {
 
   assert.ok(reactNativeArchiveName, 'Expected a packed React Native archive')
 
-  for (const archiveName of [coreArchiveName, reactNativeArchiveName]) {
+  for (const [packageName, archiveName] of [
+    ['lumen-core', coreArchiveName],
+    ['lumen-react-native', reactNativeArchiveName]
+  ]) {
+    const installDirectory = join(
+      playgroundDirectory,
+      'node_modules',
+      '@santi020k',
+      packageName
+    )
+
+    await rm(installDirectory, { force: true, recursive: true })
+
+    await mkdir(installDirectory, { recursive: true })
+
     run(
-      'pnpm',
+      'tar',
       [
-        'add',
-        '--config.link-workspace-packages=deep',
-        '--ignore-scripts',
-        '--lockfile=false',
-        '--save-prod',
+        '-xzf',
         join(temporaryDirectory, archiveName),
+        '--strip-components=1',
+        '-C',
+        installDirectory,
       ],
-      playgroundDirectory
+      repositoryRoot
     )
   }
-} finally {
-  await writeFile(manifestPath, originalManifest)
 
+  const packedCoreDirectory = join(
+    playgroundDirectory,
+    'node_modules',
+    '@santi020k',
+    'lumen-core'
+  )
+
+  const packedCoreManifest = JSON.parse(
+    await readFile(join(packedCoreDirectory, 'package.json'), 'utf8')
+  )
+
+  assert.equal(
+    typeof packedCoreManifest.dependencies,
+    'object',
+    'Packed Core must declare its runtime dependencies'
+  )
+
+  for (const dependencyName of Object.keys(packedCoreManifest.dependencies)) {
+    assert.match(
+      dependencyName,
+      /^(?:@[^/]+\/)?[^/]+$/u,
+      `Packed Core contains an invalid dependency name: ${dependencyName}`
+    )
+
+    const dependencySegments = dependencyName.split('/')
+
+    assert.ok(
+      dependencySegments.every(segment => segment !== '.' && segment !== '..'),
+      `Packed Core contains an unsafe dependency name: ${dependencyName}`
+    )
+
+    const sourceRoot = resolve(
+      repositoryRoot,
+      'packages',
+      'core',
+      'node_modules'
+    )
+
+    const destinationRoot = resolve(packedCoreDirectory, 'node_modules')
+    const source = resolve(sourceRoot, ...dependencySegments)
+    const destination = resolve(destinationRoot, ...dependencySegments)
+
+    for (const [root, candidate] of [
+      [sourceRoot, source],
+      [destinationRoot, destination]
+    ]) {
+      const relativePath = relative(root, candidate)
+
+      assert.ok(
+        relativePath.length > 0 &&
+          !isAbsolute(relativePath) &&
+          relativePath !== '..' &&
+          !relativePath.startsWith(`..${sep}`),
+        `Packed Core dependency escapes its installation root: ${dependencyName}`
+      )
+    }
+
+    await mkdir(dirname(destination), { recursive: true })
+
+    await cp(source, destination, { dereference: true, recursive: true })
+  }
+} finally {
   await rm(temporaryDirectory, { force: true, recursive: true })
 }
 

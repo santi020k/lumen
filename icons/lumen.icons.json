@@ -5,7 +5,15 @@
     {
       "name": "interface",
       "source": "lucide",
-      "selection": "all"
+      "selection": "all",
+      "aliases": {
+        "album": "square-bookmark",
+        "book-marked": "book-bookmark",
+        "building-2": "building-complex",
+        "flip-horizontal-2": "triangles-centerline-dashed-horizontal",
+        "flip-vertical-2": "triangles-centerline-dashed-vertical",
+        "trash-2": "trash"
+      }
     },
     {
       "name": "brand",

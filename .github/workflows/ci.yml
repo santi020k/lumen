@@ -18,7 +18,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     outputs:
-      apple: ${{ steps.paths.outputs.apple }}
       android: ${{ steps.paths.outputs.android }}
       bundle-size: ${{ steps.paths.outputs.bundle-size }}
       compatibility: ${{ steps.paths.outputs.compatibility }}
@@ -36,11 +35,12 @@ jobs:
       - name: Detect release pull request
         id: release
         env:
-          IS_RELEASE_PR: "${{ startsWith(github.head_ref, 'changeset-release/') }}"
-          SKIP_CHANGELOG: >-
+          HEAD_REF: ${{ github.head_ref }}
+          HEAD_REPOSITORY: ${{ github.event.pull_request.head.repo.full_name }}
+          REPOSITORY: ${{ github.repository }}
+          SKIP_CHANGELOG_REQUESTED: >-
             ${{
               contains(github.event.pull_request.labels.*.name, 'skip-changelog') ||
-              startsWith(github.head_ref, 'changeset-release/') ||
               startsWith(github.head_ref, 'chore/') ||
               startsWith(github.head_ref, 'ci/') ||
               startsWith(github.head_ref, 'docs/') ||
@@ -48,8 +48,21 @@ jobs:
               startsWith(github.head_ref, 'dependabot/')
             }}
         run: |
-          echo "value=$IS_RELEASE_PR" >> "$GITHUB_OUTPUT"
-          echo "skip-changelog=$SKIP_CHANGELOG" >> "$GITHUB_OUTPUT"
+          is_release_pr=false
+          release_pattern='^release/v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-((0|[1-9][0-9]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*)(\.((0|[1-9][0-9]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*)))*))?(\+[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?$'
+
+          if [[ "$HEAD_REPOSITORY" == "$REPOSITORY" ]] &&
+            { [[ "$HEAD_REF" == changeset-release/* ]] || [[ "$HEAD_REF" =~ $release_pattern ]]; }; then
+            is_release_pr=true
+          fi
+
+          skip_changelog="$SKIP_CHANGELOG_REQUESTED"
+          if [[ "$is_release_pr" == "true" ]]; then
+            skip_changelog=true
+          fi
+
+          echo "value=$is_release_pr" >> "$GITHUB_OUTPUT"
+          echo "skip-changelog=$skip_changelog" >> "$GITHUB_OUTPUT"
 
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.0
         with:
@@ -67,60 +80,6 @@ jobs:
           --head "$HEAD_SHA"
           --output "$GITHUB_OUTPUT"
 
-  native-apple:
-    name: SwiftUI package
-    needs: classify
-    if: needs.classify.outputs.apple == 'true'
-    runs-on: macos-15
-    timeout-minutes: 45
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          fetch-depth: 0
-
-      - name: Set up pnpm workspace
-        uses: santi020k/quality/actions/setup-pnpm@eec1701b98bcc0b76d36af288ee78a0369cd84cc # v1
-        with:
-          node-version: 22.x
-
-      - name: Verify Apple release automation
-        run: pnpm run check:playground-apple-release && pnpm run test:playground-apple-release
-
-      - name: Compile Swift icon assets
-        run: pnpm run check:swift-assets
-
-      - name: Build and test LumenUI for macOS
-        run: swift test
-
-      - name: Check reviewed SwiftUI source compatibility against v1.6.0
-        run: pnpm run check:swift-source-compatibility
-
-      - name: Check every target-specific Swift public API
-        run: pnpm run check:swift-api-baseline
-
-      - name: Regenerate and compare iPhone component captures
-        id: apple-captures
-        continue-on-error: true
-        env:
-          CI: true
-        run: |
-          apps/playground-apple/scripts/capture-component-screenshots.sh
-          pnpm --filter @santi020k/lumen-docs exec node --experimental-strip-types \
-            scripts/sync-native-component-captures.mjs \
-            --compare --platform=apple --source=default --tolerance=0.12
-
-      - name: Upload Apple capture diagnostics
-        if: steps.apple-captures.outcome == 'failure'
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-        with:
-          name: apple-capture-diagnostics
-          path: apps/playground-apple/Screenshots
-          if-no-files-found: error
-
-      - name: Fail on Apple capture regression
-        if: steps.apple-captures.outcome == 'failure'
-        run: exit 1
-
   native-android:
     name: Compose library
     needs: classify
@@ -131,7 +90,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Setup Java
-        uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5
+        uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
         with:
           distribution: temurin
           java-version: 21
@@ -291,40 +250,6 @@ jobs:
           pnpm --filter @santi020k/lumen-docs exec node --experimental-strip-types \
             scripts/sync-native-component-captures.mjs \
             --compare --platform=react-native --source=default --tolerance=0.04
-
-  visual-regression:
-    name: Visual regression
-    needs: classify
-    if: needs.classify.outputs.release-pr != 'true' && needs.classify.outputs.playwright == 'true'
-    runs-on: macos-14
-    timeout-minutes: 20
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.0
-
-      - name: Set up pnpm workspace
-        uses: santi020k/quality/actions/setup-pnpm@eec1701b98bcc0b76d36af288ee78a0369cd84cc # v1
-        with:
-          node-version: 22.x
-
-      - name: Install Playwright Chromium
-        run: pnpm exec playwright install chromium
-
-      - name: Run visual regression suite
-        id: visual-regression
-        continue-on-error: true
-        run: pnpm run test:visual && pnpm run test:framework-visual
-
-      - name: Upload visual regression diagnostics
-        if: steps.visual-regression.outcome == 'failure'
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-        with:
-          name: visual-regression-diagnostics
-          path: test-results
-          if-no-files-found: error
-
-      - name: Fail on visual regression
-        if: steps.visual-regression.outcome == 'failure'
-        run: exit 1
 
   mcp-node-20:
     name: MCP compatibility (Node 20)

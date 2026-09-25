@@ -1,16 +1,14 @@
 import {
   type ReactElement,
-  type ReactNode,
-  type Ref
+  type ReactNode
 } from 'react'
 import {
-  type HostInstance,
+  Platform,
   Pressable,
   Switch,
   type SwitchProps,
   Text,
   TextInput,
-  type TextInputInstance,
   type TextInputProps,
   type TextStyle,
   View,
@@ -18,6 +16,7 @@ import {
 } from 'react-native'
 
 import { resolveLumenSearchFieldState } from './form-recipes.js'
+import type { LumenSwitchRef, LumenTextInputRef, LumenViewRef } from './native-ref-types.js'
 import { resolveLumenButtonOpacity } from './recipes.js'
 import { useLumenTheme } from './theme-context.js'
 
@@ -27,7 +26,7 @@ export interface LumenToggleProps extends Omit<SwitchProps, 'onValueChange' | 'v
   description?: string
   label: string
   onValueChange: (value: boolean) => void
-  ref?: Ref<HostInstance>
+  ref?: LumenSwitchRef
   showLabel?: boolean
   value: boolean
 }
@@ -52,6 +51,7 @@ export const LumenToggle = ({
       accessibilityLabel={label}
       accessibilityRole="switch"
       accessibilityState={{ checked: value, disabled }}
+      aria-checked={value}
       disabled={disabled}
       onPress={() => {
         if (!disabled) onValueChange(!value)
@@ -76,7 +76,7 @@ export const LumenToggle = ({
               {label}
             </Text>
             {description ?
-              <Text style={{ color: theme.colors.inkMuted, fontSize: theme.fontSizes.xs }}>{description}</Text> :
+              <Text style={{ color: theme.colors.inkSoft, fontSize: theme.fontSizes.xs }}>{description}</Text> :
               null}
           </View>
         ) :
@@ -85,7 +85,8 @@ export const LumenToggle = ({
         ref={ref}
         {...props}
         accessibilityElementsHidden
-        disabled={disabled}
+        aria-hidden
+        disabled={disabled || Platform.OS === 'web'}
         importantForAccessibility="no-hide-descendants"
         ios_backgroundColor={theme.colors.surfaceStrong}
         pointerEvents="none"
@@ -102,7 +103,7 @@ export interface LumenSettingsRowProps extends ViewProps {
   control: ReactNode
   description?: string
   graphic?: ReactNode
-  ref?: Ref<HostInstance>
+  ref?: LumenViewRef
   title: string
 }
 
@@ -157,7 +158,7 @@ export interface LumenSearchFieldProps extends Omit<TextInputProps, 'onChangeTex
   graphic?: ReactNode
   onChangeText: (value: string) => void
   prompt?: string
-  ref?: Ref<TextInputInstance>
+  ref?: LumenTextInputRef
   value: string
 }
 

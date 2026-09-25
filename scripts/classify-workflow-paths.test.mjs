@@ -95,6 +95,14 @@ test('shared native foundations intentionally select every native adapter', () =
   assert.equal(classification['native-contracts'], true)
 })
 
+test('the Lumen 3 Swift contract selects Apple and native compatibility gates', () => {
+  const classification = classifyCiPaths(['registry/lumen-3-contract.json'])
+
+  assert.equal(classification.apple, true)
+
+  assert.equal(classification['native-contracts'], true)
+})
+
 test('canaries isolate web, Swift, and Compose package changes', () => {
   const react = classifyCanaryPaths(['packages/react/src/Button.tsx'])
   const swift = classifyCanaryPaths(['packages/swift/Sources/LumenUI/Button.swift'])
@@ -123,6 +131,18 @@ test('canaries isolate web, Swift, and Compose package changes', () => {
   assert.equal(compose.swift, false)
 
   assert.equal(compose.compose, true)
+})
+
+test('packed React Native canary helper changes select every required remote gate', () => {
+  const classification = classifyCanaryPaths([
+    'scripts/prepare-packed-react-native-canary.mjs'
+  ])
+
+  assert.equal(classification.web, true)
+
+  assert.equal(classification.native, true)
+
+  assert.equal(classification['react-native'], true)
 })
 
 test('manual canary dispatch remains the explicit full matrix', () => {

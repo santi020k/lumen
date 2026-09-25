@@ -95,6 +95,10 @@ export const mergeReleasePackageNames = ({ pending = [], unpublished = [] }) => 
   ...new Set([...pending, ...unpublished])
 ].sort((left, right) => left.localeCompare(right))
 
+export const selectPendingReleaseNames = releases => releases
+  .filter(release => release.type !== 'none')
+  .map(release => release.name)
+
 const readPendingReleaseNames = async () => {
   const temporaryDirectory = await mkdtemp(join(tmpdir(), 'lumen-release-scope-'))
   const outputPath = join(temporaryDirectory, 'status.json')
@@ -124,7 +128,7 @@ const readPendingReleaseNames = async () => {
 
   assert.ok(Array.isArray(status.releases), 'Changesets status must contain a releases array')
 
-  return status.releases.map(release => release.name)
+  return selectPendingReleaseNames(status.releases)
 }
 
 const readUnpublishedPackageNames = async packages => {

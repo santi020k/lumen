@@ -71,8 +71,8 @@ export interface PlatformGuide {
   title: string
 }
 
-const lumenComposeCoordinate = 'com.santi020k:lumen-compose:2.1.0'
-const lumenComposeWearCoordinate = 'com.santi020k:lumen-compose-wear:2.1.0'
+const lumenComposeCoordinate = 'com.santi020k:lumen-compose:3.0.0'
+const lumenComposeWearCoordinate = 'com.santi020k:lumen-compose-wear:3.0.0'
 const nativeComponentNames = (platform: 'android' | 'apple' | 'react-native'): string[] => getNativeComponentsForPlatform(platform).map(component => component.name)
 
 export const platformGuides: PlatformGuide[] = [
@@ -138,13 +138,13 @@ export const platformGuides: PlatformGuide[] = [
   {
     codeExamples: [
       {
-        code: 'pnpm add @santi020k/lumen-react-native react-native-svg @react-native-community/datetimepicker',
+        code: 'pnpm add @santi020k/lumen-react-native react-native-svg',
         label: 'pnpm',
         language: 'bash',
         value: 'pnpm'
       },
       {
-        code: 'npm install @santi020k/lumen-react-native react-native-svg @react-native-community/datetimepicker',
+        code: 'npm install @santi020k/lumen-react-native react-native-svg',
         label: 'npm',
         language: 'bash',
         value: 'npm'
@@ -196,7 +196,7 @@ npx react-native start`,
     href: '/docs/react-native',
     id: 'react-native',
     installNote:
-      'Install Lumen with its required react-native-svg and datetime-picker peers, then mount one LumenProvider near the application root. The deprecated root date exports keep the datetime picker required for the pre-v2 stability releases; Lumen 2 makes it optional for consumers that use no /datetime imports.',
+      'Install Lumen with its required react-native-svg peer, then mount one LumenProvider near the application root. Add the optional datetime picker only when importing from the /datetime subpath.',
     label: 'React Native',
     packageName: '@santi020k/lumen-react-native',
     playgroundCommands: [
@@ -327,7 +327,7 @@ return (
 https://github.com/santi020k/lumen
 
 # Dependency Rule
-Exact Version: 2.1.0
+Exact Version: 3.0.0
 
 # Add this product to your application target
 LumenUI`,
@@ -340,7 +340,7 @@ LumenUI`,
 dependencies: [
     .package(
         url: "https://github.com/santi020k/lumen",
-        exact: "2.1.0"
+        exact: "3.0.0"
     )
 ],
 targets: [
@@ -382,7 +382,7 @@ struct ExampleApp: App {
     href: '/docs/apple',
     id: 'apple',
     installNote:
-      'LumenUI installs through Swift Package Manager; no npm package, CocoaPod, or copied source is required. Add the repository URL, pin exact version 2.1.0 for reproducible builds, and attach the LumenUI product to your application target.',
+      'LumenUI installs through Swift Package Manager; no npm package, CocoaPod, or copied source is required. Add the repository URL, pin exact version 3.0.0 for reproducible builds, and attach the LumenUI product to your application target.',
     label: 'Apple / SwiftUI',
     packageName: 'LumenUI',
     playgroundCommands: [
@@ -438,7 +438,7 @@ swift run --package-path apps/playground-apple LumenApplePlayground`,
     setupSteps: [
       {
         description:
-          'In Xcode, choose File → Add Package Dependencies, paste the repository URL, and pin exact version 2.1.0 for reproducible builds. Use a compatible-version rule only when the application accepts compatible updates.',
+          'In Xcode, choose File → Add Package Dependencies, paste the repository URL, and pin exact version 3.0.0 for reproducible builds. Use a compatible-version rule only when the application accepts compatible updates.',
         title: 'Add the Swift package'
       },
       {
@@ -462,7 +462,7 @@ swift run --package-path apps/playground-apple LumenApplePlayground`,
     storeAvailability: {
       badge: 'Available on the App Store',
       description:
-        'Version 1.0 is available for iPhone, iPad, and Mac. The same listing installs the native gallery for the Apple device you are using.',
+        'Download Lumen Playground for iPhone, iPad, and Mac. Explore the native SwiftUI component gallery offline, with no account required.',
       href: 'https://apps.apple.com/app/id6805250815',
       linkLabel: 'View on the App Store',
       status: 'available',
@@ -637,11 +637,11 @@ pnpm playground:android:build`,
     shortLabel: 'Android',
     status: 'Compose module',
     storeAvailability: {
-      badge: 'Google Play · pending',
+      badge: 'Google Play · resubmission pending',
       description:
-        'The Android release is still awaiting Google Play approval. Until it is approved, run the local Compose playground or build the debug APK from the repository.',
+        'Google Play rejected the latest Android submission because its screenshots did not match the reviewed app experience. A corrected resubmission is pending; until the public listing is live, run the local Compose playground or build the debug APK from the repository.',
       status: 'pending',
-      title: 'Android store release is under review'
+      title: 'Android production rollout needs resubmission'
     },
     summary:
       'Use the shared Lumen foundations through Jetpack Compose and Material 3 while preserving Android interaction and accessibility conventions.',

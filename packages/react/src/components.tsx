@@ -66,9 +66,7 @@ import {
   type LumenFormErrorInput,
   type LumenFormStatus,
   type LumenHeatmapDatum,
-  type LumenIconData,
   type LumenIconName,
-  type LumenIconNode,
   type LumenIllustrationElement,
   lumenIllustrations,
   type LumenPhoneCountry,
@@ -112,6 +110,8 @@ import {
   useTabs,
   useTooltip
 } from './hooks.js'
+import { renderIconSvg } from './icon-svg.js'
+import { IconView } from './icon-view.js'
 import {
   resolveReactPhoneInputCountry,
   resolveReactPhoneInputValue
@@ -267,96 +267,6 @@ const variantClass = (
   variant: string,
   defaultVariant = 'default'
 ) => (variant === defaultVariant ? false : `${base}--${variant}`)
-
-const iconSizeClass = (size: IconSize) => size === 'default' ? undefined : `ui-icon--${size}`
-
-const reactSvgAttributeNames: Record<string, string> = {
-  'clip-rule': 'clipRule',
-  'fill-rule': 'fillRule',
-  'stroke-dasharray': 'strokeDasharray',
-  'stroke-dashoffset': 'strokeDashoffset',
-  'stroke-linecap': 'strokeLinecap',
-  'stroke-linejoin': 'strokeLinejoin',
-  'stroke-miterlimit': 'strokeMiterlimit',
-  'stroke-width': 'strokeWidth',
-  tabindex: 'tabIndex'
-}
-
-const toReactSvgAttributes = (attributes: Record<string, string>) => Object.fromEntries(
-  Object.entries(attributes).map(([name, value]) => [
-    reactSvgAttributeNames[name] ?? name,
-    value
-  ])
-)
-
-const renderIconNode = (
-  [tagName, attributes, children]: LumenIconNode,
-  index: number
-): ReactNode => createElement(
-  tagName, {
-    ...toReactSvgAttributes(attributes),
-    key: attributes.key ?? index
-  }, children?.map(renderIconNode)
-)
-
-interface IconAccessibilityOptions {
-  ariaHidden: boolean | 'false' | 'true' | undefined
-  ariaLabel: string | undefined
-  decorative: boolean | undefined
-  label: string | undefined
-  role: string | undefined
-}
-
-const getIconAccessibility = ({
-  ariaHidden,
-  ariaLabel,
-  decorative,
-  label,
-  role
-}: IconAccessibilityOptions) => {
-  const accessibleLabel = label ?? ariaLabel
-  const isDecorative = decorative ?? !accessibleLabel
-
-  if (isDecorative) {
-    return {
-      ariaHidden: ariaHidden ?? true,
-      ariaLabel: undefined,
-      role
-    }
-  }
-
-  return {
-    ariaHidden,
-    ariaLabel: accessibleLabel,
-    role: role ?? 'img'
-  }
-}
-
-const renderIconSvg = (icon: LumenIconData, className: string) => {
-  const width = 'size' in icon ? icon.size : icon.width
-  const height = 'size' in icon ? icon.size : icon.height
-
-  return (
-    <svg
-      aria-hidden="true"
-      className={className}
-      fill={icon.style === 'fill' ? 'currentColor' : 'none'}
-      focusable="false"
-      height="1em"
-      stroke={icon.style === 'fill' ? 'none' : 'currentColor'}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth={icon.style === 'fill' ? '0' : '2'}
-      viewBox={`0 0 ${width} ${height}`}
-      width="1em"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      {icon.node.map(renderIconNode)}
-    </svg>
-  )
-}
-
-const renderNamedIcon = (icon: LumenIconData) => renderIconSvg(icon, `ui-icon__svg ${icon.source ?? 'lucide'}-${icon.name}`)
 
 const renderLucideIcon = (name: string, className: string) => {
   const icon = getLumenIcon(name)
@@ -3501,40 +3411,9 @@ export interface IconProps extends ComponentPropsWithoutRef<'span'> {
   size?: IconSize
 }
 
-export const Icon = ({
-  'aria-hidden': ariaHidden,
-  'aria-label': ariaLabel,
-  children,
-  className,
-  decorative,
-  label,
-  name,
-  role,
-  size = 'default',
-  ...props
-}: IconProps) => {
-  const icon = name ? getLumenIcon(name) : undefined
-
-  const accessibility = getIconAccessibility({
-    ariaHidden,
-    ariaLabel,
-    decorative,
-    label,
-    role
-  })
-
-  return (
-    <span
-      aria-hidden={accessibility.ariaHidden}
-      aria-label={accessibility.ariaLabel}
-      className={composeClassName('ui-icon', iconSizeClass(size), className)}
-      role={accessibility.role}
-      {...props}
-    >
-      {icon ? renderNamedIcon(icon) : children}
-    </span>
-  )
-}
+export const Icon = ({ name, ...props }: IconProps) => (
+  <IconView {...props} icon={name ? getLumenIcon(name) : undefined} />
+)
 
 export interface PasswordFieldProps extends Omit<
   InputProps,
@@ -5265,11 +5144,12 @@ export const Switch = ({
 
 export interface TableProps extends ComponentPropsWithoutRef<'div'> {
   glass?: LumenGlassProp
+  layout?: 'records' | 'scroll'
 }
-export const Table = ({ className, glass = false, ...props }: TableProps) => (
+export const Table = ({ className, glass = false, layout = 'scroll', ...props }: TableProps) => (
   <div
     className={composeClassName(
-      'ui-table-wrap', glassClass('ui-table-wrap', glass), className
+      'ui-table-wrap', glassClass('ui-table-wrap', glass), layout === 'records' && 'ui-table-wrap--records', className
     )}
     data-slot="table"
     {...props}

@@ -16,7 +16,7 @@ considered supported.
 Install the package and mount one provider near the application root:
 
 ```bash
-pnpm add @santi020k/lumen-react-native react-native-svg @react-native-community/datetimepicker
+pnpm add @santi020k/lumen-react-native react-native-svg
 ```
 
 ```tsx
@@ -27,9 +27,8 @@ export function App() {
 }
 ```
 
-The pre-v2 stability releases keep the picker peer required because they retain deprecated root date
-exports. Import date components from their dedicated entrypoint; in Lumen 2, consumers that do not
-use this entrypoint can omit the picker:
+Import date components from their dedicated entrypoint and add the optional picker peer only when
+the application uses that entrypoint:
 
 ```bash
 pnpm add @react-native-community/datetimepicker
@@ -48,8 +47,8 @@ Shared icons use `name="search"`; applications can instead pass graphic componen
 ### SwiftUI
 
 In Xcode, choose **File → Add Package Dependencies**, paste
-`https://github.com/santi020k/lumen`, and choose **Exact Version** `2.1.0` for a reproducible
-production build. Use **Up to Next Major Version** from `2.1.0` only when the application accepts
+`https://github.com/santi020k/lumen`, and choose **Exact Version** `3.0.0` for a reproducible
+production build. Use **Up to Next Major Version** from `3.0.0` only when the application accepts
 compatible updates, and reserve `main` for local evaluation. Add the `LumenUI` product to the
 application target. The repository-root `Package.swift` is the public package entry point; no
 CocoaPod or npm package is involved.
@@ -60,12 +59,12 @@ Projects with their own Swift package manifest can declare the dependency direct
 dependencies: [
     .package(
         url: "https://github.com/santi020k/lumen",
-        exact: "2.1.0"
+        exact: "3.0.0"
     )
 ]
 ```
 
-Use `from: "2.1.0"` instead of `exact: "2.1.0"` for a compatible-version policy. Commit
+Use `from: "3.0.0"` instead of `exact: "3.0.0"` for a compatible-version policy. Commit
 `Package.resolved` for application and CI builds and verify that its version and revision match the
 intended release tag. XcodeGen and other deterministic project generators should keep the package
 requirement in their checked-in configuration and regenerate project files from that source.
@@ -141,7 +140,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.santi020k:lumen-compose:2.1.0")
+    implementation("com.santi020k:lumen-compose:3.0.0")
 }
 ```
 
@@ -155,7 +154,7 @@ mapped Lumen values when the application needs them independently.
 
 ### Cross-platform icon catalog
 
-The native adapters include all 1,777 canonical Lucide interface icons and all 573 namespaced Font
+The native adapters include all 1,860 canonical interface icon names and all 573 namespaced Font
 Awesome Free brand entries used by Lumen on the web. Use a semantic Lumen name when the artwork
 should remain consistent across the product:
 
@@ -199,7 +198,7 @@ contracts:
 
 ```kotlin
 dependencies {
-    implementation("com.santi020k:lumen-compose-wear:2.1.0")
+    implementation("com.santi020k:lumen-compose-wear:3.0.0")
 }
 ```
 
@@ -270,7 +269,7 @@ owned.
 | Picker            | `LumenPicker`           | `LumenPicker`            | `LumenPicker`           | Controlled single-value selection with native or accessible menu presentation |
 | Slider            | `LumenSlider`           | `LumenSlider`            | `LumenSlider`           | Native or dependency-free continuous and stepped range input                  |
 | Gauge             | `LumenGauge`            | `LumenGauge`             | `LumenGauge`            | Clamped circular metric with a formatted accessible value                     |
-| Sheet             | `LumenSheet`            | `lumenSheet`             | `LumenSheet`            | Controlled supplemental surface with native modal dismissal                   |
+| Sheet             | `LumenSheet`            | `lumenSheet`             | `LumenSheet`            | Safe-area-aware supplemental surface with reachable actions                   |
 | Menu              | `LumenMenu`             | `LumenMenu`              | `LumenMenu`             | Anchored actions with disabled and destructive item states                    |
 | Share button      | `LumenShareButton`      | `LumenShareButton`       | `LumenShareButton`      | Token-aware action backed by the operating system share surface               |
 | Wearable action   | —                       | `LumenWatchActionButton` | `LumenWearActionButton` | Round essential action with semantic intent and wearable-safe bounds          |
@@ -451,7 +450,9 @@ LumenNavigationBar(
 Overlay state and application data remain controlled by the host. Lumen supplies consistent action
 roles, spacing, and accessibility while each adapter uses its native modal and share presentation.
 SwiftUI exposes alert and sheet presentation as view modifiers so focus restoration remains attached
-to the presenting view.
+to the presenting view. React Native overlays accept optional application-supplied safe-area insets;
+their sheets scroll content by default, while `scrollable={false}` lets an existing `FlatList` or
+other virtualized child own scrolling. Lumen does not require a safe-area provider.
 
 ```swift
 LumenButton("Delete report") { showConfirmation = true }
@@ -486,6 +487,11 @@ LumenSheet(
   onDismiss={() => setShowConfirmation(false)}
 />
 ```
+
+React Native sheets additionally support opt-in scrolling bodies, keyboard avoidance, safe-area
+insets, and adaptive centered presentation. Their title names the modal; `accessibilityLabel` names
+a sheet without a title. See [consumer UI recipes](consumer-ui-recipes.md#react-native-sheets) for the
+complete composition and dismissal contract.
 
 ### Platform-native actions and input
 

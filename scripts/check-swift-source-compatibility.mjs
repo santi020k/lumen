@@ -5,36 +5,42 @@ import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const repositoryRoot = resolve(import.meta.dirname, '..')
+const diagnosticMarker = / \[#api-digester-breaking-change\]$/u
 
-export const parseSwiftApiBreakages = output => [...output.matchAll(/API breakage:\s+(.+)$/gm)]
-  .map(match => match[1].trim())
-  .sort()
+export const parseSwiftApiBreakages = output => [
+  ...new Set(
+    [...output.matchAll(/API breakage:\s+(.+)$/gm)]
+      .map(match => match[1].trim().replace(diagnosticMarker, ''))
+  )
+].sort()
 
 export const assertSwiftApiBreakages = (actual, expected) => {
   assert.deepEqual(
     [...actual].sort(),
     [...expected].sort(),
-    'Swift source breakage changed; restore compatibility or review the Lumen 2 contract'
+    'Swift source breakage changed; restore compatibility or review the Lumen 3 contract'
   )
 }
 
 const checkSwiftSourceCompatibility = () => {
   const contract = JSON.parse(
-    readFileSync(resolve(repositoryRoot, 'registry/lumen-2-contract.json'), 'utf8')
+    readFileSync(resolve(repositoryRoot, 'registry/lumen-3-contract.json'), 'utf8')
   )
 
-  const change = contract.changes.find(item => item.id === 'swift-surface-scale-expansion')
+  assert.equal(contract.targetVersion, '3.0.0', 'The Swift compatibility gate must use Lumen 3')
 
-  assert.ok(change, 'The Lumen 2 contract must classify Swift surface-scale breakage')
+  const change = contract.changes.find(item => item.id === 'swift-icon-catalog-expansion')
+
+  assert.ok(change, 'The Lumen 3 contract must classify Swift icon catalog expansion')
 
   assert.ok(
     Array.isArray(change.swiftApiBreakages) && change.swiftApiBreakages.length > 0,
-    'The Swift surface-scale change must list its expected API diagnostics'
+    'The Swift icon catalog change must list its expected API diagnostics'
   )
 
   const result = spawnSync(
     'swift',
-    ['package', 'diagnose-api-breaking-changes', 'v1.6.0', '--products', 'LumenUI'],
+    ['package', 'diagnose-api-breaking-changes', 'v2.1.0', '--products', 'LumenUI'],
     { cwd: repositoryRoot, encoding: 'utf8' }
   )
 
@@ -51,7 +57,7 @@ const checkSwiftSourceCompatibility = () => {
   assertSwiftApiBreakages(actualBreakages, change.swiftApiBreakages)
 
   process.stdout.write(
-    `Validated ${actualBreakages.length} reviewed Swift source breakages against v1.6.0.\n`
+    `Validated ${actualBreakages.length} reviewed Swift source breakages against v2.1.0.\n`
   )
 }
 

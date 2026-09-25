@@ -7,12 +7,6 @@ on:
       - ".github/workflows/release.yml"
       - ".github/workflows/publish-compose.yml"
       - ".github/workflows/verify-native-release.yml"
-      - ".github/workflows/release-playground-apple.yml"
-      - ".github/workflows/monitor-playground-apple.yml"
-      - ".github/workflows/release-playground-macos.yml"
-      - ".github/workflows/monitor-playground-macos.yml"
-      - ".github/scripts/monitor-xcode-cloud.mjs"
-      - ".github/scripts/monitor-xcode-cloud.test.mjs"
       - "Package.swift"
       - "apps/playground-android/**"
       - "apps/playground-apple/**"
@@ -31,6 +25,7 @@ on:
       - "registry/native-api-baseline.json"
       - "registry/compose-api-classification.json"
       - "registry/lumen-2-contract.json"
+      - "registry/lumen-3-contract.json"
       - "registry/web-api-baseline.json"
       - "registry/web-consumer-evidence.json"
       - "registry/swift-api-baseline.json"
@@ -44,6 +39,7 @@ on:
       - "scripts/check-coordinated-release-revision.mjs"
       - "scripts/check-coordinated-release-revision.test.mjs"
       - "scripts/check-graduated-release-revision.mjs"
+      - "scripts/prepare-packed-react-native-canary.mjs"
       - "scripts/check-graduated-release-revision.test.mjs"
       - "scripts/check-wear-api-classification.mjs"
       - "scripts/check-native-device-evidence.mjs"
@@ -57,6 +53,8 @@ on:
       - "scripts/check-native-stable-readiness.test.mjs"
       - "scripts/check-lumen-2-contract.mjs"
       - "scripts/check-lumen-2-contract.test.mjs"
+      - "scripts/check-lumen-3-contract.mjs"
+      - "scripts/check-lumen-3-contract.test.mjs"
       - "scripts/check-maven-release-artifacts.mjs"
       - "scripts/check-maven-release-artifacts.test.mjs"
       - "scripts/check-maven-pom-metadata.mjs"
@@ -73,8 +71,6 @@ on:
       - "scripts/check-web-consumer-evidence.test.mjs"
       - "scripts/check-playground-eas-version.mjs"
       - "scripts/check-playground-eas-version.test.mjs"
-      - "scripts/check-playground-apple-release.mjs"
-      - "scripts/check-playground-apple-release.test.mjs"
       - "scripts/check-react-native-peer-docs.mjs"
       - "scripts/check-react-native-peer-docs.test.mjs"
       - "scripts/generate-release-manifest.mjs"
@@ -162,11 +158,13 @@ jobs:
         if: needs.classify.outputs.web-contracts == 'true'
       - run: pnpm run check:web-consumer-evidence && pnpm run test:web-consumer-evidence
         if: needs.classify.outputs.web-contracts == 'true'
-      - name: Enforce the Lumen 2 contract
+      - name: Enforce release contracts
         if: needs.classify.outputs.web-contracts == 'true' || needs.classify.outputs.native == 'true'
         run: >-
           pnpm run check:lumen-2-contract &&
-          pnpm run test:lumen-2-contract
+          pnpm run test:lumen-2-contract &&
+          pnpm run check:lumen-3-contract &&
+          pnpm run test:lumen-3-contract
       - name: Enforce coordinated native release gates
         if: needs.classify.outputs.native == 'true'
         run: >-
@@ -211,32 +209,14 @@ jobs:
         if: needs.classify.outputs.consumer-packages == 'true'
       - run: pnpm run check:react-native-package
         if: needs.classify.outputs.react-native == 'true'
-
-  swift:
-    name: Swift package consumer
-    needs: classify
-    if: needs.classify.outputs.swift == 'true'
-    runs-on: macos-26
-    timeout-minutes: 55
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          fetch-depth: 0
-      - name: Set up pnpm workspace
-        uses: santi020k/quality/actions/setup-pnpm@eec1701b98bcc0b76d36af288ee78a0369cd84cc # v1
-        with:
-          node-version: 22.x
-      - run: pnpm run check:playground-apple-release && pnpm run test:playground-apple-release
-      - run: pnpm run check:swift-version && pnpm run test:swift-version
-      - run: swift test
-      - run: pnpm run check:swift-source-compatibility
-      - name: Check every target-specific Swift public API
-        run: pnpm run check:swift-api-baseline
-      - run: swift build --package-path apps/playground-apple
-      - name: Resolve a clean consumer from a tagged Swift package candidate
-        run: pnpm run check:swift-package-candidate
-      - name: Build a native iOS consumer from the packed React Native package
-        run: pnpm run check:react-native-native-package:ios
+      - name: Verify packed React Native canary isolation
+        if: needs.classify.outputs.react-native == 'true'
+        run: |
+          # cspell:ignore realpath
+          node scripts/prepare-packed-react-native-canary.mjs
+          pnpm --filter @santi020k/lumen-playground-react-native exec node \
+            --input-type=module \
+            -e "const { realpath } = await import('node:fs/promises'); const { fileURLToPath } = await import('node:url'); const resolved = await realpath(fileURLToPath(import.meta.resolve('@santi020k/lumen-react-native'))); if (resolved.includes('/packages/react-native/')) throw new Error(\`Packed canary resolved workspace source: \${resolved}\`); console.log(resolved)"
 
   compose:
     name: Compose source and app consumer
@@ -251,7 +231,7 @@ jobs:
         with:
           node-version: 22.x
           install: false
-      - uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5
+      - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
         with:
           distribution: temurin
           java-version: 21

@@ -133,3 +133,18 @@ exportThemeDesignTokens(theme)
 `exportThemeFigmaVariables` returns Figma variable-friendly color values (`r`, `g`, `b`, `a`) and
 hierarchical names such as `color/surface/muted`. `exportThemeDesignTokens` returns standard design
 token JSON that importers can map into Figma variables or other design tools.
+
+## Static interface icon data
+
+Import individual definitions from `@santi020k/lumen-core/icon-data` when icon names are known at
+build time. This entrypoint has no runtime registry and allows unused definitions to be removed:
+
+```ts
+import { Search, X } from '@santi020k/lumen-core/icon-data'
+```
+
+React consumers can import both the renderer and definitions from
+`@santi020k/lumen-react/icons`. Existing `getLumenIcon`, runtime names, and registered icon packs
+remain supported through the original API. The interface selection in `icons/lumen.icons.json`
+controls the generated exports; run `pnpm run generate:platform-icons` after catalog changes.
+See [consumer UI recipes](../../docs/consumer-ui-recipes.md#static-react-icons).

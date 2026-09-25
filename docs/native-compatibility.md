@@ -10,10 +10,10 @@ accessibility evidence is tracked separately in the
 | Adapter | Consumer baseline | Library toolchain | Automated evidence |
 | --- | --- | --- | --- |
 | React Native | React 19.2+, React Native 0.86.2+, React Native SVG 12–15, iOS 15.1+, and Android API 24+ | TypeScript 6 and Node.js 22.12 or newer | Package build, typecheck, lint, and Vitest suites; packed clean-consumer install and strict typecheck; Expo playground typecheck and lint |
-| SwiftUI | iOS 16, macOS 13, tvOS 16, visionOS 1, and watchOS 9 | Swift tools 6.0 and the current stable Xcode selected by CI | `swift test`, `swift package diagnose-api-breaking-changes v1.6.0 --products LumenUI`, and `pnpm run check:swift-api-baseline` across all five targets |
+| SwiftUI | iOS 16, macOS 13, tvOS 16, visionOS 1, and watchOS 9 | Swift tools 6.0 and the current stable Xcode selected by CI | `swift test`, `swift package diagnose-api-breaking-changes v2.1.0 --products LumenUI`, `pnpm run check:swift-source-compatibility`, and `pnpm run check:swift-api-baseline` across all five targets |
 | WidgetKit foundations | iOS 16, macOS 13, and watchOS 9 | Swift tools 6.0 and the current stable Xcode selected by CI | Focused `LumenWidgetUI` tests and public API baselines across macOS, iOS, and watchOS |
-| Jetpack Compose | Android API 23 or newer | JDK 21, Gradle 9.7.1, Android Gradle Plugin 9.4.1, Kotlin Compose plugin 2.4.20, compile SDK 37 | Binary API comparison, unit tests, Android lint, release publication verification, exact-candidate Maven APK consumer, Android test APK build, and instrumentation on API 35 |
-| Wear OS Compose | Wear OS API 30 or newer | JDK 21, Gradle 9.7.1, Android Gradle Plugin 9.4.1, Kotlin Compose plugin 2.4.20, compile SDK 37 | Separate Wear binary API comparison, unit tests, lint, Maven publication verification, exact-candidate watch APK consumer, and phone dependency-isolation assertion |
+| Jetpack Compose | Android API 23 or newer | JDK 21, Gradle 9.8.0, Android Gradle Plugin 9.4.1, Kotlin Compose plugin 2.4.20, compile SDK 37 | Binary API comparison, unit tests, Android lint, release publication verification, exact-candidate Maven APK consumer, Android test APK build, and instrumentation on API 35 |
+| Wear OS Compose | Wear OS API 30 or newer | JDK 21, Gradle 9.8.0, Android Gradle Plugin 9.4.1, Kotlin Compose plugin 2.4.20, compile SDK 37 | Separate Wear binary API comparison, unit tests, lint, Maven publication verification, exact-candidate watch APK consumer, and phone dependency-isolation assertion |
 
 The React Native peer dependency declarations, Swift package platform declarations, and Compose
 Gradle configuration are authoritative when this document and package metadata differ.

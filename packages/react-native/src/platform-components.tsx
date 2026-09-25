@@ -9,7 +9,6 @@ import {
 import {
   Animated,
   Easing,
-  type HostInstance,
   Pressable,
   RefreshControl,
   type RefreshControlProps,
@@ -21,6 +20,7 @@ import {
   type ViewStyle
 } from 'react-native'
 
+import type { LumenViewRef } from './native-ref-types.js'
 import {
   type LumenNavigationBadge,
   type LumenRefreshIndicatorTone,
@@ -47,7 +47,7 @@ export interface LumenNavigationBarProps extends Omit<ViewProps, 'children'> {
   items: readonly LumenNavigationItem[]
   onReselect?: (value: string) => void
   onValueChange: (value: string) => void
-  ref?: Ref<HostInstance>
+  ref?: LumenViewRef
   value: string
 }
 

@@ -17,6 +17,8 @@
   ·
   <a href="https://www.figma.com/community/file/1662337342676541513">Figma library</a>
   ·
+  <a href="https://apps.apple.com/app/id6805250815">iPhone and iPad app</a>
+  ·
   <a href="https://github.com/santi020k/lumen/issues">Issues</a>
 </p>
 
@@ -178,7 +180,8 @@ packages:
   [App Store](https://apps.apple.com/app/id6805250815) for iPhone, iPad, and Mac. It also builds as
   an iOS Xcode app or macOS Swift Package executable for local exploration.
 - [`apps/playground-android`](./apps/playground-android) builds a native Compose application and a
-  directly installable debug APK. Its Google Play release is awaiting approval.
+  directly installable debug APK. Its latest Google Play submission was rejected for a screenshot
+  mismatch and is pending a corrected resubmission.
 
 See the [playground workflow](./docs/playgrounds.md) for run, capture, and distribution commands.
 
@@ -228,9 +231,11 @@ The skill teaches agents how to select, compose, theme, and verify Lumen primiti
 [`@santi020k/lumen-mcp`](./packages/mcp) when an agent needs to search the live catalog or retrieve
 current source, props, tokens, and usage rules.
 
-> **OpenAI Plugins Directory status:** Lumen UI 1.0.0 has been submitted for review for Codex and
-> ChatGPT. Until OpenAI approves it and the publisher completes publication, install the portable
-> skill or connect the MCP server directly; directory availability is not yet guaranteed.
+For ChatGPT and Codex, install the published
+[Lumen UI plugin](https://chatgpt.com/plugins/plugin_asdk_app_6a8f6c526c5481918eb8a48806fa112b)
+from the Plugins Directory. Select **Install plugin**, then mention **@Lumen UI** in a request such
+as “Find the right Lumen components for an accessible React settings screen.” Version 1.0.0 bundles
+the skill with the hosted, read-only catalog; no separate Lumen account or local MCP setup is needed.
 
 Additional machine-readable surfaces include:
 
@@ -280,7 +285,9 @@ real-world feedback.
   [adoption survey](https://github.com/santi020k/lumen/issues/new?template=adoption-feedback.yml).
 
 Maintainers can use the [exposure playbook](./docs/exposure-playbook.md) for publishing cadence,
-campaign measurement, video scripts, and launch copy.
+campaign measurement, video scripts, and launch copy, and the
+[marketing package](./docs/marketing/README.md) for execution-ready copy, channel decisions, a
+four-week calendar, asset briefs, an approval queue, and a community-response library.
 
 ## License
 

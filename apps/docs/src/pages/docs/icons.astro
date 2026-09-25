@@ -21,7 +21,8 @@ interface IconEntry {
 const byName = new Map<string, { name: string, terms: Set<string> }>()
 
 for (const [key, icon] of Object.entries(lumenIcons)) {
-  const existing = byName.get(icon.name)
+  const name = icon.name ?? key
+  const existing = byName.get(name)
 
   if (existing) {
     existing.terms.add(key)
@@ -29,7 +30,7 @@ for (const [key, icon] of Object.entries(lumenIcons)) {
     continue
   }
 
-  byName.set(icon.name, { name: icon.name, terms: new Set([icon.name, key]) })
+  byName.set(name, { name, terms: new Set([name, key]) })
 }
 
 const iconEntries: IconEntry[] = [...byName.values()]

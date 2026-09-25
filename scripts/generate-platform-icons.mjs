@@ -92,12 +92,19 @@ const readCatalog = async () => {
 
   validateBrandPack(brandPack)
 
-  const aliases = requiredRecord(brandPack.aliases, 'packs.1.aliases')
+  const interfaceAliases = requiredRecord(interfacePack.aliases, 'packs.0.aliases')
+  const brandAliases = requiredRecord(brandPack.aliases, 'packs.1.aliases')
+
+  const normalizeAliases = (aliases, path) => Object.fromEntries(
+    Object.entries(aliases).map(([name, target]) => [
+      name,
+      requiredString(target, `${path}.${name}`)
+    ])
+  )
 
   return {
-    brandAliases: Object.fromEntries(
-      Object.entries(aliases).map(([name, target]) => [name, requiredString(target, `aliases.${name}`)])
-    )
+    brandAliases: normalizeAliases(brandAliases, 'packs.1.aliases'),
+    interfaceAliases: normalizeAliases(interfaceAliases, 'packs.0.aliases')
   }
 }
 
@@ -141,15 +148,14 @@ const svgAttribution = source => source === 'font-awesome-free-brands' ?
   '<!-- Font Awesome Free Brands: CC BY 4.0; converted by Lumen. -->' :
   '<!-- Lucide Icons: ISC License; converted by Lumen. -->'
 
-// Xcode's CoreSVG parser rejects this icon's compact, spec-valid arc flags.
-// Keep the workaround scoped so unrelated generated assets do not churn.
-const coreSvgPathWorkarounds = new Set(['barrel'])
-
-const renderSvgNode = ([tagName, rawAttributes], normalizePathData) => {
+// Xcode's CoreSVG parser rejects compact, spec-valid arc flags. The normalizer
+// preserves ordinary path data exactly, so apply it to every generated path
+// rather than maintaining an icon-name allowlist as upstream artwork evolves.
+const renderSvgNode = ([tagName, rawAttributes]) => {
   const attributes = Object.entries(rawAttributes)
     .filter(([name]) => name !== 'key')
     .map(([name, value]) => {
-      const normalizedValue = name === 'd' && normalizePathData ?
+      const normalizedValue = name === 'd' ?
         normalizeCoreSvgPathData(String(value)) :
         String(value)
 
@@ -176,12 +182,11 @@ const renderSvg = icon => {
   const viewport = iconViewport(icon)
   const fill = icon.style === 'fill' ? '#000000' : 'none'
   const stroke = icon.style === 'stroke' ? '#000000' : 'none'
-  const normalizePathData = coreSvgPathWorkarounds.has(icon.publicName)
 
   return `<?xml version="1.0" encoding="UTF-8"?>
 ${svgAttribution(icon.source)}
 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="${viewport.minX} ${viewport.minY} ${viewport.dimension} ${viewport.dimension}" color="#000000" fill="${fill}" stroke="${stroke}" stroke-width="${icon.style === 'stroke' ? '2' : '0'}" stroke-linecap="round" stroke-linejoin="round">
-${icon.node.map(node => renderSvgNode(node, normalizePathData)).join('\n')}
+${icon.node.map(renderSvgNode).join('\n')}
 </svg>
 `
 }
@@ -549,6 +554,31 @@ const createBrandIcons = (fab, aliases) => {
   }))
 }
 
+const createInterfaceIcons = (lucideIcons, aliases) => {
+  const interfaceIcons = new Map(Object.values(lucideIcons).map(icon => [icon.name, icon]))
+
+  for (const [alias, target] of Object.entries(aliases)) {
+    if (interfaceIcons.has(alias)) {
+      throw new Error(`Lucide interface alias conflicts with a canonical icon: ${alias}.`)
+    }
+
+    const targetIcon = interfaceIcons.get(target)
+
+    if (!targetIcon) throw new Error(`Unknown Lucide interface alias target: ${target}.`)
+
+    interfaceIcons.set(alias, targetIcon)
+  }
+
+  return [...interfaceIcons].map(([name, icon]) => ({
+    height: 'size' in icon ? icon.size : icon.height,
+    node: icon.node,
+    publicName: name,
+    source: 'lucide',
+    style: 'stroke',
+    width: 'size' in icon ? icon.size : icon.width
+  }))
+}
+
 const validateIcons = icons => {
   const names = new Set()
   const swiftNames = new Set()
@@ -582,14 +612,7 @@ const loadIcons = async catalog => {
     import('@fortawesome/free-brands-svg-icons')
   ])
 
-  const icons = Object.values(lucideIcons).map(icon => ({
-    height: 'size' in icon ? icon.size : icon.height,
-    node: icon.node,
-    publicName: icon.name,
-    source: 'lucide',
-    style: 'stroke',
-    width: 'size' in icon ? icon.size : icon.width
-  }))
+  const icons = createInterfaceIcons(lucideIcons, catalog.interfaceAliases)
 
   icons.push(...createBrandIcons(fab, catalog.brandAliases))
 

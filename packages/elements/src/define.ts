@@ -953,7 +953,10 @@ const elementConfigs = {
     tagName: 'lumen-switch'
   },
   Table: {
-    attributeClasses: glassAttributeClasses('ui-table-wrap--glass'),
+    attributeClasses: {
+      ...glassAttributeClasses('ui-table-wrap--glass'),
+      layout: { records: 'ui-table-wrap--records' }
+    },
     baseClassName: 'ui-table-wrap',
     defaults: { 'data-slot': 'table' },
     tagName: 'lumen-table'

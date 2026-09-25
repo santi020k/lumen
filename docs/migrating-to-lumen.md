@@ -79,6 +79,17 @@ Lumen components communicate using standard DOM CustomEvents, primarily prefixed
 
 Listen to these events on the document, or on the component root `[data-ui-*]` elements.
 
+### Migrating from version 2 to version 3
+
+Lumen 3 synchronizes the expanded interface icon catalog across native adapters. Existing
+component calls and existing `LumenIconName` cases remain available. Swift consumers that switch
+exhaustively over `LumenIconName` must handle the newly synchronized cases or include an
+`@unknown default` branch before updating their package pin to `3.0.0`.
+
+No web, React Native, or Compose component migration is required solely for the major-version
+change. Update coordinated package pins together, rebuild generated clients, and run the
+application's native compile and accessibility checks before release.
+
 ### Version 1 compatibility removals
 
 Lumen 1.0 removes the compatibility aliases that were deprecated during the pre-1.0 releases:

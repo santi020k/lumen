@@ -6,7 +6,7 @@
         "com.santi020k:lumen-compose",
         "com.santi020k:lumen-compose-wear"
       ],
-      "version": "2.1.0"
+      "version": "3.0.0"
     },
     "npm": {
       "packages": {
@@ -14,41 +14,41 @@
           "peerDependencies": {
             "astro": ">=5"
           },
-          "version": "2.1.0"
+          "version": "3.0.0"
         },
         "@santi020k/lumen-core": {
           "peerDependencies": {},
-          "version": "2.1.0"
+          "version": "3.0.0"
         },
         "@santi020k/lumen-elements": {
           "peerDependencies": {},
-          "version": "2.1.0"
+          "version": "3.0.0"
         },
         "@santi020k/lumen-icons-brand": {
           "peerDependencies": {},
-          "version": "2.0.0"
+          "version": "3.0.0"
         },
         "@santi020k/lumen": {
           "peerDependencies": {},
-          "version": "2.1.0"
+          "version": "3.0.0"
         },
         "@santi020k/lumen-mcp": {
           "peerDependencies": {},
-          "version": "2.1.0"
+          "version": "3.0.0"
         },
         "@santi020k/lumen-react": {
           "peerDependencies": {
             "react": ">=19"
           },
-          "version": "2.1.0"
+          "version": "3.0.0"
         },
         "@santi020k/lumen-react-hook-form": {
           "peerDependencies": {
-            "@santi020k/lumen-react": "^2.0.0",
+            "@santi020k/lumen-react": "^3.0.0",
             "react": ">=19",
             "react-hook-form": ">=7.76.0 <8"
           },
-          "version": "2.0.0"
+          "version": "3.0.0"
         },
         "@santi020k/lumen-react-native": {
           "peerDependencies": {
@@ -57,42 +57,32 @@
             "react-native": ">=0.86.2",
             "react-native-svg": ">=12 <16"
           },
-          "version": "2.1.0"
+          "version": "3.0.0"
         },
         "@santi020k/lumen-tokens": {
           "peerDependencies": {},
-          "version": "2.0.0"
+          "version": "3.0.0"
         }
       }
     },
     "swift": {
       "package": "https://github.com/santi020k/lumen.git",
       "revision": null,
-      "tag": "v2.1.0"
+      "tag": "v3.0.0"
     },
-    "version": "2.1.0"
+    "version": "3.0.0"
   },
   "migration": {
-    "codemod": "lumen migrate v2 --dry-run",
+    "codemod": null,
     "css": {
       "astro": "@santi020k/lumen-astro/styles.css",
       "elements": "@santi020k/lumen-elements/styles.css",
       "react": "@santi020k/lumen-react/styles.css"
     },
     "deprecatedExports": [],
-    "removedExports": [
-      "@santi020k/lumen-astro#Sonner",
-      "@santi020k/lumen-astro#UIPrimitives",
-      "@santi020k/lumen-react#Sonner",
-      "@santi020k/lumen-react#SonnerProps",
-      "@santi020k/lumen-react-native#LumenDateField",
-      "@santi020k/lumen-react-native#LumenDateFieldProps",
-      "@santi020k/lumen-react-native#LumenDateRangeField",
-      "@santi020k/lumen-react-native#LumenDateRangeFieldProps",
-      "@santi020k/lumen-react-native#LumenDateRangeValue"
-    ],
+    "removedExports": [],
     "runtime": {
-      "astro": "Import UIPrimitives from @santi020k/lumen-astro/runtime and mount it once when an imported component declares the ui-primitives runtime.",
+      "astro": "Mount UIPrimitives once when an imported component declares the ui-primitives runtime.",
       "elements": "Call defineLumenElements once before rendering lumen-* elements.",
       "react": "Use the public React behavior hooks for behavior-heavy primitives."
     }

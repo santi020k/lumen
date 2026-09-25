@@ -3,6 +3,23 @@
 Use this guide when an AI agent is building an app with Lumen or updating examples that teach
 another agent how to use the library.
 
+## Install in ChatGPT or Codex
+
+The [Lumen UI plugin](https://chatgpt.com/plugins/plugin_asdk_app_6a8f6c526c5481918eb8a48806fa112b)
+is published in the shared Plugins Directory for ChatGPT and Codex.
+
+1. Open the listing and select **Install plugin**. Sign in to ChatGPT if prompted.
+2. Start a request with **@Lumen UI**, or choose one of the listing's starter prompts.
+3. Describe the interface and target framework, for example: “Find the right Lumen components for
+   an accessible React settings screen.”
+
+The plugin combines the Lumen workflow skill with the hosted public MCP catalog. It requires no
+separate Lumen account, API key, or local server. Its tools only read public Lumen documentation;
+they do not access private repositories or modify files and services. Your coding agent performs
+implementation work using the retrieved contracts and its own permissions.
+
+See the [publication record](./openai-plugin-submission.md) for version and verification details.
+
 ## Install the Lumen Agent Skill
 
 Lumen ships a portable Agent Skill for AI coding tools that support the open `SKILL.md` format:
@@ -31,9 +48,9 @@ Use the framework requested by the user. Every adapter shares the same Lumen fou
 | React Hook Form composites | `@santi020k/lumen-react-hook-form`                                     | `@santi020k/lumen-react-hook-form`           | Uses React styles                      |
 | Web Components             | `@santi020k/lumen-elements`                                            | `@santi020k/lumen-elements/define`           | `@santi020k/lumen-elements/styles.css` |
 | React Native / Expo        | `@santi020k/lumen-react-native`                                        | `@santi020k/lumen-react-native`              | Not applicable                         |
-| Apple / SwiftUI            | Swift Package `https://github.com/santi020k/lumen`, pinned to `2.1.0`  | `LumenUI`                                    | Not applicable                         |
-| Android / Compose          | Maven Central `com.santi020k:lumen-compose:2.1.0`                       | `com.santi020k.lumen`                        | Not applicable                         |
-| Wear OS / Compose          | Maven Central `com.santi020k:lumen-compose-wear:2.1.0`                  | `com.santi020k.lumen`                        | Not applicable                         |
+| Apple / SwiftUI            | Swift Package `https://github.com/santi020k/lumen`, pinned to `3.0.0`  | `LumenUI`                                    | Not applicable                         |
+| Android / Compose          | Maven Central `com.santi020k:lumen-compose:3.0.0`                       | `com.santi020k.lumen`                        | Not applicable                         |
+| Wear OS / Compose          | Maven Central `com.santi020k:lumen-compose-wear:3.0.0`                  | `com.santi020k.lumen`                        | Not applicable                         |
 | Package metadata           | `@santi020k/lumen-core`                                                | `@santi020k/lumen-core`                      | Not applicable                         |
 | Optional web brand icons   | `@santi020k/lumen-icons-brand`                                         | Register once, then use the framework `Icon` | Uses framework styles                  |
 
@@ -43,7 +60,7 @@ when you need its framework-neutral CLI or registry metadata.
 For React Native, mount one `LumenProvider` near the app root. For SwiftUI, attach the `LumenUI`
 Swift Package product to the application target, use an exact or compatible release-version rule,
 and apply `.lumenTheme(...)` near the root. For Compose, install
-`com.santi020k:lumen-compose:2.1.0` from Maven Central and wrap content in `LumenTheme`. Native
+`com.santi020k:lumen-compose:3.0.0` from Maven Central and wrap content in `LumenTheme`. Native
 adapters do not load CSS or the Astro runtime.
 
 React Native can use ordinary React hooks and platform-neutral application hooks. Import native
@@ -54,7 +71,7 @@ import DOM-dependent hooks from `@santi020k/lumen-react` into a native bundle. S
 in an application workspace package and keep the Lumen rendering adapter at each app boundary.
 
 For watchOS, use the focused `LumenWatch*` contracts from the same Swift package. For Wear OS,
-install `com.santi020k:lumen-compose-wear:2.1.0` and wrap wearable content in `LumenWearTheme`
+install `com.santi020k:lumen-compose-wear:3.0.0` and wrap wearable content in `LumenWearTheme`
 inside the application-owned Wear Material theme. Keep complications, tiles, rotary input,
 Always On behavior, haptics, synchronization, navigation, and health or safety logic app-owned.
 

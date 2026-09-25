@@ -2,7 +2,6 @@ import {
   type ComponentRef,
   type ReactElement,
   type ReactNode,
-  type Ref,
   useEffect,
   useId,
   useRef
@@ -18,6 +17,7 @@ import {
   type ViewProps
 } from 'react-native'
 
+import type { LumenViewRef } from './native-ref-types.js'
 import { resolveLumenButtonOpacity } from './recipes.js'
 import { resolveLumenSelectionState } from './selection-recipes.js'
 import { useLumenTheme } from './theme-context.js'
@@ -35,7 +35,7 @@ export interface LumenCheckboxProps extends Omit<PressableProps, 'children' | 'd
   disabled?: boolean
   label: string
   onCheckedChange: (checked: boolean) => void
-  ref?: Ref<HostInstance>
+  ref?: LumenViewRef
 }
 
 export const LumenCheckbox = ({
@@ -119,7 +119,7 @@ export interface LumenRadioGroupProps extends Omit<ViewProps, 'children'> {
   label: string
   onValueChange: (value: string) => void
   options: readonly LumenSelectionOption[]
-  ref?: Ref<HostInstance>
+  ref?: LumenViewRef
   value: string
 }
 
@@ -214,7 +214,7 @@ export interface LumenSegmentedControlProps extends Omit<ViewProps, 'children'> 
   label: string
   onValueChange: (value: string) => void
   options: readonly LumenSelectionOption[]
-  ref?: Ref<HostInstance>
+  ref?: LumenViewRef
   showLabel?: boolean
   value: string
 }
@@ -311,7 +311,7 @@ export interface LumenTabsProps extends Omit<ViewProps, 'children'> {
   label: string
   onValueChange: (value: string) => void
   options: readonly LumenSelectionOption[]
-  ref?: Ref<HostInstance>
+  ref?: LumenViewRef
   value: string
 }
 

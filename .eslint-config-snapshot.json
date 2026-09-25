@@ -42,6 +42,7 @@
         "AudioPlaybackStats": false,
         "AudioProcessingEvent": false,
         "AudioScheduledSourceNode": false,
+        "AudioSession": false,
         "AudioSinkInfo": false,
         "AudioWorklet": false,
         "AudioWorkletNode": false,
@@ -383,6 +384,7 @@
         "HTMLBodyElement": false,
         "HTMLBRElement": false,
         "HTMLButtonElement": false,
+        "HTMLCameraElement": false,
         "HTMLCanvasElement": false,
         "HTMLCollection": false,
         "HTMLDataElement": false,
@@ -420,6 +422,7 @@
         "HTMLMenuElement": false,
         "HTMLMetaElement": false,
         "HTMLMeterElement": false,
+        "HTMLMicrophoneElement": false,
         "HTMLModElement": false,
         "HTMLObjectElement": false,
         "HTMLOListElement": false,
@@ -525,6 +528,7 @@
         "Map": false,
         "matchMedia": false,
         "Math": false,
+        "MathMLAnchorElement": false,
         "MathMLElement": false,
         "MediaCapabilities": false,
         "MediaCapabilitiesInfo": false,
@@ -607,6 +611,7 @@
         "NodeFilter": false,
         "NodeIterator": false,
         "NodeList": false,
+        "NodeRange": false,
         "Notification": false,
         "NotifyPaintEvent": false,
         "NotRestoredReasonDetails": false,
@@ -743,6 +748,7 @@
         "onvolumechange": true,
         "onwaiting": true,
         "onwheel": true,
+        "OpaqueRange": false,
         "open": false,
         "opener": false,
         "Option": false,
@@ -855,6 +861,7 @@
         "Request": false,
         "requestAnimationFrame": false,
         "requestIdleCallback": false,
+        "requestResize": false,
         "require": false,
         "resizeBy": false,
         "ResizeObserver": false,
@@ -1111,6 +1118,7 @@
         "Translator": false,
         "TreeWalker": false,
         "TrustedHTML": false,
+        "TrustedParserOptions": false,
         "TrustedScript": false,
         "TrustedScriptURL": false,
         "TrustedTypePolicy": false,
@@ -2534,6 +2542,9 @@
           2
         ],
         "@typescript-eslint/no-for-in-array": [
+          2
+        ],
+        "@typescript-eslint/no-generated-empty-object-type": [
           2
         ],
         "@typescript-eslint/no-implied-eval": [

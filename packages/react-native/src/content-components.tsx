@@ -1,7 +1,6 @@
-import { type ReactElement, type ReactNode, type Ref } from 'react'
+import { type ReactElement, type ReactNode } from 'react'
 import {
   type DimensionValue,
-  type HostInstance,
   Pressable,
   Text,
   type TextStyle,
@@ -23,6 +22,7 @@ import {
   type LumenIllustrationElement,
   lumenIllustrations
 } from './illustrations.generated.js'
+import type { LumenViewRef } from './native-ref-types.js'
 import { resolveLumenButtonOpacity } from './recipes.js'
 import { useLumenTheme } from './theme-context.js'
 import { lumenGraphicOpacities, lumenGraphicStrokeWidths } from './tokens.generated.js'
@@ -32,7 +32,7 @@ export type LumenSkeletonShape = 'circle' | 'rectangle' | 'text'
 export interface LumenSkeletonProps extends Omit<ViewProps, 'children'> {
   height?: number
   label?: string
-  ref?: Ref<HostInstance>
+  ref?: LumenViewRef
   shape?: LumenSkeletonShape
   width?: DimensionValue
 }
@@ -84,7 +84,7 @@ export type LumenGraphicVariant = 'glow' | 'grid' | 'orbit'
 export interface LumenGraphicProps extends ViewProps {
   children?: ReactNode
   label?: string
-  ref?: Ref<HostInstance>
+  ref?: LumenViewRef
   size?: LumenGraphicSize
   tone?: LumenGraphicTone
   variant?: LumenGraphicVariant
@@ -189,7 +189,7 @@ export type LumenBackdropVariant = 'aurora' | 'dots' | 'grid' | 'rays'
 export interface LumenBackdropProps extends ViewProps {
   children?: ReactNode
   intensity?: LumenBackdropIntensity
-  ref?: Ref<HostInstance>
+  ref?: LumenViewRef
   tone?: LumenBackdropTone
   variant?: LumenBackdropVariant
 }
@@ -280,7 +280,7 @@ export type LumenIllustrationVariant = 'empty' | 'error' | 'offline' | 'success'
 
 export interface LumenIllustrationProps extends ViewProps {
   label?: string
-  ref?: Ref<HostInstance>
+  ref?: LumenViewRef
   size?: LumenIllustrationSize
   tone?: LumenIllustrationTone
   variant?: LumenIllustrationVariant
@@ -409,7 +409,7 @@ export interface LumenDisclosureProps extends Omit<ViewProps, 'children'> {
   expanded: boolean
   graphic?: ReactNode
   onExpandedChange: (expanded: boolean) => void
-  ref?: Ref<HostInstance>
+  ref?: LumenViewRef
   title: string
 }
 

@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
+import { readdir, readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import test from "node:test";
 
@@ -12,6 +12,12 @@ const workflowDirectory = resolve(repositoryRoot, ".github", "workflows");
 
 const readWorkflow = (name) =>
   readFile(resolve(workflowDirectory, name), "utf8");
+
+const allWorkflowSources = await Promise.all(
+  (await readdir(workflowDirectory))
+    .filter((name) => name.endsWith(".yml") || name.endsWith(".yaml"))
+    .map(readWorkflow),
+);
 
 const [
   canaryWorkflow,
@@ -27,13 +33,32 @@ const [
   readWorkflow("verify-native-release.yml"),
 ]);
 
-const [nativeSmokeSource, npmProvenanceSource] = await Promise.all([
+const [
+  nativeSmokeSource,
+  npmProvenanceSource,
+  xcodeCloudChecks,
+  xcodeCloudMonitor,
+] = await Promise.all([
   readFile(
     resolve(repositoryRoot, "scripts", "smoke-react-native-native-package.mjs"),
     "utf8",
   ),
   readFile(
     resolve(repositoryRoot, "scripts", "check-npm-release-provenance.mjs"),
+    "utf8",
+  ),
+  readFile(
+    resolve(
+      repositoryRoot,
+      "apps",
+      "playground-apple",
+      "ci_scripts",
+      "run-native-checks.sh",
+    ),
+    "utf8",
+  ),
+  readFile(
+    resolve(repositoryRoot, ".github", "scripts", "monitor-xcode-cloud.mjs"),
     "utf8",
   ),
 ]);
@@ -46,6 +71,17 @@ const versionPackagesSource = await readFile(
 const composeBuildSource = await readFile(
   resolve(repositoryRoot, "packages", "compose", "build.gradle.kts"),
   "utf8",
+);
+
+const applePlaygroundPackage = await readFile(
+  resolve(repositoryRoot, "apps", "playground-apple", "Package.swift"),
+  "utf8",
+);
+
+const frameworkPlaywrightConfigs = await Promise.all(
+  ["playwright.conformance.config.ts", "playwright.frameworks.config.ts"].map(
+    name => readFile(resolve(repositoryRoot, name), "utf8"),
+  ),
 );
 
 const assertSelectsCanary = (input, canary) => {
@@ -115,7 +151,7 @@ const assertOrderedCommands = (workflow, workflowName, commands) => {
   let previousIndex = -1;
 
   for (const command of commands) {
-    const index = workflow.indexOf(command);
+    const index = workflow.indexOf(command, previousIndex + 1);
 
     assert.ok(index >= 0, `${workflowName} must run ${command}`);
 
@@ -171,11 +207,40 @@ test("the web canary executes every v2 release gate", () => {
   ]);
 });
 
-test("the Swift canary allows the native iOS consumer build to finish", () => {
+test("Apple checks run in Xcode Cloud and GitHub uses no macOS runners", () => {
+  for (const workflow of allWorkflowSources) {
+    assert.doesNotMatch(workflow, /runs-on: macos-/u);
+  }
+
+  assert.doesNotMatch(ciWorkflow, /native-apple:/u);
+
+  assert.doesNotMatch(ciWorkflow, /visual-regression:/u);
+
+  assert.doesNotMatch(canaryWorkflow, /^ {2}swift:/mu);
+
   assert.match(
-    canaryWorkflow,
-    /swift:\n[\s\S]*?name: Swift package consumer[\s\S]*?timeout-minutes: 55[\s\S]*?\n {2}compose:/u,
+    applePlaygroundPackage,
+    /\.package\(name: "lumen", path: "\.\.\/\.\."\)/u,
   );
+
+  assertOrderedCommands(xcodeCloudChecks, "Xcode Cloud pull-request checks", [
+    "corepack_command\" enable --install-directory",
+    "export PATH=\"$corepack_bin:$PATH\"",
+    "git fetch --no-tags --depth=1 origin",
+    "pnpm run check:swift-assets",
+    "pnpm run check:swift-version",
+    "pnpm run test:swift-version",
+    "swift test",
+    "pnpm run check:swift-source-compatibility",
+    "pnpm run check:swift-api-baseline",
+    "swift build --package-path apps/playground-apple",
+    "pnpm run check:swift-package-candidate",
+    "pnpm run check:react-native-native-package:ios",
+    "capture-component-screenshots.sh",
+    "pnpm exec playwright install chromium",
+    "pnpm run test:visual",
+    "pnpm run test:framework-visual",
+  ]);
 });
 
 test("pull-request compatibility checks reuse the affected build outputs", () => {
@@ -186,6 +251,22 @@ test("pull-request compatibility checks reuse the affected build outputs", () =>
     "pnpm run check:publish-dry-run",
     "pnpm run check:consumer-packages",
   ]);
+});
+
+test("framework browser checks keep the managed server inside Playwright's process group", () => {
+  for (const config of frameworkPlaywrightConfigs) {
+    assert.ok(
+      config.includes(
+        "node apps/next-smoke/node_modules/next/dist/bin/next start apps/next-smoke",
+      ),
+      "the Next.js server must run directly instead of escaping through a package-manager wrapper",
+    );
+
+    assert.ok(
+      config.includes("gracefulShutdown: { signal: 'SIGTERM', timeout: 5_000 }"),
+      "the framework server must have a bounded graceful shutdown",
+    );
+  }
 });
 
 test("coordinated revision checks select both release decision canaries", () => {
@@ -229,13 +310,13 @@ test("WidgetKit changes select the Swift canary and validate both Swift API base
   );
 
   assert.ok(
-    canaryWorkflow.includes("run: pnpm run check:swift-api-baseline"),
-    "the Swift canary must validate both Swift package products",
+    xcodeCloudChecks.includes("pnpm run check:swift-api-baseline"),
+    "Xcode Cloud must validate both Swift package products",
   );
 
   assert.ok(
-    ciWorkflow.includes("run: pnpm run check:swift-api-baseline"),
-    "pull-request CI must validate both Swift package products",
+    xcodeCloudChecks.includes('swift_compatibility_baseline="v2.1.0"'),
+    "Xcode Cloud must fetch the Swift source-compatibility baseline used by the checker",
   );
 });
 
@@ -249,6 +330,7 @@ test("npm publication validates the contract and current stability ledger", () =
     "node scripts/check-approved-release-revision.mjs",
     "node scripts/check-graduated-release-revision.mjs",
     "node scripts/check-lumen-2-contract.mjs",
+    "pnpm run check:lumen-3-contract -- --require-approved",
     "pnpm run check:web-consumer-evidence",
     "pnpm run check:native-consumer-evidence",
     "pnpm run check:native-stability-soak",
@@ -275,19 +357,60 @@ test("initial npm publication verifies the complete family before tagging", () =
 
   assertOrderedCommands(npmWorkflow, "existing npm release tag", [
     'git ls-remote --exit-code --tags origin "refs/tags/v${VERSION}"',
-    "node scripts/check-coordinated-release-revision.mjs",
-    '--release-ref "v${VERSION}"',
-    "--release-remote origin",
+    'release_commit="$(git rev-list -n 1 "v${VERSION}")"',
     "already exists at the publication commit; skipping",
   ]);
+
+  assertOrderedCommands(npmWorkflow, "recoverable repository tag", [
+    'npm view "@santi020k/lumen@${VERSION}" version',
+    'repository_tag_audit_directory="$(mktemp -d)"',
+    'cd "$repository_tag_audit_directory"',
+    "npm init --yes",
+    'npm install \\',
+    "pnpm run check:npm-release-provenance",
+    '--revision "$GITHUB_SHA"',
+    'git tag -a "v${VERSION}"',
+    'git push origin "v${VERSION}"',
+  ]);
+
+  assertOrderedCommands(npmWorkflow, "Compose release launch", [
+    "name: Create repository version tag",
+    "name: Create and launch Compose release",
+    'COMPOSE_TAG="compose-v${COMPOSE_VERSION}"',
+    'git ls-remote --exit-code --tags origin "refs/tags/${COMPOSE_TAG}"',
+    'git diff --quiet "$COMPOSE_TAG" "$GITHUB_SHA" -- packages/compose',
+    "checking publication status",
+    "gh run list",
+    "A tag pushed with GITHUB_TOKEN does not trigger another workflow run",
+    "gh workflow run publish-compose.yml",
+    '--ref "$COMPOSE_TAG"',
+    "--field publishing-type=AUTOMATIC",
+  ]);
+
+  assert.ok(
+    npmWorkflow.includes("actions: write"),
+    "npm publication must be allowed to dispatch the Compose workflow",
+  );
+
+  assert.doesNotMatch(
+    npmWorkflow,
+    /name: Create (?:repository version tag|and launch Compose release)\n\s+if: steps\.changesets\.outputs\.published/u,
+    "release tag recovery must not depend on Changesets reporting a new publication",
+  );
 });
 
 test("Compose publication validates the contract and current stability ledger", () => {
   assertOrderedCommands(composeWorkflow, "Compose publication", [
     "node scripts/check-graduated-release-revision.mjs",
     "node scripts/check-lumen-2-contract.mjs",
+    "node scripts/check-lumen-3-contract.mjs --require-approved",
     "node scripts/check-native-stability-soak.mjs",
   ]);
+
+  assert.ok(
+    !composeWorkflow.includes("pnpm run"),
+    "Compose publication must not invoke pnpm before installing it",
+  );
 
   assert.ok(
     !composeWorkflow.includes("node scripts/check-native-stable-readiness.mjs"),
@@ -301,7 +424,7 @@ test("initial Compose publication verifies the shared release commit before cred
     "name: Verify coordinated Lumen 2 revision",
     "node scripts/check-coordinated-release-revision.mjs",
     ' --candidate-ref "$GITHUB_SHA"',
-    "name: Verify approved Lumen 2 candidate",
+    "name: Verify approved release candidate",
     "node scripts/check-approved-release-revision.mjs",
     "name: Verify graduated Lumen 2 release",
     "node scripts/check-graduated-release-revision.mjs",
@@ -344,17 +467,13 @@ test("canonical package commands enforce graduation identity before publication"
     "changeset publish",
   ]);
 
-  assertOrderedCommands(
-    versionPackagesSource,
-    "npm version preparation",
-    [
-      "['changeset', 'version']",
-      "['run', 'sync:coordinated-v2-versions']",
-      "['run', 'sync:compose-version']",
-      "['install', '--lockfile-only']",
-      "['run', 'generate:release-manifest']",
-    ],
-  );
+  assertOrderedCommands(versionPackagesSource, "npm version preparation", [
+    "['changeset', 'version']",
+    "['run', 'sync:coordinated-v2-versions']",
+    "['run', 'sync:compose-version']",
+    "['install', '--lockfile-only']",
+    "['run', 'generate:release-manifest']",
+  ]);
 
   assert.equal(
     packageManifest.scripts["version-packages"],
@@ -364,9 +483,7 @@ test("canonical package commands enforce graduation identity before publication"
   assertOrderedCommands(
     packageManifest.scripts["publish-packages"],
     "direct npm publication",
-    [
-      "node scripts/publish-packages.mjs",
-    ],
+    ["node scripts/publish-packages.mjs"],
   );
 });
 
@@ -382,8 +499,8 @@ test("published React Native consumers bind signed npm provenance to the release
   assert.equal(
     [...publishedNativeWorkflow.matchAll(/--revision "\$EXPECTED_REVISION"/gu)]
       .length,
-    2,
-    "Android and iOS consumers must pass the requested revision",
+    1,
+    "the Android consumer must pass the requested revision in GitHub",
   );
 
   assert.ok(
@@ -393,9 +510,25 @@ test("published React Native consumers bind signed npm provenance to the release
 
   assert.match(
     publishedNativeWorkflow,
-    /react-native-ios:[\s\S]*?runs-on: macos-26[\s\S]*?check:react-native-native-release:ios/u,
-    "the published iOS consumer must use the Swift 6.2-or-newer runner required by Expo",
+    /apple-cloud:[\s\S]*?runs-on: ubuntu-latest[\s\S]*?xcode-native-verify-rn-/u,
+    "published Apple verification must launch Xcode Cloud from Linux",
   );
+
+  assert.match(
+    publishedNativeWorkflow,
+    /monitor-apple-cloud:[\s\S]*?XCODE_CLOUD_WORKFLOW_NAME: Published Native Release Checks[\s\S]*?monitor-xcode-cloud\.mjs/u,
+    "published Apple verification must wait for the matching Xcode Cloud build",
+  );
+
+  assert.ok(
+    xcodeCloudMonitor.includes('completionStatus === "SUCCEEDED"'),
+    "the Xcode Cloud monitor must fail closed on unsuccessful builds",
+  );
+
+  assertOrderedCommands(xcodeCloudChecks, "published Xcode Cloud checks", [
+    "check:react-native-native-release:ios",
+    "smoke-swift-package-candidate.mjs",
+  ]);
 
   assert.ok(
     nativeSmokeSource.includes("check:npm-release-provenance"),

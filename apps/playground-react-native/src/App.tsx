@@ -19,7 +19,8 @@ import {
 } from 'react-native'
 import {
   SafeAreaProvider,
-  SafeAreaView
+  SafeAreaView,
+  useSafeAreaInsets
 } from 'react-native-safe-area-context'
 
 import {
@@ -1369,6 +1370,7 @@ const Playground = ({
   onSchemeChange: (scheme: ColorScheme) => void
 }): ReactElement => {
   const theme = useLumenTheme()
+  const sheetInsets = useSafeAreaInsets()
   const initialComponent = getInitialComponentQuery()
   const initialCategory = getWebQueryParameter('category')
   const embedded = isEmbeddedPreview()
@@ -2035,6 +2037,10 @@ const Playground = ({
                 Save settings
               </LumenButton>
             )}
+            avoidKeyboard
+            presentation="adaptive"
+            safeAreaInsets={sheetInsets}
+            scrollable
             description="A native modal surface for focused supplemental work."
             onDismiss={() => {
               setSheetVisible(false)
@@ -2042,6 +2048,8 @@ const Playground = ({
             title="Component settings"
             visible={sheetVisible}
           >
+            <LumenTextField accessibilityLabel="Workspace name" placeholder="Workspace name" />
+            <LumenTextarea label="Workspace notes" onChangeText={setNotes} placeholder="Add notes" value={notes} />
             <LumenToggle
               description="Show experimental examples in this local gallery."
               label="Experimental examples"

@@ -34,13 +34,13 @@ const commit = (directory, message) => {
   return result.stdout.trim();
 };
 
-const writeContract = (directory, contract) =>
+const writeContract = (directory, contract, major = 2) =>
   writeFile(
-    resolve(directory, "registry", "lumen-2-contract.json"),
+    resolve(directory, "registry", `lumen-${major}-contract.json`),
     `${JSON.stringify(contract, null, 2)}\n`,
   );
 
-const createCandidate = async () => {
+const createCandidate = async (major = 2) => {
   const directory = await mkdtemp(resolve(tmpdir(), "lumen-approved-release-"));
 
   await mkdir(resolve(directory, "registry"), { recursive: true });
@@ -68,8 +68,8 @@ const createCandidate = async () => {
     writeContract(directory, {
       schemaVersion: 1,
       status: "draft",
-      targetVersion: "2.0.0",
-    }),
+      targetVersion: `${major}.0.0`,
+    }, major),
     writeFile(resolve(directory, "source.txt"), "reviewed source\n"),
   ]);
 
@@ -78,13 +78,13 @@ const createCandidate = async () => {
     "test: create reviewed release candidate",
   );
 
-  return { directory, reviewedRevision };
+  return { directory, major, reviewedRevision };
 };
 
-const approveCandidate = async (directory, reviewedRevision) => {
+const approveCandidate = async (directory, reviewedRevision, major = 2) => {
   const draft = JSON.parse(
     await readFile(
-      resolve(directory, "registry", "lumen-2-contract.json"),
+      resolve(directory, "registry", `lumen-${major}-contract.json`),
       "utf8",
     ),
   );
@@ -98,18 +98,18 @@ const approveCandidate = async (directory, reviewedRevision) => {
       reviewedRevision,
     },
     status: "approved",
-  });
+  }, major);
 
-  commit(directory, "chore(release): approve Lumen 2 candidate");
+  commit(directory, `chore(release): approve Lumen ${major} candidate`);
 };
 
-const runChecker = (directory, arguments_ = []) =>
+const runChecker = (directory, arguments_ = [], major = 2) =>
   run(
     process.execPath,
     [
       checkerPath,
       "--version",
-      "2.0.0",
+      `${major}.0.0`,
       "--repository",
       directory,
       ...arguments_,
@@ -135,6 +135,22 @@ test("does not require approval ancestry before the initial stable major", async
   }
 });
 
+test("does not re-enforce an initial-major approval after its tag exists", async () => {
+  const { directory } = await createCandidate(3);
+
+  try {
+    assert.equal(run("git", ["tag", "v3.0.0"], directory).status, 0);
+
+    const result = runChecker(directory, [], 3);
+
+    assert.equal(result.status, 0, result.stderr);
+
+    assert.match(result.stdout, /already enforced before v3\.0\.0 was published/);
+  } finally {
+    await rm(directory, { force: true, recursive: true });
+  }
+});
+
 test("accepts a publish commit whose only delta is the approval record", async () => {
   const { directory, reviewedRevision } = await createCandidate();
 
@@ -148,6 +164,25 @@ test("accepts a publish commit whose only delta is the approval record", async (
     assert.match(
       result.stdout,
       /has only the registry\/lumen-2-contract\.json approval delta/,
+    );
+  } finally {
+    await rm(directory, { force: true, recursive: true });
+  }
+});
+
+test("accepts the initial Lumen 3 approval record", async () => {
+  const { directory, reviewedRevision } = await createCandidate(3);
+
+  try {
+    await approveCandidate(directory, reviewedRevision, 3);
+
+    const result = runChecker(directory, [], 3);
+
+    assert.equal(result.status, 0, result.stderr);
+
+    assert.match(
+      result.stdout,
+      /Approved Lumen 3 candidate .*lumen-3-contract\.json approval delta/,
     );
   } finally {
     await rm(directory, { force: true, recursive: true });
@@ -220,6 +255,42 @@ test("rejects source changes after the reviewed candidate", async () => {
     assert.equal(result.status, 1);
 
     assert.match(result.stderr, /Only the contract approval record may change/);
+  } finally {
+    await rm(directory, { force: true, recursive: true });
+  }
+});
+
+test("rejects non-approval contract changes after the reviewed candidate", async () => {
+  const { directory, reviewedRevision } = await createCandidate(3);
+
+  try {
+    await approveCandidate(directory, reviewedRevision, 3);
+
+    const contractPath = resolve(
+      directory,
+      "registry",
+      "lumen-3-contract.json",
+    );
+
+    const approved = JSON.parse(await readFile(contractPath, "utf8"));
+
+    await writeContract(directory, {
+      ...approved,
+      policy: {
+        compatibility: "unreviewed policy change",
+      },
+    }, 3);
+
+    commit(directory, "test: mutate contract after review");
+
+    const result = runChecker(directory, [], 3);
+
+    assert.equal(result.status, 1);
+
+    assert.match(
+      result.stderr,
+      /Only status and approval metadata may change inside the Lumen 3 contract after review/,
+    );
   } finally {
     await rm(directory, { force: true, recursive: true });
   }

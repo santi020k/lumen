@@ -116,10 +116,12 @@ const run = (command, arguments_, cwd = repositoryRoot) => {
     stdio: "pipe",
   });
 
-  if (result.status !== 0) {
-    process.stderr.write(result.stdout);
+  if (result.error) throw result.error;
 
-    process.stderr.write(result.stderr);
+  if (result.status !== 0) {
+    process.stderr.write(result.stdout ?? "");
+
+    process.stderr.write(result.stderr ?? "");
 
     throw new Error(
       `${command} ${arguments_.join(" ")} failed with status ${result.status}`,
