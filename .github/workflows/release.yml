@@ -146,29 +146,51 @@ jobs:
             done
 
       - name: Create repository version tag
-        if: steps.changesets.outputs.published == 'true'
-        env:
-          PUBLISHED_PACKAGES: ${{ steps.changesets.outputs['published-packages'] }}
         run: |
           VERSION=$(node -p "require('./packages/lumen/package.json').version")
 
-          if ! jq -e \
-            --arg version "$VERSION" \
-            '.[] | select(.name == "@santi020k/lumen" and .version == $version)' \
-            <<<"$PUBLISHED_PACKAGES" >/dev/null; then
-            echo "@santi020k/lumen@${VERSION} was not published; skipping repository tag."
+          if git ls-remote --exit-code --tags origin "refs/tags/v${VERSION}" >/dev/null 2>&1; then
+            git fetch --force origin "refs/tags/v${VERSION}:refs/tags/v${VERSION}"
+            release_commit="$(git rev-list -n 1 "v${VERSION}")"
+
+            if [[ "$release_commit" == "$GITHUB_SHA" ]]; then
+              echo "Tag v${VERSION} already exists at the publication commit; skipping."
+            else
+              echo "Tag v${VERSION} belongs to ${release_commit}; no repository release is pending at ${GITHUB_SHA}."
+            fi
+
             exit 0
           fi
 
-          if git ls-remote --exit-code --tags origin "refs/tags/v${VERSION}" >/dev/null 2>&1; then
-            node scripts/check-coordinated-release-revision.mjs \
-              --version "$VERSION" \
-              --candidate-ref HEAD \
-              --release-ref "v${VERSION}" \
-              --release-remote origin
-            echo "Tag v${VERSION} already exists at the publication commit; skipping."
+          if ! registry_version="$(npm view "@santi020k/lumen@${VERSION}" version 2>/dev/null)"; then
+            echo "@santi020k/lumen@${VERSION} is not published; skipping repository tag."
             exit 0
           fi
+
+          if [[ "$registry_version" != "$VERSION" ]]; then
+            echo "@santi020k/lumen expected ${VERSION} but npm returned ${registry_version}." >&2
+            exit 1
+          fi
+
+          repository_tag_audit_directory="$(mktemp -d)"
+          trap 'rm -rf "$repository_tag_audit_directory"' EXIT
+
+          (
+            cd "$repository_tag_audit_directory"
+            npm init --yes >/dev/null
+            npm install \
+              --ignore-scripts \
+              --legacy-peer-deps \
+              --no-audit \
+              --no-fund \
+              -- "@santi020k/lumen@${VERSION}"
+          )
+
+          pnpm run check:npm-release-provenance -- \
+            --package "@santi020k/lumen" \
+            --version "$VERSION" \
+            --revision "$GITHUB_SHA" \
+            --lockfile "$repository_tag_audit_directory/package-lock.json"
 
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -176,18 +198,21 @@ jobs:
           git push origin "v${VERSION}"
 
       - name: Create and launch Compose release
-        if: steps.changesets.outputs.published == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
-          PUBLISHED_PACKAGES: ${{ steps.changesets.outputs['published-packages'] }}
         run: |
           VERSION="$(node -p "require('./packages/lumen/package.json').version")"
 
-          if ! jq -e \
-            --arg version "$VERSION" \
-            '.[] | select(.name == "@santi020k/lumen" and .version == $version)' \
-            <<<"$PUBLISHED_PACKAGES" >/dev/null; then
-            echo "@santi020k/lumen@${VERSION} was not published; skipping Compose release."
+          if ! git ls-remote --exit-code --tags origin "refs/tags/v${VERSION}" >/dev/null 2>&1; then
+            echo "Tag v${VERSION} is not published; skipping Compose release."
+            exit 0
+          fi
+
+          git fetch --force origin "refs/tags/v${VERSION}:refs/tags/v${VERSION}"
+          release_commit="$(git rev-list -n 1 "v${VERSION}")"
+
+          if [[ "$release_commit" != "$GITHUB_SHA" ]]; then
+            echo "Tag v${VERSION} belongs to ${release_commit}; no Compose release is pending at ${GITHUB_SHA}."
             exit 0
           fi
 
@@ -200,12 +225,11 @@ jobs:
 
             if [[ "$existing_commit" != "$GITHUB_SHA" ]]; then
               if git diff --quiet "$COMPOSE_TAG" "$GITHUB_SHA" -- packages/compose; then
-                echo "Tag ${COMPOSE_TAG} already publishes the unchanged Compose source; skipping."
-                exit 0
+                echo "Tag ${COMPOSE_TAG} contains the unchanged Compose source; checking publication status."
+              else
+                echo "Tag ${COMPOSE_TAG} already exists at ${existing_commit}, not ${GITHUB_SHA}." >&2
+                exit 1
               fi
-
-              echo "Tag ${COMPOSE_TAG} already exists at ${existing_commit}, not ${GITHUB_SHA}." >&2
-              exit 1
             fi
           else
             git config user.name "github-actions[bot]"

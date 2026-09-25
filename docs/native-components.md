@@ -154,7 +154,7 @@ mapped Lumen values when the application needs them independently.
 
 ### Cross-platform icon catalog
 
-The native adapters include all 1,777 canonical Lucide interface icons and all 573 namespaced Font
+The native adapters include all 1,860 canonical interface icon names and all 573 namespaced Font
 Awesome Free brand entries used by Lumen on the web. Use a semantic Lumen name when the artwork
 should remain consistent across the product:
 

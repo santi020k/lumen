@@ -145,7 +145,7 @@ const assertOrderedCommands = (workflow, workflowName, commands) => {
   let previousIndex = -1;
 
   for (const command of commands) {
-    const index = workflow.indexOf(command);
+    const index = workflow.indexOf(command, previousIndex + 1);
 
     assert.ok(index >= 0, `${workflowName} must run ${command}`);
 
@@ -329,10 +329,20 @@ test("initial npm publication verifies the complete family before tagging", () =
 
   assertOrderedCommands(npmWorkflow, "existing npm release tag", [
     'git ls-remote --exit-code --tags origin "refs/tags/v${VERSION}"',
-    "node scripts/check-coordinated-release-revision.mjs",
-    '--release-ref "v${VERSION}"',
-    "--release-remote origin",
+    'release_commit="$(git rev-list -n 1 "v${VERSION}")"',
     "already exists at the publication commit; skipping",
+  ]);
+
+  assertOrderedCommands(npmWorkflow, "recoverable repository tag", [
+    'npm view "@santi020k/lumen@${VERSION}" version',
+    'repository_tag_audit_directory="$(mktemp -d)"',
+    'cd "$repository_tag_audit_directory"',
+    "npm init --yes",
+    'npm install \\',
+    "pnpm run check:npm-release-provenance",
+    '--revision "$GITHUB_SHA"',
+    'git tag -a "v${VERSION}"',
+    'git push origin "v${VERSION}"',
   ]);
 
   assertOrderedCommands(npmWorkflow, "Compose release launch", [
@@ -341,6 +351,7 @@ test("initial npm publication verifies the complete family before tagging", () =
     'COMPOSE_TAG="compose-v${COMPOSE_VERSION}"',
     'git ls-remote --exit-code --tags origin "refs/tags/${COMPOSE_TAG}"',
     'git diff --quiet "$COMPOSE_TAG" "$GITHUB_SHA" -- packages/compose',
+    "checking publication status",
     "gh run list",
     "gh workflow run publish-compose.yml",
     '--ref "$COMPOSE_TAG"',
@@ -350,6 +361,12 @@ test("initial npm publication verifies the complete family before tagging", () =
   assert.ok(
     npmWorkflow.includes("actions: write"),
     "npm publication must be allowed to dispatch the Compose workflow",
+  );
+
+  assert.doesNotMatch(
+    npmWorkflow,
+    /name: Create (?:repository version tag|and launch Compose release)\n\s+if: steps\.changesets\.outputs\.published/u,
+    "release tag recovery must not depend on Changesets reporting a new publication",
   );
 });
 

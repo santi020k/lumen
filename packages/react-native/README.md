@@ -247,7 +247,7 @@ values. Components use native accessibility roles, states, touch targets, and re
 on the DOM or the Lumen web runtime. `LumenIcon` and `LumenIconButton` accept every canonical Lucide
 name, such as `search`, `settings`, and `circle-alert`, plus namespaced Font Awesome Free brands such
 as `brand:github`. These render the same Lumen-managed geometry as the SwiftUI, Compose, and web
-adapters. The exported `lumenIconNames` array contains the complete 2,350-entry native catalog.
+adapters. The exported `lumenIconNames` array contains the complete 2,433-entry native catalog.
 Applications can still pass any graphic component with `color`, `size`, and `strokeWidth` props
 through `icon`; Lucide React Native components work directly. Standalone icons are decorative unless
 given a label, while every `LumenIconButton` requires an accessible label. See
