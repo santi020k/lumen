@@ -260,6 +260,42 @@ test("rejects source changes after the reviewed candidate", async () => {
   }
 });
 
+test("rejects non-approval contract changes after the reviewed candidate", async () => {
+  const { directory, reviewedRevision } = await createCandidate(3);
+
+  try {
+    await approveCandidate(directory, reviewedRevision, 3);
+
+    const contractPath = resolve(
+      directory,
+      "registry",
+      "lumen-3-contract.json",
+    );
+
+    const approved = JSON.parse(await readFile(contractPath, "utf8"));
+
+    await writeContract(directory, {
+      ...approved,
+      policy: {
+        compatibility: "unreviewed policy change",
+      },
+    }, 3);
+
+    commit(directory, "test: mutate contract after review");
+
+    const result = runChecker(directory, [], 3);
+
+    assert.equal(result.status, 1);
+
+    assert.match(
+      result.stderr,
+      /Only status and approval metadata may change inside the Lumen 3 contract after review/,
+    );
+  } finally {
+    await rm(directory, { force: true, recursive: true });
+  }
+});
+
 test("rejects an approved revision outside the publication ancestry", async () => {
   const { directory, reviewedRevision } = await createCandidate();
 

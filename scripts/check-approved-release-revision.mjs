@@ -163,6 +163,37 @@ assert.deepEqual(
   `Only the contract approval record may change after the reviewed ${releaseLabel} candidate revision`,
 );
 
+const reviewedContract = JSON.parse(
+  runGit(
+    ["show", `${reviewedRevision}:${contractRelativePath}`],
+    `Could not read the reviewed ${releaseLabel} contract`,
+  ),
+);
+
+assert.equal(
+  reviewedContract.status,
+  "draft",
+  `The reviewed ${releaseLabel} candidate contract must be draft`,
+);
+
+assert.equal(
+  reviewedContract.approval,
+  undefined,
+  `The reviewed ${releaseLabel} candidate contract must not contain approval metadata`,
+);
+
+const approvalNeutralContract = structuredClone(contract);
+
+approvalNeutralContract.status = "draft";
+
+delete approvalNeutralContract.approval;
+
+assert.deepEqual(
+  approvalNeutralContract,
+  reviewedContract,
+  `Only status and approval metadata may change inside the ${releaseLabel} contract after review`,
+);
+
 process.stdout.write(
   `Approved ${releaseLabel} candidate ${reviewedRevision} has only the ${contractRelativePath} approval delta.\n`,
 );
