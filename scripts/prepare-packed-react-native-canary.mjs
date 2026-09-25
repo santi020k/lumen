@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict'
 import { spawnSync } from 'node:child_process'
-import { mkdir, mkdtemp, readdir, rm } from 'node:fs/promises'
+import { cp, mkdir, mkdtemp, readdir, readFile, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
-import { join, resolve } from 'node:path'
+import { dirname, join, resolve } from 'node:path'
 
 const repositoryRoot = resolve(import.meta.dirname, '..')
 const playgroundDirectory = join(repositoryRoot, 'apps', 'playground-react-native')
@@ -64,22 +64,50 @@ try {
     )
   }
 
-  run(
-    'pnpm',
-    [
-      'install',
-      '--prod',
-      '--ignore-scripts',
-      '--lockfile=false',
-      '--ignore-workspace',
-    ],
-    join(
-      playgroundDirectory,
-      'node_modules',
-      '@santi020k',
-      'lumen-core'
-    )
+  const packedCoreDirectory = join(
+    playgroundDirectory,
+    'node_modules',
+    '@santi020k',
+    'lumen-core'
   )
+
+  const packedCoreManifest = JSON.parse(
+    await readFile(join(packedCoreDirectory, 'package.json'), 'utf8')
+  )
+
+  assert.equal(
+    typeof packedCoreManifest.dependencies,
+    'object',
+    'Packed Core must declare its runtime dependencies'
+  )
+
+  for (const dependencyName of Object.keys(packedCoreManifest.dependencies)) {
+    assert.match(
+      dependencyName,
+      /^(?:@[^/]+\/)?[^/]+$/u,
+      `Packed Core contains an invalid dependency name: ${dependencyName}`
+    )
+
+    const dependencySegments = dependencyName.split('/')
+
+    const source = join(
+      repositoryRoot,
+      'packages',
+      'core',
+      'node_modules',
+      ...dependencySegments
+    )
+
+    const destination = join(
+      packedCoreDirectory,
+      'node_modules',
+      ...dependencySegments
+    )
+
+    await mkdir(dirname(destination), { recursive: true })
+
+    await cp(source, destination, { dereference: true, recursive: true })
+  }
 } finally {
   await rm(temporaryDirectory, { force: true, recursive: true })
 }

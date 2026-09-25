@@ -19,9 +19,14 @@ const [ci, canary, release, docsManifestSource, versionPackages] = await Promise
 test('CI delegates path decisions and keeps package-family gates independent', () => {
   assert.match(ci, /node scripts\/classify-workflow-paths\.mjs ci/u)
 
+  const releaseDetection = /IS_RELEASE_PR: >-\n([\s\S]*?)\n\s+SKIP_CHANGELOG: >-/u.exec(ci)
+
+  assert.ok(releaseDetection, 'CI must define release pull request detection')
+
   assert.match(
-    ci,
-    /startsWith\(github\.head_ref, 'changeset-release\/'\)[\s\S]*?startsWith\(github\.head_ref, 'release\/'\)/u
+    releaseDetection[1],
+    /startsWith\(github\.head_ref, 'changeset-release\/'\)[\s\S]*?startsWith\(github\.head_ref, 'release\/'\)/u,
+    'CI must classify semantic release branches as release pull requests'
   )
 
   assert.match(ci, /needs\.classify\.outputs\.bundle-size/u)
@@ -45,10 +50,13 @@ test('CI delegates path decisions and keeps package-family gates independent', (
     /if \[\[ "\$\{\{ needs\.classify\.outputs\.compatibility \}\}" == "true" \]\]; then\n[\s\S]*?pnpm run build\n/u
   )
 
-  assert.match(
-    ci,
-    /needs\.classify\.outputs\.release-pr != 'true'[\s\S]*?pnpm changeset status --since=origin\/main/u
-  )
+  const changesetGate = /- name: Require a changeset\n([\s\S]*?)\n\s+- name: Run CI checks/u.exec(ci)
+
+  assert.ok(changesetGate, 'CI must define the changeset gate')
+
+  assert.match(changesetGate[1], /needs\.classify\.outputs\.release-pr != 'true'/u)
+
+  assert.match(changesetGate[1], /pnpm changeset status --since=origin\/main/u)
 })
 
 test('release canaries keep manual full-matrix coverage and scope pull requests', () => {
