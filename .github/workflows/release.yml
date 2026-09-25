@@ -21,6 +21,7 @@ jobs:
     timeout-minutes: 20
     environment: npm
     permissions:
+      actions: write
       contents: write
       id-token: write
       pull-requests: write
@@ -173,3 +174,60 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git tag -a "v${VERSION}" -m "Release v${VERSION}"
           git push origin "v${VERSION}"
+
+      - name: Create and launch Compose release
+        if: steps.changesets.outputs.published == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PUBLISHED_PACKAGES: ${{ steps.changesets.outputs['published-packages'] }}
+        run: |
+          VERSION="$(node -p "require('./packages/lumen/package.json').version")"
+
+          if ! jq -e \
+            --arg version "$VERSION" \
+            '.[] | select(.name == "@santi020k/lumen" and .version == $version)' \
+            <<<"$PUBLISHED_PACKAGES" >/dev/null; then
+            echo "@santi020k/lumen@${VERSION} was not published; skipping Compose release."
+            exit 0
+          fi
+
+          COMPOSE_VERSION="$(sed -n 's/^lumenComposeVersion=//p' packages/compose/gradle.properties)"
+          COMPOSE_TAG="compose-v${COMPOSE_VERSION}"
+
+          if git ls-remote --exit-code --tags origin "refs/tags/${COMPOSE_TAG}" >/dev/null 2>&1; then
+            git fetch --force origin "refs/tags/${COMPOSE_TAG}:refs/tags/${COMPOSE_TAG}"
+            existing_commit="$(git rev-list -n 1 "$COMPOSE_TAG")"
+
+            if [[ "$existing_commit" != "$GITHUB_SHA" ]]; then
+              if git diff --quiet "$COMPOSE_TAG" "$GITHUB_SHA" -- packages/compose; then
+                echo "Tag ${COMPOSE_TAG} already publishes the unchanged Compose source; skipping."
+                exit 0
+              fi
+
+              echo "Tag ${COMPOSE_TAG} already exists at ${existing_commit}, not ${GITHUB_SHA}." >&2
+              exit 1
+            fi
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git tag -a "$COMPOSE_TAG" -m "Release ${COMPOSE_TAG}"
+            git push origin "$COMPOSE_TAG"
+          fi
+
+          active_or_successful_runs="$(
+            gh run list \
+              --workflow publish-compose.yml \
+              --branch "$COMPOSE_TAG" \
+              --limit 20 \
+              --json status,conclusion \
+              --jq '[.[] | select(.status != "completed" or .conclusion == "success")] | length'
+          )"
+
+          if [[ "$active_or_successful_runs" != "0" ]]; then
+            echo "Compose publication already active or successful for ${COMPOSE_TAG}; skipping dispatch."
+            exit 0
+          fi
+
+          gh workflow run publish-compose.yml \
+            --ref "$COMPOSE_TAG" \
+            --field publishing-type=AUTOMATIC

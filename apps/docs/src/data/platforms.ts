@@ -138,13 +138,13 @@ export const platformGuides: PlatformGuide[] = [
   {
     codeExamples: [
       {
-        code: 'pnpm add @santi020k/lumen-react-native react-native-svg @react-native-community/datetimepicker',
+        code: 'pnpm add @santi020k/lumen-react-native react-native-svg',
         label: 'pnpm',
         language: 'bash',
         value: 'pnpm'
       },
       {
-        code: 'npm install @santi020k/lumen-react-native react-native-svg @react-native-community/datetimepicker',
+        code: 'npm install @santi020k/lumen-react-native react-native-svg',
         label: 'npm',
         language: 'bash',
         value: 'npm'
@@ -196,7 +196,7 @@ npx react-native start`,
     href: '/docs/react-native',
     id: 'react-native',
     installNote:
-      'Install Lumen with its required react-native-svg and datetime-picker peers, then mount one LumenProvider near the application root. The deprecated root date exports keep the datetime picker required for the pre-v2 stability releases; Lumen 2 makes it optional for consumers that use no /datetime imports.',
+      'Install Lumen with its required react-native-svg peer, then mount one LumenProvider near the application root. Add the optional datetime picker only when importing from the /datetime subpath.',
     label: 'React Native',
     packageName: '@santi020k/lumen-react-native',
     playgroundCommands: [

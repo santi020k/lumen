@@ -334,6 +334,23 @@ test("initial npm publication verifies the complete family before tagging", () =
     "--release-remote origin",
     "already exists at the publication commit; skipping",
   ]);
+
+  assertOrderedCommands(npmWorkflow, "Compose release launch", [
+    "name: Create repository version tag",
+    "name: Create and launch Compose release",
+    'COMPOSE_TAG="compose-v${COMPOSE_VERSION}"',
+    'git ls-remote --exit-code --tags origin "refs/tags/${COMPOSE_TAG}"',
+    'git diff --quiet "$COMPOSE_TAG" "$GITHUB_SHA" -- packages/compose',
+    "gh run list",
+    "gh workflow run publish-compose.yml",
+    '--ref "$COMPOSE_TAG"',
+    "--field publishing-type=AUTOMATIC",
+  ]);
+
+  assert.ok(
+    npmWorkflow.includes("actions: write"),
+    "npm publication must be allowed to dispatch the Compose workflow",
+  );
 });
 
 test("Compose publication validates the contract and current stability ledger", () => {

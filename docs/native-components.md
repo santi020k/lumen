@@ -16,7 +16,7 @@ considered supported.
 Install the package and mount one provider near the application root:
 
 ```bash
-pnpm add @santi020k/lumen-react-native react-native-svg @react-native-community/datetimepicker
+pnpm add @santi020k/lumen-react-native react-native-svg
 ```
 
 ```tsx
@@ -27,9 +27,8 @@ export function App() {
 }
 ```
 
-The pre-v2 stability releases keep the picker peer required because they retain deprecated root date
-exports. Import date components from their dedicated entrypoint; in Lumen 2, consumers that do not
-use this entrypoint can omit the picker:
+Import date components from their dedicated entrypoint and add the optional picker peer only when
+the application uses that entrypoint:
 
 ```bash
 pnpm add @react-native-community/datetimepicker

@@ -31,18 +31,19 @@ Cards accept semantic `padding` and `radius` roles while preserving the extra-la
 Status bars use a distinct decorative icon for every tone and accept `iconName` when a product needs
 a more specific symbol, so visual status is not conveyed by color alone.
 
-Install the package and its native peers in an existing Expo or React Native application. The
-datetime picker remains required throughout the pre-v2 stability releases because the deprecated
-root date exports still load it:
+Install the package and its required SVG peer in an existing Expo or React Native application:
 
 ```bash
-pnpm add @santi020k/lumen-react-native react-native-svg @react-native-community/datetimepicker
-# or: npm install @santi020k/lumen-react-native react-native-svg @react-native-community/datetimepicker
+pnpm add @santi020k/lumen-react-native react-native-svg
+# or: npm install @santi020k/lumen-react-native react-native-svg
 ```
 
-New code should import date fields from `@santi020k/lumen-react-native/datetime`. The deprecated
-root date exports remain available only for 1.x compatibility; Lumen 2 removes them and makes the
-datetime picker optional for consumers that do not use the subpath.
+Date fields live in `@santi020k/lumen-react-native/datetime`. Add the optional picker peer only when
+the application uses that subpath:
+
+```bash
+pnpm add @react-native-community/datetimepicker
+```
 
 React 19.2 and React Native 0.86.2 or newer are application-provided peer dependencies. Mount one
 `LumenProvider` near the application root; no stylesheet, safe-area package, or web runtime is
