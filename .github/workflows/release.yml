@@ -200,10 +200,16 @@ jobs:
             git push origin "$RELEASE_TAG"
           fi
 
+          release_type_arguments=()
+          if [[ "$VERSION" == *-* ]]; then
+            release_type_arguments+=(--prerelease)
+          fi
+
           gh release create "$RELEASE_TAG" \
             --verify-tag \
             --title "Lumen ${VERSION}" \
-            --generate-notes
+            --generate-notes \
+            "${release_type_arguments[@]}"
 
       - name: Create and launch Compose release
         env:

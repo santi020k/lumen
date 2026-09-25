@@ -444,6 +444,8 @@ test("initial npm publication verifies the complete family before tagging", () =
     '--revision "$release_commit"',
     'git tag -a "$RELEASE_TAG"',
     'git push origin "$RELEASE_TAG"',
+    'if [[ "$VERSION" == *-* ]]',
+    "release_type_arguments+=(--prerelease)",
     'gh release create "$RELEASE_TAG"',
     "--verify-tag",
     "--generate-notes",
