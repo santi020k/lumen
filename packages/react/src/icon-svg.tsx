@@ -14,7 +14,7 @@ const reactSvgAttributeNames: Record<string, string> = {
   tabindex: 'tabIndex'
 }
 
-const toReactSvgAttributes = (attributes: Record<string, string>) => Object.fromEntries(
+const toReactSvgAttributes = (attributes: Readonly<Record<string, number | string>>) => Object.fromEntries(
   Object.entries(attributes).map(([name, value]) => [
     reactSvgAttributeNames[name] ?? name,
     value
@@ -32,8 +32,8 @@ const renderIconNode = (
 )
 
 export const renderIconSvg = (icon: LumenIconData, className: string) => {
-  const width = 'size' in icon ? icon.size : icon.width
-  const height = 'size' in icon ? icon.size : icon.height
+  const width = ('size' in icon ? icon.size : icon.width) ?? 24
+  const height = ('size' in icon ? icon.size : icon.height) ?? 24
 
   return (
     <svg

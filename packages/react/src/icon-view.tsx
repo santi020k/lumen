@@ -70,7 +70,9 @@ export const IconView = ({
       role={accessibility.role}
       {...props}
     >
-      {icon ? renderIconSvg(icon, `ui-icon__svg ${icon.source ?? 'lucide'}-${icon.name}`) : children}
+      {icon ?
+        renderIconSvg(icon, `ui-icon__svg ${icon.source ?? 'lucide'}-${icon.name ?? 'icon'}`) :
+        children}
     </span>
   )
 }

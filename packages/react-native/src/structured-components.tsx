@@ -1,6 +1,5 @@
-import { type ReactElement, type ReactNode, type Ref } from 'react'
+import { type ReactElement, type ReactNode } from 'react'
 import {
-  type HostInstance,
   Pressable,
   Text,
   type TextStyle,
@@ -10,6 +9,7 @@ import {
 
 import { LumenIllustration } from './content-components.js'
 import { type LumenIconName } from './icons.generated.js'
+import type { LumenViewRef } from './native-ref-types.js'
 import { LumenBadge, LumenIcon } from './primitives.js'
 import {
   type LumenBannerVariant,
@@ -29,7 +29,7 @@ export interface LumenEmptyStateProps extends ViewProps {
   children?: ReactNode
   description?: string
   graphic?: ReactNode
-  ref?: Ref<HostInstance>
+  ref?: LumenViewRef
   title: string
 }
 
@@ -121,7 +121,7 @@ export interface LumenErrorStateProps extends ViewProps {
   layout?: LumenErrorStateLayout
   reference?: string
   referenceLabel?: string
-  ref?: Ref<HostInstance>
+  ref?: LumenViewRef
   title: string
 }
 
@@ -251,7 +251,7 @@ export const LumenErrorState = ({
 export interface LumenListRowProps extends ViewProps {
   children: ReactNode
   leading?: ReactNode
-  ref?: Ref<HostInstance>
+  ref?: LumenViewRef
   trailing?: ReactNode
 }
 
@@ -294,7 +294,7 @@ export interface LumenBannerProps extends ViewProps {
   dismissLabel?: string
   graphic?: ReactNode
   onDismiss?: () => void
-  ref?: Ref<HostInstance>
+  ref?: LumenViewRef
   title: string
   variant?: LumenBannerVariant
 }
@@ -400,7 +400,7 @@ export interface LumenStatProps extends ViewProps {
   detail?: string
   graphic?: ReactNode
   label: string
-  ref?: Ref<HostInstance>
+  ref?: LumenViewRef
   tone?: LumenMetricTone
   value: string
 }
@@ -475,7 +475,7 @@ export const LumenStat = ({
 export interface LumenSectionHeaderProps extends ViewProps {
   actions?: ReactNode
   count?: string
-  ref?: Ref<HostInstance>
+  ref?: LumenViewRef
   subtitle?: string
   title: string
 }
@@ -547,7 +547,7 @@ export const LumenSectionHeader = ({
 export interface LumenStatusBarProps extends ViewProps {
   iconName?: LumenIconName
   message: string
-  ref?: Ref<HostInstance>
+  ref?: LumenViewRef
   tone?: LumenMetricTone
   trailing?: ReactNode
 }

@@ -232,7 +232,10 @@ describe('Lumen React Native component behavior', () => {
     const sheetPanel = root.container.queryAll(instance => {
       const style = readProp(instance, 'style')
 
-      return typeof style === 'object' && style !== null && style.paddingBottom === 34
+      return typeof style === 'object' &&
+        style !== null &&
+        'paddingBottom' in style &&
+        style.paddingBottom === 34
     })[0]
 
     if (!keyboardSurface || !sheetPanel) throw new Error('Expected the sheet surfaces.')

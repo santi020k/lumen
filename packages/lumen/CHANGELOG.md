@@ -1,5 +1,23 @@
 # @santi020k/lumen
 
+## 2.2.0
+
+### Minor Changes
+
+- Add tree-shakeable interface icon definitions and a registry-free React icon entrypoint while preserving named icons. Add opt-in responsive record layouts to Table across web adapters. Extend native sheets with keyboard avoidance, safe-area inputs, scrolling bodies, adaptive presentation, and controlled dismissal. Document consumer recipes for editor layouts, whole-unit amount entry, and asynchronous recovery.
+
+  Name sheet dialogs and remove decorative backdrop and web switch targets from keyboard traversal. Preserve the toggle's single labeled action and improve its supporting-text contrast.
+
+  Improve supporting-text and warning-badge contrast in the shared web styles and mobile record labels.
+
+  Keep icon rendering resilient to optional Lucide metadata and preserve native ref and keyboard
+  contracts with the React Native version required by Expo SDK 57.
+
+### Patch Changes
+
+- Updated dependencies [`484880b`]:
+  - @santi020k/lumen-core@2.2.0
+
 ## 2.1.0
 
 ### Minor Changes

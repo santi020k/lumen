@@ -141,15 +141,14 @@ const svgAttribution = source => source === 'font-awesome-free-brands' ?
   '<!-- Font Awesome Free Brands: CC BY 4.0; converted by Lumen. -->' :
   '<!-- Lucide Icons: ISC License; converted by Lumen. -->'
 
-// Xcode's CoreSVG parser rejects this icon's compact, spec-valid arc flags.
-// Keep the workaround scoped so unrelated generated assets do not churn.
-const coreSvgPathWorkarounds = new Set(['barrel'])
-
-const renderSvgNode = ([tagName, rawAttributes], normalizePathData) => {
+// Xcode's CoreSVG parser rejects compact, spec-valid arc flags. The normalizer
+// preserves ordinary path data exactly, so apply it to every generated path
+// rather than maintaining an icon-name allowlist as upstream artwork evolves.
+const renderSvgNode = ([tagName, rawAttributes]) => {
   const attributes = Object.entries(rawAttributes)
     .filter(([name]) => name !== 'key')
     .map(([name, value]) => {
-      const normalizedValue = name === 'd' && normalizePathData ?
+      const normalizedValue = name === 'd' ?
         normalizeCoreSvgPathData(String(value)) :
         String(value)
 
@@ -176,12 +175,11 @@ const renderSvg = icon => {
   const viewport = iconViewport(icon)
   const fill = icon.style === 'fill' ? '#000000' : 'none'
   const stroke = icon.style === 'stroke' ? '#000000' : 'none'
-  const normalizePathData = coreSvgPathWorkarounds.has(icon.publicName)
 
   return `<?xml version="1.0" encoding="UTF-8"?>
 ${svgAttribution(icon.source)}
 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="${viewport.minX} ${viewport.minY} ${viewport.dimension} ${viewport.dimension}" color="#000000" fill="${fill}" stroke="${stroke}" stroke-width="${icon.style === 'stroke' ? '2' : '0'}" stroke-linecap="round" stroke-linejoin="round">
-${icon.node.map(node => renderSvgNode(node, normalizePathData)).join('\n')}
+${icon.node.map(renderSvgNode).join('\n')}
 </svg>
 `
 }

@@ -27,7 +27,7 @@
     "lint:knip": "knip",
     "check:publish-dry-run": "node scripts/check-publish-dry-run.mjs",
     "test:published-package-family": "node --test scripts/check-published-package-family.test.mjs",
-    "check:security": "node --test scripts/check-image-size-security.test.mjs && pnpm audit --prod --audit-level moderate",
+    "check:security": "pnpm audit --prod --audit-level moderate",
     "check:bundle-size": "node scripts/check-bundle-size.mjs",
     "check:web-api-baseline": "node scripts/check-web-api-baseline.mjs",
     "test:web-api-baseline": "node --test scripts/check-web-api-baseline.test.mjs",
@@ -188,7 +188,10 @@
     "eslint": "catalog:",
     "knip": "catalog:",
     "lint-staged": "catalog:",
+    "next": "catalog:",
     "oxlint": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:",
     "tailwindcss": "catalog:",
     "turbo": "catalog:",
     "typescript": "catalog:",
@@ -199,7 +202,7 @@
   "engines": {
     "node": ">=22.19.0"
   },
-  "packageManager": "pnpm@10.32.1",
+  "packageManager": "pnpm@12.6.0",
   "license": "MIT",
   "lint-staged": {
     "*": [

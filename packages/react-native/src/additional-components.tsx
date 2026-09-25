@@ -1,16 +1,13 @@
 import {
   type ReactElement,
   type ReactNode,
-  type Ref,
   useId
 } from 'react'
 import {
-  type HostInstance,
   Pressable,
   type PressableProps,
   Text,
   TextInput,
-  type TextInputInstance,
   type TextInputProps,
   type TextStyle,
   View,
@@ -18,6 +15,7 @@ import {
 } from 'react-native'
 
 import { LumenFieldContext } from './field-context.js'
+import type { LumenTextInputRef, LumenViewRef } from './native-ref-types.js'
 import {
   resolveLumenAriaInvalid,
   resolveLumenButtonOpacity,
@@ -51,7 +49,7 @@ export interface LumenToastProps extends ViewProps {
   description?: string
   dismissLabel?: string
   onDismiss?: () => void
-  ref?: Ref<HostInstance>
+  ref?: LumenViewRef
   title: string
   variant?: LumenAlertVariant
 }
@@ -137,7 +135,7 @@ export interface LumenTextareaProps extends Omit<
   errorMessage?: string
   label: string
   onChangeText: (value: string) => void
-  ref?: Ref<TextInputInstance>
+  ref?: LumenTextInputRef
   value: string
 }
 
@@ -225,7 +223,7 @@ export const LumenTextarea = ({
 export interface LumenChipProps extends Omit<PressableProps, 'children'> {
   label: string
   onRemove?: () => void
-  ref?: Ref<HostInstance>
+  ref?: LumenViewRef
   removeLabel?: string
   selected?: boolean
 }
@@ -242,6 +240,7 @@ export const LumenChip = ({
   ...props
 }: LumenChipProps): ReactElement => {
   const theme = useLumenTheme()
+  const isDisabled = disabled === true
 
   const content = (
     <>
@@ -259,8 +258,8 @@ export const LumenChip = ({
           <Pressable
             accessibilityLabel={removeLabel}
             accessibilityRole="button"
-            accessibilityState={{ disabled }}
-            disabled={disabled}
+            accessibilityState={{ disabled: isDisabled }}
+            disabled={isDisabled}
             hitSlop={6}
             onPress={event => {
               event.stopPropagation()
@@ -291,7 +290,7 @@ export const LumenChip = ({
     flexDirection: 'row' as const,
     gap: theme.spacing.xs,
     minHeight: 32,
-    opacity: disabled ? 0.52 : 1,
+    opacity: isDisabled ? 0.52 : 1,
     paddingHorizontal: theme.spacing.md
   }
 
@@ -304,12 +303,12 @@ export const LumenChip = ({
       ref={ref}
       {...props}
       accessibilityRole="button"
-      accessibilityState={{ ...props.accessibilityState, disabled, selected }}
-      disabled={disabled}
+      accessibilityState={{ ...props.accessibilityState, disabled: isDisabled, selected }}
+      disabled={isDisabled}
       onPress={onPress}
       style={state => [
         baseStyle,
-        { opacity: resolveLumenButtonOpacity(disabled, state.pressed) },
+        { opacity: resolveLumenButtonOpacity(isDisabled, state.pressed) },
         typeof style === 'function' ? style(state) : style
       ]}
     >
@@ -323,7 +322,7 @@ export interface LumenFieldGroupProps extends ViewProps {
   description?: string
   errorMessage?: string
   label: string
-  ref?: Ref<HostInstance>
+  ref?: LumenViewRef
   required?: boolean
 }
 
@@ -396,7 +395,7 @@ export type LumenButtonGroupOrientation = 'horizontal' | 'vertical'
 export interface LumenButtonGroupProps extends ViewProps {
   children: ReactNode
   orientation?: LumenButtonGroupOrientation
-  ref?: Ref<HostInstance>
+  ref?: LumenViewRef
 }
 
 export const LumenButtonGroup = ({

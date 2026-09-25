@@ -1,12 +1,16 @@
 import {
   icons as lucideIcons,
-  type LucideIconData,
-  type LucideIconNode
+  type LucideIconData
 } from '@lucide/icons'
 
-export type LumenIconNode = LucideIconNode
+export type LumenIconNode = readonly [
+  tagName: string,
+  attributes: Readonly<Record<string, number | string>>,
+  children?: readonly LumenIconNode[]
+]
 export type LumenIconStyle = 'fill' | 'stroke'
-export type LumenIconData = LucideIconData & {
+export type LumenIconData = Omit<LucideIconData, 'node'> & {
+  node: readonly LumenIconNode[]
   source?: string
   style?: LumenIconStyle
 }
@@ -26,7 +30,11 @@ const createLumenIconEntries = () => {
   const entries: [string, LumenIconData][] = []
 
   for (const [exportName, icon] of lucideIconEntries) {
-    entries.push([toKebabCase(exportName), icon], [icon.name, icon])
+    entries.push([toKebabCase(exportName), icon])
+
+    if (icon.name) {
+      entries.push([icon.name, icon])
+    }
 
     for (const alias of icon.aliases ?? []) {
       entries.push([toKebabCase(alias), icon])
@@ -85,8 +93,8 @@ const escapeHtmlAttribute = (value: string) => value
   .replaceAll('<', '&lt;')
   .replaceAll('>', '&gt;')
 
-const renderAttributes = (attributes: Record<string, string>) => Object.entries(attributes)
-  .map(([name, value]) => `${name}="${escapeHtmlAttribute(value)}"`)
+const renderAttributes = (attributes: Readonly<Record<string, number | string>>) => Object.entries(attributes)
+  .map(([name, value]) => `${name}="${escapeHtmlAttribute(String(value))}"`)
   .join(' ')
 
 const renderIconNode = ([
@@ -137,6 +145,23 @@ export interface LumenIconSvgOptions {
   className?: string
 }
 
+const resolveLumenIconDimensions = (icon: LumenIconData) => {
+  if ('size' in icon) {
+    const size = icon.size ?? 24
+
+    return { height: size, width: size }
+  }
+
+  return {
+    height: icon.height ?? 24,
+    width: icon.width ?? 24
+  }
+}
+
+const resolveLumenIconClassName = (icon: LumenIconData, requestedName: string) => (
+  icon.name ?? parseIconName(requestedName).iconName
+)
+
 export const renderLumenIconSvg = (
   name: string,
   options: LumenIconSvgOptions = {}
@@ -147,12 +172,12 @@ export const renderLumenIconSvg = (
 
   const iconStyle = icon.style ?? 'stroke'
   const source = icon.source ?? 'lucide'
-  const width = 'size' in icon ? icon.size : icon.width
-  const height = 'size' in icon ? icon.size : icon.height
+  const iconName = resolveLumenIconClassName(icon, name)
+  const { height, width } = resolveLumenIconDimensions(icon)
 
   const className = [
     'ui-icon__svg',
-    `${source}-${icon.name}`,
+    `${source}-${iconName}`,
     options.className
   ]
     .filter(Boolean)

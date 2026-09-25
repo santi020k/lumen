@@ -1,12 +1,10 @@
 import {
   type ReactElement,
   type ReactNode,
-  type Ref,
   useState
 } from 'react'
 import {
   type AccessibilityActionEvent,
-  type HostInstance,
   type LayoutChangeEvent,
   type NativeSyntheticEvent,
   type NativeTouchEvent,
@@ -18,6 +16,7 @@ import {
 } from 'react-native'
 import { Circle, Svg } from 'react-native-svg'
 
+import type { LumenViewRef } from './native-ref-types.js'
 import { LumenIcon } from './primitives.js'
 import { resolveLumenProgressValue } from './shared-recipes.js'
 import {
@@ -42,7 +41,7 @@ export interface LumenPickerProps<Value extends number | string> extends Omit<Vi
   label: string
   onValueChange: (value: Value) => void
   options: readonly LumenPickerOption<Value>[]
-  ref?: Ref<HostInstance>
+  ref?: LumenViewRef
   value: Value
 }
 
@@ -175,7 +174,7 @@ export interface LumenSliderProps extends Omit<ViewProps, 'children'> {
   max?: number
   min?: number
   onValueChange: (value: number) => void
-  ref?: Ref<HostInstance>
+  ref?: LumenViewRef
   step?: number
   value: number
   valueLabel?: string
@@ -299,7 +298,7 @@ export interface LumenGaugeProps extends Omit<ViewProps, 'children'> {
   center?: ReactNode
   label: string
   max?: number
-  ref?: Ref<HostInstance>
+  ref?: LumenViewRef
   tone?: LumenMetricTone
   value: number
   valueLabel: string

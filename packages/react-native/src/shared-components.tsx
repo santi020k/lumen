@@ -2,12 +2,10 @@ import {
   createContext,
   type ReactElement,
   type ReactNode,
-  type Ref,
   use
 } from 'react'
 import {
   type ColorValue,
-  type HostInstance,
   Image,
   type ImageSourcePropType,
   Pressable,
@@ -19,6 +17,7 @@ import {
   type ViewProps
 } from 'react-native'
 
+import type { LumenTextRef, LumenViewRef } from './native-ref-types.js'
 import {
   type LumenSurfacePadding,
   type LumenSurfaceRadius
@@ -44,7 +43,7 @@ export interface LumenCardProps extends Omit<PressableProps, 'children'> {
   children: ReactNode
   padding?: LumenSurfacePadding
   radius?: LumenSurfaceRadius
-  ref?: Ref<HostInstance>
+  ref?: LumenViewRef
   variant?: LumenCardVariant
 }
 
@@ -63,6 +62,7 @@ export const LumenCard = ({
   ...props
 }: LumenCardProps): ReactElement => {
   const theme = useLumenTheme()
+  const isDisabled = disabled === true
   const interactive = Boolean(onPress ?? onLongPress)
   const colors = resolveLumenCardColors(theme.colors, variant)
 
@@ -99,16 +99,16 @@ export const LumenCard = ({
       accessibilityRole={accessibilityRole ?? 'button'}
       accessibilityState={{
         ...accessibilityState,
-        disabled: disabled || undefined
+        disabled: isDisabled || undefined
       }}
-      disabled={disabled}
+      disabled={isDisabled}
       onLongPress={onLongPress}
       onPress={onPress}
       style={state => [
         {
           ...cardStyle,
           borderColor: state.pressed ? theme.colors.brand : colors.borderColor,
-          opacity: resolveLumenButtonOpacity(disabled, state.pressed)
+          opacity: resolveLumenButtonOpacity(isDisabled, state.pressed)
         },
         resolveLumenPressableStyle(style, state)
       ]}
@@ -120,7 +120,7 @@ export const LumenCard = ({
 
 export interface LumenAlertProps extends ViewProps {
   children: ReactNode
-  ref?: Ref<HostInstance>
+  ref?: LumenViewRef
   variant?: LumenAlertVariant
 }
 
@@ -174,7 +174,7 @@ export const LumenAlert = ({
 }
 
 export interface LumenAlertTitleProps extends TextProps {
-  ref?: Ref<HostInstance>
+  ref?: LumenTextRef
 }
 
 export const LumenAlertTitle = ({
@@ -204,7 +204,7 @@ export const LumenAlertTitle = ({
 }
 
 export interface LumenAlertDescriptionProps extends TextProps {
-  ref?: Ref<HostInstance>
+  ref?: LumenTextRef
 }
 
 export const LumenAlertDescription = ({
@@ -235,7 +235,7 @@ export interface LumenProgressProps extends ViewProps {
   color?: ColorValue
   label?: string
   max?: number
-  ref?: Ref<HostInstance>
+  ref?: LumenViewRef
   value?: number
 }
 
@@ -285,7 +285,7 @@ export const LumenProgress = ({
 export interface LumenAvatarProps extends ViewProps {
   fallback?: string
   label?: string
-  ref?: Ref<HostInstance>
+  ref?: LumenViewRef
   size?: LumenAvatarSize
   source?: ImageSourcePropType
 }

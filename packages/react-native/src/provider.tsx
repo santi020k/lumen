@@ -16,13 +16,22 @@ export interface LumenProviderProps {
   theme?: LumenTheme
 }
 
+const resolveLumenProviderScheme = (
+  scheme: LumenColorScheme | 'system',
+  systemScheme: ReturnType<typeof useColorScheme>
+): LumenColorScheme => {
+  if (scheme !== 'system') return scheme
+
+  return systemScheme === 'dark' ? 'dark' : 'light'
+}
+
 export const LumenProvider = ({
   children,
   scheme = 'system',
   theme
 }: LumenProviderProps) => {
   const systemScheme = useColorScheme()
-  const resolvedScheme = scheme === 'system' ? systemScheme ?? 'light' : scheme
+  const resolvedScheme = resolveLumenProviderScheme(scheme, systemScheme)
 
   const value = useMemo(
     () => theme ?? createLumenTheme(resolvedScheme),
