@@ -179,6 +179,7 @@ export const classifyCanaryPaths = (paths, { manual = false } = {}) => {
     /^docs\/(native-compatibility|native-device-validation|playgrounds|web-consumer-validation)\.md$/u,
     /^registry\/(compose-api-classification|lumen-2-contract|native-api-baseline|native-consumer-evidence|native-device-evidence|native-stability-soak|release-manifest|swift-api-baseline|swift-widget-api-baseline|wear-api-classification|web-api-baseline|web-consumer-evidence)\.json$/u,
     /^scripts\/(check-approved-release-revision(?:\.test)?|check-coordinated-release-revision(?:\.test)?|check-graduated-release-revision(?:\.test)?|check-lumen-2-contract(?:\.test)?|check-maven-(pom-metadata|release-artifacts)(?:\.test)?|maven-pom-metadata|check-npm-release-provenance(?:\.test)?|check-published-package-family(?:\.test)?|check-native-consumer-evidence(?:\.test)?|check-native-device-evidence(?:\.test)?|check-native-stability-soak(?:\.test)?|check-native-stable-readiness(?:\.test)?|check-playground-eas-version(?:\.test)?|check-react-native-peer-docs(?:\.test)?|check-v2-release-workflows\.test|check-web-api-baseline(?:\.test)?|check-web-consumer-evidence(?:\.test)?|generate-release-manifest(?:\.test)?|smoke-consumer-packages|smoke-react-native-native-package|sync-coordinated-v2-versions(?:\.test)?)\.mjs$/u,
+    /^scripts\/prepare-packed-react-native-canary\.mjs$/u,
     /^\.github\/workflows\/(publish-compose|release|release-canary|verify-native-release)\.yml$/u,
     sharedConfiguration
   ])
@@ -234,6 +235,7 @@ export const classifyCanaryPaths = (paths, { manual = false } = {}) => {
     /^packages\/(compose|core|react-native|swift|swift-widget|tokens)\//u,
     /^tokens\//u,
     /^registry\/(compose-api-classification|native-api-baseline|native-consumer-evidence|native-device-evidence|native-stability-soak|swift-api-baseline|swift-widget-api-baseline|wear-api-classification)\.json$/u,
+    /^scripts\/prepare-packed-react-native-canary\.mjs$/u,
     sharedConfiguration
   ])
 
@@ -241,6 +243,7 @@ export const classifyCanaryPaths = (paths, { manual = false } = {}) => {
     /^apps\/playground-react-native\//u,
     /^packages\/(core|react-native|tokens)\//u,
     /^tokens\//u,
+    /^scripts\/prepare-packed-react-native-canary\.mjs$/u,
     sharedConfiguration
   ])
 

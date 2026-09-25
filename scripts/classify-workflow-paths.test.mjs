@@ -125,6 +125,18 @@ test('canaries isolate web, Swift, and Compose package changes', () => {
   assert.equal(compose.compose, true)
 })
 
+test('packed React Native canary helper changes select every required remote gate', () => {
+  const classification = classifyCanaryPaths([
+    'scripts/prepare-packed-react-native-canary.mjs'
+  ])
+
+  assert.equal(classification.web, true)
+
+  assert.equal(classification.native, true)
+
+  assert.equal(classification['react-native'], true)
+})
+
 test('manual canary dispatch remains the explicit full matrix', () => {
   const classification = classifyCanaryPaths([], { manual: true })
 

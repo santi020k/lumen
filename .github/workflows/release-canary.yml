@@ -38,6 +38,7 @@ on:
       - "scripts/check-coordinated-release-revision.mjs"
       - "scripts/check-coordinated-release-revision.test.mjs"
       - "scripts/check-graduated-release-revision.mjs"
+      - "scripts/prepare-packed-react-native-canary.mjs"
       - "scripts/check-graduated-release-revision.test.mjs"
       - "scripts/check-wear-api-classification.mjs"
       - "scripts/check-native-device-evidence.mjs"
