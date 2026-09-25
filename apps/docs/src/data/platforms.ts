@@ -462,7 +462,7 @@ swift run --package-path apps/playground-apple LumenApplePlayground`,
     storeAvailability: {
       badge: 'Available on the App Store',
       description:
-        'Version 1.0 is available for iPhone, iPad, and Mac. The same listing installs the native gallery for the Apple device you are using.',
+        'Download Lumen Playground for iPhone, iPad, and Mac. Explore the native SwiftUI component gallery offline, with no account required.',
       href: 'https://apps.apple.com/app/id6805250815',
       linkLabel: 'View on the App Store',
       status: 'available',
@@ -637,11 +637,11 @@ pnpm playground:android:build`,
     shortLabel: 'Android',
     status: 'Compose module',
     storeAvailability: {
-      badge: 'Google Play · pending',
+      badge: 'Google Play · in review',
       description:
-        'The Android release is still awaiting Google Play approval. Until it is approved, run the local Compose playground or build the debug APK from the repository.',
+        'The Android production rollout has been submitted to Google Play and remains under review. Until the public listing is live, run the local Compose playground or build the debug APK from the repository.',
       status: 'pending',
-      title: 'Android store release is under review'
+      title: 'Android production rollout is under review'
     },
     summary:
       'Use the shared Lumen foundations through Jetpack Compose and Material 3 while preserving Android interaction and accessibility conventions.',

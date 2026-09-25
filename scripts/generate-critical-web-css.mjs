@@ -31,6 +31,7 @@ const criticalSelectors = [
   '.ui-select',
   '.ui-skeleton',
   '.ui-spinner',
+  '.ui-table',
   '.ui-tabs',
   '.ui-textarea',
   '.ui-toast',

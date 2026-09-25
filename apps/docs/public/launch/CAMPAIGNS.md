@@ -32,7 +32,8 @@ copying launch prose:
 - The MCP server ships a deterministic component catalog so agents can retrieve real contracts.
 - The most useful feedback areas are API ergonomics, accessibility behavior, and adoption friction.
 
-Review the current [Show HN guidelines](https://news.ycombinator.com/showhn.html) immediately before
+Review the current [Show HN guidelines](https://news.ycombinator.com/showhn.html) and
+[Hacker News guidelines](https://news.ycombinator.com/newsguidelines.html) immediately before
 submitting. Do not ask anyone to vote or comment.
 
 ## Product Hunt
@@ -68,9 +69,10 @@ licensed while I focus on adoption and real-world feedback.
 If you try it, I would especially value feedback about installation, component API clarity,
 accessibility behavior, and the cross-platform story.
 
-Product Hunt's current guidelines do not feature template-only products, so launch Lumen as the
-working design-system product—not as a template collection. A personal account at least one week
-old is required, and the final launch must be scheduled from a draft.
+Product Hunt's current [featuring guidelines](https://help.producthunt.com/en/articles/9883485-product-hunt-featuring-guidelines)
+do not feature template-only products, so launch Lumen as the working design-system product—not as
+a template collection. A [personal account at least one week old](https://help.producthunt.com/en/articles/771527-personal-account-vs-company-account)
+is required, and the final launch must be scheduled from a draft.
 
 ## Reddit
 

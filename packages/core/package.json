@@ -63,7 +63,11 @@
       "types": "./dist/theme.d.ts",
       "import": "./dist/theme.js"
     },
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./icon-data": {
+      "types": "./dist/icon-data.generated.d.ts",
+      "import": "./dist/icon-data.generated.js"
+    }
   },
   "files": [
     "dist",

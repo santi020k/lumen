@@ -443,3 +443,22 @@ form a standalone item, or `as="section"` when it is a labeled region in a large
 
 Use `variant="default"` for the original neutral surface, `variant="accent"` for a featured metric,
 or `variant="glass"` for selective translucency.
+
+## Consumer composition recipes
+
+See [consumer UI recipes](../../docs/consumer-ui-recipes.md) for static React icons, responsive
+record tables, keyboard-aware native sheets, whole-unit amount fields, adaptive editors, and
+asynchronous action states. Each recipe identifies the public primitives and the behavior that
+remains owned by the application.
+
+For icons known at build time, use the static entrypoint to avoid loading the runtime registry:
+
+```tsx
+import { Icon, Search } from '@santi020k/lumen-react/icons'
+
+<Icon icon={Search} label="Search" />
+```
+
+The existing root `Icon name="search"` remains supported for runtime-selected names and icon packs.
+`Table layout="records"` opts into the responsive record recipe; its semantic child markup and
+shared mobile labels are documented in the consumer recipe linked above.

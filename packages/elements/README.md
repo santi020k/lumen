@@ -357,3 +357,10 @@ attributes.
 <lumen-date-picker glass="subtle"></lumen-date-picker>
 <lumen-select glass="strong"></lumen-select>
 ```
+
+## Consumer composition recipes
+
+See [consumer UI recipes](../../docs/consumer-ui-recipes.md) for static React icons, responsive
+record tables, keyboard-aware native sheets, whole-unit amount fields, adaptive editors, and
+asynchronous action states. Each recipe identifies the public primitives and the behavior that
+remains owned by the application.

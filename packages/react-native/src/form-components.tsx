@@ -5,6 +5,7 @@ import {
 } from 'react'
 import {
   type HostInstance,
+  Platform,
   Pressable,
   Switch,
   type SwitchProps,
@@ -52,6 +53,7 @@ export const LumenToggle = ({
       accessibilityLabel={label}
       accessibilityRole="switch"
       accessibilityState={{ checked: value, disabled }}
+      aria-checked={value}
       disabled={disabled}
       onPress={() => {
         if (!disabled) onValueChange(!value)
@@ -76,7 +78,7 @@ export const LumenToggle = ({
               {label}
             </Text>
             {description ?
-              <Text style={{ color: theme.colors.inkMuted, fontSize: theme.fontSizes.xs }}>{description}</Text> :
+              <Text style={{ color: theme.colors.inkSoft, fontSize: theme.fontSizes.xs }}>{description}</Text> :
               null}
           </View>
         ) :
@@ -85,7 +87,8 @@ export const LumenToggle = ({
         ref={ref}
         {...props}
         accessibilityElementsHidden
-        disabled={disabled}
+        aria-hidden
+        disabled={disabled || Platform.OS === 'web'}
         importantForAccessibility="no-hide-descendants"
         ios_backgroundColor={theme.colors.surfaceStrong}
         pointerEvents="none"

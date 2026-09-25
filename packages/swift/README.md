@@ -6,6 +6,10 @@
 `LumenUI` is Lumen's native SwiftUI package. Its foundations are generated from the same canonical
 design tokens as the web, React Native, and Compose adapters.
 
+Try the native components in [Lumen Playground on the App Store](https://apps.apple.com/app/id6805250815)
+for iPhone, iPad, and Mac, or browse the
+[Apple playground guide](https://lumen.santi020k.com/docs/apple/playground).
+
 `LumenPhoneInput` is implemented entirely inside `LumenUI`; consumers do not resolve or link a
 separate phone-number package. Lumen ships a compact generated metadata resource and owns the Swift
 parsing, validation, E.164, country-detection, formatting, and picker behavior. Maintainers refresh

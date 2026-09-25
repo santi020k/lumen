@@ -6,6 +6,7 @@ import { defineConfig } from 'vitest/config'
 const root = fileURLToPath(new URL('.', import.meta.url))
 
 const alias = {
+  '@santi020k/lumen-core/icon-data': fileURLToPath(new URL('./packages/core/src/icon-data.generated.ts', import.meta.url)),
   '@santi020k/lumen': fileURLToPath(new URL('./packages/lumen/src/index.ts', import.meta.url)),
   '@santi020k/lumen-core': fileURLToPath(new URL('./packages/core/src/index.ts', import.meta.url)),
   '@santi020k/lumen-elements': fileURLToPath(new URL('./packages/elements/src/index.ts', import.meta.url)),

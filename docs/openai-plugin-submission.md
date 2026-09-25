@@ -11,25 +11,40 @@ Official references:
 - [Submit plugins](https://developers.openai.com/plugins/deploy/submission)
 - [MCP server review requirements](https://developers.openai.com/plugins/deploy/app-review)
 
-## Submission status
+## Publication status
 
-Lumen UI 1.0.0 was submitted to OpenAI for review on August 26, 2026. The Plugins portal currently
-shows the version in **Review** status. The production Streamable HTTP endpoint, domain
-verification, publisher profile, listing metadata, translations, and reviewer prompts were
-completed before submission.
+Lumen UI 1.0.0 was submitted on August 26, 2026 and published on September 8, 2026 after OpenAI
+approval. The Plugins portal shows **Published**, and the public
+[Lumen UI listing](https://chatgpt.com/plugins/plugin_asdk_app_6a8f6c526c5481918eb8a48806fa112b)
+shows version **1.0.0**, **Install plugin**, the app, the skill, and all three starter prompts.
 
-The remaining owner-controlled actions are to respond to any reviewer feedback, wait for approval,
-and then deliberately select **Publish** in the portal. Until those steps are complete, the plugin
-must be described as under review rather than available in the Plugins Directory. Portal review and
-publication change external state and are deliberately not automated by the repository validation
-command.
+Install it from that listing in ChatGPT or Codex, then mention **@Lumen UI** in a request. No
+separate Lumen account, API key, or local MCP configuration is required.
+
+Publication verification:
+
+- `pnpm run validate` passed before publication.
+- The production `/health` endpoint returned HTTP 200 with `status: "ok"`.
+- A Streamable HTTP client initialized successfully and listed all 12 read-only tools.
+- `lumen_diagnose` reported `healthy`, with all eight catalog-integrity checks passing.
+- The portal changed from **Approved** to **Published** after **Publish Version** was selected.
+- The directory listing was opened while signed out to verify public visibility and installation.
+
+The approved production deployment returns HTTP 404 for `/ready`; use `/health` plus MCP
+initialization, `tools/list`, and `lumen_diagnose` to verify that deployment. The newer repository
+server provides `/ready`, but publishing the approved listing does not redeploy the MCP server.
+
+For future changes to reviewed MCP metadata or skill snapshots, scan the server, submit a new
+version for review, and publish that approved version. Portal publication changes external state
+and is deliberately not automated by repository validation.
 
 ## Public listing
 
 - **Name:** Lumen UI
-- **Developer:** Santiago Molina
+- **Developer:** Santiago Molina Orozco
 - **Category:** Developer Tools
-- **Short description:** Build accessible interfaces with Lumen.
+- **Short description:** Build interfaces with Lumen
+- **Directory:** [Lumen UI](https://chatgpt.com/plugins/plugin_asdk_app_6a8f6c526c5481918eb8a48806fa112b)
 - **Website:** `https://lumen.santi020k.com`
 - **Support:** `https://lumen.santi020k.com/support`
 - **Privacy:** `https://lumen.santi020k.com/privacy`
@@ -84,12 +99,13 @@ Before opening the portal, verify:
 
 ```bash
 curl --fail --silent https://mcp.lumen.santi020k.com/health
-curl --fail --silent https://mcp.lumen.santi020k.com/ready
-curl --fail --silent https://mcp.lumen.santi020k.com/.well-known/openai-apps-challenge
+curl --fail --silent --output /dev/null https://mcp.lumen.santi020k.com/.well-known/openai-apps-challenge
 ```
 
 Then connect an MCP inspector or developer-mode client to
 `https://mcp.lumen.santi020k.com/mcp`, list all tools, and call `lumen_diagnose`.
+For deployments that expose `/ready`, verify that endpoint too. Check the domain challenge
+against the portal's expected value without printing the token in logs or documentation.
 
 ## Tool annotation justification
 

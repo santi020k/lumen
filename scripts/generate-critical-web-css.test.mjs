@@ -23,6 +23,10 @@ test('critical CSS outputs stay identical, focused, and materially smaller', asy
 
   assert.match(canonical, /\.ui-data-table/u)
 
+  assert.match(canonical, /\.ui-table-wrap--records/u)
+
+  assert.match(canonical, /\.ui-table__label/u)
+
   assert.doesNotMatch(canonical, /\.ui-animated-portrait/u)
 
   assert.ok(Buffer.byteLength(canonical) < Buffer.byteLength(full) * 0.7)

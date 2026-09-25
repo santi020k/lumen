@@ -487,6 +487,11 @@ LumenSheet(
 />
 ```
 
+React Native sheets additionally support opt-in scrolling bodies, keyboard avoidance, safe-area
+insets, and adaptive centered presentation. Their title names the modal; `accessibilityLabel` names
+a sheet without a title. See [consumer UI recipes](consumer-ui-recipes.md#react-native-sheets) for the
+complete composition and dismissal contract.
+
 ### Platform-native actions and input
 
 React Native scroll containers retain ownership of scrolling while Lumen supplies the refresh

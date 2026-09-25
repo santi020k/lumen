@@ -153,10 +153,14 @@ catalog does not require user authentication.
 
 ## AI plugin package
 
-The repository includes a submission-ready plugin package in [`plugins/lumen-ui`](../../plugins/lumen-ui).
+Install [Lumen UI from the Plugins Directory](https://chatgpt.com/plugins/plugin_asdk_app_6a8f6c526c5481918eb8a48806fa112b)
+in ChatGPT or Codex, then mention **@Lumen UI** in a request. The published plugin uses the hosted,
+read-only catalog and requires no separate Lumen account, API key, or local MCP configuration.
+
+The repository includes the plugin package in [`plugins/lumen-ui`](../../plugins/lumen-ui).
 It combines the portable `lumen-ui` skill with this MCP server for Codex, ChatGPT, and Claude Code.
-The public OpenAI Plugins Directory submission uses a hosted Streamable HTTP endpoint; see the
-[submission checklist](../../docs/openai-plugin-submission.md) for deployment requirements, listing
+The public OpenAI Plugins Directory version uses a hosted Streamable HTTP endpoint; see the
+[publication record and checklist](../../docs/openai-plugin-submission.md) for deployment requirements, listing
 copy, annotation justifications, and reviewer test cases.
 
 Claude Code uses the package's stdio configuration and the repository marketplace in

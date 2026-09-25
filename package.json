@@ -41,8 +41,8 @@
     "check:figma-tokens": "node scripts/check-figma-theme-tokens.mjs",
     "generate:platform-graphics": "node scripts/generate-platform-graphics.mjs",
     "check:platform-graphics": "node scripts/generate-platform-graphics.mjs --check",
-    "generate:platform-icons": "node scripts/generate-platform-icons.mjs",
-    "check:platform-icons": "node scripts/generate-platform-icons.mjs --check",
+    "generate:platform-icons": "node scripts/generate-platform-icons.mjs && node scripts/generate-web-icons.mjs",
+    "check:platform-icons": "node scripts/generate-platform-icons.mjs --check && node scripts/generate-web-icons.mjs --check",
     "generate:swift-phone-metadata": "node scripts/generate-swift-phone-metadata.mjs",
     "check:swift-phone-metadata": "node scripts/generate-swift-phone-metadata.mjs --check",
     "check:swift-assets": "node scripts/check-swift-assets.mjs",
@@ -159,7 +159,8 @@
     "test:framework-visual": "playwright test -c playwright.frameworks.config.ts",
     "test:framework-visual:update": "playwright test -c playwright.frameworks.config.ts --update-snapshots",
     "test:visual": "playwright test",
-    "test:visual:update": "playwright test --update-snapshots"
+    "test:visual:update": "playwright test --update-snapshots",
+    "measure:react-client-icons": "node scripts/measure-react-client-icons.mjs"
   },
   "devDependencies": {
     "@changesets/changelog-github": "catalog:",
@@ -191,6 +192,7 @@
     "tailwindcss": "catalog:",
     "turbo": "catalog:",
     "typescript": "catalog:",
+    "vite": "catalog:",
     "vitest": "catalog:",
     "wrangler": "catalog:"
   },
