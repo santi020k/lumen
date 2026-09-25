@@ -144,25 +144,27 @@ jobs:
               fi
             done
 
-      - name: Create repository version tag
+      - name: Create repository version tag and GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           VERSION=$(node -p "require('./packages/lumen/package.json').version")
+          RELEASE_TAG="v${VERSION}"
 
-          if git ls-remote --exit-code --tags origin "refs/tags/v${VERSION}" >/dev/null 2>&1; then
-            git fetch --force origin "refs/tags/v${VERSION}:refs/tags/v${VERSION}"
-            release_commit="$(git rev-list -n 1 "v${VERSION}")"
+          if git ls-remote --exit-code --tags origin "refs/tags/${RELEASE_TAG}" >/dev/null 2>&1; then
+            git fetch --force origin "refs/tags/${RELEASE_TAG}:refs/tags/${RELEASE_TAG}"
+            release_commit="$(git rev-list -n 1 "$RELEASE_TAG")"
+          else
+            release_commit="$GITHUB_SHA"
+          fi
 
-            if [[ "$release_commit" == "$GITHUB_SHA" ]]; then
-              echo "Tag v${VERSION} already exists at the publication commit; skipping."
-            else
-              echo "Tag v${VERSION} belongs to ${release_commit}; no repository release is pending at ${GITHUB_SHA}."
-            fi
-
+          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            echo "GitHub Release ${RELEASE_TAG} already exists; skipping."
             exit 0
           fi
 
           if ! registry_version="$(npm view "@santi020k/lumen@${VERSION}" version 2>/dev/null)"; then
-            echo "@santi020k/lumen@${VERSION} is not published; skipping repository tag."
+            echo "@santi020k/lumen@${VERSION} is not published; skipping repository release."
             exit 0
           fi
 
@@ -188,13 +190,20 @@ jobs:
           pnpm run check:npm-release-provenance -- \
             --package "@santi020k/lumen" \
             --version "$VERSION" \
-            --revision "$GITHUB_SHA" \
+            --revision "$release_commit" \
             --lockfile "$repository_tag_audit_directory/package-lock.json"
 
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git tag -a "v${VERSION}" -m "Release v${VERSION}"
-          git push origin "v${VERSION}"
+          if ! git ls-remote --exit-code --tags origin "refs/tags/${RELEASE_TAG}" >/dev/null 2>&1; then
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git tag -a "$RELEASE_TAG" -m "Release ${RELEASE_TAG}"
+            git push origin "$RELEASE_TAG"
+          fi
+
+          gh release create "$RELEASE_TAG" \
+            --verify-tag \
+            --title "Lumen ${VERSION}" \
+            --generate-notes
 
       - name: Create and launch Compose release
         env:

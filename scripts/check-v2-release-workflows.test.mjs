@@ -424,13 +424,14 @@ test("initial npm publication verifies the complete family before tagging", () =
     "npm install \\",
     "pnpm run check:npm-release-provenance",
     '--revision "$GITHUB_SHA"',
-    "name: Create repository version tag",
+    "name: Create repository version tag and GitHub Release",
   ]);
 
-  assertOrderedCommands(npmWorkflow, "existing npm release tag", [
-    'git ls-remote --exit-code --tags origin "refs/tags/v${VERSION}"',
-    'release_commit="$(git rev-list -n 1 "v${VERSION}")"',
-    "already exists at the publication commit; skipping",
+  assertOrderedCommands(npmWorkflow, "existing repository release", [
+    'git ls-remote --exit-code --tags origin "refs/tags/${RELEASE_TAG}"',
+    'release_commit="$(git rev-list -n 1 "$RELEASE_TAG")"',
+    'gh release view "$RELEASE_TAG"',
+    "already exists; skipping",
   ]);
 
   assertOrderedCommands(npmWorkflow, "recoverable repository tag", [
@@ -440,13 +441,21 @@ test("initial npm publication verifies the complete family before tagging", () =
     "npm init --yes",
     'npm install \\',
     "pnpm run check:npm-release-provenance",
-    '--revision "$GITHUB_SHA"',
-    'git tag -a "v${VERSION}"',
-    'git push origin "v${VERSION}"',
+    '--revision "$release_commit"',
+    'git tag -a "$RELEASE_TAG"',
+    'git push origin "$RELEASE_TAG"',
+    'gh release create "$RELEASE_TAG"',
+    "--verify-tag",
+    "--generate-notes",
   ]);
 
+  assert.ok(
+    npmWorkflow.includes("GH_TOKEN: ${{ github.token }}"),
+    "repository release recovery must authenticate the GitHub CLI",
+  );
+
   assertOrderedCommands(npmWorkflow, "Compose release launch", [
-    "name: Create repository version tag",
+    "name: Create repository version tag and GitHub Release",
     "name: Create and launch Compose release",
     'COMPOSE_TAG="compose-v${COMPOSE_VERSION}"',
     'git ls-remote --exit-code --tags origin "refs/tags/${COMPOSE_TAG}"',
@@ -466,7 +475,7 @@ test("initial npm publication verifies the complete family before tagging", () =
 
   assert.doesNotMatch(
     npmWorkflow,
-    /name: Create (?:repository version tag|and launch Compose release)\n\s+if: steps\.changesets\.outputs\.published/u,
+    /name: Create (?:repository version tag and GitHub Release|and launch Compose release)\n\s+if: steps\.changesets\.outputs\.published/u,
     "release tag recovery must not depend on Changesets reporting a new publication",
   );
 });
