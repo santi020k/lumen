@@ -2,7 +2,7 @@ import assert from 'node:assert/strict'
 import { spawnSync } from 'node:child_process'
 import { cp, mkdir, mkdtemp, readdir, readFile, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
-import { dirname, join, resolve } from 'node:path'
+import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path'
 
 const repositoryRoot = resolve(import.meta.dirname, '..')
 const playgroundDirectory = join(repositoryRoot, 'apps', 'playground-react-native')
@@ -90,19 +90,36 @@ try {
 
     const dependencySegments = dependencyName.split('/')
 
-    const source = join(
+    assert.ok(
+      dependencySegments.every(segment => segment !== '.' && segment !== '..'),
+      `Packed Core contains an unsafe dependency name: ${dependencyName}`
+    )
+
+    const sourceRoot = resolve(
       repositoryRoot,
       'packages',
       'core',
-      'node_modules',
-      ...dependencySegments
+      'node_modules'
     )
 
-    const destination = join(
-      packedCoreDirectory,
-      'node_modules',
-      ...dependencySegments
-    )
+    const destinationRoot = resolve(packedCoreDirectory, 'node_modules')
+    const source = resolve(sourceRoot, ...dependencySegments)
+    const destination = resolve(destinationRoot, ...dependencySegments)
+
+    for (const [root, candidate] of [
+      [sourceRoot, source],
+      [destinationRoot, destination]
+    ]) {
+      const relativePath = relative(root, candidate)
+
+      assert.ok(
+        relativePath.length > 0 &&
+          !isAbsolute(relativePath) &&
+          relativePath !== '..' &&
+          !relativePath.startsWith(`..${sep}`),
+        `Packed Core dependency escapes its installation root: ${dependencyName}`
+      )
+    }
 
     await mkdir(dirname(destination), { recursive: true })
 

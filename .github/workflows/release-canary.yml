@@ -203,6 +203,14 @@ jobs:
         if: needs.classify.outputs.consumer-packages == 'true'
       - run: pnpm run check:react-native-package
         if: needs.classify.outputs.react-native == 'true'
+      - name: Verify packed React Native canary isolation
+        if: needs.classify.outputs.react-native == 'true'
+        run: |
+          # cspell:ignore realpath
+          node scripts/prepare-packed-react-native-canary.mjs
+          pnpm --filter @santi020k/lumen-playground-react-native exec node \
+            --input-type=module \
+            -e "const { realpath } = await import('node:fs/promises'); const { fileURLToPath } = await import('node:url'); const resolved = await realpath(fileURLToPath(import.meta.resolve('@santi020k/lumen-react-native'))); if (resolved.includes('/packages/react-native/')) throw new Error(\`Packed canary resolved workspace source: \${resolved}\`); console.log(resolved)"
 
   compose:
     name: Compose source and app consumer

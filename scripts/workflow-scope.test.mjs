@@ -25,8 +25,14 @@ test('CI delegates path decisions and keeps package-family gates independent', (
 
   assert.match(
     releaseDetection[1],
-    /startsWith\(github\.head_ref, 'changeset-release\/'\)[\s\S]*?startsWith\(github\.head_ref, 'release\/'\)/u,
+    /startsWith\(github\.head_ref, 'changeset-release\/'\)[\s\S]*?startsWith\(github\.head_ref, 'release\/v'\)/u,
     'CI must classify semantic release branches as release pull requests'
+  )
+
+  assert.doesNotMatch(
+    releaseDetection[1],
+    /startsWith\(github\.head_ref, 'release\/'\)/u,
+    'CI must not grant release behavior to arbitrary release branches'
   )
 
   assert.match(ci, /needs\.classify\.outputs\.bundle-size/u)
@@ -69,6 +75,8 @@ test('release canaries keep manual full-matrix coverage and scope pull requests'
   assert.match(canary, /needs\.classify\.outputs\.browser/u)
 
   assert.match(canary, /needs\.classify\.outputs\.react-native/u)
+
+  assert.match(canary, /node scripts\/prepare-packed-react-native-canary\.mjs/u)
 
   assert.match(canary, /needs\.classify\.outputs\.native/u)
 })
