@@ -1,17 +1,7 @@
 {
   "schemaVersion": 1,
-  "status": "approved",
+  "status": "draft",
   "targetVersion": "3.0.0",
-  "approval": {
-    "approver": "Santiago Molina (release owner)",
-    "date": "2026-09-25",
-    "decision": "Publish the synchronized Swift icon catalog as Lumen 3 instead of misclassifying exhaustive-enum source changes as a minor release.",
-    "evidence": [
-      "https://github.com/santi020k/lumen/commit/590b05030df44a4d03be9effe045293c83ccab12",
-      "https://github.com/santi020k/lumen/pull/80"
-    ],
-    "reviewedRevision": "590b05030df44a4d03be9effe045293c83ccab12"
-  },
   "policy": {
     "compatibility": "Every Swift API digester diagnostic relative to Lumen 2.1.0 must be explicitly listed. Toolchain-specific duplicate diagnostic markers are normalized without suppressing distinct API changes.",
     "versioning": "Adding cases to a public Swift enum can invalidate exhaustive consumer switches, so the synchronized catalog ships as a coordinated major release."
