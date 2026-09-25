@@ -3,6 +3,11 @@
 This playbook turns Lumen's open-source surfaces into a repeatable adoption loop. It deliberately
 optimizes for useful users, public evidence, and roadmap feedback before revenue.
 
+This document stays canonical for positioning, the four-week cycle, metrics categories, video
+scripts, launch copy, and the community operating loop. For execution-ready material built on top of
+it — the claim ledger, channel decisions, a concrete calendar, asset briefs, an approval queue, and a
+community-response library — see the [marketing package](marketing/README.md).
+
 ## Positioning
 
 Use this sentence consistently:
@@ -146,8 +151,9 @@ Hacker News asks contributors not to post generated or AI-edited text. The maker
 final title and opening comment personally. Use the factual checklist in the campaign manifest to
 cover package boundaries, progressive enhancement, standalone CSS, semantic token generation, and
 the deterministic MCP snapshot. Review the current
-[Show HN guidelines](https://news.ycombinator.com/showhn.html) before submitting and do not solicit
-votes or comments.
+[Show HN guidelines](https://news.ycombinator.com/showhn.html) and
+[Hacker News guidelines](https://news.ycombinator.com/newsguidelines.html) before submitting and do
+not solicit votes or comments.
 
 ### Product Hunt
 
@@ -157,9 +163,11 @@ Use the template gallery as the first gallery asset, the cross-framework setting
 second, and the Figma/AI workflow as the third. The maker comment should explain why the project is
 remaining free during the adoption phase.
 
-Product Hunt's current featuring guidelines exclude template-only products. Position Lumen as the
-working design-system product and use its templates as supporting proof. The platform requires a
-personal account at least one week old and supports creating a draft before scheduling.
+Product Hunt's current [featuring guidelines](https://help.producthunt.com/en/articles/9883485-product-hunt-featuring-guidelines)
+exclude template-only products. Position Lumen as the working design-system product and use its
+templates as supporting proof. The platform requires a
+[personal account at least one week old](https://help.producthunt.com/en/articles/771527-personal-account-vs-company-account)
+and supports creating a draft before scheduling.
 
 ### Astro and framework communities
 

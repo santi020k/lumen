@@ -71,7 +71,7 @@ describe('platform documentation', () => {
     expect(guide.prerequisites).toContain('Android Studio with JDK 21 or newer')
   })
 
-  test('publishes Apple store access without claiming Android approval', () => {
+  test('publishes Apple store access without claiming public Android availability', () => {
     expect(getPlatformGuide('apple').storeAvailability).toEqual(
       expect.objectContaining({
         href: 'https://apps.apple.com/app/id6805250815',

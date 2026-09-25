@@ -23,6 +23,7 @@ support URL, and privacy policy while proving the package native to their platfo
 
 - **Name:** Lumen Playground
 - **Category:** Developer Tools on Apple platforms; Libraries & Demo on Google Play
+- **App Store:** [Lumen Playground for iPhone, iPad, and Mac](https://apps.apple.com/app/id6805250815)
 - **Support:** `https://lumen.santi020k.com/support`
 - **Privacy:** `https://lumen.santi020k.com/privacy`
 - **Apple marketing URL:** `https://lumen.santi020k.com/docs/apple/playground`
@@ -32,6 +33,30 @@ Editable English listing copy lives in `apps/playground-apple/Store/en-US`,
 `apps/playground-apple/Store/macOS/en-US`, and `apps/playground-android/Store/en-US`. The Android data
 declaration lives beside its listing copy. Keep screenshots and submitted metadata accurate for the
 exact binary under review.
+
+## iOS release record — September 7, 2026
+
+- Released iOS **1.0.1 (24)** from Apple's approved manual-release state.
+- App Store Connect confirmed **Ready for Distribution** after accepting the release request.
+  Public storefront caches may take longer to show the new version.
+- The immutable candidate is
+  [`playground-ios-v1.0.1-r9`](https://github.com/santi020k/lumen/tree/playground-ios-v1.0.1-r9),
+  revision `a8870f6a9ab7d0ab7af7f5966aa56c8aef8980ad`.
+  The [release workflow](https://github.com/santi020k/lumen/actions/runs/33809825963)
+  confirmed Xcode Cloud build 24 succeeded.
+- [Download Lumen Playground](https://apps.apple.com/app/id6805250815) or open the
+  [Apple playground documentation](https://lumen.santi020k.com/docs/apple/playground).
+- macOS remains at **1.0 (7)** on the same listing; this release changes only iOS.
+
+## Android production record — September 24, 2026
+
+- Google granted production access for `com.santi020k.lumen.playground.compose`.
+- Submitted Android **1.0.0 (1)** for a full production rollout using the signed app bundle that
+  completed closed testing.
+- The rollout targets all 177 available Google Play countries and regions, including the rest-of-world
+  group.
+- Google Play Console reports **Changes in review** after its automated checks completed. This is a
+  submitted production rollout, not evidence that the public listing is live yet.
 
 ## Generate icons
 

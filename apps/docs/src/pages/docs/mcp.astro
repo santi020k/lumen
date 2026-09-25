@@ -11,7 +11,7 @@ import DocsLayout from '../../layouts/DocsLayout.astro'
 const packageName = '@santi020k/lumen-mcp'
 const npmUrl = 'https://www.npmjs.com/package/@santi020k/lumen-mcp'
 const readmeUrl = 'https://github.com/santi020k/lumen/blob/main/packages/mcp/README.md'
-const pluginUrl = 'https://github.com/santi020k/lumen/tree/main/plugins/lumen-ui'
+const pluginUrl = 'https://chatgpt.com/plugins/plugin_asdk_app_6a8f6c526c5481918eb8a48806fa112b'
 const claudePluginGuideUrl = 'https://github.com/santi020k/lumen/blob/main/docs/claude-code-plugin.md'
 
 const claudePluginInstall = `/plugin marketplace add santi020k/lumen
@@ -278,18 +278,18 @@ const httpCommand = `npx -y --package @santi020k/lumen-mcp lumen-mcp-http
 
     <Card as="section" class="mcp-file-card" aria-labelledby="plugin-title" glass="subtle">
       <div>
-        <Badge>Submitted for review</Badge>
-        <h2 id="plugin-title">Skill plus live catalog</h2>
+        <Badge>Published · 1.0.0</Badge>
+        <h2 id="plugin-title">Lumen UI for ChatGPT and Codex</h2>
         <p>
-          Lumen UI 1.0.0 has been submitted to the OpenAI Plugins Directory for Codex and ChatGPT
-          and is currently under review. Until OpenAI approves it and the publisher completes
-          publication, install the portable skill or connect the MCP server directly; the plugin is
-          not yet available from the directory.
+          Open Lumen UI in the Plugins Directory and select <strong>Install plugin</strong>.
+          Then mention <strong>@Lumen UI</strong> in a request or choose a starter prompt.
+          The plugin bundles the workflow skill and hosted, read-only public catalog, with no
+          separate Lumen account, API key, or local server setup.
         </p>
       </div>
-      <code>plugins/lumen-ui</code>
+      <p>Try: “Find the right Lumen components for an accessible React settings screen.”</p>
       <DocsActionLink href={pluginUrl} target="_blank" rel="noopener noreferrer">
-        Inspect the plugin
+        Install Lumen UI
       </DocsActionLink>
     </Card>
 

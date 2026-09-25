@@ -190,6 +190,17 @@ const recipeItems: DocsSearchItem[] = [
   {
     category: 'AI integration',
     description:
+      'Install Lumen UI in ChatGPT or Codex to use the workflow skill and hosted, read-only component catalog.',
+    href: '/docs/mcp#plugin-title',
+    keywords: normalizeKeywords(
+      'openai chatgpt codex plugin plugins directory install lumen ui skill mcp hosted catalog'
+    ),
+    title: 'Lumen UI plugin for ChatGPT and Codex',
+    type: 'Recipe'
+  },
+  {
+    category: 'AI integration',
+    description:
       'Connect the Lumen MCP server so AI agents can list components, read real source and props, and follow Lumen tokens and rules.',
     href: '/docs/mcp',
     keywords: normalizeKeywords(

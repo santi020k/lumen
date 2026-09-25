@@ -302,3 +302,10 @@ VoiceOver and TalkBack evidence.
 tokens while rendering with `react-native-svg`. Data charts expose a concise image summary and a
 readable fallback list; selection remains controlled by the application. See the shared
 [data-visualization guide](../../docs/data-visualization.md).
+
+## Consumer composition recipes
+
+See [consumer UI recipes](../../docs/consumer-ui-recipes.md) for static React icons, responsive
+record tables, keyboard-aware native sheets, whole-unit amount fields, adaptive editors, and
+asynchronous action states. Each recipe identifies the public primitives and the behavior that
+remains owned by the application.

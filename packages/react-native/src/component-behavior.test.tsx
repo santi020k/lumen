@@ -8,6 +8,7 @@ import { afterEach, describe, expect, test, vi } from 'vitest'
 import { LumenChip, LumenFieldGroup, LumenTextarea, LumenToast } from './additional-components.js'
 import { LumenDateField, LumenDateRangeField } from './datetime-components.js'
 import { LumenSearchField, LumenToggle } from './form-components.js'
+import { LumenSheet } from './overlay-components.js'
 import { LumenPhoneInput } from './phone-components.js'
 import { resolveLumenPhoneInputValue } from './phone-recipes.js'
 import { LumenButton, LumenText, LumenTextField } from './primitives.js'
@@ -19,6 +20,8 @@ import { LumenPicker } from './value-components.js'
 Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true })
 
 const nativePlatform = vi.hoisted(() => ({ OS: 'ios' }))
+const nativeMotion = vi.hoisted(() => ({ enabled: false }))
+const nativeWindow = vi.hoisted(() => ({ fontScale: 1, height: 800, scale: 2, width: 400 }))
 
 vi.mock('react-native', async () => {
   const { createElement, useImperativeHandle } = await import('react')
@@ -35,8 +38,13 @@ vi.mock('react-native', async () => {
   }
 
   return {
+    AccessibilityInfo: {
+      addEventListener: () => ({ remove: vi.fn() }),
+      isReduceMotionEnabled: () => Promise.resolve(nativeMotion.enabled)
+    },
     ActivityIndicator: hostComponent('ActivityIndicator'),
     FlatList: hostComponent('FlatList'),
+    KeyboardAvoidingView: hostComponent('KeyboardAvoidingView'),
     Modal: hostComponent('Modal'),
     Platform: nativePlatform,
     Pressable: FocusablePressable,
@@ -46,7 +54,7 @@ vi.mock('react-native', async () => {
     Text: hostComponent('Text'),
     TextInput: hostComponent('TextInput'),
     useColorScheme: () => 'light',
-    useWindowDimensions: () => ({ fontScale: 1, height: 800, scale: 2, width: 400 }),
+    useWindowDimensions: () => nativeWindow,
     View: hostComponent('View')
   }
 })
@@ -804,6 +812,7 @@ describe('Lumen React Native component behavior', () => {
 
     expect(readProp(toggle, 'accessibilityLabel')).toBe('Automatic updates')
     expect(readProp(toggle, 'accessibilityHint')).toBe('Receive product and security updates')
+    expect(readProp(toggle, 'aria-checked')).toBe(false)
     expect(readProp(toggle, 'accessibilityState')).toEqual({
       checked: false,
       disabled: false
@@ -825,6 +834,24 @@ describe('Lumen React Native component behavior', () => {
     })
 
     expect(onValueChange).toHaveBeenCalledExactlyOnceWith(true)
+  })
+
+  test('web toggle keeps the decorative native input out of the tab order', async () => {
+    nativePlatform.OS = 'web'
+    const onValueChange = vi.fn()
+    const root = await renderNative(<LumenToggle label="Updates" onValueChange={onValueChange} value={false} />)
+    const control = root.container.queryAll(instance => instance.type === 'Switch')[0]
+    if (!control) throw new Error('Missing decorative switch')
+    expect(readProp(control, 'disabled')).toBe(true)
+    expect(readProp(control, 'aria-hidden')).toBe(true)
+    const row = findByAccessibilityRole(root, 'switch')
+    expect(readProp(row, 'disabled')).toBe(false)
+    await act(async () => {
+      callAction(readProp(row, 'onPress'), 'Missing row action')
+      await Promise.resolve()
+    })
+    expect(onValueChange).toHaveBeenCalledExactlyOnceWith(true)
+    nativePlatform.OS = 'ios'
   })
 
   test('toggle preserves a consumer accessibility hint over supporting copy', async () => {
@@ -989,5 +1016,97 @@ describe('Lumen React Native component behavior', () => {
     expect(callKeyboardAction(readProp(overviewTab, 'onKeyDown'), 'ArrowRight'))
       .toHaveBeenCalledOnce()
     expect(onValueChange).not.toHaveBeenCalled()
+  })
+})
+
+describe('LumenSheet consumer layouts', () => {
+  afterEach(() => {
+    nativeMotion.enabled = false
+    nativeWindow.width = 400
+    nativePlatform.OS = 'ios'
+  })
+
+  test('keeps actions outside the scrolling body and opts into keyboard avoidance', async () => {
+    const root = await renderNative(
+      <LumenSheet
+        actions={<LumenButton>Save</LumenButton>}
+        avoidKeyboard
+        keyboardVerticalOffset={24}
+        onDismiss={vi.fn()}
+        safeAreaInsets={{ bottom: 34 }}
+        scrollable
+        title="Edit record"
+        visible
+      >
+        <LumenTextField accessibilityLabel="Name" />
+      </LumenSheet>
+    )
+    const scroll = root.container.queryAll(instance => instance.type === 'ScrollView')[0]
+    const keyboard = root.container.queryAll(instance => instance.type === 'KeyboardAvoidingView')[0]
+    if (!scroll || !keyboard) throw new Error('Missing keyboard or scrolling surface')
+    expect(readProp(keyboard, 'enabled')).toBe(true)
+    expect(readProp(keyboard, 'behavior')).toBe('padding')
+    expect(readProp(keyboard, 'keyboardVerticalOffset')).toBe(24)
+    expect(readProp(scroll, 'keyboardShouldPersistTaps')).toBe('handled')
+    expect(scroll.queryAll(instance => readProp(instance, 'accessibilityRole') === 'button')).toHaveLength(0)
+    expect(findByAccessibilityRole(root, 'header')).toBeDefined()
+    expect(root.container.queryAll(instance => {
+      const style = readProp(instance, 'style')
+      return typeof style === 'object' && style !== null && 'paddingBottom' in style && style.paddingBottom === 34
+    })).toHaveLength(1)
+  })
+
+  test('blocks platform and backdrop dismissal until the application unlocks it', async () => {
+    const dismiss = vi.fn()
+    const root = await renderNative(
+      <LumenSheet dismissible={false} onDismiss={dismiss} visible><LumenText>Saving</LumenText></LumenSheet>
+    )
+    const modal = root.container.queryAll(instance => instance.type === 'Modal')[0]
+    const backdrop = root.container.queryAll(instance => instance.type === 'Pressable')[0]
+    if (!modal || !backdrop) throw new Error('Missing modal or backdrop')
+    callAction(readProp(modal, 'onRequestClose'), 'Missing platform dismiss')
+    callAction(readProp(backdrop, 'onPress'), 'Missing backdrop dismiss')
+    expect(dismiss).not.toHaveBeenCalled()
+    expect(readProp(backdrop, 'disabled')).toBe(true)
+    await act(async () => {
+      root.render(<LumenProvider scheme="light"><LumenSheet onDismiss={dismiss} visible><LumenText>Saved</LumenText></LumenSheet></LumenProvider>)
+      await Promise.resolve()
+    })
+    const updatedModal = root.container.queryAll(instance => instance.type === 'Modal')[0]
+    if (!updatedModal) throw new Error('Missing updated modal')
+    callAction(readProp(updatedModal, 'onRequestClose'), 'Missing platform dismiss')
+    expect(dismiss).toHaveBeenCalledOnce()
+  })
+
+  test('names sheets and hides backdrop targets from keyboard and accessibility traversal', async () => {
+    const root = await renderNative(<LumenSheet onDismiss={vi.fn()} title="Edit record" visible><LumenText>Details</LumenText></LumenSheet>)
+    const modal = root.container.queryAll(instance => instance.type === 'Modal')[0]
+    const backdrop = root.container.queryAll(instance => instance.type === 'Pressable')[0]
+    if (!modal || !backdrop) throw new Error('Missing modal or backdrop')
+    expect(readProp(modal, 'accessibilityLabel')).toBe('Edit record')
+    expect(readProp(backdrop, 'tabIndex')).toBe(-1)
+    expect(readProp(backdrop, 'aria-hidden')).toBe(true)
+  })
+
+  test('honors the native reduced-motion setting', async () => {
+    nativeMotion.enabled = true
+    const root = await renderNative(<LumenSheet onDismiss={vi.fn()} visible><LumenText>Details</LumenText></LumenSheet>)
+    const modal = root.container.queryAll(instance => instance.type === 'Modal')[0]
+    if (!modal) throw new Error('Missing modal')
+    expect(readProp(modal, 'animationType')).toBe('none')
+  })
+
+  test('uses a centered adaptive dialog on wide windows and Android keyboard behavior', async () => {
+    nativeWindow.width = 1024
+    nativePlatform.OS = 'android'
+    const root = await renderNative(
+      <LumenSheet avoidKeyboard onDismiss={vi.fn()} presentation="adaptive" visible><LumenText>Details</LumenText></LumenSheet>
+    )
+    const modal = root.container.queryAll(instance => instance.type === 'Modal')[0]
+    const keyboard = root.container.queryAll(instance => instance.type === 'KeyboardAvoidingView')[0]
+    if (!modal || !keyboard) throw new Error('Missing modal or keyboard surface')
+    expect(readProp(modal, 'animationType')).toBe('fade')
+    expect(readProp(keyboard, 'behavior')).toBe('height')
+    expect(readProp(keyboard, 'style')).toMatchObject({ alignItems: 'center', justifyContent: 'center' })
   })
 })

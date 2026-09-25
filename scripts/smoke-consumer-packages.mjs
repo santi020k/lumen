@@ -130,6 +130,7 @@ import { lumen } from '@santi020k/lumen'
 import { lumenComponentNames, renderLumenIconSvg } from '@santi020k/lumen-core'
 import { registerLumenBrandIcons } from '@santi020k/lumen-icons-brand'
 import { Badge, Card } from '@santi020k/lumen-react'
+import { Icon as StaticIcon, Search } from '@santi020k/lumen-react/icons'
 import { Badge as ServerBadge, Card as ServerCard } from '@santi020k/lumen-react/server'
 import {
   getLumenManagedFieldState,
@@ -151,6 +152,7 @@ const html = renderToStaticMarkup(
   createElement(Card, null, createElement(Badge, null, 'Ready'))
 )
 
+assert.match(renderToStaticMarkup(createElement(StaticIcon, { icon: Search, label: 'Search records' })), /aria-label="Search records"/)
 assert.match(html, /ui-card/)
 assert.match(html, /ui-badge/)
 assert.equal(

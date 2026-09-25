@@ -3,6 +3,23 @@
 Use this guide when an AI agent is building an app with Lumen or updating examples that teach
 another agent how to use the library.
 
+## Install in ChatGPT or Codex
+
+The [Lumen UI plugin](https://chatgpt.com/plugins/plugin_asdk_app_6a8f6c526c5481918eb8a48806fa112b)
+is published in the shared Plugins Directory for ChatGPT and Codex.
+
+1. Open the listing and select **Install plugin**. Sign in to ChatGPT if prompted.
+2. Start a request with **@Lumen UI**, or choose one of the listing's starter prompts.
+3. Describe the interface and target framework, for example: “Find the right Lumen components for
+   an accessible React settings screen.”
+
+The plugin combines the Lumen workflow skill with the hosted public MCP catalog. It requires no
+separate Lumen account, API key, or local server. Its tools only read public Lumen documentation;
+they do not access private repositories or modify files and services. Your coding agent performs
+implementation work using the retrieved contracts and its own permissions.
+
+See the [publication record](./openai-plugin-submission.md) for version and verification details.
+
 ## Install the Lumen Agent Skill
 
 Lumen ships a portable Agent Skill for AI coding tools that support the open `SKILL.md` format:

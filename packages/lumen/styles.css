@@ -1491,7 +1491,7 @@
 .ui-badge--warning {
   background: hsl(var(--warning) / 0.12);
   border-color: hsl(var(--warning) / 0.36);
-  color: hsl(var(--warning));
+  color: hsl(var(--ink));
 }
 
 .ui-input,
@@ -1734,7 +1734,7 @@
 .ui-field > p,
 .ui-field > small {
   margin: 0;
-  color: hsl(var(--ink-muted));
+  color: hsl(var(--ink-soft));
   font-size: 0.8125rem;
   line-height: 1.5;
 }
@@ -2793,6 +2793,62 @@
   width: 100%;
   border-collapse: collapse;
   font-size: 0.875rem;
+}
+
+/* Mobile record labels are aria-hidden; retain explicit table roles. */
+.ui-table__label {
+  display: none;
+}
+
+@media (max-width: 48rem) {
+  .ui-table-wrap--records table,
+  .ui-table-wrap--records tbody {
+    display: block;
+    min-width: 0;
+  }
+
+  .ui-table-wrap--records thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .ui-table-wrap--records tbody tr {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 9rem), 1fr));
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  .ui-table-wrap--records tbody tr + tr {
+    border-top: 1px solid hsl(var(--line));
+  }
+
+  .ui-table-wrap--records tbody td {
+    display: block;
+    min-width: 0;
+    padding: 0;
+    border: 0;
+    overflow-wrap: anywhere;
+    white-space: normal;
+    text-align: start;
+  }
+
+  .ui-table-wrap--records .ui-table__label {
+    display: block;
+    margin-bottom: 0.25rem;
+    color: hsl(var(--ink-soft));
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .ui-table-wrap--records .ui-table__cell--wide {
+    grid-column: 1 / -1;
+  }
 }
 
 .ui-table-wrap th,

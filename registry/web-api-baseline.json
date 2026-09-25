@@ -138,7 +138,7 @@
     "StatValue": "dbb5cb1bb57aed5bb4114365a1844db075db73e1ab480cf0ea09aaeaede257aa",
     "Stepper": "94cb3db48850150576d7dad2e43dfb0407d55b8b30f5cb086f73921ee69d17ce",
     "Switch": "7aa64a71c1e93b51b3341372c76a96170835ad8932252edfce67af2c058e0f95",
-    "Table": "fe4e26cfc04ea5a4befb393d668b0f7549c53cf13cf5c19e33b9bded852f1b90",
+    "Table": "8d5213b48683d4ab0fa3af801bc4b9cdfb4bfb5f72fdce71b9bf47155e6e1ad5",
     "Tabs": "4e9d75583671afb390eec4085a133e0d06f9852abdb2d7db983460661bd567de",
     "TagGroup": "5f11e4ff7c8d8890a13d19e21ec4b4764b47b3c47fc4e5395656a3e1d455ee98",
     "Textarea": "50a08c350b83cdf5897d847ea3eba55e16c998afa9a4c82937609446a1f6727f",
@@ -572,6 +572,10 @@
         "./figma": {
           "import": "./dist/figma.js",
           "types": "./dist/figma.d.ts"
+        },
+        "./icon-data": {
+          "import": "./dist/icon-data.generated.js",
+          "types": "./dist/icon-data.generated.d.ts"
         },
         "./icons": {
           "import": "./dist/icons.js",
@@ -2158,6 +2162,10 @@
         ".": {
           "import": "./dist/index.js",
           "types": "./dist/index.d.ts"
+        },
+        "./icons": {
+          "import": "./dist/icons.js",
+          "types": "./dist/icons.d.ts"
         },
         "./layers.css": "./layers.css",
         "./package.json": "./package.json",

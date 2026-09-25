@@ -2,6 +2,11 @@
 
 <!-- cspell:words screencapture simctl UDID -->
 
+Install [Lumen Playground from the App Store](https://apps.apple.com/app/id6805250815)
+on iPhone, iPad, or Mac to explore the native gallery without building it locally.
+See the [Apple playground guide](https://lumen.santi020k.com/docs/apple/playground)
+for component previews and setup instructions.
+
 A SwiftUI reference application for the shared and Apple-specific `LumenUI` components. Its four
 primary destinations are Home, Examples, Components, and Settings:
 
