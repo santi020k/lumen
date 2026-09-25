@@ -25,6 +25,7 @@ on:
       - "registry/native-api-baseline.json"
       - "registry/compose-api-classification.json"
       - "registry/lumen-2-contract.json"
+      - "registry/lumen-3-contract.json"
       - "registry/web-api-baseline.json"
       - "registry/web-consumer-evidence.json"
       - "registry/swift-api-baseline.json"
@@ -52,6 +53,8 @@ on:
       - "scripts/check-native-stable-readiness.test.mjs"
       - "scripts/check-lumen-2-contract.mjs"
       - "scripts/check-lumen-2-contract.test.mjs"
+      - "scripts/check-lumen-3-contract.mjs"
+      - "scripts/check-lumen-3-contract.test.mjs"
       - "scripts/check-maven-release-artifacts.mjs"
       - "scripts/check-maven-release-artifacts.test.mjs"
       - "scripts/check-maven-pom-metadata.mjs"
@@ -155,11 +158,13 @@ jobs:
         if: needs.classify.outputs.web-contracts == 'true'
       - run: pnpm run check:web-consumer-evidence && pnpm run test:web-consumer-evidence
         if: needs.classify.outputs.web-contracts == 'true'
-      - name: Enforce the Lumen 2 contract
+      - name: Enforce release contracts
         if: needs.classify.outputs.web-contracts == 'true' || needs.classify.outputs.native == 'true'
         run: >-
           pnpm run check:lumen-2-contract &&
-          pnpm run test:lumen-2-contract
+          pnpm run test:lumen-2-contract &&
+          pnpm run check:lumen-3-contract &&
+          pnpm run test:lumen-3-contract
       - name: Enforce coordinated native release gates
         if: needs.classify.outputs.native == 'true'
         run: >-

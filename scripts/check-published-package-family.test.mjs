@@ -19,7 +19,7 @@ const expectedPackages = [
   { name: "@santi020k/lumen-react", version: "2.0.0" },
 ];
 
-const withReleaseManifest = async (callback) => {
+const withReleaseManifest = async (callback, version = "2.0.0") => {
   const directory = await mkdtemp(
     resolve(tmpdir(), "lumen-published-package-family-"),
   );
@@ -34,13 +34,13 @@ const withReleaseManifest = async (callback) => {
         release: {
           npm: {
             packages: Object.fromEntries(
-              expectedPackages.map(({ name, version }) => [
+              expectedPackages.map(({ name }) => [
                 name,
                 { peerDependencies: {}, version },
               ]),
             ),
           },
-          version: "2.0.0",
+          version,
         },
       },
       null,
@@ -78,6 +78,22 @@ test("accepts the complete coordinated Lumen 2 npm family", async () => {
   assert.equal(result.status, 0, result.stderr);
 
   assert.match(result.stdout, /Verified all 3 coordinated npm packages/);
+});
+
+test("accepts the complete coordinated Lumen 3 npm family", async () => {
+  const publishedPackages = expectedPackages.map((entry) => ({
+    ...entry,
+    version: "3.0.0",
+  }));
+
+  const result = await withReleaseManifest(
+    (manifestPath) => runChecker(manifestPath, publishedPackages, "3.0.0"),
+    "3.0.0",
+  );
+
+  assert.equal(result.status, 0, result.stderr);
+
+  assert.match(result.stdout, /Verified all 3 coordinated npm packages at 3\.0\.0/);
 });
 
 test("rejects a missing package after a partial initial publication", async () => {

@@ -67,7 +67,7 @@ jobs:
           --version "$LUMEN_COMPOSE_VERSION"
           --candidate-ref "$GITHUB_SHA"
 
-      - name: Verify approved Lumen 2 candidate
+      - name: Verify approved release candidate
         run: >-
           node scripts/check-approved-release-revision.mjs
           --version "$LUMEN_COMPOSE_VERSION"
@@ -92,8 +92,10 @@ jobs:
           node scripts/check-native-consumer-evidence.mjs &&
           node --test scripts/check-native-consumer-evidence.test.mjs
 
-      - name: Validate Lumen 2 contract
-        run: node scripts/check-lumen-2-contract.mjs
+      - name: Validate release contracts
+        run: >-
+          node scripts/check-lumen-2-contract.mjs &&
+          pnpm run check:lumen-3-contract -- --require-approved
 
       - name: Validate native stability ledger
         run: node scripts/check-native-stability-soak.mjs

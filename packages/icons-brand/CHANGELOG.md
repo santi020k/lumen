@@ -1,5 +1,12 @@
 # @santi020k/lumen-icons-brand
 
+## 3.0.0
+
+### Major Changes
+
+- Coordinate the complete public package family at Lumen 3. Existing brand icon names remain
+  available; consumers should update Lumen package pins together.
+
 ## 2.0.0
 
 ### Major Changes

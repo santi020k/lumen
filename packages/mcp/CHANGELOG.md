@@ -1,6 +1,12 @@
 # @santi020k/lumen-mcp
 
-## 2.2.0
+## 3.0.0
+
+### Major Changes
+
+- Coordinate Lumen 3 across web and native packages. Swift consumers with exhaustive
+  `LumenIconName` switches must handle the synchronized icon cases or add an `@unknown default`
+  branch; existing component calls and existing icon cases remain available.
 
 ### Patch Changes
 

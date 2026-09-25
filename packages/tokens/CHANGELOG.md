@@ -1,5 +1,12 @@
 # @santi020k/lumen-tokens
 
+## 3.0.0
+
+### Major Changes
+
+- Coordinate the canonical token document with the complete Lumen 3 package family. Existing token
+  names remain available.
+
 ## 2.0.0
 
 ### Major Changes

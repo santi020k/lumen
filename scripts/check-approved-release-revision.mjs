@@ -32,7 +32,10 @@ assert.match(
   "The release version must be semantic",
 );
 
-if (version !== "2.0.0") {
+const major = Number.parseInt(version.split(".")[0], 10);
+const initialMajorVersion = `${major}.0.0`;
+
+if (![2, 3].includes(major) || version !== initialMajorVersion) {
   process.stdout.write(
     `Approved release revision integrity is not required for ${version}.\n`,
   );
@@ -40,8 +43,22 @@ if (version !== "2.0.0") {
   process.exit(0);
 }
 
+const publishedTag = spawnSync(
+  "git",
+  ["rev-parse", "--verify", `v${version}^{commit}`],
+  { cwd: repository, encoding: "utf8" },
+);
+
+if (publishedTag.status === 0) {
+  process.stdout.write(
+    `Approved release revision integrity was already enforced before v${version} was published.\n`,
+  );
+
+  process.exit(0);
+}
+
 const contractArgument =
-  readArgument("--contract") ?? "registry/lumen-2-contract.json";
+  readArgument("--contract") ?? `registry/lumen-${major}-contract.json`;
 
 const contractPath = resolve(repository, contractArgument);
 
@@ -51,6 +68,7 @@ const contractRelativePath = relative(repository, contractPath)
 
 const candidateRef = readArgument("--candidate-ref") ?? "HEAD";
 const contract = JSON.parse(await readFile(contractPath, "utf8"));
+const releaseLabel = `Lumen ${major}`;
 
 assert.ok(
   contractRelativePath && !contractRelativePath.startsWith("../"),
@@ -58,9 +76,15 @@ assert.ok(
 );
 
 assert.equal(
+  contract.targetVersion,
+  version,
+  `${releaseLabel} contract must target ${version}`,
+);
+
+assert.equal(
   contract.status,
   "approved",
-  "Initial Lumen 2 publication requires an approved contract",
+  `Initial ${releaseLabel} publication requires an approved contract`,
 );
 
 assert.match(
@@ -88,7 +112,7 @@ const workingTreeStatus = runGit(
 assert.equal(
   workingTreeStatus,
   "",
-  "Initial Lumen 2 publication requires a clean working tree with no tracked or untracked changes",
+  `Initial ${releaseLabel} publication requires a clean working tree with no tracked or untracked changes`,
 );
 
 const resolveCommit = (reference, label) => {
@@ -136,9 +160,9 @@ const changedFiles = runGit(
 assert.deepEqual(
   changedFiles,
   [contractRelativePath],
-  "Only the contract approval record may change after the reviewed Lumen 2 candidate revision",
+  `Only the contract approval record may change after the reviewed ${releaseLabel} candidate revision`,
 );
 
 process.stdout.write(
-  `Approved Lumen 2 candidate ${reviewedRevision} has only the ${contractRelativePath} approval delta.\n`,
+  `Approved ${releaseLabel} candidate ${reviewedRevision} has only the ${contractRelativePath} approval delta.\n`,
 );

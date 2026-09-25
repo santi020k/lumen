@@ -1,5 +1,12 @@
 # @santi020k/lumen-react-hook-form
 
+## 3.0.0
+
+### Major Changes
+
+- Support the Lumen React 3 package family. Update `@santi020k/lumen-react` and this adapter
+  together; the form component API is unchanged.
+
 ## 2.0.0
 
 ### Major Changes

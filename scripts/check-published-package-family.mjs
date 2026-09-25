@@ -25,7 +25,7 @@ const version =
     ),
   ).version;
 
-if (version !== "2.0.0") {
+if (!["2.0.0", "3.0.0"].includes(version)) {
   process.stdout.write(
     `Coordinated npm package-family publication is not required for ${version}.\n`,
   );
@@ -43,7 +43,7 @@ const publishedPackagesSource =
 
 assert.ok(
   publishedPackagesSource,
-  "Initial Lumen 2 publication requires the Changesets published-packages output",
+  `Initial Lumen ${version.split(".")[0]} publication requires the Changesets published-packages output`,
 );
 
 const releaseManifest = JSON.parse(await readFile(releaseManifestPath, "utf8"));
@@ -101,7 +101,7 @@ const actualPackages = publishedPackages
 assert.deepEqual(
   actualPackages,
   expectedPackages,
-  "Initial Lumen 2 publication must publish the complete coordinated npm package family",
+  `Initial Lumen ${version.split(".")[0]} publication must publish the complete coordinated npm package family`,
 );
 
 process.stdout.write(

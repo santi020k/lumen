@@ -8,9 +8,10 @@ import {
 
 test('extracts and sorts Swift API diagnostics', () => {
   const output = `
-2 breaking changes detected in LumenUI:
+3 breaking changes detected in LumenUI:
   💔 API breakage: enumelement LumenSurfaceRadius.xl has been added as a new enum case
   💔 API breakage: enumelement LumenSurfacePadding.xl has been added as a new enum case
+  💔 API breakage: enumelement LumenSurfaceRadius.xl has been added as a new enum case [#api-digester-breaking-change]
 `
 
   assert.deepEqual(parseSwiftApiBreakages(output), [

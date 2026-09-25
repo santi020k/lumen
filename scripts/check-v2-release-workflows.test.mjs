@@ -303,6 +303,7 @@ test("npm publication validates the contract and current stability ledger", () =
     "node scripts/check-approved-release-revision.mjs",
     "node scripts/check-graduated-release-revision.mjs",
     "node scripts/check-lumen-2-contract.mjs",
+    "pnpm run check:lumen-3-contract -- --require-approved",
     "pnpm run check:web-consumer-evidence",
     "pnpm run check:native-consumer-evidence",
     "pnpm run check:native-stability-soak",
@@ -374,6 +375,7 @@ test("Compose publication validates the contract and current stability ledger", 
   assertOrderedCommands(composeWorkflow, "Compose publication", [
     "node scripts/check-graduated-release-revision.mjs",
     "node scripts/check-lumen-2-contract.mjs",
+    "pnpm run check:lumen-3-contract -- --require-approved",
     "node scripts/check-native-stability-soak.mjs",
   ]);
 
@@ -389,7 +391,7 @@ test("initial Compose publication verifies the shared release commit before cred
     "name: Verify coordinated Lumen 2 revision",
     "node scripts/check-coordinated-release-revision.mjs",
     ' --candidate-ref "$GITHUB_SHA"',
-    "name: Verify approved Lumen 2 candidate",
+    "name: Verify approved release candidate",
     "node scripts/check-approved-release-revision.mjs",
     "name: Verify graduated Lumen 2 release",
     "node scripts/check-graduated-release-revision.mjs",
