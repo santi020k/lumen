@@ -11,8 +11,18 @@ const contract = JSON.parse(
 
 const reviewedRevision = 'a'.repeat(40)
 
+const createDraftContract = () => {
+  const draft = structuredClone(contract)
+
+  draft.status = 'draft'
+
+  delete draft.approval
+
+  return draft
+}
+
 const createApprovedContract = () => ({
-  ...structuredClone(contract),
+  ...createDraftContract(),
   approval: {
     approver: 'Santiago Molina (release owner)',
     date: '2026-09-25',
@@ -27,11 +37,11 @@ const createApprovedContract = () => ({
 })
 
 test('accepts the reviewed draft contract before its approval-only commit', () => {
-  assert.deepEqual(validateLumen3Contract(contract), [])
+  assert.deepEqual(validateLumen3Contract(createDraftContract()), [])
 })
 
 test('requires explicit approval at the publication boundary', () => {
-  assert.deepEqual(validateLumen3Contract(contract, { requireApproved: true }), [
+  assert.deepEqual(validateLumen3Contract(createDraftContract(), { requireApproved: true }), [
     'The Lumen 3 release requires an approved contract.'
   ])
 })
@@ -116,7 +126,7 @@ test('rejects incomplete or future-dated approval records', () => {
 })
 
 test('rejects an approval record while the contract remains draft', () => {
-  const invalid = structuredClone(contract)
+  const invalid = createDraftContract()
 
   invalid.approval = createApprovedContract().approval
 
