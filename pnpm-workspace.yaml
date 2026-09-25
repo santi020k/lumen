@@ -22,7 +22,7 @@ catalog:
   "@lucide/icons": ^1.48.0
   "@modelcontextprotocol/sdk": ^1.30.1
   "@playwright/test": 1.63.0
-  "@react-native-community/datetimepicker": 9.1.0
+  "@react-native-community/datetimepicker": 9.2.1
   "@santi020k/commitprompt": ^1.1.0
   "@santi020k/eslint-config-astro": ^3.1.4
   "@santi020k/eslint-config-basic": ^3.5.4
@@ -39,8 +39,8 @@ catalog:
   "@tailwindcss/vite": ^4.3.3
   "@types/express": ^5.0.6
   "@types/node": ^26.6.2
-  "@types/react": ~19.2.4
-  "@types/react-dom": ~19.2.5
+  "@types/react": ~19.3.0
+  "@types/react-dom": ~19.3.0
   "@types/semver": ^7.8.0
   "@vitest/coverage-v8": ^5.0.1
   ajv: ^8.20.0
@@ -60,15 +60,15 @@ catalog:
   lint-staged: ^17.5.1
   next: ^16.3.6
   oxlint: ^1.85.0
-  react: 19.2.3
-  react-dom: 19.2.3
+  react: 19.3.0
+  react-dom: 19.3.0
   react-hook-form: ^7.88.0
-  react-native: 0.86.3
+  react-native: 0.87.1
   react-native-web: ^0.21.2
   semver: ^7.8.5
   sharp: ^0.35.4
   tailwindcss: ^4.3.3
-  test-renderer: 1.2.0
+  test-renderer: 1.3.0
   turbo: ^2.11.3
   # TypeScript 7 is held until the current Astro and ESLint peer ranges support it.
   typescript: ~6.0.3
@@ -83,11 +83,11 @@ catalogs:
   # React 19.3, React Native 0.87, and their matching renderer/types are not
   # compatible with the current Expo SDK and must move together in a later SDK upgrade.
   expo:
-    react: 19.2.3
-    react-dom: 19.2.3
-    react-native: 0.86.3
-    react-native-safe-area-context: ~5.7.0
-    react-native-svg: 15.15.4
+    react: 19.3.0
+    react-dom: 19.3.0
+    react-native: 0.87.1
+    react-native-safe-area-context: ~5.10.0
+    react-native-svg: 15.15.5
 ignoredBuiltDependencies:
   - esbuild
   - sharp
@@ -114,8 +114,8 @@ overrides:
   nanoid@3: 3.3.18
   postcss@8: 8.5.23
   qs@6: 6.16.0
-  react: 19.2.3
-  react-dom: 19.2.3
+  react: 19.3.0
+  react-dom: 19.3.0
   svgo@4: 4.1.0
   tar@>=7.0.0 <7.5.21: 7.5.22
   ts-deepmerge@<8.0.0: 8.0.0
