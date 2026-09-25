@@ -19,6 +19,11 @@ const [ci, canary, release, docsManifestSource, versionPackages] = await Promise
 test('CI delegates path decisions and keeps package-family gates independent', () => {
   assert.match(ci, /node scripts\/classify-workflow-paths\.mjs ci/u)
 
+  assert.match(
+    ci,
+    /startsWith\(github\.head_ref, 'changeset-release\/'\)[\s\S]*?startsWith\(github\.head_ref, 'release\/'\)/u
+  )
+
   assert.match(ci, /needs\.classify\.outputs\.bundle-size/u)
 
   assert.match(ci, /needs\.classify\.outputs\.framework-contracts/u)
@@ -38,6 +43,11 @@ test('CI delegates path decisions and keeps package-family gates independent', (
   assert.doesNotMatch(
     ci,
     /if \[\[ "\$\{\{ needs\.classify\.outputs\.compatibility \}\}" == "true" \]\]; then\n[\s\S]*?pnpm run build\n/u
+  )
+
+  assert.match(
+    ci,
+    /needs\.classify\.outputs\.release-pr != 'true'[\s\S]*?pnpm changeset status --since=origin\/main/u
   )
 })
 

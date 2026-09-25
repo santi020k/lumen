@@ -35,11 +35,16 @@ jobs:
       - name: Detect release pull request
         id: release
         env:
-          IS_RELEASE_PR: "${{ startsWith(github.head_ref, 'changeset-release/') }}"
+          IS_RELEASE_PR: >-
+            ${{
+              startsWith(github.head_ref, 'changeset-release/') ||
+              startsWith(github.head_ref, 'release/')
+            }}
           SKIP_CHANGELOG: >-
             ${{
               contains(github.event.pull_request.labels.*.name, 'skip-changelog') ||
               startsWith(github.head_ref, 'changeset-release/') ||
+              startsWith(github.head_ref, 'release/') ||
               startsWith(github.head_ref, 'chore/') ||
               startsWith(github.head_ref, 'ci/') ||
               startsWith(github.head_ref, 'docs/') ||

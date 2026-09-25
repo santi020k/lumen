@@ -1,13 +1,11 @@
 import assert from 'node:assert/strict'
 import { spawnSync } from 'node:child_process'
-import { mkdtemp, readdir, readFile, rm, writeFile } from 'node:fs/promises'
+import { mkdir, mkdtemp, readdir, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
 
 const repositoryRoot = resolve(import.meta.dirname, '..')
 const playgroundDirectory = join(repositoryRoot, 'apps', 'playground-react-native')
-const manifestPath = join(playgroundDirectory, 'package.json')
-const originalManifest = await readFile(manifestPath, 'utf8')
 const temporaryDirectory = await mkdtemp(join(tmpdir(), 'lumen-packed-rn-canary-'))
 
 const run = (command, args, cwd) => {
@@ -38,23 +36,51 @@ try {
 
   assert.ok(reactNativeArchiveName, 'Expected a packed React Native archive')
 
-  for (const archiveName of [coreArchiveName, reactNativeArchiveName]) {
+  for (const [packageName, archiveName] of [
+    ['lumen-core', coreArchiveName],
+    ['lumen-react-native', reactNativeArchiveName]
+  ]) {
+    const installDirectory = join(
+      playgroundDirectory,
+      'node_modules',
+      '@santi020k',
+      packageName
+    )
+
+    await rm(installDirectory, { force: true, recursive: true })
+
+    await mkdir(installDirectory, { recursive: true })
+
     run(
-      'pnpm',
+      'tar',
       [
-        'add',
-        '--config.link-workspace-packages=deep',
-        '--ignore-scripts',
-        '--lockfile=false',
-        '--save-prod',
+        '-xzf',
         join(temporaryDirectory, archiveName),
+        '--strip-components=1',
+        '-C',
+        installDirectory,
       ],
-      playgroundDirectory
+      repositoryRoot
     )
   }
-} finally {
-  await writeFile(manifestPath, originalManifest)
 
+  run(
+    'pnpm',
+    [
+      'install',
+      '--prod',
+      '--ignore-scripts',
+      '--lockfile=false',
+      '--ignore-workspace',
+    ],
+    join(
+      playgroundDirectory,
+      'node_modules',
+      '@santi020k',
+      'lumen-core'
+    )
+  )
+} finally {
   await rm(temporaryDirectory, { force: true, recursive: true })
 }
 
