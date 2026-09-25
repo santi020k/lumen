@@ -251,6 +251,14 @@ jobs:
             scripts/sync-native-component-captures.mjs \
             --compare --platform=react-native --source=default --tolerance=0.04
 
+      - name: Upload React Native captures on failure
+        if: failure()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: react-native-captures
+          path: test-results/react-native-components
+          if-no-files-found: error
+
   mcp-node-20:
     name: MCP compatibility (Node 20)
     needs: classify

@@ -93,6 +93,14 @@ const frameworkPlaywrightConfigs = await Promise.all(
   ),
 );
 
+const docsPlaywrightConfigs = await Promise.all(
+  [
+    "playwright.a11y.config.ts",
+    "playwright.config.ts",
+    "playwright.interactions.config.ts",
+  ].map(name => readFile(resolve(repositoryRoot, name), "utf8")),
+);
+
 const assertSelectsCanary = (input, canary) => {
   assert.equal(
     classifyCanaryPaths([input])[canary],
@@ -274,6 +282,27 @@ test("framework browser checks keep the managed server inside Playwright's proce
     assert.ok(
       config.includes("gracefulShutdown: { signal: 'SIGTERM', timeout: 5_000 }"),
       "the framework server must have a bounded graceful shutdown",
+    );
+  }
+});
+
+test("docs browser checks keep Astro preview inside Playwright's process group", () => {
+  for (const config of docsPlaywrightConfigs) {
+    assert.ok(
+      config.includes(
+        "node apps/docs/node_modules/astro/bin/astro.mjs preview --root apps/docs --ignore-lock",
+      ),
+      "Astro preview must run directly in the foreground without a package-manager wrapper",
+    );
+
+    assert.ok(
+      config.includes("gracefulShutdown: { signal: 'SIGTERM', timeout: 5_000 }"),
+      "the Astro preview server must have a bounded graceful shutdown",
+    );
+
+    assert.ok(
+      !config.includes("ASTRO_PREVIEW_BACKGROUND"),
+      "Astro's automatic background mode must not escape Playwright's managed process group",
     );
   }
 });
