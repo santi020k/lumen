@@ -1,6 +1,6 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "globalEnv": ["CI", "NPM_TOKEN", "NODE_AUTH_TOKEN", "VITEST"],
+  "globalEnv": ["CI", "VITEST"],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],

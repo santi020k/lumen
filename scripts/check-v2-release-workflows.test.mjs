@@ -68,6 +68,15 @@ const versionPackagesSource = await readFile(
   "utf8",
 );
 
+const environmentExample = await readFile(
+  resolve(repositoryRoot, ".env.example"),
+  "utf8",
+);
+
+const turboConfiguration = JSON.parse(
+  await readFile(resolve(repositoryRoot, "turbo.json"), "utf8"),
+);
+
 const composeBuildSource = await readFile(
   resolve(repositoryRoot, "packages", "compose", "build.gradle.kts"),
   "utf8",
@@ -345,6 +354,19 @@ test("npm publication validates the contract and current stability ledger", () =
     npmWorkflow,
     /\b(?:NPM_TOKEN|NODE_AUTH_TOKEN):/u,
     "npm trusted publishing must not fall back to a long-lived registry token",
+  );
+
+  assert.doesNotMatch(
+    environmentExample,
+    /^(?:NPM_TOKEN|NODE_AUTH_TOKEN)=/mu,
+    "the environment example must not ask maintainers to provision a registry token",
+  );
+
+  assert.ok(
+    !turboConfiguration.globalEnv.some((name) =>
+      ["NPM_TOKEN", "NODE_AUTH_TOKEN"].includes(name),
+    ),
+    "Turbo must not treat obsolete registry tokens as supported global inputs",
   );
 
   assertOrderedCommands(npmWorkflow, "npm publication", [
