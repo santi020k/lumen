@@ -48,15 +48,15 @@ public profile now resolves; verify the displayed bio, image, and website after 
 
 Preferred English-first bio:
 
-> Accessible UI for web, native, Figma & AI.  
-> 150+ web primitives • Free & MIT  
-> EN/ES LanguageToggle example  
+> Accessible UI for web, native, Figma & AI.<br>
+> 150+ web primitives • Free & MIT<br>
+> EN/ES LanguageToggle example<br>
 > ↓ Build with Lumen
 
 Compact fallback:
 
-> Accessible UI for web, native, Figma & AI.  
-> Free & MIT • EN/ES example  
+> Accessible UI for web, native, Figma & AI.<br>
+> Free & MIT • EN/ES example<br>
 > ↓ Build with Lumen
 
 The localization line deliberately names the example. Do not shorten it to “Lumen supports English
