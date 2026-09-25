@@ -22,7 +22,6 @@ import {
   View,
   type ViewStyle
 } from 'react-native'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import {
   type LumenMenuPosition,
@@ -30,6 +29,16 @@ import {
 } from './overlay-recipes.js'
 import { LumenButton } from './primitives.js'
 import { useLumenTheme } from './theme-context.js'
+
+export interface LumenSafeAreaInsets {
+  bottom?: number
+  left?: number
+  right?: number
+  top?: number
+}
+
+const safeInset = (value: number | undefined): number => Number.isFinite(value) ? Math.max(0, value ?? 0) : 0
+const emptySafeAreaInsets: LumenSafeAreaInsets = Object.freeze({})
 
 export interface LumenAlertDialogProps {
   cancelLabel?: string
@@ -40,6 +49,8 @@ export interface LumenAlertDialogProps {
   description?: string
   onConfirm: () => void
   onDismiss: () => void
+  /** Pass insets from the application's safe-area integration when needed. */
+  safeAreaInsets?: LumenSafeAreaInsets
   title: string
   visible: boolean
 }
@@ -54,11 +65,11 @@ export const LumenAlertDialog = ({
   description,
   onConfirm,
   onDismiss,
+  safeAreaInsets = emptySafeAreaInsets,
   title,
   visible
 }: LumenAlertDialogProps): ReactElement => {
   const theme = useLumenTheme()
-  const insets = useSafeAreaInsets()
 
   return (
     <Modal
@@ -74,10 +85,10 @@ export const LumenAlertDialog = ({
           backgroundColor: '#00000080',
           flex: 1,
           justifyContent: 'center',
-          paddingBottom: theme.spacing.xl + insets.bottom,
-          paddingLeft: theme.spacing.xl + insets.left,
-          paddingRight: theme.spacing.xl + insets.right,
-          paddingTop: theme.spacing.xl + insets.top
+          paddingBottom: theme.spacing.xl + safeInset(safeAreaInsets.bottom),
+          paddingLeft: theme.spacing.xl + safeInset(safeAreaInsets.left),
+          paddingRight: theme.spacing.xl + safeInset(safeAreaInsets.right),
+          paddingTop: theme.spacing.xl + safeInset(safeAreaInsets.top)
         }}
       >
         <ScrollView
@@ -156,14 +167,12 @@ export interface LumenSheetProps {
   /** Adaptive presentation centers a bounded dialog on windows at least 768 points wide. */
   presentation?: 'adaptive' | 'sheet'
   /** Pass insets from the application's existing safe-area provider. */
-  safeAreaInsets?: { bottom?: number, left?: number, right?: number, top?: number }
+  safeAreaInsets?: LumenSafeAreaInsets
   /** Scrolls the body while keeping the heading and actions outside the scroll region. */
   scrollable?: boolean
   title?: string
   visible: boolean
 }
-
-const safeInset = (value: number | undefined): number => Number.isFinite(value) ? Math.max(0, value ?? 0) : 0
 
 const getSheetContainerStyle = (centered: boolean, spacing: number, insets: LumenSheetProps['safeAreaInsets'] = {}): ViewStyle => {
   const margin = centered ? spacing : 0
@@ -282,7 +291,7 @@ export const LumenSheet = (props: LumenSheetProps): ReactElement => {
   const { width } = useWindowDimensions()
   const reducedMotion = useSheetReducedMotion(props.visible)
   const { actions, children, onDismiss, safeAreaInsets, visible, ...options } = props
-  const { avoidKeyboard = false, dismissible = true, keyboardVerticalOffset = 0, presentation = 'sheet', scrollable = false, ...heading } = options
+  const { avoidKeyboard = false, dismissible = true, keyboardVerticalOffset = 0, presentation = 'sheet', scrollable = true, ...heading } = options
   const centered = presentation === 'adaptive' && width >= 768
 
   const dismiss = () => {
@@ -332,6 +341,8 @@ export interface LumenMenuItem {
 export interface LumenMenuProps {
   accessibilityLabel: string
   items: readonly LumenMenuItem[]
+  /** Pass insets from the application's safe-area integration when needed. */
+  safeAreaInsets?: LumenSafeAreaInsets
   trigger: ReactNode
 }
 
@@ -341,10 +352,10 @@ const menuWidth = 240
 export const LumenMenu = ({
   accessibilityLabel,
   items,
+  safeAreaInsets = emptySafeAreaInsets,
   trigger
 }: LumenMenuProps): ReactElement => {
   const theme = useLumenTheme()
-  const insets = useSafeAreaInsets()
   const triggerRef = useRef<ComponentRef<typeof Pressable>>(null)
   const { height: windowHeight, width: windowWidth } = useWindowDimensions()
 
@@ -362,13 +373,13 @@ export const LumenMenu = ({
         anchorWidth: width,
         anchorX: x,
         anchorY: y,
-        bottomInset: insets.bottom,
+        bottomInset: safeInset(safeAreaInsets.bottom),
         itemCount: items.length,
-        leftInset: insets.left,
+        leftInset: safeInset(safeAreaInsets.left),
         margin: theme.spacing.lg,
         menuWidth,
-        rightInset: insets.right,
-        topInset: insets.top,
+        rightInset: safeInset(safeAreaInsets.right),
+        topInset: safeInset(safeAreaInsets.top),
         windowHeight,
         windowWidth
       }))

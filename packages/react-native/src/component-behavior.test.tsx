@@ -77,10 +77,6 @@ vi.mock('@react-native-community/datetimepicker', async () => {
   }
 })
 
-vi.mock('react-native-safe-area-context', () => ({
-  useSafeAreaInsets: () => safeAreaInsets
-}))
-
 vi.mock('react-native-svg', async () => {
   const { createElement } = await import('react')
   const hostComponent = (name: string) => (
@@ -192,6 +188,7 @@ describe('Lumen React Native component behavior', () => {
         confirmLabel="Delete"
         onConfirm={() => {}}
         onDismiss={() => {}}
+        safeAreaInsets={safeAreaInsets}
         title="Delete project?"
         visible
       />

@@ -1,10 +1,13 @@
 import assert from "node:assert/strict";
-import { readFile, stat } from "node:fs/promises";
+import { readdir, readFile, stat } from "node:fs/promises";
 import { join, resolve } from "node:path";
 
 // cspell:words appiconset
 
 const repositoryRoot = resolve(import.meta.dirname, "..");
+
+const monetizationLabelPattern =
+  /\b(?:billing|paid|premium|purchases?|subscriptions?)\b/iu;
 
 const appleStore = join(
   repositoryRoot,
@@ -30,6 +33,15 @@ const androidStore = join(
   "Store",
 );
 
+const androidPlaygroundSourceDirectory = join(
+  repositoryRoot,
+  "apps",
+  "playground-android",
+  "app",
+  "src",
+  "main",
+);
+
 const readStoreText = async (path, maximumLength, label) => {
   const value = (await readFile(path, "utf8")).trim();
 
@@ -49,6 +61,23 @@ const assertFile = async (path) => {
   assert.ok(file.isFile(), `${path} must be a file`);
 
   assert.ok(file.size > 0, `${path} must not be empty`);
+};
+
+const collectFiles = async (directory, extension) => {
+  const entries = await readdir(directory, { withFileTypes: true });
+  const files = [];
+
+  for (const entry of entries) {
+    const path = join(directory, entry.name);
+
+    if (entry.isDirectory()) {
+      files.push(...(await collectFiles(path, extension)));
+    } else if (entry.isFile() && entry.name.endsWith(extension)) {
+      files.push(path);
+    }
+  }
+
+  return files;
 };
 
 const assertPng = async (path, width, height, colorType = 2) => {
@@ -335,22 +364,57 @@ const macAppleEntitlements = await readFile(
   "utf8",
 );
 
-const applePlaygroundSource = await readFile(
-  join(
-    repositoryRoot,
-    "apps",
-    "playground-apple",
-    "Sources",
-    "LumenApplePlayground",
-    "LumenApplePlaygroundApp.swift",
-  ),
-  "utf8",
+const applePlaygroundSourceDirectory = join(
+  repositoryRoot,
+  "apps",
+  "playground-apple",
+  "Sources",
 );
 
-assert.doesNotMatch(
-  applePlaygroundSource,
-  /"(?:Billing|Paid|Premium|Purchases?|Subscriptions?)"/u,
-  "Apple playground demo copy must not imply unavailable monetized features",
+const applePlaygroundSourceFiles = await collectFiles(
+  applePlaygroundSourceDirectory,
+  ".swift",
+);
+
+assert.ok(
+  applePlaygroundSourceFiles.length > 0,
+  "Apple playground targets must contain Swift sources",
+);
+
+for (const path of applePlaygroundSourceFiles) {
+  const source = await readFile(path, "utf8");
+
+  assert.doesNotMatch(
+    source,
+    monetizationLabelPattern,
+    `${path} must not imply unavailable monetized features`,
+  );
+}
+
+const androidPlaygroundSourceFiles = [
+  ...(await collectFiles(androidPlaygroundSourceDirectory, ".kt")),
+  ...(await collectFiles(androidPlaygroundSourceDirectory, ".xml")),
+];
+
+assert.ok(
+  androidPlaygroundSourceFiles.length > 0,
+  "Android playground target must contain Kotlin or XML sources",
+);
+
+for (const path of androidPlaygroundSourceFiles) {
+  const source = await readFile(path, "utf8");
+
+  assert.doesNotMatch(
+    source,
+    monetizationLabelPattern,
+    `${path} must not imply unavailable monetized features`,
+  );
+}
+
+assert.match(
+  'Text("Plan: \\(enabled ? "Premium" : "Standard")")',
+  monetizationLabelPattern,
+  "Swift source must be checked without relying on string-literal parsing",
 );
 
 assert.ok(

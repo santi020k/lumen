@@ -111,6 +111,7 @@ export {
   LumenMenu,
   type LumenMenuItem,
   type LumenMenuProps,
+  type LumenSafeAreaInsets,
   LumenShareButton,
   type LumenShareButtonProps,
   LumenSheet,

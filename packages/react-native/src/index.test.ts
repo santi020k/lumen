@@ -40,6 +40,12 @@ describe('Lumen React Native foundations', () => {
     expect(packageManifest.peerDependenciesMeta['@react-native-community/datetimepicker']?.optional).toBe(true)
   })
 
+  test('exports the application-supplied safe-area contract from the root entrypoint', async () => {
+    const rootSource = await readFile(new URL('./index.ts', import.meta.url), 'utf8')
+
+    expect(rootSource).toContain('type LumenSafeAreaInsets')
+  })
+
   test('provides matching semantic roles for light and dark themes', () => {
     expect(Object.keys(lumenColorTokens.light)).toEqual(
       Object.keys(lumenColorTokens.dark)
@@ -85,10 +91,12 @@ describe('Lumen React Native foundations', () => {
   })
 
   test('exposes the complete unique interface and brand icon catalog', () => {
-    expect(lumenIconNames).toHaveLength(2_427)
-    expect(new Set(lumenIconNames).size).toBe(2_427)
+    expect(lumenIconNames).toHaveLength(2_433)
+    expect(new Set(lumenIconNames).size).toBe(2_433)
     expect(lumenIconNames.filter(name => name.startsWith('brand:'))).toHaveLength(573)
     expect(lumenIconNames).toContain('search')
+    expect(lumenIconNames).toContain('album')
+    expect(lumenIconNames).toContain('trash-2')
     expect(lumenIconNames).toContain('brand:github')
   })
 })

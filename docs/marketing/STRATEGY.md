@@ -55,8 +55,8 @@ Never write copy that implies any of the following, even loosely:
 - That the Lumen documentation site, packages, or any component ships fully translated content.
   Only the `LanguageToggle` primitive has a demonstrated English/Spanish default; say so precisely
   every time (see the approved sentence in [`CONTENT_KIT.md`](CONTENT_KIT.md)).
-- That the Android playground is available on Google Play. Its production rollout is submitted and
-  under review, but the public listing has not been verified.
+- That the Android playground is available on Google Play. Google rejected the latest submission
+  for a screenshot mismatch, and a corrected resubmission is pending.
 - That OpenAI endorses or certifies Lumen. The published Plugins Directory listing confirms
   availability, not an endorsement.
 - That native platform support is production-proven on physical devices, or that real external
@@ -87,7 +87,7 @@ must not appear in public copy at all.
 | C-11 | The Apple playground (iPhone, iPad, Mac) is live on the App Store | README "Native playgrounds" section | CONDITIONAL | Apple only. Never combine with a claim about Android or React Native playground store availability. |
 | C-12 | Lumen UI 1.0.0 is published in the shared ChatGPT and Codex Plugins Directory | [`../openai-plugin-submission.md`](../openai-plugin-submission.md), verified public listing on 2026-09-08 | SUPPORTED | May say published and available; link to the exact directory listing or instruct readers to search Plugins for Lumen UI. Do not imply OpenAI endorsement or private-repository access. |
 | C-13 | Live CI, CodeQL, and npm badges expose current status | README badges section | CONDITIONAL | Link to the live GitHub Actions and npm pages. Never restate a green or current status without checking it at publication time. |
-| C-14 | Google granted Android playground production access and version 1.0.0 (1) was submitted for a full production rollout | [`../playground-publication.md`](../playground-publication.md) Android production record; current Google Play Console publishing status | CONDITIONAL | Say the rollout is submitted and under review. Do not say it is available, deployed, published, or live on Google Play until the public listing is independently verified. |
+| C-14 | Google granted Android playground production access; version 1.0.0 (1) was submitted and later rejected for a screenshot mismatch | [`../playground-publication.md`](../playground-publication.md) Android production record; current Google Play Console publishing status | CONDITIONAL | Say a corrected resubmission is pending. Do not say it is under review, available, deployed, published, or live on Google Play until that state is independently verified. |
 
 Add new claims here with the same fields before using them anywhere else in this package. If a claim
 cannot be verified against a current file, route, or check, it does not get an ID and must not be

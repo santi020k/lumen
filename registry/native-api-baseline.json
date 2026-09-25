@@ -142,6 +142,7 @@
         "LumenRefreshControl",
         "LumenRefreshControlProps",
         "LumenRefreshIndicatorTone",
+        "LumenSafeAreaInsets",
         "LumenScatterChart",
         "LumenScatterChartProps",
         "LumenSearchField",

@@ -16,11 +16,15 @@
           {
             "type": "object",
             "additionalProperties": false,
-            "required": ["name", "source", "selection"],
+            "required": ["name", "source", "selection", "aliases"],
             "properties": {
               "name": { "const": "interface" },
               "source": { "const": "lucide" },
-              "selection": { "const": "all" }
+              "selection": { "const": "all" },
+              "aliases": {
+                "type": "object",
+                "additionalProperties": { "type": "string" }
+              }
             }
           },
           {

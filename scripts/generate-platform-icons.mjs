@@ -92,12 +92,19 @@ const readCatalog = async () => {
 
   validateBrandPack(brandPack)
 
-  const aliases = requiredRecord(brandPack.aliases, 'packs.1.aliases')
+  const interfaceAliases = requiredRecord(interfacePack.aliases, 'packs.0.aliases')
+  const brandAliases = requiredRecord(brandPack.aliases, 'packs.1.aliases')
+
+  const normalizeAliases = (aliases, path) => Object.fromEntries(
+    Object.entries(aliases).map(([name, target]) => [
+      name,
+      requiredString(target, `${path}.${name}`)
+    ])
+  )
 
   return {
-    brandAliases: Object.fromEntries(
-      Object.entries(aliases).map(([name, target]) => [name, requiredString(target, `aliases.${name}`)])
-    )
+    brandAliases: normalizeAliases(brandAliases, 'packs.1.aliases'),
+    interfaceAliases: normalizeAliases(interfaceAliases, 'packs.0.aliases')
   }
 }
 
@@ -547,6 +554,31 @@ const createBrandIcons = (fab, aliases) => {
   }))
 }
 
+const createInterfaceIcons = (lucideIcons, aliases) => {
+  const interfaceIcons = new Map(Object.values(lucideIcons).map(icon => [icon.name, icon]))
+
+  for (const [alias, target] of Object.entries(aliases)) {
+    if (interfaceIcons.has(alias)) {
+      throw new Error(`Lucide interface alias conflicts with a canonical icon: ${alias}.`)
+    }
+
+    const targetIcon = interfaceIcons.get(target)
+
+    if (!targetIcon) throw new Error(`Unknown Lucide interface alias target: ${target}.`)
+
+    interfaceIcons.set(alias, targetIcon)
+  }
+
+  return [...interfaceIcons].map(([name, icon]) => ({
+    height: 'size' in icon ? icon.size : icon.height,
+    node: icon.node,
+    publicName: name,
+    source: 'lucide',
+    style: 'stroke',
+    width: 'size' in icon ? icon.size : icon.width
+  }))
+}
+
 const validateIcons = icons => {
   const names = new Set()
   const swiftNames = new Set()
@@ -580,14 +612,7 @@ const loadIcons = async catalog => {
     import('@fortawesome/free-brands-svg-icons')
   ])
 
-  const icons = Object.values(lucideIcons).map(icon => ({
-    height: 'size' in icon ? icon.size : icon.height,
-    node: icon.node,
-    publicName: icon.name,
-    source: 'lucide',
-    style: 'stroke',
-    width: 'size' in icon ? icon.size : icon.width
-  }))
+  const icons = createInterfaceIcons(lucideIcons, catalog.interfaceAliases)
 
   icons.push(...createBrandIcons(fab, catalog.brandAliases))
 

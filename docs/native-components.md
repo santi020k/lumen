@@ -141,7 +141,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.santi020k:lumen-compose:2.1.0")
+    implementation("com.santi020k:lumen-compose:2.2.0")
 }
 ```
 
@@ -199,7 +199,7 @@ contracts:
 
 ```kotlin
 dependencies {
-    implementation("com.santi020k:lumen-compose-wear:2.1.0")
+    implementation("com.santi020k:lumen-compose-wear:2.2.0")
 }
 ```
 
@@ -451,9 +451,9 @@ LumenNavigationBar(
 Overlay state and application data remain controlled by the host. Lumen supplies consistent action
 roles, spacing, and accessibility while each adapter uses its native modal and share presentation.
 SwiftUI exposes alert and sheet presentation as view modifiers so focus restoration remains attached
-to the presenting view. React Native applications mount `SafeAreaProvider` above `LumenProvider`;
+to the presenting view. React Native overlays accept optional application-supplied safe-area insets;
 their sheets scroll content by default, while `scrollable={false}` lets an existing `FlatList` or
-other virtualized child own scrolling.
+other virtualized child own scrolling. Lumen does not require a safe-area provider.
 
 ```swift
 LumenButton("Delete report") { showConfirmation = true }

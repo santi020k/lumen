@@ -939,6 +939,7 @@ public final class com/santi020k/lumen/LumenIconName$Companion {
 	public final fun getBookA--ExOp-M ()Ljava/lang/String;
 	public final fun getBookAlert--ExOp-M ()Ljava/lang/String;
 	public final fun getBookAudio--ExOp-M ()Ljava/lang/String;
+	public final fun getBookBookmark--ExOp-M ()Ljava/lang/String;
 	public final fun getBookCheck--ExOp-M ()Ljava/lang/String;
 	public final fun getBookCopy--ExOp-M ()Ljava/lang/String;
 	public final fun getBookDashed--ExOp-M ()Ljava/lang/String;
@@ -1556,10 +1557,12 @@ public final class com/santi020k/lumen/LumenIconName$Companion {
 	public final fun getBrickWall--ExOp-M ()Ljava/lang/String;
 	public final fun getBrickWallFire--ExOp-M ()Ljava/lang/String;
 	public final fun getBrickWallShield--ExOp-M ()Ljava/lang/String;
+	public final fun getBridge--ExOp-M ()Ljava/lang/String;
 	public final fun getBriefcase--ExOp-M ()Ljava/lang/String;
 	public final fun getBriefcaseBusiness--ExOp-M ()Ljava/lang/String;
 	public final fun getBriefcaseConveyorBelt--ExOp-M ()Ljava/lang/String;
 	public final fun getBriefcaseMedical--ExOp-M ()Ljava/lang/String;
+	public final fun getBriefcasePlus--ExOp-M ()Ljava/lang/String;
 	public final fun getBringToFront--ExOp-M ()Ljava/lang/String;
 	public final fun getBroccoli--ExOp-M ()Ljava/lang/String;
 	public final fun getBroom--ExOp-M ()Ljava/lang/String;
@@ -1572,6 +1575,8 @@ public final class com/santi020k/lumen/LumenIconName$Companion {
 	public final fun getBugPlay--ExOp-M ()Ljava/lang/String;
 	public final fun getBuilding--ExOp-M ()Ljava/lang/String;
 	public final fun getBuilding2--ExOp-M ()Ljava/lang/String;
+	public final fun getBuildingComplex--ExOp-M ()Ljava/lang/String;
+	public final fun getBuildingComplexPlus--ExOp-M ()Ljava/lang/String;
 	public final fun getBus--ExOp-M ()Ljava/lang/String;
 	public final fun getBusFront--ExOp-M ()Ljava/lang/String;
 	public final fun getCable--ExOp-M ()Ljava/lang/String;
@@ -1585,6 +1590,7 @@ public final class com/santi020k/lumen/LumenIconName$Companion {
 	public final fun getCalendarArrowUp--ExOp-M ()Ljava/lang/String;
 	public final fun getCalendarCheck--ExOp-M ()Ljava/lang/String;
 	public final fun getCalendarCheck2--ExOp-M ()Ljava/lang/String;
+	public final fun getCalendarChevronsRight--ExOp-M ()Ljava/lang/String;
 	public final fun getCalendarClock--ExOp-M ()Ljava/lang/String;
 	public final fun getCalendarCog--ExOp-M ()Ljava/lang/String;
 	public final fun getCalendarDays--ExOp-M ()Ljava/lang/String;
@@ -1603,6 +1609,8 @@ public final class com/santi020k/lumen/LumenIconName$Companion {
 	public final fun getCalendars--ExOp-M ()Ljava/lang/String;
 	public final fun getCamera--ExOp-M ()Ljava/lang/String;
 	public final fun getCameraOff--ExOp-M ()Ljava/lang/String;
+	public final fun getCan--ExOp-M ()Ljava/lang/String;
+	public final fun getCanSoda--ExOp-M ()Ljava/lang/String;
 	public final fun getCandy--ExOp-M ()Ljava/lang/String;
 	public final fun getCandyCane--ExOp-M ()Ljava/lang/String;
 	public final fun getCandyOff--ExOp-M ()Ljava/lang/String;
@@ -1617,6 +1625,8 @@ public final class com/santi020k/lumen/LumenIconName$Companion {
 	public final fun getCaravan--ExOp-M ()Ljava/lang/String;
 	public final fun getCardSim--ExOp-M ()Ljava/lang/String;
 	public final fun getCarrot--ExOp-M ()Ljava/lang/String;
+	public final fun getCarton--ExOp-M ()Ljava/lang/String;
+	public final fun getCartonOff--ExOp-M ()Ljava/lang/String;
 	public final fun getCaseLower--ExOp-M ()Ljava/lang/String;
 	public final fun getCaseSensitive--ExOp-M ()Ljava/lang/String;
 	public final fun getCaseUpper--ExOp-M ()Ljava/lang/String;
@@ -1695,6 +1705,7 @@ public final class com/santi020k/lumen/LumenIconName$Companion {
 	public final fun getCircleChevronRight--ExOp-M ()Ljava/lang/String;
 	public final fun getCircleChevronUp--ExOp-M ()Ljava/lang/String;
 	public final fun getCircleDashed--ExOp-M ()Ljava/lang/String;
+	public final fun getCircleDashedCheck--ExOp-M ()Ljava/lang/String;
 	public final fun getCircleDivide--ExOp-M ()Ljava/lang/String;
 	public final fun getCircleDollarSign--ExOp-M ()Ljava/lang/String;
 	public final fun getCircleDot--ExOp-M ()Ljava/lang/String;
@@ -1728,6 +1739,9 @@ public final class com/santi020k/lumen/LumenIconName$Companion {
 	public final fun getCircuitBoard--ExOp-M ()Ljava/lang/String;
 	public final fun getCitrus--ExOp-M ()Ljava/lang/String;
 	public final fun getClapperboard--ExOp-M ()Ljava/lang/String;
+	public final fun getClefAlto--ExOp-M ()Ljava/lang/String;
+	public final fun getClefBass--ExOp-M ()Ljava/lang/String;
+	public final fun getClefTreble--ExOp-M ()Ljava/lang/String;
 	public final fun getClipboard--ExOp-M ()Ljava/lang/String;
 	public final fun getClipboardCheck--ExOp-M ()Ljava/lang/String;
 	public final fun getClipboardClock--ExOp-M ()Ljava/lang/String;
@@ -1830,6 +1844,7 @@ public final class com/santi020k/lumen/LumenIconName$Companion {
 	public final fun getCreditCardCheck--ExOp-M ()Ljava/lang/String;
 	public final fun getCreditCardMinus--ExOp-M ()Ljava/lang/String;
 	public final fun getCreditCardPlus--ExOp-M ()Ljava/lang/String;
+	public final fun getCreditCardReader--ExOp-M ()Ljava/lang/String;
 	public final fun getCreditCardX--ExOp-M ()Ljava/lang/String;
 	public final fun getCroissant--ExOp-M ()Ljava/lang/String;
 	public final fun getCrop--ExOp-M ()Ljava/lang/String;
@@ -1838,6 +1853,7 @@ public final class com/santi020k/lumen/LumenIconName$Companion {
 	public final fun getCrown--ExOp-M ()Ljava/lang/String;
 	public final fun getCuboid--ExOp-M ()Ljava/lang/String;
 	public final fun getCupSoda--ExOp-M ()Ljava/lang/String;
+	public final fun getCupcake--ExOp-M ()Ljava/lang/String;
 	public final fun getCurrency--ExOp-M ()Ljava/lang/String;
 	public final fun getCylinder--ExOp-M ()Ljava/lang/String;
 	public final fun getDam--ExOp-M ()Ljava/lang/String;
@@ -1878,10 +1894,13 @@ public final class com/santi020k/lumen/LumenIconName$Companion {
 	public final fun getDock--ExOp-M ()Ljava/lang/String;
 	public final fun getDog--ExOp-M ()Ljava/lang/String;
 	public final fun getDollarSign--ExOp-M ()Ljava/lang/String;
+	public final fun getDome--ExOp-M ()Ljava/lang/String;
 	public final fun getDonut--ExOp-M ()Ljava/lang/String;
 	public final fun getDoorClosed--ExOp-M ()Ljava/lang/String;
 	public final fun getDoorClosedLocked--ExOp-M ()Ljava/lang/String;
+	public final fun getDoorClosedPackage--ExOp-M ()Ljava/lang/String;
 	public final fun getDoorOpen--ExOp-M ()Ljava/lang/String;
+	public final fun getDoorStairwell--ExOp-M ()Ljava/lang/String;
 	public final fun getDot--ExOp-M ()Ljava/lang/String;
 	public final fun getDownload--ExOp-M ()Ljava/lang/String;
 	public final fun getDraftingCompass--ExOp-M ()Ljava/lang/String;
@@ -1906,9 +1925,11 @@ public final class com/santi020k/lumen/LumenIconName$Companion {
 	public final fun getEllipse--ExOp-M ()Ljava/lang/String;
 	public final fun getEllipsis--ExOp-M ()Ljava/lang/String;
 	public final fun getEllipsisVertical--ExOp-M ()Ljava/lang/String;
+	public final fun getEngine--ExOp-M ()Ljava/lang/String;
 	public final fun getEntries ()Ljava/util/List;
 	public final fun getEqual--ExOp-M ()Ljava/lang/String;
 	public final fun getEqualApproximately--ExOp-M ()Ljava/lang/String;
+	public final fun getEqualApproximatelyNot--ExOp-M ()Ljava/lang/String;
 	public final fun getEqualNot--ExOp-M ()Ljava/lang/String;
 	public final fun getEraser--ExOp-M ()Ljava/lang/String;
 	public final fun getEthernetPort--ExOp-M ()Ljava/lang/String;
@@ -1930,6 +1951,7 @@ public final class com/santi020k/lumen/LumenIconName$Companion {
 	public final fun getFactory--ExOp-M ()Ljava/lang/String;
 	public final fun getFan--ExOp-M ()Ljava/lang/String;
 	public final fun getFastForward--ExOp-M ()Ljava/lang/String;
+	public final fun getFaucet--ExOp-M ()Ljava/lang/String;
 	public final fun getFeather--ExOp-M ()Ljava/lang/String;
 	public final fun getFence--ExOp-M ()Ljava/lang/String;
 	public final fun getFerrisWheel--ExOp-M ()Ljava/lang/String;
@@ -2066,10 +2088,14 @@ public final class com/santi020k/lumen/LumenIconName$Companion {
 	public final fun getGamepad--ExOp-M ()Ljava/lang/String;
 	public final fun getGamepad2--ExOp-M ()Ljava/lang/String;
 	public final fun getGamepadDirectional--ExOp-M ()Ljava/lang/String;
+	public final fun getGapHorizontal--ExOp-M ()Ljava/lang/String;
+	public final fun getGapVertical--ExOp-M ()Ljava/lang/String;
 	public final fun getGauge--ExOp-M ()Ljava/lang/String;
 	public final fun getGavel--ExOp-M ()Ljava/lang/String;
 	public final fun getGem--ExOp-M ()Ljava/lang/String;
 	public final fun getGeorgianLari--ExOp-M ()Ljava/lang/String;
+	public final fun getGerm--ExOp-M ()Ljava/lang/String;
+	public final fun getGermOff--ExOp-M ()Ljava/lang/String;
 	public final fun getGhost--ExOp-M ()Ljava/lang/String;
 	public final fun getGift--ExOp-M ()Ljava/lang/String;
 	public final fun getGitBranch--ExOp-M ()Ljava/lang/String;
@@ -2093,6 +2119,7 @@ public final class com/santi020k/lumen/LumenIconName$Companion {
 	public final fun getGlasses--ExOp-M ()Ljava/lang/String;
 	public final fun getGlobe--ExOp-M ()Ljava/lang/String;
 	public final fun getGlobeCheck--ExOp-M ()Ljava/lang/String;
+	public final fun getGlobeCode--ExOp-M ()Ljava/lang/String;
 	public final fun getGlobeLock--ExOp-M ()Ljava/lang/String;
 	public final fun getGlobeOff--ExOp-M ()Ljava/lang/String;
 	public final fun getGlobeX--ExOp-M ()Ljava/lang/String;
@@ -2160,11 +2187,14 @@ public final class com/santi020k/lumen/LumenIconName$Companion {
 	public final fun getHospital--ExOp-M ()Ljava/lang/String;
 	public final fun getHotel--ExOp-M ()Ljava/lang/String;
 	public final fun getHourglass--ExOp-M ()Ljava/lang/String;
+	public final fun getHourglassCog--ExOp-M ()Ljava/lang/String;
 	public final fun getHouse--ExOp-M ()Ljava/lang/String;
+	public final fun getHouseCog--ExOp-M ()Ljava/lang/String;
 	public final fun getHouseHeart--ExOp-M ()Ljava/lang/String;
 	public final fun getHousePlug--ExOp-M ()Ljava/lang/String;
 	public final fun getHousePlus--ExOp-M ()Ljava/lang/String;
 	public final fun getHouseWifi--ExOp-M ()Ljava/lang/String;
+	public final fun getHouses--ExOp-M ()Ljava/lang/String;
 	public final fun getIceCreamBowl--ExOp-M ()Ljava/lang/String;
 	public final fun getIceCreamCone--ExOp-M ()Ljava/lang/String;
 	public final fun getIdCard--ExOp-M ()Ljava/lang/String;
@@ -2187,6 +2217,7 @@ public final class com/santi020k/lumen/LumenIconName$Companion {
 	public final fun getItalic--ExOp-M ()Ljava/lang/String;
 	public final fun getIterationCcw--ExOp-M ()Ljava/lang/String;
 	public final fun getIterationCw--ExOp-M ()Ljava/lang/String;
+	public final fun getIvBag--ExOp-M ()Ljava/lang/String;
 	public final fun getJapaneseYen--ExOp-M ()Ljava/lang/String;
 	public final fun getJoystick--ExOp-M ()Ljava/lang/String;
 	public final fun getKanban--ExOp-M ()Ljava/lang/String;
@@ -2197,6 +2228,7 @@ public final class com/santi020k/lumen/LumenIconName$Companion {
 	public final fun getKeyboard--ExOp-M ()Ljava/lang/String;
 	public final fun getKeyboardMusic--ExOp-M ()Ljava/lang/String;
 	public final fun getKeyboardOff--ExOp-M ()Ljava/lang/String;
+	public final fun getLambda--ExOp-M ()Ljava/lang/String;
 	public final fun getLamp--ExOp-M ()Ljava/lang/String;
 	public final fun getLampCeiling--ExOp-M ()Ljava/lang/String;
 	public final fun getLampDesk--ExOp-M ()Ljava/lang/String;
@@ -2219,6 +2251,8 @@ public final class com/santi020k/lumen/LumenIconName$Companion {
 	public final fun getLayersArrowUp--ExOp-M ()Ljava/lang/String;
 	public final fun getLayersMinus--ExOp-M ()Ljava/lang/String;
 	public final fun getLayersPlus--ExOp-M ()Ljava/lang/String;
+	public final fun getLayoutArrowDown--ExOp-M ()Ljava/lang/String;
+	public final fun getLayoutArrowRight--ExOp-M ()Ljava/lang/String;
 	public final fun getLayoutDashboard--ExOp-M ()Ljava/lang/String;
 	public final fun getLayoutFreeform--ExOp-M ()Ljava/lang/String;
 	public final fun getLayoutGrid--ExOp-M ()Ljava/lang/String;
@@ -2237,7 +2271,11 @@ public final class com/santi020k/lumen/LumenIconName$Companion {
 	public final fun getLigature--ExOp-M ()Ljava/lang/String;
 	public final fun getLightbulb--ExOp-M ()Ljava/lang/String;
 	public final fun getLightbulbOff--ExOp-M ()Ljava/lang/String;
+	public final fun getLighthouse--ExOp-M ()Ljava/lang/String;
+	public final fun getLineDotBottomVertical--ExOp-M ()Ljava/lang/String;
+	public final fun getLineDotLeftHorizontal--ExOp-M ()Ljava/lang/String;
 	public final fun getLineDotRightHorizontal--ExOp-M ()Ljava/lang/String;
+	public final fun getLineDotTopVertical--ExOp-M ()Ljava/lang/String;
 	public final fun getLineSquiggle--ExOp-M ()Ljava/lang/String;
 	public final fun getLineStyle--ExOp-M ()Ljava/lang/String;
 	public final fun getLink--ExOp-M ()Ljava/lang/String;
@@ -2289,6 +2327,7 @@ public final class com/santi020k/lumen/LumenIconName$Companion {
 	public final fun getMailClock--ExOp-M ()Ljava/lang/String;
 	public final fun getMailMinus--ExOp-M ()Ljava/lang/String;
 	public final fun getMailOpen--ExOp-M ()Ljava/lang/String;
+	public final fun getMailPen--ExOp-M ()Ljava/lang/String;
 	public final fun getMailPlus--ExOp-M ()Ljava/lang/String;
 	public final fun getMailQuestionMark--ExOp-M ()Ljava/lang/String;
 	public final fun getMailSearch--ExOp-M ()Ljava/lang/String;
@@ -2354,6 +2393,7 @@ public final class com/santi020k/lumen/LumenIconName$Companion {
 	public final fun getMessageSquareText--ExOp-M ()Ljava/lang/String;
 	public final fun getMessageSquareWarning--ExOp-M ()Ljava/lang/String;
 	public final fun getMessageSquareX--ExOp-M ()Ljava/lang/String;
+	public final fun getMessagesCircle--ExOp-M ()Ljava/lang/String;
 	public final fun getMessagesSquare--ExOp-M ()Ljava/lang/String;
 	public final fun getMetronome--ExOp-M ()Ljava/lang/String;
 	public final fun getMic--ExOp-M ()Ljava/lang/String;
@@ -2381,6 +2421,7 @@ public final class com/santi020k/lumen/LumenIconName$Companion {
 	public final fun getMonitorDown--ExOp-M ()Ljava/lang/String;
 	public final fun getMonitorOff--ExOp-M ()Ljava/lang/String;
 	public final fun getMonitorPause--ExOp-M ()Ljava/lang/String;
+	public final fun getMonitorPc--ExOp-M ()Ljava/lang/String;
 	public final fun getMonitorPlay--ExOp-M ()Ljava/lang/String;
 	public final fun getMonitorSmartphone--ExOp-M ()Ljava/lang/String;
 	public final fun getMonitorSpeaker--ExOp-M ()Ljava/lang/String;
@@ -2404,6 +2445,8 @@ public final class com/santi020k/lumen/LumenIconName$Companion {
 	public final fun getMousePointerBan--ExOp-M ()Ljava/lang/String;
 	public final fun getMousePointerClick--ExOp-M ()Ljava/lang/String;
 	public final fun getMouseRight--ExOp-M ()Ljava/lang/String;
+	public final fun getMouth--ExOp-M ()Ljava/lang/String;
+	public final fun getMouthOff--ExOp-M ()Ljava/lang/String;
 	public final fun getMove--ExOp-M ()Ljava/lang/String;
 	public final fun getMove3d--ExOp-M ()Ljava/lang/String;
 	public final fun getMoveDiagonal--ExOp-M ()Ljava/lang/String;
@@ -2426,11 +2469,13 @@ public final class com/santi020k/lumen/LumenIconName$Companion {
 	public final fun getNavigation2--ExOp-M ()Ljava/lang/String;
 	public final fun getNavigation2Off--ExOp-M ()Ljava/lang/String;
 	public final fun getNavigationOff--ExOp-M ()Ljava/lang/String;
+	public final fun getNepaliRupee--ExOp-M ()Ljava/lang/String;
 	public final fun getNetwork--ExOp-M ()Ljava/lang/String;
 	public final fun getNewspaper--ExOp-M ()Ljava/lang/String;
 	public final fun getNfc--ExOp-M ()Ljava/lang/String;
 	public final fun getNonBinary--ExOp-M ()Ljava/lang/String;
 	public final fun getNotebook--ExOp-M ()Ljava/lang/String;
+	public final fun getNotebookDot--ExOp-M ()Ljava/lang/String;
 	public final fun getNotebookPen--ExOp-M ()Ljava/lang/String;
 	public final fun getNotebookTabs--ExOp-M ()Ljava/lang/String;
 	public final fun getNotebookText--ExOp-M ()Ljava/lang/String;
@@ -2486,6 +2531,7 @@ public final class com/santi020k/lumen/LumenIconName$Companion {
 	public final fun getPaperclip--ExOp-M ()Ljava/lang/String;
 	public final fun getParasol--ExOp-M ()Ljava/lang/String;
 	public final fun getParentheses--ExOp-M ()Ljava/lang/String;
+	public final fun getPark--ExOp-M ()Ljava/lang/String;
 	public final fun getParkingMeter--ExOp-M ()Ljava/lang/String;
 	public final fun getPartyPopper--ExOp-M ()Ljava/lang/String;
 	public final fun getPause--ExOp-M ()Ljava/lang/String;
@@ -2530,6 +2576,7 @@ public final class com/santi020k/lumen/LumenIconName$Companion {
 	public final fun getPlane--ExOp-M ()Ljava/lang/String;
 	public final fun getPlaneLanding--ExOp-M ()Ljava/lang/String;
 	public final fun getPlaneTakeoff--ExOp-M ()Ljava/lang/String;
+	public final fun getPlantPot--ExOp-M ()Ljava/lang/String;
 	public final fun getPlay--ExOp-M ()Ljava/lang/String;
 	public final fun getPlayOff--ExOp-M ()Ljava/lang/String;
 	public final fun getPlayingCard--ExOp-M ()Ljava/lang/String;
@@ -2619,6 +2666,7 @@ public final class com/santi020k/lumen/LumenIconName$Companion {
 	public final fun getRotateCcwKey--ExOp-M ()Ljava/lang/String;
 	public final fun getRotateCcwSquare--ExOp-M ()Ljava/lang/String;
 	public final fun getRotateCw--ExOp-M ()Ljava/lang/String;
+	public final fun getRotateCwClock--ExOp-M ()Ljava/lang/String;
 	public final fun getRotateCwFadingClock--ExOp-M ()Ljava/lang/String;
 	public final fun getRotateCwSquare--ExOp-M ()Ljava/lang/String;
 	public final fun getRoute--ExOp-M ()Ljava/lang/String;
@@ -2713,10 +2761,13 @@ public final class com/santi020k/lumen/LumenIconName$Companion {
 	public final fun getShoppingBag--ExOp-M ()Ljava/lang/String;
 	public final fun getShoppingBasket--ExOp-M ()Ljava/lang/String;
 	public final fun getShoppingCart--ExOp-M ()Ljava/lang/String;
+	public final fun getShoppingCartMinus--ExOp-M ()Ljava/lang/String;
+	public final fun getShoppingCartPlus--ExOp-M ()Ljava/lang/String;
 	public final fun getShovel--ExOp-M ()Ljava/lang/String;
 	public final fun getShowerHead--ExOp-M ()Ljava/lang/String;
 	public final fun getShredder--ExOp-M ()Ljava/lang/String;
 	public final fun getShrimp--ExOp-M ()Ljava/lang/String;
+	public final fun getShrimpOff--ExOp-M ()Ljava/lang/String;
 	public final fun getShrink--ExOp-M ()Ljava/lang/String;
 	public final fun getShrub--ExOp-M ()Ljava/lang/String;
 	public final fun getShuffle--ExOp-M ()Ljava/lang/String;
@@ -2779,6 +2830,7 @@ public final class com/santi020k/lumen/LumenIconName$Companion {
 	public final fun getSquareArrowUpLeft--ExOp-M ()Ljava/lang/String;
 	public final fun getSquareArrowUpRight--ExOp-M ()Ljava/lang/String;
 	public final fun getSquareAsterisk--ExOp-M ()Ljava/lang/String;
+	public final fun getSquareBookmark--ExOp-M ()Ljava/lang/String;
 	public final fun getSquareBottomDashedScissors--ExOp-M ()Ljava/lang/String;
 	public final fun getSquareCenterlineDashedHorizontal--ExOp-M ()Ljava/lang/String;
 	public final fun getSquareCenterlineDashedVertical--ExOp-M ()Ljava/lang/String;
@@ -2795,12 +2847,16 @@ public final class com/santi020k/lumen/LumenIconName$Companion {
 	public final fun getSquareDashedBottomCode--ExOp-M ()Ljava/lang/String;
 	public final fun getSquareDashedKanban--ExOp-M ()Ljava/lang/String;
 	public final fun getSquareDashedMousePointer--ExOp-M ()Ljava/lang/String;
+	public final fun getSquareDashedPlus--ExOp-M ()Ljava/lang/String;
 	public final fun getSquareDashedText--ExOp-M ()Ljava/lang/String;
 	public final fun getSquareDashedTopSolid--ExOp-M ()Ljava/lang/String;
+	public final fun getSquareDashedX--ExOp-M ()Ljava/lang/String;
+	public final fun getSquareDashedXCorner--ExOp-M ()Ljava/lang/String;
 	public final fun getSquareDimensions--ExOp-M ()Ljava/lang/String;
 	public final fun getSquareDivide--ExOp-M ()Ljava/lang/String;
 	public final fun getSquareDot--ExOp-M ()Ljava/lang/String;
 	public final fun getSquareEqual--ExOp-M ()Ljava/lang/String;
+	public final fun getSquareExclamationPoint--ExOp-M ()Ljava/lang/String;
 	public final fun getSquareFunction--ExOp-M ()Ljava/lang/String;
 	public final fun getSquareKanban--ExOp-M ()Ljava/lang/String;
 	public final fun getSquareLibrary--ExOp-M ()Ljava/lang/String;
@@ -2824,6 +2880,7 @@ public final class com/santi020k/lumen/LumenIconName$Companion {
 	public final fun getSquareScissors--ExOp-M ()Ljava/lang/String;
 	public final fun getSquareSigma--ExOp-M ()Ljava/lang/String;
 	public final fun getSquareSlash--ExOp-M ()Ljava/lang/String;
+	public final fun getSquareSparkles--ExOp-M ()Ljava/lang/String;
 	public final fun getSquareSplitHorizontal--ExOp-M ()Ljava/lang/String;
 	public final fun getSquareSplitVertical--ExOp-M ()Ljava/lang/String;
 	public final fun getSquareSquare--ExOp-M ()Ljava/lang/String;
@@ -2927,6 +2984,7 @@ public final class com/santi020k/lumen/LumenIconName$Companion {
 	public final fun getThermometerSun--ExOp-M ()Ljava/lang/String;
 	public final fun getThumbsDown--ExOp-M ()Ljava/lang/String;
 	public final fun getThumbsUp--ExOp-M ()Ljava/lang/String;
+	public final fun getTicTacToe--ExOp-M ()Ljava/lang/String;
 	public final fun getTicket--ExOp-M ()Ljava/lang/String;
 	public final fun getTicketCheck--ExOp-M ()Ljava/lang/String;
 	public final fun getTicketMinus--ExOp-M ()Ljava/lang/String;
@@ -2945,6 +3003,8 @@ public final class com/santi020k/lumen/LumenIconName$Companion {
 	public final fun getToilet--ExOp-M ()Ljava/lang/String;
 	public final fun getToolCase--ExOp-M ()Ljava/lang/String;
 	public final fun getToolbox--ExOp-M ()Ljava/lang/String;
+	public final fun getToothbrush--ExOp-M ()Ljava/lang/String;
+	public final fun getToothbrushSparkles--ExOp-M ()Ljava/lang/String;
 	public final fun getTornado--ExOp-M ()Ljava/lang/String;
 	public final fun getTorus--ExOp-M ()Ljava/lang/String;
 	public final fun getTouchpad--ExOp-M ()Ljava/lang/String;
@@ -2962,6 +3022,7 @@ public final class com/santi020k/lumen/LumenIconName$Companion {
 	public final fun getTransgender--ExOp-M ()Ljava/lang/String;
 	public final fun getTrash--ExOp-M ()Ljava/lang/String;
 	public final fun getTrash2--ExOp-M ()Ljava/lang/String;
+	public final fun getTrashOff--ExOp-M ()Ljava/lang/String;
 	public final fun getTreeDeciduous--ExOp-M ()Ljava/lang/String;
 	public final fun getTreePalm--ExOp-M ()Ljava/lang/String;
 	public final fun getTreePine--ExOp-M ()Ljava/lang/String;
@@ -2973,9 +3034,12 @@ public final class com/santi020k/lumen/LumenIconName$Companion {
 	public final fun getTriangleAlert--ExOp-M ()Ljava/lang/String;
 	public final fun getTriangleDashed--ExOp-M ()Ljava/lang/String;
 	public final fun getTriangleRight--ExOp-M ()Ljava/lang/String;
+	public final fun getTrianglesCenterlineDashedHorizontal--ExOp-M ()Ljava/lang/String;
+	public final fun getTrianglesCenterlineDashedVertical--ExOp-M ()Ljava/lang/String;
 	public final fun getTrophy--ExOp-M ()Ljava/lang/String;
 	public final fun getTruck--ExOp-M ()Ljava/lang/String;
 	public final fun getTruckElectric--ExOp-M ()Ljava/lang/String;
+	public final fun getTubeLotion--ExOp-M ()Ljava/lang/String;
 	public final fun getTurkishLira--ExOp-M ()Ljava/lang/String;
 	public final fun getTurntable--ExOp-M ()Ljava/lang/String;
 	public final fun getTurtle--ExOp-M ()Ljava/lang/String;
@@ -3003,6 +3067,7 @@ public final class com/santi020k/lumen/LumenIconName$Companion {
 	public final fun getUser--ExOp-M ()Ljava/lang/String;
 	public final fun getUserCheck--ExOp-M ()Ljava/lang/String;
 	public final fun getUserCog--ExOp-M ()Ljava/lang/String;
+	public final fun getUserGroup--ExOp-M ()Ljava/lang/String;
 	public final fun getUserKey--ExOp-M ()Ljava/lang/String;
 	public final fun getUserLock--ExOp-M ()Ljava/lang/String;
 	public final fun getUserMinus--ExOp-M ()Ljava/lang/String;
@@ -3012,6 +3077,7 @@ public final class com/santi020k/lumen/LumenIconName$Companion {
 	public final fun getUserRoundArrowLeft--ExOp-M ()Ljava/lang/String;
 	public final fun getUserRoundCheck--ExOp-M ()Ljava/lang/String;
 	public final fun getUserRoundCog--ExOp-M ()Ljava/lang/String;
+	public final fun getUserRoundGroup--ExOp-M ()Ljava/lang/String;
 	public final fun getUserRoundKey--ExOp-M ()Ljava/lang/String;
 	public final fun getUserRoundMinus--ExOp-M ()Ljava/lang/String;
 	public final fun getUserRoundPen--ExOp-M ()Ljava/lang/String;
@@ -3030,6 +3096,7 @@ public final class com/santi020k/lumen/LumenIconName$Companion {
 	public final fun getVan--ExOp-M ()Ljava/lang/String;
 	public final fun getVariable--ExOp-M ()Ljava/lang/String;
 	public final fun getVault--ExOp-M ()Ljava/lang/String;
+	public final fun getVectorPolygon--ExOp-M ()Ljava/lang/String;
 	public final fun getVectorSquare--ExOp-M ()Ljava/lang/String;
 	public final fun getVegan--ExOp-M ()Ljava/lang/String;
 	public final fun getVenetianMask--ExOp-M ()Ljava/lang/String;
@@ -3041,6 +3108,8 @@ public final class com/santi020k/lumen/LumenIconName$Companion {
 	public final fun getVideoOff--ExOp-M ()Ljava/lang/String;
 	public final fun getVideotape--ExOp-M ()Ljava/lang/String;
 	public final fun getView--ExOp-M ()Ljava/lang/String;
+	public final fun getVirus--ExOp-M ()Ljava/lang/String;
+	public final fun getVirusOff--ExOp-M ()Ljava/lang/String;
 	public final fun getVoicemail--ExOp-M ()Ljava/lang/String;
 	public final fun getVolleyball--ExOp-M ()Ljava/lang/String;
 	public final fun getVolume--ExOp-M ()Ljava/lang/String;
@@ -3072,6 +3141,7 @@ public final class com/santi020k/lumen/LumenIconName$Companion {
 	public final fun getWeightTilde--ExOp-M ()Ljava/lang/String;
 	public final fun getWheat--ExOp-M ()Ljava/lang/String;
 	public final fun getWheatOff--ExOp-M ()Ljava/lang/String;
+	public final fun getWhistle--ExOp-M ()Ljava/lang/String;
 	public final fun getWholeWord--ExOp-M ()Ljava/lang/String;
 	public final fun getWifi--ExOp-M ()Ljava/lang/String;
 	public final fun getWifiCog--ExOp-M ()Ljava/lang/String;

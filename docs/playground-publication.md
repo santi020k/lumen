@@ -55,8 +55,9 @@ exact binary under review.
   completed closed testing.
 - The rollout targets all 177 available Google Play countries and regions, including the rest-of-world
   group.
-- Google Play Console reports **Changes in review** after its automated checks completed. This is a
-  submitted production rollout, not evidence that the public listing is live yet.
+- Google Play later rejected that submission because the listing screenshots showed features that
+  did not match the reviewed app experience. The historical submission remains recorded here, but
+  the current state is **Rejected — corrected resubmission pending**, not live or under review.
 
 ## Generate icons
 

@@ -6,6 +6,7 @@ import androidx.compose.ui.unit.dp
 import java.util.Locale
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertThrows
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class PrimitivesTest {
@@ -147,7 +148,9 @@ class PrimitivesTest {
     fun sharedIconCatalogHasStableUniqueNames() {
         val icons = LumenIconName.entries
 
-        assertEquals(2_427, icons.size)
+        assertEquals(2_433, icons.size)
+        assertTrue(LumenIconName.Album in icons)
+        assertTrue(LumenIconName.Trash2 in icons)
         assertEquals(icons.size, icons.map { it.rawValue }.toSet().size)
         assertEquals(573, icons.count { it.rawValue.startsWith("brand:") })
         assertEquals(true, LumenIconName.Search in icons)

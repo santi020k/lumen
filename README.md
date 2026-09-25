@@ -180,7 +180,8 @@ packages:
   [App Store](https://apps.apple.com/app/id6805250815) for iPhone, iPad, and Mac. It also builds as
   an iOS Xcode app or macOS Swift Package executable for local exploration.
 - [`apps/playground-android`](./apps/playground-android) builds a native Compose application and a
-  directly installable debug APK. Its Google Play production rollout has been submitted for review.
+  directly installable debug APK. Its latest Google Play submission was rejected for a screenshot
+  mismatch and is pending a corrected resubmission.
 
 See the [playground workflow](./docs/playgrounds.md) for run, capture, and distribution commands.
 

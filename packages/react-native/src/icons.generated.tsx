@@ -350,6 +350,27 @@ const LumenAlarmSmokeIconGraphic = ({
   </Svg>
 )
 
+const LumenAlbumIconGraphic = ({
+  color = 'currentColor',
+  size = 24,
+  strokeWidth = 2
+}: LumenIconGraphicProps): ReactElement => (
+  <Svg
+    fill={'none'}
+    focusable={false}
+    height={size}
+    stroke={color}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    strokeWidth={strokeWidth}
+    viewBox="0 0 24 24"
+    width={size}
+  >
+      <Path d="M11 3v7.751a.25.25 0 00.407.195l2.28-1.834a.5.5 0 01.627 0l2.28 1.834a.25.25 0 00.406-.195V3" />
+      <Rect x="3" y="3" width="18" height="18" rx="2" />
+  </Svg>
+)
+
 const LumenAlignCenterHorizontalIconGraphic = ({
   color = 'currentColor',
   size = 24,
@@ -4658,6 +4679,27 @@ const LumenBookLockIconGraphic = ({
       <Path d="M20 15v6a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20" />
       <Path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H10" />
       <Rect x="12" y="6" width="8" height="5" rx="1" />
+  </Svg>
+)
+
+const LumenBookMarkedIconGraphic = ({
+  color = 'currentColor',
+  size = 24,
+  strokeWidth = 2
+}: LumenIconGraphicProps): ReactElement => (
+  <Svg
+    fill={'none'}
+    focusable={false}
+    height={size}
+    stroke={color}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    strokeWidth={strokeWidth}
+    viewBox="0 0 24 24"
+    width={size}
+  >
+      <Path d="M10 2v7.751a.25.25 0 00.407.195l2.28-1.834a.5.5 0 01.627 0l2.28 1.834A.25.25 0 0016 9.751V2" />
+      <Path d="M4 19.5v-15A2.5 2.5 0 016.5 2H19a1 1 0 011 1v18a1 1 0 01-1 1H6.5a1 1 0 010-5H20" />
   </Svg>
 )
 
@@ -17360,6 +17402,30 @@ const LumenBuildingIconGraphic = ({
   </Svg>
 )
 
+const LumenBuilding2IconGraphic = ({
+  color = 'currentColor',
+  size = 24,
+  strokeWidth = 2
+}: LumenIconGraphicProps): ReactElement => (
+  <Svg
+    fill={'none'}
+    focusable={false}
+    height={size}
+    stroke={color}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    strokeWidth={strokeWidth}
+    viewBox="0 0 24 24"
+    width={size}
+  >
+      <Path d="M10 12h4" />
+      <Path d="M10 8h4" />
+      <Path d="M14 21v-3a2 2 0 0 0-4 0v3" />
+      <Path d="M6 10H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2" />
+      <Path d="M6 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16" />
+  </Svg>
+)
+
 const LumenBuildingComplexIconGraphic = ({
   color = 'currentColor',
   size = 24,
@@ -27849,6 +27915,56 @@ const LumenFlaskRoundIconGraphic = ({
       <Path d="M10 2v6.292a7 7 0 1 0 4 0V2" />
       <Path d="M5 15h14" />
       <Path d="M8.5 2h7" />
+  </Svg>
+)
+
+const LumenFlipHorizontal2IconGraphic = ({
+  color = 'currentColor',
+  size = 24,
+  strokeWidth = 2
+}: LumenIconGraphicProps): ReactElement => (
+  <Svg
+    fill={'none'}
+    focusable={false}
+    height={size}
+    stroke={color}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    strokeWidth={strokeWidth}
+    viewBox="0 0 24 24"
+    width={size}
+  >
+      <Path d="M10 12H8" />
+      <Path d="M16 12h-2" />
+      <Path d="M22 12h-2" />
+      <Path d="M4 12H2" />
+      <Path d="M7.298 20.288A1 1 0 008 22h8a1 1 0 00.703-1.712l-3.991-3.99a1 1 0 00-1.424-.001z" />
+      <Path d="M7.298 3.712A1 1 0 018 2h8a1 1 0 01.703 1.712l-3.991 3.99a1 1 0 01-1.424.001z" />
+  </Svg>
+)
+
+const LumenFlipVertical2IconGraphic = ({
+  color = 'currentColor',
+  size = 24,
+  strokeWidth = 2
+}: LumenIconGraphicProps): ReactElement => (
+  <Svg
+    fill={'none'}
+    focusable={false}
+    height={size}
+    stroke={color}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    strokeWidth={strokeWidth}
+    viewBox="0 0 24 24"
+    width={size}
+  >
+      <Path d="M12 14v2" />
+      <Path d="M12 20v2" />
+      <Path d="M12 2v2" />
+      <Path d="M12 8v2" />
+      <Path d="M20.288 16.703A1 1 0 0022 16V8a1 1 0 00-1.712-.703l-3.99 3.991a1 1 0 00-.001 1.424z" />
+      <Path d="M3.712 16.703A1 1 0 012 16V8a1 1 0 011.712-.703l3.99 3.991a1 1 0 01.001 1.424z" />
   </Svg>
 )
 
@@ -50685,6 +50801,30 @@ const LumenTrashIconGraphic = ({
   </Svg>
 )
 
+const LumenTrash2IconGraphic = ({
+  color = 'currentColor',
+  size = 24,
+  strokeWidth = 2
+}: LumenIconGraphicProps): ReactElement => (
+  <Svg
+    fill={'none'}
+    focusable={false}
+    height={size}
+    stroke={color}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    strokeWidth={strokeWidth}
+    viewBox="0 0 24 24"
+    width={size}
+  >
+      <Path d="M10 11v6" />
+      <Path d="M14 11v6" />
+      <Path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+      <Path d="M3 6h18" />
+      <Path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+  </Svg>
+)
+
 const LumenTrashOffIconGraphic = ({
   color = 'currentColor',
   size = 24,
@@ -54329,6 +54469,7 @@ export const lumenIcons = {
   'alarm-clock-off': LumenAlarmClockOffIconGraphic,
   'alarm-clock-plus': LumenAlarmClockPlusIconGraphic,
   'alarm-smoke': LumenAlarmSmokeIconGraphic,
+  'album': LumenAlbumIconGraphic,
   'align-center-horizontal': LumenAlignCenterHorizontalIconGraphic,
   'align-center-vertical': LumenAlignCenterVerticalIconGraphic,
   'align-end-horizontal': LumenAlignEndHorizontalIconGraphic,
@@ -54519,6 +54660,7 @@ export const lumenIcons = {
   'book-image': LumenBookImageIconGraphic,
   'book-key': LumenBookKeyIconGraphic,
   'book-lock': LumenBookLockIconGraphic,
+  'book-marked': LumenBookMarkedIconGraphic,
   'book-minus': LumenBookMinusIconGraphic,
   'book-open': LumenBookOpenIconGraphic,
   'book-open-check': LumenBookOpenCheckIconGraphic,
@@ -55143,6 +55285,7 @@ export const lumenIcons = {
   'bug-off': LumenBugOffIconGraphic,
   'bug-play': LumenBugPlayIconGraphic,
   'building': LumenBuildingIconGraphic,
+  'building-2': LumenBuilding2IconGraphic,
   'building-complex': LumenBuildingComplexIconGraphic,
   'building-complex-plus': LumenBuildingComplexPlusIconGraphic,
   'bus': LumenBusIconGraphic,
@@ -55597,6 +55740,8 @@ export const lumenIcons = {
   'flask-conical': LumenFlaskConicalIconGraphic,
   'flask-conical-off': LumenFlaskConicalOffIconGraphic,
   'flask-round': LumenFlaskRoundIconGraphic,
+  'flip-horizontal-2': LumenFlipHorizontal2IconGraphic,
+  'flip-vertical-2': LumenFlipVertical2IconGraphic,
   'flower': LumenFlowerIconGraphic,
   'flower-2': LumenFlower2IconGraphic,
   'focus': LumenFocusIconGraphic,
@@ -56586,6 +56731,7 @@ export const lumenIcons = {
   'tram-front': LumenTramFrontIconGraphic,
   'transgender': LumenTransgenderIconGraphic,
   'trash': LumenTrashIconGraphic,
+  'trash-2': LumenTrash2IconGraphic,
   'trash-off': LumenTrashOffIconGraphic,
   'tree-deciduous': LumenTreeDeciduousIconGraphic,
   'tree-palm': LumenTreePalmIconGraphic,

@@ -71,8 +71,8 @@ export interface PlatformGuide {
   title: string
 }
 
-const lumenComposeCoordinate = 'com.santi020k:lumen-compose:2.1.0'
-const lumenComposeWearCoordinate = 'com.santi020k:lumen-compose-wear:2.1.0'
+const lumenComposeCoordinate = 'com.santi020k:lumen-compose:2.2.0'
+const lumenComposeWearCoordinate = 'com.santi020k:lumen-compose-wear:2.2.0'
 const nativeComponentNames = (platform: 'android' | 'apple' | 'react-native'): string[] => getNativeComponentsForPlatform(platform).map(component => component.name)
 
 export const platformGuides: PlatformGuide[] = [
@@ -637,11 +637,11 @@ pnpm playground:android:build`,
     shortLabel: 'Android',
     status: 'Compose module',
     storeAvailability: {
-      badge: 'Google Play · in review',
+      badge: 'Google Play · resubmission pending',
       description:
-        'The Android production rollout has been submitted to Google Play and remains under review. Until the public listing is live, run the local Compose playground or build the debug APK from the repository.',
+        'Google Play rejected the latest Android submission because its screenshots did not match the reviewed app experience. A corrected resubmission is pending; until the public listing is live, run the local Compose playground or build the debug APK from the repository.',
       status: 'pending',
-      title: 'Android production rollout is under review'
+      title: 'Android production rollout needs resubmission'
     },
     summary:
       'Use the shared Lumen foundations through Jetpack Compose and Material 3 while preserving Android interaction and accessibility conventions.',

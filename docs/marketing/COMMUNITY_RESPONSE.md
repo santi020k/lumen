@@ -48,9 +48,9 @@ published on 2026-09-08 (claim C-12).
 
 **"Can I get this on Google Play / is the Android app out?"**
 
-> The Compose playground's production rollout has been submitted to Google Play and is under review,
-> so it isn't publicly listed yet. You can build and install the debug APK directly from the
-> repository in the meantime.
+> Google Play rejected the latest Compose playground submission because its screenshots did not
+> match the reviewed app experience. A corrected resubmission is pending, so it isn't publicly
+> listed yet. You can build and install the debug APK directly from the repository in the meantime.
 
 **"Who actually uses this in production? Any customers?"**
 
