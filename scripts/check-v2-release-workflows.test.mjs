@@ -78,6 +78,12 @@ const applePlaygroundPackage = await readFile(
   "utf8",
 );
 
+const frameworkPlaywrightConfigs = await Promise.all(
+  ["playwright.conformance.config.ts", "playwright.frameworks.config.ts"].map(
+    name => readFile(resolve(repositoryRoot, name), "utf8"),
+  ),
+);
+
 const assertSelectsCanary = (input, canary) => {
   assert.equal(
     classifyCanaryPaths([input])[canary],
@@ -245,6 +251,22 @@ test("pull-request compatibility checks reuse the affected build outputs", () =>
     "pnpm run check:publish-dry-run",
     "pnpm run check:consumer-packages",
   ]);
+});
+
+test("framework browser checks keep the managed server inside Playwright's process group", () => {
+  for (const config of frameworkPlaywrightConfigs) {
+    assert.ok(
+      config.includes(
+        "node apps/next-smoke/node_modules/next/dist/bin/next start apps/next-smoke",
+      ),
+      "the Next.js server must run directly instead of escaping through a package-manager wrapper",
+    );
+
+    assert.ok(
+      config.includes("gracefulShutdown: { signal: 'SIGTERM', timeout: 5_000 }"),
+      "the framework server must have a bounded graceful shutdown",
+    );
+  }
 });
 
 test("coordinated revision checks select both release decision canaries", () => {

@@ -27,7 +27,8 @@ export default defineConfig({
     baseURL
   },
   webServer: {
-    command: `pnpm --filter @santi020k/lumen-react run build && pnpm --filter @santi020k/lumen-elements run build && pnpm --filter @santi020k/lumen-next-smoke run build && pnpm --filter @santi020k/lumen-next-smoke exec next start --hostname 127.0.0.1 --port ${port}`,
+    command: `pnpm --filter @santi020k/lumen-react run build && pnpm --filter @santi020k/lumen-elements run build && pnpm --filter @santi020k/lumen-next-smoke run build && node apps/next-smoke/node_modules/next/dist/bin/next start apps/next-smoke --hostname 127.0.0.1 --port ${port}`,
+    gracefulShutdown: { signal: 'SIGTERM', timeout: 5_000 },
     reuseExistingServer: false,
     url: baseURL
   }
