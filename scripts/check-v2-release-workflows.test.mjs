@@ -68,6 +68,15 @@ const versionPackagesSource = await readFile(
   "utf8",
 );
 
+const environmentExample = await readFile(
+  resolve(repositoryRoot, ".env.example"),
+  "utf8",
+);
+
+const turboConfiguration = JSON.parse(
+  await readFile(resolve(repositoryRoot, "turbo.json"), "utf8"),
+);
+
 const composeBuildSource = await readFile(
   resolve(repositoryRoot, "packages", "compose", "build.gradle.kts"),
   "utf8",
@@ -82,6 +91,14 @@ const frameworkPlaywrightConfigs = await Promise.all(
   ["playwright.conformance.config.ts", "playwright.frameworks.config.ts"].map(
     name => readFile(resolve(repositoryRoot, name), "utf8"),
   ),
+);
+
+const docsPlaywrightConfigs = await Promise.all(
+  [
+    "playwright.a11y.config.ts",
+    "playwright.config.ts",
+    "playwright.interactions.config.ts",
+  ].map(name => readFile(resolve(repositoryRoot, name), "utf8")),
 );
 
 const assertSelectsCanary = (input, canary) => {
@@ -269,6 +286,27 @@ test("framework browser checks keep the managed server inside Playwright's proce
   }
 });
 
+test("docs browser checks keep Astro preview inside Playwright's process group", () => {
+  for (const config of docsPlaywrightConfigs) {
+    assert.ok(
+      config.includes(
+        "node apps/docs/node_modules/astro/bin/astro.mjs preview --root apps/docs --ignore-lock",
+      ),
+      "Astro preview must run directly in the foreground without a package-manager wrapper",
+    );
+
+    assert.ok(
+      config.includes("gracefulShutdown: { signal: 'SIGTERM', timeout: 5_000 }"),
+      "the Astro preview server must have a bounded graceful shutdown",
+    );
+
+    assert.ok(
+      !config.includes("ASTRO_PREVIEW_BACKGROUND"),
+      "Astro's automatic background mode must not escape Playwright's managed process group",
+    );
+  }
+});
+
 test("coordinated revision checks select both release decision canaries", () => {
   for (const input of [
     "scripts/check-approved-release-revision.mjs",
@@ -324,6 +362,40 @@ test("npm publication validates the contract and current stability ledger", () =
   assert.ok(
     npmWorkflow.includes("if: github.ref == 'refs/heads/main'"),
     "npm publication must refuse manual dispatches outside main",
+  );
+
+  assert.ok(
+    npmWorkflow.includes("runs-on: ubuntu-latest"),
+    "npm trusted publishing must run on a GitHub-hosted runner",
+  );
+
+  assert.ok(
+    npmWorkflow.includes("environment: npm"),
+    "npm trusted publishing must use the configured npm environment",
+  );
+
+  assert.ok(
+    npmWorkflow.includes("id-token: write"),
+    "npm trusted publishing must be allowed to request a short-lived OIDC token",
+  );
+
+  assert.doesNotMatch(
+    npmWorkflow,
+    /\b(?:NPM_TOKEN|NODE_AUTH_TOKEN):/u,
+    "npm trusted publishing must not fall back to a long-lived registry token",
+  );
+
+  assert.doesNotMatch(
+    environmentExample,
+    /^(?:NPM_TOKEN|NODE_AUTH_TOKEN)=/mu,
+    "the environment example must not ask maintainers to provision a registry token",
+  );
+
+  assert.ok(
+    !turboConfiguration.globalEnv.some((name) =>
+      ["NPM_TOKEN", "NODE_AUTH_TOKEN"].includes(name),
+    ),
+    "Turbo must not treat obsolete registry tokens as supported global inputs",
   );
 
   assertOrderedCommands(npmWorkflow, "npm publication", [

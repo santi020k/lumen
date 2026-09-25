@@ -20,7 +20,7 @@ export default defineConfig({
     baseURL
   },
   webServer: {
-    command: `pnpm --filter @santi020k/lumen-icons-brand... run build && pnpm --filter @santi020k/lumen-react run build && pnpm --filter @santi020k/lumen-elements run build && LUMEN_DOCS_OUT_DIR=.astro/a11y-dist-${port} pnpm --filter @santi020k/lumen-docs exec astro build && ASTRO_PREVIEW_BACKGROUND=0 LUMEN_DOCS_OUT_DIR=.astro/a11y-dist-${port} node apps/docs/node_modules/astro/bin/astro.mjs preview --root apps/docs --host 127.0.0.1 --port ${port}`,
+    command: `pnpm --filter @santi020k/lumen-icons-brand... run build && pnpm --filter @santi020k/lumen-react run build && pnpm --filter @santi020k/lumen-elements run build && LUMEN_DOCS_OUT_DIR=.astro/a11y-dist-${port} pnpm --filter @santi020k/lumen-docs exec astro build && LUMEN_DOCS_OUT_DIR=.astro/a11y-dist-${port} node apps/docs/node_modules/astro/bin/astro.mjs preview --root apps/docs --ignore-lock --host 127.0.0.1 --port ${port}`,
     gracefulShutdown: { signal: 'SIGTERM', timeout: 5_000 },
     reuseExistingServer: !process.env.CI,
     url: baseURL

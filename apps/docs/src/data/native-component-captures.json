@@ -1816,7 +1816,7 @@
       "device": "Expo web renderer",
       "height": 633,
       "platform": "react-native",
-      "sha256": "75c9b85cbb68ad13c0fe61a2803eb8bdfc68a66f324b6af803084521e750ee01",
+      "sha256": "33199de9f1e0081b802df9bd6014c835012da08f68220f117d40b0108820debf",
       "slug": "sheet",
       "src": "/native-components/react-native/sheet.webp",
       "width": 900
