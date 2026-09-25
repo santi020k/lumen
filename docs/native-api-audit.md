@@ -26,7 +26,7 @@ the same way as handwritten exports; their generator remains the editing source 
 | Adapter | Public inventory | Classification | Compatibility enforcement | Remaining work |
 | --- | --- | --- | --- | --- |
 | React Native | 243 exports across the package root and optional datetime entrypoint | 243 Supported; 0 Experimental phone exports; 0 Deprecated | `pnpm run check:native-api-baseline` compares both TypeScript entrypoints with `registry/native-api-baseline.json` | Retain the approved baseline across two ordinary stability iterations |
-| SwiftUI | Current symbol graphs: 3,154 macOS, 3,131 iOS, 2,968 tvOS, 3,131 visionOS, and 2,988 watchOS symbols | Every classified symbol is Supported on each platform; 0 Experimental, Deprecated, or Unclassified | `pnpm run check:swift-api-baseline` rebuilds every declared platform and compares it with `registry/swift-api-baseline.json`; `pnpm run check:swift-source-compatibility` currently reports 10 unreviewed diagnostics beyond the four approved Lumen 2 enum additions relative to `v1.6.0` | Review the outstanding compatibility diagnostics, then restart the two-iteration soak against the new baseline |
+| SwiftUI | Current symbol graphs: 3,154 macOS, 3,131 iOS, 2,968 tvOS, 3,131 visionOS, and 2,988 watchOS symbols | Every classified symbol is Supported on each platform; 0 Experimental, Deprecated, or Unclassified | `pnpm run check:swift-api-baseline` rebuilds every declared platform and compares it with `registry/swift-api-baseline.json`; `pnpm run check:swift-source-compatibility` validates the 70 reviewed `LumenIconName` additions relative to `v2.1.0` as the approved Lumen 3 source break | Keep the Lumen 3 contract and migration guidance aligned with future generated-catalog changes |
 | WidgetKit | Reviewed `LumenWidgetUI` symbol graphs: 71 each on macOS, iOS, and watchOS | 71 Supported; 0 Experimental, Deprecated, or Unclassified on every supported widget platform | `pnpm run check:swift-api-baseline` rebuilds both Swift products and compares `registry/swift-widget-api-baseline.json` | Keep the focused product independent from the complete `LumenUI` application catalog |
 | Compose | 155 classified public declarations in `packages/compose/api/lumen-compose.api` | 155 Supported; 0 Experimental or Deprecated | `./gradlew apiCheck` compares the release artifact with the reviewed binary API dump; `pnpm run check:compose-api-classification` enforces declaration maturity | Retain the approved baseline across two ordinary stability iterations |
 | Wear OS | 7 classified declarations in `packages/compose/wear/api/wear.api` | 7 Supported; 0 Experimental; 3 implementation helpers made Internal | Root `./gradlew apiCheck` compares the separate artifact dump; `pnpm run check:wear-api-classification` enforces classifications | Confirm active-product and physical-watch behavior, then retain the approved dump across two ordinary stability iterations |
@@ -73,8 +73,8 @@ removed, added, changed, duplicated, or unclassified declarations. The update co
 existing classifications and places new identifiers in Unclassified for deliberate review.
 
 Swift Package Manager's API diagnostic separately compares the current `LumenUI` product with the
-immutable `v1.6.0` repository tag. `pnpm run check:swift-source-compatibility` verifies that its
-output contains exactly the reviewed surface-scale enum additions in the Lumen 2 contract; removed
+immutable `v2.1.0` repository tag. `pnpm run check:swift-source-compatibility` verifies that its
+output contains exactly the 70 reviewed `LumenIconName` additions in the Lumen 3 contract; removed
 signatures or another unreviewed break fail the canary. Together, these checks cover semantic
 repository history and target-conditional APIs that a host-only package build cannot see.
 
