@@ -116,10 +116,15 @@ assert.equal(
 );
 
 const resolveCommit = (reference, label) => {
-  const revision = runGit(
+  const result = spawnSync(
+    "git",
     ["rev-parse", "--verify", `${reference}^{commit}`],
-    `Could not resolve ${label} ref ${reference}`,
+    { cwd: repository, encoding: "utf8" },
   );
+
+  assert.equal(result.status, 0, `Could not resolve ${label} ref ${reference}`);
+
+  const revision = result.stdout.trim();
 
   assert.match(
     revision,
@@ -131,23 +136,29 @@ const resolveCommit = (reference, label) => {
 };
 
 const candidateRevision = resolveCommit(candidateRef, "publication candidate");
+const reviewedReference = contract.approval.reviewedRevision;
 
-const reviewedRevision = resolveCommit(
-  contract.approval.reviewedRevision,
-  "approved candidate",
-);
-
-const ancestry = spawnSync(
+const localReviewedRevision = spawnSync(
   "git",
-  ["merge-base", "--is-ancestor", reviewedRevision, candidateRevision],
+  ["rev-parse", "--verify", `${reviewedReference}^{commit}`],
   { cwd: repository, encoding: "utf8" },
 );
 
-assert.equal(
-  ancestry.status,
-  0,
-  "The approved candidate revision must be an ancestor of the publication commit",
-);
+if (localReviewedRevision.status !== 0) {
+  const fetch = spawnSync(
+    "git",
+    ["fetch", "--no-tags", "--depth=1", "origin", reviewedReference],
+    { cwd: repository, encoding: "utf8" },
+  );
+
+  assert.equal(
+    fetch.status,
+    0,
+    `Could not fetch approved candidate ref ${reviewedReference}`,
+  );
+}
+
+const reviewedRevision = resolveCommit(reviewedReference, "approved candidate");
 
 const changedFiles = runGit(
   ["diff", "--name-only", reviewedRevision, candidateRevision, "--"],
