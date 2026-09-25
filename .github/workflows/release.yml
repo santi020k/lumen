@@ -99,8 +99,6 @@ jobs:
           HUSKY: 0
           LUMEN_RELEASE_PACKAGES: ${{ steps.scope.outputs.packages }}
           LUMEN_RELEASE_PREPARED: "true"
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_CONFIG_PROVENANCE: "true"
 
       - name: Verify published npm package family

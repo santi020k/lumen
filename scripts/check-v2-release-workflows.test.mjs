@@ -326,6 +326,27 @@ test("npm publication validates the contract and current stability ledger", () =
     "npm publication must refuse manual dispatches outside main",
   );
 
+  assert.ok(
+    npmWorkflow.includes("runs-on: ubuntu-latest"),
+    "npm trusted publishing must run on a GitHub-hosted runner",
+  );
+
+  assert.ok(
+    npmWorkflow.includes("environment: npm"),
+    "npm trusted publishing must use the configured npm environment",
+  );
+
+  assert.ok(
+    npmWorkflow.includes("id-token: write"),
+    "npm trusted publishing must be allowed to request a short-lived OIDC token",
+  );
+
+  assert.doesNotMatch(
+    npmWorkflow,
+    /\b(?:NPM_TOKEN|NODE_AUTH_TOKEN):/u,
+    "npm trusted publishing must not fall back to a long-lived registry token",
+  );
+
   assertOrderedCommands(npmWorkflow, "npm publication", [
     "node scripts/check-approved-release-revision.mjs",
     "node scripts/check-graduated-release-revision.mjs",
