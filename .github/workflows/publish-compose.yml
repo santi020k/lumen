@@ -95,7 +95,7 @@ jobs:
       - name: Validate release contracts
         run: >-
           node scripts/check-lumen-2-contract.mjs &&
-          pnpm run check:lumen-3-contract -- --require-approved
+          node scripts/check-lumen-3-contract.mjs --require-approved
 
       - name: Validate native stability ledger
         run: node scripts/check-native-stability-soak.mjs

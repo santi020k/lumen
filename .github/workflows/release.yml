@@ -253,6 +253,7 @@ jobs:
             exit 0
           fi
 
+          # A tag pushed with GITHUB_TOKEN does not trigger another workflow run.
           gh workflow run publish-compose.yml \
             --ref "$COMPOSE_TAG" \
             --field publishing-type=AUTOMATIC

@@ -291,6 +291,11 @@ test("WidgetKit changes select the Swift canary and validate both Swift API base
     xcodeCloudChecks.includes("pnpm run check:swift-api-baseline"),
     "Xcode Cloud must validate both Swift package products",
   );
+
+  assert.ok(
+    xcodeCloudChecks.includes('swift_compatibility_baseline="v2.1.0"'),
+    "Xcode Cloud must fetch the Swift source-compatibility baseline used by the checker",
+  );
 });
 
 test("npm publication validates the contract and current stability ledger", () => {
@@ -354,6 +359,7 @@ test("initial npm publication verifies the complete family before tagging", () =
     'git diff --quiet "$COMPOSE_TAG" "$GITHUB_SHA" -- packages/compose',
     "checking publication status",
     "gh run list",
+    "A tag pushed with GITHUB_TOKEN does not trigger another workflow run",
     "gh workflow run publish-compose.yml",
     '--ref "$COMPOSE_TAG"',
     "--field publishing-type=AUTOMATIC",
@@ -375,9 +381,14 @@ test("Compose publication validates the contract and current stability ledger", 
   assertOrderedCommands(composeWorkflow, "Compose publication", [
     "node scripts/check-graduated-release-revision.mjs",
     "node scripts/check-lumen-2-contract.mjs",
-    "pnpm run check:lumen-3-contract -- --require-approved",
+    "node scripts/check-lumen-3-contract.mjs --require-approved",
     "node scripts/check-native-stability-soak.mjs",
   ]);
+
+  assert.ok(
+    !composeWorkflow.includes("pnpm run"),
+    "Compose publication must not invoke pnpm before installing it",
+  );
 
   assert.ok(
     !composeWorkflow.includes("node scripts/check-native-stable-readiness.mjs"),
