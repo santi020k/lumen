@@ -5,6 +5,9 @@
 A polished Jetpack Compose reference application for `lumen-compose`, plus a focused Wear
 application that compiles the separate `lumen-compose-wear` artifact. The phone experience has four
 adaptive destinations: Home, complete Examples, the searchable Components catalog, and Settings.
+Install the phone gallery from
+[Google Play](https://play.google.com/store/apps/details?id=com.santi020k.lumen.playground.compose),
+or build it locally using the instructions below.
 Home presents the checked-in component and category totals as a release workspace. Examples includes
 interactive release-readiness, catalog-health, and profile patterns with representative product
 states. Normal Components launches add category discovery, while Settings demonstrates Lumen and

@@ -55,8 +55,8 @@ Never write copy that implies any of the following, even loosely:
 - That the Lumen documentation site, packages, or any component ships fully translated content.
   Only the `LanguageToggle` primitive has a demonstrated English/Spanish default; say so precisely
   every time (see the approved sentence in [`CONTENT_KIT.md`](CONTENT_KIT.md)).
-- That the Android playground is available on Google Play. Google rejected the latest submission
-  for a screenshot mismatch, and a corrected resubmission is pending.
+- That the public store apps prove external production adoption. The App Store and Google Play
+  listings are Lumen-owned playgrounds, not independent consumer applications.
 - That OpenAI endorses or certifies Lumen. The published Plugins Directory listing confirms
   availability, not an endorsement.
 - That native platform support is production-proven on physical devices, or that real external
@@ -84,10 +84,10 @@ must not appear in public copy at all.
 | C-08 | Real-world use across sibling web, SwiftUI, and Jetpack Compose projects in the maintainer's own workspace | [`docs/project-adoption.md`](../project-adoption.md) workspace inventory table | CONDITIONAL | Always describe as the maintainer's own projects, never as customers. Do not state a specific project count in public copy; the inventory table counts package surfaces, not products, so a single project can appear more than once. Re-verify against the current table before citing anything more specific; the audit is dated 2026-08-22 and may be stale. |
 | C-09 | Public showcase projects: PostLens, Astro Doctor, Santi020k Themes | `apps/docs/src/pages/community.astro` (live `/community` route) | SUPPORTED | Link only to the exact public URLs already on the live community page. |
 | C-10 | Lumen 2 coordinated `2.0.0` release published across the public package family | [`docs/lumen-2-readiness.md`](../lumen-2-readiness.md) readiness ledger | CONDITIONAL | Always note that real-consumer and physical-device validation remain open post-release qualification items. |
-| C-11 | The Apple playground (iPhone, iPad, Mac) is live on the App Store | README "Native playgrounds" section | CONDITIONAL | Apple only. Never combine with a claim about Android or React Native playground store availability. |
+| C-11 | The Apple playground (iPhone, iPad, Mac) is live on the App Store | README "Native playgrounds" section; current public App Store listing | SUPPORTED | Link to the exact public listing. Do not imply that the React Native playground has an App Store listing. |
 | C-12 | Lumen UI 1.0.0 is published in the shared ChatGPT and Codex Plugins Directory | [`../openai-plugin-submission.md`](../openai-plugin-submission.md), verified public listing on 2026-09-08 | SUPPORTED | May say published and available; link to the exact directory listing or instruct readers to search Plugins for Lumen UI. Do not imply OpenAI endorsement or private-repository access. |
 | C-13 | Live CI, CodeQL, and npm badges expose current status | README badges section | CONDITIONAL | Link to the live GitHub Actions and npm pages. Never restate a green or current status without checking it at publication time. |
-| C-14 | Google granted Android playground production access; version 1.0.0 (1) was submitted and later rejected for a screenshot mismatch | [`../playground-publication.md`](../playground-publication.md) Android production record; current Google Play Console publishing status | CONDITIONAL | Say a corrected resubmission is pending. Do not say it is under review, available, deployed, published, or live on Google Play until that state is independently verified. |
+| C-14 | The Android Compose playground is live on Google Play | [`../playground-publication.md`](../playground-publication.md) Android production record; [current public Google Play listing](https://play.google.com/store/apps/details?id=com.santi020k.lumen.playground.compose) | SUPPORTED | Link to the exact public listing. Do not infer a specific install count or independent production adoption from the playground listing. |
 
 Add new claims here with the same fields before using them anywhere else in this package. If a claim
 cannot be verified against a current file, route, or check, it does not get an ID and must not be

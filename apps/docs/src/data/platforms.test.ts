@@ -73,7 +73,7 @@ describe('platform documentation', () => {
     expect(guide.prerequisites).toContain('Android Studio with JDK 21 or newer')
   })
 
-  test('publishes Apple store access without claiming public Android availability', () => {
+  test('publishes the verified Apple and Android store listings', () => {
     expect(getPlatformGuide('apple').storeAvailability).toEqual(
       expect.objectContaining({
         href: 'https://apps.apple.com/app/id6805250815',
@@ -82,10 +82,10 @@ describe('platform documentation', () => {
     )
     expect(getPlatformGuide('android').storeAvailability).toEqual(
       expect.objectContaining({
-        status: 'pending'
+        href: 'https://play.google.com/store/apps/details?id=com.santi020k.lumen.playground.compose',
+        status: 'available'
       })
     )
-    expect(getPlatformGuide('android').storeAvailability?.href).toBeUndefined()
   })
 
   test('links every native guide to both searchable icon-name catalogs', () => {

@@ -48,9 +48,9 @@ published on 2026-09-08 (claim C-12).
 
 **"Can I get this on Google Play / is the Android app out?"**
 
-> Google Play rejected the latest Compose playground submission because its screenshots did not
-> match the reviewed app experience. A corrected resubmission is pending, so it isn't publicly
-> listed yet. You can build and install the debug APK directly from the repository in the meantime.
+> Yes. Lumen Playground is available on Google Play for Android phones and tablets. It is the native
+> Jetpack Compose gallery, works without an account, and can also be built as a debug APK directly
+> from the repository.
 
 **"Who actually uses this in production? Any customers?"**
 
