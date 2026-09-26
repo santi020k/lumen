@@ -457,8 +457,78 @@ export const getLumenChartTicks = (
 }
 
 const chartAxisLabelCharacterWidth = 7
+const chartAxisLabelNarrowCharacterWidth = 4
+const chartAxisLabelWideCharacterWidth = 11
 const chartAxisLabelGap = 16
 const maximumChartAxisPadding = 240
+
+const chartAxisLabelNarrowCharacters = new Set([
+  ' ', '.', ',', ':', ';', '!', '|', '\'', 'i', 'j', 'l', 'I'
+])
+
+const chartAxisLabelWideCharacters = new Set(['M', 'W', '@', '%', '&', '#'])
+
+const chartAxisCombiningCodePointRanges: (readonly [number, number])[] = [
+  [0x0300, 0x036F],
+  [0x1AB0, 0x1AFF],
+  [0x1DC0, 0x1DFF],
+  [0x20D0, 0x20FF],
+  [0xFE00, 0xFE0F],
+  [0xFE20, 0xFE2F],
+  [0x1F3FB, 0x1F3FF]
+]
+
+const chartAxisWideCodePointRanges: (readonly [number, number])[] = [
+  [0x1100, 0x115F],
+  [0x2329, 0x232A],
+  [0x2E80, 0xA4CF],
+  [0xAC00, 0xD7A3],
+  [0xF900, 0xFAFF],
+  [0xFE10, 0xFE19],
+  [0xFE30, 0xFE6F],
+  [0xFF00, 0xFF60],
+  [0xFFE0, 0xFFE6],
+  [0x1F300, 0x1FAFF],
+  [0x20000, 0x3FFFD]
+]
+
+const isLumenChartCodePointInRanges = (
+  codePoint: number,
+  ranges: readonly (readonly [number, number])[]
+): boolean => ranges.some(([start, end]) => codePoint >= start && codePoint <= end)
+
+const isLumenChartCombiningCodePoint = (codePoint: number): boolean => (
+  codePoint === 0x200D ||
+  isLumenChartCodePointInRanges(codePoint, chartAxisCombiningCodePointRanges)
+)
+
+const isLumenChartWideCodePoint = (codePoint: number): boolean => (
+  isLumenChartCodePointInRanges(codePoint, chartAxisWideCodePointRanges)
+)
+
+const getLumenChartAxisCharacterWidth = (character: string): number => {
+  const codePoint = character.codePointAt(0) ?? 0
+
+  if (isLumenChartCombiningCodePoint(codePoint)) return 0
+
+  if (isLumenChartWideCodePoint(codePoint)) return chartAxisLabelWideCharacterWidth
+
+  if (chartAxisLabelWideCharacters.has(character)) return 10
+
+  if (chartAxisLabelNarrowCharacters.has(character)) return chartAxisLabelNarrowCharacterWidth
+
+  return chartAxisLabelCharacterWidth
+}
+
+const estimateLumenChartAxisLabelWidth = (label: string): number => {
+  let width = 0
+
+  for (const character of label) {
+    width += getLumenChartAxisCharacterWidth(character)
+  }
+
+  return Math.max(label.length * chartAxisLabelCharacterWidth, width)
+}
 
 /**
  * Reserves enough SVG space for formatted value-axis labels when text measurement is unavailable
@@ -471,11 +541,11 @@ export const getLumenChartAxisPadding = (
 ): number => {
   const safeMinimum = Math.max(0, minimum)
 
-  const longestLabelLength = labels.reduce(
-    (longest, label) => Math.max(longest, label.length), 0
+  const widestLabelWidth = labels.reduce(
+    (widest, label) => Math.max(widest, estimateLumenChartAxisLabelWidth(label)), 0
   )
 
-  const estimated = longestLabelLength * chartAxisLabelCharacterWidth + chartAxisLabelGap
+  const estimated = widestLabelWidth + chartAxisLabelGap
 
   return Math.min(
     maximumChartAxisPadding,

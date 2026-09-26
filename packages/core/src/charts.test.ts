@@ -99,6 +99,12 @@ describe('Lumen chart helpers', () => {
     expect(getLumenChartAxisPadding(['x'.repeat(100)])).toBe(240)
   })
 
+  test('reserves wider axis padding for wide glyphs', () => {
+    expect(getLumenChartAxisPadding(['WWWW'], 0)).toBe(56)
+    expect(getLumenChartAxisPadding(['iiii'], 0)).toBe(44)
+    expect(getLumenChartAxisPadding(['界界界'], 0)).toBe(49)
+  })
+
   test('builds line and area geometry while preserving missing-value gaps', () => {
     const geometry = createLumenLineGeometry([
       { x: 'Mon', y: 4 },
