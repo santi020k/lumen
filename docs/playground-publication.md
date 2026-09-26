@@ -53,7 +53,7 @@ exact binary under review.
 - iOS **1.0.2** packages the current Lumen 3 component, icon, accessibility, and dependency fixes.
   The merge to `main` launches the iOS Xcode Cloud archive; App Review submission remains an
   explicit App Store Connect step after the uploaded build finishes processing.
-- Android **1.0.2 (2)** uses the same current Compose gallery represented by the checked-in native
+- Android **1.0.2 (3)** uses the same current Compose gallery represented by the checked-in native
   screenshots. Publish it through closed testing first, verify the installed Play build, then use
   that exact artifact for the corrected production resubmission.
 - The macOS listing remains on its current public version. macOS release tags are now created only
@@ -96,7 +96,9 @@ pnpm playground:android:bundle
 For a Google Play closed-beta release, dispatch **Release Android playground beta** from `main`
 with the public version name and the next unused, monotonically increasing version code. The
 workflow builds and signature-verifies the AAB, runs the Android tests and lint, retains the exact
-bundle as a workflow artifact, and publishes it to the existing `alpha` closed-testing track.
+bundle as a workflow artifact, and publishes it to the existing `alpha` closed-testing track. It
+commits the release without sending the changes for review, leaving them pending explicit
+submission in Play Console.
 
 For a local signed upload bundle, keep the upload key and passwords in the configured Infisical
 project under the `dev` environment and `/playground/google-play` path. CI uses the matching `prod`
