@@ -9,6 +9,7 @@ export {
   createLumenScatterGeometry,
   downsampleLumenChartData,
   formatLumenChartSummary,
+  getLumenChartAxisPadding,
   getLumenChartCategories,
   getLumenChartDomain,
   getLumenChartNumericX,

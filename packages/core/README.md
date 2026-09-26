@@ -55,6 +55,7 @@ aligned.
 ```ts
 import {
   createLumenLineGeometry,
+  getLumenChartAxisPadding,
   type LumenChartSeries
 } from '@santi020k/lumen-core/charts'
 
@@ -64,8 +65,22 @@ const series: LumenChartSeries = {
   data: [{ x: 'Mon', y: 42 }, { x: 'Tue', y: 68 }]
 }
 
-createLumenLineGeometry(series.data)
+const valueLabels = ['$0', '$68,000']
+const paddingLeft = getLumenChartAxisPadding(valueLabels)
+
+createLumenLineGeometry(series.data, {
+  paddingBottom: 24,
+  paddingLeft,
+  paddingRight: 16,
+  paddingTop: 16
+})
 ```
+
+Use `getLumenChartAxisPadding` when formatted value-axis labels need more than the default inset.
+It estimates proportional and wide Unicode glyphs during server rendering, honors an optional
+minimum, and caps the result at 240 so labels cannot consume the complete plot. The line geometry
+helper accepts `paddingTop`, `paddingRight`, `paddingBottom`, and `paddingLeft` to reserve each edge
+independently; unspecified edges fall back to `padding`.
 
 ## Phone Helpers
 

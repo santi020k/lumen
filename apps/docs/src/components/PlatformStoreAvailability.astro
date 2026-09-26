@@ -20,7 +20,7 @@ const Heading = headingLevel
   aria-labelledby={`platform-store-${availability.status}-title`}
 >
   <div class="platform-store-availability__icon" aria-hidden="true">
-    <Icon decorative name={isAvailable ? 'apple' : 'clock-3'} size="lg" />
+    <Icon decorative name={isAvailable ? 'download' : 'clock-3'} size="lg" />
   </div>
   <div class="platform-store-availability__copy">
     <Badge variant={isAvailable ? 'success' : 'warning'}>{availability.badge}</Badge>

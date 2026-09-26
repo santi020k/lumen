@@ -4137,10 +4137,47 @@
 
 .ui-chart__data summary {
   width: fit-content;
+  min-height: 2.75rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid hsl(var(--line));
   border-radius: var(--ui-radius-sm);
-  color: hsl(var(--brand));
+  background: hsl(var(--surface-muted));
+  color: hsl(var(--ink-soft));
   cursor: pointer;
   font-weight: 700;
+  list-style: none;
+  padding: 0.5rem 0.75rem;
+  user-select: none;
+}
+
+.ui-chart__data summary::-webkit-details-marker {
+  display: none;
+}
+
+.ui-chart__data summary::before {
+  width: 1rem;
+  height: 1rem;
+  display: grid;
+  flex: 0 0 auto;
+  border-radius: 999px;
+  background: hsl(var(--brand) / 0.12);
+  color: hsl(var(--brand));
+  content: "+";
+  font-size: 0.875rem;
+  line-height: 1;
+  place-items: center;
+}
+
+.ui-chart__data[open] summary::before {
+  content: "−";
+}
+
+.ui-chart__data summary:hover {
+  border-color: hsl(var(--brand) / 0.36);
+  background: hsl(var(--brand) / 0.08);
+  color: hsl(var(--ink));
 }
 
 .ui-chart__data summary:focus-visible {

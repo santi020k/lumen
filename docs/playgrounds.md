@@ -43,11 +43,12 @@ Expo's CMake configuration step.
 Choose one platform below after the installation completes. You do not need an Expo, Apple
 Developer, or Google Play account to run the local galleries.
 
-The native Apple gallery is also available on the
-[App Store](https://apps.apple.com/app/id6805250815) for iPhone, iPad, and Mac. Google Play rejected
-the latest Android submission because its screenshots did not match the reviewed app experience; a
-corrected resubmission is pending. Use the local Compose gallery or debug APK until the public listing
-is live.
+The native Apple gallery is available on the
+[App Store](https://apps.apple.com/app/id6805250815) for iPhone, iPad, and Mac. The native Compose
+gallery is available on
+[Google Play](https://play.google.com/store/apps/details?id=com.santi020k.lumen.playground.compose)
+for Android phones and tablets. Both galleries also remain available as local builds for development
+and validation.
 
 ## React Native and Expo
 

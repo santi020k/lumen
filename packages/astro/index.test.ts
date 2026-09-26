@@ -1130,6 +1130,8 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(styles).toContain('--chart-series-7: 52 92% 45%;')
     expect(styles).toContain('.ui-chart__legend')
     expect(styles).toContain('.ui-chart__data')
+    expect(styles).toContain('.ui-chart__data summary::-webkit-details-marker')
+    expect(styles).toContain('.ui-chart__data[open] summary::before')
     expect(styles).toContain('.ui-line-chart__line')
     expect(styles).toContain('.ui-bar-chart__marks')
     expect(styles).toContain('.ui-pie-chart__slices')

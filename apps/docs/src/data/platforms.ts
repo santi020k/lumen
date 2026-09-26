@@ -637,11 +637,13 @@ pnpm playground:android:build`,
     shortLabel: 'Android',
     status: 'Compose module',
     storeAvailability: {
-      badge: 'Google Play · resubmission pending',
+      badge: 'Available on Google Play',
       description:
-        'Google Play rejected the latest Android submission because its screenshots did not match the reviewed app experience. A corrected resubmission is pending; until the public listing is live, run the local Compose playground or build the debug APK from the repository.',
-      status: 'pending',
-      title: 'Android production rollout needs resubmission'
+        'Download Lumen Playground for Android phones and tablets. Explore the native Jetpack Compose component gallery offline, with no account required.',
+      href: 'https://play.google.com/store/apps/details?id=com.santi020k.lumen.playground.compose',
+      linkLabel: 'View on Google Play',
+      status: 'available',
+      title: 'Take the Lumen Playground with you'
     },
     summary:
       'Use the shared Lumen foundations through Jetpack Compose and Material 3 while preserving Android interaction and accessibility conventions.',

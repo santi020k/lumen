@@ -64,6 +64,7 @@ export {
   exportThemeCss,
   filterDataRecords,
   getContrastRatio,
+  getLumenChartAxisPadding,
   getLumenChartCategories,
   getLumenChartDomain,
   getLumenChartTicks,
