@@ -232,7 +232,7 @@ test("the web canary executes every v2 release gate", () => {
 
 test("the React Native package smoke builds its package outside the release scope", () => {
   assertOrderedCommands(canaryWorkflow, "React Native package canary", [
-    "pnpm --filter @santi020k/lumen-react-native run build",
+    "pnpm --filter @santi020k/lumen-react-native... run build",
     "pnpm run check:react-native-package",
   ]);
 });
