@@ -1,5 +1,11 @@
 # @santi020k/lumen-mcp
 
+## 3.0.1
+
+### Patch Changes
+
+- [#88](https://github.com/santi020k/lumen/pull/88) [`b4af91a`](https://github.com/santi020k/lumen/commit/b4af91a087644fcb430a0e0895eafd4a60a1c251) Thanks [@santi020k](https://github.com/santi020k)! - Prevent line-chart value labels from being clipped by sizing the SVG plot padding from the formatted axis values across Astro, React, and Web Components. Chart data disclosures now use a clear, touch-friendly open and close control instead of the browser's cramped default marker.
+
 ## 3.0.0
 
 ### Major Changes
