@@ -24,6 +24,7 @@ const [
   ciWorkflow,
   composeWorkflow,
   npmWorkflow,
+  playgroundAndroidWorkflow,
   playgroundAppleWorkflow,
   playgroundMacWorkflow,
   publishedNativeWorkflow,
@@ -32,6 +33,7 @@ const [
   readWorkflow("ci.yml"),
   readWorkflow("publish-compose.yml"),
   readWorkflow("release.yml"),
+  readWorkflow("release-playground-android.yml"),
   readWorkflow("release-playground-apple.yml"),
   readWorkflow("release-playground-macos.yml"),
   readWorkflow("verify-native-release.yml"),
@@ -273,6 +275,13 @@ test("iOS version bumps do not implicitly launch a macOS store upload", () => {
   assert.doesNotMatch(playgroundMacWorkflow, /push:/u);
 
   assert.match(playgroundMacWorkflow, /workflow_dispatch:/u);
+});
+
+test("Android uploads leave review submission explicit in Play Console", () => {
+  assert.match(
+    playgroundAndroidWorkflow,
+    /changesNotSentForReview: true/u,
+  );
 });
 
 test("pull-request compatibility checks reuse the affected build outputs", () => {

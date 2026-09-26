@@ -112,6 +112,7 @@ jobs:
           releaseFiles: apps/playground-android/app/build/outputs/bundle/release/app-release.aab
           tracks: alpha
           status: completed
+          changesNotSentForReview: true
           releaseName: ${{ inputs.version_name }} (${{ inputs.version_code }}) closed beta
 
       - name: Remove temporary signing material
