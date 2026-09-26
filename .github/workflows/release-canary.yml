@@ -207,6 +207,9 @@ jobs:
         run: pnpm run test:framework-conformance
       - run: pnpm run check:consumer-packages
         if: needs.classify.outputs.consumer-packages == 'true'
+      - name: Build React Native package for packed validation
+        if: needs.classify.outputs.react-native == 'true'
+        run: pnpm --filter @santi020k/lumen-react-native... run build
       - run: pnpm run check:react-native-package
         if: needs.classify.outputs.react-native == 'true'
       - name: Verify packed React Native canary isolation
