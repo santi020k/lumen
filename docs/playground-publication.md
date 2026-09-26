@@ -24,6 +24,7 @@ support URL, and privacy policy while proving the package native to their platfo
 - **Name:** Lumen Playground
 - **Category:** Developer Tools on Apple platforms; Libraries & Demo on Google Play
 - **App Store:** [Lumen Playground for iPhone, iPad, and Mac](https://apps.apple.com/app/id6805250815)
+- **Google Play:** [Lumen Playground for Android](https://play.google.com/store/apps/details?id=com.santi020k.lumen.playground.compose)
 - **Support:** `https://lumen.santi020k.com/support`
 - **Privacy:** `https://lumen.santi020k.com/privacy`
 - **Apple marketing URL:** `https://lumen.santi020k.com/docs/apple/playground`
@@ -48,14 +49,15 @@ exact binary under review.
   [Apple playground documentation](https://lumen.santi020k.com/docs/apple/playground).
 - macOS remains at **1.0 (7)** on the same listing; this release changes only iOS.
 
-## Mobile 1.0.2 candidate — September 25, 2026
+## Mobile 1.0.2 public release — September 26, 2026
 
 - iOS **1.0.2** packages the current Lumen 3 component, icon, accessibility, and dependency fixes.
-  The merge to `main` launches the iOS Xcode Cloud archive; App Review submission remains an
-  explicit App Store Connect step after the uploaded build finishes processing.
-- Android **1.0.2 (3)** uses the same current Compose gallery represented by the checked-in native
-  screenshots. Publish it through closed testing first, verify the installed Play build, then use
-  that exact artifact for the corrected production resubmission.
+  The release is public on the App Store. Storefront propagation is not instantaneous: Apple's
+  public lookup reported 1.0.2 in Colombia while the United States still returned 1.0.1 during the
+  September 26 verification.
+- Android **1.0.2 (3)** is public on Google Play with the current Compose gallery represented by the
+  checked-in native screenshots. The public listing exposes installation and records the Lumen 3
+  update on September 25.
 - The macOS listing remains on its current public version. macOS release tags are now created only
   by an explicit **Launch Mac playground release** workflow dispatch so an iOS version bump cannot
   unintentionally start a Mac App Store upload.
@@ -68,8 +70,10 @@ exact binary under review.
 - The rollout targets all 177 available Google Play countries and regions, including the rest-of-world
   group.
 - Google Play later rejected that submission because the listing screenshots showed features that
-  did not match the reviewed app experience. The historical submission remains recorded here, but
-  the current state is **Rejected — corrected resubmission pending**, not live or under review.
+  did not match the reviewed app experience.
+- After the listing and release process were corrected, Android **1.0.2 (3)** became publicly
+  installable. The historical rejection remains recorded here for release provenance; it is no
+  longer the current Google Play state.
 
 ## Generate icons
 

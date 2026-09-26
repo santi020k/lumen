@@ -19,6 +19,8 @@
   ·
   <a href="https://apps.apple.com/app/id6805250815">iPhone and iPad app</a>
   ·
+  <a href="https://play.google.com/store/apps/details?id=com.santi020k.lumen.playground.compose">Android app</a>
+  ·
   <a href="https://github.com/santi020k/lumen/issues">Issues</a>
 </p>
 
@@ -180,8 +182,9 @@ packages:
   [App Store](https://apps.apple.com/app/id6805250815) for iPhone, iPad, and Mac. It also builds as
   an iOS Xcode app or macOS Swift Package executable for local exploration.
 - [`apps/playground-android`](./apps/playground-android) builds a native Compose application and a
-  directly installable debug APK. Its latest Google Play submission was rejected for a screenshot
-  mismatch and is pending a corrected resubmission.
+  directly installable debug APK. It is also available on
+  [Google Play](https://play.google.com/store/apps/details?id=com.santi020k.lumen.playground.compose)
+  for Android phones and tablets.
 
 See the [playground workflow](./docs/playgrounds.md) for run, capture, and distribution commands.
 
