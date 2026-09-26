@@ -32,6 +32,9 @@ jobs:
           fetch-depth: 0
           ref: ${{ github.sha }}
 
+      - name: Prepare release comparison ref
+        run: git update-ref refs/heads/main "$GITHUB_SHA"
+
       - name: Set up pnpm workspace
         uses: santi020k/quality/actions/setup-pnpm@eec1701b98bcc0b76d36af288ee78a0369cd84cc # v1
         with:

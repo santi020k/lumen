@@ -141,6 +141,11 @@ test('release canaries keep manual full-matrix coverage and scope pull requests'
 })
 
 test('npm release resolves and forwards the exact publication scope', () => {
+  assert.match(
+    release,
+    /git update-ref refs\/heads\/main "\$GITHUB_SHA"[\s\S]*node scripts\/release-scope\.mjs --github-output/u
+  )
+
   assert.match(release, /node scripts\/release-scope\.mjs --github-output/u)
 
   assert.match(release, /LUMEN_RELEASE_PACKAGES: \$\{\{ steps\.scope\.outputs\.packages \}\}/u)
