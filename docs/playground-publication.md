@@ -48,6 +48,18 @@ exact binary under review.
   [Apple playground documentation](https://lumen.santi020k.com/docs/apple/playground).
 - macOS remains at **1.0 (7)** on the same listing; this release changes only iOS.
 
+## Mobile 1.0.2 candidate — September 25, 2026
+
+- iOS **1.0.2** packages the current Lumen 3 component, icon, accessibility, and dependency fixes.
+  The merge to `main` launches the iOS Xcode Cloud archive; App Review submission remains an
+  explicit App Store Connect step after the uploaded build finishes processing.
+- Android **1.0.2 (2)** uses the same current Compose gallery represented by the checked-in native
+  screenshots. Publish it through closed testing first, verify the installed Play build, then use
+  that exact artifact for the corrected production resubmission.
+- The macOS listing remains on its current public version. macOS release tags are now created only
+  by an explicit **Launch Mac playground release** workflow dispatch so an iOS version bump cannot
+  unintentionally start a Mac App Store upload.
+
 ## Android production record — September 24, 2026
 
 - Google granted production access for `com.santi020k.lumen.playground.compose`.
@@ -111,9 +123,10 @@ release checks only.
 For Apple distribution, update `apps/playground-apple/release.json` and every `MARKETING_VERSION`
 in `apps/playground-apple/project.yml`, then run `pnpm playground:apple:release-preflight`. Xcode
 Cloud stamps the checked-in project with the version from the immutable release tag. Merging that
-synchronized version change to `main`
-automatically launches both GitHub Actions workflows. Either workflow can also be dispatched
-manually from `main` to create another immutable candidate for the committed version:
+synchronized version change to `main` automatically launches the iOS workflow. The macOS workflow
+is dispatch-only so an iOS version bump cannot start an unintended Mac App Store upload. Either
+workflow can be dispatched manually from `main` to create another immutable candidate for the
+committed version:
 
 - **Launch Apple playground release** creates `playground-ios-v<version>-r<run>` for iOS.
 - **Launch Mac playground release** creates `playground-macos-v<version>-r<run>` for macOS.

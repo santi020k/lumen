@@ -24,12 +24,16 @@ const [
   ciWorkflow,
   composeWorkflow,
   npmWorkflow,
+  playgroundAppleWorkflow,
+  playgroundMacWorkflow,
   publishedNativeWorkflow,
 ] = await Promise.all([
   readWorkflow("release-canary.yml"),
   readWorkflow("ci.yml"),
   readWorkflow("publish-compose.yml"),
   readWorkflow("release.yml"),
+  readWorkflow("release-playground-apple.yml"),
+  readWorkflow("release-playground-macos.yml"),
   readWorkflow("verify-native-release.yml"),
 ]);
 
@@ -258,6 +262,17 @@ test("Apple checks run in Xcode Cloud and GitHub uses no macOS runners", () => {
     "pnpm run test:visual",
     "pnpm run test:framework-visual",
   ]);
+});
+
+test("iOS version bumps do not implicitly launch a macOS store upload", () => {
+  assert.match(
+    playgroundAppleWorkflow,
+    /push:[\s\S]*apps\/playground-apple\/release\.json/u,
+  );
+
+  assert.doesNotMatch(playgroundMacWorkflow, /push:/u);
+
+  assert.match(playgroundMacWorkflow, /workflow_dispatch:/u);
 });
 
 test("pull-request compatibility checks reuse the affected build outputs", () => {

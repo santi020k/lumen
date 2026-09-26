@@ -1,11 +1,6 @@
 name: Launch Mac playground release
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - apps/playground-apple/release.json
   workflow_dispatch:
 
 concurrency:
