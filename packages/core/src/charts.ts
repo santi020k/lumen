@@ -174,6 +174,10 @@ export interface LumenLineGeometryOptions {
   height?: number
   includeZero?: boolean
   padding?: number
+  paddingBottom?: number
+  paddingLeft?: number
+  paddingRight?: number
+  paddingTop?: number
   width?: number
   xDomain?: Partial<LumenChartDomain>
   xScale?: LumenChartScaleType
@@ -452,6 +456,33 @@ export const getLumenChartTicks = (
   return [domain.min, domain.max]
 }
 
+const chartAxisLabelCharacterWidth = 7
+const chartAxisLabelGap = 16
+const maximumChartAxisPadding = 240
+
+/**
+ * Reserves enough SVG space for formatted value-axis labels when text measurement is unavailable
+ * during server rendering. The estimate targets Lumen's 0.6875rem chart label style and stays
+ * bounded so unusually verbose formatters cannot consume the complete plot.
+ */
+export const getLumenChartAxisPadding = (
+  labels: readonly string[],
+  minimum = 44
+): number => {
+  const safeMinimum = Math.max(0, minimum)
+
+  const longestLabelLength = labels.reduce(
+    (longest, label) => Math.max(longest, label.length), 0
+  )
+
+  const estimated = longestLabelLength * chartAxisLabelCharacterWidth + chartAxisLabelGap
+
+  return Math.min(
+    maximumChartAxisPadding,
+    Math.max(safeMinimum, estimated)
+  )
+}
+
 export const resolveLumenChartTone = (
   tone: LumenChartTone | undefined,
   index = 0
@@ -652,7 +683,7 @@ const getLumenLineXCoordinate = (
   datum: LumenChartDatum,
   index: number,
   dataLength: number,
-  padding: number,
+  paddingLeft: number,
   drawableWidth: number,
   xScale: LumenChartScaleType,
   xDomain: LumenChartDomain | undefined
@@ -660,14 +691,14 @@ const getLumenLineXCoordinate = (
   if (xScale === 'categorical') {
     const denominator = Math.max(1, dataLength - 1)
 
-    return padding + (dataLength === 1 ? 0.5 : index / denominator) * drawableWidth
+    return paddingLeft + (dataLength === 1 ? 0.5 : index / denominator) * drawableWidth
   }
 
   const numericX = getLumenChartNumericX(datum.x, xScale)
 
   if (numericX === null || xDomain === undefined) return null
 
-  return scaleLumenChartValue(numericX, xDomain, padding, padding + drawableWidth)
+  return scaleLumenChartValue(numericX, xDomain, paddingLeft, paddingLeft + drawableWidth)
 }
 
 const isAvailableLumenChartY = (value: number | null): value is number => value !== null && Number.isFinite(value)
@@ -677,18 +708,21 @@ const splitGeometrySegments = (
   domain: LumenChartDomain,
   width: number,
   height: number,
-  padding: number,
+  paddingBottom: number,
+  paddingLeft: number,
+  paddingRight: number,
+  paddingTop: number,
   xScale: LumenChartScaleType,
   xDomain: LumenChartDomain | undefined
 ): LumenChartGeometryPoint[][] => {
-  const drawableWidth = Math.max(0, width - padding * 2)
-  const drawableHeight = Math.max(0, height - padding * 2)
+  const drawableWidth = Math.max(0, width - paddingLeft - paddingRight)
+  const drawableHeight = Math.max(0, height - paddingTop - paddingBottom)
   const segments: LumenChartGeometryPoint[][] = []
   let current: LumenChartGeometryPoint[] = []
 
   for (const [index, datum] of data.entries()) {
     const xCoordinate = getLumenLineXCoordinate(
-      datum, index, data.length, padding, drawableWidth, xScale, xDomain
+      datum, index, data.length, paddingLeft, drawableWidth, xScale, xDomain
     )
 
     if (!isAvailableLumenChartY(datum.y) || xCoordinate === null) {
@@ -703,7 +737,7 @@ const splitGeometrySegments = (
       ...datum,
       xCoordinate,
       yCoordinate: scaleLumenChartValue(
-        datum.y, domain, padding + drawableHeight, padding
+        datum.y, domain, paddingTop + drawableHeight, paddingTop
       )
     })
   }
@@ -740,6 +774,11 @@ const lumenLineAreaPath = (
   ].join(' ')
 }
 
+const resolveLumenLinePadding = (
+  value: number | undefined,
+  fallback: number
+): number => value ?? fallback
+
 export const createLumenLineGeometry = (
   data: readonly LumenChartDatum[],
   options: LumenLineGeometryOptions = {}
@@ -749,10 +788,19 @@ export const createLumenLineGeometry = (
     height = defaultChartSize,
     includeZero = false,
     padding = defaultChartPadding,
+    paddingBottom: requestedPaddingBottom,
+    paddingLeft: requestedPaddingLeft,
+    paddingRight: requestedPaddingRight,
+    paddingTop: requestedPaddingTop,
     width = defaultChartSize,
     xDomain: requestedXDomain,
     xScale = 'categorical'
   } = options
+
+  const paddingBottom = resolveLumenLinePadding(requestedPaddingBottom, padding)
+  const paddingLeft = resolveLumenLinePadding(requestedPaddingLeft, padding)
+  const paddingRight = resolveLumenLinePadding(requestedPaddingRight, padding)
+  const paddingTop = resolveLumenLinePadding(requestedPaddingTop, padding)
 
   const domainValues = xScale === 'categorical' ?
     data.map(datum => datum.y) :
@@ -766,11 +814,23 @@ export const createLumenLineGeometry = (
     xScale === 'categorical' ? undefined : getLumenChartXDomain(data, xScale, requestedXDomain)
 
   const segments = splitGeometrySegments(
-    data, domain, width, height, padding, xScale, xDomain
+    data,
+    domain,
+    width,
+    height,
+    paddingBottom,
+    paddingLeft,
+    paddingRight,
+    paddingTop,
+    xScale,
+    xDomain
   )
 
   const baseline = scaleLumenChartValue(
-    Math.max(domain.min, Math.min(domain.max, 0)), domain, height - padding, padding
+    Math.max(domain.min, Math.min(domain.max, 0)),
+    domain,
+    height - paddingBottom,
+    paddingTop
   )
 
   return {

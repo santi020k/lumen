@@ -13,6 +13,7 @@ import {
   createLumenScatterGeometry,
   downsampleLumenChartData,
   formatLumenChartSummary,
+  getLumenChartAxisPadding,
   getLumenChartCategories,
   getLumenChartDomain,
   getLumenChartTicks,
@@ -92,6 +93,12 @@ describe('Lumen chart helpers', () => {
     expect(getLumenChartTicks(domain, 3)).toEqual([0, 5, 10])
   })
 
+  test('reserves enough axis padding for long formatted values', () => {
+    expect(getLumenChartAxisPadding(['$ 0', '$ 3.000.000'])).toBe(93)
+    expect(getLumenChartAxisPadding(['0'], 60)).toBe(60)
+    expect(getLumenChartAxisPadding(['x'.repeat(100)])).toBe(240)
+  })
+
   test('builds line and area geometry while preserving missing-value gaps', () => {
     const geometry = createLumenLineGeometry([
       { x: 'Mon', y: 4 },
@@ -112,6 +119,16 @@ describe('Lumen chart helpers', () => {
     )
 
     expect(geometry.points[0]?.xCoordinate).toBe(50)
+  })
+
+  test('supports an expanded left axis without changing vertical padding', () => {
+    const geometry = createLumenLineGeometry(
+      [{ x: 'First', y: 0 }, { x: 'Last', y: 10 }],
+      { height: 100, padding: 10, paddingLeft: 30, width: 100 }
+    )
+
+    expect(geometry.points.map(point => point.xCoordinate)).toEqual([30, 90])
+    expect(geometry.points.map(point => point.yCoordinate)).toEqual([90, 10])
   })
 
   test('aligns differently shaped series to their shared category domain', () => {

@@ -16,6 +16,7 @@ import {
   exportThemeBuilderValue,
   formatLumenChartSummary,
   formatLumenLanguageLabel,
+  getLumenChartAxisPadding,
   getLumenChartCategories,
   getLumenChartDomain,
   getLumenChartTicks,
@@ -5796,15 +5797,21 @@ class LumenLineChartBehaviorElement extends LumenDataChartBehaviorElement {
       ], false
     )
 
+    const ticks = getLumenChartTicks(domain)
+
+    const paddingLeft = getLumenChartAxisPadding(
+      ticks.map(tick => this.valueFormatter(tick))
+    )
+
     const geometries = alignedSeries.map(item => createLumenLineGeometry(item.data, {
       domain,
       height,
       includeZero: false,
       padding,
+      paddingLeft,
       width
     }))
 
-    const ticks = getLumenChartTicks(domain)
     const labelStep = Math.max(1, Math.ceil(categories.length / 8))
 
     const grid = ticks
@@ -5812,8 +5819,8 @@ class LumenLineChartBehaviorElement extends LumenDataChartBehaviorElement {
         const y = scaleLumenChartValue(tick, domain, height - padding, padding)
 
         return [
-          `<line x1="${padding}" x2="${width - padding}" y1="${y}" y2="${y}"></line>`,
-          `<text x="${padding - 8}" y="${y}">`,
+          `<line x1="${paddingLeft}" x2="${width - padding}" y1="${y}" y2="${y}"></line>`,
+          `<text x="${paddingLeft - 8}" y="${y}">`,
           `${escapeChartHtml(this.valueFormatter(tick))}</text>`
         ].join('')
       })
@@ -5825,7 +5832,7 @@ class LumenLineChartBehaviorElement extends LumenDataChartBehaviorElement {
           return ''
 
         const denominator = Math.max(1, categories.length - 1)
-        const x = padding + (index / denominator) * (width - padding * 2)
+        const x = paddingLeft + (index / denominator) * (width - paddingLeft - padding)
 
         const label =
           series
@@ -5898,7 +5905,7 @@ class LumenLineChartBehaviorElement extends LumenDataChartBehaviorElement {
     const reference = referenceY === undefined ?
       '' :
       [
-        `<line class="ui-chart__reference" x1="${padding}" x2="${width - padding}"`,
+        `<line class="ui-chart__reference" x1="${paddingLeft}" x2="${width - padding}"`,
         ` y1="${referenceY}" y2="${referenceY}"></line>`
       ].join('')
 

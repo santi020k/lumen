@@ -5,6 +5,7 @@ import {
   alignLumenChartSeries,
   createLumenLineGeometry,
   formatLumenChartSummary,
+  getLumenChartAxisPadding,
   getLumenChartCategories,
   getLumenChartDomain,
   getLumenChartTicks,
@@ -75,15 +76,18 @@ const domain = getLumenChartDomain([
   referenceValue ?? null
 ], false)
 
+const ticks = getLumenChartTicks(domain)
+const paddingLeft = getLumenChartAxisPadding(ticks.map(tick => formatValue(tick)))
+
 const geometries = alignedSeries.map(item => createLumenLineGeometry(item.data, {
   domain,
   height,
   includeZero: false,
   padding,
+  paddingLeft,
   width
 }))
 
-const ticks = getLumenChartTicks(domain)
 const labelStep = Math.max(1, Math.ceil(categories.length / 8))
 let markerStep = 1
 
@@ -139,8 +143,8 @@ const referenceY =
 
             return (
               <>
-                <line x1={padding} x2={width - padding} y1={y} y2={y} />
-                <text x={padding - 8} y={y}>
+                <line x1={paddingLeft} x2={width - padding} y1={y} y2={y} />
+                <text x={paddingLeft - 8} y={y}>
                   {formatValue(tick)}
                 </text>
               </>
@@ -160,7 +164,7 @@ const referenceY =
             const denominator = Math.max(1, categories.length - 1)
 
             const x =
-              padding + (index / denominator) * (width - padding * 2)
+              paddingLeft + (index / denominator) * (width - paddingLeft - padding)
 
             return (
               <text text-anchor="middle" x={x} y={height - 14}>
@@ -174,7 +178,7 @@ const referenceY =
         referenceY !== undefined && (
           <line
             class="ui-chart__reference"
-            x1={padding}
+            x1={paddingLeft}
             x2={width - padding}
             y1={referenceY}
             y2={referenceY}

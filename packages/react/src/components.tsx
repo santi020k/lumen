@@ -41,6 +41,7 @@ import {
   createLumenScatterGeometry,
   formatLumenChartSummary,
   formatLumenLanguageLabel,
+  getLumenChartAxisPadding,
   getLumenChartCategories,
   getLumenChartDomain,
   getLumenChartTicks,
@@ -1178,15 +1179,18 @@ export const LineChart = ({
     ], false
   )
 
+  const ticks = getLumenChartTicks(domain)
+  const paddingLeft = getLumenChartAxisPadding(ticks.map(tick => formatValue(tick)))
+
   const geometries = alignedSeries.map(item => createLumenLineGeometry(item.data, {
     domain,
     height,
     includeZero: false,
     padding,
+    paddingLeft,
     width
   }))
 
-  const ticks = getLumenChartTicks(domain)
   const labelStep = Math.max(1, Math.ceil(categories.length / 8))
   const markerStep = getLineChartMarkerStep(markers, categories.length)
 
@@ -1221,8 +1225,8 @@ export const LineChart = ({
 
               return (
                 <Fragment key={tick}>
-                  <line x1={padding} x2={width - padding} y1={y} y2={y} />
-                  <text x={padding - 8} y={y}>
+                  <line x1={paddingLeft} x2={width - padding} y1={y} y2={y} />
+                  <text x={paddingLeft - 8} y={y}>
                     {formatValue(tick)}
                   </text>
                 </Fragment>
@@ -1235,7 +1239,7 @@ export const LineChart = ({
                 return null
 
               const denominator = Math.max(1, categories.length - 1)
-              const x = padding + (index / denominator) * (width - padding * 2)
+              const x = paddingLeft + (index / denominator) * (width - paddingLeft - padding)
 
               return (
                 <text
@@ -1255,7 +1259,7 @@ export const LineChart = ({
           {referenceY !== undefined && (
             <line
               className="ui-chart__reference"
-              x1={padding}
+              x1={paddingLeft}
               x2={width - padding}
               y1={referenceY}
               y2={referenceY}
