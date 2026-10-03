@@ -304,6 +304,37 @@ The release advanced to `10d25bd9` and now contains the earlier native-quality w
 the new splash fix still requires combined validation and local release integration. Historical
 runtime artifacts retain their tested revisions, and do not qualify the combined release.
 
+### Combined candidate verification
+
+The reconciled candidate `ecdcb322` passed 1,313 JavaScript tests in 119 files, all 23 root
+type-check and zero-warning lint tasks, ten playground tests, 69 shared and 23 platform native
+contracts, 305 classified React Native exports, 183 supported Compose declarations, 22 reviewed
+Swift compatibility diagnostics, and the clean packed React Native consumer. The canonical
+`pnpm run validate` passed the monorepo build but stopped at existing web bundle budgets: shared
+CSS was 199.7 KiB raw / 32.4 KiB gzip, React components 168.1 / 34.7 KiB and Elements gzip
+44.4 KiB. The corresponding limits remain 199.2 / 32.2, 167.0 / 34.2 and 43.9 KiB. The splash
+fix changes none of those sources or limits. Checks after that failed step are not implied green;
+the native checks above were run independently.
+
+A fresh combined Android host passed release assembly and lint with zero errors and 59 warnings.
+The artifact is preserved under `.build/native-quality-react-native-android-combined-runtime`
+with SHA-256 `c0895aefe92d0f1dd702fd92c68f58eb6b1815907c17971db767f4f676beecac`.
+All 257 generated-host and compiled library input hashes matched after the final validation build;
+signature verification passed. The preparation report remains preserved separately because Expo
+rewrites the staged Android/iOS development scripts during generation. Dependencies were unchanged,
+and final input capture happened after generation. The isolated app installed on the Android 17
+emulator, and the installed APK hash matched before and after five force-stopped process launches.
+Activity Manager samples were 1,185, 828, 657, 554 and 564 ms: median 657 ms and p95 1,185 ms.
+No application database was cleared. These observations do not establish full time-to-interactive,
+scrolling, hardware qualification or passing regression thresholds.
+
+Three Android Hermes exports per fixture passed the unchanged import budgets: baseline 1,429,229
+bytes, root button 6,253,769, foundations 1,451,478, static graphics 1,634,493 and named root icon
+6,253,837. Repeated iOS exports also passed: baseline 1,424,195 bytes, root button 6,247,982,
+foundations 1,446,438, static graphics 1,629,152 and named root icon 6,248,052. The new splash fix remains on the
+task branch pending a passing combined gate and serialized local release integration. Native
+large-text failures, physical-device and screen-reader checks, and stability iterations remain open.
+
 ### Outstanding scope and blockers
 
 The complete Required outcomes list remains authoritative. Broader phone/tablet runtime qualification and physical-device keyboard/focus and screen-reader checks,
