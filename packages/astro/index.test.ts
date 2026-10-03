@@ -1116,7 +1116,7 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(barChart).toContain('createLumenBarGeometry')
     expect(barChart).toContain('resolvedLabels.viewData')
     expect(barChart).toContain('layout = \'grouped\'')
-    expect(lineChart).toContain('createLumenLineGeometry')
+    expect(lineChart).toContain('createLumenLineChartModel')
     expect(lineChart).toContain('hasLumenChartData')
     expect(lineChart).toContain('referenceValue?: number')
     expect(lineChart).toContain('resolvedLabels.notAvailable')

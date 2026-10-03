@@ -597,7 +597,9 @@ export const componentCollections: ComponentCollection[] = [
       'ScatterChart',
       'Heatmap',
       'RangeChart',
-      'ComboChart'
+      'ComboChart',
+      'Histogram',
+      'WaterfallChart'
     ]
   },
   {
@@ -973,6 +975,7 @@ const keyboardInteractionsByComponent: Partial<
 }
 
 export const runtimeEvents: RuntimeEventRow[] = [
+  { name: 'ui:chart-cursor-change', target: 'LineChart', when: 'An interactive chart cursor changes through keyboard, pointer, or touch.', detail: '{ x: number | string | null }' },
   { detail: '{ value: number }', name: 'ui:image-comparison-change', target: 'ImageComparison root', when: 'Fires as the native range changes the percentage of the after image revealed.' },
   {
     detail: '{ value: string }',
@@ -1124,6 +1127,7 @@ export const runtimeEvents: RuntimeEventRow[] = [
 const runtimeEventsByComponent: Partial<
   Record<string, readonly RuntimeEventRow[]>
 > = {
+  LineChart: runtimeEvents.filter(event => event.name === 'ui:chart-cursor-change'),
   ImageComparison: runtimeEvents.filter(event => event.name === 'ui:image-comparison-change'),
   CopyButton: runtimeEvents.filter(event => event.name.startsWith('ui:copy-')),
   DataTable: runtimeEvents.filter(
@@ -1714,6 +1718,8 @@ const apiReferenceByComponent = {
     )
   ],
   Heatmap: [
+    apiRow('colorScale, midpoint', '"sequential" | "diverging", number', '"sequential", 0', 'Uses semantic color scales with an explicit midpoint for diverging values.'),
+    apiRow('showLegend', 'boolean', 'true', 'Shows scale endpoints and the distinct missing-data marker.'),
     apiRow(
       'data', 'LumenHeatmapDatum[]', '[]', 'Provides labelled row, column, and intensity values for the heatmap cells.'
     ),
@@ -1921,7 +1927,26 @@ const apiReferenceByComponent = {
       'target, rel', 'anchor attributes', '-', 'Forwards native navigation and relationship attributes.'
     )
   ],
+  Histogram: [
+    apiRow('bins', 'LumenHistogramBin[]', 'required', 'Supplies non-overlapping numeric start/end boundaries and nonnegative counts. The application owns binning.'),
+    apiRow('frequency', '"count" | "density"', '"count"', 'Density divides count by bin width. Unequal-width bins require density.'),
+    apiRow('formatBoundary, formatValue', 'formatter functions', 'String', 'Formats numeric boundaries and the plotted frequency.'),
+    apiRow('valueLabel, labels', 'string, Partial<LumenChartLabels>', 'localized defaults', 'Labels the measure and the accessible data table.'),
+    apiRow('showTable', 'boolean', 'true', 'Retains raw bin counts alongside the plotted frequency.')
+  ],
+  WaterfallChart: [
+    apiRow('data', 'LumenWaterfallDatum[]', 'required', 'Supplies stable IDs, labels, signed changes, and optional explicit total checkpoints.'),
+    apiRow('formatValue', 'formatter function', 'String', 'Formats chart values and start/end balances consistently.'),
+    apiRow('valueLabel, labels', 'string, Partial<LumenChartLabels>', 'localized defaults', 'Labels the measure and the accessible data table.'),
+    apiRow('showTable', 'boolean', 'true', 'Shows each supplied change and the resulting start/end balance.')
+  ],
   LineChart: [
+    apiRow('xScale', '"categorical" | "linear" | "time"', '"categorical"', 'Uses numeric or elapsed-time spacing, sorted against one shared X domain. Format dates explicitly for the application locale and time zone.'),
+    apiRow('domain, xDomain', 'Partial<LumenChartDomain>', 'automatic', 'Sets finite axis bounds shared by all series.'),
+    apiRow('interactive, syncGroup', 'boolean, string', 'false, unset', 'Enables keyboard/pointer/touch inspection, toggled legends, and exact-X cursor synchronization. Astro requires UIPrimitives.'),
+    apiRow('annotations', 'LumenChartAnnotation[]', '[]', 'Places labeled X events or Y reference lines in data coordinates.'),
+    apiRow('cursor, onCursorChange', 'React cursor identity and callback', 'uncontrolled', 'React can supply the active X identity and receive cursor changes. Astro and Elements emit ui:chart-cursor-change.'),
+    apiRow('width, height', 'number', '640, 320', 'Sets the SVG coordinate dimensions; narrow plots retain internal scrolling.'),
     apiRow(
       'series', 'LumenChartSeries[]', 'required', 'Provides ordered, already-aggregated points; null y values create visible gaps.'
     ),
@@ -4224,6 +4249,18 @@ export const componentDocs: ComponentDoc[] = (
       'Layout',
       'Keeps meaningful content available to assistive technology without displaying it.',
       '<Button><Icon name="search" decorative /><VisuallyHidden>Search</VisuallyHidden></Button>'
+    ],
+    [
+      'Histogram',
+      'Data display',
+      'Shows a numeric distribution using explicit bins and an accessible frequency table.',
+      '<Histogram aria-label="Response times" bins={[{ start: 0, end: 100, count: 8 }, { start: 100, end: 200, count: 24 }]} />'
+    ],
+    [
+      'WaterfallChart',
+      'Data display',
+      'Explains signed changes and explicit total checkpoints.',
+      '<WaterfallChart aria-label="Balance changes" data={[{ id: "opening", label: "Opening", kind: "total", value: 120 }, { id: "expenses", label: "Expenses", value: -20 }]} />'
     ]
   ] as const satisfies readonly ComponentDocTuple[]
 ).map(([name, category, summary, example]) => ({

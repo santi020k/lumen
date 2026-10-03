@@ -4348,7 +4348,9 @@ lumen-dialog-close {
   line-height: 1.5;
 }
 
-.ui-chart__legend {
+.ui-chart__legend,
+.ui-heatmap__legend,
+.ui-chart__inspection > div {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem 1rem;
@@ -4379,7 +4381,9 @@ lumen-dialog-close {
 }
 
 .ui-chart__grid text,
-.ui-chart__axis-labels text {
+.ui-chart__axis-labels text,
+.ui-chart__annotation text,
+.ui-heatmap__missing {
   fill: hsl(var(--chart-axis));
   font-size: 0.6875rem;
 }
@@ -4389,13 +4393,17 @@ lumen-dialog-close {
   text-anchor: end;
 }
 
-.ui-chart__reference {
+.ui-chart__reference,
+.ui-chart__crosshair,
+.ui-chart__annotation line,
+.ui-waterfall-chart__connector {
   stroke: hsl(var(--ink-muted));
   stroke-dasharray: 5 5;
   stroke-width: 1.5;
 }
 
-.ui-chart__data {
+.ui-chart__data,
+.ui-chart__inspection {
   border-top: var(--ui-border-width, 1px) solid hsl(var(--line));
   color: hsl(var(--ink-soft));
   font-size: 0.8125rem;
@@ -4549,6 +4557,39 @@ lumen-dialog-close {
   stroke: hsl(var(--canvas));
   stroke-width: 1px;
 }
+
+.ui-chart__content {
+  display: grid;
+  min-width: 0;
+  gap: 1rem;
+}
+
+.ui-chart [hidden] {
+  display: none;
+}
+
+.ui-chart__legend button {
+  border-inline-start: 3px solid var(--ui-chart-color);
+}
+
+.ui-chart__legend button[aria-pressed="false"] {
+  text-decoration: line-through;
+}
+
+.ui-chart__crosshair {
+  stroke: hsl(var(--chart-selection));
+}
+
+.ui-chart__annotation line {
+  stroke: var(--ui-chart-color);
+}
+
+.ui-heatmap__scale {
+  width: 6rem;
+  height: 0.75rem;
+  border: 1px solid hsl(var(--line));
+}
+
 
 .ui-range-chart__area {
   fill: color-mix(in srgb, var(--ui-chart-color) 18%, transparent);

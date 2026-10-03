@@ -1,0 +1,30 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+import { createLumenHistogramGeometry, type LumenChartLabels, type LumenChartTone, type LumenHistogramBin, resolveLumenChartLabels } from '@santi020k/lumen-core'
+
+import IntervalChart from '../internal/IntervalChart.astro'
+
+interface Props extends HTMLAttributes<'figure'> {
+  bins: readonly LumenHistogramBin[]
+  caption?: string
+  class?: string | null
+  className?: string
+  description?: string
+  formatBoundary?: (value: number) => string
+  formatValue?: (value: number) => string
+  frequency?: 'count' | 'density'
+  heading?: string
+  labels?: Partial<LumenChartLabels>
+  presentation?: 'bare' | 'default'
+  showTable?: boolean
+  summary?: string
+  tone?: LumenChartTone
+  valueLabel?: string
+}
+
+const { bins, class: classProp, className, formatBoundary = String, formatValue = String, frequency = 'count', labels, tone = 'series-1', valueLabel = resolveLumenChartLabels(labels)[frequency === 'density' ? 'density' : 'count'], ...rest } = Astro.props
+const model = createLumenHistogramGeometry(bins, { formatBoundary, formatValue, frequency, tone })
+---
+
+<IntervalChart {...rest} class:list={['ui-histogram', classProp, className]} {model} {labels} {formatBoundary} {formatValue} {valueLabel} />

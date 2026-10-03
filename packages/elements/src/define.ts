@@ -8,25 +8,29 @@ import {
   coerceThemeBuilderScheme,
   coerceThemePreset,
   createLumenBarGeometry,
-  createLumenHeatmapGeometry,
+  createLumenChartInteractionController,
+  createLumenHeatmapModel,
+  createLumenHistogramGeometry,
   createLumenKanbanMoveDetail,
+  createLumenLineChartModel,
   createLumenLineGeometry,
   createLumenPieGeometry,
   createLumenRangeGeometry,
   createLumenScatterGeometry,
   createLumenVirtualListController,
+  createLumenWaterfallGeometry,
   createThemeBuilderTokens,
   executeLumenRichTextCommand,
   exportThemeBuilderValue,
   formatLumenChartSummary,
   formatLumenLanguageLabel,
-  getLumenChartAxisPadding,
   getLumenChartCategories,
   getLumenChartCategoryLabel,
   getLumenChartCategoryTicks,
   getLumenChartDomain,
   getLumenChartTicks,
   getLumenDirectionalKey,
+  getLumenHeatmapColor,
   getLumenLocalePair,
   getLumenPhoneCountries,
   getLumenPhoneCountry,
@@ -43,6 +47,7 @@ import {
   type LumenComponentName,
   lumenComponentNames,
   type LumenHeatmapDatum,
+  type LumenHistogramBin,
   type LumenIllustrationName,
   type LumenKanbanMoveDetail,
   type LumenLocaleOption,
@@ -55,6 +60,7 @@ import {
   type LumenThemeBuilderExportFormat,
   type LumenThemeBuilderScheme,
   type LumenThemeTokens,
+  type LumenWaterfallDatum,
   normalizeLumenLocales,
   normalizeThemeBuilderHex,
   parseThemeCss,
@@ -121,6 +127,7 @@ import {
   LumenImageComparisonElement as GranularLumenImageComparisonElement,
   lumenImageComparisonElementConfig
 } from './components/image-comparison.js'
+import { chartAnnotationHtml, chartDomainAttributes, chartInspectionHtml, chartNumberAttribute, escapeChartHtml, interactiveChartLegendHtml, intervalChartHtml, parseChartAnnotations, parseHistogramBins, parseWaterfallData } from './chart-html.js'
 import {
   createLumenElementClass as createStandaloneLumenElementClass,
   LumenElement,
@@ -651,6 +658,8 @@ const elementConfigs = {
     defaults: { 'data-ui-hover-card': '' },
     tagName: 'lumen-hover-card'
   },
+  Histogram: { baseClassName: 'ui-chart ui-histogram', role: 'figure', tagName: 'lumen-histogram', attributeClasses: { presentation: { bare: 'ui-chart--bare' } } },
+  WaterfallChart: { baseClassName: 'ui-chart ui-waterfall-chart', role: 'figure', tagName: 'lumen-waterfall-chart', attributeClasses: { presentation: { bare: 'ui-chart--bare' } } },
   Heatmap: {
     baseClassName: 'ui-chart ui-heatmap',
     role: 'figure',
@@ -1490,6 +1499,23 @@ const observedAttributeNames = [
   'prefix',
   'pressed',
   'reference-value',
+  'x-scale',
+  'domain-min',
+  'domain-max',
+  'x-min',
+  'x-max',
+  'interactive',
+  'sync-group',
+  'annotations',
+  'bins',
+  'frequency',
+  'color-scale',
+  'midpoint',
+  'count-label',
+  'density-label',
+  'start-label',
+  'end-label',
+  'invalid-data-label',
   'series',
   'series-label',
   'shape',
@@ -5362,13 +5388,6 @@ class LumenListBoxBehaviorElement extends LumenElement {
   }
 }
 
-const escapeChartHtml = (value: number | string): string => String(value)
-  .replaceAll('&', '&amp;')
-  .replaceAll('<', '&lt;')
-  .replaceAll('>', '&gt;')
-  .replaceAll('"', '&quot;')
-  .replaceAll('\'', '&#39;')
-
 const chartBooleanAttribute = (
   element: HTMLElement,
   name: string,
@@ -5576,6 +5595,12 @@ const chartLabelsFor = (element: HTMLElement): Readonly<LumenChartLabels> => {
 
   return {
     ...defaults,
+    chartData: element.getAttribute('aria-label') ?? element.getAttribute('heading') ?? defaults.chartData,
+    count: element.getAttribute('count-label') ?? defaults.count,
+    density: element.getAttribute('density-label') ?? defaults.density,
+    start: element.getAttribute('start-label') ?? defaults.start,
+    end: element.getAttribute('end-label') ?? defaults.end,
+    invalidData: element.getAttribute('invalid-data-label') ?? defaults.invalidData,
     category: element.getAttribute('category-label') ?? defaults.category,
     chartLegend: element.getAttribute('legend-label') ?? defaults.chartLegend,
     column: element.getAttribute('column-label') ?? defaults.column,
@@ -5675,7 +5700,8 @@ const scatterDataTableHtml = (
 }
 
 const heatmapDataTableHtml = (
-  data: readonly LumenHeatmapDatum[], labels: Readonly<LumenChartLabels>
+  data: readonly LumenHeatmapDatum[], labels: Readonly<LumenChartLabels>,
+  formatValue: (value: number) => string = String
 ): string => {
   const rows = data
     .map(cell => {
@@ -5683,7 +5709,7 @@ const heatmapDataTableHtml = (
         cell.label ??
         (cell.value === null || !Number.isFinite(cell.value) ?
           labels.notAvailable :
-          String(cell.value))
+          formatValue(cell.value))
 
       return [
         `<tr><th scope="row">${escapeChartHtml(cell.xLabel ?? cell.x)}</th>`,
@@ -5999,10 +6025,38 @@ class LumenBarChartBehaviorElement extends LumenDataChartBehaviorElement {
 }
 
 class LumenLineChartBehaviorElement extends LumenDataChartBehaviorElement {
+  #interaction: ReturnType<typeof createLumenChartInteractionController> | undefined
+
+  override disconnectedCallback() {
+    this.#interaction?.destroy()
+
+    this.#interaction = undefined
+  }
+
   protected renderChart() {
-    const categories = getLumenChartCategories(this.series)
-    const series = this.series.map(item => alignLumenChartSeries(item, categories))
+    this.#interaction?.destroy()
+
+    this.#interaction = undefined
+
     const chartLabels = chartLabelsFor(this)
+    const xScaleAttribute = this.getAttribute('x-scale')
+    const xScale = xScaleAttribute === 'linear' || xScaleAttribute === 'time' ? xScaleAttribute : 'categorical'
+    const referenceValue = chartNumberAttribute(this, 'reference-value')
+
+    const model = createLumenLineChartModel(this.series, {
+      annotations: parseChartAnnotations(this.getAttribute('annotations')),
+      xScale,
+      domain: chartDomainAttributes(this),
+      xDomain: chartDomainAttributes(this, 'x-min', 'x-max'),
+      ...(referenceValue === undefined ? {} : { referenceValue }),
+      ...(this.detailCategoryFormatter ? { formatCategory: this.detailCategoryFormatter } : {}),
+      formatValue: this.valueFormatter
+    })
+
+    const { categories, series, width, height, padding, paddingLeft, domain, ticks, geometries, categoryTicks } = model
+    const interactive = chartBooleanAttribute(this, 'interactive', false)
+
+    this.dataset.uiChartSync = this.getAttribute('sync-group') ?? ''
 
     if (!hasLumenChartData(series)) {
       const emptyLabel =
@@ -6012,46 +6066,6 @@ class LumenLineChartBehaviorElement extends LumenDataChartBehaviorElement {
 
       return
     }
-
-    const width = 640
-    const height = 320
-    const padding = 44
-    const referenceAttribute = this.getAttribute('reference-value')
-
-    const parsedReference =
-      referenceAttribute === null ? undefined : Number(referenceAttribute)
-
-    const referenceValue =
-      parsedReference !== undefined && Number.isFinite(parsedReference) ?
-        parsedReference :
-        undefined
-
-    const domain = getLumenChartDomain(
-      [
-        ...series.flatMap(item => item.data.map(datum => datum.y)),
-        referenceValue ?? null
-      ], false
-    )
-
-    const ticks = getLumenChartTicks(domain)
-
-    const paddingLeft = getLumenChartAxisPadding(
-      ticks.map(tick => this.valueFormatter(tick))
-    )
-
-    const geometries = series.map(item => createLumenLineGeometry(item.data, {
-      domain,
-      height,
-      includeZero: false,
-      padding,
-      paddingLeft,
-      width
-    }))
-
-    const categoryTicks = getLumenChartCategoryTicks(
-      categories.map(category => getLumenChartCategoryLabel(series, category, this.categoryFormatter)),
-      { end: width - padding, start: paddingLeft }
-    )
 
     const grid = ticks
       .map(tick => {
@@ -6116,7 +6130,7 @@ class LumenLineChartBehaviorElement extends LumenDataChartBehaviorElement {
           ''
 
         return [
-          `<g class="ui-line-chart__series ui-chart-tone--${tone}">${areaPaths}`,
+          `<g data-ui-chart-series="${escapeChartHtml(item.id)}" class="ui-line-chart__series ui-chart-tone--${tone}">${areaPaths}`,
           `<path class="ui-line-chart__line" d="${geometry.path}"></path>`,
           `${points}</g>`
         ].join('')
@@ -6143,17 +6157,21 @@ class LumenLineChartBehaviorElement extends LumenDataChartBehaviorElement {
     this.innerHTML = [
       chartHeaderHtml(this),
       chartSummaryHtml(this, series),
-      showLegend ? chartLegendHtml(series, chartLabels) : '',
-      `<div class="ui-chart__plot" role="region" tabindex="0" aria-label="${escapeChartHtml(chartLabels.chartData)}"><svg aria-hidden="true"`,
+      showLegend ? (interactive ? interactiveChartLegendHtml : chartLegendHtml)(series, chartLabels) : '',
+      `<div ${interactive ? 'data-ui-chart-interaction-plot' : ''} class="ui-chart__plot" role="region" tabindex="0" aria-label="${escapeChartHtml(chartLabels.chartData)}"><svg aria-hidden="true"`,
       ` preserveAspectRatio="xMidYMid meet" viewBox="0 0 ${width} ${height}">`,
       `<g class="ui-chart__grid">${grid}</g>`,
       `<g class="ui-chart__axis-labels">${labels}</g>`,
-      `${reference}${paths}</svg></div>`,
+      `<svg x="${paddingLeft}" y="${padding}" width="${width - padding - paddingLeft}" height="${height - 2 * padding}" viewBox="${paddingLeft} ${padding} ${width - padding - paddingLeft} ${height - 2 * padding}" overflow="hidden">${reference}${paths}</svg>${chartAnnotationHtml(model)}${interactive ? `<line class="ui-chart__crosshair" data-ui-chart-crosshair style="display:none" y1="${padding}" y2="${height - padding}"></line>` : ''}</svg></div>`,
+      `<ul class="ui-sr-only">${model.annotationMarks.map(mark => `<li>${escapeChartHtml(mark.label)}: ${escapeChartHtml(mark.axis === 'x' ? this.categoryFormatter(mark.value) : this.valueFormatter(Number(mark.value)))}</li>`).join('')}</ul>`,
+      interactive ? chartInspectionHtml(model, chartLabels, this.valueFormatter, this.detailCategoryFormatter) : '',
       showTable ?
         chartDataTableHtml(categories, series, this.detailCategoryFormatter, this.valueFormatter, chartLabels) :
         '',
       chartCaptionHtml(this)
     ].join('')
+
+    if (interactive) this.#interaction = createLumenChartInteractionController(this)
   }
 }
 
@@ -6400,6 +6418,18 @@ class LumenComboChartBehaviorElement extends LumenDataChartBehaviorElement {
 }
 
 abstract class LumenStructuredChartBehaviorElement extends LumenElement {
+  #valueFormatter: (value: number) => string = String
+
+  get valueFormatter(): (value: number) => string {
+    return this.#valueFormatter
+  }
+
+  set valueFormatter(value: (value: number) => string) {
+    this.#valueFormatter = value
+
+    if (this.isConnected) this.renderChart()
+  }
+
   override connectedCallback() {
     super.connectedCallback()
 
@@ -6417,35 +6447,87 @@ abstract class LumenStructuredChartBehaviorElement extends LumenElement {
 
 class LumenHeatmapBehaviorElement extends LumenStructuredChartBehaviorElement {
   protected renderChart() {
-    const chartLabels = chartLabelsFor(this)
-    const data = parseHeatmapData(this.getAttribute('data'))
-    const geometry = createLumenHeatmapGeometry(data)
+    const labels = chartLabelsFor(this)
+    const colorScale = this.getAttribute('color-scale') === 'diverging' ? 'diverging' : 'sequential'
+    const midpoint = Number(this.getAttribute('midpoint') ?? 0)
+    const geometry = createLumenHeatmapModel(parseHeatmapData(this.getAttribute('data')), { colorScale, midpoint, domain: chartDomainAttributes(this) })
+    const available = geometry.cells.filter(cell => cell.value !== null && Number.isFinite(cell.value))
 
-    const availableCells = geometry.cells.filter(
-      cell => cell.value !== null && Number.isFinite(cell.value)
-    )
+    const axis = geometry.xTicks.map(tick => `<text text-anchor="${tick.textAnchor}" x="${tick.position}" y="298">${escapeChartHtml(tick.label)}</text>`).join('') +
+      geometry.yTicks.map(tick => `<text text-anchor="end" dominant-baseline="middle" x="108" y="${tick.position}">${escapeChartHtml(tick.label)}</text>`).join('')
 
-    const cells = availableCells.map(cell => [
-      `<rect height="${Math.max(0, cell.height - 2)}" opacity="${Math.max(0.12, cell.ratio)}"`,
-      ` width="${Math.max(0, cell.width - 2)}" x="${cell.xCoordinate + 1}"`,
-      ` y="${cell.yCoordinate + 1}"><title>${escapeChartHtml(cell.xLabel ?? cell.x)} · `,
-      `${escapeChartHtml(cell.yLabel ?? cell.y)}: `,
-      `${escapeChartHtml(cell.label ?? cell.value ?? chartLabels.notAvailable)}</title></rect>`
-    ].join('')).join('')
+    const cells = geometry.cells.map(cell => {
+      const missing = cell.value === null || !Number.isFinite(cell.value)
+      const color = getLumenHeatmapColor(cell.value, geometry.domain, colorScale, geometry.midpoint)
 
-    const summary =
-      this.getAttribute('summary') ??
-      chartLabels.formatHeatmapSummary(availableCells.length)
+      return `<g><rect height="${Math.max(0, cell.height - 2)}" width="${Math.max(0, cell.width - 2)}" x="${cell.xCoordinate + 1}" y="${cell.yCoordinate + 1}" style="fill:${color}"><title>${escapeChartHtml(cell.xLabel ?? cell.x)} · ${escapeChartHtml(cell.yLabel ?? cell.y)}: ${escapeChartHtml(missing ? labels.notAvailable : cell.label ?? this.valueFormatter(cell.value ?? 0))}</title></rect>${missing ? `<text class="ui-heatmap__missing" text-anchor="middle" dominant-baseline="middle" x="${cell.xCoordinate + cell.width / 2}" y="${cell.yCoordinate + cell.height / 2}">×</text>` : ''}</g>`
+    }).join('')
 
-    const plot = availableCells.length === 0 ?
-      `<p class="ui-chart__empty" role="status">${escapeChartHtml(chartLabels.empty)}</p>` :
-      `<div class="ui-chart__plot" role="region" tabindex="0" aria-label="${escapeChartHtml(chartLabels.chartData)}"><svg aria-hidden="true" viewBox="0 0 ${geometry.width} ${geometry.height}"><g class="ui-heatmap__cells">${cells}</g></svg></div>`
+    const summary = this.getAttribute('summary') ?? labels.formatHeatmapSummary(available.length)
+    const empty = available.length === 0 ? `<p class="ui-chart__empty" role="status">${escapeChartHtml(labels.empty)}</p>` : ''
+    const plot = geometry.cells.length === 0 ? '' : `<div class="ui-chart__plot" role="region" tabindex="0" aria-label="${escapeChartHtml(labels.chartData)}"><svg aria-hidden="true" viewBox="0 0 640 320"><g class="ui-chart__axis-labels">${axis}</g><g class="ui-heatmap__cells">${cells}</g></svg></div>`
+    const legend = geometry.cells.length > 0 && chartBooleanAttribute(this, 'show-legend', true) ? `<div class="ui-heatmap__legend" aria-label="${escapeChartHtml(labels.chartLegend)}"><span>${escapeChartHtml(this.valueFormatter(geometry.domain.min))}</span><span style="background:${geometry.legendBackground}" class="ui-heatmap__scale" aria-hidden="true"></span><span>${escapeChartHtml(this.valueFormatter(geometry.domain.max))}</span>${colorScale === 'diverging' ? `<span>${escapeChartHtml(this.valueFormatter(geometry.midpoint))}</span>` : ''}<span>× ${escapeChartHtml(labels.notAvailable)}</span></div>` : ''
+    const table = chartBooleanAttribute(this, 'show-table', true) ? heatmapDataTableHtml(geometry.cells, labels, this.valueFormatter) : ''
 
-    const table = chartBooleanAttribute(this, 'show-table', true) ?
-      heatmapDataTableHtml(data, chartLabels) :
-      ''
+    this.innerHTML = `${chartHeaderHtml(this)}<p class="ui-sr-only" data-ui-chart-summary>${escapeChartHtml(summary)}</p>${empty}${plot}${legend}${table}${chartCaptionHtml(this)}`
+  }
+}
 
-    this.innerHTML = `${chartHeaderHtml(this)}<p class="ui-sr-only" data-ui-chart-summary>${escapeChartHtml(summary)}</p>${plot}${table}${chartCaptionHtml(this)}`
+class LumenWaterfallChartBehaviorElement extends LumenStructuredChartBehaviorElement {
+  #data: readonly LumenWaterfallDatum[] | undefined
+  get data(): readonly LumenWaterfallDatum[] {
+    return this.#data ?? parseWaterfallData(this.getAttribute('data'))
+  }
+
+  set data(value: readonly LumenWaterfallDatum[]) {
+    this.#data = value
+
+    this.renderChart()
+  }
+
+  protected renderChart() {
+    const labels = chartLabelsFor(this)
+    const model = createLumenWaterfallGeometry(this.data, { formatValue: this.valueFormatter })
+
+    this.innerHTML = chartHeaderHtml(this) + intervalChartHtml(model, labels, this.valueFormatter, this.valueFormatter, this.getAttribute('value-label') ?? labels.value, chartBooleanAttribute(this, 'show-table', true), this.getAttribute('summary')) + chartCaptionHtml(this)
+  }
+}
+
+class LumenHistogramBehaviorElement extends LumenStructuredChartBehaviorElement {
+  #boundaryFormatter: (value: number) => string = String
+  get boundaryFormatter(): (value: number) => string {
+    return this.#boundaryFormatter
+  }
+
+  set boundaryFormatter(value: (value: number) => string) {
+    this.#boundaryFormatter = value
+
+    if (this.isConnected) this.renderChart()
+  }
+
+  #bins: readonly LumenHistogramBin[] | undefined
+  get bins(): readonly LumenHistogramBin[] {
+    return this.#bins ?? parseHistogramBins(this.getAttribute('bins'))
+  }
+
+  set bins(value: readonly LumenHistogramBin[]) {
+    this.#bins = value
+
+    this.renderChart()
+  }
+
+  protected renderChart() {
+    const labels = chartLabelsFor(this)
+    const frequency = this.getAttribute('frequency') === 'density' ? 'density' : 'count'
+
+    const model = createLumenHistogramGeometry(this.bins, {
+      frequency,
+      formatValue: this.valueFormatter,
+      formatBoundary: this.boundaryFormatter,
+      tone: lumenChartTones.find(tone => tone === this.getAttribute('tone')) ?? 'series-1'
+    })
+
+    this.innerHTML = chartHeaderHtml(this) + intervalChartHtml(model, labels, this.valueFormatter, this.boundaryFormatter, this.getAttribute('value-label') ?? (frequency === 'density' ? labels.density : labels.count), chartBooleanAttribute(this, 'show-table', true), this.getAttribute('summary')) + chartCaptionHtml(this)
   }
 }
 
@@ -11361,6 +11443,8 @@ const behaviorElementClasses: Partial<
   FileUpload: LumenFileUploadBehaviorElement,
   Graphic: LumenGraphicBehaviorElement,
   Heatmap: LumenHeatmapBehaviorElement,
+  Histogram: LumenHistogramBehaviorElement,
+  WaterfallChart: LumenWaterfallChartBehaviorElement,
   Illustration: LumenIllustrationBehaviorElement,
   Icon: LumenIconBehaviorElement,
   Input: LumenScalarFormControlElement,
@@ -11616,6 +11700,8 @@ export const LumenFieldElement = elementClasses.Field
 export const LumenHoverCardElement = elementClasses.HoverCard
 export const LumenIconElement = elementClasses.Icon
 export const LumenHeatmapElement = elementClasses.Heatmap
+export const LumenHistogramElement = elementClasses.Histogram
+export const LumenWaterfallChartElement = elementClasses.WaterfallChart
 export const LumenInputElement = elementClasses.Input
 export const LumenInputGroupElement = elementClasses.InputGroup
 export const LumenInputOTPElement = elementClasses.InputOTP

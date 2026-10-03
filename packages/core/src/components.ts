@@ -168,7 +168,9 @@ export const lumenComponentNames = [
   'Heatmap',
   'RangeChart',
   'ComboChart',
-  'VisuallyHidden'
+  'VisuallyHidden',
+  'Histogram',
+  'WaterfallChart'
 ] as const
 
 export type LumenComponentName = typeof lumenComponentNames[number]
@@ -256,6 +258,8 @@ export const lumenComponentBehavior = {
   FormattedDate: { astro: 'none', elements: 'registered-element', react: 'component' },
   Graphic: { astro: 'none', elements: 'registered-element', react: 'component' },
   Heatmap: { astro: 'none', elements: 'registered-element', react: 'component' },
+  Histogram: { astro: 'none', elements: 'registered-element', react: 'component' },
+  WaterfallChart: { astro: 'none', elements: 'registered-element', react: 'component' },
   GradientDivider: { astro: 'none', elements: 'registered-element', react: 'component' },
   Grid: { astro: 'none', elements: 'registered-element', react: 'component' },
   HoverCard: { astro: 'ui-primitives', elements: 'registered-element', react: 'hook' },
@@ -272,7 +276,7 @@ export const lumenComponentBehavior = {
   Kbd: { astro: 'none', elements: 'registered-element', react: 'component' },
   Label: { astro: 'none', elements: 'registered-element', react: 'component' },
   LanguageToggle: { astro: 'ui-primitives', elements: 'registered-element', react: 'component' },
-  LineChart: { astro: 'none', elements: 'registered-element', react: 'component' },
+  LineChart: { astro: 'ui-primitives', astroRuntimeBypass: 'Static charts work without the runtime; interactive charts require UIPrimitives.', elements: 'registered-element', react: 'component' },
   Link: { astro: 'none', elements: 'registered-element', react: 'component' },
   ListBox: { astro: 'ui-primitives', elements: 'registered-element', react: 'hook' },
   Marker: { astro: 'none', elements: 'registered-element', react: 'component' },

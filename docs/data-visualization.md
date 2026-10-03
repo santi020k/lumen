@@ -3,7 +3,7 @@
 Lumen provides one visualization foundation across web and native adapters: canonical semantic
 chart colors and metrics, shared TypeScript geometry and validation helpers, framework-native
 renderers, factual accessibility summaries, and readable fallback data. Applications continue to
-own aggregation, statistics, units, locale formatting, streaming cadence, annotations, and domain
+own aggregation, statistics, units, locale formatting, streaming cadence, annotation content, and domain
 decisions.
 
 ## Choose the lightest chart that answers the question
@@ -18,6 +18,8 @@ decisions.
 | Where are values concentrated in a matrix? | `Heatmap` | Use labels and the sequential palette; do not rely on color alone. |
 | How does uncertainty or an interval change? | `RangeChart` | Supply low and high values in the same unit and domain. |
 | How do magnitudes and trends compare together? | `ComboChart` | Mix bars, lines, and areas only when they share a meaningful value domain. |
+| Which changes explain a final balance? | `WaterfallChart` | Use signed deltas and explicit totals; available on the web. |
+| How are observations distributed? | `Histogram` | Supply explicit bins and counts; available on the web. |
 
 Use `Chart` as the web escape hatch for a specialized SVG, canvas, or HTML visualization. Product-
 specific maps, networks, financial studies, scientific plots, and high-density interaction can use
@@ -53,6 +55,53 @@ gap-isolated observations remain visible. Invalid numeric coordinates are exclud
 geometry. Use `LumenChartLabels(formatX = ..., formatValue = ...)` to keep the native data
 alternative in the application's language and units. The default time label includes date and
 time. These v4 corrections can change the appearance of previously ordinal time-series plots.
+
+## Web visualization controls
+
+Astro, React, and Elements share the same line model. Set `xScale="linear"` for numeric distances
+or `xScale="time"` for ISO dates and millisecond timestamps (`x-scale` in Elements). Categories
+remain the default. All series share one sorted coordinate system, and missing observations stay
+as gaps. Axis ticks label observed coordinates; applications supply locale and timezone formatting.
+`domain` and `xDomain` constrain the viewport without changing the source table. Elements uses
+`domain-min`, `domain-max`, `x-min`, and `x-max` numeric attributes instead.
+
+Opt into `interactive` to inspect all series at an observation with the pointer, a tap, Left/Right,
+Home, or End. A tap or keyboard selection pins the inspection panel; Escape dismisses it. Pointer
+inspection does not repeatedly announce values to screen readers. Legend buttons hide or show
+series while retaining the domain and full data table. Astro requires `UIPrimitives` for enhancement;
+the static chart and table remain usable without it.
+
+Give related charts the same `syncGroup` (`sync-group` in Elements) to synchronize exact X identities
+within a document. `ui:chart-cursor-change` bubbles with `{ x: number | string | null }` for direct
+interaction. React also accepts `cursor` and `onCursorChange`; a controlled cursor updates when its
+owner accepts the requested identity. Synchronized receivers do not emit another event. Numeric
+and string identities remain distinct. Selection state stays in memory and is removed on unmount.
+
+Line `annotations` accept stable IDs, labels, an X or Y axis, a value, and an optional chart tone.
+They render labeled reference lines and an accessible text alternative. Annotations outside the
+domain are omitted. Bands, zooming, and brush selection are not part of this API.
+
+Heatmaps show both axes, a color legend, and an explicit × for missing measurements. Zero remains
+a measurement. Use `colorScale="diverging"` with a meaningful `midpoint` when values span a neutral
+reference. The automatic domain is symmetric around that midpoint. A custom domain must enclose
+the midpoint; otherwise the automatic domain is used. The legend places its neutral color at the
+correct proportion of an asymmetric domain. Supply every missing coordinate explicitly as `null`.
+
+`WaterfallChart` accepts `{ id, label, value, kind?, tone? }` steps. A `delta` adds its signed value
+to the running balance; an explicit `total` draws from zero and resets the balance. Non-finite
+values, overflowing balances, or duplicate IDs produce an invalid-data state rather than a partial
+balance. The table includes each step's start, end, and supplied value.
+
+`Histogram` accepts `{ start, end, count, label? }` bins. Lumen sorts bins without mutating input,
+preserves numeric widths and gaps, and rejects reversed, overlapping, non-finite, or negative-count
+bins. Unequal widths require `frequency="density"`: height is count divided by bin width, and the
+table retains original counts. Applications own binning, inclusion of interval boundaries, and
+units. Use `formatBoundary` and `formatValue` for those units; Elements exposes `boundaryFormatter`
+and `valueFormatter` properties. Localize messages with `labels` or the documented Elements label
+attributes. The new web chart types do not add native adapter components.
+
+The [web comparison gallery](https://lumen.santi020k.com/docs/web/data-visualization) renders the same
+synthetic datasets through all three adapters and demonstrates cursor synchronization.
 
 ## Accessibility
 

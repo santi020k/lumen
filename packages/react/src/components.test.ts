@@ -718,7 +718,7 @@ describe('@santi020k/lumen-react components', () => {
     expect(propsOf(combo).className).toBe('ui-combo-chart')
   })
 
-  test('omits unavailable heatmap cells from the SVG while preserving table gaps', () => {
+  test('marks unavailable heatmap cells distinctly while preserving table gaps', () => {
     const heatmap = Heatmap({
       data: [
         { value: 8, x: 'Mon', y: 'Morning' },
@@ -732,7 +732,8 @@ describe('@santi020k/lumen-react components', () => {
       .filter(element => element.type === 'td')
       .map(element => propsOf(element).children)
 
-    expect(cells).toHaveLength(1)
+    expect(cells).toHaveLength(3)
+    expect(descendants.filter(element => propsOf(element).className === 'ui-heatmap__missing')).toHaveLength(2)
     expect(tableValues.filter(value => value === 'Not available')).toHaveLength(2)
   })
 
@@ -791,7 +792,7 @@ describe('@santi020k/lumen-react components', () => {
       ]
     }) as ReactElement
     const descendants = descendantsOf(heatmap)
-    const cellKeys = descendants.filter(element => element.type === 'rect').map(element => element.key)
+    const cellKeys = descendants.filter(element => element.type === 'g' && element.key !== null).map(element => element.key)
     const rowKeys = descendants
       .filter(element => element.type === 'tr' && element.key !== null)
       .map(element => element.key)
@@ -938,9 +939,7 @@ describe('@santi020k/lumen-react components', () => {
       LineChart({ series }),
       PieChart({ series: pieSeries })
     ]) {
-      const children = propsOf(chart as ReactElement).children
-      const elements = (Array.isArray(children) ? children : [children])
-        .filter(isValidElement)
+      const elements = descendantsOf(chart as ReactElement)
       const plot = elements.find(child => String(propsOf(child).className).includes('ui-chart__plot'))
 
       expect(elements.some(child => propsOf(child).className === 'ui-chart__empty')).toBe(true)

@@ -35,7 +35,8 @@ import {
   alignLumenChartSeries,
   composeClassName,
   createLumenBarGeometry,
-  createLumenHeatmapGeometry,
+  createLumenHeatmapModel,
+  createLumenLineChartModel,
   createLumenLineGeometry,
   createLumenPieGeometry,
   createLumenRangeGeometry,
@@ -43,13 +44,13 @@ import {
   formatLumenChartSummary,
   formatLumenLanguageLabel,
   formatLumenPhoneNumber,
-  getLumenChartAxisPadding,
   getLumenChartCategories,
   getLumenChartCategoryLabel,
   getLumenChartCategoryTicks,
   getLumenChartDomain,
   getLumenChartTicks,
   getLumenChartToneClassName,
+  getLumenHeatmapColor,
   getLumenIcon,
   getLumenPhoneCountries,
   getLumenPhoneFlagSource,
@@ -72,9 +73,11 @@ import {
   type LumenFormErrorInput,
   type LumenFormStatus,
   type LumenHeatmapDatum,
+  type LumenHeatmapOptions,
   type LumenIconName,
   type LumenIllustrationElement,
   lumenIllustrations,
+  type LumenLineChartOptions,
   type LumenPhoneCountry,
   type LumenPhoneCountryOptions,
   type LumenPhoneNumber,
@@ -91,6 +94,9 @@ import {
 import { parseLumenDate as parseCalendarDate, resolveLumenDateLabels as resolveDateControlLabels, resolveLumenDateLocale as getCalendarLocale } from '@santi020k/lumen-core'
 import { renderSVG } from 'uqr'
 
+import { ChartInspection } from './chart-inspection.js'
+import { ChartInteraction, type ChartInteractionProps } from './chart-interaction.js'
+import { getChartPlotLabel } from './chart-label.js'
 import { formatReactChartTableValue } from './chart-recipes.js'
 import {
   type DialogOptions,
@@ -1167,7 +1173,7 @@ export const BarChart = ({
   )
 }
 
-export interface LineChartProps extends Omit<ChartProps, 'children'> {
+export interface LineChartProps extends Omit<ChartProps, 'children'>, LumenLineChartOptions, ChartInteractionProps {
   area?: boolean
   emptyLabel?: ReactNode
   formatCategory?: (category: number | string) => string
@@ -1195,6 +1201,16 @@ const getLineChartMarkerStep = (
 
 export const LineChart = ({
   area = false,
+  annotations,
+  domain: requestedDomain,
+  height: requestedHeight,
+  width: requestedWidth,
+  xDomain,
+  xScale = 'categorical',
+  interactive = false,
+  syncGroup,
+  cursor,
+  onCursorChange,
   className,
   emptyLabel,
   formatCategory,
@@ -1209,42 +1225,24 @@ export const LineChart = ({
   ...props
 }: LineChartProps) => {
   const resolvedLabels = resolveLumenChartLabels(labels)
-  const width = 640
-  const height = 320
-  const padding = 44
-  const categories = getLumenChartCategories(series)
 
-  const alignedSeries = series.map(item => ({
-    ...item,
-    data: alignLumenChartSeries(item, categories).data
-  }))
+  const model = createLumenLineChartModel(series, {
+    xScale,
+    formatValue,
+    ...(annotations ? { annotations } : {}),
+    ...(requestedDomain ? { domain: requestedDomain } : {}),
+    ...(requestedHeight === undefined ? {} : { height: requestedHeight }),
+    ...(requestedWidth === undefined ? {} : { width: requestedWidth }),
+    ...(xDomain ? { xDomain } : {}),
+    ...(referenceValue === undefined ? {} : { referenceValue }),
+    ...(formatCategory ? { formatCategory } : {})
+  })
+
+  const {
+    width, height, padding, paddingLeft, categories, categoryTicks, domain, geometries, ticks, series: alignedSeries
+  } = model
 
   const hasData = hasLumenChartData(alignedSeries)
-
-  const domain = getLumenChartDomain(
-    [
-      ...alignedSeries.flatMap(item => item.data.map(datum => datum.y)),
-      referenceValue ?? null
-    ], false
-  )
-
-  const ticks = getLumenChartTicks(domain)
-  const paddingLeft = getLumenChartAxisPadding(ticks.map(tick => formatValue(tick)))
-
-  const geometries = alignedSeries.map(item => createLumenLineGeometry(item.data, {
-    domain,
-    height,
-    includeZero: false,
-    padding,
-    paddingLeft,
-    width
-  }))
-
-  const categoryTicks = getLumenChartCategoryTicks(
-    categories.map(category => getLumenChartCategoryLabel(alignedSeries, category, formatCategory)),
-    { end: width - padding, start: paddingLeft }
-  )
-
   const markerStep = getLineChartMarkerStep(markers, categories.length)
 
   const referenceY =
@@ -1258,90 +1256,163 @@ export const LineChart = ({
       summary={summary ?? formatLumenChartSummary(alignedSeries, formatValue, resolvedLabels)}
       {...props}
     >
-      {showLegend && hasData && <ChartLegend label={resolvedLabels.chartLegend} series={series} />}
-      {!hasData && (
-        <p className="ui-chart__empty" role="status">
-          {emptyLabel ?? resolvedLabels.empty}
-        </p>
-      )}
-      <div aria-label={resolvedLabels.chartData} className="ui-chart__plot" role="region" tabIndex={0} hidden={!hasData}>
-        <svg
-          aria-hidden="true"
-          preserveAspectRatio="xMidYMid meet"
-          viewBox={`0 0 ${width} ${height}`}
+      <ChartInteraction
+        interactive={interactive}
+        model={model}
+        showLegend={showLegend}
+        {...(syncGroup ? { syncGroup } : {})}
+        {...(cursor === undefined ? {} : { cursor })}
+        {...(onCursorChange ? { onCursorChange } : {})}
+      >
+        {showLegend && hasData && (interactive ?
+          (
+            <ul
+              className="ui-chart__legend"
+              aria-label={resolvedLabels.chartLegend}
+            >
+              {series.map((item, index) => <li key={item.id} className={getLumenChartToneClassName(item.tone, index)}><Button aria-pressed="true" data-ui-chart-toggle={item.id} disabled size="sm" variant="ghost">{item.label}</Button></li>)}
+            </ul>
+          ) :
+          <ChartLegend label={resolvedLabels.chartLegend} series={series} />)}
+        {!hasData && (
+          <p className="ui-chart__empty" role="status">
+            {emptyLabel ?? resolvedLabels.empty}
+          </p>
+        )}
+        <div
+          aria-label={getChartPlotLabel(props['aria-label'], props.heading, resolvedLabels.chartData)}
+          className="ui-chart__plot"
+          data-ui-chart-interaction-plot={interactive || undefined}
+          role="region"
+          tabIndex={0}
+          hidden={!hasData}
         >
-          <g className="ui-chart__grid">
-            {ticks.map(tick => {
-              const y = scaleLumenChartValue(
-                tick, domain, height - padding, padding
-              )
+          <svg
+            aria-hidden="true"
+            preserveAspectRatio="xMidYMid meet"
+            viewBox={`0 0 ${width} ${height}`}
+          >
+            <g className="ui-chart__grid">
+              {ticks.map(tick => {
+                const y = scaleLumenChartValue(
+                  tick, domain, height - padding, padding
+                )
 
-              return (
-                <Fragment key={tick}>
-                  <line x1={paddingLeft} x2={width - padding} y1={y} y2={y} />
-                  <text x={paddingLeft - 8} y={y}>
-                    {formatValue(tick)}
-                  </text>
-                </Fragment>
-              )
-            })}
-          </g>
-          <g className="ui-chart__axis-labels">
-            {categoryTicks.map(tick => (
-              <text key={tick.index} textAnchor={tick.textAnchor} x={tick.position} y={height - 14}>
-                {tick.label}
-              </text>
-            ))}
-          </g>
-          {referenceY !== undefined && (
-            <line
-              className="ui-chart__reference"
-              x1={paddingLeft}
-              x2={width - padding}
-              y1={referenceY}
-              y2={referenceY}
-            />
-          )}
-          {geometries.map((geometry, index) => {
-            const item = series[index]
+                return (
+                  <Fragment key={tick}>
+                    <line x1={paddingLeft} x2={width - padding} y1={y} y2={y} />
+                    <text x={paddingLeft - 8} y={y}>
+                      {formatValue(tick)}
+                    </text>
+                  </Fragment>
+                )
+              })}
+            </g>
+            <g className="ui-chart__axis-labels">
+              {categoryTicks.map(tick => (
+                <text key={tick.index} textAnchor={tick.textAnchor} x={tick.position} y={height - 14}>
+                  {tick.label}
+                </text>
+              ))}
+            </g>
+            <svg
+              x={paddingLeft}
+              y={padding}
+              width={width - padding - paddingLeft}
+              height={height - 2 * padding}
+              viewBox={`${paddingLeft} ${padding} ${width - padding - paddingLeft} ${height - 2 * padding}`}
+              overflow="hidden"
+            >
+              {referenceY !== undefined && (
+                <line
+                  className="ui-chart__reference"
+                  x1={paddingLeft}
+                  x2={width - padding}
+                  y1={referenceY}
+                  y2={referenceY}
+                />
+              )}
+              {geometries.map((geometry, index) => {
+                const item = series[index]
 
-            if (!item) return null
+                if (!item) return null
 
-            const tone = resolveLumenChartTone(item.tone, index)
+                const tone = resolveLumenChartTone(item.tone, index)
 
-            return (
-              <g
-                className={composeClassName(
-                  'ui-line-chart__series', getLumenChartToneClassName(tone)
-                )}
-                key={item.id}
-              >
-                {area &&
-                  geometry.areaPaths.map(path => (
-                    <path className="ui-line-chart__area" d={path} key={path} />
-                  ))}
-                <path className="ui-line-chart__line" d={geometry.path} />
-                {Number.isFinite(markerStep) &&
-                  geometry.points.map(
-                    (point, pointIndex) => pointIndex % markerStep === 0 && (
-                      <circle
-                        className="ui-line-chart__point"
-                        cx={point.xCoordinate}
-                        cy={point.yCoordinate}
-                        key={getChartCategoryKey(point.x)}
-                        r="3"
-                      >
-                        <title>
-                          {`${getLumenChartCategoryLabel(alignedSeries, point.x, formatCategory, 'detail')} · ${item.label}: ${formatValue(point.y ?? 0)}`}
-                        </title>
-                      </circle>
-                    )
+                return (
+                  <g
+                    className={composeClassName(
+                      'ui-line-chart__series', getLumenChartToneClassName(tone)
+                    )}
+                    key={item.id}
+                    data-ui-chart-series={item.id}
+                  >
+                    {area &&
+                      geometry.areaPaths.map(path => (
+                        <path className="ui-line-chart__area" d={path} key={path} />
+                      ))}
+                    <path className="ui-line-chart__line" d={geometry.path} />
+                    {Number.isFinite(markerStep) &&
+                      geometry.points.map(
+                        (point, pointIndex) => pointIndex % markerStep === 0 && (
+                          <circle
+                            className="ui-line-chart__point"
+                            cx={point.xCoordinate}
+                            cy={point.yCoordinate}
+                            key={getChartCategoryKey(point.x)}
+                            r="3"
+                          >
+                            <title>
+                              {`${getLumenChartCategoryLabel(alignedSeries, point.x, formatCategory, 'detail')} · ${item.label}: ${formatValue(point.y ?? 0)}`}
+                            </title>
+                          </circle>
+                        )
+                      )}
+                  </g>
+                )
+              })}
+            </svg>
+            {model.annotationMarks.map(mark => (
+              <g key={mark.id} className={composeClassName('ui-chart__annotation', getLumenChartToneClassName(mark.tone))}>
+                {mark.axis === 'x' ?
+                  (
+                    <>
+                      <line x1={mark.coordinate} x2={mark.coordinate} y1={padding} y2={height - padding} />
+                      <text x={mark.coordinate + 4} y={padding - 8}>{mark.label}</text>
+                    </>
+                  ) :
+                  (
+                    <>
+                      <line x1={paddingLeft} x2={width - padding} y1={mark.coordinate} y2={mark.coordinate} />
+                      <text textAnchor="end" x={width - padding} y={mark.coordinate - 8}>{mark.label}</text>
+                    </>
                   )}
               </g>
-            )
-          })}
-        </svg>
-      </div>
+            ))}
+            {interactive && <line className="ui-chart__crosshair" data-ui-chart-crosshair style={{ display: 'none' }} y1={padding} y2={height - padding} />}
+          </svg>
+        </div>
+        {model.annotationMarks.length > 0 && (
+          <ul className="ui-sr-only">
+            {model.annotationMarks.map(mark => (
+              <li key={mark.id}>
+                {mark.label}
+                :
+                {' '}
+                {mark.axis === 'x' ? getLumenChartCategoryLabel(alignedSeries, mark.value, formatCategory, 'detail') : formatValue(Number(mark.value))}
+              </li>
+            ))}
+          </ul>
+        )}
+        {interactive && hasData && (
+          <ChartInspection
+            model={model}
+            {...(formatCategory ? { formatCategory } : {})}
+            formatValue={formatValue}
+            labels={resolvedLabels}
+          />
+        )}
+      </ChartInteraction>
       {showTable && hasData && (
         <ChartDataTable
           categories={categories}
@@ -1559,7 +1630,8 @@ export const ScatterChart = ({
   )
 }
 
-export interface HeatmapProps extends Omit<ChartProps, 'children'> {
+export interface HeatmapProps extends Omit<ChartProps, 'children'>, LumenHeatmapOptions {
+  showLegend?: boolean
   data?: readonly LumenHeatmapDatum[]
   formatValue?: (value: number) => string
   labels?: Partial<LumenChartLabels>
@@ -1567,6 +1639,10 @@ export interface HeatmapProps extends Omit<ChartProps, 'children'> {
 }
 
 export const Heatmap = ({
+  colorScale = 'sequential',
+  midpoint = 0,
+  domain,
+  showLegend = true,
   className,
   data = emptyHeatmapData,
   formatValue = String,
@@ -1576,20 +1652,64 @@ export const Heatmap = ({
   ...props
 }: HeatmapProps) => {
   const resolvedLabels = resolveLumenChartLabels(labels)
-  const geometry = createLumenHeatmapGeometry(data)
+  const geometry = createLumenHeatmapModel(data, { colorScale, midpoint, ...(domain ? { domain } : {}) })
   const availableCells = geometry.cells.filter(cell => cell.value !== null && Number.isFinite(cell.value))
   const hasData = availableCells.length > 0
 
   return (
     <Chart className={composeClassName('ui-heatmap', className)} summary={summary ?? resolvedLabels.formatHeatmapSummary(availableCells.length)} {...props}>
       {!hasData && <p className="ui-chart__empty" role="status">{resolvedLabels.empty}</p>}
-      <div aria-label={resolvedLabels.chartData} className="ui-chart__plot" role="region" tabIndex={0} hidden={!hasData}>
+      <div
+        aria-label={getChartPlotLabel(props['aria-label'], props.heading, resolvedLabels.chartData)}
+        className="ui-chart__plot"
+        role="region"
+        tabIndex={0}
+        hidden={geometry.cells.length === 0}
+      >
         <svg aria-hidden="true" viewBox={`0 0 ${geometry.width} ${geometry.height}`}>
+          <g className="ui-chart__axis-labels">
+            {geometry.xTicks.map(tick => <text key={tick.index} textAnchor={tick.textAnchor} x={tick.position} y="298">{tick.label}</text>)}
+            {geometry.yTicks.map(tick => <text key={getChartCategoryKey(tick.value)} textAnchor="end" dominantBaseline="middle" x="108" y={tick.position}>{tick.label}</text>)}
+          </g>
           <g className="ui-heatmap__cells">
-            {availableCells.map(cell => <rect height={Math.max(0, cell.height - 2)} key={cell.id ?? `${getChartCategoryKey(cell.x)}:${getChartCategoryKey(cell.y)}`} opacity={Math.max(0.12, cell.ratio)} width={Math.max(0, cell.width - 2)} x={cell.xCoordinate + 1} y={cell.yCoordinate + 1}><title>{`${cell.xLabel ?? cell.x} · ${cell.yLabel ?? cell.y}: ${cell.label ?? formatValue(cell.value ?? 0)}`}</title></rect>)}
+            {geometry.cells.map(cell => {
+              const missing = cell.value === null || !Number.isFinite(cell.value)
+
+              return (
+                <g key={JSON.stringify([cell.x, cell.y])}>
+                  <rect
+                    height={Math.max(0, cell.height - 2)}
+                    width={Math.max(0, cell.width - 2)}
+                    x={cell.xCoordinate + 1}
+                    y={cell.yCoordinate + 1}
+                    style={{ fill: getLumenHeatmapColor(cell.value, geometry.domain, colorScale, geometry.midpoint) }}
+                  >
+
+                    <title>{`${cell.xLabel ?? cell.x} · ${cell.yLabel ?? cell.y}: ${missing ? resolvedLabels.notAvailable : cell.label ?? formatValue(cell.value ?? 0)}`}</title>
+                  </rect>
+                  {missing && <text className="ui-heatmap__missing" textAnchor="middle" dominantBaseline="middle" x={cell.xCoordinate + cell.width / 2} y={cell.yCoordinate + cell.height / 2}>×</text>}
+                </g>
+              )
+            })}
           </g>
         </svg>
       </div>
+      {showLegend && geometry.cells.length > 0 && (
+        <div className="ui-heatmap__legend" aria-label={resolvedLabels.chartLegend}>
+          <span>{formatValue(geometry.domain.min)}</span>
+          <span
+            style={{ background: geometry.legendBackground }}
+            className="ui-heatmap__scale"
+            aria-hidden="true"
+          />
+          <span>{formatValue(geometry.domain.max)}</span>
+          {colorScale === 'diverging' && <span>{formatValue(geometry.midpoint)}</span>}
+          <span>
+            ×
+            {resolvedLabels.notAvailable}
+          </span>
+        </div>
+      )}
       {showTable && (
         <details className="ui-chart__data">
           <summary>{resolvedLabels.viewData}</summary>
@@ -1603,7 +1723,7 @@ export const Heatmap = ({
                 </tr>
               </thead>
               <tbody>
-                {data.map(cell => (
+                {geometry.cells.map(cell => (
                   <tr key={cell.id ?? `${getChartCategoryKey(cell.x)}:${getChartCategoryKey(cell.y)}`}>
                     <th scope="row">{cell.xLabel ?? cell.x}</th>
                     <td>{cell.yLabel ?? cell.y}</td>

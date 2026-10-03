@@ -1,3 +1,5 @@
+export * from './chart-interaction.js'
+export * from './chart-models.js'
 export {
   alignLumenChartSeries,
   appendLumenChartDatum,

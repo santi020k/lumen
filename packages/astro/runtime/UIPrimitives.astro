@@ -5470,6 +5470,10 @@ const initOptionalControllers = (scope: ParentNode): void => {
     })
   }
 
+  if (scope.querySelector('[data-ui-chart-interactive]')) {
+    import('./controllers/charts.js').then(({ initChartControllers }) => initChartControllers(scope)).catch(reportError)
+  }
+
   if (scope.querySelector(
     '[data-ui-back-to-top], [data-ui-scroll-reveal], [data-ui-reveal-group], [data-ui-animated-number]'
   )) {
