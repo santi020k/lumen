@@ -32,7 +32,8 @@ explicit React Native sheet focus targets with a compact-height/large-text scrol
 
 ### Verified local evidence
 
-- React Native: 122 behavioral/unit tests passed, with strict type checking and zero-warning lint.
+- React Native behavioral/unit tests passed as part of the reconciled 925-test JavaScript suite,
+  with strict type checking and zero-warning lint.
   The new Workspace example has six playground tests, including two workspace model tests for search and isolated record saves; its
   Expo web build passed. Desktop 1280×900 and mobile 390×844 interactions covered selection,
   editing, save feedback, and chart rendering, with temporary screenshots inspected.
@@ -63,11 +64,11 @@ Three Android and iOS Hermes production exports per fixture produced these media
 
 | Fixture | Android bytes | iOS bytes |
 | --- | ---: | ---: |
-| Platform button baseline | 1,429,228 | 1,424,196 |
-| Lumen root button | 5,879,803 | 5,874,152 |
+| Platform button baseline | 1,429,228 | 1,424,195 |
+| Lumen root button | 6,188,887 | 6,183,097 |
 | Lumen foundations button | 1,447,896 | 1,442,835 |
-| Lumen static search graphic | 1,630,896 | 1,625,566 |
-| Lumen root button with named search icon | 5,879,868 | 5,874,221 |
+| Lumen static search graphic | 1,630,896 | 1,625,567 |
+| Lumen root button with named search icon | 6,188,956 | 6,183,158 |
 
 The optional `@santi020k/lumen-react-native/foundations` entrypoint reuses the root implementations
 and provider context while avoiding eager imports of the full catalog. Foundation overhead remains
@@ -75,7 +76,9 @@ bounded at 65,536 bytes; the root fixture remains bounded at 6 MiB. The new
 `@santi020k/lumen-react-native/graphics` entrypoint reuses icon rendering, accessibility, touch targets
 and the provider context while accepting an application-owned graphic instead of a catalog name.
 Static graphic overhead is bounded at 262,144 bytes, including the existing SVG renderer. The fixture
-uses the exact generated search artwork. Both platforms passed every budget across three exports.
+uses the exact generated search artwork. Both platforms passed every budget across three exports after reconciling the phone flags.
+Foundation sizes remained unchanged; the static graphic fixture varied by one byte on iOS while
+the root fixture grew with the catalog.
 The benchmark rebuilds the dependency graph before exporting to avoid stale workspace measurements.
 The clean packed consumer also type-checks the graphics import alongside root, datetime and foundations.
 
@@ -83,10 +86,33 @@ Run `pnpm run check:react-native-imports`; set `LUMEN_BENCHMARK_PLATFORM=ios` to
 These results are local bytecode measurements, not startup or scrolling latency evidence. Static
 per-icon catalog paths and broader component entrypoints remain to evaluate against actual consumers.
 
+### Android runtime measurement
+
+A local release-variant, development-signed APK at revision
+`1848710cb50896cb998d67d79ba6ad82c61d699b` was installed and its SHA-256 checked before and after
+measurement on the Android 17/API 37 arm64 emulator, at 1280×2856, density 480 and font scale 1.0.
+Five process-cold Activity Manager launches had a 907 ms median and 1,816 ms p95. Six workspace list
+swipes changed the visible range from records 001–009 to 044–057. The 177 completed frame samples
+had a 17.8 ms median, 20.4 ms p95, 69.1 ms maximum, and 10 missed deadlines (5.65%). No future
+completion timestamp was excluded in this run. These are local observations, not hardware
+qualification, full time-to-interactive, a stability iteration or a passing performance threshold.
+
+The first run exposed a Workspace header overlapping the status bar. The example now consumes
+status-bar insets, and the new Activity test compares its header bounds with the actual system
+inset. All four workspace instrumentation tests and complete app lint passed. Before and after
+screenshots were inspected using the same initial records, viewport, font scale and theme.
+The first frame report also contained three distinct impossible future completion timestamps;
+the collector now bounds completion using observed device uptime, counts such exclusions, and
+marks affected runs Partial. Six deterministic parser tests cover cold-launch rejection, empty and
+unfinished frames, timestamp precision, duplicate rows, malformed bounds and future timestamps.
+
+Run `pnpm run measure:android-workspace --serial <device>` from a clean committed checkout.
+See [runtime performance](native-runtime-performance.md) for setup, raw artifacts and limitations.
+
 ### Outstanding scope and blockers
 
 The complete Required outcomes list remains authoritative. Broader phone/tablet runtime qualification and physical-device keyboard/focus and screen-reader checks,
-startup/scrolling regression measurements, final real-consumer qualification and two ordinary
+remaining SwiftUI and React Native runtime measurements, performance regression thresholds, final real-consumer qualification and two ordinary
 stability iterations remain pending. No hardware pass or soak iteration was recorded.
 
 The first Android `./gradlew test lint assembleDebugAndroidTest` reached compilation and tests,
@@ -94,7 +120,7 @@ but lint remained active for over 30 minutes in `BidirectionalTextDetector` Kotl
 That task-owned daemon was stopped. Fresh full lint runs now pass without suppressions, including after reconciling committed release icon changes.
 The canonical `pnpm run validate` initially failed because its loopback fixture server was blocked by the sandbox.
 After local-server access and snapshot regeneration, it reached `check:security` and failed on three
-high-severity dependency advisories in `node-forge`, `http-cache-semantics`, and `braces`. The reconciled canonical gate passed all preceding checks and again stopped at `check:security`. The complete gate remains failed; committed release dependency updates were reconciled into this branch and the audit was rerun, but those three advisories remain.
+high-severity dependency advisories in `node-forge`, `http-cache-semantics`, and `braces`. The reconciled canonical gate, including the six new runtime-parser tests, passed all preceding checks and again stopped at `check:security`. The complete gate remains failed; committed release dependency updates were reconciled into this branch and the audit was rerun, but those three advisories remain.
 
 Release integration is pending because the selected `release/v4.0.0` checkout contains concurrent
 staged, unstaged, and untracked work. Preserve that checkout and the Compose-fields worktree;
