@@ -30,3 +30,14 @@ Claude Code users can add this repository as the `lumen` marketplace and install
 community-marketplace submission steps.
 
 Run `pnpm run generate:plugin-package`, then `pnpm run check:plugin-package` after changing canonical skills or portable manifests.
+
+## Distribution archives
+
+Run `pnpm run package:plugin` to create versioned archives under the ignored `dist/plugins/`
+directory. This requires the system `zip` executable. Use `--output /absolute/path` for another
+destination; existing archives are preserved and must be moved before generating again.
+
+The Codex archive uses the production HTTPS MCP endpoint and contains the portable manifest,
+three skills, and brand assets. The Claude archive retains both compatibility manifests, the
+exact npm catalog pin, and the optional read-only reviewer. Upload or install only after the
+matching v4 MCP package and hosted catalog have been released and verified.

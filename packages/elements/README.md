@@ -255,6 +255,18 @@ or `variant="glass"` for selective translucency.
 
 ## Data visualization
 
+The web visualization milestone adds `WaterfallChart` for signed changes and explicit totals, and
+`Histogram` for precomputed numeric bins (`frequency="density"` for unequal widths). Line charts
+support explicit continuous axes, annotations, optional keyboard/pointer/touch inspection, and
+synchronized cursors. Heatmaps show labeled axes, a color legend, and explicit missing cells.
+See the [visualization contracts](../../docs/data-visualization.md) and
+[interactive web example](https://lumen.santi020k.com/docs/web/data-visualization).
+
+Use `<lumen-histogram bins="...">` and `<lumen-waterfall-chart data="...">` with JSON arrays.
+`<lumen-line-chart interactive x-scale="time" sync-group="report">` emits
+`ui:chart-cursor-change` with `{ x }`. Set `annotations` to a JSON array.
+
+
 Set serializable `series` data through the JavaScript property for application data. The JSON
 attribute form is useful for static HTML and server output.
 
@@ -323,6 +335,9 @@ Rich text controls may provide `data-ui-editor-value` for commands such as `form
 formatting shortcuts, and keep toggle controls synchronized through `aria-pressed`.
 `lumen-tabs` keeps the selected trigger visible in narrow horizontal lists and emits
 `ui:tabs-change`; import `LumenTabsChangeDetail` or `LumenTabsChangeEvent` for its typed detail.
+
+Nested `lumen-tabs` and `lumen-code-tabs` keep independent selection and panel state. Keyboard
+navigation skips disabled triggers and stays within the active tab group.
 
 `<lumen-kanban-board>` and `<lumen-kanban-column value="…">` provide the same controlled board
 contract. Mark ordinary card items with `data-ui-kanban-item` and put `data-ui-kanban-handle` on a
@@ -523,3 +538,51 @@ Connect application actions and replace sample IDs before reuse. See
 Only the visible window, overscan and focused neighbors mount. Stable keys retain row identity;
 applications own offscreen editing state. See [data rendering](../../docs/virtual-list-data.md) for
 setup, lifecycle, accessibility and the mounted-mode tradeoff.
+
+Forms validate native controls associated through the `form` attribute even outside the form tree.
+Timed toasts retain their remaining duration until both pointer hover and keyboard focus leave.
+
+### Compound dialog tasks
+
+Register `DialogHeader`, `DialogTitle`, `DialogBody`, `DialogFooter`, and
+`DialogClose` with `Dialog`. Keep the body directly inside the dialog host for
+independent scrolling. Use a native heading inside the title host and a native
+button inside the close host; their semantics and disabled behavior remain native.
+Associate the heading id with the dialog's `aria-labelledby`.
+
+```html
+<lumen-dialog aria-labelledby="record-title">
+  <lumen-dialog-header>
+    <lumen-dialog-title><h2 id="record-title">Edit record</h2></lumen-dialog-title>
+  </lumen-dialog-header>
+  <lumen-dialog-body><form id="record-form"><label>Name <input name="name"></label></form></lumen-dialog-body>
+  <lumen-dialog-footer>
+    <lumen-dialog-close><button type="button">Cancel</button></lumen-dialog-close>
+    <button type="submit" form="record-form">Save</button>
+  </lumen-dialog-footer>
+</lumen-dialog>
+```
+
+A cancelled click or disabled native button does not dismiss the dialog. Nested
+close actions only dismiss their own dialog. `lumen-file-upload` accepts
+`selected-files-label` containing `{count}` for localized multiple-file feedback.
+
+### Rich description rows
+
+Register `Descriptions`, `DescriptionItem`, `DescriptionTerm`, and `DescriptionDetail`
+to compose rich values. The item, term, and detail hosts expose `group`, `term`, and
+`definition` roles respectively. Use a labeled group for the overall collection and
+associate the detail with its term when the relationship needs an explicit label.
+These custom hosts provide ARIA semantics; they are not native `dl`, `dt`, or `dd` tags.
+
+```html
+<lumen-descriptions role="group" aria-label="Record details">
+  <lumen-description-item>
+    <lumen-description-term id="status-label">Status</lumen-description-term>
+    <lumen-description-detail aria-labelledby="status-label"><strong>Active</strong></lumen-description-detail>
+  </lumen-description-item>
+</lumen-descriptions>
+```
+
+For native definition-list markup, place a complete native `dl` with `div`, `dt`,
+and `dd` children inside `lumen-descriptions` instead of nesting custom hosts inside the `dl`.

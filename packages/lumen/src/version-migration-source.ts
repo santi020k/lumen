@@ -77,7 +77,7 @@ const skipQuoted = (source: string, start: number): number => {
 }
 
 const skipNonMarkup = (source: string, cursor: number, script: boolean): number => {
-  const comment = [['<!--', '-->'], ['/*', '*/'], ...(script ? [['//', '\n']] : [])]
+  const comment = [['<!--', '-->'], ...(script ? [['/*', '*/'], ['//', '\n']] : [])]
     .find(([opening]) => opening !== undefined && source.startsWith(opening, cursor))
 
   const ending = comment?.[1]

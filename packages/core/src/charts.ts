@@ -89,6 +89,11 @@ export interface LumenChartSummary {
 }
 
 export interface LumenChartLabels {
+  count: string
+  density: string
+  end: string
+  invalidData: string
+  start: string
   category: string
   chartData: string
   chartLegend: string
@@ -125,6 +130,11 @@ const formatDefaultLumenChartSummary: LumenChartLabels['formatSummary'] = (summa
 }
 
 export const lumenChartLabels: Readonly<LumenChartLabels> = Object.freeze({
+  count: 'Count',
+  density: 'Frequency density',
+  end: 'End',
+  invalidData: 'Chart data is invalid. Check the supplied values.',
+  start: 'Start',
   category: 'Category',
   chartData: 'Chart data',
   chartLegend: 'Chart legend',
@@ -856,6 +866,8 @@ export const getLumenChartNumericX = (
   if (typeof value === 'number') return Number.isFinite(value) ? value : null
 
   if (scale === 'linear') {
+    if (!value.trim()) return null
+
     const numeric = Number(value)
 
     return Number.isFinite(numeric) ? numeric : null

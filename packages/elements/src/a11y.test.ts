@@ -26,6 +26,18 @@ beforeAll(() => {
 })
 
 describe('lumen elements accessibility', () => {
+  test('chart legends, inspection panels, and source tables have no axe violations', async () => {
+    const violations = await runAxe(`
+      <lumen-line-chart aria-label="Activity" interactive
+        series='[{"id":"a","label":"Activity","data":[{"x":0,"y":2},{"x":1,"y":null}]}]'></lumen-line-chart>
+      <lumen-histogram aria-label="Distribution" bins='[{"start":0,"end":10,"count":2}]'></lumen-histogram>
+      <lumen-waterfall-chart aria-label="Balance" data='[{"id":"a","label":"Change","value":-2}]'></lumen-waterfall-chart>
+      <lumen-heatmap aria-label="Measurements" data='[{"x":"A","y":"Day","value":null}]'></lumen-heatmap>
+    `)
+
+    expect(violations).toEqual([])
+  }, 15_000)
+
   test('button markup has no axe violations', async () => {
     const violations = await runAxe(`
       <lumen-button role="button" tabindex="0">Save changes</lumen-button>

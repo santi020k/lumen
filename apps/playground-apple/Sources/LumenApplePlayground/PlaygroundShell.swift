@@ -284,3 +284,16 @@ struct AdaptiveColumns<Primary: View, Secondary: View>: View {
         }
     }
 }
+
+/// Search accepts displayed labels and copyable component IDs such as `date-range-field`.
+enum PlaygroundComponentSearch {
+    static func normalized(_ value: String) -> String {
+        String(value.lowercased().filter { !$0.isWhitespace && $0 != "-" && $0 != "_" })
+    }
+
+    static func matches(_ name: String, query: String, exact: Bool = false) -> Bool {
+        let needle = normalized(query)
+        let label = normalized(name)
+        return needle.isEmpty || (exact ? label == needle : label.contains(needle))
+    }
+}

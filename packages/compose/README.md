@@ -412,3 +412,69 @@ caching, image errors, and content rights. Its controlled value is the visible a
 nonfinite values fall back to one half. Aspect ratios outside 0.1–10 fall back to 16:9. The native
 slider exposes localized percentages and supports keyboard/accessibility adjustment. `enabled =
 false` retains the images and blocks changes.
+
+## V4 product controls
+
+```kotlin
+val appBarBehavior = rememberLumenTopAppBarScrollBehavior(LumenTopAppBarScrollMode.EnterAlways)
+Scaffold(
+    modifier = Modifier.nestedScroll(appBarBehavior.nestedScrollConnection),
+    topBar = {
+        LumenTopAppBar("Projects", scrollBehavior = appBarBehavior,
+            navigationIcon = { LumenIconButton(LumenIconName.ArrowLeft, "Back", onClick = ::goBack) })
+    }
+) { padding ->
+    LazyColumn(Modifier.padding(padding)) { /* application-owned rows */ }
+}
+
+LumenSwipeActions(
+    startAction = LumenSwipeAction("Favorite", ::favorite),
+    endAction = LumenSwipeAction("Delete", ::requestDeleteConfirmation, destructive = true),
+    enabled = !saving
+) { LumenText("Quarterly report") }
+
+LumenMultiSelect(
+    label = "Teams", options = matchingTeams, values = selectedTeams,
+    onValuesChange = { selectedTeams = it }, query = query, onQueryChange = { query = it },
+    loading = searching, resultsErrorMessage = searchError, onRetry = ::retrySearch
+)
+
+LumenRangeSlider(
+    label = "Capacity", value = capacity, onValueChange = { capacity = it },
+    valueRange = 0f..100f, steps = 9, startLabel = "Minimum", endLabel = "Maximum",
+    formatValue = { "${it.toInt()}%" }
+)
+
+var selectedKey by rememberSaveable { mutableStateOf<String?>(null) }
+LumenAdaptiveListDetailScaffold(
+    selectedKey = selectedKey, onBack = { selectedKey = null },
+    listLabel = "Projects", detailLabel = "Project details",
+    listPane = { ProjectList(onSelect = { selectedKey = it }) },
+    emptyDetail = { LumenEmptyState("Choose a project") }
+) { key, detailOnly ->
+    BackHandler(enabled = detailOnly) { selectedKey = null }
+    ProjectDetails(key)
+}
+```
+
+Import `Modifier.nestedScroll` from Compose UI, `Scaffold` from Material 3, and `BackHandler`
+from the application's Activity Compose dependency. No Material experimental opt-in is required
+by these Lumen APIs. App bar sizes are Small, Medium, and Large. Scroll modes are Pinned,
+EnterAlways, and ExitUntilCollapsed; attach the connection above the screen's scrollable content.
+
+Swipe gestures follow logical start/end in RTL. Visible buttons and named accessibility actions
+provide alternatives. Gestures reset before callbacks and are not saved across recreation.
+Applications own confirmation, undo and mutations. Use stable record keys in lazy lists.
+
+Multi-select edits apply immediately, including when the dialog is dismissed. Search results,
+selection, loading and retry are controlled by the host. Missing selected options use their raw
+value as a chip label; retain selected options when friendly labels are required. Read-only and
+disabled states close the dialog and block changes. Localize every string and both count/removal
+formatters. Range sliders normalize invalid endpoints for display, require finite increasing bounds,
+and allow 0–10,000 steps. Each thumb has its own localized label and formatted value.
+
+Adaptive list/detail is a full-window layout using the stable Material Adaptive layout dependency
+1.3.0 for window and hinge handling. It adds no routing or data owner. Preserve selection and pane
+state in the host; wire system back through the supplied `detailOnly` flag. The full-window Android
+List/detail example demonstrates the integration, while component gallery examples are bounded
+previews. See [complete contracts](../../docs/native-components.md#compose-v4-product-controls).

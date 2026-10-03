@@ -30,6 +30,8 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
 
 <span
   class:list={classList}
+  role={!src && alt ? 'img' : undefined}
+  aria-label={!src && alt ? alt : undefined}
   {...passthrough}
 >
   {src ? <img alt={alt} src={src} /> : fallbackText && <span aria-hidden={fallback ? undefined : 'true'}>{fallbackText}</span>}

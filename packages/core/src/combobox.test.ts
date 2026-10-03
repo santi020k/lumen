@@ -1,11 +1,11 @@
 // @vitest-environment jsdom
 
-import { afterEach, describe, expect, test } from 'vitest'
+import { afterEach, describe, expect, test, vi } from 'vitest'
 
 import { createLumenComboboxController } from './combobox.js'
 
 const cleanups: (() => void)[] = []
-const fixture = () => {
+const fixture = (form?: HTMLFormElement) => {
   const root = document.createElement('div')
 
   root.innerHTML = `<label>Framework<input role="combobox"></label><div role="listbox">
@@ -13,7 +13,12 @@ const fixture = () => {
     <button role="option" data-value="react">React</button>
     <button role="option" data-value="vue" disabled>Vue</button>
   </div>`
-  document.body.append(root)
+  if (form) {
+    document.body.append(form)
+    form.append(root)
+  } else {
+    document.body.append(root)
+  }
   const input = root.querySelector('input')
   const list = root.querySelector<HTMLElement>('[role="listbox"]')
 
@@ -38,9 +43,60 @@ const activeText = (input: HTMLInputElement) => document.getElementById(input.ge
 afterEach(() => {
   for (const cleanup of cleanups.splice(0)) cleanup()
   document.body.replaceChildren()
+  vi.useRealTimers()
 })
 
 describe('Combobox DOM controller', () => {
+  test('accepted reset closes stale options and filters using the restored default without changes', () => {
+    vi.useFakeTimers()
+    const form = document.createElement('form')
+    const { input, list } = fixture(form)
+    input.defaultValue = 'astro'
+    const change = vi.fn()
+    input.addEventListener('change', change)
+    type(input, 'rea')
+    press(input, 'ArrowDown')
+    expect(activeText(input)).toBe('React')
+    form.reset()
+    vi.runAllTimers()
+    expect(input.value).toBe('astro')
+    expect(list.hidden).toBe(true)
+    expect(input.getAttribute('aria-expanded')).toBe('false')
+    expect(input.hasAttribute('aria-activedescendant')).toBe(false)
+    expect(list.querySelector('[data-value="react"]')?.hasAttribute('hidden')).toBe(true)
+    expect(change).not.toHaveBeenCalled()
+    press(input, 'ArrowDown')
+    expect(activeText(input)).toBe('Astro')
+  })
+
+  test('cancelled reset preserves the open list and active option', () => {
+    vi.useFakeTimers()
+    const form = document.createElement('form')
+    const { input, list } = fixture(form)
+    form.addEventListener('reset', event => {
+      event.preventDefault()
+    })
+    type(input, 'rea')
+    press(input, 'ArrowDown')
+    form.reset()
+    vi.runAllTimers()
+    expect(input.value).toBe('rea')
+    expect(list.hidden).toBe(false)
+    expect(activeText(input)).toBe('React')
+  })
+
+  test('destroy cancels pending reset work and removes the reset listener', () => {
+    vi.useFakeTimers()
+    const form = document.createElement('form')
+    const { controller } = fixture(form)
+    form.reset()
+    expect(vi.getTimerCount()).toBe(1)
+    controller.destroy()
+    expect(vi.getTimerCount()).toBe(0)
+    form.reset()
+    expect(vi.getTimerCount()).toBe(0)
+  })
+
   test('keeps editing focus, skips disabled choices, commits the active option once', () => {
     const { input, list } = fixture()
     const changes: string[] = []

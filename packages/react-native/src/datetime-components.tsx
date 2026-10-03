@@ -1,6 +1,5 @@
 import {
   type ChangeEvent,
-  type ComponentType,
   createElement,
   type ReactElement,
   useEffect,
@@ -15,7 +14,6 @@ import {
   type ViewProps
 } from 'react-native'
 
-import * as NativeDateTimePickerModule from '@react-native-community/datetimepicker'
 import {
   DateTimePickerAndroid,
   type DateTimePickerChangeEvent
@@ -34,6 +32,7 @@ import {
   resolveLumenDateRangeEndMinimum,
   resolveLumenDateRangeStartChange
 } from './form-recipes.js'
+import { NativeDatePicker, type NativeDatePickerProps } from './native-date-picker.js'
 import {
   resolveLumenAriaInvalid,
   resolveLumenButtonOpacity,
@@ -42,30 +41,6 @@ import {
 import { useLumenTheme } from './theme-context.js'
 
 const defaultDateFormatter = new Intl.DateTimeFormat(undefined, { dateStyle: 'medium' })
-
-interface NativeDatePickerProps {
-  accentColor: string
-  disabled: boolean
-  display: 'default' | 'inline'
-  maximumDate?: Date
-  minimumDate?: Date
-  mode: 'date'
-  onChange: (event: DateTimePickerChangeEvent, date?: Date) => void
-  themeVariant: 'dark' | 'light'
-  value: Date
-}
-
-const isNativeDatePickerComponent = (value: unknown): value is ComponentType<NativeDatePickerProps> => (
-  typeof value === 'function' || (typeof value === 'object' && value !== null && '$$typeof' in value)
-)
-
-const nativeDatePickerCandidate: unknown = NativeDateTimePickerModule.default
-
-if (!isNativeDatePickerComponent(nativeDatePickerCandidate)) {
-  throw new TypeError('The native date picker dependency did not expose its component')
-}
-
-const NativeDatePicker = nativeDatePickerCandidate
 
 interface DateSupportingTextProps {
   description?: string | undefined

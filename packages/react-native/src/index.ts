@@ -12,6 +12,17 @@ export {
   type LumenToastProps
 } from './additional-components.js'
 export {
+  LumenAutocomplete,
+  type LumenAutocompleteOption,
+  type LumenAutocompleteProps,
+  LumenInputOTP,
+  type LumenInputOTPProps,
+  LumenNumberField,
+  type LumenNumberFieldProps,
+  LumenPasswordField,
+  type LumenPasswordFieldProps
+} from './advanced-form-components.js'
+export {
   LumenBarChart,
   type LumenBarChartProps,
   type LumenChartDatum,
@@ -37,6 +48,10 @@ export {
   LumenSparkline,
   type LumenSparklineProps
 } from './chart-components.js'
+export {
+  LumenImageComparison,
+  type LumenImageComparisonProps
+} from './comparison-components.js'
 export {
   LumenBackdrop,
   type LumenBackdropProps,

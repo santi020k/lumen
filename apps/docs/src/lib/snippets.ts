@@ -557,11 +557,14 @@ const toElementsSnippet = (body: string): string => {
 }
 
 const elementsDataCharts = new Set([
-  'BarChart', 'ComboChart', 'Heatmap', 'LineChart', 'PieChart', 'RangeChart', 'ScatterChart'
+  'BarChart', 'ComboChart', 'Heatmap', 'LineChart', 'PieChart', 'RangeChart', 'ScatterChart', 'Histogram', 'WaterfallChart'
 ])
 
 const toElementsDataChartSnippet = (name: string, body: string, frontmatter: string): string => {
-  const attribute = name === 'Heatmap' || name === 'RangeChart' ? 'data' : 'series'
+  let attribute = ['Heatmap', 'RangeChart', 'WaterfallChart'].includes(name) ? 'data' : 'series'
+
+  if (name === 'Histogram') attribute = 'bins'
+
   const id = `example-${toKebabCase(name)}`
   const dataExpression = name === 'PieChart' ? '[series]' : attribute
   const markup = toElementsSnippet(body.replace(`{${attribute}}`, '').replace(`<${name}`, `<${name} id="${id}"`))
@@ -581,7 +584,33 @@ chart?.setAttribute('${attribute}', JSON.stringify(${dataExpression}))
 `
 }
 
+const compoundDialogReactExample = `'use client'
+
+import { useState } from 'react'
+import { Button, Dialog, DialogBody, DialogClose, DialogFooter, DialogHeader, DialogTitle, Input } from '@santi020k/lumen-react'
+
+export function Example() {
+  const [open, setOpen] = useState(false)
+  return (
+    <>
+      <Button onClick={() => setOpen(true)}>Edit record</Button>
+      <Dialog open={open} onOpenChange={setOpen} aria-labelledby="record-title">
+        <DialogHeader><DialogTitle id="record-title">Edit record</DialogTitle></DialogHeader>
+        <DialogBody><Input name="name" aria-label="Name" /></DialogBody>
+        <DialogFooter><DialogClose variant="outline">Close preview</DialogClose></DialogFooter>
+      </Dialog>
+    </>
+  )
+}
+`
+
 const reactOverrides: Record<string, string> = {
+  DialogHeader: compoundDialogReactExample,
+  DialogTitle: compoundDialogReactExample,
+  DialogBody: compoundDialogReactExample,
+  DialogFooter: compoundDialogReactExample,
+  DialogClose: compoundDialogReactExample,
+
   VirtualList: `'use client'
 
 import { Button, VirtualList } from '@santi020k/lumen-react'
@@ -844,7 +873,42 @@ export const Example = () => (
 `
 }
 
+const compoundDialogElementsExample = `${elementsHeader}
+
+<button type="button" data-ui-dialog-trigger="record-dialog">Edit record</button>
+<lumen-dialog id="record-dialog" aria-labelledby="record-title">
+  <lumen-dialog-header><lumen-dialog-title><h2 id="record-title">Edit record</h2></lumen-dialog-title></lumen-dialog-header>
+  <lumen-dialog-body><label>Name <input name="name"></label></lumen-dialog-body>
+  <lumen-dialog-footer><lumen-dialog-close><button type="button">Close preview</button></lumen-dialog-close></lumen-dialog-footer>
+</lumen-dialog>
+`
+
+const compoundDescriptionsElementsExample = `${elementsHeader}
+
+<lumen-descriptions role="group" aria-label="Record details">
+  <lumen-description-item>
+    <lumen-description-term id="record-status">Status</lumen-description-term>
+    <lumen-description-detail aria-labelledby="record-status"><lumen-badge variant="success">Active</lumen-badge></lumen-description-detail>
+  </lumen-description-item>
+  <lumen-description-item>
+    <lumen-description-term id="record-link">Related record</lumen-description-term>
+    <lumen-description-detail aria-labelledby="record-link"><a href="/docs/components/descriptions">View record details</a></lumen-description-detail>
+  </lumen-description-item>
+</lumen-descriptions>
+`
+
 const elementsOverrides: Record<string, string> = {
+  Descriptions: compoundDescriptionsElementsExample,
+  DescriptionItem: compoundDescriptionsElementsExample,
+  DescriptionTerm: compoundDescriptionsElementsExample,
+  DescriptionDetail: compoundDescriptionsElementsExample,
+
+  DialogHeader: compoundDialogElementsExample,
+  DialogTitle: compoundDialogElementsExample,
+  DialogBody: compoundDialogElementsExample,
+  DialogFooter: compoundDialogElementsExample,
+  DialogClose: compoundDialogElementsExample,
+
   VirtualList: `<lumen-virtual-list id="records" mode="data" role="list" aria-label="Records"></lumen-virtual-list>
 <script type="module">
   import { createLumenVirtualCollectionController } from '@santi020k/lumen-core'

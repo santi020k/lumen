@@ -290,6 +290,20 @@ the previous API error. The original failed reports remain preserved. Native dep
 generated-host warnings remain open; this is not zero-warning native qualification, physical-device
 evidence or completion of the v4 gate.
 
+The final plugin at `8a960037` passed a second fresh-host JDK 21 release assembly and lint run,
+again with zero errors and 59 warnings. Its preserved APK has SHA-256
+`4892c4825e47920db076aaf278136f6aea973222f6b8c67bd0457755b1f6d35d`; signature verification
+passed. The artifact, seven configuration/plugin input hashes and lint report are under
+`.build/native-quality-react-native-android-splash-runtime`. Minimum SDK 24 was verified in the
+merged manifest. The full JavaScript suite passed 1,189 tests; the final root type and lint checks
+each passed all 23 tasks. The Expo web export passed. These results belong to the pre-reconciliation
+task candidate, rather than the subsequently combined release.
+
+The release advanced to `10d25bd9` and now contains the earlier native-quality work through
+`3cb972ce`, verified by ancestry. The isolated task branch cleanly reconciles that combined release;
+the new splash fix still requires combined validation and local release integration. Historical
+runtime artifacts retain their tested revisions, and do not qualify the combined release.
+
 ### Outstanding scope and blockers
 
 The complete Required outcomes list remains authoritative. Broader phone/tablet runtime qualification and physical-device keyboard/focus and screen-reader checks,

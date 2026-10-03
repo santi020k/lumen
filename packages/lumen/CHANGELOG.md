@@ -2,6 +2,13 @@
 
 ## 4.0.0
 
+### Native Advanced Inputs
+
+- Add React Native and SwiftUI number, time, autocomplete, password, numeric OTP and image comparison
+  controls alongside Compose. Add exact decimal, numeric OTP and same-day time helpers in Core,
+  bilingual playground examples and an application-owned form-error summary recipe.
+
+
 ### Migration, Direction and Data Collections
 
 - Add v3 and v4 source migration previews with optional coordinated pnpm dependency upgrades. Preserve
@@ -13,6 +20,9 @@
   keys and a shared DOM controller for Astro and Elements.
 
 ### Patch Changes
+
+- Use the secondary text token for small Card descriptions so the Default and Glass light presets
+  meet text contrast requirements on opaque surfaces.
 
 - Updated dependencies []:
   - @santi020k/lumen-core@4.0.0

@@ -2,6 +2,16 @@
   "schemaVersion": 1,
   "captures": [
     {
+      "alt": "Adaptive list detail scaffold rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2008,
+      "platform": "android",
+      "sha256": "f2b32f7c9cc57dbf5ab2d979356408306cba287dd123b668e7cc302aa630666b",
+      "slug": "adaptive-list-detail-scaffold",
+      "src": "/native-components/android/adaptive-list-detail-scaffold.webp",
+      "width": 900
+    },
+    {
       "alt": "Adaptive navigation scaffold rendered in the Android phone emulator Lumen playground",
       "device": "Android phone emulator",
       "height": 1600,
@@ -352,6 +362,16 @@
       "width": 900
     },
     {
+      "alt": "Multi select rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2008,
+      "platform": "android",
+      "sha256": "d456d90b0be9feef4b5d85d802a1b8188246e6e65d66d5d4e24240ca5477b59c",
+      "slug": "multi-select",
+      "src": "/native-components/android/multi-select.webp",
+      "width": 900
+    },
+    {
       "alt": "Navigation bar rendered in the Android phone emulator Lumen playground",
       "device": "Android phone emulator",
       "height": 1600,
@@ -469,6 +489,16 @@
       "sha256": "4aaa17e276576d14aa47105af9fc531e14abf9ac9fbed66e4c86be3584bcab62",
       "slug": "range-chart",
       "src": "/native-components/android/range-chart.webp",
+      "width": 900
+    },
+    {
+      "alt": "Range slider rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2008,
+      "platform": "android",
+      "sha256": "b12c3433f798a680f6725d980435798e0b48e4bdc3969e79506db7bec858e1ef",
+      "slug": "range-slider",
+      "src": "/native-components/android/range-slider.webp",
       "width": 900
     },
     {
@@ -612,6 +642,16 @@
       "width": 900
     },
     {
+      "alt": "Swipe actions rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2008,
+      "platform": "android",
+      "sha256": "3020829edfa5d82f9e9643abab12250c0da37461fc6c20ee6f7ec705c99c2575",
+      "slug": "swipe-actions",
+      "src": "/native-components/android/swipe-actions.webp",
+      "width": 900
+    },
+    {
       "alt": "Tabs rendered in the Android phone emulator Lumen playground",
       "device": "Android phone emulator",
       "height": 1600,
@@ -699,6 +739,16 @@
       "sha256": "2d0d5c6f04d9fa68d02424dd7eee99520a4679faee1c024549f33fb6fc768235",
       "slug": "tooltip",
       "src": "/native-components/android/tooltip.webp",
+      "width": 900
+    },
+    {
+      "alt": "Top app bar rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2008,
+      "platform": "android",
+      "sha256": "7a142ede709cc307a4b63389b0ef80a4b63580a7e0bdca436408248dc4fa8738",
+      "slug": "top-app-bar",
+      "src": "/native-components/android/top-app-bar.webp",
       "width": 900
     },
     {
