@@ -36,7 +36,9 @@ The startup metric is Android Activity Manager's `TotalTime` from `am start -W`;
 that the complete workflow is interactive. The frame metric uses `FrameCompleted - IntendedVsync`
 for completed, unflagged `gfxinfo` samples, and compares completion with the frame's own deadline.
 Overlapping frame snapshots are deduplicated, incomplete timestamps are rejected or excluded,
-and an empty measurement fails. This follows Android's
+and an empty measurement fails. Completion timestamps beyond a device uptime observation are
+excluded and counted explicitly. Such a run is labeled Partial and cannot establish a passing
+performance budget. The collector includes the printed uptime precision in the observation bound. This follows Android's
 [dumpsys diagnostics](https://developer.android.com/tools/dumpsys) and preserves the distinction from
 [startup qualification with Macrobenchmark](https://developer.android.com/topic/performance/appstartup/analysis-optimization).
 

@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 
-import { parseAndroidFrames, parseAndroidLaunch, readAndroidUiNodes, summarizeSamples } from './lib/android-runtime-metrics.mjs'
+import { parseAndroidFrames, parseAndroidLaunch, parseAndroidUptimeUpperBound, readAndroidUiNodes, summarizeSamples } from './lib/android-runtime-metrics.mjs'
 
 test('accepts successful process-cold launches and rejects missing, warm, and failed timings', () => {
   assert.deepEqual(parseAndroidLaunch('Status: ok\nLaunchState: COLD\nTotalTime: 321\n'), { totalTimeMs: 321 })
@@ -12,17 +12,18 @@ test('accepts successful process-cold launches and rejects missing, warm, and fa
 })
 
 test('uses bigint frame differences, deduplicates repeated rows, and excludes flagged or unfinished frames', () => {
+  const observedTimeNs = 20000000000000000n
   const header = 'Flags,IntendedVsync,FrameCompleted,FrameDeadline,'
   const row = '0,10000000000000001,10000000020000001,10000000016666668,'
-  const frames = parseAndroidFrames(`---PROFILEDATA---\n${header}\n${row}\n${row}\n1,1,999999999,2,\n0,1,9223372036854775807,2,\n---PROFILEDATA---`)
+  const frames = parseAndroidFrames(`---PROFILEDATA---\n${header}\n${row}\n${row}\n1,1,999999999,2,\n0,1,9223372036854775807,2,\n---PROFILEDATA---`, observedTimeNs)
 
-  assert.deepEqual(frames, [{ durationMs: 20, missedDeadline: true }])
+  assert.deepEqual(frames, { frames: [{ durationMs: 20, missedDeadline: true }], excludedFutureCompletions: 0 })
 
-  assert.deepEqual(parseAndroidFrames(`${header}\n0,100,1000100,2000100,`), [{ durationMs: 1, missedDeadline: false }])
+  assert.deepEqual(parseAndroidFrames(`${header}\n0,100,1000100,2000100,`, observedTimeNs), { frames: [{ durationMs: 1, missedDeadline: false }], excludedFutureCompletions: 0 })
 
-  assert.throws(() => parseAndroidFrames('Total frames rendered: 0'))
+  assert.throws(() => parseAndroidFrames('Total frames rendered: 0', observedTimeNs))
 
-  assert.throws(() => parseAndroidFrames('Flags,IntendedVsync,FrameCompleted,\n0,100,200,'))
+  assert.throws(() => parseAndroidFrames('Flags,IntendedVsync,FrameCompleted,\n0,100,200,', observedTimeNs))
 })
 
 test('summarizes measured samples without mutating them or accepting invalid results', () => {
@@ -47,4 +48,26 @@ test('reads playground target bounds and rejects truncated or oversized device h
   assert.throws(() => readAndroidUiNodes('x'.repeat(4 * 1024 * 1024 + 1)))
 
   assert.deepEqual(readAndroidUiNodes(`${'x'.repeat(100000)}${xml}`), readAndroidUiNodes(xml))
+})
+
+test('reports impossible future completion timestamps without turning them into slow frames', () => {
+  const header = 'Flags,IntendedVsync,FrameCompleted,FrameDeadline,'
+  const output = `${header}\n0,100,200,300,\n0,100,1000000000,300,\n0,100,1000000000,300,`
+  const result = parseAndroidFrames(output, 1000n)
+
+  assert.deepEqual(result, { frames: [{ durationMs: 0.0001, missedDeadline: false }], excludedFutureCompletions: 1 })
+
+  assert.throws(() => parseAndroidFrames(output))
+
+  assert.throws(() => parseAndroidFrames(`${header}\n0,100,1000000000,300,`, 1000n))
+})
+
+test('bounds rounded device uptime using integer nanoseconds and rejects invalid clock samples', () => {
+  assert.equal(parseAndroidUptimeUpperBound('123.45 456.78\n'), 123460000000n)
+
+  assert.equal(parseAndroidUptimeUpperBound('10000000.12 1.23'), 10000000130000000n)
+
+  assert.throws(() => parseAndroidUptimeUpperBound('unknown'))
+
+  assert.throws(() => parseAndroidUptimeUpperBound('123.1234567890'))
 })

@@ -6,7 +6,7 @@ import { homedir } from 'node:os'
 import { join, resolve } from 'node:path'
 import { parseArgs, promisify } from 'node:util'
 
-import { parseAndroidFrames, parseAndroidLaunch, readAndroidUiNodes, summarizeSamples } from './lib/android-runtime-metrics.mjs'
+import { parseAndroidFrames, parseAndroidLaunch, parseAndroidUptimeUpperBound, readAndroidUiNodes, summarizeSamples } from './lib/android-runtime-metrics.mjs'
 
 const root = resolve(import.meta.dirname, '..')
 
@@ -73,11 +73,15 @@ const apkSha256 = createHash('sha256').update(await readFile(signedApk)).digest(
 
 await adb('install', '-r', signedApk)
 
-const installedPath = (await shell('pm', 'path', packageName)).trim().slice('package:'.length)
+const verifyInstalledArtifact = async () => {
+  const installedPath = (await shell('pm', 'path', packageName)).trim().slice('package:'.length)
 
-assert.ok(installedPath.startsWith('/data/app/') && installedPath.endsWith('/base.apk'), 'Expected one installed playground APK')
+  assert.ok(installedPath.startsWith('/data/app/') && installedPath.endsWith('/base.apk'), 'Expected one installed playground APK')
 
-assert.equal((await shell('sha256sum', installedPath)).split(' ')[0], apkSha256, 'Installed APK differs from the measured artifact')
+  assert.equal((await shell('sha256sum', installedPath)).split(' ')[0], apkSha256, 'Installed APK differs from the measured artifact; another run may have replaced it')
+}
+
+await verifyInstalledArtifact()
 
 const launch = async () => {
   await shell('am', 'force-stop', packageName)
@@ -145,8 +149,13 @@ const finalFrames = await shell('dumpsys', 'gfxinfo', packageName, 'framestats')
 
 await writeFile(join(output, 'frames-final.txt'), finalFrames)
 
-const samples = parseAndroidFrames([...frames.values(), finalFrames].join('\n'))
+// /proc/uptime is sampled after gfxinfo; no completed frame can follow this observation.
+const observedTimeNs = parseAndroidUptimeUpperBound(await shell('cat', '/proc/uptime'))
+const parsed = parseAndroidFrames([...frames.values(), finalFrames].join('\n'), observedTimeNs)
+const samples = parsed.frames
 const missed = samples.filter(frame => frame.missedDeadline).length
+
+await verifyInstalledArtifact()
 
 const report = {
   schemaVersion: 1,
@@ -168,7 +177,7 @@ const report = {
     listBounds: { left: list.left, top: list.top, right: list.right, bottom: list.bottom }
   },
   startup: { method: 'am start -W, force-stopped process, cleared synthetic playground task', totalTimeMs: summarizeSamples(startup), samples: startup },
-  scrolling: { method: 'gfxinfo FrameCompleted - IntendedVsync, Flags=0, completed samples only', gestures: swipes, beforeRecords, afterRecords, durationMs: summarizeSamples(samples.map(frame => frame.durationMs)), missedDeadlines: missed, missedDeadlinePercent: 100 * missed / samples.length },
+  scrolling: { method: 'gfxinfo FrameCompleted - IntendedVsync, Flags=0, completed samples only', excludedFutureCompletions: parsed.excludedFutureCompletions, quality: parsed.excludedFutureCompletions ? 'partial-invalid-completion-timestamps' : 'completed-timestamps-validated', gestures: swipes, beforeRecords, afterRecords, durationMs: summarizeSamples(samples.map(frame => frame.durationMs)), missedDeadlines: missed, missedDeadlinePercent: 100 * missed / samples.length },
   limitations: ['Local runtime baseline; not a physical-device qualification or stability iteration.', 'Activity-manager launch timing does not prove the full workspace is interactive.', 'gfxinfo includes observed frames around gestures; it is not a complete Perfetto trace.', 'Compare only with the same device, build mode, display and host workload.']
 }
 

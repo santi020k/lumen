@@ -27,7 +27,19 @@ export const summarizeSamples = samples => {
   return { count: sorted.length, median: percentile(0.5), p95: percentile(0.95), max: sorted.at(-1) }
 }
 
-const parseFrameRow = (columns, line) => {
+export const parseAndroidUptimeUpperBound = output => {
+  const elapsed = output.trim().split(' ')[0]
+  const parts = /^(\d+)\.(\d{1,9})$/.exec(elapsed)
+
+  assert.ok(parts, 'Expected device uptime in seconds with fractional precision')
+
+  const resolutionNs = 10n ** BigInt(9 - parts[2].length)
+
+  // /proc/uptime truncates its fractional output; include one unit of printed precision.
+  return BigInt(parts[1]) * 1_000_000_000n + BigInt(parts[2]) * resolutionNs + resolutionNs
+}
+
+const parseFrameRow = (columns, line, observedTimeNs) => {
   const values = line.split(',')
   const field = name => values[columns.indexOf(name)]
 
@@ -47,6 +59,8 @@ const parseFrameRow = (columns, line) => {
 
   assert.ok(deadline && /^\d+$/.test(deadline), 'FrameDeadline is required for deadline-based comparison')
 
+  if (end > observedTimeNs) return { key: `${intended}:${completed}`, futureCompletion: true }
+
   const target = BigInt(deadline)
 
   assert.ok(target > start, 'Frame deadline must follow its intended vsync')
@@ -54,8 +68,11 @@ const parseFrameRow = (columns, line) => {
   return { key: `${intended}:${completed}`, durationMs: Number(end - start) / 1_000_000, missedDeadline: end > target }
 }
 
-export const parseAndroidFrames = output => {
+export const parseAndroidFrames = (output, observedTimeNs) => {
+  assert.ok(typeof observedTimeNs === 'bigint' && observedTimeNs > 0n, 'A device observation timestamp is required')
+
   const frames = new Map()
+  const futureCompletions = new Set()
   let columns = []
 
   for (const line of output.split('\n')) {
@@ -73,14 +90,15 @@ export const parseAndroidFrames = output => {
 
     if (!columns.length || !line.trim()) continue
 
-    const frame = parseFrameRow(columns, line)
+    const frame = parseFrameRow(columns, line, observedTimeNs)
 
-    if (frame) frames.set(frame.key, { durationMs: frame.durationMs, missedDeadline: frame.missedDeadline })
+    if (frame?.futureCompletion) futureCompletions.add(frame.key)
+    else if (frame) frames.set(frame.key, { durationMs: frame.durationMs, missedDeadline: frame.missedDeadline })
   }
 
   assert.ok(frames.size > 0, 'Android did not return completed frame samples')
 
-  return [...frames.values()]
+  return { frames: [...frames.values()], excludedFutureCompletions: futureCompletions.size }
 }
 
 // Read only the fixed ASCII fields used by the playground benchmark, not general XML content.
