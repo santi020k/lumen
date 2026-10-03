@@ -14,6 +14,9 @@
 
 ### Patch Changes
 
+- Use the secondary text token for small Card descriptions so the Default and Glass light presets
+  meet text contrast requirements on opaque surfaces.
+
 - Updated dependencies []:
   - @santi020k/lumen-core@4.0.0
 ### Appearance Presets
