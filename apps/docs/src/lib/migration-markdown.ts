@@ -1,6 +1,7 @@
 import type { SatteriProcessorOptions as MarkdownProcessorOptions } from '@astrojs/markdown-satteri'
 
 const migrationRoutes: Readonly<Record<string, string>> = {
+  '/docs/migrating-v1-to-v2.md': '/docs/migrations/v1-to-v2',
   '/docs/migrating-v2-to-v3.md': '/docs/migrations/v2-to-v3',
   '/docs/migrating-v3-to-v4.md': '/docs/migrations/v3-to-v4'
 }
@@ -18,7 +19,7 @@ export const resolveMigrationLink = (href: string): string => {
 
 // Only the imported migration documents need repository-relative links adapted for the website.
 export const migrationMarkdownLinks: NonNullable<MarkdownProcessorOptions['mdastPlugins']>[number] = context => {
-  if (!context.fileURL || !/\/docs\/migrating-v[23]-to-v[34]\.md$/u.test(context.fileURL.pathname)) return false
+  if (!context.fileURL || !/\/docs\/migrating-v[123]-to-v[234]\.md$/u.test(context.fileURL.pathname)) return false
 
   return {
     definition(node, ctx) {

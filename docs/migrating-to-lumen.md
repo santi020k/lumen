@@ -83,12 +83,13 @@ Listen to these events on the document, or on the component root `[data-ui-*]` e
 
 Use the guide for your starting version:
 
+- [Lumen 1 → 2](migrating-v1-to-v2.md): source migration, removed aliases, and Swift enum additions.
 - [Lumen 2 → 3](migrating-v2-to-v3.md): coordinated package updates and Swift icon switches.
 - [Lumen 3 → 4](migrating-v3-to-v4.md): the unpublished v4 candidate, spacing changes,
   component behavior, native signatures, and consumer verification.
 
-For a v2 application targeting v4, complete and verify both steps in order. The `lumen migrate v2`
-command below migrates v1 contracts to v2; it does not automate either later upgrade.
+When skipping major versions, complete and verify each step in order. The `lumen migrate v2`
+command migrates v1 contracts to v2; it does not automate either later upgrade.
 
 ### Migrating from version 3 to version 4
 
@@ -115,27 +116,8 @@ replacement.
 
 ### Preparing for version 2
 
-Use the v2 migration preview before changing package versions:
-
-```bash
-lumen migrate v2 --cwd ./src --dry-run
-```
-
-The migration currently covers the accepted breaking-contract candidates:
-
-| Lumen 1.x contract | Lumen 2 contract |
-| --- | --- |
-| Named `UIPrimitives` import from `@santi020k/lumen-astro` | Default import from `@santi020k/lumen-astro/runtime` |
-| Literal visual `size` aliases on `Input` and `NativeSelect` | `visualSize` in Astro or `visual-size` in Elements |
-| `Sonner` / `SonnerProps` | `ToastViewport` / `ToastViewportProps` |
-| `<lumen-sonner>` | `<lumen-toast-viewport>` |
-| React Native date exports from `@santi020k/lumen-react-native` | Import from `@santi020k/lumen-react-native/datetime` and install the optional datetime-picker peer only when used |
-
-The Sonner rename preserves placement, maximum-count configuration, and children because
-`ToastViewport` is the same viewport contract under a precise public name. Ambiguous imports and
-dynamic visual-size values remain manual-review findings instead of being rewritten speculatively.
-React Native datetime imports are split from mixed root imports while preserving aliases and
-type-only specifiers; an existing datetime-subpath import is left for manual merging.
+See the [dedicated v1 → v2 migration guide](migrating-v1-to-v2.md) for the source migration,
+removed aliases, React Native date subpath, Swift enum additions, verification, and rollback.
 
 For mixed Astro and React workspaces, migrate each package at its own integration boundary. Load
 `@santi020k/lumen-astro/styles.css` once in the Astro layout, mount the default runtime from

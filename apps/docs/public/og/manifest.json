@@ -273,6 +273,22 @@
       "pathname": "/docs/migrations",
       "title": "Migration guides"
     },
+    "/docs/migrations/v1-to-v2": {
+      "alt": "Lumen 1 to 2 — Lumen UI",
+      "description": "Migrate runtime imports, sizing, toast viewports, native dates, and Swift enums.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--migrations--v1-to-v2.webp",
+          "primary": true,
+          "url": "/og/pages/docs--migrations--v1-to-v2.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/migrations/v1-to-v2",
+      "title": "Lumen 1 to 2"
+    },
     "/docs/migrations/v2-to-v3": {
       "alt": "Lumen 2 to 3 — Lumen UI",
       "description": "Update coordinated dependencies and migrate exhaustive Swift icon switches.",

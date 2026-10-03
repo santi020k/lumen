@@ -6,7 +6,7 @@ raw values, and component signatures remain available. The [approved v3 contract
 is the complete list of new cases and reviewed diagnostics.
 
 This guide covers v2 → v3. A v1 application must first apply the
-[v1 → v2 contract changes](migrating-to-lumen.md#preparing-for-version-2). The command
+[v1 → v2 contract changes](migrating-v1-to-v2.md). The command
 `lumen migrate v2` handles that earlier transition; it does not migrate v2 → v3.
 
 ## 1. Record a working baseline and update dependencies

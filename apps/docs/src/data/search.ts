@@ -274,6 +274,14 @@ const recipeItems: DocsSearchItem[] = [
   },
   {
     category: 'Migrations',
+    description: 'Migrate v1 runtime imports, sizing, toast viewports, native dates, and Swift enums.',
+    href: '/docs/migrations/v1-to-v2',
+    keywords: normalizeKeywords('migration upgrade v1 v2 version 1 version 2 runtime size toast dates Swift rollback'),
+    title: 'Migrating from Lumen 1 to Lumen 2',
+    type: 'Recipe'
+  },
+  {
+    category: 'Migrations',
     description: 'Upgrade v2 dependencies and handle the expanded Swift icon enum before rebuilding.',
     href: '/docs/migrations/v2-to-v3',
     keywords: normalizeKeywords('migration upgrade v2 v3 version 2 version 3 Swift icons package dependencies rollback'),

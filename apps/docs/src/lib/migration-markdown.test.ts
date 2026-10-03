@@ -5,6 +5,7 @@ import { migrationMarkdownLinks, resolveMigrationLink } from './migration-markdo
 
 describe('migration document links', () => {
   test.each([
+    ['migrating-v1-to-v2.md', '/docs/migrations/v1-to-v2'],
     ['migrating-v2-to-v3.md', '/docs/migrations/v2-to-v3'],
     ['migrating-v3-to-v4.md#content-flow-and-layout-spacing', '/docs/migrations/v3-to-v4#content-flow-and-layout-spacing'],
     ['../registry/lumen-4-contract.json', 'https://github.com/santi020k/lumen/blob/main/registry/lumen-4-contract.json'],
@@ -24,6 +25,9 @@ describe('migration document links', () => {
     const unrelated = await renderer.render(source, { fileURL: new URL('file:///repo/docs/ai-usage.md') })
     const migration = await renderer.render(source, { fileURL: new URL('file:///repo/docs/migrating-v3-to-v4.md') })
 
+    const firstUpgrade = await renderer.render(source, { fileURL: new URL('file:///repo/docs/migrating-v1-to-v2.md') })
+
+    expect(firstUpgrade.code).toContain('href="/docs/migrations/v2-to-v3"')
     expect(unrelated.code).toContain('href="migrating-v2-to-v3.md"')
     expect(migration.code).toContain('href="/docs/migrations/v2-to-v3"')
     expect(migration.code).toContain('href="https://github.com/santi020k/lumen/blob/main/registry/lumen-4-contract.json"')
