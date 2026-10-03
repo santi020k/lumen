@@ -2561,6 +2561,16 @@ export const lumenRegistry = {
       ]
     },
     {
+      name: 'Descriptions',
+      type: 'component',
+      category: 'Data display',
+      description: 'A key-value description list component.',
+      files: [
+        'packages/astro/components/Descriptions.astro',
+        'packages/react/src/components.tsx'
+      ]
+    },
+    {
       name: 'DescriptionItem',
       type: 'component',
       description: 'Composes rich description item content.',
@@ -2597,16 +2607,6 @@ export const lumenRegistry = {
       ],
       dependencies: [
         'styles'
-      ]
-    },
-    {
-      name: 'Descriptions',
-      type: 'component',
-      category: 'Data display',
-      description: 'A key-value description list component.',
-      files: [
-        'packages/astro/components/Descriptions.astro',
-        'packages/react/src/components.tsx'
       ]
     },
     {
