@@ -249,8 +249,8 @@ catalogs:
       specifier: 1.1.1
       version: 1.1.1
     '@santi020k/theme':
-      specifier: ^1.3.0
-      version: 1.3.0
+      specifier: ^2.0.1
+      version: 2.0.1
     '@tailwindcss/vite':
       specifier: ^4.3.3
       version: 4.3.3
@@ -546,7 +546,7 @@ importers:
         version: link:../../packages/templates
       '@santi020k/theme':
         specifier: 'catalog:'
-        version: 1.3.0
+        version: 2.0.1
       '@tailwindcss/vite':
         specifier: 'catalog:'
         version: 4.3.3(vite@8.3.1(@types/node@26.6.2)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.8.3))
@@ -4369,12 +4369,12 @@ packages:
     engines: {node: '>=22.18.0'}
     hasBin: true
 
-  '@santi020k/theme-core@1.2.0':
-    resolution: {integrity: sha512-l5mJnF/ub6cJmft6Ef1OmWDzxNzBeic3XnlBFvyPoBkns5WdiUxbk8x7nUXvOwNuhp+oRH5SSd6abzjpUU5ppA==}
+  '@santi020k/theme-core@2.0.1':
+    resolution: {integrity: sha512-lb3yyEBNW7fps1BicubryFURcJENoN4cH8Ol5hXmo0C1xcYW1TmyXfKMGkywX1vVQFIWsfTVmA4doFgatR8sFw==}
     engines: {node: '>=22.18.0'}
 
-  '@santi020k/theme@1.3.0':
-    resolution: {integrity: sha512-LBRfTWjL3SEHJfgoumSVmNzY9TFeNZS3qJMeE25svjRGcKrC6J+xz0LJ8kCY7mBuoTpeT9YUv6O7VKhddijjHw==}
+  '@santi020k/theme@2.0.1':
+    resolution: {integrity: sha512-drUfYokUMuPuPEmsLPGT15nPUEiONWzCBmPln0JrRTH1zJ6ffHA0RLGHl103KmcI1zalv0DigWSvu/sr68edOw==}
     engines: {node: '>=22.18.0'}
 
   '@shikijs/core@4.4.3':
@@ -14033,11 +14033,11 @@ snapshots:
     transitivePeerDependencies:
       - '@types/node'
 
-  '@santi020k/theme-core@1.2.0': {}
+  '@santi020k/theme-core@2.0.1': {}
 
-  '@santi020k/theme@1.3.0':
+  '@santi020k/theme@2.0.1':
     dependencies:
-      '@santi020k/theme-core': 1.2.0
+      '@santi020k/theme-core': 2.0.1
 
   '@shikijs/core@4.4.3':
     dependencies:
