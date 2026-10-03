@@ -8,7 +8,7 @@ import {
 const variants = ['empty', 'success', 'error', 'offline'] as const
 ---
 
-<Grid columns="auto" gap="lg" minItemWidth="10rem">
+<Grid columns="auto" gap="xl" minItemWidth="10rem">
   {variants.map(variant => (
     <Card style="display:grid;gap:0.5rem;justify-items:center;padding:1rem" variant="muted">
       <Illustration size="sm" variant={variant} />

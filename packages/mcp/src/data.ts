@@ -84,6 +84,8 @@ export interface LumenData {
     colors: Record<string, string>
     glass: Record<string, string>
     semantic: string[]
+    spacing: Record<string, number>
+    spacingRoles: Record<string, string>
     themeAttribute: string
   }
 }

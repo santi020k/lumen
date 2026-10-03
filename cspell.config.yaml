@@ -1,6 +1,11 @@
 version: "0.2"
 language: en
 words:
+  - Preferencias
+  - comunicación
+  - permisos
+  - espacio
+  - compartido
   - valuetext
   - Comparar
   - ajustes

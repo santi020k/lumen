@@ -72,6 +72,12 @@ export const lumenGridElementConfig = {
       auto: 'ui-grid--columns-auto'
     },
     gap: {
+      '2xl': 'ui-grid--gap-2xl',
+      '3xl': 'ui-grid--gap-3xl',
+      group: 'ui-grid--gap-group',
+      related: 'ui-grid--gap-related',
+      section: 'ui-grid--gap-section',
+      xs: 'ui-grid--gap-xs',
       lg: 'ui-grid--gap-lg',
       md: 'ui-grid--gap-md',
       none: 'ui-grid--gap-none',
@@ -80,7 +86,7 @@ export const lumenGridElementConfig = {
     }
   },
   baseClassName: 'ui-grid',
-  defaults: { 'data-ui-grid': '', columns: 'auto', gap: 'md' },
+  defaults: { 'data-ui-grid': '', columns: 'auto', gap: 'group' },
   tagName: 'lumen-grid'
 } as const satisfies LumenElementConfig
 
@@ -118,6 +124,12 @@ export const lumenStackElementConfig = {
       vertical: 'ui-stack--vertical'
     },
     gap: {
+      '2xl': 'ui-stack--gap-2xl',
+      '3xl': 'ui-stack--gap-3xl',
+      group: 'ui-stack--gap-group',
+      related: 'ui-stack--gap-related',
+      section: 'ui-stack--gap-section',
+      xs: 'ui-stack--gap-xs',
       lg: 'ui-stack--gap-lg',
       md: 'ui-stack--gap-md',
       none: 'ui-stack--gap-none',
@@ -126,7 +138,7 @@ export const lumenStackElementConfig = {
     }
   },
   baseClassName: 'ui-stack',
-  defaults: { 'data-ui-stack': '', direction: 'vertical', gap: 'md' },
+  defaults: { 'data-ui-stack': '', direction: 'vertical', gap: 'group' },
   tagName: 'lumen-stack'
 } as const satisfies LumenElementConfig
 

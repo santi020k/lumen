@@ -491,3 +491,12 @@ Wrapped blocks do not add an extra tab stop.
 native Tab order. Use `Menubar` or `Toolbar` for their documented composite-widget
 keyboard behavior. A `ThemeToggle` with `controlled` respects the host theme at
 initialization and leaves persistence and theme changes to its owner.
+
+## Content flow
+
+Stack and Grid own sibling spacing. Their gap accepts `related`, `group` (default) and `section`,
+or canonical `none`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl` sizes. Card owns the inset and gap
+between its visible parts; use `density="compact"`, `"comfortable"` (default) or `"spacious"`.
+Elements uses the same names as attributes. Use a nested Stack for CardContent groups and Field
+for label/control/feedback. See [content flow](../../docs/content-flow.md) and the
+[v4 migration guide](../../docs/migrating-to-lumen.md) for ownership and changed explicit gaps.

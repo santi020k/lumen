@@ -1,0 +1,112 @@
+# Content flow and spacing
+
+Lumen layouts express relationships between content. Keep related text and controls close, give
+separate groups more room, and use the largest gaps between major sections. A consistent numeric
+scale supports those relationships; it does not mean every gap should be equal.
+
+## Ownership
+
+| Concern | Owner |
+| --- | --- |
+| Distance between siblings | The parent `Stack` or `Grid` |
+| Distance from content to a surface edge | `Card` or the matching surface component |
+| Label, control, hint and error spacing | `Field` |
+| Heading, paragraph and list rhythm | `Prose` or `Typography` |
+| Outer border and corners | One enclosing surface |
+
+Do not add child margins on top of a parent's gap. `Stack` and `Grid` clear direct-child external
+margins. `Card` owns its direct-child gap; its parts have no external margins. Empty parts and parts
+marked `hidden` do not occupy layout space. Omit optional sections rather than rendering
+whitespace-only wrappers. Use a nested `Stack` for groups inside `CardContent`.
+
+## Canonical scale and roles
+
+`tokens/lumen.tokens.json` owns the scale and role aliases. The platform-token generator emits
+web variables into the shared stylesheet alongside the native numeric foundations.
+
+| Gap | Default size | CSS variable |
+| --- | --- | --- |
+| `none` | 0 | `--ui-space-zero` |
+| `xs` | 4px | `--ui-space-xs` |
+| `sm` | 8px | `--ui-space-sm` |
+| `md` | 12px | `--ui-space-md` |
+| `lg` | 16px | `--ui-space-lg` |
+| `xl` | 24px | `--ui-space-xl` |
+| `2xl` | 32px | `--ui-space-2xl` |
+| `3xl` | 48px | `--ui-space-3xl` |
+| `related` | `sm` / 8px | `--ui-space-related` |
+| `group` | `lg` / 16px | `--ui-space-group` |
+| `section` | `2xl` / 32px | `--ui-space-section` |
+
+Web dimensions use `rem`; pixel equivalents assume a 16px root. Stack and Grid default to `group`,
+preserving their previous 16px default. The `inset` role maps to `xl` / 24px for comfortable surface
+padding; it is a CSS token, not a Stack/Grid gap option. Override role aliases at a product or theme
+boundary; individual size tokens stay predictable.
+
+## Settings surface
+
+```astro
+---
+import {
+  Button, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle,
+  Field, Input, Label, Stack
+} from '@santi020k/lumen-astro'
+---
+
+<Stack gap="section">
+  <Card>
+    <CardHeader>
+      <CardTitle as="h2">Notifications</CardTitle>
+      <CardDescription>Choose where your team receives updates.</CardDescription>
+    </CardHeader>
+    <CardContent>
+      <Stack gap="group">
+        <Field>
+          <Label for="team-email">Team email</Label>
+          <Input id="team-email" name="email" type="email" />
+        </Field>
+        <Field>
+          <Label for="team-name">Team name</Label>
+          <Input id="team-name" name="team" />
+        </Field>
+      </Stack>
+    </CardContent>
+    <CardFooter>
+      <Button>Save changes</Button>
+      <Button variant="secondary">Cancel</Button>
+    </CardFooter>
+  </Card>
+</Stack>
+```
+
+React uses the same component and prop names, with `htmlFor` on Label. Elements uses
+`<lumen-stack gap="section">` and the corresponding `<lumen-card-*>` parts. Read the adapter's
+setup and field accessibility contract before connecting validation or actions.
+
+## Density, borders and text
+
+Card `density="compact"` uses a 16px inset and 12px part gap. The default `comfortable` density
+uses a 24px inset and 16px part gap; `spacious` uses a 32px inset and 24px part gap. Density adjusts
+the surface, not control heights or touch targets. Existing `--ui-card-padding`, `--ui-card-gap`
+and `--ui-card-section-gap` overrides remain available.
+
+Card footers wrap actions when their labels cannot fit. Prefer natural content height, readable
+line lengths and aligned edges over fixed heights or manual offsets. Check long headings,
+translated labels, field errors and enlarged text. Use spacing to group content where another
+bordered surface would add no meaning.
+
+One frame owns each outer border and radius. Use a single Separator at a shared edge, and place
+artwork in its own clipping frame so controls retain visible focus. Use Image `radius="none"`
+when artwork sits flush against that frame. Keep responsive gutters in one outer Container;
+nesting Containers unnecessarily reduces available width.
+
+## AI and verification
+
+Retrieve `lumen_get_tokens` for spacing dimensions and roles, then read the selected component
+contracts. Prefer semantic gap roles in generated screens. Keep paragraph rhythm inside Prose or
+Typography; do not combine their margins with another gap for the same relationship. Verify phone
+and desktop widths in both themes, enlarged text, shared edges, wrapping, overflow, keyboard focus
+and missing-header, missing-footer, hidden, empty and validation states.
+
+The v4 migration guide records changed explicit gaps and defaults. Native adapters retain their
+platform layout APIs; web density props and CSS variables do not imply native props.

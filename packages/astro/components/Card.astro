@@ -7,6 +7,7 @@ interface Props extends HTMLAttributes<'div'> {
   as?: 'article' | 'div' | 'section'
   class?: string | null
   className?: string
+  density?: 'comfortable' | 'compact' | 'spacious'
   glass?: boolean | 'subtle' | 'strong'
   variant?: 'default' | 'glass' | 'interactive' | 'muted' | 'unstyled'
 }
@@ -15,6 +16,7 @@ const {
   as: Tag = 'div',
   class: classProp = '',
   className = '',
+  density = 'comfortable',
   glass = false,
   variant = 'default',
   ...rest
@@ -24,6 +26,7 @@ const isGlass = glass || variant === 'glass'
 
 const { classList, passthrough } = resolveLumenAstroProps(rest, [
   'ui-card',
+  `ui-card--${density}`,
   variant === 'unstyled' && 'ui-card--unstyled',
   variant === 'muted' && 'ui-card--muted',
   variant === 'interactive' && 'ui-card--interactive',
@@ -35,6 +38,7 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
 
 <Tag
   class:list={classList}
+  data-density={density}
   data-slot="card"
   data-variant={variant}
   {...passthrough}

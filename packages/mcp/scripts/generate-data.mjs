@@ -12,6 +12,8 @@ import { fileURLToPath } from 'node:url'
 
 import ts from 'typescript'
 
+import { parseSpacingTokens } from '../../../scripts/lib/spacing-tokens.mjs'
+
 const scriptDir = dirname(fileURLToPath(import.meta.url))
 
 const findRepoRoot = async start => {
@@ -1161,6 +1163,7 @@ const main = async () => {
   const chart = parseVisualizationColors(platformTokensSource)
   const colors = parsePlatformColors(platformTokensSource)
   const glass = parseTokenBlock(tokensSource, 'lumenGlass')
+  const { spacing, spacingRoles } = parseSpacingTokens(platformTokensSource)
 
   const semanticTokens = [
     'canvas',
@@ -1311,6 +1314,8 @@ const main = async () => {
     colors,
     glass,
     semantic: semanticTokens,
+    spacing,
+    spacingRoles,
     themeAttribute: 'data-theme'
   }
 
@@ -1408,7 +1413,7 @@ const main = async () => {
       packageVersions,
       registryName: registry.name ?? 'lumen',
       registryVersion: registry.version ?? 1,
-      schemaVersion: 5,
+      schemaVersion: 6,
       serverVersion: packageJson.version
     },
     nativeComponents,

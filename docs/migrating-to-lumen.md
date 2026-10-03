@@ -81,6 +81,24 @@ Listen to these events on the document, or on the component root `[data-ui-*]` e
 
 ### Migrating from version 3 to version 4
 
+#### Content flow and layout spacing
+
+Web Stack/Grid gap sizes now match the canonical foundation scale: `md` is 12px, `lg` is 16px,
+and `xl` is 24px. To preserve a v3 explicit layout, replace old `md` with `group` (or `lg`), old
+`lg` with `xl`, and old `xl` with `2xl`. Defaults remain 16px through `gap="group"`. New choices
+include `xs`, `2xl`, `3xl`, `related`, `group` and `section`; do not change native gap props by
+applying this web-only migration. Native numeric spacing values are unchanged.
+
+Card now owns direct-child spacing with gap instead of child margins. Comfortable padding becomes
+24px; compact uses 16px and spacious 32px. Card content alone no longer receives a phantom top gap.
+Hidden/empty parts leave no space and footer actions wrap. Remove compensating section margins,
+negative offsets and child padding for the same relationship. Stack/Grid also reset direct-child
+external margins; custom unlayered CSS and documented Card variables can override defaults.
+Field spacing now uses the related token (8px). See [content flow](content-flow.md).
+
+Before publication, rollback is reverting this candidate commit or continuing to use released v3
+packages. After publication, use a new version for corrections; do not move published tags.
+
 Lumen 4 consolidates fixes from twenty consumer audits. Upgrade the adapter and its companion
 packages together, import the matching stylesheet, and rebuild native consumers. The v4 branch
 is a local release candidate; published projects in the showcase still use their deployed versions.

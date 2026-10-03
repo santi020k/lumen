@@ -500,6 +500,10 @@ describe('getTokens and getRules', () => {
     expect(result.data.tokens.semantic).toContain('brand')
     expect(result.data.tokens.chart.series1).toBeDefined()
     expect(result.text).toContain('Data visualization tokens')
+    expect(result.data.tokens.spacing.md).toBe(12)
+    expect(result.data.tokens.spacingRoles).toEqual({ group: 'lg', inset: 'xl', related: 'sm', section: '2xl' })
+    expect(result.text).toContain('--ui-space-section')
+    expect(result.text).toContain('surfaces own padding')
   })
 
   test('returns rules', () => {

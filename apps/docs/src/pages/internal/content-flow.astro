@@ -1,0 +1,70 @@
+---
+import { createElement } from 'react'
+import { renderToStaticMarkup } from 'react-dom/server'
+
+import '@santi020k/lumen/styles.css'
+
+import { Button, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, Container, Field, FieldError, Grid, Input, Label, Stack } from '@santi020k/lumen-astro'
+import { Button as ReactButton } from '@santi020k/lumen-react'
+import { Card as ReactCard, CardContent as ReactCardContent, CardDescription as ReactCardDescription, CardFooter as ReactCardFooter, CardHeader as ReactCardHeader, CardTitle as ReactCardTitle } from '@santi020k/lumen-react/server'
+
+const reactCard = renderToStaticMarkup(createElement(ReactCard, { id: 'react-card' }, createElement(ReactCardHeader, null, createElement(ReactCardTitle, { as: 'h2' }, 'React workspace'), createElement(ReactCardDescription, null, 'A shared place for your team.')), createElement(ReactCardContent, null, createElement('p', null, 'Review access before saving your changes.')), createElement(ReactCardFooter, null, createElement(ReactButton, null, 'Save changes'), createElement(ReactButton, { variant: 'secondary' }, 'Cancel'))))
+---
+
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Content flow regression fixture</title>
+  </head>
+  <body>
+    <Container as="main" size="md">
+      <Stack id="page-flow">
+        <h1>Workspace settings</h1>
+        <Grid id="adapter-cards" minItemWidth="15rem">
+          <Card id="astro-card">
+            <CardHeader><CardTitle as="h2">Astro workspace</CardTitle><CardDescription>A shared place for your team.</CardDescription></CardHeader>
+            <CardContent><p>Review access before saving your changes.</p></CardContent>
+            <CardFooter><Button>Save changes</Button><Button variant="secondary">Cancel</Button></CardFooter>
+          </Card>
+          <Fragment set:html={reactCard} />
+          <lumen-card id="elements-card">
+            <lumen-card-header><lumen-card-title role="heading" aria-level="2">Elements workspace</lumen-card-title><lumen-card-description>A shared place for your team.</lumen-card-description></lumen-card-header>
+            <lumen-card-content><p>Review access before saving your changes.</p></lumen-card-content>
+            <lumen-card-footer><lumen-button>Save changes</lumen-button><lumen-button variant="secondary">Cancel</lumen-button></lumen-card-footer>
+          </lumen-card>
+        </Grid>
+        <Card id="content-only"><CardContent>Content without a header starts at the normal inset.</CardContent></Card>
+        <Card id="hidden-parts">
+          <CardHeader hidden><CardTitle>Hidden heading</CardTitle></CardHeader>
+          <CardContent>Hidden parts should leave no extra space.</CardContent>
+          <CardFooter hidden><Button>Hidden action</Button></CardFooter>
+        </Card>
+        <Card id="empty-parts"><CardHeader /><CardContent>Empty parts do not introduce a gap.</CardContent><CardFooter /></Card>
+        <lumen-stack id="elements-stack"><span>First group</span><span>Second group</span></lumen-stack>
+        <Card id="form-card">
+          <CardHeader><CardTitle as="h2">Team details</CardTitle><CardDescription>Labels and feedback stay with their controls.</CardDescription></CardHeader>
+          <CardContent>
+            <Stack id="fields">
+              <Field><Label for="workspace-name">Workspace name</Label><Input id="workspace-name" value="Shared workspace" /></Field>
+              <Field><Label for="workspace-email">Notification email</Label><Input id="workspace-email" type="email" aria-invalid="true" aria-describedby="email-error" /><FieldError id="email-error" message="Enter an email address your team can access." /></Field>
+            </Stack>
+          </CardContent>
+          <CardFooter><Button>Save notification settings</Button><Button variant="secondary">Discard changes</Button></CardFooter>
+        </Card>
+      </Stack>
+    </Container>
+    <script>
+      import { defineLumenElements } from '@santi020k/lumen-elements'
+
+      defineLumenElements(['Stack', 'Button', 'Card', 'CardContent', 'CardDescription', 'CardFooter', 'CardHeader', 'CardTitle'])
+    </script>
+  </body>
+</html>
+
+<style>
+  body { margin: 0; background: hsl(var(--canvas)); color: hsl(var(--ink)); font-family: var(--ui-font); }
+  main { padding-block: 2rem; }
+</style>

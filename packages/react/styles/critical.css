@@ -44,6 +44,20 @@
   --chart-tooltip-background: var(--ink);
   --chart-tooltip-foreground: var(--surface);
   --ui-on-danger: var(--on-danger);
+  /* BEGIN:generated-spacing */
+  --ui-space-zero: 0rem;
+  --ui-space-xs: 0.25rem;
+  --ui-space-sm: 0.5rem;
+  --ui-space-md: 0.75rem;
+  --ui-space-lg: 1rem;
+  --ui-space-xl: 1.5rem;
+  --ui-space-2xl: 2rem;
+  --ui-space-3xl: 3rem;
+  --ui-space-related: var(--ui-space-sm);
+  --ui-space-group: var(--ui-space-lg);
+  --ui-space-section: var(--ui-space-2xl);
+  --ui-space-inset: var(--ui-space-xl);
+  /* END:generated-spacing */
   --ui-radius: 0.625rem;
   --ui-radius-sm: 0.375rem;
   --ui-radius-lg: 0.75rem;
@@ -355,11 +369,26 @@
 }
 
 .ui-card {
-  --ui-card-gap: 1rem;
-  --ui-card-padding: 1.25rem;
-  --ui-card-section-gap: 0.375rem;
+  --ui-card-gap: var(--ui-space-group);
+  --ui-card-padding: var(--ui-space-inset);
+  --ui-card-section-gap: var(--ui-space-related);
 
+  display: flex;
+  flex-direction: column;
+  gap: var(--ui-card-gap);
+  min-width: 0;
   padding: var(--ui-card-padding);
+}
+
+.ui-card--compact {
+  --ui-card-gap: var(--ui-space-md);
+  --ui-card-padding: var(--ui-space-lg);
+  --ui-card-section-gap: var(--ui-space-xs);
+}
+
+.ui-card--spacious {
+  --ui-card-gap: var(--ui-space-xl);
+  --ui-card-padding: var(--ui-space-2xl);
 }
 
 .ui-card__header {
@@ -388,14 +417,34 @@
 .ui-card__footer {
   align-items: center;
   display: flex;
-  gap: 0.75rem;
+  flex-wrap: wrap;
+  gap: var(--ui-space-related);
 }
 
-.ui-card > :where(
-  .ui-card__content,
-  .ui-card__footer
-) {
-  margin-block-start: var(--ui-card-gap);
+.ui-card__footer > :is(.ui-button, .ui-button-link) {
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.ui-card__footer .ui-button__content {
+  min-width: 0;
+}
+
+.ui-card > :where(*),
+.ui-card__header > :where(*),
+.ui-field > :where(*) {
+  min-width: 0;
+  margin: 0;
+}
+
+.ui-card__content > :where(:first-child) { margin-block-start: 0; }
+
+.ui-card__content > :where(:last-child) { margin-block-end: 0; }
+
+.ui-card > :where([hidden]:not([hidden="until-found"])),
+.ui-card > :where(.ui-card__header, .ui-card__content, .ui-card__footer):empty {
+  display: none;
 }
 
 .ui-card--muted {
@@ -808,7 +857,7 @@
 .ui-combobox,
 .ui-select-field {
   display: grid;
-  gap: 0.45rem;
+  gap: var(--ui-space-related);
 }
 
 .ui-combobox,

@@ -419,3 +419,12 @@ Unwrapped `pre` children receive `tabindex="0"` and region semantics while keepi
 authored accessible names. With `wrap="true"`, the component does not add an extra
 tab stop. Keep native `pre` and `code` children rather than placing source text in
 HTML attributes.
+
+## Content flow
+
+Stack and Grid own sibling spacing. Their gap accepts `related`, `group` (default) and `section`,
+or canonical `none`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl` sizes. Card owns the inset and gap
+between its visible parts; use `density="compact"`, `"comfortable"` (default) or `"spacious"`.
+Elements uses the same names as attributes. Use a nested Stack for CardContent groups and Field
+for label/control/feedback. See [content flow](../../docs/content-flow.md) and the
+[v4 migration guide](../../docs/migrating-to-lumen.md) for ownership and changed explicit gaps.

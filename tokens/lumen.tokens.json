@@ -121,6 +121,13 @@
     "2xl": { "$value": { "unit": "px", "value": 32 } },
     "3xl": { "$value": { "unit": "px", "value": 48 } }
   },
+  "layout": {
+    "$type": "dimension",
+    "related": { "$value": "{space.sm}", "$description": "Closely related controls or supporting content." },
+    "group": { "$value": "{space.lg}", "$description": "Separate groups inside one task or surface." },
+    "section": { "$value": "{space.2xl}", "$description": "Major sections in a page or workflow." },
+    "inset": { "$value": "{space.xl}", "$description": "Comfortable content inset inside a surface." }
+  },
   "radius": {
     "$type": "dimension",
     "sm": { "$value": { "unit": "px", "value": 6 } },
