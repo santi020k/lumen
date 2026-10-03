@@ -119,10 +119,23 @@ export const lumenSpinnerElementConfig = {
 
 export const lumenStackElementConfig = {
   attributeClasses: {
+    align: {
+      center: 'ui-stack--align-center',
+      end: 'ui-stack--align-end',
+      start: 'ui-stack--align-start',
+      stretch: 'ui-stack--align-stretch'
+    },
     direction: {
       horizontal: 'ui-stack--horizontal',
       vertical: 'ui-stack--vertical'
     },
+    justify: {
+      between: 'ui-stack--justify-between',
+      center: 'ui-stack--justify-center',
+      end: 'ui-stack--justify-end',
+      start: 'ui-stack--justify-start'
+    },
+    wrap: { '': 'ui-stack--wrap', true: 'ui-stack--wrap' },
     gap: {
       '2xl': 'ui-stack--gap-2xl',
       '3xl': 'ui-stack--gap-3xl',

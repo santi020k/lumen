@@ -61,6 +61,10 @@ Rules for agents:
 
 ## Content flow
 
+- Reuse content-flow-header, content-flow-settings, content-flow-list and content-flow-actions recipes; lumen_get_recipe returns complete framework source.
+- Container gutters grow from group to section spacing. Override --ui-container-gutter at the product boundary instead of adding nested page padding.
+- Prose and Typography trim their outer child margins and separate headings from preceding text. Card allows interactive overflow; AspectRatio owns media clipping.
+
 - Read docs/content-flow.md. Stack/Grid own sibling gaps; surfaces own padding; Field owns control feedback spacing. Do not add child margins for a relationship already controlled by a parent gap.
 - Use Stack/Grid gap="related" (8px), "group" (16px, default), or "section" (32px). Size gaps match the canonical scale: xs=4, sm=8, md=12, lg=16, xl=24, 2xl=32, 3xl=48. CSS variables use rem. Retrieve spacing and spacingRoles through lumen_get_tokens.
 - Use CardHeader, CardContent and CardFooter. Card owns their gap; missing, hidden and empty parts leave no spacing. Use a nested Stack inside the body and allow footer actions to wrap. Card density is compact, comfortable (default), or spacious; it does not reduce control touch targets.

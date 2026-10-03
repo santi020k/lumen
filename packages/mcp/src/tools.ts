@@ -920,6 +920,25 @@ export const getNativeComponent = (
   }
 }
 
+const recipeExamples = (recipe: LumenRecipeSnapshot, framework: FrameworkFilter): string[] => {
+  const frameworks: LumenFramework[] = [framework]
+
+  return frameworks.flatMap(target => {
+    const source = recipe.examples[target]
+
+    if (!source) return []
+
+    return [
+      '',
+      `## Complete composition (${target})`,
+      'Wire application actions and persistence before shipping; replace sample IDs when rendering multiple instances.',
+      `\`\`\`${{ astro: 'astro', elements: 'html', react: 'tsx' }[target]}`,
+      source,
+      '```'
+    ]
+  })
+}
+
 export const getRecipe = (
   args: { framework?: FrameworkFilter | undefined, name: string },
   data: LumenData = loadLumenData()
@@ -960,7 +979,8 @@ export const getRecipe = (
       `Install for ${framework}: ${getRecipeInstall(recipe.install, framework)}`,
       '',
       '## Components',
-      ...componentLines
+      ...componentLines,
+      ...recipeExamples(recipe, framework)
     ].join('\n')
   }
 }

@@ -29,7 +29,9 @@
           "version": "4.0.0"
         },
         "@santi020k/lumen": {
-          "peerDependencies": {},
+          "peerDependencies": {
+            "react": ">=19"
+          },
           "version": "4.0.0"
         },
         "@santi020k/lumen-mcp": {

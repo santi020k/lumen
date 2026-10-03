@@ -191,6 +191,7 @@ export interface LumenRecipeSnapshot {
   categories: string[]
   components?: string[]
   description: string
+  examples: Partial<Record<LumenFramework, string>>
   files?: unknown[]
   install: Record<LumenFramework, string>
   name: string

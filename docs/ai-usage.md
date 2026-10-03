@@ -597,6 +597,10 @@ attributes, and accessible markup.
   `"comfortable"` (default) or `"spacious"` instead of scattering padding overrides.
 - Keep text rhythm inside Prose or Typography. Verify long and translated text, enlarged text,
   validation states, optional sections and mobile wrapping before calling a composition finished.
+- Retrieve complete `content-flow-header`, `content-flow-settings`, `content-flow-list` and
+  `content-flow-actions` examples with `lumen_get_recipe`; the CLI installs the same compositions.
+  Keep one outer Container for fluid gutters. Card permits interactive overflow; use AspectRatio
+  to clip media. Reading blocks trim their outer margins, so avoid compensating offsets.
 
 - Do not require consumers to configure Tailwind for Lumen components.
 - Prefer component props and composition before adding custom CSS.

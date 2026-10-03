@@ -393,6 +393,16 @@ describe('getComponent', () => {
 })
 
 describe('getRecipe', () => {
+  test.each(['astro', 'react', 'elements'] as const)('returns complete content-flow recipes for %s', framework => {
+    for (const name of ['header', 'settings', 'list', 'actions']) {
+      const result = getRecipe({ framework, name: `content-flow-${name}` })
+
+      expect(result.data.found).toBe(true)
+      expect(result.data.recipe?.examples[framework]).toContain(name === 'settings' ? 'group' : 'related')
+      expect(result.text).toContain('## Complete composition')
+      expect(result.text).toContain('Wire application actions')
+    }
+  })
   test('resolves and returns framework-specific recipe installation', () => {
     expect(resolveRecipe('advanced_fields')?.name).toBe('advanced-fields')
 

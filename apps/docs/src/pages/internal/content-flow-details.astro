@@ -1,0 +1,45 @@
+---
+import '@santi020k/lumen/styles.css'
+
+import { Accordion, AspectRatio, Button, Card, CardContent, CardFooter, CardHeader, CardTitle, Container, Dialog, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, Empty, Field, FieldError, Image, Input, Label, Prose, Stack, Tabs, TabsList, TabsPanel, TabsTrigger, Typography } from '@santi020k/lumen-astro'
+import UIPrimitives from '@santi020k/lumen-astro/runtime'
+---
+
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head><meta charset="utf-8" /><meta name="viewport" content="width=device-width" /><meta name="robots" content="noindex, nofollow" /><title>Reading and surface flow</title></head>
+  <body>
+    <Container as="main" id="fluid-container" size="lg">
+      <Stack gap="section">
+        <h1>Reading and surface flow</h1>
+        <Card id="reading-card"><CardContent>
+          <Prose id="prose-flow">
+            <h2>Workspace guide</h2><p>Related text stays close to its heading.</p><p>Separate paragraphs keep a steady reading rhythm.</p>
+            <h3>Team communication and notification preferences</h3><p>New topics have more room above them.</p>
+            <ul><li>Invite your team<ul><li>Choose an appropriate role</li></ul></li><li>Review access regularly</li></ul>
+          </Prose>
+        </CardContent></Card>
+        <Typography id="typography-flow"><h2>Reading without a surface</h2><p>A heading and description form one group.</p><h3>Another topic</h3><p>The last paragraph adds no external margin.</p></Typography>
+        <Card id="media-card"><CardContent>
+          <AspectRatio id="media-frame"><Image src="/comparison-before.svg" width={1200} height={675} alt="Sample landscape" radius="none" /></AspectRatio>
+        </CardContent><CardFooter><Button id="media-action">Review artwork</Button></CardFooter></Card>
+        <Card id="menu-card"><CardHeader><CardTitle as="h2">Member actions</CardTitle></CardHeader><CardContent>
+          <DropdownMenu id="flow-menu"><DropdownMenuTrigger id="flow-menu-trigger">Member actions</DropdownMenuTrigger><DropdownMenuContent><DropdownMenuItem>Review notification preferences</DropdownMenuItem><DropdownMenuItem>Change workspace role</DropdownMenuItem><DropdownMenuItem>View recent activity</DropdownMenuItem></DropdownMenuContent></DropdownMenu>
+        </CardContent></Card>
+        <Tabs id="flow-tabs" initialValue="details"><TabsList aria-label="Workspace sections"><TabsTrigger value="details">Notification preferences</TabsTrigger><TabsTrigger value="empty">Pending invitations</TabsTrigger></TabsList>
+          <TabsPanel value="details"><Stack gap="group"><h2>Notification preferences</h2><Field><Label for="flow-email">Team email</Label><Input id="flow-email" type="email" aria-invalid="true" aria-describedby="flow-email-error" /><FieldError id="flow-email-error" message="Enter the email address that should receive workspace updates." /></Field></Stack></TabsPanel>
+          <TabsPanel value="empty"><Empty variant="compact"><h2>No pending invitations</h2><p>Your teammates already have access.</p></Empty></TabsPanel>
+        </Tabs>
+        <Accordion id="flow-accordion"><details open><summary>Communication preferences and team access</summary><Stack gap="group"><Prose><p>Controls stay inside the disclosure’s inset.</p></Prose><Stack direction="horizontal" gap="related" wrap><Button id="accordion-action">Review team access</Button></Stack></Stack></details><details><summary>Optional advanced settings</summary><p>No additional settings are configured.</p></details></Accordion>
+        <Stack direction="horizontal" gap="related" wrap><Button id="open-flow-dialog" data-ui-dialog-trigger="flow-dialog">Edit notification preferences</Button></Stack>
+      </Stack>
+    </Container>
+    <Dialog id="flow-dialog" aria-labelledby="flow-dialog-title"><Stack gap="group"><Typography><h2 id="flow-dialog-title">Notification preferences and team communication</h2><p>Review the address before saving.</p></Typography><Field><Label for="dialog-email">Team email</Label><Input id="dialog-email" type="email" aria-invalid="true" aria-describedby="dialog-error" /><FieldError id="dialog-error" message="Enter an email address your whole team can access." /></Field><Stack direction="horizontal" gap="related" wrap><Button data-ui-dialog-close>Save notification preferences</Button><Button variant="secondary" data-ui-dialog-close>Discard changes</Button></Stack></Stack></Dialog>
+    <UIPrimitives />
+  </body>
+</html>
+
+<style>
+  body { margin: 0; background: hsl(var(--canvas)); color: hsl(var(--ink)); font-family: var(--ui-font); }
+  main { padding-block: 2rem; }
+</style>

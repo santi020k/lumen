@@ -1,0 +1,18 @@
+<script type="module">
+  import { defineLumenElements } from '@santi020k/lumen-elements/define'
+  defineLumenElements(['Card', 'CardHeader', 'CardTitle', 'CardDescription', 'CardContent', 'CardFooter', 'Stack', 'Field', 'Label', 'Input', 'Button'])
+</script>
+
+<lumen-card role="region" aria-labelledby="notification-heading">
+  <lumen-card-header>
+    <lumen-card-title id="notification-heading" role="heading" aria-level="2">Notifications</lumen-card-title>
+    <lumen-card-description>Choose where your team receives updates.</lumen-card-description>
+  </lumen-card-header>
+  <lumen-card-content>
+    <lumen-stack gap="group">
+      <lumen-field><lumen-label id="team-name-label">Team name</lumen-label><lumen-input id="team-name" name="team" aria-labelledby="team-name-label" autocomplete="organization"></lumen-input></lumen-field>
+      <lumen-field><lumen-label id="team-email-label">Team email</lumen-label><lumen-input id="team-email" name="email" aria-labelledby="team-email-label" type="email" autocomplete="email"></lumen-input></lumen-field>
+    </lumen-stack>
+  </lumen-card-content>
+  <lumen-card-footer><lumen-button>Save preferences</lumen-button><lumen-button variant="secondary">Discard changes</lumen-button></lumen-card-footer>
+</lumen-card>

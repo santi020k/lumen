@@ -96,6 +96,15 @@ negative offsets and child padding for the same relationship. Stack/Grid also re
 external margins; custom unlayered CSS and documented Card variables can override defaults.
 Field spacing now uses the related token (8px). See [content flow](content-flow.md).
 
+Container side gutters now grow from 16px on a narrow phone to 32px on wider screens. Set
+`--ui-container-gutter: 1rem` on the Container to preserve a fixed gutter; `size="full"` is still
+edge-to-edge. Prose and Typography trim their first/last child margins and give headings more room
+above than below. Remove offsets that compensated for the old reading-block margins.
+
+Card no longer clips overflow. Move media clipping into AspectRatio, keeping Image `radius="none"`
+inside that rounded frame. Verify custom menus and focus rings rather than restoring card-wide
+clipping. Wrapping Stack actions now allow long labels to wrap inside their available width.
+
 Before publication, rollback is reverting this candidate commit or continuing to use released v3
 packages. After publication, use a new version for corrections; do not move published tags.
 

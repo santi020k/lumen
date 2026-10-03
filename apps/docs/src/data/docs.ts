@@ -2669,7 +2669,7 @@ const apiReferenceByComponent = {
       'as', '"article" | "div" | "main" | "section"', '"div"', 'Changes the semantic root.'
     ),
     apiRow(
-      'size', '"sm" | "md" | "lg" | "full"', '"lg"', 'Controls the maximum inline size.'
+      'size', '"sm" | "md" | "lg" | "full"', '"lg"', 'Controls the maximum inline size. Fluid side gutters grow from group to section spacing; full remains edge-to-edge.'
     )
   ],
   ErrorSummary: [
@@ -2769,7 +2769,7 @@ const apiReferenceByComponent = {
 const componentGuidanceByName: Partial<Record<string, ComponentGuidance>> = {
   Card: {
     when: 'Use for a distinct content surface. Card owns its inset and the gap between its visible parts; choose compact, comfortable or spacious density.',
-    distinction: 'Use Stack for unframed content groups. Use CardHeader, CardContent and CardFooter without extra external margins; nest Stack inside the body and let footer actions wrap.'
+    distinction: 'Use Stack for unframed content groups. Use CardHeader, CardContent and CardFooter without extra external margins; nest Stack inside the body and let footer actions wrap. Card permits interactive overflow; use AspectRatio for media clipping.'
   },
   Stack: {
     when: 'Use for a sequence of related content or controls. The parent owns sibling spacing; choose related, group or section gaps by content relationship.',

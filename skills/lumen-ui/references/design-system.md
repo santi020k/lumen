@@ -46,6 +46,11 @@ individually. Keep foreground/background contrast valid in both light and dark m
 
 ## Content flow
 
+- Retrieve complete content-flow-header/settings/list/actions recipes with lumen_get_recipe.
+  Container gutters grow from group to section spacing; avoid a second page padding.
+  Reading blocks trim outer child margins. Card allows overlays and focus to extend beyond its
+  border; use AspectRatio to clip media. Wire recipe actions and replace sample IDs for repeats.
+
 - Retrieve spacing and spacingRoles through `lumen_get_tokens` before choosing layout values.
 - Stack and Grid own sibling gaps; surfaces own padding; Field owns label/control/feedback spacing.
   Do not add child margins on top of a gap. Use related for closely related controls, group for

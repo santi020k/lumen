@@ -9,6 +9,7 @@ for (const theme of ['light', 'dark']) {
       await page.evaluate(value => { document.documentElement.dataset.theme = value }, theme)
 
       for (const id of ['astro-card', 'react-card', 'elements-card']) {
+        expect(await page.locator(`#${id}`).evaluate(card => getComputedStyle(card).overflow)).toBe('visible')
         const geometry = await page.locator(`#${id}`).evaluate(card => {
           const header = card.querySelector('[data-slot="card-header"]')
           const content = card.querySelector('[data-slot="card-content"]')

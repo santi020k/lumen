@@ -100,6 +100,58 @@ artwork in its own clipping frame so controls retain visible focus. Use Image `r
 when artwork sits flush against that frame. Keep responsive gutters in one outer Container;
 nesting Containers unnecessarily reduces available width.
 
+## Reading rhythm and page gutters
+
+Prose and Typography give headings more space above than below. Their first and last direct children
+have no external block margin, so a reading block fits naturally inside a Card or Stack. Keep the
+heading and its description in one Typography block; do not give each paragraph its own Card.
+Nested lists retain a smaller internal gap. Prose keeps its 65-character reading measure.
+
+Container uses `--ui-container-gutter: clamp(1rem, 4vw, 2rem)` through the group and section spacing
+tokens. At the default root, the side gutter is 16px at 320px, 24px at 600px, and 32px from 800px.
+The existing size limits still apply. `size="full"` intentionally remains edge-to-edge. Products
+can override `--ui-container-gutter` at the theme root or on an individual Container;
+avoid adding a second page padding. Rem bounds grow with enlarged text.
+
+## Clipping and overlays
+
+Card allows overflow so a focus ring or dropdown can extend beyond its border. Put artwork in
+AspectRatio, which owns rounded clipping, and use Image `radius="none"` inside it. A card-wide
+clipping rule can hide keyboard focus and menu options. If an existing consumer used Card to crop
+media, move that clipping to the media frame when upgrading.
+
+Dialog retains scrollable overflow for short viewports. TabsList retains horizontal scrolling for
+long labels. Accordion retains its disclosure clipping, with controls inset inside the content.
+These overflow rules serve different purposes; do not replace them with one global overflow rule.
+The regression fixture checks disclosure controls, menu escape and focus restoration, dialog
+scrolling, tab empty states and field errors at normal and enlarged text sizes.
+
+## Installable compositions
+
+The CLI provides complete starter compositions for all three web adapters:
+
+```bash
+lumen add content-flow-header --target astro
+lumen add content-flow-settings --target react
+lumen add content-flow-list --target elements
+lumen add content-flow-actions --target astro
+```
+
+Each recipe uses public components and semantic gaps. The header groups its title and description;
+settings separates field groups from surface insets; the list uses semantic list roles and wrapping
+rows; the action bar groups status and wrapping actions. Put them under one Container and a Stack
+with `gap="section"`. Use an Empty component when a dynamic list has no records.
+
+Elements Stack accepts `align`, `justify` and `wrap` attributes. Use `wrap` or `wrap="true"` to wrap;
+`wrap="false"` and removing the attribute disable wrapping. The alignment names match Astro and React.
+
+The examples are compositions, not persistence implementations. Connect save, discard, invite and
+activity actions to the application; wrap settings in the application's Form contract when it is
+submitted. Replace sample IDs when rendering multiple instances. In Elements, labels use explicit
+`aria-labelledby` references to the internal native controls. Keep input errors associated with
+`aria-describedby` and `aria-invalid`. The MCP `lumen_get_recipe` response includes the complete
+source for the selected framework, so agents can reuse the same examples installed by the CLI.
+
 ## AI and verification
 
 Retrieve `lumen_get_tokens` for spacing dimensions and roles, then read the selected component

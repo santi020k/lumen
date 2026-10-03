@@ -369,5 +369,5 @@ Licensed under [MIT](https://github.com/santi020k/lumen/blob/main/LICENSE); thir
 `lumen_get_tokens` returns `spacing` (canonical numeric pixel dimensions) and `spacingRoles`
 (aliases such as `related: "sm"`, `group: "lg"`, `section: "2xl"`, `inset: "xl"`). CSS uses rem.
 The readable result explains ownership and CSS variables; `lumen_search` also finds spacing roles.
-Snapshot schema 6 includes these fields. Read component contracts for supported gap and density
+Snapshot schema 7 includes these fields and complete framework recipe examples. Read component contracts for supported gap and density
 props; the inset token is for padding and is not a Stack/Grid gap prop.
