@@ -293,3 +293,7 @@ option buttons receive focus to use `aria-activedescendant` and `aria-selected` 
 activate an option; Enter commits it. Enter without an active option retains native form behavior.
 Nested controls consume their own Escape dismissal. Parent keyboard handlers should honor
 `event.defaultPrevented` before closing or moving focus. No persisted data migration is required.
+
+## V4 appearance configuration
+
+Named Default, Studio and Glass presets are opt-in; existing calls preserve their color defaults. See [appearance presets](appearance-presets.md). Rebuild Swift and Compose consumers for defaulted initializer changes. React Native numeric theme scales accept custom values without casts. Keep explicit foreground/background pairs readable and retain opaque material fallbacks. No application data migration is involved.

@@ -15,7 +15,8 @@ const allBudgets = [
   { file: 'packages/astro/runtime/controllers/dialogs.ts', gzip: 2_000, packageName: '@santi020k/lumen-astro', raw: 6_000 },
   { file: 'packages/astro/runtime/controllers/document-navigation.ts', gzip: 1_500, packageName: '@santi020k/lumen-astro', raw: 5_000 },
   { file: 'packages/astro/runtime/controllers/image-comparison.ts', gzip: 900, packageName: '@santi020k/lumen-astro', raw: 2_000 },
-  { file: 'packages/lumen/styles.css', gzip: 32_000, packageName: '@santi020k/lumen', raw: 190_000 },
+  // Appearance presets add 12.3 KiB raw / 1.3 KiB gzip to the reviewed v4 stylesheet.
+  { file: 'packages/lumen/styles.css', gzip: 33_000, packageName: '@santi020k/lumen', raw: 204_000 },
   { file: 'packages/react/dist/components.js', gzip: 35_000, packageName: '@santi020k/lumen-react', raw: 171_000 },
   { file: 'packages/react/dist/hooks.js', gzip: 20_000, packageName: '@santi020k/lumen-react', raw: 100_000 },
   { file: 'packages/elements/dist/define.js', gzip: 45_000, packageName: '@santi020k/lumen-elements', raw: 261_000 }

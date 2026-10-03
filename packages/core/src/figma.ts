@@ -106,6 +106,15 @@ const lumenTokenDescriptions = {
   'surface-muted': 'Subtle component surface.',
   'surface-strong': 'Raised or stronger component surface.',
   'ui-duration': 'Base transition duration for interactive states.',
+  'ui-border-width': 'Structural border width; focus indicators remain independent.',
+  'ui-space-zero': 'Zero spacing.',
+  'ui-space-xs': 'Extra small spacing.',
+  'ui-space-sm': 'Small spacing.',
+  'ui-space-md': 'Medium spacing.',
+  'ui-space-lg': 'Large spacing.',
+  'ui-space-xl': 'Extra large spacing.',
+  'ui-space-2xl': 'Section spacing.',
+  'ui-space-3xl': 'Large section spacing.',
   'ui-duration-fast': 'Fast transition duration for small state changes.',
   'ui-duration-slow': 'Slow transition duration for larger movements.',
   'ui-ease': 'Standard easing curve for interface motion.',
@@ -260,7 +269,7 @@ const getStructureDesignTokenType = (
 ): Exclude<LumenDesignTokenType, 'color'> => {
   if (token === 'ui-font') return 'fontFamily'
 
-  if (token.startsWith('ui-radius')) return 'dimension'
+  if (token.startsWith('ui-radius') || token.startsWith('ui-space') || token === 'ui-border-width') return 'dimension'
 
   if (token.startsWith('ui-shadow')) return 'shadow'
 

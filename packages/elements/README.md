@@ -60,6 +60,10 @@ The stylesheet defaults `--ui-font` to `"Montserrat", "Avenir Next", "Segoe UI",
 It declares the family stack but does not bundle or load font files. Load Montserrat once through
 your preferred delivery path, or override `--ui-font` in application CSS.
 
+## Appearance presets
+
+Wrap registered components in `data-lumen-preset="studio"`; ThemeBuilder preset buttons use `data-ui-theme-preset`. See [appearance presets](../../docs/appearance-presets.md).
+
 ## Usage
 
 Register the elements once per custom-element registry, then use `lumen-*` tags anywhere HTML is

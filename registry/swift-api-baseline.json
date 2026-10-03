@@ -23,6 +23,68 @@
           "precise": "s:7LumenUI08sanitizeA10PhoneInputyS2SF"
         },
         {
+          "declaration": "struct LumenAppearance",
+          "kind": "swift.struct",
+          "path": [
+            "LumenAppearance"
+          ],
+          "precise": "s:7LumenUI0A10AppearanceV"
+        },
+        {
+          "declaration": "let borderWidth: CGFloat",
+          "kind": "swift.property",
+          "path": [
+            "LumenAppearance",
+            "borderWidth"
+          ],
+          "precise": "s:7LumenUI0A10AppearanceV11borderWidth14CoreFoundation7CGFloatVvp"
+        },
+        {
+          "declaration": "init(radiusScale: CGFloat = 1, spacingScale: CGFloat = 1, borderWidth: CGFloat = 1, elevationScale: CGFloat = 1, material: LumenSurfaceMaterial = .solid)",
+          "kind": "swift.init",
+          "path": [
+            "LumenAppearance",
+            "init(radiusScale:spacingScale:borderWidth:elevationScale:material:)"
+          ],
+          "precise": "s:7LumenUI0A10AppearanceV11radiusScale07spacingE011borderWidth09elevationE08materialAC14CoreFoundation7CGFloatV_A3kA0A15SurfaceMaterialOtcfc"
+        },
+        {
+          "declaration": "let radiusScale: CGFloat",
+          "kind": "swift.property",
+          "path": [
+            "LumenAppearance",
+            "radiusScale"
+          ],
+          "precise": "s:7LumenUI0A10AppearanceV11radiusScale14CoreFoundation7CGFloatVvp"
+        },
+        {
+          "declaration": "let spacingScale: CGFloat",
+          "kind": "swift.property",
+          "path": [
+            "LumenAppearance",
+            "spacingScale"
+          ],
+          "precise": "s:7LumenUI0A10AppearanceV12spacingScale14CoreFoundation7CGFloatVvp"
+        },
+        {
+          "declaration": "let elevationScale: CGFloat",
+          "kind": "swift.property",
+          "path": [
+            "LumenAppearance",
+            "elevationScale"
+          ],
+          "precise": "s:7LumenUI0A10AppearanceV14elevationScale14CoreFoundation7CGFloatVvp"
+        },
+        {
+          "declaration": "let material: LumenSurfaceMaterial",
+          "kind": "swift.property",
+          "path": [
+            "LumenAppearance",
+            "material"
+          ],
+          "precise": "s:7LumenUI0A10AppearanceV8materialAA0A15SurfaceMaterialOvp"
+        },
+        {
           "declaration": "enum LumenAvatarSize",
           "kind": "swift.enum",
           "path": [
@@ -620,6 +682,59 @@
             "label"
           ],
           "precise": "s:7LumenUI0A10RangeDatumV5labelSSSgvp"
+        },
+        {
+          "declaration": "struct LumenTextStyles",
+          "kind": "swift.struct",
+          "path": [
+            "LumenTextStyles"
+          ],
+          "precise": "s:7LumenUI0A10TextStylesV"
+        },
+        {
+          "declaration": "let body: Font",
+          "kind": "swift.property",
+          "path": [
+            "LumenTextStyles",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A10TextStylesV4body05SwiftB04FontVvp"
+        },
+        {
+          "declaration": "init(body: Font = .body, caption: Font = .caption, label: Font = .callout.weight(.semibold), title: Font = .title2.weight(.bold))",
+          "kind": "swift.init",
+          "path": [
+            "LumenTextStyles",
+            "init(body:caption:label:title:)"
+          ],
+          "precise": "s:7LumenUI0A10TextStylesV4body7caption5label5titleAC05SwiftB04FontV_A3Jtcfc"
+        },
+        {
+          "declaration": "let label: Font",
+          "kind": "swift.property",
+          "path": [
+            "LumenTextStyles",
+            "label"
+          ],
+          "precise": "s:7LumenUI0A10TextStylesV5label05SwiftB04FontVvp"
+        },
+        {
+          "declaration": "let title: Font",
+          "kind": "swift.property",
+          "path": [
+            "LumenTextStyles",
+            "title"
+          ],
+          "precise": "s:7LumenUI0A10TextStylesV5title05SwiftB04FontVvp"
+        },
+        {
+          "declaration": "let caption: Font",
+          "kind": "swift.property",
+          "path": [
+            "LumenTextStyles",
+            "caption"
+          ],
+          "precise": "s:7LumenUI0A10TextStylesV7caption05SwiftB04FontVvp"
         },
         {
           "declaration": "enum LumenTypography",
@@ -1658,6 +1773,68 @@
           "precise": "s:7LumenUI0A11TextVariantO7captionyA2CmF"
         },
         {
+          "declaration": "enum LumenThemePreset",
+          "kind": "swift.enum",
+          "path": [
+            "LumenThemePreset"
+          ],
+          "precise": "s:7LumenUI0A11ThemePresetO"
+        },
+        {
+          "declaration": "var appearance: LumenAppearance { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenThemePreset",
+            "appearance"
+          ],
+          "precise": "s:7LumenUI0A11ThemePresetO10appearanceAA0A10AppearanceVvp"
+        },
+        {
+          "declaration": "case glass",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenThemePreset",
+            "glass"
+          ],
+          "precise": "s:7LumenUI0A11ThemePresetO5glassyA2CmF"
+        },
+        {
+          "declaration": "func colors(for scheme: LumenColorScheme) -> LumenColorPalette",
+          "kind": "swift.method",
+          "path": [
+            "LumenThemePreset",
+            "colors(for:)"
+          ],
+          "precise": "s:7LumenUI0A11ThemePresetO6colors3forAA0A12ColorPaletteVAA0aG6SchemeO_tF"
+        },
+        {
+          "declaration": "case studio",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenThemePreset",
+            "studio"
+          ],
+          "precise": "s:7LumenUI0A11ThemePresetO6studioyA2CmF"
+        },
+        {
+          "declaration": "case `default`",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenThemePreset",
+            "default"
+          ],
+          "precise": "s:7LumenUI0A11ThemePresetO7defaultyA2CmF"
+        },
+        {
+          "declaration": "init?(rawValue: String)",
+          "kind": "swift.init",
+          "path": [
+            "LumenThemePreset",
+            "init(rawValue:)"
+          ],
+          "precise": "s:7LumenUI0A11ThemePresetO8rawValueACSgSS_tcfc"
+        },
+        {
           "declaration": "enum LumenAlertVariant",
           "kind": "swift.enum",
           "path": [
@@ -2268,6 +2445,68 @@
             "flag"
           ],
           "precise": "s:7LumenUI0A12PhoneCountryV4flagSSvp"
+        },
+        {
+          "declaration": "enum LumenPresetColors",
+          "kind": "swift.enum",
+          "path": [
+            "LumenPresetColors"
+          ],
+          "precise": "s:7LumenUI0A12PresetColorsO"
+        },
+        {
+          "declaration": "static let glassLight: LumenColorPalette",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenPresetColors",
+            "glassLight"
+          ],
+          "precise": "s:7LumenUI0A12PresetColorsO10glassLightAA0A12ColorPaletteVvpZ"
+        },
+        {
+          "declaration": "static let studioDark: LumenColorPalette",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenPresetColors",
+            "studioDark"
+          ],
+          "precise": "s:7LumenUI0A12PresetColorsO10studioDarkAA0A12ColorPaletteVvpZ"
+        },
+        {
+          "declaration": "static let defaultDark: LumenColorPalette",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenPresetColors",
+            "defaultDark"
+          ],
+          "precise": "s:7LumenUI0A12PresetColorsO11defaultDarkAA0A12ColorPaletteVvpZ"
+        },
+        {
+          "declaration": "static let studioLight: LumenColorPalette",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenPresetColors",
+            "studioLight"
+          ],
+          "precise": "s:7LumenUI0A12PresetColorsO11studioLightAA0A12ColorPaletteVvpZ"
+        },
+        {
+          "declaration": "static let defaultLight: LumenColorPalette",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenPresetColors",
+            "defaultLight"
+          ],
+          "precise": "s:7LumenUI0A12PresetColorsO12defaultLightAA0A12ColorPaletteVvpZ"
+        },
+        {
+          "declaration": "static let glassDark: LumenColorPalette",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenPresetColors",
+            "glassDark"
+          ],
+          "precise": "s:7LumenUI0A12PresetColorsO9glassDarkAA0A12ColorPaletteVvpZ"
         },
         {
           "declaration": "@MainActor struct LumenScatterChart",
@@ -3358,6 +3597,32 @@
           "precise": "s:7LumenUI0A15SelectionOptionV5titleSSvp"
         },
         {
+          "declaration": "enum LumenSurfaceMaterial",
+          "kind": "swift.enum",
+          "path": [
+            "LumenSurfaceMaterial"
+          ],
+          "precise": "s:7LumenUI0A15SurfaceMaterialO"
+        },
+        {
+          "declaration": "case glass",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenSurfaceMaterial",
+            "glass"
+          ],
+          "precise": "s:7LumenUI0A15SurfaceMaterialO5glassyA2CmF"
+        },
+        {
+          "declaration": "case solid",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenSurfaceMaterial",
+            "solid"
+          ],
+          "precise": "s:7LumenUI0A15SurfaceMaterialO5solidyA2CmF"
+        },
+        {
           "declaration": "enum LumenEmptyStateLayout",
           "kind": "swift.enum",
           "path": [
@@ -4132,22 +4397,22 @@
           "precise": "s:7LumenUI0A4CardV4bodyQrvp"
         },
         {
-          "declaration": "@MainActor init(variant: LumenCardVariant = .default, action: (() -> Void)? = nil, @ViewBuilder content: () -> Content)",
+          "declaration": "@MainActor init(variant: LumenCardVariant = .default, action: (() -> Void)? = nil, material: LumenSurfaceMaterial = .solid, @ViewBuilder content: () -> Content)",
           "kind": "swift.init",
           "path": [
             "LumenCard",
-            "init(variant:action:content:)"
+            "init(variant:action:material:content:)"
           ],
-          "precise": "s:7LumenUI0A4CardV7variant6action7contentACyxGAA0aC7VariantO_yycSgxyXEtcfc"
+          "precise": "s:7LumenUI0A4CardV7variant6action8material7contentACyxGAA0aC7VariantO_yycSgAA0A15SurfaceMaterialOxyXEtcfc"
         },
         {
-          "declaration": "@MainActor init(variant: LumenCardVariant = .default, padding: LumenSurfacePadding, radius: LumenSurfaceRadius, action: (() -> Void)? = nil, @ViewBuilder content: () -> Content)",
+          "declaration": "@MainActor init(variant: LumenCardVariant = .default, padding: LumenSurfacePadding, radius: LumenSurfaceRadius, action: (() -> Void)? = nil, material: LumenSurfaceMaterial = .solid, @ViewBuilder content: () -> Content)",
           "kind": "swift.init",
           "path": [
             "LumenCard",
-            "init(variant:padding:radius:action:content:)"
+            "init(variant:padding:radius:action:material:content:)"
           ],
-          "precise": "s:7LumenUI0A4CardV7variant7padding6radius6action7contentACyxGAA0aC7VariantO_AA0A14SurfacePaddingOAA0aJ6RadiusOyycSgxyXEtcfc"
+          "precise": "s:7LumenUI0A4CardV7variant7padding6radius6action8material7contentACyxGAA0aC7VariantO_AA0A14SurfacePaddingOAA0aK6RadiusOyycSgAA0aK8MaterialOxyXEtcfc"
         },
         {
           "declaration": "@MainActor struct LumenChip",
@@ -4516,6 +4781,24 @@
           "precise": "s:7LumenUI0A5ThemeV"
         },
         {
+          "declaration": "let appearance: LumenAppearance",
+          "kind": "swift.property",
+          "path": [
+            "LumenTheme",
+            "appearance"
+          ],
+          "precise": "s:7LumenUI0A5ThemeV10appearanceAA0A10AppearanceVvp"
+        },
+        {
+          "declaration": "let textStyles: LumenTextStyles",
+          "kind": "swift.property",
+          "path": [
+            "LumenTheme",
+            "textStyles"
+          ],
+          "precise": "s:7LumenUI0A5ThemeV10textStylesAA0a4TextE0Vvp"
+        },
+        {
           "declaration": "static let dark: LumenTheme",
           "kind": "swift.type.property",
           "path": [
@@ -4534,13 +4817,13 @@
           "precise": "s:7LumenUI0A5ThemeV5lightACvpZ"
         },
         {
-          "declaration": "init(colors: LumenColorPalette, scheme: LumenColorScheme)",
+          "declaration": "init(colors: LumenColorPalette, scheme: LumenColorScheme, appearance: LumenAppearance = LumenAppearance(), textStyles: LumenTextStyles = LumenTextStyles())",
           "kind": "swift.init",
           "path": [
             "LumenTheme",
-            "init(colors:scheme:)"
+            "init(colors:scheme:appearance:textStyles:)"
           ],
-          "precise": "s:7LumenUI0A5ThemeV6colors6schemeAcA0A12ColorPaletteV_AA0aF6SchemeOtcfc"
+          "precise": "s:7LumenUI0A5ThemeV6colors6scheme10appearance10textStylesAcA0A12ColorPaletteV_AA0aI6SchemeOAA0A10AppearanceVAA0a4TextH0Vtcfc"
         },
         {
           "declaration": "let colors: LumenColorPalette",
@@ -4550,6 +4833,15 @@
             "colors"
           ],
           "precise": "s:7LumenUI0A5ThemeV6colorsAA0A12ColorPaletteVvp"
+        },
+        {
+          "declaration": "init(preset: LumenThemePreset, scheme: LumenColorScheme, appearance: LumenAppearance? = nil, textStyles: LumenTextStyles = LumenTextStyles())",
+          "kind": "swift.init",
+          "path": [
+            "LumenTheme",
+            "init(preset:scheme:appearance:textStyles:)"
+          ],
+          "precise": "s:7LumenUI0A5ThemeV6preset6scheme10appearance10textStylesAcA0aC6PresetO_AA0A11ColorSchemeOAA0A10AppearanceVSgAA0a4TextH0Vtcfc"
         },
         {
           "declaration": "let scheme: LumenColorScheme",
@@ -5308,13 +5600,13 @@
           "precise": "s:7LumenUI0A7SurfaceV4bodyQrvp"
         },
         {
-          "declaration": "@MainActor init(tone: LumenSurfaceTone = .surface, padding: LumenSurfacePadding = .md, radius: LumenSurfaceRadius = .md, @ViewBuilder content: () -> Content)",
+          "declaration": "@MainActor init(tone: LumenSurfaceTone = .surface, padding: LumenSurfacePadding = .md, radius: LumenSurfaceRadius = .md, material: LumenSurfaceMaterial = .solid, @ViewBuilder content: () -> Content)",
           "kind": "swift.init",
           "path": [
             "LumenSurface",
-            "init(tone:padding:radius:content:)"
+            "init(tone:padding:radius:material:content:)"
           ],
-          "precise": "s:7LumenUI0A7SurfaceV4tone7padding6radius7contentACyxGAA0aC4ToneO_AA0aC7PaddingOAA0aC6RadiusOxyXEtcfc"
+          "precise": "s:7LumenUI0A7SurfaceV4tone7padding6radius8material7contentACyxGAA0aC4ToneO_AA0aC7PaddingOAA0aC6RadiusOAA0aC8MaterialOxyXEtcfc"
         },
         {
           "declaration": "@MainActor struct LumenBackdrop<Content> where Content : View",
@@ -28393,6 +28685,68 @@
           "precise": "s:7LumenUI08sanitizeA10PhoneInputyS2SF"
         },
         {
+          "declaration": "struct LumenAppearance",
+          "kind": "swift.struct",
+          "path": [
+            "LumenAppearance"
+          ],
+          "precise": "s:7LumenUI0A10AppearanceV"
+        },
+        {
+          "declaration": "let borderWidth: CGFloat",
+          "kind": "swift.property",
+          "path": [
+            "LumenAppearance",
+            "borderWidth"
+          ],
+          "precise": "s:7LumenUI0A10AppearanceV11borderWidth14CoreFoundation7CGFloatVvp"
+        },
+        {
+          "declaration": "init(radiusScale: CGFloat = 1, spacingScale: CGFloat = 1, borderWidth: CGFloat = 1, elevationScale: CGFloat = 1, material: LumenSurfaceMaterial = .solid)",
+          "kind": "swift.init",
+          "path": [
+            "LumenAppearance",
+            "init(radiusScale:spacingScale:borderWidth:elevationScale:material:)"
+          ],
+          "precise": "s:7LumenUI0A10AppearanceV11radiusScale07spacingE011borderWidth09elevationE08materialAC14CoreFoundation7CGFloatV_A3kA0A15SurfaceMaterialOtcfc"
+        },
+        {
+          "declaration": "let radiusScale: CGFloat",
+          "kind": "swift.property",
+          "path": [
+            "LumenAppearance",
+            "radiusScale"
+          ],
+          "precise": "s:7LumenUI0A10AppearanceV11radiusScale14CoreFoundation7CGFloatVvp"
+        },
+        {
+          "declaration": "let spacingScale: CGFloat",
+          "kind": "swift.property",
+          "path": [
+            "LumenAppearance",
+            "spacingScale"
+          ],
+          "precise": "s:7LumenUI0A10AppearanceV12spacingScale14CoreFoundation7CGFloatVvp"
+        },
+        {
+          "declaration": "let elevationScale: CGFloat",
+          "kind": "swift.property",
+          "path": [
+            "LumenAppearance",
+            "elevationScale"
+          ],
+          "precise": "s:7LumenUI0A10AppearanceV14elevationScale14CoreFoundation7CGFloatVvp"
+        },
+        {
+          "declaration": "let material: LumenSurfaceMaterial",
+          "kind": "swift.property",
+          "path": [
+            "LumenAppearance",
+            "material"
+          ],
+          "precise": "s:7LumenUI0A10AppearanceV8materialAA0A15SurfaceMaterialOvp"
+        },
+        {
           "declaration": "enum LumenAvatarSize",
           "kind": "swift.enum",
           "path": [
@@ -28990,6 +29344,59 @@
             "label"
           ],
           "precise": "s:7LumenUI0A10RangeDatumV5labelSSSgvp"
+        },
+        {
+          "declaration": "struct LumenTextStyles",
+          "kind": "swift.struct",
+          "path": [
+            "LumenTextStyles"
+          ],
+          "precise": "s:7LumenUI0A10TextStylesV"
+        },
+        {
+          "declaration": "let body: Font",
+          "kind": "swift.property",
+          "path": [
+            "LumenTextStyles",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A10TextStylesV4body05SwiftB04FontVvp"
+        },
+        {
+          "declaration": "init(body: Font = .body, caption: Font = .caption, label: Font = .callout.weight(.semibold), title: Font = .title2.weight(.bold))",
+          "kind": "swift.init",
+          "path": [
+            "LumenTextStyles",
+            "init(body:caption:label:title:)"
+          ],
+          "precise": "s:7LumenUI0A10TextStylesV4body7caption5label5titleAC05SwiftB04FontV_A3Jtcfc"
+        },
+        {
+          "declaration": "let label: Font",
+          "kind": "swift.property",
+          "path": [
+            "LumenTextStyles",
+            "label"
+          ],
+          "precise": "s:7LumenUI0A10TextStylesV5label05SwiftB04FontVvp"
+        },
+        {
+          "declaration": "let title: Font",
+          "kind": "swift.property",
+          "path": [
+            "LumenTextStyles",
+            "title"
+          ],
+          "precise": "s:7LumenUI0A10TextStylesV5title05SwiftB04FontVvp"
+        },
+        {
+          "declaration": "let caption: Font",
+          "kind": "swift.property",
+          "path": [
+            "LumenTextStyles",
+            "caption"
+          ],
+          "precise": "s:7LumenUI0A10TextStylesV7caption05SwiftB04FontVvp"
         },
         {
           "declaration": "enum LumenTypography",
@@ -30028,6 +30435,68 @@
           "precise": "s:7LumenUI0A11TextVariantO7captionyA2CmF"
         },
         {
+          "declaration": "enum LumenThemePreset",
+          "kind": "swift.enum",
+          "path": [
+            "LumenThemePreset"
+          ],
+          "precise": "s:7LumenUI0A11ThemePresetO"
+        },
+        {
+          "declaration": "var appearance: LumenAppearance { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenThemePreset",
+            "appearance"
+          ],
+          "precise": "s:7LumenUI0A11ThemePresetO10appearanceAA0A10AppearanceVvp"
+        },
+        {
+          "declaration": "case glass",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenThemePreset",
+            "glass"
+          ],
+          "precise": "s:7LumenUI0A11ThemePresetO5glassyA2CmF"
+        },
+        {
+          "declaration": "func colors(for scheme: LumenColorScheme) -> LumenColorPalette",
+          "kind": "swift.method",
+          "path": [
+            "LumenThemePreset",
+            "colors(for:)"
+          ],
+          "precise": "s:7LumenUI0A11ThemePresetO6colors3forAA0A12ColorPaletteVAA0aG6SchemeO_tF"
+        },
+        {
+          "declaration": "case studio",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenThemePreset",
+            "studio"
+          ],
+          "precise": "s:7LumenUI0A11ThemePresetO6studioyA2CmF"
+        },
+        {
+          "declaration": "case `default`",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenThemePreset",
+            "default"
+          ],
+          "precise": "s:7LumenUI0A11ThemePresetO7defaultyA2CmF"
+        },
+        {
+          "declaration": "init?(rawValue: String)",
+          "kind": "swift.init",
+          "path": [
+            "LumenThemePreset",
+            "init(rawValue:)"
+          ],
+          "precise": "s:7LumenUI0A11ThemePresetO8rawValueACSgSS_tcfc"
+        },
+        {
           "declaration": "enum LumenAlertVariant",
           "kind": "swift.enum",
           "path": [
@@ -30638,6 +31107,68 @@
             "flag"
           ],
           "precise": "s:7LumenUI0A12PhoneCountryV4flagSSvp"
+        },
+        {
+          "declaration": "enum LumenPresetColors",
+          "kind": "swift.enum",
+          "path": [
+            "LumenPresetColors"
+          ],
+          "precise": "s:7LumenUI0A12PresetColorsO"
+        },
+        {
+          "declaration": "static let glassLight: LumenColorPalette",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenPresetColors",
+            "glassLight"
+          ],
+          "precise": "s:7LumenUI0A12PresetColorsO10glassLightAA0A12ColorPaletteVvpZ"
+        },
+        {
+          "declaration": "static let studioDark: LumenColorPalette",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenPresetColors",
+            "studioDark"
+          ],
+          "precise": "s:7LumenUI0A12PresetColorsO10studioDarkAA0A12ColorPaletteVvpZ"
+        },
+        {
+          "declaration": "static let defaultDark: LumenColorPalette",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenPresetColors",
+            "defaultDark"
+          ],
+          "precise": "s:7LumenUI0A12PresetColorsO11defaultDarkAA0A12ColorPaletteVvpZ"
+        },
+        {
+          "declaration": "static let studioLight: LumenColorPalette",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenPresetColors",
+            "studioLight"
+          ],
+          "precise": "s:7LumenUI0A12PresetColorsO11studioLightAA0A12ColorPaletteVvpZ"
+        },
+        {
+          "declaration": "static let defaultLight: LumenColorPalette",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenPresetColors",
+            "defaultLight"
+          ],
+          "precise": "s:7LumenUI0A12PresetColorsO12defaultLightAA0A12ColorPaletteVvpZ"
+        },
+        {
+          "declaration": "static let glassDark: LumenColorPalette",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenPresetColors",
+            "glassDark"
+          ],
+          "precise": "s:7LumenUI0A12PresetColorsO9glassDarkAA0A12ColorPaletteVvpZ"
         },
         {
           "declaration": "@MainActor struct LumenScatterChart",
@@ -31640,6 +32171,32 @@
           "precise": "s:7LumenUI0A15SelectionOptionV5titleSSvp"
         },
         {
+          "declaration": "enum LumenSurfaceMaterial",
+          "kind": "swift.enum",
+          "path": [
+            "LumenSurfaceMaterial"
+          ],
+          "precise": "s:7LumenUI0A15SurfaceMaterialO"
+        },
+        {
+          "declaration": "case glass",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenSurfaceMaterial",
+            "glass"
+          ],
+          "precise": "s:7LumenUI0A15SurfaceMaterialO5glassyA2CmF"
+        },
+        {
+          "declaration": "case solid",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenSurfaceMaterial",
+            "solid"
+          ],
+          "precise": "s:7LumenUI0A15SurfaceMaterialO5solidyA2CmF"
+        },
+        {
           "declaration": "enum LumenEmptyStateLayout",
           "kind": "swift.enum",
           "path": [
@@ -32362,22 +32919,22 @@
           "precise": "s:7LumenUI0A4CardV4bodyQrvp"
         },
         {
-          "declaration": "@MainActor init(variant: LumenCardVariant = .default, action: (() -> Void)? = nil, @ViewBuilder content: () -> Content)",
+          "declaration": "@MainActor init(variant: LumenCardVariant = .default, action: (() -> Void)? = nil, material: LumenSurfaceMaterial = .solid, @ViewBuilder content: () -> Content)",
           "kind": "swift.init",
           "path": [
             "LumenCard",
-            "init(variant:action:content:)"
+            "init(variant:action:material:content:)"
           ],
-          "precise": "s:7LumenUI0A4CardV7variant6action7contentACyxGAA0aC7VariantO_yycSgxyXEtcfc"
+          "precise": "s:7LumenUI0A4CardV7variant6action8material7contentACyxGAA0aC7VariantO_yycSgAA0A15SurfaceMaterialOxyXEtcfc"
         },
         {
-          "declaration": "@MainActor init(variant: LumenCardVariant = .default, padding: LumenSurfacePadding, radius: LumenSurfaceRadius, action: (() -> Void)? = nil, @ViewBuilder content: () -> Content)",
+          "declaration": "@MainActor init(variant: LumenCardVariant = .default, padding: LumenSurfacePadding, radius: LumenSurfaceRadius, action: (() -> Void)? = nil, material: LumenSurfaceMaterial = .solid, @ViewBuilder content: () -> Content)",
           "kind": "swift.init",
           "path": [
             "LumenCard",
-            "init(variant:padding:radius:action:content:)"
+            "init(variant:padding:radius:action:material:content:)"
           ],
-          "precise": "s:7LumenUI0A4CardV7variant7padding6radius6action7contentACyxGAA0aC7VariantO_AA0A14SurfacePaddingOAA0aJ6RadiusOyycSgxyXEtcfc"
+          "precise": "s:7LumenUI0A4CardV7variant7padding6radius6action8material7contentACyxGAA0aC7VariantO_AA0A14SurfacePaddingOAA0aK6RadiusOyycSgAA0aK8MaterialOxyXEtcfc"
         },
         {
           "declaration": "@MainActor struct LumenChip",
@@ -32746,6 +33303,24 @@
           "precise": "s:7LumenUI0A5ThemeV"
         },
         {
+          "declaration": "let appearance: LumenAppearance",
+          "kind": "swift.property",
+          "path": [
+            "LumenTheme",
+            "appearance"
+          ],
+          "precise": "s:7LumenUI0A5ThemeV10appearanceAA0A10AppearanceVvp"
+        },
+        {
+          "declaration": "let textStyles: LumenTextStyles",
+          "kind": "swift.property",
+          "path": [
+            "LumenTheme",
+            "textStyles"
+          ],
+          "precise": "s:7LumenUI0A5ThemeV10textStylesAA0a4TextE0Vvp"
+        },
+        {
           "declaration": "static let dark: LumenTheme",
           "kind": "swift.type.property",
           "path": [
@@ -32764,13 +33339,13 @@
           "precise": "s:7LumenUI0A5ThemeV5lightACvpZ"
         },
         {
-          "declaration": "init(colors: LumenColorPalette, scheme: LumenColorScheme)",
+          "declaration": "init(colors: LumenColorPalette, scheme: LumenColorScheme, appearance: LumenAppearance = LumenAppearance(), textStyles: LumenTextStyles = LumenTextStyles())",
           "kind": "swift.init",
           "path": [
             "LumenTheme",
-            "init(colors:scheme:)"
+            "init(colors:scheme:appearance:textStyles:)"
           ],
-          "precise": "s:7LumenUI0A5ThemeV6colors6schemeAcA0A12ColorPaletteV_AA0aF6SchemeOtcfc"
+          "precise": "s:7LumenUI0A5ThemeV6colors6scheme10appearance10textStylesAcA0A12ColorPaletteV_AA0aI6SchemeOAA0A10AppearanceVAA0a4TextH0Vtcfc"
         },
         {
           "declaration": "let colors: LumenColorPalette",
@@ -32780,6 +33355,15 @@
             "colors"
           ],
           "precise": "s:7LumenUI0A5ThemeV6colorsAA0A12ColorPaletteVvp"
+        },
+        {
+          "declaration": "init(preset: LumenThemePreset, scheme: LumenColorScheme, appearance: LumenAppearance? = nil, textStyles: LumenTextStyles = LumenTextStyles())",
+          "kind": "swift.init",
+          "path": [
+            "LumenTheme",
+            "init(preset:scheme:appearance:textStyles:)"
+          ],
+          "precise": "s:7LumenUI0A5ThemeV6preset6scheme10appearance10textStylesAcA0aC6PresetO_AA0A11ColorSchemeOAA0A10AppearanceVSgAA0a4TextH0Vtcfc"
         },
         {
           "declaration": "let scheme: LumenColorScheme",
@@ -33538,13 +34122,13 @@
           "precise": "s:7LumenUI0A7SurfaceV4bodyQrvp"
         },
         {
-          "declaration": "@MainActor init(tone: LumenSurfaceTone = .surface, padding: LumenSurfacePadding = .md, radius: LumenSurfaceRadius = .md, @ViewBuilder content: () -> Content)",
+          "declaration": "@MainActor init(tone: LumenSurfaceTone = .surface, padding: LumenSurfacePadding = .md, radius: LumenSurfaceRadius = .md, material: LumenSurfaceMaterial = .solid, @ViewBuilder content: () -> Content)",
           "kind": "swift.init",
           "path": [
             "LumenSurface",
-            "init(tone:padding:radius:content:)"
+            "init(tone:padding:radius:material:content:)"
           ],
-          "precise": "s:7LumenUI0A7SurfaceV4tone7padding6radius7contentACyxGAA0aC4ToneO_AA0aC7PaddingOAA0aC6RadiusOxyXEtcfc"
+          "precise": "s:7LumenUI0A7SurfaceV4tone7padding6radius8material7contentACyxGAA0aC4ToneO_AA0aC7PaddingOAA0aC6RadiusOAA0aC8MaterialOxyXEtcfc"
         },
         {
           "declaration": "@MainActor struct LumenBackdrop<Content> where Content : View",
@@ -56545,6 +57129,68 @@
       "minimumVersion": "16",
       "supported": [
         {
+          "declaration": "struct LumenAppearance",
+          "kind": "swift.struct",
+          "path": [
+            "LumenAppearance"
+          ],
+          "precise": "s:7LumenUI0A10AppearanceV"
+        },
+        {
+          "declaration": "let borderWidth: CGFloat",
+          "kind": "swift.property",
+          "path": [
+            "LumenAppearance",
+            "borderWidth"
+          ],
+          "precise": "s:7LumenUI0A10AppearanceV11borderWidth14CoreFoundation7CGFloatVvp"
+        },
+        {
+          "declaration": "init(radiusScale: CGFloat = 1, spacingScale: CGFloat = 1, borderWidth: CGFloat = 1, elevationScale: CGFloat = 1, material: LumenSurfaceMaterial = .solid)",
+          "kind": "swift.init",
+          "path": [
+            "LumenAppearance",
+            "init(radiusScale:spacingScale:borderWidth:elevationScale:material:)"
+          ],
+          "precise": "s:7LumenUI0A10AppearanceV11radiusScale07spacingE011borderWidth09elevationE08materialAC14CoreFoundation7CGFloatV_A3kA0A15SurfaceMaterialOtcfc"
+        },
+        {
+          "declaration": "let radiusScale: CGFloat",
+          "kind": "swift.property",
+          "path": [
+            "LumenAppearance",
+            "radiusScale"
+          ],
+          "precise": "s:7LumenUI0A10AppearanceV11radiusScale14CoreFoundation7CGFloatVvp"
+        },
+        {
+          "declaration": "let spacingScale: CGFloat",
+          "kind": "swift.property",
+          "path": [
+            "LumenAppearance",
+            "spacingScale"
+          ],
+          "precise": "s:7LumenUI0A10AppearanceV12spacingScale14CoreFoundation7CGFloatVvp"
+        },
+        {
+          "declaration": "let elevationScale: CGFloat",
+          "kind": "swift.property",
+          "path": [
+            "LumenAppearance",
+            "elevationScale"
+          ],
+          "precise": "s:7LumenUI0A10AppearanceV14elevationScale14CoreFoundation7CGFloatVvp"
+        },
+        {
+          "declaration": "let material: LumenSurfaceMaterial",
+          "kind": "swift.property",
+          "path": [
+            "LumenAppearance",
+            "material"
+          ],
+          "precise": "s:7LumenUI0A10AppearanceV8materialAA0A15SurfaceMaterialOvp"
+        },
+        {
           "declaration": "enum LumenAvatarSize",
           "kind": "swift.enum",
           "path": [
@@ -57019,6 +57665,59 @@
             "label"
           ],
           "precise": "s:7LumenUI0A10RangeDatumV5labelSSSgvp"
+        },
+        {
+          "declaration": "struct LumenTextStyles",
+          "kind": "swift.struct",
+          "path": [
+            "LumenTextStyles"
+          ],
+          "precise": "s:7LumenUI0A10TextStylesV"
+        },
+        {
+          "declaration": "let body: Font",
+          "kind": "swift.property",
+          "path": [
+            "LumenTextStyles",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A10TextStylesV4body05SwiftB04FontVvp"
+        },
+        {
+          "declaration": "init(body: Font = .body, caption: Font = .caption, label: Font = .callout.weight(.semibold), title: Font = .title2.weight(.bold))",
+          "kind": "swift.init",
+          "path": [
+            "LumenTextStyles",
+            "init(body:caption:label:title:)"
+          ],
+          "precise": "s:7LumenUI0A10TextStylesV4body7caption5label5titleAC05SwiftB04FontV_A3Jtcfc"
+        },
+        {
+          "declaration": "let label: Font",
+          "kind": "swift.property",
+          "path": [
+            "LumenTextStyles",
+            "label"
+          ],
+          "precise": "s:7LumenUI0A10TextStylesV5label05SwiftB04FontVvp"
+        },
+        {
+          "declaration": "let title: Font",
+          "kind": "swift.property",
+          "path": [
+            "LumenTextStyles",
+            "title"
+          ],
+          "precise": "s:7LumenUI0A10TextStylesV5title05SwiftB04FontVvp"
+        },
+        {
+          "declaration": "let caption: Font",
+          "kind": "swift.property",
+          "path": [
+            "LumenTextStyles",
+            "caption"
+          ],
+          "precise": "s:7LumenUI0A10TextStylesV7caption05SwiftB04FontVvp"
         },
         {
           "declaration": "enum LumenTypography",
@@ -57744,6 +58443,68 @@
           "precise": "s:7LumenUI0A11TextVariantO7captionyA2CmF"
         },
         {
+          "declaration": "enum LumenThemePreset",
+          "kind": "swift.enum",
+          "path": [
+            "LumenThemePreset"
+          ],
+          "precise": "s:7LumenUI0A11ThemePresetO"
+        },
+        {
+          "declaration": "var appearance: LumenAppearance { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenThemePreset",
+            "appearance"
+          ],
+          "precise": "s:7LumenUI0A11ThemePresetO10appearanceAA0A10AppearanceVvp"
+        },
+        {
+          "declaration": "case glass",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenThemePreset",
+            "glass"
+          ],
+          "precise": "s:7LumenUI0A11ThemePresetO5glassyA2CmF"
+        },
+        {
+          "declaration": "func colors(for scheme: LumenColorScheme) -> LumenColorPalette",
+          "kind": "swift.method",
+          "path": [
+            "LumenThemePreset",
+            "colors(for:)"
+          ],
+          "precise": "s:7LumenUI0A11ThemePresetO6colors3forAA0A12ColorPaletteVAA0aG6SchemeO_tF"
+        },
+        {
+          "declaration": "case studio",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenThemePreset",
+            "studio"
+          ],
+          "precise": "s:7LumenUI0A11ThemePresetO6studioyA2CmF"
+        },
+        {
+          "declaration": "case `default`",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenThemePreset",
+            "default"
+          ],
+          "precise": "s:7LumenUI0A11ThemePresetO7defaultyA2CmF"
+        },
+        {
+          "declaration": "init?(rawValue: String)",
+          "kind": "swift.init",
+          "path": [
+            "LumenThemePreset",
+            "init(rawValue:)"
+          ],
+          "precise": "s:7LumenUI0A11ThemePresetO8rawValueACSgSS_tcfc"
+        },
+        {
           "declaration": "enum LumenAlertVariant",
           "kind": "swift.enum",
           "path": [
@@ -58222,6 +58983,68 @@
             "column"
           ],
           "precise": "s:7LumenUI0A12HeatmapDatumV6columnSSvp"
+        },
+        {
+          "declaration": "enum LumenPresetColors",
+          "kind": "swift.enum",
+          "path": [
+            "LumenPresetColors"
+          ],
+          "precise": "s:7LumenUI0A12PresetColorsO"
+        },
+        {
+          "declaration": "static let glassLight: LumenColorPalette",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenPresetColors",
+            "glassLight"
+          ],
+          "precise": "s:7LumenUI0A12PresetColorsO10glassLightAA0A12ColorPaletteVvpZ"
+        },
+        {
+          "declaration": "static let studioDark: LumenColorPalette",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenPresetColors",
+            "studioDark"
+          ],
+          "precise": "s:7LumenUI0A12PresetColorsO10studioDarkAA0A12ColorPaletteVvpZ"
+        },
+        {
+          "declaration": "static let defaultDark: LumenColorPalette",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenPresetColors",
+            "defaultDark"
+          ],
+          "precise": "s:7LumenUI0A12PresetColorsO11defaultDarkAA0A12ColorPaletteVvpZ"
+        },
+        {
+          "declaration": "static let studioLight: LumenColorPalette",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenPresetColors",
+            "studioLight"
+          ],
+          "precise": "s:7LumenUI0A12PresetColorsO11studioLightAA0A12ColorPaletteVvpZ"
+        },
+        {
+          "declaration": "static let defaultLight: LumenColorPalette",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenPresetColors",
+            "defaultLight"
+          ],
+          "precise": "s:7LumenUI0A12PresetColorsO12defaultLightAA0A12ColorPaletteVvpZ"
+        },
+        {
+          "declaration": "static let glassDark: LumenColorPalette",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenPresetColors",
+            "glassDark"
+          ],
+          "precise": "s:7LumenUI0A12PresetColorsO9glassDarkAA0A12ColorPaletteVvpZ"
         },
         {
           "declaration": "@MainActor struct LumenScatterChart",
@@ -58926,6 +59749,32 @@
           "precise": "s:7LumenUI0A15PieChartVariantO5donutyA2CmF"
         },
         {
+          "declaration": "enum LumenSurfaceMaterial",
+          "kind": "swift.enum",
+          "path": [
+            "LumenSurfaceMaterial"
+          ],
+          "precise": "s:7LumenUI0A15SurfaceMaterialO"
+        },
+        {
+          "declaration": "case glass",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenSurfaceMaterial",
+            "glass"
+          ],
+          "precise": "s:7LumenUI0A15SurfaceMaterialO5glassyA2CmF"
+        },
+        {
+          "declaration": "case solid",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenSurfaceMaterial",
+            "solid"
+          ],
+          "precise": "s:7LumenUI0A15SurfaceMaterialO5solidyA2CmF"
+        },
+        {
           "declaration": "enum LumenEmptyStateLayout",
           "kind": "swift.enum",
           "path": [
@@ -59394,22 +60243,22 @@
           "precise": "s:7LumenUI0A4CardV4bodyQrvp"
         },
         {
-          "declaration": "@MainActor init(variant: LumenCardVariant = .default, action: (() -> Void)? = nil, @ViewBuilder content: () -> Content)",
+          "declaration": "@MainActor init(variant: LumenCardVariant = .default, action: (() -> Void)? = nil, material: LumenSurfaceMaterial = .solid, @ViewBuilder content: () -> Content)",
           "kind": "swift.init",
           "path": [
             "LumenCard",
-            "init(variant:action:content:)"
+            "init(variant:action:material:content:)"
           ],
-          "precise": "s:7LumenUI0A4CardV7variant6action7contentACyxGAA0aC7VariantO_yycSgxyXEtcfc"
+          "precise": "s:7LumenUI0A4CardV7variant6action8material7contentACyxGAA0aC7VariantO_yycSgAA0A15SurfaceMaterialOxyXEtcfc"
         },
         {
-          "declaration": "@MainActor init(variant: LumenCardVariant = .default, padding: LumenSurfacePadding, radius: LumenSurfaceRadius, action: (() -> Void)? = nil, @ViewBuilder content: () -> Content)",
+          "declaration": "@MainActor init(variant: LumenCardVariant = .default, padding: LumenSurfacePadding, radius: LumenSurfaceRadius, action: (() -> Void)? = nil, material: LumenSurfaceMaterial = .solid, @ViewBuilder content: () -> Content)",
           "kind": "swift.init",
           "path": [
             "LumenCard",
-            "init(variant:padding:radius:action:content:)"
+            "init(variant:padding:radius:action:material:content:)"
           ],
-          "precise": "s:7LumenUI0A4CardV7variant7padding6radius6action7contentACyxGAA0aC7VariantO_AA0A14SurfacePaddingOAA0aJ6RadiusOyycSgxyXEtcfc"
+          "precise": "s:7LumenUI0A4CardV7variant7padding6radius6action8material7contentACyxGAA0aC7VariantO_AA0A14SurfacePaddingOAA0aK6RadiusOyycSgAA0aK8MaterialOxyXEtcfc"
         },
         {
           "declaration": "@MainActor struct LumenChip",
@@ -59717,6 +60566,24 @@
           "precise": "s:7LumenUI0A5ThemeV"
         },
         {
+          "declaration": "let appearance: LumenAppearance",
+          "kind": "swift.property",
+          "path": [
+            "LumenTheme",
+            "appearance"
+          ],
+          "precise": "s:7LumenUI0A5ThemeV10appearanceAA0A10AppearanceVvp"
+        },
+        {
+          "declaration": "let textStyles: LumenTextStyles",
+          "kind": "swift.property",
+          "path": [
+            "LumenTheme",
+            "textStyles"
+          ],
+          "precise": "s:7LumenUI0A5ThemeV10textStylesAA0a4TextE0Vvp"
+        },
+        {
           "declaration": "static let dark: LumenTheme",
           "kind": "swift.type.property",
           "path": [
@@ -59735,13 +60602,13 @@
           "precise": "s:7LumenUI0A5ThemeV5lightACvpZ"
         },
         {
-          "declaration": "init(colors: LumenColorPalette, scheme: LumenColorScheme)",
+          "declaration": "init(colors: LumenColorPalette, scheme: LumenColorScheme, appearance: LumenAppearance = LumenAppearance(), textStyles: LumenTextStyles = LumenTextStyles())",
           "kind": "swift.init",
           "path": [
             "LumenTheme",
-            "init(colors:scheme:)"
+            "init(colors:scheme:appearance:textStyles:)"
           ],
-          "precise": "s:7LumenUI0A5ThemeV6colors6schemeAcA0A12ColorPaletteV_AA0aF6SchemeOtcfc"
+          "precise": "s:7LumenUI0A5ThemeV6colors6scheme10appearance10textStylesAcA0A12ColorPaletteV_AA0aI6SchemeOAA0A10AppearanceVAA0a4TextH0Vtcfc"
         },
         {
           "declaration": "let colors: LumenColorPalette",
@@ -59751,6 +60618,15 @@
             "colors"
           ],
           "precise": "s:7LumenUI0A5ThemeV6colorsAA0A12ColorPaletteVvp"
+        },
+        {
+          "declaration": "init(preset: LumenThemePreset, scheme: LumenColorScheme, appearance: LumenAppearance? = nil, textStyles: LumenTextStyles = LumenTextStyles())",
+          "kind": "swift.init",
+          "path": [
+            "LumenTheme",
+            "init(preset:scheme:appearance:textStyles:)"
+          ],
+          "precise": "s:7LumenUI0A5ThemeV6preset6scheme10appearance10textStylesAcA0aC6PresetO_AA0A11ColorSchemeOAA0A10AppearanceVSgAA0a4TextH0Vtcfc"
         },
         {
           "declaration": "let scheme: LumenColorScheme",
@@ -60378,13 +61254,13 @@
           "precise": "s:7LumenUI0A7SurfaceV4bodyQrvp"
         },
         {
-          "declaration": "@MainActor init(tone: LumenSurfaceTone = .surface, padding: LumenSurfacePadding = .md, radius: LumenSurfaceRadius = .md, @ViewBuilder content: () -> Content)",
+          "declaration": "@MainActor init(tone: LumenSurfaceTone = .surface, padding: LumenSurfacePadding = .md, radius: LumenSurfaceRadius = .md, material: LumenSurfaceMaterial = .solid, @ViewBuilder content: () -> Content)",
           "kind": "swift.init",
           "path": [
             "LumenSurface",
-            "init(tone:padding:radius:content:)"
+            "init(tone:padding:radius:material:content:)"
           ],
-          "precise": "s:7LumenUI0A7SurfaceV4tone7padding6radius7contentACyxGAA0aC4ToneO_AA0aC7PaddingOAA0aC6RadiusOxyXEtcfc"
+          "precise": "s:7LumenUI0A7SurfaceV4tone7padding6radius8material7contentACyxGAA0aC4ToneO_AA0aC7PaddingOAA0aC6RadiusOAA0aC8MaterialOxyXEtcfc"
         },
         {
           "declaration": "@MainActor struct LumenBarChart",
@@ -83244,6 +84120,68 @@
           "precise": "s:7LumenUI08sanitizeA10PhoneInputyS2SF"
         },
         {
+          "declaration": "struct LumenAppearance",
+          "kind": "swift.struct",
+          "path": [
+            "LumenAppearance"
+          ],
+          "precise": "s:7LumenUI0A10AppearanceV"
+        },
+        {
+          "declaration": "let borderWidth: CGFloat",
+          "kind": "swift.property",
+          "path": [
+            "LumenAppearance",
+            "borderWidth"
+          ],
+          "precise": "s:7LumenUI0A10AppearanceV11borderWidth14CoreFoundation7CGFloatVvp"
+        },
+        {
+          "declaration": "init(radiusScale: CGFloat = 1, spacingScale: CGFloat = 1, borderWidth: CGFloat = 1, elevationScale: CGFloat = 1, material: LumenSurfaceMaterial = .solid)",
+          "kind": "swift.init",
+          "path": [
+            "LumenAppearance",
+            "init(radiusScale:spacingScale:borderWidth:elevationScale:material:)"
+          ],
+          "precise": "s:7LumenUI0A10AppearanceV11radiusScale07spacingE011borderWidth09elevationE08materialAC14CoreFoundation7CGFloatV_A3kA0A15SurfaceMaterialOtcfc"
+        },
+        {
+          "declaration": "let radiusScale: CGFloat",
+          "kind": "swift.property",
+          "path": [
+            "LumenAppearance",
+            "radiusScale"
+          ],
+          "precise": "s:7LumenUI0A10AppearanceV11radiusScale14CoreFoundation7CGFloatVvp"
+        },
+        {
+          "declaration": "let spacingScale: CGFloat",
+          "kind": "swift.property",
+          "path": [
+            "LumenAppearance",
+            "spacingScale"
+          ],
+          "precise": "s:7LumenUI0A10AppearanceV12spacingScale14CoreFoundation7CGFloatVvp"
+        },
+        {
+          "declaration": "let elevationScale: CGFloat",
+          "kind": "swift.property",
+          "path": [
+            "LumenAppearance",
+            "elevationScale"
+          ],
+          "precise": "s:7LumenUI0A10AppearanceV14elevationScale14CoreFoundation7CGFloatVvp"
+        },
+        {
+          "declaration": "let material: LumenSurfaceMaterial",
+          "kind": "swift.property",
+          "path": [
+            "LumenAppearance",
+            "material"
+          ],
+          "precise": "s:7LumenUI0A10AppearanceV8materialAA0A15SurfaceMaterialOvp"
+        },
+        {
           "declaration": "enum LumenAvatarSize",
           "kind": "swift.enum",
           "path": [
@@ -83841,6 +84779,59 @@
             "label"
           ],
           "precise": "s:7LumenUI0A10RangeDatumV5labelSSSgvp"
+        },
+        {
+          "declaration": "struct LumenTextStyles",
+          "kind": "swift.struct",
+          "path": [
+            "LumenTextStyles"
+          ],
+          "precise": "s:7LumenUI0A10TextStylesV"
+        },
+        {
+          "declaration": "let body: Font",
+          "kind": "swift.property",
+          "path": [
+            "LumenTextStyles",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A10TextStylesV4body05SwiftB04FontVvp"
+        },
+        {
+          "declaration": "init(body: Font = .body, caption: Font = .caption, label: Font = .callout.weight(.semibold), title: Font = .title2.weight(.bold))",
+          "kind": "swift.init",
+          "path": [
+            "LumenTextStyles",
+            "init(body:caption:label:title:)"
+          ],
+          "precise": "s:7LumenUI0A10TextStylesV4body7caption5label5titleAC05SwiftB04FontV_A3Jtcfc"
+        },
+        {
+          "declaration": "let label: Font",
+          "kind": "swift.property",
+          "path": [
+            "LumenTextStyles",
+            "label"
+          ],
+          "precise": "s:7LumenUI0A10TextStylesV5label05SwiftB04FontVvp"
+        },
+        {
+          "declaration": "let title: Font",
+          "kind": "swift.property",
+          "path": [
+            "LumenTextStyles",
+            "title"
+          ],
+          "precise": "s:7LumenUI0A10TextStylesV5title05SwiftB04FontVvp"
+        },
+        {
+          "declaration": "let caption: Font",
+          "kind": "swift.property",
+          "path": [
+            "LumenTextStyles",
+            "caption"
+          ],
+          "precise": "s:7LumenUI0A10TextStylesV7caption05SwiftB04FontVvp"
         },
         {
           "declaration": "enum LumenTypography",
@@ -84879,6 +85870,68 @@
           "precise": "s:7LumenUI0A11TextVariantO7captionyA2CmF"
         },
         {
+          "declaration": "enum LumenThemePreset",
+          "kind": "swift.enum",
+          "path": [
+            "LumenThemePreset"
+          ],
+          "precise": "s:7LumenUI0A11ThemePresetO"
+        },
+        {
+          "declaration": "var appearance: LumenAppearance { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenThemePreset",
+            "appearance"
+          ],
+          "precise": "s:7LumenUI0A11ThemePresetO10appearanceAA0A10AppearanceVvp"
+        },
+        {
+          "declaration": "case glass",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenThemePreset",
+            "glass"
+          ],
+          "precise": "s:7LumenUI0A11ThemePresetO5glassyA2CmF"
+        },
+        {
+          "declaration": "func colors(for scheme: LumenColorScheme) -> LumenColorPalette",
+          "kind": "swift.method",
+          "path": [
+            "LumenThemePreset",
+            "colors(for:)"
+          ],
+          "precise": "s:7LumenUI0A11ThemePresetO6colors3forAA0A12ColorPaletteVAA0aG6SchemeO_tF"
+        },
+        {
+          "declaration": "case studio",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenThemePreset",
+            "studio"
+          ],
+          "precise": "s:7LumenUI0A11ThemePresetO6studioyA2CmF"
+        },
+        {
+          "declaration": "case `default`",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenThemePreset",
+            "default"
+          ],
+          "precise": "s:7LumenUI0A11ThemePresetO7defaultyA2CmF"
+        },
+        {
+          "declaration": "init?(rawValue: String)",
+          "kind": "swift.init",
+          "path": [
+            "LumenThemePreset",
+            "init(rawValue:)"
+          ],
+          "precise": "s:7LumenUI0A11ThemePresetO8rawValueACSgSS_tcfc"
+        },
+        {
           "declaration": "enum LumenAlertVariant",
           "kind": "swift.enum",
           "path": [
@@ -85489,6 +86542,68 @@
             "flag"
           ],
           "precise": "s:7LumenUI0A12PhoneCountryV4flagSSvp"
+        },
+        {
+          "declaration": "enum LumenPresetColors",
+          "kind": "swift.enum",
+          "path": [
+            "LumenPresetColors"
+          ],
+          "precise": "s:7LumenUI0A12PresetColorsO"
+        },
+        {
+          "declaration": "static let glassLight: LumenColorPalette",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenPresetColors",
+            "glassLight"
+          ],
+          "precise": "s:7LumenUI0A12PresetColorsO10glassLightAA0A12ColorPaletteVvpZ"
+        },
+        {
+          "declaration": "static let studioDark: LumenColorPalette",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenPresetColors",
+            "studioDark"
+          ],
+          "precise": "s:7LumenUI0A12PresetColorsO10studioDarkAA0A12ColorPaletteVvpZ"
+        },
+        {
+          "declaration": "static let defaultDark: LumenColorPalette",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenPresetColors",
+            "defaultDark"
+          ],
+          "precise": "s:7LumenUI0A12PresetColorsO11defaultDarkAA0A12ColorPaletteVvpZ"
+        },
+        {
+          "declaration": "static let studioLight: LumenColorPalette",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenPresetColors",
+            "studioLight"
+          ],
+          "precise": "s:7LumenUI0A12PresetColorsO11studioLightAA0A12ColorPaletteVvpZ"
+        },
+        {
+          "declaration": "static let defaultLight: LumenColorPalette",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenPresetColors",
+            "defaultLight"
+          ],
+          "precise": "s:7LumenUI0A12PresetColorsO12defaultLightAA0A12ColorPaletteVvpZ"
+        },
+        {
+          "declaration": "static let glassDark: LumenColorPalette",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenPresetColors",
+            "glassDark"
+          ],
+          "precise": "s:7LumenUI0A12PresetColorsO9glassDarkAA0A12ColorPaletteVvpZ"
         },
         {
           "declaration": "@MainActor struct LumenScatterChart",
@@ -86491,6 +87606,32 @@
           "precise": "s:7LumenUI0A15SelectionOptionV5titleSSvp"
         },
         {
+          "declaration": "enum LumenSurfaceMaterial",
+          "kind": "swift.enum",
+          "path": [
+            "LumenSurfaceMaterial"
+          ],
+          "precise": "s:7LumenUI0A15SurfaceMaterialO"
+        },
+        {
+          "declaration": "case glass",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenSurfaceMaterial",
+            "glass"
+          ],
+          "precise": "s:7LumenUI0A15SurfaceMaterialO5glassyA2CmF"
+        },
+        {
+          "declaration": "case solid",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenSurfaceMaterial",
+            "solid"
+          ],
+          "precise": "s:7LumenUI0A15SurfaceMaterialO5solidyA2CmF"
+        },
+        {
           "declaration": "enum LumenEmptyStateLayout",
           "kind": "swift.enum",
           "path": [
@@ -87213,22 +88354,22 @@
           "precise": "s:7LumenUI0A4CardV4bodyQrvp"
         },
         {
-          "declaration": "@MainActor init(variant: LumenCardVariant = .default, action: (() -> Void)? = nil, @ViewBuilder content: () -> Content)",
+          "declaration": "@MainActor init(variant: LumenCardVariant = .default, action: (() -> Void)? = nil, material: LumenSurfaceMaterial = .solid, @ViewBuilder content: () -> Content)",
           "kind": "swift.init",
           "path": [
             "LumenCard",
-            "init(variant:action:content:)"
+            "init(variant:action:material:content:)"
           ],
-          "precise": "s:7LumenUI0A4CardV7variant6action7contentACyxGAA0aC7VariantO_yycSgxyXEtcfc"
+          "precise": "s:7LumenUI0A4CardV7variant6action8material7contentACyxGAA0aC7VariantO_yycSgAA0A15SurfaceMaterialOxyXEtcfc"
         },
         {
-          "declaration": "@MainActor init(variant: LumenCardVariant = .default, padding: LumenSurfacePadding, radius: LumenSurfaceRadius, action: (() -> Void)? = nil, @ViewBuilder content: () -> Content)",
+          "declaration": "@MainActor init(variant: LumenCardVariant = .default, padding: LumenSurfacePadding, radius: LumenSurfaceRadius, action: (() -> Void)? = nil, material: LumenSurfaceMaterial = .solid, @ViewBuilder content: () -> Content)",
           "kind": "swift.init",
           "path": [
             "LumenCard",
-            "init(variant:padding:radius:action:content:)"
+            "init(variant:padding:radius:action:material:content:)"
           ],
-          "precise": "s:7LumenUI0A4CardV7variant7padding6radius6action7contentACyxGAA0aC7VariantO_AA0A14SurfacePaddingOAA0aJ6RadiusOyycSgxyXEtcfc"
+          "precise": "s:7LumenUI0A4CardV7variant7padding6radius6action8material7contentACyxGAA0aC7VariantO_AA0A14SurfacePaddingOAA0aK6RadiusOyycSgAA0aK8MaterialOxyXEtcfc"
         },
         {
           "declaration": "@MainActor struct LumenChip",
@@ -87597,6 +88738,24 @@
           "precise": "s:7LumenUI0A5ThemeV"
         },
         {
+          "declaration": "let appearance: LumenAppearance",
+          "kind": "swift.property",
+          "path": [
+            "LumenTheme",
+            "appearance"
+          ],
+          "precise": "s:7LumenUI0A5ThemeV10appearanceAA0A10AppearanceVvp"
+        },
+        {
+          "declaration": "let textStyles: LumenTextStyles",
+          "kind": "swift.property",
+          "path": [
+            "LumenTheme",
+            "textStyles"
+          ],
+          "precise": "s:7LumenUI0A5ThemeV10textStylesAA0a4TextE0Vvp"
+        },
+        {
           "declaration": "static let dark: LumenTheme",
           "kind": "swift.type.property",
           "path": [
@@ -87615,13 +88774,13 @@
           "precise": "s:7LumenUI0A5ThemeV5lightACvpZ"
         },
         {
-          "declaration": "init(colors: LumenColorPalette, scheme: LumenColorScheme)",
+          "declaration": "init(colors: LumenColorPalette, scheme: LumenColorScheme, appearance: LumenAppearance = LumenAppearance(), textStyles: LumenTextStyles = LumenTextStyles())",
           "kind": "swift.init",
           "path": [
             "LumenTheme",
-            "init(colors:scheme:)"
+            "init(colors:scheme:appearance:textStyles:)"
           ],
-          "precise": "s:7LumenUI0A5ThemeV6colors6schemeAcA0A12ColorPaletteV_AA0aF6SchemeOtcfc"
+          "precise": "s:7LumenUI0A5ThemeV6colors6scheme10appearance10textStylesAcA0A12ColorPaletteV_AA0aI6SchemeOAA0A10AppearanceVAA0a4TextH0Vtcfc"
         },
         {
           "declaration": "let colors: LumenColorPalette",
@@ -87631,6 +88790,15 @@
             "colors"
           ],
           "precise": "s:7LumenUI0A5ThemeV6colorsAA0A12ColorPaletteVvp"
+        },
+        {
+          "declaration": "init(preset: LumenThemePreset, scheme: LumenColorScheme, appearance: LumenAppearance? = nil, textStyles: LumenTextStyles = LumenTextStyles())",
+          "kind": "swift.init",
+          "path": [
+            "LumenTheme",
+            "init(preset:scheme:appearance:textStyles:)"
+          ],
+          "precise": "s:7LumenUI0A5ThemeV6preset6scheme10appearance10textStylesAcA0aC6PresetO_AA0A11ColorSchemeOAA0A10AppearanceVSgAA0a4TextH0Vtcfc"
         },
         {
           "declaration": "let scheme: LumenColorScheme",
@@ -88389,13 +89557,13 @@
           "precise": "s:7LumenUI0A7SurfaceV4bodyQrvp"
         },
         {
-          "declaration": "@MainActor init(tone: LumenSurfaceTone = .surface, padding: LumenSurfacePadding = .md, radius: LumenSurfaceRadius = .md, @ViewBuilder content: () -> Content)",
+          "declaration": "@MainActor init(tone: LumenSurfaceTone = .surface, padding: LumenSurfacePadding = .md, radius: LumenSurfaceRadius = .md, material: LumenSurfaceMaterial = .solid, @ViewBuilder content: () -> Content)",
           "kind": "swift.init",
           "path": [
             "LumenSurface",
-            "init(tone:padding:radius:content:)"
+            "init(tone:padding:radius:material:content:)"
           ],
-          "precise": "s:7LumenUI0A7SurfaceV4tone7padding6radius7contentACyxGAA0aC4ToneO_AA0aC7PaddingOAA0aC6RadiusOxyXEtcfc"
+          "precise": "s:7LumenUI0A7SurfaceV4tone7padding6radius8material7contentACyxGAA0aC4ToneO_AA0aC7PaddingOAA0aC6RadiusOAA0aC8MaterialOxyXEtcfc"
         },
         {
           "declaration": "@MainActor struct LumenBackdrop<Content> where Content : View",
@@ -111396,6 +112564,68 @@
       "minimumVersion": "9",
       "supported": [
         {
+          "declaration": "struct LumenAppearance",
+          "kind": "swift.struct",
+          "path": [
+            "LumenAppearance"
+          ],
+          "precise": "s:7LumenUI0A10AppearanceV"
+        },
+        {
+          "declaration": "let borderWidth: CGFloat",
+          "kind": "swift.property",
+          "path": [
+            "LumenAppearance",
+            "borderWidth"
+          ],
+          "precise": "s:7LumenUI0A10AppearanceV11borderWidth14CoreFoundation7CGFloatVvp"
+        },
+        {
+          "declaration": "init(radiusScale: CGFloat = 1, spacingScale: CGFloat = 1, borderWidth: CGFloat = 1, elevationScale: CGFloat = 1, material: LumenSurfaceMaterial = .solid)",
+          "kind": "swift.init",
+          "path": [
+            "LumenAppearance",
+            "init(radiusScale:spacingScale:borderWidth:elevationScale:material:)"
+          ],
+          "precise": "s:7LumenUI0A10AppearanceV11radiusScale07spacingE011borderWidth09elevationE08materialAC14CoreFoundation7CGFloatV_A3kA0A15SurfaceMaterialOtcfc"
+        },
+        {
+          "declaration": "let radiusScale: CGFloat",
+          "kind": "swift.property",
+          "path": [
+            "LumenAppearance",
+            "radiusScale"
+          ],
+          "precise": "s:7LumenUI0A10AppearanceV11radiusScale14CoreFoundation7CGFloatVvp"
+        },
+        {
+          "declaration": "let spacingScale: CGFloat",
+          "kind": "swift.property",
+          "path": [
+            "LumenAppearance",
+            "spacingScale"
+          ],
+          "precise": "s:7LumenUI0A10AppearanceV12spacingScale14CoreFoundation7CGFloatVvp"
+        },
+        {
+          "declaration": "let elevationScale: CGFloat",
+          "kind": "swift.property",
+          "path": [
+            "LumenAppearance",
+            "elevationScale"
+          ],
+          "precise": "s:7LumenUI0A10AppearanceV14elevationScale14CoreFoundation7CGFloatVvp"
+        },
+        {
+          "declaration": "let material: LumenSurfaceMaterial",
+          "kind": "swift.property",
+          "path": [
+            "LumenAppearance",
+            "material"
+          ],
+          "precise": "s:7LumenUI0A10AppearanceV8materialAA0A15SurfaceMaterialOvp"
+        },
+        {
           "declaration": "enum LumenAvatarSize",
           "kind": "swift.enum",
           "path": [
@@ -111870,6 +113100,59 @@
             "label"
           ],
           "precise": "s:7LumenUI0A10RangeDatumV5labelSSSgvp"
+        },
+        {
+          "declaration": "struct LumenTextStyles",
+          "kind": "swift.struct",
+          "path": [
+            "LumenTextStyles"
+          ],
+          "precise": "s:7LumenUI0A10TextStylesV"
+        },
+        {
+          "declaration": "let body: Font",
+          "kind": "swift.property",
+          "path": [
+            "LumenTextStyles",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A10TextStylesV4body05SwiftB04FontVvp"
+        },
+        {
+          "declaration": "init(body: Font = .body, caption: Font = .caption, label: Font = .callout.weight(.semibold), title: Font = .title2.weight(.bold))",
+          "kind": "swift.init",
+          "path": [
+            "LumenTextStyles",
+            "init(body:caption:label:title:)"
+          ],
+          "precise": "s:7LumenUI0A10TextStylesV4body7caption5label5titleAC05SwiftB04FontV_A3Jtcfc"
+        },
+        {
+          "declaration": "let label: Font",
+          "kind": "swift.property",
+          "path": [
+            "LumenTextStyles",
+            "label"
+          ],
+          "precise": "s:7LumenUI0A10TextStylesV5label05SwiftB04FontVvp"
+        },
+        {
+          "declaration": "let title: Font",
+          "kind": "swift.property",
+          "path": [
+            "LumenTextStyles",
+            "title"
+          ],
+          "precise": "s:7LumenUI0A10TextStylesV5title05SwiftB04FontVvp"
+        },
+        {
+          "declaration": "let caption: Font",
+          "kind": "swift.property",
+          "path": [
+            "LumenTextStyles",
+            "caption"
+          ],
+          "precise": "s:7LumenUI0A10TextStylesV7caption05SwiftB04FontVvp"
         },
         {
           "declaration": "enum LumenTypography",
@@ -112663,6 +113946,68 @@
           "precise": "s:7LumenUI0A11TextVariantO7captionyA2CmF"
         },
         {
+          "declaration": "enum LumenThemePreset",
+          "kind": "swift.enum",
+          "path": [
+            "LumenThemePreset"
+          ],
+          "precise": "s:7LumenUI0A11ThemePresetO"
+        },
+        {
+          "declaration": "var appearance: LumenAppearance { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenThemePreset",
+            "appearance"
+          ],
+          "precise": "s:7LumenUI0A11ThemePresetO10appearanceAA0A10AppearanceVvp"
+        },
+        {
+          "declaration": "case glass",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenThemePreset",
+            "glass"
+          ],
+          "precise": "s:7LumenUI0A11ThemePresetO5glassyA2CmF"
+        },
+        {
+          "declaration": "func colors(for scheme: LumenColorScheme) -> LumenColorPalette",
+          "kind": "swift.method",
+          "path": [
+            "LumenThemePreset",
+            "colors(for:)"
+          ],
+          "precise": "s:7LumenUI0A11ThemePresetO6colors3forAA0A12ColorPaletteVAA0aG6SchemeO_tF"
+        },
+        {
+          "declaration": "case studio",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenThemePreset",
+            "studio"
+          ],
+          "precise": "s:7LumenUI0A11ThemePresetO6studioyA2CmF"
+        },
+        {
+          "declaration": "case `default`",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenThemePreset",
+            "default"
+          ],
+          "precise": "s:7LumenUI0A11ThemePresetO7defaultyA2CmF"
+        },
+        {
+          "declaration": "init?(rawValue: String)",
+          "kind": "swift.init",
+          "path": [
+            "LumenThemePreset",
+            "init(rawValue:)"
+          ],
+          "precise": "s:7LumenUI0A11ThemePresetO8rawValueACSgSS_tcfc"
+        },
+        {
           "declaration": "@MainActor struct LumenWatchMetric",
           "kind": "swift.struct",
           "path": [
@@ -113193,6 +114538,68 @@
             "column"
           ],
           "precise": "s:7LumenUI0A12HeatmapDatumV6columnSSvp"
+        },
+        {
+          "declaration": "enum LumenPresetColors",
+          "kind": "swift.enum",
+          "path": [
+            "LumenPresetColors"
+          ],
+          "precise": "s:7LumenUI0A12PresetColorsO"
+        },
+        {
+          "declaration": "static let glassLight: LumenColorPalette",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenPresetColors",
+            "glassLight"
+          ],
+          "precise": "s:7LumenUI0A12PresetColorsO10glassLightAA0A12ColorPaletteVvpZ"
+        },
+        {
+          "declaration": "static let studioDark: LumenColorPalette",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenPresetColors",
+            "studioDark"
+          ],
+          "precise": "s:7LumenUI0A12PresetColorsO10studioDarkAA0A12ColorPaletteVvpZ"
+        },
+        {
+          "declaration": "static let defaultDark: LumenColorPalette",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenPresetColors",
+            "defaultDark"
+          ],
+          "precise": "s:7LumenUI0A12PresetColorsO11defaultDarkAA0A12ColorPaletteVvpZ"
+        },
+        {
+          "declaration": "static let studioLight: LumenColorPalette",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenPresetColors",
+            "studioLight"
+          ],
+          "precise": "s:7LumenUI0A12PresetColorsO11studioLightAA0A12ColorPaletteVvpZ"
+        },
+        {
+          "declaration": "static let defaultLight: LumenColorPalette",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenPresetColors",
+            "defaultLight"
+          ],
+          "precise": "s:7LumenUI0A12PresetColorsO12defaultLightAA0A12ColorPaletteVvpZ"
+        },
+        {
+          "declaration": "static let glassDark: LumenColorPalette",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenPresetColors",
+            "glassDark"
+          ],
+          "precise": "s:7LumenUI0A12PresetColorsO9glassDarkAA0A12ColorPaletteVvpZ"
         },
         {
           "declaration": "@MainActor struct LumenScatterChart",
@@ -113932,6 +115339,32 @@
           "precise": "s:7LumenUI0A15PieChartVariantO5donutyA2CmF"
         },
         {
+          "declaration": "enum LumenSurfaceMaterial",
+          "kind": "swift.enum",
+          "path": [
+            "LumenSurfaceMaterial"
+          ],
+          "precise": "s:7LumenUI0A15SurfaceMaterialO"
+        },
+        {
+          "declaration": "case glass",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenSurfaceMaterial",
+            "glass"
+          ],
+          "precise": "s:7LumenUI0A15SurfaceMaterialO5glassyA2CmF"
+        },
+        {
+          "declaration": "case solid",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenSurfaceMaterial",
+            "solid"
+          ],
+          "precise": "s:7LumenUI0A15SurfaceMaterialO5solidyA2CmF"
+        },
+        {
           "declaration": "enum LumenEmptyStateLayout",
           "kind": "swift.enum",
           "path": [
@@ -114452,22 +115885,22 @@
           "precise": "s:7LumenUI0A4CardV4bodyQrvp"
         },
         {
-          "declaration": "@MainActor init(variant: LumenCardVariant = .default, action: (() -> Void)? = nil, @ViewBuilder content: () -> Content)",
+          "declaration": "@MainActor init(variant: LumenCardVariant = .default, action: (() -> Void)? = nil, material: LumenSurfaceMaterial = .solid, @ViewBuilder content: () -> Content)",
           "kind": "swift.init",
           "path": [
             "LumenCard",
-            "init(variant:action:content:)"
+            "init(variant:action:material:content:)"
           ],
-          "precise": "s:7LumenUI0A4CardV7variant6action7contentACyxGAA0aC7VariantO_yycSgxyXEtcfc"
+          "precise": "s:7LumenUI0A4CardV7variant6action8material7contentACyxGAA0aC7VariantO_yycSgAA0A15SurfaceMaterialOxyXEtcfc"
         },
         {
-          "declaration": "@MainActor init(variant: LumenCardVariant = .default, padding: LumenSurfacePadding, radius: LumenSurfaceRadius, action: (() -> Void)? = nil, @ViewBuilder content: () -> Content)",
+          "declaration": "@MainActor init(variant: LumenCardVariant = .default, padding: LumenSurfacePadding, radius: LumenSurfaceRadius, action: (() -> Void)? = nil, material: LumenSurfaceMaterial = .solid, @ViewBuilder content: () -> Content)",
           "kind": "swift.init",
           "path": [
             "LumenCard",
-            "init(variant:padding:radius:action:content:)"
+            "init(variant:padding:radius:action:material:content:)"
           ],
-          "precise": "s:7LumenUI0A4CardV7variant7padding6radius6action7contentACyxGAA0aC7VariantO_AA0A14SurfacePaddingOAA0aJ6RadiusOyycSgxyXEtcfc"
+          "precise": "s:7LumenUI0A4CardV7variant7padding6radius6action8material7contentACyxGAA0aC7VariantO_AA0A14SurfacePaddingOAA0aK6RadiusOyycSgAA0aK8MaterialOxyXEtcfc"
         },
         {
           "declaration": "@MainActor struct LumenChip",
@@ -114722,6 +116155,24 @@
           "precise": "s:7LumenUI0A5ThemeV"
         },
         {
+          "declaration": "let appearance: LumenAppearance",
+          "kind": "swift.property",
+          "path": [
+            "LumenTheme",
+            "appearance"
+          ],
+          "precise": "s:7LumenUI0A5ThemeV10appearanceAA0A10AppearanceVvp"
+        },
+        {
+          "declaration": "let textStyles: LumenTextStyles",
+          "kind": "swift.property",
+          "path": [
+            "LumenTheme",
+            "textStyles"
+          ],
+          "precise": "s:7LumenUI0A5ThemeV10textStylesAA0a4TextE0Vvp"
+        },
+        {
           "declaration": "static let dark: LumenTheme",
           "kind": "swift.type.property",
           "path": [
@@ -114740,13 +116191,13 @@
           "precise": "s:7LumenUI0A5ThemeV5lightACvpZ"
         },
         {
-          "declaration": "init(colors: LumenColorPalette, scheme: LumenColorScheme)",
+          "declaration": "init(colors: LumenColorPalette, scheme: LumenColorScheme, appearance: LumenAppearance = LumenAppearance(), textStyles: LumenTextStyles = LumenTextStyles())",
           "kind": "swift.init",
           "path": [
             "LumenTheme",
-            "init(colors:scheme:)"
+            "init(colors:scheme:appearance:textStyles:)"
           ],
-          "precise": "s:7LumenUI0A5ThemeV6colors6schemeAcA0A12ColorPaletteV_AA0aF6SchemeOtcfc"
+          "precise": "s:7LumenUI0A5ThemeV6colors6scheme10appearance10textStylesAcA0A12ColorPaletteV_AA0aI6SchemeOAA0A10AppearanceVAA0a4TextH0Vtcfc"
         },
         {
           "declaration": "let colors: LumenColorPalette",
@@ -114756,6 +116207,15 @@
             "colors"
           ],
           "precise": "s:7LumenUI0A5ThemeV6colorsAA0A12ColorPaletteVvp"
+        },
+        {
+          "declaration": "init(preset: LumenThemePreset, scheme: LumenColorScheme, appearance: LumenAppearance? = nil, textStyles: LumenTextStyles = LumenTextStyles())",
+          "kind": "swift.init",
+          "path": [
+            "LumenTheme",
+            "init(preset:scheme:appearance:textStyles:)"
+          ],
+          "precise": "s:7LumenUI0A5ThemeV6preset6scheme10appearance10textStylesAcA0aC6PresetO_AA0A11ColorSchemeOAA0A10AppearanceVSgAA0a4TextH0Vtcfc"
         },
         {
           "declaration": "let scheme: LumenColorScheme",
@@ -115383,13 +116843,13 @@
           "precise": "s:7LumenUI0A7SurfaceV4bodyQrvp"
         },
         {
-          "declaration": "@MainActor init(tone: LumenSurfaceTone = .surface, padding: LumenSurfacePadding = .md, radius: LumenSurfaceRadius = .md, @ViewBuilder content: () -> Content)",
+          "declaration": "@MainActor init(tone: LumenSurfaceTone = .surface, padding: LumenSurfacePadding = .md, radius: LumenSurfaceRadius = .md, material: LumenSurfaceMaterial = .solid, @ViewBuilder content: () -> Content)",
           "kind": "swift.init",
           "path": [
             "LumenSurface",
-            "init(tone:padding:radius:content:)"
+            "init(tone:padding:radius:material:content:)"
           ],
-          "precise": "s:7LumenUI0A7SurfaceV4tone7padding6radius7contentACyxGAA0aC4ToneO_AA0aC7PaddingOAA0aC6RadiusOxyXEtcfc"
+          "precise": "s:7LumenUI0A7SurfaceV4tone7padding6radius8material7contentACyxGAA0aC4ToneO_AA0aC7PaddingOAA0aC6RadiusOAA0aC8MaterialOxyXEtcfc"
         },
         {
           "declaration": "@MainActor struct LumenBarChart",

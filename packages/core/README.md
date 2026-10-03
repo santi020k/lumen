@@ -56,6 +56,10 @@ pnpm add @santi020k/lumen-core
 Core provides data and helpers; it does not register elements, render components, or load CSS.
 Use documented subpath exports such as `/charts`, `/phone`, and `/icon-data` for focused imports.
 
+## Appearance presets
+
+Use `createThemePreset('studio', { scheme: 'dark', overrides: { 'ui-radius': '0.75rem' } })` for a named starting point. Default, Studio and Glass share the [appearance contract](../../docs/appearance-presets.md).
+
 ## Language Helpers
 
 The root entry exports the shared locale contract used by the Astro, React, and Elements language

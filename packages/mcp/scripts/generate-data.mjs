@@ -1318,6 +1318,12 @@ const main = async () => {
   const docs = { aiUsage, readme }
 
   const tokens = {
+    presets: {
+      attribute: 'data-lumen-preset',
+      names: ['default', 'studio', 'glass'],
+      schemeAttribute: 'data-lumen-scheme',
+      materialPolicy: 'explicit-surfaces'
+    },
     chart,
     colors,
     glass,

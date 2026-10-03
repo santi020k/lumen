@@ -116,7 +116,8 @@ fun LumenSurface(
     radius: LumenSurfaceRadius = LumenSurfaceRadius.Md,
     content: @Composable () -> Unit
 ) {
-    val colors = LocalLumenTheme.current.colors
+    val theme = LocalLumenTheme.current
+    val colors = theme.colors
     val color = when (tone) {
         LumenSurfaceTone.Canvas -> colors.canvas
         LumenSurfaceTone.Muted -> colors.surfaceMuted
@@ -127,10 +128,10 @@ fun LumenSurface(
     Surface(
         modifier = modifier,
         color = color,
-        shape = RoundedCornerShape(radius.value)
+        shape = RoundedCornerShape(radius.value * theme.appearance.radiusScale)
     ) {
         androidx.compose.foundation.layout.Box(
-            modifier = Modifier.padding(padding.value),
+            modifier = Modifier.padding(padding.value * theme.appearance.spacingScale),
             contentAlignment = Alignment.TopStart
         ) {
             content()

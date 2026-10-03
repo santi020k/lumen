@@ -11,6 +11,24 @@ import org.junit.Test
 
 class PrimitivesTest {
     @Test
+    fun studioPresetsRetainStatusRolesAndAllowAppearanceOverrides() {
+        for (isDark in listOf(false, true)) {
+            val theme = LumenThemeValues.preset(LumenThemePreset.Studio, isDark)
+            val defaults = if (isDark) LumenColors.Dark else LumenColors.Light
+            assertEquals(theme.colors.ink, theme.colors.brandSolid)
+            assertEquals(defaults.danger, theme.colors.danger)
+            assertEquals(0.6f, theme.appearance.radiusScale)
+            assertEquals(0f, theme.appearance.elevationScale)
+            assertEquals(isDark, theme.isDark)
+        }
+        val custom = LumenThemeValues.preset(LumenThemePreset.Studio, false)
+            .copy(appearance = LumenAppearance(radiusScale = 2f, borderWidth = 0f))
+        assertEquals(2f, custom.appearance.radiusScale)
+        assertEquals(0f, custom.appearance.borderWidth)
+        assertThrows(IllegalArgumentException::class.java) { LumenAppearance(radiusScale = -1f) }
+    }
+
+    @Test
     fun validationMessagesImplyInvalidFieldState() {
         assertEquals(false, resolveLumenFieldError(error = false, errorMessage = null))
         assertEquals(true, resolveLumenFieldError(error = true, errorMessage = null))

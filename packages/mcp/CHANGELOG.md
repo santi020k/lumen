@@ -2,6 +2,12 @@
 
 ## 4.0.0
 
+### Appearance Presets
+
+- Add Default, Studio and Glass appearance presets with semantic palette and surface customization.
+  Glass remains explicit per surface with opaque native fallbacks. See the appearance presets guide;
+  Swift and Compose consumers must rebuild for the updated initializer signatures.
+
 ### Major Changes
 
 - Prepare the coordinated Lumen 4 family from twenty real consumer audits.

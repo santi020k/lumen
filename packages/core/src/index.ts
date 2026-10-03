@@ -302,6 +302,8 @@ export {
   suggestReadableInk,
   tuneThemeContrast
 } from './theme.js'
+export { createThemePreset, type LumenSurfaceMaterial, type LumenThemePreset, lumenThemePresetDefinitions, type LumenThemePresetOptions } from './theme.js'
+export { coerceThemePreset } from './theme-builder.js'
 export {
   coerceThemeBuilderExportFormat,
   coerceThemeBuilderMode,

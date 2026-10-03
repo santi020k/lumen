@@ -6,6 +6,7 @@ import {
   coerceThemeBuilderExportFormat,
   coerceThemeBuilderMode,
   coerceThemeBuilderScheme,
+  coerceThemePreset,
   createLumenBarGeometry,
   createLumenHeatmapGeometry,
   createLumenKanbanMoveDetail,
@@ -7963,6 +7964,9 @@ class LumenThemeBuilderBehaviorElement extends LumenElement {
       ...this.querySelectorAll<HTMLButtonElement>('[data-ui-theme-scheme]')
     ]
 
+    const presetButtons = [...this.querySelectorAll<HTMLButtonElement>('[data-ui-theme-preset]')]
+    let currentPreset = this.getAttribute('data-ui-theme-preset')
+
     const importButton = this.querySelector<HTMLButtonElement>(
       '[data-ui-theme-import]'
     )
@@ -8009,6 +8013,10 @@ class LumenThemeBuilderBehaviorElement extends LumenElement {
 
     const update = (dispatch = true): void => {
       const result = createThemeBuilderTokens({
+        preset: currentPreset,
+        radiusScale: this.querySelector<HTMLInputElement>('[data-ui-theme-radius-scale]')?.value ?? null,
+        spacingScale: this.querySelector<HTMLInputElement>('[data-ui-theme-spacing-scale]')?.value ?? null,
+        borderWidth: this.querySelector<HTMLInputElement>('[data-ui-theme-border-width]')?.value ?? null,
         accentHue:
           accentHue?.value ??
           accentHueNumber?.value ??
@@ -8052,6 +8060,12 @@ class LumenThemeBuilderBehaviorElement extends LumenElement {
       }
     }
 
+    for (const input of this.querySelectorAll<HTMLInputElement>('[data-ui-theme-radius-scale], [data-ui-theme-spacing-scale], [data-ui-theme-border-width]')) {
+      input.addEventListener('input', () => {
+        update()
+      }, { signal })
+    }
+
     this.bindHueInputs(brandHue, brandHueNumber, update, signal)
 
     this.bindHueInputs(accentHue, accentHueNumber, update, signal)
@@ -8086,6 +8100,16 @@ class LumenThemeBuilderBehaviorElement extends LumenElement {
           update()
         }, { signal }
       )
+    }
+
+    for (const button of presetButtons) {
+      button.addEventListener('click', () => {
+        currentPreset = button.getAttribute('data-ui-theme-preset') === 'custom' ? null : coerceThemePreset(button.getAttribute('data-ui-theme-preset'))
+
+        this.setPressedState(presetButtons, 'data-ui-theme-preset', currentPreset ?? 'custom')
+
+        update()
+      }, { signal })
     }
 
     for (const button of schemeButtons) {

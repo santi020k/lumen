@@ -328,7 +328,7 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(css).toContain('.ui-pill--brand')
     expect(css).toContain('.ui-pill--outline')
     expect(css).toMatch(/\.ui-pill__count\s*\{/)
-    expect(css).toContain('border-left: 1px solid hsl(var(--line))')
+    expect(css).toContain('border-left: var(--ui-border-width, 1px) solid hsl(var(--line))')
     expect(css).toContain('color: hsl(var(--ink-muted))')
   })
 

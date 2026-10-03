@@ -61,6 +61,10 @@ loading states, native layout improvements and a new ImageComparison primitive. 
 and [local readiness record](docs/lumen-4-readiness.md). The refreshed community gallery includes
 published consumer screenshots; it does not imply those applications already run this candidate.
 
+## Appearance presets
+
+Choose an appearance preset or customize the existing themes with the [appearance guide](docs/appearance-presets.md). The Studio preset uses PostLens as its visual reference.
+
 ## Dashboards and templates
 
 Explore the [template gallery](https://lumen.santi020k.com/templates) for complete analytics,

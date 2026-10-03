@@ -704,3 +704,7 @@ selection to the current list. React derives options from its current props and 
 selections through `onChange`, including controlled inputs. Disabled and read-only inputs stay closed.
 Applications should keep focus on the input and observe `aria-activedescendant` instead of calling
 focus on option buttons. The DOM adapters match both option labels and values.
+
+## Appearance presets
+
+Choose `default`, `studio` or `glass` at the theme boundary. See [appearance presets](appearance-presets.md) for exact framework APIs. Studio follows the neutral PostLens look. Glass remains explicit per supporting surface; React Native and Compose retain solid fallbacks without adding blur dependencies. Customize semantic colors, typography and surface dimensions through public theme APIs.

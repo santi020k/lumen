@@ -51,10 +51,10 @@ public struct LumenText: View {
 
     private var font: Font {
         switch variant {
-        case .body: .body
-        case .caption: .caption
-        case .label: .callout.weight(.semibold)
-        case .title: .title2.weight(.bold)
+        case .body: theme.textStyles.body
+        case .caption: theme.textStyles.caption
+        case .label: theme.textStyles.label
+        case .title: theme.textStyles.title
         }
     }
 
@@ -124,24 +124,27 @@ public struct LumenSurface<Content: View>: View {
     private let padding: LumenSurfacePadding
     private let radius: LumenSurfaceRadius
     private let tone: LumenSurfaceTone
+    private let material: LumenSurfaceMaterial
 
     public init(
         tone: LumenSurfaceTone = .surface,
         padding: LumenSurfacePadding = .md,
         radius: LumenSurfaceRadius = .md,
+        material: LumenSurfaceMaterial = .solid,
         @ViewBuilder content: () -> Content
     ) {
         self.content = content()
         self.padding = padding
         self.radius = radius
         self.tone = tone
+        self.material = material
     }
 
     public var body: some View {
         content
-            .padding(padding.value)
-            .background(backgroundColor)
-            .clipShape(RoundedRectangle(cornerRadius: radius.value, style: .continuous))
+            .padding(padding.value * theme.appearance.spacingScale)
+            .modifier(LumenSurfaceBackground(color: backgroundColor, material: material))
+            .clipShape(RoundedRectangle(cornerRadius: radius.value * theme.appearance.radiusScale, style: .continuous))
     }
 
     private var backgroundColor: Color {

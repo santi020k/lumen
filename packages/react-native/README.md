@@ -337,6 +337,10 @@ See the [native compatibility matrix](../../docs/native-compatibility.md) for Re
 baselines, and use the [native device validation matrix](../../docs/native-device-validation.md) for
 VoiceOver and TalkBack evidence.
 
+## Appearance presets
+
+Start with `createLumenTheme(scheme, { preset: 'studio' })` or `<LumenProvider preset="studio">`. Theme options support custom numeric scales and semantic colors. See [appearance presets](../../docs/appearance-presets.md) for the opaque material fallback.
+
 ## Data visualization
 
 `LumenSparkline`, `LumenLineChart`, `LumenBarChart`, `LumenPieChart`, `LumenScatterChart`,

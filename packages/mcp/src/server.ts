@@ -88,6 +88,12 @@ const searchOutputSchema = z.strictObject({
 
 const tokensOutputSchema = z.strictObject({
   tokens: z.strictObject({
+    presets: z.strictObject({
+      attribute: z.string().trim(),
+      names: z.array(z.enum(['default', 'studio', 'glass'])),
+      schemeAttribute: z.string().trim(),
+      materialPolicy: z.literal('explicit-surfaces')
+    }),
     chart: z.record(z.string(), z.string().trim()),
     colors: z.record(z.string(), z.string().trim()),
     glass: z.record(z.string(), z.string().trim()),
