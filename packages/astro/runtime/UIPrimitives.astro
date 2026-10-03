@@ -4069,7 +4069,14 @@ const initThemeBuilders = (scope: ParentNode): void => {
     const modeButtons = [...root.querySelectorAll<HTMLButtonElement>('[data-ui-theme-mode]')]
     const schemeButtons = [...root.querySelectorAll<HTMLButtonElement>('[data-ui-theme-scheme]')]
     const presetButtons = [...root.querySelectorAll<HTMLButtonElement>('[data-ui-theme-preset]')]
-    let currentPreset = root.getAttribute('data-ui-theme-preset')
+    const initialPreset = root.getAttribute('data-ui-theme-preset')
+    let currentPreset = initialPreset === 'custom' ? null : initialPreset
+
+    for (const button of presetButtons) {
+      button.setAttribute('aria-pressed', String(button.getAttribute('data-ui-theme-preset') === (currentPreset ?? 'custom')))
+    }
+
+    setThemeBuilderPressedState(presetButtons, 'data-ui-theme-preset', currentPreset ?? 'custom')
 
     const hasTokenControls = Boolean(
       presetButtons.length || currentPreset ||

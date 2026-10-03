@@ -4,6 +4,31 @@ This working record tracks the local `release/v4.0.0` candidate. It is not publi
 production qualification evidence. Consumer audits inspect application source; application
 data, deployment, and migration remain owned by those projects.
 
+## October 3 branch consolidation
+
+The release checkout's pending component, phone, flag, and documentation work is preserved in
+`d8119066`. The combined candidate through `b2463284` contains the completed content-flow,
+documentation-example, Compose-control, component-behavior, and native-quality histories,
+including the later Elements Toast example and static native graphics entrypoint commits.
+Git ancestry checks confirmed containment of every original development branch.
+
+Integration fixes preserve the normalized `PhoneNumber.value` when adapting adjacent React
+`PhoneInput` examples, declare the existing jsdom catalog dependency for documentation tests,
+and reconcile generated MCP data, native API inventories, and stability-baseline hashes.
+
+The fully merged local branches `feature/content-flow`, `docs/component-examples`,
+`fix/v4-component-behavior`, and `feature/compose-v4-fields` were deleted after checking their
+checkouts were clean and their tips were contained in the release. Their detached checkouts and
+ignored files remain available. Stashes and remote branches are preserved. Branches owned by
+active chats remain in place; new work created during consolidation is outside this snapshot.
+
+Local Swift testing passed 52 tests. Compose `test lint apiCheck` passed with the installed JDK 21
+and Android SDK. These checks do not establish physical-device, store, or publication readiness.
+The combined build, 23-task type check, 1,109 tests, zero-warning lint, and spelling checks passed.
+The existing production-dependency audit still reports three high-severity advisories without
+patched releases (`node-forge`, `http-cache-semantics`, and `braces`), so the exhaustive release
+gate remains blocked. Consolidation and branch cleanup are local; nothing was pushed or published.
+
 ## Consolidation
 
 The release starts from `origin/main` at `3d8af731`. The initial checkout had one worktree,
@@ -295,3 +320,23 @@ concurrently integrated v4 work.
 The latest canonical lint passed all 23 tasks and spell checking found no issues. The read-only
 network security audit still reports the three dependency advisories listed above, so full
 `pnpm run validate` cannot be declared passing. No audit suppression was added.
+
+## Appearance preset implementation
+
+Default, Studio and Glass appearances now come from the canonical token document. Studio uses
+PostLens's neutral palette as a reference; explicit glass remains limited to selected supporting
+surfaces. The theme playground includes radius, spacing and border controls and an illustrative
+photo workspace. Web adapters share scoped tokens and exportable appearance values. SwiftUI,
+React Native and Compose expose preset palettes and native appearance customization.
+
+Local verification passes 1,134 JavaScript tests, type checking, build, zero-warning lint,
+spelling, three preset browser regressions, 53 Swift tests and Compose tests, lint and binary
+API checks. Apple API inventories were rebuilt for macOS, iOS, tvOS, visionOS and watchOS.
+Desktop and mobile screenshots were inspected in light and dark. Native API changes restart
+the two-iteration stability period; no physical-device qualification is claimed.
+
+The full `pnpm run validate` gate currently stops at `check:security`: three pre-existing high
+advisories in node-forge, http-cache-semantics and braces, with no patched versions reported by
+the audit. The appearance branch uses the current release lockfile without dependency changes.
+Release integration remains blocked rather than bypassing that gate. No packages were published
+and no remote branch was pushed.

@@ -7965,7 +7965,14 @@ class LumenThemeBuilderBehaviorElement extends LumenElement {
     ]
 
     const presetButtons = [...this.querySelectorAll<HTMLButtonElement>('[data-ui-theme-preset]')]
-    let currentPreset = this.getAttribute('data-ui-theme-preset')
+    const initialPreset = this.getAttribute('data-ui-theme-preset')
+    let currentPreset = initialPreset === 'custom' ? null : initialPreset
+
+    for (const button of presetButtons) {
+      button.setAttribute('aria-pressed', String(button.getAttribute('data-ui-theme-preset') === (currentPreset ?? 'custom')))
+    }
+
+    this.setPressedState(presetButtons, 'data-ui-theme-preset', currentPreset ?? 'custom')
 
     const importButton = this.querySelector<HTMLButtonElement>(
       '[data-ui-theme-import]'

@@ -98,7 +98,7 @@ the recommended material. `LumenSurface` and `LumenCard` consume surface dimensi
 `LumenTextStyles` customizes body, caption, label and title fonts while allowing Dynamic Type.
 Custom palettes can still use `colors.overriding(...)`; pass the preset's appearance when creating
 the customized `LumenTheme`. Glass is explicitly selected per Surface or default Card and uses
-SwiftUI's standard material. Reduce Transparency and increased contrast select the solid palette
+SwiftUI's standard material where available; watchOS before 10 retains solid surfaces. Reduce Transparency and increased contrast select the solid palette
 fallback. Status cards retain their solid semantic fill.
 
 ## React Native

@@ -21,6 +21,7 @@ test('appearance presets keep preview, dimensions and exports in sync', async ({
   await expect(preview).toHaveCSS('--ui-radius', '0.75rem')
   await builder.locator('[data-ui-theme-scheme="dark"]').click()
   await expect(output).toHaveValue(/--canvas: 0 0% 7%;/)
+  await expect(preview.locator('.ui-toggle').last()).toHaveCSS('color', 'rgb(204, 204, 204)')
   await builder.locator('[data-ui-theme-preset="glass"]').click()
   await expect(output).toHaveValue(/--glass-blur: 22px;/)
   await builder.locator('[data-ui-theme-preset="custom"]').click()

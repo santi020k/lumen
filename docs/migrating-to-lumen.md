@@ -79,90 +79,26 @@ Lumen components communicate using standard DOM CustomEvents, primarily prefixed
 
 Listen to these events on the document, or on the component root `[data-ui-*]` elements.
 
+### Major-version upgrades
+
+Use the guide for your starting version:
+
+- [Lumen 2 → 3](migrating-v2-to-v3.md): coordinated package updates and Swift icon switches.
+- [Lumen 3 → 4](migrating-v3-to-v4.md): the unpublished v4 candidate, spacing changes,
+  component behavior, native signatures, and consumer verification.
+
+For a v2 application targeting v4, complete and verify both steps in order. The `lumen migrate v2`
+command below migrates v1 contracts to v2; it does not automate either later upgrade.
+
 ### Migrating from version 3 to version 4
 
-#### Content flow and layout spacing
-
-Web Stack/Grid gap sizes now match the canonical foundation scale: `md` is 12px, `lg` is 16px,
-and `xl` is 24px. To preserve a v3 explicit layout, replace old `md` with `group` (or `lg`), old
-`lg` with `xl`, and old `xl` with `2xl`. Defaults remain 16px through `gap="group"`. New choices
-include `xs`, `2xl`, `3xl`, `related`, `group` and `section`; do not change native gap props by
-applying this web-only migration. Native numeric spacing values are unchanged.
-
-Card now owns direct-child spacing with gap instead of child margins. Comfortable padding becomes
-24px; compact uses 16px and spacious 32px. Card content alone no longer receives a phantom top gap.
-Hidden/empty parts leave no space and footer actions wrap. Remove compensating section margins,
-negative offsets and child padding for the same relationship. Stack/Grid also reset direct-child
-external margins; custom unlayered CSS and documented Card variables can override defaults.
-Field spacing now uses the related token (8px). See [content flow](content-flow.md).
-
-Container side gutters now grow from 16px on a narrow phone to 32px on wider screens. Set
-`--ui-container-gutter: 1rem` on the Container to preserve a fixed gutter; `size="full"` is still
-edge-to-edge. Prose and Typography trim their first/last child margins and give headings more room
-above than below. Remove offsets that compensated for the old reading-block margins.
-
-Card no longer clips overflow. Move media clipping into AspectRatio, keeping Image `radius="none"`
-inside that rounded frame. Verify custom menus and focus rings rather than restoring card-wide
-clipping. Wrapping Stack actions now allow long labels to wrap inside their available width.
-
-Before publication, rollback is reverting this candidate commit or continuing to use released v3
-packages. After publication, use a new version for corrections; do not move published tags.
-
-Lumen 4 consolidates fixes from twenty consumer audits. Upgrade the adapter and its companion
-packages together, import the matching stylesheet, and rebuild native consumers. The v4 branch
-is a local release candidate; published projects in the showcase still use their deployed versions.
-
-| Surface | Required review |
-| --- | --- |
-| Charts | Use stable, unique X identities. Duplicate identities report validation issues and only the first observation appears in the plot and data table. Use `xLabel` for short axis text and `formatCategory` for full details. Remove old padding, axis and graph-background patches only after comparing the real chart. |
-| React DataTable | For server-paginated results, use controlled `sort`/`onSortChange` and `sortMode="manual"`. Fetch sorted data before pagination; the table preserves the supplied page order. |
-| React Dialog | Set `dismissOnOutsidePress` and `dismissOnEscape` explicitly for pending workflows. Focus returns to the connected opener, including controlled dialogs and nested modal cleanup. |
-| Web dates | `DatePicker` puts `id` on its focusable trigger; the native date input uses `${id}-native`. Associate labels with the trigger. Dates remain strict local-calendar `YYYY-MM-DD` strings. Invalid, reversed or out-of-bounds ranges cannot be applied. |
-| Buttons | The visible label lives inside `.ui-button__content`, including while loading. Review direct-child CSS selectors. Disabled/loading slotted actions block click and keyboard activation; independently disable nested file inputs or other interactive descendants. |
-| Hidden content | The native `hidden` attribute wins over Lumen flex/grid display rules. Remove the attribute to show the element; `hidden="false"` still means hidden in HTML. `hidden="until-found"` retains browser find behavior. |
-| Code and CodeTabs | Localize `codeLabel`, `copyLabel`, `copiedLabel` and `errorLabel` (kebab-case attributes in Elements). Overflowing code is a named keyboard region. Remove duplicate clipboard controllers and announce actual success or failure. |
-| NavigationMenu | Ordinary links keep native Tab order. Do not depend on a single roving Tab stop for site navigation. |
-| Astro ThemeToggle | A controlled toggle leaves initial document theme ownership to the application. Initialize the theme before rendering and persist it in the application's change handler. |
-| SwiftUI / Compose | Rebuild for changed initializers and formatter contracts. Swift charts accept `bare` and `height`; Slider accepts `showsLabel` and announces `valueLabel`. Compose numeric/time line data uses continuous X positions, including isolated observations. |
-| Native sheets | SwiftUI and Compose sheet signatures add `dismissible` and `scrollable`; rebuild consumers. Set `scrollable` false for native lazy or virtualized content. Prevent interactive dismissal while saving. React Native accepts `initialFocusRef` and `returnFocusRef` for explicit application-owned focus targets. |
-| Native localization | React Native and Compose field groups accept `requiredLabel`; tab panels use the selected visible label unless `panelAccessibilityLabel` is supplied. Localize these descriptions together with visible labels. SwiftUI resolves the `Required` key through application localization. |
-| Embedded MCP server | `createLumenServer()` returns the stable SDK v2 `McpServer` from `@modelcontextprotocol/server`. Migrate SDK imports and transports together; do not mix SDK v1 and v2 objects. |
-
-The refreshed icon catalog adds Swift `LumenIconName.bangladeshiTaka`, `.layoutGridCircles`,
-`.letters`, and `.printer3d`. Handle these cases in exhaustive Swift switches or provide an
-appropriate fallback before rebuilding. Existing case names and raw values remain available.
-Compose exposes the same additions as `LumenIconName.BangladeshiTaka`, `.LayoutGridCircles`,
-`.Letters`, and `.Printer3d`.
-
-For embedded MCP integrations, replace `@modelcontextprotocol/sdk/server/mcp.js` imports with
-`@modelcontextprotocol/server` and import `StdioServerTransport` from
-`@modelcontextprotocol/server/stdio`. Client-side SDK code moves to
-`@modelcontextprotocol/client` and `@modelcontextprotocol/client/stdio`. Follow the
-[official SDK v2 migration guide](https://ts.sdk.modelcontextprotocol.io/v2/migration/upgrade-to-v2)
-for other programmatic integrations. Lumen's CLI commands, stateless HTTP endpoint, tool names,
-argument schemas, resource URIs, and existing `2025-11-25` protocol handshake remain unchanged;
-MCP clients connecting over stdio or HTTP do not need to change their Lumen configuration.
-
-`ImageComparison` is new across Astro, React and Elements. See the [media comparison guide](image-comparison.md)
-for full-size media framing, RTL, labels and controlled state. The [reporting example](https://lumen.santi020k.com/docs/web/reporting)
-combines range drafts, a chart and a dialog using synthetic data. The [chart guide](data-visualization.md)
-explains missing data, formatting and accessible data tables.
-
-Test the actual consumer with light/dark themes, phone/desktop widths, keyboard navigation,
-clipboard denial, empty/singleton/dense charts, invalid dates and pending submissions. Existing
-application workarounds are evidence to investigate, not a list to delete automatically. Lumen
-performs no data migration and does not change application reporting, financial or medical policy.
+See the [dedicated v3 → v4 migration guide](migrating-v3-to-v4.md). It includes the content-flow
+spacing map, component review checklist, native API changes, and candidate installation policy.
 
 ### Migrating from version 2 to version 3
 
-Lumen 3 synchronizes the expanded interface icon catalog across native adapters. Existing
-component calls and existing `LumenIconName` cases remain available. Swift consumers that switch
-exhaustively over `LumenIconName` must handle the newly synchronized cases or include an
-`@unknown default` branch before updating their package pin to `3.0.0`.
-
-No web, React Native, or Compose component migration is required solely for the major-version
-change. Update coordinated package pins together, rebuild generated clients, and run the
-application's native compile and accessibility checks before release.
+See the [dedicated v2 → v3 migration guide](migrating-v2-to-v3.md). Existing component calls remain
+available; Swift exhaustive icon switches need review before rebuilding.
 
 ### Version 1 compatibility removals
 
@@ -285,14 +221,6 @@ links; keep the site logo, theme switch, account menu, and unrelated utility act
 root so they retain independent Tab stops. Use `variant="unstyled"` when adopting the navigation
 semantics and runtime inside an established visual system. `Sidebar variant="unstyled"` and
 `Link variant="inherit"` provide the matching low-presentation migration path.
-
-## Combobox focus and nested Escape
-
-V4 keeps focus in editable Combobox inputs. Update tests and custom option styling that assumed
-option buttons receive focus to use `aria-activedescendant` and `aria-selected` instead. Arrow keys
-activate an option; Enter commits it. Enter without an active option retains native form behavior.
-Nested controls consume their own Escape dismissal. Parent keyboard handlers should honor
-`event.defaultPrevented` before closing or moving focus. No persisted data migration is required.
 
 ## V4 appearance configuration
 

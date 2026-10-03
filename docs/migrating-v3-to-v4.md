@@ -1,0 +1,219 @@
+# Migrating from Lumen 3 to Lumen 4
+
+This guide targets the local `release/v4.0.0` candidate, using `v3.0.1` as the Swift API baseline.
+V4 is unpublished and its contract is still draft. These instructions describe the checked-in
+candidate, not a completed production release. Review the [readiness record](lumen-4-readiness.md)
+and [v4 contract](../registry/lumen-4-contract.json) before choosing a release revision.
+
+## Upgrade the dependencies
+
+1. Commit a working v3 baseline with manifests and lock files, and record your current Lumen pins.
+2. Update only the adapters and companion packages your application uses. Do not install every
+   adapter. Keep their versions aligned with the [release manifest](../registry/release-manifest.json),
+   including direct core, token, icon, template, form-integration, and MCP dependencies when used.
+3. Before publication, evaluate built local packages or tarballs from one reviewed candidate
+   revision. Native consumers must use that same revision or locally built artifacts. Do not
+   assume `@4`, Swift tag `v4.0.0`, or Maven artifacts exist because manifests say `4.0.0`.
+4. After v4 publication, update your existing dependencies to the published v4 versions, resolve
+   their peer requirements, commit lock files, and rebuild the actual consumer.
+
+For example, **only after publication**, an Astro application's adapter update is:
+
+```bash
+pnpm add @santi020k/lumen-astro@4
+```
+
+Use your application's own package manager. The Lumen repository's pnpm 12 requirement applies
+only to contributors; it does not require consumer applications to change package manager.
+Astro still imports its default runtime from `@santi020k/lumen-astro/runtime`; React still loads
+`@santi020k/lumen-react/styles.css`; Elements still registers `defineLumenElements` once. Keep the
+matching stylesheet and existing integration setup. Check adapter manifests and the
+[native compatibility matrix](native-compatibility.md) for runtime and peer constraints.
+
+There is no v3/v4 source codemod. `lumen migrate v2` is only for v1 → v2 contracts. Use the manual
+changes below, then run the consumer's diagnostics, build, and interaction tests.
+
+
+## Content flow and layout spacing
+
+For explicit web Stack/Grid gaps, preserve the old size with this map (pixel equivalents assume
+an unchanged 16px root):
+
+| V3 gap | V3 size | V4 replacement preserving size |
+| --- | --- | --- |
+| `none` | 0 | `none` |
+| `sm` | 8px | `sm` |
+| `md` | 16px | `group` or `lg` |
+| `lg` | 24px | `xl` |
+| `xl` | 32px | `2xl` |
+| Omitted | 16px | Omit it, or use `group` |
+
+```astro
+<!-- V3 -->
+<Stack gap="md"><slot /></Stack>
+<!-- V4: preserve 16px between children -->
+<Stack gap="group"><slot /></Stack>
+```
+
+React uses the same gap prop; Elements uses `gap` on `<lumen-stack>` and `<lumen-grid>`.
+
+
+Web Stack/Grid gap sizes now match the canonical foundation scale: `md` is 12px, `lg` is 16px,
+and `xl` is 24px. To preserve a v3 explicit layout, replace old `md` with `group` (or `lg`), old
+`lg` with `xl`, and old `xl` with `2xl`. Defaults remain 16px through `gap="group"`. New choices
+include `xs`, `2xl`, `3xl`, `related`, `group` and `section`; do not change native gap props by
+applying this web-only migration. Native numeric spacing values are unchanged.
+
+Card now owns direct-child spacing with gap instead of child margins. Comfortable padding becomes
+24px; compact uses 16px and spacious 32px. Card content alone no longer receives a phantom top gap.
+Hidden/empty parts leave no space and footer actions wrap. Remove compensating section margins,
+negative offsets and child padding for the same relationship. Stack/Grid also reset direct-child
+external margins; custom unlayered CSS and documented Card variables can override defaults.
+Field spacing now uses the related token (8px). See [content flow](content-flow.md).
+
+Container side gutters now grow from 16px on a narrow phone to 32px on wider screens. Set
+`--ui-container-gutter: 1rem` on the Container to preserve a fixed gutter; `size="full"` is still
+edge-to-edge. Prose and Typography trim their first/last child margins and give headings more room
+above than below. Remove offsets that compensated for the old reading-block margins.
+
+Card no longer clips overflow. Move media clipping into AspectRatio, keeping Image `radius="none"`
+inside that rounded frame. Verify custom menus and focus rings rather than restoring card-wide
+clipping. Wrapping Stack actions now allow long labels to wrap inside their available width.
+
+Before publication, rollback is reverting this candidate commit or continuing to use released v3
+packages. After publication, use a new version for corrections; do not move published tags.
+
+## Component behavior checklist
+
+Lumen 4 consolidates fixes from twenty consumer audits. Upgrade the adapter and its companion
+packages together, import the matching stylesheet, and rebuild native consumers. The v4 branch
+is a local release candidate; published projects in the showcase still use their deployed versions.
+
+| Surface | Required review |
+| --- | --- |
+| Charts | Use stable, unique X identities. Duplicate identities report validation issues and only the first observation appears in the plot and data table. Use `xLabel` for short axis text and `formatCategory` for full details. Remove old padding, axis and graph-background patches only after comparing the real chart. |
+| React DataTable | For server-paginated results, use controlled `sort`/`onSortChange` and `sortMode="manual"`. Fetch sorted data before pagination; the table preserves the supplied page order. |
+| React Dialog | Set `dismissOnOutsidePress` and `dismissOnEscape` explicitly for pending workflows. Focus returns to the connected opener, including controlled dialogs and nested modal cleanup. |
+| Web dates | `DatePicker` puts `id` on its focusable trigger; the native date input uses `${id}-native`. Associate labels with the trigger. Dates remain strict local-calendar `YYYY-MM-DD` strings. Invalid, reversed or out-of-bounds ranges cannot be applied. |
+| Buttons | The visible label lives inside `.ui-button__content`, including while loading. Review direct-child CSS selectors. Disabled/loading slotted actions block click and keyboard activation; independently disable nested file inputs or other interactive descendants. |
+| Hidden content | The native `hidden` attribute wins over Lumen flex/grid display rules. Remove the attribute to show the element; `hidden="false"` still means hidden in HTML. `hidden="until-found"` retains browser find behavior. |
+| Code and CodeTabs | Localize `codeLabel`, `copyLabel`, `copiedLabel` and `errorLabel` (kebab-case attributes in Elements). Overflowing code is a named keyboard region. Remove duplicate clipboard controllers and announce actual success or failure. |
+| NavigationMenu | Ordinary links keep native Tab order. Do not depend on a single roving Tab stop for site navigation. |
+| Astro ThemeToggle | A controlled toggle leaves initial document theme ownership to the application. Initialize the theme before rendering and persist it in the application's change handler. |
+| SwiftUI / Compose | Rebuild for changed initializers and formatter contracts. Swift charts accept `bare` and `height`; Slider accepts `showsLabel` and announces `valueLabel`. Compose numeric/time line data uses continuous X positions, including isolated observations. |
+| Native sheets | SwiftUI and Compose sheet signatures add `dismissible` and `scrollable`; rebuild consumers. Set `scrollable` false for native lazy or virtualized content. Prevent interactive dismissal while saving. React Native accepts `initialFocusRef` and `returnFocusRef` for explicit application-owned focus targets. |
+| Native localization | React Native and Compose field groups accept `requiredLabel`; tab panels use the selected visible label unless `panelAccessibilityLabel` is supplied. Localize these descriptions together with visible labels. SwiftUI resolves the `Required` key through application localization. |
+| Embedded MCP server | `createLumenServer()` returns the stable SDK v2 `McpServer` from `@modelcontextprotocol/server`. Migrate SDK imports and transports together; do not mix SDK v1 and v2 objects. |
+
+The refreshed icon catalog adds Swift `LumenIconName.bangladeshiTaka`, `.layoutGridCircles`,
+`.letters`, and `.printer3d`. Handle these cases in exhaustive Swift switches or provide an
+appropriate fallback before rebuilding. Existing case names and raw values remain available.
+Compose exposes the same additions as `LumenIconName.BangladeshiTaka`, `.LayoutGridCircles`,
+`.Letters`, and `.Printer3d`.
+
+For embedded MCP integrations, replace `@modelcontextprotocol/sdk/server/mcp.js` imports with
+`@modelcontextprotocol/server` and import `StdioServerTransport` from
+`@modelcontextprotocol/server/stdio`. Client-side SDK code moves to
+`@modelcontextprotocol/client` and `@modelcontextprotocol/client/stdio`. Follow the
+[official SDK v2 migration guide](https://ts.sdk.modelcontextprotocol.io/v2/migration/upgrade-to-v2)
+for other programmatic integrations. Lumen's CLI commands, stateless HTTP endpoint, tool names,
+argument schemas, resource URIs, and existing `2025-11-25` protocol handshake remain unchanged;
+MCP clients connecting over stdio or HTTP do not need to change their Lumen configuration.
+
+`ImageComparison` is new across Astro, React and Elements. See the [media comparison guide](image-comparison.md)
+for full-size media framing, RTL, labels and controlled state. The [reporting example](https://lumen.santi020k.com/docs/web/reporting)
+combines range drafts, a chart and a dialog using synthetic data. The [chart guide](data-visualization.md)
+explains missing data, formatting and accessible data tables.
+
+Test the actual consumer with light/dark themes, phone/desktop widths, keyboard navigation,
+clipboard denial, empty/singleton/dense charts, invalid dates and pending submissions. Existing
+application workarounds are evidence to investigate, not a list to delete automatically. Lumen
+performs no data migration and does not change application reporting, financial or medical policy.
+
+
+## Combobox focus and nested Escape
+
+V4 keeps focus in editable Combobox inputs. Update tests and custom option styling that assumed
+option buttons receive focus to use `aria-activedescendant` and `aria-selected` instead. Arrow keys
+activate an option; Enter commits it. Enter without an active option retains native form behavior.
+Nested controls consume their own Escape dismissal. Parent keyboard handlers should honor
+`event.defaultPrevented` before closing or moving focus. No persisted data migration is required.
+
+## Phone inputs, virtual lists, and external editors
+
+- Astro and React PhoneInput `id` now names the number input. Update labels and DOM queries that
+  assumed it named an outer frame. Elements uses `input-id` for the inner control; its host `id`
+  remains a host identifier. Replace flag overlays and attribute patches with public props and
+  parts after checking disabled, read-only, error, and long-number states.
+- VirtualList uses fixed-height windows and inert spacers to preserve scroll height. Range
+  endpoints are inclusive; an empty list reports `endIndex: -1`. Update consumers that interpreted
+  the endpoint as exclusive. Verify changing rows, resized containers, retained row focus, and
+  cleanup. Use a list suited to variable-height content rather than assuming rows are measured.
+- An external rich-text engine must execute commands during the cancelable
+  `ui:editor-command-request` event, call `preventDefault()`, and set `detail.executed` to its
+  synchronous success result. React can supply `commandHandler` to `useRichTextEditor` instead.
+  `ui:editor-command` reports completion; remove handlers that execute the command a second time.
+  Failed external commands never fall back to browser execution. See [AI usage](ai-usage.md)
+  for engine ownership and toolbar-state examples.
+
+## Appearance presets and customization
+
+Default, Studio and Glass presets are opt-in. Existing calls retain their color defaults. Use
+`data-lumen-preset` on a web root or section and `data-lumen-scheme` when the section owns its
+scheme. ThemeBuilder can adjust radius, spacing and structural border dimensions and export
+those values. Preserve readable foreground/background pairs when overriding action colors.
+
+Native adapters accept preset palettes and appearance overrides. Rebuild Swift and Compose
+consumers for the defaulted appearance and material parameters. Swift initializer references for
+Theme, Surface and Card must adopt the new signatures. Glass remains explicit per supporting
+surface; SwiftUI honors reduced transparency and increased contrast, while React Native and
+Compose use opaque fallbacks. See [appearance presets](appearance-presets.md) for exact APIs.
+No application data migration is involved.
+
+## Native rebuild checklist
+
+The [v4 contract](../registry/lumen-4-contract.json) lists the reviewed Swift diagnostics relative
+to `v3.0.1`. Defaulted parameters preserve many ordinary source calls but change method references
+and compiled signatures. Rebuild app and framework targets; do not reuse binaries compiled
+against v3. Replace stored initializer/function references with closures that call the v4 API
+using named arguments where needed.
+
+| Native surface | V4 action |
+| --- | --- |
+| Swift `LumenLineChart` / `LumenBarChart` | Rebuild for `bare` and `height` parameters; review chart frames and formatter-driven labels. |
+| Swift `LumenSlider` overloads | Rebuild for `showsLabel`; supply an accessible `valueLabel` when hiding the visual heading. |
+| Swift `LumenSymbolPicker` / `LumenSymbolPickerButton` | Update initializer references for contextual tint and selection-completion parameters; ordinary calls keep default options. |
+| Swift `lumenSheet` / Compose sheets | Rebuild for `dismissible` and `scrollable`; disable dismissal during pending saves and avoid wrapping lazy content in another scrolling body. |
+| Swift exhaustive `LumenIconName` switches | Handle the four new cases listed above or use a deliberate fallback. |
+| Compose charts | Numeric/time X values use continuous positions; compare irregular intervals and isolated observations. |
+| React Native sheets | Supply `initialFocusRef` / `returnFocusRef` when application-owned focus targets are needed; verify focus on device. |
+| React Native / Compose localization | Translate `requiredLabel` and optional `panelAccessibilityLabel`; check screen-reader descriptions with visible labels. |
+
+Swift resolves the `Required` localization key in the application. See [native patterns](native-patterns.md)
+and [native quality](lumen-4-native-quality.md) for platform-specific compositions.
+React Native's optional `/foundations` entrypoint reduces the import graph for basic primitives;
+existing root imports remain supported. Adopt it only when its exported catalog covers the surface.
+
+## Consumer acceptance and rollback
+
+1. Resolve dependencies from one candidate revision (or one published release), then run the
+   application's lint, strict typecheck, tests, and production build. Compile each native target.
+2. Compare representative routes in light/dark themes at phone and desktop widths. Check explicit
+   gaps, Card density, media clipping, long translations, code overflow, and visible focus rings.
+3. Exercise labels and form submission, invalid/reversed/out-of-bounds dates, form reset,
+   read-only/disabled states, loading actions, and clipboard failure. For charts test empty,
+   singleton, dense, duplicate, and missing data; for tables verify sorting before pagination.
+4. Check Combobox typing, arrows, Enter and nested Escape; ordinary navigation Tab stops; dialog
+   opener restoration; and virtual-list focus after data changes. Keep app-specific workarounds
+   until equivalent behavior is verified.
+5. On native targets, test keyboard-visible actions, large text, screen-reader labels, sheet
+   dismissal protection, lazy scrolling, and safe areas. Simulator/emulator builds and library
+   tests alone do not prove physical-device behavior or production consumer qualification.
+
+If validation fails, restore the prior application commit and its manifests/lock files, reinstall
+v3 dependencies, and rebuild all targets. Keep any application data changes separate from this UI
+upgrade so rollback does not require reversing persisted data. Before publication, candidate
+corrections can be ordinary commits; after publication, corrections require a new version and
+must not replace a published tag.
+
+For a starting v2 application, first complete [v2 → v3](migrating-v2-to-v3.md).

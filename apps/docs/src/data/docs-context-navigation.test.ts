@@ -8,6 +8,14 @@ import {
 } from './docs-context-navigation'
 
 describe('documentation context navigation', () => {
+  test('marks the migration collection current on either version guide', () => {
+    const links = getDocsContextLinks(undefined)
+
+    for (const route of ['/docs/migrations', '/docs/migrations/v2-to-v3', '/docs/migrations/v3-to-v4']) {
+      expect(getCurrentDocsContextLink(links, route)?.label).toBe('Migration guides')
+    }
+  })
+
   test('gives every platform a focused overview and deeper navigation', () => {
     for (const platform of ['web', 'react-native', 'apple', 'android', 'foundations'] as const) {
       const links = getDocsContextLinks(platform)

@@ -429,3 +429,22 @@ import { LumenButton, LumenProvider } from '@santi020k/lumen-react-native/founda
 Run `pnpm run measure:react-native-imports` from the repository to compare production Hermes
 bytecode for a platform baseline, root button, root icon, and foundation button. Build time is a
 local build measurement; it does not establish native startup latency or scrolling performance.
+
+
+### Static graphic imports
+
+For app-owned SVG components, import `LumenIcon` and `LumenIconButton` from
+`@santi020k/lumen-react-native/graphics`. This entrypoint shares the root rendering, theme,
+touch-target, and accessibility behavior without loading the named icon catalog. Its `icon` prop
+is required; named `name` lookups remain available from the package root. Graphic components accept
+`LumenIconGraphicProps` (`color`, `size`, and `strokeWidth`). Do not import the root catalog to
+construct a static graphic, since that restores its eager import cost.
+
+```tsx
+import { LumenIcon, LumenProvider } from '@santi020k/lumen-react-native/graphics'
+import { SearchGraphic } from './SearchGraphic'
+
+<LumenProvider>
+  <LumenIcon icon={SearchGraphic} label="Search records" />
+</LumenProvider>
+```

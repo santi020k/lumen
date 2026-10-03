@@ -1569,6 +1569,7 @@ describe('@santi020k/lumen-elements', () => {
     })
 
     expect(preview?.style.getPropertyValue('--brand')).toBe('264 85% 53%')
+    expect(root?.querySelector('[data-ui-theme-preset="custom"]')?.getAttribute('aria-pressed')).toBe('true')
     root?.querySelector<HTMLButtonElement>('[data-ui-theme-preset="studio"]')?.click()
     expect(preview?.style.getPropertyValue('--brand')).toBe('0 0% 9%')
     expect(preview?.style.getPropertyValue('--ui-shadow-md')).toBe('none')
