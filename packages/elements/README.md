@@ -255,6 +255,18 @@ or `variant="glass"` for selective translucency.
 
 ## Data visualization
 
+The web visualization milestone adds `WaterfallChart` for signed changes and explicit totals, and
+`Histogram` for precomputed numeric bins (`frequency="density"` for unequal widths). Line charts
+support explicit continuous axes, annotations, optional keyboard/pointer/touch inspection, and
+synchronized cursors. Heatmaps show labeled axes, a color legend, and explicit missing cells.
+See the [visualization contracts](../../docs/data-visualization.md) and
+[interactive web example](https://lumen.santi020k.com/docs/web/data-visualization).
+
+Use `<lumen-histogram bins="...">` and `<lumen-waterfall-chart data="...">` with JSON arrays.
+`<lumen-line-chart interactive x-scale="time" sync-group="report">` emits
+`ui:chart-cursor-change` with `{ x }`. Set `annotations` to a JSON array.
+
+
 Set serializable `series` data through the JavaScript property for application data. The JSON
 attribute form is useful for static HTML and server output.
 

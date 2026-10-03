@@ -1,0 +1,27 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+import { createLumenWaterfallGeometry, type LumenChartLabels, type LumenWaterfallDatum, resolveLumenChartLabels } from '@santi020k/lumen-core'
+
+import IntervalChart from '../internal/IntervalChart.astro'
+
+interface Props extends HTMLAttributes<'figure'> {
+  caption?: string
+  class?: string | null
+  className?: string
+  data: readonly LumenWaterfallDatum[]
+  description?: string
+  formatValue?: (value: number) => string
+  heading?: string
+  labels?: Partial<LumenChartLabels>
+  presentation?: 'bare' | 'default'
+  showTable?: boolean
+  summary?: string
+  valueLabel?: string
+}
+
+const { data, class: classProp, className, formatValue = String, labels, valueLabel = resolveLumenChartLabels(labels).value, ...rest } = Astro.props
+const model = createLumenWaterfallGeometry(data, { formatValue })
+---
+
+<IntervalChart {...rest} class:list={['ui-waterfall-chart', classProp, className]} {model} {labels} {formatValue} formatBoundary={formatValue} {valueLabel} />

@@ -102,6 +102,12 @@ label overrides for other languages; pass an explicit locale during SSR.
 
 ## Chart Helpers
 
+The package root also exports `createLumenLineChartModel`, `createLumenWaterfallGeometry`,
+`createLumenHistogramGeometry`, and `createLumenHeatmapModel`. These pure models share web geometry,
+validation, ticks, and annotations. The optional `createLumenChartInteractionController` owns only
+DOM listeners and cursor/legend state; call `destroy()` when removing its surface.
+
+
 `@santi020k/lumen-core/charts` exports the shared `LumenChartSeries` contract plus deterministic
 domain, tick, scaling, line/area, grouped/stacked bar, and pie/donut geometry helpers. They render
 no DOM and perform no statistical analysis; framework packages use them to keep chart output

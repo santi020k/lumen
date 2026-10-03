@@ -225,6 +225,17 @@ Stable `data-slot` hooks expose the idle, copied, and error parts.
 
 ## Data visualization
 
+The web visualization milestone adds `WaterfallChart` for signed changes and explicit totals, and
+`Histogram` for precomputed numeric bins (`frequency="density"` for unequal widths). Line charts
+support explicit continuous axes, annotations, optional keyboard/pointer/touch inspection, and
+synchronized cursors. Heatmaps show labeled axes, a color legend, and explicit missing cells.
+See the [visualization contracts](../../docs/data-visualization.md) and
+[interactive web example](https://lumen.santi020k.com/docs/web/data-visualization).
+
+Use `interactive`, `syncGroup`, and optional `cursor`/`onCursorChange` on `LineChart`. A supplied
+`cursor` is controlled; the owner must accept requests before the selection changes.
+
+
 `Sparkline`, `BarChart`, `LineChart`, `PieChart`, `ScatterChart`, `Heatmap`, `RangeChart`, and
 `ComboChart` use the shared chart contracts and
 render without an external charting dependency. Data charts expose a revealable semantic table by

@@ -301,6 +301,17 @@ sync with the accessible label; free-form default children remain the idle prese
 
 ## Data visualization
 
+The web visualization milestone adds `WaterfallChart` for signed changes and explicit totals, and
+`Histogram` for precomputed numeric bins (`frequency="density"` for unequal widths). Line charts
+support explicit continuous axes, annotations, optional keyboard/pointer/touch inspection, and
+synchronized cursors. Heatmaps show labeled axes, a color legend, and explicit missing cells.
+See the [visualization contracts](../../docs/data-visualization.md) and
+[interactive web example](https://lumen.santi020k.com/docs/web/data-visualization).
+
+Set `interactive` on `LineChart` and mount `UIPrimitives` to enable inspection and legend buttons.
+Static charts continue to render without client JavaScript.
+
+
 Use `Sparkline` beside a metric, `BarChart` for categorical comparison, `LineChart` for ordered
 trends, `PieChart` for a small part-to-whole breakdown, `ScatterChart` for numeric relationships,
 `Heatmap` for a matrix, `RangeChart` for intervals, and `ComboChart` for a shared-domain mix of bars,

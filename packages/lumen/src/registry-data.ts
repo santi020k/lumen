@@ -175,6 +175,8 @@ export const lumenRegistry = {
         'Heatmap',
         'RangeChart',
         'ComboChart',
+        'Histogram',
+        'WaterfallChart',
         'Stat',
         'Meter'
       ]
@@ -1371,10 +1373,13 @@ export const lumenRegistry = {
       files: [
         'packages/astro/components/LineChart.astro',
         'packages/astro/components/Chart.astro',
+        'packages/astro/internal/ChartInspection.astro',
+        'packages/astro/runtime/controllers/charts.ts',
         'packages/astro/styles/lumen.css'
       ],
       dependencies: [
         'Chart',
+        'Button',
         'styles'
       ]
     },
@@ -2673,6 +2678,38 @@ export const lumenRegistry = {
         'packages/astro/styles/lumen.css'
       ],
       dependencies: [
+        'styles'
+      ]
+    },
+    {
+      name: 'Histogram',
+      type: 'component',
+      category: 'Data display',
+      description: 'Shows application-supplied numeric bins using counts or frequency density.',
+      files: [
+        'packages/astro/components/Histogram.astro',
+        'packages/astro/internal/IntervalChart.astro',
+        'packages/astro/components/Chart.astro',
+        'packages/astro/styles/lumen.css'
+      ],
+      dependencies: [
+        'Chart',
+        'styles'
+      ]
+    },
+    {
+      name: 'WaterfallChart',
+      type: 'component',
+      category: 'Data display',
+      description: 'Explains signed changes and explicit totals with an accessible balance table.',
+      files: [
+        'packages/astro/components/WaterfallChart.astro',
+        'packages/astro/internal/IntervalChart.astro',
+        'packages/astro/components/Chart.astro',
+        'packages/astro/styles/lumen.css'
+      ],
+      dependencies: [
+        'Chart',
         'styles'
       ]
     }

@@ -70,7 +70,7 @@
       "Kbd": "14825287aa0d6ffcec6b51b61b61d8a7c44d7cba1c7c40a77a7d46d0632c25de",
       "Label": "99e27246abcea9843c5aedfac58e71478c6748fddd711953d8835bff809e6492",
       "Link": "1c1688ea85a844a67e9c3e45d0092ca7e364a3f762b21db86234d0ad0de87600",
-      "LineChart": "31ed9b8302bb06d682fab1d2bea0f59261b411d6ce75a718d20890a82a999db8",
+      "LineChart": "2a64ed52bc76aa177588179fe8a8b0d6572c7bfcc7a6ad686ebae57eb29e55af",
       "ListBox": "65724ac8eeeb0a9e43c05017ef152cfff5388627103e19bc14dcad8d5ee4d02c",
       "Marker": "b2c3679b841cee6cc4ce6322d6dd7758f85a9371bc4817a750f6de4e7c0cc3d2",
       "Menubar": "ceaa113420c1a99cc1d7e856c04b5a75d8569473ebd8a24a83c947ec3b6608e5",
@@ -159,10 +159,12 @@
       "SpeedDial": "7e8c5ceb0cfd8e941343809ccec8109c5686872c29438686a494c330955804a1",
       "Grid": "e1d0a999e32d123df1d172388a139545cdf7b8e717731b88130457395cf09f2c",
       "ScatterChart": "52b3a28d612ff20bea72e20338022b74afdcd7aa7d5974333caa69ffd7f3da91",
-      "Heatmap": "b91a12f3ac75e3a6d28be812f21c1b642d815f4bbbac15883ff23fbd2ef6b190",
+      "Heatmap": "7d97ee683c52a1192e7bf62b94dcf84de7bf3e102dceb9e2cdfd35303e918f39",
       "RangeChart": "0beb95fb40392f4b145af93bc834ae93a118a39f1b92b28708a1667b72701c23",
       "ComboChart": "c62073f57ab1e92e10911dfb2d03e4b1d072271799f4d558351b0554fb83a4ba",
-      "VisuallyHidden": "10562829ec1f598aacc2ad819e93c0cd3b257c7eec60818854a08723d9dcc888"
+      "VisuallyHidden": "10562829ec1f598aacc2ad819e93c0cd3b257c7eec60818854a08723d9dcc888",
+      "Histogram": "5112f4f7ed4023b0e0600359397a9a10bb34749992720b922b3b8136396d671c",
+      "WaterfallChart": "e9e2f3022cee121082fc73bfeb814d7b385791fcf563aa8b27c8f30a61fc92bf"
     },
     "nativeComponents": {
       "Sparkline": "9d2085fbc1153e2650ea380843dfced5abdfd307dc9c97dfeab1fc8122f3bc00",
@@ -266,7 +268,7 @@
       "data-collections": "196c6075f68446d116c865957d2da985f7a105fc241571eca392624d31664fe3",
       "theme-builder": "3603b86b90909600a7c394f7020d7196207dd07ddcc06b15f064fc5f787982bc",
       "rich-text-editor": "4605835002b64d93a4b5be826fddc2388c941dd7f35bc8ae7028c4bdd97d7311",
-      "data-visualization": "ec01f9a1c3c70ef3429eee9c39856c0b10239c1c5ec3f626c8832f76e815d4bd",
+      "data-visualization": "65bc47b440c11867b04d1c74460dc107d9f13bdb25a059c5c16b530d4601126a",
       "analytics-dashboard": "a7b7f92de998e3e3aae0e5cd31dac267ec54ad2fcf1332626850db69ffc1f990",
       "saas-admin": "672008daa6d5a79e48a10cf7ac74f8ab4bd1804b6bd38b337a44b33ac2e23f1b",
       "commerce-dashboard": "9066b376bc9edbb32b051281df8f9e7eb79187cb39f180f3aaa84a29d4b82ebb",
@@ -15479,6 +15481,42 @@
           "values": "boolean | \"subtle\" | \"strong\""
         },
         {
+          "attribute": "xScale",
+          "defaultValue": "\"categorical\"",
+          "description": "Uses numeric or elapsed-time spacing, sorted against one shared X domain. Format dates explicitly for the application locale and time zone.",
+          "values": "\"categorical\" | \"linear\" | \"time\""
+        },
+        {
+          "attribute": "domain, xDomain",
+          "defaultValue": "automatic",
+          "description": "Sets finite axis bounds shared by all series.",
+          "values": "Partial<LumenChartDomain>"
+        },
+        {
+          "attribute": "interactive, syncGroup",
+          "defaultValue": "false, unset",
+          "description": "Enables keyboard/pointer/touch inspection, toggled legends, and exact-X cursor synchronization. Astro requires UIPrimitives.",
+          "values": "boolean, string"
+        },
+        {
+          "attribute": "annotations",
+          "defaultValue": "[]",
+          "description": "Places labeled X events or Y reference lines in data coordinates.",
+          "values": "LumenChartAnnotation[]"
+        },
+        {
+          "attribute": "cursor, onCursorChange",
+          "defaultValue": "uncontrolled",
+          "description": "React can supply the active X identity and receive cursor changes. Astro and Elements emit ui:chart-cursor-change.",
+          "values": "React cursor identity and callback"
+        },
+        {
+          "attribute": "width, height",
+          "defaultValue": "640, 320",
+          "description": "Sets the SVG coordinate dimensions; narrow plots retain internal scrolling.",
+          "values": "number"
+        },
+        {
           "attribute": "series",
           "defaultValue": "required",
           "description": "Provides ordered, already-aggregated points; null y values create visible gaps.",
@@ -15539,7 +15577,7 @@
           "values": "HTML attributes"
         }
       ],
-      "astroSource": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport {\n  alignLumenChartSeries,\n  createLumenLineGeometry,\n  formatLumenChartSummary,\n  getLumenChartAxisPadding,\n  getLumenChartCategories,\n  getLumenChartCategoryLabel,\n  getLumenChartCategoryTicks,\n  getLumenChartDomain,\n  getLumenChartTicks,\n  getLumenChartToneClassName,\n  hasLumenChartData,\n  type LumenChartLabels,\n  type LumenChartSeries,\n  resolveLumenChartLabels,\n  resolveLumenChartTone,\n  scaleLumenChartValue\n} from '@santi020k/lumen-core'\n\nimport Chart from './Chart.astro'\n\ninterface Props extends HTMLAttributes<'figure'> {\n  area?: boolean\n  caption?: string\n  class?: string | null\n  className?: string\n  description?: string\n  emptyLabel?: string\n  formatCategory?: (category: number | string) => string\n  formatValue?: (value: number) => string\n  glass?: boolean | 'subtle' | 'strong'\n  heading?: string\n  labels?: Partial<LumenChartLabels>\n  markers?: 'all' | 'auto' | 'none' | boolean | number\n  presentation?: 'bare' | 'default'\n  referenceValue?: number\n  series: readonly LumenChartSeries[]\n  showLegend?: boolean\n  showTable?: boolean\n  summary?: string\n}\n\nconst {\n  area = false,\n  caption,\n  class: classProp = '',\n  className = '',\n  description,\n  emptyLabel,\n  formatCategory,\n  formatValue = String,\n  glass = false,\n  heading,\n  labels,\n  markers = 'auto',\n  referenceValue,\n  series,\n  showLegend = series.length > 1,\n  showTable = true,\n  summary: summaryProp,\n  ...rest\n} = Astro.props\n\nconst resolvedLabels = resolveLumenChartLabels(labels)\nconst width = 640\nconst height = 320\nconst padding = 44\nconst categories = getLumenChartCategories(series)\nconst alignedSeries = series.map(item => alignLumenChartSeries(item, categories))\nconst hasData = hasLumenChartData(alignedSeries)\nconst summary = summaryProp ?? formatLumenChartSummary(alignedSeries, formatValue, resolvedLabels)\n\nconst domain = getLumenChartDomain([\n  ...alignedSeries.flatMap(item => item.data.map(datum => datum.y)),\n  referenceValue ?? null\n], false)\n\nconst ticks = getLumenChartTicks(domain)\nconst paddingLeft = getLumenChartAxisPadding(ticks.map(tick => formatValue(tick)))\n\nconst geometries = alignedSeries.map(item => createLumenLineGeometry(item.data, {\n  domain,\n  height,\n  includeZero: false,\n  padding,\n  paddingLeft,\n  width\n}))\n\nconst categoryTicks = getLumenChartCategoryTicks(\n  categories.map(category => getLumenChartCategoryLabel(alignedSeries, category, formatCategory)),\n  { end: width - padding, start: paddingLeft }\n)\n\nlet markerStep = 1\n\nif (markers === false || markers === 'none') markerStep = Number.POSITIVE_INFINITY\nelse if (typeof markers === 'number') markerStep = Math.max(1, Math.round(markers))\nelse if (markers === 'auto') markerStep = Math.max(1, Math.ceil(categories.length / 24))\n\nconst valueFor = (item: LumenChartSeries, category: number | string) => item.data.find(datum => datum.x === category)\nconst categoryLabelFor = (category: number | string) => getLumenChartCategoryLabel(alignedSeries, category, formatCategory, 'detail')\n\nconst referenceY =\n  referenceValue === undefined ?\n    undefined :\n    scaleLumenChartValue(referenceValue, domain, height - padding, padding)\n---\n\n<Chart\n  class:list={['ui-line-chart', classProp, className]}\n  {caption}\n  {description}\n  {glass}\n  {heading}\n  {summary}\n  {...rest}\n>\n  {\n    showLegend && hasData && (\n      <ul class=\"ui-chart__legend\" aria-label={resolvedLabels.chartLegend}>\n        {series.map((item, index) => (\n          <li class={getLumenChartToneClassName(item.tone, index)}>\n            <span aria-hidden=\"true\" />\n            {item.label}\n          </li>\n        ))}\n      </ul>\n    )\n  }\n  {!hasData && <p class=\"ui-chart__empty\" role=\"status\">{emptyLabel ?? resolvedLabels.empty}</p>}\n  <div aria-label={resolvedLabels.chartData} class=\"ui-chart__plot\" role=\"region\" tabindex=\"0\" hidden={!hasData}>\n    <svg\n      aria-hidden=\"true\"\n      preserveAspectRatio=\"xMidYMid meet\"\n      viewBox={`0 0 ${width} ${height}`}\n    >\n      <g class=\"ui-chart__grid\">\n        {\n          ticks.map(tick => {\n            const y = scaleLumenChartValue(\n              tick, domain, height - padding, padding\n            )\n\n            return (\n              <>\n                <line x1={paddingLeft} x2={width - padding} y1={y} y2={y} />\n                <text x={paddingLeft - 8} y={y}>\n                  {formatValue(tick)}\n                </text>\n              </>\n            )\n          })\n        }\n      </g>\n      <g class=\"ui-chart__axis-labels\">\n        {\n          categoryTicks.map(tick => (\n            <text text-anchor={tick.textAnchor} x={tick.position} y={height - 14}>\n              {tick.label}\n            </text>\n          ))\n        }\n      </g>\n      {\n        referenceY !== undefined && (\n          <line\n            class=\"ui-chart__reference\"\n            x1={paddingLeft}\n            x2={width - padding}\n            y1={referenceY}\n            y2={referenceY}\n          />\n        )\n      }\n      {\n        geometries.map((geometry, index) => {\n          const item = alignedSeries[index]\n\n          if (!item) return null\n\n          const tone = resolveLumenChartTone(item.tone, index)\n\n          return (\n            <g class:list={['ui-line-chart__series', getLumenChartToneClassName(tone)]}>\n              {area &&\n                geometry.areaPaths.map(path => (\n                  <path class=\"ui-line-chart__area\" d={path} />\n                ))}\n              <path class=\"ui-line-chart__line\" d={geometry.path} />\n              {Number.isFinite(markerStep) &&\n                geometry.points.map((point, pointIndex) => pointIndex % markerStep === 0 && (\n                  <circle\n                    class=\"ui-line-chart__point\"\n                    cx={point.xCoordinate}\n                    cy={point.yCoordinate}\n                    r=\"3\"\n                  >\n                    <title>\n                      {`${categoryLabelFor(point.x)} · ${item.label}: ${formatValue(point.y ?? 0)}`}\n                    </title>\n                  </circle>\n                ))}\n            </g>\n          )\n        })\n      }\n    </svg>\n  </div>\n  {\n    showTable && hasData && (\n      <details class=\"ui-chart__data\">\n        <summary>{resolvedLabels.viewData}</summary>\n        <div>\n          <table>\n            <thead>\n              <tr>\n                <th scope=\"col\">{resolvedLabels.category}</th>\n                {series.map(item => <th scope=\"col\">{item.label}</th>)}\n              </tr>\n            </thead>\n            <tbody>\n              {categories.map(category => (\n                <tr>\n                  <th scope=\"row\">{categoryLabelFor(category)}</th>\n                  {alignedSeries.map(item => {\n                    const datum = valueFor(item, category)\n\n                    return (\n                      <td>\n                        {datum?.label ??\n                          (datum?.y === undefined || datum.y === null || !Number.isFinite(datum.y) ?\n                            resolvedLabels.notAvailable :\n                            formatValue(datum.y))}\n                      </td>\n                    )\n                  })}\n                </tr>\n              ))}\n            </tbody>\n          </table>\n        </div>\n      </details>\n    )\n  }\n</Chart>\n",
+      "astroSource": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport {\n  createLumenLineChartModel,\n  formatLumenChartSummary,\n  getLumenChartCategoryLabel,\n  getLumenChartToneClassName,\n  hasLumenChartData,\n  type LumenChartLabels,\n  type LumenChartSeries,\n  type LumenLineChartOptions,\n  resolveLumenChartLabels,\n  resolveLumenChartTone,\n  scaleLumenChartValue\n} from '@santi020k/lumen-core'\n\nimport ChartInspection from '../internal/ChartInspection.astro'\n\nimport Button from './Button.astro'\nimport Chart from './Chart.astro'\n\ninterface Props extends HTMLAttributes<'figure'>, LumenLineChartOptions {\n  interactive?: boolean\n  syncGroup?: string\n  area?: boolean\n  caption?: string\n  class?: string | null\n  className?: string\n  description?: string\n  emptyLabel?: string\n  formatCategory?: (category: number | string) => string\n  formatValue?: (value: number) => string\n  glass?: boolean | 'subtle' | 'strong'\n  heading?: string\n  labels?: Partial<LumenChartLabels>\n  markers?: 'all' | 'auto' | 'none' | boolean | number\n  presentation?: 'bare' | 'default'\n  referenceValue?: number\n  series: readonly LumenChartSeries[]\n  showLegend?: boolean\n  showTable?: boolean\n  summary?: string\n}\n\nconst {\n  area = false,\n  annotations = [],\n  domain: requestedDomain,\n  height: requestedHeight,\n  width: requestedWidth,\n  xDomain,\n  xScale = 'categorical',\n  interactive = false,\n  syncGroup,\n  caption,\n  class: classProp = '',\n  className = '',\n  description,\n  emptyLabel,\n  formatCategory,\n  formatValue = String,\n  glass = false,\n  heading,\n  labels,\n  markers = 'auto',\n  referenceValue,\n  series,\n  showLegend = series.length > 1,\n  showTable = true,\n  summary: summaryProp,\n  ...rest\n} = Astro.props\n\nconst resolvedLabels = resolveLumenChartLabels(labels)\n\nconst model = createLumenLineChartModel(series, {\n  annotations,\nxScale,\n  ...(requestedDomain ? { domain: requestedDomain } : {}),\n  ...(requestedHeight === undefined ? {} : { height: requestedHeight }),\n  ...(requestedWidth === undefined ? {} : { width: requestedWidth }),\n  ...(xDomain ? { xDomain } : {}),\n  ...(referenceValue === undefined ? {} : { referenceValue }),\n  ...(formatCategory ? { formatCategory } : {}),\n  formatValue\n})\n\nconst { width, height, padding, paddingLeft, categories, categoryTicks, domain, geometries, ticks, series: alignedSeries } = model\nconst hasData = hasLumenChartData(alignedSeries)\nconst summary = summaryProp ?? formatLumenChartSummary(alignedSeries, formatValue, resolvedLabels)\nlet markerStep = 1\n\nif (markers === false || markers === 'none') markerStep = Number.POSITIVE_INFINITY\nelse if (typeof markers === 'number') markerStep = Math.max(1, Math.round(markers))\nelse if (markers === 'auto') markerStep = Math.max(1, Math.ceil(categories.length / 24))\n\nconst valueFor = (item: LumenChartSeries, category: number | string) => item.data.find(datum => datum.x === category)\nconst categoryLabelFor = (category: number | string) => getLumenChartCategoryLabel(alignedSeries, category, formatCategory, 'detail')\n\nconst referenceY =\n  referenceValue === undefined ?\n    undefined :\n    scaleLumenChartValue(referenceValue, domain, height - padding, padding)\n---\n\n<Chart\n  class:list={['ui-line-chart', classProp, className]}\n  {caption}\n  {description}\n  {glass}\n  {heading}\n  {summary}\n  data-ui-chart-interactive={interactive || undefined}\n  data-ui-chart-sync={syncGroup}\n  {...rest}\n>\n  {\n    showLegend && hasData && (\n      <ul class=\"ui-chart__legend\" aria-label={resolvedLabels.chartLegend}>\n        {series.map((item, index) => (\n          <li class={getLumenChartToneClassName(item.tone, index)}>\n            {interactive ? <Button aria-pressed=\"true\" data-ui-chart-toggle={item.id} disabled size=\"sm\" variant=\"ghost\">{item.label}</Button> : <><span aria-hidden=\"true\" />{item.label}</>}\n          </li>\n        ))}\n      </ul>\n    )\n  }\n  {!hasData && <p class=\"ui-chart__empty\" role=\"status\">{emptyLabel ?? resolvedLabels.empty}</p>}\n  <div\naria-label={rest['aria-label'] ?? heading ?? resolvedLabels.chartData}\nclass=\"ui-chart__plot\"\ndata-ui-chart-interaction-plot={interactive || undefined}\nrole=\"region\"\ntabindex=\"0\"\nhidden={!hasData}\n  >\n    <svg\n      aria-hidden=\"true\"\n      preserveAspectRatio=\"xMidYMid meet\"\n      viewBox={`0 0 ${width} ${height}`}\n    >\n      <g class=\"ui-chart__grid\">\n        {\n          ticks.map(tick => {\n            const y = scaleLumenChartValue(\n              tick, domain, height - padding, padding\n            )\n\n            return (\n              <>\n                <line x1={paddingLeft} x2={width - padding} y1={y} y2={y} />\n                <text x={paddingLeft - 8} y={y}>\n                  {formatValue(tick)}\n                </text>\n              </>\n            )\n          })\n        }\n      </g>\n      <g class=\"ui-chart__axis-labels\">\n        {\n          categoryTicks.map(tick => (\n            <text text-anchor={tick.textAnchor} x={tick.position} y={height - 14}>\n              {tick.label}\n            </text>\n          ))\n        }\n      </g>\n      <svg\nx={paddingLeft}\ny={padding}\nwidth={width - padding - paddingLeft}\nheight={height - 2 * padding}\n        viewBox={`${paddingLeft} ${padding} ${width - padding - paddingLeft} ${height - 2 * padding}`}\n        overflow=\"hidden\"\n      >\n      {\n        referenceY !== undefined && (\n          <line\n            class=\"ui-chart__reference\"\n            x1={paddingLeft}\n            x2={width - padding}\n            y1={referenceY}\n            y2={referenceY}\n          />\n        )\n      }\n      {\n        geometries.map((geometry, index) => {\n          const item = alignedSeries[index]\n\n          if (!item) return null\n\n          const tone = resolveLumenChartTone(item.tone, index)\n\n          return (\n            <g\ndata-ui-chart-series={item.id}\nclass:list={['ui-line-chart__series', getLumenChartToneClassName(tone)]}\n            >\n              {area &&\n                geometry.areaPaths.map(path => (\n                  <path class=\"ui-line-chart__area\" d={path} />\n                ))}\n              <path class=\"ui-line-chart__line\" d={geometry.path} />\n              {Number.isFinite(markerStep) &&\n                geometry.points.map((point, pointIndex) => pointIndex % markerStep === 0 && (\n                  <circle\n                    class=\"ui-line-chart__point\"\n                    cx={point.xCoordinate}\n                    cy={point.yCoordinate}\n                    r=\"3\"\n                  >\n                    <title>\n                      {`${categoryLabelFor(point.x)} · ${item.label}: ${formatValue(point.y ?? 0)}`}\n                    </title>\n                  </circle>\n                ))}\n            </g>\n          )\n        })\n      }\n      </svg>\n      {model.annotationMarks.map(mark => (\n<g class:list={['ui-chart__annotation', getLumenChartToneClassName(mark.tone)]}>\n        {mark.axis === 'x' ? <><line x1={mark.coordinate} x2={mark.coordinate} y1={padding} y2={height - padding} /><text x={mark.coordinate + 4} y={padding - 8}>{mark.label}</text></> : <><line x1={paddingLeft} x2={width - padding} y1={mark.coordinate} y2={mark.coordinate} /><text text-anchor=\"end\" x={width - padding} y={mark.coordinate - 8}>{mark.label}</text></>}\n      </g>\n))}\n      {interactive && <line class=\"ui-chart__crosshair\" data-ui-chart-crosshair style=\"display: none\" y1={padding} y2={height - padding} />}\n    </svg>\n  </div>\n  {model.annotationMarks.length > 0 && <ul class=\"ui-sr-only\">{model.annotationMarks.map(mark => <li>{mark.label}: {mark.axis === 'x' ? categoryLabelFor(mark.value) : formatValue(Number(mark.value))}</li>)}</ul>}\n  {interactive && hasData && <ChartInspection {model} {formatCategory} {formatValue} labels={resolvedLabels} />}\n  {\n    showTable && hasData && (\n      <details class=\"ui-chart__data\">\n        <summary>{resolvedLabels.viewData}</summary>\n        <div>\n          <table>\n            <thead>\n              <tr>\n                <th scope=\"col\">{resolvedLabels.category}</th>\n                {series.map(item => <th scope=\"col\">{item.label}</th>)}\n              </tr>\n            </thead>\n            <tbody>\n              {categories.map(category => (\n                <tr>\n                  <th scope=\"row\">{categoryLabelFor(category)}</th>\n                  {alignedSeries.map(item => {\n                    const datum = valueFor(item, category)\n\n                    return (\n                      <td>\n                        {datum?.label ??\n                          (datum?.y === undefined || datum.y === null || !Number.isFinite(datum.y) ?\n                            resolvedLabels.notAvailable :\n                            formatValue(datum.y))}\n                      </td>\n                    )\n                  })}\n                </tr>\n              ))}\n            </tbody>\n          </table>\n        </div>\n      </details>\n    )\n  }\n</Chart>\n",
       "category": "Data display",
       "collections": [
         "Data visualization"
@@ -15547,27 +15585,46 @@
       "contract": null,
       "dependencies": [
         "Chart",
+        "Button",
         "styles"
       ],
       "description": "Shows ordered trends, multiple series, missing-value gaps, areas, markers, and reference values.",
       "behavior": {
-        "astro": "none",
+        "astro": "ui-primitives",
+        "astroRuntimeBypass": "Static charts work without the runtime; interactive charts require UIPrimitives.",
         "elements": "registered-element",
         "react": "component"
       },
       "files": [
         "packages/astro/components/LineChart.astro",
         "packages/astro/components/Chart.astro",
+        "packages/astro/internal/ChartInspection.astro",
+        "packages/astro/runtime/controllers/charts.ts",
         "packages/astro/styles/lumen.css"
       ],
       "frameworkDetails": {
         "astro": {
           "available": true,
+          "behavior": {
+            "runtimeBypass": "Static charts work without the runtime; interactive charts require UIPrimitives.",
+            "mode": "runtime",
+            "setup": "Mount UIPrimitives once in the application's root layout; do not mount it beside each component. Set Static charts work without the runtime; interactive charts require UIPrimitives. when application code owns the complete interaction behavior."
+          },
           "example": "<LineChart aria-label=\"Website traffic\" heading=\"Page views and visits\" series={[{ id: \"views\", label: \"Page views\", data: [{ x: \"Mon\", y: 120 }, { x: \"Tue\", y: 168 }] }, { id: \"visits\", label: \"Visits\", data: [{ x: \"Mon\", y: 82 }, { x: \"Tue\", y: 104 }] }]} />",
           "importStatement": "import { LineChart } from '@santi020k/lumen-astro'",
           "language": "astro",
           "packageName": "@santi020k/lumen-astro",
           "props": [
+            {
+              "name": "interactive",
+              "optional": true,
+              "type": "boolean"
+            },
+            {
+              "name": "syncGroup",
+              "optional": true,
+              "type": "string"
+            },
             {
               "name": "area",
               "optional": true,
@@ -15659,14 +15716,20 @@
               "type": "string"
             }
           ],
-          "propsExtends": "HTMLAttributes<'figure'>",
-          "source": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport {\n  alignLumenChartSeries,\n  createLumenLineGeometry,\n  formatLumenChartSummary,\n  getLumenChartAxisPadding,\n  getLumenChartCategories,\n  getLumenChartCategoryLabel,\n  getLumenChartCategoryTicks,\n  getLumenChartDomain,\n  getLumenChartTicks,\n  getLumenChartToneClassName,\n  hasLumenChartData,\n  type LumenChartLabels,\n  type LumenChartSeries,\n  resolveLumenChartLabels,\n  resolveLumenChartTone,\n  scaleLumenChartValue\n} from '@santi020k/lumen-core'\n\nimport Chart from './Chart.astro'\n\ninterface Props extends HTMLAttributes<'figure'> {\n  area?: boolean\n  caption?: string\n  class?: string | null\n  className?: string\n  description?: string\n  emptyLabel?: string\n  formatCategory?: (category: number | string) => string\n  formatValue?: (value: number) => string\n  glass?: boolean | 'subtle' | 'strong'\n  heading?: string\n  labels?: Partial<LumenChartLabels>\n  markers?: 'all' | 'auto' | 'none' | boolean | number\n  presentation?: 'bare' | 'default'\n  referenceValue?: number\n  series: readonly LumenChartSeries[]\n  showLegend?: boolean\n  showTable?: boolean\n  summary?: string\n}\n\nconst {\n  area = false,\n  caption,\n  class: classProp = '',\n  className = '',\n  description,\n  emptyLabel,\n  formatCategory,\n  formatValue = String,\n  glass = false,\n  heading,\n  labels,\n  markers = 'auto',\n  referenceValue,\n  series,\n  showLegend = series.length > 1,\n  showTable = true,\n  summary: summaryProp,\n  ...rest\n} = Astro.props\n\nconst resolvedLabels = resolveLumenChartLabels(labels)\nconst width = 640\nconst height = 320\nconst padding = 44\nconst categories = getLumenChartCategories(series)\nconst alignedSeries = series.map(item => alignLumenChartSeries(item, categories))\nconst hasData = hasLumenChartData(alignedSeries)\nconst summary = summaryProp ?? formatLumenChartSummary(alignedSeries, formatValue, resolvedLabels)\n\nconst domain = getLumenChartDomain([\n  ...alignedSeries.flatMap(item => item.data.map(datum => datum.y)),\n  referenceValue ?? null\n], false)\n\nconst ticks = getLumenChartTicks(domain)\nconst paddingLeft = getLumenChartAxisPadding(ticks.map(tick => formatValue(tick)))\n\nconst geometries = alignedSeries.map(item => createLumenLineGeometry(item.data, {\n  domain,\n  height,\n  includeZero: false,\n  padding,\n  paddingLeft,\n  width\n}))\n\nconst categoryTicks = getLumenChartCategoryTicks(\n  categories.map(category => getLumenChartCategoryLabel(alignedSeries, category, formatCategory)),\n  { end: width - padding, start: paddingLeft }\n)\n\nlet markerStep = 1\n\nif (markers === false || markers === 'none') markerStep = Number.POSITIVE_INFINITY\nelse if (typeof markers === 'number') markerStep = Math.max(1, Math.round(markers))\nelse if (markers === 'auto') markerStep = Math.max(1, Math.ceil(categories.length / 24))\n\nconst valueFor = (item: LumenChartSeries, category: number | string) => item.data.find(datum => datum.x === category)\nconst categoryLabelFor = (category: number | string) => getLumenChartCategoryLabel(alignedSeries, category, formatCategory, 'detail')\n\nconst referenceY =\n  referenceValue === undefined ?\n    undefined :\n    scaleLumenChartValue(referenceValue, domain, height - padding, padding)\n---\n\n<Chart\n  class:list={['ui-line-chart', classProp, className]}\n  {caption}\n  {description}\n  {glass}\n  {heading}\n  {summary}\n  {...rest}\n>\n  {\n    showLegend && hasData && (\n      <ul class=\"ui-chart__legend\" aria-label={resolvedLabels.chartLegend}>\n        {series.map((item, index) => (\n          <li class={getLumenChartToneClassName(item.tone, index)}>\n            <span aria-hidden=\"true\" />\n            {item.label}\n          </li>\n        ))}\n      </ul>\n    )\n  }\n  {!hasData && <p class=\"ui-chart__empty\" role=\"status\">{emptyLabel ?? resolvedLabels.empty}</p>}\n  <div aria-label={resolvedLabels.chartData} class=\"ui-chart__plot\" role=\"region\" tabindex=\"0\" hidden={!hasData}>\n    <svg\n      aria-hidden=\"true\"\n      preserveAspectRatio=\"xMidYMid meet\"\n      viewBox={`0 0 ${width} ${height}`}\n    >\n      <g class=\"ui-chart__grid\">\n        {\n          ticks.map(tick => {\n            const y = scaleLumenChartValue(\n              tick, domain, height - padding, padding\n            )\n\n            return (\n              <>\n                <line x1={paddingLeft} x2={width - padding} y1={y} y2={y} />\n                <text x={paddingLeft - 8} y={y}>\n                  {formatValue(tick)}\n                </text>\n              </>\n            )\n          })\n        }\n      </g>\n      <g class=\"ui-chart__axis-labels\">\n        {\n          categoryTicks.map(tick => (\n            <text text-anchor={tick.textAnchor} x={tick.position} y={height - 14}>\n              {tick.label}\n            </text>\n          ))\n        }\n      </g>\n      {\n        referenceY !== undefined && (\n          <line\n            class=\"ui-chart__reference\"\n            x1={paddingLeft}\n            x2={width - padding}\n            y1={referenceY}\n            y2={referenceY}\n          />\n        )\n      }\n      {\n        geometries.map((geometry, index) => {\n          const item = alignedSeries[index]\n\n          if (!item) return null\n\n          const tone = resolveLumenChartTone(item.tone, index)\n\n          return (\n            <g class:list={['ui-line-chart__series', getLumenChartToneClassName(tone)]}>\n              {area &&\n                geometry.areaPaths.map(path => (\n                  <path class=\"ui-line-chart__area\" d={path} />\n                ))}\n              <path class=\"ui-line-chart__line\" d={geometry.path} />\n              {Number.isFinite(markerStep) &&\n                geometry.points.map((point, pointIndex) => pointIndex % markerStep === 0 && (\n                  <circle\n                    class=\"ui-line-chart__point\"\n                    cx={point.xCoordinate}\n                    cy={point.yCoordinate}\n                    r=\"3\"\n                  >\n                    <title>\n                      {`${categoryLabelFor(point.x)} · ${item.label}: ${formatValue(point.y ?? 0)}`}\n                    </title>\n                  </circle>\n                ))}\n            </g>\n          )\n        })\n      }\n    </svg>\n  </div>\n  {\n    showTable && hasData && (\n      <details class=\"ui-chart__data\">\n        <summary>{resolvedLabels.viewData}</summary>\n        <div>\n          <table>\n            <thead>\n              <tr>\n                <th scope=\"col\">{resolvedLabels.category}</th>\n                {series.map(item => <th scope=\"col\">{item.label}</th>)}\n              </tr>\n            </thead>\n            <tbody>\n              {categories.map(category => (\n                <tr>\n                  <th scope=\"row\">{categoryLabelFor(category)}</th>\n                  {alignedSeries.map(item => {\n                    const datum = valueFor(item, category)\n\n                    return (\n                      <td>\n                        {datum?.label ??\n                          (datum?.y === undefined || datum.y === null || !Number.isFinite(datum.y) ?\n                            resolvedLabels.notAvailable :\n                            formatValue(datum.y))}\n                      </td>\n                    )\n                  })}\n                </tr>\n              ))}\n            </tbody>\n          </table>\n        </div>\n      </details>\n    )\n  }\n</Chart>\n",
+          "propsExtends": "HTMLAttributes<'figure'>, LumenLineChartOptions",
+          "source": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport {\n  createLumenLineChartModel,\n  formatLumenChartSummary,\n  getLumenChartCategoryLabel,\n  getLumenChartToneClassName,\n  hasLumenChartData,\n  type LumenChartLabels,\n  type LumenChartSeries,\n  type LumenLineChartOptions,\n  resolveLumenChartLabels,\n  resolveLumenChartTone,\n  scaleLumenChartValue\n} from '@santi020k/lumen-core'\n\nimport ChartInspection from '../internal/ChartInspection.astro'\n\nimport Button from './Button.astro'\nimport Chart from './Chart.astro'\n\ninterface Props extends HTMLAttributes<'figure'>, LumenLineChartOptions {\n  interactive?: boolean\n  syncGroup?: string\n  area?: boolean\n  caption?: string\n  class?: string | null\n  className?: string\n  description?: string\n  emptyLabel?: string\n  formatCategory?: (category: number | string) => string\n  formatValue?: (value: number) => string\n  glass?: boolean | 'subtle' | 'strong'\n  heading?: string\n  labels?: Partial<LumenChartLabels>\n  markers?: 'all' | 'auto' | 'none' | boolean | number\n  presentation?: 'bare' | 'default'\n  referenceValue?: number\n  series: readonly LumenChartSeries[]\n  showLegend?: boolean\n  showTable?: boolean\n  summary?: string\n}\n\nconst {\n  area = false,\n  annotations = [],\n  domain: requestedDomain,\n  height: requestedHeight,\n  width: requestedWidth,\n  xDomain,\n  xScale = 'categorical',\n  interactive = false,\n  syncGroup,\n  caption,\n  class: classProp = '',\n  className = '',\n  description,\n  emptyLabel,\n  formatCategory,\n  formatValue = String,\n  glass = false,\n  heading,\n  labels,\n  markers = 'auto',\n  referenceValue,\n  series,\n  showLegend = series.length > 1,\n  showTable = true,\n  summary: summaryProp,\n  ...rest\n} = Astro.props\n\nconst resolvedLabels = resolveLumenChartLabels(labels)\n\nconst model = createLumenLineChartModel(series, {\n  annotations,\nxScale,\n  ...(requestedDomain ? { domain: requestedDomain } : {}),\n  ...(requestedHeight === undefined ? {} : { height: requestedHeight }),\n  ...(requestedWidth === undefined ? {} : { width: requestedWidth }),\n  ...(xDomain ? { xDomain } : {}),\n  ...(referenceValue === undefined ? {} : { referenceValue }),\n  ...(formatCategory ? { formatCategory } : {}),\n  formatValue\n})\n\nconst { width, height, padding, paddingLeft, categories, categoryTicks, domain, geometries, ticks, series: alignedSeries } = model\nconst hasData = hasLumenChartData(alignedSeries)\nconst summary = summaryProp ?? formatLumenChartSummary(alignedSeries, formatValue, resolvedLabels)\nlet markerStep = 1\n\nif (markers === false || markers === 'none') markerStep = Number.POSITIVE_INFINITY\nelse if (typeof markers === 'number') markerStep = Math.max(1, Math.round(markers))\nelse if (markers === 'auto') markerStep = Math.max(1, Math.ceil(categories.length / 24))\n\nconst valueFor = (item: LumenChartSeries, category: number | string) => item.data.find(datum => datum.x === category)\nconst categoryLabelFor = (category: number | string) => getLumenChartCategoryLabel(alignedSeries, category, formatCategory, 'detail')\n\nconst referenceY =\n  referenceValue === undefined ?\n    undefined :\n    scaleLumenChartValue(referenceValue, domain, height - padding, padding)\n---\n\n<Chart\n  class:list={['ui-line-chart', classProp, className]}\n  {caption}\n  {description}\n  {glass}\n  {heading}\n  {summary}\n  data-ui-chart-interactive={interactive || undefined}\n  data-ui-chart-sync={syncGroup}\n  {...rest}\n>\n  {\n    showLegend && hasData && (\n      <ul class=\"ui-chart__legend\" aria-label={resolvedLabels.chartLegend}>\n        {series.map((item, index) => (\n          <li class={getLumenChartToneClassName(item.tone, index)}>\n            {interactive ? <Button aria-pressed=\"true\" data-ui-chart-toggle={item.id} disabled size=\"sm\" variant=\"ghost\">{item.label}</Button> : <><span aria-hidden=\"true\" />{item.label}</>}\n          </li>\n        ))}\n      </ul>\n    )\n  }\n  {!hasData && <p class=\"ui-chart__empty\" role=\"status\">{emptyLabel ?? resolvedLabels.empty}</p>}\n  <div\naria-label={rest['aria-label'] ?? heading ?? resolvedLabels.chartData}\nclass=\"ui-chart__plot\"\ndata-ui-chart-interaction-plot={interactive || undefined}\nrole=\"region\"\ntabindex=\"0\"\nhidden={!hasData}\n  >\n    <svg\n      aria-hidden=\"true\"\n      preserveAspectRatio=\"xMidYMid meet\"\n      viewBox={`0 0 ${width} ${height}`}\n    >\n      <g class=\"ui-chart__grid\">\n        {\n          ticks.map(tick => {\n            const y = scaleLumenChartValue(\n              tick, domain, height - padding, padding\n            )\n\n            return (\n              <>\n                <line x1={paddingLeft} x2={width - padding} y1={y} y2={y} />\n                <text x={paddingLeft - 8} y={y}>\n                  {formatValue(tick)}\n                </text>\n              </>\n            )\n          })\n        }\n      </g>\n      <g class=\"ui-chart__axis-labels\">\n        {\n          categoryTicks.map(tick => (\n            <text text-anchor={tick.textAnchor} x={tick.position} y={height - 14}>\n              {tick.label}\n            </text>\n          ))\n        }\n      </g>\n      <svg\nx={paddingLeft}\ny={padding}\nwidth={width - padding - paddingLeft}\nheight={height - 2 * padding}\n        viewBox={`${paddingLeft} ${padding} ${width - padding - paddingLeft} ${height - 2 * padding}`}\n        overflow=\"hidden\"\n      >\n      {\n        referenceY !== undefined && (\n          <line\n            class=\"ui-chart__reference\"\n            x1={paddingLeft}\n            x2={width - padding}\n            y1={referenceY}\n            y2={referenceY}\n          />\n        )\n      }\n      {\n        geometries.map((geometry, index) => {\n          const item = alignedSeries[index]\n\n          if (!item) return null\n\n          const tone = resolveLumenChartTone(item.tone, index)\n\n          return (\n            <g\ndata-ui-chart-series={item.id}\nclass:list={['ui-line-chart__series', getLumenChartToneClassName(tone)]}\n            >\n              {area &&\n                geometry.areaPaths.map(path => (\n                  <path class=\"ui-line-chart__area\" d={path} />\n                ))}\n              <path class=\"ui-line-chart__line\" d={geometry.path} />\n              {Number.isFinite(markerStep) &&\n                geometry.points.map((point, pointIndex) => pointIndex % markerStep === 0 && (\n                  <circle\n                    class=\"ui-line-chart__point\"\n                    cx={point.xCoordinate}\n                    cy={point.yCoordinate}\n                    r=\"3\"\n                  >\n                    <title>\n                      {`${categoryLabelFor(point.x)} · ${item.label}: ${formatValue(point.y ?? 0)}`}\n                    </title>\n                  </circle>\n                ))}\n            </g>\n          )\n        })\n      }\n      </svg>\n      {model.annotationMarks.map(mark => (\n<g class:list={['ui-chart__annotation', getLumenChartToneClassName(mark.tone)]}>\n        {mark.axis === 'x' ? <><line x1={mark.coordinate} x2={mark.coordinate} y1={padding} y2={height - padding} /><text x={mark.coordinate + 4} y={padding - 8}>{mark.label}</text></> : <><line x1={paddingLeft} x2={width - padding} y1={mark.coordinate} y2={mark.coordinate} /><text text-anchor=\"end\" x={width - padding} y={mark.coordinate - 8}>{mark.label}</text></>}\n      </g>\n))}\n      {interactive && <line class=\"ui-chart__crosshair\" data-ui-chart-crosshair style=\"display: none\" y1={padding} y2={height - padding} />}\n    </svg>\n  </div>\n  {model.annotationMarks.length > 0 && <ul class=\"ui-sr-only\">{model.annotationMarks.map(mark => <li>{mark.label}: {mark.axis === 'x' ? categoryLabelFor(mark.value) : formatValue(Number(mark.value))}</li>)}</ul>}\n  {interactive && hasData && <ChartInspection {model} {formatCategory} {formatValue} labels={resolvedLabels} />}\n  {\n    showTable && hasData && (\n      <details class=\"ui-chart__data\">\n        <summary>{resolvedLabels.viewData}</summary>\n        <div>\n          <table>\n            <thead>\n              <tr>\n                <th scope=\"col\">{resolvedLabels.category}</th>\n                {series.map(item => <th scope=\"col\">{item.label}</th>)}\n              </tr>\n            </thead>\n            <tbody>\n              {categories.map(category => (\n                <tr>\n                  <th scope=\"row\">{categoryLabelFor(category)}</th>\n                  {alignedSeries.map(item => {\n                    const datum = valueFor(item, category)\n\n                    return (\n                      <td>\n                        {datum?.label ??\n                          (datum?.y === undefined || datum.y === null || !Number.isFinite(datum.y) ?\n                            resolvedLabels.notAvailable :\n                            formatValue(datum.y))}\n                      </td>\n                    )\n                  })}\n                </tr>\n              ))}\n            </tbody>\n          </table>\n        </div>\n      </details>\n    )\n  }\n</Chart>\n",
           "styleImport": "import '@santi020k/lumen-astro/styles.css'"
         },
         "elements": {
           "attributes": [
             "presentation",
             "glass",
+            "xScale",
+            "domain, xDomain",
+            "interactive, syncGroup",
+            "annotations",
+            "cursor, onCursorChange",
+            "width, height",
             "series",
             "area",
             "markers",
@@ -15681,7 +15744,7 @@
           "available": true,
           "behavior": {
             "mode": "registration",
-            "setup": "Call defineLumenElements() once before rendering Lumen custom elements."
+            "setup": "Call defineLumenElements() once before rendering Lumen custom elements. Registration includes this component’s interactive behavior."
           },
           "example": "<lumen-line-chart></lumen-line-chart>",
           "importStatement": "import { defineLumenElements } from '@santi020k/lumen-elements/define'",
@@ -15696,6 +15759,10 @@
         },
         "react": {
           "available": true,
+          "behavior": {
+            "mode": "adapter",
+            "setup": "The React component exposes the documented data attributes; app-level state must implement the documented interactive and event behavior. Do not mount Astro UIPrimitives."
+          },
           "example": "<LineChart aria-label=\"Website traffic\" heading=\"Page views and visits\" series={[{ id: \"views\", label: \"Page views\", data: [{ x: \"Mon\", y: 120 }, { x: \"Tue\", y: 168 }] }, { id: \"visits\", label: \"Visits\", data: [{ x: \"Mon\", y: 82 }, { x: \"Tue\", y: 104 }] }]} />",
           "importStatement": "import { LineChart } from '@santi020k/lumen-react'",
           "language": "tsx",
@@ -15752,8 +15819,8 @@
               "type": "boolean"
             }
           ],
-          "propsExtends": "Omit<ChartProps, 'children'>",
-          "source": "export interface LineChartProps extends Omit<ChartProps, 'children'> {\n  area?: boolean\n  emptyLabel?: ReactNode\n  formatCategory?: (category: number | string) => string\n  formatValue?: (value: number) => string\n  labels?: Partial<LumenChartLabels>\n  markers?: 'all' | 'auto' | 'none' | boolean | number\n  referenceValue?: number\n  series?: readonly LumenChartSeries[]\n  showLegend?: boolean\n  showTable?: boolean\n}\n\nexport const LineChart = ({\n  area = false,\n  className,\n  emptyLabel,\n  formatCategory,\n  formatValue = String,\n  labels,\n  markers = 'auto',\n  referenceValue,\n  series = emptyChartSeries,\n  showLegend = series.length > 1,\n  showTable = true,\n  summary,\n  ...props\n}: LineChartProps) => {\n  const resolvedLabels = resolveLumenChartLabels(labels)\n  const width = 640\n  const height = 320\n  const padding = 44\n  const categories = getLumenChartCategories(series)\n\n  const alignedSeries = series.map(item => ({\n    ...item,\n    data: alignLumenChartSeries(item, categories).data\n  }))\n\n  const hasData = hasLumenChartData(alignedSeries)\n\n  const domain = getLumenChartDomain(\n    [\n      ...alignedSeries.flatMap(item => item.data.map(datum => datum.y)),\n      referenceValue ?? null\n    ], false\n  )\n\n  const ticks = getLumenChartTicks(domain)\n  const paddingLeft = getLumenChartAxisPadding(ticks.map(tick => formatValue(tick)))\n\n  const geometries = alignedSeries.map(item => createLumenLineGeometry(item.data, {\n    domain,\n    height,\n    includeZero: false,\n    padding,\n    paddingLeft,\n    width\n  }))\n\n  const categoryTicks = getLumenChartCategoryTicks(\n    categories.map(category => getLumenChartCategoryLabel(alignedSeries, category, formatCategory)),\n    { end: width - padding, start: paddingLeft }\n  )\n\n  const markerStep = getLineChartMarkerStep(markers, categories.length)\n\n  const referenceY =\n    referenceValue === undefined ?\n      undefined :\n      scaleLumenChartValue(referenceValue, domain, height - padding, padding)\n\n  return (\n    <Chart\n      className={composeClassName('ui-line-chart', className)}\n      summary={summary ?? formatLumenChartSummary(alignedSeries, formatValue, resolvedLabels)}\n      {...props}\n    >\n      {showLegend && hasData && <ChartLegend label={resolvedLabels.chartLegend} series={series} />}\n      {!hasData && (\n        <p className=\"ui-chart__empty\" role=\"status\">\n          {emptyLabel ?? resolvedLabels.empty}\n        </p>\n      )}\n      <div aria-label={resolvedLabels.chartData} className=\"ui-chart__plot\" role=\"region\" tabIndex={0} hidden={!hasData}>\n        <svg\n          aria-hidden=\"true\"\n          preserveAspectRatio=\"xMidYMid meet\"\n          viewBox={`0 0 ${width} ${height}`}\n        >\n          <g className=\"ui-chart__grid\">\n            {ticks.map(tick => {\n              const y = scaleLumenChartValue(\n                tick, domain, height - padding, padding\n              )\n\n              return (\n                <Fragment key={tick}>\n                  <line x1={paddingLeft} x2={width - padding} y1={y} y2={y} />\n                  <text x={paddingLeft - 8} y={y}>\n                    {formatValue(tick)}\n                  </text>\n                </Fragment>\n              )\n            })}\n          </g>\n          <g className=\"ui-chart__axis-labels\">\n            {categoryTicks.map(tick => (\n              <text key={tick.index} textAnchor={tick.textAnchor} x={tick.position} y={height - 14}>\n                {tick.label}\n              </text>\n            ))}\n          </g>\n          {referenceY !== undefined && (\n            <line\n              className=\"ui-chart__reference\"\n              x1={paddingLeft}\n              x2={width - padding}\n              y1={referenceY}\n              y2={referenceY}\n            />\n          )}\n          {geometries.map((geometry, index) => {\n            const item = series[index]\n\n            if (!item) return null\n\n            const tone = resolveLumenChartTone(item.tone, index)\n\n            return (\n              <g\n                className={composeClassName(\n                  'ui-line-chart__series', getLumenChartToneClassName(tone)\n                )}\n                key={item.id}\n              >\n                {area &&\n                  geometry.areaPaths.map(path => (\n                    <path className=\"ui-line-chart__area\" d={path} key={path} />\n                  ))}\n                <path className=\"ui-line-chart__line\" d={geometry.path} />\n                {Number.isFinite(markerStep) &&\n                  geometry.points.map(\n                    (point, pointIndex) => pointIndex % markerStep === 0 && (\n                      <circle\n                        className=\"ui-line-chart__point\"\n                        cx={point.xCoordinate}\n                        cy={point.yCoordinate}\n                        key={getChartCategoryKey(point.x)}\n                        r=\"3\"\n                      >\n                        <title>\n                          {`${getLumenChartCategoryLabel(alignedSeries, point.x, formatCategory, 'detail')} · ${item.label}: ${formatValue(point.y ?? 0)}`}\n                        </title>\n                      </circle>\n                    )\n                  )}\n              </g>\n            )\n          })}\n        </svg>\n      </div>\n      {showTable && hasData && (\n        <ChartDataTable\n          categories={categories}\n          {...(formatCategory === undefined ? {} : { formatCategory })}\n          formatValue={formatValue}\n          labels={resolvedLabels}\n          series={series}\n        />\n      )}\n    </Chart>\n  )\n}",
+          "propsExtends": "Omit<ChartProps, 'children'>, LumenLineChartOptions, ChartInteractionProps",
+          "source": "export interface LineChartProps extends Omit<ChartProps, 'children'>, LumenLineChartOptions, ChartInteractionProps {\n  area?: boolean\n  emptyLabel?: ReactNode\n  formatCategory?: (category: number | string) => string\n  formatValue?: (value: number) => string\n  labels?: Partial<LumenChartLabels>\n  markers?: 'all' | 'auto' | 'none' | boolean | number\n  referenceValue?: number\n  series?: readonly LumenChartSeries[]\n  showLegend?: boolean\n  showTable?: boolean\n}\n\nexport const LineChart = ({\n  area = false,\n  annotations,\n  domain: requestedDomain,\n  height: requestedHeight,\n  width: requestedWidth,\n  xDomain,\n  xScale = 'categorical',\n  interactive = false,\n  syncGroup,\n  cursor,\n  onCursorChange,\n  className,\n  emptyLabel,\n  formatCategory,\n  formatValue = String,\n  labels,\n  markers = 'auto',\n  referenceValue,\n  series = emptyChartSeries,\n  showLegend = series.length > 1,\n  showTable = true,\n  summary,\n  ...props\n}: LineChartProps) => {\n  const resolvedLabels = resolveLumenChartLabels(labels)\n\n  const model = createLumenLineChartModel(series, {\n    xScale,\n    formatValue,\n    ...(annotations ? { annotations } : {}),\n    ...(requestedDomain ? { domain: requestedDomain } : {}),\n    ...(requestedHeight === undefined ? {} : { height: requestedHeight }),\n    ...(requestedWidth === undefined ? {} : { width: requestedWidth }),\n    ...(xDomain ? { xDomain } : {}),\n    ...(referenceValue === undefined ? {} : { referenceValue }),\n    ...(formatCategory ? { formatCategory } : {})\n  })\n\n  const {\n    width, height, padding, paddingLeft, categories, categoryTicks, domain, geometries, ticks, series: alignedSeries\n  } = model\n\n  const hasData = hasLumenChartData(alignedSeries)\n  const markerStep = getLineChartMarkerStep(markers, categories.length)\n\n  const referenceY =\n    referenceValue === undefined ?\n      undefined :\n      scaleLumenChartValue(referenceValue, domain, height - padding, padding)\n\n  return (\n    <Chart\n      className={composeClassName('ui-line-chart', className)}\n      summary={summary ?? formatLumenChartSummary(alignedSeries, formatValue, resolvedLabels)}\n      {...props}\n    >\n      <ChartInteraction\n        interactive={interactive}\n        model={model}\n        showLegend={showLegend}\n        {...(syncGroup ? { syncGroup } : {})}\n        {...(cursor === undefined ? {} : { cursor })}\n        {...(onCursorChange ? { onCursorChange } : {})}\n      >\n        {showLegend && hasData && (interactive ?\n          (\n            <ul\n              className=\"ui-chart__legend\"\n              aria-label={resolvedLabels.chartLegend}\n            >\n              {series.map((item, index) => <li key={item.id} className={getLumenChartToneClassName(item.tone, index)}><Button aria-pressed=\"true\" data-ui-chart-toggle={item.id} disabled size=\"sm\" variant=\"ghost\">{item.label}</Button></li>)}\n            </ul>\n          ) :\n          <ChartLegend label={resolvedLabels.chartLegend} series={series} />)}\n        {!hasData && (\n          <p className=\"ui-chart__empty\" role=\"status\">\n            {emptyLabel ?? resolvedLabels.empty}\n          </p>\n        )}\n        <div\n          aria-label={getChartPlotLabel(props['aria-label'], props.heading, resolvedLabels.chartData)}\n          className=\"ui-chart__plot\"\n          data-ui-chart-interaction-plot={interactive || undefined}\n          role=\"region\"\n          tabIndex={0}\n          hidden={!hasData}\n        >\n          <svg\n            aria-hidden=\"true\"\n            preserveAspectRatio=\"xMidYMid meet\"\n            viewBox={`0 0 ${width} ${height}`}\n          >\n            <g className=\"ui-chart__grid\">\n              {ticks.map(tick => {\n                const y = scaleLumenChartValue(\n                  tick, domain, height - padding, padding\n                )\n\n                return (\n                  <Fragment key={tick}>\n                    <line x1={paddingLeft} x2={width - padding} y1={y} y2={y} />\n                    <text x={paddingLeft - 8} y={y}>\n                      {formatValue(tick)}\n                    </text>\n                  </Fragment>\n                )\n              })}\n            </g>\n            <g className=\"ui-chart__axis-labels\">\n              {categoryTicks.map(tick => (\n                <text key={tick.index} textAnchor={tick.textAnchor} x={tick.position} y={height - 14}>\n                  {tick.label}\n                </text>\n              ))}\n            </g>\n            <svg\n              x={paddingLeft}\n              y={padding}\n              width={width - padding - paddingLeft}\n              height={height - 2 * padding}\n              viewBox={`${paddingLeft} ${padding} ${width - padding - paddingLeft} ${height - 2 * padding}`}\n              overflow=\"hidden\"\n            >\n              {referenceY !== undefined && (\n                <line\n                  className=\"ui-chart__reference\"\n                  x1={paddingLeft}\n                  x2={width - padding}\n                  y1={referenceY}\n                  y2={referenceY}\n                />\n              )}\n              {geometries.map((geometry, index) => {\n                const item = series[index]\n\n                if (!item) return null\n\n                const tone = resolveLumenChartTone(item.tone, index)\n\n                return (\n                  <g\n                    className={composeClassName(\n                      'ui-line-chart__series', getLumenChartToneClassName(tone)\n                    )}\n                    key={item.id}\n                    data-ui-chart-series={item.id}\n                  >\n                    {area &&\n                      geometry.areaPaths.map(path => (\n                        <path className=\"ui-line-chart__area\" d={path} key={path} />\n                      ))}\n                    <path className=\"ui-line-chart__line\" d={geometry.path} />\n                    {Number.isFinite(markerStep) &&\n                      geometry.points.map(\n                        (point, pointIndex) => pointIndex % markerStep === 0 && (\n                          <circle\n                            className=\"ui-line-chart__point\"\n                            cx={point.xCoordinate}\n                            cy={point.yCoordinate}\n                            key={getChartCategoryKey(point.x)}\n                            r=\"3\"\n                          >\n                            <title>\n                              {`${getLumenChartCategoryLabel(alignedSeries, point.x, formatCategory, 'detail')} · ${item.label}: ${formatValue(point.y ?? 0)}`}\n                            </title>\n                          </circle>\n                        )\n                      )}\n                  </g>\n                )\n              })}\n            </svg>\n            {model.annotationMarks.map(mark => (\n              <g key={mark.id} className={composeClassName('ui-chart__annotation', getLumenChartToneClassName(mark.tone))}>\n                {mark.axis === 'x' ?\n                  (\n                    <>\n                      <line x1={mark.coordinate} x2={mark.coordinate} y1={padding} y2={height - padding} />\n                      <text x={mark.coordinate + 4} y={padding - 8}>{mark.label}</text>\n                    </>\n                  ) :\n                  (\n                    <>\n                      <line x1={paddingLeft} x2={width - padding} y1={mark.coordinate} y2={mark.coordinate} />\n                      <text textAnchor=\"end\" x={width - padding} y={mark.coordinate - 8}>{mark.label}</text>\n                    </>\n                  )}\n              </g>\n            ))}\n            {interactive && <line className=\"ui-chart__crosshair\" data-ui-chart-crosshair style={{ display: 'none' }} y1={padding} y2={height - padding} />}\n          </svg>\n        </div>\n        {model.annotationMarks.length > 0 && (\n          <ul className=\"ui-sr-only\">\n            {model.annotationMarks.map(mark => (\n              <li key={mark.id}>\n                {mark.label}\n                :\n                {' '}\n                {mark.axis === 'x' ? getLumenChartCategoryLabel(alignedSeries, mark.value, formatCategory, 'detail') : formatValue(Number(mark.value))}\n              </li>\n            ))}\n          </ul>\n        )}\n        {interactive && hasData && (\n          <ChartInspection\n            model={model}\n            {...(formatCategory ? { formatCategory } : {})}\n            formatValue={formatValue}\n            labels={resolvedLabels}\n          />\n        )}\n      </ChartInteraction>\n      {showTable && hasData && (\n        <ChartDataTable\n          categories={categories}\n          {...(formatCategory === undefined ? {} : { formatCategory })}\n          formatValue={formatValue}\n          labels={resolvedLabels}\n          series={series}\n        />\n      )}\n    </Chart>\n  )\n}",
           "styleImport": "import '@santi020k/lumen-react/styles.css'"
         }
       },
@@ -15823,6 +15890,16 @@
       ],
       "name": "LineChart",
       "props": [
+        {
+          "name": "interactive",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "syncGroup",
+          "optional": true,
+          "type": "string"
+        },
         {
           "name": "area",
           "optional": true,
@@ -15914,7 +15991,7 @@
           "type": "string"
         }
       ],
-      "propsExtends": "HTMLAttributes<'figure'>",
+      "propsExtends": "HTMLAttributes<'figure'>, LumenLineChartOptions",
       "recipes": [
         {
           "name": "data-visualization",
@@ -15925,7 +16002,14 @@
           "type": "recipe"
         }
       ],
-      "runtimeEvents": []
+      "runtimeEvents": [
+        {
+          "name": "ui:chart-cursor-change",
+          "target": "LineChart",
+          "when": "An interactive chart cursor changes through keyboard, pointer, or touch.",
+          "detail": "{ x: number | string | null }"
+        }
+      ]
     },
     {
       "apiReference": [
@@ -35461,6 +35545,18 @@
     {
       "apiReference": [
         {
+          "attribute": "colorScale, midpoint",
+          "defaultValue": "\"sequential\", 0",
+          "description": "Uses semantic color scales with an explicit midpoint for diverging values.",
+          "values": "\"sequential\" | \"diverging\", number"
+        },
+        {
+          "attribute": "showLegend",
+          "defaultValue": "true",
+          "description": "Shows scale endpoints and the distinct missing-data marker.",
+          "values": "boolean"
+        },
+        {
           "attribute": "data",
           "defaultValue": "[]",
           "description": "Provides labelled row, column, and intensity values for the heatmap cells.",
@@ -35491,7 +35587,7 @@
           "values": "HTML attributes"
         }
       ],
-      "astroSource": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { createLumenHeatmapGeometry, type LumenChartLabels, type LumenHeatmapDatum, resolveLumenChartLabels } from '@santi020k/lumen-core'\n\nimport Chart from './Chart.astro'\n\ninterface Props extends HTMLAttributes<'figure'> {\n  caption?: string\n  class?: string | null\n  className?: string\n  data: readonly LumenHeatmapDatum[]\n  description?: string\n  formatValue?: (value: number) => string\n  heading?: string\n  labels?: Partial<LumenChartLabels>\n  showTable?: boolean\n  summary?: string\n}\n\nconst { caption, class: classProp = '', className = '', data, description, formatValue = String, heading, labels, showTable = true, summary: summaryProp, ...rest } = Astro.props\nconst geometry = createLumenHeatmapGeometry(data)\nconst hasData = geometry.cells.some(cell => cell.value !== null && Number.isFinite(cell.value))\nconst resolvedLabels = resolveLumenChartLabels(labels)\nconst summary = summaryProp ?? resolvedLabels.formatHeatmapSummary(geometry.cells.filter(cell => cell.value !== null && Number.isFinite(cell.value)).length)\n---\n\n<Chart class:list={['ui-heatmap', classProp, className]} {caption} {description} {heading} {summary} {...rest}>\n  {!hasData && <p class=\"ui-chart__empty\" role=\"status\">{resolvedLabels.empty}</p>}\n  <div aria-label={resolvedLabels.chartData} class=\"ui-chart__plot\" role=\"region\" tabindex=\"0\" hidden={!hasData}><svg aria-hidden=\"true\" viewBox={`0 0 ${geometry.width} ${geometry.height}`}><g class=\"\n    ui-heatmap__cells\n  \"\n                                                                                                                                                                                              >{geometry.cells.filter(cell => cell.value !== null && Number.isFinite(cell.value)).map(cell => <rect height={Math.max(0, cell.height - 2)} opacity={Math.max(0.12, cell.ratio)} width={Math.max(0, cell.width - 2)} x={cell.xCoordinate + 1} y={cell.yCoordinate + 1}><title>{`${cell.xLabel ?? cell.x} · ${cell.yLabel ?? cell.y}: ${cell.label ?? formatValue(cell.value ?? 0)}`}</title></rect>)}</g></svg></div>\n  {showTable && <details class=\"ui-chart__data\"><summary>{resolvedLabels.viewData}</summary><div><table><thead><tr><th scope=\"col\">{resolvedLabels.column}</th><th scope=\"col\">{resolvedLabels.row}</th><th scope=\"col\">{resolvedLabels.value}</th></tr></thead><tbody>{data.map(cell => <tr><th scope=\"row\">{cell.xLabel ?? cell.x}</th><td>{cell.yLabel ?? cell.y}</td><td>{cell.label ?? (cell.value === null || !Number.isFinite(cell.value) ? resolvedLabels.notAvailable : formatValue(cell.value))}</td></tr>)}</tbody></table></div></details>}\n</Chart>\n",
+      "astroSource": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { createLumenHeatmapModel, getLumenHeatmapColor, type LumenChartLabels, type LumenHeatmapDatum, type LumenHeatmapOptions, resolveLumenChartLabels } from '@santi020k/lumen-core'\n\nimport Chart from './Chart.astro'\n\ninterface Props extends HTMLAttributes<'figure'>, LumenHeatmapOptions {\n  showLegend?: boolean\n  caption?: string\n  class?: string | null\n  className?: string\n  data: readonly LumenHeatmapDatum[]\n  description?: string\n  formatValue?: (value: number) => string\n  heading?: string\n  labels?: Partial<LumenChartLabels>\n  showTable?: boolean\n  summary?: string\n}\n\nconst { colorScale = 'sequential', midpoint = 0, domain, showLegend = true, caption, class: classProp = '', className = '', data, description, formatValue = String, heading, labels, showTable = true, summary: summaryProp, ...rest } = Astro.props\nconst geometry = createLumenHeatmapModel(data, { colorScale, midpoint, ...(domain ? { domain } : {}) })\nconst hasData = geometry.cells.some(cell => cell.value !== null && Number.isFinite(cell.value))\nconst resolvedLabels = resolveLumenChartLabels(labels)\nconst summary = summaryProp ?? resolvedLabels.formatHeatmapSummary(geometry.cells.filter(cell => cell.value !== null && Number.isFinite(cell.value)).length)\n---\n\n<Chart class:list={['ui-heatmap', classProp, className]} {caption} {description} {heading} {summary} {...rest}>\n  {!hasData && <p class=\"ui-chart__empty\" role=\"status\">{resolvedLabels.empty}</p>}\n  <div\naria-label={rest['aria-label'] ?? heading ?? resolvedLabels.chartData}\nclass=\"ui-chart__plot\"\nrole=\"region\"\ntabindex=\"0\"\nhidden={geometry.cells.length === 0}\n  >\n    <svg aria-hidden=\"true\" viewBox={`0 0 ${geometry.width} ${geometry.height}`}>\n      <g class=\"ui-chart__axis-labels\">\n        {geometry.xTicks.map(tick => <text text-anchor={tick.textAnchor} x={tick.position} y=\"298\">{tick.label}</text>)}\n        {geometry.yTicks.map(tick => <text text-anchor=\"end\" dominant-baseline=\"middle\" x=\"108\" y={tick.position}>{tick.label}</text>)}\n      </g>\n      <g class=\"ui-heatmap__cells\">{geometry.cells.map(cell => {\n        const missing = cell.value === null || !Number.isFinite(cell.value)\n\n        return (\n<g>\n          <rect height={Math.max(0, cell.height - 2)} width={Math.max(0, cell.width - 2)} x={cell.xCoordinate + 1} y={cell.yCoordinate + 1} style={{ fill: getLumenHeatmapColor(cell.value, geometry.domain, colorScale, geometry.midpoint) }}>\n            <title>{`${cell.xLabel ?? cell.x} · ${cell.yLabel ?? cell.y}: ${missing ? resolvedLabels.notAvailable : cell.label ?? formatValue(cell.value ?? 0)}`}</title>\n          </rect>\n          {missing && <text class=\"ui-heatmap__missing\" text-anchor=\"middle\" dominant-baseline=\"middle\" x={cell.xCoordinate + cell.width / 2} y={cell.yCoordinate + cell.height / 2}>×</text>}\n        </g>\n)\n      })}</g>\n    </svg>\n  </div>\n  {showLegend && geometry.cells.length > 0 && (\n<div class=\"ui-heatmap__legend\" aria-label={resolvedLabels.chartLegend}>\n    <span>{formatValue(geometry.domain.min)}</span><span\nstyle={{ background: geometry.legendBackground }}\nclass=\"ui-heatmap__scale\"\naria-hidden=\"true\"\n                                                   /><span>{formatValue(geometry.domain.max)}</span>\n    {colorScale === 'diverging' && <span>{formatValue(geometry.midpoint)}</span>}\n    <span>× {resolvedLabels.notAvailable}</span>\n  </div>\n)}\n  {showTable && <details class=\"ui-chart__data\"><summary>{resolvedLabels.viewData}</summary><div><table><thead><tr><th scope=\"col\">{resolvedLabels.column}</th><th scope=\"col\">{resolvedLabels.row}</th><th scope=\"col\">{resolvedLabels.value}</th></tr></thead><tbody>{geometry.cells.map(cell => <tr><th scope=\"row\">{cell.xLabel ?? cell.x}</th><td>{cell.yLabel ?? cell.y}</td><td>{cell.label ?? (cell.value === null || !Number.isFinite(cell.value) ? resolvedLabels.notAvailable : formatValue(cell.value))}</td></tr>)}</tbody></table></div></details>}\n</Chart>\n",
       "category": "Data display",
       "collections": [
         "Data visualization"
@@ -35521,6 +35617,11 @@
           "language": "astro",
           "packageName": "@santi020k/lumen-astro",
           "props": [
+            {
+              "name": "showLegend",
+              "optional": true,
+              "type": "boolean"
+            },
             {
               "name": "caption",
               "optional": true,
@@ -35572,12 +35673,14 @@
               "type": "string"
             }
           ],
-          "propsExtends": "HTMLAttributes<'figure'>",
-          "source": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { createLumenHeatmapGeometry, type LumenChartLabels, type LumenHeatmapDatum, resolveLumenChartLabels } from '@santi020k/lumen-core'\n\nimport Chart from './Chart.astro'\n\ninterface Props extends HTMLAttributes<'figure'> {\n  caption?: string\n  class?: string | null\n  className?: string\n  data: readonly LumenHeatmapDatum[]\n  description?: string\n  formatValue?: (value: number) => string\n  heading?: string\n  labels?: Partial<LumenChartLabels>\n  showTable?: boolean\n  summary?: string\n}\n\nconst { caption, class: classProp = '', className = '', data, description, formatValue = String, heading, labels, showTable = true, summary: summaryProp, ...rest } = Astro.props\nconst geometry = createLumenHeatmapGeometry(data)\nconst hasData = geometry.cells.some(cell => cell.value !== null && Number.isFinite(cell.value))\nconst resolvedLabels = resolveLumenChartLabels(labels)\nconst summary = summaryProp ?? resolvedLabels.formatHeatmapSummary(geometry.cells.filter(cell => cell.value !== null && Number.isFinite(cell.value)).length)\n---\n\n<Chart class:list={['ui-heatmap', classProp, className]} {caption} {description} {heading} {summary} {...rest}>\n  {!hasData && <p class=\"ui-chart__empty\" role=\"status\">{resolvedLabels.empty}</p>}\n  <div aria-label={resolvedLabels.chartData} class=\"ui-chart__plot\" role=\"region\" tabindex=\"0\" hidden={!hasData}><svg aria-hidden=\"true\" viewBox={`0 0 ${geometry.width} ${geometry.height}`}><g class=\"\n    ui-heatmap__cells\n  \"\n                                                                                                                                                                                              >{geometry.cells.filter(cell => cell.value !== null && Number.isFinite(cell.value)).map(cell => <rect height={Math.max(0, cell.height - 2)} opacity={Math.max(0.12, cell.ratio)} width={Math.max(0, cell.width - 2)} x={cell.xCoordinate + 1} y={cell.yCoordinate + 1}><title>{`${cell.xLabel ?? cell.x} · ${cell.yLabel ?? cell.y}: ${cell.label ?? formatValue(cell.value ?? 0)}`}</title></rect>)}</g></svg></div>\n  {showTable && <details class=\"ui-chart__data\"><summary>{resolvedLabels.viewData}</summary><div><table><thead><tr><th scope=\"col\">{resolvedLabels.column}</th><th scope=\"col\">{resolvedLabels.row}</th><th scope=\"col\">{resolvedLabels.value}</th></tr></thead><tbody>{data.map(cell => <tr><th scope=\"row\">{cell.xLabel ?? cell.x}</th><td>{cell.yLabel ?? cell.y}</td><td>{cell.label ?? (cell.value === null || !Number.isFinite(cell.value) ? resolvedLabels.notAvailable : formatValue(cell.value))}</td></tr>)}</tbody></table></div></details>}\n</Chart>\n",
+          "propsExtends": "HTMLAttributes<'figure'>, LumenHeatmapOptions",
+          "source": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { createLumenHeatmapModel, getLumenHeatmapColor, type LumenChartLabels, type LumenHeatmapDatum, type LumenHeatmapOptions, resolveLumenChartLabels } from '@santi020k/lumen-core'\n\nimport Chart from './Chart.astro'\n\ninterface Props extends HTMLAttributes<'figure'>, LumenHeatmapOptions {\n  showLegend?: boolean\n  caption?: string\n  class?: string | null\n  className?: string\n  data: readonly LumenHeatmapDatum[]\n  description?: string\n  formatValue?: (value: number) => string\n  heading?: string\n  labels?: Partial<LumenChartLabels>\n  showTable?: boolean\n  summary?: string\n}\n\nconst { colorScale = 'sequential', midpoint = 0, domain, showLegend = true, caption, class: classProp = '', className = '', data, description, formatValue = String, heading, labels, showTable = true, summary: summaryProp, ...rest } = Astro.props\nconst geometry = createLumenHeatmapModel(data, { colorScale, midpoint, ...(domain ? { domain } : {}) })\nconst hasData = geometry.cells.some(cell => cell.value !== null && Number.isFinite(cell.value))\nconst resolvedLabels = resolveLumenChartLabels(labels)\nconst summary = summaryProp ?? resolvedLabels.formatHeatmapSummary(geometry.cells.filter(cell => cell.value !== null && Number.isFinite(cell.value)).length)\n---\n\n<Chart class:list={['ui-heatmap', classProp, className]} {caption} {description} {heading} {summary} {...rest}>\n  {!hasData && <p class=\"ui-chart__empty\" role=\"status\">{resolvedLabels.empty}</p>}\n  <div\naria-label={rest['aria-label'] ?? heading ?? resolvedLabels.chartData}\nclass=\"ui-chart__plot\"\nrole=\"region\"\ntabindex=\"0\"\nhidden={geometry.cells.length === 0}\n  >\n    <svg aria-hidden=\"true\" viewBox={`0 0 ${geometry.width} ${geometry.height}`}>\n      <g class=\"ui-chart__axis-labels\">\n        {geometry.xTicks.map(tick => <text text-anchor={tick.textAnchor} x={tick.position} y=\"298\">{tick.label}</text>)}\n        {geometry.yTicks.map(tick => <text text-anchor=\"end\" dominant-baseline=\"middle\" x=\"108\" y={tick.position}>{tick.label}</text>)}\n      </g>\n      <g class=\"ui-heatmap__cells\">{geometry.cells.map(cell => {\n        const missing = cell.value === null || !Number.isFinite(cell.value)\n\n        return (\n<g>\n          <rect height={Math.max(0, cell.height - 2)} width={Math.max(0, cell.width - 2)} x={cell.xCoordinate + 1} y={cell.yCoordinate + 1} style={{ fill: getLumenHeatmapColor(cell.value, geometry.domain, colorScale, geometry.midpoint) }}>\n            <title>{`${cell.xLabel ?? cell.x} · ${cell.yLabel ?? cell.y}: ${missing ? resolvedLabels.notAvailable : cell.label ?? formatValue(cell.value ?? 0)}`}</title>\n          </rect>\n          {missing && <text class=\"ui-heatmap__missing\" text-anchor=\"middle\" dominant-baseline=\"middle\" x={cell.xCoordinate + cell.width / 2} y={cell.yCoordinate + cell.height / 2}>×</text>}\n        </g>\n)\n      })}</g>\n    </svg>\n  </div>\n  {showLegend && geometry.cells.length > 0 && (\n<div class=\"ui-heatmap__legend\" aria-label={resolvedLabels.chartLegend}>\n    <span>{formatValue(geometry.domain.min)}</span><span\nstyle={{ background: geometry.legendBackground }}\nclass=\"ui-heatmap__scale\"\naria-hidden=\"true\"\n                                                   /><span>{formatValue(geometry.domain.max)}</span>\n    {colorScale === 'diverging' && <span>{formatValue(geometry.midpoint)}</span>}\n    <span>× {resolvedLabels.notAvailable}</span>\n  </div>\n)}\n  {showTable && <details class=\"ui-chart__data\"><summary>{resolvedLabels.viewData}</summary><div><table><thead><tr><th scope=\"col\">{resolvedLabels.column}</th><th scope=\"col\">{resolvedLabels.row}</th><th scope=\"col\">{resolvedLabels.value}</th></tr></thead><tbody>{geometry.cells.map(cell => <tr><th scope=\"row\">{cell.xLabel ?? cell.x}</th><td>{cell.yLabel ?? cell.y}</td><td>{cell.label ?? (cell.value === null || !Number.isFinite(cell.value) ? resolvedLabels.notAvailable : formatValue(cell.value))}</td></tr>)}</tbody></table></div></details>}\n</Chart>\n",
           "styleImport": "import '@santi020k/lumen-astro/styles.css'"
         },
         "elements": {
           "attributes": [
+            "colorScale, midpoint",
+            "showLegend",
             "data",
             "formatValue",
             "showTable",
@@ -35608,6 +35711,11 @@
           "packageName": "@santi020k/lumen-react",
           "props": [
             {
+              "name": "showLegend",
+              "optional": true,
+              "type": "boolean"
+            },
+            {
               "name": "data",
               "optional": true,
               "type": "readonly LumenHeatmapDatum[]"
@@ -35628,8 +35736,8 @@
               "type": "boolean"
             }
           ],
-          "propsExtends": "Omit<ChartProps, 'children'>",
-          "source": "export interface HeatmapProps extends Omit<ChartProps, 'children'> {\n  data?: readonly LumenHeatmapDatum[]\n  formatValue?: (value: number) => string\n  labels?: Partial<LumenChartLabels>\n  showTable?: boolean\n}\n\nexport const Heatmap = ({\n  className,\n  data = emptyHeatmapData,\n  formatValue = String,\n  labels,\n  showTable = true,\n  summary,\n  ...props\n}: HeatmapProps) => {\n  const resolvedLabels = resolveLumenChartLabels(labels)\n  const geometry = createLumenHeatmapGeometry(data)\n  const availableCells = geometry.cells.filter(cell => cell.value !== null && Number.isFinite(cell.value))\n  const hasData = availableCells.length > 0\n\n  return (\n    <Chart className={composeClassName('ui-heatmap', className)} summary={summary ?? resolvedLabels.formatHeatmapSummary(availableCells.length)} {...props}>\n      {!hasData && <p className=\"ui-chart__empty\" role=\"status\">{resolvedLabels.empty}</p>}\n      <div aria-label={resolvedLabels.chartData} className=\"ui-chart__plot\" role=\"region\" tabIndex={0} hidden={!hasData}>\n        <svg aria-hidden=\"true\" viewBox={`0 0 ${geometry.width} ${geometry.height}`}>\n          <g className=\"ui-heatmap__cells\">\n            {availableCells.map(cell => <rect height={Math.max(0, cell.height - 2)} key={cell.id ?? `${getChartCategoryKey(cell.x)}:${getChartCategoryKey(cell.y)}`} opacity={Math.max(0.12, cell.ratio)} width={Math.max(0, cell.width - 2)} x={cell.xCoordinate + 1} y={cell.yCoordinate + 1}><title>{`${cell.xLabel ?? cell.x} · ${cell.yLabel ?? cell.y}: ${cell.label ?? formatValue(cell.value ?? 0)}`}</title></rect>)}\n          </g>\n        </svg>\n      </div>\n      {showTable && (\n        <details className=\"ui-chart__data\">\n          <summary>{resolvedLabels.viewData}</summary>\n          <div>\n            <table>\n              <thead>\n                <tr>\n                  <th scope=\"col\">{resolvedLabels.column}</th>\n                  <th scope=\"col\">{resolvedLabels.row}</th>\n                  <th scope=\"col\">{resolvedLabels.value}</th>\n                </tr>\n              </thead>\n              <tbody>\n                {data.map(cell => (\n                  <tr key={cell.id ?? `${getChartCategoryKey(cell.x)}:${getChartCategoryKey(cell.y)}`}>\n                    <th scope=\"row\">{cell.xLabel ?? cell.x}</th>\n                    <td>{cell.yLabel ?? cell.y}</td>\n                    <td>\n                      {cell.label ?? (\n                        cell.value === null || !Number.isFinite(cell.value) ?\n                          resolvedLabels.notAvailable :\n                          formatValue(cell.value)\n                      )}\n                    </td>\n                  </tr>\n                ))}\n              </tbody>\n            </table>\n          </div>\n        </details>\n      )}\n    </Chart>\n  )\n}",
+          "propsExtends": "Omit<ChartProps, 'children'>, LumenHeatmapOptions",
+          "source": "export interface HeatmapProps extends Omit<ChartProps, 'children'>, LumenHeatmapOptions {\n  showLegend?: boolean\n  data?: readonly LumenHeatmapDatum[]\n  formatValue?: (value: number) => string\n  labels?: Partial<LumenChartLabels>\n  showTable?: boolean\n}\n\nexport const Heatmap = ({\n  colorScale = 'sequential',\n  midpoint = 0,\n  domain,\n  showLegend = true,\n  className,\n  data = emptyHeatmapData,\n  formatValue = String,\n  labels,\n  showTable = true,\n  summary,\n  ...props\n}: HeatmapProps) => {\n  const resolvedLabels = resolveLumenChartLabels(labels)\n  const geometry = createLumenHeatmapModel(data, { colorScale, midpoint, ...(domain ? { domain } : {}) })\n  const availableCells = geometry.cells.filter(cell => cell.value !== null && Number.isFinite(cell.value))\n  const hasData = availableCells.length > 0\n\n  return (\n    <Chart className={composeClassName('ui-heatmap', className)} summary={summary ?? resolvedLabels.formatHeatmapSummary(availableCells.length)} {...props}>\n      {!hasData && <p className=\"ui-chart__empty\" role=\"status\">{resolvedLabels.empty}</p>}\n      <div\n        aria-label={getChartPlotLabel(props['aria-label'], props.heading, resolvedLabels.chartData)}\n        className=\"ui-chart__plot\"\n        role=\"region\"\n        tabIndex={0}\n        hidden={geometry.cells.length === 0}\n      >\n        <svg aria-hidden=\"true\" viewBox={`0 0 ${geometry.width} ${geometry.height}`}>\n          <g className=\"ui-chart__axis-labels\">\n            {geometry.xTicks.map(tick => <text key={tick.index} textAnchor={tick.textAnchor} x={tick.position} y=\"298\">{tick.label}</text>)}\n            {geometry.yTicks.map(tick => <text key={getChartCategoryKey(tick.value)} textAnchor=\"end\" dominantBaseline=\"middle\" x=\"108\" y={tick.position}>{tick.label}</text>)}\n          </g>\n          <g className=\"ui-heatmap__cells\">\n            {geometry.cells.map(cell => {\n              const missing = cell.value === null || !Number.isFinite(cell.value)\n\n              return (\n                <g key={JSON.stringify([cell.x, cell.y])}>\n                  <rect\n                    height={Math.max(0, cell.height - 2)}\n                    width={Math.max(0, cell.width - 2)}\n                    x={cell.xCoordinate + 1}\n                    y={cell.yCoordinate + 1}\n                    style={{ fill: getLumenHeatmapColor(cell.value, geometry.domain, colorScale, geometry.midpoint) }}\n                  >\n\n                    <title>{`${cell.xLabel ?? cell.x} · ${cell.yLabel ?? cell.y}: ${missing ? resolvedLabels.notAvailable : cell.label ?? formatValue(cell.value ?? 0)}`}</title>\n                  </rect>\n                  {missing && <text className=\"ui-heatmap__missing\" textAnchor=\"middle\" dominantBaseline=\"middle\" x={cell.xCoordinate + cell.width / 2} y={cell.yCoordinate + cell.height / 2}>×</text>}\n                </g>\n              )\n            })}\n          </g>\n        </svg>\n      </div>\n      {showLegend && geometry.cells.length > 0 && (\n        <div className=\"ui-heatmap__legend\" aria-label={resolvedLabels.chartLegend}>\n          <span>{formatValue(geometry.domain.min)}</span>\n          <span\n            style={{ background: geometry.legendBackground }}\n            className=\"ui-heatmap__scale\"\n            aria-hidden=\"true\"\n          />\n          <span>{formatValue(geometry.domain.max)}</span>\n          {colorScale === 'diverging' && <span>{formatValue(geometry.midpoint)}</span>}\n          <span>\n            ×\n            {resolvedLabels.notAvailable}\n          </span>\n        </div>\n      )}\n      {showTable && (\n        <details className=\"ui-chart__data\">\n          <summary>{resolvedLabels.viewData}</summary>\n          <div>\n            <table>\n              <thead>\n                <tr>\n                  <th scope=\"col\">{resolvedLabels.column}</th>\n                  <th scope=\"col\">{resolvedLabels.row}</th>\n                  <th scope=\"col\">{resolvedLabels.value}</th>\n                </tr>\n              </thead>\n              <tbody>\n                {geometry.cells.map(cell => (\n                  <tr key={cell.id ?? `${getChartCategoryKey(cell.x)}:${getChartCategoryKey(cell.y)}`}>\n                    <th scope=\"row\">{cell.xLabel ?? cell.x}</th>\n                    <td>{cell.yLabel ?? cell.y}</td>\n                    <td>\n                      {cell.label ?? (\n                        cell.value === null || !Number.isFinite(cell.value) ?\n                          resolvedLabels.notAvailable :\n                          formatValue(cell.value)\n                      )}\n                    </td>\n                  </tr>\n                ))}\n              </tbody>\n            </table>\n          </div>\n        </details>\n      )}\n    </Chart>\n  )\n}",
           "styleImport": "import '@santi020k/lumen-react/styles.css'"
         }
       },
@@ -35675,6 +35783,11 @@
       ],
       "name": "Heatmap",
       "props": [
+        {
+          "name": "showLegend",
+          "optional": true,
+          "type": "boolean"
+        },
         {
           "name": "caption",
           "optional": true,
@@ -35726,7 +35839,7 @@
           "type": "string"
         }
       ],
-      "propsExtends": "HTMLAttributes<'figure'>",
+      "propsExtends": "HTMLAttributes<'figure'>, LumenHeatmapOptions",
       "recipes": [
         {
           "name": "data-visualization",
@@ -36492,6 +36605,641 @@
       "propsExtends": "HTMLAttributes<'span'>",
       "recipes": [],
       "runtimeEvents": []
+    },
+    {
+      "apiReference": [
+        {
+          "attribute": "bins",
+          "defaultValue": "required",
+          "description": "Supplies non-overlapping numeric start/end boundaries and nonnegative counts. The application owns binning.",
+          "values": "LumenHistogramBin[]"
+        },
+        {
+          "attribute": "frequency",
+          "defaultValue": "\"count\"",
+          "description": "Density divides count by bin width. Unequal-width bins require density.",
+          "values": "\"count\" | \"density\""
+        },
+        {
+          "attribute": "formatBoundary, formatValue",
+          "defaultValue": "String",
+          "description": "Formats numeric boundaries and the plotted frequency.",
+          "values": "formatter functions"
+        },
+        {
+          "attribute": "valueLabel, labels",
+          "defaultValue": "localized defaults",
+          "description": "Labels the measure and the accessible data table.",
+          "values": "string, Partial<LumenChartLabels>"
+        },
+        {
+          "attribute": "showTable",
+          "defaultValue": "true",
+          "description": "Retains raw bin counts alongside the plotted frequency.",
+          "values": "boolean"
+        },
+        {
+          "attribute": "class, className",
+          "defaultValue": "\"\"",
+          "description": "Merges custom classes with the generated ui-* root classes.",
+          "values": "string"
+        },
+        {
+          "attribute": "...native attributes",
+          "defaultValue": "-",
+          "description": "Forwards standard attributes to the root element unless the component consumes them.",
+          "values": "HTML attributes"
+        }
+      ],
+      "astroSource": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { createLumenHistogramGeometry, type LumenChartLabels, type LumenChartTone, type LumenHistogramBin, resolveLumenChartLabels } from '@santi020k/lumen-core'\n\nimport IntervalChart from '../internal/IntervalChart.astro'\n\ninterface Props extends HTMLAttributes<'figure'> {\n  bins: readonly LumenHistogramBin[]\n  caption?: string\n  class?: string | null\n  className?: string\n  description?: string\n  formatBoundary?: (value: number) => string\n  formatValue?: (value: number) => string\n  frequency?: 'count' | 'density'\n  heading?: string\n  labels?: Partial<LumenChartLabels>\n  presentation?: 'bare' | 'default'\n  showTable?: boolean\n  summary?: string\n  tone?: LumenChartTone\n  valueLabel?: string\n}\n\nconst { bins, class: classProp, className, formatBoundary = String, formatValue = String, frequency = 'count', labels, tone = 'series-1', valueLabel = resolveLumenChartLabels(labels)[frequency === 'density' ? 'density' : 'count'], ...rest } = Astro.props\nconst model = createLumenHistogramGeometry(bins, { formatBoundary, formatValue, frequency, tone })\n---\n\n<IntervalChart {...rest} class:list={['ui-histogram', classProp, className]} {model} {labels} {formatBoundary} {formatValue} {valueLabel} />\n",
+      "category": "Data display",
+      "collections": [
+        "Data visualization"
+      ],
+      "contract": null,
+      "dependencies": [
+        "Chart",
+        "styles"
+      ],
+      "description": "Shows a numeric distribution using explicit bins and an accessible frequency table.",
+      "behavior": {
+        "astro": "none",
+        "elements": "registered-element",
+        "react": "component"
+      },
+      "files": [
+        "packages/astro/components/Histogram.astro",
+        "packages/astro/internal/IntervalChart.astro",
+        "packages/astro/components/Chart.astro",
+        "packages/astro/styles/lumen.css"
+      ],
+      "frameworkDetails": {
+        "astro": {
+          "available": true,
+          "example": "<Histogram aria-label=\"Response times\" bins={[{ start: 0, end: 100, count: 8 }, { start: 100, end: 200, count: 24 }]} />",
+          "importStatement": "import { Histogram } from '@santi020k/lumen-astro'",
+          "language": "astro",
+          "packageName": "@santi020k/lumen-astro",
+          "props": [
+            {
+              "name": "bins",
+              "optional": false,
+              "type": "readonly LumenHistogramBin[]"
+            },
+            {
+              "name": "caption",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "name": "class",
+              "optional": true,
+              "type": "string | null"
+            },
+            {
+              "name": "className",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "name": "description",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "name": "formatBoundary",
+              "optional": true,
+              "type": "(value: number) => string"
+            },
+            {
+              "name": "formatValue",
+              "optional": true,
+              "type": "(value: number) => string"
+            },
+            {
+              "name": "frequency",
+              "optional": true,
+              "type": "'count' | 'density'"
+            },
+            {
+              "name": "heading",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "name": "labels",
+              "optional": true,
+              "type": "Partial<LumenChartLabels>"
+            },
+            {
+              "name": "presentation",
+              "optional": true,
+              "type": "'bare' | 'default'"
+            },
+            {
+              "name": "showTable",
+              "optional": true,
+              "type": "boolean"
+            },
+            {
+              "name": "summary",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "name": "tone",
+              "optional": true,
+              "type": "LumenChartTone"
+            },
+            {
+              "name": "valueLabel",
+              "optional": true,
+              "type": "string"
+            }
+          ],
+          "propsExtends": "HTMLAttributes<'figure'>",
+          "source": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { createLumenHistogramGeometry, type LumenChartLabels, type LumenChartTone, type LumenHistogramBin, resolveLumenChartLabels } from '@santi020k/lumen-core'\n\nimport IntervalChart from '../internal/IntervalChart.astro'\n\ninterface Props extends HTMLAttributes<'figure'> {\n  bins: readonly LumenHistogramBin[]\n  caption?: string\n  class?: string | null\n  className?: string\n  description?: string\n  formatBoundary?: (value: number) => string\n  formatValue?: (value: number) => string\n  frequency?: 'count' | 'density'\n  heading?: string\n  labels?: Partial<LumenChartLabels>\n  presentation?: 'bare' | 'default'\n  showTable?: boolean\n  summary?: string\n  tone?: LumenChartTone\n  valueLabel?: string\n}\n\nconst { bins, class: classProp, className, formatBoundary = String, formatValue = String, frequency = 'count', labels, tone = 'series-1', valueLabel = resolveLumenChartLabels(labels)[frequency === 'density' ? 'density' : 'count'], ...rest } = Astro.props\nconst model = createLumenHistogramGeometry(bins, { formatBoundary, formatValue, frequency, tone })\n---\n\n<IntervalChart {...rest} class:list={['ui-histogram', classProp, className]} {model} {labels} {formatBoundary} {formatValue} {valueLabel} />\n",
+          "styleImport": "import '@santi020k/lumen-astro/styles.css'"
+        },
+        "elements": {
+          "attributes": [
+            "presentation",
+            "bins",
+            "frequency",
+            "formatBoundary, formatValue",
+            "valueLabel, labels",
+            "showTable",
+            "class, className",
+            "...native attributes"
+          ],
+          "available": true,
+          "behavior": {
+            "mode": "registration",
+            "setup": "Call defineLumenElements() once before rendering Lumen custom elements."
+          },
+          "example": "<lumen-histogram></lumen-histogram>",
+          "importStatement": "import { defineLumenElements } from '@santi020k/lumen-elements/define'",
+          "language": "html",
+          "packageName": "@santi020k/lumen-elements",
+          "props": [],
+          "propsExtends": "HTMLElement attributes",
+          "registration": "defineLumenElements()",
+          "source": "Histogram: { baseClassName: 'ui-chart ui-histogram', role: 'figure', tagName: 'lumen-histogram', attributeClasses: { presentation: { bare: 'ui-chart--bare' } } }",
+          "styleImport": "import '@santi020k/lumen-elements/styles.css'",
+          "tagName": "lumen-histogram"
+        },
+        "react": {
+          "available": true,
+          "example": "<Histogram aria-label=\"Response times\" bins={[{ start: 0, end: 100, count: 8 }, { start: 100, end: 200, count: 24 }]} />",
+          "importStatement": "import { Histogram } from '@santi020k/lumen-react'",
+          "language": "tsx",
+          "packageName": "@santi020k/lumen-react",
+          "props": [
+            {
+              "name": "bins",
+              "optional": true,
+              "type": "readonly LumenHistogramBin[]"
+            },
+            {
+              "name": "formatBoundary",
+              "optional": true,
+              "type": "(value: number) => string"
+            },
+            {
+              "name": "frequency",
+              "optional": true,
+              "type": "'count' | 'density'"
+            },
+            {
+              "name": "tone",
+              "optional": true,
+              "type": "LumenChartTone"
+            }
+          ],
+          "propsExtends": "IntervalChartProps",
+          "source": "export interface HistogramProps extends IntervalChartProps {\n  bins?: readonly LumenHistogramBin[]\n  formatBoundary?: (value: number) => string\n  frequency?: 'count' | 'density'\n  tone?: LumenChartTone\n}\n\nexport const Histogram = ({ bins = emptyHistogramBins, className, formatBoundary = String, formatValue = String, frequency = 'count', labels, tone = 'series-1', valueLabel, ...props }: HistogramProps) => <IntervalPlot {...props} {...(labels ? { labels } : {})} className={composeClassName('ui-histogram', className)} model={createLumenHistogramGeometry(bins, { formatBoundary, formatValue, frequency, tone })} formatBoundary={formatBoundary} formatValue={formatValue} valueLabel={valueLabel ?? resolveLumenChartLabels(labels)[frequency === 'density' ? 'density' : 'count']} />",
+          "styleImport": "import '@santi020k/lumen-react/styles.css'"
+        }
+      },
+      "frameworks": {
+        "astro": true,
+        "elements": true,
+        "react": true
+      },
+      "guidance": null,
+      "kebab": "histogram",
+      "keyboardInteractions": [],
+      "keywords": [
+        "accessible",
+        "and",
+        "bins",
+        "breakdowns",
+        "categorical",
+        "compact",
+        "comparisons",
+        "custom",
+        "data",
+        "display",
+        "distribution",
+        "explicit",
+        "frequency",
+        "histogram",
+        "marks",
+        "match",
+        "matrices",
+        "metrics",
+        "mixed",
+        "numeric",
+        "ordered",
+        "part",
+        "plots",
+        "question",
+        "ranges",
+        "relationships",
+        "shows",
+        "table",
+        "the",
+        "trends",
+        "using",
+        "visualization",
+        "whole"
+      ],
+      "name": "Histogram",
+      "props": [
+        {
+          "name": "bins",
+          "optional": false,
+          "type": "readonly LumenHistogramBin[]"
+        },
+        {
+          "name": "caption",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "class",
+          "optional": true,
+          "type": "string | null"
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "description",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "formatBoundary",
+          "optional": true,
+          "type": "(value: number) => string"
+        },
+        {
+          "name": "formatValue",
+          "optional": true,
+          "type": "(value: number) => string"
+        },
+        {
+          "name": "frequency",
+          "optional": true,
+          "type": "'count' | 'density'"
+        },
+        {
+          "name": "heading",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "labels",
+          "optional": true,
+          "type": "Partial<LumenChartLabels>"
+        },
+        {
+          "name": "presentation",
+          "optional": true,
+          "type": "'bare' | 'default'"
+        },
+        {
+          "name": "showTable",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "summary",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "tone",
+          "optional": true,
+          "type": "LumenChartTone"
+        },
+        {
+          "name": "valueLabel",
+          "optional": true,
+          "type": "string"
+        }
+      ],
+      "propsExtends": "HTMLAttributes<'figure'>",
+      "recipes": [
+        {
+          "name": "data-visualization",
+          "type": "recipe"
+        }
+      ],
+      "runtimeEvents": []
+    },
+    {
+      "apiReference": [
+        {
+          "attribute": "data",
+          "defaultValue": "required",
+          "description": "Supplies stable IDs, labels, signed changes, and optional explicit total checkpoints.",
+          "values": "LumenWaterfallDatum[]"
+        },
+        {
+          "attribute": "formatValue",
+          "defaultValue": "String",
+          "description": "Formats chart values and start/end balances consistently.",
+          "values": "formatter function"
+        },
+        {
+          "attribute": "valueLabel, labels",
+          "defaultValue": "localized defaults",
+          "description": "Labels the measure and the accessible data table.",
+          "values": "string, Partial<LumenChartLabels>"
+        },
+        {
+          "attribute": "showTable",
+          "defaultValue": "true",
+          "description": "Shows each supplied change and the resulting start/end balance.",
+          "values": "boolean"
+        },
+        {
+          "attribute": "class, className",
+          "defaultValue": "\"\"",
+          "description": "Merges custom classes with the generated ui-* root classes.",
+          "values": "string"
+        },
+        {
+          "attribute": "...native attributes",
+          "defaultValue": "-",
+          "description": "Forwards standard attributes to the root element unless the component consumes them.",
+          "values": "HTML attributes"
+        }
+      ],
+      "astroSource": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { createLumenWaterfallGeometry, type LumenChartLabels, type LumenWaterfallDatum, resolveLumenChartLabels } from '@santi020k/lumen-core'\n\nimport IntervalChart from '../internal/IntervalChart.astro'\n\ninterface Props extends HTMLAttributes<'figure'> {\n  caption?: string\n  class?: string | null\n  className?: string\n  data: readonly LumenWaterfallDatum[]\n  description?: string\n  formatValue?: (value: number) => string\n  heading?: string\n  labels?: Partial<LumenChartLabels>\n  presentation?: 'bare' | 'default'\n  showTable?: boolean\n  summary?: string\n  valueLabel?: string\n}\n\nconst { data, class: classProp, className, formatValue = String, labels, valueLabel = resolveLumenChartLabels(labels).value, ...rest } = Astro.props\nconst model = createLumenWaterfallGeometry(data, { formatValue })\n---\n\n<IntervalChart {...rest} class:list={['ui-waterfall-chart', classProp, className]} {model} {labels} {formatValue} formatBoundary={formatValue} {valueLabel} />\n",
+      "category": "Data display",
+      "collections": [
+        "Data visualization"
+      ],
+      "contract": null,
+      "dependencies": [
+        "Chart",
+        "styles"
+      ],
+      "description": "Explains signed changes and explicit total checkpoints.",
+      "behavior": {
+        "astro": "none",
+        "elements": "registered-element",
+        "react": "component"
+      },
+      "files": [
+        "packages/astro/components/WaterfallChart.astro",
+        "packages/astro/internal/IntervalChart.astro",
+        "packages/astro/components/Chart.astro",
+        "packages/astro/styles/lumen.css"
+      ],
+      "frameworkDetails": {
+        "astro": {
+          "available": true,
+          "example": "<WaterfallChart aria-label=\"Balance changes\" data={[{ id: \"opening\", label: \"Opening\", kind: \"total\", value: 120 }, { id: \"expenses\", label: \"Expenses\", value: -20 }]} />",
+          "importStatement": "import { WaterfallChart } from '@santi020k/lumen-astro'",
+          "language": "astro",
+          "packageName": "@santi020k/lumen-astro",
+          "props": [
+            {
+              "name": "caption",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "name": "class",
+              "optional": true,
+              "type": "string | null"
+            },
+            {
+              "name": "className",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "name": "data",
+              "optional": false,
+              "type": "readonly LumenWaterfallDatum[]"
+            },
+            {
+              "name": "description",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "name": "formatValue",
+              "optional": true,
+              "type": "(value: number) => string"
+            },
+            {
+              "name": "heading",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "name": "labels",
+              "optional": true,
+              "type": "Partial<LumenChartLabels>"
+            },
+            {
+              "name": "presentation",
+              "optional": true,
+              "type": "'bare' | 'default'"
+            },
+            {
+              "name": "showTable",
+              "optional": true,
+              "type": "boolean"
+            },
+            {
+              "name": "summary",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "name": "valueLabel",
+              "optional": true,
+              "type": "string"
+            }
+          ],
+          "propsExtends": "HTMLAttributes<'figure'>",
+          "source": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { createLumenWaterfallGeometry, type LumenChartLabels, type LumenWaterfallDatum, resolveLumenChartLabels } from '@santi020k/lumen-core'\n\nimport IntervalChart from '../internal/IntervalChart.astro'\n\ninterface Props extends HTMLAttributes<'figure'> {\n  caption?: string\n  class?: string | null\n  className?: string\n  data: readonly LumenWaterfallDatum[]\n  description?: string\n  formatValue?: (value: number) => string\n  heading?: string\n  labels?: Partial<LumenChartLabels>\n  presentation?: 'bare' | 'default'\n  showTable?: boolean\n  summary?: string\n  valueLabel?: string\n}\n\nconst { data, class: classProp, className, formatValue = String, labels, valueLabel = resolveLumenChartLabels(labels).value, ...rest } = Astro.props\nconst model = createLumenWaterfallGeometry(data, { formatValue })\n---\n\n<IntervalChart {...rest} class:list={['ui-waterfall-chart', classProp, className]} {model} {labels} {formatValue} formatBoundary={formatValue} {valueLabel} />\n",
+          "styleImport": "import '@santi020k/lumen-astro/styles.css'"
+        },
+        "elements": {
+          "attributes": [
+            "presentation",
+            "data",
+            "formatValue",
+            "valueLabel, labels",
+            "showTable",
+            "class, className",
+            "...native attributes"
+          ],
+          "available": true,
+          "behavior": {
+            "mode": "registration",
+            "setup": "Call defineLumenElements() once before rendering Lumen custom elements."
+          },
+          "example": "<lumen-waterfall-chart></lumen-waterfall-chart>",
+          "importStatement": "import { defineLumenElements } from '@santi020k/lumen-elements/define'",
+          "language": "html",
+          "packageName": "@santi020k/lumen-elements",
+          "props": [],
+          "propsExtends": "HTMLElement attributes",
+          "registration": "defineLumenElements()",
+          "source": "WaterfallChart: { baseClassName: 'ui-chart ui-waterfall-chart', role: 'figure', tagName: 'lumen-waterfall-chart', attributeClasses: { presentation: { bare: 'ui-chart--bare' } } }",
+          "styleImport": "import '@santi020k/lumen-elements/styles.css'",
+          "tagName": "lumen-waterfall-chart"
+        },
+        "react": {
+          "available": true,
+          "example": "<WaterfallChart aria-label=\"Balance changes\" data={[{ id: \"opening\", label: \"Opening\", kind: \"total\", value: 120 }, { id: \"expenses\", label: \"Expenses\", value: -20 }]} />",
+          "importStatement": "import { WaterfallChart } from '@santi020k/lumen-react'",
+          "language": "tsx",
+          "packageName": "@santi020k/lumen-react",
+          "props": [
+            {
+              "name": "data",
+              "optional": true,
+              "type": "readonly LumenWaterfallDatum[]"
+            }
+          ],
+          "propsExtends": "IntervalChartProps",
+          "source": "export interface WaterfallChartProps extends IntervalChartProps {\n  data?: readonly LumenWaterfallDatum[]\n}\n\nexport const WaterfallChart = ({ className, data = emptyWaterfallData, formatValue = String, ...props }: WaterfallChartProps) => <IntervalPlot {...props} className={composeClassName('ui-waterfall-chart', className)} model={createLumenWaterfallGeometry(data, { formatValue })} formatValue={formatValue} formatBoundary={formatValue} />",
+          "styleImport": "import '@santi020k/lumen-react/styles.css'"
+        }
+      },
+      "frameworks": {
+        "astro": true,
+        "elements": true,
+        "react": true
+      },
+      "guidance": null,
+      "kebab": "waterfall-chart",
+      "keyboardInteractions": [],
+      "keywords": [
+        "and",
+        "breakdowns",
+        "categorical",
+        "changes",
+        "checkpoints",
+        "compact",
+        "comparisons",
+        "custom",
+        "data",
+        "display",
+        "explains",
+        "explicit",
+        "marks",
+        "match",
+        "matrices",
+        "metrics",
+        "mixed",
+        "ordered",
+        "part",
+        "plots",
+        "question",
+        "ranges",
+        "relationships",
+        "signed",
+        "the",
+        "total",
+        "trends",
+        "visualization",
+        "waterfallchart",
+        "whole"
+      ],
+      "name": "WaterfallChart",
+      "props": [
+        {
+          "name": "caption",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "class",
+          "optional": true,
+          "type": "string | null"
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "data",
+          "optional": false,
+          "type": "readonly LumenWaterfallDatum[]"
+        },
+        {
+          "name": "description",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "formatValue",
+          "optional": true,
+          "type": "(value: number) => string"
+        },
+        {
+          "name": "heading",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "labels",
+          "optional": true,
+          "type": "Partial<LumenChartLabels>"
+        },
+        {
+          "name": "presentation",
+          "optional": true,
+          "type": "'bare' | 'default'"
+        },
+        {
+          "name": "showTable",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "summary",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "valueLabel",
+          "optional": true,
+          "type": "string"
+        }
+      ],
+      "propsExtends": "HTMLAttributes<'figure'>",
+      "recipes": [
+        {
+          "name": "data-visualization",
+          "type": "recipe"
+        }
+      ],
+      "runtimeEvents": []
     }
   ],
   "docs": {
@@ -36499,8 +37247,8 @@
     "readme": "<p align=\"center\">\n  <a href=\"https://lumen.santi020k.com\">\n    <img src=\"./apps/docs/public/logo.svg\" alt=\"Lumen UI\" width=\"233\" height=\"60\">\n  </a>\n</p>\n\n<h1 align=\"center\">Lumen UI</h1>\n\n<p align=\"center\">\n  A cross-platform UI system with 150+ web primitives and shared native foundations.\n</p>\n\n<p align=\"center\">\n  <a href=\"https://lumen.santi020k.com\">Documentation</a>\n  ·\n  <a href=\"https://lumen.santi020k.com/docs/components\">Components</a>\n  ·\n  <a href=\"https://www.figma.com/community/file/1662337342676541513\">Figma library</a>\n  ·\n  <a href=\"https://apps.apple.com/app/id6805250815\">iPhone and iPad app</a>\n  ·\n  <a href=\"https://play.google.com/store/apps/details?id=com.santi020k.lumen.playground.compose\">Android app</a>\n  ·\n  <a href=\"https://github.com/santi020k/lumen/issues\">Issues</a>\n</p>\n\n<p align=\"center\">\n  <a href=\"https://github.com/santi020k/lumen/actions\"><img alt=\"GitHub Actions\" src=\"https://img.shields.io/github/actions/workflow/status/santi020k/lumen/ci.yml?branch=main&style=flat-square\"></a>\n  <a href=\"https://github.com/santi020k/lumen/actions/workflows/codeql.yml\"><img alt=\"CodeQL\" src=\"https://github.com/santi020k/lumen/actions/workflows/codeql.yml/badge.svg\"></a>\n  <a href=\"https://www.npmjs.com/package/@santi020k/lumen-astro\"><img alt=\"npm version\" src=\"https://img.shields.io/npm/v/@santi020k/lumen-astro?style=flat-square&label=npm\"></a>\n  <a href=\"./LICENSE\"><img alt=\"MIT license\" src=\"https://img.shields.io/badge/license-MIT-111827?style=flat-square\"></a>\n</p>\n\nLumen gives applications a consistent visual language without tying them to one rendering model.\nIts packages share tokens, component contracts, styles, and interaction patterns while keeping each\nframework and platform's native authoring experience.\n\n- **Framework native:** Astro components, React primitives, and standards-based custom elements.\n- **Native foundations:** generated React Native, SwiftUI, and Jetpack Compose tokens plus the\n  complete shared interface and namespaced brand icon catalogs preserve the same semantic roles and\n  artwork without introducing DOM or CSS assumptions.\n- **Accessible by default:** semantic markup, keyboard paths, focus management, and reduced-motion\n  support are built into the primitives.\n- **Standalone CSS:** no Tailwind configuration is required. Tailwind users get an explicit layer\n  integration.\n- **Progressively enhanced:** Astro interactions use a small client runtime instead of requiring an\n  application framework.\n- **Ready for design and AI workflows:** published Figma resources, a portable agent skill, an MCP\n  server, `llms.txt`, a machine-readable registry, and a cross-platform release manifest ship\n  alongside the component system.\n- **Product-ready templates:** five responsive dashboard and application families are available as\n  live previews and installable Astro, React, and Elements recipes.\n\n**Explore:** [Dashboards and templates](#dashboards-and-templates) · [Web quick start](#web-quick-start) · [Native playgrounds](#native-playgrounds) · [Tailwind CSS](#tailwind-css) · [Packages](#packages) · [Community](#community)\n\n## Lumen 4 candidate\n\nThe v4 release branch brings consumer-driven date selection, chart readability, clipboard feedback,\nloading states, native layout improvements and a new ImageComparison primitive. Start with the\n[v3 → v4 migration guide](docs/migrating-v3-to-v4.md), [consumer audit](docs/lumen-4-consumer-audit.md),\nand [local readiness record](docs/lumen-4-readiness.md). The refreshed community gallery includes\npublished consumer screenshots; it does not imply those applications already run this candidate.\n\nFor existing applications, start with [v1 → v2](docs/migrating-v1-to-v2.md) when needed, then\n[v2 → v3](docs/migrating-v2-to-v3.md) before\n[v3 → v4](docs/migrating-v3-to-v4.md). For initial adoption, use\n[Migrating to Lumen](docs/migrating-to-lumen.md).\n\n## Appearance presets\n\nChoose an appearance preset or customize the existing themes with the [appearance guide](docs/appearance-presets.md). The Studio preset uses PostLens as its visual reference.\n\n## Dashboards and templates\n\nExplore the [template gallery](https://lumen.santi020k.com/templates) for complete analytics,\nSaaS admin, commerce, project workspace, and authentication/onboarding experiences. Each family\nuses public Lumen primitives and semantic tokens, includes responsive and accessibility coverage,\nand ships through the CLI for all three framework targets:\n\n```bash\nlumen add analytics-dashboard\nlumen add commerce-dashboard --target react\nlumen add auth-onboarding --target elements\n```\n\n## Web quick start\n\nInstall the package for your framework:\n\n```bash\n# Astro\npnpm add @santi020k/lumen-astro\n\n# React\npnpm add @santi020k/lumen-react\n\n# Web Components\npnpm add @santi020k/lumen-elements\n```\n\n### Astro\n\nImport the stylesheet and mount `UIPrimitives` once in your root layout. The runtime enhances all\ninteractive Lumen markup on the page.\n\n```astro\n---\nimport '@santi020k/lumen-astro/styles.css'\nimport UIPrimitives from '@santi020k/lumen-astro/runtime'\n---\n\n<html lang=\"en\">\n  <body>\n    <slot />\n    <UIPrimitives />\n  </body>\n</html>\n```\n\n```astro\n---\nimport { Button, Card, Input } from '@santi020k/lumen-astro'\n---\n\n<Card>\n  <label for=\"email\">Email</label>\n  <Input id=\"email\" name=\"email\" type=\"email\" placeholder=\"you@example.com\" />\n  <Button>Subscribe</Button>\n</Card>\n```\n\n### React\n\nLoad the stylesheet once from your app entry or global CSS:\n\n```tsx\nimport '@santi020k/lumen-react/styles.css'\nimport { Button, Card, Input } from '@santi020k/lumen-react'\n\nexport function SubscribeForm() {\n  return (\n    <Card>\n      <label htmlFor=\"email\">Email</label>\n      <Input id=\"email\" name=\"email\" type=\"email\" placeholder=\"you@example.com\" />\n      <Button>Subscribe</Button>\n    </Card>\n  )\n}\n```\n\n### Web Components\n\nImport the styles and register the elements once:\n\n```html\n<style>\n  @import \"@santi020k/lumen-elements/styles.css\";\n</style>\n\n<script type=\"module\">\n  import { defineLumenElements } from '@santi020k/lumen-elements/define'\n\n  defineLumenElements()\n</script>\n\n<lumen-card>\n  <label for=\"email\">Email</label>\n  <lumen-input id=\"email\" name=\"email\" type=\"email\" placeholder=\"you@example.com\"></lumen-input>\n  <lumen-button>Subscribe</lumen-button>\n</lumen-card>\n```\n\nSee the [Web documentation](https://lumen.santi020k.com/docs/web) for installation, theming,\ncomponent examples, and API details.\n\nFor failure states, use the [error-handling guide](./docs/error-handling.md) to choose between field\nfeedback, summaries, persistent alerts, transient toasts, and the `ErrorState` recovery surface.\nLumen owns presentation and accessibility; applications retain logging, retry, and exception policy.\n\nFor native applications, choose the [React Native](https://lumen.santi020k.com/docs/react-native),\n[Apple / SwiftUI](https://lumen.santi020k.com/docs/apple), or\n[Android / Compose](https://lumen.santi020k.com/docs/android) guide. The\n[shared foundations](https://lumen.santi020k.com/docs/foundations) explain the cross-platform token\nand component contract; repository contributors can also use the\n[cross-platform architecture](./docs/cross-platform.md) and\n[native component reference](./docs/native-components.md).\n\n> **Native platform status for Lumen 2.** React Native, SwiftUI, Compose, and Wear OS use the frozen\n> supported contract. Package, migration, build, security, artifact, and stability checks gate the\n> initial release. The incomplete external-consumer and physical-device matrices remain published\n> as post-release qualification work; review them before choosing a production adapter.\n\n## Native playgrounds\n\nThe repository includes three searchable, interactive galleries built from the real native\npackages:\n\n- [`apps/playground-react-native`](./apps/playground-react-native) runs through Expo on the web,\n  iOS, and Android and includes EAS profiles for TestFlight, Android App Bundles, and APKs.\n- [`apps/playground-apple`](./apps/playground-apple) is available on the\n  [App Store](https://apps.apple.com/app/id6805250815) for iPhone, iPad, and Mac. It also builds as\n  an iOS Xcode app or macOS Swift Package executable for local exploration.\n- [`apps/playground-android`](./apps/playground-android) builds a native Compose application and a\n  directly installable debug APK. It is also available on\n  [Google Play](https://play.google.com/store/apps/details?id=com.santi020k.lumen.playground.compose)\n  for Android phones and tablets.\n\nSee the [playground workflow](./docs/playgrounds.md) for run, capture, and distribution commands.\n\n## Tailwind CSS\n\nKeep the layer prelude, Tailwind import, and Lumen stylesheet in the same shared CSS entry. Replace\n`lumen-astro` with the package for your framework.\n\n```css\n@import \"@santi020k/lumen-astro/layers.css\";\n@import \"tailwindcss\";\n@import \"@santi020k/lumen-astro/styles.css\";\n```\n\nThis order places Tailwind base styles before Lumen components and Tailwind utilities above Lumen\ncomponent defaults.\n\n## Packages\n\n| Package | Purpose |\n| --- | --- |\n| [`@santi020k/lumen-astro`](./packages/astro) | Reference implementation, Astro components, and progressive-enhancement runtime |\n| [`@santi020k/lumen-react`](./packages/react) | React components and behavior hooks |\n| [`@santi020k/lumen-react-hook-form`](./packages/react-hook-form) | Optional React Hook Form adapters for composite controls |\n| [`@santi020k/lumen-elements`](./packages/elements) | Standards-based Web Components |\n| [`@santi020k/lumen-core`](./packages/core) | Shared tokens, metadata, class helpers, and behavior contracts |\n| [`@santi020k/lumen-tokens`](./packages/tokens) | Canonical platform-neutral design token source |\n| [`@santi020k/lumen-react-native`](./packages/react-native) | React Native foundations and native primitives |\n| [`LumenUI`](./packages/swift) | Swift Package for iOS, iPadOS, macOS, tvOS, visionOS, and watchOS foundations and native primitives |\n| [`LumenWidgetUI`](./packages/swift-widget) | Focused WidgetKit-safe semantic text, icon, badge, and compact-stat foundations |\n| [`lumen-compose`](./packages/compose) | Android library for Jetpack Compose foundations and native primitives |\n| [`lumen-compose-wear`](./packages/compose/wear) | Focused Wear OS primitives for at-a-glance round-screen actions, progress, status, metrics, and rows |\n| [`@santi020k/lumen-icons-brand`](./packages/icons-brand) | Optional namespaced brand icons for web `Icon` adapters  |\n| [`@santi020k/lumen`](./packages/lumen) | Umbrella package, CLI, registry metadata, and public package map |\n| [`@santi020k/lumen-mcp`](./packages/mcp) | MCP server for component discovery and source retrieval |\n\n## AI and design workflows\n\nInstall the portable Lumen skill in Codex, Claude Code, Cursor, Windsurf, and other compatible\ncoding agents:\n\n```bash\nnpx skills add santi020k/lumen --skill lumen-ui\n```\n\nThe skill teaches agents how to select, compose, theme, and verify Lumen primitives. Pair it with\n[`@santi020k/lumen-mcp`](./packages/mcp) when an agent needs to search the live catalog or retrieve\ncurrent source, props, tokens, and usage rules.\n\nFor ChatGPT and Codex, install the published\n[Lumen UI plugin](https://chatgpt.com/plugins/plugin_asdk_app_6a8f6c526c5481918eb8a48806fa112b)\nfrom the Plugins Directory. Select **Install plugin**, then mention **@Lumen UI** in a request such\nas “Find the right Lumen components for an accessible React settings screen.” Version 1.0.0 bundles\nthe skill with the hosted, read-only catalog; no separate Lumen account or local MCP setup is needed.\n\nAdditional machine-readable surfaces include:\n\n- [`llms.txt`](./llms.txt) for a concise project map.\n- [`docs/ai-usage.md`](./docs/ai-usage.md) for downstream generation examples.\n- [`docs/styling-contract.md`](./docs/styling-contract.md) for stable parts and component variables.\n- [`docs/import-and-icon-performance.md`](./docs/import-and-icon-performance.md) for repeatable import and icon evidence.\n- [`docs/graphics.md`](./docs/graphics.md) for portable decorative artwork across web and native platforms.\n- [`docs/consumer-regression-fixtures.md`](./docs/consumer-regression-fixtures.md) for production-shaped local coverage.\n- [`docs/project-adoption.md`](./docs/project-adoption.md) for the sibling-project audit and staged\n  web and native migration strategy.\n- [`registry/lumen.registry.json`](./registry/lumen.registry.json) for recipes and installable file\n  groups.\n- [`docs/figma.md`](./docs/figma.md) for Figma variables and Code Connect workflows.\n- [`plugins/lumen-ui`](./plugins/lumen-ui) for the packaged Codex and ChatGPT plugin, with its\n  [submission and review record](./docs/openai-plugin-submission.md).\n- [`.claude-plugin/marketplace.json`](./.claude-plugin/marketplace.json) for the Claude Code\n  marketplace, with its [installation and submission guide](./docs/claude-code-plugin.md).\n- [`docs/cross-platform.md`](./docs/cross-platform.md) for the native architecture, support tiers,\n  and component-parity policy.\n- [`docs/native-patterns.md`](./docs/native-patterns.md) for developed native compositions and the\n  boundary between Lumen presentation and platform-owned application structure.\n\n## Contributing\n\nLumen is a pnpm workspace. Astro is the reference implementation; shared contracts belong in\n`packages/core`, while framework-specific behavior stays in its adapter package.\n\n```bash\npnpm install\npnpm run dev\npnpm run validate\n```\n\nRead [`CONTRIBUTING.md`](./CONTRIBUTING.md) before opening a pull request. User-visible package\nchanges require a changeset.\n\n## Community\n\n[Feedback & support](https://lumen.santi020k.com/support) connects ideas, questions, bug reports,\nand the [public roadmap](https://lumen.santi020k.com/support#roadmap). Discuss improvements on GitHub\nand follow accepted work through implementation and release.\n\nLumen is free and MIT licensed while the project focuses on adoption, public examples, and\nreal-world feedback.\n\n- Explore task-oriented [guides](https://lumen.santi020k.com/guides).\n- Share a public project in the [community showcase](https://lumen.santi020k.com/community).\n- Evaluate the system with the open [team adoption path](https://lumen.santi020k.com/teams).\n- Tell us what would improve your next build through the\n  [adoption survey](https://github.com/santi020k/lumen/issues/new?template=adoption-feedback.yml).\n\nMaintainers can use the [exposure playbook](./docs/exposure-playbook.md) for publishing cadence,\ncampaign measurement, video scripts, and launch copy, and the\n[marketing package](./docs/marketing/README.md) for execution-ready copy, channel decisions, a\nfour-week calendar, asset briefs, an approval queue, and a community-response library.\n\n## Find your next step\n\n| Resource | Use it for |\n| --- | --- |\n| [Cross-platform architecture](docs/cross-platform.md) | Shared foundations and adapter responsibilities. |\n| [Native compatibility](docs/native-compatibility.md) | Supported toolchains and platform baselines. |\n| [Native release runbook](docs/native-release-runbook.md) | Artifact qualification and distribution gates. |\n\n## License\n\nLumen's original code and artwork are available under the [MIT License](./LICENSE). Generated\ninterface icons retain the Lucide ISC or Feather MIT terms, and generated brand icons retain Font\nAwesome Free's CC BY 4.0 terms. The native packages include the required attribution and license\nnotices; see [`icons/THIRD_PARTY_NOTICES.md`](./icons/THIRD_PARTY_NOTICES.md).\n"
   },
   "meta": {
-    "catalogHash": "4c902172c67211e5649be568bdc9f6f6991cdd30cada5308c7f52e3a7ffd6655",
-    "componentCount": 162,
+    "catalogHash": "d67bf36c9aea7a5661e23f150f52d2ec8e4eaf5732e95ed610afd220f324fe85",
+    "componentCount": 164,
     "nativeComponentCount": 87,
     "packages": [
       "@santi020k/lumen-astro",
@@ -46551,6 +47299,8 @@
         "Heatmap",
         "RangeChart",
         "ComboChart",
+        "Histogram",
+        "WaterfallChart",
         "Stat",
         "Meter"
       ],
@@ -46558,7 +47308,7 @@
         "Data display"
       ],
       "examples": {},
-      "description": "A data visualization composition using Chart, Sparkline, BarChart, LineChart, PieChart, ScatterChart, Heatmap, RangeChart, ComboChart, Stat, Meter.",
+      "description": "A data visualization composition using Chart, Sparkline, BarChart, LineChart, PieChart, ScatterChart, Heatmap, RangeChart, ComboChart, Histogram, WaterfallChart, Stat, Meter.",
       "install": {
         "astro": "lumen add data-visualization --target astro",
         "elements": "lumen add data-visualization --target elements",

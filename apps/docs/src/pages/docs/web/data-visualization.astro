@@ -1,0 +1,77 @@
+---
+import { Badge, Grid, Heatmap, Histogram, LineChart, Link, Stack, WaterfallChart } from '@santi020k/lumen-astro'
+
+import DocsLayout from '../../../layouts/DocsLayout.astro'
+import { chartDemoBins, chartDemoHeatmap, chartDemoSeries, chartDemoWaterfall } from '../../../lib/chart-demo-data'
+---
+
+<DocsLayout title="Interactive data visualization — Lumen UI" description="Inspect shared chart behavior, honest time spacing, distributions, balance changes, and missing observations across the three web adapters." breadcrumbs={[{ href: '/docs/web', label: 'Web' }, { href: '/docs/web/data-visualization', label: 'Data visualization' }]}>
+  <section class="docs-hero">
+    <Badge variant="outline">Web visualization</Badge>
+    <h1>Interactive data visualization</h1>
+    <p>Compare the same illustrative data across Astro, React, and Web Components. Values are synthetic.</p>
+    <p>Focus a request plot and use Left, Right, Home, or End to inspect observations. Escape clears the cursor. Select a legend button to hide or show a series. Cursors synchronize at matching observations.</p>
+    <Link href="/docs/components/line-chart">Read the LineChart contract</Link>
+  </section>
+
+  <Stack>
+    <section data-chart-demo="astro">
+      <h2>Astro</h2>
+      <Stack>
+        <LineChart aria-label="Astro request volume" heading="Request volume" series={chartDemoSeries} xScale="linear" interactive syncGroup="visualization-demo" annotations={[{ id: 'target', label: 'Target', value: 65 }]} />
+        <Grid columns="auto" minItemWidth="34rem">
+          <WaterfallChart aria-label="Astro balance changes" heading="Balance changes" data={chartDemoWaterfall} />
+          <Histogram aria-label="Astro response times" heading="Response times" bins={chartDemoBins} />
+          <Heatmap aria-label="Astro daily difference" heading="Daily difference" data={chartDemoHeatmap} colorScale="diverging" />
+        </Grid>
+      </Stack>
+    </section>
+    <section data-chart-demo="react"><h2>React</h2><div data-react-chart-demo><p>Loading the React example…</p></div></section>
+    <section data-chart-demo="elements">
+      <h2>Web Components</h2>
+      <Stack>
+        <lumen-line-chart aria-label="Elements request volume" heading="Request volume" series={JSON.stringify(chartDemoSeries)} x-scale="linear" interactive sync-group="visualization-demo" annotations={JSON.stringify([{ id: 'target', label: 'Target', value: 65 }])}></lumen-line-chart>
+        <Grid columns="auto" minItemWidth="34rem">
+          <lumen-waterfall-chart aria-label="Elements balance changes" heading="Balance changes" data={JSON.stringify(chartDemoWaterfall)}></lumen-waterfall-chart>
+          <lumen-histogram aria-label="Elements response times" heading="Response times" bins={JSON.stringify(chartDemoBins)}></lumen-histogram>
+          <lumen-heatmap aria-label="Elements daily difference" heading="Daily difference" data={JSON.stringify(chartDemoHeatmap)} color-scale="diverging"></lumen-heatmap>
+        </Grid>
+      </Stack>
+    </section>
+  </Stack>
+</DocsLayout>
+
+<script>
+  import { createElement } from 'react'
+import { createRoot, type Root } from 'react-dom/client'
+
+import { defineLumenElements } from '@santi020k/lumen-elements'
+
+import { ReactChartDemo } from '../../../lib/react-chart-demo'
+
+  let root: Root | undefined
+
+  const mount = () => {
+    const container = document.querySelector<HTMLElement>('[data-react-chart-demo]')
+
+    if (!container || container.dataset.mounted) return
+
+    container.dataset.mounted = 'true'
+
+    defineLumenElements(['LineChart', 'WaterfallChart', 'Histogram', 'Heatmap'])
+
+    root = createRoot(container)
+
+    root.render(createElement(ReactChartDemo))
+  }
+
+  mount()
+
+  document.addEventListener('astro:page-load', mount)
+
+  document.addEventListener('astro:before-swap', () => {
+    root?.unmount()
+
+    root = undefined
+  })
+</script>

@@ -35,7 +35,7 @@
     },
     "/": {
       "alt": "Lumen UI — Crafted primitives for web and native platforms — Lumen UI",
-      "description": "Lumen is a crafted multi-framework UI system with 162 accessible primitives for Web, React Native, Apple platforms, and Android.",
+      "description": "Lumen is a crafted multi-framework UI system with 164 accessible primitives for Web, React Native, Apple platforms, and Android.",
       "images": [
         {
           "format": "webp",
@@ -512,6 +512,22 @@
       ],
       "pathname": "/docs/web/playground",
       "title": "Web playground"
+    },
+    "/docs/web/data-visualization": {
+      "alt": "Interactive data visualization — Lumen UI",
+      "description": "Explore continuous axes, accessible inspection, distributions, and balance changes across web adapters.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--web--data-visualization.webp",
+          "primary": true,
+          "url": "/og/pages/docs--web--data-visualization.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/web/data-visualization",
+      "title": "Interactive data visualization"
     },
     "/docs/web/reporting": {
       "alt": "Date ranges and reporting — Lumen UI",
@@ -6688,6 +6704,38 @@
       ],
       "pathname": "/docs/components/visually-hidden",
       "title": "VisuallyHidden"
+    },
+    "/docs/components/histogram": {
+      "alt": "Histogram — Lumen UI",
+      "description": "Shows a numeric distribution using explicit bins and an accessible frequency table. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--histogram.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--histogram.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/histogram",
+      "title": "Histogram"
+    },
+    "/docs/components/waterfall-chart": {
+      "alt": "WaterfallChart — Lumen UI",
+      "description": "Explains signed changes and explicit total checkpoints. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--waterfall-chart.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--waterfall-chart.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/waterfall-chart",
+      "title": "WaterfallChart"
     }
   },
   "version": 1

@@ -557,11 +557,14 @@ const toElementsSnippet = (body: string): string => {
 }
 
 const elementsDataCharts = new Set([
-  'BarChart', 'ComboChart', 'Heatmap', 'LineChart', 'PieChart', 'RangeChart', 'ScatterChart'
+  'BarChart', 'ComboChart', 'Heatmap', 'LineChart', 'PieChart', 'RangeChart', 'ScatterChart', 'Histogram', 'WaterfallChart'
 ])
 
 const toElementsDataChartSnippet = (name: string, body: string, frontmatter: string): string => {
-  const attribute = name === 'Heatmap' || name === 'RangeChart' ? 'data' : 'series'
+  let attribute = ['Heatmap', 'RangeChart', 'WaterfallChart'].includes(name) ? 'data' : 'series'
+
+  if (name === 'Histogram') attribute = 'bins'
+
   const id = `example-${toKebabCase(name)}`
   const dataExpression = name === 'PieChart' ? '[series]' : attribute
   const markup = toElementsSnippet(body.replace(`{${attribute}}`, '').replace(`<${name}`, `<${name} id="${id}"`))

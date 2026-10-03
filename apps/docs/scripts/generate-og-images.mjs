@@ -42,6 +42,7 @@ const supportingPages = [
   ['/docs/icons', 'Icons', 'Use accessible Lumen icons across product interfaces.', 'Icons'],
   ['/docs/web', 'Web platforms', 'Use one semantic Lumen contract across Astro, React, and Web Components.', 'Platform'],
   ['/docs/web/playground', 'Web playground', 'Explore Lumen web components and themes in a live playground.', 'Playground'],
+  ['/docs/web/data-visualization', 'Interactive data visualization', 'Explore continuous axes, accessible inspection, distributions, and balance changes across web adapters.', 'Guide'],
   ['/docs/web/reporting', 'Date ranges and reporting', 'Build readable reports with applied date ranges and accessible charts.', 'Guide'],
   ['/docs/apple', 'Apple platforms', 'Build native Apple interfaces with Lumen SwiftUI components.', 'Platform'],
   ['/docs/apple/playground', 'Apple playground', 'Explore Lumen SwiftUI components in a native playground.', 'Playground'],

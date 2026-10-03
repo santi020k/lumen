@@ -328,6 +328,7 @@ describe('@santi020k/lumen-elements primitives', () => {
     expect(scatter.querySelector('details table')?.textContent).toContain('Size')
     expect(scatter.querySelector('details table')?.textContent).toContain('20')
     expect(heatmap.querySelectorAll('.ui-heatmap__cells rect')).toHaveLength(1)
+    expect(heatmap.querySelectorAll('.ui-heatmap__missing')).toHaveLength(0)
     expect(range.querySelector('.ui-range-chart__area')).not.toBeNull()
     expect(combo.querySelector('.ui-bar-chart__marks rect')).not.toBeNull()
     expect(combo.querySelector('.ui-line-chart__line')).not.toBeNull()
@@ -506,7 +507,7 @@ describe('@santi020k/lumen-elements primitives', () => {
     expect(combo.querySelector('.ui-line-chart__line')).toBeNull()
   })
 
-  test('omits unavailable heatmap cells while preserving semantic table gaps', () => {
+  test('marks unavailable heatmap cells while preserving semantic table gaps', () => {
     const data = JSON.stringify([
       { value: 8, x: 'Mon', y: 'Morning' },
       { value: null, x: 'Tue', y: 'Morning' }
@@ -514,7 +515,8 @@ describe('@santi020k/lumen-elements primitives', () => {
 
     const heatmap = connect('lumen-heatmap', { data })
 
-    expect(heatmap.querySelectorAll('.ui-heatmap__cells rect')).toHaveLength(1)
+    expect(heatmap.querySelectorAll('.ui-heatmap__cells rect')).toHaveLength(2)
+    expect(heatmap.querySelectorAll('.ui-heatmap__missing')).toHaveLength(1)
     expect(heatmap.querySelector('details table')?.textContent).toContain('Not available')
 
     heatmap.setAttribute('show-table', 'false')
