@@ -4097,6 +4097,86 @@
       "pathname": "/docs/android/components/image-comparison",
       "title": "Image comparison"
     },
+    "/docs/android/components/top-app-bar": {
+      "alt": "Top app bar — Lumen UI",
+      "description": "Present native screen titles, navigation, and scrolling app bars.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--top-app-bar.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--top-app-bar.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/top-app-bar",
+      "title": "Top app bar"
+    },
+    "/docs/android/components/swipe-actions": {
+      "alt": "Swipe actions — Lumen UI",
+      "description": "Expose logical start and end row actions with gesture alternatives.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--swipe-actions.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--swipe-actions.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/swipe-actions",
+      "title": "Swipe actions"
+    },
+    "/docs/android/components/multi-select": {
+      "alt": "Multi select — Lumen UI",
+      "description": "Select multiple searchable options with controlled chips and result states.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--multi-select.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--multi-select.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/multi-select",
+      "title": "Multi select"
+    },
+    "/docs/android/components/range-slider": {
+      "alt": "Range slider — Lumen UI",
+      "description": "Choose bounded numeric intervals with two native adjustable thumbs.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--range-slider.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--range-slider.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/range-slider",
+      "title": "Range slider"
+    },
+    "/docs/android/components/adaptive-list-detail-scaffold": {
+      "alt": "Adaptive list detail scaffold — Lumen UI",
+      "description": "Arrange application-owned lists and details across phones, tablets, and foldable devices.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--adaptive-list-detail-scaffold.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--adaptive-list-detail-scaffold.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/adaptive-list-detail-scaffold",
+      "title": "Adaptive list detail scaffold"
+    },
     "/docs/components/accordion": {
       "alt": "Accordion — Lumen UI",
       "description": "Stacks collapsible content sections. Usage examples for Astro, React, and Elements.",

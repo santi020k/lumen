@@ -1,3 +1,7 @@
+public final class com/santi020k/lumen/AdaptiveListDetailComponentsKt {
+	public static final fun LumenAdaptiveListDetailScaffold (Ljava/lang/String;Lkotlin/jvm/functions/Function0;Ljava/lang/String;Ljava/lang/String;Landroidx/compose/ui/Modifier;Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function4;Landroidx/compose/runtime/Composer;II)V
+}
+
 public final class com/santi020k/lumen/AdditionalComponentsKt {
 	public static final fun LumenButtonGroup (Landroidx/compose/ui/Modifier;Lcom/santi020k/lumen/LumenButtonGroupOrientation;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
 	public static final fun LumenChip (Ljava/lang/String;Landroidx/compose/ui/Modifier;ZZLjava/lang/String;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Landroidx/compose/runtime/Composer;II)V
@@ -13,6 +17,11 @@ public final class com/santi020k/lumen/AdvancedFormComponentsKt {
 	public static final fun LumenAutocomplete (Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;Ljava/util/List;Lkotlin/jvm/functions/Function1;Landroidx/compose/ui/Modifier;Ljava/lang/Object;Ljava/lang/String;Ljava/lang/String;ZLjava/lang/String;Lkotlin/jvm/functions/Function0;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ZZLandroidx/compose/runtime/Composer;III)V
 	public static final fun LumenNumberField (Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;Landroidx/compose/ui/Modifier;Ljava/math/BigDecimal;Ljava/math/BigDecimal;Ljava/math/BigDecimal;Ljava/util/Locale;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ZZZLandroidx/compose/runtime/Composer;III)V
 	public static final fun LumenTimeField (Ljava/lang/String;Lcom/santi020k/lumen/LumenTimeSelection;Lkotlin/jvm/functions/Function1;Landroidx/compose/ui/Modifier;Lcom/santi020k/lumen/LumenTimeSelection;Lcom/santi020k/lumen/LumenTimeSelection;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ZZLandroidx/compose/runtime/Composer;III)V
+}
+
+public final class com/santi020k/lumen/AppBarComponentsKt {
+	public static final fun LumenTopAppBar (Ljava/lang/String;Landroidx/compose/ui/Modifier;Lcom/santi020k/lumen/LumenTopAppBarSize;Lcom/santi020k/lumen/LumenTopAppBarScrollBehavior;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)V
+	public static final fun rememberLumenTopAppBarScrollBehavior (Lcom/santi020k/lumen/LumenTopAppBarScrollMode;Landroidx/compose/runtime/Composer;II)Lcom/santi020k/lumen/LumenTopAppBarScrollBehavior;
 }
 
 public final class com/santi020k/lumen/ChartComponentsKt {
@@ -3674,6 +3683,25 @@ public final class com/santi020k/lumen/LumenSurfaceTone : java/lang/Enum {
 	public static fun values ()[Lcom/santi020k/lumen/LumenSurfaceTone;
 }
 
+public final class com/santi020k/lumen/LumenSwipeAction {
+	public static final field $stable I
+	public fun <init> (Ljava/lang/String;Lkotlin/jvm/functions/Function0;ZZ)V
+	public synthetic fun <init> (Ljava/lang/String;Lkotlin/jvm/functions/Function0;ZZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Lkotlin/jvm/functions/Function0;
+	public final fun component3 ()Z
+	public final fun component4 ()Z
+	public final fun copy (Ljava/lang/String;Lkotlin/jvm/functions/Function0;ZZ)Lcom/santi020k/lumen/LumenSwipeAction;
+	public static synthetic fun copy$default (Lcom/santi020k/lumen/LumenSwipeAction;Ljava/lang/String;Lkotlin/jvm/functions/Function0;ZZILjava/lang/Object;)Lcom/santi020k/lumen/LumenSwipeAction;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDestructive ()Z
+	public final fun getEnabled ()Z
+	public final fun getLabel ()Ljava/lang/String;
+	public final fun getOnClick ()Lkotlin/jvm/functions/Function0;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
 public final class com/santi020k/lumen/LumenTextTone : java/lang/Enum {
 	public static final field Danger Lcom/santi020k/lumen/LumenTextTone;
 	public static final field Default Lcom/santi020k/lumen/LumenTextTone;
@@ -3760,6 +3788,29 @@ public final class com/santi020k/lumen/LumenTooltipState {
 	public final fun show (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
+public final class com/santi020k/lumen/LumenTopAppBarScrollBehavior {
+	public static final field $stable I
+	public final fun getNestedScrollConnection ()Landroidx/compose/ui/input/nestedscroll/NestedScrollConnection;
+}
+
+public final class com/santi020k/lumen/LumenTopAppBarScrollMode : java/lang/Enum {
+	public static final field EnterAlways Lcom/santi020k/lumen/LumenTopAppBarScrollMode;
+	public static final field ExitUntilCollapsed Lcom/santi020k/lumen/LumenTopAppBarScrollMode;
+	public static final field Pinned Lcom/santi020k/lumen/LumenTopAppBarScrollMode;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/santi020k/lumen/LumenTopAppBarScrollMode;
+	public static fun values ()[Lcom/santi020k/lumen/LumenTopAppBarScrollMode;
+}
+
+public final class com/santi020k/lumen/LumenTopAppBarSize : java/lang/Enum {
+	public static final field Large Lcom/santi020k/lumen/LumenTopAppBarSize;
+	public static final field Medium Lcom/santi020k/lumen/LumenTopAppBarSize;
+	public static final field Small Lcom/santi020k/lumen/LumenTopAppBarSize;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/santi020k/lumen/LumenTopAppBarSize;
+	public static fun values ()[Lcom/santi020k/lumen/LumenTopAppBarSize;
+}
+
 public final class com/santi020k/lumen/LumenTypography {
 	public static final field $stable I
 	public static final field BoldWeight I
@@ -3777,6 +3828,10 @@ public final class com/santi020k/lumen/LumenTypography {
 
 public final class com/santi020k/lumen/MediaComponentsKt {
 	public static final fun LumenImage (Landroidx/compose/ui/graphics/painter/Painter;Ljava/lang/String;Landroidx/compose/ui/Modifier;Ljava/lang/Float;Lcom/santi020k/lumen/LumenImageFit;Lcom/santi020k/lumen/LumenImageRadius;Landroidx/compose/runtime/Composer;II)V
+}
+
+public final class com/santi020k/lumen/MultiSelectComponentsKt {
+	public static final fun LumenMultiSelect (Ljava/lang/String;Ljava/util/List;Ljava/util/Set;Lkotlin/jvm/functions/Function1;Ljava/lang/String;Lkotlin/jvm/functions/Function1;Landroidx/compose/ui/Modifier;ZZLjava/lang/String;Ljava/lang/String;ZLjava/lang/String;Lkotlin/jvm/functions/Function0;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;IIII)V
 }
 
 public final class com/santi020k/lumen/OverlayComponentsKt {
@@ -3818,6 +3873,10 @@ public final class com/santi020k/lumen/PrimitivesKt {
 	public static final fun LumenTextField (Ljava/lang/String;Lkotlin/jvm/functions/Function1;Ljava/lang/String;Landroidx/compose/ui/Modifier;Lcom/santi020k/lumen/LumenControlSize;ZLjava/lang/String;ZLandroidx/compose/ui/text/input/VisualTransformation;Landroidx/compose/runtime/Composer;II)V
 }
 
+public final class com/santi020k/lumen/RangeSliderComponentsKt {
+	public static final fun LumenRangeSlider (Ljava/lang/String;Lkotlin/ranges/ClosedFloatingPointRange;Lkotlin/jvm/functions/Function1;Landroidx/compose/ui/Modifier;Lkotlin/ranges/ClosedFloatingPointRange;IZZLjava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function0;Landroidx/compose/runtime/Composer;III)V
+}
+
 public final class com/santi020k/lumen/RefreshComponentsKt {
 	public static final fun LumenPullToRefresh (ZLkotlin/jvm/functions/Function0;Landroidx/compose/ui/Modifier;ZLjava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)V
 }
@@ -3852,6 +3911,10 @@ public final class com/santi020k/lumen/StructuredComponentsKt {
 	public static final fun LumenStatusBar-BR_IRG0 (Ljava/lang/String;Landroidx/compose/ui/Modifier;Lcom/santi020k/lumen/LumenMetricTone;Ljava/lang/String;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
 	public static final fun lumenBannerPalette (Lcom/santi020k/lumen/LumenColorPalette;Lcom/santi020k/lumen/LumenBannerVariant;)Lcom/santi020k/lumen/LumenBannerPalette;
 	public static final fun lumenMetricColor (Lcom/santi020k/lumen/LumenColorPalette;Lcom/santi020k/lumen/LumenMetricTone;)J
+}
+
+public final class com/santi020k/lumen/SwipeComponentsKt {
+	public static final fun LumenSwipeActions (Landroidx/compose/ui/Modifier;Lcom/santi020k/lumen/LumenSwipeAction;Lcom/santi020k/lumen/LumenSwipeAction;ZLkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
 }
 
 public final class com/santi020k/lumen/TooltipComponentsKt {
