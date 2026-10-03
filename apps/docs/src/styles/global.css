@@ -626,8 +626,19 @@ body {
 }
 
 @media (max-width: 430px) {
+  .docs-context-navigation__shell {
+    --ui-context-navigation-gap: 0.5rem;
+
+    gap: 0.5rem;
+  }
+
   .docs-context-navigation__platform .ui-select-field {
-    width: 8rem;
+    width: 9rem;
+  }
+
+  .docs-context-navigation__platform [data-ui-select-value] {
+    white-space: normal;
+    line-height: 1.2;
   }
 
   .docs-header-github {
