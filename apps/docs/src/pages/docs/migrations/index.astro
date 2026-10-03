@@ -1,0 +1,44 @@
+---
+import { Badge, Card, CardContent, CardDescription, CardHeader, CardTitle, Link, Stack } from '@santi020k/lumen-astro'
+
+import DocsPageHero from '../../../components/DocsPageHero.astro'
+import DocsLayout from '../../../layouts/DocsLayout.astro'
+---
+
+<DocsLayout
+  description="Upgrade between Lumen major versions with verified API changes, dependency updates, and rollback guidance."
+  title="Migration guides - Lumen UI"
+>
+  <Stack gap="section">
+    <DocsPageHero
+      compact
+      description="Start with your installed version. Review the changes, update dependencies together, and verify the application before shipping."
+      eyebrow="Migration guides"
+      title="Upgrade Lumen with a clear path."
+    />
+    <Card>
+      <CardHeader>
+        <CardTitle as="h2">Lumen 1 → Lumen 2</CardTitle>
+        <CardDescription>Migrate runtime imports, visual sizing, toast viewports, native dates, and exhaustive Swift switches.</CardDescription>
+      </CardHeader>
+      <CardContent><Link href="/docs/migrations/v1-to-v2">Read the v1 → v2 guide</Link></CardContent>
+    </Card>
+    <Card>
+      <CardHeader>
+        <CardTitle as="h2">Lumen 2 → Lumen 3</CardTitle>
+        <CardDescription>Update package versions and review exhaustive Swift icon switches. Existing component calls remain available.</CardDescription>
+      </CardHeader>
+      <CardContent><Link href="/docs/migrations/v2-to-v3">Read the v2 → v3 guide</Link></CardContent>
+    </Card>
+    <Card>
+      <CardHeader>
+        <Badge class="w-fit" variant="outline">Unpublished candidate</Badge>
+        <CardTitle as="h2">Lumen 3 → Lumen 4</CardTitle>
+        <CardDescription>Review spacing, focus behavior, dates, charts, and native signatures. V4 is still a local release candidate.</CardDescription>
+      </CardHeader>
+      <CardContent><Link href="/docs/migrations/v3-to-v4">Read the v3 → v4 guide</Link></CardContent>
+    </Card>
+    <p>For an application skipping major versions, complete and verify each step in order. Each guide includes consumer checks and a rollback path.</p>
+    <Link href="/changelog">Browse the release history</Link>
+  </Stack>
+</DocsLayout>

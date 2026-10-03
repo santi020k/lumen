@@ -265,6 +265,38 @@ const recipeItems: DocsSearchItem[] = [
     type: 'Recipe'
   },
   {
+    category: 'Migrations',
+    description: 'Choose a version upgrade guide, review breaking changes, and verify your application.',
+    href: '/docs/migrations',
+    keywords: normalizeKeywords('migration upgrade versions breaking changes rollback'),
+    title: 'Migration guides',
+    type: 'Recipe'
+  },
+  {
+    category: 'Migrations',
+    description: 'Migrate v1 runtime imports, sizing, toast viewports, native dates, and Swift enums.',
+    href: '/docs/migrations/v1-to-v2',
+    keywords: normalizeKeywords('migration upgrade v1 v2 version 1 version 2 runtime size toast dates Swift rollback'),
+    title: 'Migrating from Lumen 1 to Lumen 2',
+    type: 'Recipe'
+  },
+  {
+    category: 'Migrations',
+    description: 'Upgrade v2 dependencies and handle the expanded Swift icon enum before rebuilding.',
+    href: '/docs/migrations/v2-to-v3',
+    keywords: normalizeKeywords('migration upgrade v2 v3 version 2 version 3 Swift icons package dependencies rollback'),
+    title: 'Migrating from Lumen 2 to Lumen 3',
+    type: 'Recipe'
+  },
+  {
+    category: 'Migrations',
+    description: 'Review v4 candidate spacing, component behavior, native signatures, and consumer checks.',
+    href: '/docs/migrations/v3-to-v4',
+    keywords: normalizeKeywords('migration upgrade v3 v4 version 3 version 4 candidate spacing focus dates native rollback'),
+    title: 'Migrating from Lumen 3 to Lumen 4',
+    type: 'Recipe'
+  },
+  {
     category: 'Releases',
     description:
       'Follow new Lumen components, improvements, and fixes across every framework package.',
