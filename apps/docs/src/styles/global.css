@@ -3409,7 +3409,7 @@ pre code {
   border: 1px solid hsl(var(--line));
   border-radius: 0.75rem;
   background: hsl(var(--surface));
-  padding: 2.25rem 2rem;
+  padding: clamp(0.75rem, 3vw, 2.25rem) clamp(0.75rem, 3vw, 2rem);
   box-shadow: 0 1px 2px hsl(var(--ink) / 0.04);
 
   & > * + * {

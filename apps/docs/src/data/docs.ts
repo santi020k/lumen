@@ -1,6 +1,7 @@
 import type { LumenComponentName } from '@santi020k/lumen-core'
 
 export interface ComponentDoc {
+  adapterNotes?: readonly FrameworkUsageNote[]
   apiReference: ComponentApiRow[]
   name: string
   category:
@@ -20,6 +21,11 @@ export interface ComponentDoc {
   runtimeEvents?: RuntimeEventRow[]
   summary: string
   example: string
+}
+
+interface FrameworkUsageNote {
+  framework: 'Elements' | 'React'
+  text: string
 }
 
 interface ComponentGuidance {
@@ -144,7 +150,8 @@ const elementsUsage = `<script type="module">
 
 export const globalStyleSetups: GlobalStyleSetup[] = [
   {
-    code: `@import "tailwindcss";
+    code: `@import "@santi020k/lumen-astro/layers.css";
+@import "tailwindcss";
 @import "@santi020k/lumen-astro/styles.css";`,
     description:
       'Use the stylesheet exported by your framework package in your main CSS entry.',
@@ -3044,6 +3051,125 @@ const componentGuidanceByName: Partial<Record<string, ComponentGuidance>> = {
   }
 }
 
+const adapterNotesByComponent: Partial<Record<LumenComponentName, readonly FrameworkUsageNote[]>> = {
+  DataTable: [{
+    framework: 'React',
+    text: 'The React example demonstrates data rendering and sortable columns. The selection-count listener in the Astro demo is tied to Astro runtime events and is omitted from the React example.'
+  }],
+  KanbanBoard: [{
+    framework: 'React',
+    text: 'Connect useKanban to the board, columns, cards, and handles. Your application owns persistence and decides whether a requested move is accepted.'
+  }],
+  KanbanColumn: [{
+    framework: 'React',
+    text: 'Use a column inside KanbanBoard and connect both through useKanban. The example is shared with the board and hook reference.'
+  }],
+  RichTextEditor: [{
+    framework: 'React',
+    text: 'Connect useRichTextEditor rootProps, getCommandProps, and getEditableProps. The same example appears in the hook reference.'
+  }],
+  Schedule: [{
+    framework: 'React',
+    text: 'Connect slots and events with useSchedule. The application owns persistence; the hook reference supplies the same example.'
+  }],
+  ThemeBuilder: [{
+    framework: 'React',
+    text: 'Connect useThemeBuilder to the root, hue controls, output, and export button. Preview tokens are scoped through previewStyle; the hook reference supplies the same example.'
+  }],
+  AlertDialog: [{
+    framework: 'React',
+    text: 'Control open and onOpenChange with React state. Keep the actual destructive action in your application; the example only previews confirmation.'
+  }],
+  ContextMenu: [{
+    framework: 'React',
+    text: 'Spread useContextMenu triggerProps and menuProps onto the trigger button and menu. Astro trigger attributes do not connect the React components.'
+  }],
+  Drawer: [{
+    framework: 'React',
+    text: 'Use useDialog to connect triggerProps, dialogProps, and closeProps. The hook owns modal behavior while Drawer supplies the surface.'
+  }],
+  Sheet: [{
+    framework: 'React',
+    text: 'Use useDialog to connect triggerProps, dialogProps, and closeProps. The hook owns modal behavior while Sheet supplies the surface.'
+  }],
+  AnimatedPortrait: [{
+    framework: 'React',
+    text: 'Compose Image inside AnimatedPortrait. The React container does not accept the Astro image or floating-badge props.'
+  }],
+  ButtonLink: [{
+    framework: 'React',
+    text: 'Use standard target, rel, and aria-label attributes. Compose Icon as a child for an arrow; showArrow and newTab belong to the Astro adapter.'
+  }],
+  Combobox: [{
+    framework: 'React',
+    text: 'React options are strings. For separate labels and submitted values, use Select or compose the behavior hook instead.'
+  }],
+  CoverImage: [{
+    framework: 'React',
+    text: 'Compose Image inside CoverImage. Pass image dimensions, alt text, and loading behavior to Image rather than to the container.'
+  }],
+  Dialog: [{
+    framework: 'React',
+    text: 'Control open and onOpenChange with React state. Astro trigger attributes do not connect a React button to a dialog.'
+  }],
+  PhoneInput: [{
+    framework: 'React',
+    text: 'Use defaultCountryValue and defaultValue for initial values. Controlled value and onValueChange use the structured LumenPhoneNumber contract.'
+  }],
+  RevealGroup: [{
+    framework: 'React',
+    text: 'The React root is a div. Compose semantic content inside it; the Astro as prop is not part of the React API.'
+  }],
+  ScrollReveal: [{
+    framework: 'React',
+    text: 'The React root is a div. Compose a semantic section inside it when needed rather than copying the Astro as prop.'
+  }],
+  Tabs: [{
+    framework: 'React',
+    text: 'Use defaultValue for the initial selection, or value and onValueChange for controlled tabs. Astro names its initial selection initialValue.'
+  }],
+  Textarea: [{
+    framework: 'React',
+    text: 'Use defaultValue for initial text and readOnly for a read-only field. Astro supplies initial text through the component slot.'
+  }],
+  ThemeToggle: [{
+    framework: 'React',
+    text: 'Connect the button to useThemeToggle. The Astro controlled prop does not supply React behavior.'
+  }],
+  Toast: [{
+    framework: 'React',
+    text: 'Wrap the application with ToastProvider and call useToast inside that provider. The Astro global LumenToast API is not used in React.'
+  }],
+  BarChart: [{
+    framework: 'Elements',
+    text: 'Pass series as a JSON attribute or through the public element property. The Elements example serializes the sample data with JSON.stringify; Astro expression bindings are not HTML attributes.'
+  }],
+  ComboChart: [{
+    framework: 'Elements',
+    text: 'Pass series as a JSON attribute or through the public element property. The Elements example serializes the sample data with JSON.stringify; Astro expression bindings are not HTML attributes.'
+  }],
+  Heatmap: [{
+    framework: 'Elements',
+    text: 'Pass data as a JSON attribute. The Elements example serializes the sample data with JSON.stringify; Astro expression bindings are not HTML attributes.'
+  }],
+  LineChart: [{
+    framework: 'Elements',
+    text: 'Pass series as a JSON attribute or through the public element property. The Elements example serializes the sample data with JSON.stringify; Astro expression bindings are not HTML attributes.'
+  }],
+  RangeChart: [{
+    framework: 'Elements',
+    text: 'Pass data as a JSON attribute. The Elements example serializes the sample data with JSON.stringify; Astro expression bindings are not HTML attributes.'
+  }],
+  ScatterChart: [{
+    framework: 'Elements',
+    text: 'Pass series as a JSON attribute or through the public element property. The Elements example serializes the sample data with JSON.stringify; Astro expression bindings are not HTML attributes.'
+  }],
+  PieChart: [{
+    framework: 'Elements',
+    text: 'Pass series as a JSON attribute or through the public element property. The Elements pie chart expects an array containing its series; Astro and React accept one series object.'
+  }]
+}
+
 export const componentDocs: ComponentDoc[] = (
   [
     [
@@ -4020,6 +4146,9 @@ export const componentDocs: ComponentDoc[] = (
     ]
   ] as const satisfies readonly ComponentDocTuple[]
 ).map(([name, category, summary, example]) => ({
+  ...(adapterNotesByComponent[name] ?
+    { adapterNotes: adapterNotesByComponent[name] } :
+    {}),
   apiReference: [
     ...(glassApiComponentNameSet.has(name) ? [glassApiRow] : []),
     ...apiReferenceByComponent[name],
@@ -4811,9 +4940,9 @@ export function Editor() {
   return (
     <RichTextEditor {...editor.rootProps}>
       <div role="toolbar" aria-label="Formatting">
-        <Button {...editor.getCommandProps('bold')} size="icon">B</Button>
-        <Button {...editor.getCommandProps('italic')} size="icon">I</Button>
-        <Button {...editor.getCommandProps('insertUnorderedList')} size="icon">•</Button>
+        <Button {...editor.getCommandProps('bold')} aria-label="Bold" size="icon">B</Button>
+        <Button {...editor.getCommandProps('italic')} aria-label="Italic" size="icon">I</Button>
+        <Button {...editor.getCommandProps('insertUnorderedList')} aria-label="Bulleted list" size="sm">List</Button>
       </div>
       <div {...editor.getEditableProps()}>
         <p>Start writing...</p>
@@ -4908,7 +5037,7 @@ export function EditorialBoard() {
 
   return (
     <KanbanBoard {...kanban.rootProps} aria-label="Editorial workflow">
-      <KanbanColumn {...kanban.getColumnProps('planned')}>
+      <KanbanColumn value="planned" {...kanban.getColumnProps('planned')}>
         <Card as="article" {...kanban.getItemProps('draft')}>
           <Button {...kanban.getHandleProps('draft')} aria-label="Move Draft article">
             Move
@@ -4916,7 +5045,7 @@ export function EditorialBoard() {
           <strong>Draft article</strong>
         </Card>
       </KanbanColumn>
-      <KanbanColumn {...kanban.getColumnProps('published')} />
+      <KanbanColumn value="published" {...kanban.getColumnProps('published')} />
     </KanbanBoard>
   )
 }`
@@ -5062,30 +5191,26 @@ export function SplitEditor() {
         'copyExport', '() => Promise<string>', '-', 'Copy the export value to clipboard and return it.'
       )
     ],
-    code: `import { ThemeBuilder, Card, Button, Slider } from '@santi020k/lumen-react'
+    code: `import { ThemeBuilder, Card, Button, Label, Slider, Textarea } from '@santi020k/lumen-react'
 import { useThemeBuilder } from '@santi020k/lumen-react'
 
 export function CustomThemeBuilder() {
-  const builder = useThemeBuilder({
-    defaultHue: 264,
-    defaultScheme: 'dark',
-    onThemeExport: ({ value, format }) =>
-      console.log(\`Exported \${format}:\`, value)
-  })
+  const builder = useThemeBuilder({ defaultHue: 264, defaultScheme: 'dark' })
 
   return (
     <ThemeBuilder {...builder.rootProps}>
       <div style={builder.previewStyle}>
         <Card glass>
-          <label>Brand hue</label>
-          <input type="range" {...builder.hueProps} min={0} max={359} />
-          <label>Accent hue</label>
-          <input type="range" {...builder.accentHueProps} min={0} max={359} />
+          <Label htmlFor="theme-brand-hue">Brand hue</Label>
+          <Slider {...builder.hueProps} id="theme-brand-hue" min={0} max={359} />
+          <Label htmlFor="theme-accent-hue">Accent hue</Label>
+          <Slider {...builder.accentHueProps} id="theme-accent-hue" min={0} max={359} />
           <div>
             <Button {...builder.getSchemeProps('light')}>Light</Button>
             <Button {...builder.getSchemeProps('dark')}>Dark</Button>
           </div>
-          <textarea {...builder.outputProps} readOnly rows={6} />
+          <Label htmlFor="theme-output">Generated theme CSS</Label>
+          <Textarea {...builder.outputProps} aria-label="Generated theme CSS" id="theme-output" readOnly rows={6} />
           <Button {...builder.exportButtonProps}>Copy CSS</Button>
         </Card>
       </div>

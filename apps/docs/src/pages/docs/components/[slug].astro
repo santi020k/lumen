@@ -6,14 +6,15 @@ import {
   Breadcrumb,
   Icon,
   Link,
+  Note,
   Pagination,
   Separator,
-  Table,
   Tabs
 } from '@santi020k/lumen-astro'
 
 import CodeBlock from '../../../components/CodeBlock.astro'
 import DocsActionLink from '../../../components/DocsActionLink.astro'
+import DocsReferenceTable from '../../../components/DocsReferenceTable.astro'
 import FrameworkExample from '../../../components/FrameworkExample.astro'
 import {
   componentCollections,
@@ -152,7 +153,7 @@ export function HeroImage() {
           </DocsActionLink>
           <DocsActionLink
             href={figmaUrl}
-            rel="noreferrer"
+            rel="noopener noreferrer"
             target="_blank"
             variant="outline"
           >
@@ -179,7 +180,7 @@ export function HeroImage() {
           <p>
             <small>Design source</small>
             {component.figmaNodeId ?
-              <Link href={figmaUrl} rel="noreferrer" target="_blank">Linked component node</Link> :
+              <Link href={figmaUrl} rel="noopener noreferrer" target="_blank">Linked component node</Link> :
               <Link href={figmaUrl}>Behavior-only contract</Link>}
           </p>
         </div>
@@ -231,6 +232,16 @@ export function HeroImage() {
         Choose Astro, React, or Elements to compare native usage against the shared visual output.
         Each example assumes the framework-level setup is already complete.
       </p>
+      {component.adapterNotes && (
+        <Note label="Framework differences">
+          {component.adapterNotes.map(note => (
+            <p>
+              <Link href={`/docs/frameworks/${note.framework.toLowerCase()}`}>{note.framework}</Link>
+              {`: ${note.text}`}
+            </p>
+          ))}
+        </Note>
+      )}
       <FrameworkExample
         componentName={component.name}
         groupId={`code-${componentSlug}`}
@@ -294,7 +305,7 @@ export function HeroImage() {
             <Link
               class="text-sm"
               href="https://docs.astro.build/en/reference/modules/astro-assets/"
-              rel="noreferrer"
+              rel="noopener noreferrer"
               target="_blank"
             >Astro Image reference
             </Link>
@@ -337,7 +348,7 @@ export function HeroImage() {
             <Link
               class="text-sm"
               href="https://nextjs.org/docs/app/api-reference/components/image"
-              rel="noreferrer"
+              rel="noopener noreferrer"
               target="_blank"
             >Next.js Image reference
             </Link>
@@ -438,52 +449,15 @@ export function HeroImage() {
         >API reference
         </h2>
         <p class="max-w-2xl text-sm/7 text-ink-soft">
-          Lumen-specific props and runtime attributes for the Astro primitive. React props follow the
-          same names; Elements use equivalent kebab-case attributes where custom elements expose them.
+          Lumen-specific props and runtime attributes for the Astro primitive. Use the framework differences above and the copyable examples for React composition and
+          Elements attributes; the public adapter types define their supported contracts.
         </p>
       </div>
-      <Table class="overflow-x-auto rounded-xl border border-line bg-surface">
-        <table class="w-full min-w-176 border-collapse text-left text-sm">
-          <thead class="
-            bg-surface-muted text-xs font-black tracking-[0.12em] text-ink-muted
-            uppercase
-          "
-          >
-            <tr>
-              <th class="border-b border-line px-4 py-3">Attribute</th>
-              <th class="border-b border-line px-4 py-3">Values</th>
-              <th class="border-b border-line px-4 py-3">Default</th>
-              <th class="border-b border-line px-4 py-3">Description</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-line">
-            {component.apiReference.map(row => (
-              <tr>
-                <th
-                  class="
-                    w-48 px-4 py-3 align-top font-mono text-xs font-bold
-                    text-ink
-                  "
-                  scope="row"
-                >
-                  {row.attribute}
-                </th>
-                <td class="
-                  w-64 px-4 py-3 align-top font-mono text-xs text-ink-soft
-                "
-                >{row.values}
-                </td>
-                <td class="
-                  w-28 px-4 py-3 align-top font-mono text-xs text-ink-soft
-                "
-                >{row.defaultValue}
-                </td>
-                <td class="px-4 py-3 align-top text-sm/6 text-ink-soft">{row.description}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </Table>
+      <DocsReferenceTable
+        columns={['Attribute', 'Values', 'Default', 'Description']}
+        labelledBy="api-title"
+        rows={component.apiReference.map(row => [row.attribute, row.values, row.defaultValue, row.description])}
+      />
     </section>
 
     {component.keyboardInteractions && (
@@ -500,36 +474,11 @@ export function HeroImage() {
             Keyboard behavior provided by the Astro UIPrimitives runtime for this component.
           </p>
         </div>
-        <Table class="overflow-x-auto rounded-xl border border-line bg-surface">
-          <table class="w-full min-w-xl border-collapse text-left text-sm">
-            <thead class="
-              bg-surface-muted text-xs font-black tracking-[0.12em]
-              text-ink-muted uppercase
-            "
-            >
-              <tr>
-                <th class="border-b border-line px-4 py-3">Key</th>
-                <th class="border-b border-line px-4 py-3">Action</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-line">
-              {component.keyboardInteractions.map(row => (
-                <tr>
-                  <th
-                    class="
-                      w-72 px-4 py-3 align-top font-mono text-xs font-bold
-                      text-ink
-                    "
-                    scope="row"
-                  >
-                    {row.key}
-                  </th>
-                  <td class="px-4 py-3 align-top text-sm/6 text-ink-soft">{row.action}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </Table>
+        <DocsReferenceTable
+        columns={['Key', 'Action']}
+        labelledBy="keyboard-title"
+        rows={component.keyboardInteractions.map(row => [row.key, row.action])}
+        />
       </section>
     )}
 
@@ -547,44 +496,11 @@ export function HeroImage() {
             CustomEvents dispatched by the Astro UIPrimitives runtime for this component.
           </p>
         </div>
-        <Table class="overflow-x-auto rounded-xl border border-line bg-surface">
-          <table class="w-full min-w-176 border-collapse text-left text-sm">
-            <thead class="
-              bg-surface-muted text-xs font-black tracking-[0.12em]
-              text-ink-muted uppercase
-            "
-            >
-              <tr>
-                <th class="border-b border-line px-4 py-3">Event</th>
-                <th class="border-b border-line px-4 py-3">Target</th>
-                <th class="border-b border-line px-4 py-3">Detail</th>
-                <th class="border-b border-line px-4 py-3">When</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-line">
-              {component.runtimeEvents.map(row => (
-                <tr>
-                  <th
-                    class="
-                      w-56 px-4 py-3 align-top font-mono text-xs font-bold
-                      text-ink
-                    "
-                    scope="row"
-                  >
-                    {row.name}
-                  </th>
-                  <td class="w-64 px-4 py-3 align-top text-sm/6 text-ink-soft">{row.target}</td>
-                  <td class="
-                    w-64 px-4 py-3 align-top font-mono text-xs text-ink-soft
-                  "
-                  >{row.detail}
-                  </td>
-                  <td class="px-4 py-3 align-top text-sm/6 text-ink-soft">{row.when}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </Table>
+        <DocsReferenceTable
+        columns={['Event', 'Target', 'Detail', 'When']}
+        labelledBy="runtime-events-title"
+        rows={component.runtimeEvents.map(row => [row.name, row.target, row.detail, row.when])}
+        />
       </section>
     )}
 

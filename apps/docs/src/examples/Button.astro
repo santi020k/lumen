@@ -1,22 +1,22 @@
 ---
-import { Button, Icon } from '@santi020k/lumen-astro'
+import { Button, Icon, Stack } from '@santi020k/lumen-astro'
 ---
 
-<div style="display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center;">
+<Stack align="center" direction="horizontal" gap="sm" wrap>
   <Button>Default</Button>
   <Button variant="secondary">Secondary</Button>
   <Button variant="outline">Outline</Button>
   <Button variant="ghost">Ghost</Button>
   <Button variant="destructive">Destructive</Button>
   <Button variant="link">Link</Button>
-</div>
-<div style="display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center;">
+</Stack>
+<Stack align="center" direction="horizontal" gap="sm" wrap>
   <Button size="sm">Small</Button>
   <Button>Default size</Button>
   <Button size="lg">Large</Button>
   <Button aria-label="Settings" size="icon"><Icon name="settings" decorative /></Button>
-</div>
-<div style="display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center;">
+</Stack>
+<Stack align="center" direction="horizontal" gap="sm" wrap>
   <Button loading>Saving</Button>
   <Button disabled>Disabled</Button>
-</div>
+</Stack>

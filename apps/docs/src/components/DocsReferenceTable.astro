@@ -1,0 +1,91 @@
+---
+import { Table } from '@santi020k/lumen-astro'
+
+interface Props {
+  columns: readonly string[]
+  labelledBy: string
+  rows: readonly (readonly string[])[]
+}
+
+const { columns, labelledBy, rows } = Astro.props
+---
+
+<Table
+  aria-labelledby={labelledBy}
+  class="docs-reference-table"
+  role="region"
+  tabindex="0"
+>
+  <table>
+    <thead>
+      <tr>
+        {columns.map(column => <th scope="col">{column}</th>)}
+      </tr>
+    </thead>
+    <tbody>
+      {rows.map(row => (
+        <tr>
+          {row.map((cell, index) => index === 0 ?
+            <th scope="row">{cell}</th> :
+            <td>{cell}</td>)}
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</Table>
+
+<style>
+  .docs-reference-table {
+    border: 1px solid hsl(var(--line));
+    border-radius: 0.75rem;
+    background: hsl(var(--surface));
+  }
+
+  .docs-reference-table:focus-visible {
+    outline: 2px solid hsl(var(--brand));
+    outline-offset: 3px;
+  }
+
+  table {
+    width: 100%;
+    min-width: 36rem;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+
+  thead {
+    background: hsl(var(--surface-muted));
+  }
+
+  th,
+  td {
+    padding: 0.85rem 1rem;
+    vertical-align: top;
+    overflow-wrap: anywhere;
+  }
+
+  thead th {
+    color: hsl(var(--ink-muted));
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  tbody tr {
+    border-top: 1px solid hsl(var(--line));
+  }
+
+  tbody th {
+    width: 22%;
+    color: hsl(var(--ink));
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+  }
+
+  td {
+    color: hsl(var(--ink-soft));
+  }
+</style>

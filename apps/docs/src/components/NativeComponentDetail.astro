@@ -6,8 +6,7 @@ import {
   CodeTabs,
   Icon,
   Link,
-  Pagination,
-  Table
+  Pagination
 } from '@santi020k/lumen-astro'
 
 import { findNativeComponentCapture } from '../data/native-component-captures'
@@ -19,6 +18,7 @@ import {
 import type { PlatformGuide } from '../data/platforms'
 import DocsLayout from '../layouts/DocsLayout.astro'
 
+import DocsReferenceTable from './DocsReferenceTable.astro'
 import NativeLivePreview from './NativeLivePreview.astro'
 
 interface Props {
@@ -261,28 +261,11 @@ const appleAvailability = implementation.appleAvailability
       <h2 id="api-title">Public API</h2>
       <p>The primary shared and platform-specific options exposed by {implementation.exportName}.</p>
     </div>
-    <Table class="native-detail-table">
-      <table>
-        <thead>
-          <tr>
-            <th>API</th>
-            <th>Values or type</th>
-            <th>Default</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          {implementation.api.map(row => (
-            <tr>
-              <th scope="row">{row.name}</th>
-              <td><code>{row.values}</code></td>
-              <td><code>{row.defaultValue}</code></td>
-              <td>{row.description}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </Table>
+    <DocsReferenceTable
+      columns={['API', 'Values or type', 'Default', 'Description']}
+      labelledBy="api-title"
+      rows={implementation.api.map(row => [row.name, row.values, row.defaultValue, row.description])}
+    />
   </section>
 
   <section class="native-detail-section" aria-labelledby="behavior-title">
@@ -592,41 +575,6 @@ const appleAvailability = implementation.appleAvailability
     border: 1px solid hsl(var(--line));
     border-radius: 1rem;
     background: hsl(var(--surface));
-  }
-
-  .native-detail-table table {
-    width: 100%;
-    min-width: 48rem;
-    border-collapse: collapse;
-    text-align: left;
-    font-size: 0.875rem;
-  }
-
-  .native-detail-table th,
-  .native-detail-table td {
-    padding: 0.85rem 1rem;
-    border-bottom: 1px solid hsl(var(--line));
-    color: hsl(var(--ink-soft));
-    vertical-align: top;
-  }
-
-  .native-detail-table thead th {
-    color: hsl(var(--ink-muted));
-    font-size: 0.7rem;
-    font-weight: 900;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    background: hsl(var(--surface-muted));
-  }
-
-  .native-detail-table tbody th {
-    color: hsl(var(--ink));
-    font-family: ui-monospace, monospace;
-    font-size: 0.78rem;
-  }
-
-  .native-detail-table code {
-    font-size: 0.75rem;
   }
 
   .native-detail-notes {

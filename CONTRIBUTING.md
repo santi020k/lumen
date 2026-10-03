@@ -78,6 +78,17 @@ When adding a guide:
 4. Add the guide to the documentation search index and generated social-image catalog.
 5. Run the docs typecheck, tests, lint, and build before opening a pull request.
 
+Component reference examples live in `apps/docs/src/examples/<Name>.astro`. Keep data declarations
+in the Astro data block so the shared snippet builder can include them in React usage. Use
+public `Stack`, `Grid`, `Field`, and `Label` primitives rather than repeating layout and form markup.
+For automatic grids, choose `minItemWidth`; the public Grid clamps it to the available width.
+
+The docs tests check catalog coverage, parse generated React examples as JSX, and type-check them
+against the public React adapter. These checks do not replace rendered interaction tests. Complex
+framework contracts need explicit overrides in `apps/docs/src/lib/snippets.ts`. Data charts use JSON attributes
+in Elements; do not leave Astro expressions in copyable HTML. Label illustrative data as such.
+Verify changed examples at a narrow phone size and desktop, including the playground width controls.
+
 Do not publish generic announcements as guides. A guide should leave a developer able to build or
 verify something they could not confidently complete before reading it.
 

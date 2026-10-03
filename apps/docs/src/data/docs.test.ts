@@ -91,6 +91,17 @@ describe('component docs snippets', () => {
     }
   })
 
+  test('documents adapter differences beside their examples', () => {
+    for (const name of ['AnimatedPortrait', 'ButtonLink', 'Combobox', 'CoverImage', 'Dialog', 'PhoneInput', 'Tabs', 'Textarea', 'ThemeToggle', 'Toast']) {
+      const component = componentDocs.find(entry => entry.name === name)
+
+      expect(component?.adapterNotes?.some(note => note.framework === 'React')).toBe(true)
+    }
+
+    expect(componentDocs.find(entry => entry.name === 'PieChart')?.adapterNotes?.[0]?.text)
+      .toContain('array containing its series')
+  })
+
   test('group similar components into valid comparison collections', () => {
     const documentedNames = new Set(componentDocs.map(component => component.name))
 

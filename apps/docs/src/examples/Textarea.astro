@@ -1,5 +1,24 @@
 ---
-import { Textarea } from '@santi020k/lumen-astro'
+import { Field, FieldError, Label, Stack, Textarea } from '@santi020k/lumen-astro'
 ---
 
-<Textarea name="notes" rows={4} placeholder="Add release notes..." aria-label="Release notes" />
+<Stack style="max-width: 28rem">
+  <Field>
+    <Label for="ex-notes">Release notes</Label>
+    <Textarea aria-describedby="ex-notes-hint" id="ex-notes" name="notes" rows={4} placeholder="What changed for your users?" />
+    <p id="ex-notes-hint">Keep the description focused on the change and its impact.</p>
+  </Field>
+  <Field>
+    <Label for="ex-notes-invalid">Required summary</Label>
+    <Textarea aria-describedby="ex-notes-error" aria-invalid="true" id="ex-notes-invalid" name="summary" required rows={3} />
+    <FieldError id="ex-notes-error" message="Add a summary before continuing." />
+  </Field>
+  <Field>
+    <Label for="ex-notes-readonly">Published summary</Label>
+    <Textarea id="ex-notes-readonly" name="publishedSummary" readonly rows={3}>Improved keyboard navigation and clearer field feedback.</Textarea>
+  </Field>
+  <Field>
+    <Label for="ex-notes-disabled">Archived notes</Label>
+    <Textarea disabled id="ex-notes-disabled" name="archivedNotes" placeholder="This release is archived." rows={3} />
+  </Field>
+</Stack>
