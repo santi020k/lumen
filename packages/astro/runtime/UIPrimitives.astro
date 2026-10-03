@@ -12,7 +12,9 @@
 import { isLumenDateBoundsValid, parseLumenDate as parseCalendarDate, resolveLumenDateLabels, resolveLumenDateLocale } from '@santi020k/lumen-core'
 import {
   createLumenKanbanMoveDetail,
+  createLumenVirtualListController,
   createThemeFromHue,
+  executeLumenRichTextCommand,
   exportThemeCss,
   exportThemeDesignTokens,
   exportThemeFigmaVariables,
@@ -3725,42 +3727,27 @@ const initTreeCollections = (scope: ParentNode): void => {
   }
 }
 
+const virtualListControllers = new Map<HTMLElement, { destroy: () => void }>()
+
 const initVirtualLists = (scope: ParentNode): void => {
-  for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-virtual-list]')) {
-    if (root.dataset.uiBound === 'true') continue
+  for (const [root, controller] of virtualListControllers) {
+    if (!root.isConnected) {
+      controller.destroy()
 
-    const items = [...root.children].filter((child): child is HTMLElement => child instanceof HTMLElement)
-
-    if (!items.length) continue
-
-    root.dataset.uiBound = 'true'
-
-    const overscan = Number(root.dataset.uiOverscan ?? 4)
-    const itemSize = Number(root.dataset.uiItemSize ?? 44)
-
-    const update = (): void => {
-      const visibleCount = Math.ceil(root.clientHeight / itemSize) + overscan
-      const startIndex = Math.max(0, Math.floor(root.scrollTop / itemSize) - overscan)
-      const endIndex = startIndex + visibleCount
-
-      for (const [index, item] of items.entries()) {
-        item.hidden = index < startIndex || index > endIndex
-      }
-
-      root.dispatchEvent(new CustomEvent('ui:virtual-list-range', {
-        bubbles: true,
-        detail: {
-          endIndex: Math.min(items.length - 1, endIndex),
-          startIndex
-        }
-      }))
+      virtualListControllers.delete(root)
     }
+  }
 
-    root.addEventListener('scroll', update, { passive: true })
-
-    update()
+  for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-virtual-list]')) {
+    if (!virtualListControllers.has(root)) virtualListControllers.set(root, createLumenVirtualListController(root))
   }
 }
+
+document.addEventListener('astro:before-swap', () => {
+  for (const controller of virtualListControllers.values()) controller.destroy()
+
+  virtualListControllers.clear()
+})
 
 const initTagGroups = (scope: ParentNode): void => {
   for (const root of scope.querySelectorAll<HTMLElement>('.ui-tag-group, [data-ui-tag-group]')) {
@@ -3800,6 +3787,8 @@ const getRichTextCommandValue = (control: HTMLElement): string | undefined => {
 }
 
 const syncRichTextCommandStates = (root: HTMLElement): void => {
+  if (root.dataset.uiEditorNativeState === 'false') return
+
   const commandDocument = document as unknown as RichTextCommandDocument
 
   for (const control of root.querySelectorAll<HTMLElement>('[data-ui-editor-command]')) {
@@ -3847,13 +3836,14 @@ const executeRichTextCommand = (
   if (!command) return false
 
   const commandDocument = document as unknown as RichTextCommandDocument
-  let executed = false
 
-  if (typeof commandDocument.execCommand === 'function') {
-    executed = value === undefined ?
+  const executed = executeLumenRichTextCommand(root, { command, ...(value === undefined ? {} : { value }) }, () => {
+    if (typeof commandDocument.execCommand !== 'function') return false
+
+    return value === undefined ?
       commandDocument.execCommand(command) :
       commandDocument.execCommand(command, false, value)
-  }
+  })
 
   const detail: LumenRichTextCommandDetail = {
     command,

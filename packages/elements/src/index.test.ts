@@ -1459,15 +1459,65 @@ describe('@santi020k/lumen-elements', () => {
 
     document.body.append(root)
 
-    expect(ranges[0]).toEqual({ endIndex: 2, startIndex: 0 })
-    expect(root.children[3]?.hasAttribute('hidden')).toBe(true)
+    expect(ranges[0]).toEqual({ endIndex: 1, startIndex: 0 })
+    expect(root.children[4]?.hasAttribute('hidden')).toBe(true)
 
     root.scrollTop = 88
     root.dispatchEvent(new Event('scroll'))
 
-    expect(ranges.at(-1)).toEqual({ endIndex: 4, startIndex: 2 })
-    expect(root.children[0]?.hasAttribute('hidden')).toBe(true)
-    expect(root.children[2]?.hasAttribute('hidden')).toBe(false)
+    expect(ranges.at(-1)).toEqual({ endIndex: 3, startIndex: 2 })
+    expect(root.children[1]?.hasAttribute('hidden')).toBe(true)
+    expect(root.children[3]?.hasAttribute('hidden')).toBe(false)
+  })
+
+  test('virtual list refreshes changed rows and restores state on reconnect', async () => {
+    const root = document.createElement('lumen-virtual-list')
+    const rows = Array.from({ length: 10 }, () => document.createElement('div'))
+
+    root.setAttribute('item-size', '40')
+    root.setAttribute('overscan', '0')
+    Object.defineProperty(root, 'clientHeight', { configurable: true, value: 80 })
+    root.append(...rows)
+    document.body.append(root)
+    root.scrollTop = 320
+    root.dispatchEvent(new Event('scroll'))
+    expect(root.dataset.uiRangeEnd).toBe('9')
+    for (const row of rows.slice(2)) row.remove()
+    await Promise.resolve()
+    await Promise.resolve()
+    expect(root.scrollTop).toBe(0)
+    expect(root.dataset.uiRangeEnd).toBe('1')
+    root.remove()
+    expect(root.children).toHaveLength(2)
+    expect(rows[0]?.hidden).toBe(false)
+    document.body.append(root)
+    expect(root.querySelectorAll('[data-ui-virtual-list-spacer]')).toHaveLength(2)
+  })
+
+  test('external rich-text engines own canceled command requests without browser fallback', () => {
+    const fallback = vi.fn(() => true)
+
+    Object.defineProperty(document, 'execCommand', { configurable: true, value: fallback })
+    const root = document.createElement('lumen-rich-text-editor')
+
+    root.dataset.uiEditorNativeState = 'false'
+    root.innerHTML = '<button data-ui-editor-command="bold" aria-pressed="true">Bold</button><div contenteditable="true">Draft</div>'
+    const completion = vi.fn()
+
+    root.addEventListener('ui:editor-command-request', event => {
+      const request = event as CustomEvent<{ command: string, executed: boolean }>
+
+      request.preventDefault()
+      request.detail.executed = true
+    })
+    root.addEventListener('ui:editor-command', completion)
+    document.body.append(root)
+    enhanceLumenRichTextEditors(document)
+    root.querySelector('button')?.click()
+    expect(fallback).not.toHaveBeenCalled()
+    expect(completion).toHaveBeenCalledOnce()
+    expect(root.querySelector('button')?.getAttribute('aria-pressed')).toBe('true')
+    Reflect.deleteProperty(document, 'execCommand')
   })
 
   test('theme builder applies tokens and emits export events', () => {

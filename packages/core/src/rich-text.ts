@@ -17,6 +17,37 @@ export interface LumenRichTextCommandDetail {
   value?: string
 }
 
+export interface LumenRichTextCommandRequest {
+  command: string
+  value?: string
+}
+
+export type LumenRichTextCommandRequestEvent = CustomEvent<LumenRichTextCommandDetail>
+
+/** A canceled request belongs to the external engine, including unsuccessful commands. */
+export const executeLumenRichTextCommand = (
+  root: HTMLElement | null,
+  request: LumenRichTextCommandRequest,
+  fallback: () => boolean,
+  commandHandler?: (request: LumenRichTextCommandRequest) => boolean
+): boolean => {
+  const detail: LumenRichTextCommandDetail = { ...request, executed: false }
+
+  const event = typeof CustomEvent === 'undefined' ?
+    undefined :
+    new CustomEvent<LumenRichTextCommandDetail>(
+      'ui:editor-command-request', { bubbles: true, cancelable: true, detail }
+    )
+
+  if (event && root) {
+    root.dispatchEvent(event)
+
+    if (event.defaultPrevented) return detail.executed
+  }
+
+  return commandHandler ? commandHandler(request) : fallback()
+}
+
 export interface LumenRichTextChangeDetail {
   html: string
   text: string

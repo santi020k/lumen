@@ -122,6 +122,7 @@ const pageDescription =
 >
   <div class="icons-page">
     <DocsPageHero
+      compact
       description="Search the complete Lucide set through one accessible component. Generated names keep the same artwork available across web, React Native, SwiftUI, and Compose."
       eyebrow="Icon library"
       stats={[
@@ -143,6 +144,14 @@ const pageDescription =
       Icons by <Link href="https://lucide.dev/" rel="noopener noreferrer" target="_blank">Lucide</Link>,
       created and maintained by its open-source contributors.
     </p>
+
+    <IconCatalog
+      description="Search by canonical name or alias, then select any tile to copy its component name."
+      entries={iconEntries}
+      id="icon-catalog"
+      searchLabel="Search the icon library"
+      title="Find your icon"
+    />
 
     <section class="icons-section" aria-labelledby="usage-title">
       <div class="icons-section__heading">
@@ -188,14 +197,6 @@ const pageDescription =
         <DocsActionLink href="/docs/android/components/icon" variant="outline">Compose icons</DocsActionLink>
       </nav>
     </section>
-
-    <IconCatalog
-      description="Search by canonical name or alias, then select any tile to copy its component name."
-      entries={iconEntries}
-      id="icon-catalog"
-      searchLabel="Search the icon library"
-      title="Find your icon"
-    />
 
     <section class="icons-section icons-section--brands" aria-labelledby="brand-icons-title">
       <div class="icons-section__heading">

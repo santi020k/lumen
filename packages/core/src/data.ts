@@ -142,9 +142,14 @@ export const getVirtualRange = (
   itemCount: number,
   overscan = 4
 ) => {
-  const startIndex = Math.max(0, Math.floor(scrollOffset / itemSize) - overscan)
-  const visibleCount = Math.ceil(viewportSize / itemSize) + overscan * 2
-  const endIndex = Math.min(itemCount - 1, startIndex + visibleCount)
+  const count = Number.isSafeInteger(itemCount) && itemCount > 0 ? itemCount : 0
+  const size = Number.isFinite(itemSize) && itemSize > 0 ? itemSize : 44
+  const viewport = Number.isFinite(viewportSize) && viewportSize > 0 ? viewportSize : 0
+  const extra = Number.isFinite(overscan) ? Math.max(0, Math.trunc(overscan)) : 4
+  const maximumOffset = Math.max(0, count * size - viewport)
+  const offset = Number.isFinite(scrollOffset) ? Math.min(maximumOffset, Math.max(0, scrollOffset)) : 0
+  const startIndex = Math.max(0, Math.floor(offset / size) - extra)
+  const endIndex = Math.min(count - 1, Math.max(startIndex, Math.ceil((offset + viewport) / size) - 1) + extra)
 
   return {
     endIndex,

@@ -62,3 +62,13 @@ describe('phone contracts', () => {
     expect(getLumenPhoneCountry('ZZ')).toBeNull()
   })
 })
+
+test('bundles artwork for every supported phone country with a safe fallback', async () => {
+  const { getLumenPhoneFlagSource, getLumenPhoneFlag } = await import('./phone.js')
+  for (const country of getLumenPhoneCountries()) {
+    expect(getLumenPhoneFlagSource(country.regionCode)).toMatch(/^data:image\/png;base64,/)
+  }
+  expect(getLumenPhoneFlagSource('co')).toBe(getLumenPhoneFlagSource('CO'))
+  expect(getLumenPhoneFlagSource('../../secret')).toBeNull()
+  expect(getLumenPhoneFlag('12')).toBe('')
+})

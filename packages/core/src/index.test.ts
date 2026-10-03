@@ -509,7 +509,7 @@ describe('lumen product helpers', () => {
 
     expect(parsed.filters.status).toBe('ready')
     expect(parsed.sort).toEqual({ direction: 'desc', key: 'updated' })
-    expect(getVirtualRange(120, 200, 40, 100)).toEqual({ endIndex: 13, startIndex: 0 })
+    expect(getVirtualRange(120, 200, 40, 100)).toEqual({ endIndex: 11, startIndex: 0 })
 
     expect(applyDataViewState([
       { id: '1', name: 'Docs', status: 'ready', updated: 2 },

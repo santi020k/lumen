@@ -116,6 +116,7 @@ const links = getDocsContextLinks(activePlatform)
   }
 
   const docsPlatformStorageKey = 'lumen-docs-platform'
+  let navigationObserver: ResizeObserver | undefined
 
   const initDocsContextNavigation = (): void => {
     syncDocsContextCurrentLink()
@@ -142,6 +143,52 @@ const links = getDocsContextLinks(activePlatform)
       window.location.assign(select.value)
     })
 
+    const links = container.querySelector<HTMLElement>('.docs-context-navigation__links')
+
+    if (links) {
+      const updateOverflow = (): void => {
+        links.dataset.overflowStart = String(links.scrollLeft > 1)
+
+        links.dataset.overflowEnd = String(links.scrollLeft + links.clientWidth < links.scrollWidth - 1)
+      }
+
+      const revealLink = (link: HTMLElement): void => {
+        const linksRect = links.getBoundingClientRect()
+        const linkRect = link.getBoundingClientRect()
+        const inset = Number.parseFloat(getComputedStyle(links).paddingLeft)
+
+        if (linkRect.left < linksRect.left + inset) {
+          links.scrollLeft += linkRect.left - linksRect.left - inset
+        } else if (linkRect.right > linksRect.right - inset) {
+          links.scrollLeft += linkRect.right - linksRect.right + inset
+        }
+
+        updateOverflow()
+      }
+
+      const alignCurrentLink = (): void => {
+        const currentLink = links.querySelector<HTMLElement>('[aria-current]')
+
+        if (currentLink) revealLink(currentLink)
+
+        updateOverflow()
+      }
+
+      links.addEventListener('scroll', updateOverflow, { passive: true })
+
+      links.addEventListener('focusin', event => {
+        if (event.target instanceof HTMLElement && event.target.matches('a')) revealLink(event.target)
+      })
+
+      navigationObserver?.disconnect()
+
+      navigationObserver = new ResizeObserver(alignCurrentLink)
+
+      navigationObserver.observe(links)
+
+      alignCurrentLink()
+    }
+
     container.dataset.initialized = 'true'
   }
 
@@ -167,4 +214,6 @@ const links = getDocsContextLinks(activePlatform)
     // Read the actual URL after the click handlers finish, including canceled navigation.
     window.setTimeout(syncDocsContextCurrentLink, 0)
   })
+
+  document.addEventListener('astro:before-swap', () => navigationObserver?.disconnect())
 </script>

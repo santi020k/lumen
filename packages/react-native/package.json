@@ -29,6 +29,7 @@
     "dist",
     "README.md",
     "LICENSE",
+    "PHONE_FLAG_LICENSE.txt",
     "THIRD_PARTY_NOTICES.md"
   ],
   "scripts": {

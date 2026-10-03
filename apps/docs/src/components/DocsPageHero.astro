@@ -7,16 +7,17 @@ interface Stat {
 }
 
 interface Props {
+  compact?: boolean
   description: string
   eyebrow: string
   stats?: Stat[]
   title: string
 }
 
-const { description, eyebrow, stats = [], title } = Astro.props
+const { compact = false, description, eyebrow, stats = [], title } = Astro.props
 ---
 
-<header class="docs-page-hero">
+<header class:list={['docs-page-hero', { 'docs-page-hero--compact': compact }]}>
   <div class="docs-page-hero__copy">
     <Badge variant="outline">{eyebrow}</Badge>
     <h1>{title}</h1>
@@ -45,6 +46,40 @@ const { description, eyebrow, stats = [], title } = Astro.props
 </header>
 
 <style>
+  .docs-page-hero.docs-page-hero--compact {
+    min-height: 0;
+    gap: 1.25rem;
+    padding: clamp(1.25rem, 3vw, 2rem);
+  }
+
+  .docs-page-hero.docs-page-hero--compact h1 {
+    font-size: clamp(2rem, 4vw, 3rem);
+  }
+
+  .docs-page-hero.docs-page-hero--compact .docs-page-hero__copy > p {
+    margin-top: 0.75rem;
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  @media (max-width: 47.999rem) {
+    .docs-page-hero--compact .docs-page-hero__visual {
+      display: none;
+    }
+
+    .docs-page-hero--compact .docs-page-hero__stats {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .docs-page-hero--compact .docs-page-hero__stats div {
+      display: block;
+    }
+
+    .docs-page-hero--compact .docs-page-hero__stats dd {
+      margin-top: 0.25rem;
+    }
+  }
+
   .docs-page-hero {
     position: relative;
     isolation: isolate;

@@ -3678,7 +3678,9 @@ public final class com/santi020k/lumen/OverlayComponentsKt {
 }
 
 public final class com/santi020k/lumen/PhoneComponentsKt {
-	public static final fun LumenPhoneInput (Lcom/santi020k/lumen/LumenPhoneNumber;Lkotlin/jvm/functions/Function1;Ljava/lang/String;Landroidx/compose/ui/Modifier;Ljava/util/List;Ljava/util/Locale;Ljava/lang/String;Ljava/lang/String;ZLjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ZZLandroidx/compose/runtime/Composer;III)V
+	public static final fun LumenCountryFlag (Ljava/lang/String;Landroidx/compose/ui/Modifier;Ljava/lang/String;Landroidx/compose/runtime/Composer;II)V
+	public static final fun LumenPhoneInput (Lcom/santi020k/lumen/LumenPhoneNumber;Lkotlin/jvm/functions/Function1;Ljava/lang/String;Landroidx/compose/ui/Modifier;Ljava/util/List;Ljava/util/Locale;Ljava/lang/String;Ljava/lang/String;ZLjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ZZZLandroidx/compose/runtime/Composer;III)V
+	public static final fun LumenPhoneNumberView (Lcom/santi020k/lumen/LumenPhoneNumber;Landroidx/compose/ui/Modifier;Landroidx/compose/runtime/Composer;II)V
 	public static final fun resolveLumenPhoneNumber (Lcom/santi020k/lumen/LumenPhoneCountry;Ljava/lang/String;Ljava/util/Locale;)Lcom/santi020k/lumen/LumenPhoneNumber;
 	public static synthetic fun resolveLumenPhoneNumber$default (Lcom/santi020k/lumen/LumenPhoneCountry;Ljava/lang/String;Ljava/util/Locale;ILjava/lang/Object;)Lcom/santi020k/lumen/LumenPhoneNumber;
 }

@@ -50,6 +50,7 @@ vi.mock('react-native', async () => {
     },
     ActivityIndicator: hostComponent('ActivityIndicator'),
     FlatList: hostComponent('FlatList'),
+    Image: hostComponent('Image'),
     KeyboardAvoidingView: hostComponent('KeyboardAvoidingView'),
     Modal: hostComponent('Modal'),
     Platform: nativePlatform,
@@ -414,6 +415,14 @@ describe('Lumen React Native component behavior', () => {
 
     expect(readProp(validationMessage, 'accessibilityLiveRegion')).toBe('polite')
     expect(readProp(validationMessage, 'accessibilityRole')).toBe('alert')
+  })
+
+  test('read-only phone input locks country selection and number editing', async () => {
+    const country = getLumenPhoneCountry('CO')
+    if (!country) throw new Error('Missing phone fixture')
+    const root = await renderNative(<LumenPhoneInput label="Phone" onValueChange={() => {}} readOnly value={resolveLumenPhoneInputValue([country], country, '', {})} />)
+    expect(readProp(findByAccessibilityLabel(root, 'Country code, Colombia, +57'), 'disabled')).toBe(true)
+    expect(readProp(findByAccessibilityLabel(root, 'Phone number'), 'editable')).toBe(false)
   })
 
   test('phone input exposes disabled state on both native controls', async () => {

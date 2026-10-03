@@ -419,3 +419,39 @@ Unwrapped `pre` children receive `tabindex="0"` and region semantics while keepi
 authored accessible names. With `wrap="true"`, the component does not add an extra
 tab stop. Keep native `pre` and `code` children rather than placing source text in
 HTML attributes.
+
+### Virtual list and editor ownership
+
+`VirtualList` displays fixed-height rows with inert spacers that retain the full scroll extent.
+Rows stay mounted; use pagination when the initial DOM cost matters. Scrolling, resizing, sizing
+changes and direct row changes refresh the window. Focused rows remain available. See the
+[fixed-height list contract](../../docs/ai-usage.md#fixed-height-virtual-lists).
+
+External rich-text engines should handle the cancelable `ui:editor-command-request` event before
+execution and use `ui:editor-command` only for completion notifications. React also supports
+`useRichTextEditor({ commandHandler })`. Disable native toolbar state syncing when the external
+engine owns it. See the [editor guidance](../../docs/ai-usage.md).
+
+## Phone presentation in v4
+
+Phone inputs bundle the same offline flag artwork on every platform. The selected country shows
+its flag and calling code inside one continuous input border. Country names remain in the native
+picker and its accessible name; flags are supplementary. Unknown flag codes fall back to text.
+
+Astro and React `PhoneInput` accept `disabled`, `readOnly`, `required`, `errorMessage`,
+`showValidationError`, and `inputProps`. Their `id` targets the number input in v4; React also
+accepts `inputRef`. Web Components use `disabled`, `readonly`, `required`, `error-message`,
+`show-validation-error="false"`, and `input-id`, with native input attributes on the host.
+Both controls lock together and validation remains associated with the input.
+
+The `phone-input`, `phone-country`, and `country-flag` styling parts plus `--ui-phone-height`,
+`--ui-phone-padding`, and `--ui-phone-country-gap` replace consumer CSS overlays.
+
+Astro and React also export `CountryFlag` (`regionCode`, optional `decorative`) and `PhoneNumber`
+(`value: LumenPhoneNumber`, optional `link`). A telephone link is rendered only for a complete
+E.164 value. Use the model returned by the phone normalizer; keep domain persistence in your app.
+Artwork attribution is shipped with the core package in `PHONE_FLAG_LICENSE.txt`.
+
+When `PhoneInput` is registered, `defineLumenElements` also registers `lumen-country-flag`
+(`country`, `decorative`, optional `label`) and `lumen-phone-number` (`country`, `value`, `link`,
+optional `locale`). The read-only element normalizes its string value before creating a tel link.

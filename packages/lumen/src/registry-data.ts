@@ -1476,6 +1476,8 @@ export const lumenRegistry = {
       category: 'Forms',
       files: [
         'packages/astro/components/PhoneInput.astro',
+        'packages/astro/components/CountryFlag.astro',
+        'packages/astro/components/PhoneNumber.astro',
         'packages/astro/styles/lumen.css'
       ],
       dependencies: [
