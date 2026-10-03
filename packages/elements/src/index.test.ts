@@ -1537,6 +1537,8 @@ describe('@santi020k/lumen-elements', () => {
     document.body.innerHTML = `
       <div id="theme-preview"></div>
       <lumen-theme-builder data-ui-theme-target="#theme-preview">
+        <button data-ui-theme-preset="studio" type="button">Studio</button>
+        <button data-ui-theme-preset="custom" type="button">Custom</button>
         <input data-ui-theme-brand-hue type="range" max="360" value="264" />
         <input data-ui-theme-accent-hue type="range" max="360" value="54" />
         <button data-ui-theme-export-format="tokens" type="button">Tokens</button>
@@ -1566,6 +1568,13 @@ describe('@santi020k/lumen-elements', () => {
       )
     })
 
+    expect(preview?.style.getPropertyValue('--brand')).toBe('264 85% 53%')
+    expect(root?.querySelector('[data-ui-theme-preset="custom"]')?.getAttribute('aria-pressed')).toBe('true')
+    root?.querySelector<HTMLButtonElement>('[data-ui-theme-preset="studio"]')?.click()
+    expect(preview?.style.getPropertyValue('--brand')).toBe('0 0% 9%')
+    expect(preview?.style.getPropertyValue('--ui-shadow-md')).toBe('none')
+    expect(output?.value).toContain('--ui-space-lg: 1rem;')
+    root?.querySelector<HTMLButtonElement>('[data-ui-theme-preset="custom"]')?.click()
     expect(preview?.style.getPropertyValue('--brand')).toBe('264 85% 53%')
     expect(output?.value).toContain('color-scheme: light;')
 

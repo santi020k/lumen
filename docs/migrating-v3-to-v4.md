@@ -177,6 +177,20 @@ Nested controls consume their own Escape dismissal. Parent keyboard handlers sho
   Failed external commands never fall back to browser execution. See [AI usage](ai-usage.md)
   for engine ownership and toolbar-state examples.
 
+## Appearance presets and customization
+
+Default, Studio and Glass presets are opt-in. Existing calls retain their color defaults. Use
+`data-lumen-preset` on a web root or section and `data-lumen-scheme` when the section owns its
+scheme. ThemeBuilder can adjust radius, spacing and structural border dimensions and export
+those values. Preserve readable foreground/background pairs when overriding action colors.
+
+Native adapters accept preset palettes and appearance overrides. Rebuild Swift and Compose
+consumers for the defaulted appearance and material parameters. Swift initializer references for
+Theme, Surface and Card must adopt the new signatures. Glass remains explicit per supporting
+surface; SwiftUI honors reduced transparency and increased contrast, while React Native and
+Compose use opaque fallbacks. See [appearance presets](appearance-presets.md) for exact APIs.
+No application data migration is involved.
+
 ## Native rebuild checklist
 
 The [v4 contract](../registry/lumen-4-contract.json) lists the reviewed Swift diagnostics relative

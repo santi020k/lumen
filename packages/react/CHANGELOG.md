@@ -17,6 +17,11 @@
 - Updated dependencies []:
   - @santi020k/lumen@4.1.0
   - @santi020k/lumen-core@4.1.0
+### Appearance Presets
+
+- Add Default, Studio and Glass appearance presets with semantic palette and surface customization.
+  Glass remains explicit per surface with opaque native fallbacks. See the appearance presets guide;
+  Swift and Compose consumers must rebuild for the updated initializer signatures.
 
 ### Phone Input Improvements
 

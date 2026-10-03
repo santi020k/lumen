@@ -1,3 +1,8 @@
+import { lumenCssColorTokens, lumenRadii, lumenSpacing } from './foundations.generated.js'
+import { type LumenThemePreset, lumenThemePresetDefinitions } from './theme-presets.generated.js'
+
+export { type LumenSurfaceMaterial, type LumenThemePreset, lumenThemePresetDefinitions } from './theme-presets.generated.js'
+
 export type LumenThemeTokens = Record<string, string>
 
 export interface LumenContrastScore {
@@ -95,7 +100,16 @@ export const lumenStructureTokenNames = [
   ...lumenRadiusTokenNames,
   ...lumenShadowTokenNames,
   ...lumenTypographyTokenNames,
-  ...lumenMotionTokenNames
+  ...lumenMotionTokenNames,
+  'ui-border-width',
+  'ui-space-zero',
+  'ui-space-xs',
+  'ui-space-sm',
+  'ui-space-md',
+  'ui-space-lg',
+  'ui-space-xl',
+  'ui-space-2xl',
+  'ui-space-3xl'
 ] as const
 
 export const lumenColorTokenNames = [
@@ -268,8 +282,68 @@ const createStructureTokens = (
   ...lumenRadiusTokens,
   ...createShadowTokens(hue, scheme),
   ...lumenTypographyTokens,
-  ...lumenMotionTokens
+  ...lumenMotionTokens,
+  'ui-border-width': '1px',
+  'ui-space-zero': '0rem',
+  'ui-space-xs': `${lumenSpacing.xs / 16}rem`,
+  'ui-space-sm': `${lumenSpacing.sm / 16}rem`,
+  'ui-space-md': `${lumenSpacing.md / 16}rem`,
+  'ui-space-lg': `${lumenSpacing.lg / 16}rem`,
+  'ui-space-xl': `${lumenSpacing.xl / 16}rem`,
+  'ui-space-2xl': `${lumenSpacing['2xl'] / 16}rem`,
+  'ui-space-3xl': `${lumenSpacing['3xl'] / 16}rem`
 })
+
+export const mergeThemeTokens = (
+  tokens: LumenThemeTokens,
+  overrides: Partial<LumenThemeTokens>
+): LumenThemeTokens => ({
+  ...tokens,
+  ...Object.fromEntries(
+    Object.entries(overrides).filter((entry): entry is [string, string] => Boolean(entry[1]))
+  )
+})
+
+export interface LumenThemePresetOptions {
+  scheme?: 'dark' | 'light'
+  overrides?: Partial<LumenThemeTokens>
+}
+
+/** A preset configures tokens; components retain explicit control of glass surfaces. */
+export const createThemePreset = (
+  preset: LumenThemePreset = 'default',
+  options: LumenThemePresetOptions = {}
+): LumenThemeTokens => {
+  const scheme = options.scheme ?? 'light'
+  const definition = lumenThemePresetDefinitions[preset]
+
+  const colors = Object.fromEntries(lumenSemanticColorTokenNames.map(name => [
+    name,
+    Object.entries(lumenCssColorTokens[scheme]).find(([key]) => key === name.replaceAll(/-([a-z])/g, (_match: string, character: string) => character.toUpperCase()))?.[1] ?? ''
+  ]))
+
+  const tokens: LumenThemeTokens = {
+    ...colors,
+    ...definition.cssColors[scheme],
+    ...createGlassThemeTokens(preset === 'studio' ? 0 : 220, scheme),
+    ...createStructureTokens(222, scheme),
+    ...definition.effects[scheme],
+    'ui-border-width': `${definition.borderWidth}px`,
+    'ui-font': definition.fontFamily.map(family => ['system-ui', 'sans-serif'].includes(family) ? family : `"${family}"`).join(', '),
+    'ui-radius-sm': `${lumenRadii.sm / 16 * definition.radiusScale}rem`,
+    'ui-radius': `${lumenRadii.md / 16 * definition.radiusScale}rem`,
+    'ui-radius-lg': `${lumenRadii.lg / 16 * definition.radiusScale}rem`,
+    ...Object.fromEntries(Object.entries(lumenSpacing).map(([name, value]) => [
+      `ui-space-${name}`, `${value * definition.spacingScale / 16}rem`
+    ]))
+  }
+
+  if (definition.elevationScale === 0) {
+    for (const name of lumenShadowTokenNames) tokens[name] = 'none'
+  }
+
+  return mergeThemeTokens(tokens, options.overrides ?? {})
+}
 
 export const createThemePalette = (
   brand: string,
@@ -432,16 +506,6 @@ export const scoreThemeContrast = (
     wcagAAA: ratio >= 7
   }
 }
-
-export const mergeThemeTokens = (
-  tokens: LumenThemeTokens,
-  overrides: Partial<LumenThemeTokens>
-): LumenThemeTokens => ({
-  ...tokens,
-  ...Object.fromEntries(
-    Object.entries(overrides).filter((entry): entry is [string, string] => Boolean(entry[1]))
-  )
-})
 
 export const suggestReadableInk = (
   background: string

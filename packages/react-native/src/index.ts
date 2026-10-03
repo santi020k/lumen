@@ -236,12 +236,15 @@ export {
 } from './structured-recipes.js'
 export {
   createLumenTheme,
+  type LumenAppearance,
   type LumenChartColorPalette,
   type LumenColorPalette,
   lumenDarkTheme,
   lumenLightTheme,
-  type LumenTheme
-} from './theme.js'
+  type LumenSurfaceMaterial,
+  type LumenTheme,
+  type LumenThemeOptions,
+  type LumenThemePreset } from './theme.js'
 export { useLumenTheme } from './theme-context.js'
 export {
   type LumenChartColor,

@@ -57,6 +57,28 @@ public final class com/santi020k/lumen/LumenAlertVariant : java/lang/Enum {
 	public static fun values ()[Lcom/santi020k/lumen/LumenAlertVariant;
 }
 
+public final class com/santi020k/lumen/LumenAppearance {
+	public static final field $stable I
+	public fun <init> ()V
+	public fun <init> (FFFFLcom/santi020k/lumen/LumenSurfaceMaterial;)V
+	public synthetic fun <init> (FFFFLcom/santi020k/lumen/LumenSurfaceMaterial;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()F
+	public final fun component2 ()F
+	public final fun component3 ()F
+	public final fun component4 ()F
+	public final fun component5 ()Lcom/santi020k/lumen/LumenSurfaceMaterial;
+	public final fun copy (FFFFLcom/santi020k/lumen/LumenSurfaceMaterial;)Lcom/santi020k/lumen/LumenAppearance;
+	public static synthetic fun copy$default (Lcom/santi020k/lumen/LumenAppearance;FFFFLcom/santi020k/lumen/LumenSurfaceMaterial;ILjava/lang/Object;)Lcom/santi020k/lumen/LumenAppearance;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getBorderWidth ()F
+	public final fun getElevationScale ()F
+	public final fun getMaterial ()Lcom/santi020k/lumen/LumenSurfaceMaterial;
+	public final fun getRadiusScale ()F
+	public final fun getSpacingScale ()F
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
 public final class com/santi020k/lumen/LumenAutocompleteOption {
 	public static final field $stable I
 	public fun <init> (Ljava/lang/Object;Ljava/lang/String;Ljava/lang/String;Z)V
@@ -3457,6 +3479,17 @@ public final class com/santi020k/lumen/LumenPieChartVariant : java/lang/Enum {
 	public static fun values ()[Lcom/santi020k/lumen/LumenPieChartVariant;
 }
 
+public final class com/santi020k/lumen/LumenPresetColors {
+	public static final field $stable I
+	public static final field INSTANCE Lcom/santi020k/lumen/LumenPresetColors;
+	public final fun getDefaultDark ()Lcom/santi020k/lumen/LumenColorPalette;
+	public final fun getDefaultLight ()Lcom/santi020k/lumen/LumenColorPalette;
+	public final fun getGlassDark ()Lcom/santi020k/lumen/LumenColorPalette;
+	public final fun getGlassLight ()Lcom/santi020k/lumen/LumenColorPalette;
+	public final fun getStudioDark ()Lcom/santi020k/lumen/LumenColorPalette;
+	public final fun getStudioLight ()Lcom/santi020k/lumen/LumenColorPalette;
+}
+
 public final class com/santi020k/lumen/LumenProgressValue {
 	public static final field $stable I
 	public static final field Companion Lcom/santi020k/lumen/LumenProgressValue$Companion;
@@ -3597,6 +3630,14 @@ public final class com/santi020k/lumen/LumenStatDensity : java/lang/Enum {
 	public static fun values ()[Lcom/santi020k/lumen/LumenStatDensity;
 }
 
+public final class com/santi020k/lumen/LumenSurfaceMaterial : java/lang/Enum {
+	public static final field Glass Lcom/santi020k/lumen/LumenSurfaceMaterial;
+	public static final field Solid Lcom/santi020k/lumen/LumenSurfaceMaterial;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/santi020k/lumen/LumenSurfaceMaterial;
+	public static fun values ()[Lcom/santi020k/lumen/LumenSurfaceMaterial;
+}
+
 public final class com/santi020k/lumen/LumenSurfacePadding : java/lang/Enum {
 	public static final field Lg Lcom/santi020k/lumen/LumenSurfacePadding;
 	public static final field Md Lcom/santi020k/lumen/LumenSurfacePadding;
@@ -3656,28 +3697,46 @@ public final class com/santi020k/lumen/LumenTextVariant : java/lang/Enum {
 }
 
 public final class com/santi020k/lumen/LumenThemeKt {
-	public static final fun LumenTheme (ZLcom/santi020k/lumen/LumenThemeValues;Landroidx/compose/material3/ColorScheme;Lcom/santi020k/lumen/LumenMaterialColorOverrides;Landroidx/compose/material3/Typography;Landroidx/compose/material3/Shapes;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
+	public static final fun LumenTheme (ZLcom/santi020k/lumen/LumenThemeValues;Landroidx/compose/material3/ColorScheme;Lcom/santi020k/lumen/LumenMaterialColorOverrides;Landroidx/compose/material3/Typography;Landroidx/compose/material3/Shapes;Lcom/santi020k/lumen/LumenThemePreset;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
 	public static final fun getLocalLumenTheme ()Landroidx/compose/runtime/ProvidableCompositionLocal;
 	public static final fun toLumenColorPalette (Landroidx/compose/material3/ColorScheme;Lcom/santi020k/lumen/LumenColorPalette;Lcom/santi020k/lumen/LumenMaterialColorOverrides;)Lcom/santi020k/lumen/LumenColorPalette;
 	public static synthetic fun toLumenColorPalette$default (Landroidx/compose/material3/ColorScheme;Lcom/santi020k/lumen/LumenColorPalette;Lcom/santi020k/lumen/LumenMaterialColorOverrides;ILjava/lang/Object;)Lcom/santi020k/lumen/LumenColorPalette;
 	public static final fun toMaterialColorScheme (Lcom/santi020k/lumen/LumenColorPalette;Z)Landroidx/compose/material3/ColorScheme;
 }
 
+public final class com/santi020k/lumen/LumenThemePreset : java/lang/Enum {
+	public static final field Default Lcom/santi020k/lumen/LumenThemePreset;
+	public static final field Glass Lcom/santi020k/lumen/LumenThemePreset;
+	public static final field Studio Lcom/santi020k/lumen/LumenThemePreset;
+	public final fun colors (Z)Lcom/santi020k/lumen/LumenColorPalette;
+	public final fun getAppearance ()Lcom/santi020k/lumen/LumenAppearance;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/santi020k/lumen/LumenThemePreset;
+	public static fun values ()[Lcom/santi020k/lumen/LumenThemePreset;
+}
+
 public final class com/santi020k/lumen/LumenThemeValues {
 	public static final field $stable I
-	public fun <init> (Lcom/santi020k/lumen/LumenColorPalette;ZLcom/santi020k/lumen/LumenChartColorPalette;)V
-	public synthetic fun <init> (Lcom/santi020k/lumen/LumenColorPalette;ZLcom/santi020k/lumen/LumenChartColorPalette;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public static final field Companion Lcom/santi020k/lumen/LumenThemeValues$Companion;
+	public fun <init> (Lcom/santi020k/lumen/LumenColorPalette;ZLcom/santi020k/lumen/LumenChartColorPalette;Lcom/santi020k/lumen/LumenAppearance;)V
+	public synthetic fun <init> (Lcom/santi020k/lumen/LumenColorPalette;ZLcom/santi020k/lumen/LumenChartColorPalette;Lcom/santi020k/lumen/LumenAppearance;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1 ()Lcom/santi020k/lumen/LumenColorPalette;
 	public final fun component2 ()Z
 	public final fun component3 ()Lcom/santi020k/lumen/LumenChartColorPalette;
-	public final fun copy (Lcom/santi020k/lumen/LumenColorPalette;ZLcom/santi020k/lumen/LumenChartColorPalette;)Lcom/santi020k/lumen/LumenThemeValues;
-	public static synthetic fun copy$default (Lcom/santi020k/lumen/LumenThemeValues;Lcom/santi020k/lumen/LumenColorPalette;ZLcom/santi020k/lumen/LumenChartColorPalette;ILjava/lang/Object;)Lcom/santi020k/lumen/LumenThemeValues;
+	public final fun component4 ()Lcom/santi020k/lumen/LumenAppearance;
+	public final fun copy (Lcom/santi020k/lumen/LumenColorPalette;ZLcom/santi020k/lumen/LumenChartColorPalette;Lcom/santi020k/lumen/LumenAppearance;)Lcom/santi020k/lumen/LumenThemeValues;
+	public static synthetic fun copy$default (Lcom/santi020k/lumen/LumenThemeValues;Lcom/santi020k/lumen/LumenColorPalette;ZLcom/santi020k/lumen/LumenChartColorPalette;Lcom/santi020k/lumen/LumenAppearance;ILjava/lang/Object;)Lcom/santi020k/lumen/LumenThemeValues;
 	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAppearance ()Lcom/santi020k/lumen/LumenAppearance;
 	public final fun getChartColors ()Lcom/santi020k/lumen/LumenChartColorPalette;
 	public final fun getColors ()Lcom/santi020k/lumen/LumenColorPalette;
 	public fun hashCode ()I
 	public final fun isDark ()Z
 	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/santi020k/lumen/LumenThemeValues$Companion {
+	public final fun preset (Lcom/santi020k/lumen/LumenThemePreset;Z)Lcom/santi020k/lumen/LumenThemeValues;
 }
 
 public final class com/santi020k/lumen/LumenTimeSelection {

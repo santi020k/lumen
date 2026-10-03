@@ -11,6 +11,11 @@
   Correct inherited RTL horizontal navigation in tabs, calendars and pane resizing. Add an opt-in
   VirtualList data renderer that mounts only the visible window and focused neighbors, with stable
   keys and a shared DOM controller for Astro and Elements.
+### Appearance Presets
+
+- Add Default, Studio and Glass appearance presets with semantic palette and surface customization.
+  Glass remains explicit per surface with opaque native fallbacks. See the appearance presets guide;
+  Swift and Compose consumers must rebuild for the updated initializer signatures.
 
 ### Major Changes
 

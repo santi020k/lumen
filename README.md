@@ -66,6 +66,10 @@ For existing applications, start with [v1 → v2](docs/migrating-v1-to-v2.md) wh
 [v3 → v4](docs/migrating-v3-to-v4.md). For initial adoption, use
 [Migrating to Lumen](docs/migrating-to-lumen.md).
 
+## Appearance presets
+
+Choose an appearance preset or customize the existing themes with the [appearance guide](docs/appearance-presets.md). The Studio preset uses PostLens as its visual reference.
+
 ## Dashboards and templates
 
 Explore the [template gallery](https://lumen.santi020k.com/templates) for complete analytics,

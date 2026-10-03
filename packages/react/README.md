@@ -63,6 +63,10 @@ The stylesheet defaults `--ui-font` to `"Montserrat", "Avenir Next", "Segoe UI",
 It declares the family stack but does not bundle or load font files. Load Montserrat once through
 your preferred delivery path, or override `--ui-font` in application CSS.
 
+## Appearance presets
+
+Use a scoped `data-lumen-preset="studio"` container, or select a preset with `useThemeBuilder`. See [appearance presets](../../docs/appearance-presets.md) for theme overrides and explicit glass surfaces.
+
 ## Usage
 
 ```tsx

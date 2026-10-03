@@ -53,7 +53,7 @@ class AdvancedFormComponentsTest {
     @Test
     fun numericEntryUsesLocalDecimalSymbolsAndUnicodeDigits() {
         assertEquals(LumenNumberDraft.Valid(BigDecimal("1234.50")), parseLumenNumberDraft("1234,50", Locale.GERMANY))
-        assertEquals(LumenNumberDraft.Valid(BigDecimal("1234.50")), parseLumenNumberDraft("١٢٣٤٫٥٠", Locale.forLanguageTag("ar")))
+        assertEquals(LumenNumberDraft.Valid(BigDecimal("1234.50")), parseLumenNumberDraft("١٢٣٤٫٥٠", Locale.forLanguageTag("ar-u-nu-arab")))
         assertEquals("1234,5", formatLumenNumber(BigDecimal("1234.5"), Locale.GERMANY))
         val arabic = Locale.forLanguageTag("ar")
         val displayed = formatLumenNumber(BigDecimal("1234.5"), arabic)

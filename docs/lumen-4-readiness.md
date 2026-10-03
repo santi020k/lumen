@@ -338,3 +338,23 @@ concurrently integrated v4 work.
 The latest canonical lint passed all 23 tasks and spell checking found no issues. The read-only
 network security audit still reports the three dependency advisories listed above, so full
 `pnpm run validate` cannot be declared passing. No audit suppression was added.
+
+## Appearance preset implementation
+
+Default, Studio and Glass appearances now come from the canonical token document. Studio uses
+PostLens's neutral palette as a reference; explicit glass remains limited to selected supporting
+surfaces. The theme playground includes radius, spacing and border controls and an illustrative
+photo workspace. Web adapters share scoped tokens and exportable appearance values. SwiftUI,
+React Native and Compose expose preset palettes and native appearance customization.
+
+Local verification passes 1,134 JavaScript tests, type checking, build, zero-warning lint,
+spelling, three preset browser regressions, 53 Swift tests and Compose tests, lint and binary
+API checks. Apple API inventories were rebuilt for macOS, iOS, tvOS, visionOS and watchOS.
+Desktop and mobile screenshots were inspected in light and dark. Native API changes restart
+the two-iteration stability period; no physical-device qualification is claimed.
+
+The full `pnpm run validate` gate currently stops at `check:security`: three pre-existing high
+advisories in node-forge, http-cache-semantics and braces, with no patched versions reported by
+the audit. The appearance branch uses the current release lockfile without dependency changes.
+Release integration remains blocked rather than bypassing that gate. No packages were published
+and no remote branch was pushed.

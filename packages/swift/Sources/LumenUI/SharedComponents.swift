@@ -17,10 +17,12 @@ public struct LumenCard<Content: View>: View {
     private let padding: LumenSurfacePadding
     private let radius: LumenSurfaceRadius
     private let variant: LumenCardVariant
+    private let material: LumenSurfaceMaterial
 
     public init(
         variant: LumenCardVariant = .default,
         action: (() -> Void)? = nil,
+        material: LumenSurfaceMaterial = .solid,
         @ViewBuilder content: () -> Content
     ) {
         self.init(
@@ -28,6 +30,7 @@ public struct LumenCard<Content: View>: View {
             padding: .xl,
             radius: .lg,
             action: action,
+            material: material,
             content: content
         )
     }
@@ -37,12 +40,14 @@ public struct LumenCard<Content: View>: View {
         padding: LumenSurfacePadding,
         radius: LumenSurfaceRadius,
         action: (() -> Void)? = nil,
+        material: LumenSurfaceMaterial = .solid,
         @ViewBuilder content: () -> Content
     ) {
         self.variant = variant
         self.padding = padding
         self.radius = radius
         self.action = action
+        self.material = material
         self.content = content()
     }
 
@@ -62,13 +67,13 @@ public struct LumenCard<Content: View>: View {
     private var cardSurface: some View {
         content
             .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(padding.value)
-            .background(backgroundColor)
+            .padding(padding.value * theme.appearance.spacingScale)
+            .modifier(LumenSurfaceBackground(color: backgroundColor, material: variant == .default ? material : .solid))
             .overlay {
-                RoundedRectangle(cornerRadius: radius.value, style: .continuous)
-                    .stroke(borderColor, lineWidth: 1)
+                RoundedRectangle(cornerRadius: radius.value * theme.appearance.radiusScale, style: .continuous)
+                    .stroke(borderColor, lineWidth: theme.appearance.borderWidth)
             }
-            .clipShape(RoundedRectangle(cornerRadius: radius.value, style: .continuous))
+            .clipShape(RoundedRectangle(cornerRadius: radius.value * theme.appearance.radiusScale, style: .continuous))
     }
 
     private var accentColor: Color? {

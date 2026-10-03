@@ -1350,6 +1350,8 @@ export const getTokens = (
   const text = [
     '# Lumen design tokens',
     `Theme attribute: ${tokens.themeAttribute} (values: light, dark)`,
+    `Appearance presets: ${tokens.presets.names.join(', ')} via ${tokens.presets.attribute}; scheme via ${tokens.presets.schemeAttribute}.`,
+    'Studio follows the neutral PostLens appearance. Glass is explicit on supporting surfaces; native adapters use platform materials or opaque fallbacks.',
     '',
     '## Spacing scale (px at the default 16px root; CSS uses rem)',
     Object.entries(tokens.spacing).map(([name, value]) => `- ${name}: ${value}px; --ui-space-${name}`).join('\n'),

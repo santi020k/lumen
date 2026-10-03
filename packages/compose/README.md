@@ -262,6 +262,10 @@ references, and loading-safe retries.
 Use the [native device validation matrix](../../docs/native-device-validation.md) when verifying
 TalkBack, font scaling, contrast, focus order, and reduced motion on hardware.
 
+## Appearance presets
+
+Use `LumenTheme(preset = LumenThemePreset.Studio)` or customize `LumenThemeValues.preset(...)`. See [appearance presets](../../docs/appearance-presets.md) for dimensions, precedence and the solid material fallback.
+
 ## Data visualization
 
 `LumenSparkline`, `LumenLineChart`, `LumenBarChart`, `LumenPieChart`, `LumenScatterChart`,

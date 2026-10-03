@@ -39,6 +39,7 @@ import {
   type LumenThemeBuilderMode,
   type LumenThemeBuilderResult,
   type LumenThemeBuilderScheme,
+  type LumenThemePreset,
   type LumenThemeTokens,
   normalizeLumenLocales,
   scrollLumenTabIntoView } from '@santi020k/lumen-core'
@@ -499,6 +500,12 @@ export interface ThemeBuilderExportDetail {
 }
 
 export interface ThemeBuilderOptions {
+  radiusScale?: number | undefined
+  spacingScale?: number | undefined
+  borderWidth?: number | undefined
+  preset?: LumenThemePreset | undefined
+  defaultPreset?: LumenThemePreset | undefined
+  onPresetChange?: ChangeHandler<LumenThemePreset | undefined> | undefined
   accentHue?: number | undefined
   defaultAccentHue?: number | undefined
   defaultExportFormat?: LumenThemeBuilderExportFormat | undefined
@@ -526,6 +533,8 @@ export interface ThemeBuilderOptions {
 }
 
 export interface ThemeBuilderController extends ThemeBuilderChangeDetail {
+  setPreset: Dispatch<SetStateAction<LumenThemePreset | undefined>>
+  getPresetProps: (preset: LumenThemePreset, props?: ComponentPropsWithRef<'button'>) => LumenProps<'button'>
   accentHueProps: LumenProps<'input'>
   copyExport: () => Promise<string>
   exportButtonProps: LumenProps<'button'>
@@ -3422,6 +3431,12 @@ export const useResizable = ({
 /* eslint-enable @stylistic/padding-line-between-statements, @eslint-react/set-state-in-effect, @typescript-eslint/prefer-optional-chain, complexity, no-nested-ternary */
 
 export const useThemeBuilder = ({
+  radiusScale,
+  spacingScale,
+  borderWidth,
+  preset,
+  defaultPreset,
+  onPresetChange,
   accentHue,
   defaultAccentHue = 54,
   defaultExportFormat = 'css',
@@ -3446,6 +3461,10 @@ export const useThemeBuilder = ({
   scheme,
   secondaryColor
 }: ThemeBuilderOptions = {}): ThemeBuilderController => {
+  const [currentPreset, setPreset] = useControllableState<LumenThemePreset | undefined>({
+    defaultValue: defaultPreset, onChange: onPresetChange, value: preset
+  })
+
   const [currentHue, setHue] = useControllableState({
     defaultValue: defaultHue,
     onChange: onHueChange,
@@ -3490,6 +3509,10 @@ export const useThemeBuilder = ({
 
   const result = useMemo(
     () => createThemeBuilderTokens({
+      radiusScale: radiusScale ?? null,
+      spacingScale: spacingScale ?? null,
+      borderWidth: borderWidth ?? null,
+      preset: currentPreset ?? null,
       accentHue: currentAccentHue,
       hue: currentHue,
       mode: currentMode,
@@ -3497,6 +3520,10 @@ export const useThemeBuilder = ({
       scheme: currentScheme,
       secondaryColor: currentSecondaryColor
     }), [
+      radiusScale,
+      spacingScale,
+      borderWidth,
+      currentPreset,
       currentAccentHue,
       currentHue,
       currentMode,
@@ -3544,6 +3571,18 @@ export const useThemeBuilder = ({
     return exportValue
   }, [exportDetail, exportValue, onThemeExport])
 
+  const getPresetProps = useCallback<ThemeBuilderController['getPresetProps']>(
+    (nextPreset, props = {}) => ({
+      ...props,
+      'aria-pressed': currentPreset === nextPreset,
+      'data-ui-theme-preset': nextPreset,
+      onClick: composeHandlers(props.onClick, () => {
+        setPreset(nextPreset)
+      }),
+      type: props.type ?? 'button'
+    }), [currentPreset, setPreset]
+  )
+
   const getModeProps = useCallback<ThemeBuilderController['getModeProps']>(
     (nextMode, props = {}) => ({
       ...props,
@@ -3584,6 +3623,8 @@ export const useThemeBuilder = ({
 
   return {
     ...result,
+    setPreset,
+    getPresetProps,
     accentHueProps: {
       'data-ui-theme-accent-hue': true,
       max: 359,

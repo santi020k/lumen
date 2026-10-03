@@ -114,6 +114,10 @@ contains `PhoneInput`; pages without the component do not evaluate or download t
 <PhoneInput countryValue="CO" locale="en-US" name="hospitalPhone" />
 ```
 
+## Appearance presets
+
+Set `data-lumen-preset="studio"` and an optional `data-lumen-scheme="light|dark"` on the application root. See [appearance presets](../../docs/appearance-presets.md) for Default, Studio, Glass and scoped customization.
+
 ## Compound interactive components
 
 Popover, dropdown menu, tabs, and tooltip parts expose the DOM and ARIA contracts consumed by the

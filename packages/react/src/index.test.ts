@@ -1238,6 +1238,17 @@ describe('@santi020k/lumen-react', () => {
     expect(figmaFormat['data-ui-theme-export-format']).toBe('figma')
   })
 
+  test('keeps studio presets scoped and exposes controlled preset selection', () => {
+    const theme = withHookDispatcher(() => useThemeBuilder({ preset: 'studio', defaultScheme: 'dark', radiusScale: 2 }))
+
+    expect(theme.preset).toBe('studio')
+    expect(theme.tokens.canvas).toBe('0 0% 7%')
+    expect(theme.tokens['ui-radius']).toBe('0.75rem')
+    expect(theme.getPresetProps('studio')['aria-pressed']).toBe(true)
+    expect(theme.getPresetProps('default')['aria-pressed']).toBe(false)
+    expect(theme.outputProps.value).toContain('--ui-shadow-sm: none;')
+  })
+
   test('exposes theme builder scheme, hue, and color control props', () => {
     const schemes: string[] = []
     const hues: number[] = []

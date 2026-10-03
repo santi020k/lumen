@@ -3,6 +3,7 @@ import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 import { generateSpacingCss, parseSpacingTokens } from './lib/spacing-tokens.mjs'
+import { generatePresetCss, generatePresetKotlin, generatePresetSwift, generatePresetTypeScript, readThemePresets } from './lib/theme-presets.mjs'
 
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const sourcePath = join(repoRoot, 'tokens/lumen.tokens.json')
@@ -683,6 +684,8 @@ const writeGeneratedFile = async (path, content) => {
 const main = async () => {
   const tokens = await readSource()
   const canonicalSource = await readFile(sourcePath, 'utf8')
+  const presetSource = JSON.parse(canonicalSource)
+  const presets = readThemePresets(presetSource)
   const spacingCss = generateSpacingCss(parseSpacingTokens(canonicalSource))
   const stylesPath = join(repoRoot, 'packages/lumen/styles.css')
   const styles = await readFile(stylesPath, 'utf8')
@@ -692,8 +695,22 @@ const main = async () => {
 
   if (start < 0 || end < start) throw new Error('Missing generated spacing block in shared CSS.')
 
+  const spacedStyles = styles.slice(0, start) + spacingCss + styles.slice(end + endMarker.length)
+  const presetStart = spacedStyles.indexOf('/* BEGIN:generated-theme-presets */')
+  const presetEndMarker = '/* END:generated-theme-presets */'
+  const presetEnd = spacedStyles.indexOf(presetEndMarker, presetStart)
+  const presetCss = generatePresetCss(presetSource, presets)
+
+  const presetStyles = presetStart < 0
+    ? `${spacedStyles.trimEnd()}\n\n${presetCss}\n`
+    : spacedStyles.slice(0, presetStart) + presetCss + spacedStyles.slice(presetEnd + presetEndMarker.length)
+
   const outputs = [
-    ['packages/lumen/styles.css', styles.slice(0, start) + spacingCss + styles.slice(end + endMarker.length)],
+    ['packages/core/src/theme-presets.generated.ts', generatePresetTypeScript(presets)],
+    ['packages/react-native/src/theme-presets.generated.ts', generatePresetTypeScript(presets)],
+    ['packages/swift/Sources/LumenUI/ThemePresets.generated.swift', generatePresetSwift(presetSource, presets)],
+    ['packages/compose/src/main/kotlin/com/santi020k/lumen/ThemePresets.generated.kt', generatePresetKotlin(presetSource, presets)],
+    ['packages/lumen/styles.css', presetStyles],
     ['packages/tokens/lumen.tokens.json', canonicalSource],
     ['packages/core/src/foundations.generated.ts', generateTypeScript(tokens)],
     ['packages/react-native/src/tokens.generated.ts', generateTypeScript(tokens)],
