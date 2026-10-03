@@ -127,7 +127,7 @@ import {
   LumenImageComparisonElement as GranularLumenImageComparisonElement,
   lumenImageComparisonElementConfig
 } from './components/image-comparison.js'
-import { chartAnnotationHtml, chartDomainAttributes, chartInspectionHtml, chartNumberAttribute, interactiveChartLegendHtml, intervalChartHtml, parseChartAnnotations, parseHistogramBins, parseWaterfallData } from './chart-html.js'
+import { chartAnnotationHtml, chartDomainAttributes, chartInspectionHtml, chartNumberAttribute, escapeChartHtml, interactiveChartLegendHtml, intervalChartHtml, parseChartAnnotations, parseHistogramBins, parseWaterfallData } from './chart-html.js'
 import {
   createLumenElementClass as createStandaloneLumenElementClass,
   LumenElement,
@@ -5311,13 +5311,6 @@ class LumenListBoxBehaviorElement extends LumenElement {
     if (hasDocument()) enhanceLumenListBoxes(this)
   }
 }
-
-const escapeChartHtml = (value: number | string): string => String(value)
-  .replaceAll('&', '&amp;')
-  .replaceAll('<', '&lt;')
-  .replaceAll('>', '&gt;')
-  .replaceAll('"', '&quot;')
-  .replaceAll('\'', '&#39;')
 
 const chartBooleanAttribute = (
   element: HTMLElement,
