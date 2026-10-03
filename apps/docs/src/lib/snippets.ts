@@ -831,6 +831,26 @@ export const Example = () => (
 }
 
 const elementsOverrides: Record<string, string> = {
+  Toast: `<lumen-button id="show-preview-toast">Show success toast</lumen-button>
+<lumen-toast variant="success">
+  <strong>Static feedback</strong>
+  <p>This message remains readable without JavaScript.</p>
+</lumen-toast>
+
+<script type="module">
+  import { defineLumenElements, LumenToast } from '@santi020k/lumen-elements'
+
+  defineLumenElements()
+
+  document.getElementById('show-preview-toast')?.addEventListener('click', () => {
+    LumenToast.create({
+      title: 'Preview saved',
+      description: 'Example feedback; no data is persisted.',
+      variant: 'success'
+    })
+  })
+</script>
+`,
   ImageComparison: `${elementsHeader}
 
 <lumen-image-comparison
