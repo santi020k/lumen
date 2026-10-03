@@ -4,7 +4,7 @@
   "baselines": {
     "reactNative": {
       "path": "registry/native-api-baseline.json",
-      "sha256": "0efd4d7d8e86c54e4e626407d46aca520e7985a058376de22e79f023bb5b2f99"
+      "sha256": "88877e9f549aad65e09d1bf59453ff13876ab049ab15c56d347702f782545b44"
     },
     "swiftUI": {
       "path": "registry/swift-api-baseline.json",

@@ -9,10 +9,11 @@ import { afterEach, describe, expect, test, vi } from 'vitest'
 import { LumenButtonGroup, LumenChip, LumenFieldGroup, LumenTextarea, LumenToast } from './additional-components.js'
 import { LumenDateField, LumenDateRangeField } from './datetime-components.js'
 import { LumenSearchField, LumenToggle } from './form-components.js'
+import { LumenIcon as GraphicIcon, LumenIconButton as GraphicIconButton, type LumenIconGraphicProps } from './graphics.js'
 import { LumenAlertDialog, LumenMenu, LumenSheet } from './overlay-components.js'
 import { LumenPhoneInput } from './phone-components.js'
 import { resolveLumenPhoneInputValue } from './phone-recipes.js'
-import { LumenButton, LumenText, LumenTextField } from './primitives.js'
+import { LumenButton, LumenIcon, LumenIconButton, LumenText, LumenTextField } from './primitives.js'
 import { LumenProvider } from './provider.js'
 import { LumenCheckbox, LumenTabs } from './selection-components.js'
 import { LumenBanner, LumenStatusBar } from './structured-components.js'
@@ -1337,5 +1338,58 @@ describe('LumenSheet consumer layouts', () => {
     expect(readProp(modal, 'animationType')).toBe('fade')
     expect(readProp(keyboard, 'behavior')).toBe('height')
     expect(readProp(keyboard, 'style')).toMatchObject({ alignItems: 'center', justifyContent: 'center' })
+  })
+})
+
+describe('Static graphic icon accessibility', () => {
+  const Graphic = ({ size, strokeWidth }: LumenIconGraphicProps): ReactElement => (
+    <LumenText>{`Graphic ${String(size)} ${String(strokeWidth)}`}</LumenText>
+  )
+
+  test('names informative graphics and hides decorative graphics', async () => {
+    const root = await renderNative(
+      <>
+        <GraphicIcon icon={Graphic} label="Search records" size="lg" strokeWidth={3} />
+        <GraphicIcon icon={Graphic} decorative label="Decorative search" />
+      </>
+    )
+    const informative = root.container.queryAll(instance => readProp(instance, 'accessibilityRole') === 'image' && readProp(instance, 'accessible') === true)
+    expect(informative).toHaveLength(1)
+    const named = informative[0]
+    if (!named) throw new Error('Missing informative graphic')
+    expect(readProp(named, 'accessibilityLabel')).toBe('Search records')
+    expect(readProp(named, 'importantForAccessibility')).toBe('yes')
+    expect(root.container.queryAll(instance => readProp(instance, 'children') === 'Graphic 24 3').length).toBeGreaterThan(0)
+    const hidden = root.container.queryAll(instance => readProp(instance, 'importantForAccessibility') === 'no' && readProp(instance, 'accessible') === false)
+    expect(hidden).toHaveLength(1)
+    const decorative = hidden[0]
+    if (!decorative) throw new Error('Missing decorative graphic')
+    expect(readProp(decorative, 'accessibilityLabel')).toBeUndefined()
+    expect(readProp(decorative, 'accessibilityElementsHidden')).toBe(true)
+  })
+
+  test('preserves named and custom icons through the root entrypoint', async () => {
+    const root = await renderNative(
+      <>
+        <LumenIcon name="search" label="Named search" />
+        <LumenIcon icon={Graphic} label="Custom search" />
+        <LumenIconButton name="search" label="Named search action" disabled />
+        <LumenIconButton icon={Graphic} label="Custom search action" disabled />
+      </>
+    )
+    const icons = root.container.queryAll(instance => readProp(instance, 'accessibilityRole') === 'image')
+    expect(icons.map(icon => readProp(icon, 'accessibilityLabel'))).toEqual(['Named search', 'Custom search'])
+    const buttons = root.container.queryAll(instance => readProp(instance, 'accessibilityRole') === 'button')
+    expect(buttons.map(button => readProp(button, 'accessibilityLabel'))).toEqual(['Named search action', 'Custom search action'])
+    expect(buttons.map(button => readProp(button, 'accessibilityState'))).toEqual([{ disabled: true }, { disabled: true }])
+  })
+
+  test('keeps graphic buttons named and announces disabled state', async () => {
+    const root = await renderNative(<GraphicIconButton icon={Graphic} label="Search records" disabled />)
+    const button = root.container.queryAll(instance => readProp(instance, 'accessibilityRole') === 'button')[0]
+    if (!button) throw new Error('Missing graphic button')
+    expect(readProp(button, 'accessibilityLabel')).toBe('Search records')
+    expect(readProp(button, 'accessibilityState')).toEqual({ disabled: true })
+    expect(readProp(button, 'disabled')).toBe(true)
   })
 })

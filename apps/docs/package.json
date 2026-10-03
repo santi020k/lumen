@@ -49,6 +49,7 @@
     "@santi020k/og": "catalog:",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
+    "jsdom": "catalog:",
     "sharp": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:"

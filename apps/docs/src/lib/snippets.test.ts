@@ -227,6 +227,13 @@ test('uses an uncontrolled value for React textarea content', () => {
   expect(code).toContain('<Textarea readOnly defaultValue={"Published summary."} />')
 })
 
+test('preserves read-only phone models beside uncontrolled phone inputs', () => {
+  const code = buildSnippets('PhoneInput', '<PhoneInput countryValue="CO" value="6015550123" /><PhoneNumber value={contact} link />')[1]?.code
+
+  expect(code).toContain('<PhoneInput defaultCountryValue="CO" defaultValue="6015550123" />')
+  expect(code).toContain('<PhoneNumber value={contact} link />')
+})
+
 test('terminates for repeated unfinished textarea markup', () => {
   const source = '<Textarea>'.repeat(20_000)
 

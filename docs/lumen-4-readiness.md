@@ -4,6 +4,31 @@ This working record tracks the local `release/v4.0.0` candidate. It is not publi
 production qualification evidence. Consumer audits inspect application source; application
 data, deployment, and migration remain owned by those projects.
 
+## October 3 branch consolidation
+
+The release checkout's pending component, phone, flag, and documentation work is preserved in
+`d8119066`. The combined candidate through `b2463284` contains the completed content-flow,
+documentation-example, Compose-control, component-behavior, and native-quality histories,
+including the later Elements Toast example and static native graphics entrypoint commits.
+Git ancestry checks confirmed containment of every original development branch.
+
+Integration fixes preserve the normalized `PhoneNumber.value` when adapting adjacent React
+`PhoneInput` examples, declare the existing jsdom catalog dependency for documentation tests,
+and reconcile generated MCP data, native API inventories, and stability-baseline hashes.
+
+The fully merged local branches `feature/content-flow`, `docs/component-examples`,
+`fix/v4-component-behavior`, and `feature/compose-v4-fields` were deleted after checking their
+checkouts were clean and their tips were contained in the release. Their detached checkouts and
+ignored files remain available. Stashes and remote branches are preserved. Branches owned by
+active chats remain in place; new work created during consolidation is outside this snapshot.
+
+Local Swift testing passed 52 tests. Compose `test lint apiCheck` passed with the installed JDK 21
+and Android SDK. These checks do not establish physical-device, store, or publication readiness.
+The combined build, 23-task type check, 1,109 tests, zero-warning lint, and spelling checks passed.
+The existing production-dependency audit still reports three high-severity advisories without
+patched releases (`node-forge`, `http-cache-semantics`, and `braces`), so the exhaustive release
+gate remains blocked. Consolidation and branch cleanup are local; nothing was pushed or published.
+
 ## Consolidation
 
 The release starts from `origin/main` at `3d8af731`. The initial checkout had one worktree,
