@@ -113,7 +113,7 @@ export const chartInspectionHtml = (
         labels.notAvailable :
         formatValue(value)
 
-      return `<span data-ui-chart-series-value="${escapeChartHtml(series.id)}">${escapeChartHtml(series.label)}: ${escapeChartHtml(label)}</span>`
+      return `<span class="${getLumenChartToneClassName(series.tone, seriesIndex)}" data-ui-chart-series-value="${escapeChartHtml(series.id)}"><i aria-hidden="true"></i>${escapeChartHtml(series.label)} <b>${escapeChartHtml(label)}</b></span>`
     }).join('')
 
     return `<div hidden data-ui-chart-point="${escapeChartHtml(JSON.stringify(category))}" data-ui-chart-position="${model.positions[index] ?? model.paddingLeft}"><strong>${escapeChartHtml(getLumenChartCategoryLabel(model.series, category, formatCategory, 'detail'))}</strong>${values}</div>`

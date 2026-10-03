@@ -52,7 +52,7 @@ export const createLumenLineChartModel = (
 ) => {
   const { annotations = [], formatCategory, formatValue = String, xScale = 'categorical' } = options
   const width = chartSize(options.width, 640)
-  const height = chartSize(options.height, 320)
+  const height = chartSize(options.height, 240)
   const padding = 44
   const categories = getLumenChartCategories(input).filter(value => xScale === 'categorical' || getLumenChartNumericX(value, xScale) !== null)
 
@@ -66,7 +66,7 @@ export const createLumenLineChartModel = (
 
   const domain = resolveDomain(automaticDomain, options.domain)
   const ticks = getLumenChartTicks(domain)
-  const paddingLeft = getLumenChartAxisPadding(ticks.map(formatValue))
+  const paddingLeft = getLumenChartAxisPadding(ticks.map(formatValue)) * 2
 
   const numericCategories = categories.flatMap(value => {
     if (xScale === 'categorical') return []
@@ -183,7 +183,7 @@ const intervalFrame = (values: readonly number[], options: LumenIntervalChartOpt
   const height = chartSize(options.height, 320)
   const domain = getLumenChartDomain(values)
   const ticks = getLumenChartTicks(domain)
-  const left = getLumenChartAxisPadding(ticks.map(options.formatValue ?? String))
+  const left = getLumenChartAxisPadding(ticks.map(options.formatValue ?? String)) * 2
   const top = 32
   const right = width - 24
   const bottom = height - 48

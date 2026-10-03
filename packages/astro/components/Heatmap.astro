@@ -38,7 +38,7 @@ hidden={geometry.cells.length === 0}
     <svg aria-hidden="true" viewBox={`0 0 ${geometry.width} ${geometry.height}`}>
       <g class="ui-chart__axis-labels">
         {geometry.xTicks.map(tick => <text text-anchor={tick.textAnchor} x={tick.position} y="298">{tick.label}</text>)}
-        {geometry.yTicks.map(tick => <text text-anchor="end" dominant-baseline="middle" x="108" y={tick.position}>{tick.label}</text>)}
+        {geometry.yTicks.map(tick => <text class="ui-heatmap__row-label" text-anchor="end" dominant-baseline="middle" x="108" y={tick.position}>{tick.label}</text>)}
       </g>
       <g class="ui-heatmap__cells">{geometry.cells.map(cell => {
         const missing = cell.value === null || !Number.isFinite(cell.value)
@@ -59,9 +59,7 @@ hidden={geometry.cells.length === 0}
     <span>{formatValue(geometry.domain.min)}</span><span
 style={{ background: geometry.legendBackground }}
 class="ui-heatmap__scale"
-aria-hidden="true"
-                                                   /><span>{formatValue(geometry.domain.max)}</span>
-    {colorScale === 'diverging' && <span>{formatValue(geometry.midpoint)}</span>}
+                                                   >{colorScale === 'diverging' && <span style={{ left: `${geometry.midpointPercent}%` }}>{formatValue(geometry.midpoint)}</span>}</span><span>{formatValue(geometry.domain.max)}</span>
     <span>× {resolvedLabels.notAvailable}</span>
   </div>
 )}

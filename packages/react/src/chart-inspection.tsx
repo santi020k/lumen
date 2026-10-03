@@ -1,4 +1,4 @@
-import { type createLumenLineChartModel, getLumenChartCategoryLabel, type LumenChartLabels } from '@santi020k/lumen-core'
+import { type createLumenLineChartModel, getLumenChartCategoryLabel, getLumenChartToneClassName, type LumenChartLabels } from '@santi020k/lumen-core'
 
 interface ChartInspectionProps {
   formatCategory?: (value: number | string) => string
@@ -20,13 +20,19 @@ export const ChartInspection = ({ formatCategory, formatValue, labels, model }: 
               const value = lookup[seriesIndex]?.get(category)?.y
 
               return (
-                <span data-ui-chart-series-value={series.id} key={series.id}>
+                <span
+                  className={getLumenChartToneClassName(series.tone, seriesIndex)}
+                  data-ui-chart-series-value={series.id}
+                  key={series.id}
+                >
+                  <i aria-hidden="true" />
                   {series.label}
-                  :
                   {' '}
-                  {value === null || value === undefined || !Number.isFinite(value) ?
-                    labels.notAvailable :
-                    formatValue(value)}
+                  <b>
+                    {value === null || value === undefined || !Number.isFinite(value) ?
+                      labels.notAvailable :
+                      formatValue(value)}
+                  </b>
                 </span>
               )
             })}

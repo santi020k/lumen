@@ -44,9 +44,9 @@ if invalid duplicate data reaches a renderer, the first observation wins consist
 plot and table. Use a stable ISO date or numeric timestamp for identity, not a localized date
 label. Supply a short `xLabel` for the axis and `formatCategory` for full tooltip/table text.
 Web line and bar axes measure label space, retain readable endpoint alignment, and omit
-overlapping ticks. Exact values remain available in the data table. On narrow layouts, the named plot region can
-scroll horizontally to preserve readable labels; focus it and use the arrow keys, or swipe on
-touch screens. This scroll stays inside the chart rather than widening the page.
+overlapping ticks. Exact values remain available in the data table. Line, waterfall, histogram, and
+heatmap plots fit narrow cards with larger SVG labels and fewer category ticks. Other plots retain
+horizontal scrolling where their labels need more room, without widening the page.
 
 Compose line charts position homogeneous `LumenChartX.Time` and `LumenChartX.Number` values by
 elapsed/numeric distance and sort their shared coordinates. Category or mixed-type series use
@@ -67,7 +67,8 @@ as gaps. Axis ticks label observed coordinates; applications supply locale and t
 
 Opt into `interactive` to inspect all series at an observation with the pointer, a tap, Left/Right,
 Home, or End. A tap or keyboard selection pins the inspection panel; Escape dismisses it. Pointer
-inspection does not repeatedly announce values to screen readers. Legend buttons hide or show
+inspection does not repeatedly announce values to screen readers. The floating panel follows the
+observation, stays inside the card, and does not move surrounding content. Legend buttons hide or show
 series while retaining the domain and full data table. Astro requires `UIPrimitives` for enhancement;
 the static chart and table remain usable without it.
 
@@ -101,7 +102,11 @@ and `valueFormatter` properties. Localize messages with `labels` or the document
 attributes. The new web chart types do not add native adapter components.
 
 The [web comparison gallery](https://lumen.santi020k.com/docs/web/data-visualization) renders the same
-synthetic datasets through all three adapters and demonstrates cursor synchronization.
+synthetic datasets through framework tabs and demonstrates cursor synchronization. Its overview
+combines compact metrics, a wide trend chart, distributions, balance changes, channel shares, and
+a weekly matrix. The styling ships in Lumen's shared stylesheet: existing package imports remain
+unchanged. Line charts use a wider default aspect ratio, fading area fills, quiet grid lines, and
+compact legends; pie charts use clearer slice separation and a smaller default footprint.
 
 ## Accessibility
 

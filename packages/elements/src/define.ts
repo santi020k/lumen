@@ -6378,7 +6378,7 @@ class LumenHeatmapBehaviorElement extends LumenStructuredChartBehaviorElement {
     const available = geometry.cells.filter(cell => cell.value !== null && Number.isFinite(cell.value))
 
     const axis = geometry.xTicks.map(tick => `<text text-anchor="${tick.textAnchor}" x="${tick.position}" y="298">${escapeChartHtml(tick.label)}</text>`).join('') +
-      geometry.yTicks.map(tick => `<text text-anchor="end" dominant-baseline="middle" x="108" y="${tick.position}">${escapeChartHtml(tick.label)}</text>`).join('')
+      geometry.yTicks.map(tick => `<text class="ui-heatmap__row-label" text-anchor="end" dominant-baseline="middle" x="108" y="${tick.position}">${escapeChartHtml(tick.label)}</text>`).join('')
 
     const cells = geometry.cells.map(cell => {
       const missing = cell.value === null || !Number.isFinite(cell.value)
@@ -6390,7 +6390,7 @@ class LumenHeatmapBehaviorElement extends LumenStructuredChartBehaviorElement {
     const summary = this.getAttribute('summary') ?? labels.formatHeatmapSummary(available.length)
     const empty = available.length === 0 ? `<p class="ui-chart__empty" role="status">${escapeChartHtml(labels.empty)}</p>` : ''
     const plot = geometry.cells.length === 0 ? '' : `<div class="ui-chart__plot" role="region" tabindex="0" aria-label="${escapeChartHtml(labels.chartData)}"><svg aria-hidden="true" viewBox="0 0 640 320"><g class="ui-chart__axis-labels">${axis}</g><g class="ui-heatmap__cells">${cells}</g></svg></div>`
-    const legend = geometry.cells.length > 0 && chartBooleanAttribute(this, 'show-legend', true) ? `<div class="ui-heatmap__legend" aria-label="${escapeChartHtml(labels.chartLegend)}"><span>${escapeChartHtml(this.valueFormatter(geometry.domain.min))}</span><span style="background:${geometry.legendBackground}" class="ui-heatmap__scale" aria-hidden="true"></span><span>${escapeChartHtml(this.valueFormatter(geometry.domain.max))}</span>${colorScale === 'diverging' ? `<span>${escapeChartHtml(this.valueFormatter(geometry.midpoint))}</span>` : ''}<span>× ${escapeChartHtml(labels.notAvailable)}</span></div>` : ''
+    const legend = geometry.cells.length > 0 && chartBooleanAttribute(this, 'show-legend', true) ? `<div class="ui-heatmap__legend" aria-label="${escapeChartHtml(labels.chartLegend)}"><span>${escapeChartHtml(this.valueFormatter(geometry.domain.min))}</span><span style="background:${geometry.legendBackground}" class="ui-heatmap__scale">${colorScale === 'diverging' ? `<span style="left:${geometry.midpointPercent}%">${escapeChartHtml(this.valueFormatter(geometry.midpoint))}</span>` : ''}</span><span>${escapeChartHtml(this.valueFormatter(geometry.domain.max))}</span><span>× ${escapeChartHtml(labels.notAvailable)}</span></div>` : ''
     const table = chartBooleanAttribute(this, 'show-table', true) ? heatmapDataTableHtml(geometry.cells, labels, this.valueFormatter) : ''
 
     this.innerHTML = `${chartHeaderHtml(this)}<p class="ui-sr-only" data-ui-chart-summary>${escapeChartHtml(summary)}</p>${empty}${plot}${legend}${table}${chartCaptionHtml(this)}`

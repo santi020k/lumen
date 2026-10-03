@@ -50,6 +50,40 @@ const revealCoordinate = (plot: HTMLElement | null, svg: SVGSVGElement | null | 
   plot.scrollLeft = Math.max(0, Math.min(plot.scrollWidth - plot.clientWidth, x - plot.clientWidth / 2))
 }
 
+const positionInspection = (
+  panel: HTMLElement | null, svg: SVGSVGElement | null | undefined, position: number
+): void => {
+  if (!panel || !svg?.viewBox || svg.viewBox.baseVal.width <= 0) return
+
+  const frame = panel.offsetParent?.getBoundingClientRect()
+
+  if (!frame) return
+
+  const bounds = svg.getBoundingClientRect()
+  const x = bounds.left - frame.left + position / svg.viewBox.baseVal.width * bounds.width
+  const width = panel.getBoundingClientRect().width
+  const left = x + width + 24 > frame.width ? x - width - 16 : x + 16
+
+  panel.style.setProperty('--ui-chart-inspection-x', `${Math.max(12, Math.min(frame.width - width - 12, left))}px`)
+
+  panel.style.setProperty('--ui-chart-inspection-y', `${bounds.top - frame.top + 12}px`)
+}
+
+const observeChartLayout = (root: HTMLElement, plot: HTMLElement | null, reposition: () => void): (() => void) => {
+  const Resize = root.ownerDocument.defaultView?.ResizeObserver
+  const observer = Resize && plot ? new Resize(reposition) : undefined
+
+  if (plot) observer?.observe(plot)
+
+  plot?.addEventListener('scroll', reposition)
+
+  return () => {
+    plot?.removeEventListener('scroll', reposition)
+
+    observer?.disconnect()
+  }
+}
+
 /** Optional DOM enhancement shared by web adapters; no global listeners or application data transport. */
 export const createLumenChartInteractionController = (root: HTMLElement): LumenChartInteractionController => {
   const plot = root.querySelector<HTMLElement>('[data-ui-chart-interaction-plot]')
@@ -78,6 +112,8 @@ export const createLumenChartInteractionController = (root: HTMLElement): LumenC
     if (panel) panel.hidden = !point
 
     if (point && reveal) revealCoordinate(plot, svg, point.position)
+
+    if (point) positionInspection(panel, svg, point.position)
 
     if (crosshair) {
       crosshair.style.display = point ? '' : 'none'
@@ -253,6 +289,12 @@ export const createLumenChartInteractionController = (root: HTMLElement): LumenC
   plot?.addEventListener('pointerdown', down)
 
   root.addEventListener('pointerleave', leave)
+
+  const reposition = (): void => {
+    if (selected !== null) select(selected)
+  }
+
+  cleanups.push(observeChartLayout(root, plot, reposition))
 
   cleanups.push(() => {
     plot?.removeEventListener('keydown', keydown)

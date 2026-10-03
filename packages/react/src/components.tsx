@@ -1669,7 +1669,7 @@ export const Heatmap = ({
         <svg aria-hidden="true" viewBox={`0 0 ${geometry.width} ${geometry.height}`}>
           <g className="ui-chart__axis-labels">
             {geometry.xTicks.map(tick => <text key={tick.index} textAnchor={tick.textAnchor} x={tick.position} y="298">{tick.label}</text>)}
-            {geometry.yTicks.map(tick => <text key={getChartCategoryKey(tick.value)} textAnchor="end" dominantBaseline="middle" x="108" y={tick.position}>{tick.label}</text>)}
+            {geometry.yTicks.map(tick => <text className="ui-heatmap__row-label" key={getChartCategoryKey(tick.value)} textAnchor="end" dominantBaseline="middle" x="108" y={tick.position}>{tick.label}</text>)}
           </g>
           <g className="ui-heatmap__cells">
             {geometry.cells.map(cell => {
@@ -1700,10 +1700,10 @@ export const Heatmap = ({
           <span
             style={{ background: geometry.legendBackground }}
             className="ui-heatmap__scale"
-            aria-hidden="true"
-          />
+          >
+            {colorScale === 'diverging' && <span style={{ left: `${geometry.midpointPercent}%` }}>{formatValue(geometry.midpoint)}</span>}
+          </span>
           <span>{formatValue(geometry.domain.max)}</span>
-          {colorScale === 'diverging' && <span>{formatValue(geometry.midpoint)}</span>}
           <span>
             ×
             {resolvedLabels.notAvailable}
