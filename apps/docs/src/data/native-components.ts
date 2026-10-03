@@ -4856,10 +4856,104 @@ const composeV4Definitions: ComponentDefinition[] = [
   }
 ]
 
+const remainingComposeV4Definitions: ComponentDefinition[] = [
+  {
+    accessibility: 'Preserves password semantics and native autofill hints; labels visibility actions and hides on blur or disabled state.',
+    category: 'Forms',
+    examples: { android: `LumenPasswordField(
+    label = "Password", value = password,
+    onValueChange = { password = it },
+    showLabel = "Show password", hideLabel = "Hide password"
+)` },
+    exports: { android: 'LumenPasswordField' },
+    guidance: 'Keep authentication and credential lifecycle in the application. Visibility is transient and never saved. Use newPassword for registration; provider autofill needs device configuration.',
+    name: 'Password field',
+    properties: [
+      property('label / value / onValueChange', 'String / String / (String) -> Unit', 'Required', 'Names the native field and controls its value.'),
+      property('modifier', 'Modifier', 'Modifier', 'Applies layout and semantics.'),
+      property('description / errorMessage', 'String?', 'null', 'Provides translated help or validation.'),
+      property('showLabel / hideLabel', 'String', 'Show password / Hide password', 'Names the visibility action.'),
+      property('newPassword', 'Boolean', 'false', 'Uses Android new-password instead of existing-password autofill hints.'),
+      property('onSubmit', '(() -> Unit)?', 'null', 'Handles the IME Done action without automatic authentication.'),
+      property('enabled / readOnly', 'Boolean', 'true / false', 'Controls editing and visibility actions.')
+    ],
+    slug: 'password-field',
+    summary: 'Enter passwords with transient visibility and native credential autofill hints.'
+  },
+  {
+    accessibility: 'Uses one native input for paste, selection, deletion, and SMS code autofill; supports errors and optional masking.',
+    category: 'Forms',
+    examples: { android: `LumenInputOTP(
+    label = "Verification code", value = code,
+    onValueChange = { code = it }, length = 6,
+    description = "Enter or paste six digits"
+)` },
+    exports: { android: 'LumenInputOTP' },
+    guidance: 'The application verifies codes and owns submission. Normalize localized digit input into ASCII; reject invalid or excess input without truncating. Never send or persist credentials from the component.',
+    name: 'Input OTP',
+    properties: [
+      property('label / value / onValueChange', 'String / String / (String) -> Unit', 'Required', 'Names the field and controls an ASCII digit value.'),
+      property('modifier', 'Modifier', 'Modifier', 'Applies layout and semantics.'),
+      property('length', 'Int', '6', 'Sets a bounded code length from one through twelve.'),
+      property('description / errorMessage', 'String?', 'null', 'Provides translated help or validation.'),
+      property('masked', 'Boolean', 'false', 'Hides displayed digits and applies password semantics.'),
+      property('onComplete', '((String) -> Unit)?', 'null', 'Reports a newly completed edit without verifying or submitting.'),
+      property('enabled / readOnly', 'Boolean', 'true / false', 'Controls native editing.')
+    ],
+    slug: 'input-otp',
+    summary: 'Enter numeric verification codes with native paste and autofill integration.'
+  },
+  {
+    accessibility: 'Keeps the anchor independently named and delegates long-press, pointer, and popup dismissal to Material.',
+    category: 'Actions',
+    examples: { android: `LumenTooltip("Save this project") {
+    LumenIconButton(LumenIconName.Bookmark, "Save", onClick = ::saveProject, size = LumenControlSize.Lg)
+}` },
+    exports: { android: 'LumenTooltip' },
+    guidance: 'Use brief supplemental help. Essential instructions belong in visible content. Pass LumenTooltipState for explicit show/dismiss controls; disabling dismisses help without removing the anchor.',
+    name: 'Tooltip',
+    properties: [
+      property('text', 'String', 'Required', 'Provides non-empty translated contextual help.'),
+      property('modifier', 'Modifier', 'Modifier', 'Applies anchor-container layout.'),
+      property('state', 'LumenTooltipState', 'rememberLumenTooltipState()', 'Supports application-controlled visibility with Lumen state backed by Material.'),
+      property('enabled', 'Boolean', 'true', 'Enables help and dismisses it when disabled.'),
+      property('content', '@Composable () -> Unit', 'Required', 'Provides an independently labeled native anchor.')
+    ],
+    slug: 'tooltip',
+    summary: 'Show native contextual help around an independently accessible anchor.'
+  },
+  {
+    accessibility: 'Exposes a named native slider with localized percentage state for touch, keyboard, and screen-reader adjustment.',
+    category: 'Data display',
+    examples: { android: `LumenImageComparison(
+    label = "Compare edits", before = beforePainter, after = afterPainter,
+    value = position, onValueChange = { position = it },
+    beforeLabel = "Before", afterLabel = "After"
+)` },
+    exports: { android: 'LumenImageComparison' },
+    guidance: 'The value is the visible after fraction, clamped to zero through one; nonfinite input falls back to one half. The application owns painter loading, errors, cache, and image descriptions.',
+    name: 'Image comparison',
+    properties: [
+      property('label', 'String', 'Required', 'Names the comparison adjustment.'),
+      property('before / after', 'Painter', 'Required', 'Provides native images with application-owned loading.'),
+      property('value / onValueChange', 'Float / (Float) -> Unit', 'Required', 'Controls the visible after fraction from zero through one.'),
+      property('modifier', 'Modifier', 'Modifier', 'Applies layout.'),
+      property('beforeLabel / afterLabel', 'String', 'Before / After', 'Describes each image and the adjustment state.'),
+      property('aspectRatio', 'Float', '16f / 9f', 'Uses ratios from 0.1 through 10; other input falls back to 16:9.'),
+      property('fit', 'LumenImageFit', 'Cover', 'Chooses crop or contain behavior for both images.'),
+      property('locale', 'Locale', 'Locale.getDefault()', 'Formats the visible fraction as a localized percentage.'),
+      property('enabled', 'Boolean', 'true', 'Disables adjustment while retaining both images.')
+    ],
+    slug: 'image-comparison',
+    summary: 'Compare two images with a controlled reveal and native adjustable slider.'
+  }
+]
+
 export const nativeComponentDocs = [
   ...sharedDefinitions,
   ...additionalDefinitions,
-  ...composeV4Definitions
+  ...composeV4Definitions,
+  ...remainingComposeV4Definitions
 ].map(createComponent)
 
 export const nativeComponentCategories: NativeComponentCategory[] = [

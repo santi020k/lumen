@@ -137,7 +137,7 @@ describe('platform documentation', () => {
     }
 
     expect(getPlatformGuide('react-native').components).toHaveLength(61)
-    expect(getPlatformGuide('android').components).toHaveLength(71)
+    expect(getPlatformGuide('android').components).toHaveLength(75)
     expect(getPlatformGuide('apple').components).toHaveLength(72)
   })
 

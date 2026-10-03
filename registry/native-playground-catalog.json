@@ -187,6 +187,26 @@
         "id": "pull-to-refresh",
         "label": "Pull to refresh",
         "category": "feedback"
+      },
+      {
+        "id": "password-field",
+        "label": "Password field",
+        "category": "forms"
+      },
+      {
+        "id": "input-otp",
+        "label": "Input OTP",
+        "category": "forms"
+      },
+      {
+        "id": "tooltip",
+        "label": "Tooltip",
+        "category": "actions"
+      },
+      {
+        "id": "image-comparison",
+        "label": "Image comparison",
+        "category": "data"
       }
     ]
   }

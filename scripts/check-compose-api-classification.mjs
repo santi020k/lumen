@@ -83,6 +83,7 @@ const fileFacades = new Set([
   'AdditionalComponentsKt',
   'AdvancedFormComponentsKt',
   'ChartComponentsKt',
+  'ComparisonComponentsKt',
   'ContentComponentsKt',
   'FormComponentsKt',
   'LumenThemeKt',
@@ -92,9 +93,11 @@ const fileFacades = new Set([
   'PlatformComponentsKt',
   'PrimitivesKt',
   'RefreshComponentsKt',
+  'SecureFormComponentsKt',
   'SelectionComponentsKt',
   'SharedComponentsKt',
-  'StructuredComponentsKt'
+  'StructuredComponentsKt',
+  'TooltipComponentsKt'
 ])
 
 const publicIdentifiers = []

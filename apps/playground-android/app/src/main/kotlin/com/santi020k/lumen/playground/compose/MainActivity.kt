@@ -360,11 +360,14 @@ private fun PlaygroundContent(
                             FoundationsExample()
                             VisualContentExample()
                         }
-                        "Actions" -> Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                        "Actions" -> if (initialComponent == "Tooltip") { TooltipExample() } else Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                             ActionsExample()
                             SystemActionsExample()
+                            TooltipExample()
                         }
-                        "Forms" -> if (initialComponent in advancedFormNames) {
+                        "Forms" -> if (initialComponent in secureFormNames) {
+                            SecureFormsExample(initialComponent)
+                        } else if (initialComponent in advancedFormNames) {
                             AdvancedFormsExample(initialComponent)
                         } else Column(verticalArrangement = Arrangement.spacedBy(LumenSpacing.Md)) {
                             FormsExample(
@@ -380,6 +383,7 @@ private fun PlaygroundContent(
                             onDensityChange = { density = it }
                             )
                             AdvancedFormsExample()
+                            SecureFormsExample()
                         }
                         "Feedback" -> if (initialComponent == "Pull to refresh") {
                             PullToRefreshExample()
@@ -391,7 +395,8 @@ private fun PlaygroundContent(
                             FeedbackStatesExample()
                             PullToRefreshExample()
                         }
-                        "Data" -> Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                        "Data" -> if (initialComponent == "Image comparison") { ImageComparisonExample() } else Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                            ImageComparisonExample()
                             DataExample(saved = saved, onToggleSaved = { saved = !saved })
                             DisclosureExample(
                                 expanded = disclosureExpanded,

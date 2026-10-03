@@ -888,6 +888,38 @@
       "contract": "Material refresh gesture with host-owned progress and request lifecycle around existing scrollable content",
       "accessibility": "Adds a named refresh accessibility action, announces progress, and removes refresh actions while disabled or refreshing",
       "symbol": "LumenPullToRefresh"
+    },
+    {
+      "id": "password-field",
+      "adapter": "compose",
+      "platforms": ["Android"],
+      "contract": "Masked password entry with transient visibility and native autofill hints",
+      "accessibility": "Maintains password semantics, labels visibility actions, and hides on blur or disabled state",
+      "symbol": "LumenPasswordField"
+    },
+    {
+      "id": "input-otp",
+      "adapter": "compose",
+      "platforms": ["Android"],
+      "contract": "Single native numeric one-time code entry with localized digits and paste normalization",
+      "accessibility": "Preserves native selection, paste, autofill, errors, and optional masked semantics",
+      "symbol": "LumenInputOTP"
+    },
+    {
+      "id": "tooltip",
+      "adapter": "compose",
+      "platforms": ["Android"],
+      "contract": "Material contextual help with long-press, pointer, and explicit visibility",
+      "accessibility": "Preserves a labeled application-owned anchor and native tooltip dismissal",
+      "symbol": "LumenTooltip"
+    },
+    {
+      "id": "image-comparison",
+      "adapter": "compose",
+      "platforms": ["Android"],
+      "contract": "Painter-based before and after comparison with a controlled visible fraction",
+      "accessibility": "Exposes a named native slider and localized percentage for keyboard and screen-reader adjustment",
+      "symbol": "LumenImageComparison"
     }
   ]
 }

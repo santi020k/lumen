@@ -33,7 +33,8 @@ internal val playgroundSections = listOf(
             "Chip",
             "Menu",
             "Share button",
-            "Floating action button"
+            "Floating action button",
+            "Tooltip"
         )
     ),
     PlaygroundSection(
@@ -57,7 +58,9 @@ internal val playgroundSections = listOf(
             "Slider",
             "Time field",
             "Autocomplete",
-            "Number field"
+            "Number field",
+            "Password field",
+            "Input OTP"
         )
     ),
     PlaygroundSection(
@@ -96,7 +99,8 @@ internal val playgroundSections = listOf(
             "Stat",
             "Section header",
             "Status bar",
-            "Gauge"
+            "Gauge",
+            "Image comparison"
         )
     ),
     PlaygroundSection(

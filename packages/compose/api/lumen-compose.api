@@ -26,6 +26,10 @@ public final class com/santi020k/lumen/ChartComponentsKt {
 	public static final fun LumenSparkline (Ljava/util/List;Ljava/lang/String;Landroidx/compose/ui/Modifier;Lcom/santi020k/lumen/LumenChartTone;ZLandroidx/compose/runtime/Composer;II)V
 }
 
+public final class com/santi020k/lumen/ComparisonComponentsKt {
+	public static final fun LumenImageComparison (Ljava/lang/String;Landroidx/compose/ui/graphics/painter/Painter;Landroidx/compose/ui/graphics/painter/Painter;FLkotlin/jvm/functions/Function1;Landroidx/compose/ui/Modifier;Ljava/lang/String;Ljava/lang/String;FLcom/santi020k/lumen/LumenImageFit;Ljava/util/Locale;ZLandroidx/compose/runtime/Composer;III)V
+}
+
 public final class com/santi020k/lumen/ContentComponentsKt {
 	public static final fun LumenBackdrop (Landroidx/compose/ui/Modifier;Lcom/santi020k/lumen/LumenBackdropIntensity;Lcom/santi020k/lumen/LumenBackdropTone;Lcom/santi020k/lumen/LumenBackdropVariant;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)V
 	public static final fun LumenDisclosure (Ljava/lang/String;ZLkotlin/jvm/functions/Function1;Landroidx/compose/ui/Modifier;Ljava/lang/String;ZLkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
@@ -3690,6 +3694,13 @@ public final class com/santi020k/lumen/LumenTimeSelection {
 	public fun toString ()Ljava/lang/String;
 }
 
+public final class com/santi020k/lumen/LumenTooltipState {
+	public static final field $stable I
+	public final fun dismiss ()V
+	public final fun isVisible ()Z
+	public final fun show (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
 public final class com/santi020k/lumen/LumenTypography {
 	public static final field $stable I
 	public static final field BoldWeight I
@@ -3750,6 +3761,11 @@ public final class com/santi020k/lumen/RefreshComponentsKt {
 	public static final fun LumenPullToRefresh (ZLkotlin/jvm/functions/Function0;Landroidx/compose/ui/Modifier;ZLjava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)V
 }
 
+public final class com/santi020k/lumen/SecureFormComponentsKt {
+	public static final fun LumenInputOTP (Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;Landroidx/compose/ui/Modifier;ILjava/lang/String;Ljava/lang/String;ZLkotlin/jvm/functions/Function1;ZZLandroidx/compose/runtime/Composer;III)V
+	public static final fun LumenPasswordField (Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;Landroidx/compose/ui/Modifier;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ZLkotlin/jvm/functions/Function0;ZZLandroidx/compose/runtime/Composer;III)V
+}
+
 public final class com/santi020k/lumen/SelectionComponentsKt {
 	public static final fun LumenCheckbox (Ljava/lang/String;ZLkotlin/jvm/functions/Function1;Landroidx/compose/ui/Modifier;Ljava/lang/String;ZLandroidx/compose/runtime/Composer;II)V
 	public static final fun LumenRadioGroup (Ljava/lang/String;Ljava/util/List;Ljava/lang/String;Lkotlin/jvm/functions/Function1;Landroidx/compose/ui/Modifier;Landroidx/compose/runtime/Composer;II)V
@@ -3775,5 +3791,10 @@ public final class com/santi020k/lumen/StructuredComponentsKt {
 	public static final fun LumenStatusBar-BR_IRG0 (Ljava/lang/String;Landroidx/compose/ui/Modifier;Lcom/santi020k/lumen/LumenMetricTone;Ljava/lang/String;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
 	public static final fun lumenBannerPalette (Lcom/santi020k/lumen/LumenColorPalette;Lcom/santi020k/lumen/LumenBannerVariant;)Lcom/santi020k/lumen/LumenBannerPalette;
 	public static final fun lumenMetricColor (Lcom/santi020k/lumen/LumenColorPalette;Lcom/santi020k/lumen/LumenMetricTone;)J
+}
+
+public final class com/santi020k/lumen/TooltipComponentsKt {
+	public static final fun LumenTooltip (Ljava/lang/String;Landroidx/compose/ui/Modifier;Lcom/santi020k/lumen/LumenTooltipState;ZLkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
+	public static final fun rememberLumenTooltipState (ZLandroidx/compose/runtime/Composer;II)Lcom/santi020k/lumen/LumenTooltipState;
 }
 

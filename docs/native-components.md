@@ -1011,3 +1011,13 @@ other adapters. Use the existing `LumenTheme` provider and application-owned sta
 The Android playground includes editable, bounded, read-only, result-loading, empty, retry, and
 English/Spanish examples. Run the package's unit, lint, ABI, and instrumentation gates. Emulator
 checks and screenshots remain separate from physical TalkBack and consumer qualification.
+
+### Remaining Compose v4 controls
+
+`LumenPasswordField`, `LumenInputOTP`, `LumenTooltip`, and `LumenImageComparison` complete the
+additional Compose controls planned for this candidate. They are Android-specific catalog entries,
+not claims of availability in other native adapters. See the [Compose package usage](../packages/compose/README.md)
+for controlled state, native autofill hints, OTP normalization, tooltip state, and comparison bounds.
+The playground uses synthetic credentials and locally drawn comparison images, with English/Spanish
+labels. Native autofill hints are integration contracts; emulator semantics tests do not prove
+provider suggestions, physical TalkBack behavior, or consumer qualification.
