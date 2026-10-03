@@ -105,6 +105,8 @@ created and no package or application has been published.
 - `pnpm run lint:spell`: 1,286 files checked without spelling issues.
 - `LUMEN_A11Y_PORT=4337 pnpm run test:a11y`: all 460 browser checks passed, including the
   community gallery at 320, 768 and 1,440 pixels.
+- `pnpm run test:framework-conformance`: all 84 React and Elements checks passed across
+  desktop/mobile Chromium and WebKit, including English and Spanish consumer fixtures.
 - `swift test`: 49 tests passed. Swift API snapshots and the six intentional source-compatibility
   changes passed checks against `v3.0.1`.
 - `cd packages/compose && ./gradlew test lint apiCheck`: 99 tasks completed successfully.
@@ -120,7 +122,9 @@ created and no package or application has been published.
 
 ### Remaining release blockers
 
-The canonical `pnpm run validate` is **not green**: its production dependency audit remains blocked.
+The canonical `pnpm run validate` on committed candidate `e16ba750` passed generation, build,
+contracts, types, tests, lint, spelling and registry checks, then stopped at the production
+dependency audit. The full gate is **not green**.
 Compatible updates to `fast-uri` 3.1.8, `ip-address` 10.7.3 and `brace-expansion` 5.0.12 removed ten
 advisories. A frozen install, Expo compatibility check and 72 MCP tests passed after those updates.
 Three high-severity advisories have no published patched release as of October 3, 2026:
