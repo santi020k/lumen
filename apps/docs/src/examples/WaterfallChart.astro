@@ -1,0 +1,13 @@
+---
+import { WaterfallChart } from '@santi020k/lumen-astro'
+
+const data = [
+  { id: 'opening', label: 'Opening', kind: 'total' as const, value: 120 },
+  { id: 'sales', label: 'Sales', value: 85 },
+  { id: 'refunds', label: 'Refunds', value: -20 },
+  { id: 'expenses', label: 'Expenses', value: -55 },
+  { id: 'closing', label: 'Closing', kind: 'total' as const, value: 130 }
+]
+---
+
+<WaterfallChart aria-label="Illustrative monthly balance changes" heading="From opening to closing balance" caption="Illustrative values. Totals are explicit checkpoints supplied by the application." valueLabel="Amount" {data} />

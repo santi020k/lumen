@@ -16,11 +16,11 @@
     },
     "compose": {
       "path": "packages/compose/api/lumen-compose.api",
-      "sha256": "16875428d13b095864ee10c1ea1f645102e2efb100ccf92e2400eed5b38be07f"
+      "sha256": "574cda2f38d7f1c93fba67f54fae08757e0ab0cc09477c68b46fcf248d4446c8"
     },
     "composeClassification": {
       "path": "registry/compose-api-classification.json",
-      "sha256": "ffdc64b57bf564e4f4930489e9e59e6405fd36d1bfa1900c950739055bb381aa"
+      "sha256": "047fe57c8b466247d9387cec7bd67e0ad6b6d5a2fc5afbbaf3e781c7896ef3a1"
     },
     "wear": {
       "path": "packages/compose/wear/api/wear.api",

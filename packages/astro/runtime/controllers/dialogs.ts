@@ -1,21 +1,13 @@
-const focusableSelector = [
-  'a[href]',
-  'button:not([disabled])',
-  'input:not([disabled])',
-  'select:not([disabled])',
-  'textarea:not([disabled])',
-  '[tabindex]:not([tabindex="-1"])'
-].join(',')
+const dialogTriggers = new WeakMap<HTMLDialogElement, HTMLElement>()
 
-const isElementVisible = (element: HTMLElement): boolean => (
-  typeof element.checkVisibility === 'function' ?
-    element.checkVisibility() :
-    element.offsetParent !== null
-)
+const isBackdropPoint = (dialog: HTMLDialogElement, event: MouseEvent): boolean => {
+  if (event.target !== dialog) return false
 
-const getFocusable = (root: ParentNode): HTMLElement[] => [
-  ...root.querySelectorAll<HTMLElement>(focusableSelector)
-].filter(element => !element.hasAttribute('hidden') && isElementVisible(element))
+  const rect = dialog.getBoundingClientRect()
+
+  return event.clientX < rect.left || event.clientX > rect.right ||
+    event.clientY < rect.top || event.clientY > rect.bottom
+}
 
 export const initDialogControllers = (scope: ParentNode): void => {
   const dialogSelector =
@@ -32,17 +24,27 @@ export const initDialogControllers = (scope: ParentNode): void => {
       'role', dialog.hasAttribute('data-ui-alert-dialog') ? 'alertdialog' : 'dialog'
     )
 
+    let pressStartedOutside = false
+
+    dialog.addEventListener('pointerdown', event => {
+      pressStartedOutside = isBackdropPoint(dialog, event)
+    })
+
     dialog.addEventListener('click', event => {
-      if (event.target === dialog && !dialog.hasAttribute('data-ui-alert-dialog')) {
+      const dismiss = pressStartedOutside && event.detail > 0 &&
+        !event.defaultPrevented && isBackdropPoint(dialog, event)
+
+      pressStartedOutside = false
+
+      if (dismiss && !dialog.hasAttribute('data-ui-alert-dialog')) {
         dialog.close()
       }
     })
 
     dialog.addEventListener('close', () => {
-      const triggerId = dialog.dataset.uiLastTrigger
-      const trigger = triggerId ? document.getElementById(triggerId) : null
+      const trigger = dialogTriggers.get(dialog)
 
-      if (trigger instanceof HTMLElement) {
+      if (trigger?.isConnected) {
         trigger.focus({ preventScroll: true })
       }
     })
@@ -75,15 +77,9 @@ export const initDialogControllers = (scope: ParentNode): void => {
 
       if (!(dialog instanceof HTMLDialogElement)) return
 
-      if (!trigger.id) {
-        trigger.id = `ui-trigger-${crypto.randomUUID()}`
-      }
-
-      dialog.dataset.uiLastTrigger = trigger.id
+      dialogTriggers.set(dialog, trigger)
 
       dialog.showModal()
-
-      getFocusable(dialog)[0]?.focus({ preventScroll: true })
     })
   }
 
@@ -99,7 +95,9 @@ export const initDialogControllers = (scope: ParentNode): void => {
 
     closeButton.dataset.uiBound = 'true'
 
-    closeButton.addEventListener('click', () => {
+    closeButton.addEventListener('click', event => {
+      if (event.defaultPrevented || closeButton.matches(':disabled, [aria-disabled="true"]')) return
+
       closeButton.closest<HTMLDialogElement>('dialog')?.close()
     })
   }

@@ -4,6 +4,35 @@ This working record tracks the local `release/v4.0.0` candidate. It is not publi
 production qualification evidence. Consumer audits inspect application source; application
 data, deployment, and migration remain owned by those projects.
 
+## October 3 pending-work integration
+
+The release checkout's pending form reset, rich-text initialization and data-view URL fixes are
+preserved in `bd11bc02`. The combined candidate through `99f26f18` contains the original branch
+tips for Compose additions (`1150318d`), native parity (`9bd736b3`), native quality (`3cb972ce`),
+mobile playground discovery (`edbe036d`), plugin readiness (`74dc0480`), input and interaction
+hardening (`dcbb1c03`), dashboard compounds (`059aae9c`) and charts (`84c85353`).
+
+Merge resolutions regenerate the MCP snapshot, combine native catalogs without duplicating the
+shared ImageComparison entry, preserve both interaction suites, align registry order with Core,
+and generate social assets for the newly integrated documentation routes. Compose uses the
+installed Material adaptive V2 window-info API to remove the deprecated call.
+
+Local combined validation passed the build, all 23 typecheck tasks, zero-warning lint, 1,313 tests, 128 browser
+conformance checks across desktop/mobile Chromium and WebKit, 58 Swift tests, and web/native API,
+playground catalog, stability-evidence structure, registry, MCP and plugin consistency checks.
+The exhaustive `pnpm run validate` stopped at the unchanged bundle budgets: CSS measures
+199.7 KiB raw / 32.4 KiB gzip against 199.2 / 32.2 KiB; React components measure 168.1 / 34.7 KiB
+against 167.0 / 34.2 KiB; Elements gzip measures 44.4 KiB against 43.9 KiB. These results do not
+establish publication or device qualification.
+
+Six fully contained, clean, idle local branches were deleted: community feedback, Compose
+additions, theme presets, mobile playgrounds, plugin readiness and Antigravity hardening.
+Their detached checkouts and ignored files remain preserved. Dashboard composition and
+improvements, chart follow-up, native parity and quality, and newly started playground work
+remain owned by running chats. Their unfinished changes were not committed or discarded by this
+consolidation. All eight original stashes and remote branches remain preserved. Nothing was
+pushed, published or deployed.
+
 ## Latest local integration
 
 The October 3 consolidation through `7dc2b358` contains all committed local branch tips:
@@ -377,8 +406,8 @@ and no remote branch was pushed.
 ### Native advanced-input parity
 
 The v4 candidate adds NumberField, TimeField, Autocomplete, PasswordField, InputOTP and
-ImageComparison to React Native and SwiftUI, alongside the existing Compose controls. The native
-registry now contains 69 shared contracts and 18 platform-specific contracts. Number fields retain
+ImageComparison to React Native and SwiftUI, alongside the existing Compose controls. The combined native
+registry now contains 69 shared contracts and 23 platform-specific contracts. Number fields retain
 localized drafts with exact bounded decimal stepping; time values use same-day hour/minute models.
 Filtering, requests, authentication, persistence and submission validation remain application-owned.
 The native patterns guide includes a form-error summary recipe with application-owned editor focus.
@@ -400,8 +429,10 @@ The isolated parity candidate is preserved in commit `7a170606` on
 `feature/native-v4-parity`. Its canonical `pnpm run validate` passes the monorepo build, types,
 1,201 tests, zero-warning lint, spelling, Knip and registry checks, then stops at the three existing
 high dependency advisories (`node-forge`, `http-cache-semantics` and `braces`; no patched versions).
-The release checkout has concurrent uncommitted work, so the parity commit is not yet contained in
-`release/v4.0.0`. Do not treat this record as integration, device qualification or release approval.
+The implementation and this initial verification record are contained in `release/v4.0.0` through
+integration commit `40bf424e`. The simulator follow-up in `67684a73` still requires integration.
+The validation result above describes the isolated candidate, not the subsequently combined release.
+Do not treat simulator evidence as device qualification or release approval.
 
 Native simulator follow-up: the Apple `AdvancedInputTests` pass four Release-mode UI tests on a
 dedicated iPhone 17 Pro simulator running iOS 26.5. They confirm number stepping, Spanish draft
@@ -414,3 +445,20 @@ The run uses `LumenApplePlaygroundPerformance` with
 `-only-testing:LumenApplePlaygroundUITests/AdvancedInputTests` and signing disabled. Xcode emits
 `Metadata extraction skipped, no AppIntents.framework dependency found` from its metadata tool;
 the app does not expose App Intents. No production dependency was added to hide that tool warning.
+
+The simulator follow-up was refreshed against integration `10d25bd9`: 364 Core/React Native tests,
+strict native and playground types, 58 LumenUI tests plus three WidgetKit tests, and all four native
+UI tests pass on the combined code. Native registry, CLI registry, API baseline and playground
+catalog checks pass. The combined registry contains 69 shared and 23 platform-specific contracts.
+
+Its canonical validation stops at existing combined-web bundle budgets: umbrella CSS is 199.7 KiB
+raw / 32.4 KiB gzip against 199.2 / 32.2 KiB; React components are 168.1 / 34.7 KiB against
+167.0 / 34.2 KiB; Elements definition gzip is 44.4 KiB against 43.9 KiB. The diff of this follow-up
+against the release contains only Apple tests, the synthetic demo, its capture script and
+verification documentation. No production web CSS or JavaScript was changed by the follow-up.
+Budget limits remain unchanged, and the three unpatched security advisories remain open.
+
+On that combined candidate, all 1,313 repository tests and 23 type-check tasks pass. All 23 lint
+tasks pass with zero warnings; spelling, Knip and registry checks pass as well. The MCP HTTP tests
+require loopback permission and passed when rerun outside the restricted filesystem/network sandbox.
+The canonical gate remains failed at the bundle checks above; these separate checks do not clear it.

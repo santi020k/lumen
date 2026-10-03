@@ -51,6 +51,12 @@ public marketplace:
 claude --plugin-dir ./plugins/lumen-ui
 ```
 
+`pnpm run package:plugin` also creates `dist/plugins/lumen-ui-1.1.0-claude.zip` for a clean
+installation fixture. Test a fresh install and an upgrade using a temporary local marketplace
+and `--scope local`, then verify all three cached skills and the exact MCP pin. Remove only that
+test installation and marketplace after verification. A successful cache install does not prove
+that the pinned npm server can start before its publication.
+
 Confirm that the plugin lists the `lumen-ui` skill, starts the `lumen` MCP server, and can call
 `lumen_diagnose`, `lumen_search`, and one web or native component retrieval tool. The server must
 remain read-only and must not request credentials or private repository data.

@@ -389,6 +389,19 @@ describe('Lumen chart helpers', () => {
     expect(temporal.points.map(point => point.y)).toEqual([3, 4])
   })
 
+  test('rejects blank linear coordinates while preserving numeric strings and zero', () => {
+    const geometry = createLumenLineGeometry([
+      { x: '', y: 1000 },
+      { x: ' \t\n', y: -1000 },
+      { x: ' 0 ', y: 2 },
+      { x: '1', y: 3 }
+    ], { includeZero: false, xScale: 'linear' })
+
+    expect(geometry.points.map(point => point.y)).toEqual([2, 3])
+    expect(geometry.domain).toEqual({ max: 3, min: 2 })
+    expect(geometry.xDomain).toEqual({ max: 1, min: 0 })
+  })
+
   test('validates identifiers, values, sizes, and ordered continuous axes', () => {
     const issues = validateLumenChartSeries([
       {

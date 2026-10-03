@@ -25,6 +25,7 @@
     "@react-native-community/datetimepicker": "catalog:",
     "@santi020k/lumen-react-native": "workspace:*",
     "expo": "catalog:",
+    "expo-build-properties": "catalog:",
     "expo-splash-screen": "catalog:",
     "expo-status-bar": "catalog:",
     "expo-system-ui": "catalog:",

@@ -10,10 +10,23 @@ export interface AstroActionErrorLike {
 
 export type LumenControlIdMap = Readonly<Record<string, string>>
 
-const isActionErrorLike = (error: unknown): error is AstroActionErrorLike => (
-  typeof error === 'object' &&
-  error !== null
+const isFieldMessages = (value: unknown): boolean => (
+  value === null || value === undefined || typeof value === 'string' ||
+  (Array.isArray(value) && value.every((message: unknown) => typeof message === 'string'))
 )
+
+const isActionFields = (value: unknown): value is NonNullable<AstroActionErrorLike['fields']> => (
+  typeof value === 'object' && value !== null && !Array.isArray(value) &&
+  Object.values(value).every(isFieldMessages)
+)
+
+const isActionErrorLike = (error: unknown): error is AstroActionErrorLike => {
+  if (typeof error !== 'object' || error === null) return false
+
+  if ('message' in error && error.message !== undefined && typeof error.message !== 'string') return false
+
+  return !('fields' in error) || error.fields === undefined || isActionFields(error.fields)
+}
 
 export const normalizeAstroActionErrors = (
   error: unknown,
@@ -35,7 +48,7 @@ export const normalizeAstroActionErrors = (
   return {
     fields: normalized.fields.map(fieldError => ({
       ...fieldError,
-      ...(controlIds[fieldError.name] ?
+      ...(Object.hasOwn(controlIds, fieldError.name) && controlIds[fieldError.name] ?
         {
           controlId: controlIds[fieldError.name]
         } :

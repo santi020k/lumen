@@ -1185,7 +1185,9 @@ export const useTabs = ({
           if (!keys.includes(event.key)) return
 
           const tabs = rootRef.current ?
-            [...rootRef.current.querySelectorAll<HTMLElement>('[role="tab"]')] :
+            [...rootRef.current.querySelectorAll<HTMLElement>('[role="tab"]')]
+              .filter(tab => tab.closest('[data-ui-tabs]') === rootRef.current &&
+                !tab.matches(':disabled, [aria-disabled="true"]')) :
             []
 
           if (!tabs.length) return

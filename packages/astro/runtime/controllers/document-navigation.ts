@@ -1,3 +1,12 @@
+const decodeFragment = (fragment: string): string => {
+  try {
+    return decodeURIComponent(fragment)
+  } catch {
+    // A literal percent sign can still identify a section; isolate malformed escapes.
+    return fragment
+  }
+}
+
 const initAnchors = (scope: ParentNode): void => {
   for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-anchor]')) {
     if (root.dataset.uiBound === 'true') continue
@@ -8,7 +17,8 @@ const initAnchors = (scope: ParentNode): void => {
     const targets: { link: HTMLAnchorElement, target: HTMLElement }[] = []
 
     for (const link of links) {
-      const id = decodeURIComponent(link.getAttribute('href')?.slice(1) ?? '')
+      const fragment = link.getAttribute('href')?.slice(1) ?? ''
+      const id = decodeFragment(fragment)
       const target = id ? document.getElementById(id) : null
 
       if (target) {
@@ -34,10 +44,8 @@ const initAnchors = (scope: ParentNode): void => {
 
     const update = (): void => {
       const scrollingElement = document.scrollingElement ?? document.documentElement
-
-      const atEnd = scrollingElement.scrollTop + scrollingElement.clientHeight >=
-        scrollingElement.scrollHeight - 1
-
+      const maximum = scrollingElement.scrollHeight - scrollingElement.clientHeight
+      const atEnd = maximum > 0 && scrollingElement.scrollTop >= maximum - 1
       const offset = Number(root.dataset.uiAnchorOffset) || 0
       let active = targets[0]?.link
 

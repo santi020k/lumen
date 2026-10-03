@@ -1,0 +1,20 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
+interface Props extends HTMLAttributes<'header'> {
+  class?: string | null
+  className?: string
+}
+
+const { class: classProp = '', className = '', ...rest } = Astro.props
+
+const { classList, passthrough } = resolveLumenAstroProps(
+  rest, ['ui-dialog-header'], classProp, className
+)
+---
+
+<header class:list={classList} data-slot="dialog-header" {...passthrough}>
+  <slot />
+</header>

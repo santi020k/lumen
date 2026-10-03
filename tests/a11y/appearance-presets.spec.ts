@@ -1,5 +1,53 @@
 import { expect, test } from '@playwright/test'
 
+for (const preset of ['default', 'studio', 'glass']) {
+  for (const scheme of ['light', 'dark']) {
+    test(`small card descriptions keep readable contrast in ${preset} ${scheme}`, async ({ page }) => {
+      await page.goto('/internal/content-flow')
+      await expect(page.locator('#elements-card')).toHaveClass(/ui-card/u)
+      const preview = page.locator('#adapter-cards')
+
+      await preview.evaluate((element, appearance) => {
+        element.setAttribute('data-lumen-preset', appearance.preset)
+        element.setAttribute('data-lumen-scheme', appearance.scheme)
+      }, { preset, scheme })
+
+      const descriptions = preview.locator('.ui-card:not(.ui-card--glass) .ui-card__description')
+
+      expect(await descriptions.count()).toBeGreaterThan(0)
+
+      const ratios = await descriptions.evaluateAll(elements => {
+        const luminance = (color: string): number => {
+          const channels = color.match(/[\d.]+/gu)?.slice(0, 3).map(value => {
+            const channel = Number(value) / 255
+
+            return channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4
+          })
+
+          if (channels?.length !== 3) throw new Error(`Unexpected computed color: ${color}`)
+
+          const [red = 0, green = 0, blue = 0] = channels
+
+          return 0.2126 * red + 0.7152 * green + 0.0722 * blue
+        }
+
+        return elements.map(element => {
+          const card = element.closest('.ui-card')
+
+          if (!card) throw new Error('Description is missing its Card owner.')
+
+          const foreground = luminance(getComputedStyle(element).color)
+          const background = luminance(getComputedStyle(card).backgroundColor)
+
+          return (Math.max(foreground, background) + 0.05) / (Math.min(foreground, background) + 0.05)
+        })
+      })
+
+      for (const ratio of ratios) expect(ratio).toBeGreaterThanOrEqual(4.5)
+    })
+  }
+}
+
 test('appearance presets keep preview, dimensions and exports in sync', async ({ page }) => {
   await page.goto('/docs/theme-playground')
   const builder = page.locator('[data-theme-playground]')

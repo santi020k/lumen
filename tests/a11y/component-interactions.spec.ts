@@ -12,6 +12,60 @@ const openPreview = async (page: Page, slug: string) => {
 type BehaviorTestBody = (fixtures: { page: Page }) => Promise<void>
 
 const registeredBehaviorComponents = new Set<LumenComponentName>()
+
+test('Dialog opens with native autofocus and dismisses only genuine backdrop presses', async ({ page }) => {
+  await openPreview(page, 'dialog')
+  const preview = page.locator('.component-doc-preview')
+  const dialog = preview.locator('dialog')
+  const trigger = preview.getByRole('button', { name: 'Edit profile' })
+  await expect(dialog).toHaveAttribute('data-ui-bound', 'true')
+  await dialog.evaluate(element => {
+    const input = document.createElement('input')
+    input.autofocus = true
+    input.setAttribute('aria-label', 'Autofocus field')
+    element.append(input)
+  })
+  await trigger.evaluate(element => {
+    element.removeAttribute('id')
+    Object.defineProperty(crypto, 'randomUUID', { configurable: true, value: undefined })
+  })
+  await trigger.click()
+  await expect(dialog.getByRole('textbox', { name: 'Autofocus field' })).toBeFocused()
+  const bounds = await dialog.boundingBox()
+  if (!bounds) throw new Error('Expected an open dialog')
+  await page.mouse.click(bounds.x + 4, bounds.y + 4)
+  await expect(dialog).toBeVisible()
+  await page.mouse.move(bounds.x + 4, bounds.y + 4)
+  await page.mouse.down()
+  await page.mouse.move(bounds.x - 8, bounds.y - 8)
+  await page.mouse.up()
+  await expect(dialog).toBeVisible()
+  await page.mouse.click(bounds.x - 8, bounds.y - 8)
+  await expect(dialog).toBeHidden()
+  await expect(trigger).toBeFocused()
+})
+
+test('Tabs switches panels while skipping disabled tabs on arrow and End keys', async ({ page }) => {
+  await openPreview(page, 'tabs')
+  const tabs = page.locator('.component-doc-preview [data-ui-tabs]').first()
+  const triggers = tabs.getByRole('tab')
+  const count = await triggers.count()
+  expect(count).toBeGreaterThanOrEqual(3)
+  await triggers.nth(1).evaluate(element => {
+    element.setAttribute('disabled', '')
+  })
+  await triggers.first().focus()
+  await triggers.first().press('ArrowRight')
+  await expect(triggers.nth(2)).toBeFocused()
+  await expect(triggers.nth(1)).toHaveAttribute('aria-selected', 'false')
+  await triggers.nth(count - 1).evaluate(element => {
+    element.setAttribute('disabled', '')
+  })
+  await triggers.first().focus()
+  await triggers.first().press('End')
+  await expect(triggers.nth(count > 3 ? count - 2 : 0)).toBeFocused()
+})
+
 const behaviorTest = (
   components: readonly LumenComponentName[],
   title: string,
@@ -976,3 +1030,66 @@ test('runtime behavior registry is completely represented', () => {
   expect([...registeredBehaviorComponents].sort())
     .toEqual([...runtimeBehaviorComponentNames].sort())
 })
+
+test('Tabs switches regression fixture preserves localized and accessible SSR contracts', async ({ page }) => {
+  await page.goto('/internal/interaction-regressions')
+  await expect(page.getByRole('heading', { name: 'Interaction regression fixture' })).toBeVisible()
+  await expect(page.getByRole('img', { name: 'Alex Smith' })).toBeVisible()
+  const toggle = page.getByRole('button', { name: 'Mostrar' })
+  await expect(toggle).toHaveText('Mostrar')
+  await toggle.click()
+  await expect(page.getByRole('button', { name: 'Ocultar' })).toHaveText('Ocultar')
+  await expect(page.locator('[role="treeitem"]').nth(1)).toHaveAttribute('aria-level', '2')
+  expect(await page.locator('[role="listbox"] > li').evaluateAll(items => items.every(item => item.getAttribute('role') === 'presentation'))).toBe(true)
+  const form = page.locator('#external-form')
+  await expect(form).toHaveAttribute('data-ui-form-bound', 'true')
+  await page.getByRole('button', { name: 'Submit external field' }).click()
+  await expect(form).toHaveAttribute('data-status', 'error')
+  await expect(page.getByLabel('External field')).toHaveAttribute('aria-invalid', 'true')
+})
+
+test('Tooltip opens when randomUUID is unavailable and generates distinct IDs', async ({ page }) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(crypto, 'randomUUID', { configurable: true, value: undefined })
+  })
+  await page.goto('/internal/interaction-regressions')
+  const first = page.getByRole('button', { name: 'First tooltip' })
+  const second = page.getByRole('button', { name: 'Second tooltip' })
+  await expect(first).toHaveAttribute('aria-describedby', /ui-tooltip-/)
+  const firstId = await first.getAttribute('aria-describedby')
+  const secondId = await second.getAttribute('aria-describedby')
+  expect(firstId).not.toBe(secondId)
+  await first.focus()
+  await expect(page.getByRole('tooltip', { name: 'First help' })).toBeVisible()
+  await expect(page.locator('#external-form')).toHaveAttribute('data-ui-form-bound', 'true')
+})
+
+behaviorTest(
+  ['DialogClose'],
+  'Dialog opens a long compound task with reachable actions and restored focus',
+  async ({ page }) => {
+    await page.goto('/internal/dashboard-dialog')
+    const opener = page.getByRole('button', { name: 'Edit record', exact: true })
+    await opener.click()
+    const dialog = page.getByRole('dialog', { name: 'Edit a long record' })
+    await expect(dialog).toBeVisible()
+    const body = dialog.locator('[data-slot="dialog-body"]')
+    const dimensions = await body.evaluate(element => ({
+      visible: element.clientHeight,
+      content: element.scrollHeight
+    }))
+    expect(dimensions.content).toBeGreaterThan(dimensions.visible)
+    await page.getByLabel('Record field 20', { exact: true }).focus()
+    await expect(page.getByLabel('Record field 20', { exact: true })).toBeInViewport()
+    await expect(dialog.getByRole('button', { name: 'Save changes' })).toBeInViewport()
+    const cancel = dialog.getByRole('button', { name: 'Cancel', exact: true })
+    await cancel.focus()
+    await page.keyboard.press('Enter')
+    await expect(dialog).not.toBeVisible()
+    await expect(opener).toBeFocused()
+    await opener.click()
+    await page.keyboard.press('Escape')
+    await expect(dialog).not.toBeVisible()
+    await expect(opener).toBeFocused()
+  }
+)

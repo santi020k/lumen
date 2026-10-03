@@ -100,3 +100,14 @@ func runtimeLocaleCopy() {
     #expect(!english.action.isEmpty)
     #expect(!spanish.action.isEmpty)
 }
+
+@Test("component search accepts IDs and preserves exact capture filters")
+func componentSearch() {
+    #expect(PlaygroundComponentSearch.matches("Date range field", query: "  DATE-range_field  "))
+    #expect(PlaygroundComponentSearch.matches("Icon button", query: "IconButton"))
+    #expect(PlaygroundComponentSearch.matches("Button group", query: "button"))
+    #expect(!PlaygroundComponentSearch.matches("Button group", query: "button", exact: true))
+    #expect(PlaygroundComponentSearch.matches("Button", query: " BUTTON ", exact: true))
+    #expect(PlaygroundComponentSearch.matches("Button", query: "  "))
+    #expect(!PlaygroundComponentSearch.matches("Button", query: "missing"))
+}
