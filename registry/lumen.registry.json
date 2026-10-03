@@ -769,6 +769,75 @@
       "dependencies": ["Button", "styles", "runtime"]
     },
     {
+      "name": "DialogHeader",
+      "type": "component",
+      "description": "Groups the dialog title and description.",
+      "category": "Overlays",
+      "files": [
+        "packages/astro/components/DialogHeader.astro",
+        "packages/astro/styles/lumen.css"
+      ],
+      "dependencies": [
+        "styles"
+      ]
+    },
+    {
+      "name": "DialogTitle",
+      "type": "component",
+      "description": "Provides a semantic heading for dialog labeling.",
+      "category": "Overlays",
+      "files": [
+        "packages/astro/components/DialogTitle.astro",
+        "packages/astro/styles/lumen.css"
+      ],
+      "dependencies": [
+        "styles"
+      ]
+    },
+    {
+      "name": "DialogBody",
+      "type": "component",
+      "description": "Scrolls long task content while keeping actions visible.",
+      "category": "Overlays",
+      "files": [
+        "packages/astro/components/DialogBody.astro",
+        "packages/astro/styles/lumen.css"
+      ],
+      "dependencies": [
+        "styles"
+      ]
+    },
+    {
+      "name": "DialogFooter",
+      "type": "component",
+      "description": "Keeps dialog actions outside the scrolling body.",
+      "category": "Overlays",
+      "files": [
+        "packages/astro/components/DialogFooter.astro",
+        "packages/astro/styles/lumen.css"
+      ],
+      "dependencies": [
+        "styles"
+      ]
+    },
+    {
+      "name": "DialogClose",
+      "type": "component",
+      "description": "Closes the enclosing dialog through an accessible button.",
+      "category": "Overlays",
+      "files": [
+        "packages/astro/components/DialogClose.astro",
+        "packages/astro/styles/lumen.css",
+        "packages/astro/components/Button.astro",
+        "packages/astro/runtime/UIPrimitives.astro"
+      ],
+      "dependencies": [
+        "styles",
+        "Button",
+        "runtime"
+      ]
+    },
+    {
       "name": "Direction",
       "type": "component",
       "description": "Controls directional layout and text flow.",

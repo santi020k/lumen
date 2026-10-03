@@ -99,7 +99,9 @@ export const initDialogControllers = (scope: ParentNode): void => {
 
     closeButton.dataset.uiBound = 'true'
 
-    closeButton.addEventListener('click', () => {
+    closeButton.addEventListener('click', event => {
+      if (event.defaultPrevented || closeButton.matches(':disabled, [aria-disabled="true"]')) return
+
       closeButton.closest<HTMLDialogElement>('dialog')?.close()
     })
   }

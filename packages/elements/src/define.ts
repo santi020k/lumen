@@ -523,6 +523,31 @@ const elementConfigs = {
     defaults: { 'data-ui-date-range-picker': '' },
     tagName: 'lumen-date-range-picker'
   },
+  DialogHeader: {
+    baseClassName: 'ui-dialog-header',
+    defaults: { 'data-slot': 'dialog-header' },
+    tagName: 'lumen-dialog-header'
+  },
+  DialogTitle: {
+    baseClassName: 'ui-dialog-title',
+    defaults: { 'data-slot': 'dialog-title' },
+    tagName: 'lumen-dialog-title'
+  },
+  DialogBody: {
+    baseClassName: 'ui-dialog-body',
+    defaults: { 'data-slot': 'dialog-body' },
+    tagName: 'lumen-dialog-body'
+  },
+  DialogFooter: {
+    baseClassName: 'ui-dialog-footer',
+    defaults: { 'data-slot': 'dialog-footer' },
+    tagName: 'lumen-dialog-footer'
+  },
+  DialogClose: {
+    baseClassName: 'ui-dialog-close',
+    defaults: { 'data-slot': 'dialog-close', 'data-ui-dialog-close': '' },
+    tagName: 'lumen-dialog-close'
+  },
   Dialog: {
     attributeClasses: {
       glass: {
@@ -6602,7 +6627,11 @@ class LumenDialogBehaviorElement extends LumenElement {
             ) :
             null
 
-        if (closeButton) {
+        const nativeButton = target instanceof Element ? target.closest('button') : null
+        const owner = closeButton?.closest('lumen-dialog, lumen-alert-dialog, lumen-drawer, lumen-sheet')
+
+        if (closeButton && owner === this && !event.defaultPrevented &&
+          !nativeButton?.disabled && closeButton.getAttribute('aria-disabled') !== 'true') {
           this.closeDialog()
         }
       }, { signal }
@@ -8571,7 +8600,7 @@ class LumenFileUploadBehaviorElement extends LumenElement {
       } else {
         files.textContent =
           selectedFiles.length > 1 ?
-            `${selectedFiles.length} files selected` :
+            (this.getAttribute('selected-files-label') ?? '{count} files selected').replaceAll('{count}', String(selectedFiles.length)) :
             ''
       }
     }
@@ -8579,6 +8608,12 @@ class LumenFileUploadBehaviorElement extends LumenElement {
     input.addEventListener('change', renderFiles, {
       signal: this.abortController.signal
     })
+
+    input.form?.addEventListener('reset', event => {
+      queueMicrotask(() => {
+        if (this.isConnected && !event.defaultPrevented) renderFiles()
+      })
+    }, { signal: this.abortController.signal })
 
     this.addEventListener(
       'dragover', event => {
@@ -11313,6 +11348,10 @@ const behaviorElementClasses: Partial<
   VirtualList: LumenVirtualListBehaviorElement
 }
 
+export class LumenDialogElement extends LumenDialogBehaviorElement {
+  static override config = withObservedAttributes(elementConfigs.Dialog)
+}
+
 const granularElementClasses: Partial<
   Record<LumenComponentName, LumenElementConstructor>
 > = {
@@ -11325,6 +11364,7 @@ const granularElementClasses: Partial<
   CardHeader: GranularLumenCardHeaderElement,
   CardTitle: GranularLumenCardTitleElement,
   Combobox: GranularLumenComboboxElement,
+  Dialog: LumenDialogElement,
   Container: GranularLumenContainerElement,
   Direction: GranularLumenDirectionElement,
   Grid: GranularLumenGridElement,
@@ -11508,7 +11548,11 @@ export const LumenContextMenuElement = elementClasses.ContextMenu
 export const LumenDataTableElement = elementClasses.DataTable
 export const LumenDatePickerElement = elementClasses.DatePicker
 export const LumenDateRangePickerElement = elementClasses.DateRangePicker
-export const LumenDialogElement = elementClasses.Dialog
+export const LumenDialogHeaderElement = elementClasses.DialogHeader
+export const LumenDialogTitleElement = elementClasses.DialogTitle
+export const LumenDialogBodyElement = elementClasses.DialogBody
+export const LumenDialogFooterElement = elementClasses.DialogFooter
+export const LumenDialogCloseElement = elementClasses.DialogClose
 export const LumenDirectionElement = elementClasses.Direction
 export const LumenDrawerElement = elementClasses.Drawer
 export const LumenDropdownMenuElement = elementClasses.DropdownMenu

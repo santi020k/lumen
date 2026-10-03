@@ -4845,12 +4845,18 @@ const initFileUploads = (scope: ParentNode): void => {
         files.textContent = selectedFiles[0]?.name ?? ''
       } else {
         files.textContent = selectedFiles.length > 1 ?
-          `${selectedFiles.length} files selected` :
+          (root.dataset.uiSelectedFilesLabel ?? '{count} files selected').replaceAll('{count}', String(selectedFiles.length)) :
           ''
       }
     }
 
     input.addEventListener('change', renderFiles)
+
+    input.form?.addEventListener('reset', event => {
+      queueMicrotask(() => {
+        if (root.isConnected && !event.defaultPrevented) renderFiles()
+      })
+    })
 
     root.addEventListener('dragover', event => {
       if (input.disabled) return

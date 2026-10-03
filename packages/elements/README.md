@@ -523,3 +523,28 @@ Connect application actions and replace sample IDs before reuse. See
 Only the visible window, overscan and focused neighbors mount. Stable keys retain row identity;
 applications own offscreen editing state. See [data rendering](../../docs/virtual-list-data.md) for
 setup, lifecycle, accessibility and the mounted-mode tradeoff.
+
+### Compound dialog tasks
+
+Register `DialogHeader`, `DialogTitle`, `DialogBody`, `DialogFooter`, and
+`DialogClose` with `Dialog`. Keep the body directly inside the dialog host for
+independent scrolling. Use a native heading inside the title host and a native
+button inside the close host; their semantics and disabled behavior remain native.
+Associate the heading id with the dialog's `aria-labelledby`.
+
+```html
+<lumen-dialog aria-labelledby="record-title">
+  <lumen-dialog-header>
+    <lumen-dialog-title><h2 id="record-title">Edit record</h2></lumen-dialog-title>
+  </lumen-dialog-header>
+  <lumen-dialog-body><form id="record-form"><label>Name <input name="name"></label></form></lumen-dialog-body>
+  <lumen-dialog-footer>
+    <lumen-dialog-close><button type="button">Cancel</button></lumen-dialog-close>
+    <button type="submit" form="record-form">Save</button>
+  </lumen-dialog-footer>
+</lumen-dialog>
+```
+
+A cancelled click or disabled native button does not dismiss the dialog. Nested
+close actions only dismiss their own dialog. `lumen-file-upload` accepts
+`selected-files-label` containing `{count}` for localized multiple-file feedback.

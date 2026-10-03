@@ -415,3 +415,23 @@ export const VisuallyHidden = ({
     {...props}
   />
 )
+
+export type DialogHeaderProps = ComponentPropsWithRef<'header'>
+export const DialogHeader = ({ className, ...props }: DialogHeaderProps) => (
+  <header {...props} className={composeClassName('ui-dialog-header', className)} data-slot="dialog-header" />
+)
+
+export type DialogTitleProps = ComponentPropsWithRef<'h2'> & { as?: 'h2' | 'h3' | 'h4' }
+export const DialogTitle = ({ as: Tag = 'h2', className, ...props }: DialogTitleProps) => (
+  <Tag {...props} className={composeClassName('ui-dialog-title', className)} data-slot="dialog-title" />
+)
+
+export type DialogBodyProps = ComponentPropsWithRef<'div'>
+export const DialogBody = ({ className, ...props }: DialogBodyProps) => (
+  <div {...props} className={composeClassName('ui-dialog-body', className)} data-slot="dialog-body" />
+)
+
+export type DialogFooterProps = ComponentPropsWithRef<'footer'>
+export const DialogFooter = ({ className, ...props }: DialogFooterProps) => (
+  <footer {...props} className={composeClassName('ui-dialog-footer', className)} data-slot="dialog-footer" />
+)

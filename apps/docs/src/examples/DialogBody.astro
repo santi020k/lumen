@@ -1,0 +1,21 @@
+---
+import {
+  Button, Dialog, DialogBody, DialogClose, DialogFooter, DialogHeader, DialogTitle,
+  Field, Input, Label
+} from '@santi020k/lumen-astro'
+---
+
+<Button data-ui-dialog-trigger="ex-dialog-body">Preview dialog body</Button>
+<Dialog id="ex-dialog-body" aria-labelledby="ex-dialog-body-title">
+  <DialogHeader>
+    <DialogTitle id="ex-dialog-body-title">Edit record</DialogTitle>
+    <p>Keep the task title and actions visible as content grows.</p>
+  </DialogHeader>
+  <DialogBody>
+    <Field>
+      <Label for="ex-dialog-body-name">Display name</Label>
+      <Input id="ex-dialog-body-name" name="displayName" />
+    </Field>
+  </DialogBody>
+  <DialogFooter><DialogClose variant="outline">Close preview</DialogClose></DialogFooter>
+</Dialog>

@@ -581,7 +581,33 @@ chart?.setAttribute('${attribute}', JSON.stringify(${dataExpression}))
 `
 }
 
+const compoundDialogReactExample = `'use client'
+
+import { useState } from 'react'
+import { Button, Dialog, DialogBody, DialogClose, DialogFooter, DialogHeader, DialogTitle, Input } from '@santi020k/lumen-react'
+
+export function Example() {
+  const [open, setOpen] = useState(false)
+  return (
+    <>
+      <Button onClick={() => setOpen(true)}>Edit record</Button>
+      <Dialog open={open} onOpenChange={setOpen} aria-labelledby="record-title">
+        <DialogHeader><DialogTitle id="record-title">Edit record</DialogTitle></DialogHeader>
+        <DialogBody><Input name="name" aria-label="Name" /></DialogBody>
+        <DialogFooter><DialogClose variant="outline">Close preview</DialogClose></DialogFooter>
+      </Dialog>
+    </>
+  )
+}
+`
+
 const reactOverrides: Record<string, string> = {
+  DialogHeader: compoundDialogReactExample,
+  DialogTitle: compoundDialogReactExample,
+  DialogBody: compoundDialogReactExample,
+  DialogFooter: compoundDialogReactExample,
+  DialogClose: compoundDialogReactExample,
+
   VirtualList: `'use client'
 
 import { Button, VirtualList } from '@santi020k/lumen-react'
@@ -844,7 +870,23 @@ export const Example = () => (
 `
 }
 
+const compoundDialogElementsExample = `${elementsHeader}
+
+<button type="button" data-ui-dialog-trigger="record-dialog">Edit record</button>
+<lumen-dialog id="record-dialog" aria-labelledby="record-title">
+  <lumen-dialog-header><lumen-dialog-title><h2 id="record-title">Edit record</h2></lumen-dialog-title></lumen-dialog-header>
+  <lumen-dialog-body><label>Name <input name="name"></label></lumen-dialog-body>
+  <lumen-dialog-footer><lumen-dialog-close><button type="button">Close preview</button></lumen-dialog-close></lumen-dialog-footer>
+</lumen-dialog>
+`
+
 const elementsOverrides: Record<string, string> = {
+  DialogHeader: compoundDialogElementsExample,
+  DialogTitle: compoundDialogElementsExample,
+  DialogBody: compoundDialogElementsExample,
+  DialogFooter: compoundDialogElementsExample,
+  DialogClose: compoundDialogElementsExample,
+
   VirtualList: `<lumen-virtual-list id="records" mode="data" role="list" aria-label="Records"></lumen-virtual-list>
 <script type="module">
   import { createLumenVirtualCollectionController } from '@santi020k/lumen-core'

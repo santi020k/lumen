@@ -561,3 +561,25 @@ Connect application actions and replace sample IDs before reuse. See
 Only the visible window, overscan and focused neighbors mount. Stable keys retain row identity;
 applications own offscreen editing state. See [data rendering](../../docs/virtual-list-data.md) for
 setup, lifecycle, accessibility and the mounted-mode tradeoff.
+
+### Compound dialog tasks
+
+Use `DialogHeader`, `DialogTitle`, `DialogBody`, `DialogFooter`, and `DialogClose`
+for long forms. Associate the title explicitly so labeling works before enhancement.
+`DialogBody` must be a direct child of `Dialog` for independent scrolling. Footer
+submit actions target a form inside the body with the native `form` attribute.
+
+```astro
+<Dialog id="record-dialog" aria-labelledby="record-title">
+  <DialogHeader><DialogTitle id="record-title">Edit record</DialogTitle></DialogHeader>
+  <DialogBody><Form id="record-form"><Input name="name" aria-label="Name" /></Form></DialogBody>
+  <DialogFooter>
+    <DialogClose variant="outline">Cancel</DialogClose>
+    <Button type="submit" form="record-form">Save</Button>
+  </DialogFooter>
+</Dialog>
+```
+
+Mount `UIPrimitives` once and open the dialog with a button carrying
+`data-ui-dialog-trigger="record-dialog"`. Set `selectedFilesLabel="{count} files selected"`
+on `FileUpload` to supply localized multiple-file feedback; the single-file label is its filename.

@@ -2448,6 +2448,69 @@
   gap: 0.5rem;
 }
 
+/* Compound dialogs keep actions visible while the task body scrolls. */
+.ui-dialog:has(> [data-slot="dialog-body"]) {
+  padding: 0;
+  overflow: hidden;
+}
+
+.ui-dialog[open]:has(> [data-slot="dialog-body"]),
+lumen-dialog.ui-dialog:not([hidden]):has(> [data-slot="dialog-body"]) {
+  display: flex;
+  flex-direction: column;
+}
+
+.ui-dialog:has(> [data-slot="dialog-body"]) > * + * {
+  margin-block-start: 0;
+}
+
+.ui-dialog-header,
+.ui-dialog-footer {
+  display: block;
+  flex: none;
+  padding: 1.25rem;
+}
+
+.ui-dialog-header {
+  border-block-end: var(--ui-border-width, 1px) solid hsl(var(--line));
+}
+
+.ui-dialog-title {
+  display: block;
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.ui-dialog-title > :is(h2, h3, h4) {
+  margin: 0;
+  font: inherit;
+}
+
+.ui-dialog-body {
+  display: block;
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 1.25rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scroll-padding-block: 1.25rem;
+}
+
+.ui-dialog-footer,
+.ui-dialog .ui-dialog-footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  border-block-start: var(--ui-border-width, 1px) solid hsl(var(--line));
+}
+
+lumen-dialog-close {
+  display: inline-flex;
+}
+
 .ui-alert-dialog {
   max-width: 28rem;
 }

@@ -1,0 +1,21 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+import { composeClassName } from '@santi020k/lumen-core'
+
+import Button from './Button.astro'
+
+interface Props extends HTMLAttributes<'button'> {
+  class?: string | null
+  className?: string
+  loading?: boolean
+  size?: 'default' | 'sm' | 'lg' | 'icon'
+  variant?: 'default' | 'destructive' | 'ghost' | 'link' | 'outline' | 'secondary'
+}
+
+const { class: classProp = '', className = '', ...rest } = Astro.props
+---
+
+<Button {...rest} class={composeClassName('ui-dialog-close', classProp, className)} data-slot="dialog-close" data-ui-dialog-close>
+  <slot />
+</Button>
