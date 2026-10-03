@@ -6,7 +6,7 @@ import { getLumenPhoneCountry } from '@santi020k/lumen-core'
 import { createRoot, type Root, type TestInstance } from 'test-renderer'
 import { afterEach, describe, expect, test, vi } from 'vitest'
 
-import { LumenChip, LumenFieldGroup, LumenTextarea, LumenToast } from './additional-components.js'
+import { LumenButtonGroup, LumenChip, LumenFieldGroup, LumenTextarea, LumenToast } from './additional-components.js'
 import { LumenDateField, LumenDateRangeField } from './datetime-components.js'
 import { LumenSearchField, LumenToggle } from './form-components.js'
 import { LumenAlertDialog, LumenMenu, LumenSheet } from './overlay-components.js'
@@ -1209,6 +1209,27 @@ describe('LumenSheet consumer layouts', () => {
     if (!restoreFrame) throw new Error('Expected a deferred focus restoration')
     restoreFrame()
     expect(accessibilityFocus).toHaveBeenLastCalledWith(returnFocusRef.current, 'focus')
+  })
+
+  test('wraps related actions at ordinary text sizes and stacks them at accessibility sizes', async () => {
+    const fixture = (): ReactElement => (
+      <LumenButtonGroup accessibilityLabel="Form actions">
+        <LumenButton>Cancel</LumenButton>
+        <LumenButton>Save</LumenButton>
+      </LumenButtonGroup>
+    )
+    const root = await renderNative(fixture())
+    const group = root.container.queryAll(instance => readProp(instance, 'accessibilityLabel') === 'Form actions')[0]
+    if (!group) throw new Error('Missing action group')
+    expect(readProp(group, 'style')).toEqual(expect.arrayContaining([expect.objectContaining({ flexDirection: 'row', flexWrap: 'wrap' })]))
+    nativeWindow.fontScale = 2
+    await act(async () => {
+      root.render(<LumenProvider>{fixture()}</LumenProvider>)
+      await Promise.resolve()
+    })
+    const updated = root.container.queryAll(instance => readProp(instance, 'accessibilityLabel') === 'Form actions')[0]
+    if (!updated) throw new Error('Missing updated action group')
+    expect(readProp(updated, 'style')).toEqual(expect.arrayContaining([expect.objectContaining({ flexDirection: 'column', flexWrap: 'nowrap' })]))
   })
 
   test('keeps actions outside the scrolling body and opts into keyboard avoidance', async () => {

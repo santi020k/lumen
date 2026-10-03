@@ -32,21 +32,27 @@ explicit React Native sheet focus targets with a compact-height/large-text scrol
 
 ### Verified local evidence
 
-- React Native: 118 behavioral/unit tests passed, with strict type checking and zero-warning lint.
+- React Native: 119 behavioral/unit tests passed, with strict type checking and zero-warning lint.
   The new Workspace example has six playground tests, including two workspace model tests for search and isolated record saves; its
   Expo web build passed. Desktop 1280×900 and mobile 390×844 interactions covered selection,
   editing, save feedback, and chart rendering, with temporary screenshots inspected.
-- Swift: 51 LumenUI and three WidgetKit tests passed. The new native split-view workspace compiled
-  in the macOS playground; iOS/iPad runtime verification remains pending. API extraction succeeded on all five Apple
+- Swift: 52 LumenUI and three WidgetKit tests passed. The new native split-view workspace compiled
+  in the macOS playground and the iPad simulator Xcode build passed; iOS/iPad interaction verification remains pending. API extraction succeeded on all five Apple
   targets; the source-compatibility gate validated 13 explicitly reviewed v4 diagnostics.
 - Compose: compilation and unit tests passed. The Android adaptive workspace debug APK compiled
-  against the local library; runtime and Activity-recreation checks remain pending. All 18 root instrumentation tests passed on the
+  against the local library; three workspace instrumentation tests passed for saved-state restoration, editing, cancel and retry, including actual Activity recreation with an open draft and a saved record. Parent destination and pattern selection now use saved state. Process-death qualification remains pending. All 19 root instrumentation tests passed on the
   Pixel 10 Pro Android 17 emulator, including translated accessibility descriptions and a long
   form whose pinned Save action remains visible before and after body scrolling. API dumps and
   declaration classifications were regenerated and checked.
 - Documentation/MCP: docs type checking, shared native contracts, the draft v4 contract, generated
   MCP snapshot and search/example evaluation passed. The clean packed React Native root consumer
   passed again with root, datetime, and foundations imports together.
+
+Horizontal native button groups now wrap or fall back to a vertical layout when space is limited,
+and stack at accessibility text sizes. SwiftUI geometry and Compose bounds tests cover the layout;
+React Native tests verify wrapping and the large-text direction. Android and React Native workspace
+examples include chart labels and selectable loading, empty, error, retry and ready states in English
+and Spanish.
 
 ### Production import measurement
 
@@ -62,15 +68,15 @@ Three Android Hermes production exports per fixture produced these median byteco
 The optional `@santi020k/lumen-react-native/foundations` entrypoint reuses the root implementations
 and provider context while avoiding eager imports of the full catalog. Its 18,668-byte overhead
 above the baseline is bounded at 65,536 bytes; the existing root fixture is bounded at 6 MiB.
-A single iOS Hermes run passed both budgets: baseline 1,424,195 bytes, foundations 1,442,836,
-root button 5,867,149, and root icon 5,867,215. Repeat iOS sampling remains pending.
+Three iOS Hermes production exports per fixture passed both budgets, with median sizes of
+1,424,195 bytes for baseline, 1,442,836 for foundations, 5,867,149 for root button, and 5,867,214 for root icon.
 Run `pnpm run check:react-native-imports`; set `LUMEN_BENCHMARK_PLATFORM=ios` to measure iOS.
 These results are local bytecode measurements, not startup or scrolling latency evidence. Static
 per-icon paths and broader component entrypoints remain to evaluate against actual consumers.
 
 ### Outstanding scope and blockers
 
-The complete Required outcomes list remains authoritative. Runtime qualification of the new Android and SwiftUI workspaces, Android chart/state recipes, physical-device keyboard/focus and screen-reader checks, repeated iOS production import samples,
+The complete Required outcomes list remains authoritative. Runtime qualification of the new Android and SwiftUI workspaces, physical-device keyboard/focus and screen-reader checks,
 startup/scrolling regression measurements, final real-consumer qualification and two ordinary
 stability iterations remain pending. No hardware pass or soak iteration was recorded.
 

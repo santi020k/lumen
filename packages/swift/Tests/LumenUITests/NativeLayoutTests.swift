@@ -27,6 +27,25 @@ private func measuredSize<Content: View>(of content: Content) -> CGSize {
 }
 
 @MainActor
+@Test func relatedActionsStackForAccessibilityTextAndFitCompactWidths() {
+    let group = LumenButtonGroup {
+        LumenButton("Cancel changes", action: {})
+        LumenButton("Save workspace", action: {})
+    }
+    let ordinary = measuredSize(of: group.environment(\.dynamicTypeSize, .large).frame(width: 320))
+    let accessible = measuredSize(of: group.environment(\.dynamicTypeSize, .accessibility3).frame(width: 320))
+
+    let compact = measuredSize(of: group.environment(\.dynamicTypeSize, .large).frame(width: 140))
+    #expect(compact.width == 140)
+    #expect(compact.height > ordinary.height)
+    #expect(accessible.width == 320)
+    #expect(accessible.height > ordinary.height)
+    let cancel = measuredSize(of: LumenButton("Cancel changes", action: {}).environment(\.dynamicTypeSize, .accessibility3))
+    let save = measuredSize(of: LumenButton("Save workspace", action: {}).environment(\.dynamicTypeSize, .accessibility3))
+    #expect(accessible.height >= cancel.height + save.height)
+}
+
+@MainActor
 @Test func sheetCompositionSupportsScrollingAndDismissalPolicies() {
     let content = Text("An editable application-owned form")
     _ = content.lumenSheet(

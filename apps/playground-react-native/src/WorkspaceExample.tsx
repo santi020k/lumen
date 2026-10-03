@@ -12,6 +12,10 @@ import { filterWorkspaceRecords, updateWorkspaceRecord, type WorkspaceRecord, wo
 
 type WorkspaceState = 'empty' | 'error' | 'loading' | 'success'
 
+const isWorkspaceState = (value: string): value is WorkspaceState => (
+  ['success', 'loading', 'empty', 'error'].includes(value)
+)
+
 const copy = {
   en: {
     back: 'Back',
@@ -34,8 +38,11 @@ const copy = {
     states: 'Example state',
     title: 'Workspace',
     chart: 'Weekly activity',
+    chartSummary: 'Weekly activity, five values.',
+    chartLabels: { chartData: 'Chart data', chartLegend: 'Legend', category: 'Category', series: 'Series', value: 'Value', notAvailable: 'Not available', empty: 'No data available.' },
     series: 'Changes',
-    direction: 'Preview direction'
+    direction: 'Preview direction',
+    stateLabels: { success: 'Ready', loading: 'Loading', empty: 'Empty', error: 'Error' }
   },
   es: {
     back: 'Volver',
@@ -58,10 +65,17 @@ const copy = {
     states: 'Estado del ejemplo',
     title: 'Espacio de trabajo',
     chart: 'Actividad semanal',
+    chartSummary: 'Actividad semanal, cinco valores.',
+    chartLabels: { chartData: 'Datos del gráfico', chartLegend: 'Leyenda', category: 'Categoría', series: 'Serie', value: 'Valor', notAvailable: 'No disponible', empty: 'No hay datos disponibles.' },
     series: 'Cambios',
-    direction: 'Vista de dirección'
+    direction: 'Vista de dirección',
+    stateLabels: { success: 'Listo', loading: 'Cargando', empty: 'Vacío', error: 'Error' }
   }
 }
+
+const cleanWorkspaceDraft = (draft: WorkspaceRecord | null): WorkspaceRecord | null => (
+  draft?.name.trim() ? { ...draft, name: draft.name.trim() } : null
+)
 
 const useWideWorkspace = (): boolean => {
   const { width, fontScale } = useWindowDimensions()
@@ -133,9 +147,9 @@ export const WorkspaceExample = ({ onBack }: { onBack: () => void }): ReactEleme
   })
 
   const save = (): void => {
-    if (!draft?.name.trim()) return
+    const updated = cleanWorkspaceDraft(draft)
 
-    const updated = { ...draft, name: draft.name.trim() }
+    if (!updated) return
 
     setRecords(current => updateWorkspaceRecord(current, updated))
 
@@ -170,11 +184,11 @@ export const WorkspaceExample = ({ onBack }: { onBack: () => void }): ReactEleme
         label={text.states}
         value={state}
         options={(['success', 'loading', 'empty', 'error'] as const).map(value => ({
-          label: value === 'success' ? text.list : text[value],
+          label: text.stateLabels[value],
           value
         }))}
         onValueChange={value => {
-          if (value === 'success' || value === 'loading' || value === 'empty' || value === 'error') setState(value)
+          if (isWorkspaceState(value)) setState(value)
         }}
       />
       <LumenSearchField
@@ -249,7 +263,17 @@ export const WorkspaceExample = ({ onBack }: { onBack: () => void }): ReactEleme
               {text.edit}
             </LumenButton>
             {saved && <LumenStatusBar message={text.saved} tone="success" />}
-            {state === 'success' ? <LumenBarChart heading={text.chart} label={text.chart} series={[{ id: 'activity', label: text.series, data: [3, 7, 4, 8, 5].map((y, index) => ({ x: String(index + 1), y })) }]} /> : empty}
+            {state === 'success' ?
+              (
+                <LumenBarChart
+                  heading={text.chart}
+                  label={text.chart}
+                  summary={text.chartSummary}
+                  labels={text.chartLabels}
+                  series={[{ id: 'activity', label: text.series, data: [3, 7, 4, 8, 5].map((y, index) => ({ x: String(index + 1), y })) }]}
+                />
+              ) :
+              empty}
           </ScrollView>
         )}
       </View>
@@ -275,7 +299,7 @@ export const WorkspaceExample = ({ onBack }: { onBack: () => void }): ReactEleme
             >
               {text.cancel}
             </LumenButton>
-            <LumenButton disabled={!draft?.name.trim()} onPress={save}>{text.save}</LumenButton>
+            <LumenButton disabled={!cleanWorkspaceDraft(draft)} onPress={save}>{text.save}</LumenButton>
           </LumenButtonGroup>
         )}
       >

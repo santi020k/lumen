@@ -1613,7 +1613,7 @@ LumenIcon(name: .brandGithub, label: "GitHub")`,
         'orientation',
         'horizontal · vertical',
         'horizontal',
-        'Controls action layout.'
+        'Prefers horizontal or vertical actions. Horizontal groups wrap or stack when space or accessibility text requires it.'
       ),
       property(
         'content',

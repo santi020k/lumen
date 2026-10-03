@@ -7,9 +7,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.lightColorScheme
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.ProgressBarRangeInfo
@@ -31,6 +33,7 @@ import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.tryPerformAccessibilityChecks
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import org.junit.Assert.assertEquals
 import org.junit.Rule
@@ -471,6 +474,28 @@ class AccessibilityTest {
 
         composeRule.onNodeWithContentDescription("Nombre, obligatorio").assertExists()
         composeRule.onNodeWithContentDescription("Contenido del resumen").assertExists()
+    }
+
+    @Test
+    fun relatedActionsRemainWithinCompactBoundsAtAccessibilityTextSizes() {
+        composeRule.setContent {
+            LumenTheme {
+                val density = LocalDensity.current
+                CompositionLocalProvider(LocalDensity provides Density(density.density, fontScale = 2f)) {
+                    Box(Modifier.width(280.dp)) {
+                        LumenButtonGroup(modifier = Modifier.testTag("actions")) {
+                            LumenButton(onClick = {}) { Text("Cancel editing") }
+                            LumenButton(onClick = {}) { Text("Save workspace") }
+                        }
+                    }
+                }
+            }
+        }
+        val group = composeRule.onNodeWithTag("actions").fetchSemanticsNode().boundsInRoot
+        val cancel = composeRule.onNodeWithText("Cancel editing").assertIsDisplayed().fetchSemanticsNode().boundsInRoot
+        val save = composeRule.onNodeWithText("Save workspace").assertIsDisplayed().fetchSemanticsNode().boundsInRoot
+        assertEquals(true, cancel.bottom <= save.top)
+        assertEquals(true, cancel.right <= group.right && save.right <= group.right)
     }
 
     @Test

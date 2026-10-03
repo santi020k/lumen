@@ -294,3 +294,10 @@ page's scrolling wrapper. Its detail chart and protected edit sheet support Engl
 the sheet's actions stack at accessibility text sizes. The Android Workspace example uses bounded
 `LazyColumn` and detail panes, Back navigation, and `rememberSaveable` state for record names, notes,
 selection, search, and drafts. These application examples do not add a library navigation router.
+
+## Related actions at large text sizes
+
+Native button groups treat horizontal orientation as a preference. React Native and Compose wrap
+when needed, while SwiftUI falls back to a vertical layout when the row does not fit. All three
+stack at accessibility text sizes. Keep action labels descriptive and allow the group to grow
+vertically instead of fixing its height.

@@ -11,3 +11,5 @@ updated sheet signatures; application-owned lazy or virtualized sheet content sh
 additional scrolling wrapper.
 
 Add the optional React Native foundations entrypoint, which shares root implementations and avoids eager full-catalog imports.
+
+Native horizontal button groups wrap or stack when space is limited and switch to vertical layouts at accessibility text sizes.

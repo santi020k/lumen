@@ -16,7 +16,9 @@
 		59CD3BCA61AEB946FF7A2882 /* PlaygroundExamplesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A61F6D18637F340320DB6A5D /* PlaygroundExamplesView.swift */; };
 		5A3B1829F40443C5D5FA6EC2 /* PlaygroundCatalog.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 665A7EE097F09530030DCF0D /* PlaygroundCatalog.generated.swift */; };
 		5BDA6D9FDFA3F1856259D5AA /* LumenApplePlaygroundApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE69F938031E87BABC3FCC66 /* LumenApplePlaygroundApp.swift */; };
+		5E2A775AD4FDA189CC6BDDE2 /* PlaygroundWorkspaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72B8880B20E69D9623FBE419 /* PlaygroundWorkspaceView.swift */; };
 		6DBE1F8EBA5B6F1940CC680D /* LumenWidgetUI in Frameworks */ = {isa = PBXBuildFile; productRef = 49116D2CBE1F880540653F3E /* LumenWidgetUI */; };
+		98C1AA51CD562EA2E42CD67A /* PlaygroundWorkspaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72B8880B20E69D9623FBE419 /* PlaygroundWorkspaceView.swift */; };
 		A0279D955040FE673FB268D5 /* PlaygroundSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB065D953EB7775096F372DB /* PlaygroundSettingsView.swift */; };
 		A27610862D252E7C15973614 /* LumenUI in Frameworks */ = {isa = PBXBuildFile; productRef = 35416C9E579CDA363A493B7B /* LumenUI */; };
 		C264FF30047BA1493B60697F /* LumenUI in Frameworks */ = {isa = PBXBuildFile; productRef = 956081D903F21ACD6ECA2E5F /* LumenUI */; };
@@ -61,6 +63,7 @@
 		5DB685E8C1D6ED87B7329F1E /* LumenWatchPlaygroundApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LumenWatchPlaygroundApp.swift; sourceTree = "<group>"; };
 		63BB1942FA8B6D286F1A9EBE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		665A7EE097F09530030DCF0D /* PlaygroundCatalog.generated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaygroundCatalog.generated.swift; sourceTree = "<group>"; };
+		72B8880B20E69D9623FBE419 /* PlaygroundWorkspaceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaygroundWorkspaceView.swift; sourceTree = "<group>"; };
 		7DE2955684DB72950680BA1F /* LumenApplePlayground.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = LumenApplePlayground.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9D8A29BB3FCB9C15B321E3AE /* LumenMacPlayground.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LumenMacPlayground.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A61F6D18637F340320DB6A5D /* PlaygroundExamplesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaygroundExamplesView.swift; sourceTree = "<group>"; };
@@ -173,6 +176,7 @@
 				B19CC216C8A44A82EF86293B /* PlaygroundHomeView.swift */,
 				AB065D953EB7775096F372DB /* PlaygroundSettingsView.swift */,
 				581FE601DC8DCCAACDE42246 /* PlaygroundShell.swift */,
+				72B8880B20E69D9623FBE419 /* PlaygroundWorkspaceView.swift */,
 			);
 			name = LumenApplePlayground;
 			path = Sources/LumenApplePlayground;
@@ -349,6 +353,7 @@
 				3720CAC58F48F17F4380823C /* PlaygroundHomeView.swift in Sources */,
 				A0279D955040FE673FB268D5 /* PlaygroundSettingsView.swift in Sources */,
 				014EFFAD9348FEA0E0277DA9 /* PlaygroundShell.swift in Sources */,
+				5E2A775AD4FDA189CC6BDDE2 /* PlaygroundWorkspaceView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -362,6 +367,7 @@
 				C6CEF83F16EE8556EC3DBD9E /* PlaygroundHomeView.swift in Sources */,
 				E04C7AB2BD18952D8710CCB0 /* PlaygroundSettingsView.swift in Sources */,
 				F8E4ABC1A336A6607D841E29 /* PlaygroundShell.swift in Sources */,
+				98C1AA51CD562EA2E42CD67A /* PlaygroundWorkspaceView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

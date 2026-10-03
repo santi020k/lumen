@@ -10,9 +10,9 @@ import {
   TextInput,
   type TextInputProps,
   type TextStyle,
+  useWindowDimensions,
   View,
-  type ViewProps
-} from 'react-native'
+  type ViewProps } from 'react-native'
 
 import { LumenFieldContext } from './field-context.js'
 import type { LumenTextInputRef, LumenViewRef } from './native-ref-types.js'
@@ -411,6 +411,8 @@ export const LumenButtonGroup = ({
   ...props
 }: LumenButtonGroupProps): ReactElement => {
   const theme = useLumenTheme()
+  const { fontScale } = useWindowDimensions()
+  const horizontal = orientation === 'horizontal' && fontScale < 2
 
   return (
     <View
@@ -418,8 +420,9 @@ export const LumenButtonGroup = ({
       {...props}
       style={[
         {
-          alignItems: orientation === 'horizontal' ? 'center' : 'stretch',
-          flexDirection: orientation === 'horizontal' ? 'row' : 'column',
+          alignItems: horizontal ? 'center' : 'stretch',
+          flexDirection: horizontal ? 'row' : 'column',
+          flexWrap: horizontal ? 'wrap' : 'nowrap',
           gap: theme.spacing.sm
         },
         style
