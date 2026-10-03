@@ -134,7 +134,8 @@ remain distinct from its primary and secondary colors. Applications with complet
 can pass `LumenThemeValues` instead.
 
 The native set includes Text, Icon, IconButton, Surface, Button, ButtonGroup, TextField, Textarea,
-FieldGroup, Toggle, SettingsRow, SearchField, DateField, DateRangeField, PhoneInput, Checkbox, RadioGroup,
+FieldGroup, Toggle, SettingsRow, SearchField, DateField, DateRangeField, TimeField, Autocomplete,
+NumberField, PullToRefresh, PhoneInput, Checkbox, RadioGroup,
 SegmentedControl, Tabs, Chip, Picker, Slider, Badge, Divider, Spinner, Card, Alert, Toast, Progress,
 Skeleton, Graphic, Backdrop,
 Illustration, Image, Disclosure, Gauge, and Avatar.
@@ -315,3 +316,45 @@ selected Wear Material version.
 
 Part of [Lumen UI](https://lumen.santi020k.com), created by [Santiago Molina](https://santi020k.com).
 Licensed under [MIT](https://github.com/santi020k/lumen/blob/main/LICENSE); third-party artwork retains its own notices.
+
+## Advanced form and refresh examples
+
+```kotlin
+LumenTimeField(
+    label = "Meeting time",
+    value = meetingTime,
+    onValueChange = { meetingTime = it },
+    minTime = LumenTimeSelection(8, 30),
+    maxTime = LumenTimeSelection(17, 0)
+)
+
+LumenAutocomplete(
+    label = "Project",
+    query = query,
+    onQueryChange = { query = it; selectedProject = null },
+    options = matchingProjects,
+    value = selectedProject,
+    onValueChange = { selectedProject = it },
+    loading = searching,
+    resultsErrorMessage = searchError,
+    onRetry = ::retrySearch
+)
+
+LumenNumberField(
+    label = "Quantity",
+    value = quantityDraft,
+    onValueChange = { quantityDraft = it },
+    min = java.math.BigDecimal.ZERO,
+    max = java.math.BigDecimal.TEN,
+    step = java.math.BigDecimal("0.5")
+)
+
+LumenPullToRefresh(isRefreshing = refreshing, onRefresh = ::refreshProjects) {
+    LazyColumn { /* application-owned rows */ }
+}
+```
+
+Time values are local wall-clock values, and number drafts remain ungrouped localized text.
+Applications own search results, selected values, refresh work, units, and submission rules.
+Translate every visible label and validation message through the public string parameters.
+See [advanced control contracts](../../docs/native-components.md#compose-v4-advanced-controls).

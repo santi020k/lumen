@@ -4738,9 +4738,128 @@ fun TimerHistoryRow() {
   }
 ]
 
+const composeV4Definitions: ComponentDefinition[] = [
+  {
+    accessibility: 'Names the selected time and native dialog actions; confirmation publishes the draft, cancellation preserves the value, and disabled or read-only fields cannot open selection.',
+    category: 'Forms',
+    examples: { android: `LumenTimeField(
+    label = "Meeting time",
+    value = meetingTime,
+    onValueChange = { meetingTime = it },
+    minTime = LumenTimeSelection(8, 30),
+    maxTime = LumenTimeSelection(17, 0)
+)` },
+    exports: { android: 'LumenTimeField' },
+    guidance: 'Use a local wall-clock value rather than an epoch timestamp. Keep dates, time zones, overnight scheduling, and translated labels in the application.',
+    name: 'Time field',
+    properties: [
+      property('label', 'String', 'Required', 'Names the field and selection dialog.'),
+      property('value / onValueChange', 'LumenTimeSelection? / (LumenTimeSelection) -> Unit', 'Required', 'Controls the confirmed local hour and minute.'),
+      property('modifier', 'Modifier', 'Modifier', 'Applies layout and semantics to the field group.'),
+      property('minTime / maxTime', 'LumenTimeSelection?', 'null', 'Inclusive same-day bounds; minimum must not exceed maximum.'),
+      property('is24Hour', 'Boolean?', 'null', 'Follows the system preference unless explicitly set.'),
+      property('description / errorMessage', 'String?', 'null', 'Shows supporting context or host validation.'),
+      property('placeholder', 'String', 'Choose a time', 'Displays the empty state.'),
+      property('confirmLabel / dismissLabel', 'String', 'Confirm / Cancel', 'Names the native confirmation and cancellation actions.'),
+      property('inputLabel / dialLabel', 'String', 'Use keyboard / Use clock', 'Names the input mode switch.'),
+      property('rangeErrorLabel', 'String', 'Choose a time within the allowed range', 'Explains invalid draft selection.'),
+      property('enabled / readOnly', 'Boolean', 'true / false', 'Controls editing and dismisses open selection when editing becomes unavailable.')
+    ],
+    slug: 'time-field',
+    summary: 'Choose a local time with native clock or keyboard input and explicit confirmation.'
+  },
+  {
+    accessibility: 'Preserves native editable dropdown focus, selected and disabled option semantics, and announced loading, empty, and recovery states.',
+    category: 'Forms',
+    examples: { android: `LumenAutocomplete(
+    label = "Project",
+    query = query,
+    onQueryChange = { query = it; selectedProject = null },
+    options = matchingProjects,
+    value = selectedProject,
+    onValueChange = { selectedProject = it },
+    loading = searching,
+    resultsErrorMessage = searchError,
+    onRetry = ::retrySearch
+)` },
+    exports: { android: 'LumenAutocomplete' },
+    guidance: 'The application supplies filtered results with unique non-null values, owns request cancellation, and clears stale selection after query edits. Selection emits the option label before the selected value.',
+    name: 'Autocomplete',
+    properties: [
+      property('label', 'String', 'Required', 'Names the editable field.'),
+      property('query / onQueryChange', 'String / (String) -> Unit', 'Required', 'Controls the editable search text.'),
+      property('options', 'List<LumenAutocompleteOption<T>>', 'Required', 'Supplies current results with value, label, optional description, and enabled state.'),
+      property('value / onValueChange', 'T? / (T) -> Unit', 'null / Required', 'Controls selected result identity; option values must be unique and non-null.'),
+      property('modifier', 'Modifier', 'Modifier', 'Applies layout and semantics to the dropdown container.'),
+      property('description / errorMessage', 'String?', 'null', 'Shows supporting text or field validation.'),
+      property('loading', 'Boolean', 'false', 'Shows loading feedback instead of stale results.'),
+      property('resultsErrorMessage / onRetry', 'String? / (() -> Unit)?', 'null', 'Shows a result failure and optional application-owned retry.'),
+      property('loadingLabel / emptyLabel / retryLabel', 'String', 'Loading results / No results / Retry', 'Localizes result status and recovery.'),
+      property('enabled / readOnly', 'Boolean', 'true / false', 'Controls query edits and dismisses open results when editing becomes unavailable.')
+    ],
+    slug: 'autocomplete',
+    summary: 'Select from application-provided search results with loading, empty, and retry feedback.'
+  },
+  {
+    accessibility: 'Labels the editable numeric draft and step actions, exposes invalid or out-of-range context, and disables unavailable or read-only steps.',
+    category: 'Forms',
+    examples: { android: `LumenNumberField(
+    label = "Quantity",
+    value = quantityDraft,
+    onValueChange = { quantityDraft = it },
+    min = java.math.BigDecimal.ZERO,
+    max = java.math.BigDecimal.TEN,
+    step = java.math.BigDecimal("0.5")
+)` },
+    exports: { android: 'LumenNumberField' },
+    guidance: 'Preserve the raw localized String draft, including unfinished sign or decimal input. Grouping and exponent notation are unsupported. Keep currency, units, required validation, and submission parsing application-owned.',
+    name: 'Number field',
+    properties: [
+      property('label', 'String', 'Required', 'Names the numeric field.'),
+      property('value / onValueChange', 'String / (String) -> Unit', 'Required', 'Controls raw localized ungrouped input; drafts beyond 128 characters are invalid.'),
+      property('modifier', 'Modifier', 'Modifier', 'Applies layout to the field and step actions.'),
+      property('min / max', 'java.math.BigDecimal?', 'null', 'Inclusive exact decimal bounds; minimum must not exceed maximum.'),
+      property('step', 'java.math.BigDecimal', 'BigDecimal.ONE', 'Positive exact increment; precision and scale are bounded to 128.'),
+      property('locale', 'java.util.Locale', 'Locale.getDefault()', 'Selects accepted decimal separator and displayed digits.'),
+      property('description / errorMessage', 'String?', 'null', 'Shows supporting text; supplied errors take priority over draft validation.'),
+      property('invalidNumberLabel / outOfRangeLabel', 'String', 'Enter a valid number / Enter a number within the allowed range', 'Localizes draft and bound errors.'),
+      property('incrementLabel / decrementLabel', 'String', 'Increase value / Decrease value', 'Names step actions.'),
+      property('showStepper', 'Boolean', 'true', 'Shows optional increment and decrement actions.'),
+      property('enabled / readOnly', 'Boolean', 'true / false', 'Controls edits and steps without discarding the current value.')
+    ],
+    slug: 'number-field',
+    summary: 'Edit localized numeric drafts with exact decimal steps and inclusive bounds.'
+  },
+  {
+    accessibility: 'Provides a named refresh accessibility action alongside the native gesture, announces progress, and removes refresh actions while disabled or busy.',
+    category: 'Feedback',
+    examples: { android: `LumenPullToRefresh(
+    isRefreshing = refreshing,
+    onRefresh = ::refreshProjects,
+    refreshLabel = "Refresh projects",
+    refreshingLabel = "Refreshing projects"
+) {
+    LazyColumn { /* application-owned rows */ }
+}` },
+    exports: { android: 'LumenPullToRefresh' },
+    guidance: 'Wrap the existing scrollable content. Keep requests, cancellation, retry policy, and completion in application code. Disabled state removes gestures while an already-running host operation retains feedback.',
+    name: 'Pull to refresh',
+    properties: [
+      property('isRefreshing / onRefresh', 'Boolean / () -> Unit', 'Required', 'Controls progress and starts application-owned refresh work.'),
+      property('modifier', 'Modifier', 'Modifier', 'Applies container layout and accessibility.'),
+      property('enabled', 'Boolean', 'true', 'Enables the refresh gesture and accessible action when idle.'),
+      property('refreshLabel / refreshingLabel', 'String', 'Refresh / Refreshing', 'Localizes the action and progress state.'),
+      property('content', '@Composable BoxScope.() -> Unit', 'Required', 'Renders application-owned scrolling content.')
+    ],
+    slug: 'pull-to-refresh',
+    summary: 'Refresh existing scrollable content with native gestures and accessible progress.'
+  }
+]
+
 export const nativeComponentDocs = [
   ...sharedDefinitions,
-  ...additionalDefinitions
+  ...additionalDefinitions,
+  ...composeV4Definitions
 ].map(createComponent)
 
 export const nativeComponentCategories: NativeComponentCategory[] = [

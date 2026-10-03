@@ -54,7 +54,10 @@ internal val playgroundSections = listOf(
             "Segmented control",
             "Tabs",
             "Picker",
-            "Slider"
+            "Slider",
+            "Time field",
+            "Autocomplete",
+            "Number field"
         )
     ),
     PlaygroundSection(
@@ -70,7 +73,8 @@ internal val playgroundSections = listOf(
             "Skeleton",
             "Empty state",
             "Error state",
-            "Banner"
+            "Banner",
+            "Pull to refresh"
         )
     ),
     PlaygroundSection(

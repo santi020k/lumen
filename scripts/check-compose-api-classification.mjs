@@ -81,6 +81,7 @@ for (const category of categories) {
 
 const fileFacades = new Set([
   'AdditionalComponentsKt',
+  'AdvancedFormComponentsKt',
   'ChartComponentsKt',
   'ContentComponentsKt',
   'FormComponentsKt',
@@ -90,6 +91,7 @@ const fileFacades = new Set([
   'PhoneComponentsKt',
   'PlatformComponentsKt',
   'PrimitivesKt',
+  'RefreshComponentsKt',
   'SelectionComponentsKt',
   'SharedComponentsKt',
   'StructuredComponentsKt'

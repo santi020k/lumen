@@ -1,6 +1,49 @@
 version: "0.2"
 language: en
 words:
+  - diseño
+  - Proyecto
+  - archivado
+  - reunión
+  - Elegir
+  - Confirmar
+  - Usar
+  - teclado
+  - reloj
+  - Elige
+  - dentro
+  - horario
+  - lectura
+  - Cantidad
+  - pasos
+  - número
+  - válido
+  - Aumentar
+  - Disminuir
+  - fuera
+  - rango
+  - máxima
+  - resultados
+  - Listo
+  - Cargando
+  - Vacío
+  - pudieron
+  - cargar
+  - proyectos
+  - buscar
+  - Buscando
+  - coincidentes
+  - Reintentar
+  - Selección
+  - ninguna
+  - Desliza
+  - hacia
+  - abajo
+  - actualizar
+  - Actualizando
+  - Actualizaciones
+  - completadas
+  - pulltorefresh
   - valuetext
   - Comparar
   - ajustes

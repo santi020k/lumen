@@ -974,3 +974,40 @@ the shared state or measurement contract on every adapter.
 
 Use the [native device validation matrix](native-device-validation.md) for VoiceOver, TalkBack,
 keyboard, text scaling, contrast, and reduced-motion verification on representative hardware.
+
+## Compose v4 advanced controls
+
+These four controls are Android-specific entries; their names do not imply availability in the
+other adapters. Use the existing `LumenTheme` provider and application-owned state.
+
+- `LumenTimeField` uses `LumenTimeSelection(hour, minute)` for a local wall-clock time without a
+  date or time zone. Optional `minTime` and `maxTime` are inclusive within one day; overnight
+  scheduling stays in the application. Selection is a draft until Confirm, and Cancel preserves
+  the controlled value. `is24Hour = null` follows the system preference. Supply translated field,
+  placeholder, confirmation, cancellation, input-mode, and range-error labels. Read-only and
+  disabled states dismiss open selection without committing.
+- `LumenAutocomplete` takes a controlled `query`, optional selected `value`, and a list of
+  `LumenAutocompleteOption` results with unique non-null values. The application filters the list,
+  cancels outdated requests, and controls loading and results errors. On selection, the component
+  sends the option label to `onQueryChange` before `onValueChange`; clear stale selection in the
+  application's query handler when appropriate. Loading hides stale results, empty results are
+  announced, and `resultsErrorMessage` can provide an application-owned Retry action. Validation
+  uses the separate `errorMessage`. Read-only and disabled controls dismiss the menu.
+- `LumenNumberField` keeps its controlled `value` as a raw String so empty, sign-only, and trailing
+  decimal drafts remain editable. It accepts localized decimal separators and digits, without
+  grouping, exponents, or whitespace. Invalid or incomplete drafts expose translated validation
+  and disable step actions. `min`, `max`, and positive `step` use `java.math.BigDecimal`; steps use
+  exact arithmetic and clamp to inclusive bounds. Drafts and configuration use a 128-character
+  limit with bounded precision and scale; values beyond that limit remain visible and invalid.
+  The application owns units, currency, required validation, persistence, and submission parsing.
+  Read-only fields retain their value and disable steps. Never convert money to Double merely to
+  consume this component.
+- `LumenPullToRefresh` wraps existing scrollable content with Material refresh behavior and a
+  named accessibility action. The application supplies `isRefreshing` and `onRefresh`; it owns
+  requests, cancellation, retry policy, and completion. Disabled controls remove the gesture and
+  action; a host operation already in progress retains its indicator. Refresh actions are
+  unavailable while busy. Supply translated `refreshLabel` and `refreshingLabel`.
+
+The Android playground includes editable, bounded, read-only, result-loading, empty, retry, and
+English/Spanish examples. Run the package's unit, lint, ABI, and instrumentation gates. Emulator
+checks and screenshots remain separate from physical TalkBack and consumer qualification.

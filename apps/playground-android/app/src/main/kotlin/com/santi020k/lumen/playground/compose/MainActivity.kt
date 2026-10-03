@@ -121,6 +121,7 @@ import com.santi020k.lumen.LumenSpinner
 import com.santi020k.lumen.LumenSparkline
 import com.santi020k.lumen.LumenSlider
 import com.santi020k.lumen.LumenStat
+import com.santi020k.lumen.LumenSpacing
 import com.santi020k.lumen.LumenStatusBar
 import com.santi020k.lumen.LumenSurface
 import com.santi020k.lumen.LumenSurfacePadding
@@ -363,7 +364,10 @@ private fun PlaygroundContent(
                             ActionsExample()
                             SystemActionsExample()
                         }
-                        "Forms" -> FormsExample(
+                        "Forms" -> if (initialComponent in advancedFormNames) {
+                            AdvancedFormsExample(initialComponent)
+                        } else Column(verticalArrangement = Arrangement.spacedBy(LumenSpacing.Md)) {
+                            FormsExample(
                             email = email,
                             onEmailChange = { email = it },
                             notificationsEnabled = notificationsEnabled,
@@ -374,13 +378,18 @@ private fun PlaygroundContent(
                             onProfileChange = { profile = it },
                             density = density,
                             onDensityChange = { density = it }
-                        )
-                        "Feedback" -> Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                            )
+                            AdvancedFormsExample()
+                        }
+                        "Feedback" -> if (initialComponent == "Pull to refresh") {
+                            PullToRefreshExample()
+                        } else Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                             FeedbackExample(
                                 showBanner = showBanner,
                                 onBannerVisibilityChange = { showBanner = it }
                             )
                             FeedbackStatesExample()
+                            PullToRefreshExample()
                         }
                         "Data" -> Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                             DataExample(saved = saved, onToggleSaved = { saved = !saved })

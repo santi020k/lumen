@@ -3905,6 +3905,70 @@
       "pathname": "/docs/android/components/wearable-list-row",
       "title": "Wearable list row"
     },
+    "/docs/android/components/time-field": {
+      "alt": "Time field — Lumen UI",
+      "description": "Choose a local time with native clock or keyboard input and explicit confirmation.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--time-field.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--time-field.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/time-field",
+      "title": "Time field"
+    },
+    "/docs/android/components/autocomplete": {
+      "alt": "Autocomplete — Lumen UI",
+      "description": "Select from application-provided search results with loading, empty, and retry feedback.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--autocomplete.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--autocomplete.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/autocomplete",
+      "title": "Autocomplete"
+    },
+    "/docs/android/components/number-field": {
+      "alt": "Number field — Lumen UI",
+      "description": "Edit localized numeric drafts with exact decimal steps and inclusive bounds.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--number-field.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--number-field.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/number-field",
+      "title": "Number field"
+    },
+    "/docs/android/components/pull-to-refresh": {
+      "alt": "Pull to refresh — Lumen UI",
+      "description": "Refresh existing scrollable content with native gestures and accessible progress.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--pull-to-refresh.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--pull-to-refresh.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/pull-to-refresh",
+      "title": "Pull to refresh"
+    },
     "/docs/components/accordion": {
       "alt": "Accordion — Lumen UI",
       "description": "Stacks collapsible content sections. Usage examples for Astro, React, and Elements.",
