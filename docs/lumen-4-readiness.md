@@ -4,6 +4,21 @@ This working record tracks the local `release/v4.0.0` candidate. It is not publi
 production qualification evidence. Consumer audits inspect application source; application
 data, deployment, and migration remain owned by those projects.
 
+## Latest local integration
+
+The October 3 consolidation through `f90b4884` contains all committed local branch tips:
+community feedback (`6646a842`), native quality (`efa3e53a`), appearance presets (`f3a3b512`),
+AI workflows (`8eedb38f`), and release improvements (`e9c8426e`). Git ancestry also confirms
+containment of `main`, every fetched remote branch, and the detached worktree commits.
+Active checkouts, uncommitted work and stashes remain preserved.
+
+The combined v4 migration keeps layout and SDK edits in one source transform and apply ledger.
+Conflict resolutions retain appearance metadata, migration review signals, both validation
+extensions and all release notes. Dependency notes reference the unchanged `4.0.0` candidate.
+Earlier pending-integration statements below describe historical task snapshots; their committed
+work is now integrated locally. The release security gate still reports three high dependency
+advisories. No remote push, package publication, deployment or release approval occurred.
+
 ## Migration and web release improvements
 
 The v4 CLI adds `lumen migrate v3` and `lumen migrate v4`, with previews by default and optional
