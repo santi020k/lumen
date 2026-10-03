@@ -208,10 +208,25 @@ Before/after screenshots use Home, light appearance and the same maximum text se
 preserved after artifact and report are under `.build/native-quality-react-native-ios-navigation-runtime`;
 all 76 installed artifact files and eight application input files matched their captured hashes.
 
-An earlier live text-size change exposed vertically clipped button and chart text after scrolling.
-Its root cause remains unconfirmed. Large-text sheet scrolling reached Cancel and Save after
+The live text-size finding reproduced against the preserved `02178c35` Release app: selecting
+record 002 at standard text size and changing the iPhone Simulator setting from 3 to 11 left the
+title, Back/Edit labels and chart heading visibly clipped within their earlier container heights.
+The navigation bar reflowed. A newly opened edit sheet rendered its heading, labels and note at
+the enlarged size without that clipping; restoring text size 3 restored the underlying detail.
+The observed stale-layout behavior matches the open upstream
+[React Native 0.86 issue 57512](https://github.com/react/react-native/issues/57512), but an upstream
+report is not proof of the exact cause in this host. Do not disable native font scaling or remount
+the whole application as a workaround: either would change accessibility or application state.
+The clipping screenshot is preserved beside the navigation artifact, and runtime large-text
+qualification remains failed until a fix is independently verified.
+
+Large-text sheet scrolling reached Cancel and Save after
 dismissing the keyboard; that observation does not prove Save remains reachable with the keyboard
-visible at maximum text size. These findings remain open alongside VoiceOver and hardware checks.
+visible at maximum text size. Re-focusing the note hid those actions behind the keyboard; the
+attempt to scroll without dismissing it was interrupted by Device Hub accessibility errors.
+Native typing also opened the host accent picker; an accessibility value update set the note,
+but this was not a successful native long-note typing/save check. The draft was explicitly
+cancelled after restoring text size 3. These findings remain open alongside VoiceOver and hardware checks.
 
 For the navigation fix, `pnpm run test` passed 1,189 tests in 98 files with local loopback access,
 `pnpm run typecheck` and `pnpm run lint` each passed 23 tasks, the React Native package build and
