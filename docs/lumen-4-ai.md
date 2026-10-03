@@ -47,6 +47,8 @@ Use `--case <id>` to run one case and `--output <directory>` to select the evide
 | --- | --- |
 | `react-dialog` | Public React composition and behavior hooks, focus, Escape, draft persistence, and close action. |
 | `elements-spanish-without-mcp` | Spanish request, installed types/README fallback, public registration and dialog behavior. |
+| `react-content-flow` | Token-owned page gutters and related/group/section spacing, long field labels, hidden Card parts, and preserved edits. |
+| `react-appearance-presets` | Default/Studio/Glass in light and dark, keyboard selection, explicit supporting glass, opaque primary content, and preserved edits. |
 | `embedded-sdk-migration` | Known static import migration, preservation of examples, explicit dependency review, strict typecheck. |
 | `older-version-review` | Version mismatch, rejection of a fabricated component, installed contract fallback, unchanged application source. |
 
@@ -112,3 +114,38 @@ so its apply ledger fingerprints the final source and repeat runs do not rewrite
 SDK import edits remain limited to `.ts`, `.js`, and `.mjs`; this restriction does not disable the
 separate documented JSX/Astro spacing migration. The JSON report includes installed package
 versions and explicit SDK dependency-review findings.
+
+## Plugin distribution follow-up, October 3, 2026
+
+`pnpm run package:plugin` creates a hosted Codex upload and a Claude archive with the exact npm
+catalog pin. Six deterministic plugin tests check schemas, matching skills, distribution transport,
+and preservation of existing archives. The public manifest now includes the support URL.
+
+Local marketplace installation and upgrades were checked with both installed CLIs. The prior
+`main` revision has a Codex 0.1.0 manifest and a Claude 1.0.0 manifest; each upgraded to 1.1.0.
+Fresh 1.1.0 installations also succeeded. Both cached packages contained the same three canonical
+skills and the exact `@santi020k/lumen-mcp@4.0.0` pin. Temporary test plugins and marketplaces were
+removed afterward. These checks cover local package installation, not public-directory upgrades
+or npm catalog startup.
+
+The new agent cases cover semantic content flow and preset switching. Their initial runs exposed
+ambiguous heading/region requirements in the prompts, color transitions sampled before settling,
+and an actual small-text contrast failure in CardDescription. Prompts now explicitly name those
+semantic requirements; the verifier waits for CSS transitions before accessibility scans. Card
+descriptions use the secondary text token, with six rendered contrast regressions across Astro,
+React, and Elements in every preset and scheme. The complete focused appearance suite passes nine
+tests. Matched before/after captures use the same synthetic screen at 390px and 1440px.
+
+Fresh final runs of both new cases passed in Codex and Claude. Their independently verified output
+used the public React adapter, passed strict types, kept protected files unchanged, and passed
+keyboard/state, responsive, and axe checks. Preset coverage includes every appearance in light and
+dark at both viewport sizes. Saved-output rechecks are recorded separately from those fresh runs.
+Build, type checking, zero-warning lint, spelling, unused-code checks, clean packed web consumers,
+and packed MCP stdio/HTTP smoke tests passed. The canonical repository gate still fails at the
+security audit described below.
+
+The public health endpoint returned `ok`, but MCP initialization still reports server 1.6.0 with
+twelve tools, without compatibility or migration discovery. The npm registry returned 404 for
+MCP 4.0.0. Release approval remains `draft`, and the repository security audit still reports three
+high advisories with no patched versions. Deploy and publish through the approved release workflow
+after those gates are resolved; archive creation and local installation do not waive them.

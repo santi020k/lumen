@@ -34,9 +34,10 @@ The approved production deployment returns HTTP 404 for `/ready`; use `/health` 
 initialization, `tools/list`, and `lumen_diagnose` to verify that deployment. The newer repository
 server provides `/ready`, but publishing the approved listing does not redeploy the MCP server.
 
-For future changes to reviewed MCP metadata or skill snapshots, scan the server, submit a new
-version for review, and publish that approved version. Portal publication changes external state
-and is deliberately not automated by repository validation.
+For future skill or plugin metadata changes, generate and upload a new plugin ZIP for review.
+Eligible server-only updates are picked up from the deployed endpoint after automated checks;
+they do not require a new ZIP. Follow the current official submission guidance linked above.
+Portal publication changes external state and is deliberately not automated by repository validation.
 
 ## Public listing
 
@@ -218,3 +219,14 @@ Before submission, rerun strict schema/package validation, the actual agent benc
 [lumen-4-ai.md](lumen-4-ai.md), and hosted endpoint smoke tests. Confirm all fourteen tools and
 plugin capabilities in the disclosure. Publication, deployment, and directory review remain external
 gates; local validation does not establish that the candidate is publicly available.
+
+Generate the upload with `pnpm run package:plugin`. The Codex archive at
+`dist/plugins/lumen-ui-1.1.0-codex.zip` replaces the local stdio connection with the production
+HTTPS endpoint while retaining the canonical metadata and three skills. It excludes Claude
+agents and local compatibility files. The command also produces a Claude archive for installation
+checks. Archive generation validates snapshots first, includes only explicit plugin assets, and
+preserves existing output. It requires the system `zip` executable.
+
+Before uploading, verify the deployed catalog reports 4.0.0 and exposes all fourteen tools,
+including `lumen_check_compatibility` and `lumen_get_migration`. Check both a matching v4 consumer
+and an older consumer: the latter must use installed contracts without silently upgrading.
