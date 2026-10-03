@@ -395,3 +395,10 @@ This evidence does not qualify physical-device keyboard, autofill, VoiceOver or 
 Native device evidence and two stability-soak iterations remain required. Release integration and
 the canonical validation result must be recorded before claiming completion; dependency security
 still reports the three existing high advisories with no patched versions.
+
+The isolated parity candidate is preserved in commit `7a170606` on
+`feature/native-v4-parity`. Its canonical `pnpm run validate` passes the monorepo build, types,
+1,201 tests, zero-warning lint, spelling, Knip and registry checks, then stops at the three existing
+high dependency advisories (`node-forge`, `http-cache-semantics` and `braces`; no patched versions).
+The release checkout has concurrent uncommitted work, so the parity commit is not yet contained in
+`release/v4.0.0`. Do not treat this record as integration, device qualification or release approval.
