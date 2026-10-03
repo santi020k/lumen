@@ -75,7 +75,8 @@
             "image": "./assets/splash-icon.png"
           }
         }
-      ]
+      ],
+      "./plugins/with-android-splash-api.cjs"
     ]
   }
 }

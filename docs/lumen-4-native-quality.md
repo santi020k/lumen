@@ -267,6 +267,29 @@ Generated-host and dependency warnings include scoped-storage permissions, priva
 resources and unused resources; they also remain reported. Interactive Android qualification
 could not run through the UI tool, which did not recognize the running emulator application.
 
+### Android splash resource qualification
+
+The playground now runs a local Expo finalized mod after resource generation. It removes only
+`android:windowSplashScreenBehavior` from the base splash style and emits the complete splash
+style in `values-v33/lumen-splash-api.xml`. Common attributes and unrelated resources remain
+unchanged. Minimum SDK 24 is retained; no lint suppression or dependency upgrade is introduced.
+Remove the plugin after a compatible Expo upgrade fixes generation, then regenerate a clean host
+to retire the owned qualified resource.
+
+Three plugin tests cover resource preservation, immutable transformation, missing-contract errors
+and repeated application through Expo's actual mod compiler. Together with the six existing
+playground tests, all nine tests pass. Both application and plugin strict type checks and the
+playground's zero-warning JavaScript lint pass. The plugin's Node types are isolated from the
+application's React Native globals. The MCP snapshot remains current.
+
+A freshly generated qualification host retained its isolated Android application ID and disabled
+OTA updates. Its base style excludes the API 33 attribute and its qualified style includes it.
+Applying the final plugin again left both generated files byte-identical. The first corrected
+JDK 21 release assembly and lint run succeeded, reporting zero errors and 59 warnings rather than
+the previous API error. The original failed reports remain preserved. Native dependency and
+generated-host warnings remain open; this is not zero-warning native qualification, physical-device
+evidence or completion of the v4 gate.
+
 ### Outstanding scope and blockers
 
 The complete Required outcomes list remains authoritative. Broader phone/tablet runtime qualification and physical-device keyboard/focus and screen-reader checks,
