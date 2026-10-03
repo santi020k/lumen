@@ -856,6 +856,8 @@ export const getLumenChartNumericX = (
   if (typeof value === 'number') return Number.isFinite(value) ? value : null
 
   if (scale === 'linear') {
+    if (!value.trim()) return null
+
     const numeric = Number(value)
 
     return Number.isFinite(numeric) ? numeric : null

@@ -105,7 +105,7 @@ label overrides for other languages; pass an explicit locale during SSR.
 `@santi020k/lumen-core/charts` exports the shared `LumenChartSeries` contract plus deterministic
 domain, tick, scaling, line/area, grouped/stacked bar, and pie/donut geometry helpers. They render
 no DOM and perform no statistical analysis; framework packages use them to keep chart output
-aligned.
+aligned. Linear x coordinates ignore blank strings rather than treating them as zero.
 
 ```ts
 import {
@@ -154,6 +154,8 @@ const phone = resolveLumenPhoneNumber(colombia, '6015550123')
 
 It also exports the Lucide-backed icon map (`lumenIcons`, `lumenIconNames`) and helpers such as
 `renderLumenIconSvg` so framework adapters can render icons by name.
+
+Icon resolution only accepts dictionary-owned names; inherited object properties are rejected.
 
 ## Icon Credits
 

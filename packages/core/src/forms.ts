@@ -42,12 +42,27 @@ export type LumenFormErrorInput =
   undefined
 
 const isStringArray = (
-  value: readonly string[] | string | null | undefined
-): value is readonly string[] => Array.isArray(value)
+  value: unknown
+): value is readonly string[] => Array.isArray(value) &&
+  value.every((message: unknown) => typeof message === 'string')
+
+const isOptionalString = (value: unknown): boolean => value === undefined || typeof value === 'string'
+
+const isLumenFieldError = (value: unknown): value is LumenFieldError => {
+  if (typeof value !== 'object' || value === null) return false
+
+  if (!('message' in value) || typeof value.message !== 'string') return false
+
+  if (!('name' in value) || typeof value.name !== 'string') return false
+
+  if ('code' in value && !isOptionalString(value.code)) return false
+
+  return !('controlId' in value) || isOptionalString(value.controlId)
+}
 
 const isLumenFieldErrorArray = (
-  value: LumenFormErrorInput
-): value is readonly LumenFieldError[] => Array.isArray(value)
+  value: unknown
+): value is readonly LumenFieldError[] => Array.isArray(value) && value.every(isLumenFieldError)
 
 const compactMessages = (
   value: readonly string[] | string | null | undefined
@@ -69,9 +84,10 @@ const isLumenFormErrors = (value: LumenFormErrorInput): value is LumenFormErrors
   value &&
   !Array.isArray(value) &&
   'fields' in value &&
-  Array.isArray(value.fields) &&
+  isLumenFieldErrorArray(value.fields) &&
   'form' in value &&
-  Array.isArray(value.form)
+  isStringArray(value.form) &&
+  (value.fields.length > 0 || Object.keys(value).every(name => name === 'fields' || name === 'form'))
 )
 
 const normalizeFieldError = (error: LumenFieldError): LumenFieldError | undefined => {

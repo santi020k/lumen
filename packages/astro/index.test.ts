@@ -843,7 +843,7 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(runtime).toContain(
       `trigger.setAttribute('aria-${'described' + 'by'}'`
     )
-    expect(runtime).toContain('tip.id = `ui-tooltip-${crypto.randomUUID()}`')
+    expect(runtime).toContain('tip.id = nextRuntimeId(\'ui-tooltip\')')
     expect(runtime).toContain('item.getAttribute(\'aria-disabled\') !== \'true\'')
   })
 
@@ -1093,7 +1093,7 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(runtime).toContain('document.addEventListener(\'ui:toast-update\'')
     expect(runtime).toContain('document.addEventListener(\'ui:toast-dismiss\'')
     expect(runtime).toContain('\'ui:toast-action\'')
-    expect(runtime).toContain('toast.addEventListener(\'mouseenter\', pause)')
+    expect(runtime).toContain('toast.addEventListener(\'mouseenter\', enter)')
     expect(runtime).toContain('event.key !== \'Escape\'')
     expect(styles).toContain('.ui-tvp[data-placement^="top"]')
     expect(styles).toContain('.ui-tvp[data-placement$="center"]')

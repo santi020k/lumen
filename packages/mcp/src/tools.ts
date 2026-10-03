@@ -305,7 +305,7 @@ const scoreCandidate = (
   const normalizedText = normalize(searchableText)
 
   const matchedTerms = terms.filter(term => (
-    (Reflect.get(searchTermAliases, term) as string[] | undefined) ?? [term]
+    (Object.hasOwn(searchTermAliases, term) ? searchTermAliases[term] : undefined) ?? [term]
   ).some(candidate => normalizedText.includes(candidate)))
 
   if (matchedTerms.length === 0) return { matchedTerms, score: 0 }
@@ -317,7 +317,7 @@ const scoreCandidate = (
   let score = matchedTerms.reduce(
     (total, term) => total +
       ((
-        (Reflect.get(searchTermAliases, term) as string[] | undefined) ?? [term]
+        (Object.hasOwn(searchTermAliases, term) ? searchTermAliases[term] : undefined) ?? [term]
       ).some(candidate => normalizedName.includes(candidate)) ?
         20 :
         5), 0
@@ -329,7 +329,7 @@ const scoreCandidate = (
 
   if (
     terms.some(term => (
-      (Reflect.get(searchTermAliases, term) as string[] | undefined) ?? [term]
+      (Object.hasOwn(searchTermAliases, term) ? searchTermAliases[term] : undefined) ?? [term]
     ).includes(normalizedName))
   )
     score += 150

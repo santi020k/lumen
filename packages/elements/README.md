@@ -526,3 +526,6 @@ Connect application actions and replace sample IDs before reuse. See
 Only the visible window, overscan and focused neighbors mount. Stable keys retain row identity;
 applications own offscreen editing state. See [data rendering](../../docs/virtual-list-data.md) for
 setup, lifecycle, accessibility and the mounted-mode tradeoff.
+
+Forms validate native controls associated through the `form` attribute even outside the form tree.
+Timed toasts retain their remaining duration until both pointer hover and keyboard focus leave.

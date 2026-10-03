@@ -231,13 +231,6 @@ const datePickerControlSelector = '[data-ui-date-picker-control]'
 const datePickerTriggerSelector = '[data-ui-date-picker-trigger]'
 const datePickerValueSelector = '[data-ui-date-picker-value]'
 const datePickerPopoverSelector = '[data-ui-date-picker-popover]'
-
-const formControlSelector = [
-  'input:not([type="hidden"])',
-  'select',
-  'textarea'
-].join(',')
-
 const selectOptionSelector = '[data-ui-select-option]'
 const defaultToastDuration = 5000
 const defaultToastMax = 5
@@ -1635,8 +1628,9 @@ const validateControl = (
 }
 
 const getFormControls = (form: HTMLFormElement): NativeFormControl[] => [
-  ...form.querySelectorAll<NativeFormControl>(formControlSelector)
-].filter(control => control.form === form && !control.disabled)
+  ...form.elements
+].filter(isNativeFormControl).filter(control => !control.disabled &&
+  !(control instanceof HTMLInputElement && control.type === 'hidden'))
 
 const validateForm = (form: HTMLFormElement): NativeFormControl[] => (
   getFormControls(form).filter(control => !validateControl(control, form))
@@ -2498,6 +2492,7 @@ const installRichTextEditorController = (): void => {
 }
 
 const getScheduleTransferValue = (event: HTMLElement): string => event.id || event.textContent.trim()
+const activeScheduleEvents = new WeakMap<HTMLElement, HTMLElement>()
 
 const initSchedules = (scope: ParentNode): void => {
   const closestRoot = getClosestScopedElement(scope, scheduleSelector)
@@ -2525,10 +2520,14 @@ const initSchedules = (scope: ParentNode): void => {
           'text/plain', getScheduleTransferValue(scheduleEvent)
         )
 
+        activeScheduleEvents.set(root, scheduleEvent)
+
         root.dataset.uiDragging = 'true'
       })
 
       scheduleEvent.addEventListener('dragend', () => {
+        activeScheduleEvents.delete(root)
+
         delete root.dataset.uiDragging
       })
     }
@@ -2556,11 +2555,12 @@ const initSchedules = (scope: ParentNode): void => {
         delete slot.dataset.state
 
         const draggedId = event.dataTransfer?.getData('text/plain')
-        const dragged = draggedId ? document.getElementById(draggedId) : null
+        const dragged = activeScheduleEvents.get(root)
 
-        if (dragged instanceof HTMLElement) {
-          slot.append(dragged)
-        }
+        if (!(dragged instanceof HTMLElement) ||
+          dragged.closest('lumen-schedule, [data-ui-schedule]') !== root) return
+
+        slot.append(dragged)
 
         root.dispatchEvent(
           new CustomEvent('ui:schedule-change', {
@@ -2824,13 +2824,17 @@ const initResizableGroups = (scope: ParentNode): void => {
         resizePair(startSize + delta * multiplier)
       })
 
-      handle.addEventListener('pointerup', event => {
+      const finishResize = (event: PointerEvent): void => {
         if (handle.dataset.active !== 'true') return
 
         delete handle.dataset.active
         delete root.dataset.resizing
-        handle.releasePointerCapture(event.pointerId)
-      })
+        if (handle.hasPointerCapture(event.pointerId)) handle.releasePointerCapture(event.pointerId)
+      }
+
+      handle.addEventListener('pointerup', finishResize)
+      handle.addEventListener('pointercancel', finishResize)
+      handle.addEventListener('lostpointercapture', finishResize)
 
       handle.addEventListener('dblclick', () => {
         if (root.dataset.uiResizableReset !== 'true') return
@@ -4602,7 +4606,12 @@ const scheduleToastDismiss = (toast: HTMLElement, duration: number): void => {
     timer: undefined as ReturnType<typeof globalThis.setTimeout> | undefined
   }
 
+  let hovered = false
+  let paused = false
+
   const start = (): void => {
+    paused = false
+
     timerState.startedAt = Date.now()
 
     timerState.timer = globalThis.setTimeout(() => {
@@ -4611,6 +4620,10 @@ const scheduleToastDismiss = (toast: HTMLElement, duration: number): void => {
   }
 
   const pause = (): void => {
+    if (paused) return
+
+    paused = true
+
     if (timerState.timer) {
       globalThis.clearTimeout(timerState.timer)
     }
@@ -4621,26 +4634,46 @@ const scheduleToastDismiss = (toast: HTMLElement, duration: number): void => {
   }
 
   const resume = (): void => {
-    if (timerState.remaining > 0) start()
+    if (!paused || hovered || toast.contains(document.activeElement)) return
+
+    start()
+  }
+
+  const enter = (): void => {
+    hovered = true
+
+    pause()
+  }
+
+  const leave = (): void => {
+    hovered = false
+
+    resume()
+  }
+
+  const blur = (event: FocusEvent): void => {
+    if (event.relatedTarget instanceof Node && toast.contains(event.relatedTarget)) return
+
+    resume()
   }
 
   timerState.cleanup = () => {
-    toast.removeEventListener('mouseenter', pause)
+    toast.removeEventListener('mouseenter', enter)
 
-    toast.removeEventListener('mouseleave', resume)
+    toast.removeEventListener('mouseleave', leave)
 
     toast.removeEventListener('focusin', pause)
 
-    toast.removeEventListener('focusout', resume)
+    toast.removeEventListener('focusout', blur)
   }
 
-  toast.addEventListener('mouseenter', pause)
+  toast.addEventListener('mouseenter', enter)
 
-  toast.addEventListener('mouseleave', resume)
+  toast.addEventListener('mouseleave', leave)
 
   toast.addEventListener('focusin', pause)
 
-  toast.addEventListener('focusout', resume)
+  toast.addEventListener('focusout', blur)
 
   toastTimers.set(toast, timerState)
 
