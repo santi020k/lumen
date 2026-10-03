@@ -58,7 +58,7 @@ const commands = guide.playgroundCommands ?? []
         <h2 id="preview-title">Try React Native in your browser</h2>
         <p>Explore the web preview, then use the local app to evaluate native device behavior.</p>
       </div>
-      <NativeLivePreview guide={{ ...guide, id: 'react-native' }} />
+      <NativeLivePreview embedded={false} guide={{ ...guide, id: 'react-native' }} />
     </section>
   )}
 
