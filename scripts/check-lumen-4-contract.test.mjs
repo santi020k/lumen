@@ -140,6 +140,23 @@ test('rejects missing, duplicate, unsorted, or vague Swift breakage evidence', (
   }
 })
 
+test('rejects unreviewed enum additions and other API changes disguised as reviewed diagnostics', () => {
+  for (const diagnostic of [
+    'enumelement LumenIconName.unreviewed has been added as a new enum case',
+    'enumelement LumenSurfaceRadius.printer3d has been added as a new enum case',
+    'enumelement LumenIconName.printer3d has been removed',
+    'property LumenSlider.value has been removed'
+  ]) {
+    const invalid = createDraft()
+
+    invalid.changes[1].swiftApiBreakages = [diagnostic]
+
+    assert.ok(validateLumen4Contract(invalid).some(failure => failure.includes(
+      'must identify exact removed Lumen initializer or reviewed icon-case addition diagnostics'
+    )))
+  }
+})
+
 test('rejects approval consisting only of status and reviewedRevision', () => {
   const invalid = createApproved()
 

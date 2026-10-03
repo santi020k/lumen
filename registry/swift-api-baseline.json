@@ -13765,6 +13765,15 @@
           "precise": "s:7LumenUI0A8IconNameO15badgeSwissFrancyA2CmF"
         },
         {
+          "declaration": "case bangladeshiTaka",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "bangladeshiTaka"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO15bangladeshiTakayA2CmF"
+        },
+        {
           "declaration": "case banknoteArrowUp",
           "kind": "swift.enum.case",
           "path": [
@@ -16103,6 +16112,15 @@
             "hardDriveDownload"
           ],
           "precise": "s:7LumenUI0A8IconNameO17hardDriveDownloadyA2CmF"
+        },
+        {
+          "declaration": "case layoutGridCircles",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "layoutGridCircles"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO17layoutGridCirclesyA2CmF"
         },
         {
           "declaration": "case listSortAscending",
@@ -22549,6 +22567,15 @@
           "precise": "s:7LumenUI0A8IconNameO7lecternyA2CmF"
         },
         {
+          "declaration": "case letters",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "letters"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO7lettersyA2CmF"
+        },
+        {
           "declaration": "case library",
           "kind": "swift.enum.case",
           "path": [
@@ -26885,6 +26912,15 @@
             "piggyBank"
           ],
           "precise": "s:7LumenUI0A8IconNameO9piggyBankyA2CmF"
+        },
+        {
+          "declaration": "case printer3d",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "printer3d"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO9printer3dyA2CmF"
         },
         {
           "declaration": "case projector",
@@ -41907,6 +41943,15 @@
           "precise": "s:7LumenUI0A8IconNameO15badgeSwissFrancyA2CmF"
         },
         {
+          "declaration": "case bangladeshiTaka",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "bangladeshiTaka"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO15bangladeshiTakayA2CmF"
+        },
+        {
           "declaration": "case banknoteArrowUp",
           "kind": "swift.enum.case",
           "path": [
@@ -44245,6 +44290,15 @@
             "hardDriveDownload"
           ],
           "precise": "s:7LumenUI0A8IconNameO17hardDriveDownloadyA2CmF"
+        },
+        {
+          "declaration": "case layoutGridCircles",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "layoutGridCircles"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO17layoutGridCirclesyA2CmF"
         },
         {
           "declaration": "case listSortAscending",
@@ -50691,6 +50745,15 @@
           "precise": "s:7LumenUI0A8IconNameO7lecternyA2CmF"
         },
         {
+          "declaration": "case letters",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "letters"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO7lettersyA2CmF"
+        },
+        {
           "declaration": "case library",
           "kind": "swift.enum.case",
           "path": [
@@ -55027,6 +55090,15 @@
             "piggyBank"
           ],
           "precise": "s:7LumenUI0A8IconNameO9piggyBankyA2CmF"
+        },
+        {
+          "declaration": "case printer3d",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "printer3d"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO9printer3dyA2CmF"
         },
         {
           "declaration": "case projector",
@@ -68659,6 +68731,15 @@
           "precise": "s:7LumenUI0A8IconNameO15badgeSwissFrancyA2CmF"
         },
         {
+          "declaration": "case bangladeshiTaka",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "bangladeshiTaka"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO15bangladeshiTakayA2CmF"
+        },
+        {
           "declaration": "case banknoteArrowUp",
           "kind": "swift.enum.case",
           "path": [
@@ -70997,6 +71078,15 @@
             "hardDriveDownload"
           ],
           "precise": "s:7LumenUI0A8IconNameO17hardDriveDownloadyA2CmF"
+        },
+        {
+          "declaration": "case layoutGridCircles",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "layoutGridCircles"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO17layoutGridCirclesyA2CmF"
         },
         {
           "declaration": "case listSortAscending",
@@ -77443,6 +77533,15 @@
           "precise": "s:7LumenUI0A8IconNameO7lecternyA2CmF"
         },
         {
+          "declaration": "case letters",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "letters"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO7lettersyA2CmF"
+        },
+        {
           "declaration": "case library",
           "kind": "swift.enum.case",
           "path": [
@@ -81779,6 +81878,15 @@
             "piggyBank"
           ],
           "precise": "s:7LumenUI0A8IconNameO9piggyBankyA2CmF"
+        },
+        {
+          "declaration": "case printer3d",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "printer3d"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO9printer3dyA2CmF"
         },
         {
           "declaration": "case projector",
@@ -96634,6 +96742,15 @@
           "precise": "s:7LumenUI0A8IconNameO15badgeSwissFrancyA2CmF"
         },
         {
+          "declaration": "case bangladeshiTaka",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "bangladeshiTaka"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO15bangladeshiTakayA2CmF"
+        },
+        {
           "declaration": "case banknoteArrowUp",
           "kind": "swift.enum.case",
           "path": [
@@ -98972,6 +99089,15 @@
             "hardDriveDownload"
           ],
           "precise": "s:7LumenUI0A8IconNameO17hardDriveDownloadyA2CmF"
+        },
+        {
+          "declaration": "case layoutGridCircles",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "layoutGridCircles"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO17layoutGridCirclesyA2CmF"
         },
         {
           "declaration": "case listSortAscending",
@@ -105418,6 +105544,15 @@
           "precise": "s:7LumenUI0A8IconNameO7lecternyA2CmF"
         },
         {
+          "declaration": "case letters",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "letters"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO7lettersyA2CmF"
+        },
+        {
           "declaration": "case library",
           "kind": "swift.enum.case",
           "path": [
@@ -109754,6 +109889,15 @@
             "piggyBank"
           ],
           "precise": "s:7LumenUI0A8IconNameO9piggyBankyA2CmF"
+        },
+        {
+          "declaration": "case printer3d",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "printer3d"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO9printer3dyA2CmF"
         },
         {
           "declaration": "case projector",
@@ -123540,6 +123684,15 @@
           "precise": "s:7LumenUI0A8IconNameO15badgeSwissFrancyA2CmF"
         },
         {
+          "declaration": "case bangladeshiTaka",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "bangladeshiTaka"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO15bangladeshiTakayA2CmF"
+        },
+        {
           "declaration": "case banknoteArrowUp",
           "kind": "swift.enum.case",
           "path": [
@@ -125878,6 +126031,15 @@
             "hardDriveDownload"
           ],
           "precise": "s:7LumenUI0A8IconNameO17hardDriveDownloadyA2CmF"
+        },
+        {
+          "declaration": "case layoutGridCircles",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "layoutGridCircles"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO17layoutGridCirclesyA2CmF"
         },
         {
           "declaration": "case listSortAscending",
@@ -132324,6 +132486,15 @@
           "precise": "s:7LumenUI0A8IconNameO7lecternyA2CmF"
         },
         {
+          "declaration": "case letters",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "letters"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO7lettersyA2CmF"
+        },
+        {
           "declaration": "case library",
           "kind": "swift.enum.case",
           "path": [
@@ -136660,6 +136831,15 @@
             "piggyBank"
           ],
           "precise": "s:7LumenUI0A8IconNameO9piggyBankyA2CmF"
+        },
+        {
+          "declaration": "case printer3d",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "printer3d"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO9printer3dyA2CmF"
         },
         {
           "declaration": "case projector",

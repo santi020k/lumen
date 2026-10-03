@@ -1,7 +1,7 @@
 # Lumen 4 native quality
 
 This record tracks the native improvements authorized for the v4 candidate. The implementation
-branch is `feature/native-v4-quality`, based on release commit `d0e9eeb5`. Preserve concurrent v4
+branch is `feature/native-v4-quality`, originally based on release commit `d0e9eeb5` and reconciled with committed release revision `28659627`. Preserve concurrent v4
 dependency, icon, web, and Compose-field work. Integrate only completed, verified task changes into
 `release/v4.0.0`; publication requires the repository's separate release approval.
 
@@ -37,8 +37,8 @@ explicit React Native sheet focus targets with a compact-height/large-text scrol
   Expo web build passed. Desktop 1280×900 and mobile 390×844 interactions covered selection,
   editing, save feedback, and chart rendering, with temporary screenshots inspected.
 - Swift: 52 LumenUI and three WidgetKit tests passed. The new native split-view workspace compiled
-  in the macOS playground and the iPad simulator Xcode build passed; iOS/iPad interaction verification remains pending. API extraction succeeded on all five Apple
-  targets; the source-compatibility gate validated 13 explicitly reviewed v4 diagnostics.
+  in the macOS playground and the iPad simulator Xcode build passed; iPad simulator interactions verified search, record selection, initial edit focus, keyboard-visible Save, saved feedback, Spanish chart descriptions, and error/retry recovery. That interaction run used the pre-reconciliation simulator build, so final-candidate verification remains pending. API extraction succeeded on all five Apple
+  targets; the reconciled source-compatibility gate validated 17 explicitly reviewed v4 diagnostics, including four icon enum additions.
 - Compose: compilation and unit tests passed. The Android adaptive workspace debug APK compiled
   against the local library; three workspace instrumentation tests passed for saved-state restoration, editing, cancel and retry, including actual Activity recreation with an open draft and a saved record. Parent destination and pattern selection now use saved state. Process-death qualification remains pending. All 19 root instrumentation tests passed on the
   Pixel 10 Pro Android 17 emulator, including translated accessibility descriptions and a long
@@ -82,11 +82,10 @@ stability iterations remain pending. No hardware pass or soak iteration was reco
 
 The first Android `./gradlew test lint assembleDebugAndroidTest` reached compilation and tests,
 but lint remained active for over 30 minutes in `BidirectionalTextDetector` Kotlin PSI traversal.
-That task-owned daemon was stopped; lint is unverified and must be resolved without suppressions.
+That task-owned daemon was stopped. Fresh full lint runs now pass without suppressions, including after reconciling committed release icon changes.
 The canonical `pnpm run validate` initially failed because its loopback fixture server was blocked by the sandbox.
 After local-server access and snapshot regeneration, it reached `check:security` and failed on three
-high-severity dependency advisories in `node-forge`, `http-cache-semantics`, and `braces`. The complete gate remains failed; dependency work is concurrent
-on the selected release and must be reconciled rather than overwritten.
+high-severity dependency advisories in `node-forge`, `http-cache-semantics`, and `braces`. The complete gate remains failed; committed release dependency updates were reconciled into this branch and the audit was rerun, but those three advisories remain.
 
 Release integration is pending because the selected `release/v4.0.0` checkout contains concurrent
 staged, unstaged, and untracked work. Preserve that checkout and the Compose-fields worktree;

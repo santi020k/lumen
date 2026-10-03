@@ -1,17 +1,79 @@
-import { Client } from '@modelcontextprotocol/sdk/client/index.js'
-import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js'
+import { request } from 'node:http'
+
+import { Client, StreamableHTTPClientTransport } from '@modelcontextprotocol/client'
 import { describe, expect, test } from 'vitest'
 
 import { startLumenMcpHttp } from './index.js'
 
 describe('Lumen MCP Streamable HTTP transport', () => {
+  test('keeps the existing protocol handshake for connected clients', async () => {
+    const running = await startLumenMcpHttp({ port: 0 })
+
+    try {
+      const response = await fetch(running.url, {
+        body: JSON.stringify({
+          id: 1,
+          jsonrpc: '2.0',
+          method: 'initialize',
+          params: {
+            capabilities: {},
+            clientInfo: { name: 'lumen-legacy-http-test', version: '1.0.0' },
+            protocolVersion: '2025-11-25'
+          }
+        }),
+        headers: {
+          accept: 'application/json, text/event-stream',
+          'content-type': 'application/json'
+        },
+        method: 'POST'
+      })
+
+      expect(response.status).toBe(200)
+      expect(response.headers.get('mcp-session-id')).toBeNull()
+      const body: unknown = await response.json()
+
+      expect(body).toMatchObject({
+        id: 1,
+        jsonrpc: '2.0',
+        result: { protocolVersion: '2025-11-25' }
+      })
+    } finally {
+      await running.close()
+    }
+  })
+
+  test('rejects untrusted hosts on the loopback listener', async () => {
+    const running = await startLumenMcpHttp({ port: 0 })
+
+    try {
+      const status = await new Promise<number | undefined>((resolve, reject) => {
+        const outgoing = request(running.url, {
+          headers: { host: 'untrusted.example' },
+          method: 'POST'
+        }, response => {
+          response.resume()
+          response.on('end', () => {
+            resolve(response.statusCode)
+          })
+        })
+
+        outgoing.on('error', reject)
+        outgoing.end()
+      })
+
+      expect(status).toBe(403)
+    } finally {
+      await running.close()
+    }
+  })
+
   test('serves MCP tools and a health endpoint on loopback', async () => {
     const running = await startLumenMcpHttp({ port: 0 })
     const client = new Client({ name: 'lumen-http-test', version: '1.0.0' })
     const transport = new StreamableHTTPClientTransport(running.url)
 
     try {
-      await client.connect(transport as Parameters<typeof client.connect>[0])
+      await client.connect(transport)
 
       const [tools, health, readiness] = await Promise.all([
         client.listTools(),

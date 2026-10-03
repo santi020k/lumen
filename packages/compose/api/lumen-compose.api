@@ -880,6 +880,7 @@ public final class com/santi020k/lumen/LumenIconName$Companion {
 	public final fun getBan--ExOp-M ()Ljava/lang/String;
 	public final fun getBanana--ExOp-M ()Ljava/lang/String;
 	public final fun getBandage--ExOp-M ()Ljava/lang/String;
+	public final fun getBangladeshiTaka--ExOp-M ()Ljava/lang/String;
 	public final fun getBanknote--ExOp-M ()Ljava/lang/String;
 	public final fun getBanknoteArrowDown--ExOp-M ()Ljava/lang/String;
 	public final fun getBanknoteArrowUp--ExOp-M ()Ljava/lang/String;
@@ -2260,6 +2261,7 @@ public final class com/santi020k/lumen/LumenIconName$Companion {
 	public final fun getLayoutDashboard--ExOp-M ()Ljava/lang/String;
 	public final fun getLayoutFreeform--ExOp-M ()Ljava/lang/String;
 	public final fun getLayoutGrid--ExOp-M ()Ljava/lang/String;
+	public final fun getLayoutGridCircles--ExOp-M ()Ljava/lang/String;
 	public final fun getLayoutList--ExOp-M ()Ljava/lang/String;
 	public final fun getLayoutPanelLeft--ExOp-M ()Ljava/lang/String;
 	public final fun getLayoutPanelTop--ExOp-M ()Ljava/lang/String;
@@ -2269,6 +2271,7 @@ public final class com/santi020k/lumen/LumenIconName$Companion {
 	public final fun getLectern--ExOp-M ()Ljava/lang/String;
 	public final fun getLensConcave--ExOp-M ()Ljava/lang/String;
 	public final fun getLensConvex--ExOp-M ()Ljava/lang/String;
+	public final fun getLetters--ExOp-M ()Ljava/lang/String;
 	public final fun getLibrary--ExOp-M ()Ljava/lang/String;
 	public final fun getLibraryBig--ExOp-M ()Ljava/lang/String;
 	public final fun getLifeBuoy--ExOp-M ()Ljava/lang/String;
@@ -2601,6 +2604,7 @@ public final class com/santi020k/lumen/LumenIconName$Companion {
 	public final fun getPowerOff--ExOp-M ()Ljava/lang/String;
 	public final fun getPresentation--ExOp-M ()Ljava/lang/String;
 	public final fun getPrinter--ExOp-M ()Ljava/lang/String;
+	public final fun getPrinter3d--ExOp-M ()Ljava/lang/String;
 	public final fun getPrinterCheck--ExOp-M ()Ljava/lang/String;
 	public final fun getPrinterX--ExOp-M ()Ljava/lang/String;
 	public final fun getProjector--ExOp-M ()Ljava/lang/String;

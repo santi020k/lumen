@@ -39,7 +39,7 @@ corepack enable
 pnpm install
 ```
 
-Use Node.js 22.19 or newer. The Apple playground additionally needs macOS and Xcode. The Android
+Use Node.js 22.22.2+, 24.15.0+, or 26+, matching the private workspace tooling requirements. The Apple playground additionally needs macOS and Xcode. The Android
 playground needs Android Studio, Android SDK 37, and JDK 21. The packed React Native Android smoke
 test also supports Android Studio's newer bundled JDK by enabling the native access required by
 Expo's CMake configuration step.
@@ -123,8 +123,8 @@ CLI version without installing it into the Expo app. Authenticate and connect th
 
 ```bash
 cd apps/playground-react-native
-pnpm dlx eas-cli@22.4.0 login
-pnpm dlx eas-cli@22.4.0 init
+pnpm dlx eas-cli@24.8.0 login
+pnpm dlx eas-cli@24.8.0 init
 ```
 
 After `eas init`, keep the generated EAS project identifier in `app.json`. Build a directly

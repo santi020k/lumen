@@ -64,13 +64,33 @@ export const getDocsContextLinks = (platform: DocsPlatformId | undefined): DocsC
   contextLinks[platform ?? 'all']
 )
 
-export const isDocsContextLinkCurrent = (link: DocsContextLink, pathname: string): boolean => {
-  if (link.href.includes('#')) return false
+const normalizeHash = (hash: string): string => {
+  const value = hash.startsWith('#') ? hash.slice(1) : hash
 
+  try {
+    return decodeURIComponent(value)
+  } catch {
+    return value
+  }
+}
+
+export const isDocsContextLinkCurrent = (link: DocsContextLink, pathname: string, hash = ''): boolean => {
+  const [hrefPath = '', hrefHash] = link.href.split('#')
   const normalizedPath = pathname.replace(/\/$/, '') || '/'
-  const normalizedHref = link.href.replace(/\/$/, '') || '/'
+  const normalizedHref = hrefPath.replace(/\/$/, '') || '/'
+
+  if (hrefHash !== undefined) {
+    return normalizedPath === normalizedHref && normalizeHash(hash) === normalizeHash(hrefHash)
+  }
 
   return link.match === 'prefix' ?
     normalizedPath === normalizedHref || normalizedPath.startsWith(`${normalizedHref}/`) :
     normalizedPath === normalizedHref
 }
+
+export const getCurrentDocsContextLink = (
+  links: DocsContextLink[], pathname: string, hash = ''
+): DocsContextLink | undefined => (
+  links.find(link => link.href.includes('#') && isDocsContextLinkCurrent(link, pathname, hash)) ??
+  links.find(link => !link.href.includes('#') && isDocsContextLinkCurrent(link, pathname))
+)
