@@ -1,3 +1,13 @@
+export {
+  createLumenChartActivationController,
+  createLumenChartDatumActivation,
+  createLumenHeatmapDatumActivation,
+  createLumenRangeDatumActivation,
+  type LumenChartActivationController,
+  type LumenChartDatumActivationDetail,
+  parseLumenChartDatumActivation
+} from './chart-activation.js'
+
 export const lumenChartTones = [
   'series-1',
   'series-2',

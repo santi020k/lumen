@@ -54,6 +54,41 @@ geometry. Use `LumenChartLabels(formatX = ..., formatValue = ...)` to keep the n
 alternative in the application's language and units. The default time label includes date and
 time. These v4 corrections can change the appearance of previously ordinal time-series plots.
 
+## Datum activation foundation
+
+Custom charts can share a typed activation payload using the core builders:
+
+```ts
+import {
+  createLumenChartDatumActivation,
+  parseLumenChartDatumActivation
+} from '@santi020k/lumen-core/charts'
+
+const detail = createLumenChartDatumActivation('received', {
+  id: 'october-received',
+  x: '2026-10',
+  y: 0
+})
+
+if (detail) {
+  // The application chooses the detail view, route, or filter.
+  console.log(detail.kind, detail.x)
+}
+
+const validated = parseLumenChartDatumActivation(detail)
+```
+
+`LumenChartDatumActivationDetail` uses `kind: 'series'` with `seriesId`, `x`, and `y`;
+`kind: 'heatmap'` with `x`, `y`, and `value`; or `kind: 'range'` with `x`, `low`, and `high`.
+All kinds can carry `datumId`. Axes retain their original number or string identity rather than
+localized display text. Builders reject missing, non-finite, and reversed range values; zero and
+negative observations remain valid. Pie renderers must additionally restrict actions to the
+positive observations represented by their slices.
+
+The DOM controller described in the [core README](../packages/core/README.md#chart-datum-activation)
+provides a common event path for custom marks and native buttons. It handles no fetching or
+navigation. An activation payload is UI context, never proof that an operation is authorized.
+
 ## Accessibility
 
 Every data chart needs a useful accessible name. Lumen adds a factual generated summary describing
