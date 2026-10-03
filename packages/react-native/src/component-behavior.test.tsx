@@ -1,3 +1,4 @@
+// cspell:words Espacios Configuración
 import { act, type ComponentRef, createRef, type ReactElement, type Ref, useState } from 'react'
 import type { View } from 'react-native'
 
@@ -13,6 +14,7 @@ import { LumenIcon as GraphicIcon, LumenIconButton as GraphicIconButton, type Lu
 import { LumenAlertDialog, LumenMenu, LumenSheet } from './overlay-components.js'
 import { LumenPhoneInput } from './phone-components.js'
 import { resolveLumenPhoneInputValue } from './phone-recipes.js'
+import { LumenNavigationBar } from './platform-components.js'
 import { LumenButton, LumenIcon, LumenIconButton, LumenText, LumenTextField } from './primitives.js'
 import { LumenProvider } from './provider.js'
 import { LumenCheckbox, LumenTabs } from './selection-components.js'
@@ -184,10 +186,44 @@ afterEach(async () => {
     for (const root of roots) root.unmount()
     await Promise.resolve()
   })
+  nativeWindow.fontScale = 1
   vi.unstubAllGlobals()
 })
 
 describe('Lumen React Native component behavior', () => {
+  test('keeps enlarged navigation labels readable and preserves destination semantics', async () => {
+    const select = vi.fn()
+    const reselect = vi.fn()
+    const items = [
+      { label: 'Espacios de trabajo', value: 'workspaces' },
+      { label: 'Configuración', value: 'settings' },
+      { disabled: true, label: 'Archivo', value: 'archive' }
+    ]
+    const navigation = <LumenNavigationBar items={items} onReselect={reselect} onValueChange={select} value="workspaces" />
+    const root = await renderNative(navigation)
+    const labels = () => root.container.queryAll(instance => instance.type === 'Text')
+    expect(labels().map(label => readProp(label, 'numberOfLines'))).toEqual([1, 1, 1])
+
+    nativeWindow.fontScale = 3
+    await act(async () => {
+      root.render(<LumenProvider scheme="light"><LumenNavigationBar items={items} onReselect={reselect} onValueChange={select} value="workspaces" /></LumenProvider>)
+      await Promise.resolve()
+    })
+    expect(labels().every(label => readProp(label, 'numberOfLines') === undefined)).toBe(true)
+    expect(labels().every(label => {
+      const style = readProp(label, 'style')
+      return typeof style === 'object' && style !== null && 'maxWidth' in style && style.maxWidth === '100%'
+    })).toBe(true)
+    const selected = findByAccessibilityLabel(root, 'Espacios de trabajo')
+    expect(readProp(selected, 'accessibilityState')).toMatchObject({ selected: true })
+    callAction(readProp(selected, 'onPress'), 'Missing reselect action')
+    expect(reselect).toHaveBeenCalledWith('workspaces')
+    const settings = findByAccessibilityLabel(root, 'Configuración')
+    callAction(readProp(settings, 'onPress'), 'Missing destination action')
+    expect(select).toHaveBeenCalledWith('settings')
+    expect(readProp(findByAccessibilityLabel(root, 'Archivo'), 'disabled')).toBe(true)
+  })
+
   test('keeps alert actions inside safe areas and makes oversized content scrollable', async () => {
     const root = await renderNative(
       <LumenAlertDialog
