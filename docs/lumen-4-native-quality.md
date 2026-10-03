@@ -37,7 +37,7 @@ explicit React Native sheet focus targets with a compact-height/large-text scrol
   Expo web build passed. Desktop 1280×900 and mobile 390×844 interactions covered selection,
   editing, save feedback, and chart rendering, with temporary screenshots inspected.
 - Swift: 52 LumenUI and three WidgetKit tests passed. The new native split-view workspace compiled
-  in the macOS playground and the iPad simulator Xcode build passed; iPad simulator interactions verified search, record selection, initial edit focus, keyboard-visible Save, saved feedback, Spanish chart descriptions, and error/retry recovery. That interaction run used the pre-reconciliation simulator build, so final-candidate verification remains pending. API extraction succeeded on all five Apple
+  in the macOS playground and the iPad simulator Xcode build passed; iPad simulator interactions verified search, record selection, initial edit focus, keyboard-visible Save, saved feedback, Spanish chart descriptions, and error/retry recovery. The flow was repeated against reconciled code revision `1d7acc749fbb80e720a70a2e982c7aa0f1dcb095`. At maximum accessibility text size, Spanish sheet actions stacked and Save remained reachable with the keyboard visible. A swipe-dismiss attempt left the protected sheet open. Typed notes persisted; long-note persistence remains unverified because the automation value setter changed the visible editor without updating the saved draft. Temporary screenshots were inspected and the original simulator text size was restored. API extraction succeeded on all five Apple
   targets; the reconciled source-compatibility gate validated 17 explicitly reviewed v4 diagnostics, including four icon enum additions.
 - Compose: compilation and unit tests passed. The Android adaptive workspace debug APK compiled
   against the local library; three workspace instrumentation tests passed for saved-state restoration, editing, cancel and retry, including actual Activity recreation with an open draft and a saved record. Parent destination and pattern selection now use saved state. Process-death qualification remains pending. All 19 root instrumentation tests passed on the
@@ -46,7 +46,10 @@ explicit React Native sheet focus targets with a compact-height/large-text scrol
   declaration classifications were regenerated and checked.
 - Documentation/MCP: docs type checking, shared native contracts, the draft v4 contract, generated
   MCP snapshot and search/example evaluation passed. The clean packed React Native root consumer
-  passed again with root, datetime, and foundations imports together.
+  passed again with root, datetime, and foundations imports together. After reconciliation, package
+  contents dry runs, clean web/framework consumers, the packed React Native consumer, and external
+  MCP stdio and Streamable HTTP package smoke tests all passed. These are the checks after the
+  security step in the canonical gate; they were run separately after that step failed.
 
 Horizontal native button groups now wrap or fall back to a vertical layout when space is limited,
 and stack at accessibility text sizes. SwiftUI geometry and Compose bounds tests cover the layout;
@@ -76,7 +79,7 @@ per-icon paths and broader component entrypoints remain to evaluate against actu
 
 ### Outstanding scope and blockers
 
-The complete Required outcomes list remains authoritative. Runtime qualification of the new Android and SwiftUI workspaces, physical-device keyboard/focus and screen-reader checks,
+The complete Required outcomes list remains authoritative. Broader phone/tablet runtime qualification and physical-device keyboard/focus and screen-reader checks,
 startup/scrolling regression measurements, final real-consumer qualification and two ordinary
 stability iterations remain pending. No hardware pass or soak iteration was recorded.
 
@@ -85,7 +88,7 @@ but lint remained active for over 30 minutes in `BidirectionalTextDetector` Kotl
 That task-owned daemon was stopped. Fresh full lint runs now pass without suppressions, including after reconciling committed release icon changes.
 The canonical `pnpm run validate` initially failed because its loopback fixture server was blocked by the sandbox.
 After local-server access and snapshot regeneration, it reached `check:security` and failed on three
-high-severity dependency advisories in `node-forge`, `http-cache-semantics`, and `braces`. The complete gate remains failed; committed release dependency updates were reconciled into this branch and the audit was rerun, but those three advisories remain.
+high-severity dependency advisories in `node-forge`, `http-cache-semantics`, and `braces`. The reconciled canonical gate passed all preceding checks and again stopped at `check:security`. The complete gate remains failed; committed release dependency updates were reconciled into this branch and the audit was rerun, but those three advisories remain.
 
 Release integration is pending because the selected `release/v4.0.0` checkout contains concurrent
 staged, unstaged, and untracked work. Preserve that checkout and the Compose-fields worktree;
