@@ -134,7 +134,7 @@ export const ReactVisualHost = () => {
           <CardHeader>
             <CardTitle>Framework selector</CardTitle>
             <CardDescription>
-              Shared filtering and roving option focus.
+              Shared filtering with active options and uninterrupted text editing.
             </CardDescription>
           </CardHeader>
           <CardContent>

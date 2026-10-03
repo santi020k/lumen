@@ -879,7 +879,8 @@ const loadWorkspaceFiles = async p => ({
     await readIfExists(p('packages/react/src/components.tsx')),
     await readIfExists(p('packages/react/src/server-components.tsx')),
     await readIfExists(p('packages/react/src/image-comparison.tsx')),
-    await readIfExists(p('packages/react/src/virtual-list.tsx'))
+    await readIfExists(p('packages/react/src/virtual-list.tsx')),
+    await readIfExists(p('packages/react/src/combobox.tsx'))
   ].join('\n'),
   readme: await readIfExists(p('README.md')),
   rules: await readIfExists(p('llms.txt')),

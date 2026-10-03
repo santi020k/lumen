@@ -11,6 +11,7 @@
 <script>
 import { isLumenDateBoundsValid, parseLumenDate as parseCalendarDate, resolveLumenDateLabels, resolveLumenDateLocale } from '@santi020k/lumen-core'
 import {
+  createLumenComboboxController,
   createLumenKanbanMoveDetail,
   createLumenVirtualListController,
   createThemeFromHue,
@@ -211,6 +212,16 @@ const initDisclosures = (scope: ParentNode): void => {
     })
 
     trigger.addEventListener('keydown', event => {
+      if (event.defaultPrevented || event.isComposing) return
+
+      if (event.key === 'Escape' && trigger.getAttribute('aria-expanded') === 'true') {
+        event.preventDefault()
+
+        setOpen(trigger, panel, false)
+
+        return
+      }
+
       if (event.key !== 'ArrowDown' && event.key !== 'Enter' && event.key !== ' ') return
 
       event.preventDefault()
@@ -221,6 +232,8 @@ const initDisclosures = (scope: ParentNode): void => {
     })
 
     panel.addEventListener('keydown', event => {
+      if (event.defaultPrevented || event.isComposing) return
+
       if (event.key === 'Escape') {
         event.preventDefault()
 
@@ -230,6 +243,8 @@ const initDisclosures = (scope: ParentNode): void => {
 
         return
       }
+
+      if (event.target instanceof Element && event.target.matches('input, textarea, [contenteditable="true"]')) return
 
       if (root.hasAttribute('data-ui-cascader')) return
 
@@ -344,12 +359,22 @@ const initTooltips = (scope: ParentNode): void => {
       root.addEventListener('focusout', hide)
 
       root.addEventListener('keydown', event => {
-        if (event.key === 'Escape') hide()
+        if (event.defaultPrevented || event.isComposing) return
+
+        if (event.key === 'Escape' && tip.matches(':popover-open')) {
+          event.preventDefault()
+
+          hide()
+        }
       })
     } else {
       /* WCAG 1.4.13: hover/focus tooltips must be dismissible with Escape. */
       root.addEventListener('keydown', event => {
-        if (event.key !== 'Escape') return
+        if (event.defaultPrevented || event.isComposing) return
+
+        if (event.key !== 'Escape' || getComputedStyle(tip).visibility === 'hidden') return
+
+        event.preventDefault()
 
         tip.style.visibility = 'hidden'
       })
@@ -1343,35 +1368,10 @@ const initLanguageToggles = (scope: ParentNode): void => {
   }
 }
 
-const getVisibleItems = (items: HTMLElement[]): HTMLElement[] => items.filter(item => !item.hidden &&
-  item.offsetParent !== null &&
-  !item.hasAttribute('disabled') &&
-  item.getAttribute('aria-disabled') !== 'true')
+const comboboxControllers = new Map<HTMLElement, ReturnType<typeof createLumenComboboxController>>()
 
 const closeCombobox = (root: HTMLElement): void => {
-  const input = root.querySelector<HTMLInputElement>('input[role="combobox"]')
-  const listbox = root.querySelector<HTMLElement>('[role="listbox"]')
-
-  if (!input || !listbox) return
-
-  input.setAttribute('aria-expanded', 'false')
-
-  listbox.hidden = true
-
-  listbox.dataset.state = 'closed'
-}
-
-const openCombobox = (root: HTMLElement): void => {
-  const input = root.querySelector<HTMLInputElement>('input[role="combobox"]')
-  const listbox = root.querySelector<HTMLElement>('[role="listbox"]')
-
-  if (!input || !listbox) return
-
-  input.setAttribute('aria-expanded', 'true')
-
-  listbox.hidden = false
-
-  listbox.dataset.state = 'open'
+  comboboxControllers.get(root)?.close()
 }
 
 let codeCopyLiveRegion: HTMLElement | undefined
@@ -1609,22 +1609,6 @@ const filterItems = (input: HTMLInputElement, items: HTMLElement[]): void => {
   }
 }
 
-const selectComboboxOption = (root: HTMLElement, option: HTMLElement): void => {
-  const input = root.querySelector<HTMLInputElement>('input[role="combobox"]')
-
-  if (!input) return
-
-  input.value = option.dataset.value ?? option.textContent?.trim() ?? ''
-
-  input.dispatchEvent(new Event('input', { bubbles: true }))
-
-  input.dispatchEvent(new Event('change', { bubbles: true }))
-
-  closeCombobox(root)
-
-  input.focus({ preventScroll: true })
-}
-
 const closeSelect = (root: HTMLElement): void => {
   const trigger = root.querySelector<HTMLElement>('[data-ui-select-trigger]')
   const listbox = root.querySelector<HTMLElement>('[data-ui-select-list]')
@@ -1754,21 +1738,6 @@ const focusSelectOption = (
   nextItem?.focus()
 }
 
-const focusLoopedOption = (
-  items: HTMLElement[],
-  currentItem: HTMLElement,
-  key: string
-): void => {
-  const visibleItems = getVisibleItems(items)
-
-  if (!visibleItems.length) return
-
-  const currentIndex = visibleItems.indexOf(currentItem)
-  const nextItem = visibleItems[getLoopedIndex(key, Math.max(0, currentIndex), visibleItems.length, ['ArrowDown'])]
-
-  nextItem?.focus()
-}
-
 const initCommand = (scope: ParentNode): void => {
   for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-command]')) {
     if (root.dataset.uiBound === 'true') continue
@@ -1788,87 +1757,26 @@ const initCommand = (scope: ParentNode): void => {
 }
 
 const initComboboxes = (scope: ParentNode): void => {
+  for (const [root, controller] of comboboxControllers) {
+    if (!root.isConnected) {
+      controller.destroy()
+
+      comboboxControllers.delete(root)
+    }
+  }
+
   for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-combobox]')) {
-    if (root.dataset.uiBound === 'true') continue
-
-    const input = root.querySelector<HTMLInputElement>('input[role="combobox"]')
-    const listbox = root.querySelector<HTMLElement>('[role="listbox"]')
-
-    if (!input || !listbox) continue
-
-    root.dataset.uiBound = 'true'
-
-    const items = [...listbox.querySelectorAll<HTMLElement>('[role="option"]')]
-
-    closeCombobox(root)
-
-    input.addEventListener('focus', () => openCombobox(root))
-
-    input.addEventListener('input', () => {
-      filterItems(input, items)
-
-      openCombobox(root)
-    })
-
-    input.addEventListener('keydown', event => {
-      if (event.key === 'Escape') {
-        closeCombobox(root)
-
-        return
-      }
-
-      if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp' && event.key !== 'Enter') return
-
-      const visibleItems = getVisibleItems(items)
-
-      if (!visibleItems.length) return
-
-      event.preventDefault()
-
-      openCombobox(root)
-
-      if (event.key === 'Enter') {
-        selectComboboxOption(root, visibleItems[0])
-
-        return
-      }
-
-      const targetIndex = event.key === 'ArrowUp' ? visibleItems.length - 1 : 0
-
-      visibleItems[targetIndex]?.focus()
-    })
-
-    for (const item of items) {
-      item.tabIndex = -1
-
-      item.addEventListener('click', () => selectComboboxOption(root, item))
-
-      item.addEventListener('keydown', event => {
-        if (event.key === 'Escape') {
-          closeCombobox(root)
-
-          input.focus({ preventScroll: true })
-
-          return
-        }
-
-        if (event.key === 'Enter' || event.key === ' ') {
-          event.preventDefault()
-
-          selectComboboxOption(root, item)
-
-          return
-        }
-
-        if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp' && event.key !== 'Home' && event.key !== 'End') return
-
-        event.preventDefault()
-
-        focusLoopedOption(items, item, event.key)
-      })
+    if (!comboboxControllers.has(root)) {
+      comboboxControllers.set(root, createLumenComboboxController(root))
     }
   }
 }
+
+document.addEventListener('astro:before-swap', () => {
+  for (const controller of comboboxControllers.values()) controller.destroy()
+
+  comboboxControllers.clear()
+})
 
 const initSelects = (scope: ParentNode): void => {
   for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-select]')) {
@@ -1999,9 +1907,13 @@ const initSelects = (scope: ParentNode): void => {
     })
 
     trigger.addEventListener('keydown', event => {
+      if (event.defaultPrevented || event.isComposing) return
+
       if (handleTypeahead(event)) return
 
-      if (event.key === 'Escape') {
+      if (event.key === 'Escape' && !listbox.hidden) {
+        event.preventDefault()
+
         closeSelect(root)
 
         return
@@ -2042,9 +1954,13 @@ const initSelects = (scope: ParentNode): void => {
       item.addEventListener('click', () => selectSelectOption(root, item))
 
       item.addEventListener('keydown', event => {
+        if (event.defaultPrevented || event.isComposing) return
+
         if (handleTypeahead(event, item)) return
 
-        if (event.key === 'Escape') {
+        if (event.key === 'Escape' && !listbox.hidden) {
+          event.preventDefault()
+
           closeSelect(root)
 
           trigger.focus({ preventScroll: true })
@@ -3293,6 +3209,8 @@ const initDatePickers = (scope: ParentNode): void => {
     observer.observe(root, { attributes: true, attributeFilter: ['locale', 'lang', 'data-locale', 'data-choose-date-label'] })
 
     root.addEventListener('keydown', event => {
+      if (event.defaultPrevented || event.isComposing) return
+
       if (event.key !== 'Escape' || popover.hidden) return
 
       event.preventDefault()
@@ -4461,6 +4379,8 @@ const initContextMenus = (scope: ParentNode): void => {
     })
 
     menu.addEventListener('keydown', event => {
+      if (event.defaultPrevented || event.isComposing) return
+
       if (event.key === 'Escape') {
         closeContextMenu(menu)
 
@@ -4833,6 +4753,8 @@ const initToasts = (): void => {
     toast.dataset.state = 'open'
 
     toast.addEventListener('keydown', event => {
+      if (event.defaultPrevented || event.isComposing) return
+
       if (event.key !== 'Escape') return
 
       event.preventDefault()
@@ -4895,6 +4817,8 @@ const initToasts = (): void => {
 
   for (const toast of document.querySelectorAll<HTMLElement>('[data-ui-toast], .ui-toast')) {
     toast.addEventListener('keydown', event => {
+      if (event.defaultPrevented || event.isComposing) return
+
       if (event.key !== 'Escape') return
 
       event.preventDefault()
@@ -5211,6 +5135,8 @@ const initMentions = (scope: ParentNode): void => {
     input.addEventListener('keydown', event => {
       const visibleOptions = options.filter(option => !option.hidden)
 
+      if (event.defaultPrevented || event.isComposing) return
+
       if (event.key === 'Escape' && !list.hidden) {
         event.preventDefault()
 
@@ -5290,7 +5216,15 @@ const initSpeedDials = (scope: ParentNode): void => {
     })
 
     trigger.addEventListener('keydown', event => {
-      if (event.key === 'Escape') closeSpeedDial(root)
+      if (event.defaultPrevented || event.isComposing) return
+
+      if (event.key === 'Escape' && root.dataset.state === 'open') {
+        event.preventDefault()
+
+        closeSpeedDial(root)
+
+        return
+      }
 
       if (['ArrowDown', 'ArrowRight'].includes(event.key)) {
         event.preventDefault()
@@ -5314,6 +5248,8 @@ const initSpeedDials = (scope: ParentNode): void => {
     })
 
     actions.addEventListener('keydown', event => {
+      if (event.defaultPrevented || event.isComposing) return
+
       if (event.key === 'Escape') {
         event.preventDefault()
 
@@ -5669,30 +5605,49 @@ if (document.documentElement.dataset.uiPrimitivesGlobalBound !== 'true') {
   })
 
   document.addEventListener('keydown', event => {
-    if (event.key !== 'Escape') return
+    if (event.defaultPrevented || event.isComposing || event.key !== 'Escape') return
 
-    for (const root of document.querySelectorAll<HTMLElement>(disclosureSelector)) {
-      closeDisclosure(root)
-    }
+    // The first open owner in the event path is the innermost active popup.
+    for (const target of event.composedPath()) {
+      if (!(target instanceof HTMLElement)) continue
 
-    for (const root of document.querySelectorAll<HTMLElement>('[data-ui-combobox]')) {
-      closeCombobox(root)
-    }
+      if (target.matches(disclosureSelector)) {
+        const trigger = target.querySelector<HTMLElement>('[data-ui-trigger]')
 
-    for (const root of document.querySelectorAll<HTMLElement>('[data-ui-select]')) {
-      closeSelect(root)
-    }
+        if (trigger?.getAttribute('aria-expanded') !== 'true') continue
 
-    for (const root of document.querySelectorAll<HTMLElement>('[data-ui-date-picker]')) {
-      closeDatePicker(root, root.contains(document.activeElement))
-    }
+        event.preventDefault()
 
-    for (const menu of document.querySelectorAll<HTMLElement>('[data-ui-context-menu][data-state="open"]')) {
-      closeContextMenu(menu)
-    }
+        closeDisclosure(target)
 
-    for (const root of document.querySelectorAll<HTMLElement>('[data-ui-speed-dial][data-state="open"]')) {
-      closeSpeedDial(root, root.contains(document.activeElement))
+        trigger.focus({ preventScroll: true })
+
+        return
+      }
+
+      if (target.matches('[data-ui-date-picker]') && target.querySelector('[aria-expanded="true"]')) {
+        event.preventDefault()
+
+        closeDatePicker(target, true)
+
+        return
+      }
+
+      if (target.matches('[data-ui-context-menu][data-state="open"]')) {
+        event.preventDefault()
+
+        closeContextMenu(target)
+
+        return
+      }
+
+      if (target.matches('[data-ui-speed-dial][data-state="open"]')) {
+        event.preventDefault()
+
+        closeSpeedDial(target, true)
+
+        return
+      }
     }
   })
 

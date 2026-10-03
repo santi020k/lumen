@@ -50,6 +50,12 @@
 - Add ImageComparison for Astro, React, and Web Components with aligned media clipping, a labelled native range control, localized accessible values, and controlled React state. Preserve media framing across reveal changes and support writing direction without pointer-only interaction.
 
 ### Major Changes
+- Keep editable Combobox focus in the input with active-descendant navigation, composition-safe
+  shortcuts and live option updates. Report React selection through onChange for controlled forms.
+  Dismiss only the innermost active popup on Escape and preserve canceled events and text editing.
+
+  Migration: use aria-activedescendant and aria-selected instead of focusing option buttons. Enter
+  commits only an active option in an open list; otherwise native form behavior remains available.
 
 - Preserve VirtualList scroll height with fixed-height row windows and inert spacers across web
   adapters. Refresh changing rows and resized containers, retain keyboard focus, and restore row

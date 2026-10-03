@@ -674,3 +674,19 @@ window. Elements disconnect and React unmount restore original row styles and hi
 shared requirement for a locale-aware draft parser. Applications needing decimal-comma entry,
 lossless monetary drafts or currency rules should retain their explicit parsing and validation
 policy; Lumen must not infer currency units or precision from locale.
+
+
+## Combobox keyboard behavior in v4
+
+Combobox keeps DOM focus in its input while Arrow Up/Down changes the active option through
+`aria-activedescendant`. Enter commits the active option only while the list is open; without an
+active option, normal form submission remains available. Home, End, Left and Right retain native
+text editing. Composition input and canceled keyboard events do not trigger selection or dismissal.
+Escape closes the innermost open control first, preserving an enclosing popup or dialog until the
+next Escape. Tab dismisses the list when focus leaves the component.
+
+Astro and Elements observe added, removed, relabeled and disabled options, and delegate pointer
+selection to the current list. React derives options from its current props and reports committed
+selections through `onChange`, including controlled inputs. Disabled and read-only inputs stay closed.
+Applications should keep focus on the input and observe `aria-activedescendant` instead of calling
+focus on option buttons. The DOM adapters match both option labels and values.

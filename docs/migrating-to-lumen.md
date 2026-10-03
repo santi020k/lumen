@@ -256,3 +256,11 @@ links; keep the site logo, theme switch, account menu, and unrelated utility act
 root so they retain independent Tab stops. Use `variant="unstyled"` when adopting the navigation
 semantics and runtime inside an established visual system. `Sidebar variant="unstyled"` and
 `Link variant="inherit"` provide the matching low-presentation migration path.
+
+## Combobox focus and nested Escape
+
+V4 keeps focus in editable Combobox inputs. Update tests and custom option styling that assumed
+option buttons receive focus to use `aria-activedescendant` and `aria-selected` instead. Arrow keys
+activate an option; Enter commits it. Enter without an active option retains native form behavior.
+Nested controls consume their own Escape dismissal. Parent keyboard handlers should honor
+`event.defaultPrevented` before closing or moving focus. No persisted data migration is required.

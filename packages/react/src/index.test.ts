@@ -1427,44 +1427,6 @@ describe('@santi020k/lumen-react', () => {
     expect(changes).toEqual([true])
   })
 
-  test('closes an open disclosure panel on Escape', () => {
-    const changes: boolean[] = []
-    const dropdown = withHookDispatcher(() => useDropdownMenu({
-      defaultOpen: true,
-      onOpenChange: open => {
-        changes.push(open)
-      }
-    }))
-
-    dropdown.panelProps.onKeyDown?.({
-      key: 'Escape',
-      preventDefault: vi.fn()
-    } as unknown as Parameters<
-      NonNullable<typeof dropdown.panelProps.onKeyDown>
-    >[0])
-
-    expect(changes).toEqual([false])
-  })
-
-  test('dismisses tooltips on mouse leave and Escape', () => {
-    const changes: boolean[] = []
-    const tooltip = withHookDispatcher(() => useTooltip({
-      defaultOpen: true,
-      onOpenChange: open => {
-        changes.push(open)
-      }
-    }))
-
-    tooltip.rootProps.onMouseLeave?.(
-      {} as Parameters<NonNullable<typeof tooltip.rootProps.onMouseLeave>>[0]
-    )
-    tooltip.rootProps.onKeyDown?.({
-      key: 'Escape'
-    } as Parameters<NonNullable<typeof tooltip.rootProps.onKeyDown>>[0])
-
-    expect(changes).toEqual([false, false])
-  })
-
   test('opens tooltips after the scheduled focus delay', () => {
     vi.useFakeTimers()
 

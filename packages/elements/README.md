@@ -455,3 +455,10 @@ Artwork attribution is shipped with the core package in `PHONE_FLAG_LICENSE.txt`
 When `PhoneInput` is registered, `defineLumenElements` also registers `lumen-country-flag`
 (`country`, `decorative`, optional `label`) and `lumen-phone-number` (`country`, `value`, `link`,
 optional `locale`). The read-only element normalizes its string value before creating a tel link.
+
+## Combobox keyboard behavior
+
+In v4, Combobox retains input focus and exposes its active option through `aria-activedescendant`.
+Enter commits an active option; text editing and composition remain native. Escape dismisses one
+nested control at a time. See the [shared keyboard contract](../../docs/ai-usage.md#combobox-keyboard-behavior-in-v4)
+for dynamic options, controlled inputs and migration guidance.

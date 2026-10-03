@@ -178,12 +178,42 @@ and its generated notes were folded into the existing unpublished 4.0.0 entries.
 and previous changelog history remain unchanged. The React list and editor behavior have focused
 modules with separate bundle budgets; existing budgets were preserved.
 
-Verification: 531 focused web tests and six Chromium regressions passed, including desktop/phone
+Verification: 862 tests in the isolated component checkout and six Chromium regressions passed,
+including desktop/phone
 scroll extent, container resizing, Tab navigation, retained focus and external command ownership.
 Matched synthetic before/after screenshots were inspected at 390 and 1440 pixels. The isolated
-component builds, types and bundle checks passed. The combined checkout's typecheck passed all
-23 tasks, while its full test suite and canonical validation encountered concurrent PhoneInput
-mock and bundle-budget failures; those results do not qualify this component commit for release.
+component builds, types, zero-warning lint, bundle checks, Knip and registry checks passed. The
+canonical validation remains blocked by the three existing high-severity dependency advisories
+listed below. Local integration into release/v4.0.0 remains pending because its checkout contains
+active concurrent work; the focused component commit is preserved on fix/v4-component-behavior.
+
+### Editable Combobox and nested dismissal
+
+Combobox now keeps DOM focus in its editable input and exposes the active choice through
+aria-activedescendant. Arrow navigation skips disabled DOM options; ordinary editing keys,
+composition and canceled keyboard events remain owned by the input or application. Enter commits
+only an active option in an open list. Astro and Elements share a controller that observes changing
+options and delegates pointer selection. React follows changing option props and reports committed
+selection through onChange for controlled forms.
+
+Nested disclosures, Select and Combobox consume their own Escape before an enclosing popup or
+dialog dismisses. Parent handlers honor canceled events, and disclosure navigation leaves text
+editing alone. Regression tests reproduce the old failures and cover phone/desktop behavior,
+composition, changing options, controlled values, nested dismissal and focus restoration.
+
+The Astro interaction suite passed 65 checks; the React/Elements conformance suite passed all 100
+checks across desktop/mobile Chromium and WebKit. Conformance used the canonical configuration
+with a temporary longer server-start timeout under concurrent local build load. The cohesive
+React Combobox module and shared DOM controller have separate measured budgets; all existing
+budget ceilings remain unchanged. Generated Changeset notes are folded into the unpublished
+4.0.0 entries, preserving package versions and previous history.
+
+The full suite passed 881 tests in 82 files. Type checking and zero-warning lint passed all
+23 tasks; spelling checked 1,302 files without issues. Generation, API, MCP, registry and unused
+code checks passed. Packed Core, umbrella, React, React Hook Form, Elements, Astro, Next.js and
+brand-icon consumers passed. The dependency audit still reports the same three high-severity
+advisories below, so the release gate remains blocked. Local integration is pending while the
+release checkout contains active concurrent work.
 
 ### Remaining release blockers
 

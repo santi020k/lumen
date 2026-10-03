@@ -76,6 +76,7 @@ export {
   renderLumenCodeHtml,
   tokenizeLumenCode
 } from './code.js'
+export { createLumenComboboxController, type LumenComboboxController } from './combobox.js'
 export {
   type LumenComponentBehavior,
   lumenComponentBehavior,

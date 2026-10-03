@@ -523,3 +523,10 @@ Astro and React also export `CountryFlag` (`regionCode`, optional `decorative`) 
 (`value: LumenPhoneNumber`, optional `link`). A telephone link is rendered only for a complete
 E.164 value. Use the model returned by the phone normalizer; keep domain persistence in your app.
 Artwork attribution is shipped with the core package in `PHONE_FLAG_LICENSE.txt`.
+
+## Combobox keyboard behavior
+
+In v4, Combobox retains input focus and exposes its active option through `aria-activedescendant`.
+Enter commits an active option; text editing and composition remain native. Escape dismisses one
+nested control at a time. See the [shared keyboard contract](../../docs/ai-usage.md#combobox-keyboard-behavior-in-v4)
+for dynamic options, controlled inputs and migration guidance.

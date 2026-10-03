@@ -783,9 +783,13 @@ describe('@santi020k/lumen-elements', () => {
       </lumen-combobox>
     `
 
-    const root = document.querySelector<HTMLElement>('lumen-combobox')!
-    const input = root.querySelector<HTMLInputElement>('input')!
-    const listbox = root.querySelector<HTMLElement>('[role="listbox"]')!
+    const root = document.querySelector<HTMLElement>('lumen-combobox')
+    if (!root) throw new Error('Expected Combobox root')
+
+    const input = root.querySelector<HTMLInputElement>('input')
+    const listbox = root.querySelector<HTMLElement>('[role="listbox"]')
+
+    if (!input || !listbox) throw new Error('Expected Combobox controls')
     const options = [...root.querySelectorAll<HTMLButtonElement>('[role="option"]')]
     const changes: string[] = []
 
@@ -808,9 +812,10 @@ describe('@santi020k/lumen-elements', () => {
 
     press(input, 'ArrowDown')
 
-    expect(document.activeElement).toBe(options[1])
+    expect(document.activeElement).toBe(input)
+    expect(input.getAttribute('aria-activedescendant')).toBe(options[1]?.id)
 
-    press(options[1]!, 'Enter')
+    press(input, 'Enter')
 
     expect(input.value).toBe('react')
     expect(changes).toEqual(['react'])
@@ -821,11 +826,11 @@ describe('@santi020k/lumen-elements', () => {
     input.dispatchEvent(new Event('input', { bubbles: true }))
     press(input, 'ArrowUp')
 
-    expect(document.activeElement).toBe(options[2])
+    expect(input.getAttribute('aria-activedescendant')).toBe(options[2]?.id)
 
-    press(options[2]!, 'Home')
+    press(input, 'ArrowDown')
 
-    expect(document.activeElement).toBe(options[0])
+    expect(input.getAttribute('aria-activedescendant')).toBe(options[0]?.id)
 
     document.body.dispatchEvent(new Event('pointerdown', { bubbles: true }))
 
