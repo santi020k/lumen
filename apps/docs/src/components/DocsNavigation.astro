@@ -20,7 +20,7 @@ const { currentPath, platform } = Astro.props
 const platformLinks = productPlatformGuides.map(guide => [guide.label, guide.href] as const)
 
 const sharedLinks = sharedDocumentationLinks.filter((_, index) => {
-  if (!platform) return true
+  if (!platform || sharedDocumentationLinks[index]?.href === '/docs/migrations') return true
 
   if (platform === 'foundations') return index === 0
 

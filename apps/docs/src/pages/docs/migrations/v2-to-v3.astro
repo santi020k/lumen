@@ -1,0 +1,18 @@
+---
+import { Badge, Link, Prose, Stack } from '@santi020k/lumen-astro'
+
+import { Content } from '../../../../../../docs/migrating-v2-to-v3.md'
+import DocsLayout from '../../../layouts/DocsLayout.astro'
+---
+
+<DocsLayout
+  breadcrumbs={[{ href: '/docs/migrations', label: 'Migration guides' }]}
+  description="Upgrade Lumen 2 dependencies, migrate exhaustive Swift icon switches, and verify your application."
+  title="Lumen 2 to Lumen 3 migration - Lumen UI"
+>
+  <Stack gap="group">
+    <Link href="/docs/migrations">All migration guides</Link>
+    <Badge class="w-fit" variant="outline">Version upgrade</Badge>
+    <Prose class="migration-guide"><Content /></Prose>
+  </Stack>
+</DocsLayout>

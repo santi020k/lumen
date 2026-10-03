@@ -12,6 +12,7 @@ export const sharedDocumentationLinks = [
   { href: '/docs/figma', label: 'Figma' },
   { href: '/docs/ai-skill', label: 'AI skill' },
   { href: '/docs/mcp', label: 'MCP server' },
+  { href: '/docs/migrations', label: 'Migration guides' },
   { href: '/changelog', label: 'Changelog' }
 ] as const
 
@@ -37,6 +38,7 @@ const contextLinks: Record<DocsPlatformId | 'all', DocsContextLink[]> = {
     { href: '/docs/figma', label: 'Figma', match: 'prefix' },
     { href: '/docs/ai-skill', label: 'AI skill', match: 'prefix' },
     { href: '/docs/mcp', label: 'MCP server', match: 'prefix' },
+    { href: '/docs/migrations', label: 'Migration guides', match: 'prefix' },
     { href: '/changelog', label: 'Changelog', match: 'prefix' }
   ],
   android: sharedNativeLinks('android'),

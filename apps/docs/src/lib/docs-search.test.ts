@@ -19,6 +19,13 @@ const item = (
 })
 
 describe('docs search ranking', () => {
+  test.each([
+    ['migration v2 v3', '/docs/migrations/v2-to-v3'],
+    ['migration v3 v4', '/docs/migrations/v3-to-v4']
+  ])('finds the upgrade guide for %s', (query, href) => {
+    expect(getMatchedSearchItems(docsSearchIndex, query).some(result => result.href === href)).toBe(true)
+  })
+
   test('puts components first for a broad task search in the docs index', () => {
     const [firstResult] = getMatchedSearchItems(docsSearchIndex, 'filter')
 

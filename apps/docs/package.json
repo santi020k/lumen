@@ -44,11 +44,13 @@
   },
   "devDependencies": {
     "@astrojs/check": "catalog:",
+    "@astrojs/markdown-satteri": "catalog:",
     "@astrojs/ts-plugin": "catalog:",
     "@santi020k/lumen-playground-react-native": "workspace:*",
     "@santi020k/og": "catalog:",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
+    "jsdom": "catalog:",
     "sharp": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:"

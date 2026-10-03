@@ -57,9 +57,13 @@ framework and platform's native authoring experience.
 
 The v4 release branch brings consumer-driven date selection, chart readability, clipboard feedback,
 loading states, native layout improvements and a new ImageComparison primitive. Start with the
-[migration guide](docs/migrating-to-lumen.md), [consumer audit](docs/lumen-4-consumer-audit.md),
+[v3 → v4 migration guide](docs/migrating-v3-to-v4.md), [consumer audit](docs/lumen-4-consumer-audit.md),
 and [local readiness record](docs/lumen-4-readiness.md). The refreshed community gallery includes
 published consumer screenshots; it does not imply those applications already run this candidate.
+
+For existing applications, follow [v2 → v3](docs/migrating-v2-to-v3.md) before
+[v3 → v4](docs/migrating-v3-to-v4.md). For initial adoption, use
+[Migrating to Lumen](docs/migrating-to-lumen.md).
 
 ## Dashboards and templates
 

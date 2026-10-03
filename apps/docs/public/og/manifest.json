@@ -257,6 +257,54 @@
       "pathname": "/terms",
       "title": "Terms"
     },
+    "/docs/migrations": {
+      "alt": "Migration guides — Lumen UI",
+      "description": "Upgrade Lumen versions with API changes, examples, and consumer verification.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--migrations.webp",
+          "primary": true,
+          "url": "/og/pages/docs--migrations.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/migrations",
+      "title": "Migration guides"
+    },
+    "/docs/migrations/v2-to-v3": {
+      "alt": "Lumen 2 to 3 — Lumen UI",
+      "description": "Update coordinated dependencies and migrate exhaustive Swift icon switches.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--migrations--v2-to-v3.webp",
+          "primary": true,
+          "url": "/og/pages/docs--migrations--v2-to-v3.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/migrations/v2-to-v3",
+      "title": "Lumen 2 to 3"
+    },
+    "/docs/migrations/v3-to-v4": {
+      "alt": "Lumen 3 to 4 — Lumen UI",
+      "description": "Evaluate the v4 candidate with spacing changes, native API updates, and rollback guidance.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--migrations--v3-to-v4.webp",
+          "primary": true,
+          "url": "/og/pages/docs--migrations--v3-to-v4.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/migrations/v3-to-v4",
+      "title": "Lumen 3 to 4"
+    },
     "/docs/brand-icons": {
       "alt": "Brand icons — Lumen UI",
       "description": "Use the shared brand icon catalog across supported Lumen platforms.",
