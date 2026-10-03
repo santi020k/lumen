@@ -17,21 +17,21 @@ describe('versioned source migrations', () => {
       await writeFile(join(root, 'View.tsx'), layoutSource)
       const preview = await migrateLumenVersion({ cwd: root, version: 'v4' })
 
-      expect(preview.changes).toHaveLength(1)
-      expect(preview.sdkMigration?.changes).toHaveLength(1)
+      expect(preview.changes).toHaveLength(2)
+      expect(preview.changes.filter(finding => finding.kind === 'embedded-mcp-sdk')).toHaveLength(1)
       expect(formatLumenVersionMigration(preview)).toContain('@modelcontextprotocol/client')
       expect(await readFile(join(root, 'sdk.ts'), 'utf8')).toBe(sdkSource)
       expect(await readFile(join(root, 'View.tsx'), 'utf8')).toBe(layoutSource)
 
       const applied = await migrateLumenVersion({ apply: true, cwd: root, version: 'v4' })
 
-      expect(applied.sdkMigration?.applied).toBe(true)
+      expect(applied.applied).toBe(true)
       expect(await readFile(join(root, 'sdk.ts'), 'utf8')).toContain('from \'@modelcontextprotocol/client\'')
       expect(await readFile(join(root, 'View.tsx'), 'utf8')).toContain('gap="group"')
       const repeated = await migrateLumenVersion({ apply: true, cwd: root, version: 'v4' })
 
       expect(repeated.changes).toEqual([])
-      expect(repeated.sdkMigration?.changes).toEqual([])
+      expect(repeated.changedFiles).toEqual([])
       expect(await readFile(join(root, 'View.tsx'), 'utf8')).toContain('gap="group"')
     } finally {
       await rm(root, { force: true, recursive: true })
@@ -136,6 +136,33 @@ const example = '<Flow gap="md" />'
       await writeFile(path, `${await readFile(path, 'utf8')}\n// edited`)
       expect((await migrateLumenVersion({ cwd: root, version: 'v4' })).manualReview[0]?.message).toContain('already migrated')
       expect(formatLumenVersionMigration(preview)).toContain('lumen migrate v4 --apply')
+    } finally {
+      await rm(root, { force: true, recursive: true })
+    }
+  })
+
+  test('one v4 apply composes layout and SDK edits into the same idempotent ledger', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'lumen-v4-composed-'))
+    const screen = join(root, 'Screen.tsx')
+    const server = join(root, 'server.mjs')
+    const sdkSource = '// Preserve @modelcontextprotocol/sdk/server/stdio.js\nimport { StdioServerTransport } from \'@modelcontextprotocol/sdk/server/stdio.js\'\n'
+
+    try {
+      await writeFile(screen, 'import { Stack } from \'@santi020k/lumen-react\'\n<Stack gap="lg" />')
+      await writeFile(server, sdkSource)
+
+      const preview = await migrateLumenVersion({ cwd: root, version: 'v4' })
+
+      expect(preview.changedFiles).toEqual(['Screen.tsx', 'server.mjs'])
+      expect(preview.changes.map(finding => finding.kind)).toEqual(['layout-gap', 'embedded-mcp-sdk'])
+      expect(await readFile(server, 'utf8')).toBe(sdkSource)
+
+      const applied = await migrateLumenVersion({ apply: true, cwd: root, version: 'v4' })
+
+      expect(applied.changedFiles).toEqual(preview.changedFiles)
+      expect(await readFile(screen, 'utf8')).toContain('gap="xl"')
+      expect(await readFile(server, 'utf8')).toBe('// Preserve @modelcontextprotocol/sdk/server/stdio.js\nimport { StdioServerTransport } from \'@modelcontextprotocol/server/stdio\'\n')
+      expect((await migrateLumenVersion({ apply: true, cwd: root, version: 'v4' })).changedFiles).toEqual([])
     } finally {
       await rm(root, { force: true, recursive: true })
     }

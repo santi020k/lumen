@@ -245,9 +245,15 @@ pnpm exec lumen migrate v4 --dry-run --json
 pnpm exec lumen migrate v4 --apply
 ```
 
-The default is a preview. The command combines explicit v3 layout-gap preservation with four known
-static MCP SDK v1 import migrations in `.ts`, `.js`, and `.mjs` files. The JSON report retains layout
-findings and adds `sdkMigration` for SDK edits, installed versions and review triggers. Comments,
-examples, dynamic imports and native sources remain manual review tasks. Use `--dependencies` for an
-explicitly requested coordinated pnpm upgrade. Review triggers do not prove a defect. The v2 and v3
-migration commands remain available for older consumers.
+The default is a preview. Deterministic edits cover four known static MCP SDK v1 import paths in
+`.ts`, `.js`, and `.mjs` files. The report inventories resolved installed versions and lists v4
+UI/native review triggers. SDK dependency manifests, comments, examples, dynamic imports, JSX, Astro,
+and native SDK imports remain review tasks. Review triggers are not proof of a defect. The v2 migration
+command remains available separately for older consumers.
+
+The integrated `lumen migrate v4` command also retains the release's web spacing migrations and
+optional coordinated dependency workflow. SDK edits compose into that command's source transform,
+so its apply ledger fingerprints the final source and repeat runs do not rewrite spacing twice.
+SDK import edits remain limited to `.ts`, `.js`, and `.mjs`; this restriction does not disable the
+separate documented JSX/Astro spacing migration. The JSON report includes installed package
+versions and explicit SDK dependency-review findings.

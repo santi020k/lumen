@@ -2,6 +2,7 @@ import {
   findBalancedEnd, findImportStatements, findMarkupTagEnd,
   getMarkupStart, getTagNameEnd, parseMarkupAttributes, parseNamedImports
 } from './v2-migration.js'
+import { migrateLumenV4Source } from './v4-migration.js'
 import type { LumenMigrationVersion, LumenVersionMigrationFinding, LumenVersionSourceMigration } from './version-migration.js'
 
 const layoutGaps: Readonly<Record<string, string>> = { lg: 'xl', md: 'group', xl: '2xl' }
@@ -264,6 +265,20 @@ const applyEdits = (source: string, edits: Edit[]): string => {
   return pieces.join('')
 }
 
+const applySdkMigration = (migration: LumenVersionSourceMigration, file: string): LumenVersionSourceMigration => {
+  if (!['.ts', '.js', '.mjs'].some(extension => file.endsWith(extension))) return migration
+
+  const sdk = migrateLumenV4Source(migration.source, file)
+
+  return {
+    ...migration,
+    changes: [...migration.changes, ...sdk.changes.map(({ column, file: sourceFile, line, message }) => ({
+      column, file: sourceFile, kind: 'embedded-mcp-sdk' as const, line, message
+    }))],
+    source: sdk.source
+  }
+}
+
 /** Assumes v3 input for v4. Filesystem apply uses a ledger to prevent repeated spacing rewrites. */
 export const migrateLumenVersionSource = (
   source: string,
@@ -287,5 +302,5 @@ export const migrateLumenVersionSource = (
 
   scanMarkup(context, file)
 
-  return { changes: context.changes, manualReview, source: applyEdits(source, context.edits) }
+  return applySdkMigration({ changes: context.changes, manualReview, source: applyEdits(source, context.edits) }, file)
 }

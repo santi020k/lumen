@@ -722,10 +722,17 @@ inspect installed public types and README or use a matching MCP package. Do not 
 Search supports English and Spanish queries with framework and platform filters.
 
 For a v4 upgrade, read `lumen_get_migration` and preview `lumen migrate v4 --dry-run --json` locally.
-`--apply` combines the versioned layout migration with known static SDK import edits in JavaScript
-and TypeScript. The JSON report retains layout findings and adds `sdkMigration` for SDK changes,
-installed versions and review triggers. Comments and examples remain untouched. Use `--dependencies`
-only for an explicitly requested coordinated pnpm upgrade. Application-owned workarounds, native
-source and dynamic imports require manual review; review triggers do not prove a defect.
+`--apply` rewrites only known static SDK import paths in JavaScript and TypeScript. It preserves
+comments and examples and reports UI/native review triggers. Dependency updates and application-owned
+workarounds require review; the CLI does not infer that a workaround can be removed. JSX, Astro,
+native source, dynamic imports, and dependency manifests are not automatically rewritten by the
+SDK import transform.
 
 See [v4 AI verification](lumen-4-ai.md) for actual agent benchmark coverage and release evidence.
+
+The integrated `lumen migrate v4` command also retains the release's web spacing migrations and
+optional coordinated dependency workflow. SDK edits compose into that command's source transform,
+so its apply ledger fingerprints the final source and repeat runs do not rewrite spacing twice.
+SDK import edits remain limited to `.ts`, `.js`, and `.mjs`; this restriction does not disable the
+separate documented JSX/Astro spacing migration. The JSON report includes installed package
+versions and explicit SDK dependency-review findings.
