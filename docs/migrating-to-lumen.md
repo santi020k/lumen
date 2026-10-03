@@ -97,6 +97,22 @@ is a local release candidate; published projects in the showcase still use their
 | NavigationMenu | Ordinary links keep native Tab order. Do not depend on a single roving Tab stop for site navigation. |
 | Astro ThemeToggle | A controlled toggle leaves initial document theme ownership to the application. Initialize the theme before rendering and persist it in the application's change handler. |
 | SwiftUI / Compose | Rebuild for changed initializers and formatter contracts. Swift charts accept `bare` and `height`; Slider accepts `showsLabel` and announces `valueLabel`. Compose numeric/time line data uses continuous X positions, including isolated observations. |
+| Embedded MCP server | `createLumenServer()` returns the stable SDK v2 `McpServer` from `@modelcontextprotocol/server`. Migrate SDK imports and transports together; do not mix SDK v1 and v2 objects. |
+
+The refreshed icon catalog adds Swift `LumenIconName.bangladeshiTaka`, `.layoutGridCircles`,
+`.letters`, and `.printer3d`. Handle these cases in exhaustive Swift switches or provide an
+appropriate fallback before rebuilding. Existing case names and raw values remain available.
+Compose exposes the same additions as `LumenIconName.BangladeshiTaka`, `.LayoutGridCircles`,
+`.Letters`, and `.Printer3d`.
+
+For embedded MCP integrations, replace `@modelcontextprotocol/sdk/server/mcp.js` imports with
+`@modelcontextprotocol/server` and import `StdioServerTransport` from
+`@modelcontextprotocol/server/stdio`. Client-side SDK code moves to
+`@modelcontextprotocol/client` and `@modelcontextprotocol/client/stdio`. Follow the
+[official SDK v2 migration guide](https://ts.sdk.modelcontextprotocol.io/v2/migration/upgrade-to-v2)
+for other programmatic integrations. Lumen's CLI commands, stateless HTTP endpoint, tool names,
+argument schemas, resource URIs, and existing `2025-11-25` protocol handshake remain unchanged;
+MCP clients connecting over stdio or HTTP do not need to change their Lumen configuration.
 
 `ImageComparison` is new across Astro, React and Elements. See the [media comparison guide](image-comparison.md)
 for full-size media framing, RTL, labels and controlled state. The [reporting example](https://lumen.santi020k.com/docs/web/reporting)

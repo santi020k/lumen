@@ -5,6 +5,9 @@ in [README.md](README.md), and AI-specific instructions live in [AGENTS.md](AGEN
 
 ## Local Setup
 
+Use Node.js 22.22.2+, 24.15.0+, or 26+ and the pnpm version pinned in `package.json` (currently 12.8.1).
+This workspace tooling requirement does not change the supported runtimes of published packages.
+
 ```bash
 pnpm install
 pnpm run hooks:install

@@ -8,7 +8,7 @@
     },
     "swiftUI": {
       "path": "registry/swift-api-baseline.json",
-      "sha256": "64e71d1293118d92f5071ca3f9259613ca85152430e1cc6803e586da5b375748"
+      "sha256": "65ef334805ea328b9ce4303fc42b00b14c218f4f8682184999d5062121a3cf3f"
     },
     "swiftWidget": {
       "path": "registry/swift-widget-api-baseline.json",
@@ -16,7 +16,7 @@
     },
     "compose": {
       "path": "packages/compose/api/lumen-compose.api",
-      "sha256": "9aae075787ef598eb85231097477151ed159ad6d391c5591b70c8c4e75362890"
+      "sha256": "6e0ce7ab8bc99a186b08220be387c0cd0ae717c9520aebd721aa2ca804b0dc3b"
     },
     "composeClassification": {
       "path": "registry/compose-api-classification.json",

@@ -1,6 +1,77 @@
 import { describe, expect, test, vi } from 'vitest'
 
 import worker from './cloudflare-worker.js'
+import { getMeta } from './tools.js'
+
+describe('Cloudflare Worker MCP transport', () => {
+  test('keeps the existing stateless protocol handshake and tool responses', async () => {
+    const limit = vi.fn().mockResolvedValue({ success: true })
+    const environment = { LUMEN_MCP_RATE_LIMITER: { limit } }
+    const headers = {
+      accept: 'application/json, text/event-stream',
+      'cf-connecting-ip': '192.0.2.1',
+      'content-type': 'application/json',
+      'mcp-protocol-version': '2025-11-25'
+    }
+    const initialize = await worker.fetch(new Request('https://lumen.example/mcp', {
+      body: JSON.stringify({
+        id: 1,
+        jsonrpc: '2.0',
+        method: 'initialize',
+        params: {
+          capabilities: {},
+          clientInfo: { name: 'lumen-worker-test', version: '1.0.0' },
+          protocolVersion: '2025-11-25'
+        }
+      }),
+      headers,
+      method: 'POST'
+    }), environment)
+
+    expect(initialize.status).toBe(200)
+    expect(initialize.headers.get('mcp-session-id')).toBeNull()
+    expect(initialize.headers.get('cache-control')).toBe('no-store')
+    const initializationBody: unknown = await initialize.json()
+
+    expect(initializationBody).toMatchObject({
+      id: 1,
+      jsonrpc: '2.0',
+      result: {
+        capabilities: { resources: {}, tools: {} },
+        protocolVersion: '2025-11-25',
+        serverInfo: { name: '@santi020k/lumen-mcp' }
+      }
+    })
+
+    const response = await worker.fetch(new Request('https://lumen.example/mcp', {
+      body: JSON.stringify({
+        id: 2,
+        jsonrpc: '2.0',
+        method: 'tools/call',
+        params: { arguments: {}, name: 'lumen_get_meta' }
+      }),
+      headers,
+      method: 'POST'
+    }), environment)
+
+    expect(response.status).toBe(200)
+    expect(response.headers.get('x-content-type-options')).toBe('nosniff')
+    expect(response.headers.get('referrer-policy')).toBe('no-referrer')
+    expect(response.headers.get('x-frame-options')).toBe('DENY')
+    const responseBody: unknown = await response.json()
+
+    expect(responseBody).toMatchObject({
+      id: 2,
+      jsonrpc: '2.0',
+      result: {
+        content: [expect.objectContaining({ type: 'text' })],
+        isError: false,
+        structuredContent: getMeta().data
+      }
+    })
+    expect(limit).toHaveBeenCalledTimes(2)
+  })
+})
 
 describe('Cloudflare Worker rate limiting', () => {
   test('reports catalog readiness without consuming rate-limit capacity', async () => {

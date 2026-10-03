@@ -1,6 +1,5 @@
 import { fileURLToPath } from 'node:url'
 
-import mdx from '@astrojs/mdx'
 import sitemap from '@astrojs/sitemap'
 import tailwindcss from '@tailwindcss/vite'
 import { defineConfig, passthroughImageService } from 'astro/config'
@@ -9,7 +8,7 @@ export default defineConfig({
   image: {
     service: passthroughImageService()
   },
-  integrations: [mdx(), sitemap({ filter: page => !new URL(page).pathname.startsWith('/internal/') })],
+  integrations: [sitemap({ filter: page => !new URL(page).pathname.startsWith('/internal/') })],
   ...(process.env.LUMEN_DOCS_OUT_DIR ?
     { outDir: process.env.LUMEN_DOCS_OUT_DIR } :
     {}),
