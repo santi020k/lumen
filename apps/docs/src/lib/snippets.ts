@@ -960,7 +960,12 @@ export const buildSnippets = (
   if (name === 'DataTable') reactBody = '<DataTable columns={columns} rows={rows} />'
   else if (name === 'Tabs') reactBody = body.replaceAll('initialValue=', 'defaultValue=')
   else if (name === 'PhoneInput')
-    reactBody = body.replaceAll('countryValue=', 'defaultCountryValue=').replaceAll(' value=', ' defaultValue=')
+    reactBody = transformMarkup(body, (tag, start) => ({
+      end: tag.end,
+      text: tag.name === 'PhoneInput' && !tag.closing ?
+        body.slice(start, tag.end).replaceAll('countryValue=', 'defaultCountryValue=').replaceAll(' value=', ' defaultValue=') :
+        body.slice(start, tag.end)
+    }))
 
   return [
     { code: toAstroSnippet(raw), label: 'Astro', lang: 'astro' },
