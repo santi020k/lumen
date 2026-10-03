@@ -126,11 +126,9 @@ interface ImportState { afterFrom: boolean, inImport: boolean }
 
 interface SourceEdit { end: number, replacement: string, start: number }
 
-const planImport = (source: string, token: Token, state: ImportState): SourceEdit | undefined => {
+const planImport = (source: string, token: Token, state: ImportState, startsLine: boolean): SourceEdit | undefined => {
   if (token.value === 'import') {
-    const lineStart = source.lastIndexOf('\n', token.start) + 1
-
-    state.inImport = source.slice(lineStart, token.start).trim() === ''
+    state.inImport = startsLine
 
     state.afterFrom = false
 
@@ -166,6 +164,28 @@ const planImport = (source: string, token: Token, state: ImportState): SourceEdi
   return { end: token.end - 1, replacement, start: token.start + 1 }
 }
 
+interface SourcePosition { blankPrefix: boolean, column: number, cursor: number, line: number }
+
+const advancePosition = (source: string, end: number, position: SourcePosition): void => {
+  while (position.cursor < end) {
+    const character = source[position.cursor] ?? ''
+
+    if (character === '\n') {
+      position.line += 1
+
+      position.column = 1
+
+      position.blankPrefix = true
+    } else {
+      position.column += 1
+
+      if (!/\s/u.test(character)) position.blankPrefix = false
+    }
+
+    position.cursor += 1
+  }
+}
+
 export const migrateLumenV4Source = (source: string, file = '<source>'): {
   changes: LumenV4MigrationFinding[]
   source: string
@@ -173,30 +193,20 @@ export const migrateLumenV4Source = (source: string, file = '<source>'): {
   const edits: SourceEdit[] = []
   const changes: LumenV4MigrationFinding[] = []
   const state: ImportState = { afterFrom: false, inImport: false }
-  let position = 0
-  let line = 1
-  let column = 1
+  const position: SourcePosition = { blankPrefix: true, column: 1, cursor: 0, line: 1 }
 
   for (const token of tokenize(source)) {
-    const edit = planImport(source, token, state)
+    advancePosition(source, token.start, position)
+
+    const edit = planImport(source, token, state, position.blankPrefix)
 
     if (!edit) continue
 
     edits.push(edit)
 
-    while (position < token.start) {
-      if (source[position] === '\n') {
-        line += 1
-
-        column = 1
-      } else column += 1
-
-      position += 1
-    }
-
     changes.push({
-      column,
-      line,
+      column: position.column,
+      line: position.line,
       file,
       message: `Replace ${token.value} with ${edit.replacement}; update SDK dependencies and rebuild together.`,
       rule: 'embedded-mcp-sdk-v2'
