@@ -565,6 +565,7 @@ private struct LumenStructuredChartDataList: View {
 private struct LumenChartFrame<Content: View>: View {
     @Environment(\.lumenTheme) private var theme
 
+    let bare: Bool
     let content: Content
     let description: String?
     let heading: String?
@@ -576,8 +577,10 @@ private struct LumenChartFrame<Content: View>: View {
         heading: String?,
         description: String?,
         summary: String,
+        bare: Bool = false,
         @ViewBuilder content: () -> Content
     ) {
+        self.bare = bare
         self.label = label
         self.heading = heading
         self.description = description
@@ -586,6 +589,25 @@ private struct LumenChartFrame<Content: View>: View {
     }
 
     var body: some View {
+        Group {
+            if bare {
+                contents
+            } else {
+                contents
+                    .padding(LumenSpacing.lg)
+                    .background(theme.colors.surface)
+                    .clipShape(RoundedRectangle(cornerRadius: LumenRadius.lg, style: .continuous))
+                    .overlay {
+                        RoundedRectangle(cornerRadius: LumenRadius.lg, style: .continuous)
+                            .stroke(theme.colors.line, lineWidth: 1)
+                    }
+            }
+        }
+        .accessibilityLabel(label)
+        .accessibilityValue(summary)
+    }
+
+    private var contents: some View {
         VStack(alignment: .leading, spacing: LumenSpacing.md) {
             if let heading {
                 Text(heading)
@@ -601,15 +623,6 @@ private struct LumenChartFrame<Content: View>: View {
 
             content
         }
-        .padding(LumenSpacing.lg)
-        .background(theme.colors.surface)
-        .clipShape(RoundedRectangle(cornerRadius: LumenRadius.lg, style: .continuous))
-        .overlay {
-            RoundedRectangle(cornerRadius: LumenRadius.lg, style: .continuous)
-                .stroke(theme.colors.line, lineWidth: 1)
-        }
-        .accessibilityLabel(label)
-        .accessibilityValue(summary)
     }
 }
 
@@ -619,6 +632,8 @@ public struct LumenLineChart: View {
     private let area: Bool
     private let description: String?
     private let heading: String?
+    private let bare: Bool
+    private let height: CGFloat
     private let label: String
     private let labels: LumenChartLabels
     private let reference: LumenChartReference?
@@ -637,8 +652,12 @@ public struct LumenLineChart: View {
         area: Bool = false,
         reference: LumenChartReference? = nil,
         showData: Bool = true,
-        selection: Binding<LumenChartSelection?>? = nil
+        selection: Binding<LumenChartSelection?>? = nil,
+        bare: Bool = false,
+        height: CGFloat = 220
     ) {
+        self.bare = bare
+        self.height = height.isFinite && height > 0 ? height : 220
         self.label = label
         self.labels = labels
         self.series = series
@@ -661,7 +680,8 @@ public struct LumenLineChart: View {
             label: label,
             heading: heading,
             description: description,
-            summary: summary
+            summary: summary,
+            bare: bare
         ) {
             Chart {
                 if let reference {
@@ -692,7 +712,7 @@ public struct LumenLineChart: View {
                     }
                 }
             }
-            .frame(minHeight: 220)
+            .frame(height: height)
 
             if showData {
                 LumenChartDataList(labels: labels, selection: selection, series: series)
@@ -709,6 +729,8 @@ public enum LumenBarChartLayout: Sendable {
 public struct LumenBarChart: View {
     @Environment(\.lumenTheme) private var theme
 
+    private let bare: Bool
+    private let height: CGFloat
     private let label: String
     private let labels: LumenChartLabels
     private let layout: LumenBarChartLayout
@@ -724,8 +746,12 @@ public struct LumenBarChart: View {
         summary: String? = nil,
         labels: LumenChartLabels = .english,
         showData: Bool = true,
-        selection: Binding<LumenChartSelection?>? = nil
+        selection: Binding<LumenChartSelection?>? = nil,
+        bare: Bool = false,
+        height: CGFloat = 220
     ) {
+        self.bare = bare
+        self.height = height.isFinite && height > 0 ? height : 220
         self.label = label
         self.labels = labels
         self.series = series
@@ -736,7 +762,7 @@ public struct LumenBarChart: View {
     }
 
     public var body: some View {
-        LumenChartFrame(label: label, heading: nil, description: nil, summary: summary) {
+        LumenChartFrame(label: label, heading: nil, description: nil, summary: summary, bare: bare) {
             Chart {
                 ForEach(Array(series.enumerated()), id: \.element.id) { index, item in
                     let color = theme.chartColor(resolvedLumenChartTone(item.tone, index: index))
@@ -751,7 +777,7 @@ public struct LumenBarChart: View {
                     }
                 }
             }
-            .frame(minHeight: 220)
+            .frame(height: height)
 
             if showData {
                 LumenChartDataList(labels: labels, selection: selection, series: series)

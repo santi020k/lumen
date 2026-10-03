@@ -1,6 +1,19 @@
 version: "0.2"
 language: en
 words:
+  - valuetext
+  - Comparar
+  - ajustes
+  - Editada
+  - Lago
+  - montaña
+  - editar
+  - mismo
+  - cálida
+  - Cuentas
+  - Cartera
+  - Fenix
+  - KinJar
   - Aplicar
   - Cancelar
   - Desde

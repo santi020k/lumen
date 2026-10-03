@@ -2340,13 +2340,13 @@
           "precise": "s:7LumenUI0A12SymbolPickerV"
         },
         {
-          "declaration": "@MainActor init(_ title: LocalizedStringKey = \"Choose a symbol\", selectedName: Binding<String>, options: [LumenSymbolOption] = LumenSymbolOption.common)",
+          "declaration": "@MainActor init(_ title: LocalizedStringKey = \"Choose a symbol\", selectedName: Binding<String>, options: [LumenSymbolOption] = LumenSymbolOption.common, tint: Color? = nil, onSelection: ((String) -> Void)? = nil)",
           "kind": "swift.init",
           "path": [
             "LumenSymbolPicker",
-            "init(_:selectedName:options:)"
+            "init(_:selectedName:options:tint:onSelection:)"
           ],
-          "precise": "s:7LumenUI0A12SymbolPickerV_12selectedName7optionsAC05SwiftB018LocalizedStringKeyV_AF7BindingVySSGSayAA0aC6OptionVGtcfc"
+          "precise": "s:7LumenUI0A12SymbolPickerV_12selectedName7options4tint11onSelectionAC05SwiftB018LocalizedStringKeyV_AH7BindingVySSGSayAA0aC6OptionVGAH5ColorVSgySScSgtcfc"
         },
         {
           "declaration": "@MainActor var body: some View { get }",
@@ -3782,13 +3782,13 @@
           "precise": "s:7LumenUI0A18SymbolPickerButtonV"
         },
         {
-          "declaration": "@MainActor init(_ label: LocalizedStringKey = \"Choose a symbol\", selectedName: Binding<String>, options: [LumenSymbolOption] = LumenSymbolOption.common)",
+          "declaration": "@MainActor init(_ label: LocalizedStringKey = \"Choose a symbol\", selectedName: Binding<String>, options: [LumenSymbolOption] = LumenSymbolOption.common, tint: Color? = nil, dismissOnSelection: Bool = true, onSelection: ((String) -> Void)? = nil)",
           "kind": "swift.init",
           "path": [
             "LumenSymbolPickerButton",
-            "init(_:selectedName:options:)"
+            "init(_:selectedName:options:tint:dismissOnSelection:onSelection:)"
           ],
-          "precise": "s:7LumenUI0A18SymbolPickerButtonV_12selectedName7optionsAC05SwiftB018LocalizedStringKeyV_AF7BindingVySSGSayAA0aC6OptionVGtcfc"
+          "precise": "s:7LumenUI0A18SymbolPickerButtonV_12selectedName7options4tint18dismissOnSelection02onL0AC05SwiftB018LocalizedStringKeyV_AI7BindingVySSGSayAA0aC6OptionVGAI5ColorVSgSbySScSgtcfc"
         },
         {
           "declaration": "@MainActor var body: some View { get }",
@@ -4931,22 +4931,22 @@
           "precise": "s:7LumenUI0A6SliderV"
         },
         {
-          "declaration": "@MainActor init(_ label: LocalizedStringKey, value: Binding<Double>, in bounds: ClosedRange<Double>, step: Double? = nil, valueLabel: String? = nil, onEditingChanged: @escaping (Bool) -> Void = { _ in })",
+          "declaration": "@MainActor init(_ label: LocalizedStringKey, value: Binding<Double>, in bounds: ClosedRange<Double>, step: Double? = nil, valueLabel: String? = nil, showsLabel: Bool = true, onEditingChanged: @escaping (Bool) -> Void = { _ in })",
           "kind": "swift.init",
           "path": [
             "LumenSlider",
-            "init(_:value:in:step:valueLabel:onEditingChanged:)"
+            "init(_:value:in:step:valueLabel:showsLabel:onEditingChanged:)"
           ],
-          "precise": "s:7LumenUI0A6SliderV_5value2in4step0D5Label16onEditingChangedAC05SwiftB018LocalizedStringKeyV_AI7BindingVySdGSNySdGSdSgSSSgySbctcfc"
+          "precise": "s:7LumenUI0A6SliderV_5value2in4step0D5Label05showsG016onEditingChangedAC05SwiftB018LocalizedStringKeyV_AJ7BindingVySdGSNySdGSdSgSSSgSbySbctcfc"
         },
         {
-          "declaration": "@MainActor init(_ label: LocalizedStringKey, value: Binding<Double>, in bounds: ClosedRange<Double>, step: Double? = nil, valueLabel: String? = nil)",
+          "declaration": "@MainActor init(_ label: LocalizedStringKey, value: Binding<Double>, in bounds: ClosedRange<Double>, step: Double? = nil, valueLabel: String? = nil, showsLabel: Bool = true)",
           "kind": "swift.init",
           "path": [
             "LumenSlider",
-            "init(_:value:in:step:valueLabel:)"
+            "init(_:value:in:step:valueLabel:showsLabel:)"
           ],
-          "precise": "s:7LumenUI0A6SliderV_5value2in4step0D5LabelAC05SwiftB018LocalizedStringKeyV_AH7BindingVySdGSNySdGSdSgSSSgtcfc"
+          "precise": "s:7LumenUI0A6SliderV_5value2in4step0D5Label05showsG0AC05SwiftB018LocalizedStringKeyV_AI7BindingVySdGSNySdGSdSgSSSgSbtcfc"
         },
         {
           "declaration": "@MainActor var body: some View { get }",
@@ -5308,13 +5308,13 @@
           "precise": "s:7LumenUI0A8BarChartV4bodyQrvp"
         },
         {
-          "declaration": "@MainActor init(label: String, series: [LumenChartSeries], layout: LumenBarChartLayout = .grouped, summary: String? = nil, labels: LumenChartLabels = .english, showData: Bool = true, selection: Binding<LumenChartSelection?>? = nil)",
+          "declaration": "@MainActor init(label: String, series: [LumenChartSeries], layout: LumenBarChartLayout = .grouped, summary: String? = nil, labels: LumenChartLabels = .english, showData: Bool = true, selection: Binding<LumenChartSelection?>? = nil, bare: Bool = false, height: CGFloat = 220)",
           "kind": "swift.init",
           "path": [
             "LumenBarChart",
-            "init(label:series:layout:summary:labels:showData:selection:)"
+            "init(label:series:layout:summary:labels:showData:selection:bare:height:)"
           ],
-          "precise": "s:7LumenUI0A8BarChartV5label6series6layout7summary6labels8showData9selectionACSS_SayAA0aD6SeriesVGAA0acD6LayoutOSSSgAA0aD6LabelsVSb05SwiftB07BindingVyAA0aD9SelectionVSgGSgtcfc"
+          "precise": "s:7LumenUI0A8BarChartV5label6series6layout7summary6labels8showData9selection4bare6heightACSS_SayAA0aD6SeriesVGAA0acD6LayoutOSSSgAA0aD6LabelsVSb05SwiftB07BindingVyAA0aD9SelectionVSgGSgSb14CoreFoundation7CGFloatVtcfc"
         },
         {
           "declaration": "@MainActor struct LumenCheckbox",
@@ -27997,13 +27997,13 @@
           "precise": "s:7LumenUI0A9LineChartV4bodyQrvp"
         },
         {
-          "declaration": "@MainActor init(label: String, series: [LumenChartSeries], heading: String? = nil, description: String? = nil, summary: String? = nil, labels: LumenChartLabels = .english, area: Bool = false, reference: LumenChartReference? = nil, showData: Bool = true, selection: Binding<LumenChartSelection?>? = nil)",
+          "declaration": "@MainActor init(label: String, series: [LumenChartSeries], heading: String? = nil, description: String? = nil, summary: String? = nil, labels: LumenChartLabels = .english, area: Bool = false, reference: LumenChartReference? = nil, showData: Bool = true, selection: Binding<LumenChartSelection?>? = nil, bare: Bool = false, height: CGFloat = 220)",
           "kind": "swift.init",
           "path": [
             "LumenLineChart",
-            "init(label:series:heading:description:summary:labels:area:reference:showData:selection:)"
+            "init(label:series:heading:description:summary:labels:area:reference:showData:selection:bare:height:)"
           ],
-          "precise": "s:7LumenUI0A9LineChartV5label6series7heading11description7summary6labels4area9reference8showData9selectionACSS_SayAA0aD6SeriesVGSSSgA2qA0aD6LabelsVSbAA0aD9ReferenceVSgSb05SwiftB07BindingVyAA0aD9SelectionVSgGSgtcfc"
+          "precise": "s:7LumenUI0A9LineChartV5label6series7heading11description7summary6labels4area9reference8showData9selection4bare6heightACSS_SayAA0aD6SeriesVGSSSgA2sA0aD6LabelsVSbAA0aD9ReferenceVSgSb05SwiftB07BindingVyAA0aD9SelectionVSgGSgSb14CoreFoundation7CGFloatVtcfc"
         },
         {
           "declaration": "@MainActor struct LumenSparkline",
@@ -33073,22 +33073,22 @@
           "precise": "s:7LumenUI0A6SliderV"
         },
         {
-          "declaration": "@MainActor init(_ label: LocalizedStringKey, value: Binding<Double>, in bounds: ClosedRange<Double>, step: Double? = nil, valueLabel: String? = nil, onEditingChanged: @escaping (Bool) -> Void = { _ in })",
+          "declaration": "@MainActor init(_ label: LocalizedStringKey, value: Binding<Double>, in bounds: ClosedRange<Double>, step: Double? = nil, valueLabel: String? = nil, showsLabel: Bool = true, onEditingChanged: @escaping (Bool) -> Void = { _ in })",
           "kind": "swift.init",
           "path": [
             "LumenSlider",
-            "init(_:value:in:step:valueLabel:onEditingChanged:)"
+            "init(_:value:in:step:valueLabel:showsLabel:onEditingChanged:)"
           ],
-          "precise": "s:7LumenUI0A6SliderV_5value2in4step0D5Label16onEditingChangedAC05SwiftB018LocalizedStringKeyV_AI7BindingVySdGSNySdGSdSgSSSgySbctcfc"
+          "precise": "s:7LumenUI0A6SliderV_5value2in4step0D5Label05showsG016onEditingChangedAC05SwiftB018LocalizedStringKeyV_AJ7BindingVySdGSNySdGSdSgSSSgSbySbctcfc"
         },
         {
-          "declaration": "@MainActor init(_ label: LocalizedStringKey, value: Binding<Double>, in bounds: ClosedRange<Double>, step: Double? = nil, valueLabel: String? = nil)",
+          "declaration": "@MainActor init(_ label: LocalizedStringKey, value: Binding<Double>, in bounds: ClosedRange<Double>, step: Double? = nil, valueLabel: String? = nil, showsLabel: Bool = true)",
           "kind": "swift.init",
           "path": [
             "LumenSlider",
-            "init(_:value:in:step:valueLabel:)"
+            "init(_:value:in:step:valueLabel:showsLabel:)"
           ],
-          "precise": "s:7LumenUI0A6SliderV_5value2in4step0D5LabelAC05SwiftB018LocalizedStringKeyV_AH7BindingVySdGSNySdGSdSgSSSgtcfc"
+          "precise": "s:7LumenUI0A6SliderV_5value2in4step0D5Label05showsG0AC05SwiftB018LocalizedStringKeyV_AI7BindingVySdGSNySdGSdSgSSSgSbtcfc"
         },
         {
           "declaration": "@MainActor var body: some View { get }",
@@ -33450,13 +33450,13 @@
           "precise": "s:7LumenUI0A8BarChartV4bodyQrvp"
         },
         {
-          "declaration": "@MainActor init(label: String, series: [LumenChartSeries], layout: LumenBarChartLayout = .grouped, summary: String? = nil, labels: LumenChartLabels = .english, showData: Bool = true, selection: Binding<LumenChartSelection?>? = nil)",
+          "declaration": "@MainActor init(label: String, series: [LumenChartSeries], layout: LumenBarChartLayout = .grouped, summary: String? = nil, labels: LumenChartLabels = .english, showData: Bool = true, selection: Binding<LumenChartSelection?>? = nil, bare: Bool = false, height: CGFloat = 220)",
           "kind": "swift.init",
           "path": [
             "LumenBarChart",
-            "init(label:series:layout:summary:labels:showData:selection:)"
+            "init(label:series:layout:summary:labels:showData:selection:bare:height:)"
           ],
-          "precise": "s:7LumenUI0A8BarChartV5label6series6layout7summary6labels8showData9selectionACSS_SayAA0aD6SeriesVGAA0acD6LayoutOSSSgAA0aD6LabelsVSb05SwiftB07BindingVyAA0aD9SelectionVSgGSgtcfc"
+          "precise": "s:7LumenUI0A8BarChartV5label6series6layout7summary6labels8showData9selection4bare6heightACSS_SayAA0aD6SeriesVGAA0acD6LayoutOSSSgAA0aD6LabelsVSb05SwiftB07BindingVyAA0aD9SelectionVSgGSgSb14CoreFoundation7CGFloatVtcfc"
         },
         {
           "declaration": "@MainActor struct LumenCheckbox",
@@ -56077,13 +56077,13 @@
           "precise": "s:7LumenUI0A9LineChartV4bodyQrvp"
         },
         {
-          "declaration": "@MainActor init(label: String, series: [LumenChartSeries], heading: String? = nil, description: String? = nil, summary: String? = nil, labels: LumenChartLabels = .english, area: Bool = false, reference: LumenChartReference? = nil, showData: Bool = true, selection: Binding<LumenChartSelection?>? = nil)",
+          "declaration": "@MainActor init(label: String, series: [LumenChartSeries], heading: String? = nil, description: String? = nil, summary: String? = nil, labels: LumenChartLabels = .english, area: Bool = false, reference: LumenChartReference? = nil, showData: Bool = true, selection: Binding<LumenChartSelection?>? = nil, bare: Bool = false, height: CGFloat = 220)",
           "kind": "swift.init",
           "path": [
             "LumenLineChart",
-            "init(label:series:heading:description:summary:labels:area:reference:showData:selection:)"
+            "init(label:series:heading:description:summary:labels:area:reference:showData:selection:bare:height:)"
           ],
-          "precise": "s:7LumenUI0A9LineChartV5label6series7heading11description7summary6labels4area9reference8showData9selectionACSS_SayAA0aD6SeriesVGSSSgA2qA0aD6LabelsVSbAA0aD9ReferenceVSgSb05SwiftB07BindingVyAA0aD9SelectionVSgGSgtcfc"
+          "precise": "s:7LumenUI0A9LineChartV5label6series7heading11description7summary6labels4area9reference8showData9selection4bare6heightACSS_SayAA0aD6SeriesVGSSSgA2sA0aD6LabelsVSbAA0aD9ReferenceVSgSb05SwiftB07BindingVyAA0aD9SelectionVSgGSgSb14CoreFoundation7CGFloatVtcfc"
         },
         {
           "declaration": "@MainActor struct LumenSparkline",
@@ -60228,13 +60228,13 @@
           "precise": "s:7LumenUI0A8BarChartV4bodyQrvp"
         },
         {
-          "declaration": "@MainActor init(label: String, series: [LumenChartSeries], layout: LumenBarChartLayout = .grouped, summary: String? = nil, labels: LumenChartLabels = .english, showData: Bool = true, selection: Binding<LumenChartSelection?>? = nil)",
+          "declaration": "@MainActor init(label: String, series: [LumenChartSeries], layout: LumenBarChartLayout = .grouped, summary: String? = nil, labels: LumenChartLabels = .english, showData: Bool = true, selection: Binding<LumenChartSelection?>? = nil, bare: Bool = false, height: CGFloat = 220)",
           "kind": "swift.init",
           "path": [
             "LumenBarChart",
-            "init(label:series:layout:summary:labels:showData:selection:)"
+            "init(label:series:layout:summary:labels:showData:selection:bare:height:)"
           ],
-          "precise": "s:7LumenUI0A8BarChartV5label6series6layout7summary6labels8showData9selectionACSS_SayAA0aD6SeriesVGAA0acD6LayoutOSSSgAA0aD6LabelsVSb05SwiftB07BindingVyAA0aD9SelectionVSgGSgtcfc"
+          "precise": "s:7LumenUI0A8BarChartV5label6series6layout7summary6labels8showData9selection4bare6heightACSS_SayAA0aD6SeriesVGAA0acD6LayoutOSSSgAA0aD6LabelsVSb05SwiftB07BindingVyAA0aD9SelectionVSgGSgSb14CoreFoundation7CGFloatVtcfc"
         },
         {
           "declaration": "enum LumenGraphics",
@@ -82724,13 +82724,13 @@
           "precise": "s:7LumenUI0A9LineChartV4bodyQrvp"
         },
         {
-          "declaration": "@MainActor init(label: String, series: [LumenChartSeries], heading: String? = nil, description: String? = nil, summary: String? = nil, labels: LumenChartLabels = .english, area: Bool = false, reference: LumenChartReference? = nil, showData: Bool = true, selection: Binding<LumenChartSelection?>? = nil)",
+          "declaration": "@MainActor init(label: String, series: [LumenChartSeries], heading: String? = nil, description: String? = nil, summary: String? = nil, labels: LumenChartLabels = .english, area: Bool = false, reference: LumenChartReference? = nil, showData: Bool = true, selection: Binding<LumenChartSelection?>? = nil, bare: Bool = false, height: CGFloat = 220)",
           "kind": "swift.init",
           "path": [
             "LumenLineChart",
-            "init(label:series:heading:description:summary:labels:area:reference:showData:selection:)"
+            "init(label:series:heading:description:summary:labels:area:reference:showData:selection:bare:height:)"
           ],
-          "precise": "s:7LumenUI0A9LineChartV5label6series7heading11description7summary6labels4area9reference8showData9selectionACSS_SayAA0aD6SeriesVGSSSgA2qA0aD6LabelsVSbAA0aD9ReferenceVSgSb05SwiftB07BindingVyAA0aD9SelectionVSgGSgtcfc"
+          "precise": "s:7LumenUI0A9LineChartV5label6series7heading11description7summary6labels4area9reference8showData9selection4bare6heightACSS_SayAA0aD6SeriesVGSSSgA2sA0aD6LabelsVSbAA0aD9ReferenceVSgSb05SwiftB07BindingVyAA0aD9SelectionVSgGSgSb14CoreFoundation7CGFloatVtcfc"
         },
         {
           "declaration": "@MainActor struct LumenSparkline",
@@ -87800,22 +87800,22 @@
           "precise": "s:7LumenUI0A6SliderV"
         },
         {
-          "declaration": "@MainActor init(_ label: LocalizedStringKey, value: Binding<Double>, in bounds: ClosedRange<Double>, step: Double? = nil, valueLabel: String? = nil, onEditingChanged: @escaping (Bool) -> Void = { _ in })",
+          "declaration": "@MainActor init(_ label: LocalizedStringKey, value: Binding<Double>, in bounds: ClosedRange<Double>, step: Double? = nil, valueLabel: String? = nil, showsLabel: Bool = true, onEditingChanged: @escaping (Bool) -> Void = { _ in })",
           "kind": "swift.init",
           "path": [
             "LumenSlider",
-            "init(_:value:in:step:valueLabel:onEditingChanged:)"
+            "init(_:value:in:step:valueLabel:showsLabel:onEditingChanged:)"
           ],
-          "precise": "s:7LumenUI0A6SliderV_5value2in4step0D5Label16onEditingChangedAC05SwiftB018LocalizedStringKeyV_AI7BindingVySdGSNySdGSdSgSSSgySbctcfc"
+          "precise": "s:7LumenUI0A6SliderV_5value2in4step0D5Label05showsG016onEditingChangedAC05SwiftB018LocalizedStringKeyV_AJ7BindingVySdGSNySdGSdSgSSSgSbySbctcfc"
         },
         {
-          "declaration": "@MainActor init(_ label: LocalizedStringKey, value: Binding<Double>, in bounds: ClosedRange<Double>, step: Double? = nil, valueLabel: String? = nil)",
+          "declaration": "@MainActor init(_ label: LocalizedStringKey, value: Binding<Double>, in bounds: ClosedRange<Double>, step: Double? = nil, valueLabel: String? = nil, showsLabel: Bool = true)",
           "kind": "swift.init",
           "path": [
             "LumenSlider",
-            "init(_:value:in:step:valueLabel:)"
+            "init(_:value:in:step:valueLabel:showsLabel:)"
           ],
-          "precise": "s:7LumenUI0A6SliderV_5value2in4step0D5LabelAC05SwiftB018LocalizedStringKeyV_AH7BindingVySdGSNySdGSdSgSSSgtcfc"
+          "precise": "s:7LumenUI0A6SliderV_5value2in4step0D5Label05showsG0AC05SwiftB018LocalizedStringKeyV_AI7BindingVySdGSNySdGSdSgSSSgSbtcfc"
         },
         {
           "declaration": "@MainActor var body: some View { get }",
@@ -88177,13 +88177,13 @@
           "precise": "s:7LumenUI0A8BarChartV4bodyQrvp"
         },
         {
-          "declaration": "@MainActor init(label: String, series: [LumenChartSeries], layout: LumenBarChartLayout = .grouped, summary: String? = nil, labels: LumenChartLabels = .english, showData: Bool = true, selection: Binding<LumenChartSelection?>? = nil)",
+          "declaration": "@MainActor init(label: String, series: [LumenChartSeries], layout: LumenBarChartLayout = .grouped, summary: String? = nil, labels: LumenChartLabels = .english, showData: Bool = true, selection: Binding<LumenChartSelection?>? = nil, bare: Bool = false, height: CGFloat = 220)",
           "kind": "swift.init",
           "path": [
             "LumenBarChart",
-            "init(label:series:layout:summary:labels:showData:selection:)"
+            "init(label:series:layout:summary:labels:showData:selection:bare:height:)"
           ],
-          "precise": "s:7LumenUI0A8BarChartV5label6series6layout7summary6labels8showData9selectionACSS_SayAA0aD6SeriesVGAA0acD6LayoutOSSSgAA0aD6LabelsVSb05SwiftB07BindingVyAA0aD9SelectionVSgGSgtcfc"
+          "precise": "s:7LumenUI0A8BarChartV5label6series6layout7summary6labels8showData9selection4bare6heightACSS_SayAA0aD6SeriesVGAA0acD6LayoutOSSSgAA0aD6LabelsVSb05SwiftB07BindingVyAA0aD9SelectionVSgGSgSb14CoreFoundation7CGFloatVtcfc"
         },
         {
           "declaration": "@MainActor struct LumenCheckbox",
@@ -110804,13 +110804,13 @@
           "precise": "s:7LumenUI0A9LineChartV4bodyQrvp"
         },
         {
-          "declaration": "@MainActor init(label: String, series: [LumenChartSeries], heading: String? = nil, description: String? = nil, summary: String? = nil, labels: LumenChartLabels = .english, area: Bool = false, reference: LumenChartReference? = nil, showData: Bool = true, selection: Binding<LumenChartSelection?>? = nil)",
+          "declaration": "@MainActor init(label: String, series: [LumenChartSeries], heading: String? = nil, description: String? = nil, summary: String? = nil, labels: LumenChartLabels = .english, area: Bool = false, reference: LumenChartReference? = nil, showData: Bool = true, selection: Binding<LumenChartSelection?>? = nil, bare: Bool = false, height: CGFloat = 220)",
           "kind": "swift.init",
           "path": [
             "LumenLineChart",
-            "init(label:series:heading:description:summary:labels:area:reference:showData:selection:)"
+            "init(label:series:heading:description:summary:labels:area:reference:showData:selection:bare:height:)"
           ],
-          "precise": "s:7LumenUI0A9LineChartV5label6series7heading11description7summary6labels4area9reference8showData9selectionACSS_SayAA0aD6SeriesVGSSSgA2qA0aD6LabelsVSbAA0aD9ReferenceVSgSb05SwiftB07BindingVyAA0aD9SelectionVSgGSgtcfc"
+          "precise": "s:7LumenUI0A9LineChartV5label6series7heading11description7summary6labels4area9reference8showData9selection4bare6heightACSS_SayAA0aD6SeriesVGSSSgA2sA0aD6LabelsVSbAA0aD9ReferenceVSgSb05SwiftB07BindingVyAA0aD9SelectionVSgGSgSb14CoreFoundation7CGFloatVtcfc"
         },
         {
           "declaration": "@MainActor struct LumenSparkline",
@@ -115109,13 +115109,13 @@
           "precise": "s:7LumenUI0A8BarChartV4bodyQrvp"
         },
         {
-          "declaration": "@MainActor init(label: String, series: [LumenChartSeries], layout: LumenBarChartLayout = .grouped, summary: String? = nil, labels: LumenChartLabels = .english, showData: Bool = true, selection: Binding<LumenChartSelection?>? = nil)",
+          "declaration": "@MainActor init(label: String, series: [LumenChartSeries], layout: LumenBarChartLayout = .grouped, summary: String? = nil, labels: LumenChartLabels = .english, showData: Bool = true, selection: Binding<LumenChartSelection?>? = nil, bare: Bool = false, height: CGFloat = 220)",
           "kind": "swift.init",
           "path": [
             "LumenBarChart",
-            "init(label:series:layout:summary:labels:showData:selection:)"
+            "init(label:series:layout:summary:labels:showData:selection:bare:height:)"
           ],
-          "precise": "s:7LumenUI0A8BarChartV5label6series6layout7summary6labels8showData9selectionACSS_SayAA0aD6SeriesVGAA0acD6LayoutOSSSgAA0aD6LabelsVSb05SwiftB07BindingVyAA0aD9SelectionVSgGSgtcfc"
+          "precise": "s:7LumenUI0A8BarChartV5label6series6layout7summary6labels8showData9selection4bare6heightACSS_SayAA0aD6SeriesVGAA0acD6LayoutOSSSgAA0aD6LabelsVSb05SwiftB07BindingVyAA0aD9SelectionVSgGSgSb14CoreFoundation7CGFloatVtcfc"
         },
         {
           "declaration": "enum LumenGraphics",
@@ -137605,13 +137605,13 @@
           "precise": "s:7LumenUI0A9LineChartV4bodyQrvp"
         },
         {
-          "declaration": "@MainActor init(label: String, series: [LumenChartSeries], heading: String? = nil, description: String? = nil, summary: String? = nil, labels: LumenChartLabels = .english, area: Bool = false, reference: LumenChartReference? = nil, showData: Bool = true, selection: Binding<LumenChartSelection?>? = nil)",
+          "declaration": "@MainActor init(label: String, series: [LumenChartSeries], heading: String? = nil, description: String? = nil, summary: String? = nil, labels: LumenChartLabels = .english, area: Bool = false, reference: LumenChartReference? = nil, showData: Bool = true, selection: Binding<LumenChartSelection?>? = nil, bare: Bool = false, height: CGFloat = 220)",
           "kind": "swift.init",
           "path": [
             "LumenLineChart",
-            "init(label:series:heading:description:summary:labels:area:reference:showData:selection:)"
+            "init(label:series:heading:description:summary:labels:area:reference:showData:selection:bare:height:)"
           ],
-          "precise": "s:7LumenUI0A9LineChartV5label6series7heading11description7summary6labels4area9reference8showData9selectionACSS_SayAA0aD6SeriesVGSSSgA2qA0aD6LabelsVSbAA0aD9ReferenceVSgSb05SwiftB07BindingVyAA0aD9SelectionVSgGSgtcfc"
+          "precise": "s:7LumenUI0A9LineChartV5label6series7heading11description7summary6labels4area9reference8showData9selection4bare6heightACSS_SayAA0aD6SeriesVGSSSgA2sA0aD6LabelsVSbAA0aD9ReferenceVSgSb05SwiftB07BindingVyAA0aD9SelectionVSgGSgSb14CoreFoundation7CGFloatVtcfc"
         },
         {
           "declaration": "@MainActor struct LumenSparkline",

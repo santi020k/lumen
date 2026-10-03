@@ -29,8 +29,9 @@
 
 ---
 
-> **Supported for Lumen 2:** This package uses the frozen version 2 contract. The current artifact
-> remains a release candidate until publication, physical-device, and consumer-soak gates complete.
+> **Lumen 4 candidate:** This branch prepares the next major adapter contract. See the
+> [migration guide](../../docs/migrating-to-lumen.md) before upgrading. Local checks do not replace
+> publication, physical-device accessibility, or consumer-soak qualification.
 
 Maintainers can verify the exact packed package contents, peer installation, and strict external
 TypeScript consumption from the repository root with `pnpm run check:react-native-package`.
@@ -334,15 +335,52 @@ VoiceOver and TalkBack evidence.
 `LumenSparkline`, `LumenLineChart`, `LumenBarChart`, `LumenPieChart`, `LumenScatterChart`,
 `LumenHeatmap`, `LumenRangeChart`, and `LumenComboChart` use shared geometry and generated chart
 tokens while rendering with `react-native-svg`. Data charts expose a concise image summary and a
-readable fallback list; selection remains controlled by the application. See the shared
-[data-visualization guide](../../docs/data-visualization.md).
+readable fallback list; selection remains controlled by the application. Line and bar charts render
+category and value axes even when the readable list is hidden. Dense axes select labels without
+removing data, and narrow plots scroll horizontally.
+
+```tsx
+import { LumenBarChart, type LumenChartSeries } from '@santi020k/lumen-react-native'
+
+const scores: readonly LumenChartSeries[] = [{
+  id: 'scores',
+  label: 'Score',
+  data: [
+    { x: 'ana', xLabel: 'Ana', y: -4 },
+    { x: 'ben', xLabel: 'Ben', y: 8 }
+  ]
+}]
+
+export function FinalScores() {
+  return (
+    <LumenBarChart
+      label="Final scores"
+      series={scores}
+      formatValue={value => `${value} points`}
+      labels={{ chartData: 'Score details' }}
+    />
+  )
+}
+```
+
+Keep `x` as a stable category identity and use `xLabel` for a short axis label. An explicit
+`formatCategory` supplies full detail text without replacing `xLabel` on the axis. `formatValue`
+formats values and reserves space for the numeric axis. Pie data rows include markers matching
+their slices and retain readable text, so color is not the only association. Set `showData={false}`
+only when equivalent accessible values appear nearby; supply a factual `summary` when that helps
+explain the comparison. Translate the `labels` support copy in the application.
+
+See the shared [data-visualization guide](../../docs/data-visualization.md).
 
 ## Consumer composition recipes
 
 See [consumer UI recipes](../../docs/consumer-ui-recipes.md) for static React icons, responsive
 record tables, keyboard-aware native sheets, whole-unit amount fields, adaptive editors, and
 asynchronous action states. Each recipe identifies the public primitives and the behavior that
-remains owned by the application.
+remains owned by the application. For long native row titles, status badges, and separate trailing
+actions, use the [dense identity row pattern](../../docs/native-patterns.md#pattern-dense-identity-row).
+`LumenListRow` and `LumenSectionHeader` allow text to shrink and constrain trailing content; keep
+unrelated actions independently named instead of making their parent row another button.
 
 ## Resources
 

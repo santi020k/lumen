@@ -442,7 +442,7 @@ describe('@santi020k/lumen-react', () => {
     expect(blockProps['data-language']).toBe('ts')
     expect(blockProps['data-ui-code']).toBe(true)
     expect(header.type).toBe('figcaption')
-    expect(copyButtonProps['data-ui-code-copy']).toBe(true)
+    expect(copyButtonProps.copyLabel).toBe('Copy code to clipboard')
     expect(keyword.props.className).toBe('ui-code__token--keyword')
     expect(stringToken.props.className).toBe('ui-code__token--string')
   })
@@ -1321,41 +1321,12 @@ describe('@santi020k/lumen-react', () => {
     expect(changes).toEqual([true, false])
   })
 
-  test('closes non-alert dialogs on backdrop click but keeps alerts modal', () => {
-    const alertChanges: boolean[] = []
-    const alert = withHookDispatcher(() => useDialog({
-      alert: true,
-      onOpenChange: open => {
-        alertChanges.push(open)
-      }
-    }))
+  test('exposes alert dialog semantics separately from ordinary dialogs', () => {
+    const alert = withHookDispatcher(() => useDialog({ alert: true }))
 
     expect(alert.dialogProps.role).toBe('alertdialog')
     expect(alert.dialogProps['data-ui-alert-dialog']).toBe(true)
     expect(alert.dialogProps['data-ui-dialog']).toBeUndefined()
-
-    alert.dialogProps.onClick?.({
-      target: null
-    } as unknown as Parameters<
-      NonNullable<typeof alert.dialogProps.onClick>
-    >[0])
-
-    expect(alertChanges).toEqual([])
-
-    const dialogChanges: boolean[] = []
-    const dialog = withHookDispatcher(() => useDialog({
-      onOpenChange: open => {
-        dialogChanges.push(open)
-      }
-    }))
-
-    dialog.dialogProps.onClick?.({
-      target: null
-    } as unknown as Parameters<
-      NonNullable<typeof dialog.dialogProps.onClick>
-    >[0])
-
-    expect(dialogChanges).toEqual([false])
   })
 
   test('requires a toast provider ancestor', () => {

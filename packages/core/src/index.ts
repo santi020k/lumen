@@ -11,6 +11,8 @@ export {
   formatLumenChartSummary,
   getLumenChartAxisPadding,
   getLumenChartCategories,
+  getLumenChartCategoryLabel,
+  getLumenChartCategoryTicks,
   getLumenChartDomain,
   getLumenChartNumericX,
   getLumenChartTicks,
@@ -27,6 +29,8 @@ export {
   type LumenChartAnnotation,
   type LumenChartAxis,
   type LumenChartAxisPosition,
+  type LumenChartCategoryTick,
+  type LumenChartCategoryTickOptions,
   type LumenChartDatum,
   type LumenChartDomain,
   type LumenChartGeometryPoint,
@@ -110,6 +114,14 @@ export {
   toggleDataViewSelection,
   unpinDataViewColumn } from './data.js'
 export {
+  isLumenDateBoundsValid,
+  isLumenDateRangeValid,
+  type LumenDateLabels,
+  parseLumenDate,
+  resolveLumenDateLabels,
+  resolveLumenDateLocale
+} from './dates.js'
+export {
   type LumenErrorStateAnnouncement,
   lumenErrorStateAnnouncements,
   type LumenErrorStateContent,
@@ -172,6 +184,13 @@ export {
   type LumenIllustrationToneRole,
   renderLumenIllustrationSvg
 } from './illustrations.generated.js'
+export {
+  formatLumenImageComparisonValue,
+  type LumenImageComparisonChangeDetail,
+  type LumenImageComparisonChangeEvent,
+  normalizeLumenImageComparisonRatio,
+  normalizeLumenImageComparisonValue
+} from './image-comparison.js'
 export {
   createLumenKanbanMoveDetail,
   getAdjacentKanbanColumn,

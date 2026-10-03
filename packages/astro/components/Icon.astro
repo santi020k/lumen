@@ -18,16 +18,20 @@ interface Props extends HTMLAttributes<'span'> {
 }
 
 const {
+  'aria-hidden': ariaHidden,
+  'aria-label': ariaLabel,
   class: classProp = '',
   className = '',
   decorative,
   label,
   name,
+  role,
   size = 'default',
   ...rest
 } = Astro.props
 
-const isDecorative = decorative ?? !label
+const accessibleLabel = label ?? ariaLabel
+const isDecorative = decorative ?? (ariaHidden === undefined ? !accessibleLabel : ariaHidden === true || ariaHidden === 'true')
 const iconSvg = name ? renderLumenIconSvg(name) : ''
 
 if (name && !iconSvg && import.meta.env.DEV) {
@@ -47,9 +51,9 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
 
 <span
   aria-hidden={isDecorative ? 'true' : undefined}
-  aria-label={!isDecorative ? label : undefined}
+  aria-label={!isDecorative ? accessibleLabel : undefined}
   class:list={classList}
-  role={!isDecorative ? 'img' : undefined}
+  role={!isDecorative ? role ?? 'img' : undefined}
   {...passthrough}
 >
   {name ? <Fragment set:html={iconSvg} /> : <slot />}

@@ -1,0 +1,9 @@
+---
+import { Image, ImageComparison } from '@santi020k/lumen-astro'
+---
+
+<ImageComparison afterLabel="Color adjusted" beforeLabel="Original" label="Compare the landscape treatment" ratio={1.6} value={50}>
+  <Image slot="before" alt="A muted landscape illustration with mountains and a lake" height={600} radius="none" src="/comparison-before.svg" width={960} />
+  <Image slot="after" alt="The same landscape illustration with warmer light and deeper color" height={600} radius="none" src="/comparison-after.svg" width={960} />
+  <p>Illustrative color treatment. Move the control to compare the same framing.</p>
+</ImageComparison>

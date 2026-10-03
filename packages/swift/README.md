@@ -27,8 +27,9 @@
 
 ---
 
-> **Supported for Lumen 2:** This package uses the frozen version 2 contract. The current package
-> reference remains a release candidate until publication, physical-device, and consumer-soak gates complete.
+> **Lumen 4 candidate:** This branch prepares the next major adapter contract. See the
+> [migration guide](../../docs/migrating-to-lumen.md) before upgrading. Local checks do not replace
+> publication, physical-device accessibility, or consumer-soak qualification.
 
 `LumenUI` is Lumen's native SwiftUI package. Its foundations are generated from the same canonical
 design tokens as the web, React Native, and Compose adapters.
@@ -167,8 +168,24 @@ LumenTextarea("Caption", text: $caption, lineLimit: 2...6) {
 }
 ```
 
-Use `LumenSlider(..., onEditingChanged:)` to begin and end an application-owned undo group. Keep
-haptics, persistence, caption generation, and other domain workflows outside Lumen.
+Use `LumenSlider(..., onEditingChanged:)` to begin and end an application-owned undo group.
+`valueLabel` supplies the adjustable control's accessible value as well as its visible value.
+Set `showsLabel: false` for a slider embedded in an already labeled setting; the native control
+keeps its accessible name and formatted value:
+
+```swift
+LumenSlider(
+    "Minimum speed",
+    value: $minimumSpeed,
+    in: 1_000...5_000,
+    step: 100,
+    valueLabel: "\(Int(minimumSpeed)) RPM",
+    showsLabel: false
+)
+```
+
+Without `valueLabel`, the slider retains the platform's value announcement. Keep haptics,
+persistence, caption generation, and other domain workflows outside Lumen.
 
 Applications can construct `LumenColorPalette` directly when they already own light and dark
 product palettes. If a stored System/Light/Dark preference is application-owned, inject the chosen
@@ -322,6 +339,10 @@ icon with a progress indicator using the selected intent's foreground color, and
 activation. Use a styled native button when its visual content must change beyond that fixed
 icon-to-progress transition.
 
+`LumenButton` also disables activation while loading and overlays progress on its existing label.
+Keep the label unchanged to preserve its width and height; changing the label text is an
+application-owned layout change. Supply localized `loadingAccessibilityValue` when needed.
+
 Use `.lumenControlDensity(.regular)` or `.lumenControlDensity(.compact)` on a view hierarchy only
 when a project intentionally needs to override the platform default.
 
@@ -366,6 +387,22 @@ LumenShortcutRecorder("Quick switch", shortcut: $shortcut) { candidate in
 }
 ```
 
+The macOS symbol picker accepts an application-owned tint and publishes selection after updating
+its binding. The popover closes after selection by default, including a repeated selection:
+
+```swift
+LumenSymbolPickerButton(
+    "Workspace symbol",
+    selectedName: $symbolName,
+    tint: .orange,
+    onSelection: { name in saveSymbol(name) }
+)
+```
+
+Set `dismissOnSelection: false` to keep the popover open. Embedded `LumenSymbolPicker` accepts
+`tint` and `onSelection` without owning presentation. Catalog contents, persistence, and workspace
+color selection remain application-owned.
+
 See the [native component reference](../../docs/native-components.md) for the complete API matrix,
 state contracts, native image mapping, and accessibility requirements.
 Use the shared [SwiftUI error-handling guide](../../docs/error-handling.md#swiftui) when integrating
@@ -386,6 +423,26 @@ and a readable disclosure list. See the shared
 Pass `labels` for localized support copy. A finite zero remains valid data. Line charts also accept
 `reference: LumenChartReference(...)`; set a datum's `tone` and `toneLabel` together so an
 intensity or status encoding is never communicated by color alone.
+
+`LumenLineChart` and `LumenBarChart` accept `bare: true` inside an existing surface and an exact
+plot `height` in points. The default is 220; zero, negative, or nonfinite heights fall back to 220.
+Headings, descriptions, and the readable data disclosure remain outside that plot height:
+
+```swift
+LumenCard {
+    LumenLineChart(
+        label: "CPU history",
+        series: cpuSeries,
+        heading: "Recent activity",
+        bare: true,
+        height: 130
+    )
+}
+```
+
+Use `.time(Date)` for real time coordinates and `.number(Double)` for numeric coordinates. Keep
+`showData` enabled unless equivalent accessible values appear nearby. `bare` and `height` are
+currently options on these two Swift chart types, not shared options on every native adapter.
 
 From the repository root, check the reviewed public API for every declared Apple platform with:
 

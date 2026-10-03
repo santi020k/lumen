@@ -50,7 +50,8 @@ sealed interface LumenChartX {
 
     @Immutable
     data class Time(val epochMillis: Long) : LumenChartX {
-        override val label: String = DateFormat.getDateInstance(DateFormat.MEDIUM).format(Date(epochMillis))
+        override val label: String = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT)
+            .format(Date(epochMillis))
     }
 }
 
@@ -77,6 +78,8 @@ data class LumenChartLabels(
     val empty: String = "No chart data available.",
     val notAvailable: String = "Not available",
     val size: String = "Size",
+    val formatX: (LumenChartX) -> String = { it.label },
+    val formatValue: (Double) -> String = { it.toString() },
     val formatHeatmapSummary: (Int) -> String = { count ->
         if (count == 0) "No chart data available." else "$count heatmap ${if (count == 1) "cell" else "cells"}."
     },
@@ -300,9 +303,50 @@ internal fun lumenChartCategoryPosition(
     centerInBand: Boolean
 ): Float {
     if (categoryCount <= 0) return 0f
+    if (categoryCount == 1) return 0.5f
     if (centerInBand) return (categoryIndex + 0.5f) / categoryCount
 
     return categoryIndex.toFloat() / max(1, categoryCount - 1).toFloat()
+}
+
+/** Continuous line charts sort homogeneous numeric/time coordinates; mixed types stay categorical. */
+internal fun lumenLineChartCategories(series: List<LumenChartSeries>): List<LumenChartX> {
+    val categories = lumenChartCategories(series)
+
+    return when {
+        categories.all { it is LumenChartX.Number } -> categories
+            .filterIsInstance<LumenChartX.Number>()
+            .filter { it.value.isFinite() }
+            .sortedBy { it.value }
+        categories.all { it is LumenChartX.Time } -> categories
+            .filterIsInstance<LumenChartX.Time>()
+            .sortedBy { it.epochMillis }
+        else -> categories
+    }
+}
+
+internal fun lumenChartXPosition(
+    categoryIndex: Int,
+    categories: List<LumenChartX>,
+    centerInBands: Boolean = false
+): Float {
+    if (centerInBands || categories.size <= 1) {
+        return lumenChartCategoryPosition(categoryIndex, categories.size, centerInBands)
+    }
+    val values = when {
+        categories.all { it is LumenChartX.Number } ->
+            categories.filterIsInstance<LumenChartX.Number>().map { it.value }
+        categories.all { it is LumenChartX.Time } ->
+            categories.filterIsInstance<LumenChartX.Time>().map { it.epochMillis.toDouble() }
+        else -> return lumenChartCategoryPosition(categoryIndex, categories.size, false)
+    }
+    val value = values.getOrNull(categoryIndex) ?: return 0.5f
+    val minimum = values.min()
+    val maximum = values.max()
+    if (minimum == maximum) return 0.5f
+
+    // Halving before subtraction keeps opposite finite extremes from overflowing.
+    return ((value / 2 - minimum / 2) / (maximum / 2 - minimum / 2)).toFloat()
 }
 
 private fun lumenChartDomain(values: List<Double?>, includeZero: Boolean = false): LumenChartDomain {
@@ -468,9 +512,9 @@ internal fun lumenChartDataLabel(
     labels: LumenChartLabels = LumenChartLabels(),
     includeSize: Boolean = false
 ): String {
-    val value = datum.y?.takeIf(Double::isFinite)?.toString() ?: labels.notAvailable
-    val base = "${datum.x.label}, ${series.label}: ${datum.label ?: value}${datum.toneLabel?.let { ", $it" } ?: ""}"
-    val size = datum.size?.takeIf { it.isFinite() && it >= 0 }?.toString() ?: labels.notAvailable
+    val value = datum.y?.takeIf(Double::isFinite)?.let(labels.formatValue) ?: labels.notAvailable
+    val base = "${labels.formatX(datum.x)}, ${series.label}: ${datum.label ?: value}${datum.toneLabel?.let { ", $it" } ?: ""}"
+    val size = datum.size?.takeIf { it.isFinite() && it >= 0 }?.let(labels.formatValue) ?: labels.notAvailable
 
     return if (includeSize) "$base, ${labels.size}: $size" else base
 }
@@ -523,21 +567,24 @@ private fun DrawScope.drawLumenLineSeries(
     color: Color,
     area: Boolean,
     padding: Float,
-    categories: List<LumenChartX> = lumenChartCategories(listOf(series)),
+    categories: List<LumenChartX> = lumenLineChartCategories(listOf(series)),
     centerInBands: Boolean = false
 ) {
     val plotWidth = size.width - padding * 2
 
     lumenLineValueSegments(series, categories).forEach { segment ->
         val available = segment.map { point ->
-            val x = padding + lumenChartCategoryPosition(
+            val x = padding + lumenChartXPosition(
                 point.categoryIndex,
-                categories.size,
+                categories,
                 centerInBands
             ) * plotWidth
             val y = lumenChartScale(point.value, domain, size.height - padding, padding)
 
             Offset(x, y)
+        }
+        if (available.size == 1) {
+            drawCircle(color, radius = 4.dp.toPx(), center = available.first())
         }
         val path = Path().apply {
             moveTo(available.first().x, available.first().y)
@@ -614,17 +661,17 @@ fun LumenLineChart(
     val domain = lumenChartDomain(
         series.flatMap { item -> item.data.map { it.y } } + listOf(reference?.value)
     )
-    val categories = lumenChartCategories(series)
+    val categories = lumenLineChartCategories(series)
 
     val baseSummary = labels.formatSummary(LumenChartSummary.resolve(series))
     val resolvedSummary = summary ?: reference?.let {
-        "$baseSummary ${it.label}: ${it.value}."
+        "$baseSummary ${it.label}: ${labels.formatValue(it.value)}."
     } ?: baseSummary
 
     LumenChartFrame(label, resolvedSummary, modifier, heading, description) {
         if (reference != null) {
             Text(
-                "${reference.label}: ${reference.value}",
+                "${reference.label}: ${labels.formatValue(reference.value)}",
                 color = theme.chartColor(reference.tone),
                 style = MaterialTheme.typography.labelSmall
             )
@@ -662,14 +709,15 @@ fun LumenLineChart(
                 item.data.forEach { datum ->
                     val datumTone = datum.tone ?: return@forEach
                     val datumIndex = categories.indexOf(datum.x)
+                    if (datumIndex < 0) return@forEach
                     val datumValue = datum.y?.takeIf(Double::isFinite) ?: return@forEach
 
                     drawCircle(
                         color = theme.chartColor(datumTone),
                         radius = 4.dp.toPx(),
                         center = Offset(
-                            padding + lumenChartCategoryPosition(
-                                datumIndex, categories.size, false
+                            padding + lumenChartXPosition(
+                                datumIndex, categories
                             ) * plotWidth,
                             lumenChartScale(
                                 datumValue, domain, size.height - padding, padding

@@ -103,6 +103,20 @@ test('the Lumen 3 Swift contract selects Apple and native compatibility gates', 
   assert.equal(classification['native-contracts'], true)
 })
 
+test('the Lumen 4 contract selects native and publication qualification gates', () => {
+  const path = 'registry/lumen-4-contract.json'
+  const ci = classifyCiPaths([path])
+  const canary = classifyCanaryPaths([path])
+
+  assert.equal(ci.apple, true)
+
+  assert.equal(ci['native-contracts'], true)
+
+  assert.equal(canary.native, true)
+
+  assert.equal(canary.swift, true)
+})
+
 test('canaries isolate web, Swift, and Compose package changes', () => {
   const react = classifyCanaryPaths(['packages/react/src/Button.tsx'])
   const swift = classifyCanaryPaths(['packages/swift/Sources/LumenUI/Button.swift'])

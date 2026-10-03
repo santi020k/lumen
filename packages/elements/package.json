@@ -40,6 +40,10 @@
       "types": "./dist/components/combobox.d.ts",
       "import": "./dist/components/combobox.js"
     },
+    "./components/image-comparison": {
+      "types": "./dist/components/image-comparison.d.ts",
+      "import": "./dist/components/image-comparison.js"
+    },
     "./components/foundations": {
       "types": "./dist/components/foundations.d.ts",
       "import": "./dist/components/foundations.js"

@@ -29,8 +29,9 @@
 
 <!-- cspell:words screencap -->
 
-> **Supported for Lumen 2:** This package uses the frozen version 2 contract. The current artifact
-> remains a release candidate until publication, physical-device, and consumer-soak gates complete.
+> **Lumen 4 candidate:** This branch prepares the next major adapter contract. See the
+> [migration guide](../../docs/migrating-to-lumen.md) before upgrading. Local checks do not replace
+> publication, physical-device accessibility, or consumer-soak qualification.
 
 This Android library provides native Compose foundations and primitives generated from Lumen's
 canonical design tokens. It follows the same semantic color roles, spacing, radii, typography, and
@@ -259,6 +260,39 @@ TalkBack, font scaling, contrast, focus order, and reduced motion on hardware.
 `LumenSparkline`, `LumenLineChart`, `LumenBarChart`, `LumenPieChart`, `LumenScatterChart`,
 `LumenHeatmap`, `LumenRangeChart`, and `LumenComboChart` use Compose Canvas with generated chart
 tokens and TalkBack semantics. Data charts include a factual summary and a readable fallback list.
+Use `LumenChartX.Time(epochMillis)` for time coordinates: line charts sort time samples and position
+them by elapsed time, so a long gap remains visibly longer than a short interval. Numeric line
+coordinates also use their numeric distance; categories retain their declared order.
+
+Formatting belongs to `LumenChartLabels`, not to stringified coordinates:
+
+```kotlin
+val chartLabels = LumenChartLabels(
+    chartData = "CPU samples",
+    formatX = { x ->
+        when (x) {
+            is LumenChartX.Time -> java.text.DateFormat
+                .getTimeInstance(java.text.DateFormat.SHORT)
+                .format(java.util.Date(x.epochMillis))
+            else -> x.label
+        }
+    },
+    formatValue = { value -> "${value.toInt()}%" }
+)
+
+LumenLineChart(
+    series = cpuSeries,
+    label = "CPU history",
+    labels = chartLabels,
+    reference = LumenChartReference(label = "Target", value = 70.0)
+)
+```
+
+`formatX` and `formatValue` format readable data; `formatValue` also formats the reference value.
+For localized summary sentences, provide `formatSummary` or an explicit chart `summary` as well.
+Keep `showData` enabled unless equivalent accessible values appear nearby. Swift's `bare` and
+`height` options are not Compose parameters.
+
 See the shared [data-visualization guide](../../docs/data-visualization.md).
 See the [native compatibility matrix](../../docs/native-compatibility.md) for supported Android,
 JDK, Gradle, Kotlin, and Compose baselines.

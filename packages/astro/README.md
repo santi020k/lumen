@@ -472,3 +472,22 @@ remains owned by the application.
 
 Part of [Lumen UI](https://lumen.santi020k.com), created by [Santiago Molina](https://santi020k.com).
 Licensed under [MIT](https://github.com/santi020k/lumen/blob/main/LICENSE); third-party artwork retains its own notices.
+
+### Accessible documentation controls
+
+`Code` and `CodeTabs` accept `copyLabel`, `copiedLabel`, `errorLabel`, and
+`codeLabel` strings. The first three customize clipboard controls and their live
+success/error feedback; `codeLabel` names the keyboard-focusable region for an
+unwrapped code block. A denied or unavailable clipboard reports the error label
+and keeps the source available for manual selection. `CodeTabs` forwards these
+labels to each code example.
+
+`Code` with `highlighted` enhances the supplied `pre` when the Astro runtime loads.
+For keyboard scrolling before JavaScript loads, give that `pre` `tabindex="0"`,
+`role="region"`, and an accessible name; existing attributes are preserved.
+Wrapped blocks do not add an extra tab stop.
+
+`NavigationMenu` contains ordinary site links, so every enabled link remains in
+native Tab order. Use `Menubar` or `Toolbar` for their documented composite-widget
+keyboard behavior. A `ThemeToggle` with `controlled` respects the host theme at
+initialization and leaves persistence and theme changes to its owner.

@@ -282,8 +282,8 @@ export const LumenListRow = ({
       ]}
     >
       {leading ? <View>{leading}</View> : null}
-      <View style={{ flex: 1 }}>{children}</View>
-      {trailing ? <View>{trailing}</View> : null}
+      <View style={{ flex: 1, minWidth: 0 }}>{children}</View>
+      {trailing ? <View style={{ flexShrink: 1, maxWidth: '45%' }}>{trailing}</View> : null}
     </View>
   )
 }
@@ -336,7 +336,7 @@ export const LumenBanner = ({
       ]}
     >
       {graphic ? <View>{graphic}</View> : null}
-      <View style={{ flex: 1, gap: theme.spacing.xs }}>
+      <View style={{ flex: 1, gap: theme.spacing.xs, minWidth: 0 }}>
         <Text
           style={{
             color: theme.colors.ink,
@@ -516,6 +516,7 @@ export const LumenSectionHeader = ({
             accessibilityRole="header"
             style={{
               color: theme.colors.ink,
+              flexShrink: 1,
               fontSize: theme.fontSizes.md,
               fontWeight: String(
                 theme.fontWeights.semibold
@@ -539,7 +540,7 @@ export const LumenSectionHeader = ({
           ) :
           null}
       </View>
-      {actions}
+      {actions ? <View style={{ flexShrink: 1, maxWidth: '45%' }}>{actions}</View> : null}
     </View>
   )
 }

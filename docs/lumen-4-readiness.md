@@ -48,13 +48,48 @@ and its generated outputs are complete.
 
 ## Consumer audit and implementation
 
-Rebuild the older adoption inventory from current manifests and source. Give each consumer
-repository a dedicated audit agent, record precise source examples and reusable library gaps,
-and distinguish an absent component from an existing component that needs better guidance.
-Prioritize chart readability, responsive layout, range selection, public API consistency,
-accessibility, error/loading states, and avoidable consumer CSS overrides.
+Twenty dedicated consumer audits are complete. The [consumer decision record](lumen-4-consumer-audit.md)
+identifies the source evidence and disposition for every project. Consumer repositories remain
+unchanged; older installed APIs are not treated as missing library features.
 
-Audit and implementation results are pending. Do not interpret this plan as completed evidence.
+The integrated implementation includes strict localized dates and range drafts; controlled manual
+server sorting; explicit dialog dismissal and focus restoration; collision-aware chart labels,
+formatter-aware margins and consistent mixed-chart coordinates; native chart axes and continuous
+Compose time geometry; stable loading geometry; localized clipboard recovery; normal navigation
+Tab order; native hidden semantics; responsive OTP rows; richer Prose styling; and ImageComparison
+across all three web adapters. Native slider, chart, symbol-selection and row composition examples
+are documented and checked against their actual APIs.
+
+A fresh independent review identified image-comparison reset consistency, cancellation of date
+resets, and mixed-chart Y alignment. Each finding was accepted and corrected with regression
+coverage. Browser-triggered reset checks also established that synchronization must happen after
+the native reset default action, with canceled resets and disconnected controls preserved.
+
+Fifteen published projects now have fresh anonymous desktop and phone captures, with exact
+[capture provenance](showcase-captures.json). The homepage and community gallery share one data
+source. Removed 24 superseded, unreferenced image assets. KinJar remains a development consumer;
+private Cartera and Observatory data are excluded. These are deployed-design examples, not v4
+consumer qualification.
+
+### Bundle accounting
+
+The v3 shared CSS was 172,643 bytes raw and 28,330 bytes at gzip level 9. Range calendars, comparison
+frames, complete prose semantics and the shared visual corrections bring v4 to approximately
+183 KB raw / 30 KB gzip. The reviewed budgets are 186 KB / 31 KB. Astro runtime source moves from
+160,090 bytes to approximately 165 KB for date localization, reset, theme and clipboard handling;
+its raw budget is 167 KB and its existing 33 KB gzip ceiling is retained. React components have
+approximately 163 KB raw / 33.5 KB gzip after the new contracts; the ceilings are 166 KB / 34 KB.
+A separate 2 KB raw / 900-byte gzip budget covers the new image-comparison controller. Existing
+hook, Elements and other controller budgets remain enforced. No new production dependency was
+added for these component improvements.
+
+Generated catalogs, registries and public API snapshots are reviewed alongside implementation.
+Six intentional Swift initializer replacements are recorded against immutable `v3.0.1`; consumers
+must rebuild. The changed native baselines restart the two-iteration stability qualification;
+historical consumer/device evidence is preserved without being relabeled as v4 proof.
+
+Final validation and version preparation are in progress; results below must be completed before
+this local candidate is handed off.
 
 ## Design references
 

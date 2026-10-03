@@ -405,3 +405,17 @@ remains owned by the application.
 
 Part of [Lumen UI](https://lumen.santi020k.com), created by [Santiago Molina](https://santi020k.com).
 Licensed under [MIT](https://github.com/santi020k/lumen/blob/main/LICENSE); third-party artwork retains its own notices.
+
+### Accessible code examples
+
+`<lumen-code variant="block" copy>` enhances its native `pre > code` child with a
+copy button. Use `copy-label`, `copied-label`, and `error-label` for clipboard
+feedback, and `code-label` to name its keyboard-scrollable source region. The same
+labels can be placed on an enclosing `<lumen-code-tabs>`; child labels take
+precedence. Copy emits `ui:copy-success` or `ui:copy-error` and announces feedback
+in a live region. Clipboard failures leave the source available for manual copy.
+
+Unwrapped `pre` children receive `tabindex="0"` and region semantics while keeping
+authored accessible names. With `wrap="true"`, the component does not add an extra
+tab stop. Keep native `pre` and `code` children rather than placing source text in
+HTML attributes.

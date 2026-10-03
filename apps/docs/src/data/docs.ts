@@ -810,6 +810,7 @@ const rovingGroupKeyboardInteractions = keyboardRows(
 const keyboardInteractionsByComponent: Partial<
   Record<string, readonly KeyboardInteractionRow[]>
 > = {
+  ImageComparison: keyboardRows(['Arrow keys', 'Adjust the reveal using the native range control; horizontal direction follows writing direction.'], ['Home / End', 'Reveal the full before / after image.']),
   Calendar: keyboardRows(
     [
       'Enter, Space on a day',
@@ -957,6 +958,7 @@ const keyboardInteractionsByComponent: Partial<
 }
 
 export const runtimeEvents: RuntimeEventRow[] = [
+  { detail: '{ value: number }', name: 'ui:image-comparison-change', target: 'ImageComparison root', when: 'Fires as the native range changes the percentage of the after image revealed.' },
   {
     detail: '{ value: string }',
     name: 'ui:copy-success',
@@ -1101,6 +1103,7 @@ export const runtimeEvents: RuntimeEventRow[] = [
 const runtimeEventsByComponent: Partial<
   Record<string, readonly RuntimeEventRow[]>
 > = {
+  ImageComparison: runtimeEvents.filter(event => event.name === 'ui:image-comparison-change'),
   CopyButton: runtimeEvents.filter(event => event.name.startsWith('ui:copy-')),
   DataTable: runtimeEvents.filter(
     event => event.name === 'ui:data-table-selection-change'
@@ -1701,6 +1704,17 @@ const apiReferenceByComponent = {
     apiRow(
       'size', '"default" | "sm" | "lg" | "xl"', '"default"', 'Controls the icon box size.'
     )
+  ],
+  ImageComparison: [
+    apiRow('label', 'string', 'required', 'Provides the visible label for the native comparison range control.'),
+    apiRow('before / after', 'named Astro slots | ReactNode props | slotted child nodes', 'required', 'Supplies media with matching framing and meaningful alternative text. Media is clipped, never resized as the range moves.'),
+    apiRow('beforeLabel / afterLabel', 'string', '"Before" / "After"', 'Labels each side. Elements uses before-label and after-label attributes.'),
+    apiRow('value / defaultValue', 'number', '50', 'Percentage of the after image revealed (0–100). React value is controlled; defaultValue initializes local state. Astro value is the initial position; Elements value is reflected.'),
+    apiRow('onValueChange', '(value: number) => void', '-', 'React callback for user changes. Astro and Elements emit ui:image-comparison-change with { value }.'),
+    apiRow('ratio', 'number', '16 / 9', 'Sets a shared positive finite aspect ratio. Invalid values fall back to 16 / 9.'),
+    apiRow('fit', '"cover" | "contain"', '"cover"', 'Applies the same media fit to both layers.'),
+    apiRow('disabled', 'boolean', 'false', 'Disables the native range without hiding either image. Astro keeps the range disabled until UIPrimitives enhances the static comparison.'),
+    apiRow('locale', 'string', 'environment locale', 'Formats the accessible percentage. Localize label, beforeLabel, and afterLabel separately.')
   ],
   Image: [
     apiRow(
@@ -3353,6 +3367,12 @@ export const componentDocs: ComponentDoc[] = (
       'Data display',
       'Styles accessible images while preserving Astro, Next.js, and browser-native optimization.',
       '<Image alt="Lumen UI logo" layout="fixed" src="/logo.svg" />'
+    ],
+    [
+      'ImageComparison',
+      'Data display',
+      'Compares aligned before and after media with an accessible reveal control.',
+      '<ImageComparison label="Compare edits"><Image slot="before" src="/comparison-before.svg" alt="Original landscape illustration" width={960} height={600} /><Image slot="after" src="/comparison-after.svg" alt="Color-adjusted landscape illustration" width={960} height={600} /></ImageComparison>'
     ],
     [
       'Illustration',

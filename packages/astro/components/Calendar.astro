@@ -1,13 +1,16 @@
 ---
 import type { HTMLAttributes } from 'astro/types'
 
-import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+import { isLumenDateBoundsValid, type LumenDateLabels, parseLumenDate, resolveLumenAstroProps, resolveLumenDateLabels, resolveLumenDateLocale } from '@santi020k/lumen-core'
 
 interface Props extends Omit<HTMLAttributes<'div'>, 'value'> {
   class?: string | null
   className?: string
   disabled?: boolean
   glass?: boolean | 'subtle' | 'strong'
+  labels?: Partial<Pick<LumenDateLabels, 'previousMonth' | 'nextMonth'>>
+  locale?: string
+  readOnly?: boolean
   max?: string
   min?: string
   month?: string
@@ -15,66 +18,31 @@ interface Props extends Omit<HTMLAttributes<'div'>, 'value'> {
   value?: string
 }
 
-const isoDatePattern = /^\d{4}-\d{2}-\d{2}$/
-const isoMonthPattern = /^\d{4}-\d{2}$/
-const weekdayFormatter = new Intl.DateTimeFormat('en', { timeZone: 'UTC', weekday: 'short' })
-const monthFormatter = new Intl.DateTimeFormat('en', { month: 'long', timeZone: 'UTC', year: 'numeric' })
+const createDate = (year: number, month: number, day: number): Date => {
+  const date = new Date(0)
 
-const dayFormatter = new Intl.DateTimeFormat('en', {
-  day: 'numeric',
-  month: 'long',
-  timeZone: 'UTC',
-  weekday: 'long',
-  year: 'numeric'
-})
+  date.setUTCFullYear(year, month, day)
 
-const parseIsoDate = (date: string | undefined): Date | undefined => {
-  if (!date || !isoDatePattern.test(date)) return undefined
-
-  const [year, month, day] = date.split('-').map(Number)
-  const parsed = new Date(Date.UTC(year, month - 1, day))
-
-  return parsed.getUTCFullYear() === year &&
-    parsed.getUTCMonth() === month - 1 &&
-    parsed.getUTCDate() === day ?
-    parsed :
-    undefined
+  return date
 }
 
-const parseIsoMonth = (date: string | undefined): Date | undefined => {
-  if (!date || !isoMonthPattern.test(date)) return undefined
-
-  const [year, month] = date.split('-').map(Number)
-  const parsed = new Date(Date.UTC(year, month - 1, 1))
-
-  return parsed.getUTCFullYear() === year && parsed.getUTCMonth() === month - 1 ?
-    parsed :
-    undefined
-}
-
-const formatIsoDate = (date: Date): string => date.toISOString().slice(0, 10)
-const formatIsoMonth = (date: Date): string => date.toISOString().slice(0, 7)
-
-const addDays = (date: Date, days: number): Date => {
-  const utc = Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate() + days)
-
-  return new Date(utc)
-}
-
-const isBefore = (date: Date, limit: Date | undefined): boolean => (
-  Boolean(limit && formatIsoDate(date) < formatIsoDate(limit))
-)
-
-const isAfter = (date: Date, limit: Date | undefined): boolean => (
-  Boolean(limit && formatIsoDate(date) > formatIsoDate(limit))
-)
+const parseIsoDate = (date: string | undefined): Date | undefined => parseLumenDate(date) ?? undefined
+const parseIsoMonth = (date: string | undefined): Date | undefined => date ? parseIsoDate(`${date}-01`) : undefined
+const formatIsoDate = (date: Date): string => date.toISOString().split('T')[0] ?? ''
+const formatIsoMonth = (date: Date): string => formatIsoDate(date).slice(0, -3)
+const addDays = (date: Date, days: number): Date => createDate(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate() + days)
+const isBefore = (date: Date, limit: Date | undefined): boolean => Boolean(limit && date < limit)
+const isAfter = (date: Date, limit: Date | undefined): boolean => Boolean(limit && date > limit)
 
 const {
   class: classProp = '',
   className = '',
-  disabled = false,
+  disabled: requestedDisabled = false,
   glass = false,
   id,
+  labels,
+  locale,
+  readOnly = false,
   max,
   min,
   month,
@@ -83,16 +51,26 @@ const {
   ...rest
 } = Astro.props
 
+const disabled = requestedDisabled || !isLumenDateBoundsValid(min, max)
+const resolvedLocale = resolveLumenDateLocale(locale)
+const resolvedLabels = { ...resolveLumenDateLabels(resolvedLocale), ...labels }
+const weekdayFormatter = new Intl.DateTimeFormat(resolvedLocale, { timeZone: 'UTC', weekday: 'short' })
+const monthFormatter = new Intl.DateTimeFormat(resolvedLocale, { month: 'long', timeZone: 'UTC', year: 'numeric' })
+
+const dayFormatter = new Intl.DateTimeFormat(resolvedLocale, {
+  day: 'numeric', month: 'long', timeZone: 'UTC', weekday: 'long', year: 'numeric'
+})
+
 const today = new Date()
-const todayUtc = new Date(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate()))
+const todayUtc = createDate(today.getFullYear(), today.getMonth(), today.getDate())
 const selectedDate = parseIsoDate(value)
-const minDate = parseIsoDate(min)
-const maxDate = parseIsoDate(max)
+const minDate = parseIsoDate(min ?? '0001-01-01')
+const maxDate = parseIsoDate(max ?? '9999-12-31')
 const selectedIso = selectedDate ? formatIsoDate(selectedDate) : ''
 
 const monthDate = parseIsoMonth(month) ??
-  (selectedDate ? new Date(Date.UTC(selectedDate.getUTCFullYear(), selectedDate.getUTCMonth(), 1)) : undefined) ??
-  new Date(Date.UTC(todayUtc.getUTCFullYear(), todayUtc.getUTCMonth(), 1))
+  (selectedDate ? createDate(selectedDate.getUTCFullYear(), selectedDate.getUTCMonth(), 1) : undefined) ??
+  createDate(todayUtc.getUTCFullYear(), todayUtc.getUTCMonth(), 1)
 
 const calendarId = id ?? `ui-calendar-${Math.random().toString(36).slice(2)}`
 const labelId = `${calendarId}-label`
@@ -108,8 +86,9 @@ const firstSelectableDate = visibleDates.find(date => date.getUTCMonth() === mon
 
 let focusIso = formatIsoDate(monthDate)
 
-if (selectedDate && formatIsoMonth(selectedDate) === monthIso) focusIso = selectedIso
+if (selectedDate && !isBefore(selectedDate, minDate) && !isAfter(selectedDate, maxDate) && formatIsoMonth(selectedDate) === monthIso) focusIso = selectedIso
 else if (
+  !isBefore(todayUtc, minDate) && !isAfter(todayUtc, maxDate) &&
   todayUtc.getUTCMonth() === monthDate.getUTCMonth() &&
   todayUtc.getUTCFullYear() === monthDate.getUTCFullYear()
 ) focusIso = todayIso
@@ -131,12 +110,16 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
   aria-disabled={disabled ? 'true' : undefined}
   class:list={classList}
   data-ui-calendar
+  data-locale={locale}
+  data-readonly={readOnly ? 'true' : undefined}
+  data-previous-month-label={labels?.previousMonth}
+  data-next-month-label={labels?.nextMonth}
   data-ui-calendar-initial-month={monthIso}
-  data-ui-calendar-max={maxDate ? formatIsoDate(maxDate) : undefined}
-  data-ui-calendar-min={minDate ? formatIsoDate(minDate) : undefined}
+  data-ui-calendar-max={max}
+  data-ui-calendar-min={min}
   data-ui-calendar-month={monthIso}
   data-ui-calendar-value={selectedIso || undefined}
-  data-disabled={disabled ? 'true' : undefined}
+  data-disabled={requestedDisabled ? 'true' : undefined}
   data-ui-glass-track={glass ? true : undefined}
   id={calendarId}
   {...passthrough}
@@ -151,27 +134,33 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
 
   <div class="ui-calendar__header">
     <button
-      aria-label="Previous month"
+      aria-label={resolvedLabels.previousMonth}
       class="ui-calendar__nav"
       data-ui-calendar-prev
-      disabled={disabled || undefined}
+      disabled={disabled || isBefore(addDays(monthDate, -1), minDate) || undefined}
       type="button"
     >
       <span aria-hidden="true">&lsaquo;</span>
     </button>
     <strong class="ui-calendar__label" data-ui-calendar-label id={labelId}>{monthFormatter.format(monthDate)}</strong>
     <button
-      aria-label="Next month"
+      aria-label={resolvedLabels.nextMonth}
       class="ui-calendar__nav"
       data-ui-calendar-next
-      disabled={disabled || undefined}
+      disabled={disabled || isAfter(createDate(monthDate.getUTCFullYear(), monthDate.getUTCMonth() + 1, 1), maxDate) || undefined}
       type="button"
     >
       <span aria-hidden="true">&rsaquo;</span>
     </button>
   </div>
 
-  <table aria-labelledby={labelId} class="ui-calendar__grid" data-ui-calendar-grid role="grid">
+  <table
+aria-readonly={readOnly ? 'true' : undefined}
+aria-labelledby={labelId}
+class="ui-calendar__grid"
+data-ui-calendar-grid
+role="grid"
+  >
     <thead>
       <tr role="row">
         {weekdays.map(weekday => <th role="columnheader" scope="col">{weekday}</th>)}

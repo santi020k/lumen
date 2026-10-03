@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "status": "draft",
+  "targetVersion": "4.0.0",
+  "policy": {
+    "compatibility": "Lumen 4 may deliberately replace v3 component and binary contracts. Consumer data, privacy, and release approval remain protected. Migration guidance documents externally visible changes.",
+    "versioning": "Prepare the coordinated v4 candidate locally. Publication requires separate approval of the final reviewed revision through the existing GitHub release workflow."
+  },
+  "changes": [
+    {
+      "id": "consumer-driven-component-polish",
+      "kind": "breaking",
+      "currentContract": "Consumers carry chart-label, hidden-state, clipboard, date-selection, and native-layout workarounds across older Lumen releases.",
+      "replacement": "Shared chart geometry and formatted axes, strict range selection, explicit clipboard recovery, accessible native layout controls, and a cross-framework image comparison primitive.",
+      "migration": "Use stable unique chart X identities; remove verified old chart/hidden patches; review button content selectors and loading activation; rebuild native consumers for changed initializer and formatter contracts.",
+      "evidence": [
+        "docs/lumen-4-consumer-audit.md",
+        "docs/lumen-4-readiness.md"
+      ],
+      "docs": [
+        "docs/migrating-to-lumen.md",
+        "docs/data-visualization.md",
+        "docs/ai-usage.md"
+      ],
+      "tests": [
+        "pnpm run validate",
+        "pnpm run test:a11y",
+        "swift test",
+        "cd packages/compose && ./gradlew test lint apiCheck"
+      ]
+    },
+    {
+      "id": "swift-native-control-polish",
+      "kind": "breaking",
+      "currentContract": "Six v3 Swift initializer signatures do not expose compact chart, slider-label, and symbol-selection options.",
+      "replacement": "Defaulted parameters provide bare chart frames, explicit plot height, optional slider headings, contextual symbol tint, and selection completion.",
+      "migration": "Rebuild consumers against v4. Existing source calls generally retain defaults; method references and binary clients must adopt the new signatures. See native composition examples.",
+      "packages": [
+        "LumenUI"
+      ],
+      "evidence": [
+        "docs/lumen-4-consumer-audit.md",
+        "docs/native-api-audit.md"
+      ],
+      "docs": [
+        "packages/swift/README.md",
+        "docs/native-patterns.md",
+        "docs/migrating-to-lumen.md"
+      ],
+      "tests": [
+        "swift test",
+        "pnpm run check:swift-api-baseline",
+        "pnpm run check:swift-source-compatibility"
+      ],
+      "swiftApiBreakages": [
+        "constructor LumenBarChart.init(label:series:layout:summary:labels:showData:selection:) has been removed",
+        "constructor LumenLineChart.init(label:series:heading:description:summary:labels:area:reference:showData:selection:) has been removed",
+        "constructor LumenSlider.init(_:value:in:step:valueLabel:) has been removed",
+        "constructor LumenSlider.init(_:value:in:step:valueLabel:onEditingChanged:) has been removed",
+        "constructor LumenSymbolPicker.init(_:selectedName:options:) has been removed",
+        "constructor LumenSymbolPickerButton.init(_:selectedName:options:) has been removed"
+      ]
+    }
+  ],
+  "swiftApiBaseline": "v3.0.1"
+}

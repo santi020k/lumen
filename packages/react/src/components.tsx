@@ -22,6 +22,7 @@ import {
   createElement,
   Fragment,
   isValidElement,
+  useCallback,
   useContext,
   useEffect,
   useId,
@@ -43,6 +44,8 @@ import {
   formatLumenLanguageLabel,
   getLumenChartAxisPadding,
   getLumenChartCategories,
+  getLumenChartCategoryLabel,
+  getLumenChartCategoryTicks,
   getLumenChartDomain,
   getLumenChartTicks,
   getLumenChartToneClassName,
@@ -83,6 +86,7 @@ import {
   scaleLumenChartValue,
   tokenizeLumenCode
 } from '@santi020k/lumen-core'
+import { parseLumenDate as parseCalendarDate, resolveLumenDateLabels as resolveDateControlLabels, resolveLumenDateLocale as getCalendarLocale } from '@santi020k/lumen-core'
 import { renderSVG } from 'uqr'
 
 import { formatReactChartTableValue } from './chart-recipes.js'
@@ -122,6 +126,7 @@ import {
   type InputProps,
   Label
 } from './server-components.js'
+import { useCopyFeedback } from './use-copy-feedback.js'
 
 export {
   Badge,
@@ -447,14 +452,18 @@ Omit<DialogOptions, 'id'>
 export const AlertDialog = ({
   className,
   defaultOpen,
+  dismissOnEscape,
+  dismissOnOutsidePress,
   glass = false,
+  onCancel,
   onClick,
   onClose,
   onOpenChange,
+  onPointerDown,
   open,
   ...props
 }: AlertDialogProps) => {
-  const dialog = useDialog({ alert: true, defaultOpen, onOpenChange, open })
+  const dialog = useDialog({ alert: true, defaultOpen, dismissOnEscape, dismissOnOutsidePress, onOpenChange, open })
 
   return (
     <dialog
@@ -464,6 +473,8 @@ export const AlertDialog = ({
         'ui-dialog ui-alert-dialog', glassSurfaceClass('ui-dialog', glass), className
       )}
       data-surface={resolveSurface(glass)}
+      onCancel={composeHandlers(onCancel, dialog.dialogProps.onCancel)}
+      onPointerDown={composeHandlers(onPointerDown, dialog.dialogProps.onPointerDown)}
       onClick={composeHandlers(onClick, dialog.dialogProps.onClick)}
       onClose={composeHandlers(onClose, dialog.dialogProps.onClose)}
     />
@@ -619,8 +630,10 @@ export const Button = ({
   variant = 'default',
   ...props
 }: ButtonProps) => {
+  const isDisabled = disabled === true || loading
+
   const buttonClassName = composeClassName(
-    'ui-button', `ui-button--${variant}`, size === 'default' ? 'ui-button--default-size' : `ui-button--${size}`, disabled && 'ui-button--disabled', loading && 'ui-button--loading', className
+    'ui-button', `ui-button--${variant}`, size === 'default' ? 'ui-button--default-size' : `ui-button--${size}`, isDisabled && 'ui-button--disabled', loading && 'ui-button--loading', className
   )
 
   if (asChild) {
@@ -639,13 +652,30 @@ export const Button = ({
         {...child.props}
         {...props}
         aria-busy={loading ? true : undefined}
-        aria-disabled={disabled ? true : undefined}
+        aria-disabled={isDisabled ? true : undefined}
         className={composeClassName(buttonClassName, child.props.className)}
         data-slot="button"
+        onClickCapture={isDisabled ?
+          (event: ReactMouseEvent<HTMLElement>) => {
+            event.preventDefault()
+
+            event.stopPropagation()
+          } :
+          props.onClickCapture ?? child.props.onClickCapture}
+        onKeyDownCapture={isDisabled ?
+          (event: KeyboardEvent<HTMLElement>) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+              event.preventDefault()
+
+              event.stopPropagation()
+            }
+          } :
+          props.onKeyDownCapture ?? child.props.onKeyDownCapture}
         ref={ref as Ref<HTMLElement>}
+        tabIndex={isDisabled ? -1 : props.tabIndex ?? child.props.tabIndex}
       >
         {loading && <span aria-hidden="true" className="ui-spinner" />}
-        {child.props.children}
+        <span className="ui-button__content">{child.props.children}</span>
       </ChildComponent>
     )
   }
@@ -655,13 +685,13 @@ export const Button = ({
       aria-busy={loading || undefined}
       className={buttonClassName}
       data-slot="button"
-      disabled={disabled}
+      disabled={isDisabled}
       ref={ref}
       type={type}
       {...props}
     >
       {loading && <span aria-hidden="true" className="ui-spinner" />}
-      {children}
+      <span className="ui-button__content">{children}</span>
     </button>
   )
 }
@@ -676,12 +706,14 @@ export interface CalendarProps extends ComponentPropsWithoutRef<'div'> {
   defaultValue?: string | undefined
   disabled?: boolean | undefined
   glass?: LumenGlassProp
+  labels?: { previousMonth?: string, nextMonth?: string } | undefined
   locale?: string | undefined
   max?: string | undefined
   min?: string | undefined
   month?: string | undefined
   name?: string | undefined
   onValueChange?: ((value: string) => void) | undefined
+  readOnly?: boolean | undefined
   value?: string | undefined
 }
 export const Calendar = ({
@@ -689,24 +721,28 @@ export const Calendar = ({
   defaultValue,
   disabled = false,
   glass = false,
+  labels,
   locale,
   max,
   min,
   month,
   name,
   onValueChange,
+  readOnly,
   value,
   ...props
 }: CalendarProps) => {
   const calendar = useCalendar({
     defaultValue,
     disabled,
+    labels,
     locale,
     max,
     min,
     month,
     name,
     onValueChange,
+    readOnly,
     value
   })
 
@@ -854,12 +890,13 @@ interface ChartDataTableProps {
 
 const ChartDataTable = ({
   categories,
-  formatCategory = String,
+  formatCategory,
   formatValue = String,
   labels,
   series
 }: ChartDataTableProps) => {
   const resolvedLabels = resolveLumenChartLabels(labels)
+  const alignedSeries = series.map(item => alignLumenChartSeries(item, categories))
 
   return (
     <details className="ui-chart__data">
@@ -880,12 +917,9 @@ const ChartDataTable = ({
             {categories.map(category => (
               <tr key={getChartCategoryKey(category)}>
                 <th scope="row">
-                  {series
-                    .flatMap(item => item.data)
-                    .find(datum => datum.x === category)?.xLabel ??
-                    formatCategory(category)}
+                  {getLumenChartCategoryLabel(alignedSeries, category, formatCategory, 'detail')}
                 </th>
-                {series.map(item => {
+                {alignedSeries.map(item => {
                   const datum = item.data.find(
                     candidate => candidate.x === category
                   )
@@ -984,7 +1018,7 @@ export const BarChart = ({
   categoryWidth,
   className,
   emptyLabel,
-  formatCategory = String,
+  formatCategory,
   formatValue = String,
   layout = 'grouped',
   labels,
@@ -996,31 +1030,39 @@ export const BarChart = ({
   ...props
 }: BarChartProps) => {
   const resolvedLabels = resolveLumenChartLabels(labels)
+  const categories = getLumenChartCategories(series)
+  const alignedSeries = series.map(item => alignLumenChartSeries(item, categories))
 
-  const geometry = createLumenBarGeometry(series, {
+  const geometry = createLumenBarGeometry(alignedSeries, {
     ...(categoryWidth === undefined ? {} : { categoryWidth }),
+    ...(formatCategory === undefined ? {} : { formatCategory }),
+    formatValue,
     layout,
     orientation
   })
 
-  const hasData = hasLumenChartData(series)
+  const hasData = hasLumenChartData(alignedSeries)
   const ticks = getLumenChartTicks(geometry.domain)
-  const categories = geometry.categories.map(category => category.category)
+  const margin = geometry.margin
 
-  const margin =
-    orientation === 'horizontal' ?
-      {
-        bottom: 24,
-        left: Math.max(64, Math.min(240, categoryWidth ?? 112)),
-        right: 20,
-        top: 16
-      } :
-      { bottom: 52, left: 52, right: 16, top: 16 }
+  const categoryTicks = getLumenChartCategoryTicks(geometry.categories.map(category => String(category.label)), {
+    end: geometry.width - margin.right,
+    positions: geometry.categories.map(category => category.x),
+    start: margin.left
+  })
+
+  const valueTicks = getLumenChartCategoryTicks(ticks.map(tick => formatValue(tick)), {
+    end: geometry.width - margin.right,
+    positions: ticks.map(tick => scaleLumenChartValue(
+      tick, geometry.domain, margin.left, geometry.width - margin.right
+    )),
+    start: margin.left
+  })
 
   return (
     <Chart
       className={composeClassName('ui-bar-chart', className)}
-      summary={summary ?? formatLumenChartSummary(series, formatValue, resolvedLabels)}
+      summary={summary ?? formatLumenChartSummary(alignedSeries, formatValue, resolvedLabels)}
       {...props}
     >
       {showLegend && hasData && <ChartLegend label={resolvedLabels.chartLegend} series={series} />}
@@ -1029,7 +1071,7 @@ export const BarChart = ({
           {emptyLabel ?? resolvedLabels.empty}
         </p>
       )}
-      <div className="ui-chart__plot" hidden={!hasData}>
+      <div aria-label={resolvedLabels.chartData} className="ui-chart__plot" role="region" tabIndex={0} hidden={!hasData}>
         <svg
           aria-hidden="true"
           preserveAspectRatio="xMidYMid meet"
@@ -1057,31 +1099,41 @@ export const BarChart = ({
                   />
                 ) :
                 (
-                  <line
-                    key={tick}
-                    x1={margin.left}
-                    x2={geometry.width - margin.right}
-                    y1={coordinate}
-                    y2={coordinate}
-                  />
+                  <Fragment key={tick}>
+                    <line x1={margin.left} x2={geometry.width - margin.right} y1={coordinate} y2={coordinate} />
+                    <text x={margin.left - 8} y={coordinate}>{formatValue(tick)}</text>
+                  </Fragment>
                 )
             })}
           </g>
           <g className="ui-chart__axis-labels">
-            {geometry.categories.map(category => (
-              <text
-                dominantBaseline={
-                  orientation === 'horizontal' ? 'middle' : undefined
-                }
-                key={getChartCategoryKey(category.label)}
-                textAnchor={orientation === 'horizontal' ? 'end' : 'middle'}
-                x={category.x}
-                y={category.y}
-              >
-                {String(category.label)}
-              </text>
-            ))}
+            {orientation === 'horizontal' ?
+              geometry.categories.map(category => (
+                <text
+                  dominantBaseline="middle"
+                  key={getChartCategoryKey(category.category)}
+                  textAnchor="end"
+                  x={category.x}
+                  y={category.y}
+                >
+                  {getLumenChartCategoryTicks([String(category.label)], { end: margin.left - 16, start: 0 })[0]?.label}
+                </text>
+              )) :
+              categoryTicks.map(tick => (
+                <text key={tick.index} textAnchor={tick.textAnchor} x={tick.position} y={geometry.height - 20}>
+                  {tick.label}
+                </text>
+              ))}
           </g>
+          {orientation === 'horizontal' && (
+            <g className="ui-chart__axis-labels">
+              {valueTicks.map(tick => (
+                <text key={tick.index} textAnchor={tick.textAnchor} x={tick.position} y={geometry.height - 6}>
+                  {tick.label}
+                </text>
+              ))}
+            </g>
+          )}
           <g className="ui-bar-chart__marks">
             {geometry.marks.map(mark => (
               <rect
@@ -1094,12 +1146,7 @@ export const BarChart = ({
                 y={mark.y}
               >
                 <title>
-                  {`${
-                    series
-                      .flatMap(item => item.data)
-                      .find(datum => datum.x === mark.category)?.xLabel ??
-                      formatCategory(mark.category)
-                  } · ${mark.seriesLabel}: ${formatValue(mark.value)}`}
+                  {`${getLumenChartCategoryLabel(alignedSeries, mark.category, formatCategory, 'detail')} · ${mark.seriesLabel}: ${formatValue(mark.value)}`}
                 </title>
               </rect>
             ))}
@@ -1109,7 +1156,7 @@ export const BarChart = ({
       {showTable && hasData && (
         <ChartDataTable
           categories={categories}
-          formatCategory={formatCategory}
+          {...(formatCategory === undefined ? {} : { formatCategory })}
           formatValue={formatValue}
           labels={resolvedLabels}
           series={series}
@@ -1149,7 +1196,7 @@ export const LineChart = ({
   area = false,
   className,
   emptyLabel,
-  formatCategory = String,
+  formatCategory,
   formatValue = String,
   labels,
   markers = 'auto',
@@ -1165,12 +1212,13 @@ export const LineChart = ({
   const height = 320
   const padding = 44
   const categories = getLumenChartCategories(series)
-  const hasData = hasLumenChartData(series)
 
   const alignedSeries = series.map(item => ({
     ...item,
     data: alignLumenChartSeries(item, categories).data
   }))
+
+  const hasData = hasLumenChartData(alignedSeries)
 
   const domain = getLumenChartDomain(
     [
@@ -1191,7 +1239,11 @@ export const LineChart = ({
     width
   }))
 
-  const labelStep = Math.max(1, Math.ceil(categories.length / 8))
+  const categoryTicks = getLumenChartCategoryTicks(
+    categories.map(category => getLumenChartCategoryLabel(alignedSeries, category, formatCategory)),
+    { end: width - padding, start: paddingLeft }
+  )
+
   const markerStep = getLineChartMarkerStep(markers, categories.length)
 
   const referenceY =
@@ -1202,7 +1254,7 @@ export const LineChart = ({
   return (
     <Chart
       className={composeClassName('ui-line-chart', className)}
-      summary={summary ?? formatLumenChartSummary(series, formatValue, resolvedLabels)}
+      summary={summary ?? formatLumenChartSummary(alignedSeries, formatValue, resolvedLabels)}
       {...props}
     >
       {showLegend && hasData && <ChartLegend label={resolvedLabels.chartLegend} series={series} />}
@@ -1211,7 +1263,7 @@ export const LineChart = ({
           {emptyLabel ?? resolvedLabels.empty}
         </p>
       )}
-      <div className="ui-chart__plot" hidden={!hasData}>
+      <div aria-label={resolvedLabels.chartData} className="ui-chart__plot" role="region" tabIndex={0} hidden={!hasData}>
         <svg
           aria-hidden="true"
           preserveAspectRatio="xMidYMid meet"
@@ -1234,27 +1286,11 @@ export const LineChart = ({
             })}
           </g>
           <g className="ui-chart__axis-labels">
-            {categories.map((category, index) => {
-              if (index % labelStep !== 0 && index !== categories.length - 1)
-                return null
-
-              const denominator = Math.max(1, categories.length - 1)
-              const x = paddingLeft + (index / denominator) * (width - paddingLeft - padding)
-
-              return (
-                <text
-                  key={getChartCategoryKey(category)}
-                  textAnchor="middle"
-                  x={x}
-                  y={height - 14}
-                >
-                  {series
-                    .flatMap(item => item.data)
-                    .find(datum => datum.x === category)?.xLabel ??
-                    formatCategory(category)}
-                </text>
-              )
-            })}
+            {categoryTicks.map(tick => (
+              <text key={tick.index} textAnchor={tick.textAnchor} x={tick.position} y={height - 14}>
+                {tick.label}
+              </text>
+            ))}
           </g>
           {referenceY !== undefined && (
             <line
@@ -1295,7 +1331,7 @@ export const LineChart = ({
                         r="3"
                       >
                         <title>
-                          {`${point.xLabel ?? formatCategory(point.x)} · ${item.label}: ${formatValue(point.y ?? 0)}`}
+                          {`${getLumenChartCategoryLabel(alignedSeries, point.x, formatCategory, 'detail')} · ${item.label}: ${formatValue(point.y ?? 0)}`}
                         </title>
                       </circle>
                     )
@@ -1308,7 +1344,7 @@ export const LineChart = ({
       {showTable && hasData && (
         <ChartDataTable
           categories={categories}
-          formatCategory={formatCategory}
+          {...(formatCategory === undefined ? {} : { formatCategory })}
           formatValue={formatValue}
           labels={resolvedLabels}
           series={series}
@@ -1478,7 +1514,7 @@ export const ScatterChart = ({
     <Chart className={composeClassName('ui-scatter-chart', className)} summary={summary ?? formatLumenChartSummary(renderedSeries, formatValue, resolvedLabels)} {...props}>
       {showLegend && hasData && <ChartLegend label={resolvedLabels.chartLegend} series={series} />}
       {!hasData && <p className="ui-chart__empty" role="status">{resolvedLabels.empty}</p>}
-      <div className="ui-chart__plot" hidden={!hasData}>
+      <div aria-label={resolvedLabels.chartData} className="ui-chart__plot" role="region" tabIndex={0} hidden={!hasData}>
         <svg aria-hidden="true" viewBox={`0 0 ${geometry.width} ${geometry.height}`}>
           <g className="ui-scatter-chart__marks">
             {geometry.points.map((point, pointIndex) => (
@@ -1546,7 +1582,7 @@ export const Heatmap = ({
   return (
     <Chart className={composeClassName('ui-heatmap', className)} summary={summary ?? resolvedLabels.formatHeatmapSummary(availableCells.length)} {...props}>
       {!hasData && <p className="ui-chart__empty" role="status">{resolvedLabels.empty}</p>}
-      <div className="ui-chart__plot" hidden={!hasData}>
+      <div aria-label={resolvedLabels.chartData} className="ui-chart__plot" role="region" tabIndex={0} hidden={!hasData}>
         <svg aria-hidden="true" viewBox={`0 0 ${geometry.width} ${geometry.height}`}>
           <g className="ui-heatmap__cells">
             {availableCells.map(cell => <rect height={Math.max(0, cell.height - 2)} key={cell.id ?? `${getChartCategoryKey(cell.x)}:${getChartCategoryKey(cell.y)}`} opacity={Math.max(0.12, cell.ratio)} width={Math.max(0, cell.width - 2)} x={cell.xCoordinate + 1} y={cell.yCoordinate + 1}><title>{`${cell.xLabel ?? cell.x} · ${cell.yLabel ?? cell.y}: ${cell.label ?? formatValue(cell.value ?? 0)}`}</title></rect>)}
@@ -1615,7 +1651,7 @@ export const RangeChart = ({
   return (
     <Chart className={composeClassName('ui-range-chart', getLumenChartToneClassName(tone), className)} summary={summary ?? resolvedLabels.formatRangeSummary(geometry.points.length)} {...props}>
       {geometry.points.length === 0 && <p className="ui-chart__empty" role="status">{resolvedLabels.empty}</p>}
-      <div className="ui-chart__plot" hidden={geometry.points.length === 0}>
+      <div aria-label={resolvedLabels.chartData} className="ui-chart__plot" role="region" tabIndex={0} hidden={geometry.points.length === 0}>
         <svg aria-hidden="true" viewBox={`0 0 ${width} ${height}`}>
           <path className="ui-range-chart__area" d={geometry.areaPath} />
           {geometry.points.map(point => (
@@ -1726,6 +1762,8 @@ export const ComboChart = ({
     ...(barSeries.length === 0 ?
       {} :
       {
+        paddingBottom: bars.margin.bottom,
+        paddingTop: bars.margin.top,
         xDomain: { max: 1, min: 0 },
         xScale: 'linear' as const
       })
@@ -1742,7 +1780,7 @@ export const ComboChart = ({
     <Chart className={composeClassName('ui-combo-chart', className)} summary={summary ?? formatLumenChartSummary(series, formatValue, resolvedLabels)} {...props}>
       {showLegend && hasData && <ChartLegend label={resolvedLabels.chartLegend} series={series} />}
       {!hasData && <p className="ui-chart__empty" role="status">{resolvedLabels.empty}</p>}
-      <div className="ui-chart__plot" hidden={!hasData}>
+      <div aria-label={resolvedLabels.chartData} className="ui-chart__plot" role="region" tabIndex={0} hidden={!hasData}>
         <svg aria-hidden="true" viewBox={`0 0 ${width} ${height}`}>
           <g className="ui-bar-chart__marks">{bars.marks.map(mark => <rect className={getLumenChartToneClassName(mark.tone)} height={mark.height} key={`${mark.seriesId}:${getChartCategoryKey(mark.category)}`} rx="4" width={mark.width} x={mark.x} y={mark.y}><title>{`${mark.seriesLabel}: ${formatValue(mark.value)}`}</title></rect>)}</g>
           {lines.map((geometry, index) => {
@@ -1832,6 +1870,10 @@ export const Collapsible = ({ className, ...props }: CollapsibleProps) => (
 )
 
 export interface CodeProps extends ComponentPropsWithoutRef<'figure'> {
+  codeLabel?: string
+  copyLabel?: string
+  copiedLabel?: string
+  errorLabel?: string
   code?: string
   copy?: boolean
   highlighted?: boolean
@@ -1863,25 +1905,87 @@ const renderCodeChildren = (
   children :
   tokenizeLumenCode(code, language).map(renderCodeToken)
 
-const renderCodeCopyButton = () => (
-  <button
-    aria-label="Copy code to clipboard"
-    className="ui-code__copy"
-    data-ui-code-copy
-    type="button"
+interface CodeCopyLabels {
+  code: string | undefined
+  copyLabel: string
+  copiedLabel: string
+  errorLabel: string
+}
+
+const CodeCopyButton = ({ code, copyLabel, copiedLabel, errorLabel }: CodeCopyLabels) => {
+  const { accessibleLabel, handleClick, state } = useCopyFeedback({
+    copiedLabel,
+    errorLabel,
+    getValue: button => {
+      if (code !== undefined) return code
+
+      const content = button.closest('[data-ui-code]')?.querySelector<HTMLElement>('pre code, code')
+
+      return content?.innerText ?? content?.textContent ?? undefined
+    },
+    label: copyLabel
+  })
+
+  return (
+    <>
+      <button
+        aria-label={accessibleLabel}
+        className={composeClassName('ui-code__copy', state === 'copied' && 'ui-code__copy--copied')}
+        data-state={state}
+        data-ui-code-copy
+        onClick={handleClick}
+        title={accessibleLabel}
+        type="button"
+      >
+        {renderLucideIcon('copy', 'ui-code__copy-icon')}
+        {renderLucideIcon('check', 'ui-code__check-icon')}
+      </button>
+      <span aria-live="polite" className="ui-sr-only" role="status">
+        {state === 'idle' ? '' : accessibleLabel}
+      </span>
+    </>
+  )
+}
+
+const codeRegionProps = (wrap: boolean, codeLabel: string) => wrap ?
+  {} :
+  {
+    'aria-label': codeLabel,
+    role: 'region',
+    tabIndex: 0
+  }
+
+const HighlightedCode = ({ children, codeLabel, wrap }: { children: ReactNode, codeLabel: string, wrap: boolean }) => (
+  <div ref={container => {
+    if (!container || wrap) return
+
+    for (const pre of container.querySelectorAll('pre')) {
+      if (!pre.hasAttribute('tabindex')) pre.tabIndex = 0
+
+      if (!pre.hasAttribute('role')) pre.setAttribute('role', 'region')
+
+      if (!pre.hasAttribute('aria-label') && !pre.hasAttribute('aria-labelledby')) pre.setAttribute('aria-label', codeLabel)
+    }
+  }}
   >
-    {renderLucideIcon('copy', 'ui-code__copy-icon')}
-    {renderLucideIcon('check', 'ui-code__check-icon')}
-  </button>
+    {children}
+  </div>
 )
 
-interface CodeHeaderOptions {
+const resolveCodeLabels = ({ codeLabel, copyLabel, copiedLabel, errorLabel }: Record<'codeLabel' | 'copyLabel' | 'copiedLabel' | 'errorLabel', string | undefined>) => ({
+  codeLabel: codeLabel ?? 'Code example',
+  copyLabel: copyLabel ?? 'Copy code to clipboard',
+  copiedLabel: copiedLabel ?? 'Code copied to clipboard',
+  errorLabel: errorLabel ?? 'Could not copy code. Select and copy it manually.'
+})
+
+interface CodeHeaderOptions extends CodeCopyLabels {
   copy: boolean
   label: ReactNode
   language: string | undefined
 }
 
-const renderCodeHeader = ({ copy, label, language }: CodeHeaderOptions) => {
+const renderCodeHeader = ({ code, copy, copyLabel, copiedLabel, errorLabel, label, language }: CodeHeaderOptions) => {
   if (!copy && !label && !language) return null
 
   return (
@@ -1895,7 +1999,7 @@ const renderCodeHeader = ({ copy, label, language }: CodeHeaderOptions) => {
         {language && <span className="ui-code__language">{language}</span>}
         {label && <span className="ui-code__label">{label}</span>}
       </span>
-      {copy && renderCodeCopyButton()}
+      {copy && <CodeCopyButton code={code} copiedLabel={copiedLabel} copyLabel={copyLabel} errorLabel={errorLabel} />}
     </figcaption>
   )
 }
@@ -1905,6 +2009,10 @@ export const Code = ({
   className,
   code,
   copy = false,
+  codeLabel,
+  copyLabel,
+  copiedLabel,
+  errorLabel,
   highlighted = false,
   label,
   language,
@@ -1913,6 +2021,7 @@ export const Code = ({
   wrap = false,
   ...props
 }: CodeProps) => {
+  const labels = resolveCodeLabels({ codeLabel, copyLabel, copiedLabel, errorLabel })
   const codeChildren = renderCodeChildren(code, children, language)
 
   if (variant === 'block') {
@@ -1927,13 +2036,13 @@ export const Code = ({
         data-ui-code
         {...props}
       >
-        {renderCodeHeader({ copy, label, language })}
+        {renderCodeHeader({ code, copy, ...labels, label, language })}
         {highlighted ?
           (
-            children
+            <HighlightedCode codeLabel={labels.codeLabel} wrap={wrap}>{children}</HighlightedCode>
           ) :
           (
-            <pre>
+            <pre {...codeRegionProps(wrap, labels.codeLabel)}>
               <code>{codeChildren}</code>
             </pre>
           )}
@@ -1968,18 +2077,6 @@ export interface CopyButtonProps extends ComponentPropsWithoutRef<'button'> {
   size?: 'default' | 'icon' | 'lg' | 'sm'
 }
 
-const dispatchCopyToast = (
-  enabled: boolean,
-  title: string,
-  variant: 'destructive' | 'success'
-): void => {
-  if (!enabled) return
-
-  document.dispatchEvent(new CustomEvent('ui:toast', {
-    detail: { title, variant }
-  }))
-}
-
 const resolveCopyText = (target: string | undefined, value: string | undefined): string | undefined => {
   if (value !== undefined) return value
 
@@ -2011,57 +2108,15 @@ export const CopyButton = ({
   variant = 'outline',
   ...props
 }: CopyButtonProps) => {
-  const [state, setState] = useState<'copied' | 'error' | 'idle'>('idle')
-  const resetTimerRef = useRef<ReturnType<typeof globalThis.setTimeout>>(undefined)
-
-  useEffect(() => () => {
-    globalThis.clearTimeout(resetTimerRef.current)
-  }, [])
-
-  const handleClick = async (event: ReactMouseEvent<HTMLButtonElement>) => {
-    onClick?.(event)
-
-    if (event.defaultPrevented) return
-
-    const button = event.currentTarget
-    const text = resolveCopyText(target, value)
-
-    try {
-      if (text === undefined) throw new Error(errorLabel)
-
-      await navigator.clipboard.writeText(text)
-
-      setState('copied')
-
-      button.dispatchEvent(new CustomEvent('ui:copy-success', {
-        bubbles: true,
-        detail: { value: text }
-      }))
-
-      dispatchCopyToast(toast, copiedLabel, 'success')
-    } catch (error) {
-      setState('error')
-
-      button.dispatchEvent(new CustomEvent('ui:copy-error', {
-        bubbles: true,
-        detail: { error }
-      }))
-
-      dispatchCopyToast(toast, errorLabel, 'destructive')
-    }
-
-    globalThis.clearTimeout(resetTimerRef.current)
-
-    resetTimerRef.current = globalThis.setTimeout(() => {
-      setState('idle')
-    }, resetAfter)
-  }
-
-  const accessibleLabel = {
-    copied: copiedLabel,
-    error: errorLabel,
-    idle: label
-  }[state]
+  const { accessibleLabel, handleClick, state } = useCopyFeedback({
+    copiedLabel,
+    errorLabel,
+    getValue: () => resolveCopyText(target, value),
+    label,
+    onClick,
+    resetAfter,
+    toast
+  })
 
   return (
     <Button
@@ -2099,6 +2154,10 @@ export interface CodeTabsProps extends Omit<
 > {
   ariaLabel?: string
   copy?: boolean
+  codeLabel?: string
+  copyLabel?: string
+  copiedLabel?: string
+  errorLabel?: string
   initialValue?: string
   items?: readonly CodeTabItem[]
   storageKey?: string
@@ -2353,30 +2412,46 @@ export const ColorPicker = ({
   />
 )
 
+export interface DataTableSort {
+  direction: 'ascending' | 'descending'
+  key: string
+}
+
+const resolveDataTableSort = (
+  controlled: DataTableSort | null | undefined,
+  fallback: DataTableSort | null
+): DataTableSort | null => controlled === undefined ? fallback : controlled
+
 export interface DataTableProps extends ComponentPropsWithoutRef<'div'> {
   columns?: DataTableColumn[]
+  defaultSort?: DataTableSort | null
   glass?: LumenGlassProp
   name?: string
+  onSortChange?: (sort: DataTableSort | null) => void
   rows?: DataTableRow[]
+  sort?: DataTableSort | null
+  sortMode?: 'client' | 'manual'
   selectable?: boolean
 }
 export const DataTable = ({
   children,
   className,
   columns = emptyDataTableColumns,
+  defaultSort = null,
   glass = false,
   name,
+  onSortChange,
   rows = emptyDataTableRows,
+  sort: controlledSort,
+  sortMode = 'client',
   selectable = false,
   ...props
 }: DataTableProps) => {
-  const [sort, setSort] = useState<{
-    direction: 'ascending' | 'descending'
-    key: string
-  } | null>(null)
+  const [uncontrolledSort, setUncontrolledSort] = useState<DataTableSort | null>(defaultSort)
+  const sort = resolveDataTableSort(controlledSort, uncontrolledSort)
 
   const sortedRows = useMemo(() => {
-    if (!sort) return rows
+    if (sortMode === 'manual' || !sort) return rows
 
     const column = columns.find(candidate => candidate.key === sort.key)
 
@@ -2387,16 +2462,17 @@ export const DataTable = ({
     return [...rows].sort((left, right) => compareDataTableCells(
       left[column.key], right[column.key], column.sort
     ) * direction)
-  }, [columns, rows, sort])
+  }, [columns, rows, sort, sortMode])
 
   const toggleSort = (column: DataTableColumn): void => {
-    setSort(current => ({
-      direction:
-        current?.key === column.key && current.direction === 'ascending' ?
-          'descending' :
-          'ascending',
+    const next: DataTableSort = {
+      direction: sort?.key === column.key && sort.direction === 'ascending' ? 'descending' : 'ascending',
       key: column.key
-    }))
+    }
+
+    if (controlledSort === undefined) setUncontrolledSort(next)
+
+    onSortChange?.(next)
   }
 
   return (
@@ -2406,6 +2482,7 @@ export const DataTable = ({
       )}
       data-ui-datatable
       data-ui-datatable-name={name}
+      data-ui-datatable-sort-mode={sortMode}
       data-ui-datatable-selectable={selectable ? 'true' : undefined}
       data-ui-glass-track={glass ? true : undefined}
       {...props}
@@ -2425,6 +2502,7 @@ export const DataTable = ({
                   return (
                     <th
                       aria-sort={direction ?? (column.sortable ? 'none' : undefined)}
+                      data-ui-datatable-sort-bound="true"
                       data-ui-datatable-sort-type={column.sort}
                       data-ui-datatable-sortable={
                         column.sortable ? 'true' : undefined
@@ -2482,7 +2560,10 @@ export type DatePickerProps = Omit<
 > &
 SurfaceProps & {
   defaultValue?: string
+  formatDate?: (value: string) => string
   inputRef?: Ref<HTMLInputElement>
+  labels?: { chooseDate?: string, previousMonth?: string, nextMonth?: string }
+  locale?: string
   onValueChange?: (value: string) => void
   placeholder?: string
   value?: string
@@ -2490,15 +2571,17 @@ SurfaceProps & {
 
 const formatDatePickerDisplayValue = (
   value: string | undefined,
-  placeholder: string
+  placeholder: string,
+  locale?: string,
+  formatDate?: (value: string) => string
 ): string => {
-  if (!value || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return placeholder
+  const date = parseCalendarDate(value)
 
-  const date = new Date(`${value}T00:00:00.000Z`)
+  if (!date || !value) return placeholder
 
-  if (Number.isNaN(date.getTime())) return placeholder
+  if (formatDate) return formatDate(value)
 
-  return new Intl.DateTimeFormat(undefined, {
+  return new Intl.DateTimeFormat(getCalendarLocale(locale), {
     day: 'numeric',
     month: 'short',
     timeZone: 'UTC',
@@ -2510,14 +2593,31 @@ const stringifyDatePickerConstraint = (
   value: number | string | undefined
 ): string | undefined => (value === undefined ? undefined : String(value))
 
+const useDatePickerDisclosure = (unavailable: boolean) => {
+  const [state, setState] = useState({ unavailable, open: false })
+
+  if (state.unavailable !== unavailable) {
+    setState({ unavailable, open: false })
+  }
+
+  const setOpen = useCallback((open: boolean) => {
+    setState({ unavailable, open: open && !unavailable })
+  }, [unavailable])
+
+  return { open: state.open && !unavailable, setOpen }
+}
+
 /* eslint-disable complexity -- DatePicker coordinates controlled input, disclosure, Calendar, and native form contracts. */
 export const DatePicker = ({
   className,
   defaultValue,
   disabled,
+  formatDate,
   glass = false,
   id,
   inputRef,
+  labels,
+  locale,
   max,
   min,
   name,
@@ -2525,28 +2625,58 @@ export const DatePicker = ({
   onInvalid,
   onValueChange,
   placeholder,
+  readOnly,
   required,
   value,
   ...props
 }: DatePickerProps) => {
   const generatedId = useId()
   const datePickerId = id ?? generatedId
-  const triggerId = `${datePickerId}-trigger`
+  const nativeInputId = `${datePickerId}-native`
   const popoverId = `${datePickerId}-popover`
   const rootRef = useRef<HTMLDivElement | null>(null)
   const nativeInputRef = useRef<HTMLInputElement | null>(null)
   const triggerRef = useRef<HTMLButtonElement | null>(null)
   const [internalValue, setInternalValue] = useState(defaultValue ?? '')
-  const [open, setOpen] = useState(false)
+  const { open: isOpen, setOpen } = useDatePickerDisclosure(disabled === true || readOnly === true)
   const selectedValue = value ?? internalValue
   const hasSelectedValue = selectedValue !== ''
-  const placeholderText = placeholder ?? 'Choose a date'
+  const dateLabels = { ...resolveDateControlLabels(locale), ...labels }
+  const placeholderText = placeholder ?? dateLabels.chooseDate
   const maxStr = stringifyDatePickerConstraint(max)
   const minStr = stringifyDatePickerConstraint(min)
   const accessibleLabel = props['aria-label']
 
   useEffect(() => {
-    if (!open) return
+    const owner = nativeInputRef.current?.form
+    let active = true
+    let resetTimer: ReturnType<typeof globalThis.setTimeout> | undefined
+
+    const reset = (event: Event) => {
+      globalThis.clearTimeout(resetTimer)
+
+      resetTimer = globalThis.setTimeout(() => {
+        if (!active || event.defaultPrevented || !nativeInputRef.current?.isConnected) return
+
+        if (value === undefined) setInternalValue(defaultValue ?? '')
+
+        setOpen(false)
+      })
+    }
+
+    owner?.addEventListener('reset', reset)
+
+    return () => {
+      active = false
+
+      globalThis.clearTimeout(resetTimer)
+
+      owner?.removeEventListener('reset', reset)
+    }
+  }, [defaultValue, props.form, value, setOpen])
+
+  useEffect(() => {
+    if (!isOpen) return
 
     const handlePointerDown = (event: MouseEvent) => {
       if (
@@ -2556,26 +2686,18 @@ export const DatePicker = ({
         setOpen(false)
     }
 
-    const handleKeyDown = (event: globalThis.KeyboardEvent) => {
-      if (event.key !== 'Escape') return
-
-      setOpen(false)
-
-      triggerRef.current?.focus()
-    }
-
     document.addEventListener('mousedown', handlePointerDown)
 
-    document.addEventListener('keydown', handleKeyDown)
+    rootRef.current?.querySelector<HTMLElement>('[role="gridcell"][tabindex="0"]')?.focus({ preventScroll: true })
 
     return () => {
       document.removeEventListener('mousedown', handlePointerDown)
-
-      document.removeEventListener('keydown', handleKeyDown)
     }
-  }, [open])
+  }, [isOpen, setOpen])
 
   const selectDate = (nextValue: string) => {
+    if (disabled || readOnly) return
+
     if (value === undefined) setInternalValue(nextValue)
 
     onValueChange?.(nextValue)
@@ -2606,6 +2728,17 @@ export const DatePicker = ({
       data-ui-date-picker
       data-ui-glass-track={glass ? true : undefined}
       ref={rootRef}
+      onKeyDown={event => {
+        if (!isOpen || event.key !== 'Escape') return
+
+        event.preventDefault()
+
+        event.stopPropagation()
+
+        setOpen(false)
+
+        triggerRef.current?.focus({ preventScroll: true })
+      }}
     >
       <input
         aria-hidden="true"
@@ -2613,7 +2746,7 @@ export const DatePicker = ({
         data-ui-date-picker-native
         data-ui-enhanced="true"
         disabled={disabled}
-        id={datePickerId}
+        id={nativeInputId}
         max={max}
         min={min}
         name={name}
@@ -2637,6 +2770,7 @@ export const DatePicker = ({
           setRefValue(inputRef, node)
         }}
         required={required}
+        readOnly={readOnly}
         tabIndex={-1}
         type="date"
         value={selectedValue}
@@ -2645,19 +2779,24 @@ export const DatePicker = ({
       <div className="ui-date-picker__control" data-ui-date-picker-control>
         <button
           aria-controls={popoverId}
-          aria-expanded={open}
+          aria-expanded={isOpen}
           aria-haspopup="dialog"
           aria-label={accessibleLabel}
+          aria-labelledby={props['aria-labelledby']}
+          aria-describedby={props['aria-describedby']}
+          aria-disabled={readOnly ? true : undefined}
           aria-required={required ?? undefined}
           className="ui-input ui-date-picker ui-date-picker__trigger"
           data-ui-date-picker-trigger
           disabled={disabled}
-          id={triggerId}
+          id={datePickerId}
           onClick={() => {
-            setOpen(current => !current)
+            if (disabled || readOnly) return
+
+            setOpen(!isOpen)
           }}
           onKeyDown={event => {
-            if (event.key !== 'ArrowDown') return
+            if (event.key !== 'ArrowDown' || disabled || readOnly) return
 
             event.preventDefault()
 
@@ -2667,7 +2806,7 @@ export const DatePicker = ({
           type="button"
         >
           <span data-ui-date-picker-value>
-            {formatDatePickerDisplayValue(selectedValue, placeholderText)}
+            {formatDatePickerDisplayValue(selectedValue, placeholderText, locale, formatDate)}
           </span>
           <svg
             aria-hidden="true"
@@ -2679,16 +2818,19 @@ export const DatePicker = ({
           </svg>
         </button>
         <div
-          aria-label="Choose date"
+          aria-label={dateLabels.chooseDate}
           className="ui-date-picker__popover"
-          data-state={open ? 'open' : 'closed'}
+          data-state={isOpen ? 'open' : 'closed'}
           data-ui-date-picker-popover
-          hidden={!open}
+          hidden={!isOpen}
           id={popoverId}
           role="dialog"
         >
           <Calendar
             disabled={disabled}
+            readOnly={readOnly}
+            labels={dateLabels}
+            locale={locale}
             max={maxStr}
             min={minStr}
             onValueChange={selectDate}
@@ -2791,15 +2933,19 @@ export type DialogProps = Omit<ComponentPropsWithoutRef<'dialog'>, 'open'> &
 export const Dialog = ({
   className,
   defaultOpen,
+  dismissOnEscape,
+  dismissOnOutsidePress,
   glass = false,
   layout = 'centered',
+  onCancel,
   onClick,
   onClose,
   onOpenChange,
+  onPointerDown,
   open,
   ...props
 }: DialogProps) => {
-  const dialog = useDialog({ defaultOpen, onOpenChange, open })
+  const dialog = useDialog({ defaultOpen, dismissOnEscape, dismissOnOutsidePress, onOpenChange, open })
 
   return (
     <dialog
@@ -2810,6 +2956,8 @@ export const Dialog = ({
       )}
       data-layout={layout}
       data-surface={resolveSurface(glass)}
+      onCancel={composeHandlers(onCancel, dialog.dialogProps.onCancel)}
+      onPointerDown={composeHandlers(onPointerDown, dialog.dialogProps.onPointerDown)}
       onClick={composeHandlers(onClick, dialog.dialogProps.onClick)}
       onClose={composeHandlers(onClose, dialog.dialogProps.onClose)}
     />
@@ -5238,6 +5386,10 @@ export const CodeTabs = ({
   ariaLabel = 'Code examples',
   className,
   copy = true,
+  codeLabel,
+  copyLabel,
+  copiedLabel,
+  errorLabel,
   initialValue,
   items = emptyCodeTabItems,
   storageKey,
@@ -5245,6 +5397,7 @@ export const CodeTabs = ({
   wrap = true,
   ...props
 }: CodeTabsProps) => {
+  const labels = resolveCodeLabels({ codeLabel, copyLabel, copiedLabel, errorLabel })
   const selectedValue = initialValue ?? items[0]?.value
 
   const [value, setValue] = useState(() => {
@@ -5333,6 +5486,7 @@ export const CodeTabs = ({
           <Code
             code={item.code}
             copy={copy}
+            {...labels}
             {...(item.language === undefined ?
               {} :
               { language: item.language })}

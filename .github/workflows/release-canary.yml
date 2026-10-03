@@ -26,6 +26,7 @@ on:
       - "registry/compose-api-classification.json"
       - "registry/lumen-2-contract.json"
       - "registry/lumen-3-contract.json"
+      - "registry/lumen-4-contract.json"
       - "registry/web-api-baseline.json"
       - "registry/web-consumer-evidence.json"
       - "registry/swift-api-baseline.json"

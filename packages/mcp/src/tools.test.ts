@@ -72,6 +72,17 @@ describe('lumen-mcp data snapshot', () => {
     ).toBe(true)
   })
 
+  test('discovers granular image comparison implementations and their public contracts', () => {
+    const comparison = resolveComponent('ImageComparison', loadLumenData())
+
+    expect(comparison?.frameworkDetails.react).toMatchObject({ available: true })
+    expect(comparison?.frameworkDetails.react.source).toContain('ImageComparisonProps')
+    expect(comparison?.frameworkDetails.react.props.some(prop => prop.name === 'onValueChange')).toBe(true)
+    expect(comparison?.frameworkDetails.elements).toMatchObject({ available: true, tagName: 'lumen-image-comparison' })
+    expect(comparison?.frameworkDetails.elements.attributes).toContain('before-label')
+    expect(comparison?.files).toContain('packages/astro/components/ImageComparison.astro')
+  })
+
   test('documents wrapped code and Astro motion runtime requirements', () => {
     const data = loadLumenData()
     const accordion = resolveComponent('Accordion', data)

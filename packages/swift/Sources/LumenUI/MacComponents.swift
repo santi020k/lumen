@@ -259,15 +259,21 @@ public struct LumenSymbolPicker: View {
 
     private let options: [LumenSymbolOption]
     private let title: LocalizedStringKey
+    private let tint: Color?
+    private let onSelection: ((String) -> Void)?
 
     public init(
         _ title: LocalizedStringKey = "Choose a symbol",
         selectedName: Binding<String>,
-        options: [LumenSymbolOption] = LumenSymbolOption.common
+        options: [LumenSymbolOption] = LumenSymbolOption.common,
+        tint: Color? = nil,
+        onSelection: ((String) -> Void)? = nil
     ) {
         self.title = title
         _selectedName = selectedName
         self.options = options
+        self.tint = tint
+        self.onSelection = onSelection
     }
 
     public var body: some View {
@@ -330,17 +336,22 @@ public struct LumenSymbolPicker: View {
         }
     }
 
+    func select(_ name: String) {
+        selectedName = name
+        onSelection?(name)
+    }
+
     private func symbolButton(_ option: LumenSymbolOption) -> some View {
         let isSelected = selectedName == option.name
 
         return Button {
-            selectedName = option.name
+            select(option.name)
         } label: {
             VStack(spacing: LumenSpacing.xs) {
                 LumenIcon(
                     systemName: option.name,
                     size: .md,
-                    color: isSelected ? theme.colors.brand : theme.colors.inkSoft
+                    color: isSelected ? (tint ?? theme.colors.brand) : theme.colors.inkSoft
                 )
                 Text(option.label)
                     .font(.caption2)
@@ -351,7 +362,7 @@ public struct LumenSymbolPicker: View {
             .background(isSelected ? theme.colors.brandSoft : theme.colors.surfaceMuted)
             .overlay {
                 RoundedRectangle(cornerRadius: LumenRadius.sm, style: .continuous)
-                    .stroke(isSelected ? theme.colors.brand : theme.colors.line, lineWidth: 1)
+                    .stroke(isSelected ? (tint ?? theme.colors.brand) : theme.colors.line, lineWidth: 1)
             }
             .clipShape(RoundedRectangle(cornerRadius: LumenRadius.sm, style: .continuous))
         }
@@ -369,15 +380,24 @@ public struct LumenSymbolPickerButton: View {
 
     private let label: LocalizedStringKey
     private let options: [LumenSymbolOption]
+    private let tint: Color?
+    private let dismissOnSelection: Bool
+    private let onSelection: ((String) -> Void)?
 
     public init(
         _ label: LocalizedStringKey = "Choose a symbol",
         selectedName: Binding<String>,
-        options: [LumenSymbolOption] = LumenSymbolOption.common
+        options: [LumenSymbolOption] = LumenSymbolOption.common,
+        tint: Color? = nil,
+        dismissOnSelection: Bool = true,
+        onSelection: ((String) -> Void)? = nil
     ) {
         self.label = label
         _selectedName = selectedName
         self.options = options
+        self.tint = tint
+        self.dismissOnSelection = dismissOnSelection
+        self.onSelection = onSelection
     }
 
     public var body: some View {
@@ -385,7 +405,7 @@ public struct LumenSymbolPickerButton: View {
             isPresented = true
         } label: {
             ZStack(alignment: .bottomTrailing) {
-                LumenIcon(systemName: selectedName, size: .lg, color: theme.colors.brand)
+                LumenIcon(systemName: selectedName, size: .lg, color: tint ?? theme.colors.brand)
                     .frame(width: 42, height: 42)
                     .background(theme.colors.brandSoft)
                     .clipShape(RoundedRectangle(cornerRadius: LumenRadius.md, style: .continuous))
@@ -400,7 +420,10 @@ public struct LumenSymbolPickerButton: View {
         .accessibilityLabel(label)
         .help(Text(label))
         .popover(isPresented: $isPresented, arrowEdge: .bottom) {
-            LumenSymbolPicker(label, selectedName: $selectedName, options: options)
+            LumenSymbolPicker(label, selectedName: $selectedName, options: options, tint: tint) { name in
+                if dismissOnSelection { isPresented = false }
+                onSelection?(name)
+            }
                 .padding(LumenSpacing.lg)
                 .frame(width: 400, height: 480)
                 .lumenTheme(theme)

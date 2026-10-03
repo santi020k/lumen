@@ -35,7 +35,7 @@ assert.match(
 const major = Number.parseInt(version.split(".")[0], 10);
 const initialMajorVersion = `${major}.0.0`;
 
-if (![2, 3].includes(major) || version !== initialMajorVersion) {
+if (major < 2 || version !== initialMajorVersion) {
   process.stdout.write(
     `Approved release revision integrity is not required for ${version}.\n`,
   );

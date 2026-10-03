@@ -456,6 +456,20 @@ const toElementsSnippet = (body: string): string => {
 }
 
 const reactOverrides: Record<string, string> = {
+  ImageComparison: `import { Image, ImageComparison } from '@santi020k/lumen-react'
+
+export const Example = () => (
+  <ImageComparison
+    label="Compare the landscape treatment"
+    beforeLabel="Original"
+    afterLabel="Color adjusted"
+    ratio={1.6}
+    defaultValue={50}
+    before={<Image alt="Original landscape illustration" src="/comparison-before.svg" />}
+    after={<Image alt="Color-adjusted landscape illustration" src="/comparison-after.svg" />}
+  />
+)
+`,
   Code: `import { Code } from '@santi020k/lumen-react'
 
 const themeExample = \`
@@ -500,6 +514,20 @@ export const Example = () => (
 }
 
 const elementsOverrides: Record<string, string> = {
+  ImageComparison: `${elementsHeader}
+
+<lumen-image-comparison
+  label="Compare the landscape treatment"
+  before-label="Original"
+  after-label="Color adjusted"
+  ratio="1.6"
+  value="50"
+>
+  <img slot="before" alt="Original landscape illustration" src="/comparison-before.svg" width="960" height="600" />
+  <img slot="after" alt="Color-adjusted landscape illustration" src="/comparison-after.svg" width="960" height="600" />
+  <p>Illustrative color treatment with matching framing.</p>
+</lumen-image-comparison>
+`,
   Code: `${elementsHeader}
 
 <lumen-code data-code-theme="auto" variant="block">

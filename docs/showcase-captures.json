@@ -1,0 +1,396 @@
+{
+  "capturedDate": "2026-10-03",
+  "policy": "Public marketing and documentation pages only. Captures do not establish store availability or use of the v4 candidate.",
+  "captures": [
+    {
+      "project": "PostLens",
+      "url": "https://postlens.santi020k.com/",
+      "capturedAt": "2026-10-03T13:12:33.587Z",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "status": 200,
+      "title": "PostLens — Find the Photo Worth Posting",
+      "image": "/use-cases/2026-10/postlens-1440.webp",
+      "context": "Anonymous public website; source adoption audited separately. Not v4 consumer qualification."
+    },
+    {
+      "project": "PostLens",
+      "url": "https://postlens.santi020k.com/",
+      "capturedAt": "2026-10-03T13:12:34.237Z",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "status": 200,
+      "title": "PostLens — Find the Photo Worth Posting",
+      "image": "/use-cases/2026-10/postlens-390.webp",
+      "context": "Anonymous public website; source adoption audited separately. Not v4 consumer qualification."
+    },
+    {
+      "project": "Between Contractions",
+      "url": "https://between.santi020k.com/",
+      "capturedAt": "2026-10-03T13:12:35.489Z",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "status": 200,
+      "title": "Free Contraction Timer — Between Contractions",
+      "image": "/use-cases/2026-10/between-1440.webp",
+      "context": "Anonymous public website; source adoption audited separately. Not v4 consumer qualification."
+    },
+    {
+      "project": "Between Contractions",
+      "url": "https://between.santi020k.com/",
+      "capturedAt": "2026-10-03T13:12:37.097Z",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "status": 200,
+      "title": "Free Contraction Timer — Between Contractions",
+      "image": "/use-cases/2026-10/between-390.webp",
+      "context": "Anonymous public website; source adoption audited separately. Not v4 consumer qualification."
+    },
+    {
+      "project": "Fenix Digital",
+      "url": "https://fenixdg.co/",
+      "capturedAt": "2026-10-03T13:12:31.691Z",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "status": 200,
+      "title": "Fenix Digital — Cuentas premium de streaming",
+      "image": "/use-cases/2026-10/fenix-1440.webp",
+      "context": "Anonymous public website; source adoption audited separately. Not v4 consumer qualification."
+    },
+    {
+      "project": "Fenix Digital",
+      "url": "https://fenixdg.co/",
+      "capturedAt": "2026-10-03T13:12:32.544Z",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "status": 200,
+      "title": "Fenix Digital — Cuentas premium de streaming",
+      "image": "/use-cases/2026-10/fenix-390.webp",
+      "context": "Anonymous public website; source adoption audited separately. Not v4 consumer qualification."
+    },
+    {
+      "project": "Coolstead",
+      "url": "https://coolstead.santi020k.com/",
+      "capturedAt": "2026-10-03T13:26:43.276Z",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "status": 200,
+      "title": "Coolstead — Steady cooling for your Mac",
+      "image": "/use-cases/2026-10/coolstead-1440.webp",
+      "context": "Anonymous public website; source adoption audited separately. Not v4 consumer qualification."
+    },
+    {
+      "project": "Coolstead",
+      "url": "https://coolstead.santi020k.com/",
+      "capturedAt": "2026-10-03T13:26:44.507Z",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "status": 200,
+      "title": "Coolstead — Steady cooling for your Mac",
+      "image": "/use-cases/2026-10/coolstead-390.webp",
+      "context": "Anonymous public website; source adoption audited separately. Not v4 consumer qualification."
+    },
+    {
+      "project": "RoadScore",
+      "url": "https://roadscore.santi020k.com/",
+      "capturedAt": "2026-10-03T13:26:45.083Z",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "status": 200,
+      "title": "RoadScore — Turn the Miles Into the Game",
+      "image": "/use-cases/2026-10/roadscore-1440.webp",
+      "context": "Anonymous public website; source adoption audited separately. Not v4 consumer qualification."
+    },
+    {
+      "project": "RoadScore",
+      "url": "https://roadscore.santi020k.com/",
+      "capturedAt": "2026-10-03T13:26:45.558Z",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "status": 200,
+      "title": "RoadScore — Turn the Miles Into the Game",
+      "image": "/use-cases/2026-10/roadscore-390.webp",
+      "context": "Anonymous public website; source adoption audited separately. Not v4 consumer qualification."
+    },
+    {
+      "project": "Workscene",
+      "url": "https://workscene.santi020k.com/",
+      "capturedAt": "2026-10-03T13:26:46.396Z",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "status": 200,
+      "title": "Workscene for macOS — Restore Every Project Window",
+      "image": "/use-cases/2026-10/workscene-1440.webp",
+      "context": "Anonymous public website; source adoption audited separately. Not v4 consumer qualification."
+    },
+    {
+      "project": "Workscene",
+      "url": "https://workscene.santi020k.com/",
+      "capturedAt": "2026-10-03T13:26:46.815Z",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "status": 200,
+      "title": "Workscene for macOS — Restore Every Project Window",
+      "image": "/use-cases/2026-10/workscene-390.webp",
+      "context": "Anonymous public website; source adoption audited separately. Not v4 consumer qualification."
+    },
+    {
+      "project": "Astro Doctor",
+      "url": "https://doctor.santi020k.com/",
+      "capturedAt": "2026-10-03T13:12:38.042Z",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "status": 200,
+      "title": "astro-doctor",
+      "image": "/use-cases/2026-10/doctor-1440.webp",
+      "context": "Anonymous public website; source adoption audited separately. Not v4 consumer qualification."
+    },
+    {
+      "project": "Astro Doctor",
+      "url": "https://doctor.santi020k.com/",
+      "capturedAt": "2026-10-03T13:12:38.788Z",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "status": 200,
+      "title": "astro-doctor",
+      "image": "/use-cases/2026-10/doctor-390.webp",
+      "context": "Anonymous public website; source adoption audited separately. Not v4 consumer qualification."
+    },
+    {
+      "project": "Quality",
+      "url": "https://quality.santi020k.com/",
+      "capturedAt": "2026-10-03T13:12:40.590Z",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "status": 200,
+      "title": "quality — One quality command for every project",
+      "image": "/use-cases/2026-10/quality-1440.webp",
+      "context": "Anonymous public website; source adoption audited separately. Not v4 consumer qualification."
+    },
+    {
+      "project": "Quality",
+      "url": "https://quality.santi020k.com/",
+      "capturedAt": "2026-10-03T13:12:41.012Z",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "status": 200,
+      "title": "quality — One quality command for every project",
+      "image": "/use-cases/2026-10/quality-390.webp",
+      "context": "Anonymous public website; source adoption audited separately. Not v4 consumer qualification."
+    },
+    {
+      "project": "Commitprompt",
+      "url": "https://commitprompt.santi020k.com/",
+      "capturedAt": "2026-10-03T13:12:39.347Z",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "status": 200,
+      "title": "Commitprompt — Commit with intent",
+      "image": "/use-cases/2026-10/commitprompt-1440.webp",
+      "context": "Anonymous public website; source adoption audited separately. Not v4 consumer qualification."
+    },
+    {
+      "project": "Commitprompt",
+      "url": "https://commitprompt.santi020k.com/",
+      "capturedAt": "2026-10-03T13:12:39.847Z",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "status": 200,
+      "title": "Commitprompt — Commit with intent",
+      "image": "/use-cases/2026-10/commitprompt-390.webp",
+      "context": "Anonymous public website; source adoption audited separately. Not v4 consumer qualification."
+    },
+    {
+      "project": "Santi020k Themes",
+      "url": "https://theme.santi020k.com/codex/",
+      "capturedAt": "2026-10-03T13:26:54.779Z",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "status": 200,
+      "title": "Santi020k Codex Theme — Dark and Light Presets",
+      "image": "/use-cases/2026-10/theme-codex-1440.webp",
+      "context": "Anonymous public website; source adoption audited separately. Not v4 consumer qualification."
+    },
+    {
+      "project": "Santi020k Themes",
+      "url": "https://theme.santi020k.com/codex/",
+      "capturedAt": "2026-10-03T13:26:56.001Z",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "status": 200,
+      "title": "Santi020k Codex Theme — Dark and Light Presets",
+      "image": "/use-cases/2026-10/theme-codex-390.webp",
+      "context": "Anonymous public website; source adoption audited separately. Not v4 consumer qualification."
+    },
+    {
+      "project": "Open Graph",
+      "url": "https://og.santi020k.com/",
+      "capturedAt": "2026-10-03T13:26:51.654Z",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "status": 200,
+      "title": "@santi020k/og — Open Graph image generation",
+      "image": "/use-cases/2026-10/og-1440.webp",
+      "context": "Anonymous public website; source adoption audited separately. Not v4 consumer qualification."
+    },
+    {
+      "project": "Open Graph",
+      "url": "https://og.santi020k.com/",
+      "capturedAt": "2026-10-03T13:26:52.353Z",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "status": 200,
+      "title": "@santi020k/og — Open Graph image generation",
+      "image": "/use-cases/2026-10/og-390.webp",
+      "context": "Anonymous public website; source adoption audited separately. Not v4 consumer qualification."
+    },
+    {
+      "project": "Dep Beacon",
+      "url": "https://beacon.santi020k.com/",
+      "capturedAt": "2026-10-03T13:26:50.338Z",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "status": 200,
+      "title": "Dep Beacon",
+      "image": "/use-cases/2026-10/beacon-1440.webp",
+      "context": "Anonymous public website; source adoption audited separately. Not v4 consumer qualification."
+    },
+    {
+      "project": "Dep Beacon",
+      "url": "https://beacon.santi020k.com/",
+      "capturedAt": "2026-10-03T13:26:50.859Z",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "status": 200,
+      "title": "Dep Beacon",
+      "image": "/use-cases/2026-10/beacon-390.webp",
+      "context": "Anonymous public website; source adoption audited separately. Not v4 consumer qualification."
+    },
+    {
+      "project": "Auth",
+      "url": "https://auth.santi020k.com/",
+      "capturedAt": "2026-10-03T13:26:47.610Z",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "status": 200,
+      "title": "santi020k auth",
+      "image": "/use-cases/2026-10/auth-1440.webp",
+      "context": "Anonymous public website; source adoption audited separately. Not v4 consumer qualification."
+    },
+    {
+      "project": "Auth",
+      "url": "https://auth.santi020k.com/",
+      "capturedAt": "2026-10-03T13:26:48.052Z",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "status": 200,
+      "title": "santi020k auth",
+      "image": "/use-cases/2026-10/auth-390.webp",
+      "context": "Anonymous public website; source adoption audited separately. Not v4 consumer qualification."
+    },
+    {
+      "project": "ESLint Config Basic",
+      "url": "https://eslint.santi020k.com/",
+      "capturedAt": "2026-10-03T13:26:53.350Z",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "status": 200,
+      "title": "Lean ESLint Flat Config for Modern Stacks | ESLint Config",
+      "image": "/use-cases/2026-10/eslint-1440.webp",
+      "context": "Anonymous public website; source adoption audited separately. Not v4 consumer qualification."
+    },
+    {
+      "project": "ESLint Config Basic",
+      "url": "https://eslint.santi020k.com/",
+      "capturedAt": "2026-10-03T13:26:53.966Z",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "status": 200,
+      "title": "Lean ESLint Flat Config for Modern Stacks | ESLint Config",
+      "image": "/use-cases/2026-10/eslint-390.webp",
+      "context": "Anonymous public website; source adoption audited separately. Not v4 consumer qualification."
+    },
+    {
+      "project": "Santiago Molina",
+      "url": "https://santi020k.com/portfolio/",
+      "capturedAt": "2026-10-03T13:26:56.878Z",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "status": 200,
+      "title": "Selected Portfolio | santi020k",
+      "image": "/use-cases/2026-10/website-1440.webp",
+      "context": "Anonymous public website; source adoption audited separately. Not v4 consumer qualification."
+    },
+    {
+      "project": "Santiago Molina",
+      "url": "https://santi020k.com/portfolio/",
+      "capturedAt": "2026-10-03T13:26:57.668Z",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "status": 200,
+      "title": "Selected Portfolio | santi020k",
+      "image": "/use-cases/2026-10/website-390.webp",
+      "context": "Anonymous public website; source adoption audited separately. Not v4 consumer qualification."
+    }
+  ]
+}

@@ -367,39 +367,89 @@ describe('@santi020k/lumen-elements primitives', () => {
     }
   })
 
-  test('renders programmatic combo series and aligns line marks with bar centers', () => {
-    const data = [
-      { x: 'Mon', y: 4 },
-      { x: 'Tue', y: 8 },
-      { x: 'Wed', y: 6 }
-    ]
+  test('centers singleton labels and separates concise dates from full chart details', () => {
+    const chart = connect('lumen-line-chart', {
+      series: JSON.stringify([{ data: [{ x: '2026-09-01', xLabel: 'Sep 1', y: 4 }], id: 'daily', label: 'Daily' }])
+    })
 
-    const series: readonly LumenComboSeries[] = [
-      { data, id: 'bars', label: 'Bars', mark: 'bar' },
-      { data, id: 'line', label: 'Line', mark: 'line' }
-    ]
+    expect(Reflect.set(chart, 'categoryFormatter', () => 'September 1, 2026')).toBe(true)
 
-    const combo = connect('lumen-combo-chart')
+    const label = requiredElement(chart.querySelector('.ui-chart__axis-labels text'))
+    const mark = requiredElement(chart.querySelector('circle'))
 
-    expect(Reflect.set(combo, 'series', series)).toBe(true)
-
-    const categoryCenters = [...combo.querySelectorAll('.ui-bar-chart__marks rect')]
-      .map(rectangle => Number(
-        (
-          Number(rectangle.getAttribute('x')) +
-          Number(rectangle.getAttribute('width')) / 2
-        ).toFixed(3)
-      ))
-
-    const linePath =
-      combo.querySelector('.ui-line-chart__line')?.getAttribute('d') ?? ''
-
-    const lineXCoordinates = [...linePath.matchAll(/[LM]\s+(-?\d+(?:\.\d+)?)/gu)]
-      .map(match => Number(match[1]))
-
-    expect(categoryCenters).toHaveLength(3)
-    expect(lineXCoordinates).toEqual(categoryCenters)
+    expect(label.textContent).toBe('Sep 1')
+    expect(label.getAttribute('x')).toBe(mark.getAttribute('cx'))
+    expect(mark.querySelector('title')?.textContent).toBe('September 1, 2026 · Daily: 4')
+    expect(chart.querySelector('tbody th')?.textContent).toBe('September 1, 2026')
+    expect(chart.querySelector('.ui-chart__plot')?.getAttribute('tabindex')).toBe('0')
   })
+
+  test('keeps duplicate category marks and fallback values consistent', () => {
+    for (const tag of ['lumen-line-chart', 'lumen-bar-chart']) {
+      const chart = connect(tag, {
+        series: JSON.stringify([{ data: [{ x: 'A', y: 100 }, { x: 'A', y: 160 }, { x: 'B', y: 220 }], id: 'daily', label: 'Daily' }])
+      })
+
+      expect(chart.querySelector('[data-ui-chart-summary]')?.textContent).toBe('1 series, 2 points. Values range from 160 to 220.')
+      expect(chart.querySelector('tbody td')?.textContent).toBe('160')
+      expect(chart.querySelector('svg title')?.textContent).toBe('A · Daily: 160')
+    }
+  })
+
+  test('formats bar axes and retains repeated display labels with distinct keys', () => {
+    const chart = connect('lumen-bar-chart', {
+      series: JSON.stringify([{ data: [{ x: 'a', y: -3_000_000 }, { x: 'b', y: 4_000_000 }], id: 'money', label: 'Money' }])
+    })
+
+    expect(Reflect.set(chart, 'categoryFormatter', (value: string | number) => `Category ${value}`)).toBe(true)
+    expect(Reflect.set(chart, 'valueFormatter', (value: number) => `$ ${value}`)).toBe(true)
+    expect(chart.querySelector('.ui-chart__axis-labels text')?.textContent).toBe('Category a')
+    expect(chart.querySelector('.ui-chart__grid text')?.textContent).toContain('$ ')
+    expect(chart.querySelector('svg title')?.textContent).toBe('Category a · Money: $ -3000000')
+
+    expect(Reflect.set(chart, 'series', [{ data: [{ x: 'a', xLabel: 'Same', y: 4 }, { x: 'b', xLabel: 'Same', y: 8 }], id: 'daily', label: 'Daily' }])).toBe(true)
+    expect([...chart.querySelectorAll('.ui-chart__axis-labels text')].map(label => label.textContent)).toEqual(['Same', 'Same'])
+    expect(chart.querySelectorAll('rect')).toHaveLength(2)
+  })
+
+  test.each([[0, 5, 10], [-10, -5, 0], [-5, 0, 5], [7]].map(values => ({ values })))(
+    'aligns combo line marks with bar centers and value endpoints for $values', ({ values }) => {
+      const data = values.map((y, x) => ({ x, y }))
+
+      const series: readonly LumenComboSeries[] = [
+        { data, id: 'bars', label: 'Bars', mark: 'bar' },
+        { data, id: 'line', label: 'Line', mark: 'line' }
+      ]
+
+      const combo = connect('lumen-combo-chart')
+
+      expect(Reflect.set(combo, 'series', series)).toBe(true)
+
+      const rectangles = [...combo.querySelectorAll('.ui-bar-chart__marks rect')]
+      const categoryCenters = rectangles
+        .map(rectangle => Number(
+          (
+            Number(rectangle.getAttribute('x')) +
+            Number(rectangle.getAttribute('width')) / 2
+          ).toFixed(3)
+        ))
+      const valueEndpoints = rectangles.map((rectangle, index) => Number((
+        Number(rectangle.getAttribute('y')) + ((values[index] ?? 0) < 0 ? Number(rectangle.getAttribute('height')) : 0)
+      ).toFixed(3)))
+
+      const linePath =
+        combo.querySelector('.ui-line-chart__line')?.getAttribute('d') ?? ''
+
+      const lineXCoordinates = [...linePath.matchAll(/[LM]\s+(-?\d+(?:\.\d+)?)/gu)]
+        .map(match => Number(match[1]))
+      const lineYCoordinates = [...linePath.matchAll(/[LM]\s+-?\d+(?:\.\d+)?\s+(-?\d+(?:\.\d+)?)/gu)]
+        .map(match => Number(match[1]))
+
+      expect(categoryCenters).toHaveLength(values.length)
+      expect(lineXCoordinates).toEqual(categoryCenters)
+      expect(lineYCoordinates).toEqual(valueEndpoints)
+    }
+  )
 
   test('keeps programmatic chart disclosures aligned with finite rendered values', () => {
     const valueFormatter = vi.fn((value: number) => `${value} units`)

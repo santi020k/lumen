@@ -736,6 +736,53 @@ describe('@santi020k/lumen-react components', () => {
     expect(tableValues.filter(value => value === 'Not available')).toHaveLength(2)
   })
 
+  test('centers singleton chart labels and keeps full dates in details', () => {
+    const series = [{ data: [{ x: '2026-09-01', xLabel: 'Sep 1', y: 4 }], id: 'daily', label: 'Daily' }]
+    const chart = LineChart({ formatCategory: () => 'September 1, 2026', series }) as ReactElement
+    const descendants = descendantsOf(chart)
+    const mark = descendants.find(element => element.type === 'circle')
+    const label = descendants.find(element => element.type === 'text' && propsOf(element).children === 'Sep 1')
+    const html = renderToStaticMarkup(chart)
+
+    expect(propsOf(label).x).toBe(propsOf(mark).cx)
+    expect(propsOf(label).textAnchor).toBe('middle')
+    expect(html).toContain('<title>September 1, 2026 · Daily: 4</title>')
+    expect(html).toContain('<th scope="row">September 1, 2026</th>')
+    expect(html).toContain('role="region" tabindex="0"')
+  })
+
+  test('renders matching categorical values in marks, summaries, and disclosure tables', () => {
+    const series = [{ data: [{ x: 'A', y: 100 }, { x: 'A', y: 160 }, { x: 'B', y: 220 }], id: 'daily', label: 'Daily' }]
+
+    for (const chart of [LineChart({ series }), BarChart({ series })]) {
+      const html = renderToStaticMarkup(chart)
+
+      expect(html).toContain('1 series, 2 points. Values range from 160 to 220.')
+      expect(html).toContain('<td>160</td>')
+      expect(html).not.toContain('<td>100</td>')
+      expect(html).toContain('Daily: 160</title>')
+    }
+  })
+
+  test('formats bar category and value axes without colliding repeated label keys', () => {
+    const series = [{ data: [{ x: 'a', xLabel: 'Same', y: -3_000_000 }, { x: 'b', xLabel: 'Same', y: 4_000_000 }], id: 'money', label: 'Money' }]
+    const chart = BarChart({ formatCategory: key => `Full ${key}`, formatValue: value => `$ ${value}`, series }) as ReactElement
+    const labels = descendantsOf(chart).filter(element => element.type === 'text')
+    const html = renderToStaticMarkup(chart)
+
+    expect(labels.filter(element => propsOf(element).children === 'Same')).toHaveLength(2)
+    expect(labels.some(element => String(propsOf(element).children).startsWith('$ '))).toBe(true)
+    expect(html).toContain('<title>Full a · Money: $ -3000000</title>')
+    expect(html).toContain('<th scope="row">Full b</th>')
+
+    const formatted = renderToStaticMarkup(BarChart({
+      formatCategory: value => `Category ${value}`,
+      series: [{ data: [{ x: 'raw', y: 4 }], id: 'formatted', label: 'Formatted' }]
+    }))
+
+    expect(formatted).toContain('>Category raw</text>')
+  })
+
   test('preserves heatmap coordinate types in fallback keys', () => {
     const heatmap = Heatmap({
       data: [
@@ -850,29 +897,33 @@ describe('@santi020k/lumen-react components', () => {
     expect(propsOf(scatter).summary).toBe('1 series, 1 point. Values range from 1 to 1.')
   })
 
-  test('aligns combo line points with bar category centers', () => {
-    const data = [
-      { x: 'Mon', y: 4 },
-      { x: 'Tue', y: 8 },
-      { x: 'Wed', y: 6 }
-    ]
-    const combo = ComboChart({
-      series: [
-        { data, id: 'bars', label: 'Bars', mark: 'bar' },
-        { data, id: 'line', label: 'Line', mark: 'line' }
-      ]
-    }) as ReactElement
-    const descendants = descendantsOf(combo)
-    const categoryCenters = descendants
-      .filter(element => element.type === 'rect')
-      .map(element => Number((Number(propsOf(element).x) + Number(propsOf(element).width) / 2).toFixed(3)))
-    const line = descendants.find(element => propsOf(element).className === 'ui-line-chart__line')
-    const lineXCoordinates = [...String(propsOf(line).d).matchAll(/[LM]\s+(-?\d+(?:\.\d+)?)/gu)]
-      .map(match => Number(match[1]))
+  test.each([[0, 5, 10], [-10, -5, 0], [-5, 0, 5], [7]].map(values => ({ values })))(
+    'aligns combo line points with bar category centers and value endpoints for $values', ({ values }) => {
+      const data = values.map((y, x) => ({ x, y }))
+      const combo = ComboChart({
+        series: [
+          { data, id: 'bars', label: 'Bars', mark: 'bar' },
+          { data, id: 'line', label: 'Line', mark: 'line' }
+        ]
+      }) as ReactElement
+      const descendants = descendantsOf(combo)
+      const rectangles = descendants.filter(element => element.type === 'rect')
+      const categoryCenters = rectangles
+        .map(element => Number((Number(propsOf(element).x) + Number(propsOf(element).width) / 2).toFixed(3)))
+      const valueEndpoints = rectangles.map((element, index) => Number((
+        Number(propsOf(element).y) + ((values[index] ?? 0) < 0 ? Number(propsOf(element).height) : 0)
+      ).toFixed(3)))
+      const line = descendants.find(element => propsOf(element).className === 'ui-line-chart__line')
+      const lineXCoordinates = [...String(propsOf(line).d).matchAll(/[LM]\s+(-?\d+(?:\.\d+)?)/gu)]
+        .map(match => Number(match[1]))
+      const lineYCoordinates = [...String(propsOf(line).d).matchAll(/[LM]\s+-?\d+(?:\.\d+)?\s+(-?\d+(?:\.\d+)?)/gu)]
+        .map(match => Number(match[1]))
 
-    expect(categoryCenters).toHaveLength(3)
-    expect(lineXCoordinates).toEqual(categoryCenters)
-  })
+      expect(categoryCenters).toHaveLength(values.length)
+      expect(lineXCoordinates).toEqual(categoryCenters)
+      expect(lineYCoordinates).toEqual(valueEndpoints)
+    }
+  )
 
   test('renders the empty state when chart series contain no usable data', () => {
     const pieSeries = {

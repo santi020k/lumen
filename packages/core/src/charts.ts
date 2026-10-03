@@ -69,7 +69,8 @@ export interface LumenChartAnnotation {
 
 export interface LumenChartValidationIssue {
   code:
-    | 'duplicate-datum-id' |
+    | 'duplicate-category' |
+    'duplicate-datum-id' |
     'duplicate-series-id' |
     'invalid-size' |
     'invalid-x' |
@@ -210,12 +211,15 @@ export interface LumenBarGeometry {
   domain: LumenChartDomain
   height: number
   marks: readonly LumenBarGeometryMark[]
+  margin: Readonly<{ bottom: number, left: number, right: number, top: number }>
   width: number
 }
 
 export interface LumenBarGeometryOptions {
   categoryWidth?: number
   domain?: Partial<LumenChartDomain>
+  formatCategory?: (category: number | string) => string
+  formatValue?: (value: number) => string
   height?: number
   layout?: LumenBarChartLayout
   orientation?: LumenChartOrientation
@@ -551,6 +555,135 @@ export const getLumenChartAxisPadding = (
     maximumChartAxisPadding,
     Math.max(safeMinimum, estimated)
   )
+}
+
+export interface LumenChartCategoryTick {
+  index: number
+  label: string
+  position: number
+  textAnchor: 'end' | 'middle' | 'start'
+}
+
+export interface LumenChartCategoryTickOptions {
+  end: number
+  minimumGap?: number
+  positions?: readonly number[]
+  start: number
+}
+
+const fitLumenChartLabel = (label: string, maximumWidth: number): string => {
+  if (estimateLumenChartAxisLabelWidth(label) <= maximumWidth) return label
+
+  const suffix = '…'
+  let result = ''
+  let width = estimateLumenChartAxisLabelWidth(suffix)
+
+  for (const character of label) {
+    width += Math.max(chartAxisLabelCharacterWidth, getLumenChartAxisCharacterWidth(character))
+
+    if (width > maximumWidth) break
+
+    result += character
+  }
+
+  return result + suffix
+}
+
+const getLumenChartTickAnchor = (index: number, count: number): LumenChartCategoryTick['textAnchor'] => {
+  if (count === 1) return 'middle'
+
+  if (index === 0) return 'start'
+
+  return index === count - 1 ? 'end' : 'middle'
+}
+
+const selectLumenChartCategoryTicks = (
+  candidates: readonly LumenChartCategoryTick[],
+  gap: number
+): LumenChartCategoryTick[] => {
+  const first = candidates[0]
+  const last = candidates.at(-1)
+
+  if (!first || !last) return []
+
+  if (candidates.length === 1) return [first]
+
+  const lastStart = last.position - estimateLumenChartAxisLabelWidth(last.label)
+  const ticks = [first]
+  let previousEnd = first.position + estimateLumenChartAxisLabelWidth(first.label)
+
+  for (const candidate of candidates.slice(1, -1)) {
+    const halfWidth = estimateLumenChartAxisLabelWidth(candidate.label) / 2
+    const labelStart = candidate.position - halfWidth
+    const labelEnd = candidate.position + halfWidth
+
+    if (labelStart < previousEnd + gap || labelEnd + gap > lastStart) continue
+
+    ticks.push(candidate)
+
+    previousEnd = labelEnd
+  }
+
+  if (lastStart >= previousEnd + gap) ticks.push(last)
+
+  return ticks
+}
+
+const resolveLumenChartTickPositions = (
+  count: number,
+  end: number,
+  positions: readonly number[] | undefined,
+  start: number
+): readonly number[] => {
+  const validPositions = positions?.length === count && positions.every((position, index) => (
+    Number.isFinite(position) && position >= start && position <= end && position >= (positions[index - 1] ?? start)
+  ))
+
+  if (validPositions) return positions
+
+  return Array.from({ length: count }, (_, index) => (
+    start + (count === 1 ? 0.5 : index / (count - 1)) * (end - start)
+  ))
+}
+
+/** Selects readable axis labels without changing or downsampling the underlying chart data. */
+export const getLumenChartCategoryTicks = (
+  labels: readonly string[],
+  { end, minimumGap = 16, positions, start }: LumenChartCategoryTickOptions
+): LumenChartCategoryTick[] => {
+  if (labels.length === 0 || !Number.isFinite(start) || !Number.isFinite(end) || end < start) return []
+
+  const gap = Number.isFinite(minimumGap) ? Math.max(0, minimumGap) : 16
+  const resolvedPositions = resolveLumenChartTickPositions(labels.length, end, positions, start)
+  const span = (resolvedPositions.at(-1) ?? end) - (resolvedPositions[0] ?? start)
+  const maximumWidth = Math.max(0, labels.length === 1 ? end - start : (span - gap) / 2)
+
+  const candidates = labels.map((label, index): LumenChartCategoryTick => ({
+    index,
+    label: fitLumenChartLabel(label, maximumWidth),
+    position: resolvedPositions[index] ?? start,
+    textAnchor: getLumenChartTickAnchor(index, labels.length)
+  }))
+
+  return selectLumenChartCategoryTicks(candidates, gap)
+}
+
+/** Axis labels prefer xLabel; detail labels prefer an explicitly supplied full formatter. */
+export const getLumenChartCategoryLabel = (
+  series: readonly LumenChartSeries[],
+  category: number | string,
+  formatCategory?: (category: number | string) => string,
+  context: 'axis' | 'detail' = 'axis'
+): string => {
+  if (context === 'detail' && formatCategory) return formatCategory(category)
+
+  for (const item of series) {
+    const label = item.data.find(datum => datum.x === category)?.xLabel
+
+    if (label !== undefined) return label
+  }
+
+  return formatCategory?.(category) ?? String(category)
 }
 
 export const resolveLumenChartTone = (
@@ -1018,7 +1151,7 @@ export const createLumenBarGeometry = (
   const layout = options.layout ?? 'grouped'
   const categories = getLumenChartCategories(series)
   const indexedSeries = series.map(indexLumenChartSeries)
-  const values = series.flatMap(item => item.data.map(datum => datum.y))
+  const values = indexedSeries.flatMap(item => [...item.values()].map(datum => datum.y))
 
   const calculatedDomain =
     layout === 'stacked' ?
@@ -1034,11 +1167,20 @@ export const createLumenBarGeometry = (
     orientation === 'horizontal' ?
       {
         bottom: 24,
-        left: Math.max(64, Math.min(240, options.categoryWidth ?? 112)),
+        left: Math.max(64, Math.min(240, options.categoryWidth ?? getLumenChartAxisPadding(
+          categories.map(category => getLumenChartCategoryLabel(series, category, options.formatCategory)), 112
+        ))),
         right: 20,
         top: 16
       } :
-      { bottom: 52, left: 52, right: 16, top: 16 }
+      {
+        bottom: 52,
+        left: getLumenChartAxisPadding(
+          getLumenChartTicks(domain).map(tick => (options.formatValue ?? String)(tick)), 52
+        ),
+        right: 16,
+        top: 16
+      }
 
   const plotWidth = Math.max(1, width - margin.left - margin.right)
   const plotHeight = Math.max(1, height - margin.top - margin.bottom)
@@ -1064,10 +1206,7 @@ export const createLumenBarGeometry = (
 
     categoryPositions.push({
       category,
-      label:
-        series
-          .flatMap(item => item.data)
-          .find(datum => datum.x === category)?.xLabel ?? category,
+      label: getLumenChartCategoryLabel(series, category, options.formatCategory),
       x:
         orientation === 'horizontal' ?
           margin.left - 8 :
@@ -1164,6 +1303,7 @@ export const createLumenBarGeometry = (
     categories: categoryPositions,
     domain,
     height,
+    margin,
     marks,
     width
   }
@@ -1215,6 +1355,7 @@ export const formatLumenChartSummary = (
 }
 
 interface LumenChartDatumValidationContext {
+  categories: Set<string>
   datumIds: Set<string>
   issues: LumenChartValidationIssue[]
   path: string
@@ -1266,7 +1407,21 @@ const validateLumenChartDatumX = (
   datum: LumenChartDatum,
   context: LumenChartDatumValidationContext
 ): number => {
-  if (context.xScale === 'categorical') return context.previousX
+  if (context.xScale === 'categorical') {
+    const key = lumenChartCategoryKey(datum.x)
+
+    if (context.categories.has(key)) {
+      context.issues.push({
+        code: 'duplicate-category',
+        message: 'Category x values must be unique within a series. Use xLabel for repeated display labels.',
+        path: `${context.path}.x`
+      })
+    }
+
+    context.categories.add(key)
+
+    return context.previousX
+  }
 
   const numericX = getLumenChartNumericX(datum.x, context.xScale)
 
@@ -1323,10 +1478,12 @@ export const validateLumenChartSeries = (
     seriesIds.add(item.id)
 
     const datumIds = new Set<string>()
+    const categories = new Set<string>()
     let previousX = Number.NEGATIVE_INFINITY
 
     for (const [datumIndex, datum] of item.data.entries()) {
       previousX = validateLumenChartDatum(datum, {
+        categories,
         datumIds,
         issues,
         path: `${seriesPath}.data[${datumIndex}]`,

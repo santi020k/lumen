@@ -53,6 +53,14 @@ framework and platform's native authoring experience.
 
 **Explore:** [Dashboards and templates](#dashboards-and-templates) · [Web quick start](#web-quick-start) · [Native playgrounds](#native-playgrounds) · [Tailwind CSS](#tailwind-css) · [Packages](#packages) · [Community](#community)
 
+## Lumen 4 candidate
+
+The v4 release branch brings consumer-driven date selection, chart readability, clipboard feedback,
+loading states, native layout improvements and a new ImageComparison primitive. Start with the
+[migration guide](docs/migrating-to-lumen.md), [consumer audit](docs/lumen-4-consumer-audit.md),
+and [local readiness record](docs/lumen-4-readiness.md). The refreshed community gallery includes
+published consumer screenshots; it does not imply those applications already run this candidate.
+
 ## Dashboards and templates
 
 Explore the [template gallery](https://lumen.santi020k.com/templates) for complete analytics,

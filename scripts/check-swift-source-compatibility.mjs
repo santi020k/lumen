@@ -18,29 +18,38 @@ export const assertSwiftApiBreakages = (actual, expected) => {
   assert.deepEqual(
     [...actual].sort(),
     [...expected].sort(),
-    'Swift source breakage changed; restore compatibility or review the Lumen 3 contract'
+    'Swift source breakage changed; restore compatibility or review the current major contract'
   )
 }
 
+export const resolveSwiftCompatibilityExpectation = (major, contract) => {
+  assert.equal(contract.targetVersion, `${major}.0.0`, 'The Swift compatibility contract must match the release major')
+
+  const baseline = major === 3 ? 'v2.1.0' : contract.swiftApiBaseline
+  const breakages = contract.changes.flatMap(change => change.swiftApiBreakages ?? [])
+
+  assert.match(baseline ?? '', /^v\d+\.\d+\.\d+$/u, 'The Swift baseline must be an immutable release tag')
+
+  assert.ok(breakages.every(item => typeof item === 'string' && item.length > 0), 'Expected Swift diagnostics must be non-empty strings')
+
+  assert.equal(new Set(breakages).size, breakages.length, 'Expected Swift diagnostics must be unique')
+
+  return { baseline, breakages }
+}
+
 const checkSwiftSourceCompatibility = () => {
+  const manifest = JSON.parse(readFileSync(resolve(repositoryRoot, 'packages/lumen/package.json'), 'utf8'))
+  const major = Math.max(3, Number.parseInt(manifest.version, 10))
+
   const contract = JSON.parse(
-    readFileSync(resolve(repositoryRoot, 'registry/lumen-3-contract.json'), 'utf8')
+    readFileSync(resolve(repositoryRoot, `registry/lumen-${major}-contract.json`), 'utf8')
   )
 
-  assert.equal(contract.targetVersion, '3.0.0', 'The Swift compatibility gate must use Lumen 3')
-
-  const change = contract.changes.find(item => item.id === 'swift-icon-catalog-expansion')
-
-  assert.ok(change, 'The Lumen 3 contract must classify Swift icon catalog expansion')
-
-  assert.ok(
-    Array.isArray(change.swiftApiBreakages) && change.swiftApiBreakages.length > 0,
-    'The Swift icon catalog change must list its expected API diagnostics'
-  )
+  const { baseline, breakages } = resolveSwiftCompatibilityExpectation(major, contract)
 
   const result = spawnSync(
     'swift',
-    ['package', 'diagnose-api-breaking-changes', 'v2.1.0', '--products', 'LumenUI'],
+    ['package', 'diagnose-api-breaking-changes', baseline, '--products', 'LumenUI'],
     { cwd: repositoryRoot, encoding: 'utf8' }
   )
 
@@ -54,10 +63,10 @@ const checkSwiftSourceCompatibility = () => {
     `Swift compatibility diagnosis failed without API diagnostics:\n${output}`
   )
 
-  assertSwiftApiBreakages(actualBreakages, change.swiftApiBreakages)
+  assertSwiftApiBreakages(actualBreakages, breakages)
 
   process.stdout.write(
-    `Validated ${actualBreakages.length} reviewed Swift source breakages against v2.1.0.\n`
+    `Validated ${actualBreakages.length} reviewed Swift source breakages against ${baseline}.\n`
   )
 }
 

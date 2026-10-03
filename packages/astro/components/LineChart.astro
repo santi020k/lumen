@@ -7,6 +7,8 @@ import {
   formatLumenChartSummary,
   getLumenChartAxisPadding,
   getLumenChartCategories,
+  getLumenChartCategoryLabel,
+  getLumenChartCategoryTicks,
   getLumenChartDomain,
   getLumenChartTicks,
   getLumenChartToneClassName,
@@ -48,7 +50,7 @@ const {
   className = '',
   description,
   emptyLabel,
-  formatCategory = String,
+  formatCategory,
   formatValue = String,
   glass = false,
   heading,
@@ -63,13 +65,13 @@ const {
 } = Astro.props
 
 const resolvedLabels = resolveLumenChartLabels(labels)
-const summary = summaryProp ?? formatLumenChartSummary(series, formatValue, resolvedLabels)
 const width = 640
 const height = 320
 const padding = 44
 const categories = getLumenChartCategories(series)
-const hasData = hasLumenChartData(series)
 const alignedSeries = series.map(item => alignLumenChartSeries(item, categories))
+const hasData = hasLumenChartData(alignedSeries)
+const summary = summaryProp ?? formatLumenChartSummary(alignedSeries, formatValue, resolvedLabels)
 
 const domain = getLumenChartDomain([
   ...alignedSeries.flatMap(item => item.data.map(datum => datum.y)),
@@ -88,7 +90,11 @@ const geometries = alignedSeries.map(item => createLumenLineGeometry(item.data, 
   width
 }))
 
-const labelStep = Math.max(1, Math.ceil(categories.length / 8))
+const categoryTicks = getLumenChartCategoryTicks(
+  categories.map(category => getLumenChartCategoryLabel(alignedSeries, category, formatCategory)),
+  { end: width - padding, start: paddingLeft }
+)
+
 let markerStep = 1
 
 if (markers === false || markers === 'none') markerStep = Number.POSITIVE_INFINITY
@@ -96,9 +102,7 @@ else if (typeof markers === 'number') markerStep = Math.max(1, Math.round(marker
 else if (markers === 'auto') markerStep = Math.max(1, Math.ceil(categories.length / 24))
 
 const valueFor = (item: LumenChartSeries, category: number | string) => item.data.find(datum => datum.x === category)
-
-const categoryLabelFor = (category: number | string) => series.flatMap(item => item.data)
-  .find(datum => datum.x === category)?.xLabel ?? formatCategory(category)
+const categoryLabelFor = (category: number | string) => getLumenChartCategoryLabel(alignedSeries, category, formatCategory, 'detail')
 
 const referenceY =
   referenceValue === undefined ?
@@ -128,7 +132,7 @@ const referenceY =
     )
   }
   {!hasData && <p class="ui-chart__empty" role="status">{emptyLabel ?? resolvedLabels.empty}</p>}
-  <div class="ui-chart__plot" hidden={!hasData}>
+  <div aria-label={resolvedLabels.chartData} class="ui-chart__plot" role="region" tabindex="0" hidden={!hasData}>
     <svg
       aria-hidden="true"
       preserveAspectRatio="xMidYMid meet"
@@ -154,24 +158,11 @@ const referenceY =
       </g>
       <g class="ui-chart__axis-labels">
         {
-          categories.map((category, index) => {
-            if (
-              index % labelStep !== 0 &&
-              index !== categories.length - 1
-            )
-              return null
-
-            const denominator = Math.max(1, categories.length - 1)
-
-            const x =
-              paddingLeft + (index / denominator) * (width - paddingLeft - padding)
-
-            return (
-              <text text-anchor="middle" x={x} y={height - 14}>
-                {categoryLabelFor(category)}
-              </text>
-            )
-          })
+          categoryTicks.map(tick => (
+            <text text-anchor={tick.textAnchor} x={tick.position} y={height - 14}>
+              {tick.label}
+            </text>
+          ))
         }
       </g>
       {
@@ -187,7 +178,7 @@ const referenceY =
       }
       {
         geometries.map((geometry, index) => {
-          const item = series[index]
+          const item = alignedSeries[index]
 
           if (!item) return null
 
@@ -209,7 +200,7 @@ const referenceY =
                     r="3"
                   >
                     <title>
-                      {`${point.xLabel ?? formatCategory(point.x)} · ${item.label}: ${formatValue(point.y ?? 0)}`}
+                      {`${categoryLabelFor(point.x)} · ${item.label}: ${formatValue(point.y ?? 0)}`}
                     </title>
                   </circle>
                 ))}
@@ -235,7 +226,7 @@ const referenceY =
               {categories.map(category => (
                 <tr>
                   <th scope="row">{categoryLabelFor(category)}</th>
-                  {series.map(item => {
+                  {alignedSeries.map(item => {
                     const datum = valueFor(item, category)
 
                     return (

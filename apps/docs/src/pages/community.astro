@@ -10,39 +10,10 @@ import {
 } from '@santi020k/lumen-astro'
 
 import NewsletterSignup from '../components/NewsletterSignup.astro'
+import { showcaseProjects } from '../data/showcase'
 import BaseLayout from '../layouts/BaseLayout.astro'
 
-const projects = [
-  {
-    category: 'iOS photo studio',
-    description: 'An editorial product experience spanning an Astro launch site and a native SwiftUI application.',
-    href: 'https://postlens.santi020k.com',
-    image: '/use-cases/postlens-desktop-live.jpg',
-    mobileImage: '/use-cases/postlens-mobile-live.jpg',
-    name: 'PostLens',
-    stack: 'Astro · SwiftUI'
-  },
-  {
-    category: 'Developer tooling',
-    description: 'A focused documentation and product surface for improving quality, security, and accessibility in Astro projects.',
-    href: 'https://doctor.santi020k.com',
-    image: '/use-cases/astro-doctor-desktop-live.jpg',
-    mobileImage: null,
-    name: 'Astro Doctor',
-    stack: 'Astro · Lumen'
-  },
-  {
-    category: 'Theme ecosystem',
-    description: 'A shared visual language carried across developer tools, browser surfaces, and documentation.',
-    href: 'https://theme.santi020k.com',
-    image: '/use-cases/theme-desktop.jpg',
-    mobileImage: null,
-    name: 'Santi020k Themes',
-    stack: 'Web · Design tokens'
-  }
-] as const
-
-const [featuredProject, ...projectGrid] = projects
+const [featuredProject, ...projectGrid] = showcaseProjects
 
 const waysToJoin = [
   {
@@ -137,7 +108,7 @@ const waysToJoin = [
           <Marker variant="success">Community showcase</Marker>
           <h2 id="community-showcase-title">Made with Lumen</h2>
         </div>
-        <p>Real products reveal what documentation and component tests cannot.</p>
+        <p>Public websites from projects using Lumen. Captured October 3, 2026; deployed versions vary.</p>
       </header>
       <div class="community-showcase">
         <Card as="article" class="community-featured-project" variant="interactive">
@@ -145,7 +116,7 @@ const waysToJoin = [
             <Image
               alt={`${featuredProject.name} desktop interface preview`}
               class="community-featured-project__desktop"
-              height="900"
+              height="1000"
               loading="eager"
               src={featuredProject.image}
               width="1440"
@@ -180,7 +151,7 @@ const waysToJoin = [
             <Card as="article" class="community-project" variant="interactive">
               <Image
                 alt={`${project.name} interface preview`}
-                height="900"
+                height="1000"
                 loading="lazy"
                 src={project.image}
                 width="1440"
@@ -195,6 +166,10 @@ const waysToJoin = [
                 <Link href={project.href} rel="noopener noreferrer" target="_blank">
                   Visit project <Icon decorative name="arrow-up-right" size="sm" />
                 </Link>
+                <Link
+href={project.mobileImage}
+class="community-project__mobile-link"
+                >View mobile capture</Link>
               </div>
             </Card>
           ))}
@@ -489,8 +464,11 @@ const waysToJoin = [
     width: 100%;
     aspect-ratio: 16 / 9;
     object-fit: cover;
+    object-position: top;
     border-bottom: 1px solid hsl(var(--line));
   }
+
+  .community-project__mobile-link { margin-inline-start: 1rem; font-size: .8125rem; }
 
   .community-project__body {
     padding: 1.35rem;
@@ -703,7 +681,9 @@ const waysToJoin = [
       aspect-ratio: 16 / 8;
     }
 
-    .community-project__body {
+    .community-project__mobile-link { margin-inline-start: 1rem; font-size: .8125rem; }
+
+  .community-project__body {
       padding: 1.1rem 1.25rem 1.25rem;
     }
 

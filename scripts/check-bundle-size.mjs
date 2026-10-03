@@ -2,12 +2,13 @@ import { readFile } from 'node:fs/promises'
 import { gzipSync } from 'node:zlib'
 
 const allBudgets = [
-  { file: 'packages/astro/runtime/UIPrimitives.astro', gzip: 33_000, packageName: '@santi020k/lumen-astro', raw: 162_000 },
+  { file: 'packages/astro/runtime/UIPrimitives.astro', gzip: 33_000, packageName: '@santi020k/lumen-astro', raw: 167_000 },
   { file: 'packages/astro/runtime/controllers/motion.ts', gzip: 1_500, packageName: '@santi020k/lumen-astro', raw: 5_000 },
   { file: 'packages/astro/runtime/controllers/dialogs.ts', gzip: 2_000, packageName: '@santi020k/lumen-astro', raw: 6_000 },
   { file: 'packages/astro/runtime/controllers/document-navigation.ts', gzip: 1_500, packageName: '@santi020k/lumen-astro', raw: 5_000 },
-  { file: 'packages/lumen/styles.css', gzip: 28_500, packageName: '@santi020k/lumen', raw: 173_000 },
-  { file: 'packages/react/dist/components.js', gzip: 33_100, packageName: '@santi020k/lumen-react', raw: 160_000 },
+  { file: 'packages/astro/runtime/controllers/image-comparison.ts', gzip: 900, packageName: '@santi020k/lumen-astro', raw: 2_000 },
+  { file: 'packages/lumen/styles.css', gzip: 31_000, packageName: '@santi020k/lumen', raw: 186_000 },
+  { file: 'packages/react/dist/components.js', gzip: 34_000, packageName: '@santi020k/lumen-react', raw: 166_000 },
   { file: 'packages/react/dist/hooks.js', gzip: 20_000, packageName: '@santi020k/lumen-react', raw: 100_000 },
   { file: 'packages/elements/dist/define.js', gzip: 43_000, packageName: '@santi020k/lumen-elements', raw: 250_000 }
 ]

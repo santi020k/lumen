@@ -29,6 +29,7 @@ import HomeWorkbench from '../components/HomeWorkbench.astro'
 import { frameworkSetups } from '../data/docs'
 import type { DocsPlatformId } from '../data/platforms'
 import { productPlatformGuides } from '../data/platforms'
+import { showcaseProjects } from '../data/showcase'
 import { documentedComponentCount, primaryPageMetadata } from '../data/site-metadata'
 import BaseLayout from '../layouts/BaseLayout.astro'
 
@@ -136,36 +137,20 @@ interface UseCase {
   stack: string
 }
 
-const useCases: readonly UseCase[] = [
-  {
-    category: 'Developer quality',
-    description: 'A deterministic Astro health-check toolkit spanning a CLI, ESLint plugin, editor extension, GitHub Action, docs, and agent skills.',
-    desktop: { height: 895, src: '/use-cases/astro-doctor-desktop-live.jpg', width: 1432 },
-    featured: true,
-    href: 'https://doctor.santi020k.com',
-    mobile: { height: 827, src: '/use-cases/astro-doctor-mobile-live.jpg', width: 382 },
-    name: 'Astro Doctor',
-    stack: 'Astro · TypeScript'
-  },
-  {
-    category: 'iOS photo studio',
-    description: 'An iPhone-first visual content studio with a cinematic product story for private, on-device photo selection, enhancement, and composition.',
-    desktop: { height: 900, src: '/use-cases/postlens-desktop-live.jpg', width: 1440 },
-    href: 'https://postlens.santi020k.com',
-    mobile: { height: 844, src: '/use-cases/postlens-mobile-live.jpg', width: 390 },
-    name: 'PostLens',
-    stack: 'Astro · SwiftUI'
-  },
-  {
-    category: 'macOS utility',
-    description: 'A safety-minded native Mac utility with a calm product surface for thermal monitoring and gradual, bounded fan control.',
-    desktop: { height: 900, src: '/use-cases/coolstead-desktop-live.jpg', width: 1440 },
-    href: 'https://coolstead.santi020k.com',
-    mobile: { height: 844, src: '/use-cases/coolstead-mobile-live.jpg', width: 390 },
-    name: 'Coolstead',
-    stack: 'Astro · SwiftUI'
-  }
-]
+const featuredProjects = ['Astro Doctor', 'PostLens', 'Coolstead']
+
+const useCases: readonly UseCase[] = featuredProjects.flatMap(name => {
+  const project = showcaseProjects.find(item => item.name === name)
+
+  return project ?
+[{
+    ...project,
+    desktop: { height: 1000, src: project.image, width: 1440 },
+    featured: name === 'Astro Doctor',
+    mobile: { height: 844, src: project.mobileImage, width: 390 }
+  }] :
+[]
+})
 
 ---
 

@@ -95,6 +95,66 @@ the default icon catalog. React Native, SwiftUI, and Compose already include the
 complete brand catalog and accept `brand:github`, `.brandGithub`, and
 `LumenIconName.BrandGithub`, respectively, without a separate package.
 
+## Consumer composition in v4
+
+- For reporting filters, use React `DateRangeInput` with controlled `value`/`onValueChange`, localized
+  `labels`, bounds and explicit presets. Keep draft changes inside the picker until Apply. See the
+  [reporting example](https://lumen.santi020k.com/docs/web/reporting) and [migration guide](migrating-to-lumen.md).
+- Keep date-only values as validated `YYYY-MM-DD` strings. Do not round-trip a local date through
+  UTC timestamps. Use the native adapter's existing date field and application-owned calendar/time-zone rules.
+- Compose a metric card from `Card`, `Stat` and a chart with `presentation="bare"`; do not invent
+  MetricCard or Status components. Products own status labels, aggregation, currency units and rounding.
+- Use unique chart X identities, abbreviated `xLabel` text and full `formatCategory` labels.
+  Preserve absent observations explicitly; never turn missing data into a fabricated zero.
+- Compare two media treatments with `ImageComparison` and matching source dimensions. Supply a
+  visible localized control label and useful image alternatives. See [image comparison](image-comparison.md).
+- Use `Prose` for ordinary Markdown, `Code`/`CodeTabs` for examples, and `CopyButton` for dynamic
+  command output. Localize clipboard success/error feedback; do not swallow rejected writes.
+- Use public `asChild` composition when a semantic link needs button styling. Disable nested form
+  controls separately. On Input, native numeric `size` and Lumen `visualSize` have different meanings.
+- Map the complete semantic theme in light and dark modes, including `brand-solid`/`on-brand` and
+  `danger`/`on-danger`. Text-safe colors matter more than matching a decorative swatch.
+- NavigationMenu, Sidebar and Sheet compose a documentation shell. Keep ordinary links in normal
+  Tab order and application routing in the app. Do not rebuild primitives with `ui-*` classes.
+
+### Theme bootstrap and generated command output
+
+When the application owns theme state, use `ThemeToggle controlled` and its own click handler.
+Initialize the document in the head before paint; unavailable storage must not prevent rendering:
+
+```html
+<script>
+  let theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+  try {
+    const saved = localStorage.getItem('application-theme')
+    if (saved === 'light' || saved === 'dark') theme = saved
+  } catch {
+    // Private browsing or storage policy can deny access.
+  }
+  document.documentElement.dataset.theme = theme
+  document.documentElement.classList.toggle('dark', theme === 'dark')
+</script>
+```
+
+The owner's click handler updates the document and the toggle's `aria-pressed` state, and persists
+inside a guarded storage write. Use a server-rendered theme when the application already has one.
+A controlled Lumen toggle does not read storage or change that state itself.
+
+For commands generated from a form, point `CopyButton` at the current output element. It reads the
+latest text when clicked, so the application only updates the output rather than managing clipboard
+promises or feedback timers:
+
+```astro
+---
+import { CopyButton } from '@santi020k/lumen-astro'
+---
+
+<output id="generated-command">pnpm run check</output>
+<CopyButton target="#generated-command" label="Copy command" copiedLabel="Command copied" errorLabel="Copy failed; select the command and copy it manually">
+  Copy command
+</CopyButton>
+```
+
 ## MCP-Assisted Workflow
 
 Connect `@santi020k/lumen-mcp` when the agent supports Model Context Protocol. The server returns

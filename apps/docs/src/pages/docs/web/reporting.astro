@@ -1,0 +1,89 @@
+---
+import { Badge, Code, Link } from '@santi020k/lumen-astro'
+
+import DocsLayout from '../../../layouts/DocsLayout.astro'
+
+const example = `const [range, setRange] = useState({ start: '2026-09-01', end: '2026-09-30' })
+
+<DateRangeInput
+  label="Reporting period"
+  value={range}
+  onValueChange={setRange}
+  labels={{ start: 'From', end: 'To', presets: 'Ranges', apply: 'Apply', cancel: 'Cancel' }}
+/>`
+---
+
+<DocsLayout
+  breadcrumbs={[{ href: '/docs/web', label: 'Web' }, { href: '/docs/web/reporting', label: 'Reporting' }]}
+  description="Build readable reports with an applied date range, accessible charts, and explicit missing observations."
+  title="Date ranges and reporting — Lumen UI"
+>
+  <section class="docs-hero">
+    <Badge variant="outline">React composition</Badge>
+    <h1>Date ranges and reporting</h1>
+    <p>Preview a period, apply it once, and keep precise dates in the chart's data table.</p>
+  </section>
+
+  <div data-react-reporting-demo><p>Loading the interactive React example…</p></div>
+
+  <section class="reporting-guide">
+    <h2>Draft first, apply once</h2>
+    <p>
+      <code>DateRangeInput</code> keeps an editing draft. Only Apply calls <code>onValueChange</code>.
+      Cancel, Escape, an external value change, or making the control disabled or read-only closes
+      the editor without committing the draft. ISO calendar dates, endpoint order, and bounds are
+      validated before the optional application validator.
+    </p>
+    <Code code={example} language="tsx" variant="block" copy wrap />
+    <p>
+      Supply localized labels and <code>formatDate</code>. Use <code>name</code> with explicit
+      <code>start</code> and <code>end</code> names for native form entries. Fetch reports in response
+      to the applied state; the application owns requests, aggregation, and stored filters.
+    </p>
+    <h2>Keep identity separate from presentation</h2>
+    <p>
+      This example uses ISO dates as <code>x</code>, day numbers as <code>xLabel</code>, and a full
+      <code>formatCategory</code> for details. Missing measurements remain <code>null</code>, so the
+      line has an honest gap. Every series needs unique X values. Short axes never replace the
+      exact dates and values in the accessible data table.
+    </p>
+    <p>
+      <Link href="/docs/components/line-chart">Explore LineChart</Link> or
+      <Link href="/docs/components/date-range-picker">use the native-input DateRangePicker</Link>
+      for a lighter Astro or Elements form. The two-calendar draft editor is currently a React API.
+    </p>
+  </section>
+</DocsLayout>
+
+<script>
+  import { createElement } from 'react'
+  import { createRoot } from 'react-dom/client'
+
+  import { ReactReportingDemo } from '../../../lib/react-reporting-demo'
+
+  const mount = () => {
+    const container = document.querySelector<HTMLElement>('[data-react-reporting-demo]')
+
+    if (!container || container.dataset.mounted) return
+
+    container.dataset.mounted = 'true'
+
+    createRoot(container).render(createElement(ReactReportingDemo))
+  }
+
+  mount()
+
+  document.addEventListener('astro:page-load', mount)
+</script>
+
+<style is:global>
+  .reporting-demo { margin-block: 2rem; }
+  .reporting-demo__controls { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem; }
+  .reporting-demo__controls > :first-child { flex: 1 1 15rem; min-width: 0; }
+  .reporting-demo__period { display: block; margin-block: 1rem; color: hsl(var(--ink-soft)); font-size: .875rem; }
+  .reporting-demo__dialog { display: grid; gap: 1rem; padding: 1.5rem; max-width: 36rem; max-height: 70dvh; overflow: auto; }
+  .reporting-demo__dialog h2, .reporting-demo__dialog p { margin: 0; }
+  .reporting-demo__actions { display: flex; flex-wrap: wrap; gap: .75rem; }
+  .reporting-guide { display: grid; gap: 1rem; }
+  .reporting-guide h2 { margin-top: 1.5rem; }
+</style>

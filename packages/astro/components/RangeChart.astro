@@ -37,10 +37,10 @@ const ticks = getLumenChartTicks(geometry.domain)
 
 <Chart class:list={['ui-range-chart', getLumenChartToneClassName(tone), classProp, className]} {caption} {description} {heading} {summary} {...rest}>
   {geometry.points.length === 0 && <p class="ui-chart__empty" role="status">{resolvedLabels.empty}</p>}
-  <div class="ui-chart__plot" hidden={geometry.points.length === 0}><svg aria-hidden="true" viewBox={`0 0 ${width} ${height}`}><g class="
+  <div aria-label={resolvedLabels.chartData} class="ui-chart__plot" role="region" tabindex="0" hidden={geometry.points.length === 0}><svg aria-hidden="true" viewBox={`0 0 ${width} ${height}`}><g class="
     ui-chart__grid
   "
-                                                                                                                               >{ticks.map(tick => {
+                                                                                                                                                                                                >{ticks.map(tick => {
  const y = scaleLumenChartValue(tick, geometry.domain, height - padding, padding)
 
  return <><line x1={padding} x2={width - padding} y1={y} y2={y}/><text x={padding - 8} y={y}>{formatValue(tick)}</text></>

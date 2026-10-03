@@ -376,6 +376,10 @@ const processElementConfig = (name, config, sourceNode, sourceFile) => {
       `lumen-${toKebab(name)}`
 
   const attributes = config.properties.flatMap(entry => {
+    if (ts.isPropertyAssignment(entry) && propertyName(entry, sourceFile) === 'observedAttributes' && ts.isArrayLiteralExpression(entry.initializer)) {
+      return entry.initializer.elements.filter(ts.isStringLiteral).map(attribute => attribute.text)
+    }
+
     if (
       !ts.isPropertyAssignment(entry) ||
       !ts.isObjectLiteralExpression(entry.initializer) ||
@@ -863,11 +867,13 @@ const loadWorkspaceFiles = async p => ({
     await readIfExists(p('packages/elements/src/components/badge.ts')),
     await readIfExists(p('packages/elements/src/components/button.ts')),
     await readIfExists(p('packages/elements/src/components/card.ts')),
-    await readIfExists(p('packages/elements/src/components/combobox.ts'))
+    await readIfExists(p('packages/elements/src/components/combobox.ts')),
+    await readIfExists(p('packages/elements/src/components/image-comparison.ts'))
   ].join('\n'),
   reactSource: [
     await readIfExists(p('packages/react/src/components.tsx')),
-    await readIfExists(p('packages/react/src/server-components.tsx'))
+    await readIfExists(p('packages/react/src/server-components.tsx')),
+    await readIfExists(p('packages/react/src/image-comparison.tsx'))
   ].join('\n'),
   readme: await readIfExists(p('README.md')),
   rules: await readIfExists(p('llms.txt')),

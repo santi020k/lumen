@@ -1154,6 +1154,19 @@ export const lumenRegistry = {
       ]
     },
     {
+      name: 'ImageComparison',
+      type: 'component',
+      description: 'Compares two media treatments with an accessible reveal control.',
+      category: 'Data display',
+      files: [
+        'packages/astro/components/ImageComparison.astro',
+        'packages/astro/styles/lumen.css'
+      ],
+      dependencies: [
+        'styles'
+      ]
+    },
+    {
       name: 'Illustration',
       type: 'component',
       description: 'Renders a built-in semantic empty, success, error, or offline illustration.',

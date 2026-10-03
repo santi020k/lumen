@@ -10,6 +10,7 @@ import {
   LumenBarChart,
   LumenComboChart,
   LumenHeatmap,
+  LumenLineChart,
   LumenPieChart,
   LumenRangeChart,
   LumenScatterChart
@@ -20,7 +21,8 @@ vi.mock('react-native-svg', () => ({
   Line: () => null,
   Path: () => null,
   Rect: () => null,
-  Svg: () => null
+  Svg: () => null,
+  Text: () => null
 }))
 
 vi.mock('react-native', () => ({
@@ -33,6 +35,7 @@ vi.mock('react-native', () => ({
 vi.mock('./theme-context.js', () => ({
   useLumenTheme: () => ({
     chartColors: {
+      grid: '#e5e7eb',
       sequentialHigh: '#2463eb',
       series1: '#2463eb',
       series2: '#854dff',
@@ -82,6 +85,8 @@ interface ChartDataOutputProps {
 
 type Props = Record<string, unknown>
 
+const isProps = (value: unknown): value is Props => typeof value === 'object' && value !== null && !Array.isArray(value)
+
 const isReactNodeList = (value: ReactNode): value is ReactNode[] => Array.isArray(value)
 const propsOf = (element: ReactElement | undefined): Props => (element?.props ?? {}) as Props
 const descendantsOf = (node: ReactNode): ReactElement[] => {
@@ -124,6 +129,153 @@ const renderDataOutput = (element: ReactElement<ChartFrameOutputProps>): ReactNo
 }
 
 describe('Lumen React Native chart components', () => {
+  test.each([[0, 5, 10], [-10, -5, 0], [-5, 0, 5], [7]].map(values => ({ values })))(
+    'aligns combo lines and areas with bar value endpoints for $values', ({ values }) => {
+      const data = values.map((y, x) => ({ x, y }))
+
+      for (const mark of ['line', 'area'] as const) {
+        const chart = LumenComboChart({
+          label: 'Planned and actual',
+          series: [
+            { data, id: 'bars', label: 'Bars', mark: 'bar' },
+            { data, id: 'trend', label: 'Trend', mark }
+          ]
+        })
+        const descendants = descendantsOf(chart)
+        const rectangles = descendants.filter(element => propsOf(element).rx === 4)
+        const endpoints = rectangles.map((element, index) => {
+          const coordinates = /translate\(([-\d.]+) ([-\d.]+)\)/u.exec(String(propsOf(element).transform))
+
+          return [
+            Number((Number(coordinates?.[1]) + Number(propsOf(element).width) / 2).toFixed(3)),
+            Number((
+              Number(coordinates?.[2]) + ((values[index] ?? 0) < 0 ? Number(propsOf(element).height) : 0)
+            ).toFixed(3))
+          ]
+        })
+        const line = descendants.find(element => propsOf(element).fill === 'none' && typeof propsOf(element).d === 'string')
+        const points = [...String(propsOf(line).d).matchAll(/[LM]\s+(-?\d+(?:\.\d+)?)\s+(-?\d+(?:\.\d+)?)/gu)]
+          .map(match => [Number(match[1]), Number(match[2])])
+
+        expect(endpoints).toHaveLength(values.length)
+        expect(points).toEqual(endpoints)
+      }
+    }
+  )
+
+  test('keeps bar category and formatted value labels visible when readable data is hidden', () => {
+    const chart = LumenBarChart({
+      formatValue: value => `${value} pts`,
+      label: 'Final scores',
+      labels: { chartData: 'Datos del gráfico' },
+      series: [{
+        data: [{ x: 'id-1', xLabel: 'Ana', y: -4 }, { x: 'id-2', xLabel: 'Ben', y: 8 }],
+        id: 'scores',
+        label: 'Score'
+      }],
+      showData: false,
+      summary: 'Ana has minus four points; Ben has eight.'
+    }) as ReactElement<ChartFrameOutputProps>
+    const descendants = descendantsOf(chart)
+    const text = descendants.map(element => propsOf(element).children)
+
+    expect(text).toContain('Ana')
+    expect(text).toContain('Ben')
+    expect(text).toContain('0 pts')
+    expect(descendants.some(element => propsOf(element).accessibilityLabel === 'Datos del gráfico')).toBe(true)
+    expect(descendants.some(element => propsOf(element).stroke === '#6b7280' && propsOf(element).strokeOpacity === 1)).toBe(true)
+    expect(chart.props.summary).toBe('Ana has minus four points; Ben has eight.')
+  })
+
+  test('uses full detail formatters without replacing short axis labels', () => {
+    const chart = LumenBarChart({
+      formatCategory: value => `Passenger ${value}`,
+      label: 'Final scores',
+      series: [{ data: [{ x: 'id-1', xLabel: 'Ana', y: 8 }], id: 'scores', label: 'Score' }]
+    }) as ReactElement<ChartFrameOutputProps>
+
+    expect(descendantsOf(chart).some(element => propsOf(element).children === 'Ana')).toBe(true)
+    expect(descendantsOf(renderDataOutput(chart)).some(element => (
+      propsOf(element).children === 'Passenger id-1, Score: 8'
+    ))).toBe(true)
+  })
+
+  test('allocates bounded native chart margins for long formatted values', () => {
+    const chart = (formatValue: (value: number) => string) => LumenBarChart({
+      formatValue,
+      label: 'Revenue',
+      series: [{ data: [{ x: 'A', y: 400000 }], id: 'revenue', label: 'Revenue' }]
+    }) as ReactElement<ChartFrameOutputProps>
+    const margin = (element: ReactElement<ChartFrameOutputProps>) => propsOf(descendantsOf(element)
+      .find(child => propsOf(child).x1 !== undefined)).x1
+    const plain = margin(chart(String))
+    const formatted = margin(chart(value => `COP ${value.toLocaleString('en-US')} million`))
+
+    expect(Number(formatted)).toBeGreaterThan(Number(plain))
+    expect(Number(formatted)).toBeLessThanOrEqual(240)
+  })
+
+  test('centers a singleton line axis label on its plotted point', () => {
+    const chart = LumenLineChart({
+      label: 'Score',
+      series: [{ data: [{ tone: 'success', x: 'id-1', xLabel: 'Ana', y: 8 }], id: 'scores', label: 'Score' }],
+      showData: false
+    }) as ReactElement<ChartFrameOutputProps>
+    const descendants = descendantsOf(chart)
+    const label = descendants.find(element => propsOf(element).children === 'Ana')
+    const point = descendants.find(element => propsOf(element).r === '4')
+    const position = Number(/translate\(([-\d.]+)/u.exec(String(propsOf(label).transform))?.[1])
+
+    expect(propsOf(label).textAnchor).toBe('middle')
+    expect(position).toBe(propsOf(point).cx)
+  })
+
+  test('retains every bar while selecting readable dense category labels', () => {
+    const chart = LumenBarChart({
+      label: 'Passengers',
+      series: [{
+        data: Array.from({ length: 30 }, (_, index) => ({ x: index, xLabel: `Passenger ${index + 1}`, y: index })),
+        id: 'scores',
+        label: 'Score'
+      }],
+      showData: false
+    }) as ReactElement<ChartFrameOutputProps>
+    const descendants = descendantsOf(chart)
+    const categoryLabels = descendants.filter(element => (
+      typeof propsOf(element).children === 'string' && String(propsOf(element).children).startsWith('Passenger ')
+    ))
+
+    expect(descendants.filter(element => propsOf(element).rx === 4)).toHaveLength(30)
+    expect(categoryLabels.length).toBeGreaterThan(1)
+    expect(categoryLabels.length).toBeLessThan(30)
+    expect(categoryLabels.map(element => propsOf(element).children)).toContain('Passenger 30')
+  })
+
+  test('matches pie data markers to rendered slice colors after filtering unavailable data', () => {
+    const chart = LumenPieChart({
+      label: 'Round mix',
+      series: {
+        data: [{ x: 'Skipped', y: 0 }, { x: 'Trivia', y: 4 }, { tone: 'success', x: 'Spotting', y: 8 }],
+        id: 'rounds',
+        label: 'Rounds'
+      }
+    }) as ReactElement<ChartFrameOutputProps>
+    const slices = descendantsOf(chart).filter(element => propsOf(element).fillRule === 'evenodd')
+    const markers = descendantsOf(renderDataOutput(chart)).filter(element => (
+      propsOf(element).importantForAccessibility === 'no-hide-descendants'
+    ))
+
+    expect(markers.map(element => {
+      const style = propsOf(element).style
+
+      return isProps(style) ? style.backgroundColor : undefined
+    }))
+      .toEqual(slices.map(element => propsOf(element).fill))
+    expect(descendantsOf(renderDataOutput(chart)).some(element => (
+      propsOf(element).children === 'Trivia, Rounds: 4'
+    ))).toBe(true)
+  })
+
   test.each([
     ['scatter', LumenScatterChart],
     ['combo', LumenComboChart]

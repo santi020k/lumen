@@ -79,6 +79,35 @@ Lumen components communicate using standard DOM CustomEvents, primarily prefixed
 
 Listen to these events on the document, or on the component root `[data-ui-*]` elements.
 
+### Migrating from version 3 to version 4
+
+Lumen 4 consolidates fixes from twenty consumer audits. Upgrade the adapter and its companion
+packages together, import the matching stylesheet, and rebuild native consumers. The v4 branch
+is a local release candidate; published projects in the showcase still use their deployed versions.
+
+| Surface | Required review |
+| --- | --- |
+| Charts | Use stable, unique X identities. Duplicate identities report validation issues and only the first observation appears in the plot and data table. Use `xLabel` for short axis text and `formatCategory` for full details. Remove old padding, axis and graph-background patches only after comparing the real chart. |
+| React DataTable | For server-paginated results, use controlled `sort`/`onSortChange` and `sortMode="manual"`. Fetch sorted data before pagination; the table preserves the supplied page order. |
+| React Dialog | Set `dismissOnOutsidePress` and `dismissOnEscape` explicitly for pending workflows. Focus returns to the connected opener, including controlled dialogs and nested modal cleanup. |
+| React dates | `DatePicker` puts `id` on its focusable trigger; the native date input uses `${id}-native`. Associate labels with the trigger. Dates remain strict local-calendar `YYYY-MM-DD` strings. Invalid, reversed or out-of-bounds ranges cannot be applied. |
+| Buttons | The visible label lives inside `.ui-button__content`, including while loading. Review direct-child CSS selectors. Disabled/loading slotted actions block click and keyboard activation; independently disable nested file inputs or other interactive descendants. |
+| Hidden content | The native `hidden` attribute wins over Lumen flex/grid display rules. Remove the attribute to show the element; `hidden="false"` still means hidden in HTML. `hidden="until-found"` retains browser find behavior. |
+| Code and CodeTabs | Localize `codeLabel`, `copyLabel`, `copiedLabel` and `errorLabel` (kebab-case attributes in Elements). Overflowing code is a named keyboard region. Remove duplicate clipboard controllers and announce actual success or failure. |
+| NavigationMenu | Ordinary links keep native Tab order. Do not depend on a single roving Tab stop for site navigation. |
+| Astro ThemeToggle | A controlled toggle leaves initial document theme ownership to the application. Initialize the theme before rendering and persist it in the application's change handler. |
+| SwiftUI / Compose | Rebuild for changed initializers and formatter contracts. Swift charts accept `bare` and `height`; Slider accepts `showsLabel` and announces `valueLabel`. Compose numeric/time line data uses continuous X positions, including isolated observations. |
+
+`ImageComparison` is new across Astro, React and Elements. See the [media comparison guide](image-comparison.md)
+for full-size media framing, RTL, labels and controlled state. The [reporting example](https://lumen.santi020k.com/docs/web/reporting)
+combines range drafts, a chart and a dialog using synthetic data. The [chart guide](data-visualization.md)
+explains missing data, formatting and accessible data tables.
+
+Test the actual consumer with light/dark themes, phone/desktop widths, keyboard navigation,
+clipboard denial, empty/singleton/dense charts, invalid dates and pending submissions. Existing
+application workarounds are evidence to investigate, not a list to delete automatically. Lumen
+performs no data migration and does not change application reporting, financial or medical policy.
+
 ### Migrating from version 2 to version 3
 
 Lumen 3 synchronizes the expanded interface icon catalog across native adapters. Existing

@@ -27,9 +27,9 @@ const summary = summaryProp ?? resolvedLabels.formatHeatmapSummary(geometry.cell
 
 <Chart class:list={['ui-heatmap', classProp, className]} {caption} {description} {heading} {summary} {...rest}>
   {!hasData && <p class="ui-chart__empty" role="status">{resolvedLabels.empty}</p>}
-  <div class="ui-chart__plot" hidden={!hasData}><svg aria-hidden="true" viewBox={`0 0 ${geometry.width} ${geometry.height}`}><g class="
+  <div aria-label={resolvedLabels.chartData} class="ui-chart__plot" role="region" tabindex="0" hidden={!hasData}><svg aria-hidden="true" viewBox={`0 0 ${geometry.width} ${geometry.height}`}><g class="
     ui-heatmap__cells
   "
-                                                                                                                             >{geometry.cells.filter(cell => cell.value !== null && Number.isFinite(cell.value)).map(cell => <rect height={Math.max(0, cell.height - 2)} opacity={Math.max(0.12, cell.ratio)} width={Math.max(0, cell.width - 2)} x={cell.xCoordinate + 1} y={cell.yCoordinate + 1}><title>{`${cell.xLabel ?? cell.x} · ${cell.yLabel ?? cell.y}: ${cell.label ?? formatValue(cell.value ?? 0)}`}</title></rect>)}</g></svg></div>
+                                                                                                                                                                                              >{geometry.cells.filter(cell => cell.value !== null && Number.isFinite(cell.value)).map(cell => <rect height={Math.max(0, cell.height - 2)} opacity={Math.max(0.12, cell.ratio)} width={Math.max(0, cell.width - 2)} x={cell.xCoordinate + 1} y={cell.yCoordinate + 1}><title>{`${cell.xLabel ?? cell.x} · ${cell.yLabel ?? cell.y}: ${cell.label ?? formatValue(cell.value ?? 0)}`}</title></rect>)}</g></svg></div>
   {showTable && <details class="ui-chart__data"><summary>{resolvedLabels.viewData}</summary><div><table><thead><tr><th scope="col">{resolvedLabels.column}</th><th scope="col">{resolvedLabels.row}</th><th scope="col">{resolvedLabels.value}</th></tr></thead><tbody>{data.map(cell => <tr><th scope="row">{cell.xLabel ?? cell.x}</th><td>{cell.yLabel ?? cell.y}</td><td>{cell.label ?? (cell.value === null || !Number.isFinite(cell.value) ? resolvedLabels.notAvailable : formatValue(cell.value))}</td></tr>)}</tbody></table></div></details>}
 </Chart>

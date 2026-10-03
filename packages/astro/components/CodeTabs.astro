@@ -20,6 +20,10 @@ interface Props extends HTMLAttributes<'div'> {
   class?: string | null
   className?: string
   copy?: boolean
+  codeLabel?: string
+  copyLabel?: string
+  copiedLabel?: string
+  errorLabel?: string
   initialValue?: string
   items: readonly CodeTabItem[]
   storageKey?: string
@@ -32,6 +36,10 @@ const {
   class: classProp = '',
   className = '',
   copy = true,
+  codeLabel = 'Code example',
+  copyLabel = 'Copy code to clipboard',
+  copiedLabel = 'Code copied to clipboard',
+  errorLabel = 'Could not copy code. Select and copy it manually.',
   initialValue,
   items,
   storageKey,
@@ -82,6 +90,10 @@ const { classList, passthrough } = resolveLumenAstroProps(
       <Code
         code={item.code}
         copy={copy}
+        codeLabel={codeLabel}
+        copyLabel={copyLabel}
+        copiedLabel={copiedLabel}
+        errorLabel={errorLabel}
         {...(item.language === undefined ? {} : { language: item.language })}
         theme={theme}
         variant="block"

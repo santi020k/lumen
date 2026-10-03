@@ -657,19 +657,22 @@ public struct LumenButton<Label: View>: View {
 
     public var body: some View {
         Button(role: role, action: action) {
-            HStack(spacing: LumenSpacing.sm) {
-                if loading {
+            label
+                .opacity(loading ? 0 : 1)
+                .overlay {
+                    if loading {
 #if os(tvOS)
-                    ProgressView()
-                        .tint(foregroundColor)
+                        ProgressView()
+                            .tint(foregroundColor)
+                            .accessibilityHidden(true)
 #else
-                    ProgressView()
-                        .controlSize(.small)
-                        .tint(foregroundColor)
+                        ProgressView()
+                            .controlSize(.small)
+                            .tint(foregroundColor)
+                            .accessibilityHidden(true)
 #endif
+                    }
                 }
-                label
-            }
         }
         .buttonStyle(LumenButtonStyle(intent: intent, size: size))
         .disabled(disabled || loading)

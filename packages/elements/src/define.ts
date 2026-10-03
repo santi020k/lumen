@@ -1,5 +1,6 @@
 /* eslint-disable complexity, @typescript-eslint/no-non-null-assertion */
 
+import { isLumenDateBoundsValid, parseLumenDate as parseCalendarDate, resolveLumenDateLabels, resolveLumenDateLocale } from '@santi020k/lumen-core'
 import {
   alignLumenChartSeries,
   coerceThemeBuilderExportFormat,
@@ -18,6 +19,8 @@ import {
   formatLumenLanguageLabel,
   getLumenChartAxisPadding,
   getLumenChartCategories,
+  getLumenChartCategoryLabel,
+  getLumenChartCategoryTicks,
   getLumenChartDomain,
   getLumenChartTicks,
   getLumenLocalePair,
@@ -110,6 +113,10 @@ import {
   LumenVisuallyHiddenElement as GranularLumenVisuallyHiddenElement,
   lumenVisuallyHiddenElementConfig
 } from './components/foundations.js'
+import {
+  LumenImageComparisonElement as GranularLumenImageComparisonElement,
+  lumenImageComparisonElementConfig
+} from './components/image-comparison.js'
 import {
   createLumenElementClass as createStandaloneLumenElementClass,
   LumenElement,
@@ -639,6 +646,7 @@ const elementConfigs = {
     defaults: { size: 'default' },
     tagName: 'lumen-icon'
   },
+  ImageComparison: lumenImageComparisonElementConfig,
   Image: {
     attributeClasses: {
       fit: {
@@ -2975,105 +2983,6 @@ const initDateRangePickers = (scope: ParentNode): void => {
   }
 }
 
-const initDatePickers = (scope: ParentNode): void => {
-  const closestRoot = getClosestScopedElement(scope, datePickerSelector)
-  const roots = getScopedElements<HTMLElement>(scope, datePickerSelector)
-
-  if (closestRoot instanceof HTMLElement && !roots.includes(closestRoot)) {
-    roots.unshift(closestRoot)
-  }
-
-  for (const root of roots) {
-    if (root.dataset.uiBound === 'true') continue
-
-    const native = root.querySelector<HTMLInputElement>(
-      datePickerNativeSelector
-    )
-
-    const control = root.querySelector<HTMLElement>(datePickerControlSelector)
-    const trigger = root.querySelector<HTMLElement>(datePickerTriggerSelector)
-    const valueEl = root.querySelector<HTMLElement>(datePickerValueSelector)
-    const popover = root.querySelector<HTMLElement>(datePickerPopoverSelector)
-    const calendar = root.querySelector<HTMLElement>(calendarSelector)
-
-    if (!native || !control || !trigger || !popover) continue
-
-    root.dataset.uiBound = 'true'
-
-    native.dataset.uiEnhanced = 'true'
-
-    control.hidden = false
-
-    const closePopover = (): void => {
-      popover.hidden = true
-
-      popover.dataset.state = 'closed'
-
-      trigger.setAttribute('aria-expanded', 'false')
-
-      // eslint-disable-next-line no-use-before-define -- the paired callbacks reference each other.
-      document.removeEventListener('click', handleOutsideClick)
-    }
-
-    const handleOutsideClick = (event: MouseEvent): void => {
-      if (!(event.target instanceof Node)) return
-
-      if (!popover.contains(event.target) && !trigger.contains(event.target)) {
-        closePopover()
-      }
-    }
-
-    const openPopover = (): void => {
-      if (calendar) {
-        if (native.min) calendar.dataset.uiCalendarMin = native.min
-        else delete calendar.dataset.uiCalendarMin
-
-        if (native.max) calendar.dataset.uiCalendarMax = native.max
-        else delete calendar.dataset.uiCalendarMax
-      }
-
-      popover.hidden = false
-
-      popover.dataset.state = 'open'
-
-      trigger.setAttribute('aria-expanded', 'true')
-
-      globalThis.setTimeout(() => {
-        document.addEventListener('click', handleOutsideClick)
-      })
-    }
-
-    trigger.addEventListener('click', () => {
-      if (popover.hidden) {
-        openPopover()
-      } else {
-        closePopover()
-      }
-    })
-
-    popover.addEventListener('change', event => {
-      const target = event.target
-
-      if (
-        target instanceof HTMLInputElement &&
-        target.hasAttribute('data-ui-calendar-input')
-      ) {
-        const newDate = target.value
-
-        native.value = newDate
-
-        if (valueEl) valueEl.textContent = newDate || 'mm/dd/yyyy'
-
-        native.dispatchEvent(
-          new Event('change', { bubbles: true, cancelable: true })
-        )
-
-        closePopover()
-      }
-    })
-  }
-}
-
 export const enhanceLumenDateRangePickers = (
   scope: ParentNode = document
 ): void => {
@@ -3098,39 +3007,6 @@ const installDateRangePickerController = (): void => {
       for (const node of mutation.addedNodes) {
         if (node instanceof Element || node instanceof DocumentFragment) {
           enhanceLumenDateRangePickers(node)
-        }
-      }
-    }
-  })
-
-  observer.observe(document.documentElement, {
-    childList: true,
-    subtree: true
-  })
-}
-
-export const enhanceLumenDatePickers = (scope: ParentNode = document): void => {
-  initDatePickers(scope)
-}
-
-const installDatePickerController = (): void => {
-  if (
-    !hasDocument() ||
-    document.documentElement.dataset.uiElementsDatePickersBound === 'true'
-  )
-    return
-
-  document.documentElement.dataset.uiElementsDatePickersBound = 'true'
-
-  enhanceLumenDatePickers(document)
-
-  if (typeof MutationObserver === 'undefined') return
-
-  const observer = new MutationObserver(mutations => {
-    for (const mutation of mutations) {
-      for (const node of mutation.addedNodes) {
-        if (node instanceof Element || node instanceof DocumentFragment) {
-          enhanceLumenDatePickers(node)
         }
       }
     }
@@ -3505,74 +3381,50 @@ const installInputOtpController = (): void => {
 
 /* cspell:ignore lsaquo rsaquo */
 /* eslint-disable @stylistic/padding-line-between-statements -- Calendar mirrors Astro's UTC date grid runtime. */
-const calendarDatePattern = /^\d{4}-\d{2}-\d{2}$/
-const calendarMonthPattern = /^\d{4}-\d{2}$/
+const createCalendarDate = (year: number, month: number, day: number): Date => {
+  const date = new Date(0)
 
-const parseCalendarDate = (value: string | null | undefined): Date | null => {
-  if (!value || !calendarDatePattern.test(value)) return null
+  date.setUTCFullYear(year, month, day)
 
-  const [year = Number.NaN, month = Number.NaN, day = Number.NaN] = value
-    .split('-')
-    .map(Number)
-  const date = new Date(Date.UTC(year, month - 1, day))
-
-  return date.getUTCFullYear() === year &&
-    date.getUTCMonth() === month - 1 &&
-    date.getUTCDate() === day ?
-    date :
-    null
+  return date
 }
-
-const parseCalendarMonth = (value: string | null | undefined): Date | null => {
-  if (!value || !calendarMonthPattern.test(value)) return null
-
-  const [year = Number.NaN, month = Number.NaN] = value.split('-').map(Number)
-  const date = new Date(Date.UTC(year, month - 1, 1))
-
-  return date.getUTCFullYear() === year && date.getUTCMonth() === month - 1 ?
-    date :
-    null
-}
-
-const formatCalendarDate = (date: Date): string => date.toISOString().slice(0, 10)
-const formatCalendarMonth = (date: Date): string => date.toISOString().slice(0, 7)
-const addCalendarDays = (date: Date, days: number): Date => new Date(
-  Date.UTC(
-    date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate() + days
-  )
+const parseCalendarMonth = (value: string | null | undefined): Date | null => value ? parseCalendarDate(`${value}-01`) : null
+const formatCalendarDate = (date: Date): string => date.toISOString().split('T')[0] ?? ''
+const formatCalendarMonth = (date: Date): string => formatCalendarDate(date).slice(0, -3)
+const addCalendarDays = (date: Date, days: number): Date => createCalendarDate(
+  date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate() + days
 )
-const getCalendarDaysInMonth = (date: Date): number => new Date(
-  Date.UTC(date.getUTCFullYear(), date.getUTCMonth() + 1, 0)
+const getCalendarDaysInMonth = (date: Date): number => createCalendarDate(
+  date.getUTCFullYear(), date.getUTCMonth() + 1, 0
 ).getUTCDate()
 const addCalendarMonths = (date: Date, months: number): Date => {
-  const targetMonth = new Date(
-    Date.UTC(date.getUTCFullYear(), date.getUTCMonth() + months, 1)
-  )
-  const day = Math.min(date.getUTCDate(), getCalendarDaysInMonth(targetMonth))
+  const target = createCalendarDate(date.getUTCFullYear(), date.getUTCMonth() + months, 1)
 
-  return new Date(
-    Date.UTC(targetMonth.getUTCFullYear(), targetMonth.getUTCMonth(), day)
+  return createCalendarDate(
+    target.getUTCFullYear(), target.getUTCMonth(), Math.min(date.getUTCDate(), getCalendarDaysInMonth(target))
   )
 }
 const compareCalendarDates = (date: Date, other: Date | null): number => (
-  other ? formatCalendarDate(date).localeCompare(formatCalendarDate(other)) : 0
+  other ? Math.sign(date.getTime() - other.getTime()) : 0
 )
+const getCalendarLocale = (root: HTMLElement): string => resolveLumenDateLocale(root.getAttribute('locale') || root.dataset.locale || root.closest('[lang]')?.getAttribute('lang') || undefined)
+const getCalendarMin = (root: HTMLElement): Date | null => parseCalendarDate(root.getAttribute('min') ?? root.dataset.uiCalendarMin ?? '0001-01-01')
+const getCalendarMax = (root: HTMLElement): Date | null => parseCalendarDate(root.getAttribute('max') ?? root.dataset.uiCalendarMax ?? '9999-12-31')
+const isCalendarDisabled = (root: HTMLElement): boolean => root.hasAttribute('disabled') || root.dataset.disabled === 'true' || !isLumenDateBoundsValid(root.getAttribute('min') ?? root.dataset.uiCalendarMin, root.getAttribute('max') ?? root.dataset.uiCalendarMax)
+const isCalendarReadOnly = (root: HTMLElement): boolean => root.hasAttribute('readonly') || root.dataset.readonly === 'true'
 const getCalendarToday = (): Date => {
   const today = new Date()
 
-  return new Date(
-    Date.UTC(today.getFullYear(), today.getMonth(), today.getDate())
-  )
+  return createCalendarDate(today.getFullYear(), today.getMonth(), today.getDate())
 }
 const getCalendarGridStart = (month: Date): Date => addCalendarDays(month, -((month.getUTCDay() + 6) % 7))
-const getCalendarLocale = (): string => document.documentElement.lang || navigator.language || 'en'
 
 const isCalendarDateDisabled = (
   root: HTMLElement,
   date: Date,
   min: Date | null,
   max: Date | null
-): boolean => root.dataset.disabled === 'true' ||
+): boolean => isCalendarDisabled(root) ||
   compareCalendarDates(date, min) < 0 ||
   compareCalendarDates(date, max) > 0
 
@@ -3624,38 +3476,24 @@ const ensureCalendarStructure = (root: HTMLElement): void => {
   const selectedDate = parseCalendarDate(
     root.getAttribute('value') ?? root.dataset.uiCalendarValue
   )
-  const minDate = parseCalendarDate(
-    root.getAttribute('min') ?? root.dataset.uiCalendarMin
-  )
-  const maxDate = parseCalendarDate(
-    root.getAttribute('max') ?? root.dataset.uiCalendarMax
-  )
   const monthDate =
     parseCalendarMonth(
       root.getAttribute('month') ?? root.dataset.uiCalendarMonth
     ) ??
     (selectedDate ?
-      new Date(
-        Date.UTC(
-          selectedDate.getUTCFullYear(), selectedDate.getUTCMonth(), 1
-        )
+      createCalendarDate(
+        selectedDate.getUTCFullYear(), selectedDate.getUTCMonth(), 1
       ) :
       null) ??
-      new Date(
-        Date.UTC(
-          getCalendarToday().getUTCFullYear(), getCalendarToday().getUTCMonth(), 1
-        )
+      createCalendarDate(
+        getCalendarToday().getUTCFullYear(), getCalendarToday().getUTCMonth(), 1
       )
   let input = root.querySelector<HTMLInputElement>(calendarInputSelector)
 
   root.dataset.uiCalendarInitialMonth ??= formatCalendarMonth(monthDate)
   root.dataset.uiCalendarMonth ||= formatCalendarMonth(monthDate)
 
-  if (minDate) root.dataset.uiCalendarMin = formatCalendarDate(minDate)
-  if (maxDate) root.dataset.uiCalendarMax = formatCalendarDate(maxDate)
-  if (selectedDate)
-    root.dataset.uiCalendarValue = formatCalendarDate(selectedDate)
-  if (root.hasAttribute('disabled')) root.dataset.disabled = 'true'
+  root.dataset.uiCalendarValue = selectedDate ? formatCalendarDate(selectedDate) : ''
 
   if (!input) {
     input = document.createElement('input')
@@ -3664,8 +3502,9 @@ const ensureCalendarStructure = (root: HTMLElement): void => {
     root.prepend(input)
   }
 
-  input.disabled = root.dataset.disabled === 'true'
-  input.value = root.dataset.uiCalendarValue ?? ''
+  input.disabled = isCalendarDisabled(root)
+  input.value = root.dataset.uiCalendarValue
+  input.defaultValue = input.value
 
   if (root.hasAttribute('name') && !input.name) {
     input.name = root.getAttribute('name') ?? ''
@@ -3722,7 +3561,7 @@ const syncCalendarNavigation = (
     '[data-ui-calendar-prev]'
   )
   const next = root.querySelector<HTMLButtonElement>('[data-ui-calendar-next]')
-  const disabled = root.dataset.disabled === 'true'
+  const disabled = isCalendarDisabled(root)
   const previousMonthLastDay = addCalendarDays(month, -1)
   const nextMonthFirstDay = addCalendarMonths(month, 1)
 
@@ -3744,24 +3583,29 @@ const renderCalendar = (
 
   if (!label || !grid) return
 
-  const locale = getCalendarLocale()
-  const min = parseCalendarDate(root.dataset.uiCalendarMin)
-  const max = parseCalendarDate(root.dataset.uiCalendarMax)
+  const locale = getCalendarLocale(root)
+  const labels = resolveLumenDateLabels(locale)
+  const input = root.querySelector<HTMLInputElement>('[data-ui-calendar-input]')
+
+  if (input) input.disabled = isCalendarDisabled(root)
+  root.setAttribute('aria-disabled', String(isCalendarDisabled(root)))
+
+  grid.setAttribute('aria-readonly', String(isCalendarReadOnly(root)))
+  root.querySelector('[data-ui-calendar-prev]')?.setAttribute('aria-label', root.dataset.previousMonthLabel || labels.previousMonth)
+  root.querySelector('[data-ui-calendar-next]')?.setAttribute('aria-label', root.dataset.nextMonthLabel || labels.nextMonth)
+  const min = getCalendarMin(root)
+  const max = getCalendarMax(root)
   const selectedDate = parseCalendarDate(root.dataset.uiCalendarValue)
   const todayIso = formatCalendarDate(getCalendarToday())
   const month =
     parseCalendarMonth(root.dataset.uiCalendarMonth) ??
     (selectedDate ?
-      new Date(
-        Date.UTC(
-          selectedDate.getUTCFullYear(), selectedDate.getUTCMonth(), 1
-        )
+      createCalendarDate(
+        selectedDate.getUTCFullYear(), selectedDate.getUTCMonth(), 1
       ) :
       null) ??
       getCalendarToday()
-  const visibleMonth = new Date(
-    Date.UTC(month.getUTCFullYear(), month.getUTCMonth(), 1)
-  )
+  const visibleMonth = createCalendarDate(month.getUTCFullYear(), month.getUTCMonth(), 1)
   const focusDate = getCalendarFocusDate(
     root, visibleMonth, min, max, requestedFocusDate
   )
@@ -3799,7 +3643,7 @@ const renderCalendar = (
     cell.scope = 'col'
     cell.role = 'columnheader'
     cell.textContent = weekdayLabel.format(
-      new Date(Date.UTC(2026, 0, 5 + index))
+      createCalendarDate(2026, 0, 5 + index)
     )
     headerRow.append(cell)
   }
@@ -3839,7 +3683,7 @@ const renderCalendar = (
 
   grid.replaceChildren(header, body)
 
-  if (shouldFocus) {
+  if (shouldFocus && !isCalendarDisabled(root)) {
     root
       .querySelector<HTMLElement>(
         `${calendarDaySelector}[data-date="${focusIso}"]`
@@ -3851,25 +3695,26 @@ const renderCalendar = (
 const selectCalendarDate = (root: HTMLElement, date: Date): void => {
   const input = root.querySelector<HTMLInputElement>(calendarInputSelector)
 
-  if (!input || root.dataset.disabled === 'true') return
+  if (!input || isCalendarDisabled(root) || isCalendarReadOnly(root)) return
 
-  const min = parseCalendarDate(root.dataset.uiCalendarMin)
-  const max = parseCalendarDate(root.dataset.uiCalendarMax)
-  const nextDate = clampCalendarDate(date, min, max)
+  const min = getCalendarMin(root)
+  const max = getCalendarMax(root)
+  const nextDate = date
 
   if (isCalendarDateDisabled(root, nextDate, min, max)) return
 
   input.value = formatCalendarDate(nextDate)
   root.dataset.uiCalendarValue = input.value
   root.dataset.uiCalendarMonth = formatCalendarMonth(nextDate)
+  renderCalendar(root, nextDate, true)
+
   input.dispatchEvent(new Event('input', { bubbles: true }))
   input.dispatchEvent(new Event('change', { bubbles: true }))
-  renderCalendar(root, nextDate, true)
 }
 
 const focusCalendarDate = (root: HTMLElement, date: Date): void => {
-  const min = parseCalendarDate(root.dataset.uiCalendarMin)
-  const max = parseCalendarDate(root.dataset.uiCalendarMax)
+  const min = getCalendarMin(root)
+  const max = getCalendarMax(root)
   const nextDate = clampCalendarDate(date, min, max)
 
   root.dataset.uiCalendarMonth = formatCalendarMonth(nextDate)
@@ -3923,6 +3768,8 @@ const initCalendars = (scope: ParentNode): void => {
 
     if (!input) continue
 
+    const initialValue = input.value
+
     root.dataset.uiBound = 'true'
     renderCalendar(root)
     root
@@ -3930,9 +3777,11 @@ const initCalendars = (scope: ParentNode): void => {
       ?.addEventListener('click', () => {
         const month = parseCalendarMonth(root.dataset.uiCalendarMonth)
 
-        if (!month) return
+        if (!month || isCalendarDisabled(root)) return
 
         const nextMonth = addCalendarMonths(month, -1)
+
+        if (compareCalendarDates(addCalendarDays(month, -1), getCalendarMin(root)) < 0) return
 
         root.dataset.uiCalendarMonth = formatCalendarMonth(nextMonth)
         renderCalendar(root, nextMonth, true)
@@ -3942,9 +3791,11 @@ const initCalendars = (scope: ParentNode): void => {
       ?.addEventListener('click', () => {
         const month = parseCalendarMonth(root.dataset.uiCalendarMonth)
 
-        if (!month) return
+        if (!month || isCalendarDisabled(root)) return
 
         const nextMonth = addCalendarMonths(month, 1)
+
+        if (compareCalendarDates(nextMonth, getCalendarMax(root)) > 0) return
 
         root.dataset.uiCalendarMonth = formatCalendarMonth(nextMonth)
         renderCalendar(root, nextMonth, true)
@@ -3978,7 +3829,7 @@ const initCalendars = (scope: ParentNode): void => {
 
       const date = parseCalendarDate(target.dataset.date)
 
-      if (!date) return
+      if (!date || isCalendarDisabled(root)) return
 
       if (event.key === 'Enter' || event.key === ' ') {
         event.preventDefault()
@@ -4003,9 +3854,31 @@ const initCalendars = (scope: ParentNode): void => {
       event.preventDefault()
       moveCalendarFocus(root, date, event.key)
     })
-    input.form?.addEventListener('reset', () => {
+    const observer = new MutationObserver(mutations => {
+      for (const mutation of mutations) {
+        if (mutation.attributeName === 'value') {
+          root.dataset.uiCalendarValue = parseCalendarDate(root.getAttribute('value')) ? root.getAttribute('value') ?? '' : ''
+          input.value = root.dataset.uiCalendarValue
+        }
+        if (mutation.attributeName === 'month') {
+          root.dataset.uiCalendarMonth = root.getAttribute('month') ?? root.dataset.uiCalendarInitialMonth ?? ''
+        }
+      }
+      const focusedDay = root.contains(document.activeElement) && document.activeElement instanceof HTMLElement ?
+        parseCalendarDate(document.activeElement.dataset.date) :
+        null
+
+      renderCalendar(root, focusedDay, focusedDay !== null)
+    })
+
+    observer.observe(root, { attributes: true, attributeFilter: ['disabled', 'readonly', 'min', 'max', 'value', 'month', 'locale', 'lang', 'data-disabled', 'data-readonly', 'data-locale', 'data-ui-calendar-min', 'data-ui-calendar-max', 'data-previous-month-label', 'data-next-month-label'] })
+    input.form?.addEventListener('reset', event => {
       globalThis.setTimeout(() => {
-        root.dataset.uiCalendarValue = input.value
+        if (event.defaultPrevented || !root.isConnected) return
+
+        root.dataset.uiCalendarValue = initialValue
+
+        input.value = initialValue
         root.dataset.uiCalendarMonth =
           root.dataset.uiCalendarInitialMonth ?? root.dataset.uiCalendarMonth
         renderCalendar(root)
@@ -4046,6 +3919,261 @@ const installCalendarController = (): void => {
   })
 }
 /* eslint-enable @stylistic/padding-line-between-statements */
+
+const initDatePickers = (scope: ParentNode): void => {
+  const closestRoot = getClosestScopedElement(scope, datePickerSelector)
+  const roots = getScopedElements<HTMLElement>(scope, datePickerSelector)
+
+  if (closestRoot instanceof HTMLElement && !roots.includes(closestRoot)) roots.unshift(closestRoot)
+
+  for (const root of roots) {
+    if (root.dataset.uiBound === 'true') continue
+
+    const native = root.querySelector<HTMLInputElement>(datePickerNativeSelector)
+    const control = root.querySelector<HTMLElement>(datePickerControlSelector)
+    const trigger = root.querySelector<HTMLButtonElement>(datePickerTriggerSelector)
+    const valueEl = root.querySelector<HTMLElement>(datePickerValueSelector)
+    const popover = root.querySelector<HTMLElement>(datePickerPopoverSelector)
+    const calendar = root.querySelector<HTMLElement>(calendarSelector)
+
+    if (!native || !control || !trigger || !popover) continue
+
+    root.dataset.uiBound = 'true'
+
+    native.dataset.uiEnhanced = 'true'
+
+    native.setAttribute('aria-hidden', 'true')
+
+    native.tabIndex = -1
+
+    control.hidden = false
+
+    trigger.type = 'button'
+
+    trigger.setAttribute('aria-haspopup', 'dialog')
+
+    popover.id ||= createId('ui-date-picker-popover')
+
+    popover.role = 'dialog'
+
+    trigger.setAttribute('aria-controls', popover.id)
+
+    if (root.hasAttribute('disabled')) native.disabled = true
+
+    if (root.hasAttribute('readonly')) native.readOnly = true
+
+    if (native.id) {
+      const controlId = native.id
+
+      native.id = `${controlId}-native`
+
+      trigger.id = controlId
+    }
+
+    for (const attribute of ['aria-label', 'aria-labelledby', 'aria-describedby']) {
+      const value = native.getAttribute(attribute)
+
+      if (value) trigger.setAttribute(attribute, value)
+    }
+
+    const isUnavailable = (): boolean => native.disabled || native.readOnly ||
+      root.hasAttribute('disabled') || root.hasAttribute('readonly')
+
+    let outsideController: AbortController | undefined
+
+    const closePopover = (restoreFocus = false): void => {
+      outsideController?.abort()
+
+      popover.hidden = true
+
+      popover.dataset.state = 'closed'
+
+      trigger.setAttribute('aria-expanded', 'false')
+
+      if (restoreFocus && !native.disabled) trigger.focus({ preventScroll: true })
+    }
+
+    const syncState = (): void => {
+      const locale = getCalendarLocale(root)
+      const labels = resolveLumenDateLabels(locale)
+      const selected = parseCalendarDate(native.value)
+
+      if (valueEl) valueEl.textContent = selected ? new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' }).format(selected) : native.placeholder || labels.chooseDate
+
+      root.dataset.placeholder = String(!selected)
+
+      trigger.disabled = native.disabled
+
+      trigger.setAttribute('aria-disabled', String(native.disabled || native.readOnly))
+
+      trigger.setAttribute('aria-required', String(native.required))
+
+      popover.setAttribute('aria-label', root.dataset.chooseDateLabel || labels.chooseDate)
+
+      if (native.validity.valid) trigger.removeAttribute('aria-invalid')
+    }
+
+    const openPopover = (): void => {
+      if (isUnavailable() ||
+        !isLumenDateBoundsValid(native.min || undefined, native.max || undefined)) return
+
+      if (calendar) {
+        initCalendars(root)
+
+        calendar.dataset.locale = getCalendarLocale(root)
+
+        calendar.dataset.uiCalendarValue = native.value
+
+        if (native.value) calendar.dataset.uiCalendarMonth = native.value.slice(0, 7)
+
+        if (native.min) calendar.dataset.uiCalendarMin = native.min
+        else delete calendar.dataset.uiCalendarMin
+
+        if (native.max) calendar.dataset.uiCalendarMax = native.max
+        else delete calendar.dataset.uiCalendarMax
+
+        renderCalendar(calendar)
+      }
+
+      popover.hidden = false
+
+      popover.dataset.state = 'open'
+
+      trigger.setAttribute('aria-expanded', 'true')
+
+      outsideController = new AbortController()
+
+      document.addEventListener('click', event => {
+        if (event.target instanceof Node && !root.contains(event.target)) closePopover()
+      }, { signal: outsideController.signal })
+
+      const focusTarget = calendar?.querySelector<HTMLElement>('[data-ui-calendar-day][tabindex="0"]') ??
+        calendar?.querySelector<HTMLButtonElement>('button:not(:disabled)')
+
+      focusTarget?.focus({ preventScroll: true })
+    }
+
+    closePopover()
+
+    syncState()
+
+    const observer = new MutationObserver(mutations => {
+      for (const mutation of mutations) {
+        if (mutation.target === root && mutation.attributeName === 'disabled') native.disabled = root.hasAttribute('disabled')
+
+        if (mutation.target === root && mutation.attributeName === 'readonly') native.readOnly = root.hasAttribute('readonly')
+      }
+
+      closePopover()
+
+      syncState()
+    })
+
+    observer.observe(native, { attributes: true, attributeFilter: ['disabled', 'readonly', 'required', 'value', 'min', 'max', 'placeholder'] })
+
+    observer.observe(root, { attributes: true, attributeFilter: ['disabled', 'readonly', 'locale', 'lang', 'data-locale', 'data-choose-date-label'] })
+
+    trigger.addEventListener('click', () => {
+      if (popover.hidden) openPopover()
+      else closePopover()
+    })
+
+    trigger.addEventListener('keydown', event => {
+      if (event.key !== 'ArrowDown') return
+
+      event.preventDefault()
+
+      openPopover()
+    })
+
+    root.addEventListener('keydown', event => {
+      if (event.key !== 'Escape' || popover.hidden) return
+
+      event.preventDefault()
+
+      event.stopPropagation()
+
+      closePopover(true)
+    })
+
+    popover.addEventListener('change', event => {
+      const target = event.target
+
+      if (!(target instanceof HTMLInputElement) || !target.hasAttribute('data-ui-calendar-input') || isUnavailable()) return
+
+      if (!parseCalendarDate(target.value) ||
+        !isLumenDateBoundsValid(native.min || undefined, native.max || undefined) ||
+        (native.min && target.value < native.min) || (native.max && target.value > native.max)) return
+
+      native.value = target.value
+
+      syncState()
+
+      native.dispatchEvent(new Event('input', { bubbles: true }))
+
+      native.dispatchEvent(new Event('change', { bubbles: true }))
+
+      closePopover(true)
+    })
+
+    native.addEventListener('change', () => {
+      closePopover()
+
+      syncState()
+    })
+
+    native.addEventListener('invalid', event => {
+      event.preventDefault()
+
+      trigger.setAttribute('aria-invalid', 'true')
+
+      trigger.focus()
+    })
+
+    native.form?.addEventListener('reset', event => {
+      globalThis.setTimeout(() => {
+        if (event.defaultPrevented || !root.isConnected) return
+
+        syncState()
+
+        closePopover()
+      })
+    })
+  }
+}
+
+export const enhanceLumenDatePickers = (scope: ParentNode = document): void => {
+  initDatePickers(scope)
+}
+
+const installDatePickerController = (): void => {
+  if (
+    !hasDocument() ||
+    document.documentElement.dataset.uiElementsDatePickersBound === 'true'
+  )
+    return
+
+  document.documentElement.dataset.uiElementsDatePickersBound = 'true'
+
+  enhanceLumenDatePickers(document)
+
+  if (typeof MutationObserver === 'undefined') return
+
+  const observer = new MutationObserver(mutations => {
+    for (const mutation of mutations) {
+      for (const node of mutation.addedNodes) {
+        if (node instanceof Element || node instanceof DocumentFragment) {
+          enhanceLumenDatePickers(node)
+        }
+      }
+    }
+  })
+
+  observer.observe(document.documentElement, {
+    childList: true,
+    subtree: true
+  })
+}
 
 const closeContextMenu = (menu: HTMLElement): void => {
   if (menu.dataset.state !== 'open') return
@@ -5378,17 +5506,19 @@ const chartLegendHtml = (
 const chartDataTableHtml = (
   categories: readonly (number | string)[],
   series: readonly LumenChartSeries[],
-  formatCategory: (category: number | string) => string = String,
+  formatCategory: ((category: number | string) => string) | undefined,
   formatValue: (value: number) => string = String,
   labels: Readonly<LumenChartLabels>
 ): string => {
-  const headers = series
+  const alignedSeries = series.map(item => alignLumenChartSeries(item, categories))
+
+  const headers = alignedSeries
     .map(item => `<th scope="col">${escapeChartHtml(item.label)}</th>`)
     .join('')
 
   const rows = categories
     .map(category => {
-      const cells = series
+      const cells = alignedSeries
         .map(item => {
           const datum = item.data.find(candidate => candidate.x === category)
 
@@ -5402,11 +5532,7 @@ const chartDataTableHtml = (
         })
         .join('')
 
-      const label =
-        series
-          .flatMap(item => item.data)
-          .find(datum => datum.x === category)?.xLabel ??
-          formatCategory(category)
+      const label = getLumenChartCategoryLabel(alignedSeries, category, formatCategory, 'detail')
 
       return `<tr><th scope="row">${escapeChartHtml(label)}</th>${cells}</tr>`
     })
@@ -5517,6 +5643,10 @@ abstract class LumenDataChartBehaviorElement extends LumenElement {
     this.#categoryFormatter = value
 
     this.renderChart()
+  }
+
+  protected get detailCategoryFormatter(): ((category: number | string) => string) | undefined {
+    return this.#categoryFormatter
   }
 
   get series(): readonly LumenChartSeries[] {
@@ -5652,7 +5782,8 @@ class LumenSparklineBehaviorElement extends LumenElement {
 
 class LumenBarChartBehaviorElement extends LumenDataChartBehaviorElement {
   protected renderChart() {
-    const series = this.series
+    const categories = getLumenChartCategories(this.series)
+    const series = this.series.map(item => alignLumenChartSeries(item, categories))
     const chartLabels = chartLabelsFor(this)
 
     if (!hasLumenChartData(series)) {
@@ -5681,21 +5812,28 @@ class LumenBarChartBehaviorElement extends LumenDataChartBehaviorElement {
 
     const geometry = createLumenBarGeometry(series, {
       ...(categoryWidth === undefined ? {} : { categoryWidth }),
+      formatCategory: this.categoryFormatter,
+      formatValue: this.valueFormatter,
       layout,
       orientation
     })
 
     const ticks = getLumenChartTicks(geometry.domain)
+    const margin = geometry.margin
 
-    const margin =
-      orientation === 'horizontal' ?
-        {
-          bottom: 24,
-          left: Math.max(64, Math.min(240, categoryWidth ?? 112)),
-          right: 20,
-          top: 16
-        } :
-        { bottom: 52, left: 52, right: 16, top: 16 }
+    const categoryTicks = getLumenChartCategoryTicks(geometry.categories.map(category => String(category.label)), {
+      end: geometry.width - margin.right,
+      positions: geometry.categories.map(category => category.x),
+      start: margin.left
+    })
+
+    const valueTicks = getLumenChartCategoryTicks(ticks.map(tick => this.valueFormatter(tick)), {
+      end: geometry.width - margin.right,
+      positions: ticks.map(tick => scaleLumenChartValue(
+        tick, geometry.domain, margin.left, geometry.width - margin.right
+      )),
+      start: margin.left
+    })
 
     const grid = ticks
       .map(tick => {
@@ -5715,31 +5853,26 @@ class LumenBarChartBehaviorElement extends LumenDataChartBehaviorElement {
           ].join('') :
           [
             `<line x1="${margin.left}" x2="${geometry.width - margin.right}"`,
-            ` y1="${coordinate}" y2="${coordinate}"></line>`
+            ` y1="${coordinate}" y2="${coordinate}"></line>`,
+            `<text x="${margin.left - 8}" y="${coordinate}">${escapeChartHtml(this.valueFormatter(tick))}</text>`
           ].join('')
       })
       .join('')
 
-    const labels = geometry.categories
-      .map(category => {
-        const baseline = orientation === 'horizontal' ? 'middle' : 'auto'
-        const anchor = orientation === 'horizontal' ? 'end' : 'middle'
+    const categoryLabels = orientation === 'horizontal' ?
+      geometry.categories.map(category => {
+        const label = getLumenChartCategoryTicks([String(category.label)], { end: margin.left - 16, start: 0 })[0]?.label ?? ''
 
-        return [
-          `<text dominant-baseline="${baseline}" text-anchor="${anchor}"`,
-          ` x="${category.x}" y="${category.y}">`,
-          `${escapeChartHtml(category.label)}</text>`
-        ].join('')
-      })
-      .join('')
+        return `<text dominant-baseline="middle" text-anchor="end" x="${category.x}" y="${category.y}">${escapeChartHtml(label)}</text>`
+      }).join('') :
+      categoryTicks.map(tick => `<text text-anchor="${tick.textAnchor}" x="${tick.position}" y="${geometry.height - 20}">${escapeChartHtml(tick.label)}</text>`).join('')
+
+    const valueLabels = orientation === 'horizontal' ? valueTicks.map(tick => `<text text-anchor="${tick.textAnchor}" x="${tick.position}" y="${geometry.height - 6}">${escapeChartHtml(tick.label)}</text>`).join('') : ''
+    const labels = categoryLabels + valueLabels
 
     const marks = geometry.marks
       .map(mark => {
-        const datum = series
-          .flatMap(item => item.data)
-          .find(item => item.x === mark.category)
-
-        const label = datum?.xLabel ?? this.categoryFormatter(mark.category)
+        const label = getLumenChartCategoryLabel(series, mark.category, this.detailCategoryFormatter, 'detail')
         const title = `${label} · ${mark.seriesLabel}: ${this.valueFormatter(mark.value)}`
 
         return [
@@ -5755,15 +5888,15 @@ class LumenBarChartBehaviorElement extends LumenDataChartBehaviorElement {
     )
 
     const showTable = chartBooleanAttribute(this, 'show-table', true)
-    const categories = geometry.categories.map(category => category.category)
 
-    this.innerHTML = `${chartHeaderHtml(this)}${chartSummaryHtml(this, series)}${showLegend ? chartLegendHtml(series, chartLabels) : ''}<div class="ui-chart__plot"><svg aria-hidden="true" preserveAspectRatio="xMidYMid meet" viewBox="0 0 ${geometry.width} ${geometry.height}"><g class="ui-chart__grid">${grid}</g><g class="ui-chart__axis-labels">${labels}</g><g class="ui-bar-chart__marks">${marks}</g></svg></div>${showTable ? chartDataTableHtml(categories, series, this.categoryFormatter, this.valueFormatter, chartLabels) : ''}${chartCaptionHtml(this)}`
+    this.innerHTML = `${chartHeaderHtml(this)}${chartSummaryHtml(this, series)}${showLegend ? chartLegendHtml(series, chartLabels) : ''}<div class="ui-chart__plot" role="region" tabindex="0" aria-label="${escapeChartHtml(chartLabels.chartData)}"><svg aria-hidden="true" preserveAspectRatio="xMidYMid meet" viewBox="0 0 ${geometry.width} ${geometry.height}"><g class="ui-chart__grid">${grid}</g><g class="ui-chart__axis-labels">${labels}</g><g class="ui-bar-chart__marks">${marks}</g></svg></div>${showTable ? chartDataTableHtml(categories, series, this.detailCategoryFormatter, this.valueFormatter, chartLabels) : ''}${chartCaptionHtml(this)}`
   }
 }
 
 class LumenLineChartBehaviorElement extends LumenDataChartBehaviorElement {
   protected renderChart() {
-    const series = this.series
+    const categories = getLumenChartCategories(this.series)
+    const series = this.series.map(item => alignLumenChartSeries(item, categories))
     const chartLabels = chartLabelsFor(this)
 
     if (!hasLumenChartData(series)) {
@@ -5778,8 +5911,6 @@ class LumenLineChartBehaviorElement extends LumenDataChartBehaviorElement {
     const width = 640
     const height = 320
     const padding = 44
-    const categories = getLumenChartCategories(series)
-    const alignedSeries = series.map(item => alignLumenChartSeries(item, categories))
     const referenceAttribute = this.getAttribute('reference-value')
 
     const parsedReference =
@@ -5792,7 +5923,7 @@ class LumenLineChartBehaviorElement extends LumenDataChartBehaviorElement {
 
     const domain = getLumenChartDomain(
       [
-        ...alignedSeries.flatMap(item => item.data.map(datum => datum.y)),
+        ...series.flatMap(item => item.data.map(datum => datum.y)),
         referenceValue ?? null
       ], false
     )
@@ -5803,7 +5934,7 @@ class LumenLineChartBehaviorElement extends LumenDataChartBehaviorElement {
       ticks.map(tick => this.valueFormatter(tick))
     )
 
-    const geometries = alignedSeries.map(item => createLumenLineGeometry(item.data, {
+    const geometries = series.map(item => createLumenLineGeometry(item.data, {
       domain,
       height,
       includeZero: false,
@@ -5812,7 +5943,10 @@ class LumenLineChartBehaviorElement extends LumenDataChartBehaviorElement {
       width
     }))
 
-    const labelStep = Math.max(1, Math.ceil(categories.length / 8))
+    const categoryTicks = getLumenChartCategoryTicks(
+      categories.map(category => getLumenChartCategoryLabel(series, category, this.categoryFormatter)),
+      { end: width - padding, start: paddingLeft }
+    )
 
     const grid = ticks
       .map(tick => {
@@ -5826,22 +5960,8 @@ class LumenLineChartBehaviorElement extends LumenDataChartBehaviorElement {
       })
       .join('')
 
-    const labels = categories
-      .map((category, index) => {
-        if (index % labelStep !== 0 && index !== categories.length - 1)
-          return ''
-
-        const denominator = Math.max(1, categories.length - 1)
-        const x = paddingLeft + (index / denominator) * (width - paddingLeft - padding)
-
-        const label =
-          series
-            .flatMap(item => item.data)
-            .find(datum => datum.x === category)?.xLabel ??
-            this.categoryFormatter(category)
-
-        return `<text text-anchor="middle" x="${x}" y="${height - 14}">${escapeChartHtml(label)}</text>`
-      })
+    const labels = categoryTicks
+      .map(tick => `<text text-anchor="${tick.textAnchor}" x="${tick.position}" y="${height - 14}">${escapeChartHtml(tick.label)}</text>`)
       .join('')
 
     const area = chartBooleanAttribute(this, 'area', false)
@@ -5878,7 +5998,7 @@ class LumenLineChartBehaviorElement extends LumenDataChartBehaviorElement {
             .map((point, pointIndex) => {
               if (pointIndex % markerStep !== 0) return ''
 
-              const label = point.xLabel ?? this.categoryFormatter(point.x)
+              const label = getLumenChartCategoryLabel(series, point.x, this.detailCategoryFormatter, 'detail')
               const title = `${label} · ${item.label}: ${this.valueFormatter(point.y ?? 0)}`
 
               return [
@@ -5919,13 +6039,13 @@ class LumenLineChartBehaviorElement extends LumenDataChartBehaviorElement {
       chartHeaderHtml(this),
       chartSummaryHtml(this, series),
       showLegend ? chartLegendHtml(series, chartLabels) : '',
-      '<div class="ui-chart__plot"><svg aria-hidden="true"',
+      `<div class="ui-chart__plot" role="region" tabindex="0" aria-label="${escapeChartHtml(chartLabels.chartData)}"><svg aria-hidden="true"`,
       ` preserveAspectRatio="xMidYMid meet" viewBox="0 0 ${width} ${height}">`,
       `<g class="ui-chart__grid">${grid}</g>`,
       `<g class="ui-chart__axis-labels">${labels}</g>`,
       `${reference}${paths}</svg></div>`,
       showTable ?
-        chartDataTableHtml(categories, series, this.categoryFormatter, this.valueFormatter, chartLabels) :
+        chartDataTableHtml(categories, series, this.detailCategoryFormatter, this.valueFormatter, chartLabels) :
         '',
       chartCaptionHtml(this)
     ].join('')
@@ -6048,7 +6168,7 @@ class LumenScatterChartBehaviorElement extends LumenDataChartBehaviorElement {
       chartHeaderHtml(this),
       chartSummaryHtml(this, renderedSeries),
       chartBooleanAttribute(this, 'show-legend', series.length > 1) ? chartLegendHtml(series, chartLabels) : '',
-      `<div class="ui-chart__plot"><svg aria-hidden="true" viewBox="0 0 ${geometry.width} ${geometry.height}">`,
+      `<div class="ui-chart__plot" role="region" tabindex="0" aria-label="${escapeChartHtml(chartLabels.chartData)}"><svg aria-hidden="true" viewBox="0 0 ${geometry.width} ${geometry.height}">`,
       `<g class="ui-scatter-chart__marks">${marks}</g></svg></div>`,
       chartBooleanAttribute(this, 'show-table', true) ?
         scatterDataTableHtml(
@@ -6126,6 +6246,8 @@ class LumenComboChartBehaviorElement extends LumenDataChartBehaviorElement {
       ...(bars.length === 0 ?
         {} :
         {
+          paddingBottom: barGeometry.margin.bottom,
+          paddingTop: barGeometry.margin.top,
           xDomain: { max: 1, min: 0 },
           xScale: 'linear' as const
         })
@@ -6158,7 +6280,7 @@ class LumenComboChartBehaviorElement extends LumenDataChartBehaviorElement {
       chartHeaderHtml(this),
       chartSummaryHtml(this, series),
       chartBooleanAttribute(this, 'show-legend', true) ? chartLegendHtml(series, chartLabels) : '',
-      `<div class="ui-chart__plot"><svg aria-hidden="true" viewBox="0 0 ${width} ${height}">`,
+      `<div class="ui-chart__plot" role="region" tabindex="0" aria-label="${escapeChartHtml(chartLabels.chartData)}"><svg aria-hidden="true" viewBox="0 0 ${width} ${height}">`,
       `<g class="ui-bar-chart__marks">${barMarks}</g>${lineMarks}</svg></div>`,
       chartBooleanAttribute(this, 'show-table', true) ?
         chartDataTableHtml(categories, series, this.categoryFormatter, this.valueFormatter, chartLabels) :
@@ -6212,7 +6334,7 @@ class LumenHeatmapBehaviorElement extends LumenStructuredChartBehaviorElement {
 
     const plot = availableCells.length === 0 ?
       `<p class="ui-chart__empty" role="status">${escapeChartHtml(chartLabels.empty)}</p>` :
-      `<div class="ui-chart__plot"><svg aria-hidden="true" viewBox="0 0 ${geometry.width} ${geometry.height}"><g class="ui-heatmap__cells">${cells}</g></svg></div>`
+      `<div class="ui-chart__plot" role="region" tabindex="0" aria-label="${escapeChartHtml(chartLabels.chartData)}"><svg aria-hidden="true" viewBox="0 0 ${geometry.width} ${geometry.height}"><g class="ui-heatmap__cells">${cells}</g></svg></div>`
 
     const table = chartBooleanAttribute(this, 'show-table', true) ?
       heatmapDataTableHtml(data, chartLabels) :
@@ -6239,7 +6361,7 @@ class LumenRangeChartBehaviorElement extends LumenStructuredChartBehaviorElement
 
     const plot = geometry.points.length === 0 ?
       `<p class="ui-chart__empty" role="status">${escapeChartHtml(chartLabels.empty)}</p>` :
-      `<div class="ui-chart__plot"><svg aria-hidden="true" viewBox="0 0 640 320"><path class="ui-range-chart__area" d="${geometry.areaPath}"></path>${intervals}</svg></div>`
+      `<div class="ui-chart__plot" role="region" tabindex="0" aria-label="${escapeChartHtml(chartLabels.chartData)}"><svg aria-hidden="true" viewBox="0 0 640 320"><path class="ui-range-chart__area" d="${geometry.areaPath}"></path>${intervals}</svg></div>`
 
     const table = chartBooleanAttribute(this, 'show-table', true) ?
       rangeDataTableHtml(data, chartLabels) :
@@ -8513,6 +8635,193 @@ class LumenProgressBehaviorElement extends LumenElement {
   }
 }
 
+class LumenCodeBehaviorElement extends LumenElement {
+  private abortController: AbortController | undefined
+  private observer: MutationObserver | undefined
+  private resetTimer: ReturnType<typeof globalThis.setTimeout> | undefined
+  private operation = 0
+
+  override connectedCallback() {
+    super.connectedCallback()
+
+    this.abortController?.abort()
+
+    this.abortController = new AbortController()
+
+    this.observer?.disconnect()
+
+    this.observer = new MutationObserver(() => {
+      this.updateCode()
+    })
+
+    this.observer.observe(this, {
+      attributeFilter: ['code-label', 'copy', 'copy-label', 'copied-label', 'error-label', 'wrap', 'variant'],
+      attributes: true,
+      childList: true,
+      subtree: true
+    })
+
+    this.addEventListener('click', event => {
+      const button = event.target instanceof Element ? event.target.closest<HTMLButtonElement>('[data-ui-code-copy]') : null
+
+      if (button?.closest('lumen-code') === this) void this.copy(button)
+    }, { signal: this.abortController.signal })
+
+    this.updateCode()
+  }
+
+  override disconnectedCallback() {
+    this.abortController?.abort()
+
+    this.observer?.disconnect()
+
+    this.operation += 1
+
+    globalThis.clearTimeout(this.resetTimer)
+  }
+
+  private label(name: string, fallback: string) {
+    return this.getAttribute(name) ?? this.closest('lumen-code-tabs')?.getAttribute(name) ?? fallback
+  }
+
+  private updateCode() {
+    if (this.getAttribute('variant') !== 'block') return
+
+    const pre = this.querySelector('pre')
+
+    if (!pre) return
+
+    if (this.getAttribute('wrap') !== 'true') {
+      if (!pre.hasAttribute('tabindex')) pre.tabIndex = 0
+
+      if (!pre.hasAttribute('role')) pre.setAttribute('role', 'region')
+
+      if (!pre.hasAttribute('aria-label') && !pre.hasAttribute('aria-labelledby')) {
+        pre.setAttribute('aria-label', this.label('code-label', 'Code example'))
+      }
+    }
+
+    if (!this.hasAttribute('copy') || this.getAttribute('copy') === 'false') return
+
+    let button = this.querySelector<HTMLButtonElement>('[data-ui-code-copy]')
+
+    if (!button) {
+      let header = this.querySelector<HTMLElement>('.ui-code__header')
+
+      if (!header) {
+        header = document.createElement('div')
+
+        header.className = 'ui-code__header'
+
+        const decoration = document.createElement('span')
+
+        decoration.className = 'ui-code__dots'
+
+        decoration.setAttribute('aria-hidden', 'true')
+
+        const meta = document.createElement('span')
+
+        meta.className = 'ui-code__meta'
+
+        meta.textContent = this.getAttribute('label') ?? ''
+
+        header.append(decoration, meta)
+
+        this.prepend(header)
+      }
+
+      button = document.createElement('button')
+
+      button.type = 'button'
+
+      button.className = 'ui-code__copy'
+
+      button.dataset.uiCodeCopy = ''
+
+      button.dataset.state = 'idle'
+
+      button.innerHTML = renderLumenIconSvg('copy', { className: 'ui-code__copy-icon' }) + renderLumenIconSvg('check', { className: 'ui-code__check-icon' })
+
+      header.append(button)
+
+      const status = document.createElement('span')
+
+      status.className = 'ui-sr-only'
+
+      status.dataset.uiCodeStatus = ''
+
+      status.setAttribute('role', 'status')
+
+      status.setAttribute('aria-live', 'polite')
+
+      this.append(status)
+    }
+
+    if (button.dataset.state === 'idle') {
+      const label = this.label('copy-label', 'Copy code to clipboard')
+
+      button.setAttribute('aria-label', label)
+
+      button.title = label
+    }
+  }
+
+  private async copy(button: HTMLButtonElement) {
+    const operation = ++this.operation
+
+    globalThis.clearTimeout(this.resetTimer)
+
+    const label = this.label('copy-label', 'Copy code to clipboard')
+    let feedback = this.label('copied-label', 'Code copied to clipboard')
+    let state: 'copied' | 'error' = 'copied'
+
+    try {
+      const code = this.querySelector<HTMLElement>('pre code')
+      const value = code?.innerText ?? code?.textContent
+
+      if (value === undefined) throw new Error('Clipboard is unavailable')
+
+      await navigator.clipboard.writeText(value)
+
+      if (operation !== this.operation) return
+
+      button.dispatchEvent(new CustomEvent('ui:copy-success', { bubbles: true, detail: { value } }))
+    } catch (error) {
+      if (operation !== this.operation) return
+
+      state = 'error'
+
+      feedback = this.label('error-label', 'Could not copy code. Select and copy it manually.')
+
+      button.dispatchEvent(new CustomEvent('ui:copy-error', { bubbles: true, detail: { error } }))
+    }
+
+    button.dataset.state = state
+
+    button.classList.toggle('ui-code__copy--copied', state === 'copied')
+
+    button.setAttribute('aria-label', feedback)
+
+    button.title = feedback
+
+    const status = this.querySelector<HTMLElement>('[data-ui-code-status]')
+
+    if (status) status.textContent = feedback
+
+    this.resetTimer = globalThis.setTimeout(() => {
+      button.dataset.state = 'idle'
+
+      button.classList.remove('ui-code__copy--copied')
+
+      button.setAttribute('aria-label', label)
+
+      button.title = label
+
+      if (status) status.textContent = ''
+    }, 2000)
+  }
+}
+
 class LumenCopyButtonBehaviorElement extends LumenElement {
   private abortController: AbortController | undefined
   private resetTimer: ReturnType<typeof globalThis.setTimeout> | undefined
@@ -10606,6 +10915,7 @@ const behaviorElementClasses: Partial<
   BarChart: LumenBarChartBehaviorElement,
   Cascader: LumenCascaderBehaviorElement,
   Checkbox: LumenScalarFormControlElement,
+  Code: LumenCodeBehaviorElement,
   CodeTabs: LumenTabsBehaviorElement,
   ColorPicker: LumenScalarFormControlElement,
   ComboChart: LumenComboChartBehaviorElement,
@@ -10672,6 +10982,7 @@ const granularElementClasses: Partial<
   Container: GranularLumenContainerElement,
   Direction: GranularLumenDirectionElement,
   Grid: GranularLumenGridElement,
+  ImageComparison: GranularLumenImageComparisonElement,
   Label: GranularLumenLabelElement,
   Separator: GranularLumenSeparatorElement,
   Skeleton: GranularLumenSkeletonElement,
@@ -10947,6 +11258,7 @@ export const LumenEyebrowElement = elementClasses.Eyebrow
 export const LumenFloatingBadgeElement = elementClasses.FloatingBadge
 export const LumenFormattedDateElement = elementClasses.FormattedDate
 export const LumenImageElement = elementClasses.Image
+export const LumenImageComparisonElement = elementClasses.ImageComparison
 export const LumenLinkElement = elementClasses.Link
 export const LumenPillElement = elementClasses.Pill
 export const LumenProseElement = elementClasses.Prose

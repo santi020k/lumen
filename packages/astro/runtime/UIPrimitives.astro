@@ -9,6 +9,7 @@
 ---
 
 <script>
+import { isLumenDateBoundsValid, parseLumenDate as parseCalendarDate, resolveLumenDateLabels, resolveLumenDateLocale } from '@santi020k/lumen-core'
 import {
   createLumenKanbanMoveDetail,
   createThemeFromHue,
@@ -27,6 +28,8 @@ import {
   lumenTokenNames,
   normalizeLumenLocales,
   scrollLumenTabIntoView } from '@santi020k/lumen-core'
+
+import { initImageComparisonControllers } from './controllers/image-comparison'
 
 /* eslint-disable complexity */
 /* Stateful DOM handlers stay local so Astro consumers do not need a framework runtime. */
@@ -1003,7 +1006,6 @@ const initTabs = (scope: ParentNode): void => {
 const initRovingGroups = (scope: ParentNode): void => {
   const groupSelector = [
     '[data-ui-menubar]',
-    '[data-ui-navigation-menu]',
     '[data-ui-radio-group]',
     '[data-ui-toggle-group]',
     '[data-ui-toolbar]'
@@ -1201,6 +1203,12 @@ const initThemeToggles = (scope: ParentNode): void => {
 
     control.dataset.uiBound = 'true'
 
+    if (control.hasAttribute('data-ui-controlled')) {
+      sync(root.dataset.theme ?? control.dataset.lightTheme ?? 'light')
+
+      continue
+    }
+
     const storageKey = control.dataset.storageKey ?? 'lumen-theme'
     let storedTheme: string | null = null
 
@@ -1367,7 +1375,7 @@ const openCombobox = (root: HTMLElement): void => {
 let codeCopyLiveRegion: HTMLElement | undefined
 
 const getCodeCopyLiveRegion = (): HTMLElement => {
-  if (codeCopyLiveRegion) return codeCopyLiveRegion
+  if (codeCopyLiveRegion?.isConnected) return codeCopyLiveRegion
 
   codeCopyLiveRegion = document.createElement('div')
 
@@ -1392,45 +1400,31 @@ const getCodeCopyLiveRegion = (): HTMLElement => {
   return codeCopyLiveRegion
 }
 
-const initCodeCopy = (scope: ParentNode): void => {
-  for (const button of scope.querySelectorAll<HTMLButtonElement>('[data-ui-code-copy]')) {
-    if (button.dataset.uiCodeCopyBound === 'true') continue
+const initCodeRegions = (scope: ParentNode): void => {
+  for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-code]')) {
+    if (root.classList.contains('ui-code--wrap')) continue
 
-    button.dataset.uiCodeCopyBound = 'true'
+    for (const pre of root.querySelectorAll<HTMLPreElement>('pre')) {
+      if (!pre.hasAttribute('tabindex')) pre.tabIndex = 0
 
-    button.addEventListener('click', async () => {
-      const root = button.closest<HTMLElement>('[data-ui-code]')
-      const code = root?.querySelector<HTMLElement>('pre code, code')
-      const text = code?.innerText ?? code?.textContent
+      if (!pre.hasAttribute('role')) pre.setAttribute('role', 'region')
 
-      if (!text || !navigator.clipboard) return
-
-      try {
-        await navigator.clipboard.writeText(text)
-      } catch {
-        return
+      if (!pre.hasAttribute('aria-label') && !pre.hasAttribute('aria-labelledby')) {
+        pre.setAttribute('aria-label', root.dataset.codeLabel ?? 'Code example')
       }
-
-      button.classList.add('ui-code__copy--copied')
-
-      button.setAttribute('aria-label', 'Code copied!')
-
-      getCodeCopyLiveRegion().textContent = 'Code copied to clipboard'
-
-      window.setTimeout(() => {
-        button.classList.remove('ui-code__copy--copied')
-
-        button.setAttribute('aria-label', 'Copy code to clipboard')
-
-        getCodeCopyLiveRegion().textContent = ''
-      }, 2000)
-    })
+    }
   }
 }
 
 const getCopyButtonValue = (button: HTMLElement): string | undefined => {
   if (button.hasAttribute('data-copy-value')) {
     return button.dataset.copyValue
+  }
+
+  if (button.hasAttribute('data-ui-code-copy')) {
+    const code = button.closest('[data-ui-code]')?.querySelector<HTMLElement>('pre code, code')
+
+    return code?.innerText ?? code?.textContent ?? undefined
   }
 
   const selector = button.dataset.copyTarget
@@ -1448,16 +1442,19 @@ const getCopyButtonValue = (button: HTMLElement): string | undefined => {
 
 const initCopyButtons = (scope: ParentNode): void => {
   for (const button of scope.querySelectorAll<HTMLButtonElement>(
-    '[data-ui-copy-button]'
+    '[data-ui-copy-button], [data-ui-code-copy]'
   )) {
     if (button.dataset.uiCopyButtonBound === 'true') continue
 
     button.dataset.uiCopyButtonBound = 'true'
 
     let resetTimer = 0
+    let operation = 0
 
     const setCopyButtonState = (state: 'copied' | 'error' | 'idle'): void => {
       button.dataset.state = state
+
+      button.classList.toggle('ui-code__copy--copied', state === 'copied' && button.hasAttribute('data-ui-code-copy'))
 
       for (const part of button.querySelectorAll<HTMLElement>('[data-slot^="copy-"]')) {
         const isActive = part.dataset.slot === `copy-${state}`
@@ -1471,6 +1468,10 @@ const initCopyButtons = (scope: ParentNode): void => {
     setCopyButtonState('idle')
 
     button.addEventListener('click', async () => {
+      const currentOperation = ++operation
+
+      window.clearTimeout(resetTimer)
+
       const label = button.dataset.copyLabel ?? 'Copy to clipboard'
 
       const copiedLabel = button.dataset.copyCopiedLabel ??
@@ -1488,9 +1489,13 @@ const initCopyButtons = (scope: ParentNode): void => {
 
         await navigator.clipboard.writeText(value)
 
+        if (operation !== currentOperation || !button.isConnected) return
+
         setCopyButtonState('copied')
 
         button.setAttribute('aria-label', copiedLabel)
+
+        if (button.hasAttribute('data-ui-code-copy')) button.title = copiedLabel
 
         button.dispatchEvent(new CustomEvent('ui:copy-success', {
           bubbles: true,
@@ -1505,9 +1510,13 @@ const initCopyButtons = (scope: ParentNode): void => {
           }))
         }
       } catch (error) {
+        if (operation !== currentOperation || !button.isConnected) return
+
         setCopyButtonState('error')
 
         button.setAttribute('aria-label', errorLabel)
+
+        if (button.hasAttribute('data-ui-code-copy')) button.title = errorLabel
 
         button.dispatchEvent(new CustomEvent('ui:copy-error', {
           bubbles: true,
@@ -1535,6 +1544,8 @@ const initCopyButtons = (scope: ParentNode): void => {
         setCopyButtonState('idle')
 
         button.setAttribute('aria-label', label)
+
+        if (button.hasAttribute('data-ui-code-copy')) button.title = label
 
         getCodeCopyLiveRegion().textContent = ''
       }, resetAfter)
@@ -2641,66 +2652,58 @@ const initDataTables = (scope: ParentNode): void => {
 }
 /* eslint-enable @stylistic/padding-line-between-statements, no-nested-ternary */
 
-const calendarDatePattern = /^\d{4}-\d{2}-\d{2}$/
-const calendarMonthPattern = /^\d{4}-\d{2}$/
+const createCalendarDate = (year: number, month: number, day: number): Date => {
+  const date = new Date(0)
 
-const parseCalendarDate = (value: string | null | undefined): Date | null => {
-  if (!value || !calendarDatePattern.test(value)) return null
+  date.setUTCFullYear(year, month, day)
 
-  const [year, month, day] = value.split('-').map(Number)
-  const date = new Date(Date.UTC(year, month - 1, day))
-
-  return date.getUTCFullYear() === year &&
-    date.getUTCMonth() === month - 1 &&
-    date.getUTCDate() === day ?
-    date :
-    null
+  return date
 }
 
-const parseCalendarMonth = (value: string | null | undefined): Date | null => {
-  if (!value || !calendarMonthPattern.test(value)) return null
+const parseCalendarMonth = (value: string | null | undefined): Date | null => value ? parseCalendarDate(`${value}-01`) : null
+const formatCalendarDate = (date: Date): string => date.toISOString().split('T')[0] ?? ''
+const formatCalendarMonth = (date: Date): string => formatCalendarDate(date).slice(0, -3)
 
-  const [year, month] = value.split('-').map(Number)
-  const date = new Date(Date.UTC(year, month - 1, 1))
-
-  return date.getUTCFullYear() === year && date.getUTCMonth() === month - 1 ? date : null
-}
-
-const formatCalendarDate = (date: Date): string => date.toISOString().slice(0, 10)
-const formatCalendarMonth = (date: Date): string => date.toISOString().slice(0, 7)
-
-const addCalendarDays = (date: Date, days: number): Date => new Date(
-  Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate() + days)
+const addCalendarDays = (date: Date, days: number): Date => createCalendarDate(
+  date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate() + days
 )
 
-const getCalendarDaysInMonth = (date: Date): number => new Date(
-  Date.UTC(date.getUTCFullYear(), date.getUTCMonth() + 1, 0)
+const getCalendarDaysInMonth = (date: Date): number => createCalendarDate(
+  date.getUTCFullYear(), date.getUTCMonth() + 1, 0
 ).getUTCDate()
 
 const addCalendarMonths = (date: Date, months: number): Date => {
-  const year = date.getUTCFullYear()
-  const month = date.getUTCMonth() + months
-  const day = date.getUTCDate()
-  const targetMonth = new Date(Date.UTC(year, month, 1))
-  const daysInTargetMonth = getCalendarDaysInMonth(targetMonth)
+  const target = createCalendarDate(date.getUTCFullYear(), date.getUTCMonth() + months, 1)
 
-  return new Date(Date.UTC(
-    targetMonth.getUTCFullYear(), targetMonth.getUTCMonth(), Math.min(day, daysInTargetMonth)
-  ))
+  return createCalendarDate(
+    target.getUTCFullYear(), target.getUTCMonth(), Math.min(date.getUTCDate(), getCalendarDaysInMonth(target))
+  )
 }
 
-const compareCalendarDates = (date: Date, other: Date | null): number => {
-  if (!other) return 0
+const compareCalendarDates = (date: Date, other: Date | null): number => (
+  other ? Math.sign(date.getTime() - other.getTime()) : 0
+)
 
-  return formatCalendarDate(date).localeCompare(formatCalendarDate(other))
+const getCalendarLocale = (root: HTMLElement): string => resolveLumenDateLocale(root.getAttribute('locale') || root.dataset.locale || root.closest('[lang]')?.getAttribute('lang') || undefined)
+const getCalendarMin = (root: HTMLElement): Date | null => parseCalendarDate(root.getAttribute('min') ?? root.dataset.uiCalendarMin ?? '0001-01-01')
+const getCalendarMax = (root: HTMLElement): Date | null => parseCalendarDate(root.getAttribute('max') ?? root.dataset.uiCalendarMax ?? '9999-12-31')
+const isCalendarDisabled = (root: HTMLElement): boolean => root.hasAttribute('disabled') || root.dataset.disabled === 'true' || !isLumenDateBoundsValid(root.getAttribute('min') ?? root.dataset.uiCalendarMin, root.getAttribute('max') ?? root.dataset.uiCalendarMax)
+const isCalendarReadOnly = (root: HTMLElement): boolean => root.hasAttribute('readonly') || root.dataset.readonly === 'true'
+
+const getCalendarToday = (): Date => {
+  const today = new Date()
+
+  return createCalendarDate(today.getFullYear(), today.getMonth(), today.getDate())
 }
+
+const getCalendarGridStart = (month: Date): Date => addCalendarDays(month, -((month.getUTCDay() + 6) % 7))
 
 const isCalendarDateDisabled = (
   root: HTMLElement,
   date: Date,
   min: Date | null,
   max: Date | null
-): boolean => root.dataset.disabled === 'true' ||
+): boolean => isCalendarDisabled(root) ||
   compareCalendarDates(date, min) < 0 ||
   compareCalendarDates(date, max) > 0
 
@@ -2711,16 +2714,6 @@ const clampCalendarDate = (date: Date, min: Date | null, max: Date | null): Date
 
   return date
 }
-
-const getCalendarLocale = (): string => document.documentElement.lang || navigator.language || 'en'
-
-const getCalendarToday = (): Date => {
-  const today = new Date()
-
-  return new Date(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate()))
-}
-
-const getCalendarGridStart = (month: Date): Date => addCalendarDays(month, -((month.getUTCDay() + 6) % 7))
 
 const getCalendarFocusDate = (
   root: HTMLElement,
@@ -2760,7 +2753,7 @@ const syncCalendarNavigation = (
 ): void => {
   const previous = root.querySelector<HTMLButtonElement>('[data-ui-calendar-prev]')
   const next = root.querySelector<HTMLButtonElement>('[data-ui-calendar-next]')
-  const disabled = root.dataset.disabled === 'true'
+  const disabled = isCalendarDisabled(root)
   const previousMonthLastDay = addCalendarDays(month, -1)
   const nextMonthFirstDay = addCalendarMonths(month, 1)
 
@@ -2783,17 +2776,30 @@ const renderCalendar = (
 
   if (!label || !grid) return
 
-  const locale = getCalendarLocale()
-  const min = parseCalendarDate(root.dataset.uiCalendarMin)
-  const max = parseCalendarDate(root.dataset.uiCalendarMax)
+  const locale = getCalendarLocale(root)
+  const labels = resolveLumenDateLabels(locale)
+  const input = root.querySelector<HTMLInputElement>('[data-ui-calendar-input]')
+
+  if (input) input.disabled = isCalendarDisabled(root)
+
+  root.setAttribute('aria-disabled', String(isCalendarDisabled(root)))
+
+  grid.setAttribute('aria-readonly', String(isCalendarReadOnly(root)))
+
+  root.querySelector('[data-ui-calendar-prev]')?.setAttribute('aria-label', root.dataset.previousMonthLabel || labels.previousMonth)
+
+  root.querySelector('[data-ui-calendar-next]')?.setAttribute('aria-label', root.dataset.nextMonthLabel || labels.nextMonth)
+
+  const min = getCalendarMin(root)
+  const max = getCalendarMax(root)
   const selectedDate = parseCalendarDate(root.dataset.uiCalendarValue)
   const todayIso = formatCalendarDate(getCalendarToday())
 
   const month = parseCalendarMonth(root.dataset.uiCalendarMonth) ??
-    (selectedDate ? new Date(Date.UTC(selectedDate.getUTCFullYear(), selectedDate.getUTCMonth(), 1)) : null) ??
+    (selectedDate ? createCalendarDate(selectedDate.getUTCFullYear(), selectedDate.getUTCMonth(), 1) : null) ??
     getCalendarToday()
 
-  const visibleMonth = new Date(Date.UTC(month.getUTCFullYear(), month.getUTCMonth(), 1))
+  const visibleMonth = createCalendarDate(month.getUTCFullYear(), month.getUTCMonth(), 1)
   const focusDate = getCalendarFocusDate(root, visibleMonth, min, max, requestedFocusDate)
   const focusIso = formatCalendarDate(focusDate)
   const selectedIso = selectedDate ? formatCalendarDate(selectedDate) : ''
@@ -2837,7 +2843,7 @@ const renderCalendar = (
 
     cell.role = 'columnheader'
 
-    cell.textContent = weekdayLabel.format(new Date(Date.UTC(2026, 0, 5 + index)))
+    cell.textContent = weekdayLabel.format(createCalendarDate(2026, 0, 5 + index))
 
     headerRow.append(cell)
   }
@@ -2900,7 +2906,7 @@ const renderCalendar = (
     grid.replaceChildren(header, body)
   }
 
-  if (shouldFocus) {
+  if (shouldFocus && !isCalendarDisabled(root)) {
     root.querySelector<HTMLElement>(`[data-ui-calendar-day][data-date="${focusIso}"]`)?.focus({ preventScroll: true })
   }
 }
@@ -2908,11 +2914,11 @@ const renderCalendar = (
 const selectCalendarDate = (root: HTMLElement, date: Date): void => {
   const input = root.querySelector<HTMLInputElement>('[data-ui-calendar-input]')
 
-  if (!input || root.dataset.disabled === 'true') return
+  if (!input || isCalendarDisabled(root) || isCalendarReadOnly(root)) return
 
-  const min = parseCalendarDate(root.dataset.uiCalendarMin)
-  const max = parseCalendarDate(root.dataset.uiCalendarMax)
-  const nextDate = clampCalendarDate(date, min, max)
+  const min = getCalendarMin(root)
+  const max = getCalendarMax(root)
+  const nextDate = date
 
   if (isCalendarDateDisabled(root, nextDate, min, max)) return
 
@@ -2922,16 +2928,16 @@ const selectCalendarDate = (root: HTMLElement, date: Date): void => {
 
   root.dataset.uiCalendarMonth = formatCalendarMonth(nextDate)
 
+  renderCalendar(root, nextDate, true)
+
   input.dispatchEvent(new Event('input', { bubbles: true }))
 
   input.dispatchEvent(new Event('change', { bubbles: true }))
-
-  renderCalendar(root, nextDate, true)
 }
 
 const focusCalendarDate = (root: HTMLElement, date: Date): void => {
-  const min = parseCalendarDate(root.dataset.uiCalendarMin)
-  const max = parseCalendarDate(root.dataset.uiCalendarMax)
+  const min = getCalendarMin(root)
+  const max = getCalendarMax(root)
   const nextDate = clampCalendarDate(date, min, max)
 
   root.dataset.uiCalendarMonth = formatCalendarMonth(nextDate)
@@ -2972,6 +2978,8 @@ const initCalendars = (scope: ParentNode): void => {
 
     if (!input) continue
 
+    const initialValue = input.value
+
     root.dataset.uiBound = 'true'
 
     renderCalendar(root)
@@ -2979,9 +2987,11 @@ const initCalendars = (scope: ParentNode): void => {
     root.querySelector<HTMLButtonElement>('[data-ui-calendar-prev]')?.addEventListener('click', () => {
       const month = parseCalendarMonth(root.dataset.uiCalendarMonth)
 
-      if (!month) return
+      if (!month || isCalendarDisabled(root)) return
 
       const nextMonth = addCalendarMonths(month, -1)
+
+        if (compareCalendarDates(addCalendarDays(month, -1), getCalendarMin(root)) < 0) return
 
       root.dataset.uiCalendarMonth = formatCalendarMonth(nextMonth)
 
@@ -2991,9 +3001,11 @@ const initCalendars = (scope: ParentNode): void => {
     root.querySelector<HTMLButtonElement>('[data-ui-calendar-next]')?.addEventListener('click', () => {
       const month = parseCalendarMonth(root.dataset.uiCalendarMonth)
 
-      if (!month) return
+      if (!month || isCalendarDisabled(root)) return
 
       const nextMonth = addCalendarMonths(month, 1)
+
+        if (compareCalendarDates(nextMonth, getCalendarMax(root)) > 0) return
 
       root.dataset.uiCalendarMonth = formatCalendarMonth(nextMonth)
 
@@ -3023,7 +3035,7 @@ const initCalendars = (scope: ParentNode): void => {
 
       const date = parseCalendarDate(target.dataset.date)
 
-      if (!date) return
+      if (!date || isCalendarDisabled(root)) return
 
       if (event.key === 'Enter' || event.key === ' ') {
         event.preventDefault()
@@ -3051,9 +3063,35 @@ const initCalendars = (scope: ParentNode): void => {
       moveCalendarFocus(root, date, event.key)
     })
 
-    input.form?.addEventListener('reset', () => {
-      window.setTimeout(() => {
-        root.dataset.uiCalendarValue = input.value
+    const observer = new MutationObserver(mutations => {
+      for (const mutation of mutations) {
+        if (mutation.attributeName === 'value') {
+          root.dataset.uiCalendarValue = parseCalendarDate(root.getAttribute('value')) ? root.getAttribute('value') ?? '' : ''
+
+          input.value = root.dataset.uiCalendarValue
+        }
+
+        if (mutation.attributeName === 'month') {
+          root.dataset.uiCalendarMonth = root.getAttribute('month') ?? root.dataset.uiCalendarInitialMonth ?? ''
+        }
+      }
+
+      const focusedDay = root.contains(document.activeElement) && document.activeElement instanceof HTMLElement ?
+        parseCalendarDate(document.activeElement.dataset.date) :
+null
+
+      renderCalendar(root, focusedDay, focusedDay !== null)
+    })
+
+    observer.observe(root, { attributes: true, attributeFilter: ['disabled', 'readonly', 'min', 'max', 'value', 'month', 'locale', 'lang', 'data-disabled', 'data-readonly', 'data-locale', 'data-ui-calendar-min', 'data-ui-calendar-max', 'data-previous-month-label', 'data-next-month-label'] })
+
+    input.form?.addEventListener('reset', event => {
+      globalThis.setTimeout(() => {
+        if (event.defaultPrevented || !root.isConnected) return
+
+        root.dataset.uiCalendarValue = initialValue
+
+        input.value = initialValue
 
         root.dataset.uiCalendarMonth = root.dataset.uiCalendarInitialMonth ?? root.dataset.uiCalendarMonth
 
@@ -3063,12 +3101,12 @@ const initCalendars = (scope: ParentNode): void => {
   }
 }
 
-const formatDatePickerValue = (value: string, placeholder: string): string => {
+const formatDatePickerValue = (value: string, placeholder: string, locale: string): string => {
   const date = parseCalendarDate(value)
 
   if (!date) return placeholder
 
-  return new Intl.DateTimeFormat(getCalendarLocale(), {
+  return new Intl.DateTimeFormat(locale, {
     day: 'numeric',
     month: 'short',
     timeZone: 'UTC',
@@ -3080,7 +3118,7 @@ const closeDatePicker = (root: HTMLElement, restoreFocus = false): void => {
   const trigger = root.querySelector<HTMLButtonElement>('[data-ui-date-picker-trigger]')
   const popover = root.querySelector<HTMLElement>('[data-ui-date-picker-popover]')
 
-  if (!trigger || !popover || popover.hidden) return
+  if (!trigger || !popover) return
 
   popover.hidden = true
 
@@ -3097,9 +3135,10 @@ const syncDatePickerValue = (root: HTMLElement): void => {
 
   if (!native || !value) return
 
-  const placeholder = native.getAttribute('placeholder') || 'Choose a date'
+  const defaultPlaceholder = root.dataset.chooseDateLabel || resolveLumenDateLabels(getCalendarLocale(root)).chooseDate
+  const placeholder = root.dataset.placeholderDefault === 'true' ? defaultPlaceholder : native.getAttribute('placeholder') || defaultPlaceholder
 
-  value.textContent = formatDatePickerValue(native.value, placeholder)
+  value.textContent = formatDatePickerValue(native.value, placeholder, getCalendarLocale(root))
 
   if (native.value) {
     delete root.dataset.placeholder
@@ -3118,13 +3157,16 @@ const openDatePicker = (root: HTMLElement): void => {
   const popover = root.querySelector<HTMLElement>('[data-ui-date-picker-popover]')
   const calendar = root.querySelector<HTMLElement>('[data-ui-calendar]')
 
-  if (!native || !trigger || !popover || native.disabled) return
+  if (!native || !trigger || !popover || native.disabled || native.readOnly ||
+    !isLumenDateBoundsValid(native.min || undefined, native.max || undefined)) return
 
   for (const other of document.querySelectorAll<HTMLElement>('[data-ui-date-picker]')) {
     if (other !== root) closeDatePicker(other)
   }
 
   if (calendar) {
+    calendar.dataset.locale = getCalendarLocale(root)
+
     calendar.dataset.uiCalendarValue = native.value
 
     if (native.value) calendar.dataset.uiCalendarMonth = native.value.slice(0, 7)
@@ -3145,7 +3187,12 @@ const openDatePicker = (root: HTMLElement): void => {
   trigger.setAttribute('aria-expanded', 'true')
 
   window.requestAnimationFrame(() => {
-    calendar?.querySelector<HTMLElement>('[data-ui-calendar-day][tabindex="0"]')?.focus({ preventScroll: true })
+    if (popover.hidden || native.disabled || native.readOnly) return
+
+    const focusTarget = calendar?.querySelector<HTMLElement>('[data-ui-calendar-day][tabindex="0"]') ??
+      calendar?.querySelector<HTMLButtonElement>('button:not(:disabled)')
+
+    focusTarget?.focus({ preventScroll: true })
   })
 }
 
@@ -3169,6 +3216,14 @@ const initDatePickers = (scope: ParentNode): void => {
 
     native.tabIndex = -1
 
+    if (native.id) {
+      const controlId = native.id
+
+      native.id = `${controlId}-native`
+
+      trigger.id = controlId
+    }
+
     control.hidden = false
 
     const accessibleName = native.getAttribute('aria-label')
@@ -3181,7 +3236,39 @@ const initDatePickers = (scope: ParentNode): void => {
 
     if (describedBy) trigger.setAttribute('aria-describedby', describedBy)
 
-    syncDatePickerValue(root)
+    const syncState = (): void => {
+      trigger.disabled = native.disabled
+
+      trigger.setAttribute('aria-disabled', String(native.disabled || native.readOnly))
+
+      trigger.setAttribute('aria-required', String(native.required))
+
+      popover.setAttribute('aria-label', root.dataset.chooseDateLabel || resolveLumenDateLabels(getCalendarLocale(root)).chooseDate)
+
+      syncDatePickerValue(root)
+    }
+
+    syncState()
+
+    const observer = new MutationObserver(() => {
+      closeDatePicker(root)
+
+      syncState()
+    })
+
+    observer.observe(native, { attributes: true, attributeFilter: ['disabled', 'readonly', 'required', 'value', 'min', 'max', 'placeholder'] })
+
+    observer.observe(root, { attributes: true, attributeFilter: ['locale', 'lang', 'data-locale', 'data-choose-date-label'] })
+
+    root.addEventListener('keydown', event => {
+      if (event.key !== 'Escape' || popover.hidden) return
+
+      event.preventDefault()
+
+      event.stopPropagation()
+
+      closeDatePicker(root, true)
+    })
 
     trigger.addEventListener('click', () => {
       if (popover.hidden) openDatePicker(root)
@@ -3197,6 +3284,10 @@ const initDatePickers = (scope: ParentNode): void => {
     })
 
     calendarInput.addEventListener('change', () => {
+      if (native.disabled || native.readOnly || !parseCalendarDate(calendarInput.value) ||
+        !isLumenDateBoundsValid(native.min || undefined, native.max || undefined) ||
+        (native.min && calendarInput.value < native.min) || (native.max && calendarInput.value > native.max)) return
+
       native.value = calendarInput.value
 
       syncDatePickerValue(root)
@@ -3208,7 +3299,11 @@ const initDatePickers = (scope: ParentNode): void => {
       closeDatePicker(root, true)
     })
 
-    native.addEventListener('change', () => syncDatePickerValue(root))
+    native.addEventListener('change', () => {
+      closeDatePicker(root)
+
+      syncState()
+    })
 
     native.addEventListener('invalid', event => {
       event.preventDefault()
@@ -3218,8 +3313,10 @@ const initDatePickers = (scope: ParentNode): void => {
       trigger.focus()
     })
 
-    native.form?.addEventListener('reset', () => {
-      window.setTimeout(() => {
+    native.form?.addEventListener('reset', event => {
+      globalThis.setTimeout(() => {
+        if (event.defaultPrevented || !root.isConnected) return
+
         syncDatePickerValue(root)
 
         closeDatePicker(root)
@@ -5450,7 +5547,9 @@ const initUiPrimitives = (scope: ParentNode = document): void => {
 
   initDatePickers(scope)
 
-  initCodeCopy(scope)
+  initImageComparisonControllers(scope)
+
+  initCodeRegions(scope)
 
   initCopyButtons(scope)
 

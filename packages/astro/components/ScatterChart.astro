@@ -64,7 +64,7 @@ const yTicks = getLumenChartTicks(geometry.domain)
 <Chart class:list={['ui-scatter-chart', classProp, className]} {caption} {description} {heading} {summary} {...rest}>
   {showLegend && hasData && <ul class="ui-chart__legend" aria-label={resolvedLabels.chartLegend}>{series.map((item, index) => <li class={getLumenChartToneClassName(item.tone, index)}><span aria-hidden="true" />{item.label}</li>)}</ul>}
   {!hasData && <p class="ui-chart__empty" role="status">{emptyLabel ?? resolvedLabels.empty}</p>}
-  <div class="ui-chart__plot" hidden={!hasData}>
+  <div aria-label={resolvedLabels.chartData} class="ui-chart__plot" role="region" tabindex="0" hidden={!hasData}>
     <svg aria-hidden="true" viewBox={`0 0 ${geometry.width} ${geometry.height}`}>
       <g class="ui-chart__grid">{yTicks.map(tick => {
  const y = scaleLumenChartValue(tick, geometry.domain, geometry.height - 44, 44)

@@ -77,6 +77,39 @@ LumenListRow {
 Use the platform's native `List`, lazy collection, selection, swipe actions, context menu, and
 keyboard commands around the row. Those containers own virtualization and navigation behavior.
 
+In React Native, let long labels wrap inside `LumenListRow` rather than truncating the entire row.
+Keep a separate, named control in the trailing slot:
+
+```tsx
+import {
+  LumenAvatar,
+  LumenIconButton,
+  LumenListRow,
+  LumenSectionHeader,
+  LumenText
+} from '@santi020k/lumen-react-native'
+
+export function WorkspaceRows({ onOpen }: { onOpen: () => void }) {
+  return (
+    <>
+      <LumenSectionHeader title="Workspaces shared with your household" count="3" />
+      <LumenListRow
+        leading={<LumenAvatar fallback="LM" />}
+        trailing={<LumenIconButton name="chevron-right" label="Open Lumen workspace" onPress={onOpen} />}
+      >
+        <LumenText variant="label">Lumen workspace</LumenText>
+        <LumenText tone="muted">Edited five minutes ago</LumenText>
+      </LumenListRow>
+    </>
+  )
+}
+```
+
+The row reserves flexible space for its content and bounds trailing content. Section headings
+also allow the title to shrink beside a count. At narrow widths or large text sizes, keep trailing
+actions compact and move lengthy secondary descriptions into the row's main content. Verify the
+application's actual longest translations and text scale.
+
 ## Pattern: asynchronous collection state
 
 Render one clear collection state at a time:
@@ -118,6 +151,11 @@ Always express status with text or an accessible symbol as well as color.
 Use `LumenButtonGroup` for a small, related action set. Let the surrounding view choose horizontal
 or vertical orientation from its actual available width, Dynamic Type size, or window class. Keep
 toolbar placement, keyboard commands, and navigation actions in their native containers.
+
+Swift `LumenButton(loading: true, ...)` retains the label's layout space and overlays progress;
+the button is disabled while loading. Keep the label content stable if constant dimensions matter,
+and provide localized `loadingAccessibilityValue`. The application owns pending state and error
+recovery, including keeping a dialog open when an operation fails.
 
 ## Pattern: immersive iPhone tabs
 

@@ -15,6 +15,8 @@ import {
   formatLumenChartSummary,
   getLumenChartAxisPadding,
   getLumenChartCategories,
+  getLumenChartCategoryLabel,
+  getLumenChartCategoryTicks,
   getLumenChartDomain,
   getLumenChartTicks,
   hasLumenChartData,
@@ -119,6 +121,96 @@ describe('Lumen chart helpers', () => {
     expect(geometry.points).toHaveLength(3)
   })
 
+  test('places a singleton label at the same coordinate as its mark', () => {
+    const geometry = createLumenLineGeometry([{ x: 'Only day', y: 4 }], { padding: 44, width: 640 })
+    const ticks = getLumenChartCategoryTicks(['Only day'], { end: 596, start: 44 })
+
+    expect(ticks).toEqual([{ index: 0, label: 'Only day', position: geometry.points[0]?.xCoordinate, textAnchor: 'middle' }])
+  })
+
+  test('keeps dense endpoint labels apart without removing source points', () => {
+    const labels = Array.from({ length: 30 }, (_, index) => `Sep ${index + 1}`)
+    const ticks = getLumenChartCategoryTicks(labels, { end: 596, start: 44 })
+
+    expect(ticks[0]).toMatchObject({ index: 0, textAnchor: 'start' })
+    expect(ticks.at(-1)).toMatchObject({ index: 29, textAnchor: 'end' })
+    expect(ticks.some(tick => tick.index === 28)).toBe(false)
+    expect(ticks.length).toBeLessThan(labels.length)
+
+    for (const [index, tick] of ticks.entries()) {
+      const previous = ticks[index - 1]
+
+      if (!previous) continue
+
+      const previousEnd = previous.position + previous.label.length * 7 * (previous.textAnchor === 'start' ? 1 : 0.5)
+      const currentStart = tick.position - tick.label.length * 7 * (tick.textAnchor === 'end' ? 1 : 0.5)
+
+      expect(currentStart - previousEnd).toBeGreaterThanOrEqual(16)
+    }
+  })
+
+  test('bounds verbose category labels and rejects invalid plot bounds', () => {
+    const ticks = getLumenChartCategoryTicks(['W'.repeat(500), 'W'.repeat(500)], { end: 300, start: 0 })
+
+    expect(ticks).toHaveLength(2)
+    expect(ticks.every(tick => tick.label.endsWith('…') && tick.label.length < 20)).toBe(true)
+    expect(getLumenChartCategoryTicks([], { end: 300, start: 0 })).toEqual([])
+    expect(getLumenChartCategoryTicks(['A'], { end: 0, start: 100 })).toEqual([])
+  })
+
+  test('fits labels to bar centers and normalizes invalid custom positions', () => {
+    const labels = ['W'.repeat(500), 'W'.repeat(500)]
+    const ticks = getLumenChartCategoryTicks(labels, { end: 600, positions: [180, 460], start: 40 })
+
+    expect(ticks.map(tick => tick.position)).toEqual([180, 460])
+    expect(ticks.every(tick => tick.label.length < 15)).toBe(true)
+    expect(getLumenChartCategoryTicks(['A', 'B'], { end: 600, positions: [Number.NaN, 460], start: 40 }))
+      .toEqual(getLumenChartCategoryTicks(['A', 'B'], { end: 600, start: 40 }))
+  })
+
+  test('separates concise labels from full category descriptions', () => {
+    const series = [{ data: [{ x: '2026-09-01', xLabel: 'Sep 1', y: 4 }], id: 'daily', label: 'Daily' }]
+    const formatCategory = () => 'September 1, 2026'
+
+    expect(getLumenChartCategoryLabel(series, '2026-09-01', formatCategory)).toBe('Sep 1')
+    expect(getLumenChartCategoryLabel(series, '2026-09-01', formatCategory, 'detail')).toBe('September 1, 2026')
+    expect(getLumenChartCategoryLabel(series, '2026-09-01', undefined, 'detail')).toBe('Sep 1')
+  })
+
+  test('diagnoses duplicate categories and consistently retains the last observation', () => {
+    const item = { data: [{ x: 'A', y: 100 }, { x: 'A', y: 160 }, { x: 'B', y: 220 }], id: 'daily', label: 'Daily' }
+    const series = [item]
+    const categories = getLumenChartCategories(series)
+
+    expect(validateLumenChartSeries(series)).toEqual([{
+      code: 'duplicate-category',
+      message: 'Category x values must be unique within a series. Use xLabel for repeated display labels.',
+      path: 'series[0].data[1].x'
+    }])
+    expect(alignLumenChartSeries(item, categories).data.map(datum => datum.y)).toEqual([160, 220])
+    expect(createLumenBarGeometry(series).marks.map(mark => mark.value)).toEqual([160, 220])
+  })
+
+  test('preserves distinct stable keys with repeated display labels and repeated continuous coordinates', () => {
+    const series = [{ data: [{ x: 1, xLabel: 'Sep 1', y: 4 }, { x: '1', xLabel: 'Sep 1', y: 8 }], id: 'daily', label: 'Daily' }]
+
+    expect(validateLumenChartSeries(series)).toEqual([])
+    expect(createLumenBarGeometry(series).categories.map(category => category.label)).toEqual(['Sep 1', 'Sep 1'])
+    expect(validateLumenChartSeries([{ data: [{ x: 1, y: 4 }, { x: 1, y: 8 }], id: 'continuous', label: 'Continuous' }], 'linear')).toEqual([])
+  })
+
+  test('shares bounded bar margins with formatted numeric axes and category labels', () => {
+    const series = [{ data: [{ x: 'A', y: -3_000_000 }, { x: 'B', y: 4_000_000 }], id: 'money', label: 'Money' }]
+    const vertical = createLumenBarGeometry(series, { formatValue: value => `$ ${value.toLocaleString('en')}` })
+    const horizontal = createLumenBarGeometry(series, { formatCategory: () => 'W'.repeat(100), orientation: 'horizontal' })
+
+    expect(vertical.margin.left).toBeGreaterThan(52)
+    expect(vertical.marks.every(mark => mark.x >= vertical.margin.left && Number.isFinite(mark.height))).toBe(true)
+    expect(horizontal.margin.left).toBe(240)
+    expect(horizontal.marks.every(mark => mark.x >= horizontal.margin.left && Number.isFinite(mark.width))).toBe(true)
+    expect(horizontal.categories[0]?.label).toBe('W'.repeat(100))
+  })
+
   test('centers a single line-chart point', () => {
     const geometry = createLumenLineGeometry(
       [{ x: 'Only', y: 4 }], { height: 100, padding: 10, width: 100 }
@@ -136,6 +228,25 @@ describe('Lumen chart helpers', () => {
     expect(geometry.points.map(point => point.xCoordinate)).toEqual([30, 90])
     expect(geometry.points.map(point => point.yCoordinate)).toEqual([90, 10])
   })
+
+  test.each([[0, 5, 10], [-10, -5, 0], [-5, 0, 5], [7]].map(values => ({ values })))(
+    'shares vertical bar and line geometry for equal values $values', ({ values }) => {
+      const data = values.map((y, x) => ({ x, y }))
+      const bars = createLumenBarGeometry([{ data, id: 'bars', label: 'Bars' }], { height: 320 })
+      const line = createLumenLineGeometry(data, {
+        domain: bars.domain,
+        height: bars.height,
+        paddingBottom: bars.margin.bottom,
+        paddingTop: bars.margin.top
+      })
+      const barEndpoints = bars.marks.map(mark => mark.y + (mark.value < 0 ? mark.height : 0))
+
+      expect(line.points.map(point => point.yCoordinate)).toEqual(barEndpoints)
+      expect(line.areaPaths[0]).toContain(
+        scaleLumenChartValue(0, bars.domain, bars.height - bars.margin.bottom, bars.margin.top).toFixed(3)
+      )
+    }
+  )
 
   test('aligns differently shaped series to their shared category domain', () => {
     const first = {

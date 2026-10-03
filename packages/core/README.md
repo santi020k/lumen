@@ -85,6 +85,17 @@ const label = formatLumenLanguageLabel(
 )
 ```
 
+## Date Helpers
+
+Calendar adapters share `parseLumenDate`, `isLumenDateBoundsValid`, and
+`isLumenDateRangeValid` from the core root entry. They accept complete Gregorian
+`YYYY-MM-DD` dates in years 0001–9999, reject overflow dates, and require ordered,
+inclusive bounds. `resolveLumenDateLocale` normalizes an explicit locale or the
+browser locale, falling back to English for invalid locale tags.
+`resolveLumenDateLabels` supplies English and Spanish navigation, picker, and
+invalid-range defaults through the `LumenDateLabels` contract. Components allow
+label overrides for other languages; pass an explicit locale during SSR.
+
 ## Chart Helpers
 
 `@santi020k/lumen-core/charts` exports the shared `LumenChartSeries` contract plus deterministic

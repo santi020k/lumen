@@ -588,3 +588,50 @@ export function ReportPeriod() {
   outer container. Import the shared stylesheet once at the application boundary.
 
 This component is currently React-only. Publication is separate from local implementation.
+
+### Accessible code examples
+
+`Code` and `CodeTabs` accept `copyLabel`, `copiedLabel`, `errorLabel`, and
+`codeLabel`. Copy controls work directly in React, emit `ui:copy-success` or
+`ui:copy-error`, and announce localized success or recovery guidance. Repeated
+clicks restart feedback; unmounting clears its timer. No Astro runtime is needed.
+
+Unwrapped code uses a named, keyboard-focusable region. `codeLabel` defaults to
+`Code example`; set a descriptive localized name when several examples are
+present. Highlighted `pre` children receive the same behavior while retaining
+authored names and tab order. Wrapped code does not add an extra tab stop.
+
+### Server-sorted tables
+
+`DataTable` accepts `sort` and `onSortChange` for controlled sorting, or
+`defaultSort` for an initial uncontrolled sort. A `DataTableSort` contains a
+column `key` and `direction: 'ascending' | 'descending'`; `null` means unsorted.
+Header buttons request the next direction, and `aria-sort` describes the applied
+state. Replacing `rows` does not reset that state.
+
+Use `sortMode="manual"` with server pagination. In this mode the table preserves
+the supplied row order, even when a header is activated. Apply the requested sort
+to the complete dataset on the server before selecting the page, then supply the
+returned rows and controlled sort. Keep authentication, query validation, loading
+state, and network errors in the application. The default `sortMode="client"`
+sorts a copy of the supplied rows.
+
+### Dialog dismissal and focus
+
+`Dialog`, `AlertDialog`, and `useDialog` accept `dismissOnOutsidePress` and
+`dismissOnEscape`. Ordinary dialogs allow both by default; alert dialogs ignore
+outside presses by default. Set both to `false` while an application requires an
+explicit decision or is completing a pending mutation. These policies govern
+implicit dismissal; explicit close actions remain under application control.
+
+Native Escape requests `onOpenChange(false)` without overriding a controlled
+`open` value. Content padding and a drag that begins inside the dialog do not
+count as backdrop dismissal. Consumer `onCancel` or `onClick` handlers can prevent
+the corresponding default action.
+
+A controlled dialog can open without hook trigger props: it captures the focused
+opener before opening and returns focus on close or unmount. StrictMode replay
+preserves that opener, and cleanup does not steal focus from a nested or
+replacement dialog. Hook trigger props remain useful when the same component
+owns the opener and dialog. Keep an accessible dialog name and logical initial
+focus; native `autoFocus` can select the initial control.

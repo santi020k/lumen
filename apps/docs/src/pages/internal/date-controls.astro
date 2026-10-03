@@ -1,0 +1,66 @@
+---
+// cspell:words Précédent Suivant
+import '@santi020k/lumen/styles.css'
+
+import { Button, Calendar, DatePicker, Form, Image, ImageComparison, Label, Stack, Typography } from '@santi020k/lumen-astro'
+import UIPrimitives from '@santi020k/lumen-astro/runtime'
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Date and form reset regression fixture</title>
+  </head>
+  <body>
+    <main>
+      <Stack gap="lg">
+        <Typography><h1>Date and form reset regression fixture</h1></Typography>
+        <Form enhance={false} id="astro-form">
+          <Label for="astro-date">Astro appointment</Label>
+          <DatePicker id="astro-date" locale="es-CO" name="appointment" value="2026-07-23" min="2026-07-20" max="2026-08-05" />
+          <Button type="reset">Reset Astro</Button>
+        </Form>
+        <Form enhance={false} id="calendar-form">
+          <Calendar id="astro-calendar" locale="es-CO" month="2026-07" name="calendar" value="2026-07-31" />
+        </Form>
+        <Calendar id="early-calendar" locale="en" month="0001-01" value="0001-01-02" />
+        <DatePicker id="readonly-date" locale="es" readonly value="2026-07-23" aria-label="Readonly appointment" />
+        <DatePicker id="invalid-date" locale="en" value="2026-02-30" placeholder="Select appointment" />
+        <Calendar id="custom-calendar" locale="fr" month="2026-07" labels={{ previousMonth: 'Précédent', nextMonth: 'Suivant' }} />
+        <Form enhance={false} id="elements-form">
+          <Label for="elements-date">Elements appointment</Label>
+          <lumen-date-picker locale="es-CO">
+            <input id="elements-date" data-ui-date-picker-native type="date" name="appointment" value="2026-07-23" min="2026-07-20" max="2026-08-05" />
+            <div data-ui-date-picker-control hidden>
+              <button data-ui-date-picker-trigger type="button"><span data-ui-date-picker-value></span></button>
+            </div>
+            <div data-ui-date-picker-popover hidden><lumen-calendar></lumen-calendar></div>
+          </lumen-date-picker>
+          <Button type="reset">Reset Elements</Button>
+        </Form>
+        <Form enhance={false} id="comparison-form" aria-label="Image comparison reset regression">
+          <ImageComparison name="reveal" value={25} label="Compare reset behavior">
+            <Image slot="before" src="/comparison-before.svg" alt="Original landscape" width={1200} height={675} />
+            <Image slot="after" src="/comparison-after.svg" alt="Edited landscape" width={1200} height={675} />
+          </ImageComparison>
+          <Button type="reset">Reset comparison</Button>
+        </Form>
+      </Stack>
+    </main>
+    <UIPrimitives />
+    <script>
+      import { enhanceLumenCalendars, enhanceLumenDatePickers } from '@santi020k/lumen-elements'
+
+      const root = document.querySelector('lumen-date-picker')
+
+      if (root) {
+        enhanceLumenCalendars(root)
+
+        enhanceLumenDatePickers(root)
+      }
+    </script>
+  </body>
+</html>

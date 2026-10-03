@@ -37,6 +37,23 @@ untrusted or remote series with `validateLumenChartSeries`, preserve `null` gaps
 large display data without changing the source dataset. Use `appendLumenChartDatum` for a bounded
 live window; the application still owns transport, retries, persistence, and update frequency.
 
+Each series must have one observation per `x`. In v4, validation reports `duplicate-category`;
+if invalid duplicate data reaches a renderer, the first observation wins consistently in the
+plot and table. Use a stable ISO date or numeric timestamp for identity, not a localized date
+label. Supply a short `xLabel` for the axis and `formatCategory` for full tooltip/table text.
+Web line and bar axes measure label space, retain readable endpoint alignment, and omit
+overlapping ticks. Exact values remain available in the data table. On narrow layouts, the named plot region can
+scroll horizontally to preserve readable labels; focus it and use the arrow keys, or swipe on
+touch screens. This scroll stays inside the chart rather than widening the page.
+
+Compose line charts position homogeneous `LumenChartX.Time` and `LumenChartX.Number` values by
+elapsed/numeric distance and sort their shared coordinates. Category or mixed-type series use
+categorical spacing; bar and combo charts retain category bands. Single observations and
+gap-isolated observations remain visible. Invalid numeric coordinates are excluded from line
+geometry. Use `LumenChartLabels(formatX = ..., formatValue = ...)` to keep the native data
+alternative in the application's language and units. The default time label includes date and
+time. These v4 corrections can change the appearance of previously ordinal time-series plots.
+
 ## Accessibility
 
 Every data chart needs a useful accessible name. Lumen adds a factual generated summary describing

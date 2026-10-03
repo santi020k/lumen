@@ -45,6 +45,9 @@ import {
   type LumenThemeTokens,
   normalizeLumenLocales,
   scrollLumenTabIntoView } from '@santi020k/lumen-core'
+import { isLumenDateBoundsValid as isCalendarBoundsValid, parseLumenDate as parseCalendarDate, resolveLumenDateLabels as resolveDateControlLabels, resolveLumenDateLocale as getCalendarLocale } from '@santi020k/lumen-core'
+
+import { useDialogLifecycle } from './dialog-lifecycle.js'
 
 type ChangeHandler<T> = (value: T) => void
 
@@ -146,6 +149,8 @@ interface DisclosureController {
 
 export interface DialogOptions extends DisclosureOptions {
   alert?: boolean | undefined
+  dismissOnEscape?: boolean | undefined
+  dismissOnOutsidePress?: boolean | undefined
 }
 
 export interface DialogController {
@@ -362,12 +367,14 @@ export interface CalendarDay {
 export interface CalendarOptions {
   defaultValue?: string | undefined
   disabled?: boolean | undefined
+  labels?: { previousMonth?: string, nextMonth?: string } | undefined
   locale?: string | undefined
   max?: string | undefined
   min?: string | undefined
   month?: string | undefined
   name?: string | undefined
   onValueChange?: ChangeHandler<string> | undefined
+  readOnly?: boolean | undefined
   value?: string | undefined
 }
 
@@ -839,9 +846,22 @@ const useDisclosureController = (
   }
 }
 
+const isDialogBackdropPoint = (
+  dialog: HTMLDialogElement | null,
+  event: { clientX: number, clientY: number, target: EventTarget | null }
+): boolean => {
+  if (!dialog || event.target !== dialog) return false
+
+  const bounds = dialog.getBoundingClientRect()
+
+  return event.clientX < bounds.left || event.clientX >= bounds.right ||
+    event.clientY < bounds.top || event.clientY >= bounds.bottom
+}
+
 export const useDialog = (options: DialogOptions = {}): DialogController => {
   const dialogRef = useRef<HTMLDialogElement | null>(null)
   const triggerRef = useRef<HTMLElement | null>(null)
+  const outsidePointerRef = useRef<boolean | undefined>(undefined)
 
   const [open, setOpen] = useControllableState({
     defaultValue: options.defaultOpen ?? false,
@@ -849,45 +869,44 @@ export const useDialog = (options: DialogOptions = {}): DialogController => {
     value: options.open
   })
 
+  const consumeProgrammaticClose = useDialogLifecycle(open, dialogRef, triggerRef)
+
   const close = useCallback(() => {
     setOpen(false)
   }, [setOpen])
 
-  useEffect(() => {
-    const dialog = dialogRef.current
-
-    if (!dialog) return
-
-    if (open && !dialog.open) {
-      if (typeof dialog.showModal === 'function') {
-        dialog.showModal()
-      } else {
-        dialog.setAttribute('open', '')
-      }
-
-      focusFirstIn(dialog)
-
-      return
-    }
-
-    if (!open && dialog.open) {
-      dialog.close()
-    }
-  }, [open])
-
   const dialogProps: LumenProps<'dialog'> = {
     'aria-modal': true,
     'data-ui-alert-dialog': options.alert ? true : undefined,
+    'data-ui-bound': true,
     'data-ui-dialog': options.alert ? undefined : true,
-    onClick: event => {
-      if (event.target === dialogRef.current && !options.alert) {
-        close()
-      }
-    },
-    onClose: () => {
-      close()
+    onCancel: event => {
+      if (event.target !== dialogRef.current || event.defaultPrevented) return
 
-      focusTrigger(triggerRef.current)
+      event.preventDefault()
+
+      event.stopPropagation()
+
+      if (options.dismissOnEscape !== false) close()
+    },
+    onClick: event => {
+      const startedOutside = outsidePointerRef.current
+
+      outsidePointerRef.current = undefined
+
+      if (event.defaultPrevented || startedOutside === false || event.detail === 0) return
+
+      if (!(options.dismissOnOutsidePress ?? !options.alert)) return
+
+      if (isDialogBackdropPoint(dialogRef.current, event)) close()
+    },
+    onClose: event => {
+      if (event.target !== dialogRef.current || consumeProgrammaticClose()) return
+
+      close()
+    },
+    onPointerDown: event => {
+      outsidePointerRef.current = isDialogBackdropPoint(dialogRef.current, event)
     },
     ref: dialogRef,
     role: options.alert ? 'alertdialog' : 'dialog'
@@ -898,7 +917,9 @@ export const useDialog = (options: DialogOptions = {}): DialogController => {
     onClick: () => {
       setOpen(true)
     },
-    ref: triggerRef as Ref<HTMLButtonElement>,
+    ref: element => {
+      triggerRef.current = element
+    },
     type: 'button'
   }
 
@@ -1833,71 +1854,56 @@ export const useFormValidation = ({
 }
 
 /* eslint-disable @stylistic/padding-line-between-statements, complexity, no-nested-ternary -- Calendar mirrors Astro's UTC date grid and keyboard runtime. */
-const calendarDatePattern = /^\d{4}-\d{2}-\d{2}$/
 const calendarMonthPattern = /^\d{4}-\d{2}$/
-
-const parseCalendarDate = (value: string | null | undefined): Date | null => {
-  if (!value || !calendarDatePattern.test(value)) return null
-
-  const [year = Number.NaN, month = Number.NaN, day = Number.NaN] = value
-    .split('-')
-    .map(Number)
-  const date = new Date(Date.UTC(year, month - 1, day))
-
-  return date.getUTCFullYear() === year &&
-    date.getUTCMonth() === month - 1 &&
-    date.getUTCDate() === day ?
-    date :
-    null
-}
 
 const parseCalendarMonth = (value: string | null | undefined): Date | null => {
   if (!value || !calendarMonthPattern.test(value)) return null
 
-  const [year = Number.NaN, month = Number.NaN] = value.split('-').map(Number)
-  const date = new Date(Date.UTC(year, month - 1, 1))
-
-  return date.getUTCFullYear() === year && date.getUTCMonth() === month - 1 ?
-    date :
-    null
+  return parseCalendarDate(`${value}-01`)
 }
 
-const formatCalendarDate = (date: Date): string => date.toISOString().slice(0, 10)
-const formatCalendarMonth = (date: Date): string => date.toISOString().slice(0, 7)
-const startOfCalendarMonth = (date: Date): Date => new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), 1))
-const addCalendarDays = (date: Date, days: number): Date => new Date(
-  Date.UTC(
-    date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate() + days
-  )
+const createCalendarDate = (year: number, month: number, day: number): Date => {
+  const date = new Date(0)
+
+  date.setUTCFullYear(year, month, day)
+
+  return date
+}
+
+const formatCalendarDate = (date: Date): string => date.toISOString().split('T')[0] ?? ''
+const formatCalendarMonth = (date: Date): string => formatCalendarDate(date).slice(0, -3)
+const startOfCalendarMonth = (date: Date): Date => createCalendarDate(date.getUTCFullYear(), date.getUTCMonth(), 1)
+const addCalendarDays = (date: Date, days: number): Date => createCalendarDate(
+  date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate() + days
 )
-const getCalendarDaysInMonth = (date: Date): number => new Date(
-  Date.UTC(date.getUTCFullYear(), date.getUTCMonth() + 1, 0)
+const getCalendarDaysInMonth = (date: Date): number => createCalendarDate(
+  date.getUTCFullYear(), date.getUTCMonth() + 1, 0
 ).getUTCDate()
 const addCalendarMonths = (date: Date, months: number): Date => {
-  const targetMonth = new Date(
-    Date.UTC(date.getUTCFullYear(), date.getUTCMonth() + months, 1)
+  const targetMonth = createCalendarDate(
+    date.getUTCFullYear(), date.getUTCMonth() + months, 1
   )
   const day = Math.min(
     date.getUTCDate(), getCalendarDaysInMonth(targetMonth)
   )
 
-  return new Date(
-    Date.UTC(targetMonth.getUTCFullYear(), targetMonth.getUTCMonth(), day)
+  return createCalendarDate(
+    targetMonth.getUTCFullYear(), targetMonth.getUTCMonth(), day
   )
 }
 
 const getCalendarToday = (): Date => {
   const today = new Date()
 
-  return new Date(
-    Date.UTC(today.getFullYear(), today.getMonth(), today.getDate())
+  return createCalendarDate(
+    today.getFullYear(), today.getMonth(), today.getDate()
   )
 }
 
 const compareCalendarDates = (date: Date, other: Date | null): number => {
   if (!other) return 0
 
-  return formatCalendarDate(date).localeCompare(formatCalendarDate(other))
+  return Math.sign(date.getTime() - other.getTime())
 }
 
 const isCalendarDateDisabled = (
@@ -1922,20 +1928,6 @@ const clampCalendarDate = (
 }
 
 const getCalendarGridStart = (month: Date): Date => addCalendarDays(month, -((month.getUTCDay() + 6) % 7))
-
-const getCalendarLocale = (locale: string | undefined): string => {
-  if (locale) return locale
-
-  if (typeof document !== 'undefined' && document.documentElement.lang) {
-    return document.documentElement.lang
-  }
-
-  if (typeof navigator !== 'undefined' && navigator.language) {
-    return navigator.language
-  }
-
-  return 'en'
-}
 
 const coerceCalendarDate = (value: string | Date): Date | null => (
   value instanceof Date ? value : parseCalendarDate(value)
@@ -1973,21 +1965,24 @@ const getCalendarFocusDate = (
 
 export const useCalendar = ({
   defaultValue,
-  disabled = false,
+  disabled: requestedDisabled = false,
+  labels,
   locale,
   max,
   min,
   month,
   name,
   onValueChange,
+  readOnly = false,
   value: controlledValue
 }: CalendarOptions = {}): CalendarController => {
+  const disabled = requestedDisabled || !isCalendarBoundsValid(min, max)
   const rootRef = useRef<HTMLDivElement | null>(null)
   const generatedId = useId()
   const calendarId = `ui-calendar-${generatedId}`
   const labelId = `${calendarId}-label`
-  const minDate = parseCalendarDate(min)
-  const maxDate = parseCalendarDate(max)
+  const minDate = parseCalendarDate(min ?? '0001-01-01')
+  const maxDate = parseCalendarDate(max ?? '9999-12-31')
   const defaultDate = parseCalendarDate(defaultValue)
   const controlledDate = parseCalendarDate(controlledValue)
   const [uncontrolledValue, setUncontrolledValue] = useState(() => defaultDate ? formatCalendarDate(defaultDate) : '')
@@ -2006,12 +2001,54 @@ export const useCalendar = ({
   const visibleMonth =
     parseCalendarMonth(month ?? visibleMonthValue) ?? initialMonth
   const [focusValue, setFocusValue] = useState<string | null>(null)
+  useEffect(() => {
+    const root = rootRef.current
+    const owner = root?.closest('form')
+    let active = true
+    let resetTimer: ReturnType<typeof globalThis.setTimeout> | undefined
+
+    const reset = (event: Event) => {
+      globalThis.clearTimeout(resetTimer)
+
+      resetTimer = globalThis.setTimeout(() => {
+        if (!active || event.defaultPrevented || !root?.isConnected) return
+
+        const date = parseCalendarDate(defaultValue)
+
+        if (controlledValue === undefined) setUncontrolledValue(date ? formatCalendarDate(date) : '')
+
+        const resetMonth = parseCalendarMonth(month) ?? startOfCalendarMonth(date ?? getCalendarToday())
+
+        setVisibleMonthValue(formatCalendarMonth(resetMonth))
+        setFocusValue(null)
+      })
+    }
+
+    owner?.addEventListener('reset', reset)
+
+    return () => {
+      active = false
+
+      globalThis.clearTimeout(resetTimer)
+      owner?.removeEventListener('reset', reset)
+    }
+  }, [controlledValue, defaultValue, month])
+
   const focusDate = getCalendarFocusDate(
     disabled, visibleMonth, minDate, maxDate, selectedDate, parseCalendarDate(focusValue)
   )
   const focusIso = formatCalendarDate(focusDate)
+  useEffect(() => {
+    const root = rootRef.current
+
+    if (root?.contains(document.activeElement) && document.activeElement?.getAttribute('role') === 'gridcell') {
+      root.querySelector<HTMLElement>('[role="gridcell"][tabindex="0"]')?.focus({ preventScroll: true })
+    }
+  }, [focusIso])
+
   const selectedIso = selectedDate ? formatCalendarDate(selectedDate) : ''
   const currentLocale = getCalendarLocale(locale)
+  const navigationLabels = { ...resolveDateControlLabels(currentLocale), ...labels }
   const monthFormatter = useMemo(
     () => new Intl.DateTimeFormat(currentLocale, {
       month: 'long',
@@ -2086,7 +2123,7 @@ export const useCalendar = ({
   }
 
   const selectDate: CalendarController['selectDate'] = dateInput => {
-    if (disabled) return
+    if (disabled || readOnly) return
 
     const date = coerceCalendarDate(dateInput)
 
@@ -2196,6 +2233,7 @@ export const useCalendar = ({
     getDayProps,
     gridProps: {
       'aria-labelledby': labelId,
+      'aria-readonly': readOnly || undefined,
       className: 'ui-calendar__grid',
       'data-ui-calendar-grid': true,
       role: 'grid'
@@ -2215,11 +2253,13 @@ export const useCalendar = ({
     },
     month: formatCalendarMonth(visibleMonth),
     nextProps: {
-      'aria-label': 'Next month',
+      'aria-label': navigationLabels.nextMonth,
       className: 'ui-calendar__nav',
       'data-ui-calendar-next': true,
       disabled: nextDisabled,
       onClick: () => {
+        if (nextDisabled) return
+
         const nextMonth = startOfCalendarMonth(
           addCalendarMonths(visibleMonth, 1)
         )
@@ -2236,11 +2276,13 @@ export const useCalendar = ({
       type: 'button'
     },
     previousProps: {
-      'aria-label': 'Previous month',
+      'aria-label': navigationLabels.previousMonth,
       className: 'ui-calendar__nav',
       'data-ui-calendar-prev': true,
       disabled: previousDisabled,
       onClick: () => {
+        if (previousDisabled) return
+
         const previousMonth = startOfCalendarMonth(
           addCalendarMonths(visibleMonth, -1)
         )

@@ -1,6 +1,8 @@
 import type { ComponentPropsWithoutRef } from 'react'
 import { useEffect, useRef, useState } from 'react'
 
+import { isLumenDateRangeValid as isCalendarRangeValid, parseLumenDate as parseCalendarDate } from '@santi020k/lumen-core'
+
 import { Button, Icon } from './components.js'
 import { useCalendar } from './hooks.js'
 
@@ -15,12 +17,14 @@ export interface DateRangeCalendarProps extends Omit<ComponentPropsWithoutRef<'d
   locale?: string
   min?: string
   max?: string
-  labels: { start: string, end: string, presets: string }
+  disabled?: boolean
+  readOnly?: boolean
+  labels: { start: string, end: string, presets: string, previousMonth?: string, nextMonth?: string }
   presets?: readonly { label: string, value: CalendarRange }[]
   formatDate?: (value: string) => string
 }
 
-const RangeMonth = ({ part, value, onValueChange, locale, min, max, label, formatDate }: {
+const RangeMonth = ({ part, value, onValueChange, locale, min, max, label, labels, disabled, readOnly, formatDate }: {
   part: 'start' | 'end'
   value: CalendarRange
   onValueChange: (value: CalendarRange) => void
@@ -28,6 +32,9 @@ const RangeMonth = ({ part, value, onValueChange, locale, min, max, label, forma
   min: string | undefined
   max: string | undefined
   label: string
+  labels: DateRangeCalendarProps['labels']
+  disabled: boolean
+  readOnly: boolean
   formatDate: (value: string) => string
 }) => {
   const calendar = useCalendar({
@@ -35,10 +42,15 @@ const RangeMonth = ({ part, value, onValueChange, locale, min, max, label, forma
     locale,
     min,
     max,
+    labels,
+    disabled,
+    readOnly,
     onValueChange: next => {
-      onValueChange(part === 'start' ?
+      const range = part === 'start' ?
         { start: next, end: next > value.end ? next : value.end } :
-        { start: next < value.start ? next : value.start, end: next })
+        { start: next < value.start ? next : value.start, end: next }
+
+      onValueChange(isCalendarRangeValid(range, min, max) ? range : { start: next, end: next })
     }
   })
 
@@ -64,7 +76,7 @@ const RangeMonth = ({ part, value, onValueChange, locale, min, max, label, forma
     <section className="ui-range-calendar__month" aria-label={label}>
       <div className="ui-range-calendar__endpoint">
         <span>{label}</span>
-        <strong>{formatDate(value[part])}</strong>
+        <strong>{parseCalendarDate(value[part]) ? formatDate(value[part]) : value[part]}</strong>
       </div>
       <div {...calendar.rootProps} ref={rootRef}>
         <div className="ui-calendar__header">
@@ -78,8 +90,10 @@ const RangeMonth = ({ part, value, onValueChange, locale, min, max, label, forma
             {calendar.weeks.map(week => (
               <tr key={week[0]?.date} role="row">
                 {week.map(day => {
-                  const inRange = day.date >= value.start && day.date <= value.end
-                  const endpoint = day.date === value.start || day.date === value.end
+                  const inRange = isCalendarRangeValid(value, min, max) &&
+                    day.date >= value.start && day.date <= value.end
+
+                  const endpoint = inRange && (day.date === value.start || day.date === value.end)
 
                   return (
                     <td
@@ -108,7 +122,7 @@ const isoDate = (value: string): string => value
 /** Inline range editor. Consumers own draft state and Apply/Cancel actions. */
 export const DateRangeCalendar = ({
   value, onValueChange, locale, min, max, labels, presets = emptyPresets,
-  formatDate = isoDate, className, ...props
+  disabled = false, readOnly = false, formatDate = isoDate, className, ...props
 }: DateRangeCalendarProps) => {
   const [selectedPreset, setSelectedPreset] = useState<string>()
 
@@ -120,7 +134,7 @@ export const DateRangeCalendar = ({
     presets.find(matchesRange)
 
   return (
-    <div {...props} className={['ui-range-calendar', className].filter(Boolean).join(' ')}>
+    <div {...props} aria-disabled={disabled || undefined} className={['ui-range-calendar', className].filter(Boolean).join(' ')}>
       {presets.length > 0 && (
         <nav className="ui-range-calendar__presets" aria-label={labels.presets}>
           {presets.map(preset => (
@@ -128,10 +142,11 @@ export const DateRangeCalendar = ({
               key={preset.label}
               type="button"
               variant="ghost"
-              disabled={preset.value.start > preset.value.end ||
-                Boolean(min && preset.value.start < min) || Boolean(max && preset.value.end > max)}
+              disabled={disabled || readOnly || !isCalendarRangeValid(preset.value, min, max)}
               aria-pressed={preset === activePreset}
               onClick={() => {
+                if (disabled || readOnly || !isCalendarRangeValid(preset.value, min, max)) return
+
                 setSelectedPreset(preset.label)
 
                 onValueChange({ ...preset.value })
@@ -153,6 +168,9 @@ export const DateRangeCalendar = ({
             min={min}
             max={max}
             label={labels[part]}
+            labels={labels}
+            disabled={disabled}
+            readOnly={readOnly}
             formatDate={formatDate}
           />
         ))}

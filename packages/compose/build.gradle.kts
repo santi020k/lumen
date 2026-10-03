@@ -45,12 +45,14 @@ fun Project.configureBinaryApiValidation() {
         }
         val checkApi = tasks.register<KotlinApiCompareTask>("apiCheck") {
             dependsOn(buildApi)
+            mustRunAfter("apiDump")
             generatedApiFile.set(generatedApi)
             projectApiFile.set(referenceApi)
         }
 
         tasks.register("apiDump") {
             dependsOn(buildApi)
+            inputs.file(generatedApi)
             outputs.file(referenceApi)
 
             doLast {

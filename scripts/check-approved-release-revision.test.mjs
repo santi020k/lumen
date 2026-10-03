@@ -117,6 +117,38 @@ const runChecker = (directory, arguments_ = [], major = 2) =>
     directory,
   );
 
+for (const major of [4, 5]) {
+  test(`major ${major} requires explicit approval of the exact reviewed candidate`, async () => {
+    const { directory, reviewedRevision } = await createCandidate(major);
+
+    try {
+      const draft = runChecker(directory, [], major);
+
+      assert.notEqual(draft.status, 0);
+
+      assert.match(draft.stderr, /requires an approved contract/);
+
+      await approveCandidate(directory, reviewedRevision, major);
+
+      const approved = runChecker(directory, [], major);
+
+      assert.equal(approved.status, 0, approved.stderr);
+
+      await writeFile(resolve(directory, 'source.txt'), 'unreviewed change\n');
+
+      commit(directory, 'test: change source after approval');
+
+      const changed = runChecker(directory, [], major);
+
+      assert.notEqual(changed.status, 0);
+
+      assert.match(changed.stderr, /Only the contract approval record may change/);
+    } finally {
+      await rm(directory, { force: true, recursive: true });
+    }
+  });
+}
+
 test("does not require approval ancestry before the initial stable major", async () => {
   const directory = await mkdtemp(resolve(tmpdir(), "lumen-pre-v2-approval-"));
 

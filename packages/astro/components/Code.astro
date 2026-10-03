@@ -12,6 +12,10 @@ interface Props extends HTMLAttributes<'code'> {
   className?: string
   code?: string
   copy?: boolean
+  codeLabel?: string
+  copyLabel?: string
+  copiedLabel?: string
+  errorLabel?: string
   highlighted?: boolean
   label?: string
   language?: string
@@ -25,6 +29,10 @@ const {
   className = '',
   code,
   copy = false,
+  codeLabel = 'Code example',
+  copyLabel = 'Copy code to clipboard',
+  copiedLabel = 'Code copied to clipboard',
+  errorLabel = 'Could not copy code. Select and copy it manually.',
   highlighted = false,
   label,
   language,
@@ -54,6 +62,7 @@ const renderedCode = hasCode ? renderLumenCodeHtml(code, language) : ''
   (
     <figure
       class:list={blockClassList}
+      data-code-label={codeLabel}
       data-code-theme={theme}
       data-language={language}
       data-slot="code"
@@ -73,8 +82,14 @@ const renderedCode = hasCode ? renderLumenCodeHtml(code, language) : ''
           </span>
           {copy && (
             <button
-              aria-label="Copy code to clipboard"
+              aria-label={copyLabel}
               class="ui-code__copy"
+              data-copy-value={code}
+              data-copy-label={copyLabel}
+              data-copy-copied-label={copiedLabel}
+              data-copy-error-label={errorLabel}
+              data-state="idle"
+              title={copyLabel}
               data-ui-code-copy
               type="button"
             >
@@ -85,8 +100,8 @@ const renderedCode = hasCode ? renderLumenCodeHtml(code, language) : ''
         </figcaption>
       )}
       {highlighted && <slot />}
-      {!highlighted && hasCode && <pre><code set:html={renderedCode}></code></pre>}
-      {!highlighted && !hasCode && <pre><code><slot /></code></pre>}
+      {!highlighted && hasCode && <pre aria-label={!wrap ? codeLabel : undefined} role={!wrap ? 'region' : undefined} tabindex={!wrap ? 0 : undefined}><code set:html={renderedCode}></code></pre>}
+      {!highlighted && !hasCode && <pre aria-label={!wrap ? codeLabel : undefined} role={!wrap ? 'region' : undefined} tabindex={!wrap ? 0 : undefined}><code><slot /></code></pre>}
     </figure>
   ) :
   (

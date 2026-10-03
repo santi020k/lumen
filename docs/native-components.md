@@ -653,11 +653,16 @@ LumenSlider(
     in: 1_000...5_000,
     step: 100,
     valueLabel: "\(Int(minimumSpeed)) RPM",
+    showsLabel: false,
     onEditingChanged: { editing in
         editing ? undoManager.beginUndoGrouping() : undoManager.endUndoGrouping()
     }
 )
 ```
+
+SwiftUI slider `valueLabel` is also the adjustable control's accessible value. `showsLabel: false`
+removes the separate visual heading while retaining the control's accessible name and formatted
+value. Omit `valueLabel` to retain the platform's default value announcement.
 
 SwiftUI pickers also accept rich label and current-value builders, so a product can preserve an
 icon-bearing setting label and a color-swatch selection without replacing the native picker. The
@@ -773,6 +778,22 @@ nearby accessible table. Native line charts accept an optional labeled reference
 per-datum `tone` plus `toneLabel`; always provide the visible or spoken tone label so color is not
 the only encoding.
 
+React Native line/bar axes keep category labels and formatted values visible independently of the
+readable list. `xLabel` supplies short axis text; explicit `formatCategory` supplies full detail
+text. `formatValue` also determines numeric-axis spacing. Pie data markers match the slice colors
+while retaining text labels.
+
+Compose uses `LumenChartLabels(formatX = ..., formatValue = ...)` for readable data and formats
+reference values with `formatValue`. Use `LumenChartX.Time(epochMillis)` rather than date strings
+for chronological line spacing. Provide `formatSummary` or explicit `summary` for localized
+summary sentences.
+
+Swift `LumenLineChart` and `LumenBarChart` accept `bare: true` to remove the outer surface and
+`height: 130` to set the plot's exact height in points. Supporting content stays outside that
+height; invalid heights fall back to 220. Other chart types and adapters do not share these two
+parameters. See the [Swift chart example](../packages/swift/README.md#data-visualization) and
+[Compose formatting example](../packages/compose/README.md#data-visualization).
+
 ### Metrics and dense desktop structure
 
 ```swift
@@ -808,8 +829,18 @@ LumenShortcutRecorder("Quick switch", shortcut: $shortcut) { candidate in
 common set. `LumenSymbolPickerButton` presents the picker in a compact native popover:
 
 ```swift
-LumenSymbolPickerButton("Workspace symbol", selectedName: $symbolName)
+LumenSymbolPickerButton(
+    "Workspace symbol",
+    selectedName: $symbolName,
+    tint: .orange,
+    onSelection: { name in saveSymbol(name) }
+)
 ```
+
+The binding updates before `onSelection` runs, including when the same symbol is selected again.
+The popover closes after selection by default; set `dismissOnSelection: false` for continued
+browsing. Embedded `LumenSymbolPicker` also accepts `tint` and `onSelection` without owning a
+popover. Keep workspace colors, catalog policy, and persistence in the application.
 
 ## Shared component contracts
 
