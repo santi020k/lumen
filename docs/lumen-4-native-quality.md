@@ -86,6 +86,14 @@ Run `pnpm run check:react-native-imports`; set `LUMEN_BENCHMARK_PLATFORM=ios` to
 These results are local bytecode measurements, not startup or scrolling latency evidence. Static
 per-icon catalog paths and broader component entrypoints remain to evaluate against actual consumers.
 
+After reconciling release revision `04178a3d`, three exports per platform passed the same budgets.
+Android medians were 1,429,228 bytes for the platform baseline, 6,205,859 for the root button,
+1,451,478 for foundations, 1,634,493 for static graphics and 6,205,920 for the named root icon.
+iOS medians were 1,424,195, 6,200,929, 1,446,436, 1,629,152 and 6,200,993 bytes respectively.
+Temporary benchmark applications now live inside the playground's existing ignored `.build`
+directory, preventing generated fixtures from interfering with concurrent source lint checks.
+One Android export per fixture verified that new location; budget thresholds are unchanged.
+
 ### Android runtime measurement
 
 A local release-variant, development-signed APK at revision
@@ -152,6 +160,18 @@ candidate still requires rebuilt native hosts and repeated affected checks.
 This follows Expo's [Continuous Native Generation](https://docs.expo.dev/workflow/continuous-native-generation/)
 workflow. Preserve the original app configuration and EAS identity; qualification must not publish
 an update or replace a user's installed public playground.
+
+### React Native iOS scene lifecycle
+
+The first reconciled Release build succeeded, but the iPad iOS 27 Simulator rejected launch at
+`UIApplicationEvaluateRuntimeIssueForNoSceneLifecycleAdoption`. Expo SDK 57's generated host uses
+the legacy lifecycle by default. The playground now opts into the official scene support using
+`expo-build-properties` 57.0.22, the current stable SDK 57 plugin verified in the registry and
+release notes. This build-time dependency supplies the native generation fix; Lumen does not
+implement another scene delegate. Expo documents the SDK 57 opt-in in its
+[scene migration guide](https://github.com/expo/fyi/blob/main/ios-scene-lifecycle.md).
+The generated native host, successful original build and preserved app remain local; rebuilding
+and runtime verification of the corrected host are pending. The failing app is not qualified.
 
 ### Outstanding scope and blockers
 

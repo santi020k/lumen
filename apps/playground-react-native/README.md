@@ -28,6 +28,11 @@ Scan the Expo QR code, or press `i`, `a`, or `w` to choose iOS, Android, or web.
 [`docs/playgrounds.md`](../../docs/playgrounds.md) for prerequisites, EAS setup, APK generation, and
 store distribution profiles.
 
+The SDK 57 configuration enables iOS scene support through `expo-build-properties` so native
+builds made with Xcode 27 launch on iOS and iPadOS 27. Keep this opt-in until the Expo SDK upgrade;
+Expo SDK 58 adopts scenes by default. Regenerate the native host after changing the plugin settings.
+See Expo's [scene lifecycle migration](https://github.com/expo/fyi/blob/main/ios-scene-lifecycle.md).
+
 ## Open the published playground
 
 The public React Native playground runs in Expo Go rather than using an App Store or Google Play
