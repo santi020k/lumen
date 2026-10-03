@@ -46,13 +46,17 @@ enum PlaygroundThemePreference: String, CaseIterable, Identifiable {
 
 enum PlaygroundThemePreset: String, CaseIterable, Identifiable {
     case lumen
+    case studio
+    case glass
     case santi020k
 
     var id: String { rawValue }
 
     var title: String {
         switch self {
-        case .lumen: "Lumen"
+        case .lumen: "Normal"
+        case .studio: "Studio"
+        case .glass: "Glass"
         case .santi020k: "santi020k"
         }
     }
@@ -63,6 +67,10 @@ enum PlaygroundThemePreset: String, CaseIterable, Identifiable {
             .light
         case (.lumen, .dark):
             .dark
+        case (.studio, _):
+            LumenTheme(preset: .studio, scheme: scheme)
+        case (.glass, _):
+            LumenTheme(preset: .glass, scheme: scheme)
         case (.santi020k, .light):
             LumenTheme(colors: Self.santi020kLight, scheme: .light)
         case (.santi020k, .dark):

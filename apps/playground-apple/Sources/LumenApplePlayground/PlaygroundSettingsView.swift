@@ -86,7 +86,7 @@ struct PlaygroundSettingsView: View {
             description: "Choose a theme and preview the semantic surface hierarchy immediately."
         ) {
             VStack(alignment: .leading, spacing: LumenSpacing.md) {
-                LumenPicker("Theme", selection: $themePreset, style: .segmented) {
+                LumenPicker("Theme", selection: $themePreset, style: .menu) {
                     ForEach(PlaygroundThemePreset.allCases) { preset in
                         Text(preset.title).tag(preset)
                     }
@@ -102,6 +102,10 @@ struct PlaygroundSettingsView: View {
                 .onChange(of: themePreset) { _ in
                     showThemeFeedback = true
                 }
+                LumenText(
+                    "Normal keeps the classic Lumen look. Studio uses neutral photo-workspace surfaces. Glass adds rounded supporting surfaces with accessible material fallbacks.",
+                    variant: .caption, tone: .muted
+                )
                 themePreview
                 if showThemeFeedback {
                     LumenToast(
@@ -145,7 +149,7 @@ struct PlaygroundSettingsView: View {
     }
 
     private func previewSurface(_ label: LocalizedStringKey, tone: LumenSurfaceTone) -> some View {
-        LumenSurface(tone: tone, padding: .md) {
+        LumenSurface(tone: tone, padding: .md, material: themePreset == .glass && tone == .surface ? .glass : .solid) {
             LumenText(label, variant: .caption)
                 .frame(maxWidth: .infinity)
         }

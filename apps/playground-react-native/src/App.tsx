@@ -25,7 +25,6 @@ import {
 
 import {
   createEmptyLumenPhoneNumber,
-  createLumenTheme,
   getLumenIconGraphic,
   getLumenPhoneCountry,
   LumenAlert,
@@ -88,7 +87,6 @@ import {
   LumenText,
   LumenTextarea,
   LumenTextField,
-  type LumenTheme,
   LumenToast,
   LumenToggle,
   useLumenTheme
@@ -113,11 +111,10 @@ import {
   normalizeComponentQuery,
   playgroundLumenVersion
 } from './playground-model'
+import { createPlaygroundTheme, isThemePreset, type ThemePreset, themePresetOptions } from './playground-theme'
 import { WorkspaceExample } from './WorkspaceExample'
 
 type ColorScheme = 'dark' | 'light' | 'system'
-
-type ThemePreset = 'lumen' | 'santi020k'
 
 const resolvePlaygroundScheme = (
   preference: ColorScheme,
@@ -126,58 +123,6 @@ const resolvePlaygroundScheme = (
   if (preference === 'dark' || preference === 'light') return preference
 
   return systemScheme === 'dark' ? 'dark' : 'light'
-}
-
-const santi020kColorPalettes: Record<'dark' | 'light', LumenTheme['colors']> = {
-  light: {
-    canvas: '#FAF9FB',
-    surface: '#FFFFFF',
-    surfaceMuted: '#F5F3F7',
-    surfaceStrong: '#E5E2E9',
-    line: '#D6D0DC',
-    ink: '#332E38',
-    inkSoft: '#5B5463',
-    inkMuted: '#47434C',
-    brand: '#620AE6',
-    brandSolid: '#5709CE',
-    brandSoft: '#EEE7F9',
-    onBrand: '#FFFFFF',
-    accent: '#7D29FA',
-    success: '#16A249',
-    warning: '#F59F0A',
-    danger: '#EF4343',
-    onDanger: '#000000'
-  },
-  dark: {
-    canvas: '#110C1D',
-    surface: '#1C1528',
-    surfaceMuted: '#231D30',
-    surfaceStrong: '#322B40',
-    line: '#494158',
-    ink: '#DFDDE3',
-    inkSoft: '#B6B2BD',
-    inkMuted: '#8D8896',
-    brand: '#A56EF7',
-    brandSolid: '#6F16F3',
-    brandSoft: '#2A1943',
-    onBrand: '#FFFFFF',
-    accent: '#9F64F7',
-    success: '#21C45D',
-    warning: '#F6A823',
-    danger: '#F15B5B',
-    onDanger: '#110C1D'
-  }
-}
-
-const createPlaygroundTheme = (preset: ThemePreset, scheme: 'dark' | 'light'): LumenTheme => {
-  const theme = createLumenTheme(scheme)
-
-  if (preset === 'lumen') return theme
-
-  return {
-    ...theme,
-    colors: santi020kColorPalettes[scheme]
-  }
 }
 
 interface ComponentSectionProps {
@@ -227,9 +172,11 @@ const getInitialColorScheme = (): ColorScheme => {
   return scheme === 'dark' || scheme === 'light' || scheme === 'system' ? scheme : 'system'
 }
 
-const getInitialThemePreset = (): ThemePreset => (
-  getWebQueryParameter('theme') === 'santi020k' ? 'santi020k' : 'lumen'
-)
+const getInitialThemePreset = (): ThemePreset => {
+  const preset = getWebQueryParameter('theme')
+
+  return isThemePreset(preset) ? preset : 'lumen'
+}
 
 const getInitialDestination = (): AppDestination => {
   if (isEmbeddedPreview() || getInitialComponentQuery()) return 'components'
@@ -418,10 +365,6 @@ const getThemeToggleState = (scheme: ColorScheme): {
 
 const isColorScheme = (value: string): value is ColorScheme => (
   value === 'dark' || value === 'light' || value === 'system'
-)
-
-const isThemePreset = (value: string): value is ThemePreset => (
-  value === 'lumen' || value === 'santi020k'
 )
 
 type ExampleState = 'empty' | 'error' | 'loading' | 'success'
@@ -926,17 +869,18 @@ const SettingsScreen = ({
             subtitle="Follow the device or choose a fixed playground theme."
             title="Appearance"
           />
-          <LumenSegmentedControl
+          <LumenPicker
             label="Playground theme"
             onValueChange={value => {
               if (isThemePreset(value)) onThemePresetChange(value)
             }}
-            options={[
-              { label: 'Lumen', value: 'lumen' },
-              { label: 'santi020k', value: 'santi020k' }
-            ]}
+            options={themePresetOptions}
             value={themePreset}
           />
+          <LumenText variant="caption" tone="muted">
+            Normal keeps the classic Lumen look. Studio uses neutral surfaces. Glass uses rounded surfaces
+            with an opaque material fallback on React Native.
+          </LumenText>
           <LumenSegmentedControl
             label="Playground appearance"
             onValueChange={value => {
@@ -950,7 +894,7 @@ const SettingsScreen = ({
             value={scheme}
           />
           <View style={styles.row}>
-            <LumenBadge tone="accent">{themePreset === 'lumen' ? 'Lumen' : 'santi020k'}</LumenBadge>
+            <LumenBadge tone="accent">{themePresetOptions.find(option => option.value === themePreset)?.label}</LumenBadge>
             <LumenBadge tone="neutral">{scheme.charAt(0).toUpperCase() + scheme.slice(1)}</LumenBadge>
           </View>
         </LumenCard>

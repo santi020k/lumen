@@ -7,7 +7,7 @@ func themePresets() {
     let lumenLight = PlaygroundThemePreset.lumen.theme(for: .light)
     let lumenDark = PlaygroundThemePreset.lumen.theme(for: .dark)
 
-    #expect(PlaygroundThemePreset.allCases.map(\.title) == ["Lumen", "santi020k"])
+    #expect(PlaygroundThemePreset.allCases.map(\.title) == ["Normal", "Studio", "Glass", "santi020k"])
     #expect(lumenLight.scheme == .light)
     #expect(lumenLight.colors.brand == LumenColors.light.brand)
     #expect(lumenLight.colors.canvas == LumenColors.light.canvas)
@@ -110,4 +110,20 @@ func componentSearch() {
     #expect(PlaygroundComponentSearch.matches("Button", query: " BUTTON ", exact: true))
     #expect(PlaygroundComponentSearch.matches("Button", query: "  "))
     #expect(!PlaygroundComponentSearch.matches("Button", query: "missing"))
+}
+
+@Test("Studio and Glass use the shared appearance in both schemes")
+func sharedAppearancePresets() {
+    for scheme in [LumenColorScheme.light, .dark] {
+        let studio = PlaygroundThemePreset.studio.theme(for: scheme)
+        let glass = PlaygroundThemePreset.glass.theme(for: scheme)
+        #expect(studio.scheme == scheme)
+        #expect(glass.scheme == scheme)
+        #expect(studio.colors.canvas == LumenThemePreset.studio.colors(for: scheme).canvas)
+        #expect(studio.colors.brandSolid == LumenThemePreset.studio.colors(for: scheme).brandSolid)
+        #expect(studio.appearance.radiusScale == LumenThemePreset.studio.appearance.radiusScale)
+        #expect(studio.appearance.elevationScale == 0)
+        #expect(glass.appearance.radiusScale == LumenThemePreset.glass.appearance.radiusScale)
+        #expect(glass.appearance.material == .glass)
+    }
 }
