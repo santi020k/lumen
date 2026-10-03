@@ -8,6 +8,20 @@ packages:
   LumenUI:
     path: ../..
 targets:
+  LumenApplePlaygroundUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - UITests
+    dependencies:
+      - target: LumenApplePlayground
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        PRODUCT_BUNDLE_IDENTIFIER: com.santi020k.lumen.playground.apple.uitests
+        SWIFT_VERSION: 6.0
+        TARGETED_DEVICE_FAMILY: "1,2"
   LumenApplePlayground:
     type: application
     platform: iOS
@@ -131,6 +145,15 @@ targets:
         SWIFT_VERSION: 6.0
         TARGETED_DEVICE_FAMILY: "4"
 schemes:
+  LumenApplePlaygroundPerformance:
+    build:
+      targets:
+        LumenApplePlayground: all
+        LumenApplePlaygroundUITests: [test]
+    test:
+      config: Release
+      targets:
+        - LumenApplePlaygroundUITests
   LumenApplePlayground:
     build:
       targets:

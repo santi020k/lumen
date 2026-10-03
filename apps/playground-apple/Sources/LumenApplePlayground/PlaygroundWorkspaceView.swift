@@ -65,6 +65,7 @@ struct PlaygroundWorkspaceView: View {
                 List(visibleRecords, selection: $selection) { record in
                     LumenText(LocalizedStringKey(record.name)).tag(record.id)
                 }
+                .accessibilityIdentifier("workspace-records")
                 if visibleRecords.isEmpty { placeholder }
             }
             .padding(LumenSpacing.md)

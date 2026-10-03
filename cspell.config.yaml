@@ -44,6 +44,27 @@ words:
   - selector
   - rango
   - tabla
+  - Macrobenchmark
+  - fsmonitor
+  - apksigner
+  - androiddebugkey
+  - uiautomator
+  - sdcard
+  - screencap
+  - dumpsys
+  - gfxinfo
+  - framestats
+  - PROFILEDATA
+  - vsync
+  - cinco
+  - valores
+  - ejemplos
+  - Vacío
+  - Selecciona
+  - Volver
+  - Borrar
+  - búsqueda
+  - encontraron
   - registros
   - después
   - guardar
@@ -117,12 +138,10 @@ words:
   - Aumentar
   - Disminuir
   - fuera
-  - rango
   - máxima
   - resultados
   - Listo
   - Cargando
-  - Vacío
   - pudieron
   - cargar
   - proyectos
@@ -140,15 +159,6 @@ words:
   - Actualizaciones
   - completadas
   - pulltorefresh
-  - cinco
-  - valores
-  - ejemplos
-  - Selecciona
-  - Volver
-  - Borrar
-  - búsqueda
-  - encontraron
-  - registros
   - Cambios
   - guardados
   - localmente
@@ -383,7 +393,6 @@ words:
   - npx
   - nums
   - overscan
-  - paintpalette
   - phonenumbers
   - pipefail
   - popconfirm
@@ -472,6 +481,11 @@ words:
   - xcodegen
   - xcodeproj
   - xcassets
+  - XCUI
+  - XCTOS
+  - udid
+  - xcresult
+  - xcresulttool
   - reactnative
   - reactjs
   - webdev
