@@ -6,6 +6,7 @@ import { resolve } from "node:path";
 import test from "node:test";
 
 const repositoryRoot = resolve(import.meta.dirname, "..");
+const lumen4Contract = JSON.parse(await readFile(resolve(repositoryRoot, "registry/lumen-4-contract.json"), "utf8"));
 
 const checkerPath = resolve(
   repositoryRoot,
@@ -64,12 +65,28 @@ const createCandidate = async (major = 2) => {
     0,
   );
 
+  const draft = major === 4 ? structuredClone(lumen4Contract) : {
+    schemaVersion: 1,
+    status: "draft",
+    targetVersion: `${major}.0.0`,
+  };
+
+  draft.status = "draft";
+
+  delete draft.approval;
+
+  if (major === 4) {
+    for (const path of new Set(draft.changes.flatMap(change => [...change.evidence, ...change.docs]))) {
+      const target = resolve(directory, path);
+
+      await mkdir(resolve(target, ".."), { recursive: true });
+
+      await writeFile(target, "Reviewed release fixture evidence\n");
+    }
+  }
+
   await Promise.all([
-    writeContract(directory, {
-      schemaVersion: 1,
-      status: "draft",
-      targetVersion: `${major}.0.0`,
-    }, major),
+    writeContract(directory, draft, major),
     writeFile(resolve(directory, "source.txt"), "reviewed source\n"),
   ]);
 
@@ -92,9 +109,13 @@ const approveCandidate = async (directory, reviewedRevision, major = 2) => {
   await writeContract(directory, {
     ...draft,
     approval: {
-      approver: "Release owner",
+      approver: "Santiago Molina (release owner)",
       date: "2026-09-01",
-      evidence: ["https://github.com/santi020k/lumen/issues/200"],
+      decision: "Publish the reviewed release candidate.",
+      evidence: [
+        `https://github.com/santi020k/lumen/commit/${reviewedRevision}`,
+        "https://github.com/santi020k/lumen/issues/200",
+      ],
       reviewedRevision,
     },
     status: "approved",
@@ -148,6 +169,54 @@ for (const major of [4, 5]) {
     }
   });
 }
+
+test('the direct v4 publication guard rejects status and revision without attributable approval evidence', async () => {
+  const { directory, reviewedRevision } = await createCandidate(4);
+
+  try {
+    const draft = JSON.parse(await readFile(resolve(directory, 'registry/lumen-4-contract.json'), 'utf8'));
+
+    await writeContract(directory, {
+      ...draft,
+      status: 'approved',
+      approval: { reviewedRevision },
+    }, 4);
+
+    commit(directory, 'test: write incomplete release approval');
+
+    const result = runChecker(directory, [], 4);
+
+    assert.notEqual(result.status, 0);
+
+    assert.match(result.stderr, /approval\.approver must be a non-empty string/);
+
+    assert.match(result.stderr, /approval\.decision must be a non-empty string/);
+
+    assert.match(result.stderr, /approval\.evidence must be a non-empty string array/);
+  } finally {
+    await rm(directory, { force: true, recursive: true });
+  }
+});
+
+test('the direct v4 publication guard checks evidence in its target repository', async () => {
+  const { directory, reviewedRevision } = await createCandidate(4);
+
+  try {
+    await approveCandidate(directory, reviewedRevision, 4);
+
+    await rm(resolve(directory, 'docs/lumen-4-readiness.md'));
+
+    commit(directory, 'test: remove candidate evidence');
+
+    const result = runChecker(directory, [], 4);
+
+    assert.notEqual(result.status, 0);
+
+    assert.match(result.stderr, /Referenced file does not exist: docs\/lumen-4-readiness\.md/);
+  } finally {
+    await rm(directory, { force: true, recursive: true });
+  }
+});
 
 test("does not require approval ancestry before the initial stable major", async () => {
   const directory = await mkdtemp(resolve(tmpdir(), "lumen-pre-v2-approval-"));

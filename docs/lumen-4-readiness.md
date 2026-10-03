@@ -65,6 +65,11 @@ resets, and mixed-chart Y alignment. Each finding was accepted and corrected wit
 coverage. Browser-triggered reset checks also established that synchronization must happen after
 the native reset default action, with canceled resets and disconnected controls preserved.
 
+The final candidate review also identified incomplete v4 approval validation. The corrected gate
+requires attribution, a valid date, a decision record and exact-revision evidence; both publication
+workflows enforce it. The reviewer independently passed 55 contract, revision and workflow tests
+and confirmed that no actionable findings remain. The v4 contract is still a draft.
+
 Fifteen published projects now have fresh anonymous desktop and phone captures, with exact
 [capture provenance](showcase-captures.json). The homepage and community gallery share one data
 source. Removed 24 superseded, unreferenced image assets. KinJar remains a development consumer;

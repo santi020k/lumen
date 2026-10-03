@@ -434,6 +434,7 @@ test("npm publication validates the contract and current stability ledger", () =
     "node scripts/check-graduated-release-revision.mjs",
     "node scripts/check-lumen-2-contract.mjs",
     "pnpm run check:lumen-3-contract -- --require-approved",
+    "node scripts/check-lumen-4-contract.mjs --require-approved",
     "pnpm run check:web-consumer-evidence",
     "pnpm run check:native-consumer-evidence",
     "pnpm run check:native-stability-soak",
@@ -443,6 +444,37 @@ test("npm publication validates the contract and current stability ledger", () =
     !npmWorkflow.includes("pnpm run check:native-stable-readiness"),
     "initial npm publication must keep deferred platform qualification advisory",
   );
+});
+
+test('v4 contract changes trigger canaries and are checked before publication', async () => {
+  const packageManifest = JSON.parse(await readFile(resolve(repositoryRoot, 'package.json'), 'utf8'));
+
+  for (const path of [
+    'registry/lumen-4-contract.json',
+    'scripts/check-lumen-4-contract.mjs',
+    'scripts/check-lumen-4-contract.test.mjs',
+  ]) {
+    assert.ok(canaryWorkflow.includes(`      - "${path}"`), `${path} must trigger the canary`);
+
+    assertSelectsCanary(path, 'web');
+  }
+
+  for (const command of ['pnpm run check:lumen-4-contract', 'pnpm run test:lumen-4-contract']) {
+    assert.ok(packageManifest.scripts.validate.includes(command));
+
+    assert.ok(canaryWorkflow.includes(command));
+  }
+
+  assertOrderedCommands(npmWorkflow, 'v4 npm publication', [
+    'node scripts/check-lumen-4-contract.mjs --require-approved',
+    'name: Create release pull request or publish',
+  ]);
+
+  assertOrderedCommands(composeWorkflow, 'v4 Compose publication', [
+    'node scripts/check-lumen-4-contract.mjs --require-approved',
+    'name: Validate publication credentials',
+    'name: Upload to Maven Central',
+  ]);
 });
 
 test("initial npm publication verifies the complete family before tagging", () => {
@@ -518,6 +550,7 @@ test("Compose publication validates the contract and current stability ledger", 
     "node scripts/check-graduated-release-revision.mjs",
     "node scripts/check-lumen-2-contract.mjs",
     "node scripts/check-lumen-3-contract.mjs --require-approved",
+    "node scripts/check-lumen-4-contract.mjs --require-approved",
     "node scripts/check-native-stability-soak.mjs",
   ]);
 

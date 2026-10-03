@@ -27,6 +27,15 @@
         "pnpm run test:a11y",
         "swift test",
         "cd packages/compose && ./gradlew test lint apiCheck"
+      ],
+      "packages": [
+        "@santi020k/lumen-core",
+        "@santi020k/lumen-astro",
+        "@santi020k/lumen-react",
+        "@santi020k/lumen-elements",
+        "@santi020k/lumen-react-native",
+        "LumenUI",
+        "com.santi020k:lumen-compose"
       ]
     },
     {

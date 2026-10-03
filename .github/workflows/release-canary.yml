@@ -56,6 +56,8 @@ on:
       - "scripts/check-lumen-2-contract.test.mjs"
       - "scripts/check-lumen-3-contract.mjs"
       - "scripts/check-lumen-3-contract.test.mjs"
+      - "scripts/check-lumen-4-contract.mjs"
+      - "scripts/check-lumen-4-contract.test.mjs"
       - "scripts/check-maven-release-artifacts.mjs"
       - "scripts/check-maven-release-artifacts.test.mjs"
       - "scripts/check-maven-pom-metadata.mjs"
@@ -165,7 +167,9 @@ jobs:
           pnpm run check:lumen-2-contract &&
           pnpm run test:lumen-2-contract &&
           pnpm run check:lumen-3-contract &&
-          pnpm run test:lumen-3-contract
+          pnpm run test:lumen-3-contract &&
+          pnpm run check:lumen-4-contract &&
+          pnpm run test:lumen-4-contract
       - name: Enforce coordinated native release gates
         if: needs.classify.outputs.native == 'true'
         run: >-

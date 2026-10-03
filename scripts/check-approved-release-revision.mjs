@@ -3,6 +3,8 @@ import { spawnSync } from "node:child_process";
 import { readFile } from "node:fs/promises";
 import { relative, resolve, sep } from "node:path";
 
+import { validateLumen4Contract, validateLumen4ContractReferences } from "./check-lumen-4-contract.mjs";
+
 const repositoryRoot = resolve(import.meta.dirname, "..");
 
 const readArgument = (name) => {
@@ -86,6 +88,15 @@ assert.equal(
   "approved",
   `Initial ${releaseLabel} publication requires an approved contract`,
 );
+
+if (major === 4) {
+  const failures = [
+    ...validateLumen4Contract(contract, { requireApproved: true }),
+    ...await validateLumen4ContractReferences(contract, repository),
+  ];
+
+  assert.deepEqual(failures, [], `Lumen 4 contract validation failed:\n${failures.join("\n")}`);
+}
 
 assert.match(
   contract.approval?.reviewedRevision ?? "",
