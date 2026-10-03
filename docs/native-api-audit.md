@@ -25,8 +25,8 @@ the same way as handwritten exports; their generator remains the editing source 
 
 | Adapter | Public inventory | Classification | Compatibility enforcement | Remaining work |
 | --- | --- | --- | --- | --- |
-| React Native | 243 exports across the package root and optional datetime entrypoint | 243 Supported; 0 Experimental phone exports; 0 Deprecated | `pnpm run check:native-api-baseline` compares both TypeScript entrypoints with `registry/native-api-baseline.json` | Retain the approved baseline across two ordinary stability iterations |
-| SwiftUI | Current symbol graphs: 3,154 macOS, 3,131 iOS, 2,968 tvOS, 3,131 visionOS, and 2,988 watchOS symbols | Every classified symbol is Supported on each platform; 0 Experimental, Deprecated, or Unclassified | `pnpm run check:swift-api-baseline` rebuilds every declared platform and compares it with `registry/swift-api-baseline.json`; `pnpm run check:swift-source-compatibility` checks the six reviewed initializer replacements relative to `v3.0.1` for the v4 candidate | Keep the current major contract and migration guidance aligned with intentional signature changes |
+| React Native | 243 unique exports across the package root, datetime, and foundations entrypoints | 243 Supported; 0 Experimental phone exports; 0 Deprecated | `pnpm run check:native-api-baseline` compares all three TypeScript entrypoints with `registry/native-api-baseline.json` | Retain the approved baseline across two ordinary stability iterations |
+| SwiftUI | Current symbol graphs: 3,154 macOS, 3,131 iOS, 2,968 tvOS, 3,131 visionOS, and 2,988 watchOS symbols | Every classified symbol is Supported on each platform; 0 Experimental, Deprecated, or Unclassified | `pnpm run check:swift-api-baseline` rebuilds every declared platform and compares it with `registry/swift-api-baseline.json`; `pnpm run check:swift-source-compatibility` checks six initializer replacements and seven sheet diagnostics relative to `v3.0.1` for the v4 candidate | Keep the current major contract and migration guidance aligned with intentional signature changes |
 | WidgetKit | Reviewed `LumenWidgetUI` symbol graphs: 71 each on macOS, iOS, and watchOS | 71 Supported; 0 Experimental, Deprecated, or Unclassified on every supported widget platform | `pnpm run check:swift-api-baseline` rebuilds both Swift products and compares `registry/swift-widget-api-baseline.json` | Keep the focused product independent from the complete `LumenUI` application catalog |
 | Compose | 155 classified public declarations in `packages/compose/api/lumen-compose.api` | 155 Supported; 0 Experimental or Deprecated | `./gradlew apiCheck` compares the release artifact with the reviewed binary API dump; `pnpm run check:compose-api-classification` enforces declaration maturity | Retain the approved baseline across two ordinary stability iterations |
 | Wear OS | 7 classified declarations in `packages/compose/wear/api/wear.api` | 7 Supported; 0 Experimental; 3 implementation helpers made Internal | Root `./gradlew apiCheck` compares the separate artifact dump; `pnpm run check:wear-api-classification` enforces classifications | Confirm active-product and physical-watch behavior, then retain the approved dump across two ordinary stability iterations |
@@ -35,8 +35,8 @@ the same way as handwritten exports; their generator remains the editing source 
 
 `registry/native-api-baseline.json` is reviewed API metadata, not generated output. Every named
 export from the root or an approved subpath must appear in exactly one classification, arrays remain
-sorted, and wildcard exports are rejected because they can bypass classification. Symbols cannot
-be duplicated across stable entrypoints. An intentional API change updates implementation, types,
+sorted, and wildcard exports are rejected because they can bypass classification. An optional entrypoint may re-export an existing symbol while retaining the same reviewed
+classification. An intentional API change updates implementation, types,
 documentation, tests, the baseline, and migration notes together.
 
 The baseline check is part of `pnpm run validate`. A changed entrypoint therefore fails before a

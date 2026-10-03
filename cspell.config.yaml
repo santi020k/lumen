@@ -1,6 +1,37 @@
 version: "0.2"
 language: en
 words:
+  - cinco
+  - valores
+  - ejemplos
+  - Vacío
+  - Selecciona
+  - Volver
+  - Borrar
+  - búsqueda
+  - encontraron
+  - registros
+  - pudieron
+  - cargar
+  - Cargando
+  - Reintentar
+  - Guardar
+  - Cambios
+  - guardados
+  - localmente
+  - Buscar
+  - ejemplo
+  - Espacio
+  - trabajo
+  - semanal
+  - dirección
+  - Nombre
+  - Notas
+  - obligatorio
+  - Resumen
+  - Contenido
+  - Vistas
+  - Listo
   - valuetext
   - Comparar
   - ajustes

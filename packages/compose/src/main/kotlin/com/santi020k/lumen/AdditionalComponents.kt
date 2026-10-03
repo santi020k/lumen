@@ -77,6 +77,7 @@ fun LumenFieldGroup(
     description: String? = null,
     errorMessage: String? = null,
     required: Boolean = false,
+    requiredLabel: String = "required",
     content: @Composable () -> Unit
 ) {
     val colors = LocalLumenTheme.current.colors
@@ -85,7 +86,7 @@ fun LumenFieldGroup(
         Text(
             text = if (required) "$label *" else label,
             modifier = if (required) {
-                Modifier.clearAndSetSemantics { contentDescription = "$label, required" }
+                Modifier.clearAndSetSemantics { contentDescription = "$label, $requiredLabel" }
             } else {
                 Modifier
             },

@@ -57,6 +57,13 @@ presentation and operating-system sharing. Overlays accept application-supplied 
 and sheets scroll application content by default so actions remain reachable with large text and
 short viewports. Set `scrollable={false}` when the child is already a virtualized scrolling
 container.
+Sheets use a full-content scrolling fallback at large accessibility text sizes or short window
+heights. `dismissible={false}` guards backdrop and platform dismissal while the application saves.
+Pass `initialFocusRef` and `returnFocusRef` when an accessible application-owned control should
+receive focus after presentation or closing. Both refs must point to mounted native controls;
+Lumen leaves the choice of field and trigger to the application.
+`LumenFieldGroup.requiredLabel` and `LumenTabs.panelAccessibilityLabel` accept translated spoken
+text. A tab panel otherwise uses its selected tab's visible label without an English suffix.
 Cards accept semantic `padding` and `radius` roles while preserving the extra-large/large defaults.
 Status bars use a distinct decorative icon for every tone and accept `iconName` when a product needs
 a more specific symbol, so visual status is not conveyed by color alone.
@@ -394,3 +401,19 @@ unrelated actions independently named instead of making their parent row another
 
 Part of [Lumen UI](https://lumen.santi020k.com), created by [Santiago Molina](https://santi020k.com).
 Licensed under [MIT](https://github.com/santi020k/lumen/blob/main/LICENSE); third-party artwork retains its own notices.
+
+## Small foundation imports
+
+For screens using only text, surfaces, buttons, fields, badges, dividers, and spinners, use the
+optional foundations entrypoint. It shares the root implementation and theme context while avoiding
+the root catalog, chart, phone, and icon lookup imports. Mixing entrypoints uses the same provider.
+
+```tsx
+import { LumenButton, LumenProvider } from '@santi020k/lumen-react-native/foundations'
+
+<LumenProvider><LumenButton>Continue</LumenButton></LumenProvider>
+```
+
+Run `pnpm run measure:react-native-imports` from the repository to compare production Hermes
+bytecode for a platform baseline, root button, root icon, and foundation button. Build time is a
+local build measurement; it does not establish native startup latency or scrolling performance.

@@ -28209,22 +28209,22 @@
           "precise": "s:7SwiftUI4ViewP05LumenB0E08lumenTabC15BottomAccessory9isEnabled7contentQrSb_qd__yXEtAaBRd__lF"
         },
         {
-          "declaration": "@MainActor func lumenSheet<SheetContent, Actions>(isPresented: Binding<Bool>, title: LocalizedStringKey? = nil, description: LocalizedStringKey? = nil, onDismiss: @escaping () -> Void = {}, @ViewBuilder actions: () -> Actions, @ViewBuilder content: () -> SheetContent) -> some View where SheetContent : View, Actions : View\n",
+          "declaration": "@MainActor func lumenSheet<SheetContent, Actions>(isPresented: Binding<Bool>, title: LocalizedStringKey? = nil, description: LocalizedStringKey? = nil, dismissible: Bool = true, scrollable: Bool = true, onDismiss: @escaping () -> Void = {}, @ViewBuilder actions: () -> Actions, @ViewBuilder content: () -> SheetContent) -> some View where SheetContent : View, Actions : View\n",
           "kind": "swift.method",
           "path": [
             "View",
-            "lumenSheet(isPresented:title:description:onDismiss:actions:content:)"
+            "lumenSheet(isPresented:title:description:dismissible:scrollable:onDismiss:actions:content:)"
           ],
-          "precise": "s:7SwiftUI4ViewP05LumenB0E10lumenSheet11isPresented5title11description9onDismiss7actions7contentQrAA7BindingVySbG_AA18LocalizedStringKeyVSgAQyycqd_0_yXEqd__yXEtAaBRd__AaBRd_0_r0_lF"
+          "precise": "s:7SwiftUI4ViewP05LumenB0E10lumenSheet11isPresented5title11description11dismissible10scrollable9onDismiss7actions7contentQrAA7BindingVySbG_AA18LocalizedStringKeyVSgASS2byycqd_0_yXEqd__yXEtAaBRd__AaBRd_0_r0_lF"
         },
         {
-          "declaration": "@MainActor func lumenSheet<SheetContent>(isPresented: Binding<Bool>, title: LocalizedStringKey? = nil, description: LocalizedStringKey? = nil, onDismiss: @escaping () -> Void = {}, @ViewBuilder content: () -> SheetContent) -> some View where SheetContent : View\n",
+          "declaration": "@MainActor func lumenSheet<SheetContent>(isPresented: Binding<Bool>, title: LocalizedStringKey? = nil, description: LocalizedStringKey? = nil, dismissible: Bool = true, scrollable: Bool = true, onDismiss: @escaping () -> Void = {}, @ViewBuilder content: () -> SheetContent) -> some View where SheetContent : View\n",
           "kind": "swift.method",
           "path": [
             "View",
-            "lumenSheet(isPresented:title:description:onDismiss:content:)"
+            "lumenSheet(isPresented:title:description:dismissible:scrollable:onDismiss:content:)"
           ],
-          "precise": "s:7SwiftUI4ViewP05LumenB0E10lumenSheet11isPresented5title11description9onDismiss7contentQrAA7BindingVySbG_AA18LocalizedStringKeyVSgAPyycqd__yXEtAaBRd__lF"
+          "precise": "s:7SwiftUI4ViewP05LumenB0E10lumenSheet11isPresented5title11description11dismissible10scrollable9onDismiss7contentQrAA7BindingVySbG_AA18LocalizedStringKeyVSgARS2byycqd__yXEtAaBRd__lF"
         },
         {
           "declaration": "@ViewBuilder @MainActor func lumenTheme(_ theme: LumenTheme, enforceColorScheme: Bool = true, applyTint: Bool) -> some View\n",
@@ -56289,22 +56289,22 @@
           "precise": "s:7SwiftUI4ViewP05LumenB0E08lumenTabC15BottomAccessory9isEnabled7contentQrSb_qd__yXEtAaBRd__lF"
         },
         {
-          "declaration": "@MainActor func lumenSheet<SheetContent, Actions>(isPresented: Binding<Bool>, title: LocalizedStringKey? = nil, description: LocalizedStringKey? = nil, onDismiss: @escaping () -> Void = {}, @ViewBuilder actions: () -> Actions, @ViewBuilder content: () -> SheetContent) -> some View where SheetContent : View, Actions : View\n",
+          "declaration": "@MainActor func lumenSheet<SheetContent, Actions>(isPresented: Binding<Bool>, title: LocalizedStringKey? = nil, description: LocalizedStringKey? = nil, dismissible: Bool = true, scrollable: Bool = true, onDismiss: @escaping () -> Void = {}, @ViewBuilder actions: () -> Actions, @ViewBuilder content: () -> SheetContent) -> some View where SheetContent : View, Actions : View\n",
           "kind": "swift.method",
           "path": [
             "View",
-            "lumenSheet(isPresented:title:description:onDismiss:actions:content:)"
+            "lumenSheet(isPresented:title:description:dismissible:scrollable:onDismiss:actions:content:)"
           ],
-          "precise": "s:7SwiftUI4ViewP05LumenB0E10lumenSheet11isPresented5title11description9onDismiss7actions7contentQrAA7BindingVySbG_AA18LocalizedStringKeyVSgAQyycqd_0_yXEqd__yXEtAaBRd__AaBRd_0_r0_lF"
+          "precise": "s:7SwiftUI4ViewP05LumenB0E10lumenSheet11isPresented5title11description11dismissible10scrollable9onDismiss7actions7contentQrAA7BindingVySbG_AA18LocalizedStringKeyVSgASS2byycqd_0_yXEqd__yXEtAaBRd__AaBRd_0_r0_lF"
         },
         {
-          "declaration": "@MainActor func lumenSheet<SheetContent>(isPresented: Binding<Bool>, title: LocalizedStringKey? = nil, description: LocalizedStringKey? = nil, onDismiss: @escaping () -> Void = {}, @ViewBuilder content: () -> SheetContent) -> some View where SheetContent : View\n",
+          "declaration": "@MainActor func lumenSheet<SheetContent>(isPresented: Binding<Bool>, title: LocalizedStringKey? = nil, description: LocalizedStringKey? = nil, dismissible: Bool = true, scrollable: Bool = true, onDismiss: @escaping () -> Void = {}, @ViewBuilder content: () -> SheetContent) -> some View where SheetContent : View\n",
           "kind": "swift.method",
           "path": [
             "View",
-            "lumenSheet(isPresented:title:description:onDismiss:content:)"
+            "lumenSheet(isPresented:title:description:dismissible:scrollable:onDismiss:content:)"
           ],
-          "precise": "s:7SwiftUI4ViewP05LumenB0E10lumenSheet11isPresented5title11description9onDismiss7contentQrAA7BindingVySbG_AA18LocalizedStringKeyVSgAPyycqd__yXEtAaBRd__lF"
+          "precise": "s:7SwiftUI4ViewP05LumenB0E10lumenSheet11isPresented5title11description11dismissible10scrollable9onDismiss7contentQrAA7BindingVySbG_AA18LocalizedStringKeyVSgARS2byycqd__yXEtAaBRd__lF"
         },
         {
           "declaration": "@ViewBuilder @MainActor func lumenTheme(_ theme: LumenTheme, enforceColorScheme: Bool = true, applyTint: Bool) -> some View\n",
@@ -82936,22 +82936,22 @@
           "precise": "s:7SwiftUI4ViewP05LumenB0E08lumenTabC15BottomAccessory9isEnabled7contentQrSb_qd__yXEtAaBRd__lF"
         },
         {
-          "declaration": "@MainActor func lumenSheet<SheetContent, Actions>(isPresented: Binding<Bool>, title: LocalizedStringKey? = nil, description: LocalizedStringKey? = nil, onDismiss: @escaping () -> Void = {}, @ViewBuilder actions: () -> Actions, @ViewBuilder content: () -> SheetContent) -> some View where SheetContent : View, Actions : View\n",
+          "declaration": "@MainActor func lumenSheet<SheetContent, Actions>(isPresented: Binding<Bool>, title: LocalizedStringKey? = nil, description: LocalizedStringKey? = nil, dismissible: Bool = true, scrollable: Bool = true, onDismiss: @escaping () -> Void = {}, @ViewBuilder actions: () -> Actions, @ViewBuilder content: () -> SheetContent) -> some View where SheetContent : View, Actions : View\n",
           "kind": "swift.method",
           "path": [
             "View",
-            "lumenSheet(isPresented:title:description:onDismiss:actions:content:)"
+            "lumenSheet(isPresented:title:description:dismissible:scrollable:onDismiss:actions:content:)"
           ],
-          "precise": "s:7SwiftUI4ViewP05LumenB0E10lumenSheet11isPresented5title11description9onDismiss7actions7contentQrAA7BindingVySbG_AA18LocalizedStringKeyVSgAQyycqd_0_yXEqd__yXEtAaBRd__AaBRd_0_r0_lF"
+          "precise": "s:7SwiftUI4ViewP05LumenB0E10lumenSheet11isPresented5title11description11dismissible10scrollable9onDismiss7actions7contentQrAA7BindingVySbG_AA18LocalizedStringKeyVSgASS2byycqd_0_yXEqd__yXEtAaBRd__AaBRd_0_r0_lF"
         },
         {
-          "declaration": "@MainActor func lumenSheet<SheetContent>(isPresented: Binding<Bool>, title: LocalizedStringKey? = nil, description: LocalizedStringKey? = nil, onDismiss: @escaping () -> Void = {}, @ViewBuilder content: () -> SheetContent) -> some View where SheetContent : View\n",
+          "declaration": "@MainActor func lumenSheet<SheetContent>(isPresented: Binding<Bool>, title: LocalizedStringKey? = nil, description: LocalizedStringKey? = nil, dismissible: Bool = true, scrollable: Bool = true, onDismiss: @escaping () -> Void = {}, @ViewBuilder content: () -> SheetContent) -> some View where SheetContent : View\n",
           "kind": "swift.method",
           "path": [
             "View",
-            "lumenSheet(isPresented:title:description:onDismiss:content:)"
+            "lumenSheet(isPresented:title:description:dismissible:scrollable:onDismiss:content:)"
           ],
-          "precise": "s:7SwiftUI4ViewP05LumenB0E10lumenSheet11isPresented5title11description9onDismiss7contentQrAA7BindingVySbG_AA18LocalizedStringKeyVSgAPyycqd__yXEtAaBRd__lF"
+          "precise": "s:7SwiftUI4ViewP05LumenB0E10lumenSheet11isPresented5title11description11dismissible10scrollable9onDismiss7contentQrAA7BindingVySbG_AA18LocalizedStringKeyVSgARS2byycqd__yXEtAaBRd__lF"
         },
         {
           "declaration": "@ViewBuilder @MainActor func lumenTheme(_ theme: LumenTheme, enforceColorScheme: Bool = true, applyTint: Bool) -> some View\n",
@@ -111016,22 +111016,22 @@
           "precise": "s:7SwiftUI4ViewP05LumenB0E08lumenTabC15BottomAccessory9isEnabled7contentQrSb_qd__yXEtAaBRd__lF"
         },
         {
-          "declaration": "@MainActor func lumenSheet<SheetContent, Actions>(isPresented: Binding<Bool>, title: LocalizedStringKey? = nil, description: LocalizedStringKey? = nil, onDismiss: @escaping () -> Void = {}, @ViewBuilder actions: () -> Actions, @ViewBuilder content: () -> SheetContent) -> some View where SheetContent : View, Actions : View\n",
+          "declaration": "@MainActor func lumenSheet<SheetContent, Actions>(isPresented: Binding<Bool>, title: LocalizedStringKey? = nil, description: LocalizedStringKey? = nil, dismissible: Bool = true, scrollable: Bool = true, onDismiss: @escaping () -> Void = {}, @ViewBuilder actions: () -> Actions, @ViewBuilder content: () -> SheetContent) -> some View where SheetContent : View, Actions : View\n",
           "kind": "swift.method",
           "path": [
             "View",
-            "lumenSheet(isPresented:title:description:onDismiss:actions:content:)"
+            "lumenSheet(isPresented:title:description:dismissible:scrollable:onDismiss:actions:content:)"
           ],
-          "precise": "s:7SwiftUI4ViewP05LumenB0E10lumenSheet11isPresented5title11description9onDismiss7actions7contentQrAA7BindingVySbG_AA18LocalizedStringKeyVSgAQyycqd_0_yXEqd__yXEtAaBRd__AaBRd_0_r0_lF"
+          "precise": "s:7SwiftUI4ViewP05LumenB0E10lumenSheet11isPresented5title11description11dismissible10scrollable9onDismiss7actions7contentQrAA7BindingVySbG_AA18LocalizedStringKeyVSgASS2byycqd_0_yXEqd__yXEtAaBRd__AaBRd_0_r0_lF"
         },
         {
-          "declaration": "@MainActor func lumenSheet<SheetContent>(isPresented: Binding<Bool>, title: LocalizedStringKey? = nil, description: LocalizedStringKey? = nil, onDismiss: @escaping () -> Void = {}, @ViewBuilder content: () -> SheetContent) -> some View where SheetContent : View\n",
+          "declaration": "@MainActor func lumenSheet<SheetContent>(isPresented: Binding<Bool>, title: LocalizedStringKey? = nil, description: LocalizedStringKey? = nil, dismissible: Bool = true, scrollable: Bool = true, onDismiss: @escaping () -> Void = {}, @ViewBuilder content: () -> SheetContent) -> some View where SheetContent : View\n",
           "kind": "swift.method",
           "path": [
             "View",
-            "lumenSheet(isPresented:title:description:onDismiss:content:)"
+            "lumenSheet(isPresented:title:description:dismissible:scrollable:onDismiss:content:)"
           ],
-          "precise": "s:7SwiftUI4ViewP05LumenB0E10lumenSheet11isPresented5title11description9onDismiss7contentQrAA7BindingVySbG_AA18LocalizedStringKeyVSgAPyycqd__yXEtAaBRd__lF"
+          "precise": "s:7SwiftUI4ViewP05LumenB0E10lumenSheet11isPresented5title11description11dismissible10scrollable9onDismiss7contentQrAA7BindingVySbG_AA18LocalizedStringKeyVSgARS2byycqd__yXEtAaBRd__lF"
         },
         {
           "declaration": "@ViewBuilder @MainActor func lumenTheme(_ theme: LumenTheme, enforceColorScheme: Bool = true, applyTint: Bool) -> some View\n",
@@ -137817,22 +137817,22 @@
           "precise": "s:7SwiftUI4ViewP05LumenB0E08lumenTabC15BottomAccessory9isEnabled7contentQrSb_qd__yXEtAaBRd__lF"
         },
         {
-          "declaration": "@MainActor func lumenSheet<SheetContent, Actions>(isPresented: Binding<Bool>, title: LocalizedStringKey? = nil, description: LocalizedStringKey? = nil, onDismiss: @escaping () -> Void = {}, @ViewBuilder actions: () -> Actions, @ViewBuilder content: () -> SheetContent) -> some View where SheetContent : View, Actions : View\n",
+          "declaration": "@MainActor func lumenSheet<SheetContent, Actions>(isPresented: Binding<Bool>, title: LocalizedStringKey? = nil, description: LocalizedStringKey? = nil, dismissible: Bool = true, scrollable: Bool = true, onDismiss: @escaping () -> Void = {}, @ViewBuilder actions: () -> Actions, @ViewBuilder content: () -> SheetContent) -> some View where SheetContent : View, Actions : View\n",
           "kind": "swift.method",
           "path": [
             "View",
-            "lumenSheet(isPresented:title:description:onDismiss:actions:content:)"
+            "lumenSheet(isPresented:title:description:dismissible:scrollable:onDismiss:actions:content:)"
           ],
-          "precise": "s:7SwiftUI4ViewP05LumenB0E10lumenSheet11isPresented5title11description9onDismiss7actions7contentQrAA7BindingVySbG_AA18LocalizedStringKeyVSgAQyycqd_0_yXEqd__yXEtAaBRd__AaBRd_0_r0_lF"
+          "precise": "s:7SwiftUI4ViewP05LumenB0E10lumenSheet11isPresented5title11description11dismissible10scrollable9onDismiss7actions7contentQrAA7BindingVySbG_AA18LocalizedStringKeyVSgASS2byycqd_0_yXEqd__yXEtAaBRd__AaBRd_0_r0_lF"
         },
         {
-          "declaration": "@MainActor func lumenSheet<SheetContent>(isPresented: Binding<Bool>, title: LocalizedStringKey? = nil, description: LocalizedStringKey? = nil, onDismiss: @escaping () -> Void = {}, @ViewBuilder content: () -> SheetContent) -> some View where SheetContent : View\n",
+          "declaration": "@MainActor func lumenSheet<SheetContent>(isPresented: Binding<Bool>, title: LocalizedStringKey? = nil, description: LocalizedStringKey? = nil, dismissible: Bool = true, scrollable: Bool = true, onDismiss: @escaping () -> Void = {}, @ViewBuilder content: () -> SheetContent) -> some View where SheetContent : View\n",
           "kind": "swift.method",
           "path": [
             "View",
-            "lumenSheet(isPresented:title:description:onDismiss:content:)"
+            "lumenSheet(isPresented:title:description:dismissible:scrollable:onDismiss:content:)"
           ],
-          "precise": "s:7SwiftUI4ViewP05LumenB0E10lumenSheet11isPresented5title11description9onDismiss7contentQrAA7BindingVySbG_AA18LocalizedStringKeyVSgAPyycqd__yXEtAaBRd__lF"
+          "precise": "s:7SwiftUI4ViewP05LumenB0E10lumenSheet11isPresented5title11description11dismissible10scrollable9onDismiss7contentQrAA7BindingVySbG_AA18LocalizedStringKeyVSgARS2byycqd__yXEtAaBRd__lF"
         },
         {
           "declaration": "@ViewBuilder @MainActor func lumenTheme(_ theme: LumenTheme, enforceColorScheme: Bool = true, applyTint: Bool) -> some View\n",

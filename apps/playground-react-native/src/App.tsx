@@ -110,6 +110,7 @@ import {
   isAppDestination,
   isComponentCategory
 } from './playground-model'
+import { WorkspaceExample } from './WorkspaceExample'
 
 type ColorScheme = 'dark' | 'light' | 'system'
 
@@ -422,7 +423,7 @@ const isThemePreset = (value: string): value is ThemePreset => (
 
 type ExampleState = 'empty' | 'error' | 'loading' | 'success'
 
-type ExamplePattern = 'health' | 'profile' | 'release'
+type ExamplePattern = 'health' | 'profile' | 'release' | 'workspace'
 
 type PlaygroundLocale = 'en' | 'es'
 
@@ -462,7 +463,7 @@ const isExampleState = (value: string): value is ExampleState => (
 )
 
 const isExamplePattern = (value: string): value is ExamplePattern => (
-  value === 'health' || value === 'profile' || value === 'release'
+  value === 'health' || value === 'profile' || value === 'release' || value === 'workspace'
 )
 
 const useAccessibilitySnapshot = (): AccessibilitySnapshot => {
@@ -712,6 +713,17 @@ const ExamplesScreen = (): ReactElement => {
     updateWebQueryParameter('state', state)
   }
 
+  if (pattern === 'workspace') {
+    return (
+      <WorkspaceExample onBack={() => {
+        setPattern('release')
+
+        updateWebQueryParameter('pattern', 'release')
+      }}
+      />
+    )
+  }
+
   return (
     <LumenSurface padding="none" radius="none" style={styles.screen} tone="canvas">
       <ScrollView contentContainerStyle={styles.content}>
@@ -735,7 +747,8 @@ const ExamplesScreen = (): ReactElement => {
           options={[
             { label: 'Release', value: 'release' },
             { label: 'Health', value: 'health' },
-            { label: 'Profile', value: 'profile' }
+            { label: 'Profile', value: 'profile' },
+            { label: 'Workspace', value: 'workspace' }
           ]}
           value={pattern}
         >

@@ -1,4 +1,5 @@
-import { act, type ReactElement, type Ref, useState } from 'react'
+import { act, type ComponentRef, createRef, type ReactElement, type Ref, useState } from 'react'
+import type { View } from 'react-native'
 
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker'
 import { getLumenPhoneCountry } from '@santi020k/lumen-core'
@@ -8,7 +9,7 @@ import { afterEach, describe, expect, test, vi } from 'vitest'
 import { LumenChip, LumenFieldGroup, LumenTextarea, LumenToast } from './additional-components.js'
 import { LumenDateField, LumenDateRangeField } from './datetime-components.js'
 import { LumenSearchField, LumenToggle } from './form-components.js'
-import { LumenAlertDialog, LumenSheet } from './overlay-components.js'
+import { LumenAlertDialog, LumenMenu, LumenSheet } from './overlay-components.js'
 import { LumenPhoneInput } from './phone-components.js'
 import { resolveLumenPhoneInputValue } from './phone-recipes.js'
 import { LumenButton, LumenText, LumenTextField } from './primitives.js'
@@ -21,6 +22,7 @@ Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true })
 
 const nativePlatform = vi.hoisted(() => ({ OS: 'ios' }))
 const nativeMotion = vi.hoisted(() => ({ enabled: false }))
+const accessibilityFocus = vi.hoisted(() => vi.fn())
 const nativeWindow = vi.hoisted(() => ({ fontScale: 1, height: 800, scale: 2, width: 400 }))
 const safeAreaInsets = vi.hoisted(() => ({
   bottom: 34,
@@ -46,7 +48,8 @@ vi.mock('react-native', async () => {
   return {
     AccessibilityInfo: {
       addEventListener: () => ({ remove: vi.fn() }),
-      isReduceMotionEnabled: () => Promise.resolve(nativeMotion.enabled)
+      isReduceMotionEnabled: () => Promise.resolve(nativeMotion.enabled),
+      sendAccessibilityEvent: accessibilityFocus
     },
     ActivityIndicator: hostComponent('ActivityIndicator'),
     FlatList: hostComponent('FlatList'),
@@ -179,6 +182,7 @@ afterEach(async () => {
     for (const root of roots) root.unmount()
     await Promise.resolve()
   })
+  vi.unstubAllGlobals()
 })
 
 describe('Lumen React Native component behavior', () => {
@@ -373,6 +377,19 @@ describe('Lumen React Native component behavior', () => {
 
     expect(readProp(dateRange, 'aria-invalid')).toBe(true)
     expect(readProp(dateRange, 'accessibilityHint')).toBe('Choose a valid schedule')
+  })
+
+  test('localizes required-field descriptions without exposing them on optional fields', async () => {
+    const root = await renderNative(
+      <>
+        <LumenFieldGroup label="Nombre" required requiredLabel="obligatorio"><LumenTextField /></LumenFieldGroup>
+        <LumenFieldGroup label="Notas" requiredLabel="obligatorio"><LumenTextField /></LumenFieldGroup>
+      </>
+    )
+
+    expect(findByAccessibilityLabel(root, 'Nombre, obligatorio')).toBeDefined()
+    expect(root.container.queryAll(instance => readProp(instance, 'accessibilityLabel') === 'Notas, obligatorio')).toHaveLength(0)
+    expect(findByAccessibilityLabel(root, 'Notas')).toBeDefined()
   })
 
   test('field groups provide inherited native and web relationships without overriding inputs', async () => {
@@ -1021,6 +1038,25 @@ describe('Lumen React Native component behavior', () => {
     expect(onValueChange).toHaveBeenCalledExactlyOnceWith('overview')
   })
 
+  test('uses the translated tab label by default and accepts an explicit translated panel name', async () => {
+    const fixture = (panelAccessibilityLabel?: string): ReactElement => (
+      <LumenTabs label="Vistas" onValueChange={vi.fn()} options={[{ label: 'Resumen', value: 'overview' }]} {...(panelAccessibilityLabel ? { panelAccessibilityLabel } : {})} value="overview">
+        <LumenText>Contenido</LumenText>
+      </LumenTabs>
+    )
+    const root = await renderNative(fixture())
+    const panel = root.container.queryAll(instance => readProp(instance, 'role') === 'tabpanel')[0]
+    if (!panel) throw new Error('Missing tab panel')
+    expect(readProp(panel, 'accessibilityLabel')).toBe('Resumen')
+    await act(async () => {
+      root.render(<LumenProvider>{fixture('Contenido del resumen')}</LumenProvider>)
+      await Promise.resolve()
+    })
+    const translatedPanel = root.container.queryAll(instance => readProp(instance, 'role') === 'tabpanel')[0]
+    if (!translatedPanel) throw new Error('Missing translated tab panel')
+    expect(readProp(translatedPanel, 'accessibilityLabel')).toBe('Contenido del resumen')
+  })
+
   test('tabs support directional keyboard navigation without selecting disabled tabs', async () => {
     const onValueChange = vi.fn<(value: string) => void>()
     const KeyboardTabsFixture = (): ReactElement => {
@@ -1104,7 +1140,75 @@ describe('LumenSheet consumer layouts', () => {
   afterEach(() => {
     nativeMotion.enabled = false
     nativeWindow.width = 400
+    nativeWindow.height = 800
+    nativeWindow.fontScale = 1
     nativePlatform.OS = 'ios'
+    accessibilityFocus.mockClear()
+  })
+
+  test.each([
+    { fontScale: 2, height: 800, alignment: 'center' },
+    { fontScale: 1, height: 320, alignment: 'flex-end' }
+  ])('keeps headings and actions scrollable when space is limited: %j', async ({ alignment, ...window }) => {
+    Object.assign(nativeWindow, window, { width: 1024 })
+    const root = await renderNative(
+      <LumenSheet actions={<LumenButton>Save changes</LumenButton>} onDismiss={vi.fn()} presentation="adaptive" title="A long translated heading" visible>
+        <LumenTextField accessibilityLabel="Details" />
+      </LumenSheet>
+    )
+    const scroll = findHostComponent(root, 'ScrollView')
+
+    expect(scroll.queryAll(instance => readProp(instance, 'accessibilityRole') === 'header')).toHaveLength(1)
+    expect(scroll.queryAll(instance => readProp(instance, 'accessibilityRole') === 'button')).toHaveLength(1)
+    expect(readProp(scroll, 'keyboardShouldPersistTaps')).toBe('handled')
+    expect(readProp(findHostComponent(root, 'KeyboardAvoidingView'), 'style')).toMatchObject({ justifyContent: alignment })
+  })
+
+  test('preserves application-owned virtualization at accessibility text sizes', async () => {
+    nativeWindow.fontScale = 3
+    const root = await renderNative(
+      <LumenSheet onDismiss={vi.fn()} scrollable={false} visible>
+        <LumenText>Virtualized collection</LumenText>
+      </LumenSheet>
+    )
+
+    expect(root.container.queryAll(instance => instance.type === 'ScrollView')).toHaveLength(0)
+  })
+
+  test('focuses an explicit initial control after presentation and restores the trigger after closing', async () => {
+    const initialFocusRef = createRef<ComponentRef<typeof View>>()
+    const returnFocusRef = createRef<ComponentRef<typeof View>>()
+    let restoreFrame: (() => void) | undefined
+    vi.stubGlobal('requestAnimationFrame', (callback: () => void) => {
+      restoreFrame = callback
+
+      return 1
+    })
+    vi.stubGlobal('cancelAnimationFrame', vi.fn())
+    const fixture = (visible: boolean): ReactElement => (
+      <>
+        <LumenButton ref={returnFocusRef}>Edit</LumenButton>
+        <LumenSheet
+          initialFocusRef={initialFocusRef}
+          onDismiss={vi.fn()}
+          returnFocusRef={returnFocusRef}
+          visible={visible}
+        >
+          <LumenButton ref={initialFocusRef}>Save</LumenButton>
+        </LumenSheet>
+      </>
+    )
+    const root = await renderNative(fixture(true))
+    callAction(readProp(findHostComponent(root, 'Modal'), 'onShow'), 'Missing modal presentation event')
+    expect(accessibilityFocus).toHaveBeenCalledExactlyOnceWith(initialFocusRef.current, 'focus')
+    await act(async () => {
+      root.render(<LumenProvider>{fixture(false)}</LumenProvider>)
+      await Promise.resolve()
+    })
+    expect(accessibilityFocus).toHaveBeenCalledTimes(1)
+    if (!restoreFrame) throw new Error('Expected a deferred focus restoration')
+    restoreFrame()
+    expect(accessibilityFocus).toHaveBeenLastCalledWith(returnFocusRef.current, 'focus')
   })
 
   test('keeps actions outside the scrolling body and opts into keyboard avoidance', async () => {
@@ -1175,6 +1279,20 @@ describe('LumenSheet consumer layouts', () => {
     const modal = root.container.queryAll(instance => instance.type === 'Modal')[0]
     if (!modal) throw new Error('Missing modal')
     expect(readProp(modal, 'animationType')).toBe('none')
+  })
+
+  test('honors reduced motion in confirmation dialogs and menus', async () => {
+    nativeMotion.enabled = true
+    const root = await renderNative(
+      <>
+        <LumenAlertDialog confirmLabel="Save" onConfirm={vi.fn()} onDismiss={vi.fn()} title="Save changes" visible />
+        <LumenMenu accessibilityLabel="Actions" items={[]} trigger={<LumenText>Open menu</LumenText>} />
+      </>
+    )
+    const modals = root.container.queryAll(instance => instance.type === 'Modal')
+
+    expect(modals).toHaveLength(2)
+    expect(modals.map(modal => readProp(modal, 'animationType'))).toEqual(['none', 'none'])
   })
 
   test('uses a centered adaptive dialog on wide windows and Android keyboard behavior', async () => {

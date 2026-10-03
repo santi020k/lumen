@@ -10,6 +10,52 @@ private func measuredSize<Content: View>(of content: Content) -> CGSize {
 }
 
 @MainActor
+@Test func accessibilityRowsStackIndependentActionsWithinTheirAvailableWidth() {
+    let row = LumenListRow {
+        LumenAvatar(fallback: "LM")
+    } content: {
+        Text("Workspace shared with your household")
+    } trailing: {
+        LumenButton("Review workspace membership", action: {})
+    }
+    let ordinary = measuredSize(of: row.environment(\.dynamicTypeSize, .large).frame(width: 320))
+    let accessible = measuredSize(of: row.environment(\.dynamicTypeSize, .accessibility3).frame(width: 320))
+
+    #expect(accessible.width == 320)
+    #expect(accessible.height < ordinary.height)
+    #expect(accessible.height < 300)
+}
+
+@MainActor
+@Test func sheetCompositionSupportsScrollingAndDismissalPolicies() {
+    let content = Text("An editable application-owned form")
+    _ = content.lumenSheet(
+        isPresented: .constant(true),
+        title: "Edit workspace",
+        dismissible: false,
+        scrollable: true,
+        actions: { LumenButton("Save changes", action: {}) }
+    ) { content }
+    _ = content.lumenSheet(
+        isPresented: .constant(true),
+        scrollable: false
+    ) { List { Text("Application-owned collection") } }
+
+    for textSize: DynamicTypeSize in [.large, .accessibility5] {
+        let layout = LumenSheetLayout(
+            title: "Edit workspace",
+            description: "Long content remains scrollable",
+            scrollable: true,
+            sheetContent: VStack { ForEach(0..<20) { Text("Field \($0)") } },
+            actions: LumenButton("Save changes", action: {})
+        )
+        let size = measuredSize(of: layout.environment(\.dynamicTypeSize, textSize).frame(width: 320, height: 300))
+        #expect(size.width == 320)
+        #expect(size.height == 300)
+    }
+}
+
+@MainActor
 @Test func loadingButtonsPreserveTheSameLabelGeometry() {
     for size: LumenControlSize in [.sm, .md, .lg] {
         let idle = measuredSize(of: LumenButton(size: size, action: {}) {

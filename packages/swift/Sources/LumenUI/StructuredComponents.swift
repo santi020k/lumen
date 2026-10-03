@@ -237,6 +237,7 @@ public extension LumenErrorState where Graphic == LumenIllustration, Actions == 
 #endif
 
 public struct LumenListRow<Leading: View, Content: View, Trailing: View>: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     private let content: Content
     private let leading: Leading
     private let trailing: Trailing
@@ -252,7 +253,11 @@ public struct LumenListRow<Leading: View, Content: View, Trailing: View>: View {
     }
 
     public var body: some View {
-        HStack(alignment: .center, spacing: LumenSpacing.md) {
+        let layout = dynamicTypeSize.isAccessibilitySize
+            ? AnyLayout(VStackLayout(alignment: .leading, spacing: LumenSpacing.md))
+            : AnyLayout(HStackLayout(alignment: .center, spacing: LumenSpacing.md))
+
+        layout {
             leading
                 .fixedSize()
 
@@ -260,7 +265,7 @@ public struct LumenListRow<Leading: View, Content: View, Trailing: View>: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
 
             trailing
-                .fixedSize(horizontal: true, vertical: false)
+                .fixedSize(horizontal: !dynamicTypeSize.isAccessibilitySize, vertical: false)
         }
         .padding(.horizontal, LumenSpacing.lg)
         .padding(.vertical, LumenSpacing.md)
@@ -595,6 +600,7 @@ public struct LumenGauge: View {
 }
 
 public struct LumenSectionHeader<Actions: View>: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.lumenTheme) private var theme
 
     private let actions: Actions
@@ -615,7 +621,11 @@ public struct LumenSectionHeader<Actions: View>: View {
     }
 
     public var body: some View {
-        HStack(alignment: .top, spacing: LumenSpacing.md) {
+        let layout = dynamicTypeSize.isAccessibilitySize
+            ? AnyLayout(VStackLayout(alignment: .leading, spacing: LumenSpacing.md))
+            : AnyLayout(HStackLayout(alignment: .top, spacing: LumenSpacing.md))
+
+        layout {
             VStack(alignment: .leading, spacing: LumenSpacing.xs) {
                 HStack(alignment: .firstTextBaseline, spacing: LumenSpacing.sm) {
                     Text(title)

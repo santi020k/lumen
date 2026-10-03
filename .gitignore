@@ -16,6 +16,7 @@ out/
 .vite/
 .cache/
 .gradle/
+.kotlin/
 .build/
 .swiftpm/
 apps/docs/native-previews/apple/Package.resolved

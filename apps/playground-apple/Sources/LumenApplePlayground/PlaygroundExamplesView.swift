@@ -5,6 +5,7 @@ private enum ExamplePattern: String, CaseIterable, Identifiable {
     case release
     case health
     case profile
+    case workspace
 
     var id: String { rawValue }
     var title: String { rawValue.capitalized }
@@ -35,11 +36,15 @@ struct PlaygroundExamplesView: View {
     @State private var syncState: ReferenceState = .success
 
     var body: some View {
-        PlaygroundPage(
-            "Examples",
-            subtitle: "Switch among complete product patterns and exercise their real interaction states."
-        ) {
-            patternGallery
+        if pattern == .workspace {
+            PlaygroundWorkspaceView(onBack: { pattern = .release })
+        } else {
+            PlaygroundPage(
+                "Examples",
+                subtitle: "Switch among complete product patterns and exercise their real interaction states."
+            ) {
+                patternGallery
+            }
         }
     }
 
@@ -83,6 +88,8 @@ struct PlaygroundExamplesView: View {
             healthPattern
         case .profile:
             profilePattern
+        case .workspace:
+            EmptyView()
         }
     }
 
@@ -385,6 +392,7 @@ struct PlaygroundExamplesView: View {
         case .release: "checkmark.seal"
         case .health: "chart.xyaxis.line"
         case .profile: "person.crop.circle"
+        case .workspace: "rectangle.split.2x1"
         }
     }
 
@@ -396,6 +404,8 @@ struct PlaygroundExamplesView: View {
             "Inspect factual catalog distribution and recoverable health states."
         case .profile:
             "Complete contributor onboarding and verify saved preference feedback."
+        case .workspace:
+            "Search records, edit a protected form, and inspect activity across adaptive panes."
         }
     }
 }

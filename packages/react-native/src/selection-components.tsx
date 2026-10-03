@@ -311,6 +311,8 @@ export interface LumenTabsProps extends Omit<ViewProps, 'children'> {
   label: string
   onValueChange: (value: string) => void
   options: readonly LumenSelectionOption[]
+  /** Localized panel name; defaults to the selected tab's visible label. */
+  panelAccessibilityLabel?: string
   ref?: LumenViewRef
   value: string
 }
@@ -320,6 +322,7 @@ export const LumenTabs = ({
   label,
   onValueChange,
   options,
+  panelAccessibilityLabel,
   ref,
   style,
   value,
@@ -463,7 +466,7 @@ export const LumenTabs = ({
       </ScrollView>
       <View
         aria-labelledby={selectedIndex >= 0 ? `${tabsId}-tab-${selectedIndex}` : undefined}
-        accessibilityLabel={`${selectedOption?.label ?? value} tab panel`}
+        accessibilityLabel={panelAccessibilityLabel ?? selectedOption?.label ?? value}
         accessibilityLiveRegion="polite"
         role="tabpanel"
       >

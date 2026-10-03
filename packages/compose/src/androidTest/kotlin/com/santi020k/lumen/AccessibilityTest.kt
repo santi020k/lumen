@@ -17,6 +17,7 @@ import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.assert
+import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertHasClickAction
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
@@ -28,6 +29,7 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.tryPerformAccessibilityChecks
 import androidx.compose.ui.unit.dp
 import org.junit.Assert.assertEquals
@@ -444,7 +446,52 @@ class AccessibilityTest {
         composeRule.onNodeWithText("Overview")
             .assertIsSelected()
             .assertHasClickAction()
-        composeRule.onNodeWithContentDescription("Overview tab panel").assertExists()
+        composeRule.onNodeWithContentDescription("Overview").assertExists()
         composeRule.onNodeWithText("Workspace health is ready").assertExists()
+    }
+
+    @Test
+    fun requiredFieldsAndTabPanelsAcceptLocalizedDescriptions() {
+        composeRule.setContent {
+            LumenTheme {
+                Column {
+                    LumenFieldGroup(label = "Nombre", required = true, requiredLabel = "obligatorio") {
+                        Text("Datos")
+                    }
+                    LumenTabs(
+                        label = "Vistas",
+                        options = listOf(LumenSelectionOption("overview", "Resumen")),
+                        value = "overview",
+                        onValueChange = {},
+                        panelAccessibilityLabel = "Contenido del resumen"
+                    ) { Text("Listo") }
+                }
+            }
+        }
+
+        composeRule.onNodeWithContentDescription("Nombre, obligatorio").assertExists()
+        composeRule.onNodeWithContentDescription("Contenido del resumen").assertExists()
+    }
+
+    @Test
+    fun sheetKeepsLongFormContentScrollableAndSaveReachable() {
+        var saved = false
+        composeRule.setContent {
+            LumenTheme {
+                LumenSheet(
+                    visible = true,
+                    title = "Edit workspace",
+                    onDismiss = {},
+                    actions = { LumenButton(onClick = { saved = true }) { Text("Save changes") } }
+                ) {
+                    repeat(40) { Text("Editable field $it") }
+                }
+            }
+        }
+
+        composeRule.onNodeWithText("Save changes").assertIsDisplayed()
+        composeRule.onNodeWithText("Editable field 39").performScrollTo().assertIsDisplayed()
+        composeRule.onNodeWithText("Save changes").assertIsDisplayed().performClick()
+        composeRule.runOnIdle { assertEquals(true, saved) }
     }
 }

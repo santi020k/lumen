@@ -69,6 +69,39 @@
         "constructor LumenSymbolPicker.init(_:selectedName:options:) has been removed",
         "constructor LumenSymbolPickerButton.init(_:selectedName:options:) has been removed"
       ]
+    },
+    {
+      "id": "native-sheet-accessibility-quality",
+      "kind": "breaking",
+      "currentContract": "SwiftUI and Compose sheets wrap unbounded content without configurable dismissal protection; native required-field and tab-panel descriptions include fixed English text.",
+      "replacement": "Native sheet scroll and dismissal policies, keyboard-safe content, compact-height and large-text fallbacks, explicit React Native focus targets, and caller-localized accessibility descriptions.",
+      "migration": "Rebuild SwiftUI and Compose consumers for the new sheet signatures. Set scrollable false for application-owned lazy or virtualized content. Supply translated requiredLabel and panelAccessibilityLabel in Compose and React Native when needed.",
+      "packages": [
+        "@santi020k/lumen-react-native",
+        "LumenUI",
+        "com.santi020k:lumen-compose"
+      ],
+      "evidence": [
+        "docs/lumen-4-native-quality.md"
+      ],
+      "docs": [
+        "docs/native-patterns.md",
+        "docs/migrating-to-lumen.md"
+      ],
+      "tests": [
+        "pnpm --filter @santi020k/lumen-react-native test",
+        "swift test",
+        "cd packages/compose && ./gradlew test lint apiCheck connectedDebugAndroidTest"
+      ],
+      "swiftApiBreakages": [
+        "func View.lumenSheet(isPresented:title:description:onDismiss:actions:content:) has been renamed to func lumenSheet(isPresented:title:description:dismissible:scrollable:onDismiss:actions:content:)",
+        "func View.lumenSheet(isPresented:title:description:onDismiss:actions:content:) has parameter 3 type change from () -> Swift.Void to Swift.Bool",
+        "func View.lumenSheet(isPresented:title:description:onDismiss:actions:content:) has parameter 4 type change from () -> Actions to Swift.Bool",
+        "func View.lumenSheet(isPresented:title:description:onDismiss:actions:content:) has parameter 5 type change from () -> SheetContent to () -> Swift.Void",
+        "func View.lumenSheet(isPresented:title:description:onDismiss:content:) has been renamed to func lumenSheet(isPresented:title:description:dismissible:scrollable:onDismiss:content:)",
+        "func View.lumenSheet(isPresented:title:description:onDismiss:content:) has parameter 3 type change from () -> Swift.Void to Swift.Bool",
+        "func View.lumenSheet(isPresented:title:description:onDismiss:content:) has parameter 4 type change from () -> SheetContent to Swift.Bool"
+      ]
     }
   ],
   "swiftApiBaseline": "v3.0.1"
