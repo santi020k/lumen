@@ -170,8 +170,29 @@ the legacy lifecycle by default. The playground now opts into the official scene
 release notes. This build-time dependency supplies the native generation fix; Lumen does not
 implement another scene delegate. Expo documents the SDK 57 opt-in in its
 [scene migration guide](https://github.com/expo/fyi/blob/main/ios-scene-lifecycle.md).
-The generated native host, successful original build and preserved app remain local; rebuilding
-and runtime verification of the corrected host are pending. The failing app is not qualified.
+The corrected native Release host at commit `49d483cc` built and launched successfully on the
+iPad Pro 13-inch (M5), iOS 27 Simulator. Native interactions verified search for record 200,
+adaptive list/detail, initial name focus with the software keyboard visible, and reachable Save
+while entering a 316-character note. The saved note and success feedback were visually compared.
+Spanish/RTL changes retained the record and note; reopening and explicit Cancel preserved the
+saved value, backdrop taps left the protected sheet open, and error/retry restored the selected
+record. Horizontal chart scrolling reached category 5. This is manual native flow evidence,
+not automated exact-text, screen-reader, physical-device or performance qualification.
+
+The corrected app's 76-file manifest matched the installed app after interaction checks. The
+preserved app, source/package hashes, report and inspected keyboard/RTL screenshots remain under
+`.build/native-quality-react-native-ios-scene-runtime`. The original failing host and report are
+preserved separately under `.build/native-quality-react-native-ios-reconciled-runtime`.
+The same preserved Release app launched on the iPhone 17 Pro iOS 27 Simulator. Compact
+list-to-detail navigation, a 317-character note, reachable Save above the software keyboard,
+reopening and Cancel passed. The complete saved note and success feedback were asserted in the
+native accessibility tree; all 76 installed artifact files matched after these interactions.
+The software keyboard was shown using Device Hub after native text entry. Phone keyboard and
+saved-note screenshots were inspected and preserved beside the tablet evidence. These checks
+do not establish VoiceOver, large-text, hardware, startup or scrolling qualification.
+The rebuilt Android host also passed against `04178a3d`,
+but its repeat installation could not run after the Android emulator disconnected; its separate
+APK and report are preserved under `.build/native-quality-react-native-android-reconciled-runtime`.
 
 ### Outstanding scope and blockers
 
@@ -186,13 +207,23 @@ The canonical `pnpm run validate` initially failed because its loopback fixture 
 After local-server access and snapshot regeneration, it reached `check:security` and failed on three
 high-severity dependency advisories in `node-forge`, `http-cache-semantics`, and `braces`. The reconciled canonical gate, including the six new runtime-parser tests, passed all preceding checks and again stopped at `check:security`. The complete gate remains failed; committed release dependency updates were reconciled into this branch and the audit was rerun, but those three advisories remain.
 
+After reconciling `04178a3d` and committing the scene-support/benchmark fixes at `49d483cc`,
+`pnpm run validate` passed all checks preceding `check:security`, including 1,188 JavaScript tests
+in 98 files, builds, strict type checking, zero-warning lint, spelling, API/contracts and generated
+snapshot checks. It again stopped on the same three high-severity advisories. The clean packed
+React Native package separately passed installation, peer, content and strict consumer checks.
+The full gate is still failed. Further canonical checks following security are not implied green.
+
 The selected `release/v4.0.0` at committed revision `04178a3d` contains the native implementation,
 static-graphics entrypoints, Android runtime collector and status-bar fix, and Apple UI-test commits
 through `efa3e53a`; Git ancestry verified that containment. The isolated qualification branch was
 fast-forwarded to that committed release revision. This containment is local integration evidence,
 not a passing canonical security gate or publication approval. The shared release checkout has
 unrelated concurrent changes; preserve its ownership. Further task changes require validation and
-serialized integration in a clean, idle release worktree. Publication remains outside this
+serialized integration in a clean, idle release worktree. The new qualification record and iOS
+scene-support/benchmark commits (`3e719a0f`, `49d483cc`) remain on the task branch: the canonical
+security gate is failed and the release checkout has unrelated active Core and React edits.
+Do not overwrite those edits or bypass the failed gate. Publication remains outside this
 implementation authorization. Physical-device and release stability evidence must bind their
 actual tested revision; historical records retain their original attribution and version.
 
