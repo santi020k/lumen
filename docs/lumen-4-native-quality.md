@@ -241,6 +241,32 @@ These are bytecode measurements, not native startup or scrolling qualification.
 The full canonical gate has not passed. A fresh `pnpm run check:security` still failed with the same
 three high-severity advisories and no patched versions listed by the audit.
 
+### Repeated React Native Android startup observation
+
+The updated React Native host assembled with JDK 21.0.12.1 and the emulator's `arm64-v8a` ABI at
+task revision `7dd9027c7`. The development-signed Release APK is preserved under
+`.build/native-quality-react-native-android-navigation-runtime`; its SHA-256 is
+`20a50c61a9503942ef0e033641bdafb5e7d182e99ed42c617fab11a60305d7c2`.
+Signature verification passed, installation on `emulator-5554` succeeded, and the installed APK
+hash matched before and after five force-stopped process launches. Raw Android Activity Manager
+records contain successful COLD launches of 773, 782, 491, 392 and 608 ms, with a median of 608 ms
+and p95/maximum of 782 ms. The report captures application/package inputs and emulator OS, API,
+display, density and text scale. No application database was cleared. These observations measure
+Activity Manager `TotalTime`, not full time-to-interactive, hardware performance, scrolling or an
+established regression budget.
+
+This host's native gate failed. The initial attempt selected Android Studio's JDK 25 and stopped
+in CMake configuration after a Java native-access warning; retrying with documented JDK 21 resolved
+that failure. `:app:assembleRelease` then succeeded, but `:app:lintRelease` reported one error and
+59 warnings. Expo's generated `res/values/styles.xml:13` sets `android:windowSplashScreenBehavior`,
+which requires API 33, in an unqualified style despite minimum SDK 24. The installed
+`expo-splash-screen` 57.0.9 source generates this item directly; the registry still lists 57.0.9 as
+the latest compatible major-57 release. Keep the original failed build and lint reports. Do not
+raise the minimum SDK, suppress lint or count the assembled artifact as a successful native gate.
+Generated-host and dependency warnings include scoped-storage permissions, private AppCompat
+resources and unused resources; they also remain reported. Interactive Android qualification
+could not run through the UI tool, which did not recognize the running emulator application.
+
 ### Outstanding scope and blockers
 
 The complete Required outcomes list remains authoritative. Broader phone/tablet runtime qualification and physical-device keyboard/focus and screen-reader checks,
