@@ -49,6 +49,52 @@ for (const adapter of adapters) {
       await expect(page.getByRole("tabpanel", { name: "Notes" })).toBeVisible();
     });
 
+    test("mirrors tabs and calendar arrows under inherited RTL", async ({ page }) => {
+      await page.locator('main[data-framework]').evaluate(element => { element.setAttribute('dir', 'rtl'); });
+      const first = page.getByRole('tab', { name: 'Packages' });
+      const second = page.getByRole('tab', { name: 'Notes' });
+
+      await first.focus();
+      await first.press('ArrowLeft');
+      await expect(second).toBeFocused();
+      await second.press('ArrowRight');
+      await expect(first).toBeFocused();
+
+      const calendar = page.locator('[data-ui-calendar], lumen-calendar').first();
+      const day = calendar.locator('[data-ui-calendar-day]:not([aria-disabled="true"])').filter({ hasText: /^15$/ });
+
+      await day.focus();
+      await day.press('ArrowLeft');
+      await expect(calendar.locator('[data-ui-calendar-day]:focus')).toHaveText('16');
+    });
+
+    if (adapter.label === 'React') {
+      test('data collection retains focused rows with bounded rendering', async ({ page, browserName }) => {
+        const list = page.getByRole('list', { name: 'Large records' });
+
+        await expect(list).toHaveAttribute('data-ui-range-start', '0');
+        expect(await list.getByRole('listitem').count()).toBeLessThan(15);
+        const first = list.getByRole('button', { name: 'Record 1', exact: true });
+
+        await first.focus();
+        // WebKit's default Tab mode skips buttons; Option+Tab includes all controls.
+        const forward = browserName === 'webkit' ? 'Alt+Tab' : 'Tab';
+
+        for (let index = 0; index < 12; index += 1) {
+          await page.keyboard.press(forward);
+          await expect(list.getByRole('button', { name: `Record ${index + 2}`, exact: true })).toBeFocused();
+          await expect(list.getByRole('button', { name: `Record ${index + 2}`, exact: true })).toBeInViewport();
+        }
+        const focused = list.getByRole('button', { name: 'Record 13', exact: true });
+
+        await expect(focused).toBeFocused();
+        await list.evaluate(element => { element.scrollTop = element.scrollHeight; });
+        await expect(focused).toBeFocused();
+        expect(await list.getByRole('listitem').count()).toBeLessThan(18);
+        await expect(list.getByRole('button', { name: 'Record 10000', exact: true })).toBeAttached();
+      });
+    }
+
     test("navigates the calendar through its public next-month control", async ({
       page,
     }) => {

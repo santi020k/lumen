@@ -550,3 +550,10 @@ Install `content-flow-header`, `content-flow-settings`, `content-flow-list` or `
 with `lumen add <recipe> --target astro|react|elements`. MCP returns the same complete examples.
 Connect application actions and replace sample IDs before reuse. See
 [content flow](../../docs/content-flow.md) for composition and migration guidance.
+
+### Large fixed-height collections
+
+`VirtualList` supports an empty `mode="data"` root with the public Core data controller.
+Only the visible window, overscan and focused neighbors mount. Stable keys retain row identity;
+applications own offscreen editing state. See [data rendering](../../docs/virtual-list-data.md) for
+setup, lifecycle, accessibility and the mounted-mode tradeoff.

@@ -330,8 +330,20 @@ const parseReactComponents = (source, componentNames) => {
       const componentDeclaration = componentDeclarations.get(name)
       const propsDeclaration = propDeclarations.get(name)
       const props = parseTypeScriptProps(propsDeclaration, sourceFile)
+      const dataPropsDeclaration = name === 'VirtualList' ? propDeclarations.get('VirtualListData') : undefined
 
-      const snippets = [propsDeclaration, componentDeclaration]
+      if (dataPropsDeclaration) {
+        const dataProps = parseTypeScriptProps(dataPropsDeclaration, sourceFile)
+        const combined = new Map(props.props.map(prop => [prop.name, prop]))
+
+        for (const prop of dataProps.props) {
+          if (prop.name !== 'children') combined.set(prop.name, { ...prop, optional: true })
+        }
+
+        props.props = [...combined.values()]
+      }
+
+      const snippets = [propsDeclaration, dataPropsDeclaration, componentDeclaration]
         .filter(Boolean)
         .map(declaration => declaration.getText(sourceFile))
 
@@ -882,6 +894,7 @@ const loadWorkspaceFiles = async p => ({
     await readIfExists(p('packages/react/src/server-components.tsx')),
     await readIfExists(p('packages/react/src/image-comparison.tsx')),
     await readIfExists(p('packages/react/src/virtual-list.tsx')),
+    await readIfExists(p('packages/react/src/virtual-list-data.tsx')),
     await readIfExists(p('packages/react/src/combobox.tsx'))
   ].join('\n'),
   readme: await readIfExists(p('README.md')),

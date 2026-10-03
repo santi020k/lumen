@@ -582,6 +582,20 @@ chart?.setAttribute('${attribute}', JSON.stringify(${dataExpression}))
 }
 
 const reactOverrides: Record<string, string> = {
+  VirtualList: `'use client'
+
+import { Button, VirtualList } from '@santi020k/lumen-react'
+
+const records = Array.from({ length: 10000 }, (_, id) => ({ id, label: \`Record \${id + 1}\` }))
+
+export function Example() {
+  return (
+    <VirtualList aria-label="Records" items={records} getKey={record => record.id}
+      renderItem={record => <Button variant="ghost">{record.label}</Button>}
+      itemSize={44} overscan={4} style={{ height: '12rem' }} />
+  )
+}`,
+
   AlertDialog: `'use client'
 
 import { useState } from 'react'
@@ -831,6 +845,26 @@ export const Example = () => (
 }
 
 const elementsOverrides: Record<string, string> = {
+  VirtualList: `<lumen-virtual-list id="records" mode="data" role="list" aria-label="Records"></lumen-virtual-list>
+<script type="module">
+  import { createLumenVirtualCollectionController } from '@santi020k/lumen-core'
+
+  const root = document.getElementById('records')
+  if (root) {
+    const controller = createLumenVirtualCollectionController(root, {
+      items: Array.from({ length: 10000 }, (_, id) => ({ id })),
+      getKey: record => record.id,
+      itemSize: 44,
+      renderItem: record => {
+        const row = document.createElement('div')
+        row.textContent = \`Record \${record.id + 1}\`
+        return row
+      }
+    })
+    // Call controller.destroy() when removing this view.
+  }
+</script>`,
+
   Toast: `<lumen-button id="show-preview-toast">Show success toast</lumen-button>
 <lumen-toast variant="success">
   <strong>Static feedback</strong>

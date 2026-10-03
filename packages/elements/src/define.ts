@@ -25,6 +25,7 @@ import {
   getLumenChartCategoryTicks,
   getLumenChartDomain,
   getLumenChartTicks,
+  getLumenDirectionalKey,
   getLumenLocalePair,
   getLumenPhoneCountries,
   getLumenPhoneCountry,
@@ -2817,7 +2818,9 @@ const initResizableGroups = (scope: ParentNode): void => {
 
         const delta = ((event[axis] - startPosition) / containerSize) * 100
 
-        resizePair(startSize + delta)
+        const multiplier = direction === 'horizontal' && getLumenDirectionalKey(handle, 'ArrowRight') === 'ArrowLeft' ? -1 : 1
+
+        resizePair(startSize + delta * multiplier)
       })
 
       handle.addEventListener('pointerup', event => {
@@ -2858,7 +2861,7 @@ const initResizableGroups = (scope: ParentNode): void => {
           return
         }
 
-        const delta = keyDeltas[event.key]
+        const delta = keyDeltas[getLumenDirectionalKey(handle, event.key)]
 
         if (delta === undefined) return
 
@@ -3754,7 +3757,7 @@ const moveCalendarFocus = (
     return
   }
 
-  const offset = keyOffsets[key]
+  const offset = keyOffsets[getLumenDirectionalKey(root, key)]
 
   if (offset !== undefined) {
     focusCalendarDate(root, addCalendarDays(currentDate, offset))
@@ -6974,7 +6977,7 @@ class LumenTabsBehaviorElement extends LumenElement {
                 event.key,
                 Math.max(0, currentIndex),
                 tabs.length,
-                orientation === 'vertical' ? ['ArrowDown'] : ['ArrowRight']
+                orientation === 'vertical' ? ['ArrowDown'] : [getLumenDirectionalKey(tab, 'ArrowRight')]
               )
             ]
 

@@ -700,7 +700,7 @@ describe('@santi020k/lumen-astro package surface', () => {
       'storedValue ?? control.dataset.uiLanguageInitialValue ?? documentValue'
     )
     expect(runtime).toContain(
-      'orientation === \'vertical\' ? [\'ArrowDown\'] : [\'ArrowRight\']'
+      'orientation === \'vertical\' ? [\'ArrowDown\'] : [getLumenDirectionalKey(tab, \'ArrowRight\')]'
     )
     expect(particles).toContain('<div')
     expect(particles).not.toContain('<lumen-particles')

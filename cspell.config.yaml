@@ -1,6 +1,8 @@
 version: "0.2"
 language: en
 words:
+  - posinset
+  - setsize
   - AFRIKA
   - Biolinum
   - Cunha
@@ -468,3 +470,5 @@ ignorePaths:
   - apps/playground-apple/LumenApplePlayground.xcodeproj/**
   - apps/playground-apple/Supporting/Info.plist
   - apps/playground-apple/project.yml
+
+# Standard ARIA attribute suffixes used by virtualized collections.

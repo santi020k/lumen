@@ -3,6 +3,7 @@
 
 import type { ReactElement } from 'react'
 import * as React from 'react'
+import { renderToStaticMarkup } from 'react-dom/server'
 
 import { describe, expect, test, vi } from 'vitest'
 
@@ -997,10 +998,6 @@ describe('@santi020k/lumen-react', () => {
     const firstRowCells = rows[0]?.props.children as ReactElement<
       Record<string, unknown>
     >[]
-    const virtualList = withHookDispatcher(() => VirtualList({
-      itemSize: 48,
-      overscan: 2
-    })) as ReactElement<Record<string, unknown>>
 
     expect(tableProps['data-ui-datatable']).toBe(true)
     expect(tableProps['data-ui-datatable-name']).toBe('rows')
@@ -1014,9 +1011,20 @@ describe('@santi020k/lumen-react', () => {
     expect(headers[1]?.props['data-ui-datatable-sort-type']).toBe('number')
     expect(rows[0]?.props['data-value']).toBe('beta')
     expect(firstRowCells[1]?.props['data-sort-value']).toBe('2')
-    expect(virtualList.props['data-ui-virtual-list']).toBe(true)
-    expect(virtualList.props['data-ui-item-size']).toBe(48)
-    expect(virtualList.props['data-ui-overscan']).toBe(2)
+  })
+
+  test('renders the mounted virtual list runtime contract', () => {
+    const virtualList = withHookDispatcher(() => VirtualList({
+      itemSize: 48,
+      overscan: 2
+    })) as ReactElement<Record<string, unknown>>
+    const renderedList = document.createElement('div')
+
+    renderedList.innerHTML = renderToStaticMarkup(virtualList)
+
+    expect(renderedList.firstElementChild?.hasAttribute('data-ui-virtual-list')).toBe(true)
+    expect(renderedList.firstElementChild?.getAttribute('data-ui-item-size')).toBe('48')
+    expect(renderedList.firstElementChild?.getAttribute('data-ui-overscan')).toBe('2')
   })
 
   test('renders resizable panes with separator handles', () => {
@@ -1064,6 +1072,7 @@ describe('@santi020k/lumen-react', () => {
 
     handleProps.onKeyDown?.({
       key: 'ArrowRight',
+      currentTarget: document.createElement('div'),
       preventDefault,
       shiftKey: false
     } as unknown as Parameters<NonNullable<typeof handleProps.onKeyDown>>[0])
@@ -1085,6 +1094,7 @@ describe('@santi020k/lumen-react', () => {
     const key = (init: { key: string, shiftKey?: boolean }): void => {
       handle.onKeyDown?.({
         preventDefault: vi.fn(),
+        currentTarget: document.createElement('div'),
         shiftKey: false,
         ...init
       } as unknown as Parameters<NonNullable<typeof handle.onKeyDown>>[0])

@@ -7,6 +7,8 @@ export interface LumenVirtualListController {
 
 /** Fixed-height DOM windowing; rows remain mounted so application state is retained. */
 export const createLumenVirtualListController = (root: HTMLElement): LumenVirtualListController => {
+  if (root.getAttribute('data-ui-virtual-list-mode') === 'data' || root.getAttribute('mode') === 'data') return { destroy: () => undefined, update: () => undefined }
+
   const document = root.ownerDocument
   const view = document.defaultView
   const originalRows = new Map<HTMLElement, { hidden: HTMLElement['hidden'], blockSize: string, boxSizing: string }>()

@@ -20,6 +20,7 @@ import {
   exportThemeDesignTokens,
   exportThemeFigmaVariables,
   formatLumenLanguageLabel,
+  getLumenDirectionalKey,
   getLumenLocalePair,
   getLumenRichTextShortcut,
   isLumenRichTextToggleCommand,
@@ -1016,7 +1017,7 @@ const initTabs = (scope: ParentNode): void => {
             event.key,
             index,
             tabs.length,
-            orientation === 'vertical' ? ['ArrowDown'] : ['ArrowRight']
+            orientation === 'vertical' ? ['ArrowDown'] : [getLumenDirectionalKey(tab, 'ArrowRight')]
           )
         ]
 
@@ -1064,7 +1065,7 @@ const initRovingGroups = (scope: ParentNode): void => {
           nextItem.tabIndex = -1
         }
 
-        const nextItem = items[getLoopedIndex(event.key, index, items.length, ['ArrowRight', 'ArrowDown'])]
+        const nextItem = items[getLoopedIndex(getLumenDirectionalKey(root, event.key), index, items.length, ['ArrowRight', 'ArrowDown'])]
 
         if (nextItem) {
           nextItem.tabIndex = 0
@@ -2132,8 +2133,9 @@ const initResizableGroups = (scope: ParentNode): void => {
         if (handle.dataset.active !== 'true') return
 
         const delta = ((event[axis] - startPosition) / containerSize) * 100
+        const multiplier = direction === 'horizontal' && getLumenDirectionalKey(handle, 'ArrowRight') === 'ArrowLeft' ? -1 : 1
 
-        resizePair(index, startSize + delta)
+        resizePair(index, startSize + delta * multiplier)
       })
 
       handle.addEventListener('pointerup', event => {
@@ -2177,7 +2179,7 @@ const initResizableGroups = (scope: ParentNode): void => {
           return
         }
 
-        const delta = keyDeltas[event.key]
+        const delta = keyDeltas[getLumenDirectionalKey(handle, event.key)]
 
         if (delta === undefined) return
 
@@ -2911,7 +2913,7 @@ const moveCalendarFocus = (root: HTMLElement, currentDate: Date, key: string): v
     return
   }
 
-  const offset = keyOffsets[key]
+  const offset = keyOffsets[getLumenDirectionalKey(root, key)]
 
   if (offset === undefined) return
 

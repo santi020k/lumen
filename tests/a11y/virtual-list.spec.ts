@@ -1,10 +1,29 @@
 import { expect, test } from '@playwright/test'
 
 for (const width of [390, 1440]) {
+  test(`data list mounts a bounded window and keeps the last row at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 844 })
+    await page.goto('/docs/components/virtual-list')
+    const list = page.locator('#data-virtual-list')
+
+    await expect(list).toHaveAttribute('data-ui-range-start', '0')
+    expect(await list.locator('[data-ui-virtual-list-index]').count()).toBeLessThan(20)
+    const height = await list.evaluate(element => element.scrollHeight)
+
+    await list.screenshot({ path: test.info().outputPath('data-list.png') })
+
+    await list.evaluate(element => { element.scrollTop = element.scrollHeight })
+    await expect(list.locator('[data-ui-virtual-list-index="9999"]')).toHaveText('Deployment #10000')
+    expect(await list.evaluate(element => element.scrollHeight)).toBe(height)
+    expect(await list.locator('[data-ui-virtual-list-index]').count()).toBeLessThan(20)
+  })
+}
+
+for (const width of [390, 1440]) {
   test(`fixed-height list preserves its extent and last row at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 844 })
     await page.goto('/docs/components/virtual-list')
-    const list = page.locator('.component-doc-preview [data-ui-virtual-list]')
+    const list = page.locator('.component-doc-preview [data-ui-virtual-list-mode="mounted"]')
 
     await expect(list).toHaveAttribute('data-ui-range-start', '0')
     const initialHeight = await list.evaluate(element => element.scrollHeight)
@@ -25,7 +44,7 @@ for (const width of [390, 1440]) {
 
 test('Tab reaches rows beyond the initial window and scrolling retains the active control', async ({ page }) => {
   await page.goto('/docs/components/virtual-list')
-  const list = page.locator('.component-doc-preview [data-ui-virtual-list]')
+  const list = page.locator('.component-doc-preview [data-ui-virtual-list-mode="mounted"]')
 
   await expect(list).toHaveAttribute('data-ui-range-start', '0')
   await list.evaluate(element => {

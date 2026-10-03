@@ -31,6 +31,7 @@ import {
   createLumenKanbanMoveDetail,
   createThemeBuilderTokens,
   exportThemeBuilderValue,
+  getLumenDirectionalKey,
   getLumenLocalePair,
   type LumenKanbanMoveDetail,
   type LumenLocaleOption,
@@ -804,9 +805,11 @@ const useDisclosureController = (
 
       const nextItem =
         items[
-          getLoopedIndex(event.key, Math.max(0, currentIndex), items.length, [
-            'ArrowDown'
-          ])
+          getLoopedIndex(
+            getLumenDirectionalKey(event.currentTarget, event.key), Math.max(0, currentIndex), items.length, [
+              'ArrowDown'
+            ]
+          )
         ]
 
       nextItem?.focus()
@@ -1102,7 +1105,7 @@ export const useContextMenu = ({
           -1
 
       items[
-        getLoopedIndex(event.key, currentIndex, items.length, ['ArrowDown'])
+        getLoopedIndex(getLumenDirectionalKey(event.currentTarget, event.key), currentIndex, items.length, ['ArrowDown'])
       ]?.focus()
     },
     ref: menuRef,
@@ -1188,7 +1191,7 @@ export const useTabs = ({
                 event.key,
                 Math.max(0, currentIndex),
                 tabs.length,
-                orientation === 'vertical' ? ['ArrowDown'] : ['ArrowRight']
+                orientation === 'vertical' ? ['ArrowDown'] : [getLumenDirectionalKey(event.currentTarget, 'ArrowRight')]
               )
             ]
 
@@ -2157,7 +2160,8 @@ export const useCalendar = ({
       return
     }
 
-    const offset = keyOffsets[key]
+    const directionRoot = rootRef.current
+    const offset = keyOffsets[directionRoot ? getLumenDirectionalKey(directionRoot, key) : key]
 
     if (offset !== undefined) {
       focusCalendarDate(addCalendarDays(currentDate, offset))
@@ -3314,7 +3318,7 @@ export const useResizable = ({
           return
         }
 
-        const delta = keyDeltas[event.key]
+        const delta = keyDeltas[getLumenDirectionalKey(event.currentTarget, event.key)]
 
         if (delta === undefined) return
 
@@ -3356,7 +3360,9 @@ export const useResizable = ({
         const delta =
           ((event[axis] - drag.startPosition) / drag.containerSize) * 100
 
-        resizePair(index, drag.startSize + delta)
+        const multiplier = direction === 'horizontal' && getLumenDirectionalKey(event.currentTarget, 'ArrowRight') === 'ArrowLeft' ? -1 : 1
+
+        resizePair(index, drag.startSize + delta * multiplier)
       }),
       onPointerUp: composeHandlers(props.onPointerUp, event => {
         if (event.currentTarget.dataset.active !== 'true') return

@@ -122,6 +122,7 @@ export {
   resolveLumenDateLabels,
   resolveLumenDateLocale
 } from './dates.js'
+export { getLumenDirectionalKey } from './direction.js'
 export {
   type LumenErrorStateAnnouncement,
   lumenErrorStateAnnouncements,
@@ -348,4 +349,6 @@ export {
   lumenSpacing,
   lumenThemeAttribute
 } from './tokens.js'
+export { createLumenVirtualCollectionController, type LumenVirtualCollectionController, type LumenVirtualCollectionOptions } from './virtual-collection.js'
 export { createLumenVirtualListController, type LumenVirtualListController } from './virtual-list.js'
+export { getLumenVirtualWindow, type LumenVirtualWindow, type LumenVirtualWindowOptions, observeLumenVirtualWindow } from './virtual-window.js'

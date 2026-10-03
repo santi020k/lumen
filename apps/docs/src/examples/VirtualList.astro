@@ -8,3 +8,31 @@ const rows = Array.from({ length: 200 }, (_, index) => `Deployment #${200 - inde
 <VirtualList aria-label="Deployments" itemSize={44} style="--ui-list-height: 12rem">
   {rows.map(row => <div>{row}</div>)}
 </VirtualList>
+
+{/* Data mode mounts a bounded window from a synthetic 10,000-record collection. */}
+<VirtualList id="data-virtual-list" mode="data" role="list" aria-label="Large deployment collection" style="--ui-list-height: 12rem" />
+<noscript><p>Enable JavaScript to browse the large deployment collection.</p></noscript>
+<script>
+  import { createLumenVirtualCollectionController } from '@santi020k/lumen-core'
+
+  const root = document.getElementById('data-virtual-list')
+
+  if (root && !root.dataset.collectionReady) {
+    root.dataset.collectionReady = 'true'
+
+    const controller = createLumenVirtualCollectionController(root, {
+      items: Array.from({ length: 10000 }, (_, id) => ({ id })),
+      getKey: record => record.id,
+      itemSize: 44,
+      renderItem: record => {
+        const row = document.createElement('div')
+
+        row.textContent = `Deployment #${record.id + 1}`
+
+        return row
+      }
+    })
+
+    document.addEventListener('astro:before-swap', () => controller.destroy(), { once: true })
+  }
+</script>

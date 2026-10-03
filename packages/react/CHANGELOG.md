@@ -2,6 +2,22 @@
 
 ## 4.0.0
 
+### Migration, Direction and Data Collections
+
+- Add v3 and v4 source migration previews with optional coordinated pnpm dependency upgrades. Preserve
+  explicit v3 layout gaps, report product and native review boundaries, and prevent repeated v4 applies
+  from rewriting spacing twice.
+
+  Correct inherited RTL horizontal navigation in tabs, calendars and pane resizing. Add an opt-in
+  VirtualList data renderer that mounts only the visible window and focused neighbors, with stable
+  keys and a shared DOM controller for Astro and Elements.
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @santi020k/lumen@4.1.0
+  - @santi020k/lumen-core@4.1.0
+
 ### Phone Input Improvements
 
 - Polish international phone inputs with shared offline flag artwork, compact country selectors,

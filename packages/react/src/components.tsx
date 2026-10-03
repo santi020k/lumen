@@ -5664,7 +5664,7 @@ export const TreeGrid = ({
   />
 )
 
-export { VirtualList, type VirtualListProps } from './virtual-list.js'
+export { VirtualList, type VirtualListDataProps, type VirtualListProps } from './virtual-list.js'
 
 export type BackToTopProps = ComponentPropsWithoutRef<'button'>
 export const BackToTop = ({
