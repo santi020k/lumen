@@ -51,6 +51,8 @@ framework and platform's native authoring experience.
 - **Product-ready templates:** five responsive dashboard and application families are available as
   live previews and installable Astro, React, and Elements recipes.
 
+**Explore:** [Dashboards and templates](#dashboards-and-templates) · [Web quick start](#web-quick-start) · [Native playgrounds](#native-playgrounds) · [Tailwind CSS](#tailwind-css) · [Packages](#packages) · [Community](#community)
+
 ## Dashboards and templates
 
 Explore the [template gallery](https://lumen.santi020k.com/templates) for complete analytics,
@@ -291,6 +293,14 @@ Maintainers can use the [exposure playbook](./docs/exposure-playbook.md) for pub
 campaign measurement, video scripts, and launch copy, and the
 [marketing package](./docs/marketing/README.md) for execution-ready copy, channel decisions, a
 four-week calendar, asset briefs, an approval queue, and a community-response library.
+
+## Find your next step
+
+| Resource | Use it for |
+| --- | --- |
+| [Cross-platform architecture](docs/cross-platform.md) | Shared foundations and adapter responsibilities. |
+| [Native compatibility](docs/native-compatibility.md) | Supported toolchains and platform baselines. |
+| [Native release runbook](docs/native-release-runbook.md) | Artifact qualification and distribution gates. |
 
 ## License
 

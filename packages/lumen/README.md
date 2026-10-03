@@ -1,4 +1,33 @@
-# @santi020k/lumen
+<p align="center">
+  <a href="https://lumen.santi020k.com">
+    <img src="https://raw.githubusercontent.com/santi020k/lumen/main/apps/docs/public/logo.svg" alt="Lumen UI" width="233" height="60">
+  </a>
+</p>
+
+<h1 align="center">Lumen UI · CLI &amp; Registry</h1>
+
+<p align="center">Component discovery · Recipes · Integration diagnostics</p>
+
+<p align="center">
+  <a href="https://www.npmjs.com/package/@santi020k/lumen"><img src="https://img.shields.io/npm/v/@santi020k/lumen?style=flat-square&color=0369a0" alt="npm version"></a>
+  <a href="https://github.com/santi020k/lumen/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-13967e?style=flat-square" alt="MIT license"></a>
+</p>
+
+<p align="center">
+  <a href="https://lumen.santi020k.com/docs">Documentation</a>
+  ·
+  <a href="https://www.npmjs.com/package/@santi020k/lumen">npm</a>
+  ·
+  <a href="https://github.com/santi020k/lumen/tree/main/packages/lumen">Source</a>
+  ·
+  <a href="https://github.com/santi020k/lumen/issues">Issues</a>
+</p>
+
+**Package:** `@santi020k/lumen`
+
+**On this page:** [Typography](#typography) · [Lumen v2 migration preview](#lumen-v2-migration-preview) · [Coordinated consumer rollout](#coordinated-consumer-rollout) · [Resources](#resources)
+
+---
 
 Shared foundation and umbrella package for Lumen UI.
 
@@ -144,3 +173,16 @@ new release through `minimumReleaseAgeExclude`, runs installs through Corepack f
 root, removes obsolete Lumen release-age exceptions, verifies the unified resolved version, and
 runs available framework checks, builds, and browser scripts. It refuses dirty repositories,
 missing exact pnpm declarations, and unsupported Node runtimes unless `--allow-dirty` is explicit.
+
+## Resources
+
+| Guide | What you will find |
+| --- | --- |
+| [AI usage examples](https://github.com/santi020k/lumen/blob/main/docs/ai-usage.md) | Reference for aI usage examples. |
+| [Consumer adoption](https://github.com/santi020k/lumen/blob/main/docs/project-adoption.md) | Reference for consumer adoption. |
+| [MCP server](https://github.com/santi020k/lumen/blob/main/packages/mcp/README.md) | Reference for mCP server. |
+| [Contributing](https://github.com/santi020k/lumen/blob/main/CONTRIBUTING.md) | Setup, checks, and contribution workflow. |
+| [Release history](https://github.com/santi020k/lumen/releases) | Published releases and version notes. |
+
+Part of [Lumen UI](https://lumen.santi020k.com), created by [Santiago Molina](https://santi020k.com).
+Licensed under [MIT](https://github.com/santi020k/lumen/blob/main/LICENSE); third-party artwork retains its own notices.

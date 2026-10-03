@@ -1,4 +1,31 @@
-# Lumen UI for Jetpack Compose
+<p align="center">
+  <a href="https://lumen.santi020k.com">
+    <img src="https://raw.githubusercontent.com/santi020k/lumen/main/apps/docs/public/logo.svg" alt="Lumen UI" width="233" height="60">
+  </a>
+</p>
+
+<h1 align="center">Lumen UI · Jetpack Compose</h1>
+
+<p align="center">Android-native components · Semantic themes · Shared foundations</p>
+
+<p align="center">
+  <a href="https://github.com/santi020k/lumen/tree/main/packages/compose"><img src="https://img.shields.io/badge/platform-Jetpack%20Compose-0369a0?style=flat-square" alt="Jetpack Compose package"></a>
+  <a href="https://github.com/santi020k/lumen/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-13967e?style=flat-square" alt="MIT license"></a>
+</p>
+
+<p align="center">
+  <a href="https://lumen.santi020k.com/docs/android">Documentation</a>
+  ·
+  <a href="https://github.com/santi020k/lumen/tree/main/packages/compose">Source</a>
+  ·
+  <a href="https://github.com/santi020k/lumen/issues">Issues</a>
+</p>
+
+**Package:** `Lumen UI for Jetpack Compose`
+
+**On this page:** [Complete gallery and screenshots](#complete-gallery-and-screenshots) · [Data visualization](#data-visualization) · [Resources](#resources)
+
+---
 
 <!-- cspell:words screencap -->
 
@@ -241,3 +268,16 @@ Wear OS applications should use the sibling
 deliberately small round-screen tier without
 forcing phone applications to acquire wearable contracts or requiring consumers to migrate their
 selected Wear Material version.
+
+## Resources
+
+| Guide | What you will find |
+| --- | --- |
+| [Native component reference](https://github.com/santi020k/lumen/blob/main/docs/native-components.md) | Reference for native component reference. |
+| [Native compatibility](https://github.com/santi020k/lumen/blob/main/docs/native-compatibility.md) | Reference for native compatibility. |
+| [Wear OS package](https://github.com/santi020k/lumen/blob/main/packages/compose/wear/README.md) | Reference for wear OS package. |
+| [Contributing](https://github.com/santi020k/lumen/blob/main/CONTRIBUTING.md) | Setup, checks, and contribution workflow. |
+| [Release history](https://github.com/santi020k/lumen/releases) | Published releases and version notes. |
+
+Part of [Lumen UI](https://lumen.santi020k.com), created by [Santiago Molina](https://santi020k.com).
+Licensed under [MIT](https://github.com/santi020k/lumen/blob/main/LICENSE); third-party artwork retains its own notices.

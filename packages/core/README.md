@@ -1,4 +1,33 @@
-# @santi020k/lumen-core
+<p align="center">
+  <a href="https://lumen.santi020k.com">
+    <img src="https://raw.githubusercontent.com/santi020k/lumen/main/apps/docs/public/logo.svg" alt="Lumen UI" width="233" height="60">
+  </a>
+</p>
+
+<h1 align="center">Lumen UI · Core</h1>
+
+<p align="center">Shared contracts · Metadata · Framework-neutral helpers</p>
+
+<p align="center">
+  <a href="https://www.npmjs.com/package/@santi020k/lumen-core"><img src="https://img.shields.io/npm/v/@santi020k/lumen-core?style=flat-square&color=0369a0" alt="npm version"></a>
+  <a href="https://github.com/santi020k/lumen/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-13967e?style=flat-square" alt="MIT license"></a>
+</p>
+
+<p align="center">
+  <a href="https://lumen.santi020k.com/docs/foundations">Documentation</a>
+  ·
+  <a href="https://www.npmjs.com/package/@santi020k/lumen-core">npm</a>
+  ·
+  <a href="https://github.com/santi020k/lumen/tree/main/packages/core">Source</a>
+  ·
+  <a href="https://github.com/santi020k/lumen/issues">Issues</a>
+</p>
+
+**Package:** `@santi020k/lumen-core`
+
+**On this page:** [Install](#install) · [Language Helpers](#language-helpers) · [Chart Helpers](#chart-helpers) · [Phone Helpers](#phone-helpers) · [Icon Credits](#icon-credits) · [Resources](#resources)
+
+---
 
 Shared metadata, token constants, and tiny utilities used by the Lumen package family.
 
@@ -15,6 +44,17 @@ Cross-platform foundations originate in `tokens/lumen.tokens.json` and are publi
 `@santi020k/lumen-tokens`. Core also exports generated hexadecimal light/dark palettes and native
 numeric spacing, radius, typography, duration, easing, and elevation values. The legacy
 `lumenColors` export retains CSS-ready HSL values.
+
+## Install
+
+Install core directly when building framework-neutral tooling or a custom adapter:
+
+```bash
+pnpm add @santi020k/lumen-core
+```
+
+Core provides data and helpers; it does not register elements, render components, or load CSS.
+Use documented subpath exports such as `/charts`, `/phone`, and `/icon-data` for focused imports.
 
 ## Language Helpers
 
@@ -89,6 +129,8 @@ as-you-type formatting, validation, pasted international-number detection, and E
 web and React Native adapters.
 
 ```ts
+import { getLumenPhoneCountry, resolveLumenPhoneNumber } from '@santi020k/lumen-core/phone'
+
 const colombia = getLumenPhoneCountry('CO', { locale: 'en-US' })
 if (!colombia) throw new Error('Missing Colombia metadata')
 
@@ -163,3 +205,16 @@ React consumers can import both the renderer and definitions from
 remain supported through the original API. The interface selection in `icons/lumen.icons.json`
 controls the generated exports; run `pnpm run generate:platform-icons` after catalog changes.
 See [consumer UI recipes](../../docs/consumer-ui-recipes.md#static-react-icons).
+
+## Resources
+
+| Guide | What you will find |
+| --- | --- |
+| [Cross-platform architecture](https://github.com/santi020k/lumen/blob/main/docs/cross-platform.md) | Reference for cross-platform architecture. |
+| [Data visualization](https://github.com/santi020k/lumen/blob/main/docs/data-visualization.md) | Reference for data visualization. |
+| [Figma token export](https://github.com/santi020k/lumen/blob/main/docs/figma.md) | Reference for figma token export. |
+| [Contributing](https://github.com/santi020k/lumen/blob/main/CONTRIBUTING.md) | Setup, checks, and contribution workflow. |
+| [Release history](https://github.com/santi020k/lumen/releases) | Published releases and version notes. |
+
+Part of [Lumen UI](https://lumen.santi020k.com), created by [Santiago Molina](https://santi020k.com).
+Licensed under [MIT](https://github.com/santi020k/lumen/blob/main/LICENSE); third-party artwork retains its own notices.

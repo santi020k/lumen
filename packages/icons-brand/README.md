@@ -1,4 +1,33 @@
-# @santi020k/lumen-icons-brand
+<p align="center">
+  <a href="https://lumen.santi020k.com">
+    <img src="https://raw.githubusercontent.com/santi020k/lumen/main/apps/docs/public/logo.svg" alt="Lumen UI" width="233" height="60">
+  </a>
+</p>
+
+<h1 align="center">Lumen UI · Brand Icons</h1>
+
+<p align="center">Namespaced brand artwork · Shared Icon adapters</p>
+
+<p align="center">
+  <a href="https://www.npmjs.com/package/@santi020k/lumen-icons-brand"><img src="https://img.shields.io/npm/v/@santi020k/lumen-icons-brand?style=flat-square&color=0369a0" alt="npm version"></a>
+  <a href="https://github.com/santi020k/lumen/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-13967e?style=flat-square" alt="MIT license"></a>
+</p>
+
+<p align="center">
+  <a href="https://lumen.santi020k.com/docs/brand-icons">Documentation</a>
+  ·
+  <a href="https://www.npmjs.com/package/@santi020k/lumen-icons-brand">npm</a>
+  ·
+  <a href="https://github.com/santi020k/lumen/tree/main/packages/icons-brand">Source</a>
+  ·
+  <a href="https://github.com/santi020k/lumen/issues">Issues</a>
+</p>
+
+**Package:** `@santi020k/lumen-icons-brand`
+
+**On this page:** [Install](#install) · [Resources](#resources)
+
+---
 
 Optional brand icons for Lumen UI. The pack keeps company marks separate from Lumen's default
 Lucide catalog and renders them through the same `Icon` component in Astro, React, and Web
@@ -44,3 +73,15 @@ namespaced name programmatically.
 Brand paths come from
 [Font Awesome Free](https://github.com/FortAwesome/Font-Awesome), whose icons are licensed under
 CC BY 4.0. Read each brand's usage guidelines before publishing brand marks.
+
+## Resources
+
+| Guide | What you will find |
+| --- | --- |
+| [Icon licenses and trademark guidance](https://github.com/santi020k/lumen/blob/main/icons/THIRD_PARTY_NOTICES.md) | Reference for icon licenses and trademark guidance. |
+| [Import and icon performance](https://github.com/santi020k/lumen/blob/main/docs/import-and-icon-performance.md) | Reference for import and icon performance. |
+| [Contributing](https://github.com/santi020k/lumen/blob/main/CONTRIBUTING.md) | Setup, checks, and contribution workflow. |
+| [Release history](https://github.com/santi020k/lumen/releases) | Published releases and version notes. |
+
+Part of [Lumen UI](https://lumen.santi020k.com), created by [Santiago Molina](https://santi020k.com).
+Licensed under [MIT](https://github.com/santi020k/lumen/blob/main/LICENSE); third-party artwork retains its own notices.

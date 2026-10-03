@@ -1,4 +1,33 @@
-# @santi020k/lumen-mcp
+<p align="center">
+  <a href="https://lumen.santi020k.com">
+    <img src="https://raw.githubusercontent.com/santi020k/lumen/main/apps/docs/public/logo.svg" alt="Lumen UI" width="233" height="60">
+  </a>
+</p>
+
+<h1 align="center">Lumen UI · MCP Server</h1>
+
+<p align="center">Structured catalog · Component discovery · AI tooling</p>
+
+<p align="center">
+  <a href="https://www.npmjs.com/package/@santi020k/lumen-mcp"><img src="https://img.shields.io/npm/v/@santi020k/lumen-mcp?style=flat-square&color=0369a0" alt="npm version"></a>
+  <a href="https://github.com/santi020k/lumen/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-13967e?style=flat-square" alt="MIT license"></a>
+</p>
+
+<p align="center">
+  <a href="https://lumen.santi020k.com/docs/mcp">Documentation</a>
+  ·
+  <a href="https://www.npmjs.com/package/@santi020k/lumen-mcp">npm</a>
+  ·
+  <a href="https://github.com/santi020k/lumen/tree/main/packages/mcp">Source</a>
+  ·
+  <a href="https://github.com/santi020k/lumen/issues">Issues</a>
+</p>
+
+**Package:** `@santi020k/lumen-mcp`
+
+**On this page:** [Tools](#tools) · [Resources](#resources) · [Install and connect](#install-and-connect) · [AI plugin package](#ai-plugin-package) · [Recommended agent workflow](#recommended-agent-workflow) · [Resources](#resources)
+
+---
 
 A [Model Context Protocol](https://modelcontextprotocol.io) server for the Lumen
 multi-framework primitive UI system. It gives AI agents structured access to
@@ -29,6 +58,8 @@ Every tool returns both readable text and validated `structuredContent`.
 
 ## Resources
 
+| Guide | What you will find |
+| --- | --- |
 | Resource | Contents |
 | --- | --- |
 | `lumen://meta` | Snapshot provenance, package versions, and deterministic catalog hash. |
@@ -312,3 +343,13 @@ uses an unsupported React prop therefore fails before release.
 ## License
 
 MIT © Santiago Molina
+
+## Resources
+
+| [AI usage examples](https://github.com/santi020k/lumen/blob/main/docs/ai-usage.md) | Reference for aI usage examples. |
+| [Portable agent skill](https://github.com/santi020k/lumen/blob/main/skills/lumen-ui/SKILL.md) | Reference for portable agent skill. |
+| [Contributing](https://github.com/santi020k/lumen/blob/main/CONTRIBUTING.md) | Setup, checks, and contribution workflow. |
+| [Release history](https://github.com/santi020k/lumen/releases) | Published releases and version notes. |
+
+Part of [Lumen UI](https://lumen.santi020k.com), created by [Santiago Molina](https://santi020k.com).
+Licensed under [MIT](https://github.com/santi020k/lumen/blob/main/LICENSE); third-party artwork retains its own notices.

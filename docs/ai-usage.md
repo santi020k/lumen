@@ -547,3 +547,23 @@ token JSON for token importers. See [docs/figma.md](figma.md) for the recommende
 - Update the relevant package README when public usage changes.
 - Add tests beside package code as `*.test.ts` when behavior, exported metadata, or component
   contracts change.
+
+### React inline range calendar
+
+For a range editor with both endpoint calendars visible, use the React-only
+`DateRangeCalendar` export. Pass `value={{ start, end }}`, `onValueChange`, required
+`labels={{ start, end, presets }}`, `locale`, optional `min`/`max`, and optional
+`presets={[{ label, value: { start, end } }]}`. `formatDate` customizes the displayed
+endpoint summaries. Keep a draft in the consuming application and apply it only
+when confirmed. ISO endpoints must be valid and ascending. Crossing a boundary
+moves the other endpoint; presets outside the bounds are disabled. The component
+shares `useCalendar` keyboard behavior and stacks its calendars on narrow screens.
+
+For React input-attached range selection, import `DateRangeInput` from
+`@santi020k/lumen-react`. Pass controlled ISO `value`/`onValueChange`, an accessible
+`label`, and localized `labels` containing `start`, `end`, `presets`, `apply`, and
+`cancel`. It owns draft state and confirmation, anchors a non-modal popover to its
+trigger, and supports keyboard dismissal and responsive scrolling. Use `validate`
+for domain restrictions and `renderSummary` for draft details. Optional
+`name={{ start: 'from', end: 'to' }}` submits applied ISO values through hidden inputs.
+See the React README for the complete usage and browser fallback contract.

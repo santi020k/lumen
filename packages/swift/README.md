@@ -1,4 +1,31 @@
-# LumenUI for SwiftUI
+<p align="center">
+  <a href="https://lumen.santi020k.com">
+    <img src="https://raw.githubusercontent.com/santi020k/lumen/main/apps/docs/public/logo.svg" alt="Lumen UI" width="233" height="60">
+  </a>
+</p>
+
+<h1 align="center">Lumen UI · SwiftUI</h1>
+
+<p align="center">Apple-native components · Semantic themes · Shared foundations</p>
+
+<p align="center">
+  <a href="https://github.com/santi020k/lumen/tree/main/packages/swift"><img src="https://img.shields.io/badge/platform-SwiftUI-0369a0?style=flat-square" alt="SwiftUI package"></a>
+  <a href="https://github.com/santi020k/lumen/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-13967e?style=flat-square" alt="MIT license"></a>
+</p>
+
+<p align="center">
+  <a href="https://lumen.santi020k.com/docs/apple">Documentation</a>
+  ·
+  <a href="https://github.com/santi020k/lumen/tree/main/packages/swift">Source</a>
+  ·
+  <a href="https://github.com/santi020k/lumen/issues">Issues</a>
+</p>
+
+**Package:** `LumenUI for SwiftUI`
+
+**On this page:** [Runtime and localized text](#runtime-and-localized-text) · [Data visualization](#data-visualization) · [Resources](#resources)
+
+---
 
 > **Supported for Lumen 2:** This package uses the frozen version 2 contract. The current package
 > reference remains a release candidate until publication, physical-device, and consumer-soak gates complete.
@@ -370,3 +397,16 @@ After an intentional API change, run `pnpm run generate:swift-api-baseline`, rev
 declaration diff, and move every new entry from `unclassified` into `supported`, `experimental`, or
 `deprecated`. The checker also builds macOS, iOS, tvOS, visionOS, and watchOS, so platform-conditional source
 cannot bypass the inventory.
+
+## Resources
+
+| Guide | What you will find |
+| --- | --- |
+| [Native component reference](https://github.com/santi020k/lumen/blob/main/docs/native-components.md) | Reference for native component reference. |
+| [Native compatibility](https://github.com/santi020k/lumen/blob/main/docs/native-compatibility.md) | Reference for native compatibility. |
+| [WidgetKit package](https://github.com/santi020k/lumen/blob/main/packages/swift-widget/README.md) | Reference for widgetKit package. |
+| [Contributing](https://github.com/santi020k/lumen/blob/main/CONTRIBUTING.md) | Setup, checks, and contribution workflow. |
+| [Release history](https://github.com/santi020k/lumen/releases) | Published releases and version notes. |
+
+Part of [Lumen UI](https://lumen.santi020k.com), created by [Santiago Molina](https://santi020k.com).
+Licensed under [MIT](https://github.com/santi020k/lumen/blob/main/LICENSE); third-party artwork retains its own notices.

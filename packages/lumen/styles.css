@@ -7385,3 +7385,145 @@ a.ui-pill:focus-visible {
     white-space: normal;
   }
 }
+
+@layer lumen.components {
+  .ui-range-calendar {
+    display: grid;
+    grid-template-columns: 10rem minmax(0, 1fr);
+    gap: 1rem;
+    color: hsl(var(--ink));
+    font-size: .8125rem;
+  }
+  .ui-range-calendar__presets {
+    display: flex;
+    flex-direction: column;
+    gap: .25rem;
+    padding-inline-end: 1rem;
+    border-inline-end: 1px solid hsl(var(--line));
+  }
+  .ui-range-calendar__presets .ui-button {
+    justify-content: start;
+    min-height: 2.75rem;
+    padding-inline: .75rem;
+    font-size: inherit;
+    font-weight: 500;
+    white-space: normal;
+    text-align: start;
+  }
+  .ui-range-calendar__presets [aria-pressed="true"] {
+    background: hsl(var(--brand-soft));
+    color: hsl(var(--brand));
+    font-weight: 650;
+  }
+  .ui-range-calendar__months { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+  .ui-range-calendar__month { min-width: 0; }
+  .ui-range-calendar__endpoint {
+    display: grid;
+    gap: .25rem;
+    padding: .625rem .75rem;
+    margin-bottom: .75rem;
+    border: 1px solid hsl(var(--line));
+    border-radius: .5rem;
+    background: hsl(var(--surface));
+  }
+  .ui-range-calendar__endpoint span { font-size: .75rem; color: hsl(var(--ink-muted)); }
+  .ui-range-calendar__endpoint strong { font-size: .875rem; font-weight: 650; }
+  .ui-range-calendar .ui-calendar { width: 100%; max-width: none; border: 0; padding: 0; box-shadow: none; background: transparent; }
+  .ui-range-calendar .ui-calendar__header { margin-bottom: .5rem; }
+  .ui-range-calendar .ui-calendar__header strong { font-size: .8125rem; font-weight: 650; }
+  .ui-range-calendar .ui-calendar__header button { display: grid; place-items: center; width: 2.5rem; height: 2.5rem; }
+  .ui-range-calendar .ui-calendar__grid { width: 100%; table-layout: fixed; border-collapse: separate; border-spacing: 0 .25rem; }
+  .ui-range-calendar .ui-calendar__grid th { height: 2rem; font-size: .6875rem; font-weight: 500; }
+  .ui-range-calendar .ui-calendar__grid td { height: 2.5rem; padding: 0; text-align: center; border: 0; border-radius: 0; font-size: .8125rem; font-weight: 400; }
+  .ui-range-calendar .ui-calendar__grid td[data-in-range="true"] { background: hsl(var(--brand-soft)); color: hsl(var(--ink)); box-shadow: none; }
+  .ui-range-calendar .ui-calendar__grid td[data-in-range="true"]:first-child { border-start-start-radius: .375rem; border-end-start-radius: .375rem; }
+  .ui-range-calendar .ui-calendar__grid td[data-in-range="true"]:last-child { border-start-end-radius: .375rem; border-end-end-radius: .375rem; }
+  .ui-range-calendar .ui-calendar__grid td[data-selected="true"] { background: hsl(var(--brand-solid)); color: hsl(var(--on-brand)); border-radius: .375rem; font-weight: 650; }
+  .ui-range-calendar [data-ui-calendar-day]:focus-visible { outline: 2px solid hsl(var(--brand)); outline-offset: -2px; }
+  @media (max-width: 640px) {
+    .ui-range-calendar { grid-template-columns: minmax(0, 1fr); gap: .75rem; }
+    .ui-range-calendar__presets { flex-direction: row; overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: thin; border-inline-end: 0; border-bottom: 1px solid hsl(var(--line)); padding: 0 0 .75rem; }
+    .ui-range-calendar__presets .ui-button { flex-shrink: 0; white-space: nowrap; }
+    .ui-range-calendar__months { grid-template-columns: minmax(0, 1fr); gap: 1.25rem; }
+    .ui-range-calendar .ui-calendar__grid td { height: 2.75rem; }
+    .ui-range-calendar .ui-calendar__header button { width: 2.75rem; height: 2.75rem; }
+  }
+}
+
+@layer lumen.components {
+.ui-range-input { min-width: 0; }
+.ui-range-input > .ui-button {
+  width: 100%;
+  min-height: 44px;
+  justify-content: space-between;
+  gap: .75rem;
+  padding-inline: .875rem;
+  font-size: .8125rem;
+  font-weight: 500;
+  color: hsl(var(--ink));
+}
+.ui-range-input > .ui-button[aria-expanded="true"] {
+  border-color: hsl(var(--brand));
+  box-shadow: 0 0 0 2px hsl(var(--brand) / .12);
+}
+.ui-range-input__value { display: flex; align-items: center; gap: .5rem; min-width: 0; }
+.ui-range-input__value > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ui-range-input > .ui-button > .ui-icon { flex-shrink: 0; color: hsl(var(--ink-muted)); }
+.ui-range-input__panel {
+  font-family: var(--ui-font);
+  position: fixed;
+  inset: auto;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background: hsl(var(--surface));
+  color: hsl(var(--ink));
+  border: 1px solid hsl(var(--line));
+  border-radius: .75rem;
+  box-shadow: 0 12px 32px hsl(var(--ink) / .14);
+}
+.ui-range-input__panel:popover-open { display: flex; flex-direction: column; }
+.ui-range-input__panel::backdrop { background: transparent; }
+.ui-range-input__body {
+  min-height: 0;
+  padding: 1rem;
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-gutter: stable;
+}
+.ui-range-input__panel .ui-range-input__actions {
+  flex-shrink: 0;
+  display: flex;
+  justify-content: flex-end;
+  gap: .5rem;
+  margin: 0;
+  padding: .75rem 1rem;
+  background: hsl(var(--surface));
+  border-top: 1px solid hsl(var(--line));
+}
+.ui-range-input__panel .ui-range-input__actions .ui-button { min-height: 44px; font-size: .8125rem; }
+.ui-range-input__panel .ui-range-input__summary {
+  margin: .75rem 0 0;
+  color: hsl(var(--ink-soft));
+  font-size: .75rem;
+  font-weight: 500;
+  line-height: 1.5;
+}
+.ui-range-input__panel .ui-range-input__summary[data-invalid="true"] { color: hsl(var(--danger)); }
+.ui-range-input__panel[data-state="open"] { display: flex; flex-direction: column; }
+@media (max-width: 640px) {
+.ui-range-input__body { padding: .75rem; }
+.ui-range-input__actions { padding: .75rem; }
+.ui-range-input__actions .ui-button { flex: 1; }
+}
+}
+
+@layer lumen.components {
+  .ui-range-calendar { font-family: var(--ui-font); }
+  .ui-range-calendar__endpoint > span,
+  .ui-range-calendar .ui-calendar__grid th,
+  .ui-range-calendar .ui-calendar__grid td[data-outside="true"]:not([data-in-range="true"]) {
+    color: hsl(var(--ink-soft));
+  }
+}

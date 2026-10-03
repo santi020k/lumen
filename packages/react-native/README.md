@@ -1,4 +1,33 @@
-# @santi020k/lumen-react-native
+<p align="center">
+  <a href="https://lumen.santi020k.com">
+    <img src="https://raw.githubusercontent.com/santi020k/lumen/main/apps/docs/public/logo.svg" alt="Lumen UI" width="233" height="60">
+  </a>
+</p>
+
+<h1 align="center">Lumen UI · React Native</h1>
+
+<p align="center">Native primitives · Semantic themes · Shared foundations</p>
+
+<p align="center">
+  <a href="https://www.npmjs.com/package/@santi020k/lumen-react-native"><img src="https://img.shields.io/npm/v/@santi020k/lumen-react-native?style=flat-square&color=0369a0" alt="npm version"></a>
+  <a href="https://github.com/santi020k/lumen/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-13967e?style=flat-square" alt="MIT license"></a>
+</p>
+
+<p align="center">
+  <a href="https://lumen.santi020k.com/docs/react-native">Documentation</a>
+  ·
+  <a href="https://www.npmjs.com/package/@santi020k/lumen-react-native">npm</a>
+  ·
+  <a href="https://github.com/santi020k/lumen/tree/main/packages/react-native">Source</a>
+  ·
+  <a href="https://github.com/santi020k/lumen/issues">Issues</a>
+</p>
+
+**Package:** `@santi020k/lumen-react-native`
+
+**On this page:** [React hooks](#react-hooks) · [Data visualization](#data-visualization) · [Consumer composition recipes](#consumer-composition-recipes) · [Resources](#resources)
+
+---
 
 > **Supported for Lumen 2:** This package uses the frozen version 2 contract. The current artifact
 > remains a release candidate until publication, physical-device, and consumer-soak gates complete.
@@ -314,3 +343,16 @@ See [consumer UI recipes](../../docs/consumer-ui-recipes.md) for static React ic
 record tables, keyboard-aware native sheets, whole-unit amount fields, adaptive editors, and
 asynchronous action states. Each recipe identifies the public primitives and the behavior that
 remains owned by the application.
+
+## Resources
+
+| Guide | What you will find |
+| --- | --- |
+| [Native component reference](https://github.com/santi020k/lumen/blob/main/docs/native-components.md) | Reference for native component reference. |
+| [Native compatibility](https://github.com/santi020k/lumen/blob/main/docs/native-compatibility.md) | Reference for native compatibility. |
+| [Device validation evidence](https://github.com/santi020k/lumen/blob/main/docs/native-device-validation.md) | Reference for device validation evidence. |
+| [Contributing](https://github.com/santi020k/lumen/blob/main/CONTRIBUTING.md) | Setup, checks, and contribution workflow. |
+| [Release history](https://github.com/santi020k/lumen/releases) | Published releases and version notes. |
+
+Part of [Lumen UI](https://lumen.santi020k.com), created by [Santiago Molina](https://santi020k.com).
+Licensed under [MIT](https://github.com/santi020k/lumen/blob/main/LICENSE); third-party artwork retains its own notices.

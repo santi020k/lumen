@@ -1,4 +1,33 @@
-# @santi020k/lumen-react
+<p align="center">
+  <a href="https://lumen.santi020k.com">
+    <img src="https://raw.githubusercontent.com/santi020k/lumen/main/apps/docs/public/logo.svg" alt="Lumen UI" width="233" height="60">
+  </a>
+</p>
+
+<h1 align="center">Lumen UI · React</h1>
+
+<p align="center">React primitives · Shared styles · Typed component APIs</p>
+
+<p align="center">
+  <a href="https://www.npmjs.com/package/@santi020k/lumen-react"><img src="https://img.shields.io/npm/v/@santi020k/lumen-react?style=flat-square&color=0369a0" alt="npm version"></a>
+  <a href="https://github.com/santi020k/lumen/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-13967e?style=flat-square" alt="MIT license"></a>
+</p>
+
+<p align="center">
+  <a href="https://lumen.santi020k.com/docs/frameworks/react">Documentation</a>
+  ·
+  <a href="https://www.npmjs.com/package/@santi020k/lumen-react">npm</a>
+  ·
+  <a href="https://github.com/santi020k/lumen/tree/main/packages/react">Source</a>
+  ·
+  <a href="https://github.com/santi020k/lumen/issues">Issues</a>
+</p>
+
+**Package:** `@santi020k/lumen-react`
+
+**On this page:** [Install](#install) · [Usage](#usage) · [Dropdown menus](#dropdown-menus) · [Language selection](#language-selection) · [Forms](#forms) · [Resources](#resources)
+
+---
 
 React primitives for Lumen UI.
 
@@ -6,6 +35,8 @@ This package provides React components for the shared Lumen primitive catalog us
 Lumen stylesheet.
 
 ## Install
+
+Requires React 19 or newer in the consuming application.
 
 ```bash
 pnpm add @santi020k/lumen-react
@@ -462,3 +493,98 @@ import { Icon, Search } from '@santi020k/lumen-react/icons'
 The existing root `Icon name="search"` remains supported for runtime-selected names and icon packs.
 `Table layout="records"` opts into the responsive record recipe; its semantic child markup and
 shared mobile labels are documented in the consumer recipe linked above.
+
+## Resources
+
+| Guide | What you will find |
+| --- | --- |
+| [Consumer UI recipes](https://github.com/santi020k/lumen/blob/main/docs/consumer-ui-recipes.md) | Reference for consumer UI recipes. |
+| [React Hook Form adapters](https://github.com/santi020k/lumen/blob/main/packages/react-hook-form/README.md) | Reference for react Hook Form adapters. |
+| [Import and icon performance](https://github.com/santi020k/lumen/blob/main/docs/import-and-icon-performance.md) | Reference for import and icon performance. |
+| [Contributing](https://github.com/santi020k/lumen/blob/main/CONTRIBUTING.md) | Setup, checks, and contribution workflow. |
+| [Release history](https://github.com/santi020k/lumen/releases) | Published releases and version notes. |
+
+Part of [Lumen UI](https://lumen.santi020k.com), created by [Santiago Molina](https://santi020k.com).
+Licensed under [MIT](https://github.com/santi020k/lumen/blob/main/LICENSE); third-party artwork retains its own notices.
+
+## Inline date range calendar
+
+`DateRangeCalendar` is a controlled React range editor with two visible calendars,
+inclusive range highlighting, a preset sidebar and the keyboard behavior of `useCalendar`.
+On narrow screens the presets scroll horizontally and the calendars stack. It uses the shared Lumen stylesheet.
+
+```tsx
+const [range, setRange] = useState({ start: '2026-09-01', end: '2026-09-30' })
+
+<DateRangeCalendar
+  value={range}
+  onValueChange={setRange}
+  locale="en-US"
+  min="2000-01-01"
+  max="2100-12-31"
+  labels={{ start: 'From', end: 'To', presets: 'Quick range' }}
+  presets={[{ label: 'September', value: { start: '2026-09-01', end: '2026-09-30' } }]}
+/>
+```
+
+Supply valid ISO date endpoints in ascending order. Choosing a start after the end,
+or an end before the start, moves the opposite endpoint to the chosen day.
+Presets outside `min`/`max` or in descending order are disabled. Only one matching
+preset is highlighted, including when multiple presets resolve to the same range. `formatDate` can customize
+the endpoint summaries without changing ISO values. The consumer owns draft state,
+Apply/Cancel actions and domain limits such as maximum report duration. Labels are required;
+`locale` controls month, weekday, navigation and day announcements.
+
+## Input-attached date range selection
+
+`DateRangeInput` wraps `DateRangeCalendar` in an anchored, non-modal popover. Use it
+when the range should be edited directly from an input-like control. It keeps draft
+changes internal and calls `onValueChange` only when the user chooses Apply.
+The existing `DateRangePicker` and inline `DateRangeCalendar` remain available.
+
+```tsx
+import { useState } from 'react'
+import { DateRangeInput } from '@santi020k/lumen-react'
+import '@santi020k/lumen-react/styles.css'
+
+export function ReportPeriod() {
+  const [range, setRange] = useState({ start: '2026-09-01', end: '2026-09-30' })
+
+  return (
+    <DateRangeInput
+      value={range}
+      onValueChange={setRange}
+      label="Report period"
+      locale="en-US"
+      labels={{ start: 'From', end: 'To', presets: 'Quick ranges', apply: 'Apply', cancel: 'Cancel' }}
+      presets={[{ label: 'September', value: { start: '2026-09-01', end: '2026-09-30' } }]}
+      name={{ start: 'from', end: 'to' }}
+      validate={draft => draft.start < '2026-01-01' ? 'Choose dates in 2026 or later.' : undefined}
+      renderSummary={draft => `${draft.start} through ${draft.end}`}
+    />
+  )
+}
+```
+
+- `value` must contain real, ascending ISO dates (`YYYY-MM-DD`). `min`, `max`,
+  `presets`, `locale`, and `formatDate` follow the inline calendar contract.
+- `label` names both the trigger and dialog. Supply localized start, end, presets,
+  apply, and cancel labels. For Spanish, use `Desde`, `Hasta`, `Períodos`, `Aplicar`,
+  and `Cancelar` with `locale="es-CO"`. Navigation announcements follow `locale`.
+- `validate` runs on the draft; return a localized error to disable Apply. The error
+  is announced politely and associated with the Apply button. Keep validation pure.
+- `renderSummary` optionally renders localized draft details. `formatDate` changes
+  visible dates, while optional hidden form fields always submit the applied ISO values.
+- Cancel, Escape, outside pointer interaction, or moving focus outside discard the
+  draft. Apply, Cancel, and Escape return focus to the trigger. Opening again starts
+  from the latest controlled value. Calendar arrows retain their date-navigation behavior.
+- The panel uses the browser Popover API top layer without a modal backdrop or focus
+  trap. A fixed-position fallback works where the API is unavailable; ancestor clipping
+  can affect that fallback. The page remains interactive.
+- The panel tracks viewport changes, scroll, and trigger size. Narrow screens scroll
+  the trigger into view, stack the calendars, and scroll presets horizontally.
+  Only the body scrolls vertically; confirmation actions stay visible.
+- `disabled` disables the trigger and optional form entries. `className` styles the
+  outer container. Import the shared stylesheet once at the application boundary.
+
+This component is currently React-only. Publication is separate from local implementation.

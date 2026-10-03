@@ -1,4 +1,31 @@
-# Lumen UI for Wear OS
+<p align="center">
+  <a href="https://lumen.santi020k.com">
+    <img src="https://raw.githubusercontent.com/santi020k/lumen/main/apps/docs/public/logo.svg" alt="Lumen UI" width="233" height="60">
+  </a>
+</p>
+
+<h1 align="center">Lumen UI · Wear OS</h1>
+
+<p align="center">At-a-glance actions · Progress · Round-screen presentation</p>
+
+<p align="center">
+  <a href="https://github.com/santi020k/lumen/tree/main/packages/compose/wear"><img src="https://img.shields.io/badge/platform-Wear%20OS-0369a0?style=flat-square" alt="Wear OS package"></a>
+  <a href="https://github.com/santi020k/lumen/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-13967e?style=flat-square" alt="MIT license"></a>
+</p>
+
+<p align="center">
+  <a href="https://lumen.santi020k.com/docs/android">Documentation</a>
+  ·
+  <a href="https://github.com/santi020k/lumen/tree/main/packages/compose/wear">Source</a>
+  ·
+  <a href="https://github.com/santi020k/lumen/issues">Issues</a>
+</p>
+
+**Package:** `Lumen UI for Wear OS`
+
+**On this page:** [Resources](#resources)
+
+---
 
 > The complete Wear theme, tone, action, progress, status, metric, and list-row surface is Supported
 > for Lumen 2. Publication and physical-watch evidence remain release gates.
@@ -52,3 +79,15 @@ that debug application installed on a Wear emulator, run
 `apps/playground-android/scripts/capture-component-screenshots.sh` from the repository root. The
 script detects the wearable target and captures theme, action, progress, status, metric, and
 list-row states separately beneath `apps/playground-android/build/screenshots/wear`.
+
+## Resources
+
+| Guide | What you will find |
+| --- | --- |
+| [Compose installation](https://github.com/santi020k/lumen/blob/main/packages/compose/README.md) | Reference for compose installation. |
+| [Device validation evidence](https://github.com/santi020k/lumen/blob/main/docs/native-device-validation.md) | Reference for device validation evidence. |
+| [Contributing](https://github.com/santi020k/lumen/blob/main/CONTRIBUTING.md) | Setup, checks, and contribution workflow. |
+| [Release history](https://github.com/santi020k/lumen/releases) | Published releases and version notes. |
+
+Part of [Lumen UI](https://lumen.santi020k.com), created by [Santiago Molina](https://santi020k.com).
+Licensed under [MIT](https://github.com/santi020k/lumen/blob/main/LICENSE); third-party artwork retains its own notices.

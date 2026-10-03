@@ -1,4 +1,33 @@
-# @santi020k/lumen-elements
+<p align="center">
+  <a href="https://lumen.santi020k.com">
+    <img src="https://raw.githubusercontent.com/santi020k/lumen/main/apps/docs/public/logo.svg" alt="Lumen UI" width="233" height="60">
+  </a>
+</p>
+
+<h1 align="center">Lumen UI · Web Components</h1>
+
+<p align="center">Custom elements · Browser-native composition · Shared styles</p>
+
+<p align="center">
+  <a href="https://www.npmjs.com/package/@santi020k/lumen-elements"><img src="https://img.shields.io/npm/v/@santi020k/lumen-elements?style=flat-square&color=0369a0" alt="npm version"></a>
+  <a href="https://github.com/santi020k/lumen/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-13967e?style=flat-square" alt="MIT license"></a>
+</p>
+
+<p align="center">
+  <a href="https://lumen.santi020k.com/docs/frameworks/elements">Documentation</a>
+  ·
+  <a href="https://www.npmjs.com/package/@santi020k/lumen-elements">npm</a>
+  ·
+  <a href="https://github.com/santi020k/lumen/tree/main/packages/elements">Source</a>
+  ·
+  <a href="https://github.com/santi020k/lumen/issues">Issues</a>
+</p>
+
+**Package:** `@santi020k/lumen-elements`
+
+**On this page:** [Install](#install) · [Usage](#usage) · [Language selection](#language-selection) · [Forms](#forms) · [Context navigation](#context-navigation) · [Resources](#resources)
+
+---
 
 Web Components for Lumen UI.
 
@@ -364,3 +393,15 @@ See [consumer UI recipes](../../docs/consumer-ui-recipes.md) for static React ic
 record tables, keyboard-aware native sheets, whole-unit amount fields, adaptive editors, and
 asynchronous action states. Each recipe identifies the public primitives and the behavior that
 remains owned by the application.
+
+## Resources
+
+| Guide | What you will find |
+| --- | --- |
+| [Styling contract](https://github.com/santi020k/lumen/blob/main/docs/styling-contract.md) | Reference for styling contract. |
+| [Error handling](https://github.com/santi020k/lumen/blob/main/docs/error-handling.md) | Reference for error handling. |
+| [Contributing](https://github.com/santi020k/lumen/blob/main/CONTRIBUTING.md) | Setup, checks, and contribution workflow. |
+| [Release history](https://github.com/santi020k/lumen/releases) | Published releases and version notes. |
+
+Part of [Lumen UI](https://lumen.santi020k.com), created by [Santiago Molina](https://santi020k.com).
+Licensed under [MIT](https://github.com/santi020k/lumen/blob/main/LICENSE); third-party artwork retains its own notices.
