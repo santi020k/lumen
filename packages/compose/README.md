@@ -141,6 +141,12 @@ Skeleton, Graphic, Backdrop,
 Illustration, Image, Disclosure, Gauge, and Avatar.
 `LumenAlertDialog`, `LumenSheet`, `LumenMenu`, and `LumenShareButton` add Material-native controlled
 presentation and Android share-sheet integration while application state remains host-owned.
+Sheets scroll their content by default, respond to keyboard insets, and keep ordinary actions
+outside the scrolling body. Large text or short windows use a full-content scrolling fallback.
+Set `scrollable = false` for application-owned lazy collections and `dismissible = false` while
+work must prevent back, scrim, or swipe dismissal. The application retains explicit visibility
+ownership. `LumenFieldGroup.requiredLabel` and `LumenTabs.panelAccessibilityLabel` accept localized
+spoken descriptions; tab panels otherwise use the selected tab's visible label.
 `LumenNavigationBar` provides Material-native destination selection while the application retains
 ownership of its navigation controller, back stack, deep links, and selected screen.
 Pass a remembered `LumenNavigationBarScrollState` to the bar and attach

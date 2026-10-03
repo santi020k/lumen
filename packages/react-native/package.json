@@ -23,7 +23,11 @@
       "types": "./dist/tokens.generated.d.ts",
       "import": "./dist/tokens.generated.js"
     },
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./foundations": {
+      "types": "./dist/foundations.d.ts",
+      "import": "./dist/foundations.js"
+    }
   },
   "files": [
     "dist",

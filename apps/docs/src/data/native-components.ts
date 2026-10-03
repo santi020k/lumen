@@ -1507,6 +1507,12 @@ LumenIcon(name: .brandGithub, label: "GitHub")`,
         'Shows that the grouped answer is required.'
       ),
       property(
+        { android: 'requiredLabel', 'react-native': 'requiredLabel' },
+        'String',
+        'required',
+        'Localizes the spoken required-field description. SwiftUI resolves the Required key through application localization.'
+      ),
+      property(
         'content',
         'Native content',
         'Required',
@@ -1607,7 +1613,7 @@ LumenIcon(name: .brandGithub, label: "GitHub")`,
         'orientation',
         'horizontal · vertical',
         'horizontal',
-        'Controls action layout.'
+        'Prefers horizontal or vertical actions. Horizontal groups wrap or stack when space or accessibility text requires it.'
       ),
       property(
         'content',
@@ -2442,6 +2448,12 @@ const [phone, setPhone] = useState(() =>
     name: 'Tabs',
     properties: [
       property('label', 'String', 'Required', 'Names the tab list for assistive technology.'),
+      property(
+        { android: 'panelAccessibilityLabel', 'react-native': 'panelAccessibilityLabel' },
+        'String?',
+        'Selected tab label',
+        'Names the active panel using application-localized text without appending an English role description.'
+      ),
       property(
         'options',
         {
@@ -4341,6 +4353,14 @@ Scaffold(
       'Use for supplemental editing or detail that should not replace the current screen. Keep form state and dismissal decisions application-owned.',
     name: 'Sheet',
     properties: [
+      property('dismissible', 'Boolean', 'true', 'Allows platform gestures, back actions, and backdrop dismissal. Set false while application work requires the sheet to remain open.'),
+      property('scrollable', 'Boolean', 'true', 'Scrolls content with reachable actions. Short windows and accessibility text sizes may scroll the complete sheet; set false for application-owned lazy or virtualized containers.'),
+      property(
+        { 'react-native': 'initialFocusRef / returnFocusRef' },
+        'RefObject<HostInstance | null>',
+        'undefined',
+        'Optionally focuses an accessible application-owned control after presentation and restores its trigger after closing.'
+      ),
       property(
         { android: 'visible', apple: 'isPresented', 'react-native': 'visible' },
         {

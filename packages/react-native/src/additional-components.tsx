@@ -10,9 +10,9 @@ import {
   TextInput,
   type TextInputProps,
   type TextStyle,
+  useWindowDimensions,
   View,
-  type ViewProps
-} from 'react-native'
+  type ViewProps } from 'react-native'
 
 import { LumenFieldContext } from './field-context.js'
 import type { LumenTextInputRef, LumenViewRef } from './native-ref-types.js'
@@ -324,7 +324,11 @@ export interface LumenFieldGroupProps extends ViewProps {
   label: string
   ref?: LumenViewRef
   required?: boolean
+  /** Localized spoken description of a required field. */
+  requiredLabel?: string
 }
+
+const requiredFieldLabel = (label: string, required: boolean, requiredLabel: string): string | undefined => required ? `${label}, ${requiredLabel}` : undefined
 
 export const LumenFieldGroup = ({
   children,
@@ -333,6 +337,7 @@ export const LumenFieldGroup = ({
   label,
   ref,
   required = false,
+  requiredLabel = 'required',
   style,
   ...props
 }: LumenFieldGroupProps): ReactElement => {
@@ -354,7 +359,7 @@ export const LumenFieldGroup = ({
     >
       <View ref={ref} {...props} style={[{ gap: theme.spacing.sm }, style]}>
         <Text
-          accessibilityLabel={required ? `${label}, required` : undefined}
+          accessibilityLabel={requiredFieldLabel(label, required, requiredLabel)}
           nativeID={labelId}
           style={{
             color: theme.colors.ink,
@@ -406,6 +411,8 @@ export const LumenButtonGroup = ({
   ...props
 }: LumenButtonGroupProps): ReactElement => {
   const theme = useLumenTheme()
+  const { fontScale } = useWindowDimensions()
+  const horizontal = orientation === 'horizontal' && fontScale < 2
 
   return (
     <View
@@ -413,8 +420,9 @@ export const LumenButtonGroup = ({
       {...props}
       style={[
         {
-          alignItems: orientation === 'horizontal' ? 'center' : 'stretch',
-          flexDirection: orientation === 'horizontal' ? 'row' : 'column',
+          alignItems: horizontal ? 'center' : 'stretch',
+          flexDirection: horizontal ? 'row' : 'column',
+          flexWrap: horizontal ? 'wrap' : 'nowrap',
           gap: theme.spacing.sm
         },
         style

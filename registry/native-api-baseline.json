@@ -261,6 +261,43 @@
           ],
           "experimental": [],
           "deprecated": []
+        },
+        "/foundations": {
+          "entrypoint": "packages/react-native/src/foundations.ts",
+          "maturity": "stable",
+          "supported": [
+            "LumenBadge",
+            "LumenBadgeProps",
+            "LumenButton",
+            "LumenButtonIntent",
+            "LumenButtonProps",
+            "LumenControlSize",
+            "LumenDivider",
+            "LumenDividerProps",
+            "LumenIconSize",
+            "LumenProvider",
+            "LumenProviderProps",
+            "LumenSpinner",
+            "LumenSpinnerProps",
+            "LumenSurface",
+            "LumenSurfacePadding",
+            "LumenSurfaceProps",
+            "LumenSurfaceRadius",
+            "LumenSurfaceTone",
+            "LumenText",
+            "LumenTextField",
+            "LumenTextFieldProps",
+            "LumenTextProps",
+            "LumenTextTone",
+            "LumenTextVariant",
+            "LumenTheme",
+            "createLumenTheme",
+            "lumenDarkTheme",
+            "lumenLightTheme",
+            "useLumenTheme"
+          ],
+          "experimental": [],
+          "deprecated": []
         }
       }
     }

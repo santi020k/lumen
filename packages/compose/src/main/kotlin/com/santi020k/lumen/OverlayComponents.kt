@@ -6,22 +6,34 @@ import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 
 /** A controlled native confirmation dialog with explicit cancel and confirm actions. */
 @Composable
@@ -74,33 +86,55 @@ fun LumenSheet(
     modifier: Modifier = Modifier,
     title: String? = null,
     description: String? = null,
+    dismissible: Boolean = true,
+    scrollable: Boolean = true,
     actions: @Composable () -> Unit = {},
     content: @Composable () -> Unit
 ) {
     if (!visible) return
 
-    ModalBottomSheet(onDismissRequest = onDismiss, modifier = modifier) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = LumenSpacing.Xl)
-                .padding(bottom = LumenSpacing.Xl),
-            verticalArrangement = Arrangement.spacedBy(LumenSpacing.Lg)
-        ) {
-            if (title != null || description != null) {
-                Column(verticalArrangement = Arrangement.spacedBy(LumenSpacing.Sm)) {
-                    title?.let { Text(it, fontWeight = FontWeight.SemiBold) }
-                    description?.let { Text(it, color = LocalLumenTheme.current.colors.inkSoft) }
-                }
-            }
+    val currentDismissible = rememberUpdatedState(dismissible)
+    val sheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true,
+        confirmValueChange = { target -> currentDismissible.value || target != SheetValue.Hidden }
+    )
+    val dismiss = { if (dismissible) onDismiss() }
 
-            content()
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End
+    ModalBottomSheet(onDismissRequest = dismiss, sheetState = sheetState, modifier = modifier) {
+        BoxWithConstraints(modifier = Modifier.fillMaxWidth().imePadding()) {
+            val scrollAll = scrollable && (LocalDensity.current.fontScale >= 2f || maxHeight < 480.dp)
+            val contentScrollState = rememberScrollState()
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .then(if (scrollAll) Modifier.verticalScroll(contentScrollState) else Modifier)
+                    .padding(horizontal = LumenSpacing.Xl)
+                    .padding(bottom = LumenSpacing.Xl),
+                verticalArrangement = Arrangement.spacedBy(LumenSpacing.Lg)
             ) {
-                actions()
+                if (title != null || description != null) {
+                    Column(verticalArrangement = Arrangement.spacedBy(LumenSpacing.Sm)) {
+                        title?.let {
+                            Text(it, modifier = Modifier.semantics { heading() }, fontWeight = FontWeight.SemiBold)
+                        }
+                        description?.let { Text(it, color = LocalLumenTheme.current.colors.inkSoft) }
+                    }
+                }
+
+                if (scrollable && !scrollAll) {
+                    Column(
+                        modifier = Modifier.weight(1f, fill = false).verticalScroll(contentScrollState)
+                    ) { content() }
+                } else {
+                    content()
+                }
+
+                FlowRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    actions()
+                }
             }
         }
     }

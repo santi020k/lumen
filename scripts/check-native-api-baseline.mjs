@@ -112,21 +112,27 @@ for (const [adapterName, adapter] of Object.entries(baseline.adapters)) {
     exportCount += subpathExportedNames.length
   }
 
-  const allClassifiedNames = entrypointClassifications.flatMap(contract => (
-    classifications.flatMap(classification => contract[classification])
-  ))
+  // Optional entrypoints may expose an existing contract without duplicating its implementation.
+  // The same symbol must retain its reviewed classification at every entrypoint.
+  const symbolClassifications = new Map()
 
-  assert.equal(
-    new Set(allClassifiedNames).size,
-    allClassifiedNames.length,
-    `${adapterName} exports the same public symbol from more than one stable entrypoint`
-  )
+  for (const contract of entrypointClassifications) {
+    for (const classification of classifications) {
+      for (const name of contract[classification]) {
+        const previous = symbolClassifications.get(name)
+
+        assert.ok(previous === undefined || previous === classification, `${name} has inconsistent classifications`)
+
+        symbolClassifications.set(name, classification)
+      }
+    }
+  }
 
   if (adapterName === 'reactNative') {
     const expectedClassification = [
-      `${entrypointClassifications.reduce((count, contract) => count + contract.supported.length, 0)} Supported`,
-      `${entrypointClassifications.reduce((count, contract) => count + contract.experimental.length, 0)} Experimental phone exports`,
-      `${entrypointClassifications.reduce((count, contract) => count + contract.deprecated.length, 0)} Deprecated`
+      `${new Set(entrypointClassifications.flatMap(contract => contract.supported)).size} Supported`,
+      `${new Set(entrypointClassifications.flatMap(contract => contract.experimental)).size} Experimental phone exports`,
+      `${new Set(entrypointClassifications.flatMap(contract => contract.deprecated)).size} Deprecated`
     ].join('; ')
 
     assert.ok(

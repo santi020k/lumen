@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -30,6 +31,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.LiveRegionMode
@@ -57,11 +59,12 @@ fun LumenButtonGroup(
     orientation: LumenButtonGroupOrientation = LumenButtonGroupOrientation.Horizontal,
     content: @Composable () -> Unit
 ) {
-    if (orientation == LumenButtonGroupOrientation.Horizontal) {
-        Row(
+    if (orientation == LumenButtonGroupOrientation.Horizontal && LocalDensity.current.fontScale < 2f) {
+        FlowRow(
             modifier = modifier,
             horizontalArrangement = Arrangement.spacedBy(LumenSpacing.Sm),
-            verticalAlignment = Alignment.CenterVertically
+            verticalArrangement = Arrangement.spacedBy(LumenSpacing.Sm),
+            itemVerticalAlignment = Alignment.CenterVertically
         ) { content() }
     } else {
         Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(LumenSpacing.Sm)) {
@@ -77,6 +80,7 @@ fun LumenFieldGroup(
     description: String? = null,
     errorMessage: String? = null,
     required: Boolean = false,
+    requiredLabel: String = "required",
     content: @Composable () -> Unit
 ) {
     val colors = LocalLumenTheme.current.colors
@@ -85,7 +89,7 @@ fun LumenFieldGroup(
         Text(
             text = if (required) "$label *" else label,
             modifier = if (required) {
-                Modifier.clearAndSetSemantics { contentDescription = "$label, required" }
+                Modifier.clearAndSetSemantics { contentDescription = "$label, $requiredLabel" }
             } else {
                 Modifier
             },

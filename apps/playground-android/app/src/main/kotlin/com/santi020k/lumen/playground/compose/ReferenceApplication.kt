@@ -23,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -98,7 +99,7 @@ internal enum class PlaygroundDestination {
             entries.firstOrNull { it.name.equals(value, ignoreCase = true) } ?: Home
     }
 }
-private enum class ExamplePattern(val label: String) { Release("Release"), Health("Health"), Profile("Profile") }
+private enum class ExamplePattern(val label: String) { Release("Release"), Health("Health"), Profile("Profile"), Workspace("Workspace") }
 private enum class ExampleState { Loading, Empty, Error, Success }
 private enum class PlaygroundLocale(val label: String) { English("English"), Spanish("Español") }
 
@@ -112,7 +113,7 @@ internal fun LumenReferenceApplication(
     catalog: List<CatalogCategorySummary>,
     components: @Composable () -> Unit
 ) {
-    var destination by remember(initialDestination) { mutableStateOf(initialDestination) }
+    var destination by rememberSaveable(initialDestination) { mutableStateOf(initialDestination) }
     val navigationItems = remember {
         listOf(
             LumenNavigationItem(PlaygroundDestination.Home, "Home", Icons.Default.Home),
@@ -320,7 +321,7 @@ private fun WorkflowRow(icon: LumenIconName, title: String, description: String)
 
 @Composable
 private fun ExamplesScreen(catalog: List<CatalogCategorySummary>) {
-    var pattern by remember { mutableStateOf(ExamplePattern.Release) }
+    var pattern by rememberSaveable { mutableStateOf(ExamplePattern.Release) }
     var projectName by remember { mutableStateOf("Lumen Android") }
     var accessibilityReview by remember { mutableStateOf(true) }
     var releaseState by remember { mutableStateOf(ExampleState.Success) }
@@ -332,11 +333,16 @@ private fun ExamplesScreen(catalog: List<CatalogCategorySummary>) {
     var updatesEnabled by remember { mutableStateOf(true) }
     var showSavedToast by remember { mutableStateOf(false) }
 
+    if (pattern == ExamplePattern.Workspace) {
+        WorkspaceExample(onBack = { pattern = ExamplePattern.Release })
+        return
+    }
+
     Box(modifier = Modifier.fillMaxSize()) {
         ResponsiveScreen { wide ->
             item {
                 DestinationHeader(
-                    "3 patterns",
+                    "4 patterns",
                     "Examples",
                     "Switch tasks, change state, and inspect complete product compositions."
                 )
@@ -365,6 +371,7 @@ private fun ExamplesScreen(catalog: List<CatalogCategorySummary>) {
                         },
                         { showResetDialog = true }
                     )
+                    ExamplePattern.Workspace -> Unit
                     ExamplePattern.Health -> HealthPattern(catalog, releaseState) { releaseState = it }
                     ExamplePattern.Profile -> ProfilePattern(
                         wide,

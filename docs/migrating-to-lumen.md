@@ -124,6 +124,8 @@ is a local release candidate; published projects in the showcase still use their
 | NavigationMenu | Ordinary links keep native Tab order. Do not depend on a single roving Tab stop for site navigation. |
 | Astro ThemeToggle | A controlled toggle leaves initial document theme ownership to the application. Initialize the theme before rendering and persist it in the application's change handler. |
 | SwiftUI / Compose | Rebuild for changed initializers and formatter contracts. Swift charts accept `bare` and `height`; Slider accepts `showsLabel` and announces `valueLabel`. Compose numeric/time line data uses continuous X positions, including isolated observations. |
+| Native sheets | SwiftUI and Compose sheet signatures add `dismissible` and `scrollable`; rebuild consumers. Set `scrollable` false for native lazy or virtualized content. Prevent interactive dismissal while saving. React Native accepts `initialFocusRef` and `returnFocusRef` for explicit application-owned focus targets. |
+| Native localization | React Native and Compose field groups accept `requiredLabel`; tab panels use the selected visible label unless `panelAccessibilityLabel` is supplied. Localize these descriptions together with visible labels. SwiftUI resolves the `Required` key through application localization. |
 | Embedded MCP server | `createLumenServer()` returns the stable SDK v2 `McpServer` from `@modelcontextprotocol/server`. Migrate SDK imports and transports together; do not mix SDK v1 and v2 objects. |
 
 The refreshed icon catalog adds Swift `LumenIconName.bangladeshiTaka`, `.layoutGridCircles`,

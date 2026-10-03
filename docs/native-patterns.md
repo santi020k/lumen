@@ -28,6 +28,22 @@ view would duplicate restoration, deep links, keyboard routing, window behavior,
 
 ## Pattern: complete settings section
 
+For editable settings in a sheet, keep the draft and saving state in the application. All three
+adapters accept `dismissible` and `scrollable`: prevent interactive dismissal while saving, and
+disable Lumen's scrolling wrapper when the child already owns a native lazy or virtualized list.
+Ordinary layouts scroll the body with actions outside it. At large accessibility text sizes or
+short mobile heights, headings and actions can join the scrolling region to remain reachable.
+
+React Native sheets also accept `initialFocusRef` and `returnFocusRef` for explicit native control
+focus after presentation and closing. Use mounted refs from the application's field and trigger;
+test both screen-reader and keyboard focus on each operating system. Keep safe-area insets owned
+by the existing application provider and pass `avoidKeyboard` for editable sheet content.
+
+Localize every visible and spoken label together. In React Native and Compose, set `requiredLabel`
+to `"obligatorio"` for required Spanish field groups, and supply `panelAccessibilityLabel` when the
+selected tab's visible label needs more panel context. SwiftUI uses application localization for
+the `Required` key. Do not translate stable selection values, IDs, or domain data.
+
 Group settings with the platform's native form or scrolling container. Use `LumenSettingsRow` for
 alignment and keep each trailing control independently focusable and named.
 
@@ -259,3 +275,29 @@ A developed pattern is ready to become a component only when it:
 - supports loading, disabled, error, high-contrast, large-text, and reduced-motion conditions where
   applicable;
 - can be verified in a real integration example and on supported device classes.
+
+## Search, edit, and chart workspace
+
+The React Native playground's Workspace example uses an app-owned bounded `FlatList` for 200
+searchable records, a separate scrolling detail pane on wide windows, and a protected editing sheet.
+Selection and draft state survive window resizing; Android Back returns from detail to the list.
+The form passes safe-area insets and explicit focus targets, validates its required name, and
+supports cancel and local save. English, Spanish, direction previews, and loading, empty, error,
+retry, and success states exercise the same workflow. Direction previews are layout probes, not
+proof of an Arabic translation or a physical screen-reader pass.
+
+Open the Expo web preview with `?destination=examples&pattern=workspace`. The example owns its
+scroll containers and must remain outside the other examples' surrounding `ScrollView`.
+
+SwiftUI's Workspace example uses `NavigationSplitView` and native `List` selection outside the
+page's scrolling wrapper. Its detail chart and protected edit sheet support English and Spanish;
+the sheet's actions stack at accessibility text sizes. The Android Workspace example uses bounded
+`LazyColumn` and detail panes, Back navigation, and `rememberSaveable` state for record names, notes,
+selection, search, and drafts. These application examples do not add a library navigation router.
+
+## Related actions at large text sizes
+
+Native button groups treat horizontal orientation as a preference. React Native and Compose wrap
+when needed, while SwiftUI falls back to a vertical layout when the row does not fit. All three
+stack at accessibility text sizes. Keep action labels descriptive and allow the group to grow
+vertically instead of fixing its height.

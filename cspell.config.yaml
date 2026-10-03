@@ -23,7 +23,6 @@ words:
   - permisos
   - espacio
   - compartido
-
   - Contraseña
   - Ejemplo
   - cuenta
@@ -90,6 +89,30 @@ words:
   - Actualizaciones
   - completadas
   - pulltorefresh
+  - cinco
+  - valores
+  - ejemplos
+  - Selecciona
+  - Volver
+  - Borrar
+  - búsqueda
+  - encontraron
+  - registros
+  - Cambios
+  - guardados
+  - localmente
+  - Buscar
+  - ejemplo
+  - Espacio
+  - trabajo
+  - semanal
+  - dirección
+  - Nombre
+  - Notas
+  - obligatorio
+  - Resumen
+  - Contenido
+  - Vistas
   - fflate
   - valuetext
   - Comparar
@@ -413,6 +436,9 @@ words:
   - appletvsimulator
   - subrange
   - APPL
+  - Leyenda
+  - Categoría
+  - Serie
 ignoreRegExpList:
   - luQW2pTQ3jGGxSFPAAsfa9
 ignorePaths:

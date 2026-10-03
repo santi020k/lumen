@@ -2,12 +2,15 @@ import {
   type ComponentRef,
   type ReactElement,
   type ReactNode,
+  type RefObject,
+  useCallback,
   useEffect,
   useRef,
   useState
 } from 'react'
 import {
   AccessibilityInfo,
+  type HostInstance,
   KeyboardAvoidingView,
   Modal,
   Platform,
@@ -40,6 +43,37 @@ export interface LumenSafeAreaInsets {
 const safeInset = (value: number | undefined): number => Number.isFinite(value) ? Math.max(0, value ?? 0) : 0
 const emptySafeAreaInsets: LumenSafeAreaInsets = Object.freeze({})
 
+const useOverlayReducedMotion = (visible: boolean): boolean => {
+  const [reduced, setReduced] = useState(true)
+
+  useEffect(() => {
+    if (!visible) return
+
+    let active = true
+    let changed = false
+
+    const subscription = AccessibilityInfo.addEventListener('reduceMotionChanged', value => {
+      changed = true
+
+      setReduced(value)
+    })
+
+    void AccessibilityInfo.isReduceMotionEnabled().then(value => {
+      if (active && !changed) setReduced(value)
+
+      return undefined
+    }).catch(() => { /* Keep the conservative no-animation fallback. */ })
+
+    return () => {
+      active = false
+
+      subscription.remove()
+    }
+  }, [visible])
+
+  return reduced
+}
+
 export interface LumenAlertDialogProps {
   cancelLabel?: string
   confirmDisabled?: boolean
@@ -70,10 +104,11 @@ export const LumenAlertDialog = ({
   visible
 }: LumenAlertDialogProps): ReactElement => {
   const theme = useLumenTheme()
+  const reducedMotion = useOverlayReducedMotion(visible)
 
   return (
     <Modal
-      animationType="fade"
+      animationType={reducedMotion ? 'none' : 'fade'}
       onRequestClose={onDismiss}
       transparent
       visible={visible}
@@ -162,10 +197,14 @@ export interface LumenSheetProps {
   description?: string
   /** Controls backdrop taps and the platform back/dismiss action. */
   dismissible?: boolean
+  /** An application-owned accessible control to focus after the modal is shown. */
+  initialFocusRef?: RefObject<HostInstance | null>
   keyboardVerticalOffset?: number
   onDismiss: () => void
   /** Adaptive presentation centers a bounded dialog on windows at least 768 points wide. */
   presentation?: 'adaptive' | 'sheet'
+  /** The application-owned trigger to focus after the modal closes. */
+  returnFocusRef?: RefObject<HostInstance | null>
   /** Pass insets from the application's existing safe-area provider. */
   safeAreaInsets?: LumenSafeAreaInsets
   /** Scrolls the body while keeping the heading and actions outside the scroll region. */
@@ -219,64 +258,88 @@ const SheetBody = ({ children, scrollable }: Pick<LumenSheetProps, 'children' | 
   ) :
   children
 
-const SheetPanel = ({ actions, children, centered, safeAreaInsets, ...heading }: Pick<LumenSheetProps, 'actions' | 'children' | 'title' | 'description'> & { centered: boolean, safeAreaInsets: LumenSheetProps['safeAreaInsets'] }) => {
+const SheetPanel = ({ actions, children, centered, safeAreaInsets, scrollAll, ...heading }: Pick<LumenSheetProps, 'actions' | 'children' | 'title' | 'description'> & { centered: boolean, safeAreaInsets: LumenSheetProps['safeAreaInsets'], scrollAll: boolean }) => {
   const theme = useLumenTheme()
   const bottomRadius = centered ? theme.radii.lg : 0
 
-  return (
-    <View style={{
-      backgroundColor: theme.colors.surface,
-      borderColor: theme.colors.line,
-      borderTopLeftRadius: theme.radii.lg,
-      borderTopRightRadius: theme.radii.lg,
-      borderBottomLeftRadius: bottomRadius,
-      borderBottomRightRadius: bottomRadius,
-      borderWidth: 1,
-      gap: theme.spacing.lg,
-      maxHeight: '90%',
-      maxWidth: centered ? 560 : undefined,
-      minHeight: 0,
-      padding: theme.spacing.xl,
-      paddingBottom: centered ? theme.spacing.xl : Math.max(theme.spacing.xl, safeInset(safeAreaInsets?.bottom)),
-      width: '100%'
-    }}
-    >
+  const panelStyle: ViewStyle = {
+    backgroundColor: theme.colors.surface,
+    borderColor: theme.colors.line,
+    borderTopLeftRadius: theme.radii.lg,
+    borderTopRightRadius: theme.radii.lg,
+    borderBottomLeftRadius: bottomRadius,
+    borderBottomRightRadius: bottomRadius,
+    borderWidth: 1,
+    maxHeight: '90%',
+    maxWidth: centered ? 560 : undefined,
+    minHeight: 0,
+    width: '100%'
+  }
+
+  const contentStyle: ViewStyle = {
+    gap: theme.spacing.lg,
+    padding: theme.spacing.xl,
+    paddingBottom: centered ? theme.spacing.xl : Math.max(theme.spacing.xl, safeInset(safeAreaInsets?.bottom))
+  }
+
+  const content = (
+    <>
       <SheetHeading {...heading} />
       {children}
       {actions ? <View style={{ alignItems: 'flex-end', flexShrink: 0 }}>{actions}</View> : null}
-    </View>
+    </>
   )
+
+  if (scrollAll) {
+    return (
+      <ScrollView
+        contentContainerStyle={contentStyle}
+        keyboardDismissMode={Platform.OS === 'ios' ? 'interactive' : 'on-drag'}
+        keyboardShouldPersistTaps="handled"
+        style={panelStyle}
+      >
+        {content}
+      </ScrollView>
+    )
+  }
+
+  return <View style={{ ...panelStyle, ...contentStyle }}>{content}</View>
 }
 
-const useSheetReducedMotion = (visible: boolean): boolean => {
-  const [reduced, setReduced] = useState(true)
+const focusOverlayControl = (target: HostInstance | null | undefined): void => {
+  if (!target) return
+
+  target.focus()
+
+  if (Platform.OS !== 'web') AccessibilityInfo.sendAccessibilityEvent(target, 'focus')
+}
+
+const useOverlayFocus = (
+  visible: boolean,
+  initialFocusRef: LumenSheetProps['initialFocusRef'],
+  returnFocusRef: LumenSheetProps['returnFocusRef']
+): (() => void) => {
+  const wasVisibleRef = useRef(visible)
 
   useEffect(() => {
-    if (!visible) return
+    const closed = wasVisibleRef.current && !visible
 
-    let active = true
-    let changed = false
+    wasVisibleRef.current = visible
 
-    const subscription = AccessibilityInfo.addEventListener('reduceMotionChanged', value => {
-      changed = true
+    if (!closed || !returnFocusRef?.current) return
 
-      setReduced(value)
+    const frame = requestAnimationFrame(() => {
+      if (!wasVisibleRef.current) focusOverlayControl(returnFocusRef.current)
     })
 
-    void AccessibilityInfo.isReduceMotionEnabled().then(value => {
-      if (active && !changed) setReduced(value)
-
-      return undefined
-    }).catch(() => { /* Keep the conservative no-animation fallback. */ })
-
     return () => {
-      active = false
-
-      subscription.remove()
+      cancelAnimationFrame(frame)
     }
-  }, [visible])
+  }, [returnFocusRef, visible])
 
-  return reduced
+  return useCallback(() => {
+    if (visible) focusOverlayControl(initialFocusRef?.current)
+  }, [initialFocusRef, visible])
 }
 
 const getSheetAnimation = (centered: boolean, reducedMotion: boolean) => {
@@ -285,14 +348,24 @@ const getSheetAnimation = (centered: boolean, reducedMotion: boolean) => {
   return centered ? 'fade' : 'slide'
 }
 
+const resolveSheetLayout = (
+  { fontScale, height, width }: ReturnType<typeof useWindowDimensions>,
+  presentation: NonNullable<LumenSheetProps['presentation']>,
+  scrollable: boolean
+) => ({
+  centered: presentation === 'adaptive' && width >= 768 && height >= 480,
+  scrollAll: scrollable && (fontScale >= 2 || height < 480)
+})
+
 /** A controlled sheet with optional keyboard avoidance and an independently scrolling body. */
 export const LumenSheet = (props: LumenSheetProps): ReactElement => {
   const theme = useLumenTheme()
-  const { width } = useWindowDimensions()
-  const reducedMotion = useSheetReducedMotion(props.visible)
-  const { actions, children, onDismiss, safeAreaInsets, visible, ...options } = props
+  const window = useWindowDimensions()
+  const reducedMotion = useOverlayReducedMotion(props.visible)
+  const { actions, children, initialFocusRef, onDismiss, returnFocusRef, safeAreaInsets, visible, ...options } = props
+  const onShow = useOverlayFocus(visible, initialFocusRef, returnFocusRef)
   const { avoidKeyboard = false, dismissible = true, keyboardVerticalOffset = 0, presentation = 'sheet', scrollable = true, ...heading } = options
-  const centered = presentation === 'adaptive' && width >= 768
+  const { centered, scrollAll } = resolveSheetLayout(window, presentation, scrollable)
 
   const dismiss = () => {
     if (dismissible) onDismiss()
@@ -303,6 +376,7 @@ export const LumenSheet = (props: LumenSheetProps): ReactElement => {
       accessibilityLabel={props.accessibilityLabel ?? props.title}
       animationType={getSheetAnimation(centered, reducedMotion)}
       onRequestClose={dismiss}
+      onShow={onShow}
       transparent
       visible={visible}
     >
@@ -323,8 +397,14 @@ export const LumenSheet = (props: LumenSheetProps): ReactElement => {
           onPress={dismiss}
           style={{ backgroundColor: '#00000066', position: 'absolute', inset: 0 }}
         />
-        <SheetPanel {...heading} actions={actions} centered={centered} safeAreaInsets={safeAreaInsets}>
-          <SheetBody scrollable={scrollable}>{children}</SheetBody>
+        <SheetPanel
+          {...heading}
+          actions={actions}
+          centered={centered}
+          safeAreaInsets={safeAreaInsets}
+          scrollAll={scrollAll}
+        >
+          <SheetBody scrollable={scrollable && !scrollAll}>{children}</SheetBody>
         </SheetPanel>
       </KeyboardAvoidingView>
     </Modal>
@@ -365,6 +445,7 @@ export const LumenMenu = ({
   })
 
   const [visible, setVisible] = useState(false)
+  const reducedMotion = useOverlayReducedMotion(visible)
 
   const open = (): void => {
     triggerRef.current?.measureInWindow((x, y, width, height) => {
@@ -400,7 +481,7 @@ export const LumenMenu = ({
         {trigger}
       </Pressable>
       <Modal
-        animationType="fade"
+        animationType={reducedMotion ? 'none' : 'fade'}
         onRequestClose={() => {
           setVisible(false)
         }}
