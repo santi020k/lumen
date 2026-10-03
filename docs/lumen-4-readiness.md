@@ -4,6 +4,35 @@ This working record tracks the local `release/v4.0.0` candidate. It is not publi
 production qualification evidence. Consumer audits inspect application source; application
 data, deployment, and migration remain owned by those projects.
 
+## October 3 pending-work integration
+
+The release checkout's pending form reset, rich-text initialization and data-view URL fixes are
+preserved in `bd11bc02`. The combined candidate through `99f26f18` contains the original branch
+tips for Compose additions (`1150318d`), native parity (`9bd736b3`), native quality (`3cb972ce`),
+mobile playground discovery (`edbe036d`), plugin readiness (`74dc0480`), input and interaction
+hardening (`dcbb1c03`), dashboard compounds (`059aae9c`) and charts (`84c85353`).
+
+Merge resolutions regenerate the MCP snapshot, combine native catalogs without duplicating the
+shared ImageComparison entry, preserve both interaction suites, align registry order with Core,
+and generate social assets for the newly integrated documentation routes. Compose uses the
+installed Material adaptive V2 window-info API to remove the deprecated call.
+
+Local combined validation passed the build, all 23 typecheck tasks, zero-warning lint, 1,313 tests, 128 browser
+conformance checks across desktop/mobile Chromium and WebKit, 58 Swift tests, and web/native API,
+playground catalog, stability-evidence structure, registry, MCP and plugin consistency checks.
+The exhaustive `pnpm run validate` stopped at the unchanged bundle budgets: CSS measures
+199.7 KiB raw / 32.4 KiB gzip against 199.2 / 32.2 KiB; React components measure 168.1 / 34.7 KiB
+against 167.0 / 34.2 KiB; Elements gzip measures 44.4 KiB against 43.9 KiB. These results do not
+establish publication or device qualification.
+
+Six fully contained, clean, idle local branches were deleted: community feedback, Compose
+additions, theme presets, mobile playgrounds, plugin readiness and Antigravity hardening.
+Their detached checkouts and ignored files remain preserved. Dashboard composition and
+improvements, chart follow-up, native parity and quality, and newly started playground work
+remain owned by running chats. Their unfinished changes were not committed or discarded by this
+consolidation. All eight original stashes and remote branches remain preserved. Nothing was
+pushed, published or deployed.
+
 ## Latest local integration
 
 The October 3 consolidation through `7dc2b358` contains all committed local branch tips:

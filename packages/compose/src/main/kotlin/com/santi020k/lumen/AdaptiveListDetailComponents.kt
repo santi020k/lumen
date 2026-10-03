@@ -4,7 +4,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
-import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfoV2
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffold
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldDefaults
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
@@ -36,7 +36,7 @@ fun LumenAdaptiveListDetailScaffold(
     emptyDetail: @Composable () -> Unit,
     detailPane: @Composable (String, Boolean) -> Unit
 ) {
-    val directive = calculatePaneScaffoldDirective(currentWindowAdaptiveInfo())
+    val directive = calculatePaneScaffoldDirective(currentWindowAdaptiveInfoV2())
     val role = if (selectedKey == null) ListDetailPaneScaffoldRole.List else ListDetailPaneScaffoldRole.Detail
     val value = calculateThreePaneScaffoldValue(directive.maxHorizontalPartitions,
         ListDetailPaneScaffoldDefaults.adaptStrategies(), ThreePaneScaffoldDestinationItem(role, selectedKey),
