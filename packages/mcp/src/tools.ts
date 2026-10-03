@@ -371,6 +371,14 @@ const collectComponentSearchResults = (
   return results
 }
 
+const spacingValue = (tokens: LumenData['tokens'], token: string): number => {
+  const value = tokens.spacing[token]
+
+  if (value === undefined) throw new Error(`Missing spacing dimension for ${token}.`)
+
+  return value
+}
+
 const collectReferenceSearchResults = (
   query: string,
   terms: string[],
@@ -396,6 +404,14 @@ const collectReferenceSearchResults = (
         kind: 'token',
         name: token
       }, query, terms, token
+    )
+  }
+
+  for (const [role, token] of Object.entries(data.tokens.spacingRoles)) {
+    const description = `Content flow spacing role ${role}: ${spacingValue(data.tokens, token)}px; CSS --ui-space-${role}.`
+
+    appendSearchResult(
+      results, { description, kind: 'token', name: role }, query, terms, `${description} layout gap padding rhythm`
     )
   }
 
@@ -904,6 +920,25 @@ export const getNativeComponent = (
   }
 }
 
+const recipeExamples = (recipe: LumenRecipeSnapshot, framework: FrameworkFilter): string[] => {
+  const frameworks: LumenFramework[] = [framework]
+
+  return frameworks.flatMap(target => {
+    const source = recipe.examples[target]
+
+    if (!source) return []
+
+    return [
+      '',
+      `## Complete composition (${target})`,
+      'Wire application actions and persistence before shipping; replace sample IDs when rendering multiple instances.',
+      `\`\`\`${{ astro: 'astro', elements: 'html', react: 'tsx' }[target]}`,
+      source,
+      '```'
+    ]
+  })
+}
+
 export const getRecipe = (
   args: { framework?: FrameworkFilter | undefined, name: string },
   data: LumenData = loadLumenData()
@@ -944,7 +979,8 @@ export const getRecipe = (
       `Install for ${framework}: ${getRecipeInstall(recipe.install, framework)}`,
       '',
       '## Components',
-      ...componentLines
+      ...componentLines,
+      ...recipeExamples(recipe, framework)
     ].join('\n')
   }
 }
@@ -1314,6 +1350,14 @@ export const getTokens = (
   const text = [
     '# Lumen design tokens',
     `Theme attribute: ${tokens.themeAttribute} (values: light, dark)`,
+    '',
+    '## Spacing scale (px at the default 16px root; CSS uses rem)',
+    Object.entries(tokens.spacing).map(([name, value]) => `- ${name}: ${value}px; --ui-space-${name}`).join('\n'),
+    '',
+    '## Content flow roles',
+    Object.entries(tokens.spacingRoles).map(([role, token]) => `- ${role}: ${token} (${spacingValue(tokens, token)}px); --ui-space-${role}`).join('\n'),
+    'Stack and Grid own sibling gaps; surfaces own padding; Field owns control feedback spacing.',
+    'Use related, group or section for Stack/Grid gap. Use inset for surface padding, not a gap prop.',
     '',
     '## Semantic token names (use as `text-ink`, `bg-surface`, `border-line`, etc.)',
     tokens.semantic.map(token => `- ${token}`).join('\n'),

@@ -51,7 +51,7 @@ not need a checkout of the Lumen repository.
 | `lumen_get_catalog_manifest` | Return stable web component, native component, and recipe fingerprints that clients can retain between upgrades. |
 | `lumen_diff_catalog` | Compare a retained manifest with the current snapshot and report added, changed, removed, and unchanged entries. |
 | `lumen_diagnose` | Verify snapshot integrity and report web framework plus native platform coverage when testing a connection. |
-| `lumen_get_tokens` | Return semantic token names, base colors, glass tokens, and the theme attribute. |
+| `lumen_get_tokens` | Return canonical spacing dimensions and role aliases, semantic colors, glass tokens, and the theme attribute. |
 | `lumen_get_rules` | Return the Lumen agent rules from `llms.txt`. |
 
 Every tool returns both readable text and validated `structuredContent`.
@@ -363,3 +363,11 @@ MIT © Santiago Molina
 
 Part of [Lumen UI](https://lumen.santi020k.com), created by [Santiago Molina](https://santi020k.com).
 Licensed under [MIT](https://github.com/santi020k/lumen/blob/main/LICENSE); third-party artwork retains its own notices.
+
+## Spacing contracts
+
+`lumen_get_tokens` returns `spacing` (canonical numeric pixel dimensions) and `spacingRoles`
+(aliases such as `related: "sm"`, `group: "lg"`, `section: "2xl"`, `inset: "xl"`). CSS uses rem.
+The readable result explains ownership and CSS variables; `lumen_search` also finds spacing roles.
+Snapshot schema 7 includes these fields and complete framework recipe examples. Read component contracts for supported gap and density
+props; the inset token is for padding and is not a Stack/Grid gap prop.

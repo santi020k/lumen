@@ -186,3 +186,26 @@ missing exact pnpm declarations, and unsupported Node runtimes unless `--allow-d
 
 Part of [Lumen UI](https://lumen.santi020k.com), created by [Santiago Molina](https://santi020k.com).
 Licensed under [MIT](https://github.com/santi020k/lumen/blob/main/LICENSE); third-party artwork retains its own notices.
+
+## Content flow
+
+Stack and Grid own sibling spacing. Their gap accepts `related`, `group` (default) and `section`,
+or canonical `none`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl` sizes. Card owns the inset and gap
+between its visible parts; use `density="compact"`, `"comfortable"` (default) or `"spacious"`.
+Elements uses the same names as attributes. Use a nested Stack for CardContent groups and Field
+for label/control/feedback. See [content flow](../../docs/content-flow.md) and the
+[v4 migration guide](../../docs/migrating-to-lumen.md) for ownership and changed explicit gaps.
+
+
+### Reading and complete compositions
+
+Prose and Typography trim outer child margins and separate headings from preceding text.
+Container gutters grow from 16px to 32px with viewport width; override `--ui-container-gutter`
+when a product needs fixed gutters. Card allows interactive overflow; use AspectRatio to clip media.
+Install `content-flow-header`, `content-flow-settings`, `content-flow-list` or `content-flow-actions`
+with `lumen add <recipe> --target astro|react|elements`. MCP returns the same complete examples.
+Connect application actions and replace sample IDs before reuse. See
+[content flow](../../docs/content-flow.md) for composition and migration guidance.
+
+React is an optional peer for the published React starter templates. Astro and Elements consumers
+do not need it; React consumers should follow the React adapter's existing installation contract.

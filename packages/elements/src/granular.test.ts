@@ -111,7 +111,7 @@ describe('granular element entrypoints', () => {
     expect(badge.className).toBe('ui-badge ui-badge--default')
     expect(button.className).toBe('ui-button ui-button--default ui-button--default-size')
     expect(button.getAttribute('role')).toBe('button')
-    expect(card.className).toBe('ui-card')
+    expect(card.className).toBe('ui-card ui-card--comfortable')
 
     badge.setAttribute('variant', 'success')
     button.setAttribute('loading', '')
@@ -119,6 +119,6 @@ describe('granular element entrypoints', () => {
 
     expect(badge.className).toBe('ui-badge ui-badge--success')
     expect(button.className).toContain('ui-button--loading')
-    expect(card.className).toBe('ui-card ui-card--glass ui-glass-strong')
+    expect(card.className).toBe('ui-card ui-card--comfortable ui-card--glass ui-glass-strong')
   })
 })

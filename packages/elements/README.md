@@ -462,3 +462,23 @@ In v4, Combobox retains input focus and exposes its active option through `aria-
 Enter commits an active option; text editing and composition remain native. Escape dismisses one
 nested control at a time. See the [shared keyboard contract](../../docs/ai-usage.md#combobox-keyboard-behavior-in-v4)
 for dynamic options, controlled inputs and migration guidance.
+
+## Content flow
+
+Stack and Grid own sibling spacing. Their gap accepts `related`, `group` (default) and `section`,
+or canonical `none`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl` sizes. Card owns the inset and gap
+between its visible parts; use `density="compact"`, `"comfortable"` (default) or `"spacious"`.
+Elements uses the same names as attributes. Use a nested Stack for CardContent groups and Field
+for label/control/feedback. See [content flow](../../docs/content-flow.md) and the
+[v4 migration guide](../../docs/migrating-to-lumen.md) for ownership and changed explicit gaps.
+
+
+### Reading and complete compositions
+
+Prose and Typography trim outer child margins and separate headings from preceding text.
+Container gutters grow from 16px to 32px with viewport width; override `--ui-container-gutter`
+when a product needs fixed gutters. Card allows interactive overflow; use AspectRatio to clip media.
+Install `content-flow-header`, `content-flow-settings`, `content-flow-list` or `content-flow-actions`
+with `lumen add <recipe> --target astro|react|elements`. MCP returns the same complete examples.
+Connect application actions and replace sample IDs before reuse. See
+[content flow](../../docs/content-flow.md) for composition and migration guidance.

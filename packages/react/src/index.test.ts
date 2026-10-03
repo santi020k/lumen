@@ -321,7 +321,7 @@ describe('@santi020k/lumen-react', () => {
 
     expect(card.props.as).toBe('section')
     expect(card.props.className).toBe(
-      'ui-card--interactive ui-card--glass custom-card'
+      'ui-card--comfortable ui-card--interactive ui-card--glass custom-card'
     )
     expect(card.props['data-variant']).toBe('interactive')
     expect(card.props.uiClassName).toBe('ui-card')

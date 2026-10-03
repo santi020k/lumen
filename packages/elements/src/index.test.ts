@@ -397,7 +397,7 @@ describe('@santi020k/lumen-elements', () => {
     )
     expect(button.getAttribute('role')).toBe('button')
     expect(button.tabIndex).toBe(0)
-    expect([...card.classList]).toEqual(['ui-card'])
+    expect([...card.classList]).toEqual(['ui-card', 'ui-card--comfortable'])
     expect([...contextNavigation.classList]).toEqual([
       'ui-context-navigation',
       'ui-context-navigation--unstyled'

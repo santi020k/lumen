@@ -8,7 +8,7 @@ interface Props extends HTMLAttributes<'div'> {
   class?: string | null
   className?: string
   columns?: 1 | 2 | 3 | 4 | 6 | 12 | 'auto'
-  gap?: 'lg' | 'md' | 'none' | 'sm' | 'xl'
+  gap?: '2xl' | '3xl' | 'group' | 'lg' | 'md' | 'none' | 'related' | 'section' | 'sm' | 'xl' | 'xs'
   minItemWidth?: string
 }
 
@@ -17,7 +17,7 @@ const {
   class: classProp = '',
   className = '',
   columns = 'auto',
-  gap = 'md',
+  gap = 'group',
   minItemWidth,
   style,
   ...rest

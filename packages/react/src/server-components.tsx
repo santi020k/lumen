@@ -62,6 +62,7 @@ type CardVariant = 'default' | 'glass' | 'interactive' | 'muted' | 'unstyled'
 export type CardProps<T extends ElementType = 'div'> =
   LumenPrimitiveProps<T> & {
     'data-variant'?: CardVariant
+    density?: 'comfortable' | 'compact' | 'spacious'
     glass?: LumenGlassProp
     variant?: CardVariant
   }
@@ -69,6 +70,7 @@ export type CardProps<T extends ElementType = 'div'> =
 export const Card = <T extends ElementType = 'div'>({
   as,
   className,
+  density = 'comfortable',
   glass = false,
   variant = 'default',
   ...props
@@ -76,6 +78,7 @@ export const Card = <T extends ElementType = 'div'>({
   <Primitive
     {...(as ? { as } : {})}
     className={composeClassName(
+      `ui-card--${density}`,
       variant === 'muted' && 'ui-card--muted',
       variant === 'interactive' && 'ui-card--interactive',
       variant === 'unstyled' && 'ui-card--unstyled',
@@ -84,6 +87,7 @@ export const Card = <T extends ElementType = 'div'>({
       ),
       className
     )}
+    data-density={density}
     data-slot="card"
     data-variant={variant}
     {...props}
@@ -191,7 +195,7 @@ export const Direction = ({
 export interface GridProps extends ComponentPropsWithRef<'div'> {
   as?: ElementType
   columns?: 1 | 2 | 3 | 4 | 6 | 12 | 'auto'
-  gap?: 'lg' | 'md' | 'none' | 'sm' | 'xl'
+  gap?: '2xl' | '3xl' | 'group' | 'lg' | 'md' | 'none' | 'related' | 'section' | 'sm' | 'xl' | 'xs'
   minItemWidth?: string
 }
 
@@ -202,7 +206,7 @@ export const Grid = ({
   as = 'div',
   className,
   columns = 'auto',
-  gap = 'md',
+  gap = 'group',
   minItemWidth,
   style,
   ...props
@@ -341,7 +345,7 @@ export interface StackProps extends ComponentPropsWithRef<'div'> {
   align?: 'center' | 'end' | 'start' | 'stretch'
   as?: ElementType
   direction?: Orientation
-  gap?: 'lg' | 'md' | 'none' | 'sm' | 'xl'
+  gap?: '2xl' | '3xl' | 'group' | 'lg' | 'md' | 'none' | 'related' | 'section' | 'sm' | 'xl' | 'xs'
   justify?: 'between' | 'center' | 'end' | 'start'
   wrap?: boolean
 }
@@ -351,7 +355,7 @@ export const Stack = ({
   as = 'div',
   className,
   direction = 'vertical',
-  gap = 'md',
+  gap = 'group',
   justify = 'start',
   wrap = false,
   ...props

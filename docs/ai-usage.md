@@ -593,6 +593,20 @@ attributes, and accessible markup.
 
 ## Styling Rules for Generated Code
 
+- Read the [content flow contract](content-flow.md). Stack and Grid own sibling gaps; surfaces own
+  padding; Field owns label/control/feedback spacing. Do not add another child margin for the same
+  relationship. Use `gap="related"` for closely related controls, `gap="group"` for separate groups
+  and `gap="section"` for major sections. Retrieve spacing tokens through MCP.
+- Use Card parts for header/body/actions and a nested Stack inside complex CardContent. Card
+  handles missing or hidden parts and wraps footer actions. Choose `density="compact"`,
+  `"comfortable"` (default) or `"spacious"` instead of scattering padding overrides.
+- Keep text rhythm inside Prose or Typography. Verify long and translated text, enlarged text,
+  validation states, optional sections and mobile wrapping before calling a composition finished.
+- Retrieve complete `content-flow-header`, `content-flow-settings`, `content-flow-list` and
+  `content-flow-actions` examples with `lumen_get_recipe`; the CLI installs the same compositions.
+  Keep one outer Container for fluid gutters. Card permits interactive overflow; use AspectRatio
+  to clip media. Reading blocks trim their outer margins, so avoid compensating offsets.
+
 - Do not require consumers to configure Tailwind for Lumen components.
 - Prefer component props and composition before adding custom CSS.
 - Assign each visible outer edge to one container. For flush content inside a rounded frame,

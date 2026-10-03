@@ -393,6 +393,16 @@ describe('getComponent', () => {
 })
 
 describe('getRecipe', () => {
+  test.each(['astro', 'react', 'elements'] as const)('returns complete content-flow recipes for %s', framework => {
+    for (const name of ['header', 'settings', 'list', 'actions']) {
+      const result = getRecipe({ framework, name: `content-flow-${name}` })
+
+      expect(result.data.found).toBe(true)
+      expect(result.data.recipe?.examples[framework]).toContain(name === 'settings' ? 'group' : 'related')
+      expect(result.text).toContain('## Complete composition')
+      expect(result.text).toContain('Wire application actions')
+    }
+  })
   test('resolves and returns framework-specific recipe installation', () => {
     expect(resolveRecipe('advanced_fields')?.name).toBe('advanced-fields')
 
@@ -500,6 +510,10 @@ describe('getTokens and getRules', () => {
     expect(result.data.tokens.semantic).toContain('brand')
     expect(result.data.tokens.chart.series1).toBeDefined()
     expect(result.text).toContain('Data visualization tokens')
+    expect(result.data.tokens.spacing.md).toBe(12)
+    expect(result.data.tokens.spacingRoles).toEqual({ group: 'lg', inset: 'xl', related: 'sm', section: '2xl' })
+    expect(result.text).toContain('--ui-space-section')
+    expect(result.text).toContain('surfaces own padding')
   })
 
   test('returns rules', () => {

@@ -44,6 +44,25 @@ individually. Keep foreground/background contrast valid in both light and dark m
 - Provide responsive behavior based on content pressure, not arbitrary device labels.
 - Respect reduced-motion preferences and keep transitions short and functional.
 
+## Content flow
+
+- Retrieve complete content-flow-header/settings/list/actions recipes with lumen_get_recipe.
+  Container gutters grow from group to section spacing; avoid a second page padding.
+  Reading blocks trim outer child margins. Card allows overlays and focus to extend beyond its
+  border; use AspectRatio to clip media. Wire recipe actions and replace sample IDs for repeats.
+
+- Retrieve spacing and spacingRoles through `lumen_get_tokens` before choosing layout values.
+- Stack and Grid own sibling gaps; surfaces own padding; Field owns label/control/feedback spacing.
+  Do not add child margins on top of a gap. Use related for closely related controls, group for
+  separate groups and section for major sections. The default is group (16px).
+- Size gaps follow the canonical scale: xs=4, sm=8, md=12, lg=16, xl=24, 2xl=32, 3xl=48.
+  Web variables use rem. The inset role is a padding token, not a gap prop.
+- Use Card parts and nested Stack for body groups. Card owns part spacing, omits empty/hidden
+  parts from layout and wraps footer actions. Choose compact, comfortable or spacious density.
+- Keep text rhythm inside Prose or Typography. Avoid another gap for the same text relationship.
+- Verify long translated labels, enlarged text, optional sections and error messages at phone and
+  desktop widths in both themes. Keep page gutters in one outer Container.
+
 ## Borders and rounded compositions
 
 Before styling a composed surface, identify which element owns each visible boundary.

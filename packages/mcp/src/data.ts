@@ -84,6 +84,8 @@ export interface LumenData {
     colors: Record<string, string>
     glass: Record<string, string>
     semantic: string[]
+    spacing: Record<string, number>
+    spacingRoles: Record<string, string>
     themeAttribute: string
   }
 }
@@ -189,6 +191,7 @@ export interface LumenRecipeSnapshot {
   categories: string[]
   components?: string[]
   description: string
+  examples: Partial<Record<LumenFramework, string>>
   files?: unknown[]
   install: Record<LumenFramework, string>
   name: string

@@ -1,0 +1,52 @@
+---
+import { createElement } from 'react'
+import { renderToStaticMarkup } from 'react-dom/server'
+
+import '@santi020k/lumen/styles.css'
+
+import { Container, Stack } from '@santi020k/lumen-astro'
+
+import Actions from '../../../../../../packages/lumen/templates/astro/content-flow-actions/src/lumen/content-flow-actions.astro'
+import Header from '../../../../../../packages/lumen/templates/astro/content-flow-header/src/lumen/content-flow-header.astro'
+import List from '../../../../../../packages/lumen/templates/astro/content-flow-list/src/lumen/content-flow-list.astro'
+import Settings from '../../../../../../packages/lumen/templates/astro/content-flow-settings/src/lumen/content-flow-settings.astro'
+import elementsActions from '../../../../../../packages/lumen/templates/elements/content-flow-actions/src/lumen/content-flow-actions.html?raw'
+import elementsHeader from '../../../../../../packages/lumen/templates/elements/content-flow-header/src/lumen/content-flow-header.html?raw'
+import elementsList from '../../../../../../packages/lumen/templates/elements/content-flow-list/src/lumen/content-flow-list.html?raw'
+import elementsSettings from '../../../../../../packages/lumen/templates/elements/content-flow-settings/src/lumen/content-flow-settings.html?raw'
+import { ContentFlowActionsRecipe } from '../../../../../../packages/lumen/templates/react/content-flow-actions/src/lumen/content-flow-actions'
+import { ContentFlowHeaderRecipe } from '../../../../../../packages/lumen/templates/react/content-flow-header/src/lumen/content-flow-header'
+import { ContentFlowListRecipe } from '../../../../../../packages/lumen/templates/react/content-flow-list/src/lumen/content-flow-list'
+import { ContentFlowSettingsRecipe } from '../../../../../../packages/lumen/templates/react/content-flow-settings/src/lumen/content-flow-settings'
+
+export const getStaticPaths = () => ['astro', 'react', 'elements'].map(framework => ({ params: { framework } }))
+
+const { framework } = Astro.params
+let markup = ''
+
+if (framework === 'react') {
+  markup = [ContentFlowHeaderRecipe, ContentFlowSettingsRecipe, ContentFlowListRecipe, ContentFlowActionsRecipe].map(component => renderToStaticMarkup(createElement(component))).join('')
+} else if (framework === 'elements') {
+  markup = [elementsHeader, elementsSettings, elementsList, elementsActions].map(source => source.slice(source.indexOf('</script>') + '</script>'.length)).join('')
+}
+---
+
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head><meta charset="utf-8" /><meta name="viewport" content="width=device-width" /><meta name="robots" content="noindex, nofollow" /><title>Content flow recipes</title></head>
+  <body>
+    <Container as="main" size="md"><Stack gap="section" id="recipe-flow">
+      {framework === 'astro' ? <><Header /><Settings /><List /><Actions /></> : <Fragment set:html={markup} />}
+    </Stack></Container>
+    <script>
+      import { defineLumenElements } from '@santi020k/lumen-elements/define'
+
+      defineLumenElements(['Stack', 'Typography', 'Button', 'Card', 'CardHeader', 'CardTitle', 'CardDescription', 'CardContent', 'CardFooter', 'Field', 'Label', 'Input', 'Badge'])
+    </script>
+  </body>
+</html>
+
+<style>
+  body { margin: 0; background: hsl(var(--canvas)); color: hsl(var(--ink)); font-family: var(--ui-font); }
+  main { padding-block: 2rem; }
+</style>

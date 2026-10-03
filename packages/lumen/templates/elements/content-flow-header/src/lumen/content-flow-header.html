@@ -1,0 +1,15 @@
+<script type="module">
+  import { defineLumenElements } from '@santi020k/lumen-elements/define'
+  defineLumenElements(['Stack', 'Typography', 'Button'])
+</script>
+
+<lumen-stack gap="group" role="region" aria-labelledby="workspace-heading">
+  <lumen-typography>
+    <h1 id="workspace-heading">Workspace settings</h1>
+    <p>Manage your team’s access and notification preferences.</p>
+  </lumen-typography>
+  <lumen-stack direction="horizontal" gap="related" wrap>
+    <lumen-button>Invite a teammate</lumen-button>
+    <lumen-button variant="secondary">View activity</lumen-button>
+  </lumen-stack>
+</lumen-stack>
