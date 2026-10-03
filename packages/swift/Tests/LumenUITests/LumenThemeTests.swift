@@ -266,7 +266,11 @@ import Testing
 @Test func sharedIconCatalogHasStableUniqueNames() {
     let icons = LumenIconName.allCases
 
-    #expect(icons.count == 2_433)
+    #expect(icons.count == 2_437)
+    #expect(icons.contains(.bangladeshiTaka))
+    #expect(icons.contains(.layoutGridCircles))
+    #expect(icons.contains(.letters))
+    #expect(icons.contains(.printer3d))
     #expect(icons.contains(.album))
     #expect(icons.contains(.trash2))
     #expect(Set(icons.map(\.rawValue)).count == icons.count)

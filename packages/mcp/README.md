@@ -314,6 +314,16 @@ import { createLumenServer } from '@santi020k/lumen-mcp'
 const server = createLumenServer()
 ```
 
+Lumen 4 uses the stable MCP TypeScript SDK v2. The embedded server is an
+`McpServer` from `@modelcontextprotocol/server`; use v2 transports from that
+package (or `@modelcontextprotocol/server/stdio`) when connecting it. Rebuild
+programmatic integrations that previously imported SDK objects from
+`@modelcontextprotocol/sdk`, following the
+[official SDK migration guide](https://ts.sdk.modelcontextprotocol.io/v2/migration/upgrade-to-v2).
+The CLI commands, stateless HTTP endpoint, tool names, argument schemas, and
+resource URIs are unchanged. Existing MCP clients can keep using the
+`2025-11-25` protocol handshake.
+
 ## Snapshot generation
 
 `scripts/generate-data.mjs` builds `data/lumen-data.json` from:

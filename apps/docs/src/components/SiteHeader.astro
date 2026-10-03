@@ -4,8 +4,8 @@ import {
   Icon,
   Label,
   Link,
-  NativeSelect,
   NavigationMenu,
+  Select,
   ThemeToggle
 } from '@santi020k/lumen-astro'
 
@@ -65,18 +65,19 @@ const componentCount = documentedComponentCount
         <div class="docs-theme-picker">
           <Icon aria-hidden="true" name="palette" size="sm" />
           <Label class="sr-only" for="site-color-theme">Theme family</Label>
-          <NativeSelect
+          <Select
             id="site-color-theme"
             class="docs-theme-select"
             data-theme-select
             aria-label="Theme family"
-            visualSize="sm"
-          >
-            <option value="lumen">Lumen</option>
-            <option value="santi020k">Santi020k</option>
-          </NativeSelect>
+            size="sm"
+            value="lumen"
+            options={[
+              { label: 'Lumen', value: 'lumen' },
+              { label: 'Santi020k', value: 'santi020k' }
+            ]}
+          />
         </div>
-        <span class="docs-theme-divider" aria-hidden="true"></span>
         <ThemeToggle
           class="docs-theme-toggle"
           controlled

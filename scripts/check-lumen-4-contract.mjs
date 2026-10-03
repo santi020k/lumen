@@ -10,6 +10,14 @@ const repositoryRoot = resolve(import.meta.dirname, '..')
 const consumerChangeId = 'consumer-driven-component-polish'
 const swiftChangeId = 'swift-native-control-polish'
 const requiredChangeIds = [consumerChangeId, swiftChangeId]
+
+const reviewedIconCaseDiagnostics = new Set([
+  'enumelement LumenIconName.bangladeshiTaka has been added as a new enum case',
+  'enumelement LumenIconName.layoutGridCircles has been added as a new enum case',
+  'enumelement LumenIconName.letters has been added as a new enum case',
+  'enumelement LumenIconName.printer3d has been added as a new enum case'
+])
+
 const isRecord = value => value !== null && typeof value === 'object' && !Array.isArray(value)
 const isNonEmptyString = value => typeof value === 'string' && value.trim().length > 0
 const isStringArray = value => Array.isArray(value) && value.length > 0 && value.every(isNonEmptyString)
@@ -107,8 +115,10 @@ const validateSwiftDiagnostics = diagnostics => {
   }
 
   for (const diagnostic of diagnostics) {
-    if (!diagnostic.startsWith('constructor Lumen') || !diagnostic.endsWith(' has been removed')) {
-      failures.push(`${swiftChangeId}.swiftApiBreakages must identify exact removed Lumen initializer diagnostics.`)
+    const isInitializerRemoval = diagnostic.startsWith('constructor Lumen') && diagnostic.endsWith(' has been removed')
+
+    if (!isInitializerRemoval && !reviewedIconCaseDiagnostics.has(diagnostic)) {
+      failures.push(`${swiftChangeId}.swiftApiBreakages must identify exact removed Lumen initializer or reviewed icon-case addition diagnostics.`)
     }
   }
 

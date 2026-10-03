@@ -193,10 +193,8 @@
     "eslint": "catalog:",
     "knip": "catalog:",
     "lint-staged": "catalog:",
-    "next": "catalog:",
     "oxlint": "catalog:",
     "react": "catalog:",
-    "react-dom": "catalog:",
     "tailwindcss": "catalog:",
     "turbo": "catalog:",
     "typescript": "catalog:",
@@ -205,9 +203,9 @@
     "wrangler": "catalog:"
   },
   "engines": {
-    "node": ">=22.19.0"
+    "node": "^22.22.2 || ^24.15.0 || >=26.0.0"
   },
-  "packageManager": "pnpm@12.6.0",
+  "packageManager": "pnpm@12.8.1",
   "license": "MIT",
   "lint-staged": {
     "*": [

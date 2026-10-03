@@ -1,4 +1,4 @@
-import { WebStandardStreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/webStandardStreamableHttp.js'
+import { WebStandardStreamableHTTPServerTransport } from '@modelcontextprotocol/server'
 
 import snapshot from '../data/lumen-data.json' with { type: 'json' }
 

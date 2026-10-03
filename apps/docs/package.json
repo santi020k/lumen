@@ -27,7 +27,6 @@
     "clean": "rm -rf dist .astro coverage"
   },
   "dependencies": {
-    "@astrojs/mdx": "catalog:",
     "@astrojs/sitemap": "catalog:",
     "@santi020k/lumen": "workspace:^",
     "@santi020k/lumen-astro": "workspace:^",
@@ -57,5 +56,5 @@
   "engines": {
     "node": ">=22.18.0"
   },
-  "packageManager": "pnpm@10.32.1"
+  "packageManager": "pnpm@12.8.1"
 }

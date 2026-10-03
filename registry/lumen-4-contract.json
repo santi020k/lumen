@@ -41,9 +41,9 @@
     {
       "id": "swift-native-control-polish",
       "kind": "breaking",
-      "currentContract": "Six v3 Swift initializer signatures do not expose compact chart, slider-label, and symbol-selection options.",
-      "replacement": "Defaulted parameters provide bare chart frames, explicit plot height, optional slider headings, contextual symbol tint, and selection completion.",
-      "migration": "Rebuild consumers against v4. Existing source calls generally retain defaults; method references and binary clients must adopt the new signatures. See native composition examples.",
+      "currentContract": "Six v3 Swift initializer signatures do not expose compact chart, slider-label, and symbol-selection options. The v3 icon enum lacks four reviewed catalog additions.",
+      "replacement": "Defaulted parameters provide bare chart frames, explicit plot height, optional slider headings, contextual symbol tint, and selection completion. The icon enum adds bangladeshiTaka, layoutGridCircles, letters, and printer3d.",
+      "migration": "Rebuild consumers against v4. Existing source calls generally retain defaults; method references and binary clients must adopt the new signatures. Exhaustive LumenIconName switches must handle the four new cases or provide an appropriate fallback. See native composition examples and the v4 migration guide.",
       "packages": [
         "LumenUI"
       ],
@@ -67,7 +67,11 @@
         "constructor LumenSlider.init(_:value:in:step:valueLabel:) has been removed",
         "constructor LumenSlider.init(_:value:in:step:valueLabel:onEditingChanged:) has been removed",
         "constructor LumenSymbolPicker.init(_:selectedName:options:) has been removed",
-        "constructor LumenSymbolPickerButton.init(_:selectedName:options:) has been removed"
+        "constructor LumenSymbolPickerButton.init(_:selectedName:options:) has been removed",
+        "enumelement LumenIconName.bangladeshiTaka has been added as a new enum case",
+        "enumelement LumenIconName.layoutGridCircles has been added as a new enum case",
+        "enumelement LumenIconName.letters has been added as a new enum case",
+        "enumelement LumenIconName.printer3d has been added as a new enum case"
       ]
     }
   ],
