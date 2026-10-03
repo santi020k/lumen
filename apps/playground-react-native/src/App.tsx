@@ -100,6 +100,7 @@ import {
 } from '@santi020k/lumen-react-native/datetime'
 import { StatusBar as ExpoStatusBar } from 'expo-status-bar'
 
+import { AdvancedInputExamples } from './AdvancedInputExamples'
 import {
   type AppDestination,
   componentCategories,
@@ -1574,6 +1575,12 @@ const Playground = ({
         <Visibility
           visible={isAnyVisible(
             'Text field',
+            'Number field',
+            'Time field',
+            'Autocomplete',
+            'Password field',
+            'Input OTP',
+            'Image comparison',
             'Textarea',
             'Field group',
             'Toggle',
@@ -1591,6 +1598,7 @@ const Playground = ({
           )}
         >
           <ComponentSection description="Edit controls to exercise native focus, switch, and clear behavior." title="Forms">
+            <AdvancedInputExamples isVisible={isVisible} />
             <LumenTextField
               accessibilityLabel="Email address"
               autoCapitalize="none"

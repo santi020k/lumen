@@ -8,6 +8,8 @@ import { createRoot, type Root, type TestInstance } from 'test-renderer'
 import { afterEach, describe, expect, test, vi } from 'vitest'
 
 import { LumenButtonGroup, LumenChip, LumenFieldGroup, LumenTextarea, LumenToast } from './additional-components.js'
+import { LumenAutocomplete, LumenInputOTP, LumenNumberField, LumenPasswordField } from './advanced-form-components.js'
+import { LumenImageComparison } from './comparison-components.js'
 import { LumenDateField, LumenDateRangeField } from './datetime-components.js'
 import { LumenSearchField, LumenToggle } from './form-components.js'
 import { LumenIcon as GraphicIcon, LumenIconButton as GraphicIconButton, type LumenIconGraphicProps } from './graphics.js'
@@ -19,6 +21,7 @@ import { LumenButton, LumenIcon, LumenIconButton, LumenText, LumenTextField } fr
 import { LumenProvider } from './provider.js'
 import { LumenCheckbox, LumenTabs } from './selection-components.js'
 import { LumenBanner, LumenStatusBar } from './structured-components.js'
+import { LumenTimeField } from './time-components.js'
 import { LumenPicker } from './value-components.js'
 
 Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true })
@@ -56,6 +59,7 @@ vi.mock('react-native', async () => {
     },
     ActivityIndicator: hostComponent('ActivityIndicator'),
     FlatList: hostComponent('FlatList'),
+    I18nManager: { isRTL: false },
     Image: hostComponent('Image'),
     KeyboardAvoidingView: hostComponent('KeyboardAvoidingView'),
     Modal: hostComponent('Modal'),
@@ -1427,5 +1431,205 @@ describe('Static graphic icon accessibility', () => {
     expect(readProp(button, 'accessibilityLabel')).toBe('Search records')
     expect(readProp(button, 'accessibilityState')).toEqual({ disabled: true })
     expect(readProp(button, 'disabled')).toBe(true)
+  })
+})
+
+const callInputAction = (value: unknown, proposal: string): void => {
+  if (typeof value !== 'function') throw new Error('Missing native input callback')
+  Reflect.apply(value, undefined, [proposal])
+}
+
+const runNativeAction = async (action: () => void): Promise<void> => {
+  await act(async () => {
+    action()
+
+    await Promise.resolve()
+  })
+}
+
+describe('advanced native inputs', () => {
+  test('secure entry hides on blur and after disabling and re-enabling', async () => {
+    const props = { label: 'Password', onValueChange: vi.fn(), value: 'synthetic-fixture' }
+    const root = await renderNative(<LumenPasswordField {...props} />)
+    expect(readProp(findByAccessibilityLabel(root, 'Password'), 'secureTextEntry')).toBe(true)
+    await runNativeAction(() => {
+      callAction(readProp(findByAccessibilityLabel(root, 'Show password'), 'onPress'), 'Missing reveal')
+    })
+    expect(readProp(findByAccessibilityLabel(root, 'Password'), 'secureTextEntry')).toBe(false)
+    await runNativeAction(() => {
+      callAction(readProp(findByAccessibilityLabel(root, 'Password'), 'onBlur'), 'Missing blur')
+    })
+    expect(readProp(findByAccessibilityLabel(root, 'Password'), 'secureTextEntry')).toBe(true)
+    await runNativeAction(() => {
+      callAction(readProp(findByAccessibilityLabel(root, 'Show password'), 'onPress'), 'Missing reveal')
+    })
+    await runNativeAction(() => {
+      root.render(<LumenProvider><LumenPasswordField {...props} enabled={false} /></LumenProvider>)
+    })
+    await runNativeAction(() => {
+      root.render(<LumenProvider><LumenPasswordField {...props} /></LumenProvider>)
+    })
+    expect(readProp(findByAccessibilityLabel(root, 'Password'), 'secureTextEntry')).toBe(true)
+  })
+
+  test('OTP preserves native autofill, normalizes paste and emits completion only for changed full codes', async () => {
+    const onValueChange = vi.fn<(value: string) => void>()
+    const onComplete = vi.fn<(value: string) => void>()
+    const root = await renderNative(<LumenInputOTP label="Code" value="123" onValueChange={onValueChange} onComplete={onComplete} />)
+    const input = findByAccessibilityLabel(root, 'Code')
+    expect(readProp(input, 'textContentType')).toBe('oneTimeCode')
+    await runNativeAction(() => {
+      callInputAction(readProp(input, 'onChangeText'), '١٢٣-４５６')
+    })
+    expect(onValueChange).toHaveBeenCalledExactlyOnceWith('123456')
+    expect(onComplete).toHaveBeenCalledExactlyOnceWith('123456')
+    await runNativeAction(() => {
+      callInputAction(readProp(input, 'onChangeText'), 'not a code')
+    })
+    expect(onValueChange).toHaveBeenCalledTimes(1)
+    await runNativeAction(() => {
+      root.render(<LumenProvider><LumenInputOTP label="Code" value="123456" onValueChange={onValueChange} onComplete={onComplete} readOnly /></LumenProvider>)
+    })
+    await runNativeAction(() => {
+      callInputAction(readProp(findByAccessibilityLabel(root, 'Code'), 'onChangeText'), '654321')
+    })
+    expect(onValueChange).toHaveBeenCalledTimes(1)
+  })
+
+  test('number entry retains raw drafts and steps exact localized values', async () => {
+    const onValueChange = vi.fn<(value: string) => void>()
+    const root = await renderNative(<LumenNumberField label="Amount" value="0,1" locale="es-CO" step="0.2" onValueChange={onValueChange} />)
+    await runNativeAction(() => {
+      callAction(readProp(findByAccessibilityLabel(root, 'Increase value'), 'onPress'), 'Missing increase')
+    })
+    expect(onValueChange).toHaveBeenLastCalledWith('0,3')
+    await runNativeAction(() => {
+      callInputAction(readProp(findByAccessibilityLabel(root, 'Amount'), 'onChangeText'), '12,')
+    })
+    expect(onValueChange).toHaveBeenLastCalledWith('12,')
+    await runNativeAction(() => {
+      root.render(<LumenProvider><LumenNumberField label="Amount" value="12," locale="es-CO" onValueChange={onValueChange} /></LumenProvider>)
+    })
+    expect(readProp(findByAccessibilityLabel(root, 'Increase value'), 'disabled')).toBe(true)
+    expect(readProp(findByAccessibilityLabel(root, 'Amount'), 'aria-invalid')).toBe(true)
+  })
+
+  test('autocomplete publishes query before selection and closes its results', async () => {
+    const calls: string[] = []
+    const root = await renderNative(
+      <LumenAutocomplete
+        label="City"
+        query="Bo"
+        options={[{ label: 'Bogotá', value: 'bogota' }]}
+        onQueryChange={query => {
+          calls.push(query)
+        }}
+        onValueChange={value => {
+          calls.push(value)
+        }}
+      />
+    )
+    await runNativeAction(() => {
+      callInputAction(readProp(findByAccessibilityLabel(root, 'City'), 'onChangeText'), 'Bog')
+    })
+    calls.length = 0
+    await runNativeAction(() => {
+      callAction(readProp(findByAccessibilityLabel(root, 'Bogotá'), 'onPress'), 'Missing result')
+    })
+    expect(calls).toEqual(['Bogotá', 'bogota'])
+    expect(root.container.queryAll(instance => readProp(instance, 'accessibilityLabel') === 'Close results')).toHaveLength(0)
+  })
+
+  test('autocomplete loading hides results and disabled state dismisses selection', async () => {
+    const props = { label: 'City', onQueryChange: vi.fn(), onValueChange: vi.fn(), options: [{ label: 'Bogotá', value: 'bogota' }], query: '' }
+    const root = await renderNative(<LumenAutocomplete {...props} loading />)
+    await runNativeAction(() => {
+      callInputAction(readProp(findByAccessibilityLabel(root, 'City'), 'onChangeText'), 'Bo')
+    })
+    expect(root.container.queryAll(instance => readProp(instance, 'accessibilityLabel') === 'Bogotá')).toHaveLength(0)
+    await runNativeAction(() => {
+      root.render(<LumenProvider><LumenAutocomplete {...props} enabled={false} /></LumenProvider>)
+    })
+    await runNativeAction(() => {
+      root.render(<LumenProvider><LumenAutocomplete {...props} /></LumenProvider>)
+    })
+    expect(readProp(findByAccessibilityLabel(root, 'City'), 'accessibilityState')).toMatchObject({ expanded: false })
+  })
+
+  test('time selection requires confirmation and cancellation preserves the value', async () => {
+    nativePlatform.OS = 'ios'
+    const onValueChange = vi.fn()
+    const root = await renderNative(
+      <LumenTimeField
+        label="Time"
+        value={{ hour: 9, minute: 30 }}
+        locale="en-US"
+        is24Hour
+        minTime={{ hour: 9, minute: 0 }}
+        maxTime={{ hour: 17, minute: 0 }}
+        onValueChange={onValueChange}
+      />
+    )
+    const open = async (): Promise<void> => {
+      await runNativeAction(() => {
+        callAction(readProp(findByAccessibilityLabel(root, 'Time, 09:30'), 'onPress'), 'Missing time trigger')
+      })
+    }
+    await open()
+    await runNativeAction(() => {
+      const picker = findHostComponent(root, 'NativeDatePicker')
+      const change = readProp(picker, 'onChange')
+      if (typeof change !== 'function') throw new Error('Missing time change')
+      Reflect.apply(change, undefined, [{ type: 'set' }, new Date(2000, 0, 1, 10, 45)])
+    })
+    expect(onValueChange).not.toHaveBeenCalled()
+    await runNativeAction(() => {
+      callAction(readProp(findByAccessibilityLabel(root, 'Cancel'), 'onPress'), 'Missing cancel')
+    })
+    expect(onValueChange).not.toHaveBeenCalled()
+    await open()
+    await runNativeAction(() => {
+      callAction(readProp(findByAccessibilityLabel(root, 'Confirm'), 'onPress'), 'Missing confirm')
+    })
+    expect(onValueChange).toHaveBeenCalledExactlyOnceWith({ hour: 9, minute: 30 })
+  })
+
+  test('Android time rejects out-of-range selection and stale callbacks after disabling', async () => {
+    nativePlatform.OS = 'android'
+    const onValueChange = vi.fn()
+    const props = { label: 'Time', locale: 'en-US', onValueChange, value: null }
+    const root = await renderNative(<LumenTimeField {...props} minTime={{ hour: 9, minute: 0 }} />)
+    await runNativeAction(() => {
+      callAction(readProp(findByAccessibilityLabel(root, 'Time, Choose a time'), 'onPress'), 'Missing time trigger')
+    })
+    const options = vi.mocked(DateTimePickerAndroid.open).mock.calls.at(-1)?.[0]
+    if (!options?.onValueChange) throw new Error('Missing Android time handler')
+    const change = options.onValueChange
+    await runNativeAction(() => {
+      change({ nativeEvent: { timestamp: 0, utcOffset: 0 } }, new Date(2000, 0, 1, 8, 0))
+    })
+    expect(onValueChange).not.toHaveBeenCalled()
+    await runNativeAction(() => {
+      callAction(readProp(findByAccessibilityLabel(root, 'Time, Choose a time'), 'onPress'), 'Missing time trigger')
+    })
+    const current = vi.mocked(DateTimePickerAndroid.open).mock.calls.at(-1)?.[0]
+    if (!current?.onValueChange) throw new Error('Missing Android time handler')
+    const stale = current.onValueChange
+    await runNativeAction(() => {
+      root.render(<LumenProvider><LumenTimeField {...props} enabled={false} /></LumenProvider>)
+    })
+    expect(DateTimePickerAndroid.dismiss).toHaveBeenCalledWith('time')
+    await runNativeAction(() => {
+      stale({ nativeEvent: { timestamp: 0, utcOffset: 0 } }, new Date(2000, 0, 1, 10, 0))
+    })
+    expect(onValueChange).not.toHaveBeenCalled()
+  })
+
+  test('image comparison exposes one adjustable control and localized after percentage', async () => {
+    const root = await renderNative(<LumenImageComparison label="Comparison" before={{ uri: 'fixture:before' }} after={{ uri: 'fixture:after' }} value={0.25} locale="es-CO" onValueChange={() => {}} />)
+    const control = findByAccessibilityRole(root, 'adjustable')
+    expect(readProp(control, 'accessibilityLabel')).toBe('Comparison')
+    expect(readProp(control, 'accessibilityValue')).toMatchObject({ text: 'After 25%' })
+    expect(root.container.queryAll(instance => readProp(instance, 'accessibilityRole') === 'image')).toHaveLength(0)
   })
 })

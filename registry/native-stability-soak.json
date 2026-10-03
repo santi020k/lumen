@@ -4,11 +4,11 @@
   "baselines": {
     "reactNative": {
       "path": "registry/native-api-baseline.json",
-      "sha256": "a34857dd1c9b39f6d9492ae2512304530ba0474bf2cd7fa286c92ca3e28ecd34"
+      "sha256": "d3efae3929c3b7deab4c72f0a11c752af798b9cccd13c8c4c326368559a36660"
     },
     "swiftUI": {
       "path": "registry/swift-api-baseline.json",
-      "sha256": "99383d9fb256459d2dbf3aae90fb30e8e5af385b3ef661a0ce5b04a3f149a33f"
+      "sha256": "5f5029f48465bcd57ae3e1217a09e20c22e5d2c577cb4225c8a52ffff5bb0ed4"
     },
     "swiftWidget": {
       "path": "registry/swift-widget-api-baseline.json",

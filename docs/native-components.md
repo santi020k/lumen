@@ -975,10 +975,16 @@ the shared state or measurement contract on every adapter.
 Use the [native device validation matrix](native-device-validation.md) for VoiceOver, TalkBack,
 keyboard, text scaling, contrast, and reduced-motion verification on representative hardware.
 
-## Compose v4 advanced controls
+## Shared v4 advanced controls
 
-These four controls are Android-specific entries; their names do not imply availability in the
-other adapters. Use the existing `LumenTheme` provider and application-owned state.
+React Native, SwiftUI and Compose provide `LumenNumberField`, `LumenTimeField`,
+`LumenAutocomplete`, `LumenPasswordField`, `LumenInputOTP` and `LumenImageComparison`.
+React Native time selection is exported from the optional `/datetime` entrypoint.
+Apple editing controls support iOS, macOS and visionOS. Values, queries, requests and submission
+policy stay in the application. SwiftUI reads locale from its environment; React Native accepts
+a locale identifier and Compose accepts `Locale`. Supply translated visible and spoken copy together.
+
+The descriptions below record the shared behavior, using Compose spelling for its native types.
 
 - `LumenTimeField` uses `LumenTimeSelection(hour, minute)` for a local wall-clock time without a
   date or time zone. Optional `minTime` and `maxTime` are inclusive within one day; overnight
@@ -1008,15 +1014,15 @@ other adapters. Use the existing `LumenTheme` provider and application-owned sta
   action; a host operation already in progress retains its indicator. Refresh actions are
   unavailable while busy. Supply translated `refreshLabel` and `refreshingLabel`.
 
-The Android playground includes editable, bounded, read-only, result-loading, empty, retry, and
+The native playgrounds include editable, bounded, read-only, result-loading, empty, retry, and
 English/Spanish examples. Run the package's unit, lint, ABI, and instrumentation gates. Emulator
 checks and screenshots remain separate from physical TalkBack and consumer qualification.
 
-### Remaining Compose v4 controls
+### Authentication and media controls
 
 `LumenPasswordField`, `LumenInputOTP`, `LumenTooltip`, and `LumenImageComparison` complete the
-additional Compose controls planned for this candidate. They are Android-specific catalog entries,
-not claims of availability in other native adapters. See the [Compose package usage](../packages/compose/README.md)
+additional Compose controls planned for this candidate. React Native and SwiftUI expose the
+advanced input contracts described below; adapter-specific APIs remain documented separately. See the [Compose package usage](../packages/compose/README.md)
 for controlled state, native autofill hints, OTP normalization, tooltip state, and comparison bounds.
 The playground uses synthetic credentials and locally drawn comparison images, with English/Spanish
 labels. Native autofill hints are integration contracts; emulator semantics tests do not prove
@@ -1067,3 +1073,32 @@ The Android-specific catalog also includes `LumenTopAppBar`, `LumenSwipeActions`
 See the [Compose examples](../packages/compose/README.md#v4-product-controls). These components do
 not expand the Wear artifact or imply equivalent APIs on other adapters. Emulator interactions and
 rendering are separate from physical-device TalkBack and foldable qualification.
+- `LumenPasswordField` starts masked, hides on blur or when editing is disabled, and uses native
+  password/autofill hints. The application owns authentication, validation and submission. React
+  Native retains native input props and refs; SwiftUI uses a String binding. New-password hints
+  use the native hint where available, with password fallback on macOS 13.
+- `LumenInputOTP` uses one native editor and a controlled value of at most 1–12 ASCII digits.
+  Pasted Unicode decimal digits, spaces and hyphens are normalized; unrelated text and excess
+  digits are rejected. Completion is emitted only for a changed full code and never verifies or
+  submits it. Disabled/read-only fields cannot emit changes. Masking is optional. Native autofill
+  hints require separate provider verification in the consuming application.
+- `LumenImageComparison` controls the visible after-image fraction from zero to one. It clamps
+  finite values and falls back to 0.5 for non-finite values, mirrors the reveal edge in RTL, and
+  exposes one named adjustable control with a localized after percentage. React Native accepts
+  native image sources, SwiftUI accepts view builders, and Compose accepts painters. Applications
+  own image loading, analysis and editing.
+- `LumenTooltip` and `LumenPullToRefresh` retain their Compose-specific entries.
+
+React Native and SwiftUI number bounds and steps use complete, ungrouped ASCII decimal strings;
+Compose uses `BigDecimal`. Every adapter preserves raw localized drafts and computes exact steps.
+SwiftUI uses bounded decimal digit arrays, preserving the 128-character contract without narrowing
+values through `Double` or Foundation `Decimal`.
+
+Web `NumberField` retains browser-native number entry. Applications needing exact localized drafts
+can compose a text input with Core `parseLumenDecimalDraft`, `isLumenDecimalInBounds` and
+`stepLumenDecimalDraft`. This makes the stronger policy available across web and React Native.
+
+SwiftUI autocomplete uses `Binding<Value?>` with Hashable option values; React Native uses strings.
+Selection updates the query label before the selection callback/binding. The host clears stale
+selection when queries change. Loading hides results; result errors can expose Retry. Disabling
+or making the field read-only dismisses results without reopening them after re-enabling.

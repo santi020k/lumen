@@ -373,3 +373,32 @@ advisories in node-forge, http-cache-semantics and braces, with no patched versi
 the audit. The appearance branch uses the current release lockfile without dependency changes.
 Release integration remains blocked rather than bypassing that gate. No packages were published
 and no remote branch was pushed.
+
+### Native advanced-input parity
+
+The v4 candidate adds NumberField, TimeField, Autocomplete, PasswordField, InputOTP and
+ImageComparison to React Native and SwiftUI, alongside the existing Compose controls. The native
+registry now contains 69 shared contracts and 18 platform-specific contracts. Number fields retain
+localized drafts with exact bounded decimal stepping; time values use same-day hour/minute models.
+Filtering, requests, authentication, persistence and submission validation remain application-owned.
+The native patterns guide includes a form-error summary recipe with application-owned editor focus.
+
+Core and React Native verification covers 330 tests, including exact stepping beyond floating-point
+precision, bounded paste and parsing, secure-entry reset, autocomplete selection/dismissal and
+confirmed time selection with stale callback rejection. The Swift suite covers 58 LumenUI tests
+and three WidgetKit tests; the Apple playground builds, and the reviewed Swift API builds for all
+five Apple targets. Both playgrounds expose the six additions with English/Spanish and read-only
+examples. Twelve React Native web captures at 390 and 1280 pixels were inspected, with browser
+checks for number stepping, localization, autocomplete and password reveal/blur.
+
+This evidence does not qualify physical-device keyboard, autofill, VoiceOver or TalkBack behavior.
+Native device evidence and two stability-soak iterations remain required. Release integration and
+the canonical validation result must be recorded before claiming completion; dependency security
+still reports the three existing high advisories with no patched versions.
+
+The isolated parity candidate is preserved in commit `7a170606` on
+`feature/native-v4-parity`. Its canonical `pnpm run validate` passes the monorepo build, types,
+1,201 tests, zero-warning lint, spelling, Knip and registry checks, then stops at the three existing
+high dependency advisories (`node-forge`, `http-cache-semantics` and `braces`; no patched versions).
+The release checkout has concurrent uncommitted work, so the parity commit is not yet contained in
+`release/v4.0.0`. Do not treat this record as integration, device qualification or release approval.

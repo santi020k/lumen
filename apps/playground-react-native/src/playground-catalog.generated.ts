@@ -56,7 +56,12 @@ export const componentCategories: readonly ComponentCategoryDefinition[] = [
       "Segmented control",
       "Tabs",
       "Picker",
-      "Slider"
+      "Slider",
+      "Time field",
+      "Autocomplete",
+      "Number field",
+      "Password field",
+      "Input OTP"
     ],
     value: 'forms'
   },
@@ -97,7 +102,8 @@ export const componentCategories: readonly ComponentCategoryDefinition[] = [
       "Stat",
       "Section header",
       "Status bar",
-      "Gauge"
+      "Gauge",
+      "Image comparison"
     ],
     value: 'data'
   },
