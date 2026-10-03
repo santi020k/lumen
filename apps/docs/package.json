@@ -44,6 +44,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "catalog:",
+    "@astrojs/markdown-satteri": "catalog:",
     "@astrojs/ts-plugin": "catalog:",
     "@santi020k/lumen-playground-react-native": "workspace:*",
     "@santi020k/og": "catalog:",

@@ -3431,3 +3431,27 @@ pre code {
   max-width: 100%;
   margin-inline: auto;
 }
+.migration-guide :where(h1, h2, h3) {
+  font-weight: 700;
+  scroll-margin-top: 10rem;
+}
+
+.migration-guide h1 {
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1.15;
+}
+
+.migration-guide h2 {
+  font-size: 1.5rem;
+}
+
+.migration-guide h3 {
+  font-size: 1.125rem;
+}
+
+.migration-guide pre {
+  max-width: 100%;
+  overflow-x: auto;
+  padding: 1rem;
+  border-radius: var(--ui-radius);
+}
