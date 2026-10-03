@@ -20,7 +20,11 @@ final class WorkspacePerformanceTests: XCTestCase {
         let options = XCTMeasureOptions.default
         options.iterationCount = 5
         options.invocationOptions = [.manuallyStart, .manuallyStop]
-        measure(metrics: [XCTOSSignpostMetric.scrollingAndDecelerationMetric], options: options) {
+        var metrics: [XCTMetric] = [XCTOSSignpostMetric.scrollingAndDecelerationMetric]
+        if #available(iOS 26.0, *) {
+            metrics.append(XCTHitchMetric(application: app))
+        }
+        measure(metrics: metrics, options: options) {
             app.terminate()
             app.launch()
             let list = openWorkspace(app)
