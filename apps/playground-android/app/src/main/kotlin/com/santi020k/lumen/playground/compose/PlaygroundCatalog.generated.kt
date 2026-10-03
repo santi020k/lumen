@@ -103,6 +103,7 @@ internal val playgroundSections = listOf(
             "Section header",
             "Status bar",
             "Gauge",
+            "Image comparison",
             "Image comparison"
         )
     ),
