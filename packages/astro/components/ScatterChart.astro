@@ -3,14 +3,18 @@ import type { HTMLAttributes } from 'astro/types'
 
 import {
   createLumenScatterGeometry,
+  createLumenScatterReferences,
   formatLumenChartSummary,
   getLumenChartTicks,
   getLumenChartToneClassName,
+  getLumenScatterXTicks,
+  type LumenChartDomain,
   type LumenChartLabels,
-  type LumenChartScaleType,
   type LumenChartSeries,
+  type LumenScatterReference,
+  type LumenScatterScaleType,
   resolveLumenChartLabels,
-  scaleLumenChartValue } from '@santi020k/lumen-core'
+  scaleLumenChartValue,  scaleLumenScatterX } from '@santi020k/lumen-core'
 
 import Chart from './Chart.astro'
 
@@ -21,13 +25,18 @@ interface Props extends HTMLAttributes<'figure'> {
   description?: string
   emptyLabel?: string
   formatValue?: (value: number) => string
+  formatX?: (value: number | string) => string
+  formatY?: (value: number) => string
+  xDomain?: Partial<LumenChartDomain>
+  domain?: Partial<LumenChartDomain>
+  references?: readonly LumenScatterReference[]
   heading?: string
   labels?: Partial<LumenChartLabels>
   series: readonly LumenChartSeries[]
   showLegend?: boolean
   showTable?: boolean
   summary?: string
-  xScale?: Exclude<LumenChartScaleType, 'categorical'>
+  xScale?: LumenScatterScaleType
 }
 
 const {
@@ -37,6 +46,11 @@ const {
   description,
   emptyLabel,
   formatValue = String,
+  formatX = String,
+  formatY = formatValue,
+  xDomain,
+  domain,
+  references = [],
   heading,
   labels,
   series,
@@ -47,7 +61,9 @@ const {
   ...rest
 } = Astro.props
 
-const geometry = createLumenScatterGeometry(series, { xScale })
+const plotId = `ui-scatter-${crypto.randomUUID()}`
+const geometry = createLumenScatterGeometry(series, { xScale, ...(xDomain ? { xDomain } : {}), ...(domain ? { domain } : {}) })
+const referenceGeometry = createLumenScatterReferences(references, geometry, xScale)
 const resolvedLabels = resolveLumenChartLabels(labels)
 
 const projectedSeries = series.map(item => ({
@@ -56,8 +72,8 @@ const projectedSeries = series.map(item => ({
 })).filter(item => item.data.length > 0)
 
 const hasData = geometry.points.length > 0
-const summary = summaryProp ?? formatLumenChartSummary(projectedSeries, formatValue, resolvedLabels)
-const xTicks = getLumenChartTicks(geometry.xDomain)
+const summary = summaryProp ?? formatLumenChartSummary(projectedSeries, formatY, resolvedLabels)
+const xTicks = getLumenScatterXTicks(geometry.xDomain, xScale)
 const yTicks = getLumenChartTicks(geometry.domain)
 ---
 
@@ -66,18 +82,25 @@ const yTicks = getLumenChartTicks(geometry.domain)
   {!hasData && <p class="ui-chart__empty" role="status">{emptyLabel ?? resolvedLabels.empty}</p>}
   <div aria-label={resolvedLabels.chartData} class="ui-chart__plot" role="region" tabindex="0" hidden={!hasData}>
     <svg aria-hidden="true" viewBox={`0 0 ${geometry.width} ${geometry.height}`}>
+      <defs><clipPath id={plotId}><rect x="44" y="44" width={geometry.width - 88} height={geometry.height - 88} /></clipPath></defs>
       <g class="ui-chart__grid">{yTicks.map(tick => {
  const y = scaleLumenChartValue(tick, geometry.domain, geometry.height - 44, 44)
 
- return <><line x1="44" x2={geometry.width - 44} y1={y} y2={y}/><text x="36" y={y}>{formatValue(tick)}</text></>
+ return <><line x1="44" x2={geometry.width - 44} y1={y} y2={y}/><text x="36" y={y}>{formatY(tick)}</text></>
 })}</g>
       <g class="ui-chart__axis-labels">{xTicks.map(tick => {
- const x = scaleLumenChartValue(tick, geometry.xDomain, 44, geometry.width - 44)
+ const x = scaleLumenScatterX(tick, geometry.xDomain, 44, geometry.width - 44, xScale)
 
- return <text text-anchor="middle" x={x} y={geometry.height - 14}>{formatValue(tick)}</text>
+ return <text text-anchor="middle" x={x} y={geometry.height - 14}>{formatX(tick)}</text>
 })}</g>
-      <g class="ui-scatter-chart__marks">{geometry.points.map(point => <circle class={getLumenChartToneClassName(point.tone)} cx={point.xCoordinate} cy={point.yCoordinate} r={point.radius}><title>{`${point.xLabel ?? point.x} · ${point.seriesLabel}: ${point.label ?? formatValue(point.y ?? 0)}`}</title></circle>)}</g>
+      <g class="ui-scatter-chart__references" clip-path={`url(#${plotId})`}>{referenceGeometry.map(reference => reference.region ?
+        <rect x={Math.min(reference.x1, reference.x2)} y={Math.min(reference.y1, reference.y2)} width={Math.abs(reference.x2 - reference.x1)} height={Math.abs(reference.y2 - reference.y1)}><title>{reference.label}</title></rect> :
+        <line x1={reference.x1} x2={reference.x2} y1={reference.y1} y2={reference.y2}><title>{reference.label}</title></line>)}</g>
+      <g class="ui-scatter-chart__marks" clip-path={`url(#${plotId})`}>{geometry.points.map(point => <circle class={getLumenChartToneClassName(point.tone)} cx={point.xCoordinate} cy={point.yCoordinate} r={point.radius}><title>{`${point.xLabel ?? formatX(point.x)} · ${point.seriesLabel}: ${point.label ?? formatY(point.y ?? 0)}`}</title></circle>)}</g>
     </svg>
   </div>
-  {showTable && hasData && <details class="ui-chart__data"><summary>{resolvedLabels.viewData}</summary><div><table><thead><tr><th scope="col">{resolvedLabels.x}</th><th scope="col">{resolvedLabels.series}</th><th scope="col">{resolvedLabels.value}</th><th scope="col">{resolvedLabels.size}</th></tr></thead><tbody>{geometry.points.map(point => <tr><th scope="row">{point.xLabel ?? point.x}</th><td>{point.seriesLabel}</td><td>{point.label ?? formatValue(point.y ?? 0)}</td><td>{point.size === undefined || point.size === null || !Number.isFinite(point.size) ? resolvedLabels.notAvailable : formatValue(point.size)}</td></tr>)}</tbody></table></div></details>}
+  {referenceGeometry.length > 0 && (
+<ul class="ui-scatter-chart__reference-labels">{referenceGeometry.map(reference => <li>{reference.label}</li>)}</ul>
+)}
+  {showTable && hasData && <details class="ui-chart__data"><summary>{resolvedLabels.viewData}</summary><div><table><thead><tr><th scope="col">{resolvedLabels.x}</th><th scope="col">{resolvedLabels.series}</th><th scope="col">{resolvedLabels.value}</th><th scope="col">{resolvedLabels.size}</th></tr></thead><tbody>{geometry.points.map(point => <tr><th scope="row">{point.xLabel ?? formatX(point.x)}</th><td>{point.seriesLabel}</td><td>{point.label ?? formatY(point.y ?? 0)}</td><td>{point.size === undefined || point.size === null || !Number.isFinite(point.size) ? resolvedLabels.notAvailable : formatValue(point.size)}</td></tr>)}</tbody></table></div></details>}
 </Chart>

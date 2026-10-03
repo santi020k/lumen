@@ -98,7 +98,7 @@ const RangePopover = ({ open, onOpenChange, label, trigger, children, disabled, 
   disabled: boolean
   readOnly: boolean
 }) => {
-  const { panelRef, triggerRef, rootRef, rootProps, panelProps, triggerProps } = usePopover({ open, onOpenChange })
+  const { panelRef, triggerRef, rootRef, rootProps, panelProps, triggerProps } = usePopover({ open, onOpenChange, positioning: 'none' })
 
   useLayoutEffect(() => {
     if (!open) return

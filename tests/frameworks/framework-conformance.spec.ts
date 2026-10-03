@@ -268,3 +268,32 @@ test('consumer amount entry preserves empty, invalid, maximum, and localized val
   await expect(page.locator('output')).toContainText('100.000.000.000');
   await expect(page.getByRole('textbox', { name: 'Importe (COP)' })).toHaveValue('100000000000');
 });
+
+for (const width of [320, 1440]) {
+  test(`dashboard filtering, details, and popup placement at ${width}px`, async ({ page }, testInfo) => {
+    await page.setViewportSize({ width, height: 1100 });
+    await page.goto('/dashboard-recipes');
+    await page.getByRole('searchbox', { name: 'Search clients' }).fill('studio');
+    await expect(page.getByRole('status').filter({ hasText: '1 matching record' })).toBeVisible();
+    await page.getByRole('button', { name: 'Remove Search: studio' }).click();
+    await expect(page.getByRole('searchbox', { name: 'Search clients' })).toHaveValue('');
+    await page.getByRole('button', { name: /Expand record/ }).first().click();
+    await expect(page.getByText(/Record details for/)).toBeVisible();
+    await page.getByRole('combobox', { name: 'Sort by' }).selectOption('balance');
+    await expect(page.getByText(/Record details for/)).toBeVisible();
+    const trigger = page.getByRole('button', { name: 'Open record actions' });
+    await trigger.click();
+    const panel = page.getByRole('region', { name: 'Record actions' });
+    await expect(panel).toBeVisible();
+    const bounds = await panel.boundingBox();
+    expect(bounds).not.toBeNull();
+    if (!bounds) throw new Error('Expected visible popup bounds');
+    expect(bounds.x).toBeGreaterThanOrEqual(0);
+    expect(bounds.x + bounds.width).toBeLessThanOrEqual(width);
+    await page.keyboard.press('Escape');
+    await expect(panel).toBeHidden();
+    await expect(trigger).toBeFocused();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    await page.screenshot({ path: testInfo.outputPath(`dashboard-${width}.png`), fullPage: true });
+  });
+}

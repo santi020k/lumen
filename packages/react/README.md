@@ -705,3 +705,20 @@ React `VirtualList` accepts typed `items`, `getKey` and `renderItem` for data mo
 Only the visible window, overscan and focused neighbors mount. Stable keys retain row identity;
 applications own offscreen editing state. See [data rendering](../../docs/virtual-list-data.md) for
 setup, lifecycle, accessibility and the mounted-mode tradeoff.
+
+## Dashboard composition
+
+`FilterBar` groups host-owned filtering controls, active criteria, reset actions, and a polite
+result announcement. `ChangeSummary` presents explicit before/after values and application-owned
+changed state. Neither component owns requests, persistence, parsing, or financial policy.
+
+ScatterChart supports independent X/Y formatting, explicit domains, logarithmic positive X values,
+and labeled reference lines/regions. See [consumer UI recipes](../../docs/consumer-ui-recipes.md)
+for dashboard tables, freshness, import review, activity inbox, and persistent Kanban patterns.
+
+React DataTable adds `layout="records"`, rich `column.render`, and expandable `renderDetails`.
+Use stable record IDs and controlled `expandedRowIds` across pages. `DataTableSortControls` shares
+`sort`/`onSortChange` with table headers; manual sorting preserves server page order.
+
+Popover and DropdownMenu support anchored top-layer placement, viewport collision handling, logical
+start/end alignment, and focus handoff. Set `positioning="none"` for application-owned placement.

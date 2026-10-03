@@ -169,3 +169,170 @@ Undo is an application transaction exposed through a status action. Retain focus
 result. Lumen should not decide what can be reversed, retry payments, restore purchases, publish a
 post, or store an idempotency key. See [error handling](error-handling.md) for the existing
 cross-platform recovery surfaces and announcement contracts.
+
+## Dashboard filters and record details
+
+Use `FilterBar` to group existing SearchField, Select/NativeSelect, date controls, and reset actions.
+It does not fetch records or persist filters. In React, `filters` contains stable IDs and display
+labels; `onRemoveFilter(id)` and `onReset()` request changes from the host. Keep one
+`LumenDataViewState` owner and use `createDataViewServerRequest` for server filtering. Reset the page
+when criteria change, abort superseded requests, and ignore responses from older requests. Preserve
+URL/storage ownership in the application using the existing data-view helpers.
+
+Pass a complete localized `resultLabel`, such as "0 matching records". Leave it absent while the
+count is unknown; do not announce a fabricated zero. `pending` marks the region busy and disables
+React removal/reset actions. Disable authored Astro controls in the same state. The native details
+control remains keyboard usable without JavaScript. `open` controls the initial Astro disclosure;
+React also supports `defaultOpen` and `onOpenChange`. Supply closed mobile defaults only when the
+application can reliably determine its layout; hiding active criteria can obscure a filtered view.
+
+Astro provides `active` and `actions` slots. Elements preserves authored native details, controls,
+active-filter buttons and a polite status region inside `<lumen-filter-bar aria-label="Filters">`.
+Use the public Lumen controls in both adapters. Give each removal action a name containing both
+criterion and value. Keep active criteria visible outside the collapsed controls.
+
+React `DataTable` now supports `layout="records"`, `column.render(cell, row)`, and
+`renderDetails(row)`. Sorting still reads the original cell or its explicit `sortValue`, never a
+badge's rendered text. Use stable `rowValue`/`id` values; expanded IDs must not depend on page order.
+`expandedRowIds` plus `onExpandedRowIdsChange` controls expansion across paging. Customize
+`expandLabel`, `collapseLabel`, and `detailsLabel` for the current language. Details travel with
+their record during sorting. The renderer owns links/actions and should label them by record.
+
+```tsx
+const [sort, setSort] = useState<DataTableSort | null>(null)
+const columns = [
+  { key: 'client', label: 'Client', sortable: true },
+  { key: 'balance', label: 'Balance', sortable: true, sort: 'number' as const,
+    render: (cell: DataTableCell) => typeof cell === 'number' ? <Badge>{cell}</Badge> : 'Unavailable' }
+]
+<DataTableSortControls columns={columns} sort={sort} onSortChange={setSort} />
+<DataTable columns={columns} rows={serverPage} layout="records" sort={sort}
+  sortMode="manual" onSortChange={setSort} renderDetails={row => <p>{String(row.id)}</p>} />
+```
+
+The toolbar and headers share one sort state. `sortMode="manual"` preserves the supplied page
+order. Astro supports the same mode; Elements uses `sort-mode="manual"`. Both dispatch
+`ui:data-table-sort-change` with `{ key, columnIndex, direction }`. Annotate authored headers with
+`data-ui-datatable-sort-key` to identify server fields. `direction="none"` requests default order.
+Use authored Table children for rich Astro/Elements cells, with native details inside a cell so the
+record and its disclosure remain one row. Responsive records use the documented `ui-table__label`
+child contract and retain keyboard access to sortable headers.
+
+## Review proposed changes
+
+Use `ChangeSummary` before confirmation for imports, allocations, or settings. Each item has a
+stable `id`, a field `label`, explicit `before` and `after` strings, and an application-owned
+`changed` boolean. The component never infers financial equality, parses amounts, or applies the
+proposal. Supply `summary` for localized counts and customize the four before/after/state labels.
+Both changed and unchanged states use visible text, so meaning is available without color.
+
+```tsx
+<ChangeSummary label="Review allocation" summary="1 changed field" items={[
+  { id: 'amount', label: 'Amount', before: 'COP 25,000', after: 'COP 30,000', changed: true },
+  { id: 'owner', label: 'Owner', before: 'Example studio', after: 'Example studio', changed: false }
+]} />
+```
+
+Astro accepts the same props. Elements accepts `.items` and `label`, `summary`, `before-label`,
+`after-label`, `changed-label`, and `unchanged-label` attributes. Its setter validates unique IDs
+and typed display values, copies input records, and renders text safely. Authored audit notes remain
+intact. Keep original ledger facts in the application; confirmation creates an auditable command.
+
+## Data availability and freshness
+
+Distinguish `available`, `missing`, `pending`, `stale`, and `failed` in the application model. Use
+Stat for a value, Badge for the state, FormattedDate for the last successful observation, and
+ErrorState/Alert with an explicit recovery action when collection fails. A successful observation
+of zero renders zero. Missing metrics render "Unavailable" and chart data uses `y: null`; stale
+values retain their last known value and timestamp with a visible stale label. Refreshing should
+retain usable prior data rather than replacing it with zero or a misleading empty state.
+
+```tsx
+<Stat label="Downloads" value={metric.value === null ? 'Unavailable' : formatNumber(metric.value)}>
+  <Badge variant={metric.stale ? 'warning' : 'outline'}>{metric.stale ? 'Stale' : 'Available'}</Badge>
+  {metric.observedAt && <FormattedDate dateTime={metric.observedAt}>{formatDate(metric.observedAt)}</FormattedDate>}
+  <Button loading={refreshing} onClick={refresh}>Refresh</Button>
+</Stat>
+```
+
+Use timestamps or stable period keys for chart `x`; put localized date text in `xLabel`. Different
+periods may have identical display labels. Do not collapse their identities. Freshness thresholds,
+permissions, collection schedules, and retry decisions belong to the application.
+
+## Import review flow
+
+Compose FileUpload, Stepper, Alert, DataTable, ChangeSummary, and explicit confirmation actions.
+Use the steps Choose file → Review issues → Review changes → Confirm → Result. Keep parsing and
+reconciliation in the host. FileUpload validation is input assistance, not proof of safe content.
+
+Hold a versioned proposal separate from current records. Report invalid rows with line numbers and
+safe descriptions; show the accepted, rejected, unchanged, and changed counts. Block confirmation
+until blocking issues are resolved. Provide an accessible downloadable issue report if the host
+supports it. Use `ChangeSummary` for proposed field changes and a responsive record table for row
+preview. A retry must reuse/reconcile the application's transaction identity rather than applying
+the same proposal twice. Retain the original file/proposal on failure; let the user correct or cancel.
+
+At confirmation, display the destination and consequence, disable concurrent submissions, and
+wait for durable acknowledgement before showing success. Keep an audit record of accepted rows and
+changes. A timeout is an uncertain result requiring reconciliation, not automatic failure or retry.
+Lumen does not implement CSV/XLSX parsing, merge policy, or destructive import semantics.
+
+## Activity inbox
+
+Compose Popover, FloatingBadge, Timeline, Pagination, and Empty/ErrorState. Count unread events in
+the host; omit the badge while the count is unknown. Name the trigger, such as "Activity, 3 unread",
+and use a region/list inside Popover rather than a menu role for non-menu content. Each event needs
+a stable ID, meaningful action, timestamp, and visible read/unread state. Use an explicit mark-read
+command; opening the panel should not silently discard notifications.
+
+Keep unread changes and page requests independently pending. Announce a successful mark-read once,
+retain the item and count on failure, and preserve focus while pages load. Preserve historical events
+and distinguish empty history from a failed request. The host owns read cursors, permissions,
+pagination, subscription cleanup, and durable persistence.
+
+React Popover/DropdownMenu now promote panels to the browser top layer when the Popover API is
+available. Placement defaults to `bottom-start`, flips vertically, and clamps to the visual viewport.
+Logical start/end follows text direction; `offset` and `collisionPadding` adjust safe spacing.
+`positioning="none"` opts out for specialized application layout. The fixed-position fallback cannot
+escape every transformed ancestor in older browsers. Cleanup restores styles and owned focus;
+focus moved into a newly opened dialog is retained.
+
+## Persistent Kanban moves
+
+Use the existing `useKanban` move request or Astro/Elements `ui:kanban-move-request` event as an
+application command. Track stable item IDs, source/destination columns, order, and a server revision.
+Prefer pessimistic persistence for consequential workflows: keep the item in its confirmed column,
+disable a second move for that item, and announce pending status. Apply the returned canonical board
+only after the server acknowledges success. On failure retain confirmed state, explain recovery,
+and restore focus to the item or its move action.
+
+For optimistic boards, store a rollback snapshot with the request ID. A rejected or superseded
+request must not overwrite newer board state. Reconcile conflicts from the server rather than
+replaying stale order. Guard duplicate submissions, cancel listeners on unmount, and offer keyboard
+move actions alongside drag interaction. Announce the resulting column after success. Persisting,
+reordering, authorization, retries, and audit history belong to the application, not to Lumen.
+
+## Numeric relationships and dashboard quadrants
+
+ScatterChart accepts `formatX` and `formatY` independently; `formatValue` remains the fallback for
+Y/size presentation. `xDomain` and `domain` define explicit X/Y bounds. `xScale="log"` places positive
+raw X values logarithmically; zero, negative, or missing X and unavailable Y are omitted. Explicit log
+bounds must be positive, finite, and increasing. Empty log charts use finite fallback bounds.
+
+```tsx
+<ScatterChart aria-label="Reach and momentum" xScale="log"
+  xDomain={{ min: 1, max: 100000 }} domain={{ min: -10, max: 10 }}
+  formatX={value => formatNumber(Number(value))} formatY={value => `${value}%`}
+  series={growthSeries} references={[
+    { id: 'reach', label: 'Reach threshold: 1,000', x: 1000 },
+    { id: 'momentum', label: 'No change: 0%', y: 0 },
+    { id: 'target', label: 'High reach and positive momentum', x: 1000, xEnd: 100000, y: 0, yEnd: 10 }
+  ]} />
+```
+
+References are descriptive lines (`x` or `y`) or regions (`x`, `xEnd`, `y`, `yEnd`). Visible reference
+labels accompany the plot for nonvisual access. Keep thresholds, momentum calculations, audience
+normalization, and quadrant classification in the host. Astro has the same props. Elements uses
+`x-scale`, `x-min`, `x-max`, `domain-min`, and `domain-max`; set `.references`, `.categoryFormatter`,
+and `.valueFormatter` for reference geometry and independent axis presentation. No application
+business formula belongs in the chart component.

@@ -1244,6 +1244,15 @@
     white-space: nowrap;
   }
 
+.ui-table-wrap--records thead:focus-within {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip-path: none;
+    white-space: normal;
+  }
+
 .ui-table-wrap--records tbody tr {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 9rem), 1fr));
@@ -1276,6 +1285,18 @@
 .ui-table-wrap--records .ui-table__cell--wide {
     grid-column: 1 / -1;
   }
+}
+
+.ui-data-table__sort-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: var(--ui-space-related, 0.75rem);
+}
+
+.ui-data-table__sort-controls .ui-field {
+  flex: 1 1 12rem;
+  min-width: 0;
 }
 
 .ui-table-wrap th,

@@ -68,6 +68,7 @@ export {
   summarizeLumenChart,
   validateLumenChartSeries
 } from './charts.js'
+export { createLumenScatterReferences, getLumenScatterXTicks,   type LumenScatterReference, type LumenScatterReferenceGeometry, type LumenScatterScaleType, scaleLumenScatterX } from './charts.js'
 export {
   type LumenCodeToken,
   lumenCodeTokenClassNames,
@@ -89,6 +90,12 @@ export {
   type LumenStylingContract,
   lumenStylingContracts
 } from './components.js'
+export {
+  type LumenActiveFilter,
+  type LumenChangeSummaryItem,
+  readLumenActiveFilters,
+  readLumenChangeSummaryItems
+} from './dashboard.js'
 export {
   applyDataViewState,
   createDataViewRequestUrl,

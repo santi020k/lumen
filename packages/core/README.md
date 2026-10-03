@@ -257,3 +257,14 @@ setup, state ownership and lifecycle examples.
 `getLumenDirectionalKey(element, key)` resolves the element's current inherited CSS direction and
 swaps horizontal arrows in RTL. Other keys are unchanged. Web adapters use it for visual keyboard
 navigation; native range inputs retain browser-owned behavior.
+
+## Dashboard contracts
+
+`LumenChangeSummaryItem` carries explicit display values and caller-owned changed state;
+`LumenActiveFilter` identifies an active criterion. `readLumenChangeSummaryItems` and
+`readLumenActiveFilters` validate unknown input, reject duplicate/empty IDs, and copy records.
+
+Scatter geometry supports positive logarithmic X coordinates, explicit domains, and shared
+reference projection. `createLumenScatterReferences`, `scaleLumenScatterX`, and
+`getLumenScatterXTicks` use the same coordinate contract as `createLumenScatterGeometry`.
+See [consumer UI recipes](../../docs/consumer-ui-recipes.md) for application ownership boundaries.

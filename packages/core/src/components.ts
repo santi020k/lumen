@@ -160,7 +160,9 @@ export const lumenComponentNames = [
   'Heatmap',
   'RangeChart',
   'ComboChart',
-  'VisuallyHidden'
+  'VisuallyHidden',
+  'ChangeSummary',
+  'FilterBar'
 ] as const
 
 export type LumenComponentName = typeof lumenComponentNames[number]
@@ -338,6 +340,8 @@ export const lumenComponentBehavior = {
   TreeSelect: { astro: 'ui-primitives', elements: 'registered-element', react: 'component' },
   Typography: { astro: 'none', elements: 'registered-element', react: 'component' },
   VirtualList: { astro: 'ui-primitives', elements: 'registered-element', react: 'hook' },
+  ChangeSummary: { astro: 'none', elements: 'registered-element', react: 'component' },
+  FilterBar: { astro: 'none', elements: 'registered-element', react: 'component' },
   VisuallyHidden: { astro: 'none', elements: 'registered-element', react: 'component' },
   Watermark: { astro: 'none', elements: 'registered-element', react: 'component' }
 } as const satisfies Readonly<Record<LumenComponentName, LumenComponentBehavior>>

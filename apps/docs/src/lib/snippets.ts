@@ -845,6 +845,27 @@ export const Example = () => (
 }
 
 const elementsOverrides: Record<string, string> = {
+  ChangeSummary: `<lumen-change-summary id="review" label="Review changes" summary="1 changed field"></lumen-change-summary>
+<script type="module">
+  import { defineLumenChangeSummary } from '@santi020k/lumen-elements/components/dashboard'
+  defineLumenChangeSummary()
+  document.getElementById('review').items = [
+    { id: 'owner', label: 'Owner', before: 'Alice', after: 'Bob', changed: true }
+  ]
+</script>`,
+  FilterBar: `${elementsHeader}
+<lumen-filter-bar aria-label="Filters">
+  <details open>
+    <summary>Filters</summary>
+    <div class="ui-filter-bar__controls">
+      <lumen-search-field aria-label="Search records"></lumen-search-field>
+    </div>
+  </details>
+  <div class="ui-filter-bar__active">
+    <lumen-button aria-label="Remove status: Active">Status: Active ×</lumen-button>
+  </div>
+  <p role="status" aria-live="polite" aria-atomic="true">12 matching records</p>
+</lumen-filter-bar>`,
   VirtualList: `<lumen-virtual-list id="records" mode="data" role="list" aria-label="Records"></lumen-virtual-list>
 <script type="module">
   import { createLumenVirtualCollectionController } from '@santi020k/lumen-core'

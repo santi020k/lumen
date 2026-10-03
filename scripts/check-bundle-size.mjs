@@ -13,13 +13,19 @@ const allBudgets = [
   { file: 'packages/core/dist/virtual-list.js', gzip: 2_200, packageName: '@santi020k/lumen-core', raw: 7_000 },
   { file: 'packages/react/dist/virtual-list.js', gzip: 1_000, packageName: '@santi020k/lumen-react', raw: 3_000 },
   { file: 'packages/react/dist/rich-text-editor.js', gzip: 2_500, packageName: '@santi020k/lumen-react', raw: 10_000 },
+  { file: 'packages/react/dist/data-table.js', gzip: 3_100, packageName: '@santi020k/lumen-react', raw: 11_000 },
+  { file: 'packages/react/dist/floating-panel.js', gzip: 2_100, packageName: '@santi020k/lumen-react', raw: 7_000 },
+  { file: 'packages/react/dist/dashboard.js', gzip: 800, packageName: '@santi020k/lumen-react', raw: 2_000 },
+  { file: 'packages/react/dist/change-summary.js', gzip: 550, packageName: '@santi020k/lumen-react', raw: 1_500 },
   { file: 'packages/astro/runtime/UIPrimitives.astro', gzip: 33_000, packageName: '@santi020k/lumen-astro', raw: 167_000 },
   { file: 'packages/astro/runtime/controllers/motion.ts', gzip: 1_500, packageName: '@santi020k/lumen-astro', raw: 5_000 },
   { file: 'packages/astro/runtime/controllers/dialogs.ts', gzip: 2_000, packageName: '@santi020k/lumen-astro', raw: 6_000 },
   { file: 'packages/astro/runtime/controllers/document-navigation.ts', gzip: 1_500, packageName: '@santi020k/lumen-astro', raw: 5_000 },
   { file: 'packages/astro/runtime/controllers/image-comparison.ts', gzip: 900, packageName: '@santi020k/lumen-astro', raw: 2_000 },
   // Appearance presets add 12.3 KiB raw / 1.3 KiB gzip to the reviewed v4 stylesheet.
-  { file: 'packages/lumen/styles.css', gzip: 33_000, packageName: '@santi020k/lumen', raw: 204_000 },
+  // Dashboard controls, change summaries, table focus paths, and scatter references add
+  // 2.2 KiB raw / 0.4 KiB gzip. Keep this allowance bounded alongside the new modules.
+  { file: 'packages/lumen/styles.css', gzip: 33_600, packageName: '@santi020k/lumen', raw: 207_000 },
   { file: 'packages/react/dist/components.js', gzip: 35_000, packageName: '@santi020k/lumen-react', raw: 171_000 },
   { file: 'packages/react/dist/hooks.js', gzip: 20_000, packageName: '@santi020k/lumen-react', raw: 100_000 },
   { file: 'packages/elements/dist/define.js', gzip: 45_000, packageName: '@santi020k/lumen-elements', raw: 261_000 }

@@ -14,6 +14,7 @@ import {
   createLumenPieGeometry,
   createLumenRangeGeometry,
   createLumenScatterGeometry,
+  createLumenScatterReferences,
   createLumenVirtualListController,
   createThemeBuilderTokens,
   executeLumenRichTextCommand,
@@ -51,6 +52,7 @@ import {
   type LumenRichTextChangeDetail,
   type LumenRichTextCommandDetail,
   type LumenScatterGeometryPoint,
+  type LumenScatterReference,
   type LumenTabsChangeDetail,
   type LumenThemeBuilderExportFormat,
   type LumenThemeBuilderScheme,
@@ -85,6 +87,12 @@ import {
   LumenComboboxElement as GranularLumenComboboxElement,
   lumenComboboxElementConfig
 } from './components/combobox.js'
+import {
+  LumenChangeSummaryElement as GranularLumenChangeSummaryElement,
+  lumenChangeSummaryElementConfig,
+  LumenFilterBarElement as GranularLumenFilterBarElement,
+  lumenFilterBarElementConfig
+} from './components/dashboard.js'
 import {
   LumenCardContentElement as GranularLumenCardContentElement,
   lumenCardContentElementConfig,
@@ -651,6 +659,8 @@ const elementConfigs = {
     tagName: 'lumen-icon'
   },
   ImageComparison: lumenImageComparisonElementConfig,
+  ChangeSummary: lumenChangeSummaryElementConfig,
+  FilterBar: lumenFilterBarElementConfig,
   Image: {
     attributeClasses: {
       fit: {
@@ -1397,6 +1407,11 @@ const observedAttributeNames = [
   'autocomplete',
   'border-position',
   'caption',
+  'x-scale',
+  'x-min',
+  'x-max',
+  'domain-min',
+  'domain-max',
   'category-label',
   'center-label',
   'center-value',
@@ -6169,11 +6184,51 @@ class LumenPieChartBehaviorElement extends LumenDataChartBehaviorElement {
   }
 }
 
+const scatterElementDomain = (element: HTMLElement, prefix: string) => {
+  const read = (key: string): number | undefined => {
+    const text = element.getAttribute(`${prefix}-${key}`)
+    const value = text === null ? undefined : Number(text)
+
+    return value !== undefined && Number.isFinite(value) ? value : undefined
+  }
+
+  const min = read('min')
+  const max = read('max')
+
+  return { ...(min === undefined ? {} : { min }), ...(max === undefined ? {} : { max }) }
+}
+
 class LumenScatterChartBehaviorElement extends LumenDataChartBehaviorElement {
+  private referenceItems: readonly LumenScatterReference[] = []
+
+  get references(): readonly LumenScatterReference[] {
+    return this.referenceItems.map(item => ({ ...item }))
+  }
+
+  set references(value: readonly LumenScatterReference[]) {
+    this.referenceItems = value.map(item => ({ ...item }))
+
+    if (this.isConnected) this.renderChart()
+  }
+
   protected renderChart() {
+    const plotId = createId('scatter-plot')
     const series = this.series
     const chartLabels = chartLabelsFor(this)
-    const geometry = createLumenScatterGeometry(series)
+    const requestedScale = this.getAttribute('x-scale')
+    const xScale = requestedScale === 'log' || requestedScale === 'time' ? requestedScale : 'linear'
+
+    const geometry = createLumenScatterGeometry(series, {
+      xScale,
+      xDomain: scatterElementDomain(this, 'x'),
+      domain: scatterElementDomain(this, 'domain')
+    })
+
+    const referenceGeometry = createLumenScatterReferences(this.referenceItems, geometry, xScale)
+
+    const references = referenceGeometry.map(reference => reference.region ?
+      `<rect x="${Math.min(reference.x1, reference.x2)}" y="${Math.min(reference.y1, reference.y2)}" width="${Math.abs(reference.x2 - reference.x1)}" height="${Math.abs(reference.y2 - reference.y1)}"><title>${escapeChartHtml(reference.label)}</title></rect>` :
+      `<line x1="${reference.x1}" x2="${reference.x2}" y1="${reference.y1}" y2="${reference.y2}"><title>${escapeChartHtml(reference.label)}</title></line>`).join('')
 
     const renderedSeries = series.map(item => ({
       ...item,
@@ -6189,7 +6244,7 @@ class LumenScatterChartBehaviorElement extends LumenDataChartBehaviorElement {
     const marks = geometry.points.map(point => [
       `<circle class="ui-chart-tone--${point.tone}" cx="${point.xCoordinate}"`,
       ` cy="${point.yCoordinate}" r="${point.radius}"><title>`,
-      `${escapeChartHtml(point.xLabel ?? point.x)} · ${escapeChartHtml(point.seriesLabel)}: `,
+      `${escapeChartHtml(point.xLabel ?? this.categoryFormatter(point.x))} · ${escapeChartHtml(point.seriesLabel)}: `,
       `${escapeChartHtml(point.label ?? this.valueFormatter(point.y ?? 0))}</title></circle>`
     ].join('')).join('')
 
@@ -6198,7 +6253,9 @@ class LumenScatterChartBehaviorElement extends LumenDataChartBehaviorElement {
       chartSummaryHtml(this, renderedSeries),
       chartBooleanAttribute(this, 'show-legend', series.length > 1) ? chartLegendHtml(series, chartLabels) : '',
       `<div class="ui-chart__plot" role="region" tabindex="0" aria-label="${escapeChartHtml(chartLabels.chartData)}"><svg aria-hidden="true" viewBox="0 0 ${geometry.width} ${geometry.height}">`,
-      `<g class="ui-scatter-chart__marks">${marks}</g></svg></div>`,
+      `<defs><clipPath id="${plotId}"><rect x="44" y="44" width="${geometry.width - 88}" height="${geometry.height - 88}"></rect></clipPath></defs>`,
+      `<g class="ui-scatter-chart__references" clip-path="url(#${plotId})">${references}</g><g class="ui-scatter-chart__marks" clip-path="url(#${plotId})">${marks}</g></svg></div>`,
+      `<ul class="ui-scatter-chart__reference-labels">${referenceGeometry.map(item => `<li>${escapeChartHtml(item.label)}</li>`).join('')}</ul>`,
       chartBooleanAttribute(this, 'show-table', true) ?
         scatterDataTableHtml(
           geometry.points, this.categoryFormatter, this.valueFormatter, chartLabels
@@ -6207,6 +6264,10 @@ class LumenScatterChartBehaviorElement extends LumenDataChartBehaviorElement {
       chartCaptionHtml(this)
     ].join('')
   }
+}
+
+class LumenScatterChartRegisteredElement extends LumenScatterChartBehaviorElement {
+  static override config = { ...elementConfigs.ScatterChart, observedAttributes: observedAttributeNames }
 }
 
 class LumenComboChartBehaviorElement extends LumenDataChartBehaviorElement {
@@ -7579,7 +7640,16 @@ class LumenDataTableBehaviorElement extends LumenElement {
 
           this.updateSort(table, header, nextDirection)
 
-          this.sortRows(table, header, columnIndex, nextDirection)
+          if (this.getAttribute('sort-mode') !== 'manual' && this.dataset.uiDatatableSortMode !== 'manual') {
+            this.sortRows(table, header, columnIndex, nextDirection)
+          }
+
+          this.dispatchEvent(new CustomEvent('ui:data-table-sort-change', {
+            bubbles: true,
+            detail: {
+              key: header.dataset.uiDatatableSortKey ?? String(columnIndex), columnIndex, direction: nextDirection
+            }
+          }))
         }, { signal }
       )
     }
@@ -11316,6 +11386,8 @@ const behaviorElementClasses: Partial<
 const granularElementClasses: Partial<
   Record<LumenComponentName, LumenElementConstructor>
 > = {
+  ChangeSummary: GranularLumenChangeSummaryElement,
+  FilterBar: GranularLumenFilterBarElement,
   Badge: GranularLumenBadgeElement,
   Button: GranularLumenButtonElement,
   Card: GranularLumenCardElement,
@@ -11328,6 +11400,7 @@ const granularElementClasses: Partial<
   Container: GranularLumenContainerElement,
   Direction: GranularLumenDirectionElement,
   Grid: GranularLumenGridElement,
+  ScatterChart: LumenScatterChartRegisteredElement,
   ImageComparison: GranularLumenImageComparisonElement,
   Label: GranularLumenLabelElement,
   Separator: GranularLumenSeparatorElement,
@@ -11545,7 +11618,7 @@ export const LumenResizableElement = elementClasses.Resizable
 export const LumenRichTextEditorElement = elementClasses.RichTextEditor
 export const LumenScrollAreaElement = elementClasses.ScrollArea
 export const LumenScrollProgressElement = elementClasses.ScrollProgress
-export const LumenScatterChartElement = elementClasses.ScatterChart
+export const LumenScatterChartElement = LumenScatterChartRegisteredElement
 export const LumenScheduleElement = elementClasses.Schedule
 export const LumenSearchFieldElement = elementClasses.SearchField
 export const LumenSelectElement = elementClasses.Select
@@ -11634,3 +11707,6 @@ export const LumenQRCodeElement = elementClasses.QRCode
 export const LumenWatermarkElement = elementClasses.Watermark
 export const LumenAffixElement = elementClasses.Affix
 export const LumenSpeedDialElement = elementClasses.SpeedDial
+
+export const LumenChangeSummaryElement = GranularLumenChangeSummaryElement
+export const LumenFilterBarElement = GranularLumenFilterBarElement

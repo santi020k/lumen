@@ -2426,7 +2426,7 @@ const initDataTableSorting = (root: HTMLElement, table: HTMLTableElement): void 
 
     header.dataset.uiDatatableSortBound = 'true'
     header.dataset.uiDatatableColumn = String(columnIndex)
-    header.setAttribute('aria-sort', 'none')
+    header.setAttribute('aria-sort', header.getAttribute('aria-sort') ?? 'none')
 
     const button = document.createElement('button')
 
@@ -2450,7 +2450,11 @@ const initDataTableSorting = (root: HTMLElement, table: HTMLTableElement): void 
           'none'
 
       updateDataTableSort(root, table, header, nextDirection)
-      sortDataTableRows(table, header, columnIndex, nextDirection)
+      if (root.dataset.uiDatatableSortMode !== 'manual') sortDataTableRows(table, header, columnIndex, nextDirection)
+      root.dispatchEvent(new CustomEvent('ui:data-table-sort-change', {
+        bubbles: true,
+        detail: { key: header.dataset.uiDatatableSortKey ?? String(columnIndex), columnIndex, direction: nextDirection }
+      }))
     })
   }
 

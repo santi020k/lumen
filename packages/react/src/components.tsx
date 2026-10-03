@@ -40,6 +40,7 @@ import {
   createLumenPieGeometry,
   createLumenRangeGeometry,
   createLumenScatterGeometry,
+  createLumenScatterReferences,
   formatLumenChartSummary,
   formatLumenLanguageLabel,
   formatLumenPhoneNumber,
@@ -58,9 +59,9 @@ import {
   hasLumenPieData,
   type LumenBarChartLayout,
   type LumenChartDatum,
+  type LumenChartDomain,
   type LumenChartLabels,
   type LumenChartOrientation,
-  type LumenChartScaleType,
   type LumenChartSeries,
   type LumenChartTone,
   type LumenCodeToken,
@@ -80,6 +81,8 @@ import {
   type LumenPhoneNumber,
   type LumenPieChartVariant,
   type LumenRangeDatum,
+  type LumenScatterReference,
+  type LumenScatterScaleType,
   type LumenTabsChangeDetail,
   normalizeLumenFormErrors,
   resolveLumenChartLabels,
@@ -190,32 +193,6 @@ type IconSize = 'default' | 'lg' | 'sm' | 'xl'
 
 const getChartCategoryKey = (value: number | string): string => `${typeof value}:${String(value)}`
 
-export type DataTableCell =
-  | boolean |
-  null |
-  number |
-  string |
-  undefined |
-  {
-    label?: boolean | null | number | string
-    sortValue?: boolean | null | number | string
-    value?: boolean | null | number | string
-  }
-
-export interface DataTableColumn {
-  header?: string
-  key: string
-  label?: string
-  sort?: 'number' | 'string'
-  sortable?: boolean
-}
-
-export type DataTableRow = Record<string, DataTableCell> & {
-  id?: number | string
-  rowValue?: number | string
-  value?: number | string
-}
-
 type MessageFrom = 'assistant' | 'user'
 
 type MarkerVariant = 'danger' | 'default' | 'success' | 'warning'
@@ -254,8 +231,6 @@ export interface Option {
 type SelectOption = Option | string
 
 const emptyOptions: SelectOption[] = []
-const emptyDataTableColumns: DataTableColumn[] = []
-const emptyDataTableRows: DataTableRow[] = []
 const emptyChartSeries: LumenChartSeries[] = []
 const emptyHeatmapData: LumenHeatmapDatum[] = []
 const emptyRangeData: LumenRangeDatum[] = []
@@ -297,54 +272,6 @@ const glassClass = (base: string, glass?: LumenGlassProp) => Boolean(glass) &&
   composeClassName(`${base}--glass`, glassIntensityClass(glass))
 
 const normalizeOption = (option: SelectOption): Option => typeof option === 'string' ? { label: option, value: option } : option
-
-const isDataTableCellObject = (
-  cell: DataTableCell
-): cell is Exclude<
-  DataTableCell,
-  boolean | null | number | string | undefined
-> => typeof cell === 'object' && cell !== null
-
-const formatDataTableCell = (cell: DataTableCell): string => {
-  const value = isDataTableCellObject(cell) ? (cell.label ?? cell.value) : cell
-
-  return value === undefined || value === null ? '' : String(value)
-}
-
-const getDataTableSortValue = (cell: DataTableCell): string | undefined => {
-  if (
-    !isDataTableCellObject(cell) ||
-    cell.sortValue === undefined ||
-    cell.sortValue === null
-  )
-    return undefined
-
-  return String(cell.sortValue)
-}
-
-const compareDataTableCells = (
-  left: DataTableCell,
-  right: DataTableCell,
-  sortType: DataTableColumn['sort']
-): number => {
-  const leftValue = getDataTableSortValue(left) ?? formatDataTableCell(left)
-  const rightValue = getDataTableSortValue(right) ?? formatDataTableCell(right)
-
-  if (sortType === 'number') {
-    return Number(leftValue.replaceAll(',', '')) -
-      Number(rightValue.replaceAll(',', ''))
-  }
-
-  return leftValue.localeCompare(rightValue, undefined, {
-    numeric: true,
-    sensitivity: 'base'
-  })
-}
-
-const getDataTableRowValue = (
-  row: DataTableRow,
-  index: number
-): string => String(row.rowValue ?? row.value ?? row.id ?? index)
 
 const toInputValue = (
   value: ComponentPropsWithoutRef<'input'>['value']
@@ -1481,18 +1408,41 @@ export const PieChart = ({
   )
 }
 
+const emptyScatterReferences: readonly LumenScatterReference[] = []
+
 export interface ScatterChartProps extends Omit<ChartProps, 'children'> {
   formatValue?: (value: number) => string
+  formatX?: (value: number | string) => string
+  formatY?: (value: number) => string
+  xDomain?: Partial<LumenChartDomain>
+  domain?: Partial<LumenChartDomain>
+  references?: readonly LumenScatterReference[]
   labels?: Partial<LumenChartLabels>
   series?: readonly LumenChartSeries[]
   showLegend?: boolean
   showTable?: boolean
-  xScale?: Exclude<LumenChartScaleType, 'categorical'>
+  xScale?: LumenScatterScaleType
+}
+
+const ScatterPlotClip = ({ children, width, height }: { children: ReactNode, width: number, height: number }) => {
+  const plotId = useId()
+
+  return (
+    <>
+      <defs><clipPath id={plotId}><rect x="44" y="44" width={width - 88} height={height - 88} /></clipPath></defs>
+      <g clipPath={`url(#${plotId})`}>{children}</g>
+    </>
+  )
 }
 
 export const ScatterChart = ({
   className,
   formatValue = String,
+  formatX = String,
+  formatY = formatValue,
+  xDomain,
+  domain,
+  references = emptyScatterReferences,
   labels,
   series = emptyChartSeries,
   showLegend = series.length > 1,
@@ -1502,7 +1452,12 @@ export const ScatterChart = ({
   ...props
 }: ScatterChartProps) => {
   const resolvedLabels = resolveLumenChartLabels(labels)
-  const geometry = createLumenScatterGeometry(series, { xScale })
+
+  const geometry = createLumenScatterGeometry(series, {
+    xScale, ...(xDomain ? { xDomain } : {}), ...(domain ? { domain } : {})
+  })
+
+  const referenceGeometry = createLumenScatterReferences(references, geometry, xScale)
 
   const renderedSeries = series.map(item => ({
     ...item,
@@ -1512,20 +1467,46 @@ export const ScatterChart = ({
   const hasData = geometry.points.length > 0
 
   return (
-    <Chart className={composeClassName('ui-scatter-chart', className)} summary={summary ?? formatLumenChartSummary(renderedSeries, formatValue, resolvedLabels)} {...props}>
+    <Chart className={composeClassName('ui-scatter-chart', className)} summary={summary ?? formatLumenChartSummary(renderedSeries, formatY, resolvedLabels)} {...props}>
       {showLegend && hasData && <ChartLegend label={resolvedLabels.chartLegend} series={series} />}
       {!hasData && <p className="ui-chart__empty" role="status">{resolvedLabels.empty}</p>}
       <div aria-label={resolvedLabels.chartData} className="ui-chart__plot" role="region" tabIndex={0} hidden={!hasData}>
         <svg aria-hidden="true" viewBox={`0 0 ${geometry.width} ${geometry.height}`}>
-          <g className="ui-scatter-chart__marks">
-            {geometry.points.map((point, pointIndex) => (
-              <circle className={getLumenChartToneClassName(point.tone)} cx={point.xCoordinate} cy={point.yCoordinate} key={`${point.seriesId}:${point.id ?? `${getChartCategoryKey(point.x)}:${pointIndex}`}`} r={point.radius}>
-                <title>{`${point.xLabel ?? point.x} · ${point.seriesLabel}: ${point.label ?? formatValue(point.y ?? 0)}`}</title>
-              </circle>
-            ))}
-          </g>
+          <ScatterPlotClip width={geometry.width} height={geometry.height}>
+            <g className="ui-scatter-chart__references">
+              {referenceGeometry.map(reference => reference.region ?
+                (
+                  <rect
+                    key={reference.id}
+                    x={Math.min(reference.x1, reference.x2)}
+                    y={Math.min(reference.y1, reference.y2)}
+                    width={Math.abs(reference.x2 - reference.x1)}
+                    height={Math.abs(reference.y2 - reference.y1)}
+                  >
+                    <title>{reference.label}</title>
+                  </rect>
+                ) :
+                (
+                  <line key={reference.id} x1={reference.x1} x2={reference.x2} y1={reference.y1} y2={reference.y2}>
+                    <title>{reference.label}</title>
+                  </line>
+                ))}
+            </g>
+            <g className="ui-scatter-chart__marks">
+              {geometry.points.map((point, pointIndex) => (
+                <circle className={getLumenChartToneClassName(point.tone)} cx={point.xCoordinate} cy={point.yCoordinate} key={`${point.seriesId}:${point.id ?? `${getChartCategoryKey(point.x)}:${pointIndex}`}`} r={point.radius}>
+                  <title>{`${point.xLabel ?? formatX(point.x)} · ${point.seriesLabel}: ${point.label ?? formatY(point.y ?? 0)}`}</title>
+                </circle>
+              ))}
+            </g>
+          </ScatterPlotClip>
         </svg>
       </div>
+      {referenceGeometry.length > 0 && (
+        <ul className="ui-scatter-chart__reference-labels">
+          {referenceGeometry.map(reference => <li key={reference.id}>{reference.label}</li>)}
+        </ul>
+      )}
       {showTable && hasData && (
         <details className="ui-chart__data">
           <summary>{resolvedLabels.viewData}</summary>
@@ -1542,9 +1523,9 @@ export const ScatterChart = ({
               <tbody>
                 {geometry.points.map((point, pointIndex) => (
                   <tr key={`${point.seriesId}:${point.id ?? `${getChartCategoryKey(point.x)}:${pointIndex}`}`}>
-                    <th scope="row">{point.xLabel ?? point.x}</th>
+                    <th scope="row">{point.xLabel ?? formatX(point.x)}</th>
                     <td>{point.seriesLabel}</td>
-                    <td>{point.label ?? formatValue(point.y ?? 0)}</td>
+                    <td>{point.label ?? formatY(point.y ?? 0)}</td>
                     <td>
                       {formatReactChartTableValue(point.size, formatValue, resolvedLabels.notAvailable)}
                     </td>
@@ -2217,148 +2198,6 @@ export const ColorPicker = ({
   />
 )
 
-export interface DataTableSort {
-  direction: 'ascending' | 'descending'
-  key: string
-}
-
-const resolveDataTableSort = (
-  controlled: DataTableSort | null | undefined,
-  fallback: DataTableSort | null
-): DataTableSort | null => controlled === undefined ? fallback : controlled
-
-export interface DataTableProps extends ComponentPropsWithoutRef<'div'> {
-  columns?: DataTableColumn[]
-  defaultSort?: DataTableSort | null
-  glass?: LumenGlassProp
-  name?: string
-  onSortChange?: (sort: DataTableSort | null) => void
-  rows?: DataTableRow[]
-  sort?: DataTableSort | null
-  sortMode?: 'client' | 'manual'
-  selectable?: boolean
-}
-export const DataTable = ({
-  children,
-  className,
-  columns = emptyDataTableColumns,
-  defaultSort = null,
-  glass = false,
-  name,
-  onSortChange,
-  rows = emptyDataTableRows,
-  sort: controlledSort,
-  sortMode = 'client',
-  selectable = false,
-  ...props
-}: DataTableProps) => {
-  const [uncontrolledSort, setUncontrolledSort] = useState<DataTableSort | null>(defaultSort)
-  const sort = resolveDataTableSort(controlledSort, uncontrolledSort)
-
-  const sortedRows = useMemo(() => {
-    if (sortMode === 'manual' || !sort) return rows
-
-    const column = columns.find(candidate => candidate.key === sort.key)
-
-    if (!column) return rows
-
-    const direction = sort.direction === 'ascending' ? 1 : -1
-
-    return [...rows].sort((left, right) => compareDataTableCells(
-      left[column.key], right[column.key], column.sort
-    ) * direction)
-  }, [columns, rows, sort, sortMode])
-
-  const toggleSort = (column: DataTableColumn): void => {
-    const next: DataTableSort = {
-      direction: sort?.key === column.key && sort.direction === 'ascending' ? 'descending' : 'ascending',
-      key: column.key
-    }
-
-    if (controlledSort === undefined) setUncontrolledSort(next)
-
-    onSortChange?.(next)
-  }
-
-  return (
-    <div
-      className={composeClassName(
-        'ui-data-table', glassClass('ui-data-table', glass), className
-      )}
-      data-ui-datatable
-      data-ui-datatable-name={name}
-      data-ui-datatable-sort-mode={sortMode}
-      data-ui-datatable-selectable={selectable ? 'true' : undefined}
-      data-ui-glass-track={glass ? true : undefined}
-      {...props}
-    >
-      {columns.length > 0 ?
-        (
-          <table>
-            <thead>
-              <tr>
-                {columns.map(column => {
-                  const direction = sort?.key === column.key ?
-                    sort.direction :
-                    undefined
-
-                  const label = column.header ?? column.label ?? column.key
-
-                  return (
-                    <th
-                      aria-sort={direction ?? (column.sortable ? 'none' : undefined)}
-                      data-ui-datatable-sort-bound="true"
-                      data-ui-datatable-sort-type={column.sort}
-                      data-ui-datatable-sortable={
-                        column.sortable ? 'true' : undefined
-                      }
-                      key={column.key}
-                      scope="col"
-                    >
-                      {column.sortable ?
-                        (
-                          <button
-                            className="ui-data-table__sort"
-                            data-ui-datatable-sort
-                            onClick={() => {
-                              toggleSort(column)
-                            }}
-                            type="button"
-                          >
-                            {label}
-                          </button>
-                        ) :
-                        label}
-                    </th>
-                  )
-                })}
-              </tr>
-            </thead>
-            <tbody>
-              {sortedRows.map((row, rowIndex) => (
-                <tr
-                  data-ui-datatable-row
-                  data-value={getDataTableRowValue(row, rowIndex)}
-                  key={getDataTableRowValue(row, rowIndex)}
-                >
-                  {columns.map(column => (
-                    <td
-                      data-sort-value={getDataTableSortValue(row[column.key])}
-                      key={column.key}
-                    >
-                      {formatDataTableCell(row[column.key])}
-                    </td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        ) :
-        children}
-    </div>
-  )
-}
-
 export type DatePickerProps = Omit<
   ComponentPropsWithoutRef<'input'>,
   'defaultValue' | 'type' | 'value'
@@ -2794,13 +2633,17 @@ export type DropdownMenuProps = ComponentPropsWithoutRef<'menu'> &
 export const DropdownMenu = ({
   children,
   className,
+  collisionPadding,
   defaultOpen,
   glass = false,
+  offset,
   onOpenChange,
   open,
+  placement,
+  positioning,
   ...props
 }: DropdownMenuProps) => {
-  const menu = useDropdownMenu({ defaultOpen, onOpenChange, open })
+  const menu = useDropdownMenu({ collisionPadding, defaultOpen, offset, onOpenChange, open, placement, positioning })
 
   return (
     <DropdownMenuContext.Provider value={menu}>
@@ -4315,13 +4158,17 @@ export type PopoverProps = ComponentPropsWithoutRef<'div'> &
 export const Popover = ({
   children,
   className,
+  collisionPadding,
   defaultOpen,
   glass = false,
+  offset,
   onOpenChange,
   open,
+  placement,
+  positioning,
   ...props
 }: PopoverProps) => {
-  const popover = usePopover({ defaultOpen, onOpenChange, open })
+  const popover = usePopover({ collisionPadding, defaultOpen, offset, onOpenChange, open, placement, positioning })
 
   return (
     <PopoverContext.Provider value={popover}>
@@ -4340,7 +4187,7 @@ export const Popover = ({
   )
 }
 
-export type PopoverTriggerProps = ComponentPropsWithoutRef<'button'>
+export type PopoverTriggerProps = ButtonProps
 export const PopoverTrigger = ({
   onClick,
   onKeyDown,
@@ -4349,7 +4196,7 @@ export const PopoverTrigger = ({
   const popover = requireContext(useContext(PopoverContext), 'PopoverTrigger')
 
   return (
-    <button
+    <Button
       {...popover.triggerProps}
       {...props}
       onClick={composeHandlers(onClick, popover.triggerProps.onClick)}
@@ -4360,13 +4207,14 @@ export const PopoverTrigger = ({
 }
 
 export type PopoverPanelProps = ComponentPropsWithoutRef<'div'>
-export const PopoverPanel = ({ onKeyDown, ...props }: PopoverPanelProps) => {
+export const PopoverPanel = ({ className, onKeyDown, ...props }: PopoverPanelProps) => {
   const popover = requireContext(useContext(PopoverContext), 'PopoverPanel')
 
   return (
     <div
       {...popover.panelProps}
       {...props}
+      className={composeClassName('ui-popover__panel', className)}
       onKeyDown={composeHandlers(onKeyDown, popover.panelProps.onKeyDown)}
     />
   )

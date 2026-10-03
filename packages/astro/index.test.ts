@@ -145,7 +145,7 @@ describe('@santi020k/lumen-astro package surface', () => {
 
     expect(scatter).toContain('const hasData = geometry.points.length > 0')
     expect(scatter).toContain(
-      'formatLumenChartSummary(projectedSeries, formatValue, resolvedLabels)'
+      'formatLumenChartSummary(projectedSeries, formatY, resolvedLabels)'
     )
     expect(scatter).toContain('data: geometry.points.filter(point => point.seriesId === item.id)')
     expect(scatter).toContain('filter(item => item.data.length > 0)')
@@ -1021,7 +1021,7 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(runtime).toContain(
       'const initDataTables = (scope: ParentNode): void =>'
     )
-    expect(runtime).toContain('header.setAttribute(\'aria-sort\', \'none\')')
+    expect(runtime).toContain('header.setAttribute(\'aria-sort\', header.getAttribute(\'aria-sort\') ?? \'none\')')
     expect(runtime).toContain(
       'root.dispatchEvent(new CustomEvent(\'ui:data-table-selection-change\''
     )

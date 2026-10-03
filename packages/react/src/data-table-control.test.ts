@@ -4,7 +4,7 @@ import { createRoot, type Root } from 'react-dom/client'
 
 import { afterEach, beforeEach, expect, test, vi } from 'vitest'
 
-import { DataTable, type DataTableProps, type DataTableSort } from './components.js'
+import { DataTable, type DataTableProps, type DataTableSort } from './index.js'
 
 let container: HTMLDivElement
 let root: Root

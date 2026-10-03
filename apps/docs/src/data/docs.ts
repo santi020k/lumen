@@ -1568,6 +1568,11 @@ const apiReferenceByComponent = {
     apiRow('type', 'HTML input type', '"color"', 'Sets the native input type.')
   ],
   DataTable: [
+    apiRow('layout', '"records" | "scroll"', '"scroll"', 'Opt-in responsive record labels; rich authored Table children remain available.'),
+    apiRow('sortMode', '"client" | "manual"', '"client"', 'Manual mode requests host sorting and preserves supplied server order.'),
+    apiRow('column.render, renderDetails', 'React render callbacks', '-', 'Renders rich cells and stable record details without changing sort values.'),
+    apiRow('expandedRowIds, onExpandedRowIdsChange', 'controlled React expansion', '-', 'Preserves expansion by stable record ID across pages.'),
+    apiRow('DataTableSortControls', 'React component', '-', 'Shares controlled sort state with headers for a visible mobile sort path.'),
     apiRow(
       'columns', 'DataTableColumn[]', '[]', 'Generates table headers and maps row cells by column key when rows are provided.'
     ),
@@ -2106,6 +2111,9 @@ const apiReferenceByComponent = {
     )
   ],
   ScatterChart: [
+    apiRow('formatX, formatY', 'formatter callbacks', 'String, formatValue', 'Formats independent units without altering numeric geometry.'),
+    apiRow('xDomain, domain', 'Partial<LumenChartDomain>', 'derived', 'Provides explicit X and Y bounds; log X requires positive increasing values.'),
+    apiRow('references', 'readonly LumenScatterReference[]', '[]', 'Draws labeled reference lines or regions using the same scales as points.'),
     apiRow(
       'series', 'LumenChartSeries[]', '[]', 'Provides x/y points with optional labels and bubble sizes.'
     ),
@@ -2779,6 +2787,16 @@ const apiReferenceByComponent = {
     apiRow(
       'align, justify, wrap', 'layout props', 'stretch, start, false', 'Controls cross-axis alignment, distribution, and wrapping.'
     )
+  ],
+  ChangeSummary: [
+    apiRow('items', 'readonly LumenChangeSummaryItem[]', '[]', 'Explicit IDs, labels, before/after display values, and application-owned changed state.'),
+    apiRow('label, summary', 'string', 'Changes, optional', 'Names the comparison and supplies localized count text.'),
+    apiRow('beforeLabel, afterLabel, changedLabel, unchangedLabel', 'string', 'English labels', 'Localizes the visible comparison labels.')
+  ],
+  FilterBar: [
+    apiRow('label, resultLabel', 'string', 'Filters, optional', 'Names filters and announces a complete localized result count.'),
+    apiRow('pending, open', 'boolean', 'false, true', 'Marks pending results and controls the native disclosure.'),
+    apiRow('default slot, active slot, actions slot', 'content', 'optional', 'Composes public search/select controls, removable filters, and reset actions. The application owns requests and persistence.')
   ],
   VisuallyHidden: [
     apiRow(
@@ -4150,6 +4168,18 @@ export const componentDocs: ComponentDoc[] = (
       'Layout',
       'Keeps meaningful content available to assistive technology without displaying it.',
       '<Button><Icon name="search" decorative /><VisuallyHidden>Search</VisuallyHidden></Button>'
+    ],
+    [
+      'ChangeSummary',
+      'Data display',
+      'Compares explicit current and proposed values before a user confirms a change.',
+      '<ChangeSummary label="Review changes" items={[{ id: "owner", label: "Owner", before: "Alice", after: "Bob", changed: true }]} />'
+    ],
+    [
+      'FilterBar',
+      'Data display',
+      'Composes dashboard filtering, active criteria, and result announcements without owning queries.',
+      '<FilterBar label="Filters" resultLabel="12 records"><SearchField aria-label="Search records" /></FilterBar>'
     ]
   ] as const satisfies readonly ComponentDocTuple[]
 ).map(([name, category, summary, example]) => ({

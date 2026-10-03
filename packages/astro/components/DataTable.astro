@@ -33,6 +33,8 @@ interface Props extends HTMLAttributes<'div'> {
   class?: string | null
   className?: string
   columns?: DataTableColumn[]
+  layout?: 'records' | 'scroll'
+  sortMode?: 'client' | 'manual'
   glass?: boolean | 'subtle' | 'strong'
   name?: string
   rows?: DataTableRow[]
@@ -44,6 +46,8 @@ const {
   className = '',
   columns = [],
   glass = false,
+  layout = 'scroll',
+  sortMode = 'client',
   name,
   rows = [],
   selectable = false,
@@ -80,17 +84,20 @@ const getRowValue = (row: DataTableRow, index: number): string => String(row.row
   class:list={classList}
   data-ui-datatable
   data-ui-datatable-name={name}
+  data-ui-datatable-sort-mode={sortMode}
+  data-layout={layout}
   data-ui-datatable-selectable={selectable ? 'true' : undefined}
   data-ui-glass-track={glass ? true : undefined}
   {...passthrough}
 >
   {hasData ?
     (
-      <table>
-        <thead>
-          <tr>
+      <table class="ui-table" data-layout={layout} role="table">
+        <thead role="rowgroup">
+          <tr role="row">
             {columns.map(column => (
               <th
+                data-ui-datatable-sort-key={column.key}
                 data-ui-datatable-sort-type={column.sort}
                 data-ui-datatable-sortable={column.sortable ? 'true' : undefined}
                 scope="col"
@@ -100,15 +107,16 @@ const getRowValue = (row: DataTableRow, index: number): string => String(row.row
             ))}
           </tr>
         </thead>
-        <tbody>
+        <tbody role="rowgroup">
           {rows.map((row, rowIndex) => (
-            <tr data-ui-datatable-row data-value={getRowValue(row, rowIndex)}>
+            <tr role="row" data-ui-datatable-row data-value={getRowValue(row, rowIndex)}>
               {columns.map(column => {
                 const cell = row[column.key]
 
                 return (
-                  <td data-sort-value={getSortValue(cell)}>
-                    {formatCell(cell)}
+                  <td role="cell" data-sort-value={getSortValue(cell)}>
+                    {layout === 'records' && <span class="ui-table__label" aria-hidden="true">{column.header ?? column.label ?? column.key}</span>}
+                    <div class="ui-table__value">{formatCell(cell)}</div>
                   </td>
                 )
               })}

@@ -620,6 +620,24 @@ const reactHookByComponent = {
 }
 
 const elementsExampleOverrides = {
+  ChangeSummary: `<lumen-change-summary id="review" label="Review changes"></lumen-change-summary>
+<script>
+  import { defineLumenChangeSummary, LumenChangeSummaryElement } from '@santi020k/lumen-elements/components/dashboard'
+  defineLumenChangeSummary()
+  const review = document.getElementById('review')
+  if (review instanceof LumenChangeSummaryElement) {
+    review.items = [
+      { id: 'owner', label: 'Owner', before: 'Alice', after: 'Bob', changed: true }
+    ]
+  }
+</script>`,
+  FilterBar: `<lumen-filter-bar aria-label="Filters">
+  <details open><summary>Filters</summary>
+    <div class="ui-filter-bar__controls"><lumen-search-field aria-label="Search records"></lumen-search-field></div>
+  </details>
+  <div class="ui-filter-bar__active"><lumen-button aria-label="Remove status: Active">Status: Active ×</lumen-button></div>
+  <p role="status" aria-live="polite" aria-atomic="true">12 matching records</p>
+</lumen-filter-bar>`,
   ImageComparison: `<lumen-image-comparison label="Compare the landscape treatment" before-label="Original" after-label="Color adjusted" ratio="1.6" value="50">
   <img slot="before" alt="Original landscape illustration" src="/comparison-before.svg" width="960" height="600" />
   <img slot="after" alt="Color-adjusted landscape illustration" src="/comparison-after.svg" width="960" height="600" />
@@ -887,15 +905,19 @@ const loadWorkspaceFiles = async p => ({
     await readIfExists(p('packages/elements/src/components/button.ts')),
     await readIfExists(p('packages/elements/src/components/card.ts')),
     await readIfExists(p('packages/elements/src/components/combobox.ts')),
-    await readIfExists(p('packages/elements/src/components/image-comparison.ts'))
+    await readIfExists(p('packages/elements/src/components/image-comparison.ts')),
+    await readIfExists(p('packages/elements/src/components/dashboard.ts'))
   ].join('\n'),
   reactSource: [
     await readIfExists(p('packages/react/src/components.tsx')),
+    await readIfExists(p('packages/react/src/data-table.tsx')),
     await readIfExists(p('packages/react/src/server-components.tsx')),
     await readIfExists(p('packages/react/src/image-comparison.tsx')),
     await readIfExists(p('packages/react/src/virtual-list.tsx')),
     await readIfExists(p('packages/react/src/virtual-list-data.tsx')),
-    await readIfExists(p('packages/react/src/combobox.tsx'))
+    await readIfExists(p('packages/react/src/combobox.tsx')),
+    await readIfExists(p('packages/react/src/change-summary.tsx')),
+    await readIfExists(p('packages/react/src/dashboard.tsx'))
   ].join('\n'),
   readme: await readIfExists(p('README.md')),
   rules: await readIfExists(p('llms.txt')),
