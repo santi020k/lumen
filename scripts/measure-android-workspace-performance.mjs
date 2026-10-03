@@ -82,7 +82,7 @@ assert.equal((await shell('sha256sum', installedPath)).split(' ')[0], apkSha256,
 const launch = async () => {
   await shell('am', 'force-stop', packageName)
 
-  return shell('am', 'start', '-W', '--activity-clear-task', '--activity-new-task', '-n', component, '--es', 'destination', 'examples')
+  return shell('am', 'start', '-W', '--activity-clear-task', '-n', component, '--es', 'destination', 'examples')
 }
 
 const startup = []
