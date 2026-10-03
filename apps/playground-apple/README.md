@@ -57,8 +57,9 @@ device, signing, and TestFlight workflow.
 ## Workspace runtime tests
 
 The separate `LumenApplePlaygroundPerformance` scheme runs Release-mode UI tests for responsive
-application launch, list scrolling and saving long notes while the keyboard is visible. Its test
-runner requires iOS 17 or later; the playground application's iOS 16 minimum is unchanged.
+application launch, list scrolling and saving long notes while the keyboard is visible. The test
+requests scrolling-hitch measurements on iOS 26 or later alongside the scrolling duration.
+Its runner requires iOS 17 or later; the playground application's iOS 16 minimum is unchanged.
 See [native runtime performance](../../docs/native-runtime-performance.md) for the local command,
 metric interpretation and result-bundle inspection. This scheme does not change archive or
 distribution schemes.

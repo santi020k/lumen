@@ -70,12 +70,16 @@ Archive and distribution schemes are separate.
 
 The tests collect five responsive-launch samples with `XCTApplicationLaunchMetric` and five
 scrolling samples with `XCTOSSignpostMetric.scrollingAndDecelerationMetric`. XCTest discards its
-initial warm-up iteration. Launch measurement ends at the first responsive frame, rather than
+initial warm-up iteration. On iOS 26 or later the scrolling test also requests Apple's
+[`XCTHitchMetric`](https://developer.apple.com/documentation/xctest/xcthitchmetric) for the tested
+application; earlier runtimes retain duration measurement. Launch measurement ends at the first responsive frame, rather than
 complete workflow readiness. Scrolling setup and navigation occur outside the measured interval;
 the test also verifies that the list moved. Inspect the actual metrics in the result bundle:
 a green test without frame measurements does not establish a scrolling performance budget.
-The initial iPad Simulator bundle exposed scroll duration only, without frame or hitch counts;
-frame-smoothness qualification therefore remains pending.
+Both the initial iPad Simulator run and the later run explicitly requesting `XCTHitchMetric`
+exposed scroll duration only, without frame or hitch counts. A requested metric is not a collected
+metric; verify that the result bundle contains hitch samples before using it for frame-smoothness
+qualification, which remains pending.
 The keyboard test types and saves a long note, checks the rendered saved value and keeps screenshots.
 
 These are local Simulator checks. Repeat on representative phone and tablet layouts and preserve

@@ -109,6 +109,16 @@ unfinished frames, timestamp precision, duplicate rows, malformed bounds and fut
 Run `pnpm run measure:android-workspace --serial <device>` from a clean committed checkout.
 See [runtime performance](native-runtime-performance.md) for setup, raw artifacts and limitations.
 
+### Apple scrolling hitch fixture
+
+The scrolling test now requests `XCTHitchMetric(application:)` on iOS 26 or later in addition to
+scroll/deceleration duration, retaining duration measurement on earlier supported runtimes. The
+focused Release-mode test passed on the iPad iOS 27 Simulator with five duration samples averaging
+2.567 seconds. Its result bundle contains no hitch measurements even though that metric was
+requested. This is not a frame-smoothness pass. The built application, test source and raw metric
+report are preserved locally under `.build/native-quality-apple-hitch-ipad*`, based on `0ea68b5b`
+plus the UI-test change. Physical-device hitch collection remains required.
+
 ### React Native native-host preparation
 
 A temporary Android host was generated from candidate `5444fada` using the installed Expo SDK
