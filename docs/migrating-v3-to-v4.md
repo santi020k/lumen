@@ -30,8 +30,26 @@ Astro still imports its default runtime from `@santi020k/lumen-astro/runtime`; R
 matching stylesheet and existing integration setup. Check adapter manifests and the
 [native compatibility matrix](native-compatibility.md) for runtime and peer constraints.
 
-There is no v3/v4 source codemod. `lumen migrate v2` is only for v1 → v2 contracts. Use the manual
-changes below, then run the consumer's diagnostics, build, and interaction tests.
+The v4 umbrella CLI provides a conservative source migration preview:
+
+```sh
+lumen migrate v4 --dry-run
+lumen migrate v4 --apply
+```
+
+It rewrites literal Stack/Grid gaps from v3 `md`/`lg`/`xl` to v4 `group`/`xl`/`2xl`, including
+import aliases. Dynamic values, spreads, application CSS, component behavior and native contracts
+need manual review. Source-only migration supports applications using any package manager.
+
+Add `--dependencies` to inventory or, with `--apply`, upgrade the coordinated npm family to
+`4.0.0` through the existing pnpm rollout. That path uses a clean consumer checkout and its declared
+pnpm version; other package managers use the dependency commands above. Installs precede source
+rewrites, and a failed dependency command stops the source phase. Native pins remain application-owned.
+
+Commit `.lumen/migrations-v4.json` with applied source changes. It prevents repeated gap rewrites;
+later edits to migrated files require manual review. The command does not replace the checklist
+below or the consumer's diagnostics, build, and interaction tests. `lumen migrate v2` continues to
+handle only the earlier v1 → v2 contracts.
 
 
 ## Content flow and layout spacing
@@ -149,6 +167,9 @@ Nested controls consume their own Escape dismissal. Parent keyboard handlers sho
   endpoints are inclusive; an empty list reports `endIndex: -1`. Update consumers that interpreted
   the endpoint as exclusive. Verify changing rows, resized containers, retained row focus, and
   cleanup. Use a list suited to variable-height content rather than assuming rows are measured.
+  The default mode preserves mounted DOM state. Opt-in [data rendering](virtual-list-data.md)
+  mounts only visible rows and focused neighbors; keep offscreen application state outside row
+  components and use stable unique keys. It is optional for existing consumers.
 - An external rich-text engine must execute commands during the cancelable
   `ui:editor-command-request` event, call `preventDefault()`, and set `detail.executed` to its
   synchronous success result. React can supply `commandHandler` to `useRichTextEditor` instead.

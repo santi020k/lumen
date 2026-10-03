@@ -4,6 +4,24 @@ This working record tracks the local `release/v4.0.0` candidate. It is not publi
 production qualification evidence. Consumer audits inspect application source; application
 data, deployment, and migration remain owned by those projects.
 
+## Migration and web release improvements
+
+The v4 CLI adds `lumen migrate v3` and `lumen migrate v4`, with previews by default and optional
+coordinated pnpm dependency updates. V3 does not invent web rewrites; v4 preserves literal layout
+gaps and records output fingerprints to prevent repeated spacing rewrites. Both report native and
+application-owned review boundaries. The versioned migration guides and website describe those paths.
+
+Inherited RTL arrows now follow visual direction in tabs, calendars and horizontal pane resizing
+across web adapters; pointer resizing follows the same direction. Native sliders keep browser behavior.
+VirtualList adds optional bounded data rendering with stable keys, scroll extent, focus retention,
+and shared Astro/Elements lifecycle control. Mounted mode remains the default. The mobile docs scope
+selector leaves enough room for the complete active link.
+
+The scoped Changeset was consumed through the configured generator in a scratch workspace, and its
+notes were folded into the unpublished 4.0.0 changelogs. Public versions and prior release history
+remain unchanged. These improvements do not replace the security, approval or native qualification
+gates documented below.
+
 ## October 3 branch consolidation
 
 The release checkout's pending component, phone, flag, and documentation work is preserved in

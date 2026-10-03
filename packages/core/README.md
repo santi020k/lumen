@@ -237,3 +237,19 @@ Licensed under [MIT](https://github.com/santi020k/lumen/blob/main/LICENSE); thir
 It preserves editing focus, observes option changes and supports delegated selection. It returns
 `close()` and `destroy()`; call `destroy()` when the owner disconnects. Astro and Elements manage
 that lifecycle automatically. React uses its state-driven component with the same keyboard contract.
+
+## Virtual collections and direction
+
+`createLumenVirtualCollectionController(root, { items, getKey, renderItem, itemSize, overscan })`
+owns an empty data-mode VirtualList root. It mounts only visible rows and focused neighbors, retains
+stable keyed wrappers, and returns `update(items)` and `destroy()`. Declare data mode before the
+Astro or Elements runtime initializes. See [data rendering](../../docs/virtual-list-data.md) for
+setup, state ownership and lifecycle examples.
+
+`getLumenVirtualWindow` calculates a fixed-height window with optional disjoint focus retention.
+`observeLumenVirtualWindow` observes scroll, resize and focus; its handle provides `update()` and
+`destroy()`. Applications using these lower-level helpers own row rendering and cleanup.
+
+`getLumenDirectionalKey(element, key)` resolves the element's current inherited CSS direction and
+swaps horizontal arrows in RTL. Other keys are unchanged. Web adapters use it for visual keyboard
+navigation; native range inputs retain browser-owned behavior.
