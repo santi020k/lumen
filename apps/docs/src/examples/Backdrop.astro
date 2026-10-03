@@ -8,7 +8,7 @@ import {
 const variants = ['aurora', 'dots', 'grid', 'rays'] as const
 ---
 
-<Grid columns="auto" gap="lg" minItemWidth="13rem">
+<Grid columns="auto" gap="xl" minItemWidth="13rem">
   {variants.map(variant => (
     <Backdrop style="border-radius:0.75rem;min-height:10rem" tone={variant === 'dots' ? 'accent' : 'brand'} variant={variant}>
       <Card style="margin:2rem;padding:1rem" variant="glass">

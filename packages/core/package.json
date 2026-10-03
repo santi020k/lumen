@@ -73,6 +73,7 @@
     "dist",
     "README.md",
     "LICENSE",
+    "PHONE_FLAG_LICENSE.txt",
     "THIRD_PARTY_NOTICES.md"
   ],
   "scripts": {
@@ -91,6 +92,7 @@
   },
   "devDependencies": {
     "@vitest/coverage-v8": "catalog:",
+    "jsdom": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:"
   },

@@ -6,25 +6,26 @@ import {
   CardDescription,
   CardFooter,
   CardHeader,
-  CardTitle
+  CardTitle,
+  Grid
 } from '@santi020k/lumen-astro'
 ---
 
-<div style="display: grid; gap: 0.75rem; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));">
+<Grid gap="group" minItemWidth="14rem">
   <Card>
-    <h3>Starter</h3>
-    <p>For personal projects and prototypes.</p>
-    <Button size="sm">Choose plan</Button>
+    <CardHeader>
+      <CardTitle as="h3">Starter</CardTitle>
+      <CardDescription>For personal projects and prototypes.</CardDescription>
+    </CardHeader>
+    <CardFooter><Button size="sm">Choose plan</Button></CardFooter>
   </Card>
-  <Card variant="muted">
-    <h3>Muted</h3>
-    <p>A quieter surface for secondary content.</p>
+  <Card variant="muted" density="compact">
+<CardHeader><CardTitle as="h3">Muted</CardTitle><CardDescription>A quieter surface for secondary content.</CardDescription></CardHeader>
   </Card>
   <Card as="article" variant="interactive">
-    <h3>Interactive</h3>
-    <p>Hover and focus styles for clickable cards.</p>
+<CardHeader><CardTitle as="h3">Interactive</CardTitle><CardDescription>Hover and focus styles for clickable cards.</CardDescription></CardHeader>
   </Card>
-  <Card variant="glass">
+  <Card variant="glass" density="spacious">
     <CardHeader>
       <CardTitle as="h3">Compound glass card</CardTitle>
       <CardDescription>Stable public parts avoid implementation selectors.</CardDescription>
@@ -35,4 +36,4 @@ import {
   <Card variant="unstyled">
     <CardContent>Unstyled preserves semantics and stable hooks without a surface.</CardContent>
   </Card>
-</div>
+</Grid>

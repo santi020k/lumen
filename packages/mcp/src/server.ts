@@ -92,6 +92,8 @@ const tokensOutputSchema = z.strictObject({
     colors: z.record(z.string(), z.string().trim()),
     glass: z.record(z.string(), z.string().trim()),
     semantic: z.array(z.string().trim()),
+    spacing: z.record(z.string(), z.number().nonnegative()),
+    spacingRoles: z.record(z.string(), z.string().trim()),
     themeAttribute: z.string().trim()
   })
 })
@@ -358,7 +360,7 @@ export const createLumenServer = (): McpServer => {
     'lumen_get_tokens', {
       annotations: readOnlyAnnotations,
       description:
-        'Return structured Lumen semantic tokens, base color values, glass tokens, and theme attribute.',
+        'Return Lumen spacing dimensions and content roles, semantic colors, glass tokens, and theme attribute.',
       inputSchema: z.strictObject({}),
       outputSchema: tokensOutputSchema
     }, () => toMcpResult(getTokens())

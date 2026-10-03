@@ -160,6 +160,61 @@ orders and unmounting. The approved follow-up Changesets were consumed through a
 the configured generator, preserving all ten public versions at `4.0.0` and all previous release
 history. Changesets belonging to other active work are preserved for that work's integration.
 
+### Existing component follow-up
+
+VirtualList now shares fixed-height DOM windowing across Astro, React and Elements. Inert spacers
+preserve scroll extent; row and container changes refresh the range; focused rows and neighbors
+remain available for native Tab navigation. Rows remain mounted, so this does not eliminate initial
+DOM creation cost. Range endpoints are inclusive and empty lists use endIndex -1.
+
+RichTextEditor emits a cancelable command request before execution. External engines can own that
+request, and React also accepts a synchronous commandHandler. Failed engine commands do not fall
+back to the browser; completion events remain notifications. Native toolbar-state synchronization
+can be disabled when the engine owns it. NumberField retains its native input contract because the
+consumer evidence does not justify a shared locale-aware draft parser.
+
+The scoped Changeset was consumed through a scratch run of the configured Changesets generator
+and its generated notes were folded into the existing unpublished 4.0.0 entries. Package versions
+and previous changelog history remain unchanged. The React list and editor behavior have focused
+modules with separate bundle budgets; existing budgets were preserved.
+
+Verification: 862 tests in the isolated component checkout and six Chromium regressions passed,
+including desktop/phone
+scroll extent, container resizing, Tab navigation, retained focus and external command ownership.
+Matched synthetic before/after screenshots were inspected at 390 and 1440 pixels. The isolated
+component builds, types, zero-warning lint, bundle checks, Knip and registry checks passed. The
+canonical validation remains blocked by the three existing high-severity dependency advisories
+listed below. Local integration into release/v4.0.0 remains pending because its checkout contains
+active concurrent work; the focused component commit is preserved on fix/v4-component-behavior.
+
+### Editable Combobox and nested dismissal
+
+Combobox now keeps DOM focus in its editable input and exposes the active choice through
+aria-activedescendant. Arrow navigation skips disabled DOM options; ordinary editing keys,
+composition and canceled keyboard events remain owned by the input or application. Enter commits
+only an active option in an open list. Astro and Elements share a controller that observes changing
+options and delegates pointer selection. React follows changing option props and reports committed
+selection through onChange for controlled forms.
+
+Nested disclosures, Select and Combobox consume their own Escape before an enclosing popup or
+dialog dismisses. Parent handlers honor canceled events, and disclosure navigation leaves text
+editing alone. Regression tests reproduce the old failures and cover phone/desktop behavior,
+composition, changing options, controlled values, nested dismissal and focus restoration.
+
+The Astro interaction suite passed 65 checks; the React/Elements conformance suite passed all 100
+checks across desktop/mobile Chromium and WebKit. Conformance used the canonical configuration
+with a temporary longer server-start timeout under concurrent local build load. The cohesive
+React Combobox module and shared DOM controller have separate measured budgets; all existing
+budget ceilings remain unchanged. Generated Changeset notes are folded into the unpublished
+4.0.0 entries, preserving package versions and previous history.
+
+The full suite passed 881 tests in 82 files. Type checking and zero-warning lint passed all
+23 tasks; spelling checked 1,302 files without issues. Generation, API, MCP, registry and unused
+code checks passed. Packed Core, umbrella, React, React Hook Form, Elements, Astro, Next.js and
+brand-icon consumers passed. The dependency audit still reports the same three high-severity
+advisories below, so the release gate remains blocked. Local integration is pending while the
+release checkout contains active concurrent work.
+
 ### Remaining release blockers
 
 The canonical `pnpm run validate` on committed candidate `e16ba750` passed generation, build,
@@ -211,3 +266,32 @@ rendering and semantic Lumen tokens unless actual consumer evidence requires a d
   GitHub workflow after separate release authorization; no local tags or manual publication.
 - Rollback before publication means retaining the released v3 packages. After publication, fix
   regressions with a new version; never move a published tag or rewrite consumer data.
+
+## International phone input refinement
+
+The v4 phone controls share offline flag artwork across Astro, React, Elements, React Native,
+SwiftUI and Compose. The selector and number input use one frame with an internal divider,
+consistent padding, hover and focus feedback, and disabled/read-only behavior. Web adapters expose
+input attributes, associated validation and form-reset behavior without consumer DOM patches.
+Public country flags and read-only phone views replace application-specific flag overlays.
+
+Cartera currently consumes Lumen 2.1.0 and adds its own SVG overlays and phone-input attribute
+patches. Its migration requires a v4 dependency update and replacing those wrappers with the public
+phone API. This library task does not update or deploy Fenix/Cartera.
+
+Local verification includes the full 896-test JavaScript suite, 23 type-check tasks, packed web,
+React Native and MCP consumers, 49 Swift tests, Swift public API builds on all five Apple targets,
+and Compose tests, lint and public API checks. Web visual checks cover desktop/mobile, light/dark,
+field sizes, keyboard focus, selector hover, pasted international numbers and validation feedback.
+Phone input availability follows each adapter's existing platform support; this is not a claim of
+editable phone fields on watchOS or tvOS. Physical-device visual verification and the two native
+stability iterations remain pending.
+
+Phone release notes are folded into the unpublished 4.0.0 changelogs. A focused local phone commit
+is pending explicit commit authorization required by AGENTS.md; no phone publication or remote
+integration has been performed. Final release validation must include the security gate and all
+concurrently integrated v4 work.
+
+The latest canonical lint passed all 23 tasks and spell checking found no issues. The read-only
+network security audit still reports the three dependency advisories listed above, so full
+`pnpm run validate` cannot be declared passing. No audit suppression was added.

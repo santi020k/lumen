@@ -22,6 +22,7 @@ apiValidation {
             "com.santi020k.lumen.ComposableSingletons\$OverlayComponentsKt",
             "com.santi020k.lumen.R",
             "com.santi020k.lumen.R\$drawable",
+            "com.santi020k.lumen.R\$raw",
             "com.santi020k.lumen.wear.R"
         )
     )

@@ -390,7 +390,8 @@ behaviorTest(['VirtualList'], 'VirtualList updates its rendered window while scr
   })
 
   await expect(list).not.toHaveAttribute('data-ui-range-start', initialStart ?? '0')
-  await expect(list.locator('[data-ui-virtual-list-item]')).not.toHaveCount(200)
+  await expect(list.locator(':scope > :not([data-ui-virtual-list-spacer]):not([hidden])')).not.toHaveCount(200)
+  await expect(list.locator(':scope > :not([data-ui-virtual-list-spacer]):not([hidden])').last()).toHaveText('Deployment #1')
 })
 
 const dialogScenario = (

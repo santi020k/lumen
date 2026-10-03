@@ -132,7 +132,7 @@ const fileExample = `<Form
 
     <section class="docs-section mt-10 space-y-4" aria-labelledby="production-title">
       <h2 class="text-2xl font-bold text-ink" id="production-title">Production checklist</h2>
-      <Stack gap="md">
+      <Stack gap="group">
         <Card variant="muted">Authorize inside the Action before reading or writing private data.</Card>
         <Card variant="muted">Rate-limit sensitive submissions and keep CSRF decisions in the application.</Card>
         <Card variant="muted">After success, redirect to a GET route to avoid accidental resubmission.</Card>

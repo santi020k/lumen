@@ -12,6 +12,8 @@ import { fileURLToPath } from 'node:url'
 
 import ts from 'typescript'
 
+import { parseSpacingTokens } from '../../../scripts/lib/spacing-tokens.mjs'
+
 const scriptDir = dirname(fileURLToPath(import.meta.url))
 
 const findRepoRoot = async start => {
@@ -878,7 +880,9 @@ const loadWorkspaceFiles = async p => ({
   reactSource: [
     await readIfExists(p('packages/react/src/components.tsx')),
     await readIfExists(p('packages/react/src/server-components.tsx')),
-    await readIfExists(p('packages/react/src/image-comparison.tsx'))
+    await readIfExists(p('packages/react/src/image-comparison.tsx')),
+    await readIfExists(p('packages/react/src/virtual-list.tsx')),
+    await readIfExists(p('packages/react/src/combobox.tsx'))
   ].join('\n'),
   readme: await readIfExists(p('README.md')),
   rules: await readIfExists(p('llms.txt')),
@@ -1161,6 +1165,7 @@ const main = async () => {
   const chart = parseVisualizationColors(platformTokensSource)
   const colors = parsePlatformColors(platformTokensSource)
   const glass = parseTokenBlock(tokensSource, 'lumenGlass')
+  const { spacing, spacingRoles } = parseSpacingTokens(platformTokensSource)
 
   const semanticTokens = [
     'canvas',
@@ -1280,9 +1285,9 @@ const main = async () => {
 
   const componentMap = new Map(components.map(component => [component.name, component]))
 
-  const recipes = (registry.items ?? [])
+  const recipes = await Promise.all((registry.items ?? [])
     .filter(item => item.type === 'recipe' || item.type === 'component-set')
-    .map(item => {
+    .map(async item => {
       const recipeComponents = (item.components ?? [])
         .map(name => componentMap.get(name))
         .filter(Boolean)
@@ -1292,6 +1297,12 @@ const main = async () => {
       return {
         ...item,
         categories,
+        examples: Object.fromEntries((await Promise.all(['astro', 'react', 'elements'].map(async framework => {
+          const extension = { astro: 'astro', elements: 'html', react: 'tsx' }[framework]
+          const example = await readIfExists(join(repoRoot, 'packages/lumen/templates', framework, item.name, 'src/lumen', `${item.name}.${extension}`))
+
+          return [framework, example]
+        }))).filter(([, source]) => source)),
         description:
           item.type === 'component-set' ?
             'The complete Lumen component catalog and shared runtime foundation.' :
@@ -1302,7 +1313,7 @@ const main = async () => {
           react: `lumen add ${item.name} --target react`
         }
       }
-    })
+    }))
 
   const docs = { aiUsage, readme }
 
@@ -1311,6 +1322,8 @@ const main = async () => {
     colors,
     glass,
     semantic: semanticTokens,
+    spacing,
+    spacingRoles,
     themeAttribute: 'data-theme'
   }
 
@@ -1408,7 +1421,7 @@ const main = async () => {
       packageVersions,
       registryName: registry.name ?? 'lumen',
       registryVersion: registry.version ?? 1,
-      schemaVersion: 5,
+      schemaVersion: 7,
       serverVersion: packageJson.version
     },
     nativeComponents,

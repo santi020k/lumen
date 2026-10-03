@@ -38,6 +38,7 @@
     "release-manifest.json",
     "styles.css",
     "styles",
+    "templates",
     "README.md",
     "LICENSE"
   ],
@@ -67,6 +68,14 @@
     "tailwindcss": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:"
+  },
+  "peerDependencies": {
+    "react": ">=19"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    }
   },
   "engines": {
     "node": ">=22.12.0"

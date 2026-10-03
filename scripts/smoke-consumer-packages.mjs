@@ -121,12 +121,14 @@ try {
   await writeFile(
     join(consumerDirectory, 'smoke.mjs'),
     `import assert from 'node:assert/strict'
+import { readFile } from 'node:fs/promises'
+import { join } from 'node:path'
 import { JSDOM } from 'jsdom'
 import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { useForm } from 'react-hook-form'
 
-import { lumen } from '@santi020k/lumen'
+import { addLumenRegistryItem, lumen } from '@santi020k/lumen'
 import { lumenComponentNames, renderLumenIconSvg } from '@santi020k/lumen-core'
 import { registerLumenBrandIcons } from '@santi020k/lumen-icons-brand'
 import { Badge, Card } from '@santi020k/lumen-react'
@@ -143,6 +145,19 @@ import * as z from 'zod'
 
 assert.equal(lumen.name, 'Lumen')
 assert.ok(lumenComponentNames.includes('Card'))
+
+for (const target of ['astro', 'react', 'elements']) {
+  for (const name of ['header', 'settings', 'list', 'actions']) {
+    const cwd = join(process.cwd(), 'installed-recipes', target)
+    const result = await addLumenRegistryItem('content-flow-' + name, { cwd, target })
+
+    assert.equal(result.added.length, 1)
+    const source = await readFile(join(cwd, result.added[0]), 'utf8')
+
+    assert.ok(source.includes('@santi020k/lumen-' + target))
+    assert.ok(source.includes(name === 'settings' ? 'group' : 'related'))
+  }
+}
 
 registerLumenBrandIcons()
 
@@ -161,7 +176,7 @@ assert.equal(
 )
 assert.match(
   renderToStaticMarkup(createElement(ServerCard, { as: 'article' }, 'Server card')),
-  /<article class="ui-card"/
+  /<article class="ui-card ui-card--comfortable" data-density="comfortable"/
 )
 
 const HookFormFixture = () => {

@@ -13,7 +13,9 @@ import {
   createLumenPieGeometry,
   createLumenRangeGeometry,
   createLumenScatterGeometry,
+  createLumenVirtualListController,
   createThemeBuilderTokens,
+  executeLumenRichTextCommand,
   exportThemeBuilderValue,
   formatLumenChartSummary,
   formatLumenLanguageLabel,
@@ -26,8 +28,8 @@ import {
   getLumenLocalePair,
   getLumenPhoneCountries,
   getLumenPhoneCountry,
+  getLumenPhoneFlagSource,
   getLumenRichTextShortcut,
-  getVirtualRange,
   hasLumenChartData,
   hasLumenPieData,
   isLumenRichTextToggleCommand,
@@ -813,7 +815,7 @@ const elementConfigs = {
     tagName: 'lumen-password-field'
   },
   PhoneInput: {
-    baseClassName: 'ui-phone-input ui-input-group',
+    baseClassName: 'ui-phone-field',
     tagName: 'lumen-phone-input'
   },
   Pill: {
@@ -1055,7 +1057,7 @@ const elementConfigs = {
   VirtualList: {
     attributeClasses: glassAttributeClasses('ui-virtual-list--glass'),
     baseClassName: 'ui-virtual-list',
-    defaults: { 'data-ui-virtual-list': '' },
+    defaults: { 'data-ui-virtual-list': '', tabindex: '0' },
     tagName: 'lumen-virtual-list'
   },
   VisuallyHidden: lumenVisuallyHiddenElementConfig,
@@ -1401,6 +1403,12 @@ const observedAttributeNames = [
   'columns',
   'country',
   'country-name',
+  'country-label',
+  'input-id',
+  'number-label',
+  'invalid-number-message',
+  'show-validation-error',
+  'error-message',
   'decimals',
   'data',
   'default-value',
@@ -2298,6 +2306,8 @@ const getRichTextCommandValue = (control: HTMLElement): string | undefined => {
 }
 
 const syncRichTextCommandStates = (root: HTMLElement): void => {
+  if (root.dataset.uiEditorNativeState === 'false') return
+
   const commandDocument = document as unknown as RichTextCommandDocument
 
   for (const control of root.querySelectorAll<HTMLElement>(
@@ -2352,14 +2362,14 @@ const executeRichTextCommand = (
   if (!command) return false
 
   const commandDocument = document as unknown as RichTextCommandDocument
-  let executed = false
 
-  if (typeof commandDocument.execCommand === 'function') {
-    executed =
-      value === undefined ?
-        commandDocument.execCommand(command) :
-        commandDocument.execCommand(command, false, value)
-  }
+  const executed = executeLumenRichTextCommand(root, { command, ...(value === undefined ? {} : { value }) }, () => {
+    if (typeof commandDocument.execCommand !== 'function') return false
+
+    return value === undefined ?
+      commandDocument.execCommand(command) :
+      commandDocument.execCommand(command, false, value)
+  })
 
   const detail: LumenRichTextCommandDetail = {
     command,
@@ -4087,6 +4097,8 @@ const initDatePickers = (scope: ParentNode): void => {
     })
 
     root.addEventListener('keydown', event => {
+      if (event.defaultPrevented || event.isComposing) return
+
       if (event.key !== 'Escape' || popover.hidden) return
 
       event.preventDefault()
@@ -4261,6 +4273,8 @@ const initContextMenus = (scope: ParentNode): void => {
     menu.dataset.uiContextMenuMenuBound = 'true'
 
     menu.addEventListener('keydown', event => {
+      if (event.defaultPrevented || event.isComposing) return
+
       if (event.key === 'Escape') {
         event.preventDefault()
 
@@ -4329,8 +4343,17 @@ const installContextMenuController = (): void => {
   })
 
   document.addEventListener('keydown', event => {
+    if (event.defaultPrevented || event.isComposing) return
+
     if (event.key === 'Escape') {
-      closeOpenContextMenus()
+      const target = getOwnedTarget(event)
+      const menu = target instanceof Element ? target.closest<HTMLElement>(`${contextMenuSelector}[data-state="open"]`) : null
+
+      if (!menu) return
+
+      event.preventDefault()
+
+      closeContextMenu(menu)
     }
   })
 
@@ -4749,6 +4772,8 @@ export const LumenToast: ToastApi = {
     toast.dataset.state = 'open'
 
     toast.addEventListener('keydown', event => {
+      if (event.defaultPrevented || event.isComposing) return
+
       if (event.key !== 'Escape') return
 
       event.preventDefault()
@@ -6581,6 +6606,8 @@ class LumenDialogBehaviorElement extends LumenElement {
 
     this.addEventListener(
       'keydown', event => {
+        if (event.defaultPrevented || event.isComposing) return
+
         if (event.key === 'Escape') {
           event.preventDefault()
 
@@ -6771,6 +6798,16 @@ class LumenDisclosureBehaviorElement extends LumenElement {
 
     trigger.addEventListener(
       'keydown', event => {
+        if (event.defaultPrevented || event.isComposing) return
+
+        if (event.key === 'Escape' && trigger.getAttribute('aria-expanded') === 'true') {
+          event.preventDefault()
+
+          close()
+
+          return
+        }
+
         if (
           event.key !== 'ArrowDown' &&
           event.key !== 'Enter' &&
@@ -6788,6 +6825,8 @@ class LumenDisclosureBehaviorElement extends LumenElement {
 
     panel.addEventListener(
       'keydown', event => {
+        if (event.defaultPrevented || event.isComposing) return
+
         if (event.key === 'Escape') {
           event.preventDefault()
 
@@ -6797,6 +6836,8 @@ class LumenDisclosureBehaviorElement extends LumenElement {
 
           return
         }
+
+        if (event.target instanceof Element && event.target.matches('input, textarea, [contenteditable="true"]')) return
 
         const keys = ['ArrowDown', 'ArrowUp', 'Home', 'End']
 
@@ -7063,9 +7104,13 @@ class LumenSelectBehaviorElement extends LumenElement {
 
     trigger.addEventListener(
       'keydown', event => {
+        if (event.defaultPrevented || event.isComposing) return
+
         if (this.handleTypeahead(event)) return
 
-        if (event.key === 'Escape') {
+        if (event.key === 'Escape' && !listbox.hidden) {
+          event.preventDefault()
+
           this.closeSelect(trigger, listbox)
 
           return
@@ -7114,9 +7159,13 @@ class LumenSelectBehaviorElement extends LumenElement {
 
       item.addEventListener(
         'keydown', event => {
+          if (event.defaultPrevented || event.isComposing) return
+
           if (this.handleTypeahead(event, item)) return
 
-          if (event.key === 'Escape') {
+          if (event.key === 'Escape' && !listbox.hidden) {
+            event.preventDefault()
+
             this.closeSelect(trigger, listbox)
 
             trigger.focus({ preventScroll: true })
@@ -7815,76 +7864,22 @@ class LumenDataTableBehaviorElement extends LumenElement {
 }
 
 class LumenVirtualListBehaviorElement extends LumenElement {
-  private abortController: AbortController | undefined
+  private virtualListController: { destroy: () => void } | undefined
 
   override connectedCallback() {
     super.connectedCallback()
 
     if (!hasDocument()) return
 
-    this.abortController?.abort()
+    this.virtualListController?.destroy()
 
-    this.abortController = new AbortController()
-
-    this.setupVirtualList(this.abortController.signal)
+    this.virtualListController = createLumenVirtualListController(this)
   }
 
   override disconnectedCallback() {
-    this.abortController?.abort()
+    this.virtualListController?.destroy()
 
-    this.abortController = undefined
-  }
-
-  private setupVirtualList(signal: AbortSignal): void {
-    const items = [...this.children].filter(
-      (child): child is HTMLElement => child instanceof HTMLElement
-    )
-
-    if (!items.length) return
-
-    const update = (): void => {
-      const overscan = this.getNumberAttribute(
-        'data-ui-overscan', 'overscan', 4, 0
-      )
-
-      const itemSize = this.getNumberAttribute(
-        'data-ui-item-size', 'item-size', 44
-      )
-
-      const range = getVirtualRange(
-        this.scrollTop, this.clientHeight, itemSize, items.length, overscan
-      )
-
-      for (const [index, item] of items.entries()) {
-        item.hidden = index < range.startIndex || index > range.endIndex
-      }
-
-      this.dispatchEvent(
-        new CustomEvent('ui:virtual-list-range', {
-          bubbles: true,
-          detail: range
-        })
-      )
-    }
-
-    this.addEventListener('scroll', update, { passive: true, signal })
-
-    update()
-  }
-
-  private getNumberAttribute(
-    dataAttribute: string,
-    attribute: string,
-    fallback: number,
-    minimum = 1
-  ): number {
-    const value = Number(
-      this.getAttribute(dataAttribute) ??
-      this.getAttribute(attribute) ??
-      fallback
-    )
-
-    return Number.isFinite(value) && value >= minimum ? value : fallback
+    this.virtualListController = undefined
   }
 }
 
@@ -8434,7 +8429,11 @@ class LumenTooltipBehaviorElement extends LumenElement {
 
     this.addEventListener(
       'keydown', event => {
-        if (event.key === 'Escape') {
+        if (event.defaultPrevented || event.isComposing) return
+
+        if (event.key === 'Escape' && getComputedStyle(tip).visibility !== 'hidden') {
+          event.preventDefault()
+
           hide()
         }
       }, { signal }
@@ -8486,6 +8485,8 @@ class LumenToastBehaviorElement extends LumenElement {
 
     this.addEventListener(
       'keydown', event => {
+        if (event.defaultPrevented || event.isComposing) return
+
         if (event.key !== 'Escape') return
 
         event.preventDefault()
@@ -9495,6 +9496,8 @@ class LumenMentionsBehaviorElement extends LumenElement {
       'keydown', event => {
         const visibleOptions = options.filter(option => !option.hidden)
 
+        if (event.defaultPrevented || event.isComposing) return
+
         if (event.key === 'Escape' && !list.hidden) {
           event.preventDefault()
 
@@ -9577,6 +9580,16 @@ const setupSelectionDisclosure = (
 
   trigger.addEventListener(
     'keydown', event => {
+      if (event.defaultPrevented || event.isComposing) return
+
+      if (event.key === 'Escape' && trigger.getAttribute('aria-expanded') === 'true') {
+        event.preventDefault()
+
+        close()
+
+        return
+      }
+
       if (!['ArrowDown', 'Enter', ' '].includes(event.key)) return
 
       event.preventDefault()
@@ -9589,6 +9602,8 @@ const setupSelectionDisclosure = (
 
   panel.addEventListener(
     'keydown', event => {
+      if (event.defaultPrevented || event.isComposing) return
+
       if (event.key === 'Escape') {
         event.preventDefault()
 
@@ -10701,6 +10716,105 @@ class LumenThemeToggleBehaviorElement extends LumenElement {
   }
 }
 
+export class LumenCountryFlagElement extends LumenElement {
+  static override config = { baseClassName: 'ui-country-flag', tagName: 'lumen-country-flag', observedAttributes: ['country', 'decorative', 'label'] }
+
+  override connectedCallback() {
+    super.connectedCallback()
+
+    this.renderFlag()
+  }
+
+  override attributeChangedCallback(name: string, previous: string | null, value: string | null) {
+    super.attributeChangedCallback(name, previous, value)
+
+    if (previous !== value && this.isConnected) this.renderFlag()
+  }
+
+  private renderFlag() {
+    const country = this.getAttribute('country') ?? ''
+    const source = getLumenPhoneFlagSource(country)
+    const decorative = this.hasAttribute('decorative')
+
+    this.setAttribute('aria-hidden', String(decorative))
+
+    this.setAttribute('role', 'img')
+
+    this.setAttribute('aria-label', this.getAttribute('label') ?? country.toUpperCase())
+
+    this.dataset.slot = 'country-flag'
+
+    if (!source) {
+      this.textContent = country.toUpperCase().slice(0, 2)
+
+      return
+    }
+
+    const image = document.createElement('img')
+
+    image.alt = ''
+
+    image.src = source
+
+    image.width = 24
+
+    image.height = 18
+
+    this.replaceChildren(image)
+  }
+}
+
+export class LumenPhoneNumberElement extends LumenElement {
+  static override config = { baseClassName: 'ui-phone-number', tagName: 'lumen-phone-number', observedAttributes: ['country', 'value', 'link', 'locale'] }
+
+  override connectedCallback() {
+    super.connectedCallback()
+
+    this.renderNumber()
+  }
+
+  override attributeChangedCallback(name: string, previous: string | null, value: string | null) {
+    super.attributeChangedCallback(name, previous, value)
+
+    if (previous !== value && this.isConnected) this.renderNumber()
+  }
+
+  private renderNumber() {
+    const country = getLumenPhoneCountry(this.getAttribute('country') ?? 'US', { locale: this.getAttribute('locale') ?? 'en' })
+
+    if (!country) {
+      this.textContent = '—'
+
+      return
+    }
+
+    const number = resolveLumenPhoneNumber(country, this.getAttribute('value') ?? '')
+    const flag = document.createElement('lumen-country-flag')
+
+    flag.setAttribute('country', number.country.regionCode)
+
+    flag.setAttribute('decorative', '')
+
+    const text = document.createElement('span')
+
+    text.textContent = number.e164 ?? (number.nationalNumber || '—')
+
+    if (this.hasAttribute('link') && number.e164) {
+      const link = document.createElement('a')
+
+      link.href = `tel:${number.e164}`
+
+      link.className = 'ui-phone-number'
+
+      link.append(flag, text)
+
+      this.replaceChildren(link)
+    } else {
+      this.replaceChildren(flag, text)
+    }
+  }
+}
+
 class LumenPhoneInputBehaviorElement extends LumenElement {
   private countrySelect: HTMLSelectElement | undefined
   private eventController: AbortController | undefined
@@ -10731,6 +10845,12 @@ class LumenPhoneInputBehaviorElement extends LumenElement {
 
     if (previousValue === value || !this.numberInput || !this.countrySelect) return
 
+    this.syncInputAttributes()
+
+    this.syncCountrySubmission()
+
+    if (['disabled', 'readonly', 'required', 'error-message', 'show-validation-error', 'invalid-number-message'].includes(name)) this.commit()
+
     if (name === 'value') {
       this.numberInput.value = value ?? ''
 
@@ -10759,7 +10879,11 @@ class LumenPhoneInputBehaviorElement extends LumenElement {
 
     this.bindControls()
 
-    if (this.numberInput?.value) this.commit()
+    const controls = this.querySelector<HTMLElement>('.ui-phone-input')
+
+    if (controls) controls.dataset.phoneEnhanced = 'true'
+
+    this.commit()
   }
 
   override disconnectedCallback() {
@@ -10784,6 +10908,12 @@ class LumenPhoneInputBehaviorElement extends LumenElement {
     this.numberInput.addEventListener('input', () => {
       this.commit()
     }, options)
+
+    this.numberInput.form?.addEventListener('reset', () => {
+      queueMicrotask(() => {
+        this.commit()
+      })
+    }, options)
   }
 
   private commit() {
@@ -10795,7 +10925,9 @@ class LumenPhoneInputBehaviorElement extends LumenElement {
 
     if (!country) return
 
-    const phoneNumber = resolveLumenPhoneNumber(country, this.numberInput.value, this.phoneOptions)
+    const detected = resolveLumenPhoneNumber(country, this.numberInput.value, this.phoneOptions)
+    const allowed = [...this.countrySelect.options].some(option => option.value === detected.country.regionCode)
+    const phoneNumber = allowed ? detected : resolveLumenPhoneNumber(country, detected.nationalNumber.startsWith('+') ? detected.nationalNumber.slice(1) : detected.nationalNumber, this.phoneOptions)
     const hasInput = phoneNumber.nationalNumber.length > 0
 
     const invalidMessage = this.getAttribute('invalid-number-message') ??
@@ -10805,9 +10937,45 @@ class LumenPhoneInputBehaviorElement extends LumenElement {
 
     this.countrySelect.value = phoneNumber.country.regionCode
 
-    this.numberInput.setCustomValidity(hasInput && !phoneNumber.isValid ? invalidMessage : '')
+    const errorMessage = this.getAttribute('error-message') || (this.getAttribute('show-validation-error') !== 'false' && hasInput && !phoneNumber.isValid ? invalidMessage : '')
 
-    this.numberInput.setAttribute('aria-invalid', String(hasInput && !phoneNumber.isValid))
+    this.numberInput.setCustomValidity(errorMessage)
+
+    this.numberInput.setAttribute('aria-invalid', String(Boolean(errorMessage)))
+
+    this.dataset.invalid = String(Boolean(errorMessage))
+
+    const controls = this.querySelector<HTMLElement>('.ui-phone-input')
+
+    if (controls) controls.dataset.invalid = String(Boolean(errorMessage))
+
+    const error = this.querySelector<HTMLElement>('.ui-phone-input__error')
+
+    if (error) {
+      error.textContent = errorMessage
+
+      error.hidden = !errorMessage
+
+      if (errorMessage) this.numberInput.setAttribute('aria-errormessage', error.id)
+      else this.numberInput.removeAttribute('aria-errormessage')
+
+      const descriptions = (this.getAttribute('aria-describedby') ?? '').split(' ').filter(Boolean)
+      const describedBy = [...descriptions, ...(errorMessage ? [error.id] : [])].join(' ')
+
+      if (describedBy) this.numberInput.setAttribute('aria-describedby', describedBy)
+      else this.numberInput.removeAttribute('aria-describedby')
+    }
+
+    const flag = this.querySelector<HTMLImageElement>('[data-slot="country-flag"] img')
+    const source = getLumenPhoneFlagSource(phoneNumber.country.regionCode)
+
+    if (flag && source) flag.src = source
+
+    const code = this.querySelector('[data-ui-phone-code]')
+
+    if (code) code.textContent = phoneNumber.country.callingCode
+
+    this.syncCountrySubmission()
 
     this.dataset.e164 = phoneNumber.e164 ?? ''
 
@@ -10817,6 +10985,30 @@ class LumenPhoneInputBehaviorElement extends LumenElement {
       bubbles: true,
       detail: phoneNumber
     }))
+  }
+
+  private syncCountrySubmission() {
+    if (!this.numberInput || !this.countrySelect) return
+
+    const existing = this.querySelector<HTMLInputElement>('[data-ui-phone-country-value]')
+
+    if (!this.numberInput.readOnly || this.numberInput.disabled) {
+      existing?.remove()
+
+      return
+    }
+
+    const hidden = existing ?? document.createElement('input')
+
+    hidden.type = 'hidden'
+
+    hidden.dataset.uiPhoneCountryValue = ''
+
+    hidden.name = this.countrySelect.name
+
+    hidden.value = this.countrySelect.value
+
+    if (!existing) this.append(hidden)
   }
 
   private ensureControls() {
@@ -10840,13 +11032,87 @@ class LumenPhoneInputBehaviorElement extends LumenElement {
       this.append(this.numberInput)
     }
 
+    if (!this.querySelector('.ui-phone-input')) {
+      const controls = document.createElement('div')
+
+      controls.className = 'ui-phone-input ui-input-group'
+
+      controls.dataset.slot = 'phone-input'
+
+      this.prepend(controls)
+
+      controls.append(this.countrySelect, this.numberInput)
+    }
+
+    if (!this.countrySelect.parentElement?.classList.contains('ui-phone-input__picker')) {
+      const picker = document.createElement('span')
+
+      picker.className = 'ui-phone-input__picker'
+
+      picker.dataset.slot = 'phone-country'
+
+      this.countrySelect.before(picker)
+
+      picker.append(this.countrySelect)
+
+      const selection = document.createElement('span')
+
+      selection.className = 'ui-phone-input__selection'
+
+      selection.setAttribute('aria-hidden', 'true')
+
+      const flag = document.createElement('span')
+
+      flag.className = 'ui-country-flag'
+
+      flag.dataset.slot = 'country-flag'
+
+      const image = document.createElement('img')
+
+      image.alt = ''
+
+      image.width = 24
+
+      image.height = 18
+
+      flag.append(image)
+
+      const code = document.createElement('span')
+
+      code.dataset.uiPhoneCode = ''
+
+      const chevron = document.createElement('span')
+
+      chevron.className = 'ui-phone-input__chevron'
+
+      selection.append(flag, code, chevron)
+
+      picker.prepend(selection)
+    }
+
+    if (!this.querySelector('.ui-phone-input__error')) {
+      const error = document.createElement('span')
+
+      error.className = 'ui-phone-input__error'
+
+      error.id = createId('phone-error')
+
+      error.setAttribute('role', 'alert')
+
+      error.hidden = true
+
+      this.append(error)
+    }
+
+    this.syncInputAttributes()
+
     this.populateCountries()
 
     this.countrySelect.setAttribute('aria-label', this.getAttribute('country-label') ?? 'Country code')
 
     this.countrySelect.name = this.getAttribute('country-name') ?? 'country'
 
-    this.numberInput.autocomplete = 'tel'
+    this.numberInput.setAttribute('autocomplete', this.getAttribute('autocomplete') ?? 'tel-national')
 
     this.numberInput.inputMode = 'tel'
 
@@ -10857,6 +11123,50 @@ class LumenPhoneInputBehaviorElement extends LumenElement {
     this.numberInput.type = 'tel'
 
     this.numberInput.value = this.getAttribute('value') ?? this.numberInput.value
+  }
+
+  private syncInputAttributes() {
+    if (!this.numberInput || !this.countrySelect) return
+
+    this.numberInput.disabled = this.hasAttribute('disabled')
+
+    this.numberInput.readOnly = this.hasAttribute('readonly')
+
+    this.numberInput.required = this.hasAttribute('required')
+
+    this.countrySelect.disabled = this.numberInput.disabled || this.numberInput.readOnly
+
+    this.toggleAttribute('data-disabled', this.numberInput.disabled)
+
+    this.toggleAttribute('data-readonly', this.numberInput.readOnly)
+
+    const controls = this.querySelector<HTMLElement>('.ui-phone-input')
+
+    controls?.toggleAttribute('data-disabled', this.numberInput.disabled)
+
+    controls?.toggleAttribute('data-readonly', this.numberInput.readOnly)
+
+    if (controls) controls.dataset.size = this.getAttribute('size') ?? 'default'
+
+    this.numberInput.id = this.getAttribute('input-id') ?? (this.numberInput.id || createId('phone-number'))
+
+    this.numberInput.setAttribute('aria-label', this.getAttribute('number-label') ?? 'Phone number')
+
+    this.countrySelect.setAttribute('aria-label', this.getAttribute('country-label') ?? 'Country code')
+
+    this.countrySelect.name = this.getAttribute('country-name') ?? 'country'
+
+    this.numberInput.name = this.getAttribute('name') ?? 'phone'
+
+    this.numberInput.placeholder = this.getAttribute('placeholder') ?? 'Phone number'
+
+    for (const attribute of ['minlength', 'maxlength', 'pattern', 'autocomplete']) {
+      const value = this.getAttribute(attribute)
+
+      if (value === null && attribute === 'autocomplete') this.numberInput.setAttribute(attribute, 'tel-national')
+      else if (value === null) this.numberInput.removeAttribute(attribute)
+      else this.numberInput.setAttribute(attribute, value)
+    }
   }
 
   private get phoneOptions() {
@@ -10876,12 +11186,14 @@ class LumenPhoneInputBehaviorElement extends LumenElement {
 
       option.dataset.region = country.regionCode
 
-      option.textContent = country.pickerLabel
+      option.textContent = `${country.displayName} (${country.callingCode})`
 
       option.value = country.regionCode
 
-      option.selected = country.regionCode === requestedCountry ||
+      option.defaultSelected = country.regionCode === requestedCountry ||
         country.callingCode === requestedCountry
+
+      option.selected = option.defaultSelected
 
       this.countrySelect.append(option)
     }
@@ -11084,6 +11396,14 @@ export const defineLumenElements = (
 
     if (!customElementsRegistry.get(config.tagName)) {
       customElementsRegistry.define(config.tagName, element)
+    }
+  }
+
+  if (componentNames.includes('PhoneInput')) {
+    for (const presentation of [LumenCountryFlagElement, LumenPhoneNumberElement]) {
+      if (!customElementsRegistry.get(presentation.config.tagName)) {
+        customElementsRegistry.define(presentation.config.tagName, presentation)
+      }
     }
   }
 

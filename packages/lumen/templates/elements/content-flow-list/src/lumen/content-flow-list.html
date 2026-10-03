@@ -1,0 +1,14 @@
+<script type="module">
+  import { defineLumenElements } from '@santi020k/lumen-elements/define'
+  defineLumenElements(['Card', 'CardHeader', 'CardTitle', 'CardContent', 'Stack', 'Badge'])
+</script>
+
+<lumen-card role="region" aria-labelledby="members-heading">
+  <lumen-card-header><lumen-card-title id="members-heading" role="heading" aria-level="2">Team members</lumen-card-title></lumen-card-header>
+  <lumen-card-content>
+    <lumen-stack role="list" gap="group">
+      <lumen-stack role="listitem" direction="horizontal" align="center" justify="between" gap="related" wrap><span>Alex Morgan — Workspace owner</span><lumen-badge>Active</lumen-badge></lumen-stack>
+      <lumen-stack role="listitem" direction="horizontal" align="center" justify="between" gap="related" wrap><span>Jamie Lee — Design and operations</span><lumen-badge variant="secondary">Invited</lumen-badge></lumen-stack>
+    </lumen-stack>
+  </lumen-card-content>
+</lumen-card>

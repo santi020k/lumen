@@ -42,6 +42,7 @@ import {
   createLumenScatterGeometry,
   formatLumenChartSummary,
   formatLumenLanguageLabel,
+  formatLumenPhoneNumber,
   getLumenChartAxisPadding,
   getLumenChartCategories,
   getLumenChartCategoryLabel,
@@ -51,6 +52,7 @@ import {
   getLumenChartToneClassName,
   getLumenIcon,
   getLumenPhoneCountries,
+  getLumenPhoneFlagSource,
   getLumenPieChartVariantClassName,
   hasLumenChartData,
   hasLumenPieData,
@@ -252,7 +254,6 @@ export interface Option {
 type SelectOption = Option | string
 
 const emptyOptions: SelectOption[] = []
-const emptyStringOptions: string[] = []
 const emptyDataTableColumns: DataTableColumn[] = []
 const emptyDataTableRows: DataTableRow[] = []
 const emptyChartSeries: LumenChartSeries[] = []
@@ -2165,203 +2166,7 @@ export interface CodeTabsProps extends Omit<
   wrap?: boolean
 }
 
-export interface ComboboxProps extends ComponentPropsWithoutRef<'input'> {
-  label?: ReactNode
-  list: string
-  options?: string[]
-  wrapperClassName?: string
-}
-
-export const Combobox = ({
-  className,
-  defaultValue,
-  id,
-  label,
-  list,
-  onBlur,
-  onChange,
-  onFocus,
-  onKeyDown,
-  options = emptyStringOptions,
-  type = 'text',
-  value: valueProp,
-  wrapperClassName,
-  ...props
-}: ComboboxProps) => {
-  const inputId = id ?? `${list}-input`
-  const rootRef = useRef<HTMLDivElement>(null)
-  const [open, setOpen] = useState(false)
-  const [value, setValue] = useState(() => String(defaultValue ?? ''))
-  const renderedValue = valueProp ?? value
-  const query = String(renderedValue).trim().toLowerCase()
-
-  const visibleOptions = useMemo(
-    () => options.filter(
-      option => !query || option.toLowerCase().includes(query)
-    ), [options, query]
-  )
-
-  const selectOption = (option: string) => {
-    if (valueProp === undefined) {
-      setValue(option)
-    }
-
-    setOpen(false)
-  }
-
-  const getVisibleOptions = (): HTMLButtonElement[] => [
-    ...(rootRef.current?.querySelectorAll<HTMLButtonElement>(
-      '[data-ui-combobox-option]:not([hidden]):not([disabled])'
-    ) ?? [])
-  ]
-
-  const focusInputEdgeOption = (key: 'ArrowDown' | 'ArrowUp') => {
-    const options = getVisibleOptions()
-
-    options[key === 'ArrowUp' ? options.length - 1 : 0]?.focus()
-  }
-
-  const focusOption = (option: HTMLButtonElement, key: string) => {
-    const options = getVisibleOptions()
-
-    if (!options.length) return
-
-    const currentIndex = Math.max(0, options.indexOf(option))
-    let nextIndex = (currentIndex - 1 + options.length) % options.length
-
-    if (key === 'Home') nextIndex = 0
-    else if (key === 'End') nextIndex = options.length - 1
-    else if (key === 'ArrowDown') nextIndex = (currentIndex + 1) % options.length
-
-    options[nextIndex]?.focus()
-  }
-
-  return (
-    <div
-      className={composeClassName('ui-combobox', wrapperClassName)}
-      data-ui-combobox
-      onBlur={event => {
-        const nextTarget = event.relatedTarget
-
-        if (!nextTarget || !event.currentTarget.contains(nextTarget)) {
-          setOpen(false)
-        }
-      }}
-      ref={rootRef}
-    >
-      {label && (
-        <label className="ui-label" htmlFor={inputId}>
-          {label}
-        </label>
-      )}
-      <input
-        aria-autocomplete="list"
-        aria-controls={list}
-        aria-expanded={open}
-        className={composeClassName('ui-input', className)}
-        id={inputId}
-        role="combobox"
-        type={type}
-        value={renderedValue}
-        onBlur={onBlur}
-        onChange={event => {
-          if (valueProp === undefined) {
-            setValue(event.currentTarget.value)
-          }
-
-          setOpen(true)
-
-          onChange?.(event)
-        }}
-        onFocus={event => {
-          setOpen(true)
-
-          onFocus?.(event)
-        }}
-        onKeyDown={event => {
-          if (event.key === 'Escape') {
-            setOpen(false)
-          }
-
-          if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
-            const key = event.key
-
-            event.preventDefault()
-
-            setOpen(true)
-
-            globalThis.queueMicrotask(() => {
-              focusInputEdgeOption(key)
-            })
-          }
-
-          if (event.key === 'Enter' && visibleOptions[0]) {
-            event.preventDefault()
-
-            selectOption(visibleOptions[0])
-          }
-
-          onKeyDown?.(event)
-        }}
-        {...props}
-      />
-      <div
-        className="ui-combobox__list"
-        hidden={!open}
-        id={list}
-        role="listbox"
-      >
-        {visibleOptions.map(option => (
-          <button
-            data-ui-combobox-option
-            data-value={option}
-            key={option}
-            role="option"
-            tabIndex={-1}
-            type="button"
-            onClick={() => {
-              selectOption(option)
-            }}
-            onKeyDown={event => {
-              if (event.key === 'Escape') {
-                setOpen(false)
-
-                rootRef.current?.querySelector<HTMLInputElement>(
-                  'input[role="combobox"]'
-                )?.focus()
-
-                return
-              }
-
-              if (event.key === 'Enter' || event.key === ' ') {
-                event.preventDefault()
-
-                rootRef.current?.querySelector<HTMLInputElement>(
-                  'input[role="combobox"]'
-                )?.focus()
-
-                selectOption(option)
-
-                return
-              }
-
-              if (!['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) return
-
-              event.preventDefault()
-
-              focusOption(event.currentTarget, event.key)
-            }}
-            onMouseDown={event => {
-              event.preventDefault()
-            }}
-          >
-            {option}
-          </button>
-        ))}
-      </div>
-    </div>
-  )
-}
+export { Combobox, type ComboboxProps } from './combobox.js'
 
 export interface CommandProps extends ComponentPropsWithoutRef<'div'> {
   glass?: LumenGlassProp
@@ -3989,6 +3794,12 @@ export interface PhoneInputProps extends Omit<
 > {
   countries?: SelectOption[]
   countryOptions?: readonly LumenPhoneCountry[]
+  disabled?: boolean
+  readOnly?: boolean
+  required?: boolean
+  errorMessage?: string
+  inputProps?: Omit<ComponentPropsWithoutRef<'input'>, 'value' | 'defaultValue' | 'onChange' | 'name' | 'size' | 'type'>
+  inputRef?: Ref<HTMLInputElement>
   countryLabel?: string
   countryName?: string
   defaultCountryValue?: string
@@ -4002,6 +3813,8 @@ export interface PhoneInputProps extends Omit<
   size?: 'default' | 'lg' | 'sm'
   value?: LumenPhoneNumber
 }
+
+const emptyPhoneInputProps: NonNullable<PhoneInputProps['inputProps']> = {}
 
 const phoneInputSizeModifiers = (size: 'default' | 'lg' | 'sm') => {
   if (size === 'sm') {
@@ -4032,31 +3845,123 @@ const getPhoneInputOptions = (
 
 const getBooleanAttribute = (value: boolean): true | undefined => value ? true : undefined
 
-const getPhoneErrorId = (invalid: boolean, name: string): string | undefined => (
-  invalid ? `${name}-error` : undefined
+export interface CountryFlagProps extends ComponentPropsWithoutRef<'span'> {
+  regionCode: string
+  decorative?: boolean
+}
+
+export const CountryFlag = ({ regionCode, decorative = false, className, ...props }: CountryFlagProps) => {
+  const source = getLumenPhoneFlagSource(regionCode)
+
+  return (
+    <span {...props} aria-hidden={decorative || undefined} aria-label={decorative ? undefined : props['aria-label'] ?? regionCode.toUpperCase()} className={composeClassName('ui-country-flag', className)} data-slot="country-flag" role={decorative ? undefined : 'img'}>
+      {source ? <img alt="" height={18} src={source} width={24} /> : regionCode.toUpperCase().slice(0, 2)}
+    </span>
+  )
+}
+
+export interface PhoneNumberProps extends ComponentPropsWithoutRef<'span'> {
+  value: LumenPhoneNumber
+  link?: boolean
+}
+
+export const PhoneNumber = ({ value, link = false, className, ...props }: PhoneNumberProps) => {
+  const content = (
+    <>
+      <CountryFlag decorative regionCode={value.country.regionCode} />
+      <span>{formatLumenPhoneNumber(value) || '—'}</span>
+    </>
+  )
+
+  const classes = composeClassName('ui-phone-number', className)
+
+  return link && value.isValid && value.e164 ? <a {...props} className={classes} href={`tel:${value.e164}`} title={value.country.displayName}>{content}</a> : <span {...props} className={classes} title={value.country.displayName}>{content}</span>
+}
+
+const resolvePhoneError = (
+  errorMessage: string | undefined,
+  showValidationError: boolean,
+  value: LumenPhoneNumber,
+  invalidNumberMessage: string
+): string | undefined => {
+  if (errorMessage) return errorMessage
+
+  if (showValidationError && value.nationalNumber.length > 0 && !value.isValid) return invalidNumberMessage
+
+  return undefined
+}
+
+interface PhoneNumberInputProps {
+  controlId: string
+  errorId: string
+  hasExplicitId: boolean
+  inputClass: string | undefined
+  inputProps: NonNullable<PhoneInputProps['inputProps']>
+  inputRef: Ref<HTMLInputElement> | undefined
+  invalid: boolean
+  isDisabled: boolean
+  isReadOnly: boolean
+  name: string
+  numberRef: RefObject<HTMLInputElement | null>
+  onChange: (event: ChangeEvent<HTMLInputElement>) => void
+  phoneValue: LumenPhoneNumber
+  placeholder: string
+  required: boolean | undefined
+}
+
+const resolvePhoneAria = (inputProps: NonNullable<PhoneInputProps['inputProps']>, invalid: boolean, errorId: string) => ({
+  'aria-describedby': [inputProps['aria-describedby'], invalid ? errorId : undefined].filter(Boolean).join(' ') || undefined,
+  'aria-errormessage': invalid ? errorId : inputProps['aria-errormessage'],
+  'aria-invalid': invalid ? true : inputProps['aria-invalid']
+})
+
+const PhoneNumberInput = ({
+  controlId, errorId, hasExplicitId, inputClass, inputProps, inputRef, invalid,
+  isDisabled, isReadOnly, name, numberRef, onChange, phoneValue, placeholder, required
+}: PhoneNumberInputProps) => (
+  <input
+    {...inputProps}
+    {...resolvePhoneAria(inputProps, invalid, errorId)}
+    autoComplete={inputProps.autoComplete ?? 'tel-national'}
+    aria-label={inputProps['aria-label'] ?? (hasExplicitId ? undefined : placeholder)}
+    className={composeClassName('ui-input ui-phone-input__number', inputClass, inputProps.className)}
+    disabled={isDisabled}
+    id={controlId}
+    inputMode="tel"
+    name={name}
+    onChange={onChange}
+    placeholder={placeholder}
+    readOnly={isReadOnly}
+    ref={node => {
+      numberRef.current = node
+
+      setRefValue(inputRef, node)
+    }}
+    required={required ?? inputProps.required}
+    type="tel"
+    value={phoneValue.nationalNumber}
+  />
 )
 
-const PhoneInputError = ({
-  invalid,
-  message,
-  name
-}: {
-  invalid: boolean
-  message: string
+const PhoneCountryValue = ({ disabled, readOnly, name, value }: {
+  disabled: boolean
+  readOnly: boolean
   name: string
-}) => invalid ?
-  (
-    <span className="ui-visually-hidden" id={`${name}-error`} role="alert">
-      {message}
-    </span>
-  ) :
-  null
+  value: string
+}) => readOnly && !disabled ? <input name={name} type="hidden" value={value} /> : null
 
 const MetadataPhoneInput = ({
   className,
   countryOptions,
   countryLabel,
   countryName,
+  disabled,
+  readOnly,
+  required,
+  errorMessage,
+  id,
+  inputProps = emptyPhoneInputProps,
+  inputRef,
   defaultCountryValue,
   defaultValue,
   invalidNumberMessage,
@@ -4070,6 +3975,12 @@ const MetadataPhoneInput = ({
   ...props
 }: ResolvedMetadataPhoneInputProps) => {
   const { selectClass, inputClass } = phoneInputSizeModifiers(size)
+  const isDisabled = [disabled, inputProps.disabled].some(Boolean)
+  const isReadOnly = [readOnly, inputProps.readOnly].some(Boolean)
+  const generatedId = useId()
+  const controlId = id ?? inputProps.id ?? generatedId
+  const errorId = `${generatedId}-error`
+  const numberRef = useRef<HTMLInputElement>(null)
   const phoneOptions = useMemo(() => getPhoneInputOptions(locale), [locale])
 
   const metadataCountries = useMemo(
@@ -4104,7 +4015,7 @@ const MetadataPhoneInput = ({
 
   const resolvedOptions = metadataCountries.map(country => ({
     disabled: false,
-    label: country.pickerLabel,
+    label: `${country.displayName} (${country.callingCode})`,
     value: country.regionCode
   }))
 
@@ -4138,56 +4049,118 @@ const MetadataPhoneInput = ({
     ))
   }
 
-  const invalid = showValidationError && phoneValue.nationalNumber.length > 0 && !phoneValue.isValid
+  const effectiveError = resolvePhoneError(errorMessage, showValidationError, phoneValue, invalidNumberMessage)
+  const invalid = Boolean(effectiveError)
+
+  useEffect(() => {
+    numberRef.current?.setCustomValidity(effectiveError ?? '')
+  }, [effectiveError])
+
+  useEffect(() => {
+    const form = numberRef.current?.form
+
+    if (!form || value !== undefined) return
+
+    const reset = (): void => {
+      const country = resolveReactPhoneInputCountry(metadataCountries, defaultCountryValue, locale, undefined)
+
+      setInternalValue(resolveReactPhoneInputValue(metadataCountries, country, defaultValue ?? '', phoneOptions))
+    }
+
+    form.addEventListener('reset', reset)
+
+    return () => {
+      form.removeEventListener('reset', reset)
+    }
+  }, [defaultCountryValue, defaultValue, locale, metadataCountries, phoneOptions, value])
 
   return (
-    <div
-      className={composeClassName('ui-phone-input ui-input-group', className)}
-      data-invalid={getBooleanAttribute(invalid)}
-      {...props}
-    >
-      <select
-        aria-label={countryLabel}
-        className={composeClassName(
-          'ui-select ui-phone-input__country', selectClass
-        )}
-        name={countryName}
-        onChange={handleCountryChange}
-        value={phoneValue.country.regionCode}
+    <>
+      <div
+        className={composeClassName('ui-phone-input ui-input-group', className)}
+        data-disabled={getBooleanAttribute(isDisabled)}
+        data-invalid={getBooleanAttribute(invalid)}
+        data-phone-enhanced="true"
+        data-readonly={getBooleanAttribute(isReadOnly)}
+        data-size={size}
+        data-slot="phone-input"
+        {...props}
       >
-        {resolvedOptions.map(option => (
-          <option
-            disabled={option.disabled}
-            key={option.value}
-            value={option.value}
+        <span className="ui-phone-input__picker" data-slot="phone-country">
+          <span aria-hidden="true" className="ui-phone-input__selection">
+            <CountryFlag decorative regionCode={phoneValue.country.regionCode} />
+            <span>{phoneValue.country.callingCode}</span>
+            <span className="ui-phone-input__chevron" />
+          </span>
+          <select
+            aria-label={countryLabel}
+            className={composeClassName('ui-select ui-phone-input__country', selectClass)}
+            disabled={isDisabled || isReadOnly || metadataCountries.length === 0}
+            name={countryName}
+            onChange={handleCountryChange}
+            value={phoneValue.country.regionCode}
           >
-            {option.label}
-          </option>
-        ))}
-      </select>
-      <input
-        autoComplete="tel"
-        aria-errormessage={getPhoneErrorId(invalid, name)}
-        aria-invalid={getBooleanAttribute(invalid)}
-        className={composeClassName(
-          'ui-input ui-phone-input__number', inputClass
-        )}
-        inputMode="tel"
-        name={name}
-        onChange={handleNumberChange}
-        placeholder={placeholder}
-        type="tel"
-        value={phoneValue.nationalNumber}
-      />
-      <PhoneInputError invalid={invalid} message={invalidNumberMessage} name={name} />
-    </div>
+            {resolvedOptions.map(option => (
+              <option disabled={option.disabled} key={option.value} value={option.value}>{option.label}</option>
+            ))}
+          </select>
+        </span>
+        <PhoneNumberInput
+          controlId={controlId}
+          errorId={errorId}
+          hasExplicitId={[id, inputProps.id].some(Boolean)}
+          inputClass={inputClass}
+          inputProps={inputProps}
+          inputRef={inputRef}
+          invalid={invalid}
+          isDisabled={isDisabled}
+          isReadOnly={isReadOnly}
+          name={name}
+          numberRef={numberRef}
+          onChange={handleNumberChange}
+          phoneValue={phoneValue}
+          placeholder={placeholder}
+          required={required}
+        />
+        <PhoneCountryValue
+          disabled={isDisabled}
+          name={countryName}
+          readOnly={isReadOnly}
+          value={phoneValue.country.regionCode}
+        />
+      </div>
+      {effectiveError && <span className="ui-phone-input__error" id={errorId} role="alert">{effectiveError}</span>}
+    </>
   )
 }
+
+const resolveLegacyPhoneAttributes = (
+  inputProps: NonNullable<PhoneInputProps['inputProps']>,
+  props: {
+    disabled: boolean | undefined
+    readOnly: boolean | undefined
+    required: boolean | undefined
+    id: string | undefined
+  }
+) => ({
+  autoComplete: inputProps.autoComplete ?? 'tel-national',
+  disabled: props.disabled ?? inputProps.disabled,
+  id: props.id ?? inputProps.id,
+  readOnly: props.readOnly ?? inputProps.readOnly,
+  required: props.required ?? inputProps.required
+})
 
 const LegacyPhoneInput = ({
   className,
   countries,
   countryOptions: _countryOptions,
+  disabled,
+  readOnly,
+  required,
+  errorMessage: _errorMessage,
+  id,
+  inputProps = emptyPhoneInputProps,
+  inputRef,
   countryLabel = 'Country code',
   countryName = 'country',
   defaultCountryValue,
@@ -4203,26 +4176,36 @@ const LegacyPhoneInput = ({
   ...props
 }: PhoneInputProps & { countries: SelectOption[] }) => {
   const { inputClass, selectClass } = phoneInputSizeModifiers(size)
+  const numberAttributes = resolveLegacyPhoneAttributes(inputProps, { disabled, readOnly, required, id })
 
   return (
     <div
       className={composeClassName('ui-phone-input ui-input-group', className)}
       {...props}
+      data-disabled={getBooleanAttribute([disabled, inputProps.disabled].some(Boolean))}
+      data-readonly={getBooleanAttribute([readOnly, inputProps.readOnly].some(Boolean))}
+      data-size={size}
+      data-slot="phone-input"
     >
-      <select
-        aria-label={countryLabel}
-        className={composeClassName('ui-select ui-phone-input__country', selectClass)}
-        defaultValue={defaultCountryValue}
-        name={countryName}
-      >
-        {countries.map(normalizeOption).map(option => (
-          <option disabled={option.disabled} key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
+      <span className="ui-phone-input__picker">
+        <select
+          aria-label={countryLabel}
+          className={composeClassName('ui-select ui-phone-input__country', selectClass)}
+          defaultValue={defaultCountryValue}
+          disabled={[disabled, readOnly, inputProps.disabled, inputProps.readOnly].some(Boolean)}
+          name={countryName}
+        >
+          {countries.map(normalizeOption).map(option => (
+            <option disabled={option.disabled} key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+      </span>
       <input
-        autoComplete="tel"
+        {...inputProps}
+        {...numberAttributes}
+        ref={inputRef}
         className={composeClassName('ui-input ui-phone-input__number', inputClass)}
         defaultValue={defaultValue}
         inputMode="tel"
@@ -5681,28 +5664,7 @@ export const TreeGrid = ({
   />
 )
 
-export interface VirtualListProps extends ComponentPropsWithoutRef<'div'> {
-  glass?: LumenGlassProp
-  itemSize?: number | string
-  overscan?: number | string
-}
-export const VirtualList = ({
-  className,
-  glass = false,
-  itemSize,
-  overscan,
-  ...props
-}: VirtualListProps) => (
-  <div
-    className={composeClassName(
-      'ui-virtual-list', glassClass('ui-virtual-list', glass), className
-    )}
-    data-ui-item-size={itemSize}
-    data-ui-overscan={overscan}
-    data-ui-virtual-list
-    {...props}
-  />
-)
+export { VirtualList, type VirtualListProps } from './virtual-list.js'
 
 export type BackToTopProps = ComponentPropsWithoutRef<'button'>
 export const BackToTop = ({

@@ -456,6 +456,12 @@ export const lumenStylingContracts = {
     rootSlot: 'stat',
     stability: 'stable'
   },
+  PhoneInput: {
+    customProperties: ['--ui-phone-height', '--ui-phone-padding', '--ui-phone-country-gap'],
+    parts: ['phone-country', 'country-flag'],
+    rootSlot: 'phone-input',
+    stability: 'stable'
+  },
   Table: {
     customProperties: ['--ui-table-cell-padding'],
     parts: [],

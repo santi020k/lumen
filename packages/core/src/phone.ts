@@ -5,6 +5,8 @@ import {
   getCountryCallingCode,
   isSupportedCountry } from 'libphonenumber-js/max'
 
+import { lumenPhoneFlagSources } from './phone-flags.generated.js'
+
 const regionalIndicatorA = 0x1F1E6
 
 export interface LumenPhoneCountry {
@@ -41,7 +43,7 @@ const getRegionDisplayNames = (
 export const getLumenPhoneFlag = (regionCode: string): string => {
   const normalizedRegion = regionCode.toUpperCase()
 
-  if (normalizedRegion.length !== 2) return ''
+  if (!/^[A-Z]{2}$/.test(normalizedRegion)) return ''
 
   const first = String.fromCodePoint(regionalIndicatorA + normalizedRegion.charCodeAt(0) - 65)
   const second = String.fromCodePoint(regionalIndicatorA + normalizedRegion.charCodeAt(1) - 65)
@@ -165,3 +167,13 @@ export const resolveLumenPhoneNumber = (
     )
   }
 }
+
+/** Bundled, offline flag artwork shared by the web and React Native adapters. */
+export const getLumenPhoneFlagSource = (regionCode: string): string | null => (
+  lumenPhoneFlagSources[regionCode.toUpperCase()] ?? null
+)
+
+/** A complete number for read-only presentation; incomplete input stays editable. */
+export const formatLumenPhoneNumber = (value: LumenPhoneNumber): string => (
+  value.isValid && value.e164 ? value.e164 : value.nationalNumber
+)

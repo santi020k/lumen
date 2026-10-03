@@ -397,7 +397,7 @@ describe('@santi020k/lumen-elements', () => {
     )
     expect(button.getAttribute('role')).toBe('button')
     expect(button.tabIndex).toBe(0)
-    expect([...card.classList]).toEqual(['ui-card'])
+    expect([...card.classList]).toEqual(['ui-card', 'ui-card--comfortable'])
     expect([...contextNavigation.classList]).toEqual([
       'ui-context-navigation',
       'ui-context-navigation--unstyled'
@@ -783,9 +783,13 @@ describe('@santi020k/lumen-elements', () => {
       </lumen-combobox>
     `
 
-    const root = document.querySelector<HTMLElement>('lumen-combobox')!
-    const input = root.querySelector<HTMLInputElement>('input')!
-    const listbox = root.querySelector<HTMLElement>('[role="listbox"]')!
+    const root = document.querySelector<HTMLElement>('lumen-combobox')
+    if (!root) throw new Error('Expected Combobox root')
+
+    const input = root.querySelector<HTMLInputElement>('input')
+    const listbox = root.querySelector<HTMLElement>('[role="listbox"]')
+
+    if (!input || !listbox) throw new Error('Expected Combobox controls')
     const options = [...root.querySelectorAll<HTMLButtonElement>('[role="option"]')]
     const changes: string[] = []
 
@@ -808,9 +812,10 @@ describe('@santi020k/lumen-elements', () => {
 
     press(input, 'ArrowDown')
 
-    expect(document.activeElement).toBe(options[1])
+    expect(document.activeElement).toBe(input)
+    expect(input.getAttribute('aria-activedescendant')).toBe(options[1]?.id)
 
-    press(options[1]!, 'Enter')
+    press(input, 'Enter')
 
     expect(input.value).toBe('react')
     expect(changes).toEqual(['react'])
@@ -821,11 +826,11 @@ describe('@santi020k/lumen-elements', () => {
     input.dispatchEvent(new Event('input', { bubbles: true }))
     press(input, 'ArrowUp')
 
-    expect(document.activeElement).toBe(options[2])
+    expect(input.getAttribute('aria-activedescendant')).toBe(options[2]?.id)
 
-    press(options[2]!, 'Home')
+    press(input, 'ArrowDown')
 
-    expect(document.activeElement).toBe(options[0])
+    expect(input.getAttribute('aria-activedescendant')).toBe(options[0]?.id)
 
     document.body.dispatchEvent(new Event('pointerdown', { bubbles: true }))
 
@@ -1459,15 +1464,65 @@ describe('@santi020k/lumen-elements', () => {
 
     document.body.append(root)
 
-    expect(ranges[0]).toEqual({ endIndex: 2, startIndex: 0 })
-    expect(root.children[3]?.hasAttribute('hidden')).toBe(true)
+    expect(ranges[0]).toEqual({ endIndex: 1, startIndex: 0 })
+    expect(root.children[4]?.hasAttribute('hidden')).toBe(true)
 
     root.scrollTop = 88
     root.dispatchEvent(new Event('scroll'))
 
-    expect(ranges.at(-1)).toEqual({ endIndex: 4, startIndex: 2 })
-    expect(root.children[0]?.hasAttribute('hidden')).toBe(true)
-    expect(root.children[2]?.hasAttribute('hidden')).toBe(false)
+    expect(ranges.at(-1)).toEqual({ endIndex: 3, startIndex: 2 })
+    expect(root.children[1]?.hasAttribute('hidden')).toBe(true)
+    expect(root.children[3]?.hasAttribute('hidden')).toBe(false)
+  })
+
+  test('virtual list refreshes changed rows and restores state on reconnect', async () => {
+    const root = document.createElement('lumen-virtual-list')
+    const rows = Array.from({ length: 10 }, () => document.createElement('div'))
+
+    root.setAttribute('item-size', '40')
+    root.setAttribute('overscan', '0')
+    Object.defineProperty(root, 'clientHeight', { configurable: true, value: 80 })
+    root.append(...rows)
+    document.body.append(root)
+    root.scrollTop = 320
+    root.dispatchEvent(new Event('scroll'))
+    expect(root.dataset.uiRangeEnd).toBe('9')
+    for (const row of rows.slice(2)) row.remove()
+    await Promise.resolve()
+    await Promise.resolve()
+    expect(root.scrollTop).toBe(0)
+    expect(root.dataset.uiRangeEnd).toBe('1')
+    root.remove()
+    expect(root.children).toHaveLength(2)
+    expect(rows[0]?.hidden).toBe(false)
+    document.body.append(root)
+    expect(root.querySelectorAll('[data-ui-virtual-list-spacer]')).toHaveLength(2)
+  })
+
+  test('external rich-text engines own canceled command requests without browser fallback', () => {
+    const fallback = vi.fn(() => true)
+
+    Object.defineProperty(document, 'execCommand', { configurable: true, value: fallback })
+    const root = document.createElement('lumen-rich-text-editor')
+
+    root.dataset.uiEditorNativeState = 'false'
+    root.innerHTML = '<button data-ui-editor-command="bold" aria-pressed="true">Bold</button><div contenteditable="true">Draft</div>'
+    const completion = vi.fn()
+
+    root.addEventListener('ui:editor-command-request', event => {
+      const request = event as CustomEvent<{ command: string, executed: boolean }>
+
+      request.preventDefault()
+      request.detail.executed = true
+    })
+    root.addEventListener('ui:editor-command', completion)
+    document.body.append(root)
+    enhanceLumenRichTextEditors(document)
+    root.querySelector('button')?.click()
+    expect(fallback).not.toHaveBeenCalled()
+    expect(completion).toHaveBeenCalledOnce()
+    expect(root.querySelector('button')?.getAttribute('aria-pressed')).toBe('true')
+    Reflect.deleteProperty(document, 'execCommand')
   })
 
   test('theme builder applies tokens and emits export events', () => {

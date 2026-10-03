@@ -450,7 +450,7 @@ The shared catalog includes:
   `Skeleton` blocks while loading, and paginate large columns. See [Kanban composition and movement](kanban.md).
 - Use `DataTable`, `Tree`, `TreeGrid`, `VirtualList`, `Pagination`, and `Command` for dense data
   collection workflows. Astro and Elements wire selectable/sortable `DataTable` behavior and
-  `VirtualList` range events; React emits the same data attributes for app-level adapters. `Tree`
+  `VirtualList` range events; React also provides built-in fixed-height list windowing. `Tree`
   and `TreeGrid` use roving keyboard focus, and `VirtualList` emits `ui:virtual-list-range` as the
   rendered range changes. Use `createDataViewState`,
   `serializeDataViewState`, `parseDataViewState`, `applyDataViewState`, and `getVirtualRange` for
@@ -475,15 +475,19 @@ The shared catalog includes:
   for theme import/export and accessibility checks. Use `suggestReadableInk`, `mergeThemeTokens`,
   and `tuneThemeContrast` when generated palettes need readable foreground repair.
 - Use `RichTextEditor` with `ButtonGroup`, `ToggleGroup`, and `Textarea` for editor compositions.
-  Controls with `data-ui-editor-command` dispatch browser editing commands and emit
-  `ui:editor-command`; use `data-ui-editor-value` for headings, links, and other value-bearing
-  commands. Editable surfaces support common formatting shortcuts, synchronize toggle
-  `aria-pressed` state, and emit `ui:editor-change` with HTML and plain text. Astro `UIPrimitives`
-  and registered Web Components bind those controls directly; React apps can use
-  `useRichTextEditor` for `rootProps`, `getCommandProps`, `getEditableProps`, and `executeCommand`.
-  For Tiptap, ProseMirror, Lexical, or Markdown engines, keep the external editor
-  package in the app and bridge toolbar buttons through the emitted command event instead of adding
-  the editor engine to Lumen.
+  Controls with `data-ui-editor-command` request formatting, block, history, link or list commands;
+  use `data-ui-editor-value` for value-bearing commands. Before the browser executes a command,
+  Lumen emits the bubbling, cancelable `ui:editor-command-request` event. External engines must
+  call `preventDefault()` and set `event.detail.executed` to their synchronous result. A failed
+  external command never falls back to the browser. The existing `ui:editor-command` event reports
+  completion; use it for notifications, not executing the command again.
+  Editable surfaces support formatting shortcuts and emit `ui:editor-change` with HTML and text.
+  Set `data-ui-editor-native-state="false"` when an external engine owns toolbar state.
+  React apps can use `useRichTextEditor({ commandHandler: ({ command, value }) => boolean })`;
+  providing a handler disables native toolbar state syncing by default. Use `nativeState` to
+  explicitly control that policy. Engine commands are synchronous; engines with asynchronous
+  work should manage completion themselves. Keep Tiptap, ProseMirror, Lexical and other engines
+  in the application.
 - Use `Autocomplete`, `SearchField`, `NumberField`, `TimeField`, `DateRangePicker`, `ColorPicker`,
   and `TagGroup` when forms need more than plain text inputs. Add `data-ui-form` to forms that
   should reflect native Constraint Validation API state into `Field` error slots on blur and submit.
@@ -522,6 +526,7 @@ uses these CustomEvents:
 | `ui:virtual-list-range`          | `VirtualList` root `[data-ui-virtual-list]`              | `{ startIndex: number, endIndex: number }`                                                                                     | The virtual list calculates its visible range on init or scroll.                                          |
 | `ui:kanban-move-request`         | `KanbanBoard` root `[data-ui-kanban]`                    | `{ itemId: string, fromColumn: string, toColumn: string, beforeId?: string, input: 'keyboard' \| 'pointer' }`                  | A handle requests a controlled move; the event is cancellable and never moves data or DOM.                |
 | `ui:tag-remove`                  | `TagGroup` root `.ui-tag-group` or `[data-ui-tag-group]` | `{ value?: string }`                                                                                                           | A `[data-ui-tag-remove]` control removes its closest tag or list item.                                    |
+| `ui:editor-command-request` | `RichTextEditor` root `[data-ui-rich-text-editor]` | `{ command: string, executed: boolean, value?: string }` | Cancel before execution and set executed for external engine ownership. |
 | `ui:editor-command`              | `RichTextEditor` root `[data-ui-rich-text-editor]`       | `{ command: string, executed: boolean, value?: string }`                                                                       | A toolbar control or keyboard shortcut runs an editor command.                                            |
 | `ui:editor-change`               | `RichTextEditor` root `[data-ui-rich-text-editor]`       | `{ html: string, text: string }`                                                                                               | Editable content changes or an editor command runs.                                                       |
 | `ui:theme-change`                | `ThemeBuilder` root `[data-ui-theme-builder]`            | `{ hue: number, accentHue: number, mode: 'generated' \| 'manual', scheme: 'dark' \| 'light', tokens: Record<string, string> }` | Hue, manual color, mode, or scheme controls update generated tokens.                                      |
@@ -588,6 +593,20 @@ attributes, and accessible markup.
 
 ## Styling Rules for Generated Code
 
+- Read the [content flow contract](content-flow.md). Stack and Grid own sibling gaps; surfaces own
+  padding; Field owns label/control/feedback spacing. Do not add another child margin for the same
+  relationship. Use `gap="related"` for closely related controls, `gap="group"` for separate groups
+  and `gap="section"` for major sections. Retrieve spacing tokens through MCP.
+- Use Card parts for header/body/actions and a nested Stack inside complex CardContent. Card
+  handles missing or hidden parts and wraps footer actions. Choose `density="compact"`,
+  `"comfortable"` (default) or `"spacious"` instead of scattering padding overrides.
+- Keep text rhythm inside Prose or Typography. Verify long and translated text, enlarged text,
+  validation states, optional sections and mobile wrapping before calling a composition finished.
+- Retrieve complete `content-flow-header`, `content-flow-settings`, `content-flow-list` and
+  `content-flow-actions` examples with `lumen_get_recipe`; the CLI installs the same compositions.
+  Keep one outer Container for fluid gutters. Card permits interactive overflow; use AspectRatio
+  to clip media. Reading blocks trim their outer margins, so avoid compensating offsets.
+
 - Do not require consumers to configure Tailwind for Lumen components.
 - Prefer component props and composition before adding custom CSS.
 - Assign each visible outer edge to one container. For flush content inside a rounded frame,
@@ -641,3 +660,47 @@ trigger, and supports keyboard dismissal and responsive scrolling. Use `validate
 for domain restrictions and `renderSummary` for draft details. Optional
 `name={{ start: 'from', end: 'to' }}` submits applied ISO values through hidden inputs.
 See the React README for the complete usage and browser fallback contract.
+
+## Fixed-height virtual lists
+
+`VirtualList` uses the same DOM windowing controller in Astro, React and Elements. All rows remain
+mounted; offscreen rows are hidden, and inert spacers preserve the complete scroll height. This
+reduces displayed rows, not the cost of creating the initial DOM. Use pagination or an application
+renderer when retaining the entire dataset in the DOM is too expensive.
+
+Use `itemSize` (Astro/React) or `item-size` (Elements) for a fixed row height in pixels, defaulting
+to 44. `overscan` defaults to four rows on each side. Every direct element child is a row; put
+controls inside it, and keep headers or empty-state actions outside the list. Rows must fit the
+configured height; variable-height measurement is not supported. Do not add external row margins
+or gaps. Initially hidden rows remain hidden and are excluded from the window.
+
+The controller refreshes on scrolling, resizing, direct child changes and sizing attribute changes.
+A focused row and its neighboring rows remain available for native Tab navigation, which can extend
+the displayed window until focus moves. Name the scroll container using `aria-label` or
+`aria-labelledby`; it is keyboard-focusable by default. `ui:virtual-list-range` reports inclusive
+`startIndex` and `endIndex` when the displayed range or item count changes. Empty lists use
+`{ startIndex: 0, endIndex: -1 }`. `data-ui-range-start` and `data-ui-range-end` mirror the current
+window. Elements disconnect and React unmount restore original row styles and hidden state.
+
+## NumberField boundary
+
+`NumberField` remains a native number-input wrapper. The v4 consumer audits do not establish a
+shared requirement for a locale-aware draft parser. Applications needing decimal-comma entry,
+lossless monetary drafts or currency rules should retain their explicit parsing and validation
+policy; Lumen must not infer currency units or precision from locale.
+
+
+## Combobox keyboard behavior in v4
+
+Combobox keeps DOM focus in its input while Arrow Up/Down changes the active option through
+`aria-activedescendant`. Enter commits the active option only while the list is open; without an
+active option, normal form submission remains available. Home, End, Left and Right retain native
+text editing. Composition input and canceled keyboard events do not trigger selection or dismissal.
+Escape closes the innermost open control first, preserving an enclosing popup or dialog until the
+next Escape. Tab dismisses the list when focus leaves the component.
+
+Astro and Elements observe added, removed, relabeled and disabled options, and delegate pointer
+selection to the current list. React derives options from its current props and reports committed
+selections through `onChange`, including controlled inputs. Disabled and read-only inputs stay closed.
+Applications should keep focus on the input and observe `aria-activedescendant` instead of calling
+focus on option buttons. The DOM adapters match both option labels and values.

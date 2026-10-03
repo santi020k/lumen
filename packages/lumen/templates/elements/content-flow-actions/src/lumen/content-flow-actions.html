@@ -1,0 +1,11 @@
+<script type="module">
+  import { defineLumenElements } from '@santi020k/lumen-elements/define'
+  defineLumenElements(['Stack', 'Button'])
+</script>
+
+<lumen-stack role="group" aria-label="Changes" gap="related">
+  <p role="status">You have unsaved changes.</p>
+  <lumen-stack direction="horizontal" gap="related" wrap>
+    <lumen-button>Save changes</lumen-button><lumen-button variant="secondary">Discard changes</lumen-button>
+  </lumen-stack>
+</lumen-stack>

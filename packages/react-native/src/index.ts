@@ -123,9 +123,10 @@ export {
   resolveLumenMenuPosition
 } from './overlay-recipes.js'
 export {
+  LumenCountryFlag,
   LumenPhoneInput,
-  type LumenPhoneInputProps
-} from './phone-components.js'
+  type LumenPhoneInputProps,
+  LumenPhoneNumberView } from './phone-components.js'
 export {
   LumenCollapsibleNavigationBar,
   type LumenCollapsibleNavigationBarProps,

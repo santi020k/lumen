@@ -76,6 +76,82 @@ const glassCount = componentDocs.filter(component => component.glass).length
       </dl>
     </header>
 
+    <div class="components-explorer">
+      <div class="components-filter">
+        <Label for="component-filter">Search the component library</Label>
+        <div class="components-filter__control">
+          <Icon decorative name="search" size="sm" />
+          <Input
+            autocomplete="off"
+            id="component-filter"
+            placeholder="Search by name, category, or use case..."
+            type="search"
+            data-component-filter
+          />
+          <Kbd>/</Kbd>
+        </div>
+        <p id="component-filter-status" aria-live="polite">
+          Showing all {componentDocs.length} components
+        </p>
+      </div>
+
+      <nav class="components-categories" aria-label="Component categories">
+        {componentGroups.map(({ category, components }) => (
+          <Link href={`#${categoryId(category)}`}>
+            <span>{category}</span>
+            <span>{components.length}</span>
+          </Link>
+        ))}
+      </nav>
+    </div>
+
+    <div class="components-catalog" data-component-catalog>
+      {componentGroups.map(({ category, components }) => (
+        <section
+          aria-labelledby={`${categoryId(category)}-title`}
+          data-component-section
+          id={categoryId(category)}
+        >
+          <div class="components-section__heading">
+            <div>
+              <p>{components.length} components</p>
+              <h2 id={`${categoryId(category)}-title`}>{category}</h2>
+            </div>
+            <p>{categoryDescriptions[category]}</p>
+          </div>
+
+          <div class="components-grid">
+            {components.map(component => (
+              <Link
+                aria-label={`${component.name}: ${component.summary}`}
+                data-component-card
+                data-component-search={`${component.name} ${category} ${component.summary} ${component.guidance?.when ?? ''} ${component.guidance?.distinction ?? ''}`.toLowerCase()}
+                href={`/docs/components/${toSlug(component.name)}`}
+              >
+                <Card class="components-card" variant="interactive">
+                  <div class="components-card__top">
+                    <h3>{component.name}</h3>
+                    {component.glass && <Badge variant="outline">Glass</Badge>}
+                  </div>
+                  <p>{component.summary}</p>
+                  <span class="components-card__link">
+                    View usage
+                    <Icon decorative name="arrow-right" size="sm" />
+                  </span>
+                </Card>
+              </Link>
+            ))}
+          </div>
+        </section>
+      ))}
+
+      <div class="components-empty" data-component-empty hidden>
+        <Icon decorative name="search-x" size="lg" />
+        <h2>No components found</h2>
+        <p>Try a component name, category, or a broader use case.</p>
+      </div>
+    </div>
+
     <section class="components-live" aria-labelledby="components-live-title">
       <div class="components-live__heading">
         <div>
@@ -261,81 +337,6 @@ const glassCount = componentDocs.filter(component => component.glass).length
       </div>
     </section>
 
-    <div class="components-explorer">
-      <div class="components-filter">
-        <Label for="component-filter">Search the component library</Label>
-        <div class="components-filter__control">
-          <Icon decorative name="search" size="sm" />
-          <Input
-            autocomplete="off"
-            id="component-filter"
-            placeholder="Search by name, category, or use case..."
-            type="search"
-            data-component-filter
-          />
-          <Kbd>/</Kbd>
-        </div>
-        <p id="component-filter-status" aria-live="polite">
-          Showing all {componentDocs.length} components
-        </p>
-      </div>
-
-      <nav class="components-categories" aria-label="Component categories">
-        {componentGroups.map(({ category, components }) => (
-          <Link href={`#${categoryId(category)}`}>
-            <span>{category}</span>
-            <span>{components.length}</span>
-          </Link>
-        ))}
-      </nav>
-    </div>
-
-    <div class="components-catalog" data-component-catalog>
-      {componentGroups.map(({ category, components }) => (
-        <section
-          aria-labelledby={`${categoryId(category)}-title`}
-          data-component-section
-          id={categoryId(category)}
-        >
-          <div class="components-section__heading">
-            <div>
-              <p>{components.length} components</p>
-              <h2 id={`${categoryId(category)}-title`}>{category}</h2>
-            </div>
-            <p>{categoryDescriptions[category]}</p>
-          </div>
-
-          <div class="components-grid">
-            {components.map(component => (
-              <Link
-                aria-label={`${component.name}: ${component.summary}`}
-                data-component-card
-                data-component-search={`${component.name} ${category} ${component.summary} ${component.guidance?.when ?? ''} ${component.guidance?.distinction ?? ''}`.toLowerCase()}
-                href={`/docs/components/${toSlug(component.name)}`}
-              >
-                <Card class="components-card" variant="interactive">
-                  <div class="components-card__top">
-                    <h3>{component.name}</h3>
-                    {component.glass && <Badge variant="outline">Glass</Badge>}
-                  </div>
-                  <p>{component.summary}</p>
-                  <span class="components-card__link">
-                    View usage
-                    <Icon decorative name="arrow-right" size="sm" />
-                  </span>
-                </Card>
-              </Link>
-            ))}
-          </div>
-        </section>
-      ))}
-
-      <div class="components-empty" data-component-empty hidden>
-        <Icon decorative name="search-x" size="lg" />
-        <h2>No components found</h2>
-        <p>Try a component name, category, or a broader use case.</p>
-      </div>
-    </div>
   </div>
 </DocsLayout>
 
@@ -405,9 +406,9 @@ const glassCount = componentDocs.filter(component => component.glass).length
 
   .components-hero {
     display: grid;
-    gap: 2rem;
+    gap: 1.25rem;
     overflow: hidden;
-    padding: clamp(1.5rem, 4vw, 3rem);
+    padding: clamp(1.25rem, 3vw, 2rem);
     border: 1px solid hsl(var(--line));
     border-radius: 1.5rem;
     background:
@@ -423,7 +424,7 @@ const glassCount = componentDocs.filter(component => component.glass).length
     max-width: 12ch;
     margin-top: 1rem;
     color: hsl(var(--ink));
-    font-size: clamp(2.5rem, 7vw, 5rem);
+    font-size: clamp(2rem, 4vw, 3rem);
     font-weight: 900;
     letter-spacing: -0.04em;
     line-height: 1.02;
@@ -431,10 +432,10 @@ const glassCount = componentDocs.filter(component => component.glass).length
 
   .components-hero__copy > p {
     max-width: 42rem;
-    margin-top: 1.25rem;
+    margin-top: 0.75rem;
     color: hsl(var(--ink-soft));
-    font-size: 1.05rem;
-    line-height: 1.75;
+    font-size: 0.95rem;
+    line-height: 1.6;
   }
 
   .components-stats {
@@ -446,7 +447,8 @@ const glassCount = componentDocs.filter(component => component.glass).length
   }
 
   .components-stats div {
-    padding: 1rem;
+    min-width: 0;
+    padding: 0.75rem;
     border: 1px solid hsl(var(--line));
     border-radius: 1rem;
     background: hsl(var(--canvas) / 0.72);
@@ -455,9 +457,9 @@ const glassCount = componentDocs.filter(component => component.glass).length
 
   .components-stats dt {
     color: hsl(var(--ink-muted));
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     font-weight: 800;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.025em;
     text-transform: uppercase;
   }
 
@@ -936,25 +938,30 @@ const glassCount = componentDocs.filter(component => component.glass).length
 
   @media (min-width: 64rem) {
     .components-hero {
-      min-height: 28rem;
       grid-template-columns: minmax(0, 1.35fr) minmax(16rem, 0.65fr);
       align-items: end;
     }
 
     .components-stats {
-      grid-template-columns: 1fr;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.5rem;
     }
   }
 
   @media (max-width: 36rem) {
     .components-stats {
-      grid-template-columns: 1fr;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.5rem;
     }
 
     .components-stats div {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      padding: 0.65rem;
+      border-radius: 0.65rem;
+    }
+
+    .components-stats dt {
+      font-size: 0.6rem;
+      letter-spacing: 0;
     }
 
     .components-stats dd {

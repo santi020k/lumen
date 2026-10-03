@@ -1,0 +1,19 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+import { formatLumenPhoneNumber, type LumenPhoneNumber } from '@santi020k/lumen-core'
+
+import CountryFlag from './CountryFlag.astro'
+
+interface Props extends HTMLAttributes<'span'> {
+  value: LumenPhoneNumber
+  link?: boolean
+}
+
+const { value, link = false, class: className, ...props } = Astro.props
+const Tag = link && value.isValid && value.e164 ? 'a' : 'span'
+---
+<Tag {...props} class:list={['ui-phone-number', className]} href={link && value.isValid && value.e164 ? `tel:${value.e164}` : undefined} title={value.country.displayName}>
+  <CountryFlag decorative regionCode={value.country.regionCode} />
+  <span>{formatLumenPhoneNumber(value) || '—'}</span>
+</Tag>

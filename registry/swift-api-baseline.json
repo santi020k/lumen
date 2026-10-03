@@ -490,13 +490,13 @@
           "precise": "s:7LumenUI0A10PhoneInputV"
         },
         {
-          "declaration": "@MainActor init(_ label: String, value: Binding<LumenPhoneNumber>, countries: [LumenPhoneCountry]? = nil, locale: Locale = .current, description: String? = nil, errorMessage: String? = nil, showValidationError: Bool = true, invalidNumberMessage: String = \"Enter a complete phone number.\", numberLabel: String = \"Phone number\", countrySelectorLabel: String = \"Country code\", countryPickerTitle: String = \"Select country\", countrySearchLabel: String = \"Search countries\", required: Bool = false, enabled: Bool = true)",
+          "declaration": "@MainActor init(_ label: String, value: Binding<LumenPhoneNumber>, countries: [LumenPhoneCountry]? = nil, locale: Locale = .current, description: String? = nil, errorMessage: String? = nil, showValidationError: Bool = true, invalidNumberMessage: String = \"Enter a complete phone number.\", numberLabel: String = \"Phone number\", countrySelectorLabel: String = \"Country code\", countryPickerTitle: String = \"Select country\", countrySearchLabel: String = \"Search countries\", required: Bool = false, enabled: Bool = true, readOnly: Bool = false)",
           "kind": "swift.init",
           "path": [
             "LumenPhoneInput",
-            "init(_:value:countries:locale:description:errorMessage:showValidationError:invalidNumberMessage:numberLabel:countrySelectorLabel:countryPickerTitle:countrySearchLabel:required:enabled:)"
+            "init(_:value:countries:locale:description:errorMessage:showValidationError:invalidNumberMessage:numberLabel:countrySelectorLabel:countryPickerTitle:countrySearchLabel:required:enabled:readOnly:)"
           ],
-          "precise": "s:7LumenUI0A10PhoneInputV_5value9countries6locale11description12errorMessage19showValidationError013invalidNumberJ011numberLabel015countrySelectorQ00R11PickerTitle0r6SearchQ08required7enabledACSS_05SwiftB07BindingVyAA0acO0VGSayAA0aC7CountryVGSg10Foundation6LocaleVSSSgA2_SbS5SS2btcfc"
+          "precise": "s:7LumenUI0A10PhoneInputV_5value9countries6locale11description12errorMessage19showValidationError013invalidNumberJ011numberLabel015countrySelectorQ00R11PickerTitle0r6SearchQ08required7enabled8readOnlyACSS_05SwiftB07BindingVyAA0acO0VGSayAA0aC7CountryVGSg10Foundation6LocaleVSSSgA3_SbS5SS3btcfc"
         },
         {
           "declaration": "@MainActor var body: some View { get }",
@@ -1070,6 +1070,32 @@
             "sm"
           ],
           "precise": "s:7LumenUI0A11ControlSizeO2smyA2CmF"
+        },
+        {
+          "declaration": "@MainActor struct LumenCountryFlag",
+          "kind": "swift.struct",
+          "path": [
+            "LumenCountryFlag"
+          ],
+          "precise": "s:7LumenUI0A11CountryFlagV"
+        },
+        {
+          "declaration": "@MainActor init(regionCode: String, decorative: Bool = false)",
+          "kind": "swift.init",
+          "path": [
+            "LumenCountryFlag",
+            "init(regionCode:decorative:)"
+          ],
+          "precise": "s:7LumenUI0A11CountryFlagV10regionCode10decorativeACSS_Sbtcfc"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenCountryFlag",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A11CountryFlagV4bodyQrvp"
         },
         {
           "declaration": "struct LumenCubicBezier",
@@ -3225,6 +3251,32 @@
             "count(_:)"
           ],
           "precise": "s:7LumenUI0A15NavigationBadgeO5countyACSiFZ"
+        },
+        {
+          "declaration": "@MainActor struct LumenPhoneNumberView",
+          "kind": "swift.struct",
+          "path": [
+            "LumenPhoneNumberView"
+          ],
+          "precise": "s:7LumenUI0A15PhoneNumberViewV"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenPhoneNumberView",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A15PhoneNumberViewV4bodyQrvp"
+        },
+        {
+          "declaration": "@MainActor init(value: LumenPhoneNumber)",
+          "kind": "swift.init",
+          "path": [
+            "LumenPhoneNumberView",
+            "init(value:)"
+          ],
+          "precise": "s:7LumenUI0A15PhoneNumberViewV5valueAcA0acD0V_tcfc"
         },
         {
           "declaration": "enum LumenPieChartVariant",
@@ -28808,13 +28860,13 @@
           "precise": "s:7LumenUI0A10PhoneInputV"
         },
         {
-          "declaration": "@MainActor init(_ label: String, value: Binding<LumenPhoneNumber>, countries: [LumenPhoneCountry]? = nil, locale: Locale = .current, description: String? = nil, errorMessage: String? = nil, showValidationError: Bool = true, invalidNumberMessage: String = \"Enter a complete phone number.\", numberLabel: String = \"Phone number\", countrySelectorLabel: String = \"Country code\", countryPickerTitle: String = \"Select country\", countrySearchLabel: String = \"Search countries\", required: Bool = false, enabled: Bool = true)",
+          "declaration": "@MainActor init(_ label: String, value: Binding<LumenPhoneNumber>, countries: [LumenPhoneCountry]? = nil, locale: Locale = .current, description: String? = nil, errorMessage: String? = nil, showValidationError: Bool = true, invalidNumberMessage: String = \"Enter a complete phone number.\", numberLabel: String = \"Phone number\", countrySelectorLabel: String = \"Country code\", countryPickerTitle: String = \"Select country\", countrySearchLabel: String = \"Search countries\", required: Bool = false, enabled: Bool = true, readOnly: Bool = false)",
           "kind": "swift.init",
           "path": [
             "LumenPhoneInput",
-            "init(_:value:countries:locale:description:errorMessage:showValidationError:invalidNumberMessage:numberLabel:countrySelectorLabel:countryPickerTitle:countrySearchLabel:required:enabled:)"
+            "init(_:value:countries:locale:description:errorMessage:showValidationError:invalidNumberMessage:numberLabel:countrySelectorLabel:countryPickerTitle:countrySearchLabel:required:enabled:readOnly:)"
           ],
-          "precise": "s:7LumenUI0A10PhoneInputV_5value9countries6locale11description12errorMessage19showValidationError013invalidNumberJ011numberLabel015countrySelectorQ00R11PickerTitle0r6SearchQ08required7enabledACSS_05SwiftB07BindingVyAA0acO0VGSayAA0aC7CountryVGSg10Foundation6LocaleVSSSgA2_SbS5SS2btcfc"
+          "precise": "s:7LumenUI0A10PhoneInputV_5value9countries6locale11description12errorMessage19showValidationError013invalidNumberJ011numberLabel015countrySelectorQ00R11PickerTitle0r6SearchQ08required7enabled8readOnlyACSS_05SwiftB07BindingVyAA0acO0VGSayAA0aC7CountryVGSg10Foundation6LocaleVSSSgA3_SbS5SS3btcfc"
         },
         {
           "declaration": "@MainActor var body: some View { get }",
@@ -29388,6 +29440,32 @@
             "sm"
           ],
           "precise": "s:7LumenUI0A11ControlSizeO2smyA2CmF"
+        },
+        {
+          "declaration": "@MainActor struct LumenCountryFlag",
+          "kind": "swift.struct",
+          "path": [
+            "LumenCountryFlag"
+          ],
+          "precise": "s:7LumenUI0A11CountryFlagV"
+        },
+        {
+          "declaration": "@MainActor init(regionCode: String, decorative: Bool = false)",
+          "kind": "swift.init",
+          "path": [
+            "LumenCountryFlag",
+            "init(regionCode:decorative:)"
+          ],
+          "precise": "s:7LumenUI0A11CountryFlagV10regionCode10decorativeACSS_Sbtcfc"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenCountryFlag",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A11CountryFlagV4bodyQrvp"
         },
         {
           "declaration": "struct LumenCubicBezier",
@@ -31455,6 +31533,32 @@
             "count(_:)"
           ],
           "precise": "s:7LumenUI0A15NavigationBadgeO5countyACSiFZ"
+        },
+        {
+          "declaration": "@MainActor struct LumenPhoneNumberView",
+          "kind": "swift.struct",
+          "path": [
+            "LumenPhoneNumberView"
+          ],
+          "precise": "s:7LumenUI0A15PhoneNumberViewV"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenPhoneNumberView",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A15PhoneNumberViewV4bodyQrvp"
+        },
+        {
+          "declaration": "@MainActor init(value: LumenPhoneNumber)",
+          "kind": "swift.init",
+          "path": [
+            "LumenPhoneNumberView",
+            "init(value:)"
+          ],
+          "precise": "s:7LumenUI0A15PhoneNumberViewV5valueAcA0acD0V_tcfc"
         },
         {
           "declaration": "enum LumenPieChartVariant",
@@ -83607,13 +83711,13 @@
           "precise": "s:7LumenUI0A10PhoneInputV"
         },
         {
-          "declaration": "@MainActor init(_ label: String, value: Binding<LumenPhoneNumber>, countries: [LumenPhoneCountry]? = nil, locale: Locale = .current, description: String? = nil, errorMessage: String? = nil, showValidationError: Bool = true, invalidNumberMessage: String = \"Enter a complete phone number.\", numberLabel: String = \"Phone number\", countrySelectorLabel: String = \"Country code\", countryPickerTitle: String = \"Select country\", countrySearchLabel: String = \"Search countries\", required: Bool = false, enabled: Bool = true)",
+          "declaration": "@MainActor init(_ label: String, value: Binding<LumenPhoneNumber>, countries: [LumenPhoneCountry]? = nil, locale: Locale = .current, description: String? = nil, errorMessage: String? = nil, showValidationError: Bool = true, invalidNumberMessage: String = \"Enter a complete phone number.\", numberLabel: String = \"Phone number\", countrySelectorLabel: String = \"Country code\", countryPickerTitle: String = \"Select country\", countrySearchLabel: String = \"Search countries\", required: Bool = false, enabled: Bool = true, readOnly: Bool = false)",
           "kind": "swift.init",
           "path": [
             "LumenPhoneInput",
-            "init(_:value:countries:locale:description:errorMessage:showValidationError:invalidNumberMessage:numberLabel:countrySelectorLabel:countryPickerTitle:countrySearchLabel:required:enabled:)"
+            "init(_:value:countries:locale:description:errorMessage:showValidationError:invalidNumberMessage:numberLabel:countrySelectorLabel:countryPickerTitle:countrySearchLabel:required:enabled:readOnly:)"
           ],
-          "precise": "s:7LumenUI0A10PhoneInputV_5value9countries6locale11description12errorMessage19showValidationError013invalidNumberJ011numberLabel015countrySelectorQ00R11PickerTitle0r6SearchQ08required7enabledACSS_05SwiftB07BindingVyAA0acO0VGSayAA0aC7CountryVGSg10Foundation6LocaleVSSSgA2_SbS5SS2btcfc"
+          "precise": "s:7LumenUI0A10PhoneInputV_5value9countries6locale11description12errorMessage19showValidationError013invalidNumberJ011numberLabel015countrySelectorQ00R11PickerTitle0r6SearchQ08required7enabled8readOnlyACSS_05SwiftB07BindingVyAA0acO0VGSayAA0aC7CountryVGSg10Foundation6LocaleVSSSgA3_SbS5SS3btcfc"
         },
         {
           "declaration": "@MainActor var body: some View { get }",
@@ -84187,6 +84291,32 @@
             "sm"
           ],
           "precise": "s:7LumenUI0A11ControlSizeO2smyA2CmF"
+        },
+        {
+          "declaration": "@MainActor struct LumenCountryFlag",
+          "kind": "swift.struct",
+          "path": [
+            "LumenCountryFlag"
+          ],
+          "precise": "s:7LumenUI0A11CountryFlagV"
+        },
+        {
+          "declaration": "@MainActor init(regionCode: String, decorative: Bool = false)",
+          "kind": "swift.init",
+          "path": [
+            "LumenCountryFlag",
+            "init(regionCode:decorative:)"
+          ],
+          "precise": "s:7LumenUI0A11CountryFlagV10regionCode10decorativeACSS_Sbtcfc"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenCountryFlag",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A11CountryFlagV4bodyQrvp"
         },
         {
           "declaration": "struct LumenCubicBezier",
@@ -86254,6 +86384,32 @@
             "count(_:)"
           ],
           "precise": "s:7LumenUI0A15NavigationBadgeO5countyACSiFZ"
+        },
+        {
+          "declaration": "@MainActor struct LumenPhoneNumberView",
+          "kind": "swift.struct",
+          "path": [
+            "LumenPhoneNumberView"
+          ],
+          "precise": "s:7LumenUI0A15PhoneNumberViewV"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenPhoneNumberView",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A15PhoneNumberViewV4bodyQrvp"
+        },
+        {
+          "declaration": "@MainActor init(value: LumenPhoneNumber)",
+          "kind": "swift.init",
+          "path": [
+            "LumenPhoneNumberView",
+            "init(value:)"
+          ],
+          "precise": "s:7LumenUI0A15PhoneNumberViewV5valueAcA0acD0V_tcfc"
         },
         {
           "declaration": "enum LumenPieChartVariant",

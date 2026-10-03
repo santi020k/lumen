@@ -1,16 +1,24 @@
 import { readFile } from 'node:fs/promises'
 import { gzipSync } from 'node:zlib'
 
+// Phone v4 adds measured presentation/validation code and shared offline artwork.
 const allBudgets = [
+  { file: 'packages/core/dist/phone-flags.generated.js', gzip: 205_000, packageName: '@santi020k/lumen-core', raw: 305_000 },
+
+  { file: 'packages/react/dist/combobox.js', gzip: 2_500, packageName: '@santi020k/lumen-react', raw: 10_000 },
+  { file: 'packages/core/dist/combobox.js', gzip: 2_400, packageName: '@santi020k/lumen-core', raw: 9_000 },
+  { file: 'packages/core/dist/virtual-list.js', gzip: 2_200, packageName: '@santi020k/lumen-core', raw: 7_000 },
+  { file: 'packages/react/dist/virtual-list.js', gzip: 1_000, packageName: '@santi020k/lumen-react', raw: 3_000 },
+  { file: 'packages/react/dist/rich-text-editor.js', gzip: 2_500, packageName: '@santi020k/lumen-react', raw: 10_000 },
   { file: 'packages/astro/runtime/UIPrimitives.astro', gzip: 33_000, packageName: '@santi020k/lumen-astro', raw: 167_000 },
   { file: 'packages/astro/runtime/controllers/motion.ts', gzip: 1_500, packageName: '@santi020k/lumen-astro', raw: 5_000 },
   { file: 'packages/astro/runtime/controllers/dialogs.ts', gzip: 2_000, packageName: '@santi020k/lumen-astro', raw: 6_000 },
   { file: 'packages/astro/runtime/controllers/document-navigation.ts', gzip: 1_500, packageName: '@santi020k/lumen-astro', raw: 5_000 },
   { file: 'packages/astro/runtime/controllers/image-comparison.ts', gzip: 900, packageName: '@santi020k/lumen-astro', raw: 2_000 },
-  { file: 'packages/lumen/styles.css', gzip: 31_000, packageName: '@santi020k/lumen', raw: 186_000 },
-  { file: 'packages/react/dist/components.js', gzip: 34_000, packageName: '@santi020k/lumen-react', raw: 166_000 },
+  { file: 'packages/lumen/styles.css', gzip: 32_000, packageName: '@santi020k/lumen', raw: 190_000 },
+  { file: 'packages/react/dist/components.js', gzip: 35_000, packageName: '@santi020k/lumen-react', raw: 171_000 },
   { file: 'packages/react/dist/hooks.js', gzip: 20_000, packageName: '@santi020k/lumen-react', raw: 100_000 },
-  { file: 'packages/elements/dist/define.js', gzip: 43_000, packageName: '@santi020k/lumen-elements', raw: 250_000 }
+  { file: 'packages/elements/dist/define.js', gzip: 45_000, packageName: '@santi020k/lumen-elements', raw: 261_000 }
 ]
 
 const requestedPackagesSource = process.env.LUMEN_RELEASE_PACKAGES

@@ -15,6 +15,64 @@ export const lumenRegistry = {
   ],
   items: [
     {
+      name: 'content-flow-header',
+      type: 'recipe',
+      components: [
+        'Button',
+        'Stack',
+        'Typography'
+      ],
+      files: [
+        'docs/content-flow.md'
+      ]
+    },
+    {
+      name: 'content-flow-settings',
+      type: 'recipe',
+      components: [
+        'Button',
+        'Card',
+        'CardHeader',
+        'CardTitle',
+        'CardDescription',
+        'CardContent',
+        'CardFooter',
+        'Field',
+        'Input',
+        'Label',
+        'Stack'
+      ],
+      files: [
+        'docs/content-flow.md'
+      ]
+    },
+    {
+      name: 'content-flow-list',
+      type: 'recipe',
+      components: [
+        'Badge',
+        'Card',
+        'CardHeader',
+        'CardTitle',
+        'CardContent',
+        'Stack'
+      ],
+      files: [
+        'docs/content-flow.md'
+      ]
+    },
+    {
+      name: 'content-flow-actions',
+      type: 'recipe',
+      components: [
+        'Button',
+        'Stack'
+      ],
+      files: [
+        'docs/content-flow.md'
+      ]
+    },
+    {
       name: 'all-components',
       type: 'component-set',
       files: [
@@ -1476,6 +1534,8 @@ export const lumenRegistry = {
       category: 'Forms',
       files: [
         'packages/astro/components/PhoneInput.astro',
+        'packages/astro/components/CountryFlag.astro',
+        'packages/astro/components/PhoneNumber.astro',
         'packages/astro/styles/lumen.css'
       ],
       dependencies: [

@@ -87,6 +87,10 @@ describe('@santi020k/lumen umbrella package', () => {
 
   test('exports registry recipes and components for product surfaces', () => {
     expect(lumenRegistry.items.map(item => item.name)).toEqual([
+      'content-flow-header',
+      'content-flow-settings',
+      'content-flow-list',
+      'content-flow-actions',
       'all-components',
       'advanced-fields',
       'error-handling',
@@ -242,6 +246,28 @@ describe('@santi020k/lumen umbrella package', () => {
       expect(elementsSource).toContain('defineLumenElements()')
       expect(elementsSource).toContain('<lumen-theme-builder')
       expect(elementsSource).toContain('data-lumen-theme-builder-recipe')
+    } finally {
+      await rm(cwd, { force: true, recursive: true })
+    }
+  })
+
+  test('installs content-flow compositions for all web adapters', async () => {
+    const cwd = await mkdtemp(join(tmpdir(), 'lumen-content-flow-'))
+
+    try {
+      for (const target of ['astro', 'react', 'elements'] as const) {
+        for (const name of ['header', 'settings', 'list', 'actions']) {
+          const recipe = `content-flow-${name}`
+          const result = await addLumenRegistryItem(recipe, { cwd: join(cwd, target), target })
+          const extension = { astro: 'astro', elements: 'html', react: 'tsx' }[target]
+          const path = `src/lumen/${recipe}.${extension}`
+          const source = await readFile(join(cwd, target, path), 'utf8')
+
+          expect(result.added).toEqual([path])
+          expect(source).toContain(`@santi020k/lumen-${target}`)
+          expect(source).toContain(name === 'settings' ? 'group' : 'related')
+        }
+      }
     } finally {
       await rm(cwd, { force: true, recursive: true })
     }

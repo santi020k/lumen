@@ -7,6 +7,11 @@ import {
 
 export const lumenCardElementConfig = {
   attributeClasses: {
+    density: {
+      comfortable: 'ui-card--comfortable',
+      compact: 'ui-card--compact',
+      spacious: 'ui-card--spacious'
+    },
     glass: {
       strong: 'ui-card--glass ui-glass-strong',
       subtle: 'ui-card--glass ui-glass-subtle',
@@ -20,7 +25,7 @@ export const lumenCardElementConfig = {
     }
   },
   baseClassName: 'ui-card',
-  defaults: { 'data-slot': 'card', variant: 'default' },
+  defaults: { 'data-slot': 'card', density: 'comfortable', variant: 'default' },
   tagName: 'lumen-card'
 } as const satisfies LumenElementConfig
 

@@ -81,6 +81,33 @@ Listen to these events on the document, or on the component root `[data-ui-*]` e
 
 ### Migrating from version 3 to version 4
 
+#### Content flow and layout spacing
+
+Web Stack/Grid gap sizes now match the canonical foundation scale: `md` is 12px, `lg` is 16px,
+and `xl` is 24px. To preserve a v3 explicit layout, replace old `md` with `group` (or `lg`), old
+`lg` with `xl`, and old `xl` with `2xl`. Defaults remain 16px through `gap="group"`. New choices
+include `xs`, `2xl`, `3xl`, `related`, `group` and `section`; do not change native gap props by
+applying this web-only migration. Native numeric spacing values are unchanged.
+
+Card now owns direct-child spacing with gap instead of child margins. Comfortable padding becomes
+24px; compact uses 16px and spacious 32px. Card content alone no longer receives a phantom top gap.
+Hidden/empty parts leave no space and footer actions wrap. Remove compensating section margins,
+negative offsets and child padding for the same relationship. Stack/Grid also reset direct-child
+external margins; custom unlayered CSS and documented Card variables can override defaults.
+Field spacing now uses the related token (8px). See [content flow](content-flow.md).
+
+Container side gutters now grow from 16px on a narrow phone to 32px on wider screens. Set
+`--ui-container-gutter: 1rem` on the Container to preserve a fixed gutter; `size="full"` is still
+edge-to-edge. Prose and Typography trim their first/last child margins and give headings more room
+above than below. Remove offsets that compensated for the old reading-block margins.
+
+Card no longer clips overflow. Move media clipping into AspectRatio, keeping Image `radius="none"`
+inside that rounded frame. Verify custom menus and focus rings rather than restoring card-wide
+clipping. Wrapping Stack actions now allow long labels to wrap inside their available width.
+
+Before publication, rollback is reverting this candidate commit or continuing to use released v3
+packages. After publication, use a new version for corrections; do not move published tags.
+
 Lumen 4 consolidates fixes from twenty consumer audits. Upgrade the adapter and its companion
 packages together, import the matching stylesheet, and rebuild native consumers. The v4 branch
 is a local release candidate; published projects in the showcase still use their deployed versions.
@@ -258,3 +285,11 @@ links; keep the site logo, theme switch, account menu, and unrelated utility act
 root so they retain independent Tab stops. Use `variant="unstyled"` when adopting the navigation
 semantics and runtime inside an established visual system. `Sidebar variant="unstyled"` and
 `Link variant="inherit"` provide the matching low-presentation migration path.
+
+## Combobox focus and nested Escape
+
+V4 keeps focus in editable Combobox inputs. Update tests and custom option styling that assumed
+option buttons receive focus to use `aria-activedescendant` and `aria-selected` instead. Arrow keys
+activate an option; Enter commits it. Enter without an active option retains native form behavior.
+Nested controls consume their own Escape dismissal. Parent keyboard handlers should honor
+`event.defaultPrevented` before closing or moving focus. No persisted data migration is required.

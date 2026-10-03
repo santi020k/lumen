@@ -94,14 +94,57 @@ for (const adapter of adapters) {
 
       await input.press("ArrowDown");
 
-      await expect(reactOption).toBeFocused();
+      await expect(input).toBeFocused();
+      await expect(reactOption).toHaveAttribute("aria-selected", "true");
 
-      await reactOption.press("Enter");
+      await input.press("Enter");
 
       await expect(input).toHaveValue("React");
       await expect(input).toHaveAttribute("aria-expanded", "false");
       await expect(input).toBeFocused();
     });
+
+    test('keeps text editing and composition in the Combobox input', async ({ page }) => {
+      const input = page.getByRole('combobox', { name: 'Framework selector' })
+
+      await input.fill('rea')
+      await input.press('ArrowDown')
+      await expect(input).toBeFocused()
+      await input.dispatchEvent('keydown', { key: 'Enter', isComposing: true })
+      await expect(input).toHaveValue('rea')
+      await expect(input).toHaveAttribute('aria-expanded', 'true')
+      await input.press('Backspace')
+      await expect(input).toHaveValue('re')
+      await expect(input).not.toHaveAttribute('aria-activedescendant')
+      await input.press('End')
+      await expect(input).toBeFocused()
+      await input.press('Escape')
+      await expect(input).toHaveAttribute('aria-expanded', 'false')
+    })
+
+    test('dismisses the Combobox before its native dialog', async ({ page }) => {
+      const input = page.getByRole('combobox', { name: 'Framework selector' })
+
+      await input.evaluate(element => {
+        const root = element.closest('[data-ui-combobox]')
+
+        if (!root) throw new Error('Expected Combobox root')
+        const dialog = document.createElement('dialog')
+
+        dialog.setAttribute('aria-label', 'Nested control fixture')
+        root.before(dialog)
+        dialog.append(root)
+        dialog.showModal()
+      })
+      const dialog = page.getByRole('dialog', { name: 'Nested control fixture' })
+
+      await input.fill('rea')
+      await input.press('Escape')
+      await expect(dialog).toBeVisible()
+      await expect(input).toHaveAttribute('aria-expanded', 'false')
+      await input.press('Escape')
+      await expect(dialog).not.toBeVisible()
+    })
 
     test("opens and closes a dialog through the adapter boundary", async ({
       page,

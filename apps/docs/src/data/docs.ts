@@ -681,7 +681,7 @@ import '@santi020k/lumen-astro/styles.css'
   {
     body: [
       'React components mirror the same ui-* classes, data attributes, and prop names where React naming allows it.',
-      'DataTable renders the same structured row contract and VirtualList emits the shared sizing attributes for app-level adapters.',
+      'DataTable renders the same structured row contract and VirtualList provides built-in fixed-height windowing.',
       'Use React hooks such as useDialog, usePopover, useDropdownMenu, useContextMenu, useTabs, useSelect, useFormValidation, useCalendar, useInputOTP, useDateRangePicker, useRichTextEditor, useSchedule, useKanban, useResizable, useThemeBuilder, useThemeToggle, useToast, and useTooltip for behavior-heavy primitives.',
       'Use lumen add Component --target react or lumen add recipe-name --target react when you want local .tsx starter files.'
     ],
@@ -1015,6 +1015,12 @@ export const runtimeEvents: RuntimeEventRow[] = [
   },
   {
     detail: '{ command: string, executed: boolean, value?: string }',
+    name: 'ui:editor-command-request',
+    target: 'RichTextEditor root ([data-ui-rich-text-editor])',
+    when: 'Cancelable request before execution. Prevent default and set detail.executed for external engine ownership.'
+  },
+  {
+    detail: '{ command: string, executed: boolean, value?: string }',
     name: 'ui:editor-command',
     target: 'RichTextEditor root ([data-ui-rich-text-editor])',
     when: 'Fires after a toolbar control or keyboard shortcut runs an editor command.'
@@ -1309,6 +1315,7 @@ const apiReferenceByComponent = {
     )
   ],
   Card: [
+    apiRow('density', '"compact" | "comfortable" | "spacious"', '"comfortable"', 'Controls surface inset and part spacing while preserving control sizes.'),
     apiRow(
       'as', '"div" | "article" | "section"', '"div"', 'Changes the rendered HTML element.'
     ),
@@ -1963,6 +1970,10 @@ const apiReferenceByComponent = {
     )
   ],
   PhoneInput: [
+    apiRow('id / input-id', 'string', 'Generated', 'Associates a visible label with the number input; Web Components use input-id.'),
+    apiRow('inputProps / inputRef', 'input attributes / React ref', '-', 'Passes native number-input attributes and exposes its ref without DOM patches.'),
+    apiRow('disabled / readOnly / required', 'boolean', 'false', 'Locks both controls when disabled or read-only and supports native required validation.'),
+    apiRow('errorMessage / showValidationError', 'string / boolean', '- / true', 'Shows an associated field error or metadata validation feedback.'),
     apiRow(
       'countries', 'Array<string | { label, value, disabled? }>', 'International metadata', 'Overrides the generated country choices for legacy or specialized forms.'
     ),
@@ -2148,6 +2159,9 @@ const apiReferenceByComponent = {
     )
   ],
   RichTextEditor: [
+    apiRow(
+      'data-ui-editor-native-state', 'boolean string', '"true"', 'Set false when an external engine owns toolbar state; React commandHandler disables it by default.'
+    ),
     apiRow(
       'data-ui-editor-command', 'string', '-', 'Runs formatting, block, alignment, history, link, list, or custom commands and emits ui:editor-command.'
     ),
@@ -2371,10 +2385,10 @@ const apiReferenceByComponent = {
   ],
   VirtualList: [
     apiRow(
-      'itemSize', 'number | string', '-', 'Fixed size for items if all are uniform height/width. Used for virtual scroll calculation.'
+      'itemSize', 'number | string', '-', 'Fixed row height in pixels (default 44). Rows remain mounted; hidden windows and spacers preserve scroll height.'
     ),
     apiRow(
-      'overscan', 'number | string', '-', 'Number of items to render outside the viewport.'
+      'overscan', 'number | string', '-', 'Extra rows displayed on each side (default 4). Focused rows and neighbors remain available.'
     )
   ],
   Particles: [
@@ -2668,7 +2682,7 @@ const apiReferenceByComponent = {
       'as', '"article" | "div" | "main" | "section"', '"div"', 'Changes the semantic root.'
     ),
     apiRow(
-      'size', '"sm" | "md" | "lg" | "full"', '"lg"', 'Controls the maximum inline size.'
+      'size', '"sm" | "md" | "lg" | "full"', '"lg"', 'Controls the maximum inline size. Fluid side gutters grow from group to section spacing; full remains edge-to-edge.'
     )
   ],
   ErrorSummary: [
@@ -2706,7 +2720,7 @@ const apiReferenceByComponent = {
       'columns', '1 | 2 | 3 | 4 | 6 | 12 | "auto"', '"auto"', 'Controls the preferred column count.'
     ),
     apiRow(
-      'gap', '"none" | "sm" | "md" | "lg" | "xl"', '"md"', 'Controls spacing between items.'
+      'gap', '"none" | "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "related" | "group" | "section"', '"group"', 'Controls spacing between items.'
     ),
     apiRow(
       'minItemWidth', 'CSS length', '-', 'Sets the responsive minimum item width in auto mode.'
@@ -2749,7 +2763,7 @@ const apiReferenceByComponent = {
       'direction', '"horizontal" | "vertical"', '"vertical"', 'Controls the primary layout axis.'
     ),
     apiRow(
-      'gap', '"none" | "sm" | "md" | "lg" | "xl"', '"md"', 'Controls spacing between children.'
+      'gap', '"none" | "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "related" | "group" | "section"', '"group"', 'Controls spacing between children.'
     ),
     apiRow(
       'align, justify, wrap', 'layout props', 'stretch, start, false', 'Controls cross-axis alignment, distribution, and wrapping.'
@@ -2766,6 +2780,18 @@ const apiReferenceByComponent = {
 } satisfies Record<LumenComponentName, readonly ComponentApiRow[]>
 
 const componentGuidanceByName: Partial<Record<string, ComponentGuidance>> = {
+  Card: {
+    when: 'Use for a distinct content surface. Card owns its inset and the gap between its visible parts; choose compact, comfortable or spacious density.',
+    distinction: 'Use Stack for unframed content groups. Use CardHeader, CardContent and CardFooter without extra external margins; nest Stack inside the body and let footer actions wrap. Card permits interactive overflow; use AspectRatio for media clipping.'
+  },
+  Stack: {
+    when: 'Use for a sequence of related content or controls. The parent owns sibling spacing; choose related, group or section gaps by content relationship.',
+    distinction: 'Use Grid for multiple columns and Field for label/control/feedback. Keep text rhythm inside Prose or Typography rather than adding another sibling gap.'
+  },
+  Grid: {
+    when: 'Use for responsive peer groups in columns. Choose canonical or semantic gaps and a minimum item width based on content.',
+    distinction: 'Use Stack for one sequence. Grid owns direct-child external spacing; keep surface padding inside each Card.'
+  },
   Accordion: {
     when: 'Use for a list of related sections when people may open and compare more than one section. Use the flush variant for FAQs and content-led lists.',
     distinction:
@@ -2852,9 +2878,9 @@ const componentGuidanceByName: Partial<Record<string, ComponentGuidance>> = {
       'It styles a paragraph and does not replace a semantic heading or act as a status Badge.'
   },
   Field: {
-    when: 'Use to group a form control with its label, description, and validation errors.',
+    when: 'Use to group a form control with its label, description, and validation errors. Field owns their related spacing; associate labels and descriptions with the control.',
     distinction:
-      'Use Field as the structural container for form elements, and Input for the interactive control itself.'
+      'Use Field as the structural container and Input as the interactive control. Use Stack between separate fields; do not add another gap or child margin inside the same Field relationship.'
   },
   FloatingBadge: {
     when: 'Use for a high-emphasis count or notification positioned over an icon, avatar, or control.',

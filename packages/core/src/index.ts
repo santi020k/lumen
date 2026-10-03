@@ -76,6 +76,7 @@ export {
   renderLumenCodeHtml,
   tokenizeLumenCode
 } from './code.js'
+export { createLumenComboboxController, type LumenComboboxController } from './combobox.js'
 export {
   type LumenComponentBehavior,
   lumenComponentBehavior,
@@ -206,9 +207,11 @@ export {
 } from './language.js'
 export {
   createEmptyLumenPhoneNumber,
+  formatLumenPhoneNumber,
   getLumenPhoneCountries,
   getLumenPhoneCountry,
   getLumenPhoneFlag,
+  getLumenPhoneFlagSource,
   type LumenPhoneCountry,
   type LumenPhoneCountryOptions,
   type LumenPhoneNumber,
@@ -223,10 +226,13 @@ export {
   resolveLumenGlass
 } from './props.js'
 export {
+  executeLumenRichTextCommand,
   getLumenRichTextShortcut,
   isLumenRichTextToggleCommand,
   type LumenRichTextChangeDetail,
   type LumenRichTextCommandDetail,
+  type LumenRichTextCommandRequest,
+  type LumenRichTextCommandRequestEvent,
   type LumenRichTextShortcutEvent,
   type LumenRichTextToggleCommand,
   lumenRichTextToggleCommands
@@ -342,3 +348,4 @@ export {
   lumenSpacing,
   lumenThemeAttribute
 } from './tokens.js'
+export { createLumenVirtualListController, type LumenVirtualListController } from './virtual-list.js'

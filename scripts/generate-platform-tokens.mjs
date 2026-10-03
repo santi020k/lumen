@@ -2,6 +2,8 @@ import { mkdir, readFile, rename, unlink, writeFile } from 'node:fs/promises'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
+import { generateSpacingCss, parseSpacingTokens } from './lib/spacing-tokens.mjs'
+
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const sourcePath = join(repoRoot, 'tokens/lumen.tokens.json')
 const checkOnly = process.argv.includes('--check')
@@ -681,8 +683,17 @@ const writeGeneratedFile = async (path, content) => {
 const main = async () => {
   const tokens = await readSource()
   const canonicalSource = await readFile(sourcePath, 'utf8')
+  const spacingCss = generateSpacingCss(parseSpacingTokens(canonicalSource))
+  const stylesPath = join(repoRoot, 'packages/lumen/styles.css')
+  const styles = await readFile(stylesPath, 'utf8')
+  const start = styles.indexOf('  /* BEGIN:generated-spacing */')
+  const endMarker = '  /* END:generated-spacing */'
+  const end = styles.indexOf(endMarker, start)
+
+  if (start < 0 || end < start) throw new Error('Missing generated spacing block in shared CSS.')
 
   const outputs = [
+    ['packages/lumen/styles.css', styles.slice(0, start) + spacingCss + styles.slice(end + endMarker.length)],
     ['packages/tokens/lumen.tokens.json', canonicalSource],
     ['packages/core/src/foundations.generated.ts', generateTypeScript(tokens)],
     ['packages/react-native/src/tokens.generated.ts', generateTypeScript(tokens)],

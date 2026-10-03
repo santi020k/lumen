@@ -436,3 +436,10 @@ import { SearchGraphic } from './SearchGraphic'
   <LumenIcon icon={SearchGraphic} label="Search records" />
 </LumenProvider>
 ```
+### Phone presentation in v4
+
+`LumenPhoneInput` uses bundled flag artwork and a continuous control frame, and accepts `readOnly`
+in addition to `enabled`. Read-only fields also lock country selection. `LumenCountryFlag` and
+`LumenPhoneNumberView` expose the same artwork and normalized read-only phone presentation.
+Country names and calling codes remain the accessible selector label. The flag source and license
+are documented in [flags/README.md](../../flags/README.md); no external flag request is made.
