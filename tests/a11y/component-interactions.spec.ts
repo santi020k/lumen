@@ -12,6 +12,60 @@ const openPreview = async (page: Page, slug: string) => {
 type BehaviorTestBody = (fixtures: { page: Page }) => Promise<void>
 
 const registeredBehaviorComponents = new Set<LumenComponentName>()
+
+test('Dialog opens with native autofocus and dismisses only genuine backdrop presses', async ({ page }) => {
+  await openPreview(page, 'dialog')
+  const preview = page.locator('.component-doc-preview')
+  const dialog = preview.locator('dialog')
+  const trigger = preview.getByRole('button', { name: 'Edit profile' })
+  await expect(dialog).toHaveAttribute('data-ui-bound', 'true')
+  await dialog.evaluate(element => {
+    const input = document.createElement('input')
+    input.autofocus = true
+    input.setAttribute('aria-label', 'Autofocus field')
+    element.append(input)
+  })
+  await trigger.evaluate(element => {
+    element.removeAttribute('id')
+    Object.defineProperty(crypto, 'randomUUID', { configurable: true, value: undefined })
+  })
+  await trigger.click()
+  await expect(dialog.getByRole('textbox', { name: 'Autofocus field' })).toBeFocused()
+  const bounds = await dialog.boundingBox()
+  if (!bounds) throw new Error('Expected an open dialog')
+  await page.mouse.click(bounds.x + 4, bounds.y + 4)
+  await expect(dialog).toBeVisible()
+  await page.mouse.move(bounds.x + 4, bounds.y + 4)
+  await page.mouse.down()
+  await page.mouse.move(bounds.x - 8, bounds.y - 8)
+  await page.mouse.up()
+  await expect(dialog).toBeVisible()
+  await page.mouse.click(bounds.x - 8, bounds.y - 8)
+  await expect(dialog).toBeHidden()
+  await expect(trigger).toBeFocused()
+})
+
+test('Tabs switches panels while skipping disabled tabs on arrow and End keys', async ({ page }) => {
+  await openPreview(page, 'tabs')
+  const tabs = page.locator('.component-doc-preview [data-ui-tabs]').first()
+  const triggers = tabs.getByRole('tab')
+  const count = await triggers.count()
+  expect(count).toBeGreaterThanOrEqual(3)
+  await triggers.nth(1).evaluate(element => {
+    element.setAttribute('disabled', '')
+  })
+  await triggers.first().focus()
+  await triggers.first().press('ArrowRight')
+  await expect(triggers.nth(2)).toBeFocused()
+  await expect(triggers.nth(1)).toHaveAttribute('aria-selected', 'false')
+  await triggers.nth(count - 1).evaluate(element => {
+    element.setAttribute('disabled', '')
+  })
+  await triggers.first().focus()
+  await triggers.first().press('End')
+  await expect(triggers.nth(count > 3 ? count - 2 : 0)).toBeFocused()
+})
+
 const behaviorTest = (
   components: readonly LumenComponentName[],
   title: string,

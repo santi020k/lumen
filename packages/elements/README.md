@@ -324,6 +324,9 @@ formatting shortcuts, and keep toggle controls synchronized through `aria-presse
 `lumen-tabs` keeps the selected trigger visible in narrow horizontal lists and emits
 `ui:tabs-change`; import `LumenTabsChangeDetail` or `LumenTabsChangeEvent` for its typed detail.
 
+Nested `lumen-tabs` and `lumen-code-tabs` keep independent selection and panel state. Keyboard
+navigation skips disabled triggers and stays within the active tab group.
+
 `<lumen-kanban-board>` and `<lumen-kanban-column value="…">` provide the same controlled board
 contract. Mark ordinary card items with `data-ui-kanban-item` and put `data-ui-kanban-handle` on a
 dedicated button. The board emits the cancellable `ui:kanban-move-request` event for keyboard,

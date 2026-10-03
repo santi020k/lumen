@@ -1,4 +1,4 @@
-/* eslint-disable complexity, @typescript-eslint/no-non-null-assertion */
+/* eslint-disable complexity */
 
 import { isLumenDateBoundsValid, parseLumenDate as parseCalendarDate, resolveLumenDateLabels, resolveLumenDateLocale } from '@santi020k/lumen-core'
 import {
@@ -6905,7 +6905,11 @@ class LumenTabsBehaviorElement extends LumenElement {
 
   private setupTabs(signal: AbortSignal): void {
     const tabs = [...this.querySelectorAll<HTMLElement>('[role="tab"]')]
+      .filter(tab => tab.closest('lumen-tabs, lumen-code-tabs, [data-ui-tabs]') === this)
+
     const panels = [...this.querySelectorAll<HTMLElement>('[role="tabpanel"]')]
+      .filter(panel => panel.closest('lumen-tabs, lumen-code-tabs, [data-ui-tabs]') === this)
+
     const tabList = tabs[0]?.closest<HTMLElement>('[role="tablist"]')
 
     const orientation = tabList?.getAttribute('aria-orientation') === 'vertical' ?
@@ -6947,11 +6951,9 @@ class LumenTabsBehaviorElement extends LumenElement {
       }))
     }
 
-    activate(
-      tabs.find(tab => tab.getAttribute('aria-selected') === 'true') ??
-      tabs[0]!,
-      false
-    )
+    const initialTab = tabs.find(tab => tab.getAttribute('aria-selected') === 'true') ?? tabs[0]
+
+    if (initialTab) activate(initialTab, false)
 
     for (const tab of tabs) {
       tab.addEventListener(
@@ -6970,14 +6972,15 @@ class LumenTabsBehaviorElement extends LumenElement {
 
           event.preventDefault()
 
-          const currentIndex = tabs.indexOf(tab)
+          const enabledTabs = tabs.filter(candidate => !candidate.matches(':disabled, [aria-disabled="true"]'))
+          const currentIndex = enabledTabs.indexOf(tab)
 
           const nextTab =
-            tabs[
+            enabledTabs[
               getLoopedIndex(
                 event.key,
                 Math.max(0, currentIndex),
-                tabs.length,
+                enabledTabs.length,
                 orientation === 'vertical' ? ['ArrowDown'] : [getLumenDirectionalKey(tab, 'ArrowRight')]
               )
             ]

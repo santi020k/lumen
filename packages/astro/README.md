@@ -128,6 +128,10 @@ Tabs keep the selected trigger visible when a narrow tab list scrolls horizontal
 typed `ui:tabs-change` event. Import `LumenTabsChangeDetail` or `LumenTabsChangeEvent` from this
 package when application behavior follows the selected value.
 
+Keyboard tab navigation skips disabled triggers and stays within the current group when tabs are nested.
+Dialogs preserve native `autofocus`, restore their connected opener on close, and dismiss only a
+backdrop press that starts and ends outside the dialog. Alert dialogs retain explicit dismissal.
+
 ```astro
 ---
 import {

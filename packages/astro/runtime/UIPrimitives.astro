@@ -1001,7 +1001,7 @@ const initTabs = (scope: ParentNode): void => {
 
     if (initiallySelected) activate(initiallySelected, false)
 
-    for (const [index, tab] of tabs.entries()) {
+    for (const tab of tabs) {
       tab.addEventListener('click', () => activate(tab))
 
       tab.addEventListener('keydown', event => {
@@ -1013,11 +1013,13 @@ const initTabs = (scope: ParentNode): void => {
 
         event.preventDefault()
 
-        const nextTab = tabs[
+        const enabledTabs = tabs.filter(candidate => !candidate.matches(':disabled, [aria-disabled="true"]'))
+
+        const nextTab = enabledTabs[
           getLoopedIndex(
             event.key,
-            index,
-            tabs.length,
+            Math.max(0, enabledTabs.indexOf(tab)),
+            enabledTabs.length,
             orientation === 'vertical' ? ['ArrowDown'] : [getLumenDirectionalKey(tab, 'ArrowRight')]
           )
         ]

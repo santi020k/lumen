@@ -429,6 +429,8 @@ shared selectable/sortable data attributes remain available for app-level adapte
 also exports `LumenTabsChangeDetail` and `LumenTabsChangeEvent` for integrations that consume the
 shared `ui:tabs-change` contract.
 
+Keyboard navigation stays within the current tab group when tabs are nested and skips disabled triggers.
+
 ## Kanban boards
 
 Use `KanbanBoard`, `KanbanColumn`, and ordinary `Card` items for status-based workspaces. The
