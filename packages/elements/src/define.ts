@@ -13,7 +13,9 @@ import {
   createLumenPieGeometry,
   createLumenRangeGeometry,
   createLumenScatterGeometry,
+  createLumenVirtualListController,
   createThemeBuilderTokens,
+  executeLumenRichTextCommand,
   exportThemeBuilderValue,
   formatLumenChartSummary,
   formatLumenLanguageLabel,
@@ -27,7 +29,6 @@ import {
   getLumenPhoneCountries,
   getLumenPhoneCountry,
   getLumenRichTextShortcut,
-  getVirtualRange,
   hasLumenChartData,
   hasLumenPieData,
   isLumenRichTextToggleCommand,
@@ -1055,7 +1056,7 @@ const elementConfigs = {
   VirtualList: {
     attributeClasses: glassAttributeClasses('ui-virtual-list--glass'),
     baseClassName: 'ui-virtual-list',
-    defaults: { 'data-ui-virtual-list': '' },
+    defaults: { 'data-ui-virtual-list': '', tabindex: '0' },
     tagName: 'lumen-virtual-list'
   },
   VisuallyHidden: lumenVisuallyHiddenElementConfig,
@@ -2298,6 +2299,8 @@ const getRichTextCommandValue = (control: HTMLElement): string | undefined => {
 }
 
 const syncRichTextCommandStates = (root: HTMLElement): void => {
+  if (root.dataset.uiEditorNativeState === 'false') return
+
   const commandDocument = document as unknown as RichTextCommandDocument
 
   for (const control of root.querySelectorAll<HTMLElement>(
@@ -2352,14 +2355,14 @@ const executeRichTextCommand = (
   if (!command) return false
 
   const commandDocument = document as unknown as RichTextCommandDocument
-  let executed = false
 
-  if (typeof commandDocument.execCommand === 'function') {
-    executed =
-      value === undefined ?
-        commandDocument.execCommand(command) :
-        commandDocument.execCommand(command, false, value)
-  }
+  const executed = executeLumenRichTextCommand(root, { command, ...(value === undefined ? {} : { value }) }, () => {
+    if (typeof commandDocument.execCommand !== 'function') return false
+
+    return value === undefined ?
+      commandDocument.execCommand(command) :
+      commandDocument.execCommand(command, false, value)
+  })
 
   const detail: LumenRichTextCommandDetail = {
     command,
@@ -7815,76 +7818,22 @@ class LumenDataTableBehaviorElement extends LumenElement {
 }
 
 class LumenVirtualListBehaviorElement extends LumenElement {
-  private abortController: AbortController | undefined
+  private virtualListController: { destroy: () => void } | undefined
 
   override connectedCallback() {
     super.connectedCallback()
 
     if (!hasDocument()) return
 
-    this.abortController?.abort()
+    this.virtualListController?.destroy()
 
-    this.abortController = new AbortController()
-
-    this.setupVirtualList(this.abortController.signal)
+    this.virtualListController = createLumenVirtualListController(this)
   }
 
   override disconnectedCallback() {
-    this.abortController?.abort()
+    this.virtualListController?.destroy()
 
-    this.abortController = undefined
-  }
-
-  private setupVirtualList(signal: AbortSignal): void {
-    const items = [...this.children].filter(
-      (child): child is HTMLElement => child instanceof HTMLElement
-    )
-
-    if (!items.length) return
-
-    const update = (): void => {
-      const overscan = this.getNumberAttribute(
-        'data-ui-overscan', 'overscan', 4, 0
-      )
-
-      const itemSize = this.getNumberAttribute(
-        'data-ui-item-size', 'item-size', 44
-      )
-
-      const range = getVirtualRange(
-        this.scrollTop, this.clientHeight, itemSize, items.length, overscan
-      )
-
-      for (const [index, item] of items.entries()) {
-        item.hidden = index < range.startIndex || index > range.endIndex
-      }
-
-      this.dispatchEvent(
-        new CustomEvent('ui:virtual-list-range', {
-          bubbles: true,
-          detail: range
-        })
-      )
-    }
-
-    this.addEventListener('scroll', update, { passive: true, signal })
-
-    update()
-  }
-
-  private getNumberAttribute(
-    dataAttribute: string,
-    attribute: string,
-    fallback: number,
-    minimum = 1
-  ): number {
-    const value = Number(
-      this.getAttribute(dataAttribute) ??
-      this.getAttribute(attribute) ??
-      fallback
-    )
-
-    return Number.isFinite(value) && value >= minimum ? value : fallback
+    this.virtualListController = undefined
   }
 }
 

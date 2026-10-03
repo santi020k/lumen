@@ -5681,28 +5681,7 @@ export const TreeGrid = ({
   />
 )
 
-export interface VirtualListProps extends ComponentPropsWithoutRef<'div'> {
-  glass?: LumenGlassProp
-  itemSize?: number | string
-  overscan?: number | string
-}
-export const VirtualList = ({
-  className,
-  glass = false,
-  itemSize,
-  overscan,
-  ...props
-}: VirtualListProps) => (
-  <div
-    className={composeClassName(
-      'ui-virtual-list', glassClass('ui-virtual-list', glass), className
-    )}
-    data-ui-item-size={itemSize}
-    data-ui-overscan={overscan}
-    data-ui-virtual-list
-    {...props}
-  />
-)
+export { VirtualList, type VirtualListProps } from './virtual-list.js'
 
 export type BackToTopProps = ComponentPropsWithoutRef<'button'>
 export const BackToTop = ({

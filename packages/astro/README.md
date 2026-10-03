@@ -491,3 +491,15 @@ Wrapped blocks do not add an extra tab stop.
 native Tab order. Use `Menubar` or `Toolbar` for their documented composite-widget
 keyboard behavior. A `ThemeToggle` with `controlled` respects the host theme at
 initialization and leaves persistence and theme changes to its owner.
+
+### Virtual list and editor ownership
+
+`VirtualList` displays fixed-height rows with inert spacers that retain the full scroll extent.
+Rows stay mounted; use pagination when the initial DOM cost matters. Scrolling, resizing, sizing
+changes and direct row changes refresh the window. Focused rows remain available. See the
+[fixed-height list contract](../../docs/ai-usage.md#fixed-height-virtual-lists).
+
+External rich-text engines should handle the cancelable `ui:editor-command-request` event before
+execution and use `ui:editor-command` only for completion notifications. React also supports
+`useRichTextEditor({ commandHandler })`. Disable native toolbar state syncing when the external
+engine owns it. See the [editor guidance](../../docs/ai-usage.md).

@@ -681,7 +681,7 @@ import '@santi020k/lumen-astro/styles.css'
   {
     body: [
       'React components mirror the same ui-* classes, data attributes, and prop names where React naming allows it.',
-      'DataTable renders the same structured row contract and VirtualList emits the shared sizing attributes for app-level adapters.',
+      'DataTable renders the same structured row contract and VirtualList provides built-in fixed-height windowing.',
       'Use React hooks such as useDialog, usePopover, useDropdownMenu, useContextMenu, useTabs, useSelect, useFormValidation, useCalendar, useInputOTP, useDateRangePicker, useRichTextEditor, useSchedule, useKanban, useResizable, useThemeBuilder, useThemeToggle, useToast, and useTooltip for behavior-heavy primitives.',
       'Use lumen add Component --target react or lumen add recipe-name --target react when you want local .tsx starter files.'
     ],
@@ -1012,6 +1012,12 @@ export const runtimeEvents: RuntimeEventRow[] = [
     name: 'ui:tag-remove',
     target: 'TagGroup root (.ui-tag-group or [data-ui-tag-group])',
     when: 'Fires after a [data-ui-tag-remove] control removes its closest tag or list item.'
+  },
+  {
+    detail: '{ command: string, executed: boolean, value?: string }',
+    name: 'ui:editor-command-request',
+    target: 'RichTextEditor root ([data-ui-rich-text-editor])',
+    when: 'Cancelable request before execution. Prevent default and set detail.executed for external engine ownership.'
   },
   {
     detail: '{ command: string, executed: boolean, value?: string }',
@@ -2149,6 +2155,9 @@ const apiReferenceByComponent = {
   ],
   RichTextEditor: [
     apiRow(
+      'data-ui-editor-native-state', 'boolean string', '"true"', 'Set false when an external engine owns toolbar state; React commandHandler disables it by default.'
+    ),
+    apiRow(
       'data-ui-editor-command', 'string', '-', 'Runs formatting, block, alignment, history, link, list, or custom commands and emits ui:editor-command.'
     ),
     apiRow(
@@ -2371,10 +2380,10 @@ const apiReferenceByComponent = {
   ],
   VirtualList: [
     apiRow(
-      'itemSize', 'number | string', '-', 'Fixed size for items if all are uniform height/width. Used for virtual scroll calculation.'
+      'itemSize', 'number | string', '-', 'Fixed row height in pixels (default 44). Rows remain mounted; hidden windows and spacers preserve scroll height.'
     ),
     apiRow(
-      'overscan', 'number | string', '-', 'Number of items to render outside the viewport.'
+      'overscan', 'number | string', '-', 'Extra rows displayed on each side (default 4). Focused rows and neighbors remain available.'
     )
   ],
   Particles: [

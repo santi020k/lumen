@@ -419,3 +419,15 @@ Unwrapped `pre` children receive `tabindex="0"` and region semantics while keepi
 authored accessible names. With `wrap="true"`, the component does not add an extra
 tab stop. Keep native `pre` and `code` children rather than placing source text in
 HTML attributes.
+
+### Virtual list and editor ownership
+
+`VirtualList` displays fixed-height rows with inert spacers that retain the full scroll extent.
+Rows stay mounted; use pagination when the initial DOM cost matters. Scrolling, resizing, sizing
+changes and direct row changes refresh the window. Focused rows remain available. See the
+[fixed-height list contract](../../docs/ai-usage.md#fixed-height-virtual-lists).
+
+External rich-text engines should handle the cancelable `ui:editor-command-request` event before
+execution and use `ui:editor-command` only for completion notifications. React also supports
+`useRichTextEditor({ commandHandler })`. Disable native toolbar state syncing when the external
+engine owns it. See the [editor guidance](../../docs/ai-usage.md).

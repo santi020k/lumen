@@ -997,10 +997,10 @@ describe('@santi020k/lumen-react', () => {
     const firstRowCells = rows[0]?.props.children as ReactElement<
       Record<string, unknown>
     >[]
-    const virtualList = VirtualList({
+    const virtualList = withHookDispatcher(() => VirtualList({
       itemSize: 48,
       overscan: 2
-    }) as ReactElement<Record<string, unknown>>
+    })) as ReactElement<Record<string, unknown>>
 
     expect(tableProps['data-ui-datatable']).toBe(true)
     expect(tableProps['data-ui-datatable-name']).toBe('rows')

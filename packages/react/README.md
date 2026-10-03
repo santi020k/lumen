@@ -420,7 +420,7 @@ shortcuts, active toolbar state, and `{ html, text }` change details.
 `DataTable` can render structured `columns` and `rows`; sortable columns use native header buttons,
 update `aria-sort`, and order string or numeric values without mutating the supplied rows. The
 shared selectable/sortable data attributes remain available for app-level adapters, and
-`VirtualList` exposes the shared range sizing attributes.
+`VirtualList` provides built-in fixed-height windowing with the shared sizing attributes.
 `useTabs` keeps the selected trigger visible when a narrow horizontal list scrolls. The package
 also exports `LumenTabsChangeDetail` and `LumenTabsChangeEvent` for integrations that consume the
 shared `ui:tabs-change` contract.
@@ -635,3 +635,15 @@ preserves that opener, and cleanup does not steal focus from a nested or
 replacement dialog. Hook trigger props remain useful when the same component
 owns the opener and dialog. Keep an accessible dialog name and logical initial
 focus; native `autoFocus` can select the initial control.
+
+### Virtual list and editor ownership
+
+`VirtualList` displays fixed-height rows with inert spacers that retain the full scroll extent.
+Rows stay mounted; use pagination when the initial DOM cost matters. Scrolling, resizing, sizing
+changes and direct row changes refresh the window. Focused rows remain available. See the
+[fixed-height list contract](../../docs/ai-usage.md#fixed-height-virtual-lists).
+
+External rich-text engines should handle the cancelable `ui:editor-command-request` event before
+execution and use `ui:editor-command` only for completion notifications. React also supports
+`useRichTextEditor({ commandHandler })`. Disable native toolbar state syncing when the external
+engine owns it. See the [editor guidance](../../docs/ai-usage.md).

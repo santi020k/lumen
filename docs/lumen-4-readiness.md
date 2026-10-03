@@ -120,6 +120,33 @@ created and no package or application has been published.
   Chart and comparison checks include light and dark themes; overflowing chart detail remains an
   intentionally scrollable, keyboard-accessible region with a data-table alternative.
 
+### Existing component follow-up
+
+VirtualList now shares fixed-height DOM windowing across Astro, React and Elements. Inert spacers
+preserve scroll extent; row and container changes refresh the range; focused rows and neighbors
+remain available for native Tab navigation. Rows remain mounted, so this does not eliminate initial
+DOM creation cost. Range endpoints are inclusive and empty lists use endIndex -1.
+
+RichTextEditor emits a cancelable command request before execution. External engines can own that
+request, and React also accepts a synchronous commandHandler. Failed engine commands do not fall
+back to the browser; completion events remain notifications. Native toolbar-state synchronization
+can be disabled when the engine owns it. NumberField retains its native input contract because the
+consumer evidence does not justify a shared locale-aware draft parser.
+
+The scoped Changeset was consumed through a scratch run of the configured Changesets generator
+and its generated notes were folded into the existing unpublished 4.0.0 entries. Package versions
+and previous changelog history remain unchanged. The React list and editor behavior have focused
+modules with separate bundle budgets; existing budgets were preserved.
+
+Verification: 862 tests in the isolated component checkout and six Chromium regressions passed,
+including desktop/phone
+scroll extent, container resizing, Tab navigation, retained focus and external command ownership.
+Matched synthetic before/after screenshots were inspected at 390 and 1440 pixels. The isolated
+component builds, types, zero-warning lint, bundle checks, Knip and registry checks passed. The
+canonical validation remains blocked by the three existing high-severity dependency advisories
+listed below. Local integration into release/v4.0.0 remains pending because its checkout contains
+active concurrent work; the focused component commit is preserved on fix/v4-component-behavior.
+
 ### Remaining release blockers
 
 The canonical `pnpm run validate` on committed candidate `e16ba750` passed generation, build,

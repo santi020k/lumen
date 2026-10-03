@@ -2,6 +2,9 @@ import { readFile } from 'node:fs/promises'
 import { gzipSync } from 'node:zlib'
 
 const allBudgets = [
+  { file: 'packages/core/dist/virtual-list.js', gzip: 2_200, packageName: '@santi020k/lumen-core', raw: 7_000 },
+  { file: 'packages/react/dist/virtual-list.js', gzip: 1_000, packageName: '@santi020k/lumen-react', raw: 3_000 },
+  { file: 'packages/react/dist/rich-text-editor.js', gzip: 2_500, packageName: '@santi020k/lumen-react', raw: 10_000 },
   { file: 'packages/astro/runtime/UIPrimitives.astro', gzip: 33_000, packageName: '@santi020k/lumen-astro', raw: 167_000 },
   { file: 'packages/astro/runtime/controllers/motion.ts', gzip: 1_500, packageName: '@santi020k/lumen-astro', raw: 5_000 },
   { file: 'packages/astro/runtime/controllers/dialogs.ts', gzip: 2_000, packageName: '@santi020k/lumen-astro', raw: 6_000 },

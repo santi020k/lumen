@@ -7650,3 +7650,23 @@ a.ui-pill:focus-visible {
     color: hsl(var(--ink-soft));
   }
 }
+@layer lumen.components {
+/* Fixed-height virtual rows retain the complete scroll extent through inert spacers. */
+.ui-virtual-list[data-ui-range-start] {
+  display: block;
+  overflow-anchor: none;
+}
+
+.ui-virtual-list[data-ui-range-start] > :not([data-ui-virtual-list-spacer]) {
+  margin-block: 0;
+  padding-block: 0.5rem;
+}
+
+.ui-virtual-list > [data-ui-virtual-list-spacer] {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+}
+}

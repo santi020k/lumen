@@ -4,6 +4,13 @@
 
 ### Major Changes
 
+- Preserve VirtualList scroll height with fixed-height row windows and inert spacers across web
+  adapters. Refresh changing rows and resized containers, retain keyboard focus, and restore row
+  state on cleanup. Range endpoints are inclusive; empty lists report endIndex -1.
+
+  Add cancelable rich-text command requests and a React commandHandler option so external engines
+  can execute commands once without a browser fallback. Existing command events report completion.
+
 - Prepare the coordinated Lumen 4 family from twenty real consumer audits.
 
   - Make chart axes readable, preserve complete detail labels, center single observations, use
