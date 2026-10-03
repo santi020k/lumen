@@ -1,5 +1,10 @@
 # Lumen React Native Playground
 
+This candidate uses the local Lumen 4 adapter. Catalog discovery accepts component IDs,
+provides filter reset, and shows the workspace release version. See
+[the v4 playground guide](../../docs/playgrounds.md#lumen-4-candidate) for search and capture behavior.
+
+
 <!-- cspell:words screencap simctl -->
 
 An Expo reference app for every public component in `@santi020k/lumen-react-native`. It runs on
