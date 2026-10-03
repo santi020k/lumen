@@ -3,6 +3,10 @@
 Use this guide when an AI agent is building an app with Lumen or updating examples that teach
 another agent how to use the library.
 
+This branch documents the locally prepared Lumen 4 candidate. Version 4 install examples become
+usable after publication; the public plugin and hosted MCP still describe their deployed version.
+Use the workspace packages and generated local MCP snapshot to evaluate this candidate.
+
 ## Install in ChatGPT or Codex
 
 The [Lumen UI plugin](https://chatgpt.com/plugins/plugin_asdk_app_6a8f6c526c5481918eb8a48806fa112b)
@@ -48,9 +52,9 @@ Use the framework requested by the user. Every adapter shares the same Lumen fou
 | React Hook Form composites | `@santi020k/lumen-react-hook-form`                                     | `@santi020k/lumen-react-hook-form`           | Uses React styles                      |
 | Web Components             | `@santi020k/lumen-elements`                                            | `@santi020k/lumen-elements/define`           | `@santi020k/lumen-elements/styles.css` |
 | React Native / Expo        | `@santi020k/lumen-react-native`                                        | `@santi020k/lumen-react-native`              | Not applicable                         |
-| Apple / SwiftUI            | Swift Package `https://github.com/santi020k/lumen`, pinned to `3.0.1`  | `LumenUI`                                    | Not applicable                         |
-| Android / Compose          | Maven Central `com.santi020k:lumen-compose:3.0.0`                       | `com.santi020k.lumen`                        | Not applicable                         |
-| Wear OS / Compose          | Maven Central `com.santi020k:lumen-compose-wear:3.0.0`                  | `com.santi020k.lumen`                        | Not applicable                         |
+| Apple / SwiftUI            | Swift Package `https://github.com/santi020k/lumen`, pinned to `4.0.0`  | `LumenUI`                                    | Not applicable                         |
+| Android / Compose          | Maven Central `com.santi020k:lumen-compose:4.0.0`                       | `com.santi020k.lumen`                        | Not applicable                         |
+| Wear OS / Compose          | Maven Central `com.santi020k:lumen-compose-wear:4.0.0`                  | `com.santi020k.lumen`                        | Not applicable                         |
 | Package metadata           | `@santi020k/lumen-core`                                                | `@santi020k/lumen-core`                      | Not applicable                         |
 | Optional web brand icons   | `@santi020k/lumen-icons-brand`                                         | Register once, then use the framework `Icon` | Uses framework styles                  |
 
@@ -60,7 +64,7 @@ when you need its framework-neutral CLI or registry metadata.
 For React Native, mount one `LumenProvider` near the app root. For SwiftUI, attach the `LumenUI`
 Swift Package product to the application target, use an exact or compatible release-version rule,
 and apply `.lumenTheme(...)` near the root. For Compose, install
-`com.santi020k:lumen-compose:3.0.0` from Maven Central and wrap content in `LumenTheme`. Native
+`com.santi020k:lumen-compose:4.0.0` from Maven Central and wrap content in `LumenTheme`. Native
 adapters do not load CSS or the Astro runtime.
 
 React Native can use ordinary React hooks and platform-neutral application hooks. Import native
@@ -71,7 +75,7 @@ import DOM-dependent hooks from `@santi020k/lumen-react` into a native bundle. S
 in an application workspace package and keep the Lumen rendering adapter at each app boundary.
 
 For watchOS, use the focused `LumenWatch*` contracts from the same Swift package. For Wear OS,
-install `com.santi020k:lumen-compose-wear:3.0.0` and wrap wearable content in `LumenWearTheme`
+install `com.santi020k:lumen-compose-wear:4.0.0` and wrap wearable content in `LumenWearTheme`
 inside the application-owned Wear Material theme. Keep complications, tiles, rotary input,
 Always On behavior, haptics, synchronization, navigation, and health or safety logic app-owned.
 

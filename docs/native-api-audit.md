@@ -48,7 +48,7 @@ The reviewed `.api` files are the declaration-level inventory for the two Kotlin
 phone and tablet declarations are Supported, including `LumenPhoneInput` and its related country,
 number, and resolution contracts. ContracTrack exercises the Wear theme, tone, action, progress,
 and status APIs, while the clean artifact consumer verifies the artifact in isolation. Metric and
-list-row compositions are also Supported for Lumen 2. Sizing, progress-normalization, and color
+list-row compositions retain their Supported classification. Sizing, progress-normalization, and color
 helpers remain Internal and absent from the public ABI.
 
 Both dumps are generated from each release classes JAR with JetBrains' binary compatibility

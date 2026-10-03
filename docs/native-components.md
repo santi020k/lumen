@@ -5,9 +5,10 @@ each platform's rendering, image, focus, and accessibility systems. This referen
 the supported component surface, platform mappings, and the checks required for a component to be
 considered supported.
 
-> **Supported for Lumen 2:** The native component APIs below are part of the frozen version 2
-> contract. Current artifacts remain release candidates until publication, physical-device, and
-> consumer-soak gates are complete.
+> **Lumen 4 candidate:** Version 4 install examples describe the prepared release and are not yet
+> available from public registries. Evaluate the local packages and read the
+> [migration guide](migrating-to-lumen.md). Current API classifications do not replace publication,
+> physical-device, or consumer-soak qualification of this revision.
 
 ## Install and consume
 
@@ -47,8 +48,8 @@ Shared icons use `name="search"`; applications can instead pass graphic componen
 ### SwiftUI
 
 In Xcode, choose **File → Add Package Dependencies**, paste
-`https://github.com/santi020k/lumen`, and choose **Exact Version** `3.0.1` for a reproducible
-production build. Use **Up to Next Major Version** from `3.0.1` only when the application accepts
+`https://github.com/santi020k/lumen`, and choose **Exact Version** `4.0.0` for a reproducible
+production build. Use **Up to Next Major Version** from `4.0.0` only when the application accepts
 compatible updates, and reserve `main` for local evaluation. Add the `LumenUI` product to the
 application target. The repository-root `Package.swift` is the public package entry point; no
 CocoaPod or npm package is involved.
@@ -59,12 +60,12 @@ Projects with their own Swift package manifest can declare the dependency direct
 dependencies: [
     .package(
         url: "https://github.com/santi020k/lumen",
-        exact: "3.0.1"
+        exact: "4.0.0"
     )
 ]
 ```
 
-Use `from: "3.0.1"` instead of `exact: "3.0.1"` for a compatible-version policy. Commit
+Use `from: "4.0.0"` instead of `exact: "4.0.0"` for a compatible-version policy. Commit
 `Package.resolved` for application and CI builds and verify that its version and revision match the
 intended release tag. XcodeGen and other deterministic project generators should keep the package
 requirement in their checked-in configuration and regenerate project files from that source.
@@ -140,7 +141,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.santi020k:lumen-compose:3.0.0")
+    implementation("com.santi020k:lumen-compose:4.0.0")
 }
 ```
 
@@ -198,7 +199,7 @@ contracts:
 
 ```kotlin
 dependencies {
-    implementation("com.santi020k:lumen-compose-wear:3.0.0")
+    implementation("com.santi020k:lumen-compose-wear:4.0.0")
 }
 ```
 
@@ -209,7 +210,7 @@ complications, haptics, synchronization, health behavior, and background work re
 owned.
 
 `LumenWearTheme`, `LumenWearTone`, `LumenWearActionButton`, `LumenWearProgressRing`,
-`LumenWearStatus`, `LumenWearMetric`, and `LumenWearListRow` are Supported for Lumen 2.
+`LumenWearStatus`, `LumenWearMetric`, and `LumenWearListRow` retain their Supported API classification.
 
 ## Supported surface
 

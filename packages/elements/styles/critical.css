@@ -141,6 +141,11 @@
 }
 
 @layer lumen.base {
+/* Preserve native hiding even when a primitive establishes its own display mode. */
+[hidden]:not([hidden="until-found"]) {
+  display: none !important;
+}
+
 @keyframes ui-shimmer {
   from {
     background-position: 200% 0;
@@ -420,6 +425,7 @@
   --ui-button-padding: 0.5rem 1rem;
   --ui-button-radius: var(--ui-radius-sm);
 
+  position: relative;
   display: inline-flex;
   min-height: var(--ui-button-min-height);
   align-items: center;
@@ -442,6 +448,23 @@
     color 160ms ease,
     transform 160ms ease;
   user-select: none;
+}
+
+.ui-button__content {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: inherit;
+}
+
+.ui-button--loading > .ui-button__content {
+  opacity: 0;
+}
+
+.ui-button--loading > .ui-spinner {
+  position: absolute;
+  inset: 0;
+  margin: auto;
 }
 
 .ui-button:hover {
@@ -559,6 +582,12 @@
   width: 2.5rem;
   padding: 0;
 }
+
+.ui-prose :where(table:not(.ui-table)) { display: block; max-width: 100%; overflow-x: auto; border-collapse: collapse; }
+
+.ui-prose :where(table:not(.ui-table) th, table:not(.ui-table) td) { padding: .625rem .75rem; border-bottom: 1px solid hsl(var(--line)); text-align: start; }
+
+.ui-prose :where(table:not(.ui-table) th) { color: hsl(var(--ink)); font-weight: 600; }
 
 .ui-alert,
 .ui-toast {
@@ -1457,7 +1486,9 @@
 .ui-input-otp-field {
   position: relative;
   display: inline-grid;
-  width: min(100%, max-content);
+  width: fit-content;
+  max-width: 100%;
+  min-width: 0;
 }
 
 .ui-input-otp {
@@ -1477,9 +1508,11 @@
 }
 
 .ui-input-otp__segments {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.45rem;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 2.5rem);
+  gap: clamp(0.25rem, 1vw, 0.45rem);
+  min-width: 0;
 }
 
 .ui-input-otp__segments[hidden] {
@@ -1488,7 +1521,8 @@
 
 .ui-input-otp__segment {
   display: inline-grid;
-  width: 2.5rem;
+  width: 100%;
+  min-width: 0;
   min-height: 2.75rem;
   place-items: center;
   border: 1px solid hsl(var(--line));
@@ -2105,5 +2139,82 @@
 
 .ui-password-field__control > .ui-button span {
     font-size: 0.6875rem;
+  }
+}
+
+@layer lumen.components {
+.ui-range-calendar__presets .ui-button {
+    justify-content: start;
+    min-height: 2.75rem;
+    padding-inline: .75rem;
+    font-size: inherit;
+    font-weight: 500;
+    white-space: normal;
+    text-align: start;
+  }
+
+.ui-range-calendar .ui-calendar { width: 100%; max-width: none; border: 0; padding: 0; box-shadow: none; background: transparent; }
+
+.ui-range-calendar .ui-calendar__header { margin-bottom: .5rem; }
+
+.ui-range-calendar .ui-calendar__header strong { font-size: .8125rem; font-weight: 650; }
+
+.ui-range-calendar .ui-calendar__header button { display: grid; place-items: center; width: 2.5rem; height: 2.5rem; }
+
+.ui-range-calendar .ui-calendar__grid { width: 100%; table-layout: fixed; border-collapse: separate; border-spacing: 0 .25rem; }
+
+.ui-range-calendar .ui-calendar__grid th { height: 2rem; font-size: .6875rem; font-weight: 500; }
+
+.ui-range-calendar .ui-calendar__grid td { height: 2.5rem; padding: 0; text-align: center; border: 0; border-radius: 0; font-size: .8125rem; font-weight: 400; }
+
+.ui-range-calendar .ui-calendar__grid td[data-in-range="true"] { background: hsl(var(--brand-soft)); color: hsl(var(--ink)); box-shadow: none; }
+
+.ui-range-calendar .ui-calendar__grid td[data-in-range="true"]:first-child { border-start-start-radius: .375rem; border-end-start-radius: .375rem; }
+
+.ui-range-calendar .ui-calendar__grid td[data-in-range="true"]:last-child { border-start-end-radius: .375rem; border-end-end-radius: .375rem; }
+
+.ui-range-calendar .ui-calendar__grid td[data-selected="true"] { background: hsl(var(--brand-solid)); color: hsl(var(--on-brand)); border-radius: .375rem; font-weight: 650; }
+
+@media (max-width: 640px) {
+.ui-range-calendar__presets .ui-button { flex-shrink: 0; white-space: nowrap; }
+
+.ui-range-calendar .ui-calendar__grid td { height: 2.75rem; }
+
+.ui-range-calendar .ui-calendar__header button { width: 2.75rem; height: 2.75rem; }
+}
+}
+
+@layer lumen.components {
+.ui-range-input > .ui-button {
+  width: 100%;
+  min-height: 44px;
+  justify-content: space-between;
+  gap: .75rem;
+  padding-inline: .875rem;
+  font-size: .8125rem;
+  font-weight: 500;
+  color: hsl(var(--ink));
+}
+
+.ui-range-input > .ui-button[aria-expanded="true"] {
+  border-color: hsl(var(--brand));
+  box-shadow: 0 0 0 2px hsl(var(--brand) / .12);
+}
+
+.ui-range-input > .ui-button > .ui-button__content { width: 100%; min-width: 0; justify-content: space-between; }
+
+.ui-range-input > .ui-button .ui-icon { flex-shrink: 0; color: hsl(var(--ink-muted)); }
+
+.ui-range-input__panel .ui-range-input__actions .ui-button { min-height: 44px; font-size: .8125rem; }
+
+@media (max-width: 640px) {
+.ui-range-input__actions .ui-button { flex: 1; }
+}
+}
+
+@layer lumen.components {
+.ui-range-calendar .ui-calendar__grid th,
+  .ui-range-calendar .ui-calendar__grid td[data-outside="true"]:not([data-in-range="true"]) {
+    color: hsl(var(--ink-soft));
   }
 }

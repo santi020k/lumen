@@ -43,8 +43,8 @@ then stopped at the shared CSS size budget after inclusion of the two range cont
 Separately, `pnpm run typecheck` passed all 23 tasks and `pnpm run test` passed 703 tests in
 64 files. HTTP fixture tests require loopback access; their sandbox-only permission
 failures were rerun successfully with that access. Recovered snippet/runtime changes passed
-69 focused tests and zero-warning lint. The final gate remains pending until implementation
-and its generated outputs are complete.
+69 focused tests and zero-warning lint. The final candidate results below supersede this initial
+consolidation checkpoint.
 
 ## Consumer audit and implementation
 
@@ -88,8 +88,52 @@ Six intentional Swift initializer replacements are recorded against immutable `v
 must rebuild. The changed native baselines restart the two-iteration stability qualification;
 historical consumer/device evidence is preserved without being relabeled as v4 proof.
 
-Final validation and version preparation are in progress; results below must be completed before
-this local candidate is handed off.
+All ten public npm packages, Compose and Wear are prepared at `4.0.0`; the Swift release manifest
+targets `v4.0.0`. Changesets have been consumed into package changelogs and the registry, MCP
+snapshot, documentation versions and critical styles have been regenerated. No tag has been
+created and no package or application has been published.
+
+### Candidate verification
+
+- `pnpm run test`: 843 tests across 76 files passed.
+- `pnpm run typecheck` and `pnpm run lint`: all 23 tasks passed, with zero lint warnings.
+- `pnpm run lint:spell`: 1,286 files checked without spelling issues.
+- `LUMEN_A11Y_PORT=4337 pnpm run test:a11y`: all 460 browser checks passed, including the
+  community gallery at 320, 768 and 1,440 pixels.
+- `swift test`: 49 tests passed. Swift API snapshots and the six intentional source-compatibility
+  changes passed checks against `v3.0.1`.
+- `cd packages/compose && ./gradlew test lint apiCheck`: 99 tasks completed successfully.
+- Packed-package checks passed for Core, umbrella, Astro, React, React Hook Form, Elements,
+  Next.js integration, brand icons, React Native, and MCP stdio/HTTP consumers. Publish dry runs
+  checked all ten public npm packages without publishing them.
+- MCP evaluation passed 12 search cases, 486 web contracts, 200 native contracts and 162 framework
+  examples. Bundle budgets, registry synchronization and API classifications passed.
+- Desktop/phone captures were inspected for the gallery, homepage, reporting, charts, prose and
+  comparison component. Gallery and homepage images decoded successfully without broken sources.
+  Chart and comparison checks include light and dark themes; overflowing chart detail remains an
+  intentionally scrollable, keyboard-accessible region with a data-table alternative.
+
+### Remaining release blockers
+
+The canonical `pnpm run validate` is **not green**: its production dependency audit remains blocked.
+Compatible updates to `fast-uri` 3.1.8, `ip-address` 10.7.3 and `brace-expansion` 5.0.12 removed ten
+advisories. A frozen install, Expo compatibility check and 72 MCP tests passed after those updates.
+Three high-severity advisories have no published patched release as of October 3, 2026:
+
+| Dependency | Path and upstream advisory |
+| --- | --- |
+| `node-forge` 1.4.0 | Expo CLI signing and certificate tooling; [signature verification advisory](https://github.com/advisories/GHSA-86w9-cpqp-85rv). |
+| `http-cache-semantics` 4.2.0 | Astro remote-image build cache; [cache disclosure advisory](https://github.com/advisories/GHSA-ch52-4w7c-c8xp). |
+| `braces` 3.0.3 | Metro/micromatch build tooling; [nested pattern advisory](https://github.com/advisories/GHSA-vfj7-8cjw-p6xm). |
+
+Current compatible parent releases still depend on these packages. Reachability observations do
+not waive the security gate. No advisory exclusions, vendored replacements or audit suppressions
+were added. Update to verified upstream fixes when available and rerun the complete validation.
+
+The v4 contract also remains a draft without publication approval. The changed native baseline
+has zero of two required stability iterations; historical device and consumer records do not
+qualify this v4 revision. Complete those external qualification gates and approve the final
+revision before initiating the existing GitHub and Xcode Cloud release workflows.
 
 ## Design references
 

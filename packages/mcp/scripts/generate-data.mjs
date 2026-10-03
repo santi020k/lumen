@@ -558,6 +558,7 @@ const reactExampleOverrides = {
   ErrorState:
     '<ErrorState actions={<><Button size="sm">Try again</Button><ButtonLink href="/docs" variant="secondary">Open help</ButtonLink></>} description="Check your connection and try again." id="projects-error" reference="REQ-4F82" title="Could not load projects" />',
   Image: '<Image alt="Lumen UI logo" invertOnDark src="/logo.svg" />',
+  ImageComparison: '<ImageComparison label="Compare the landscape treatment" beforeLabel="Original" afterLabel="Color adjusted" ratio={1.6} defaultValue={50} before={<Image alt="Original landscape illustration" src="/comparison-before.svg" />} after={<Image alt="Color-adjusted landscape illustration" src="/comparison-after.svg" />} />',
   PhoneInput:
     '<PhoneInput name="phone" defaultCountryValue="+1" countries={[{ label: "+1", value: "+1" }, { label: "+44", value: "+44" }]} placeholder="(555) 000-0000" />',
   Tabs: `import { Tabs, TabsList, TabsPanel, TabsTrigger } from '@santi020k/lumen-react'
@@ -605,6 +606,10 @@ const reactHookByComponent = {
 }
 
 const elementsExampleOverrides = {
+  ImageComparison: `<lumen-image-comparison label="Compare the landscape treatment" before-label="Original" after-label="Color adjusted" ratio="1.6" value="50">
+  <img slot="before" alt="Original landscape illustration" src="/comparison-before.svg" width="960" height="600" />
+  <img slot="after" alt="Color-adjusted landscape illustration" src="/comparison-after.svg" width="960" height="600" />
+</lumen-image-comparison>`,
   ErrorState: `<lumen-error-state id="projects-error" aria-labelledby="projects-error-title">
   <lumen-illustration aria-hidden="true" data-slot="error-state-graphic" variant="error"></lumen-illustration>
   <div data-slot="error-state-content">

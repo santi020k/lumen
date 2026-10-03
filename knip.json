@@ -9,7 +9,6 @@
     "apps/docs": {
       "entry": ["src/pages/**/*.astro", "scripts/**/*.{js,mjs}"],
       "ignoreDependencies": [
-        "@santi020k/lumen",
         "@santi020k/lumen-playground-react-native",
         "tailwindcss"
       ],

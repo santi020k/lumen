@@ -222,8 +222,18 @@ behaviorTest(
 
 behaviorTest(
   ['NavigationMenu'],
-  'NavigationMenu supports horizontal keyboard navigation',
-  rovingNavigationScenario('navigation-menu', 'link')
+  'NavigationMenu preserves ordinary link Tab order',
+  async ({ page }) => {
+    await openPreview(page, 'navigation-menu')
+
+    const links = page.locator('.component-doc-preview a')
+
+    await links.first().focus()
+    await page.keyboard.press('Tab')
+    await expect(links.nth(1)).toBeFocused()
+    await page.keyboard.press('Shift+Tab')
+    await expect(links.first()).toBeFocused()
+  }
 )
 
 behaviorTest(['RadioGroup'], 'RadioGroup changes selection with arrow keys', async ({ page }) => {
@@ -509,7 +519,7 @@ behaviorTest(['Code'], 'Code copies its block content and announces success', as
 
   await expect(copy).toHaveAttribute('aria-label', 'Copy code to clipboard')
   await copy.click()
-  await expect(copy).toHaveAttribute('aria-label', 'Code copied!')
+  await expect(copy).toHaveAttribute('aria-label', 'Code copied to clipboard')
   await expect(page.getByText('Code copied to clipboard', { exact: true })).toBeAttached()
 })
 
@@ -569,7 +579,7 @@ behaviorTest(['InputOTP'], 'InputOTP synchronizes typed digits with its visual s
   await page.keyboard.type('654321')
 
   await expect(input).toHaveValue('654321')
-  await expect(root.locator('[data-ui-input-otp-char]')).toHaveText(['6', '5', '4', '3', '2', '1'])
+  await expect(root.locator('[data-ui-input-otp-char]')).toHaveText(['6', '5', '4', '3', '2', '1', '\u00a0', '\u00a0'])
 })
 
 behaviorTest(['DataTable'], 'DataTable sorts records and reports row selection', async ({ page }) => {

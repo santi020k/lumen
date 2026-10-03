@@ -25,12 +25,15 @@ const [
     'button',
     'card',
     'combobox',
-    'foundations'
+    'foundations',
+    'image-comparison'
   ].map(name => readFile(
     new URL(`../packages/elements/src/components/${name}.ts`, import.meta.url),
     'utf8'
   ))).then(sources => sources.join('\n')),
-  readFile(new URL('../packages/react/src/components.tsx', import.meta.url), 'utf8'),
+  Promise.all(['components', 'image-comparison'].map(name => readFile(
+    new URL(`../packages/react/src/${name}.tsx`, import.meta.url), 'utf8'
+  ))).then(sources => sources.join('\n')),
   readFile(new URL('../packages/react/src/hooks.tsx', import.meta.url), 'utf8'),
   readFile(new URL('../packages/react/src/server-components.tsx', import.meta.url), 'utf8')
 ])

@@ -1,5 +1,49 @@
 # @santi020k/lumen-react
 
+## 4.0.0
+
+### Major Changes
+
+- Prepare the coordinated Lumen 4 family from twenty real consumer audits.
+
+  - Make chart axes readable, preserve complete detail labels, center single observations, use
+    deterministic duplicate handling, and expose formatted native axes and compact plot layouts.
+  - Add controlled date-range drafting with strict calendar bounds, localized labels, and safe
+    disabled/read-only behavior. Keep form labels and keyboard focus attached to the active control.
+  - Keep server-paginated tables in supplied order with controlled manual sorting, and make dialog
+    dismissal and opener restoration explicit for pending and nested workflows.
+  - Preserve native hidden semantics, loading-button dimensions, and disabled slotted activation.
+  - Give code-copy actions localized success and failure feedback, preserve normal navigation Tab
+    order, and improve readable prose and code-theme defaults.
+  - Add ImageComparison with a fixed image frame, native range control, RTL support, and matching
+    Astro, React, and Web Component contracts.
+  - Improve native slider announcements, long text layout, and contextual symbol selection.
+  - Refresh usage examples, migration guidance, machine-readable contracts, and the public consumer
+    showcase. Token, icon, and form-integration packages join the coordinated major family.
+
+  Migration: use unique stable chart X values, rebuild native consumers for updated initializer
+  contracts, and review custom button selectors against the content wrapper. Loading actions now
+  prevent repeated activation. See `docs/migrating-to-lumen.md` for the full v4 migration. No
+  application data migration is performed, and this candidate is not publication authorization.
+
+### Minor Changes
+
+- Add ImageComparison for Astro, React, and Web Components with aligned media clipping, a labelled native range control, localized accessible values, and controlled React state. Preserve media framing across reveal changes and support writing direction without pointer-only interaction.
+
+- Add a controlled React DateRangeCalendar with visible endpoint calendars, inclusive
+  range highlighting, bounded presets, keyboard navigation and responsive shared styles.
+  Consumers own draft state and confirmation actions.
+
+  Add DateRangeInput for polished input-attached selection, draft Apply/Cancel,
+  localized validation and summaries, optional form entries, viewport-aware positioning,
+  keyboard dismissal and a separately scrolling body with visible actions.
+
+### Patch Changes
+
+- Updated dependencies [`0266a98`, `d76f3da`, `475597e`, `d76f3da`]:
+  - @santi020k/lumen-core@4.0.0
+  - @santi020k/lumen@4.0.0
+
 ## 3.0.1
 
 ### Patch Changes

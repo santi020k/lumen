@@ -167,8 +167,8 @@ const waysToJoin = [
                   Visit project <Icon decorative name="arrow-up-right" size="sm" />
                 </Link>
                 <Link
-href={project.mobileImage}
-class="community-project__mobile-link"
+                  href={project.mobileImage}
+                  class="community-project__mobile-link"
                 >View mobile capture</Link>
               </div>
             </Card>
@@ -468,7 +468,10 @@ class="community-project__mobile-link"
     border-bottom: 1px solid hsl(var(--line));
   }
 
-  .community-project__mobile-link { margin-inline-start: 1rem; font-size: .8125rem; }
+  .community-project__mobile-link {
+    margin-inline-start: 1rem;
+    font-size: 0.8125rem;
+  }
 
   .community-project__body {
     padding: 1.35rem;
@@ -480,6 +483,7 @@ class="community-project__mobile-link"
 
   .community-project__body > div {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
     gap: 0.75rem;
@@ -669,21 +673,27 @@ class="community-project__mobile-link"
       grid-template-columns: minmax(0, 1.7fr) minmax(18rem, 0.55fr);
     }
 
-    .community-showcase {
-      grid-template-columns: minmax(0, 1.45fr) minmax(19rem, 0.55fr);
+    :global(.community-featured-project.ui-card) {
+      display: grid;
+      grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+      align-items: center;
+    }
+
+    .community-featured-project__visual {
+      min-height: 32rem;
+      border-bottom: 0;
+      border-inline-end: 1px solid hsl(var(--line));
     }
 
     .community-projects {
-      grid-template-columns: 1fr;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
     .community-project :global(.ui-image) {
       aspect-ratio: 16 / 8;
     }
 
-    .community-project__mobile-link { margin-inline-start: 1rem; font-size: .8125rem; }
-
-  .community-project__body {
+    .community-project__body {
       padding: 1.1rem 1.25rem 1.25rem;
     }
 

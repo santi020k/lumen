@@ -45,7 +45,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.santi020k:lumen-compose:3.0.0")
+    implementation("com.santi020k:lumen-compose:4.0.0")
 }
 ```
 
@@ -298,7 +298,7 @@ See the [native compatibility matrix](../../docs/native-compatibility.md) for su
 JDK, Gradle, Kotlin, and Compose baselines.
 
 Wear OS applications should use the sibling
-[`lumen-compose-wear`](./wear) artifact (`com.santi020k:lumen-compose-wear:3.0.0`). It provides a
+[`lumen-compose-wear`](./wear) artifact (`com.santi020k:lumen-compose-wear:4.0.0`). It provides a
 deliberately small round-screen tier without
 forcing phone applications to acquire wearable contracts or requiring consumers to migrate their
 selected Wear Material version.
