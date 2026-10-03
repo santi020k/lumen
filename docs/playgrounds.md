@@ -39,6 +39,30 @@ case-insensitive partial matches. Reset filters returns to the complete catalog.
 capture launches match a complete component name. Store and Expo updates require the separate
 publication workflow.
 
+## Try Lumen and use it as a reference
+
+Start at the [homepage playground section](https://lumen.santi020k.com/#playgrounds). Choose a
+browser preview for a quick evaluation or install a native gallery to explore device interactions.
+
+| Platform | Try it | Guide and implementation reference |
+| --- | --- | --- |
+| Astro, React, Web Components | [Web playground](https://lumen.santi020k.com/docs/web/playground) | [Component examples](https://lumen.santi020k.com/docs/components) and [example source](../apps/docs/src/examples) |
+| iPhone, iPad, Mac | [App Store](https://apps.apple.com/app/id6805250815) | [Apple guide](https://lumen.santi020k.com/docs/apple/playground#reference) and [SwiftUI app source](../apps/playground-apple) |
+| Android phones and tablets | [Google Play](https://play.google.com/store/apps/details?id=com.santi020k.lumen.playground.compose) | [Android guide](https://lumen.santi020k.com/docs/android/playground#reference) and [Compose app source](../apps/playground-android) |
+| React Native and Expo | [Browser preview](https://lumen.santi020k.com/docs/react-native/playground#preview) | [Local Expo guide](https://lumen.santi020k.com/docs/react-native/playground#run) and [app source](../apps/playground-react-native) |
+
+Use the playgrounds as a practical adoption path:
+
+1. Find a component and try its input, focus, loading, disabled, or error states where available.
+2. Compare themes and layout on the platform you intend to ship.
+3. Read the matching component API and app source, then adapt the example to your own application.
+
+The browser previews are available without a local setup. The Apple and Android store galleries
+work offline without an account. React Native native-device evaluation uses the local Expo workflow
+below; its Expo Go link is subject to SDK compatibility and is not a separate public store app.
+Store versions are released independently from this repository, so use the local workspace when
+evaluating candidate-only components or patterns.
+
 ## First-time repository setup
 
 Install the shared repository dependencies before running any playground:

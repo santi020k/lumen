@@ -28,7 +28,7 @@ import {
 import HomeWorkbench from '../components/HomeWorkbench.astro'
 import { frameworkSetups } from '../data/docs'
 import type { DocsPlatformId } from '../data/platforms'
-import { productPlatformGuides } from '../data/platforms'
+import { getPlatformGuide, productPlatformGuides } from '../data/platforms'
 import { showcaseProjects } from '../data/showcase'
 import { documentedComponentCount, primaryPageMetadata } from '../data/site-metadata'
 import BaseLayout from '../layouts/BaseLayout.astro'
@@ -85,6 +85,37 @@ const platformShowcase = productPlatformGuides.map(guide => ({
   ...guide,
   ...platformPresentation[guide.id]
 }))
+
+const playgrounds = [
+  {
+    description: 'Try Astro, React, and Web Components side by side. Change states and explore the code behind each example.',
+    icon: 'panels-top-left',
+    id: 'web',
+    label: 'In your browser',
+    platform: 'Astro · React · Elements'
+  },
+  {
+    description: 'Explore SwiftUI components, themes, and native interactions on your own Apple device.',
+    icon: 'apple',
+    id: 'apple',
+    label: 'iPhone, iPad & Mac',
+    platform: 'SwiftUI'
+  },
+  {
+    description: 'Get a feel for Compose components, touch interactions, and light and dark themes on Android.',
+    icon: 'bot',
+    id: 'android',
+    label: 'Android phones & tablets',
+    platform: 'Jetpack Compose'
+  },
+  {
+    description: 'Explore the browser gallery, then run the Expo reference app locally to try it on iOS or Android.',
+    icon: 'smartphone',
+    id: 'react-native',
+    label: 'React Native & Expo',
+    platform: 'Browser preview · Local app'
+  }
+] as const
 
 const principles = [
   {
@@ -178,8 +209,8 @@ const useCases: readonly UseCase[] = featuredProjects.flatMap(name => {
           <ButtonLink class="home-button-lg" href="/docs" showArrow variant="primary">
             Start building
           </ButtonLink>
-          <ButtonLink class="home-button-lg" href="/docs/components" variant="secondary">
-            Explore components
+          <ButtonLink class="home-button-lg" href="#playgrounds" variant="secondary">
+            Try the playgrounds
           </ButtonLink>
         </div>
         <Tabs class="home-installer" glass="subtle">
@@ -246,6 +277,62 @@ const useCases: readonly UseCase[] = featuredProjects.flatMap(name => {
           {categories.map(category => <Badge variant="outline">{category}</Badge>)}
         </div>
       </div>
+    </section>
+
+    <section class="home-section home-container home-playgrounds" id="playgrounds" aria-labelledby="playgrounds-title">
+      <ScrollReveal animation="slide-up">
+        <div class="home-section__head home-section__head--split">
+          <div>
+            <Eyebrow>Try Lumen</Eyebrow>
+            <h2 id="playgrounds-title">Try the components.<br />Make them your own.</h2>
+          </div>
+          <div class="home-section__aside">
+            <p>
+              Open a playground, explore real interactions, and use the source as a reference
+              for your next app. Start in the browser or take Lumen onto your device.
+            </p>
+            <Marker variant="success">Free to explore. No account needed.</Marker>
+          </div>
+        </div>
+      </ScrollReveal>
+      <RevealGroup class="home-playgrounds__grid" stagger={60}>
+        {playgrounds.map(playground => {
+          const guide = getPlatformGuide(playground.id)
+          const store = guide.storeAvailability
+          const availableStore = store?.status === 'available' && store.href && store.linkLabel ? store : undefined
+          const guideHref = `${guide.href}/playground`
+          const browserPreview = playground.id === 'web' || playground.id === 'react-native'
+
+          return (
+            <Card as="article" class="home-playground" aria-labelledby={`playground-${playground.id}-title`}>
+              <Icon class="home-playground__icon" decorative name={playground.icon} size="lg" />
+              <p class="home-playground__platform">{playground.platform}</p>
+              <h3 id={`playground-${playground.id}-title`}>{playground.label}</h3>
+              <p class="home-playground__description">{playground.description}</p>
+              <div class="home-playground__actions">
+                <ButtonLink
+                  href={availableStore?.href ?? `${guideHref}${playground.id === 'react-native' ? '#preview' : ''}`}
+                  newTab={Boolean(availableStore)}
+                  showArrow
+                  variant={playground.id === 'web' ? 'primary' : 'secondary'}
+                >
+                  {availableStore?.linkLabel ?? (browserPreview ? 'Try in browser' : 'Open playground guide')}
+                </ButtonLink>
+                <ButtonLink
+                  ariaLabel={playground.id === 'web' ? 'Browse web component examples' : `${guide.shortLabel} playground guide and source`}
+                  href={playground.id === 'web' ? '/docs/components' : `${guideHref}#reference`}
+                  variant="inline"
+                >
+                  {playground.id === 'web' ? 'Browse examples' : 'Guide & source'}
+                </ButtonLink>
+              </div>
+            </Card>
+          )
+        })}
+      </RevealGroup>
+      <p class="home-playgrounds__note">
+        Store apps follow their own release schedule. For the latest workspace examples, use the local setup in each guide.
+      </p>
     </section>
 
     <section class="home-section home-container home-platforms" aria-labelledby="platforms-title">
@@ -1429,6 +1516,75 @@ const useCases: readonly UseCase[] = featuredProjects.flatMap(name => {
     color: hsl(var(--ink-soft));
   }
 
+  .home-playgrounds {
+    scroll-margin-top: 5rem;
+  }
+
+  .home-playgrounds__grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1rem;
+    margin-top: 2.5rem;
+  }
+
+  .home-playground {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1.5rem;
+  }
+
+  .home-playground__icon {
+    color: hsl(var(--brand));
+  }
+
+  .home-playground__platform {
+    margin: 1.5rem 0 .65rem;
+    color: hsl(var(--ink-soft));
+    font-size: .75rem;
+    line-height: 1.5;
+  }
+
+  .home-playground h3 {
+    margin: 0;
+    color: hsl(var(--ink));
+    font-family: var(--app-font-display), sans-serif;
+    font-size: 1.3rem;
+    font-weight: 750;
+    letter-spacing: -.02em;
+    line-height: 1.25;
+  }
+
+  .home-playground__description {
+    margin: 1rem 0 1.5rem;
+    color: hsl(var(--ink-soft));
+    font-size: .85rem;
+    line-height: 1.7;
+  }
+
+  .home-playground__actions {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: .65rem;
+    margin-top: auto;
+  }
+
+  .home-playground__actions :global(.ui-button-link) {
+    max-width: 100%;
+    min-height: 2.75rem;
+    white-space: normal;
+  }
+
+  .home-playgrounds__note {
+    margin: 1.25rem 0 0;
+    color: hsl(var(--ink-soft));
+    font-size: .8rem;
+    line-height: 1.6;
+  }
+
   .home-platforms {
     position: relative;
   }
@@ -1655,6 +1811,10 @@ const useCases: readonly UseCase[] = featuredProjects.flatMap(name => {
   }
 
   @media (max-width: 960px) {
+    .home-playgrounds__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
     .home-proof__inner {
       grid-template-columns: 1fr auto;
     }
@@ -1698,6 +1858,10 @@ const useCases: readonly UseCase[] = featuredProjects.flatMap(name => {
   }
 
   @media (max-width: 720px) {
+    .home-playgrounds__grid {
+      grid-template-columns: 1fr;
+    }
+
     .home-container,
     .home-hero__copy,
     .home-hero__product {

@@ -58,6 +58,7 @@ export interface PlatformGuide {
   playgroundCommands?: PlatformCodeExample[]
   playgroundLaunch?: PlatformPlaygroundLaunch
   playgroundNote?: string
+  playgroundSource?: string
   prerequisites?: string[]
   principles: PlatformPrinciple[]
   setupSteps?: PlatformSetupStep[]
@@ -224,6 +225,7 @@ pnpm playground:react-native`,
     ],
     playgroundNote:
       'Use the browser preview for the quickest public tour. Clone the repository for Expo, simulators, emulators, or physical-device validation; the local path avoids advertising an Expo Go QR code that the current public client cannot open.',
+    playgroundSource: 'https://github.com/santi020k/lumen/tree/main/apps/playground-react-native',
     prerequisites: [
       'Node.js 22.12 or newer for consumer applications',
       'Node.js 22.19 or newer and pnpm for the Lumen repository playground',
@@ -404,6 +406,7 @@ swift run --package-path apps/playground-apple LumenApplePlayground`,
     ],
     playgroundNote:
       'The Apple gallery runs as an iOS app from Xcode and as a macOS Swift Package executable. Choose an iPhone simulator and press Run; signing is not required for the simulator.',
+    playgroundSource: 'https://github.com/santi020k/lumen/tree/main/apps/playground-apple',
     prerequisites: [
       'macOS with Xcode 16 or newer and the SDK for the Apple platform you target',
       'An existing SwiftUI application targeting a supported Apple platform',
@@ -578,6 +581,7 @@ pnpm playground:android:build`,
     ],
     playgroundNote:
       'Open the Android playground directory in Android Studio, let Gradle sync, select an emulator or connected device, and press Run. The command-line build writes a directly installable debug APK under the app build directory.',
+    playgroundSource: 'https://github.com/santi020k/lumen/tree/main/apps/playground-android',
     prerequisites: [
       'Android Studio with JDK 21 or newer',
       'Android SDK 37 and an emulator or USB-debuggable device',

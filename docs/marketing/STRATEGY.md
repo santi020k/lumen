@@ -23,7 +23,7 @@ platforms," "Figma," or "AI-assisted development":
 
 | Audience | What they need to see first | Primary CTA | Destination |
 | --- | --- | --- | --- |
-| Developers evaluating a UI library | A real, runnable component example and a one-line install | Install a package or try a template | `/templates`, package quick starts in the root README |
+| Developers evaluating a UI library | A real, runnable component example and a one-line install | Try a playground, then build from its reference | `/#playgrounds`, `/templates`, package quick starts in the root README |
 | Design-system engineers | Shared semantic tokens and cross-platform contract, not just visual styling | Read the shared foundations | `/docs/foundations`, [`docs/cross-platform.md`](../cross-platform.md) |
 | AI-assisted builders | A deterministic, agent-usable catalog instead of guesswork | Install the skill or connect the MCP server | `/docs/ai-skill`, `/docs/mcp` |
 | Product teams evaluating adoption | A low-risk, evidence-driven path with no sales gate | Start a scoped evaluation | `/teams` |
@@ -31,6 +31,20 @@ platforms," "Figma," or "AI-assisted development":
 These four audiences are the only ones this package targets. Do not broaden scope to
 general consumer marketing, growth hacking, or paid acquisition; this package covers organic and
 community channels only, consistent with the existing [exposure playbook](../exposure-playbook.md).
+
+## Playgrounds as an adoption path
+
+The homepage's `/#playgrounds` section gives developers a direct path from discovery to evaluation:
+try a browser demo or install a native gallery, inspect component states and themes, then follow the
+guide to the app source and package setup. Treat these apps as useful implementation references
+and an ongoing reason to return to the documentation. The platform chooser and canonical links
+live in [`docs/playgrounds.md`](../playgrounds.md#try-lumen-and-use-it-as-a-reference).
+
+Promote the public App Store and Google Play listings for the SwiftUI and Compose galleries.
+Lead React Native visitors to its browser preview and local Expo guide; do not promote its
+SDK-dependent Expo Go link as a universal installation path. Keep store builds distinct from
+unpublished repository candidates and recheck availability before publication. Playground
+availability demonstrates Lumen's own implementation, not independent product adoption.
 
 ## Message pillars
 
