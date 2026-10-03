@@ -94,3 +94,14 @@ Before/after MCP documentation captures at 390px and 1440px passed overflow chec
 schemas, both strict Claude validators, four plugin mutation tests, exhaustive MCP evaluation,
 repository type checking and zero-warning lint passed. These are local results, not publication or
 public installation evidence. Account-authenticated benchmarks remain opt-in and separate from CI.
+
+The reconciled repository gate passed 1,134 unit tests, all type and lint tasks, spelling, unused-code
+checks, and the preceding contract gates before stopping at `check:security`: three existing high
+advisories in `node-forge`, `http-cache-semantics`, and `braces`. Packed consumer, React Native,
+MCP stdio/HTTP, and publish dry-run checks were run separately and passed. The release gate remains
+failed; this work does not waive those advisories or authorize publishing.
+
+The skill creator's `quick_validate.py` was attempted with both available Python runtimes and could
+not start because PyYAML was unavailable (`ModuleNotFoundError: No module named 'yaml'`). Skill metadata
+was inspected, generated skill snapshots matched, and both strict Claude plugin validators passed;
+these results do not imply the Python validator passed.

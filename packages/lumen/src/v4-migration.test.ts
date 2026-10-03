@@ -51,6 +51,12 @@ import { Other } from '@modelcontextprotocol/sdk/types.js'
     expect(migrateLumenV4Source(result.source).changes).toEqual([])
   })
 
+  test('handles repeated import keywords on one adversarial line without edits', () => {
+    const source = 'import '.repeat(50000)
+
+    expect(migrateLumenV4Source(source)).toEqual({ changes: [], source })
+  })
+
   test('previews by default, inventories versions, applies safe edits, and retains manual reviews', async () => {
     const root = await mkdtemp(join(tmpdir(), 'lumen-v4-migration-test-'))
     try {
