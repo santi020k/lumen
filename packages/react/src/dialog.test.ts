@@ -5,7 +5,7 @@ import { createRoot, type Root } from 'react-dom/client'
 
 import { afterEach, beforeEach, expect, test, vi } from 'vitest'
 
-import { AlertDialog, Dialog, type DialogProps } from './components.js'
+import { AlertDialog, Dialog, DialogBody, DialogClose, type DialogCloseProps, DialogFooter, DialogHeader, type DialogProps, DialogTitle } from './components.js'
 
 let container: HTMLDivElement
 let root: Root
@@ -161,4 +161,56 @@ test('focus restoration does not steal focus from a replacement dialog', async (
   await render(content({ open: true }))
   await render(createElement(Dialog, { key: 'replacement', open: true }, createElement('button', { id: 'replacement-action' }, 'Next')))
   expect(document.activeElement?.id).toBe('replacement-action')
+})
+
+const compoundContent = (props: DialogProps = {}, closeProps: DialogCloseProps = {}) => createElement(Dialog,
+  { defaultOpen: true, 'aria-labelledby': 'record-title', ...props },
+  createElement(DialogHeader, null, createElement(DialogTitle, { id: 'record-title' }, 'Edit record')),
+  createElement(DialogBody, null, createElement('input', { 'aria-label': 'Record name' })),
+  createElement(DialogFooter, null, createElement(DialogClose, closeProps, 'Cancel')))
+
+test('compound parts preserve title association and close with focus restoration', async () => {
+  await render(compoundContent())
+  const dialog = getDialog()
+  const title = container.querySelector('#record-title')
+  expect(title?.tagName).toBe('H2')
+  expect(dialog.getAttribute('aria-labelledby')).toBe(title?.id)
+  expect(dialog.querySelector('[data-slot="dialog-body"]')).toBeTruthy()
+  const close = dialog.querySelector<HTMLButtonElement>('[data-slot="dialog-close"]')
+  if (!close) throw new Error('Missing close button')
+  await run(() => {
+    close.click()
+  })
+  expect(dialog.open).toBe(false)
+  expect(document.activeElement).toBe(opener)
+})
+
+test('compound close respects cancelled clicks and disabled actions', async () => {
+  await render(compoundContent({}, { onClick: event => {
+    event.preventDefault()
+  } }))
+  const dialog = getDialog()
+  const close = dialog.querySelector<HTMLButtonElement>('[data-slot="dialog-close"]')
+  if (!close) throw new Error('Missing close button')
+  await run(() => {
+    close.click()
+  })
+  expect(dialog.open).toBe(true)
+  await render(compoundContent({}, { disabled: true }))
+  await run(() => {
+    close.click()
+  })
+  expect(dialog.open).toBe(true)
+})
+
+test('compound close reports controlled requests without overriding application state', async () => {
+  const onOpenChange = vi.fn()
+  await render(compoundContent({ open: true, onOpenChange }))
+  const close = getDialog().querySelector<HTMLButtonElement>('[data-slot="dialog-close"]')
+  if (!close) throw new Error('Missing close button')
+  await run(() => {
+    close.click()
+  })
+  expect(onOpenChange).toHaveBeenCalledWith(false)
+  expect(getDialog().open).toBe(true)
 })

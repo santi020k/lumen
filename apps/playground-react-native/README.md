@@ -1,5 +1,10 @@
 # Lumen React Native Playground
 
+This candidate uses the local Lumen 4 adapter. Catalog discovery accepts component IDs,
+provides filter reset, and shows the workspace release version. See
+[the v4 playground guide](../../docs/playgrounds.md#lumen-4-candidate) for search and capture behavior.
+
+
 <!-- cspell:words screencap simctl -->
 
 An Expo reference app for every public component in `@santi020k/lumen-react-native`. It runs on
@@ -27,6 +32,11 @@ pnpm playground:react-native:web
 Scan the Expo QR code, or press `i`, `a`, or `w` to choose iOS, Android, or web. See
 [`docs/playgrounds.md`](../../docs/playgrounds.md) for prerequisites, EAS setup, APK generation, and
 store distribution profiles.
+
+The SDK 57 configuration enables iOS scene support through `expo-build-properties` so native
+builds made with Xcode 27 launch on iOS and iPadOS 27. Keep this opt-in until the Expo SDK upgrade;
+Expo SDK 58 adopts scenes by default. Regenerate the native host after changing the plugin settings.
+See Expo's [scene lifecycle migration](https://github.com/expo/fyi/blob/main/ios-scene-lifecycle.md).
 
 ## Open the published playground
 

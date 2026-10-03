@@ -121,12 +121,12 @@ export const resolveLumenIconName = (
   const { iconName, prefix } = parseIconName(name)
 
   if (!prefix) {
-    return lumenIcons[iconName] ? iconName : undefined
+    return Object.hasOwn(lumenIcons, iconName) ? iconName : undefined
   }
 
-  return registeredIconPacks.get(prefix)?.[iconName] ?
-    `${prefix}:${iconName}` :
-    undefined
+  const pack = registeredIconPacks.get(prefix)
+
+  return pack && Object.hasOwn(pack, iconName) ? `${prefix}:${iconName}` : undefined
 }
 
 export const getLumenIcon = (name: string): LumenIconData | undefined => {

@@ -10,6 +10,8 @@ import { join, resolve } from 'node:path'
 import { chromium, expect } from '@playwright/test'
 import ts from 'typescript'
 
+import { verifyV4AgentScreen } from './lib/verify-v4-agent-screen.mjs'
+
 const { build } = createRequire(new URL('../packages/elements/package.json', import.meta.url))('esbuild')
 const root = resolve(import.meta.dirname, '..')
 const providers = ['codex', 'claude']
@@ -102,7 +104,7 @@ const setup = async (directory, scenario) => {
     await writeFile(join(directory, 'Screen.tsx'), "import { Button } from '@santi020k/lumen-react'\nexport default function Screen() { return <Button>Save</Button> }\n")
   }
 
-  if (scenario.kind === 'react') await writeFile(join(directory, 'Screen.tsx'), 'export default function Screen() { return null }\n')
+  if (scenario.kind.startsWith('react')) await writeFile(join(directory, 'Screen.tsx'), 'export default function Screen() { return null }\n')
 
   if (scenario.kind === 'elements') {
     await writeFile(join(directory, 'Screen.html'), '<main></main>\n')
@@ -205,7 +207,15 @@ const serve = async directory => {
  response.end() }
   })
 
-  await new Promise(resolve => server.listen(0, '127.0.0.1', resolve))
+  await new Promise((resolve, reject) => {
+    server.once('error', reject)
+
+    server.listen(0, '127.0.0.1', () => {
+      server.off('error', reject)
+
+      resolve()
+    })
+  })
 
   const address = server.address()
 
@@ -224,8 +234,8 @@ const screenBody = async (directory, react) => {
   return body
 }
 
-const verifyScreen = async (directory, scenario) => {
-  const react = scenario.kind === 'react'
+const prepareScreen = async (directory, scenario) => {
+  const react = scenario.kind.startsWith('react')
   const entry = react ? `import React from 'react'; import { createRoot } from 'react-dom/client'; import Screen from './Screen'; import ${JSON.stringify(join(root, 'packages/astro/styles/lumen.css'))}; createRoot(document.getElementById('app')).render(<Screen />);` : `import './setup'; import ${JSON.stringify(join(root, 'packages/astro/styles/lumen.css'))};`
   const entryPath = join(directory, react ? 'entry.tsx' : 'entry.ts')
 
@@ -251,7 +261,12 @@ const verifyScreen = async (directory, scenario) => {
 
   await writeFile(join(directory, 'index.html'), `<!doctype html><html lang="${react ? 'en' : 'es'}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Agent evaluation</title><link rel="stylesheet" href="/app.css"></head><body>${body}<script type="module" src="/app.js"></script></body></html>`)
 
-  const { server, url } = await serve(directory)
+  return serve(directory)
+}
+
+const verifyScreen = async (directory, scenario) => {
+  const react = scenario.kind.startsWith('react')
+  const { server, url } = await prepareScreen(directory, scenario)
   const browser = await chromium.launch()
 
   try {
@@ -262,6 +277,16 @@ const verifyScreen = async (directory, scenario) => {
       page.on('pageerror', error => errors.push(error.message))
 
       await page.goto(url)
+
+      if (['react-content-flow', 'react-appearance-presets'].includes(scenario.kind)) {
+        await verifyV4AgentScreen(page, scenario.kind, directory, root, width)
+
+        assert.deepEqual(errors, [])
+
+        await page.close()
+
+        continue
+      }
 
       const trigger = page.getByRole('button', { name: react ? 'Edit profile' : 'Editar perfil', exact: true })
 

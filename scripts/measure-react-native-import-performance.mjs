@@ -36,7 +36,12 @@ const buildCode = await new Promise((resolve, reject) => {
 
 assert.equal(buildCode, 0, `Native package build failed: ${Buffer.concat(buildOutput).toString()}`)
 
-const fixtureRoot = await mkdtemp(join(playgroundRoot, '.lumen-native-benchmark-'))
+// Keep generated applications out of the playground's source lint/type-check surface.
+const benchmarkRoot = join(playgroundRoot, '.build')
+
+await mkdir(benchmarkRoot, { recursive: true })
+
+const fixtureRoot = await mkdtemp(join(benchmarkRoot, 'native-import-benchmark-'))
 const manifest = JSON.parse(await readFile(join(playgroundRoot, 'package.json'), 'utf8'))
 const iconSource = await readFile(join(repositoryRoot, 'packages/react-native/src/icons.generated.tsx'), 'utf8')
 const searchStart = iconSource.indexOf('const LumenSearchIconGraphic =')

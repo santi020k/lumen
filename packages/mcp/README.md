@@ -42,11 +42,11 @@ not need a checkout of the Lumen repository.
 | Tool | Purpose |
 | --- | --- |
 | `lumen_list_components` | List components with descriptions, categories, framework availability, collections, and recipe membership. Filter by `framework`, `recipe`, or natural-language `query`. |
-| `lumen_get_component` | Get a component for `astro`, `react`, or `elements` at `summary`, `usage`, or `source` detail. Usage includes imports, styles, props or attributes, examples, accessibility, guidance, and events. |
+| `lumen_get_component` | Get a component for `astro`, `react`, or `elements` at `summary`, `usage`, or `source` detail. Usage includes imports, styles, props or attributes, examples, keyboard interactions, guidance, and events. |
 | `lumen_list_native_components` | List native components and filter them by `react-native`, `swiftui`, or `compose`. |
 | `lumen_get_native_component` | Get native installation, setup, import, API, example, accessibility guidance, and optional adapter source for one platform. |
 | `lumen_get_recipe` | Get a recipe or component set with its purpose, components, files, categories, and framework-specific install command. |
-| `lumen_search` | Rank natural-language matches across web and native contracts, recipes, tokens, and agent rules. Optionally filter by web framework or native platform. |
+| `lumen_search` | Rank natural-language matches across web contracts, recipes, tokens, and agent rules. Supply `platform` to search native contracts; optionally filter web results by `framework`. |
 | `lumen_get_meta` | Return deterministic snapshot provenance, package versions, schema version, component count, and catalog hash. |
 | `lumen_get_catalog_manifest` | Return stable web component, native component, and recipe fingerprints that clients can retain between upgrades. |
 | `lumen_diff_catalog` | Compare a retained manifest with the current snapshot and report added, changed, removed, and unchanged entries. |

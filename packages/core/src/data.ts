@@ -90,7 +90,12 @@ const parseDataViewFilters = (params: URLSearchParams): Record<string, string> =
 
   for (const [key, filterValue] of params.entries()) {
     if (key.startsWith('filter.')) {
-      filters[key.slice('filter.'.length)] = filterValue
+      Object.defineProperty(filters, key.slice('filter.'.length), {
+        configurable: true,
+        enumerable: true,
+        value: filterValue,
+        writable: true
+      })
     }
   }
 
@@ -287,7 +292,14 @@ export const createDataViewRequestUrl = (
 
   if (!query) return endpoint
 
-  return `${endpoint}${endpoint.includes('?') ? '&' : '?'}${query}`
+  const fragmentIndex = endpoint.indexOf('#')
+  const path = fragmentIndex < 0 ? endpoint : endpoint.slice(0, fragmentIndex)
+  const fragment = fragmentIndex < 0 ? '' : endpoint.slice(fragmentIndex)
+  let separator = path.includes('?') ? '&' : '?'
+
+  if (path.endsWith('?') || path.endsWith('&')) separator = ''
+
+  return `${path}${separator}${query}${fragment}`
 }
 
 export const createDataViewServerRequest = (

@@ -209,6 +209,17 @@ export {
   normalizeLumenLocales
 } from './language.js'
 export {
+  isLumenDecimalInBounds,
+  isLumenTimeInBounds,
+  isLumenTimeSelection,
+  type LumenDecimalDraft,
+  type LumenDecimalOptions,
+  type LumenTimeSelection,
+  normalizeLumenNumericOTP,
+  parseLumenDecimalDraft,
+  stepLumenDecimalDraft
+} from './native-input.js'
+export {
   createEmptyLumenPhoneNumber,
   formatLumenPhoneNumber,
   getLumenPhoneCountries,

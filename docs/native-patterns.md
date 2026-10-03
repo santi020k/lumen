@@ -301,3 +301,34 @@ Native button groups treat horizontal orientation as a preference. React Native 
 when needed, while SwiftUI falls back to a vertical layout when the row does not fit. All three
 stack at accessibility text sizes. Keep action labels descriptive and allow the group to grow
 vertically instead of fixing its height.
+
+## Pattern: form submission errors
+
+Keep the form and its drafts visible after an invalid submission. Use field error messages for
+specific context, and compose an alert containing a concise summary and actions that move focus to
+the corresponding native controls. The application owns the error collection and focus targets;
+Lumen does not infer field identity or replace the form with ErrorState.
+
+React Native can retain `TextInput` refs and call `focus()` from summary actions. Associate each
+message through `LumenFieldGroup` and give each action a readable name such as “Review quantity.”
+SwiftUI can pass its application-owned `@FocusState<Bool>` binding to NumberField and set it
+from an alert action; Compose
+can request focus using its application-owned `FocusRequester`.
+
+```swift
+@FocusState var quantityFocused: Bool
+
+LumenAlert(variant: .destructive) {
+    VStack(alignment: .leading, spacing: LumenSpacing.sm) {
+        LumenText("Review the form", variant: .label)
+        LumenButton("Review quantity", intent: .quiet) { quantityFocused = true }
+    }
+}
+LumenNumberField("Quantity", text: $quantityDraft, min: "0", focused: $quantityFocused)
+```
+
+For advanced controls that compose several focusable children, use the platform's native focus
+section or wrap the actual application-owned input when precise editor focus is required. Verify
+summary-to-field focus in the consuming form on each target. Announce a new summary once, preserve
+submitted values, and avoid announcing the same failure through both a summary and a toast. This
+recipe intentionally retains native focus ownership and requires no extra public summary primitive.

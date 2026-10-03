@@ -15,6 +15,7 @@ import {
   type StyleProp,
   Text,
   type TextStyle,
+  useWindowDimensions,
   View,
   type ViewProps,
   type ViewStyle
@@ -127,6 +128,7 @@ const LumenNavigationDestination = ({
   value
 }: LumenNavigationDestinationProps): ReactElement => {
   const theme = useLumenTheme()
+  const { fontScale } = useWindowDimensions()
 
   const itemState = resolveLumenNavigationItemState(
     theme.colors,
@@ -183,9 +185,12 @@ const LumenNavigationDestination = ({
         graphic={graphic}
       />
       <Text
-        numberOfLines={1}
+        numberOfLines={fontScale >= 2 ? undefined : 1}
         style={{
           color: itemState.color,
+          flexShrink: 1,
+          maxWidth: '100%',
+          textAlign: 'center',
           fontSize: theme.fontSizes.xs,
           fontWeight: String(
             selected ? theme.fontWeights.semibold : theme.fontWeights.medium

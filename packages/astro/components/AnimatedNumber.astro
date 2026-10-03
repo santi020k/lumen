@@ -28,7 +28,7 @@ const {
   ...rest
 } = Astro.props
 
-const safeDecimals = Math.max(0, Math.min(20, Math.floor(decimals)))
+const safeDecimals = Math.max(0, Math.min(20, (Math.floor(decimals) || 0)))
 
 const formatter = new Intl.NumberFormat(locale, {
   maximumFractionDigits: safeDecimals,

@@ -20,6 +20,8 @@ enum PlaygroundComponentCategory: String, CaseIterable, Identifiable {
 }
 
 enum PlaygroundCatalog {
+    static let lumenVersion = "4.0.0"
+
     static let categories: [(category: PlaygroundComponentCategory, names: [String])] = [
         (
             .foundations,
@@ -64,6 +66,11 @@ enum PlaygroundCatalog {
                 "Tabs",
                 "Picker",
                 "Slider",
+                "Time field",
+                "Autocomplete",
+                "Number field",
+                "Password field",
+                "Input OTP",
                 "Shortcut recorder",
                 "Symbol picker"
             ]
@@ -101,7 +108,8 @@ enum PlaygroundCatalog {
                 "Stat",
                 "Section header",
                 "Status bar",
-                "Gauge"
+                "Gauge",
+                "Image comparison"
             ]
         ),
         (

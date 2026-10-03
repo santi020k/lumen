@@ -2628,7 +2628,10 @@ export const DatePicker = ({
     onValueChange?.(nextValue)
 
     if (nativeInputRef.current) {
-      nativeInputRef.current.value = nextValue
+      // Use the native setter so React's change event observes the selected value.
+      const descriptor = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')
+
+      descriptor?.set?.call(nativeInputRef.current, nextValue)
 
       nativeInputRef.current.dispatchEvent(
         new Event('input', { bubbles: true })
@@ -2855,7 +2858,51 @@ export type DialogProps = Omit<ComponentPropsWithoutRef<'dialog'>, 'open'> &
     layout?: 'centered' | 'fullscreen'
   }
 
+const DialogCloseContext = createContext<(() => void) | null>(null)
+
+export type DialogHeaderProps = ComponentPropsWithRef<'header'>
+export const DialogHeader = ({ className, ...props }: DialogHeaderProps) => (
+  <header {...props} className={composeClassName('ui-dialog-header', className)} data-slot="dialog-header" />
+)
+
+export type DialogTitleProps = ComponentPropsWithRef<'h2'> & { as?: 'h2' | 'h3' | 'h4' }
+export const DialogTitle = ({ as: Tag = 'h2', className, ...props }: DialogTitleProps) => (
+  <Tag {...props} className={composeClassName('ui-dialog-title', className)} data-slot="dialog-title" />
+)
+
+export type DialogBodyProps = ComponentPropsWithRef<'div'>
+export const DialogBody = ({ className, ...props }: DialogBodyProps) => (
+  <div {...props} className={composeClassName('ui-dialog-body', className)} data-slot="dialog-body" />
+)
+
+export type DialogFooterProps = ComponentPropsWithRef<'footer'>
+export const DialogFooter = ({ className, ...props }: DialogFooterProps) => (
+  <footer {...props} className={composeClassName('ui-dialog-footer', className)} data-slot="dialog-footer" />
+)
+
+export type DialogCloseProps = ButtonProps
+export const DialogClose = ({ className, onClick, ...props }: DialogCloseProps) => {
+  const close = useContext(DialogCloseContext)
+
+  return (
+    <Button
+      {...props}
+      className={composeClassName('ui-dialog-close', className)}
+      data-slot="dialog-close"
+      onClick={event => {
+        onClick?.(event)
+
+        if (event.defaultPrevented) return
+
+        if (close) close()
+        else event.currentTarget.closest('dialog')?.close()
+      }}
+    />
+  )
+}
+
 export const Dialog = ({
+  children,
   className,
   defaultOpen,
   dismissOnEscape,
@@ -2885,7 +2932,9 @@ export const Dialog = ({
       onPointerDown={composeHandlers(onPointerDown, dialog.dialogProps.onPointerDown)}
       onClick={composeHandlers(onClick, dialog.dialogProps.onClick)}
       onClose={composeHandlers(onClose, dialog.dialogProps.onClose)}
-    />
+    >
+      <DialogCloseContext value={dialog.close}>{children}</DialogCloseContext>
+    </dialog>
   )
 }
 
@@ -4101,6 +4150,7 @@ const MetadataPhoneInput = ({
   const controlId = id ?? inputProps.id ?? generatedId
   const errorId = `${generatedId}-error`
   const numberRef = useRef<HTMLInputElement>(null)
+  const selectRef = useRef<HTMLSelectElement>(null)
   const phoneOptions = useMemo(() => getPhoneInputOptions(locale), [locale])
 
   const metadataCountries = useMemo(
@@ -4178,21 +4228,44 @@ const MetadataPhoneInput = ({
 
   useEffect(() => {
     const form = numberRef.current?.form
+    let active = true
+    let resetTimer: ReturnType<typeof globalThis.setTimeout> | undefined
 
-    if (!form || value !== undefined) return
+    const reset = (event: Event): void => {
+      globalThis.clearTimeout(resetTimer)
 
-    const reset = (): void => {
-      const country = resolveReactPhoneInputCountry(metadataCountries, defaultCountryValue, locale, undefined)
+      resetTimer = globalThis.setTimeout(() => {
+        const input = numberRef.current
 
-      setInternalValue(resolveReactPhoneInputValue(metadataCountries, country, defaultValue ?? '', phoneOptions))
+        if (!active || event.defaultPrevented || !input?.isConnected) return
+
+        if (value === undefined) {
+          const country = resolveReactPhoneInputCountry(metadataCountries, defaultCountryValue, locale, undefined)
+
+          setInternalValue(resolveReactPhoneInputValue(metadataCountries, country, defaultValue ?? '', phoneOptions))
+
+          return
+        }
+
+        // Keep the DOM controls aligned with the application-owned value after native reset.
+        const select = selectRef.current
+
+        if (select) select.value = phoneValue.country.regionCode
+
+        input.value = phoneValue.nationalNumber
+      })
     }
 
-    form.addEventListener('reset', reset)
+    form?.addEventListener('reset', reset)
 
     return () => {
-      form.removeEventListener('reset', reset)
+      active = false
+
+      globalThis.clearTimeout(resetTimer)
+
+      form?.removeEventListener('reset', reset)
     }
-  }, [defaultCountryValue, defaultValue, locale, metadataCountries, phoneOptions, value])
+  }, [defaultCountryValue, defaultValue, inputProps.form, locale, metadataCountries, phoneOptions, phoneValue, value])
 
   return (
     <>
@@ -4218,6 +4291,7 @@ const MetadataPhoneInput = ({
             disabled={isDisabled || isReadOnly || metadataCountries.length === 0}
             name={countryName}
             onChange={handleCountryChange}
+            ref={selectRef}
             value={phoneValue.country.regionCode}
           >
             {resolvedOptions.map(option => (
@@ -6867,6 +6941,7 @@ export interface FileUploadProps extends Omit<
   hint?: ReactNode
   inputClassName?: string
   label?: ReactNode
+  selectedFilesLabel?: string
 }
 export const FileUpload = ({
   children,
@@ -6875,6 +6950,7 @@ export const FileUpload = ({
   id,
   inputClassName,
   label = 'Choose a file or drag it here',
+  selectedFilesLabel = '{count} files selected',
   onChange,
   ref,
   ...props
@@ -6882,10 +6958,30 @@ export const FileUpload = ({
   const generatedId = useId()
   const inputId = id ?? `ui-file-upload-${generatedId.replaceAll(':', '')}`
   const [selectedFiles, setSelectedFiles] = useState<string[]>([])
+  const inputRef = useRef<HTMLInputElement | null>(null)
+
+  useEffect(() => {
+    const form = inputRef.current?.form
+    let active = true
+
+    const reset = (event: Event): void => {
+      queueMicrotask(() => {
+        if (active && !event.defaultPrevented) setSelectedFiles([])
+      })
+    }
+
+    form?.addEventListener('reset', reset)
+
+    return () => {
+      active = false
+
+      form?.removeEventListener('reset', reset)
+    }
+  }, [props.form])
 
   const selectedFileText =
     selectedFiles.length > 1 ?
-      `${selectedFiles.length} files selected` :
+      selectedFilesLabel.replaceAll('{count}', String(selectedFiles.length)) :
       (selectedFiles[0] ?? '')
 
   return (
@@ -6906,7 +7002,13 @@ export const FileUpload = ({
 
           onChange?.(event)
         }}
-        ref={ref}
+        ref={element => {
+          inputRef.current = element
+
+          if (typeof ref === 'function') return ref(element)
+
+          if (ref) ref.current = element
+        }}
         type="file"
         {...props}
       />
@@ -8142,3 +8244,18 @@ export const SpeedDial = ({
     </div>
   )
 }
+
+export type DescriptionItemProps = ComponentPropsWithRef<'div'>
+export const DescriptionItem = ({ className, ...props }: DescriptionItemProps) => (
+  <div {...props} className={composeClassName('ui-description-item', 'ui-descriptions__item', className)} data-slot="description-item" />
+)
+
+export type DescriptionTermProps = ComponentPropsWithRef<'dt'>
+export const DescriptionTerm = ({ className, ...props }: DescriptionTermProps) => (
+  <dt {...props} className={composeClassName('ui-description-term', 'ui-descriptions__term', className)} data-slot="description-term" />
+)
+
+export type DescriptionDetailProps = ComponentPropsWithRef<'dd'>
+export const DescriptionDetail = ({ className, ...props }: DescriptionDetailProps) => (
+  <dd {...props} className={composeClassName('ui-description-detail', 'ui-descriptions__detail', className)} data-slot="description-detail" />
+)

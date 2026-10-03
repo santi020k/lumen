@@ -975,10 +975,16 @@ the shared state or measurement contract on every adapter.
 Use the [native device validation matrix](native-device-validation.md) for VoiceOver, TalkBack,
 keyboard, text scaling, contrast, and reduced-motion verification on representative hardware.
 
-## Compose v4 advanced controls
+## Shared v4 advanced controls
 
-These four controls are Android-specific entries; their names do not imply availability in the
-other adapters. Use the existing `LumenTheme` provider and application-owned state.
+React Native, SwiftUI and Compose provide `LumenNumberField`, `LumenTimeField`,
+`LumenAutocomplete`, `LumenPasswordField`, `LumenInputOTP` and `LumenImageComparison`.
+React Native time selection is exported from the optional `/datetime` entrypoint.
+Apple editing controls support iOS, macOS and visionOS. Values, queries, requests and submission
+policy stay in the application. SwiftUI reads locale from its environment; React Native accepts
+a locale identifier and Compose accepts `Locale`. Supply translated visible and spoken copy together.
+
+The descriptions below record the shared behavior, using Compose spelling for its native types.
 
 - `LumenTimeField` uses `LumenTimeSelection(hour, minute)` for a local wall-clock time without a
   date or time zone. Optional `minTime` and `maxTime` are inclusive within one day; overnight
@@ -1008,16 +1014,91 @@ other adapters. Use the existing `LumenTheme` provider and application-owned sta
   action; a host operation already in progress retains its indicator. Refresh actions are
   unavailable while busy. Supply translated `refreshLabel` and `refreshingLabel`.
 
-The Android playground includes editable, bounded, read-only, result-loading, empty, retry, and
+The native playgrounds include editable, bounded, read-only, result-loading, empty, retry, and
 English/Spanish examples. Run the package's unit, lint, ABI, and instrumentation gates. Emulator
 checks and screenshots remain separate from physical TalkBack and consumer qualification.
 
-### Remaining Compose v4 controls
+### Authentication and media controls
 
 `LumenPasswordField`, `LumenInputOTP`, `LumenTooltip`, and `LumenImageComparison` complete the
-additional Compose controls planned for this candidate. They are Android-specific catalog entries,
-not claims of availability in other native adapters. See the [Compose package usage](../packages/compose/README.md)
+additional Compose controls planned for this candidate. React Native and SwiftUI expose the
+advanced input contracts described below; adapter-specific APIs remain documented separately. See the [Compose package usage](../packages/compose/README.md)
 for controlled state, native autofill hints, OTP normalization, tooltip state, and comparison bounds.
 The playground uses synthetic credentials and locally drawn comparison images, with English/Spanish
 labels. Native autofill hints are integration contracts; emulator semantics tests do not prove
 provider suggestions, physical TalkBack behavior, or consumer qualification.
+
+### Compose v4 product controls
+
+The Android-specific catalog also includes `LumenTopAppBar`, `LumenSwipeActions`,
+`LumenMultiSelect`, `LumenRangeSlider`, and `LumenAdaptiveListDetailScaffold`.
+
+- App bars provide small, medium, and large sizes and named navigation/action slots. Remember a
+  `LumenTopAppBarScrollBehavior` with `rememberLumenTopAppBarScrollBehavior`, then attach its
+  `nestedScrollConnection` to the screen container. Pinned, enter-always, and exit-until-collapsed
+  modes use native Material behavior. The bar handles top system insets; the application applies
+  Scaffold content padding and owns back navigation.
+- Swipe actions accept optional logical `startAction` and `endAction` values of `LumenSwipeAction`.
+  Gestures respect RTL and return the row to rest before invoking the action. Transient swipe state
+  is never restored, preventing operation replay. Visible buttons and custom accessibility actions
+  expose the same operations without gestures. Set `enabled = false` while busy. Destructive
+  actions use the danger intent; confirmation, undo, persistence and actual removal belong to the
+  application. Use stable lazy-list keys for each record.
+- Multi-select takes `LumenSelectionOption` results and a controlled `Set<String>`. Selection is
+  immediate; Done or outside dismissal closes the dialog without reverting changes. The application
+  owns `query`, filtering, asynchronous results, cancellation and retry. Loading and results errors
+  hide stale selectable results. Options require unique non-empty values and labels. Selections
+  absent from current results remain visible with their raw value as a fallback label and can be
+  removed; keep stable human-readable values or retain selected options in results when friendly
+  chip labels are needed. Disabled options cannot be selected or removed while present. Read-only
+  and disabled states dismiss selection and prevent edits. `errorMessage` is form validation;
+  `resultsErrorMessage` is a separate recoverable search failure. Localize search, completion,
+  empty/loading/retry, selection count and chip-removal labels.
+- Range sliders expose separately labeled native lower and upper thumbs. Bounds must be finite,
+  strictly increasing, and have a finite span. Values are clamped and reversed endpoints reordered;
+  nonfinite endpoints fall back to the corresponding bound without writing to host state. `steps`
+  accepts 0–10,000 intermediate stops; zero means continuous adjustment. Supply translated
+  `startLabel`, `endLabel`, and `formatValue` for spoken and visible values. Read-only or disabled
+  states prevent adjustment. Units, persistence, and exact financial amounts belong to the host.
+- Adaptive list/detail scaffolds are full-window layouts backed by Material Adaptive 1.3.0.
+  Window size, posture and separating hinges determine the pane arrangement. A null `selectedKey`
+  prioritizes the list and shows `emptyDetail` beside it in wide windows; a selection prioritizes
+  detail in compact windows. Supply localized pane labels and `backLabel`. Selection and data are
+  application-owned; save them with `rememberSaveable` or your existing state owner. The detail
+  slot receives `(selectedKey, detailOnly)`; use `BackHandler(enabled = detailOnly)` to route system
+  back through the same callback as the built-in compact Back button. The scaffold creates no
+  back stack, owns no scroll container, and makes no network requests. Use the full-window
+  List/detail playground pattern to verify resizing and selection restoration.
+
+See the [Compose examples](../packages/compose/README.md#v4-product-controls). These components do
+not expand the Wear artifact or imply equivalent APIs on other adapters. Emulator interactions and
+rendering are separate from physical-device TalkBack and foldable qualification.
+- `LumenPasswordField` starts masked, hides on blur or when editing is disabled, and uses native
+  password/autofill hints. The application owns authentication, validation and submission. React
+  Native retains native input props and refs; SwiftUI uses a String binding. New-password hints
+  use the native hint where available, with password fallback on macOS 13.
+- `LumenInputOTP` uses one native editor and a controlled value of at most 1–12 ASCII digits.
+  Pasted Unicode decimal digits, spaces and hyphens are normalized; unrelated text and excess
+  digits are rejected. Completion is emitted only for a changed full code and never verifies or
+  submits it. Disabled/read-only fields cannot emit changes. Masking is optional. Native autofill
+  hints require separate provider verification in the consuming application.
+- `LumenImageComparison` controls the visible after-image fraction from zero to one. It clamps
+  finite values and falls back to 0.5 for non-finite values, mirrors the reveal edge in RTL, and
+  exposes one named adjustable control with a localized after percentage. React Native accepts
+  native image sources, SwiftUI accepts view builders, and Compose accepts painters. Applications
+  own image loading, analysis and editing.
+- `LumenTooltip` and `LumenPullToRefresh` retain their Compose-specific entries.
+
+React Native and SwiftUI number bounds and steps use complete, ungrouped ASCII decimal strings;
+Compose uses `BigDecimal`. Every adapter preserves raw localized drafts and computes exact steps.
+SwiftUI uses bounded decimal digit arrays, preserving the 128-character contract without narrowing
+values through `Double` or Foundation `Decimal`.
+
+Web `NumberField` retains browser-native number entry. Applications needing exact localized drafts
+can compose a text input with Core `parseLumenDecimalDraft`, `isLumenDecimalInBounds` and
+`stepLumenDecimalDraft`. This makes the stronger policy available across web and React Native.
+
+SwiftUI autocomplete uses `Binding<Value?>` with Hashable option values; React Native uses strings.
+Selection updates the query label before the selection callback/binding. The host clears stale
+selection when queries change. Loading hides results; result errors can expose Retry. Disabling
+or making the field read-only dismisses results without reopening them after re-enabling.

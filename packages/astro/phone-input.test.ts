@@ -40,3 +40,17 @@ test('restores the flag and calling code after a form reset', async () => {
   await Promise.resolve()
   expect(root.querySelector('[data-ui-phone-code]')?.textContent).toBe('+57')
 })
+
+test('clears stale error references when the error element is removed', () => {
+  const { input } = fixture()
+  document.getElementById('phone-error')?.remove()
+  input.value = '+1 212 555 0123'
+  input.dispatchEvent(new Event('input'))
+  expect(input.validity.customError).toBe(false)
+  expect(input.getAttribute('aria-errormessage')).toBeNull()
+  expect(input.getAttribute('aria-describedby')).toBeNull()
+  input.value = '3'
+  input.dispatchEvent(new Event('input'))
+  expect(input.validity.customError).toBe(true)
+  expect(input.getAttribute('aria-describedby')).toBeNull()
+})

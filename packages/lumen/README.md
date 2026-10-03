@@ -82,7 +82,8 @@ lumen migrate v4 --dry-run
 
 Use `lumen add <component>` for a local Astro wrapper, `--target react` for a React wrapper, or
 `--target elements` for a custom-elements starter. Bundled recipes support the same Astro, React,
-and Elements targets.
+and Elements targets. With `--conflict error`, existing target files are checked before any recipe
+files are written; runtime write failures can still require cleanup.
 
 Complete product recipes are also bundled for `analytics-dashboard`, `saas-admin`,
 `commerce-dashboard`, `project-workspace`, `auth-onboarding`, `docs-shell`, `marketing-shell`,
@@ -142,6 +143,7 @@ or package-manager requirement. Native Swift/Maven pins remain application-owned
 V4 apply records output fingerprints in `.lumen/migrations-v4.json`. Commit that ledger with the
 source changes: repeated applies skip migrated files, and later edits to them require manual review.
 The pure `migrateLumenVersionSource` API assumes v3 input and does not maintain that filesystem ledger.
+Markup migrations preserve literal slash-star text; script comments remain excluded from rewrites.
 Review the actual application at mobile and desktop widths after applying a migration.
 
 ### Lumen v2 migration

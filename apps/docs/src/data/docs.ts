@@ -524,6 +524,11 @@ export const componentCollections: ComponentCollection[] = [
       'Match the layer to the task: blocking, edge-mounted, anchored, or explanatory.',
     names: [
       'Dialog',
+      'DialogHeader',
+      'DialogTitle',
+      'DialogBody',
+      'DialogFooter',
+      'DialogClose',
       'AlertDialog',
       'Sheet',
       'Drawer',
@@ -567,6 +572,9 @@ export const componentCollections: ComponentCollection[] = [
       'Choose the lightest structure that supports the required hierarchy and interaction.',
     names: [
       'Descriptions',
+      'DescriptionItem',
+      'DescriptionTerm',
+      'DescriptionDetail',
       'Table',
       'DataTable',
       'Tree',
@@ -1619,6 +1627,18 @@ const apiReferenceByComponent = {
     ),
     ...dialogTriggerApiRows('dialog')
   ],
+  DialogHeader: [apiRow('children', 'title and optional description', 'required', 'Keeps introductory content outside the scrolling body.')],
+  DialogTitle: [
+    apiRow('as', '"h2" | "h3" | "h4"', '"h2"', 'Matches the surrounding heading hierarchy. Elements use a native heading child.'),
+    apiRow('id', 'string', 'required for labeling', 'Reference this id from Dialog aria-labelledby. Explicit association also works before hydration.')
+  ],
+  DialogBody: [apiRow('children', 'task content', 'required', 'Scrolls long content independently when it is a direct child of Dialog.')],
+  DialogFooter: [apiRow('children', 'actions', 'required', 'Keeps actions visible. A submit button can target a form in DialogBody using its form attribute.')],
+  DialogClose: [
+    apiRow('children', 'accessible button label', 'required', 'Closes the enclosing dialog. Elements require a native button child.'),
+    apiRow('disabled / loading', 'boolean', 'false', 'Uses Button props in Astro and React. Elements set disabled on the native button.'),
+    apiRow('onClick', 'React mouse event handler', '-', 'Calling preventDefault cancels dismissal.')
+  ],
   Direction: [
     apiRow(
       'dir', '"ltr" | "rtl" | "auto"', '"ltr"', 'Sets text and layout direction for the subtree.'
@@ -2578,6 +2598,9 @@ const apiReferenceByComponent = {
   ],
   FileUpload: [
     apiRow(
+      'selectedFilesLabel', 'string', '"{count} files selected"', 'Localizes the multiple-file announcement. Use {count} for the count; Elements uses selected-files-label.'
+    ),
+    apiRow(
       'label', 'string', '"Choose a file"', 'Sets the visible upload action label.'
     ),
     apiRow(
@@ -2623,6 +2646,9 @@ const apiReferenceByComponent = {
       'aria-label, aria-labelledby', 'string', '-', 'Provides the toolbar accessible name.'
     )
   ],
+  DescriptionItem: [apiRow('children', 'rich content', 'required', 'Composes a description item. Astro and React render div; Elements expose group semantics on the host.')],
+  DescriptionTerm: [apiRow('children', 'rich content', 'required', 'Composes a description term. Astro and React render dt; Elements expose term semantics on the host.')],
+  DescriptionDetail: [apiRow('children', 'rich content', 'required', 'Composes a description detail. Astro and React render dd; Elements expose definition semantics on the host.')],
   Descriptions: [
     apiRow(
       'items', 'Array<{ label, value }>', '[]', 'Defines the labelled facts.'
@@ -3457,6 +3483,36 @@ export const componentDocs: ComponentDoc[] = (
       '<Button data-ui-dialog-trigger="profile-dialog">Edit profile</Button><Dialog id="profile-dialog"><p>Profile form</p><Button data-ui-dialog-close>Close</Button></Dialog>'
     ],
     [
+      'DialogHeader',
+      'Overlays',
+      'Groups the dialog title and description.',
+      '<DialogHeader><DialogTitle id="edit-title">Edit record</DialogTitle></DialogHeader>'
+    ],
+    [
+      'DialogTitle',
+      'Overlays',
+      'Provides a semantic heading for dialog labeling.',
+      '<DialogTitle id="edit-title">Edit record</DialogTitle>'
+    ],
+    [
+      'DialogBody',
+      'Overlays',
+      'Scrolls long task content while keeping actions visible.',
+      '<DialogBody><p>Task content</p></DialogBody>'
+    ],
+    [
+      'DialogFooter',
+      'Overlays',
+      'Keeps dialog actions outside the scrolling body.',
+      '<DialogFooter><DialogClose>Cancel</DialogClose><Button type="submit" form="record-form">Save</Button></DialogFooter>'
+    ],
+    [
+      'DialogClose',
+      'Overlays',
+      'Closes the enclosing dialog through an accessible button.',
+      '<DialogClose variant="outline">Cancel</DialogClose>'
+    ],
+    [
       'Direction',
       'Layout',
       'Controls directional layout and text flow.',
@@ -4085,6 +4141,24 @@ export const componentDocs: ComponentDoc[] = (
       'Data display',
       'Presents a set of labeled facts as an aligned key–value list.',
       '<Descriptions items={[{ label: "Owner", value: "Alice" }, { label: "Status", value: "Active" }]} />'
+    ],
+    [
+      'DescriptionItem',
+      'Data display',
+      'Composes rich description item content.',
+      '<DescriptionItem>Record item</DescriptionItem>'
+    ],
+    [
+      'DescriptionTerm',
+      'Data display',
+      'Composes rich description term content.',
+      '<DescriptionTerm>Record term</DescriptionTerm>'
+    ],
+    [
+      'DescriptionDetail',
+      'Data display',
+      'Composes rich description detail content.',
+      '<DescriptionDetail>Record detail</DescriptionDetail>'
     ],
     [
       'Popconfirm',

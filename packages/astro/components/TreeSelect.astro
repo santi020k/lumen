@@ -59,6 +59,7 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
     <div class="ui-tree-select__tree" role="tree">
       {rows.map(row => (
         <button
+          aria-level={row.depth + 1}
           class="ui-tree-select__option"
           data-value={row.value}
           role="treeitem"

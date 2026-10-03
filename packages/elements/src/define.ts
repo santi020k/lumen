@@ -1,4 +1,4 @@
-/* eslint-disable complexity, @typescript-eslint/no-non-null-assertion */
+/* eslint-disable complexity */
 
 import { isLumenDateBoundsValid, parseLumenDate as parseCalendarDate, resolveLumenDateLabels, resolveLumenDateLocale } from '@santi020k/lumen-core'
 import {
@@ -238,13 +238,6 @@ const datePickerControlSelector = '[data-ui-date-picker-control]'
 const datePickerTriggerSelector = '[data-ui-date-picker-trigger]'
 const datePickerValueSelector = '[data-ui-date-picker-value]'
 const datePickerPopoverSelector = '[data-ui-date-picker-popover]'
-
-const formControlSelector = [
-  'input:not([type="hidden"])',
-  'select',
-  'textarea'
-].join(',')
-
 const selectOptionSelector = '[data-ui-select-option]'
 const defaultToastDuration = 5000
 const defaultToastMax = 5
@@ -529,6 +522,31 @@ const elementConfigs = {
     baseClassName: 'ui-date-range-picker',
     defaults: { 'data-ui-date-range-picker': '' },
     tagName: 'lumen-date-range-picker'
+  },
+  DialogHeader: {
+    baseClassName: 'ui-dialog-header',
+    defaults: { 'data-slot': 'dialog-header' },
+    tagName: 'lumen-dialog-header'
+  },
+  DialogTitle: {
+    baseClassName: 'ui-dialog-title',
+    defaults: { 'data-slot': 'dialog-title' },
+    tagName: 'lumen-dialog-title'
+  },
+  DialogBody: {
+    baseClassName: 'ui-dialog-body',
+    defaults: { 'data-slot': 'dialog-body' },
+    tagName: 'lumen-dialog-body'
+  },
+  DialogFooter: {
+    baseClassName: 'ui-dialog-footer',
+    defaults: { 'data-slot': 'dialog-footer' },
+    tagName: 'lumen-dialog-footer'
+  },
+  DialogClose: {
+    baseClassName: 'ui-dialog-close',
+    defaults: { 'data-slot': 'dialog-close', 'data-ui-dialog-close': '' },
+    tagName: 'lumen-dialog-close'
   },
   Dialog: {
     attributeClasses: {
@@ -1340,6 +1358,24 @@ const elementConfigs = {
     },
     tagName: 'lumen-toolbar'
   },
+  DescriptionItem: {
+    baseClassName: 'ui-description-item ui-descriptions__item',
+    defaults: { 'data-slot': 'description-item' },
+    role: 'group',
+    tagName: 'lumen-description-item'
+  },
+  DescriptionTerm: {
+    baseClassName: 'ui-description-term ui-descriptions__term',
+    defaults: { 'data-slot': 'description-term' },
+    role: 'term',
+    tagName: 'lumen-description-term'
+  },
+  DescriptionDetail: {
+    baseClassName: 'ui-description-detail ui-descriptions__detail',
+    defaults: { 'data-slot': 'description-detail' },
+    role: 'definition',
+    tagName: 'lumen-description-detail'
+  },
   Descriptions: {
     baseClassName: 'ui-descriptions',
     tagName: 'lumen-descriptions'
@@ -1661,8 +1697,9 @@ const validateControl = (
 }
 
 const getFormControls = (form: HTMLFormElement): NativeFormControl[] => [
-  ...form.querySelectorAll<NativeFormControl>(formControlSelector)
-].filter(control => control.form === form && !control.disabled)
+  ...form.elements
+].filter(isNativeFormControl).filter(control => !control.disabled &&
+  !(control instanceof HTMLInputElement && control.type === 'hidden'))
 
 const validateForm = (form: HTMLFormElement): NativeFormControl[] => (
   getFormControls(form).filter(control => !validateControl(control, form))
@@ -2524,6 +2561,7 @@ const installRichTextEditorController = (): void => {
 }
 
 const getScheduleTransferValue = (event: HTMLElement): string => event.id || event.textContent.trim()
+const activeScheduleEvents = new WeakMap<HTMLElement, HTMLElement>()
 
 const initSchedules = (scope: ParentNode): void => {
   const closestRoot = getClosestScopedElement(scope, scheduleSelector)
@@ -2551,10 +2589,14 @@ const initSchedules = (scope: ParentNode): void => {
           'text/plain', getScheduleTransferValue(scheduleEvent)
         )
 
+        activeScheduleEvents.set(root, scheduleEvent)
+
         root.dataset.uiDragging = 'true'
       })
 
       scheduleEvent.addEventListener('dragend', () => {
+        activeScheduleEvents.delete(root)
+
         delete root.dataset.uiDragging
       })
     }
@@ -2582,11 +2624,12 @@ const initSchedules = (scope: ParentNode): void => {
         delete slot.dataset.state
 
         const draggedId = event.dataTransfer?.getData('text/plain')
-        const dragged = draggedId ? document.getElementById(draggedId) : null
+        const dragged = activeScheduleEvents.get(root)
 
-        if (dragged instanceof HTMLElement) {
-          slot.append(dragged)
-        }
+        if (!(dragged instanceof HTMLElement) ||
+          dragged.closest('lumen-schedule, [data-ui-schedule]') !== root) return
+
+        slot.append(dragged)
 
         root.dispatchEvent(
           new CustomEvent('ui:schedule-change', {
@@ -2850,13 +2893,17 @@ const initResizableGroups = (scope: ParentNode): void => {
         resizePair(startSize + delta * multiplier)
       })
 
-      handle.addEventListener('pointerup', event => {
+      const finishResize = (event: PointerEvent): void => {
         if (handle.dataset.active !== 'true') return
 
         delete handle.dataset.active
         delete root.dataset.resizing
-        handle.releasePointerCapture(event.pointerId)
-      })
+        if (handle.hasPointerCapture(event.pointerId)) handle.releasePointerCapture(event.pointerId)
+      }
+
+      handle.addEventListener('pointerup', finishResize)
+      handle.addEventListener('pointercancel', finishResize)
+      handle.addEventListener('lostpointercapture', finishResize)
 
       handle.addEventListener('dblclick', () => {
         if (root.dataset.uiResizableReset !== 'true') return
@@ -4628,7 +4675,12 @@ const scheduleToastDismiss = (toast: HTMLElement, duration: number): void => {
     timer: undefined as ReturnType<typeof globalThis.setTimeout> | undefined
   }
 
+  let hovered = false
+  let paused = false
+
   const start = (): void => {
+    paused = false
+
     timerState.startedAt = Date.now()
 
     timerState.timer = globalThis.setTimeout(() => {
@@ -4637,6 +4689,10 @@ const scheduleToastDismiss = (toast: HTMLElement, duration: number): void => {
   }
 
   const pause = (): void => {
+    if (paused) return
+
+    paused = true
+
     if (timerState.timer) {
       globalThis.clearTimeout(timerState.timer)
     }
@@ -4647,26 +4703,46 @@ const scheduleToastDismiss = (toast: HTMLElement, duration: number): void => {
   }
 
   const resume = (): void => {
-    if (timerState.remaining > 0) start()
+    if (!paused || hovered || toast.contains(document.activeElement)) return
+
+    start()
+  }
+
+  const enter = (): void => {
+    hovered = true
+
+    pause()
+  }
+
+  const leave = (): void => {
+    hovered = false
+
+    resume()
+  }
+
+  const blur = (event: FocusEvent): void => {
+    if (event.relatedTarget instanceof Node && toast.contains(event.relatedTarget)) return
+
+    resume()
   }
 
   timerState.cleanup = () => {
-    toast.removeEventListener('mouseenter', pause)
+    toast.removeEventListener('mouseenter', enter)
 
-    toast.removeEventListener('mouseleave', resume)
+    toast.removeEventListener('mouseleave', leave)
 
     toast.removeEventListener('focusin', pause)
 
-    toast.removeEventListener('focusout', resume)
+    toast.removeEventListener('focusout', blur)
   }
 
-  toast.addEventListener('mouseenter', pause)
+  toast.addEventListener('mouseenter', enter)
 
-  toast.addEventListener('mouseleave', resume)
+  toast.addEventListener('mouseleave', leave)
 
   toast.addEventListener('focusin', pause)
 
-  toast.addEventListener('focusout', resume)
+  toast.addEventListener('focusout', blur)
 
   toastTimers.set(toast, timerState)
 
@@ -6684,7 +6760,11 @@ class LumenDialogBehaviorElement extends LumenElement {
             ) :
             null
 
-        if (closeButton) {
+        const nativeButton = target instanceof Element ? target.closest('button') : null
+        const owner = closeButton?.closest('lumen-dialog, lumen-alert-dialog, lumen-drawer, lumen-sheet')
+
+        if (closeButton && owner === this && !event.defaultPrevented &&
+          !nativeButton?.disabled && closeButton.getAttribute('aria-disabled') !== 'true') {
           this.closeDialog()
         }
       }, { signal }
@@ -6987,7 +7067,11 @@ class LumenTabsBehaviorElement extends LumenElement {
 
   private setupTabs(signal: AbortSignal): void {
     const tabs = [...this.querySelectorAll<HTMLElement>('[role="tab"]')]
+      .filter(tab => tab.closest('lumen-tabs, lumen-code-tabs, [data-ui-tabs]') === this)
+
     const panels = [...this.querySelectorAll<HTMLElement>('[role="tabpanel"]')]
+      .filter(panel => panel.closest('lumen-tabs, lumen-code-tabs, [data-ui-tabs]') === this)
+
     const tabList = tabs[0]?.closest<HTMLElement>('[role="tablist"]')
 
     const orientation = tabList?.getAttribute('aria-orientation') === 'vertical' ?
@@ -7029,11 +7113,9 @@ class LumenTabsBehaviorElement extends LumenElement {
       }))
     }
 
-    activate(
-      tabs.find(tab => tab.getAttribute('aria-selected') === 'true') ??
-      tabs[0]!,
-      false
-    )
+    const initialTab = tabs.find(tab => tab.getAttribute('aria-selected') === 'true') ?? tabs[0]
+
+    if (initialTab) activate(initialTab, false)
 
     for (const tab of tabs) {
       tab.addEventListener(
@@ -7052,14 +7134,15 @@ class LumenTabsBehaviorElement extends LumenElement {
 
           event.preventDefault()
 
-          const currentIndex = tabs.indexOf(tab)
+          const enabledTabs = tabs.filter(candidate => !candidate.matches(':disabled, [aria-disabled="true"]'))
+          const currentIndex = enabledTabs.indexOf(tab)
 
           const nextTab =
-            tabs[
+            enabledTabs[
               getLoopedIndex(
                 event.key,
                 Math.max(0, currentIndex),
-                tabs.length,
+                enabledTabs.length,
                 orientation === 'vertical' ? ['ArrowDown'] : [getLumenDirectionalKey(tab, 'ArrowRight')]
               )
             ]
@@ -8653,7 +8736,7 @@ class LumenFileUploadBehaviorElement extends LumenElement {
       } else {
         files.textContent =
           selectedFiles.length > 1 ?
-            `${selectedFiles.length} files selected` :
+            (this.getAttribute('selected-files-label') ?? '{count} files selected').replaceAll('{count}', String(selectedFiles.length)) :
             ''
       }
     }
@@ -8661,6 +8744,12 @@ class LumenFileUploadBehaviorElement extends LumenElement {
     input.addEventListener('change', renderFiles, {
       signal: this.abortController.signal
     })
+
+    input.form?.addEventListener('reset', event => {
+      queueMicrotask(() => {
+        if (this.isConnected && !event.defaultPrevented) renderFiles()
+      })
+    }, { signal: this.abortController.signal })
 
     this.addEventListener(
       'dragover', event => {
@@ -11397,6 +11486,10 @@ const behaviorElementClasses: Partial<
   VirtualList: LumenVirtualListBehaviorElement
 }
 
+export class LumenDialogElement extends LumenDialogBehaviorElement {
+  static override config = withObservedAttributes(elementConfigs.Dialog)
+}
+
 const granularElementClasses: Partial<
   Record<LumenComponentName, LumenElementConstructor>
 > = {
@@ -11409,6 +11502,7 @@ const granularElementClasses: Partial<
   CardHeader: GranularLumenCardHeaderElement,
   CardTitle: GranularLumenCardTitleElement,
   Combobox: GranularLumenComboboxElement,
+  Dialog: LumenDialogElement,
   Container: GranularLumenContainerElement,
   Direction: GranularLumenDirectionElement,
   Grid: GranularLumenGridElement,
@@ -11592,7 +11686,11 @@ export const LumenContextMenuElement = elementClasses.ContextMenu
 export const LumenDataTableElement = elementClasses.DataTable
 export const LumenDatePickerElement = elementClasses.DatePicker
 export const LumenDateRangePickerElement = elementClasses.DateRangePicker
-export const LumenDialogElement = elementClasses.Dialog
+export const LumenDialogHeaderElement = elementClasses.DialogHeader
+export const LumenDialogTitleElement = elementClasses.DialogTitle
+export const LumenDialogBodyElement = elementClasses.DialogBody
+export const LumenDialogFooterElement = elementClasses.DialogFooter
+export const LumenDialogCloseElement = elementClasses.DialogClose
 export const LumenDirectionElement = elementClasses.Direction
 export const LumenDrawerElement = elementClasses.Drawer
 export const LumenDropdownMenuElement = elementClasses.DropdownMenu
@@ -11720,3 +11818,6 @@ export const LumenQRCodeElement = elementClasses.QRCode
 export const LumenWatermarkElement = elementClasses.Watermark
 export const LumenAffixElement = elementClasses.Affix
 export const LumenSpeedDialElement = elementClasses.SpeedDial
+export const LumenDescriptionItemElement = elementClasses.DescriptionItem
+export const LumenDescriptionTermElement = elementClasses.DescriptionTerm
+export const LumenDescriptionDetailElement = elementClasses.DescriptionDetail

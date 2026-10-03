@@ -4969,11 +4969,126 @@ const remainingComposeV4Definitions: ComponentDefinition[] = [
   }
 ]
 
+const composeProductDefinitions: ComponentDefinition[] = [
+  {
+    accessibility: 'Exposes a screen heading and preserves native navigation, action, and window-inset semantics.',
+    category: 'Navigation',
+    examples: { android: `val behavior = rememberLumenTopAppBarScrollBehavior(LumenTopAppBarScrollMode.EnterAlways)
+// Attach Modifier.nestedScroll(behavior.nestedScrollConnection) to the screen container.
+LumenTopAppBar("Projects", scrollBehavior = behavior,
+    navigationIcon = { LumenIconButton(LumenIconName.ArrowLeft, "Back", onClick = ::goBack) })` },
+    exports: { android: 'LumenTopAppBar' },
+    guidance: 'Use a remembered scrolling behavior and attach its nested-scroll connection above native scroll content. The application owns routing and Scaffold content padding.',
+    name: 'Top app bar',
+    properties: [
+      property('title', 'String', 'Required', 'Provides the visible screen heading.'),
+      property('size', 'LumenTopAppBarSize', 'Small', 'Selects Small, Medium, or Large native geometry.'),
+      property('scrollBehavior', 'LumenTopAppBarScrollBehavior?', 'null', 'Coordinates Pinned, EnterAlways, or ExitUntilCollapsed behavior.'),
+      property('navigationIcon / actions', '@Composable slots', 'Empty', 'Provides independently named application actions.'),
+      property('modifier', 'Modifier', 'Modifier', 'Applies bar layout.')
+    ],
+    slug: 'top-app-bar',
+    summary: 'Present native screen titles, navigation, and scrolling app bars.'
+  },
+  {
+    accessibility: 'Provides RTL-aware gestures, named custom accessibility actions, and visible keyboard-usable action buttons.',
+    category: 'Actions',
+    examples: { android: `LumenSwipeActions(
+    startAction = LumenSwipeAction("Favorite", ::favorite),
+    endAction = LumenSwipeAction("Delete", ::requestDeleteConfirmation, destructive = true)
+) { LumenText("Quarterly report") }` },
+    exports: { android: 'LumenSwipeActions' },
+    guidance: 'Use stable record keys. Transient gesture state resets before callbacks and never restores an operation. The application owns confirmation, undo, removal, and persistence.',
+    name: 'Swipe actions',
+    properties: [
+      property('startAction / endAction', 'LumenSwipeAction?', 'null', 'Provides a non-empty label, callback, enabled flag, and optional destructive intent.'),
+      property('enabled', 'Boolean', 'true', 'Disables gestures, buttons, and custom actions while busy.'),
+      property('modifier', 'Modifier', 'Modifier', 'Applies outer layout.'),
+      property('content', '@Composable () -> Unit', 'Required', 'Provides native record content.')
+    ],
+    slug: 'swipe-actions',
+    summary: 'Expose logical start and end row actions with gesture alternatives.'
+  },
+  {
+    accessibility: 'Uses a native dialog with named checkbox options, removal actions, validation, and read-only or disabled behavior.',
+    category: 'Forms',
+    examples: { android: `LumenMultiSelect(
+    label = "Teams", options = matchingTeams, values = selectedTeams,
+    onValuesChange = { selectedTeams = it }, query = query, onQueryChange = { query = it },
+    loading = searching, resultsErrorMessage = searchError, onRetry = ::retrySearch
+)` },
+    exports: { android: 'LumenMultiSelect' },
+    guidance: 'Selection applies immediately. The host owns search, asynchronous results, cancellation, and persistence. Missing selected options retain their raw value as a chip label. Localize every string and count/removal formatter.',
+    name: 'Multi select',
+    properties: [
+      property('label / options', 'String / List<LumenSelectionOption>', 'Required', 'Names the field and supplies uniquely identified, readable results.'),
+      property('values / onValuesChange', 'Set<String> / (Set<String>) -> Unit', 'Required', 'Controls selection independently from visible results.'),
+      property('query / onQueryChange', 'String / (String) -> Unit', 'Required', 'Controls caller-owned search.'),
+      property('loading / resultsErrorMessage / onRetry', 'Boolean / String? / (() -> Unit)?', 'false / null / null', 'Provides loading, safe error, and recovery states.'),
+      property('description / errorMessage', 'String?', 'null', 'Provides help and separate form validation.'),
+      property('enabled / readOnly', 'Boolean', 'true / false', 'Blocks editing and dismisses selection.'),
+      property('chooseLabel / searchLabel / clearSearchLabel / doneLabel', 'String', 'English defaults', 'Localizes selection and dialog actions.'),
+      property('emptyLabel / loadingLabel / retryLabel', 'String', 'English defaults', 'Localizes result states.'),
+      property('selectionLabel / removeLabel', '(Int) -> String / (String) -> String', 'English formatters', 'Localizes counts and chip removal.'),
+      property('modifier', 'Modifier', 'Modifier', 'Applies field layout.')
+    ],
+    slug: 'multi-select',
+    summary: 'Select multiple searchable options with controlled chips and result states.'
+  },
+  {
+    accessibility: 'Exposes separately named lower and upper native thumbs with formatted spoken values and keyboard adjustment.',
+    category: 'Forms',
+    examples: { android: `LumenRangeSlider("Capacity", capacity, { capacity = it },
+    valueRange = 0f..100f, steps = 9, startLabel = "Minimum", endLabel = "Maximum",
+    formatValue = { "\${it.toInt()}%" })` },
+    exports: { android: 'LumenRangeSlider' },
+    guidance: 'Bounds must be finite, increasing, and have a finite span. Nonfinite values fall back to bounds; reversed endpoints reorder for display without changing host state. Keep exact financial arithmetic in the application.',
+    name: 'Range slider',
+    properties: [
+      property('label / value / onValueChange', 'String / ClosedFloatingPointRange<Float> / callback', 'Required', 'Names and controls the numeric interval.'),
+      property('valueRange', 'ClosedFloatingPointRange<Float>', '0f..1f', 'Provides valid inclusive bounds.'),
+      property('steps', 'Int', '0', 'Sets 0–10,000 intermediate stops; zero is continuous.'),
+      property('startLabel / endLabel / formatValue', 'String / String / (Float) -> String', 'Minimum / Maximum / numeric text', 'Localizes both thumb names and values.'),
+      property('enabled / readOnly', 'Boolean', 'true / false', 'Blocks adjustment while retaining values.'),
+      property('onValueChangeFinished', '(() -> Unit)?', 'null', 'Reports the end of native adjustment.'),
+      property('modifier', 'Modifier', 'Modifier', 'Applies field layout.')
+    ],
+    slug: 'range-slider',
+    summary: 'Choose bounded numeric intervals with two native adjustable thumbs.'
+  },
+  {
+    accessibility: 'Names both panes and exposes compact back navigation without owning application routing or selection.',
+    category: 'Layout',
+    examples: { android: `LumenAdaptiveListDetailScaffold(
+    selectedKey = selectedKey, onBack = { selectedKey = null },
+    listLabel = "Projects", detailLabel = "Project details",
+    listPane = { ProjectList(onSelect = { selectedKey = it }) },
+    emptyDetail = { LumenEmptyState("Choose a project") }
+) { key, detailOnly ->
+    BackHandler(enabled = detailOnly) { selectedKey = null }
+    ProjectDetails(key)
+}` },
+    exports: { android: 'LumenAdaptiveListDetailScaffold' },
+    guidance: 'Use as a full-window layout. Material adapts to window size and separating hinges. Save selection and pane state in the host; wire system BackHandler through detailOnly and apply screen content insets outside the scaffold.',
+    name: 'Adaptive list detail scaffold',
+    properties: [
+      property('selectedKey / onBack', 'String? / () -> Unit', 'Required', 'Controls selection; null prioritizes the list.'),
+      property('listLabel / detailLabel / backLabel', 'String', 'Required / Required / Back', 'Names panes and compact navigation.'),
+      property('listPane / emptyDetail', '@Composable () -> Unit', 'Required', 'Provides native lists and wide-window empty detail.'),
+      property('detailPane', '@Composable (String, Boolean) -> Unit', 'Required', 'Receives the selected key and whether detail is the only visible pane.'),
+      property('modifier', 'Modifier', 'Modifier', 'Applies full-window layout.')
+    ],
+    slug: 'adaptive-list-detail-scaffold',
+    summary: 'Arrange application-owned lists and details across phones, tablets, and foldable devices.'
+  }
+]
+
 export const nativeComponentDocs = [
   ...sharedDefinitions,
   ...additionalDefinitions,
   ...composeV4Definitions,
-  ...remainingComposeV4Definitions
+  ...remainingComposeV4Definitions,
+  ...composeProductDefinitions
 ].map(createComponent)
 
 export const nativeComponentCategories: NativeComponentCategory[] = [

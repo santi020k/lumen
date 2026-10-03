@@ -75,12 +75,6 @@ const fieldControlSelector = [
 const fieldDescriptionSelector = '[data-ui-field-hint], [data-ui-field-error], .ui-field__hint, .ui-field__error'
 const fieldErrorSelector = '[data-ui-field-error], .ui-field__error'
 
-const formControlSelector = [
-  'input:not([type="hidden"])',
-  'select',
-  'textarea'
-].join(',')
-
 const validityMessageAttributes = [
   ['valueMissing', 'data-error-required'],
   ['typeMismatch', 'data-error-type'],
@@ -106,6 +100,18 @@ const supportsAnchoredPopovers =
   typeof CSS !== 'undefined' &&
   CSS.supports('anchor-name: --ui-anchor') &&
   CSS.supports('position-area: block-end')
+
+let uiGeneratedId = 0
+
+const nextRuntimeId = (prefix: string): string => {
+  let id: string
+
+  do {
+    id = `${prefix}-${++uiGeneratedId}`
+  } while (document.getElementById(id))
+
+  return id
+}
 
 let uiAnchorCount = 0
 let uiTabsCount = 0
@@ -309,7 +315,7 @@ const initTooltips = (scope: ParentNode): void => {
 
     if (trigger && !trigger.closest('[role="tooltip"]')) {
       if (!tip.id) {
-        tip.id = `ui-tooltip-${crypto.randomUUID()}`
+        tip.id = nextRuntimeId('ui-tooltip')
       }
 
       const describedBy = new Set((trigger.getAttribute('aria-describedby') ?? '').split(/\s+/).filter(Boolean))
@@ -432,7 +438,7 @@ const getFieldControl = (root: HTMLElement): HTMLElement | null => {
 
 const getFieldDescriptionId = (element: HTMLElement): string => {
   if (!element.id) {
-    element.id = `ui-field-description-${crypto.randomUUID()}`
+    element.id = nextRuntimeId('ui-field-description')
   }
 
   return element.id
@@ -515,8 +521,9 @@ const validateControl = (
 }
 
 const getFormControls = (form: HTMLFormElement): NativeFormControl[] => [
-  ...form.querySelectorAll<NativeFormControl>(formControlSelector)
-].filter(control => control.form === form && !control.disabled)
+  ...form.elements
+].filter(isNativeFormControl).filter(control => !control.disabled &&
+  !(control instanceof HTMLInputElement && control.type === 'hidden'))
 
 const validateForm = (form: HTMLFormElement): Array<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement> => {
   const invalidControls: Array<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement> = []
@@ -673,7 +680,7 @@ const initPasswordFields = (scope: ParentNode): void => {
 
       toggle.setAttribute('aria-pressed', String(visible))
 
-      if (visibleLabel) visibleLabel.textContent = visible ? 'Hide' : 'Show'
+      if (visibleLabel) visibleLabel.textContent = visible ? hideLabel : showLabel
     }
 
     toggle.addEventListener('click', () => {
@@ -1001,7 +1008,7 @@ const initTabs = (scope: ParentNode): void => {
 
     if (initiallySelected) activate(initiallySelected, false)
 
-    for (const [index, tab] of tabs.entries()) {
+    for (const tab of tabs) {
       tab.addEventListener('click', () => activate(tab))
 
       tab.addEventListener('keydown', event => {
@@ -1013,11 +1020,13 @@ const initTabs = (scope: ParentNode): void => {
 
         event.preventDefault()
 
-        const nextTab = tabs[
+        const enabledTabs = tabs.filter(candidate => !candidate.matches(':disabled, [aria-disabled="true"]'))
+
+        const nextTab = enabledTabs[
           getLoopedIndex(
             event.key,
-            index,
-            tabs.length,
+            Math.max(0, enabledTabs.indexOf(tab)),
+            enabledTabs.length,
             orientation === 'vertical' ? ['ArrowDown'] : [getLumenDirectionalKey(tab, 'ArrowRight')]
           )
         ]
@@ -2139,15 +2148,21 @@ const initResizableGroups = (scope: ParentNode): void => {
         resizePair(index, startSize + delta * multiplier)
       })
 
-      handle.addEventListener('pointerup', event => {
+      const finishResize = (event: PointerEvent): void => {
         if (handle.dataset.active !== 'true') return
 
         delete handle.dataset.active
 
         delete root.dataset.resizing
 
-        handle.releasePointerCapture(event.pointerId)
-      })
+        if (handle.hasPointerCapture(event.pointerId)) handle.releasePointerCapture(event.pointerId)
+      }
+
+      handle.addEventListener('pointerup', finishResize)
+
+      handle.addEventListener('pointercancel', finishResize)
+
+      handle.addEventListener('lostpointercapture', finishResize)
 
       handle.addEventListener('dblclick', () => {
         if (root.dataset.uiResizableReset !== 'true') return
@@ -3304,16 +3319,22 @@ const initSchedules = (scope: ParentNode): void => {
 
     root.dataset.uiBound = 'true'
 
+    let activeEvent: HTMLElement | undefined
+
     for (const event of root.querySelectorAll<HTMLElement>('[data-ui-schedule-event]')) {
       event.draggable = event.draggable || event.dataset.uiDraggable === 'true'
 
       event.addEventListener('dragstart', dragEvent => {
         dragEvent.dataTransfer?.setData('text/plain', event.id || event.textContent?.trim() || '')
 
+        activeEvent = event
+
         root.dataset.uiDragging = 'true'
       })
 
       event.addEventListener('dragend', () => {
+        activeEvent = undefined
+
         delete root.dataset.uiDragging
       })
     }
@@ -3335,11 +3356,12 @@ const initSchedules = (scope: ParentNode): void => {
         delete dropzone.dataset.state
 
         const draggedId = event.dataTransfer?.getData('text/plain')
-        const dragged = draggedId ? document.getElementById(draggedId) : null
+        const dragged = activeEvent
 
-        if (dragged instanceof HTMLElement) {
-          dropzone.append(dragged)
-        }
+        if (!(dragged instanceof HTMLElement) ||
+          dragged.closest('[data-ui-schedule]') !== root) return
+
+        dropzone.append(dragged)
 
         root.dispatchEvent(new CustomEvent('ui:schedule-change', {
           bubbles: true,
@@ -4582,39 +4604,68 @@ const scheduleToastDismiss = (toast: HTMLElement, duration: number): void => {
     timer: 0
   }
 
+  let hovered = false
+  let paused = false
+
   const start = (): void => {
+    paused = false
+
     timerState.startedAt = Date.now()
 
     timerState.timer = window.setTimeout(() => dismissToast(toast), timerState.remaining)
   }
 
   const pause = (): void => {
+    if (paused) return
+
+    paused = true
+
     window.clearTimeout(timerState.timer)
 
     timerState.remaining = Math.max(0, timerState.remaining - (Date.now() - timerState.startedAt))
   }
 
   const resume = (): void => {
-    if (timerState.remaining > 0) start()
+    if (!paused || hovered || toast.contains(document.activeElement)) return
+
+    start()
+  }
+
+  const enter = (): void => {
+    hovered = true
+
+    pause()
+  }
+
+  const leave = (): void => {
+    hovered = false
+
+    resume()
+  }
+
+  const blur = (event: FocusEvent): void => {
+    if (event.relatedTarget instanceof Node && toast.contains(event.relatedTarget)) return
+
+    resume()
   }
 
   timerState.cleanup = () => {
-    toast.removeEventListener('mouseenter', pause)
+    toast.removeEventListener('mouseenter', enter)
 
-    toast.removeEventListener('mouseleave', resume)
+    toast.removeEventListener('mouseleave', leave)
 
     toast.removeEventListener('focusin', pause)
 
-    toast.removeEventListener('focusout', resume)
+    toast.removeEventListener('focusout', blur)
   }
 
-  toast.addEventListener('mouseenter', pause)
+  toast.addEventListener('mouseenter', enter)
 
-  toast.addEventListener('mouseleave', resume)
+  toast.addEventListener('mouseleave', leave)
 
   toast.addEventListener('focusin', pause)
 
-  toast.addEventListener('focusout', resume)
+  toast.addEventListener('focusout', blur)
 
   toastTimers.set(toast, timerState)
 
@@ -4705,7 +4756,7 @@ const initToasts = (): void => {
 
   const createToast = (detail: ToastDetail): string => {
     const viewport = getToastViewport(detail.placement)
-    const id = detail.id ?? `ui-toast-${crypto.randomUUID()}`
+    const id = detail.id ?? nextRuntimeId('ui-toast')
     const duration = detail.duration ?? defaultToastDuration
     const max = detail.max ?? Number(viewport.dataset.uiToastMax ?? defaultToastMax)
     const existingToast = document.getElementById(id)
@@ -4845,12 +4896,18 @@ const initFileUploads = (scope: ParentNode): void => {
         files.textContent = selectedFiles[0]?.name ?? ''
       } else {
         files.textContent = selectedFiles.length > 1 ?
-          `${selectedFiles.length} files selected` :
+          (root.dataset.uiSelectedFilesLabel ?? '{count} files selected').replaceAll('{count}', String(selectedFiles.length)) :
           ''
       }
     }
 
     input.addEventListener('change', renderFiles)
+
+    input.form?.addEventListener('reset', event => {
+      queueMicrotask(() => {
+        if (root.isConnected && !event.defaultPrevented) renderFiles()
+      })
+    })
 
     root.addEventListener('dragover', event => {
       if (input.disabled) return

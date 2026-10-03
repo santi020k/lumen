@@ -50,6 +50,15 @@ describe('React Native playground model', () => {
     ])
   })
 
+  test('accepts component IDs, padded text, and collapsed labels', () => {
+    expect(getVisibleComponentNames('  DATE-range_field  ', 'forms', false)).toEqual(['Date range field'])
+    expect(getVisibleComponentNames('IconButton', 'all', false)).toEqual(['Icon button'])
+    expect(getVisibleComponentNames('  \t ', 'actions', false)).toEqual(getVisibleComponentNames('', 'actions', false))
+    expect(getVisibleComponentNames('button', 'forms', false)).toEqual([])
+    expect(getVisibleComponentNames('does-not-exist', 'all', false)).toEqual([])
+    expect(getVisibleComponentNames('button', 'all', true)).toEqual(['Button'])
+  })
+
   test('recognizes only supported destinations and categories', () => {
     expect(isAppDestination('examples')).toBe(true)
 
