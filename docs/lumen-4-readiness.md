@@ -402,3 +402,15 @@ The isolated parity candidate is preserved in commit `7a170606` on
 high dependency advisories (`node-forge`, `http-cache-semantics` and `braces`; no patched versions).
 The release checkout has concurrent uncommitted work, so the parity commit is not yet contained in
 `release/v4.0.0`. Do not treat this record as integration, device qualification or release approval.
+
+Native simulator follow-up: the Apple `AdvancedInputTests` pass four Release-mode UI tests on a
+dedicated iPhone 17 Pro simulator running iOS 26.5. They confirm number stepping, Spanish draft
+reset, native autocomplete selection and password masking after disabling and re-enabling. Six
+control-layout captures and three interaction-state captures were inspected. The Apple capture
+script now includes the six controls by default. This is simulator evidence; physical-device
+qualification and minimum-OS coverage remain pending.
+
+The run uses `LumenApplePlaygroundPerformance` with
+`-only-testing:LumenApplePlaygroundUITests/AdvancedInputTests` and signing disabled. Xcode emits
+`Metadata extraction skipped, no AppIntents.framework dependency found` from its metadata tool;
+the app does not expose App Intents. No production dependency was added to hide that tool warning.

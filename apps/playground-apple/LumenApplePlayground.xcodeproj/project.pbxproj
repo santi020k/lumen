@@ -25,6 +25,7 @@
 		A27610862D252E7C15973614 /* LumenUI in Frameworks */ = {isa = PBXBuildFile; productRef = 35416C9E579CDA363A493B7B /* LumenUI */; };
 		C264FF30047BA1493B60697F /* LumenUI in Frameworks */ = {isa = PBXBuildFile; productRef = 956081D903F21ACD6ECA2E5F /* LumenUI */; };
 		C6CEF83F16EE8556EC3DBD9E /* PlaygroundHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19CC216C8A44A82EF86293B /* PlaygroundHomeView.swift */; };
+		CFCF1EA85842549E0B5FFD33 /* AdvancedInputTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F138F7D00C2BD2E7A2AE6F2 /* AdvancedInputTests.swift */; };
 		D2F4C18E705C065824038B2A /* LumenUI in Frameworks */ = {isa = PBXBuildFile; productRef = 92444F6FFAE06F3DC42DB84A /* LumenUI */; };
 		DB50ECBEE184BDB2D1838CE8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 63BB1942FA8B6D286F1A9EBE /* Assets.xcassets */; };
 		E04C7AB2BD18952D8710CCB0 /* PlaygroundSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB065D953EB7775096F372DB /* PlaygroundSettingsView.swift */; };
@@ -68,6 +69,7 @@
 
 /* Begin PBXFileReference section */
 		0BB0D085D401FD296278ADC6 /* WorkspacePerformanceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspacePerformanceTests.swift; sourceTree = "<group>"; };
+		1F138F7D00C2BD2E7A2AE6F2 /* AdvancedInputTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvancedInputTests.swift; sourceTree = "<group>"; };
 		399D6F6E9C693782368B32EC /* LumenWidgetPlayground.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = LumenWidgetPlayground.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		48D0AE883A9D2E8CA87E712A /* PlaygroundAdvancedInputsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaygroundAdvancedInputsView.swift; sourceTree = "<group>"; };
 		581FE601DC8DCCAACDE42246 /* PlaygroundShell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaygroundShell.swift; sourceTree = "<group>"; };
@@ -169,6 +171,7 @@
 		D34D651DB1AB9B9B1907A9F2 /* UITests */ = {
 			isa = PBXGroup;
 			children = (
+				1F138F7D00C2BD2E7A2AE6F2 /* AdvancedInputTests.swift */,
 				0BB0D085D401FD296278ADC6 /* WorkspacePerformanceTests.swift */,
 			);
 			path = UITests;
@@ -423,6 +426,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CFCF1EA85842549E0B5FFD33 /* AdvancedInputTests.swift in Sources */,
 				302BA7A9A3B20BC59019A96E /* WorkspacePerformanceTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

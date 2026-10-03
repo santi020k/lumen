@@ -1,0 +1,109 @@
+import XCTest
+
+final class AdvancedInputTests: XCTestCase {
+    @MainActor
+    func testPasswordRevealResetsAfterDisabling() {
+        let app = open("Password field")
+        let secure = app.secureTextFields["Example password"]
+        reveal(secure, in: app)
+        XCTAssertTrue(secure.exists)
+        let show = app.buttons["Show password"]
+        reveal(show, in: app)
+        show.tap()
+        XCTAssertTrue(app.textFields["Example password"].waitForExistence(timeout: 5))
+        let readOnly = app.switches["Read-only examples"]
+        reveal(readOnly, in: app)
+        tapSwitch(readOnly)
+        XCTAssertEqual(readOnly.value as? String, "1")
+        XCTAssertTrue(app.secureTextFields["Example password"].waitForExistence(timeout: 5))
+        tapSwitch(readOnly)
+        XCTAssertEqual(readOnly.value as? String, "0")
+        XCTAssertTrue(app.secureTextFields["Example password"].exists)
+        capture("Password masked after re-enabling", app: app)
+    }
+
+    @MainActor
+    func testNumberSteppingAndSpanishDraft() {
+        let app = open("Number field")
+        let number = app.textFields["Quantity"]
+        reveal(number, in: app)
+        XCTAssertEqual(number.value as? String, "12.5")
+        let increase = app.buttons["Increase value"]
+        reveal(increase, in: app)
+        increase.tap()
+        XCTAssertEqual(number.value as? String, "12.6")
+        let spanish = app.switches["Español"]
+        reveal(spanish, in: app)
+        tapSwitch(spanish)
+        XCTAssertEqual(spanish.value as? String, "1")
+        let localized = app.textFields["Cantidad"]
+        XCTAssertTrue(localized.waitForExistence(timeout: 5))
+        let draft = expectation(for: NSPredicate(format: "value == %@", "12,5"), evaluatedWith: localized)
+        wait(for: [draft], timeout: 5)
+        capture("Localized number draft", app: app)
+    }
+
+    @MainActor
+    func testAutocompleteSelectsNativeResult() {
+        let app = open("Autocomplete")
+        let city = app.textFields["City"]
+        reveal(city, in: app)
+        city.tap()
+        city.typeText("Bo")
+        let result = app.buttons["Bogotá"]
+        XCTAssertTrue(result.waitForExistence(timeout: 5))
+        reveal(result, in: app)
+        result.tap()
+        XCTAssertEqual(city.value as? String, "Bogotá")
+        XCTAssertFalse(app.buttons["Close results"].exists)
+        capture("Native autocomplete selection", app: app)
+    }
+
+    @MainActor
+    func testAdvancedControlLayouts() {
+        for component in ["Number field", "Time field", "Autocomplete", "Password field", "Input OTP", "Image comparison"] {
+            let app = open(component)
+            let advanced = app.staticTexts["Advanced inputs"]
+            reveal(advanced, in: app)
+            app.scrollViews.firstMatch.swipeUp()
+            capture(component, app: app)
+            app.terminate()
+        }
+    }
+
+    @MainActor
+    private func open(_ component: String) -> XCUIApplication {
+        let app = XCUIApplication()
+        app.launchArguments = ["--component", component]
+        app.launch()
+        XCTAssertTrue(app.staticTexts["Advanced inputs"].waitForExistence(timeout: 10))
+        return app
+    }
+
+    @MainActor
+    private func reveal(_ element: XCUIElement, in app: XCUIApplication) {
+        for _ in 0..<8 {
+            if element.isHittable { return }
+            if element.frame.midY < app.frame.midY {
+                app.scrollViews.firstMatch.swipeDown()
+            } else {
+                app.scrollViews.firstMatch.swipeUp()
+            }
+        }
+        XCTAssertTrue(element.isHittable)
+    }
+
+    @MainActor
+    private func tapSwitch(_ toggle: XCUIElement) {
+        // SwiftUI exposes the complete label row; tap the native switch at its trailing edge.
+        toggle.coordinate(withNormalizedOffset: CGVector(dx: 0.95, dy: 0.5)).tap()
+    }
+
+    @MainActor
+    private func capture(_ name: String, app: XCUIApplication) {
+        let attachment = XCTAttachment(screenshot: app.screenshot())
+        attachment.name = name
+        attachment.lifetime = .keepAlways
+        add(attachment)
+    }
+}
