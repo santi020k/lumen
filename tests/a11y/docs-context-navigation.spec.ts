@@ -144,18 +144,40 @@ test('documentation scope keeps its native fallback and direct links without Jav
   }
 })
 
-for (const width of [320, 1440]) {
-  for (const theme of ['lumen-light', 'lumen-dark']) {
-    test(`documentation scope menu fits ${width}px in ${theme}`, async ({ page }) => {
+for (const width of [320, 390, 896, 1440]) {
+  for (const theme of ['lumen-light', 'lumen-dark', 'santi020k-light', 'santi020k-dark']) {
+    test(`documentation scope menu fits ${width}px in ${theme}`, async ({ page }, testInfo) => {
       await page.setViewportSize({ width, height: 900 })
       await page.addInitScript(value => { localStorage.setItem('lumen-theme', value) }, theme)
-      await page.goto('/docs/web')
-      await page.getByRole('combobox', { name: 'Choose documentation scope' }).click()
+      await page.emulateMedia({ reducedMotion: 'reduce' })
+      await page.goto('/docs/foundations')
+
+      const trigger = page.getByRole('combobox', { name: 'Choose documentation scope' })
+      const label = trigger.locator('[data-ui-select-value]')
+
+      await expect(trigger).toHaveJSProperty('tagName', 'BUTTON')
+      await expect(trigger).toHaveText('Shared foundations')
+      const native = page.locator('#docs-context-platform-select')
+
+      await expect(native).toHaveAttribute('aria-hidden', 'true')
+      await expect(native).toHaveAttribute('tabindex', '-1')
+      await expect(native).toHaveCSS('opacity', '0')
+      await expect(native).toHaveCSS('pointer-events', 'none')
+      expect(await label.evaluate(element => element.scrollWidth <= element.clientWidth + 1)).toBe(true)
+      expect((await trigger.boundingBox())?.height).toBeGreaterThanOrEqual(44)
+      await trigger.click()
 
       const list = page.locator('#docs-context-platform-select-listbox')
 
       await expect(list).toBeVisible()
+      await expect(list).toHaveCSS('transform', 'none')
+      await expect(list).toHaveCSS('opacity', '1')
+      expect(await list.evaluate(element => element.scrollHeight <= element.clientHeight + 1)).toBe(true)
       await expect(list.getByRole('option')).toHaveCount(6)
+
+      for (const option of await list.getByRole('option').all()) {
+        expect((await option.boundingBox())?.height).toBeGreaterThanOrEqual(44)
+      }
 
       const bounds = await list.boundingBox()
 
@@ -166,6 +188,51 @@ for (const width of [320, 1440]) {
       expect(bounds.y).toBeGreaterThanOrEqual(0)
       expect(bounds.y + bounds.height).toBeLessThanOrEqual(900)
       expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width)
+      await page.screenshot({
+        path: testInfo.outputPath(`scope-menu-${theme}-${width}.png`),
+        clip: { x: 0, y: 0, width: Math.min(width, 960), height: 540 }
+      })
     })
   }
 }
+
+
+test('context navigation example demonstrates the styled Select menu', async ({ page }) => {
+  await page.goto('/docs/components/context-navigation')
+
+  const preview = page.locator('.component-doc-preview')
+  const trigger = preview.getByRole('combobox', { name: 'Documentation for' })
+
+  await expect(trigger).toHaveJSProperty('tagName', 'BUTTON')
+  await expect(trigger).toHaveText('Web')
+  await trigger.press('Space')
+  await expect(preview.getByRole('listbox', { name: 'Documentation for' })).toBeVisible()
+  await page.keyboard.press('End')
+  await page.keyboard.press('Enter')
+  await expect(trigger).toHaveText('Android')
+  await expect(preview.locator('#context-navigation-example')).toHaveValue('Android')
+})
+
+
+test('documentation scope scrolls within short windows and keeps keyboard options reachable', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 430 })
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.goto('/docs/foundations')
+
+  const trigger = page.getByRole('combobox', { name: 'Choose documentation scope' })
+  const list = page.getByRole('listbox', { name: 'Choose documentation scope' })
+
+  await trigger.press('End')
+  await expect(list).toHaveCSS('transform', 'none')
+  await expect(list.getByRole('option', { name: 'Android', exact: true })).toBeFocused()
+
+  const bounds = await list.boundingBox()
+
+  if (!bounds) throw new Error('Expected a visible scope menu in the short window')
+
+  expect(bounds.y + bounds.height).toBeLessThanOrEqual(430)
+  expect(await list.evaluate(element => element.scrollTop)).toBeGreaterThan(0)
+  await page.keyboard.press('Escape')
+  await expect(trigger).toBeFocused()
+  await expect(list).toBeHidden()
+})
