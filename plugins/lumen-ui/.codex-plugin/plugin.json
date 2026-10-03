@@ -28,6 +28,7 @@
     "websiteURL": "https://lumen.santi020k.com",
     "privacyPolicyURL": "https://lumen.santi020k.com/privacy",
     "termsOfServiceURL": "https://lumen.santi020k.com/terms",
+    "supportURL": "https://lumen.santi020k.com/support",
     "defaultPrompt": [
       "Find the right Lumen components for this interface.",
       "Build this screen with Lumen for React.",
