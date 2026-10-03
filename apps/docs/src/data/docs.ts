@@ -3113,6 +3113,9 @@ const adapterNotesByComponent: Partial<Record<LumenComponentName, readonly Frame
   Toast: [{
     framework: 'React',
     text: 'Wrap the application with ToastProvider and call useToast inside that provider. The Astro global LumenToast API is not used in React.'
+  }, {
+    framework: 'Elements',
+    text: 'Register the elements and call the exported LumenToast API from your event handler. The Elements example includes its own button listener; the Astro demo controller is not required.'
   }],
   BarChart: [{
     framework: 'Elements',
