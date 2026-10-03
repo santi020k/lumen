@@ -161,6 +161,9 @@ import {
 } from '@santi020k/lumen-react-native'
 import { type LumenDateRangeValue } from '@santi020k/lumen-react-native/datetime'
 import { LumenButton as FoundationButton } from '@santi020k/lumen-react-native/foundations'
+import { LumenIcon as GraphicIcon, type LumenIconGraphicProps } from '@santi020k/lumen-react-native/graphics'
+
+const SearchGraphic = ({ size }: LumenIconGraphicProps): ReactElement => <LumenText>{size}</LumenText>
 
 export function PackedConsumer(): ReactElement {
   const [enabled, setEnabled] = useState(false)
@@ -179,6 +182,7 @@ export function PackedConsumer(): ReactElement {
         />
         <LumenToggle label="Enabled" value={enabled} onValueChange={setEnabled} />
         <LumenButton onPress={() => setEnabled(true)}>Continue</LumenButton>
+        <GraphicIcon icon={SearchGraphic} label="Search" />
         <FoundationButton onPress={() => setEnabled(false)}>Reset</FoundationButton>
       </LumenSurface>
     </LumenProvider>

@@ -13,3 +13,5 @@ additional scrolling wrapper.
 Add the optional React Native foundations entrypoint, which shares root implementations and avoids eager full-catalog imports.
 
 Native horizontal button groups wrap or stack when space is limited and switch to vertical layouts at accessibility text sizes.
+
+Add an optional React Native graphics entrypoint for statically imported, app-owned SVG components. It shares root icon behavior while avoiding the full named catalog; root name and custom icon APIs remain available.

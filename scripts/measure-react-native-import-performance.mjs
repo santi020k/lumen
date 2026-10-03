@@ -15,8 +15,37 @@ assert.ok(Number.isInteger(iterations) && iterations > 0, 'Iterations must be a 
 
 assert.ok(['android', 'ios'].includes(platform), 'Platform must be android or ios')
 
+// Rebuild the package graph so exports never measure stale workspace output.
+const buildOutput = []
+
+const build = spawn('pnpm', ['--filter', '@santi020k/lumen-react-native...', 'run', 'build'], {
+  cwd: repositoryRoot,
+  env: { ...process.env, CI: '1' },
+  stdio: ['ignore', 'pipe', 'pipe']
+})
+
+build.stdout.on('data', chunk => buildOutput.push(chunk))
+
+build.stderr.on('data', chunk => buildOutput.push(chunk))
+
+const buildCode = await new Promise((resolve, reject) => {
+  build.once('error', reject)
+
+  build.once('close', resolve)
+})
+
+assert.equal(buildCode, 0, `Native package build failed: ${Buffer.concat(buildOutput).toString()}`)
+
 const fixtureRoot = await mkdtemp(join(playgroundRoot, '.lumen-native-benchmark-'))
 const manifest = JSON.parse(await readFile(join(playgroundRoot, 'package.json'), 'utf8'))
+const iconSource = await readFile(join(repositoryRoot, 'packages/react-native/src/icons.generated.tsx'), 'utf8')
+const searchStart = iconSource.indexOf('const LumenSearchIconGraphic =')
+const searchEnd = iconSource.indexOf('\n\nconst ', searchStart)
+
+assert.ok(searchStart >= 0 && searchEnd > searchStart, 'Expected the canonical search graphic fixture')
+
+const searchGraphic = iconSource.slice(searchStart, searchEnd)
+const svgElements = [...new Set([...searchGraphic.matchAll(/<([A-Z][A-Za-z]*)\b/g)].map(match => match[1]))].sort()
 
 const scenarios = {
   baseline: `import { Button } from 'react-native'
@@ -27,6 +56,12 @@ export default function App() { return <LumenProvider><LumenButton>Search</Lumen
 `,
   foundations: `import { LumenButton, LumenProvider } from '@santi020k/lumen-react-native/foundations'
 export default function App() { return <LumenProvider><LumenButton>Search</LumenButton></LumenProvider> }
+`,
+  graphics: `import type { ReactElement } from 'react'
+import { ${svgElements.join(', ')} } from 'react-native-svg'
+import { LumenIcon, LumenProvider, type LumenIconGraphicProps } from '@santi020k/lumen-react-native/graphics'
+${searchGraphic}
+export default function App() { return <LumenProvider><LumenIcon icon={LumenSearchIconGraphic} label="Search" /></LumenProvider> }
 `,
   'root-icon': `import { LumenButton, LumenIcon, LumenProvider } from '@santi020k/lumen-react-native'
 export default function App() { return <LumenProvider><LumenButton><LumenIcon name="search" decorative />Search</LumenButton></LumenProvider> }
@@ -112,6 +147,8 @@ try {
     const foundations = report.scenarios.foundations.bundleBytes
 
     assert.ok(foundations - baseline <= budgets.foundationOverheadBytes, 'Foundation import exceeds its Hermes overhead budget')
+
+    assert.ok(report.scenarios.graphics.bundleBytes - baseline <= budgets.graphicsOverheadBytes, 'Static graphics import exceeds its Hermes overhead budget')
 
     assert.ok(report.scenarios['root-icon'].bundleBytes <= budgets.rootBundleBytes, 'Root import exceeds its Hermes bundle budget')
   }

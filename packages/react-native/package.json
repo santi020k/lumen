@@ -27,6 +27,10 @@
     "./foundations": {
       "types": "./dist/foundations.d.ts",
       "import": "./dist/foundations.js"
+    },
+    "./graphics": {
+      "types": "./dist/graphics.d.ts",
+      "import": "./dist/graphics.js"
     }
   },
   "files": [

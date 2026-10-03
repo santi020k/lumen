@@ -32,7 +32,7 @@ explicit React Native sheet focus targets with a compact-height/large-text scrol
 
 ### Verified local evidence
 
-- React Native: 119 behavioral/unit tests passed, with strict type checking and zero-warning lint.
+- React Native: 122 behavioral/unit tests passed, with strict type checking and zero-warning lint.
   The new Workspace example has six playground tests, including two workspace model tests for search and isolated record saves; its
   Expo web build passed. Desktop 1280×900 and mobile 390×844 interactions covered selection,
   editing, save feedback, and chart rendering, with temporary screenshots inspected.
@@ -59,23 +59,29 @@ and Spanish.
 
 ### Production import measurement
 
-Three Android Hermes production exports per fixture produced these median bytecode sizes:
+Three Android and iOS Hermes production exports per fixture produced these median bytecode sizes:
 
-| Fixture | Bytes |
-| --- | ---: |
-| Platform button baseline | 1,429,228 |
-| Lumen root button | 5,872,687 |
-| Lumen foundations button | 1,447,896 |
-| Lumen root button with named search icon | 5,872,764 |
+| Fixture | Android bytes | iOS bytes |
+| --- | ---: | ---: |
+| Platform button baseline | 1,429,228 | 1,424,196 |
+| Lumen root button | 5,879,803 | 5,874,152 |
+| Lumen foundations button | 1,447,896 | 1,442,835 |
+| Lumen static search graphic | 1,630,896 | 1,625,566 |
+| Lumen root button with named search icon | 5,879,868 | 5,874,221 |
 
 The optional `@santi020k/lumen-react-native/foundations` entrypoint reuses the root implementations
-and provider context while avoiding eager imports of the full catalog. Its 18,668-byte overhead
-above the baseline is bounded at 65,536 bytes; the existing root fixture is bounded at 6 MiB.
-Three iOS Hermes production exports per fixture passed both budgets, with median sizes of
-1,424,195 bytes for baseline, 1,442,836 for foundations, 5,867,149 for root button, and 5,867,214 for root icon.
+and provider context while avoiding eager imports of the full catalog. Foundation overhead remains
+bounded at 65,536 bytes; the root fixture remains bounded at 6 MiB. The new
+`@santi020k/lumen-react-native/graphics` entrypoint reuses icon rendering, accessibility, touch targets
+and the provider context while accepting an application-owned graphic instead of a catalog name.
+Static graphic overhead is bounded at 262,144 bytes, including the existing SVG renderer. The fixture
+uses the exact generated search artwork. Both platforms passed every budget across three exports.
+The benchmark rebuilds the dependency graph before exporting to avoid stale workspace measurements.
+The clean packed consumer also type-checks the graphics import alongside root, datetime and foundations.
+
 Run `pnpm run check:react-native-imports`; set `LUMEN_BENCHMARK_PLATFORM=ios` to measure iOS.
 These results are local bytecode measurements, not startup or scrolling latency evidence. Static
-per-icon paths and broader component entrypoints remain to evaluate against actual consumers.
+per-icon catalog paths and broader component entrypoints remain to evaluate against actual consumers.
 
 ### Outstanding scope and blockers
 

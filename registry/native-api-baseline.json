@@ -296,6 +296,23 @@
           ],
           "experimental": [],
           "deprecated": []
+        },
+        "./graphics": {
+          "entrypoint": "packages/react-native/src/graphics.ts",
+          "maturity": "stable",
+          "supported": [
+            "LumenIcon",
+            "LumenIconButton",
+            "LumenIconButtonProps",
+            "LumenIconGraphic",
+            "LumenIconGraphicProps",
+            "LumenIconProps",
+            "LumenProvider",
+            "LumenProviderProps",
+            "useLumenTheme"
+          ],
+          "experimental": [],
+          "deprecated": []
         }
       }
     }
