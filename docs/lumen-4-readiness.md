@@ -31,6 +31,21 @@ safe-area-context ~5.7.0, and SVG 15.15.4. Keep matching React 19.2 types and te
 Updating this set requires a coordinated SDK migration and native validation; v4 component work
 does not require that migration.
 
+The live compatibility check also identified compatible SDK 57 patches: Expo 57.0.26 and
+expo-updates 57.0.24. Their official release notes document no new Expo user-facing behavior and
+an embedded-asset hash fix, respectively. Updated only those catalog entries and their lockfile
+graph; `expo install --check` then passed using live metadata.
+
+### Initial checks
+
+The post-merge `pnpm run validate` completed generation/platform checks and the full build,
+then stopped at the shared CSS size budget after inclusion of the two range controls.
+Separately, `pnpm run typecheck` passed all 23 tasks and `pnpm run test` passed 703 tests in
+64 files. HTTP fixture tests require loopback access; their sandbox-only permission
+failures were rerun successfully with that access. Recovered snippet/runtime changes passed
+69 focused tests and zero-warning lint. The final gate remains pending until implementation
+and its generated outputs are complete.
+
 ## Consumer audit and implementation
 
 Rebuild the older adoption inventory from current manifests and source. Give each consumer
