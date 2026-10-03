@@ -128,6 +128,10 @@ Tabs keep the selected trigger visible when a narrow tab list scrolls horizontal
 typed `ui:tabs-change` event. Import `LumenTabsChangeDetail` or `LumenTabsChangeEvent` from this
 package when application behavior follows the selected value.
 
+Keyboard tab navigation skips disabled triggers and stays within the current group when tabs are nested.
+Dialogs preserve native `autofocus`, restore their connected opener on close, and dismiss only a
+backdrop press that starts and ends outside the dialog. Alert dialogs retain explicit dismissal.
+
 ```astro
 ---
 import {
@@ -561,3 +565,6 @@ Connect application actions and replace sample IDs before reuse. See
 Only the visible window, overscan and focused neighbors mount. Stable keys retain row identity;
 applications own offscreen editing state. See [data rendering](../../docs/virtual-list-data.md) for
 setup, lifecycle, accessibility and the mounted-mode tradeoff.
+
+Action-error normalization ignores malformed fields and non-string messages. Enhanced forms include
+externally associated native controls. Timed toasts stay paused while hovered or focused.

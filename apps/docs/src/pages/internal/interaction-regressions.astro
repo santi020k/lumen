@@ -1,0 +1,36 @@
+---
+// cspell:words Mostrar Ocultar
+import '@santi020k/lumen/styles.css'
+
+import { AnimatedNumber, Avatar, Button, Form, Input, Label, Mentions, PasswordField, Stack, Tooltip, TooltipContent, TreeSelect, Typography } from '@santi020k/lumen-astro'
+import UIPrimitives from '@santi020k/lumen-astro/runtime'
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Interaction regression fixture</title>
+  </head>
+  <body>
+    <main>
+      <Stack gap="group">
+        <Typography><h1>Interaction regression fixture</h1></Typography>
+        <Tooltip><Button>First tooltip</Button><TooltipContent>First help</TooltipContent></Tooltip>
+        <Tooltip><Button>Second tooltip</Button><TooltipContent>Second help</TooltipContent></Tooltip>
+        <AnimatedNumber value={10} decimals={Number.NaN} />
+        <Avatar alt="Alex Smith" fallback="AS" />
+        <PasswordField showLabel="Mostrar" hideLabel="Ocultar" />
+        <Mentions options={['Alex', 'Sam']} />
+        <TreeSelect treeData={[{ label: 'Parent', value: 'parent', children: [{ label: 'Child', value: 'child' }] }]} />
+        <Form id="external-form">
+          <Button type="submit">Submit external field</Button>
+        </Form>
+        <Label for="external-field">External field</Label>
+        <Input form="external-form" id="external-field" name="external" required />
+      </Stack>
+    </main>
+    <UIPrimitives />
+  </body>
+</html>

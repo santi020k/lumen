@@ -324,6 +324,9 @@ formatting shortcuts, and keep toggle controls synchronized through `aria-presse
 `lumen-tabs` keeps the selected trigger visible in narrow horizontal lists and emits
 `ui:tabs-change`; import `LumenTabsChangeDetail` or `LumenTabsChangeEvent` for its typed detail.
 
+Nested `lumen-tabs` and `lumen-code-tabs` keep independent selection and panel state. Keyboard
+navigation skips disabled triggers and stays within the active tab group.
+
 `<lumen-kanban-board>` and `<lumen-kanban-column value="…">` provide the same controlled board
 contract. Mark ordinary card items with `data-ui-kanban-item` and put `data-ui-kanban-handle` on a
 dedicated button. The board emits the cancellable `ui:kanban-move-request` event for keyboard,
@@ -523,3 +526,6 @@ Connect application actions and replace sample IDs before reuse. See
 Only the visible window, overscan and focused neighbors mount. Stable keys retain row identity;
 applications own offscreen editing state. See [data rendering](../../docs/virtual-list-data.md) for
 setup, lifecycle, accessibility and the mounted-mode tradeoff.
+
+Forms validate native controls associated through the `form` attribute even outside the form tree.
+Timed toasts retain their remaining duration until both pointer hover and keyboard focus leave.

@@ -424,6 +424,33 @@ describe('@santi020k/lumen umbrella package', () => {
     }
   })
 
+  test('rejects known multi-file conflicts before writing the first recipe file', async () => {
+    const cwd = await mkdtemp(join(tmpdir(), 'lumen-external-conflict-'))
+
+    try {
+      await writeFile(join(cwd, 'existing.txt'), 'Keep this file')
+      await expect(addLumenRegistryItem('custom', {
+        conflict: 'error',
+        cwd,
+        registry: {
+          description: 'Test registry',
+          items: [{
+            files: [{ path: 'first.txt', source: 'First file' }, { path: 'existing.txt', source: 'Replacement' }],
+            name: 'custom',
+            type: 'recipe'
+          }],
+          name: 'test',
+          packages: ['@santi020k/lumen-astro'],
+          version: 1
+        }
+      })).rejects.toThrow('Refusing to overwrite existing file: existing.txt')
+      expect(existsSync(join(cwd, 'first.txt'))).toBe(false)
+      expect(await readFile(join(cwd, 'existing.txt'), 'utf8')).toBe('Keep this file')
+    } finally {
+      await rm(cwd, { force: true, recursive: true })
+    }
+  })
+
   test('rejects external registry paths that escape the consumer root before writing', async () => {
     const cwd = await mkdtemp(join(tmpdir(), 'lumen-external-escape-'))
     const outsidePath = join(cwd, '..', 'lumen-registry-escape.txt')

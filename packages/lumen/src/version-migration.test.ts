@@ -7,6 +7,14 @@ import { describe, expect, test } from 'vitest'
 import { formatLumenVersionMigration, migrateLumenVersion, migrateLumenVersionSource } from './version-migration.js'
 
 describe('versioned source migrations', () => {
+  test.each(['page.astro', 'page.html'])('preserves slash-star text while migrating %s markup', file => {
+    const source = '<div>Path is /*/user/*.</div><lumen-stack gap="md"></lumen-stack>'
+
+    expect(migrateLumenVersionSource(source, file, 'v4').source).toBe(
+      '<div>Path is /*/user/*.</div><lumen-stack gap="group"></lumen-stack>'
+    )
+  })
+
   test('combines v4 layout and SDK migrations without changing previews or repeating edits', async () => {
     const root = await mkdtemp(join(tmpdir(), 'lumen-combined-migration-'))
     const sdkSource = 'import { Client } from \'@modelcontextprotocol/sdk/client/index.js\'\n'

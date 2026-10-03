@@ -387,7 +387,7 @@ const getMarkupTokenKind = (
   const openingTagIndex = source.lastIndexOf('<', start)
   const closingTagIndex = source.lastIndexOf('>', start)
 
-  if (openingTagIndex < closingTagIndex) return undefined
+  if (openingTagIndex <= closingTagIndex) return undefined
 
   const beforeValue = source
     .slice(openingTagIndex + 1, start)
