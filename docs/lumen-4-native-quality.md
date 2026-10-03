@@ -1,7 +1,7 @@
 # Lumen 4 native quality
 
 This record tracks the native improvements authorized for the v4 candidate. The implementation
-branch is `feature/native-v4-quality`, originally based on release commit `d0e9eeb5` and reconciled with committed release revisions `28659627` and `5831f8f0`. Preserve concurrent v4
+branch is `feature/native-v4-quality`, originally based on release commit `d0e9eeb5` and reconciled with committed release revisions `28659627`, `5831f8f0` and `04178a3d`. Preserve concurrent v4
 dependency, icon, web, and Compose-field work. Integrate only completed, verified task changes into
 `release/v4.0.0`; publication requires the repository's separate release approval.
 
@@ -86,6 +86,14 @@ Run `pnpm run check:react-native-imports`; set `LUMEN_BENCHMARK_PLATFORM=ios` to
 These results are local bytecode measurements, not startup or scrolling latency evidence. Static
 per-icon catalog paths and broader component entrypoints remain to evaluate against actual consumers.
 
+After reconciling release revision `04178a3d`, three exports per platform passed the same budgets.
+Android medians were 1,429,228 bytes for the platform baseline, 6,205,859 for the root button,
+1,451,478 for foundations, 1,634,493 for static graphics and 6,205,920 for the named root icon.
+iOS medians were 1,424,195, 6,200,929, 1,446,436, 1,629,152 and 6,200,993 bytes respectively.
+Temporary benchmark applications now live inside the playground's existing ignored `.build`
+directory, preventing generated fixtures from interfering with concurrent source lint checks.
+One Android export per fixture verified that new location; budget thresholds are unchanged.
+
 ### Android runtime measurement
 
 A local release-variant, development-signed APK at revision
@@ -119,21 +127,145 @@ requested. This is not a frame-smoothness pass. The built application, test sour
 report are preserved locally under `.build/native-quality-apple-hitch-ipad*`, based on `0ea68b5b`
 plus the UI-test change. Physical-device hitch collection remains required.
 
-### React Native native-host preparation
+### React Native Android native host
 
 A temporary Android host was generated from candidate `5444fada` using the installed Expo SDK
 57.0.26 and React Native 0.86.3, without dependency installation or tracked app-configuration changes.
 The host lives under `.build/native-quality-react-native-host`, uses the separate local package ID
 `com.santi020k.lumen.playground.reactnative.qualification`, and disables over-the-air updates so
 runtime checks cannot silently load a published bundle. The development-signed release build targets
-arm64 and uses the generated project's SDK/NDK versions. Generation succeeded; native compilation
-is still pending while Gradle installs the required NDK. No React Native native-runtime pass,
-startup result or frame measurement is claimed yet. The build log is
-`.build/native-quality-react-native-android-build.log`.
+arm64 and uses the generated project's SDK/NDK versions. Generation and native release compilation succeeded, including release lint. The initial build
+exhausted the generated Gradle daemon's 512 MiB class-metadata memory limit; only that task's daemon was stopped.
+A retry with 1,024 MiB class-metadata memory and a 2,048 MiB heap passed without skipping checks. External
+Gradle and Expo deprecation warnings remain. The successful build log is
+`.build/native-quality-react-native-android-build-retry.log`.
+
+The preserved APK and installed application both matched SHA-256
+`a76b082553a86a6d3a6c797564a744f8d1827fe5113410619d666b404b43949c`, verified again
+following the flow checks. On the Android 17 emulator, native interactions covered home rendering,
+searching for record 200, list/detail selection, chart descriptions and initial modal input focus.
+A 316-character note was entered with the software keyboard visible; Save remained reachable and
+the exact note plus success feedback appeared in the detail. Temporary screenshots were inspected.
+The artifact, report and screenshots remain under
+`.build/native-quality-react-native-android-runtime`. One process-cold Activity Manager launch took
+1,137 ms; this single observation does not establish a startup threshold or full time-to-interactive.
+The emulator's hardware-keyboard preference prevented automatic IME display on initial focus;
+tapping the notes field opened the software keyboard. Physical focus behavior remains to verify.
+
+These observations use the prepared candidate inputs, before the `04178a3d` appearance-preset and
+other release changes were reconciled. They are historical emulator evidence, not final-candidate,
+iOS, screen-reader, physical-device, stability or frame-smoothness qualification. The updated
+candidate still requires rebuilt native hosts and repeated affected checks.
 
 This follows Expo's [Continuous Native Generation](https://docs.expo.dev/workflow/continuous-native-generation/)
 workflow. Preserve the original app configuration and EAS identity; qualification must not publish
 an update or replace a user's installed public playground.
+
+### React Native iOS scene lifecycle
+
+The first reconciled Release build succeeded, but the iPad iOS 27 Simulator rejected launch at
+`UIApplicationEvaluateRuntimeIssueForNoSceneLifecycleAdoption`. Expo SDK 57's generated host uses
+the legacy lifecycle by default. The playground now opts into the official scene support using
+`expo-build-properties` 57.0.22, the current stable SDK 57 plugin verified in the registry and
+release notes. This build-time dependency supplies the native generation fix; Lumen does not
+implement another scene delegate. Expo documents the SDK 57 opt-in in its
+[scene migration guide](https://github.com/expo/fyi/blob/main/ios-scene-lifecycle.md).
+The corrected native Release host at commit `49d483cc` built and launched successfully on the
+iPad Pro 13-inch (M5), iOS 27 Simulator. Native interactions verified search for record 200,
+adaptive list/detail, initial name focus with the software keyboard visible, and reachable Save
+while entering a 316-character note. The saved note and success feedback were visually compared.
+Spanish/RTL changes retained the record and note; reopening and explicit Cancel preserved the
+saved value, backdrop taps left the protected sheet open, and error/retry restored the selected
+record. Horizontal chart scrolling reached category 5. This is manual native flow evidence,
+not automated exact-text, screen-reader, physical-device or performance qualification.
+
+The corrected app's 76-file manifest matched the installed app after interaction checks. The
+preserved app, source/package hashes, report and inspected keyboard/RTL screenshots remain under
+`.build/native-quality-react-native-ios-scene-runtime`. The original failing host and report are
+preserved separately under `.build/native-quality-react-native-ios-reconciled-runtime`.
+The same preserved Release app launched on the iPhone 17 Pro iOS 27 Simulator. Compact
+list-to-detail navigation, a 317-character note, reachable Save above the software keyboard,
+reopening and Cancel passed. The complete saved note and success feedback were asserted in the
+native accessibility tree; all 76 installed artifact files matched after these interactions.
+The software keyboard was shown using Device Hub after native text entry. Phone keyboard and
+saved-note screenshots were inspected and preserved beside the tablet evidence. These checks
+do not establish VoiceOver, large-text, hardware, startup or scrolling qualification.
+The rebuilt Android host also passed against `04178a3d`,
+but its repeat installation could not run after the Android emulator disconnected; its separate
+APK and report are preserved under `.build/native-quality-react-native-android-reconciled-runtime`.
+
+### React Native navigation at accessibility text sizes
+
+The iPhone maximum-text check exposed single-line destination labels truncated to fragments.
+Commit `02178c35` removes the line limit at native font scales of 2 or greater, retaining native
+text scaling, full accessibility names and controlled selection/reselection behavior. Regression
+coverage includes long Spanish labels, a live scale change, selected and disabled destinations.
+The rebuilt Release app displayed all four complete labels at the iPhone 17 Pro iOS 27 Simulator's
+maximum text setting; Home-to-Examples selection worked and restoring the standard text size
+restored the compact bar. Long labels still wrap within narrow destinations and substantially
+increase bar height, so this is a truncation fix rather than complete large-text qualification.
+Before/after screenshots use Home, light appearance and the same maximum text setting. The
+preserved after artifact and report are under `.build/native-quality-react-native-ios-navigation-runtime`;
+all 76 installed artifact files and eight application input files matched their captured hashes.
+
+The live text-size finding reproduced against the preserved `02178c35` Release app: selecting
+record 002 at standard text size and changing the iPhone Simulator setting from 3 to 11 left the
+title, Back/Edit labels and chart heading visibly clipped within their earlier container heights.
+The navigation bar reflowed. A newly opened edit sheet rendered its heading, labels and note at
+the enlarged size without that clipping; restoring text size 3 restored the underlying detail.
+The observed stale-layout behavior matches the open upstream
+[React Native 0.86 issue 57512](https://github.com/react/react-native/issues/57512), but an upstream
+report is not proof of the exact cause in this host. Do not disable native font scaling or remount
+the whole application as a workaround: either would change accessibility or application state.
+The clipping screenshot is preserved beside the navigation artifact, and runtime large-text
+qualification remains failed until a fix is independently verified.
+
+Large-text sheet scrolling reached Cancel and Save after
+dismissing the keyboard; that observation does not prove Save remains reachable with the keyboard
+visible at maximum text size. Re-focusing the note hid those actions behind the keyboard; the
+attempt to scroll without dismissing it was interrupted by Device Hub accessibility errors.
+Native typing also opened the host accent picker; an accessibility value update set the note,
+but this was not a successful native long-note typing/save check. The draft was explicitly
+cancelled after restoring text size 3. These findings remain open alongside VoiceOver and hardware checks.
+
+For the navigation fix, `pnpm run test` passed 1,189 tests in 98 files with local loopback access,
+`pnpm run typecheck` and `pnpm run lint` each passed 23 tasks, the React Native package build and
+iOS Release host build passed, and the regenerated MCP snapshot passed its consistency check.
+The iOS build still emitted external native build warnings. The clean packed React Native consumer
+also passed installation, peer, contents and strict TypeScript checks. Repeating the Android Hermes
+benchmark with three exports per scenario passed the configured budgets: baseline 1,429,228 bytes,
+root without icons 6,205,936, foundations 1,451,478, static graphics 1,634,493 and root with icons
+6,206,006. The equivalent three-export iOS run also passed: baseline 1,424,195 bytes, root without
+icons 6,201,013, foundations 1,446,437, static graphics 1,629,152 and root with icons 6,201,082.
+These are bytecode measurements, not native startup or scrolling qualification.
+The full canonical gate has not passed. A fresh `pnpm run check:security` still failed with the same
+three high-severity advisories and no patched versions listed by the audit.
+
+### Repeated React Native Android startup observation
+
+The updated React Native host assembled with JDK 21.0.12.1 and the emulator's `arm64-v8a` ABI at
+task revision `7dd9027c7`. The development-signed Release APK is preserved under
+`.build/native-quality-react-native-android-navigation-runtime`; its SHA-256 is
+`20a50c61a9503942ef0e033641bdafb5e7d182e99ed42c617fab11a60305d7c2`.
+Signature verification passed, installation on `emulator-5554` succeeded, and the installed APK
+hash matched before and after five force-stopped process launches. Raw Android Activity Manager
+records contain successful COLD launches of 773, 782, 491, 392 and 608 ms, with a median of 608 ms
+and p95/maximum of 782 ms. The report captures application/package inputs and emulator OS, API,
+display, density and text scale. No application database was cleared. These observations measure
+Activity Manager `TotalTime`, not full time-to-interactive, hardware performance, scrolling or an
+established regression budget.
+
+This host's native gate failed. The initial attempt selected Android Studio's JDK 25 and stopped
+in CMake configuration after a Java native-access warning; retrying with documented JDK 21 resolved
+that failure. `:app:assembleRelease` then succeeded, but `:app:lintRelease` reported one error and
+59 warnings. Expo's generated `res/values/styles.xml:13` sets `android:windowSplashScreenBehavior`,
+which requires API 33, in an unqualified style despite minimum SDK 24. The installed
+`expo-splash-screen` 57.0.9 source generates this item directly; the registry still lists 57.0.9 as
+the latest compatible major-57 release. Keep the original failed build and lint reports. Do not
+raise the minimum SDK, suppress lint or count the assembled artifact as a successful native gate.
+Generated-host and dependency warnings include scoped-storage permissions, private AppCompat
+resources and unused resources; they also remain reported. Interactive Android qualification
+could not run through the UI tool, which did not recognize the running emulator application.
 
 ### Outstanding scope and blockers
 
@@ -148,12 +280,24 @@ The canonical `pnpm run validate` initially failed because its loopback fixture 
 After local-server access and snapshot regeneration, it reached `check:security` and failed on three
 high-severity dependency advisories in `node-forge`, `http-cache-semantics`, and `braces`. The reconciled canonical gate, including the six new runtime-parser tests, passed all preceding checks and again stopped at `check:security`. The complete gate remains failed; committed release dependency updates were reconciled into this branch and the audit was rerun, but those three advisories remain.
 
-The selected `release/v4.0.0` contains the initial native implementation and static-graphics work
-through shared ancestor `05e1a20c296c79b7981a4e49ea3d66783ee961da`. The additional Android runtime
-collector, status-bar fix and Apple UI-test commits still require integration. The release checkout
-was clean at revision `5524f4b9` when checked again, but the canonical security gate remains failed.
-Preserve concurrent checkout ownership and serialize the eventual merge in a clean, idle release
-worktree after the required gates pass. Publication remains outside this
+After reconciling `04178a3d` and committing the scene-support/benchmark fixes at `49d483cc`,
+`pnpm run validate` passed all checks preceding `check:security`, including 1,188 JavaScript tests
+in 98 files, builds, strict type checking, zero-warning lint, spelling, API/contracts and generated
+snapshot checks. It again stopped on the same three high-severity advisories. The clean packed
+React Native package separately passed installation, peer, content and strict consumer checks.
+The full gate is still failed. Further canonical checks following security are not implied green.
+
+The selected `release/v4.0.0` at committed revision `04178a3d` contains the native implementation,
+static-graphics entrypoints, Android runtime collector and status-bar fix, and Apple UI-test commits
+through `efa3e53a`; Git ancestry verified that containment. The isolated qualification branch was
+fast-forwarded to that committed release revision. This containment is local integration evidence,
+not a passing canonical security gate or publication approval. The shared release checkout has
+unrelated concurrent changes; preserve its ownership. Further task changes require validation and
+serialized integration in a clean, idle release worktree. The new qualification record and iOS
+scene-support/benchmark, phone verification and navigation commits (`3e719a0f`, `49d483cc`,
+`fb589f38`, `02178c35`) remain on the task branch: the canonical
+security gate is failed and the release checkout has unrelated active Core and React edits.
+Do not overwrite those edits or bypass the failed gate. Publication remains outside this
 implementation authorization. Physical-device and release stability evidence must bind their
 actual tested revision; historical records retain their original attribution and version.
 

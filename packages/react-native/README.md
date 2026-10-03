@@ -50,6 +50,8 @@ Illustration, and Disclosure implementations.
 The structured tier also includes EmptyState, ErrorState, ListRow, Banner, Stat, SectionHeader, StatusBar, and a
 controlled NavigationBar for common product layouts without giving up native composition. `LumenRefreshControl` adds a
 React Native-specific pull-to-refresh indicator using the active semantic theme.
+Navigation destination labels wrap within their available width at accessibility text sizes
+(font scale 2 or greater), preserving their complete spoken names and native text scaling.
 `useLumenNavigationBarVisibility` and `LumenCollapsibleNavigationBar` add an optional scroll-
 responsive treatment for native lists without introducing an animation or navigation dependency.
 `LumenAlertDialog`, `LumenSheet`, `LumenMenu`, and `LumenShareButton` provide controlled native
