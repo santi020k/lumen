@@ -257,3 +257,10 @@ setup, state ownership and lifecycle examples.
 `getLumenDirectionalKey(element, key)` resolves the element's current inherited CSS direction and
 swaps horizontal arrows in RTL. Other keys are unchanged. Web adapters use it for visual keyboard
 navigation; native range inputs retain browser-owned behavior.
+
+## Attachment preview state
+
+`resolveLumenAttachmentPreviewState` resolves explicit fallback states, unsupported MIME types,
+and image failures. `createLumenAttachmentPreviewController` enhances the documented DOM child
+contract with safe state events and lifecycle cleanup. Use the framework components for product UI;
+see the [attachment recipe](../../docs/consumer-ui-recipes.md#attachment-previews-and-file-lists).

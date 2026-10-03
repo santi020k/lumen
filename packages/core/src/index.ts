@@ -1,4 +1,12 @@
 export {
+  createLumenAttachmentPreviewController,
+  type LumenAttachmentPreviewController,
+  type LumenAttachmentPreviewLabels,
+  lumenAttachmentPreviewLabels,
+  type LumenAttachmentPreviewState,
+  resolveLumenAttachmentPreviewState
+} from './attachments.js'
+export {
   alignLumenChartSeries,
   appendLumenChartDatum,
   createLumenBarGeometry,

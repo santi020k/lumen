@@ -973,6 +973,7 @@ const keyboardInteractionsByComponent: Partial<
 }
 
 export const runtimeEvents: RuntimeEventRow[] = [
+  { detail: '{ state: "error" | "loading" | "ready" | "unavailable" }', name: 'ui:attachment-preview-change', target: 'AttachmentPreview root', when: 'Fires after a preview state changes. The event never includes the file URL.' },
   { detail: '{ value: number }', name: 'ui:image-comparison-change', target: 'ImageComparison root', when: 'Fires as the native range changes the percentage of the after image revealed.' },
   {
     detail: '{ value: string }',
@@ -1124,6 +1125,7 @@ export const runtimeEvents: RuntimeEventRow[] = [
 const runtimeEventsByComponent: Partial<
   Record<string, readonly RuntimeEventRow[]>
 > = {
+  AttachmentPreview: runtimeEvents.filter(event => event.name === 'ui:attachment-preview-change'),
   ImageComparison: runtimeEvents.filter(event => event.name === 'ui:image-comparison-change'),
   CopyButton: runtimeEvents.filter(event => event.name.startsWith('ui:copy-')),
   DataTable: runtimeEvents.filter(
@@ -1179,6 +1181,19 @@ const apiReferenceByComponent = {
     apiRow(
       'href', 'string', '-', 'Renders the root as a link when provided; otherwise renders an article.'
     )
+  ],
+  AttachmentList: [
+    apiRow('children / default slot', 'native li children', '-', 'Composes file rows with independent actions. Use Attachment without href when a row contains controls.')
+  ],
+  AttachmentPreview: [
+    apiRow('src', 'string', '-', 'Browser-owned image URL; the application owns authorization and object URL cleanup.'),
+    apiRow('alt', 'string', 'required', 'Accessible description of the image.'),
+    apiRow('contentType / content-type', 'string', '-', 'Non-image MIME types use a fallback instead of rendering an image.'),
+    apiRow('state', '"ready" | "loading" | "error" | "unavailable"', 'derived', 'Explicit loading, error and unavailable states override automatic image status.'),
+    apiRow('labels', 'Partial<LumenAttachmentPreviewLabels>', 'English labels', 'Localizes fallback messages. Elements uses error-label, loading-label and unavailable-label.'),
+    apiRow('retryKey / retry-key', 'string | number', '-', 'Changes the retry identity for the current image. Retry remains application controlled.'),
+    apiRow('caption / actions', 'React nodes / Astro named slots', '-', 'Composes a caption and independent download, replace or remove actions.'),
+    apiRow('onStateChange', '(state) => void', '-', 'React callback for transitions after the initial render; DOM adapters emit ui:attachment-preview-change with { state }.')
   ],
   Autocomplete: [
     apiRow(
@@ -3240,6 +3255,18 @@ export const componentDocs: ComponentDoc[] = (
       'Data display',
       'Displays a file attachment with metadata.',
       '<Attachment href="/logo.svg"><strong>lumen-logo.svg</strong><span>1 KB</span></Attachment>'
+    ],
+    [
+      'AttachmentList',
+      'Data display',
+      'Groups file rows with independent download, replacement and removal actions.',
+      '<AttachmentList aria-label="Files"><li><Attachment><strong>report.pdf</strong><Button type="button">Remove</Button></Attachment></li></AttachmentList>'
+    ],
+    [
+      'AttachmentPreview',
+      'Data display',
+      'Previews browser-owned images with localized loading, error and unsupported-file fallbacks.',
+      '<AttachmentPreview src="/logo.svg" contentType="image/svg+xml" alt="Lumen logo"><span slot="caption">Logo attachment</span><Button slot="actions" type="button">Replace</Button></AttachmentPreview>'
     ],
     [
       'Autocomplete',

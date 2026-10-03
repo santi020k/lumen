@@ -3930,6 +3930,60 @@ lumen-dialog-close {
   border-color: hsl(var(--brand) / 0.42);
 }
 
+.ui-attachment-list {
+  display: grid;
+  min-width: 0;
+  gap: var(--ui-space-related);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ui-attachment-list > li {
+  min-width: 0;
+  list-style: none;
+}
+
+.ui-attachment-list .ui-attachment {
+  flex-wrap: wrap;
+  overflow-wrap: anywhere;
+}
+
+.ui-attachment-list .ui-attachment > * {
+  min-width: 0;
+}
+
+.ui-attachment-preview {
+  display: grid;
+  min-width: 0;
+  gap: var(--ui-space-related);
+  margin: 0;
+  border: var(--ui-border-width, 1px) solid hsl(var(--line));
+  border-radius: var(--ui-radius);
+  padding: var(--ui-space-inset);
+  background: hsl(var(--surface));
+  color: hsl(var(--ink));
+  overflow-wrap: anywhere;
+}
+
+.ui-attachment-preview [data-slot="attachment-preview-media"] img {
+  display: block;
+  width: 100%;
+  max-height: 28rem;
+  object-fit: contain;
+}
+
+.ui-attachment-preview [data-slot="attachment-preview-fallback"] {
+  margin: 0;
+  color: hsl(var(--ink-muted));
+}
+
+.ui-attachment-preview [data-slot="attachment-preview-actions"] {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ui-space-related);
+}
+
 .ui-bubble {
   max-width: min(42rem, 100%);
   border: var(--ui-border-width, 1px) solid hsl(var(--line));

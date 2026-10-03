@@ -5427,6 +5427,12 @@ const initOptionalControllers = (scope: ParentNode): void => {
       .catch(reportError)
   }
 
+  if (scope.querySelector('[data-ui-attachment-preview]')) {
+    import('./controllers/attachments.js')
+      .then(({ initAttachmentPreviewControllers }) => initAttachmentPreviewControllers(scope))
+      .catch(reportError)
+  }
+
   if (scope.querySelector('[data-ui-phone-input]')) {
     import('./controllers/phone-input.js')
       .then(({ initPhoneInputControllers }) => initPhoneInputControllers(scope))

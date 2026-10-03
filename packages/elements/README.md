@@ -568,3 +568,12 @@ These custom hosts provide ARIA semantics; they are not native `dl`, `dt`, or `d
 
 For native definition-list markup, place a complete native `dl` with `div`, `dt`,
 and `dd` children inside `lumen-descriptions` instead of nesting custom hosts inside the `dl`.
+
+## Attachment composition
+
+Use `AttachmentList` to group native `li` children and `AttachmentPreview` for browser-owned images
+with localized loading, error, and unsupported-file states. Compose independent actions rather
+than nesting controls inside a linked Attachment. The application retains file validation,
+authorization, persistence, and object URL cleanup. See the
+[attachment composition recipe](../../docs/consumer-ui-recipes.md#attachment-previews-and-file-lists)
+for adapter props, slots, child contracts, retry identity, and safe state events.

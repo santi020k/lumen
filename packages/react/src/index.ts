@@ -1,5 +1,6 @@
 'use client'
 
+export * from './attachments.js'
 export * from './components.js'
 export * from './date-range-calendar.js'
 export * from './date-range-input.js'

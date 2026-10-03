@@ -7,6 +7,7 @@ import {
   coerceThemeBuilderMode,
   coerceThemeBuilderScheme,
   coerceThemePreset,
+  createLumenAttachmentPreviewController,
   createLumenBarGeometry,
   createLumenHeatmapGeometry,
   createLumenKanbanMoveDetail,
@@ -35,6 +36,7 @@ import {
   hasLumenChartData,
   hasLumenPieData,
   isLumenRichTextToggleCommand,
+  type LumenAttachmentPreviewController,
   type LumenChartLabels,
   type LumenChartSeries,
   type LumenChartTone,
@@ -325,6 +327,16 @@ const elementConfigs = {
     attributeClasses: glassAttributeClasses('ui-attachment--glass'),
     baseClassName: 'ui-attachment',
     tagName: 'lumen-attachment'
+  },
+  AttachmentList: {
+    baseClassName: 'ui-attachment-list',
+    defaults: { role: 'list', 'data-slot': 'attachment-list' },
+    tagName: 'lumen-attachment-list'
+  },
+  AttachmentPreview: {
+    baseClassName: 'ui-attachment-preview',
+    defaults: { role: 'figure', 'data-ui-attachment-preview': '' },
+    tagName: 'lumen-attachment-preview'
   },
   Autocomplete: {
     baseClassName: 'ui-input ui-autocomplete',
@@ -11287,6 +11299,24 @@ class LumenPhoneInputBehaviorElement extends LumenElement {
   }
 }
 
+class LumenAttachmentPreviewBehaviorElement extends LumenElement {
+  private previewController: LumenAttachmentPreviewController | undefined
+
+  override connectedCallback() {
+    super.connectedCallback()
+
+    this.previewController?.destroy()
+
+    this.previewController = createLumenAttachmentPreviewController(this)
+  }
+
+  override disconnectedCallback() {
+    this.previewController?.destroy()
+
+    this.previewController = undefined
+  }
+}
+
 const withObservedAttributes = (
   config: LumenElementConfig
 ): LumenElementConfig => ({ ...config, observedAttributes: observedAttributeNames })
@@ -11308,6 +11338,7 @@ const behaviorElementClasses: Partial<
   Record<LumenComponentName, typeof LumenElement>
 > = {
   AlertDialog: LumenDialogBehaviorElement,
+  AttachmentPreview: LumenAttachmentPreviewBehaviorElement,
   Anchor: LumenAnchorBehaviorElement,
   AnimatedNumber: LumenAnimatedNumberBehaviorElement,
   BackToTop: LumenBackToTopBehaviorElement,
@@ -11699,3 +11730,6 @@ export const LumenSpeedDialElement = elementClasses.SpeedDial
 export const LumenDescriptionItemElement = elementClasses.DescriptionItem
 export const LumenDescriptionTermElement = elementClasses.DescriptionTerm
 export const LumenDescriptionDetailElement = elementClasses.DescriptionDetail
+
+export const LumenAttachmentListElement = elementClasses.AttachmentList
+export const LumenAttachmentPreviewElement = elementClasses.AttachmentPreview

@@ -169,3 +169,29 @@ Undo is an application transaction exposed through a status action. Retain focus
 result. Lumen should not decide what can be reversed, retry payments, restore purchases, publish a
 post, or store an idempotency key. See [error handling](error-handling.md) for the existing
 cross-platform recovery surfaces and announcement contracts.
+
+## Attachment previews and file lists
+
+Use AttachmentList with native `li` children. Compose each row from Attachment without `href` when
+it contains separate download, replace, or remove controls. Avoid nesting controls inside a linked
+Attachment. The list is a native `ul` in Astro and React; Elements exposes a list role and preserves
+its native `li` children.
+
+AttachmentPreview accepts a browser-owned `src`, required `alt`, optional `contentType`, explicit
+`state`, localized `labels`, and `retryKey`. Non-image MIME types show a fallback and do not render an
+image in Astro or React. Loading, error, and unavailable states can be controlled by the application.
+Changing the source or retry identity clears an earlier image failure. This component does not embed
+PDFs, execute document content, optimize private images on the server, or fetch attachment metadata.
+
+React uses `caption` and `actions` nodes. Astro uses named `caption` and `actions` slots. Elements
+requires an owned native image marked `data-ui-attachment-preview-image` inside a
+`data-slot="attachment-preview-media"` container, plus a status paragraph marked
+`data-ui-attachment-preview-message` and `data-slot="attachment-preview-fallback"`. Supply only an
+image URL to this child contract. Its host supports `content-type`, `state`, `retry-key`, `error-label`,
+`loading-label`, and `unavailable-label`; add an accessible name to the figure host.
+
+DOM adapters emit `ui:attachment-preview-change` with only `{ state }`; React provides
+`onStateChange`. Transitions are reported after initialization. File URLs are not included in these
+events. The application owns validation, authorization, object URL creation and revocation,
+replacement, removal confirmation, and persistence. Fallback text does not disable those independent
+actions. Never use real identity documents in demonstration data.

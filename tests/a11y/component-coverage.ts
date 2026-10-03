@@ -18,6 +18,7 @@ export const runtimeBehaviorComponentNames = [
   'AlertDialog',
   'Anchor',
   'AnimatedNumber',
+  'AttachmentPreview',
   'BackToTop',
   'Calendar',
   'Carousel',

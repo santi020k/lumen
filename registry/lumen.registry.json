@@ -334,6 +334,28 @@
       "dependencies": ["styles"]
     },
     {
+      "name": "AttachmentList",
+      "type": "component",
+      "description": "Groups file rows with independent actions.",
+      "category": "Data display",
+      "files": [
+        "packages/astro/components/AttachmentList.astro",
+        "packages/astro/styles/lumen.css"
+      ],
+      "dependencies": ["styles"]
+    },
+    {
+      "name": "AttachmentPreview",
+      "type": "component",
+      "description": "Previews browser-owned images with localized fallback states.",
+      "category": "Data display",
+      "files": [
+        "packages/astro/components/AttachmentPreview.astro",
+        "packages/astro/styles/lumen.css"
+      ],
+      "dependencies": ["styles"]
+    },
+    {
       "name": "Autocomplete",
       "type": "component",
       "description": "Captures searchable text connected to suggestions.",
