@@ -45,7 +45,7 @@
 
 ### Patch Changes
 
-- Updated dependencies [`0266a98`, `d76f3da`, `475597e`, `d76f3da`]:
+- Updated dependencies []:
   - @santi020k/lumen-core@4.0.0
   - @santi020k/lumen@4.0.0
 

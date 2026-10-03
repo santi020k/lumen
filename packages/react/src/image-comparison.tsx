@@ -43,15 +43,24 @@ export const ImageComparison = ({
 
     if (!input) return
 
-    const pendingResets = new Set<number>()
+    const pendingResets = new Set<Event>()
+    let pendingReset: number | undefined
 
     const reset = (event: Event) => {
       if (event.target !== input.form) return
 
-      const timeout = window.setTimeout(() => {
-        pendingResets.delete(timeout)
+      pendingResets.add(event)
 
-        if (event.defaultPrevented || !input.isConnected) return
+      if (pendingReset !== undefined) return
+
+      pendingReset = window.setTimeout(() => {
+        pendingReset = undefined
+
+        const shouldReset = [...pendingResets].some(resetEvent => !resetEvent.defaultPrevented)
+
+        pendingResets.clear()
+
+        if (!shouldReset || !input.isConnected) return
 
         const next = normalizeLumenImageComparisonValue(value ?? defaultValue)
 
@@ -59,14 +68,12 @@ export const ImageComparison = ({
 
         if (value === undefined) setInternalValue(next)
       })
-
-      pendingResets.add(timeout)
     }
 
     input.ownerDocument.addEventListener('reset', reset, true)
 
     return () => {
-      for (const timeout of pendingResets) window.clearTimeout(timeout)
+      if (pendingReset !== undefined) window.clearTimeout(pendingReset)
 
       pendingResets.clear()
 

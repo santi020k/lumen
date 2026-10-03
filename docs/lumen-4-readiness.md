@@ -19,7 +19,7 @@ one local branch, 25 changed or untracked paths, and eight preserved stashes.
 | Native/docs stash `568bef0a` | Native components are incorporated. Keep the enhanced documentation-owned framework example instead of adding a duplicate library component. Replace old showcase prototypes with fresh captures. |
 | Snippet/metadata stash `e701c8a2` | Recover QR code tag naming, framework snippet cleanup, and runtime metadata with regression coverage. Evaluate button sizes through current consumer audits. Existing Card/Stat and Badge composition supersede the metric/status prototypes. |
 | Icon stash `a2f7a905` | Icon dimensions and filled brand rendering are incorporated. Do not restore temporary configuration or obsolete screenshots. |
-| Package-manager stash `212d3eed` | Superseded pnpm 10 fields; root pnpm 12.6.0 remains authoritative. |
+| Package-manager stash `212d3eed` | Superseded pnpm 10 fields; the dependency refresh now aligns the workspace on pnpm 12.8.1. |
 | Scroll/miscellaneous stash `65a70d72` | Scroll cue examples and tooling changes are incorporated. |
 | Motion stashes `9b41b959`, `33c190f4` | Identical snapshots; intended motion components and options are incorporated. Preserve both originals. |
 
@@ -98,7 +98,7 @@ targets `v4.0.0`. Changesets have been consumed into package changelogs and the 
 snapshot, documentation versions and critical styles have been regenerated. No tag has been
 created and no package or application has been published.
 
-### Candidate verification
+### Previous candidate verification
 
 - `pnpm run test`: 843 tests across 76 files passed.
 - `pnpm run typecheck` and `pnpm run lint`: all 23 tasks passed, with zero lint warnings.
@@ -119,6 +119,46 @@ created and no package or application has been published.
   comparison component. Gallery and homepage images decoded successfully without broken sources.
   Chart and comparison checks include light and dark themes; overflowing chart detail remains an
   intentionally scrollable, keyboard-accessible region with a data-table alternative.
+
+### Header and dependency refresh
+
+The documentation header and scope navigation now use Lumen's enhanced Select, retaining native
+fallbacks. The header uses separate, consistent controls, visible keyboard focus, menus that remain visible,
+and 44-pixel options. Family and mode remain synchronized across navigation, reloads, denied storage,
+and failed writes. Shared Select now names its listbox, supports Space activation and search with spaces, and dismisses when keyboard focus leaves the component.
+
+The [dependency inventory](lumen-4-dependencies.md) records registry-verified upgrades, compatible
+holds, removals, and official references. Removed unused MDX support, redundant root Next and React DOM
+declarations, the monolithic MCP SDK, and nine obsolete overrides. The split MCP v2 integration
+preserves stdio, HTTP, and Worker wire contracts; programmatic consumers must use v2 SDK objects.
+Seven development security findings were resolved. Public package Node requirements are unchanged;
+the private workspace now declares the runtime range its existing tooling actually supports.
+
+Lucide adds four interface icons, with synchronized web/native generation and reviewed additive
+Swift and Compose API baselines. Swift source compatibility verifies exactly ten reviewed v4
+diagnostics against `v3.0.1`: six initializer replacements and four icon enum additions. Exhaustive
+icon switches must handle the new cases. The native stability ledger still has zero completed iterations.
+
+Two independent review findings were accepted: preserve the session preference after a failed
+storage write, and dismiss Select when focus leaves. Regression coverage verifies both. Final source
+review found no remaining actionable UI, MCP, or dependency implementation issues.
+
+Final verification uses an isolated copy of this task's changes because unrelated virtual-list,
+editor, and documentation-layout work is active in the shared checkout. No unrelated work is removed
+or claimed as verified by this refresh.
+
+The refreshed candidate passed 850 unit tests, 488 browser checks, all 84 desktop/mobile React and
+Elements conformance checks, 49 Swift tests, and 53 Compose plus three Wear tests. Type checking and
+zero-warning lint passed all 23 tasks. Spelling checked 1,289 files without issues; unused-dependency,
+registry, bundle, and API checks passed. Packed consumers, including the upgraded Astro/Next/React
+fixtures and MCP stdio/HTTP transports, passed without publishing. The local Worker integration and
+MCP's 75 tests passed. The complete gate still stops at the three unpatched dependency advisories.
+
+The dependency refresh also exposed a React reset-timer lint diagnostic. A single scheduled update
+now batches reset events and is explicitly canceled during cleanup; tests cover mixed cancellation
+orders and unmounting. The approved follow-up Changesets were consumed through a scratch run of
+the configured generator, preserving all ten public versions at `4.0.0` and all previous release
+history. Changesets belonging to other active work are preserved for that work's integration.
 
 ### Existing component follow-up
 

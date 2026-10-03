@@ -244,6 +244,7 @@ const structuredData = composeJsonLd(
   type LegacyColorTheme = 'dark' | 'light'
 
   const themeStorageKey = 'lumen-theme'
+  let sessionTheme: ColorTheme | null = null
 
   const getLegacyTheme = (theme: LegacyColorTheme): ColorTheme => (
     theme === 'dark' ? 'lumen-dark' : 'lumen-light'
@@ -299,7 +300,9 @@ const structuredData = composeJsonLd(
     window.matchMedia('(prefers-color-scheme: dark)').matches ? 'lumen-dark' : 'lumen-light'
   )
 
-  const getPreferredTheme = (): ColorTheme => getStoredTheme() ?? getSystemTheme()
+  const getPreferredTheme = (): ColorTheme => (
+    sessionTheme ?? getStoredTheme() ?? normalizeTheme(document.documentElement.dataset.theme) ?? getSystemTheme()
+  )
 
   const getToggledTheme = (theme: ColorTheme): ColorTheme => {
     const nextMode = getThemeMode(theme) === 'dark' ? 'light' : 'dark'
@@ -331,6 +334,9 @@ const structuredData = composeJsonLd(
   const syncThemeSelects = (theme: ColorTheme, targetDocument = document) => {
     for (const select of targetDocument.querySelectorAll<HTMLSelectElement>('[data-theme-select]')) {
       select.value = getThemeFamily(theme)
+
+      // Notify the enhanced Select without re-entering the delegated theme handler.
+      select.dispatchEvent(new Event('change'))
     }
   }
 
@@ -371,7 +377,13 @@ const structuredData = composeJsonLd(
   let isThemeAnimating = false
 
   const commitTheme = (nextTheme: ColorTheme) => {
-    localStorage.setItem(themeStorageKey, nextTheme)
+    sessionTheme = nextTheme
+
+    try {
+      localStorage.setItem(themeStorageKey, nextTheme)
+    } catch {
+      // Theme controls still work for this document when storage is unavailable.
+    }
 
     applyTheme(nextTheme)
   }
@@ -470,13 +482,11 @@ const structuredData = composeJsonLd(
       return
     }
 
-    localStorage.setItem(themeStorageKey, nextTheme)
-
-    applyTheme(nextTheme)
+    commitTheme(nextTheme)
   })
 
   preferredColorScheme.addEventListener('change', () => {
-    if (getStoredTheme()) return
+    if (sessionTheme || getStoredTheme()) return
 
     applyTheme(getSystemTheme())
   })

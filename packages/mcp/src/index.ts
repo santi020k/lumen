@@ -1,8 +1,8 @@
 import type { Server as HttpServer } from 'node:http'
 
-import { createMcpExpressApp } from '@modelcontextprotocol/sdk/server/express.js'
-import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
-import { WebStandardStreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/webStandardStreamableHttp.js'
+import { createMcpExpressApp } from '@modelcontextprotocol/express'
+import { WebStandardStreamableHTTPServerTransport } from '@modelcontextprotocol/server'
+import { StdioServerTransport } from '@modelcontextprotocol/server/stdio'
 import type {
   NextFunction,
   Request as ExpressRequest,
