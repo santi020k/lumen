@@ -33,6 +33,7 @@ export const createLumenComboboxController = (root: HTMLElement): LumenComboboxC
   let composing = false
   let filtering = false
   let destroyed = false
+  let resetTimer: ReturnType<typeof globalThis.setTimeout> | undefined
 
   if (!list.id) list.id = `ui-combobox-list-${++nextId}`
 
@@ -207,6 +208,22 @@ export const createLumenComboboxController = (root: HTMLElement): LumenComboboxC
 
   input.addEventListener('keydown', keydown, { signal })
 
+  input.form?.addEventListener('reset', event => {
+    globalThis.clearTimeout(resetTimer)
+
+    resetTimer = globalThis.setTimeout(() => {
+      if (destroyed || event.defaultPrevented || !input.isConnected) return
+
+      composing = false
+
+      filtering = true
+
+      close()
+
+      refresh()
+    })
+  }, { signal })
+
   list.addEventListener('pointerdown', event => {
     if (optionFromEvent(event)) event.preventDefault()
   }, { signal })
@@ -247,6 +264,8 @@ export const createLumenComboboxController = (root: HTMLElement): LumenComboboxC
     close,
     destroy: () => {
       destroyed = true
+
+      globalThis.clearTimeout(resetTimer)
 
       abort.abort()
 

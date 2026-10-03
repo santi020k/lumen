@@ -274,6 +274,32 @@ test('range reset cancellation keeps the active draft and applied submitted valu
   expect(new FormData(form()).get('from')).toBe('2026-09-01')
 })
 
+test('range draft closes on native form reset even without name form fields', async () => {
+  const props = { value: rangeValue, label: 'Period', labels: rangeLabels, onValueChange: vi.fn<NonNullable<Parameters<typeof DateRangeInput>[0]['onValueChange']>>() }
+
+  await render(createElement('form', null, createElement(DateRangeInput, props)))
+  await click('[aria-haspopup="dialog"]')
+  await click('section:first-child [data-date="2026-09-02"]')
+  expect(element('[aria-haspopup="dialog"]').getAttribute('aria-expanded')).toBe('true')
+  await run(() => {
+    form().reset()
+  })
+  expect(element('[aria-haspopup="dialog"]').getAttribute('aria-expanded')).toBe('false')
+})
+
+test('range draft closes on reset of an explicitly associated external form', async () => {
+  const props = { value: rangeValue, label: 'Period', labels: rangeLabels, onValueChange: vi.fn<NonNullable<Parameters<typeof DateRangeInput>[0]['onValueChange']>>(), form: 'external-range-form' }
+
+  await render(createElement('div', null, createElement('form', { id: 'external-range-form' }), createElement(DateRangeInput, props)))
+  await click('[aria-haspopup="dialog"]')
+  await click('section:first-child [data-date="2026-09-02"]')
+  expect(element('[aria-haspopup="dialog"]').getAttribute('aria-expanded')).toBe('true')
+  await run(() => {
+    form().reset()
+  })
+  expect(element('[aria-haspopup="dialog"]').getAttribute('aria-expanded')).toBe('false')
+})
+
 test('calendar resets uncontrolled selection only after a non-cancelled form reset', async () => {
   const onReset = (event: SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -291,6 +317,22 @@ test('calendar resets uncontrolled selection only after a non-cancelled form res
     form().reset()
   })
   expect(new FormData(form()).get('date')).toBe('2026-09-10')
+})
+
+test('DatePicker calendar selection fires the native onChange exactly once and keeps form data in sync', async () => {
+  const change = vi.fn<NonNullable<Parameters<typeof DatePicker>[0]['onChange']>>()
+  const valueChange = vi.fn<NonNullable<Parameters<typeof DatePicker>[0]['onValueChange']>>()
+
+  await render(createElement(DatePicker, { defaultValue: '2026-09-10', onChange: change, onValueChange: valueChange }))
+  await click('[data-ui-date-picker-trigger]')
+  await click('[data-date="2026-09-11"]')
+  expect(change).toHaveBeenCalledTimes(1)
+  expect(valueChange).toHaveBeenCalledTimes(1)
+  expect(valueChange).toHaveBeenCalledWith('2026-09-11')
+  const nativeInput = element('[data-ui-date-picker-native]')
+
+  if (!(nativeInput instanceof HTMLInputElement)) throw new Error('Expected native date input')
+  expect(nativeInput.value).toBe('2026-09-11')
 })
 
 test('DatePicker closes an active calendar on disable and consumes Escape before a containing dialog', async () => {

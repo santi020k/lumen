@@ -32,6 +32,7 @@ afterEach(async () => {
   })
   container.remove()
   Reflect.deleteProperty(document, 'execCommand')
+  Reflect.deleteProperty(document, 'queryCommandState')
   vi.clearAllMocks()
   vi.unstubAllGlobals()
 })
@@ -69,4 +70,40 @@ test('ordinary editing retains the browser command and notification behavior', a
   container.querySelector('button')?.click()
   expect(fallback).toHaveBeenCalledExactlyOnceWith('bold')
   expect(completion).toHaveBeenCalledExactlyOnceWith({ command: 'bold', executed: true })
+})
+
+test('initializes toggle accessibility state before the first editing interaction', () => {
+  Object.defineProperty(document, 'queryCommandState', { configurable: true, value: () => true })
+
+  act(() => {
+    root.render(createElement(Editor))
+  })
+
+  expect(container.querySelector('button')?.getAttribute('aria-pressed')).toBe('true')
+  expect(container.querySelector('button')?.dataset.state).toBe('on')
+  expect(fallback).not.toHaveBeenCalled()
+  expect(completion).not.toHaveBeenCalled()
+})
+
+test('initializes inactive toggles when browser command state is unavailable', () => {
+  act(() => {
+    root.render(createElement(Editor))
+  })
+
+  expect(container.querySelector('button')?.getAttribute('aria-pressed')).toBe('false')
+  expect(container.querySelector('button')?.dataset.state).toBe('off')
+})
+
+test('leaves initial toolbar state owned by an external engine', () => {
+  const query = vi.fn(() => true)
+
+  Object.defineProperty(document, 'queryCommandState', { configurable: true, value: query })
+
+  act(() => {
+    root.render(createElement(Editor, { external: true }))
+  })
+
+  expect(query).not.toHaveBeenCalled()
+  expect(container.querySelector('button')?.hasAttribute('aria-pressed')).toBe(false)
+  expect(container.querySelector('button')?.dataset.state).toBeUndefined()
 })
