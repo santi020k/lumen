@@ -216,8 +216,15 @@ visible at maximum text size. These findings remain open alongside VoiceOver and
 For the navigation fix, `pnpm run test` passed 1,189 tests in 98 files with local loopback access,
 `pnpm run typecheck` and `pnpm run lint` each passed 23 tasks, the React Native package build and
 iOS Release host build passed, and the regenerated MCP snapshot passed its consistency check.
-The iOS build still emitted external native build warnings. The full canonical gate has not passed;
-the security findings below remain unresolved, and import budgets need repeating for this revision.
+The iOS build still emitted external native build warnings. The clean packed React Native consumer
+also passed installation, peer, contents and strict TypeScript checks. Repeating the Android Hermes
+benchmark with three exports per scenario passed the configured budgets: baseline 1,429,228 bytes,
+root without icons 6,205,936, foundations 1,451,478, static graphics 1,634,493 and root with icons
+6,206,006. The equivalent three-export iOS run also passed: baseline 1,424,195 bytes, root without
+icons 6,201,013, foundations 1,446,437, static graphics 1,629,152 and root with icons 6,201,082.
+These are bytecode measurements, not native startup or scrolling qualification.
+The full canonical gate has not passed. A fresh `pnpm run check:security` still failed with the same
+three high-severity advisories and no patched versions listed by the audit.
 
 ### Outstanding scope and blockers
 
