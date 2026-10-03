@@ -10,12 +10,25 @@ import {
 } from '@santi020k/lumen-astro'
 
 import NewsletterSignup from '../components/NewsletterSignup.astro'
+import { communityLinks } from '../data/community'
 import { showcaseProjects } from '../data/showcase'
 import BaseLayout from '../layouts/BaseLayout.astro'
 
 const [featuredProject, ...projectGrid] = showcaseProjects
 
 const waysToJoin = [
+  {
+    description: 'Suggest an improvement, add your use case, or vote for an idea that matters to your project.',
+    href: communityLinks.ideas,
+    icon: 'lightbulb',
+    label: 'Share an idea'
+  },
+  {
+    description: 'Ask a question, report a problem, or follow accepted work through to a release.',
+    href: '/support',
+    icon: 'messages-square',
+    label: 'Feedback & support'
+  },
   {
     description: 'Show what you shipped, the platform you chose, and the Lumen pieces that helped.',
     href: 'https://github.com/santi020k/lumen/issues/new?template=showcase.yml',
@@ -202,7 +215,7 @@ const waysToJoin = [
             <ButtonLink
               data-exposure-event={`community-${item.icon}`}
               href={item.href}
-              newTab
+              newTab={item.href.startsWith('https:')}
               showArrow
               variant="secondary"
             >

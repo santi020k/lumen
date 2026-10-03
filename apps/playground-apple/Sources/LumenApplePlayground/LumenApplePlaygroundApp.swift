@@ -259,7 +259,7 @@ struct ComponentsCatalogView: View {
                             showsExternalIndicator: true
                         )
                         LumenLink(
-                            "Support",
+                            "Feedback & support",
                             destination: playgroundURL("https://lumen.santi020k.com/support"),
                             showsExternalIndicator: true
                         )

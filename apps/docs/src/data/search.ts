@@ -232,6 +232,14 @@ const recipeItems: DocsSearchItem[] = [
     type: 'Recipe'
   },
   {
+    category: 'Community',
+    description: 'Suggest improvements, report bugs, ask questions, and follow accepted work through a release.',
+    href: '/support',
+    keywords: normalizeKeywords('feedback support help bug accessibility question idea suggestion discussion roadmap vote release'),
+    title: 'Feedback & support',
+    type: 'Recipe'
+  },
+  {
     category: 'Adoption',
     description:
       'Evaluate Lumen on a production-shaped surface and share product-team requirements.',

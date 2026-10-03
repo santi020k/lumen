@@ -297,6 +297,10 @@ changes require a changeset.
 
 ## Community
 
+[Feedback & support](https://lumen.santi020k.com/support) connects ideas, questions, bug reports,
+and the [public roadmap](https://lumen.santi020k.com/support#roadmap). Discuss improvements on GitHub
+and follow accepted work through implementation and release.
+
 Lumen is free and MIT licensed while the project focuses on adoption, public examples, and
 real-world feedback.
 

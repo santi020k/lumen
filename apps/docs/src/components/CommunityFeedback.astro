@@ -1,0 +1,47 @@
+---
+import { Link, Stack } from '@santi020k/lumen-astro'
+
+import { bugReportUrl, communityLinks } from '../data/community'
+
+interface Props {
+  documentationPath: string
+  subject: string
+}
+
+const { documentationPath, subject } = Astro.props
+---
+
+<Stack as="section" class="community-feedback" gap="related" aria-label={`Feedback about ${subject}`}>
+  <h2>Help improve {subject}</h2>
+  <p>Found a problem or a missing capability? Share it with the Lumen community on GitHub.</p>
+  <Stack direction="horizontal" gap="group" wrap>
+    <Link href={bugReportUrl({ documentationPath, subject })} newTab>Report a bug</Link>
+    <Link href={communityLinks.ideas} newTab>Suggest an improvement</Link>
+    <Link href={communityLinks.questions} newTab>Ask a question</Link>
+    <Link href="/support#roadmap">Follow progress</Link>
+  </Stack>
+</Stack>
+
+<style>
+  :global(.community-feedback) {
+    margin-block: var(--ui-space-section);
+    padding-block: var(--ui-space-group);
+    border-top: 1px solid hsl(var(--line));
+  }
+
+  .community-feedback h2 {
+    color: hsl(var(--ink));
+    font-size: 1.2rem;
+    font-weight: 700;
+  }
+
+  .community-feedback p {
+    color: hsl(var(--ink-soft));
+  }
+
+  :global(.community-feedback a) {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+  }
+</style>

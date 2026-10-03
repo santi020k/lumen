@@ -1,0 +1,91 @@
+name: Bug or accessibility report
+description: Report unexpected behavior, an accessibility problem, or a documentation error.
+title: "Bug: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Reports are public. Remove credentials, private code, and personal data.
+        For a security vulnerability, use [private reporting](https://github.com/santi020k/lumen/security/advisories/new).
+        For ideas or usage questions, use [Discussions](https://github.com/santi020k/lumen/discussions).
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Affected platform
+      options:
+        - Astro
+        - React
+        - Web Components
+        - React Native
+        - Apple / SwiftUI
+        - Android / Compose
+        - Wear OS
+        - Figma
+        - CLI / registry
+        - AI skill / MCP
+        - Documentation website
+        - Multiple platforms / unsure
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Package or playground version
+      description: Include the exact installed package name and version, or the app version and build. For the website, write website.
+      placeholder: "@santi020k/lumen-astro 4.0.0"
+    validations:
+      required: true
+  - type: input
+    id: component
+    attributes:
+      label: Component or affected surface
+      placeholder: Dialog, keyboard navigation, installation, or a documentation page
+    validations:
+      required: true
+  - type: input
+    id: reference
+    attributes:
+      label: Documentation reference
+      description: Optional link to the relevant public documentation.
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal reproduction
+      description: Provide steps and a small public code example or reproduction link. For a docs problem, provide the page and incorrect text.
+      placeholder: |
+        1. Open or render...
+        2. Interact with...
+        3. Observe...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: Include safe error details or screenshots if useful.
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment and accessibility context
+      description: Include framework version, OS, browser or device, and relevant keyboard, screen reader, zoom, or reduced-motion settings.
+    validations:
+      required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      options:
+        - label: I searched existing issues for this problem.
+          required: true
+        - label: This report contains no secrets, private code, or personal information.
+          required: true

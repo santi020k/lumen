@@ -62,3 +62,16 @@
 - name: "autorelease: pending"
   color: "fbca04"
   description: Changesets release pull request awaiting merge
+
+# Public roadmap. Only accepted work receives the roadmap label.
+- name: "roadmap"
+  color: "5319e7"
+  description: Accepted work tracked on the public roadmap
+
+- name: "in progress"
+  color: "fbca04"
+  description: Roadmap work with implementation underway
+
+- name: "shipped"
+  color: "0e8a16"
+  description: Verified available in a published release linked from the issue

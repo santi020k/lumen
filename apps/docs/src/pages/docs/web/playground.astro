@@ -19,6 +19,7 @@ import {
   TabsTrigger
 } from '@santi020k/lumen-astro'
 
+import CommunityFeedback from '../../../components/CommunityFeedback.astro'
 import DocsLayout from '../../../layouts/DocsLayout.astro'
 
 const playgrounds = [
@@ -183,6 +184,7 @@ const playgrounds = [
       </Link>
     ))}
   </div>
+  <CommunityFeedback documentationPath="/docs/web/playground" subject="Web playground" />
 </DocsLayout>
 
 <script>

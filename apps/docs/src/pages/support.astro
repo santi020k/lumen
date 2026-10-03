@@ -1,48 +1,209 @@
 ---
-import { ButtonLink, Link } from '@santi020k/lumen-astro'
+import { Badge, ButtonLink, Card, Grid, Icon, Link, Stack } from '@santi020k/lumen-astro'
 
-import LegalPage from '../components/LegalPage.astro'
+import { communityLinks } from '../data/community'
+import BaseLayout from '../layouts/BaseLayout.astro'
+
+const paths = [
+  {
+    description: 'Tell us what you are building, where you get stuck, and what would make Lumen more useful. Search existing ideas and add your vote or use case.',
+    destination: 'GitHub Discussions · Ideas',
+    href: communityLinks.ideas,
+    icon: 'lightbulb',
+    title: 'Suggest an improvement'
+  },
+  {
+    description: 'Report unexpected behavior, accessibility problems, or a documentation error. Include your version, platform, and a small reproduction.',
+    destination: 'GitHub Issues · Bug report',
+    href: communityLinks.bugs,
+    icon: 'bug',
+    title: 'Report a bug'
+  },
+  {
+    description: 'Get help with setup, components, theming, Figma, or the MCP server. Search previous answers or start a focused question.',
+    destination: 'GitHub Discussions · Q&A',
+    href: communityLinks.questions,
+    icon: 'messages-square',
+    title: 'Ask a question'
+  },
+  {
+    description: 'See accepted work, follow implementation, and find the release that delivers an improvement. GitHub keeps the full history in one place.',
+    destination: 'Public roadmap · Releases',
+    href: '#roadmap',
+    icon: 'route',
+    title: 'Follow progress'
+  }
+] as const
+
+const stages = [
+  {
+    description: 'Accepted work with a linked issue. Priorities may change; acceptance is not a delivery date.',
+    href: communityLinks.planned,
+    title: 'Planned'
+  },
+  {
+    description: 'Work underway. Follow the issue for its implementation, pull request, and verification.',
+    href: communityLinks.inProgress,
+    title: 'In progress'
+  },
+  {
+    description: 'Available in a published release. The issue links to the version that includes the change.',
+    href: communityLinks.shipped,
+    title: 'Shipped'
+  }
+]
 ---
 
-<LegalPage
-  description="Get help with Lumen packages, Playground apps, documentation, the agent skill, or the MCP server."
-  eyebrow="Project"
-  title="Support"
-  updatedAt="August 24, 2026"
+<BaseLayout
+  description="Suggest improvements, report bugs, ask questions, and follow Lumen's public roadmap on GitHub."
+  title="Feedback & support — Lumen UI"
 >
-  <h2>Public support</h2>
-  <p>
-    Use GitHub Issues for reproducible bugs, Playground problems, documentation gaps, feature
-    requests, and MCP connection problems. Include the affected app or package version, client,
-    framework or platform, expected result, and the smallest safe reproduction you can share.
-  </p>
-  <p>
-    <ButtonLink href="https://github.com/santi020k/lumen/issues/new/choose" newTab showArrow>
-      Open a support request
-    </ButtonLink>
-  </p>
+  <main class="support-page">
+    <Stack gap="section">
+      <Stack as="section" class="support-intro" gap="group" aria-labelledby="support-title">
+        <div><Badge variant="outline">Build Lumen together</Badge></div>
+        <h1 id="support-title">Feedback & support</h1>
+        <p class="support-lead">
+          Your next build can help shape Lumen. Bring an idea, ask for help, or show us what needs fixing.
+        </p>
+        <p>
+          Conversations and reports are public on GitHub. You can browse without an account;
+          sign in to post, vote, or subscribe. Share only code and details you can make public.
+        </p>
+      </Stack>
 
-  <h2>Security reports</h2>
-  <p>
-    Do not disclose a suspected vulnerability or sensitive information in a public issue. Use
-    <Link href="https://github.com/santi020k/lumen/security/advisories/new" newTab>
-      GitHub's private vulnerability reporting flow
-    </Link>
-    so maintainers can investigate before public disclosure.
-  </p>
+      <Grid gap="group" minItemWidth="24rem" aria-label="Feedback and support options">
+        {paths.map(path => (
+          <Card as="section" class="support-option">
+            <Stack gap="group">
+              <Icon decorative name={path.icon} size="lg" />
+              <Stack gap="related">
+                <h2>{path.title}</h2>
+                <p>{path.description}</p>
+              </Stack>
+              <small>{path.destination}</small>
+              <div>
+                <ButtonLink href={path.href} newTab={path.href.startsWith('https:')} showArrow variant="secondary">
+                  {path.title}
+                </ButtonLink>
+              </div>
+            </Stack>
+          </Card>
+        ))}
+      </Grid>
 
-  <h2>Before reporting an MCP problem</h2>
-  <ul>
-    <li>Call <code>lumen_get_meta</code> and record the package and schema versions.</li>
-    <li>Call <code>lumen_diagnose</code> and confirm the bundled snapshot is healthy.</li>
-    <li>Confirm whether the issue affects stdio, Streamable HTTP, or both.</li>
-    <li>Remove tokens, private prompts, repository content, and personal information from logs.</li>
-  </ul>
+      <Stack as="section" gap="group" id="roadmap" aria-labelledby="roadmap-title">
+        <Stack gap="related">
+          <h2 id="roadmap-title">From an idea to a release</h2>
+          <p>
+            Ideas start in Discussions. When an improvement is accepted, we link an implementation
+            issue and track it on the public roadmap. Votes help us understand demand; accessibility,
+            impact, and maintenance also guide priorities.
+          </p>
+        </Stack>
+        <Grid gap="group" minItemWidth="15rem">
+          {stages.map(stage => (
+            <Stack gap="related">
+              <h3>{stage.title}</h3>
+              <p>{stage.description}</p>
+              <Link href={stage.href} newTab>View {stage.title.toLowerCase()} work</Link>
+            </Stack>
+          ))}
+        </Grid>
+        <p>
+          These links show live GitHub issues. An empty view means no work is currently labeled for
+          that stage. A merged pull request or a closed issue alone does not mean a change has shipped.
+        </p>
+        <Stack direction="horizontal" gap="group" wrap>
+          <Link href={communityLinks.roadmap} newTab>Browse the full roadmap</Link>
+          <Link href={communityLinks.releases} newTab>Read published releases</Link>
+          <Link href={communityLinks.announcements} newTab>Follow announcements</Link>
+        </Stack>
+      </Stack>
 
-  <h2>Response expectations</h2>
-  <p>
-    Lumen is maintained as an open-source project. Support is best-effort and no response time is
-    guaranteed. Clear reproductions and respectful, focused reports are the fastest path to a useful
-    answer.
-  </p>
-</LegalPage>
+      <Grid gap="section" minItemWidth="24rem">
+        <Stack as="section" gap="related" aria-labelledby="security-title">
+          <h2 id="security-title">Private security reports</h2>
+          <p>
+            Use private vulnerability reporting for suspected security issues. Keep credentials,
+            private repository content, and personal information out of public reports.
+          </p>
+          <Link href={communityLinks.security} newTab>Report a vulnerability privately</Link>
+          <p>
+            If private reporting is unavailable, email{' '}
+            <Link href="mailto:support@santi020k.com">support@santi020k.com</Link>{' '}
+            without including secrets or personal data.
+          </p>
+        </Stack>
+        <Stack as="section" gap="related" aria-labelledby="expectations-title">
+          <h2 id="expectations-title">What to expect</h2>
+          <p>
+            Lumen is an open-source project. General support is best-effort, with no guaranteed
+            response time. Focused reports and respectful follow-up help everyone find an answer.
+          </p>
+          <p>
+            For MCP problems, include the versions from <code>lumen_get_meta</code>, the safe output
+            from <code>lumen_diagnose</code>, and whether stdio or Streamable HTTP is affected.
+            Remove tokens, private prompts, and repository content before posting.
+          </p>
+        </Stack>
+      </Grid>
+    </Stack>
+  </main>
+</BaseLayout>
+
+<style>
+  .support-page {
+    width: min(100% - 2.5rem, 68rem);
+    margin-inline: auto;
+    padding-block: clamp(2rem, 6vw, 5rem);
+  }
+
+  :global(.support-intro) {
+    max-width: 48rem;
+  }
+
+  .support-page h1 {
+    color: hsl(var(--ink));
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-weight: 900;
+    letter-spacing: -0.045em;
+    line-height: 1.08;
+  }
+
+  .support-page h2,
+  .support-page h3 {
+    color: hsl(var(--ink));
+    font-size: 1.25rem;
+    font-weight: 750;
+  }
+
+  .support-page p {
+    color: hsl(var(--ink-soft));
+    line-height: 1.7;
+  }
+
+  .support-page .support-lead {
+    font-size: 1.2rem;
+  }
+
+  .support-page small {
+    color: hsl(var(--ink-muted));
+  }
+
+  :global(.support-page a) {
+    overflow-wrap: anywhere;
+  }
+
+  :global(.support-option > [data-ui-stack]) {
+    height: 100%;
+  }
+
+  :global(.support-option > [data-ui-stack] > div:last-child) {
+    margin-top: auto;
+  }
+
+  #roadmap {
+    scroll-margin-top: 7rem;
+  }
+</style>
