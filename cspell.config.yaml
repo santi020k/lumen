@@ -1,6 +1,18 @@
 version: "0.2"
 language: en
 words:
+  - Macrobenchmark
+  - fsmonitor
+  - apksigner
+  - androiddebugkey
+  - uiautomator
+  - sdcard
+  - screencap
+  - dumpsys
+  - gfxinfo
+  - framestats
+  - PROFILEDATA
+  - vsync
   - cinco
   - valores
   - ejemplos

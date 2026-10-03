@@ -1,7 +1,7 @@
 # Lumen 4 native quality
 
 This record tracks the native improvements authorized for the v4 candidate. The implementation
-branch is `feature/native-v4-quality`, originally based on release commit `d0e9eeb5` and reconciled with committed release revision `28659627`. Preserve concurrent v4
+branch is `feature/native-v4-quality`, originally based on release commit `d0e9eeb5` and reconciled with committed release revisions `28659627` and `5831f8f0`. Preserve concurrent v4
 dependency, icon, web, and Compose-field work. Integrate only completed, verified task changes into
 `release/v4.0.0`; publication requires the repository's separate release approval.
 
@@ -102,5 +102,5 @@ serialize the eventual merge in a clean, idle release worktree. Publication rema
 implementation authorization. Physical-device and release stability evidence must bind their
 actual tested revision; historical records retain their original attribution and version.
 
-See [native patterns](native-patterns.md), [device validation](native-device-validation.md),
+See [runtime performance](native-runtime-performance.md), [native patterns](native-patterns.md), [device validation](native-device-validation.md),
 [consumer qualification](native-consumer-validation.md), and [v4 readiness](lumen-4-readiness.md).
