@@ -194,6 +194,31 @@ The rebuilt Android host also passed against `04178a3d`,
 but its repeat installation could not run after the Android emulator disconnected; its separate
 APK and report are preserved under `.build/native-quality-react-native-android-reconciled-runtime`.
 
+### React Native navigation at accessibility text sizes
+
+The iPhone maximum-text check exposed single-line destination labels truncated to fragments.
+Commit `02178c35` removes the line limit at native font scales of 2 or greater, retaining native
+text scaling, full accessibility names and controlled selection/reselection behavior. Regression
+coverage includes long Spanish labels, a live scale change, selected and disabled destinations.
+The rebuilt Release app displayed all four complete labels at the iPhone 17 Pro iOS 27 Simulator's
+maximum text setting; Home-to-Examples selection worked and restoring the standard text size
+restored the compact bar. Long labels still wrap within narrow destinations and substantially
+increase bar height, so this is a truncation fix rather than complete large-text qualification.
+Before/after screenshots use Home, light appearance and the same maximum text setting. The
+preserved after artifact and report are under `.build/native-quality-react-native-ios-navigation-runtime`;
+all 76 installed artifact files and eight application input files matched their captured hashes.
+
+An earlier live text-size change exposed vertically clipped button and chart text after scrolling.
+Its root cause remains unconfirmed. Large-text sheet scrolling reached Cancel and Save after
+dismissing the keyboard; that observation does not prove Save remains reachable with the keyboard
+visible at maximum text size. These findings remain open alongside VoiceOver and hardware checks.
+
+For the navigation fix, `pnpm run test` passed 1,189 tests in 98 files with local loopback access,
+`pnpm run typecheck` and `pnpm run lint` each passed 23 tasks, the React Native package build and
+iOS Release host build passed, and the regenerated MCP snapshot passed its consistency check.
+The iOS build still emitted external native build warnings. The full canonical gate has not passed;
+the security findings below remain unresolved, and import budgets need repeating for this revision.
+
 ### Outstanding scope and blockers
 
 The complete Required outcomes list remains authoritative. Broader phone/tablet runtime qualification and physical-device keyboard/focus and screen-reader checks,
@@ -221,7 +246,8 @@ fast-forwarded to that committed release revision. This containment is local int
 not a passing canonical security gate or publication approval. The shared release checkout has
 unrelated concurrent changes; preserve its ownership. Further task changes require validation and
 serialized integration in a clean, idle release worktree. The new qualification record and iOS
-scene-support/benchmark commits (`3e719a0f`, `49d483cc`) remain on the task branch: the canonical
+scene-support/benchmark, phone verification and navigation commits (`3e719a0f`, `49d483cc`,
+`fb589f38`, `02178c35`) remain on the task branch: the canonical
 security gate is failed and the release checkout has unrelated active Core and React edits.
 Do not overwrite those edits or bypass the failed gate. Publication remains outside this
 implementation authorization. Physical-device and release stability evidence must bind their
