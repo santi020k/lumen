@@ -38,7 +38,7 @@
 
 ### Patch Changes
 
-- Updated dependencies [`0266a98`, `d76f3da`, `d76f3da`]:
+- Updated dependencies []:
   - @santi020k/lumen-core@4.0.0
 
 ## 3.0.1

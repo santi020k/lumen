@@ -28,7 +28,7 @@
 
 ### Patch Changes
 
-- Updated dependencies [`d76f3da`, `475597e`, `d76f3da`]:
+- Updated dependencies []:
   - @santi020k/lumen-react@4.0.0
 
 ## 3.0.0

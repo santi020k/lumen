@@ -26,6 +26,7 @@ afterEach(() => {
     root.unmount()
   })
   container.remove()
+  vi.useRealTimers()
   vi.unstubAllGlobals()
 })
 
@@ -143,4 +144,57 @@ test('form reset preserves the controlled comparison value', async () => {
   })
   expect(range().value).toBe('70')
   expect(container.querySelector<HTMLElement>('.ui-image-comparison__frame')?.style.getPropertyValue('--ui-image-comparison-position')).toBe('70%')
+})
+
+for (const cancellations of [[false, true], [true, false], [true, true]]) {
+  test(`batched resets preserve uncanceled events with cancellation order ${cancellations.join(', ')}`, async () => {
+    act(() => {
+      root.render(createElement('form', null, createElement(ImageComparison, { ...media, defaultValue: 25 })))
+    })
+    const form = container.querySelector('form')
+
+    if (!form) throw new Error('Expected comparison form')
+
+    setRange('75')
+    let resetIndex = 0
+
+    form.addEventListener('reset', event => {
+      if (cancellations[resetIndex]) event.preventDefault()
+
+      resetIndex += 1
+    })
+    await act(async () => {
+      form.reset()
+      form.reset()
+
+      await new Promise(resolve => window.setTimeout(resolve))
+    })
+    const expected = cancellations.every(Boolean) ? '75' : '25'
+
+    expect(range().value).toBe(expected)
+    expect(container.querySelector<HTMLElement>('.ui-image-comparison__frame')?.style.getPropertyValue('--ui-image-comparison-position')).toBe(`${expected}%`)
+  })
+}
+
+test('unmount cancels pending reset work before the timer runs', () => {
+  act(() => {
+    root.render(createElement('form', null, createElement(ImageComparison, { ...media, defaultValue: 25 })))
+  })
+  const form = container.querySelector('form')
+
+  if (!form) throw new Error('Expected comparison form')
+
+  setRange('75')
+  vi.useFakeTimers()
+  const initialTimers = vi.getTimerCount()
+
+  act(() => {
+    form.reset()
+    form.reset()
+  })
+  expect(vi.getTimerCount()).toBe(initialTimers + 1)
+  act(() => {
+    root.render(null)
+  })
+  expect(vi.getTimerCount()).toBe(initialTimers)
 })

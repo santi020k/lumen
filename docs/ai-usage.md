@@ -590,6 +590,16 @@ attributes, and accessible markup.
 
 - Do not require consumers to configure Tailwind for Lumen components.
 - Prefer component props and composition before adding custom CSS.
+- Assign each visible outer edge to one container. For flush content inside a rounded frame,
+  let the frame own the border and corner clipping; remove child rounding with supported props.
+  For example, use `<Image radius="none" ... />` below a framed header: `Image` defaults to
+  `radius="lg"`, which otherwise leaves rounded gaps at the shared edge. Keep standalone image
+  rounding when appropriate.
+- Use a single divider between header and body rather than overlapping full borders. Inset
+  surfaces with padding may have their own radius; account for the inset so their curves align.
+  Clip artwork at its frame, not an entire interactive surface where focus rings or overlays
+  could be cut off. Verify shared corners, borders, and keyboard focus at phone and desktop
+  widths in both light and dark themes.
 - Use the shared token names for custom surfaces: `canvas`, `surface`, `surface-muted`,
   `surface-strong`, `line`, `ink`, `ink-soft`, `ink-muted`, `brand`, `brand-solid`, `brand-soft`,
   `accent`, `success`, `warning`, and `danger`.
