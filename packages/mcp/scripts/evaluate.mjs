@@ -28,6 +28,7 @@ try {
     const result = await client.callTool({
       arguments: {
         framework: searchCase.framework,
+        platform: searchCase.platform,
         limit: searchCase.top,
         query: searchCase.query
       },
@@ -107,6 +108,18 @@ try {
         evaluatedNativeContracts += 1
       }
     }
+
+    const matching = await client.callTool({ arguments: { packageVersions: data.meta.packageVersions }, name: 'lumen_check_compatibility' })
+
+    assert.equal(matching.structuredContent?.compatible, true)
+
+    const mismatched = await client.callTool({ arguments: { packageVersions: { '@santi020k/lumen-react': '3.0.1' } }, name: 'lumen_check_compatibility' })
+
+    assert.equal(mismatched.structuredContent?.compatible, false)
+
+    const migration = await client.callTool({ arguments: { packageName: '@santi020k/lumen-mcp' }, name: 'lumen_get_migration' })
+
+    assert.equal(migration.structuredContent?.targetVersion, '4.0.0')
 
     const diagnostics = await client.callTool({
       arguments: {},

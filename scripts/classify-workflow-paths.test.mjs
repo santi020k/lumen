@@ -212,3 +212,16 @@ test('MCP changes skip unrelated bundle, browser, and packed UI consumer gates',
 
   assert.equal(canary['web-contracts'], false)
 })
+
+test('portable skill and plugin changes select MCP validation', () => {
+  for (const path of [
+    'skills/lumen-review/SKILL.md',
+    'plugins/lumen-ui/plugin.json',
+    'scripts/lib/plugin-contract.mjs',
+    'scripts/schemas/agent-plugin.schema.json',
+    'registry/lumen-4-contract.json',
+    'docs/ai-usage.md'
+  ]) {
+    assert.equal(classifyCiPaths([path]).mcp, true, path)
+  }
+})

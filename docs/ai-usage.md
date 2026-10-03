@@ -708,3 +708,24 @@ focus on option buttons. The DOM adapters match both option labels and values.
 ## Appearance presets
 
 Choose `default`, `studio` or `glass` at the theme boundary. See [appearance presets](appearance-presets.md) for exact framework APIs. Studio follows the neutral PostLens look. Glass remains explicit per supporting surface; React Native and Compose retain solid fallbacks without adding blur dependencies. Customize semantic colors, typography and surface dimensions through public theme APIs.
+
+## Version-aware build, review, and migration
+
+The portable skills are `lumen-ui` for implementation, `lumen-review` for a read-only audit, and
+`lumen-migrate` for an explicitly requested upgrade. Their canonical sources live under `skills/`;
+`pnpm run generate:plugin-package` produces the client snapshots. Both client manifests use plugin
+1.1.0 and pin the v4 catalog. This candidate is not proof of publication or directory approval.
+
+Before applying MCP contracts, call `lumen_check_compatibility` with resolved versions from installed
+metadata or native lock files. A manifest range is not an installed version. When versions differ,
+inspect installed public types and README or use a matching MCP package. Do not silently upgrade.
+Search supports English and Spanish queries with framework and platform filters.
+
+For a v4 upgrade, read `lumen_get_migration` and preview `lumen migrate v4 --dry-run --json` locally.
+`--apply` combines the versioned layout migration with known static SDK import edits in JavaScript
+and TypeScript. The JSON report retains layout findings and adds `sdkMigration` for SDK changes,
+installed versions and review triggers. Comments and examples remain untouched. Use `--dependencies`
+only for an explicitly requested coordinated pnpm upgrade. Application-owned workarounds, native
+source and dynamic imports require manual review; review triggers do not prove a defect.
+
+See [v4 AI verification](lumen-4-ai.md) for actual agent benchmark coverage and release evidence.

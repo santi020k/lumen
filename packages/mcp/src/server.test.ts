@@ -81,6 +81,8 @@ describe('Lumen MCP protocol server', () => {
         'lumen_get_native_component',
         'lumen_get_recipe',
         'lumen_search',
+        'lumen_check_compatibility',
+        'lumen_get_migration',
         'lumen_get_meta',
         'lumen_get_catalog_manifest',
         'lumen_diff_catalog',

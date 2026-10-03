@@ -60,6 +60,8 @@ export interface SearchResult {
 }
 
 const normalize = (value: string) => value
+  .normalize('NFD')
+  .replaceAll(/[\u0300-\u036f]/g, '')
   .replaceAll(/([a-z0-9])([A-Z])/g, '$1-$2')
   .replaceAll(/[\s_]+/g, '-')
   .toLowerCase()
@@ -87,10 +89,41 @@ const searchStopWords = new Set([
   'the',
   'to',
   'ui',
-  'with'
+  'with',
+  'de',
+  'del',
+  'el',
+  'la',
+  'las',
+  'los',
+  'para',
+  'un',
+  'una',
+  'y',
+  'con',
+  'accesible'
 ])
 
 const searchTermAliases: Record<string, string[]> = {
+  boton: ['button'],
+  buscar: ['search'],
+  calendario: ['calendar'],
+  confirmar: ['confirm', 'confirmation'],
+  contrasena: ['password'],
+  eliminacion: ['delete', 'destructive'],
+  eliminar: ['delete', 'destructive'],
+  fecha: ['date'],
+  fechas: ['date'],
+  formulario: ['form'],
+  modal: ['modal', 'dialog'],
+  notificacion: ['toast', 'notification'],
+  oscuro: ['dark', 'theme'],
+  paginada: ['pagination', 'paginated'],
+  rango: ['range'],
+  registros: ['records', 'data-table'],
+  seleccion: ['select'],
+  selector: ['select', 'picker'],
+  tabla: ['table'],
   booking: ['booking', 'schedule', 'calendar', 'appointment', 'date'],
   dark: ['dark', 'theme'],
   dashboard: ['dashboard', 'data-table', 'sidebar', 'chart', 'stat', 'metric'],

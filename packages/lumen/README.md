@@ -237,3 +237,17 @@ do not need it; React consumers should follow the React adapter's existing insta
 Choose Default, Studio or Glass with `data-lumen-preset` on a scoped web container.
 Use the [appearance guide](../../docs/appearance-presets.md) for semantic overrides,
 ThemeBuilder controls and native fallbacks. The Studio preset uses PostLens as its visual reference.
+
+## Preview a v4 migration
+
+```bash
+pnpm exec lumen migrate v4 --dry-run --json
+pnpm exec lumen migrate v4 --apply
+```
+
+The default is a preview. The command combines explicit v3 layout-gap preservation with four known
+static MCP SDK v1 import migrations in `.ts`, `.js`, and `.mjs` files. The JSON report retains layout
+findings and adds `sdkMigration` for SDK edits, installed versions and review triggers. Comments,
+examples, dynamic imports and native sources remain manual review tasks. Use `--dependencies` for an
+explicitly requested coordinated pnpm upgrade. Review triggers do not prove a defect. The v2 and v3
+migration commands remain available for older consumers.

@@ -4,6 +4,7 @@ import { relative, resolve } from 'node:path'
 
 import { formatConsumerRollout, inspectLumenConsumer } from './consumer-rollout.js'
 import { discoverSourceFiles } from './v2-migration.js'
+import { formatLumenV4Migration, type LumenV4MigrationReport, migrateLumenV4 } from './v4-migration.js'
 import {
   applyLumenVersionMigrationDependencies,
   type LumenMigrationDependencyOptions
@@ -36,6 +37,7 @@ export interface LumenVersionMigrationReport extends Omit<LumenVersionSourceMigr
   dependencyVersion: string
   filesScanned: number
   root: string
+  sdkMigration?: LumenV4MigrationReport
   version: LumenMigrationVersion
 }
 
@@ -169,6 +171,8 @@ export const migrateLumenVersion = async (
     }
   }
 
+  if (options.version === 'v4') report.sdkMigration = await migrateLumenV4({ apply: report.applied, cwd: root })
+
   for (const absoluteFile of files) {
     await migrateFile(absoluteFile, report, ledger, ledgerPath)
   }
@@ -183,6 +187,7 @@ export const formatLumenVersionMigration = (report: LumenVersionMigrationReport)
   `Scanned ${report.filesScanned} source files. ${report.applied ? 'Applied' : 'Would apply'} ${report.changes.length} changes in ${report.changedFiles.length} files.`,
   ...report.changes.map(item => `${item.file}:${item.line}:${item.column} [${item.kind}] ${item.message}`),
   ...report.manualReview.map(item => `${item.file}:${item.line}:${item.column} [manual review] ${item.message}`),
+  ...(report.sdkMigration ? [formatLumenV4Migration(report.sdkMigration)] : []),
   ...(report.dependencies ? [formatConsumerRollout(report.dependencies)] : []),
   report.version === 'v3' ?
     'V3 requires coordinated package versions and a native rebuild, with no web source rewrites. Review exhaustive Swift LumenIconName switches for added cases.' :

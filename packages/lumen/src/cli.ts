@@ -278,7 +278,7 @@ const help = [
   '  --tailwind             Include the verified Tailwind cascade setup in lumen init',
   '  --json                 Print lumen doctor output as JSON',
   '  --manifest <path>      Use a specific cross-platform release manifest',
-  '  --apply                Apply a rollout or v2 migration (migrations default to dry-run)',
+  '  --apply                Apply a rollout or supported migration (migrations default to dry-run)',
   '  --allow-dirty          Allow rollout after recording an uncommitted baseline',
   '  --exclude <path>       Exclude a repository (repeatable)',
   '  --no-verify            Skip downstream check, typecheck, build, and browser scripts',

@@ -202,3 +202,19 @@ updates, deletes, sends, publishes, enqueues, logs user content, or changes exte
 - After approval, deliberately select **Publish** in the portal.
 - Once publication is confirmed, replace the under-review notice in the README and documentation
   site with the public directory link.
+
+## Next candidate: plugin 1.1.0 and Lumen 4
+
+The local candidate uses portable `plugin.json` and `mcp.json` manifests and generated Codex/Claude
+wrappers. Both client manifests carry version 1.1.0. The local stdio configuration pins
+`@santi020k/lumen-mcp@4.0.0`; publish that package before distributing the plugin update.
+
+The candidate includes three skills (build, review, migration), fourteen read-only catalog tools,
+and an optional read-only Claude reviewer. It adds installed-version compatibility checks, v4
+migration discovery, concrete nested schemas, and English/Spanish search. No hooks or new credentials
+are required. The published 1.0.0 record above describes the previous release.
+
+Before submission, rerun strict schema/package validation, the actual agent benchmarks in
+[lumen-4-ai.md](lumen-4-ai.md), and hosted endpoint smoke tests. Confirm all fourteen tools and
+plugin capabilities in the disclosure. Publication, deployment, and directory review remain external
+gates; local validation does not establish that the candidate is publicly available.

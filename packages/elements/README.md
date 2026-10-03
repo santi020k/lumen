@@ -78,8 +78,8 @@ independently from the document registry.
 </script>
 
 <lumen-card>
-  <label for="email">Email</label>
-  <lumen-input id="email" type="email" placeholder="you@example.com"></lumen-input>
+  <lumen-label id="email-label">Email</lumen-label>
+  <lumen-input aria-labelledby="email-label" id="email" type="email" placeholder="you@example.com"></lumen-input>
   <lumen-button>Subscribe</lumen-button>
 </lumen-card>
 ```
@@ -377,6 +377,36 @@ The elements adapter exposes the same motion vocabulary as Astro and React. Use
 
 <lumen-animated-number decimals="1" suffix="%" value="99.8"></lumen-animated-number>
 ```
+
+### Elements labels and dialogs
+
+`lumen-input` owns an internal native control. Name that control using `aria-labelledby` pointing
+at a visible label, or `aria-label` on the host. A native label's `for` pointing only at the custom
+host does not name the internal input. Use the public `lumen-label` for visible label styling.
+Do not type a custom host as `HTMLInputElement` or `HTMLButtonElement`; use its exported element
+class and runtime narrowing when accessing element-specific methods.
+
+Use `lumen-dialog` as the behavior owner. Its public methods are `show(trigger?)` and `close()`,
+not `showModal()` on the custom host. A native `dialog` child is its documented modal contract:
+
+```html
+<lumen-button data-ui-dialog-trigger="profile-dialog">Edit profile</lumen-button>
+<lumen-dialog id="profile-dialog">
+  <dialog aria-labelledby="profile-title">
+    <h2 id="profile-title">Profile settings</h2>
+    <lumen-field>
+      <lumen-label id="profile-name-label">Display name</lumen-label>
+      <lumen-input aria-labelledby="profile-name-label" value="Ada"></lumen-input>
+    </lumen-field>
+    <lumen-button data-ui-dialog-close type="button">Cancel</lumen-button>
+  </dialog>
+</lumen-dialog>
+```
+
+Register `Button`, `Dialog`, `Field`, `Input`, and `Label` through `defineLumenElements` before use.
+The dialog behavior focuses its first focusable control, handles Escape, traps focus, and returns
+focus to its trigger. Keep draft state in the form control or application; closing does not reset it.
+Do not replace this behavior with a parallel native-dialog controller.
 
 ## Glass surfaces
 
