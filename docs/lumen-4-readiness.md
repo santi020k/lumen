@@ -6,9 +6,9 @@ data, deployment, and migration remain owned by those projects.
 
 ## Latest local integration
 
-The October 3 consolidation through `f90b4884` contains all committed local branch tips:
+The October 3 consolidation through `7dc2b358` contains all committed local branch tips:
 community feedback (`6646a842`), native quality (`efa3e53a`), appearance presets (`f3a3b512`),
-AI workflows (`8eedb38f`), and release improvements (`e9c8426e`). Git ancestry also confirms
+AI workflows (`7dc2b358`), and release improvements (`e9c8426e`). Git ancestry also confirms
 containment of `main`, every fetched remote branch, and the detached worktree commits.
 Active checkouts, uncommitted work and stashes remain preserved.
 
