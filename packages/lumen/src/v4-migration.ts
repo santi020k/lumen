@@ -377,10 +377,3 @@ export const migrateLumenV4 = async (
 
   return report
 }
-
-export const formatLumenV4Migration = (report: LumenV4MigrationReport): string => [
-  `Lumen ${report.targetVersion} migration ${report.applied ? 'applied' : 'preview'}: ${report.filesScanned} source files`,
-  ...report.changes.map(change => `${change.file}:${change.line}:${change.column} [edit] ${change.message}`),
-  ...report.manualReview.map(change => `${change.file}:${change.line}:${change.column} [review] ${change.message}`),
-  'Manual findings are review triggers, not proof of a defect. Verify dependency versions and consumer behavior before removing workarounds.'
-].join('\n')
