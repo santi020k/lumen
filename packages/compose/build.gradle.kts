@@ -20,6 +20,7 @@ apiValidation {
     ignoredClasses.addAll(
         listOf(
             "com.santi020k.lumen.ComposableSingletons\$OverlayComponentsKt",
+            "com.santi020k.lumen.ComposableSingletons\$AppBarComponentsKt",
             "com.santi020k.lumen.R",
             "com.santi020k.lumen.R\$drawable",
             "com.santi020k.lumen.R\$raw",
@@ -115,6 +116,7 @@ dependencies {
     implementation("androidx.compose.foundation:foundation")
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.material3:material3-adaptive-navigation-suite")
+    implementation("androidx.compose.material3.adaptive:adaptive-layout:1.3.0")
     implementation("androidx.compose.runtime:runtime")
     implementation("androidx.compose.ui:ui")
     implementation("com.googlecode.libphonenumber:libphonenumber:9.0.40")

@@ -207,6 +207,31 @@
         "id": "image-comparison",
         "label": "Image comparison",
         "category": "data"
+      },
+      {
+        "id": "top-app-bar",
+        "label": "Top app bar",
+        "category": "navigation"
+      },
+      {
+        "id": "swipe-actions",
+        "label": "Swipe actions",
+        "category": "actions"
+      },
+      {
+        "id": "multi-select",
+        "label": "Multi select",
+        "category": "forms"
+      },
+      {
+        "id": "range-slider",
+        "label": "Range slider",
+        "category": "forms"
+      },
+      {
+        "id": "adaptive-list-detail-scaffold",
+        "label": "Adaptive list detail scaffold",
+        "category": "navigation"
       }
     ]
   }

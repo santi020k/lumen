@@ -355,7 +355,7 @@ private fun PlaygroundContent(
 
             items(visibleSections, key = { it.title }) { section ->
                 ComponentSection(section) {
-                    when (section.title) {
+                    if (initialComponent in v4AdditionNames) V4AdditionsExample(initialComponent) else when (section.title) {
                         "Foundations" -> Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                             FoundationsExample()
                             VisualContentExample()
