@@ -7,7 +7,7 @@ import Testing
     #expect(LumenTheme.dark.scheme == .dark)
 }
 
-@Test func studioPresetsPreserveStatusRolesAndUseSharedAppearance() {
+@MainActor @Test func studioPresetsPreserveStatusRolesAndUseSharedAppearance() {
     for scheme in [LumenColorScheme.light, .dark] {
         let theme = LumenTheme(preset: .studio, scheme: scheme)
         let defaults = scheme == .dark ? LumenColors.dark : LumenColors.light

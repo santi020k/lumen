@@ -257,3 +257,18 @@ setup, state ownership and lifecycle examples.
 `getLumenDirectionalKey(element, key)` resolves the element's current inherited CSS direction and
 swaps horizontal arrows in RTL. Other keys are unchanged. Web adapters use it for visual keyboard
 navigation; native range inputs retain browser-owned behavior.
+
+## Exact localized input drafts
+
+`parseLumenDecimalDraft(value, locale)` distinguishes empty, incomplete, invalid and valid decimal
+input. `isLumenDecimalInBounds(value, { locale, min, max, step })` validates complete values;
+`stepLumenDecimalDraft(value, direction, options)` performs exact steps and inclusive clamping without
+floating-point conversion. Bounds and steps use ASCII decimal strings; drafts use localized decimal
+separators and Unicode decimal digits. Grouping, exponents, whitespace and inputs exceeding 128
+characters are rejected. Empty drafts stay distinct from zero; unfinished drafts cannot step.
+Applications own units, currency policy, required validation and submission serialization.
+
+`normalizeLumenNumericOTP(proposal, length)` normalizes Unicode decimal digits, whitespace and hyphens
+into ASCII, rejects unrelated text and excess digits, and bounds input to 128 characters. Length must
+be 1–12. `LumenTimeSelection`, `isLumenTimeSelection` and `isLumenTimeInBounds` describe wall-clock
+hours/minutes with inclusive same-day bounds, leaving dates and time zones to the application.

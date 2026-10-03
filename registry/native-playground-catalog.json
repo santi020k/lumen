@@ -48,7 +48,12 @@
         "segmented-control",
         "tabs",
         "picker",
-        "slider"
+        "slider",
+        "time-field",
+        "autocomplete",
+        "number-field",
+        "password-field",
+        "input-otp"
       ]
     },
     {
@@ -88,7 +93,8 @@
         "stat",
         "section-header",
         "status-bar",
-        "gauge"
+        "gauge",
+        "image-comparison"
       ]
     },
     {
@@ -169,44 +175,14 @@
         "category": "navigation"
       },
       {
-        "id": "time-field",
-        "label": "Time field",
-        "category": "forms"
-      },
-      {
-        "id": "autocomplete",
-        "label": "Autocomplete",
-        "category": "forms"
-      },
-      {
-        "id": "number-field",
-        "label": "Number field",
-        "category": "forms"
-      },
-      {
         "id": "pull-to-refresh",
         "label": "Pull to refresh",
         "category": "feedback"
       },
       {
-        "id": "password-field",
-        "label": "Password field",
-        "category": "forms"
-      },
-      {
-        "id": "input-otp",
-        "label": "Input OTP",
-        "category": "forms"
-      },
-      {
         "id": "tooltip",
         "label": "Tooltip",
         "category": "actions"
-      },
-      {
-        "id": "image-comparison",
-        "label": "Image comparison",
-        "category": "data"
       }
     ]
   }

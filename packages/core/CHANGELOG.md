@@ -2,6 +2,13 @@
 
 ## 4.0.0
 
+### Native Advanced Inputs
+
+- Add React Native and SwiftUI number, time, autocomplete, password, numeric OTP and image comparison
+  controls alongside Compose. Add exact decimal, numeric OTP and same-day time helpers in Core,
+  bilingual playground examples and an application-owned form-error summary recipe.
+
+
 ### Migration, Direction and Data Collections
 
 - Add v3 and v4 source migration previews with optional coordinated pnpm dependency upgrades. Preserve

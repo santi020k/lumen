@@ -64,6 +64,11 @@ enum PlaygroundCatalog {
                 "Tabs",
                 "Picker",
                 "Slider",
+                "Time field",
+                "Autocomplete",
+                "Number field",
+                "Password field",
+                "Input OTP",
                 "Shortcut recorder",
                 "Symbol picker"
             ]
@@ -101,7 +106,8 @@ enum PlaygroundCatalog {
                 "Stat",
                 "Section header",
                 "Status bar",
-                "Gauge"
+                "Gauge",
+                "Image comparison"
             ]
         ),
         (

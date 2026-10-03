@@ -43,7 +43,7 @@ const requiredArray = (value, path) => {
   return value
 }
 
-const componentLabel = id => id
+const componentLabel = id => id === 'input-otp' ? 'Input OTP' : id
   .split('-')
   .map((part, index) => index === 0 ? `${part.slice(0, 1).toUpperCase()}${part.slice(1)}` : part)
   .join(' ')

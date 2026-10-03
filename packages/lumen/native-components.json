@@ -726,13 +726,81 @@
         "swiftUI": "LumenWatchListRow",
         "compose": "LumenWearListRow"
       }
+    },
+    {
+      "id": "time-field",
+      "tier": "shared",
+      "contract": "Controlled local wall-clock selection with optional inclusive same-day bounds and native keyboard or clock input",
+      "accessibility": "Names the field and selected time; cancellation preserves the host value and read-only or disabled fields cannot open selection",
+      "symbols": {
+        "reactNative": "LumenTimeField",
+        "swiftUI": "LumenTimeField",
+        "compose": "LumenTimeField"
+      }
+    },
+    {
+      "id": "autocomplete",
+      "tier": "shared",
+      "contract": "Controlled query and selected value with host-provided results, loading, empty, retry, and disabled option states",
+      "accessibility": "Preserves native editable dropdown focus and selection semantics; announces result status and keeps disabled results unavailable",
+      "symbols": {
+        "reactNative": "LumenAutocomplete",
+        "swiftUI": "LumenAutocomplete",
+        "compose": "LumenAutocomplete"
+      }
+    },
+    {
+      "id": "number-field",
+      "tier": "shared",
+      "contract": "Localized ungrouped decimal drafts with exact BigDecimal steps, inclusive bounds, validation, and read-only state",
+      "accessibility": "Labels the editable field and step actions, exposes validation context, and disables unavailable steps without discarding unfinished input",
+      "symbols": {
+        "reactNative": "LumenNumberField",
+        "swiftUI": "LumenNumberField",
+        "compose": "LumenNumberField"
+      }
+    },
+    {
+      "id": "password-field",
+      "tier": "shared",
+      "contract": "Masked password entry with transient visibility and native autofill hints",
+      "accessibility": "Maintains password semantics, labels visibility actions, and hides on blur or disabled state",
+      "symbols": {
+        "reactNative": "LumenPasswordField",
+        "swiftUI": "LumenPasswordField",
+        "compose": "LumenPasswordField"
+      }
+    },
+    {
+      "id": "input-otp",
+      "tier": "shared",
+      "contract": "Single native numeric one-time code entry with localized digits and paste normalization",
+      "accessibility": "Preserves native selection, paste, autofill, errors, and optional masked semantics",
+      "symbols": {
+        "reactNative": "LumenInputOTP",
+        "swiftUI": "LumenInputOTP",
+        "compose": "LumenInputOTP"
+      }
+    },
+    {
+      "id": "image-comparison",
+      "tier": "shared",
+      "contract": "Painter-based before and after comparison with a controlled visible fraction",
+      "accessibility": "Exposes a named native slider and localized percentage for keyboard and screen-reader adjustment",
+      "symbols": {
+        "reactNative": "LumenImageComparison",
+        "swiftUI": "LumenImageComparison",
+        "compose": "LumenImageComparison"
+      }
     }
   ],
   "platformComponents": [
     {
       "id": "shortcut-recorder",
       "adapter": "swiftUI",
-      "platforms": ["macOS"],
+      "platforms": [
+        "macOS"
+      ],
       "contract": "Keyboard shortcut capture, validation, clear, and cancel states",
       "accessibility": "Displays the current shortcut and exposes labeled controls",
       "symbol": "LumenShortcutRecorder"
@@ -740,7 +808,9 @@
     {
       "id": "symbol-picker",
       "adapter": "swiftUI",
-      "platforms": ["macOS"],
+      "platforms": [
+        "macOS"
+      ],
       "contract": "Searchable and categorized SF Symbols selection",
       "accessibility": "Labels every symbol and exposes selected state",
       "symbol": "LumenSymbolPicker"
@@ -748,7 +818,11 @@
     {
       "id": "link",
       "adapter": "swiftUI",
-      "platforms": ["iOS", "macOS", "visionOS"],
+      "platforms": [
+        "iOS",
+        "macOS",
+        "visionOS"
+      ],
       "contract": "Token-aware URL action backed by SwiftUI native link opening",
       "accessibility": "Preserves the native link role, visible label, focus behavior, and disabled state",
       "symbol": "LumenLink"
@@ -756,7 +830,9 @@
     {
       "id": "tab-bar-minimization",
       "adapter": "swiftUI",
-      "platforms": ["iOS"],
+      "platforms": [
+        "iOS"
+      ],
       "contract": "Availability-safe native tab-bar minimization with automatic, never, and scroll-direction policies",
       "accessibility": "Delegates motion, safe-area, focus, and reduced-motion behavior to the native SwiftUI tab bar",
       "symbol": "lumenTabBarMinimizeBehavior"
@@ -764,7 +840,9 @@
     {
       "id": "tab-accessory",
       "adapter": "swiftUI",
-      "platforms": ["iOS"],
+      "platforms": [
+        "iOS"
+      ],
       "contract": "Adaptive expanded and compact content above or inline with a native tab bar",
       "accessibility": "Preserves the semantics of application-owned accessory content across native placements",
       "symbol": "LumenTabAccessory"
@@ -772,7 +850,10 @@
     {
       "id": "refresh-control",
       "adapter": "reactNative",
-      "platforms": ["iOS", "Android"],
+      "platforms": [
+        "iOS",
+        "Android"
+      ],
       "contract": "Native pull-to-refresh state with semantic indicator colors",
       "accessibility": "Preserves native refresh gestures and exposes the application-provided loading label",
       "symbol": "LumenRefreshControl"
@@ -780,7 +861,10 @@
     {
       "id": "collapsible-navigation-bar",
       "adapter": "reactNative",
-      "platforms": ["iOS", "Android"],
+      "platforms": [
+        "iOS",
+        "Android"
+      ],
       "contract": "Animated bottom navigation that hides after forward scroll travel and reveals on reverse travel or at the top",
       "accessibility": "Removes hidden destinations from interaction and the accessibility tree while preserving native list ownership",
       "symbol": "LumenCollapsibleNavigationBar"
@@ -788,7 +872,10 @@
     {
       "id": "navigation-accessory",
       "adapter": "reactNative",
-      "platforms": ["iOS", "Android"],
+      "platforms": [
+        "iOS",
+        "Android"
+      ],
       "contract": "Compact status or action content above a React Native bottom navigation bar",
       "accessibility": "Preserves the semantics of application-owned accessory content and collapses with hidden navigation",
       "symbol": "LumenNavigationAccessory"
@@ -796,7 +883,9 @@
     {
       "id": "navigation-bar-scroll-behavior",
       "adapter": "compose",
-      "platforms": ["Android"],
+      "platforms": [
+        "Android"
+      ],
       "contract": "Threshold-based nested-scroll visibility state for a Material navigation bar",
       "accessibility": "Stops exposing the navigation bar after its exit transition without consuming descendant scroll input",
       "symbol": "LumenNavigationBarScrollState"
@@ -804,7 +893,9 @@
     {
       "id": "navigation-bar-accessory",
       "adapter": "compose",
-      "platforms": ["Android"],
+      "platforms": [
+        "Android"
+      ],
       "contract": "Compact token-aware content above Material bottom navigation coordinated with its scroll visibility",
       "accessibility": "Preserves application-owned child semantics and exits the layout with hidden navigation",
       "symbol": "LumenNavigationBarAccessory"
@@ -812,7 +903,9 @@
     {
       "id": "adaptive-navigation-scaffold",
       "adapter": "compose",
-      "platforms": ["Android"],
+      "platforms": [
+        "Android"
+      ],
       "contract": "Material adaptive navigation that switches between bottom bar and rail from window size and device posture",
       "accessibility": "Uses Material navigation semantics while preserving application-owned destination content and routing",
       "symbol": "LumenAdaptiveNavigationScaffold"
@@ -820,7 +913,9 @@
     {
       "id": "floating-action-button",
       "adapter": "compose",
-      "platforms": ["Android"],
+      "platforms": [
+        "Android"
+      ],
       "contract": "Material-native floating action with semantic intent, sizing, and optional hide or follow-navigation behavior",
       "accessibility": "Requires a readable icon action description and preserves native button semantics",
       "symbol": "LumenFloatingActionButton"
@@ -828,7 +923,11 @@
     {
       "id": "widget-text",
       "adapter": "swiftUI",
-      "platforms": ["iOS", "macOS", "watchOS"],
+      "platforms": [
+        "iOS",
+        "macOS",
+        "watchOS"
+      ],
       "contract": "WidgetKit-safe semantic text with native Dynamic Type and rendering-mode adaptation",
       "accessibility": "Preserves localized or verbatim text and native text scaling",
       "symbol": "LumenWidgetText"
@@ -836,7 +935,11 @@
     {
       "id": "widget-icon",
       "adapter": "swiftUI",
-      "platforms": ["iOS", "macOS", "watchOS"],
+      "platforms": [
+        "iOS",
+        "macOS",
+        "watchOS"
+      ],
       "contract": "WidgetKit-safe SF Symbol treatment with semantic tone and optional label",
       "accessibility": "Decorative by default and labeled when it conveys meaning",
       "symbol": "LumenWidgetIcon"
@@ -844,7 +947,11 @@
     {
       "id": "widget-badge",
       "adapter": "swiftUI",
-      "platforms": ["iOS", "macOS", "watchOS"],
+      "platforms": [
+        "iOS",
+        "macOS",
+        "watchOS"
+      ],
       "contract": "Compact rendering-mode-aware status badge with optional symbol",
       "accessibility": "Combines the icon and text into one concise status value",
       "symbol": "LumenWidgetBadge"
@@ -852,74 +959,34 @@
     {
       "id": "widget-compact-stat",
       "adapter": "swiftUI",
-      "platforms": ["iOS", "macOS", "watchOS"],
+      "platforms": [
+        "iOS",
+        "macOS",
+        "watchOS"
+      ],
       "contract": "Compact WidgetKit label and metric treatment with optional semantic icon",
       "accessibility": "Combines the label and value while preserving large-text scaling",
       "symbol": "LumenWidgetCompactStat"
     },
     {
-      "id": "time-field",
-      "adapter": "compose",
-      "platforms": ["Android"],
-      "contract": "Controlled local wall-clock selection with optional inclusive same-day bounds and native keyboard or clock input",
-      "accessibility": "Names the field and selected time; cancellation preserves the host value and read-only or disabled fields cannot open selection",
-      "symbol": "LumenTimeField"
-    },
-    {
-      "id": "autocomplete",
-      "adapter": "compose",
-      "platforms": ["Android"],
-      "contract": "Controlled query and selected value with host-provided results, loading, empty, retry, and disabled option states",
-      "accessibility": "Preserves native editable dropdown focus and selection semantics; announces result status and keeps disabled results unavailable",
-      "symbol": "LumenAutocomplete"
-    },
-    {
-      "id": "number-field",
-      "adapter": "compose",
-      "platforms": ["Android"],
-      "contract": "Localized ungrouped decimal drafts with exact BigDecimal steps, inclusive bounds, validation, and read-only state",
-      "accessibility": "Labels the editable field and step actions, exposes validation context, and disables unavailable steps without discarding unfinished input",
-      "symbol": "LumenNumberField"
-    },
-    {
       "id": "pull-to-refresh",
       "adapter": "compose",
-      "platforms": ["Android"],
+      "platforms": [
+        "Android"
+      ],
       "contract": "Material refresh gesture with host-owned progress and request lifecycle around existing scrollable content",
       "accessibility": "Adds a named refresh accessibility action, announces progress, and removes refresh actions while disabled or refreshing",
       "symbol": "LumenPullToRefresh"
     },
     {
-      "id": "password-field",
-      "adapter": "compose",
-      "platforms": ["Android"],
-      "contract": "Masked password entry with transient visibility and native autofill hints",
-      "accessibility": "Maintains password semantics, labels visibility actions, and hides on blur or disabled state",
-      "symbol": "LumenPasswordField"
-    },
-    {
-      "id": "input-otp",
-      "adapter": "compose",
-      "platforms": ["Android"],
-      "contract": "Single native numeric one-time code entry with localized digits and paste normalization",
-      "accessibility": "Preserves native selection, paste, autofill, errors, and optional masked semantics",
-      "symbol": "LumenInputOTP"
-    },
-    {
       "id": "tooltip",
       "adapter": "compose",
-      "platforms": ["Android"],
+      "platforms": [
+        "Android"
+      ],
       "contract": "Material contextual help with long-press, pointer, and explicit visibility",
       "accessibility": "Preserves a labeled application-owned anchor and native tooltip dismissal",
       "symbol": "LumenTooltip"
-    },
-    {
-      "id": "image-comparison",
-      "adapter": "compose",
-      "platforms": ["Android"],
-      "contract": "Painter-based before and after comparison with a controlled visible fraction",
-      "accessibility": "Exposes a named native slider and localized percentage for keyboard and screen-reader adjustment",
-      "symbol": "LumenImageComparison"
     }
   ]
 }

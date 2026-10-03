@@ -238,3 +238,19 @@ corrections can be ordinary commits; after publication, corrections require a ne
 must not replace a published tag.
 
 For a starting v2 application, first complete [v2 → v3](migrating-v2-to-v3.md).
+
+## Native advanced inputs
+
+React Native and SwiftUI now expose `LumenNumberField`, `LumenTimeField`,
+`LumenAutocomplete`, `LumenPasswordField`, `LumenInputOTP` and `LumenImageComparison`,
+joining the existing Compose controls. This is additive; existing native controls remain unchanged.
+React Native time fields use the optional `/datetime` entry point. SwiftUI editable controls
+support iOS, macOS and visionOS; image comparison also supports tvOS and watchOS.
+
+Native number fields bind an ungrouped localized string so incomplete edits survive. Configure
+bounds and steps as ASCII decimal strings and validate before submitting. Web NumberField keeps
+its browser-native number contract. For a web editor that requires the same exact draft behavior,
+compose TextField with the Core decimal helpers; do not coerce financial values to floating point.
+
+See the [native component contracts](native-components.md) and
+[form submission error recipe](native-patterns.md#pattern-form-submission-errors).
