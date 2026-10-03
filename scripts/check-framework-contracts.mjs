@@ -32,7 +32,7 @@ const [
     new URL(`../packages/elements/src/components/${name}.ts`, import.meta.url),
     'utf8'
   ))).then(sources => sources.join('\n')),
-  Promise.all(['combobox', 'components', 'data-table', 'dashboard', 'change-summary', 'image-comparison', 'virtual-list'].map(name => readFile(
+  Promise.all(['combobox', 'components', 'data-table', 'dashboard', 'change-summary', 'image-comparison', 'interval-charts', 'virtual-list'].map(name => readFile(
     new URL(`../packages/react/src/${name}.tsx`, import.meta.url), 'utf8'
   ))).then(sources => sources.join('\n')),
   Promise.all(['hooks', 'rich-text-editor'].map(name => readFile(

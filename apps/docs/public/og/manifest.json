@@ -35,7 +35,7 @@
     },
     "/": {
       "alt": "Lumen UI — Crafted primitives for web and native platforms — Lumen UI",
-      "description": "Lumen is a crafted multi-framework UI system with 164 accessible primitives for Web, React Native, Apple platforms, and Android.",
+      "description": "Lumen is a crafted multi-framework UI system with 174 accessible primitives for Web, React Native, Apple platforms, and Android.",
       "images": [
         {
           "format": "webp",
@@ -512,6 +512,22 @@
       ],
       "pathname": "/docs/web/playground",
       "title": "Web playground"
+    },
+    "/docs/web/data-visualization": {
+      "alt": "Interactive data visualization — Lumen UI",
+      "description": "Explore continuous axes, accessible inspection, distributions, and balance changes across web adapters.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--web--data-visualization.webp",
+          "primary": true,
+          "url": "/og/pages/docs--web--data-visualization.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/web/data-visualization",
+      "title": "Interactive data visualization"
     },
     "/docs/web/reporting": {
       "alt": "Date ranges and reporting — Lumen UI",
@@ -4097,6 +4113,86 @@
       "pathname": "/docs/android/components/image-comparison",
       "title": "Image comparison"
     },
+    "/docs/android/components/top-app-bar": {
+      "alt": "Top app bar — Lumen UI",
+      "description": "Present native screen titles, navigation, and scrolling app bars.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--top-app-bar.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--top-app-bar.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/top-app-bar",
+      "title": "Top app bar"
+    },
+    "/docs/android/components/swipe-actions": {
+      "alt": "Swipe actions — Lumen UI",
+      "description": "Expose logical start and end row actions with gesture alternatives.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--swipe-actions.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--swipe-actions.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/swipe-actions",
+      "title": "Swipe actions"
+    },
+    "/docs/android/components/multi-select": {
+      "alt": "Multi select — Lumen UI",
+      "description": "Select multiple searchable options with controlled chips and result states.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--multi-select.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--multi-select.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/multi-select",
+      "title": "Multi select"
+    },
+    "/docs/android/components/range-slider": {
+      "alt": "Range slider — Lumen UI",
+      "description": "Choose bounded numeric intervals with two native adjustable thumbs.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--range-slider.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--range-slider.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/range-slider",
+      "title": "Range slider"
+    },
+    "/docs/android/components/adaptive-list-detail-scaffold": {
+      "alt": "Adaptive list detail scaffold — Lumen UI",
+      "description": "Arrange application-owned lists and details across phones, tablets, and foldable devices.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--adaptive-list-detail-scaffold.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--adaptive-list-detail-scaffold.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/adaptive-list-detail-scaffold",
+      "title": "Adaptive list detail scaffold"
+    },
     "/docs/components/accordion": {
       "alt": "Accordion — Lumen UI",
       "description": "Stacks collapsible content sections. Usage examples for Astro, React, and Elements.",
@@ -4768,6 +4864,86 @@
       ],
       "pathname": "/docs/components/dialog",
       "title": "Dialog"
+    },
+    "/docs/components/dialog-header": {
+      "alt": "DialogHeader — Lumen UI",
+      "description": "Groups the dialog title and description. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--dialog-header.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--dialog-header.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/dialog-header",
+      "title": "DialogHeader"
+    },
+    "/docs/components/dialog-title": {
+      "alt": "DialogTitle — Lumen UI",
+      "description": "Provides a semantic heading for dialog labeling. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--dialog-title.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--dialog-title.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/dialog-title",
+      "title": "DialogTitle"
+    },
+    "/docs/components/dialog-body": {
+      "alt": "DialogBody — Lumen UI",
+      "description": "Scrolls long task content while keeping actions visible. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--dialog-body.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--dialog-body.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/dialog-body",
+      "title": "DialogBody"
+    },
+    "/docs/components/dialog-footer": {
+      "alt": "DialogFooter — Lumen UI",
+      "description": "Keeps dialog actions outside the scrolling body. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--dialog-footer.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--dialog-footer.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/dialog-footer",
+      "title": "DialogFooter"
+    },
+    "/docs/components/dialog-close": {
+      "alt": "DialogClose — Lumen UI",
+      "description": "Closes the enclosing dialog through an accessible button. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--dialog-close.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--dialog-close.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/dialog-close",
+      "title": "DialogClose"
     },
     "/docs/components/direction": {
       "alt": "Direction — Lumen UI",
@@ -6449,6 +6625,54 @@
       "pathname": "/docs/components/descriptions",
       "title": "Descriptions"
     },
+    "/docs/components/description-item": {
+      "alt": "DescriptionItem — Lumen UI",
+      "description": "Composes rich description item content. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--description-item.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--description-item.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/description-item",
+      "title": "DescriptionItem"
+    },
+    "/docs/components/description-term": {
+      "alt": "DescriptionTerm — Lumen UI",
+      "description": "Composes rich description term content. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--description-term.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--description-term.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/description-term",
+      "title": "DescriptionTerm"
+    },
+    "/docs/components/description-detail": {
+      "alt": "DescriptionDetail — Lumen UI",
+      "description": "Composes rich description detail content. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--description-detail.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--description-detail.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/description-detail",
+      "title": "DescriptionDetail"
+    },
     "/docs/components/popconfirm": {
       "alt": "Popconfirm — Lumen UI",
       "description": "Requests a brief confirmation beside the action that triggered it. Usage examples for Astro, React, and Elements.",
@@ -6688,6 +6912,38 @@
       ],
       "pathname": "/docs/components/visually-hidden",
       "title": "VisuallyHidden"
+    },
+    "/docs/components/histogram": {
+      "alt": "Histogram — Lumen UI",
+      "description": "Shows a numeric distribution using explicit bins and an accessible frequency table. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--histogram.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--histogram.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/histogram",
+      "title": "Histogram"
+    },
+    "/docs/components/waterfall-chart": {
+      "alt": "WaterfallChart — Lumen UI",
+      "description": "Explains signed changes and explicit total checkpoints. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--waterfall-chart.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--waterfall-chart.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/waterfall-chart",
+      "title": "WaterfallChart"
     },
     "/docs/components/change-summary": {
       "alt": "ChangeSummary — Lumen UI",

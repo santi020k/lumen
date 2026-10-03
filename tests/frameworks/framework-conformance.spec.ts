@@ -5,6 +5,91 @@ const adapters = [
   { label: "Elements", path: "/visual/elements" },
 ] as const;
 
+test('Elements Combobox restores native form state without a stale active option', async ({ page }) => {
+  await page.goto('/visual/elements');
+  await page.evaluate(async () => {
+    await customElements.whenDefined('lumen-combobox');
+    const form = document.createElement('form');
+    form.setAttribute('aria-label', 'Combobox reset fixture');
+    form.innerHTML = '<lumen-combobox><label>Reset framework<input role="combobox" value="Astro"></label><div role="listbox"><button type="button" role="option" data-value="Astro">Astro</button><button type="button" role="option" data-value="React">React</button></div></lumen-combobox>';
+    document.body.prepend(form);
+  });
+  const form = page.getByRole('form', { name: 'Combobox reset fixture' });
+  const input = form.getByRole('combobox', { name: 'Reset framework' });
+  await input.fill('rea');
+  await input.press('ArrowDown');
+  await expect(input).toHaveAttribute('aria-activedescendant', /.+/);
+  await form.evaluate(element => {
+    if (!(element instanceof HTMLFormElement)) throw new Error('Expected form');
+    element.reset();
+  });
+  await expect(input).toHaveValue('Astro');
+  await expect(input).toHaveAttribute('aria-expanded', 'false');
+  await expect(input).not.toHaveAttribute('aria-activedescendant');
+  await input.press('ArrowDown');
+  await expect(form.getByRole('option', { name: 'Astro', exact: true })).toHaveAttribute('aria-selected', 'true');
+  await expect(form.getByRole('option', { name: 'React', exact: true })).toBeHidden();
+});
+
+test.describe('React native form boundaries', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/visual/forms');
+    await expect(page.getByRole('heading', { name: 'Native form behavior' })).toBeVisible();
+  });
+
+  test('accepted native form reset restores defaults and closes unnamed range drafts', async ({ page }, testInfo) => {
+    const framework = page.getByRole('combobox', { name: 'Framework' });
+    const country = page.getByRole('combobox', { name: 'Contact country' });
+    const phone = page.getByLabel('Contact phone');
+    const initialPhone = await phone.inputValue();
+    await framework.fill('React');
+    await country.selectOption('US');
+    await page.getByRole('button', { name: /Period/ }).click();
+    const range = page.getByRole('button', { name: /Period/ });
+    await expect(range).toHaveAttribute('aria-expanded', 'true');
+    await page.getByRole('form', { name: 'Editable fields' }).evaluate(element => {
+      if (!(element instanceof HTMLFormElement)) throw new Error('Expected form');
+      element.reset();
+    });
+    await expect(framework).toHaveValue('Astro');
+    await expect(country).toHaveValue('CO');
+    await expect(phone).toHaveValue(initialPhone);
+    await expect(range).toHaveAttribute('aria-expanded', 'false');
+    await expect(page.getByText('Native changes: 0', { exact: true })).toBeVisible();
+    await page.getByRole('heading', { name: 'Native form behavior' }).click();
+    await page.screenshot({ path: testInfo.outputPath('form-reset.png'), fullPage: true });
+  });
+
+  test('cancelled native form reset preserves values and an open unnamed range draft', async ({ page }) => {
+    await page.getByRole('button', { name: 'Cancel reset', exact: true }).click();
+    const framework = page.getByRole('combobox', { name: 'Framework' });
+    const country = page.getByRole('combobox', { name: 'Contact country' });
+    await framework.fill('React');
+    await country.selectOption('US');
+    const range = page.getByRole('button', { name: /Period/ });
+    await range.click();
+    await page.getByRole('form', { name: 'Editable fields' }).evaluate(element => {
+      if (!(element instanceof HTMLFormElement)) throw new Error('Expected form');
+      element.reset();
+    });
+    await expect(framework).toHaveValue('React');
+    await expect(country).toHaveValue('US');
+    await expect(range).toHaveAttribute('aria-expanded', 'true');
+  });
+
+  test('calendar selection emits each public callback once and updates form data', async ({ page }) => {
+    await page.getByRole('button', { name: 'Appointment' }).click();
+    await page.locator('[data-ui-date-picker] [data-date="2026-09-11"]').click();
+    await expect(page.getByText('Native changes: 1', { exact: true })).toBeVisible();
+    await expect(page.getByText('Value changes: 1', { exact: true })).toBeVisible();
+    const selected = await page.getByRole('form', { name: 'Editable fields' }).evaluate(element => {
+      if (!(element instanceof HTMLFormElement)) throw new Error('Expected form');
+      return new FormData(element).get('appointment');
+    });
+    expect(selected).toBe('2026-09-11');
+  });
+});
+
 for (const adapter of adapters) {
   test.describe(`${adapter.label} shared behavior contracts`, () => {
     test.beforeEach(async ({ page }) => {
@@ -273,6 +358,12 @@ for (const width of [320, 1440]) {
   test(`dashboard filtering, details, and popup placement at ${width}px`, async ({ page }, testInfo) => {
     await page.setViewportSize({ width, height: 1100 });
     await page.goto('/dashboard-recipes');
+    const filterSummary = page.locator('.ui-filter-bar summary');
+    await filterSummary.focus();
+    await filterSummary.press('Enter');
+    await expect(page.getByRole('searchbox', { name: 'Search clients' })).toBeHidden();
+    await filterSummary.press('Enter');
+    await expect(page.getByRole('searchbox', { name: 'Search clients' })).toBeVisible();
     await page.getByRole('searchbox', { name: 'Search clients' }).fill('studio');
     await expect(page.getByRole('status').filter({ hasText: '1 matching record' })).toBeVisible();
     await page.getByRole('button', { name: 'Remove Search: studio' }).click();

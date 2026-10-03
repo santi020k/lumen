@@ -2,27 +2,27 @@
 import type { HTMLAttributes } from 'astro/types'
 
 import {
-  alignLumenChartSeries,
-  createLumenLineGeometry,
+  createLumenLineChartModel,
   formatLumenChartSummary,
-  getLumenChartAxisPadding,
-  getLumenChartCategories,
   getLumenChartCategoryLabel,
-  getLumenChartCategoryTicks,
-  getLumenChartDomain,
-  getLumenChartTicks,
   getLumenChartToneClassName,
   hasLumenChartData,
   type LumenChartLabels,
   type LumenChartSeries,
+  type LumenLineChartOptions,
   resolveLumenChartLabels,
   resolveLumenChartTone,
   scaleLumenChartValue
 } from '@santi020k/lumen-core'
 
+import ChartInspection from '../internal/ChartInspection.astro'
+
+import Button from './Button.astro'
 import Chart from './Chart.astro'
 
-interface Props extends HTMLAttributes<'figure'> {
+interface Props extends HTMLAttributes<'figure'>, LumenLineChartOptions {
+  interactive?: boolean
+  syncGroup?: string
   area?: boolean
   caption?: string
   class?: string | null
@@ -45,6 +45,14 @@ interface Props extends HTMLAttributes<'figure'> {
 
 const {
   area = false,
+  annotations = [],
+  domain: requestedDomain,
+  height: requestedHeight,
+  width: requestedWidth,
+  xDomain,
+  xScale = 'categorical',
+  interactive = false,
+  syncGroup,
   caption,
   class: classProp = '',
   className = '',
@@ -65,36 +73,22 @@ const {
 } = Astro.props
 
 const resolvedLabels = resolveLumenChartLabels(labels)
-const width = 640
-const height = 320
-const padding = 44
-const categories = getLumenChartCategories(series)
-const alignedSeries = series.map(item => alignLumenChartSeries(item, categories))
+
+const model = createLumenLineChartModel(series, {
+  annotations,
+xScale,
+  ...(requestedDomain ? { domain: requestedDomain } : {}),
+  ...(requestedHeight === undefined ? {} : { height: requestedHeight }),
+  ...(requestedWidth === undefined ? {} : { width: requestedWidth }),
+  ...(xDomain ? { xDomain } : {}),
+  ...(referenceValue === undefined ? {} : { referenceValue }),
+  ...(formatCategory ? { formatCategory } : {}),
+  formatValue
+})
+
+const { width, height, padding, paddingLeft, categories, categoryTicks, domain, geometries, ticks, series: alignedSeries } = model
 const hasData = hasLumenChartData(alignedSeries)
 const summary = summaryProp ?? formatLumenChartSummary(alignedSeries, formatValue, resolvedLabels)
-
-const domain = getLumenChartDomain([
-  ...alignedSeries.flatMap(item => item.data.map(datum => datum.y)),
-  referenceValue ?? null
-], false)
-
-const ticks = getLumenChartTicks(domain)
-const paddingLeft = getLumenChartAxisPadding(ticks.map(tick => formatValue(tick)))
-
-const geometries = alignedSeries.map(item => createLumenLineGeometry(item.data, {
-  domain,
-  height,
-  includeZero: false,
-  padding,
-  paddingLeft,
-  width
-}))
-
-const categoryTicks = getLumenChartCategoryTicks(
-  categories.map(category => getLumenChartCategoryLabel(alignedSeries, category, formatCategory)),
-  { end: width - padding, start: paddingLeft }
-)
-
 let markerStep = 1
 
 if (markers === false || markers === 'none') markerStep = Number.POSITIVE_INFINITY
@@ -117,6 +111,8 @@ const referenceY =
   {glass}
   {heading}
   {summary}
+  data-ui-chart-interactive={interactive || undefined}
+  data-ui-chart-sync={syncGroup}
   {...rest}
 >
   {
@@ -124,15 +120,21 @@ const referenceY =
       <ul class="ui-chart__legend" aria-label={resolvedLabels.chartLegend}>
         {series.map((item, index) => (
           <li class={getLumenChartToneClassName(item.tone, index)}>
-            <span aria-hidden="true" />
-            {item.label}
+            {interactive ? <Button aria-pressed="true" data-ui-chart-toggle={item.id} disabled size="sm" variant="ghost">{item.label}</Button> : <><span aria-hidden="true" />{item.label}</>}
           </li>
         ))}
       </ul>
     )
   }
   {!hasData && <p class="ui-chart__empty" role="status">{emptyLabel ?? resolvedLabels.empty}</p>}
-  <div aria-label={resolvedLabels.chartData} class="ui-chart__plot" role="region" tabindex="0" hidden={!hasData}>
+  <div
+aria-label={rest['aria-label'] ?? heading ?? resolvedLabels.chartData}
+class="ui-chart__plot"
+data-ui-chart-interaction-plot={interactive || undefined}
+role="region"
+tabindex="0"
+hidden={!hasData}
+  >
     <svg
       aria-hidden="true"
       preserveAspectRatio="xMidYMid meet"
@@ -165,6 +167,14 @@ const referenceY =
           ))
         }
       </g>
+      <svg
+x={paddingLeft}
+y={padding}
+width={width - padding - paddingLeft}
+height={height - 2 * padding}
+        viewBox={`${paddingLeft} ${padding} ${width - padding - paddingLeft} ${height - 2 * padding}`}
+        overflow="hidden"
+      >
       {
         referenceY !== undefined && (
           <line
@@ -185,7 +195,10 @@ const referenceY =
           const tone = resolveLumenChartTone(item.tone, index)
 
           return (
-            <g class:list={['ui-line-chart__series', getLumenChartToneClassName(tone)]}>
+            <g
+data-ui-chart-series={item.id}
+class:list={['ui-line-chart__series', getLumenChartToneClassName(tone)]}
+            >
               {area &&
                 geometry.areaPaths.map(path => (
                   <path class="ui-line-chart__area" d={path} />
@@ -208,8 +221,17 @@ const referenceY =
           )
         })
       }
+      </svg>
+      {model.annotationMarks.map(mark => (
+<g class:list={['ui-chart__annotation', getLumenChartToneClassName(mark.tone)]}>
+        {mark.axis === 'x' ? <><line x1={mark.coordinate} x2={mark.coordinate} y1={padding} y2={height - padding} /><text x={mark.coordinate + 4} y={padding - 8}>{mark.label}</text></> : <><line x1={paddingLeft} x2={width - padding} y1={mark.coordinate} y2={mark.coordinate} /><text text-anchor="end" x={width - padding} y={mark.coordinate - 8}>{mark.label}</text></>}
+      </g>
+))}
+      {interactive && <line class="ui-chart__crosshair" data-ui-chart-crosshair style="display: none" y1={padding} y2={height - padding} />}
     </svg>
   </div>
+  {model.annotationMarks.length > 0 && <ul class="ui-sr-only">{model.annotationMarks.map(mark => <li>{mark.label}: {mark.axis === 'x' ? categoryLabelFor(mark.value) : formatValue(Number(mark.value))}</li>)}</ul>}
+  {interactive && hasData && <ChartInspection {model} {formatCategory} {formatValue} labels={resolvedLabels} />}
   {
     showTable && hasData && (
       <details class="ui-chart__data">

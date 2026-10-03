@@ -55,4 +55,41 @@ describe('dashboard composition', () => {
       await Promise.resolve()
     })
   })
+  test('requests controlled disclosure changes and waits for the host to accept them', async () => {
+    const container = document.createElement('div')
+    const root = createRoot(container)
+    const requests: boolean[] = []
+    const render = async (open: boolean) => {
+      await act(async () => {
+        root.render(createElement(FilterBar, { open, onOpenChange: next => requests.push(next) }))
+        await Promise.resolve()
+      })
+    }
+
+    await render(true)
+    const details = container.querySelector('details')
+    const summary = container.querySelector('summary')
+
+    if (!(details instanceof HTMLDetailsElement) || !(summary instanceof HTMLElement)) {
+      throw new Error('Missing filter disclosure')
+    }
+    await act(async () => {
+      summary.click()
+      await Promise.resolve()
+    })
+    expect(requests).toEqual([false])
+    expect(details.open).toBe(true)
+    await render(false)
+    expect(details.open).toBe(false)
+    await act(async () => {
+      summary.click()
+      await Promise.resolve()
+    })
+    expect(requests).toEqual([false, true])
+    expect(details.open).toBe(false)
+    await act(async () => {
+      root.unmount()
+      await Promise.resolve()
+    })
+  })
 })

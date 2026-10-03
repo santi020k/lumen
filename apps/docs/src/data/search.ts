@@ -84,6 +84,14 @@ const eventItems: DocsSearchItem[] = runtimeEvents.map(event => {
 
 const recipeItems: DocsSearchItem[] = [
   {
+    category: 'Data visualization',
+    description: 'Compare interactive charts, distributions, balance changes, and missing observations across web adapters.',
+    href: '/docs/web/data-visualization',
+    keywords: normalizeKeywords('chart line heatmap histogram waterfall cursor keyboard time numeric axis'),
+    title: 'Interactive data visualization',
+    type: 'Recipe'
+  },
+  {
     category: 'Getting started',
     description:
       'Install Lumen, load the shared stylesheet, and choose Astro, React, or Elements.',

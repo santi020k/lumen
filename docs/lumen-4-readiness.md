@@ -4,6 +4,35 @@ This working record tracks the local `release/v4.0.0` candidate. It is not publi
 production qualification evidence. Consumer audits inspect application source; application
 data, deployment, and migration remain owned by those projects.
 
+## October 3 pending-work integration
+
+The release checkout's pending form reset, rich-text initialization and data-view URL fixes are
+preserved in `bd11bc02`. The combined candidate through `99f26f18` contains the original branch
+tips for Compose additions (`1150318d`), native parity (`9bd736b3`), native quality (`3cb972ce`),
+mobile playground discovery (`edbe036d`), plugin readiness (`74dc0480`), input and interaction
+hardening (`dcbb1c03`), dashboard compounds (`059aae9c`) and charts (`84c85353`).
+
+Merge resolutions regenerate the MCP snapshot, combine native catalogs without duplicating the
+shared ImageComparison entry, preserve both interaction suites, align registry order with Core,
+and generate social assets for the newly integrated documentation routes. Compose uses the
+installed Material adaptive V2 window-info API to remove the deprecated call.
+
+Local combined validation passed the build, all 23 typecheck tasks, zero-warning lint, 1,313 tests, 128 browser
+conformance checks across desktop/mobile Chromium and WebKit, 58 Swift tests, and web/native API,
+playground catalog, stability-evidence structure, registry, MCP and plugin consistency checks.
+The exhaustive `pnpm run validate` stopped at the unchanged bundle budgets: CSS measures
+199.7 KiB raw / 32.4 KiB gzip against 199.2 / 32.2 KiB; React components measure 168.1 / 34.7 KiB
+against 167.0 / 34.2 KiB; Elements gzip measures 44.4 KiB against 43.9 KiB. These results do not
+establish publication or device qualification.
+
+Six fully contained, clean, idle local branches were deleted: community feedback, Compose
+additions, theme presets, mobile playgrounds, plugin readiness and Antigravity hardening.
+Their detached checkouts and ignored files remain preserved. Dashboard composition and
+improvements, chart follow-up, native parity and quality, and newly started playground work
+remain owned by running chats. Their unfinished changes were not committed or discarded by this
+consolidation. All eight original stashes and remote branches remain preserved. Nothing was
+pushed, published or deployed.
+
 ## Latest local integration
 
 The October 3 consolidation through `7dc2b358` contains all committed local branch tips:
@@ -373,3 +402,32 @@ advisories in node-forge, http-cache-semantics and braces, with no patched versi
 the audit. The appearance branch uses the current release lockfile without dependency changes.
 Release integration remains blocked rather than bypassing that gate. No packages were published
 and no remote branch was pushed.
+
+### Native advanced-input parity
+
+The v4 candidate adds NumberField, TimeField, Autocomplete, PasswordField, InputOTP and
+ImageComparison to React Native and SwiftUI, alongside the existing Compose controls. The native
+registry now contains 69 shared contracts and 18 platform-specific contracts. Number fields retain
+localized drafts with exact bounded decimal stepping; time values use same-day hour/minute models.
+Filtering, requests, authentication, persistence and submission validation remain application-owned.
+The native patterns guide includes a form-error summary recipe with application-owned editor focus.
+
+Core and React Native verification covers 330 tests, including exact stepping beyond floating-point
+precision, bounded paste and parsing, secure-entry reset, autocomplete selection/dismissal and
+confirmed time selection with stale callback rejection. The Swift suite covers 58 LumenUI tests
+and three WidgetKit tests; the Apple playground builds, and the reviewed Swift API builds for all
+five Apple targets. Both playgrounds expose the six additions with English/Spanish and read-only
+examples. Twelve React Native web captures at 390 and 1280 pixels were inspected, with browser
+checks for number stepping, localization, autocomplete and password reveal/blur.
+
+This evidence does not qualify physical-device keyboard, autofill, VoiceOver or TalkBack behavior.
+Native device evidence and two stability-soak iterations remain required. Release integration and
+the canonical validation result must be recorded before claiming completion; dependency security
+still reports the three existing high advisories with no patched versions.
+
+The isolated parity candidate is preserved in commit `7a170606` on
+`feature/native-v4-parity`. Its canonical `pnpm run validate` passes the monorepo build, types,
+1,201 tests, zero-warning lint, spelling, Knip and registry checks, then stops at the three existing
+high dependency advisories (`node-forge`, `http-cache-semantics` and `braces`; no patched versions).
+The release checkout has concurrent uncommitted work, so the parity commit is not yet contained in
+`release/v4.0.0`. Do not treat this record as integration, device qualification or release approval.

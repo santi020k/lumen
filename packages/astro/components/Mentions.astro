@@ -49,7 +49,7 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
   />
   <ul class="ui-mentions__list" data-ui-mentions-list hidden id={listId} role="listbox">
     {normalized.map((option, index) => (
-      <li>
+      <li role="presentation">
         <button
           aria-selected="false"
           class="ui-mentions__option"

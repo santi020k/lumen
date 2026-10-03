@@ -56,6 +56,14 @@ pnpm add @santi020k/lumen-core
 Core provides data and helpers; it does not register elements, render components, or load CSS.
 Use documented subpath exports such as `/charts`, `/phone`, and `/icon-data` for focused imports.
 
+## Data view state
+
+`serializeDataViewState` and `parseDataViewState` preserve named filters, including names that
+match built-in object properties, as ordinary own properties. Repeated filter parameters use
+the last value. `createDataViewRequestUrl` and `createDataViewServerRequest` append state to
+an endpoint's query before its fragment, preserving existing query parameters and fragment text.
+Import these helpers from the root or `@santi020k/lumen-core/data`.
+
 ## Appearance presets
 
 Use `createThemePreset('studio', { scheme: 'dark', overrides: { 'ui-radius': '0.75rem' } })` for a named starting point. Default, Studio and Glass share the [appearance contract](../../docs/appearance-presets.md).
@@ -102,10 +110,16 @@ label overrides for other languages; pass an explicit locale during SSR.
 
 ## Chart Helpers
 
+The package root also exports `createLumenLineChartModel`, `createLumenWaterfallGeometry`,
+`createLumenHistogramGeometry`, and `createLumenHeatmapModel`. These pure models share web geometry,
+validation, ticks, and annotations. The optional `createLumenChartInteractionController` owns only
+DOM listeners and cursor/legend state; call `destroy()` when removing its surface.
+
+
 `@santi020k/lumen-core/charts` exports the shared `LumenChartSeries` contract plus deterministic
 domain, tick, scaling, line/area, grouped/stacked bar, and pie/donut geometry helpers. They render
 no DOM and perform no statistical analysis; framework packages use them to keep chart output
-aligned.
+aligned. Linear x coordinates ignore blank strings rather than treating them as zero.
 
 ```ts
 import {
@@ -154,6 +168,8 @@ const phone = resolveLumenPhoneNumber(colombia, '6015550123')
 
 It also exports the Lucide-backed icon map (`lumenIcons`, `lumenIconNames`) and helpers such as
 `renderLumenIconSvg` so framework adapters can render icons by name.
+
+Icon resolution only accepts dictionary-owned names; inherited object properties are rejected.
 
 ## Icon Credits
 
@@ -241,6 +257,9 @@ Licensed under [MIT](https://github.com/santi020k/lumen/blob/main/LICENSE); thir
 It preserves editing focus, observes option changes and supports delegated selection. It returns
 `close()` and `destroy()`; call `destroy()` when the owner disconnects. Astro and Elements manage
 that lifecycle automatically. React uses its state-driven component with the same keyboard contract.
+An accepted native form reset closes options, clears the active descendant, and refilters against
+the restored input value without emitting change events. Canceled resets preserve editing state;
+`destroy()` cancels pending reset work.
 
 ## Virtual collections and direction
 
@@ -257,6 +276,21 @@ setup, state ownership and lifecycle examples.
 `getLumenDirectionalKey(element, key)` resolves the element's current inherited CSS direction and
 swaps horizontal arrows in RTL. Other keys are unchanged. Web adapters use it for visual keyboard
 navigation; native range inputs retain browser-owned behavior.
+
+## Exact localized input drafts
+
+`parseLumenDecimalDraft(value, locale)` distinguishes empty, incomplete, invalid and valid decimal
+input. `isLumenDecimalInBounds(value, { locale, min, max, step })` validates complete values;
+`stepLumenDecimalDraft(value, direction, options)` performs exact steps and inclusive clamping without
+floating-point conversion. Bounds and steps use ASCII decimal strings; drafts use localized decimal
+separators and Unicode decimal digits. Grouping, exponents, whitespace and inputs exceeding 128
+characters are rejected. Empty drafts stay distinct from zero; unfinished drafts cannot step.
+Applications own units, currency policy, required validation and submission serialization.
+
+`normalizeLumenNumericOTP(proposal, length)` normalizes Unicode decimal digits, whitespace and hyphens
+into ASCII, rejects unrelated text and excess digits, and bounds input to 128 characters. Length must
+be 1–12. `LumenTimeSelection`, `isLumenTimeSelection` and `isLumenTimeInBounds` describe wall-clock
+hours/minutes with inclusive same-day bounds, leaving dates and time zones to the application.
 
 ## Dashboard contracts
 

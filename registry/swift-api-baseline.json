@@ -1389,6 +1389,32 @@
           "precise": "s:7LumenUI0A11ImageRadiusO4noneyA2CmF"
         },
         {
+          "declaration": "@MainActor struct LumenNumberField",
+          "kind": "swift.struct",
+          "path": [
+            "LumenNumberField"
+          ],
+          "precise": "s:7LumenUI0A11NumberFieldV"
+        },
+        {
+          "declaration": "@MainActor init(_ label: String, text: Binding<String>, min: String? = nil, max: String? = nil, step: String = \"1\", description: String? = nil, errorMessage: String? = nil, invalidNumberLabel: String = \"Enter a valid number\", outOfRangeLabel: String = \"Enter a number within the allowed range\", incrementLabel: String = \"Increase value\", decrementLabel: String = \"Decrease value\", showStepper: Bool = true, readOnly: Bool = false, focused: FocusState<Bool>.Binding? = nil)",
+          "kind": "swift.init",
+          "path": [
+            "LumenNumberField",
+            "init(_:text:min:max:step:description:errorMessage:invalidNumberLabel:outOfRangeLabel:incrementLabel:decrementLabel:showStepper:readOnly:focused:)"
+          ],
+          "precise": "s:7LumenUI0A11NumberFieldV_4text3min3max4step11description12errorMessage07invalidC5Label010outOfRangeM009incrementM009decrementM011showStepper8readOnly7focusedACSS_05SwiftB07BindingVySSGSSSgAUSSA2US4SS2bAQ10FocusStateVARVySb_GSgtcfc"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenNumberField",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A11NumberFieldV4bodyQrvp"
+        },
+        {
           "declaration": "struct LumenPhoneNumber",
           "kind": "swift.struct",
           "path": [
@@ -1877,6 +1903,32 @@
             "warning"
           ],
           "precise": "s:7LumenUI0A12AlertVariantO7warningyA2CmF"
+        },
+        {
+          "declaration": "@MainActor struct LumenAutocomplete<Value> where Value : Hashable",
+          "kind": "swift.struct",
+          "path": [
+            "LumenAutocomplete"
+          ],
+          "precise": "s:7LumenUI0A12AutocompleteV"
+        },
+        {
+          "declaration": "@MainActor init(_ label: String, query: Binding<String>, selection: Binding<Value?>, options: [LumenAutocompleteOption<Value>], description: String? = nil, errorMessage: String? = nil, loading: Bool = false, resultsErrorMessage: String? = nil, onRetry: (() -> Void)? = nil, loadingLabel: String = \"Loading results\", emptyLabel: String = \"No results\", retryLabel: String = \"Retry\", dismissLabel: String = \"Close results\", readOnly: Bool = false)",
+          "kind": "swift.init",
+          "path": [
+            "LumenAutocomplete",
+            "init(_:query:selection:options:description:errorMessage:loading:resultsErrorMessage:onRetry:loadingLabel:emptyLabel:retryLabel:dismissLabel:readOnly:)"
+          ],
+          "precise": "s:7LumenUI0A12AutocompleteV_5query9selection7options11description12errorMessage7loading012resultsErrorI07onRetry0J5Label05emptyO005retryO007dismissO08readOnlyACyxGSS_05SwiftB07BindingVySSGATyxSgGSayAA0aC6OptionVyxGGSSSgA0_SbA0_yycSgS4SSbtcfc"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenAutocomplete",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A12AutocompleteV4bodyQrvp"
         },
         {
           "declaration": "enum LumenBackdropTone",
@@ -2763,6 +2815,32 @@
           "precise": "s:7LumenUI0A13NavigationBarV4bodyQrvp"
         },
         {
+          "declaration": "@MainActor struct LumenPasswordField",
+          "kind": "swift.struct",
+          "path": [
+            "LumenPasswordField"
+          ],
+          "precise": "s:7LumenUI0A13PasswordFieldV"
+        },
+        {
+          "declaration": "@MainActor init(_ label: String, text: Binding<String>, description: String? = nil, errorMessage: String? = nil, showLabel: String = \"Show password\", hideLabel: String = \"Hide password\", newPassword: Bool = false, readOnly: Bool = false)",
+          "kind": "swift.init",
+          "path": [
+            "LumenPasswordField",
+            "init(_:text:description:errorMessage:showLabel:hideLabel:newPassword:readOnly:)"
+          ],
+          "precise": "s:7LumenUI0A13PasswordFieldV_4text11description12errorMessage9showLabel04hideJ003newC08readOnlyACSS_05SwiftB07BindingVySSGSSSgAOS2SS2btcfc"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenPasswordField",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A13PasswordFieldV4bodyQrvp"
+        },
+        {
           "declaration": "struct LumenProgressValue",
           "kind": "swift.struct",
           "path": [
@@ -2946,6 +3024,41 @@
             "size3xl"
           ],
           "precise": "s:7LumenUI0A13SurfaceRadiusO7size3xlyA2CmF"
+        },
+        {
+          "declaration": "struct LumenTimeSelection",
+          "kind": "swift.struct",
+          "path": [
+            "LumenTimeSelection"
+          ],
+          "precise": "s:7LumenUI0A13TimeSelectionV"
+        },
+        {
+          "declaration": "init(hour: Int, minute: Int)",
+          "kind": "swift.init",
+          "path": [
+            "LumenTimeSelection",
+            "init(hour:minute:)"
+          ],
+          "precise": "s:7LumenUI0A13TimeSelectionV4hour6minuteACSi_Sitcfc"
+        },
+        {
+          "declaration": "let hour: Int",
+          "kind": "swift.property",
+          "path": [
+            "LumenTimeSelection",
+            "hour"
+          ],
+          "precise": "s:7LumenUI0A13TimeSelectionV4hourSivp"
+        },
+        {
+          "declaration": "let minute: Int",
+          "kind": "swift.property",
+          "path": [
+            "LumenTimeSelection",
+            "minute"
+          ],
+          "precise": "s:7LumenUI0A13TimeSelectionV6minuteSivp"
         },
         {
           "declaration": "enum LumenBarChartLayout",
@@ -3455,6 +3568,32 @@
             "makeBody(configuration:)"
           ],
           "precise": "s:7LumenUI0A15IconButtonStyleV8makeBody13configurationQr05SwiftB00dE13ConfigurationV_tF"
+        },
+        {
+          "declaration": "@MainActor struct LumenImageComparison<Before, After> where Before : View, After : View",
+          "kind": "swift.struct",
+          "path": [
+            "LumenImageComparison"
+          ],
+          "precise": "s:7LumenUI0A15ImageComparisonV"
+        },
+        {
+          "declaration": "@MainActor init(_ label: String, value: Binding<Double>, beforeLabel: String = \"Before\", afterLabel: String = \"After\", aspectRatio: CGFloat = 16 / 9, @ViewBuilder before: () -> Before, @ViewBuilder after: () -> After)",
+          "kind": "swift.init",
+          "path": [
+            "LumenImageComparison",
+            "init(_:value:beforeLabel:afterLabel:aspectRatio:before:after:)"
+          ],
+          "precise": "s:7LumenUI0A15ImageComparisonV_5value11beforeLabel05afterG011aspectRatio0F00H0ACyxq_GSS_05SwiftB07BindingVySdGS2S14CoreFoundation7CGFloatVxyXEq_yXEtcfc"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenImageComparison",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A15ImageComparisonV4bodyQrvp"
         },
         {
           "declaration": "enum LumenNavigationBadge",
@@ -4089,6 +4228,68 @@
             "iconSize"
           ],
           "precise": "s:7LumenUI0A17IconButtonMetricsV8iconSizeAA0acG0Ovp"
+        },
+        {
+          "declaration": "struct LumenAutocompleteOption<Value> where Value : Hashable",
+          "kind": "swift.struct",
+          "path": [
+            "LumenAutocompleteOption"
+          ],
+          "precise": "s:7LumenUI0A18AutocompleteOptionV"
+        },
+        {
+          "declaration": "let description: String?",
+          "kind": "swift.property",
+          "path": [
+            "LumenAutocompleteOption",
+            "description"
+          ],
+          "precise": "s:7LumenUI0A18AutocompleteOptionV11descriptionSSSgvp"
+        },
+        {
+          "declaration": "var id: Value { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenAutocompleteOption",
+            "id"
+          ],
+          "precise": "s:7LumenUI0A18AutocompleteOptionV2idxvp"
+        },
+        {
+          "declaration": "let label: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenAutocompleteOption",
+            "label"
+          ],
+          "precise": "s:7LumenUI0A18AutocompleteOptionV5labelSSvp"
+        },
+        {
+          "declaration": "init(value: Value, label: String, description: String? = nil, disabled: Bool = false)",
+          "kind": "swift.init",
+          "path": [
+            "LumenAutocompleteOption",
+            "init(value:label:description:disabled:)"
+          ],
+          "precise": "s:7LumenUI0A18AutocompleteOptionV5value5label11description8disabledACyxGx_S2SSgSbtcfc"
+        },
+        {
+          "declaration": "let value: Value",
+          "kind": "swift.property",
+          "path": [
+            "LumenAutocompleteOption",
+            "value"
+          ],
+          "precise": "s:7LumenUI0A18AutocompleteOptionV5valuexvp"
+        },
+        {
+          "declaration": "let disabled: Bool",
+          "kind": "swift.property",
+          "path": [
+            "LumenAutocompleteOption",
+            "disabled"
+          ],
+          "precise": "s:7LumenUI0A18AutocompleteOptionV8disabledSbvp"
         },
         {
           "declaration": "@MainActor struct LumenSymbolPickerButton",
@@ -27796,6 +27997,32 @@
           "precise": "s:7LumenUI0A8ImageFitO7containyA2CmF"
         },
         {
+          "declaration": "@MainActor struct LumenInputOTP",
+          "kind": "swift.struct",
+          "path": [
+            "LumenInputOTP"
+          ],
+          "precise": "s:7LumenUI0A8InputOTPV"
+        },
+        {
+          "declaration": "@MainActor init(_ label: String, text: Binding<String>, length: Int = 6, description: String? = nil, errorMessage: String? = nil, masked: Bool = false, readOnly: Bool = false, onComplete: @escaping (String) -> Void = { _ in })",
+          "kind": "swift.init",
+          "path": [
+            "LumenInputOTP",
+            "init(_:text:length:description:errorMessage:masked:readOnly:onComplete:)"
+          ],
+          "precise": "s:7LumenUI0A8InputOTPV_4text6length11description12errorMessage6masked8readOnly10onCompleteACSS_05SwiftB07BindingVySSGSiSSSgAOS2bySSctcfc"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenInputOTP",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A8InputOTPV4bodyQrvp"
+        },
+        {
           "declaration": "struct LumenMenuItem",
           "kind": "swift.struct",
           "path": [
@@ -28498,6 +28725,32 @@
             "body"
           ],
           "precise": "s:7LumenUI0A9TextFieldV4bodyQrvp"
+        },
+        {
+          "declaration": "@MainActor struct LumenTimeField",
+          "kind": "swift.struct",
+          "path": [
+            "LumenTimeField"
+          ],
+          "precise": "s:7LumenUI0A9TimeFieldV"
+        },
+        {
+          "declaration": "@MainActor init(_ label: String, selection: Binding<LumenTimeSelection?>, minTime: LumenTimeSelection? = nil, maxTime: LumenTimeSelection? = nil, description: String? = nil, errorMessage: String? = nil, placeholder: String = \"Choose a time\", confirmLabel: String = \"Confirm\", dismissLabel: String = \"Cancel\", rangeErrorLabel: String = \"Choose a time within the allowed range\", readOnly: Bool = false)",
+          "kind": "swift.init",
+          "path": [
+            "LumenTimeField",
+            "init(_:selection:minTime:maxTime:description:errorMessage:placeholder:confirmLabel:dismissLabel:rangeErrorLabel:readOnly:)"
+          ],
+          "precise": "s:7LumenUI0A9TimeFieldV_9selection03minC003maxC011description12errorMessage11placeholder12confirmLabel07dismissM0010rangeErrorM08readOnlyACSS_05SwiftB07BindingVyAA0aC9SelectionVSgGA2SSSSgAUS4SSbtcfc"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenTimeField",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A9TimeFieldV4bodyQrvp"
         },
         {
           "declaration": "enum LumenWatchTone",
@@ -30051,6 +30304,32 @@
           "precise": "s:7LumenUI0A11ImageRadiusO4noneyA2CmF"
         },
         {
+          "declaration": "@MainActor struct LumenNumberField",
+          "kind": "swift.struct",
+          "path": [
+            "LumenNumberField"
+          ],
+          "precise": "s:7LumenUI0A11NumberFieldV"
+        },
+        {
+          "declaration": "@MainActor init(_ label: String, text: Binding<String>, min: String? = nil, max: String? = nil, step: String = \"1\", description: String? = nil, errorMessage: String? = nil, invalidNumberLabel: String = \"Enter a valid number\", outOfRangeLabel: String = \"Enter a number within the allowed range\", incrementLabel: String = \"Increase value\", decrementLabel: String = \"Decrease value\", showStepper: Bool = true, readOnly: Bool = false, focused: FocusState<Bool>.Binding? = nil)",
+          "kind": "swift.init",
+          "path": [
+            "LumenNumberField",
+            "init(_:text:min:max:step:description:errorMessage:invalidNumberLabel:outOfRangeLabel:incrementLabel:decrementLabel:showStepper:readOnly:focused:)"
+          ],
+          "precise": "s:7LumenUI0A11NumberFieldV_4text3min3max4step11description12errorMessage07invalidC5Label010outOfRangeM009incrementM009decrementM011showStepper8readOnly7focusedACSS_05SwiftB07BindingVySSGSSSgAUSSA2US4SS2bAQ10FocusStateVARVySb_GSgtcfc"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenNumberField",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A11NumberFieldV4bodyQrvp"
+        },
+        {
           "declaration": "struct LumenPhoneNumber",
           "kind": "swift.struct",
           "path": [
@@ -30539,6 +30818,32 @@
             "warning"
           ],
           "precise": "s:7LumenUI0A12AlertVariantO7warningyA2CmF"
+        },
+        {
+          "declaration": "@MainActor struct LumenAutocomplete<Value> where Value : Hashable",
+          "kind": "swift.struct",
+          "path": [
+            "LumenAutocomplete"
+          ],
+          "precise": "s:7LumenUI0A12AutocompleteV"
+        },
+        {
+          "declaration": "@MainActor init(_ label: String, query: Binding<String>, selection: Binding<Value?>, options: [LumenAutocompleteOption<Value>], description: String? = nil, errorMessage: String? = nil, loading: Bool = false, resultsErrorMessage: String? = nil, onRetry: (() -> Void)? = nil, loadingLabel: String = \"Loading results\", emptyLabel: String = \"No results\", retryLabel: String = \"Retry\", dismissLabel: String = \"Close results\", readOnly: Bool = false)",
+          "kind": "swift.init",
+          "path": [
+            "LumenAutocomplete",
+            "init(_:query:selection:options:description:errorMessage:loading:resultsErrorMessage:onRetry:loadingLabel:emptyLabel:retryLabel:dismissLabel:readOnly:)"
+          ],
+          "precise": "s:7LumenUI0A12AutocompleteV_5query9selection7options11description12errorMessage7loading012resultsErrorI07onRetry0J5Label05emptyO005retryO007dismissO08readOnlyACyxGSS_05SwiftB07BindingVySSGATyxSgGSayAA0aC6OptionVyxGGSSSgA0_SbA0_yycSgS4SSbtcfc"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenAutocomplete",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A12AutocompleteV4bodyQrvp"
         },
         {
           "declaration": "enum LumenBackdropTone",
@@ -31337,6 +31642,32 @@
           "precise": "s:7LumenUI0A13NavigationBarV4bodyQrvp"
         },
         {
+          "declaration": "@MainActor struct LumenPasswordField",
+          "kind": "swift.struct",
+          "path": [
+            "LumenPasswordField"
+          ],
+          "precise": "s:7LumenUI0A13PasswordFieldV"
+        },
+        {
+          "declaration": "@MainActor init(_ label: String, text: Binding<String>, description: String? = nil, errorMessage: String? = nil, showLabel: String = \"Show password\", hideLabel: String = \"Hide password\", newPassword: Bool = false, readOnly: Bool = false)",
+          "kind": "swift.init",
+          "path": [
+            "LumenPasswordField",
+            "init(_:text:description:errorMessage:showLabel:hideLabel:newPassword:readOnly:)"
+          ],
+          "precise": "s:7LumenUI0A13PasswordFieldV_4text11description12errorMessage9showLabel04hideJ003newC08readOnlyACSS_05SwiftB07BindingVySSGSSSgAOS2SS2btcfc"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenPasswordField",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A13PasswordFieldV4bodyQrvp"
+        },
+        {
           "declaration": "struct LumenProgressValue",
           "kind": "swift.struct",
           "path": [
@@ -31520,6 +31851,41 @@
             "size3xl"
           ],
           "precise": "s:7LumenUI0A13SurfaceRadiusO7size3xlyA2CmF"
+        },
+        {
+          "declaration": "struct LumenTimeSelection",
+          "kind": "swift.struct",
+          "path": [
+            "LumenTimeSelection"
+          ],
+          "precise": "s:7LumenUI0A13TimeSelectionV"
+        },
+        {
+          "declaration": "init(hour: Int, minute: Int)",
+          "kind": "swift.init",
+          "path": [
+            "LumenTimeSelection",
+            "init(hour:minute:)"
+          ],
+          "precise": "s:7LumenUI0A13TimeSelectionV4hour6minuteACSi_Sitcfc"
+        },
+        {
+          "declaration": "let hour: Int",
+          "kind": "swift.property",
+          "path": [
+            "LumenTimeSelection",
+            "hour"
+          ],
+          "precise": "s:7LumenUI0A13TimeSelectionV4hourSivp"
+        },
+        {
+          "declaration": "let minute: Int",
+          "kind": "swift.property",
+          "path": [
+            "LumenTimeSelection",
+            "minute"
+          ],
+          "precise": "s:7LumenUI0A13TimeSelectionV6minuteSivp"
         },
         {
           "declaration": "enum LumenBarChartLayout",
@@ -32029,6 +32395,32 @@
             "makeBody(configuration:)"
           ],
           "precise": "s:7LumenUI0A15IconButtonStyleV8makeBody13configurationQr05SwiftB00dE13ConfigurationV_tF"
+        },
+        {
+          "declaration": "@MainActor struct LumenImageComparison<Before, After> where Before : View, After : View",
+          "kind": "swift.struct",
+          "path": [
+            "LumenImageComparison"
+          ],
+          "precise": "s:7LumenUI0A15ImageComparisonV"
+        },
+        {
+          "declaration": "@MainActor init(_ label: String, value: Binding<Double>, beforeLabel: String = \"Before\", afterLabel: String = \"After\", aspectRatio: CGFloat = 16 / 9, @ViewBuilder before: () -> Before, @ViewBuilder after: () -> After)",
+          "kind": "swift.init",
+          "path": [
+            "LumenImageComparison",
+            "init(_:value:beforeLabel:afterLabel:aspectRatio:before:after:)"
+          ],
+          "precise": "s:7LumenUI0A15ImageComparisonV_5value11beforeLabel05afterG011aspectRatio0F00H0ACyxq_GSS_05SwiftB07BindingVySdGS2S14CoreFoundation7CGFloatVxyXEq_yXEtcfc"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenImageComparison",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A15ImageComparisonV4bodyQrvp"
         },
         {
           "declaration": "enum LumenNavigationBadge",
@@ -32637,6 +33029,68 @@
             "iconSize"
           ],
           "precise": "s:7LumenUI0A17IconButtonMetricsV8iconSizeAA0acG0Ovp"
+        },
+        {
+          "declaration": "struct LumenAutocompleteOption<Value> where Value : Hashable",
+          "kind": "swift.struct",
+          "path": [
+            "LumenAutocompleteOption"
+          ],
+          "precise": "s:7LumenUI0A18AutocompleteOptionV"
+        },
+        {
+          "declaration": "let description: String?",
+          "kind": "swift.property",
+          "path": [
+            "LumenAutocompleteOption",
+            "description"
+          ],
+          "precise": "s:7LumenUI0A18AutocompleteOptionV11descriptionSSSgvp"
+        },
+        {
+          "declaration": "var id: Value { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenAutocompleteOption",
+            "id"
+          ],
+          "precise": "s:7LumenUI0A18AutocompleteOptionV2idxvp"
+        },
+        {
+          "declaration": "let label: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenAutocompleteOption",
+            "label"
+          ],
+          "precise": "s:7LumenUI0A18AutocompleteOptionV5labelSSvp"
+        },
+        {
+          "declaration": "init(value: Value, label: String, description: String? = nil, disabled: Bool = false)",
+          "kind": "swift.init",
+          "path": [
+            "LumenAutocompleteOption",
+            "init(value:label:description:disabled:)"
+          ],
+          "precise": "s:7LumenUI0A18AutocompleteOptionV5value5label11description8disabledACyxGx_S2SSgSbtcfc"
+        },
+        {
+          "declaration": "let value: Value",
+          "kind": "swift.property",
+          "path": [
+            "LumenAutocompleteOption",
+            "value"
+          ],
+          "precise": "s:7LumenUI0A18AutocompleteOptionV5valuexvp"
+        },
+        {
+          "declaration": "let disabled: Bool",
+          "kind": "swift.property",
+          "path": [
+            "LumenAutocompleteOption",
+            "disabled"
+          ],
+          "precise": "s:7LumenUI0A18AutocompleteOptionV8disabledSbvp"
         },
         {
           "declaration": "struct LumenWatchActionMetrics",
@@ -56318,6 +56772,32 @@
           "precise": "s:7LumenUI0A8ImageFitO7containyA2CmF"
         },
         {
+          "declaration": "@MainActor struct LumenInputOTP",
+          "kind": "swift.struct",
+          "path": [
+            "LumenInputOTP"
+          ],
+          "precise": "s:7LumenUI0A8InputOTPV"
+        },
+        {
+          "declaration": "@MainActor init(_ label: String, text: Binding<String>, length: Int = 6, description: String? = nil, errorMessage: String? = nil, masked: Bool = false, readOnly: Bool = false, onComplete: @escaping (String) -> Void = { _ in })",
+          "kind": "swift.init",
+          "path": [
+            "LumenInputOTP",
+            "init(_:text:length:description:errorMessage:masked:readOnly:onComplete:)"
+          ],
+          "precise": "s:7LumenUI0A8InputOTPV_4text6length11description12errorMessage6masked8readOnly10onCompleteACSS_05SwiftB07BindingVySSGSiSSSgAOS2bySSctcfc"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenInputOTP",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A8InputOTPV4bodyQrvp"
+        },
+        {
           "declaration": "struct LumenMenuItem",
           "kind": "swift.struct",
           "path": [
@@ -56958,6 +57438,32 @@
             "body"
           ],
           "precise": "s:7LumenUI0A9TextFieldV4bodyQrvp"
+        },
+        {
+          "declaration": "@MainActor struct LumenTimeField",
+          "kind": "swift.struct",
+          "path": [
+            "LumenTimeField"
+          ],
+          "precise": "s:7LumenUI0A9TimeFieldV"
+        },
+        {
+          "declaration": "@MainActor init(_ label: String, selection: Binding<LumenTimeSelection?>, minTime: LumenTimeSelection? = nil, maxTime: LumenTimeSelection? = nil, description: String? = nil, errorMessage: String? = nil, placeholder: String = \"Choose a time\", confirmLabel: String = \"Confirm\", dismissLabel: String = \"Cancel\", rangeErrorLabel: String = \"Choose a time within the allowed range\", readOnly: Bool = false)",
+          "kind": "swift.init",
+          "path": [
+            "LumenTimeField",
+            "init(_:selection:minTime:maxTime:description:errorMessage:placeholder:confirmLabel:dismissLabel:rangeErrorLabel:readOnly:)"
+          ],
+          "precise": "s:7LumenUI0A9TimeFieldV_9selection03minC003maxC011description12errorMessage11placeholder12confirmLabel07dismissM0010rangeErrorM08readOnlyACSS_05SwiftB07BindingVyAA0aC9SelectionVSgGA2SSSSgAUS4SSbtcfc"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenTimeField",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A9TimeFieldV4bodyQrvp"
         },
         {
           "declaration": "enum LumenWatchTone",
@@ -59361,6 +59867,41 @@
             "size3xl"
           ],
           "precise": "s:7LumenUI0A13SurfaceRadiusO7size3xlyA2CmF"
+        },
+        {
+          "declaration": "struct LumenTimeSelection",
+          "kind": "swift.struct",
+          "path": [
+            "LumenTimeSelection"
+          ],
+          "precise": "s:7LumenUI0A13TimeSelectionV"
+        },
+        {
+          "declaration": "init(hour: Int, minute: Int)",
+          "kind": "swift.init",
+          "path": [
+            "LumenTimeSelection",
+            "init(hour:minute:)"
+          ],
+          "precise": "s:7LumenUI0A13TimeSelectionV4hour6minuteACSi_Sitcfc"
+        },
+        {
+          "declaration": "let hour: Int",
+          "kind": "swift.property",
+          "path": [
+            "LumenTimeSelection",
+            "hour"
+          ],
+          "precise": "s:7LumenUI0A13TimeSelectionV4hourSivp"
+        },
+        {
+          "declaration": "let minute: Int",
+          "kind": "swift.property",
+          "path": [
+            "LumenTimeSelection",
+            "minute"
+          ],
+          "precise": "s:7LumenUI0A13TimeSelectionV6minuteSivp"
         },
         {
           "declaration": "enum LumenBarChartLayout",
@@ -85486,6 +86027,32 @@
           "precise": "s:7LumenUI0A11ImageRadiusO4noneyA2CmF"
         },
         {
+          "declaration": "@MainActor struct LumenNumberField",
+          "kind": "swift.struct",
+          "path": [
+            "LumenNumberField"
+          ],
+          "precise": "s:7LumenUI0A11NumberFieldV"
+        },
+        {
+          "declaration": "@MainActor init(_ label: String, text: Binding<String>, min: String? = nil, max: String? = nil, step: String = \"1\", description: String? = nil, errorMessage: String? = nil, invalidNumberLabel: String = \"Enter a valid number\", outOfRangeLabel: String = \"Enter a number within the allowed range\", incrementLabel: String = \"Increase value\", decrementLabel: String = \"Decrease value\", showStepper: Bool = true, readOnly: Bool = false, focused: FocusState<Bool>.Binding? = nil)",
+          "kind": "swift.init",
+          "path": [
+            "LumenNumberField",
+            "init(_:text:min:max:step:description:errorMessage:invalidNumberLabel:outOfRangeLabel:incrementLabel:decrementLabel:showStepper:readOnly:focused:)"
+          ],
+          "precise": "s:7LumenUI0A11NumberFieldV_4text3min3max4step11description12errorMessage07invalidC5Label010outOfRangeM009incrementM009decrementM011showStepper8readOnly7focusedACSS_05SwiftB07BindingVySSGSSSgAUSSA2US4SS2bAQ10FocusStateVARVySb_GSgtcfc"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenNumberField",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A11NumberFieldV4bodyQrvp"
+        },
+        {
           "declaration": "struct LumenPhoneNumber",
           "kind": "swift.struct",
           "path": [
@@ -85974,6 +86541,32 @@
             "warning"
           ],
           "precise": "s:7LumenUI0A12AlertVariantO7warningyA2CmF"
+        },
+        {
+          "declaration": "@MainActor struct LumenAutocomplete<Value> where Value : Hashable",
+          "kind": "swift.struct",
+          "path": [
+            "LumenAutocomplete"
+          ],
+          "precise": "s:7LumenUI0A12AutocompleteV"
+        },
+        {
+          "declaration": "@MainActor init(_ label: String, query: Binding<String>, selection: Binding<Value?>, options: [LumenAutocompleteOption<Value>], description: String? = nil, errorMessage: String? = nil, loading: Bool = false, resultsErrorMessage: String? = nil, onRetry: (() -> Void)? = nil, loadingLabel: String = \"Loading results\", emptyLabel: String = \"No results\", retryLabel: String = \"Retry\", dismissLabel: String = \"Close results\", readOnly: Bool = false)",
+          "kind": "swift.init",
+          "path": [
+            "LumenAutocomplete",
+            "init(_:query:selection:options:description:errorMessage:loading:resultsErrorMessage:onRetry:loadingLabel:emptyLabel:retryLabel:dismissLabel:readOnly:)"
+          ],
+          "precise": "s:7LumenUI0A12AutocompleteV_5query9selection7options11description12errorMessage7loading012resultsErrorI07onRetry0J5Label05emptyO005retryO007dismissO08readOnlyACyxGSS_05SwiftB07BindingVySSGATyxSgGSayAA0aC6OptionVyxGGSSSgA0_SbA0_yycSgS4SSbtcfc"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenAutocomplete",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A12AutocompleteV4bodyQrvp"
         },
         {
           "declaration": "enum LumenBackdropTone",
@@ -86772,6 +87365,32 @@
           "precise": "s:7LumenUI0A13NavigationBarV4bodyQrvp"
         },
         {
+          "declaration": "@MainActor struct LumenPasswordField",
+          "kind": "swift.struct",
+          "path": [
+            "LumenPasswordField"
+          ],
+          "precise": "s:7LumenUI0A13PasswordFieldV"
+        },
+        {
+          "declaration": "@MainActor init(_ label: String, text: Binding<String>, description: String? = nil, errorMessage: String? = nil, showLabel: String = \"Show password\", hideLabel: String = \"Hide password\", newPassword: Bool = false, readOnly: Bool = false)",
+          "kind": "swift.init",
+          "path": [
+            "LumenPasswordField",
+            "init(_:text:description:errorMessage:showLabel:hideLabel:newPassword:readOnly:)"
+          ],
+          "precise": "s:7LumenUI0A13PasswordFieldV_4text11description12errorMessage9showLabel04hideJ003newC08readOnlyACSS_05SwiftB07BindingVySSGSSSgAOS2SS2btcfc"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenPasswordField",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A13PasswordFieldV4bodyQrvp"
+        },
+        {
           "declaration": "struct LumenProgressValue",
           "kind": "swift.struct",
           "path": [
@@ -86955,6 +87574,41 @@
             "size3xl"
           ],
           "precise": "s:7LumenUI0A13SurfaceRadiusO7size3xlyA2CmF"
+        },
+        {
+          "declaration": "struct LumenTimeSelection",
+          "kind": "swift.struct",
+          "path": [
+            "LumenTimeSelection"
+          ],
+          "precise": "s:7LumenUI0A13TimeSelectionV"
+        },
+        {
+          "declaration": "init(hour: Int, minute: Int)",
+          "kind": "swift.init",
+          "path": [
+            "LumenTimeSelection",
+            "init(hour:minute:)"
+          ],
+          "precise": "s:7LumenUI0A13TimeSelectionV4hour6minuteACSi_Sitcfc"
+        },
+        {
+          "declaration": "let hour: Int",
+          "kind": "swift.property",
+          "path": [
+            "LumenTimeSelection",
+            "hour"
+          ],
+          "precise": "s:7LumenUI0A13TimeSelectionV4hourSivp"
+        },
+        {
+          "declaration": "let minute: Int",
+          "kind": "swift.property",
+          "path": [
+            "LumenTimeSelection",
+            "minute"
+          ],
+          "precise": "s:7LumenUI0A13TimeSelectionV6minuteSivp"
         },
         {
           "declaration": "enum LumenBarChartLayout",
@@ -87464,6 +88118,32 @@
             "makeBody(configuration:)"
           ],
           "precise": "s:7LumenUI0A15IconButtonStyleV8makeBody13configurationQr05SwiftB00dE13ConfigurationV_tF"
+        },
+        {
+          "declaration": "@MainActor struct LumenImageComparison<Before, After> where Before : View, After : View",
+          "kind": "swift.struct",
+          "path": [
+            "LumenImageComparison"
+          ],
+          "precise": "s:7LumenUI0A15ImageComparisonV"
+        },
+        {
+          "declaration": "@MainActor init(_ label: String, value: Binding<Double>, beforeLabel: String = \"Before\", afterLabel: String = \"After\", aspectRatio: CGFloat = 16 / 9, @ViewBuilder before: () -> Before, @ViewBuilder after: () -> After)",
+          "kind": "swift.init",
+          "path": [
+            "LumenImageComparison",
+            "init(_:value:beforeLabel:afterLabel:aspectRatio:before:after:)"
+          ],
+          "precise": "s:7LumenUI0A15ImageComparisonV_5value11beforeLabel05afterG011aspectRatio0F00H0ACyxq_GSS_05SwiftB07BindingVySdGS2S14CoreFoundation7CGFloatVxyXEq_yXEtcfc"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenImageComparison",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A15ImageComparisonV4bodyQrvp"
         },
         {
           "declaration": "enum LumenNavigationBadge",
@@ -88072,6 +88752,68 @@
             "iconSize"
           ],
           "precise": "s:7LumenUI0A17IconButtonMetricsV8iconSizeAA0acG0Ovp"
+        },
+        {
+          "declaration": "struct LumenAutocompleteOption<Value> where Value : Hashable",
+          "kind": "swift.struct",
+          "path": [
+            "LumenAutocompleteOption"
+          ],
+          "precise": "s:7LumenUI0A18AutocompleteOptionV"
+        },
+        {
+          "declaration": "let description: String?",
+          "kind": "swift.property",
+          "path": [
+            "LumenAutocompleteOption",
+            "description"
+          ],
+          "precise": "s:7LumenUI0A18AutocompleteOptionV11descriptionSSSgvp"
+        },
+        {
+          "declaration": "var id: Value { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenAutocompleteOption",
+            "id"
+          ],
+          "precise": "s:7LumenUI0A18AutocompleteOptionV2idxvp"
+        },
+        {
+          "declaration": "let label: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenAutocompleteOption",
+            "label"
+          ],
+          "precise": "s:7LumenUI0A18AutocompleteOptionV5labelSSvp"
+        },
+        {
+          "declaration": "init(value: Value, label: String, description: String? = nil, disabled: Bool = false)",
+          "kind": "swift.init",
+          "path": [
+            "LumenAutocompleteOption",
+            "init(value:label:description:disabled:)"
+          ],
+          "precise": "s:7LumenUI0A18AutocompleteOptionV5value5label11description8disabledACyxGx_S2SSgSbtcfc"
+        },
+        {
+          "declaration": "let value: Value",
+          "kind": "swift.property",
+          "path": [
+            "LumenAutocompleteOption",
+            "value"
+          ],
+          "precise": "s:7LumenUI0A18AutocompleteOptionV5valuexvp"
+        },
+        {
+          "declaration": "let disabled: Bool",
+          "kind": "swift.property",
+          "path": [
+            "LumenAutocompleteOption",
+            "disabled"
+          ],
+          "precise": "s:7LumenUI0A18AutocompleteOptionV8disabledSbvp"
         },
         {
           "declaration": "struct LumenWatchActionMetrics",
@@ -111753,6 +112495,32 @@
           "precise": "s:7LumenUI0A8ImageFitO7containyA2CmF"
         },
         {
+          "declaration": "@MainActor struct LumenInputOTP",
+          "kind": "swift.struct",
+          "path": [
+            "LumenInputOTP"
+          ],
+          "precise": "s:7LumenUI0A8InputOTPV"
+        },
+        {
+          "declaration": "@MainActor init(_ label: String, text: Binding<String>, length: Int = 6, description: String? = nil, errorMessage: String? = nil, masked: Bool = false, readOnly: Bool = false, onComplete: @escaping (String) -> Void = { _ in })",
+          "kind": "swift.init",
+          "path": [
+            "LumenInputOTP",
+            "init(_:text:length:description:errorMessage:masked:readOnly:onComplete:)"
+          ],
+          "precise": "s:7LumenUI0A8InputOTPV_4text6length11description12errorMessage6masked8readOnly10onCompleteACSS_05SwiftB07BindingVySSGSiSSSgAOS2bySSctcfc"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenInputOTP",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A8InputOTPV4bodyQrvp"
+        },
+        {
           "declaration": "struct LumenMenuItem",
           "kind": "swift.struct",
           "path": [
@@ -112393,6 +113161,32 @@
             "body"
           ],
           "precise": "s:7LumenUI0A9TextFieldV4bodyQrvp"
+        },
+        {
+          "declaration": "@MainActor struct LumenTimeField",
+          "kind": "swift.struct",
+          "path": [
+            "LumenTimeField"
+          ],
+          "precise": "s:7LumenUI0A9TimeFieldV"
+        },
+        {
+          "declaration": "@MainActor init(_ label: String, selection: Binding<LumenTimeSelection?>, minTime: LumenTimeSelection? = nil, maxTime: LumenTimeSelection? = nil, description: String? = nil, errorMessage: String? = nil, placeholder: String = \"Choose a time\", confirmLabel: String = \"Confirm\", dismissLabel: String = \"Cancel\", rangeErrorLabel: String = \"Choose a time within the allowed range\", readOnly: Bool = false)",
+          "kind": "swift.init",
+          "path": [
+            "LumenTimeField",
+            "init(_:selection:minTime:maxTime:description:errorMessage:placeholder:confirmLabel:dismissLabel:rangeErrorLabel:readOnly:)"
+          ],
+          "precise": "s:7LumenUI0A9TimeFieldV_9selection03minC003maxC011description12errorMessage11placeholder12confirmLabel07dismissM0010rangeErrorM08readOnlyACSS_05SwiftB07BindingVyAA0aC9SelectionVSgGA2SSSSgAUS4SSbtcfc"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenTimeField",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A9TimeFieldV4bodyQrvp"
         },
         {
           "declaration": "enum LumenWatchTone",
@@ -114951,6 +115745,41 @@
             "size3xl"
           ],
           "precise": "s:7LumenUI0A13SurfaceRadiusO7size3xlyA2CmF"
+        },
+        {
+          "declaration": "struct LumenTimeSelection",
+          "kind": "swift.struct",
+          "path": [
+            "LumenTimeSelection"
+          ],
+          "precise": "s:7LumenUI0A13TimeSelectionV"
+        },
+        {
+          "declaration": "init(hour: Int, minute: Int)",
+          "kind": "swift.init",
+          "path": [
+            "LumenTimeSelection",
+            "init(hour:minute:)"
+          ],
+          "precise": "s:7LumenUI0A13TimeSelectionV4hour6minuteACSi_Sitcfc"
+        },
+        {
+          "declaration": "let hour: Int",
+          "kind": "swift.property",
+          "path": [
+            "LumenTimeSelection",
+            "hour"
+          ],
+          "precise": "s:7LumenUI0A13TimeSelectionV4hourSivp"
+        },
+        {
+          "declaration": "let minute: Int",
+          "kind": "swift.property",
+          "path": [
+            "LumenTimeSelection",
+            "minute"
+          ],
+          "precise": "s:7LumenUI0A13TimeSelectionV6minuteSivp"
         },
         {
           "declaration": "enum LumenBarChartLayout",

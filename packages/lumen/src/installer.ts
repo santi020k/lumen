@@ -270,6 +270,20 @@ const validateInstallFiles = async (
   }
 }
 
+const validateInstallConflicts = async (
+  files: readonly LumenRecipeFile[],
+  cwd: string,
+  conflict: NonNullable<LumenAddOptions['conflict']>
+): Promise<void> => {
+  if (conflict !== 'error') return
+
+  for (const file of files) {
+    if (await fileExists(join(cwd, file.path))) {
+      throw new Error(`Refusing to overwrite existing file: ${file.path}`)
+    }
+  }
+}
+
 type InstallFileOutcome = 'added' | 'merged' | 'skipped'
 
 const installRegistryFile = async (
@@ -312,6 +326,9 @@ export const addLumenRegistryItem = async (name: string, options: LumenAddOption
 
   const added: string[] = []
   const conflict = getConflictMode(options)
+
+  await validateInstallConflicts(files, cwd, conflict)
+
   const merged: string[] = []
   const skipped: string[] = []
 

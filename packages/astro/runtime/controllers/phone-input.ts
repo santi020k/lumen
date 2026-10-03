@@ -62,7 +62,7 @@ export const initPhoneInputControllers = (scope: ParentNode): void => {
 
       const errorMessage = root.dataset.errorMessage || (root.dataset.showValidationError !== 'false' && hasInput && !phoneNumber.isValid ? invalidMessage : '')
       const error = document.getElementById(root.dataset.errorId ?? '')
-      const describedBy = [...descriptions, ...(errorMessage ? [errorId] : [])].join(' ')
+      const describedBy = [...descriptions, ...(errorMessage && error ? [error.id] : [])].join(' ')
 
       if (describedBy) numberInput.setAttribute('aria-describedby', describedBy)
       else numberInput.removeAttribute('aria-describedby')
@@ -77,10 +77,10 @@ export const initPhoneInputControllers = (scope: ParentNode): void => {
         error.textContent = errorMessage
 
         error.hidden = !errorMessage
-
-        if (errorMessage) numberInput.setAttribute('aria-errormessage', error.id)
-        else numberInput.removeAttribute('aria-errormessage')
       }
+
+      if (errorMessage && error) numberInput.setAttribute('aria-errormessage', error.id)
+      else numberInput.removeAttribute('aria-errormessage')
 
       const flag = root.querySelector<HTMLImageElement>('[data-slot="country-flag"] img')
       const flagSource = getLumenPhoneFlagSource(phoneNumber.country.regionCode)

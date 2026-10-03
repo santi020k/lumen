@@ -1,8 +1,9 @@
 // @vitest-environment jsdom
+import type { SyntheticEvent } from 'react'
 import { act, createElement, createRef } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 
-import { createEmptyLumenPhoneNumber, getLumenPhoneCountry } from '@santi020k/lumen-core'
+import { createEmptyLumenPhoneNumber, getLumenPhoneCountry, getLumenPhoneFlagSource } from '@santi020k/lumen-core'
 import { afterEach, beforeEach, expect, test, vi } from 'vitest'
 
 import { PhoneInput, PhoneNumber } from './components.js'
@@ -12,6 +13,7 @@ beforeEach(() => {
 })
 
 let root: Root | undefined
+const mounted: Root[] = []
 const country = getLumenPhoneCountry('CO')
 if (!country) throw new Error('Missing phone fixture country')
 
@@ -33,9 +35,12 @@ afterEach(async () => {
   await act(async () => {
     await Promise.resolve()
     root?.unmount()
+
+    for (const extraRoot of mounted.splice(0)) extraRoot.unmount()
   })
   root = undefined
   document.body.replaceChildren()
+  vi.useRealTimers()
 })
 
 test('associates labels, input attributes and refs without DOM patches', async () => {
@@ -97,9 +102,111 @@ test('restores the initial country and number on form reset', async () => {
   await act(async () => {
     await Promise.resolve()
     container.querySelector('form')?.reset()
+    await new Promise(resolve => setTimeout(resolve, 0))
   })
   expect(select.value).toBe('CO')
   expect(input.value).toBe('(601) 5550123')
+})
+
+test('honors a cancelled reset and keeps the edited uncontrolled phone number', async () => {
+  const container = document.createElement('div')
+
+  document.body.append(container)
+  const localRoot = createRoot(container)
+
+  mounted.push(localRoot)
+  const cancelReset = (event: SyntheticEvent<HTMLFormElement>) => {
+    event.preventDefault()
+  }
+
+  await act(async () => {
+    await Promise.resolve()
+    localRoot.render(createElement('form', { onReset: cancelReset }, createElement(PhoneInput, { defaultCountryValue: 'CO', defaultValue: '6015550123' })))
+  })
+  const form = container.querySelector('form')
+  const select = container.querySelector('select')
+
+  if (!form || !select) throw new Error('Missing phone controls')
+  await act(async () => {
+    await Promise.resolve()
+    select.value = 'US'
+    select.dispatchEvent(new Event('change', { bubbles: true }))
+  })
+  expect(select.value).toBe('US')
+  await act(async () => {
+    await Promise.resolve()
+    form.reset()
+    await new Promise(resolve => setTimeout(resolve, 0))
+  })
+  expect(select.value).toBe('US')
+})
+
+test('preserves a controlled phone value and skips onValueChange when the form resets', async () => {
+  const container = document.createElement('div')
+
+  document.body.append(container)
+  const localRoot = createRoot(container)
+
+  mounted.push(localRoot)
+  const controlledValue = { country, e164: '+576015550123', isValid: true, nationalNumber: '(601) 5550123' }
+  const onValueChange = vi.fn<NonNullable<Parameters<typeof PhoneInput>[0]['onValueChange']>>()
+
+  await act(async () => {
+    await Promise.resolve()
+    localRoot.render(createElement('form', null, createElement(PhoneInput, { value: controlledValue, onValueChange })))
+  })
+  const form = container.querySelector('form')
+  const input = container.querySelector('input')
+  const select = container.querySelector('select')
+
+  if (!form || !input || !select) throw new Error('Missing phone controls')
+  await act(async () => {
+    await Promise.resolve()
+    form.reset()
+    await new Promise(resolve => setTimeout(resolve, 0))
+  })
+  expect(input.value).toBe('(601) 5550123')
+  expect(select.value).toBe('CO')
+  expect(onValueChange).not.toHaveBeenCalled()
+})
+
+test('ignores a pending reset once the number control disconnects before the timer fires', async () => {
+  const { container, select, input } = await mount({ defaultCountryValue: 'CO', defaultValue: '6015550123' })
+  await act(async () => {
+    await Promise.resolve()
+    select.value = 'US'
+    select.dispatchEvent(new Event('change', { bubbles: true }))
+  })
+  expect(select.value).toBe('US')
+  await act(async () => {
+    await Promise.resolve()
+    container.querySelector('form')?.reset()
+    input.remove()
+    await new Promise(resolve => setTimeout(resolve, 0))
+  })
+  // The browser's native reset mutates the disconnected select's DOM value directly; that is a
+  // browser effect, not a React state update, so assert the React-owned presentation instead.
+  expect(container.querySelector('.ui-phone-input__selection')?.textContent).toBe('+1')
+  expect(container.querySelector('img')?.src).toBe(getLumenPhoneFlagSource('US'))
+})
+
+test('clears a pending phone reset timer when the control unmounts', async () => {
+  vi.useFakeTimers()
+  const { container } = await mount({ defaultCountryValue: 'CO', defaultValue: '6015550123' })
+  const form = container.querySelector('form')
+
+  if (!form) throw new Error('Missing phone form')
+
+  act(() => {
+    form.reset()
+  })
+  expect(vi.getTimerCount()).toBe(1)
+  act(() => {
+    root?.unmount()
+  })
+  root = undefined
+  expect(vi.getTimerCount()).toBe(0)
+  expect(container.childNodes).toHaveLength(0)
 })
 
 test('only valid read-only numbers become telephone links', async () => {

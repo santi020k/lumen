@@ -34,6 +34,11 @@ individually. Keep foreground/background contrast valid in both light and dark m
 
 ## Composition Principles
 
+- For v4, choose `default`, `studio`, or `glass` through `data-lumen-preset` on a web theme
+  boundary. Keep the light/dark scheme independent with `data-lumen-scheme`. Preset changes
+  preserve application state. Retrieve the matching installed contract before using these
+  attributes; native adapters use their documented theme APIs.
+
 - Establish hierarchy with spacing, alignment, weight, and content grouping before adding effects.
 - Keep primary actions visually dominant and destructive actions unmistakable.
 - Use `surface-muted` to group supporting content and `surface-strong` sparingly for emphasis.

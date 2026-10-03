@@ -157,6 +157,13 @@ and Spanish defaults when `locales` is omitted.
 accessibility contract without replacing form state. Native-backed controls forward refs to their
 submitted DOM controls and work directly with React Hook Form's `register()`.
 
+Native form resets defer past the browser's default action and honor a cancelled `reset` event:
+`DatePicker`, `DateRangeInput`, `PhoneInput`, and `Combobox` only restore uncontrolled defaults when
+the reset is not prevented, and leave a controlled `value` untouched. `DatePicker` calendar
+selection fires the native `onChange` exactly once, matching typed input. `DateRangeInput` attaches
+its reset listener even without `name`, honoring an explicit `form` id as well as the nearest
+ancestor form.
+
 For controlled composites, install the optional adapter:
 
 ```bash
@@ -224,6 +231,17 @@ customize its visible feedback while the localized label props remain the access
 Stable `data-slot` hooks expose the idle, copied, and error parts.
 
 ## Data visualization
+
+The web visualization milestone adds `WaterfallChart` for signed changes and explicit totals, and
+`Histogram` for precomputed numeric bins (`frequency="density"` for unequal widths). Line charts
+support explicit continuous axes, annotations, optional keyboard/pointer/touch inspection, and
+synchronized cursors. Heatmaps show labeled axes, a color legend, and explicit missing cells.
+See the [visualization contracts](../../docs/data-visualization.md) and
+[interactive web example](https://lumen.santi020k.com/docs/web/data-visualization).
+
+Use `interactive`, `syncGroup`, and optional `cursor`/`onCursorChange` on `LineChart`. A supplied
+`cursor` is controlled; the owner must accept requests before the selection changes.
+
 
 `Sparkline`, `BarChart`, `LineChart`, `PieChart`, `ScatterChart`, `Heatmap`, `RangeChart`, and
 `ComboChart` use the shared chart contracts and
@@ -428,6 +446,8 @@ shared selectable/sortable data attributes remain available for app-level adapte
 `useTabs` keeps the selected trigger visible when a narrow horizontal list scrolls. The package
 also exports `LumenTabsChangeDetail` and `LumenTabsChangeEvent` for integrations that consume the
 shared `ui:tabs-change` contract.
+
+Keyboard navigation stays within the current tab group when tabs are nested and skips disabled triggers.
 
 ## Kanban boards
 
@@ -652,6 +672,10 @@ execution and use `ui:editor-command` only for completion notifications. React a
 `useRichTextEditor({ commandHandler })`. Disable native toolbar state syncing when the external
 engine owns it. See the [editor guidance](../../docs/ai-usage.md).
 
+With native state enabled, `useRichTextEditor` initializes toolbar toggle states on mount,
+including `aria-pressed`, before the first editing interaction. External command handlers
+disable this synchronization by default so the application can own toolbar state.
+
 ## Phone presentation in v4
 
 Phone inputs bundle the same offline flag artwork on every platform. The selected country shows
@@ -679,6 +703,10 @@ Enter commits an active option; text editing and composition remain native. Esca
 nested control at a time. See the [shared keyboard contract](../../docs/ai-usage.md#combobox-keyboard-behavior-in-v4)
 for dynamic options, controlled inputs and migration guidance.
 
+Combobox also supports native form reset: resetting the owning form restores an uncontrolled
+`defaultValue`, closes the open option list, and clears the active selection without emitting
+`onChange`. A controlled `value` is left unchanged.
+
 ## Content flow
 
 Stack and Grid own sibling spacing. Their gap accepts `related`, `group` (default) and `section`,
@@ -705,6 +733,46 @@ React `VirtualList` accepts typed `items`, `getKey` and `renderItem` for data mo
 Only the visible window, overscan and focused neighbors mount. Stable keys retain row identity;
 applications own offscreen editing state. See [data rendering](../../docs/virtual-list-data.md) for
 setup, lifecycle, accessibility and the mounted-mode tradeoff.
+
+### Compound dialog tasks
+
+`DialogHeader`, `DialogTitle`, `DialogBody`, `DialogFooter`, and `DialogClose`
+compose long forms with fixed actions and an independently scrolling body. Keep
+`DialogBody` directly inside `Dialog`. Give `DialogTitle` an `id` and reference it
+from `Dialog aria-labelledby`; `as` supports `h2`, `h3`, and `h4`.
+`DialogClose` accepts Button props, honors `onClick` cancellation, and requests
+closure through the enclosing Dialog controller, including controlled dialogs.
+The four static structural parts are also exported from `@santi020k/lumen-react/server`.
+
+```tsx
+<Dialog open={open} onOpenChange={setOpen} aria-labelledby="record-title">
+  <DialogHeader><DialogTitle id="record-title">Edit record</DialogTitle></DialogHeader>
+  <DialogBody><Form id="record-form"><Input name="name" aria-label="Name" /></Form></DialogBody>
+  <DialogFooter>
+    <DialogClose variant="outline">Cancel</DialogClose>
+    <Button type="submit" form="record-form">Save</Button>
+  </DialogFooter>
+</Dialog>
+```
+
+`FileUpload selectedFilesLabel` accepts localized text containing `{count}`.
+Accepted native form resets clear selected-file feedback; cancelled resets preserve it.
+
+### Rich description rows
+
+`DescriptionItem`, `DescriptionTerm`, and `DescriptionDetail` accept native props
+and refs and render `div`, `dt`, and `dd`. Compose them inside `Descriptions` for
+rich values, alongside the existing `items` array when needed. The three static
+parts are also available from `@santi020k/lumen-react/server` for use inside a native `dl`.
+
+```tsx
+<Descriptions>
+  <DescriptionItem>
+    <DescriptionTerm>Status</DescriptionTerm>
+    <DescriptionDetail><Badge variant="success">Active</Badge></DescriptionDetail>
+  </DescriptionItem>
+</Descriptions>
+```
 
 ## Dashboard composition
 

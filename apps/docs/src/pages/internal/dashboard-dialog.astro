@@ -1,0 +1,52 @@
+---
+import '@santi020k/lumen/styles.css'
+
+import {
+  Button, Container, Dialog, DialogBody, DialogClose, DialogFooter,
+  DialogHeader, DialogTitle, Form, Input, Label, Stack
+} from '@santi020k/lumen-astro'
+import UIPrimitives from '@santi020k/lumen-astro/runtime'
+
+const fields = Array.from({ length: 20 }, (_, index) => index + 1)
+---
+
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Dashboard dialog verification</title>
+  </head>
+  <body>
+    <Container as="main" size="md">
+      <h1>Dashboard dialog task</h1>
+      <Button data-ui-dialog-trigger="record-dialog">Edit record</Button>
+      <Dialog id="record-dialog" aria-labelledby="record-title">
+        <DialogHeader><DialogTitle id="record-title">Edit a long record</DialogTitle></DialogHeader>
+        <DialogBody>
+          <Form id="record-form">
+            <Stack gap="md">
+              {fields.map(index => (
+<Stack gap="xs">
+                <Label for={`record-${index}`}>Record field {index}</Label>
+                <Input id={`record-${index}`} name={`field-${index}`} />
+              </Stack>
+))}
+            </Stack>
+          </Form>
+        </DialogBody>
+        <DialogFooter>
+          <DialogClose variant="outline">Cancel</DialogClose>
+          <Button type="submit" form="record-form">Save changes</Button>
+        </DialogFooter>
+      </Dialog>
+    </Container>
+    <UIPrimitives />
+  </body>
+</html>
+
+<style>
+  body { margin: 0; background: hsl(var(--canvas)); color: hsl(var(--ink)); font-family: var(--ui-font); }
+  main { padding-block: 2rem; }
+</style>

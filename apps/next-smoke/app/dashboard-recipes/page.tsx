@@ -26,6 +26,7 @@ const columns: DataTableColumn[] = [
 
 export default function DashboardRecipes() {
   const [query, setQuery] = useState('')
+  const [filtersOpen, setFiltersOpen] = useState(true)
   const [sort, setSort] = useState<DataTableSort | null>(null)
   const [selected, setSelected] = useState('')
   const rows = records.filter(row => row.client.toLowerCase().includes(query.toLowerCase()))
@@ -36,6 +37,8 @@ export default function DashboardRecipes() {
         <Typography><h1>Dashboard composition</h1></Typography>
         <FilterBar
           label="Filters"
+          open={filtersOpen}
+          onOpenChange={setFiltersOpen}
           resultLabel={`${rows.length} matching records`}
           filters={query ? [{ id: 'query', label: 'Search', value: query }] : []}
           onRemoveFilter={() => {

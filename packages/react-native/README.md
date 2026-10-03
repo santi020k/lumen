@@ -50,6 +50,8 @@ Illustration, and Disclosure implementations.
 The structured tier also includes EmptyState, ErrorState, ListRow, Banner, Stat, SectionHeader, StatusBar, and a
 controlled NavigationBar for common product layouts without giving up native composition. `LumenRefreshControl` adds a
 React Native-specific pull-to-refresh indicator using the active semantic theme.
+Navigation destination labels wrap within their available width at accessibility text sizes
+(font scale 2 or greater), preserving their complete spoken names and native text scaling.
 `useLumenNavigationBarVisibility` and `LumenCollapsibleNavigationBar` add an optional scroll-
 responsive treatment for native lists without introducing an animation or navigation dependency.
 `LumenAlertDialog`, `LumenSheet`, `LumenMenu`, and `LumenShareButton` provide controlled native
@@ -448,3 +450,49 @@ import { SearchGraphic } from './SearchGraphic'
   <LumenIcon icon={SearchGraphic} label="Search records" />
 </LumenProvider>
 ```
+
+## Advanced native inputs
+
+`LumenNumberField`, `LumenAutocomplete`, `LumenPasswordField`, `LumenInputOTP` and
+`LumenImageComparison` are root exports. `LumenTimeField` and `LumenTimeSelection` live in
+`@santi020k/lumen-react-native/datetime`, alongside the optional native picker integration.
+
+```tsx
+<LumenNumberField
+  label="Cantidad"
+  value={quantityDraft}
+  onValueChange={setQuantityDraft}
+  locale="es-CO"
+  min="0"
+  max="100"
+  step="0.1"
+  incrementLabel="Aumentar valor"
+  decrementLabel="Disminuir valor"
+  invalidNumberLabel="Ingresa un número válido"
+  outOfRangeLabel="Ingresa un número entre 0 y 100"
+/>
+```
+
+Number values remain raw localized strings, including unfinished drafts. Bounds and steps use
+complete ASCII decimal strings and exact arithmetic, with a 128-character limit. Units, currencies,
+required validation, persistence and submission parsing remain application-owned. Password visibility
+is transient and resets on blur or disabled/read-only state. OTP uses one editor with native code
+hints, normalizes pasted decimal digits and emits `onComplete` only for a changed full code; it never
+verifies or submits the value. Autofill hints require provider testing in the consuming app.
+
+Autocomplete takes `query`, `onQueryChange`, `options`, `onValueChange` and an optional selected
+`value`. Applications filter results, clear stale selection, cancel requests and supply `loading`
+or `resultsErrorMessage` plus `onRetry`. Selection sends the option label before its value. Supply
+localized loading, empty, retry and dismissal labels. Results are bounded in height; applications
+should limit suggestions to a useful small set. Disabling or making the field read-only dismisses
+results without reopening them after re-enabling.
+
+Time selection uses `{ hour, minute }`, inclusive same-day bounds, and explicit cancellation.
+Pass `safeAreaInsets` from the existing application provider. Android uses the system picker;
+other hosts use the native picker inside LumenSheet. Image comparison takes native `before` and
+`after` sources and a controlled `value` from zero to one for the visible after fraction. Its named
+slider provides touch, keyboard and screen-reader adjustment; supply localized image labels and
+`locale` for its percentage.
+
+See the [shared advanced contracts](../../docs/native-components.md#shared-v4-advanced-controls)
+and the [native form-error recipe](../../docs/native-patterns.md#pattern-form-submission-errors).

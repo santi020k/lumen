@@ -75,6 +75,7 @@ struct ComponentsCatalogView: View {
                 } secondary: {
                     visualSection
                 }
+                PlaygroundAdvancedInputsView(matches: { matches($0) })
                 AdaptiveColumns {
                     actionsSection
                 } secondary: {
@@ -109,8 +110,13 @@ struct ComponentsCatalogView: View {
                     LumenEmptyState(
                         "No matching component",
                         systemName: "magnifyingglass",
-                        description: "Try another component name."
-                    )
+                        description: "Try another component name or reset the catalog."
+                    ) {
+                        LumenButton("Reset filters", intent: .secondary) {
+                            query = ""
+                            selectedCategory = .all
+                        }
+                    }
                 }
 
                 LumenStatusBar("Built with LumenUI", tone: .success) {
@@ -135,7 +141,7 @@ struct ComponentsCatalogView: View {
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: LumenSpacing.sm) {
                             LumenBadge("\(componentNames.count) components", tone: .accent)
-                            LumenBadge("6 categories", tone: .neutral)
+                            LumenBadge("Lumen \(PlaygroundCatalog.lumenVersion)", tone: .neutral)
                             LumenBadge("3 platforms", tone: .success)
                         }
                     }
@@ -157,13 +163,19 @@ struct ComponentsCatalogView: View {
                     .padding(.vertical, 1)
                 }
                 catalogCountRow
+                if !query.isEmpty || selectedCategory != .all {
+                    LumenButton("Reset filters", intent: .quiet) {
+                        query = ""
+                        selectedCategory = .all
+                    }
+                }
             }
         }
     }
 
     private var catalogCountRow: some View {
         HStack {
-            LumenText("\(visibleCount) components", variant: .label)
+            LumenText("\(visibleCount) \(visibleCount == 1 ? "component" : "components")", variant: .label)
             Spacer()
             LumenText(
                 selectedCategory == .all ? "iOS · iPadOS · macOS" : LocalizedStringKey(selectedCategory.title),
@@ -962,7 +974,7 @@ struct ComponentsCatalogView: View {
     }
 
     private func isVisible(_ name: String) -> Bool {
-        let matchesQuery = query.isEmpty || name.localizedCaseInsensitiveContains(query)
+        let matchesQuery = PlaygroundComponentSearch.matches(name, query: query, exact: isDeterministicFilter)
         return matchesQuery && selectedCategory.contains(name)
     }
 }

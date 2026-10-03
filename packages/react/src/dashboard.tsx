@@ -32,8 +32,22 @@ export const FilterBar = ({
   onOpenChange, actions, className, children, ...props
 }: FilterBarProps) => (
   <section className={composeClassName('ui-filter-bar', className)} aria-label={label} aria-busy={pending} {...props}>
-    <details open={open ?? defaultOpen} onToggle={event => onOpenChange?.(event.currentTarget.open)}>
-      <summary>{label}</summary>
+    <details
+      open={open ?? defaultOpen}
+      onToggle={event => {
+        if (open === undefined) onOpenChange?.(event.currentTarget.open)
+      }}
+    >
+      <summary onClick={event => {
+        if (open === undefined) return
+
+        event.preventDefault()
+
+        onOpenChange?.(!open)
+      }}
+      >
+        {label}
+      </summary>
       <div className="ui-filter-bar__controls">{children}</div>
     </details>
     <div className="ui-filter-bar__active">

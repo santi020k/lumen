@@ -1,5 +1,6 @@
 # Native playgrounds
 
+
 This branch prepares Lumen 4. Version 4 dependency pins below require the future published release;
 use the local workspace adapters for candidate evaluation. Existing store builds remain separate
 from this revision's validation.
@@ -27,6 +28,16 @@ intentionally macOS-specific controls.
 The native Apple and Android galleries are also prepared as one public **Lumen Playground** product.
 See [Publishing Lumen Playground](playground-publication.md) for listing copy, shared assets,
 privacy declarations, signed release candidates, staged testing, and production gates.
+
+## Lumen 4 candidate
+
+The repository playground consumes the current local Lumen 4 adapter; it does not depend on
+a published v4 artifact. The Components header displays the adapter release version generated
+from the workspace manifest. Search accepts labels and component IDs (for example,
+`date-range-field` or `DateRangeField`), ignores surrounding whitespace, and supports
+case-insensitive partial matches. Reset filters returns to the complete catalog. Deterministic
+capture launches match a complete component name. Store and Expo updates require the separate
+publication workflow.
 
 ## First-time repository setup
 

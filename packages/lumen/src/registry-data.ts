@@ -175,6 +175,8 @@ export const lumenRegistry = {
         'Heatmap',
         'RangeChart',
         'ComboChart',
+        'Histogram',
+        'WaterfallChart',
         'Stat',
         'Meter'
       ]
@@ -981,6 +983,75 @@ export const lumenRegistry = {
       ]
     },
     {
+      name: 'DialogHeader',
+      type: 'component',
+      description: 'Groups the dialog title and description.',
+      category: 'Overlays',
+      files: [
+        'packages/astro/components/DialogHeader.astro',
+        'packages/astro/styles/lumen.css'
+      ],
+      dependencies: [
+        'styles'
+      ]
+    },
+    {
+      name: 'DialogTitle',
+      type: 'component',
+      description: 'Provides a semantic heading for dialog labeling.',
+      category: 'Overlays',
+      files: [
+        'packages/astro/components/DialogTitle.astro',
+        'packages/astro/styles/lumen.css'
+      ],
+      dependencies: [
+        'styles'
+      ]
+    },
+    {
+      name: 'DialogBody',
+      type: 'component',
+      description: 'Scrolls long task content while keeping actions visible.',
+      category: 'Overlays',
+      files: [
+        'packages/astro/components/DialogBody.astro',
+        'packages/astro/styles/lumen.css'
+      ],
+      dependencies: [
+        'styles'
+      ]
+    },
+    {
+      name: 'DialogFooter',
+      type: 'component',
+      description: 'Keeps dialog actions outside the scrolling body.',
+      category: 'Overlays',
+      files: [
+        'packages/astro/components/DialogFooter.astro',
+        'packages/astro/styles/lumen.css'
+      ],
+      dependencies: [
+        'styles'
+      ]
+    },
+    {
+      name: 'DialogClose',
+      type: 'component',
+      description: 'Closes the enclosing dialog through an accessible button.',
+      category: 'Overlays',
+      files: [
+        'packages/astro/components/DialogClose.astro',
+        'packages/astro/styles/lumen.css',
+        'packages/astro/components/Button.astro',
+        'packages/astro/runtime/UIPrimitives.astro'
+      ],
+      dependencies: [
+        'styles',
+        'Button',
+        'runtime'
+      ]
+    },
+    {
       name: 'Direction',
       type: 'component',
       description: 'Controls directional layout and text flow.',
@@ -1371,10 +1442,13 @@ export const lumenRegistry = {
       files: [
         'packages/astro/components/LineChart.astro',
         'packages/astro/components/Chart.astro',
+        'packages/astro/internal/ChartInspection.astro',
+        'packages/astro/runtime/controllers/charts.ts',
         'packages/astro/styles/lumen.css'
       ],
       dependencies: [
         'Chart',
+        'Button',
         'styles'
       ]
     },
@@ -2497,6 +2571,45 @@ export const lumenRegistry = {
       ]
     },
     {
+      name: 'DescriptionItem',
+      type: 'component',
+      description: 'Composes rich description item content.',
+      category: 'Data display',
+      files: [
+        'packages/astro/components/DescriptionItem.astro',
+        'packages/astro/styles/lumen.css'
+      ],
+      dependencies: [
+        'styles'
+      ]
+    },
+    {
+      name: 'DescriptionTerm',
+      type: 'component',
+      description: 'Composes rich description term content.',
+      category: 'Data display',
+      files: [
+        'packages/astro/components/DescriptionTerm.astro',
+        'packages/astro/styles/lumen.css'
+      ],
+      dependencies: [
+        'styles'
+      ]
+    },
+    {
+      name: 'DescriptionDetail',
+      type: 'component',
+      description: 'Composes rich description detail content.',
+      category: 'Data display',
+      files: [
+        'packages/astro/components/DescriptionDetail.astro',
+        'packages/astro/styles/lumen.css'
+      ],
+      dependencies: [
+        'styles'
+      ]
+    },
+    {
       name: 'Popconfirm',
       type: 'component',
       category: 'Overlays',
@@ -2673,6 +2786,38 @@ export const lumenRegistry = {
         'packages/astro/styles/lumen.css'
       ],
       dependencies: [
+        'styles'
+      ]
+    },
+    {
+      name: 'Histogram',
+      type: 'component',
+      category: 'Data display',
+      description: 'Shows application-supplied numeric bins using counts or frequency density.',
+      files: [
+        'packages/astro/components/Histogram.astro',
+        'packages/astro/internal/IntervalChart.astro',
+        'packages/astro/components/Chart.astro',
+        'packages/astro/styles/lumen.css'
+      ],
+      dependencies: [
+        'Chart',
+        'styles'
+      ]
+    },
+    {
+      name: 'WaterfallChart',
+      type: 'component',
+      category: 'Data display',
+      description: 'Explains signed changes and explicit totals with an accessible balance table.',
+      files: [
+        'packages/astro/components/WaterfallChart.astro',
+        'packages/astro/internal/IntervalChart.astro',
+        'packages/astro/components/Chart.astro',
+        'packages/astro/styles/lumen.css'
+      ],
+      dependencies: [
+        'Chart',
         'styles'
       ]
     },

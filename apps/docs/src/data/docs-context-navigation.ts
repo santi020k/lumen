@@ -54,6 +54,7 @@ const contextLinks: Record<DocsPlatformId | 'all', DocsContextLink[]> = {
     { href: '/docs/web', label: 'Overview', match: 'exact' },
     { href: '/docs/components', label: 'Components', match: 'prefix' },
     { href: '/docs/web/playground', label: 'Playground', match: 'prefix' },
+    { href: '/docs/web/data-visualization', label: 'Data visualization', match: 'prefix' },
     { href: '/docs/frameworks/astro', label: 'Astro', match: 'prefix' },
     { href: '/docs/frameworks/react', label: 'React', match: 'prefix' },
     { href: '/docs/frameworks/elements', label: 'Elements', match: 'prefix' },

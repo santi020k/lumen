@@ -485,3 +485,40 @@ in addition to `enabled`. Read-only fields also lock country selection. `LumenCo
 `LumenPhoneNumberView` expose the same artwork and normalized read-only phone presentation.
 Country names and calling codes remain the accessible selector label. The flag source and license
 are documented in [flags/README.md](../../flags/README.md); no external flag request is made.
+
+## Advanced native inputs
+
+On iOS, macOS and visionOS, `LumenNumberField`, `LumenTimeField`, `LumenAutocomplete`,
+`LumenPasswordField`, `LumenInputOTP` and `LumenImageComparison` provide controlled native editing
+and comparison. Supply application-localized String labels and read locale from the environment.
+
+```swift
+LumenNumberField(
+    "Cantidad", text: $quantityDraft, min: "0", max: "100", step: "0.1",
+    invalidNumberLabel: "Ingresa un número válido",
+    outOfRangeLabel: "Ingresa un número entre 0 y 100",
+    incrementLabel: "Aumentar valor", decrementLabel: "Disminuir valor"
+)
+.environment(\.locale, Locale(identifier: "es_CO"))
+```
+
+Numbers retain raw drafts and use exact bounded decimal arithmetic. Configuration uses ASCII
+strings; display uses locale-specific digits and separators. Do not convert money to Double to
+consume a field. `LumenTimeField` uses `Binding<LumenTimeSelection?>`, same-day bounds and an explicit
+Confirm/Cancel draft. The operating system owns clock presentation and time-format preference.
+
+Autocomplete takes `Binding<String>` for its query, `Binding<Value?>` for selection and
+`LumenAutocompleteOption<Value>` values conforming to Hashable. Applications own filtering,
+cancellation and clearing stale selection as the query changes. Loading, empty, result error and
+retry states are explicit, and disabling/read-only dismisses results. Keep suggestions to a small
+useful set. Password visibility resets on blur and when editing is disabled; native autofill hints
+use a password fallback for new passwords on macOS 13. OTP uses one native editor, preserves paste
+and selection, and never submits or verifies its completion automatically. Provider suggestions
+require consumer validation.
+
+Image comparison accepts before/after view builders and a `Binding<Double>` for the visible after
+fraction from zero to one. The native slider supplies accessible adjustment and localized percentage;
+image content, loading and analysis remain application-owned.
+
+See the [shared advanced contracts](../../docs/native-components.md#shared-v4-advanced-controls)
+and the [native form-error recipe](../../docs/native-patterns.md#pattern-form-submission-errors).

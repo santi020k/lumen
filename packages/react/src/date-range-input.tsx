@@ -53,6 +53,18 @@ const hidePanel = (panel: HTMLElement) => {
 
 const isoDate = (date: string): string => date
 
+const resolveRangeInputForm = (root: HTMLElement | null, formId: string | undefined): HTMLFormElement | null => {
+  if (!root) return null
+
+  if (formId !== undefined) {
+    const owner = root.ownerDocument.getElementById(formId)
+
+    return owner instanceof HTMLFormElement ? owner : null
+  }
+
+  return root.closest('form')
+}
+
 const observePanelPosition = (panel: HTMLElement, control: HTMLElement, position: () => void) => {
   const viewport = window.visualViewport
 
@@ -239,13 +251,13 @@ export const DateRangeInput = ({
   validate, renderSummary, formatDate = isoDate, ...calendarProps
 }: DateRangeInputProps) => {
   const { open, draft, changeOpen, setDraft } = useRangeDraft(value, disabled, readOnly)
-  const inputRef = useRef<HTMLInputElement>(null)
+  const wrapperRef = useRef<HTMLDivElement>(null)
   const messageId = useId()
   const validDraft = isCalendarRangeValid(draft, calendarProps.min, calendarProps.max)
   const error = rangeError(draft, { ...calendarProps, labels, validate })
 
   useEffect(() => {
-    const owner = inputRef.current?.form
+    const owner = resolveRangeInputForm(wrapperRef.current, form)
     let active = true
     let resetTimer: ReturnType<typeof globalThis.setTimeout> | undefined
 
@@ -253,7 +265,7 @@ export const DateRangeInput = ({
       globalThis.clearTimeout(resetTimer)
 
       resetTimer = globalThis.setTimeout(() => {
-        if (!active || event.defaultPrevented || !inputRef.current?.isConnected) return
+        if (!active || event.defaultPrevented || !wrapperRef.current?.isConnected) return
 
         changeOpen(false)
       })
@@ -268,13 +280,13 @@ export const DateRangeInput = ({
 
       owner?.removeEventListener('reset', reset)
     }
-  }, [form, name, changeOpen])
+  }, [form, changeOpen])
 
   return (
-    <div className={className}>
+    <div className={className} ref={wrapperRef}>
       {name && (
         <>
-          <input ref={inputRef} type="hidden" name={name.start} form={form} value={value.start} disabled={disabled} />
+          <input type="hidden" name={name.start} form={form} value={value.start} disabled={disabled} />
           <input type="hidden" name={name.end} form={form} value={value.end} disabled={disabled} />
         </>
       )}

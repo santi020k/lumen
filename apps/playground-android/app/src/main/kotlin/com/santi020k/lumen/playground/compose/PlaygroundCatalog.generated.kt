@@ -8,6 +8,8 @@ internal data class PlaygroundSection(
     val title: String
 )
 
+internal const val playgroundLumenVersion = "4.0.0"
+
 internal val playgroundSections = listOf(
     PlaygroundSection(
         title = "Foundations",
@@ -34,7 +36,8 @@ internal val playgroundSections = listOf(
             "Menu",
             "Share button",
             "Floating action button",
-            "Tooltip"
+            "Tooltip",
+            "Swipe actions"
         )
     ),
     PlaygroundSection(
@@ -60,7 +63,9 @@ internal val playgroundSections = listOf(
             "Autocomplete",
             "Number field",
             "Password field",
-            "Input OTP"
+            "Input OTP",
+            "Multi select",
+            "Range slider"
         )
     ),
     PlaygroundSection(
@@ -112,7 +117,9 @@ internal val playgroundSections = listOf(
             "Navigation bar",
             "Navigation bar scroll behavior",
             "Navigation bar accessory",
-            "Adaptive navigation scaffold"
+            "Adaptive navigation scaffold",
+            "Top app bar",
+            "Adaptive list detail scaffold"
         )
     )
 )
