@@ -1,7 +1,7 @@
 # Lumen 4 native quality
 
 This record tracks the native improvements authorized for the v4 candidate. The implementation
-branch is `feature/native-v4-quality`, originally based on release commit `d0e9eeb5` and reconciled with committed release revisions `28659627` and `5831f8f0`. Preserve concurrent v4
+branch is `feature/native-v4-quality`, originally based on release commit `d0e9eeb5` and reconciled with committed release revisions `28659627`, `5831f8f0` and `04178a3d`. Preserve concurrent v4
 dependency, icon, web, and Compose-field work. Integrate only completed, verified task changes into
 `release/v4.0.0`; publication requires the repository's separate release approval.
 
@@ -119,17 +119,35 @@ requested. This is not a frame-smoothness pass. The built application, test sour
 report are preserved locally under `.build/native-quality-apple-hitch-ipad*`, based on `0ea68b5b`
 plus the UI-test change. Physical-device hitch collection remains required.
 
-### React Native native-host preparation
+### React Native Android native host
 
 A temporary Android host was generated from candidate `5444fada` using the installed Expo SDK
 57.0.26 and React Native 0.86.3, without dependency installation or tracked app-configuration changes.
 The host lives under `.build/native-quality-react-native-host`, uses the separate local package ID
 `com.santi020k.lumen.playground.reactnative.qualification`, and disables over-the-air updates so
 runtime checks cannot silently load a published bundle. The development-signed release build targets
-arm64 and uses the generated project's SDK/NDK versions. Generation succeeded; native compilation
-is still pending while Gradle installs the required NDK. No React Native native-runtime pass,
-startup result or frame measurement is claimed yet. The build log is
-`.build/native-quality-react-native-android-build.log`.
+arm64 and uses the generated project's SDK/NDK versions. Generation and native release compilation succeeded, including release lint. The initial build
+exhausted the generated Gradle daemon's 512 MiB class-metadata memory limit; only that task's daemon was stopped.
+A retry with 1,024 MiB class-metadata memory and a 2,048 MiB heap passed without skipping checks. External
+Gradle and Expo deprecation warnings remain. The successful build log is
+`.build/native-quality-react-native-android-build-retry.log`.
+
+The preserved APK and installed application both matched SHA-256
+`a76b082553a86a6d3a6c797564a744f8d1827fe5113410619d666b404b43949c`, verified again
+following the flow checks. On the Android 17 emulator, native interactions covered home rendering,
+searching for record 200, list/detail selection, chart descriptions and initial modal input focus.
+A 316-character note was entered with the software keyboard visible; Save remained reachable and
+the exact note plus success feedback appeared in the detail. Temporary screenshots were inspected.
+The artifact, report and screenshots remain under
+`.build/native-quality-react-native-android-runtime`. One process-cold Activity Manager launch took
+1,137 ms; this single observation does not establish a startup threshold or full time-to-interactive.
+The emulator's hardware-keyboard preference prevented automatic IME display on initial focus;
+tapping the notes field opened the software keyboard. Physical focus behavior remains to verify.
+
+These observations use the prepared candidate inputs, before the `04178a3d` appearance-preset and
+other release changes were reconciled. They are historical emulator evidence, not final-candidate,
+iOS, screen-reader, physical-device, stability or frame-smoothness qualification. The updated
+candidate still requires rebuilt native hosts and repeated affected checks.
 
 This follows Expo's [Continuous Native Generation](https://docs.expo.dev/workflow/continuous-native-generation/)
 workflow. Preserve the original app configuration and EAS identity; qualification must not publish
@@ -148,12 +166,13 @@ The canonical `pnpm run validate` initially failed because its loopback fixture 
 After local-server access and snapshot regeneration, it reached `check:security` and failed on three
 high-severity dependency advisories in `node-forge`, `http-cache-semantics`, and `braces`. The reconciled canonical gate, including the six new runtime-parser tests, passed all preceding checks and again stopped at `check:security`. The complete gate remains failed; committed release dependency updates were reconciled into this branch and the audit was rerun, but those three advisories remain.
 
-The selected `release/v4.0.0` contains the initial native implementation and static-graphics work
-through shared ancestor `05e1a20c296c79b7981a4e49ea3d66783ee961da`. The additional Android runtime
-collector, status-bar fix and Apple UI-test commits still require integration. The release checkout
-was clean at revision `5524f4b9` when checked again, but the canonical security gate remains failed.
-Preserve concurrent checkout ownership and serialize the eventual merge in a clean, idle release
-worktree after the required gates pass. Publication remains outside this
+The selected `release/v4.0.0` at committed revision `04178a3d` contains the native implementation,
+static-graphics entrypoints, Android runtime collector and status-bar fix, and Apple UI-test commits
+through `efa3e53a`; Git ancestry verified that containment. The isolated qualification branch was
+fast-forwarded to that committed release revision. This containment is local integration evidence,
+not a passing canonical security gate or publication approval. The shared release checkout has
+unrelated concurrent changes; preserve its ownership. Further task changes require validation and
+serialized integration in a clean, idle release worktree. Publication remains outside this
 implementation authorization. Physical-device and release stability evidence must bind their
 actual tested revision; historical records retain their original attribution and version.
 
