@@ -108,7 +108,9 @@ import {
   getComponentCategory,
   getVisibleComponentNames,
   isAppDestination,
-  isComponentCategory
+  isComponentCategory,
+  normalizeComponentQuery,
+  playgroundLumenVersion
 } from './playground-model'
 import { WorkspaceExample } from './WorkspaceExample'
 
@@ -1222,7 +1224,9 @@ const CatalogFocusPanel = ({
   onSelectComponent,
   showComponentPicker,
   visibleNames
-}: CatalogFocusPanelProps): ReactElement => {
+}: CatalogFocusPanelProps): ReactElement | null => {
+  if (visibleNames.length === 0) return null
+
   if (focusedComponent) {
     const focusedCategory = getComponentCategory(focusedComponent)
 
@@ -1312,7 +1316,7 @@ const CatalogDiscovery = ({
   const themeToggle = getThemeToggleState(theme.scheme)
 
   const focusedComponent = componentNames.find(
-    name => name.toLowerCase() === query.trim().toLowerCase()
+    name => visibleNames.includes(name) && normalizeComponentQuery(name) === normalizeComponentQuery(query)
   )
 
   const showComponentPicker = query.trim().length > 0 || selectedCategory !== 'all'
@@ -1322,6 +1326,9 @@ const CatalogDiscovery = ({
       <View style={styles.hero}>
         <View style={styles.heroCopy}>
           <LumenBadge tone="accent">{Platform.OS}</LumenBadge>
+          <LumenBadge tone="neutral">
+            {`Lumen ${playgroundLumenVersion}`}
+          </LumenBadge>
           <LumenText variant="title">Lumen Playground</LumenText>
           <LumenText tone="soft">
             Explore every public primitive with real React Native state and behavior.
@@ -1358,13 +1365,19 @@ const CatalogDiscovery = ({
       </View>
 
       <View style={styles.catalogMeta}>
-        <LumenText variant="label">
+        <LumenText accessibilityLiveRegion="polite" variant="label">
           {visibleNames.length}
           {' '}
-          components
+          {visibleNames.length === 1 ? 'component' : 'components'}
         </LumenText>
         <LumenText tone="muted" variant="caption">Interactive web · iOS · Android</LumenText>
       </View>
+
+      {showComponentPicker ?
+        (
+          <LumenButton intent="quiet" onPress={onClear}>Reset filters</LumenButton>
+        ) :
+        null}
 
       <CatalogFocusPanel
         focusedComponent={focusedComponent}

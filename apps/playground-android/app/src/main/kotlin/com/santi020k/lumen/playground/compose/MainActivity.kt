@@ -276,14 +276,14 @@ private fun PlaygroundContent(
     var saved by remember { mutableStateOf(false) }
     var showBanner by remember { mutableStateOf(true) }
     var selectedCategory by remember(enhancedDiscovery) {
-        mutableStateOf(if (enhancedDiscovery) playgroundSections.first().title else ALL_CATEGORIES)
+        mutableStateOf(ALL_CATEGORIES)
     }
     val visibleSections = playgroundSections.filter { section ->
         (selectedCategory == ALL_CATEGORIES || section.title == selectedCategory) &&
-            (query.isBlank() || section.names.any { it.contains(query, ignoreCase = true) })
+            section.names.any { matchesComponentQuery(it, query, exact = !enhancedDiscovery) }
     }
     val visibleCount = visibleSections.sumOf { section ->
-        section.names.count { query.isBlank() || it.contains(query, ignoreCase = true) }
+        section.names.count { matchesComponentQuery(it, query, exact = !enhancedDiscovery) }
     }
 
     LumenSurface(
@@ -344,12 +344,27 @@ private fun PlaygroundContent(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    LumenText("$visibleCount components", variant = LumenTextVariant.Label)
                     LumenText(
-                        if (enhancedDiscovery) "$selectedCategory · Android" else "Android · Compose",
+                        "$visibleCount ${if (visibleCount == 1) "component" else "components"}",
+                        variant = LumenTextVariant.Label
+                    )
+                    LumenText(
+                        if (enhancedDiscovery) "$selectedCategory · Lumen $playgroundLumenVersion" else "Android · Compose",
                         variant = LumenTextVariant.Caption,
                         tone = LumenTextTone.Muted
                     )
+                }
+            }
+
+            if (enhancedDiscovery && (query.isNotBlank() || selectedCategory != ALL_CATEGORIES)) {
+                item {
+                    LumenButton(
+                        onClick = {
+                            query = ""
+                            selectedCategory = ALL_CATEGORIES
+                        },
+                        intent = LumenButtonIntent.Quiet
+                    ) { Text("Reset filters") }
                 }
             }
 
@@ -404,7 +419,7 @@ private fun PlaygroundContent(
                             )
                             ChartExample(
                                 section.names.filterTo(mutableSetOf()) { name ->
-                                    query.isBlank() || name.contains(query, ignoreCase = true)
+                                    query.isBlank() || matchesComponentQuery(name, query, exact = !enhancedDiscovery)
                                 }
                             )
                         }
@@ -424,10 +439,13 @@ private fun PlaygroundContent(
                         graphic = { LumenIcon(LumenIconName.Search, contentDescription = null) },
                         actions = {
                             LumenButton(
-                                onClick = { query = "" },
+                                onClick = {
+                                    query = ""
+                                    selectedCategory = ALL_CATEGORIES
+                                },
                                 intent = LumenButtonIntent.Secondary
                             ) {
-                                Text("Clear search")
+                                Text("Reset filters")
                             }
                         }
                     )

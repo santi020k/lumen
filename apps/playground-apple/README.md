@@ -1,5 +1,10 @@
 # Lumen Apple Playground
 
+This candidate uses the local Lumen 4 adapter. Catalog discovery accepts component IDs,
+provides filter reset, and shows the workspace release version. See
+[the v4 playground guide](../../docs/playgrounds.md#lumen-4-candidate) for search and capture behavior.
+
+
 <!-- cspell:words screencapture simctl UDID -->
 
 Install [Lumen Playground from the App Store](https://apps.apple.com/app/id6805250815)
