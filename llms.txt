@@ -49,6 +49,7 @@ Rules for agents:
 - Use ImageComparison for before/after media with matching dimensions, alternative text and a visible localized control label. See docs/image-comparison.md for adapter contracts.
 - Read docs/migrating-to-lumen.md before upgrading to v4, especially date-trigger IDs, loading buttons, hidden semantics, copy feedback and native initializer changes.
 - Do not require Tailwind configuration for Lumen components.
+- Give each outer edge one border and radius owner. Flush images inside rounded frames use Image radius="none"; Image defaults to radius="lg". Use one divider at shared edges, account for padding on inset curves, and check phone/desktop corners and keyboard focus in both themes. Keep artwork clipping scoped so it does not cut off focus rings or overlays. See docs/ai-usage.md for styling rules.
 - Use public tokens: canvas, surface, surface-muted, surface-strong, line, ink, ink-soft, ink-muted, brand, brand-solid, brand-soft, on-brand, accent, success, warning, danger, on-danger.
 - Mount `UIPrimitives` once for interactive Astro primitives.
 - Use `glass` for glass surfaces. The obsolete overlay `surface="glass"` alias is removed.

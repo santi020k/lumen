@@ -44,6 +44,22 @@ individually. Keep foreground/background contrast valid in both light and dark m
 - Provide responsive behavior based on content pressure, not arbitrary device labels.
 - Respect reduced-motion preferences and keep transitions short and functional.
 
+## Borders and rounded compositions
+
+Before styling a composed surface, identify which element owns each visible boundary.
+
+- Let one container own each outer border and radius. Content flush against that container
+  should not repeat its rounding. Lumen `Image` defaults to `radius="lg"`; use
+  `<Image radius="none" ... />` when placing it directly below a header inside a rounded frame.
+  Keep standalone image rounding when appropriate.
+- Use one divider between attached sections rather than overlapping full borders.
+- Inset surfaces separated by padding can own their borders and radii. Account for the inset
+  so the inner and outer curves align instead of blindly applying the same radius.
+- Clip artwork at its frame. Avoid applying clipping to an entire interactive surface when
+  it would cut off focus rings, shadows, or overlays.
+- Inspect the rendered shared edges at phone and desktop widths in light and dark themes.
+  Check for rounded gaps, doubled borders, and clipped keyboard focus.
+
 ## Accessibility and Product States
 
 - Associate every field with a visible label or an equivalent accessible name.
