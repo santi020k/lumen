@@ -46,6 +46,40 @@ Compare only runs with the same device, build mode, OS, display settings, workfl
 Keep raw samples and inspect screenshots before choosing a regression threshold. A slower or
 sparser result remains evidence to investigate; do not turn it into a passing budget.
 
+## Apple workspace XCTest measurements
+
+Choose an available iPhone or iPad simulator explicitly and run the separate local performance
+scheme from the repository root:
+
+```bash
+xcodebuild -project apps/playground-apple/LumenApplePlayground.xcodeproj \
+  -scheme LumenApplePlaygroundPerformance \
+  -destination 'platform=iOS Simulator,id=<simulator-udid>' \
+  -derivedDataPath .build/apple-workspace-performance \
+  -resultBundlePath .build/apple-workspace-performance.xcresult \
+  CODE_SIGNING_ALLOWED=NO test
+xcrun xcresulttool get test-results metrics \
+  --path .build/apple-workspace-performance.xcresult
+```
+
+Use a fresh result-bundle path for each run. Record the source revision, simulator model, OS,
+text size and host workload alongside the result bundle. The UI test runner needs iOS 17 or
+later, matching the installed XCTest libraries; the application's iOS 16 minimum is unchanged.
+Archive and distribution schemes are separate.
+
+The tests collect five responsive-launch samples with `XCTApplicationLaunchMetric` and five
+scrolling samples with `XCTOSSignpostMetric.scrollingAndDecelerationMetric`. XCTest discards its
+initial warm-up iteration. Launch measurement ends at the first responsive frame, rather than
+complete workflow readiness. Scrolling setup and navigation occur outside the measured interval;
+the test also verifies that the list moved. Inspect the actual metrics in the result bundle:
+a green test without frame measurements does not establish a scrolling performance budget.
+The initial iPad Simulator bundle exposed scroll duration only, without frame or hitch counts;
+frame-smoothness qualification therefore remains pending.
+The keyboard test types and saves a long note, checks the rendered saved value and keeps screenshots.
+
+These are local Simulator checks. Repeat on representative phone and tablet layouts and preserve
+the raw samples before selecting regression thresholds or claiming a hardware result.
+
 ## Remaining platform qualification
 
 React Native bytecode budgets use `pnpm run check:react-native-imports`, including the static graphic

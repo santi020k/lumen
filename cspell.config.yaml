@@ -374,6 +374,11 @@ words:
   - xcodegen
   - xcodeproj
   - xcassets
+  - XCUI
+  - XCTOS
+  - udid
+  - xcresult
+  - xcresulttool
   - reactnative
   - reactjs
   - webdev
