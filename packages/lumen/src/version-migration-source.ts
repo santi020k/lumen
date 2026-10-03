@@ -169,7 +169,7 @@ const inspectGap = (context: SourceContext, tag: Tag): void => {
     return
   }
 
-  const replacement = layoutGaps[value]
+  const replacement = Object.hasOwn(layoutGaps, value) ? layoutGaps[value] : undefined
 
   if (!replacement) return
 

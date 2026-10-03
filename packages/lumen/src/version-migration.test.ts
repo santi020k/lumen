@@ -111,6 +111,12 @@ const example = '<Flow gap="md" />'
     }
   })
 
+  test.each(['constructor', '__proto__', 'toString'])('preserves unsupported gap %s rather than inherited object values', gap => {
+    const source = `import { Stack } from '@santi020k/lumen-react'\n<Stack gap="${gap}" />`
+
+    expect(migrateLumenVersionSource(source, 'Screen.tsx', 'v4').source).toBe(source)
+  })
+
   test('one v4 apply composes layout and SDK edits into the same idempotent ledger', async () => {
     const root = await mkdtemp(join(tmpdir(), 'lumen-v4-composed-'))
     const screen = join(root, 'Screen.tsx')

@@ -21,6 +21,12 @@ describe('installed version compatibility', () => {
     expect(result.data.guidance).toContain('installed public types')
   })
 
+  test.each(['__proto__', 'constructor', 'toString'])('treats inherited metadata key %s as unknown', name => {
+    expect(checkCompatibility({ packageVersions: { [name]: '4.0.0' } }).data.checks).toEqual([
+      { catalogVersion: null, installedVersion: '4.0.0', packageName: name, status: 'unknown' }
+    ])
+  })
+
   test('unknown packages and empty inventory require local verification', () => {
     expect(checkCompatibility({ packageVersions: {} }).data.compatible).toBe(false)
     expect(checkCompatibility({ packageVersions: { other: '4.0.0' } }).data.checks).toEqual([

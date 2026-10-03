@@ -51,6 +51,12 @@ import { Other } from '@modelcontextprotocol/sdk/types.js'
     expect(migrateLumenV4Source(result.source).changes).toEqual([])
   })
 
+  test.each(['__proto__', 'constructor', 'toString', 'hasOwnProperty'])('never rewrites inherited module key %s', name => {
+    const source = `import value from '${name}'`
+
+    expect(migrateLumenV4Source(source)).toEqual({ changes: [], source })
+  })
+
   test('handles repeated import keywords on one adversarial line without edits', () => {
     const source = 'import '.repeat(50000)
 

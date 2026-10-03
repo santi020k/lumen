@@ -38,12 +38,12 @@ interface Token {
   value: string
 }
 
-const modules: Readonly<Record<string, string>> = {
-  '@modelcontextprotocol/sdk/client/index.js': '@modelcontextprotocol/client',
-  '@modelcontextprotocol/sdk/client/stdio.js': '@modelcontextprotocol/client/stdio',
-  '@modelcontextprotocol/sdk/server/mcp.js': '@modelcontextprotocol/server',
-  '@modelcontextprotocol/sdk/server/stdio.js': '@modelcontextprotocol/server/stdio'
-}
+const modules = new Map([
+  ['@modelcontextprotocol/sdk/client/index.js', '@modelcontextprotocol/client'],
+  ['@modelcontextprotocol/sdk/client/stdio.js', '@modelcontextprotocol/client/stdio'],
+  ['@modelcontextprotocol/sdk/server/mcp.js', '@modelcontextprotocol/server'],
+  ['@modelcontextprotocol/sdk/server/stdio.js', '@modelcontextprotocol/server/stdio']
+])
 
 const sourceExtensions = new Set(['.astro', '.html', '.htm', '.js', '.jsx', '.mjs', '.ts', '.tsx', '.swift', '.kt', '.kts'])
 const ignored = new Set(['.git', '.build', '.astro', '.next', '.expo', '.turbo', '.wrangler', '.swiftpm', 'node_modules', 'dist', 'build', 'coverage', 'Pods', 'DerivedData', 'vendor'])
@@ -153,7 +153,7 @@ const planImport = (source: string, token: Token, state: ImportState, startsLine
 
   state.inImport = false
 
-  const replacement = modules[token.value]
+  const replacement = modules.get(token.value)
 
   if (!state.afterFrom) return undefined
 

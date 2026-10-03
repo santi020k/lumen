@@ -28,7 +28,9 @@ export const checkCompatibility = (
 ): LumenToolResult<LumenCompatibilityReport> => {
   const checks = Object.entries(args.packageVersions).sort(([left], [right]) => left.localeCompare(right))
     .map(([packageName, installedVersion]): LumenVersionCheck => {
-      const catalogVersion = data.meta.packageVersions[packageName] ?? null
+      const catalogVersion = Object.hasOwn(data.meta.packageVersions, packageName) ?
+        data.meta.packageVersions[packageName] ?? null :
+        null
 
       return {
         catalogVersion,
