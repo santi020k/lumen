@@ -1,0 +1,18 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
+interface Props extends HTMLAttributes<'dd'> {
+  class?: string | null
+  className?: string
+}
+
+const { class: classProp = '', className = '', ...rest } = Astro.props
+
+const { classList, passthrough } = resolveLumenAstroProps(
+  rest, ['ui-description-detail', 'ui-descriptions__detail'], classProp, className
+)
+---
+
+<dd class:list={classList} data-slot="description-detail" {...passthrough}><slot /></dd>

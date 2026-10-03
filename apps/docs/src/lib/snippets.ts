@@ -880,7 +880,26 @@ const compoundDialogElementsExample = `${elementsHeader}
 </lumen-dialog>
 `
 
+const compoundDescriptionsElementsExample = `${elementsHeader}
+
+<lumen-descriptions role="group" aria-label="Record details">
+  <lumen-description-item>
+    <lumen-description-term id="record-status">Status</lumen-description-term>
+    <lumen-description-detail aria-labelledby="record-status"><lumen-badge variant="success">Active</lumen-badge></lumen-description-detail>
+  </lumen-description-item>
+  <lumen-description-item>
+    <lumen-description-term id="record-link">Related record</lumen-description-term>
+    <lumen-description-detail aria-labelledby="record-link"><a href="/docs/components/descriptions">View record details</a></lumen-description-detail>
+  </lumen-description-item>
+</lumen-descriptions>
+`
+
 const elementsOverrides: Record<string, string> = {
+  Descriptions: compoundDescriptionsElementsExample,
+  DescriptionItem: compoundDescriptionsElementsExample,
+  DescriptionTerm: compoundDescriptionsElementsExample,
+  DescriptionDetail: compoundDescriptionsElementsExample,
+
   DialogHeader: compoundDialogElementsExample,
   DialogTitle: compoundDialogElementsExample,
   DialogBody: compoundDialogElementsExample,

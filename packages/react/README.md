@@ -729,3 +729,19 @@ The four static structural parts are also exported from `@santi020k/lumen-react/
 
 `FileUpload selectedFilesLabel` accepts localized text containing `{count}`.
 Accepted native form resets clear selected-file feedback; cancelled resets preserve it.
+
+### Rich description rows
+
+`DescriptionItem`, `DescriptionTerm`, and `DescriptionDetail` accept native props
+and refs and render `div`, `dt`, and `dd`. Compose them inside `Descriptions` for
+rich values, alongside the existing `items` array when needed. The three static
+parts are also available from `@santi020k/lumen-react/server` for use inside a native `dl`.
+
+```tsx
+<Descriptions>
+  <DescriptionItem>
+    <DescriptionTerm>Status</DescriptionTerm>
+    <DescriptionDetail><Badge variant="success">Active</Badge></DescriptionDetail>
+  </DescriptionItem>
+</Descriptions>
+```

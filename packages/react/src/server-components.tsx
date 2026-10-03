@@ -435,3 +435,18 @@ export type DialogFooterProps = ComponentPropsWithRef<'footer'>
 export const DialogFooter = ({ className, ...props }: DialogFooterProps) => (
   <footer {...props} className={composeClassName('ui-dialog-footer', className)} data-slot="dialog-footer" />
 )
+
+export type DescriptionItemProps = ComponentPropsWithRef<'div'>
+export const DescriptionItem = ({ className, ...props }: DescriptionItemProps) => (
+  <div {...props} className={composeClassName('ui-description-item', 'ui-descriptions__item', className)} data-slot="description-item" />
+)
+
+export type DescriptionTermProps = ComponentPropsWithRef<'dt'>
+export const DescriptionTerm = ({ className, ...props }: DescriptionTermProps) => (
+  <dt {...props} className={composeClassName('ui-description-term', 'ui-descriptions__term', className)} data-slot="description-term" />
+)
+
+export type DescriptionDetailProps = ComponentPropsWithRef<'dd'>
+export const DescriptionDetail = ({ className, ...props }: DescriptionDetailProps) => (
+  <dd {...props} className={composeClassName('ui-description-detail', 'ui-descriptions__detail', className)} data-slot="description-detail" />
+)

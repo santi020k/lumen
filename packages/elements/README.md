@@ -548,3 +548,23 @@ Associate the heading id with the dialog's `aria-labelledby`.
 A cancelled click or disabled native button does not dismiss the dialog. Nested
 close actions only dismiss their own dialog. `lumen-file-upload` accepts
 `selected-files-label` containing `{count}` for localized multiple-file feedback.
+
+### Rich description rows
+
+Register `Descriptions`, `DescriptionItem`, `DescriptionTerm`, and `DescriptionDetail`
+to compose rich values. The item, term, and detail hosts expose `group`, `term`, and
+`definition` roles respectively. Use a labeled group for the overall collection and
+associate the detail with its term when the relationship needs an explicit label.
+These custom hosts provide ARIA semantics; they are not native `dl`, `dt`, or `dd` tags.
+
+```html
+<lumen-descriptions role="group" aria-label="Record details">
+  <lumen-description-item>
+    <lumen-description-term id="status-label">Status</lumen-description-term>
+    <lumen-description-detail aria-labelledby="status-label"><strong>Active</strong></lumen-description-detail>
+  </lumen-description-item>
+</lumen-descriptions>
+```
+
+For native definition-list markup, place a complete native `dl` with `div`, `dt`,
+and `dd` children inside `lumen-descriptions` instead of nesting custom hosts inside the `dl`.

@@ -1,0 +1,14 @@
+---
+import { Badge, DescriptionDetail, DescriptionItem, Descriptions, DescriptionTerm, Link } from '@santi020k/lumen-astro'
+---
+
+<Descriptions columns={2} aria-label="Record details">
+  <DescriptionItem>
+    <DescriptionTerm>Status</DescriptionTerm>
+    <DescriptionDetail><Badge variant="success">Active</Badge></DescriptionDetail>
+  </DescriptionItem>
+  <DescriptionItem>
+    <DescriptionTerm>Related record</DescriptionTerm>
+    <DescriptionDetail><Link href="/docs/components/descriptions">View record details</Link></DescriptionDetail>
+  </DescriptionItem>
+</Descriptions>

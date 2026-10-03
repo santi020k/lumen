@@ -153,6 +153,9 @@
       "Segmented": "b16527cf40f8c16082850895d2e199696c821792520d33766b5478d91c865d5e",
       "Toolbar": "51a37716b40423443e0dfd8d772152005844cd3a94319285a3ab859acd183144",
       "Descriptions": "b4df2c68aa2165fed37b36b930fdf088c481362ae560206a35bd3a6e38fc1e7c",
+      "DescriptionItem": "068aa76c935061bb708d4ce38c165f769c872670241c303592eb60c251deda04",
+      "DescriptionTerm": "604a10c9f30654331bc2c0d9617e4be30bea4f226f4805132eef81ab9454ecfa",
+      "DescriptionDetail": "234861d7fe60abf4f09536cacca84e89c5be21fe87115c91618efa60df8556cc",
       "Popconfirm": "a7c0a9f7661ac93fca21dbf90da4e55dad2dd52eec3ed64e027cbfb1c777b630",
       "Transfer": "5045bc197c5d0209973288dbf52506b844fd9bfe781e773e472f47772262e4bb",
       "Cascader": "d10878826e478ff6ab1b41e038c27fed678b854a0bfe45c4e4e3fd2c0cb574a8",
@@ -33733,6 +33736,438 @@
     {
       "apiReference": [
         {
+          "attribute": "children",
+          "defaultValue": "required",
+          "description": "Composes a description item. Astro and React render div; Elements expose group semantics on the host.",
+          "values": "rich content"
+        },
+        {
+          "attribute": "class, className",
+          "defaultValue": "\"\"",
+          "description": "Merges custom classes with the generated ui-* root classes.",
+          "values": "string"
+        },
+        {
+          "attribute": "...native attributes",
+          "defaultValue": "-",
+          "description": "Forwards standard attributes to the root element unless the component consumes them.",
+          "values": "HTML attributes"
+        }
+      ],
+      "astroSource": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ninterface Props extends HTMLAttributes<'div'> {\n  class?: string | null\n  className?: string\n}\n\nconst { class: classProp = '', className = '', ...rest } = Astro.props\n\nconst { classList, passthrough } = resolveLumenAstroProps(\n  rest, ['ui-description-item', 'ui-descriptions__item'], classProp, className\n)\n---\n\n<div class:list={classList} data-slot=\"description-item\" {...passthrough}><slot /></div>\n",
+      "category": "Data display",
+      "collections": [
+        "Structured data"
+      ],
+      "contract": null,
+      "dependencies": [
+        "styles"
+      ],
+      "description": "Composes rich description item content.",
+      "behavior": {
+        "astro": "none",
+        "elements": "registered-element",
+        "react": "component"
+      },
+      "files": [
+        "packages/astro/components/DescriptionItem.astro",
+        "packages/astro/styles/lumen.css"
+      ],
+      "frameworkDetails": {
+        "astro": {
+          "available": true,
+          "example": "<DescriptionItem>Record item</DescriptionItem>",
+          "importStatement": "import { DescriptionItem } from '@santi020k/lumen-astro'",
+          "language": "astro",
+          "packageName": "@santi020k/lumen-astro",
+          "props": [
+            {
+              "name": "class",
+              "optional": true,
+              "type": "string | null"
+            },
+            {
+              "name": "className",
+              "optional": true,
+              "type": "string"
+            }
+          ],
+          "propsExtends": "HTMLAttributes<'div'>",
+          "source": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ninterface Props extends HTMLAttributes<'div'> {\n  class?: string | null\n  className?: string\n}\n\nconst { class: classProp = '', className = '', ...rest } = Astro.props\n\nconst { classList, passthrough } = resolveLumenAstroProps(\n  rest, ['ui-description-item', 'ui-descriptions__item'], classProp, className\n)\n---\n\n<div class:list={classList} data-slot=\"description-item\" {...passthrough}><slot /></div>\n",
+          "styleImport": "import '@santi020k/lumen-astro/styles.css'"
+        },
+        "elements": {
+          "attributes": [
+            "data-slot",
+            "children",
+            "class, className",
+            "...native attributes"
+          ],
+          "available": true,
+          "behavior": {
+            "mode": "registration",
+            "setup": "Call defineLumenElements() once before rendering Lumen custom elements."
+          },
+          "example": "<lumen-description-item>Record item</lumen-description-item>",
+          "importStatement": "import { defineLumenElements } from '@santi020k/lumen-elements/define'",
+          "language": "html",
+          "packageName": "@santi020k/lumen-elements",
+          "props": [],
+          "propsExtends": "HTMLElement attributes",
+          "registration": "defineLumenElements()",
+          "source": "DescriptionItem: {\n    baseClassName: 'ui-description-item ui-descriptions__item',\n    defaults: { 'data-slot': 'description-item' },\n    role: 'group',\n    tagName: 'lumen-description-item'\n  }",
+          "styleImport": "import '@santi020k/lumen-elements/styles.css'",
+          "tagName": "lumen-description-item"
+        },
+        "react": {
+          "available": true,
+          "example": "<DescriptionItem>Record item</DescriptionItem>",
+          "importStatement": "import { DescriptionItem } from '@santi020k/lumen-react'",
+          "language": "tsx",
+          "packageName": "@santi020k/lumen-react",
+          "props": [],
+          "propsExtends": "ComponentPropsWithRef<'div'>",
+          "source": "export type DescriptionItemProps = ComponentPropsWithRef<'div'>\n\nexport const DescriptionItem = ({ className, ...props }: DescriptionItemProps) => (\n  <div {...props} className={composeClassName('ui-description-item', 'ui-descriptions__item', className)} data-slot=\"description-item\" />\n)",
+          "styleImport": "import '@santi020k/lumen-react/styles.css'"
+        }
+      },
+      "frameworks": {
+        "astro": true,
+        "elements": true,
+        "react": true
+      },
+      "guidance": null,
+      "kebab": "description-item",
+      "keyboardInteractions": [],
+      "keywords": [
+        "and",
+        "choose",
+        "composes",
+        "content",
+        "data",
+        "description",
+        "descriptionitem",
+        "display",
+        "hierarchy",
+        "interaction",
+        "item",
+        "lightest",
+        "required",
+        "rich",
+        "structure",
+        "structured",
+        "supports",
+        "that",
+        "the"
+      ],
+      "name": "DescriptionItem",
+      "props": [
+        {
+          "name": "class",
+          "optional": true,
+          "type": "string | null"
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string"
+        }
+      ],
+      "propsExtends": "HTMLAttributes<'div'>",
+      "recipes": [],
+      "runtimeEvents": []
+    },
+    {
+      "apiReference": [
+        {
+          "attribute": "children",
+          "defaultValue": "required",
+          "description": "Composes a description term. Astro and React render dt; Elements expose term semantics on the host.",
+          "values": "rich content"
+        },
+        {
+          "attribute": "class, className",
+          "defaultValue": "\"\"",
+          "description": "Merges custom classes with the generated ui-* root classes.",
+          "values": "string"
+        },
+        {
+          "attribute": "...native attributes",
+          "defaultValue": "-",
+          "description": "Forwards standard attributes to the root element unless the component consumes them.",
+          "values": "HTML attributes"
+        }
+      ],
+      "astroSource": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ninterface Props extends HTMLAttributes<'dt'> {\n  class?: string | null\n  className?: string\n}\n\nconst { class: classProp = '', className = '', ...rest } = Astro.props\n\nconst { classList, passthrough } = resolveLumenAstroProps(\n  rest, ['ui-description-term', 'ui-descriptions__term'], classProp, className\n)\n---\n\n<dt class:list={classList} data-slot=\"description-term\" {...passthrough}><slot /></dt>\n",
+      "category": "Data display",
+      "collections": [
+        "Structured data"
+      ],
+      "contract": null,
+      "dependencies": [
+        "styles"
+      ],
+      "description": "Composes rich description term content.",
+      "behavior": {
+        "astro": "none",
+        "elements": "registered-element",
+        "react": "component"
+      },
+      "files": [
+        "packages/astro/components/DescriptionTerm.astro",
+        "packages/astro/styles/lumen.css"
+      ],
+      "frameworkDetails": {
+        "astro": {
+          "available": true,
+          "example": "<DescriptionTerm>Record term</DescriptionTerm>",
+          "importStatement": "import { DescriptionTerm } from '@santi020k/lumen-astro'",
+          "language": "astro",
+          "packageName": "@santi020k/lumen-astro",
+          "props": [
+            {
+              "name": "class",
+              "optional": true,
+              "type": "string | null"
+            },
+            {
+              "name": "className",
+              "optional": true,
+              "type": "string"
+            }
+          ],
+          "propsExtends": "HTMLAttributes<'dt'>",
+          "source": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ninterface Props extends HTMLAttributes<'dt'> {\n  class?: string | null\n  className?: string\n}\n\nconst { class: classProp = '', className = '', ...rest } = Astro.props\n\nconst { classList, passthrough } = resolveLumenAstroProps(\n  rest, ['ui-description-term', 'ui-descriptions__term'], classProp, className\n)\n---\n\n<dt class:list={classList} data-slot=\"description-term\" {...passthrough}><slot /></dt>\n",
+          "styleImport": "import '@santi020k/lumen-astro/styles.css'"
+        },
+        "elements": {
+          "attributes": [
+            "data-slot",
+            "children",
+            "class, className",
+            "...native attributes"
+          ],
+          "available": true,
+          "behavior": {
+            "mode": "registration",
+            "setup": "Call defineLumenElements() once before rendering Lumen custom elements."
+          },
+          "example": "<lumen-description-term>Record term</lumen-description-term>",
+          "importStatement": "import { defineLumenElements } from '@santi020k/lumen-elements/define'",
+          "language": "html",
+          "packageName": "@santi020k/lumen-elements",
+          "props": [],
+          "propsExtends": "HTMLElement attributes",
+          "registration": "defineLumenElements()",
+          "source": "DescriptionTerm: {\n    baseClassName: 'ui-description-term ui-descriptions__term',\n    defaults: { 'data-slot': 'description-term' },\n    role: 'term',\n    tagName: 'lumen-description-term'\n  }",
+          "styleImport": "import '@santi020k/lumen-elements/styles.css'",
+          "tagName": "lumen-description-term"
+        },
+        "react": {
+          "available": true,
+          "example": "<DescriptionTerm>Record term</DescriptionTerm>",
+          "importStatement": "import { DescriptionTerm } from '@santi020k/lumen-react'",
+          "language": "tsx",
+          "packageName": "@santi020k/lumen-react",
+          "props": [],
+          "propsExtends": "ComponentPropsWithRef<'dt'>",
+          "source": "export type DescriptionTermProps = ComponentPropsWithRef<'dt'>\n\nexport const DescriptionTerm = ({ className, ...props }: DescriptionTermProps) => (\n  <dt {...props} className={composeClassName('ui-description-term', 'ui-descriptions__term', className)} data-slot=\"description-term\" />\n)",
+          "styleImport": "import '@santi020k/lumen-react/styles.css'"
+        }
+      },
+      "frameworks": {
+        "astro": true,
+        "elements": true,
+        "react": true
+      },
+      "guidance": null,
+      "kebab": "description-term",
+      "keyboardInteractions": [],
+      "keywords": [
+        "and",
+        "choose",
+        "composes",
+        "content",
+        "data",
+        "description",
+        "descriptionterm",
+        "display",
+        "hierarchy",
+        "interaction",
+        "lightest",
+        "required",
+        "rich",
+        "structure",
+        "structured",
+        "supports",
+        "term",
+        "that",
+        "the"
+      ],
+      "name": "DescriptionTerm",
+      "props": [
+        {
+          "name": "class",
+          "optional": true,
+          "type": "string | null"
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string"
+        }
+      ],
+      "propsExtends": "HTMLAttributes<'dt'>",
+      "recipes": [],
+      "runtimeEvents": []
+    },
+    {
+      "apiReference": [
+        {
+          "attribute": "children",
+          "defaultValue": "required",
+          "description": "Composes a description detail. Astro and React render dd; Elements expose definition semantics on the host.",
+          "values": "rich content"
+        },
+        {
+          "attribute": "class, className",
+          "defaultValue": "\"\"",
+          "description": "Merges custom classes with the generated ui-* root classes.",
+          "values": "string"
+        },
+        {
+          "attribute": "...native attributes",
+          "defaultValue": "-",
+          "description": "Forwards standard attributes to the root element unless the component consumes them.",
+          "values": "HTML attributes"
+        }
+      ],
+      "astroSource": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ninterface Props extends HTMLAttributes<'dd'> {\n  class?: string | null\n  className?: string\n}\n\nconst { class: classProp = '', className = '', ...rest } = Astro.props\n\nconst { classList, passthrough } = resolveLumenAstroProps(\n  rest, ['ui-description-detail', 'ui-descriptions__detail'], classProp, className\n)\n---\n\n<dd class:list={classList} data-slot=\"description-detail\" {...passthrough}><slot /></dd>\n",
+      "category": "Data display",
+      "collections": [
+        "Structured data"
+      ],
+      "contract": null,
+      "dependencies": [
+        "styles"
+      ],
+      "description": "Composes rich description detail content.",
+      "behavior": {
+        "astro": "none",
+        "elements": "registered-element",
+        "react": "component"
+      },
+      "files": [
+        "packages/astro/components/DescriptionDetail.astro",
+        "packages/astro/styles/lumen.css"
+      ],
+      "frameworkDetails": {
+        "astro": {
+          "available": true,
+          "example": "<DescriptionDetail>Record detail</DescriptionDetail>",
+          "importStatement": "import { DescriptionDetail } from '@santi020k/lumen-astro'",
+          "language": "astro",
+          "packageName": "@santi020k/lumen-astro",
+          "props": [
+            {
+              "name": "class",
+              "optional": true,
+              "type": "string | null"
+            },
+            {
+              "name": "className",
+              "optional": true,
+              "type": "string"
+            }
+          ],
+          "propsExtends": "HTMLAttributes<'dd'>",
+          "source": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ninterface Props extends HTMLAttributes<'dd'> {\n  class?: string | null\n  className?: string\n}\n\nconst { class: classProp = '', className = '', ...rest } = Astro.props\n\nconst { classList, passthrough } = resolveLumenAstroProps(\n  rest, ['ui-description-detail', 'ui-descriptions__detail'], classProp, className\n)\n---\n\n<dd class:list={classList} data-slot=\"description-detail\" {...passthrough}><slot /></dd>\n",
+          "styleImport": "import '@santi020k/lumen-astro/styles.css'"
+        },
+        "elements": {
+          "attributes": [
+            "data-slot",
+            "children",
+            "class, className",
+            "...native attributes"
+          ],
+          "available": true,
+          "behavior": {
+            "mode": "registration",
+            "setup": "Call defineLumenElements() once before rendering Lumen custom elements."
+          },
+          "example": "<lumen-description-detail>Record detail</lumen-description-detail>",
+          "importStatement": "import { defineLumenElements } from '@santi020k/lumen-elements/define'",
+          "language": "html",
+          "packageName": "@santi020k/lumen-elements",
+          "props": [],
+          "propsExtends": "HTMLElement attributes",
+          "registration": "defineLumenElements()",
+          "source": "DescriptionDetail: {\n    baseClassName: 'ui-description-detail ui-descriptions__detail',\n    defaults: { 'data-slot': 'description-detail' },\n    role: 'definition',\n    tagName: 'lumen-description-detail'\n  }",
+          "styleImport": "import '@santi020k/lumen-elements/styles.css'",
+          "tagName": "lumen-description-detail"
+        },
+        "react": {
+          "available": true,
+          "example": "<DescriptionDetail>Record detail</DescriptionDetail>",
+          "importStatement": "import { DescriptionDetail } from '@santi020k/lumen-react'",
+          "language": "tsx",
+          "packageName": "@santi020k/lumen-react",
+          "props": [],
+          "propsExtends": "ComponentPropsWithRef<'dd'>",
+          "source": "export type DescriptionDetailProps = ComponentPropsWithRef<'dd'>\n\nexport const DescriptionDetail = ({ className, ...props }: DescriptionDetailProps) => (\n  <dd {...props} className={composeClassName('ui-description-detail', 'ui-descriptions__detail', className)} data-slot=\"description-detail\" />\n)",
+          "styleImport": "import '@santi020k/lumen-react/styles.css'"
+        }
+      },
+      "frameworks": {
+        "astro": true,
+        "elements": true,
+        "react": true
+      },
+      "guidance": null,
+      "kebab": "description-detail",
+      "keyboardInteractions": [],
+      "keywords": [
+        "and",
+        "choose",
+        "composes",
+        "content",
+        "data",
+        "description",
+        "descriptiondetail",
+        "detail",
+        "display",
+        "hierarchy",
+        "interaction",
+        "lightest",
+        "required",
+        "rich",
+        "structure",
+        "structured",
+        "supports",
+        "that",
+        "the"
+      ],
+      "name": "DescriptionDetail",
+      "props": [
+        {
+          "name": "class",
+          "optional": true,
+          "type": "string | null"
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string"
+        }
+      ],
+      "propsExtends": "HTMLAttributes<'dd'>",
+      "recipes": [],
+      "runtimeEvents": []
+    },
+    {
+      "apiReference": [
+        {
           "attribute": "title",
           "defaultValue": "\"Are you sure?\"",
           "description": "Sets the concise confirmation question.",
@@ -37335,8 +37770,8 @@
     "readme": "<p align=\"center\">\n  <a href=\"https://lumen.santi020k.com\">\n    <img src=\"./apps/docs/public/logo.svg\" alt=\"Lumen UI\" width=\"233\" height=\"60\">\n  </a>\n</p>\n\n<h1 align=\"center\">Lumen UI</h1>\n\n<p align=\"center\">\n  A cross-platform UI system with 150+ web primitives and shared native foundations.\n</p>\n\n<p align=\"center\">\n  <a href=\"https://lumen.santi020k.com\">Documentation</a>\n  ·\n  <a href=\"https://lumen.santi020k.com/docs/components\">Components</a>\n  ·\n  <a href=\"https://www.figma.com/community/file/1662337342676541513\">Figma library</a>\n  ·\n  <a href=\"https://apps.apple.com/app/id6805250815\">iPhone and iPad app</a>\n  ·\n  <a href=\"https://play.google.com/store/apps/details?id=com.santi020k.lumen.playground.compose\">Android app</a>\n  ·\n  <a href=\"https://github.com/santi020k/lumen/issues\">Issues</a>\n</p>\n\n<p align=\"center\">\n  <a href=\"https://github.com/santi020k/lumen/actions\"><img alt=\"GitHub Actions\" src=\"https://img.shields.io/github/actions/workflow/status/santi020k/lumen/ci.yml?branch=main&style=flat-square\"></a>\n  <a href=\"https://github.com/santi020k/lumen/actions/workflows/codeql.yml\"><img alt=\"CodeQL\" src=\"https://github.com/santi020k/lumen/actions/workflows/codeql.yml/badge.svg\"></a>\n  <a href=\"https://www.npmjs.com/package/@santi020k/lumen-astro\"><img alt=\"npm version\" src=\"https://img.shields.io/npm/v/@santi020k/lumen-astro?style=flat-square&label=npm\"></a>\n  <a href=\"./LICENSE\"><img alt=\"MIT license\" src=\"https://img.shields.io/badge/license-MIT-111827?style=flat-square\"></a>\n</p>\n\nLumen gives applications a consistent visual language without tying them to one rendering model.\nIts packages share tokens, component contracts, styles, and interaction patterns while keeping each\nframework and platform's native authoring experience.\n\n- **Framework native:** Astro components, React primitives, and standards-based custom elements.\n- **Native foundations:** generated React Native, SwiftUI, and Jetpack Compose tokens plus the\n  complete shared interface and namespaced brand icon catalogs preserve the same semantic roles and\n  artwork without introducing DOM or CSS assumptions.\n- **Accessible by default:** semantic markup, keyboard paths, focus management, and reduced-motion\n  support are built into the primitives.\n- **Standalone CSS:** no Tailwind configuration is required. Tailwind users get an explicit layer\n  integration.\n- **Progressively enhanced:** Astro interactions use a small client runtime instead of requiring an\n  application framework.\n- **Ready for design and AI workflows:** published Figma resources, a portable agent skill, an MCP\n  server, `llms.txt`, a machine-readable registry, and a cross-platform release manifest ship\n  alongside the component system.\n- **Product-ready templates:** five responsive dashboard and application families are available as\n  live previews and installable Astro, React, and Elements recipes.\n\n**Explore:** [Dashboards and templates](#dashboards-and-templates) · [Web quick start](#web-quick-start) · [Native playgrounds](#native-playgrounds) · [Tailwind CSS](#tailwind-css) · [Packages](#packages) · [Community](#community)\n\n## Lumen 4 candidate\n\nThe v4 release branch brings consumer-driven date selection, chart readability, clipboard feedback,\nloading states, native layout improvements and a new ImageComparison primitive. Start with the\n[v3 → v4 migration guide](docs/migrating-v3-to-v4.md), [consumer audit](docs/lumen-4-consumer-audit.md),\nand [local readiness record](docs/lumen-4-readiness.md). The refreshed community gallery includes\npublished consumer screenshots; it does not imply those applications already run this candidate.\n\nFor existing applications, start with [v1 → v2](docs/migrating-v1-to-v2.md) when needed, then\n[v2 → v3](docs/migrating-v2-to-v3.md) before\n[v3 → v4](docs/migrating-v3-to-v4.md). For initial adoption, use\n[Migrating to Lumen](docs/migrating-to-lumen.md).\n\n## Appearance presets\n\nChoose an appearance preset or customize the existing themes with the [appearance guide](docs/appearance-presets.md). The Studio preset uses PostLens as its visual reference.\n\n## Dashboards and templates\n\nExplore the [template gallery](https://lumen.santi020k.com/templates) for complete analytics,\nSaaS admin, commerce, project workspace, and authentication/onboarding experiences. Each family\nuses public Lumen primitives and semantic tokens, includes responsive and accessibility coverage,\nand ships through the CLI for all three framework targets:\n\n```bash\nlumen add analytics-dashboard\nlumen add commerce-dashboard --target react\nlumen add auth-onboarding --target elements\n```\n\n## Web quick start\n\nInstall the package for your framework:\n\n```bash\n# Astro\npnpm add @santi020k/lumen-astro\n\n# React\npnpm add @santi020k/lumen-react\n\n# Web Components\npnpm add @santi020k/lumen-elements\n```\n\n### Astro\n\nImport the stylesheet and mount `UIPrimitives` once in your root layout. The runtime enhances all\ninteractive Lumen markup on the page.\n\n```astro\n---\nimport '@santi020k/lumen-astro/styles.css'\nimport UIPrimitives from '@santi020k/lumen-astro/runtime'\n---\n\n<html lang=\"en\">\n  <body>\n    <slot />\n    <UIPrimitives />\n  </body>\n</html>\n```\n\n```astro\n---\nimport { Button, Card, Input } from '@santi020k/lumen-astro'\n---\n\n<Card>\n  <label for=\"email\">Email</label>\n  <Input id=\"email\" name=\"email\" type=\"email\" placeholder=\"you@example.com\" />\n  <Button>Subscribe</Button>\n</Card>\n```\n\n### React\n\nLoad the stylesheet once from your app entry or global CSS:\n\n```tsx\nimport '@santi020k/lumen-react/styles.css'\nimport { Button, Card, Input } from '@santi020k/lumen-react'\n\nexport function SubscribeForm() {\n  return (\n    <Card>\n      <label htmlFor=\"email\">Email</label>\n      <Input id=\"email\" name=\"email\" type=\"email\" placeholder=\"you@example.com\" />\n      <Button>Subscribe</Button>\n    </Card>\n  )\n}\n```\n\n### Web Components\n\nImport the styles and register the elements once:\n\n```html\n<style>\n  @import \"@santi020k/lumen-elements/styles.css\";\n</style>\n\n<script type=\"module\">\n  import { defineLumenElements } from '@santi020k/lumen-elements/define'\n\n  defineLumenElements()\n</script>\n\n<lumen-card>\n  <label for=\"email\">Email</label>\n  <lumen-input id=\"email\" name=\"email\" type=\"email\" placeholder=\"you@example.com\"></lumen-input>\n  <lumen-button>Subscribe</lumen-button>\n</lumen-card>\n```\n\nSee the [Web documentation](https://lumen.santi020k.com/docs/web) for installation, theming,\ncomponent examples, and API details.\n\nFor failure states, use the [error-handling guide](./docs/error-handling.md) to choose between field\nfeedback, summaries, persistent alerts, transient toasts, and the `ErrorState` recovery surface.\nLumen owns presentation and accessibility; applications retain logging, retry, and exception policy.\n\nFor native applications, choose the [React Native](https://lumen.santi020k.com/docs/react-native),\n[Apple / SwiftUI](https://lumen.santi020k.com/docs/apple), or\n[Android / Compose](https://lumen.santi020k.com/docs/android) guide. The\n[shared foundations](https://lumen.santi020k.com/docs/foundations) explain the cross-platform token\nand component contract; repository contributors can also use the\n[cross-platform architecture](./docs/cross-platform.md) and\n[native component reference](./docs/native-components.md).\n\n> **Native platform status for Lumen 2.** React Native, SwiftUI, Compose, and Wear OS use the frozen\n> supported contract. Package, migration, build, security, artifact, and stability checks gate the\n> initial release. The incomplete external-consumer and physical-device matrices remain published\n> as post-release qualification work; review them before choosing a production adapter.\n\n## Native playgrounds\n\nThe repository includes three searchable, interactive galleries built from the real native\npackages:\n\n- [`apps/playground-react-native`](./apps/playground-react-native) runs through Expo on the web,\n  iOS, and Android and includes EAS profiles for TestFlight, Android App Bundles, and APKs.\n- [`apps/playground-apple`](./apps/playground-apple) is available on the\n  [App Store](https://apps.apple.com/app/id6805250815) for iPhone, iPad, and Mac. It also builds as\n  an iOS Xcode app or macOS Swift Package executable for local exploration.\n- [`apps/playground-android`](./apps/playground-android) builds a native Compose application and a\n  directly installable debug APK. It is also available on\n  [Google Play](https://play.google.com/store/apps/details?id=com.santi020k.lumen.playground.compose)\n  for Android phones and tablets.\n\nSee the [playground workflow](./docs/playgrounds.md) for run, capture, and distribution commands.\n\n## Tailwind CSS\n\nKeep the layer prelude, Tailwind import, and Lumen stylesheet in the same shared CSS entry. Replace\n`lumen-astro` with the package for your framework.\n\n```css\n@import \"@santi020k/lumen-astro/layers.css\";\n@import \"tailwindcss\";\n@import \"@santi020k/lumen-astro/styles.css\";\n```\n\nThis order places Tailwind base styles before Lumen components and Tailwind utilities above Lumen\ncomponent defaults.\n\n## Packages\n\n| Package | Purpose |\n| --- | --- |\n| [`@santi020k/lumen-astro`](./packages/astro) | Reference implementation, Astro components, and progressive-enhancement runtime |\n| [`@santi020k/lumen-react`](./packages/react) | React components and behavior hooks |\n| [`@santi020k/lumen-react-hook-form`](./packages/react-hook-form) | Optional React Hook Form adapters for composite controls |\n| [`@santi020k/lumen-elements`](./packages/elements) | Standards-based Web Components |\n| [`@santi020k/lumen-core`](./packages/core) | Shared tokens, metadata, class helpers, and behavior contracts |\n| [`@santi020k/lumen-tokens`](./packages/tokens) | Canonical platform-neutral design token source |\n| [`@santi020k/lumen-react-native`](./packages/react-native) | React Native foundations and native primitives |\n| [`LumenUI`](./packages/swift) | Swift Package for iOS, iPadOS, macOS, tvOS, visionOS, and watchOS foundations and native primitives |\n| [`LumenWidgetUI`](./packages/swift-widget) | Focused WidgetKit-safe semantic text, icon, badge, and compact-stat foundations |\n| [`lumen-compose`](./packages/compose) | Android library for Jetpack Compose foundations and native primitives |\n| [`lumen-compose-wear`](./packages/compose/wear) | Focused Wear OS primitives for at-a-glance round-screen actions, progress, status, metrics, and rows |\n| [`@santi020k/lumen-icons-brand`](./packages/icons-brand) | Optional namespaced brand icons for web `Icon` adapters  |\n| [`@santi020k/lumen`](./packages/lumen) | Umbrella package, CLI, registry metadata, and public package map |\n| [`@santi020k/lumen-mcp`](./packages/mcp) | MCP server for component discovery and source retrieval |\n\n## AI and design workflows\n\nInstall the portable Lumen skill in Codex, Claude Code, Cursor, Windsurf, and other compatible\ncoding agents:\n\n```bash\nnpx skills add santi020k/lumen --skill lumen-ui\n```\n\nThe skill teaches agents how to select, compose, theme, and verify Lumen primitives. Pair it with\n[`@santi020k/lumen-mcp`](./packages/mcp) when an agent needs to search the live catalog or retrieve\ncurrent source, props, tokens, and usage rules.\n\nFor ChatGPT and Codex, install the published\n[Lumen UI plugin](https://chatgpt.com/plugins/plugin_asdk_app_6a8f6c526c5481918eb8a48806fa112b)\nfrom the Plugins Directory. Select **Install plugin**, then mention **@Lumen UI** in a request such\nas “Find the right Lumen components for an accessible React settings screen.” Version 1.0.0 bundles\nthe skill with the hosted, read-only catalog; no separate Lumen account or local MCP setup is needed.\n\nAdditional machine-readable surfaces include:\n\n- [`llms.txt`](./llms.txt) for a concise project map.\n- [`docs/ai-usage.md`](./docs/ai-usage.md) for downstream generation examples.\n- [`docs/styling-contract.md`](./docs/styling-contract.md) for stable parts and component variables.\n- [`docs/import-and-icon-performance.md`](./docs/import-and-icon-performance.md) for repeatable import and icon evidence.\n- [`docs/graphics.md`](./docs/graphics.md) for portable decorative artwork across web and native platforms.\n- [`docs/consumer-regression-fixtures.md`](./docs/consumer-regression-fixtures.md) for production-shaped local coverage.\n- [`docs/project-adoption.md`](./docs/project-adoption.md) for the sibling-project audit and staged\n  web and native migration strategy.\n- [`registry/lumen.registry.json`](./registry/lumen.registry.json) for recipes and installable file\n  groups.\n- [`docs/figma.md`](./docs/figma.md) for Figma variables and Code Connect workflows.\n- [`plugins/lumen-ui`](./plugins/lumen-ui) for the packaged Codex and ChatGPT plugin, with its\n  [submission and review record](./docs/openai-plugin-submission.md).\n- [`.claude-plugin/marketplace.json`](./.claude-plugin/marketplace.json) for the Claude Code\n  marketplace, with its [installation and submission guide](./docs/claude-code-plugin.md).\n- [`docs/cross-platform.md`](./docs/cross-platform.md) for the native architecture, support tiers,\n  and component-parity policy.\n- [`docs/native-patterns.md`](./docs/native-patterns.md) for developed native compositions and the\n  boundary between Lumen presentation and platform-owned application structure.\n\n## Contributing\n\nLumen is a pnpm workspace. Astro is the reference implementation; shared contracts belong in\n`packages/core`, while framework-specific behavior stays in its adapter package.\n\n```bash\npnpm install\npnpm run dev\npnpm run validate\n```\n\nRead [`CONTRIBUTING.md`](./CONTRIBUTING.md) before opening a pull request. User-visible package\nchanges require a changeset.\n\n## Community\n\n[Feedback & support](https://lumen.santi020k.com/support) connects ideas, questions, bug reports,\nand the [public roadmap](https://lumen.santi020k.com/support#roadmap). Discuss improvements on GitHub\nand follow accepted work through implementation and release.\n\nLumen is free and MIT licensed while the project focuses on adoption, public examples, and\nreal-world feedback.\n\n- Explore task-oriented [guides](https://lumen.santi020k.com/guides).\n- Share a public project in the [community showcase](https://lumen.santi020k.com/community).\n- Evaluate the system with the open [team adoption path](https://lumen.santi020k.com/teams).\n- Tell us what would improve your next build through the\n  [adoption survey](https://github.com/santi020k/lumen/issues/new?template=adoption-feedback.yml).\n\nMaintainers can use the [exposure playbook](./docs/exposure-playbook.md) for publishing cadence,\ncampaign measurement, video scripts, and launch copy, and the\n[marketing package](./docs/marketing/README.md) for execution-ready copy, channel decisions, a\nfour-week calendar, asset briefs, an approval queue, and a community-response library.\n\n## Find your next step\n\n| Resource | Use it for |\n| --- | --- |\n| [Cross-platform architecture](docs/cross-platform.md) | Shared foundations and adapter responsibilities. |\n| [Native compatibility](docs/native-compatibility.md) | Supported toolchains and platform baselines. |\n| [Native release runbook](docs/native-release-runbook.md) | Artifact qualification and distribution gates. |\n\n## License\n\nLumen's original code and artwork are available under the [MIT License](./LICENSE). Generated\ninterface icons retain the Lucide ISC or Feather MIT terms, and generated brand icons retain Font\nAwesome Free's CC BY 4.0 terms. The native packages include the required attribution and license\nnotices; see [`icons/THIRD_PARTY_NOTICES.md`](./icons/THIRD_PARTY_NOTICES.md).\n"
   },
   "meta": {
-    "catalogHash": "4b7b22be25a16ef4ba9858e57e051d0ebc949e263cffb9c416878a6077f37ec4",
-    "componentCount": 167,
+    "catalogHash": "038582a5511098672aa5043712b83043e5e33dc68c9b32b17883dfbcf21e3da0",
+    "componentCount": 170,
     "nativeComponentCount": 87,
     "packages": [
       "@santi020k/lumen-astro",

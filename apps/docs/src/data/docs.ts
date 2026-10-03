@@ -572,6 +572,9 @@ export const componentCollections: ComponentCollection[] = [
       'Choose the lightest structure that supports the required hierarchy and interaction.',
     names: [
       'Descriptions',
+      'DescriptionItem',
+      'DescriptionTerm',
+      'DescriptionDetail',
       'Table',
       'DataTable',
       'Tree',
@@ -2618,6 +2621,9 @@ const apiReferenceByComponent = {
       'aria-label, aria-labelledby', 'string', '-', 'Provides the toolbar accessible name.'
     )
   ],
+  DescriptionItem: [apiRow('children', 'rich content', 'required', 'Composes a description item. Astro and React render div; Elements expose group semantics on the host.')],
+  DescriptionTerm: [apiRow('children', 'rich content', 'required', 'Composes a description term. Astro and React render dt; Elements expose term semantics on the host.')],
+  DescriptionDetail: [apiRow('children', 'rich content', 'required', 'Composes a description detail. Astro and React render dd; Elements expose definition semantics on the host.')],
   Descriptions: [
     apiRow(
       'items', 'Array<{ label, value }>', '[]', 'Defines the labelled facts.'
@@ -4110,6 +4116,24 @@ export const componentDocs: ComponentDoc[] = (
       'Data display',
       'Presents a set of labeled facts as an aligned key–value list.',
       '<Descriptions items={[{ label: "Owner", value: "Alice" }, { label: "Status", value: "Active" }]} />'
+    ],
+    [
+      'DescriptionItem',
+      'Data display',
+      'Composes rich description item content.',
+      '<DescriptionItem>Record item</DescriptionItem>'
+    ],
+    [
+      'DescriptionTerm',
+      'Data display',
+      'Composes rich description term content.',
+      '<DescriptionTerm>Record term</DescriptionTerm>'
+    ],
+    [
+      'DescriptionDetail',
+      'Data display',
+      'Composes rich description detail content.',
+      '<DescriptionDetail>Record detail</DescriptionDetail>'
     ],
     [
       'Popconfirm',

@@ -1356,6 +1356,24 @@ const elementConfigs = {
     },
     tagName: 'lumen-toolbar'
   },
+  DescriptionItem: {
+    baseClassName: 'ui-description-item ui-descriptions__item',
+    defaults: { 'data-slot': 'description-item' },
+    role: 'group',
+    tagName: 'lumen-description-item'
+  },
+  DescriptionTerm: {
+    baseClassName: 'ui-description-term ui-descriptions__term',
+    defaults: { 'data-slot': 'description-term' },
+    role: 'term',
+    tagName: 'lumen-description-term'
+  },
+  DescriptionDetail: {
+    baseClassName: 'ui-description-detail ui-descriptions__detail',
+    defaults: { 'data-slot': 'description-detail' },
+    role: 'definition',
+    tagName: 'lumen-description-detail'
+  },
   Descriptions: {
     baseClassName: 'ui-descriptions',
     tagName: 'lumen-descriptions'
@@ -11678,3 +11696,6 @@ export const LumenQRCodeElement = elementClasses.QRCode
 export const LumenWatermarkElement = elementClasses.Watermark
 export const LumenAffixElement = elementClasses.Affix
 export const LumenSpeedDialElement = elementClasses.SpeedDial
+export const LumenDescriptionItemElement = elementClasses.DescriptionItem
+export const LumenDescriptionTermElement = elementClasses.DescriptionTerm
+export const LumenDescriptionDetailElement = elementClasses.DescriptionDetail

@@ -583,3 +583,19 @@ submit actions target a form inside the body with the native `form` attribute.
 Mount `UIPrimitives` once and open the dialog with a button carrying
 `data-ui-dialog-trigger="record-dialog"`. Set `selectedFilesLabel="{count} files selected"`
 on `FileUpload` to supply localized multiple-file feedback; the single-file label is its filename.
+
+### Rich description rows
+
+Use `Descriptions` with `DescriptionItem`, `DescriptionTerm`, and `DescriptionDetail`
+when a value contains links, badges, formatted dates, or actions. Astro renders a
+native `dl` containing `div`, `dt`, and `dd` elements. The existing `items` array
+remains available and can be combined with child rows.
+
+```astro
+<Descriptions>
+  <DescriptionItem>
+    <DescriptionTerm>Status</DescriptionTerm>
+    <DescriptionDetail><Badge variant="success">Active</Badge></DescriptionDetail>
+  </DescriptionItem>
+</Descriptions>
+```

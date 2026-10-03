@@ -2556,6 +2556,45 @@ export const lumenRegistry = {
       ]
     },
     {
+      name: 'DescriptionItem',
+      type: 'component',
+      description: 'Composes rich description item content.',
+      category: 'Data display',
+      files: [
+        'packages/astro/components/DescriptionItem.astro',
+        'packages/astro/styles/lumen.css'
+      ],
+      dependencies: [
+        'styles'
+      ]
+    },
+    {
+      name: 'DescriptionTerm',
+      type: 'component',
+      description: 'Composes rich description term content.',
+      category: 'Data display',
+      files: [
+        'packages/astro/components/DescriptionTerm.astro',
+        'packages/astro/styles/lumen.css'
+      ],
+      dependencies: [
+        'styles'
+      ]
+    },
+    {
+      name: 'DescriptionDetail',
+      type: 'component',
+      description: 'Composes rich description detail content.',
+      category: 'Data display',
+      files: [
+        'packages/astro/components/DescriptionDetail.astro',
+        'packages/astro/styles/lumen.css'
+      ],
+      dependencies: [
+        'styles'
+      ]
+    },
+    {
       name: 'Descriptions',
       type: 'component',
       category: 'Data display',

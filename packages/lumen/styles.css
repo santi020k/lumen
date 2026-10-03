@@ -6756,6 +6756,8 @@ a.ui-pill:focus-visible {
   background: hsl(var(--line));
 }
 .ui-descriptions__item {
+  min-width: 0;
+  overflow-wrap: anywhere;
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
@@ -6763,10 +6765,12 @@ a.ui-pill:focus-visible {
   background: hsl(var(--surface));
 }
 .ui-descriptions__term {
+  display: block;
   font-size: 0.8125rem;
   color: hsl(var(--ink-muted));
 }
 .ui-descriptions__detail {
+  display: block;
   margin: 0;
   color: hsl(var(--ink));
 }
