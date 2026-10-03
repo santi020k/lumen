@@ -6,8 +6,20 @@ raw values, and component signatures remain available. The [approved v3 contract
 is the complete list of new cases and reviewed diagnostics.
 
 This guide covers v2 → v3. A v1 application must first apply the
-[v1 → v2 contract changes](migrating-to-lumen.md#preparing-for-version-2). The command
+[v1 → v2 contract changes](migrating-v1-to-v2.md). The command
 `lumen migrate v2` handles that earlier transition; it does not migrate v2 → v3.
+
+The v4 umbrella CLI also provides a v3 migration review:
+
+```sh
+lumen migrate v3 --dry-run
+```
+
+It reports native rebuild and exhaustive icon-switch review points without rewriting web source.
+With `--dependencies`, it inventories the coordinated npm family; adding `--apply` upgrades that
+family to `3.0.1` through the existing pnpm rollout. Use a clean consumer checkout and its declared
+pnpm version. Other package managers and historical `3.0.0` pins follow the manual steps below.
+Native Swift and Maven pins remain application-owned. Run the application's normal checks afterward.
 
 ## 1. Record a working baseline and update dependencies
 

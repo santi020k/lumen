@@ -721,6 +721,14 @@ For a v4 upgrade, read `lumen_get_migration` and preview `lumen migrate v4 --dry
 `--apply` rewrites only known static SDK import paths in JavaScript and TypeScript. It preserves
 comments and examples and reports UI/native review triggers. Dependency updates and application-owned
 workarounds require review; the CLI does not infer that a workaround can be removed. JSX, Astro,
-native source, dynamic imports, and dependency manifests are not automatically rewritten.
+native source, dynamic imports, and dependency manifests are not automatically rewritten by the
+SDK import transform.
 
 See [v4 AI verification](lumen-4-ai.md) for actual agent benchmark coverage and release evidence.
+
+The integrated `lumen migrate v4` command also retains the release's web spacing migrations and
+optional coordinated dependency workflow. SDK edits compose into that command's source transform,
+so its apply ledger fingerprints the final source and repeat runs do not rewrite spacing twice.
+SDK import edits remain limited to `.ts`, `.js`, and `.mjs`; this restriction does not disable the
+separate documented JSX/Astro spacing migration. The JSON report includes installed package
+versions and explicit SDK dependency-review findings.

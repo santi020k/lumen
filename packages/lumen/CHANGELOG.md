@@ -7,6 +7,20 @@
 - Add version-aware AI workflows with exact installed-package compatibility checks, v4 migration discovery, concrete MCP usage schemas, and English/Spanish search. Preview known static embedded SDK import migrations with `lumen migrate v4`; preserve examples and report dependency and application review decisions before applying changes.
 
   Package portable plugin 1.1.0 with shared Codex/Claude manifests, a pinned v4 catalog, build/review/migration skills, and an optional read-only Claude reviewer. Add actual authenticated agent benchmarks with independently checked types, browser interactions, accessibility, migration output, and version-mismatch review.
+### Migration, Direction and Data Collections
+
+- Add v3 and v4 source migration previews with optional coordinated pnpm dependency upgrades. Preserve
+  explicit v3 layout gaps, report product and native review boundaries, and prevent repeated v4 applies
+  from rewriting spacing twice.
+
+  Correct inherited RTL horizontal navigation in tabs, calendars and pane resizing. Add an opt-in
+  VirtualList data renderer that mounts only the visible window and focused neighbors, with stable
+  keys and a shared DOM controller for Astro and Elements.
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @santi020k/lumen-core@4.0.0
 
 ### Phone Input Improvements
 

@@ -48,6 +48,8 @@ words:
   - contrasena
   - notificación
   - eliminación
+  - posinset
+  - setsize
   - Satteri
   - AFRIKA
   - Biolinum
@@ -516,3 +518,5 @@ ignorePaths:
   - apps/playground-apple/LumenApplePlayground.xcodeproj/**
   - apps/playground-apple/Supporting/Info.plist
   - apps/playground-apple/project.yml
+
+# Standard ARIA attribute suffixes used by virtualized collections.

@@ -105,3 +105,10 @@ The skill creator's `quick_validate.py` was attempted with both available Python
 not start because PyYAML was unavailable (`ModuleNotFoundError: No module named 'yaml'`). Skill metadata
 was inspected, generated skill snapshots matched, and both strict Claude plugin validators passed;
 these results do not imply the Python validator passed.
+
+The integrated `lumen migrate v4` command also retains the release's web spacing migrations and
+optional coordinated dependency workflow. SDK edits compose into that command's source transform,
+so its apply ledger fingerprints the final source and repeat runs do not rewrite spacing twice.
+SDK import edits remain limited to `.ts`, `.js`, and `.mjs`; this restriction does not disable the
+separate documented JSX/Astro spacing migration. The JSON report includes installed package
+versions and explicit SDK dependency-review findings.

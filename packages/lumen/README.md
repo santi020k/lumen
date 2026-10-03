@@ -25,7 +25,7 @@
 
 **Package:** `@santi020k/lumen`
 
-**On this page:** [Typography](#typography) · [Lumen v2 migration preview](#lumen-v2-migration-preview) · [Coordinated consumer rollout](#coordinated-consumer-rollout) · [Resources](#resources)
+**On this page:** [Typography](#typography) · [Version migration previews](#version-migration-previews) · [Coordinated consumer rollout](#coordinated-consumer-rollout) · [Resources](#resources)
 
 ---
 
@@ -76,6 +76,8 @@ lumen doctor --json
 lumen doctor-native --json
 lumen init --framework astro --tailwind
 lumen migrate v2 --dry-run
+lumen migrate v3 --dry-run
+lumen migrate v4 --dry-run
 ```
 
 Use `lumen add <component>` for a local Astro wrapper, `--target react` for a React wrapper, or
@@ -122,7 +124,27 @@ Run `lumen audit-tokens [path]` before incremental adoption when an existing sty
 declare names such as `--surface`, `--ink`, or `--line`. The audit reports complete CSS colors that
 are incompatible with Lumen's HSL-channel token format and exits non-zero when it finds conflicts.
 
-## Lumen v2 migration preview
+## Version migration previews
+
+Run `lumen migrate v3` for the v2-to-v3 review: no web source rewrites are needed. It reports
+native rebuild and exhaustive Swift icon-switch boundaries. Run `lumen migrate v4` for the
+v3-to-v4 source preview. Literal Stack/Grid gaps preserve v3 spacing (`md` → `group`, `lg` → `xl`,
+`xl` → `2xl`); dynamic values, spreads, product CSS, charts, dialogs and native contracts need review.
+Aliases are resolved from actual Lumen imports; unrelated components and source examples stay intact.
+
+Both commands preview by default and accept `--cwd`, `--json`, and `--apply`. Add `--dependencies`
+to include the existing coordinated pnpm rollout: v3 targets `3.0.1`, v4 targets `4.0.0`. Dependency
+apply retains rollout's exact package-manager and dirty-worktree guards; `--allow-dirty` is explicit.
+Installs run before source rewrites; a failed dependency command stops source apply. Run the
+consumer's completion gate after both phases. Source-only migration works without a package manifest
+or package-manager requirement. Native Swift/Maven pins remain application-owned.
+
+V4 apply records output fingerprints in `.lumen/migrations-v4.json`. Commit that ledger with the
+source changes: repeated applies skip migrated files, and later edits to them require manual review.
+The pure `migrateLumenVersionSource` API assumes v3 input and does not maintain that filesystem ledger.
+Review the actual application at mobile and desktop widths after applying a migration.
+
+### Lumen v2 migration
 
 Run `lumen migrate v2 [--cwd <path>]` to preview the candidate v2 source migrations. Previewing is
 the safe default; `--dry-run` makes that intent explicit, and `--json` emits a machine-readable
@@ -219,6 +241,13 @@ pnpm exec lumen migrate v4 --apply
 
 The default is a preview. Deterministic edits cover four known static MCP SDK v1 import paths in
 `.ts`, `.js`, and `.mjs` files. The report inventories resolved installed versions and lists v4
-UI/native review triggers. Dependency manifests, comments, examples, dynamic imports, JSX, Astro,
-and native sources remain review tasks. Review triggers are not proof of a defect. The v2 migration
+UI/native review triggers. SDK dependency manifests, comments, examples, dynamic imports, JSX, Astro,
+and native SDK imports remain review tasks. Review triggers are not proof of a defect. The v2 migration
 command remains available separately for older consumers.
+
+The integrated `lumen migrate v4` command also retains the release's web spacing migrations and
+optional coordinated dependency workflow. SDK edits compose into that command's source transform,
+so its apply ledger fingerprints the final source and repeat runs do not rewrite spacing twice.
+SDK import edits remain limited to `.ts`, `.js`, and `.mjs`; this restriction does not disable the
+separate documented JSX/Astro spacing migration. The JSON report includes installed package
+versions and explicit SDK dependency-review findings.

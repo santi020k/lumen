@@ -3,6 +3,9 @@ import { gzipSync } from 'node:zlib'
 
 // Phone v4 adds measured presentation/validation code and shared offline artwork.
 const allBudgets = [
+  { file: 'packages/core/dist/virtual-window.js', gzip: 2_200, packageName: '@santi020k/lumen-core', raw: 7_000 },
+  { file: 'packages/core/dist/virtual-collection.js', gzip: 2_500, packageName: '@santi020k/lumen-core', raw: 9_000 },
+  { file: 'packages/react/dist/virtual-list-data.js', gzip: 2_000, packageName: '@santi020k/lumen-react', raw: 6_000 },
   { file: 'packages/core/dist/phone-flags.generated.js', gzip: 205_000, packageName: '@santi020k/lumen-core', raw: 305_000 },
 
   { file: 'packages/react/dist/combobox.js', gzip: 2_500, packageName: '@santi020k/lumen-react', raw: 10_000 },

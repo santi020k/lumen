@@ -87,7 +87,7 @@ test('narrow docs headers stay compact and active context links remain fully vis
       const link = active.getBoundingClientRect()
 
       return link.left >= viewport.left + 10 && link.right <= viewport.right - 10
-    })).toBe(true)
+    }), { message: `Active context link fits inside the navigation at ${width}px` }).toBe(true)
 
     if (width === 320) {
       const header = await page.locator('.docs-site-header').boundingBox()

@@ -18,6 +18,13 @@ import DocsLayout from '../../../layouts/DocsLayout.astro'
     />
     <Card>
       <CardHeader>
+        <CardTitle as="h2">Lumen 1 → Lumen 2</CardTitle>
+        <CardDescription>Migrate runtime imports, visual sizing, toast viewports, native dates, and exhaustive Swift switches.</CardDescription>
+      </CardHeader>
+      <CardContent><Link href="/docs/migrations/v1-to-v2">Read the v1 → v2 guide</Link></CardContent>
+    </Card>
+    <Card>
+      <CardHeader>
         <CardTitle as="h2">Lumen 2 → Lumen 3</CardTitle>
         <CardDescription>Update package versions and review exhaustive Swift icon switches. Existing component calls remain available.</CardDescription>
       </CardHeader>
@@ -31,7 +38,7 @@ import DocsLayout from '../../../layouts/DocsLayout.astro'
       </CardHeader>
       <CardContent><Link href="/docs/migrations/v3-to-v4">Read the v3 → v4 guide</Link></CardContent>
     </Card>
-    <p>For a v2 application targeting v4, complete and verify both steps in order. Each guide includes consumer checks and a rollback path.</p>
+    <p>For an application skipping major versions, complete and verify each step in order. Each guide includes consumer checks and a rollback path.</p>
     <Link href="/changelog">Browse the release history</Link>
   </Stack>
 </DocsLayout>

@@ -381,7 +381,7 @@ behaviorTest(['ToggleGroup'], 'ToggleGroup moves focus and pressed state with ar
 behaviorTest(['VirtualList'], 'VirtualList updates its rendered window while scrolling', async ({ page }) => {
   await openPreview(page, 'virtual-list')
 
-  const list = page.locator('.component-doc-preview [data-ui-virtual-list]')
+  const list = page.locator('.component-doc-preview [data-ui-virtual-list-mode="mounted"]')
   const initialStart = await list.getAttribute('data-ui-range-start')
 
   await list.evaluate(element => {

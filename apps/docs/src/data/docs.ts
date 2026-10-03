@@ -2391,8 +2391,12 @@ const apiReferenceByComponent = {
     )
   ],
   VirtualList: [
+    apiRow('mode', '"mounted" | "data"', '"mounted"', 'Astro/Elements: initialize an empty data-mode root for the Core collection controller.'),
+    apiRow('items', 'readonly T[]', '-', 'React: enable data rendering with immutable records; do not supply children.'),
+    apiRow('getKey', '(item: T, index: number) => string | number', '-', 'React data mode: stable unique item identity.'),
+    apiRow('renderItem', '(item: T, index: number) => ReactNode', '-', 'React data mode: render only the visible window and focused neighbors.'),
     apiRow(
-      'itemSize', 'number | string', '-', 'Fixed row height in pixels (default 44). Rows remain mounted; hidden windows and spacers preserve scroll height.'
+      'itemSize', 'number | string', '-', 'Fixed row height in pixels (default 44). Default mode retains mounted rows; data mode mounts a bounded window.'
     ),
     apiRow(
       'overscan', 'number | string', '-', 'Extra rows displayed on each side (default 4). Focused rows and neighbors remain available.'

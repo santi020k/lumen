@@ -4,13 +4,18 @@ import { useCallback, useEffect, useRef } from 'react'
 import { composeClassName, createLumenVirtualListController } from '@santi020k/lumen-core'
 
 import type { LumenGlassProp } from './components.js'
+import { VirtualListData, type VirtualListDataProps } from './virtual-list-data.js'
 
 export interface VirtualListProps extends ComponentPropsWithRef<'div'> {
   glass?: LumenGlassProp
+  items?: never
+  getKey?: never
+  renderItem?: never
   itemSize?: number | string
   overscan?: number | string
 }
-export const VirtualList = ({
+
+const MountedVirtualList = ({
   className,
   glass = false,
   itemSize,
@@ -52,3 +57,9 @@ export const VirtualList = ({
     />
   )
 }
+
+export const VirtualList = <T,>(props: VirtualListProps | VirtualListDataProps<T>) => (
+  props.items !== undefined ? <VirtualListData {...props} /> : <MountedVirtualList {...props} />
+)
+
+export type { VirtualListDataProps } from './virtual-list-data.js'

@@ -61,7 +61,8 @@ loading states, native layout improvements and a new ImageComparison primitive. 
 and [local readiness record](docs/lumen-4-readiness.md). The refreshed community gallery includes
 published consumer screenshots; it does not imply those applications already run this candidate.
 
-For existing applications, follow [v2 → v3](docs/migrating-v2-to-v3.md) before
+For existing applications, start with [v1 → v2](docs/migrating-v1-to-v2.md) when needed, then
+[v2 → v3](docs/migrating-v2-to-v3.md) before
 [v3 → v4](docs/migrating-v3-to-v4.md). For initial adoption, use
 [Migrating to Lumen](docs/migrating-to-lumen.md).
 

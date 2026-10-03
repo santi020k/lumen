@@ -223,3 +223,12 @@ export {
   migrateLumenV2,
   migrateLumenV2Source
 } from './v2-migration.js'
+export {
+  formatLumenVersionMigration,
+  type LumenMigrationVersion,
+  type LumenVersionMigrationFinding,
+  type LumenVersionMigrationOptions,
+  type LumenVersionMigrationReport,
+  type LumenVersionSourceMigration,
+  migrateLumenVersion,
+  migrateLumenVersionSource } from './version-migration.js'

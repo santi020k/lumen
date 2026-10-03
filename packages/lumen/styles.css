@@ -5103,6 +5103,13 @@
   padding: 0.5rem;
 }
 
+.ui-virtual-list[data-ui-virtual-list-mode="data"] > [data-ui-virtual-list-content] {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  padding: 0;
+}
+
 .ui-tree {
   display: grid;
   gap: 0.125rem;

@@ -27,6 +27,7 @@ const supportingPages = [
   ['/support', 'Support', 'Get help with Lumen UI components, integrations, and product workflows.', 'Support'],
   ['/terms', 'Terms', 'Review the terms that apply when using the Lumen UI website and resources.', 'Legal'],
   ['/docs/migrations', 'Migration guides', 'Upgrade Lumen versions with API changes, examples, and consumer verification.', 'Migrations'],
+  ['/docs/migrations/v1-to-v2', 'Lumen 1 to 2', 'Migrate runtime imports, sizing, toast viewports, native dates, and Swift enums.', 'Migration'],
   ['/docs/migrations/v2-to-v3', 'Lumen 2 to 3', 'Update coordinated dependencies and migrate exhaustive Swift icon switches.', 'Migration'],
   ['/docs/migrations/v3-to-v4', 'Lumen 3 to 4', 'Evaluate the v4 candidate with spacing changes, native API updates, and rollback guidance.', 'Migration'],
   ['/docs/brand-icons', 'Brand icons', 'Use the shared brand icon catalog across supported Lumen platforms.', 'Icons'],

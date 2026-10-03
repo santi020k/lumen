@@ -626,6 +626,10 @@ body {
 }
 
 @media (max-width: 430px) {
+  .docs-context-navigation__platform .ui-select-field {
+    width: 8rem;
+  }
+
   .docs-header-github {
     display: none;
   }

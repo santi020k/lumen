@@ -8,10 +8,14 @@ import {
 } from './docs-context-navigation'
 
 describe('documentation context navigation', () => {
-  test('marks the migration collection current on either version guide', () => {
+  test('marks the migration collection current on every version guide', () => {
     const links = getDocsContextLinks(undefined)
 
-    for (const route of ['/docs/migrations', '/docs/migrations/v2-to-v3', '/docs/migrations/v3-to-v4']) {
+    const routes = [
+      '/docs/migrations', '/docs/migrations/v1-to-v2', '/docs/migrations/v2-to-v3', '/docs/migrations/v3-to-v4'
+    ]
+
+    for (const route of routes) {
       expect(getCurrentDocsContextLink(links, route)?.label).toBe('Migration guides')
     }
   })
