@@ -52,6 +52,8 @@ not need a checkout of the Lumen repository.
 | `lumen_diff_catalog` | Compare a retained manifest with the current snapshot and report added, changed, removed, and unchanged entries. |
 | `lumen_diagnose` | Verify snapshot integrity and report web framework plus native platform coverage when testing a connection. |
 | `lumen_get_tokens` | Return canonical spacing dimensions and role aliases, semantic colors, glass tokens, and the theme attribute. |
+| `lumen_check_compatibility` | Compare resolved installed Lumen versions with the catalog; report mismatches without upgrading. |
+| `lumen_get_migration` | Read the v4 migration contract and package-specific review guidance without changing files. |
 | `lumen_get_rules` | Return the Lumen agent rules from `llms.txt`. |
 
 Every tool returns both readable text and validated `structuredContent`.
@@ -201,7 +203,7 @@ Claude Code uses the package's stdio configuration and the repository marketplac
 ## Recommended agent workflow
 
 1. Read `lumen://meta` and call `lumen_diagnose` to identify and verify the bundled snapshot.
-2. Read `lumen://rules`.
+2. Call `lumen_check_compatibility` with exact installed versions (not manifest ranges). Use matching installed types and README when any version differs. Read `lumen://rules`.
 3. Call `lumen_search` with the requested use case and target framework or platform.
 4. For web, call `lumen_get_component`; for native, call `lumen_get_native_component` with `detail: "usage"`.
 5. Follow the returned framework behavior section: mount Astro `UIPrimitives` once, use the named React hook/controller, or register custom elements once.
@@ -320,8 +322,9 @@ package (or `@modelcontextprotocol/server/stdio`) when connecting it. Rebuild
 programmatic integrations that previously imported SDK objects from
 `@modelcontextprotocol/sdk`, following the
 [official SDK migration guide](https://ts.sdk.modelcontextprotocol.io/v2/migration/upgrade-to-v2).
-The CLI commands, stateless HTTP endpoint, tool names, argument schemas, and
-resource URIs are unchanged. Existing MCP clients can keep using the
+Existing CLI commands, the stateless HTTP endpoint, argument schemas, and resource URIs remain
+available. Version checks and migration discovery are additive tools; component and recipe results
+now expose concrete nested output schemas. Existing MCP clients can keep using the
 `2025-11-25` protocol handshake.
 
 ## Snapshot generation
@@ -344,11 +347,14 @@ alongside Lumen framework packages, and the package smoke test installs the
 packed artifact into a temporary consumer project before making a real stdio
 handshake.
 
-The evaluation gate also runs a curated natural-language search benchmark,
+The deterministic evaluation gate runs English and Spanish natural-language search benchmarks,
 calls every available component/framework contract through MCP, parses all
 Astro and custom-element examples, and type-checks every React example against
 the built React package. A generated example that is syntactically valid but
 uses an unsupported React prop therefore fails before release.
+
+Actual Codex and Claude fixture runs are an opt-in authenticated benchmark, separate from deterministic
+CI. See [v4 AI verification](../../docs/lumen-4-ai.md) for commands, evidence, and limitations.
 
 ## License
 
@@ -369,5 +375,5 @@ Licensed under [MIT](https://github.com/santi020k/lumen/blob/main/LICENSE); thir
 `lumen_get_tokens` returns `spacing` (canonical numeric pixel dimensions) and `spacingRoles`
 (aliases such as `related: "sm"`, `group: "lg"`, `section: "2xl"`, `inset: "xl"`). CSS uses rem.
 The readable result explains ownership and CSS variables; `lumen_search` also finds spacing roles.
-Snapshot schema 7 includes these fields and complete framework recipe examples. Read component contracts for supported gap and density
+Snapshot schema 8 includes these fields and complete framework recipe examples. Read component contracts for supported gap and density
 props; the inset token is for padding and is not a Stack/Grid gap prop.

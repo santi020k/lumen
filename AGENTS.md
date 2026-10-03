@@ -147,3 +147,12 @@ Before changing Turborepo configuration or commands, read `node_modules/turbo/do
 and the relevant bundled reference. Those documents match the installed version.
 Automatic guidance updates are disabled in `turbo.json` because the generated block adds a second
 level-one heading that violates this repository's Markdown rules. Maintain this section here.
+
+## AI workflow sources
+
+- Root `skills/` and `plugins/lumen-ui/plugin.json` plus `mcp.json` are canonical; run
+  `pnpm run generate:plugin-package`, then `pnpm run check:plugin-package` after changing them.
+- `registry/lumen-4-contract.json` supplies the CLI migration data and MCP migration tool; run
+  `pnpm run generate:v4-migration` and regenerate the MCP snapshot after changing it.
+- Actual authenticated agent benchmarks are opt-in; see `docs/lumen-4-ai.md`. They are separate from
+  deterministic CI and public publication evidence.

@@ -1315,6 +1315,7 @@ const main = async () => {
       }
     }))
 
+  const migration = JSON.parse(await readFile(join(repoRoot, 'registry/lumen-4-contract.json'), 'utf8'))
   const docs = { aiUsage, readme }
 
   const tokens = {
@@ -1345,17 +1346,18 @@ const main = async () => {
     Reflect.set(packageVersions, packageName, manifest.version)
   }
 
-  packageVersions.LumenUI = 'workspace'
+  packageVersions.LumenUI = releaseManifest.release.version
 
-  packageVersions['com.santi020k:lumen-compose'] = 'workspace'
+  packageVersions['com.santi020k:lumen-compose'] = releaseManifest.release.compose.version
 
-  packageVersions['com.santi020k:lumen-compose-wear'] = 'workspace'
+  packageVersions['com.santi020k:lumen-compose-wear'] = releaseManifest.release.compose.version
 
   const catalogHash = createHash('sha256')
     .update(
       JSON.stringify({
         components,
         docs,
+        migration,
         nativeComponents,
         nativeSources,
         recipes,
@@ -1421,9 +1423,10 @@ const main = async () => {
       packageVersions,
       registryName: registry.name ?? 'lumen',
       registryVersion: registry.version ?? 1,
-      schemaVersion: 7,
+      schemaVersion: 8,
       serverVersion: packageJson.version
     },
+    migration,
     nativeComponents,
     nativeSources,
     recipes,

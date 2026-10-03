@@ -209,3 +209,16 @@ Connect application actions and replace sample IDs before reuse. See
 
 React is an optional peer for the published React starter templates. Astro and Elements consumers
 do not need it; React consumers should follow the React adapter's existing installation contract.
+
+## Preview a v4 migration
+
+```bash
+pnpm exec lumen migrate v4 --dry-run --json
+pnpm exec lumen migrate v4 --apply
+```
+
+The default is a preview. Deterministic edits cover four known static MCP SDK v1 import paths in
+`.ts`, `.js`, and `.mjs` files. The report inventories resolved installed versions and lists v4
+UI/native review triggers. Dependency manifests, comments, examples, dynamic imports, JSX, Astro,
+and native sources remain review tasks. Review triggers are not proof of a defect. The v2 migration
+command remains available separately for older consumers.

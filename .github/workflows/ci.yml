@@ -320,6 +320,8 @@ jobs:
         if: needs.classify.outputs.release-pr != 'true'
         run: pnpm exec turbo run build typecheck lint test --affected
 
+      - name: Validate portable AI plugin and migration artifacts
+        run: pnpm run check:plugin-package && pnpm run test:plugin-package && pnpm run check:v4-migration
       - name: Assert the generated MCP snapshot is committed
         if: >-
           ${{

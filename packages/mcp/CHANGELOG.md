@@ -2,6 +2,12 @@
 
 ## 4.0.0
 
+### AI Workflow Improvements
+
+- Add version-aware AI workflows with exact installed-package compatibility checks, v4 migration discovery, concrete MCP usage schemas, and English/Spanish search. Preview known static embedded SDK import migrations with `lumen migrate v4`; preserve examples and report dependency and application review decisions before applying changes.
+
+  Package portable plugin 1.1.0 with shared Codex/Claude manifests, a pinned v4 catalog, build/review/migration skills, and an optional read-only Claude reviewer. Add actual authenticated agent benchmarks with independently checked types, browser interactions, accessibility, migration output, and version-mismatch review.
+
 ### Major Changes
 
 - Prepare the coordinated Lumen 4 family from twenty real consumer audits.

@@ -1,0 +1,26 @@
+[
+  {
+    "id": "react-dialog",
+    "kind": "react",
+    "mcp": true,
+    "prompt": "Use the Lumen UI skill to implement Screen.tsx, exporting a default React component. Build a profile settings dialog using public Lumen primitives and the correct React behavior. The trigger is Edit profile, dialog title Profile settings, text field label Display name, initial value Ada, and close action Cancel. Opening focuses the field; edits survive closing and reopening; Escape closes and returns focus to the trigger. Include a descriptive main heading and usable phone/desktop layout. Inspect resolved package versions and contracts first. The harness owns runtime setup and imports the stylesheet once."
+  },
+  {
+    "id": "elements-spanish-without-mcp",
+    "kind": "elements",
+    "mcp": false,
+    "prompt": "Usa la habilidad Lumen UI para implementar Screen.html y setup.ts con Web Components públicos de Lumen. MCP no está disponible; revisa los tipos y README instalados. Crea un diálogo de preferencias del perfil: botón Editar perfil, título Preferencias del perfil, campo Nombre con valor inicial Ada y botón Cancelar. Al abrir, enfoca el campo; conserva los cambios al cerrar y abrir; Escape cierra y devuelve el foco al botón. Incluye un encabezado principal y diseño usable en móvil y escritorio. El entorno carga los estilos una vez; tú debes registrar los componentes necesarios."
+  },
+  {
+    "id": "embedded-sdk-migration",
+    "kind": "migration",
+    "mcp": true,
+    "prompt": "Use the Lumen Migration skill to migrate server.ts to the Lumen 4 embedded SDK contract. The target Lumen CLI is available as lumen-cli.mjs; the host has run its dry-run and saved migration-preview.json. Inspect that preview and the MCP migration contract before editing. Apply only deterministic known import-path changes. Keep comments and examples intact. Write migration-review.json with targetVersion, dependencyUpdates (package names), and manualReview (a list of unresolved application decisions). The package manifest is owned by the harness; describe required dependency changes there without editing it. Do not remove application-owned workarounds."
+  },
+  {
+    "id": "older-version-review",
+    "kind": "review",
+    "mcp": true,
+    "prompt": "Use the Lumen Review skill to assess this installed Lumen 3 React project. A proposed change imports QuantumDashboard from Lumen and assumes the connected latest catalog matches the application. Review the proposal without changing Screen.tsx or dependency files. Write assessment.json with resolvedVersion, catalogVersion, mayUseCatalog (boolean), supportedComponent (boolean), contractSource (installed or catalog), and proposedUpgrade (boolean). Provide evidence and any unresolved verification in review.md."
+  }
+]

@@ -11,7 +11,7 @@ Treat Astro as the reference surface, while following the user's existing stack.
 ## Workflow
 
 1. Inspect the app before editing. Identify the framework, package manager, global style entry,
-   existing Lumen packages, theme overrides, and local component conventions.
+   resolved installed Lumen versions, theme overrides, and local component conventions.
 2. Choose the matching target:
    - Astro: `@santi020k/lumen-astro`
    - React: `@santi020k/lumen-react`
@@ -20,13 +20,15 @@ Treat Astro as the reference surface, while following the user's existing stack.
    - SwiftUI or Apple platforms: `LumenUI`
    - Jetpack Compose or Android: `lumen-compose`
 3. Retrieve current contracts before guessing:
-   - For Astro, React, and Elements, prefer connected Lumen MCP tools: read snapshot metadata and diagnostics, read agent rules,
-     search with the target framework, then read the selected component's usage contract and tokens.
+   - For Astro, React, and Elements, when Lumen MCP is connected, read snapshot metadata and diagnostics, read agent rules,
+     compare resolved installed versions with `lumen_check_compatibility`, search with the target framework, then read the selected component's usage contract and tokens.
      Retain the catalog manifest when the client supports caching so a later catalog diff identifies
      only the contracts that changed.
    - For native targets, prefer `lumen_list_native_components` and `lumen_get_native_component`,
      then verify installed adapter source/types when the local package version may differ.
    - Otherwise inspect installed package types/source or use the Lumen CLI and online docs.
+   - On a version mismatch, use a matching published MCP version or installed public types and package documentation. Do not apply a newer catalog as the installed API or silently upgrade the app.
+   - For a requested upgrade, use the `lumen-migrate` workflow; for a requested audit, use `lumen-review`. Ordinary UI changes retain their requested scope.
    - Never invent a component, prop, variant, event, or import path from memory.
 4. Plan the interface as product structure and states, then map each part to the smallest suitable
    Lumen primitive. Read [references/component-selection.md](references/component-selection.md)

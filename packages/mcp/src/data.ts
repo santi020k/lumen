@@ -74,6 +74,18 @@ export interface LumenData {
     schemaVersion: number
     serverVersion: string
   }
+  migration: {
+    changes: {
+      currentContract: string
+      docs: string[]
+      id: string
+      migration: string
+      packages: string[]
+      replacement: string
+    }[]
+    status: string
+    targetVersion: string
+  }
   nativeComponents: LumenNativeComponentSnapshot[]
   nativeSources: Record<LumenNativePlatform, Record<string, string>>
   recipes: LumenRecipeSnapshot[]
@@ -169,6 +181,7 @@ export interface LumenFrameworkSnapshot {
       name: string
       type: string
     }[]
+    runtimeBypass?: string
     setup: string
   }
   example: string

@@ -1,6 +1,6 @@
 # Claude Code Plugin
 
-Lumen UI is packaged as a Claude Code plugin that combines the portable `lumen-ui` skill with the
+Lumen UI is packaged as a Claude Code plugin that combines the portable build, review, and migration skills with the
 public, read-only Lumen MCP catalog. The plugin source lives in
 [`plugins/lumen-ui`](../plugins/lumen-ui), and this repository publishes its marketplace catalog
 from [`.claude-plugin/marketplace.json`](../.claude-plugin/marketplace.json).
@@ -24,11 +24,15 @@ Run `/reload-plugins` if Claude Code asks you to activate the new plugin. The bu
 namespaced as `/lumen-ui:lumen-ui`; Claude can also invoke it automatically when a request matches
 its description.
 
-The plugin starts `@santi020k/lumen-mcp@latest` through `npx`. This is intentional: the MCP server
-is read-only and ships Lumen's generated public catalog snapshot, so installed plugins receive the
-latest published component contracts without waiting for a separate plugin release. Plugin skills
-remain versioned in this repository. If a future MCP release changes its transport or tool contract
-incompatibly, update the plugin configuration and compatibility checks before publishing it.
+Plugin 1.1.0 pins `@santi020k/lumen-mcp@4.0.0` through `npx`, matching the Codex package. This is
+an unpublished v4 candidate: the pinned server must be published before distributing this plugin.
+Call `lumen_check_compatibility` with resolved installed package versions before using catalog
+contracts. On a mismatch, use installed public types and README or a matching catalog; never upgrade
+an application implicitly.
+
+Use `/lumen-ui:lumen-review` for audits and `/lumen-ui:lumen-migrate` for an explicitly requested
+upgrade. The optional `lumen-ui:lumen-reviewer` agent has only Read, Glob, Grep, and Lumen MCP tools.
+It cannot edit files or run shell commands. There are no hooks.
 
 ## Validate before publishing
 
@@ -59,8 +63,8 @@ separately. Before submitting Lumen UI:
 
 1. Run both strict validators against the public revision.
 2. Test installation from `santi020k/lumen`, not only with `--plugin-dir`.
-3. Verify that the plugin disclosure shows one skill and one MCP server with no hooks, agents, LSP
-   servers, or write capabilities.
+3. Verify that the plugin disclosure shows three skills, one read-only MCP server, and one optional read-only reviewer,
+   with no hooks or LSP servers. Build and migration skills edit only within the user-authorized scope.
 4. Submit the public repository through Anthropic's plugin submission form.
 5. Describe the plugin as community-submitted or under review until it appears in the public
    `claude-community` catalog.

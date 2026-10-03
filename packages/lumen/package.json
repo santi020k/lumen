@@ -40,7 +40,8 @@
     "styles",
     "templates",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "v4-migration.json"
   ],
   "bin": {
     "lumen": "./bin/lumen.mjs"

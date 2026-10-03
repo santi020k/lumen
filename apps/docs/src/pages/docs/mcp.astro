@@ -18,6 +18,8 @@ const claudePluginInstall = `/plugin marketplace add santi020k/lumen
 /plugin install lumen-ui@lumen`
 
 const tools = [
+  ['lumen_check_compatibility', 'Compare resolved installed versions before applying catalog contracts.', 'git-compare-arrows'],
+  ['lumen_get_migration', 'Read v4 migration guidance and package-specific review decisions without changing files.', 'scroll-text'],
   [
     'lumen_list_components',
     'List every component with its framework availability and recipe membership. Filter by framework, recipe, or a name query.',
@@ -82,10 +84,11 @@ const tools = [
 
 const workflow = [
   ['01', 'Verify the snapshot', 'lumen_get_meta identifies the snapshot and lumen_diagnose verifies web and native coverage.'],
-  ['02', 'Discover', 'The agent lists web or native components, or searches with a target framework or platform.'],
-  ['03', 'Read target usage', 'The matching get tool returns installation, setup, imports, API, examples, accessibility, and runtime guidance.'],
-  ['04', 'Compose a recipe', 'lumen_get_recipe explains multi-component patterns and gives the correct framework install command.'],
-  ['05', 'Track changes', 'Retain lumen://catalog-manifest and compare it after upgrades to refresh only contracts that changed.']
+  ['02', 'Check installed versions', 'lumen_check_compatibility compares resolved versions; use installed types when the catalog differs.'],
+  ['03', 'Discover', 'The agent lists web or native components, or searches with a target framework or platform.'],
+  ['04', 'Read target usage', 'The matching get tool returns installation, setup, imports, API, examples, accessibility, and runtime guidance.'],
+  ['05', 'Compose a recipe', 'lumen_get_recipe explains multi-component patterns and gives the correct framework install command.'],
+  ['06', 'Track changes', 'Retain lumen://catalog-manifest and compare it after upgrades to refresh only contracts that changed.']
 ] as const
 
 const resources = [

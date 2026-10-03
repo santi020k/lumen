@@ -69,3 +69,8 @@ Rules for agents:
 - Use Stack/Grid gap="related" (8px), "group" (16px, default), or "section" (32px). Size gaps match the canonical scale: xs=4, sm=8, md=12, lg=16, xl=24, 2xl=32, 3xl=48. CSS variables use rem. Retrieve spacing and spacingRoles through lumen_get_tokens.
 - Use CardHeader, CardContent and CardFooter. Card owns their gap; missing, hidden and empty parts leave no spacing. Use a nested Stack inside the body and allow footer actions to wrap. Card density is compact, comfortable (default), or spacious; it does not reduce control touch targets.
 - Keep Prose/Typography text rhythm separate from sibling gaps. Check long translated text, enlarged text, validation, optional parts and phone/desktop wrapping in both themes. Use one outer Container for page gutters and one border owner per visible edge.
+
+Before using MCP contracts, call lumen_check_compatibility with resolved installed Lumen versions.
+If versions differ, use installed public types and package README or a matching MCP package.
+Never silently upgrade an application. For an explicit v4 upgrade, read lumen_get_migration and
+preview lumen migrate v4 --dry-run --json; review dependency updates and application workarounds.

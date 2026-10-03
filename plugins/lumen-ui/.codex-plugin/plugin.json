@@ -1,6 +1,6 @@
 {
   "name": "lumen-ui",
-  "version": "0.1.0",
+  "version": "1.1.0",
   "description": "Build accessible web and native interfaces from Lumen's real component contracts.",
   "author": {
     "name": "Santiago Molina",
@@ -9,22 +9,30 @@
   "homepage": "https://lumen.santi020k.com/docs/mcp",
   "repository": "https://github.com/santi020k/lumen",
   "license": "MIT",
-  "keywords": ["design-system", "lumen", "mcp", "ui"],
+  "keywords": [
+    "design-system",
+    "lumen",
+    "mcp",
+    "ui"
+  ],
   "skills": "./skills/",
   "interface": {
     "displayName": "Lumen UI",
     "shortDescription": "Build accessible interfaces with Lumen",
-    "longDescription": "Search Lumen's component catalog, retrieve framework-specific contracts and recipes, and follow the bundled workflow for accessible Astro, React, Web Components, React Native, SwiftUI, and Compose interfaces.",
+    "longDescription": "Build, review, and migrate accessible Lumen interfaces using version-checked component contracts for web and native frameworks.",
     "developerName": "Santiago Molina",
     "category": "Developer Tools",
-    "capabilities": ["Read"],
+    "capabilities": [
+      "Read"
+    ],
     "websiteURL": "https://lumen.santi020k.com",
     "privacyPolicyURL": "https://lumen.santi020k.com/privacy",
     "termsOfServiceURL": "https://lumen.santi020k.com/terms",
     "defaultPrompt": [
       "Find the right Lumen components for this interface.",
       "Build this screen with Lumen for React.",
-      "Review this UI against Lumen's accessibility contracts."
+      "Review this UI against Lumen's accessibility contracts.",
+      "Plan and verify my migration to Lumen 4."
     ],
     "brandColor": "#7C3AED",
     "composerIcon": "./assets/icon.png",

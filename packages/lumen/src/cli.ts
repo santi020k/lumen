@@ -26,6 +26,7 @@ import {
 } from './registry.js'
 import { auditLumenTokenCss, type LumenTokenAuditFinding } from './token-audit.js'
 import { formatLumenV2Migration, migrateLumenV2 } from './v2-migration.js'
+import { formatLumenV4Migration, migrateLumenV4 } from './v4-migration.js'
 
 const args = process.argv.slice(2)
 const [command = 'help', name] = args
@@ -261,7 +262,8 @@ const help = [
   '  lumen doctor-native    Inspect native versions, package pins, and theme placement',
   '  lumen init             Print canonical framework setup without changing files',
   '  lumen rollout [version] [repositories...]  Inventory or upgrade pnpm consumers',
-  '  lumen migrate v2       Preview or apply the candidate Lumen v2 source migrations',
+  '  lumen migrate v2       Preview or apply Lumen v2 source migrations',
+  '  lumen migrate v4       Inventory v4 changes and preview or apply safe SDK import edits',
   '',
   'Options:',
   '  --cwd <path>           Target directory for lumen add',
@@ -276,7 +278,7 @@ const help = [
   '  --tailwind             Include the verified Tailwind cascade setup in lumen init',
   '  --json                 Print lumen doctor output as JSON',
   '  --manifest <path>      Use a specific cross-platform release manifest',
-  '  --apply                Apply a rollout or v2 migration (migrations default to dry-run)',
+  '  --apply                Apply a rollout or supported migration (migrations default to dry-run)',
   '  --allow-dirty          Allow rollout after recording an uncommitted baseline',
   '  --exclude <path>       Exclude a repository (repeatable)',
   '  --no-verify            Skip downstream check, typecheck, build, and browser scripts',
@@ -344,7 +346,17 @@ const run = async () => {
     }
 
     case 'migrate': {
-      if (name !== 'v2') throw new Error('Missing or invalid migration. Use lumen migrate v2.')
+      if (name === 'v4') {
+        if (applyRollout && dryRun) throw new Error('Choose either --dry-run or --apply for lumen migrate v4.')
+
+        const report = await migrateLumenV4({ apply: applyRollout, cwd })
+
+        output = json ? JSON.stringify(report, undefined, 2) : formatLumenV4Migration(report)
+
+        break
+      }
+
+      if (name !== 'v2') throw new Error('Missing or invalid migration. Use lumen migrate v2 or v4.')
 
       if (applyRollout && dryRun) throw new Error('Choose either --dry-run or --apply for lumen migrate v2.')
 

@@ -1,7 +1,10 @@
 import { McpServer, ResourceTemplate } from '@modelcontextprotocol/server'
 import * as z from 'zod'
 
+import { checkCompatibility } from './compatibility.js'
+import { compatibilityOutputSchema, componentOutputSchema, nativeComponentOutputSchema, recipeOutputSchema } from './contracts.js'
 import { loadLumenData } from './data.js'
+import { getMigration } from './migration.js'
 import {
   diagnose,
   diffCatalog,
@@ -40,12 +43,6 @@ const listComponentsOutputSchema = z.strictObject({
   count: z.int().min(0)
 })
 
-const componentOutputSchema = z.strictObject({
-  component: z.record(z.string(), z.unknown()).optional(),
-  found: z.boolean(),
-  message: z.string().trim().optional()
-})
-
 const nativePlatformSchema = z.enum(['react-native', 'swiftui', 'compose'])
 
 const nativeComponentSummarySchema = z.strictObject({
@@ -61,12 +58,6 @@ const nativeComponentSummarySchema = z.strictObject({
 const listNativeComponentsOutputSchema = z.strictObject({
   components: z.array(nativeComponentSummarySchema),
   count: z.int().min(0)
-})
-
-const recipeOutputSchema = z.strictObject({
-  found: z.boolean(),
-  message: z.string().trim().optional(),
-  recipe: z.record(z.string(), z.unknown()).optional()
 })
 
 const searchResultSchema = z.strictObject({
@@ -88,12 +79,12 @@ const searchOutputSchema = z.strictObject({
 
 const tokensOutputSchema = z.strictObject({
   tokens: z.strictObject({
-    chart: z.record(z.string(), z.string().trim()),
-    colors: z.record(z.string(), z.string().trim()),
-    glass: z.record(z.string(), z.string().trim()),
+    chart: z.record(z.string().trim(), z.string().trim()),
+    colors: z.record(z.string().trim(), z.string().trim()),
+    glass: z.record(z.string().trim(), z.string().trim()),
     semantic: z.array(z.string().trim()),
-    spacing: z.record(z.string(), z.number().nonnegative()),
-    spacingRoles: z.record(z.string(), z.string().trim()),
+    spacing: z.record(z.string().trim(), z.number().nonnegative()),
+    spacingRoles: z.record(z.string().trim(), z.string().trim()),
     themeAttribute: z.string().trim()
   })
 })
@@ -108,7 +99,7 @@ const metaOutputSchema = z.strictObject({
     componentCount: z.int().min(0),
     nativeComponentCount: z.int().min(0),
     packages: z.array(z.string().trim()),
-    packageVersions: z.record(z.string(), z.string().trim()),
+    packageVersions: z.record(z.string().trim(), z.string().trim()),
     registryName: z.string().trim(),
     registryVersion: z.int().min(1),
     schemaVersion: z.int().min(1),
@@ -117,10 +108,10 @@ const metaOutputSchema = z.strictObject({
 })
 
 const catalogManifestSchema = z.strictObject({
-  components: z.record(z.string(), z.string().trim().regex(/^[a-f0-9]{64}$/)),
-  nativeComponents: z.record(z.string(), z.string().trim().regex(/^[a-f0-9]{64}$/))
+  components: z.record(z.string().trim(), z.string().trim().regex(/^[a-f0-9]{64}$/)),
+  nativeComponents: z.record(z.string().trim(), z.string().trim().regex(/^[a-f0-9]{64}$/))
     .optional(),
-  recipes: z.record(z.string(), z.string().trim().regex(/^[a-f0-9]{64}$/))
+  recipes: z.record(z.string().trim(), z.string().trim().regex(/^[a-f0-9]{64}$/))
 })
 
 const catalogChangesSchema = z.strictObject({
@@ -191,7 +182,7 @@ export const createLumenServer = (): McpServer => {
   const server = new McpServer(
     { name: '@santi020k/lumen-mcp', version: data.meta.serverVersion }, {
       instructions:
-        'Read lumen://meta, lumen://diagnostics, and lumen://rules before generating Lumen code. Search or list the catalog, ' +
+        'Compare resolved installed versions with lumen_check_compatibility. On mismatch use installed public types or a matching catalog. Read lumen://meta, lumen://diagnostics, and lumen://rules before generating Lumen code. Search or list the catalog, ' +
         'then inspect the selected web or native component for the target framework or platform at usage detail before requesting source.'
     }
   )
@@ -266,7 +257,7 @@ export const createLumenServer = (): McpServer => {
         platform: nativePlatformSchema
           .meta({ description: 'Native implementation contract to return.' })
       }),
-      outputSchema: componentOutputSchema
+      outputSchema: nativeComponentOutputSchema
     }, args => toMcpResult(getNativeComponent(args))
   )
 
@@ -307,6 +298,38 @@ export const createLumenServer = (): McpServer => {
       }),
       outputSchema: searchOutputSchema
     }, args => toMcpResult(search(args))
+  )
+
+  server.registerTool(
+    'lumen_check_compatibility', {
+      annotations: readOnlyAnnotations,
+      description: 'Compare resolved installed Lumen package versions with this snapshot before generating or migrating code. Does not read repositories or change dependencies.',
+      inputSchema: z.strictObject({
+        packageVersions: z.record(z.string().trim().min(1).max(160), z.string().trim().min(1).max(100))
+          .meta({ description: 'Resolved versions from installed package metadata or native lock files, not manifest ranges. Include only Lumen packages.' })
+      }),
+      outputSchema: compatibilityOutputSchema
+    }, args => toMcpResult(checkCompatibility(args))
+  )
+
+  server.registerTool(
+    'lumen_get_migration', {
+      annotations: readOnlyAnnotations,
+      description: 'Read the v4 migration contract, affected packages and review guidance. Does not modify consumer code or versions.',
+      inputSchema: z.strictObject({ packageName: z.string().trim().min(1).max(160).optional() }),
+      outputSchema: z.strictObject({
+        changes: z.array(z.strictObject({
+          currentContract: z.string().trim(),
+          docs: z.array(z.string().trim()),
+          id: z.string().trim(),
+          migration: z.string().trim(),
+          packages: z.array(z.string().trim()),
+          replacement: z.string().trim()
+        })),
+        status: z.string().trim(),
+        targetVersion: z.string().trim()
+      })
+    }, args => toMcpResult(getMigration(args))
   )
 
   server.registerTool(

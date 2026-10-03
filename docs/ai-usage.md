@@ -704,3 +704,23 @@ selection to the current list. React derives options from its current props and 
 selections through `onChange`, including controlled inputs. Disabled and read-only inputs stay closed.
 Applications should keep focus on the input and observe `aria-activedescendant` instead of calling
 focus on option buttons. The DOM adapters match both option labels and values.
+
+## Version-aware build, review, and migration
+
+The portable skills are `lumen-ui` for implementation, `lumen-review` for a read-only audit, and
+`lumen-migrate` for an explicitly requested upgrade. Their canonical sources live under `skills/`;
+`pnpm run generate:plugin-package` produces the client snapshots. Both client manifests use plugin
+1.1.0 and pin the v4 catalog. This candidate is not proof of publication or directory approval.
+
+Before applying MCP contracts, call `lumen_check_compatibility` with resolved versions from installed
+metadata or native lock files. A manifest range is not an installed version. When versions differ,
+inspect installed public types and README or use a matching MCP package. Do not silently upgrade.
+Search supports English and Spanish queries with framework and platform filters.
+
+For a v4 upgrade, read `lumen_get_migration` and preview `lumen migrate v4 --dry-run --json` locally.
+`--apply` rewrites only known static SDK import paths in JavaScript and TypeScript. It preserves
+comments and examples and reports UI/native review triggers. Dependency updates and application-owned
+workarounds require review; the CLI does not infer that a workaround can be removed. JSX, Astro,
+native source, dynamic imports, and dependency manifests are not automatically rewritten.
+
+See [v4 AI verification](lumen-4-ai.md) for actual agent benchmark coverage and release evidence.

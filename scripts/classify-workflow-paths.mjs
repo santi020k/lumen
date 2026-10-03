@@ -60,6 +60,11 @@ export const classifyCiPaths = (paths, { releasePullRequest = false } = {}) => {
   ])
 
   const mcp = matchesAny(paths, [
+    /^(skills|plugins|\.claude-plugin)\//u,
+    /^scripts\/(?:generate-plugin-package|check-plugin-package|plugin-contract\.test|evaluate-ai-agents|generate-v4-migration)\.mjs$/u,
+    /^scripts\/(?:lib\/plugin-contract\.mjs|schemas\/agent-[^/]+\.json)$/u,
+    /^docs\/(?:ai-usage|claude-code-plugin|lumen-4-ai)\.md$/u,
+    /^registry\/lumen-4-contract\.json$/u,
     /^packages\/(astro|core|elements|lumen|mcp|react|tokens)\//u,
     /^tokens\//u,
     /^registry\/lumen\.registry\.json$/u,
