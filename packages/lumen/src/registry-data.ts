@@ -15,6 +15,34 @@ export const lumenRegistry = {
   ],
   items: [
     {
+      name: 'page-header',
+      type: 'recipe',
+      components: [
+        'Badge',
+        'Breadcrumb',
+        'Button',
+        'Link',
+        'Stack',
+        'Typography'
+      ],
+      files: [
+        'docs/consumer-ui-recipes.md'
+      ]
+    },
+    {
+      name: 'section-header',
+      type: 'recipe',
+      components: [
+        'Badge',
+        'Button',
+        'Stack',
+        'Typography'
+      ],
+      files: [
+        'docs/consumer-ui-recipes.md'
+      ]
+    },
+    {
       name: 'content-flow-header',
       type: 'recipe',
       components: [
@@ -2582,6 +2610,16 @@ export const lumenRegistry = {
       ]
     },
     {
+      name: 'Descriptions',
+      type: 'component',
+      category: 'Data display',
+      description: 'A key-value description list component.',
+      files: [
+        'packages/astro/components/Descriptions.astro',
+        'packages/react/src/components.tsx'
+      ]
+    },
+    {
       name: 'DescriptionItem',
       type: 'component',
       description: 'Composes rich description item content.',
@@ -2618,16 +2656,6 @@ export const lumenRegistry = {
       ],
       dependencies: [
         'styles'
-      ]
-    },
-    {
-      name: 'Descriptions',
-      type: 'component',
-      category: 'Data display',
-      description: 'A key-value description list component.',
-      files: [
-        'packages/astro/components/Descriptions.astro',
-        'packages/react/src/components.tsx'
       ]
     },
     {

@@ -1,0 +1,35 @@
+---
+import { Badge, Stack, Typography } from '@santi020k/lumen-astro'
+
+interface Props {
+  actionsLabel?: string
+  count?: string
+  description?: string
+  headingId: string
+  level?: 2 | 3 | 4 | 5 | 6
+  title: string
+}
+
+declare const Astro: Readonly<{ props: Props, slots: { has: (name: string) => boolean } }>
+
+const { actionsLabel = 'Section actions', count, description, headingId, level = 2, title } = Astro.props
+const headings = { 2: 'h2', 3: 'h3', 4: 'h4', 5: 'h5', 6: 'h6' } as const
+const Heading = headings[level]
+---
+
+<header aria-labelledby={headingId}>
+  <Stack direction="horizontal" align="start" justify="between" gap="group" wrap>
+    <Stack class="header-identity" gap="related">
+      <Stack direction="horizontal" align="center" gap="related" wrap>
+        <Typography><Heading id={headingId}>{title}</Heading></Typography>
+        {count !== undefined && <Badge variant="secondary">{count}</Badge>}
+      </Stack>
+      {description && <Typography><p>{description}</p></Typography>}
+    </Stack>
+    {Astro.slots.has('actions') && <Stack direction="horizontal" align="center" gap="related" wrap role="group" aria-label={actionsLabel}><slot name="actions" /></Stack>}
+  </Stack>
+</header>
+
+<style>
+  .header-identity { flex: 1 1 20rem; min-width: 0; overflow-wrap: anywhere; }
+</style>
