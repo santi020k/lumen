@@ -185,11 +185,6 @@
         "category": "actions"
       },
       {
-        "id": "image-comparison",
-        "label": "Image comparison",
-        "category": "data"
-      },
-      {
         "id": "top-app-bar",
         "label": "Top app bar",
         "category": "navigation"

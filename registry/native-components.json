@@ -989,17 +989,11 @@
       "symbol": "LumenTooltip"
     },
     {
-      "id": "image-comparison",
-      "adapter": "compose",
-      "platforms": ["Android"],
-      "contract": "Painter-based before and after comparison with a controlled visible fraction",
-      "accessibility": "Exposes a named native slider and localized percentage for keyboard and screen-reader adjustment",
-      "symbol": "LumenImageComparison"
-    },
-    {
       "id": "top-app-bar",
       "adapter": "compose",
-      "platforms": ["Android"],
+      "platforms": [
+        "Android"
+      ],
       "contract": "Material app bar with named navigation and actions plus pinned or collapsing scroll behavior",
       "accessibility": "Heading semantics, native window insets, and application-owned navigation",
       "symbol": "LumenTopAppBar"
@@ -1007,7 +1001,9 @@
     {
       "id": "swipe-actions",
       "adapter": "compose",
-      "platforms": ["Android"],
+      "platforms": [
+        "Android"
+      ],
       "contract": "Logical start and end list actions with transient gesture state and application-owned operations",
       "accessibility": "RTL-aware gestures, named custom accessibility actions, visible keyboard buttons, and disabled states",
       "symbol": "LumenSwipeActions"
@@ -1015,7 +1011,9 @@
     {
       "id": "multi-select",
       "adapter": "compose",
-      "platforms": ["Android"],
+      "platforms": [
+        "Android"
+      ],
       "contract": "Controlled multiple selection with caller-owned search results, chips, validation, loading and retry",
       "accessibility": "Named native checkbox options, dialog focus, retained selections and disabled or read-only behavior",
       "symbol": "LumenMultiSelect"
@@ -1023,7 +1021,9 @@
     {
       "id": "range-slider",
       "adapter": "compose",
-      "platforms": ["Android"],
+      "platforms": [
+        "Android"
+      ],
       "contract": "Controlled bounded numeric interval with native continuous or stepped adjustment",
       "accessibility": "Separately named and formatted lower and upper thumbs with keyboard and accessibility adjustment",
       "symbol": "LumenRangeSlider"
@@ -1031,7 +1031,9 @@
     {
       "id": "adaptive-list-detail-scaffold",
       "adapter": "compose",
-      "platforms": ["Android"],
+      "platforms": [
+        "Android"
+      ],
       "contract": "Material full-window list/detail panes adapting to window size and separating hinges",
       "accessibility": "Named panes, compact back action, and application-owned selection and system back handling",
       "symbol": "LumenAdaptiveListDetailScaffold"
