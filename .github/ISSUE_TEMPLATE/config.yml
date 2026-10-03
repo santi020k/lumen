@@ -1,0 +1,14 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Suggest an improvement
+    url: https://github.com/santi020k/lumen/discussions/categories/ideas
+    about: Search ideas, add a use case, vote, or propose an improvement.
+  - name: Ask a question
+    url: https://github.com/santi020k/lumen/discussions/categories/q-a
+    about: Get help with setup, components, theming, and integrations.
+  - name: Follow the public roadmap
+    url: https://github.com/santi020k/lumen/issues?q=is%3Aissue%20label%3Aroadmap
+    about: Follow accepted work and its linked pull requests and releases.
+  - name: Report a security vulnerability privately
+    url: https://github.com/santi020k/lumen/security/advisories/new
+    about: Keep suspected vulnerabilities out of public issues and discussions.

@@ -1087,7 +1087,7 @@ const SettingsScreen = ({
                 openExternalURL('https://lumen.santi020k.com/support')
               }}
             >
-              Support
+              Feedback & support
             </LumenButton>
             <LumenButton
               intent="quiet"

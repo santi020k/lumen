@@ -4,6 +4,7 @@ import { Badge, ButtonLink, Card, CodeTabs, Icon } from '@santi020k/lumen-astro'
 import type { PlatformGuide } from '../data/platforms'
 import DocsLayout from '../layouts/DocsLayout.astro'
 
+import CommunityFeedback from './CommunityFeedback.astro'
 import PlatformShipping from './PlatformShipping.astro'
 import PlatformStoreAvailability from './PlatformStoreAvailability.astro'
 
@@ -61,4 +62,5 @@ const commands = guide.playgroundCommands ?? []
     />
     {guide.shippingNotes && <PlatformShipping notes={guide.shippingNotes} />}
   </section>
+  <CommunityFeedback documentationPath={`${guide.href}/playground`} subject={`${guide.label} playground`} />
 </DocsLayout>

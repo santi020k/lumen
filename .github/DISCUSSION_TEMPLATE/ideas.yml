@@ -1,0 +1,47 @@
+title: "Idea: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Search existing ideas first. Add your use case or vote there when the idea already exists.
+        Ideas are public and votes inform priorities without promising delivery. Keep private code and personal data out.
+        Use the bug report form for broken behavior and Q&A for usage questions.
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Relevant platform or surface
+      multiple: true
+      options:
+        - Astro
+        - React
+        - Web Components
+        - React Native
+        - Apple / SwiftUI
+        - Android / Compose
+        - Wear OS
+        - Figma
+        - CLI / registry
+        - AI skill / MCP
+        - Documentation
+        - Shared foundations / multiple platforms
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What are you trying to build?
+      description: Describe the user need, current friction, and who would benefit.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What would help?
+      description: Describe the improvement and any examples. A finished API design is not required.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Existing options and workarounds
+      description: What have you tried? Link related discussions or public examples if useful.

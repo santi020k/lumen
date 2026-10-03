@@ -949,7 +949,7 @@ private fun ResourceSettings(uriHandler: UriHandler) {
     SettingsGroup("Privacy and resources", "Documentation, privacy, and support") {
         ResourceButton("Android documentation") { uriHandler.openUri("https://lumen.santi020k.com/docs/android") }
         ResourceButton("Privacy") { uriHandler.openUri("https://lumen.santi020k.com/privacy") }
-        ResourceButton("Support") { uriHandler.openUri("https://lumen.santi020k.com/support") }
+        ResourceButton("Feedback & support") { uriHandler.openUri("https://lumen.santi020k.com/support") }
         ResourceButton("santi020k") { uriHandler.openUri("https://santi020k.com") }
     }
 }

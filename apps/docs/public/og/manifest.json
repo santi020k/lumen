@@ -226,8 +226,8 @@
       "title": "Privacy"
     },
     "/support": {
-      "alt": "Support — Lumen UI",
-      "description": "Get help with Lumen UI components, integrations, and product workflows.",
+      "alt": "Feedback & support — Lumen UI",
+      "description": "Suggest improvements, report bugs, ask questions, and follow the public roadmap.",
       "images": [
         {
           "format": "webp",
@@ -239,7 +239,7 @@
         }
       ],
       "pathname": "/support",
-      "title": "Support"
+      "title": "Feedback & support"
     },
     "/terms": {
       "alt": "Terms — Lumen UI",

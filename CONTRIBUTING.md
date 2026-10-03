@@ -3,6 +3,18 @@
 Thanks for helping Lumen stay sharp. This guide covers the working loop; public project context lives
 in [README.md](README.md), and AI-specific instructions live in [AGENTS.md](AGENTS.md).
 
+## Feedback and support
+
+Use [Ideas](https://github.com/santi020k/lumen/discussions/categories/ideas) for suggestions,
+[Q&A](https://github.com/santi020k/lumen/discussions/categories/q-a) for usage questions, and the
+[bug form](https://github.com/santi020k/lumen/issues/new?template=bug-report.yml) for defects and
+accessibility problems. Search existing conversations before posting. Reports are public; use
+[SECURITY.md](SECURITY.md) for suspected vulnerabilities.
+
+Accepted ideas link to implementation issues on the [public roadmap](https://lumen.santi020k.com/support#roadmap).
+Follow the [community feedback workflow](docs/community-feedback.md) when reviewing feedback, linking work,
+and recording the release that ships an improvement. Votes inform priorities without promising delivery.
+
 ## Local Setup
 
 Use Node.js 22.22.2+, 24.15.0+, or 26+ and the pnpm version pinned in `package.json` (currently 12.8.1).

@@ -24,7 +24,7 @@ const page = (pathname, title, description, badge) => definePageMetadata({
 const supportingPages = [
   ['/changelog', 'Changelog', 'Follow Lumen UI releases, fixes, and platform updates.', 'Releases'],
   ['/privacy', 'Privacy', 'Learn how the Lumen UI website handles data and protects visitor privacy.', 'Legal'],
-  ['/support', 'Support', 'Get help with Lumen UI components, integrations, and product workflows.', 'Support'],
+  ['/support', 'Feedback & support', 'Suggest improvements, report bugs, ask questions, and follow the public roadmap.', 'Community'],
   ['/terms', 'Terms', 'Review the terms that apply when using the Lumen UI website and resources.', 'Legal'],
   ['/docs/brand-icons', 'Brand icons', 'Use the shared brand icon catalog across supported Lumen platforms.', 'Icons'],
   ['/docs/forms', 'Forms', 'Build accessible forms with Lumen components and framework integrations.', 'Forms'],

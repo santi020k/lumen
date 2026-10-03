@@ -548,7 +548,7 @@ private fun AboutPlayground() {
                     onClick = { uriHandler.openUri("https://lumen.santi020k.com/support") },
                     intent = LumenButtonIntent.Secondary
                 ) {
-                    Text("Support")
+                    Text("Feedback & support")
                 }
                 LumenButton(
                     onClick = { uriHandler.openUri("https://lumen.santi020k.com/privacy") },
