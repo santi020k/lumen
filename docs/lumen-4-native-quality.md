@@ -335,6 +335,20 @@ foundations 1,446,438, static graphics 1,629,152 and named root icon 6,248,052. 
 task branch pending a passing combined gate and serialized local release integration. Native
 large-text failures, physical-device and screen-reader checks, and stability iterations remain open.
 
+The combined iOS Release host built at `737838ec`, using the same verified application inputs
+prepared at `ecdcb322`, and launched on the iPhone 17 Pro iOS 27 Simulator. Scene support remained
+enabled and OTA updates disabled. The preserved app contains 76 file hashes; all installed files
+matched after the native flow. Home-to-Examples-to-Workspace navigation and record 002 selection
+worked. Changing text size live from 3 to 11 reproduced clipped detail title, Back/Edit labels
+and chart heading within stale heights, while navigation reflowed. This confirms the large-text
+failure on the combined candidate; it does not identify the exact upstream cause or qualify the
+remaining keyboard, VoiceOver or hardware flows. Standard text size 3 and Device Hub's sidebar
+layout were restored. No draft was opened or record changed. Privacy-safe before/after screenshots,
+the app and input/artifact report are preserved under
+`.build/native-quality-react-native-ios-combined-runtime`. Native dependency warnings remain in
+`.build/native-quality-react-native-ios-combined-build.log`; a successful build is not a
+zero-warning native or accessibility pass.
+
 ### Outstanding scope and blockers
 
 The complete Required outcomes list remains authoritative. Broader phone/tablet runtime qualification and physical-device keyboard/focus and screen-reader checks,
