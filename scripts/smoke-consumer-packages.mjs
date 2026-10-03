@@ -161,7 +161,7 @@ assert.equal(
 )
 assert.match(
   renderToStaticMarkup(createElement(ServerCard, { as: 'article' }, 'Server card')),
-  /<article class="ui-card"/
+  /<article class="ui-card ui-card--comfortable" data-density="comfortable"/
 )
 
 const HookFormFixture = () => {
