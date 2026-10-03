@@ -1,6 +1,7 @@
 import { describe, expect, test } from 'vitest'
 
 import {
+  getCurrentDocsContextLink,
   getDocsContextLinks,
   isDocsContextLinkCurrent,
   sharedDocumentationLinks
@@ -56,5 +57,34 @@ describe('documentation context navigation', () => {
     expect(hooks?.href).toBe('/docs/react-native/hooks')
     expect(hooks && isDocsContextLinkCurrent(hooks, '/docs/react-native/hooks')).toBe(true)
     expect(getDocsContextLinks('apple').some(link => link.label === 'Hooks')).toBe(false)
+  })
+})
+
+describe('current documentation destination', () => {
+  test.each([
+    ['', 'Overview'],
+    ['#installation', 'Use the tokens'],
+    ['#components', 'Coverage'],
+    ['#component%73', 'Coverage'],
+    ['#principles', 'Principles'],
+    ['#unknown', 'Overview'],
+    ['#%', 'Overview']
+  ])('selects exactly one foundations destination for %s', (hash, label) => {
+    expect(getCurrentDocsContextLink(getDocsContextLinks('foundations'), '/docs/foundations/', hash)?.label).toBe(label)
+  })
+
+  test('uses native platform section anchors only on their overview page', () => {
+    const links = getDocsContextLinks('apple')
+
+    expect(getCurrentDocsContextLink(links, '/docs/apple', '#installation')?.label).toBe('Install')
+    expect(getCurrentDocsContextLink(links, '/docs/apple', '#theme')?.label).toBe('Theme')
+    expect(getCurrentDocsContextLink(links, '/docs/apple/components/button', '#theme')?.label).toBe('Components')
+  })
+
+  test('preserves prefix sections for child routes and rejects partial path matches', () => {
+    const links = getDocsContextLinks('web')
+
+    expect(getCurrentDocsContextLink(links, '/docs/components/button', '#api')?.label).toBe('Components')
+    expect(getCurrentDocsContextLink(links, '/docs/components-extra', '#api')).toBeUndefined()
   })
 })

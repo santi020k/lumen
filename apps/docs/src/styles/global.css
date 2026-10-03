@@ -516,7 +516,7 @@ body {
 }
 
 .docs-context-navigation__link:hover,
-.docs-context-navigation__link[aria-current="page"] {
+.docs-context-navigation__link:is([aria-current="page"], [aria-current="location"]) {
   background: hsl(var(--brand-soft) / 0.72);
   color: hsl(var(--brand));
 }

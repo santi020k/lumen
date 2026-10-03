@@ -69,6 +69,7 @@ const links = getDocsContextLinks(activePlatform)
           <Link
             class="docs-context-navigation__link no-underline"
             href={link.href}
+            data-docs-context-match={link.match}
             aria-current={isCurrent ? 'page' : undefined}
           >
             {link.label}
@@ -80,9 +81,45 @@ const links = getDocsContextLinks(activePlatform)
 </div>
 
 <script>
+  import { getCurrentDocsContextLink } from '../data/docs-context-navigation'
+
+  const syncDocsContextCurrentLink = (): void => {
+    const navigation = document.querySelector<HTMLElement>('.docs-context-navigation__links')
+
+    if (!navigation) return
+
+    const anchors = [...navigation.querySelectorAll<HTMLAnchorElement>('a[href]')]
+
+    const current = getCurrentDocsContextLink(anchors.map(anchor => ({
+      href: anchor.getAttribute('href') ?? '',
+      label: anchor.textContent?.trim() ?? '',
+      match: anchor.dataset.docsContextMatch === 'prefix' ? 'prefix' : 'exact'
+    })), window.location.pathname, window.location.hash)
+
+    for (const anchor of anchors) {
+      if (current && anchor.getAttribute('href') === current.href) {
+        anchor.setAttribute('aria-current', current.href.includes('#') ? 'location' : 'page')
+      } else {
+        anchor.removeAttribute('aria-current')
+      }
+    }
+
+    const active = anchors.find(anchor => anchor.hasAttribute('aria-current'))
+
+    if (!active) return
+
+    const navigationRect = navigation.getBoundingClientRect()
+    const activeRect = active.getBoundingClientRect()
+
+    navigation.scrollLeft += activeRect.left - navigationRect.left -
+      (navigation.clientWidth - active.clientWidth) / 2
+  }
+
   const docsPlatformStorageKey = 'lumen-docs-platform'
 
   const initDocsContextNavigation = (): void => {
+    syncDocsContextCurrentLink()
+
     const container = document.querySelector<HTMLElement>('.docs-context-navigation')
 
     if (!container || container.dataset.initialized === 'true') return
@@ -105,23 +142,29 @@ const links = getDocsContextLinks(activePlatform)
       window.location.assign(select.value)
     })
 
-    const links = container.querySelector<HTMLElement>('.docs-context-navigation__links')
-    const currentLink = links?.querySelector<HTMLElement>('[aria-current="page"]')
-
-    if (links && currentLink) {
-      const linksRect = links.getBoundingClientRect()
-      const currentLinkRect = currentLink.getBoundingClientRect()
-
-      const centeredOffset = links.scrollLeft + currentLinkRect.left - linksRect.left -
-        (links.clientWidth - currentLink.clientWidth) / 2
-
-      links.scrollLeft = Math.max(0, centeredOffset)
-    }
-
     container.dataset.initialized = 'true'
   }
 
   initDocsContextNavigation()
 
   document.addEventListener('astro:after-swap', initDocsContextNavigation)
+
+  document.addEventListener('astro:page-load', syncDocsContextCurrentLink)
+
+  for (const event of ['hashchange', 'popstate', 'pageshow', 'resize']) {
+    window.addEventListener(event, syncDocsContextCurrentLink)
+  }
+
+  document.addEventListener('click', event => {
+    if (!(event.target instanceof Element)) return
+
+    const anchor = event.target.closest('a[href]')
+
+    if (!(anchor instanceof HTMLAnchorElement) || anchor.origin !== window.location.origin ||
+      anchor.pathname !== window.location.pathname) return
+
+    // Astro's same-page navigation updates history without a swap or guaranteed hashchange.
+    // Read the actual URL after the click handlers finish, including canceled navigation.
+    window.setTimeout(syncDocsContextCurrentLink, 0)
+  })
 </script>
