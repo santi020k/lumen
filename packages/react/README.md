@@ -722,3 +722,43 @@ React `VirtualList` accepts typed `items`, `getKey` and `renderItem` for data mo
 Only the visible window, overscan and focused neighbors mount. Stable keys retain row identity;
 applications own offscreen editing state. See [data rendering](../../docs/virtual-list-data.md) for
 setup, lifecycle, accessibility and the mounted-mode tradeoff.
+
+### Compound dialog tasks
+
+`DialogHeader`, `DialogTitle`, `DialogBody`, `DialogFooter`, and `DialogClose`
+compose long forms with fixed actions and an independently scrolling body. Keep
+`DialogBody` directly inside `Dialog`. Give `DialogTitle` an `id` and reference it
+from `Dialog aria-labelledby`; `as` supports `h2`, `h3`, and `h4`.
+`DialogClose` accepts Button props, honors `onClick` cancellation, and requests
+closure through the enclosing Dialog controller, including controlled dialogs.
+The four static structural parts are also exported from `@santi020k/lumen-react/server`.
+
+```tsx
+<Dialog open={open} onOpenChange={setOpen} aria-labelledby="record-title">
+  <DialogHeader><DialogTitle id="record-title">Edit record</DialogTitle></DialogHeader>
+  <DialogBody><Form id="record-form"><Input name="name" aria-label="Name" /></Form></DialogBody>
+  <DialogFooter>
+    <DialogClose variant="outline">Cancel</DialogClose>
+    <Button type="submit" form="record-form">Save</Button>
+  </DialogFooter>
+</Dialog>
+```
+
+`FileUpload selectedFilesLabel` accepts localized text containing `{count}`.
+Accepted native form resets clear selected-file feedback; cancelled resets preserve it.
+
+### Rich description rows
+
+`DescriptionItem`, `DescriptionTerm`, and `DescriptionDetail` accept native props
+and refs and render `div`, `dt`, and `dd`. Compose them inside `Descriptions` for
+rich values, alongside the existing `items` array when needed. The three static
+parts are also available from `@santi020k/lumen-react/server` for use inside a native `dl`.
+
+```tsx
+<Descriptions>
+  <DescriptionItem>
+    <DescriptionTerm>Status</DescriptionTerm>
+    <DescriptionDetail><Badge variant="success">Active</Badge></DescriptionDetail>
+  </DescriptionItem>
+</Descriptions>
+```

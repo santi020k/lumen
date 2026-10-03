@@ -32,6 +32,7 @@ export const runtimeBehaviorComponentNames = [
   'DatePicker',
   'DateRangePicker',
   'Dialog',
+  'DialogClose',
   'Drawer',
   'DropdownMenu',
   'Field',

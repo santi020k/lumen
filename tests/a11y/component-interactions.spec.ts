@@ -1063,3 +1063,33 @@ test('Tooltip opens when randomUUID is unavailable and generates distinct IDs', 
   await expect(page.getByRole('tooltip', { name: 'First help' })).toBeVisible()
   await expect(page.locator('#external-form')).toHaveAttribute('data-ui-form-bound', 'true')
 })
+
+behaviorTest(
+  ['DialogClose'],
+  'Dialog opens a long compound task with reachable actions and restored focus',
+  async ({ page }) => {
+    await page.goto('/internal/dashboard-dialog')
+    const opener = page.getByRole('button', { name: 'Edit record', exact: true })
+    await opener.click()
+    const dialog = page.getByRole('dialog', { name: 'Edit a long record' })
+    await expect(dialog).toBeVisible()
+    const body = dialog.locator('[data-slot="dialog-body"]')
+    const dimensions = await body.evaluate(element => ({
+      visible: element.clientHeight,
+      content: element.scrollHeight
+    }))
+    expect(dimensions.content).toBeGreaterThan(dimensions.visible)
+    await page.getByLabel('Record field 20', { exact: true }).focus()
+    await expect(page.getByLabel('Record field 20', { exact: true })).toBeInViewport()
+    await expect(dialog.getByRole('button', { name: 'Save changes' })).toBeInViewport()
+    const cancel = dialog.getByRole('button', { name: 'Cancel', exact: true })
+    await cancel.focus()
+    await page.keyboard.press('Enter')
+    await expect(dialog).not.toBeVisible()
+    await expect(opener).toBeFocused()
+    await opener.click()
+    await page.keyboard.press('Escape')
+    await expect(dialog).not.toBeVisible()
+    await expect(opener).toBeFocused()
+  }
+)
