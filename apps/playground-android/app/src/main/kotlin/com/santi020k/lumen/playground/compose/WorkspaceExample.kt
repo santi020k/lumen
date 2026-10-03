@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -52,7 +53,7 @@ internal fun WorkspaceExample(onBack: () -> Unit) {
     var state by rememberSaveable { mutableStateOf("success") }
     val text: (String, String) -> String = { english, translation -> if (spanish) translation else english }
 
-    BoxWithConstraints(Modifier.fillMaxSize()) {
+    BoxWithConstraints(Modifier.fillMaxSize().statusBarsPadding()) {
         val wide = maxWidth >= 840.dp && LocalDensity.current.fontScale < 2f
         BackHandler(enabled = selected != null && !wide && !editing) { selected = null }
         Row(Modifier.fillMaxSize()) {

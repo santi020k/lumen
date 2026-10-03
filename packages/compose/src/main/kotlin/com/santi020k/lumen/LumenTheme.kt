@@ -13,12 +13,33 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 
+enum class LumenSurfaceMaterial { Solid, Glass }
+
+@Immutable
+data class LumenAppearance(
+    val radiusScale: Float = 1f,
+    val spacingScale: Float = 1f,
+    val borderWidth: Float = 1f,
+    val elevationScale: Float = 1f,
+    val material: LumenSurfaceMaterial = LumenSurfaceMaterial.Solid
+) {
+    init {
+        require(listOf(radiusScale, spacingScale, borderWidth, elevationScale).all { it.isFinite() && it >= 0 })
+    }
+}
+
 @Immutable
 data class LumenThemeValues(
     val colors: LumenColorPalette,
     val isDark: Boolean,
-    val chartColors: LumenChartColorPalette = if (isDark) LumenChartColors.Dark else LumenChartColors.Light
-)
+    val chartColors: LumenChartColorPalette = if (isDark) LumenChartColors.Dark else LumenChartColors.Light,
+    val appearance: LumenAppearance = LumenAppearance()
+) {
+    companion object {
+        fun preset(preset: LumenThemePreset, isDark: Boolean): LumenThemeValues =
+            LumenThemeValues(colors = preset.colors(isDark), isDark = isDark, appearance = preset.appearance)
+    }
+}
 
 @Immutable
 data class LumenMaterialColorOverrides(
@@ -103,17 +124,15 @@ fun LumenTheme(
     materialColorOverrides: LumenMaterialColorOverrides = LumenMaterialColorOverrides(),
     typography: Typography = Typography(),
     shapes: Shapes = Shapes(),
+    preset: LumenThemePreset = LumenThemePreset.Default,
     content: @Composable () -> Unit
 ) {
-    val defaultValues = if (darkTheme) {
-        LumenThemeValues(colors = LumenColors.Dark, isDark = true)
-    } else {
-        LumenThemeValues(colors = LumenColors.Light, isDark = false)
-    }
+    val defaultValues = LumenThemeValues.preset(preset, darkTheme)
     val resolvedValues = values ?: materialColorScheme?.let { colorScheme ->
         LumenThemeValues(
             colors = colorScheme.toLumenColorPalette(defaultValues.colors, materialColorOverrides),
-            isDark = darkTheme
+            isDark = darkTheme,
+            appearance = defaultValues.appearance
         )
     } ?: defaultValues
     val resolvedColorScheme = materialColorScheme

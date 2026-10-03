@@ -66,6 +66,10 @@ For existing applications, start with [v1 → v2](docs/migrating-v1-to-v2.md) wh
 [v3 → v4](docs/migrating-v3-to-v4.md). For initial adoption, use
 [Migrating to Lumen](docs/migrating-to-lumen.md).
 
+## Appearance presets
+
+Choose an appearance preset or customize the existing themes with the [appearance guide](docs/appearance-presets.md). The Studio preset uses PostLens as its visual reference.
+
 ## Dashboards and templates
 
 Explore the [template gallery](https://lumen.santi020k.com/templates) for complete analytics,
@@ -292,6 +296,10 @@ Read [`CONTRIBUTING.md`](./CONTRIBUTING.md) before opening a pull request. User-
 changes require a changeset.
 
 ## Community
+
+[Feedback & support](https://lumen.santi020k.com/support) connects ideas, questions, bug reports,
+and the [public roadmap](https://lumen.santi020k.com/support#roadmap). Discuss improvements on GitHub
+and follow accepted work through implementation and release.
 
 Lumen is free and MIT licensed while the project focuses on adoption, public examples, and
 real-world feedback.

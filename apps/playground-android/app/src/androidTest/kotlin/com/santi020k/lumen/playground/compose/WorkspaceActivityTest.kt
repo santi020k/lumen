@@ -7,12 +7,26 @@ import androidx.compose.ui.test.junit4.v2.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextReplacement
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 
 class WorkspaceActivityTest {
     @get:Rule
     val composeRule = createAndroidComposeRule<MainActivity>()
+
+    @Test
+    fun workspaceHeaderRespectsStatusBarInsets() {
+        composeRule.onNodeWithText("Examples", substring = false).performClick()
+        composeRule.onNodeWithText("Workspace", substring = false).performClick()
+        val statusBarInset = requireNotNull(
+            ViewCompat.getRootWindowInsets(composeRule.activity.window.decorView)
+        ).getInsets(WindowInsetsCompat.Type.statusBars()).top
+        val header = composeRule.onNodeWithText("Back to examples").fetchSemanticsNode()
+        assertTrue("Workspace header overlaps the status bar", header.boundsInWindow.top >= statusBarInset)
+    }
 
     @Test
     fun activityRecreationKeepsNavigationAndUnsavedWorkspaceDraft() {

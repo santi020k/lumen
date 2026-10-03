@@ -283,8 +283,8 @@ struct PlaygroundSettingsView: View {
                 )
                 LumenDivider()
                 resourceRow(
-                    "Support",
-                    detail: "Project help and issue guidance",
+                    "Feedback & support",
+                    detail: "Ideas, questions, bug reports, and the public roadmap",
                     destination: safeURL("https://lumen.santi020k.com/support")
                 )
                 LumenDivider()

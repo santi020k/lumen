@@ -418,6 +418,10 @@ See the [native compatibility matrix](../../docs/native-compatibility.md) for su
 Swift, and Xcode baselines, and use the
 [native device validation matrix](../../docs/native-device-validation.md) for VoiceOver evidence.
 
+## Appearance presets
+
+Start with `LumenTheme(preset: .studio, scheme: .light)`. Surface and Card accept explicit `.glass` materials with accessibility fallbacks. See [appearance presets](../../docs/appearance-presets.md) for surface dimensions and text styles.
+
 ## Data visualization
 
 `LumenSparkline`, `LumenLineChart`, `LumenBarChart`, `LumenPieChart`, `LumenScatterChart`,

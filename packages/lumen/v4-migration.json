@@ -151,6 +151,76 @@
         "pnpm run check:mcp-evaluation",
         "pnpm run check:mcp-package"
       ]
+    },
+    {
+      "id": "appearance-presets",
+      "kind": "breaking",
+      "currentContract": "Theme palettes and surface dimensions are customized separately in each adapter. Swift surface and theme initializer signatures do not expose appearance or material options.",
+      "replacement": "Canonical Default, Studio and Glass appearances, scoped web tokens, ThemeBuilder dimensions and explicit surface material with native opaque fallbacks.",
+      "migration": "Choose a preset, then override semantic tokens or native appearance values. Glass remains explicit per surface. Rebuild Swift and Compose consumers; Swift initializer references must include the defaulted appearance and material parameters.",
+      "packages": [
+        "@santi020k/lumen-core",
+        "@santi020k/lumen-astro",
+        "@santi020k/lumen-react",
+        "@santi020k/lumen-elements",
+        "@santi020k/lumen-react-native",
+        "@santi020k/lumen-tokens",
+        "@santi020k/lumen-mcp",
+        "LumenUI",
+        "com.santi020k:lumen-compose"
+      ],
+      "evidence": [
+        "docs/appearance-presets.md"
+      ],
+      "docs": [
+        "docs/appearance-presets.md",
+        "docs/migrating-to-lumen.md"
+      ],
+      "tests": [
+        "pnpm run validate",
+        "swift test",
+        "cd packages/compose && ./gradlew test lint apiCheck"
+      ],
+      "swiftApiBreakages": [
+        "constructor LumenCard.init(variant:action:content:) has been removed",
+        "constructor LumenCard.init(variant:padding:radius:action:content:) has been removed",
+        "constructor LumenSurface.init(tone:padding:radius:content:) has been removed",
+        "constructor LumenTheme.init(colors:scheme:) has been removed"
+      ],
+      "signals": [
+        "LumenTheme",
+        "LumenProvider",
+        "ThemeBuilder",
+        "data-lumen-preset",
+        "glass"
+      ]
+    },
+    {
+      "id": "swift-phone-presentation-signature",
+      "kind": "breaking",
+      "currentContract": "The v3 phone initializer does not expose presentation controls.",
+      "replacement": "Defaulted v4 selector, display format, placeholder, flag and size options for existing phone selection behavior.",
+      "migration": "Rebuild Swift consumers and update initializer references for the added defaulted phone presentation parameters.",
+      "packages": [
+        "LumenUI"
+      ],
+      "evidence": [
+        "docs/lumen-4-readiness.md"
+      ],
+      "docs": [
+        "packages/swift/README.md",
+        "docs/lumen-4-readiness.md"
+      ],
+      "tests": [
+        "swift test",
+        "pnpm run check:swift-source-compatibility"
+      ],
+      "swiftApiBreakages": [
+        "constructor LumenPhoneInput.init(_:value:countries:locale:description:errorMessage:showValidationError:invalidNumberMessage:numberLabel:countrySelectorLabel:countryPickerTitle:countrySearchLabel:required:enabled:) has been removed"
+      ],
+      "signals": [
+        "LumenPhoneInput"
+      ]
     }
   ],
   "swiftApiBaseline": "v3.0.1"

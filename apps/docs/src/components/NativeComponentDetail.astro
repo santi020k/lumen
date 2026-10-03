@@ -18,6 +18,7 @@ import {
 import type { PlatformGuide } from '../data/platforms'
 import DocsLayout from '../layouts/DocsLayout.astro'
 
+import CommunityFeedback from './CommunityFeedback.astro'
 import DocsReferenceTable from './DocsReferenceTable.astro'
 import NativeLivePreview from './NativeLivePreview.astro'
 
@@ -300,6 +301,11 @@ const appleAvailability = implementation.appleAvailability
       </div>
     </Card>
   )}
+
+  <CommunityFeedback
+    documentationPath={`${guide.href}/components/${component.slug}`}
+    subject={`${component.name} (${guide.label})`}
+  />
 
   <Pagination class="native-detail-pagination" aria-label="Native component pagination">
     {previous ?

@@ -1,0 +1,25 @@
+---
+import { Badge, Button, Card, Image, ImageComparison, Stack, Toggle, ToggleGroup } from '@santi020k/lumen-astro'
+---
+
+<Card aria-labelledby="studio-reference-title">
+  <Stack direction="horizontal" align="center" justify="between" wrap>
+    <h3 id="studio-reference-title">Photo workspace</h3>
+    <Badge variant="secondary">Illustrative example</Badge>
+  </Stack>
+  <p>A PostLens-inspired composition. The content stays opaque while a supporting rail uses glass.</p>
+  <ImageComparison beforeLabel="Original" afterLabel="Adjusted" label="Compare the illustrative treatment" ratio={1.6} value={50}>
+    <Image slot="before" src="/comparison-before.svg" alt="A muted landscape illustration" width={960} height={600} radius="none" />
+    <Image slot="after" src="/comparison-after.svg" alt="The same landscape illustration with warmer colors" width={960} height={600} radius="none" />
+  </ImageComparison>
+  <Card glass="subtle">
+    <Stack direction="horizontal" align="center" justify="between" wrap>
+      <ToggleGroup role="group" aria-label="Illustrative editing tool">
+        <Toggle pressed>Light</Toggle>
+        <Toggle>Color</Toggle>
+        <Toggle>Crop</Toggle>
+      </ToggleGroup>
+      <Button variant="outline">Export preview</Button>
+    </Stack>
+  </Card>
+</Card>

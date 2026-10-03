@@ -38,14 +38,14 @@ export const resolveLumenTextStyle = (
   variant: LumenTextVariant
 ): TextStyle => {
   if (variant === 'caption') {
-    return { fontSize: theme.fontSizes.xs, lineHeight: 16 }
+    return { fontSize: theme.fontSizes.xs, lineHeight: theme.fontSizes.xs * 4 / 3 }
   }
 
   if (variant === 'label') {
     return {
       fontSize: theme.fontSizes.sm,
       fontWeight: String(theme.fontWeights.semibold) as TextStyle['fontWeight'],
-      lineHeight: 20
+      lineHeight: theme.fontSizes.sm * 10 / 7
     }
   }
 
@@ -53,11 +53,11 @@ export const resolveLumenTextStyle = (
     return {
       fontSize: theme.fontSizes['2xl'],
       fontWeight: String(theme.fontWeights.bold) as TextStyle['fontWeight'],
-      lineHeight: 32
+      lineHeight: theme.fontSizes['2xl'] * 4 / 3
     }
   }
 
-  return { fontSize: theme.fontSizes.md, lineHeight: 24 }
+  return { fontSize: theme.fontSizes.md, lineHeight: theme.fontSizes.md * 1.5 }
 }
 
 export const resolveLumenSurfaceColor = (

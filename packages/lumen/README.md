@@ -232,6 +232,12 @@ Connect application actions and replace sample IDs before reuse. See
 React is an optional peer for the published React starter templates. Astro and Elements consumers
 do not need it; React consumers should follow the React adapter's existing installation contract.
 
+## Appearance presets
+
+Choose Default, Studio or Glass with `data-lumen-preset` on a scoped web container.
+Use the [appearance guide](../../docs/appearance-presets.md) for semantic overrides,
+ThemeBuilder controls and native fallbacks. The Studio preset uses PostLens as its visual reference.
+
 ## Preview a v4 migration
 
 ```bash

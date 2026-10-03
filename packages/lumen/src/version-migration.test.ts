@@ -7,6 +7,36 @@ import { describe, expect, test } from 'vitest'
 import { formatLumenVersionMigration, migrateLumenVersion, migrateLumenVersionSource } from './version-migration.js'
 
 describe('versioned source migrations', () => {
+  test('combines v4 layout and SDK migrations without changing previews or repeating edits', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'lumen-combined-migration-'))
+    const sdkSource = 'import { Client } from \'@modelcontextprotocol/sdk/client/index.js\'\n'
+    const layoutSource = 'import { Stack } from \'@santi020k/lumen-react\'\nexport const View = () => <Stack gap="md" />\n'
+
+    try {
+      await writeFile(join(root, 'sdk.ts'), sdkSource)
+      await writeFile(join(root, 'View.tsx'), layoutSource)
+      const preview = await migrateLumenVersion({ cwd: root, version: 'v4' })
+
+      expect(preview.changes).toHaveLength(2)
+      expect(preview.changes.filter(finding => finding.kind === 'embedded-mcp-sdk')).toHaveLength(1)
+      expect(formatLumenVersionMigration(preview)).toContain('@modelcontextprotocol/client')
+      expect(await readFile(join(root, 'sdk.ts'), 'utf8')).toBe(sdkSource)
+      expect(await readFile(join(root, 'View.tsx'), 'utf8')).toBe(layoutSource)
+
+      const applied = await migrateLumenVersion({ apply: true, cwd: root, version: 'v4' })
+
+      expect(applied.applied).toBe(true)
+      expect(await readFile(join(root, 'sdk.ts'), 'utf8')).toContain('from \'@modelcontextprotocol/client\'')
+      expect(await readFile(join(root, 'View.tsx'), 'utf8')).toContain('gap="group"')
+      const repeated = await migrateLumenVersion({ apply: true, cwd: root, version: 'v4' })
+
+      expect(repeated.changes).toEqual([])
+      expect(repeated.changedFiles).toEqual([])
+      expect(await readFile(join(root, 'View.tsx'), 'utf8')).toContain('gap="group"')
+    } finally {
+      await rm(root, { force: true, recursive: true })
+    }
+  })
   test.each(['v3', 'v4'] as const)('inventories coordinated %s dependencies without mutating the project', async version => {
     const root = await mkdtemp(join(tmpdir(), 'lumen-version-dependencies-'))
     const manifest = JSON.stringify({ name: 'migration-fixture', packageManager: 'pnpm@12.8.1', dependencies: { '@santi020k/lumen-react': '^2.0.0' } })

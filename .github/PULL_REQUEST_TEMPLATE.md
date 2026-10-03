@@ -2,6 +2,10 @@
 
 <!-- What changed, and why? -->
 
+## Related Feedback
+
+<!-- Link the original discussion and implementation issue when applicable. Update both after release. -->
+
 ## Affected Surfaces
 
 - [ ] Core / package metadata

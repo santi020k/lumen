@@ -203,3 +203,7 @@ links; keep the site logo, theme switch, account menu, and unrelated utility act
 root so they retain independent Tab stops. Use `variant="unstyled"` when adopting the navigation
 semantics and runtime inside an established visual system. `Sidebar variant="unstyled"` and
 `Link variant="inherit"` provide the matching low-presentation migration path.
+
+## V4 appearance configuration
+
+Named Default, Studio and Glass presets are opt-in; existing calls preserve their color defaults. See [appearance presets](appearance-presets.md). Rebuild Swift and Compose consumers for defaulted initializer changes. React Native numeric theme scales accept custom values without casts. Keep explicit foreground/background pairs readable and retain opaque material fallbacks. No application data migration is involved.

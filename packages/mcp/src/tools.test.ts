@@ -508,6 +508,8 @@ describe('getTokens and getRules', () => {
 
     expect(result.text).toContain('Semantic token names')
     expect(result.data.tokens.semantic).toContain('brand')
+    expect(result.data.tokens.presets.names).toEqual(['default', 'studio', 'glass'])
+    expect(result.text).toContain('data-lumen-preset')
     expect(result.data.tokens.chart.series1).toBeDefined()
     expect(result.text).toContain('Data visualization tokens')
     expect(result.data.tokens.spacing.md).toBe(12)

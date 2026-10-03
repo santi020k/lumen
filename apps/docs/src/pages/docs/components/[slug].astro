@@ -13,6 +13,7 @@ import {
 } from '@santi020k/lumen-astro'
 
 import CodeBlock from '../../../components/CodeBlock.astro'
+import CommunityFeedback from '../../../components/CommunityFeedback.astro'
 import DocsActionLink from '../../../components/DocsActionLink.astro'
 import DocsReferenceTable from '../../../components/DocsReferenceTable.astro'
 import FrameworkExample from '../../../components/FrameworkExample.astro'
@@ -505,6 +506,8 @@ export function HeroImage() {
     )}
 
     <Separator class="my-10" />
+
+    <CommunityFeedback documentationPath={`/docs/components/${componentSlug}`} subject={component.name} />
 
     <Pagination class="component-doc-pagination" aria-label="Component pagination">
       {previous ?

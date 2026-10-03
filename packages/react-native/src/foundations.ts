@@ -23,4 +23,5 @@ export {
   type LumenTextVariant } from './foundation-primitives.js'
 export { LumenProvider, type LumenProviderProps } from './provider.js'
 export { createLumenTheme, lumenDarkTheme, lumenLightTheme, type LumenTheme } from './theme.js'
+export { type LumenAppearance, type LumenSurfaceMaterial, type LumenThemeOptions, type LumenThemePreset } from './theme.js'
 export { useLumenTheme } from './theme-context.js'

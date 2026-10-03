@@ -11,6 +11,7 @@ import {
   Label,
   NumberField,
   Slider,
+  Stack,
   Tabs,
   Textarea,
   ThemeBuilder
@@ -20,6 +21,7 @@ import { createThemeFromHue, lumenTokenNames } from '@santi020k/lumen-core'
 import DocsActionLink from '../../components/DocsActionLink.astro'
 import DocsPageHero from '../../components/DocsPageHero.astro'
 import PrimitiveShowcase from '../../components/PrimitiveShowcase.astro'
+import StudioReference from '../../components/StudioReference.astro'
 import DocsLayout from '../../layouts/DocsLayout.astro'
 
 const defaultHue = 264
@@ -95,6 +97,29 @@ ${lumenTokenNames.map(token => `  --${token}: ${defaultTokens[token] ?? ''};`).j
           <p>Inputs</p>
           <h2>Build tokens</h2>
         </div>
+
+        <Field>
+          <Label id="theme-preset-label">Appearance preset</Label>
+          <Stack direction="horizontal" wrap role="group" aria-labelledby="theme-preset-label">
+            <Button variant="outline" aria-pressed="false" data-ui-theme-preset="default">Default</Button>
+            <Button variant="outline" aria-pressed="false" data-ui-theme-preset="studio">Studio</Button>
+            <Button variant="outline" aria-pressed="false" data-ui-theme-preset="glass">Glass</Button>
+            <Button variant="secondary" aria-pressed="true" data-ui-theme-preset="custom">Custom colors</Button>
+          </Stack>
+          <p>Studio takes its neutral palette from PostLens. Use Manual to customize a preset's action colors. Glass stays an explicit component choice.</p>
+        </Field>
+        <Field>
+          <Label for="theme-radius-scale">Corner radius multiplier</Label>
+          <NumberField id="theme-radius-scale" data-ui-theme-radius-scale min="0" max="3" step="0.1" value="1" />
+        </Field>
+        <Field>
+          <Label for="theme-spacing-scale">Spacing multiplier</Label>
+          <NumberField id="theme-spacing-scale" data-ui-theme-spacing-scale min="0.5" max="2" step="0.1" value="1" />
+        </Field>
+        <Field>
+          <Label for="theme-border-width">Border width in pixels</Label>
+          <NumberField id="theme-border-width" data-ui-theme-border-width min="0" max="3" step="0.5" value="1" />
+        </Field>
 
         <Tabs class="theme-playground__tabs">
           <div role="tablist" aria-label="Theme input mode">
@@ -254,18 +279,18 @@ ${lumenTokenNames.map(token => `  --${token}: ${defaultTokens[token] ?? ''};`).j
           <h2 id="theme-preview-title">Representative primitives</h2>
         </div>
 
+        <Stack id="theme-playground-preview" data-ui-theme-preview style={`color-scheme: ${defaultScheme}; ${tokenStyle}`}>
         <PrimitiveShowcase
           class="theme-playground__preview"
-          data-ui-theme-preview
           description="The preview reads generated tokens from this scoped container."
           eyebrow="Generated"
           headingLevel="h3"
-          id="theme-playground-preview"
           status="Ready"
-          style={`color-scheme: ${defaultScheme}; ${tokenStyle}`}
           swatchMode="all"
           title="Workspace launch"
         />
+        <StudioReference />
+        </Stack>
       </section>
 
       <Card class="theme-playground__export" variant="muted">

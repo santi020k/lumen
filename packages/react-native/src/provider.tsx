@@ -3,10 +3,7 @@ import {
   useMemo } from 'react'
 import { useColorScheme } from 'react-native'
 
-import {
-  createLumenTheme,
-  type LumenTheme
-} from './theme.js'
+import { createLumenTheme, type LumenTheme, type LumenThemePreset } from './theme.js'
 import { LumenThemeContext } from './theme-context.js'
 import type { LumenColorScheme } from './tokens.generated.js'
 
@@ -14,6 +11,7 @@ export interface LumenProviderProps {
   children: ReactNode
   scheme?: LumenColorScheme | 'system'
   theme?: LumenTheme
+  preset?: LumenThemePreset
 }
 
 const resolveLumenProviderScheme = (
@@ -27,6 +25,7 @@ const resolveLumenProviderScheme = (
 
 export const LumenProvider = ({
   children,
+  preset = 'default',
   scheme = 'system',
   theme
 }: LumenProviderProps) => {
@@ -34,8 +33,8 @@ export const LumenProvider = ({
   const resolvedScheme = resolveLumenProviderScheme(scheme, systemScheme)
 
   const value = useMemo(
-    () => theme ?? createLumenTheme(resolvedScheme),
-    [resolvedScheme, theme]
+    () => theme ?? createLumenTheme(resolvedScheme, { preset }),
+    [preset, resolvedScheme, theme]
   )
 
   return (

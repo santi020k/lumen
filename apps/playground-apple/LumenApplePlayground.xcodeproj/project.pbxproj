@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		014EFFAD9348FEA0E0277DA9 /* PlaygroundShell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 581FE601DC8DCCAACDE42246 /* PlaygroundShell.swift */; };
 		1AD09D6BAD61D64C9559FF33 /* LumenApplePlaygroundApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE69F938031E87BABC3FCC66 /* LumenApplePlaygroundApp.swift */; };
+		302BA7A9A3B20BC59019A96E /* WorkspacePerformanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BB0D085D401FD296278ADC6 /* WorkspacePerformanceTests.swift */; };
 		335D2FA3C54ACA2B893F678F /* LumenWidgetPlayground.swift in Sources */ = {isa = PBXBuildFile; fileRef = D98080257A4C04BB0ACA9566 /* LumenWidgetPlayground.swift */; };
 		3720CAC58F48F17F4380823C /* PlaygroundHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19CC216C8A44A82EF86293B /* PlaygroundHomeView.swift */; };
 		3B161D679836623944870272 /* LumenWidgetPlayground.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 399D6F6E9C693782368B32EC /* LumenWidgetPlayground.appex */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -33,6 +34,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		0B36D67C28F79185B8422D9B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6D32CE28C8DD1B4872E3E316 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B87CA3EC27EB3E2B33212422;
+			remoteInfo = LumenApplePlayground;
+		};
 		DDA994642B3E72C7C8BD6EF4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 6D32CE28C8DD1B4872E3E316 /* Project object */;
@@ -57,6 +65,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0BB0D085D401FD296278ADC6 /* WorkspacePerformanceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspacePerformanceTests.swift; sourceTree = "<group>"; };
 		399D6F6E9C693782368B32EC /* LumenWidgetPlayground.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = LumenWidgetPlayground.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		5128309A5EE62A8C5B16E7CD /* lumen */ = {isa = PBXFileReference; lastKnownFileType = folder; name = lumen; path = ../..; sourceTree = SOURCE_ROOT; };
 		581FE601DC8DCCAACDE42246 /* PlaygroundShell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaygroundShell.swift; sourceTree = "<group>"; };
@@ -72,6 +81,7 @@
 		B19CC216C8A44A82EF86293B /* PlaygroundHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaygroundHomeView.swift; sourceTree = "<group>"; };
 		D98080257A4C04BB0ACA9566 /* LumenWidgetPlayground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LumenWidgetPlayground.swift; sourceTree = "<group>"; };
 		EE69F938031E87BABC3FCC66 /* LumenApplePlaygroundApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LumenApplePlaygroundApp.swift; sourceTree = "<group>"; };
+		F3B760A456295F63FEB652B8 /* LumenApplePlaygroundUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = LumenApplePlaygroundUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -127,6 +137,7 @@
 				0AE262FA552586B5EF9A8058 /* LumenWidgetPlayground */,
 				DE258D8D5B5E09B006098DED /* Packages */,
 				DC5232210B3A8BE4F18A8383 /* Supporting */,
+				D34D651DB1AB9B9B1907A9F2 /* UITests */,
 				8FF15E17560DC8DEB07592CC /* Products */,
 			);
 			sourceTree = "<group>";
@@ -144,11 +155,20 @@
 			isa = PBXGroup;
 			children = (
 				7DE2955684DB72950680BA1F /* LumenApplePlayground.app */,
+				F3B760A456295F63FEB652B8 /* LumenApplePlaygroundUITests.xctest */,
 				9D8A29BB3FCB9C15B321E3AE /* LumenMacPlayground.app */,
 				A74CE400BC46C61E435CCDCB /* LumenWatchPlayground.app */,
 				399D6F6E9C693782368B32EC /* LumenWidgetPlayground.appex */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		D34D651DB1AB9B9B1907A9F2 /* UITests */ = {
+			isa = PBXGroup;
+			children = (
+				0BB0D085D401FD296278ADC6 /* WorkspacePerformanceTests.swift */,
+			);
+			path = UITests;
 			sourceTree = "<group>";
 		};
 		DC5232210B3A8BE4F18A8383 /* Supporting */ = {
@@ -185,6 +205,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		547E857C496D57AAF4F20375 /* LumenApplePlaygroundUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A1DA9A96844CAED130DFED27 /* Build configuration list for PBXNativeTarget "LumenApplePlaygroundUITests" */;
+			buildPhases = (
+				B8BDBAB7F12981F9BD553A6C /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				09A326FDDD9D50C087E03AE3 /* PBXTargetDependency */,
+			);
+			name = LumenApplePlaygroundUITests;
+			packageProductDependencies = (
+			);
+			productName = LumenApplePlaygroundUITests;
+			productReference = F3B760A456295F63FEB652B8 /* LumenApplePlaygroundUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 		646E633DD983191F4D179E43 /* LumenWidgetPlayground */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = A0F630C9F5C80AB97F22ED44 /* Build configuration list for PBXNativeTarget "LumenWidgetPlayground" */;
@@ -274,6 +312,9 @@
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
+					547E857C496D57AAF4F20375 = {
+						TestTargetID = B87CA3EC27EB3E2B33212422;
+					};
 					646E633DD983191F4D179E43 = {
 						DevelopmentTeam = BY4995HQ3J;
 						ProvisioningStyle = Automatic;
@@ -307,6 +348,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
+				547E857C496D57AAF4F20375 /* LumenApplePlaygroundUITests */,
 				B87CA3EC27EB3E2B33212422 /* LumenApplePlayground */,
 				A1744112F1B4A2ED319D9D98 /* LumenMacPlayground */,
 				646E633DD983191F4D179E43 /* LumenWidgetPlayground */,
@@ -371,6 +413,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B8BDBAB7F12981F9BD553A6C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				302BA7A9A3B20BC59019A96E /* WorkspacePerformanceTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C78337A39B4C1ED8DEDBD490 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -382,6 +432,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		09A326FDDD9D50C087E03AE3 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B87CA3EC27EB3E2B33212422 /* LumenApplePlayground */;
+			targetProxy = 0B36D67C28F79185B8422D9B /* PBXContainerItemProxy */;
+		};
 		7257008578C129A7DE6F3007 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 646E633DD983191F4D179E43 /* LumenWidgetPlayground */;
@@ -496,6 +551,25 @@
 			};
 			name = Release;
 		};
+		263AECDEC945E0D32D21DC5E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.santi020k.lumen.playground.apple.uitests;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = LumenApplePlayground;
+			};
+			name = Release;
+		};
 		2BC8DC344C05F3A9E3DC837B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -536,6 +610,25 @@
 				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Debug;
+		};
+		AB2F961F47413DC98CD6D80B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.santi020k.lumen.playground.apple.uitests;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = LumenApplePlayground;
 			};
 			name = Debug;
 		};
@@ -713,6 +806,15 @@
 			buildConfigurations = (
 				1008DF4D105B5A19146E9799 /* Debug */,
 				F570D9F0DE7CF08EF4CB6006 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		A1DA9A96844CAED130DFED27 /* Build configuration list for PBXNativeTarget "LumenApplePlaygroundUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AB2F961F47413DC98CD6D80B /* Debug */,
+				263AECDEC945E0D32D21DC5E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
