@@ -744,6 +744,16 @@ const useDisclosureController = (
       toggle()
     },
     onKeyDown: event => {
+      if (event.defaultPrevented || event.nativeEvent.isComposing) return
+
+      if (event.key === 'Escape' && open) {
+        event.preventDefault()
+
+        close()
+
+        return
+      }
+
       if (
         event.key !== 'ArrowDown' &&
         event.key !== 'Enter' &&
@@ -766,6 +776,8 @@ const useDisclosureController = (
     hidden: !open,
     id: panelId,
     onKeyDown: event => {
+      if (event.defaultPrevented || event.nativeEvent.isComposing) return
+
       if (event.key === 'Escape') {
         event.preventDefault()
 
@@ -775,6 +787,8 @@ const useDisclosureController = (
 
         return
       }
+
+      if (event.target instanceof Element && event.target.matches('input, textarea, [contenteditable="true"]')) return
 
       const keys = ['ArrowDown', 'ArrowUp', 'Home', 'End']
 
@@ -1059,6 +1073,8 @@ export const useContextMenu = ({
       }
     },
     onKeyDown: event => {
+      if (event.defaultPrevented || event.nativeEvent.isComposing) return
+
       if (event.key === 'Escape') {
         event.preventDefault()
 
@@ -1442,9 +1458,13 @@ export const useSelect = ({
       setOpen(current => !current)
     },
     onKeyDown: event => {
+      if (event.defaultPrevented || event.nativeEvent.isComposing) return
+
       if (handleTypeahead(event)) return
 
-      if (event.key === 'Escape') {
+      if (event.key === 'Escape' && open) {
+        event.preventDefault()
+
         close()
 
         return
@@ -1498,9 +1518,13 @@ export const useSelect = ({
         selectOption(option.value)
       }),
       onKeyDown: composeHandlers(props.onKeyDown, event => {
+        if (event.defaultPrevented || event.nativeEvent.isComposing) return
+
         if (handleTypeahead(event, event.currentTarget)) return
 
-        if (event.key === 'Escape') {
+        if (event.key === 'Escape' && open) {
+          event.preventDefault()
+
           close()
 
           focusTrigger(triggerRef.current)
@@ -1527,7 +1551,7 @@ export const useSelect = ({
       role: 'option',
       tabIndex: -1,
       type: props.type ?? 'button'
-    }), [close, focusOption, handleTypeahead, selectOption, selectedValue]
+    }), [close, focusOption, handleTypeahead, open, selectOption, selectedValue]
   )
 
   return {
@@ -3676,7 +3700,11 @@ export const useTooltip = ({
         scheduleOpen(0)
       },
       onKeyDown: event => {
-        if (event.key === 'Escape') {
+        if (event.defaultPrevented || event.nativeEvent.isComposing) return
+
+        if (event.key === 'Escape' && isOpen) {
+          event.preventDefault()
+
           close()
         }
       },
@@ -3942,6 +3970,8 @@ const ToastItem = ({ onDismiss, toast }: ToastItemProps) => {
       id={toast.id}
       onFocus={pauseTimer}
       onKeyDown={event => {
+        if (event.defaultPrevented || event.nativeEvent.isComposing) return
+
         if (event.key !== 'Escape') return
 
         event.preventDefault()

@@ -163,7 +163,7 @@ export const ElementsVisualHost = () => {
               Framework selector
             </LumenElement>
             <LumenElement as="lumen-card-description">
-              Shared filtering and roving option focus.
+              Shared filtering with active options and uninterrupted text editing.
             </LumenElement>
           </LumenElement>
           <LumenElement as="lumen-card-content">

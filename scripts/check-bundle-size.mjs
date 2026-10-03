@@ -2,6 +2,8 @@ import { readFile } from 'node:fs/promises'
 import { gzipSync } from 'node:zlib'
 
 const allBudgets = [
+  { file: 'packages/react/dist/combobox.js', gzip: 2_500, packageName: '@santi020k/lumen-react', raw: 10_000 },
+  { file: 'packages/core/dist/combobox.js', gzip: 2_400, packageName: '@santi020k/lumen-core', raw: 9_000 },
   { file: 'packages/core/dist/virtual-list.js', gzip: 2_200, packageName: '@santi020k/lumen-core', raw: 7_000 },
   { file: 'packages/react/dist/virtual-list.js', gzip: 1_000, packageName: '@santi020k/lumen-react', raw: 3_000 },
   { file: 'packages/react/dist/rich-text-editor.js', gzip: 2_500, packageName: '@santi020k/lumen-react', raw: 10_000 },

@@ -4090,6 +4090,8 @@ const initDatePickers = (scope: ParentNode): void => {
     })
 
     root.addEventListener('keydown', event => {
+      if (event.defaultPrevented || event.isComposing) return
+
       if (event.key !== 'Escape' || popover.hidden) return
 
       event.preventDefault()
@@ -4264,6 +4266,8 @@ const initContextMenus = (scope: ParentNode): void => {
     menu.dataset.uiContextMenuMenuBound = 'true'
 
     menu.addEventListener('keydown', event => {
+      if (event.defaultPrevented || event.isComposing) return
+
       if (event.key === 'Escape') {
         event.preventDefault()
 
@@ -4332,8 +4336,17 @@ const installContextMenuController = (): void => {
   })
 
   document.addEventListener('keydown', event => {
+    if (event.defaultPrevented || event.isComposing) return
+
     if (event.key === 'Escape') {
-      closeOpenContextMenus()
+      const target = getOwnedTarget(event)
+      const menu = target instanceof Element ? target.closest<HTMLElement>(`${contextMenuSelector}[data-state="open"]`) : null
+
+      if (!menu) return
+
+      event.preventDefault()
+
+      closeContextMenu(menu)
     }
   })
 
@@ -4752,6 +4765,8 @@ export const LumenToast: ToastApi = {
     toast.dataset.state = 'open'
 
     toast.addEventListener('keydown', event => {
+      if (event.defaultPrevented || event.isComposing) return
+
       if (event.key !== 'Escape') return
 
       event.preventDefault()
@@ -6584,6 +6599,8 @@ class LumenDialogBehaviorElement extends LumenElement {
 
     this.addEventListener(
       'keydown', event => {
+        if (event.defaultPrevented || event.isComposing) return
+
         if (event.key === 'Escape') {
           event.preventDefault()
 
@@ -6774,6 +6791,16 @@ class LumenDisclosureBehaviorElement extends LumenElement {
 
     trigger.addEventListener(
       'keydown', event => {
+        if (event.defaultPrevented || event.isComposing) return
+
+        if (event.key === 'Escape' && trigger.getAttribute('aria-expanded') === 'true') {
+          event.preventDefault()
+
+          close()
+
+          return
+        }
+
         if (
           event.key !== 'ArrowDown' &&
           event.key !== 'Enter' &&
@@ -6791,6 +6818,8 @@ class LumenDisclosureBehaviorElement extends LumenElement {
 
     panel.addEventListener(
       'keydown', event => {
+        if (event.defaultPrevented || event.isComposing) return
+
         if (event.key === 'Escape') {
           event.preventDefault()
 
@@ -6800,6 +6829,8 @@ class LumenDisclosureBehaviorElement extends LumenElement {
 
           return
         }
+
+        if (event.target instanceof Element && event.target.matches('input, textarea, [contenteditable="true"]')) return
 
         const keys = ['ArrowDown', 'ArrowUp', 'Home', 'End']
 
@@ -7066,9 +7097,13 @@ class LumenSelectBehaviorElement extends LumenElement {
 
     trigger.addEventListener(
       'keydown', event => {
+        if (event.defaultPrevented || event.isComposing) return
+
         if (this.handleTypeahead(event)) return
 
-        if (event.key === 'Escape') {
+        if (event.key === 'Escape' && !listbox.hidden) {
+          event.preventDefault()
+
           this.closeSelect(trigger, listbox)
 
           return
@@ -7117,9 +7152,13 @@ class LumenSelectBehaviorElement extends LumenElement {
 
       item.addEventListener(
         'keydown', event => {
+          if (event.defaultPrevented || event.isComposing) return
+
           if (this.handleTypeahead(event, item)) return
 
-          if (event.key === 'Escape') {
+          if (event.key === 'Escape' && !listbox.hidden) {
+            event.preventDefault()
+
             this.closeSelect(trigger, listbox)
 
             trigger.focus({ preventScroll: true })
@@ -8383,7 +8422,11 @@ class LumenTooltipBehaviorElement extends LumenElement {
 
     this.addEventListener(
       'keydown', event => {
-        if (event.key === 'Escape') {
+        if (event.defaultPrevented || event.isComposing) return
+
+        if (event.key === 'Escape' && getComputedStyle(tip).visibility !== 'hidden') {
+          event.preventDefault()
+
           hide()
         }
       }, { signal }
@@ -8435,6 +8478,8 @@ class LumenToastBehaviorElement extends LumenElement {
 
     this.addEventListener(
       'keydown', event => {
+        if (event.defaultPrevented || event.isComposing) return
+
         if (event.key !== 'Escape') return
 
         event.preventDefault()
@@ -9444,6 +9489,8 @@ class LumenMentionsBehaviorElement extends LumenElement {
       'keydown', event => {
         const visibleOptions = options.filter(option => !option.hidden)
 
+        if (event.defaultPrevented || event.isComposing) return
+
         if (event.key === 'Escape' && !list.hidden) {
           event.preventDefault()
 
@@ -9526,6 +9573,16 @@ const setupSelectionDisclosure = (
 
   trigger.addEventListener(
     'keydown', event => {
+      if (event.defaultPrevented || event.isComposing) return
+
+      if (event.key === 'Escape' && trigger.getAttribute('aria-expanded') === 'true') {
+        event.preventDefault()
+
+        close()
+
+        return
+      }
+
       if (!['ArrowDown', 'Enter', ' '].includes(event.key)) return
 
       event.preventDefault()
@@ -9538,6 +9595,8 @@ const setupSelectionDisclosure = (
 
   panel.addEventListener(
     'keydown', event => {
+      if (event.defaultPrevented || event.isComposing) return
+
       if (event.key === 'Escape') {
         event.preventDefault()
 

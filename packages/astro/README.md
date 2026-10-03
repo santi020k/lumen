@@ -503,3 +503,10 @@ External rich-text engines should handle the cancelable `ui:editor-command-reque
 execution and use `ui:editor-command` only for completion notifications. React also supports
 `useRichTextEditor({ commandHandler })`. Disable native toolbar state syncing when the external
 engine owns it. See the [editor guidance](../../docs/ai-usage.md).
+
+## Combobox keyboard behavior
+
+In v4, Combobox retains input focus and exposes its active option through `aria-activedescendant`.
+Enter commits an active option; text editing and composition remain native. Escape dismisses one
+nested control at a time. See the [shared keyboard contract](../../docs/ai-usage.md#combobox-keyboard-behavior-in-v4)
+for dynamic options, controlled inputs and migration guidance.

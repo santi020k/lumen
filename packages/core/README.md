@@ -229,3 +229,11 @@ See [consumer UI recipes](../../docs/consumer-ui-recipes.md#static-react-icons).
 
 Part of [Lumen UI](https://lumen.santi020k.com), created by [Santiago Molina](https://santi020k.com).
 Licensed under [MIT](https://github.com/santi020k/lumen/blob/main/LICENSE); third-party artwork retains its own notices.
+
+## Combobox DOM controller
+
+`createLumenComboboxController(root)` enhances a client-side root containing an
+`input[role="combobox"]` and a `[role="listbox"]` with `[role="option"]` children.
+It preserves editing focus, observes option changes and supports delegated selection. It returns
+`close()` and `destroy()`; call `destroy()` when the owner disconnects. Astro and Elements manage
+that lifecycle automatically. React uses its state-driven component with the same keyboard contract.
