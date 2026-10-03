@@ -1,4 +1,9 @@
+import { readdirSync, readFileSync } from 'node:fs'
+
+import ts from 'typescript'
 import { describe, expect, test } from 'vitest'
+
+import { reactHooksReference } from '../data/docs'
 
 import { buildSnippets } from './snippets'
 
@@ -150,4 +155,93 @@ import { Button, ErrorState } from '@santi020k/lumen-astro'
     expect(elements).not.toContain('/logo.avif')
     expect(elements).not.toContain('/logo.webp')
   })
+})
+
+describe('catalog React snippet syntax', () => {
+  const directory = new URL('../examples/', import.meta.url)
+
+  for (const fileName of readdirSync(directory).filter(name => name.endsWith('.astro'))) {
+    test(`generates valid JSX for ${fileName}`, () => {
+      const source = readFileSync(new URL(fileName, directory), 'utf8')
+      const code = buildSnippets(fileName.slice(0, -6), source)[1]?.code ?? ''
+      const result = ts.transpileModule(code, {
+        compilerOptions: { jsx: ts.JsxEmit.ReactJSX, target: ts.ScriptTarget.ESNext },
+        fileName: 'Example.tsx',
+        reportDiagnostics: true
+      })
+      const errors = result.diagnostics?.map(diagnostic => ts.flattenDiagnosticMessageText(
+        diagnostic.messageText, '\n'
+      )) ?? []
+
+      expect(errors).toEqual([])
+    })
+  }
+})
+
+describe('data-driven snippets', () => {
+  test('keeps declarations and core type imports in React examples', () => {
+    const raw = readFileSync(new URL('../examples/ComboChart.astro', import.meta.url), 'utf8')
+    const code = buildSnippets('ComboChart', raw)[1]?.code
+
+    expect(code).toContain('const series = [')
+    expect(code).toContain('import type { LumenComboSeries }')
+    expect(code).toContain('series={series}')
+    expect(code).not.toContain('@santi020k/lumen-astro')
+  })
+
+  test.each(['BarChart', 'ComboChart', 'Heatmap', 'LineChart', 'PieChart', 'RangeChart', 'ScatterChart'])(
+    'binds %s data through JSON attributes in Elements', name => {
+      const raw = readFileSync(new URL(`../examples/${name}.astro`, import.meta.url), 'utf8')
+      const code = buildSnippets(name, raw)[2]?.code
+      const attribute = name === 'Heatmap' || name === 'RangeChart' ? 'data' : 'series'
+
+      expect(code).toContain(`JSON.stringify(${name === 'PieChart' ? '[series]' : attribute})`)
+      expect(code).toContain(`setAttribute('${attribute}'`)
+      expect(code).not.toContain(`{${attribute}}`)
+      expect(code).not.toContain('import type')
+      expect(code).not.toContain('satisfies ')
+    }
+  )
+
+  test('quotes CSS custom properties and values without corrupting JSX', () => {
+    const code = buildSnippets('Stack', '<Stack style="--ui-gap: 1rem; font-family: \'Example\';" />')[1]?.code
+
+    expect(code).toContain('"--ui-gap": "1rem"')
+    expect(code).toContain('"fontFamily": "\'Example\'"')
+  })
+})
+
+test('retains public compound imports alongside their root component', () => {
+  const source = readFileSync(new URL('../examples/Card.astro', import.meta.url), 'utf8')
+  const code = buildSnippets('Card', source)[1]?.code
+
+  expect(code).toContain('  CardHeader,')
+  expect(code).toContain('  CardContent,')
+  expect(code).toContain('  CardTitle')
+  expect(code).toContain('from \'@santi020k/lumen-react\'')
+})
+
+test('uses an uncontrolled value for React textarea content', () => {
+  const code = buildSnippets('Textarea', '<Textarea readonly>Published summary.</Textarea>')[1]?.code
+
+  expect(code).toContain('<Textarea readOnly defaultValue={"Published summary."} />')
+})
+
+test('terminates for repeated unfinished textarea markup', () => {
+  const source = '<Textarea>'.repeat(20_000)
+
+  expect(buildSnippets('Textarea', source)[1]?.code).toContain('<Textarea>')
+})
+
+test.each([
+  ['RichTextEditor', 'useRichTextEditor'],
+  ['ThemeBuilder', 'useThemeBuilder'],
+  ['Schedule', 'useSchedule'],
+  ['KanbanBoard', 'useKanban'],
+  ['KanbanColumn', 'useKanban']
+])('reuses the canonical hook example for %s', (name, hookName) => {
+  const code = reactHooksReference.find(hook => hook.name === hookName)?.code
+
+  expect(code).toBeDefined()
+  expect(buildSnippets(name, '')[1]?.code).toContain(code ?? '')
 })

@@ -1,20 +1,23 @@
 ---
-import { Checkbox } from '@santi020k/lumen-astro'
+import {
+  Checkbox,
+  Label
+} from '@santi020k/lumen-astro'
 ---
 
 <div style="display: grid; gap: 0.5rem;">
-  <label>
+  <Label>
     <Checkbox name="updates" /> Email me product updates
-  </label>
-  <label>
+  </Label>
+  <Label>
     <Checkbox checked name="terms" /> Accept terms (checked)
-  </label>
-  <label>
+  </Label>
+  <Label>
     <Checkbox id="ex-checkbox-indeterminate" name="permissions" /> Some permissions selected
-  </label>
-  <label>
+  </Label>
+  <Label>
     <Checkbox disabled name="legacy" /> Legacy option (disabled)
-  </label>
+  </Label>
 </div>
 
 <script>

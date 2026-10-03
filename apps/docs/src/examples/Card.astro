@@ -6,11 +6,11 @@ import {
   CardDescription,
   CardFooter,
   CardHeader,
-  CardTitle
-} from '@santi020k/lumen-astro'
+  CardTitle,
+  Grid } from '@santi020k/lumen-astro'
 ---
 
-<div style="display: grid; gap: 0.75rem; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));">
+<Grid gap="md" minItemWidth="14rem">
   <Card>
     <h3>Starter</h3>
     <p>For personal projects and prototypes.</p>
@@ -35,4 +35,4 @@ import {
   <Card variant="unstyled">
     <CardContent>Unstyled preserves semantics and stable hooks without a surface.</CardContent>
   </Card>
-</div>
+</Grid>

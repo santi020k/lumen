@@ -1,13 +1,15 @@
 ---
 import {
+  Button,
   Calendar,
   Field,
-  Label
-} from '@santi020k/lumen-astro'
+  Grid,
+  Label,
+  Stack } from '@santi020k/lumen-astro'
 ---
 
-<div style="display: grid; gap: 1rem; max-width: 42rem;">
-  <div style="display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));">
+<Stack style="max-width: 42rem">
+  <Grid minItemWidth="17rem">
     <Field>
       <Label id="ex-calendar-basic-label">Project month</Label>
       <Calendar aria-labelledby="ex-calendar-basic-label" month="2026-07" />
@@ -17,9 +19,9 @@ import {
       <Label id="ex-calendar-selected-label">Selected milestone</Label>
       <Calendar aria-labelledby="ex-calendar-selected-label" value="2026-07-14" />
     </Field>
-  </div>
+  </Grid>
 
-  <div style="display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));">
+  <Grid minItemWidth="17rem">
     <Field>
       <Label id="ex-calendar-bounds-label">Booking window</Label>
       <Calendar
@@ -42,7 +44,7 @@ import {
           value="2026-07-20"
         />
       </Field>
-      <button class="ui-button ui-button--default ui-button--default-size" type="submit">Save date</button>
+      <Button type="submit">Save date</Button>
     </form>
-  </div>
-</div>
+  </Grid>
+</Stack>

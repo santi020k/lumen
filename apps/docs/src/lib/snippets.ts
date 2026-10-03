@@ -1,4 +1,7 @@
 import { lumenComponentNames } from '@santi020k/lumen-core'
+import ts from 'typescript'
+
+import { reactHooksReference } from '../data/docs'
 
 export interface FrameworkSnippet {
   code: string
@@ -368,7 +371,10 @@ const toAstroSnippet = (raw: string): string => {
 }
 
 const uppercaseCssSegment = (_match: string, letter: string) => letter.toUpperCase()
-const toCssCamelCase = (property: string) => property.replaceAll(/-([a-z])/g, uppercaseCssSegment)
+
+const toCssCamelCase = (property: string) => property.startsWith('--') ?
+  property :
+  property.replaceAll(/-([a-z])/g, uppercaseCssSegment)
 
 const toReactStyleObject = (css: string) => {
   const declarations = css
@@ -384,16 +390,78 @@ const toReactStyleObject = (css: string) => {
 
       const value = declaration.slice(separatorIndex + 1).trim()
 
-      return `${property}: '${value}'`
+      return `${JSON.stringify(property)}: ${JSON.stringify(value)}`
     })
 
   return `{{ ${declarations.join(', ')} }}`
 }
 
-const toReactBody = (body: string) => body
+const expandAstroShorthand = (source: string): string => transformMarkup(source, (tag, start) => {
+  if (tag.closing) return { end: tag.end, text: source.slice(start, tag.end) }
+
+  const output = [source.slice(start, tag.nameEnd)]
+  let cursor = tag.nameEnd
+
+  while (cursor < tag.end) {
+    const character = source[cursor]
+
+    if (isQuote(character)) {
+      const end = quotedEnd(source, cursor)
+
+      output.push(source.slice(cursor, end))
+
+      cursor = end
+    } else if (character === '{') {
+      const end = expressionEnd(source, cursor)
+      const expression = source.slice(cursor + 1, end - 1)
+      const shorthand = /^[A-Za-z_$][\w$]*$/u.test(expression) && isWhitespace(source[cursor - 1])
+
+      output.push(shorthand ? `${expression}={${expression}}` : source.slice(cursor, end))
+
+      cursor = end
+    } else {
+      output.push(character ?? '')
+
+      cursor += 1
+    }
+  }
+
+  return { end: tag.end, text: output.join('') }
+})
+
+const normalizeReactTextarea = (source: string): string => transformMarkup(source, (tag, start) => {
+  if (tag.name !== 'Textarea' || tag.closing || tag.selfClosing)
+    return { end: tag.end, text: source.slice(start, tag.end) }
+
+  let closing = tag.end
+
+  while (closing < source.length && source[closing] !== '<' && source[closing] !== '{') closing += 1
+
+  const value = source.slice(tag.end, closing)
+
+  if (!source.startsWith('</Textarea>', closing))
+    return { end: tag.end, text: source.slice(start, tag.end) }
+
+  return {
+    end: closing + '</Textarea>'.length,
+    text: `${source.slice(start, tag.end - 1)} defaultValue={${JSON.stringify(value)}} />`
+  }
+})
+
+const toReactBody = (body: string, styles: string[]) => expandAstroShorthand(normalizeReactTextarea(body))
   .replaceAll(valueDefaultPattern, '<$1$2 defaultValue="')
   .replaceAll(
-    /(?<=\s)style="([^"]*)"/g, (_match, css: string) => `style=${toReactStyleObject(css)}`
+    /(?<=\s)style="([^"]*)"/g, (_match, css: string) => {
+      const value = toReactStyleObject(css)
+
+      if (!css.includes('--')) return `style=${value}`
+
+      const name = `exampleStyle${styles.length}`
+
+      styles.push(`const ${name}: CSSProperties & Record<\`--\${string}\`, string | number> = ${value.slice(1, -1)}`)
+
+      return `style={${name}}`
+    }
   )
   .replaceAll(/(?<=\s)class=/g, 'className=')
   .replaceAll(/(?<=\s)for=/g, 'htmlFor=')
@@ -404,18 +472,51 @@ const toReactBody = (body: string) => body
   .replaceAll(/(?<=\s)maxlength=/g, 'maxLength=')
   .replaceAll(/(?<=\s)inputmode=/g, 'inputMode=')
   .replaceAll(/(?<=\s)tabindex=/g, 'tabIndex=')
+  .replaceAll(/(?<=\s)contenteditable=/g, 'contentEditable=')
+  .replaceAll(/(?<=\s)spellcheck=/g, 'spellCheck=')
+  .replaceAll(/(?<=\s)autocomplete=/g, 'autoComplete=')
+  .replaceAll(/(?<=\s)datetime=/g, 'dateTime=')
+  .replaceAll(/(?<=\s)readonly(?=[\s/>])/g, 'readOnly')
+  .replaceAll(/(?<=\s)(tabIndex|aria-level)="(-?\d+)"/g, '$1={$2}')
+  .replaceAll(/<!--([\s\S]*?)-->/g, '{/*$1*/}')
 
-const toReactSnippet = (body: string): string => {
+const reactDeclarations = (frontmatter: string): string => {
+  const source = ts.createSourceFile('example.ts', frontmatter, ts.ScriptTarget.Latest, true)
+
+  return source.statements.filter(statement => (
+    !ts.isImportDeclaration(statement) ||
+    !ts.isStringLiteral(statement.moduleSpecifier) ||
+    statement.moduleSpecifier.text !== '@santi020k/lumen-astro'
+  )).map(statement => statement.getFullText(source).trim()).join('\n\n')
+}
+
+const toReactSnippet = (body: string, frontmatter: string): string => {
   const cleanBody = stripEmbeddedAstroBlocks(body)
   const components = usedComponents(cleanBody)
-  const importLine = `import { ${components.join(', ')} } from '@santi020k/lumen-react'`
+  const source = ts.createSourceFile('example.ts', frontmatter, ts.ScriptTarget.Latest, true)
 
-  const indented = toReactBody(cleanBody)
+  const imports = source.statements.filter(statement => ts.isImportDeclaration(statement) &&
+    ts.isStringLiteral(statement.moduleSpecifier) &&
+    statement.moduleSpecifier.text === '@santi020k/lumen-astro')
+
+  const importLine = imports.length > 0 ?
+    imports.map(statement => statement.getText(source).replaceAll('@santi020k/lumen-astro', '@santi020k/lumen-react')).join('\n') :
+    `import { ${components.join(', ')} } from '@santi020k/lumen-react'`
+
+  const styles: string[] = []
+
+  const indented = toReactBody(cleanBody, styles)
     .split('\n')
     .map(line => (line ? `    ${line}` : line))
     .join('\n')
 
-  return `${importLine}\n\nexport const Example = () => (\n  <>\n${indented}\n  </>\n)\n`
+  const declarations = [reactDeclarations(frontmatter), ...styles].filter(Boolean).join('\n\n')
+
+  const styleImport = styles.length > 0 ?
+    'import type { CSSProperties } from \'react\'\n' :
+    ''
+
+  return `${styleImport}${importLine}\n\n${declarations ? `${declarations}\n\n` : ''}export const Example = () => (\n  <>\n${indented}\n  </>\n)\n`
 }
 
 const elementsHeader = `<script type="module">
@@ -455,7 +556,225 @@ const toElementsSnippet = (body: string): string => {
   return `${elementsHeader}\n\n${output}\n`
 }
 
+const elementsDataCharts = new Set([
+  'BarChart', 'ComboChart', 'Heatmap', 'LineChart', 'PieChart', 'RangeChart', 'ScatterChart'
+])
+
+const toElementsDataChartSnippet = (name: string, body: string, frontmatter: string): string => {
+  const attribute = name === 'Heatmap' || name === 'RangeChart' ? 'data' : 'series'
+  const id = `example-${toKebabCase(name)}`
+  const dataExpression = name === 'PieChart' ? '[series]' : attribute
+  const markup = toElementsSnippet(body.replace(`{${attribute}}`, '').replace(`<${name}`, `<${name} id="${id}"`))
+
+  const declarations = ts.transpileModule(reactDeclarations(frontmatter), {
+    compilerOptions: { target: ts.ScriptTarget.ESNext }
+  }).outputText.trim()
+
+  return `${markup}
+<script type="module">
+${declarations}
+
+const chart = document.getElementById('${id}')
+
+chart?.setAttribute('${attribute}', JSON.stringify(${dataExpression}))
+</script>
+`
+}
+
 const reactOverrides: Record<string, string> = {
+  AlertDialog: `'use client'
+
+import { useState } from 'react'
+import { AlertDialog, Button } from '@santi020k/lumen-react'
+
+export function Example() {
+  const [open, setOpen] = useState(false)
+
+  return (
+    <>
+      <Button variant="destructive" onClick={() => setOpen(true)}>Preview confirmation</Button>
+      <AlertDialog open={open} onOpenChange={setOpen} aria-labelledby="confirm-title" aria-describedby="confirm-description">
+        <h2 id="confirm-title">Delete this project?</h2>
+        <p id="confirm-description">This example only demonstrates confirmation. No project is deleted.</p>
+        <Button onClick={() => setOpen(false)} variant="secondary">Cancel</Button>
+        <Button onClick={() => setOpen(false)} variant="destructive">Confirm preview</Button>
+      </AlertDialog>
+    </>
+  )
+}
+`,
+  ContextMenu: `'use client'
+
+import { Button, ContextMenu, useContextMenu } from '@santi020k/lumen-react'
+
+export function Example() {
+  const menu = useContextMenu()
+
+  return (
+    <>
+      <Button {...menu.triggerProps} variant="outline">Right-click or press Shift+F10 for project actions</Button>
+      <ContextMenu {...menu.menuProps} aria-label="Project actions">
+        <Button role="menuitem" onClick={menu.close} variant="ghost">Duplicate preview</Button>
+        <Button role="menuitem" onClick={menu.close} variant="ghost">Close menu</Button>
+      </ContextMenu>
+    </>
+  )
+}
+`,
+  Drawer: `'use client'
+
+import { Button, Checkbox, Drawer, Label, useDialog } from '@santi020k/lumen-react'
+
+export function Example() {
+  const drawer = useDialog()
+
+  return (
+    <>
+      <Button {...drawer.triggerProps} variant="outline">Open filters</Button>
+      <Drawer {...drawer.dialogProps} aria-labelledby="filters-title">
+        <h2 id="filters-title">Filters</h2>
+        <Label><Checkbox name="stable" /> Stable packages only</Label>
+        <Button {...drawer.closeProps} variant="secondary">Close</Button>
+      </Drawer>
+    </>
+  )
+}
+`,
+  Sheet: `'use client'
+
+import { Button, Sheet, useDialog } from '@santi020k/lumen-react'
+
+export function Example() {
+  const sheet = useDialog()
+
+  return (
+    <>
+      <Button {...sheet.triggerProps} variant="outline">Open details</Button>
+      <Sheet {...sheet.dialogProps} aria-labelledby="details-title">
+        <h2 id="details-title">Deployment details</h2>
+        <p>Illustrative build details for the preview.</p>
+        <Button {...sheet.closeProps} variant="secondary">Close</Button>
+      </Sheet>
+    </>
+  )
+}
+`,
+
+  AnimatedPortrait: `import { AnimatedPortrait, Image } from '@santi020k/lumen-react'
+
+export const Example = () => (
+  <AnimatedPortrait>
+    <Image alt="Mountain landscape illustration" src="/comparison-after.svg" width={960} height={600} />
+  </AnimatedPortrait>
+)
+`,
+  ButtonLink: `import { ButtonLink, Icon, Stack } from '@santi020k/lumen-react'
+
+export const Example = () => (
+  <Stack direction="horizontal" gap="sm" wrap>
+    <ButtonLink href="https://santi020k.com" target="_blank" rel="noopener noreferrer">
+      Visit Santiago <Icon decorative name="arrow-up-right" />
+    </ButtonLink>
+    <ButtonLink aria-label="Santiago's website" href="https://santi020k.com" shape="icon" variant="secondary" target="_blank" rel="noopener noreferrer">
+      <Icon decorative name="globe" />
+    </ButtonLink>
+  </Stack>
+)
+`,
+  Combobox: `import { Combobox } from '@santi020k/lumen-react'
+
+export const Example = () => (
+  <Combobox label="Framework" list="framework-options" options={['Astro', 'React', 'Web Components']} placeholder="Search frameworks" />
+)
+`,
+  CoverImage: `import { CoverImage, Grid, Image } from '@santi020k/lumen-react'
+
+export const Example = () => (
+  <Grid minItemWidth="14rem">
+    <CoverImage>
+      <Image alt="Mountain landscape illustration" src="/comparison-before.svg" width={960} height={600} />
+    </CoverImage>
+    <CoverImage hover showBottomGradient>
+      <Image alt="The landscape in warm light" src="/comparison-after.svg" width={960} height={600} />
+    </CoverImage>
+  </Grid>
+)
+`,
+  Dialog: `'use client'
+
+import { useState } from 'react'
+import { Button, Dialog, Field, Input, Label } from '@santi020k/lumen-react'
+
+export function Example() {
+  const [open, setOpen] = useState(false)
+
+  return (
+    <>
+      <Button onClick={() => setOpen(true)}>Edit profile</Button>
+      <Dialog open={open} onOpenChange={setOpen} aria-labelledby="profile-title">
+        <h2 id="profile-title">Edit profile</h2>
+        <Field>
+          <Label htmlFor="profile-name">Display name</Label>
+          <Input id="profile-name" name="displayName" defaultValue="Santiago" />
+        </Field>
+        <Button onClick={() => setOpen(false)} variant="secondary">Close preview</Button>
+      </Dialog>
+    </>
+  )
+}
+`,
+  RevealGroup: `import { Card, RevealGroup } from '@santi020k/lumen-react'
+
+export const Example = () => (
+  <RevealGroup animation="slide-up" stagger={90}>
+    <Card><strong>Plan</strong><p>Start with semantic structure.</p></Card>
+    <Card><strong>Build</strong><p>Compose accessible primitives.</p></Card>
+    <Card><strong>Ship</strong><p>Keep motion consistent.</p></Card>
+  </RevealGroup>
+)
+`,
+  ScrollReveal: `import { Card, ScrollReveal } from '@santi020k/lumen-react'
+
+export const Example = () => (
+  <ScrollReveal animation="slide-up" duration="slow" threshold={0.2}>
+    <Card>
+      <strong>Progressive by default</strong>
+      <p>Content remains readable when motion is reduced.</p>
+    </Card>
+  </ScrollReveal>
+)
+`,
+  ThemeToggle: `'use client'
+
+import { ThemeToggle, useThemeToggle } from '@santi020k/lumen-react'
+
+export function Example() {
+  const { toggleTheme } = useThemeToggle()
+
+  return <ThemeToggle onClick={toggleTheme} />
+}
+`,
+  Toast: `'use client'
+
+import { Button, ToastProvider, useToast } from '@santi020k/lumen-react'
+
+function SaveButton() {
+  const toast = useToast()
+
+  return (
+    <Button onClick={() => toast.create({ title: 'Preview saved', description: 'Example feedback; no data is persisted.', variant: 'success' })}>
+      Show success toast
+    </Button>
+  )
+}
+
+export const Example = () => (
+  <ToastProvider placement="bottom-right" maxCount={5}>
+    <SaveButton />
+  </ToastProvider>
+)
+`,
+
   ImageComparison: `import { Image, ImageComparison } from '@santi020k/lumen-react'
 
 export const Example = () => (
@@ -498,13 +817,11 @@ export const Example = () => (
   />
 )
 `,
-  Image: `import NextImage from 'next/image'
-import { Image as LumenImage } from '@santi020k/lumen-react'
+  Image: `import { Image } from '@santi020k/lumen-react'
 
 export const Example = () => (
-  <LumenImage
+  <Image
     alt="Lumen UI logo"
-    as={NextImage}
     height={80}
     src="/logo.svg"
     width={310}
@@ -618,21 +935,44 @@ const accent = "hsl(var(--accent))";</code></pre>
 `
 }
 
+const reactHookByComponent: Record<string, string> = {
+  KanbanBoard: 'useKanban',
+  KanbanColumn: 'useKanban',
+  RichTextEditor: 'useRichTextEditor',
+  Schedule: 'useSchedule',
+  ThemeBuilder: 'useThemeBuilder'
+}
+
+const getReactHookExample = (name: string): string | undefined => {
+  const hookName = reactHookByComponent[name]
+  const code = hookName ? reactHooksReference.find(hook => hook.name === hookName)?.code : undefined
+
+  return code ? `'use client'\n\n${code}\n` : undefined
+}
+
 export const buildSnippets = (
   name: string,
   raw: string
 ): FrameworkSnippet[] => {
-  const { body } = splitExample(raw)
+  const { body, frontmatter } = splitExample(raw)
+  let reactBody = body
+
+  if (name === 'DataTable') reactBody = '<DataTable columns={columns} rows={rows} />'
+  else if (name === 'Tabs') reactBody = body.replaceAll('initialValue=', 'defaultValue=')
+  else if (name === 'PhoneInput')
+    reactBody = body.replaceAll('countryValue=', 'defaultCountryValue=').replaceAll(' value=', ' defaultValue=')
 
   return [
     { code: toAstroSnippet(raw), label: 'Astro', lang: 'astro' },
     {
-      code: reactOverrides[name] ?? toReactSnippet(body),
+      code: reactOverrides[name] ?? getReactHookExample(name) ?? toReactSnippet(reactBody, frontmatter),
       label: 'React',
       lang: 'tsx'
     },
     {
-      code: elementsOverrides[name] ?? toElementsSnippet(body),
+      code: elementsOverrides[name] ?? (elementsDataCharts.has(name) ?
+        toElementsDataChartSnippet(name, body, frontmatter) :
+        toElementsSnippet(body)),
       label: 'Elements',
       lang: 'html'
     }

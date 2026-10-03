@@ -1,29 +1,31 @@
 ---
 import {
   Field,
-  Input
+  Input,
+  Label,
+  Stack
 } from '@santi020k/lumen-astro'
 ---
 
-<div style="display: grid; gap: 0.75rem; max-width: 20rem;">
+<Stack gap="sm" style="max-width: 24rem">
   <Field>
-    <label for="ex-input-small">Small input</label>
+    <Label for="ex-input-small">Small input</Label>
     <Input id="ex-input-small" name="small-input" placeholder="Small" visualSize="sm" />
   </Field>
   <Field>
-    <label for="ex-input-email">Email</label>
+    <Label for="ex-input-email">Email</Label>
     <Input id="ex-input-email" name="email" placeholder="you@example.com" type="email" />
   </Field>
   <Field>
-    <label for="ex-input-large">Large input</label>
+    <Label for="ex-input-large">Large input</Label>
     <Input id="ex-input-large" name="large-input" placeholder="Large" visualSize="lg" />
   </Field>
   <Field>
-    <label for="ex-input-disabled">Disabled input</label>
+    <Label for="ex-input-disabled">Disabled input</Label>
     <Input id="ex-input-disabled" name="disabled-input" disabled placeholder="Disabled" />
   </Field>
   <Field>
-    <label for="ex-input-invalid">Workspace slug</label>
+    <Label for="ex-input-invalid">Workspace slug</Label>
     <Input
       aria-describedby="ex-input-invalid-error"
       aria-invalid="true"
@@ -33,4 +35,4 @@ import {
     />
     <p id="ex-input-invalid-error">Use lowercase letters, numbers, and hyphens only.</p>
   </Field>
-</div>
+</Stack>

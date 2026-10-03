@@ -1,13 +1,16 @@
 ---
-import { Slider } from '@santi020k/lumen-astro'
+import {
+  Label,
+  Slider
+} from '@santi020k/lumen-astro'
 ---
 
 <div style="display: grid; gap: 0.75rem; max-width: 20rem;">
-  <label for="ex-slider-opacity">Opacity</label>
+  <Label for="ex-slider-opacity">Opacity</Label>
   <Slider id="ex-slider-opacity" name="opacity" min="0" max="100" value="80" aria-describedby="ex-slider-opacity-value" />
   <output id="ex-slider-opacity-value" for="ex-slider-opacity" aria-live="polite">80</output>
 
-  <label for="ex-slider-volume">Volume</label>
+  <Label for="ex-slider-volume">Volume</Label>
   <Slider id="ex-slider-volume" name="volume" min="0" max="100" step="5" value="45" />
 </div>
 

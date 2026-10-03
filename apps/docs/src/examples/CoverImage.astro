@@ -1,10 +1,10 @@
 ---
-import { CoverImage } from '@santi020k/lumen-astro'
+import { CoverImage, Grid } from '@santi020k/lumen-astro'
 
 import dummyImage from '../assets/cover-dummy.jpg'
 ---
 
-<div style="display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));">
+<Grid gap="md" minItemWidth="14rem">
   <CoverImage
     alt="Cover image"
     image={dummyImage}
@@ -22,4 +22,4 @@ import dummyImage from '../assets/cover-dummy.jpg'
     showBottomGradient
     sizes="(min-width: 1024px) 400px, 100vw"
   />
-</div>
+</Grid>

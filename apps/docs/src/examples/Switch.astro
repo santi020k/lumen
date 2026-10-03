@@ -1,15 +1,18 @@
 ---
-import { Switch } from '@santi020k/lumen-astro'
+import {
+  Label,
+  Switch
+} from '@santi020k/lumen-astro'
 ---
 
 <div style="display: grid; gap: 1rem;">
-  <label style="display: flex; align-items: center; gap: 0.5rem;">
+  <Label style="display: flex; align-items: center; gap: 0.5rem;">
     <Switch name="notifications" checked /> Email notifications
-  </label>
-  <label style="display: flex; align-items: center; gap: 0.5rem;">
+  </Label>
+  <Label style="display: flex; align-items: center; gap: 0.5rem;">
     <Switch name="digest" /> Weekly digest
-  </label>
-  <label style="display: flex; align-items: center; gap: 0.5rem; color: hsl(var(--ink-muted));">
+  </Label>
+  <Label style="display: flex; align-items: center; gap: 0.5rem; color: hsl(var(--ink-muted));">
     <Switch disabled name="beta" /> Beta features (disabled)
-  </label>
+  </Label>
 </div>
