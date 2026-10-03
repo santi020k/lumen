@@ -62,8 +62,9 @@ xcrun xcresulttool get test-results metrics \
   --path .build/apple-workspace-performance.xcresult
 ```
 
-Use a fresh result-bundle path for each run. Record the source revision, simulator model, OS,
-text size and host workload alongside the result bundle. The UI test runner needs iOS 17 or
+Use fresh result-bundle and derived-data paths for each run. Preserve the built `.app` with the
+result bundle and record its checksum before another build replaces it. Record the source revision,
+simulator model, OS, text size and host workload alongside the result bundle. The UI test runner needs iOS 17 or
 later, matching the installed XCTest libraries; the application's iOS 16 minimum is unchanged.
 Archive and distribution schemes are separate.
 

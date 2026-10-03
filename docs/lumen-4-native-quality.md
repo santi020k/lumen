@@ -38,7 +38,7 @@ explicit React Native sheet focus targets with a compact-height/large-text scrol
   Expo web build passed. Desktop 1280×900 and mobile 390×844 interactions covered selection,
   editing, save feedback, and chart rendering, with temporary screenshots inspected.
 - Swift: 52 LumenUI and three WidgetKit tests passed. The new native split-view workspace compiled
-  in the macOS playground and the iPad simulator Xcode build passed; iPad simulator interactions verified search, record selection, initial edit focus, keyboard-visible Save, saved feedback, Spanish chart descriptions, and error/retry recovery. The flow was repeated against reconciled code revision `1d7acc749fbb80e720a70a2e982c7aa0f1dcb095`. At maximum accessibility text size, Spanish sheet actions stacked and Save remained reachable with the keyboard visible. A swipe-dismiss attempt left the protected sheet open. Typed notes persisted. A later Release-mode XCTest run on the iPad Pro 13-inch (M5), iOS 27 Simulator, passed all three workspace tests, including typing and saving a long note through the native keyboard and verifying the exact saved text. Temporary keyboard and saved-note screenshots were inspected. Five responsive-launch samples averaged 4.935 seconds with 21.341% relative standard deviation; five scrolling/deceleration durations averaged 2.553 seconds. The bundle contains duration samples only, without frame or hitch counts. These host-dependent samples do not establish performance budgets. This run used the candidate worktree based on `156dd6e8` plus the new UI-test fixture, before its commit; The final committed fixture at `038e46f4a1dc751a1cea7ca778f631c9794d52b1` then passed all three tests on the iPhone 17 Pro iOS 27 Simulator, including an explicit keyboard-visible assertion. Phone launch samples averaged 5.472 seconds with 23.658% relative standard deviation; scrolling/deceleration duration averaged 2.570 seconds. Its raw result bundle, source/artifact report and inspected screenshots remain local under `.build/native-quality-apple-performance-iphone*`. A final committed tablet rerun, physical-device qualification and frame-smoothness measurements remain pending. Temporary screenshots were inspected and the original simulator text size was restored. API extraction succeeded on all five Apple
+  in the macOS playground and the iPad simulator Xcode build passed; iPad simulator interactions verified search, record selection, initial edit focus, keyboard-visible Save, saved feedback, Spanish chart descriptions, and error/retry recovery. The flow was repeated against reconciled code revision `1d7acc749fbb80e720a70a2e982c7aa0f1dcb095`. At maximum accessibility text size, Spanish sheet actions stacked and Save remained reachable with the keyboard visible. A swipe-dismiss attempt left the protected sheet open. Typed notes persisted. A later Release-mode XCTest run on the iPad Pro 13-inch (M5), iOS 27 Simulator, passed all three workspace tests, including typing and saving a long note through the native keyboard and verifying the exact saved text. Temporary keyboard and saved-note screenshots were inspected. Five responsive-launch samples averaged 4.935 seconds with 21.341% relative standard deviation; five scrolling/deceleration durations averaged 2.553 seconds. The bundle contains duration samples only, without frame or hitch counts. These host-dependent samples do not establish performance budgets. This run used the candidate worktree based on `156dd6e8` plus the new UI-test fixture, before its commit. The final committed fixture at `038e46f4a1dc751a1cea7ca778f631c9794d52b1` then passed all three tests on the iPhone 17 Pro iOS 27 Simulator, including an explicit keyboard-visible assertion. Phone launch samples averaged 5.472 seconds with 23.658% relative standard deviation; scrolling/deceleration duration averaged 2.570 seconds. Its raw result bundle, source/artifact report and inspected screenshots remain local under `.build/native-quality-apple-performance-iphone*`. The phone artifact checksum was captured after testing, but the shared build output was subsequently replaced by the tablet build; the phone report records that limitation. The final keyboard/save fixture also passed on iPad at source revision `5444fada`, with only documentation changing during the run. That built app is preserved with its checksum, result bundle and inspected screenshots under `.build/native-quality-apple-keyboard-ipad-committed*`. XCTest encountered three 60-second animation-idle waits but continued and verified keyboard visibility, reachable Save and the exact saved note; this is behavioral evidence, not a latency pass. Physical-device qualification and frame-smoothness measurements remain pending. Temporary screenshots were inspected and the original simulator text size was restored. API extraction succeeded on all five Apple
   targets; the reconciled source-compatibility gate validated 17 explicitly reviewed v4 diagnostics, including four icon enum additions.
 - Compose: compilation and unit tests passed. The Android adaptive workspace debug APK compiled
   against the local library; three workspace instrumentation tests passed for saved-state restoration, editing, cancel and retry, including actual Activity recreation with an open draft and a saved record. Parent destination and pattern selection now use saved state. Process-death qualification remains pending. All 19 root instrumentation tests passed on the
@@ -109,6 +109,22 @@ unfinished frames, timestamp precision, duplicate rows, malformed bounds and fut
 Run `pnpm run measure:android-workspace --serial <device>` from a clean committed checkout.
 See [runtime performance](native-runtime-performance.md) for setup, raw artifacts and limitations.
 
+### React Native native-host preparation
+
+A temporary Android host was generated from candidate `5444fada` using the installed Expo SDK
+57.0.26 and React Native 0.86.3, without dependency installation or tracked app-configuration changes.
+The host lives under `.build/native-quality-react-native-host`, uses the separate local package ID
+`com.santi020k.lumen.playground.reactnative.qualification`, and disables over-the-air updates so
+runtime checks cannot silently load a published bundle. The development-signed release build targets
+arm64 and uses the generated project's SDK/NDK versions. Generation succeeded; native compilation
+is still pending while Gradle installs the required NDK. No React Native native-runtime pass,
+startup result or frame measurement is claimed yet. The build log is
+`.build/native-quality-react-native-android-build.log`.
+
+This follows Expo's [Continuous Native Generation](https://docs.expo.dev/workflow/continuous-native-generation/)
+workflow. Preserve the original app configuration and EAS identity; qualification must not publish
+an update or replace a user's installed public playground.
+
 ### Outstanding scope and blockers
 
 The complete Required outcomes list remains authoritative. Broader phone/tablet runtime qualification and physical-device keyboard/focus and screen-reader checks,
@@ -122,9 +138,12 @@ The canonical `pnpm run validate` initially failed because its loopback fixture 
 After local-server access and snapshot regeneration, it reached `check:security` and failed on three
 high-severity dependency advisories in `node-forge`, `http-cache-semantics`, and `braces`. The reconciled canonical gate, including the six new runtime-parser tests, passed all preceding checks and again stopped at `check:security`. The complete gate remains failed; committed release dependency updates were reconciled into this branch and the audit was rerun, but those three advisories remain.
 
-Release integration is pending because the selected `release/v4.0.0` checkout contains concurrent
-staged, unstaged, and untracked work. Preserve that checkout and the Compose-fields worktree;
-serialize the eventual merge in a clean, idle release worktree. Publication remains outside this
+The selected `release/v4.0.0` contains the initial native implementation and static-graphics work
+through shared ancestor `05e1a20c296c79b7981a4e49ea3d66783ee961da`. The additional Android runtime
+collector, status-bar fix and Apple UI-test commits still require integration. The release checkout
+was clean at revision `5524f4b9` when checked again, but the canonical security gate remains failed.
+Preserve concurrent checkout ownership and serialize the eventual merge in a clean, idle release
+worktree after the required gates pass. Publication remains outside this
 implementation authorization. Physical-device and release stability evidence must bind their
 actual tested revision; historical records retain their original attribution and version.
 
