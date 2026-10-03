@@ -10,7 +10,7 @@
       "Autocomplete": "7f17759d2ba590420283d16216c4fa12d7ab8296f4c4af259377646f61dc097f",
       "Avatar": "5e96c7984dcc1552ddc5b632fbf9ef46060471be60b35575fad678e9fe41f49e",
       "Backdrop": "69e54d576e43ebaecf5beec41c9594a8a1db1cbe8a3cb70f87a9b3da8b70eeed",
-      "BackToTop": "d61a6ef994c395b2565fd2d006ffdbc1f03c679686ad218c0dbc9b45a9686cb8",
+      "BackToTop": "90d46ec1afc97a2e229d671f2da139de68c2cda2610b72231f2946f1674a73ce",
       "Badge": "ebc92a9a90b0ca403d10b6a120efc106a85f4b29562b8ebe9c2f2ad89af8ac87",
       "BarChart": "7fdcc1ec3c075877957d13d7dbff2a5ab2598057dc563926483a2b59c2a8f779",
       "Breadcrumb": "22166b745c3b484a5c051a94ba321dfd04d266c039ea5cd00c74d562d9bd3c7d",
@@ -40,7 +40,7 @@
       "ContextMenu": "8b9b5b009deb7c99fb367bf68216d9fe144163b8cb759c46154e3d0bbaed5048",
       "ColorPicker": "c5c777fd5aa2c9d91d8eff7ef6386af457807ab01a1400cebd7204c40fdedaec",
       "DataTable": "9238254bcd8512ebe262f81fbddfea13016912f85a82241d49ec91c785c081b7",
-      "DatePicker": "31b66170254050cba5dea5892485807de6c5fc51aa85984242c9bf12d021b9fd",
+      "DatePicker": "e3fd2e2d618f1fccd7642679df8a64cb922c60b8109440b3235155b1c2feae2f",
       "DateRangePicker": "b9ca3d0d56e7a26710bfdedea2ab34d5e334b1bb31a9abbee7478252ba9b8123",
       "Dialog": "90deedb88e019f9fe5c312e31d37ef5ab688d4209fbd53f33ebbe09966b6b61a",
       "Direction": "ac13fa49498f18ea7734a565324402953549202080eaa3054c5068f347ec29bf",
@@ -50,7 +50,7 @@
       "ErrorState": "5f9715289c4d92562d71f498df10817e8225d1a4649a5764a7b92ebedbf67673",
       "ErrorSummary": "6a58f69ab4eeefe972c5edcb3874cbf11778392d60203f81276178d7090faff6",
       "Eyebrow": "0a8d851399c2a11af89d9e20c7decfe7ed717ae7f67494366280656ebb6e5c34",
-      "Field": "93c3dbc7d08f80213d90fbc905b05393cadc76b2c664b030a01e59b45445eaff",
+      "Field": "128087a4c102c72b49542bd5bd3d0f010ad3c285bea7bc2ab15e6f81c0c990bb",
       "FieldError": "4dc3e1ce708e13ecd39cca879d13e14a4cc1f5632d9b22d847f5578db8b833e9",
       "FloatingBadge": "5e73640b20c8f8ba6fc731c77d30bc2254493021e3040d4ca6eea0332eee0d98",
       "Form": "567ee134ad4b6585816a66d3dee4cd5bb467b3272622e1e6959318061dbf6400",
@@ -83,7 +83,7 @@
       "PhoneInput": "1748ec7197986a829d7137d69529f6f44b324a053b2a29c0eb7e22464f767b44",
       "PieChart": "a0092e09beffcf77d99978f0794305a22379b4914cf07d70a05504d5ac88531d",
       "Pill": "a0dffa43c0e089ae68d8dd11df5ccca3b83eb0acb5d777752f29475b0bb064a1",
-      "Popover": "ccad3363b8b6df2404b2844039d9bbd8927c8215ec39c5abd96c98274d85521d",
+      "Popover": "72f6c508c2d9fb0070ae3652fde089a8bab097193e6fb26c57b7dde751eb8ee6",
       "Progress": "cd577f799cf9102eabef5e3b6dd98f1c33df42795f228b84c86a97d7d045233c",
       "Prose": "36e61f7f8b4a6c74a2a716a73dbf22cb4f86fae092b1518aa0a0e68765cea68d",
       "RadioGroup": "10423caa00dba5ef159036ba11d3845371e859656dd7c8cb86490f0e63da821f",
@@ -108,15 +108,15 @@
       "TagGroup": "910c86e791f7b53d5bd39e2f873c4dcbeda00cb48435a5655ef51e18a6010171",
       "Textarea": "e19130eb8f521a75d7fd1dacea570137b402b8af98ddf1e13a67fa2a1b57652c",
       "ThemeBuilder": "628f318cbb67e2fea790c015967c2c9a0e6734d59f203bb1a873863c5738ab2d",
-      "ThemeToggle": "e48ac18f0f6726dbf879eafe7cd58bdc4666e02168d3c6e5245911e12d9a3f88",
+      "ThemeToggle": "fe19e77025a642755a89d5d7fde527ce7fcb08d0ede3305b8c30dee2426fe60b",
       "TimeField": "f2035ca80e0c8b5a925dcc450c68c54c567124250834ff0954611d2795c8b081",
       "Toast": "7122a41af8d5384b44bba2b58ba5a1407b2f5974190afa59a053bf4f129944ed",
       "ToastViewport": "6ed1cbcbff659bb9ef634c8f731c6b5457d6d662c47cf13537e8c7055ab67d78",
       "Toggle": "bb5ecc75c8edf241dd0b9dc543d87ff48b1fd889e199580bcd53291d0f246f9d",
       "ToggleGroup": "fa08e6472764e83226296dceae4c8ca8808416d86d29e3845169d22ed8377802",
-      "Tooltip": "78def5f4c1855db75095c4cf2d5a8bb783d2ee3bd285b18ce050ffffadc6b5e7",
-      "Tree": "c5bf6aa0e8886fb32fb5b09ad7addf981d8d40063d5fde544376789aed65f6b4",
-      "TreeGrid": "8ffd5647e6041289c01299cf76d2589a5d5d691be3dff896e97bbfa70788c0eb",
+      "Tooltip": "fe67c14520ae8a52b59e9604513743d2e2ac3c8eb33adbe97bd2c004fba09da1",
+      "Tree": "82fec780732d44258a1870898c9df666c5982433ce625ca3b8bf8d62d0dacd3c",
+      "TreeGrid": "50577908772c53c08d336747253ca7c4527145d94caac2e268e6148cb21255a5",
       "Typography": "d31a0f2ed632b9eeca0663086aeb766cf9b7fb2c53e7333c336509f09d24884f",
       "VirtualList": "6bc4440e170f3d5eb3012cde659eb6445ea29732dd70bf563260b310fae7dd7c",
       "LanguageToggle": "ff65170382ae5b1241ce142b670a32bb708e92fbfbeeac6a285bd39b13c612b6",
@@ -141,21 +141,21 @@
       "CoverImage": "20e6b50dec3aede860d5c47887bca3e74257c5b6081e7351992d938c5f071e6e",
       "GradientDivider": "c7c91bb13626d5785dd667401d214dbfb5eff79634cfa0e914b79266c8d815d7",
       "Stepper": "681398765cf6b7c4a331a28d9acfc64a2a7b7c1839a4fb75b2e15c6f24ff7fca",
-      "FileUpload": "c72e9a4abcbcd5e01ce63eb6b4b4ac52bb155bdebfbd1bba2fd00ddfc4043c1c",
-      "Tour": "8f0e8ca555ba34430d1ec5d848d9578e789238762da803202995749ed36ebbef",
+      "FileUpload": "036693e498739773ab7899eeb72a831e4573ef35d2d66c590b833bd4c3ffa27b",
+      "Tour": "80e8e76b43dd906ea5d6eb1e2fd39f17b65f53c7c280a6916fa1b22adccf9137",
       "Anchor": "40cbb0e2b2b0d1df99241d41e350ee68431b70e25abe3e4139ffda25f7cdbbae",
       "Segmented": "b16527cf40f8c16082850895d2e199696c821792520d33766b5478d91c865d5e",
-      "Toolbar": "d731fae526ff3785ecabd5452ab7d6c0757b0dacb5a4287823313024922cdc83",
+      "Toolbar": "51a37716b40423443e0dfd8d772152005844cd3a94319285a3ab859acd183144",
       "Descriptions": "b4df2c68aa2165fed37b36b930fdf088c481362ae560206a35bd3a6e38fc1e7c",
-      "Popconfirm": "6b2feaf6a70ea306954c4e9717daa7ef4a6e9c378bcc045689b10af833ff7807",
-      "Transfer": "d9136780e75f5ada3242b567b77ed943a15c457612de49019e91f42e25c7ec8d",
-      "Cascader": "596b67e148764b255ab506250437ffbffd8efebd11eee4c0b0500d6dac8d8f05",
-      "TreeSelect": "444bd328c2dec49a8bd6a4d40c5d756112b3a5c960ca94d699f5c5d8bf12f946",
-      "Mentions": "7bde65fee7f3b0b3e6790e13d8f0486f1c5839ff51f889f4832ad5d5cf3c902d",
+      "Popconfirm": "a7c0a9f7661ac93fca21dbf90da4e55dad2dd52eec3ed64e027cbfb1c777b630",
+      "Transfer": "5045bc197c5d0209973288dbf52506b844fd9bfe781e773e472f47772262e4bb",
+      "Cascader": "d10878826e478ff6ab1b41e038c27fed678b854a0bfe45c4e4e3fd2c0cb574a8",
+      "TreeSelect": "1a90f99f205f4ce29fc13178b9716606ff375c59b10879d46b4888c448a83888",
+      "Mentions": "b2547c38302f03d700f683988e4e0c691a3b78a79ac401ca5d9bf5997ab33acf",
       "QRCode": "273c43b82b15fde0848761c77f106a726a43afab9caadd9fe6399f10e59358a1",
       "Watermark": "9d3ce82d76ab698e69c2ccc92450fc4c68fdeb10193c270608a123aaf24ec251",
       "Affix": "554b64a7393d73e9b53ac7bb32793d16e82b609873c4c53a6ad39f844c1dcb23",
-      "SpeedDial": "df44f45f21224de16a02cd447a09023e3244ada8f578e7c1ad78920018d71eca",
+      "SpeedDial": "7e8c5ceb0cfd8e941343809ccec8109c5686872c29438686a494c330955804a1",
       "Grid": "3464531ee987e06ce7cdb25384bdb7a2cf7ff5ad573717b7eabacf4fd6422251",
       "ScatterChart": "4d43fab9e151f16c773a6135c5689e3748a4a44ec6a8cf5db3e942130213859e",
       "Heatmap": "01aab2b03d0111d6956272e219375cda674fc760b213138d7524cf2ce4efe8e6",
@@ -2058,7 +2058,7 @@
       ],
       "description": "Returns user to the top of the page.",
       "behavior": {
-        "astro": "none",
+        "astro": "ui-primitives",
         "elements": "registered-element",
         "react": "component"
       },
@@ -2069,6 +2069,10 @@
       "frameworkDetails": {
         "astro": {
           "available": true,
+          "behavior": {
+            "mode": "runtime",
+            "setup": "Mount UIPrimitives once in the application's root layout; do not mount it beside each component."
+          },
           "example": "<BackToTop aria-label=\"Back to top\">↑ Top</BackToTop>",
           "importStatement": "import { BackToTop } from '@santi020k/lumen-astro'",
           "language": "astro",
@@ -2099,7 +2103,7 @@
           "available": true,
           "behavior": {
             "mode": "registration",
-            "setup": "Call defineLumenElements() once before rendering Lumen custom elements."
+            "setup": "Call defineLumenElements() once before rendering Lumen custom elements. Registration includes this component’s interactive behavior."
           },
           "example": "<lumen-back-to-top aria-label=\"Back to top\">↑ Top</lumen-back-to-top>",
           "importStatement": "import { defineLumenElements } from '@santi020k/lumen-elements/define'",
@@ -2114,6 +2118,10 @@
         },
         "react": {
           "available": true,
+          "behavior": {
+            "mode": "adapter",
+            "setup": "The React component exposes the documented data attributes; app-level state must implement the documented interactive and event behavior. Do not mount Astro UIPrimitives."
+          },
           "example": "<BackToTop aria-label=\"Back to top\">↑ Top</BackToTop>",
           "importStatement": "import { BackToTop } from '@santi020k/lumen-react'",
           "language": "tsx",
@@ -8642,7 +8650,7 @@
       ],
       "description": "Selects a date from a polished, accessible Calendar popover.",
       "behavior": {
-        "astro": "none",
+        "astro": "ui-primitives",
         "elements": "registered-element",
         "react": "component"
       },
@@ -8653,6 +8661,10 @@
       "frameworkDetails": {
         "astro": {
           "available": true,
+          "behavior": {
+            "mode": "runtime",
+            "setup": "Mount UIPrimitives once in the application's root layout; do not mount it beside each component."
+          },
           "example": "<DatePicker name=\"launchDate\" aria-label=\"Launch date\" />",
           "importStatement": "import { DatePicker } from '@santi020k/lumen-astro'",
           "language": "astro",
@@ -8697,7 +8709,7 @@
           "available": true,
           "behavior": {
             "mode": "registration",
-            "setup": "Call defineLumenElements() once before rendering Lumen custom elements."
+            "setup": "Call defineLumenElements() once before rendering Lumen custom elements. Registration includes this component’s interactive behavior."
           },
           "example": "<lumen-date-picker name=\"launchDate\" aria-label=\"Launch date\"></lumen-date-picker>",
           "importStatement": "import { defineLumenElements } from '@santi020k/lumen-elements/define'",
@@ -8712,6 +8724,10 @@
         },
         "react": {
           "available": true,
+          "behavior": {
+            "mode": "built-in",
+            "setup": "Interactive behavior is implemented by the React component; do not mount Astro UIPrimitives."
+          },
           "example": "<DatePicker name=\"launchDate\" aria-label=\"Launch date\" />",
           "importStatement": "import { DatePicker } from '@santi020k/lumen-react'",
           "language": "tsx",
@@ -11020,7 +11036,7 @@
       ],
       "description": "Groups labels, controls, descriptions, and errors.",
       "behavior": {
-        "astro": "none",
+        "astro": "ui-primitives",
         "elements": "registered-element",
         "react": "component"
       },
@@ -11033,6 +11049,10 @@
       "frameworkDetails": {
         "astro": {
           "available": true,
+          "behavior": {
+            "mode": "runtime",
+            "setup": "Mount UIPrimitives once in the application's root layout; do not mount it beside each component."
+          },
           "example": "<Field><Label for=\"email\">Email</Label><Input id=\"email\" type=\"email\" /></Field>",
           "importStatement": "import { Field, Label, Input } from '@santi020k/lumen-astro'",
           "language": "astro",
@@ -11082,7 +11102,7 @@
           "available": true,
           "behavior": {
             "mode": "registration",
-            "setup": "Call defineLumenElements() once before rendering Lumen custom elements."
+            "setup": "Call defineLumenElements() once before rendering Lumen custom elements. Registration includes this component’s interactive behavior."
           },
           "example": "<lumen-field><lumen-label for=\"email\">Email</lumen-label><lumen-input id=\"email\" type=\"email\"></lumen-input></lumen-field>",
           "importStatement": "import { defineLumenElements } from '@santi020k/lumen-elements/define'",
@@ -18198,7 +18218,7 @@
       ],
       "description": "Displays lightweight floating content from a trigger.",
       "behavior": {
-        "astro": "none",
+        "astro": "ui-primitives",
         "elements": "registered-element",
         "react": "hook"
       },
@@ -18210,6 +18230,10 @@
       "frameworkDetails": {
         "astro": {
           "available": true,
+          "behavior": {
+            "mode": "runtime",
+            "setup": "Mount UIPrimitives once in the application's root layout; do not mount it beside each component."
+          },
           "example": "<Popover><Button data-ui-trigger>Invite</Button><div>Email form</div></Popover>",
           "importStatement": "import { Popover, Button } from '@santi020k/lumen-astro'",
           "language": "astro",
@@ -18246,7 +18270,7 @@
           "available": true,
           "behavior": {
             "mode": "registration",
-            "setup": "Call defineLumenElements() once before rendering Lumen custom elements."
+            "setup": "Call defineLumenElements() once before rendering Lumen custom elements. Registration includes this component’s interactive behavior."
           },
           "example": "<lumen-popover><lumen-button data-ui-trigger>Invite</lumen-button><div>Email form</div></lumen-popover>",
           "importStatement": "import { defineLumenElements } from '@santi020k/lumen-elements/define'",
@@ -23740,7 +23764,7 @@
       ],
       "description": "Switches between the configured light and dark color themes.",
       "behavior": {
-        "astro": "none",
+        "astro": "ui-primitives",
         "elements": "registered-element",
         "react": "component"
       },
@@ -23751,6 +23775,10 @@
       "frameworkDetails": {
         "astro": {
           "available": true,
+          "behavior": {
+            "mode": "runtime",
+            "setup": "Mount UIPrimitives once in the application's root layout; do not mount it beside each component."
+          },
           "example": "<ThemeToggle>Switch theme</ThemeToggle>",
           "importStatement": "import { ThemeToggle } from '@santi020k/lumen-astro'",
           "language": "astro",
@@ -23803,7 +23831,7 @@
           "available": true,
           "behavior": {
             "mode": "registration",
-            "setup": "Call defineLumenElements() once before rendering Lumen custom elements."
+            "setup": "Call defineLumenElements() once before rendering Lumen custom elements. Registration includes this component’s interactive behavior."
           },
           "example": "<lumen-theme-toggle>Switch theme</lumen-theme-toggle>",
           "importStatement": "import { defineLumenElements } from '@santi020k/lumen-elements/define'",
@@ -23818,6 +23846,10 @@
         },
         "react": {
           "available": true,
+          "behavior": {
+            "mode": "adapter",
+            "setup": "The React component exposes the documented data attributes; app-level state must implement the documented interactive and event behavior. Do not mount Astro UIPrimitives."
+          },
           "example": "<ThemeToggle>Switch theme</ThemeToggle>",
           "importStatement": "import { ThemeToggle } from '@santi020k/lumen-react'",
           "language": "tsx",
@@ -25000,7 +25032,7 @@
       ],
       "description": "Adds concise helper text to compact controls.",
       "behavior": {
-        "astro": "none",
+        "astro": "ui-primitives",
         "elements": "registered-element",
         "react": "hook"
       },
@@ -25011,6 +25043,10 @@
       "frameworkDetails": {
         "astro": {
           "available": true,
+          "behavior": {
+            "mode": "runtime",
+            "setup": "Mount UIPrimitives once in the application's root layout; do not mount it beside each component."
+          },
           "example": "<Tooltip><button aria-label=\"Save changes\">Save</button><span role=\"tooltip\">Save changes</span></Tooltip>",
           "importStatement": "import { Tooltip } from '@santi020k/lumen-astro'",
           "language": "astro",
@@ -25041,7 +25077,7 @@
           "available": true,
           "behavior": {
             "mode": "registration",
-            "setup": "Call defineLumenElements() once before rendering Lumen custom elements."
+            "setup": "Call defineLumenElements() once before rendering Lumen custom elements. Registration includes this component’s interactive behavior."
           },
           "example": "<lumen-tooltip><button aria-label=\"Save changes\">Save</button><span role=\"tooltip\">Save changes</span></lumen-tooltip>",
           "importStatement": "import { defineLumenElements } from '@santi020k/lumen-elements/define'",
@@ -25239,7 +25275,7 @@
       ],
       "description": "Displays hierarchical navigation or object collections.",
       "behavior": {
-        "astro": "none",
+        "astro": "ui-primitives",
         "elements": "registered-element",
         "react": "component"
       },
@@ -25250,6 +25286,10 @@
       "frameworkDetails": {
         "astro": {
           "available": true,
+          "behavior": {
+            "mode": "runtime",
+            "setup": "Mount UIPrimitives once in the application's root layout; do not mount it beside each component."
+          },
           "example": "<Tree><div role=\"treeitem\" aria-expanded=\"true\">src</div><div role=\"treeitem\">index.ts</div></Tree>",
           "importStatement": "import { Tree } from '@santi020k/lumen-astro'",
           "language": "astro",
@@ -25286,7 +25326,7 @@
           "available": true,
           "behavior": {
             "mode": "registration",
-            "setup": "Call defineLumenElements() once before rendering Lumen custom elements."
+            "setup": "Call defineLumenElements() once before rendering Lumen custom elements. Registration includes this component’s interactive behavior."
           },
           "example": "<lumen-tree><div role=\"treeitem\" aria-expanded=\"true\">src</div><div role=\"treeitem\">index.ts</div></lumen-tree>",
           "importStatement": "import { defineLumenElements } from '@santi020k/lumen-elements/define'",
@@ -25301,6 +25341,10 @@
         },
         "react": {
           "available": true,
+          "behavior": {
+            "mode": "adapter",
+            "setup": "The React component exposes the documented data attributes; app-level state must implement the documented interactive and event behavior. Do not mount Astro UIPrimitives."
+          },
           "example": "<Tree><div role=\"treeitem\" aria-expanded=\"true\">src</div><div role=\"treeitem\">index.ts</div></Tree>",
           "importStatement": "import { Tree } from '@santi020k/lumen-react'",
           "language": "tsx",
@@ -25417,7 +25461,7 @@
       ],
       "description": "Displays hierarchical rows with grid-like columns.",
       "behavior": {
-        "astro": "none",
+        "astro": "ui-primitives",
         "elements": "registered-element",
         "react": "component"
       },
@@ -25428,6 +25472,10 @@
       "frameworkDetails": {
         "astro": {
           "available": true,
+          "behavior": {
+            "mode": "runtime",
+            "setup": "Mount UIPrimitives once in the application's root layout; do not mount it beside each component."
+          },
           "example": "<TreeGrid><div role=\"row\"><span role=\"gridcell\">Docs</span><span role=\"gridcell\">Ready</span></div></TreeGrid>",
           "importStatement": "import { TreeGrid } from '@santi020k/lumen-astro'",
           "language": "astro",
@@ -25464,7 +25512,7 @@
           "available": true,
           "behavior": {
             "mode": "registration",
-            "setup": "Call defineLumenElements() once before rendering Lumen custom elements."
+            "setup": "Call defineLumenElements() once before rendering Lumen custom elements. Registration includes this component’s interactive behavior."
           },
           "example": "<lumen-tree-grid><div role=\"row\"><span role=\"gridcell\">Docs</span><span role=\"gridcell\">Ready</span></div></lumen-tree-grid>",
           "importStatement": "import { defineLumenElements } from '@santi020k/lumen-elements/define'",
@@ -25479,6 +25527,10 @@
         },
         "react": {
           "available": true,
+          "behavior": {
+            "mode": "adapter",
+            "setup": "The React component exposes the documented data attributes; app-level state must implement the documented interactive and event behavior. Do not mount Astro UIPrimitives."
+          },
           "example": "<TreeGrid><div role=\"row\"><span role=\"gridcell\">Docs</span><span role=\"gridcell\">Ready</span></div></TreeGrid>",
           "importStatement": "import { TreeGrid } from '@santi020k/lumen-react'",
           "language": "tsx",
@@ -30646,7 +30698,7 @@
       "dependencies": [],
       "description": "Collects files through a picker or drag-and-drop target.",
       "behavior": {
-        "astro": "none",
+        "astro": "ui-primitives",
         "elements": "registered-element",
         "react": "component"
       },
@@ -30657,6 +30709,10 @@
       "frameworkDetails": {
         "astro": {
           "available": true,
+          "behavior": {
+            "mode": "runtime",
+            "setup": "Mount UIPrimitives once in the application's root layout; do not mount it beside each component."
+          },
           "example": "<FileUpload accept=\"image/*\" aria-label=\"Upload profile image\" />",
           "importStatement": "import { FileUpload } from '@santi020k/lumen-astro'",
           "language": "astro",
@@ -30699,7 +30755,7 @@
           "available": true,
           "behavior": {
             "mode": "registration",
-            "setup": "Call defineLumenElements() once before rendering Lumen custom elements."
+            "setup": "Call defineLumenElements() once before rendering Lumen custom elements. Registration includes this component’s interactive behavior."
           },
           "example": "<lumen-file-upload accept=\"image/*\" aria-label=\"Upload profile image\"></lumen-file-upload>",
           "importStatement": "import { defineLumenElements } from '@santi020k/lumen-elements/define'",
@@ -30714,6 +30770,10 @@
         },
         "react": {
           "available": true,
+          "behavior": {
+            "mode": "built-in",
+            "setup": "Interactive behavior is implemented by the React component; do not mount Astro UIPrimitives."
+          },
           "example": "<FileUpload accept=\"image/*\" aria-label=\"Upload profile image\" />",
           "importStatement": "import { FileUpload } from '@santi020k/lumen-react'",
           "language": "tsx",
@@ -30823,7 +30883,7 @@
       "dependencies": [],
       "description": "Guides people through product features using a sequence of anchored steps.",
       "behavior": {
-        "astro": "none",
+        "astro": "ui-primitives",
         "elements": "registered-element",
         "react": "component"
       },
@@ -30834,6 +30894,10 @@
       "frameworkDetails": {
         "astro": {
           "available": true,
+          "behavior": {
+            "mode": "runtime",
+            "setup": "Mount UIPrimitives once in the application's root layout; do not mount it beside each component."
+          },
           "example": "<Tour steps={[{ target: \"#publish\", content: \"Publish your changes when they are ready.\" }]} />",
           "importStatement": "import { Tour } from '@santi020k/lumen-astro'",
           "language": "astro",
@@ -30880,7 +30944,7 @@
           "available": true,
           "behavior": {
             "mode": "registration",
-            "setup": "Call defineLumenElements() once before rendering Lumen custom elements."
+            "setup": "Call defineLumenElements() once before rendering Lumen custom elements. Registration includes this component’s interactive behavior."
           },
           "example": "<lumen-tour></lumen-tour>",
           "importStatement": "import { defineLumenElements } from '@santi020k/lumen-elements/define'",
@@ -30895,6 +30959,10 @@
         },
         "react": {
           "available": true,
+          "behavior": {
+            "mode": "adapter",
+            "setup": "The React component exposes the documented data attributes; app-level state must implement the documented interactive and event behavior. Do not mount Astro UIPrimitives."
+          },
           "example": "<Tour steps={[{ target: \"#publish\", content: \"Publish your changes when they are ready.\" }]} />",
           "importStatement": "import { Tour } from '@santi020k/lumen-react'",
           "language": "tsx",
@@ -31479,7 +31547,7 @@
       "dependencies": [],
       "description": "Groups frequently used controls into one compact action row.",
       "behavior": {
-        "astro": "none",
+        "astro": "ui-primitives",
         "elements": "registered-element",
         "react": "component"
       },
@@ -31490,6 +31558,10 @@
       "frameworkDetails": {
         "astro": {
           "available": true,
+          "behavior": {
+            "mode": "runtime",
+            "setup": "Mount UIPrimitives once in the application's root layout; do not mount it beside each component."
+          },
           "example": "<Toolbar aria-label=\"Text formatting\"><Button>Bold</Button><Button>Italic</Button></Toolbar>",
           "importStatement": "import { Toolbar, Button } from '@santi020k/lumen-astro'",
           "language": "astro",
@@ -31528,7 +31600,7 @@
           "available": true,
           "behavior": {
             "mode": "registration",
-            "setup": "Call defineLumenElements() once before rendering Lumen custom elements."
+            "setup": "Call defineLumenElements() once before rendering Lumen custom elements. Registration includes this component’s interactive behavior."
           },
           "example": "<lumen-toolbar aria-label=\"Text formatting\"><lumen-button>Bold</lumen-button><lumen-button>Italic</lumen-button></lumen-toolbar>",
           "importStatement": "import { defineLumenElements } from '@santi020k/lumen-elements/define'",
@@ -31543,6 +31615,10 @@
         },
         "react": {
           "available": true,
+          "behavior": {
+            "mode": "adapter",
+            "setup": "The React component exposes the documented data attributes; app-level state must implement the documented interactive and event behavior. Do not mount Astro UIPrimitives."
+          },
           "example": "<Toolbar aria-label=\"Text formatting\"><Button>Bold</Button><Button>Italic</Button></Toolbar>",
           "importStatement": "import { Toolbar, Button } from '@santi020k/lumen-react'",
           "language": "tsx",
@@ -31827,7 +31903,7 @@
       "dependencies": [],
       "description": "Requests a brief confirmation beside the action that triggered it.",
       "behavior": {
-        "astro": "none",
+        "astro": "ui-primitives",
         "elements": "registered-element",
         "react": "component"
       },
@@ -31838,6 +31914,10 @@
       "frameworkDetails": {
         "astro": {
           "available": true,
+          "behavior": {
+            "mode": "runtime",
+            "setup": "Mount UIPrimitives once in the application's root layout; do not mount it beside each component."
+          },
           "example": "<Popconfirm title=\"Delete this item?\" confirmLabel=\"Delete\"><Button variant=\"destructive\">Delete</Button></Popconfirm>",
           "importStatement": "import { Popconfirm, Button } from '@santi020k/lumen-astro'",
           "language": "astro",
@@ -31885,7 +31965,7 @@
           "available": true,
           "behavior": {
             "mode": "registration",
-            "setup": "Call defineLumenElements() once before rendering Lumen custom elements."
+            "setup": "Call defineLumenElements() once before rendering Lumen custom elements. Registration includes this component’s interactive behavior."
           },
           "example": "<lumen-popconfirm title=\"Delete this item?\" confirmLabel=\"Delete\"><lumen-button variant=\"destructive\">Delete</lumen-button></lumen-popconfirm>",
           "importStatement": "import { defineLumenElements } from '@santi020k/lumen-elements/define'",
@@ -31900,6 +31980,10 @@
         },
         "react": {
           "available": true,
+          "behavior": {
+            "mode": "adapter",
+            "setup": "The React component exposes the documented data attributes; app-level state must implement the documented interactive and event behavior. Do not mount Astro UIPrimitives."
+          },
           "example": "<Popconfirm title=\"Delete this item?\" confirmLabel=\"Delete\"><Button variant=\"destructive\">Delete</Button></Popconfirm>",
           "importStatement": "import { Popconfirm, Button } from '@santi020k/lumen-react'",
           "language": "tsx",
@@ -32045,7 +32129,7 @@
       "dependencies": [],
       "description": "Moves selected items between available and chosen collections.",
       "behavior": {
-        "astro": "none",
+        "astro": "ui-primitives",
         "elements": "registered-element",
         "react": "component"
       },
@@ -32056,6 +32140,10 @@
       "frameworkDetails": {
         "astro": {
           "available": true,
+          "behavior": {
+            "mode": "runtime",
+            "setup": "Mount UIPrimitives once in the application's root layout; do not mount it beside each component."
+          },
           "example": "<Transfer sourceTitle=\"Available members\" targetTitle=\"Project members\" items={[{ key: \"1\", label: \"Ana\" }]} />",
           "importStatement": "import { Transfer } from '@santi020k/lumen-astro'",
           "language": "astro",
@@ -32113,7 +32201,7 @@
           "available": true,
           "behavior": {
             "mode": "registration",
-            "setup": "Call defineLumenElements() once before rendering Lumen custom elements."
+            "setup": "Call defineLumenElements() once before rendering Lumen custom elements. Registration includes this component’s interactive behavior."
           },
           "example": "<lumen-transfer></lumen-transfer>",
           "importStatement": "import { defineLumenElements } from '@santi020k/lumen-elements/define'",
@@ -32128,6 +32216,10 @@
         },
         "react": {
           "available": true,
+          "behavior": {
+            "mode": "adapter",
+            "setup": "The React component exposes the documented data attributes; app-level state must implement the documented interactive and event behavior. Do not mount Astro UIPrimitives."
+          },
           "example": "<Transfer sourceTitle=\"Available members\" targetTitle=\"Project members\" items={[{ key: \"1\", label: \"Ana\" }]} />",
           "importStatement": "import { Transfer } from '@santi020k/lumen-react'",
           "language": "tsx",
@@ -32268,7 +32360,7 @@
       "dependencies": [],
       "description": "Selects one value by drilling through dependent levels of a hierarchy.",
       "behavior": {
-        "astro": "none",
+        "astro": "ui-primitives",
         "elements": "registered-element",
         "react": "component"
       },
@@ -32279,6 +32371,10 @@
       "frameworkDetails": {
         "astro": {
           "available": true,
+          "behavior": {
+            "mode": "runtime",
+            "setup": "Mount UIPrimitives once in the application's root layout; do not mount it beside each component."
+          },
           "example": "<Cascader placeholder=\"Choose location\" options={[{ label: \"Colombia\", value: \"co\", children: [{ label: \"Bogotá\", value: \"bog\" }] }]} />",
           "importStatement": "import { Cascader } from '@santi020k/lumen-astro'",
           "language": "astro",
@@ -32326,7 +32422,7 @@
           "available": true,
           "behavior": {
             "mode": "registration",
-            "setup": "Call defineLumenElements() once before rendering Lumen custom elements."
+            "setup": "Call defineLumenElements() once before rendering Lumen custom elements. Registration includes this component’s interactive behavior."
           },
           "example": "<lumen-cascader></lumen-cascader>",
           "importStatement": "import { defineLumenElements } from '@santi020k/lumen-elements/define'",
@@ -32341,6 +32437,10 @@
         },
         "react": {
           "available": true,
+          "behavior": {
+            "mode": "built-in",
+            "setup": "Interactive behavior is implemented by the React component; do not mount Astro UIPrimitives."
+          },
           "example": "<Cascader placeholder=\"Choose location\" options={[{ label: \"Colombia\", value: \"co\", children: [{ label: \"Bogotá\", value: \"bog\" }] }]} />",
           "importStatement": "import { Cascader } from '@santi020k/lumen-react'",
           "language": "tsx",
@@ -32471,7 +32571,7 @@
       "dependencies": [],
       "description": "Selects nodes from a branching hierarchy inside a dropdown.",
       "behavior": {
-        "astro": "none",
+        "astro": "ui-primitives",
         "elements": "registered-element",
         "react": "component"
       },
@@ -32482,6 +32582,10 @@
       "frameworkDetails": {
         "astro": {
           "available": true,
+          "behavior": {
+            "mode": "runtime",
+            "setup": "Mount UIPrimitives once in the application's root layout; do not mount it beside each component."
+          },
           "example": "<TreeSelect placeholder=\"Choose team\" treeData={[{ label: \"Design\", value: \"design\", children: [{ label: \"Research\", value: \"research\" }] }]} />",
           "importStatement": "import { TreeSelect } from '@santi020k/lumen-astro'",
           "language": "astro",
@@ -32529,7 +32633,7 @@
           "available": true,
           "behavior": {
             "mode": "registration",
-            "setup": "Call defineLumenElements() once before rendering Lumen custom elements."
+            "setup": "Call defineLumenElements() once before rendering Lumen custom elements. Registration includes this component’s interactive behavior."
           },
           "example": "<lumen-tree-select></lumen-tree-select>",
           "importStatement": "import { defineLumenElements } from '@santi020k/lumen-elements/define'",
@@ -32544,6 +32648,10 @@
         },
         "react": {
           "available": true,
+          "behavior": {
+            "mode": "adapter",
+            "setup": "The React component exposes the documented data attributes; app-level state must implement the documented interactive and event behavior. Do not mount Astro UIPrimitives."
+          },
           "example": "<TreeSelect placeholder=\"Choose team\" treeData={[{ label: \"Design\", value: \"design\", children: [{ label: \"Research\", value: \"research\" }] }]} />",
           "importStatement": "import { TreeSelect } from '@santi020k/lumen-react'",
           "language": "tsx",
@@ -32679,7 +32787,7 @@
       "dependencies": [],
       "description": "Captures multi-line text with suggestions triggered by @ mentions.",
       "behavior": {
-        "astro": "none",
+        "astro": "ui-primitives",
         "elements": "registered-element",
         "react": "component"
       },
@@ -32690,6 +32798,10 @@
       "frameworkDetails": {
         "astro": {
           "available": true,
+          "behavior": {
+            "mode": "runtime",
+            "setup": "Mount UIPrimitives once in the application's root layout; do not mount it beside each component."
+          },
           "example": "<Mentions placeholder=\"Comment and @mention a teammate\" options={[\"alice\", \"bob\", \"carol\"]} />",
           "importStatement": "import { Mentions } from '@santi020k/lumen-astro'",
           "language": "astro",
@@ -32748,7 +32860,7 @@
           "available": true,
           "behavior": {
             "mode": "registration",
-            "setup": "Call defineLumenElements() once before rendering Lumen custom elements."
+            "setup": "Call defineLumenElements() once before rendering Lumen custom elements. Registration includes this component’s interactive behavior."
           },
           "example": "<lumen-mentions></lumen-mentions>",
           "importStatement": "import { defineLumenElements } from '@santi020k/lumen-elements/define'",
@@ -32763,6 +32875,10 @@
         },
         "react": {
           "available": true,
+          "behavior": {
+            "mode": "built-in",
+            "setup": "Interactive behavior is implemented by the React component; do not mount Astro UIPrimitives."
+          },
           "example": "<Mentions placeholder=\"Comment and @mention a teammate\" options={[\"alice\", \"bob\", \"carol\"]} />",
           "importStatement": "import { Mentions } from '@santi020k/lumen-react'",
           "language": "tsx",
@@ -33536,7 +33652,7 @@
       "dependencies": [],
       "description": "Expands a floating primary action into a compact set of related actions.",
       "behavior": {
-        "astro": "none",
+        "astro": "ui-primitives",
         "elements": "registered-element",
         "react": "component"
       },
@@ -33547,6 +33663,10 @@
       "frameworkDetails": {
         "astro": {
           "available": true,
+          "behavior": {
+            "mode": "runtime",
+            "setup": "Mount UIPrimitives once in the application's root layout; do not mount it beside each component."
+          },
           "example": "<SpeedDial actions={[{ icon: \"file-plus-2\", label: \"New document\" }, { icon: \"folder-plus\", label: \"New folder\" }]} label=\"Create new\" />",
           "importStatement": "import { SpeedDial } from '@santi020k/lumen-astro'",
           "language": "astro",
@@ -33601,7 +33721,7 @@
           "available": true,
           "behavior": {
             "mode": "registration",
-            "setup": "Call defineLumenElements() once before rendering Lumen custom elements."
+            "setup": "Call defineLumenElements() once before rendering Lumen custom elements. Registration includes this component’s interactive behavior."
           },
           "example": "<lumen-speed-dial></lumen-speed-dial>",
           "importStatement": "import { defineLumenElements } from '@santi020k/lumen-elements/define'",
@@ -33616,6 +33736,10 @@
         },
         "react": {
           "available": true,
+          "behavior": {
+            "mode": "built-in",
+            "setup": "Interactive behavior is implemented by the React component; do not mount Astro UIPrimitives."
+          },
           "example": "<SpeedDial actions={[{ icon: \"file-plus-2\", label: \"New document\" }, { icon: \"folder-plus\", label: \"New folder\" }]} label=\"Create new\" />",
           "importStatement": "import { SpeedDial } from '@santi020k/lumen-react'",
           "language": "tsx",
@@ -35318,7 +35442,7 @@
     "readme": "<p align=\"center\">\n  <a href=\"https://lumen.santi020k.com\">\n    <img src=\"./apps/docs/public/logo.svg\" alt=\"Lumen UI\" width=\"233\" height=\"60\">\n  </a>\n</p>\n\n<h1 align=\"center\">Lumen UI</h1>\n\n<p align=\"center\">\n  A cross-platform UI system with 150+ web primitives and shared native foundations.\n</p>\n\n<p align=\"center\">\n  <a href=\"https://lumen.santi020k.com\">Documentation</a>\n  ·\n  <a href=\"https://lumen.santi020k.com/docs/components\">Components</a>\n  ·\n  <a href=\"https://www.figma.com/community/file/1662337342676541513\">Figma library</a>\n  ·\n  <a href=\"https://apps.apple.com/app/id6805250815\">iPhone and iPad app</a>\n  ·\n  <a href=\"https://play.google.com/store/apps/details?id=com.santi020k.lumen.playground.compose\">Android app</a>\n  ·\n  <a href=\"https://github.com/santi020k/lumen/issues\">Issues</a>\n</p>\n\n<p align=\"center\">\n  <a href=\"https://github.com/santi020k/lumen/actions\"><img alt=\"GitHub Actions\" src=\"https://img.shields.io/github/actions/workflow/status/santi020k/lumen/ci.yml?branch=main&style=flat-square\"></a>\n  <a href=\"https://github.com/santi020k/lumen/actions/workflows/codeql.yml\"><img alt=\"CodeQL\" src=\"https://github.com/santi020k/lumen/actions/workflows/codeql.yml/badge.svg\"></a>\n  <a href=\"https://www.npmjs.com/package/@santi020k/lumen-astro\"><img alt=\"npm version\" src=\"https://img.shields.io/npm/v/@santi020k/lumen-astro?style=flat-square&label=npm\"></a>\n  <a href=\"./LICENSE\"><img alt=\"MIT license\" src=\"https://img.shields.io/badge/license-MIT-111827?style=flat-square\"></a>\n</p>\n\nLumen gives applications a consistent visual language without tying them to one rendering model.\nIts packages share tokens, component contracts, styles, and interaction patterns while keeping each\nframework and platform's native authoring experience.\n\n- **Framework native:** Astro components, React primitives, and standards-based custom elements.\n- **Native foundations:** generated React Native, SwiftUI, and Jetpack Compose tokens plus the\n  complete shared interface and namespaced brand icon catalogs preserve the same semantic roles and\n  artwork without introducing DOM or CSS assumptions.\n- **Accessible by default:** semantic markup, keyboard paths, focus management, and reduced-motion\n  support are built into the primitives.\n- **Standalone CSS:** no Tailwind configuration is required. Tailwind users get an explicit layer\n  integration.\n- **Progressively enhanced:** Astro interactions use a small client runtime instead of requiring an\n  application framework.\n- **Ready for design and AI workflows:** published Figma resources, a portable agent skill, an MCP\n  server, `llms.txt`, a machine-readable registry, and a cross-platform release manifest ship\n  alongside the component system.\n- **Product-ready templates:** five responsive dashboard and application families are available as\n  live previews and installable Astro, React, and Elements recipes.\n\n**Explore:** [Dashboards and templates](#dashboards-and-templates) · [Web quick start](#web-quick-start) · [Native playgrounds](#native-playgrounds) · [Tailwind CSS](#tailwind-css) · [Packages](#packages) · [Community](#community)\n\n## Dashboards and templates\n\nExplore the [template gallery](https://lumen.santi020k.com/templates) for complete analytics,\nSaaS admin, commerce, project workspace, and authentication/onboarding experiences. Each family\nuses public Lumen primitives and semantic tokens, includes responsive and accessibility coverage,\nand ships through the CLI for all three framework targets:\n\n```bash\nlumen add analytics-dashboard\nlumen add commerce-dashboard --target react\nlumen add auth-onboarding --target elements\n```\n\n## Web quick start\n\nInstall the package for your framework:\n\n```bash\n# Astro\npnpm add @santi020k/lumen-astro\n\n# React\npnpm add @santi020k/lumen-react\n\n# Web Components\npnpm add @santi020k/lumen-elements\n```\n\n### Astro\n\nImport the stylesheet and mount `UIPrimitives` once in your root layout. The runtime enhances all\ninteractive Lumen markup on the page.\n\n```astro\n---\nimport '@santi020k/lumen-astro/styles.css'\nimport UIPrimitives from '@santi020k/lumen-astro/runtime'\n---\n\n<html lang=\"en\">\n  <body>\n    <slot />\n    <UIPrimitives />\n  </body>\n</html>\n```\n\n```astro\n---\nimport { Button, Card, Input } from '@santi020k/lumen-astro'\n---\n\n<Card>\n  <label for=\"email\">Email</label>\n  <Input id=\"email\" name=\"email\" type=\"email\" placeholder=\"you@example.com\" />\n  <Button>Subscribe</Button>\n</Card>\n```\n\n### React\n\nLoad the stylesheet once from your app entry or global CSS:\n\n```tsx\nimport '@santi020k/lumen-react/styles.css'\nimport { Button, Card, Input } from '@santi020k/lumen-react'\n\nexport function SubscribeForm() {\n  return (\n    <Card>\n      <label htmlFor=\"email\">Email</label>\n      <Input id=\"email\" name=\"email\" type=\"email\" placeholder=\"you@example.com\" />\n      <Button>Subscribe</Button>\n    </Card>\n  )\n}\n```\n\n### Web Components\n\nImport the styles and register the elements once:\n\n```html\n<style>\n  @import \"@santi020k/lumen-elements/styles.css\";\n</style>\n\n<script type=\"module\">\n  import { defineLumenElements } from '@santi020k/lumen-elements/define'\n\n  defineLumenElements()\n</script>\n\n<lumen-card>\n  <label for=\"email\">Email</label>\n  <lumen-input id=\"email\" name=\"email\" type=\"email\" placeholder=\"you@example.com\"></lumen-input>\n  <lumen-button>Subscribe</lumen-button>\n</lumen-card>\n```\n\nSee the [Web documentation](https://lumen.santi020k.com/docs/web) for installation, theming,\ncomponent examples, and API details.\n\nFor failure states, use the [error-handling guide](./docs/error-handling.md) to choose between field\nfeedback, summaries, persistent alerts, transient toasts, and the `ErrorState` recovery surface.\nLumen owns presentation and accessibility; applications retain logging, retry, and exception policy.\n\nFor native applications, choose the [React Native](https://lumen.santi020k.com/docs/react-native),\n[Apple / SwiftUI](https://lumen.santi020k.com/docs/apple), or\n[Android / Compose](https://lumen.santi020k.com/docs/android) guide. The\n[shared foundations](https://lumen.santi020k.com/docs/foundations) explain the cross-platform token\nand component contract; repository contributors can also use the\n[cross-platform architecture](./docs/cross-platform.md) and\n[native component reference](./docs/native-components.md).\n\n> **Native platform status for Lumen 2.** React Native, SwiftUI, Compose, and Wear OS use the frozen\n> supported contract. Package, migration, build, security, artifact, and stability checks gate the\n> initial release. The incomplete external-consumer and physical-device matrices remain published\n> as post-release qualification work; review them before choosing a production adapter.\n\n## Native playgrounds\n\nThe repository includes three searchable, interactive galleries built from the real native\npackages:\n\n- [`apps/playground-react-native`](./apps/playground-react-native) runs through Expo on the web,\n  iOS, and Android and includes EAS profiles for TestFlight, Android App Bundles, and APKs.\n- [`apps/playground-apple`](./apps/playground-apple) is available on the\n  [App Store](https://apps.apple.com/app/id6805250815) for iPhone, iPad, and Mac. It also builds as\n  an iOS Xcode app or macOS Swift Package executable for local exploration.\n- [`apps/playground-android`](./apps/playground-android) builds a native Compose application and a\n  directly installable debug APK. It is also available on\n  [Google Play](https://play.google.com/store/apps/details?id=com.santi020k.lumen.playground.compose)\n  for Android phones and tablets.\n\nSee the [playground workflow](./docs/playgrounds.md) for run, capture, and distribution commands.\n\n## Tailwind CSS\n\nKeep the layer prelude, Tailwind import, and Lumen stylesheet in the same shared CSS entry. Replace\n`lumen-astro` with the package for your framework.\n\n```css\n@import \"@santi020k/lumen-astro/layers.css\";\n@import \"tailwindcss\";\n@import \"@santi020k/lumen-astro/styles.css\";\n```\n\nThis order places Tailwind base styles before Lumen components and Tailwind utilities above Lumen\ncomponent defaults.\n\n## Packages\n\n| Package | Purpose |\n| --- | --- |\n| [`@santi020k/lumen-astro`](./packages/astro) | Reference implementation, Astro components, and progressive-enhancement runtime |\n| [`@santi020k/lumen-react`](./packages/react) | React components and behavior hooks |\n| [`@santi020k/lumen-react-hook-form`](./packages/react-hook-form) | Optional React Hook Form adapters for composite controls |\n| [`@santi020k/lumen-elements`](./packages/elements) | Standards-based Web Components |\n| [`@santi020k/lumen-core`](./packages/core) | Shared tokens, metadata, class helpers, and behavior contracts |\n| [`@santi020k/lumen-tokens`](./packages/tokens) | Canonical platform-neutral design token source |\n| [`@santi020k/lumen-react-native`](./packages/react-native) | React Native foundations and native primitives |\n| [`LumenUI`](./packages/swift) | Swift Package for iOS, iPadOS, macOS, tvOS, visionOS, and watchOS foundations and native primitives |\n| [`LumenWidgetUI`](./packages/swift-widget) | Focused WidgetKit-safe semantic text, icon, badge, and compact-stat foundations |\n| [`lumen-compose`](./packages/compose) | Android library for Jetpack Compose foundations and native primitives |\n| [`lumen-compose-wear`](./packages/compose/wear) | Focused Wear OS primitives for at-a-glance round-screen actions, progress, status, metrics, and rows |\n| [`@santi020k/lumen-icons-brand`](./packages/icons-brand) | Optional namespaced brand icons for web `Icon` adapters  |\n| [`@santi020k/lumen`](./packages/lumen) | Umbrella package, CLI, registry metadata, and public package map |\n| [`@santi020k/lumen-mcp`](./packages/mcp) | MCP server for component discovery and source retrieval |\n\n## AI and design workflows\n\nInstall the portable Lumen skill in Codex, Claude Code, Cursor, Windsurf, and other compatible\ncoding agents:\n\n```bash\nnpx skills add santi020k/lumen --skill lumen-ui\n```\n\nThe skill teaches agents how to select, compose, theme, and verify Lumen primitives. Pair it with\n[`@santi020k/lumen-mcp`](./packages/mcp) when an agent needs to search the live catalog or retrieve\ncurrent source, props, tokens, and usage rules.\n\nFor ChatGPT and Codex, install the published\n[Lumen UI plugin](https://chatgpt.com/plugins/plugin_asdk_app_6a8f6c526c5481918eb8a48806fa112b)\nfrom the Plugins Directory. Select **Install plugin**, then mention **@Lumen UI** in a request such\nas “Find the right Lumen components for an accessible React settings screen.” Version 1.0.0 bundles\nthe skill with the hosted, read-only catalog; no separate Lumen account or local MCP setup is needed.\n\nAdditional machine-readable surfaces include:\n\n- [`llms.txt`](./llms.txt) for a concise project map.\n- [`docs/ai-usage.md`](./docs/ai-usage.md) for downstream generation examples.\n- [`docs/styling-contract.md`](./docs/styling-contract.md) for stable parts and component variables.\n- [`docs/import-and-icon-performance.md`](./docs/import-and-icon-performance.md) for repeatable import and icon evidence.\n- [`docs/graphics.md`](./docs/graphics.md) for portable decorative artwork across web and native platforms.\n- [`docs/consumer-regression-fixtures.md`](./docs/consumer-regression-fixtures.md) for production-shaped local coverage.\n- [`docs/project-adoption.md`](./docs/project-adoption.md) for the sibling-project audit and staged\n  web and native migration strategy.\n- [`registry/lumen.registry.json`](./registry/lumen.registry.json) for recipes and installable file\n  groups.\n- [`docs/figma.md`](./docs/figma.md) for Figma variables and Code Connect workflows.\n- [`plugins/lumen-ui`](./plugins/lumen-ui) for the packaged Codex and ChatGPT plugin, with its\n  [submission and review record](./docs/openai-plugin-submission.md).\n- [`.claude-plugin/marketplace.json`](./.claude-plugin/marketplace.json) for the Claude Code\n  marketplace, with its [installation and submission guide](./docs/claude-code-plugin.md).\n- [`docs/cross-platform.md`](./docs/cross-platform.md) for the native architecture, support tiers,\n  and component-parity policy.\n- [`docs/native-patterns.md`](./docs/native-patterns.md) for developed native compositions and the\n  boundary between Lumen presentation and platform-owned application structure.\n\n## Contributing\n\nLumen is a pnpm workspace. Astro is the reference implementation; shared contracts belong in\n`packages/core`, while framework-specific behavior stays in its adapter package.\n\n```bash\npnpm install\npnpm run dev\npnpm run validate\n```\n\nRead [`CONTRIBUTING.md`](./CONTRIBUTING.md) before opening a pull request. User-visible package\nchanges require a changeset.\n\n## Community\n\nLumen is free and MIT licensed while the project focuses on adoption, public examples, and\nreal-world feedback.\n\n- Explore task-oriented [guides](https://lumen.santi020k.com/guides).\n- Share a public project in the [community showcase](https://lumen.santi020k.com/community).\n- Evaluate the system with the open [team adoption path](https://lumen.santi020k.com/teams).\n- Tell us what would improve your next build through the\n  [adoption survey](https://github.com/santi020k/lumen/issues/new?template=adoption-feedback.yml).\n\nMaintainers can use the [exposure playbook](./docs/exposure-playbook.md) for publishing cadence,\ncampaign measurement, video scripts, and launch copy, and the\n[marketing package](./docs/marketing/README.md) for execution-ready copy, channel decisions, a\nfour-week calendar, asset briefs, an approval queue, and a community-response library.\n\n## Find your next step\n\n| Resource | Use it for |\n| --- | --- |\n| [Cross-platform architecture](docs/cross-platform.md) | Shared foundations and adapter responsibilities. |\n| [Native compatibility](docs/native-compatibility.md) | Supported toolchains and platform baselines. |\n| [Native release runbook](docs/native-release-runbook.md) | Artifact qualification and distribution gates. |\n\n## License\n\nLumen's original code and artwork are available under the [MIT License](./LICENSE). Generated\ninterface icons retain the Lucide ISC or Feather MIT terms, and generated brand icons retain Font\nAwesome Free's CC BY 4.0 terms. The native packages include the required attribution and license\nnotices; see [`icons/THIRD_PARTY_NOTICES.md`](./icons/THIRD_PARTY_NOTICES.md).\n"
   },
   "meta": {
-    "catalogHash": "776affb1544e8723f746ee3312f8f5f399d7a7b610c09f8bd1a5141ae9a2c2e7",
+    "catalogHash": "5d51f6a554640be9a646a29c1afcf90561bf96c922cc36b092dd92a698987b09",
     "componentCount": 161,
     "nativeComponentCount": 79,
     "packages": [

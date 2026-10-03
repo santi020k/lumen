@@ -145,6 +145,28 @@ describe('lumen core metadata', () => {
     ])
   })
 
+  test.each([
+    'BackToTop',
+    'Cascader',
+    'DatePicker',
+    'Field',
+    'FileUpload',
+    'Mentions',
+    'Popconfirm',
+    'Popover',
+    'SpeedDial',
+    'ThemeToggle',
+    'Toolbar',
+    'Tooltip',
+    'Tour',
+    'Transfer',
+    'Tree',
+    'TreeGrid',
+    'TreeSelect'
+  ] as const)('declares the Astro runtime needed to enhance %s', name => {
+    expect(lumenComponentBehavior[name].astro).toBe('ui-primitives')
+  })
+
   test('publishes framework behavior for every component and global authored behavior', () => {
     expect(Object.keys(lumenComponentBehavior).sort()).toEqual([...lumenComponentNames].sort())
     expect(lumenComponentBehavior.Card).toEqual({

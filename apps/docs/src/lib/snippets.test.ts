@@ -53,6 +53,73 @@ import { Button, Form } from '@santi020k/lumen-astro'
     expect(elements).not.toContain('<lumen-form')
   })
 
+  test('preserves acronym boundaries and converts property names for Elements', () => {
+    const elements = buildSnippets('Field', `
+<QRCode value="https://example.com" size={160} />
+<Input defaultValue="Ready" ariaLabel="Name" />
+<Button data-label="defaultValue={example}">Save</Button>`)[2]?.code
+
+    expect(elements).toContain('<lumen-qr-code value="https://example.com" size="160"></lumen-qr-code>')
+    expect(elements).toContain('<lumen-input value="Ready" aria-label="Name"></lumen-input>')
+    expect(elements).toContain('data-label="defaultValue={example}"')
+  })
+
+  test('keeps nested Form boundaries native without changing their content', () => {
+    const elements = buildSnippets('Field', `
+<Form method="post"><Field><Input name="email" /><Button type="submit">Join</Button></Field></Form>`)[2]?.code
+
+    expect(elements).toContain('<form data-ui-form method="post"><lumen-field>')
+    expect(elements).toContain('<lumen-input name="email"></lumen-input>')
+    expect(elements).toContain('</lumen-button></lumen-field></form>')
+    expect(elements).not.toContain('lumen-form')
+  })
+
+  test('removes embedded Astro scripts and styles while preserving surrounding markup', () => {
+    const raw = `<Button title="Keep <script> as text">Before</Button>
+<script data-label="1 > 0">document.querySelector('button')</script>
+<style data-label="1 > 0">button { color: red; }</style>
+<Button>After</Button>`
+    const [astro, react, elements] = buildSnippets('Button', raw)
+
+    expect(astro?.code).toContain('<style data-label="1 > 0">')
+    expect(react?.code).toContain('title="Keep <script> as text"')
+    expect(react?.code).toContain('<Button>After</Button>')
+    expect(react?.code).not.toContain('document.querySelector')
+    expect(react?.code).not.toContain('color: red')
+    expect(elements?.code).toContain('<lumen-button>After</lumen-button>')
+    expect(elements?.code).not.toContain('document.querySelector')
+    expect(elements?.code).not.toContain('color: red')
+  })
+
+  test('keeps expression values intact when they require a framework-specific example', () => {
+    const quoted = JSON.stringify('escaped"quote')
+    const source = `<Button label={{ message: "} >", nested: { count: 2 } }}>Save</Button>
+<Input value={getValue(/* } */ ${quoted})} />`
+    const elements = buildSnippets('Button', source)[2]?.code
+
+    expect(elements).toContain('label={{ message: "} >", nested: { count: 2 } }}')
+    expect(elements).toContain('<lumen-input')
+    expect(elements).toContain('value={getValue(')
+    expect(elements).toContain('</lumen-input>')
+  })
+
+  test('preserves comments without treating their tag examples as live markup', () => {
+    const elements = buildSnippets('Button', `<!-- <script>Example</script> -->
+<Button>Continue</Button>`)[2]?.code
+
+    expect(elements).toContain('<!-- <script>Example</script> -->')
+    expect(elements).toContain('<lumen-button>Continue</lumen-button>')
+  })
+
+  test('terminates for long unfinished expressions and embedded blocks', () => {
+    const malformed = `<Input value={${'{'.repeat(20_000)}"} >"`
+    const scripts = `<Button>Before</Button><script>${'</scripture>'.repeat(20_000)}`
+
+    expect(buildSnippets('Input', malformed)[2]?.code).toContain(malformed)
+    expect(buildSnippets('Button', scripts)[1]?.code).toContain('<Button>Before</Button>')
+    expect(buildSnippets('Button', scripts)[2]?.code).not.toContain('</scripture>')
+  })
+
   test('uses framework-native ErrorState recovery composition', () => {
     const example = `---
 import { Button, ErrorState } from '@santi020k/lumen-astro'
