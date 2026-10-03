@@ -134,7 +134,8 @@ remain distinct from its primary and secondary colors. Applications with complet
 can pass `LumenThemeValues` instead.
 
 The native set includes Text, Icon, IconButton, Surface, Button, ButtonGroup, TextField, Textarea,
-FieldGroup, Toggle, SettingsRow, SearchField, DateField, DateRangeField, PhoneInput, Checkbox, RadioGroup,
+FieldGroup, Toggle, SettingsRow, SearchField, DateField, DateRangeField, TimeField, Autocomplete,
+NumberField, PullToRefresh, PhoneInput, Checkbox, RadioGroup,
 SegmentedControl, Tabs, Chip, Picker, Slider, Badge, Divider, Spinner, Card, Alert, Toast, Progress,
 Skeleton, Graphic, Backdrop,
 Illustration, Image, Disclosure, Gauge, and Avatar.
@@ -323,3 +324,81 @@ in addition to `enabled`. Read-only fields also lock country selection. `LumenCo
 `LumenPhoneNumberView` expose the same artwork and normalized read-only phone presentation.
 Country names and calling codes remain the accessible selector label. The flag source and license
 are documented in [flags/README.md](../../flags/README.md); no external flag request is made.
+
+## Advanced form and refresh examples
+
+```kotlin
+LumenTimeField(
+    label = "Meeting time",
+    value = meetingTime,
+    onValueChange = { meetingTime = it },
+    minTime = LumenTimeSelection(8, 30),
+    maxTime = LumenTimeSelection(17, 0)
+)
+
+LumenAutocomplete(
+    label = "Project",
+    query = query,
+    onQueryChange = { query = it; selectedProject = null },
+    options = matchingProjects,
+    value = selectedProject,
+    onValueChange = { selectedProject = it },
+    loading = searching,
+    resultsErrorMessage = searchError,
+    onRetry = ::retrySearch
+)
+
+LumenNumberField(
+    label = "Quantity",
+    value = quantityDraft,
+    onValueChange = { quantityDraft = it },
+    min = java.math.BigDecimal.ZERO,
+    max = java.math.BigDecimal.TEN,
+    step = java.math.BigDecimal("0.5")
+)
+
+LumenPullToRefresh(isRefreshing = refreshing, onRefresh = ::refreshProjects) {
+    LazyColumn { /* application-owned rows */ }
+}
+```
+
+Time values are local wall-clock values, and number drafts remain ungrouped localized text.
+Applications own search results, selected values, refresh work, units, and submission rules.
+Translate every visible label and validation message through the public string parameters.
+See [advanced control contracts](../../docs/native-components.md#compose-v4-advanced-controls).
+
+### Passwords, codes, contextual help, and image comparison
+
+```kotlin
+LumenPasswordField("Password", password, onValueChange = { password = it })
+LumenInputOTP("Verification code", code, onValueChange = { code = it }, length = 6)
+LumenTooltip("Save this project") {
+    LumenIconButton(LumenIconName.Bookmark, "Save", onClick = ::saveProject, size = LumenControlSize.Lg)
+}
+LumenImageComparison(
+    "Compare edits", beforePainter, afterPainter, position,
+    onValueChange = { position = it }
+)
+```
+
+Password visibility is temporary, resets on focus loss or disabled/read-only state, and is never
+saved. `newPassword` selects the native new-password autofill hint. `onSubmit` handles the IME Done
+action; the application owns authentication and credential lifecycle.
+
+OTP uses one native input with the SMS code autofill hint, preserving paste, selection, and deletion.
+`length` is 1–12, and the controlled value contains ASCII digits. Input converts localized digits
+and removes spaces/hyphens; invalid or excess input is rejected without truncation. `onComplete`
+reports a newly completed edit; it does not verify or submit. `masked` is optional. Supply translated
+labels, descriptions, and errors. Autofill suggestions require a configured Android provider.
+
+Tooltip wraps an independently labeled anchor. Material handles pointer and long-press interactions;
+pass state from `rememberLumenTooltipState(isPersistent = true)` when the application needs explicit
+show/dismiss controls. Its `show()` is a suspend function, `dismiss()` hides it, and `isVisible` reports
+the native state. Consumers do not need a Material experimental API opt-in. Disabled
+state dismisses the tooltip and leaves the anchor in place.
+
+Image comparison accepts native `Painter` inputs, preserving application ownership of loading,
+caching, image errors, and content rights. Its controlled value is the visible after fraction (0–1);
+nonfinite values fall back to one half. Aspect ratios outside 0.1–10 fall back to 16:9. The native
+slider exposes localized percentages and supports keyboard/accessibility adjustment. `enabled =
+false` retains the images and blocks changes.

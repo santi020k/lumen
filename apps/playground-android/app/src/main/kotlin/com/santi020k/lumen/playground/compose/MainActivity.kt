@@ -121,6 +121,7 @@ import com.santi020k.lumen.LumenSpinner
 import com.santi020k.lumen.LumenSparkline
 import com.santi020k.lumen.LumenSlider
 import com.santi020k.lumen.LumenStat
+import com.santi020k.lumen.LumenSpacing
 import com.santi020k.lumen.LumenStatusBar
 import com.santi020k.lumen.LumenSurface
 import com.santi020k.lumen.LumenSurfacePadding
@@ -359,11 +360,17 @@ private fun PlaygroundContent(
                             FoundationsExample()
                             VisualContentExample()
                         }
-                        "Actions" -> Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                        "Actions" -> if (initialComponent == "Tooltip") { TooltipExample() } else Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                             ActionsExample()
                             SystemActionsExample()
+                            TooltipExample()
                         }
-                        "Forms" -> FormsExample(
+                        "Forms" -> if (initialComponent in secureFormNames) {
+                            SecureFormsExample(initialComponent)
+                        } else if (initialComponent in advancedFormNames) {
+                            AdvancedFormsExample(initialComponent)
+                        } else Column(verticalArrangement = Arrangement.spacedBy(LumenSpacing.Md)) {
+                            FormsExample(
                             email = email,
                             onEmailChange = { email = it },
                             notificationsEnabled = notificationsEnabled,
@@ -374,15 +381,22 @@ private fun PlaygroundContent(
                             onProfileChange = { profile = it },
                             density = density,
                             onDensityChange = { density = it }
-                        )
-                        "Feedback" -> Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                            )
+                            AdvancedFormsExample()
+                            SecureFormsExample()
+                        }
+                        "Feedback" -> if (initialComponent == "Pull to refresh") {
+                            PullToRefreshExample()
+                        } else Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                             FeedbackExample(
                                 showBanner = showBanner,
                                 onBannerVisibilityChange = { showBanner = it }
                             )
                             FeedbackStatesExample()
+                            PullToRefreshExample()
                         }
-                        "Data" -> Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                        "Data" -> if (initialComponent == "Image comparison") { ImageComparisonExample() } else Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                            ImageComparisonExample()
                             DataExample(saved = saved, onToggleSaved = { saved = !saved })
                             DisclosureExample(
                                 expanded = disclosureExpanded,

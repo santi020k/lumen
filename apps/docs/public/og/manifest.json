@@ -3905,6 +3905,134 @@
       "pathname": "/docs/android/components/wearable-list-row",
       "title": "Wearable list row"
     },
+    "/docs/android/components/time-field": {
+      "alt": "Time field — Lumen UI",
+      "description": "Choose a local time with native clock or keyboard input and explicit confirmation.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--time-field.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--time-field.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/time-field",
+      "title": "Time field"
+    },
+    "/docs/android/components/autocomplete": {
+      "alt": "Autocomplete — Lumen UI",
+      "description": "Select from application-provided search results with loading, empty, and retry feedback.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--autocomplete.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--autocomplete.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/autocomplete",
+      "title": "Autocomplete"
+    },
+    "/docs/android/components/number-field": {
+      "alt": "Number field — Lumen UI",
+      "description": "Edit localized numeric drafts with exact decimal steps and inclusive bounds.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--number-field.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--number-field.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/number-field",
+      "title": "Number field"
+    },
+    "/docs/android/components/pull-to-refresh": {
+      "alt": "Pull to refresh — Lumen UI",
+      "description": "Refresh existing scrollable content with native gestures and accessible progress.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--pull-to-refresh.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--pull-to-refresh.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/pull-to-refresh",
+      "title": "Pull to refresh"
+    },
+    "/docs/android/components/password-field": {
+      "alt": "Password field — Lumen UI",
+      "description": "Enter passwords with transient visibility and native credential autofill hints.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--password-field.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--password-field.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/password-field",
+      "title": "Password field"
+    },
+    "/docs/android/components/input-otp": {
+      "alt": "Input OTP — Lumen UI",
+      "description": "Enter numeric verification codes with native paste and autofill integration.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--input-otp.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--input-otp.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/input-otp",
+      "title": "Input OTP"
+    },
+    "/docs/android/components/tooltip": {
+      "alt": "Tooltip — Lumen UI",
+      "description": "Show native contextual help around an independently accessible anchor.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--tooltip.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--tooltip.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/tooltip",
+      "title": "Tooltip"
+    },
+    "/docs/android/components/image-comparison": {
+      "alt": "Image comparison — Lumen UI",
+      "description": "Compare two images with a controlled reveal and native adjustable slider.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--image-comparison.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--image-comparison.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/image-comparison",
+      "title": "Image comparison"
+    },
     "/docs/components/accordion": {
       "alt": "Accordion — Lumen UI",
       "description": "Stacks collapsible content sections. Usage examples for Astro, React, and Elements.",

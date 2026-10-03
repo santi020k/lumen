@@ -81,7 +81,9 @@ for (const category of categories) {
 
 const fileFacades = new Set([
   'AdditionalComponentsKt',
+  'AdvancedFormComponentsKt',
   'ChartComponentsKt',
+  'ComparisonComponentsKt',
   'ContentComponentsKt',
   'FormComponentsKt',
   'LumenThemeKt',
@@ -90,9 +92,12 @@ const fileFacades = new Set([
   'PhoneComponentsKt',
   'PlatformComponentsKt',
   'PrimitivesKt',
+  'RefreshComponentsKt',
+  'SecureFormComponentsKt',
   'SelectionComponentsKt',
   'SharedComponentsKt',
-  'StructuredComponentsKt'
+  'StructuredComponentsKt',
+  'TooltipComponentsKt'
 ])
 
 const publicIdentifiers = []

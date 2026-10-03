@@ -856,6 +856,70 @@
       "contract": "Compact WidgetKit label and metric treatment with optional semantic icon",
       "accessibility": "Combines the label and value while preserving large-text scaling",
       "symbol": "LumenWidgetCompactStat"
+    },
+    {
+      "id": "time-field",
+      "adapter": "compose",
+      "platforms": ["Android"],
+      "contract": "Controlled local wall-clock selection with optional inclusive same-day bounds and native keyboard or clock input",
+      "accessibility": "Names the field and selected time; cancellation preserves the host value and read-only or disabled fields cannot open selection",
+      "symbol": "LumenTimeField"
+    },
+    {
+      "id": "autocomplete",
+      "adapter": "compose",
+      "platforms": ["Android"],
+      "contract": "Controlled query and selected value with host-provided results, loading, empty, retry, and disabled option states",
+      "accessibility": "Preserves native editable dropdown focus and selection semantics; announces result status and keeps disabled results unavailable",
+      "symbol": "LumenAutocomplete"
+    },
+    {
+      "id": "number-field",
+      "adapter": "compose",
+      "platforms": ["Android"],
+      "contract": "Localized ungrouped decimal drafts with exact BigDecimal steps, inclusive bounds, validation, and read-only state",
+      "accessibility": "Labels the editable field and step actions, exposes validation context, and disables unavailable steps without discarding unfinished input",
+      "symbol": "LumenNumberField"
+    },
+    {
+      "id": "pull-to-refresh",
+      "adapter": "compose",
+      "platforms": ["Android"],
+      "contract": "Material refresh gesture with host-owned progress and request lifecycle around existing scrollable content",
+      "accessibility": "Adds a named refresh accessibility action, announces progress, and removes refresh actions while disabled or refreshing",
+      "symbol": "LumenPullToRefresh"
+    },
+    {
+      "id": "password-field",
+      "adapter": "compose",
+      "platforms": ["Android"],
+      "contract": "Masked password entry with transient visibility and native autofill hints",
+      "accessibility": "Maintains password semantics, labels visibility actions, and hides on blur or disabled state",
+      "symbol": "LumenPasswordField"
+    },
+    {
+      "id": "input-otp",
+      "adapter": "compose",
+      "platforms": ["Android"],
+      "contract": "Single native numeric one-time code entry with localized digits and paste normalization",
+      "accessibility": "Preserves native selection, paste, autofill, errors, and optional masked semantics",
+      "symbol": "LumenInputOTP"
+    },
+    {
+      "id": "tooltip",
+      "adapter": "compose",
+      "platforms": ["Android"],
+      "contract": "Material contextual help with long-press, pointer, and explicit visibility",
+      "accessibility": "Preserves a labeled application-owned anchor and native tooltip dismissal",
+      "symbol": "LumenTooltip"
+    },
+    {
+      "id": "image-comparison",
+      "adapter": "compose",
+      "platforms": ["Android"],
+      "contract": "Painter-based before and after comparison with a controlled visible fraction",
+      "accessibility": "Exposes a named native slider and localized percentage for keyboard and screen-reader adjustment",
+      "symbol": "LumenImageComparison"
     }
   ]
 }

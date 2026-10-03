@@ -4738,9 +4738,222 @@ fun TimerHistoryRow() {
   }
 ]
 
+const composeV4Definitions: ComponentDefinition[] = [
+  {
+    accessibility: 'Names the selected time and native dialog actions; confirmation publishes the draft, cancellation preserves the value, and disabled or read-only fields cannot open selection.',
+    category: 'Forms',
+    examples: { android: `LumenTimeField(
+    label = "Meeting time",
+    value = meetingTime,
+    onValueChange = { meetingTime = it },
+    minTime = LumenTimeSelection(8, 30),
+    maxTime = LumenTimeSelection(17, 0)
+)` },
+    exports: { android: 'LumenTimeField' },
+    guidance: 'Use a local wall-clock value rather than an epoch timestamp. Keep dates, time zones, overnight scheduling, and translated labels in the application.',
+    name: 'Time field',
+    properties: [
+      property('label', 'String', 'Required', 'Names the field and selection dialog.'),
+      property('value / onValueChange', 'LumenTimeSelection? / (LumenTimeSelection) -> Unit', 'Required', 'Controls the confirmed local hour and minute.'),
+      property('modifier', 'Modifier', 'Modifier', 'Applies layout and semantics to the field group.'),
+      property('minTime / maxTime', 'LumenTimeSelection?', 'null', 'Inclusive same-day bounds; minimum must not exceed maximum.'),
+      property('is24Hour', 'Boolean?', 'null', 'Follows the system preference unless explicitly set.'),
+      property('description / errorMessage', 'String?', 'null', 'Shows supporting context or host validation.'),
+      property('placeholder', 'String', 'Choose a time', 'Displays the empty state.'),
+      property('confirmLabel / dismissLabel', 'String', 'Confirm / Cancel', 'Names the native confirmation and cancellation actions.'),
+      property('inputLabel / dialLabel', 'String', 'Use keyboard / Use clock', 'Names the input mode switch.'),
+      property('rangeErrorLabel', 'String', 'Choose a time within the allowed range', 'Explains invalid draft selection.'),
+      property('enabled / readOnly', 'Boolean', 'true / false', 'Controls editing and dismisses open selection when editing becomes unavailable.')
+    ],
+    slug: 'time-field',
+    summary: 'Choose a local time with native clock or keyboard input and explicit confirmation.'
+  },
+  {
+    accessibility: 'Preserves native editable dropdown focus, selected and disabled option semantics, and announced loading, empty, and recovery states.',
+    category: 'Forms',
+    examples: { android: `LumenAutocomplete(
+    label = "Project",
+    query = query,
+    onQueryChange = { query = it; selectedProject = null },
+    options = matchingProjects,
+    value = selectedProject,
+    onValueChange = { selectedProject = it },
+    loading = searching,
+    resultsErrorMessage = searchError,
+    onRetry = ::retrySearch
+)` },
+    exports: { android: 'LumenAutocomplete' },
+    guidance: 'The application supplies filtered results with unique non-null values, owns request cancellation, and clears stale selection after query edits. Selection emits the option label before the selected value.',
+    name: 'Autocomplete',
+    properties: [
+      property('label', 'String', 'Required', 'Names the editable field.'),
+      property('query / onQueryChange', 'String / (String) -> Unit', 'Required', 'Controls the editable search text.'),
+      property('options', 'List<LumenAutocompleteOption<T>>', 'Required', 'Supplies current results with value, label, optional description, and enabled state.'),
+      property('value / onValueChange', 'T? / (T) -> Unit', 'null / Required', 'Controls selected result identity; option values must be unique and non-null.'),
+      property('modifier', 'Modifier', 'Modifier', 'Applies layout and semantics to the dropdown container.'),
+      property('description / errorMessage', 'String?', 'null', 'Shows supporting text or field validation.'),
+      property('loading', 'Boolean', 'false', 'Shows loading feedback instead of stale results.'),
+      property('resultsErrorMessage / onRetry', 'String? / (() -> Unit)?', 'null', 'Shows a result failure and optional application-owned retry.'),
+      property('loadingLabel / emptyLabel / retryLabel', 'String', 'Loading results / No results / Retry', 'Localizes result status and recovery.'),
+      property('enabled / readOnly', 'Boolean', 'true / false', 'Controls query edits and dismisses open results when editing becomes unavailable.')
+    ],
+    slug: 'autocomplete',
+    summary: 'Select from application-provided search results with loading, empty, and retry feedback.'
+  },
+  {
+    accessibility: 'Labels the editable numeric draft and step actions, exposes invalid or out-of-range context, and disables unavailable or read-only steps.',
+    category: 'Forms',
+    examples: { android: `LumenNumberField(
+    label = "Quantity",
+    value = quantityDraft,
+    onValueChange = { quantityDraft = it },
+    min = java.math.BigDecimal.ZERO,
+    max = java.math.BigDecimal.TEN,
+    step = java.math.BigDecimal("0.5")
+)` },
+    exports: { android: 'LumenNumberField' },
+    guidance: 'Preserve the raw localized String draft, including unfinished sign or decimal input. Grouping and exponent notation are unsupported. Keep currency, units, required validation, and submission parsing application-owned.',
+    name: 'Number field',
+    properties: [
+      property('label', 'String', 'Required', 'Names the numeric field.'),
+      property('value / onValueChange', 'String / (String) -> Unit', 'Required', 'Controls raw localized ungrouped input; drafts beyond 128 characters are invalid.'),
+      property('modifier', 'Modifier', 'Modifier', 'Applies layout to the field and step actions.'),
+      property('min / max', 'java.math.BigDecimal?', 'null', 'Inclusive exact decimal bounds; minimum must not exceed maximum.'),
+      property('step', 'java.math.BigDecimal', 'BigDecimal.ONE', 'Positive exact increment; precision and scale are bounded to 128.'),
+      property('locale', 'java.util.Locale', 'Locale.getDefault()', 'Selects accepted decimal separator and displayed digits.'),
+      property('description / errorMessage', 'String?', 'null', 'Shows supporting text; supplied errors take priority over draft validation.'),
+      property('invalidNumberLabel / outOfRangeLabel', 'String', 'Enter a valid number / Enter a number within the allowed range', 'Localizes draft and bound errors.'),
+      property('incrementLabel / decrementLabel', 'String', 'Increase value / Decrease value', 'Names step actions.'),
+      property('showStepper', 'Boolean', 'true', 'Shows optional increment and decrement actions.'),
+      property('enabled / readOnly', 'Boolean', 'true / false', 'Controls edits and steps without discarding the current value.')
+    ],
+    slug: 'number-field',
+    summary: 'Edit localized numeric drafts with exact decimal steps and inclusive bounds.'
+  },
+  {
+    accessibility: 'Provides a named refresh accessibility action alongside the native gesture, announces progress, and removes refresh actions while disabled or busy.',
+    category: 'Feedback',
+    examples: { android: `LumenPullToRefresh(
+    isRefreshing = refreshing,
+    onRefresh = ::refreshProjects,
+    refreshLabel = "Refresh projects",
+    refreshingLabel = "Refreshing projects"
+) {
+    LazyColumn { /* application-owned rows */ }
+}` },
+    exports: { android: 'LumenPullToRefresh' },
+    guidance: 'Wrap the existing scrollable content. Keep requests, cancellation, retry policy, and completion in application code. Disabled state removes gestures while an already-running host operation retains feedback.',
+    name: 'Pull to refresh',
+    properties: [
+      property('isRefreshing / onRefresh', 'Boolean / () -> Unit', 'Required', 'Controls progress and starts application-owned refresh work.'),
+      property('modifier', 'Modifier', 'Modifier', 'Applies container layout and accessibility.'),
+      property('enabled', 'Boolean', 'true', 'Enables the refresh gesture and accessible action when idle.'),
+      property('refreshLabel / refreshingLabel', 'String', 'Refresh / Refreshing', 'Localizes the action and progress state.'),
+      property('content', '@Composable BoxScope.() -> Unit', 'Required', 'Renders application-owned scrolling content.')
+    ],
+    slug: 'pull-to-refresh',
+    summary: 'Refresh existing scrollable content with native gestures and accessible progress.'
+  }
+]
+
+const remainingComposeV4Definitions: ComponentDefinition[] = [
+  {
+    accessibility: 'Preserves password semantics and native autofill hints; labels visibility actions and hides on blur or disabled state.',
+    category: 'Forms',
+    examples: { android: `LumenPasswordField(
+    label = "Password", value = password,
+    onValueChange = { password = it },
+    showLabel = "Show password", hideLabel = "Hide password"
+)` },
+    exports: { android: 'LumenPasswordField' },
+    guidance: 'Keep authentication and credential lifecycle in the application. Visibility is transient and never saved. Use newPassword for registration; provider autofill needs device configuration.',
+    name: 'Password field',
+    properties: [
+      property('label / value / onValueChange', 'String / String / (String) -> Unit', 'Required', 'Names the native field and controls its value.'),
+      property('modifier', 'Modifier', 'Modifier', 'Applies layout and semantics.'),
+      property('description / errorMessage', 'String?', 'null', 'Provides translated help or validation.'),
+      property('showLabel / hideLabel', 'String', 'Show password / Hide password', 'Names the visibility action.'),
+      property('newPassword', 'Boolean', 'false', 'Uses Android new-password instead of existing-password autofill hints.'),
+      property('onSubmit', '(() -> Unit)?', 'null', 'Handles the IME Done action without automatic authentication.'),
+      property('enabled / readOnly', 'Boolean', 'true / false', 'Controls editing and visibility actions.')
+    ],
+    slug: 'password-field',
+    summary: 'Enter passwords with transient visibility and native credential autofill hints.'
+  },
+  {
+    accessibility: 'Uses one native input for paste, selection, deletion, and SMS code autofill; supports errors and optional masking.',
+    category: 'Forms',
+    examples: { android: `LumenInputOTP(
+    label = "Verification code", value = code,
+    onValueChange = { code = it }, length = 6,
+    description = "Enter or paste six digits"
+)` },
+    exports: { android: 'LumenInputOTP' },
+    guidance: 'The application verifies codes and owns submission. Normalize localized digit input into ASCII; reject invalid or excess input without truncating. Never send or persist credentials from the component.',
+    name: 'Input OTP',
+    properties: [
+      property('label / value / onValueChange', 'String / String / (String) -> Unit', 'Required', 'Names the field and controls an ASCII digit value.'),
+      property('modifier', 'Modifier', 'Modifier', 'Applies layout and semantics.'),
+      property('length', 'Int', '6', 'Sets a bounded code length from one through twelve.'),
+      property('description / errorMessage', 'String?', 'null', 'Provides translated help or validation.'),
+      property('masked', 'Boolean', 'false', 'Hides displayed digits and applies password semantics.'),
+      property('onComplete', '((String) -> Unit)?', 'null', 'Reports a newly completed edit without verifying or submitting.'),
+      property('enabled / readOnly', 'Boolean', 'true / false', 'Controls native editing.')
+    ],
+    slug: 'input-otp',
+    summary: 'Enter numeric verification codes with native paste and autofill integration.'
+  },
+  {
+    accessibility: 'Keeps the anchor independently named and delegates long-press, pointer, and popup dismissal to Material.',
+    category: 'Actions',
+    examples: { android: `LumenTooltip("Save this project") {
+    LumenIconButton(LumenIconName.Bookmark, "Save", onClick = ::saveProject, size = LumenControlSize.Lg)
+}` },
+    exports: { android: 'LumenTooltip' },
+    guidance: 'Use brief supplemental help. Essential instructions belong in visible content. Pass LumenTooltipState for explicit show/dismiss controls; disabling dismisses help without removing the anchor.',
+    name: 'Tooltip',
+    properties: [
+      property('text', 'String', 'Required', 'Provides non-empty translated contextual help.'),
+      property('modifier', 'Modifier', 'Modifier', 'Applies anchor-container layout.'),
+      property('state', 'LumenTooltipState', 'rememberLumenTooltipState()', 'Supports application-controlled visibility with Lumen state backed by Material.'),
+      property('enabled', 'Boolean', 'true', 'Enables help and dismisses it when disabled.'),
+      property('content', '@Composable () -> Unit', 'Required', 'Provides an independently labeled native anchor.')
+    ],
+    slug: 'tooltip',
+    summary: 'Show native contextual help around an independently accessible anchor.'
+  },
+  {
+    accessibility: 'Exposes a named native slider with localized percentage state for touch, keyboard, and screen-reader adjustment.',
+    category: 'Data display',
+    examples: { android: `LumenImageComparison(
+    label = "Compare edits", before = beforePainter, after = afterPainter,
+    value = position, onValueChange = { position = it },
+    beforeLabel = "Before", afterLabel = "After"
+)` },
+    exports: { android: 'LumenImageComparison' },
+    guidance: 'The value is the visible after fraction, clamped to zero through one; nonfinite input falls back to one half. The application owns painter loading, errors, cache, and image descriptions.',
+    name: 'Image comparison',
+    properties: [
+      property('label', 'String', 'Required', 'Names the comparison adjustment.'),
+      property('before / after', 'Painter', 'Required', 'Provides native images with application-owned loading.'),
+      property('value / onValueChange', 'Float / (Float) -> Unit', 'Required', 'Controls the visible after fraction from zero through one.'),
+      property('modifier', 'Modifier', 'Modifier', 'Applies layout.'),
+      property('beforeLabel / afterLabel', 'String', 'Before / After', 'Describes each image and the adjustment state.'),
+      property('aspectRatio', 'Float', '16f / 9f', 'Uses ratios from 0.1 through 10; other input falls back to 16:9.'),
+      property('fit', 'LumenImageFit', 'Cover', 'Chooses crop or contain behavior for both images.'),
+      property('locale', 'Locale', 'Locale.getDefault()', 'Formats the visible fraction as a localized percentage.'),
+      property('enabled', 'Boolean', 'true', 'Disables adjustment while retaining both images.')
+    ],
+    slug: 'image-comparison',
+    summary: 'Compare two images with a controlled reveal and native adjustable slider.'
+  }
+]
+
 export const nativeComponentDocs = [
   ...sharedDefinitions,
-  ...additionalDefinitions
+  ...additionalDefinitions,
+  ...composeV4Definitions,
+  ...remainingComposeV4Definitions
 ].map(createComponent)
 
 export const nativeComponentCategories: NativeComponentCategory[] = [

@@ -32,6 +32,16 @@
       "width": 900
     },
     {
+      "alt": "Autocomplete rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2008,
+      "platform": "android",
+      "sha256": "c9cf9b1362f4173adf3ba3c54f61a0250b18542c58b243ac1deab3914da3fe30",
+      "slug": "autocomplete",
+      "src": "/native-components/android/autocomplete.webp",
+      "width": 900
+    },
+    {
       "alt": "Avatar rendered in the Android phone emulator Lumen playground",
       "device": "Android phone emulator",
       "height": 1600,
@@ -292,6 +302,26 @@
       "width": 900
     },
     {
+      "alt": "Image comparison rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2008,
+      "platform": "android",
+      "sha256": "41b8216fa72c5cd98a4398d253b624a7479f95e2aad6399395c98f422fd9bd3e",
+      "slug": "image-comparison",
+      "src": "/native-components/android/image-comparison.webp",
+      "width": 900
+    },
+    {
+      "alt": "Input OTP rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2008,
+      "platform": "android",
+      "sha256": "f45da1dcf50b1d04903f45f30ae7d130ed38f0293bbd171b83e01d254149cdd2",
+      "slug": "input-otp",
+      "src": "/native-components/android/input-otp.webp",
+      "width": 900
+    },
+    {
       "alt": "Line chart rendered in the Android phone emulator Lumen playground",
       "device": "Android phone emulator",
       "height": 2008,
@@ -352,6 +382,26 @@
       "width": 900
     },
     {
+      "alt": "Number field rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2008,
+      "platform": "android",
+      "sha256": "e6c70c71fb038430dda2f527d71a954c03f7c8b9be1a68034f567c483a19ef21",
+      "slug": "number-field",
+      "src": "/native-components/android/number-field.webp",
+      "width": 900
+    },
+    {
+      "alt": "Password field rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2008,
+      "platform": "android",
+      "sha256": "1c23dfb15dfc0d8d093cb598ae8e1c22d45b6e60276786cb7a46f629df3ccf92",
+      "slug": "password-field",
+      "src": "/native-components/android/password-field.webp",
+      "width": 900
+    },
+    {
       "alt": "Phone input rendered in the Android phone emulator Lumen playground",
       "device": "Android phone emulator",
       "height": 1600,
@@ -389,6 +439,16 @@
       "sha256": "b36054205dc3cae85ebab14610eacc048c906dad8f03dfb0e31516acf55ba309",
       "slug": "progress",
       "src": "/native-components/android/progress.webp",
+      "width": 900
+    },
+    {
+      "alt": "Pull to refresh rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2008,
+      "platform": "android",
+      "sha256": "c6ad723adec4000efc922858a5740f9cfa5c1de1009a933573138665c03eed3b",
+      "slug": "pull-to-refresh",
+      "src": "/native-components/android/pull-to-refresh.webp",
       "width": 900
     },
     {
@@ -602,6 +662,16 @@
       "width": 900
     },
     {
+      "alt": "Time field rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2008,
+      "platform": "android",
+      "sha256": "750397a30a0e5e9c6af6db513a7b042430ef53dc8c5b5803bfabaeb4ff061547",
+      "slug": "time-field",
+      "src": "/native-components/android/time-field.webp",
+      "width": 900
+    },
+    {
       "alt": "Toast rendered in the Android phone emulator Lumen playground",
       "device": "Android phone emulator",
       "height": 1600,
@@ -619,6 +689,16 @@
       "sha256": "c1cfd615043a7d4f098d7726695eed6a1007553b9edb719439640205ef90ac3a",
       "slug": "toggle",
       "src": "/native-components/android/toggle.webp",
+      "width": 900
+    },
+    {
+      "alt": "Tooltip rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2008,
+      "platform": "android",
+      "sha256": "2d0d5c6f04d9fa68d02424dd7eee99520a4679faee1c024549f33fb6fc768235",
+      "slug": "tooltip",
+      "src": "/native-components/android/tooltip.webp",
       "width": 900
     },
     {
