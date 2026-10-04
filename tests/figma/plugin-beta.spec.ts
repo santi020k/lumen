@@ -20,6 +20,7 @@ for (const width of [390, 1440]) {
 
   test(`generated Astro labels, tabs, and dialog work at ${width}px`, async ({ page }, testInfo) => {
     await page.setViewportSize({ width, height: 900 })
+    await page.emulateMedia({ reducedMotion: 'reduce' })
     await page.goto('http://127.0.0.1:4762')
     await expect(page.getByLabel('Workspace name')).toHaveAttribute('aria-describedby', /-help$/u)
     await page.getByRole('tab', { name: 'Profile' }).focus()
