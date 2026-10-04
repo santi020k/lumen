@@ -1383,6 +1383,8 @@ describe('Lumen React Native component behavior', () => {
     const checkbox = findByAccessibilityRole(root, 'checkbox')
     const onPress = readProp(checkbox, 'onPress')
 
+    expect(readProp(checkbox, 'accessibilityLabel')).toBe('Include diagnostics')
+
     expect(readProp(checkbox, 'accessibilityState')).toEqual({
       checked: false,
       disabled: false
@@ -1395,6 +1397,14 @@ describe('Lumen React Native component behavior', () => {
     })
 
     expect(onCheckedChange).toHaveBeenCalledExactlyOnceWith(true)
+  })
+
+  test('checkbox preserves a host-provided accessible name', async () => {
+    const root = await renderNative(
+      <LumenCheckbox checked={false} label="Diagnostics" accessibilityLabel="Include diagnostic report" onCheckedChange={() => undefined} />
+    )
+
+    expect(readProp(findByAccessibilityRole(root, 'checkbox'), 'accessibilityLabel')).toBe('Include diagnostic report')
   })
 
   test('toggle makes the full labeled row the single interactive switch', async () => {

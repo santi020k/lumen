@@ -109,6 +109,7 @@ import {
 import { StatusBar as ExpoStatusBar } from 'expo-status-bar'
 
 import { AdvancedInputExamples } from './AdvancedInputExamples'
+import { CatalogParityExamples } from './CatalogParityExamples'
 import {
   type AppDestination,
   componentCategories,
@@ -1520,6 +1521,8 @@ const Playground = ({
             visibleNames={visibleNames}
           />
         </Visibility>
+
+        <CatalogParityExamples isVisible={isVisible} />
 
         <Visibility visible={isAnyVisible('Theme', 'Text', 'Surface')}>
           <ComponentSection

@@ -22,7 +22,17 @@ export {
   LumenPasswordField,
   type LumenPasswordFieldProps
 } from './advanced-form-components.js'
+export { LumenAgenda, type LumenAgendaProps } from './agenda-components.js'
+export { formatLumenAgendaMinute, isLumenAgendaEventsValid, type LumenAgendaEvent,
+  type LumenAgendaGroup, lumenAgendaGroups, type LumenAgendaSegment } from './agenda-recipes.js'
 export { LumenBreadcrumb, type LumenBreadcrumbItem, type LumenBreadcrumbProps } from './breadcrumb-components.js'
+export { LumenCalendar, type LumenCalendarProps } from './calendar-components.js'
+export { addLumenCalendarDays, addLumenCalendarMonths, isLumenCalendarDay, isLumenCalendarSelectable,
+  type LumenCalendarDay, lumenCalendarDayKey, lumenCalendarDaysInMonth,
+  type LumenCalendarEvent, lumenCalendarEventsForDay, lumenCalendarGrid,
+  lumenCalendarOrdinal, parseLumenCalendarDay } from './calendar-recipes.js'
+export { LumenCascader, type LumenCascaderProps } from './cascader-components.js'
+export { LumenCascaderModel } from './cascader-recipes.js'
 export {
   LumenBarChart,
   type LumenBarChartProps,
@@ -59,6 +69,8 @@ export {
   type LumenWaterfallDatum } from './chart-components.js'
 export { type LumenComparisonChartProps, LumenDumbbellChart, LumenLollipopChart } from './chart-components.js'
 export { LumenBoxPlot, type LumenBoxPlotProps, LumenCalendarHeatmap, type LumenCalendarHeatmapProps, LumenFunnelChart, type LumenFunnelChartProps } from './chart-components.js'
+export { LumenColorPicker, type LumenColorPickerLabels, type LumenColorPickerProps } from './color-picker-components.js'
+export { formatLumenColor, type LumenColorSwatch, type LumenHSVA, lumenHSVAToRGBA, type LumenRGBA, lumenRGBAToHSVA, parseLumenColor } from './color-picker-recipes.js'
 export {
   LumenImageComparison,
   type LumenImageComparisonProps
@@ -125,6 +137,9 @@ export {
   lumenIconNames,
   lumenIcons
 } from './icons.generated.js'
+export { LumenKanbanBoard, type LumenKanbanBoardProps } from './kanban-board-components.js'
+export { LumenKanbanColumn, type LumenKanbanColumnProps } from './kanban-column-components.js'
+export { type LumenKanbanCard, type LumenKanbanColumnData, LumenKanbanModel } from './kanban-recipes.js'
 export {
   LumenImage,
   type LumenImageFit,
@@ -209,8 +224,12 @@ export {
   type LumenTextVariant
 } from './primitives.js'
 export { LumenProvider, type LumenProviderProps } from './provider.js'
+export { LumenQRCode, type LumenQRCodeProps } from './qrcode-components.js'
+export { encodeLumenQRCode, type LumenQRCodeCorrection, lumenQRCodePath, type LumenQRCodeResult } from './qrcode-recipes.js'
 export { LumenRating, type LumenRatingProps } from './rating-components.js'
 export { resolveLumenRating } from './rating-recipes.js'
+export { LumenSchedule, type LumenScheduleProps } from './schedule-components.js'
+export { type LumenScheduleDay, lumenScheduleLayout, type LumenSchedulePlacement } from './schedule-recipes.js'
 export {
   LumenCheckbox,
   type LumenCheckboxProps,
@@ -307,6 +326,12 @@ export {
   type LumenSemanticColor,
   lumenSpacing
 } from './tokens.generated.js'
+export { LumenTransfer, type LumenTransferProps } from './transfer-components.js'
+export { isLumenTransferItemsValid, isLumenTransferValueValid, type LumenTransferItem, type LumenTransferLists, lumenTransferLists, type LumenTransferSide, type LumenTransferValue, moveLumenTransferItems, toggleLumenTransferItem } from './transfer-recipes.js'
+export { LumenTree, type LumenTreeProps } from './tree-components.js'
+export { LumenTreeModel, type LumenTreeNode, type LumenTreeRow } from './tree-recipes.js'
+export { LumenTreeSelect, type LumenTreeSelectProps } from './tree-select-components.js'
+export { LumenTreeSelectModel } from './tree-select-recipes.js'
 export {
   LumenGauge,
   type LumenGaugeProps,

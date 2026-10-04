@@ -542,6 +542,16 @@
       "width": 900
     },
     {
+      "alt": "QR code rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2000,
+      "platform": "android",
+      "sha256": "1b194dfc141656b8b0acf1bb5c968da8c67cfd20790bafc10fc224028c3ff14a",
+      "slug": "qr-code",
+      "src": "/native-components/android/qr-code.webp",
+      "width": 780
+    },
+    {
       "alt": "Radio group rendered in the Android phone emulator Lumen playground",
       "device": "Android phone emulator",
       "height": 1600,
@@ -1322,6 +1332,16 @@
       "width": 900
     },
     {
+      "alt": "QR code rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "bffb667f808d45efea9cac41bf42cbecf39eb8143d232998c484f159a5264977",
+      "slug": "qr-code",
+      "src": "/native-components/apple/qr-code.webp",
+      "width": 900
+    },
+    {
       "alt": "Radio group rendered in the iPhone simulator Lumen playground",
       "device": "iPhone simulator",
       "height": 1957,
@@ -1662,6 +1682,16 @@
       "width": 416
     },
     {
+      "alt": "Agenda rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 847,
+      "platform": "react-native",
+      "sha256": "2fc649fc624a207724cc538538a344ca9a3caad874883efbd5abad7a18897c8c",
+      "slug": "agenda",
+      "src": "/native-components/react-native/agenda.webp",
+      "width": 350
+    },
+    {
       "alt": "Alert rendered in the Expo web renderer Lumen playground",
       "device": "Expo web renderer",
       "height": 633,
@@ -1772,6 +1802,16 @@
       "width": 900
     },
     {
+      "alt": "Calendar rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 512,
+      "platform": "react-native",
+      "sha256": "46382fd80ff0973c0932fee631c8eded5d208d3adaebf1dbda4581cac79b8a1f",
+      "slug": "calendar",
+      "src": "/native-components/react-native/calendar.webp",
+      "width": 350
+    },
+    {
       "alt": "Calendar heatmap rendered in the Expo web renderer Lumen playground",
       "device": "Expo web renderer",
       "height": 633,
@@ -1790,6 +1830,16 @@
       "slug": "card",
       "src": "/native-components/react-native/card.webp",
       "width": 900
+    },
+    {
+      "alt": "Cascader rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 360,
+      "platform": "react-native",
+      "sha256": "83522146202f3d8ffdfb54614883630c6e9784f8a8e8c358c7e495765112a55d",
+      "slug": "cascader",
+      "src": "/native-components/react-native/cascader.webp",
+      "width": 350
     },
     {
       "alt": "Checkbox rendered in the Expo web renderer Lumen playground",
@@ -2002,6 +2052,26 @@
       "width": 900
     },
     {
+      "alt": "Kanban board rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 872,
+      "platform": "react-native",
+      "sha256": "471a2a196a7f643267ac9b987f854e39940ef50de06346cd079878cfbeddd2d5",
+      "slug": "kanban-board",
+      "src": "/native-components/react-native/kanban-board.webp",
+      "width": 350
+    },
+    {
+      "alt": "Kanban column rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 920,
+      "platform": "react-native",
+      "sha256": "4dd486b596a9f76d99c346a90b2b7ac672e54430f5b2351b7cc601ed5b9bba3c",
+      "slug": "kanban-column",
+      "src": "/native-components/react-native/kanban-column.webp",
+      "width": 350
+    },
+    {
       "alt": "Line chart rendered in the Expo web renderer Lumen playground",
       "device": "Expo web renderer",
       "height": 633,
@@ -2112,6 +2182,16 @@
       "width": 900
     },
     {
+      "alt": "QR code rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 936,
+      "platform": "react-native",
+      "sha256": "e82890554fbf8f11cf12896dfacd0373258ffd4fffd5fd3d8aca281f70ac9009",
+      "slug": "qr-code",
+      "src": "/native-components/react-native/qr-code.webp",
+      "width": 700
+    },
+    {
       "alt": "Radio group rendered in the Expo web renderer Lumen playground",
       "device": "Expo web renderer",
       "height": 633,
@@ -2160,6 +2240,16 @@
       "slug": "scatter-chart",
       "src": "/native-components/react-native/scatter-chart.webp",
       "width": 900
+    },
+    {
+      "alt": "Schedule rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 792,
+      "platform": "react-native",
+      "sha256": "af3f853716175a291c2258ea44b5166275bb3d7f3f2dd711f730b62da6581838",
+      "slug": "schedule",
+      "src": "/native-components/react-native/schedule.webp",
+      "width": 350
     },
     {
       "alt": "Search field rendered in the Expo web renderer Lumen playground",
@@ -2360,6 +2450,16 @@
       "slug": "toggle",
       "src": "/native-components/react-native/toggle.webp",
       "width": 900
+    },
+    {
+      "alt": "Tree rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 632,
+      "platform": "react-native",
+      "sha256": "be912f73d78c164ab6910681e39f77321705ee8a20747a5f3c197151973a390e",
+      "slug": "tree",
+      "src": "/native-components/react-native/tree.webp",
+      "width": 350
     },
     {
       "alt": "Waterfall chart rendered in the Expo web renderer Lumen playground",

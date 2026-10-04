@@ -24,30 +24,30 @@ its reference behavior, documented public API, regression tests and rendered int
 
 | Gap | Implementation status | Verification status |
 | --- | --- | --- |
-| `Agenda` | Pending in all three adapters | Pending |
+| `Agenda` | Implemented in all three adapters | Focused native checks pass; combined API and rendered qualification pending |
 | `Breadcrumb` | Initial implementation in all three adapters | Focused native regression checks; playground/rendered and full API baseline checks pending |
-| `Calendar` | Pending in all three adapters | Pending |
+| `Calendar` | Implemented in all three adapters | Focused native checks pass; combined API and rendered qualification pending |
 | `Carousel` | Pending in all three adapters | Pending |
 | `Command` | Pending in all three adapters | Pending |
-| `ColorPicker` | Pending in all three adapters | Pending |
+| `ColorPicker` | Implemented in all three adapters | Focused model and controlled interaction checks pass, including Android emulator; combined/rendered qualification pending |
 | `DataTable` | Initial implementation in all three adapters | Sorting, selection, identity and state regressions; playground/rendered and full API baseline checks pending |
-| `KanbanBoard` | Pending in all three adapters | Pending |
-| `KanbanColumn` | Pending in all three adapters | Pending |
-| `RichTextEditor` | Pending in all three adapters | Pending |
-| `Schedule` | Pending in all three adapters | Pending |
+| `KanbanBoard` | Implemented in all three adapters | Focused native checks pass; combined API and rendered qualification pending |
+| `KanbanColumn` | Implemented in all three adapters | Focused native checks pass; combined API and rendered qualification pending |
+| `RichTextEditor` | SwiftUI and Compose in progress; React Native editor deferred by user | User declined a new native dependency; React Native rich editing remains an explicit gap |
+| `Schedule` | Implemented in all three adapters | Focused adapter tests and two Android UI tests pass; rendered qualification and combined gates pending |
 | `Table` | Initial implementation in all three adapters | Sorting, selection, identity and state regressions; playground/rendered and full API baseline checks pending |
 | `Tooltip` | Compose exists; SwiftUI and React Native pending | Pending |
-| `Tree` | Pending in all three adapters | Pending |
+| `Tree` | Implemented in all three adapters | Focused native tests and React Native strict type/lint checks pass; playground dispatch, rendered checks and combined API gates pending |
 | `TreeGrid` | Pending in all three adapters | Pending |
 | `Rating` | Initial implementation in all three adapters | Swift model/API tests and Compose model test passed; React Native behavior tests and type checking passed; zero-warning React Native lint and API classification passed; rendered checks pending |
 | `Timeline` | Initial implementation in all three adapters | Focused native regression checks; playground/rendered and full API baseline checks pending |
 | `Stepper` | Initial implementation in all three adapters | Focused native regression checks; playground/rendered and full API baseline checks pending |
 | `Tour` | Pending in all three adapters | Pending |
-| `Transfer` | Pending in all three adapters | Pending |
-| `Cascader` | Pending in all three adapters | Pending |
-| `TreeSelect` | Pending in all three adapters | Pending |
+| `Transfer` | Implemented in all three adapters | Focused adapter tests and two Android UI tests pass; combined/rendered qualification pending |
+| `Cascader` | Implemented in all three adapters | Focused model and interaction tests, native compilation and zero-warning lint pass; rendered and combined API gates pending |
+| `TreeSelect` | Implemented in all three adapters | Focused adapter tests and two Android UI tests pass; combined/rendered qualification pending |
 | `Mentions` | Pending in all three adapters | Pending |
-| `QRCode` | Pending in all three adapters | Pending |
+| `QRCode` | Implemented in all three adapters | Focused encoding/independent decoding and lint pass; React Native narrow/desktop light/dark rendered states pass; iOS simulator and Android emulator rendered states independently decoded; combined gates pending |
 
 ## Working state
 
@@ -63,3 +63,21 @@ Table/DataTable use stable identities and host-formatted cells. Manual sorting
 retains server order; explicit client sorting is stable with missing values last.
 Selection retains hidden IDs and skips disabled rows. Status states hide stale
 controls. The preceding full Compose unit/lint run passed before table changes.
+
+## Dedicated gap assignments
+
+Each subagent assignment owns one gap. Completed agent slots are reused because the tool refuses additional threads at its limit. The session permits
+three active subagents alongside the integration owner; remaining assignments are
+queued as each slot becomes available. Component agents own their adapter code,
+focused tests and individual playground examples. The integration owner manages
+shared exports, registries, generators, combined verification and release integration.
+
+Dedicated assignments so far: Tree, QRCode, RichTextEditor, Cascader, Calendar
+and KanbanBoard. Calendar and KanbanBoard implementation and QRCode rendered
+verification remain active. The six checkpoint
+implementations also receive dedicated verification assignments before closure.
+No gap is closed by an assignment or a registry entry alone.
+
+The user explicitly deferred the React Native RichTextEditor on 2026-10-04 and
+declined an additional native editor dependency. SwiftUI and Compose work continues;
+a plain text field must not be described as rich text parity.

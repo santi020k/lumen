@@ -56,6 +56,7 @@ export const LumenCheckbox = ({
       ref={ref}
       {...props}
       accessibilityRole="checkbox"
+      accessibilityLabel={props.accessibilityLabel ?? label}
       accessibilityState={{ checked, disabled }}
       disabled={disabled}
       onPress={() => {

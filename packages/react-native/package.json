@@ -55,7 +55,8 @@
     "clean": "rm -rf dist coverage"
   },
   "dependencies": {
-    "@santi020k/lumen-core": "workspace:^"
+    "@santi020k/lumen-core": "workspace:^",
+    "uqr": "catalog:"
   },
   "devDependencies": {
     "@react-native-community/datetimepicker": "catalog:",

@@ -65,7 +65,12 @@ internal val playgroundSections = listOf(
             "Number field",
             "Password field",
             "Input OTP",
-            "Multi select"
+            "Multi select",
+            "Rating",
+            "Cascader",
+            "Color picker",
+            "Tree select",
+            "Transfer"
         )
     ),
     PlaygroundSection(
@@ -82,6 +87,8 @@ internal val playgroundSections = listOf(
             "Empty state",
             "Error state",
             "Banner",
+            "Stepper",
+            "Timeline",
             "Pull to refresh"
         )
     ),
@@ -113,7 +120,16 @@ internal val playgroundSections = listOf(
             "Dumbbell chart",
             "Calendar heatmap",
             "Funnel chart",
-            "Box plot"
+            "Box plot",
+            "Table",
+            "Data table",
+            "Tree",
+            "QR code",
+            "Calendar",
+            "Agenda",
+            "Kanban board",
+            "Kanban column",
+            "Schedule"
         )
     ),
     PlaygroundSection(
@@ -123,6 +139,7 @@ internal val playgroundSections = listOf(
             "Alert dialog",
             "Sheet",
             "Navigation bar",
+            "Breadcrumb",
             "Navigation bar scroll behavior",
             "Navigation bar accessory",
             "Adaptive navigation scaffold",

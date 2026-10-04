@@ -566,3 +566,50 @@ visible bulk actions skip disabled rows. Loading/error states hide stale control
 Supply localized labels and `formatSort`; the host owns requests and persistence.
 See the [native contracts](../../docs/native-components.md) for parameter names
 and typed cell/column/row examples.
+
+## Tree
+
+`LumenTree` supports controlled expansion and selection with stable IDs,
+inherited disabled branches and localized status/disclosure labels. Its iterative
+`LumenTreeModel` rejects invalid graphs without changing application state.
+See the [native Tree contract](../../docs/native-parity/tree.md).
+
+## QRCode and Cascader
+
+`LumenQRCode` generates accessible offline QR values with explicit capacity errors,
+quiet zones and scanner-safe contrast. See the [QRCode contract](../../docs/native-parity/qrcode.md).
+The Android adapter uses the Apache-2.0 ZXing core encoder; SwiftUI uses Core Image
+and React Native reuses the web catalog's uqr engine. No runtime request is needed.
+
+`LumenCascader` browses validated tree branches and emits controlled leaf paths,
+with localized navigation and safe loading/error states. See the
+[Cascader contract](../../docs/native-parity/cascader.md).
+
+### Calendar, Agenda and Kanban
+
+The public `LumenCalendar` and `LumenAgenda` provide controlled civil-date selection
+and chronological event presentation. `LumenKanbanBoard` and `LumenKanbanColumn`
+provide stable card identities, native dragging and localized accessible moves.
+Hosts retain dataset and persistence ownership. See the native contracts for
+[Calendar](../../docs/native-parity/calendar.md), [Agenda](../../docs/native-parity/agenda.md),
+[KanbanBoard](../../docs/native-parity/kanban-board.md), and
+[KanbanColumn](../../docs/native-parity/kanban-column.md).
+
+`LumenSchedule` adds a controlled day/week time grid using Agenda events, overlap
+lanes and accessible host move requests. See the [Schedule contract](../../docs/native-parity/schedule.md)
+for bounded ranges, wall-clock conversion ownership and adapter APIs.
+
+`LumenColorPicker` provides validated controlled color text, HSV channels and an
+optional named palette/alpha. Invalid drafts stay local. See the
+[ColorPicker contract](../../docs/native-parity/color-picker.md) for supported strings
+and latent hue behavior at black, grayscale and zero alpha.
+
+`LumenTreeSelect` selects a stable ID through a hierarchical disclosure panel.
+`LumenTransfer` controls source/target membership and staged checks with atomic moves.
+Both retain unknown host values and disabled records. See the
+[TreeSelect](../../docs/native-parity/tree-select.md) and [Transfer](../../docs/native-parity/transfer.md)
+contracts for localization, state guards and adapter APIs.
+
+The initial `LumenRichTextEditor` formatting subset supports controlled selection
+and bold/italic/underline spans; full editor parity remains pending. See the
+[limited rich editor contract](../../docs/native-parity/rich-text-editor.md).

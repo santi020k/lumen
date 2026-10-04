@@ -73,6 +73,11 @@ enum PlaygroundCatalog {
                 "Password field",
                 "Input OTP",
                 "Multi select",
+                "Rating",
+                "Cascader",
+                "Color picker",
+                "Tree select",
+                "Transfer",
                 "Shortcut recorder",
                 "Symbol picker"
             ]
@@ -89,7 +94,9 @@ enum PlaygroundCatalog {
                 "Skeleton",
                 "Empty state",
                 "Error state",
-                "Banner"
+                "Banner",
+                "Stepper",
+                "Timeline"
             ]
         ),
         (
@@ -119,7 +126,16 @@ enum PlaygroundCatalog {
                 "Dumbbell chart",
                 "Calendar heatmap",
                 "Funnel chart",
-                "Box plot"
+                "Box plot",
+                "Table",
+                "Data table",
+                "Tree",
+                "QR code",
+                "Calendar",
+                "Agenda",
+                "Kanban board",
+                "Kanban column",
+                "Schedule"
             ]
         ),
         (
@@ -128,6 +144,7 @@ enum PlaygroundCatalog {
                 "Alert dialog",
                 "Sheet",
                 "Navigation bar",
+                "Breadcrumb",
                 "Tab bar minimization",
                 "Tab accessory"
             ]

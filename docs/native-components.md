@@ -955,6 +955,10 @@ LumenCard(
 }
 ```
 
+Compose default `LumenText` and `LumenIcon` content inside `LumenButton` inherit
+its native foreground, including disabled state. Explicit semantic tones and icon
+tints remain explicit; defaults outside buttons continue to use `ink`.
+
 ## Accessibility requirements
 
 - Icon-only controls require a concise action label; visible tooltips do not replace it.
@@ -1289,3 +1293,71 @@ fun RecordsExample() {
         selectedIds = selection, onSelectionChange = { selection = it })
 }
 ```
+
+## Tree
+
+`LumenTree` provides controlled expansion and selection over a flat, validated
+graph of `LumenTreeNode` records. `LumenTreeModel` exposes iterative graph
+validation, paths, children, disabled inheritance, visible `LumenTreeRow` records
+and controlled state updates. React Native additionally exports `LumenTreeProps`.
+See the [Tree contract](native-parity/tree.md) for platform usage, status behavior,
+localization and adversarial graph limits.
+
+## QRCode and Cascader
+
+`LumenQRCode` renders offline scanner-compatible values with explicit capacity
+errors and localized accessible labels. Its React Native `LumenQRCodeProps`,
+`LumenQRCodeCorrection`, `LumenQRCodeResult`, `encodeLumenQRCode` and
+`lumenQRCodePath` contracts are detailed in the [QRCode guide](native-parity/qrcode.md).
+SwiftUI additionally exposes `LumenQRCodeMatrix` and `LumenQRCodeError`.
+
+`LumenCascader` uses `LumenCascaderModel` to browse branches and select controlled
+leaf paths while retaining invalid or hidden host state. React Native exports
+`LumenCascaderProps`. See the [Cascader guide](native-parity/cascader.md).
+
+
+## Calendar
+
+`LumenCalendar` controls a Gregorian month grid and selected civil day with
+localized labels, inclusive bounds and event indicators. `LumenCalendarDay` and
+`LumenCalendarEvent` describe civil dates and inclusive event intervals; hosts own
+display-zone conversions. React Native exports `LumenCalendarProps`,
+`isLumenCalendarDay`, `parseLumenCalendarDay`, `lumenCalendarDayKey`,
+`lumenCalendarOrdinal`, `lumenCalendarDaysInMonth`, `addLumenCalendarDays`,
+`addLumenCalendarMonths`, `lumenCalendarGrid`, `isLumenCalendarSelectable` and
+`lumenCalendarEventsForDay`. See the [Calendar contract](native-parity/calendar.md).
+
+## Civil calendar and native boards
+
+`LumenCalendar` controls Gregorian month and date selection with inclusive bounds.
+`LumenAgenda` groups timed and all-day events under civil-day headings; hosts own timezone conversion.
+`LumenKanbanBoard` requests immutable moves between capacity-limited columns, and
+`LumenKanbanColumn` provides standalone rich cards and controlled reorder. Both provide
+localized accessible move alternatives alongside native dragging; drag auto-scrolling is absent.
+
+See [Calendar](native-parity/calendar.md), [Agenda](native-parity/agenda.md),
+[KanbanBoard](native-parity/kanban-board.md), and [KanbanColumn](native-parity/kanban-column.md)
+for adapter APIs, state guards and validation boundaries.
+
+`LumenSchedule` uses the same civil event model in a day/week wall-clock grid with
+all-day bands, overlap lanes and accessible host move requests. Hosts own timezone
+conversion, persistence and rescheduling policy. Pointer drag rescheduling is absent.
+See the [Schedule contract](native-parity/schedule.md).
+
+`LumenColorPicker` provides controlled sRGB/HSV edits with optional alpha and
+localized palettes. Bounded hex/rgba parsing retains invalid drafts and preserves
+latent hue at black or grayscale. See the [ColorPicker contract](native-parity/color-picker.md).
+
+`LumenTreeSelect` reuses the validated Tree graph for hierarchical stable-ID
+selection in a lazy native disclosure panel. `LumenTransfer` performs controlled
+bidirectional moves while retaining unknown and disabled memberships. See the
+[TreeSelect](native-parity/tree-select.md) and [Transfer](native-parity/transfer.md) contracts.
+
+## Pending rich editor parity
+
+The initial SwiftUI and Compose `LumenRichTextEditor` supports controlled UTF-16
+selection and bold/italic/underline spans. Links, lists, headings, rich paste and
+caret formatting remain absent. React Native rich editing remains explicitly
+pending: the user declined a native editor dependency. The pure React Native
+span helpers do not supply a rendered editor. See the
+[limited editor contract](native-parity/rich-text-editor.md).

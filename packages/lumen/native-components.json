@@ -902,6 +902,193 @@
         "swiftUI": "LumenMultiSelect",
         "compose": "LumenMultiSelect"
       }
+    },
+    {
+      "id": "rating",
+      "tier": "shared",
+      "contract": "Controlled whole-star selection with zero for unrated and host-localized options",
+      "accessibility": "Native radio semantics, selected state, disabled and read-only interaction, and minimum touch targets",
+      "symbols": {
+        "reactNative": "LumenRating",
+        "swiftUI": "LumenRating",
+        "compose": "LumenRating"
+      }
+    },
+    {
+      "id": "stepper",
+      "tier": "shared",
+      "contract": "Host-owned ordered workflow with current, completed and upcoming step states",
+      "accessibility": "Localized state labels and readable vertical or horizontal layouts",
+      "symbols": {
+        "reactNative": "LumenStepper",
+        "swiftUI": "LumenStepper",
+        "compose": "LumenStepper"
+      }
+    },
+    {
+      "id": "timeline",
+      "tier": "shared",
+      "contract": "Chronological rich content with decorative markers and native child controls",
+      "accessibility": "Localized group label and preserved child control semantics",
+      "symbols": {
+        "reactNative": "LumenTimeline",
+        "swiftUI": "LumenTimeline",
+        "compose": "LumenTimeline"
+      }
+    },
+    {
+      "id": "breadcrumb",
+      "tier": "shared",
+      "contract": "Stable ancestor navigation with a noninteractive current destination",
+      "accessibility": "Localized navigation group and current destination, with disabled ancestors",
+      "symbols": {
+        "reactNative": "LumenBreadcrumb",
+        "swiftUI": "LumenBreadcrumb",
+        "compose": "LumenBreadcrumb"
+      }
+    },
+    {
+      "id": "table",
+      "tier": "shared",
+      "contract": "Stable host-formatted rows and columns in record or horizontal column layouts",
+      "accessibility": "Named records, readable native text scaling and explicit loading, error and empty states",
+      "symbols": {
+        "reactNative": "LumenTable",
+        "swiftUI": "LumenTable",
+        "compose": "LumenTable"
+      }
+    },
+    {
+      "id": "data-table",
+      "tier": "shared",
+      "contract": "Controlled sorting and selection; manual server order or explicit stable client sorting",
+      "accessibility": "Localized sort status and selection controls; disabled rows, read-only state and safe status recovery",
+      "symbols": {
+        "reactNative": "LumenDataTable",
+        "swiftUI": "LumenDataTable",
+        "compose": "LumenDataTable"
+      }
+    },
+    {
+      "id": "tree",
+      "tier": "shared",
+      "contract": "Controlled expansion and selection over a validated flat graph with stable sibling order and inherited disabled state",
+      "accessibility": "Localized disclosure and depth, native selection controls, bounded visual indentation and safe status states",
+      "symbols": {
+        "reactNative": "LumenTree",
+        "swiftUI": "LumenTree",
+        "compose": "LumenTree"
+      }
+    },
+    {
+      "id": "qr-code",
+      "tier": "shared",
+      "contract": "Offline UTF-8 QR encoding with correction levels, module quiet zones and safe capacity errors",
+      "accessibility": "Named image value, optional visible text and localized error recovery; scanner-safe contrast",
+      "symbols": {
+        "reactNative": "LumenQRCode",
+        "swiftUI": "LumenQRCode",
+        "compose": "LumenQRCode"
+      }
+    },
+    {
+      "id": "cascader",
+      "tier": "shared",
+      "contract": "Controlled leaf path selection with native branch drill-down over validated stable tree identities",
+      "accessibility": "Localized browse/back actions, selectable leaf controls and disabled/status semantics",
+      "symbols": {
+        "reactNative": "LumenCascader",
+        "swiftUI": "LumenCascader",
+        "compose": "LumenCascader"
+      }
+    },
+    {
+      "id": "calendar",
+      "tier": "shared",
+      "contract": "Controlled Gregorian visible month and selected civil date, bounded navigation and event indicators",
+      "accessibility": "Localized month/day/weekday labels, minimum touch targets, native selected state and explicit result states",
+      "symbols": {
+        "reactNative": "LumenCalendar",
+        "swiftUI": "LumenCalendar",
+        "compose": "LumenCalendar"
+      }
+    },
+    {
+      "id": "agenda",
+      "tier": "shared",
+      "contract": "Controlled civil-day agenda groups with chronological timed and all-day events and host event callbacks",
+      "accessibility": "Localized day, time and status announcements with native event actions",
+      "symbols": {
+        "reactNative": "LumenAgenda",
+        "swiftUI": "LumenAgenda",
+        "compose": "LumenAgenda"
+      }
+    },
+    {
+      "id": "kanban-board",
+      "tier": "shared",
+      "contract": "Controlled stable-ID columns and cards with bounded immutable moves, capacity guards and native dragging",
+      "accessibility": "Localized accessible move alternatives, named cards and safe loading/error/empty states",
+      "symbols": {
+        "reactNative": "LumenKanbanBoard",
+        "swiftUI": "LumenKanbanBoard",
+        "compose": "LumenKanbanBoard"
+      }
+    },
+    {
+      "id": "kanban-column",
+      "tier": "shared",
+      "contract": "Standalone controlled column with rich cards, capacity presentation and immutable card reorder requests",
+      "accessibility": "Native drag and localized accessible reorder actions with disabled and read-only guards",
+      "symbols": {
+        "reactNative": "LumenKanbanColumn",
+        "swiftUI": "LumenKanbanColumn",
+        "compose": "LumenKanbanColumn"
+      }
+    },
+    {
+      "id": "schedule",
+      "tier": "shared",
+      "contract": "Controlled civil-day time grid with all-day bands, collision-safe overlap lanes and host move requests",
+      "accessibility": "Localized event time and day names, accessible move controls and guarded native targets",
+      "symbols": {
+        "reactNative": "LumenSchedule",
+        "swiftUI": "LumenSchedule",
+        "compose": "LumenSchedule"
+      }
+    },
+    {
+      "id": "color-picker",
+      "tier": "shared",
+      "contract": "Controlled RGB/HSV and optional alpha editing with bounded linear color parsing and retained invalid drafts",
+      "accessibility": "Localized channel controls, palette choices and validation with native disabled/read-only guards",
+      "symbols": {
+        "reactNative": "LumenColorPicker",
+        "swiftUI": "LumenColorPicker",
+        "compose": "LumenColorPicker"
+      }
+    },
+    {
+      "id": "tree-select",
+      "tier": "shared",
+      "contract": "Controlled stable-ID hierarchical selection through a lazy disclosure panel over the validated Tree graph",
+      "accessibility": "Localized path and depth names, retained unknown values and inherited disabled ancestry",
+      "symbols": {
+        "reactNative": "LumenTreeSelect",
+        "swiftUI": "LumenTreeSelect",
+        "compose": "LumenTreeSelect"
+      }
+    },
+    {
+      "id": "transfer",
+      "tier": "shared",
+      "contract": "Controlled source/target membership and staged checks with atomic bidirectional moves preserving unavailable IDs",
+      "accessibility": "Localized checked/disabled rows, move counts and safe status guards with native controls",
+      "symbols": {
+        "reactNative": "LumenTransfer",
+        "swiftUI": "LumenTransfer",
+        "compose": "LumenTransfer"
+      }
     }
   ],
   "platformComponents": [

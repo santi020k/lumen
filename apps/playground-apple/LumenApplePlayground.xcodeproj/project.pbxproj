@@ -8,32 +8,60 @@
 
 /* Begin PBXBuildFile section */
 		014EFFAD9348FEA0E0277DA9 /* PlaygroundShell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 581FE601DC8DCCAACDE42246 /* PlaygroundShell.swift */; };
+		0A78480519D1F79BCCB08A2B /* TreeSelectParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B137475D2B5E5290E2B7A32 /* TreeSelectParityExample.swift */; };
 		1AD09D6BAD61D64C9559FF33 /* LumenApplePlaygroundApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE69F938031E87BABC3FCC66 /* LumenApplePlaygroundApp.swift */; };
+		1CD3097C0DDE5216F954C852 /* RichTextParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0DBEBDBF0FB5D511CFAD7DB /* RichTextParityExample.swift */; };
+		1FD33D9C49CD77D173073503 /* AgendaParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E7A36358D6E501DB29AA9C1 /* AgendaParityExample.swift */; };
+		2152E330D2F38DC10E5E5616 /* ScheduleParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EF89347B50B6EABEC242B28 /* ScheduleParityExample.swift */; };
+		226AAB82E082BFACE85E0D71 /* TreeParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDC5BEEFE1A80AB3992E8138 /* TreeParityExample.swift */; };
+		2A1662A587470DB05241B18D /* KanbanColumnParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A6EC8792199429B0A3C6F02 /* KanbanColumnParityExample.swift */; };
+		2A3D0DA3291B0184C1657D8E /* QRCodeParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D1D222933113F56FAA76A80 /* QRCodeParityExample.swift */; };
 		302BA7A9A3B20BC59019A96E /* WorkspacePerformanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BB0D085D401FD296278ADC6 /* WorkspacePerformanceTests.swift */; };
+		3223BAB34D21B5B139504B85 /* PlaygroundParityExamplesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 498DE581FB012C81BFFD8BE6 /* PlaygroundParityExamplesView.swift */; };
+		3322905321148FA091DAE0D5 /* CalendarParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C6713B0CADD67BC29E2E936 /* CalendarParityExample.swift */; };
 		335D2FA3C54ACA2B893F678F /* LumenWidgetPlayground.swift in Sources */ = {isa = PBXBuildFile; fileRef = D98080257A4C04BB0ACA9566 /* LumenWidgetPlayground.swift */; };
 		3720CAC58F48F17F4380823C /* PlaygroundHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19CC216C8A44A82EF86293B /* PlaygroundHomeView.swift */; };
 		3B161D679836623944870272 /* LumenWidgetPlayground.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 399D6F6E9C693782368B32EC /* LumenWidgetPlayground.appex */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		3F78C1BF0A31445B3A1BC333 /* PlaygroundExamplesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A61F6D18637F340320DB6A5D /* PlaygroundExamplesView.swift */; };
+		577B1907638AAABD1C41F229 /* CascaderParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33D07C5D814B076CDF538E41 /* CascaderParityExample.swift */; };
 		59CD3BCA61AEB946FF7A2882 /* PlaygroundExamplesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A61F6D18637F340320DB6A5D /* PlaygroundExamplesView.swift */; };
 		5A3B1829F40443C5D5FA6EC2 /* PlaygroundCatalog.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 665A7EE097F09530030DCF0D /* PlaygroundCatalog.generated.swift */; };
 		5BDA6D9FDFA3F1856259D5AA /* LumenApplePlaygroundApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE69F938031E87BABC3FCC66 /* LumenApplePlaygroundApp.swift */; };
+		5D44BEDC71D11C2D620D83CF /* QRCodeParityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C59ED6B26980706A630860 /* QRCodeParityTests.swift */; };
 		5E2A775AD4FDA189CC6BDDE2 /* PlaygroundWorkspaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72B8880B20E69D9623FBE419 /* PlaygroundWorkspaceView.swift */; };
+		601DDD093E4DF42D134ABE24 /* TreeSelectParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B137475D2B5E5290E2B7A32 /* TreeSelectParityExample.swift */; };
+		62BB5CE88AF95E32F3E9EFD1 /* KanbanColumnParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A6EC8792199429B0A3C6F02 /* KanbanColumnParityExample.swift */; };
+		6A5CF4725FEBCD3EC376D6C8 /* CascaderParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33D07C5D814B076CDF538E41 /* CascaderParityExample.swift */; };
 		6DBE1F8EBA5B6F1940CC680D /* LumenWidgetUI in Frameworks */ = {isa = PBXBuildFile; productRef = 49116D2CBE1F880540653F3E /* LumenWidgetUI */; };
+		75194820256C6494D85D146E /* KanbanBoardParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33722FDCBB7E6F155C53D08D /* KanbanBoardParityExample.swift */; };
+		81D7A8F2D08567023C275929 /* TransferParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = C071B6F5EF2E4F4825BC28DC /* TransferParityExample.swift */; };
+		8B9E817F2C9ACF09C187BC6E /* PlaygroundParityExamplesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 498DE581FB012C81BFFD8BE6 /* PlaygroundParityExamplesView.swift */; };
 		91A2AF2E011BA885CFD033FF /* PlaygroundAdvancedInputsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48D0AE883A9D2E8CA87E712A /* PlaygroundAdvancedInputsView.swift */; };
 		98C1AA51CD562EA2E42CD67A /* PlaygroundWorkspaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72B8880B20E69D9623FBE419 /* PlaygroundWorkspaceView.swift */; };
 		A0279D955040FE673FB268D5 /* PlaygroundSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB065D953EB7775096F372DB /* PlaygroundSettingsView.swift */; };
+		A274D3205D7F8E1D119AA734 /* CalendarParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C6713B0CADD67BC29E2E936 /* CalendarParityExample.swift */; };
 		A27610862D252E7C15973614 /* LumenUI in Frameworks */ = {isa = PBXBuildFile; productRef = 35416C9E579CDA363A493B7B /* LumenUI */; };
+		A3CA82E708CAD60F5C073498 /* TransferParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = C071B6F5EF2E4F4825BC28DC /* TransferParityExample.swift */; };
+		A98C8673AF53E2C9275F8432 /* ScheduleParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EF89347B50B6EABEC242B28 /* ScheduleParityExample.swift */; };
+		AE068C7F33E573F5E263D2F9 /* CatalogParityInteractionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DDD459A59B4A5E78B40659F /* CatalogParityInteractionTests.swift */; };
+		BB9196312625E40B8BAC0768 /* ColorPickerParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 237EB6454952F828624C93F4 /* ColorPickerParityExample.swift */; };
 		C264FF30047BA1493B60697F /* LumenUI in Frameworks */ = {isa = PBXBuildFile; productRef = 956081D903F21ACD6ECA2E5F /* LumenUI */; };
 		C6CEF83F16EE8556EC3DBD9E /* PlaygroundHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19CC216C8A44A82EF86293B /* PlaygroundHomeView.swift */; };
+		CB938ED74CB35895BD71AD06 /* QRCodeParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D1D222933113F56FAA76A80 /* QRCodeParityExample.swift */; };
+		CC49DC4F6F98D56B09B8E001 /* TreeParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDC5BEEFE1A80AB3992E8138 /* TreeParityExample.swift */; };
 		CFCF1EA85842549E0B5FFD33 /* AdvancedInputTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F138F7D00C2BD2E7A2AE6F2 /* AdvancedInputTests.swift */; };
+		D1F56E1CDBE696DA8A9FC3E2 /* ColorPickerParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 237EB6454952F828624C93F4 /* ColorPickerParityExample.swift */; };
 		D2F4C18E705C065824038B2A /* LumenUI in Frameworks */ = {isa = PBXBuildFile; productRef = 92444F6FFAE06F3DC42DB84A /* LumenUI */; };
 		DB50ECBEE184BDB2D1838CE8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 63BB1942FA8B6D286F1A9EBE /* Assets.xcassets */; };
 		E04C7AB2BD18952D8710CCB0 /* PlaygroundSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB065D953EB7775096F372DB /* PlaygroundSettingsView.swift */; };
+		E37A78B6EEFB51FBC4BCDEFC /* KanbanBoardParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33722FDCBB7E6F155C53D08D /* KanbanBoardParityExample.swift */; };
 		E6E453BDD94FE3ED53037917 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 63BB1942FA8B6D286F1A9EBE /* Assets.xcassets */; };
+		E8C8495E7FF73558F9242C62 /* AgendaParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E7A36358D6E501DB29AA9C1 /* AgendaParityExample.swift */; };
 		EA8330549EDCCDB72343C25B /* PlaygroundCatalog.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 665A7EE097F09530030DCF0D /* PlaygroundCatalog.generated.swift */; };
 		EB0BAF57DA9822940D2A710A /* LumenWatchPlaygroundApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DB685E8C1D6ED87B7329F1E /* LumenWatchPlaygroundApp.swift */; };
 		F6FC73E55CFB20FC5A23B088 /* PlaygroundAdvancedInputsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48D0AE883A9D2E8CA87E712A /* PlaygroundAdvancedInputsView.swift */; };
 		F8E4ABC1A336A6607D841E29 /* PlaygroundShell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 581FE601DC8DCCAACDE42246 /* PlaygroundShell.swift */; };
+		FA9360479DDD26FC4936D801 /* RichTextParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0DBEBDBF0FB5D511CFAD7DB /* RichTextParityExample.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -69,24 +97,39 @@
 
 /* Begin PBXFileReference section */
 		0BB0D085D401FD296278ADC6 /* WorkspacePerformanceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspacePerformanceTests.swift; sourceTree = "<group>"; };
+		1D1D222933113F56FAA76A80 /* QRCodeParityExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRCodeParityExample.swift; sourceTree = "<group>"; };
+		1DDD459A59B4A5E78B40659F /* CatalogParityInteractionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogParityInteractionTests.swift; sourceTree = "<group>"; };
 		1F138F7D00C2BD2E7A2AE6F2 /* AdvancedInputTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvancedInputTests.swift; sourceTree = "<group>"; };
+		237EB6454952F828624C93F4 /* ColorPickerParityExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPickerParityExample.swift; sourceTree = "<group>"; };
+		2B137475D2B5E5290E2B7A32 /* TreeSelectParityExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TreeSelectParityExample.swift; sourceTree = "<group>"; };
+		2EF89347B50B6EABEC242B28 /* ScheduleParityExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleParityExample.swift; sourceTree = "<group>"; };
+		329F417F8A698774E953B4DC /* lumen-native-catalog-parity */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "lumen-native-catalog-parity"; path = ../..; sourceTree = SOURCE_ROOT; };
+		33722FDCBB7E6F155C53D08D /* KanbanBoardParityExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KanbanBoardParityExample.swift; sourceTree = "<group>"; };
+		33D07C5D814B076CDF538E41 /* CascaderParityExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CascaderParityExample.swift; sourceTree = "<group>"; };
 		399D6F6E9C693782368B32EC /* LumenWidgetPlayground.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = LumenWidgetPlayground.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		3A6EC8792199429B0A3C6F02 /* KanbanColumnParityExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KanbanColumnParityExample.swift; sourceTree = "<group>"; };
 		48D0AE883A9D2E8CA87E712A /* PlaygroundAdvancedInputsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaygroundAdvancedInputsView.swift; sourceTree = "<group>"; };
+		498DE581FB012C81BFFD8BE6 /* PlaygroundParityExamplesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaygroundParityExamplesView.swift; sourceTree = "<group>"; };
+		4C6713B0CADD67BC29E2E936 /* CalendarParityExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarParityExample.swift; sourceTree = "<group>"; };
 		581FE601DC8DCCAACDE42246 /* PlaygroundShell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaygroundShell.swift; sourceTree = "<group>"; };
 		5DB685E8C1D6ED87B7329F1E /* LumenWatchPlaygroundApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LumenWatchPlaygroundApp.swift; sourceTree = "<group>"; };
 		63BB1942FA8B6D286F1A9EBE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		665A7EE097F09530030DCF0D /* PlaygroundCatalog.generated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaygroundCatalog.generated.swift; sourceTree = "<group>"; };
 		72B8880B20E69D9623FBE419 /* PlaygroundWorkspaceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaygroundWorkspaceView.swift; sourceTree = "<group>"; };
 		7DE2955684DB72950680BA1F /* LumenApplePlayground.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = LumenApplePlayground.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8E7A36358D6E501DB29AA9C1 /* AgendaParityExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgendaParityExample.swift; sourceTree = "<group>"; };
 		9D8A29BB3FCB9C15B321E3AE /* LumenMacPlayground.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LumenMacPlayground.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A61F6D18637F340320DB6A5D /* PlaygroundExamplesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaygroundExamplesView.swift; sourceTree = "<group>"; };
 		A74CE400BC46C61E435CCDCB /* LumenWatchPlayground.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LumenWatchPlayground.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB065D953EB7775096F372DB /* PlaygroundSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaygroundSettingsView.swift; sourceTree = "<group>"; };
+		B0DBEBDBF0FB5D511CFAD7DB /* RichTextParityExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RichTextParityExample.swift; sourceTree = "<group>"; };
 		B19CC216C8A44A82EF86293B /* PlaygroundHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaygroundHomeView.swift; sourceTree = "<group>"; };
+		C071B6F5EF2E4F4825BC28DC /* TransferParityExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransferParityExample.swift; sourceTree = "<group>"; };
 		D98080257A4C04BB0ACA9566 /* LumenWidgetPlayground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LumenWidgetPlayground.swift; sourceTree = "<group>"; };
 		EE69F938031E87BABC3FCC66 /* LumenApplePlaygroundApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LumenApplePlaygroundApp.swift; sourceTree = "<group>"; };
 		F3B760A456295F63FEB652B8 /* LumenApplePlaygroundUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = LumenApplePlaygroundUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		FACE82AFF935E5CC70423B9C /* lumen-native-v4-parity */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "lumen-native-v4-parity"; path = ../..; sourceTree = SOURCE_ROOT; };
+		F8C59ED6B26980706A630860 /* QRCodeParityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRCodeParityTests.swift; sourceTree = "<group>"; };
+		FDC5BEEFE1A80AB3992E8138 /* TreeParityExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TreeParityExample.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -172,6 +215,8 @@
 			isa = PBXGroup;
 			children = (
 				1F138F7D00C2BD2E7A2AE6F2 /* AdvancedInputTests.swift */,
+				1DDD459A59B4A5E78B40659F /* CatalogParityInteractionTests.swift */,
+				F8C59ED6B26980706A630860 /* QRCodeParityTests.swift */,
 				0BB0D085D401FD296278ADC6 /* WorkspacePerformanceTests.swift */,
 			);
 			path = UITests;
@@ -188,7 +233,7 @@
 		DE258D8D5B5E09B006098DED /* Packages */ = {
 			isa = PBXGroup;
 			children = (
-				FACE82AFF935E5CC70423B9C /* lumen-native-v4-parity */,
+				329F417F8A698774E953B4DC /* lumen-native-catalog-parity */,
 			);
 			name = Packages;
 			sourceTree = "<group>";
@@ -196,14 +241,27 @@
 		DF2CC21E680132A851141C3E /* LumenApplePlayground */ = {
 			isa = PBXGroup;
 			children = (
+				8E7A36358D6E501DB29AA9C1 /* AgendaParityExample.swift */,
+				4C6713B0CADD67BC29E2E936 /* CalendarParityExample.swift */,
+				33D07C5D814B076CDF538E41 /* CascaderParityExample.swift */,
+				237EB6454952F828624C93F4 /* ColorPickerParityExample.swift */,
+				33722FDCBB7E6F155C53D08D /* KanbanBoardParityExample.swift */,
+				3A6EC8792199429B0A3C6F02 /* KanbanColumnParityExample.swift */,
 				EE69F938031E87BABC3FCC66 /* LumenApplePlaygroundApp.swift */,
 				48D0AE883A9D2E8CA87E712A /* PlaygroundAdvancedInputsView.swift */,
 				665A7EE097F09530030DCF0D /* PlaygroundCatalog.generated.swift */,
 				A61F6D18637F340320DB6A5D /* PlaygroundExamplesView.swift */,
 				B19CC216C8A44A82EF86293B /* PlaygroundHomeView.swift */,
+				498DE581FB012C81BFFD8BE6 /* PlaygroundParityExamplesView.swift */,
 				AB065D953EB7775096F372DB /* PlaygroundSettingsView.swift */,
 				581FE601DC8DCCAACDE42246 /* PlaygroundShell.swift */,
 				72B8880B20E69D9623FBE419 /* PlaygroundWorkspaceView.swift */,
+				1D1D222933113F56FAA76A80 /* QRCodeParityExample.swift */,
+				B0DBEBDBF0FB5D511CFAD7DB /* RichTextParityExample.swift */,
+				2EF89347B50B6EABEC242B28 /* ScheduleParityExample.swift */,
+				C071B6F5EF2E4F4825BC28DC /* TransferParityExample.swift */,
+				FDC5BEEFE1A80AB3992E8138 /* TreeParityExample.swift */,
+				2B137475D2B5E5290E2B7A32 /* TreeSelectParityExample.swift */,
 			);
 			name = LumenApplePlayground;
 			path = Sources/LumenApplePlayground;
@@ -396,14 +454,27 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E8C8495E7FF73558F9242C62 /* AgendaParityExample.swift in Sources */,
+				A274D3205D7F8E1D119AA734 /* CalendarParityExample.swift in Sources */,
+				577B1907638AAABD1C41F229 /* CascaderParityExample.swift in Sources */,
+				D1F56E1CDBE696DA8A9FC3E2 /* ColorPickerParityExample.swift in Sources */,
+				75194820256C6494D85D146E /* KanbanBoardParityExample.swift in Sources */,
+				62BB5CE88AF95E32F3E9EFD1 /* KanbanColumnParityExample.swift in Sources */,
 				5BDA6D9FDFA3F1856259D5AA /* LumenApplePlaygroundApp.swift in Sources */,
 				F6FC73E55CFB20FC5A23B088 /* PlaygroundAdvancedInputsView.swift in Sources */,
 				EA8330549EDCCDB72343C25B /* PlaygroundCatalog.generated.swift in Sources */,
 				59CD3BCA61AEB946FF7A2882 /* PlaygroundExamplesView.swift in Sources */,
 				3720CAC58F48F17F4380823C /* PlaygroundHomeView.swift in Sources */,
+				3223BAB34D21B5B139504B85 /* PlaygroundParityExamplesView.swift in Sources */,
 				A0279D955040FE673FB268D5 /* PlaygroundSettingsView.swift in Sources */,
 				014EFFAD9348FEA0E0277DA9 /* PlaygroundShell.swift in Sources */,
 				5E2A775AD4FDA189CC6BDDE2 /* PlaygroundWorkspaceView.swift in Sources */,
+				2A3D0DA3291B0184C1657D8E /* QRCodeParityExample.swift in Sources */,
+				1CD3097C0DDE5216F954C852 /* RichTextParityExample.swift in Sources */,
+				A98C8673AF53E2C9275F8432 /* ScheduleParityExample.swift in Sources */,
+				A3CA82E708CAD60F5C073498 /* TransferParityExample.swift in Sources */,
+				CC49DC4F6F98D56B09B8E001 /* TreeParityExample.swift in Sources */,
+				601DDD093E4DF42D134ABE24 /* TreeSelectParityExample.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -411,14 +482,27 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1FD33D9C49CD77D173073503 /* AgendaParityExample.swift in Sources */,
+				3322905321148FA091DAE0D5 /* CalendarParityExample.swift in Sources */,
+				6A5CF4725FEBCD3EC376D6C8 /* CascaderParityExample.swift in Sources */,
+				BB9196312625E40B8BAC0768 /* ColorPickerParityExample.swift in Sources */,
+				E37A78B6EEFB51FBC4BCDEFC /* KanbanBoardParityExample.swift in Sources */,
+				2A1662A587470DB05241B18D /* KanbanColumnParityExample.swift in Sources */,
 				1AD09D6BAD61D64C9559FF33 /* LumenApplePlaygroundApp.swift in Sources */,
 				91A2AF2E011BA885CFD033FF /* PlaygroundAdvancedInputsView.swift in Sources */,
 				5A3B1829F40443C5D5FA6EC2 /* PlaygroundCatalog.generated.swift in Sources */,
 				3F78C1BF0A31445B3A1BC333 /* PlaygroundExamplesView.swift in Sources */,
 				C6CEF83F16EE8556EC3DBD9E /* PlaygroundHomeView.swift in Sources */,
+				8B9E817F2C9ACF09C187BC6E /* PlaygroundParityExamplesView.swift in Sources */,
 				E04C7AB2BD18952D8710CCB0 /* PlaygroundSettingsView.swift in Sources */,
 				F8E4ABC1A336A6607D841E29 /* PlaygroundShell.swift in Sources */,
 				98C1AA51CD562EA2E42CD67A /* PlaygroundWorkspaceView.swift in Sources */,
+				CB938ED74CB35895BD71AD06 /* QRCodeParityExample.swift in Sources */,
+				FA9360479DDD26FC4936D801 /* RichTextParityExample.swift in Sources */,
+				2152E330D2F38DC10E5E5616 /* ScheduleParityExample.swift in Sources */,
+				81D7A8F2D08567023C275929 /* TransferParityExample.swift in Sources */,
+				226AAB82E082BFACE85E0D71 /* TreeParityExample.swift in Sources */,
+				0A78480519D1F79BCCB08A2B /* TreeSelectParityExample.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -427,6 +511,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				CFCF1EA85842549E0B5FFD33 /* AdvancedInputTests.swift in Sources */,
+				AE068C7F33E573F5E263D2F9 /* CatalogParityInteractionTests.swift in Sources */,
+				5D44BEDC71D11C2D620D83CF /* QRCodeParityTests.swift in Sources */,
 				302BA7A9A3B20BC59019A96E /* WorkspacePerformanceTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
