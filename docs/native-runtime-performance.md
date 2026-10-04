@@ -87,6 +87,30 @@ the raw samples before selecting regression thresholds or claiming a hardware re
 
 ## Remaining platform qualification
 
+### React Native live text-layout probe
+
+The diagnostic [TextLayoutProbe](../apps/playground-react-native/src/fixtures/TextLayoutProbe.tsx)
+compares plain React Native `Text` with Lumen foundations inside the same native host. Its static
+paragraphs have no fixed heights, retain normal font scaling, and remain mounted while the size
+changes. A dynamic heading displays `useWindowDimensions().fontScale`; native line callbacks
+display reported counts and widths. The controlled field helps observe whether its initial value
+survives the change, but that alone does not verify retention of a user-edited draft.
+
+Copy the fixture into an ignored, isolated native qualification host and point only that temporary
+host's entrypoint at it. Preserve the original app and entrypoint first; do not replace the public
+playground entrypoint or enable OTA updates. Build Release, capture source and installed artifact
+hashes, compare standard text with a live maximum-size change, and inspect the actual rendering.
+Line callbacks are diagnostic output: measurements that fit the viewport do not prove that all
+text remains visible. Restore the original text size, app and host entrypoint after testing.
+
+The iPhone iOS 27 Simulator probe reproduced clipping in both renderers at live maximum text size.
+Both callbacks reported four lines at standard size and only one after enlargement, despite lost
+paragraph content. This rules out a Lumen-only layout defect in this host; it does not identify the exact native
+cache failure or establish an acceptable workaround. See the [v4 quality record](lumen-4-native-quality.md)
+for the preserved fixture, artifact and screenshots.
+
+### Runtime and hardware measurements
+
 React Native bytecode budgets use `pnpm run check:react-native-imports`, including the static graphic
 fixture. React Native native startup, JavaScript responsiveness and list frame measurements still
 need release-mode native hosts on both iOS and Android. Expo web timing cannot stand in for them.

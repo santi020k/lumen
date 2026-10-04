@@ -349,6 +349,24 @@ the app and input/artifact report are preserved under
 `.build/native-quality-react-native-ios-combined-build.log`; a successful build is not a
 zero-warning native or accessibility pass.
 
+A temporary Release text-layout probe compared plain React Native `Text` with `LumenText` using
+static paragraphs without fixed heights. Both rendered four lines with a reported widest line
+of 360 at font scale 1.000. A live change to maximum text size produced scale 3.571 and visible
+clipping in both renderers; each callback then reported only one line, widest 362. The initial
+controlled field value remained, but no edited-draft retention was qualified. This reproduces
+the defect outside Lumen's text implementation, rather than proving its exact renderer-cache cause.
+The original probe passed strict TypeScript and the native Release build; all 76 installed app
+file hashes matched after the comparison. Its source, artifact, report and privacy-safe screenshots
+are under `.build/native-quality-text-layout-probe`. A maintained diagnostic fixture now lives in
+`apps/playground-react-native/src/fixtures/TextLayoutProbe.tsx`; its labels use single expressions
+and repository formatting rather than the temporary probe's multi-expression labels.
+The maintained fixture passed repository type checking and zero-warning lint (23 tasks each),
+the ten playground tests, and focused documentation lint and spelling checks. A subsequent
+read-only check confirmed all 76 installed files still match the preserved combined app.
+Standard text size, Device Hub's sidebar, the original host entrypoint and the preserved combined
+qualification app were restored. The public playground entrypoint is unchanged. This remains a
+failed accessibility result; neither font scaling nor application state was disabled to hide it.
+
 ### Outstanding scope and blockers
 
 The complete Required outcomes list remains authoritative. Broader phone/tablet runtime qualification and physical-device keyboard/focus and screen-reader checks,
