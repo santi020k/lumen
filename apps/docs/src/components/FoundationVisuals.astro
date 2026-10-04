@@ -2,6 +2,7 @@
 import { Badge, Button, Card, Field, Input, Label, Link, Stack } from '@santi020k/lumen-astro'
 
 import CodeBlock from './CodeBlock.astro'
+import FoundationScaleExamples from './FoundationScaleExamples.astro'
 
 const roles = [
   ['canvas', 'Page background'],
@@ -78,6 +79,8 @@ import { Button, Card, Field, Input, Label, Stack } from '@santi020k/lumen-astro
   </div>
   <p class="foundation-caption"><Link href="/docs/components/stack">Explore Stack spacing</Link> or <Link href="/docs/theme-playground">build a theme in the interactive lab</Link>.</p>
 </section>
+
+<FoundationScaleExamples />
 
 <style>
   .foundation-swatches { display: grid; grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); gap: 1rem; }

@@ -4,6 +4,7 @@ import { Breadcrumb, Card, Separator, Table } from '@santi020k/lumen-astro'
 import CodeBlock from '../../../components/CodeBlock.astro'
 import DocsActionLink from '../../../components/DocsActionLink.astro'
 import DocsPageHero from '../../../components/DocsPageHero.astro'
+import FrameworkLiveExample from '../../../components/FrameworkLiveExample.astro'
 import { frameworkGuides, frameworkSetups, reactHooksReference } from '../../../data/docs'
 import DocsLayout from '../../../layouts/DocsLayout.astro'
 
@@ -46,6 +47,8 @@ if (!guide || !setup) {
         </DocsActionLink>
       </Fragment>
     </DocsPageHero>
+
+    <FrameworkLiveExample framework="react" />
 
     <section class="docs-section space-y-4" aria-labelledby="install-title">
       <div class="docs-section-heading">
