@@ -1,6 +1,7 @@
 ---
 import {
   Badge,
+  Button,
   Card,
   Field,
   Input,
@@ -8,6 +9,7 @@ import {
   Link,
   Marker,
   Progress,
+  Stack,
   Switch,
   Toggle,
   ToggleGroup
@@ -224,6 +226,27 @@ const customThemeSetup = themeSetups.find(setup => setup.label === 'Custom theme
         brand can be expressed through the same token contract.
       </p>
     </div>
+    <div class="theme-comparison" aria-label="The same components in light and dark themes">
+      {(['light', 'dark'] as const).map(theme => (
+        <figure class="theme-comparison__sample" data-theme={theme}>
+          <figcaption>{theme === 'light' ? 'Light' : 'Dark'} · same components, different tokens</figcaption>
+          <Card>
+            <Stack gap="group">
+              <Stack direction="horizontal" justify="between" align="center" wrap>
+                <strong>Workspace settings</strong>
+                <Badge variant="success">Active</Badge>
+              </Stack>
+              <Field>
+                <Label for={`theme-${theme}-workspace`}>Workspace name</Label>
+                <Input id={`theme-${theme}-workspace`} value="Lumen Labs" />
+              </Field>
+              <Button type="button">Save changes</Button>
+            </Stack>
+          </Card>
+        </figure>
+      ))}
+    </div>
+    <p class="theme-comparison__note">Illustrative previews · buttons do not save data. <Link href="/docs/theme-playground">Try your own palette in the theme playground</Link>.</p>
     <div class="
       grid gap-4
       lg:grid-cols-2
@@ -364,6 +387,12 @@ const customThemeSetup = themeSetups.find(setup => setup.label === 'Custom theme
 </DocsLayout>
 
 <style>
+  .theme-comparison { display: grid; gap: 1rem; margin-bottom: 1rem; }
+  .theme-comparison__sample { display: grid; gap: 1rem; min-width: 0; margin: 0; padding: 1.5rem; border: 1px solid hsl(var(--line)); border-radius: 1rem; background: hsl(var(--canvas)); color: hsl(var(--ink)); }
+  .theme-comparison__sample figcaption { color: hsl(var(--ink-soft)); font-size: 0.875rem; }
+  .theme-comparison__note { margin-bottom: 1.5rem; color: hsl(var(--ink-soft)); font-size: 0.875rem; line-height: 1.6; }
+  @media (min-width: 48rem) { .theme-comparison { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
   .docs-intro-hero {
     position: relative;
     isolation: isolate;

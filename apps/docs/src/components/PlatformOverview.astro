@@ -14,6 +14,7 @@ import type { PlatformGuide } from '../data/platforms'
 import DocsLayout from '../layouts/DocsLayout.astro'
 
 import CodeBlock from './CodeBlock.astro'
+import FoundationVisuals from './FoundationVisuals.astro'
 import NativePlatformPreview from './NativePlatformPreview.astro'
 import PlatformShipping from './PlatformShipping.astro'
 import PlatformStoreAvailability from './PlatformStoreAvailability.astro'
@@ -98,6 +99,8 @@ const nativeGuideLinks = hasNativeCatalog ?
       </div>
     </nav>
   )}
+
+  {guide.id === 'foundations' && <FoundationVisuals />}
 
   <section class="docs-section" id="installation" aria-labelledby="installation-title">
     <div class="docs-section-heading">

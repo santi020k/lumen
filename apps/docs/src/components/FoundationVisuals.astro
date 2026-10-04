@@ -1,0 +1,92 @@
+---
+import { Badge, Button, Card, Field, Input, Label, Link, Stack } from '@santi020k/lumen-astro'
+
+import CodeBlock from './CodeBlock.astro'
+
+const roles = [
+  ['canvas', 'Page background'],
+  ['surface', 'Cards and panels'],
+  ['surface-muted', 'Secondary surfaces'],
+  ['ink', 'Primary text'],
+  ['brand', 'Brand expression'],
+  ['brand-solid', 'Primary actions'],
+  ['success', 'Successful outcomes'],
+  ['warning', 'Needs attention'],
+  ['danger', 'Errors and destructive actions']
+] as const
+
+const example = `---
+import { Button, Card, Field, Input, Label, Stack } from '@santi020k/lumen-astro'
+---
+
+<Card>
+  <Stack gap="group">
+    <Field>
+      <Label for="workspace">Workspace name</Label>
+      <Input id="workspace" value="Lumen Labs" />
+    </Field>
+    <Stack direction="horizontal" gap="related" wrap>
+      <Button>Save changes</Button>
+      <Button variant="outline">Cancel</Button>
+    </Stack>
+  </Stack>
+</Card>`
+---
+
+<section class="docs-section" id="tokens-in-use" aria-labelledby="tokens-in-use-title">
+  <div class="docs-section-heading">
+    <p>See the contract</p>
+    <h2 id="tokens-in-use-title">A role, not a fixed color</h2>
+    <p>These swatches follow the current docs theme. Change the theme to see each role adapt.</p>
+  </div>
+  <div class="foundation-swatches" aria-label="Semantic color roles">
+    {roles.map(([token, purpose]) => (
+      <Card class="foundation-swatch" density="compact">
+        <span class="foundation-swatch__color" style={`background: hsl(var(--${token}));`} aria-hidden="true"></span>
+        <code>{token}</code>
+        <span>{purpose}</span>
+      </Card>
+    ))}
+  </div>
+  <p class="foundation-caption">Use roles for their purpose; status also needs a label or icon so color never carries the meaning alone.</p>
+</section>
+
+<section class="docs-section" id="composition-in-use" aria-labelledby="composition-in-use-title">
+  <div class="docs-section-heading">
+    <p>From tokens to a screen</p>
+    <h2 id="composition-in-use-title">Let each layer own its space</h2>
+    <p>Card owns padding. Stack separates groups. Field keeps its label and input together.</p>
+  </div>
+  <div class="foundation-composition">
+    <figure>
+      <Card>
+        <Stack gap="group">
+          <Badge variant="outline">Workspace settings</Badge>
+          <Field>
+            <Label for="foundation-workspace">Workspace name</Label>
+            <Input id="foundation-workspace" value="Lumen Labs" />
+          </Field>
+          <Stack direction="horizontal" gap="related" wrap>
+            <Button type="button">Save changes</Button>
+            <Button type="button" variant="outline">Cancel</Button>
+          </Stack>
+        </Stack>
+      </Card>
+      <figcaption>Illustrative layout · buttons do not save data. Copy the composition and connect your application behavior.</figcaption>
+    </figure>
+    <CodeBlock code={example} lang="astro" title="Compose a settings panel" />
+  </div>
+  <p class="foundation-caption"><Link href="/docs/components/stack">Explore Stack spacing</Link> or <Link href="/docs/theme-playground">build a theme in the interactive lab</Link>.</p>
+</section>
+
+<style>
+  .foundation-swatches { display: grid; grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); gap: 1rem; }
+  :global(.foundation-swatch) { min-width: 0; display: grid; gap: 0.5rem; }
+  .foundation-swatch__color { height: 3rem; border: 1px solid hsl(var(--line)); border-radius: 0.5rem; }
+  .foundation-swatch code { color: hsl(var(--ink)); font-size: 0.875rem; }
+  .foundation-swatch > span:last-child, .foundation-caption, figcaption { color: hsl(var(--ink-soft)); font-size: 0.875rem; line-height: 1.6; }
+  .foundation-caption { margin-top: 1rem; }
+  .foundation-composition { display: grid; align-items: start; gap: 1.5rem; min-width: 0; }
+  figure { display: grid; gap: 1rem; margin: 0; min-width: 0; }
+  @media (min-width: 64rem) { .foundation-composition { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+</style>
