@@ -18,8 +18,9 @@ decisions.
 | Where are values concentrated in a matrix? | `Heatmap` | Use labels and the sequential palette; do not rely on color alone. |
 | How does uncertainty or an interval change? | `RangeChart` | Supply low and high values in the same unit and domain. |
 | How do magnitudes and trends compare together? | `ComboChart` | Mix bars, lines, and areas only when they share a meaningful value domain. |
-| Which changes explain a final balance? | `WaterfallChart` | Use signed deltas and explicit totals; available on the web. |
-| How are observations distributed? | `Histogram` | Supply explicit bins and counts; available on the web. |
+| Which changes explain a final balance? | `WaterfallChart` | Use signed deltas and explicit totals on web and native. |
+| How does the actual value compare with a target? | `BulletChart` | Use a zero-inclusive domain and optional labeled ranges on web and native. |
+| How are observations distributed? | `Histogram` | Supply explicit bins and counts on web and native. |
 
 Use `Chart` as the web escape hatch for a specialized SVG, canvas, or HTML visualization. Product-
 specific maps, networks, financial studies, scientific plots, and high-density interaction can use
@@ -44,9 +45,9 @@ if invalid duplicate data reaches a renderer, the first observation wins consist
 plot and table. Use a stable ISO date or numeric timestamp for identity, not a localized date
 label. Supply a short `xLabel` for the axis and `formatCategory` for full tooltip/table text.
 Web line and bar axes measure label space, retain readable endpoint alignment, and omit
-overlapping ticks. Exact values remain available in the data table. On narrow layouts, the named plot region can
-scroll horizontally to preserve readable labels; focus it and use the arrow keys, or swipe on
-touch screens. This scroll stays inside the chart rather than widening the page.
+overlapping ticks. Exact values remain available in the data table. Line, waterfall, histogram, and
+heatmap plots fit narrow cards with larger SVG labels and fewer category ticks. Other plots retain
+horizontal scrolling where their labels need more room, without widening the page.
 
 Compose line charts position homogeneous `LumenChartX.Time` and `LumenChartX.Number` values by
 elapsed/numeric distance and sort their shared coordinates. Category or mixed-type series use
@@ -67,7 +68,8 @@ as gaps. Axis ticks label observed coordinates; applications supply locale and t
 
 Opt into `interactive` to inspect all series at an observation with the pointer, a tap, Left/Right,
 Home, or End. A tap or keyboard selection pins the inspection panel; Escape dismisses it. Pointer
-inspection does not repeatedly announce values to screen readers. Legend buttons hide or show
+inspection does not repeatedly announce values to screen readers. The floating panel follows the
+observation, stays inside the card, and does not move surrounding content. Legend buttons hide or show
 series while retaining the domain and full data table. Astro requires `UIPrimitives` for enhancement;
 the static chart and table remain usable without it.
 
@@ -98,10 +100,30 @@ bins. Unequal widths require `frequency="density"`: height is count divided by b
 table retains original counts. Applications own binning, inclusion of interval boundaries, and
 units. Use `formatBoundary` and `formatValue` for those units; Elements exposes `boundaryFormatter`
 and `valueFormatter` properties. Localize messages with `labels` or the documented Elements label
-attributes. The new web chart types do not add native adapter components.
+attributes. Waterfall and histogram components are also available in React Native, SwiftUI, and Compose.
+
+## Native heatmaps
+
+Native heatmaps use the same sequential and diverging color semantics as web charts. They include
+row and column labels, a numeric color legend, explicit missing-value crosses, and an expandable
+list of exact measurements. Dense axes omit overlapping labels without removing observations.
+The first measurement at each coordinate wins in both the plot and the readable list.
+
+Use `colorScale="diverging"` in React Native, `.diverging` in SwiftUI, or
+`LumenHeatmapColorScale.Diverging` in Compose. `midpoint` defaults to zero; an explicit `domain`
+must be finite, increasing, and contain the midpoint for a diverging scale. SwiftUI and Compose
+accept a closed numeric range; React Native accepts `{ min, max }`. Values outside the domain
+use the endpoint color while their exact values remain available in the data disclosure.
+Pass `formatValue` in React Native or `labels.formatValue` in SwiftUI and Compose to format the
+legend and data consistently. `heading` and `description` provide visible chart context.
 
 The [web comparison gallery](https://lumen.santi020k.com/docs/web/data-visualization) renders the same
-synthetic datasets through all three adapters and demonstrates cursor synchronization.
+synthetic datasets through framework tabs and demonstrates cursor synchronization. Its overview
+combines compact metrics, a wide trend chart, distributions, balance changes, channel shares, and
+a weekly matrix. The styling ships in Lumen's shared stylesheet: existing package imports remain
+unchanged. Line charts use a wider default aspect ratio, fading area fills, quiet grid lines, and
+compact legends; pie charts use clearer slice separation and a smaller default footprint.
+
 ## Datum activation foundation
 
 Custom charts can share a typed activation payload using the core builders:
@@ -211,8 +233,8 @@ and cancelled interactions do not activate a datum.
 
 Every data chart needs a useful accessible name. Lumen adds a factual generated summary describing
 series count, available points, range, and missing values; pass `summary` when domain context is
-more useful. Web charts expose a disclosure table by default. Native charts pair their visual plot
-with a readable data list, and controlled selection is available where the adapter supports it.
+more useful. Web charts expose a full-width disclosure table with sticky headers and a bounded, keyboard-scrollable
+body. Native charts pair their visual plot with an expandable, bounded data list, and controlled selection is available where the adapter supports it.
 
 Keep visual marks decorative to assistive technology, retain the summary and fallback data, and
 format every visible and spoken value with the same unit and locale. Do not use hue as the only
@@ -244,3 +266,21 @@ semantic success, warning, and danger tones for data that truly carries those me
 The native galleries under `apps/playground-react-native`, `apps/playground-apple`, and
 `apps/playground-android` provide executable examples. Run the platform-specific builds and the
 repository validation gates before publishing API or token changes.
+
+## Actual values and targets
+
+`BulletChart` (native `LumenBulletChart`) compares a nullable `value` with a finite `target`.
+The actual bar starts at zero, including for negative values. The target is a separate high-contrast
+marker; its exact value remains visible above the plot. `ranges` contains `{ end, label, tone? }`
+entries sorted by their unique finite end values. Lumen keeps the source array unchanged.
+
+An explicit `domain` must include zero, the actual value, target, and every range end. Invalid
+measurements, duplicate ends, blank labels, or truncated domains produce the invalid-data state.
+A null value displays the localized unavailable label while retaining the target and ranges;
+zero remains a real observation. No percent-of-target score is inferred.
+
+Astro and React accept `formatValue`, `targetLabel`, `valueLabel`, and `labels`. Elements exposes
+`value` and `target` as numeric properties or attributes, `ranges` as a property or JSON attribute,
+`domain-min`/`domain-max`, `target-label`, and a `valueFormatter` property. Removing the Elements
+`value` attribute represents a missing observation. Native adapters use their existing labels and
+number formatter contracts. Keep `showTable` (web) or `showData` (native) enabled for exact values.

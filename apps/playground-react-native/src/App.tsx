@@ -37,6 +37,7 @@ import {
   LumenBadge,
   LumenBanner,
   LumenBarChart,
+  LumenBulletChart,
   LumenButton,
   LumenButtonGroup,
   LumenCard,
@@ -52,6 +53,7 @@ import {
   LumenGauge,
   LumenGraphic,
   LumenHeatmap,
+  LumenHistogram,
   LumenIcon,
   LumenIconButton,
   LumenIllustration,
@@ -91,6 +93,7 @@ import {
   type LumenTheme,
   LumenToast,
   LumenToggle,
+  LumenWaterfallChart,
   useLumenTheme
 } from '@santi020k/lumen-react-native'
 import {
@@ -1111,6 +1114,42 @@ const SettingsScreen = ({
   )
 }
 
+const IntervalChartExamples = ({ isVisible }: { isVisible: (name: string) => boolean }): ReactElement => (
+  <>
+    {isVisible('Waterfall chart') && (
+      <LumenWaterfallChart
+        label="Revenue movement"
+        heading="Revenue movement"
+        description="Opening balance to closing · USD, thousands"
+        valueLabel="USD, thousands"
+        data={[
+          { id: 'opening', label: 'Opening', kind: 'total', value: 120 },
+          { id: 'new', label: 'New', value: 85 },
+          { id: 'growth', label: 'Growth', value: 35 },
+          { id: 'costs', label: 'Costs', value: -45 },
+          { id: 'other', label: 'Other', value: -10 },
+          { id: 'closing', label: 'Closing', kind: 'total', value: 185 }
+        ]}
+      />
+    )}
+    {isVisible('Bullet chart') && (
+      <LumenBulletChart testID="component-bullet-chart" label="Delivery performance" heading="On-time delivery" description="Actual performance against the service target" value={86} target={95} ranges={[{ end: 70, label: 'Developing' }, { end: 90, label: 'Consistent' }, { end: 100, label: 'Excellent' }]} formatValue={value => `${value}%`} />
+    )}
+    {isVisible('Histogram') && (
+      <LumenHistogram
+        label="Response times"
+        heading="Response time"
+        description="Distribution of requests · milliseconds"
+        data={
+          [3, 8, 18, 34, 48, 57, 51, 37, 26, 15, 8, 3].map((count, index) => ({
+            start: index * 25, end: (index + 1) * 25, count
+          }))
+        }
+      />
+    )}
+  </>
+)
+
 const ChartExamples = ({
   isVisible
 }: {
@@ -1168,15 +1207,21 @@ const ChartExamples = ({
         }]}
       />
     )}
+    <IntervalChartExamples isVisible={isVisible} />
     {isVisible('Heatmap') && (
       <LumenHeatmap
-        data={[
-          { value: 18, x: 'Mon', y: 'Morning' },
-          { value: 32, x: 'Tue', y: 'Morning' },
-          { value: 47, x: 'Mon', y: 'Evening' },
-          { value: null, x: 'Tue', y: 'Evening' }
-        ]}
-        label="Activity by day and period"
+        colorScale="diverging"
+        heading="Weekly activity"
+        description="Change from typical activity · by day and hour"
+        data={['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].flatMap((day, row) => (
+          Array.from({ length: 12 }, (_, column) => {
+            const typical = Math.round(Math.sin((column - 3) / 2) * 14 + Math.cos(row) * 6)
+            const value = row === 0 && column === 0 ? 0 : typical
+
+            return { value: row === 4 && column === 6 ? null : value, x: `${column + 8}:00`, y: day }
+          })
+        ))}
+        label="Change in activity by day and hour"
       />
     )}
     {isVisible('Range chart') && (
@@ -1576,7 +1621,7 @@ const Playground = ({
           </ComponentSection>
         </Visibility>
 
-        <Visibility visible={isAnyVisible('Sparkline', 'Line chart', 'Bar chart', 'Pie chart', 'Scatter chart', 'Heatmap', 'Range chart', 'Combo chart')}>
+        <Visibility visible={isAnyVisible('Sparkline', 'Line chart', 'Bar chart', 'Pie chart', 'Scatter chart', 'Waterfall chart', 'Histogram', 'Bullet chart', 'Heatmap', 'Range chart', 'Combo chart')}>
           <ComponentSection
             description="Tokenized plots include a factual accessibility summary and readable fallback data."
             title="Data visualization"

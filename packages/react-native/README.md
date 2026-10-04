@@ -345,10 +345,15 @@ Start with `createLumenTheme(scheme, { preset: 'studio' })` or `<LumenProvider p
 
 ## Data visualization
 
+Heatmaps include labeled axes, a numeric color legend, and × markers for missing measurements.
+Use a diverging color scale around a meaningful midpoint for signed data. The plot and expandable
+list preserve zero and use the first measurement at each coordinate. See the
+[native heatmap options](../../docs/data-visualization.md#native-heatmaps) for domain and formatting APIs.
+
 `LumenSparkline`, `LumenLineChart`, `LumenBarChart`, `LumenPieChart`, `LumenScatterChart`,
-`LumenHeatmap`, `LumenRangeChart`, and `LumenComboChart` use shared geometry and generated chart
-tokens while rendering with `react-native-svg`. Data charts expose a concise image summary and a
-readable fallback list; selection remains controlled by the application. Line and bar charts render
+`LumenHeatmap`, `LumenRangeChart`, `LumenComboChart`, `LumenWaterfallChart`, and `LumenHistogram` use shared geometry and generated chart
+tokens while rendering with `react-native-svg`. Data charts expose a concise image summary and an
+expandable readable data list; selection remains controlled by the application. Line and bar charts render
 category and value axes even when the readable list is hidden. Dense axes select labels without
 removing data, and narrow plots scroll horizontally.
 
@@ -384,6 +389,24 @@ only when equivalent accessible values appear nearby; supply a factual `summary`
 explain the comparison. Translate the `labels` support copy in the application.
 
 See the shared [data-visualization guide](../../docs/data-visualization.md).
+
+
+`LumenWaterfallChart` draws signed changes with explicit total resets and connectors. Invalid
+steps reject the complete plot so later balances cannot become misleading. `LumenHistogram`
+preserves supplied bin widths and gaps; use density for unequal widths. Data disclosures retain
+start, end, plotted value, and original density-bin counts. Empty and invalid inputs have separate
+localized messages. Expanded data stays scrollable within the card.
+
+```tsx
+<LumenWaterfallChart label="Revenue movement" data={[
+  { id: 'opening', label: 'Opening', kind: 'total', value: 100 },
+  { id: 'growth', label: 'Growth', value: 40 },
+  { id: 'costs', label: 'Costs', value: -25 }
+]} />
+<LumenHistogram label="Response time" frequency="density" data={[
+  { start: 0, end: 10, count: 5 }, { start: 10, end: 30, count: 10 }
+]} />
+```
 
 ## Consumer composition recipes
 
@@ -496,3 +519,11 @@ slider provides touch, keyboard and screen-reader adjustment; supply localized i
 
 See the [shared advanced contracts](../../docs/native-components.md#shared-v4-advanced-controls)
 and the [native form-error recipe](../../docs/native-patterns.md#pattern-form-submission-errors).
+
+### Actual-versus-target charts
+
+`LumenBulletChart` compares a nullable actual `value` with a finite `target` and optional
+labeled `ranges`. A strong actual bar, target marker, readable value labels, and expandable exact
+data work together. Domains include zero and all measurements; invalid inputs fail closed.
+Null values stay distinct from zero. See the [chart guide](../../docs/data-visualization.md#actual-values-and-targets)
+for the input, localization, and domain contracts.

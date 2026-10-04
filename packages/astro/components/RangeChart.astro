@@ -79,6 +79,6 @@ height={Math.max(20, Math.abs(point.highCoordinate - point.lowCoordinate))}
     data-ui-chart-datum={datumActions[index]?.serialized}
   />
 ))}</svg></div>
-  {showTable && <details class="ui-chart__data"><summary>{resolvedLabels.viewData}</summary><div><table><thead><tr><th scope="col">{resolvedLabels.category}</th><th scope="col">{resolvedLabels.low}</th><th scope="col">{resolvedLabels.high}</th></tr></thead><tbody>{data.map(item => <tr><th scope="row">{item.xLabel ?? item.x}</th><td>{item.low === null || !Number.isFinite(item.low) ? resolvedLabels.notAvailable : formatValue(item.low)}</td><td>{item.high === null || !Number.isFinite(item.high) ? resolvedLabels.notAvailable : formatValue(item.high)}</td></tr>)}</tbody></table></div></details>}
+  {showTable && <details class="ui-chart__data"><summary>{resolvedLabels.viewData}</summary><div role="group" tabindex="0" aria-label={resolvedLabels.chartData}><table><thead><tr><th scope="col">{resolvedLabels.category}</th><th scope="col">{resolvedLabels.low}</th><th scope="col">{resolvedLabels.high}</th></tr></thead><tbody>{data.map(item => <tr><th scope="row">{item.xLabel ?? item.x}</th><td>{item.low === null || !Number.isFinite(item.low) ? resolvedLabels.notAvailable : formatValue(item.low)}</td><td>{item.high === null || !Number.isFinite(item.high) ? resolvedLabels.notAvailable : formatValue(item.high)}</td></tr>)}</tbody></table></div></details>}
   {drilldown && <ChartDatumActions actions={datumActions} label={resolvedLabels.exploreData} />}
 </Chart>

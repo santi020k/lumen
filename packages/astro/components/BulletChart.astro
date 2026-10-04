@@ -1,0 +1,64 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+import { createLumenBulletGeometry, getLumenChartToneClassName, type LumenBulletOptions, type LumenChartLabels, type LumenChartTone, resolveLumenChartLabels } from '@santi020k/lumen-core'
+
+import Chart from './Chart.astro'
+
+interface Props extends HTMLAttributes<'figure'>, LumenBulletOptions {
+  caption?: string
+  className?: string
+  description?: string
+  formatValue?: (value: number) => string
+  heading?: string
+  labels?: Partial<LumenChartLabels>
+  presentation?: 'bare' | 'default'
+  showTable?: boolean
+  summary?: string
+  target: number
+  targetLabel?: string
+  tone?: LumenChartTone
+  value: number | null
+  valueLabel?: string
+}
+
+const { class: classProp, className, domain, formatValue = String, labels, ranges, showTable = true, summary, target, targetLabel = 'Target', tone = 'series-1', value, valueLabel, ...props } = Astro.props
+const text = resolveLumenChartLabels(labels)
+const model = createLumenBulletGeometry(value, target, { ...(domain ? { domain } : {}), ...(ranges ? { ranges } : {}) })
+const title = valueLabel ?? text.value
+const actual = value === null ? text.notAvailable : formatValue(value)
+const factual = model.valid ? `${title}: ${actual}. ${targetLabel}: ${formatValue(target)}.` : text.invalidData
+---
+
+<Chart {...props} class:list={['ui-bullet-chart', classProp, className]} summary={summary ?? factual}>
+  {model.valid ?
+(
+    <>
+      <div class="ui-bullet-chart__values">
+        <div><span>{title}</span><strong>{actual}</strong></div>
+        <p><span class="ui-bullet-chart__target-key" aria-hidden="true" />{targetLabel}<strong>{formatValue(target)}</strong></p>
+      </div>
+      <div aria-hidden="true" class="ui-bullet-chart__plot">
+        <div class="ui-bullet-chart__track">
+          {model.ranges.map((range, index) => (
+<span
+class:list={['ui-bullet-chart__range', getLumenChartToneClassName(range.tone ?? 'neutral')]}
+style={{ left: `${range.startRatio * 100}%`, width: `${(range.endRatio - range.startRatio) * 100}%`, opacity: 0.12 + index / Math.max(1, model.ranges.length - 1) * 0.2 }}
+/>
+))}
+          {value !== null && <span class:list={['ui-bullet-chart__bar', getLumenChartToneClassName(tone)]} style={{ left: `${model.valueStartRatio * 100}%`, width: `${model.valueWidthRatio * 100}%` }} />}
+          <span class="ui-bullet-chart__target" style={{ left: `${model.targetRatio * 100}%` }} />
+        </div>
+        <div class="ui-bullet-chart__ticks">{model.ticks.map(tick => <span>{formatValue(tick.value)}</span>)}</div>
+      </div>
+      {model.ranges.length > 0 && <ul class="ui-bullet-chart__ranges">{model.ranges.map(range => <li><span>{range.label}</span><span>{formatValue(range.start)}–{formatValue(range.end)}</span></li>)}</ul>}
+      {showTable && (
+<details class="ui-chart__data"><summary>{text.viewData}</summary><div role="group" tabindex="0" aria-label={text.chartData}><table>
+        <thead><tr><th scope="col">{text.category}</th><th scope="col">{text.value}</th></tr></thead>
+        <tbody><tr><th scope="row">{title}</th><td>{actual}</td></tr><tr><th scope="row">{targetLabel}</th><td>{formatValue(target)}</td></tr>{model.ranges.map(range => <tr><th scope="row">{range.label}</th><td>{formatValue(range.start)}–{formatValue(range.end)}</td></tr>)}</tbody>
+      </table></div></details>
+)}
+    </>
+  ) :
+<p class="ui-chart__empty" role="status">{text.invalidData}</p>}
+</Chart>

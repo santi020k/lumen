@@ -2878,6 +2878,21 @@ export const lumenRegistry = {
       ]
     },
     {
+      name: 'BulletChart',
+      type: 'component',
+      category: 'Data display',
+      description: 'Compares an actual value with a target and optional labeled performance ranges.',
+      files: [
+        'packages/astro/components/BulletChart.astro',
+        'packages/astro/components/Chart.astro',
+        'packages/astro/styles/lumen.css'
+      ],
+      dependencies: [
+        'Chart',
+        'styles'
+      ]
+    },
+    {
       name: 'Histogram',
       type: 'component',
       category: 'Data display',

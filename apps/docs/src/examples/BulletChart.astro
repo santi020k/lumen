@@ -1,0 +1,7 @@
+---
+import { BulletChart } from '@santi020k/lumen-astro'
+
+import { chartDemoBulletRanges } from '../lib/chart-demo-data'
+---
+
+<BulletChart aria-label="Illustrative delivery performance" heading="On-time delivery" description="Actual performance against the service target" value={86} target={95} ranges={chartDemoBulletRanges} formatValue={value => `${value}%`} />

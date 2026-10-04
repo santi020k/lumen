@@ -102,6 +102,16 @@
       "width": 900
     },
     {
+      "alt": "Bullet chart rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2008,
+      "platform": "android",
+      "sha256": "661a0c4e70559f2366bdd2ea550fb10f356e113eb142d7411e213972447d68a8",
+      "slug": "bullet-chart",
+      "src": "/native-components/android/bullet-chart.webp",
+      "width": 900
+    },
+    {
       "alt": "Button rendered in the Android phone emulator Lumen playground",
       "device": "Android phone emulator",
       "height": 1600,
@@ -266,9 +276,19 @@
       "device": "Android phone emulator",
       "height": 2008,
       "platform": "android",
-      "sha256": "8befa872385745fee3e397b095f4e8c6c59a676692e6817b314909cb6ec6cc56",
+      "sha256": "1b8748bfd148f1bcbaa1e339335b45508c21ae7f6d5e94d5489970f0f0f88f1e",
       "slug": "heatmap",
       "src": "/native-components/android/heatmap.webp",
+      "width": 900
+    },
+    {
+      "alt": "Histogram rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2008,
+      "platform": "android",
+      "sha256": "e43c89df12b0828782139df05e32e20482a63cf2397e5f3e7a8c6794ca1c1a09",
+      "slug": "histogram",
+      "src": "/native-components/android/histogram.webp",
       "width": 900
     },
     {
@@ -752,6 +772,16 @@
       "width": 900
     },
     {
+      "alt": "Waterfall chart rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2008,
+      "platform": "android",
+      "sha256": "72a2073423e82eefc40eaa257bb29f4d37d20b423c88dc602d489bf5225914eb",
+      "slug": "waterfall-chart",
+      "src": "/native-components/android/waterfall-chart.webp",
+      "width": 900
+    },
+    {
       "alt": "Wearable action rendered in the Wear OS emulator Lumen playground",
       "device": "Wear OS emulator",
       "height": 454,
@@ -869,6 +899,16 @@
       "sha256": "1842021594b77618f574391ba59811673b14d22038e9a312e9dd0b11968ab58f",
       "slug": "bar-chart",
       "src": "/native-components/apple/bar-chart.webp",
+      "width": 900
+    },
+    {
+      "alt": "Bullet chart rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "5a55c1e82c8356201a6d005e0561ec7f35bbb66ad1c2cc4b40e3482d5b02458c",
+      "slug": "bullet-chart",
+      "src": "/native-components/apple/bullet-chart.webp",
       "width": 900
     },
     {
@@ -1026,9 +1066,19 @@
       "device": "iPhone simulator",
       "height": 1957,
       "platform": "apple",
-      "sha256": "fb5b611186bf455c0db5031121735b83540ee18f92f3eefc927fa21a37f83f95",
+      "sha256": "76767e747d790ac40b9b0dc1a304585e0a931a56316fa7ec0f567a83ee49771b",
       "slug": "heatmap",
       "src": "/native-components/apple/heatmap.webp",
+      "width": 900
+    },
+    {
+      "alt": "Histogram rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "181195bd1e06cd28d8998413c8ad3a7431bbc3bbe859bd29358d07d45c35b735",
+      "slug": "histogram",
+      "src": "/native-components/apple/histogram.webp",
       "width": 900
     },
     {
@@ -1432,6 +1482,16 @@
       "width": 900
     },
     {
+      "alt": "Waterfall chart rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "26652fba63da62215edb810bca96487b9577057decb592ac4b1b62b0dc9e494c",
+      "slug": "waterfall-chart",
+      "src": "/native-components/apple/waterfall-chart.webp",
+      "width": 900
+    },
+    {
       "alt": "Wearable action rendered in the watchOS simulator Lumen playground",
       "device": "watchOS simulator",
       "height": 496,
@@ -1549,6 +1609,16 @@
       "sha256": "f924c926048b5c93a4984565ed1cc50d16694f7e6698e9d8dbc31967217e737c",
       "slug": "bar-chart",
       "src": "/native-components/react-native/bar-chart.webp",
+      "width": 900
+    },
+    {
+      "alt": "Bullet chart rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 633,
+      "platform": "react-native",
+      "sha256": "732a12e8bef31265bd773df648841883b671f08fbb99ff26780a3b8c71ba444c",
+      "slug": "bullet-chart",
+      "src": "/native-components/react-native/bullet-chart.webp",
       "width": 900
     },
     {
@@ -1716,9 +1786,19 @@
       "device": "Expo web renderer",
       "height": 633,
       "platform": "react-native",
-      "sha256": "74f092906625bbd60defd5445ac6e1db9cc80d861f44bc67e6e68c7ec7510209",
+      "sha256": "670c89b8cfea967fd37bd7339f61460bd207be0b70a9fa69eb5f760faa96f652",
       "slug": "heatmap",
       "src": "/native-components/react-native/heatmap.webp",
+      "width": 900
+    },
+    {
+      "alt": "Histogram rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 506,
+      "platform": "react-native",
+      "sha256": "568da691ab1bb52eb66381e5ff43c1bdcc4267c54ae362232df87251c0e6cae8",
+      "slug": "histogram",
+      "src": "/native-components/react-native/histogram.webp",
       "width": 900
     },
     {
@@ -2089,6 +2169,16 @@
       "sha256": "0251e6309e847b3fcc78c8e8cc80162def033e31f39904c96978c815905a39ac",
       "slug": "toggle",
       "src": "/native-components/react-native/toggle.webp",
+      "width": 900
+    },
+    {
+      "alt": "Waterfall chart rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 506,
+      "platform": "react-native",
+      "sha256": "539b02220c328e2c920a49f18b547061e0f7f86261030b3875796c68dd88b612",
+      "slug": "waterfall-chart",
+      "src": "/native-components/react-native/waterfall-chart.webp",
       "width": 900
     }
   ]

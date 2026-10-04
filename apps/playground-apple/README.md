@@ -86,7 +86,8 @@ apps/playground-apple/scripts/capture-component-screenshots.sh
 
 Screenshots are written to `apps/playground-apple/Screenshots` and remain local verification
 artifacts. Pass a destination directory as the first argument when preparing release evidence. Set
-`LUMEN_SIMULATOR_UDID` to capture with a specific available simulator. The script uses the checked-in
+`LUMEN_SIMULATOR_UDID` to capture with a specific available simulator. Set
+`LUMEN_CAPTURE_SETTLE_SECONDS=5` if the first chart capture needs longer to finish its initial layout. The script uses the checked-in
 Xcode project, disables code signing for the simulator build, and waits for each filtered gallery
 state before capture.
 

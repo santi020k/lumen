@@ -718,7 +718,7 @@ struct ComponentsCatalogView: View {
 
     @ViewBuilder
     private var chartSection: some View {
-        if matches("Sparkline", "Line chart", "Bar chart", "Pie chart", "Scatter chart", "Heatmap", "Range chart", "Combo chart") {
+        if matches("Sparkline", "Line chart", "Bar chart", "Pie chart", "Scatter chart", "Waterfall chart", "Histogram", "Bullet chart", "Heatmap", "Range chart", "Combo chart") {
             PlaygroundSection(
                 "Data visualization",
                 description: "Tokenized plots include a factual accessibility summary and readable fallback data."
@@ -792,15 +792,41 @@ struct ComponentsCatalogView: View {
                         ]
                     )
                 }
+
+                if isVisible("Waterfall chart") {
+                    LumenWaterfallChart(label: "Revenue movement", data: [
+                        .init(id: "opening", label: "Opening", value: 120, kind: .total),
+                        .init(id: "new", label: "New", value: 85),
+                        .init(id: "growth", label: "Growth", value: 35),
+                        .init(id: "costs", label: "Costs", value: -45),
+                        .init(id: "other", label: "Other", value: -10),
+                        .init(id: "closing", label: "Closing", value: 185, kind: .total)
+                    ], heading: "Revenue movement", description: "Opening balance to closing · USD, thousands", valueLabel: "USD, thousands")
+                }
+                if isVisible("Bullet chart") {
+                    LumenBulletChart(label: "Delivery performance", value: 86, target: 95, ranges: [
+                        LumenBulletRange(end: 70, label: "Developing"),
+                        LumenBulletRange(end: 90, label: "Consistent"),
+                        LumenBulletRange(end: 100, label: "Excellent")
+                    ], heading: "On-time delivery", description: "Actual performance against the service target", labels: LumenChartLabels(formatValue: { "\($0.formatted())%" }))
+                }
+                if isVisible("Histogram") {
+                    LumenHistogram(label: "Response times", data: [3, 8, 18, 34, 48, 57, 51, 37, 26, 15, 8, 3].enumerated().map { index, count in
+                        LumenHistogramBin(start: Double(index * 25), end: Double((index + 1) * 25), count: Double(count))
+                    }, heading: "Response time", description: "Distribution of requests · milliseconds")
+                }
                 if isVisible("Heatmap") {
                     LumenHeatmap(
-                        label: "Activity by day and period",
-                        data: [
-                            LumenHeatmapDatum(id: "mon-am", column: "Mon", row: "Morning", value: 18),
-                            LumenHeatmapDatum(id: "tue-am", column: "Tue", row: "Morning", value: 32),
-                            LumenHeatmapDatum(id: "mon-pm", column: "Mon", row: "Evening", value: 47),
-                            LumenHeatmapDatum(id: "tue-pm", column: "Tue", row: "Evening", value: nil)
-                        ]
+                        label: "Change in activity by day and hour",
+                        data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].enumerated().flatMap { row, day in
+                            (0..<12).map { column in
+                                let value = row == 4 && column == 6 ? nil : row == 0 && column == 0 ? 0 :
+                                    (sin(Double(column - 3) / 2) * 14 + cos(Double(row)) * 6).rounded()
+                                return LumenHeatmapDatum(id: "\(row)-\(column)", column: "\(column + 8):00", row: day, value: value)
+                            }
+                        },
+                        heading: "Weekly activity", description: "Change from typical activity · by day and hour",
+                        colorScale: .diverging
                     )
                 }
                 if isVisible("Range chart") {

@@ -16,7 +16,7 @@ components=(
   "Tabs"
   "Chip" "Badge" "Link" "Divider" "Spinner" "Card" "Alert" "Alert dialog"
   "Toast" "Banner" "Progress" "Skeleton" "Graphic" "Backdrop" "Illustration" "Image"
-  "Sparkline" "Line chart" "Bar chart" "Pie chart" "Scatter chart" "Heatmap" "Range chart" "Combo chart"
+  "Sparkline" "Line chart" "Bar chart" "Pie chart" "Scatter chart" "Waterfall chart" "Bullet chart" "Histogram" "Heatmap" "Range chart" "Combo chart"
   "Disclosure" "Avatar" "Empty state" "Error state" "List row" "Stat" "Gauge" "Section header"
   "Status bar" "Navigation bar" "Sheet" "Menu" "Share button" "Tab bar minimization"
   "Tab accessory"
@@ -56,7 +56,7 @@ for component in "${components[@]}"; do
   xcrun simctl terminate "${device_id}" "${bundle_id}" 2>/dev/null || true
   xcrun simctl launch "${device_id}" "${bundle_id}" --component "${component}"
   # Allow SwiftUI layout and the generated icon asset catalog to settle before capture.
-  sleep 2
+  sleep "${LUMEN_CAPTURE_SETTLE_SECONDS:-2}"
   xcrun simctl io "${device_id}" screenshot "${output_dir}/${slug}.png"
 done
 

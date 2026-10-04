@@ -1,6 +1,7 @@
 'use client'
 
 export * from './attachments.js'
+export * from './bullet-chart.js'
 export { ChangeSummary, type ChangeSummaryProps } from './change-summary.js'
 export { type ChartInteractionProps } from './chart-interaction.js'
 export * from './components.js'

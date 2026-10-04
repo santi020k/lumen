@@ -1,43 +1,87 @@
-import type { LumenChartSeries, LumenHistogramBin, LumenWaterfallDatum } from '@santi020k/lumen-core'
+import type { LumenChartSeries, LumenHeatmapDatum, LumenHistogramBin, LumenWaterfallDatum } from '@santi020k/lumen-core'
+
+const timeline = (values: readonly (number | null)[]) => values.map((y, index) => {
+  const x = index < 2 ? index : Math.round((index - 1) * 180 / (values.length - 2))
+
+  return { x, xLabel: `${String(9 + Math.floor(x / 60)).padStart(2, '0')}:${String(x % 60).padStart(2, '0')}`, y }
+})
 
 export const chartDemoSeries: readonly LumenChartSeries[] = [
   { id: 'requests',
     label: 'Requests',
-    data: [
-      { x: 0, xLabel: '09:00', y: 20 },
-      { x: 1, xLabel: '09:01', y: 35 },
-      { x: 30, xLabel: '09:30', y: null },
-      { x: 90, xLabel: '10:30', y: 75 },
-      { x: 180, xLabel: '12:00', y: 60 }
-    ] },
+    data: timeline([
+      48,
+      52,
+      46,
+      61,
+      58,
+      null,
+      78,
+      72,
+      86,
+      82,
+      106,
+      118,
+      110,
+      124,
+      103,
+      98,
+      116,
+      137,
+      129,
+      148,
+      141,
+      165,
+      158,
+      176,
+      169,
+      188
+    ]) },
   { id: 'completed',
     label: 'Completed',
-    data: [
-      { x: 0, xLabel: '09:00', y: 12 },
-      { x: 1, xLabel: '09:01', y: 22 },
-      { x: 30, xLabel: '09:30', y: 40 },
-      { x: 90, xLabel: '10:30', y: 62 },
-      { x: 180, xLabel: '12:00', y: 52 }
-    ] }
+    data: timeline([
+      34, 38, 36, 43, 42, 51, 55, 53, 66, 61, 76, 82, 79, 89, 74, 71, 83, 96, 92, 106, 103, 119, 112, 125, 122, 136
+    ]) }
 ]
 
-export const chartDemoBins: readonly LumenHistogramBin[] = [
-  { start: 0, end: 100, count: 8 },
-  { start: 100, end: 200, count: 24 },
-  { start: 200, end: 300, count: 42 },
-  { start: 300, end: 400, count: 18 }
-]
+export const chartDemoBins: readonly LumenHistogramBin[] = [3, 8, 18, 34, 48, 57, 51, 37, 26, 15, 8, 3]
+  .map((count, index) => ({ start: index * 25, end: (index + 1) * 25, count }))
 
 export const chartDemoWaterfall: readonly LumenWaterfallDatum[] = [
   { id: 'opening', label: 'Opening', kind: 'total', value: 120 },
-  { id: 'added', label: 'Added', value: 85 },
-  { id: 'used', label: 'Used', value: -55 },
-  { id: 'closing', label: 'Closing', kind: 'total', value: 150 }
+  { id: 'new', label: 'New', value: 85 },
+  { id: 'expansion', label: 'Expansion', value: 35 },
+  { id: 'churn', label: 'Churn', value: -45, tone: 'series-4' },
+  { id: 'credits', label: 'Credits', value: -10, tone: 'series-4' },
+  { id: 'closing', label: 'Closing', kind: 'total', value: 185 }
 ]
 
-export const chartDemoHeatmap = [
-  { x: 'Morning', y: 'Monday', value: -4 },
-  { x: 'Afternoon', y: 'Monday', value: 4 },
-  { x: 'Morning', y: 'Tuesday', value: 0 },
-  { x: 'Afternoon', y: 'Tuesday', value: null }
+export const chartDemoHeatmap: readonly LumenHeatmapDatum[] = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].flatMap((y, day) => Array.from({ length: 12 }, (_, hour) => ({
+  x: hour * 2,
+  xLabel: `${String(hour * 2).padStart(2, '0')}:00`,
+  y,
+  value: day === 5 && hour === 8 ? null : Math.round(Math.sin(hour * 0.55 - day * 0.7) * 7 + Math.cos(day * 1.8) * 2)
+})))
+
+export const chartDemoChannels: LumenChartSeries = {
+  id: 'channels',
+  label: 'Traffic source',
+  data: [
+    { x: 'Organic', y: 48, tone: 'series-1' },
+    { x: 'Direct', y: 27, tone: 'series-2' },
+    { x: 'Referral', y: 17, tone: 'series-3' },
+    { x: 'Social', y: 8, tone: 'series-4' }
+  ]
+}
+
+export const chartDemoMetrics = chartDemoSeries.map(series => ({
+  label: series.label,
+  value: series.data.reduce((total, point) => total + (point.y ?? 0), 0).toLocaleString('en-US'),
+  values: series.data.flatMap(point => point.y === null ? [] : [point.y])
+}))
+
+export const chartDemoBulletRanges = [
+  { end: 70, label: 'Developing' },
+  { end: 90, label: 'Consistent' },
+  { end: 100, label: 'Excellent' }
 ]

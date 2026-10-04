@@ -25,6 +25,9 @@ export {
 export {
   LumenBarChart,
   type LumenBarChartProps,
+  LumenBulletChart,
+  type LumenBulletChartProps,
+  type LumenBulletRange,
   type LumenChartDatum,
   type LumenChartScaleType,
   type LumenChartSelection,
@@ -36,6 +39,9 @@ export {
   LumenHeatmap,
   type LumenHeatmapDatum,
   type LumenHeatmapProps,
+  LumenHistogram,
+  type LumenHistogramBin,
+  type LumenHistogramProps,
   LumenLineChart,
   type LumenLineChartProps,
   LumenPieChart,
@@ -46,8 +52,10 @@ export {
   LumenScatterChart,
   type LumenScatterChartProps,
   LumenSparkline,
-  type LumenSparklineProps
-} from './chart-components.js'
+  type LumenSparklineProps,
+  LumenWaterfallChart,
+  type LumenWaterfallChartProps,
+  type LumenWaterfallDatum } from './chart-components.js'
 export {
   LumenImageComparison,
   type LumenImageComparisonProps

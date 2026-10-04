@@ -79,6 +79,15 @@ import com.santi020k.lumen.LumenGraphicSize
 import com.santi020k.lumen.LumenGraphicTone
 import com.santi020k.lumen.LumenGraphicVariant
 import com.santi020k.lumen.LumenHeatmap
+import com.santi020k.lumen.LumenChartLabels
+import com.santi020k.lumen.LumenHeatmapColorScale
+import com.santi020k.lumen.LumenBulletChart
+import com.santi020k.lumen.LumenBulletRange
+import com.santi020k.lumen.LumenHistogram
+import com.santi020k.lumen.LumenHistogramBin
+import com.santi020k.lumen.LumenWaterfallChart
+import com.santi020k.lumen.LumenWaterfallDatum
+import com.santi020k.lumen.LumenWaterfallKind
 import com.santi020k.lumen.LumenHeatmapDatum
 import com.santi020k.lumen.LumenIcon
 import com.santi020k.lumen.LumenIconButton
@@ -1309,15 +1318,40 @@ private fun ChartExample(visibleNames: Set<String>) {
             )
         )
     }
+
+    if ("Waterfall chart" in visibleNames) {
+        LumenWaterfallChart(label = "Revenue movement", heading = "Revenue movement", description = "Opening balance to closing · USD, thousands", valueLabel = "USD, thousands", data = listOf(
+            LumenWaterfallDatum("opening", "Opening", 120.0, LumenWaterfallKind.Total),
+            LumenWaterfallDatum("new", "New", 85.0),
+            LumenWaterfallDatum("growth", "Growth", 35.0),
+            LumenWaterfallDatum("costs", "Costs", -45.0),
+            LumenWaterfallDatum("other", "Other", -10.0),
+            LumenWaterfallDatum("closing", "Closing", 185.0, LumenWaterfallKind.Total)
+        ))
+    }
+    if ("Bullet chart" in visibleNames) {
+        LumenBulletChart(value = 86.0, target = 95.0, label = "Delivery performance", heading = "On-time delivery", description = "Actual performance against the service target", ranges = listOf(
+            LumenBulletRange(70.0, "Developing"), LumenBulletRange(90.0, "Consistent"), LumenBulletRange(100.0, "Excellent")
+        ), labels = LumenChartLabels(formatValue = { "${it.toInt()}%" }))
+    }
+    if ("Histogram" in visibleNames) {
+        LumenHistogram(label = "Response times", heading = "Response time", description = "Distribution of requests · milliseconds", data = listOf(3, 8, 18, 34, 48, 57, 51, 37, 26, 15, 8, 3).mapIndexed { index, count ->
+            LumenHistogramBin(index * 25.0, (index + 1) * 25.0, count.toDouble())
+        })
+    }
     if ("Heatmap" in visibleNames) {
         LumenHeatmap(
-            label = "Activity by day and period",
-            data = listOf(
-                LumenHeatmapDatum("mon-am", "Mon", "Morning", 18.0),
-                LumenHeatmapDatum("tue-am", "Tue", "Morning", 32.0),
-                LumenHeatmapDatum("mon-pm", "Mon", "Evening", 47.0),
-                LumenHeatmapDatum("tue-pm", "Tue", "Evening", null)
-            )
+            label = "Change in activity by day and hour",
+            heading = "Weekly activity", description = "Change from typical activity · by day and hour",
+            colorScale = LumenHeatmapColorScale.Diverging,
+            labels = LumenChartLabels(formatValue = { it.toInt().toString() }),
+            data = listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun").flatMapIndexed { row, day ->
+                (0..<12).map { column ->
+                    val value = if (row == 4 && column == 6) null else if (row == 0 && column == 0) 0.0 else
+                        kotlin.math.round(kotlin.math.sin((column - 3) / 2.0) * 14 + kotlin.math.cos(row.toDouble()) * 6)
+                    LumenHeatmapDatum("$row-$column", "${column + 8}:00", day, value)
+                }
+            }
         )
     }
     if ("Range chart" in visibleNames) {

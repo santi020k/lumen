@@ -95,6 +95,8 @@ internal val playgroundSections = listOf(
             "Bar chart",
             "Pie chart",
             "Scatter chart",
+            "Waterfall chart",
+            "Histogram",
             "Heatmap",
             "Range chart",
             "Combo chart",
@@ -105,7 +107,8 @@ internal val playgroundSections = listOf(
             "Section header",
             "Status bar",
             "Gauge",
-            "Image comparison"
+            "Image comparison",
+            "Bullet chart"
         )
     ),
     PlaygroundSection(

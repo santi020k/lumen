@@ -44,6 +44,7 @@ import {
   hasLumenPieData,
   isLumenRichTextToggleCommand,
   type LumenAttachmentPreviewController,
+  type LumenBulletRange,
   type LumenChartLabels,
   type LumenChartSeries,
   type LumenChartTone,
@@ -136,6 +137,7 @@ import {
   LumenImageComparisonElement as GranularLumenImageComparisonElement,
   lumenImageComparisonElementConfig
 } from './components/image-comparison.js'
+import { bulletChartHtml, bulletNumberAttribute, parseBulletRanges } from './bullet-chart-html.js'
 import { LumenDatumChartElement } from './chart-activation.js'
 import { chartAnnotationHtml, chartCaptionHtml, chartDataTableHtml, chartDomainAttributes, chartHeaderHtml, chartInspectionHtml, chartNumberAttribute, escapeChartHtml, heatmapDataTableHtml, interactiveChartLegendHtml, intervalChartHtml, parseChartAnnotations, parseHeatmapData, parseHistogramBins, parseRangeData, parseWaterfallData, rangeDataTableHtml, scatterDataTableHtml, scatterPlotHtml } from './chart-html.js'
 import {
@@ -678,6 +680,7 @@ const elementConfigs = {
     defaults: { 'data-ui-hover-card': '' },
     tagName: 'lumen-hover-card'
   },
+  BulletChart: { baseClassName: 'ui-chart ui-bullet-chart', role: 'figure', tagName: 'lumen-bullet-chart', attributeClasses: { presentation: { bare: 'ui-chart--bare' } } },
   Histogram: { baseClassName: 'ui-chart ui-histogram', role: 'figure', tagName: 'lumen-histogram', attributeClasses: { presentation: { bare: 'ui-chart--bare' } } },
   WaterfallChart: { baseClassName: 'ui-chart ui-waterfall-chart', role: 'figure', tagName: 'lumen-waterfall-chart', attributeClasses: { presentation: { bare: 'ui-chart--bare' } } },
   Heatmap: {
@@ -1458,6 +1461,9 @@ const elementConfigs = {
 >
 
 const observedAttributeNames = [
+  'target',
+  'ranges',
+  'target-label',
   'activation-offset',
   'animation',
   'area',
@@ -6104,7 +6110,7 @@ class LumenPieChartBehaviorElement extends LumenDataChartBehaviorElement {
 
     return [
       `<details class="ui-chart__data"><summary>${escapeChartHtml(labels.viewData)}</summary>`,
-      `<div><table><thead><tr><th scope="col">${escapeChartHtml(labels.category)}</th>`,
+      `<div role="group" tabindex="0" aria-label="${escapeChartHtml(labels.chartData)}"><table><thead><tr><th scope="col">${escapeChartHtml(labels.category)}</th>`,
       `<th scope="col">${escapeChartHtml(labels.value)}</th><th scope="col">Share</th></tr></thead>`,
       `<tbody>${rows}</tbody></table></div></details>`
     ].join('')
@@ -6351,7 +6357,7 @@ class LumenHeatmapBehaviorElement extends LumenStructuredChartBehaviorElement {
     const available = geometry.cells.filter(cell => cell.value !== null && Number.isFinite(cell.value))
 
     const axis = geometry.xTicks.map(tick => `<text text-anchor="${tick.textAnchor}" x="${tick.position}" y="298">${escapeChartHtml(tick.label)}</text>`).join('') +
-      geometry.yTicks.map(tick => `<text text-anchor="end" dominant-baseline="middle" x="108" y="${tick.position}">${escapeChartHtml(tick.label)}</text>`).join('')
+      geometry.yTicks.map(tick => `<text class="ui-heatmap__row-label" text-anchor="end" dominant-baseline="middle" x="108" y="${tick.position}">${escapeChartHtml(tick.label)}</text>`).join('')
 
     const cells = geometry.cells.map(cell => {
       const missing = cell.value === null || !Number.isFinite(cell.value)
@@ -6365,7 +6371,7 @@ class LumenHeatmapBehaviorElement extends LumenStructuredChartBehaviorElement {
     const summary = this.getAttribute('summary') ?? labels.formatHeatmapSummary(available.length)
     const empty = available.length === 0 ? `<p class="ui-chart__empty" role="status">${escapeChartHtml(labels.empty)}</p>` : ''
     const plot = geometry.cells.length === 0 ? '' : `<div class="ui-chart__plot" role="region" tabindex="0" aria-label="${escapeChartHtml(labels.chartData)}"><svg aria-hidden="true" viewBox="0 0 640 320"><g class="ui-chart__axis-labels">${axis}</g><g class="ui-heatmap__cells">${cells}</g></svg></div>`
-    const legend = geometry.cells.length > 0 && chartBooleanAttribute(this, 'show-legend', true) ? `<div class="ui-heatmap__legend" aria-label="${escapeChartHtml(labels.chartLegend)}"><span>${escapeChartHtml(this.valueFormatter(geometry.domain.min))}</span><span style="background:${geometry.legendBackground}" class="ui-heatmap__scale" aria-hidden="true"></span><span>${escapeChartHtml(this.valueFormatter(geometry.domain.max))}</span>${colorScale === 'diverging' ? `<span>${escapeChartHtml(this.valueFormatter(geometry.midpoint))}</span>` : ''}<span>× ${escapeChartHtml(labels.notAvailable)}</span></div>` : ''
+    const legend = geometry.cells.length > 0 && chartBooleanAttribute(this, 'show-legend', true) ? `<div class="ui-heatmap__legend" aria-label="${escapeChartHtml(labels.chartLegend)}"><span>${escapeChartHtml(this.valueFormatter(geometry.domain.min))}</span><span style="background:${geometry.legendBackground}" class="ui-heatmap__scale">${colorScale === 'diverging' ? `<span style="left:${geometry.midpointPercent}%">${escapeChartHtml(this.valueFormatter(geometry.midpoint))}</span>` : ''}</span><span>${escapeChartHtml(this.valueFormatter(geometry.domain.max))}</span><span>× ${escapeChartHtml(labels.notAvailable)}</span></div>` : ''
     const table = chartBooleanAttribute(this, 'show-table', true) ? heatmapDataTableHtml(geometry.cells, labels, this.valueFormatter) : ''
 
     this.renderChartContent(`${chartHeaderHtml(this)}<p class="ui-sr-only" data-ui-chart-summary>${escapeChartHtml(summary)}</p>${empty}${plot}${legend}${table}${chartCaptionHtml(this)}`)
@@ -6389,6 +6395,44 @@ class LumenWaterfallChartBehaviorElement extends LumenStructuredChartBehaviorEle
     const model = createLumenWaterfallGeometry(this.data, { formatValue: this.valueFormatter })
 
     this.innerHTML = chartHeaderHtml(this) + intervalChartHtml(model, labels, this.valueFormatter, this.valueFormatter, this.getAttribute('value-label') ?? labels.value, chartBooleanAttribute(this, 'show-table', true), this.getAttribute('summary')) + chartCaptionHtml(this)
+  }
+}
+
+export class LumenBulletChartElement extends LumenStructuredChartBehaviorElement {
+  static override config = { ...elementConfigs.BulletChart, observedAttributes: observedAttributeNames }
+
+  #ranges: readonly LumenBulletRange[] | undefined
+
+  get ranges(): readonly LumenBulletRange[] {
+    return this.#ranges ?? parseBulletRanges(this.getAttribute('ranges'))
+  }
+
+  set ranges(value: readonly LumenBulletRange[]) {
+    this.#ranges = value
+
+    if (this.isConnected) this.renderChart()
+  }
+
+  get value(): number | null {
+    return this.hasAttribute('value') ? bulletNumberAttribute(this, 'value') : null
+  }
+
+  set value(value: number | null) {
+    if (value === null) this.removeAttribute('value')
+    else this.setAttribute('value', String(value))
+  }
+
+  get target(): number {
+    return bulletNumberAttribute(this, 'target')
+  }
+
+  set target(value: number) {
+    this.setAttribute('target', String(value))
+  }
+
+  protected renderChart() {
+    this.innerHTML = chartHeaderHtml(this, false) +
+      bulletChartHtml(this, this.ranges, chartLabelsFor(this), this.valueFormatter) + chartCaptionHtml(this)
   }
 }
 
@@ -11429,6 +11473,7 @@ const granularElementClasses: Partial<
   ChangeSummary: GranularLumenChangeSummaryElement,
   FilterBar: GranularLumenFilterBarElement,
   Badge: GranularLumenBadgeElement,
+  BulletChart: LumenBulletChartElement,
   Button: GranularLumenButtonElement,
   Card: GranularLumenCardElement,
   CardContent: GranularLumenCardContentElement,

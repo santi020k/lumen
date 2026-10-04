@@ -95,6 +95,8 @@ export const componentCategories: readonly ComponentCategoryDefinition[] = [
       "Bar chart",
       "Pie chart",
       "Scatter chart",
+      "Waterfall chart",
+      "Histogram",
       "Heatmap",
       "Range chart",
       "Combo chart",
@@ -105,7 +107,8 @@ export const componentCategories: readonly ComponentCategoryDefinition[] = [
       "Section header",
       "Status bar",
       "Gauge",
-      "Image comparison"
+      "Image comparison",
+      "Bullet chart"
     ],
     value: 'data'
   },

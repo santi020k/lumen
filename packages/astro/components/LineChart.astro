@@ -269,7 +269,7 @@ r="10"
     showTable && hasData && (
       <details class="ui-chart__data">
         <summary>{resolvedLabels.viewData}</summary>
-        <div>
+        <div role="group" tabindex="0" aria-label={resolvedLabels.chartData}>
           <table>
             <thead>
               <tr>

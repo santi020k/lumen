@@ -416,11 +416,11 @@ export const getLumenChartDomain = (
   }
 
   if (min === max) {
-    const offset = Math.abs(min || 1) * 0.1
+    const offset = Math.max(Number.MIN_VALUE, Math.abs(min || 1) * 0.1)
 
-    min -= offset
+    min = Math.max(-Number.MAX_VALUE, min - offset)
 
-    max += offset
+    max = Math.min(Number.MAX_VALUE, max + offset)
   }
 
   return { max, min }
@@ -447,9 +447,14 @@ export const scaleLumenChartValue = (
 ): number => {
   const domainSize = domain.max - domain.min
 
-  if (!Number.isFinite(value) || domainSize === 0) return rangeStart
+  if (
+    !Number.isFinite(value) || !Number.isFinite(domain.min) || !Number.isFinite(domain.max) || domainSize === 0
+  ) return rangeStart
 
-  const ratio = (value - domain.min) / domainSize
+  // A valid domain can span opposite finite extremes whose difference overflows.
+  const ratio = Number.isFinite(domainSize) ?
+    (value - domain.min) / domainSize :
+    (value / 2 - domain.min / 2) / (domain.max / 2 - domain.min / 2)
 
   return rangeStart + ratio * (rangeEnd - rangeStart)
 }

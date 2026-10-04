@@ -9,6 +9,7 @@ import { afterEach, describe, expect, test, vi } from 'vitest'
 
 import { LumenButtonGroup, LumenChip, LumenFieldGroup, LumenTextarea, LumenToast } from './additional-components.js'
 import { LumenAutocomplete, LumenInputOTP, LumenNumberField, LumenPasswordField } from './advanced-form-components.js'
+import { LumenHeatmap, LumenHistogram, LumenWaterfallChart } from './chart-components.js'
 import { LumenImageComparison } from './comparison-components.js'
 import { LumenDateField, LumenDateRangeField } from './datetime-components.js'
 import { LumenSearchField, LumenToggle } from './form-components.js'
@@ -95,7 +96,7 @@ vi.mock('react-native-svg', async () => {
   ): ReactElement => createElement(name, props)
 
   return Object.fromEntries(
-    ['Circle', 'Ellipse', 'Line', 'Path', 'Polygon', 'Polyline', 'Rect', 'Svg']
+    ['Circle', 'Defs', 'Ellipse', 'G', 'Line', 'LinearGradient', 'Path', 'Polygon', 'Polyline', 'Rect', 'Stop', 'Svg', 'Text']
       .map(name => [name, hostComponent(name)])
   )
 })
@@ -1631,5 +1632,77 @@ describe('advanced native inputs', () => {
     expect(readProp(control, 'accessibilityLabel')).toBe('Comparison')
     expect(readProp(control, 'accessibilityValue')).toMatchObject({ text: 'After 25%' })
     expect(root.container.queryAll(instance => readProp(instance, 'accessibilityRole') === 'image')).toHaveLength(0)
+  })
+})
+
+describe('native chart data inspection', () => {
+  test('renders zero as neutral and missing measurements with a separate marker and exact fallback', async () => {
+    const root = await renderNative(
+      <LumenHeatmap
+        label="Activity"
+        colorScale="diverging"
+        data={[
+          { x: 'Mon', y: 'AM', value: -2 },
+          { x: 'Tue', y: 'AM', value: 0 },
+          { x: 'Wed', y: 'AM', value: null },
+          { x: 'Mon', y: 'AM', value: 40 }
+        ]}
+      />
+    )
+    const neutral = root.container.queryAll(instance => instance.type === 'Rect' && readProp(instance, 'fillOpacity') === 0)
+    expect(neutral).toHaveLength(1)
+    const missing = root.container.queryAll(instance => instance.type === 'Text' && readProp(instance, 'children') === '× Not available')
+    expect(missing).toHaveLength(1)
+    await act(async () => {
+      callAction(readProp(findByAccessibilityRole(root, 'button'), 'onPress'), 'Missing chart disclosure')
+      await Promise.resolve()
+    })
+    const rows = root.container.queryAll(instance => instance.type === 'Text').map(instance => readProp(instance, 'children'))
+    expect(rows).toContain('Wed, AM: Not available')
+    expect(rows).toContain('Tue, AM: 0')
+    expect(rows).toContain('Mon, AM: -2')
+    expect(rows).not.toContain('Mon, AM: 40')
+  })
+
+  test('opens and closes exact source values using a labeled disclosure', async () => {
+    const root = await renderNative(
+      <LumenWaterfallChart
+        label="Revenue"
+        data={[
+          { id: 'opening', label: 'Opening', kind: 'total', value: 100 },
+          { id: 'cost', label: 'Costs', value: -25 }
+        ]}
+      />
+    )
+    const button = findByAccessibilityRole(root, 'button')
+    expect(readProp(button, 'accessibilityState')).toMatchObject({ expanded: false })
+    expect(root.container.queryAll(instance => readProp(instance, 'accessibilityRole') === 'list')).toHaveLength(0)
+    await act(async () => {
+      callAction(readProp(button, 'onPress'), 'Missing chart disclosure')
+      await Promise.resolve()
+    })
+    expect(readProp(findByAccessibilityRole(root, 'button'), 'accessibilityState')).toMatchObject({ expanded: true })
+    const rows = root.container.queryAll(instance => instance.type === 'Text').map(instance => readProp(instance, 'children'))
+    expect(rows).toContain('Costs, Start: 100, End: 75, Value: -25')
+    await act(async () => {
+      callAction(readProp(findByAccessibilityRole(root, 'button'), 'onPress'), 'Missing chart disclosure')
+      await Promise.resolve()
+    })
+    expect(root.container.queryAll(instance => readProp(instance, 'accessibilityRole') === 'list')).toHaveLength(0)
+  })
+
+  test('shows a localized invalid-data state rather than a partial histogram', async () => {
+    const root = await renderNative(
+      <LumenHistogram
+        label="Distribution"
+        labels={{ invalidData: 'Check the bins' }}
+        data={[
+          { start: 0, end: 10, count: 5 }, { start: 5, end: 15, count: 3 }
+        ]}
+      />
+    )
+    expect(readProp(findByAccessibilityRole(root, 'alert'), 'children')).toBe('Check the bins')
+    expect(root.container.queryAll(instance => instance.type === 'Svg')).toHaveLength(0)
+    expect(root.container.queryAll(instance => readProp(instance, 'accessibilityRole') === 'button')).toHaveLength(0)
   })
 })

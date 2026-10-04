@@ -121,7 +121,7 @@ export const chartInspectionHtml = (
         labels.notAvailable :
         formatValue(value)
 
-      return `<span data-ui-chart-series-value="${escapeChartHtml(series.id)}">${escapeChartHtml(series.label)}: ${escapeChartHtml(label)}</span>`
+      return `<span class="${getLumenChartToneClassName(series.tone, seriesIndex)}" data-ui-chart-series-value="${escapeChartHtml(series.id)}"><i aria-hidden="true"></i>${escapeChartHtml(series.label)} <b>${escapeChartHtml(label)}</b></span>`
     }).join('')
 
     return `<div hidden data-ui-chart-point="${escapeChartHtml(JSON.stringify(category))}" data-ui-chart-position="${model.positions[index] ?? model.paddingLeft}"><strong>${escapeChartHtml(getLumenChartCategoryLabel(model.series, category, formatCategory, 'detail'))}</strong>${values}</div>`
@@ -155,7 +155,7 @@ export const intervalChartHtml = (
   const connectors = 'connectors' in model ? model.connectors.map(line => `<line class="ui-waterfall-chart__connector" x1="${line.x1}" x2="${line.x2}" y1="${line.y}" y2="${line.y}"></line>`).join('') : ''
   const marks = model.marks.map(mark => `<rect class="${getLumenChartToneClassName(mark.tone)}" x="${mark.x}" y="${mark.y}" width="${mark.width}" height="${mark.height}"><title>${escapeChartHtml(mark.label)}: ${escapeChartHtml(formatValue(mark.value))}</title></rect>`).join('')
   const rows = model.marks.map((mark, index) => `<tr><th scope="row">${escapeChartHtml(mark.label)}</th><td>${escapeChartHtml(formatBoundary(mark.start))}</td><td>${escapeChartHtml(formatBoundary(mark.end))}</td><td>${escapeChartHtml(formatValue(mark.value))}</td>${'bins' in model && model.frequency === 'density' ? `<td>${model.bins[index]?.count ?? 0}</td>` : ''}</tr>`).join('')
-  const table = showTable ? `<details class="ui-chart__data"><summary>${escapeChartHtml(labels.viewData)}</summary><div><table><thead><tr><th scope="col">${escapeChartHtml(labels.category)}</th><th scope="col">${escapeChartHtml(labels.start)}</th><th scope="col">${escapeChartHtml(labels.end)}</th><th scope="col">${escapeChartHtml(valueLabel)}</th>${'bins' in model && model.frequency === 'density' ? `<th scope="col">${escapeChartHtml(labels.count)}</th>` : ''}</tr></thead><tbody>${rows}</tbody></table></div></details>` : ''
+  const table = showTable ? `<details class="ui-chart__data"><summary>${escapeChartHtml(labels.viewData)}</summary><div role="group" tabindex="0" aria-label="${escapeChartHtml(labels.chartData)}"><table><thead><tr><th scope="col">${escapeChartHtml(labels.category)}</th><th scope="col">${escapeChartHtml(labels.start)}</th><th scope="col">${escapeChartHtml(labels.end)}</th><th scope="col">${escapeChartHtml(valueLabel)}</th>${'bins' in model && model.frequency === 'density' ? `<th scope="col">${escapeChartHtml(labels.count)}</th>` : ''}</tr></thead><tbody>${rows}</tbody></table></div></details>` : ''
   const summary = summaryOverride ?? formatLumenChartSummary([{ id: 'values', label: valueLabel, data: model.marks.map(mark => ({ x: mark.key, y: mark.value })) }], formatValue, labels)
 
   return `<p class="ui-sr-only" data-ui-chart-summary>${escapeChartHtml(summary)}</p><p class="ui-chart__axis-title">${escapeChartHtml(valueLabel)}</p><div class="ui-chart__plot" role="region" tabindex="0" aria-label="${escapeChartHtml(labels.chartData)}"><svg aria-hidden="true" viewBox="0 0 ${model.width} ${model.height}"><g class="ui-chart__grid">${grid}</g><g class="ui-chart__axis-labels">${axis}</g>${connectors}<g class="ui-bar-chart__marks">${marks}</g></svg></div>${table}`
@@ -224,7 +224,7 @@ export const chartDataTableHtml = (
 
   return [
     `<details class="ui-chart__data"><summary>${escapeChartHtml(labels.viewData)}</summary>`,
-    `<div><table><thead><tr><th scope="col">${escapeChartHtml(labels.category)}</th>`,
+    `<div role="group" tabindex="0" aria-label="${escapeChartHtml(labels.chartData)}"><table><thead><tr><th scope="col">${escapeChartHtml(labels.category)}</th>`,
     `${headers}</tr></thead><tbody>${rows}</tbody></table></div></details>`
   ].join('')
 }
@@ -246,7 +246,7 @@ export const scatterDataTableHtml = (
 
   return [
     `<details class="ui-chart__data"><summary>${escapeChartHtml(labels.viewData)}</summary>`,
-    `<div><table><thead><tr><th scope="col">${escapeChartHtml(labels.x)}</th>`,
+    `<div role="group" tabindex="0" aria-label="${escapeChartHtml(labels.chartData)}"><table><thead><tr><th scope="col">${escapeChartHtml(labels.x)}</th>`,
     `<th scope="col">${escapeChartHtml(labels.series)}</th><th scope="col">${escapeChartHtml(labels.value)}</th>`,
     `<th scope="col">${escapeChartHtml(labels.size)}</th></tr></thead>`,
     `<tbody>${rows}</tbody></table></div></details>`
@@ -275,7 +275,7 @@ export const heatmapDataTableHtml = (
 
   return [
     `<details class="ui-chart__data"><summary>${escapeChartHtml(labels.viewData)}</summary>`,
-    `<div><table><thead><tr><th scope="col">${escapeChartHtml(labels.column)}</th>`,
+    `<div role="group" tabindex="0" aria-label="${escapeChartHtml(labels.chartData)}"><table><thead><tr><th scope="col">${escapeChartHtml(labels.column)}</th>`,
     `<th scope="col">${escapeChartHtml(labels.row)}</th><th scope="col">${escapeChartHtml(labels.value)}</th></tr></thead>`,
     `<tbody>${rows}</tbody></table></div></details>`
   ].join('')
@@ -294,16 +294,16 @@ export const rangeDataTableHtml = (
 
   return [
     `<details class="ui-chart__data"><summary>${escapeChartHtml(labels.viewData)}</summary>`,
-    `<div><table><thead><tr><th scope="col">${escapeChartHtml(labels.category)}</th>`,
+    `<div role="group" tabindex="0" aria-label="${escapeChartHtml(labels.chartData)}"><table><thead><tr><th scope="col">${escapeChartHtml(labels.category)}</th>`,
     `<th scope="col">${escapeChartHtml(labels.low)}</th><th scope="col">${escapeChartHtml(labels.high)}</th></tr></thead>`,
     `<tbody>${rows}</tbody></table></div></details>`
   ].join('')
 }
 
-export const chartHeaderHtml = (element: HTMLElement): string => {
+export const chartHeaderHtml = (element: HTMLElement, showValue = true): string => {
   const heading = element.getAttribute('heading')
   const description = element.getAttribute('description')
-  const value = element.getAttribute('value')
+  const value = showValue ? element.getAttribute('value') : null
 
   if (!heading && !description && !value) return ''
 

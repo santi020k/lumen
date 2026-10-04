@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict'
-import { realpath } from 'node:fs/promises'
+import { mkdir, realpath } from 'node:fs/promises'
+import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 import { chromium, expect } from '@playwright/test'
@@ -103,8 +104,111 @@ try {
   await expect(updates).toHaveAttribute('aria-selected', 'true')
 
   await expect(settings).toHaveAttribute('aria-disabled', 'true')
+
+  url.searchParams.set('component', 'Heatmap')
+
+  const captureDirectory = resolve(import.meta.dirname, '../../../test-results/react-native-components')
+
+  await mkdir(captureDirectory, { recursive: true })
+
+  for (const width of [390, 1280]) {
+    await page.setViewportSize({ width, height: 900 })
+
+    await page.goto(url.href, { waitUntil: 'load' })
+
+    const disclosure = page.getByRole('button', { name: /View chart data/ })
+
+    await expect(page.getByText('Weekly activity', { exact: true })).toBeVisible()
+
+    await expect(page.getByLabel('Chart legend: -20, 0, 20', { exact: true })).toBeVisible()
+
+    for (const theme of ['light', 'dark']) {
+      const toggle = page.getByRole('button', { name: `Use ${theme} theme` })
+
+      if (await toggle.count()) await toggle.click()
+
+      await disclosure.scrollIntoViewIfNeeded()
+
+      await page.screenshot({ path: resolve(captureDirectory, `heatmap-${width}-${theme}.png`) })
+
+      if (width === 1280 && theme === 'light') {
+        await page.screenshot({ path: resolve(captureDirectory, 'heatmap.png') })
+      }
+
+      const bounds = await disclosure.boundingBox()
+
+      assert.ok(bounds && bounds.x >= 0 && bounds.x + bounds.width <= width, 'Disclosure fits the viewport')
+
+      await disclosure.focus()
+
+      await page.keyboard.press('Enter')
+
+      await expect(disclosure).toHaveAttribute('aria-expanded', 'true')
+
+      await expect(page.getByText('8:00, Mon: 0', { exact: true })).toBeVisible()
+
+      await page.getByText('14:00, Fri: Not available', { exact: true }).scrollIntoViewIfNeeded()
+
+      await expect(page.getByText('14:00, Fri: Not available', { exact: true })).toBeVisible()
+
+      await page.getByText('19:00, Sun: -5', { exact: true }).scrollIntoViewIfNeeded()
+
+      await expect(page.getByText('19:00, Sun: -5', { exact: true })).toBeVisible()
+
+      await disclosure.click()
+
+      await expect(disclosure).toHaveAttribute('aria-expanded', 'false')
+    }
+  }
+
+  url.searchParams.set('component', 'Bullet chart')
+
+  for (const width of [390, 1280]) {
+    await page.setViewportSize({ width, height: 900 })
+
+    await page.goto(url.href, { waitUntil: 'load' })
+
+    const chart = page.getByTestId('component-bullet-chart')
+    const disclosure = chart.getByRole('button', { name: /View chart data/ })
+
+    for (const theme of ['light', 'dark']) {
+      const toggle = page.getByRole('button', { name: `Use ${theme} theme` })
+
+      if (await toggle.count()) await toggle.click()
+
+      await chart.scrollIntoViewIfNeeded()
+
+      await expect(chart.getByText('86%', { exact: true })).toBeVisible()
+
+      await expect(chart.getByText('Target: 95%', { exact: true })).toBeVisible()
+
+      const bounds = await chart.boundingBox()
+
+      assert.ok(bounds && bounds.x >= 0 && bounds.x + bounds.width <= width, 'Target chart fits the viewport')
+
+      await page.screenshot({ path: resolve(captureDirectory, `bullet-chart-${width}-${theme}.png`) })
+
+      if (width === 1280 && theme === 'light') {
+        await page.screenshot({ path: resolve(captureDirectory, 'bullet-chart.png') })
+      }
+
+      await disclosure.focus()
+
+      await page.keyboard.press('Enter')
+
+      await expect(disclosure).toHaveAttribute('aria-expanded', 'true')
+
+      await expect(chart.getByText('Value: 86%', { exact: true })).toBeVisible()
+
+      await expect(chart.getByText('Excellent: 90%–100%', { exact: true })).toBeVisible()
+
+      await disclosure.click()
+
+      await expect(disclosure).toHaveAttribute('aria-expanded', 'false')
+    }
+  }
 } finally {
   await browser.close()
 }
 
-console.log('React Native web accessibility canary passed at a 390px viewport.')
+console.log('React Native web accessibility canary passed, including heatmaps and target charts at 390px and 1280px in both themes.')

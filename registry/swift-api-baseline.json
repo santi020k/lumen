@@ -835,6 +835,76 @@
           "precise": "s:7LumenUI0A10TypographyO6xsSize14CoreFoundation7CGFloatVvpZ"
         },
         {
+          "declaration": "@MainActor struct LumenBulletChart",
+          "kind": "swift.struct",
+          "path": [
+            "LumenBulletChart"
+          ],
+          "precise": "s:7LumenUI0A11BulletChartV"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenBulletChart",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A11BulletChartV4bodyQrvp"
+        },
+        {
+          "declaration": "@MainActor init(label: String, value: Double?, target: Double, ranges: [LumenBulletRange] = [], domain: ClosedRange<Double>? = nil, heading: String? = nil, description: String? = nil, labels: LumenChartLabels = .english, targetLabel: String = \"Target\", valueLabel: String? = nil, tone: LumenChartTone = .series1, showData: Bool = true)",
+          "kind": "swift.init",
+          "path": [
+            "LumenBulletChart",
+            "init(label:value:target:ranges:domain:heading:description:labels:targetLabel:valueLabel:tone:showData:)"
+          ],
+          "precise": "s:7LumenUI0A11BulletChartV5label5value6target6ranges6domain7heading11description6labels0G5Label0fM04tone8showDataACSS_SdSgSdSayAA0aC5RangeVGSNySdGSgSSSgAvA0aD6LabelsVSSAvA0aD4ToneOSbtcfc"
+        },
+        {
+          "declaration": "struct LumenBulletRange",
+          "kind": "swift.struct",
+          "path": [
+            "LumenBulletRange"
+          ],
+          "precise": "s:7LumenUI0A11BulletRangeV"
+        },
+        {
+          "declaration": "init(end: Double, label: String, tone: LumenChartTone? = nil)",
+          "kind": "swift.init",
+          "path": [
+            "LumenBulletRange",
+            "init(end:label:tone:)"
+          ],
+          "precise": "s:7LumenUI0A11BulletRangeV3end5label4toneACSd_SSAA0A9ChartToneOSgtcfc"
+        },
+        {
+          "declaration": "let end: Double",
+          "kind": "swift.property",
+          "path": [
+            "LumenBulletRange",
+            "end"
+          ],
+          "precise": "s:7LumenUI0A11BulletRangeV3endSdvp"
+        },
+        {
+          "declaration": "let tone: LumenChartTone?",
+          "kind": "swift.property",
+          "path": [
+            "LumenBulletRange",
+            "tone"
+          ],
+          "precise": "s:7LumenUI0A11BulletRangeV4toneAA0A9ChartToneOSgvp"
+        },
+        {
+          "declaration": "let label: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenBulletRange",
+            "label"
+          ],
+          "precise": "s:7LumenUI0A11BulletRangeV5labelSSvp"
+        },
+        {
           "declaration": "@MainActor struct LumenButtonGroup<Content> where Content : View",
           "kind": "swift.struct",
           "path": [
@@ -983,6 +1053,24 @@
           "precise": "s:7LumenUI0A11ChartLabelsV"
         },
         {
+          "declaration": "let formatValue: @Sendable (Double) -> String",
+          "kind": "swift.property",
+          "path": [
+            "LumenChartLabels",
+            "formatValue"
+          ],
+          "precise": "s:7LumenUI0A11ChartLabelsV11formatValueySSSdYbcvp"
+        },
+        {
+          "declaration": "let invalidData: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenChartLabels",
+            "invalidData"
+          ],
+          "precise": "s:7LumenUI0A11ChartLabelsV11invalidDataSSvp"
+        },
+        {
           "declaration": "let notAvailable: String",
           "kind": "swift.property",
           "path": [
@@ -1019,6 +1107,24 @@
           "precise": "s:7LumenUI0A11ChartLabelsV20formatHeatmapSummaryySSSiYbcvp"
         },
         {
+          "declaration": "let end: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenChartLabels",
+            "end"
+          ],
+          "precise": "s:7LumenUI0A11ChartLabelsV3endSSvp"
+        },
+        {
+          "declaration": "let row: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenChartLabels",
+            "row"
+          ],
+          "precise": "s:7LumenUI0A11ChartLabelsV3rowSSvp"
+        },
+        {
           "declaration": "let size: String",
           "kind": "swift.property",
           "path": [
@@ -1028,13 +1134,22 @@
           "precise": "s:7LumenUI0A11ChartLabelsV4sizeSSvp"
         },
         {
-          "declaration": "init(empty: String = \"No chart data available.\", notAvailable: String = \"Not available\", size: String = \"Size\", viewData: String = \"View chart data\", formatHeatmapSummary: @escaping @Sendable (Int) -> String = { count in\n            count == 0 ? \"No chart data available.\" : \"\\(count) heatmap \\(count == 1 ? \"cell\" : \"cells\").\"\n        }, formatRangeSummary: @escaping @Sendable (Int) -> String = { count in\n            count == 0 ? \"No chart data available.\" : \"\\(count) \\(count == 1 ? \"range\" : \"ranges\").\"\n        }, formatSummary: @escaping @Sendable (LumenChartSummary) -> String = { $0.spokenDescription })",
+          "declaration": "let count: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenChartLabels",
+            "count"
+          ],
+          "precise": "s:7LumenUI0A11ChartLabelsV5countSSvp"
+        },
+        {
+          "declaration": "init(empty: String = \"No chart data available.\", notAvailable: String = \"Not available\", size: String = \"Size\", viewData: String = \"View chart data\", invalidData: String = \"Chart data is invalid.\", start: String = \"Start\", end: String = \"End\", value: String = \"Value\", count: String = \"Count\", density: String = \"Density\", column: String = \"Column\", row: String = \"Row\", formatValue: @escaping @Sendable (Double) -> String = { $0.formatted() }, formatHeatmapSummary: @escaping @Sendable (Int) -> String = { count in\n            count == 0 ? \"No chart data available.\" : \"\\(count) heatmap \\(count == 1 ? \"cell\" : \"cells\").\"\n        }, formatRangeSummary: @escaping @Sendable (Int) -> String = { count in\n            count == 0 ? \"No chart data available.\" : \"\\(count) \\(count == 1 ? \"range\" : \"ranges\").\"\n        }, formatSummary: @escaping @Sendable (LumenChartSummary) -> String = { $0.spokenDescription })",
           "kind": "swift.init",
           "path": [
             "LumenChartLabels",
-            "init(empty:notAvailable:size:viewData:formatHeatmapSummary:formatRangeSummary:formatSummary:)"
+            "init(empty:notAvailable:size:viewData:invalidData:start:end:value:count:density:column:row:formatValue:formatHeatmapSummary:formatRangeSummary:formatSummary:)"
           ],
-          "precise": "s:7LumenUI0A11ChartLabelsV5empty12notAvailable4size8viewData20formatHeatmapSummary0k5RangeM00kM0ACSS_S4SSiYbcSSSiYbcSSAA0acM0VYbctcfc"
+          "precise": "s:7LumenUI0A11ChartLabelsV5empty12notAvailable4size8viewData07invalidJ05start3end5value5count7density6column3row11formatValue0S14HeatmapSummary0s5RangeV00sV0ACSS_S12SSdYbcSSSiYbcSSSiYbcSSAA0acV0VYbctcfc"
         },
         {
           "declaration": "let empty: String",
@@ -1044,6 +1159,42 @@
             "empty"
           ],
           "precise": "s:7LumenUI0A11ChartLabelsV5emptySSvp"
+        },
+        {
+          "declaration": "let start: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenChartLabels",
+            "start"
+          ],
+          "precise": "s:7LumenUI0A11ChartLabelsV5startSSvp"
+        },
+        {
+          "declaration": "let value: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenChartLabels",
+            "value"
+          ],
+          "precise": "s:7LumenUI0A11ChartLabelsV5valueSSvp"
+        },
+        {
+          "declaration": "let column: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenChartLabels",
+            "column"
+          ],
+          "precise": "s:7LumenUI0A11ChartLabelsV6columnSSvp"
+        },
+        {
+          "declaration": "let density: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenChartLabels",
+            "density"
+          ],
+          "precise": "s:7LumenUI0A11ChartLabelsV7densitySSvp"
         },
         {
           "declaration": "static let english: LumenChartLabels",
@@ -2402,6 +2553,59 @@
           "precise": "s:7LumenUI0A12HeatmapDatumV6columnSSvp"
         },
         {
+          "declaration": "struct LumenHistogramBin",
+          "kind": "swift.struct",
+          "path": [
+            "LumenHistogramBin"
+          ],
+          "precise": "s:7LumenUI0A12HistogramBinV"
+        },
+        {
+          "declaration": "let end: Double",
+          "kind": "swift.property",
+          "path": [
+            "LumenHistogramBin",
+            "end"
+          ],
+          "precise": "s:7LumenUI0A12HistogramBinV3endSdvp"
+        },
+        {
+          "declaration": "let count: Double",
+          "kind": "swift.property",
+          "path": [
+            "LumenHistogramBin",
+            "count"
+          ],
+          "precise": "s:7LumenUI0A12HistogramBinV5countSdvp"
+        },
+        {
+          "declaration": "let label: String?",
+          "kind": "swift.property",
+          "path": [
+            "LumenHistogramBin",
+            "label"
+          ],
+          "precise": "s:7LumenUI0A12HistogramBinV5labelSSSgvp"
+        },
+        {
+          "declaration": "init(start: Double, end: Double, count: Double, label: String? = nil)",
+          "kind": "swift.init",
+          "path": [
+            "LumenHistogramBin",
+            "init(start:end:count:label:)"
+          ],
+          "precise": "s:7LumenUI0A12HistogramBinV5start3end5count5labelACSd_S2dSSSgtcfc"
+        },
+        {
+          "declaration": "let start: Double",
+          "kind": "swift.property",
+          "path": [
+            "LumenHistogramBin",
+            "start"
+          ],
+          "precise": "s:7LumenUI0A12HistogramBinV5startSdvp"
+        },
+        {
           "declaration": "@MainActor struct LumenIllustration",
           "kind": "swift.struct",
           "path": [
@@ -3061,6 +3265,41 @@
           "precise": "s:7LumenUI0A13TimeSelectionV6minuteSivp"
         },
         {
+          "declaration": "enum LumenWaterfallKind",
+          "kind": "swift.enum",
+          "path": [
+            "LumenWaterfallKind"
+          ],
+          "precise": "s:7LumenUI0A13WaterfallKindO"
+        },
+        {
+          "declaration": "case delta",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenWaterfallKind",
+            "delta"
+          ],
+          "precise": "s:7LumenUI0A13WaterfallKindO5deltayA2CmF"
+        },
+        {
+          "declaration": "case total",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenWaterfallKind",
+            "total"
+          ],
+          "precise": "s:7LumenUI0A13WaterfallKindO5totalyA2CmF"
+        },
+        {
+          "declaration": "init?(rawValue: String)",
+          "kind": "swift.init",
+          "path": [
+            "LumenWaterfallKind",
+            "init(rawValue:)"
+          ],
+          "precise": "s:7LumenUI0A13WaterfallKindO8rawValueACSgSS_tcfc"
+        },
+        {
           "declaration": "enum LumenBarChartLayout",
           "kind": "swift.enum",
           "path": [
@@ -3445,6 +3684,94 @@
             "none"
           ],
           "precise": "s:7LumenUI0A14SurfacePaddingO4noneyA2CmF"
+        },
+        {
+          "declaration": "@MainActor struct LumenWaterfallChart",
+          "kind": "swift.struct",
+          "path": [
+            "LumenWaterfallChart"
+          ],
+          "precise": "s:7LumenUI0A14WaterfallChartV"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenWaterfallChart",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A14WaterfallChartV4bodyQrvp"
+        },
+        {
+          "declaration": "@MainActor init(label: String, data: [LumenWaterfallDatum], heading: String? = nil, description: String? = nil, labels: LumenChartLabels = .english, showData: Bool = true, valueLabel: String? = nil)",
+          "kind": "swift.init",
+          "path": [
+            "LumenWaterfallChart",
+            "init(label:data:heading:description:labels:showData:valueLabel:)"
+          ],
+          "precise": "s:7LumenUI0A14WaterfallChartV5label4data7heading11description6labels8showData10valueLabelACSS_SayAA0aC5DatumVGSSSgAnA0aD6LabelsVSbANtcfc"
+        },
+        {
+          "declaration": "struct LumenWaterfallDatum",
+          "kind": "swift.struct",
+          "path": [
+            "LumenWaterfallDatum"
+          ],
+          "precise": "s:7LumenUI0A14WaterfallDatumV"
+        },
+        {
+          "declaration": "init(id: String, label: String, value: Double, kind: LumenWaterfallKind = .delta, tone: LumenChartTone? = nil)",
+          "kind": "swift.init",
+          "path": [
+            "LumenWaterfallDatum",
+            "init(id:label:value:kind:tone:)"
+          ],
+          "precise": "s:7LumenUI0A14WaterfallDatumV2id5label5value4kind4toneACSS_SSSdAA0aC4KindOAA0A9ChartToneOSgtcfc"
+        },
+        {
+          "declaration": "let id: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenWaterfallDatum",
+            "id"
+          ],
+          "precise": "s:7LumenUI0A14WaterfallDatumV2idSSvp"
+        },
+        {
+          "declaration": "let kind: LumenWaterfallKind",
+          "kind": "swift.property",
+          "path": [
+            "LumenWaterfallDatum",
+            "kind"
+          ],
+          "precise": "s:7LumenUI0A14WaterfallDatumV4kindAA0aC4KindOvp"
+        },
+        {
+          "declaration": "let tone: LumenChartTone?",
+          "kind": "swift.property",
+          "path": [
+            "LumenWaterfallDatum",
+            "tone"
+          ],
+          "precise": "s:7LumenUI0A14WaterfallDatumV4toneAA0A9ChartToneOSgvp"
+        },
+        {
+          "declaration": "let label: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenWaterfallDatum",
+            "label"
+          ],
+          "precise": "s:7LumenUI0A14WaterfallDatumV5labelSSvp"
+        },
+        {
+          "declaration": "let value: Double",
+          "kind": "swift.property",
+          "path": [
+            "LumenWaterfallDatum",
+            "value"
+          ],
+          "precise": "s:7LumenUI0A14WaterfallDatumV5valueSdvp"
         },
         {
           "declaration": "enum LumenBackdropVariant",
@@ -4195,6 +4522,41 @@
           "precise": "s:7LumenUI0A17ChartColorPaletteV9selection05SwiftB00D0Vvp"
         },
         {
+          "declaration": "enum LumenHeatmapColorScale",
+          "kind": "swift.enum",
+          "path": [
+            "LumenHeatmapColorScale"
+          ],
+          "precise": "s:7LumenUI0A17HeatmapColorScaleO"
+        },
+        {
+          "declaration": "case sequential",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenHeatmapColorScale",
+            "sequential"
+          ],
+          "precise": "s:7LumenUI0A17HeatmapColorScaleO10sequentialyA2CmF"
+        },
+        {
+          "declaration": "init?(rawValue: String)",
+          "kind": "swift.init",
+          "path": [
+            "LumenHeatmapColorScale",
+            "init(rawValue:)"
+          ],
+          "precise": "s:7LumenUI0A17HeatmapColorScaleO8rawValueACSgSS_tcfc"
+        },
+        {
+          "declaration": "case diverging",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenHeatmapColorScale",
+            "diverging"
+          ],
+          "precise": "s:7LumenUI0A17HeatmapColorScaleO9divergingyA2CmF"
+        },
+        {
           "declaration": "struct LumenIconButtonMetrics",
           "kind": "swift.struct",
           "path": [
@@ -4290,6 +4652,41 @@
             "disabled"
           ],
           "precise": "s:7LumenUI0A18AutocompleteOptionV8disabledSbvp"
+        },
+        {
+          "declaration": "enum LumenHistogramFrequency",
+          "kind": "swift.enum",
+          "path": [
+            "LumenHistogramFrequency"
+          ],
+          "precise": "s:7LumenUI0A18HistogramFrequencyO"
+        },
+        {
+          "declaration": "case count",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenHistogramFrequency",
+            "count"
+          ],
+          "precise": "s:7LumenUI0A18HistogramFrequencyO5countyA2CmF"
+        },
+        {
+          "declaration": "case density",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenHistogramFrequency",
+            "density"
+          ],
+          "precise": "s:7LumenUI0A18HistogramFrequencyO7densityyA2CmF"
+        },
+        {
+          "declaration": "init?(rawValue: String)",
+          "kind": "swift.init",
+          "path": [
+            "LumenHistogramFrequency",
+            "init(rawValue:)"
+          ],
+          "precise": "s:7LumenUI0A18HistogramFrequencyO8rawValueACSgSS_tcfc"
         },
         {
           "declaration": "@MainActor struct LumenSymbolPickerButton",
@@ -5607,13 +6004,13 @@
           "precise": "s:7LumenUI0A7HeatmapV4bodyQrvp"
         },
         {
-          "declaration": "@MainActor init(label: String, data: [LumenHeatmapDatum], summary: String? = nil, labels: LumenChartLabels = .english, showData: Bool = true)",
+          "declaration": "@MainActor init(label: String, data: [LumenHeatmapDatum], summary: String? = nil, labels: LumenChartLabels = .english, showData: Bool = true, heading: String? = nil, description: String? = nil, colorScale: LumenHeatmapColorScale = .sequential, domain: ClosedRange<Double>? = nil, midpoint: Double = 0)",
           "kind": "swift.init",
           "path": [
             "LumenHeatmap",
-            "init(label:data:summary:labels:showData:)"
+            "init(label:data:summary:labels:showData:heading:description:colorScale:domain:midpoint:)"
           ],
-          "precise": "s:7LumenUI0A7HeatmapV5label4data7summary6labels8showDataACSS_SayAA0aC5DatumVGSSSgAA0A11ChartLabelsVSbtcfc"
+          "precise": "s:7LumenUI0A7HeatmapV5label4data7summary6labels8showData7heading11description10colorScale6domain8midpointACSS_SayAA0aC5DatumVGSSSgAA0A11ChartLabelsVSbA2qA0ac5ColorM0OSNySdGSgSdtcfc"
         },
         {
           "declaration": "@MainActor struct LumenListRow<Leading, Content, Trailing> where Leading : View, Content : View, Trailing : View",
@@ -28587,6 +28984,32 @@
           "precise": "s:7LumenUI0A9ElevationO7resting14CoreFoundation7CGFloatVvpZ"
         },
         {
+          "declaration": "@MainActor struct LumenHistogram",
+          "kind": "swift.struct",
+          "path": [
+            "LumenHistogram"
+          ],
+          "precise": "s:7LumenUI0A9HistogramV"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenHistogram",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A9HistogramV4bodyQrvp"
+        },
+        {
+          "declaration": "@MainActor init(label: String, data: [LumenHistogramBin], heading: String? = nil, description: String? = nil, labels: LumenChartLabels = .english, frequency: LumenHistogramFrequency = .count, tone: LumenChartTone = .series1, showData: Bool = true, formatBoundary: @escaping (Double) -> String = { $0.formatted() })",
+          "kind": "swift.init",
+          "path": [
+            "LumenHistogram",
+            "init(label:data:heading:description:labels:frequency:tone:showData:formatBoundary:)"
+          ],
+          "precise": "s:7LumenUI0A9HistogramV5label4data7heading11description6labels9frequency4tone8showData14formatBoundaryACSS_SayAA0aC3BinVGSSSgApA0A11ChartLabelsVAA0aC9FrequencyOAA0aP4ToneOSbSSSdctcfc"
+        },
+        {
           "declaration": "@MainActor struct LumenLineChart",
           "kind": "swift.struct",
           "path": [
@@ -29750,6 +30173,76 @@
           "precise": "s:7LumenUI0A10TypographyO6xsSize14CoreFoundation7CGFloatVvpZ"
         },
         {
+          "declaration": "@MainActor struct LumenBulletChart",
+          "kind": "swift.struct",
+          "path": [
+            "LumenBulletChart"
+          ],
+          "precise": "s:7LumenUI0A11BulletChartV"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenBulletChart",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A11BulletChartV4bodyQrvp"
+        },
+        {
+          "declaration": "@MainActor init(label: String, value: Double?, target: Double, ranges: [LumenBulletRange] = [], domain: ClosedRange<Double>? = nil, heading: String? = nil, description: String? = nil, labels: LumenChartLabels = .english, targetLabel: String = \"Target\", valueLabel: String? = nil, tone: LumenChartTone = .series1, showData: Bool = true)",
+          "kind": "swift.init",
+          "path": [
+            "LumenBulletChart",
+            "init(label:value:target:ranges:domain:heading:description:labels:targetLabel:valueLabel:tone:showData:)"
+          ],
+          "precise": "s:7LumenUI0A11BulletChartV5label5value6target6ranges6domain7heading11description6labels0G5Label0fM04tone8showDataACSS_SdSgSdSayAA0aC5RangeVGSNySdGSgSSSgAvA0aD6LabelsVSSAvA0aD4ToneOSbtcfc"
+        },
+        {
+          "declaration": "struct LumenBulletRange",
+          "kind": "swift.struct",
+          "path": [
+            "LumenBulletRange"
+          ],
+          "precise": "s:7LumenUI0A11BulletRangeV"
+        },
+        {
+          "declaration": "init(end: Double, label: String, tone: LumenChartTone? = nil)",
+          "kind": "swift.init",
+          "path": [
+            "LumenBulletRange",
+            "init(end:label:tone:)"
+          ],
+          "precise": "s:7LumenUI0A11BulletRangeV3end5label4toneACSd_SSAA0A9ChartToneOSgtcfc"
+        },
+        {
+          "declaration": "let end: Double",
+          "kind": "swift.property",
+          "path": [
+            "LumenBulletRange",
+            "end"
+          ],
+          "precise": "s:7LumenUI0A11BulletRangeV3endSdvp"
+        },
+        {
+          "declaration": "let tone: LumenChartTone?",
+          "kind": "swift.property",
+          "path": [
+            "LumenBulletRange",
+            "tone"
+          ],
+          "precise": "s:7LumenUI0A11BulletRangeV4toneAA0A9ChartToneOSgvp"
+        },
+        {
+          "declaration": "let label: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenBulletRange",
+            "label"
+          ],
+          "precise": "s:7LumenUI0A11BulletRangeV5labelSSvp"
+        },
+        {
           "declaration": "@MainActor struct LumenButtonGroup<Content> where Content : View",
           "kind": "swift.struct",
           "path": [
@@ -29898,6 +30391,24 @@
           "precise": "s:7LumenUI0A11ChartLabelsV"
         },
         {
+          "declaration": "let formatValue: @Sendable (Double) -> String",
+          "kind": "swift.property",
+          "path": [
+            "LumenChartLabels",
+            "formatValue"
+          ],
+          "precise": "s:7LumenUI0A11ChartLabelsV11formatValueySSSdYbcvp"
+        },
+        {
+          "declaration": "let invalidData: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenChartLabels",
+            "invalidData"
+          ],
+          "precise": "s:7LumenUI0A11ChartLabelsV11invalidDataSSvp"
+        },
+        {
           "declaration": "let notAvailable: String",
           "kind": "swift.property",
           "path": [
@@ -29934,6 +30445,24 @@
           "precise": "s:7LumenUI0A11ChartLabelsV20formatHeatmapSummaryySSSiYbcvp"
         },
         {
+          "declaration": "let end: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenChartLabels",
+            "end"
+          ],
+          "precise": "s:7LumenUI0A11ChartLabelsV3endSSvp"
+        },
+        {
+          "declaration": "let row: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenChartLabels",
+            "row"
+          ],
+          "precise": "s:7LumenUI0A11ChartLabelsV3rowSSvp"
+        },
+        {
           "declaration": "let size: String",
           "kind": "swift.property",
           "path": [
@@ -29943,13 +30472,22 @@
           "precise": "s:7LumenUI0A11ChartLabelsV4sizeSSvp"
         },
         {
-          "declaration": "init(empty: String = \"No chart data available.\", notAvailable: String = \"Not available\", size: String = \"Size\", viewData: String = \"View chart data\", formatHeatmapSummary: @escaping @Sendable (Int) -> String = { count in\n            count == 0 ? \"No chart data available.\" : \"\\(count) heatmap \\(count == 1 ? \"cell\" : \"cells\").\"\n        }, formatRangeSummary: @escaping @Sendable (Int) -> String = { count in\n            count == 0 ? \"No chart data available.\" : \"\\(count) \\(count == 1 ? \"range\" : \"ranges\").\"\n        }, formatSummary: @escaping @Sendable (LumenChartSummary) -> String = { $0.spokenDescription })",
+          "declaration": "let count: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenChartLabels",
+            "count"
+          ],
+          "precise": "s:7LumenUI0A11ChartLabelsV5countSSvp"
+        },
+        {
+          "declaration": "init(empty: String = \"No chart data available.\", notAvailable: String = \"Not available\", size: String = \"Size\", viewData: String = \"View chart data\", invalidData: String = \"Chart data is invalid.\", start: String = \"Start\", end: String = \"End\", value: String = \"Value\", count: String = \"Count\", density: String = \"Density\", column: String = \"Column\", row: String = \"Row\", formatValue: @escaping @Sendable (Double) -> String = { $0.formatted() }, formatHeatmapSummary: @escaping @Sendable (Int) -> String = { count in\n            count == 0 ? \"No chart data available.\" : \"\\(count) heatmap \\(count == 1 ? \"cell\" : \"cells\").\"\n        }, formatRangeSummary: @escaping @Sendable (Int) -> String = { count in\n            count == 0 ? \"No chart data available.\" : \"\\(count) \\(count == 1 ? \"range\" : \"ranges\").\"\n        }, formatSummary: @escaping @Sendable (LumenChartSummary) -> String = { $0.spokenDescription })",
           "kind": "swift.init",
           "path": [
             "LumenChartLabels",
-            "init(empty:notAvailable:size:viewData:formatHeatmapSummary:formatRangeSummary:formatSummary:)"
+            "init(empty:notAvailable:size:viewData:invalidData:start:end:value:count:density:column:row:formatValue:formatHeatmapSummary:formatRangeSummary:formatSummary:)"
           ],
-          "precise": "s:7LumenUI0A11ChartLabelsV5empty12notAvailable4size8viewData20formatHeatmapSummary0k5RangeM00kM0ACSS_S4SSiYbcSSSiYbcSSAA0acM0VYbctcfc"
+          "precise": "s:7LumenUI0A11ChartLabelsV5empty12notAvailable4size8viewData07invalidJ05start3end5value5count7density6column3row11formatValue0S14HeatmapSummary0s5RangeV00sV0ACSS_S12SSdYbcSSSiYbcSSSiYbcSSAA0acV0VYbctcfc"
         },
         {
           "declaration": "let empty: String",
@@ -29959,6 +30497,42 @@
             "empty"
           ],
           "precise": "s:7LumenUI0A11ChartLabelsV5emptySSvp"
+        },
+        {
+          "declaration": "let start: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenChartLabels",
+            "start"
+          ],
+          "precise": "s:7LumenUI0A11ChartLabelsV5startSSvp"
+        },
+        {
+          "declaration": "let value: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenChartLabels",
+            "value"
+          ],
+          "precise": "s:7LumenUI0A11ChartLabelsV5valueSSvp"
+        },
+        {
+          "declaration": "let column: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenChartLabels",
+            "column"
+          ],
+          "precise": "s:7LumenUI0A11ChartLabelsV6columnSSvp"
+        },
+        {
+          "declaration": "let density: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenChartLabels",
+            "density"
+          ],
+          "precise": "s:7LumenUI0A11ChartLabelsV7densitySSvp"
         },
         {
           "declaration": "static let english: LumenChartLabels",
@@ -31317,6 +31891,59 @@
           "precise": "s:7LumenUI0A12HeatmapDatumV6columnSSvp"
         },
         {
+          "declaration": "struct LumenHistogramBin",
+          "kind": "swift.struct",
+          "path": [
+            "LumenHistogramBin"
+          ],
+          "precise": "s:7LumenUI0A12HistogramBinV"
+        },
+        {
+          "declaration": "let end: Double",
+          "kind": "swift.property",
+          "path": [
+            "LumenHistogramBin",
+            "end"
+          ],
+          "precise": "s:7LumenUI0A12HistogramBinV3endSdvp"
+        },
+        {
+          "declaration": "let count: Double",
+          "kind": "swift.property",
+          "path": [
+            "LumenHistogramBin",
+            "count"
+          ],
+          "precise": "s:7LumenUI0A12HistogramBinV5countSdvp"
+        },
+        {
+          "declaration": "let label: String?",
+          "kind": "swift.property",
+          "path": [
+            "LumenHistogramBin",
+            "label"
+          ],
+          "precise": "s:7LumenUI0A12HistogramBinV5labelSSSgvp"
+        },
+        {
+          "declaration": "init(start: Double, end: Double, count: Double, label: String? = nil)",
+          "kind": "swift.init",
+          "path": [
+            "LumenHistogramBin",
+            "init(start:end:count:label:)"
+          ],
+          "precise": "s:7LumenUI0A12HistogramBinV5start3end5count5labelACSd_S2dSSSgtcfc"
+        },
+        {
+          "declaration": "let start: Double",
+          "kind": "swift.property",
+          "path": [
+            "LumenHistogramBin",
+            "start"
+          ],
+          "precise": "s:7LumenUI0A12HistogramBinV5startSdvp"
+        },
+        {
           "declaration": "@MainActor struct LumenIllustration",
           "kind": "swift.struct",
           "path": [
@@ -31888,6 +32515,41 @@
           "precise": "s:7LumenUI0A13TimeSelectionV6minuteSivp"
         },
         {
+          "declaration": "enum LumenWaterfallKind",
+          "kind": "swift.enum",
+          "path": [
+            "LumenWaterfallKind"
+          ],
+          "precise": "s:7LumenUI0A13WaterfallKindO"
+        },
+        {
+          "declaration": "case delta",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenWaterfallKind",
+            "delta"
+          ],
+          "precise": "s:7LumenUI0A13WaterfallKindO5deltayA2CmF"
+        },
+        {
+          "declaration": "case total",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenWaterfallKind",
+            "total"
+          ],
+          "precise": "s:7LumenUI0A13WaterfallKindO5totalyA2CmF"
+        },
+        {
+          "declaration": "init?(rawValue: String)",
+          "kind": "swift.init",
+          "path": [
+            "LumenWaterfallKind",
+            "init(rawValue:)"
+          ],
+          "precise": "s:7LumenUI0A13WaterfallKindO8rawValueACSgSS_tcfc"
+        },
+        {
           "declaration": "enum LumenBarChartLayout",
           "kind": "swift.enum",
           "path": [
@@ -32272,6 +32934,94 @@
             "none"
           ],
           "precise": "s:7LumenUI0A14SurfacePaddingO4noneyA2CmF"
+        },
+        {
+          "declaration": "@MainActor struct LumenWaterfallChart",
+          "kind": "swift.struct",
+          "path": [
+            "LumenWaterfallChart"
+          ],
+          "precise": "s:7LumenUI0A14WaterfallChartV"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenWaterfallChart",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A14WaterfallChartV4bodyQrvp"
+        },
+        {
+          "declaration": "@MainActor init(label: String, data: [LumenWaterfallDatum], heading: String? = nil, description: String? = nil, labels: LumenChartLabels = .english, showData: Bool = true, valueLabel: String? = nil)",
+          "kind": "swift.init",
+          "path": [
+            "LumenWaterfallChart",
+            "init(label:data:heading:description:labels:showData:valueLabel:)"
+          ],
+          "precise": "s:7LumenUI0A14WaterfallChartV5label4data7heading11description6labels8showData10valueLabelACSS_SayAA0aC5DatumVGSSSgAnA0aD6LabelsVSbANtcfc"
+        },
+        {
+          "declaration": "struct LumenWaterfallDatum",
+          "kind": "swift.struct",
+          "path": [
+            "LumenWaterfallDatum"
+          ],
+          "precise": "s:7LumenUI0A14WaterfallDatumV"
+        },
+        {
+          "declaration": "init(id: String, label: String, value: Double, kind: LumenWaterfallKind = .delta, tone: LumenChartTone? = nil)",
+          "kind": "swift.init",
+          "path": [
+            "LumenWaterfallDatum",
+            "init(id:label:value:kind:tone:)"
+          ],
+          "precise": "s:7LumenUI0A14WaterfallDatumV2id5label5value4kind4toneACSS_SSSdAA0aC4KindOAA0A9ChartToneOSgtcfc"
+        },
+        {
+          "declaration": "let id: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenWaterfallDatum",
+            "id"
+          ],
+          "precise": "s:7LumenUI0A14WaterfallDatumV2idSSvp"
+        },
+        {
+          "declaration": "let kind: LumenWaterfallKind",
+          "kind": "swift.property",
+          "path": [
+            "LumenWaterfallDatum",
+            "kind"
+          ],
+          "precise": "s:7LumenUI0A14WaterfallDatumV4kindAA0aC4KindOvp"
+        },
+        {
+          "declaration": "let tone: LumenChartTone?",
+          "kind": "swift.property",
+          "path": [
+            "LumenWaterfallDatum",
+            "tone"
+          ],
+          "precise": "s:7LumenUI0A14WaterfallDatumV4toneAA0A9ChartToneOSgvp"
+        },
+        {
+          "declaration": "let label: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenWaterfallDatum",
+            "label"
+          ],
+          "precise": "s:7LumenUI0A14WaterfallDatumV5labelSSvp"
+        },
+        {
+          "declaration": "let value: Double",
+          "kind": "swift.property",
+          "path": [
+            "LumenWaterfallDatum",
+            "value"
+          ],
+          "precise": "s:7LumenUI0A14WaterfallDatumV5valueSdvp"
         },
         {
           "declaration": "enum LumenBackdropVariant",
@@ -32996,6 +33746,41 @@
           "precise": "s:7LumenUI0A17ChartColorPaletteV9selection05SwiftB00D0Vvp"
         },
         {
+          "declaration": "enum LumenHeatmapColorScale",
+          "kind": "swift.enum",
+          "path": [
+            "LumenHeatmapColorScale"
+          ],
+          "precise": "s:7LumenUI0A17HeatmapColorScaleO"
+        },
+        {
+          "declaration": "case sequential",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenHeatmapColorScale",
+            "sequential"
+          ],
+          "precise": "s:7LumenUI0A17HeatmapColorScaleO10sequentialyA2CmF"
+        },
+        {
+          "declaration": "init?(rawValue: String)",
+          "kind": "swift.init",
+          "path": [
+            "LumenHeatmapColorScale",
+            "init(rawValue:)"
+          ],
+          "precise": "s:7LumenUI0A17HeatmapColorScaleO8rawValueACSgSS_tcfc"
+        },
+        {
+          "declaration": "case diverging",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenHeatmapColorScale",
+            "diverging"
+          ],
+          "precise": "s:7LumenUI0A17HeatmapColorScaleO9divergingyA2CmF"
+        },
+        {
           "declaration": "struct LumenIconButtonMetrics",
           "kind": "swift.struct",
           "path": [
@@ -33091,6 +33876,41 @@
             "disabled"
           ],
           "precise": "s:7LumenUI0A18AutocompleteOptionV8disabledSbvp"
+        },
+        {
+          "declaration": "enum LumenHistogramFrequency",
+          "kind": "swift.enum",
+          "path": [
+            "LumenHistogramFrequency"
+          ],
+          "precise": "s:7LumenUI0A18HistogramFrequencyO"
+        },
+        {
+          "declaration": "case count",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenHistogramFrequency",
+            "count"
+          ],
+          "precise": "s:7LumenUI0A18HistogramFrequencyO5countyA2CmF"
+        },
+        {
+          "declaration": "case density",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenHistogramFrequency",
+            "density"
+          ],
+          "precise": "s:7LumenUI0A18HistogramFrequencyO7densityyA2CmF"
+        },
+        {
+          "declaration": "init?(rawValue: String)",
+          "kind": "swift.init",
+          "path": [
+            "LumenHistogramFrequency",
+            "init(rawValue:)"
+          ],
+          "precise": "s:7LumenUI0A18HistogramFrequencyO8rawValueACSgSS_tcfc"
         },
         {
           "declaration": "struct LumenWatchActionMetrics",
@@ -34382,13 +35202,13 @@
           "precise": "s:7LumenUI0A7HeatmapV4bodyQrvp"
         },
         {
-          "declaration": "@MainActor init(label: String, data: [LumenHeatmapDatum], summary: String? = nil, labels: LumenChartLabels = .english, showData: Bool = true)",
+          "declaration": "@MainActor init(label: String, data: [LumenHeatmapDatum], summary: String? = nil, labels: LumenChartLabels = .english, showData: Bool = true, heading: String? = nil, description: String? = nil, colorScale: LumenHeatmapColorScale = .sequential, domain: ClosedRange<Double>? = nil, midpoint: Double = 0)",
           "kind": "swift.init",
           "path": [
             "LumenHeatmap",
-            "init(label:data:summary:labels:showData:)"
+            "init(label:data:summary:labels:showData:heading:description:colorScale:domain:midpoint:)"
           ],
-          "precise": "s:7LumenUI0A7HeatmapV5label4data7summary6labels8showDataACSS_SayAA0aC5DatumVGSSSgAA0A11ChartLabelsVSbtcfc"
+          "precise": "s:7LumenUI0A7HeatmapV5label4data7summary6labels8showData7heading11description10colorScale6domain8midpointACSS_SayAA0aC5DatumVGSSSgAA0A11ChartLabelsVSbA2qA0ac5ColorM0OSNySdGSgSdtcfc"
         },
         {
           "declaration": "@MainActor struct LumenListRow<Leading, Content, Trailing> where Leading : View, Content : View, Trailing : View",
@@ -57300,6 +58120,32 @@
           "precise": "s:7LumenUI0A9ElevationO7resting14CoreFoundation7CGFloatVvpZ"
         },
         {
+          "declaration": "@MainActor struct LumenHistogram",
+          "kind": "swift.struct",
+          "path": [
+            "LumenHistogram"
+          ],
+          "precise": "s:7LumenUI0A9HistogramV"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenHistogram",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A9HistogramV4bodyQrvp"
+        },
+        {
+          "declaration": "@MainActor init(label: String, data: [LumenHistogramBin], heading: String? = nil, description: String? = nil, labels: LumenChartLabels = .english, frequency: LumenHistogramFrequency = .count, tone: LumenChartTone = .series1, showData: Bool = true, formatBoundary: @escaping (Double) -> String = { $0.formatted() })",
+          "kind": "swift.init",
+          "path": [
+            "LumenHistogram",
+            "init(label:data:heading:description:labels:frequency:tone:showData:formatBoundary:)"
+          ],
+          "precise": "s:7LumenUI0A9HistogramV5label4data7heading11description6labels9frequency4tone8showData14formatBoundaryACSS_SayAA0aC3BinVGSSSgApA0A11ChartLabelsVAA0aC9FrequencyOAA0aP4ToneOSbSSSdctcfc"
+        },
+        {
           "declaration": "@MainActor struct LumenLineChart",
           "kind": "swift.struct",
           "path": [
@@ -58324,6 +59170,76 @@
           "precise": "s:7LumenUI0A10TypographyO6xsSize14CoreFoundation7CGFloatVvpZ"
         },
         {
+          "declaration": "@MainActor struct LumenBulletChart",
+          "kind": "swift.struct",
+          "path": [
+            "LumenBulletChart"
+          ],
+          "precise": "s:7LumenUI0A11BulletChartV"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenBulletChart",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A11BulletChartV4bodyQrvp"
+        },
+        {
+          "declaration": "@MainActor init(label: String, value: Double?, target: Double, ranges: [LumenBulletRange] = [], domain: ClosedRange<Double>? = nil, heading: String? = nil, description: String? = nil, labels: LumenChartLabels = .english, targetLabel: String = \"Target\", valueLabel: String? = nil, tone: LumenChartTone = .series1, showData: Bool = true)",
+          "kind": "swift.init",
+          "path": [
+            "LumenBulletChart",
+            "init(label:value:target:ranges:domain:heading:description:labels:targetLabel:valueLabel:tone:showData:)"
+          ],
+          "precise": "s:7LumenUI0A11BulletChartV5label5value6target6ranges6domain7heading11description6labels0G5Label0fM04tone8showDataACSS_SdSgSdSayAA0aC5RangeVGSNySdGSgSSSgAvA0aD6LabelsVSSAvA0aD4ToneOSbtcfc"
+        },
+        {
+          "declaration": "struct LumenBulletRange",
+          "kind": "swift.struct",
+          "path": [
+            "LumenBulletRange"
+          ],
+          "precise": "s:7LumenUI0A11BulletRangeV"
+        },
+        {
+          "declaration": "init(end: Double, label: String, tone: LumenChartTone? = nil)",
+          "kind": "swift.init",
+          "path": [
+            "LumenBulletRange",
+            "init(end:label:tone:)"
+          ],
+          "precise": "s:7LumenUI0A11BulletRangeV3end5label4toneACSd_SSAA0A9ChartToneOSgtcfc"
+        },
+        {
+          "declaration": "let end: Double",
+          "kind": "swift.property",
+          "path": [
+            "LumenBulletRange",
+            "end"
+          ],
+          "precise": "s:7LumenUI0A11BulletRangeV3endSdvp"
+        },
+        {
+          "declaration": "let tone: LumenChartTone?",
+          "kind": "swift.property",
+          "path": [
+            "LumenBulletRange",
+            "tone"
+          ],
+          "precise": "s:7LumenUI0A11BulletRangeV4toneAA0A9ChartToneOSgvp"
+        },
+        {
+          "declaration": "let label: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenBulletRange",
+            "label"
+          ],
+          "precise": "s:7LumenUI0A11BulletRangeV5labelSSvp"
+        },
+        {
           "declaration": "@MainActor struct LumenButtonGroup<Content> where Content : View",
           "kind": "swift.struct",
           "path": [
@@ -58472,6 +59388,24 @@
           "precise": "s:7LumenUI0A11ChartLabelsV"
         },
         {
+          "declaration": "let formatValue: @Sendable (Double) -> String",
+          "kind": "swift.property",
+          "path": [
+            "LumenChartLabels",
+            "formatValue"
+          ],
+          "precise": "s:7LumenUI0A11ChartLabelsV11formatValueySSSdYbcvp"
+        },
+        {
+          "declaration": "let invalidData: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenChartLabels",
+            "invalidData"
+          ],
+          "precise": "s:7LumenUI0A11ChartLabelsV11invalidDataSSvp"
+        },
+        {
           "declaration": "let notAvailable: String",
           "kind": "swift.property",
           "path": [
@@ -58508,6 +59442,24 @@
           "precise": "s:7LumenUI0A11ChartLabelsV20formatHeatmapSummaryySSSiYbcvp"
         },
         {
+          "declaration": "let end: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenChartLabels",
+            "end"
+          ],
+          "precise": "s:7LumenUI0A11ChartLabelsV3endSSvp"
+        },
+        {
+          "declaration": "let row: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenChartLabels",
+            "row"
+          ],
+          "precise": "s:7LumenUI0A11ChartLabelsV3rowSSvp"
+        },
+        {
           "declaration": "let size: String",
           "kind": "swift.property",
           "path": [
@@ -58517,13 +59469,22 @@
           "precise": "s:7LumenUI0A11ChartLabelsV4sizeSSvp"
         },
         {
-          "declaration": "init(empty: String = \"No chart data available.\", notAvailable: String = \"Not available\", size: String = \"Size\", viewData: String = \"View chart data\", formatHeatmapSummary: @escaping @Sendable (Int) -> String = { count in\n            count == 0 ? \"No chart data available.\" : \"\\(count) heatmap \\(count == 1 ? \"cell\" : \"cells\").\"\n        }, formatRangeSummary: @escaping @Sendable (Int) -> String = { count in\n            count == 0 ? \"No chart data available.\" : \"\\(count) \\(count == 1 ? \"range\" : \"ranges\").\"\n        }, formatSummary: @escaping @Sendable (LumenChartSummary) -> String = { $0.spokenDescription })",
+          "declaration": "let count: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenChartLabels",
+            "count"
+          ],
+          "precise": "s:7LumenUI0A11ChartLabelsV5countSSvp"
+        },
+        {
+          "declaration": "init(empty: String = \"No chart data available.\", notAvailable: String = \"Not available\", size: String = \"Size\", viewData: String = \"View chart data\", invalidData: String = \"Chart data is invalid.\", start: String = \"Start\", end: String = \"End\", value: String = \"Value\", count: String = \"Count\", density: String = \"Density\", column: String = \"Column\", row: String = \"Row\", formatValue: @escaping @Sendable (Double) -> String = { $0.formatted() }, formatHeatmapSummary: @escaping @Sendable (Int) -> String = { count in\n            count == 0 ? \"No chart data available.\" : \"\\(count) heatmap \\(count == 1 ? \"cell\" : \"cells\").\"\n        }, formatRangeSummary: @escaping @Sendable (Int) -> String = { count in\n            count == 0 ? \"No chart data available.\" : \"\\(count) \\(count == 1 ? \"range\" : \"ranges\").\"\n        }, formatSummary: @escaping @Sendable (LumenChartSummary) -> String = { $0.spokenDescription })",
           "kind": "swift.init",
           "path": [
             "LumenChartLabels",
-            "init(empty:notAvailable:size:viewData:formatHeatmapSummary:formatRangeSummary:formatSummary:)"
+            "init(empty:notAvailable:size:viewData:invalidData:start:end:value:count:density:column:row:formatValue:formatHeatmapSummary:formatRangeSummary:formatSummary:)"
           ],
-          "precise": "s:7LumenUI0A11ChartLabelsV5empty12notAvailable4size8viewData20formatHeatmapSummary0k5RangeM00kM0ACSS_S4SSiYbcSSSiYbcSSAA0acM0VYbctcfc"
+          "precise": "s:7LumenUI0A11ChartLabelsV5empty12notAvailable4size8viewData07invalidJ05start3end5value5count7density6column3row11formatValue0S14HeatmapSummary0s5RangeV00sV0ACSS_S12SSdYbcSSSiYbcSSSiYbcSSAA0acV0VYbctcfc"
         },
         {
           "declaration": "let empty: String",
@@ -58533,6 +59494,42 @@
             "empty"
           ],
           "precise": "s:7LumenUI0A11ChartLabelsV5emptySSvp"
+        },
+        {
+          "declaration": "let start: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenChartLabels",
+            "start"
+          ],
+          "precise": "s:7LumenUI0A11ChartLabelsV5startSSvp"
+        },
+        {
+          "declaration": "let value: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenChartLabels",
+            "value"
+          ],
+          "precise": "s:7LumenUI0A11ChartLabelsV5valueSSvp"
+        },
+        {
+          "declaration": "let column: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenChartLabels",
+            "column"
+          ],
+          "precise": "s:7LumenUI0A11ChartLabelsV6columnSSvp"
+        },
+        {
+          "declaration": "let density: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenChartLabels",
+            "density"
+          ],
+          "precise": "s:7LumenUI0A11ChartLabelsV7densitySSvp"
         },
         {
           "declaration": "static let english: LumenChartLabels",
@@ -59491,6 +60488,59 @@
           "precise": "s:7LumenUI0A12HeatmapDatumV6columnSSvp"
         },
         {
+          "declaration": "struct LumenHistogramBin",
+          "kind": "swift.struct",
+          "path": [
+            "LumenHistogramBin"
+          ],
+          "precise": "s:7LumenUI0A12HistogramBinV"
+        },
+        {
+          "declaration": "let end: Double",
+          "kind": "swift.property",
+          "path": [
+            "LumenHistogramBin",
+            "end"
+          ],
+          "precise": "s:7LumenUI0A12HistogramBinV3endSdvp"
+        },
+        {
+          "declaration": "let count: Double",
+          "kind": "swift.property",
+          "path": [
+            "LumenHistogramBin",
+            "count"
+          ],
+          "precise": "s:7LumenUI0A12HistogramBinV5countSdvp"
+        },
+        {
+          "declaration": "let label: String?",
+          "kind": "swift.property",
+          "path": [
+            "LumenHistogramBin",
+            "label"
+          ],
+          "precise": "s:7LumenUI0A12HistogramBinV5labelSSSgvp"
+        },
+        {
+          "declaration": "init(start: Double, end: Double, count: Double, label: String? = nil)",
+          "kind": "swift.init",
+          "path": [
+            "LumenHistogramBin",
+            "init(start:end:count:label:)"
+          ],
+          "precise": "s:7LumenUI0A12HistogramBinV5start3end5count5labelACSd_S2dSSSgtcfc"
+        },
+        {
+          "declaration": "let start: Double",
+          "kind": "swift.property",
+          "path": [
+            "LumenHistogramBin",
+            "start"
+          ],
+          "precise": "s:7LumenUI0A12HistogramBinV5startSdvp"
+        },
+        {
           "declaration": "enum LumenPresetColors",
           "kind": "swift.enum",
           "path": [
@@ -59904,6 +60954,41 @@
           "precise": "s:7LumenUI0A13TimeSelectionV6minuteSivp"
         },
         {
+          "declaration": "enum LumenWaterfallKind",
+          "kind": "swift.enum",
+          "path": [
+            "LumenWaterfallKind"
+          ],
+          "precise": "s:7LumenUI0A13WaterfallKindO"
+        },
+        {
+          "declaration": "case delta",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenWaterfallKind",
+            "delta"
+          ],
+          "precise": "s:7LumenUI0A13WaterfallKindO5deltayA2CmF"
+        },
+        {
+          "declaration": "case total",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenWaterfallKind",
+            "total"
+          ],
+          "precise": "s:7LumenUI0A13WaterfallKindO5totalyA2CmF"
+        },
+        {
+          "declaration": "init?(rawValue: String)",
+          "kind": "swift.init",
+          "path": [
+            "LumenWaterfallKind",
+            "init(rawValue:)"
+          ],
+          "precise": "s:7LumenUI0A13WaterfallKindO8rawValueACSgSS_tcfc"
+        },
+        {
           "declaration": "enum LumenBarChartLayout",
           "kind": "swift.enum",
           "path": [
@@ -60201,6 +61286,94 @@
             "none"
           ],
           "precise": "s:7LumenUI0A14SurfacePaddingO4noneyA2CmF"
+        },
+        {
+          "declaration": "@MainActor struct LumenWaterfallChart",
+          "kind": "swift.struct",
+          "path": [
+            "LumenWaterfallChart"
+          ],
+          "precise": "s:7LumenUI0A14WaterfallChartV"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenWaterfallChart",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A14WaterfallChartV4bodyQrvp"
+        },
+        {
+          "declaration": "@MainActor init(label: String, data: [LumenWaterfallDatum], heading: String? = nil, description: String? = nil, labels: LumenChartLabels = .english, showData: Bool = true, valueLabel: String? = nil)",
+          "kind": "swift.init",
+          "path": [
+            "LumenWaterfallChart",
+            "init(label:data:heading:description:labels:showData:valueLabel:)"
+          ],
+          "precise": "s:7LumenUI0A14WaterfallChartV5label4data7heading11description6labels8showData10valueLabelACSS_SayAA0aC5DatumVGSSSgAnA0aD6LabelsVSbANtcfc"
+        },
+        {
+          "declaration": "struct LumenWaterfallDatum",
+          "kind": "swift.struct",
+          "path": [
+            "LumenWaterfallDatum"
+          ],
+          "precise": "s:7LumenUI0A14WaterfallDatumV"
+        },
+        {
+          "declaration": "init(id: String, label: String, value: Double, kind: LumenWaterfallKind = .delta, tone: LumenChartTone? = nil)",
+          "kind": "swift.init",
+          "path": [
+            "LumenWaterfallDatum",
+            "init(id:label:value:kind:tone:)"
+          ],
+          "precise": "s:7LumenUI0A14WaterfallDatumV2id5label5value4kind4toneACSS_SSSdAA0aC4KindOAA0A9ChartToneOSgtcfc"
+        },
+        {
+          "declaration": "let id: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenWaterfallDatum",
+            "id"
+          ],
+          "precise": "s:7LumenUI0A14WaterfallDatumV2idSSvp"
+        },
+        {
+          "declaration": "let kind: LumenWaterfallKind",
+          "kind": "swift.property",
+          "path": [
+            "LumenWaterfallDatum",
+            "kind"
+          ],
+          "precise": "s:7LumenUI0A14WaterfallDatumV4kindAA0aC4KindOvp"
+        },
+        {
+          "declaration": "let tone: LumenChartTone?",
+          "kind": "swift.property",
+          "path": [
+            "LumenWaterfallDatum",
+            "tone"
+          ],
+          "precise": "s:7LumenUI0A14WaterfallDatumV4toneAA0A9ChartToneOSgvp"
+        },
+        {
+          "declaration": "let label: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenWaterfallDatum",
+            "label"
+          ],
+          "precise": "s:7LumenUI0A14WaterfallDatumV5labelSSvp"
+        },
+        {
+          "declaration": "let value: Double",
+          "kind": "swift.property",
+          "path": [
+            "LumenWaterfallDatum",
+            "value"
+          ],
+          "precise": "s:7LumenUI0A14WaterfallDatumV5valueSdvp"
         },
         {
           "declaration": "@MainActor struct LumenIconButtonStyle",
@@ -60583,6 +61756,41 @@
           "precise": "s:7LumenUI0A17ChartColorPaletteV9selection05SwiftB00D0Vvp"
         },
         {
+          "declaration": "enum LumenHeatmapColorScale",
+          "kind": "swift.enum",
+          "path": [
+            "LumenHeatmapColorScale"
+          ],
+          "precise": "s:7LumenUI0A17HeatmapColorScaleO"
+        },
+        {
+          "declaration": "case sequential",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenHeatmapColorScale",
+            "sequential"
+          ],
+          "precise": "s:7LumenUI0A17HeatmapColorScaleO10sequentialyA2CmF"
+        },
+        {
+          "declaration": "init?(rawValue: String)",
+          "kind": "swift.init",
+          "path": [
+            "LumenHeatmapColorScale",
+            "init(rawValue:)"
+          ],
+          "precise": "s:7LumenUI0A17HeatmapColorScaleO8rawValueACSgSS_tcfc"
+        },
+        {
+          "declaration": "case diverging",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenHeatmapColorScale",
+            "diverging"
+          ],
+          "precise": "s:7LumenUI0A17HeatmapColorScaleO9divergingyA2CmF"
+        },
+        {
           "declaration": "struct LumenIconButtonMetrics",
           "kind": "swift.struct",
           "path": [
@@ -60616,6 +61824,41 @@
             "iconSize"
           ],
           "precise": "s:7LumenUI0A17IconButtonMetricsV8iconSizeAA0acG0Ovp"
+        },
+        {
+          "declaration": "enum LumenHistogramFrequency",
+          "kind": "swift.enum",
+          "path": [
+            "LumenHistogramFrequency"
+          ],
+          "precise": "s:7LumenUI0A18HistogramFrequencyO"
+        },
+        {
+          "declaration": "case count",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenHistogramFrequency",
+            "count"
+          ],
+          "precise": "s:7LumenUI0A18HistogramFrequencyO5countyA2CmF"
+        },
+        {
+          "declaration": "case density",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenHistogramFrequency",
+            "density"
+          ],
+          "precise": "s:7LumenUI0A18HistogramFrequencyO7densityyA2CmF"
+        },
+        {
+          "declaration": "init?(rawValue: String)",
+          "kind": "swift.init",
+          "path": [
+            "LumenHistogramFrequency",
+            "init(rawValue:)"
+          ],
+          "precise": "s:7LumenUI0A18HistogramFrequencyO8rawValueACSgSS_tcfc"
         },
         {
           "declaration": "struct LumenWatchActionMetrics",
@@ -61601,13 +62844,13 @@
           "precise": "s:7LumenUI0A7HeatmapV4bodyQrvp"
         },
         {
-          "declaration": "@MainActor init(label: String, data: [LumenHeatmapDatum], summary: String? = nil, labels: LumenChartLabels = .english, showData: Bool = true)",
+          "declaration": "@MainActor init(label: String, data: [LumenHeatmapDatum], summary: String? = nil, labels: LumenChartLabels = .english, showData: Bool = true, heading: String? = nil, description: String? = nil, colorScale: LumenHeatmapColorScale = .sequential, domain: ClosedRange<Double>? = nil, midpoint: Double = 0)",
           "kind": "swift.init",
           "path": [
             "LumenHeatmap",
-            "init(label:data:summary:labels:showData:)"
+            "init(label:data:summary:labels:showData:heading:description:colorScale:domain:midpoint:)"
           ],
-          "precise": "s:7LumenUI0A7HeatmapV5label4data7summary6labels8showDataACSS_SayAA0aC5DatumVGSSSgAA0A11ChartLabelsVSbtcfc"
+          "precise": "s:7LumenUI0A7HeatmapV5label4data7summary6labels8showData7heading11description10colorScale6domain8midpointACSS_SayAA0aC5DatumVGSSSgAA0A11ChartLabelsVSbA2qA0ac5ColorM0OSNySdGSgSdtcfc"
         },
         {
           "declaration": "@MainActor struct LumenListRow<Leading, Content, Trailing> where Leading : View, Content : View, Trailing : View",
@@ -84334,6 +85577,32 @@
             "resting"
           ],
           "precise": "s:7LumenUI0A9ElevationO7resting14CoreFoundation7CGFloatVvpZ"
+        },
+        {
+          "declaration": "@MainActor struct LumenHistogram",
+          "kind": "swift.struct",
+          "path": [
+            "LumenHistogram"
+          ],
+          "precise": "s:7LumenUI0A9HistogramV"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenHistogram",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A9HistogramV4bodyQrvp"
+        },
+        {
+          "declaration": "@MainActor init(label: String, data: [LumenHistogramBin], heading: String? = nil, description: String? = nil, labels: LumenChartLabels = .english, frequency: LumenHistogramFrequency = .count, tone: LumenChartTone = .series1, showData: Bool = true, formatBoundary: @escaping (Double) -> String = { $0.formatted() })",
+          "kind": "swift.init",
+          "path": [
+            "LumenHistogram",
+            "init(label:data:heading:description:labels:frequency:tone:showData:formatBoundary:)"
+          ],
+          "precise": "s:7LumenUI0A9HistogramV5label4data7heading11description6labels9frequency4tone8showData14formatBoundaryACSS_SayAA0aC3BinVGSSSgApA0A11ChartLabelsVAA0aC9FrequencyOAA0aP4ToneOSbSSSdctcfc"
         },
         {
           "declaration": "@MainActor struct LumenLineChart",
@@ -85473,6 +86742,76 @@
           "precise": "s:7LumenUI0A10TypographyO6xsSize14CoreFoundation7CGFloatVvpZ"
         },
         {
+          "declaration": "@MainActor struct LumenBulletChart",
+          "kind": "swift.struct",
+          "path": [
+            "LumenBulletChart"
+          ],
+          "precise": "s:7LumenUI0A11BulletChartV"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenBulletChart",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A11BulletChartV4bodyQrvp"
+        },
+        {
+          "declaration": "@MainActor init(label: String, value: Double?, target: Double, ranges: [LumenBulletRange] = [], domain: ClosedRange<Double>? = nil, heading: String? = nil, description: String? = nil, labels: LumenChartLabels = .english, targetLabel: String = \"Target\", valueLabel: String? = nil, tone: LumenChartTone = .series1, showData: Bool = true)",
+          "kind": "swift.init",
+          "path": [
+            "LumenBulletChart",
+            "init(label:value:target:ranges:domain:heading:description:labels:targetLabel:valueLabel:tone:showData:)"
+          ],
+          "precise": "s:7LumenUI0A11BulletChartV5label5value6target6ranges6domain7heading11description6labels0G5Label0fM04tone8showDataACSS_SdSgSdSayAA0aC5RangeVGSNySdGSgSSSgAvA0aD6LabelsVSSAvA0aD4ToneOSbtcfc"
+        },
+        {
+          "declaration": "struct LumenBulletRange",
+          "kind": "swift.struct",
+          "path": [
+            "LumenBulletRange"
+          ],
+          "precise": "s:7LumenUI0A11BulletRangeV"
+        },
+        {
+          "declaration": "init(end: Double, label: String, tone: LumenChartTone? = nil)",
+          "kind": "swift.init",
+          "path": [
+            "LumenBulletRange",
+            "init(end:label:tone:)"
+          ],
+          "precise": "s:7LumenUI0A11BulletRangeV3end5label4toneACSd_SSAA0A9ChartToneOSgtcfc"
+        },
+        {
+          "declaration": "let end: Double",
+          "kind": "swift.property",
+          "path": [
+            "LumenBulletRange",
+            "end"
+          ],
+          "precise": "s:7LumenUI0A11BulletRangeV3endSdvp"
+        },
+        {
+          "declaration": "let tone: LumenChartTone?",
+          "kind": "swift.property",
+          "path": [
+            "LumenBulletRange",
+            "tone"
+          ],
+          "precise": "s:7LumenUI0A11BulletRangeV4toneAA0A9ChartToneOSgvp"
+        },
+        {
+          "declaration": "let label: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenBulletRange",
+            "label"
+          ],
+          "precise": "s:7LumenUI0A11BulletRangeV5labelSSvp"
+        },
+        {
           "declaration": "@MainActor struct LumenButtonGroup<Content> where Content : View",
           "kind": "swift.struct",
           "path": [
@@ -85621,6 +86960,24 @@
           "precise": "s:7LumenUI0A11ChartLabelsV"
         },
         {
+          "declaration": "let formatValue: @Sendable (Double) -> String",
+          "kind": "swift.property",
+          "path": [
+            "LumenChartLabels",
+            "formatValue"
+          ],
+          "precise": "s:7LumenUI0A11ChartLabelsV11formatValueySSSdYbcvp"
+        },
+        {
+          "declaration": "let invalidData: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenChartLabels",
+            "invalidData"
+          ],
+          "precise": "s:7LumenUI0A11ChartLabelsV11invalidDataSSvp"
+        },
+        {
           "declaration": "let notAvailable: String",
           "kind": "swift.property",
           "path": [
@@ -85657,6 +87014,24 @@
           "precise": "s:7LumenUI0A11ChartLabelsV20formatHeatmapSummaryySSSiYbcvp"
         },
         {
+          "declaration": "let end: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenChartLabels",
+            "end"
+          ],
+          "precise": "s:7LumenUI0A11ChartLabelsV3endSSvp"
+        },
+        {
+          "declaration": "let row: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenChartLabels",
+            "row"
+          ],
+          "precise": "s:7LumenUI0A11ChartLabelsV3rowSSvp"
+        },
+        {
           "declaration": "let size: String",
           "kind": "swift.property",
           "path": [
@@ -85666,13 +87041,22 @@
           "precise": "s:7LumenUI0A11ChartLabelsV4sizeSSvp"
         },
         {
-          "declaration": "init(empty: String = \"No chart data available.\", notAvailable: String = \"Not available\", size: String = \"Size\", viewData: String = \"View chart data\", formatHeatmapSummary: @escaping @Sendable (Int) -> String = { count in\n            count == 0 ? \"No chart data available.\" : \"\\(count) heatmap \\(count == 1 ? \"cell\" : \"cells\").\"\n        }, formatRangeSummary: @escaping @Sendable (Int) -> String = { count in\n            count == 0 ? \"No chart data available.\" : \"\\(count) \\(count == 1 ? \"range\" : \"ranges\").\"\n        }, formatSummary: @escaping @Sendable (LumenChartSummary) -> String = { $0.spokenDescription })",
+          "declaration": "let count: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenChartLabels",
+            "count"
+          ],
+          "precise": "s:7LumenUI0A11ChartLabelsV5countSSvp"
+        },
+        {
+          "declaration": "init(empty: String = \"No chart data available.\", notAvailable: String = \"Not available\", size: String = \"Size\", viewData: String = \"View chart data\", invalidData: String = \"Chart data is invalid.\", start: String = \"Start\", end: String = \"End\", value: String = \"Value\", count: String = \"Count\", density: String = \"Density\", column: String = \"Column\", row: String = \"Row\", formatValue: @escaping @Sendable (Double) -> String = { $0.formatted() }, formatHeatmapSummary: @escaping @Sendable (Int) -> String = { count in\n            count == 0 ? \"No chart data available.\" : \"\\(count) heatmap \\(count == 1 ? \"cell\" : \"cells\").\"\n        }, formatRangeSummary: @escaping @Sendable (Int) -> String = { count in\n            count == 0 ? \"No chart data available.\" : \"\\(count) \\(count == 1 ? \"range\" : \"ranges\").\"\n        }, formatSummary: @escaping @Sendable (LumenChartSummary) -> String = { $0.spokenDescription })",
           "kind": "swift.init",
           "path": [
             "LumenChartLabels",
-            "init(empty:notAvailable:size:viewData:formatHeatmapSummary:formatRangeSummary:formatSummary:)"
+            "init(empty:notAvailable:size:viewData:invalidData:start:end:value:count:density:column:row:formatValue:formatHeatmapSummary:formatRangeSummary:formatSummary:)"
           ],
-          "precise": "s:7LumenUI0A11ChartLabelsV5empty12notAvailable4size8viewData20formatHeatmapSummary0k5RangeM00kM0ACSS_S4SSiYbcSSSiYbcSSAA0acM0VYbctcfc"
+          "precise": "s:7LumenUI0A11ChartLabelsV5empty12notAvailable4size8viewData07invalidJ05start3end5value5count7density6column3row11formatValue0S14HeatmapSummary0s5RangeV00sV0ACSS_S12SSdYbcSSSiYbcSSSiYbcSSAA0acV0VYbctcfc"
         },
         {
           "declaration": "let empty: String",
@@ -85682,6 +87066,42 @@
             "empty"
           ],
           "precise": "s:7LumenUI0A11ChartLabelsV5emptySSvp"
+        },
+        {
+          "declaration": "let start: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenChartLabels",
+            "start"
+          ],
+          "precise": "s:7LumenUI0A11ChartLabelsV5startSSvp"
+        },
+        {
+          "declaration": "let value: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenChartLabels",
+            "value"
+          ],
+          "precise": "s:7LumenUI0A11ChartLabelsV5valueSSvp"
+        },
+        {
+          "declaration": "let column: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenChartLabels",
+            "column"
+          ],
+          "precise": "s:7LumenUI0A11ChartLabelsV6columnSSvp"
+        },
+        {
+          "declaration": "let density: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenChartLabels",
+            "density"
+          ],
+          "precise": "s:7LumenUI0A11ChartLabelsV7densitySSvp"
         },
         {
           "declaration": "static let english: LumenChartLabels",
@@ -87040,6 +88460,59 @@
           "precise": "s:7LumenUI0A12HeatmapDatumV6columnSSvp"
         },
         {
+          "declaration": "struct LumenHistogramBin",
+          "kind": "swift.struct",
+          "path": [
+            "LumenHistogramBin"
+          ],
+          "precise": "s:7LumenUI0A12HistogramBinV"
+        },
+        {
+          "declaration": "let end: Double",
+          "kind": "swift.property",
+          "path": [
+            "LumenHistogramBin",
+            "end"
+          ],
+          "precise": "s:7LumenUI0A12HistogramBinV3endSdvp"
+        },
+        {
+          "declaration": "let count: Double",
+          "kind": "swift.property",
+          "path": [
+            "LumenHistogramBin",
+            "count"
+          ],
+          "precise": "s:7LumenUI0A12HistogramBinV5countSdvp"
+        },
+        {
+          "declaration": "let label: String?",
+          "kind": "swift.property",
+          "path": [
+            "LumenHistogramBin",
+            "label"
+          ],
+          "precise": "s:7LumenUI0A12HistogramBinV5labelSSSgvp"
+        },
+        {
+          "declaration": "init(start: Double, end: Double, count: Double, label: String? = nil)",
+          "kind": "swift.init",
+          "path": [
+            "LumenHistogramBin",
+            "init(start:end:count:label:)"
+          ],
+          "precise": "s:7LumenUI0A12HistogramBinV5start3end5count5labelACSd_S2dSSSgtcfc"
+        },
+        {
+          "declaration": "let start: Double",
+          "kind": "swift.property",
+          "path": [
+            "LumenHistogramBin",
+            "start"
+          ],
+          "precise": "s:7LumenUI0A12HistogramBinV5startSdvp"
+        },
+        {
           "declaration": "@MainActor struct LumenIllustration",
           "kind": "swift.struct",
           "path": [
@@ -87611,6 +89084,41 @@
           "precise": "s:7LumenUI0A13TimeSelectionV6minuteSivp"
         },
         {
+          "declaration": "enum LumenWaterfallKind",
+          "kind": "swift.enum",
+          "path": [
+            "LumenWaterfallKind"
+          ],
+          "precise": "s:7LumenUI0A13WaterfallKindO"
+        },
+        {
+          "declaration": "case delta",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenWaterfallKind",
+            "delta"
+          ],
+          "precise": "s:7LumenUI0A13WaterfallKindO5deltayA2CmF"
+        },
+        {
+          "declaration": "case total",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenWaterfallKind",
+            "total"
+          ],
+          "precise": "s:7LumenUI0A13WaterfallKindO5totalyA2CmF"
+        },
+        {
+          "declaration": "init?(rawValue: String)",
+          "kind": "swift.init",
+          "path": [
+            "LumenWaterfallKind",
+            "init(rawValue:)"
+          ],
+          "precise": "s:7LumenUI0A13WaterfallKindO8rawValueACSgSS_tcfc"
+        },
+        {
           "declaration": "enum LumenBarChartLayout",
           "kind": "swift.enum",
           "path": [
@@ -87995,6 +89503,94 @@
             "none"
           ],
           "precise": "s:7LumenUI0A14SurfacePaddingO4noneyA2CmF"
+        },
+        {
+          "declaration": "@MainActor struct LumenWaterfallChart",
+          "kind": "swift.struct",
+          "path": [
+            "LumenWaterfallChart"
+          ],
+          "precise": "s:7LumenUI0A14WaterfallChartV"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenWaterfallChart",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A14WaterfallChartV4bodyQrvp"
+        },
+        {
+          "declaration": "@MainActor init(label: String, data: [LumenWaterfallDatum], heading: String? = nil, description: String? = nil, labels: LumenChartLabels = .english, showData: Bool = true, valueLabel: String? = nil)",
+          "kind": "swift.init",
+          "path": [
+            "LumenWaterfallChart",
+            "init(label:data:heading:description:labels:showData:valueLabel:)"
+          ],
+          "precise": "s:7LumenUI0A14WaterfallChartV5label4data7heading11description6labels8showData10valueLabelACSS_SayAA0aC5DatumVGSSSgAnA0aD6LabelsVSbANtcfc"
+        },
+        {
+          "declaration": "struct LumenWaterfallDatum",
+          "kind": "swift.struct",
+          "path": [
+            "LumenWaterfallDatum"
+          ],
+          "precise": "s:7LumenUI0A14WaterfallDatumV"
+        },
+        {
+          "declaration": "init(id: String, label: String, value: Double, kind: LumenWaterfallKind = .delta, tone: LumenChartTone? = nil)",
+          "kind": "swift.init",
+          "path": [
+            "LumenWaterfallDatum",
+            "init(id:label:value:kind:tone:)"
+          ],
+          "precise": "s:7LumenUI0A14WaterfallDatumV2id5label5value4kind4toneACSS_SSSdAA0aC4KindOAA0A9ChartToneOSgtcfc"
+        },
+        {
+          "declaration": "let id: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenWaterfallDatum",
+            "id"
+          ],
+          "precise": "s:7LumenUI0A14WaterfallDatumV2idSSvp"
+        },
+        {
+          "declaration": "let kind: LumenWaterfallKind",
+          "kind": "swift.property",
+          "path": [
+            "LumenWaterfallDatum",
+            "kind"
+          ],
+          "precise": "s:7LumenUI0A14WaterfallDatumV4kindAA0aC4KindOvp"
+        },
+        {
+          "declaration": "let tone: LumenChartTone?",
+          "kind": "swift.property",
+          "path": [
+            "LumenWaterfallDatum",
+            "tone"
+          ],
+          "precise": "s:7LumenUI0A14WaterfallDatumV4toneAA0A9ChartToneOSgvp"
+        },
+        {
+          "declaration": "let label: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenWaterfallDatum",
+            "label"
+          ],
+          "precise": "s:7LumenUI0A14WaterfallDatumV5labelSSvp"
+        },
+        {
+          "declaration": "let value: Double",
+          "kind": "swift.property",
+          "path": [
+            "LumenWaterfallDatum",
+            "value"
+          ],
+          "precise": "s:7LumenUI0A14WaterfallDatumV5valueSdvp"
         },
         {
           "declaration": "enum LumenBackdropVariant",
@@ -88719,6 +90315,41 @@
           "precise": "s:7LumenUI0A17ChartColorPaletteV9selection05SwiftB00D0Vvp"
         },
         {
+          "declaration": "enum LumenHeatmapColorScale",
+          "kind": "swift.enum",
+          "path": [
+            "LumenHeatmapColorScale"
+          ],
+          "precise": "s:7LumenUI0A17HeatmapColorScaleO"
+        },
+        {
+          "declaration": "case sequential",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenHeatmapColorScale",
+            "sequential"
+          ],
+          "precise": "s:7LumenUI0A17HeatmapColorScaleO10sequentialyA2CmF"
+        },
+        {
+          "declaration": "init?(rawValue: String)",
+          "kind": "swift.init",
+          "path": [
+            "LumenHeatmapColorScale",
+            "init(rawValue:)"
+          ],
+          "precise": "s:7LumenUI0A17HeatmapColorScaleO8rawValueACSgSS_tcfc"
+        },
+        {
+          "declaration": "case diverging",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenHeatmapColorScale",
+            "diverging"
+          ],
+          "precise": "s:7LumenUI0A17HeatmapColorScaleO9divergingyA2CmF"
+        },
+        {
           "declaration": "struct LumenIconButtonMetrics",
           "kind": "swift.struct",
           "path": [
@@ -88814,6 +90445,41 @@
             "disabled"
           ],
           "precise": "s:7LumenUI0A18AutocompleteOptionV8disabledSbvp"
+        },
+        {
+          "declaration": "enum LumenHistogramFrequency",
+          "kind": "swift.enum",
+          "path": [
+            "LumenHistogramFrequency"
+          ],
+          "precise": "s:7LumenUI0A18HistogramFrequencyO"
+        },
+        {
+          "declaration": "case count",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenHistogramFrequency",
+            "count"
+          ],
+          "precise": "s:7LumenUI0A18HistogramFrequencyO5countyA2CmF"
+        },
+        {
+          "declaration": "case density",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenHistogramFrequency",
+            "density"
+          ],
+          "precise": "s:7LumenUI0A18HistogramFrequencyO7densityyA2CmF"
+        },
+        {
+          "declaration": "init?(rawValue: String)",
+          "kind": "swift.init",
+          "path": [
+            "LumenHistogramFrequency",
+            "init(rawValue:)"
+          ],
+          "precise": "s:7LumenUI0A18HistogramFrequencyO8rawValueACSgSS_tcfc"
         },
         {
           "declaration": "struct LumenWatchActionMetrics",
@@ -90105,13 +91771,13 @@
           "precise": "s:7LumenUI0A7HeatmapV4bodyQrvp"
         },
         {
-          "declaration": "@MainActor init(label: String, data: [LumenHeatmapDatum], summary: String? = nil, labels: LumenChartLabels = .english, showData: Bool = true)",
+          "declaration": "@MainActor init(label: String, data: [LumenHeatmapDatum], summary: String? = nil, labels: LumenChartLabels = .english, showData: Bool = true, heading: String? = nil, description: String? = nil, colorScale: LumenHeatmapColorScale = .sequential, domain: ClosedRange<Double>? = nil, midpoint: Double = 0)",
           "kind": "swift.init",
           "path": [
             "LumenHeatmap",
-            "init(label:data:summary:labels:showData:)"
+            "init(label:data:summary:labels:showData:heading:description:colorScale:domain:midpoint:)"
           ],
-          "precise": "s:7LumenUI0A7HeatmapV5label4data7summary6labels8showDataACSS_SayAA0aC5DatumVGSSSgAA0A11ChartLabelsVSbtcfc"
+          "precise": "s:7LumenUI0A7HeatmapV5label4data7summary6labels8showData7heading11description10colorScale6domain8midpointACSS_SayAA0aC5DatumVGSSSgAA0A11ChartLabelsVSbA2qA0ac5ColorM0OSNySdGSgSdtcfc"
         },
         {
           "declaration": "@MainActor struct LumenListRow<Leading, Content, Trailing> where Leading : View, Content : View, Trailing : View",
@@ -113023,6 +114689,32 @@
           "precise": "s:7LumenUI0A9ElevationO7resting14CoreFoundation7CGFloatVvpZ"
         },
         {
+          "declaration": "@MainActor struct LumenHistogram",
+          "kind": "swift.struct",
+          "path": [
+            "LumenHistogram"
+          ],
+          "precise": "s:7LumenUI0A9HistogramV"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenHistogram",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A9HistogramV4bodyQrvp"
+        },
+        {
+          "declaration": "@MainActor init(label: String, data: [LumenHistogramBin], heading: String? = nil, description: String? = nil, labels: LumenChartLabels = .english, frequency: LumenHistogramFrequency = .count, tone: LumenChartTone = .series1, showData: Bool = true, formatBoundary: @escaping (Double) -> String = { $0.formatted() })",
+          "kind": "swift.init",
+          "path": [
+            "LumenHistogram",
+            "init(label:data:heading:description:labels:frequency:tone:showData:formatBoundary:)"
+          ],
+          "precise": "s:7LumenUI0A9HistogramV5label4data7heading11description6labels9frequency4tone8showData14formatBoundaryACSS_SayAA0aC3BinVGSSSgApA0A11ChartLabelsVAA0aC9FrequencyOAA0aP4ToneOSbSSSdctcfc"
+        },
+        {
           "declaration": "@MainActor struct LumenLineChart",
           "kind": "swift.struct",
           "path": [
@@ -114047,6 +115739,76 @@
           "precise": "s:7LumenUI0A10TypographyO6xsSize14CoreFoundation7CGFloatVvpZ"
         },
         {
+          "declaration": "@MainActor struct LumenBulletChart",
+          "kind": "swift.struct",
+          "path": [
+            "LumenBulletChart"
+          ],
+          "precise": "s:7LumenUI0A11BulletChartV"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenBulletChart",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A11BulletChartV4bodyQrvp"
+        },
+        {
+          "declaration": "@MainActor init(label: String, value: Double?, target: Double, ranges: [LumenBulletRange] = [], domain: ClosedRange<Double>? = nil, heading: String? = nil, description: String? = nil, labels: LumenChartLabels = .english, targetLabel: String = \"Target\", valueLabel: String? = nil, tone: LumenChartTone = .series1, showData: Bool = true)",
+          "kind": "swift.init",
+          "path": [
+            "LumenBulletChart",
+            "init(label:value:target:ranges:domain:heading:description:labels:targetLabel:valueLabel:tone:showData:)"
+          ],
+          "precise": "s:7LumenUI0A11BulletChartV5label5value6target6ranges6domain7heading11description6labels0G5Label0fM04tone8showDataACSS_SdSgSdSayAA0aC5RangeVGSNySdGSgSSSgAvA0aD6LabelsVSSAvA0aD4ToneOSbtcfc"
+        },
+        {
+          "declaration": "struct LumenBulletRange",
+          "kind": "swift.struct",
+          "path": [
+            "LumenBulletRange"
+          ],
+          "precise": "s:7LumenUI0A11BulletRangeV"
+        },
+        {
+          "declaration": "init(end: Double, label: String, tone: LumenChartTone? = nil)",
+          "kind": "swift.init",
+          "path": [
+            "LumenBulletRange",
+            "init(end:label:tone:)"
+          ],
+          "precise": "s:7LumenUI0A11BulletRangeV3end5label4toneACSd_SSAA0A9ChartToneOSgtcfc"
+        },
+        {
+          "declaration": "let end: Double",
+          "kind": "swift.property",
+          "path": [
+            "LumenBulletRange",
+            "end"
+          ],
+          "precise": "s:7LumenUI0A11BulletRangeV3endSdvp"
+        },
+        {
+          "declaration": "let tone: LumenChartTone?",
+          "kind": "swift.property",
+          "path": [
+            "LumenBulletRange",
+            "tone"
+          ],
+          "precise": "s:7LumenUI0A11BulletRangeV4toneAA0A9ChartToneOSgvp"
+        },
+        {
+          "declaration": "let label: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenBulletRange",
+            "label"
+          ],
+          "precise": "s:7LumenUI0A11BulletRangeV5labelSSvp"
+        },
+        {
           "declaration": "@MainActor struct LumenButtonGroup<Content> where Content : View",
           "kind": "swift.struct",
           "path": [
@@ -114195,6 +115957,24 @@
           "precise": "s:7LumenUI0A11ChartLabelsV"
         },
         {
+          "declaration": "let formatValue: @Sendable (Double) -> String",
+          "kind": "swift.property",
+          "path": [
+            "LumenChartLabels",
+            "formatValue"
+          ],
+          "precise": "s:7LumenUI0A11ChartLabelsV11formatValueySSSdYbcvp"
+        },
+        {
+          "declaration": "let invalidData: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenChartLabels",
+            "invalidData"
+          ],
+          "precise": "s:7LumenUI0A11ChartLabelsV11invalidDataSSvp"
+        },
+        {
           "declaration": "let notAvailable: String",
           "kind": "swift.property",
           "path": [
@@ -114231,6 +116011,24 @@
           "precise": "s:7LumenUI0A11ChartLabelsV20formatHeatmapSummaryySSSiYbcvp"
         },
         {
+          "declaration": "let end: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenChartLabels",
+            "end"
+          ],
+          "precise": "s:7LumenUI0A11ChartLabelsV3endSSvp"
+        },
+        {
+          "declaration": "let row: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenChartLabels",
+            "row"
+          ],
+          "precise": "s:7LumenUI0A11ChartLabelsV3rowSSvp"
+        },
+        {
           "declaration": "let size: String",
           "kind": "swift.property",
           "path": [
@@ -114240,13 +116038,22 @@
           "precise": "s:7LumenUI0A11ChartLabelsV4sizeSSvp"
         },
         {
-          "declaration": "init(empty: String = \"No chart data available.\", notAvailable: String = \"Not available\", size: String = \"Size\", viewData: String = \"View chart data\", formatHeatmapSummary: @escaping @Sendable (Int) -> String = { count in\n            count == 0 ? \"No chart data available.\" : \"\\(count) heatmap \\(count == 1 ? \"cell\" : \"cells\").\"\n        }, formatRangeSummary: @escaping @Sendable (Int) -> String = { count in\n            count == 0 ? \"No chart data available.\" : \"\\(count) \\(count == 1 ? \"range\" : \"ranges\").\"\n        }, formatSummary: @escaping @Sendable (LumenChartSummary) -> String = { $0.spokenDescription })",
+          "declaration": "let count: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenChartLabels",
+            "count"
+          ],
+          "precise": "s:7LumenUI0A11ChartLabelsV5countSSvp"
+        },
+        {
+          "declaration": "init(empty: String = \"No chart data available.\", notAvailable: String = \"Not available\", size: String = \"Size\", viewData: String = \"View chart data\", invalidData: String = \"Chart data is invalid.\", start: String = \"Start\", end: String = \"End\", value: String = \"Value\", count: String = \"Count\", density: String = \"Density\", column: String = \"Column\", row: String = \"Row\", formatValue: @escaping @Sendable (Double) -> String = { $0.formatted() }, formatHeatmapSummary: @escaping @Sendable (Int) -> String = { count in\n            count == 0 ? \"No chart data available.\" : \"\\(count) heatmap \\(count == 1 ? \"cell\" : \"cells\").\"\n        }, formatRangeSummary: @escaping @Sendable (Int) -> String = { count in\n            count == 0 ? \"No chart data available.\" : \"\\(count) \\(count == 1 ? \"range\" : \"ranges\").\"\n        }, formatSummary: @escaping @Sendable (LumenChartSummary) -> String = { $0.spokenDescription })",
           "kind": "swift.init",
           "path": [
             "LumenChartLabels",
-            "init(empty:notAvailable:size:viewData:formatHeatmapSummary:formatRangeSummary:formatSummary:)"
+            "init(empty:notAvailable:size:viewData:invalidData:start:end:value:count:density:column:row:formatValue:formatHeatmapSummary:formatRangeSummary:formatSummary:)"
           ],
-          "precise": "s:7LumenUI0A11ChartLabelsV5empty12notAvailable4size8viewData20formatHeatmapSummary0k5RangeM00kM0ACSS_S4SSiYbcSSSiYbcSSAA0acM0VYbctcfc"
+          "precise": "s:7LumenUI0A11ChartLabelsV5empty12notAvailable4size8viewData07invalidJ05start3end5value5count7density6column3row11formatValue0S14HeatmapSummary0s5RangeV00sV0ACSS_S12SSdYbcSSSiYbcSSSiYbcSSAA0acV0VYbctcfc"
         },
         {
           "declaration": "let empty: String",
@@ -114256,6 +116063,42 @@
             "empty"
           ],
           "precise": "s:7LumenUI0A11ChartLabelsV5emptySSvp"
+        },
+        {
+          "declaration": "let start: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenChartLabels",
+            "start"
+          ],
+          "precise": "s:7LumenUI0A11ChartLabelsV5startSSvp"
+        },
+        {
+          "declaration": "let value: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenChartLabels",
+            "value"
+          ],
+          "precise": "s:7LumenUI0A11ChartLabelsV5valueSSvp"
+        },
+        {
+          "declaration": "let column: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenChartLabels",
+            "column"
+          ],
+          "precise": "s:7LumenUI0A11ChartLabelsV6columnSSvp"
+        },
+        {
+          "declaration": "let density: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenChartLabels",
+            "density"
+          ],
+          "precise": "s:7LumenUI0A11ChartLabelsV7densitySSvp"
         },
         {
           "declaration": "static let english: LumenChartLabels",
@@ -115334,6 +117177,59 @@
           "precise": "s:7LumenUI0A12HeatmapDatumV6columnSSvp"
         },
         {
+          "declaration": "struct LumenHistogramBin",
+          "kind": "swift.struct",
+          "path": [
+            "LumenHistogramBin"
+          ],
+          "precise": "s:7LumenUI0A12HistogramBinV"
+        },
+        {
+          "declaration": "let end: Double",
+          "kind": "swift.property",
+          "path": [
+            "LumenHistogramBin",
+            "end"
+          ],
+          "precise": "s:7LumenUI0A12HistogramBinV3endSdvp"
+        },
+        {
+          "declaration": "let count: Double",
+          "kind": "swift.property",
+          "path": [
+            "LumenHistogramBin",
+            "count"
+          ],
+          "precise": "s:7LumenUI0A12HistogramBinV5countSdvp"
+        },
+        {
+          "declaration": "let label: String?",
+          "kind": "swift.property",
+          "path": [
+            "LumenHistogramBin",
+            "label"
+          ],
+          "precise": "s:7LumenUI0A12HistogramBinV5labelSSSgvp"
+        },
+        {
+          "declaration": "init(start: Double, end: Double, count: Double, label: String? = nil)",
+          "kind": "swift.init",
+          "path": [
+            "LumenHistogramBin",
+            "init(start:end:count:label:)"
+          ],
+          "precise": "s:7LumenUI0A12HistogramBinV5start3end5count5labelACSd_S2dSSSgtcfc"
+        },
+        {
+          "declaration": "let start: Double",
+          "kind": "swift.property",
+          "path": [
+            "LumenHistogramBin",
+            "start"
+          ],
+          "precise": "s:7LumenUI0A12HistogramBinV5startSdvp"
+        },
+        {
           "declaration": "enum LumenPresetColors",
           "kind": "swift.enum",
           "path": [
@@ -115782,6 +117678,41 @@
           "precise": "s:7LumenUI0A13TimeSelectionV6minuteSivp"
         },
         {
+          "declaration": "enum LumenWaterfallKind",
+          "kind": "swift.enum",
+          "path": [
+            "LumenWaterfallKind"
+          ],
+          "precise": "s:7LumenUI0A13WaterfallKindO"
+        },
+        {
+          "declaration": "case delta",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenWaterfallKind",
+            "delta"
+          ],
+          "precise": "s:7LumenUI0A13WaterfallKindO5deltayA2CmF"
+        },
+        {
+          "declaration": "case total",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenWaterfallKind",
+            "total"
+          ],
+          "precise": "s:7LumenUI0A13WaterfallKindO5totalyA2CmF"
+        },
+        {
+          "declaration": "init?(rawValue: String)",
+          "kind": "swift.init",
+          "path": [
+            "LumenWaterfallKind",
+            "init(rawValue:)"
+          ],
+          "precise": "s:7LumenUI0A13WaterfallKindO8rawValueACSgSS_tcfc"
+        },
+        {
           "declaration": "enum LumenBarChartLayout",
           "kind": "swift.enum",
           "path": [
@@ -116079,6 +118010,94 @@
             "none"
           ],
           "precise": "s:7LumenUI0A14SurfacePaddingO4noneyA2CmF"
+        },
+        {
+          "declaration": "@MainActor struct LumenWaterfallChart",
+          "kind": "swift.struct",
+          "path": [
+            "LumenWaterfallChart"
+          ],
+          "precise": "s:7LumenUI0A14WaterfallChartV"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenWaterfallChart",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A14WaterfallChartV4bodyQrvp"
+        },
+        {
+          "declaration": "@MainActor init(label: String, data: [LumenWaterfallDatum], heading: String? = nil, description: String? = nil, labels: LumenChartLabels = .english, showData: Bool = true, valueLabel: String? = nil)",
+          "kind": "swift.init",
+          "path": [
+            "LumenWaterfallChart",
+            "init(label:data:heading:description:labels:showData:valueLabel:)"
+          ],
+          "precise": "s:7LumenUI0A14WaterfallChartV5label4data7heading11description6labels8showData10valueLabelACSS_SayAA0aC5DatumVGSSSgAnA0aD6LabelsVSbANtcfc"
+        },
+        {
+          "declaration": "struct LumenWaterfallDatum",
+          "kind": "swift.struct",
+          "path": [
+            "LumenWaterfallDatum"
+          ],
+          "precise": "s:7LumenUI0A14WaterfallDatumV"
+        },
+        {
+          "declaration": "init(id: String, label: String, value: Double, kind: LumenWaterfallKind = .delta, tone: LumenChartTone? = nil)",
+          "kind": "swift.init",
+          "path": [
+            "LumenWaterfallDatum",
+            "init(id:label:value:kind:tone:)"
+          ],
+          "precise": "s:7LumenUI0A14WaterfallDatumV2id5label5value4kind4toneACSS_SSSdAA0aC4KindOAA0A9ChartToneOSgtcfc"
+        },
+        {
+          "declaration": "let id: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenWaterfallDatum",
+            "id"
+          ],
+          "precise": "s:7LumenUI0A14WaterfallDatumV2idSSvp"
+        },
+        {
+          "declaration": "let kind: LumenWaterfallKind",
+          "kind": "swift.property",
+          "path": [
+            "LumenWaterfallDatum",
+            "kind"
+          ],
+          "precise": "s:7LumenUI0A14WaterfallDatumV4kindAA0aC4KindOvp"
+        },
+        {
+          "declaration": "let tone: LumenChartTone?",
+          "kind": "swift.property",
+          "path": [
+            "LumenWaterfallDatum",
+            "tone"
+          ],
+          "precise": "s:7LumenUI0A14WaterfallDatumV4toneAA0A9ChartToneOSgvp"
+        },
+        {
+          "declaration": "let label: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenWaterfallDatum",
+            "label"
+          ],
+          "precise": "s:7LumenUI0A14WaterfallDatumV5labelSSvp"
+        },
+        {
+          "declaration": "let value: Double",
+          "kind": "swift.property",
+          "path": [
+            "LumenWaterfallDatum",
+            "value"
+          ],
+          "precise": "s:7LumenUI0A14WaterfallDatumV5valueSdvp"
         },
         {
           "declaration": "@MainActor struct LumenIconButtonStyle",
@@ -116461,6 +118480,41 @@
           "precise": "s:7LumenUI0A17ChartColorPaletteV9selection05SwiftB00D0Vvp"
         },
         {
+          "declaration": "enum LumenHeatmapColorScale",
+          "kind": "swift.enum",
+          "path": [
+            "LumenHeatmapColorScale"
+          ],
+          "precise": "s:7LumenUI0A17HeatmapColorScaleO"
+        },
+        {
+          "declaration": "case sequential",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenHeatmapColorScale",
+            "sequential"
+          ],
+          "precise": "s:7LumenUI0A17HeatmapColorScaleO10sequentialyA2CmF"
+        },
+        {
+          "declaration": "init?(rawValue: String)",
+          "kind": "swift.init",
+          "path": [
+            "LumenHeatmapColorScale",
+            "init(rawValue:)"
+          ],
+          "precise": "s:7LumenUI0A17HeatmapColorScaleO8rawValueACSgSS_tcfc"
+        },
+        {
+          "declaration": "case diverging",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenHeatmapColorScale",
+            "diverging"
+          ],
+          "precise": "s:7LumenUI0A17HeatmapColorScaleO9divergingyA2CmF"
+        },
+        {
           "declaration": "struct LumenIconButtonMetrics",
           "kind": "swift.struct",
           "path": [
@@ -116546,6 +118600,41 @@
             "init(value:maximum:tone:lineWidth:content:)"
           ],
           "precise": "s:7LumenUI0A17WatchProgressRingV5value7maximum4tone9lineWidth7contentACyxGSd_SdAA0aC4ToneO14CoreFoundation7CGFloatVxyXEtcfc"
+        },
+        {
+          "declaration": "enum LumenHistogramFrequency",
+          "kind": "swift.enum",
+          "path": [
+            "LumenHistogramFrequency"
+          ],
+          "precise": "s:7LumenUI0A18HistogramFrequencyO"
+        },
+        {
+          "declaration": "case count",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenHistogramFrequency",
+            "count"
+          ],
+          "precise": "s:7LumenUI0A18HistogramFrequencyO5countyA2CmF"
+        },
+        {
+          "declaration": "case density",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenHistogramFrequency",
+            "density"
+          ],
+          "precise": "s:7LumenUI0A18HistogramFrequencyO7densityyA2CmF"
+        },
+        {
+          "declaration": "init?(rawValue: String)",
+          "kind": "swift.init",
+          "path": [
+            "LumenHistogramFrequency",
+            "init(rawValue:)"
+          ],
+          "precise": "s:7LumenUI0A18HistogramFrequencyO8rawValueACSgSS_tcfc"
         },
         {
           "declaration": "struct LumenWatchActionMetrics",
@@ -117478,13 +119567,13 @@
           "precise": "s:7LumenUI0A7HeatmapV4bodyQrvp"
         },
         {
-          "declaration": "@MainActor init(label: String, data: [LumenHeatmapDatum], summary: String? = nil, labels: LumenChartLabels = .english, showData: Bool = true)",
+          "declaration": "@MainActor init(label: String, data: [LumenHeatmapDatum], summary: String? = nil, labels: LumenChartLabels = .english, showData: Bool = true, heading: String? = nil, description: String? = nil, colorScale: LumenHeatmapColorScale = .sequential, domain: ClosedRange<Double>? = nil, midpoint: Double = 0)",
           "kind": "swift.init",
           "path": [
             "LumenHeatmap",
-            "init(label:data:summary:labels:showData:)"
+            "init(label:data:summary:labels:showData:heading:description:colorScale:domain:midpoint:)"
           ],
-          "precise": "s:7LumenUI0A7HeatmapV5label4data7summary6labels8showDataACSS_SayAA0aC5DatumVGSSSgAA0A11ChartLabelsVSbtcfc"
+          "precise": "s:7LumenUI0A7HeatmapV5label4data7summary6labels8showData7heading11description10colorScale6domain8midpointACSS_SayAA0aC5DatumVGSSSgAA0A11ChartLabelsVSbA2qA0ac5ColorM0OSNySdGSgSdtcfc"
         },
         {
           "declaration": "@MainActor struct LumenListRow<Leading, Content, Trailing> where Leading : View, Content : View, Trailing : View",
@@ -140211,6 +142300,32 @@
             "resting"
           ],
           "precise": "s:7LumenUI0A9ElevationO7resting14CoreFoundation7CGFloatVvpZ"
+        },
+        {
+          "declaration": "@MainActor struct LumenHistogram",
+          "kind": "swift.struct",
+          "path": [
+            "LumenHistogram"
+          ],
+          "precise": "s:7LumenUI0A9HistogramV"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenHistogram",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A9HistogramV4bodyQrvp"
+        },
+        {
+          "declaration": "@MainActor init(label: String, data: [LumenHistogramBin], heading: String? = nil, description: String? = nil, labels: LumenChartLabels = .english, frequency: LumenHistogramFrequency = .count, tone: LumenChartTone = .series1, showData: Bool = true, formatBoundary: @escaping (Double) -> String = { $0.formatted() })",
+          "kind": "swift.init",
+          "path": [
+            "LumenHistogram",
+            "init(label:data:heading:description:labels:frequency:tone:showData:formatBoundary:)"
+          ],
+          "precise": "s:7LumenUI0A9HistogramV5label4data7heading11description6labels9frequency4tone8showData14formatBoundaryACSS_SayAA0aC3BinVGSSSgApA0A11ChartLabelsVAA0aC9FrequencyOAA0aP4ToneOSbSSSdctcfc"
         },
         {
           "declaration": "@MainActor struct LumenLineChart",

@@ -424,8 +424,13 @@ Start with `LumenTheme(preset: .studio, scheme: .light)`. Surface and Card accep
 
 ## Data visualization
 
+Heatmaps include labeled axes, a numeric color legend, and × markers for missing measurements.
+Use a diverging color scale around a meaningful midpoint for signed data. The plot and expandable
+list preserve zero and use the first measurement at each coordinate. See the
+[native heatmap options](../../docs/data-visualization.md#native-heatmaps) for domain and formatting APIs.
+
 `LumenSparkline`, `LumenLineChart`, `LumenBarChart`, `LumenPieChart`, `LumenScatterChart`,
-`LumenHeatmap`, `LumenRangeChart`, and `LumenComboChart` use Swift Charts or a tokenized Canvas while
+`LumenHeatmap`, `LumenRangeChart`, `LumenComboChart`, `LumenWaterfallChart`, and `LumenHistogram` use Swift Charts or a tokenized Canvas while
 preserving the iOS 16 baseline. Data charts provide native mark accessibility, a factual summary,
 and a readable disclosure list. See the shared
 [data-visualization guide](../../docs/data-visualization.md).
@@ -464,6 +469,27 @@ After an intentional API change, run `pnpm run generate:swift-api-baseline`, rev
 declaration diff, and move every new entry from `unclassified` into `supported`, `experimental`, or
 `deprecated`. The checker also builds macOS, iOS, tvOS, visionOS, and watchOS, so platform-conditional source
 cannot bypass the inventory.
+
+`LumenWaterfallChart` draws signed changes with explicit total resets and connectors. Invalid
+steps reject the complete plot so later balances cannot become misleading. `LumenHistogram`
+preserves supplied bin widths and gaps; use density for unequal widths. Data disclosures retain
+start, end, plotted value, and original density-bin counts. Empty and invalid inputs have separate
+localized messages. Expanded data stays scrollable within the card.
+
+```swift
+LumenWaterfallChart(label: "Revenue movement", data: [
+    .init(id: "opening", label: "Opening", value: 100, kind: .total),
+    .init(id: "growth", label: "Growth", value: 40),
+    .init(id: "costs", label: "Costs", value: -25)
+])
+LumenHistogram(label: "Response time", data: [
+    .init(start: 0, end: 10, count: 5), .init(start: 10, end: 30, count: 10)
+], frequency: .density)
+```
+
+For v4, `LumenChartLabels` adds defaulted interval labels and `formatValue`. Ordinary initializer
+calls retain their defaults; stored initializer references must adopt the new signature, and
+binary consumers must rebuild.
 
 ## Resources
 
@@ -522,3 +548,11 @@ image content, loading and analysis remain application-owned.
 
 See the [shared advanced contracts](../../docs/native-components.md#shared-v4-advanced-controls)
 and the [native form-error recipe](../../docs/native-patterns.md#pattern-form-submission-errors).
+
+### Actual-versus-target charts
+
+`LumenBulletChart` compares a nullable actual `value` with a finite `target` and optional
+labeled `ranges`. A strong actual bar, target marker, readable value labels, and expandable exact
+data work together. Domains include zero and all measurements; invalid inputs fail closed.
+Null values stay distinct from zero. See the [chart guide](../../docs/data-visualization.md#actual-values-and-targets)
+for the input, localization, and domain contracts.

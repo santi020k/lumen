@@ -24,10 +24,14 @@ public final class com/santi020k/lumen/AppBarComponentsKt {
 	public static final fun rememberLumenTopAppBarScrollBehavior (Lcom/santi020k/lumen/LumenTopAppBarScrollMode;Landroidx/compose/runtime/Composer;II)Lcom/santi020k/lumen/LumenTopAppBarScrollBehavior;
 }
 
+public final class com/santi020k/lumen/BulletChartComponentsKt {
+	public static final fun LumenBulletChart (Ljava/lang/Double;DLjava/lang/String;Landroidx/compose/ui/Modifier;Ljava/util/List;Lkotlin/ranges/ClosedFloatingPointRange;Ljava/lang/String;Ljava/lang/String;Lcom/santi020k/lumen/LumenChartLabels;Ljava/lang/String;Ljava/lang/String;Lcom/santi020k/lumen/LumenChartTone;ZLandroidx/compose/runtime/Composer;III)V
+}
+
 public final class com/santi020k/lumen/ChartComponentsKt {
 	public static final fun LumenBarChart (Ljava/util/List;Ljava/lang/String;Landroidx/compose/ui/Modifier;Lcom/santi020k/lumen/LumenBarChartLayout;Ljava/lang/String;Lcom/santi020k/lumen/LumenChartLabels;ZLcom/santi020k/lumen/LumenChartSelection;Lkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
 	public static final fun LumenComboChart (Ljava/util/List;Ljava/lang/String;Landroidx/compose/ui/Modifier;Ljava/lang/String;Lcom/santi020k/lumen/LumenChartLabels;ZLcom/santi020k/lumen/LumenChartSelection;Lkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
-	public static final fun LumenHeatmap (Ljava/util/List;Ljava/lang/String;Landroidx/compose/ui/Modifier;Ljava/lang/String;Lcom/santi020k/lumen/LumenChartLabels;ZLandroidx/compose/runtime/Composer;II)V
+	public static final fun LumenHeatmap (Ljava/util/List;Ljava/lang/String;Landroidx/compose/ui/Modifier;Ljava/lang/String;Lcom/santi020k/lumen/LumenChartLabels;ZLjava/lang/String;Ljava/lang/String;Lcom/santi020k/lumen/LumenHeatmapColorScale;Lkotlin/ranges/ClosedFloatingPointRange;DLandroidx/compose/runtime/Composer;III)V
 	public static final fun LumenLineChart (Ljava/util/List;Ljava/lang/String;Landroidx/compose/ui/Modifier;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lcom/santi020k/lumen/LumenChartLabels;ZLcom/santi020k/lumen/LumenChartReference;ZLcom/santi020k/lumen/LumenChartSelection;Lkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;III)V
 	public static final fun LumenPieChart (Lcom/santi020k/lumen/LumenChartSeries;Ljava/lang/String;Landroidx/compose/ui/Modifier;Lcom/santi020k/lumen/LumenPieChartVariant;Ljava/lang/String;Lcom/santi020k/lumen/LumenChartLabels;ZLcom/santi020k/lumen/LumenChartSelection;Lkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
 	public static final fun LumenRangeChart (Ljava/util/List;Ljava/lang/String;Landroidx/compose/ui/Modifier;Ljava/lang/String;Lcom/santi020k/lumen/LumenChartLabels;Lcom/santi020k/lumen/LumenChartTone;ZLandroidx/compose/runtime/Composer;II)V
@@ -54,6 +58,11 @@ public final class com/santi020k/lumen/FormComponentsKt {
 	public static final fun LumenSearchField (Ljava/lang/String;Lkotlin/jvm/functions/Function1;Landroidx/compose/ui/Modifier;Ljava/lang/String;Ljava/lang/String;ZLkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
 	public static final fun LumenSettingsRow (Ljava/lang/String;Landroidx/compose/ui/Modifier;Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
 	public static final fun LumenToggle (Ljava/lang/String;ZLkotlin/jvm/functions/Function1;Landroidx/compose/ui/Modifier;Ljava/lang/String;ZZLandroidx/compose/runtime/Composer;II)V
+}
+
+public final class com/santi020k/lumen/IntervalChartComponentsKt {
+	public static final fun LumenHistogram (Ljava/util/List;Ljava/lang/String;Landroidx/compose/ui/Modifier;Ljava/lang/String;Ljava/lang/String;Lcom/santi020k/lumen/LumenChartLabels;Lcom/santi020k/lumen/LumenHistogramFrequency;Lcom/santi020k/lumen/LumenChartTone;ZLkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
+	public static final fun LumenWaterfallChart (Ljava/util/List;Ljava/lang/String;Landroidx/compose/ui/Modifier;Ljava/lang/String;Ljava/lang/String;Lcom/santi020k/lumen/LumenChartLabels;ZLjava/lang/String;Landroidx/compose/runtime/Composer;II)V
 }
 
 public final class com/santi020k/lumen/LumenAlertVariant : java/lang/Enum {
@@ -190,6 +199,23 @@ public final class com/santi020k/lumen/LumenBarChartLayout : java/lang/Enum {
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lcom/santi020k/lumen/LumenBarChartLayout;
 	public static fun values ()[Lcom/santi020k/lumen/LumenBarChartLayout;
+}
+
+public final class com/santi020k/lumen/LumenBulletRange {
+	public static final field $stable I
+	public fun <init> (DLjava/lang/String;Lcom/santi020k/lumen/LumenChartTone;)V
+	public synthetic fun <init> (DLjava/lang/String;Lcom/santi020k/lumen/LumenChartTone;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()D
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Lcom/santi020k/lumen/LumenChartTone;
+	public final fun copy (DLjava/lang/String;Lcom/santi020k/lumen/LumenChartTone;)Lcom/santi020k/lumen/LumenBulletRange;
+	public static synthetic fun copy$default (Lcom/santi020k/lumen/LumenBulletRange;DLjava/lang/String;Lcom/santi020k/lumen/LumenChartTone;ILjava/lang/Object;)Lcom/santi020k/lumen/LumenBulletRange;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getEnd ()D
+	public final fun getLabel ()Ljava/lang/String;
+	public final fun getTone ()Lcom/santi020k/lumen/LumenChartTone;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/santi020k/lumen/LumenButtonGroupOrientation : java/lang/Enum {
@@ -341,29 +367,43 @@ public final class com/santi020k/lumen/LumenChartDatum {
 public final class com/santi020k/lumen/LumenChartLabels {
 	public static final field $stable I
 	public fun <init> ()V
-	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)V
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1 ()Ljava/lang/String;
+	public final fun component10 ()Ljava/lang/String;
+	public final fun component11 ()Ljava/lang/String;
+	public final fun component12 ()Lkotlin/jvm/functions/Function1;
+	public final fun component13 ()Lkotlin/jvm/functions/Function1;
+	public final fun component14 ()Lkotlin/jvm/functions/Function1;
+	public final fun component15 ()Lkotlin/jvm/functions/Function1;
+	public final fun component16 ()Lkotlin/jvm/functions/Function1;
 	public final fun component2 ()Ljava/lang/String;
 	public final fun component3 ()Ljava/lang/String;
 	public final fun component4 ()Ljava/lang/String;
-	public final fun component5 ()Lkotlin/jvm/functions/Function1;
-	public final fun component6 ()Lkotlin/jvm/functions/Function1;
-	public final fun component7 ()Lkotlin/jvm/functions/Function1;
-	public final fun component8 ()Lkotlin/jvm/functions/Function1;
-	public final fun component9 ()Lkotlin/jvm/functions/Function1;
-	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)Lcom/santi020k/lumen/LumenChartLabels;
-	public static synthetic fun copy$default (Lcom/santi020k/lumen/LumenChartLabels;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/santi020k/lumen/LumenChartLabels;
+	public final fun component5 ()Ljava/lang/String;
+	public final fun component6 ()Ljava/lang/String;
+	public final fun component7 ()Ljava/lang/String;
+	public final fun component8 ()Ljava/lang/String;
+	public final fun component9 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)Lcom/santi020k/lumen/LumenChartLabels;
+	public static synthetic fun copy$default (Lcom/santi020k/lumen/LumenChartLabels;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/santi020k/lumen/LumenChartLabels;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getChartData ()Ljava/lang/String;
+	public final fun getCount ()Ljava/lang/String;
+	public final fun getDensity ()Ljava/lang/String;
 	public final fun getEmpty ()Ljava/lang/String;
+	public final fun getEnd ()Ljava/lang/String;
 	public final fun getFormatHeatmapSummary ()Lkotlin/jvm/functions/Function1;
 	public final fun getFormatRangeSummary ()Lkotlin/jvm/functions/Function1;
 	public final fun getFormatSummary ()Lkotlin/jvm/functions/Function1;
 	public final fun getFormatValue ()Lkotlin/jvm/functions/Function1;
 	public final fun getFormatX ()Lkotlin/jvm/functions/Function1;
+	public final fun getInvalidData ()Ljava/lang/String;
 	public final fun getNotAvailable ()Ljava/lang/String;
 	public final fun getSize ()Ljava/lang/String;
+	public final fun getStart ()Ljava/lang/String;
+	public final fun getValue ()Ljava/lang/String;
+	public final fun getViewData ()Ljava/lang/String;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
@@ -753,6 +793,14 @@ public final class com/santi020k/lumen/LumenGraphics {
 	public final fun getStandardStrokeWidth-D9Ej5fM ()F
 }
 
+public final class com/santi020k/lumen/LumenHeatmapColorScale : java/lang/Enum {
+	public static final field Diverging Lcom/santi020k/lumen/LumenHeatmapColorScale;
+	public static final field Sequential Lcom/santi020k/lumen/LumenHeatmapColorScale;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/santi020k/lumen/LumenHeatmapColorScale;
+	public static fun values ()[Lcom/santi020k/lumen/LumenHeatmapColorScale;
+}
+
 public final class com/santi020k/lumen/LumenHeatmapDatum {
 	public static final field $stable I
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Double;Ljava/lang/String;)V
@@ -772,6 +820,33 @@ public final class com/santi020k/lumen/LumenHeatmapDatum {
 	public final fun getValue ()Ljava/lang/Double;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/santi020k/lumen/LumenHistogramBin {
+	public static final field $stable I
+	public fun <init> (DDDLjava/lang/String;)V
+	public synthetic fun <init> (DDDLjava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()D
+	public final fun component2 ()D
+	public final fun component3 ()D
+	public final fun component4 ()Ljava/lang/String;
+	public final fun copy (DDDLjava/lang/String;)Lcom/santi020k/lumen/LumenHistogramBin;
+	public static synthetic fun copy$default (Lcom/santi020k/lumen/LumenHistogramBin;DDDLjava/lang/String;ILjava/lang/Object;)Lcom/santi020k/lumen/LumenHistogramBin;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getCount ()D
+	public final fun getEnd ()D
+	public final fun getLabel ()Ljava/lang/String;
+	public final fun getStart ()D
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/santi020k/lumen/LumenHistogramFrequency : java/lang/Enum {
+	public static final field Count Lcom/santi020k/lumen/LumenHistogramFrequency;
+	public static final field Density Lcom/santi020k/lumen/LumenHistogramFrequency;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/santi020k/lumen/LumenHistogramFrequency;
+	public static fun values ()[Lcom/santi020k/lumen/LumenHistogramFrequency;
 }
 
 public final class com/santi020k/lumen/LumenIconButtonMetrics {
@@ -3824,6 +3899,35 @@ public final class com/santi020k/lumen/LumenTypography {
 	public final fun getSmSize-XSAIIZE ()J
 	public final fun getXlSize-XSAIIZE ()J
 	public final fun getXsSize-XSAIIZE ()J
+}
+
+public final class com/santi020k/lumen/LumenWaterfallDatum {
+	public static final field $stable I
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;DLcom/santi020k/lumen/LumenWaterfallKind;Lcom/santi020k/lumen/LumenChartTone;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;DLcom/santi020k/lumen/LumenWaterfallKind;Lcom/santi020k/lumen/LumenChartTone;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()D
+	public final fun component4 ()Lcom/santi020k/lumen/LumenWaterfallKind;
+	public final fun component5 ()Lcom/santi020k/lumen/LumenChartTone;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;DLcom/santi020k/lumen/LumenWaterfallKind;Lcom/santi020k/lumen/LumenChartTone;)Lcom/santi020k/lumen/LumenWaterfallDatum;
+	public static synthetic fun copy$default (Lcom/santi020k/lumen/LumenWaterfallDatum;Ljava/lang/String;Ljava/lang/String;DLcom/santi020k/lumen/LumenWaterfallKind;Lcom/santi020k/lumen/LumenChartTone;ILjava/lang/Object;)Lcom/santi020k/lumen/LumenWaterfallDatum;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getId ()Ljava/lang/String;
+	public final fun getKind ()Lcom/santi020k/lumen/LumenWaterfallKind;
+	public final fun getLabel ()Ljava/lang/String;
+	public final fun getTone ()Lcom/santi020k/lumen/LumenChartTone;
+	public final fun getValue ()D
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/santi020k/lumen/LumenWaterfallKind : java/lang/Enum {
+	public static final field Delta Lcom/santi020k/lumen/LumenWaterfallKind;
+	public static final field Total Lcom/santi020k/lumen/LumenWaterfallKind;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/santi020k/lumen/LumenWaterfallKind;
+	public static fun values ()[Lcom/santi020k/lumen/LumenWaterfallKind;
 }
 
 public final class com/santi020k/lumen/MediaComponentsKt {

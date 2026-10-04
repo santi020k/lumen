@@ -80,6 +80,7 @@ for (const category of categories) {
 }
 
 const fileFacades = new Set([
+  'BulletChartComponentsKt',
   'AdaptiveListDetailComponentsKt',
   'AppBarComponentsKt',
   'MultiSelectComponentsKt',
@@ -88,6 +89,7 @@ const fileFacades = new Set([
   'AdditionalComponentsKt',
   'AdvancedFormComponentsKt',
   'ChartComponentsKt',
+  'IntervalChartComponentsKt',
   'ComparisonComponentsKt',
   'ContentComponentsKt',
   'FormComponentsKt',

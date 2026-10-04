@@ -26,6 +26,7 @@ describe('React Native playground model', () => {
       'Bar chart',
       'Pie chart',
       'Scatter chart',
+      'Waterfall chart',
       'Range chart',
       'Combo chart'
     ])

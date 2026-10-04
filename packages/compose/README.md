@@ -268,9 +268,14 @@ Use `LumenTheme(preset = LumenThemePreset.Studio)` or customize `LumenThemeValue
 
 ## Data visualization
 
+Heatmaps include labeled axes, a numeric color legend, and × markers for missing measurements.
+Use a diverging color scale around a meaningful midpoint for signed data. The plot and expandable
+list preserve zero and use the first measurement at each coordinate. See the
+[native heatmap options](../../docs/data-visualization.md#native-heatmaps) for domain and formatting APIs.
+
 `LumenSparkline`, `LumenLineChart`, `LumenBarChart`, `LumenPieChart`, `LumenScatterChart`,
-`LumenHeatmap`, `LumenRangeChart`, and `LumenComboChart` use Compose Canvas with generated chart
-tokens and TalkBack semantics. Data charts include a factual summary and a readable fallback list.
+`LumenHeatmap`, `LumenRangeChart`, `LumenComboChart`, `LumenWaterfallChart`, and `LumenHistogram` use Compose Canvas with generated chart
+tokens and TalkBack semantics. Data charts include a factual summary and an expandable readable data list.
 Use `LumenChartX.Time(epochMillis)` for time coordinates: line charts sort time samples and position
 them by elapsed time, so a long gap remains visibly longer than a short interval. Numeric line
 coordinates also use their numeric distance; categories retain their declared order.
@@ -313,6 +318,24 @@ Wear OS applications should use the sibling
 deliberately small round-screen tier without
 forcing phone applications to acquire wearable contracts or requiring consumers to migrate their
 selected Wear Material version.
+
+
+`LumenWaterfallChart` draws signed changes with explicit total resets and connectors. Invalid
+steps reject the complete plot so later balances cannot become misleading. `LumenHistogram`
+preserves supplied bin widths and gaps; use density for unequal widths. Data disclosures retain
+start, end, plotted value, and original density-bin counts. Empty and invalid inputs have separate
+localized messages. Expanded data stays scrollable within the card.
+
+```kotlin
+LumenWaterfallChart(label = "Revenue movement", data = listOf(
+    LumenWaterfallDatum("opening", "Opening", 100.0, LumenWaterfallKind.Total),
+    LumenWaterfallDatum("growth", "Growth", 40.0),
+    LumenWaterfallDatum("costs", "Costs", -25.0)
+))
+LumenHistogram(label = "Response time", frequency = LumenHistogramFrequency.Density, data = listOf(
+    LumenHistogramBin(0.0, 10.0, 5.0), LumenHistogramBin(10.0, 30.0, 10.0)
+))
+```
 
 ## Resources
 
@@ -478,3 +501,11 @@ Adaptive list/detail is a full-window layout using the stable Material Adaptive 
 state in the host; wire system back through the supplied `detailOnly` flag. The full-window Android
 List/detail example demonstrates the integration, while component gallery examples are bounded
 previews. See [complete contracts](../../docs/native-components.md#compose-v4-product-controls).
+
+### Actual-versus-target charts
+
+`LumenBulletChart` compares a nullable actual `value` with a finite `target` and optional
+labeled `ranges`. A strong actual bar, target marker, readable value labels, and expandable exact
+data work together. Domains include zero and all measurements; invalid inputs fail closed.
+Null values stay distinct from zero. See the [chart guide](../../docs/data-visualization.md#actual-values-and-targets)
+for the input, localization, and domain contracts.
