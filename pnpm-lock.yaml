@@ -409,6 +409,10 @@ overrides:
   uuid@<11.1.1: 11.1.1
   yaml@>=2.0.0 <2.8.3: 2.8.3
 
+patchedDependencies:
+  braces@3.0.3: bfdb0c171556074c2785f98d0a7355209223df8e29dbc2ff489240c16a47da97
+  node-forge@1.4.0: 4fa957cddb4b4601a48b535053d0fec7ed013f9d075660a38365f285fc830fe0
+
 importers:
 
   .:
@@ -12333,7 +12337,7 @@ snapshots:
       glob: 13.0.6
       lan-network: 0.2.1
       multitars: 1.0.2
-      node-forge: 1.4.0
+      node-forge: 1.4.0(patch_hash=4fa957cddb4b4601a48b535053d0fec7ed013f9d075660a38365f285fc830fe0)
       npm-package-arg: 11.0.3
       ora: 3.4.0
       picomatch: 4.0.7
@@ -12369,7 +12373,7 @@ snapshots:
 
   '@expo/code-signing-certificates@0.0.6':
     dependencies:
-      node-forge: 1.4.0
+      node-forge: 1.4.0(patch_hash=4fa957cddb4b4601a48b535053d0fec7ed013f9d075660a38365f285fc830fe0)
 
   '@expo/config-plugins@57.0.9(supports-color@10.2.2)(typescript@6.0.3)':
     dependencies:
@@ -15297,7 +15301,7 @@ snapshots:
     dependencies:
       balanced-match: 4.0.4
 
-  braces@3.0.3:
+  braces@3.0.3(patch_hash=bfdb0c171556074c2785f98d0a7355209223df8e29dbc2ff489240c16a47da97):
     dependencies:
       fill-range: 7.1.1
 
@@ -19144,7 +19148,7 @@ snapshots:
 
   micromatch@4.0.8:
     dependencies:
-      braces: 3.0.3
+      braces: 3.0.3(patch_hash=bfdb0c171556074c2785f98d0a7355209223df8e29dbc2ff489240c16a47da97)
       picomatch: 2.3.2
 
   mime-db@1.52.0: {}
@@ -19276,7 +19280,7 @@ snapshots:
       fetch-blob: 3.2.0
       formdata-polyfill: 4.0.10
 
-  node-forge@1.4.0: {}
+  node-forge@1.4.0(patch_hash=4fa957cddb4b4601a48b535053d0fec7ed013f9d075660a38365f285fc830fe0): {}
 
   node-int64@0.4.0: {}
 

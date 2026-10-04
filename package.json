@@ -27,7 +27,7 @@
     "lint:knip": "knip",
     "check:publish-dry-run": "node scripts/check-publish-dry-run.mjs",
     "test:published-package-family": "node --test scripts/check-published-package-family.test.mjs",
-    "check:security": "pnpm audit --prod --audit-level moderate",
+    "check:security": "pnpm run test:security-patches && node scripts/check-security.mjs",
     "check:bundle-size": "node scripts/check-bundle-size.mjs",
     "check:web-api-baseline": "node scripts/check-web-api-baseline.mjs",
     "test:web-api-baseline": "node --test scripts/check-web-api-baseline.test.mjs",
@@ -180,7 +180,9 @@
     "test:android-runtime-report": "node --test scripts/report-android-workspace-runtime.test.mjs",
     "test:android-runtime-metrics": "node --test scripts/android-runtime-metrics.test.mjs",
     "test:native-api-exports": "node --test scripts/native-api-exports.test.mjs",
-    "test:react-native-import-fixtures": "node --test scripts/react-native-import-fixtures.test.mjs"
+    "test:react-native-import-fixtures": "node --test scripts/react-native-import-fixtures.test.mjs",
+    "check:security:raw": "pnpm audit --prod --audit-level moderate",
+    "test:security-patches": "node --test scripts/security-patches.test.mjs"
   },
   "devDependencies": {
     "@changesets/changelog-github": "catalog:",

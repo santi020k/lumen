@@ -258,6 +258,7 @@ words:
   - appstoreconnect
   - SAMEORIGIN
   - SLSA
+  - RSASSA
   - swiftui
   - aaronmgz
   - activedescendant

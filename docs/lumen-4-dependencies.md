@@ -7,15 +7,16 @@ The workspace remains on release/v4.0.0. No releases, pushes, deployments, accou
 This follow-up was performed in the isolated `chore/v4-consolidation` candidate, after the owner
 approved increasing the stylesheet budget for the combined v4 feature set. The stylesheet now
 has limits of 220,000 bytes raw and 36,000 bytes gzip, approximately 3% above the measured
-213,671 / 34,856 bytes. All measured bundles pass. The security gate remains unchanged.
+213,671 / 34,856 bytes. All measured bundles pass. The owner subsequently approved the two
+version-locked patches and a guarded audit treatment while retaining the 24-hour release-age hold.
 
 Registry metadata and installed imports were checked again on October 3 (October 4 UTC).
 All three findings are transitive; none can simply be deleted from Lumen's manifests:
 
 | Dependency | Installed / latest stable | Required consumer | Finding and safe next step |
 | --- | --- | --- | --- |
-| `node-forge` | 1.4.0 / 1.4.0 | Expo CLI certificate parsing and Expo update certificate/signature operations | No fixed stable release. A version-locked local patch can backport the nested ASN.1 element-count check from upstream PR 1152. |
-| `braces` | 3.0.3 / 3.0.3 | `micromatch`, used by Metro file watching and development glob tooling | No fixed stable release. A version-locked local patch can backport bounded brace/parenthesis and AST depth checks from upstream PR 72. |
+| `node-forge` | 1.4.0 / 1.4.0 | Expo CLI certificate parsing and Expo update certificate/signature operations | No fixed stable release. An approved version-locked local patch backports the nested ASN.1 element-count check from upstream PR 1152. |
+| `braces` | 3.0.3 / 3.0.3 | `micromatch`, used by Metro file watching and development glob tooling | No fixed stable release. An approved version-locked local patch backports bounded brace/parenthesis and AST depth checks from upstream PR 72. |
 | `http-cache-semantics` | 4.2.0 / 4.3.0 | Astro remote-image build caching | Audit metadata lists 4.3.0 outside the affected range, but this is not evidence that the reported stale-cache behavior was fixed. See the maintainer dispute and release-age restriction below. |
 
 Latest stable Astro 7.3.5 and Expo 57.0.26 are already installed. Latest `micromatch` 4.0.8
@@ -48,9 +49,11 @@ minimum. The temporary floor was removed, leaving the manifest, lockfile, and ag
 unchanged. Without an approved exception, 4.3.0 becomes age-eligible after
 `2026-10-05T02:56:05.593Z` (October 4, 21:56 in Colombia).
 
-### Verified patch options
+### Applied patches and audit verification
 
-Both proposed runtime patches apply cleanly to isolated copies of the installed packages:
+Both proposed runtime patches were first reproduced in isolated copies, then applied to the
+workspace with `pnpm patch` and `pnpm patch-commit`. The committed patch files and lockfile
+preserve exact versions and hashes:
 
 - [Forge PR 1152](https://github.com/digitalbazaar/forge/pull/1152), exact proposed commit
   `ceba34402e329f0365134f23fe19898756527d65`: the original release accepts a synthetic signature
@@ -63,20 +66,36 @@ Both proposed runtime patches apply cleanly to isolated copies of the installed 
   parentheses, ordinary globs/ranges, fractional and excessive limit overrides, and cyclic AST
   parent chains passed focused checks.
 
-These are proposed upstream patches, not merged or released fixes, and the probes are not a full
-upstream qualification. Adopting them means Lumen temporarily owns their review, compatibility
-tests, exact-version application, and removal after fixed releases arrive. The npm audit still
-identifies the original package versions after local patching. A passing patched-dependency gate
-would therefore need an explicitly approved, tightly scoped audit treatment backed by exact patch
-integrity and behavioral checks; blanket advisory ignores would hide an unpatched installation.
-No patches, audit exceptions, or age exceptions have been applied to the dependency graph.
+These are proposed upstream patches, not merged or released fixes. Lumen temporarily owns their
+review, compatibility tests, exact-version application, and removal after fixed releases arrive.
+`registry/security-patches.json` records the source commits and SHA-256 hashes of the patch files
+and every changed installed runtime file. These workspace patches do not propagate to consumers
+of published Lumen packages; the affected dependencies belong to the development applications.
 
-After the approved stylesheet budget change, `pnpm run validate` passes the bundle limits,
-build, web/native consistency checks, type checking, 1,434 tests, zero-warning lint, spelling,
-Knip, and registry checks before stopping at the same three high audit findings. Focused lint
-and spelling checks also pass for this investigation record. The release branch remains at
-`50990a22`; the completed budget change and investigation are preserved on the consolidation
-branch while the security-policy choices remain open.
+`pnpm run check:security` now runs the guard regression suite and then verifies pnpm's exact-version
+patch configuration, patch bytes, every installed occurrence, and actual dependency resolution
+against the lockfile inventory. It checks the signature/certificate and glob/range behaviors before
+accepting only the two recorded advisory/package/version pairs as locally mitigated. Missing or
+altered patches, an additional unpatched installation, different versions, stale dependency links,
+malformed audit reports, network failures, and other moderate-or-higher findings remain failures.
+No global pnpm advisory ignore list was added. `pnpm run check:security:raw` retains the original
+unfiltered production audit, which still identifies all three original package versions.
+
+Remove each patch, its registry entry, and the corresponding verification code only after a
+compatible fixed stable release is eligible under the age policy. Update the manifest/lockfile,
+inspect the upstream fix, and rerun the security regressions and full validation. Do not merely
+refresh the stored hashes to accept changed upstream code.
+
+The cache dependency remains at 4.2.0 and is not exempted. The age policy and existing exclusions
+are unchanged. Its 4.3.0 upgrade becomes eligible at the time above; reassess current registry and
+maintainer evidence then. The owner-approved patch treatment resolves two of the three current
+gate findings but does not authorize skipping this remaining cache finding.
+
+After the approved stylesheet budget change, the previous `pnpm run validate` passed the bundle
+limits, build, web/native consistency checks, type checking, 1,434 tests, zero-warning lint,
+spelling, Knip, and registry checks before stopping at the three raw audit findings. Validation of
+the applied patches is recorded in the current readiness section. The release branch remains at
+`50990a22`; the candidate is preserved on `chore/v4-consolidation` until the security gate passes.
 
 ## Updated
 

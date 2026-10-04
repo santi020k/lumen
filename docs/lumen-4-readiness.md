@@ -10,7 +10,18 @@ The owner subsequently approved raising the combined stylesheet budget. The new 
 raw / 36,000-byte gzip limits pass. Dependency investigation, tested patch options, the disputed
 cache advisory, and the release-age blocker are recorded in
 [the dependency review](lumen-4-dependencies.md#consolidation-security-investigation).
-The remaining integration blocker is the security gate; no audit or age exceptions were applied.
+The owner approved exact-version Forge and Braces patches with integrity and behavior checks.
+The guarded audit now accepts only those two verified patched findings. The remaining integration
+blocker is `http-cache-semantics` 4.2.0: the normal 24-hour hold prevents installing 4.3.0 until
+October 4 at 21:56 Colombia time (October 5 at 02:56 UTC). No release-age exception was applied.
+
+With both patches installed, `pnpm install --frozen-lockfile` passes and `pnpm run validate`
+passes the 14-task build, bundle limits, web/native consistency checks, 23-task strict typecheck,
+1,434 tests, zero-warning lint, spelling, Knip, registry checks, and all nine security guard tests.
+It then fails only on the unmitigated high cache advisory. The package dry run, clean-consumer
+smoke tests, React Native package checks, and MCP stdio/HTTP package smoke tests also pass when
+run separately. This records a validated patch candidate with an incomplete release gate, not a
+fully qualified release. The raw audit still reports all three original package versions.
 
 The isolated `chore/v4-consolidation` candidate through `fdcfab80` starts from the selected
 `release/v4.0.0` at `50990a22`. The release branch has not advanced: the combined candidate is
@@ -53,8 +64,8 @@ two required iterations.
 
 Before the approved budget increase, `pnpm run validate` passed its prerequisite checks and build, then stopped at
 `check:bundle-size`: `packages/lumen/styles.css` is 213,671 bytes raw and 34,856 bytes gzip,
-against unchanged combined limits of 208,000 and 34,000. Other measured bundles pass. Running
-`pnpm run check:security` separately still reports three high advisories:
+against unchanged combined limits of 208,000 and 34,000. Other measured bundles pass. At that point, running
+`pnpm run check:security` separately reported three high advisories:
 [node-forge](https://github.com/advisories/GHSA-86w9-cpqp-85rv),
 [http-cache-semantics](https://github.com/advisories/GHSA-ch52-4w7c-c8xp), and
 [braces](https://github.com/advisories/GHSA-vfj7-8cjw-p6xm).
