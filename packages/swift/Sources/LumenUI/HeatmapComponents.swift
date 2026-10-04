@@ -17,16 +17,9 @@ struct LumenHeatmapModel {
     let domain: ClosedRange<Double>
     let midpoint: Double
 
-    var midpointRatio: Double { lumenHeatmapRatio(midpoint, domain: domain) }
+    var midpointRatio: Double { lumenChartRatio(midpoint, domain: domain) }
 }
 
-func lumenHeatmapRatio(_ value: Double, domain: ClosedRange<Double>) -> Double {
-    let span = domain.upperBound - domain.lowerBound
-    guard value.isFinite, span > 0 else { return 0.5 }
-    let ratio = span.isFinite ? (value - domain.lowerBound) / span
-        : (value / 2 - domain.lowerBound / 2) / (domain.upperBound / 2 - domain.lowerBound / 2)
-    return min(1, max(0, ratio))
-}
 
 func lumenHeatmapModel(_ data: [LumenHeatmapDatum], colorScale: LumenHeatmapColorScale, domain: ClosedRange<Double>?, midpoint: Double) -> LumenHeatmapModel {
     var seen = Set<String>()

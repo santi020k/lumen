@@ -24,6 +24,8 @@
     "LumenBannerVariant",
     "LumenBarChart",
     "LumenBarChartLayout",
+    "LumenBulletChart",
+    "LumenBulletRange",
     "LumenButton",
     "LumenButtonGroup",
     "LumenButtonGroupOrientation",

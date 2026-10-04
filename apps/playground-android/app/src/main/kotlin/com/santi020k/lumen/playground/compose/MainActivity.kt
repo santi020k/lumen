@@ -81,6 +81,8 @@ import com.santi020k.lumen.LumenGraphicVariant
 import com.santi020k.lumen.LumenHeatmap
 import com.santi020k.lumen.LumenChartLabels
 import com.santi020k.lumen.LumenHeatmapColorScale
+import com.santi020k.lumen.LumenBulletChart
+import com.santi020k.lumen.LumenBulletRange
 import com.santi020k.lumen.LumenHistogram
 import com.santi020k.lumen.LumenHistogramBin
 import com.santi020k.lumen.LumenWaterfallChart
@@ -1326,6 +1328,11 @@ private fun ChartExample(visibleNames: Set<String>) {
             LumenWaterfallDatum("other", "Other", -10.0),
             LumenWaterfallDatum("closing", "Closing", 185.0, LumenWaterfallKind.Total)
         ))
+    }
+    if ("Bullet chart" in visibleNames) {
+        LumenBulletChart(value = 86.0, target = 95.0, label = "Delivery performance", heading = "On-time delivery", description = "Actual performance against the service target", ranges = listOf(
+            LumenBulletRange(70.0, "Developing"), LumenBulletRange(90.0, "Consistent"), LumenBulletRange(100.0, "Excellent")
+        ), labels = LumenChartLabels(formatValue = { "${it.toInt()}%" }))
     }
     if ("Histogram" in visibleNames) {
         LumenHistogram(label = "Response times", heading = "Response time", description = "Distribution of requests · milliseconds", data = listOf(3, 8, 18, 34, 48, 57, 51, 37, 26, 15, 8, 3).mapIndexed { index, count ->

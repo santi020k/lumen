@@ -36,6 +36,7 @@ const chartSlugs = new Set([
   'pie-chart',
   'scatter-chart',
   'waterfall-chart',
+  'bullet-chart',
   'histogram',
   'heatmap',
   'range-chart',

@@ -160,8 +160,55 @@ try {
       await expect(disclosure).toHaveAttribute('aria-expanded', 'false')
     }
   }
+
+  url.searchParams.set('component', 'Bullet chart')
+
+  for (const width of [390, 1280]) {
+    await page.setViewportSize({ width, height: 900 })
+
+    await page.goto(url.href, { waitUntil: 'load' })
+
+    const chart = page.getByTestId('component-bullet-chart')
+    const disclosure = chart.getByRole('button', { name: /View chart data/ })
+
+    for (const theme of ['light', 'dark']) {
+      const toggle = page.getByRole('button', { name: `Use ${theme} theme` })
+
+      if (await toggle.count()) await toggle.click()
+
+      await chart.scrollIntoViewIfNeeded()
+
+      await expect(chart.getByText('86%', { exact: true })).toBeVisible()
+
+      await expect(chart.getByText('Target: 95%', { exact: true })).toBeVisible()
+
+      const bounds = await chart.boundingBox()
+
+      assert.ok(bounds && bounds.x >= 0 && bounds.x + bounds.width <= width, 'Target chart fits the viewport')
+
+      await page.screenshot({ path: resolve(captureDirectory, `bullet-chart-${width}-${theme}.png`) })
+
+      if (width === 1280 && theme === 'light') {
+        await page.screenshot({ path: resolve(captureDirectory, 'bullet-chart.png') })
+      }
+
+      await disclosure.focus()
+
+      await page.keyboard.press('Enter')
+
+      await expect(disclosure).toHaveAttribute('aria-expanded', 'true')
+
+      await expect(chart.getByText('Value: 86%', { exact: true })).toBeVisible()
+
+      await expect(chart.getByText('Excellent: 90%–100%', { exact: true })).toBeVisible()
+
+      await disclosure.click()
+
+      await expect(disclosure).toHaveAttribute('aria-expanded', 'false')
+    }
+  }
 } finally {
   await browser.close()
 }
 
-console.log('React Native web accessibility canary passed, including heatmaps at 390px and 1280px in both themes.')
+console.log('React Native web accessibility canary passed, including heatmaps and target charts at 390px and 1280px in both themes.')

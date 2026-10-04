@@ -835,6 +835,76 @@
           "precise": "s:7LumenUI0A10TypographyO6xsSize14CoreFoundation7CGFloatVvpZ"
         },
         {
+          "declaration": "@MainActor struct LumenBulletChart",
+          "kind": "swift.struct",
+          "path": [
+            "LumenBulletChart"
+          ],
+          "precise": "s:7LumenUI0A11BulletChartV"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenBulletChart",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A11BulletChartV4bodyQrvp"
+        },
+        {
+          "declaration": "@MainActor init(label: String, value: Double?, target: Double, ranges: [LumenBulletRange] = [], domain: ClosedRange<Double>? = nil, heading: String? = nil, description: String? = nil, labels: LumenChartLabels = .english, targetLabel: String = \"Target\", valueLabel: String? = nil, tone: LumenChartTone = .series1, showData: Bool = true)",
+          "kind": "swift.init",
+          "path": [
+            "LumenBulletChart",
+            "init(label:value:target:ranges:domain:heading:description:labels:targetLabel:valueLabel:tone:showData:)"
+          ],
+          "precise": "s:7LumenUI0A11BulletChartV5label5value6target6ranges6domain7heading11description6labels0G5Label0fM04tone8showDataACSS_SdSgSdSayAA0aC5RangeVGSNySdGSgSSSgAvA0aD6LabelsVSSAvA0aD4ToneOSbtcfc"
+        },
+        {
+          "declaration": "struct LumenBulletRange",
+          "kind": "swift.struct",
+          "path": [
+            "LumenBulletRange"
+          ],
+          "precise": "s:7LumenUI0A11BulletRangeV"
+        },
+        {
+          "declaration": "init(end: Double, label: String, tone: LumenChartTone? = nil)",
+          "kind": "swift.init",
+          "path": [
+            "LumenBulletRange",
+            "init(end:label:tone:)"
+          ],
+          "precise": "s:7LumenUI0A11BulletRangeV3end5label4toneACSd_SSAA0A9ChartToneOSgtcfc"
+        },
+        {
+          "declaration": "let end: Double",
+          "kind": "swift.property",
+          "path": [
+            "LumenBulletRange",
+            "end"
+          ],
+          "precise": "s:7LumenUI0A11BulletRangeV3endSdvp"
+        },
+        {
+          "declaration": "let tone: LumenChartTone?",
+          "kind": "swift.property",
+          "path": [
+            "LumenBulletRange",
+            "tone"
+          ],
+          "precise": "s:7LumenUI0A11BulletRangeV4toneAA0A9ChartToneOSgvp"
+        },
+        {
+          "declaration": "let label: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenBulletRange",
+            "label"
+          ],
+          "precise": "s:7LumenUI0A11BulletRangeV5labelSSvp"
+        },
+        {
           "declaration": "@MainActor struct LumenButtonGroup<Content> where Content : View",
           "kind": "swift.struct",
           "path": [
@@ -30103,6 +30173,76 @@
           "precise": "s:7LumenUI0A10TypographyO6xsSize14CoreFoundation7CGFloatVvpZ"
         },
         {
+          "declaration": "@MainActor struct LumenBulletChart",
+          "kind": "swift.struct",
+          "path": [
+            "LumenBulletChart"
+          ],
+          "precise": "s:7LumenUI0A11BulletChartV"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenBulletChart",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A11BulletChartV4bodyQrvp"
+        },
+        {
+          "declaration": "@MainActor init(label: String, value: Double?, target: Double, ranges: [LumenBulletRange] = [], domain: ClosedRange<Double>? = nil, heading: String? = nil, description: String? = nil, labels: LumenChartLabels = .english, targetLabel: String = \"Target\", valueLabel: String? = nil, tone: LumenChartTone = .series1, showData: Bool = true)",
+          "kind": "swift.init",
+          "path": [
+            "LumenBulletChart",
+            "init(label:value:target:ranges:domain:heading:description:labels:targetLabel:valueLabel:tone:showData:)"
+          ],
+          "precise": "s:7LumenUI0A11BulletChartV5label5value6target6ranges6domain7heading11description6labels0G5Label0fM04tone8showDataACSS_SdSgSdSayAA0aC5RangeVGSNySdGSgSSSgAvA0aD6LabelsVSSAvA0aD4ToneOSbtcfc"
+        },
+        {
+          "declaration": "struct LumenBulletRange",
+          "kind": "swift.struct",
+          "path": [
+            "LumenBulletRange"
+          ],
+          "precise": "s:7LumenUI0A11BulletRangeV"
+        },
+        {
+          "declaration": "init(end: Double, label: String, tone: LumenChartTone? = nil)",
+          "kind": "swift.init",
+          "path": [
+            "LumenBulletRange",
+            "init(end:label:tone:)"
+          ],
+          "precise": "s:7LumenUI0A11BulletRangeV3end5label4toneACSd_SSAA0A9ChartToneOSgtcfc"
+        },
+        {
+          "declaration": "let end: Double",
+          "kind": "swift.property",
+          "path": [
+            "LumenBulletRange",
+            "end"
+          ],
+          "precise": "s:7LumenUI0A11BulletRangeV3endSdvp"
+        },
+        {
+          "declaration": "let tone: LumenChartTone?",
+          "kind": "swift.property",
+          "path": [
+            "LumenBulletRange",
+            "tone"
+          ],
+          "precise": "s:7LumenUI0A11BulletRangeV4toneAA0A9ChartToneOSgvp"
+        },
+        {
+          "declaration": "let label: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenBulletRange",
+            "label"
+          ],
+          "precise": "s:7LumenUI0A11BulletRangeV5labelSSvp"
+        },
+        {
           "declaration": "@MainActor struct LumenButtonGroup<Content> where Content : View",
           "kind": "swift.struct",
           "path": [
@@ -59030,6 +59170,76 @@
           "precise": "s:7LumenUI0A10TypographyO6xsSize14CoreFoundation7CGFloatVvpZ"
         },
         {
+          "declaration": "@MainActor struct LumenBulletChart",
+          "kind": "swift.struct",
+          "path": [
+            "LumenBulletChart"
+          ],
+          "precise": "s:7LumenUI0A11BulletChartV"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenBulletChart",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A11BulletChartV4bodyQrvp"
+        },
+        {
+          "declaration": "@MainActor init(label: String, value: Double?, target: Double, ranges: [LumenBulletRange] = [], domain: ClosedRange<Double>? = nil, heading: String? = nil, description: String? = nil, labels: LumenChartLabels = .english, targetLabel: String = \"Target\", valueLabel: String? = nil, tone: LumenChartTone = .series1, showData: Bool = true)",
+          "kind": "swift.init",
+          "path": [
+            "LumenBulletChart",
+            "init(label:value:target:ranges:domain:heading:description:labels:targetLabel:valueLabel:tone:showData:)"
+          ],
+          "precise": "s:7LumenUI0A11BulletChartV5label5value6target6ranges6domain7heading11description6labels0G5Label0fM04tone8showDataACSS_SdSgSdSayAA0aC5RangeVGSNySdGSgSSSgAvA0aD6LabelsVSSAvA0aD4ToneOSbtcfc"
+        },
+        {
+          "declaration": "struct LumenBulletRange",
+          "kind": "swift.struct",
+          "path": [
+            "LumenBulletRange"
+          ],
+          "precise": "s:7LumenUI0A11BulletRangeV"
+        },
+        {
+          "declaration": "init(end: Double, label: String, tone: LumenChartTone? = nil)",
+          "kind": "swift.init",
+          "path": [
+            "LumenBulletRange",
+            "init(end:label:tone:)"
+          ],
+          "precise": "s:7LumenUI0A11BulletRangeV3end5label4toneACSd_SSAA0A9ChartToneOSgtcfc"
+        },
+        {
+          "declaration": "let end: Double",
+          "kind": "swift.property",
+          "path": [
+            "LumenBulletRange",
+            "end"
+          ],
+          "precise": "s:7LumenUI0A11BulletRangeV3endSdvp"
+        },
+        {
+          "declaration": "let tone: LumenChartTone?",
+          "kind": "swift.property",
+          "path": [
+            "LumenBulletRange",
+            "tone"
+          ],
+          "precise": "s:7LumenUI0A11BulletRangeV4toneAA0A9ChartToneOSgvp"
+        },
+        {
+          "declaration": "let label: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenBulletRange",
+            "label"
+          ],
+          "precise": "s:7LumenUI0A11BulletRangeV5labelSSvp"
+        },
+        {
           "declaration": "@MainActor struct LumenButtonGroup<Content> where Content : View",
           "kind": "swift.struct",
           "path": [
@@ -86530,6 +86740,76 @@
             "xsSize"
           ],
           "precise": "s:7LumenUI0A10TypographyO6xsSize14CoreFoundation7CGFloatVvpZ"
+        },
+        {
+          "declaration": "@MainActor struct LumenBulletChart",
+          "kind": "swift.struct",
+          "path": [
+            "LumenBulletChart"
+          ],
+          "precise": "s:7LumenUI0A11BulletChartV"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenBulletChart",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A11BulletChartV4bodyQrvp"
+        },
+        {
+          "declaration": "@MainActor init(label: String, value: Double?, target: Double, ranges: [LumenBulletRange] = [], domain: ClosedRange<Double>? = nil, heading: String? = nil, description: String? = nil, labels: LumenChartLabels = .english, targetLabel: String = \"Target\", valueLabel: String? = nil, tone: LumenChartTone = .series1, showData: Bool = true)",
+          "kind": "swift.init",
+          "path": [
+            "LumenBulletChart",
+            "init(label:value:target:ranges:domain:heading:description:labels:targetLabel:valueLabel:tone:showData:)"
+          ],
+          "precise": "s:7LumenUI0A11BulletChartV5label5value6target6ranges6domain7heading11description6labels0G5Label0fM04tone8showDataACSS_SdSgSdSayAA0aC5RangeVGSNySdGSgSSSgAvA0aD6LabelsVSSAvA0aD4ToneOSbtcfc"
+        },
+        {
+          "declaration": "struct LumenBulletRange",
+          "kind": "swift.struct",
+          "path": [
+            "LumenBulletRange"
+          ],
+          "precise": "s:7LumenUI0A11BulletRangeV"
+        },
+        {
+          "declaration": "init(end: Double, label: String, tone: LumenChartTone? = nil)",
+          "kind": "swift.init",
+          "path": [
+            "LumenBulletRange",
+            "init(end:label:tone:)"
+          ],
+          "precise": "s:7LumenUI0A11BulletRangeV3end5label4toneACSd_SSAA0A9ChartToneOSgtcfc"
+        },
+        {
+          "declaration": "let end: Double",
+          "kind": "swift.property",
+          "path": [
+            "LumenBulletRange",
+            "end"
+          ],
+          "precise": "s:7LumenUI0A11BulletRangeV3endSdvp"
+        },
+        {
+          "declaration": "let tone: LumenChartTone?",
+          "kind": "swift.property",
+          "path": [
+            "LumenBulletRange",
+            "tone"
+          ],
+          "precise": "s:7LumenUI0A11BulletRangeV4toneAA0A9ChartToneOSgvp"
+        },
+        {
+          "declaration": "let label: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenBulletRange",
+            "label"
+          ],
+          "precise": "s:7LumenUI0A11BulletRangeV5labelSSvp"
         },
         {
           "declaration": "@MainActor struct LumenButtonGroup<Content> where Content : View",
@@ -115457,6 +115737,76 @@
             "xsSize"
           ],
           "precise": "s:7LumenUI0A10TypographyO6xsSize14CoreFoundation7CGFloatVvpZ"
+        },
+        {
+          "declaration": "@MainActor struct LumenBulletChart",
+          "kind": "swift.struct",
+          "path": [
+            "LumenBulletChart"
+          ],
+          "precise": "s:7LumenUI0A11BulletChartV"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenBulletChart",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A11BulletChartV4bodyQrvp"
+        },
+        {
+          "declaration": "@MainActor init(label: String, value: Double?, target: Double, ranges: [LumenBulletRange] = [], domain: ClosedRange<Double>? = nil, heading: String? = nil, description: String? = nil, labels: LumenChartLabels = .english, targetLabel: String = \"Target\", valueLabel: String? = nil, tone: LumenChartTone = .series1, showData: Bool = true)",
+          "kind": "swift.init",
+          "path": [
+            "LumenBulletChart",
+            "init(label:value:target:ranges:domain:heading:description:labels:targetLabel:valueLabel:tone:showData:)"
+          ],
+          "precise": "s:7LumenUI0A11BulletChartV5label5value6target6ranges6domain7heading11description6labels0G5Label0fM04tone8showDataACSS_SdSgSdSayAA0aC5RangeVGSNySdGSgSSSgAvA0aD6LabelsVSSAvA0aD4ToneOSbtcfc"
+        },
+        {
+          "declaration": "struct LumenBulletRange",
+          "kind": "swift.struct",
+          "path": [
+            "LumenBulletRange"
+          ],
+          "precise": "s:7LumenUI0A11BulletRangeV"
+        },
+        {
+          "declaration": "init(end: Double, label: String, tone: LumenChartTone? = nil)",
+          "kind": "swift.init",
+          "path": [
+            "LumenBulletRange",
+            "init(end:label:tone:)"
+          ],
+          "precise": "s:7LumenUI0A11BulletRangeV3end5label4toneACSd_SSAA0A9ChartToneOSgtcfc"
+        },
+        {
+          "declaration": "let end: Double",
+          "kind": "swift.property",
+          "path": [
+            "LumenBulletRange",
+            "end"
+          ],
+          "precise": "s:7LumenUI0A11BulletRangeV3endSdvp"
+        },
+        {
+          "declaration": "let tone: LumenChartTone?",
+          "kind": "swift.property",
+          "path": [
+            "LumenBulletRange",
+            "tone"
+          ],
+          "precise": "s:7LumenUI0A11BulletRangeV4toneAA0A9ChartToneOSgvp"
+        },
+        {
+          "declaration": "let label: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenBulletRange",
+            "label"
+          ],
+          "precise": "s:7LumenUI0A11BulletRangeV5labelSSvp"
         },
         {
           "declaration": "@MainActor struct LumenButtonGroup<Content> where Content : View",

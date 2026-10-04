@@ -772,6 +772,11 @@ actions adapt from a row to a vertical stack when width or text size makes the r
 `success` button communicates a positive semantic outcome; `primary` remains the single default
 call to action for hierarchy.
 
+`LumenBulletChart` compares an actual value with a target and optional labeled ranges on all
+three native adapters. It retains a zero-inclusive baseline, distinguishes null from zero, and
+provides a readable value, target marker, and expandable exact measurements. See the
+[comparison contract](data-visualization.md#actual-values-and-targets).
+
 `LumenWaterfallChart` and `LumenHistogram` are available in React Native, SwiftUI, and Compose.
 Waterfalls preserve signed deltas and explicit total resets; invalid steps reject the whole plot.
 Histograms preserve numeric bin widths and gaps, require density for unequal widths, and retain

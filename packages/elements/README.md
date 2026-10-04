@@ -586,3 +586,11 @@ These custom hosts provide ARIA semantics; they are not native `dl`, `dt`, or `d
 
 For native definition-list markup, place a complete native `dl` with `div`, `dt`,
 and `dd` children inside `lumen-descriptions` instead of nesting custom hosts inside the `dl`.
+
+### Actual-versus-target charts
+
+`lumen-bullet-chart` compares a nullable actual `value` with a finite `target` and optional
+labeled `ranges`. A strong actual bar, target marker, readable value labels, and expandable exact
+data work together. Domains include zero and all measurements; invalid inputs fail closed.
+Null values stay distinct from zero. See the [chart guide](../../docs/data-visualization.md#actual-values-and-targets)
+for the input, localization, and domain contracts.

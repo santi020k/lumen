@@ -39,6 +39,7 @@ import {
   hasLumenChartData,
   hasLumenPieData,
   isLumenRichTextToggleCommand,
+  type LumenBulletRange,
   type LumenChartLabels,
   type LumenChartSeries,
   type LumenChartTone,
@@ -127,6 +128,7 @@ import {
   LumenImageComparisonElement as GranularLumenImageComparisonElement,
   lumenImageComparisonElementConfig
 } from './components/image-comparison.js'
+import { bulletChartHtml, bulletNumberAttribute, parseBulletRanges } from './bullet-chart-html.js'
 import { chartAnnotationHtml, chartDomainAttributes, chartInspectionHtml, chartNumberAttribute, escapeChartHtml, interactiveChartLegendHtml, intervalChartHtml, parseChartAnnotations, parseHistogramBins, parseWaterfallData } from './chart-html.js'
 import {
   createLumenElementClass as createStandaloneLumenElementClass,
@@ -658,6 +660,7 @@ const elementConfigs = {
     defaults: { 'data-ui-hover-card': '' },
     tagName: 'lumen-hover-card'
   },
+  BulletChart: { baseClassName: 'ui-chart ui-bullet-chart', role: 'figure', tagName: 'lumen-bullet-chart', attributeClasses: { presentation: { bare: 'ui-chart--bare' } } },
   Histogram: { baseClassName: 'ui-chart ui-histogram', role: 'figure', tagName: 'lumen-histogram', attributeClasses: { presentation: { bare: 'ui-chart--bare' } } },
   WaterfallChart: { baseClassName: 'ui-chart ui-waterfall-chart', role: 'figure', tagName: 'lumen-waterfall-chart', attributeClasses: { presentation: { bare: 'ui-chart--bare' } } },
   Heatmap: {
@@ -1436,6 +1439,9 @@ const elementConfigs = {
 >
 
 const observedAttributeNames = [
+  'target',
+  'ranges',
+  'target-label',
   'activation-offset',
   'animation',
   'area',
@@ -5574,10 +5580,10 @@ const parseRangeData = (value: string | null): LumenRangeDatum[] => {
   }
 }
 
-const chartHeaderHtml = (element: HTMLElement): string => {
+const chartHeaderHtml = (element: HTMLElement, showValue = true): string => {
   const heading = element.getAttribute('heading')
   const description = element.getAttribute('description')
-  const value = element.getAttribute('value')
+  const value = showValue ? element.getAttribute('value') : null
 
   if (!heading && !description && !value) return ''
 
@@ -6490,6 +6496,44 @@ class LumenWaterfallChartBehaviorElement extends LumenStructuredChartBehaviorEle
     const model = createLumenWaterfallGeometry(this.data, { formatValue: this.valueFormatter })
 
     this.innerHTML = chartHeaderHtml(this) + intervalChartHtml(model, labels, this.valueFormatter, this.valueFormatter, this.getAttribute('value-label') ?? labels.value, chartBooleanAttribute(this, 'show-table', true), this.getAttribute('summary')) + chartCaptionHtml(this)
+  }
+}
+
+export class LumenBulletChartElement extends LumenStructuredChartBehaviorElement {
+  static override config = { ...elementConfigs.BulletChart, observedAttributes: observedAttributeNames }
+
+  #ranges: readonly LumenBulletRange[] | undefined
+
+  get ranges(): readonly LumenBulletRange[] {
+    return this.#ranges ?? parseBulletRanges(this.getAttribute('ranges'))
+  }
+
+  set ranges(value: readonly LumenBulletRange[]) {
+    this.#ranges = value
+
+    if (this.isConnected) this.renderChart()
+  }
+
+  get value(): number | null {
+    return this.hasAttribute('value') ? bulletNumberAttribute(this, 'value') : null
+  }
+
+  set value(value: number | null) {
+    if (value === null) this.removeAttribute('value')
+    else this.setAttribute('value', String(value))
+  }
+
+  get target(): number {
+    return bulletNumberAttribute(this, 'target')
+  }
+
+  set target(value: number) {
+    this.setAttribute('target', String(value))
+  }
+
+  protected renderChart() {
+    this.innerHTML = chartHeaderHtml(this, false) +
+      bulletChartHtml(this, this.ranges, chartLabelsFor(this), this.valueFormatter) + chartCaptionHtml(this)
   }
 }
 
@@ -11494,6 +11538,7 @@ const granularElementClasses: Partial<
   Record<LumenComponentName, LumenElementConstructor>
 > = {
   Badge: GranularLumenBadgeElement,
+  BulletChart: LumenBulletChartElement,
   Button: GranularLumenButtonElement,
   Card: GranularLumenCardElement,
   CardContent: GranularLumenCardContentElement,

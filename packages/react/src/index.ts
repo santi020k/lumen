@@ -1,5 +1,6 @@
 'use client'
 
+export * from './bullet-chart.js'
 export { type ChartInteractionProps } from './chart-interaction.js'
 export * from './components.js'
 export * from './date-range-calendar.js'

@@ -519,3 +519,11 @@ slider provides touch, keyboard and screen-reader adjustment; supply localized i
 
 See the [shared advanced contracts](../../docs/native-components.md#shared-v4-advanced-controls)
 and the [native form-error recipe](../../docs/native-patterns.md#pattern-form-submission-errors).
+
+### Actual-versus-target charts
+
+`LumenBulletChart` compares a nullable actual `value` with a finite `target` and optional
+labeled `ranges`. A strong actual bar, target marker, readable value labels, and expandable exact
+data work together. Domains include zero and all measurements; invalid inputs fail closed.
+Null values stay distinct from zero. See the [chart guide](../../docs/data-visualization.md#actual-values-and-targets)
+for the input, localization, and domain contracts.

@@ -1,8 +1,8 @@
 ---
-import { Badge, Heatmap, Histogram, Icon, LineChart, Link, PieChart, Sparkline, Stat, Tabs, TabsList, TabsPanel, TabsTrigger, WaterfallChart } from '@santi020k/lumen-astro'
+import { Badge, BulletChart, Heatmap, Histogram, Icon, LineChart, Link, PieChart, Sparkline, Stat, Tabs, TabsList, TabsPanel, TabsTrigger, WaterfallChart } from '@santi020k/lumen-astro'
 
 import DocsLayout from '../../../layouts/DocsLayout.astro'
-import { chartDemoBins, chartDemoChannels, chartDemoHeatmap, chartDemoMetrics, chartDemoSeries, chartDemoWaterfall } from '../../../lib/chart-demo-data'
+import { chartDemoBins, chartDemoBulletRanges, chartDemoChannels, chartDemoHeatmap, chartDemoMetrics, chartDemoSeries, chartDemoWaterfall } from '../../../lib/chart-demo-data'
 ---
 
 <DocsLayout title="Interactive data visualization — Lumen UI" description="Inspect shared chart behavior, honest time spacing, distributions, balance changes, and missing observations across the three web adapters." breadcrumbs={[{ href: '/docs/web', label: 'Web' }, { href: '/docs/web/data-visualization', label: 'Data visualization' }]}>
@@ -45,6 +45,7 @@ import { chartDemoBins, chartDemoChannels, chartDemoHeatmap, chartDemoMetrics, c
         <TabsPanel value="astro">
           <section class="viz-chart-grid" data-chart-demo="astro" aria-label="Astro charts">
             <LineChart class="viz-main-chart" aria-label="Astro request volume" heading="Request volume" description="Requests and completions · 09:00–12:00" series={chartDemoSeries} xScale="linear" area markers="none" interactive syncGroup="visualization-demo" annotations={[{ id: 'target', label: 'Capacity target', value: 160 }]} />
+            <BulletChart aria-label="Astro delivery performance" heading="On-time delivery" description="Actual performance against the service target" value={86} target={95} ranges={chartDemoBulletRanges} formatValue={value => `${value}%`} />
             <WaterfallChart aria-label="Astro balance changes" heading="Revenue movement" description="Opening balance to closing · USD, thousands" data={chartDemoWaterfall} valueLabel="USD, thousands" />
             <Histogram aria-label="Astro response times" heading="Response time" description="Distribution of requests · milliseconds" bins={chartDemoBins} tone="series-3" />
             <PieChart aria-label="Astro traffic sources" heading="Traffic sources" description="Share of acquisition by channel" series={chartDemoChannels} centerValue="48%" centerLabel="Organic" />
@@ -57,6 +58,7 @@ import { chartDemoBins, chartDemoChannels, chartDemoHeatmap, chartDemoMetrics, c
         <TabsPanel value="elements">
           <section class="viz-chart-grid" data-chart-demo="elements" aria-label="Web Component charts">
             <lumen-line-chart class="viz-main-chart" aria-label="Elements request volume" heading="Request volume" description="Requests and completions · 09:00–12:00" series={JSON.stringify(chartDemoSeries)} x-scale="linear" area markers="none" interactive sync-group="visualization-demo" annotations={JSON.stringify([{ id: 'target', label: 'Capacity target', value: 160 }])}></lumen-line-chart>
+            <lumen-bullet-chart aria-label="Elements delivery performance" heading="On-time delivery" description="Actual performance against the service target · percent" value="86" target="95" ranges={JSON.stringify(chartDemoBulletRanges)}></lumen-bullet-chart>
             <lumen-waterfall-chart aria-label="Elements balance changes" heading="Revenue movement" description="Opening balance to closing · USD, thousands" value-label="USD, thousands" data={JSON.stringify(chartDemoWaterfall)}></lumen-waterfall-chart>
             <lumen-histogram aria-label="Elements response times" heading="Response time" description="Distribution of requests · milliseconds" tone="series-3" bins={JSON.stringify(chartDemoBins)}></lumen-histogram>
             <lumen-pie-chart aria-label="Elements traffic sources" heading="Traffic sources" description="Share of acquisition by channel" series={JSON.stringify([chartDemoChannels])} center-value="48%" center-label="Organic"></lumen-pie-chart>
@@ -88,7 +90,7 @@ import { ReactChartDemo } from '../../../lib/react-chart-demo'
 
     container.dataset.mounted = 'true'
 
-    defineLumenElements(['LineChart', 'WaterfallChart', 'Histogram', 'Heatmap', 'PieChart'])
+    defineLumenElements(['BulletChart', 'LineChart', 'WaterfallChart', 'Histogram', 'Heatmap', 'PieChart'])
 
     root = createRoot(container)
 

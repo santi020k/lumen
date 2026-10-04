@@ -33,13 +33,6 @@ internal data class LumenHeatmapModel(
     val domain: ClosedFloatingPointRange<Double>, val midpoint: Double
 )
 
-internal fun lumenHeatmapRatio(value: Double, domain: ClosedFloatingPointRange<Double>): Float {
-    val span = domain.endInclusive - domain.start
-    if (!value.isFinite() || span <= 0) return 0.5f
-    val ratio = if (span.isFinite()) (value - domain.start) / span
-        else (value / 2 - domain.start / 2) / (domain.endInclusive / 2 - domain.start / 2)
-    return ratio.coerceIn(0.0, 1.0).toFloat()
-}
 
 internal fun lumenHeatmapModel(
     data: List<LumenHeatmapDatum>, colorScale: LumenHeatmapColorScale,
@@ -78,11 +71,11 @@ internal fun lumenHeatmapModel(
 
 internal fun lumenHeatmapColor(value: Double, model: LumenHeatmapModel, scale: LumenHeatmapColorScale, colors: LumenChartColorPalette): Color =
     if (scale == LumenHeatmapColorScale.Sequential) {
-        lerp(colors.sequentialLow, colors.sequentialHigh, lumenHeatmapRatio(value, model.domain))
+        lerp(colors.sequentialLow, colors.sequentialHigh, lumenChartRatio(value, model.domain))
     } else if (value < model.midpoint) {
-        lerp(colors.divergingNegative, colors.divergingMid, lumenHeatmapRatio(value, model.domain.start..model.midpoint))
+        lerp(colors.divergingNegative, colors.divergingMid, lumenChartRatio(value, model.domain.start..model.midpoint))
     } else {
-        lerp(colors.divergingMid, colors.divergingPositive, lumenHeatmapRatio(value, model.midpoint..model.domain.endInclusive))
+        lerp(colors.divergingMid, colors.divergingPositive, lumenChartRatio(value, model.midpoint..model.domain.endInclusive))
     }
 
 @Composable
@@ -166,7 +159,7 @@ private fun LumenHeatmapLegend(model: LumenHeatmapModel, scale: LumenHeatmapColo
     val measurer = rememberTextMeasurer()
     val style = MaterialTheme.typography.labelSmall.copy(color = theme.colors.inkSoft)
     val diverging = scale == LumenHeatmapColorScale.Diverging
-    val ratio = lumenHeatmapRatio(model.midpoint, model.domain)
+    val ratio = lumenChartRatio(model.midpoint, model.domain)
     val stops = if (diverging) arrayOf(0f to theme.chartColors.divergingNegative, ratio to theme.chartColors.divergingMid, 1f to theme.chartColors.divergingPositive)
         else arrayOf(0f to theme.chartColors.sequentialLow, 1f to theme.chartColors.sequentialHigh)
     val values = if (diverging) listOf(model.domain.start, model.domain.endInclusive, model.midpoint) else listOf(model.domain.start, model.domain.endInclusive)

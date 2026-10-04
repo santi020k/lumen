@@ -22,8 +22,8 @@ import Testing
     #expect(explicit.midpointRatio == 0.25)
     let invalid = lumenHeatmapModel(data, colorScale: .diverging, domain: 1...5, midpoint: 0)
     #expect(invalid.domain.lowerBound == -invalid.domain.upperBound)
-    #expect(lumenHeatmapRatio(-30, domain: explicit.domain) == 0)
-    #expect(lumenHeatmapRatio(30, domain: explicit.domain) == 1)
+    #expect(lumenChartRatio(-30, domain: explicit.domain) == 0)
+    #expect(lumenChartRatio(30, domain: explicit.domain) == 1)
 }
 
 @Test func heatmapKeepsExtremeAndConstantExtentsFinite() {

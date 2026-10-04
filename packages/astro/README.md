@@ -617,3 +617,11 @@ remains available and can be combined with child rows.
   </DescriptionItem>
 </Descriptions>
 ```
+
+### Actual-versus-target charts
+
+`BulletChart` compares a nullable actual `value` with a finite `target` and optional
+labeled `ranges`. A strong actual bar, target marker, readable value labels, and expandable exact
+data work together. Domains include zero and all measurements; invalid inputs fail closed.
+Null values stay distinct from zero. See the [chart guide](../../docs/data-visualization.md#actual-values-and-targets)
+for the input, localization, and domain contracts.

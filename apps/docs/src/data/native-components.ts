@@ -354,6 +354,27 @@ const chartDefinitions: ComponentDefinition[] = [
     'Explain a balance using signed changes and explicit totals.',
     'Provides labeled axes, a factual summary, and expandable source values; invalid changes fail closed.'
   ),
+  {
+    name: 'Bullet chart',
+    slug: 'bullet-chart',
+    category: 'Data display',
+    summary: 'Compare an actual value with a target and labeled performance ranges.',
+    accessibility: 'Exposes exact actual, target, and range values; missing values remain distinct from zero.',
+    guidance: 'Use a domain that includes zero and every supplied measurement. Localize targetLabel and labels for the application.',
+    exports: { android: 'LumenBulletChart', apple: 'LumenBulletChart', 'react-native': 'LumenBulletChart' },
+    examples: {
+      android: 'LumenBulletChart(value = 86.0, target = 95.0, label = "On-time delivery", domain = 0.0..100.0)',
+      apple: 'LumenBulletChart(label: "On-time delivery", value: 86, target: 95, domain: 0...100)',
+      'react-native': '<LumenBulletChart label="On-time delivery" value={86} target={95} domain={{ min: 0, max: 100 }} />'
+    },
+    properties: [
+      property('value, target', 'Nullable measurement, finite target', 'Required', 'Null is unavailable; zero is a measured value.'),
+      property('ranges', 'LumenBulletRange[]', '[]', 'Uses labeled finite range ends sorted without changing the source data.'),
+      property('domain', 'Finite numeric range', 'Automatic', 'Includes zero, target, actual, and all ranges; invalid input fails closed.'),
+      property('labels, targetLabel, valueLabel', 'Localized chart labels', 'English', 'Labels the summary, visible measurements, and exact data list.'),
+      property('showData', 'Boolean', 'true', 'Provides the expandable actual, target, and range boundaries.')
+    ]
+  },
   chartDefinition(
     'Histogram',
     'histogram',

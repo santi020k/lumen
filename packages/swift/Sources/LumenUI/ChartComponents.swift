@@ -1245,3 +1245,11 @@ public struct LumenComboChart: View {
         }
     }
 }
+
+func lumenChartRatio(_ value: Double, domain: ClosedRange<Double>) -> Double {
+    let span = domain.upperBound - domain.lowerBound
+    guard value.isFinite, span > 0 else { return 0.5 }
+    let ratio = span.isFinite ? (value - domain.lowerBound) / span
+        : (value / 2 - domain.lowerBound / 2) / (domain.upperBound / 2 - domain.lowerBound / 2)
+    return min(1, max(0, ratio))
+}

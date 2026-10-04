@@ -11,6 +11,7 @@ import { Circle, Defs, G, Line, LinearGradient, Path, Rect, Stop, Svg, Text as S
 import {
   alignLumenChartSeries,
   createLumenBarGeometry,
+  createLumenBulletGeometry,
   createLumenHeatmapModel,
   createLumenHistogramGeometry,
   createLumenLineGeometry,
@@ -29,6 +30,7 @@ import {
   hasLumenChartData,
   hasLumenPieData,
   type LumenBarChartLayout,
+  type LumenBulletOptions,
   type LumenChartDatum,
   type LumenChartLabels,
   type LumenChartReference,
@@ -51,6 +53,7 @@ import { useLumenTheme } from './theme-context.js'
 import { lumenChartOpacities, lumenChartStrokeWidths } from './tokens.generated.js'
 
 export type {
+  LumenBulletRange,
   LumenChartDatum,
   LumenChartScaleType,
   LumenChartSelection,
@@ -1487,4 +1490,100 @@ export const LumenHistogram = ({
       axisFontSize: 12, formatBoundary, formatValue, frequency, tone, width, height: 260
     })}
   />
+)
+
+export interface LumenBulletChartProps extends LumenIntervalChartProps, LumenBulletOptions {
+  target: number
+  targetLabel?: string
+  tone?: LumenChartTone
+  value: number | null
+}
+
+type ResolvedNativeBulletProps = LumenBulletChartProps & Required<Pick<LumenBulletChartProps,
+  'formatValue' | 'showData' | 'targetLabel' | 'tone'>>
+
+const resolveNativeBulletProps = (props: LumenBulletChartProps): ResolvedNativeBulletProps => ({
+  ...props,
+  formatValue: props.formatValue ?? String,
+  showData: props.showData ?? true,
+  targetLabel: props.targetLabel ?? 'Target',
+  tone: props.tone ?? 'series-1'
+})
+
+const bulletTickAlignment = (index: number): 'left' | 'right' | 'center' => {
+  if (index === 0) return 'left'
+
+  return index === 2 ? 'right' : 'center'
+}
+
+const LumenBulletContent = ({
+  domain, formatValue, labels, ranges, showData, summary, target,
+  targetLabel, tone, value, valueLabel, ...props
+}: ResolvedNativeBulletProps): ReactElement => {
+  const theme = useLumenTheme()
+  const text = resolveLumenChartLabels(labels)
+  const model = createLumenBulletGeometry(value, target, { domain, ranges })
+  const title = valueLabel ?? text.value
+  const actual = value === null ? text.notAvailable : formatValue(value)
+  const factual = model.valid ? `${title}: ${actual}. ${targetLabel}: ${formatValue(target)}.` : text.invalidData
+
+  const rows = [
+    { id: 'actual', label: `${title}: ${actual}` },
+    { id: 'target', label: `${targetLabel}: ${formatValue(target)}` },
+    ...model.ranges.map(range => ({ id: `range:${range.end}`, label: `${range.label}: ${formatValue(range.start)}–${formatValue(range.end)}` }))
+  ]
+
+  return (
+    <LumenChartFrame {...props} summary={summary ?? factual}>
+      {model.valid ?
+        (
+          <>
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'flex-end', gap: theme.spacing.md }}>
+              <View style={{ gap: theme.spacing.xs }}>
+                <Text style={{ color: theme.colors.inkSoft, fontSize: theme.fontSizes.sm }}>{title}</Text>
+                <Text style={{ color: theme.colors.ink, fontSize: 40, fontWeight: '700', fontVariant: ['tabular-nums'] }}>{actual}</Text>
+              </View>
+              <Text style={{ color: theme.colors.inkSoft, fontSize: theme.fontSizes.sm }}>
+                {targetLabel}
+                :
+                {' '}
+                <Text style={{ color: theme.colors.ink, fontWeight: '700' }}>{formatValue(target)}</Text>
+              </Text>
+            </View>
+            <View accessibilityElementsHidden importantForAccessibility="no-hide-descendants" aria-hidden style={{ paddingVertical: theme.spacing.sm, gap: theme.spacing.md }}>
+              <View style={{ height: 48, backgroundColor: theme.colors.surfaceMuted, borderRadius: theme.radii.sm }}>
+                {model.ranges.map((range, index) => (
+                  <View key={range.end} style={{ position: 'absolute', top: 0, bottom: 0, left: `${range.startRatio * 100}%`, width: `${(range.endRatio - range.startRatio) * 100}%`, backgroundColor: lumenChartToneColor(range.tone ?? 'neutral', theme), opacity: 0.12 + index / Math.max(1, model.ranges.length - 1) * 0.2, borderRightWidth: 1, borderColor: theme.colors.surface }} />
+                ))}
+                {value !== null && <View style={{ position: 'absolute', top: 16, height: 16, left: `${model.valueStartRatio * 100}%`, width: `${model.valueWidthRatio * 100}%`, borderRadius: 2, backgroundColor: lumenChartToneColor(tone, theme) }} />}
+                <View style={{ position: 'absolute', top: -6, bottom: -6, left: `${model.targetRatio * 100}%`, width: 5, marginLeft: -2.5, borderWidth: 1, borderColor: theme.colors.surface, backgroundColor: theme.colors.ink, borderRadius: 1 }} />
+              </View>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', gap: theme.spacing.sm }}>
+                {model.ticks.map((tick, index) => <Text key={tick.position} style={{ flex: 1, textAlign: bulletTickAlignment(index), color: theme.colors.inkSoft, fontSize: theme.fontSizes.xs, fontVariant: ['tabular-nums'] }}>{formatValue(tick.value)}</Text>)}
+              </View>
+            </View>
+            {model.ranges.length > 0 && (
+              <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: theme.spacing.md }}>
+                {model.ranges.map(range => (
+                  <View key={range.end} style={{ gap: theme.spacing.xs }}>
+                    <Text style={{ color: theme.colors.ink, fontSize: theme.fontSizes.xs, fontWeight: '600' }}>{range.label}</Text>
+                    <Text style={{ color: theme.colors.inkSoft, fontSize: theme.fontSizes.xs }}>
+                      {formatValue(range.start)}
+                      –
+                      {formatValue(range.end)}
+                    </Text>
+                  </View>
+                ))}
+              </View>
+            )}
+            {showData && <LumenChartStructuredDataList labels={text} rows={rows} />}
+          </>
+        ) :
+        <Text accessibilityRole="alert" style={{ color: theme.colors.inkSoft }}>{text.invalidData}</Text>}
+    </LumenChartFrame>
+  )
+}
+
+export const LumenBulletChart = (props: LumenBulletChartProps): ReactElement => (
+  <LumenBulletContent {...resolveNativeBulletProps(props)} />
 )

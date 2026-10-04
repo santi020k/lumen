@@ -79,3 +79,9 @@ export const chartDemoMetrics = chartDemoSeries.map(series => ({
   value: series.data.reduce((total, point) => total + (point.y ?? 0), 0).toLocaleString('en-US'),
   values: series.data.flatMap(point => point.y === null ? [] : [point.y])
 }))
+
+export const chartDemoBulletRanges = [
+  { end: 70, label: 'Developing' },
+  { end: 90, label: 'Consistent' },
+  { end: 100, label: 'Excellent' }
+]

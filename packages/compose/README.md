@@ -501,3 +501,11 @@ Adaptive list/detail is a full-window layout using the stable Material Adaptive 
 state in the host; wire system back through the supplied `detailOnly` flag. The full-window Android
 List/detail example demonstrates the integration, while component gallery examples are bounded
 previews. See [complete contracts](../../docs/native-components.md#compose-v4-product-controls).
+
+### Actual-versus-target charts
+
+`LumenBulletChart` compares a nullable actual `value` with a finite `target` and optional
+labeled `ranges`. A strong actual bar, target marker, readable value labels, and expandable exact
+data work together. Domains include zero and all measurements; invalid inputs fail closed.
+Null values stay distinct from zero. See the [chart guide](../../docs/data-visualization.md#actual-values-and-targets)
+for the input, localization, and domain contracts.

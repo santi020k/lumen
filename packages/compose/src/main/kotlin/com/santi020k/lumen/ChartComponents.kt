@@ -1096,3 +1096,11 @@ fun LumenComboChart(
         if (showData) LumenChartDataList(series, selection, onSelectionChange, labels)
     }
 }
+
+internal fun lumenChartRatio(value: Double, domain: ClosedFloatingPointRange<Double>): Float {
+    val span = domain.endInclusive - domain.start
+    if (!value.isFinite() || span <= 0) return 0.5f
+    val ratio = if (span.isFinite()) (value - domain.start) / span
+        else (value / 2 - domain.start / 2) / (domain.endInclusive / 2 - domain.start / 2)
+    return ratio.coerceIn(0.0, 1.0).toFloat()
+}

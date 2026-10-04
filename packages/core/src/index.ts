@@ -1,3 +1,4 @@
+export { createLumenBulletGeometry, type LumenBulletOptions, type LumenBulletRange } from './bullet-chart.js'
 export * from './chart-interaction.js'
 export * from './chart-models.js'
 export {

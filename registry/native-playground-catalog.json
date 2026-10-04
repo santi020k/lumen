@@ -96,7 +96,8 @@
         "section-header",
         "status-bar",
         "gauge",
-        "image-comparison"
+        "image-comparison",
+        "bullet-chart"
       ]
     },
     {

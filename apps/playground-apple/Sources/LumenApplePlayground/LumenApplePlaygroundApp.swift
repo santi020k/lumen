@@ -718,7 +718,7 @@ struct ComponentsCatalogView: View {
 
     @ViewBuilder
     private var chartSection: some View {
-        if matches("Sparkline", "Line chart", "Bar chart", "Pie chart", "Scatter chart", "Waterfall chart", "Histogram", "Heatmap", "Range chart", "Combo chart") {
+        if matches("Sparkline", "Line chart", "Bar chart", "Pie chart", "Scatter chart", "Waterfall chart", "Histogram", "Bullet chart", "Heatmap", "Range chart", "Combo chart") {
             PlaygroundSection(
                 "Data visualization",
                 description: "Tokenized plots include a factual accessibility summary and readable fallback data."
@@ -802,6 +802,13 @@ struct ComponentsCatalogView: View {
                         .init(id: "other", label: "Other", value: -10),
                         .init(id: "closing", label: "Closing", value: 185, kind: .total)
                     ], heading: "Revenue movement", description: "Opening balance to closing · USD, thousands", valueLabel: "USD, thousands")
+                }
+                if isVisible("Bullet chart") {
+                    LumenBulletChart(label: "Delivery performance", value: 86, target: 95, ranges: [
+                        LumenBulletRange(end: 70, label: "Developing"),
+                        LumenBulletRange(end: 90, label: "Consistent"),
+                        LumenBulletRange(end: 100, label: "Excellent")
+                    ], heading: "On-time delivery", description: "Actual performance against the service target", labels: LumenChartLabels(formatValue: { "\($0.formatted())%" }))
                 }
                 if isVisible("Histogram") {
                     LumenHistogram(label: "Response times", data: [3, 8, 18, 34, 48, 57, 51, 37, 26, 15, 8, 3].enumerated().map { index, count in

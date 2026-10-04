@@ -102,6 +102,16 @@
       "width": 900
     },
     {
+      "alt": "Bullet chart rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2008,
+      "platform": "android",
+      "sha256": "661a0c4e70559f2366bdd2ea550fb10f356e113eb142d7411e213972447d68a8",
+      "slug": "bullet-chart",
+      "src": "/native-components/android/bullet-chart.webp",
+      "width": 900
+    },
+    {
       "alt": "Button rendered in the Android phone emulator Lumen playground",
       "device": "Android phone emulator",
       "height": 1600,
@@ -892,6 +902,16 @@
       "width": 900
     },
     {
+      "alt": "Bullet chart rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "5a55c1e82c8356201a6d005e0561ec7f35bbb66ad1c2cc4b40e3482d5b02458c",
+      "slug": "bullet-chart",
+      "src": "/native-components/apple/bullet-chart.webp",
+      "width": 900
+    },
+    {
       "alt": "Button rendered in the iPhone simulator Lumen playground",
       "device": "iPhone simulator",
       "height": 1957,
@@ -1589,6 +1609,16 @@
       "sha256": "f924c926048b5c93a4984565ed1cc50d16694f7e6698e9d8dbc31967217e737c",
       "slug": "bar-chart",
       "src": "/native-components/react-native/bar-chart.webp",
+      "width": 900
+    },
+    {
+      "alt": "Bullet chart rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 633,
+      "platform": "react-native",
+      "sha256": "732a12e8bef31265bd773df648841883b671f08fbb99ff26780a3b8c71ba444c",
+      "slug": "bullet-chart",
+      "src": "/native-components/react-native/bullet-chart.webp",
       "width": 900
     },
     {

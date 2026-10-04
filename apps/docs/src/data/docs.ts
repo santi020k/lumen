@@ -599,6 +599,7 @@ export const componentCollections: ComponentCollection[] = [
       'RangeChart',
       'ComboChart',
       'Histogram',
+      'BulletChart',
       'WaterfallChart'
     ]
   },
@@ -1926,6 +1927,13 @@ const apiReferenceByComponent = {
     apiRow(
       'target, rel', 'anchor attributes', '-', 'Forwards native navigation and relationship attributes.'
     )
+  ],
+  BulletChart: [
+    apiRow('value, target', 'number | null, number', 'required', 'Compares a measured value with a target. Null is unavailable, zero remains a real value.'),
+    apiRow('ranges', 'LumenBulletRange[]', '[]', 'Uses labeled, finite, unique range ends. Ranges are sorted without mutating input.'),
+    apiRow('domain', 'LumenChartDomain', 'automatic', 'Must include zero, the actual value, target, and all range ends. Invalid input fails closed.'),
+    apiRow('formatValue, valueLabel, targetLabel, labels', 'formatters and labels', 'String, Value, Target', 'Localizes the visible values and exact data inspection.'),
+    apiRow('showTable', 'boolean', 'true', 'Exposes the actual, target, and exact range boundaries.')
   ],
   Histogram: [
     apiRow('bins', 'LumenHistogramBin[]', 'required', 'Supplies non-overlapping numeric start/end boundaries and nonnegative counts. The application owns binning.'),
@@ -4249,6 +4257,12 @@ export const componentDocs: ComponentDoc[] = (
       'Layout',
       'Keeps meaningful content available to assistive technology without displaying it.',
       '<Button><Icon name="search" decorative /><VisuallyHidden>Search</VisuallyHidden></Button>'
+    ],
+    [
+      'BulletChart',
+      'Data display',
+      'Compares a measured value with a target and optional labeled performance ranges.',
+      '<BulletChart aria-label="Delivery performance" heading="On-time delivery" value={86} target={95} ranges={[{ end: 70, label: "Developing" }, { end: 90, label: "Consistent" }, { end: 100, label: "Excellent" }]} formatValue={value => `${value}%`} />'
     ],
     [
       'Histogram',

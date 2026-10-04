@@ -1,6 +1,6 @@
 import { afterEach, beforeAll, expect, test, vi } from 'vitest'
 
-import { defineLumenElements } from './define.js'
+import { defineLumenElements, LumenBulletChartElement } from './define.js'
 
 beforeAll(() => {
   defineLumenElements()
@@ -43,4 +43,38 @@ test('new chart attributes fail safely and escape supplied labels', () => {
   expect(histogram.querySelector('table')?.textContent).toContain('<img')
   const waterfall = chart('lumen-waterfall-chart', { data: '{broken' })
   expect(waterfall.querySelector('[role="status"]')?.textContent).toContain('invalid')
+})
+
+test('bullet properties and attributes update exact data without interpreting supplied HTML', () => {
+  const element = new LumenBulletChartElement()
+  element.target = 95
+  element.value = 86
+  element.ranges = [{ end: 100, label: '<img src=x onerror=alert(1)>' }]
+  element.valueFormatter = value => `${value}%`
+  document.body.append(element)
+  expect(element.querySelector('img')).toBeNull()
+  expect(element.querySelector('tbody tr:last-child')?.textContent).toBe('<img src=x onerror=alert(1)>0%–100%')
+  element.setAttribute('target-label', 'Meta')
+  expect(element.querySelector('.ui-bullet-chart__values')?.textContent).toContain('Meta95%')
+  element.value = null
+  expect(element.querySelector('.ui-bullet-chart__bar')).toBeNull()
+  expect(element.querySelector('tbody tr')?.textContent).toContain('Not available')
+  element.value = 0
+  expect(element.querySelector('tbody tr')?.textContent).toBe('Value0%')
+  element.setAttribute('domain-min', '50')
+  element.setAttribute('domain-max', '100')
+  expect(element.querySelector('[role="status"]')?.textContent).toContain('invalid')
+  expect(element.querySelector('.ui-bullet-chart__plot')).toBeNull()
+})
+
+test('bullet attributes reject invalid targets and malformed ranges instead of clipping or dropping them', () => {
+  const element = chart('lumen-bullet-chart', { value: '86', target: '95', ranges: '[{"end":100,"label":"Strong"}]' })
+  expect(element.querySelector('.ui-bullet-chart__target')).not.toBeNull()
+  for (const invalid of ['{broken', '[null]', '[{"end":100,"label":"Strong","tone":"url(x)"}]', '[{"end":70,"label":"A"},{"end":70,"label":"B"}]']) {
+    element.setAttribute('ranges', invalid)
+    expect(element.querySelector('[role="status"]')?.textContent).toContain('invalid')
+  }
+  element.setAttribute('ranges', '[]')
+  element.setAttribute('target', '')
+  expect(element.querySelector('[role="status"]')?.textContent).toContain('invalid')
 })

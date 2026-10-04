@@ -19,6 +19,7 @@ decisions.
 | How does uncertainty or an interval change? | `RangeChart` | Supply low and high values in the same unit and domain. |
 | How do magnitudes and trends compare together? | `ComboChart` | Mix bars, lines, and areas only when they share a meaningful value domain. |
 | Which changes explain a final balance? | `WaterfallChart` | Use signed deltas and explicit totals on web and native. |
+| How does the actual value compare with a target? | `BulletChart` | Use a zero-inclusive domain and optional labeled ranges on web and native. |
 | How are observations distributed? | `Histogram` | Supply explicit bins and counts on web and native. |
 
 Use `Chart` as the web escape hatch for a specialized SVG, canvas, or HTML visualization. Product-
@@ -160,3 +161,21 @@ semantic success, warning, and danger tones for data that truly carries those me
 The native galleries under `apps/playground-react-native`, `apps/playground-apple`, and
 `apps/playground-android` provide executable examples. Run the platform-specific builds and the
 repository validation gates before publishing API or token changes.
+
+## Actual values and targets
+
+`BulletChart` (native `LumenBulletChart`) compares a nullable `value` with a finite `target`.
+The actual bar starts at zero, including for negative values. The target is a separate high-contrast
+marker; its exact value remains visible above the plot. `ranges` contains `{ end, label, tone? }`
+entries sorted by their unique finite end values. Lumen keeps the source array unchanged.
+
+An explicit `domain` must include zero, the actual value, target, and every range end. Invalid
+measurements, duplicate ends, blank labels, or truncated domains produce the invalid-data state.
+A null value displays the localized unavailable label while retaining the target and ranges;
+zero remains a real observation. No percent-of-target score is inferred.
+
+Astro and React accept `formatValue`, `targetLabel`, `valueLabel`, and `labels`. Elements exposes
+`value` and `target` as numeric properties or attributes, `ranges` as a property or JSON attribute,
+`domain-min`/`domain-max`, `target-label`, and a `valueFormatter` property. Removing the Elements
+`value` attribute represents a missing observation. Native adapters use their existing labels and
+number formatter contracts. Keep `showTable` (web) or `showData` (native) enabled for exact values.

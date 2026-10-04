@@ -25,6 +25,9 @@ export {
 export {
   LumenBarChart,
   type LumenBarChartProps,
+  LumenBulletChart,
+  type LumenBulletChartProps,
+  type LumenBulletRange,
   type LumenChartDatum,
   type LumenChartScaleType,
   type LumenChartSelection,

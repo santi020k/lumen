@@ -169,6 +169,7 @@ export const lumenComponentNames = [
   'RangeChart',
   'ComboChart',
   'VisuallyHidden',
+  'BulletChart',
   'Histogram',
   'WaterfallChart'
 ] as const
@@ -258,6 +259,7 @@ export const lumenComponentBehavior = {
   FormattedDate: { astro: 'none', elements: 'registered-element', react: 'component' },
   Graphic: { astro: 'none', elements: 'registered-element', react: 'component' },
   Heatmap: { astro: 'none', elements: 'registered-element', react: 'component' },
+  BulletChart: { astro: 'none', elements: 'registered-element', react: 'component' },
   Histogram: { astro: 'none', elements: 'registered-element', react: 'component' },
   WaterfallChart: { astro: 'none', elements: 'registered-element', react: 'component' },
   GradientDivider: { astro: 'none', elements: 'registered-element', react: 'component' },

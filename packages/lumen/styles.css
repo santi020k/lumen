@@ -4533,6 +4533,34 @@ lumen-dialog-close {
   border-bottom: 0;
 }
 
+.ui-bullet-chart__values,
+.ui-bullet-chart__ticks { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; }
+.ui-bullet-chart__values { flex-wrap: wrap; }
+.ui-bullet-chart__values > div { display: grid; gap: .25rem; }
+.ui-bullet-chart__values span,
+.ui-bullet-chart__ticks,
+.ui-bullet-chart__ranges { color: hsl(var(--ink-soft)); font-size: .75rem; }
+.ui-bullet-chart__values > div > strong { font-size: clamp(2rem, 5vw, 3rem); line-height: 1; letter-spacing: -.04em; }
+.ui-bullet-chart__values p { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; margin: 0; font-size: .875rem; }
+.ui-bullet-chart__values strong,
+.ui-bullet-chart__ticks,
+.ui-bullet-chart__ranges { font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.ui-bullet-chart__plot { padding-block: .75rem .25rem; }
+.ui-bullet-chart__track { position: relative; height: 3rem; background: hsl(var(--surface-muted)); border-radius: .25rem; }
+.ui-bullet-chart__range,
+.ui-bullet-chart__bar { position: absolute; background: var(--ui-chart-color); }
+.ui-bullet-chart__range { inset-block: 0; box-shadow: inset -1px 0 hsl(var(--surface)); }
+.ui-bullet-chart__bar { top: 1rem; height: 1rem; border-radius: .125rem; }
+.ui-bullet-chart__target { position: absolute; top: -.375rem; bottom: -.375rem; width: 3px; transform: translateX(-50%); background: hsl(var(--ink)); box-shadow: 0 0 0 2px hsl(var(--surface)); border-radius: 1px; }
+.ui-bullet-chart__target-key { width: 3px; height: 1rem; background: hsl(var(--ink)); flex: none; }
+.ui-bullet-chart__ticks { margin-top: 1rem; }
+.ui-bullet-chart__ticks > span { flex: 1; min-width: 0; }
+.ui-bullet-chart__ticks > span:nth-child(2) { text-align: center; }
+.ui-bullet-chart__ticks > span:last-child { text-align: end; }
+.ui-bullet-chart__ranges { display: flex; flex-wrap: wrap; gap: .5rem 1.5rem; list-style: none; margin: 0; padding: 0; }
+.ui-bullet-chart__ranges li { display: grid; gap: .125rem; }
+.ui-bullet-chart__ranges li > span:first-child { color: hsl(var(--ink)); font-weight: 600; }
+
 .ui-chart-tone--series-1 {
   --ui-chart-color: hsl(var(--chart-series-1));
 }

@@ -107,7 +107,8 @@ export const componentCategories: readonly ComponentCategoryDefinition[] = [
       "Section header",
       "Status bar",
       "Gauge",
-      "Image comparison"
+      "Image comparison",
+      "Bullet chart"
     ],
     value: 'data'
   },

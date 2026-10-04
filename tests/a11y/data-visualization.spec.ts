@@ -67,6 +67,20 @@ for (const width of [390, 1440]) {
       await expectScrollableDataPanel(page, chart, chartBounds.width)
       await toggle.click()
       await expect(chart.locator('[data-ui-chart-series="requests"]')).toBeVisible()
+      const bullet = scope.locator('.ui-bullet-chart')
+      await expect(bullet.locator('.ui-bullet-chart__values')).toContainText('86')
+      await expect(bullet.locator('.ui-bullet-chart__values')).toContainText('95')
+      await bullet.locator('summary').focus()
+      await page.keyboard.press('Enter')
+      await expect(bullet.locator('table')).toBeVisible()
+      await expect(bullet.locator('tbody tr')).toHaveCount(5)
+      await expect(bullet.locator('tbody tr').last()).toContainText('Excellent')
+      await page.keyboard.press('Space')
+      await expect(bullet.locator('table')).toBeHidden()
+      const bulletBounds = await bullet.boundingBox()
+      const targetBounds = await bullet.locator('.ui-bullet-chart__target').boundingBox()
+      if (!bulletBounds || !targetBounds) throw new Error('Expected a visible target chart')
+      expect(targetBounds.x + targetBounds.width).toBeLessThan(bulletBounds.x + bulletBounds.width)
       await expect(scope.locator('.ui-heatmap__missing')).toHaveCount(1)
       await expect(scope.locator('.ui-heatmap__legend')).toContainText('Not available')
       await expect(scope.locator('.ui-histogram .ui-bar-chart__marks rect')).toHaveCount(12)
@@ -134,8 +148,15 @@ for (const theme of ['lumen-light', 'lumen-dark']) {
         await page.getByRole('tablist', { name: 'Chart framework' }).getByRole('tab', { name, exact: true }).click()
         // Audit the open scroll region and its table as well as the plots.
         await page.locator(`[data-chart-demo="${id}"] .ui-line-chart .ui-chart__data > summary`).click()
+        const bullet = page.locator(`[data-chart-demo="${id}"] .ui-bullet-chart`)
+        await bullet.locator('summary').click()
+        if (id === 'astro') {
+          await page.mouse.wheel(0, -180)
+          await bullet.screenshot({ path: test.info().outputPath(`bullet-${width}-${theme}.png`) })
+        }
         const report: unknown = await page.evaluate('axe.run(".viz-gallery")')
         expect(report).toMatchObject({ violations: [] })
+        await bullet.locator('summary').click()
         await page.locator(`[data-chart-demo="${id}"] .ui-line-chart .ui-chart__data > summary`).click()
       }
     }

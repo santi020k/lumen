@@ -16,7 +16,7 @@ components=(
   "Tabs"
   "Chip" "Badge" "Link" "Divider" "Spinner" "Card" "Alert" "Alert dialog"
   "Toast" "Banner" "Progress" "Skeleton" "Graphic" "Backdrop" "Illustration" "Image"
-  "Sparkline" "Line chart" "Bar chart" "Pie chart" "Scatter chart" "Waterfall chart" "Histogram" "Heatmap" "Range chart" "Combo chart"
+  "Sparkline" "Line chart" "Bar chart" "Pie chart" "Scatter chart" "Waterfall chart" "Bullet chart" "Histogram" "Heatmap" "Range chart" "Combo chart"
   "Disclosure" "Avatar" "Empty state" "Error state" "List row" "Stat" "Gauge" "Section header"
   "Status bar" "Navigation bar" "Sheet" "Menu" "Share button" "Tab bar minimization"
   "Tab accessory"

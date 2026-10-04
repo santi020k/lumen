@@ -111,7 +111,8 @@ enum PlaygroundCatalog {
                 "Section header",
                 "Status bar",
                 "Gauge",
-                "Image comparison"
+                "Image comparison",
+                "Bullet chart"
             ]
         ),
         (

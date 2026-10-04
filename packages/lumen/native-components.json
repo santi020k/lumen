@@ -464,6 +464,17 @@
       }
     },
     {
+      "id": "bullet-chart",
+      "tier": "shared",
+      "contract": "Actual-versus-target comparison with optional ordered ranges and a domain that includes zero",
+      "accessibility": "Keeps actual, target, and range boundaries readable with an expandable exact data list; distinguishes missing from zero",
+      "symbols": {
+        "reactNative": "LumenBulletChart",
+        "swiftUI": "LumenBulletChart",
+        "compose": "LumenBulletChart"
+      }
+    },
+    {
       "id": "histogram",
       "tier": "shared",
       "contract": "Explicit numeric bins preserve widths and gaps; unequal widths require count-per-unit density",

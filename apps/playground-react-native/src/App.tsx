@@ -37,6 +37,7 @@ import {
   LumenBadge,
   LumenBanner,
   LumenBarChart,
+  LumenBulletChart,
   LumenButton,
   LumenButtonGroup,
   LumenCard,
@@ -1131,6 +1132,9 @@ const IntervalChartExamples = ({ isVisible }: { isVisible: (name: string) => boo
         ]}
       />
     )}
+    {isVisible('Bullet chart') && (
+      <LumenBulletChart testID="component-bullet-chart" label="Delivery performance" heading="On-time delivery" description="Actual performance against the service target" value={86} target={95} ranges={[{ end: 70, label: 'Developing' }, { end: 90, label: 'Consistent' }, { end: 100, label: 'Excellent' }]} formatValue={value => `${value}%`} />
+    )}
     {isVisible('Histogram') && (
       <LumenHistogram
         label="Response times"
@@ -1617,7 +1621,7 @@ const Playground = ({
           </ComponentSection>
         </Visibility>
 
-        <Visibility visible={isAnyVisible('Sparkline', 'Line chart', 'Bar chart', 'Pie chart', 'Scatter chart', 'Waterfall chart', 'Histogram', 'Heatmap', 'Range chart', 'Combo chart')}>
+        <Visibility visible={isAnyVisible('Sparkline', 'Line chart', 'Bar chart', 'Pie chart', 'Scatter chart', 'Waterfall chart', 'Histogram', 'Bullet chart', 'Heatmap', 'Range chart', 'Combo chart')}>
           <ComponentSection
             description="Tokenized plots include a factual accessibility summary and readable fallback data."
             title="Data visualization"

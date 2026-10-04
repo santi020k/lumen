@@ -4,6 +4,7 @@ import { createRoot, type Root } from 'react-dom/client'
 
 import { afterEach, beforeEach, expect, test, vi } from 'vitest'
 
+import { BulletChart } from './bullet-chart.js'
 import { LineChart } from './components.js'
 import { Histogram, WaterfallChart } from './interval-charts.js'
 
@@ -63,4 +64,29 @@ test('renders histogram counts and waterfall balances in semantic tables', () =>
     }))
   })
   expect(container.querySelector('tbody tr:last-child')?.textContent).toBe('Spent10-5-15')
+})
+
+test('bullet charts keep localized actual and target values readable and update missing and invalid states', () => {
+  const props = { target: 95, ranges: [{ end: 70, label: 'Developing' }, { end: 100, label: 'Excellent' }], targetLabel: 'Meta', valueLabel: 'Actual', formatValue: (value: number) => `${value}%`, labels: { notAvailable: 'Sin datos' } }
+  act(() => {
+    root.render(createElement(BulletChart, { ...props, value: 86 }))
+  })
+  expect(container.querySelector('.ui-bullet-chart__values')?.textContent).toBe('Actual86%Meta95%')
+  expect([...container.querySelectorAll('tbody tr')].map(row => row.textContent)).toEqual(['Actual86%', 'Meta95%', 'Developing0%–70%', 'Excellent70%–100%'])
+  act(() => {
+    root.render(createElement(BulletChart, { ...props, value: null }))
+  })
+  expect(container.querySelector('tbody tr')?.textContent).toBe('ActualSin datos')
+  expect(container.querySelector('.ui-bullet-chart__bar')).toBeNull()
+  expect(container.querySelector('.ui-bullet-chart__target')).not.toBeNull()
+  act(() => {
+    root.render(createElement(BulletChart, { ...props, value: 0, showTable: false }))
+  })
+  expect(container.querySelector('.ui-bullet-chart__values')?.textContent).toContain('0%')
+  expect(container.querySelector('details')).toBeNull()
+  act(() => {
+    root.render(createElement(BulletChart, { ...props, value: 86, domain: { min: 50, max: 100 } }))
+  })
+  expect(container.querySelector('[role="status"]')?.textContent).toContain('invalid')
+  expect(container.querySelector('.ui-bullet-chart__target')).toBeNull()
 })
