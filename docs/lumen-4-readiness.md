@@ -9,18 +9,25 @@ data, deployment, and migration remain owned by those projects.
 The isolated `chore/v4-release-preparation` branch combines consolidation `79e6b066`, native and
 web quality integration `a775f1cd`, live iOS renderer/bundle corrections `bd40105d`, and explicit
 Astro parser resolution `cb31915d`. It preserves all existing checkouts and historical stashes.
-The selected `release/v4.0.0` integration branch remains at `50990a22` while the security gate fails.
+The completed changelog cleanup `9fd6ae0d` is also contained. Candidate `d91c9c98` passes the
+canonical gate after the owner-approved cache dependency exception and is now integrated locally
+into `release/v4.0.0`. A fresh final independent review reports no new actionable findings and
+confirms all three review fixes. Historical checkpoints below retain their original results and do
+not describe the current security status.
 
 All pending Changesets were processed through the installed generator in an isolated metadata
 workspace and folded into the ten existing, unpublished `4.0.0` changelogs. This prevents unintended
 `5.0.0`, `4.1.0`, and `4.0.1` releases. The duplicate Core heading was consolidated; earlier published
 entries and package versions remain unchanged. New stabilization notes are reconciled into the same
-candidate. The publication scope still resolves all ten unpublished npm packages.
+candidate. The publication scope still resolves all ten unpublished npm packages. The final review
+fixes were also generated as Changesets and folded into the prepared 4.0.0 entries.
 
 Manual release-canary dispatch now skips the pull-request comparison fetch. Its regression executes
 the actual classification command with empty pull-request references and verifies every canary
 surface and all ten npm packages. The workflow/classifier suites pass 40 checks; this is local
-workflow validation, not an Actions run.
+workflow validation, not an Actions run. Prepared package manifests and the shared release manifest
+now trigger publication after merging into `main`, even when every Changeset has been consumed.
+The updated release-workflow suite passes 54 tests.
 
 Browser stabilization corrected Safari popup dismissal: pointer activation now focuses the trigger
 so Escape reaches the disclosure, while canceled clicks retain application control. Mounted tests
@@ -37,23 +44,48 @@ bundles retain their public contracts after artifact reductions.
 
 ### Current verification and remaining gates
 
-Canonical `pnpm run validate` passes build, strict types, 1,442 tests in 137 files, zero-warning lint,
-spelling, Knip, registry checks and all nine security guard tests. It stops at the remaining high
-`http-cache-semantics` advisory. After the parser integration, a fresh frozen install and all 23 lint
-tasks pass again. Local Swift tests pass all 68 cases; Compose `test lint apiCheck` completes all 99
-tasks. These native sources are unchanged by the final renderer and web integration.
+Canonical `pnpm run validate` passes on `d91c9c98`: all 14 build tasks, 24 strict type/build tasks,
+1,445 tests in 137 files, 23 zero-warning lint/build tasks, spelling, Knip, registry checks, nine
+security guard tests, package-content dry runs and clean consumers. The owner authorized the exact
+`http-cache-semantics@4.3.0` release-age exception in `b9845f03`; frozen installation and guarded
+security checks pass. Keep the 24-hour policy for every other package and remove this temporary
+exception after October 5, 02:56 UTC. See the [dependency review](lumen-4-dependencies.md#cache-advisory-correction)
+for the distinction between audit metadata and a demonstrated cache behavior fix.
 
-The final web artifacts pass all 1,526 accessibility/responsive checks and all 136 framework
-conformance checks. Publish dry runs validate all ten package contents; clean Core, umbrella, Astro,
-React, React Hook Form, Elements, Next.js and brand-icon consumers pass. The packed React Native
-consumer passes install, peer, contents and strict types, and packed MCP consumers pass both stdio
-and Streamable HTTP. These post-security checks were run separately because the canonical gate
-stops at the advisory. A metadata comparison against `79e6b066` confirms unchanged published
+The final code passes all 136 desktop/mobile Chromium and WebKit conformance checks. The prior
+1,526 accessibility/responsive checks remain applicable to the unchanged visual surfaces; the
+Combobox observer change has two additional asynchronous regressions. Core and React Native pass
+417 focused tests; Swift passes 69 tests, including negative Arabic/Persian decimal round trips.
+Compose `test lint apiCheck` previously completed all 99 tasks, and its sources are unchanged by
+these review fixes.
+
+Publish dry runs validate all ten package contents; clean Core, umbrella, Astro, React, React Hook
+Form, Elements, Next.js and brand-icon consumers pass within the canonical gate. The packed React
+Native consumer passes install, peer, contents and strict types, and packed MCP consumers pass both
+stdio and Streamable HTTP. A metadata comparison against `79e6b066` confirms unchanged published
 changelog history, ten public versions at `4.0.0`, one v4 entry per package and no pending Changesets.
+
+The first independent review inspected `18a26a98` against `main` at `3d8af731`. All findings were
+accepted and fixed in `e7f3a8d6`:
+
+- P1: closing an unavailable Combobox now writes its observed `hidden` state only when it changes,
+  preventing repeated observer deliveries. Disabled and read-only regressions fail before the fix
+  and pass afterward, including reopening the field.
+- P2: the Swift decimal parser consumes the full localized minus prefix, including direction marks.
+  Arabic and Persian drafts round-trip, reject repeated signs and continue decrementing.
+- P2: an open Android TimeField delegates through the latest committed callback, bounds and error
+  copy. Mounted tests reject newly invalid minimum/maximum selections and call the current handler.
+
+The separately identified publication-trigger omission is fixed in `d91c9c98`; its regression
+verifies every public package manifest can trigger publication without a Changeset diff. A fresh
+independent review of `d91c9c98` accepted the fix, confirmed all three earlier findings resolved and
+reported no new actionable findings. It covered the complete follow-up diff and adjacent contracts,
+supplementing the first broad review. Neither review substitutes for device evidence or final owner
+approval.
 
 | Gate | Current evidence | Required next action |
 | --- | --- | --- |
-| Security | Forge and Braces patches verified; cache advisory still fails | Preserve the 24-hour hold. After October 4, 21:56:05 Colombia time, resolve the age-eligible cache dependency and rerun the guarded audit and canonical gate. See [dependency review](lumen-4-dependencies.md#cache-advisory-correction) for why version metadata alone is not proof of a behavior fix. |
+| Security | Guarded production check passes with verified Forge/Braces patches and the approved exact cache version | Remove only the temporary age exception after its hold expires; retain the patch guards and normal release-age policy. |
 | Native stability | Zero of two iterations; seven current baseline hashes | Align the old pre-2.0-only checker with the approved v4 qualification policy, then collect two distinct iterations with immutable artifact and consumer evidence. Local checks do not count automatically. |
 | Real native consumers | All five adapter records remain incomplete | Verify the final candidate in React Native, SwiftUI, Compose, WidgetKit and Wear consumers and record exact revisions and permanent proof. |
 | Physical devices | All 22 minimum/current slots remain incomplete | Complete the documented interaction, accessibility, text-scale and state checks on the required hardware. |
@@ -67,9 +99,10 @@ contract update. No exception or evidence was invented during preparation.
 
 ### Release execution and recovery
 
-After the security gate passes, merge the validated preparation branch into a clean, idle
-`release/v4.0.0` worktree and rerun the merged-candidate checks. Before an authorized first push,
-obtain the required fresh independent review against `main` and resolve every finding. Prepare the
+The clean, idle `release/v4.0.0` checkout was fast-forwarded from `50990a22` to reviewed candidate
+`d91c9c98`. This record is committed and integrated afterward as documentation only. Before an
+authorized first push, run `pnpm install --frozen-lockfile` and `pnpm run validate` in that integrated
+checkout and retain the review dispositions above. Prepare the
 `release/v4.0.0` to `main` pull request with the coordinated versions, changelogs, and
 [v4 migration guidance](migrating-to-lumen.md#migrating-from-version-3-to-version-4). Remote pushes,
 PR creation, merges, publication and deployment remain separately authorized actions.
