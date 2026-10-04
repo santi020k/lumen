@@ -504,6 +504,18 @@ for runtime source `14c0cda1`. The source hashes recorded after export match tha
 only qualification documentation changed during measurement. Raw logs and the import report remain
 local. These bytecode-size checks do not establish startup, scrolling, hardware or stability passes.
 
+### RoadScore v4 compatibility canary
+
+The real RoadScore mobile source at committed revision `487ba102` passed strict type checking,
+zero-warning lint and all 180 tests against packed v4 React Native/core packages. Android and iOS
+Hermes production exports plus the web export passed without application source changes. Ten dirty
+paths in the original checkout were preserved; the canary used committed source in an isolated
+copy. Peer diagnostics failed identically in both the original checkout and candidate, reflecting
+existing lint-tool ranges. The [consumer record](native-consumer-validation.md#lumen-4-local-roadscore-compatibility)
+describes exact inputs, hashes and limitations. This establishes local compatibility, not a
+published, adopted, signed or physical-device-qualified consumer; the qualification ledger remains
+unchanged.
+
 ### Current completion audit
 
 The audit at `14c0cda1` does not prove completion of the Required outcomes above. Current

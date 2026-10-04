@@ -387,3 +387,34 @@ prerelease does not count as an ordinary stability-soak iteration.
 4. Convert the successful Coolstead technical upgrade into immutable consumer evidence and record
    its installed behavior on representative Mac hardware; use Workscene if a second independent
    macOS consumer is needed.
+
+## Lumen 4 local RoadScore compatibility
+
+Committed RoadScore source `487ba1024aa003aa5e41c8f00b927ef2d8f614c8` was copied into an ignored,
+isolated directory and tested against packed Lumen v4 candidate `b6dbe7ea`. The original checkout
+had ten dirty paths; its status remained unchanged, and those uncommitted changes were excluded.
+The copied dependency catalog moved the mobile application's Lumen dependency from 2.1.0 to the
+exact local 4.0.0 tarball. The core override was scoped to React Native so the website retained its
+existing Lumen dependency graph. No consumer application source was changed.
+
+Using RoadScore's declared pnpm 11.24.0 and Node 22.23.1:
+
+- exact resolution showed React Native and its core dependency at 4.0.0 from the packed archives;
+- the shared deck-contract package build passed;
+- mobile `typecheck` and `lint -- --max-warnings=0` passed;
+- all 180 mobile tests passed; and
+- `expo export --platform all` produced Android and iOS Hermes bytecode and the web export.
+
+The peer check failed identically in the original checkout and candidate copy: existing ESLint
+plugins exclude ESLint 10 and TypeScript ESLint 8.56.1 excludes TypeScript 6.0.3. No incompatible
+range was suppressed or dependency upgraded for this library-focused check. Expo export also
+reported the existing `/app` experimental base path and conflicting terminal color variables;
+these are not native runtime or accessibility findings.
+
+Source/archive hashes, package hashes, dependency resolution, test/build/export logs, original
+status and exported artifact hashes remain local under `.build/native-quality-roadscore-v4-*`.
+This is local source/package compatibility evidence. It does not prove signed native compilation,
+installation, device accessibility, an adopted consumer upgrade, current active-product status,
+published-artifact qualification or either stability iteration. The historical consumer ledger
+remains unchanged and incomplete. See [v4 native quality](lumen-4-native-quality.md) for the final
+candidate requirements and remaining release gates.
