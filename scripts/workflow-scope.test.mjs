@@ -140,6 +140,51 @@ test('release canaries keep manual full-matrix coverage and scope pull requests'
   assert.match(canary, /needs\.classify\.outputs\.native/u)
 })
 
+test('manual release canaries classify every surface without a pull request base', async () => {
+  const fetchStep = /- name: Fetch comparison base\n([\s\S]*?)\n\s+- name:/u.exec(canary)
+
+  assert.ok(fetchStep, 'The canary must define its comparison fetch')
+
+  assert.match(fetchStep[1], /if: github\.event_name == 'pull_request'/u)
+
+  const classifyStep = /- name: Classify changed paths[\s\S]*?\n\s+run: >-\n([\s\S]*?)\n\n/u.exec(canary)
+
+  assert.ok(classifyStep, 'The canary must define executable path classification')
+
+  const directory = await mkdtemp(join(tmpdir(), 'lumen-manual-canary-'))
+
+  try {
+    const outputPath = join(directory, 'outputs')
+    const script = classifyStep[1].trim().split('\n').map(line => line.trim()).join(' ')
+
+    const result = spawnSync('bash', ['-euo', 'pipefail', '-c', script], {
+      cwd: repositoryRoot,
+      encoding: 'utf8',
+      env: {
+        ...process.env,
+        BASE_SHA: '',
+        GITHUB_EVENT_NAME: 'workflow_dispatch',
+        GITHUB_OUTPUT: outputPath,
+        HEAD_SHA: ''
+      }
+    })
+
+    assert.equal(result.status, 0, result.stderr)
+
+    const outputs = Object.fromEntries(
+      (await readFile(outputPath, 'utf8')).trim().split('\n').map(line => line.split('='))
+    )
+
+    for (const surface of ['browser', 'compose', 'consumer-packages', 'native', 'react-native', 'swift', 'web', 'web-contracts']) {
+      assert.equal(outputs[surface], 'true', `${surface} must run for a manual canary`)
+    }
+
+    assert.equal(JSON.parse(outputs['npm-packages']).length, 10)
+  } finally {
+    await rm(directory, { recursive: true })
+  }
+})
+
 test('npm release resolves and forwards the exact publication scope', () => {
   assert.match(
     release,
