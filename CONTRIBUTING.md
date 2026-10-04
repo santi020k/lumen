@@ -109,9 +109,22 @@ For automatic grids, choose `minItemWidth`; the public Grid clamps it to the ava
 
 The docs tests check catalog coverage, parse generated React examples as JSX, and type-check them
 against the public React adapter. These checks do not replace rendered interaction tests. Complex
-framework contracts need explicit overrides in `apps/docs/src/lib/snippets.ts`. Data charts use JSON attributes
-in Elements; do not leave Astro expressions in copyable HTML. Label illustrative data as such.
+framework contracts need explicit overrides in `apps/docs/src/lib/snippets.ts`. Elements chart examples
+use JSON attributes or public element properties; do not leave Astro expressions in copyable HTML.
+Label illustrative data as such.
 Verify changed examples at a narrow phone size and desktop, including the playground width controls.
+
+Keep documentation pages focused on one task. Put working previews before long explanations and
+keep copyable code next to the preview, using `FrameworkExample` for adapter tabs. Chart directories
+link to the canonical component pages; their selection, data, and interpretation guidance lives in
+`apps/docs/src/data/chart-guides.ts`. Do not duplicate chart API reference pages.
+
+For a new documentation route, update the relevant navigation and search metadata, add it to
+`apps/docs/scripts/generate-og-images.mjs`, and regenerate social images. `DocsLayout` builds an
+accessible section menu from page headings; pass explicit `pageNavigation` entries when sections
+need different labels or a stable server-rendered menu. Preserve old deep links with an onward link
+or a focused redirect. See [the navigation audit](docs/documentation-navigation-audit.md) for the
+current page boundaries and validation coverage.
 
 Do not publish generic announcements as guides. A guide should leave a developer able to build or
 verify something they could not confidently complete before reading it.

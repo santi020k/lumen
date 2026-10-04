@@ -21,12 +21,12 @@ const sharedNativeLinks = (platform: 'android' | 'apple' | 'react-native'): Docs
 
   return [
     { href, label: 'Overview', match: 'exact' },
-    { href: `${href}#installation`, label: 'Install' },
+    { href: `${href}/installation`, label: 'Install' },
     { href: `${href}/components`, label: 'Components', match: 'prefix' },
     ...(platform === 'react-native' ? [{ href: `${href}/hooks`, label: 'Hooks', match: 'prefix' as const }] : []),
-    { href: `${href}#theme`, label: 'Theme' },
+    { href: `${href}/theming`, label: 'Theme' },
     { href: `${href}/playground`, label: 'Playground', match: 'prefix' },
-    { href: `${href}#ai-usage`, label: 'AI usage' },
+    { href: `${href}/ai`, label: 'AI usage' },
     { href: `${href}#principles`, label: 'Principles' }
   ]
 }

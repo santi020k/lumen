@@ -1,0 +1,43 @@
+---
+import { Link } from '@santi020k/lumen-astro'
+
+import ChartGuideNavigation from '../components/ChartGuideNavigation.astro'
+
+import DocsLayout from './DocsLayout.astro'
+
+interface Props { title: string, description: string }
+
+const { title, description } = Astro.props
+---
+<DocsLayout title={`${title} — Lumen UI`} description={description} breadcrumbs={[{ href: '/docs', label: 'Docs' }, { href: '/docs/web/data-visualization', label: 'Data visualization' }, { href: Astro.url.pathname, label: title }]}>
+  <div class="chart-topic">
+    <header><p class="chart-topic-eyebrow">Data visualization / Guide</p><h1>{title}</h1><p>{description}</p></header>
+    <ChartGuideNavigation />
+    <slot />
+    <p><Link href="/docs/web/data-visualization">Explore all 16 chart guides →</Link></p>
+  </div>
+</DocsLayout>
+<style>
+  .chart-topic { display: grid; gap: 2rem; min-width: 0; }
+  .chart-topic > header, .chart-topic > :global(section) { display: grid; gap: 1rem; min-width: 0; }
+  .chart-topic h1 { margin: 0; font-size: clamp(2rem, 4vw, 3rem); letter-spacing: -0.05em; line-height: 1.1; }
+  .chart-topic :global(h2) { margin: 0; font-size: 1.5rem; letter-spacing: -0.03em; }
+  .chart-topic :global(h3) { margin: 0; font-size: 1.125rem; }
+  .chart-topic :global(p), .chart-topic :global(.chart-guide-list > li) { color: hsl(var(--ink-soft)); font-size: .875rem; line-height: 1.8; }
+  .chart-topic :global(p) { margin: 0; }
+  .chart-topic .chart-topic-eyebrow { color: hsl(var(--brand)); font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; }
+  .chart-topic :global(.chart-guide-step) { display: none; }
+  .chart-topic :global(.chart-guidance-grid) { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 2rem; }
+  .chart-topic :global(.chart-guidance-grid > div) { display: grid; gap: .75rem; align-content: start; }
+  .chart-topic :global(.chart-guide-table table) { width: 100%; font-size: .8125rem; }
+  .chart-topic :global(.chart-guide-table th), .chart-topic :global(.chart-guide-table td) { padding: 1rem; text-align: start; vertical-align: top; }
+  .chart-topic :global(.chart-guide-table caption) { padding: 1rem; text-align: start; }
+  .chart-topic :global(.chart-guide-list) { display: grid; gap: 1rem; padding-inline-start: 1.25rem; }
+  .chart-topic :global(code) { overflow-wrap: anywhere; }
+  @media(max-width: 48rem) {
+    .chart-topic :global(.chart-guidance-grid) { grid-template-columns: minmax(0,1fr); }
+    .chart-topic :global(.chart-guide-table caption) { display: block; width: 100%; box-sizing: border-box; }
+    .chart-topic :global(.chart-guide-table tbody tr) { grid-template-columns: minmax(0,1fr); gap: .5rem; }
+    .chart-topic :global(.chart-guide-table tbody th), .chart-topic :global(.chart-guide-table tbody td) { padding: 0; border: 0; }
+  }
+</style>

@@ -3,6 +3,8 @@ import { lumenComponentNames } from '@santi020k/lumen-core'
 import type { DocsSearchItem } from '../lib/docs-search'
 import { toSlug } from '../lib/routes'
 
+import { getChartGuide } from './chart-guides'
+import { chartTopics } from './chart-topics'
 import {
   type ComponentDoc,
   componentDocs,
@@ -11,11 +13,14 @@ import {
   frameworkSetups,
   glassSurfaceExamples,
   globalStyleSetups,
-  reactHooksReference,
   runtimeEvents,
   themeSetups
 } from './docs'
+import { mcpGuideTopics } from './mcp-guides'
+import { getNativeComponentsForPlatform } from './native-components'
+import { nativeGuidePlatforms, nativeGuideTopics } from './native-guide-topics'
 import { platformGuides } from './platforms'
+import { reactHookGuides } from './react-hooks'
 
 const canonicalComponentNames = new Set<string>(lumenComponentNames)
 
@@ -26,12 +31,18 @@ const normalizeKeywords = (...values: string[]): string => values
   .trim()
   .toLowerCase()
 
+const chartKeywords = (name: string): string => {
+  const guide = getChartGuide(name)
+
+  return guide ? `${guide.question} ${guide.category}` : ''
+}
+
 const componentItems: DocsSearchItem[] = componentDocs.map(component => ({
   category: component.category,
   description: component.summary,
   href: `/docs/components/${toSlug(component.name)}`,
   keywords: normalizeKeywords(
-    component.name, component.category, component.summary, component.guidance?.when ?? '', component.guidance?.distinction ?? '', component.glass ? 'glass surface' : '', canonicalComponentNames.has(component.name) ?
+    chartKeywords(component.name), component.name, component.category, component.summary, component.guidance?.when ?? '', component.guidance?.distinction ?? '', component.glass ? 'glass surface' : '', canonicalComponentNames.has(component.name) ?
       'canonical component primitive' :
       ''
   ),
@@ -83,14 +94,36 @@ const eventItems: DocsSearchItem[] = runtimeEvents.map(event => {
 })
 
 const recipeItems: DocsSearchItem[] = [
-  {
+  ...chartTopics.map(topic => ({
     category: 'Data visualization',
-    description: 'Compare interactive charts, distributions, balance changes, and missing observations across web adapters.',
-    href: '/docs/web/data-visualization',
-    keywords: normalizeKeywords('chart line heatmap histogram waterfall cursor keyboard time numeric axis'),
-    title: 'Interactive data visualization',
-    type: 'Recipe'
-  },
+    description: topic.description,
+    href: topic.href,
+    keywords: normalizeKeywords('chart visualization', topic.label, topic.description),
+    title: `Charts: ${topic.label}`,
+    type: 'Recipe' as const
+  })),
+  ...mcpGuideTopics.slice(1).map(topic => ({
+    category: 'AI integration',
+    description: topic.description,
+    href: topic.href,
+    keywords: normalizeKeywords('mcp tools resources clients plugin', topic.label, topic.description),
+    title: `MCP: ${topic.label}`,
+    type: 'Recipe' as const
+  })),
+  ...nativeGuideTopics.map(topic => ({
+    category: 'Native guides',
+    description: topic.description,
+    href: topic.href,
+    keywords: normalizeKeywords(topic.platform, topic.title, topic.description),
+    title: topic.title,
+    type: 'Recipe' as const
+  })),
+  { category: 'React Hooks',
+    description: 'Browse 19 behavior hooks by task and open their focused API guides.',
+    href: '/docs/frameworks/react/hooks',
+    keywords: 'react hooks state controllers overlays forms selection',
+    title: 'React hooks',
+    type: 'Recipe' },
   {
     category: 'Getting started',
     description:
@@ -199,7 +232,7 @@ const recipeItems: DocsSearchItem[] = [
     category: 'AI integration',
     description:
       'Install Lumen UI in ChatGPT or Codex to use the workflow skill and hosted, read-only component catalog.',
-    href: '/docs/mcp#plugin-title',
+    href: '/docs/mcp/clients#plugin-title',
     keywords: normalizeKeywords(
       'openai chatgpt codex plugin plugins directory install lumen ui skill mcp hosted catalog'
     ),
@@ -343,10 +376,10 @@ const recipeItems: DocsSearchItem[] = [
     title: `${guide.title} framework guide`,
     type: 'Recipe' as const
   })),
-  ...reactHooksReference.map(hook => ({
+  ...reactHookGuides.map(hook => ({
     category: 'React Hooks',
     description: hook.description,
-    href: `/docs/frameworks/react#${hook.name}`,
+    href: hook.href,
     keywords: normalizeKeywords(
       hook.name, hook.description, 'react hook use state'
     ),
@@ -395,8 +428,20 @@ const recipeItems: DocsSearchItem[] = [
   }))
 ]
 
+const nativeComponentItems: DocsSearchItem[] = nativeGuidePlatforms.flatMap(platform => (
+  getNativeComponentsForPlatform(platform).map(component => ({
+    category: `${platform}: ${component.category}`,
+    description: component.summary,
+    href: `/docs/${platform}/components/${component.slug}`,
+    keywords: normalizeKeywords(platform, component.name, component.category, component.summary, component.guidance),
+    title: `${component.name} (${platform})`,
+    type: 'Component' as const
+  }))
+))
+
 export const docsSearchIndex: DocsSearchItem[] = [
   ...componentItems,
+  ...nativeComponentItems,
   ...propItems,
   ...keyboardItems,
   ...eventItems,

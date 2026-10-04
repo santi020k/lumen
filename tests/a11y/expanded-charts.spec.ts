@@ -5,7 +5,7 @@ for (const width of [390, 1280]) {
     for (const framework of ['astro', 'react', 'elements'] as const) {
       test(`extended ${framework} charts retain exact keyboard data at ${width}px ${theme}`, async ({ page }, testInfo) => {
         await page.setViewportSize({ width, height: 1000 })
-        await page.goto('/docs/web/data-visualization')
+        await page.goto('/docs/web/data-visualization/gallery')
         await page.evaluate(value => { document.documentElement.setAttribute('data-theme', value) }, theme)
         if (framework !== 'astro') {
           await page.getByRole('tablist', { name: 'Chart framework' }).getByRole('tab', { name: framework === 'react' ? 'React' : 'Web Components', exact: true }).click()

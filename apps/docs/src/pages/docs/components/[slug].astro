@@ -12,11 +12,13 @@ import {
   Tabs
 } from '@santi020k/lumen-astro'
 
+import ChartUsageDetails from '../../../components/ChartUsageDetails.astro'
 import CodeBlock from '../../../components/CodeBlock.astro'
 import CommunityFeedback from '../../../components/CommunityFeedback.astro'
 import DocsActionLink from '../../../components/DocsActionLink.astro'
 import DocsReferenceTable from '../../../components/DocsReferenceTable.astro'
 import FrameworkExample from '../../../components/FrameworkExample.astro'
+import { chartGuides, getChartGuide } from '../../../data/chart-guides'
 import {
   componentCollections,
   componentDocs,
@@ -38,6 +40,7 @@ type Props = InferGetStaticPropsType<typeof getStaticPaths>
 const { component } = Astro.props
 const { component: Example, source } = getExample(component.name)
 const componentSlug = toSlug(component.name)
+const chartGuide = getChartGuide(component.name)
 const snippets = buildSnippets(component.name, source)
 const registryCommand = `lumen add ${component.name}`
 
@@ -54,11 +57,12 @@ const packageInstallSetups = frameworkSetups.map(setup => ({
 const glassExample = component.glass ? getGlassExample(component.name) : undefined
 const GlassExample = glassExample?.component
 const glassSnippets = glassExample ? buildSnippets(component.name, glassExample.source) : undefined
-const index = componentDocs.findIndex(entry => entry.name === component.name)
-const previous = index > 0 ? componentDocs[index - 1] : undefined
+const paginationComponents = chartGuide ? chartGuides : componentDocs
+const index = paginationComponents.findIndex(entry => entry.name === component.name)
+const previous = index > 0 ? paginationComponents[index - 1] : undefined
 
-const next = index >= 0 && index < componentDocs.length - 1 ?
-  componentDocs[index + 1] :
+const next = index >= 0 && index < paginationComponents.length - 1 ?
+  paginationComponents[index + 1] :
   undefined
 
 const requiresAstroRuntime = Boolean(
@@ -115,13 +119,25 @@ export function HeroImage() {
 ---
 
 <DocsLayout
+  pageNavigation={chartGuide ?
+[
+    { id: 'preview-title', label: 'Live example & code' },
+    { id: 'chart-reading-title', label: 'When to use it' },
+    { id: 'chart-data-title', label: 'Data shape' },
+    { id: 'chart-pitfalls-title', label: 'Reading accurately' },
+    { id: 'install-title', label: 'Installation' },
+    { id: 'api-title', label: 'API reference' },
+    ...(component.keyboardInteractions ? [{ id: 'keyboard-title', label: 'Keyboard access' }] : []),
+    ...(component.runtimeEvents ? [{ id: 'runtime-events-title', label: 'Events' }] : [])
+  ] :
+undefined}
   breadcrumbs={[
     { href: '/', label: 'Home' },
     { href: '/docs', label: 'Docs' },
     { href: '/docs/components', label: 'Components' },
     { href: `/docs/components/${componentSlug}`, label: component.name }
   ]}
-  description={`${component.name}: ${component.summary} Usage examples for Astro, React, and Elements.`}
+  description={chartGuide ? `${chartGuide.description} Live examples, data shapes, and code for Astro, React, and Web Components.` : `${component.name}: ${component.summary} Usage examples for Astro, React, and Elements.`}
   title={`${component.name} - Lumen UI`}
 >
   <div class="component-doc-page">
@@ -133,7 +149,7 @@ export function HeroImage() {
       </ol>
     </Breadcrumb>
 
-    <header class="component-doc-hero">
+    <header class:list={['component-doc-hero', { 'component-doc-hero--chart': chartGuide }]}>
       <div class="component-doc-hero__copy">
         <div class="component-doc-hero__badges">
           <Badge variant="secondary">{component.category}</Badge>
@@ -188,7 +204,7 @@ export function HeroImage() {
       </div>
     </header>
 
-    {component.guidance && (
+    {component.guidance && !chartGuide && (
       <aside class="component-doc-guidance" aria-label={`${component.name} usage guidance`}>
         <div>
           <span><Icon decorative name="check-circle-2" size="sm" /></span>
@@ -203,11 +219,11 @@ export function HeroImage() {
       </aside>
     )}
 
-    {relatedCollection?.title === 'Data visualization' && (
-      <Note><p>New to charts? Read the <Link href="/docs/web/data-visualization#chart-recipes">data visualization guide</Link> for setup, copyable examples, chart selection, formatting, and accessibility.</p></Note>
+    {chartGuide && (
+      <p class="text-sm text-ink-soft"><Link href="/docs/web/data-visualization">← All chart guides</Link> · <Link href="/docs/web/data-visualization/setup">Framework setup</Link> · <Link href="/docs/web/data-visualization/native">Native counterparts</Link></p>
     )}
 
-    {relatedCollection && relatedComponents.length > 0 && (
+    {relatedCollection && !chartGuide && relatedComponents.length > 0 && (
       <aside class="component-doc-related" aria-labelledby="related-components-title">
         <div>
           <small>Compare the pattern</small>
@@ -249,12 +265,15 @@ export function HeroImage() {
       )}
       <FrameworkExample
         componentName={component.name}
+        codeCollapsed={Boolean(chartGuide)}
         groupId={`code-${componentSlug}`}
         snippets={snippets}
       >
         <Example />
       </FrameworkExample>
     </section>
+
+    {chartGuide && <ChartUsageDetails guide={chartGuide} />}
 
     {isImage && (
       <section class="component-doc-section space-y-5" aria-labelledby="image-optimization-title">
@@ -423,9 +442,7 @@ export function HeroImage() {
       <section class="mt-10 space-y-3" aria-labelledby="glass-title">
         <div class="space-y-2">
           <h2
-            class="
-              text-sm font-black tracking-[0.14em] text-ink-muted uppercase
-            "
+            class="text-sm font-black tracking-[0.14em] text-ink-soft uppercase"
             id="glass-title"
           >Glass
           </h2>
@@ -449,7 +466,7 @@ export function HeroImage() {
     <section class="mt-10 space-y-3" aria-labelledby="api-title">
       <div class="space-y-2">
         <h2
-          class="text-sm font-black tracking-[0.14em] text-ink-muted uppercase"
+          class="text-sm font-black tracking-[0.14em] text-ink-soft uppercase"
           id="api-title"
         >API reference
         </h2>
@@ -469,9 +486,7 @@ export function HeroImage() {
       <section class="mt-10 space-y-3" aria-labelledby="keyboard-title">
         <div class="space-y-2">
           <h2
-            class="
-              text-sm font-black tracking-[0.14em] text-ink-muted uppercase
-            "
+            class="text-sm font-black tracking-[0.14em] text-ink-soft uppercase"
             id="keyboard-title"
           >Keyboard interactions
           </h2>
@@ -491,9 +506,7 @@ export function HeroImage() {
       <section class="mt-10 space-y-3" aria-labelledby="runtime-events-title">
         <div class="space-y-2">
           <h2
-            class="
-              text-sm font-black tracking-[0.14em] text-ink-muted uppercase
-            "
+            class="text-sm font-black tracking-[0.14em] text-ink-soft uppercase"
             id="runtime-events-title"
           >Runtime events
           </h2>
@@ -556,3 +569,12 @@ export function HeroImage() {
     </Pagination>
   </div>
 </DocsLayout>
+
+<style>
+  .component-doc-hero--chart { min-height: 0; grid-template-columns: minmax(0, 1fr); padding: 1.5rem; gap: 0; }
+  .component-doc-hero--chart .component-doc-hero__meta { display: none; }
+  .component-doc-hero--chart h1,
+  .component-doc-hero--chart h1[data-long-title] { max-width: none; font-size: clamp(2rem, 4vw, 3rem); line-height: 1.1; }
+  .component-doc-hero--chart .component-doc-hero__copy > p { margin-top: .75rem; font-size: .9375rem; }
+  .component-doc-hero--chart .component-doc-hero__actions { margin-top: 1rem; }
+</style>
