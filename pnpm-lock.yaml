@@ -275,6 +275,9 @@ catalogs:
     '@types/semver':
       specifier: ^7.8.0
       version: 7.8.0
+    '@typescript-eslint/parser':
+      specifier: ^8.71.0
+      version: 8.71.0
     '@vitest/coverage-v8':
       specifier: ^5.0.3
       version: 5.0.3
@@ -474,6 +477,9 @@ importers:
       '@types/node':
         specifier: 'catalog:'
         version: 26.6.4
+      '@typescript-eslint/parser':
+        specifier: 'catalog:'
+        version: 8.71.0(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@6.0.3)
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 5.0.3(vitest@5.0.3)
