@@ -15,6 +15,34 @@ export const lumenRegistry = {
   ],
   items: [
     {
+      name: 'page-header',
+      type: 'recipe',
+      components: [
+        'Badge',
+        'Breadcrumb',
+        'Button',
+        'Link',
+        'Stack',
+        'Typography'
+      ],
+      files: [
+        'docs/consumer-ui-recipes.md'
+      ]
+    },
+    {
+      name: 'section-header',
+      type: 'recipe',
+      components: [
+        'Badge',
+        'Button',
+        'Stack',
+        'Typography'
+      ],
+      files: [
+        'docs/consumer-ui-recipes.md'
+      ]
+    },
+    {
       name: 'content-flow-header',
       type: 'recipe',
       components: [
@@ -413,6 +441,32 @@ export const lumenRegistry = {
       ]
     },
     {
+      name: 'AttachmentList',
+      type: 'component',
+      description: 'Groups file rows with independent actions.',
+      category: 'Data display',
+      files: [
+        'packages/astro/components/AttachmentList.astro',
+        'packages/astro/styles/lumen.css'
+      ],
+      dependencies: [
+        'styles'
+      ]
+    },
+    {
+      name: 'AttachmentPreview',
+      type: 'component',
+      description: 'Previews browser-owned images with localized fallback states.',
+      category: 'Data display',
+      files: [
+        'packages/astro/components/AttachmentPreview.astro',
+        'packages/astro/styles/lumen.css'
+      ],
+      dependencies: [
+        'styles'
+      ]
+    },
+    {
       name: 'Autocomplete',
       type: 'component',
       description: 'Captures searchable text connected to suggestions.',
@@ -486,9 +540,14 @@ export const lumenRegistry = {
       files: [
         'packages/astro/components/BarChart.astro',
         'packages/astro/components/Chart.astro',
+        'packages/astro/components/ChartDatumActions.astro',
+        'packages/astro/runtime/chart-actions.ts',
+        'packages/astro/runtime/controllers/chart-activation.ts',
+        'packages/astro/runtime/UIPrimitives.astro',
         'packages/astro/styles/lumen.css'
       ],
       dependencies: [
+        'Button',
         'Chart',
         'styles'
       ]
@@ -1443,6 +1502,10 @@ export const lumenRegistry = {
         'packages/astro/components/LineChart.astro',
         'packages/astro/components/Chart.astro',
         'packages/astro/internal/ChartInspection.astro',
+        'packages/astro/components/ChartDatumActions.astro',
+        'packages/astro/runtime/chart-actions.ts',
+        'packages/astro/runtime/controllers/chart-activation.ts',
+        'packages/astro/runtime/UIPrimitives.astro',
         'packages/astro/runtime/controllers/charts.ts',
         'packages/astro/styles/lumen.css'
       ],
@@ -1627,9 +1690,14 @@ export const lumenRegistry = {
       files: [
         'packages/astro/components/PieChart.astro',
         'packages/astro/components/Chart.astro',
+        'packages/astro/components/ChartDatumActions.astro',
+        'packages/astro/runtime/chart-actions.ts',
+        'packages/astro/runtime/controllers/chart-activation.ts',
+        'packages/astro/runtime/UIPrimitives.astro',
         'packages/astro/styles/lumen.css'
       ],
       dependencies: [
+        'Button',
         'Chart',
         'styles'
       ]
@@ -2720,10 +2788,15 @@ export const lumenRegistry = {
       files: [
         'packages/astro/components/ScatterChart.astro',
         'packages/astro/components/Chart.astro',
+        'packages/astro/components/ChartDatumActions.astro',
+        'packages/astro/runtime/chart-actions.ts',
+        'packages/astro/runtime/controllers/chart-activation.ts',
+        'packages/astro/runtime/UIPrimitives.astro',
         'packages/astro/styles/lumen.css',
         'packages/react/src/components.tsx'
       ],
       dependencies: [
+        'Button',
         'Chart',
         'styles'
       ]
@@ -2736,10 +2809,15 @@ export const lumenRegistry = {
       files: [
         'packages/astro/components/Heatmap.astro',
         'packages/astro/components/Chart.astro',
+        'packages/astro/components/ChartDatumActions.astro',
+        'packages/astro/runtime/chart-actions.ts',
+        'packages/astro/runtime/controllers/chart-activation.ts',
+        'packages/astro/runtime/UIPrimitives.astro',
         'packages/astro/styles/lumen.css',
         'packages/react/src/components.tsx'
       ],
       dependencies: [
+        'Button',
         'Chart',
         'styles'
       ]
@@ -2752,10 +2830,15 @@ export const lumenRegistry = {
       files: [
         'packages/astro/components/RangeChart.astro',
         'packages/astro/components/Chart.astro',
+        'packages/astro/components/ChartDatumActions.astro',
+        'packages/astro/runtime/chart-actions.ts',
+        'packages/astro/runtime/controllers/chart-activation.ts',
+        'packages/astro/runtime/UIPrimitives.astro',
         'packages/astro/styles/lumen.css',
         'packages/react/src/components.tsx'
       ],
       dependencies: [
+        'Button',
         'Chart',
         'styles'
       ]
@@ -2768,10 +2851,15 @@ export const lumenRegistry = {
       files: [
         'packages/astro/components/ComboChart.astro',
         'packages/astro/components/Chart.astro',
+        'packages/astro/components/ChartDatumActions.astro',
+        'packages/astro/runtime/chart-actions.ts',
+        'packages/astro/runtime/controllers/chart-activation.ts',
+        'packages/astro/runtime/UIPrimitives.astro',
         'packages/astro/styles/lumen.css',
         'packages/react/src/components.tsx'
       ],
       dependencies: [
+        'Button',
         'Chart',
         'styles'
       ]

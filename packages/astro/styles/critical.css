@@ -1615,6 +1615,19 @@ lumen-dialog.ui-dialog:not([hidden]):has(> [data-slot="dialog-body"]) {
   box-shadow: 0 0 0 3px hsl(var(--danger) / 0.14);
 }
 
+.ui-chart__actions .ui-button {
+  height: auto;
+  min-height: 44px;
+  max-width: 100%;
+  white-space: normal;
+  text-align: start;
+}
+
+.ui-chart__actions .ui-button__content {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
 .ui-tvp > .ui-toast {
   pointer-events: auto;
 }

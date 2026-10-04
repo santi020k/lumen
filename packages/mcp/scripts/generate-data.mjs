@@ -561,6 +561,7 @@ const toReactExample = example => example
   .replaceAll(/style="([^"]*)"/g, (_, value) => reactStyleValue(value))
 
 const reactExampleOverrides = {
+  AttachmentPreview: '<AttachmentPreview src="/logo.svg" contentType="image/svg+xml" alt="Lumen logo" caption="Logo attachment" actions={<Button type="button">Replace</Button>} />',
   AnimatedPortrait:
     '<AnimatedPortrait><img src="/portrait.jpg" alt="Portrait of Ana" /></AnimatedPortrait>',
   ButtonLink:
@@ -890,6 +891,7 @@ const loadWorkspaceFiles = async p => ({
     await readIfExists(p('packages/elements/src/components/image-comparison.ts'))
   ].join('\n'),
   reactSource: [
+    await readIfExists(p('packages/react/src/attachments.tsx')),
     await readIfExists(p('packages/react/src/components.tsx')),
     await readIfExists(p('packages/react/src/interval-charts.tsx')),
     await readIfExists(p('packages/react/src/chart-interaction.tsx')),

@@ -1,0 +1,90 @@
+---
+import { createElement } from 'react'
+import { renderToStaticMarkup } from 'react-dom/server'
+
+import '@santi020k/lumen/styles.css'
+
+import { Button, Container, Stack } from '@santi020k/lumen-astro'
+import UIPrimitives from '@santi020k/lumen-astro/runtime'
+import { Button as ReactButton, Stack as ReactStack } from '@santi020k/lumen-react'
+
+import PageHeader from '../../../../../packages/lumen/templates/astro/page-header/src/lumen/page-header.astro'
+import SectionHeader from '../../../../../packages/lumen/templates/astro/section-header/src/lumen/section-header.astro'
+import elementsPage from '../../../../../packages/lumen/templates/elements/page-header/src/lumen/page-header.html?raw'
+import elementsSection from '../../../../../packages/lumen/templates/elements/section-header/src/lumen/section-header.html?raw'
+import { PageHeaderRecipe } from '../../../../../packages/lumen/templates/react/page-header/src/lumen/page-header'
+import { SectionHeaderRecipe } from '../../../../../packages/lumen/templates/react/section-header/src/lumen/section-header'
+
+const examples = [
+  { locale: 'en', title: 'Portfolio operations and collection follow-up', description: 'Review activity across the selected period without losing context.', workspace: 'Workspace', breadcrumb: 'Breadcrumb', pageActions: 'Page actions', export: 'Export detailed report', create: 'Create a new record', status: 'Active', section: 'Recently updated operational records', count: '0 records', sectionActions: 'Section actions', view: 'View all activity' },
+  { locale: 'es', title: 'Operaciones de cartera y seguimiento de cobros pendientes', description: 'Revisa la actividad del periodo seleccionado sin perder el contexto.', workspace: 'Espacio de trabajo', breadcrumb: 'Ruta de navegación', pageActions: 'Acciones de la página', export: 'Exportar informe detallado', create: 'Crear un nuevo registro', status: 'Activo', section: 'Registros operativos actualizados recientemente', count: '0 registros', sectionActions: 'Acciones de la sección', view: 'Ver toda la actividad' }
+] as const
+
+const reactMarkup = examples.map(copy => renderToStaticMarkup(createElement('section', { lang: copy.locale, 'aria-label': `React ${copy.locale}` }, createElement(ReactStack, { gap: 'section' }, createElement(PageHeaderRecipe, { title: copy.title, headingId: `react-page-${copy.locale}`, description: copy.description, breadcrumbs: [{ label: copy.workspace, href: '#' }], breadcrumbLabel: copy.breadcrumb, status: copy.status, actionsLabel: copy.pageActions, actions: createElement(ReactButton, { type: 'button' }, copy.export) }), createElement(SectionHeaderRecipe, { title: copy.section, headingId: `react-section-${copy.locale}`, count: copy.count, actionsLabel: copy.sectionActions, actions: createElement(ReactButton, { type: 'button' }, copy.view) }))))).join('')
+const elementsMarkup = [elementsPage, elementsSection].map(source => source.slice(source.indexOf('</script>') + '</script>'.length)).join('')
+---
+
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head><meta charset="utf-8" /><meta name="viewport" content="width=device-width" /><meta name="robots" content="noindex, nofollow" /><title>Dashboard header recipes</title></head>
+  <body>
+    <Container as="main" size="lg">
+      <Stack gap="section" id="header-recipes">
+        {examples.map(copy => (
+<section lang={copy.locale} aria-label={`Astro ${copy.locale}`}>
+          <Stack gap="section">
+            <PageHeader title={copy.title} headingId={`astro-page-${copy.locale}`} description={copy.description} breadcrumbs={[{ href: '#', label: copy.workspace }]} breadcrumbLabel={copy.breadcrumb} status={copy.status} actionsLabel={copy.pageActions}>
+              <Button slot="actions" type="button" variant="outline">{copy.export}</Button>
+              <Button slot="actions" type="button">{copy.create}</Button>
+            </PageHeader>
+            <section aria-labelledby={`astro-section-${copy.locale}`}>
+              <SectionHeader title={copy.section} headingId={`astro-section-${copy.locale}`} count={copy.count} actionsLabel={copy.sectionActions}>
+                <Button slot="actions" type="button" variant="outline">{copy.view}</Button>
+              </SectionHeader>
+            </section>
+          </Stack>
+        </section>
+))}
+        <Fragment set:html={reactMarkup} />
+        <section aria-label="Elements en"><Stack gap="section"><Fragment set:html={elementsMarkup} /></Stack></section>
+        <section lang="es" aria-label="Elements es">
+          <lumen-stack gap="section">
+            <header aria-labelledby="elements-page-es">
+              <lumen-stack gap="group">
+                <lumen-breadcrumb><nav aria-label="Ruta de navegación"><ol><li><lumen-link><a href="#">Espacio de trabajo</a></lumen-link></li><li aria-current="page">Operaciones de cartera y seguimiento de cobros pendientes</li></ol></nav></lumen-breadcrumb>
+                <lumen-stack direction="horizontal" align="start" justify="between" gap="group" wrap>
+                  <lumen-stack gap="related" style="flex: 1 1 20rem; min-width: 0; overflow-wrap: anywhere">
+                    <lumen-typography><h1 id="elements-page-es">Operaciones de cartera y seguimiento de cobros pendientes</h1><p>Revisa la actividad del periodo seleccionado sin perder el contexto.</p></lumen-typography>
+                    <lumen-badge variant="outline" style="align-self: flex-start">Activo</lumen-badge>
+                  </lumen-stack>
+                  <lumen-stack direction="horizontal" align="center" gap="related" wrap role="group" aria-label="Acciones de la página"><lumen-button type="button">Exportar informe detallado</lumen-button><lumen-button type="button">Crear un nuevo registro</lumen-button></lumen-stack>
+                </lumen-stack>
+              </lumen-stack>
+            </header>
+            <section aria-labelledby="elements-section-es">
+              <header aria-labelledby="elements-section-es">
+                <lumen-stack direction="horizontal" align="start" justify="between" gap="group" wrap>
+                  <lumen-stack gap="related" style="flex: 1 1 20rem; min-width: 0; overflow-wrap: anywhere">
+                    <lumen-stack direction="horizontal" align="center" gap="related" wrap><lumen-typography><h2 id="elements-section-es">Registros operativos actualizados recientemente</h2></lumen-typography><lumen-badge variant="secondary">0 registros</lumen-badge></lumen-stack>
+                  </lumen-stack>
+                  <lumen-stack direction="horizontal" align="center" gap="related" wrap role="group" aria-label="Acciones de la sección"><lumen-button type="button">Ver toda la actividad</lumen-button></lumen-stack>
+                </lumen-stack>
+              </header>
+            </section>
+          </lumen-stack>
+        </section>
+      </Stack>
+    </Container>
+    <UIPrimitives />
+    <script>
+      import { defineLumenElements } from '@santi020k/lumen-elements/define'
+
+      defineLumenElements(['Badge', 'Breadcrumb', 'Button', 'Link', 'Stack', 'Typography'])
+    </script>
+  </body>
+</html>
+
+<style>
+  body { margin: 0; background: hsl(var(--canvas)); color: hsl(var(--ink)); font-family: var(--ui-font); }
+  main { padding-block: var(--ui-space-section); }
+</style>

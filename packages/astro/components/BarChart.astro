@@ -1,9 +1,9 @@
 ---
 import type { HTMLAttributes } from 'astro/types'
 
-import {
-  alignLumenChartSeries,
+import {   alignLumenChartSeries,
   createLumenBarGeometry,
+createLumenChartDatumActivation,
   formatLumenChartSummary,
   getLumenChartCategories,
   getLumenChartCategoryLabel,
@@ -19,7 +19,10 @@ import {
   scaleLumenChartValue
 } from '@santi020k/lumen-core'
 
+import { createChartDatumAction } from '../runtime/chart-actions'
+
 import Chart from './Chart.astro'
+import ChartDatumActions from './ChartDatumActions.astro'
 
 interface Props extends HTMLAttributes<'figure'> {
   caption?: string
@@ -27,6 +30,7 @@ interface Props extends HTMLAttributes<'figure'> {
   class?: string | null
   className?: string
   description?: string
+  drilldown?: boolean
   emptyLabel?: string
   formatCategory?: (category: number | string) => string
   formatValue?: (value: number) => string
@@ -48,6 +52,7 @@ const {
   class: classProp = '',
   className = '',
   description,
+  drilldown = false,
   emptyLabel,
   formatCategory,
   formatValue = String,
@@ -112,6 +117,21 @@ const formattedValueFor = (item: LumenChartSeries, category: number | string) =>
 
 const categoryLabelFor = (category: number | string) => getLumenChartCategoryLabel(alignedSeries, category, formatCategory, 'detail')
 
+const datumActions = drilldown ?
+geometry.marks.map(mark => {
+  const item = alignedSeries.find(candidate => candidate.id === mark.seriesId)
+  const datum = item?.data.find(candidate => candidate.x === mark.category)
+
+  return item && datum ?
+createChartDatumAction(
+    createLumenChartDatumActivation(item.id, datum),
+    `${categoryLabelFor(mark.category)} · ${mark.seriesLabel}: ${formatValue(mark.value)}`,
+    resolvedLabels
+  ) :
+null
+}) :
+[]
+
 ---
 
 <Chart
@@ -122,6 +142,7 @@ const categoryLabelFor = (category: number | string) => getLumenChartCategoryLab
   {heading}
   {summary}
   {...rest}
+  data-ui-chart-activation={drilldown || undefined}
 >
   {
     showLegend && hasData && (
@@ -192,10 +213,11 @@ categoryTicks.map(tick => (
 )}
       <g class="ui-bar-chart__marks">
         {
-          geometry.marks.map(mark => (
+          geometry.marks.map((mark, index) => (
             <rect
               class={getLumenChartToneClassName(mark.tone)}
               height={mark.height}
+              data-ui-chart-datum={datumActions[index]?.serialized}
               rx="4"
               width={mark.width}
               x={mark.x}
@@ -207,6 +229,16 @@ categoryTicks.map(tick => (
             </rect>
           ))
         }
+{drilldown && geometry.marks.map((mark, index) => (
+  <rect
+class="ui-chart__datum-hit"
+width={Math.max(12, mark.width)}
+height={Math.max(12, mark.height)}
+    x={mark.x - Math.max(0, 12 - mark.width) / 2}
+y={mark.y - Math.max(0, 12 - mark.height) / 2}
+    data-ui-chart-datum={datumActions[index]?.serialized}
+  />
+))}
       </g>
     </svg>
   </div>
@@ -239,4 +271,5 @@ categoryTicks.map(tick => (
       </details>
     )
   }
+  {drilldown && <ChartDatumActions actions={datumActions} label={resolvedLabels.exploreData} />}
 </Chart>

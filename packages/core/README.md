@@ -291,3 +291,24 @@ Applications own units, currency policy, required validation and submission seri
 into ASCII, rejects unrelated text and excess digits, and bounds input to 128 characters. Length must
 be 1–12. `LumenTimeSelection`, `isLumenTimeSelection` and `isLumenTimeInBounds` describe wall-clock
 hours/minutes with inclusive same-day bounds, leaving dates and time zones to the application.
+## Attachment preview state
+
+`resolveLumenAttachmentPreviewState` resolves explicit fallback states, unsupported MIME types,
+and image failures. `createLumenAttachmentPreviewController` enhances the documented DOM child
+contract with safe state events and lifecycle cleanup. Use the framework components for product UI;
+see the [attachment recipe](../../docs/consumer-ui-recipes.md#attachment-previews-and-file-lists).
+
+## Chart datum activation
+
+`createLumenChartDatumActivation(seriesId, datum)`, `createLumenHeatmapDatumActivation(datum)`,
+and `createLumenRangeDatumActivation(datum)` return a validated `LumenChartDatumActivationDetail`
+or `null` for an unavailable observation. The discriminated payload preserves raw axes and optional
+datum IDs. `parseLumenChartDatumActivation(unknown)` validates event data and removes unrelated
+fields. These helpers are also available from `@santi020k/lumen-core/charts`.
+
+For custom browser charts, `createLumenChartActivationController(root)` delegates clicks from
+`[data-ui-chart-datum]` descendants owned by a `[data-ui-chart-activation]` root. Each target's
+attribute contains a JSON payload from the builders. Use native buttons with descriptive labels
+as keyboard equivalents for decorative SVG marks; the controller does not create that UI.
+It emits the bubbling, composed `ui:chart-datum-activate` event and returns `destroy()` for cleanup.
+Applications own navigation, filtering, detail views, and server authorization.

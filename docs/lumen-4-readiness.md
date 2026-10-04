@@ -431,3 +431,55 @@ The isolated parity candidate is preserved in commit `7a170606` on
 high dependency advisories (`node-forge`, `http-cache-semantics` and `braces`; no patched versions).
 The release checkout has concurrent uncommitted work, so the parity commit is not yet contained in
 `release/v4.0.0`. Do not treat this record as integration, device qualification or release approval.
+
+
+## Dashboard composition integration preparation
+
+The dashboard composition work is committed on `feature/dashboard-composition` through `cedf45a2`.
+It adds attachment previews and lists, PageHeader/SectionHeader registry recipes, and datum actions
+for BarChart, LineChart, PieChart, ScatterChart, ComboChart, Heatmap, and RangeChart across Astro,
+React, and Elements. The earlier dialog and rich Descriptions work is already contained in the
+release history. Application navigation, requests, file ownership, and financial rules remain
+outside the primitives.
+
+An isolated integration branch combines this work with release snapshot `50990a22`. Conflict
+resolution retains continuous/time line models, annotations, inspection and synchronization,
+heatmap color scales and missing-value markers, and the newer Histogram/WaterfallChart exports.
+The line inspection crosshair ignores pointer events so inspection can coexist with datum activation.
+Generated registry data, critical CSS, MCP data, and the public API inventory come from the merged
+canonical sources. The source worktree's unrelated edits are preserved.
+
+The combined web unit suite passes 1,134 tests. Core, Astro, React, and Elements type checks pass;
+the docs check reports zero diagnostics across 357 files. Fifteen combined browser checks pass:
+datum activation alongside line inspection across all three web adapters, attachment image failure
+and replacement, bilingual headers at 320/1440 pixels and 100/200 percent text, and the existing
+chart inspection and missing-value cases. Mobile and desktop header captures were also inspected.
+The isolated merge is committed as `827923ad`, retaining both `50990a22` and `cedf45a2` as parents.
+On that commit, `pnpm run validate` passes all builds and type checks, 1,375 tests, zero-warning
+lint, spelling, unused-code and registry checks. It stops at `pnpm run check:security`: the registry
+reports three high advisories in existing native-tooling dependencies (`node-forge`,
+`http-cache-semantics`, and `braces`), with no patched versions listed. No advisory is ignored.
+The remaining canonical publish-content, clean web-consumer, React Native package and external
+MCP package checks were run separately and pass, including stdio and Streamable HTTP transport.
+Local release integration is pending while another active task owns the release checkout;
+this preparation record is not release evidence.
+
+### Measured v4 bundle budgets
+
+Fresh locked builds compare the release snapshot above with the combined implementation. These
+are complete shipped entries, not an application bundle or a claim of runtime download cost.
+Gzip measurements use Node's level-9 gzip, matching the canonical checker.
+
+| Entry | Baseline raw / gzip bytes | Combined raw / gzip bytes | Added raw / gzip bytes |
+| --- | --- | --- | --- |
+| Astro UIPrimitives source | 165962 / 32993 | 166498 / 33081 | 536 / 88 |
+| Shared stylesheet | 204467 / 33219 | 206215 / 33502 | 1748 / 283 |
+| React components | 172180 / 35543 | 180640 / 36531 | 8460 / 988 |
+| Elements definition entry | 183319 / 45428 | 186555 / 46172 | 3236 / 744 |
+
+The baseline already exceeds the previous stylesheet, React, and Elements limits. The checker now
+bounds the complete intended v4 surface with small headroom and separately caps the new core
+activation, React chart recipe, and Elements activation helper entries. The helper measurements
+are respectively 3922 / 1152, 1526 / 590, and 4456 / 1331 raw / gzip bytes. Existing unrelated entry
+limits remain unchanged. The crosshair fix adds one CSS declaration beyond the table snapshot;
+the checker measures final files again during validation.

@@ -1,7 +1,7 @@
 ---
 import type { HTMLAttributes } from 'astro/types'
 
-import {
+import { createLumenChartDatumActivation,
   createLumenScatterGeometry,
   formatLumenChartSummary,
   getLumenChartTicks,
@@ -12,13 +12,17 @@ import {
   resolveLumenChartLabels,
   scaleLumenChartValue } from '@santi020k/lumen-core'
 
+import { createChartDatumAction } from '../runtime/chart-actions'
+
 import Chart from './Chart.astro'
+import ChartDatumActions from './ChartDatumActions.astro'
 
 interface Props extends HTMLAttributes<'figure'> {
   caption?: string
   class?: string | null
   className?: string
   description?: string
+  drilldown?: boolean
   emptyLabel?: string
   formatValue?: (value: number) => string
   heading?: string
@@ -35,6 +39,7 @@ const {
   class: classProp = '',
   className = '',
   description,
+  drilldown = false,
   emptyLabel,
   formatValue = String,
   heading,
@@ -59,9 +64,18 @@ const hasData = geometry.points.length > 0
 const summary = summaryProp ?? formatLumenChartSummary(projectedSeries, formatValue, resolvedLabels)
 const xTicks = getLumenChartTicks(geometry.xDomain)
 const yTicks = getLumenChartTicks(geometry.domain)
+
+const datumActions = drilldown ?
+geometry.points.map(point => createChartDatumAction(
+  createLumenChartDatumActivation(point.seriesId, point),
+  `${point.xLabel ?? point.x} · ${point.seriesLabel}: ${point.label ?? formatValue(point.y ?? 0)}`,
+  resolvedLabels
+)) :
+[]
+
 ---
 
-<Chart class:list={['ui-scatter-chart', classProp, className]} {caption} {description} {heading} {summary} {...rest}>
+<Chart class:list={['ui-scatter-chart', classProp, className]} {caption} {description} {heading} {summary} {...rest} data-ui-chart-activation={drilldown || undefined}>
   {showLegend && hasData && <ul class="ui-chart__legend" aria-label={resolvedLabels.chartLegend}>{series.map((item, index) => <li class={getLumenChartToneClassName(item.tone, index)}><span aria-hidden="true" />{item.label}</li>)}</ul>}
   {!hasData && <p class="ui-chart__empty" role="status">{emptyLabel ?? resolvedLabels.empty}</p>}
   <div aria-label={resolvedLabels.chartData} class="ui-chart__plot" role="region" tabindex="0" hidden={!hasData}>
@@ -76,8 +90,18 @@ const yTicks = getLumenChartTicks(geometry.domain)
 
  return <text text-anchor="middle" x={x} y={geometry.height - 14}>{formatValue(tick)}</text>
 })}</g>
-      <g class="ui-scatter-chart__marks">{geometry.points.map(point => <circle class={getLumenChartToneClassName(point.tone)} cx={point.xCoordinate} cy={point.yCoordinate} r={point.radius}><title>{`${point.xLabel ?? point.x} · ${point.seriesLabel}: ${point.label ?? formatValue(point.y ?? 0)}`}</title></circle>)}</g>
+      <g class="ui-scatter-chart__marks">{geometry.points.map((point, index) => <circle data-ui-chart-datum={datumActions[index]?.serialized} class={getLumenChartToneClassName(point.tone)} cx={point.xCoordinate} cy={point.yCoordinate} r={point.radius}><title>{`${point.xLabel ?? point.x} · ${point.seriesLabel}: ${point.label ?? formatValue(point.y ?? 0)}`}</title></circle>)}</g>
+      {drilldown && geometry.points.map((point, index) => (
+        <circle
+class="ui-chart__datum-hit"
+cx={point.xCoordinate}
+cy={point.yCoordinate}
+r={Math.max(10, point.radius)}
+          data-ui-chart-datum={datumActions[index]?.serialized}
+        />
+      ))}
     </svg>
   </div>
   {showTable && hasData && <details class="ui-chart__data"><summary>{resolvedLabels.viewData}</summary><div><table><thead><tr><th scope="col">{resolvedLabels.x}</th><th scope="col">{resolvedLabels.series}</th><th scope="col">{resolvedLabels.value}</th><th scope="col">{resolvedLabels.size}</th></tr></thead><tbody>{geometry.points.map(point => <tr><th scope="row">{point.xLabel ?? point.x}</th><td>{point.seriesLabel}</td><td>{point.label ?? formatValue(point.y ?? 0)}</td><td>{point.size === undefined || point.size === null || !Number.isFinite(point.size) ? resolvedLabels.notAvailable : formatValue(point.size)}</td></tr>)}</tbody></table></div></details>}
+  {drilldown && <ChartDatumActions actions={datumActions} label={resolvedLabels.exploreData} />}
 </Chart>

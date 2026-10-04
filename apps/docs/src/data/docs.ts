@@ -768,6 +768,13 @@ const apiRow = (
   values
 })
 
+const chartDatumApiRows = [
+  apiRow('drilldown', 'boolean (Astro / Elements attribute)', 'false', 'Enables plotted datum actions and an equivalent native button disclosure, including with hidden tables. Astro requires UIPrimitives; Elements owns its lifecycle.'),
+  apiRow('onDatumActivate', '(detail: LumenChartDatumActivationDetail) => void (React)', '-', 'Enables React datum actions and receives validated values with raw identities. Navigation and filtering remain application owned.'),
+  apiRow('explore-data-label, datum-action-prefix, datumActionFormatter', 'string attributes, (context: string) => string property (Elements)', 'English labels', 'Localizes the Elements disclosure and datum actions.'),
+  apiRow('labels.exploreData, labels.formatDatumAction', 'string, (context: string) => string', 'English labels', 'Localizes the actions disclosure and each contextual datum button.')
+] as const
+
 const commonApiRows = [
   apiRow(
     'class, className', 'string', '""', 'Merges custom classes with the generated ui-* root classes.'
@@ -827,6 +834,13 @@ const rovingGroupKeyboardInteractions = keyboardRows(
 const keyboardInteractionsByComponent: Partial<
   Record<string, readonly KeyboardInteractionRow[]>
 > = {
+  BarChart: keyboardRows(['Tab', 'Focus the actions disclosure and its native buttons in document order.'], ['Enter, Space', 'Toggle the disclosure or activate the focused datum button. Actions remain available when the data table is hidden.']),
+  LineChart: keyboardRows(['Tab', 'Focus the actions disclosure and its native buttons in document order.'], ['Enter, Space', 'Toggle the disclosure or activate the focused datum button. Actions remain available when the data table is hidden.']),
+  PieChart: keyboardRows(['Tab', 'Focus the actions disclosure and its native buttons in document order.'], ['Enter, Space', 'Toggle the disclosure or activate the focused datum button. Actions remain available when the data table is hidden.']),
+  ScatterChart: keyboardRows(['Tab', 'Focus the actions disclosure and its native buttons in document order.'], ['Enter, Space', 'Toggle the disclosure or activate the focused datum button. Actions remain available when the data table is hidden.']),
+  ComboChart: keyboardRows(['Tab', 'Focus the actions disclosure and its native buttons in document order.'], ['Enter, Space', 'Toggle the disclosure or activate the focused datum button. Actions remain available when the data table is hidden.']),
+  Heatmap: keyboardRows(['Tab', 'Focus the actions disclosure and its native buttons in document order.'], ['Enter, Space', 'Toggle the disclosure or activate the focused datum button. Actions remain available when the data table is hidden.']),
+  RangeChart: keyboardRows(['Tab', 'Focus the actions disclosure and its native buttons in document order.'], ['Enter, Space', 'Toggle the disclosure or activate the focused datum button. Actions remain available when the data table is hidden.']),
   ImageComparison: keyboardRows(['Arrow keys', 'Adjust the reveal using the native range control; horizontal direction follows writing direction.'], ['Home / End', 'Reveal the full before / after image.']),
   Calendar: keyboardRows(
     [
@@ -976,6 +990,8 @@ const keyboardInteractionsByComponent: Partial<
 
 export const runtimeEvents: RuntimeEventRow[] = [
   { name: 'ui:chart-cursor-change', target: 'LineChart', when: 'An interactive chart cursor changes through keyboard, pointer, or touch.', detail: '{ x: number | string | null }' },
+  { detail: 'LumenChartDatumActivationDetail: series { seriesId, x, y, datumId? }, heatmap { x, y, value, datumId? }, range { x, low, high, datumId? }', name: 'ui:chart-datum-activate', target: 'Astro chart figure or Elements data chart host', when: 'Fires once after a plotted datum or its native action button is activated. Requires drilldown. Astro uses UIPrimitives, Elements owns its lifecycle, and React uses onDatumActivate instead.' },
+  { detail: '{ state: "error" | "loading" | "ready" | "unavailable" }', name: 'ui:attachment-preview-change', target: 'AttachmentPreview root', when: 'Fires after a preview state changes. The event never includes the file URL.' },
   { detail: '{ value: number }', name: 'ui:image-comparison-change', target: 'ImageComparison root', when: 'Fires as the native range changes the percentage of the after image revealed.' },
   {
     detail: '{ value: string }',
@@ -1127,7 +1143,14 @@ export const runtimeEvents: RuntimeEventRow[] = [
 const runtimeEventsByComponent: Partial<
   Record<string, readonly RuntimeEventRow[]>
 > = {
-  LineChart: runtimeEvents.filter(event => event.name === 'ui:chart-cursor-change'),
+  BarChart: runtimeEvents.filter(event => event.name === 'ui:chart-datum-activate'),
+  LineChart: runtimeEvents.filter(event => event.name === 'ui:chart-datum-activate' || event.name === 'ui:chart-cursor-change'),
+  PieChart: runtimeEvents.filter(event => event.name === 'ui:chart-datum-activate'),
+  ScatterChart: runtimeEvents.filter(event => event.name === 'ui:chart-datum-activate'),
+  ComboChart: runtimeEvents.filter(event => event.name === 'ui:chart-datum-activate'),
+  Heatmap: runtimeEvents.filter(event => event.name === 'ui:chart-datum-activate'),
+  RangeChart: runtimeEvents.filter(event => event.name === 'ui:chart-datum-activate'),
+  AttachmentPreview: runtimeEvents.filter(event => event.name === 'ui:attachment-preview-change'),
   ImageComparison: runtimeEvents.filter(event => event.name === 'ui:image-comparison-change'),
   CopyButton: runtimeEvents.filter(event => event.name.startsWith('ui:copy-')),
   DataTable: runtimeEvents.filter(
@@ -1183,6 +1206,19 @@ const apiReferenceByComponent = {
     apiRow(
       'href', 'string', '-', 'Renders the root as a link when provided; otherwise renders an article.'
     )
+  ],
+  AttachmentList: [
+    apiRow('children / default slot', 'native li children', '-', 'Composes file rows with independent actions. Use Attachment without href when a row contains controls.')
+  ],
+  AttachmentPreview: [
+    apiRow('src', 'string', '-', 'Browser-owned image URL; the application owns authorization and object URL cleanup.'),
+    apiRow('alt', 'string', 'required', 'Accessible description of the image.'),
+    apiRow('contentType / content-type', 'string', '-', 'Non-image MIME types use a fallback instead of rendering an image.'),
+    apiRow('state', '"ready" | "loading" | "error" | "unavailable"', 'derived', 'Explicit loading, error and unavailable states override automatic image status.'),
+    apiRow('labels', 'Partial<LumenAttachmentPreviewLabels>', 'English labels', 'Localizes fallback messages. Elements uses error-label, loading-label and unavailable-label.'),
+    apiRow('retryKey / retry-key', 'string | number', '-', 'Changes the retry identity for the current image. Retry remains application controlled.'),
+    apiRow('caption / actions', 'React nodes / Astro named slots', '-', 'Composes a caption and independent download, replace or remove actions.'),
+    apiRow('onStateChange', '(state) => void', '-', 'React callback for transitions after the initial render; DOM adapters emit ui:attachment-preview-change with { state }.')
   ],
   Autocomplete: [
     apiRow(
@@ -1261,6 +1297,7 @@ const apiReferenceByComponent = {
     )
   ],
   BarChart: [
+    ...chartDatumApiRows,
     apiRow(
       'series', 'LumenChartSeries[]', 'required', 'Provides already-aggregated categorical values and stable series metadata.'
     ),
@@ -1546,6 +1583,7 @@ const apiReferenceByComponent = {
     apiRow('type', 'HTML input type', '"text"', 'Sets the native input type.')
   ],
   ComboChart: [
+    ...chartDatumApiRows,
     apiRow(
       'series', 'LumenComboSeries[]', '[]', 'Combines bar and line series over one ordered category domain.'
     ),
@@ -1720,6 +1758,7 @@ const apiReferenceByComponent = {
   Heatmap: [
     apiRow('colorScale, midpoint', '"sequential" | "diverging", number', '"sequential", 0', 'Uses semantic color scales with an explicit midpoint for diverging values.'),
     apiRow('showLegend', 'boolean', 'true', 'Shows scale endpoints and the distinct missing-data marker.'),
+    ...chartDatumApiRows,
     apiRow(
       'data', 'LumenHeatmapDatum[]', '[]', 'Provides labelled row, column, and intensity values for the heatmap cells.'
     ),
@@ -1947,6 +1986,7 @@ const apiReferenceByComponent = {
     apiRow('annotations', 'LumenChartAnnotation[]', '[]', 'Places labeled X events or Y reference lines in data coordinates.'),
     apiRow('cursor, onCursorChange', 'React cursor identity and callback', 'uncontrolled', 'React can supply the active X identity and receive cursor changes. Astro and Elements emit ui:chart-cursor-change.'),
     apiRow('width, height', 'number', '640, 320', 'Sets the SVG coordinate dimensions; narrow plots retain internal scrolling.'),
+    ...chartDatumApiRows,
     apiRow(
       'series', 'LumenChartSeries[]', 'required', 'Provides ordered, already-aggregated points; null y values create visible gaps.'
     ),
@@ -2058,6 +2098,7 @@ const apiReferenceByComponent = {
     )
   ],
   PieChart: [
+    ...chartDatumApiRows,
     apiRow(
       'series', 'LumenChartSeries', 'required', 'Provides one already-aggregated series whose positive finite data points become slices.'
     ),
@@ -2112,6 +2153,7 @@ const apiReferenceByComponent = {
     )
   ],
   RangeChart: [
+    ...chartDatumApiRows,
     apiRow(
       'data', 'LumenRangeDatum[]', '[]', 'Provides ordered low and high values for each interval.'
     ),
@@ -2151,6 +2193,7 @@ const apiReferenceByComponent = {
     )
   ],
   ScatterChart: [
+    ...chartDatumApiRows,
     apiRow(
       'series', 'LumenChartSeries[]', '[]', 'Provides x/y points with optional labels and bubble sizes.'
     ),
@@ -3265,6 +3308,18 @@ export const componentDocs: ComponentDoc[] = (
       'Data display',
       'Displays a file attachment with metadata.',
       '<Attachment href="/logo.svg"><strong>lumen-logo.svg</strong><span>1 KB</span></Attachment>'
+    ],
+    [
+      'AttachmentList',
+      'Data display',
+      'Groups file rows with independent download, replacement and removal actions.',
+      '<AttachmentList aria-label="Files"><li><Attachment><strong>report.pdf</strong><Button type="button">Remove</Button></Attachment></li></AttachmentList>'
+    ],
+    [
+      'AttachmentPreview',
+      'Data display',
+      'Previews browser-owned images with localized loading, error and unsupported-file fallbacks.',
+      '<AttachmentPreview src="/logo.svg" contentType="image/svg+xml" alt="Lumen logo"><span slot="caption">Logo attachment</span><Button slot="actions" type="button">Replace</Button></AttachmentPreview>'
     ],
     [
       'Autocomplete',

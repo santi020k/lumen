@@ -605,6 +605,10 @@ export function Example() {
 `
 
 const reactOverrides: Record<string, string> = {
+  AttachmentPreview: `import { AttachmentPreview, Button } from '@santi020k/lumen-react'
+
+<AttachmentPreview src="/logo.svg" contentType="image/svg+xml" alt="Lumen logo"
+  caption="Example attachment" actions={<Button type="button">Replace</Button>} />`,
   DialogHeader: compoundDialogReactExample,
   DialogTitle: compoundDialogReactExample,
   DialogBody: compoundDialogReactExample,
@@ -898,6 +902,17 @@ const compoundDescriptionsElementsExample = `${elementsHeader}
 `
 
 const elementsOverrides: Record<string, string> = {
+  AttachmentList: `${elementsHeader}
+<lumen-attachment-list aria-label="Files">
+  <li><lumen-attachment><strong>Example file</strong><button type="button">Remove</button></lumen-attachment></li>
+</lumen-attachment-list>`,
+  AttachmentPreview: `${elementsHeader}
+<lumen-attachment-preview aria-label="Logo attachment" content-type="image/svg+xml" error-label="Could not load the preview.">
+  <div data-slot="attachment-preview-media"><img data-ui-attachment-preview-image src="/logo.svg" alt="Lumen logo"></div>
+  <p data-slot="attachment-preview-fallback" data-ui-attachment-preview-message role="status"></p>
+  <p>Example image attachment</p>
+  <div data-slot="attachment-preview-actions"><a href="/logo.svg" download>Download</a></div>
+</lumen-attachment-preview>`,
   Descriptions: compoundDescriptionsElementsExample,
   DescriptionItem: compoundDescriptionsElementsExample,
   DescriptionTerm: compoundDescriptionsElementsExample,

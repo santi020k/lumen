@@ -169,3 +169,60 @@ Undo is an application transaction exposed through a status action. Retain focus
 result. Lumen should not decide what can be reversed, retry payments, restore purchases, publish a
 post, or store an idempotency key. See [error handling](error-handling.md) for the existing
 cross-platform recovery surfaces and announcement contracts.
+
+## Attachment previews and file lists
+
+Use AttachmentList with native `li` children. Compose each row from Attachment without `href` when
+it contains separate download, replace, or remove controls. Avoid nesting controls inside a linked
+Attachment. The list is a native `ul` in Astro and React; Elements exposes a list role and preserves
+its native `li` children.
+
+AttachmentPreview accepts a browser-owned `src`, required `alt`, optional `contentType`, explicit
+`state`, localized `labels`, and `retryKey`. Non-image MIME types show a fallback and do not render an
+image in Astro or React. Loading, error, and unavailable states can be controlled by the application.
+Changing the source or retry identity clears an earlier image failure. This component does not embed
+PDFs, execute document content, optimize private images on the server, or fetch attachment metadata.
+
+React uses `caption` and `actions` nodes. Astro uses named `caption` and `actions` slots. Elements
+requires an owned native image marked `data-ui-attachment-preview-image` inside a
+`data-slot="attachment-preview-media"` container, plus a status paragraph marked
+`data-ui-attachment-preview-message` and `data-slot="attachment-preview-fallback"`. Supply only an
+image URL to this child contract. Its host supports `content-type`, `state`, `retry-key`, `error-label`,
+`loading-label`, and `unavailable-label`; add an accessible name to the figure host.
+
+DOM adapters emit `ui:attachment-preview-change` with only `{ state }`; React provides
+`onStateChange`. Transitions are reported after initialization. File URLs are not included in these
+events. The application owns validation, authorization, object URL creation and revocation,
+replacement, removal confirmation, and persistence. Fallback text does not disable those independent
+actions. Never use real identity documents in demonstration data.
+
+## Page and section headers
+
+Install `page-header` or `section-header` through the bundled CLI for Astro, React or Elements:
+
+```bash
+pnpm exec lumen add page-header --target astro
+pnpm exec lumen add section-header --target react
+pnpm exec lumen add page-header --target elements
+```
+
+These are copyable recipes composed from Stack, Typography, Breadcrumb, Badge, Link and Button.
+They do not add a second heading or navigation primitive. PageHeader names the page with an `h1`,
+optional ancestor breadcrumbs, description, status, and actions. SectionHeader uses an `h2` by
+default; Astro and React accept a `level` from 2 through 6 to match the surrounding document.
+Associate the containing section with the same `headingId` through `aria-labelledby`.
+
+Astro recipes accept required `title` and `headingId`, optional `description`, and translated
+`actionsLabel`. PageHeader also accepts `breadcrumbs`, `breadcrumbLabel` and `status`. SectionHeader
+accepts a caller-formatted `count`, including an empty string or zero label. Put controls in the
+`actions` slot. React uses equivalent props and an `actions` node. Elements recipes contain native
+heading markup: edit the heading text, level, id, breadcrumb labels, count and action-group names
+in the copied HTML. Breadcrumb uses a native `nav` child and Link wraps a native anchor to retain
+link activation and keyboard semantics. Supply an accessible, meaningful count such as “12 records” or “12 registros”.
+
+Identity and action groups wrap naturally. The identity column can shrink to the available width
+and wraps long tokens. Optional descriptions, badges and actions leave no empty containers.
+Action groups use `role="group"`; ordinary Tab order reaches every control. Do not use Toolbar
+for these independent actions unless the application intentionally needs its arrow-key contract.
+The application owns navigation, export, refresh and record creation. The recipes do not initiate
+requests or announce success before the application confirms it.

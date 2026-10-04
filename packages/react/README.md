@@ -773,3 +773,27 @@ parts are also available from `@santi020k/lumen-react/server` for use inside a n
   </DescriptionItem>
 </Descriptions>
 ```
+
+## Attachment composition
+
+Use `AttachmentList` to group native `li` children and `AttachmentPreview` for browser-owned images
+with localized loading, error, and unsupported-file states. Compose independent actions rather
+than nesting controls inside a linked Attachment. The application retains file validation,
+authorization, persistence, and object URL cleanup. See the
+[attachment composition recipe](../../docs/consumer-ui-recipes.md#attachment-previews-and-file-lists)
+for adapter props, slots, child contracts, retry identity, and safe state events.
+
+## Chart datum actions
+
+Pass `onDatumActivate(detail)` to BarChart, LineChart, PieChart, ScatterChart, ComboChart, Heatmap,
+or RangeChart to enable drilldown. The callback receives `LumenChartDatumActivationDetail`,
+exported from this package, with raw axes and optional datum IDs. Applications own navigation,
+filtering, detail views, and authorization. React charts use their own event handling and do not
+require `UIPrimitives`.
+
+Each available plotted datum has an equivalent native button in the actions disclosure, even
+with `showTable={false}` or hidden line markers. Translate `labels.exploreData` and
+`labels.formatDatumAction(context)` alongside the chart's existing labels and value formatters.
+Missing observations have no action; pie actions cover only positive slices. Updated values and
+callbacks take effect on rerender, while stable datum identities retain focused action buttons.
+The chart's native `onClick` can cancel activation with `event.preventDefault()`.

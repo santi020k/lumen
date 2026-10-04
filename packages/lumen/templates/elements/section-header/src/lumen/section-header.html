@@ -1,0 +1,21 @@
+<script type="module">
+  import { defineLumenElements } from '@santi020k/lumen-elements/define'
+  defineLumenElements(['Badge', 'Button', 'Stack', 'Typography'])
+</script>
+
+<section aria-labelledby="section-heading">
+  <header aria-labelledby="section-heading">
+    <lumen-stack direction="horizontal" align="start" justify="between" gap="group" wrap>
+      <lumen-stack gap="related" style="flex: 1 1 20rem; min-width: 0; overflow-wrap: anywhere">
+        <lumen-stack direction="horizontal" align="center" gap="related" wrap>
+          <lumen-typography><h2 id="section-heading">Recent activity</h2></lumen-typography>
+          <lumen-badge variant="secondary">0 records</lumen-badge>
+        </lumen-stack>
+        <lumen-typography><p>Changes made during the selected period.</p></lumen-typography>
+      </lumen-stack>
+      <lumen-stack direction="horizontal" align="center" gap="related" wrap role="group" aria-label="Section actions">
+        <lumen-button type="button">View all activity</lumen-button>
+      </lumen-stack>
+    </lumen-stack>
+  </header>
+</section>

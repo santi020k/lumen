@@ -259,3 +259,10 @@ so its apply ledger fingerprints the final source and repeat runs do not rewrite
 SDK import edits remain limited to `.ts`, `.js`, and `.mjs`; this restriction does not disable the
 separate documented JSX/Astro spacing migration. The JSON report includes installed package
 versions and explicit SDK dependency-review findings.
+
+## Dashboard header recipes
+
+Install `page-header` and `section-header` with `lumen add <recipe> --target astro|react|elements`.
+These compositions provide page identity, optional breadcrumbs and metadata, translated action-group
+labels, and responsive action wrapping using the existing primitives. The application owns its
+routes and action handlers. See the [header recipe guide](../../docs/consumer-ui-recipes.md#page-and-section-headers).

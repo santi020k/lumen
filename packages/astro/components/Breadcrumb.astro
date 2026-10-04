@@ -9,6 +9,7 @@ interface Props extends HTMLAttributes<'nav'> {
 }
 
 const {
+  'aria-label': ariaLabel = 'Breadcrumb',
   class: classProp = '',
   className = '',
   ...rest
@@ -20,7 +21,7 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
 ---
 
 <nav
-  aria-label="Breadcrumb"
+  aria-label={ariaLabel}
   class:list={classList}
   {...passthrough}
 >

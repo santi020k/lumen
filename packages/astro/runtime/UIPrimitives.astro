@@ -5482,6 +5482,18 @@ const initOptionalControllers = (scope: ParentNode): void => {
       .catch(reportError)
   }
 
+  if (scope.querySelector('[data-ui-attachment-preview]')) {
+    import('./controllers/attachments.js')
+      .then(({ initAttachmentPreviewControllers }) => initAttachmentPreviewControllers(scope))
+      .catch(reportError)
+  }
+
+  if (scope.querySelector('[data-ui-chart-activation]:not([data-ui-chart-adapter="react"]):not([data-ui-chart-adapter="elements"])')) {
+    import('./controllers/chart-activation.js')
+      .then(({ initChartActivationControllers }) => initChartActivationControllers(scope))
+      .catch(reportError)
+  }
+
   if (scope.querySelector('[data-ui-phone-input]')) {
     import('./controllers/phone-input.js')
       .then(({ initPhoneInputControllers }) => initPhoneInputControllers(scope))

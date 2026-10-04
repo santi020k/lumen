@@ -1,12 +1,24 @@
+export {
+  createLumenAttachmentPreviewController,
+  type LumenAttachmentPreviewController,
+  type LumenAttachmentPreviewLabels,
+  lumenAttachmentPreviewLabels,
+  type LumenAttachmentPreviewState,
+  resolveLumenAttachmentPreviewState
+} from './attachments.js'
 export * from './chart-interaction.js'
 export * from './chart-models.js'
 export {
   alignLumenChartSeries,
   appendLumenChartDatum,
   createLumenBarGeometry,
+  createLumenChartActivationController,
+  createLumenChartDatumActivation,
+  createLumenHeatmapDatumActivation,
   createLumenHeatmapGeometry,
   createLumenLineGeometry,
   createLumenPieGeometry,
+  createLumenRangeDatumActivation,
   createLumenRangeGeometry,
   createLumenScatterGeometry,
   downsampleLumenChartData,
@@ -28,12 +40,14 @@ export {
   type LumenBarGeometryCategory,
   type LumenBarGeometryMark,
   type LumenBarGeometryOptions,
+  type LumenChartActivationController,
   type LumenChartAnnotation,
   type LumenChartAxis,
   type LumenChartAxisPosition,
   type LumenChartCategoryTick,
   type LumenChartCategoryTickOptions,
   type LumenChartDatum,
+  type LumenChartDatumActivationDetail,
   type LumenChartDomain,
   type LumenChartGeometryPoint,
   type LumenChartLabels,
@@ -64,6 +78,7 @@ export {
   type LumenScatterGeometry,
   type LumenScatterGeometryOptions,
   type LumenScatterGeometryPoint,
+  parseLumenChartDatumActivation,
   resolveLumenChartLabels,
   resolveLumenChartTone,
   scaleLumenChartValue,

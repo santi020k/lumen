@@ -602,6 +602,9 @@ attributes, and accessible markup.
   `"comfortable"` (default) or `"spacious"` instead of scattering padding overrides.
 - Keep text rhythm inside Prose or Typography. Verify long and translated text, enlarged text,
   validation states, optional sections and mobile wrapping before calling a composition finished.
+- Use the `page-header` and `section-header` recipes for dashboard identity, optional breadcrumbs,
+  status/count badges and independent actions. Keep headings in document order, pass translated
+  navigation/action labels and unique heading ids, and connect buttons to application-owned handlers.
 - Retrieve complete `content-flow-header`, `content-flow-settings`, `content-flow-list` and
   `content-flow-actions` examples with `lumen_get_recipe`; the CLI installs the same compositions.
   Keep one outer Container for fluid gutters. Card permits interactive overflow; use AspectRatio

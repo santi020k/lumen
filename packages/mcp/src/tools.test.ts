@@ -72,6 +72,19 @@ describe('lumen-mcp data snapshot', () => {
     ).toBe(true)
   })
 
+  test('discovers attachment previews from their dedicated React module', () => {
+    const preview = resolveComponent('AttachmentPreview', loadLumenData())
+
+    expect(preview?.frameworkDetails.react.available).toBe(true)
+    expect(preview?.frameworkDetails.react.source).toContain('AttachmentPreviewProps')
+    expect(preview?.frameworkDetails.react.example).toContain('actions={<Button')
+    expect(preview?.frameworkDetails.react.example).not.toContain('slot=')
+    expect(preview?.frameworkDetails.react.props).toEqual(expect.arrayContaining([
+      expect.objectContaining({ name: 'onStateChange' }),
+      expect.objectContaining({ name: 'retryKey' })
+    ]))
+  })
+
   test('discovers granular image comparison implementations and their public contracts', () => {
     const comparison = resolveComponent('ImageComparison', loadLumenData())
 

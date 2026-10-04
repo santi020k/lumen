@@ -450,3 +450,8 @@ export type DescriptionDetailProps = ComponentPropsWithRef<'dd'>
 export const DescriptionDetail = ({ className, ...props }: DescriptionDetailProps) => (
   <dd {...props} className={composeClassName('ui-description-detail', 'ui-descriptions__detail', className)} data-slot="description-detail" />
 )
+
+export type AttachmentListProps = ComponentPropsWithRef<'ul'>
+export const AttachmentList = ({ className, ...props }: AttachmentListProps) => (
+  <ul {...props} className={composeClassName('ui-attachment-list', className)} data-slot="attachment-list" />
+)

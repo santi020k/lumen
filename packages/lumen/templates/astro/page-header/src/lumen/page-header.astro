@@ -1,0 +1,41 @@
+---
+import { Badge, Breadcrumb, Link, Stack, Typography } from '@santi020k/lumen-astro'
+
+interface Props {
+  actionsLabel?: string
+  breadcrumbLabel?: string
+  breadcrumbs?: readonly { href: string, label: string }[]
+  description?: string
+  headingId: string
+  status?: string
+  title: string
+}
+
+declare const Astro: Readonly<{ props: Props, slots: { has: (name: string) => boolean } }>
+
+const { actionsLabel = 'Page actions', breadcrumbLabel = 'Breadcrumb', breadcrumbs = [], description, headingId, status, title } = Astro.props
+---
+
+<header aria-labelledby={headingId}>
+  <Stack gap="group">
+    {breadcrumbs.length > 0 && (
+<Breadcrumb aria-label={breadcrumbLabel}>
+      <ol>
+        {breadcrumbs.map(item => <li><Link href={item.href}>{item.label}</Link></li>)}
+        <li aria-current="page">{title}</li>
+      </ol>
+    </Breadcrumb>
+)}
+    <Stack direction="horizontal" align="start" justify="between" gap="group" wrap>
+      <Stack class="header-identity" gap="related">
+        <Typography><h1 id={headingId}>{title}</h1>{description && <p>{description}</p>}</Typography>
+        {status && <Badge variant="outline" style="align-self: flex-start">{status}</Badge>}
+      </Stack>
+      {Astro.slots.has('actions') && <Stack direction="horizontal" align="center" gap="related" wrap role="group" aria-label={actionsLabel}><slot name="actions" /></Stack>}
+    </Stack>
+  </Stack>
+</header>
+
+<style>
+  .header-identity { flex: 1 1 20rem; min-width: 0; overflow-wrap: anywhere; }
+</style>
