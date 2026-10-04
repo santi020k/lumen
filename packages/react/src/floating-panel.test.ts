@@ -4,7 +4,7 @@ import { createRoot, type Root } from 'react-dom/client'
 
 import { afterEach, beforeEach, expect, test, vi } from 'vitest'
 
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, type DropdownMenuProps, DropdownMenuTrigger } from './components.js'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, type DropdownMenuProps, DropdownMenuTrigger, Popover, PopoverPanel, PopoverTrigger } from './components.js'
 
 let container: HTMLDivElement
 let root: Root
@@ -32,7 +32,7 @@ const render = (props: DropdownMenuProps = {}) => run(() => {
   root.render(menu(props))
 })
 const click = (selector: string) => run(() => {
-  element(selector).dispatchEvent(new MouseEvent('click', { bubbles: true }))
+  element(selector).dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
 })
 
 beforeEach(() => {
@@ -156,4 +156,33 @@ test('StrictMode and controlled dismissal retain application ownership', async (
   expect(changes).toHaveBeenCalledExactlyOnceWith(false)
   expect(element('#panel').hidden).toBe(false)
   expect(element('#panel').dataset.nativeOpen).toBe('true')
+})
+
+test.each(['anchored', 'none'] as const)('pointer-opened popovers retain a keyboard dismissal path with %s positioning', async positioning => {
+  await run(() => {
+    root.render(createElement(Popover, { positioning }, createElement(PopoverTrigger, { id: 'trigger' }, 'Actions'), createElement(PopoverPanel, { id: 'panel', role: 'region', 'aria-label': 'Record actions' }, createElement('button', { type: 'button' }, 'Edit'))))
+  })
+  expect(document.activeElement).not.toBe(element('#trigger'))
+  // A synthetic pointer click, like a Safari button click, does not focus the trigger for us.
+  await click('#trigger')
+  expect(element('#panel').hidden).toBe(false)
+  expect(document.activeElement).toBe(element('#trigger'))
+  await run(() => {
+    document.activeElement?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }))
+  })
+  expect(element('#panel').hidden).toBe(true)
+  expect(document.activeElement).toBe(element('#trigger'))
+})
+
+test('a canceled popover click preserves focus and closed state', async () => {
+  await run(() => {
+    root.render(createElement(Popover, {}, createElement('input', { id: 'editor', 'aria-label': 'Edit record' }), createElement(PopoverTrigger, { id: 'trigger',
+      onClick: event => {
+        event.preventDefault()
+      } }, 'Actions'), createElement(PopoverPanel, { id: 'panel' }, 'Record actions')))
+  })
+  element('#editor').focus()
+  await click('#trigger')
+  expect(element('#panel').hidden).toBe(true)
+  expect(document.activeElement).toBe(element('#editor'))
 })
