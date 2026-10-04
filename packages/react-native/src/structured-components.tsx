@@ -7,6 +7,7 @@ import {
   type ViewProps
 } from 'react-native'
 
+import { useLumenAccessibilityAnnouncement } from './accessibility-announcement.js'
 import { LumenIllustration } from './content-components.js'
 import { type LumenIconName } from './icons.generated.js'
 import type { LumenViewRef } from './native-ref-types.js'
@@ -216,6 +217,8 @@ export const LumenErrorState = ({
 }: LumenErrorStateProps): ReactElement => {
   const theme = useLumenTheme()
   const compact = layout === 'compact'
+
+  useLumenAccessibilityAnnouncement([title, description].filter(Boolean).join('. '), announcement)
 
   return (
     <View
