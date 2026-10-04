@@ -68,8 +68,11 @@ const RangeMonth = ({ part, value, onValueChange, locale, min, max, label, label
   })
 
   useEffect(() => {
-    if (rootRef.current?.contains(document.activeElement) && document.activeElement?.getAttribute('role') === 'gridcell') {
-      rootRef.current.querySelector<HTMLElement>('[role="gridcell"][tabindex="0"]')?.focus()
+    const root = rootRef.current
+    const activeElement = root?.ownerDocument.activeElement
+
+    if (root?.contains(activeElement ?? null) && activeElement?.getAttribute('role') === 'gridcell') {
+      root.querySelector<HTMLElement>('[role="gridcell"][tabindex="0"]')?.focus()
     }
   }, [focusedDate, rootRef])
 

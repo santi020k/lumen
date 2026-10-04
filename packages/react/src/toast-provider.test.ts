@@ -20,7 +20,15 @@ const ToastActions = () => {
     }
   }, 'Complete'), createElement('button', {
     onClick: () => toast.create({ duration: 1000, id: 'timed', title: 'Temporary', action: { label: 'Retry' } })
-  }, 'Timed'))
+  }, 'Timed'), createElement('button', {
+    onClick: () => {
+      toast.dismiss()
+    }
+  }, 'Dismiss latest'), createElement('button', {
+    onClick: () => {
+      toast.dismiss('save')
+    }
+  }, 'Dismiss save'))
 }
 
 const clickButton = async (label: string) => {
@@ -139,4 +147,33 @@ test('keeps overlapping pointer and keyboard pauses until both end', async () =>
   })
   await act(() => vi.advanceTimersByTimeAsync(900))
   expect(toast.dataset.state).toBe('closed')
+})
+
+test('dismisses only the newest open toast when no ID is supplied', async () => {
+  await act(async () => {
+    await Promise.resolve()
+    root.render(createElement(ToastProvider, { maxCount: 3 }, createElement(ToastActions)))
+  })
+  await clickButton('Save')
+  await clickButton('Timed')
+  await clickButton('Dismiss latest')
+  expect(container.querySelector('#save')?.getAttribute('data-state')).toBe('open')
+  expect(container.querySelector('#timed')?.getAttribute('data-state')).toBe('closed')
+  await clickButton('Dismiss latest')
+  expect(container.querySelector('#save')?.getAttribute('data-state')).toBe('closed')
+  await clickButton('Dismiss latest')
+  await act(() => vi.advanceTimersByTimeAsync(240))
+  expect(container.querySelectorAll('[data-ui-toast]')).toHaveLength(0)
+})
+
+test('explicit dismissal preserves the newer open toast', async () => {
+  await act(async () => {
+    await Promise.resolve()
+    root.render(createElement(ToastProvider, { maxCount: 3 }, createElement(ToastActions)))
+  })
+  await clickButton('Save')
+  await clickButton('Timed')
+  await clickButton('Dismiss save')
+  expect(container.querySelector('#save')?.getAttribute('data-state')).toBe('closed')
+  expect(container.querySelector('#timed')?.getAttribute('data-state')).toBe('open')
 })

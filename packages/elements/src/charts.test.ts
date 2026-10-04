@@ -1,5 +1,6 @@
 import { afterEach, beforeAll, expect, test, vi } from 'vitest'
 
+import { parseChartAnnotations } from './chart-html.js'
 import { defineLumenElements, LumenBoxPlotElement, LumenBulletChartElement, LumenCalendarHeatmapElement, LumenFunnelChartElement } from './define.js'
 
 beforeAll(() => {
@@ -197,4 +198,20 @@ test('expanded chart typed properties update connected hosts and survive reconne
   box.statisticLabels = { median: '<img src=x>' }
   expect(box.querySelector('img')).toBeNull()
   expect(box.querySelector('thead')?.textContent).toContain('<img src=x>')
+})
+
+test('rejects supplied invalid annotation axes before defaulting omitted axes', () => {
+  const valid = { id: 'default', label: 'Default', value: 2 }
+  const annotations = [valid,
+    { ...valid, id: 'x', axis: 'x' },
+    { ...valid, id: 'y', axis: 'y' },
+    ...['z', null, 1, {}].map(axis => ({ ...valid, id: 'invalid', label: 'Malformed', axis }))
+  ]
+  expect(parseChartAnnotations(JSON.stringify(annotations)).map(annotation => annotation.axis)).toEqual(['y', 'x', 'y'])
+  const element = chart('lumen-line-chart', {
+    annotations: JSON.stringify(annotations),
+    series: JSON.stringify([{ id: 'series', label: 'Series', data: [{ x: 'A', y: 0 }, { x: 'B', y: 4 }] }])
+  })
+  expect(element.textContent).toContain('Default')
+  expect(element.textContent).not.toContain('Malformed')
 })

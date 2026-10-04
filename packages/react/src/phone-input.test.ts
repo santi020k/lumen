@@ -277,3 +277,82 @@ test('associates the legacy country picker with the number external form', async
   expect(new FormData(form).get('country')).toBe('CO')
   expect(new FormData(form).get('phone')).toBe('6015550123')
 })
+
+test('preserves the legacy selected country when locking and resetting an external form', async () => {
+  const form = document.createElement('form')
+  form.id = 'legacy-readonly-phone-form'
+  const container = document.createElement('div')
+  document.body.append(form, container)
+  const extraRoot = createRoot(container)
+  mounted.push(extraRoot)
+  const props = {
+    countries: [{ value: 'CO', label: 'Colombia' }, { value: 'US', label: 'United States' }],
+    defaultCountryValue: 'CO',
+    defaultValue: '6015550123',
+    inputProps: { form: form.id }
+  }
+  await act(async () => {
+    await Promise.resolve()
+    extraRoot.render(createElement(PhoneInput, props))
+  })
+  const select = container.querySelector('select')
+  if (!select) throw new Error('Missing legacy picker')
+  await act(async () => {
+    await Promise.resolve()
+    select.value = 'US'
+    select.dispatchEvent(new Event('change', { bubbles: true }))
+  })
+  await act(async () => {
+    await Promise.resolve()
+    extraRoot.render(createElement(PhoneInput, { ...props, readOnly: true }))
+  })
+  expect(new FormData(form).get('country')).toBe('US')
+  expect(new FormData(form).get('phone')).toBe('6015550123')
+  const cancel = (event: Event) => {
+    event.preventDefault()
+  }
+  form.addEventListener('reset', cancel)
+  await act(async () => {
+    form.reset()
+    await Promise.resolve()
+  })
+  expect(new FormData(form).get('country')).toBe('US')
+  form.removeEventListener('reset', cancel)
+  await act(async () => {
+    form.reset()
+    await Promise.resolve()
+  })
+  expect(new FormData(form).get('country')).toBe('CO')
+  await act(async () => {
+    await Promise.resolve()
+    extraRoot.render(createElement(PhoneInput, { ...props, readOnly: true, disabled: true }))
+  })
+  expect([...new FormData(form).entries()]).toEqual([])
+})
+
+test('legacy read-only submission follows the remaining enabled country options', async () => {
+  const { container } = await mount({
+    countries: [{ value: 'CO', label: 'Colombia' }, { value: 'US', label: 'United States' }],
+    defaultCountryValue: 'CO',
+    readOnly: true
+  })
+  await act(async () => {
+    await Promise.resolve()
+    root?.render(createElement('form', null, createElement(PhoneInput, {
+      countries: [{ value: 'US', label: 'United States' }], defaultCountryValue: 'CO', readOnly: true
+    })))
+  })
+  const form = container.querySelector('form')
+  if (!form) throw new Error('Missing legacy phone form')
+  expect(new FormData(form).get('country')).toBe('US')
+  await act(async () => {
+    await Promise.resolve()
+    root?.render(createElement('form', null, createElement(PhoneInput, {
+      countries: [{ value: 'CO', label: 'Colombia' }, { value: 'US', label: 'United States' }],
+      defaultCountryValue: 'CO',
+      readOnly: true
+    })))
+  })
+  expect(container.querySelector('select')?.value).toBe('US')
+  expect(new FormData(form).get('country')).toBe('US')
+})

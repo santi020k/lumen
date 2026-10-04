@@ -715,3 +715,5 @@ provide an application-owned summary when additional interpretation is useful.
 `lumen-combobox` enhances its input and listbox when both are available. Children can arrive after
 connection or be replaced by an application renderer. Disconnecting the host releases listeners
 and observers; reconnecting binds the current children.
+
+Decoded chart annotations ignore invalid supplied axes; omitted axes use the shared `y` default.

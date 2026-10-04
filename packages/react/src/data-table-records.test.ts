@@ -121,3 +121,17 @@ test('toolbar sort requests the same server ordering without reordering a suppli
   expect(element('thead th:nth-child(2)').getAttribute('aria-sort')).toBe('none')
   expect([...container.querySelectorAll('tbody tr')].map(row => row.getAttribute('data-value'))).toEqual(['beta', 'alpha'])
 })
+
+test('expands records by explicit IDs even when ordinary value cells repeat', async () => {
+  const records = [{ id: 'first', name: 'First', value: 100 }, { id: 'second', name: 'Second', value: 100 }]
+  await render({ rows: records, expandedRowIds: ['first'] })
+  expect(element('[data-value="first"] button').getAttribute('aria-expanded')).toBe('true')
+  expect(element('[data-value="second"] button').getAttribute('aria-expanded')).toBe('false')
+  expect(container.querySelectorAll('[data-ui-datatable-detail]')).toHaveLength(1)
+  await render({ rows: records, expandedRowIds: undefined })
+  await click('[data-value="second"] button')
+  expect(element('[data-ui-datatable-detail]').textContent).toBe('Notes for Second')
+  expect(container.querySelectorAll('[data-ui-datatable-detail]')).toHaveLength(1)
+  await render({ rows: [{ ...records[0], rowValue: 'override' }], expandedRowIds: ['override'] })
+  expect(element('[data-value="override"] button').getAttribute('aria-expanded')).toBe('true')
+})

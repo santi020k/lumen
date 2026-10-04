@@ -4,6 +4,7 @@ import { createRoot } from 'react-dom/client'
 
 import { expect, test } from 'vitest'
 
+import { Calendar } from './components.js'
 import { DateRangeCalendar } from './date-range-calendar.js'
 
 const Harness = () => {
@@ -119,5 +120,47 @@ test.each(['ltr', 'rtl'] as const)('moves focus in both range calendars in %s di
       root.unmount()
     })
     container.remove()
+  }
+})
+
+test.each(['single', 'range'])('moves successive calendar keys in an iframe: %s', async kind => {
+  const frame = document.createElement('iframe')
+  document.body.append(frame)
+  const owner = frame.contentDocument
+  if (!owner) throw new Error('Missing iframe document')
+  const container = owner.createElement('div')
+  owner.body.append(container)
+  const root = createRoot(container)
+  try {
+    await act(async () => {
+      await Promise.resolve()
+      root.render(kind === 'single' ?
+        createElement(Calendar, {
+          defaultValue: '2026-09-10', locale: 'en-US'
+        }) :
+        createElement(DateRangeCalendar, {
+          value: { start: '2026-09-10', end: '2026-09-20' },
+          onValueChange: () => undefined,
+          locale: 'en-US',
+          labels: { start: 'From', end: 'To', presets: 'Quick range' }
+        }))
+    })
+    const day = container.querySelector<HTMLElement>('[data-date="2026-09-10"]')
+    if (!day) throw new Error('Missing iframe calendar day')
+    day.focus()
+    for (const date of ['2026-09-11', '2026-09-12']) {
+      await act(async () => {
+        await Promise.resolve()
+        owner.activeElement?.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }))
+      })
+      expect(owner.activeElement?.getAttribute('data-date')).toBe(date)
+      expect(owner.activeElement?.getAttribute('tabindex')).toBe('0')
+    }
+  } finally {
+    await act(async () => {
+      await Promise.resolve()
+      root.unmount()
+    })
+    frame.remove()
   }
 })

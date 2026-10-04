@@ -4501,6 +4501,45 @@ const resolveLegacyPhoneAttributes = (
   required: props.required ?? inputProps.required
 })
 
+const resolveLegacyPhoneCountry = (
+  options: ReturnType<typeof normalizeOption>[], value: string | undefined
+): string => options.find(option => option.value === value)?.value ??
+  options.find(option => !option.disabled)?.value ?? ''
+
+const useLegacyPhoneCountry = (
+  countries: SelectOption[], defaultCountryValue: string | undefined, form: string | undefined
+) => {
+  const options = countries.map(normalizeOption)
+  const [countryValue, setCountryValue] = useState(() => resolveLegacyPhoneCountry(options, defaultCountryValue))
+  const submissionCountry = resolveLegacyPhoneCountry(options, countryValue)
+  const countryRef = useRef<HTMLSelectElement>(null)
+
+  useEffect(() => {
+    const form = countryRef.current?.form
+    let active = true
+
+    queueMicrotask(() => {
+      if (active) setCountryValue(countryRef.current?.value ?? '')
+    })
+
+    const reset = (event: Event): void => {
+      queueMicrotask(() => {
+        if (active && !event.defaultPrevented) setCountryValue(countryRef.current?.value ?? '')
+      })
+    }
+
+    form?.addEventListener('reset', reset)
+
+    return () => {
+      active = false
+
+      form?.removeEventListener('reset', reset)
+    }
+  }, [countries, defaultCountryValue, form])
+
+  return { countryRef, options, setCountryValue, submissionCountry }
+}
+
 const LegacyPhoneInput = ({
   className,
   countries,
@@ -4529,6 +4568,10 @@ const LegacyPhoneInput = ({
   const { inputClass, selectClass } = phoneInputSizeModifiers(visualSize)
   const numberAttributes = resolveLegacyPhoneAttributes(inputProps, { disabled, readOnly, required, id })
 
+  const { countryRef, options, setCountryValue, submissionCountry } = useLegacyPhoneCountry(
+    countries, defaultCountryValue, inputProps.form
+  )
+
   return (
     <div
       className={composeClassName('ui-phone-input ui-input-group', className)}
@@ -4546,8 +4589,12 @@ const LegacyPhoneInput = ({
           disabled={[disabled, readOnly, inputProps.disabled, inputProps.readOnly].some(Boolean)}
           form={inputProps.form}
           name={countryName}
+          onChange={event => {
+            setCountryValue(event.currentTarget.value)
+          }}
+          ref={countryRef}
         >
-          {countries.map(normalizeOption).map(option => (
+          {options.map(option => (
             <option disabled={option.disabled} key={option.value} value={option.value}>
               {option.label}
             </option>
@@ -4564,6 +4611,13 @@ const LegacyPhoneInput = ({
         name={name}
         placeholder={placeholder}
         type="tel"
+      />
+      <PhoneCountryValue
+        disabled={[disabled, inputProps.disabled].some(Boolean)}
+        form={inputProps.form}
+        name={countryName}
+        readOnly={[readOnly, inputProps.readOnly].some(Boolean)}
+        value={submissionCountry}
       />
     </div>
   )

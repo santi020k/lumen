@@ -76,6 +76,10 @@ export const parseWaterfallData = (value: string | null): LumenWaterfallDatum[] 
   return result
 }
 
+const isChartAnnotationAxis = (axis: unknown): axis is 'x' | 'y' | undefined => (
+  axis === undefined || axis === 'x' || axis === 'y'
+)
+
 export const parseChartAnnotations = (value: string | null): LumenChartAnnotation[] => {
   const result: LumenChartAnnotation[] = []
 
@@ -85,7 +89,9 @@ export const parseChartAnnotations = (value: string | null): LumenChartAnnotatio
     if (typeof entry.id !== 'string' || typeof entry.label !== 'string' ||
       (typeof entry.value !== 'number' && typeof entry.value !== 'string')) continue
 
-    const axis = entry.axis === 'x' ? 'x' : 'y'
+    if (!isChartAnnotationAxis(entry.axis)) continue
+
+    const axis = entry.axis ?? 'y'
     const tone = chartTone(entry.tone)
 
     result.push({ id: entry.id, label: entry.label, value: entry.value, axis, ...(tone ? { tone } : {}) })

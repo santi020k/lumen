@@ -86,7 +86,7 @@ const compareDataTableCells = (
 const getDataTableRowValue = (
   row: DataTableRow,
   index: number
-): string => String(row.rowValue ?? row.value ?? row.id ?? index)
+): string => String(row.rowValue ?? row.id ?? row.value ?? index)
 
 export interface DataTableSort {
   direction: 'ascending' | 'descending'

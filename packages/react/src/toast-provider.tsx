@@ -241,11 +241,11 @@ export const ToastProvider = ({
   }, [])
 
   const dismiss = useCallback((id?: string) => {
-    setToasts(current => current.map(toast => {
-      if (id && toast.id !== id) return toast
+    setToasts(current => {
+      const targetId = id ?? current.filter(toast => toast.open).at(-1)?.id
 
-      return { ...toast, open: false }
-    }))
+      return current.map(toast => toast.id === targetId ? { ...toast, open: false } : toast)
+    })
   }, [])
 
   const create = useCallback(

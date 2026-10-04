@@ -573,7 +573,7 @@ Licensed under [MIT](https://github.com/santi020k/lumen/blob/main/LICENSE); thir
 
 `DateRangeCalendar` is a controlled React range editor with two visible calendars,
 inclusive range highlighting, a preset sidebar and the keyboard behavior of `useCalendar`,
-including inherited RTL arrow navigation in both calendars.
+including inherited RTL arrow navigation and focus movement in iframe documents.
 On narrow screens the presets scroll horizontally and the calendars stack. It uses the shared Lumen stylesheet.
 
 ```tsx
@@ -730,7 +730,8 @@ accepts `inputRef`. Web Components use `disabled`, `readonly`, `required`, `erro
 `show-validation-error="false"`, and `input-id`, with native input attributes on the host.
 Both controls lock together and validation remains associated with the input. React forwards
 `inputProps.form` to the country picker and read-only country value as well as the number input,
-so an external form receives both values.
+so an external form receives both values. Legacy `countries` pickers also retain their selected
+country while read-only and restore it after an accepted native form reset.
 
 The `phone-input`, `phone-country`, and `country-flag` styling parts plus `--ui-phone-height`,
 `--ui-phone-padding`, and `--ui-phone-country-gap` replace consumer CSS overlays.
@@ -855,7 +856,8 @@ and labeled reference lines/regions. See [consumer UI recipes](../../docs/consum
 for dashboard tables, freshness, import review, activity inbox, and persistent Kanban patterns.
 
 React DataTable adds `layout="records"`, rich `column.render`, and expandable `renderDetails`.
-Use stable record IDs and controlled `expandedRowIds` across pages. `DataTableSortControls` shares
+Use stable record IDs and controlled `expandedRowIds` across pages. Row identity uses `rowValue`,
+then `id`, then a legacy `value` fallback; ordinary value cells do not override explicit IDs. `DataTableSortControls` shares
 `sort`/`onSortChange` with table headers; manual sorting preserves server page order.
 
 Popover and DropdownMenu support anchored top-layer placement, viewport collision handling, logical
@@ -915,3 +917,5 @@ import { BoxPlot, CalendarHeatmap, FunnelChart } from '@santi020k/lumen-react'
 Public hook setters accept React functional updates. In uncontrolled mode, consecutive calls in
 one event compose against the latest pending value. Change callbacks run once per setter call,
 including under Strict Mode. Controlled values remain owned by the application.
+
+`useToast().dismiss()` closes only the newest open toast. Pass an ID to dismiss a specific toast.

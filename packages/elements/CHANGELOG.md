@@ -2,6 +2,10 @@
 
 ## 4.0.0
 
+### Patch Changes
+
+- Preserve iframe calendar focus, newest-only toast dismissal, explicit table record identities, legacy read-only phone country submission, and valid decoded annotation axes.
+
 - Validate decoded chart annotations, restore chart legend inspection state on teardown, refresh external image-comparison reset values, restore iframe dialog focus, and preserve uncontrolled filter disclosure state.
 
 - Honor comparison chart value labels and escaped accessible summaries in Web Components. Reset iOS and web time-picker drafts when controlled values or bounds change, preserving current Android bounds and callback handling.

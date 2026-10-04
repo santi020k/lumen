@@ -15,10 +15,36 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  deploy:
+  publication:
     if: >-
       (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success') ||
       (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      published: ${{ steps.publication.outputs.published }}
+    steps:
+      - name: Check out the released revision
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.0
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+
+      - name: Check publication tag before deployment approval
+        id: publication
+        run: |
+          version="$(node -p "require('./packages/lumen/package.json').version")"
+          released_revision="$(git rev-parse "refs/tags/v${version}^{commit}" 2>/dev/null || true)"
+          if [[ "$released_revision" == "$(git rev-parse HEAD)" ]]; then
+            echo "published=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "published=false" >> "$GITHUB_OUTPUT"
+            echo "No repository publication at this revision; skipping MCP deployment."
+          fi
+
+  deploy:
+    needs: publication
+    if: needs.publication.outputs.published == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     environment: production

@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { spawnSync } from 'node:child_process'
-import { mkdtemp, readFile, rm } from 'node:fs/promises'
+import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join, matchesGlob, resolve } from 'node:path'
 import test from 'node:test'
@@ -243,4 +243,64 @@ test('Turbo owns the docs dependency build without a duplicate prebuild invocati
   assert.equal(docsManifest.scripts.prebuild, 'pnpm run prepare:native-live-previews')
 
   assert.match(docsManifest.scripts.predev, /lumen-playground-react-native/u)
+})
+
+test('MCP deployment skips unpublished and stale-tag revisions before production approval', async () => {
+  const workflow = await readRepositoryFile('.github/workflows/deploy-mcp.yml')
+  const [publication, deployment] = workflow.split('  deploy:\n')
+
+  assert.ok(publication && deployment)
+
+  assert.doesNotMatch(publication, /environment: production/u)
+
+  assert.match(deployment, /needs: publication/u)
+
+  assert.match(deployment, /if: needs\.publication\.outputs\.published == 'true'/u)
+
+  assert.match(deployment, /environment: production/u)
+
+  const script = publication.split('        run: |\n')[1]?.trimEnd().split('\n')
+    .map(line => line.slice(10)).join('\n')
+
+  assert.ok(script)
+
+  for (const scenario of ['unpublished', 'published', 'stale']) {
+    const directory = await mkdtemp(join(tmpdir(), 'lumen-mcp-publication-'))
+
+    try {
+      const git = args => {
+        const result = spawnSync('git', ['-c', 'user.name=Release test', '-c', 'user.email=release@example.com', ...args], {
+          cwd: directory, encoding: 'utf8'
+        })
+
+        assert.equal(result.status, 0, result.stderr)
+      }
+
+      git(['init', '--initial-branch=main'])
+
+      await mkdir(join(directory, 'packages/lumen'), { recursive: true })
+
+      await writeFile(join(directory, 'packages/lumen/package.json'), '{"version":"4.0.0"}')
+
+      git(['add', '.'])
+
+      git(['commit', '-m', 'fixture'])
+
+      if (scenario !== 'unpublished') git(['tag', '-a', 'v4.0.0', '-m', 'fixture release'])
+
+      if (scenario === 'stale') git(['commit', '--allow-empty', '-m', 'next revision'])
+
+      const output = join(directory, 'outputs')
+
+      const result = spawnSync('bash', ['-euo', 'pipefail', '-c', script], {
+        cwd: directory, encoding: 'utf8', env: { ...process.env, GITHUB_OUTPUT: output }
+      })
+
+      assert.equal(result.status, 0, result.stderr)
+
+      assert.equal(await readFile(output, 'utf8'), `published=${scenario === 'published'}\n`)
+    } finally {
+      await rm(directory, { recursive: true, force: true })
+    }
+  }
 })

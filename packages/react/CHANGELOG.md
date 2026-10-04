@@ -4,6 +4,8 @@
 
 ### Patch Changes
 
+- Preserve iframe calendar focus, newest-only toast dismissal, explicit table record identities, legacy read-only phone country submission, and valid decoded annotation axes.
+
 - Keep chart annotation IDs unique, preserve RTL range calendar navigation, and associate phone country values with explicit external forms.
 
 - Validate decoded chart annotations, restore chart legend inspection state on teardown, refresh external image-comparison reset values, restore iframe dialog focus, and preserve uncontrolled filter disclosure state.

@@ -234,7 +234,8 @@ and an older consumer: the latter must use installed contracts without silently 
 ## Automated catalog rollout
 
 The `Deploy MCP` GitHub workflow follows a successful `Release` run on `main`. It checks out that
-release's exact revision, requires the approved v4 contract and an immutable version tag at that
+release's exact revision and uses a read-only publication job to skip revisions without their
+matching version tag before entering production approval. The deployment job requires the approved v4 contract and an immutable version tag at that
 revision, and rejects a revision that is no longer the current `main`. It also requires the exact
 MCP npm version to exist before deployment. A manual rerun is restricted to `main` and enforces the
 same gates. A successful release-preparation run without a published tag cannot deploy.
