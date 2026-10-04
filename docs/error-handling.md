@@ -229,7 +229,7 @@ import {
 ```
 
 `kind` accepts `error` and `offline`; `layout` accepts `compact`, `default`, and `page`.
-`announcement` accepts `off`, `polite`, and `assertive` and defaults to polite. Set it to off when
+`announcement` accepts `off`, `polite`, and `assertive` and defaults to polite. On iOS, the title and description are posted through React Native's accessibility announcement API on mount or when the copy changes; polite queues behind speech and assertive interrupts it. Ordinary rerenders with unchanged copy do not repeat the announcement. References and action labels are not included in the explicit iOS announcement. Android and web retain live-region behavior. Set it to off when
 the state is present initially or a parent surface announces the same failure. Use `graphic` for a
 custom React node, `actions` for recovery controls, and `style` for native layout composition.
 

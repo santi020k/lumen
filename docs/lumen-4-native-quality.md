@@ -459,6 +459,28 @@ Repository type checking and zero-warning ESLint passed 23 tasks each. A fresh
 diagnostics are preserved in `.build/native-quality-long-note-bundle-check.log`. No budgets were
 raised. The full release gate and local integration remain incomplete.
 
+### React Native iOS feedback announcements
+
+Toast and ErrorState previously set Android live-region properties without posting iOS speech.
+They now post the supplied title and description through React Native's native announcement API
+on iOS. Polite messages queue behind current speech; assertive errors interrupt it, and the existing
+ErrorState off setting suppresses speech. Unchanged copy does not repeat on ordinary rerenders or
+Strict Mode effect replay. Explicit iOS announcements omit diagnostic references and action labels;
+action and dismiss controls retain their existing semantics. Android and web retain live regions
+without a second imperative announcement.
+
+Five new behavioral cases cover localized updated toast copy, deduplication, error urgency/off,
+empty messages and Android/web behavior. All 143 React Native tests passed, with unchanged public
+API classification. These tests verify calls and semantics, not successful VoiceOver delivery or
+physical-device qualification. Package documentation and a Changeset describe the correction.
+
+At committed runtime revision `373eb37a`, the full JavaScript suite passed 1,319 tests; repository
+type checking and zero-warning lint passed 23 tasks each. The clean packed React Native consumer
+and regenerated MCP snapshot/evaluation passed. Three Hermes exports per fixture on Android and
+iOS passed every unchanged import budget. The canonical gate still stops at the unchanged web
+CSS, React and Elements size limits; local release integration remains incomplete. Import logs
+and post-export committed runtime source hashes remain under `.build/native-quality-rn-announcements-*`.
+
 ### Outstanding scope and blockers
 
 The complete Required outcomes list remains authoritative. Broader phone/tablet runtime qualification and physical-device keyboard/focus and screen-reader checks,

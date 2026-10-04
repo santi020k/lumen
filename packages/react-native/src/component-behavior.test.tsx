@@ -1,5 +1,5 @@
-// cspell:words Espacios Configuración
-import { act, type ComponentRef, createRef, type ReactElement, type Ref, useState } from 'react'
+// cspell:words Espacios Configuración Cambios guardados Registro actualizado Otro
+import { act, type ComponentRef, createRef, type ReactElement, type Ref, StrictMode, useState } from 'react'
 import type { View } from 'react-native'
 
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker'
@@ -23,7 +23,7 @@ import { LumenNavigationBar } from './platform-components.js'
 import { LumenButton, LumenIcon, LumenIconButton, LumenText, LumenTextField } from './primitives.js'
 import { LumenProvider } from './provider.js'
 import { LumenCheckbox, LumenTabs } from './selection-components.js'
-import { LumenBanner, LumenStatusBar } from './structured-components.js'
+import { LumenBanner, LumenErrorState, LumenStatusBar } from './structured-components.js'
 import { LumenTimeField } from './time-components.js'
 import { LumenPicker } from './value-components.js'
 
@@ -32,6 +32,7 @@ Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true })
 const nativePlatform = vi.hoisted(() => ({ OS: 'ios' }))
 const nativeMotion = vi.hoisted(() => ({ enabled: false }))
 const accessibilityFocus = vi.hoisted(() => vi.fn())
+const accessibilityAnnouncement = vi.hoisted(() => vi.fn<(message: string, options: { queue: boolean }) => void>())
 const nativeWindow = vi.hoisted(() => ({ fontScale: 1, height: 800, scale: 2, width: 400 }))
 const safeAreaInsets = vi.hoisted(() => ({
   bottom: 34,
@@ -57,6 +58,7 @@ vi.mock('react-native', async () => {
   return {
     AccessibilityInfo: {
       addEventListener: () => ({ remove: vi.fn() }),
+      announceForAccessibilityWithOptions: accessibilityAnnouncement,
       isReduceMotionEnabled: () => Promise.resolve(nativeMotion.enabled),
       sendAccessibilityEvent: accessibilityFocus
     },
@@ -194,6 +196,8 @@ afterEach(async () => {
     await Promise.resolve()
   })
   nativeWindow.fontScale = 1
+  nativePlatform.OS = 'ios'
+  accessibilityAnnouncement.mockClear()
   vi.unstubAllGlobals()
 })
 
@@ -830,6 +834,76 @@ describe('Lumen React Native component behavior', () => {
     })
 
     expect(onDismiss).toHaveBeenCalledOnce()
+  })
+
+  test('queues localized iOS toast copy once and announces changed content', async () => {
+    const toast = (description: string) => (
+      <StrictMode><LumenToast description={description} title="Cambios guardados" /></StrictMode>
+    )
+    const root = await renderNative(toast('Registro actualizado'))
+
+    expect(accessibilityAnnouncement).toHaveBeenCalledExactlyOnceWith('Cambios guardados. Registro actualizado', { queue: true })
+
+    await act(async () => {
+      root.render(<LumenProvider scheme="light">{toast('Registro actualizado')}</LumenProvider>)
+      await Promise.resolve()
+    })
+
+    expect(accessibilityAnnouncement).toHaveBeenCalledOnce()
+
+    await act(async () => {
+      root.render(<LumenProvider scheme="light">{toast('Otro registro actualizado')}</LumenProvider>)
+      await Promise.resolve()
+    })
+
+    expect(accessibilityAnnouncement).toHaveBeenLastCalledWith('Cambios guardados. Otro registro actualizado', { queue: true })
+    expect(accessibilityAnnouncement).toHaveBeenCalledTimes(2)
+  })
+
+  test('honors iOS error announcement urgency and off without speaking diagnostic references', async () => {
+    const root = await renderNative(<LumenErrorState announcement="assertive" description="Try again" reference="request-123" title="Unable to save" />)
+
+    expect(accessibilityAnnouncement).toHaveBeenCalledExactlyOnceWith('Unable to save. Try again', { queue: false })
+
+    await act(async () => {
+      root.render(<LumenProvider scheme="light"><LumenErrorState announcement="off" title="Unable to save" /></LumenProvider>)
+      await Promise.resolve()
+    })
+
+    expect(accessibilityAnnouncement).toHaveBeenCalledOnce()
+
+    await act(async () => {
+      root.render(<LumenProvider scheme="light"><LumenErrorState announcement="polite" title="Unable to save" /></LumenProvider>)
+      await Promise.resolve()
+    })
+
+    expect(accessibilityAnnouncement).toHaveBeenLastCalledWith('Unable to save', { queue: true })
+    expect(accessibilityAnnouncement).toHaveBeenCalledTimes(2)
+  })
+
+  test('does not announce initially disabled errors or empty toast copy on iOS', async () => {
+    await renderNative(
+      <>
+        <LumenErrorState announcement="off" title="Unable to save" />
+        <LumenToast title=" " />
+      </>
+    )
+
+    expect(accessibilityAnnouncement).not.toHaveBeenCalled()
+  })
+
+  test.each(['android', 'web'])('keeps %s live regions without duplicate imperative announcements', async platform => {
+    nativePlatform.OS = platform
+    const root = await renderNative(
+      <>
+        <LumenToast title="Saved" />
+        <LumenErrorState announcement="assertive" title="Unable to save" />
+      </>
+    )
+
+    expect(readProp(findByAccessibilityRole(root, 'alert'), 'accessibilityLiveRegion')).toBe('polite')
+    expect(readProp(findByAccessibilityRole(root, 'summary'), 'accessibilityLiveRegion')).toBe('assertive')
+    expect(accessibilityAnnouncement).not.toHaveBeenCalled()
   })
 
   test('banner dismissal has a full independent touch target', async () => {

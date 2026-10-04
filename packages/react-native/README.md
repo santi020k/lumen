@@ -335,6 +335,11 @@ state contracts, image-source mapping, and accessibility requirements. Use the s
 [React Native error-handling guide](../../docs/error-handling.md#react-native) when integrating
 `LumenErrorState`; it covers error/offline classification, layouts, announcements, safe references,
 and loading-safe retries.
+On iOS, Toast and ErrorState announce their title and description when mounted or when that copy
+changes. Polite announcements queue behind current speech; assertive errors interrupt it, and
+`announcement="off"` disables ErrorState announcements. Unchanged copy is not repeated on ordinary
+rerenders. Android and web retain live-region semantics. Diagnostic references and action labels
+are excluded from the explicit iOS announcement, and action controls remain independently operable.
 See the [native compatibility matrix](../../docs/native-compatibility.md) for React and React Native
 baselines, and use the [native device validation matrix](../../docs/native-device-validation.md) for
 VoiceOver and TalkBack evidence.

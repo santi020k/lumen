@@ -14,6 +14,7 @@ import {
   View,
   type ViewProps } from 'react-native'
 
+import { useLumenAccessibilityAnnouncement } from './accessibility-announcement.js'
 import { LumenFieldContext } from './field-context.js'
 import type { LumenTextInputRef, LumenViewRef } from './native-ref-types.js'
 import {
@@ -67,6 +68,8 @@ export const LumenToast = ({
 }: LumenToastProps): ReactElement => {
   const theme = useLumenTheme()
   const colors = resolveLumenAlertColors(theme.colors, variant)
+
+  useLumenAccessibilityAnnouncement([title, description].filter(Boolean).join('. '), 'polite')
 
   return (
     <View
