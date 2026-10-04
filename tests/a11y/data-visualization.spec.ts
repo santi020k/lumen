@@ -1,9 +1,27 @@
 import { createRequire } from 'node:module'
 
-import { expect, test } from '@playwright/test'
+import { expect, type Locator, type Page, test } from '@playwright/test'
 
 const axePath = createRequire(new URL('../../packages/elements/package.json', import.meta.url)).resolve('axe-core/axe.min.js')
 const adapters = [{ id: 'astro', name: 'Astro' }, { id: 'react', name: 'React' }, { id: 'elements', name: 'Web Components' }]
+
+const expectScrollableDataPanel = async (page: Page, chart: Locator, chartWidth: number): Promise<void> => {
+  const disclosure = chart.locator('.ui-chart__data')
+  const tableRegion = disclosure.getByRole('group')
+  const disclosureBounds = await disclosure.boundingBox()
+  const regionBounds = await tableRegion.boundingBox()
+  if (!disclosureBounds || !regionBounds) throw new Error('Expected full-width data disclosure')
+  expect(disclosureBounds.width).toBeGreaterThan(chartWidth * 0.75)
+  expect(regionBounds.width).toBeGreaterThan(disclosureBounds.width - 2)
+  expect(regionBounds.height).toBeLessThanOrEqual(322)
+  await tableRegion.focus()
+  await page.keyboard.press('End')
+  await expect.poll(() => tableRegion.evaluate(region => region.scrollTop)).toBeGreaterThan(0)
+  // Sticky column labels must remain visible while the last source row is reachable.
+  const stickyHeaderTop = (await tableRegion.locator('thead th').first().boundingBox())?.y
+  expect(stickyHeaderTop).toBeCloseTo(((await tableRegion.boundingBox())?.y ?? 0) + 1, 0)
+  await expect(tableRegion.locator('tbody tr').last()).toBeInViewport()
+}
 
 for (const width of [390, 1440]) {
   test(`chart interaction, exact tables and missing values agree across web adapters at ${width}px`, async ({ page }) => {
@@ -46,6 +64,7 @@ for (const width of [390, 1440]) {
       await chart.getByText('View chart data', { exact: true }).click()
       await expect(chart.locator('table')).toContainText('Requests')
       await expect(chart.locator('table')).toContainText('Not available')
+      await expectScrollableDataPanel(page, chart, chartBounds.width)
       await toggle.click()
       await expect(chart.locator('[data-ui-chart-series="requests"]')).toBeVisible()
       await expect(scope.locator('.ui-heatmap__missing')).toHaveCount(1)
@@ -111,10 +130,13 @@ for (const theme of ['lumen-light', 'lumen-dark']) {
     await page.addScriptTag({ path: axePath })
     for (const width of [390, 1440]) {
       await page.setViewportSize({ width, height: 1000 })
-      for (const { name } of adapters) {
+      for (const { id, name } of adapters) {
         await page.getByRole('tablist', { name: 'Chart framework' }).getByRole('tab', { name, exact: true }).click()
+        // Audit the open scroll region and its table as well as the plots.
+        await page.locator(`[data-chart-demo="${id}"] .ui-line-chart .ui-chart__data > summary`).click()
         const report: unknown = await page.evaluate('axe.run(".viz-gallery")')
         expect(report).toMatchObject({ violations: [] })
+        await page.locator(`[data-chart-demo="${id}"] .ui-line-chart .ui-chart__data > summary`).click()
       }
     }
   })

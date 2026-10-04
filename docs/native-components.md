@@ -772,6 +772,12 @@ actions adapt from a row to a vertical stack when width or text size makes the r
 `success` button communicates a positive semantic outcome; `primary` remains the single default
 call to action for hierarchy.
 
+`LumenWaterfallChart` and `LumenHistogram` are available in React Native, SwiftUI, and Compose.
+Waterfalls preserve signed deltas and explicit total resets; invalid steps reject the whole plot.
+Histograms preserve numeric bin widths and gaps, require density for unequal widths, and retain
+original counts in the data disclosure. Every adapter supplies labeled axes and expandable exact
+values. Package READMEs contain platform-specific examples and formatter options.
+
 All native chart adapters accept replaceable chart labels. Finite zero is valid data; an all-zero
 series is therefore not empty, although an application may choose a scoreboard instead when the
 chart adds no value. Set `showData` to `false` only when the same values are already available in a

@@ -136,9 +136,9 @@ describe('platform documentation', () => {
       )
     }
 
-    expect(getPlatformGuide('react-native').components).toHaveLength(61)
-    expect(getPlatformGuide('android').components).toHaveLength(80)
-    expect(getPlatformGuide('apple').components).toHaveLength(72)
+    expect(getPlatformGuide('react-native').components).toHaveLength(63)
+    expect(getPlatformGuide('android').components).toHaveLength(82)
+    expect(getPlatformGuide('apple').components).toHaveLength(74)
   })
 
   test('documents accurate Apple ecosystem availability and Swift products', () => {

@@ -52,6 +52,7 @@ import {
   LumenGauge,
   LumenGraphic,
   LumenHeatmap,
+  LumenHistogram,
   LumenIcon,
   LumenIconButton,
   LumenIllustration,
@@ -91,6 +92,7 @@ import {
   type LumenTheme,
   LumenToast,
   LumenToggle,
+  LumenWaterfallChart,
   useLumenTheme
 } from '@santi020k/lumen-react-native'
 import {
@@ -1111,6 +1113,39 @@ const SettingsScreen = ({
   )
 }
 
+const IntervalChartExamples = ({ isVisible }: { isVisible: (name: string) => boolean }): ReactElement => (
+  <>
+    {isVisible('Waterfall chart') && (
+      <LumenWaterfallChart
+        label="Revenue movement"
+        heading="Revenue movement"
+        description="Opening balance to closing · USD, thousands"
+        valueLabel="USD, thousands"
+        data={[
+          { id: 'opening', label: 'Opening', kind: 'total', value: 120 },
+          { id: 'new', label: 'New', value: 85 },
+          { id: 'growth', label: 'Growth', value: 35 },
+          { id: 'costs', label: 'Costs', value: -45 },
+          { id: 'other', label: 'Other', value: -10 },
+          { id: 'closing', label: 'Closing', kind: 'total', value: 185 }
+        ]}
+      />
+    )}
+    {isVisible('Histogram') && (
+      <LumenHistogram
+        label="Response times"
+        heading="Response time"
+        description="Distribution of requests · milliseconds"
+        data={
+          [3, 8, 18, 34, 48, 57, 51, 37, 26, 15, 8, 3].map((count, index) => ({
+            start: index * 25, end: (index + 1) * 25, count
+          }))
+        }
+      />
+    )}
+  </>
+)
+
 const ChartExamples = ({
   isVisible
 }: {
@@ -1168,6 +1203,7 @@ const ChartExamples = ({
         }]}
       />
     )}
+    <IntervalChartExamples isVisible={isVisible} />
     {isVisible('Heatmap') && (
       <LumenHeatmap
         data={[
@@ -1576,7 +1612,7 @@ const Playground = ({
           </ComponentSection>
         </Visibility>
 
-        <Visibility visible={isAnyVisible('Sparkline', 'Line chart', 'Bar chart', 'Pie chart', 'Scatter chart', 'Heatmap', 'Range chart', 'Combo chart')}>
+        <Visibility visible={isAnyVisible('Sparkline', 'Line chart', 'Bar chart', 'Pie chart', 'Scatter chart', 'Waterfall chart', 'Histogram', 'Heatmap', 'Range chart', 'Combo chart')}>
           <ComponentSection
             description="Tokenized plots include a factual accessibility summary and readable fallback data."
             title="Data visualization"

@@ -346,9 +346,9 @@ Start with `createLumenTheme(scheme, { preset: 'studio' })` or `<LumenProvider p
 ## Data visualization
 
 `LumenSparkline`, `LumenLineChart`, `LumenBarChart`, `LumenPieChart`, `LumenScatterChart`,
-`LumenHeatmap`, `LumenRangeChart`, and `LumenComboChart` use shared geometry and generated chart
+`LumenHeatmap`, `LumenRangeChart`, `LumenComboChart`, `LumenWaterfallChart`, and `LumenHistogram` use shared geometry and generated chart
 tokens while rendering with `react-native-svg`. Data charts expose a concise image summary and a
-readable fallback list; selection remains controlled by the application. Line and bar charts render
+expandable readable data list; selection remains controlled by the application. Line and bar charts render
 category and value axes even when the readable list is hidden. Dense axes select labels without
 removing data, and narrow plots scroll horizontally.
 
@@ -384,6 +384,24 @@ only when equivalent accessible values appear nearby; supply a factual `summary`
 explain the comparison. Translate the `labels` support copy in the application.
 
 See the shared [data-visualization guide](../../docs/data-visualization.md).
+
+
+`LumenWaterfallChart` draws signed changes with explicit total resets and connectors. Invalid
+steps reject the complete plot so later balances cannot become misleading. `LumenHistogram`
+preserves supplied bin widths and gaps; use density for unequal widths. Data disclosures retain
+start, end, plotted value, and original density-bin counts. Empty and invalid inputs have separate
+localized messages. Expanded data stays scrollable within the card.
+
+```tsx
+<LumenWaterfallChart label="Revenue movement" data={[
+  { id: 'opening', label: 'Opening', kind: 'total', value: 100 },
+  { id: 'growth', label: 'Growth', value: 40 },
+  { id: 'costs', label: 'Costs', value: -25 }
+]} />
+<LumenHistogram label="Response time" frequency="density" data={[
+  { start: 0, end: 10, count: 5 }, { start: 10, end: 30, count: 10 }
+]} />
+```
 
 ## Consumer composition recipes
 

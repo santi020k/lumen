@@ -115,7 +115,7 @@ const IntervalPlot = ({
       {showTable && hasData && (
         <details className="ui-chart__data">
           <summary>{text.viewData}</summary>
-          <div>
+          <div aria-label={text.chartData} role="group" tabIndex={0}>
             <table>
               <thead>
                 <tr>

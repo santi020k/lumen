@@ -833,6 +833,38 @@
       "pathname": "/docs/react-native/components/scatter-chart",
       "title": "Scatter chart"
     },
+    "/docs/react-native/components/waterfall-chart": {
+      "alt": "Waterfall chart — Lumen UI",
+      "description": "Explain a balance using signed changes and explicit totals.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--waterfall-chart.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--waterfall-chart.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/waterfall-chart",
+      "title": "Waterfall chart"
+    },
+    "/docs/react-native/components/histogram": {
+      "alt": "Histogram — Lumen UI",
+      "description": "Show a distribution with explicit bins, accurate interval widths, and count or density.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--histogram.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--histogram.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/histogram",
+      "title": "Histogram"
+    },
     "/docs/react-native/components/heatmap": {
       "alt": "Heatmap — Lumen UI",
       "description": "Encode a two-dimensional matrix with the canonical sequential scale.",
@@ -1824,6 +1856,38 @@
       ],
       "pathname": "/docs/apple/components/scatter-chart",
       "title": "Scatter chart"
+    },
+    "/docs/apple/components/waterfall-chart": {
+      "alt": "Waterfall chart — Lumen UI",
+      "description": "Explain a balance using signed changes and explicit totals.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--waterfall-chart.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--waterfall-chart.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/waterfall-chart",
+      "title": "Waterfall chart"
+    },
+    "/docs/apple/components/histogram": {
+      "alt": "Histogram — Lumen UI",
+      "description": "Show a distribution with explicit bins, accurate interval widths, and count or density.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--histogram.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--histogram.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/histogram",
+      "title": "Histogram"
     },
     "/docs/apple/components/heatmap": {
       "alt": "Heatmap — Lumen UI",
@@ -2992,6 +3056,38 @@
       ],
       "pathname": "/docs/android/components/scatter-chart",
       "title": "Scatter chart"
+    },
+    "/docs/android/components/waterfall-chart": {
+      "alt": "Waterfall chart — Lumen UI",
+      "description": "Explain a balance using signed changes and explicit totals.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--waterfall-chart.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--waterfall-chart.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/waterfall-chart",
+      "title": "Waterfall chart"
+    },
+    "/docs/android/components/histogram": {
+      "alt": "Histogram — Lumen UI",
+      "description": "Show a distribution with explicit bins, accurate interval widths, and count or density.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--histogram.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--histogram.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/histogram",
+      "title": "Histogram"
     },
     "/docs/android/components/heatmap": {
       "alt": "Heatmap — Lumen UI",

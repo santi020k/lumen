@@ -269,8 +269,8 @@ Use `LumenTheme(preset = LumenThemePreset.Studio)` or customize `LumenThemeValue
 ## Data visualization
 
 `LumenSparkline`, `LumenLineChart`, `LumenBarChart`, `LumenPieChart`, `LumenScatterChart`,
-`LumenHeatmap`, `LumenRangeChart`, and `LumenComboChart` use Compose Canvas with generated chart
-tokens and TalkBack semantics. Data charts include a factual summary and a readable fallback list.
+`LumenHeatmap`, `LumenRangeChart`, `LumenComboChart`, `LumenWaterfallChart`, and `LumenHistogram` use Compose Canvas with generated chart
+tokens and TalkBack semantics. Data charts include a factual summary and an expandable readable data list.
 Use `LumenChartX.Time(epochMillis)` for time coordinates: line charts sort time samples and position
 them by elapsed time, so a long gap remains visibly longer than a short interval. Numeric line
 coordinates also use their numeric distance; categories retain their declared order.
@@ -313,6 +313,24 @@ Wear OS applications should use the sibling
 deliberately small round-screen tier without
 forcing phone applications to acquire wearable contracts or requiring consumers to migrate their
 selected Wear Material version.
+
+
+`LumenWaterfallChart` draws signed changes with explicit total resets and connectors. Invalid
+steps reject the complete plot so later balances cannot become misleading. `LumenHistogram`
+preserves supplied bin widths and gaps; use density for unequal widths. Data disclosures retain
+start, end, plotted value, and original density-bin counts. Empty and invalid inputs have separate
+localized messages. Expanded data stays scrollable within the card.
+
+```kotlin
+LumenWaterfallChart(label = "Revenue movement", data = listOf(
+    LumenWaterfallDatum("opening", "Opening", 100.0, LumenWaterfallKind.Total),
+    LumenWaterfallDatum("growth", "Growth", 40.0),
+    LumenWaterfallDatum("costs", "Costs", -25.0)
+))
+LumenHistogram(label = "Response time", frequency = LumenHistogramFrequency.Density, data = listOf(
+    LumenHistogramBin(0.0, 10.0, 5.0), LumenHistogramBin(10.0, 30.0, 10.0)
+))
+```
 
 ## Resources
 

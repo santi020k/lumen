@@ -718,7 +718,7 @@ struct ComponentsCatalogView: View {
 
     @ViewBuilder
     private var chartSection: some View {
-        if matches("Sparkline", "Line chart", "Bar chart", "Pie chart", "Scatter chart", "Heatmap", "Range chart", "Combo chart") {
+        if matches("Sparkline", "Line chart", "Bar chart", "Pie chart", "Scatter chart", "Waterfall chart", "Histogram", "Heatmap", "Range chart", "Combo chart") {
             PlaygroundSection(
                 "Data visualization",
                 description: "Tokenized plots include a factual accessibility summary and readable fallback data."
@@ -791,6 +791,22 @@ struct ComponentsCatalogView: View {
                             )
                         ]
                     )
+                }
+
+                if isVisible("Waterfall chart") {
+                    LumenWaterfallChart(label: "Revenue movement", data: [
+                        .init(id: "opening", label: "Opening", value: 120, kind: .total),
+                        .init(id: "new", label: "New", value: 85),
+                        .init(id: "growth", label: "Growth", value: 35),
+                        .init(id: "costs", label: "Costs", value: -45),
+                        .init(id: "other", label: "Other", value: -10),
+                        .init(id: "closing", label: "Closing", value: 185, kind: .total)
+                    ], heading: "Revenue movement", description: "Opening balance to closing · USD, thousands", valueLabel: "USD, thousands")
+                }
+                if isVisible("Histogram") {
+                    LumenHistogram(label: "Response times", data: [3, 8, 18, 34, 48, 57, 51, 37, 26, 15, 8, 3].enumerated().map { index, count in
+                        LumenHistogramBin(start: Double(index * 25), end: Double((index + 1) * 25), count: Double(count))
+                    }, heading: "Response time", description: "Distribution of requests · milliseconds")
                 }
                 if isVisible("Heatmap") {
                     LumenHeatmap(

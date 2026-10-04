@@ -347,6 +347,22 @@ const chartDefinitions: ComponentDefinition[] = [
     'Provides a factual summary and readable fallback data while decorative marks remain hidden.'
   ),
   chartDefinition(
+    'Waterfall chart',
+    'waterfall-chart',
+    'data',
+    'balanceChanges',
+    'Explain a balance using signed changes and explicit totals.',
+    'Provides labeled axes, a factual summary, and expandable source values; invalid changes fail closed.'
+  ),
+  chartDefinition(
+    'Histogram',
+    'histogram',
+    'data',
+    'responseTimeBins',
+    'Show a distribution with explicit bins, accurate interval widths, and count or density.',
+    'Provides labeled axes and expandable bin boundaries, plotted values, and original counts.'
+  ),
+  chartDefinition(
     'Heatmap',
     'heatmap',
     'data',

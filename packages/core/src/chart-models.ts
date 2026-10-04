@@ -160,6 +160,8 @@ export interface LumenHistogramBin {
 }
 
 export interface LumenIntervalChartOptions {
+  /** Axis text size in geometry coordinates; native renderers use their unscaled font size. */
+  axisFontSize?: number
   formatValue?: (value: number) => string
   height?: number
   width?: number
@@ -183,7 +185,13 @@ const intervalFrame = (values: readonly number[], options: LumenIntervalChartOpt
   const height = chartSize(options.height, 320)
   const domain = getLumenChartDomain(values)
   const ticks = getLumenChartTicks(domain)
-  const left = getLumenChartAxisPadding(ticks.map(options.formatValue ?? String)) * 2
+  const requestedFontSize = options.axisFontSize
+
+  const fontSize = requestedFontSize !== undefined && Number.isFinite(requestedFontSize) && requestedFontSize > 0 ?
+    requestedFontSize :
+    24
+
+  const left = Math.min(width - 64, getLumenChartAxisPadding(ticks.map(options.formatValue ?? String)) * fontSize / 12)
   const top = 32
   const right = width - 24
   const bottom = height - 48

@@ -908,7 +908,7 @@ const ChartDataTable = ({
   return (
     <details className="ui-chart__data">
       <summary>{resolvedLabels.viewData}</summary>
-      <div>
+      <div aria-label={resolvedLabels.chartData} role="group" tabIndex={0}>
         <table>
           <thead>
             <tr>
@@ -1526,7 +1526,7 @@ export const PieChart = ({
       {showTable && hasData && (
         <details className="ui-chart__data">
           <summary>{resolvedLabels.viewData}</summary>
-          <div>
+          <div aria-label={resolvedLabels.chartData} role="group" tabIndex={0}>
             <table>
               <thead>
                 <tr>
@@ -1600,7 +1600,7 @@ export const ScatterChart = ({
       {showTable && hasData && (
         <details className="ui-chart__data">
           <summary>{resolvedLabels.viewData}</summary>
-          <div>
+          <div aria-label={resolvedLabels.chartData} role="group" tabIndex={0}>
             <table>
               <thead>
                 <tr>
@@ -1713,7 +1713,7 @@ export const Heatmap = ({
       {showTable && (
         <details className="ui-chart__data">
           <summary>{resolvedLabels.viewData}</summary>
-          <div>
+          <div aria-label={resolvedLabels.chartData} role="group" tabIndex={0}>
             <table>
               <thead>
                 <tr>
@@ -1792,7 +1792,7 @@ export const RangeChart = ({
       {showTable && (
         <details className="ui-chart__data">
           <summary>{resolvedLabels.viewData}</summary>
-          <div>
+          <div aria-label={resolvedLabels.chartData} role="group" tabIndex={0}>
             <table>
               <thead>
                 <tr>

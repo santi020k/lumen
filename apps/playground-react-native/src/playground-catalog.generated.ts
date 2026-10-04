@@ -95,6 +95,8 @@ export const componentCategories: readonly ComponentCategoryDefinition[] = [
       "Bar chart",
       "Pie chart",
       "Scatter chart",
+      "Waterfall chart",
+      "Histogram",
       "Heatmap",
       "Range chart",
       "Combo chart",

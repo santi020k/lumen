@@ -18,8 +18,8 @@ decisions.
 | Where are values concentrated in a matrix? | `Heatmap` | Use labels and the sequential palette; do not rely on color alone. |
 | How does uncertainty or an interval change? | `RangeChart` | Supply low and high values in the same unit and domain. |
 | How do magnitudes and trends compare together? | `ComboChart` | Mix bars, lines, and areas only when they share a meaningful value domain. |
-| Which changes explain a final balance? | `WaterfallChart` | Use signed deltas and explicit totals; available on the web. |
-| How are observations distributed? | `Histogram` | Supply explicit bins and counts; available on the web. |
+| Which changes explain a final balance? | `WaterfallChart` | Use signed deltas and explicit totals on web and native. |
+| How are observations distributed? | `Histogram` | Supply explicit bins and counts on web and native. |
 
 Use `Chart` as the web escape hatch for a specialized SVG, canvas, or HTML visualization. Product-
 specific maps, networks, financial studies, scientific plots, and high-density interaction can use
@@ -112,8 +112,8 @@ compact legends; pie charts use clearer slice separation and a smaller default f
 
 Every data chart needs a useful accessible name. Lumen adds a factual generated summary describing
 series count, available points, range, and missing values; pass `summary` when domain context is
-more useful. Web charts expose a disclosure table by default. Native charts pair their visual plot
-with a readable data list, and controlled selection is available where the adapter supports it.
+more useful. Web charts expose a full-width disclosure table with sticky headers and a bounded, keyboard-scrollable
+body. Native charts pair their visual plot with an expandable, bounded data list, and controlled selection is available where the adapter supports it.
 
 Keep visual marks decorative to assistive technology, retain the summary and fallback data, and
 format every visible and spoken value with the same unit and locale. Do not use hue as the only

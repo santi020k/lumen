@@ -88,6 +88,7 @@ const fileFacades = new Set([
   'AdditionalComponentsKt',
   'AdvancedFormComponentsKt',
   'ChartComponentsKt',
+  'IntervalChartComponentsKt',
   'ComparisonComponentsKt',
   'ContentComponentsKt',
   'FormComponentsKt',

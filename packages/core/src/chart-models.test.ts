@@ -62,6 +62,17 @@ describe('continuous line chart model', () => {
 })
 
 describe('waterfall geometry', () => {
+  test('reserves axis space using the renderer font size and keeps a positive plotting width', () => {
+    const data = [{ id: 'value', label: 'Value', value: 120 }]
+    const native = createLumenWaterfallGeometry(data, { width: 266, axisFontSize: 12 })
+    const web = createLumenWaterfallGeometry(data, { width: 266 })
+    expect(native.left).toBe(web.left / 2)
+    const large = createLumenWaterfallGeometry(data, { width: 266, axisFontSize: 48, formatValue: value => `${value} very long units` })
+    expect(large.marks[0]?.width).toBeGreaterThan(0)
+    expect(large.right - large.left).toBeGreaterThanOrEqual(40)
+    expect(createLumenWaterfallGeometry(data, { axisFontSize: NaN }).left).toBe(createLumenWaterfallGeometry(data).left)
+  })
+
   test('uses signed changes and explicit totals without mutating input', () => {
     const data = [
       { id: 'opening', label: 'Opening', kind: 'total' as const, value: 100 },

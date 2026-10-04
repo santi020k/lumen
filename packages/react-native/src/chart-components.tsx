@@ -1,4 +1,4 @@
-import { Fragment, type ReactElement, type ReactNode } from 'react'
+import { Fragment, type ReactElement, type ReactNode, useState } from 'react'
 import {
   Pressable,
   ScrollView,
@@ -12,10 +12,12 @@ import {
   alignLumenChartSeries,
   createLumenBarGeometry,
   createLumenHeatmapGeometry,
+  createLumenHistogramGeometry,
   createLumenLineGeometry,
   createLumenPieGeometry,
   createLumenRangeGeometry,
   createLumenScatterGeometry,
+  createLumenWaterfallGeometry,
   formatLumenChartSummary,
   getLumenChartAxisPadding,
   getLumenChartCategories,
@@ -33,13 +35,16 @@ import {
   type LumenChartTone,
   type LumenComboSeries,
   type LumenHeatmapDatum,
+  type LumenHistogramBin,
   type LumenPieChartVariant,
   type LumenRangeDatum,
+  type LumenWaterfallDatum,
   resolveLumenChartLabels,
   resolveLumenChartTone,
   scaleLumenChartValue
 } from '@santi020k/lumen-core'
 
+import { LumenDisclosure } from './content-components.js'
 import { useLumenTheme } from './theme-context.js'
 import { lumenChartOpacities, lumenChartStrokeWidths } from './tokens.generated.js'
 
@@ -51,8 +56,9 @@ export type {
   LumenChartTone,
   LumenComboSeries,
   LumenHeatmapDatum,
-  LumenRangeDatum
-} from '@santi020k/lumen-core'
+  LumenHistogramBin,
+  LumenRangeDatum,
+  LumenWaterfallDatum } from '@santi020k/lumen-core'
 
 interface LumenChartFrameProps extends Omit<ViewProps, 'children'> {
   children: ReactNode
@@ -104,7 +110,7 @@ const LumenChartFrame = ({
         null}
       {description ?
         (
-          <Text style={{ color: theme.colors.inkMuted, fontSize: theme.fontSizes.sm }}>
+          <Text style={{ color: theme.colors.inkSoft, fontSize: theme.fontSizes.sm }}>
             {description}
           </Text>
         ) :
@@ -144,6 +150,22 @@ const lumenChartToneColor = (
   const index = Number.parseInt(tone.slice('series-'.length), 10) - 1
 
   return seriesColors[index] ?? theme.chartColors.series1
+}
+
+const LumenChartDataDisclosure = ({ children, labels }: {
+  children: ReactNode
+  labels: Readonly<LumenChartLabels>
+}): ReactElement => {
+  const [expanded, setExpanded] = useState(false)
+  const theme = useLumenTheme()
+
+  return (
+    <LumenDisclosure expanded={expanded} onExpandedChange={setExpanded} title={labels.viewData}>
+      <ScrollView accessibilityLabel={labels.chartData} nestedScrollEnabled style={{ maxHeight: 280 }}>
+        <View accessibilityRole="list" style={{ gap: theme.spacing.sm }}>{children}</View>
+      </ScrollView>
+    </LumenDisclosure>
+  )
 }
 
 interface LumenChartDataListProps {
@@ -199,8 +221,7 @@ const LumenChartDataList = ({
   const theme = useLumenTheme()
 
   return (
-    <View accessibilityRole="list" style={{ gap: theme.spacing.xs }}>
-      <Text style={{ color: theme.colors.ink, fontWeight: '700' }}>{labels.chartData}</Text>
+    <LumenChartDataDisclosure labels={labels}>
       {series.flatMap(item => item.data.map((datum, datumIndex) => {
         const label = chartDatumLabel(item, datum, formatCategory, formatValue, labels, includeSize)
         const selected = selectedSeriesId === item.id && selectedX === datum.x
@@ -259,7 +280,7 @@ const LumenChartDataList = ({
           </Pressable>
         )
       }))}
-    </View>
+    </LumenChartDataDisclosure>
   )
 }
 
@@ -275,14 +296,13 @@ const LumenChartStructuredDataList = ({
   const theme = useLumenTheme()
 
   return (
-    <View accessibilityRole="list" style={{ gap: theme.spacing.xs }}>
-      <Text style={{ color: theme.colors.ink, fontWeight: '700' }}>{labels.chartData}</Text>
+    <LumenChartDataDisclosure labels={labels}>
       {rows.map(row => (
         <Text key={row.id} style={{ color: theme.colors.inkSoft, fontSize: theme.fontSizes.sm }}>
           {row.label}
         </Text>
       ))}
-    </View>
+    </LumenChartDataDisclosure>
   )
 }
 
@@ -1108,3 +1128,195 @@ export const LumenComboChart = ({
     </LumenChartFrame>
   )
 }
+
+interface LumenIntervalChartProps extends Omit<ViewProps, 'children'> {
+  description?: string
+  formatValue?: (value: number) => string
+  heading?: string
+  label: string
+  labels?: Partial<LumenChartLabels>
+  showData?: boolean
+  summary?: string
+  valueLabel?: string
+}
+
+export interface LumenWaterfallChartProps extends LumenIntervalChartProps {
+  data: readonly LumenWaterfallDatum[]
+}
+
+export interface LumenHistogramProps extends LumenIntervalChartProps {
+  data: readonly LumenHistogramBin[]
+  formatBoundary?: (value: number) => string
+  frequency?: 'count' | 'density'
+  tone?: LumenChartTone
+}
+
+type LumenNativeIntervalModel =
+  ReturnType<typeof createLumenWaterfallGeometry> | ReturnType<typeof createLumenHistogramGeometry>
+
+const nativeIntervalValueLabel = (model: LumenNativeIntervalModel, text: Readonly<LumenChartLabels>): string => {
+  if (!('frequency' in model)) return text.value
+
+  return model.frequency === 'density' ? text.density : text.count
+}
+
+const nativeIntervalRows = (
+  model: LumenNativeIntervalModel, text: Readonly<LumenChartLabels>, title: string,
+  formatBoundary: (value: number) => string, formatValue: (value: number) => string
+): { id: string, label: string }[] => model.marks.map((mark, index) => {
+  const count = 'bins' in model && model.frequency === 'density' ?
+    `, ${text.count}: ${formatValue(model.bins[index]?.count ?? 0)}` :
+    ''
+
+  return {
+    id: mark.key,
+    label: `${mark.label}, ${text.start}: ${formatBoundary(mark.start)}, ${text.end}: ${formatBoundary(mark.end)}, ` +
+      `${title}: ${formatValue(mark.value)}${count}`
+  }
+})
+
+const LumenIntervalPlot = ({ model, label, formatValue }: {
+  model: LumenNativeIntervalModel
+  label: string
+  formatValue: (value: number) => string
+}): ReactElement => {
+  const theme = useLumenTheme()
+
+  return (
+    <ScrollView accessibilityLabel={label} horizontal>
+      <Svg accessible={false} height={model.height} width={model.width}>
+        {model.ticks.map(tick => (
+          <Fragment key={tick}>
+            <Line
+              stroke={theme.chartColors.grid}
+              strokeDasharray="3 5"
+              x1={model.left}
+              x2={model.right}
+              y1={model.y(tick)}
+              y2={model.y(tick)}
+            />
+            <SvgText
+              fill={theme.colors.inkSoft}
+              fontFamily={theme.fontFamilies.sans.join(', ')}
+              fontSize={12}
+              textAnchor="end"
+              transform={`translate(${model.left - 8} ${model.y(tick) + 4})`}
+            >
+              {formatValue(tick)}
+            </SvgText>
+          </Fragment>
+        ))}
+        {'connectors' in model && model.connectors.map(connector => (
+          <Line
+            key={`${connector.x1}:${connector.x2}`}
+            stroke={theme.colors.inkSoft}
+            strokeDasharray="4 4"
+            x1={connector.x1}
+            x2={connector.x2}
+            y1={connector.y}
+            y2={connector.y}
+          />
+        ))}
+        {model.marks.map(mark => (
+          <Rect
+            fill={lumenChartToneColor(mark.tone, theme)}
+            height={mark.height}
+            key={mark.key}
+            rx={2}
+            transform={`translate(${mark.x} ${mark.y})`}
+            width={mark.width}
+          />
+        ))}
+        {model.categoryTicks.map(tick => (
+          <SvgText
+            fill={theme.colors.inkSoft}
+            fontFamily={theme.fontFamilies.sans.join(', ')}
+            fontSize={12}
+            key={tick.index}
+            textAnchor={tick.textAnchor}
+            transform={`translate(${tick.position} ${model.height - 12})`}
+          >
+            {tick.label}
+          </SvgText>
+        ))}
+      </Svg>
+    </ScrollView>
+  )
+}
+
+const LumenIntervalChart = ({
+  formatBoundary,
+  formatValue = String,
+  labels,
+  createModel,
+  showData = true,
+  summary,
+  valueLabel,
+  ...props
+}: LumenIntervalChartProps & {
+  formatBoundary: (value: number) => string
+  createModel: (width: number) => LumenNativeIntervalModel
+}): ReactElement => {
+  const [width, setWidth] = useState(320)
+  const model = createModel(width)
+  const theme = useLumenTheme()
+  const text = resolveLumenChartLabels(labels)
+  const valueTitle = valueLabel ?? nativeIntervalValueLabel(model, text)
+  const series = [{ id: 'values', label: valueTitle, data: model.marks.map(mark => ({ x: mark.key, y: mark.value })) }]
+  const hasData = model.marks.length > 0
+  const factualSummary = model.valid ? formatLumenChartSummary(series, formatValue, text) : text.invalidData
+
+  return (
+    <LumenChartFrame {...props} summary={summary ?? factualSummary}>
+      {hasData ?
+        (
+          <>
+            <Text style={{ color: theme.colors.inkSoft, fontSize: theme.fontSizes.sm }}>{valueTitle}</Text>
+            <View onLayout={event => {
+              const measured = event.nativeEvent.layout.width
+
+              if (Number.isFinite(measured) && measured > 0) setWidth(Math.max(240, Math.floor(measured)))
+            }}
+            >
+              <LumenIntervalPlot model={model} label={text.chartData} formatValue={formatValue} />
+            </View>
+          </>
+        ) :
+        (
+          <Text accessibilityRole="alert" style={{ color: theme.colors.inkSoft }}>
+            {model.valid ? text.empty : text.invalidData}
+          </Text>
+        )}
+      {showData && hasData && (
+        <LumenChartStructuredDataList
+          labels={text}
+          rows={nativeIntervalRows(model, text, valueTitle, formatBoundary, formatValue)}
+        />
+      )}
+    </LumenChartFrame>
+  )
+}
+
+export const LumenWaterfallChart = ({
+  data, formatValue = String, ...props
+}: LumenWaterfallChartProps): ReactElement => (
+  <LumenIntervalChart
+    {...props}
+    formatBoundary={formatValue}
+    formatValue={formatValue}
+    createModel={width => createLumenWaterfallGeometry(data, { axisFontSize: 12, formatValue, width, height: 260 })}
+  />
+)
+
+export const LumenHistogram = ({
+  data, formatBoundary = String, formatValue = String, frequency = 'count', tone = 'series-1', ...props
+}: LumenHistogramProps): ReactElement => (
+  <LumenIntervalChart
+    {...props}
+    formatBoundary={formatBoundary}
+    formatValue={formatValue}
+    createModel={width => createLumenHistogramGeometry(data, {
+      axisFontSize: 12, formatBoundary, formatValue, frequency, tone, width, height: 260
+    })}
+  />
+)

@@ -23,6 +23,13 @@ public struct LumenChartLabels: Sendable {
     public let notAvailable: String
     public let size: String
     public let viewData: String
+    public let invalidData: String
+    public let start: String
+    public let end: String
+    public let value: String
+    public let count: String
+    public let density: String
+    public let formatValue: @Sendable (Double) -> String
     public let formatHeatmapSummary: @Sendable (Int) -> String
     public let formatRangeSummary: @Sendable (Int) -> String
     public let formatSummary: @Sendable (LumenChartSummary) -> String
@@ -32,6 +39,13 @@ public struct LumenChartLabels: Sendable {
         notAvailable: String = "Not available",
         size: String = "Size",
         viewData: String = "View chart data",
+        invalidData: String = "Chart data is invalid.",
+        start: String = "Start",
+        end: String = "End",
+        value: String = "Value",
+        count: String = "Count",
+        density: String = "Density",
+        formatValue: @escaping @Sendable (Double) -> String = { $0.formatted() },
         formatHeatmapSummary: @escaping @Sendable (Int) -> String = { count in
             count == 0 ? "No chart data available." : "\(count) heatmap \(count == 1 ? "cell" : "cells")."
         },
@@ -44,6 +58,13 @@ public struct LumenChartLabels: Sendable {
         self.notAvailable = notAvailable
         self.size = size
         self.viewData = viewData
+        self.invalidData = invalidData
+        self.start = start
+        self.end = end
+        self.value = value
+        self.count = count
+        self.density = density
+        self.formatValue = formatValue
         self.formatHeatmapSummary = formatHeatmapSummary
         self.formatRangeSummary = formatRangeSummary
         self.formatSummary = formatSummary
@@ -305,7 +326,7 @@ public struct LumenChartSummary: Equatable, Sendable {
     }
 }
 
-private extension LumenTheme {
+extension LumenTheme {
     var chartColors: LumenChartColorPalette {
         scheme == .dark ? LumenChartColors.dark : LumenChartColors.light
     }
@@ -497,7 +518,11 @@ private struct LumenChartDataList: View {
         }
         #else
         DisclosureGroup(labels.viewData) {
-            dataRows
+            ScrollView {
+                dataRows
+                    .padding(LumenSpacing.sm)
+            }
+            .frame(maxHeight: 280)
         }
         .tint(theme.colors.brand)
         #endif
@@ -521,12 +546,12 @@ func lumenScatterSymbolSize(_ size: Double?) -> Double {
     size.flatMap { $0.isFinite && $0 >= 0 ? $0 : nil } ?? 36
 }
 
-private struct LumenChartDataRow: Identifiable {
+struct LumenChartDataRow: Identifiable {
     let id: String
     let label: String
 }
 
-private struct LumenStructuredChartDataList: View {
+struct LumenStructuredChartDataList: View {
     @Environment(\.lumenTheme) private var theme
 
     let labels: LumenChartLabels
@@ -555,14 +580,18 @@ private struct LumenStructuredChartDataList: View {
         }
         #else
         DisclosureGroup(labels.viewData) {
-            dataRows
+            ScrollView {
+                dataRows
+                    .padding(LumenSpacing.sm)
+            }
+            .frame(maxHeight: 280)
         }
         .tint(theme.colors.brand)
         #endif
     }
 }
 
-private struct LumenChartFrame<Content: View>: View {
+struct LumenChartFrame<Content: View>: View {
     @Environment(\.lumenTheme) private var theme
 
     let bare: Bool
@@ -603,8 +632,14 @@ private struct LumenChartFrame<Content: View>: View {
                     }
             }
         }
-        .accessibilityLabel(label)
-        .accessibilityValue(summary)
+        .overlay(alignment: .topLeading) {
+            Text(summary)
+                .font(.system(size: 1))
+                .foregroundStyle(.clear)
+                .frame(width: 1, height: 1)
+                .accessibilityLabel(label)
+                .accessibilityValue(summary)
+        }
     }
 
     private var contents: some View {

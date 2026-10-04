@@ -79,6 +79,11 @@ import com.santi020k.lumen.LumenGraphicSize
 import com.santi020k.lumen.LumenGraphicTone
 import com.santi020k.lumen.LumenGraphicVariant
 import com.santi020k.lumen.LumenHeatmap
+import com.santi020k.lumen.LumenHistogram
+import com.santi020k.lumen.LumenHistogramBin
+import com.santi020k.lumen.LumenWaterfallChart
+import com.santi020k.lumen.LumenWaterfallDatum
+import com.santi020k.lumen.LumenWaterfallKind
 import com.santi020k.lumen.LumenHeatmapDatum
 import com.santi020k.lumen.LumenIcon
 import com.santi020k.lumen.LumenIconButton
@@ -1308,6 +1313,22 @@ private fun ChartExample(visibleNames: Set<String>) {
                 )
             )
         )
+    }
+
+    if ("Waterfall chart" in visibleNames) {
+        LumenWaterfallChart(label = "Revenue movement", heading = "Revenue movement", description = "Opening balance to closing · USD, thousands", valueLabel = "USD, thousands", data = listOf(
+            LumenWaterfallDatum("opening", "Opening", 120.0, LumenWaterfallKind.Total),
+            LumenWaterfallDatum("new", "New", 85.0),
+            LumenWaterfallDatum("growth", "Growth", 35.0),
+            LumenWaterfallDatum("costs", "Costs", -45.0),
+            LumenWaterfallDatum("other", "Other", -10.0),
+            LumenWaterfallDatum("closing", "Closing", 185.0, LumenWaterfallKind.Total)
+        ))
+    }
+    if ("Histogram" in visibleNames) {
+        LumenHistogram(label = "Response times", heading = "Response time", description = "Distribution of requests · milliseconds", data = listOf(3, 8, 18, 34, 48, 57, 51, 37, 26, 15, 8, 3).mapIndexed { index, count ->
+            LumenHistogramBin(index * 25.0, (index + 1) * 25.0, count.toDouble())
+        })
     }
     if ("Heatmap" in visibleNames) {
         LumenHeatmap(

@@ -15,6 +15,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -75,6 +79,13 @@ enum class LumenChartTone {
 @Immutable
 data class LumenChartLabels(
     val chartData: String = "Chart data",
+    val viewData: String = "View chart data",
+    val invalidData: String = "Chart data is invalid.",
+    val start: String = "Start",
+    val end: String = "End",
+    val value: String = "Value",
+    val count: String = "Count",
+    val density: String = "Density",
     val empty: String = "No chart data available.",
     val notAvailable: String = "Not available",
     val size: String = "Size",
@@ -402,7 +413,7 @@ private fun resolvedLumenChartTone(tone: LumenChartTone?, index: Int): LumenChar
     return tones[index % tones.size]
 }
 
-private fun LumenThemeValues.chartColor(tone: LumenChartTone): Color = when (tone) {
+internal fun LumenThemeValues.chartColor(tone: LumenChartTone): Color = when (tone) {
     LumenChartTone.Accent -> colors.accent
     LumenChartTone.Brand -> colors.brand
     LumenChartTone.Danger -> colors.danger
@@ -420,7 +431,7 @@ private fun LumenThemeValues.chartColor(tone: LumenChartTone): Color = when (ton
 }
 
 @Composable
-private fun LumenChartFrame(
+internal fun LumenChartFrame(
     label: String,
     summary: String,
     modifier: Modifier,
@@ -474,31 +485,33 @@ private fun LumenChartDataList(
 ) {
     val colors = LocalLumenTheme.current.colors
 
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .heightIn(max = 240.dp)
-            .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(LumenSpacing.Xs)
-    ) {
-        Text(labels.chartData, color = colors.ink, fontWeight = FontWeight.Bold)
+    var expanded by rememberSaveable { mutableStateOf(false) }
+    LumenDisclosure(title = labels.viewData, expanded = expanded, onExpandedChange = { expanded = it }) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(max = 240.dp)
+                .verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.spacedBy(LumenSpacing.Xs)
+        ) {
 
-        for (item in series) {
-            for (datum in item.data) {
-                val label = lumenChartDataLabel(item, datum, labels, includeSize)
-                val next = LumenChartSelection(item.id, datum.x)
+            for (item in series) {
+                for (datum in item.data) {
+                    val label = lumenChartDataLabel(item, datum, labels, includeSize)
+                    val next = LumenChartSelection(item.id, datum.x)
 
-                if (onSelectionChange == null || datum.y?.isFinite() != true) {
-                    Text(label, color = colors.inkSoft, style = MaterialTheme.typography.bodySmall)
-                } else {
-                    TextButton(
-                        onClick = { onSelectionChange(next) },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .heightIn(min = 44.dp)
-                            .semantics { selected = selection == next }
-                    ) {
-                        Text(label, modifier = Modifier.fillMaxWidth(), color = colors.inkSoft)
+                    if (onSelectionChange == null || datum.y?.isFinite() != true) {
+                        Text(label, color = colors.inkSoft, style = MaterialTheme.typography.bodySmall)
+                    } else {
+                        TextButton(
+                            onClick = { onSelectionChange(next) },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .heightIn(min = 44.dp)
+                                .semantics { selected = selection == next }
+                        ) {
+                            Text(label, modifier = Modifier.fillMaxWidth(), color = colors.inkSoft)
+                        }
                     }
                 }
             }
@@ -519,30 +532,32 @@ internal fun lumenChartDataLabel(
     return if (includeSize) "$base, ${labels.size}: $size" else base
 }
 
-private data class LumenStructuredChartDataRow(val id: String, val label: String)
+internal data class LumenStructuredChartDataRow(val id: String, val label: String)
 
 @Composable
-private fun LumenStructuredChartDataList(
+internal fun LumenStructuredChartDataList(
     rows: List<LumenStructuredChartDataRow>,
     labels: LumenChartLabels
 ) {
     val colors = LocalLumenTheme.current.colors
 
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .heightIn(max = 240.dp)
-            .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(LumenSpacing.Xs)
-    ) {
-        Text(labels.chartData, color = colors.ink, fontWeight = FontWeight.Bold)
-        rows.forEach { row ->
-            Text(
-                row.label,
-                color = colors.inkSoft,
-                modifier = Modifier.semantics { contentDescription = row.label },
-                style = MaterialTheme.typography.bodySmall
-            )
+    var expanded by rememberSaveable { mutableStateOf(false) }
+    LumenDisclosure(title = labels.viewData, expanded = expanded, onExpandedChange = { expanded = it }) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(max = 240.dp)
+                .verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.spacedBy(LumenSpacing.Xs)
+        ) {
+            rows.forEach { row ->
+                Text(
+                    row.label,
+                    color = colors.inkSoft,
+                    modifier = Modifier.semantics { contentDescription = row.label },
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
         }
     }
 }

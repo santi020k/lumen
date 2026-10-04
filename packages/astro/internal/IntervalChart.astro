@@ -58,7 +58,7 @@ y2={connector.y}
   </>
 )}
   {showTable && hasData && (
-<details class="ui-chart__data"><summary>{text.viewData}</summary><div><table>
+<details class="ui-chart__data"><summary>{text.viewData}</summary><div role="group" tabindex="0" aria-label={text.chartData}><table>
     <thead><tr><th scope="col">{text.category}</th><th scope="col">{text.start}</th><th scope="col">{text.end}</th><th scope="col">{valueLabel}</th>{'bins' in model && model.frequency === 'density' && <th scope="col">{text.count}</th>}</tr></thead>
     <tbody>{model.marks.map((mark, index) => <tr><th scope="row">{mark.label}</th><td>{formatBoundary(mark.start)}</td><td>{formatBoundary(mark.end)}</td><td>{formatValue(mark.value)}</td>{'bins' in model && model.frequency === 'density' && <td>{model.bins[index]?.count}</td>}</tr>)}</tbody>
   </table></div></details>

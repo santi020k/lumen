@@ -10,11 +10,12 @@ import {
   LumenBarChart,
   LumenComboChart,
   LumenHeatmap,
+  LumenHistogram,
   LumenLineChart,
   LumenPieChart,
   LumenRangeChart,
-  LumenScatterChart
-} from './chart-components.js'
+  LumenScatterChart,
+  LumenWaterfallChart } from './chart-components.js'
 
 vi.mock('react-native-svg', () => ({
   Circle: () => null,
@@ -500,5 +501,46 @@ describe('Lumen React Native chart components', () => {
 
     expect(categoryCenters).toHaveLength(3)
     expect(lineXCoordinates).toEqual(categoryCenters)
+  })
+})
+
+const isIntervalModelFactory = (value: unknown): value is (width: number) => unknown => typeof value === 'function'
+const intervalModelOf = (chart: ReactElement): unknown => {
+  const createModel = propsOf(chart).createModel
+
+  if (!isIntervalModelFactory(createModel)) throw new Error('Expected native interval geometry factory')
+
+  return createModel(320)
+}
+
+describe('native interval chart adapters', () => {
+  test('waterfall preserves signed balances and rejects partial invalid input', () => {
+    const chart = LumenWaterfallChart({ label: 'Revenue',
+      data: [
+        { id: 'opening', label: 'Balance', kind: 'total', value: 100 },
+        { id: 'income', label: 'Income', value: 40 },
+        { id: 'costs', label: 'Costs', value: -180 },
+        { id: 'closing', label: 'Balance', kind: 'total', value: -40 }
+      ] })
+    expect(intervalModelOf(chart)).toMatchObject({ valid: true,
+      marks: [
+        { start: 0, end: 100, value: 100 },
+        { start: 100, end: 140, value: 40 },
+        { start: 140, end: -40, value: -180 },
+        { start: 0, end: -40, value: -40 }
+      ] })
+    const invalid = LumenWaterfallChart({ label: 'Revenue', data: [{ id: 'invalid', label: 'Invalid', value: NaN }] })
+    expect(intervalModelOf(invalid)).toMatchObject({ valid: false, marks: [] })
+  })
+
+  test('histogram requires density for unequal bin widths and retains original counts', () => {
+    const data = [{ start: 20, end: 40, count: 10 }, { start: 0, end: 10, count: 5 }]
+    expect(intervalModelOf(LumenHistogram({ data, label: 'Distribution' }))).toMatchObject({ valid: false, marks: [] })
+    expect(intervalModelOf(LumenHistogram({ data, label: 'Distribution', frequency: 'density', formatBoundary: value => `${value} ms` }))).toMatchObject({
+      valid: true,
+      marks: [{ start: 0, end: 10, value: 0.5, label: '0 ms–10 ms' }, { start: 20, end: 40, value: 0.5 }],
+      bins: [{ count: 5 }, { count: 10 }]
+    })
+    expect(data[0]?.start).toBe(20)
   })
 })

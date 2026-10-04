@@ -453,6 +453,28 @@
       }
     },
     {
+      "id": "waterfall-chart",
+      "tier": "shared",
+      "contract": "Signed deltas and explicit total resets with connecting balances; invalid steps fail closed",
+      "accessibility": "Provides labeled axes, a factual summary, and an expandable readable data list",
+      "symbols": {
+        "reactNative": "LumenWaterfallChart",
+        "swiftUI": "LumenWaterfallChart",
+        "compose": "LumenWaterfallChart"
+      }
+    },
+    {
+      "id": "histogram",
+      "tier": "shared",
+      "contract": "Explicit numeric bins preserve widths and gaps; unequal widths require count-per-unit density",
+      "accessibility": "Provides labeled axes, a factual summary, and an expandable readable data list",
+      "symbols": {
+        "reactNative": "LumenHistogram",
+        "swiftUI": "LumenHistogram",
+        "compose": "LumenHistogram"
+      }
+    },
+    {
       "id": "heatmap",
       "tier": "shared",
       "contract": "Two-dimensional matrix encoded with a canonical sequential color scale",

@@ -5670,7 +5670,7 @@ const chartDataTableHtml = (
 
   return [
     `<details class="ui-chart__data"><summary>${escapeChartHtml(labels.viewData)}</summary>`,
-    `<div><table><thead><tr><th scope="col">${escapeChartHtml(labels.category)}</th>`,
+    `<div role="group" tabindex="0" aria-label="${escapeChartHtml(labels.chartData)}"><table><thead><tr><th scope="col">${escapeChartHtml(labels.category)}</th>`,
     `${headers}</tr></thead><tbody>${rows}</tbody></table></div></details>`
   ].join('')
 }
@@ -5692,7 +5692,7 @@ const scatterDataTableHtml = (
 
   return [
     `<details class="ui-chart__data"><summary>${escapeChartHtml(labels.viewData)}</summary>`,
-    `<div><table><thead><tr><th scope="col">${escapeChartHtml(labels.x)}</th>`,
+    `<div role="group" tabindex="0" aria-label="${escapeChartHtml(labels.chartData)}"><table><thead><tr><th scope="col">${escapeChartHtml(labels.x)}</th>`,
     `<th scope="col">${escapeChartHtml(labels.series)}</th><th scope="col">${escapeChartHtml(labels.value)}</th>`,
     `<th scope="col">${escapeChartHtml(labels.size)}</th></tr></thead>`,
     `<tbody>${rows}</tbody></table></div></details>`
@@ -5721,7 +5721,7 @@ const heatmapDataTableHtml = (
 
   return [
     `<details class="ui-chart__data"><summary>${escapeChartHtml(labels.viewData)}</summary>`,
-    `<div><table><thead><tr><th scope="col">${escapeChartHtml(labels.column)}</th>`,
+    `<div role="group" tabindex="0" aria-label="${escapeChartHtml(labels.chartData)}"><table><thead><tr><th scope="col">${escapeChartHtml(labels.column)}</th>`,
     `<th scope="col">${escapeChartHtml(labels.row)}</th><th scope="col">${escapeChartHtml(labels.value)}</th></tr></thead>`,
     `<tbody>${rows}</tbody></table></div></details>`
   ].join('')
@@ -5740,7 +5740,7 @@ const rangeDataTableHtml = (
 
   return [
     `<details class="ui-chart__data"><summary>${escapeChartHtml(labels.viewData)}</summary>`,
-    `<div><table><thead><tr><th scope="col">${escapeChartHtml(labels.category)}</th>`,
+    `<div role="group" tabindex="0" aria-label="${escapeChartHtml(labels.chartData)}"><table><thead><tr><th scope="col">${escapeChartHtml(labels.category)}</th>`,
     `<th scope="col">${escapeChartHtml(labels.low)}</th><th scope="col">${escapeChartHtml(labels.high)}</th></tr></thead>`,
     `<tbody>${rows}</tbody></table></div></details>`
   ].join('')
@@ -6256,7 +6256,7 @@ class LumenPieChartBehaviorElement extends LumenDataChartBehaviorElement {
 
     return [
       `<details class="ui-chart__data"><summary>${escapeChartHtml(labels.viewData)}</summary>`,
-      `<div><table><thead><tr><th scope="col">${escapeChartHtml(labels.category)}</th>`,
+      `<div role="group" tabindex="0" aria-label="${escapeChartHtml(labels.chartData)}"><table><thead><tr><th scope="col">${escapeChartHtml(labels.category)}</th>`,
       `<th scope="col">${escapeChartHtml(labels.value)}</th><th scope="col">Share</th></tr></thead>`,
       `<tbody>${rows}</tbody></table></div></details>`
     ].join('')
