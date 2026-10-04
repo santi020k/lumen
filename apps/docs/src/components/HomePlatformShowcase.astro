@@ -117,12 +117,12 @@ const platforms = [
 
 <style>
   .platform-showcase {
-    margin-top: clamp(2rem, 4vw, 3rem);
+    margin-top: var(--home-content-gap, 2.5rem);
     overflow: hidden;
     border-color: hsl(var(--line));
     background: hsl(var(--surface));
     padding: 0;
-    box-shadow: 0 1.5rem 4rem -3rem hsl(var(--ink) / .25);
+    box-shadow: none;
   }
 
   .platform-showcase__tabs {
@@ -148,7 +148,7 @@ const platforms = [
     align-items: center;
     justify-content: center;
     gap: .65rem;
-    border-radius: .6rem;
+    border-radius: var(--ui-radius-sm);
     color: hsl(var(--ink-soft));
     font-size: .9rem;
     font-weight: 650;
@@ -193,8 +193,8 @@ const platforms = [
     margin: 1.25rem 0 0;
     color: hsl(var(--ink));
     font-family: var(--app-font-display), sans-serif;
-    font-size: clamp(1.8rem, 3.2vw, 2.7rem);
-    font-weight: 750;
+    font-size: clamp(1.5rem, 2.5vw, 2.25rem);
+    font-weight: 700;
     letter-spacing: -.035em;
     line-height: 1.12;
     text-wrap: balance;

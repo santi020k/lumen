@@ -11,6 +11,8 @@ import {
   ButtonLink,
   Card,
   Checkbox,
+  Code,
+  CodeTabs,
   Eyebrow,
   Field,
   Icon,
@@ -20,10 +22,8 @@ import {
   Marker,
   RevealGroup,
   ScrollReveal,
-  Stat,
-  Switch,
-  Tabs
-} from '@santi020k/lumen-astro'
+  Stack,
+  Stat } from '@santi020k/lumen-astro'
 
 import HomePlatformShowcase from '../components/HomePlatformShowcase.astro'
 import HomeWorkbench from '../components/HomeWorkbench.astro'
@@ -35,17 +35,11 @@ import BaseLayout from '../layouts/BaseLayout.astro'
 const componentCount = documentedComponentCount
 const aiSkillInstallCommand = 'npx skills add santi020k/lumen --skill lumen-ui'
 
-const installerIcons = {
-  astro: 'asterisk',
-  elements: 'blocks',
-  react: 'atom'
-} as const
-
 const heroInstallers = frameworkSetups.map(setup => ({
-  command: setup.installCommands.find(install => install.label === 'pnpm')?.command ?? '',
-  icon: installerIcons[setup.id],
-  id: setup.id,
-  label: setup.label
+  code: setup.installCommands.find(install => install.label === 'pnpm')?.command ?? '',
+  label: setup.label,
+  language: 'shell',
+  value: setup.id
 }))
 
 const principles = [
@@ -126,7 +120,7 @@ const useCases: readonly UseCase[] = featuredProjects.flatMap(name => {
       <RevealGroup class="home-hero__copy" stagger={70}>
         <Eyebrow class="home-hero__eyebrow">
           <Marker variant="success">Open source</Marker>
-          <span>{componentCount} crafted primitives</span>
+          <span>{componentCount} primitives</span>
         </Eyebrow>
         <h1>
           Build interfaces<br />
@@ -144,40 +138,14 @@ const useCases: readonly UseCase[] = featuredProjects.flatMap(name => {
             Explore components
           </ButtonLink>
         </div>
-        <Tabs class="home-installer" glass="subtle">
-          <span class="home-installer__label">Web quick install</span>
-          <div role="tablist" aria-label="Choose a web framework to install">
-            {heroInstallers.map((installer, index) => (
-              <button
-                aria-controls={`hero-install-panel-${installer.id}`}
-                aria-selected={index === 0 ? 'true' : 'false'}
-                id={`hero-install-tab-${installer.id}`}
-                role="tab"
-              >
-                <Icon name={installer.icon} size="sm" />
-                {installer.label}
-              </button>
-            ))}
-          </div>
-          {heroInstallers.map((installer, index) => (
-            <section
-              aria-labelledby={`hero-install-tab-${installer.id}`}
-              hidden={index !== 0}
-              id={`hero-install-panel-${installer.id}`}
-              role="tabpanel"
-            >
-              <Button
-                class="home-install"
-                data-copy-command={installer.command}
-                variant="ghost"
-              >
-                <Icon name="terminal" size="sm" />
-                <code>{installer.command}</code>
-                <span class="home-install__copy" data-copy-feedback>Copy</span>
-              </Button>
-            </section>
-          ))}
-        </Tabs>
+        <CodeTabs
+          ariaLabel="Choose a web framework to install"
+          class="home-installer"
+          codeLabel="Web install command"
+          copiedLabel="Install command copied"
+          copyLabel="Copy install command"
+          items={heroInstallers}
+        />
       </RevealGroup>
 
       <ScrollReveal animation="scale" class="home-hero__product" delay={140}>
@@ -194,13 +162,13 @@ const useCases: readonly UseCase[] = featuredProjects.flatMap(name => {
       <div class="home-container home-proof__inner">
         <p>One system. Every surface.</p>
         <div class="home-proof__stats">
-          <Stat label="components">
+          <Stat label="components" variant="bare">
             <span class="ui-stat-value"><AnimatedNumber value={componentCount} /></span>
           </Stat>
-          <Stat label="product platforms">
+          <Stat label="product platforms" variant="bare">
             <span class="ui-stat-value"><AnimatedNumber value={4} /></span>
           </Stat>
-          <Stat label="runtime lock-in">
+          <Stat label="runtime lock-in" variant="bare">
             <span class="ui-stat-value"><AnimatedNumber value={0} /></span>
           </Stat>
         </div>
@@ -278,17 +246,17 @@ const useCases: readonly UseCase[] = featuredProjects.flatMap(name => {
             <span>Forms</span>
             <Marker variant="success">Valid</Marker>
           </div>
-          <div class="home-specimen__form">
+          <Stack class="home-specimen__form" gap="md">
             <Field>
               <Label for="home-email">Work email</Label>
               <Input id="home-email" placeholder="you@company.com" type="email" />
             </Field>
-            <label>
+            <Label class="home-specimen__preference">
               <Checkbox checked />
               <span>Send me product updates</span>
-            </label>
+            </Label>
             <Button>Join the preview</Button>
-          </div>
+          </Stack>
         </Card>
 
         <Card class="home-specimen home-specimen--feedback">
@@ -317,7 +285,7 @@ const useCases: readonly UseCase[] = featuredProjects.flatMap(name => {
         <Card class="home-specimen home-specimen--tokens">
           <div class="home-specimen__label">
             <span>Semantic tokens</span>
-            <Switch aria-label="Enable brand theme" checked />
+            <Badge variant="secondary">Shared roles</Badge>
           </div>
           <div class="home-specimen__swatches" aria-label="Token colors">
             <span style="--swatch: hsl(var(--brand));">brand</span>
@@ -429,9 +397,9 @@ const useCases: readonly UseCase[] = featuredProjects.flatMap(name => {
 
     <section class="home-section home-container home-ai" id="ai-native" aria-labelledby="ai-title">
       <ScrollReveal animation="slide-up">
-        <div class="home-ai__copy">
+        <div class="home-section__head home-ai__copy">
           <Eyebrow>AI-native UI</Eyebrow>
-          <h2 id="ai-title">Give your coding agent<br />the Lumen design system.</h2>
+          <h2 id="ai-title">Give your coding agent the Lumen design system.</h2>
           <p>
             Install one portable skill for Codex, Claude Code, Cursor, Windsurf, and other Agent
             Skills clients. It teaches your AI to choose real Lumen primitives, respect the current
@@ -448,31 +416,24 @@ const useCases: readonly UseCase[] = featuredProjects.flatMap(name => {
         </div>
       </ScrollReveal>
       <ScrollReveal animation="scale" delay={100}>
-        <Card class="home-ai__terminal" glass="subtle">
-          <div class="home-ai__terminal-head">
-            <div class="home-ai__terminal-dots" aria-hidden="true">
-              <span></span><span></span><span></span>
-            </div>
-            <Badge variant="outline">Agent Skills</Badge>
-          </div>
-          <div class="home-ai__terminal-line">
-            <span>$</span>
-            <code>{aiSkillInstallCommand}</code>
-          </div>
+        <Card class="home-ai__terminal">
+          <Code
+            code={aiSkillInstallCommand}
+            copy
+            copiedLabel="AI skill install command copied"
+            copyLabel="Copy AI skill install command"
+            label="Agent Skills"
+            language="shell"
+            variant="block"
+            wrap
+          />
           <div class="home-ai__agent-flow">
             <span><Icon decorative name="scan-search" size="sm" /> Detect framework</span>
             <span><Icon decorative name="blocks" size="sm" /> Select primitives</span>
             <span><Icon decorative name="palette" size="sm" /> Apply tokens</span>
             <span><Icon decorative name="shield-check" size="sm" /> Verify behavior</span>
           </div>
-          <Button
-            class="home-ai__copy-command"
-            data-copy-command={aiSkillInstallCommand}
-            variant="ghost"
-          >
-            <Icon decorative name="copy" size="sm" />
-            <span data-copy-feedback>Copy install command</span>
-          </Button>
+
         </Card>
       </ScrollReveal>
     </section>
@@ -480,46 +441,12 @@ const useCases: readonly UseCase[] = featuredProjects.flatMap(name => {
   </main>
 </BaseLayout>
 
-<script>
-  const initHomeCopy = () => {
-    for (const button of document.querySelectorAll<HTMLButtonElement>('[data-copy-command]')) {
-      if (button.dataset.copyInit === 'true') continue
-
-      button.dataset.copyInit = 'true'
-
-      button.addEventListener('click', async () => {
-        const command = button.dataset.copyCommand
-
-        if (!command) return
-
-        try {
-          await navigator.clipboard.writeText(command)
-
-          const feedback = button.querySelector('[data-copy-feedback]')
-
-          if (!feedback) return
-
-          feedback.textContent = 'Copied'
-
-          setTimeout(() => {
-            feedback.textContent = 'Copy'
-          }, 1800)
-        } catch {
-          // Clipboard access can be unavailable in non-secure preview contexts.
-        }
-      })
-    }
-  }
-
-  initHomeCopy()
-
-  document.addEventListener('astro:page-load', initHomeCopy)
-</script>
-
 <style>
   .home {
-    overflow: hidden;
-    padding-bottom: clamp(5rem, 10vw, 9rem);
+    --home-section-space: clamp(4rem, 7vw, 7rem);
+    --home-content-gap: clamp(1.5rem, 3vw, 2.5rem);
+    overflow: clip;
+    padding-bottom: var(--home-section-space);
   }
 
   .home-container {
@@ -529,7 +456,7 @@ const useCases: readonly UseCase[] = featuredProjects.flatMap(name => {
 
   .home-hero {
     position: relative;
-    padding: clamp(5rem, 10vw, 8.5rem) 0 0;
+    padding: var(--home-section-space) 0 0;
   }
 
   .home-hero__wash {
@@ -564,14 +491,14 @@ const useCases: readonly UseCase[] = featuredProjects.flatMap(name => {
   }
 
   .home-hero h1 {
-    max-width: 13ch;
+    max-width: 20ch;
     margin: 0;
     color: hsl(var(--ink));
     font-family: var(--app-font-display), "Montserrat", sans-serif;
-    font-size: clamp(3.25rem, 7.4vw, 6.65rem);
-    font-weight: 800;
+    font-size: clamp(3rem, 6vw, 5.25rem);
+    font-weight: 700;
     letter-spacing: -.045em;
-    line-height: .96;
+    line-height: 1.06;
   }
 
   .home-hero h1 em {
@@ -617,105 +544,15 @@ const useCases: readonly UseCase[] = featuredProjects.flatMap(name => {
   }
 
   .home-installer {
-    display: grid;
-    width: min(100%, 49rem);
-    margin-top: 1.1rem;
-    grid-template-columns: auto auto minmax(0, 1fr);
-    align-items: center;
-    gap: .35rem;
-    border: 1px solid hsl(var(--line) / .8);
-    border-radius: 999px;
-    background:
-      linear-gradient(180deg, hsl(var(--canvas) / .38), transparent),
-      hsl(var(--surface) / .66);
-    box-shadow:
-      0 12px 38px hsl(var(--ink) / .055),
-      inset 0 1px 0 hsl(var(--canvas) / .9);
-    padding: .3rem;
-    backdrop-filter: blur(18px);
-  }
-
-  .home-installer__label {
-    padding-inline: .8rem .45rem;
-    color: hsl(var(--ink-muted));
-    font-size: .62rem;
-    font-weight: 800;
-    letter-spacing: .09em;
-    text-transform: uppercase;
-    white-space: nowrap;
-  }
-
-  .home-installer [role="tablist"] {
-    width: auto;
-    justify-content: start;
-    gap: .1rem;
-    border: 0;
-    border-radius: 999px;
-    background: hsl(var(--surface-muted) / .7);
-    padding: .18rem;
-  }
-
-  .home-installer [role="tab"] {
-    display: inline-flex;
-    min-width: 0;
-    align-items: center;
-    justify-content: center;
-    gap: .32rem;
-    border-radius: 999px;
-    padding: .34rem .55rem;
-    font-size: .72rem;
-  }
-
-  .home-installer [role="tab"][aria-selected="true"] {
-    background: hsl(var(--surface) / .92);
-    color: hsl(var(--brand));
-    box-shadow: 0 2px 10px hsl(var(--ink) / .08);
-  }
-
-  .home-installer [role="tabpanel"] {
-    min-width: 0;
-    border-left: 1px solid hsl(var(--line) / .8);
-  }
-
-  .home-install {
-    width: 100%;
-    min-width: 0;
-    justify-content: flex-start;
-    gap: .65rem;
-    border: 0;
-    border-radius: 999px;
-    background: transparent;
-    padding-inline: .8rem;
-  }
-
-  .home-install :global(.ui-button__content) {
-    width: 100%;
-    min-width: 0;
-  }
-
-  .home-install code {
-    min-width: 0;
-    flex: 1;
-    color: hsl(var(--ink-soft));
-    font-size: .78rem;
+    width: min(100%, 34rem);
+    margin-top: 1.5rem;
     text-align: left;
-    overflow-wrap: anywhere;
-    white-space: normal;
-  }
-
-  .home-install__copy {
-    flex-shrink: 0;
-    color: hsl(var(--brand));
-    font-size: .64rem;
-    font-weight: 800;
-    letter-spacing: .04em;
-    text-transform: uppercase;
   }
 
   .home-hero__product {
     position: relative;
-    width: min(100% - 2.5rem, 82rem);
-    margin: clamp(3.5rem, 7vw, 6rem) auto 0;
+    width: min(100% - 2.5rem, 74rem);
+    margin: var(--home-section-space) auto 0;
   }
 
   .home-hero__product::before {
@@ -735,7 +572,7 @@ const useCases: readonly UseCase[] = featuredProjects.flatMap(name => {
     margin: 0 0 .8rem .5rem;
     color: hsl(var(--ink-muted));
     font-size: .66rem;
-    font-weight: 800;
+    font-weight: 700;
     letter-spacing: .08em;
     text-transform: uppercase;
   }
@@ -750,7 +587,7 @@ const useCases: readonly UseCase[] = featuredProjects.flatMap(name => {
     border-top: 1px solid hsl(var(--line) / .7);
     border-bottom: 1px solid hsl(var(--line) / .7);
     background: hsl(var(--surface-muted) / .35);
-    margin-top: 5rem;
+    margin-top: var(--home-section-space);
     padding: 2rem 0;
   }
 
@@ -765,7 +602,7 @@ const useCases: readonly UseCase[] = featuredProjects.flatMap(name => {
     margin: 0;
     color: hsl(var(--ink));
     font-family: var(--app-font-display), sans-serif;
-    font-weight: 800;
+    font-weight: 700;
   }
 
   .home-proof__stats {
@@ -780,12 +617,12 @@ const useCases: readonly UseCase[] = featuredProjects.flatMap(name => {
     color: hsl(var(--ink));
     font-family: var(--app-font-display), sans-serif;
     font-size: 1.4rem;
-    font-weight: 800;
+    font-weight: 700;
   }
 
   .home-proof__stats :global(.ui-stat-label) {
     color: hsl(var(--ink-muted));
-    font-size: .62rem;
+    font-size: .75rem;
   }
 
   .home-proof__categories {
@@ -796,7 +633,7 @@ const useCases: readonly UseCase[] = featuredProjects.flatMap(name => {
   }
 
   .home-section {
-    padding-top: clamp(6rem, 11vw, 10rem);
+    padding-top: var(--home-section-space);
   }
 
   .home-section__head {
@@ -814,10 +651,11 @@ const useCases: readonly UseCase[] = featuredProjects.flatMap(name => {
     margin: 0;
     color: hsl(var(--ink));
     font-family: var(--app-font-display), "Montserrat", sans-serif;
-    font-size: clamp(2.2rem, 5vw, 4rem);
-    font-weight: 800;
+    font-size: clamp(2rem, 3.5vw, 3rem);
+    font-weight: 700;
+    text-wrap: balance;
     letter-spacing: -.03em;
-    line-height: 1.08;
+    line-height: 1.15;
   }
 
   .home-section__aside {
@@ -836,8 +674,8 @@ const useCases: readonly UseCase[] = featuredProjects.flatMap(name => {
   .home-specimens {
     display: grid;
     grid-template-columns: repeat(12, minmax(0, 1fr));
-    gap: .9rem;
-    margin-top: 3rem;
+    gap: 1rem;
+    margin-top: var(--home-content-gap);
   }
 
   .home-specimen {
@@ -848,7 +686,7 @@ const useCases: readonly UseCase[] = featuredProjects.flatMap(name => {
     overflow: hidden;
     border-color: hsl(var(--line) / .86);
     box-shadow: none;
-    padding: 1.15rem;
+    padding: clamp(1rem, 2vw, 1.5rem);
   }
 
   .home-specimen--actions { grid-column: span 7; }
@@ -862,15 +700,15 @@ const useCases: readonly UseCase[] = featuredProjects.flatMap(name => {
     justify-content: space-between;
     gap: 1rem;
     color: hsl(var(--ink));
-    font-size: .74rem;
-    font-weight: 800;
+    font-size: .875rem;
+    font-weight: 700;
   }
 
   .home-specimen__center {
     display: grid;
     min-height: 10rem;
     place-items: center;
-    border-radius: .9rem;
+    border-radius: var(--ui-radius);
     background:
       linear-gradient(hsl(var(--line) / .35) 1px, transparent 1px),
       linear-gradient(90deg, hsl(var(--line) / .35) 1px, transparent 1px),
@@ -881,26 +719,24 @@ const useCases: readonly UseCase[] = featuredProjects.flatMap(name => {
   .home-specimen > p {
     margin: auto 0 0;
     color: hsl(var(--ink-muted));
-    font-size: .78rem;
+    font-size: .875rem;
     line-height: 1.6;
   }
 
   .home-specimen__form {
-    display: grid;
-    gap: .8rem;
     margin: auto 0;
     border: 1px solid hsl(var(--line) / .75);
-    border-radius: 1rem;
+    border-radius: var(--ui-radius);
     background: hsl(var(--surface-muted) / .45);
     padding: 1rem;
   }
 
-  .home-specimen__form > label {
+  .home-specimen__preference {
     display: flex;
     align-items: center;
     gap: .55rem;
     color: hsl(var(--ink-soft));
-    font-size: .72rem;
+    font-size: .875rem;
   }
 
   .home-specimen__form :global(.ui-input) {
@@ -946,7 +782,7 @@ const useCases: readonly UseCase[] = featuredProjects.flatMap(name => {
   .home-specimen__swatches span::before {
     height: 5.5rem;
     border: 1px solid hsl(var(--line) / .5);
-    border-radius: .7rem;
+    border-radius: var(--ui-radius-sm);
     background: var(--swatch);
     content: "";
   }
@@ -954,8 +790,8 @@ const useCases: readonly UseCase[] = featuredProjects.flatMap(name => {
   .home-use-cases__grid {
     display: grid;
     grid-template-columns: repeat(12, minmax(0, 1fr));
-    gap: 1.25rem;
-    margin-top: 3rem;
+    gap: 1rem;
+    margin-top: var(--home-content-gap);
   }
 
   .home-use-case {
@@ -966,7 +802,7 @@ const useCases: readonly UseCase[] = featuredProjects.flatMap(name => {
     overflow: hidden;
     border-color: hsl(var(--line) / .78);
     background: hsl(var(--surface) / .88);
-    box-shadow: 0 24px 64px -46px hsl(var(--ink) / .68);
+    box-shadow: none;
     padding: 0;
   }
 
@@ -1168,19 +1004,17 @@ const useCases: readonly UseCase[] = featuredProjects.flatMap(name => {
   }
 
   .home-principles {
-    margin-top: clamp(6rem, 11vw, 10rem);
+    margin-top: var(--home-section-space);
     border-top: 1px solid hsl(var(--line) / .7);
     border-bottom: 1px solid hsl(var(--line) / .7);
-    background:
-      radial-gradient(circle at 85% 15%, hsl(var(--brand) / .12), transparent 28%),
-      hsl(var(--surface-muted) / .42);
-    padding: clamp(5rem, 9vw, 8rem) 0;
+    background: hsl(var(--surface-muted) / .45);
+    padding: var(--home-section-space) 0;
   }
 
   .home-principles__grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    margin-top: 3.5rem;
+    margin-top: var(--home-content-gap);
     border-top: 1px solid hsl(var(--line));
     border-bottom: 1px solid hsl(var(--line));
   }
@@ -1190,7 +1024,7 @@ const useCases: readonly UseCase[] = featuredProjects.flatMap(name => {
     display: grid;
     align-content: start;
     gap: 1rem;
-    min-height: 21rem;
+    min-height: 18rem;
     padding: 2rem;
   }
 
@@ -1207,7 +1041,7 @@ const useCases: readonly UseCase[] = featuredProjects.flatMap(name => {
   .home-principle > :global(.ui-icon) {
     width: 2rem;
     height: 2rem;
-    margin-top: 1.5rem;
+    margin-top: .5rem;
     color: hsl(var(--brand));
   }
 
@@ -1234,7 +1068,7 @@ const useCases: readonly UseCase[] = featuredProjects.flatMap(name => {
 
   .home-ai {
     display: grid;
-    grid-template-columns: minmax(0, .9fr) minmax(24rem, 1.1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: clamp(2rem, 6vw, 5rem);
     align-items: center;
   }
@@ -1243,16 +1077,6 @@ const useCases: readonly UseCase[] = featuredProjects.flatMap(name => {
     display: grid;
     justify-items: start;
     gap: 1rem;
-  }
-
-  .home-ai__copy h2 {
-    margin: 0;
-    color: hsl(var(--ink));
-    font-family: var(--app-font-display), "Montserrat", sans-serif;
-    font-size: clamp(2.2rem, 5vw, 3.8rem);
-    font-weight: 800;
-    letter-spacing: -.03em;
-    line-height: 1.08;
   }
 
   .home-ai__copy > p {
@@ -1273,53 +1097,12 @@ const useCases: readonly UseCase[] = featuredProjects.flatMap(name => {
 
   .home-ai__terminal {
     display: grid;
+    min-width: 0;
     gap: 1rem;
-    overflow: hidden;
-    border-color: hsl(var(--brand) / .22);
-    background:
-      radial-gradient(circle at 90% 0%, hsl(var(--brand) / .16), transparent 34%),
-      hsl(var(--surface) / .82);
-    box-shadow: 0 28px 72px -52px hsl(var(--ink) / .55);
-    padding: 1rem;
-  }
-
-  .home-ai__terminal-head {
-    display: flex;
-    align-items: center;
-    gap: .35rem;
-  }
-
-  .home-ai__terminal-dots {
-    display: flex;
-    gap: .35rem;
-  }
-
-  .home-ai__terminal-dots span {
-    width: .55rem;
-    height: .55rem;
-    border-radius: 999px;
-    background: hsl(var(--line));
-  }
-
-  .home-ai__terminal-head :global(.ui-badge) {
-    margin-left: auto;
-  }
-
-  .home-ai__terminal-line {
-    display: flex;
-    gap: .65rem;
-    overflow-x: auto;
-    border: 1px solid hsl(var(--line) / .8);
-    border-radius: .8rem;
-    background: hsl(var(--canvas) / .78);
-    padding: .9rem;
-    color: hsl(var(--brand));
-    font: 700 .76rem/1.5 var(--santi020k-font-mono, monospace);
-    white-space: nowrap;
-  }
-
-  .home-ai__terminal-line code {
-    color: hsl(var(--ink));
+    border-color: hsl(var(--line));
+    background: hsl(var(--surface));
+    box-shadow: none;
+    padding: clamp(1rem, 2vw, 1.5rem);
   }
 
   .home-ai__agent-flow {
@@ -1328,11 +1111,11 @@ const useCases: readonly UseCase[] = featuredProjects.flatMap(name => {
     gap: .55rem;
   }
 
-  .home-ai__agent-flow span {
+  .home-ai__agent-flow > span {
     display: flex;
     align-items: center;
     gap: .55rem;
-    border-radius: .7rem;
+    border-radius: var(--ui-radius-sm);
     background: hsl(var(--surface-muted) / .72);
     padding: .7rem;
     color: hsl(var(--ink-soft));
@@ -1342,11 +1125,6 @@ const useCases: readonly UseCase[] = featuredProjects.flatMap(name => {
 
   .home-ai__agent-flow :global(.ui-icon) {
     color: hsl(var(--brand));
-  }
-
-  .home-ai__copy-command:global(.ui-button) {
-    justify-self: start;
-    color: hsl(var(--ink-soft));
   }
 
   .home-platforms {
@@ -1396,44 +1174,11 @@ const useCases: readonly UseCase[] = featuredProjects.flatMap(name => {
 
   }
 
-  @media (max-width: 52rem) {
-    .home-installer {
-      grid-template-columns: 1fr;
-      gap: .25rem;
-      border-radius: calc(var(--ui-radius) + .35rem);
-      padding: .38rem;
-    }
-
-    .home-installer__label {
-      display: none;
-    }
-
-    .home-installer [role="tablist"] {
-      width: 100%;
-      justify-content: stretch;
-    }
-
-    .home-installer [role="tab"] {
-      flex: 1;
-      padding-inline: .45rem;
-      font-size: .78rem;
-    }
-
-    .home-installer [role="tabpanel"] {
-      border-top: 1px solid hsl(var(--line) / .75);
-      border-left: 0;
-    }
-
-    .home-install {
-      min-height: 2.65rem;
-    }
-  }
-
   @media (max-width: 720px) {
     .home-container,
     .home-hero__copy,
     .home-hero__product {
-      width: min(100% - 1.5rem, 74rem);
+      width: min(100% - 2rem, 74rem);
     }
 
     .home-hero {
@@ -1441,7 +1186,7 @@ const useCases: readonly UseCase[] = featuredProjects.flatMap(name => {
     }
 
     .home-hero h1 {
-      font-size: clamp(3.15rem, 15vw, 5rem);
+      font-size: clamp(2.5rem, 10.5vw, 4rem);
     }
 
     .home-hero__lede {
@@ -1528,7 +1273,8 @@ const useCases: readonly UseCase[] = featuredProjects.flatMap(name => {
     }
 
     .home-specimen__center :global(.ui-button-group) {
-      transform: scale(.86);
+      flex-wrap: wrap;
+      justify-content: center;
     }
   }
 </style>

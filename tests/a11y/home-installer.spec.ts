@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test'
 
 for (const theme of ['lumen-light', 'lumen-dark']) {
-  test(`home installer keeps commands and copy feedback inside the bar in ${theme}`, async ({ page }) => {
+  test(`home installer keeps commands and copy feedback inside the code tabs in ${theme}`, async ({ page }) => {
     await page.addInitScript(value => {
       localStorage.setItem('lumen-theme', value)
       Object.defineProperty(navigator, 'clipboard', {
@@ -37,15 +37,17 @@ for (const theme of ['lumen-light', 'lumen-dark']) {
         const command = `pnpm add @santi020k/lumen-${framework}`
 
         await expect(panel.locator('code')).toHaveText(command)
+        const copyButton = panel.getByRole('button')
         await page.keyboard.press('Tab')
-        await expect(panel.getByRole('button')).toBeFocused()
+        await expect(copyButton).toBeFocused()
         await page.keyboard.press('Enter')
-        await expect(panel.locator('[data-copy-feedback]')).toHaveText('Copied')
+        await expect(copyButton).toHaveAttribute('data-state', 'copied')
+        await expect(copyButton).toHaveAccessibleName('Install command copied')
         await expect(page.locator('html')).toHaveAttribute('data-copied-command', command)
 
         const fits = await installer.evaluate(element => {
           const bounds = element.getBoundingClientRect()
-          const content = element.querySelectorAll('[role="tab"], [role="tabpanel"]:not([hidden]) *')
+          const content = element.querySelectorAll('[role="tab"], [role="tabpanel"]:not([hidden]) pre, [role="tabpanel"]:not([hidden]) button')
 
           return bounds.left >= 0 && bounds.right <= window.innerWidth && [...content].every(child => {
             const rect = child.getBoundingClientRect()
@@ -62,3 +64,47 @@ for (const theme of ['lumen-light', 'lumen-dark']) {
     }
   })
 }
+
+test('homepage reports unavailable clipboard access and supports retry', async ({ page }) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, 'clipboard', {
+      value: { writeText: () => Promise.reject(new Error('Clipboard unavailable')) }
+    })
+  })
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.goto('/')
+
+  for (const selector of ['.home-installer', '.home-ai__terminal']) {
+    const container = page.locator(selector)
+    const button = container.getByRole('button')
+    await button.click()
+    await expect(button).toHaveAttribute('data-state', 'error')
+    await expect(button).toHaveAccessibleName('Could not copy code. Select and copy it manually.')
+    await expect(container.locator('code:visible')).not.toBeEmpty()
+
+    await page.evaluate(() => {
+      navigator.clipboard.writeText = () => Promise.resolve()
+    })
+    await button.click()
+    await expect(button).toHaveAttribute('data-state', 'copied')
+
+    await page.evaluate(() => {
+      navigator.clipboard.writeText = () => Promise.reject(new Error('Clipboard unavailable'))
+    })
+  }
+})
+
+test('homepage chart exposes its illustrative data to keyboard users', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.goto('/')
+  await page.setViewportSize({ width: 390, height: 844 })
+  const chart = page.locator('.home-workbench__chart')
+  const disclosure = chart.locator('summary')
+  await disclosure.focus()
+  await page.keyboard.press('Enter')
+  await expect(chart.getByRole('table')).toBeVisible()
+  await expect(chart.getByRole('row')).toHaveCount(7)
+  await expect(chart.getByRole('row').last()).toHaveText('Jul$48.29k')
+  await page.keyboard.press('Enter')
+  await expect(chart.getByRole('table')).toBeHidden()
+})

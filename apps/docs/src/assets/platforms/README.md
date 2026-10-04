@@ -4,7 +4,7 @@ These WebP images show real Lumen interfaces. Keep each capture at its original 
 the homepage displays the complete image without a cover crop or a fading overlay.
 
 - `web.webp`: the homepage `HomeWorkbench` canvas, captured in the Lumen light theme at a
-  1440 px viewport. Only the canvas bounds are captured (1312 × 722 px).
+  1440 px viewport. Only the canvas bounds are captured (1184 × 802 px).
 - `react-native.webp`: the local Expo browser preview at
   `/native-previews/react-native-live/index.html?destination=examples&pattern=profile`, captured
   at 390 × 844 px. The caption explicitly identifies this as a browser preview.
