@@ -140,6 +140,7 @@ const LumenPickerControl = <Value extends number | string,>({
                   }}
                   style={({ pressed }) => ({
                     backgroundColor: optionSelected ? theme.colors.brandSoft : theme.colors.surface,
+                    justifyContent: 'center',
                     minHeight: 44,
                     opacity: resolveControlOpacity(!optionDisabled, pressed),
                     paddingHorizontal: theme.spacing.md,
