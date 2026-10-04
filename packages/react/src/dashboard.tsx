@@ -23,12 +23,12 @@ export interface FilterBarProps extends ComponentPropsWithRef<'section'> {
   actions?: ReactNode
 }
 
-const noFilters: readonly LumenActiveFilter[] = []
-const defaultRemoveLabel = (filter: LumenActiveFilter): string => `Remove ${filter.label}: ${filter.value}`
+const empty: readonly LumenActiveFilter[] = []
+const removeFilterLabel = (filter: LumenActiveFilter): string => `Remove ${filter.label}: ${filter.value}`
 
 export const FilterBar = ({
-  label = 'Filters', filters = noFilters, onRemoveFilter, onReset, resetLabel = 'Reset filters',
-  removeLabel = defaultRemoveLabel, resultLabel, pending = false, open, defaultOpen = true,
+  label = 'Filters', filters = empty, onRemoveFilter, onReset, resetLabel = 'Reset filters',
+  removeLabel = removeFilterLabel, resultLabel, pending = false, open, defaultOpen = true,
   onOpenChange, actions, className, children, ...props
 }: FilterBarProps) => (
   <section className={composeClassName('ui-filter-bar', className)} aria-label={label} aria-busy={pending} {...props}>
@@ -63,19 +63,12 @@ export const FilterBar = ({
               onRemoveFilter(filter.id)
             }}
           >
-            {filter.label}
-            :
-            {filter.value}
-            {' '}
-            ×
+            {`${filter.label}: ${filter.value} ×`}
           </Button>
         ) :
         (
           <span key={filter.id}>
-            {filter.label}
-            :
-            {' '}
-            {filter.value}
+            {`${filter.label}: ${filter.value}`}
           </span>
         ))}
       {onReset && filters.length > 0 && <Button variant="ghost" size="sm" disabled={pending} onClick={onReset}>{resetLabel}</Button>}

@@ -29,6 +29,15 @@ describe('dashboard adapter contracts', () => {
     expect(events).toEqual([{ key: 'name', columnIndex: 0, direction: 'ascending' }])
     expect(document.querySelector('th')?.getAttribute('aria-sort')).toBe('ascending')
   })
+  test('advances an authored sort state without relying on stale root metadata', () => {
+    document.body.innerHTML = `<lumen-data-table sort-mode="manual"><table>
+      <thead><tr><th aria-sort="ascending" data-ui-datatable-sortable="true">Name</th></tr></thead>
+      <tbody><tr><td>Alpha</td></tr><tr><td>Beta</td></tr></tbody>
+    </table></lumen-data-table>`
+    document.querySelector<HTMLButtonElement>('th button')?.click()
+    expect(document.querySelector('th')?.getAttribute('aria-sort')).toBe('descending')
+    expect([...document.querySelectorAll('tbody tr')].map(row => row.textContent)).toEqual(['Alpha', 'Beta'])
+  })
   test('uses log geometry with independent accessible value labels and references', () => {
     const chart = new LumenScatterChartElement()
 

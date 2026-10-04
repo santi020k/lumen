@@ -17,6 +17,8 @@ const allBudgets = [
   { file: 'packages/react/dist/floating-panel.js', gzip: 2_100, packageName: '@santi020k/lumen-react', raw: 7_000 },
   { file: 'packages/react/dist/dashboard.js', gzip: 800, packageName: '@santi020k/lumen-react', raw: 2_000 },
   { file: 'packages/react/dist/change-summary.js', gzip: 550, packageName: '@santi020k/lumen-react', raw: 1_500 },
+  { file: 'packages/elements/dist/chart-html.js', gzip: 4_300, packageName: '@santi020k/lumen-elements', raw: 20_000 },
+  { file: 'packages/astro/runtime/controllers/data-table.ts', gzip: 1_450, packageName: '@santi020k/lumen-astro', raw: 4_500 },
   { file: 'packages/astro/runtime/UIPrimitives.astro', gzip: 33_000, packageName: '@santi020k/lumen-astro', raw: 167_000 },
   { file: 'packages/astro/runtime/controllers/motion.ts', gzip: 1_500, packageName: '@santi020k/lumen-astro', raw: 5_000 },
   { file: 'packages/astro/runtime/controllers/dialogs.ts', gzip: 2_000, packageName: '@santi020k/lumen-astro', raw: 6_000 },

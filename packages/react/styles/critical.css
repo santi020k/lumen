@@ -1345,14 +1345,17 @@ lumen-dialog.ui-dialog:not([hidden]):has(> [data-slot="dialog-body"]) {
   }
 }
 
-.ui-data-table__sort-controls {
+.ui-data-table__sort-controls,
+.ui-filter-bar__controls,
+.ui-filter-bar__active {
   display: flex;
   flex-wrap: wrap;
   align-items: end;
   gap: var(--ui-space-related, 0.75rem);
 }
 
-.ui-data-table__sort-controls .ui-field {
+.ui-data-table__sort-controls .ui-field,
+.ui-filter-bar__controls > * {
   flex: 1 1 12rem;
   min-width: 0;
 }

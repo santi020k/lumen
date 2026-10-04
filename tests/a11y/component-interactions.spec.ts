@@ -654,6 +654,39 @@ behaviorTest(['DataTable'], 'DataTable sorts records and reports row selection',
   await expect(preview.locator('[data-selected-count]')).toHaveText('1')
 })
 
+test('DataTable requests server sorting from the displayed header state', async ({ page }) => {
+  await openPreview(page, 'data-table')
+  const header = page.locator('.component-doc-preview thead th').filter({ hasText: 'Downloads' })
+  const result = await header.evaluate(element => {
+    const root = element.closest('[data-ui-datatable]')
+    const button = element.querySelector('[data-ui-datatable-sort]')
+
+    if (!(root instanceof HTMLElement) || !(button instanceof HTMLButtonElement)) {
+      throw new Error('Missing data table controls')
+    }
+    root.dataset.uiDatatableSortMode = 'manual'
+    element.setAttribute('aria-sort', 'ascending')
+    const rows = () => [...root.querySelectorAll('tbody tr')].map(row => row.textContent)
+    const before = rows()
+    const events: unknown[] = []
+
+    root.addEventListener('ui:data-table-sort-change', event => {
+      if (event instanceof CustomEvent) {
+        const detail: unknown = event.detail
+
+        events.push(detail)
+      }
+    })
+    button.click()
+
+    return { before, after: rows(), events, direction: element.getAttribute('aria-sort') }
+  })
+
+  expect(result.after).toEqual(result.before)
+  expect(result.direction).toBe('descending')
+  expect(result.events).toEqual([expect.objectContaining({ direction: 'descending' })])
+})
+
 behaviorTest(['Calendar'], 'Calendar navigates months and commits a selected day', async ({ page }) => {
   await openPreview(page, 'calendar')
 
