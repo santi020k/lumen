@@ -13,7 +13,7 @@ export const initChartActivationControllers = (scope: ParentNode): void => {
     controllers.delete(root)
   }
 
-  for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-chart-activation]')) {
+  for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-chart-activation]:not([data-ui-chart-adapter="react"])')) {
     if (!controllers.has(root)) {
       controllers.set(root, createLumenChartActivationController(root))
 

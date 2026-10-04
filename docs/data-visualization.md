@@ -116,6 +116,35 @@ Line and combo point targets retain their actions when visible markers are omitt
 charts keep their existing output unless drilldown is enabled. Use chart formatters and the
 remaining label overrides to keep the entire chart in the application's language.
 
+## React chart actions
+
+Pass `onDatumActivate` to any of the seven React data charts to enable the same native-button
+disclosure and pointer actions. React owns callback dispatch; it does not emit the Astro DOM event
+or need `UIPrimitives`. A mixed-framework Astro page leaves React chart roots to React's handlers.
+
+```tsx
+import { BarChart, type LumenChartDatumActivationDetail } from '@santi020k/lumen-react'
+
+const openDetails = (detail: LumenChartDatumActivationDetail) => {
+  if (detail.kind === 'series') {
+    // Choose an application detail view using raw identities.
+    console.log(detail.seriesId, detail.x, detail.datumId)
+  }
+}
+
+<BarChart
+  aria-label="Collections by month"
+  series={collectionSeries}
+  showTable={false}
+  onDatumActivate={openDetails}
+/>
+```
+
+The native `onClick` handler runs before datum activation and may prevent it. Disabled or inert
+ancestors suppress callbacks. Stable action identities preserve button focus when values change;
+the callback always receives the currently rendered values. Apps should handle stale data and
+permissions again when carrying out the chosen operation.
+
 ## Accessibility
 
 Every data chart needs a useful accessible name. Lumen adds a factual generated summary describing

@@ -766,6 +766,12 @@ const apiRow = (
   values
 })
 
+const chartDatumApiRows = [
+  apiRow('drilldown', 'boolean (Astro)', 'false', 'Enables plotted datum actions and an equivalent native button disclosure, including with hidden tables. Requires UIPrimitives.'),
+  apiRow('onDatumActivate', '(detail: LumenChartDatumActivationDetail) => void (React)', '-', 'Enables React datum actions and receives validated values with raw identities. Navigation and filtering remain application owned.'),
+  apiRow('labels.exploreData, labels.formatDatumAction', 'string, (context: string) => string', 'English labels', 'Localizes the actions disclosure and each contextual datum button.')
+] as const
+
 const commonApiRows = [
   apiRow(
     'class, className', 'string', '""', 'Merges custom classes with the generated ui-* root classes.'
@@ -825,6 +831,13 @@ const rovingGroupKeyboardInteractions = keyboardRows(
 const keyboardInteractionsByComponent: Partial<
   Record<string, readonly KeyboardInteractionRow[]>
 > = {
+  BarChart: keyboardRows(['Tab', 'Focus the actions disclosure and its native buttons in document order.'], ['Enter, Space', 'Toggle the disclosure or activate the focused datum button. Actions remain available when the data table is hidden.']),
+  LineChart: keyboardRows(['Tab', 'Focus the actions disclosure and its native buttons in document order.'], ['Enter, Space', 'Toggle the disclosure or activate the focused datum button. Actions remain available when the data table is hidden.']),
+  PieChart: keyboardRows(['Tab', 'Focus the actions disclosure and its native buttons in document order.'], ['Enter, Space', 'Toggle the disclosure or activate the focused datum button. Actions remain available when the data table is hidden.']),
+  ScatterChart: keyboardRows(['Tab', 'Focus the actions disclosure and its native buttons in document order.'], ['Enter, Space', 'Toggle the disclosure or activate the focused datum button. Actions remain available when the data table is hidden.']),
+  ComboChart: keyboardRows(['Tab', 'Focus the actions disclosure and its native buttons in document order.'], ['Enter, Space', 'Toggle the disclosure or activate the focused datum button. Actions remain available when the data table is hidden.']),
+  Heatmap: keyboardRows(['Tab', 'Focus the actions disclosure and its native buttons in document order.'], ['Enter, Space', 'Toggle the disclosure or activate the focused datum button. Actions remain available when the data table is hidden.']),
+  RangeChart: keyboardRows(['Tab', 'Focus the actions disclosure and its native buttons in document order.'], ['Enter, Space', 'Toggle the disclosure or activate the focused datum button. Actions remain available when the data table is hidden.']),
   ImageComparison: keyboardRows(['Arrow keys', 'Adjust the reveal using the native range control; horizontal direction follows writing direction.'], ['Home / End', 'Reveal the full before / after image.']),
   Calendar: keyboardRows(
     [
@@ -973,6 +986,7 @@ const keyboardInteractionsByComponent: Partial<
 }
 
 export const runtimeEvents: RuntimeEventRow[] = [
+  { detail: 'LumenChartDatumActivationDetail: series { seriesId, x, y, datumId? }, heatmap { x, y, value, datumId? }, range { x, low, high, datumId? }', name: 'ui:chart-datum-activate', target: 'Astro data chart figure', when: 'Fires once after a plotted datum or its native action button is activated. Requires drilldown and UIPrimitives; React uses onDatumActivate instead.' },
   { detail: '{ state: "error" | "loading" | "ready" | "unavailable" }', name: 'ui:attachment-preview-change', target: 'AttachmentPreview root', when: 'Fires after a preview state changes. The event never includes the file URL.' },
   { detail: '{ value: number }', name: 'ui:image-comparison-change', target: 'ImageComparison root', when: 'Fires as the native range changes the percentage of the after image revealed.' },
   {
@@ -1125,6 +1139,13 @@ export const runtimeEvents: RuntimeEventRow[] = [
 const runtimeEventsByComponent: Partial<
   Record<string, readonly RuntimeEventRow[]>
 > = {
+  BarChart: runtimeEvents.filter(event => event.name === 'ui:chart-datum-activate'),
+  LineChart: runtimeEvents.filter(event => event.name === 'ui:chart-datum-activate'),
+  PieChart: runtimeEvents.filter(event => event.name === 'ui:chart-datum-activate'),
+  ScatterChart: runtimeEvents.filter(event => event.name === 'ui:chart-datum-activate'),
+  ComboChart: runtimeEvents.filter(event => event.name === 'ui:chart-datum-activate'),
+  Heatmap: runtimeEvents.filter(event => event.name === 'ui:chart-datum-activate'),
+  RangeChart: runtimeEvents.filter(event => event.name === 'ui:chart-datum-activate'),
   AttachmentPreview: runtimeEvents.filter(event => event.name === 'ui:attachment-preview-change'),
   ImageComparison: runtimeEvents.filter(event => event.name === 'ui:image-comparison-change'),
   CopyButton: runtimeEvents.filter(event => event.name.startsWith('ui:copy-')),
@@ -1272,6 +1293,7 @@ const apiReferenceByComponent = {
     )
   ],
   BarChart: [
+    ...chartDatumApiRows,
     apiRow(
       'series', 'LumenChartSeries[]', 'required', 'Provides already-aggregated categorical values and stable series metadata.'
     ),
@@ -1557,6 +1579,7 @@ const apiReferenceByComponent = {
     apiRow('type', 'HTML input type', '"text"', 'Sets the native input type.')
   ],
   ComboChart: [
+    ...chartDatumApiRows,
     apiRow(
       'series', 'LumenComboSeries[]', '[]', 'Combines bar and line series over one ordered category domain.'
     ),
@@ -1729,6 +1752,7 @@ const apiReferenceByComponent = {
     )
   ],
   Heatmap: [
+    ...chartDatumApiRows,
     apiRow(
       'data', 'LumenHeatmapDatum[]', '[]', 'Provides labelled row, column, and intensity values for the heatmap cells.'
     ),
@@ -1937,6 +1961,7 @@ const apiReferenceByComponent = {
     )
   ],
   LineChart: [
+    ...chartDatumApiRows,
     apiRow(
       'series', 'LumenChartSeries[]', 'required', 'Provides ordered, already-aggregated points; null y values create visible gaps.'
     ),
@@ -2048,6 +2073,7 @@ const apiReferenceByComponent = {
     )
   ],
   PieChart: [
+    ...chartDatumApiRows,
     apiRow(
       'series', 'LumenChartSeries', 'required', 'Provides one already-aggregated series whose positive finite data points become slices.'
     ),
@@ -2102,6 +2128,7 @@ const apiReferenceByComponent = {
     )
   ],
   RangeChart: [
+    ...chartDatumApiRows,
     apiRow(
       'data', 'LumenRangeDatum[]', '[]', 'Provides ordered low and high values for each interval.'
     ),
@@ -2141,6 +2168,7 @@ const apiReferenceByComponent = {
     )
   ],
   ScatterChart: [
+    ...chartDatumApiRows,
     apiRow(
       'series', 'LumenChartSeries[]', '[]', 'Provides x/y points with optional labels and bubble sizes.'
     ),

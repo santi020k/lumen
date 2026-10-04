@@ -701,12 +701,12 @@ describe('@santi020k/lumen-react components', () => {
       series: [{ data: series[0]?.data ?? [], id: 'downloads', label: 'Downloads', mark: 'line' }]
     }) as ReactElement
 
-    expect(bars.type).toBe(Chart)
+    expect(renderToStaticMarkup(bars)).toContain('<figure')
     expect(propsOf(bars).className).toBe('ui-bar-chart')
     expect(propsOf(bars).heading).toBe('Package downloads')
-    expect(line.type).toBe(Chart)
+    expect(renderToStaticMarkup(line)).toContain('<figure')
     expect(propsOf(line).className).toBe('ui-line-chart')
-    expect(pie.type).toBe(Chart)
+    expect(renderToStaticMarkup(pie)).toContain('<figure')
     expect(propsOf(pie).className).toBe('ui-pie-chart ui-pie-chart--donut')
     expect(sparkline.type).toBe('span')
     expect(propsOf(sparkline).role).toBe('img')

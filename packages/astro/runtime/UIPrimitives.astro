@@ -5433,7 +5433,7 @@ const initOptionalControllers = (scope: ParentNode): void => {
       .catch(reportError)
   }
 
-  if (scope.querySelector('[data-ui-chart-activation]')) {
+  if (scope.querySelector('[data-ui-chart-activation]:not([data-ui-chart-adapter="react"])')) {
     import('./controllers/chart-activation.js')
       .then(({ initChartActivationControllers }) => initChartActivationControllers(scope))
       .catch(reportError)

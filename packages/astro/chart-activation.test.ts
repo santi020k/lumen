@@ -42,3 +42,12 @@ test('removes a disconnected controller before enhancing replacement charts', ()
   initChartActivationControllers(document)
   expect(root.hasAttribute('data-ui-chart-activation-bound')).toBe(false)
 })
+
+test('leaves callback-driven React charts to their framework owner', () => {
+  const root = document.createElement('figure')
+  root.setAttribute('data-ui-chart-activation', '')
+  root.setAttribute('data-ui-chart-adapter', 'react')
+  document.body.append(root)
+  initChartActivationControllers(document)
+  expect(root.hasAttribute('data-ui-chart-activation-bound')).toBe(false)
+})

@@ -14,7 +14,7 @@
       "Backdrop": "69e54d576e43ebaecf5beec41c9594a8a1db1cbe8a3cb70f87a9b3da8b70eeed",
       "BackToTop": "90d46ec1afc97a2e229d671f2da139de68c2cda2610b72231f2946f1674a73ce",
       "Badge": "3afadb318b22ad785399ba0755b667687ca357e0ea7c224809066c7d6a08d269",
-      "BarChart": "6ccc5d1c54e3de55c471fc1c58025e7c052acd12aba88abb2d9f614a7dd3056c",
+      "BarChart": "bae2109c2e4d2258938af6c2944a43d738fcc8e3d6f197269e43562e0dbf6094",
       "Breadcrumb": "700d5860a964387089f8fc8918145bb8e82fca04f0e6c6d8fb2e20bd90cdb152",
       "Bubble": "61d1f46dd7b7695e8c1906faf487b5b8dc12c769b170af87269db24f0b91d916",
       "Button": "2eee954c4684ac4fb9e549961238cd0ca254f0d8bfbe3cce545509c141b0226d",
@@ -77,7 +77,7 @@
       "Kbd": "14825287aa0d6ffcec6b51b61b61d8a7c44d7cba1c7c40a77a7d46d0632c25de",
       "Label": "99e27246abcea9843c5aedfac58e71478c6748fddd711953d8835bff809e6492",
       "Link": "d939a1c5f221f60c5dac42dc148434326728305fa0eb0e6b10094a538f9a7b04",
-      "LineChart": "0c353a9004e26b21541cbb33ebb6fb9dfebe12a5d22af578599adf5230f8ff6d",
+      "LineChart": "992d8575955a8d5bc809e9d6e50333d9bef88c91c2b1d5af1e263feac488270f",
       "ListBox": "65724ac8eeeb0a9e43c05017ef152cfff5388627103e19bc14dcad8d5ee4d02c",
       "Marker": "b2c3679b841cee6cc4ce6322d6dd7758f85a9371bc4817a750f6de4e7c0cc3d2",
       "Menubar": "ceaa113420c1a99cc1d7e856c04b5a75d8569473ebd8a24a83c947ec3b6608e5",
@@ -89,7 +89,7 @@
       "Pagination": "1e85cbdac6aa9a6417ce9cc7e015f2dfceecba126803529c88d8fe228e2d50a9",
       "PasswordField": "de7e32c05784c226285e2d9317c28948473fa221d1e75d3009ec80692f6d16d0",
       "PhoneInput": "1d1f45d24adeb4320fa6ee9ffb055f7c8c9876dfb22e5ff6495c5a0b669f3435",
-      "PieChart": "4039bd4f323979f1c79714dd51a119fe03ef15fda9e0fe21b0d69c97fd6d489e",
+      "PieChart": "e3bf02d5fdb4e0c7d0fdf739dd567b66ee4a05819ca0429d2795df41e9c57345",
       "Pill": "a0dffa43c0e089ae68d8dd11df5ccca3b83eb0acb5d777752f29475b0bb064a1",
       "Popover": "72f6c508c2d9fb0070ae3652fde089a8bab097193e6fb26c57b7dde751eb8ee6",
       "Progress": "cd577f799cf9102eabef5e3b6dd98f1c33df42795f228b84c86a97d7d045233c",
@@ -168,10 +168,10 @@
       "Affix": "554b64a7393d73e9b53ac7bb32793d16e82b609873c4c53a6ad39f844c1dcb23",
       "SpeedDial": "7e8c5ceb0cfd8e941343809ccec8109c5686872c29438686a494c330955804a1",
       "Grid": "e1d0a999e32d123df1d172388a139545cdf7b8e717731b88130457395cf09f2c",
-      "ScatterChart": "2aaff474a61ec27d0ca7834f94d312179abfbf288c02f465df886807d630da2a",
-      "Heatmap": "1df90fbe9b7324e5b21ce71a8ee40f956383ec43f1bcca5765b924324af1476b",
-      "RangeChart": "6582ab8f2b56095b19f30023b9d816f749ed1a10acc58109758f99417bb7f704",
-      "ComboChart": "2dc9043eff21b9a66d975f3a2b97bf0f07f9156c1491f5bb1c523834bfece7b8",
+      "ScatterChart": "e48683c24d82b91f4574f3e9bef9338fee0f6eb2925e552e65a801b434382179",
+      "Heatmap": "6de835151ac7eb6d40b36d7fc7d2bcc108d4c2b44c9375de1b1a13ba53de18dd",
+      "RangeChart": "44ccac860042cf4d3601d0d47c3a707986ee10849d4afe37d6bbe394fb2e8ef3",
+      "ComboChart": "b49c9304fabf9be41461de89d024507da1c85a489e32930446e93a9ef1a9f95d",
       "VisuallyHidden": "10562829ec1f598aacc2ad819e93c0cd3b257c7eec60818854a08723d9dcc888"
     },
     "nativeComponents": {
@@ -2806,6 +2806,24 @@
           "values": "boolean | \"subtle\" | \"strong\""
         },
         {
+          "attribute": "drilldown",
+          "defaultValue": "false",
+          "description": "Enables plotted datum actions and an equivalent native button disclosure, including with hidden tables. Requires UIPrimitives.",
+          "values": "boolean (Astro)"
+        },
+        {
+          "attribute": "onDatumActivate",
+          "defaultValue": "-",
+          "description": "Enables React datum actions and receives validated values with raw identities. Navigation and filtering remain application owned.",
+          "values": "(detail: LumenChartDatumActivationDetail) => void (React)"
+        },
+        {
+          "attribute": "labels.exploreData, labels.formatDatumAction",
+          "defaultValue": "English labels",
+          "description": "Localizes the actions disclosure and each contextual datum button.",
+          "values": "string, (context: string) => string"
+        },
+        {
           "attribute": "series",
           "defaultValue": "required",
           "description": "Provides already-aggregated categorical values and stable series metadata.",
@@ -3016,6 +3034,9 @@
             "orientation",
             "presentation",
             "glass",
+            "drilldown",
+            "onDatumActivate",
+            "labels.exploreData, labels.formatDatumAction",
             "series",
             "categoryWidth",
             "formatCategory, formatValue",
@@ -3053,6 +3074,11 @@
           "language": "tsx",
           "packageName": "@santi020k/lumen-react",
           "props": [
+            {
+              "name": "onDatumActivate",
+              "optional": true,
+              "type": "(detail: LumenChartDatumActivationDetail) => void"
+            },
             {
               "name": "categoryWidth",
               "optional": true,
@@ -3105,7 +3131,7 @@
             }
           ],
           "propsExtends": "Omit<ChartProps, 'children'>",
-          "source": "export interface BarChartProps extends Omit<ChartProps, 'children'> {\n  categoryWidth?: number\n  emptyLabel?: ReactNode\n  formatCategory?: (category: number | string) => string\n  formatValue?: (value: number) => string\n  layout?: LumenBarChartLayout\n  labels?: Partial<LumenChartLabels>\n  orientation?: LumenChartOrientation\n  series?: readonly LumenChartSeries[]\n  showLegend?: boolean\n  showTable?: boolean\n}\n\nexport const BarChart = ({\n  categoryWidth,\n  className,\n  emptyLabel,\n  formatCategory,\n  formatValue = String,\n  layout = 'grouped',\n  labels,\n  orientation = 'vertical',\n  series = emptyChartSeries,\n  showLegend = series.length > 1,\n  showTable = true,\n  summary,\n  ...props\n}: BarChartProps) => {\n  const resolvedLabels = resolveLumenChartLabels(labels)\n  const categories = getLumenChartCategories(series)\n  const alignedSeries = series.map(item => alignLumenChartSeries(item, categories))\n\n  const geometry = createLumenBarGeometry(alignedSeries, {\n    ...(categoryWidth === undefined ? {} : { categoryWidth }),\n    ...(formatCategory === undefined ? {} : { formatCategory }),\n    formatValue,\n    layout,\n    orientation\n  })\n\n  const hasData = hasLumenChartData(alignedSeries)\n  const ticks = getLumenChartTicks(geometry.domain)\n  const margin = geometry.margin\n\n  const categoryTicks = getLumenChartCategoryTicks(geometry.categories.map(category => String(category.label)), {\n    end: geometry.width - margin.right,\n    positions: geometry.categories.map(category => category.x),\n    start: margin.left\n  })\n\n  const valueTicks = getLumenChartCategoryTicks(ticks.map(tick => formatValue(tick)), {\n    end: geometry.width - margin.right,\n    positions: ticks.map(tick => scaleLumenChartValue(\n      tick, geometry.domain, margin.left, geometry.width - margin.right\n    )),\n    start: margin.left\n  })\n\n  return (\n    <Chart\n      className={composeClassName('ui-bar-chart', className)}\n      summary={summary ?? formatLumenChartSummary(alignedSeries, formatValue, resolvedLabels)}\n      {...props}\n    >\n      {showLegend && hasData && <ChartLegend label={resolvedLabels.chartLegend} series={series} />}\n      {!hasData && (\n        <p className=\"ui-chart__empty\" role=\"status\">\n          {emptyLabel ?? resolvedLabels.empty}\n        </p>\n      )}\n      <div aria-label={resolvedLabels.chartData} className=\"ui-chart__plot\" role=\"region\" tabIndex={0} hidden={!hasData}>\n        <svg\n          aria-hidden=\"true\"\n          preserveAspectRatio=\"xMidYMid meet\"\n          viewBox={`0 0 ${geometry.width} ${geometry.height}`}\n        >\n          <g className=\"ui-chart__grid\">\n            {ticks.map(tick => {\n              const coordinate =\n                orientation === 'horizontal' ?\n                  scaleLumenChartValue(\n                    tick, geometry.domain, margin.left, geometry.width - margin.right\n                  ) :\n                  scaleLumenChartValue(\n                    tick, geometry.domain, geometry.height - margin.bottom, margin.top\n                  )\n\n              return orientation === 'horizontal' ?\n                (\n                  <line\n                    key={tick}\n                    x1={coordinate}\n                    x2={coordinate}\n                    y1={margin.top}\n                    y2={geometry.height - margin.bottom}\n                  />\n                ) :\n                (\n                  <Fragment key={tick}>\n                    <line x1={margin.left} x2={geometry.width - margin.right} y1={coordinate} y2={coordinate} />\n                    <text x={margin.left - 8} y={coordinate}>{formatValue(tick)}</text>\n                  </Fragment>\n                )\n            })}\n          </g>\n          <g className=\"ui-chart__axis-labels\">\n            {orientation === 'horizontal' ?\n              geometry.categories.map(category => (\n                <text\n                  dominantBaseline=\"middle\"\n                  key={getChartCategoryKey(category.category)}\n                  textAnchor=\"end\"\n                  x={category.x}\n                  y={category.y}\n                >\n                  {getLumenChartCategoryTicks([String(category.label)], { end: margin.left - 16, start: 0 })[0]?.label}\n                </text>\n              )) :\n              categoryTicks.map(tick => (\n                <text key={tick.index} textAnchor={tick.textAnchor} x={tick.position} y={geometry.height - 20}>\n                  {tick.label}\n                </text>\n              ))}\n          </g>\n          {orientation === 'horizontal' && (\n            <g className=\"ui-chart__axis-labels\">\n              {valueTicks.map(tick => (\n                <text key={tick.index} textAnchor={tick.textAnchor} x={tick.position} y={geometry.height - 6}>\n                  {tick.label}\n                </text>\n              ))}\n            </g>\n          )}\n          <g className=\"ui-bar-chart__marks\">\n            {geometry.marks.map(mark => (\n              <rect\n                className={getLumenChartToneClassName(mark.tone)}\n                height={mark.height}\n                key={`${mark.seriesId}:${getChartCategoryKey(mark.category)}`}\n                rx=\"4\"\n                width={mark.width}\n                x={mark.x}\n                y={mark.y}\n              >\n                <title>\n                  {`${getLumenChartCategoryLabel(alignedSeries, mark.category, formatCategory, 'detail')} · ${mark.seriesLabel}: ${formatValue(mark.value)}`}\n                </title>\n              </rect>\n            ))}\n          </g>\n        </svg>\n      </div>\n      {showTable && hasData && (\n        <ChartDataTable\n          categories={categories}\n          {...(formatCategory === undefined ? {} : { formatCategory })}\n          formatValue={formatValue}\n          labels={resolvedLabels}\n          series={series}\n        />\n      )}\n    </Chart>\n  )\n}",
+          "source": "export interface BarChartProps extends Omit<ChartProps, 'children'> {\n  onDatumActivate?: (detail: LumenChartDatumActivationDetail) => void\n  categoryWidth?: number\n  emptyLabel?: ReactNode\n  formatCategory?: (category: number | string) => string\n  formatValue?: (value: number) => string\n  layout?: LumenBarChartLayout\n  labels?: Partial<LumenChartLabels>\n  orientation?: LumenChartOrientation\n  series?: readonly LumenChartSeries[]\n  showLegend?: boolean\n  showTable?: boolean\n}\n\nexport const BarChart = ({\n  categoryWidth,\n  className,\n  onDatumActivate,\n  emptyLabel,\n  formatCategory,\n  formatValue = String,\n  layout = 'grouped',\n  labels,\n  orientation = 'vertical',\n  series = emptyChartSeries,\n  showLegend = series.length > 1,\n  showTable = true,\n  summary,\n  ...props\n}: BarChartProps) => {\n  const resolvedLabels = resolveLumenChartLabels(labels)\n  const categories = getLumenChartCategories(series)\n  const alignedSeries = series.map(item => alignLumenChartSeries(item, categories))\n\n  const geometry = createLumenBarGeometry(alignedSeries, {\n    ...(categoryWidth === undefined ? {} : { categoryWidth }),\n    ...(formatCategory === undefined ? {} : { formatCategory }),\n    formatValue,\n    layout,\n    orientation\n  })\n\n  const hasData = hasLumenChartData(alignedSeries)\n  const ticks = getLumenChartTicks(geometry.domain)\n  const margin = geometry.margin\n\n  const categoryTicks = getLumenChartCategoryTicks(geometry.categories.map(category => String(category.label)), {\n    end: geometry.width - margin.right,\n    positions: geometry.categories.map(category => category.x),\n    start: margin.left\n  })\n\n  const valueTicks = getLumenChartCategoryTicks(ticks.map(tick => formatValue(tick)), {\n    end: geometry.width - margin.right,\n    positions: ticks.map(tick => scaleLumenChartValue(\n      tick, geometry.domain, margin.left, geometry.width - margin.right\n    )),\n    start: margin.left\n  })\n\n  const datumActions = onDatumActivate ?\n    geometry.marks.map(mark => {\n      const item = alignedSeries.find(candidate => candidate.id === mark.seriesId)\n      const datum = item?.data.find(candidate => candidate.x === mark.category)\n\n      return item && datum ?\n        createReactChartDatumAction(\n          createLumenChartDatumActivation(item.id, datum),\n          `${getLumenChartCategoryLabel(alignedSeries, mark.category, formatCategory, 'detail')} · ${mark.seriesLabel}: ${formatValue(mark.value)}`,\n          resolvedLabels\n        ) :\n        null\n    }) :\n    []\n\n  return (\n    <DatumChart\n      onDatumActivate={onDatumActivate}\n      className={composeClassName('ui-bar-chart', className)}\n      summary={summary ?? formatLumenChartSummary(alignedSeries, formatValue, resolvedLabels)}\n      {...props}\n    >\n      {showLegend && hasData && <ChartLegend label={resolvedLabels.chartLegend} series={series} />}\n      {!hasData && (\n        <p className=\"ui-chart__empty\" role=\"status\">\n          {emptyLabel ?? resolvedLabels.empty}\n        </p>\n      )}\n      <div aria-label={resolvedLabels.chartData} className=\"ui-chart__plot\" role=\"region\" tabIndex={0} hidden={!hasData}>\n        <svg\n          aria-hidden=\"true\"\n          preserveAspectRatio=\"xMidYMid meet\"\n          viewBox={`0 0 ${geometry.width} ${geometry.height}`}\n        >\n          <g className=\"ui-chart__grid\">\n            {ticks.map(tick => {\n              const coordinate =\n                orientation === 'horizontal' ?\n                  scaleLumenChartValue(\n                    tick, geometry.domain, margin.left, geometry.width - margin.right\n                  ) :\n                  scaleLumenChartValue(\n                    tick, geometry.domain, geometry.height - margin.bottom, margin.top\n                  )\n\n              return orientation === 'horizontal' ?\n                (\n                  <line\n                    key={tick}\n                    x1={coordinate}\n                    x2={coordinate}\n                    y1={margin.top}\n                    y2={geometry.height - margin.bottom}\n                  />\n                ) :\n                (\n                  <Fragment key={tick}>\n                    <line x1={margin.left} x2={geometry.width - margin.right} y1={coordinate} y2={coordinate} />\n                    <text x={margin.left - 8} y={coordinate}>{formatValue(tick)}</text>\n                  </Fragment>\n                )\n            })}\n          </g>\n          <g className=\"ui-chart__axis-labels\">\n            {orientation === 'horizontal' ?\n              geometry.categories.map(category => (\n                <text\n                  dominantBaseline=\"middle\"\n                  key={getChartCategoryKey(category.category)}\n                  textAnchor=\"end\"\n                  x={category.x}\n                  y={category.y}\n                >\n                  {getLumenChartCategoryTicks([String(category.label)], { end: margin.left - 16, start: 0 })[0]?.label}\n                </text>\n              )) :\n              categoryTicks.map(tick => (\n                <text key={tick.index} textAnchor={tick.textAnchor} x={tick.position} y={geometry.height - 20}>\n                  {tick.label}\n                </text>\n              ))}\n          </g>\n          {orientation === 'horizontal' && (\n            <g className=\"ui-chart__axis-labels\">\n              {valueTicks.map(tick => (\n                <text key={tick.index} textAnchor={tick.textAnchor} x={tick.position} y={geometry.height - 6}>\n                  {tick.label}\n                </text>\n              ))}\n            </g>\n          )}\n          <g className=\"ui-bar-chart__marks\">\n            {geometry.marks.map((mark, index) => (\n              <rect\n                className={getLumenChartToneClassName(mark.tone)}\n                data-ui-chart-datum={datumActions[index]?.serialized}\n                height={mark.height}\n                key={`${mark.seriesId}:${getChartCategoryKey(mark.category)}`}\n                rx=\"4\"\n                width={mark.width}\n                x={mark.x}\n                y={mark.y}\n              >\n                <title>\n                  {`${getLumenChartCategoryLabel(alignedSeries, mark.category, formatCategory, 'detail')} · ${mark.seriesLabel}: ${formatValue(mark.value)}`}\n                </title>\n              </rect>\n            ))}\n            {onDatumActivate && geometry.marks.map((mark, index) => (\n              <rect\n                className=\"ui-chart__datum-hit\"\n                key={`${mark.seriesId}:${getChartCategoryKey(mark.category)}`}\n                width={Math.max(12, mark.width)}\n                height={Math.max(12, mark.height)}\n                x={mark.x - Math.max(0, 12 - mark.width) / 2}\n                y={mark.y - Math.max(0, 12 - mark.height) / 2}\n                data-ui-chart-datum={datumActions[index]?.serialized}\n              />\n            ))}\n          </g>\n        </svg>\n      </div>\n      {showTable && hasData && (\n        <ChartDataTable\n          categories={categories}\n          {...(formatCategory === undefined ? {} : { formatCategory })}\n          formatValue={formatValue}\n          labels={resolvedLabels}\n          series={series}\n        />\n      )}\n      {onDatumActivate && <ChartDatumActions actions={datumActions} label={resolvedLabels.exploreData} />}\n    </DatumChart>\n  )\n}",
           "styleImport": "import '@santi020k/lumen-react/styles.css'"
         }
       },
@@ -3119,7 +3145,16 @@
         "distinction": "Use LineChart for continuous ordered trends and Sparkline for a compact trend attached to one metric."
       },
       "kebab": "bar-chart",
-      "keyboardInteractions": [],
+      "keyboardInteractions": [
+        {
+          "action": "Focus the actions disclosure and its native buttons in document order.",
+          "key": "Tab"
+        },
+        {
+          "action": "Toggle the disclosure or activate the focused datum button. Actions remain available when the data table is hidden.",
+          "key": "Enter, Space"
+        }
+      ],
       "keywords": [
         "aggregated",
         "already",
@@ -3283,7 +3318,14 @@
           "type": "recipe"
         }
       ],
-      "runtimeEvents": []
+      "runtimeEvents": [
+        {
+          "detail": "LumenChartDatumActivationDetail: series { seriesId, x, y, datumId? }, heatmap { x, y, value, datumId? }, range { x, low, high, datumId? }",
+          "name": "ui:chart-datum-activate",
+          "target": "Astro data chart figure",
+          "when": "Fires once after a plotted datum or its native action button is activated. Requires drilldown and UIPrimitives; React uses onDatumActivate instead."
+        }
+      ]
     },
     {
       "apiReference": [
@@ -16748,6 +16790,24 @@
           "values": "boolean | \"subtle\" | \"strong\""
         },
         {
+          "attribute": "drilldown",
+          "defaultValue": "false",
+          "description": "Enables plotted datum actions and an equivalent native button disclosure, including with hidden tables. Requires UIPrimitives.",
+          "values": "boolean (Astro)"
+        },
+        {
+          "attribute": "onDatumActivate",
+          "defaultValue": "-",
+          "description": "Enables React datum actions and receives validated values with raw identities. Navigation and filtering remain application owned.",
+          "values": "(detail: LumenChartDatumActivationDetail) => void (React)"
+        },
+        {
+          "attribute": "labels.exploreData, labels.formatDatumAction",
+          "defaultValue": "English labels",
+          "description": "Localizes the actions disclosure and each contextual datum button.",
+          "values": "string, (context: string) => string"
+        },
+        {
           "attribute": "series",
           "defaultValue": "required",
           "description": "Provides ordered, already-aggregated points; null y values create visible gaps.",
@@ -16950,6 +17010,9 @@
           "attributes": [
             "presentation",
             "glass",
+            "drilldown",
+            "onDatumActivate",
+            "labels.exploreData, labels.formatDatumAction",
             "series",
             "area",
             "markers",
@@ -16988,6 +17051,11 @@
           "language": "tsx",
           "packageName": "@santi020k/lumen-react",
           "props": [
+            {
+              "name": "onDatumActivate",
+              "optional": true,
+              "type": "(detail: LumenChartDatumActivationDetail) => void"
+            },
             {
               "name": "area",
               "optional": true,
@@ -17040,7 +17108,7 @@
             }
           ],
           "propsExtends": "Omit<ChartProps, 'children'>",
-          "source": "export interface LineChartProps extends Omit<ChartProps, 'children'> {\n  area?: boolean\n  emptyLabel?: ReactNode\n  formatCategory?: (category: number | string) => string\n  formatValue?: (value: number) => string\n  labels?: Partial<LumenChartLabels>\n  markers?: 'all' | 'auto' | 'none' | boolean | number\n  referenceValue?: number\n  series?: readonly LumenChartSeries[]\n  showLegend?: boolean\n  showTable?: boolean\n}\n\nexport const LineChart = ({\n  area = false,\n  className,\n  emptyLabel,\n  formatCategory,\n  formatValue = String,\n  labels,\n  markers = 'auto',\n  referenceValue,\n  series = emptyChartSeries,\n  showLegend = series.length > 1,\n  showTable = true,\n  summary,\n  ...props\n}: LineChartProps) => {\n  const resolvedLabels = resolveLumenChartLabels(labels)\n  const width = 640\n  const height = 320\n  const padding = 44\n  const categories = getLumenChartCategories(series)\n\n  const alignedSeries = series.map(item => ({\n    ...item,\n    data: alignLumenChartSeries(item, categories).data\n  }))\n\n  const hasData = hasLumenChartData(alignedSeries)\n\n  const domain = getLumenChartDomain(\n    [\n      ...alignedSeries.flatMap(item => item.data.map(datum => datum.y)),\n      referenceValue ?? null\n    ], false\n  )\n\n  const ticks = getLumenChartTicks(domain)\n  const paddingLeft = getLumenChartAxisPadding(ticks.map(tick => formatValue(tick)))\n\n  const geometries = alignedSeries.map(item => createLumenLineGeometry(item.data, {\n    domain,\n    height,\n    includeZero: false,\n    padding,\n    paddingLeft,\n    width\n  }))\n\n  const categoryTicks = getLumenChartCategoryTicks(\n    categories.map(category => getLumenChartCategoryLabel(alignedSeries, category, formatCategory)),\n    { end: width - padding, start: paddingLeft }\n  )\n\n  const markerStep = getLineChartMarkerStep(markers, categories.length)\n\n  const referenceY =\n    referenceValue === undefined ?\n      undefined :\n      scaleLumenChartValue(referenceValue, domain, height - padding, padding)\n\n  return (\n    <Chart\n      className={composeClassName('ui-line-chart', className)}\n      summary={summary ?? formatLumenChartSummary(alignedSeries, formatValue, resolvedLabels)}\n      {...props}\n    >\n      {showLegend && hasData && <ChartLegend label={resolvedLabels.chartLegend} series={series} />}\n      {!hasData && (\n        <p className=\"ui-chart__empty\" role=\"status\">\n          {emptyLabel ?? resolvedLabels.empty}\n        </p>\n      )}\n      <div aria-label={resolvedLabels.chartData} className=\"ui-chart__plot\" role=\"region\" tabIndex={0} hidden={!hasData}>\n        <svg\n          aria-hidden=\"true\"\n          preserveAspectRatio=\"xMidYMid meet\"\n          viewBox={`0 0 ${width} ${height}`}\n        >\n          <g className=\"ui-chart__grid\">\n            {ticks.map(tick => {\n              const y = scaleLumenChartValue(\n                tick, domain, height - padding, padding\n              )\n\n              return (\n                <Fragment key={tick}>\n                  <line x1={paddingLeft} x2={width - padding} y1={y} y2={y} />\n                  <text x={paddingLeft - 8} y={y}>\n                    {formatValue(tick)}\n                  </text>\n                </Fragment>\n              )\n            })}\n          </g>\n          <g className=\"ui-chart__axis-labels\">\n            {categoryTicks.map(tick => (\n              <text key={tick.index} textAnchor={tick.textAnchor} x={tick.position} y={height - 14}>\n                {tick.label}\n              </text>\n            ))}\n          </g>\n          {referenceY !== undefined && (\n            <line\n              className=\"ui-chart__reference\"\n              x1={paddingLeft}\n              x2={width - padding}\n              y1={referenceY}\n              y2={referenceY}\n            />\n          )}\n          {geometries.map((geometry, index) => {\n            const item = series[index]\n\n            if (!item) return null\n\n            const tone = resolveLumenChartTone(item.tone, index)\n\n            return (\n              <g\n                className={composeClassName(\n                  'ui-line-chart__series', getLumenChartToneClassName(tone)\n                )}\n                key={item.id}\n              >\n                {area &&\n                  geometry.areaPaths.map(path => (\n                    <path className=\"ui-line-chart__area\" d={path} key={path} />\n                  ))}\n                <path className=\"ui-line-chart__line\" d={geometry.path} />\n                {Number.isFinite(markerStep) &&\n                  geometry.points.map(\n                    (point, pointIndex) => pointIndex % markerStep === 0 && (\n                      <circle\n                        className=\"ui-line-chart__point\"\n                        cx={point.xCoordinate}\n                        cy={point.yCoordinate}\n                        key={getChartCategoryKey(point.x)}\n                        r=\"3\"\n                      >\n                        <title>\n                          {`${getLumenChartCategoryLabel(alignedSeries, point.x, formatCategory, 'detail')} · ${item.label}: ${formatValue(point.y ?? 0)}`}\n                        </title>\n                      </circle>\n                    )\n                  )}\n              </g>\n            )\n          })}\n        </svg>\n      </div>\n      {showTable && hasData && (\n        <ChartDataTable\n          categories={categories}\n          {...(formatCategory === undefined ? {} : { formatCategory })}\n          formatValue={formatValue}\n          labels={resolvedLabels}\n          series={series}\n        />\n      )}\n    </Chart>\n  )\n}",
+          "source": "export interface LineChartProps extends Omit<ChartProps, 'children'> {\n  onDatumActivate?: (detail: LumenChartDatumActivationDetail) => void\n  area?: boolean\n  emptyLabel?: ReactNode\n  formatCategory?: (category: number | string) => string\n  formatValue?: (value: number) => string\n  labels?: Partial<LumenChartLabels>\n  markers?: 'all' | 'auto' | 'none' | boolean | number\n  referenceValue?: number\n  series?: readonly LumenChartSeries[]\n  showLegend?: boolean\n  showTable?: boolean\n}\n\nexport const LineChart = ({\n  area = false,\n  className,\n  onDatumActivate,\n  emptyLabel,\n  formatCategory,\n  formatValue = String,\n  labels,\n  markers = 'auto',\n  referenceValue,\n  series = emptyChartSeries,\n  showLegend = series.length > 1,\n  showTable = true,\n  summary,\n  ...props\n}: LineChartProps) => {\n  const resolvedLabels = resolveLumenChartLabels(labels)\n  const width = 640\n  const height = 320\n  const padding = 44\n  const categories = getLumenChartCategories(series)\n\n  const alignedSeries = series.map(item => ({\n    ...item,\n    data: alignLumenChartSeries(item, categories).data\n  }))\n\n  const hasData = hasLumenChartData(alignedSeries)\n\n  const domain = getLumenChartDomain(\n    [\n      ...alignedSeries.flatMap(item => item.data.map(datum => datum.y)),\n      referenceValue ?? null\n    ], false\n  )\n\n  const ticks = getLumenChartTicks(domain)\n  const paddingLeft = getLumenChartAxisPadding(ticks.map(tick => formatValue(tick)))\n\n  const geometries = alignedSeries.map(item => createLumenLineGeometry(item.data, {\n    domain,\n    height,\n    includeZero: false,\n    padding,\n    paddingLeft,\n    width\n  }))\n\n  const categoryTicks = getLumenChartCategoryTicks(\n    categories.map(category => getLumenChartCategoryLabel(alignedSeries, category, formatCategory)),\n    { end: width - padding, start: paddingLeft }\n  )\n\n  const markerStep = getLineChartMarkerStep(markers, categories.length)\n\n  const referenceY =\n    referenceValue === undefined ?\n      undefined :\n      scaleLumenChartValue(referenceValue, domain, height - padding, padding)\n\n  const pointActions = onDatumActivate ?\n    geometries.map((geometry, index) => {\n      const item = alignedSeries[index]\n\n      return geometry.points.map(point => item ?\n        createReactChartDatumAction(\n          createLumenChartDatumActivation(item.id, point),\n          `${getLumenChartCategoryLabel(alignedSeries, point.x, formatCategory, 'detail')} · ${item.label}: ${formatValue(point.y ?? 0)}`,\n          resolvedLabels\n        ) :\n        null)\n    }) :\n    []\n\n  const datumActions = pointActions.flat()\n\n  return (\n    <DatumChart\n      onDatumActivate={onDatumActivate}\n      className={composeClassName('ui-line-chart', className)}\n      summary={summary ?? formatLumenChartSummary(alignedSeries, formatValue, resolvedLabels)}\n      {...props}\n    >\n      {showLegend && hasData && <ChartLegend label={resolvedLabels.chartLegend} series={series} />}\n      {!hasData && (\n        <p className=\"ui-chart__empty\" role=\"status\">\n          {emptyLabel ?? resolvedLabels.empty}\n        </p>\n      )}\n      <div aria-label={resolvedLabels.chartData} className=\"ui-chart__plot\" role=\"region\" tabIndex={0} hidden={!hasData}>\n        <svg\n          aria-hidden=\"true\"\n          preserveAspectRatio=\"xMidYMid meet\"\n          viewBox={`0 0 ${width} ${height}`}\n        >\n          <g className=\"ui-chart__grid\">\n            {ticks.map(tick => {\n              const y = scaleLumenChartValue(\n                tick, domain, height - padding, padding\n              )\n\n              return (\n                <Fragment key={tick}>\n                  <line x1={paddingLeft} x2={width - padding} y1={y} y2={y} />\n                  <text x={paddingLeft - 8} y={y}>\n                    {formatValue(tick)}\n                  </text>\n                </Fragment>\n              )\n            })}\n          </g>\n          <g className=\"ui-chart__axis-labels\">\n            {categoryTicks.map(tick => (\n              <text key={tick.index} textAnchor={tick.textAnchor} x={tick.position} y={height - 14}>\n                {tick.label}\n              </text>\n            ))}\n          </g>\n          {referenceY !== undefined && (\n            <line\n              className=\"ui-chart__reference\"\n              x1={paddingLeft}\n              x2={width - padding}\n              y1={referenceY}\n              y2={referenceY}\n            />\n          )}\n          {geometries.map((geometry, index) => {\n            const item = series[index]\n\n            if (!item) return null\n\n            const tone = resolveLumenChartTone(item.tone, index)\n\n            return (\n              <g\n                className={composeClassName(\n                  'ui-line-chart__series', getLumenChartToneClassName(tone)\n                )}\n                key={item.id}\n              >\n                {area &&\n                  geometry.areaPaths.map(path => (\n                    <path className=\"ui-line-chart__area\" d={path} key={path} />\n                  ))}\n                <path className=\"ui-line-chart__line\" d={geometry.path} />\n                {Number.isFinite(markerStep) &&\n                  geometry.points.map(\n                    (point, pointIndex) => pointIndex % markerStep === 0 && (\n                      <circle\n                        data-ui-chart-datum={pointActions[index]?.[pointIndex]?.serialized}\n                        className=\"ui-line-chart__point\"\n                        cx={point.xCoordinate}\n                        cy={point.yCoordinate}\n                        key={getChartCategoryKey(point.x)}\n                        r=\"3\"\n                      >\n                        <title>\n                          {`${getLumenChartCategoryLabel(alignedSeries, point.x, formatCategory, 'detail')} · ${item.label}: ${formatValue(point.y ?? 0)}`}\n                        </title>\n                      </circle>\n                    )\n                  )}\n                {onDatumActivate && geometry.points.map((point, pointIndex) => (\n                  <circle\n                    className=\"ui-chart__datum-hit\"\n                    key={point.id ?? getChartCategoryKey(point.x)}\n                    cx={point.xCoordinate}\n                    cy={point.yCoordinate}\n                    r=\"10\"\n                    data-ui-chart-datum={pointActions[index]?.[pointIndex]?.serialized}\n                  />\n                ))}\n              </g>\n            )\n          })}\n        </svg>\n      </div>\n      {showTable && hasData && (\n        <ChartDataTable\n          categories={categories}\n          {...(formatCategory === undefined ? {} : { formatCategory })}\n          formatValue={formatValue}\n          labels={resolvedLabels}\n          series={series}\n        />\n      )}\n      {onDatumActivate && <ChartDatumActions actions={datumActions} label={resolvedLabels.exploreData} />}\n    </DatumChart>\n  )\n}",
           "styleImport": "import '@santi020k/lumen-react/styles.css'"
         }
       },
@@ -17054,7 +17122,16 @@
         "distinction": "Use BarChart for categorical magnitude comparisons and Sparkline when axes and exact values are unnecessary."
       },
       "kebab": "line-chart",
-      "keyboardInteractions": [],
+      "keyboardInteractions": [
+        {
+          "action": "Focus the actions disclosure and its native buttons in document order.",
+          "key": "Tab"
+        },
+        {
+          "action": "Toggle the disclosure or activate the focused datum button. Actions remain available when the data table is hidden.",
+          "key": "Enter, Space"
+        }
+      ],
       "keywords": [
         "and",
         "are",
@@ -17217,7 +17294,14 @@
           "type": "recipe"
         }
       ],
-      "runtimeEvents": []
+      "runtimeEvents": [
+        {
+          "detail": "LumenChartDatumActivationDetail: series { seriesId, x, y, datumId? }, heatmap { x, y, value, datumId? }, range { x, low, high, datumId? }",
+          "name": "ui:chart-datum-activate",
+          "target": "Astro data chart figure",
+          "when": "Fires once after a plotted datum or its native action button is activated. Requires drilldown and UIPrimitives; React uses onDatumActivate instead."
+        }
+      ]
     },
     {
       "apiReference": [
@@ -19737,6 +19821,24 @@
           "values": "boolean | \"subtle\" | \"strong\""
         },
         {
+          "attribute": "drilldown",
+          "defaultValue": "false",
+          "description": "Enables plotted datum actions and an equivalent native button disclosure, including with hidden tables. Requires UIPrimitives.",
+          "values": "boolean (Astro)"
+        },
+        {
+          "attribute": "onDatumActivate",
+          "defaultValue": "-",
+          "description": "Enables React datum actions and receives validated values with raw identities. Navigation and filtering remain application owned.",
+          "values": "(detail: LumenChartDatumActivationDetail) => void (React)"
+        },
+        {
+          "attribute": "labels.exploreData, labels.formatDatumAction",
+          "defaultValue": "English labels",
+          "description": "Localizes the actions disclosure and each contextual datum button.",
+          "values": "string, (context: string) => string"
+        },
+        {
           "attribute": "series",
           "defaultValue": "required",
           "description": "Provides one already-aggregated series whose positive finite data points become slices.",
@@ -19912,6 +20014,9 @@
           "attributes": [
             "variant",
             "glass",
+            "drilldown",
+            "onDatumActivate",
+            "labels.exploreData, labels.formatDatumAction",
             "series",
             "centerLabel, centerValue",
             "showLegend",
@@ -19947,6 +20052,11 @@
           "language": "tsx",
           "packageName": "@santi020k/lumen-react",
           "props": [
+            {
+              "name": "onDatumActivate",
+              "optional": true,
+              "type": "(detail: LumenChartDatumActivationDetail) => void"
+            },
             {
               "name": "centerLabel",
               "optional": true,
@@ -19989,7 +20099,7 @@
             }
           ],
           "propsExtends": "Omit<ChartProps, 'children'>",
-          "source": "export interface PieChartProps extends Omit<ChartProps, 'children'> {\n  centerLabel?: ReactNode\n  centerValue?: ReactNode\n  labels?: Partial<LumenChartLabels>\n  series?: LumenChartSeries\n  showLegend?: boolean\n  showTable?: boolean\n  valueFormatter?: (value: number) => string\n  variant?: LumenPieChartVariant\n}\n\nexport const PieChart = ({\n  centerLabel,\n  centerValue,\n  className,\n  labels,\n  series = emptyPieSeries,\n  showLegend = true,\n  showTable = true,\n  summary,\n  valueFormatter = String,\n  variant = 'donut',\n  ...props\n}: PieChartProps) => {\n  const resolvedLabels = resolveLumenChartLabels(labels)\n  const geometry = createLumenPieGeometry(series.data, { variant })\n  const hasData = hasLumenPieData(series.data)\n\n  const renderedSeries = {\n    ...series,\n    data: series.data.filter(datum => datum.y !== null && Number.isFinite(datum.y) && datum.y > 0)\n  }\n\n  const hasCenterLabel = centerLabel !== null && centerLabel !== undefined\n  const hasCenterValue = centerValue !== null && centerValue !== undefined\n\n  return (\n    <Chart\n      className={composeClassName(\n        'ui-pie-chart', getLumenPieChartVariantClassName(variant), className\n      )}\n      summary={summary ?? formatLumenChartSummary([renderedSeries], valueFormatter, resolvedLabels)}\n      {...props}\n    >\n      {showLegend && hasData && (\n        <ul aria-label={resolvedLabels.chartLegend} className=\"ui-chart__legend\">\n          {geometry.slices.map(slice => (\n            <li\n              className={getLumenChartToneClassName(slice.tone)}\n              key={`${typeof slice.x}:${String(slice.x)}`}\n            >\n              <span aria-hidden=\"true\" />\n              {slice.label}\n            </li>\n          ))}\n        </ul>\n      )}\n      {!hasData && (\n        <p className=\"ui-chart__empty\" role=\"status\">\n          {resolvedLabels.empty}\n        </p>\n      )}\n      <div className=\"ui-chart__plot ui-pie-chart__plot\" hidden={!hasData}>\n        <svg\n          aria-hidden=\"true\"\n          preserveAspectRatio=\"xMidYMid meet\"\n          viewBox={`0 0 ${geometry.size} ${geometry.size}`}\n        >\n          <g className=\"ui-pie-chart__slices\">\n            {geometry.slices.map(slice => (\n              <path\n                className={getLumenChartToneClassName(slice.tone)}\n                d={slice.path}\n                fillRule=\"evenodd\"\n                key={`${typeof slice.x}:${String(slice.x)}`}\n              >\n                <title>\n                  {`${slice.label}: ${valueFormatter(slice.value)} (${formatChartPercentage(slice.percentage)})`}\n                </title>\n              </path>\n            ))}\n          </g>\n        </svg>\n        {variant === 'donut' && (hasCenterLabel || hasCenterValue) && (\n          <>\n            <div aria-hidden=\"true\" className=\"ui-pie-chart__center\">\n              {hasCenterValue && <strong>{centerValue}</strong>}\n              {hasCenterLabel && <span>{centerLabel}</span>}\n            </div>\n            <div className=\"ui-sr-only\">\n              {centerValue}\n              {' '}\n              {centerLabel}\n            </div>\n          </>\n        )}\n      </div>\n      {showTable && hasData && (\n        <details className=\"ui-chart__data\">\n          <summary>{resolvedLabels.viewData}</summary>\n          <div>\n            <table>\n              <thead>\n                <tr>\n                  <th scope=\"col\">{resolvedLabels.category}</th>\n                  <th scope=\"col\">{resolvedLabels.value}</th>\n                  <th scope=\"col\">Share</th>\n                </tr>\n              </thead>\n              <tbody>\n                {geometry.slices.map(slice => (\n                  <tr key={`${typeof slice.x}:${String(slice.x)}`}>\n                    <th scope=\"row\">{slice.label}</th>\n                    <td>{valueFormatter(slice.value)}</td>\n                    <td>{formatChartPercentage(slice.percentage)}</td>\n                  </tr>\n                ))}\n              </tbody>\n            </table>\n          </div>\n        </details>\n      )}\n    </Chart>\n  )\n}",
+          "source": "export interface PieChartProps extends Omit<ChartProps, 'children'> {\n  onDatumActivate?: (detail: LumenChartDatumActivationDetail) => void\n  centerLabel?: ReactNode\n  centerValue?: ReactNode\n  labels?: Partial<LumenChartLabels>\n  series?: LumenChartSeries\n  showLegend?: boolean\n  showTable?: boolean\n  valueFormatter?: (value: number) => string\n  variant?: LumenPieChartVariant\n}\n\nexport const PieChart = ({\n  centerLabel,\n  centerValue,\n  className,\n  onDatumActivate,\n  labels,\n  series = emptyPieSeries,\n  showLegend = true,\n  showTable = true,\n  summary,\n  valueFormatter = String,\n  variant = 'donut',\n  ...props\n}: PieChartProps) => {\n  const resolvedLabels = resolveLumenChartLabels(labels)\n  const geometry = createLumenPieGeometry(series.data, { variant })\n  const hasData = hasLumenPieData(series.data)\n\n  const renderedSeries = {\n    ...series,\n    data: series.data.filter(datum => datum.y !== null && Number.isFinite(datum.y) && datum.y > 0)\n  }\n\n  const hasCenterLabel = centerLabel !== null && centerLabel !== undefined\n  const hasCenterValue = centerValue !== null && centerValue !== undefined\n\n  const datumActions = onDatumActivate ?\n    geometry.slices.map((slice, index) => {\n      const datum = renderedSeries.data[index]\n\n      return datum ?\n        createReactChartDatumAction(\n          createLumenChartDatumActivation(series.id, datum),\n          `${slice.label} · ${series.label}: ${valueFormatter(slice.value)}`,\n          resolvedLabels\n        ) :\n        null\n    }) :\n    []\n\n  return (\n    <DatumChart\n      onDatumActivate={onDatumActivate}\n      className={composeClassName(\n        'ui-pie-chart', getLumenPieChartVariantClassName(variant), className\n      )}\n      summary={summary ?? formatLumenChartSummary([renderedSeries], valueFormatter, resolvedLabels)}\n      {...props}\n    >\n      {showLegend && hasData && (\n        <ul aria-label={resolvedLabels.chartLegend} className=\"ui-chart__legend\">\n          {geometry.slices.map(slice => (\n            <li\n              className={getLumenChartToneClassName(slice.tone)}\n              key={`${typeof slice.x}:${String(slice.x)}`}\n            >\n              <span aria-hidden=\"true\" />\n              {slice.label}\n            </li>\n          ))}\n        </ul>\n      )}\n      {!hasData && (\n        <p className=\"ui-chart__empty\" role=\"status\">\n          {resolvedLabels.empty}\n        </p>\n      )}\n      <div className=\"ui-chart__plot ui-pie-chart__plot\" hidden={!hasData}>\n        <svg\n          aria-hidden=\"true\"\n          preserveAspectRatio=\"xMidYMid meet\"\n          viewBox={`0 0 ${geometry.size} ${geometry.size}`}\n        >\n          <g className=\"ui-pie-chart__slices\">\n            {geometry.slices.map((slice, index) => (\n              <path\n                className={getLumenChartToneClassName(slice.tone)}\n                data-ui-chart-datum={datumActions[index]?.serialized}\n                d={slice.path}\n                fillRule=\"evenodd\"\n                key={`${typeof slice.x}:${String(slice.x)}`}\n              >\n                <title>\n                  {`${slice.label}: ${valueFormatter(slice.value)} (${formatChartPercentage(slice.percentage)})`}\n                </title>\n              </path>\n            ))}\n          </g>\n        </svg>\n        {variant === 'donut' && (hasCenterLabel || hasCenterValue) && (\n          <>\n            <div aria-hidden=\"true\" className=\"ui-pie-chart__center\">\n              {hasCenterValue && <strong>{centerValue}</strong>}\n              {hasCenterLabel && <span>{centerLabel}</span>}\n            </div>\n            <div className=\"ui-sr-only\">\n              {centerValue}\n              {' '}\n              {centerLabel}\n            </div>\n          </>\n        )}\n      </div>\n      {showTable && hasData && (\n        <details className=\"ui-chart__data\">\n          <summary>{resolvedLabels.viewData}</summary>\n          <div>\n            <table>\n              <thead>\n                <tr>\n                  <th scope=\"col\">{resolvedLabels.category}</th>\n                  <th scope=\"col\">{resolvedLabels.value}</th>\n                  <th scope=\"col\">Share</th>\n                </tr>\n              </thead>\n              <tbody>\n                {geometry.slices.map(slice => (\n                  <tr key={`${typeof slice.x}:${String(slice.x)}`}>\n                    <th scope=\"row\">{slice.label}</th>\n                    <td>{valueFormatter(slice.value)}</td>\n                    <td>{formatChartPercentage(slice.percentage)}</td>\n                  </tr>\n                ))}\n              </tbody>\n            </table>\n          </div>\n        </details>\n      )}\n      {onDatumActivate && <ChartDatumActions actions={datumActions} label={resolvedLabels.exploreData} />}\n    </DatumChart>\n  )\n}",
           "styleImport": "import '@santi020k/lumen-react/styles.css'"
         }
       },
@@ -20003,7 +20113,16 @@
         "distinction": "Prefer the default donut for a center total. Use BarChart when precise comparison or more than roughly seven categories matters, and do not use PieChart for negative values or change over time."
       },
       "kebab": "pie-chart",
-      "keyboardInteractions": [],
+      "keyboardInteractions": [
+        {
+          "action": "Focus the actions disclosure and its native buttons in document order.",
+          "key": "Tab"
+        },
+        {
+          "action": "Toggle the disclosure or activate the focused datum button. Actions remain available when the data table is hidden.",
+          "key": "Enter, Space"
+        }
+      ],
       "keywords": [
         "accessible",
         "and",
@@ -20159,7 +20278,14 @@
           "type": "recipe"
         }
       ],
-      "runtimeEvents": []
+      "runtimeEvents": [
+        {
+          "detail": "LumenChartDatumActivationDetail: series { seriesId, x, y, datumId? }, heatmap { x, y, value, datumId? }, range { x, low, high, datumId? }",
+          "name": "ui:chart-datum-activate",
+          "target": "Astro data chart figure",
+          "when": "Fires once after a plotted datum or its native action button is activated. Requires drilldown and UIPrimitives; React uses onDatumActivate instead."
+        }
+      ]
     },
     {
       "apiReference": [
@@ -36913,6 +37039,24 @@
     {
       "apiReference": [
         {
+          "attribute": "drilldown",
+          "defaultValue": "false",
+          "description": "Enables plotted datum actions and an equivalent native button disclosure, including with hidden tables. Requires UIPrimitives.",
+          "values": "boolean (Astro)"
+        },
+        {
+          "attribute": "onDatumActivate",
+          "defaultValue": "-",
+          "description": "Enables React datum actions and receives validated values with raw identities. Navigation and filtering remain application owned.",
+          "values": "(detail: LumenChartDatumActivationDetail) => void (React)"
+        },
+        {
+          "attribute": "labels.exploreData, labels.formatDatumAction",
+          "defaultValue": "English labels",
+          "description": "Localizes the actions disclosure and each contextual datum button.",
+          "values": "string, (context: string) => string"
+        },
+        {
           "attribute": "series",
           "defaultValue": "[]",
           "description": "Provides x/y points with optional labels and bubble sizes.",
@@ -37071,6 +37215,9 @@
         },
         "elements": {
           "attributes": [
+            "drilldown",
+            "onDatumActivate",
+            "labels.exploreData, labels.formatDatumAction",
             "series",
             "xScale",
             "formatValue",
@@ -37107,6 +37254,11 @@
           "packageName": "@santi020k/lumen-react",
           "props": [
             {
+              "name": "onDatumActivate",
+              "optional": true,
+              "type": "(detail: LumenChartDatumActivationDetail) => void"
+            },
+            {
               "name": "formatValue",
               "optional": true,
               "type": "(value: number) => string"
@@ -37138,7 +37290,7 @@
             }
           ],
           "propsExtends": "Omit<ChartProps, 'children'>",
-          "source": "export interface ScatterChartProps extends Omit<ChartProps, 'children'> {\n  formatValue?: (value: number) => string\n  labels?: Partial<LumenChartLabels>\n  series?: readonly LumenChartSeries[]\n  showLegend?: boolean\n  showTable?: boolean\n  xScale?: Exclude<LumenChartScaleType, 'categorical'>\n}\n\nexport const ScatterChart = ({\n  className,\n  formatValue = String,\n  labels,\n  series = emptyChartSeries,\n  showLegend = series.length > 1,\n  showTable = true,\n  summary,\n  xScale = 'linear',\n  ...props\n}: ScatterChartProps) => {\n  const resolvedLabels = resolveLumenChartLabels(labels)\n  const geometry = createLumenScatterGeometry(series, { xScale })\n\n  const renderedSeries = series.map(item => ({\n    ...item,\n    data: geometry.points.filter(point => point.seriesId === item.id)\n  })).filter(item => item.data.length > 0)\n\n  const hasData = geometry.points.length > 0\n\n  return (\n    <Chart className={composeClassName('ui-scatter-chart', className)} summary={summary ?? formatLumenChartSummary(renderedSeries, formatValue, resolvedLabels)} {...props}>\n      {showLegend && hasData && <ChartLegend label={resolvedLabels.chartLegend} series={series} />}\n      {!hasData && <p className=\"ui-chart__empty\" role=\"status\">{resolvedLabels.empty}</p>}\n      <div aria-label={resolvedLabels.chartData} className=\"ui-chart__plot\" role=\"region\" tabIndex={0} hidden={!hasData}>\n        <svg aria-hidden=\"true\" viewBox={`0 0 ${geometry.width} ${geometry.height}`}>\n          <g className=\"ui-scatter-chart__marks\">\n            {geometry.points.map((point, pointIndex) => (\n              <circle className={getLumenChartToneClassName(point.tone)} cx={point.xCoordinate} cy={point.yCoordinate} key={`${point.seriesId}:${point.id ?? `${getChartCategoryKey(point.x)}:${pointIndex}`}`} r={point.radius}>\n                <title>{`${point.xLabel ?? point.x} · ${point.seriesLabel}: ${point.label ?? formatValue(point.y ?? 0)}`}</title>\n              </circle>\n            ))}\n          </g>\n        </svg>\n      </div>\n      {showTable && hasData && (\n        <details className=\"ui-chart__data\">\n          <summary>{resolvedLabels.viewData}</summary>\n          <div>\n            <table>\n              <thead>\n                <tr>\n                  <th scope=\"col\">{resolvedLabels.x}</th>\n                  <th scope=\"col\">{resolvedLabels.series}</th>\n                  <th scope=\"col\">{resolvedLabels.value}</th>\n                  <th scope=\"col\">{resolvedLabels.size}</th>\n                </tr>\n              </thead>\n              <tbody>\n                {geometry.points.map((point, pointIndex) => (\n                  <tr key={`${point.seriesId}:${point.id ?? `${getChartCategoryKey(point.x)}:${pointIndex}`}`}>\n                    <th scope=\"row\">{point.xLabel ?? point.x}</th>\n                    <td>{point.seriesLabel}</td>\n                    <td>{point.label ?? formatValue(point.y ?? 0)}</td>\n                    <td>\n                      {formatReactChartTableValue(point.size, formatValue, resolvedLabels.notAvailable)}\n                    </td>\n                  </tr>\n                ))}\n              </tbody>\n            </table>\n          </div>\n        </details>\n      )}\n    </Chart>\n  )\n}",
+          "source": "export interface ScatterChartProps extends Omit<ChartProps, 'children'> {\n  onDatumActivate?: (detail: LumenChartDatumActivationDetail) => void\n  formatValue?: (value: number) => string\n  labels?: Partial<LumenChartLabels>\n  series?: readonly LumenChartSeries[]\n  showLegend?: boolean\n  showTable?: boolean\n  xScale?: Exclude<LumenChartScaleType, 'categorical'>\n}\n\nexport const ScatterChart = ({\n  className,\n  onDatumActivate,\n  formatValue = String,\n  labels,\n  series = emptyChartSeries,\n  showLegend = series.length > 1,\n  showTable = true,\n  summary,\n  xScale = 'linear',\n  ...props\n}: ScatterChartProps) => {\n  const resolvedLabels = resolveLumenChartLabels(labels)\n  const geometry = createLumenScatterGeometry(series, { xScale })\n\n  const renderedSeries = series.map(item => ({\n    ...item,\n    data: geometry.points.filter(point => point.seriesId === item.id)\n  })).filter(item => item.data.length > 0)\n\n  const hasData = geometry.points.length > 0\n\n  const datumActions = onDatumActivate ?\n    geometry.points.map(point => createReactChartDatumAction(\n      createLumenChartDatumActivation(point.seriesId, point),\n      `${point.xLabel ?? point.x} · ${point.seriesLabel}: ${point.label ?? formatValue(point.y ?? 0)}`,\n      resolvedLabels\n    )) :\n    []\n\n  return (\n    <DatumChart onDatumActivate={onDatumActivate} className={composeClassName('ui-scatter-chart', className)} summary={summary ?? formatLumenChartSummary(renderedSeries, formatValue, resolvedLabels)} {...props}>\n      {showLegend && hasData && <ChartLegend label={resolvedLabels.chartLegend} series={series} />}\n      {!hasData && <p className=\"ui-chart__empty\" role=\"status\">{resolvedLabels.empty}</p>}\n      <div aria-label={resolvedLabels.chartData} className=\"ui-chart__plot\" role=\"region\" tabIndex={0} hidden={!hasData}>\n        <svg aria-hidden=\"true\" viewBox={`0 0 ${geometry.width} ${geometry.height}`}>\n          <g className=\"ui-scatter-chart__marks\">\n            {geometry.points.map((point, pointIndex) => (\n              <circle data-ui-chart-datum={datumActions[pointIndex]?.serialized} className={getLumenChartToneClassName(point.tone)} cx={point.xCoordinate} cy={point.yCoordinate} key={`${point.seriesId}:${point.id ?? `${getChartCategoryKey(point.x)}:${pointIndex}`}`} r={point.radius}>\n                <title>{`${point.xLabel ?? point.x} · ${point.seriesLabel}: ${point.label ?? formatValue(point.y ?? 0)}`}</title>\n              </circle>\n            ))}\n          </g>\n          {onDatumActivate && geometry.points.map((point, index) => (\n            <circle\n              className=\"ui-chart__datum-hit\"\n              key={`${point.seriesId}:${point.id ?? getChartCategoryKey(point.x)}`}\n              cx={point.xCoordinate}\n              cy={point.yCoordinate}\n              r={Math.max(10, point.radius)}\n              data-ui-chart-datum={datumActions[index]?.serialized}\n            />\n          ))}\n        </svg>\n      </div>\n      {showTable && hasData && (\n        <details className=\"ui-chart__data\">\n          <summary>{resolvedLabels.viewData}</summary>\n          <div>\n            <table>\n              <thead>\n                <tr>\n                  <th scope=\"col\">{resolvedLabels.x}</th>\n                  <th scope=\"col\">{resolvedLabels.series}</th>\n                  <th scope=\"col\">{resolvedLabels.value}</th>\n                  <th scope=\"col\">{resolvedLabels.size}</th>\n                </tr>\n              </thead>\n              <tbody>\n                {geometry.points.map((point, pointIndex) => (\n                  <tr key={`${point.seriesId}:${point.id ?? `${getChartCategoryKey(point.x)}:${pointIndex}`}`}>\n                    <th scope=\"row\">{point.xLabel ?? point.x}</th>\n                    <td>{point.seriesLabel}</td>\n                    <td>{point.label ?? formatValue(point.y ?? 0)}</td>\n                    <td>\n                      {formatReactChartTableValue(point.size, formatValue, resolvedLabels.notAvailable)}\n                    </td>\n                  </tr>\n                ))}\n              </tbody>\n            </table>\n          </div>\n        </details>\n      )}\n      {onDatumActivate && <ChartDatumActions actions={datumActions} label={resolvedLabels.exploreData} />}\n    </DatumChart>\n  )\n}",
           "styleImport": "import '@santi020k/lumen-react/styles.css'"
         }
       },
@@ -37149,7 +37301,16 @@
       },
       "guidance": null,
       "kebab": "scatter-chart",
-      "keyboardInteractions": [],
+      "keyboardInteractions": [
+        {
+          "action": "Focus the actions disclosure and its native buttons in document order.",
+          "key": "Tab"
+        },
+        {
+          "action": "Toggle the disclosure or activate the focused datum button. Actions remain available when the data table is hidden.",
+          "key": "Enter, Space"
+        }
+      ],
       "keywords": [
         "across",
         "and",
@@ -37264,10 +37425,35 @@
           "type": "recipe"
         }
       ],
-      "runtimeEvents": []
+      "runtimeEvents": [
+        {
+          "detail": "LumenChartDatumActivationDetail: series { seriesId, x, y, datumId? }, heatmap { x, y, value, datumId? }, range { x, low, high, datumId? }",
+          "name": "ui:chart-datum-activate",
+          "target": "Astro data chart figure",
+          "when": "Fires once after a plotted datum or its native action button is activated. Requires drilldown and UIPrimitives; React uses onDatumActivate instead."
+        }
+      ]
     },
     {
       "apiReference": [
+        {
+          "attribute": "drilldown",
+          "defaultValue": "false",
+          "description": "Enables plotted datum actions and an equivalent native button disclosure, including with hidden tables. Requires UIPrimitives.",
+          "values": "boolean (Astro)"
+        },
+        {
+          "attribute": "onDatumActivate",
+          "defaultValue": "-",
+          "description": "Enables React datum actions and receives validated values with raw identities. Navigation and filtering remain application owned.",
+          "values": "(detail: LumenChartDatumActivationDetail) => void (React)"
+        },
+        {
+          "attribute": "labels.exploreData, labels.formatDatumAction",
+          "defaultValue": "English labels",
+          "description": "Localizes the actions disclosure and each contextual datum button.",
+          "values": "string, (context: string) => string"
+        },
         {
           "attribute": "data",
           "defaultValue": "[]",
@@ -37400,6 +37586,9 @@
         },
         "elements": {
           "attributes": [
+            "drilldown",
+            "onDatumActivate",
+            "labels.exploreData, labels.formatDatumAction",
             "data",
             "formatValue",
             "showTable",
@@ -37434,6 +37623,11 @@
           "packageName": "@santi020k/lumen-react",
           "props": [
             {
+              "name": "onDatumActivate",
+              "optional": true,
+              "type": "(detail: LumenChartDatumActivationDetail) => void"
+            },
+            {
               "name": "data",
               "optional": true,
               "type": "readonly LumenHeatmapDatum[]"
@@ -37455,7 +37649,7 @@
             }
           ],
           "propsExtends": "Omit<ChartProps, 'children'>",
-          "source": "export interface HeatmapProps extends Omit<ChartProps, 'children'> {\n  data?: readonly LumenHeatmapDatum[]\n  formatValue?: (value: number) => string\n  labels?: Partial<LumenChartLabels>\n  showTable?: boolean\n}\n\nexport const Heatmap = ({\n  className,\n  data = emptyHeatmapData,\n  formatValue = String,\n  labels,\n  showTable = true,\n  summary,\n  ...props\n}: HeatmapProps) => {\n  const resolvedLabels = resolveLumenChartLabels(labels)\n  const geometry = createLumenHeatmapGeometry(data)\n  const availableCells = geometry.cells.filter(cell => cell.value !== null && Number.isFinite(cell.value))\n  const hasData = availableCells.length > 0\n\n  return (\n    <Chart className={composeClassName('ui-heatmap', className)} summary={summary ?? resolvedLabels.formatHeatmapSummary(availableCells.length)} {...props}>\n      {!hasData && <p className=\"ui-chart__empty\" role=\"status\">{resolvedLabels.empty}</p>}\n      <div aria-label={resolvedLabels.chartData} className=\"ui-chart__plot\" role=\"region\" tabIndex={0} hidden={!hasData}>\n        <svg aria-hidden=\"true\" viewBox={`0 0 ${geometry.width} ${geometry.height}`}>\n          <g className=\"ui-heatmap__cells\">\n            {availableCells.map(cell => <rect height={Math.max(0, cell.height - 2)} key={cell.id ?? `${getChartCategoryKey(cell.x)}:${getChartCategoryKey(cell.y)}`} opacity={Math.max(0.12, cell.ratio)} width={Math.max(0, cell.width - 2)} x={cell.xCoordinate + 1} y={cell.yCoordinate + 1}><title>{`${cell.xLabel ?? cell.x} · ${cell.yLabel ?? cell.y}: ${cell.label ?? formatValue(cell.value ?? 0)}`}</title></rect>)}\n          </g>\n        </svg>\n      </div>\n      {showTable && (\n        <details className=\"ui-chart__data\">\n          <summary>{resolvedLabels.viewData}</summary>\n          <div>\n            <table>\n              <thead>\n                <tr>\n                  <th scope=\"col\">{resolvedLabels.column}</th>\n                  <th scope=\"col\">{resolvedLabels.row}</th>\n                  <th scope=\"col\">{resolvedLabels.value}</th>\n                </tr>\n              </thead>\n              <tbody>\n                {data.map(cell => (\n                  <tr key={cell.id ?? `${getChartCategoryKey(cell.x)}:${getChartCategoryKey(cell.y)}`}>\n                    <th scope=\"row\">{cell.xLabel ?? cell.x}</th>\n                    <td>{cell.yLabel ?? cell.y}</td>\n                    <td>\n                      {cell.label ?? (\n                        cell.value === null || !Number.isFinite(cell.value) ?\n                          resolvedLabels.notAvailable :\n                          formatValue(cell.value)\n                      )}\n                    </td>\n                  </tr>\n                ))}\n              </tbody>\n            </table>\n          </div>\n        </details>\n      )}\n    </Chart>\n  )\n}",
+          "source": "export interface HeatmapProps extends Omit<ChartProps, 'children'> {\n  onDatumActivate?: (detail: LumenChartDatumActivationDetail) => void\n  data?: readonly LumenHeatmapDatum[]\n  formatValue?: (value: number) => string\n  labels?: Partial<LumenChartLabels>\n  showTable?: boolean\n}\n\nexport const Heatmap = ({\n  className,\n  onDatumActivate,\n  data = emptyHeatmapData,\n  formatValue = String,\n  labels,\n  showTable = true,\n  summary,\n  ...props\n}: HeatmapProps) => {\n  const resolvedLabels = resolveLumenChartLabels(labels)\n  const geometry = createLumenHeatmapGeometry(data)\n  const availableCells = geometry.cells.filter(cell => cell.value !== null && Number.isFinite(cell.value))\n  const hasData = availableCells.length > 0\n\n  const datumActions = onDatumActivate ?\n    availableCells.map(cell => createReactChartDatumAction(\n      createLumenHeatmapDatumActivation(cell),\n      `${cell.xLabel ?? cell.x} · ${cell.yLabel ?? cell.y}: ${cell.label ?? formatValue(cell.value ?? 0)}`,\n      resolvedLabels\n    )) :\n    []\n\n  return (\n    <DatumChart onDatumActivate={onDatumActivate} className={composeClassName('ui-heatmap', className)} summary={summary ?? resolvedLabels.formatHeatmapSummary(availableCells.length)} {...props}>\n      {!hasData && <p className=\"ui-chart__empty\" role=\"status\">{resolvedLabels.empty}</p>}\n      <div aria-label={resolvedLabels.chartData} className=\"ui-chart__plot\" role=\"region\" tabIndex={0} hidden={!hasData}>\n        <svg aria-hidden=\"true\" viewBox={`0 0 ${geometry.width} ${geometry.height}`}>\n          <g className=\"ui-heatmap__cells\">\n            {availableCells.map((cell, index) => <rect data-ui-chart-datum={datumActions[index]?.serialized} height={Math.max(0, cell.height - 2)} key={cell.id ?? `${getChartCategoryKey(cell.x)}:${getChartCategoryKey(cell.y)}`} opacity={Math.max(0.12, cell.ratio)} width={Math.max(0, cell.width - 2)} x={cell.xCoordinate + 1} y={cell.yCoordinate + 1}><title>{`${cell.xLabel ?? cell.x} · ${cell.yLabel ?? cell.y}: ${cell.label ?? formatValue(cell.value ?? 0)}`}</title></rect>)}\n          </g>\n        </svg>\n      </div>\n      {showTable && (\n        <details className=\"ui-chart__data\">\n          <summary>{resolvedLabels.viewData}</summary>\n          <div>\n            <table>\n              <thead>\n                <tr>\n                  <th scope=\"col\">{resolvedLabels.column}</th>\n                  <th scope=\"col\">{resolvedLabels.row}</th>\n                  <th scope=\"col\">{resolvedLabels.value}</th>\n                </tr>\n              </thead>\n              <tbody>\n                {data.map(cell => (\n                  <tr key={cell.id ?? `${getChartCategoryKey(cell.x)}:${getChartCategoryKey(cell.y)}`}>\n                    <th scope=\"row\">{cell.xLabel ?? cell.x}</th>\n                    <td>{cell.yLabel ?? cell.y}</td>\n                    <td>\n                      {cell.label ?? (\n                        cell.value === null || !Number.isFinite(cell.value) ?\n                          resolvedLabels.notAvailable :\n                          formatValue(cell.value)\n                      )}\n                    </td>\n                  </tr>\n                ))}\n              </tbody>\n            </table>\n          </div>\n        </details>\n      )}\n      {onDatumActivate && <ChartDatumActions actions={datumActions} label={resolvedLabels.exploreData} />}\n    </DatumChart>\n  )\n}",
           "styleImport": "import '@santi020k/lumen-react/styles.css'"
         }
       },
@@ -37466,7 +37660,16 @@
       },
       "guidance": null,
       "kebab": "heatmap",
-      "keyboardInteractions": [],
+      "keyboardInteractions": [
+        {
+          "action": "Focus the actions disclosure and its native buttons in document order.",
+          "key": "Tab"
+        },
+        {
+          "action": "Toggle the disclosure or activate the focused datum button. Actions remain available when the data table is hidden.",
+          "key": "Enter, Space"
+        }
+      ],
       "keywords": [
         "and",
         "breakdowns",
@@ -37564,10 +37767,35 @@
           "type": "recipe"
         }
       ],
-      "runtimeEvents": []
+      "runtimeEvents": [
+        {
+          "detail": "LumenChartDatumActivationDetail: series { seriesId, x, y, datumId? }, heatmap { x, y, value, datumId? }, range { x, low, high, datumId? }",
+          "name": "ui:chart-datum-activate",
+          "target": "Astro data chart figure",
+          "when": "Fires once after a plotted datum or its native action button is activated. Requires drilldown and UIPrimitives; React uses onDatumActivate instead."
+        }
+      ]
     },
     {
       "apiReference": [
+        {
+          "attribute": "drilldown",
+          "defaultValue": "false",
+          "description": "Enables plotted datum actions and an equivalent native button disclosure, including with hidden tables. Requires UIPrimitives.",
+          "values": "boolean (Astro)"
+        },
+        {
+          "attribute": "onDatumActivate",
+          "defaultValue": "-",
+          "description": "Enables React datum actions and receives validated values with raw identities. Navigation and filtering remain application owned.",
+          "values": "(detail: LumenChartDatumActivationDetail) => void (React)"
+        },
+        {
+          "attribute": "labels.exploreData, labels.formatDatumAction",
+          "defaultValue": "English labels",
+          "description": "Localizes the actions disclosure and each contextual datum button.",
+          "values": "string, (context: string) => string"
+        },
         {
           "attribute": "data",
           "defaultValue": "[]",
@@ -37711,6 +37939,9 @@
         },
         "elements": {
           "attributes": [
+            "drilldown",
+            "onDatumActivate",
+            "labels.exploreData, labels.formatDatumAction",
             "data",
             "formatValue",
             "tone",
@@ -37746,6 +37977,11 @@
           "packageName": "@santi020k/lumen-react",
           "props": [
             {
+              "name": "onDatumActivate",
+              "optional": true,
+              "type": "(detail: LumenChartDatumActivationDetail) => void"
+            },
+            {
               "name": "data",
               "optional": true,
               "type": "readonly LumenRangeDatum[]"
@@ -37772,7 +38008,7 @@
             }
           ],
           "propsExtends": "Omit<ChartProps, 'children'>",
-          "source": "export interface RangeChartProps extends Omit<ChartProps, 'children'> {\n  data?: readonly LumenRangeDatum[]\n  formatValue?: (value: number) => string\n  labels?: Partial<LumenChartLabels>\n  showTable?: boolean\n  tone?: LumenChartTone\n}\n\nexport const RangeChart = ({\n  className,\n  data = emptyRangeData,\n  formatValue = String,\n  labels,\n  showTable = true,\n  summary,\n  tone = 'series-1',\n  ...props\n}: RangeChartProps) => {\n  const resolvedLabels = resolveLumenChartLabels(labels)\n  const width = 640\n  const height = 320\n  const padding = 44\n  const geometry = createLumenRangeGeometry(data, { height, padding, width })\n\n  return (\n    <Chart className={composeClassName('ui-range-chart', getLumenChartToneClassName(tone), className)} summary={summary ?? resolvedLabels.formatRangeSummary(geometry.points.length)} {...props}>\n      {geometry.points.length === 0 && <p className=\"ui-chart__empty\" role=\"status\">{resolvedLabels.empty}</p>}\n      <div aria-label={resolvedLabels.chartData} className=\"ui-chart__plot\" role=\"region\" tabIndex={0} hidden={geometry.points.length === 0}>\n        <svg aria-hidden=\"true\" viewBox={`0 0 ${width} ${height}`}>\n          <path className=\"ui-range-chart__area\" d={geometry.areaPath} />\n          {geometry.points.map(point => (\n            <line\n              className=\"ui-range-chart__interval\"\n              key={point.id ?? getChartCategoryKey(point.x)}\n              x1={point.xCoordinate}\n              x2={point.xCoordinate}\n              y1={point.highCoordinate}\n              y2={point.lowCoordinate}\n            >\n              <title>{`${point.xLabel ?? point.x}: ${point.label ?? `${formatValue(point.low ?? 0)}–${formatValue(point.high ?? 0)}`}`}</title>\n            </line>\n          ))}\n        </svg>\n      </div>\n      {showTable && (\n        <details className=\"ui-chart__data\">\n          <summary>{resolvedLabels.viewData}</summary>\n          <div>\n            <table>\n              <thead>\n                <tr>\n                  <th scope=\"col\">{resolvedLabels.category}</th>\n                  <th scope=\"col\">{resolvedLabels.low}</th>\n                  <th scope=\"col\">{resolvedLabels.high}</th>\n                </tr>\n              </thead>\n              <tbody>\n                {data.map(item => (\n                  <tr key={item.id ?? getChartCategoryKey(item.x)}>\n                    <th scope=\"row\">{item.xLabel ?? item.x}</th>\n                    <td>\n                      {item.low === null || !Number.isFinite(item.low) ?\n                        resolvedLabels.notAvailable :\n                        formatValue(item.low)}\n                    </td>\n                    <td>\n                      {item.high === null || !Number.isFinite(item.high) ?\n                        resolvedLabels.notAvailable :\n                        formatValue(item.high)}\n                    </td>\n                  </tr>\n                ))}\n              </tbody>\n            </table>\n          </div>\n        </details>\n      )}\n    </Chart>\n  )\n}",
+          "source": "export interface RangeChartProps extends Omit<ChartProps, 'children'> {\n  onDatumActivate?: (detail: LumenChartDatumActivationDetail) => void\n  data?: readonly LumenRangeDatum[]\n  formatValue?: (value: number) => string\n  labels?: Partial<LumenChartLabels>\n  showTable?: boolean\n  tone?: LumenChartTone\n}\n\nexport const RangeChart = ({\n  className,\n  onDatumActivate,\n  data = emptyRangeData,\n  formatValue = String,\n  labels,\n  showTable = true,\n  summary,\n  tone = 'series-1',\n  ...props\n}: RangeChartProps) => {\n  const resolvedLabels = resolveLumenChartLabels(labels)\n  const width = 640\n  const height = 320\n  const padding = 44\n  const geometry = createLumenRangeGeometry(data, { height, padding, width })\n\n  const datumActions = onDatumActivate ?\n    geometry.points.map(point => createReactChartDatumAction(\n      createLumenRangeDatumActivation(point),\n      `${point.xLabel ?? point.x}: ${point.label ?? `${formatValue(point.low ?? 0)}–${formatValue(point.high ?? 0)}`}`,\n      resolvedLabels\n    )) :\n    []\n\n  return (\n    <DatumChart onDatumActivate={onDatumActivate} className={composeClassName('ui-range-chart', getLumenChartToneClassName(tone), className)} summary={summary ?? resolvedLabels.formatRangeSummary(geometry.points.length)} {...props}>\n      {geometry.points.length === 0 && <p className=\"ui-chart__empty\" role=\"status\">{resolvedLabels.empty}</p>}\n      <div aria-label={resolvedLabels.chartData} className=\"ui-chart__plot\" role=\"region\" tabIndex={0} hidden={geometry.points.length === 0}>\n        <svg aria-hidden=\"true\" viewBox={`0 0 ${width} ${height}`}>\n          <path className=\"ui-range-chart__area\" d={geometry.areaPath} />\n          {geometry.points.map((point, index) => (\n            <line\n              data-ui-chart-datum={datumActions[index]?.serialized}\n              className=\"ui-range-chart__interval\"\n              key={point.id ?? getChartCategoryKey(point.x)}\n              x1={point.xCoordinate}\n              x2={point.xCoordinate}\n              y1={point.highCoordinate}\n              y2={point.lowCoordinate}\n            >\n              <title>{`${point.xLabel ?? point.x}: ${point.label ?? `${formatValue(point.low ?? 0)}–${formatValue(point.high ?? 0)}`}`}</title>\n            </line>\n          ))}\n          {onDatumActivate && geometry.points.map((point, index) => (\n            <rect\n              className=\"ui-chart__datum-hit\"\n              key={point.id ?? getChartCategoryKey(point.x)}\n              x={point.xCoordinate - 10}\n              y={Math.min(point.highCoordinate, point.lowCoordinate) -\n                Math.max(0, 20 - Math.abs(point.highCoordinate - point.lowCoordinate)) / 2}\n              width=\"20\"\n              height={Math.max(20, Math.abs(point.highCoordinate - point.lowCoordinate))}\n              data-ui-chart-datum={datumActions[index]?.serialized}\n            />\n          ))}\n        </svg>\n      </div>\n      {showTable && (\n        <details className=\"ui-chart__data\">\n          <summary>{resolvedLabels.viewData}</summary>\n          <div>\n            <table>\n              <thead>\n                <tr>\n                  <th scope=\"col\">{resolvedLabels.category}</th>\n                  <th scope=\"col\">{resolvedLabels.low}</th>\n                  <th scope=\"col\">{resolvedLabels.high}</th>\n                </tr>\n              </thead>\n              <tbody>\n                {data.map(item => (\n                  <tr key={item.id ?? getChartCategoryKey(item.x)}>\n                    <th scope=\"row\">{item.xLabel ?? item.x}</th>\n                    <td>\n                      {item.low === null || !Number.isFinite(item.low) ?\n                        resolvedLabels.notAvailable :\n                        formatValue(item.low)}\n                    </td>\n                    <td>\n                      {item.high === null || !Number.isFinite(item.high) ?\n                        resolvedLabels.notAvailable :\n                        formatValue(item.high)}\n                    </td>\n                  </tr>\n                ))}\n              </tbody>\n            </table>\n          </div>\n        </details>\n      )}\n      {onDatumActivate && <ChartDatumActions actions={datumActions} label={resolvedLabels.exploreData} />}\n    </DatumChart>\n  )\n}",
           "styleImport": "import '@santi020k/lumen-react/styles.css'"
         }
       },
@@ -37783,7 +38019,16 @@
       },
       "guidance": null,
       "kebab": "range-chart",
-      "keyboardInteractions": [],
+      "keyboardInteractions": [
+        {
+          "action": "Focus the actions disclosure and its native buttons in document order.",
+          "key": "Tab"
+        },
+        {
+          "action": "Toggle the disclosure or activate the focused datum button. Actions remain available when the data table is hidden.",
+          "key": "Enter, Space"
+        }
+      ],
       "keywords": [
         "and",
         "band",
@@ -37887,10 +38132,35 @@
           "type": "recipe"
         }
       ],
-      "runtimeEvents": []
+      "runtimeEvents": [
+        {
+          "detail": "LumenChartDatumActivationDetail: series { seriesId, x, y, datumId? }, heatmap { x, y, value, datumId? }, range { x, low, high, datumId? }",
+          "name": "ui:chart-datum-activate",
+          "target": "Astro data chart figure",
+          "when": "Fires once after a plotted datum or its native action button is activated. Requires drilldown and UIPrimitives; React uses onDatumActivate instead."
+        }
+      ]
     },
     {
       "apiReference": [
+        {
+          "attribute": "drilldown",
+          "defaultValue": "false",
+          "description": "Enables plotted datum actions and an equivalent native button disclosure, including with hidden tables. Requires UIPrimitives.",
+          "values": "boolean (Astro)"
+        },
+        {
+          "attribute": "onDatumActivate",
+          "defaultValue": "-",
+          "description": "Enables React datum actions and receives validated values with raw identities. Navigation and filtering remain application owned.",
+          "values": "(detail: LumenChartDatumActivationDetail) => void (React)"
+        },
+        {
+          "attribute": "labels.exploreData, labels.formatDatumAction",
+          "defaultValue": "English labels",
+          "description": "Localizes the actions disclosure and each contextual datum button.",
+          "values": "string, (context: string) => string"
+        },
         {
           "attribute": "series",
           "defaultValue": "[]",
@@ -38034,6 +38304,9 @@
         },
         "elements": {
           "attributes": [
+            "drilldown",
+            "onDatumActivate",
+            "labels.exploreData, labels.formatDatumAction",
             "series",
             "formatValue",
             "showLegend",
@@ -38069,6 +38342,11 @@
           "packageName": "@santi020k/lumen-react",
           "props": [
             {
+              "name": "onDatumActivate",
+              "optional": true,
+              "type": "(detail: LumenChartDatumActivationDetail) => void"
+            },
+            {
               "name": "formatValue",
               "optional": true,
               "type": "(value: number) => string"
@@ -38095,7 +38373,7 @@
             }
           ],
           "propsExtends": "Omit<ChartProps, 'children'>",
-          "source": "export interface ComboChartProps extends Omit<ChartProps, 'children'> {\n  formatValue?: (value: number) => string\n  labels?: Partial<LumenChartLabels>\n  series?: readonly LumenComboSeries[]\n  showLegend?: boolean\n  showTable?: boolean\n}\n\nexport const ComboChart = ({\n  className,\n  formatValue = String,\n  labels,\n  series = emptyComboSeries,\n  showLegend = true,\n  showTable = true,\n  summary,\n  ...props\n}: ComboChartProps) => {\n  const resolvedLabels = resolveLumenChartLabels(labels)\n  const width = 640\n  const height = 320\n  const padding = 44\n  const categories = getLumenChartCategories(series)\n\n  const alignedSeries = series.map(item => ({\n    ...item,\n    data: alignLumenChartSeries(item, categories).data\n  }))\n\n  const domain = getLumenChartDomain(alignedSeries.flatMap(item => item.data.map(datum => datum.y)))\n  const barSeries = alignedSeries.filter(item => item.mark === 'bar')\n  const lineSeries = alignedSeries.filter(item => item.mark !== 'bar')\n  const bars = createLumenBarGeometry(barSeries, { domain, height, width })\n\n  const categoryPositions = new Map(\n    bars.categories.map(category => [getChartCategoryKey(category.category), category.x])\n  )\n\n  const drawableWidth = width - padding * 2\n\n  const alignComboLineDatum = (datum: LumenChartDatum): LumenChartDatum => {\n    if (barSeries.length === 0) return datum\n\n    return {\n      ...datum,\n      x: ((categoryPositions.get(`${typeof datum.x}:${String(datum.x)}`) ?? padding) - padding) / drawableWidth\n    }\n  }\n\n  const lineGeometryOptions = {\n    domain,\n    height,\n    padding,\n    width,\n    ...(barSeries.length === 0 ?\n      {} :\n      {\n        paddingBottom: bars.margin.bottom,\n        paddingTop: bars.margin.top,\n        xDomain: { max: 1, min: 0 },\n        xScale: 'linear' as const\n      })\n  }\n\n  const lines = lineSeries.map(item => createLumenLineGeometry(\n    item.data.map(alignComboLineDatum),\n    lineGeometryOptions\n  ))\n\n  const hasData = hasLumenChartData(series)\n\n  return (\n    <Chart className={composeClassName('ui-combo-chart', className)} summary={summary ?? formatLumenChartSummary(series, formatValue, resolvedLabels)} {...props}>\n      {showLegend && hasData && <ChartLegend label={resolvedLabels.chartLegend} series={series} />}\n      {!hasData && <p className=\"ui-chart__empty\" role=\"status\">{resolvedLabels.empty}</p>}\n      <div aria-label={resolvedLabels.chartData} className=\"ui-chart__plot\" role=\"region\" tabIndex={0} hidden={!hasData}>\n        <svg aria-hidden=\"true\" viewBox={`0 0 ${width} ${height}`}>\n          <g className=\"ui-bar-chart__marks\">{bars.marks.map(mark => <rect className={getLumenChartToneClassName(mark.tone)} height={mark.height} key={`${mark.seriesId}:${getChartCategoryKey(mark.category)}`} rx=\"4\" width={mark.width} x={mark.x} y={mark.y}><title>{`${mark.seriesLabel}: ${formatValue(mark.value)}`}</title></rect>)}</g>\n          {lines.map((geometry, index) => {\n            const item = lineSeries[index]\n\n            if (!item) return null\n\n            const tone = resolveLumenChartTone(item.tone, index + barSeries.length)\n\n            return (\n              <g className={composeClassName('ui-line-chart__series', getLumenChartToneClassName(tone))} key={item.id}>\n                {item.mark === 'area' && geometry.areaPaths.map(path => (\n                  <path\n                    className=\"ui-line-chart__area\"\n                    d={path}\n                    key={path}\n                  />\n                ))}\n                <path\n                  className=\"ui-line-chart__line\"\n                  d={geometry.path}\n                />\n              </g>\n            )\n          })}\n        </svg>\n      </div>\n      {showTable && hasData && (\n        <ChartDataTable\n          categories={categories}\n          formatValue={formatValue}\n          labels={resolvedLabels}\n          series={series}\n        />\n      )}\n    </Chart>\n  )\n}",
+          "source": "export interface ComboChartProps extends Omit<ChartProps, 'children'> {\n  onDatumActivate?: (detail: LumenChartDatumActivationDetail) => void\n  formatValue?: (value: number) => string\n  labels?: Partial<LumenChartLabels>\n  series?: readonly LumenComboSeries[]\n  showLegend?: boolean\n  showTable?: boolean\n}\n\nexport const ComboChart = ({\n  className,\n  onDatumActivate,\n  formatValue = String,\n  labels,\n  series = emptyComboSeries,\n  showLegend = true,\n  showTable = true,\n  summary,\n  ...props\n}: ComboChartProps) => {\n  const resolvedLabels = resolveLumenChartLabels(labels)\n  const width = 640\n  const height = 320\n  const padding = 44\n  const categories = getLumenChartCategories(series)\n\n  const alignedSeries = series.map(item => ({\n    ...item,\n    data: alignLumenChartSeries(item, categories).data\n  }))\n\n  const domain = getLumenChartDomain(alignedSeries.flatMap(item => item.data.map(datum => datum.y)))\n  const barSeries = alignedSeries.filter(item => item.mark === 'bar')\n  const lineSeries = alignedSeries.filter(item => item.mark !== 'bar')\n  const bars = createLumenBarGeometry(barSeries, { domain, height, width })\n\n  const categoryPositions = new Map(\n    bars.categories.map(category => [getChartCategoryKey(category.category), category.x])\n  )\n\n  const drawableWidth = width - padding * 2\n\n  const alignComboLineDatum = (datum: LumenChartDatum): LumenChartDatum => {\n    if (barSeries.length === 0) return datum\n\n    return {\n      ...datum,\n      x: ((categoryPositions.get(`${typeof datum.x}:${String(datum.x)}`) ?? padding) - padding) / drawableWidth\n    }\n  }\n\n  const lineGeometryOptions = {\n    domain,\n    height,\n    padding,\n    width,\n    ...(barSeries.length === 0 ?\n      {} :\n      {\n        paddingBottom: bars.margin.bottom,\n        paddingTop: bars.margin.top,\n        xDomain: { max: 1, min: 0 },\n        xScale: 'linear' as const\n      })\n  }\n\n  const lines = lineSeries.map(item => createLumenLineGeometry(\n    item.data.map(alignComboLineDatum),\n    lineGeometryOptions\n  ))\n\n  const hasData = hasLumenChartData(series)\n\n  const barActions = onDatumActivate ?\n    bars.marks.map(mark => {\n      const item = barSeries.find(candidate => candidate.id === mark.seriesId)\n      const datum = item?.data.find(candidate => candidate.x === mark.category)\n\n      return item && datum ?\n        createReactChartDatumAction(\n          createLumenChartDatumActivation(item.id, datum),\n          `${datum.xLabel ?? datum.x} · ${item.label}: ${datum.label ?? formatValue(mark.value)}`,\n          resolvedLabels\n        ) :\n        null\n    }) :\n    []\n\n  const pointActions = onDatumActivate ?\n    lines.map((geometry, index) => {\n      const item = lineSeries[index]\n\n      return geometry.points.map(point => {\n        const datum = item?.data.find(candidate => alignComboLineDatum(candidate).x === point.x)\n\n        return item && datum ?\n          createReactChartDatumAction(\n            createLumenChartDatumActivation(item.id, datum),\n            `${datum.xLabel ?? datum.x} · ${item.label}: ${datum.label ?? formatValue(point.y ?? 0)}`,\n            resolvedLabels\n          ) :\n          null\n      })\n    }) :\n    []\n\n  const datumActions = [...barActions, ...pointActions.flat()]\n\n  return (\n    <DatumChart onDatumActivate={onDatumActivate} className={composeClassName('ui-combo-chart', className)} summary={summary ?? formatLumenChartSummary(series, formatValue, resolvedLabels)} {...props}>\n      {showLegend && hasData && <ChartLegend label={resolvedLabels.chartLegend} series={series} />}\n      {!hasData && <p className=\"ui-chart__empty\" role=\"status\">{resolvedLabels.empty}</p>}\n      <div aria-label={resolvedLabels.chartData} className=\"ui-chart__plot\" role=\"region\" tabIndex={0} hidden={!hasData}>\n        <svg aria-hidden=\"true\" viewBox={`0 0 ${width} ${height}`}>\n          <g className=\"ui-bar-chart__marks\">\n            {bars.marks.map((mark, index) => <rect data-ui-chart-datum={barActions[index]?.serialized} className={getLumenChartToneClassName(mark.tone)} height={mark.height} key={`${mark.seriesId}:${getChartCategoryKey(mark.category)}`} rx=\"4\" width={mark.width} x={mark.x} y={mark.y}><title>{`${mark.seriesLabel}: ${formatValue(mark.value)}`}</title></rect>)}\n            {onDatumActivate && bars.marks.map((mark, index) => (\n              <rect\n                className=\"ui-chart__datum-hit\"\n                key={`${mark.seriesId}:${getChartCategoryKey(mark.category)}`}\n                width={Math.max(12, mark.width)}\n                height={Math.max(12, mark.height)}\n                x={mark.x - Math.max(0, 12 - mark.width) / 2}\n                y={mark.y - Math.max(0, 12 - mark.height) / 2}\n                data-ui-chart-datum={barActions[index]?.serialized}\n              />\n            ))}\n          </g>\n          {lines.map((geometry, index) => {\n            const item = lineSeries[index]\n\n            if (!item) return null\n\n            const tone = resolveLumenChartTone(item.tone, index + barSeries.length)\n\n            return (\n              <g className={composeClassName('ui-line-chart__series', getLumenChartToneClassName(tone))} key={item.id}>\n                {item.mark === 'area' && geometry.areaPaths.map(path => (\n                  <path\n                    className=\"ui-line-chart__area\"\n                    d={path}\n                    key={path}\n                  />\n                ))}\n                <path\n                  className=\"ui-line-chart__line\"\n                  d={geometry.path}\n                />\n                {onDatumActivate && geometry.points.map((point, pointIndex) => (\n                  <circle\n                    className=\"ui-chart__datum-hit\"\n                    key={point.id ?? getChartCategoryKey(point.x)}\n                    cx={point.xCoordinate}\n                    cy={point.yCoordinate}\n                    r=\"10\"\n                    data-ui-chart-datum={pointActions[index]?.[pointIndex]?.serialized}\n                  />\n                ))}\n              </g>\n            )\n          })}\n        </svg>\n      </div>\n      {showTable && hasData && (\n        <ChartDataTable\n          categories={categories}\n          formatValue={formatValue}\n          labels={resolvedLabels}\n          series={series}\n        />\n      )}\n      {onDatumActivate && <ChartDatumActions actions={datumActions} label={resolvedLabels.exploreData} />}\n    </DatumChart>\n  )\n}",
           "styleImport": "import '@santi020k/lumen-react/styles.css'"
         }
       },
@@ -38106,7 +38384,16 @@
       },
       "guidance": null,
       "kebab": "combo-chart",
-      "keyboardInteractions": [],
+      "keyboardInteractions": [
+        {
+          "action": "Focus the actions disclosure and its native buttons in document order.",
+          "key": "Tab"
+        },
+        {
+          "action": "Toggle the disclosure or activate the focused datum button. Actions remain available when the data table is hidden.",
+          "key": "Enter, Space"
+        }
+      ],
       "keywords": [
         "and",
         "areas",
@@ -38212,7 +38499,14 @@
           "type": "recipe"
         }
       ],
-      "runtimeEvents": []
+      "runtimeEvents": [
+        {
+          "detail": "LumenChartDatumActivationDetail: series { seriesId, x, y, datumId? }, heatmap { x, y, value, datumId? }, range { x, low, high, datumId? }",
+          "name": "ui:chart-datum-activate",
+          "target": "Astro data chart figure",
+          "when": "Fires once after a plotted datum or its native action button is activated. Requires drilldown and UIPrimitives; React uses onDatumActivate instead."
+        }
+      ]
     },
     {
       "apiReference": [
@@ -38376,7 +38670,7 @@
     "readme": "<p align=\"center\">\n  <a href=\"https://lumen.santi020k.com\">\n    <img src=\"./apps/docs/public/logo.svg\" alt=\"Lumen UI\" width=\"233\" height=\"60\">\n  </a>\n</p>\n\n<h1 align=\"center\">Lumen UI</h1>\n\n<p align=\"center\">\n  A cross-platform UI system with 150+ web primitives and shared native foundations.\n</p>\n\n<p align=\"center\">\n  <a href=\"https://lumen.santi020k.com\">Documentation</a>\n  ·\n  <a href=\"https://lumen.santi020k.com/docs/components\">Components</a>\n  ·\n  <a href=\"https://www.figma.com/community/file/1662337342676541513\">Figma library</a>\n  ·\n  <a href=\"https://apps.apple.com/app/id6805250815\">iPhone and iPad app</a>\n  ·\n  <a href=\"https://play.google.com/store/apps/details?id=com.santi020k.lumen.playground.compose\">Android app</a>\n  ·\n  <a href=\"https://github.com/santi020k/lumen/issues\">Issues</a>\n</p>\n\n<p align=\"center\">\n  <a href=\"https://github.com/santi020k/lumen/actions\"><img alt=\"GitHub Actions\" src=\"https://img.shields.io/github/actions/workflow/status/santi020k/lumen/ci.yml?branch=main&style=flat-square\"></a>\n  <a href=\"https://github.com/santi020k/lumen/actions/workflows/codeql.yml\"><img alt=\"CodeQL\" src=\"https://github.com/santi020k/lumen/actions/workflows/codeql.yml/badge.svg\"></a>\n  <a href=\"https://www.npmjs.com/package/@santi020k/lumen-astro\"><img alt=\"npm version\" src=\"https://img.shields.io/npm/v/@santi020k/lumen-astro?style=flat-square&label=npm\"></a>\n  <a href=\"./LICENSE\"><img alt=\"MIT license\" src=\"https://img.shields.io/badge/license-MIT-111827?style=flat-square\"></a>\n</p>\n\nLumen gives applications a consistent visual language without tying them to one rendering model.\nIts packages share tokens, component contracts, styles, and interaction patterns while keeping each\nframework and platform's native authoring experience.\n\n- **Framework native:** Astro components, React primitives, and standards-based custom elements.\n- **Native foundations:** generated React Native, SwiftUI, and Jetpack Compose tokens plus the\n  complete shared interface and namespaced brand icon catalogs preserve the same semantic roles and\n  artwork without introducing DOM or CSS assumptions.\n- **Accessible by default:** semantic markup, keyboard paths, focus management, and reduced-motion\n  support are built into the primitives.\n- **Standalone CSS:** no Tailwind configuration is required. Tailwind users get an explicit layer\n  integration.\n- **Progressively enhanced:** Astro interactions use a small client runtime instead of requiring an\n  application framework.\n- **Ready for design and AI workflows:** published Figma resources, a portable agent skill, an MCP\n  server, `llms.txt`, a machine-readable registry, and a cross-platform release manifest ship\n  alongside the component system.\n- **Product-ready templates:** five responsive dashboard and application families are available as\n  live previews and installable Astro, React, and Elements recipes.\n\n**Explore:** [Dashboards and templates](#dashboards-and-templates) · [Web quick start](#web-quick-start) · [Native playgrounds](#native-playgrounds) · [Tailwind CSS](#tailwind-css) · [Packages](#packages) · [Community](#community)\n\n## Lumen 4 candidate\n\nThe v4 release branch brings consumer-driven date selection, chart readability, clipboard feedback,\nloading states, native layout improvements and a new ImageComparison primitive. Start with the\n[v3 → v4 migration guide](docs/migrating-v3-to-v4.md), [consumer audit](docs/lumen-4-consumer-audit.md),\nand [local readiness record](docs/lumen-4-readiness.md). The refreshed community gallery includes\npublished consumer screenshots; it does not imply those applications already run this candidate.\n\nFor existing applications, start with [v1 → v2](docs/migrating-v1-to-v2.md) when needed, then\n[v2 → v3](docs/migrating-v2-to-v3.md) before\n[v3 → v4](docs/migrating-v3-to-v4.md). For initial adoption, use\n[Migrating to Lumen](docs/migrating-to-lumen.md).\n\n## Appearance presets\n\nChoose an appearance preset or customize the existing themes with the [appearance guide](docs/appearance-presets.md). The Studio preset uses PostLens as its visual reference.\n\n## Dashboards and templates\n\nExplore the [template gallery](https://lumen.santi020k.com/templates) for complete analytics,\nSaaS admin, commerce, project workspace, and authentication/onboarding experiences. Each family\nuses public Lumen primitives and semantic tokens, includes responsive and accessibility coverage,\nand ships through the CLI for all three framework targets:\n\n```bash\nlumen add analytics-dashboard\nlumen add commerce-dashboard --target react\nlumen add auth-onboarding --target elements\n```\n\n## Web quick start\n\nInstall the package for your framework:\n\n```bash\n# Astro\npnpm add @santi020k/lumen-astro\n\n# React\npnpm add @santi020k/lumen-react\n\n# Web Components\npnpm add @santi020k/lumen-elements\n```\n\n### Astro\n\nImport the stylesheet and mount `UIPrimitives` once in your root layout. The runtime enhances all\ninteractive Lumen markup on the page.\n\n```astro\n---\nimport '@santi020k/lumen-astro/styles.css'\nimport UIPrimitives from '@santi020k/lumen-astro/runtime'\n---\n\n<html lang=\"en\">\n  <body>\n    <slot />\n    <UIPrimitives />\n  </body>\n</html>\n```\n\n```astro\n---\nimport { Button, Card, Input } from '@santi020k/lumen-astro'\n---\n\n<Card>\n  <label for=\"email\">Email</label>\n  <Input id=\"email\" name=\"email\" type=\"email\" placeholder=\"you@example.com\" />\n  <Button>Subscribe</Button>\n</Card>\n```\n\n### React\n\nLoad the stylesheet once from your app entry or global CSS:\n\n```tsx\nimport '@santi020k/lumen-react/styles.css'\nimport { Button, Card, Input } from '@santi020k/lumen-react'\n\nexport function SubscribeForm() {\n  return (\n    <Card>\n      <label htmlFor=\"email\">Email</label>\n      <Input id=\"email\" name=\"email\" type=\"email\" placeholder=\"you@example.com\" />\n      <Button>Subscribe</Button>\n    </Card>\n  )\n}\n```\n\n### Web Components\n\nImport the styles and register the elements once:\n\n```html\n<style>\n  @import \"@santi020k/lumen-elements/styles.css\";\n</style>\n\n<script type=\"module\">\n  import { defineLumenElements } from '@santi020k/lumen-elements/define'\n\n  defineLumenElements()\n</script>\n\n<lumen-card>\n  <label for=\"email\">Email</label>\n  <lumen-input id=\"email\" name=\"email\" type=\"email\" placeholder=\"you@example.com\"></lumen-input>\n  <lumen-button>Subscribe</lumen-button>\n</lumen-card>\n```\n\nSee the [Web documentation](https://lumen.santi020k.com/docs/web) for installation, theming,\ncomponent examples, and API details.\n\nFor failure states, use the [error-handling guide](./docs/error-handling.md) to choose between field\nfeedback, summaries, persistent alerts, transient toasts, and the `ErrorState` recovery surface.\nLumen owns presentation and accessibility; applications retain logging, retry, and exception policy.\n\nFor native applications, choose the [React Native](https://lumen.santi020k.com/docs/react-native),\n[Apple / SwiftUI](https://lumen.santi020k.com/docs/apple), or\n[Android / Compose](https://lumen.santi020k.com/docs/android) guide. The\n[shared foundations](https://lumen.santi020k.com/docs/foundations) explain the cross-platform token\nand component contract; repository contributors can also use the\n[cross-platform architecture](./docs/cross-platform.md) and\n[native component reference](./docs/native-components.md).\n\n> **Native platform status for Lumen 2.** React Native, SwiftUI, Compose, and Wear OS use the frozen\n> supported contract. Package, migration, build, security, artifact, and stability checks gate the\n> initial release. The incomplete external-consumer and physical-device matrices remain published\n> as post-release qualification work; review them before choosing a production adapter.\n\n## Native playgrounds\n\nThe repository includes three searchable, interactive galleries built from the real native\npackages:\n\n- [`apps/playground-react-native`](./apps/playground-react-native) runs through Expo on the web,\n  iOS, and Android and includes EAS profiles for TestFlight, Android App Bundles, and APKs.\n- [`apps/playground-apple`](./apps/playground-apple) is available on the\n  [App Store](https://apps.apple.com/app/id6805250815) for iPhone, iPad, and Mac. It also builds as\n  an iOS Xcode app or macOS Swift Package executable for local exploration.\n- [`apps/playground-android`](./apps/playground-android) builds a native Compose application and a\n  directly installable debug APK. It is also available on\n  [Google Play](https://play.google.com/store/apps/details?id=com.santi020k.lumen.playground.compose)\n  for Android phones and tablets.\n\nSee the [playground workflow](./docs/playgrounds.md) for run, capture, and distribution commands.\n\n## Tailwind CSS\n\nKeep the layer prelude, Tailwind import, and Lumen stylesheet in the same shared CSS entry. Replace\n`lumen-astro` with the package for your framework.\n\n```css\n@import \"@santi020k/lumen-astro/layers.css\";\n@import \"tailwindcss\";\n@import \"@santi020k/lumen-astro/styles.css\";\n```\n\nThis order places Tailwind base styles before Lumen components and Tailwind utilities above Lumen\ncomponent defaults.\n\n## Packages\n\n| Package | Purpose |\n| --- | --- |\n| [`@santi020k/lumen-astro`](./packages/astro) | Reference implementation, Astro components, and progressive-enhancement runtime |\n| [`@santi020k/lumen-react`](./packages/react) | React components and behavior hooks |\n| [`@santi020k/lumen-react-hook-form`](./packages/react-hook-form) | Optional React Hook Form adapters for composite controls |\n| [`@santi020k/lumen-elements`](./packages/elements) | Standards-based Web Components |\n| [`@santi020k/lumen-core`](./packages/core) | Shared tokens, metadata, class helpers, and behavior contracts |\n| [`@santi020k/lumen-tokens`](./packages/tokens) | Canonical platform-neutral design token source |\n| [`@santi020k/lumen-react-native`](./packages/react-native) | React Native foundations and native primitives |\n| [`LumenUI`](./packages/swift) | Swift Package for iOS, iPadOS, macOS, tvOS, visionOS, and watchOS foundations and native primitives |\n| [`LumenWidgetUI`](./packages/swift-widget) | Focused WidgetKit-safe semantic text, icon, badge, and compact-stat foundations |\n| [`lumen-compose`](./packages/compose) | Android library for Jetpack Compose foundations and native primitives |\n| [`lumen-compose-wear`](./packages/compose/wear) | Focused Wear OS primitives for at-a-glance round-screen actions, progress, status, metrics, and rows |\n| [`@santi020k/lumen-icons-brand`](./packages/icons-brand) | Optional namespaced brand icons for web `Icon` adapters  |\n| [`@santi020k/lumen`](./packages/lumen) | Umbrella package, CLI, registry metadata, and public package map |\n| [`@santi020k/lumen-mcp`](./packages/mcp) | MCP server for component discovery and source retrieval |\n\n## AI and design workflows\n\nInstall the portable Lumen skill in Codex, Claude Code, Cursor, Windsurf, and other compatible\ncoding agents:\n\n```bash\nnpx skills add santi020k/lumen --skill lumen-ui\n```\n\nThe skill teaches agents how to select, compose, theme, and verify Lumen primitives. Pair it with\n[`@santi020k/lumen-mcp`](./packages/mcp) when an agent needs to search the live catalog or retrieve\ncurrent source, props, tokens, and usage rules.\n\nFor ChatGPT and Codex, install the published\n[Lumen UI plugin](https://chatgpt.com/plugins/plugin_asdk_app_6a8f6c526c5481918eb8a48806fa112b)\nfrom the Plugins Directory. Select **Install plugin**, then mention **@Lumen UI** in a request such\nas “Find the right Lumen components for an accessible React settings screen.” Version 1.0.0 bundles\nthe skill with the hosted, read-only catalog; no separate Lumen account or local MCP setup is needed.\n\nAdditional machine-readable surfaces include:\n\n- [`llms.txt`](./llms.txt) for a concise project map.\n- [`docs/ai-usage.md`](./docs/ai-usage.md) for downstream generation examples.\n- [`docs/styling-contract.md`](./docs/styling-contract.md) for stable parts and component variables.\n- [`docs/import-and-icon-performance.md`](./docs/import-and-icon-performance.md) for repeatable import and icon evidence.\n- [`docs/graphics.md`](./docs/graphics.md) for portable decorative artwork across web and native platforms.\n- [`docs/consumer-regression-fixtures.md`](./docs/consumer-regression-fixtures.md) for production-shaped local coverage.\n- [`docs/project-adoption.md`](./docs/project-adoption.md) for the sibling-project audit and staged\n  web and native migration strategy.\n- [`registry/lumen.registry.json`](./registry/lumen.registry.json) for recipes and installable file\n  groups.\n- [`docs/figma.md`](./docs/figma.md) for Figma variables and Code Connect workflows.\n- [`plugins/lumen-ui`](./plugins/lumen-ui) for the packaged Codex and ChatGPT plugin, with its\n  [submission and review record](./docs/openai-plugin-submission.md).\n- [`.claude-plugin/marketplace.json`](./.claude-plugin/marketplace.json) for the Claude Code\n  marketplace, with its [installation and submission guide](./docs/claude-code-plugin.md).\n- [`docs/cross-platform.md`](./docs/cross-platform.md) for the native architecture, support tiers,\n  and component-parity policy.\n- [`docs/native-patterns.md`](./docs/native-patterns.md) for developed native compositions and the\n  boundary between Lumen presentation and platform-owned application structure.\n\n## Contributing\n\nLumen is a pnpm workspace. Astro is the reference implementation; shared contracts belong in\n`packages/core`, while framework-specific behavior stays in its adapter package.\n\n```bash\npnpm install\npnpm run dev\npnpm run validate\n```\n\nRead [`CONTRIBUTING.md`](./CONTRIBUTING.md) before opening a pull request. User-visible package\nchanges require a changeset.\n\n## Community\n\n[Feedback & support](https://lumen.santi020k.com/support) connects ideas, questions, bug reports,\nand the [public roadmap](https://lumen.santi020k.com/support#roadmap). Discuss improvements on GitHub\nand follow accepted work through implementation and release.\n\nLumen is free and MIT licensed while the project focuses on adoption, public examples, and\nreal-world feedback.\n\n- Explore task-oriented [guides](https://lumen.santi020k.com/guides).\n- Share a public project in the [community showcase](https://lumen.santi020k.com/community).\n- Evaluate the system with the open [team adoption path](https://lumen.santi020k.com/teams).\n- Tell us what would improve your next build through the\n  [adoption survey](https://github.com/santi020k/lumen/issues/new?template=adoption-feedback.yml).\n\nMaintainers can use the [exposure playbook](./docs/exposure-playbook.md) for publishing cadence,\ncampaign measurement, video scripts, and launch copy, and the\n[marketing package](./docs/marketing/README.md) for execution-ready copy, channel decisions, a\nfour-week calendar, asset briefs, an approval queue, and a community-response library.\n\n## Find your next step\n\n| Resource | Use it for |\n| --- | --- |\n| [Cross-platform architecture](docs/cross-platform.md) | Shared foundations and adapter responsibilities. |\n| [Native compatibility](docs/native-compatibility.md) | Supported toolchains and platform baselines. |\n| [Native release runbook](docs/native-release-runbook.md) | Artifact qualification and distribution gates. |\n\n## License\n\nLumen's original code and artwork are available under the [MIT License](./LICENSE). Generated\ninterface icons retain the Lucide ISC or Feather MIT terms, and generated brand icons retain Font\nAwesome Free's CC BY 4.0 terms. The native packages include the required attribution and license\nnotices; see [`icons/THIRD_PARTY_NOTICES.md`](./icons/THIRD_PARTY_NOTICES.md).\n"
   },
   "meta": {
-    "catalogHash": "289ec873b556889fefda31560e9dd76f5b48bfc1e6c1bb029c71f1cf2713e97d",
+    "catalogHash": "51115e1e0b805f7211d88969213f7484886a0630cf5c77d588c8772cbfe8f59c",
     "componentCount": 172,
     "nativeComponentCount": 87,
     "packages": [

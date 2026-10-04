@@ -65,7 +65,7 @@ x: 'X'
     <Container as="main" size="lg">
       <Stack gap="section">
         <Typography><h1>Explorar datos del gráfico</h1></Typography>
-        <p role="status" aria-live="polite" data-activation-result style="overflow-wrap: anywhere; min-width: 0">Sin selección</p>
+        <p role="status" aria-live="polite" data-activation-result data-count="0" style="overflow-wrap: anywhere; min-width: 0">Sin selección</p>
         <BarChart data-chart-example="bar" aria-label="Bar" heading="Cobros por día" drilldown {labels} {series} showTable={false} />
         <LineChart data-chart-example="line" aria-label="Line" heading="Evolución de cobros" drilldown {labels} {series} markers="none" showTable={false} />
         {pie && <PieChart data-chart-example="pie" aria-label="Pie" heading="Distribución de cobros" drilldown {labels} series={pie} showTable={false} />}
@@ -75,11 +75,22 @@ x: 'X'
         <RangeChart data-chart-example="range" aria-label="Range" heading="Intervalos de cobros" drilldown {labels} data={ranges} showTable={false} />
         <BarChart data-chart-example="static" aria-label="Static" {labels} {series} />
         <Heatmap data-chart-example="empty" aria-label="Empty" drilldown {labels} data={[]} showTable={false} />
+        <Typography><h2>React</h2></Typography>
+        <div data-react-chart-mount></div>
       </Stack>
     </Container>
     <UIPrimitives />
     <script>
+      import { createElement } from 'react'
+      import { createRoot } from 'react-dom/client'
+
       import { parseLumenChartDatumActivation } from '@santi020k/lumen-core'
+
+      import { ReactChartActivationDemo } from '../../lib/react-chart-activation'
+
+      const mount = document.querySelector<HTMLElement>('[data-react-chart-mount]')
+
+      if (mount) createRoot(mount).render(createElement(ReactChartActivationDemo))
 
       const result = document.querySelector<HTMLElement>('[data-activation-result]')
       let count = 0
