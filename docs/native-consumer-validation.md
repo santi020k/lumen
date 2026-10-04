@@ -1,4 +1,4 @@
-# Native consumer validation
+# Native consumer evidence history
 
 <!-- cspell:words Roadscore -->
 
@@ -6,11 +6,11 @@ This document records candidate and qualifying applications from the historical 
 plan in the [Lumen 2 readiness plan](lumen-2-readiness.md). A repository reference alone is discovery evidence,
 not proof that an adapter is production-ready.
 
-Real-consumer qualification is optional for current releases. Missing completed records do not
-block publication or produce warnings during normal validation. See the current
-[native release policy](native-release-runbook.md#current-release-policy).
+This historical record is retained for reference. Native consumer qualification checks and commands
+have been removed from releases; these records do not define current launch requirements. See the
+[current release policy](native-release-runbook.md#current-release-policy).
 
-## Optional qualification requirements
+## Historical qualification requirements
 
 A qualifying consumer must:
 
@@ -24,15 +24,7 @@ A qualifying consumer must:
 The product owner must confirm active application status. Local source presence or a successful
 build does not by itself establish that the application is active or shipped.
 
-`registry/native-consumer-evidence.json` is the machine-readable qualification ledger. Run
-`pnpm run check:native-consumer-evidence` after updating a technical record and
-`pnpm run check:native-consumer-readiness` to validate optional records without requiring completion.
-Use `node scripts/check-native-consumer-evidence.mjs --require-complete` only when requesting a
-strict qualification report. A Complete entry requires
-an owner-confirmed active product, an immutable published-artifact upgrade, supported component
-usage, installation and theming review, accessibility and integration checks, a signed application
-artifact, immutable HTTPS evidence, and no blocking findings. Prose in this document cannot bypass
-the recorded evidence requirements.
+`registry/native-consumer-evidence.json` preserves the historical qualification ledger.
 
 For a Complete record, the checker requires an external HTTPS repository, an immutable revision
 URL containing the exact lowercase 40-character consumer upgrade commit, and a permanent workflow,

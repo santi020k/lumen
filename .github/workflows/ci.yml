@@ -390,8 +390,6 @@ jobs:
           if [[ "${{ needs.classify.outputs.native-contracts }}" == "true" ]]; then
             pnpm run check:native-contracts
             pnpm run check:native-captures
-            pnpm run check:native-consumer-evidence
-            pnpm run test:native-consumer-evidence
             pnpm run check:platform-tokens
           fi
 

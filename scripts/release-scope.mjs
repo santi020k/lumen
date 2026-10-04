@@ -250,11 +250,6 @@ export const validateReleasePackages = names => {
     runReleaseCommand('pnpm', ['run', 'check:mcp-package'])
   }
 
-  if (classification.native) {
-    runReleaseCommand('pnpm', ['run', 'check:native-consumer-evidence'])
-
-    runReleaseCommand('pnpm', ['run', 'check:native-stability-soak'])
-  }
 }
 
 const runCli = async () => {

@@ -122,9 +122,6 @@ const v2Inputs = [
   "registry/compose-api-classification.json",
   "registry/lumen-2-contract.json",
   "registry/native-api-baseline.json",
-  "registry/native-consumer-evidence.json",
-  "registry/native-device-evidence.json",
-  "registry/native-stability-soak.json",
   "registry/swift-api-baseline.json",
   "registry/swift-widget-api-baseline.json",
   "registry/wear-api-classification.json",
@@ -154,14 +151,6 @@ const v2Inputs = [
   "scripts/check-npm-release-provenance.test.mjs",
   "scripts/check-published-package-family.mjs",
   "scripts/check-published-package-family.test.mjs",
-  "scripts/check-native-consumer-evidence.mjs",
-  "scripts/check-native-consumer-evidence.test.mjs",
-  "scripts/check-native-device-evidence.mjs",
-  "scripts/check-native-device-evidence.test.mjs",
-  "scripts/check-native-stability-soak.mjs",
-  "scripts/check-native-stability-soak.test.mjs",
-  "scripts/check-native-stable-readiness.mjs",
-  "scripts/check-native-stable-readiness.test.mjs",
   "scripts/check-v2-release-workflows.test.mjs",
 ];
 
@@ -208,13 +197,6 @@ test("the web canary executes every v2 release gate", () => {
     "pnpm run test:web-consumer-evidence",
     "pnpm run check:lumen-2-contract",
     "pnpm run test:lumen-2-contract",
-    "pnpm run check:native-stability-soak",
-    "pnpm run test:native-stability-soak",
-    "pnpm run check:native-consumer-evidence",
-    "pnpm run test:native-consumer-evidence",
-    "pnpm run check:native-device-evidence",
-    "pnpm run test:native-device-evidence",
-    "pnpm run test:native-stable-readiness",
     "pnpm run test:approved-release-revision",
     "pnpm run test:coordinated-release-revision",
     "pnpm run check:graduated-release-revision",
@@ -436,14 +418,8 @@ test("npm publication validates the contract and current stability ledger", () =
     "pnpm run check:lumen-3-contract -- --require-approved",
     "node scripts/check-lumen-4-contract.mjs --require-approved",
     "pnpm run check:web-consumer-evidence",
-    "pnpm run check:native-consumer-evidence",
-    "pnpm run check:native-stability-soak",
   ]);
 
-  assert.ok(
-    !npmWorkflow.includes("pnpm run check:native-stable-readiness"),
-    "initial npm publication must keep deferred platform qualification advisory",
-  );
 });
 
 test('v4 contract changes trigger canaries and are checked before publication', async () => {
@@ -545,13 +521,12 @@ test("initial npm publication verifies the complete family before tagging", () =
   );
 });
 
-test("Compose publication validates the contract and current stability ledger", () => {
+test("Compose publication validates approved release contracts", () => {
   assertOrderedCommands(composeWorkflow, "Compose publication", [
     "node scripts/check-graduated-release-revision.mjs",
     "node scripts/check-lumen-2-contract.mjs",
     "node scripts/check-lumen-3-contract.mjs --require-approved",
     "node scripts/check-lumen-4-contract.mjs --require-approved",
-    "node scripts/check-native-stability-soak.mjs",
   ]);
 
   assert.ok(
@@ -561,7 +536,7 @@ test("Compose publication validates the contract and current stability ledger", 
 
   assert.ok(
     !composeWorkflow.includes("node scripts/check-native-stable-readiness.mjs"),
-    "initial Compose publication must keep deferred platform qualification advisory",
+    "Compose publication must not restore removed platform qualification checks",
   );
 });
 
@@ -583,20 +558,6 @@ test("initial Compose publication verifies the shared release commit before cred
 test("canonical package commands enforce graduation identity before publication", async () => {
   const packageManifest = JSON.parse(
     await readFile(resolve(repositoryRoot, "package.json"), "utf8"),
-  );
-
-  assert.ok(
-    packageManifest.scripts.validate.includes(
-      "pnpm run check:native-stability-soak",
-    ),
-    "canonical validation must validate the current native stability ledger",
-  );
-
-  assert.ok(
-    !packageManifest.scripts.validate.includes(
-      "pnpm run check:native-stable-readiness",
-    ),
-    "canonical validation must keep deferred external and device qualification advisory",
   );
 
   assertOrderedCommands(packageManifest.scripts.validate, "validation", [
@@ -727,4 +688,18 @@ test("published Compose artifacts bind checksums and POM metadata to the release
     composeBuildSource.includes("check-maven-pom-metadata.mjs"),
     "the local publication gate must use the structural POM metadata checker",
   );
+});
+
+
+test('release validation does not schedule removed native qualification checks', async () => {
+  const manifest = JSON.parse(await readFile(resolve(repositoryRoot, 'package.json'), 'utf8'));
+  const releaseScope = await readFile(resolve(repositoryRoot, 'scripts/release-scope.mjs'), 'utf8');
+  const ciWorkflow = await readFile(resolve(repositoryRoot, '.github/workflows/ci.yml'), 'utf8');
+  const removed = /(?:check|test)(?::|-)native-(?:consumer-evidence|consumer-readiness|device-evidence|device-readiness|stability-soak|stability-readiness|stable-readiness)/u;
+
+  for (const name of Object.keys(manifest.scripts)) assert.doesNotMatch(name, removed);
+
+  for (const surface of [manifest.scripts.validate, releaseScope, ciWorkflow, canaryWorkflow, npmWorkflow, composeWorkflow]) {
+    assert.doesNotMatch(surface, removed);
+  }
 });

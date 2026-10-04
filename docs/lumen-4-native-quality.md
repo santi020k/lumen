@@ -27,12 +27,12 @@ dependency, icon, web, and Compose-field work. Integrate only completed, verifie
   loading, empty, error, retry and success states.
 - Release validation: aligned API baselines, migration guidance, Changeset, and canonical validation.
 
-## Optional qualification evidence
+## Removed qualification checks
 
-Exact-candidate real-consumer checks, physical-device passes, and the two native stability iterations
-are optional evidence collection. Their absence does not block launch or warn during default
-validation. Historical incomplete-qualification statements below describe evidence coverage, not
-current release blockers. See the [current release policy](native-release-runbook.md#current-release-policy).
+Real-consumer completion, physical-device evidence matrices, and two stability iterations no longer
+form release steps or validation checks. Historical statements below describe previously collected
+evidence, not current release blockers. See the
+[current release policy](native-release-runbook.md#current-release-policy).
 
 ## Implementation and evidence
 

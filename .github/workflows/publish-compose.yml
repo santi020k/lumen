@@ -87,19 +87,11 @@ jobs:
       - name: Validate Wear API classifications
         run: node scripts/check-wear-api-classification.mjs
 
-      - name: Validate real-consumer evidence
-        run: >-
-          node scripts/check-native-consumer-evidence.mjs &&
-          node --test scripts/check-native-consumer-evidence.test.mjs
-
       - name: Validate release contracts
         run: >-
           node scripts/check-lumen-2-contract.mjs &&
           node scripts/check-lumen-3-contract.mjs --require-approved &&
           node scripts/check-lumen-4-contract.mjs --require-approved
-
-      - name: Validate native stability ledger
-        run: node scripts/check-native-stability-soak.mjs
 
       - name: Validate publication credentials
         run: |

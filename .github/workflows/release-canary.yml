@@ -19,9 +19,6 @@ on:
       - "docs/playgrounds.md"
       - "docs/web-consumer-validation.md"
       - "packages/**"
-      - "registry/native-device-evidence.json"
-      - "registry/native-consumer-evidence.json"
-      - "registry/native-stability-soak.json"
       - "registry/native-api-baseline.json"
       - "registry/compose-api-classification.json"
       - "registry/lumen-2-contract.json"
@@ -43,15 +40,7 @@ on:
       - "scripts/prepare-packed-react-native-canary.mjs"
       - "scripts/check-graduated-release-revision.test.mjs"
       - "scripts/check-wear-api-classification.mjs"
-      - "scripts/check-native-device-evidence.mjs"
-      - "scripts/check-native-device-evidence.test.mjs"
-      - "scripts/check-native-consumer-evidence.mjs"
-      - "scripts/check-native-consumer-evidence.test.mjs"
-      - "scripts/check-native-stability-soak.mjs"
-      - "scripts/check-native-stability-soak.test.mjs"
       - "scripts/check-native-api-baseline.mjs"
-      - "scripts/check-native-stable-readiness.mjs"
-      - "scripts/check-native-stable-readiness.test.mjs"
       - "scripts/check-lumen-2-contract.mjs"
       - "scripts/check-lumen-2-contract.test.mjs"
       - "scripts/check-lumen-3-contract.mjs"
@@ -174,13 +163,6 @@ jobs:
       - name: Enforce coordinated native release gates
         if: needs.classify.outputs.native == 'true'
         run: >-
-          pnpm run check:native-stability-soak &&
-          pnpm run test:native-stability-soak &&
-          pnpm run check:native-consumer-evidence &&
-          pnpm run test:native-consumer-evidence &&
-          pnpm run check:native-device-evidence &&
-          pnpm run test:native-device-evidence &&
-          pnpm run test:native-stable-readiness &&
           pnpm run test:approved-release-revision &&
           pnpm run test:coordinated-release-revision &&
           pnpm run check:graduated-release-revision &&
@@ -255,7 +237,6 @@ jobs:
         working-directory: packages/compose
       - run: pnpm run check:compose-api-classification && pnpm run test:compose-api-classification
       - run: node scripts/check-wear-api-classification.mjs
-      - run: pnpm run check:native-consumer-evidence && pnpm run test:native-consumer-evidence
       - run: >-
           ./packages/compose/gradlew -p apps/playground-android
           -PlumenComposeRepository=../../packages/compose/build/central-staging
