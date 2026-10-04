@@ -280,7 +280,13 @@ It preserves editing focus, observes option changes and supports delegated selec
 that lifecycle automatically. React uses its state-driven component with the same keyboard contract.
 An accepted native form reset closes options, clears the active descendant, and refilters against
 the restored input value without emitting change events. Canceled resets preserve editing state;
-`destroy()` cancels pending reset work.
+`destroy()` cancels pending reset work. Pointer selection cancels native option-button submission.
+Filtering preserves application-hidden options; cleanup restores options hidden by the filter.
+The controller respects disabled fieldset ancestors and uses the input's current form association
+when handling resets.
+
+The mounted VirtualList controller supports roots and rows created in another document, including
+same-origin iframe documents.
 
 ## Virtual collections and direction
 

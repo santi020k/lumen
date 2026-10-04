@@ -5,12 +5,22 @@ export interface LumenVirtualListController {
   update: () => void
 }
 
+const getDocumentConstructors = (document: Document) => {
+  const view = document.defaultView
+
+  return {
+    RangeEvent: view?.CustomEvent ?? CustomEvent,
+    RowObserver: view?.MutationObserver ?? MutationObserver
+  }
+}
+
 /** Fixed-height DOM windowing; rows remain mounted so application state is retained. */
 export const createLumenVirtualListController = (root: HTMLElement): LumenVirtualListController => {
   if (root.getAttribute('data-ui-virtual-list-mode') === 'data' || root.getAttribute('mode') === 'data') return { destroy: () => undefined, update: () => undefined }
 
   const document = root.ownerDocument
   const view = document.defaultView
+  const { RangeEvent, RowObserver } = getDocumentConstructors(document)
   const originalRows = new Map<HTMLElement, { hidden: HTMLElement['hidden'], blockSize: string, boxSizing: string }>()
 
   const spacers = ['start', 'end'].map(position => {
@@ -52,7 +62,7 @@ export const createLumenVirtualListController = (root: HTMLElement): LumenVirtua
 
   const syncRows = (): HTMLElement[] => {
     const children = [...root.children].filter(
-      (child): child is HTMLElement => child instanceof HTMLElement && child !== before && child !== after
+      (child): child is HTMLElement => child.namespaceURI === 'http://www.w3.org/1999/xhtml' && child !== before && child !== after
     )
 
     const childSet = new Set(children)
@@ -127,11 +137,11 @@ export const createLumenVirtualListController = (root: HTMLElement): LumenVirtua
     if (rangeKey !== previousRange) {
       previousRange = rangeKey
 
-      root.dispatchEvent(new CustomEvent('ui:virtual-list-range', { bubbles: true, detail: range }))
+      root.dispatchEvent(new RangeEvent('ui:virtual-list-range', { bubbles: true, detail: range }))
     }
   }
 
-  const observer = new MutationObserver(update)
+  const observer = new RowObserver(update)
   const resizeObserver = typeof ResizeObserver === 'undefined' ? undefined : new ResizeObserver(update)
 
   const onFocusOut = (): void => {

@@ -117,3 +117,130 @@ test('nested disclosures consume Escape once from either the trigger or the pane
   await expect(outer).toHaveAttribute('aria-expanded', 'false')
   await expect(outer).toBeFocused()
 })
+
+
+for (const width of [390, 1440]) {
+  test(`Combobox selection preserves form and hidden options at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 844 })
+    await page.goto('/docs/components/combobox')
+    const root = page.locator('.component-doc-preview [data-ui-combobox]')
+
+    await root.evaluate(element => {
+      const form = document.createElement('form')
+
+      form.dataset.submits = '0'
+      form.addEventListener('submit', event => {
+        event.preventDefault()
+        form.dataset.submits = String(Number(form.dataset.submits) + 1)
+      })
+      element.before(form)
+      form.append(element)
+      const hidden = element.querySelector<HTMLElement>('[data-value="Astro"]')
+      const option = element.querySelector<HTMLButtonElement>('[data-value="react"]')
+
+      if (!hidden || !option) throw new Error('Expected options')
+
+      hidden.hidden = true
+      option.removeAttribute('type')
+    })
+    const input = root.locator('input')
+
+    await input.fill('rea')
+    await input.fill('')
+    await expect(root.locator('[data-value="Astro"]')).toBeHidden()
+    await root.getByRole('option', { name: 'React', exact: true }).click()
+    await expect(input).toHaveValue('react')
+    await expect(input).toBeFocused()
+    await expect(page.locator('form[data-submits]')).toHaveAttribute('data-submits', '0')
+    await input.fill('rea')
+    await input.press('ArrowDown')
+    await root.evaluate(element => element.closest('form')?.reset())
+    await expect(input).toHaveValue('')
+    await expect(input).toHaveAttribute('aria-expanded', 'false')
+    await expect(input).not.toHaveAttribute('aria-activedescendant')
+  })
+}
+
+test('Combobox respects disabled fieldset ancestors and the first legend exception', async ({ page }) => {
+  await page.goto('/docs/components/combobox')
+  const root = page.locator('.component-doc-preview [data-ui-combobox]')
+
+  await root.evaluate(element => {
+    const fieldset = document.createElement('fieldset')
+
+    fieldset.dataset.comboboxFixture = ''
+    element.before(fieldset)
+    fieldset.append(element)
+  })
+  const input = root.locator('input')
+  const fieldset = page.locator('fieldset[data-combobox-fixture]')
+
+  await input.fill('rea')
+  await input.press('ArrowDown')
+  await fieldset.evaluate(element => {
+    if (!(element instanceof HTMLFieldSetElement)) throw new Error('Expected fieldset')
+
+    element.disabled = true
+  })
+  await expect(input).toBeDisabled()
+  await expect(input).toHaveAttribute('aria-expanded', 'false')
+  await expect(input).not.toHaveAttribute('aria-activedescendant')
+  await root.evaluate(element => {
+    const legend = document.createElement('legend')
+    const fieldset = element.closest('fieldset')
+
+    if (!fieldset) throw new Error('Expected fieldset')
+
+    fieldset.prepend(legend)
+    legend.append(element)
+  })
+  await expect(input).toBeEnabled()
+  await input.fill('rea')
+  await input.press('ArrowDown')
+  await input.press('Enter')
+  await expect(input).toHaveValue('react')
+})
+
+test('Combobox observes form resets and disabled ancestors inside shadow DOM', async ({ page }) => {
+  await page.goto('/docs/components/combobox')
+  await page.locator('.component-doc-preview [data-ui-combobox]').evaluate(element => {
+    const host = document.createElement('div')
+
+    host.id = 'shadow-combobox-fixture'
+    document.body.append(host)
+    const shadow = host.attachShadow({ mode: 'open' })
+    const form = document.createElement('form')
+    const fieldset = document.createElement('fieldset')
+
+    fieldset.append(element.cloneNode(true))
+    form.append(fieldset)
+    shadow.append(form)
+    const initialize = (window as Window & { LumenInitUiPrimitives?: (scope: ParentNode) => void }).LumenInitUiPrimitives
+
+    if (!initialize) throw new Error('Expected runtime initializer')
+
+    initialize(shadow)
+  })
+  const host = page.locator('#shadow-combobox-fixture')
+  const input = host.locator('input[role="combobox"]')
+
+  await input.fill('rea')
+  await input.press('ArrowDown')
+  await host.locator('form').evaluate(form => {
+    if (!(form instanceof HTMLFormElement)) throw new Error('Expected form')
+
+    form.reset()
+  })
+  await expect(input).toHaveValue('')
+  await expect(input).toHaveAttribute('aria-expanded', 'false')
+  await expect(input).not.toHaveAttribute('aria-activedescendant')
+  await input.fill('rea')
+  await input.press('ArrowDown')
+  await host.locator('fieldset').evaluate(fieldset => {
+    if (!(fieldset instanceof HTMLFieldSetElement)) throw new Error('Expected fieldset')
+
+    fieldset.disabled = true
+  })
+  await expect(input).toBeDisabled()
+  await expect(input).toHaveAttribute('aria-expanded', 'false')
+})

@@ -16,20 +16,52 @@ export const lumenComboboxElementConfig = {
 export class LumenComboboxElement extends LumenElement {
   static override config = lumenComboboxElementConfig
 
-  private controller: LumenComboboxController | undefined
+  #controller: LumenComboboxController | undefined
+  #observer: MutationObserver | undefined
+  #input: HTMLInputElement | null = null
+  #list: HTMLElement | null = null
+
+  #bind(): void {
+    const input = this.querySelector<HTMLInputElement>('input[role="combobox"]')
+    const list = this.querySelector<HTMLElement>('[role="listbox"]')
+
+    if (input === this.#input && list === this.#list) return
+
+    this.#controller?.destroy()
+
+    this.#input = input
+
+    this.#list = list
+
+    this.#controller = input && list ? createLumenComboboxController(this) : undefined
+  }
 
   override connectedCallback() {
     super.connectedCallback()
 
-    this.controller?.destroy()
+    this.#observer?.disconnect()
 
-    this.controller = createLumenComboboxController(this)
+    this.#bind()
+
+    this.#observer = new MutationObserver(() => {
+      this.#bind()
+    })
+
+    this.#observer.observe(this, { childList: true, subtree: true })
   }
 
   override disconnectedCallback() {
-    this.controller?.destroy()
+    this.#observer?.disconnect()
 
-    this.controller = undefined
+    this.#observer = undefined
+
+    this.#controller?.destroy()
+
+    this.#controller = undefined
+
+    this.#input = null
+
+    this.#list = null
   }
 }
 

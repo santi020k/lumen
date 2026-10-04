@@ -657,3 +657,9 @@ Use `LollipopChart` for zero-based rankings and `DumbbellChart` for paired measu
 `LumenLollipopChart` and `LumenDumbbellChart`). Supply ordered comparison data with `id`, `label`,
 nullable `value`, optional nullable `reference`, and optional `tone`. Both charts preserve missing
 values and expose exact data. See the [shared visualization contract](../../docs/data-visualization.md#rankings-and-paired-comparisons).
+
+## Combobox lifecycle
+
+`lumen-combobox` enhances its input and listbox when both are available. Children can arrive after
+connection or be replaced by an application renderer. Disconnecting the host releases listeners
+and observers; reconnecting binds the current children.
