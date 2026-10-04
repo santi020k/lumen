@@ -205,6 +205,7 @@
     "@santi020k/eslint-config-testing": "catalog:",
     "@santi020k/eslint-config-tools": "catalog:",
     "@types/node": "catalog:",
+    "@typescript-eslint/parser": "catalog:",
     "@vitest/coverage-v8": "catalog:",
     "ajv": "catalog:",
     "cspell": "catalog:",

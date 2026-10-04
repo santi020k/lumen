@@ -62,6 +62,10 @@ on one kind of check.
 The canonical `pnpm run typecheck` also checks the local Figma Code Connect templates and their
 shared ambient types with `pnpm run typecheck:figma`.
 
+The root ESLint configuration explicitly supplies `@typescript-eslint/parser` for Astro files.
+Keep it as a declared development dependency: the Astro plugin resolves the parser from the
+consumer workspace, so a transitive installation alone does not guarantee type-aware linting.
+
 The Next.js smoke app runs type checking after its own build so the two tasks do not overwrite
 the same generated route types during combined checks.
 
