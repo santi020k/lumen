@@ -572,7 +572,8 @@ Licensed under [MIT](https://github.com/santi020k/lumen/blob/main/LICENSE); thir
 ## Inline date range calendar
 
 `DateRangeCalendar` is a controlled React range editor with two visible calendars,
-inclusive range highlighting, a preset sidebar and the keyboard behavior of `useCalendar`.
+inclusive range highlighting, a preset sidebar and the keyboard behavior of `useCalendar`,
+including inherited RTL arrow navigation in both calendars.
 On narrow screens the presets scroll horizontally and the calendars stack. It uses the shared Lumen stylesheet.
 
 ```tsx
@@ -692,7 +693,8 @@ count as backdrop dismissal. Consumer `onCancel` or `onClick` handlers can preve
 the corresponding default action.
 
 A controlled dialog can open without hook trigger props: it captures the focused
-opener before opening and returns focus on close or unmount. StrictMode replay
+opener before opening and returns focus on close or unmount, including when rendered into an iframe.
+Focus capture and restoration use the dialog's own document. StrictMode replay
 preserves that opener, and cleanup does not steal focus from a nested or
 replacement dialog. Hook trigger props remain useful when the same component
 owns the opener and dialog. Keep an accessible dialog name and logical initial
@@ -726,7 +728,9 @@ Astro and React `PhoneInput` accept `disabled`, `readOnly`, `required`, `errorMe
 `showValidationError`, and `inputProps`. Their `id` targets the number input in v4; React also
 accepts `inputRef`. Web Components use `disabled`, `readonly`, `required`, `error-message`,
 `show-validation-error="false"`, and `input-id`, with native input attributes on the host.
-Both controls lock together and validation remains associated with the input.
+Both controls lock together and validation remains associated with the input. React forwards
+`inputProps.form` to the country picker and read-only country value as well as the number input,
+so an external form receives both values.
 
 The `phone-input`, `phone-country`, and `country-flag` styling parts plus `--ui-phone-height`,
 `--ui-phone-padding`, and `--ui-phone-country-gap` replace consumer CSS overlays.
@@ -843,6 +847,8 @@ The chart's native `onClick` can cancel activation with `event.preventDefault()`
 `FilterBar` groups host-owned filtering controls, active criteria, reset actions, and a polite
 result announcement. `ChangeSummary` presents explicit before/after values and application-owned
 changed state. Neither component owns requests, persistence, parsing, or financial policy.
+Omit `FilterBar.open` for native disclosure ownership. Unrelated rerenders preserve native toggles
+when `defaultOpen` is unchanged. Pass `open` and `onOpenChange` for application-controlled disclosure.
 
 ScatterChart supports independent X/Y formatting, explicit domains, logarithmic positive X values,
 and labeled reference lines/regions. See [consumer UI recipes](../../docs/consumer-ui-recipes.md)

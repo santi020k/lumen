@@ -1544,7 +1544,7 @@ pre:where(:not(.ui-code pre)) code {
   scroll-margin-top: calc(var(--docs-sticky-header-height, 10rem) + var(--docs-sticky-navigation-height, var(--docs-anchor-navigation-fallback)) + 1rem);
 }
 
-.docs-site-content:has(.docs-shell) + .docs-site-footer {
+.docs-site-content:has(.docs-shell, .home) + .docs-site-footer {
   margin-top: 0;
 }
 

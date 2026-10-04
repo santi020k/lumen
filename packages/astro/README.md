@@ -133,7 +133,8 @@ disabled controls, including a disabled fieldset. Available controls in a fields
 retain their native keyboard behavior; removing `inert` makes a region available again.
 
 Mentions keeps suggestion navigation on the textarea through `aria-activedescendant`; suggestion
-buttons are excluded from the Tab sequence. Static Toast markup is enhanced again after client
+buttons are excluded from the Tab sequence. Returning focus before the delayed blur dismissal
+preserves reopened suggestions. Static Toast markup is enhanced again after client
 navigation, retaining Escape dismissal without duplicate listeners.
 
 Tabs keep the selected trigger visible when a narrow tab list scrolls horizontally and emit a
@@ -659,7 +660,9 @@ result announcement. `ChangeSummary` presents explicit before/after values and a
 changed state. Neither component owns requests, persistence, parsing, or financial policy.
 
 ScatterChart supports independent X/Y formatting, explicit domains, logarithmic positive X values,
-and labeled reference lines/regions. See [consumer UI recipes](../../docs/consumer-ui-recipes.md)
+and labeled reference lines/regions. Automatic domains leave room for complete bubbles; explicit
+domain limits stay exact and can intentionally crop marks. ComboChart and RangeChart include
+category labels and value scales. See [consumer UI recipes](../../docs/consumer-ui-recipes.md)
 for dashboard tables, freshness, import review, activity inbox, and persistent Kanban patterns.
 
 ### Actual-versus-target charts

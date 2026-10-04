@@ -79,6 +79,14 @@ non-integer or negative recurrence counts produce `RangeError`. Applications own
 recovery feedback. `parseScheduleEvents` preserves structurally valid records with malformed
 date-times so applications can repair the original data; these helpers do not rewrite storage.
 
+## Data view state
+
+`serializeDataViewState` and `parseDataViewState` preserve named filters, including names that
+match built-in object properties, as ordinary own properties. Repeated filter parameters use
+the last value. `createDataViewRequestUrl` and `createDataViewServerRequest` append state to
+an endpoint's query before its fragment, preserving existing query parameters and fragment text.
+Import these helpers from the root or `@santi020k/lumen-core/data`.
+
 ## Appearance presets
 
 Use `createThemePreset('studio', { scheme: 'dark', overrides: { 'ui-radius': '0.75rem' } })` for a named starting point. Default, Studio and Glass share the [appearance contract](../../docs/appearance-presets.md).
@@ -129,6 +137,10 @@ The package root also exports `createLumenLineChartModel`, `createLumenWaterfall
 `createLumenHistogramGeometry`, and `createLumenHeatmapModel`. These pure models share web geometry,
 validation, ticks, and annotations. The optional `createLumenChartInteractionController` owns only
 DOM listeners and cursor/legend state; call `destroy()` when removing its surface.
+Line chart models ignore malformed annotation entries and containers before reading overlay fields.
+When annotation IDs repeat, the first valid entry wins so overlay identities stay unique.
+Destroying a chart controller restores series marks, inspection values, and legend pressed state
+so rebinding starts with all series visible.
 Waterfall and histogram geometry accept arrays of unknown decoded rows, validate their complete
 shape before accumulation or sorting, and return `valid: false` with empty marks when a row is
 malformed. Typed component props continue to use `LumenWaterfallDatum` and `LumenHistogramBin`.
@@ -289,6 +301,8 @@ when handling resets.
 
 The mounted VirtualList controller supports roots and rows created in another document, including
 same-origin iframe documents.
+Data-mode collections preserve iframe keyboard focus across distant scrolling and keyed updates,
+and return focus to the list when the focused record is removed.
 
 ## Virtual collections and direction
 

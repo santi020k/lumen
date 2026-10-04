@@ -80,3 +80,44 @@ test('highlights inclusive ranges, adjusts crossed endpoints and follows preset 
     container.remove()
   }
 })
+
+test.each(['ltr', 'rtl'] as const)('moves focus in both range calendars in %s direction', async dir => {
+  const container = document.createElement('div')
+  document.body.append(container)
+  const root = createRoot(container)
+  try {
+    await act(async () => {
+      await Promise.resolve()
+      root.render(createElement(DateRangeCalendar, {
+        dir,
+        value: { start: '2026-09-10', end: '2026-09-20' },
+        onValueChange: () => undefined,
+        locale: 'en-US',
+        labels: { start: 'From', end: 'To', presets: 'Quick range' }
+      }))
+    })
+    for (const [index, date] of ['2026-09-10', '2026-09-20'].entries()) {
+      const day = container.querySelectorAll('section')[index]?.querySelector(`[data-date="${date}"]`)
+      if (!(day instanceof HTMLElement)) throw new Error('Missing range day')
+      day.focus()
+      await act(async () => {
+        await Promise.resolve()
+        day.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }))
+      })
+      expect(document.activeElement?.getAttribute('data-date')).toBe(
+        `2026-09-${String(Number(date.slice(-2)) + (dir === 'rtl' ? -1 : 1)).padStart(2, '0')}`
+      )
+      await act(async () => {
+        await Promise.resolve()
+        document.activeElement?.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true }))
+      })
+      expect(document.activeElement?.getAttribute('data-date')).toBe(date)
+    }
+  } finally {
+    await act(async () => {
+      await Promise.resolve()
+      root.unmount()
+    })
+    container.remove()
+  }
+})

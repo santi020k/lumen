@@ -11,6 +11,29 @@ import {
 import { createLumenHeatmapGeometry, normalizeLumenHeatmapData } from './charts.js'
 
 test.each([null,
+  1,
+  'annotation',
+  [],
+  {},
+  { id: 'a', label: 'A', value: 1, axis: 'z' },
+  { id: 'a', label: null, value: 1 },
+  { id: 'a', label: 'A', value: Infinity },
+  { id: 'a', label: 'A', value: 1, tone: 'invalid' }
+])('line charts ignore malformed decoded annotations: %j', annotation => {
+  const valid = { id: 'target', label: 'Target', value: 5 }
+  const model: unknown = Reflect.apply(createLumenLineChartModel, undefined, [
+    [{ id: 'a', label: 'A', data: [{ x: 'A', y: 0 }, { x: 'B', y: 10 }] }],
+    { annotations: [annotation, valid] }
+  ])
+  expect(model).toMatchObject({ annotationMarks: [{ ...valid, axis: 'y' }] })
+})
+
+test.each([null, 1, {}])('line charts ignore malformed annotation containers: %j', annotations => {
+  const model: unknown = Reflect.apply(createLumenLineChartModel, undefined, [[], { annotations }])
+  expect(model).toMatchObject({ annotationMarks: [] })
+})
+
+test.each([null,
   undefined,
   1,
   'cell',
@@ -232,4 +255,31 @@ test('native and web heatmap weights preserve zero, signs, clamping, and extreme
   expect(getLumenHeatmapColorMix(0, { min: -Number.MAX_VALUE, max: Number.MAX_VALUE })?.ratio).toBe(0.5)
   const extreme = createLumenHeatmapModel([{ x: 'X', y: 'Y', value: Number.MAX_VALUE }], { colorScale: 'diverging' })
   expect(extreme.midpointPercent).toBe(50)
+})
+
+test('line charts keep the first valid annotation for each ID across updates', () => {
+  const series = [{ id: 'a', label: 'A', data: [{ x: 'A', y: 0 }, { x: 'B', y: 10 }] }]
+  const first = { id: 'target', label: 'First', value: 2 }
+  const duplicate = { id: 'target', label: 'Duplicate', value: 8 }
+  const other = { id: 'other', label: 'Other', value: 5 }
+  for (const [annotations, labels] of [
+    [[first, duplicate, other], ['First', 'Other']],
+    [[other, duplicate, first], ['Other', 'Duplicate']],
+    [[first], ['First']]
+  ] as const) {
+    const model = createLumenLineChartModel(series, { annotations })
+    expect(model.annotationMarks.map(mark => mark.label)).toEqual(labels)
+    expect(new Set(model.annotationMarks.map(mark => mark.id)).size).toBe(model.annotationMarks.length)
+  }
+})
+
+test('heatmaps retain finite sibling cells when measurements are unavailable', () => {
+  const data = [NaN, Infinity, -Infinity, null, 0, 2].map((value, x) => ({ x, y: 'Row', value }))
+  expect(normalizeLumenHeatmapData(data)).toEqual(data)
+  for (const model of [createLumenHeatmapGeometry(data), createLumenHeatmapModel(data)]) {
+    expect(model.cells.map(cell => cell.value)).toEqual([NaN, Infinity, -Infinity, null, 0, 2])
+    expect(model.domain).toEqual({ min: 0, max: 2 })
+    expect(model.cells.map(cell => getLumenHeatmapColorMix(cell.value, model.domain)))
+      .toEqual([null, null, null, null, { base: 'sequentialLow', overlay: 'sequentialHigh', ratio: 0 }, { base: 'sequentialLow', overlay: 'sequentialHigh', ratio: 1 }])
+  }
 })

@@ -9,20 +9,24 @@ const removeDialog = (dialog: HTMLDialogElement): void => {
   if (index !== -1) openDialogs.splice(index, 1)
 }
 
-const getActiveElement = (): HTMLElement | null => (
-  document.activeElement instanceof HTMLElement ? document.activeElement : null
-)
+const getActiveElement = (dialog: HTMLDialogElement): HTMLElement | null => {
+  const { activeElement, defaultView } = dialog.ownerDocument
+
+  return defaultView && activeElement instanceof defaultView.HTMLElement ? activeElement : null
+}
 
 const restoreDialogFocus = (dialog: HTMLDialogElement, target: HTMLElement | null): void => {
   if (!target?.isConnected) return
 
-  const topDialog = [...openDialogs].reverse().find(candidate => candidate.isConnected && candidate.open)
+  const topDialog = [...openDialogs].reverse().find(candidate => (
+    candidate.ownerDocument === dialog.ownerDocument && candidate.isConnected && candidate.open
+  ))
 
   if (topDialog && !topDialog.contains(target)) return
 
-  const active = getActiveElement()
+  const active = getActiveElement(dialog)
 
-  if (active && active !== document.body && active !== target && !dialog.contains(active)) return
+  if (active && active !== dialog.ownerDocument.body && active !== target && !dialog.contains(active)) return
 
   target.focus({ preventScroll: true })
 }
@@ -43,7 +47,7 @@ export const useDialogLifecycle = (
 
     generationRef.current += 1
 
-    returnFocusRef.current ??= triggerRef.current ?? getActiveElement()
+    returnFocusRef.current ??= triggerRef.current ?? getActiveElement(dialog)
 
     removeDialog(dialog)
 

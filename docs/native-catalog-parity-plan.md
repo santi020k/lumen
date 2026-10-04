@@ -91,8 +91,10 @@ strict type checking passed. Compose full unit/lint and consumer build passed, i
 five palette and two malformed-span regression tests. iPhone simulator interaction/capture
 checks passed for the combined catalog, including center tapping quiet Command buttons.
 Rendered capture coverage passes with 305 captures, and native API baselines are regenerated and
-classified. Canonical `pnpm run validate` passes: 1,921 tests, strict types, zero-warning lint,
+classified. Canonical `pnpm run validate` passes on the prepared merge with release commit
+`a18bb023`: 1,968 tests, strict types, zero-warning lint,
 spelling, unused-export checks, builds, security checks and packed consumer smoke tests.
 Local release integration remains pending while the release checkout belongs to another active chat.
+The implementation is preserved in `12215e1b`; the prepared merge stays on the task branch.
 Android consumer captures revealed a narrow calendar grid defect; the correction now
 passes actual geometry and date-selection checks at 268/350/390dp in both themes.

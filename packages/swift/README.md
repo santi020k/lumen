@@ -574,6 +574,7 @@ columns, with horizontal scrolling for long ranges. `weekStartsOn` accepts `0` (
 Defaults use the environment locale. `formatDate` customizes exact date and week labels.
 Ranges include at most 3,660 days; invalid dates, duplicates, out-of-range measurements and
 nonfinite values fail closed. Omitted days remain missing rather than becoming zero.
+The accessible summary counts measured days, including zero, and excludes missing days.
 
 `LumenFunnelChart` accepts ordered `LumenFunnelDatum` stages with nonnegative finite nullable
 values. Centered horizontal bars normalize to the largest measured stage, including funnels that

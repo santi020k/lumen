@@ -11,6 +11,36 @@ import { FilterBar } from './dashboard.js'
 Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true })
 
 describe('dashboard composition', () => {
+  test.each([true, false])('preserves native disclosure toggles across unrelated rerenders from defaultOpen=%s', async defaultOpen => {
+    const container = document.createElement('div')
+    const root = createRoot(container)
+    const requests: boolean[] = []
+    const render = async (pending: boolean) => {
+      await act(async () => {
+        root.render(createElement(FilterBar, { defaultOpen,
+          pending,
+          resultLabel: pending ? 'Loading' : 'Ready',
+          onOpenChange: next => requests.push(next) }))
+        await Promise.resolve()
+      })
+    }
+    await render(false)
+    const details = container.querySelector('details')
+    if (!details) throw new Error('Missing filter disclosure')
+    expect(details.open).toBe(defaultOpen)
+    await act(async () => {
+      details.open = !defaultOpen
+      details.dispatchEvent(new Event('toggle'))
+      await Promise.resolve()
+    })
+    expect(requests).toContain(!defaultOpen)
+    await render(true)
+    expect(details.open).toBe(!defaultOpen)
+    await act(async () => {
+      root.unmount()
+      await Promise.resolve()
+    })
+  })
   test('labels before, after and unchanged values without inferring equality', () => {
     const html = renderToStaticMarkup(createElement(ChangeSummary, {
       label: 'Review',

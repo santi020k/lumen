@@ -136,6 +136,7 @@ struct LumenCalendarHeatmapModel {
     let cells: [LumenCalendarCell]
     let domain: ClosedRange<Double>
     let weeks: Int
+    var availableValueCount: Int { cells.filter { $0.value != nil }.count }
     func intensity(_ value: Double) -> Double { lumenChartRatio(value, domain: domain) }
 }
 func lumenCalendarHeatmapModel(_ data: [LumenCalendarHeatmapDatum], startDate: String, endDate: String, weekStartsOn: Int, domain: ClosedRange<Double>?, weekdayLabels: [String]? = nil) -> LumenCalendarHeatmapModel {
@@ -294,7 +295,7 @@ public struct LumenCalendarHeatmap: View {
     }
     public var body: some View {
         let model = lumenCalendarHeatmapModel(data, startDate: startDate, endDate: endDate, weekStartsOn: weekStartsOn, domain: domain, weekdayLabels: weekdayLabels)
-        LumenChartFrame(label: label, heading: heading, description: description, summary: model.valid ? (showData ? "\(formatDate(startDate)) – \(formatDate(endDate)). \(labels.count): \(model.cells.count)." : model.cells.map { "\(formatDate($0.date)): \($0.value.map(labels.formatValue) ?? labels.notAvailable)." }.joined(separator: " ")) : labels.invalidData) {
+        LumenChartFrame(label: label, heading: heading, description: description, summary: model.valid ? (showData ? "\(formatDate(startDate)) – \(formatDate(endDate)). \(labels.count): \(model.availableValueCount)." : model.cells.map { "\(formatDate($0.date)): \($0.value.map(labels.formatValue) ?? labels.notAvailable)." }.joined(separator: " ")) : labels.invalidData) {
             if model.valid {
                 HStack(alignment: .top, spacing: LumenSpacing.sm) {
                     VStack(alignment: .trailing, spacing: 3) {

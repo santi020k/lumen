@@ -36,6 +36,9 @@ Web Components for Lumen UI.
 
 This package registers standards-based custom elements for the shared Lumen primitive catalog.
 
+`ImageComparison` form resets restore the latest externally configured `value`; user range input
+does not replace that reset baseline.
+
 See the [shared web form contracts](../../docs/form-controls.md) for value ownership, reset,
 submission, disabled state, and event behavior.
 
@@ -675,7 +678,9 @@ for the input, localization, and domain contracts.
 Use `LollipopChart` for zero-based rankings and `DumbbellChart` for paired measurements (native
 `LumenLollipopChart` and `LumenDumbbellChart`). Supply ordered comparison data with `id`, `label`,
 nullable `value`, optional nullable `reference`, and optional `tone`. Both charts preserve missing
-values and expose exact data. See the [shared visualization contract](../../docs/data-visualization.md#rankings-and-paired-comparisons).
+values and expose exact data. Set `value-label` to name the current measurement and `reference-label`
+to name the paired measurement; `summary` supplies an escaped accessible interpretation that remains
+available when `show-table="false"`. See the [shared visualization contract](../../docs/data-visualization.md#rankings-and-paired-comparisons).
 
 
 ### Calendar activity, ordered stages and distributions

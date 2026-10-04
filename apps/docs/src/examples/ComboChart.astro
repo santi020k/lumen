@@ -2,35 +2,30 @@
 import { ComboChart } from '@santi020k/lumen-astro'
 import type { LumenComboSeries } from '@santi020k/lumen-core'
 
+const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug']
+
 const series = [
   {
-    data: [
-      { x: 'Q1', y: 128 },
-      { x: 'Q2', y: 154 },
-      { x: 'Q3', y: 183 },
-      { x: 'Q4', y: 216 }
-    ],
-    id: 'revenue',
-    label: 'Revenue',
-    mark: 'bar'
+    id: 'orders',
+    label: 'Paid orders',
+    mark: 'bar',
+    tone: 'series-1',
+    data: [128, 146, 138, 192, 176, 218, 246, 274].map((y, index) => ({ x: months[index] ?? '', y }))
   },
   {
-    data: [
-      { x: 'Q1', y: 42 },
-      { x: 'Q2', y: 49 },
-      { x: 'Q3', y: 61 },
-      { x: 'Q4', y: 74 }
-    ],
-    id: 'margin',
-    label: 'Margin',
-    mark: 'line'
+    id: 'plan',
+    label: 'Monthly plan',
+    mark: 'line',
+    tone: 'series-3',
+    data: [140, 150, 165, 180, 195, 210, 230, 250].map((y, index) => ({ x: months[index] ?? '', y }))
   }
 ] satisfies readonly LumenComboSeries[]
 ---
 
 <ComboChart
-  aria-label="Quarterly revenue and margin"
-  caption="Revenue is shown as bars and margin as a line."
-  heading="Business performance"
+  aria-label="Monthly paid orders compared with plan"
+  heading="A stronger second half"
+  description="Paid orders · January–August 2026"
+  caption="Bars show actual orders; the line shows the plan on the same scale. August finished 24 orders ahead. Illustrative data."
   {series}
 />

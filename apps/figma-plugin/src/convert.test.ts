@@ -16,6 +16,10 @@ describe('Lumen Figma beta conversion', () => {
     expect(result.code).toContain('<TabsList aria-label="Sections">')
     expect(result.code).toContain('<TabsPanel value="settings">')
     expect(result.code).toContain('data-ui-dialog-trigger=')
+    for (const part of ['DialogHeader', 'DialogTitle', 'DialogBody', 'DialogFooter', 'DialogClose']) {
+      expect(result.code).toContain(part)
+    }
+    expect(result.code).not.toContain('data-ui-dialog-close')
     expect(result.code).toContain('aria-labelledby=')
     expect(result.code).toContain('aria-describedby=')
     expect(result.code).toContain('<Label for="lumen-figma-3">')
@@ -82,7 +86,8 @@ describe('Lumen Figma beta conversion', () => {
     expect(field.code).not.toContain('-help')
     const dialog = analyzeSelection(componentNode('Dialog', { Title: 'Note', 'Show content': false, 'Show actions': false }))
     expect(dialog.code).not.toContain('aria-describedby')
-    expect(dialog.code).toContain('data-ui-dialog-close>Close dialog')
+    expect(dialog.code).toContain('<DialogClose>Close dialog</DialogClose>')
+    expect(dialog.code).not.toContain('<DialogBody>')
   })
 
   test('escapes hostile text, attribute values, and long strings as data', async () => {

@@ -46,6 +46,8 @@ functions in a client component rather than passing functions across the server/
 | How does the actual value compare with a target? | `BulletChart` | Use a zero-inclusive domain and optional labeled ranges on web and native. |
 | How are observations distributed? | `Histogram` | Supply explicit bins and counts on web and native. |
 
+Sparkline stretches its trend to fit the container while keeping the endpoint marker circular at a fixed size. Set `showEndpoint` to `false` (or `show-endpoint="false"` in Elements) to omit the marker.
+
 Use `Chart` as the web escape hatch for a specialized SVG, canvas, or HTML visualization. Product-
 specific maps, networks, financial studies, scientific plots, and high-density interaction can use
 an application-selected engine while consuming Lumen chart tokens and accessibility patterns.

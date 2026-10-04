@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 import type { ReactNode } from 'react'
 import { act, createElement, StrictMode } from 'react'
+import { createPortal } from 'react-dom'
 import { createRoot, type Root } from 'react-dom/client'
 
 import { afterEach, beforeEach, expect, test, vi } from 'vitest'
@@ -79,6 +80,28 @@ test('controlled opening captures the focused opener without a trigger ref and r
   expect(getDialog().open).toBe(false)
   expect(document.activeElement).toBe(opener)
   expect(onOpenChange).not.toHaveBeenCalled()
+})
+
+test('controlled iframe dialogs capture and restore focus in their own document', async () => {
+  const frame = document.createElement('iframe')
+  document.body.append(frame)
+  const frameDocument = frame.contentDocument
+  if (!frameDocument) throw new Error('Missing iframe document')
+  const frameOpener = frameDocument.createElement('button')
+  const frameContainer = frameDocument.createElement('div')
+  frameDocument.body.append(frameOpener, frameContainer)
+  frameOpener.focus()
+  await render(createPortal(content({ open: true }), frameContainer))
+  const dialog = frameContainer.querySelector('dialog')
+  if (!dialog) throw new Error('Missing iframe dialog')
+  expect(dialog.open).toBe(true)
+  dialog.querySelector('button')?.focus()
+  expect(document.activeElement).toBe(frame)
+  await render(createPortal(content({ open: false }), frameContainer))
+  expect(dialog.open).toBe(false)
+  expect(frameDocument.activeElement).toBe(frameOpener)
+  await render(null)
+  frame.remove()
 })
 
 test('cleanup restores the original opener after controlled unmount and StrictMode replay', async () => {

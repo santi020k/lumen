@@ -117,11 +117,15 @@ export const analyzeSelection = (selection: DesignNode): Analysis => {
   }
 
   const renderDialog = (node: DesignNode, id: string): string => {
-    addImports('Button', 'Stack')
+    addImports('Button', 'DialogHeader', 'DialogTitle', 'DialogFooter', 'DialogClose')
+
+    const content = node.properties['Show content'] === true
+
+    if (content) addImports('DialogBody')
 
     issue(node, 'A preview trigger is included. Connect the confirmation action and review its close behavior.')
 
-    return `<Button data-ui-dialog-trigger="${id}">Open dialog</Button>\n<Dialog id="${id}" aria-labelledby="${id}-title"${node.properties['Show content'] === true ? ` aria-describedby="${id}-description"` : ''}>\n  <Stack>\n    <h2 id="${id}-title">${expression(text(node, 'Title', 'Dialog'))}</h2>${node.properties['Show content'] === true ? `\n    <p id="${id}-description">${expression(text(node, 'Description', ''))}</p>` : ''}${node.properties['Show actions'] === true ? `\n    <Stack direction="horizontal" justify="end" wrap>\n      <Button variant="outline" data-ui-dialog-close>${expression(text(node, 'Cancel label', 'Cancel'))}</Button>\n      <Button>${expression(text(node, 'Confirm label', 'Confirm'))}</Button>\n    </Stack>` : '\n    <Button data-ui-dialog-close>Close dialog</Button>'}\n  </Stack>\n</Dialog>`
+    return `<Button data-ui-dialog-trigger="${id}">Open dialog</Button>\n<Dialog id="${id}" aria-labelledby="${id}-title"${content ? ` aria-describedby="${id}-description"` : ''}>\n  <DialogHeader>\n    <DialogTitle id="${id}-title">${expression(text(node, 'Title', 'Dialog'))}</DialogTitle>\n  </DialogHeader>${content ? `\n  <DialogBody>\n    <p id="${id}-description">${expression(text(node, 'Description', ''))}</p>\n  </DialogBody>` : ''}\n  <DialogFooter>${node.properties['Show actions'] === true ? `\n    <DialogClose variant="outline">${expression(text(node, 'Cancel label', 'Cancel'))}</DialogClose>\n    <Button>${expression(text(node, 'Confirm label', 'Confirm'))}</Button>` : '\n    <DialogClose>Close dialog</DialogClose>'}\n  </DialogFooter>\n</Dialog>`
   }
 
   const renderers: Record<ComponentName, (node: DesignNode, id: string) => string> = {

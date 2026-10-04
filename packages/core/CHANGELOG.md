@@ -2,6 +2,14 @@
 
 ## 4.0.0
 
+### Patch Changes
+
+- Keep chart annotation IDs unique, preserve RTL range calendar navigation, and associate phone country values with explicit external forms.
+
+- Reject overflowing theme dimension scales, preserve iframe virtual-list focus and control reuse, and count only measured days in Swift calendar heatmap summaries.
+
+- Validate decoded chart annotations, restore chart legend inspection state on teardown, refresh external image-comparison reset values, restore iframe dialog focus, and preserve uncontrolled filter disclosure state.
+
 ### Minor Changes
 
 - Add CalendarHeatmap, FunnelChart, and BoxPlot across web and native adapters with shared validation,
@@ -70,6 +78,8 @@
   Refine BulletChart with a slimmer track, quieter range bands, and a capped target marker.
 
 ### Patch Changes
+
+- Keep complete scatter bubbles inside automatically derived plot bounds for linear, logarithmic, and time scales. Explicit domain limits remain exact.
 
 - Reject sparse calendar heatmap, funnel, box-plot, and comparison datasets instead of silently
   skipping empty array slots. Reject sparse box-plot outliers while preserving explicit missing

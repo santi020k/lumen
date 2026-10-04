@@ -97,6 +97,24 @@ class PrimitivesTest {
     }
 
     @Test
+    fun materialNavigationColorsFollowEveryLumenPresetInBothSchemes() {
+        for (preset in LumenThemePreset.entries) {
+            for (isDark in listOf(false, true)) {
+                val palette = preset.colors(isDark)
+                val material = palette.toMaterialColorScheme(isDark)
+                assertEquals(palette.surface, material.surfaceContainer)
+                assertEquals(palette.surface, material.surfaceContainerLow)
+                assertEquals(palette.canvas, material.surfaceContainerLowest)
+                assertEquals(palette.surfaceStrong, material.surfaceContainerHighest)
+                assertEquals(palette.brandSoft, material.secondaryContainer)
+                assertEquals(palette.brand, material.onSecondaryContainer)
+                assertEquals(palette.brand, material.surfaceTint)
+                assertEquals(palette.inkMuted, material.onSurfaceVariant)
+            }
+        }
+    }
+
+    @Test
     fun materialMappingsKeepCanonicalSuccessAndWarningWithoutOverrides() {
         val palette = lightColorScheme().toLumenColorPalette(fallback = LumenColors.Dark)
 

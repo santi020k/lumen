@@ -20,6 +20,7 @@ for (const width of [390, 1440]) {
 
   test(`generated Astro labels, tabs, and dialog work at ${width}px`, async ({ page }, testInfo) => {
     await page.setViewportSize({ width, height: 900 })
+    await page.emulateMedia({ reducedMotion: 'reduce' })
     await page.goto('http://127.0.0.1:4762')
     await expect(page.getByLabel('Workspace name')).toHaveAttribute('aria-describedby', /-help$/u)
     await page.getByRole('tab', { name: 'Profile' }).focus()
@@ -30,7 +31,29 @@ for (const width of [390, 1440]) {
     await trigger.click()
     const dialog = page.getByRole('dialog', { name: 'Archive workspace' })
     await expect(dialog).toBeVisible()
+    await expect(dialog.locator('[data-slot="dialog-header"]')).toBeVisible()
+    await expect(dialog.locator('[data-slot="dialog-body"]')).toBeVisible()
+    await expect(dialog.locator('[data-slot="dialog-footer"]')).toBeVisible()
+    await expect(dialog.locator('[data-slot="dialog-title"]')).toHaveText('Archive workspace')
     await expect(dialog.getByRole('button', { name: 'Cancel' })).toBeFocused()
+    await page.screenshot({ path: testInfo.outputPath(`dialog-open-${width}.png`), fullPage: true })
+    const body = dialog.locator('[data-slot="dialog-body"]')
+    const footer = dialog.locator('[data-slot="dialog-footer"]')
+    await body.locator('p').evaluate(element => {
+      element.textContent = 'Review the archive action with your team. '.repeat(200)
+    })
+    await expect.poll(() => body.evaluate(element => element.scrollHeight > element.clientHeight)).toBe(true)
+    const footerBefore = await footer.boundingBox()
+    if (!footerBefore) throw new Error('Missing dialog footer geometry')
+    expect(footerBefore.y + footerBefore.height).toBeLessThanOrEqual(900)
+    await body.evaluate(element => {
+      element.scrollTop = element.scrollHeight
+    })
+    expect(await footer.boundingBox()).toEqual(footerBefore)
+    await dialog.getByRole('button', { name: 'Cancel' }).click()
+    await expect(dialog).not.toBeVisible()
+    await expect(trigger).toBeFocused()
+    await trigger.click()
     await page.keyboard.press('Escape')
     await expect(dialog).not.toBeVisible()
     await expect(trigger).toBeFocused()

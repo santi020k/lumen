@@ -128,7 +128,9 @@ LumenTheme(
 }
 ```
 
-The Material mapping supplies canvas, surface, text, line, brand, accent, and danger roles. The
+The Material mapping supplies canvas, surface, text, line, brand, accent, and danger roles.
+Lumen palettes also supply Material surface containers and navigation selection colors, so adaptive
+bottom bars and rails follow the selected preset in both light and dark appearances. The
 explicit overrides preserve product semantics that Material does not model directly or that must
 remain distinct from its primary and secondary colors. Applications with complete Lumen palettes
 can pass `LumenThemeValues` instead.

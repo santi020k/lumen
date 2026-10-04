@@ -78,6 +78,18 @@ import Testing
     #expect(!lumenCalendarHeatmapModel([], startDate: "2024-01-01", endDate: "2024-01-01", weekStartsOn: 1, domain: nil, weekdayLabels: ["Mon"]).valid)
     #expect(!lumenCalendarHeatmapModel([.init(date: "2024-01-01", value: .infinity)], startDate: "2024-01-01", endDate: "2024-01-01", weekStartsOn: 1, domain: nil).valid)
 }
+@Test func calendarSummaryCountsOnlyMeasuredDaysIncludingZero() {
+    let model = lumenCalendarHeatmapModel([
+        .init(date: "2024-01-01", value: 0),
+        .init(date: "2024-01-02", value: nil),
+        .init(date: "2024-01-03", value: 5)
+    ], startDate: "2024-01-01", endDate: "2024-01-31", weekStartsOn: 1, domain: nil)
+    #expect(model.valid)
+    #expect(model.cells.count == 31)
+    #expect(model.availableValueCount == 2)
+    let missing = lumenCalendarHeatmapModel([], startDate: "2024-01-01", endDate: "2024-01-31", weekStartsOn: 1, domain: nil)
+    #expect(missing.availableValueCount == 0)
+}
 @MainActor @Test func expandedChartsCompileWithLocalizedMissingData() {
     let labels = LumenChartLabels(notAvailable: "Sin datos", viewData: "Ver datos", invalidData: "Datos inválidos", value: "Valor", count: "Cantidad")
     _ = LumenFunnelChart(data: [.init(id: "a", label: "Inicio", value: nil)], label: "Proceso", labels: labels).body

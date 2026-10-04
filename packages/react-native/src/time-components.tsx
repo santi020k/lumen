@@ -221,6 +221,14 @@ const LumenTimeFieldControl = ({
   )
 }
 
-export const LumenTimeField = (props: LumenTimeFieldProps): ReactElement => (
-  <LumenTimeFieldControl key={`${props.enabled ?? true}-${props.readOnly ?? false}`} {...props} />
-)
+export const LumenTimeField = (props: LumenTimeFieldProps): ReactElement => {
+  const sheetIdentity = Platform.OS === 'android' ?
+    '' :
+    [
+      props.value ? inputTime(props.value) : 'empty',
+      props.minTime ? inputTime(props.minTime) : 'unbounded',
+      props.maxTime ? inputTime(props.maxTime) : 'unbounded'
+    ].join('|')
+
+  return <LumenTimeFieldControl key={`${props.enabled ?? true}-${props.readOnly ?? false}-${sheetIdentity}`} {...props} />
+}

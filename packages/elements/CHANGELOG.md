@@ -2,6 +2,12 @@
 
 ## 4.0.0
 
+- Validate decoded chart annotations, restore chart legend inspection state on teardown, refresh external image-comparison reset values, restore iframe dialog focus, and preserve uncontrolled filter disclosure state.
+
+- Honor comparison chart value labels and escaped accessible summaries in Web Components. Reset iOS and web time-picker drafts when controlled values or bounds change, preserving current Android bounds and callback handling.
+
+- Keep sparkline endpoints circular and line strokes uniform when a chart stretches to fit a wide or shallow container.
+
 ### Major Changes
 
 - Finalize web form visual sizing with visualSize/visual-size on Select, PhoneInput and Segmented, preserving native numeric size. Add conservative literal migration previews and a complete machine-readable v4 breaking inventory. Fix controlled Segmented ownership, Select accessibility/callback/reset behavior, Elements scalar reconnection and reset defaults, and multiple-select submission. Add selective React component and Elements VirtualList imports with measured bundle and packed-consumer checks. Existing root imports remain supported.
@@ -88,6 +94,8 @@
   Refine BulletChart with a slimmer track, quieter range bands, and a capped target marker.
 
 ### Patch Changes
+
+- Show category labels and value scales in combo and range charts, with visible line markers in combo charts.
 
 - Keep success Alert and Toast text readable on their tinted surfaces by using the semantic
   ink color. Success borders and backgrounds retain their status color across web adapters.

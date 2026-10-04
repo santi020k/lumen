@@ -355,6 +355,10 @@ export const createLumenChartInteractionController = (root: HTMLElement): LumenC
 
       for (const mark of root.querySelectorAll<SVGElement>('[data-ui-chart-series]')) mark.style.display = ''
 
+      for (const value of root.querySelectorAll<HTMLElement>('[data-ui-chart-series-value]')) value.hidden = false
+
+      for (const button of legend) button.setAttribute('aria-pressed', 'true')
+
       delete root.dataset.uiChartEnhanced
     },
     select,

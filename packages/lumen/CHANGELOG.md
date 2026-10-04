@@ -2,6 +2,10 @@
 
 ## 4.0.0
 
+- Map Compose Material surface containers and navigation selection colors to Lumen semantic tokens, removing fallback purple from adaptive bottom bars and rails.
+
+- Keep sparkline endpoints circular and line strokes uniform when a chart stretches to fit a wide or shallow container.
+
 - Add controlled MultiSelect to React Native and SwiftUI alongside Compose, retaining selections
   outside filtered results, blocking disabled/read-only edits, and exposing loading/retry and localized
   action labels. Forward application safe-area insets into the React Native sheet. Add a complete,
@@ -126,6 +130,8 @@
   Refine BulletChart with a slimmer track, quieter range bands, and a capped target marker.
 
 ### Patch Changes
+
+- Fit scatter, combo, and range charts to narrow screens with readable responsive axis labels.
 
 - Keep success Alert and Toast text readable on their tinted surfaces by using the semantic
   ink color. Success borders and backgrounds retain their status color across web adapters.

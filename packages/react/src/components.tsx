@@ -965,15 +965,14 @@ export const Sparkline = ({
             <path className="ui-sparkline__area" d={path} key={path} />
           ))}
         <path className="ui-sparkline__line" d={geometry.path} />
-        {showEndpoint && endpoint && (
-          <circle
-            className="ui-sparkline__endpoint"
-            cx={endpoint.xCoordinate}
-            cy={endpoint.yCoordinate}
-            r="2.5"
-          />
-        )}
       </svg>
+      {showEndpoint && endpoint && (
+        <span
+          aria-hidden="true"
+          className="ui-sparkline__endpoint"
+          style={{ left: `${endpoint.xCoordinate / 120 * 100}%`, top: `${endpoint.yCoordinate / 40 * 100}%` }}
+        />
+      )}
       <span className="ui-sr-only">{label}</span>
     </span>
   )
@@ -1923,6 +1922,14 @@ export const RangeChart = ({
   const padding = 44
   const geometry = createLumenRangeGeometry(data, { height, padding, width })
 
+  const categoryTicks = getLumenChartCategoryTicks(geometry.points.map(point => String(point.xLabel ?? point.x)), {
+    start: padding,
+    end: width - padding,
+    positions: geometry.points.map(point => point.xCoordinate)
+  })
+
+  const ticks = getLumenChartTicks(geometry.domain)
+
   const datumActions = onDatumActivate ?
     geometry.points.map(point => createReactChartDatumAction(
       createLumenRangeDatumActivation(point),
@@ -1936,6 +1943,19 @@ export const RangeChart = ({
       {geometry.points.length === 0 && <p className="ui-chart__empty" role="status">{resolvedLabels.empty}</p>}
       <div aria-label={resolvedLabels.chartData} className="ui-chart__plot" role="region" tabIndex={0} hidden={geometry.points.length === 0}>
         <svg aria-hidden="true" viewBox={`0 0 ${width} ${height}`}>
+          <g className="ui-chart__grid">
+            {ticks.map(tick => {
+              const y = scaleLumenChartValue(tick, geometry.domain, height - padding, padding)
+
+              return (
+                <g key={tick}>
+                  <line x1={padding} x2={width - padding} y1={y} y2={y} />
+                  <text x={padding - 8} y={y}>{formatValue(tick)}</text>
+                </g>
+              )
+            })}
+          </g>
+          <g className="ui-chart__axis-labels">{categoryTicks.map(tick => <text key={tick.index} x={tick.position} y={height - 12} textAnchor={tick.textAnchor}>{tick.label}</text>)}</g>
           <path className="ui-range-chart__area" d={geometry.areaPath} />
           {geometry.points.map((point, index) => (
             <line
@@ -2108,6 +2128,19 @@ export const ComboChart = ({
     }) :
     []
 
+  const plotTop = barSeries.length > 0 ? bars.margin.top : padding
+  const plotBottom = height - (barSeries.length > 0 ? bars.margin.bottom : padding)
+  const plotLeft = barSeries.length > 0 ? bars.margin.left : padding
+  const plotRight = width - (barSeries.length > 0 ? bars.margin.right : padding)
+  const ticks = getLumenChartTicks(domain)
+  const categoryLabels = categories.map(category => getLumenChartCategoryLabel(series, category))
+
+  const categoryTicks = getLumenChartCategoryTicks(categoryLabels, {
+    start: plotLeft,
+    end: plotRight,
+    ...(barSeries.length > 0 ? { positions: bars.categories.map(category => category.x) } : {})
+  })
+
   const datumActions = [...barActions, ...pointActions.flat()]
 
   return (
@@ -2116,6 +2149,19 @@ export const ComboChart = ({
       {!hasData && <p className="ui-chart__empty" role="status">{resolvedLabels.empty}</p>}
       <div aria-label={resolvedLabels.chartData} className="ui-chart__plot" role="region" tabIndex={0} hidden={!hasData}>
         <svg aria-hidden="true" viewBox={`0 0 ${width} ${height}`}>
+          <g className="ui-chart__grid">
+            {ticks.map(tick => {
+              const y = scaleLumenChartValue(tick, domain, plotBottom, plotTop)
+
+              return (
+                <g key={tick}>
+                  <line x1={plotLeft} x2={plotRight} y1={y} y2={y} />
+                  <text x={plotLeft - 8} y={y}>{formatValue(tick)}</text>
+                </g>
+              )
+            })}
+          </g>
+          <g className="ui-chart__axis-labels">{categoryTicks.map(tick => <text key={tick.index} x={tick.position} y={height - 12} textAnchor={tick.textAnchor}>{tick.label}</text>)}</g>
           <g className="ui-bar-chart__marks">
             {bars.marks.map((mark, index) => <rect data-ui-chart-datum={barActions[index]?.serialized} className={getLumenChartToneClassName(mark.tone)} height={mark.height} key={`${mark.seriesId}:${getChartCategoryKey(mark.category)}`} rx="4" width={mark.width} x={mark.x} y={mark.y}><title>{`${mark.seriesLabel}: ${formatValue(mark.value)}`}</title></rect>)}
             {onDatumActivate && bars.marks.map((mark, index) => (
@@ -2150,6 +2196,15 @@ export const ComboChart = ({
                   className="ui-line-chart__line"
                   d={geometry.path}
                 />
+                {geometry.points.map(point => (
+                  <circle
+                    key={point.id ?? getChartCategoryKey(point.x)}
+                    className="ui-line-chart__point"
+                    cx={point.xCoordinate}
+                    cy={point.yCoordinate}
+                    r="3.5"
+                  />
+                ))}
                 {onDatumActivate && geometry.points.map((point, pointIndex) => (
                   <circle
                     className="ui-chart__datum-hit"
@@ -4211,12 +4266,13 @@ const PhoneNumberInput = ({
   />
 )
 
-const PhoneCountryValue = ({ disabled, readOnly, name, value }: {
+const PhoneCountryValue = ({ disabled, readOnly, form, name, value }: {
   disabled: boolean
   readOnly: boolean
+  form?: string | undefined
   name: string
   value: string
-}) => readOnly && !disabled ? <input name={name} type="hidden" value={value} /> : null
+}) => readOnly && !disabled ? <input form={form} name={name} type="hidden" value={value} /> : null
 
 const MetadataPhoneInput = ({
   className,
@@ -4388,6 +4444,7 @@ const MetadataPhoneInput = ({
             aria-label={countryLabel}
             className={composeClassName('ui-select ui-phone-input__country', selectClass)}
             disabled={isDisabled || isReadOnly || metadataCountries.length === 0}
+            form={inputProps.form}
             name={countryName}
             onChange={handleCountryChange}
             ref={selectRef}
@@ -4417,6 +4474,7 @@ const MetadataPhoneInput = ({
         />
         <PhoneCountryValue
           disabled={isDisabled}
+          form={inputProps.form}
           name={countryName}
           readOnly={isReadOnly}
           value={phoneValue.country.regionCode}
@@ -4486,6 +4544,7 @@ const LegacyPhoneInput = ({
           className={composeClassName('ui-select ui-phone-input__country', selectClass)}
           defaultValue={defaultCountryValue}
           disabled={[disabled, readOnly, inputProps.disabled, inputProps.readOnly].some(Boolean)}
+          form={inputProps.form}
           name={countryName}
         >
           {countries.map(normalizeOption).map(option => (

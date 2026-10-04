@@ -2,6 +2,8 @@
 
 ## 4.0.0
 
+- Honor comparison chart value labels and escaped accessible summaries in Web Components. Reset iOS and web time-picker drafts when controlled values or bounds change, preserving current Android bounds and callback handling.
+
 - Add controlled MultiSelect to React Native and SwiftUI alongside Compose, retaining selections
   outside filtered results, blocking disabled/read-only edits, and exposing loading/retry and localized
   action labels. Forward application safe-area insets into the React Native sheet. Add a complete,

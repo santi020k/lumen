@@ -39,7 +39,7 @@ const RangeMonth = ({ part, value, onValueChange, locale, min, max, label, label
   readOnly: boolean
   formatDate: (value: string) => string
 }) => {
-  const calendar = useCalendar({
+  const { rootRef, ...calendar } = useCalendar({
     value: value[part],
     locale,
     min,
@@ -56,7 +56,6 @@ const RangeMonth = ({ part, value, onValueChange, locale, min, max, label, label
     }
   })
 
-  const rootRef = useRef<HTMLDivElement>(null)
   const selectedRef = useRef(value[part])
   const focusedDate = calendar.weeks.flat().find(day => day.tabIndex === 0)?.date
 
@@ -72,7 +71,7 @@ const RangeMonth = ({ part, value, onValueChange, locale, min, max, label, label
     if (rootRef.current?.contains(document.activeElement) && document.activeElement?.getAttribute('role') === 'gridcell') {
       rootRef.current.querySelector<HTMLElement>('[role="gridcell"][tabindex="0"]')?.focus()
     }
-  }, [focusedDate])
+  }, [focusedDate, rootRef])
 
   return (
     <section className="ui-range-calendar__month" aria-label={label}>
@@ -80,7 +79,7 @@ const RangeMonth = ({ part, value, onValueChange, locale, min, max, label, label
         <span>{label}</span>
         <strong>{parseCalendarDate(value[part]) ? formatDate(value[part]) : value[part]}</strong>
       </div>
-      <div {...calendar.rootProps} ref={rootRef}>
+      <div {...calendar.rootProps}>
         <div className="ui-calendar__header">
           <button {...calendar.previousProps} type="button"><Icon name="chevron-left" size="sm" /></button>
           <strong {...calendar.labelProps}>{calendar.label}</strong>

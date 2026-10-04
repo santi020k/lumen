@@ -17,7 +17,7 @@ import {
   type LumenScatterGeometryPoint,
   type LumenScatterReference,
   type LumenScatterScaleType,
-  type LumenWaterfallDatum,  normalizeLumenHeatmapData } from '@santi020k/lumen-core'
+  type LumenWaterfallDatum,  normalizeLumenHeatmapData,  resolveLumenChartLabels } from '@santi020k/lumen-core'
 
 export const escapeChartHtml = (value: number | string): string => String(value)
   .replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')
@@ -100,13 +100,6 @@ export const chartNumberAttribute = (element: HTMLElement, name: string): number
   return value !== null && value.trim() !== '' && Number.isFinite(Number(value)) ? Number(value) : undefined
 }
 
-export const chartDomainAttributes = (element: HTMLElement, minName = 'domain-min', maxName = 'domain-max') => {
-  const min = chartNumberAttribute(element, minName)
-  const max = chartNumberAttribute(element, maxName)
-
-  return { ...(min === undefined ? {} : { min }), ...(max === undefined ? {} : { max }) }
-}
-
 export const chartInspectionHtml = (
   model: ReturnType<typeof createLumenLineChartModel>, labels: Readonly<LumenChartLabels>,
   formatValue: (value: number) => string, formatCategory?: (value: number | string) => string
@@ -140,7 +133,61 @@ export const chartAnnotationHtml = (
   return `<g class="ui-chart__annotation ${getLumenChartToneClassName(mark.tone)}">${line}</g>`
 }).join('')
 
-export const interactiveChartLegendHtml = (series: readonly LumenChartSeries[], labels: Readonly<LumenChartLabels>): string => `<ul class="ui-chart__legend" aria-label="${escapeChartHtml(labels.chartLegend)}">${series.map((item, index) => `<li class="${getLumenChartToneClassName(item.tone, index)}"><button type="button" class="ui-button ui-button--ghost ui-button--sm" aria-pressed="true" data-ui-chart-toggle="${escapeChartHtml(item.id)}">${escapeChartHtml(item.label)}</button></li>`).join('')}</ul>`
+export const chartLabelsFor = (element: HTMLElement): Readonly<LumenChartLabels> => {
+  const defaults = resolveLumenChartLabels(undefined)
+  const label = (name: string, fallback: string) => element.getAttribute(`${name}-label`) ?? fallback
+
+  return {
+    ...defaults,
+    chartData: element.getAttribute('aria-label') ?? element.getAttribute('heading') ?? defaults.chartData,
+    count: label('count', defaults.count),
+    density: label('density', defaults.density),
+    start: label('start', defaults.start),
+    end: label('end', defaults.end),
+    invalidData: label('invalid-data', defaults.invalidData),
+    category: label('category', defaults.category),
+    chartLegend: label('legend', defaults.chartLegend),
+    column: label('column', defaults.column),
+    empty: label('empty', defaults.empty),
+    high: label('high', defaults.high),
+    low: label('low', defaults.low),
+    notAvailable: label('not-available', defaults.notAvailable),
+    row: label('row', defaults.row),
+    series: label('series', defaults.series),
+    size: label('size', defaults.size),
+    value: label('value', defaults.value),
+    viewData: label('view-data', defaults.viewData),
+    x: label('x', defaults.x)
+  }
+}
+
+export const chartLegendHtml = (
+  series: readonly LumenChartSeries[],
+  labels: Readonly<LumenChartLabels>,
+  interactive = false
+): string => `<ul class="ui-chart__legend" aria-label="${escapeChartHtml(labels.chartLegend)}">${series.map((item, index) => {
+  const content = interactive ?
+    `<button type="button" class="ui-button ui-button--ghost ui-button--sm" aria-pressed="true" data-ui-chart-toggle="${escapeChartHtml(item.id)}">${escapeChartHtml(item.label)}</button>` :
+    `<span aria-hidden="true"></span>${escapeChartHtml(item.label)}`
+
+  return `<li class="${getLumenChartToneClassName(item.tone, index)}">${content}</li>`
+}).join('')}</ul>`
+
+export const chartAxesHtml = (
+  model: Pick<ReturnType<typeof createLumenHistogramGeometry>, 'categoryTicks' | 'height' | 'left' | 'right' | 'ticks' | 'y'>,
+  formatValue: (value: number) => string,
+  labelOffset = 16
+): string => {
+  const grid = model.ticks.map(tick => {
+    const y = model.y(tick)
+
+    return `<line x1="${model.left}" x2="${model.right}" y1="${y}" y2="${y}"></line><text x="${model.left - 8}" y="${y}">${escapeChartHtml(formatValue(tick))}</text>`
+  }).join('')
+
+  const axis = model.categoryTicks.map(tick => `<text text-anchor="${tick.textAnchor}" x="${tick.position}" y="${model.height - labelOffset}">${escapeChartHtml(tick.label)}</text>`).join('')
+
+  return `<g class="ui-chart__grid">${grid}</g><g class="ui-chart__axis-labels">${axis}</g>`
+}
 
 export const intervalChartHtml = (
   model: ReturnType<typeof createLumenWaterfallGeometry> | ReturnType<typeof createLumenHistogramGeometry>,
@@ -150,15 +197,13 @@ export const intervalChartHtml = (
 ): string => {
   if (model.marks.length === 0) return `<p class="ui-chart__empty" role="status">${escapeChartHtml(model.valid ? labels.empty : labels.invalidData)}</p>`
 
-  const grid = model.ticks.map(tick => `<line x1="${model.left}" x2="${model.right}" y1="${model.y(tick)}" y2="${model.y(tick)}"></line><text x="${model.left - 8}" y="${model.y(tick)}">${escapeChartHtml(formatValue(tick))}</text>`).join('')
-  const axis = model.categoryTicks.map(tick => `<text text-anchor="${tick.textAnchor}" x="${tick.position}" y="${model.height - 16}">${escapeChartHtml(tick.label)}</text>`).join('')
   const connectors = 'connectors' in model ? model.connectors.map(line => `<line class="ui-waterfall-chart__connector" x1="${line.x1}" x2="${line.x2}" y1="${line.y}" y2="${line.y}"></line>`).join('') : ''
   const marks = model.marks.map(mark => `<rect class="${getLumenChartToneClassName(mark.tone)}" x="${mark.x}" y="${mark.y}" width="${mark.width}" height="${mark.height}"><title>${escapeChartHtml(mark.label)}: ${escapeChartHtml(formatValue(mark.value))}</title></rect>`).join('')
   const rows = model.marks.map((mark, index) => `<tr><th scope="row">${escapeChartHtml(mark.label)}</th><td>${escapeChartHtml(formatBoundary(mark.start))}</td><td>${escapeChartHtml(formatBoundary(mark.end))}</td><td>${escapeChartHtml(formatValue(mark.value))}</td>${'bins' in model && model.frequency === 'density' ? `<td>${model.bins[index]?.count ?? 0}</td>` : ''}</tr>`).join('')
   const table = showTable ? `<details class="ui-chart__data"><summary>${escapeChartHtml(labels.viewData)}</summary><div role="group" tabindex="0" aria-label="${escapeChartHtml(labels.chartData)}"><table><thead><tr><th scope="col">${escapeChartHtml(labels.category)}</th><th scope="col">${escapeChartHtml(labels.start)}</th><th scope="col">${escapeChartHtml(labels.end)}</th><th scope="col">${escapeChartHtml(valueLabel)}</th>${'bins' in model && model.frequency === 'density' ? `<th scope="col">${escapeChartHtml(labels.count)}</th>` : ''}</tr></thead><tbody>${rows}</tbody></table></div></details>` : ''
   const summary = summaryOverride ?? formatLumenChartSummary([{ id: 'values', label: valueLabel, data: model.marks.map(mark => ({ x: mark.key, y: mark.value })) }], formatValue, labels)
 
-  return `<p class="ui-sr-only" data-ui-chart-summary>${escapeChartHtml(summary)}</p><p class="ui-chart__axis-title">${escapeChartHtml(valueLabel)}</p><div class="ui-chart__plot" role="region" tabindex="0" aria-label="${escapeChartHtml(labels.chartData)}"><svg aria-hidden="true" viewBox="0 0 ${model.width} ${model.height}"><g class="ui-chart__grid">${grid}</g><g class="ui-chart__axis-labels">${axis}</g>${connectors}<g class="ui-bar-chart__marks">${marks}</g></svg></div>${table}`
+  return `<p class="ui-sr-only" data-ui-chart-summary>${escapeChartHtml(summary)}</p><p class="ui-chart__axis-title">${escapeChartHtml(valueLabel)}</p><div class="ui-chart__plot" role="region" tabindex="0" aria-label="${escapeChartHtml(labels.chartData)}"><svg aria-hidden="true" viewBox="0 0 ${model.width} ${model.height}">${chartAxesHtml(model, formatValue)}${connectors}<g class="ui-bar-chart__marks">${marks}</g></svg></div>${table}`
 }
 
 export const scatterPlotHtml = (

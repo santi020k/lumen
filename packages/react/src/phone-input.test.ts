@@ -231,3 +231,49 @@ test('read-only values retain their country in native form submission', async ()
   expect(data.get('country')).toBe('CO')
   expect(data.get('phone')).toBe('(601) 5550123')
 })
+
+test.each([false, true])('submits number and country to an external form with readOnly=%s', async readOnly => {
+  const form = document.createElement('form')
+  form.id = 'external-phone-form'
+  const container = document.createElement('div')
+  document.body.append(form, container)
+  const extraRoot = createRoot(container)
+  mounted.push(extraRoot)
+  const props = {
+    defaultCountryValue: 'CO',
+    defaultValue: '6015550123',
+    readOnly,
+    inputProps: { form: form.id }
+  }
+  await act(async () => {
+    await Promise.resolve()
+    extraRoot.render(createElement(PhoneInput, props))
+  })
+  expect(new FormData(form).get('country')).toBe('CO')
+  expect(new FormData(form).get('phone')).toBe('(601) 5550123')
+  await act(async () => {
+    await Promise.resolve()
+    extraRoot.render(createElement(PhoneInput, { ...props, disabled: true }))
+  })
+  expect([...new FormData(form).entries()]).toEqual([])
+})
+
+test('associates the legacy country picker with the number external form', async () => {
+  const form = document.createElement('form')
+  form.id = 'legacy-phone-form'
+  const container = document.createElement('div')
+  document.body.append(form, container)
+  const extraRoot = createRoot(container)
+  mounted.push(extraRoot)
+  await act(async () => {
+    await Promise.resolve()
+    extraRoot.render(createElement(PhoneInput, {
+      countries: [{ value: 'CO', label: 'Colombia' }],
+      defaultCountryValue: 'CO',
+      defaultValue: '6015550123',
+      inputProps: { form: form.id }
+    }))
+  })
+  expect(new FormData(form).get('country')).toBe('CO')
+  expect(new FormData(form).get('phone')).toBe('6015550123')
+})

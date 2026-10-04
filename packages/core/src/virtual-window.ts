@@ -63,7 +63,8 @@ const getViewport = (root: HTMLElement): number => {
 
 const getFocusedIndex = (root: HTMLElement): number => {
   const active = root.ownerDocument.activeElement
-  const row = active instanceof HTMLElement ? active.closest<HTMLElement>('[data-ui-virtual-list-index]') : null
+  const elementClass = root.ownerDocument.defaultView?.HTMLElement
+  const row = elementClass && active instanceof elementClass ? active.closest<HTMLElement>('[data-ui-virtual-list-index]') : null
 
   return row?.closest('[data-ui-virtual-list]') === root ? Number(row.dataset.uiVirtualListIndex) : -1
 }
