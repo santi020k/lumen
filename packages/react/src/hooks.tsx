@@ -746,7 +746,9 @@ const useDisclosureController = (
     'aria-expanded': open,
     'aria-haspopup': hasPopup,
     'data-ui-trigger': true,
-    onClick: () => {
+    onClick: event => {
+      if (event.defaultPrevented) return
+
       focusTrigger(triggerRef.current)
 
       toggle()
