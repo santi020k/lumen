@@ -2,6 +2,7 @@
 import type { HTMLAttributes } from 'astro/types'
 
 import {
+  createLumenChartDatumActivation,
   createLumenLineChartModel,
   formatLumenChartSummary,
   getLumenChartCategoryLabel,
@@ -16,9 +17,11 @@ import {
 } from '@santi020k/lumen-core'
 
 import ChartInspection from '../internal/ChartInspection.astro'
+import { createChartDatumAction } from '../runtime/chart-actions'
 
 import Button from './Button.astro'
 import Chart from './Chart.astro'
+import ChartDatumActions from './ChartDatumActions.astro'
 
 interface Props extends HTMLAttributes<'figure'>, LumenLineChartOptions {
   interactive?: boolean
@@ -28,6 +31,7 @@ interface Props extends HTMLAttributes<'figure'>, LumenLineChartOptions {
   class?: string | null
   className?: string
   description?: string
+  drilldown?: boolean
   emptyLabel?: string
   formatCategory?: (category: number | string) => string
   formatValue?: (value: number) => string
@@ -57,6 +61,7 @@ const {
   class: classProp = '',
   className = '',
   description,
+  drilldown = false,
   emptyLabel,
   formatCategory,
   formatValue = String,
@@ -102,6 +107,23 @@ const referenceY =
   referenceValue === undefined ?
     undefined :
     scaleLumenChartValue(referenceValue, domain, height - padding, padding)
+
+const pointActions = drilldown ?
+geometries.map((geometry, index) => {
+  const item = alignedSeries[index]
+
+  return geometry.points.map(point => item ?
+createChartDatumAction(
+    createLumenChartDatumActivation(item.id, point),
+    `${categoryLabelFor(point.x)} · ${item.label}: ${formatValue(point.y ?? 0)}`,
+    resolvedLabels
+  ) :
+null)
+}) :
+[]
+
+const datumActions = pointActions.flat()
+
 ---
 
 <Chart
@@ -114,6 +136,7 @@ const referenceY =
   data-ui-chart-interactive={interactive || undefined}
   data-ui-chart-sync={syncGroup}
   {...rest}
+  data-ui-chart-activation={drilldown || undefined}
 >
   {
     showLegend && hasData && (
@@ -207,6 +230,7 @@ class:list={['ui-line-chart__series', getLumenChartToneClassName(tone)]}
               {Number.isFinite(markerStep) &&
                 geometry.points.map((point, pointIndex) => pointIndex % markerStep === 0 && (
                   <circle
+                    data-ui-chart-datum={pointActions[index]?.[pointIndex]?.serialized}
                     class="ui-line-chart__point"
                     cx={point.xCoordinate}
                     cy={point.yCoordinate}
@@ -217,6 +241,15 @@ class:list={['ui-line-chart__series', getLumenChartToneClassName(tone)]}
                     </title>
                   </circle>
                 ))}
+              {drilldown && geometry.points.map((point, pointIndex) => (
+                <circle
+class="ui-chart__datum-hit"
+cx={point.xCoordinate}
+cy={point.yCoordinate}
+r="10"
+                  data-ui-chart-datum={pointActions[index]?.[pointIndex]?.serialized}
+                />
+              ))}
             </g>
           )
         })
@@ -268,4 +301,5 @@ class:list={['ui-line-chart__series', getLumenChartToneClassName(tone)]}
       </details>
     )
   }
+  {drilldown && <ChartDatumActions actions={datumActions} label={resolvedLabels.exploreData} />}
 </Chart>

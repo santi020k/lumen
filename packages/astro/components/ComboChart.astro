@@ -1,9 +1,9 @@
 ---
 import type { HTMLAttributes } from 'astro/types'
 
-import {
-  alignLumenChartSeries,
+import {   alignLumenChartSeries,
   createLumenBarGeometry,
+createLumenChartDatumActivation,
   createLumenLineGeometry,
   formatLumenChartSummary,
   getLumenChartCategories,
@@ -16,13 +16,17 @@ import {
   resolveLumenChartLabels,
   resolveLumenChartTone } from '@santi020k/lumen-core'
 
+import { createChartDatumAction } from '../runtime/chart-actions'
+
 import Chart from './Chart.astro'
+import ChartDatumActions from './ChartDatumActions.astro'
 
 interface Props extends HTMLAttributes<'figure'> {
   caption?: string
   class?: string | null
   className?: string
   description?: string
+  drilldown?: boolean
   formatValue?: (value: number) => string
   heading?: string
   labels?: Partial<LumenChartLabels>
@@ -32,7 +36,7 @@ interface Props extends HTMLAttributes<'figure'> {
   summary?: string
 }
 
-const { caption, class: classProp = '', className = '', description, formatValue = String, heading, labels, series, showLegend = true, showTable = true, summary: summaryProp, ...rest } = Astro.props
+const { caption, class: classProp = '', className = '', description, drilldown = false, formatValue = String, heading, labels, series, showLegend = true, showTable = true, summary: summaryProp, ...rest } = Astro.props
 const resolvedLabels = resolveLumenChartLabels(labels)
 const summary = summaryProp ?? formatLumenChartSummary(series, formatValue, resolvedLabels)
 const width = 640
@@ -86,15 +90,60 @@ const lines = lineSeries.map(item => createLumenLineGeometry(
 ))
 
 const hasData = hasLumenChartData(series)
+
+const barActions = drilldown ?
+bars.marks.map(mark => {
+  const item = barSeries.find(candidate => candidate.id === mark.seriesId)
+  const datum = item?.data.find(candidate => candidate.x === mark.category)
+
+  return item && datum ?
+createChartDatumAction(
+    createLumenChartDatumActivation(item.id, datum),
+    `${datum.xLabel ?? datum.x} · ${item.label}: ${datum.label ?? formatValue(mark.value)}`,
+    resolvedLabels
+  ) :
+null
+}) :
+[]
+
+const pointActions = drilldown ?
+lines.map((geometry, index) => {
+  const item = lineSeries[index]
+
+  return geometry.points.map(point => {
+    const datum = item?.data.find(candidate => alignComboLineDatum(candidate).x === point.x)
+
+    return item && datum ?
+createChartDatumAction(
+      createLumenChartDatumActivation(item.id, datum),
+      `${datum.xLabel ?? datum.x} · ${item.label}: ${datum.label ?? formatValue(point.y ?? 0)}`,
+      resolvedLabels
+    ) :
+null
+  })
+}) :
+[]
+
+const datumActions = [...barActions, ...pointActions.flat()]
+
 ---
 
-<Chart class:list={['ui-combo-chart', classProp, className]} {caption} {description} {heading} {summary} {...rest}>
+<Chart class:list={['ui-combo-chart', classProp, className]} {caption} {description} {heading} {summary} {...rest} data-ui-chart-activation={drilldown || undefined}>
   {showLegend && hasData && <ul class="ui-chart__legend" aria-label={resolvedLabels.chartLegend}>{series.map((item, index) => <li class={getLumenChartToneClassName(item.tone, index)}><span aria-hidden="true" />{item.label}</li>)}</ul>}
   {!hasData && <p class="ui-chart__empty" role="status">{resolvedLabels.empty}</p>}
   <div aria-label={resolvedLabels.chartData} class="ui-chart__plot" role="region" tabindex="0" hidden={!hasData}><svg aria-hidden="true" viewBox={`0 0 ${width} ${height}`}><g class="
     ui-bar-chart__marks
   "
-                                                                                                                                                                            >{bars.marks.map(mark => <rect class={getLumenChartToneClassName(mark.tone)} height={mark.height} rx="4" width={mark.width} x={mark.x} y={mark.y}><title>{`${mark.seriesLabel}: ${formatValue(mark.value)}`}</title></rect>)}</g>{lines.map((geometry, index) => {
+                                                                                                                                                                            >{bars.marks.map((mark, index) => <rect data-ui-chart-datum={barActions[index]?.serialized} class={getLumenChartToneClassName(mark.tone)} height={mark.height} rx="4" width={mark.width} x={mark.x} y={mark.y}><title>{`${mark.seriesLabel}: ${formatValue(mark.value)}`}</title></rect>)}{drilldown && bars.marks.map((mark, index) => (
+  <rect
+class="ui-chart__datum-hit"
+width={Math.max(12, mark.width)}
+height={Math.max(12, mark.height)}
+    x={mark.x - Math.max(0, 12 - mark.width) / 2}
+y={mark.y - Math.max(0, 12 - mark.height) / 2}
+    data-ui-chart-datum={barActions[index]?.serialized}
+  />
+))}</g>{lines.map((geometry, index) => {
  const item = lineSeries[index]
 
  if (!item) return null
@@ -110,7 +159,15 @@ d={path}
 )) }<path
 class="ui-line-chart__line"
 d={geometry.path}
-    /></g>
+    />{drilldown && geometry.points.map((point, pointIndex) => (
+      <circle
+class="ui-chart__datum-hit"
+cx={point.xCoordinate}
+cy={point.yCoordinate}
+r="10"
+        data-ui-chart-datum={pointActions[index]?.[pointIndex]?.serialized}
+      />
+    ))}</g>
 )
 })}</svg></div>
   {showTable && hasData && (
@@ -122,4 +179,5 @@ d={geometry.path}
 })}</tr>
 ))}</tbody></table></div></details>
 )}
+  {drilldown && <ChartDatumActions actions={datumActions} label={resolvedLabels.exploreData} />}
 </Chart>

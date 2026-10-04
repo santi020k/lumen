@@ -87,6 +87,8 @@ describe('@santi020k/lumen umbrella package', () => {
 
   test('exports registry recipes and components for product surfaces', () => {
     expect(lumenRegistry.items.map(item => item.name)).toEqual([
+      'page-header',
+      'section-header',
       'content-flow-header',
       'content-flow-settings',
       'content-flow-list',
@@ -266,6 +268,27 @@ describe('@santi020k/lumen umbrella package', () => {
           expect(result.added).toEqual([path])
           expect(source).toContain(`@santi020k/lumen-${target}`)
           expect(source).toContain(name === 'settings' ? 'group' : 'related')
+        }
+      }
+    } finally {
+      await rm(cwd, { force: true, recursive: true })
+    }
+  })
+
+  test('installs complete page and section header recipes for all web adapters', async () => {
+    const cwd = await mkdtemp(join(tmpdir(), 'lumen-dashboard-headers-'))
+    try {
+      for (const target of ['astro', 'react', 'elements'] as const) {
+        for (const name of ['page-header', 'section-header']) {
+          const result = await addLumenRegistryItem(name, { cwd: join(cwd, target), target })
+          const extension = { astro: 'astro', elements: 'html', react: 'tsx' }[target]
+          const path = `src/lumen/${name}.${extension}`
+          const source = await readFile(join(cwd, target, path), 'utf8')
+          expect(result.added).toEqual([path])
+          expect(source).toContain(`@santi020k/lumen-${target}`)
+          expect(source).toContain('aria-labelledby')
+          expect(source).toContain('wrap')
+          expect(source).toContain(name === 'page-header' ? 'Breadcrumb' : 'Badge')
         }
       }
     } finally {

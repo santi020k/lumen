@@ -1,8 +1,12 @@
 import { readFile } from 'node:fs/promises'
 import { gzipSync } from 'node:zlib'
 
-// Phone v4 adds measured presentation/validation code and shared offline artwork.
+// V4 budgets cover the measured combined surface; see docs/lumen-4-readiness.md.
+// New chart helper entries have independent limits to keep extraction measurable.
 const allBudgets = [
+  { file: 'packages/core/dist/chart-activation.js', gzip: 1_300, packageName: '@santi020k/lumen-core', raw: 4_500 },
+  { file: 'packages/react/dist/chart-recipes.js', gzip: 700, packageName: '@santi020k/lumen-react', raw: 1_800 },
+  { file: 'packages/elements/dist/chart-activation.js', gzip: 1_500, packageName: '@santi020k/lumen-elements', raw: 5_000 },
   { file: 'packages/core/dist/virtual-window.js', gzip: 2_200, packageName: '@santi020k/lumen-core', raw: 7_000 },
   { file: 'packages/core/dist/virtual-collection.js', gzip: 2_500, packageName: '@santi020k/lumen-core', raw: 9_000 },
   { file: 'packages/react/dist/virtual-list-data.js', gzip: 2_000, packageName: '@santi020k/lumen-react', raw: 6_000 },
@@ -13,16 +17,16 @@ const allBudgets = [
   { file: 'packages/core/dist/virtual-list.js', gzip: 2_200, packageName: '@santi020k/lumen-core', raw: 7_000 },
   { file: 'packages/react/dist/virtual-list.js', gzip: 1_000, packageName: '@santi020k/lumen-react', raw: 3_000 },
   { file: 'packages/react/dist/rich-text-editor.js', gzip: 2_500, packageName: '@santi020k/lumen-react', raw: 10_000 },
-  { file: 'packages/astro/runtime/UIPrimitives.astro', gzip: 33_000, packageName: '@santi020k/lumen-astro', raw: 167_000 },
+  { file: 'packages/astro/runtime/UIPrimitives.astro', gzip: 33_500, packageName: '@santi020k/lumen-astro', raw: 167_000 },
   { file: 'packages/astro/runtime/controllers/motion.ts', gzip: 1_500, packageName: '@santi020k/lumen-astro', raw: 5_000 },
   { file: 'packages/astro/runtime/controllers/dialogs.ts', gzip: 2_000, packageName: '@santi020k/lumen-astro', raw: 6_000 },
   { file: 'packages/astro/runtime/controllers/document-navigation.ts', gzip: 1_500, packageName: '@santi020k/lumen-astro', raw: 5_000 },
   { file: 'packages/astro/runtime/controllers/image-comparison.ts', gzip: 900, packageName: '@santi020k/lumen-astro', raw: 2_000 },
   // Appearance presets add 12.3 KiB raw / 1.3 KiB gzip to the reviewed v4 stylesheet.
-  { file: 'packages/lumen/styles.css', gzip: 33_000, packageName: '@santi020k/lumen', raw: 204_000 },
-  { file: 'packages/react/dist/components.js', gzip: 35_000, packageName: '@santi020k/lumen-react', raw: 171_000 },
+  { file: 'packages/lumen/styles.css', gzip: 34_000, packageName: '@santi020k/lumen', raw: 208_000 },
+  { file: 'packages/react/dist/components.js', gzip: 37_000, packageName: '@santi020k/lumen-react', raw: 183_000 },
   { file: 'packages/react/dist/hooks.js', gzip: 20_000, packageName: '@santi020k/lumen-react', raw: 100_000 },
-  { file: 'packages/elements/dist/define.js', gzip: 45_000, packageName: '@santi020k/lumen-elements', raw: 261_000 }
+  { file: 'packages/elements/dist/define.js', gzip: 47_000, packageName: '@santi020k/lumen-elements', raw: 261_000 }
 ]
 
 const requestedPackagesSource = process.env.LUMEN_RELEASE_PACKAGES

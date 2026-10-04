@@ -2,6 +2,7 @@ import { expect, type Page, test } from '@playwright/test'
 
 import type { LumenComponentName } from '../../packages/core/src/components.js'
 
+import { verifyAstroChartActivation } from './chart-activation.js'
 import { runtimeBehaviorComponentNames } from './component-coverage.js'
 
 const openPreview = async (page: Page, slug: string) => {
@@ -1065,6 +1066,12 @@ test('Tooltip opens when randomUUID is unavailable and generates distinct IDs', 
 })
 
 behaviorTest(
+  ['BarChart', 'LineChart', 'PieChart', 'ScatterChart', 'ComboChart', 'Heatmap', 'RangeChart'],
+  'Chart datum actions preserve identity across pointer and keyboard activation',
+  async ({ page }) => { await verifyAstroChartActivation(page) }
+)
+
+behaviorTest(
   ['DialogClose'],
   'Dialog opens a long compound task with reachable actions and restored focus',
   async ({ page }) => {
@@ -1093,3 +1100,23 @@ behaviorTest(
     await expect(opener).toBeFocused()
   }
 )
+
+behaviorTest(['AttachmentPreview'], 'Attachment previews retain actions through image failure and replacement', async ({ page }) => {
+  await openPreview(page, 'attachment-preview')
+  const preview = page.locator('.component-doc-preview [data-ui-attachment-preview]').first()
+  const image = preview.locator('img')
+  await expect(preview).toHaveAttribute('data-state', 'ready')
+  await image.evaluate(element => {
+    element.setAttribute('src', '/missing-synthetic-attachment.png')
+  })
+  await expect(preview).toHaveAttribute('data-state', 'error')
+  await expect(preview.getByRole('status')).toHaveText('Could not load the preview.')
+  await expect(preview.getByRole('button', { name: 'Replace' })).toBeEnabled()
+  await preview.getByRole('button', { name: 'Replace' }).focus()
+  await expect(preview.getByRole('button', { name: 'Replace' })).toBeFocused()
+  await image.evaluate(element => {
+    element.setAttribute('src', '/logo.svg')
+  })
+  await expect(preview).toHaveAttribute('data-state', 'ready')
+  await expect(preview.getByRole('status')).toBeHidden()
+})

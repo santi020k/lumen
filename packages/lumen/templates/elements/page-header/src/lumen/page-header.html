@@ -1,0 +1,20 @@
+<script type="module">
+  import { defineLumenElements } from '@santi020k/lumen-elements/define'
+  defineLumenElements(['Badge', 'Breadcrumb', 'Button', 'Link', 'Stack', 'Typography'])
+</script>
+
+<header aria-labelledby="page-heading">
+  <lumen-stack gap="group">
+    <lumen-breadcrumb><nav aria-label="Breadcrumb"><ol><li><lumen-link><a href="/">Workspace</a></lumen-link></li><li aria-current="page">Portfolio operations</li></ol></nav></lumen-breadcrumb>
+    <lumen-stack direction="horizontal" align="start" justify="between" gap="group" wrap>
+      <lumen-stack gap="related" style="flex: 1 1 20rem; min-width: 0; overflow-wrap: anywhere">
+        <lumen-typography><h1 id="page-heading">Portfolio operations</h1><p>Review activity and keep your workspace up to date.</p></lumen-typography>
+        <lumen-badge variant="outline" style="align-self: flex-start">Active</lumen-badge>
+      </lumen-stack>
+      <lumen-stack direction="horizontal" align="center" gap="related" wrap role="group" aria-label="Page actions">
+        <lumen-button type="button">Export report</lumen-button>
+        <lumen-button type="button">Create record</lumen-button>
+      </lumen-stack>
+    </lumen-stack>
+  </lumen-stack>
+</header>

@@ -102,6 +102,110 @@ attributes. The new web chart types do not add native adapter components.
 
 The [web comparison gallery](https://lumen.santi020k.com/docs/web/data-visualization) renders the same
 synthetic datasets through all three adapters and demonstrates cursor synchronization.
+## Datum activation foundation
+
+Custom charts can share a typed activation payload using the core builders:
+
+```ts
+import {
+  createLumenChartDatumActivation,
+  parseLumenChartDatumActivation
+} from '@santi020k/lumen-core/charts'
+
+const detail = createLumenChartDatumActivation('received', {
+  id: 'october-received',
+  x: '2026-10',
+  y: 0
+})
+
+if (detail) {
+  // The application chooses the detail view, route, or filter.
+  console.log(detail.kind, detail.x)
+}
+
+const validated = parseLumenChartDatumActivation(detail)
+```
+
+`LumenChartDatumActivationDetail` uses `kind: 'series'` with `seriesId`, `x`, and `y`;
+`kind: 'heatmap'` with `x`, `y`, and `value`; or `kind: 'range'` with `x`, `low`, and `high`.
+All kinds can carry `datumId`. Axes retain their original number or string identity rather than
+localized display text. Builders reject missing, non-finite, and reversed range values; zero and
+negative observations remain valid. Pie renderers must additionally restrict actions to the
+positive observations represented by their slices.
+
+The DOM controller described in the [core README](../packages/core/README.md#chart-datum-activation)
+provides a common event path for custom marks and native buttons. It handles no fetching or
+navigation. An activation payload is UI context, never proof that an operation is authorized.
+
+## Astro chart actions
+
+Astro's seven data charts accept `drilldown`. Mount `UIPrimitives` once in the page layout and
+listen for `ui:chart-datum-activate` on the chart figure or a containing application surface.
+The event uses the validated payload documented above, preserving the original X value even
+when combo geometry transforms it for plotting.
+
+```astro
+<BarChart
+  id="collection-chart"
+  aria-label="Collections by month"
+  drilldown
+  series={collectionSeries}
+  showTable={false}
+  labels={{
+    exploreData: 'Explorar datos del gráfico',
+    formatDatumAction: context => `Abrir detalles: ${context}`
+  }}
+/>
+```
+
+The action disclosure remains available when the table is hidden. Its native buttons support
+Enter, Space, and ordinary Tab order without making SVG marks part of the accessibility tree.
+Line and combo point targets retain their actions when visible markers are omitted. Static
+charts keep their existing output unless drilldown is enabled. Use chart formatters and the
+remaining label overrides to keep the entire chart in the application's language.
+
+## React chart actions
+
+Pass `onDatumActivate` to any of the seven React data charts to enable the same native-button
+disclosure and pointer actions. React owns callback dispatch; it does not emit the Astro DOM event
+or need `UIPrimitives`. A mixed-framework Astro page leaves React chart roots to React's handlers.
+
+```tsx
+import { BarChart, type LumenChartDatumActivationDetail } from '@santi020k/lumen-react'
+
+const openDetails = (detail: LumenChartDatumActivationDetail) => {
+  if (detail.kind === 'series') {
+    // Choose an application detail view using raw identities.
+    console.log(detail.seriesId, detail.x, detail.datumId)
+  }
+}
+
+<BarChart
+  aria-label="Collections by month"
+  series={collectionSeries}
+  showTable={false}
+  onDatumActivate={openDetails}
+/>
+```
+
+The native `onClick` handler runs before datum activation and may prevent it. Disabled or inert
+ancestors suppress callbacks. Stable action identities preserve button focus when values change;
+the callback always receives the currently rendered values. Apps should handle stale data and
+permissions again when carrying out the chosen operation.
+
+## Elements chart actions
+
+Set `drilldown` on BarChart, LineChart, PieChart, ScatterChart, ComboChart, Heatmap, or RangeChart
+hosts to enable datum activation. Elements supplies its own controller lifecycle; listen for
+`ui:chart-datum-activate` on the host and validate unknown event details with
+`parseLumenChartDatumActivation` from core before using them at application boundaries.
+
+The event uses the same original identities and finite values as Astro and React. Native action
+buttons remain available with hidden tables or suppressed line markers. Use `explore-data-label`
+and `datum-action-prefix`, or the host's `datumActionFormatter(context)` property, for localization.
+When data updates, Elements retains the disclosure state and restores focus to the same available
+action. Disconnection destroys the controller; reconnection enhances once. Disabled, inert, hidden,
+and cancelled interactions do not activate a datum.
 
 ## Accessibility
 

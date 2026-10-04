@@ -35,10 +35,13 @@ import {
   alignLumenChartSeries,
   composeClassName,
   createLumenBarGeometry,
+  createLumenChartDatumActivation,
+  createLumenHeatmapDatumActivation,
   createLumenHeatmapModel,
   createLumenLineChartModel,
   createLumenLineGeometry,
   createLumenPieGeometry,
+  createLumenRangeDatumActivation,
   createLumenRangeGeometry,
   createLumenScatterGeometry,
   formatLumenChartSummary,
@@ -59,6 +62,7 @@ import {
   hasLumenPieData,
   type LumenBarChartLayout,
   type LumenChartDatum,
+  type LumenChartDatumActivationDetail,
   type LumenChartLabels,
   type LumenChartOrientation,
   type LumenChartScaleType,
@@ -97,7 +101,7 @@ import { renderSVG } from 'uqr'
 import { ChartInspection } from './chart-inspection.js'
 import { ChartInteraction, type ChartInteractionProps } from './chart-interaction.js'
 import { getChartPlotLabel } from './chart-label.js'
-import { formatReactChartTableValue } from './chart-recipes.js'
+import { createReactChartDatumAction, formatReactChartTableValue, type ReactChartDatumAction, readReactChartDatumActivation } from './chart-recipes.js'
 import {
   type DialogOptions,
   type DropdownMenuController,
@@ -868,6 +872,47 @@ export const Chart = ({
   </figure>
 )
 
+interface DatumChartProps extends ChartProps {
+  onDatumActivate: ((detail: LumenChartDatumActivationDetail) => void) | undefined
+}
+
+const DatumChart = ({ onClick, onDatumActivate, ...props }: DatumChartProps) => (
+  <Chart
+    {...props}
+    data-ui-chart-activation={onDatumActivate ? true : undefined}
+    data-ui-chart-adapter={onDatumActivate ? 'react' : undefined}
+    onClick={event => {
+      onClick?.(event)
+
+      if (event.defaultPrevented || event.button !== 0 || !onDatumActivate) return
+
+      const detail = readReactChartDatumActivation(event.currentTarget, event.target)
+
+      if (detail) onDatumActivate(detail)
+    }}
+  />
+)
+
+const ChartDatumActions = ({ actions, label }: {
+  actions: readonly (ReactChartDatumAction | null)[]
+  label: string
+}) => {
+  const available = actions.filter(action => action !== null)
+
+  if (available.length === 0) return null
+
+  return (
+    <details className="ui-chart__actions" data-ui-chart-actions>
+      <summary>{label}</summary>
+      <ul>
+        {available.map(action => (
+          <li key={action.key}><Button variant="ghost" data-ui-chart-datum={action.serialized}>{action.label}</Button></li>
+        ))}
+      </ul>
+    </details>
+  )
+}
+
 interface ChartLegendProps {
   label?: string
   series: readonly LumenChartSeries[]
@@ -1008,6 +1053,7 @@ export const Sparkline = ({
 }
 
 export interface BarChartProps extends Omit<ChartProps, 'children'> {
+  onDatumActivate?: (detail: LumenChartDatumActivationDetail) => void
   categoryWidth?: number
   emptyLabel?: ReactNode
   formatCategory?: (category: number | string) => string
@@ -1024,6 +1070,7 @@ export interface BarChartProps extends Omit<ChartProps, 'children'> {
 export const BarChart = ({
   categoryWidth,
   className,
+  onDatumActivate,
   emptyLabel,
   formatCategory,
   formatValue = String,
@@ -1066,8 +1113,24 @@ export const BarChart = ({
     start: margin.left
   })
 
+  const datumActions = onDatumActivate ?
+    geometry.marks.map(mark => {
+      const item = alignedSeries.find(candidate => candidate.id === mark.seriesId)
+      const datum = item?.data.find(candidate => candidate.x === mark.category)
+
+      return item && datum ?
+        createReactChartDatumAction(
+          createLumenChartDatumActivation(item.id, datum),
+          `${getLumenChartCategoryLabel(alignedSeries, mark.category, formatCategory, 'detail')} · ${mark.seriesLabel}: ${formatValue(mark.value)}`,
+          resolvedLabels
+        ) :
+        null
+    }) :
+    []
+
   return (
-    <Chart
+    <DatumChart
+      onDatumActivate={onDatumActivate}
       className={composeClassName('ui-bar-chart', className)}
       summary={summary ?? formatLumenChartSummary(alignedSeries, formatValue, resolvedLabels)}
       {...props}
@@ -1142,9 +1205,10 @@ export const BarChart = ({
             </g>
           )}
           <g className="ui-bar-chart__marks">
-            {geometry.marks.map(mark => (
+            {geometry.marks.map((mark, index) => (
               <rect
                 className={getLumenChartToneClassName(mark.tone)}
+                data-ui-chart-datum={datumActions[index]?.serialized}
                 height={mark.height}
                 key={`${mark.seriesId}:${getChartCategoryKey(mark.category)}`}
                 rx="4"
@@ -1156,6 +1220,17 @@ export const BarChart = ({
                   {`${getLumenChartCategoryLabel(alignedSeries, mark.category, formatCategory, 'detail')} · ${mark.seriesLabel}: ${formatValue(mark.value)}`}
                 </title>
               </rect>
+            ))}
+            {onDatumActivate && geometry.marks.map((mark, index) => (
+              <rect
+                className="ui-chart__datum-hit"
+                key={`${mark.seriesId}:${getChartCategoryKey(mark.category)}`}
+                width={Math.max(12, mark.width)}
+                height={Math.max(12, mark.height)}
+                x={mark.x - Math.max(0, 12 - mark.width) / 2}
+                y={mark.y - Math.max(0, 12 - mark.height) / 2}
+                data-ui-chart-datum={datumActions[index]?.serialized}
+              />
             ))}
           </g>
         </svg>
@@ -1169,11 +1244,13 @@ export const BarChart = ({
           series={series}
         />
       )}
-    </Chart>
+      {onDatumActivate && <ChartDatumActions actions={datumActions} label={resolvedLabels.exploreData} />}
+    </DatumChart>
   )
 }
 
 export interface LineChartProps extends Omit<ChartProps, 'children'>, LumenLineChartOptions, ChartInteractionProps {
+  onDatumActivate?: (detail: LumenChartDatumActivationDetail) => void
   area?: boolean
   emptyLabel?: ReactNode
   formatCategory?: (category: number | string) => string
@@ -1201,6 +1278,7 @@ const getLineChartMarkerStep = (
 
 export const LineChart = ({
   area = false,
+  onDatumActivate,
   annotations,
   domain: requestedDomain,
   height: requestedHeight,
@@ -1245,13 +1323,30 @@ export const LineChart = ({
   const hasData = hasLumenChartData(alignedSeries)
   const markerStep = getLineChartMarkerStep(markers, categories.length)
 
+  const pointActions = onDatumActivate ?
+    geometries.map((geometry, index) => {
+      const item = alignedSeries[index]
+
+      if (!item) return []
+
+      return geometry.points.map(point => createReactChartDatumAction(
+        createLumenChartDatumActivation(item.id, point),
+        `${getLumenChartCategoryLabel(alignedSeries, point.x, formatCategory, 'detail')} · ${item.label}: ${formatValue(point.y ?? 0)}`,
+        resolvedLabels
+      ))
+    }) :
+    []
+
+  const datumActions = pointActions.flat()
+
   const referenceY =
     referenceValue === undefined ?
       undefined :
       scaleLumenChartValue(referenceValue, domain, height - padding, padding)
 
   return (
-    <Chart
+    <DatumChart
+      onDatumActivate={onDatumActivate}
       className={composeClassName('ui-line-chart', className)}
       summary={summary ?? formatLumenChartSummary(alignedSeries, formatValue, resolvedLabels)}
       {...props}
@@ -1356,6 +1451,7 @@ export const LineChart = ({
                       geometry.points.map(
                         (point, pointIndex) => pointIndex % markerStep === 0 && (
                           <circle
+                            data-ui-chart-datum={pointActions[index]?.[pointIndex]?.serialized}
                             className="ui-line-chart__point"
                             cx={point.xCoordinate}
                             cy={point.yCoordinate}
@@ -1368,6 +1464,16 @@ export const LineChart = ({
                           </circle>
                         )
                       )}
+                    {onDatumActivate && geometry.points.map((point, pointIndex) => (
+                      <circle
+                        className="ui-chart__datum-hit"
+                        key={point.id ?? getChartCategoryKey(point.x)}
+                        cx={point.xCoordinate}
+                        cy={point.yCoordinate}
+                        r="10"
+                        data-ui-chart-datum={pointActions[index]?.[pointIndex]?.serialized}
+                      />
+                    ))}
                   </g>
                 )
               })}
@@ -1422,11 +1528,13 @@ export const LineChart = ({
           series={series}
         />
       )}
-    </Chart>
+      {onDatumActivate && <ChartDatumActions actions={datumActions} label={resolvedLabels.exploreData} />}
+    </DatumChart>
   )
 }
 
 export interface PieChartProps extends Omit<ChartProps, 'children'> {
+  onDatumActivate?: (detail: LumenChartDatumActivationDetail) => void
   centerLabel?: ReactNode
   centerValue?: ReactNode
   labels?: Partial<LumenChartLabels>
@@ -1441,6 +1549,7 @@ export const PieChart = ({
   centerLabel,
   centerValue,
   className,
+  onDatumActivate,
   labels,
   series = emptyPieSeries,
   showLegend = true,
@@ -1462,8 +1571,23 @@ export const PieChart = ({
   const hasCenterLabel = centerLabel !== null && centerLabel !== undefined
   const hasCenterValue = centerValue !== null && centerValue !== undefined
 
+  const datumActions = onDatumActivate ?
+    geometry.slices.map((slice, index) => {
+      const datum = renderedSeries.data[index]
+
+      return datum ?
+        createReactChartDatumAction(
+          createLumenChartDatumActivation(series.id, datum),
+          `${slice.label} · ${series.label}: ${valueFormatter(slice.value)}`,
+          resolvedLabels
+        ) :
+        null
+    }) :
+    []
+
   return (
-    <Chart
+    <DatumChart
+      onDatumActivate={onDatumActivate}
       className={composeClassName(
         'ui-pie-chart', getLumenPieChartVariantClassName(variant), className
       )}
@@ -1495,9 +1619,10 @@ export const PieChart = ({
           viewBox={`0 0 ${geometry.size} ${geometry.size}`}
         >
           <g className="ui-pie-chart__slices">
-            {geometry.slices.map(slice => (
+            {geometry.slices.map((slice, index) => (
               <path
                 className={getLumenChartToneClassName(slice.tone)}
+                data-ui-chart-datum={datumActions[index]?.serialized}
                 d={slice.path}
                 fillRule="evenodd"
                 key={`${typeof slice.x}:${String(slice.x)}`}
@@ -1548,11 +1673,13 @@ export const PieChart = ({
           </div>
         </details>
       )}
-    </Chart>
+      {onDatumActivate && <ChartDatumActions actions={datumActions} label={resolvedLabels.exploreData} />}
+    </DatumChart>
   )
 }
 
 export interface ScatterChartProps extends Omit<ChartProps, 'children'> {
+  onDatumActivate?: (detail: LumenChartDatumActivationDetail) => void
   formatValue?: (value: number) => string
   labels?: Partial<LumenChartLabels>
   series?: readonly LumenChartSeries[]
@@ -1563,6 +1690,7 @@ export interface ScatterChartProps extends Omit<ChartProps, 'children'> {
 
 export const ScatterChart = ({
   className,
+  onDatumActivate,
   formatValue = String,
   labels,
   series = emptyChartSeries,
@@ -1582,19 +1710,37 @@ export const ScatterChart = ({
 
   const hasData = geometry.points.length > 0
 
+  const datumActions = onDatumActivate ?
+    geometry.points.map(point => createReactChartDatumAction(
+      createLumenChartDatumActivation(point.seriesId, point),
+      `${point.xLabel ?? point.x} · ${point.seriesLabel}: ${point.label ?? formatValue(point.y ?? 0)}`,
+      resolvedLabels
+    )) :
+    []
+
   return (
-    <Chart className={composeClassName('ui-scatter-chart', className)} summary={summary ?? formatLumenChartSummary(renderedSeries, formatValue, resolvedLabels)} {...props}>
+    <DatumChart onDatumActivate={onDatumActivate} className={composeClassName('ui-scatter-chart', className)} summary={summary ?? formatLumenChartSummary(renderedSeries, formatValue, resolvedLabels)} {...props}>
       {showLegend && hasData && <ChartLegend label={resolvedLabels.chartLegend} series={series} />}
       {!hasData && <p className="ui-chart__empty" role="status">{resolvedLabels.empty}</p>}
       <div aria-label={resolvedLabels.chartData} className="ui-chart__plot" role="region" tabIndex={0} hidden={!hasData}>
         <svg aria-hidden="true" viewBox={`0 0 ${geometry.width} ${geometry.height}`}>
           <g className="ui-scatter-chart__marks">
             {geometry.points.map((point, pointIndex) => (
-              <circle className={getLumenChartToneClassName(point.tone)} cx={point.xCoordinate} cy={point.yCoordinate} key={`${point.seriesId}:${point.id ?? `${getChartCategoryKey(point.x)}:${pointIndex}`}`} r={point.radius}>
+              <circle data-ui-chart-datum={datumActions[pointIndex]?.serialized} className={getLumenChartToneClassName(point.tone)} cx={point.xCoordinate} cy={point.yCoordinate} key={`${point.seriesId}:${point.id ?? `${getChartCategoryKey(point.x)}:${pointIndex}`}`} r={point.radius}>
                 <title>{`${point.xLabel ?? point.x} · ${point.seriesLabel}: ${point.label ?? formatValue(point.y ?? 0)}`}</title>
               </circle>
             ))}
           </g>
+          {onDatumActivate && geometry.points.map((point, index) => (
+            <circle
+              className="ui-chart__datum-hit"
+              key={`${point.seriesId}:${point.id ?? getChartCategoryKey(point.x)}`}
+              cx={point.xCoordinate}
+              cy={point.yCoordinate}
+              r={Math.max(10, point.radius)}
+              data-ui-chart-datum={datumActions[index]?.serialized}
+            />
+          ))}
         </svg>
       </div>
       {showTable && hasData && (
@@ -1626,11 +1772,13 @@ export const ScatterChart = ({
           </div>
         </details>
       )}
-    </Chart>
+      {onDatumActivate && <ChartDatumActions actions={datumActions} label={resolvedLabels.exploreData} />}
+    </DatumChart>
   )
 }
 
 export interface HeatmapProps extends Omit<ChartProps, 'children'>, LumenHeatmapOptions {
+  onDatumActivate?: (detail: LumenChartDatumActivationDetail) => void
   showLegend?: boolean
   data?: readonly LumenHeatmapDatum[]
   formatValue?: (value: number) => string
@@ -1639,6 +1787,7 @@ export interface HeatmapProps extends Omit<ChartProps, 'children'>, LumenHeatmap
 }
 
 export const Heatmap = ({
+  onDatumActivate,
   colorScale = 'sequential',
   midpoint = 0,
   domain,
@@ -1656,8 +1805,16 @@ export const Heatmap = ({
   const availableCells = geometry.cells.filter(cell => cell.value !== null && Number.isFinite(cell.value))
   const hasData = availableCells.length > 0
 
+  const datumActions = onDatumActivate ?
+    geometry.cells.map(cell => createReactChartDatumAction(
+      createLumenHeatmapDatumActivation(cell),
+      `${cell.xLabel ?? cell.x} · ${cell.yLabel ?? cell.y}: ${cell.label ?? formatValue(cell.value ?? 0)}`,
+      resolvedLabels
+    )) :
+    []
+
   return (
-    <Chart className={composeClassName('ui-heatmap', className)} summary={summary ?? resolvedLabels.formatHeatmapSummary(availableCells.length)} {...props}>
+    <DatumChart onDatumActivate={onDatumActivate} className={composeClassName('ui-heatmap', className)} summary={summary ?? resolvedLabels.formatHeatmapSummary(availableCells.length)} {...props}>
       {!hasData && <p className="ui-chart__empty" role="status">{resolvedLabels.empty}</p>}
       <div
         aria-label={getChartPlotLabel(props['aria-label'], props.heading, resolvedLabels.chartData)}
@@ -1672,12 +1829,13 @@ export const Heatmap = ({
             {geometry.yTicks.map(tick => <text key={getChartCategoryKey(tick.value)} textAnchor="end" dominantBaseline="middle" x="108" y={tick.position}>{tick.label}</text>)}
           </g>
           <g className="ui-heatmap__cells">
-            {geometry.cells.map(cell => {
+            {geometry.cells.map((cell, index) => {
               const missing = cell.value === null || !Number.isFinite(cell.value)
 
               return (
                 <g key={JSON.stringify([cell.x, cell.y])}>
                   <rect
+                    data-ui-chart-datum={datumActions[index]?.serialized}
                     height={Math.max(0, cell.height - 2)}
                     width={Math.max(0, cell.width - 2)}
                     x={cell.xCoordinate + 1}
@@ -1741,11 +1899,13 @@ export const Heatmap = ({
           </div>
         </details>
       )}
-    </Chart>
+      {onDatumActivate && <ChartDatumActions actions={datumActions} label={resolvedLabels.exploreData} />}
+    </DatumChart>
   )
 }
 
 export interface RangeChartProps extends Omit<ChartProps, 'children'> {
+  onDatumActivate?: (detail: LumenChartDatumActivationDetail) => void
   data?: readonly LumenRangeDatum[]
   formatValue?: (value: number) => string
   labels?: Partial<LumenChartLabels>
@@ -1755,6 +1915,7 @@ export interface RangeChartProps extends Omit<ChartProps, 'children'> {
 
 export const RangeChart = ({
   className,
+  onDatumActivate,
   data = emptyRangeData,
   formatValue = String,
   labels,
@@ -1769,14 +1930,23 @@ export const RangeChart = ({
   const padding = 44
   const geometry = createLumenRangeGeometry(data, { height, padding, width })
 
+  const datumActions = onDatumActivate ?
+    geometry.points.map(point => createReactChartDatumAction(
+      createLumenRangeDatumActivation(point),
+      `${point.xLabel ?? point.x}: ${point.label ?? `${formatValue(point.low ?? 0)}–${formatValue(point.high ?? 0)}`}`,
+      resolvedLabels
+    )) :
+    []
+
   return (
-    <Chart className={composeClassName('ui-range-chart', getLumenChartToneClassName(tone), className)} summary={summary ?? resolvedLabels.formatRangeSummary(geometry.points.length)} {...props}>
+    <DatumChart onDatumActivate={onDatumActivate} className={composeClassName('ui-range-chart', getLumenChartToneClassName(tone), className)} summary={summary ?? resolvedLabels.formatRangeSummary(geometry.points.length)} {...props}>
       {geometry.points.length === 0 && <p className="ui-chart__empty" role="status">{resolvedLabels.empty}</p>}
       <div aria-label={resolvedLabels.chartData} className="ui-chart__plot" role="region" tabIndex={0} hidden={geometry.points.length === 0}>
         <svg aria-hidden="true" viewBox={`0 0 ${width} ${height}`}>
           <path className="ui-range-chart__area" d={geometry.areaPath} />
-          {geometry.points.map(point => (
+          {geometry.points.map((point, index) => (
             <line
+              data-ui-chart-datum={datumActions[index]?.serialized}
               className="ui-range-chart__interval"
               key={point.id ?? getChartCategoryKey(point.x)}
               x1={point.xCoordinate}
@@ -1786,6 +1956,18 @@ export const RangeChart = ({
             >
               <title>{`${point.xLabel ?? point.x}: ${point.label ?? `${formatValue(point.low ?? 0)}–${formatValue(point.high ?? 0)}`}`}</title>
             </line>
+          ))}
+          {onDatumActivate && geometry.points.map((point, index) => (
+            <rect
+              className="ui-chart__datum-hit"
+              key={point.id ?? getChartCategoryKey(point.x)}
+              x={point.xCoordinate - 10}
+              y={Math.min(point.highCoordinate, point.lowCoordinate) -
+                Math.max(0, 20 - Math.abs(point.highCoordinate - point.lowCoordinate)) / 2}
+              width="20"
+              height={Math.max(20, Math.abs(point.highCoordinate - point.lowCoordinate))}
+              data-ui-chart-datum={datumActions[index]?.serialized}
+            />
           ))}
         </svg>
       </div>
@@ -1822,11 +2004,13 @@ export const RangeChart = ({
           </div>
         </details>
       )}
-    </Chart>
+      {onDatumActivate && <ChartDatumActions actions={datumActions} label={resolvedLabels.exploreData} />}
+    </DatumChart>
   )
 }
 
 export interface ComboChartProps extends Omit<ChartProps, 'children'> {
+  onDatumActivate?: (detail: LumenChartDatumActivationDetail) => void
   formatValue?: (value: number) => string
   labels?: Partial<LumenChartLabels>
   series?: readonly LumenComboSeries[]
@@ -1836,6 +2020,7 @@ export interface ComboChartProps extends Omit<ChartProps, 'children'> {
 
 export const ComboChart = ({
   className,
+  onDatumActivate,
   formatValue = String,
   labels,
   series = emptyComboSeries,
@@ -1897,13 +2082,61 @@ export const ComboChart = ({
 
   const hasData = hasLumenChartData(series)
 
+  const barActions = onDatumActivate ?
+    bars.marks.map(mark => {
+      const item = barSeries.find(candidate => candidate.id === mark.seriesId)
+      const datum = item?.data.find(candidate => candidate.x === mark.category)
+
+      return item && datum ?
+        createReactChartDatumAction(
+          createLumenChartDatumActivation(item.id, datum),
+          `${datum.xLabel ?? datum.x} · ${item.label}: ${datum.label ?? formatValue(mark.value)}`,
+          resolvedLabels
+        ) :
+        null
+    }) :
+    []
+
+  const pointActions = onDatumActivate ?
+    lines.map((geometry, index) => {
+      const item = lineSeries[index]
+
+      return geometry.points.map(point => {
+        const datum = item?.data.find(candidate => alignComboLineDatum(candidate).x === point.x)
+
+        return item && datum ?
+          createReactChartDatumAction(
+            createLumenChartDatumActivation(item.id, datum),
+            `${datum.xLabel ?? datum.x} · ${item.label}: ${datum.label ?? formatValue(point.y ?? 0)}`,
+            resolvedLabels
+          ) :
+          null
+      })
+    }) :
+    []
+
+  const datumActions = [...barActions, ...pointActions.flat()]
+
   return (
-    <Chart className={composeClassName('ui-combo-chart', className)} summary={summary ?? formatLumenChartSummary(series, formatValue, resolvedLabels)} {...props}>
+    <DatumChart onDatumActivate={onDatumActivate} className={composeClassName('ui-combo-chart', className)} summary={summary ?? formatLumenChartSummary(series, formatValue, resolvedLabels)} {...props}>
       {showLegend && hasData && <ChartLegend label={resolvedLabels.chartLegend} series={series} />}
       {!hasData && <p className="ui-chart__empty" role="status">{resolvedLabels.empty}</p>}
       <div aria-label={resolvedLabels.chartData} className="ui-chart__plot" role="region" tabIndex={0} hidden={!hasData}>
         <svg aria-hidden="true" viewBox={`0 0 ${width} ${height}`}>
-          <g className="ui-bar-chart__marks">{bars.marks.map(mark => <rect className={getLumenChartToneClassName(mark.tone)} height={mark.height} key={`${mark.seriesId}:${getChartCategoryKey(mark.category)}`} rx="4" width={mark.width} x={mark.x} y={mark.y}><title>{`${mark.seriesLabel}: ${formatValue(mark.value)}`}</title></rect>)}</g>
+          <g className="ui-bar-chart__marks">
+            {bars.marks.map((mark, index) => <rect data-ui-chart-datum={barActions[index]?.serialized} className={getLumenChartToneClassName(mark.tone)} height={mark.height} key={`${mark.seriesId}:${getChartCategoryKey(mark.category)}`} rx="4" width={mark.width} x={mark.x} y={mark.y}><title>{`${mark.seriesLabel}: ${formatValue(mark.value)}`}</title></rect>)}
+            {onDatumActivate && bars.marks.map((mark, index) => (
+              <rect
+                className="ui-chart__datum-hit"
+                key={`${mark.seriesId}:${getChartCategoryKey(mark.category)}`}
+                width={Math.max(12, mark.width)}
+                height={Math.max(12, mark.height)}
+                x={mark.x - Math.max(0, 12 - mark.width) / 2}
+                y={mark.y - Math.max(0, 12 - mark.height) / 2}
+                data-ui-chart-datum={barActions[index]?.serialized}
+              />
+            ))}
+          </g>
           {lines.map((geometry, index) => {
             const item = lineSeries[index]
 
@@ -1924,6 +2157,16 @@ export const ComboChart = ({
                   className="ui-line-chart__line"
                   d={geometry.path}
                 />
+                {onDatumActivate && geometry.points.map((point, pointIndex) => (
+                  <circle
+                    className="ui-chart__datum-hit"
+                    key={point.id ?? getChartCategoryKey(point.x)}
+                    cx={point.xCoordinate}
+                    cy={point.yCoordinate}
+                    r="10"
+                    data-ui-chart-datum={pointActions[index]?.[pointIndex]?.serialized}
+                  />
+                ))}
               </g>
             )
           })}
@@ -1937,7 +2180,8 @@ export const ComboChart = ({
           series={series}
         />
       )}
-    </Chart>
+      {onDatumActivate && <ChartDatumActions actions={datumActions} label={resolvedLabels.exploreData} />}
+    </DatumChart>
   )
 }
 /* eslint-enable complexity */

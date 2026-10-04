@@ -1,3 +1,13 @@
+export {
+  createLumenChartActivationController,
+  createLumenChartDatumActivation,
+  createLumenHeatmapDatumActivation,
+  createLumenRangeDatumActivation,
+  type LumenChartActivationController,
+  type LumenChartDatumActivationDetail,
+  parseLumenChartDatumActivation
+} from './chart-activation.js'
+
 export const lumenChartTones = [
   'series-1',
   'series-2',
@@ -99,6 +109,7 @@ export interface LumenChartLabels {
   chartLegend: string
   column: string
   empty: string
+  exploreData: string
   high: string
   low: string
   notAvailable: string
@@ -108,6 +119,7 @@ export interface LumenChartLabels {
   value: string
   viewData: string
   x: string
+  formatDatumAction: (context: string) => string
   formatHeatmapSummary: (count: number) => string
   formatRangeSummary: (count: number) => string
   formatSummary: (
@@ -140,6 +152,8 @@ export const lumenChartLabels: Readonly<LumenChartLabels> = Object.freeze({
   chartLegend: 'Chart legend',
   column: 'Column',
   empty: 'No chart data available.',
+  exploreData: 'Explore chart data',
+  formatDatumAction: (context: string) => `Open details: ${context}`,
   formatHeatmapSummary: (count: number) => count === 0 ?
     'No chart data available.' :
     `${count} available heatmap ${count === 1 ? 'cell' : 'cells'}.`,

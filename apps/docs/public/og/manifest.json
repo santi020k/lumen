@@ -35,7 +35,7 @@
     },
     "/": {
       "alt": "Lumen UI — Crafted primitives for web and native platforms — Lumen UI",
-      "description": "Lumen is a crafted multi-framework UI system with 172 accessible primitives for Web, React Native, Apple platforms, and Android.",
+      "description": "Lumen is a crafted multi-framework UI system with 174 accessible primitives for Web, React Native, Apple platforms, and Android.",
       "images": [
         {
           "format": "webp",
@@ -4288,6 +4288,38 @@
       ],
       "pathname": "/docs/components/attachment",
       "title": "Attachment"
+    },
+    "/docs/components/attachment-list": {
+      "alt": "AttachmentList — Lumen UI",
+      "description": "Groups file rows with independent download, replacement and removal actions. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--attachment-list.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--attachment-list.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/attachment-list",
+      "title": "AttachmentList"
+    },
+    "/docs/components/attachment-preview": {
+      "alt": "AttachmentPreview — Lumen UI",
+      "description": "Previews browser-owned images with localized loading, error and unsupported-file fallbacks. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--attachment-preview.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--attachment-preview.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/attachment-preview",
+      "title": "AttachmentPreview"
     },
     "/docs/components/autocomplete": {
       "alt": "Autocomplete — Lumen UI",

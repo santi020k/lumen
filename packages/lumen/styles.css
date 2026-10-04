@@ -3930,6 +3930,60 @@ lumen-dialog-close {
   border-color: hsl(var(--brand) / 0.42);
 }
 
+.ui-attachment-list {
+  display: grid;
+  min-width: 0;
+  gap: var(--ui-space-related);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ui-attachment-list > li {
+  min-width: 0;
+  list-style: none;
+}
+
+.ui-attachment-list .ui-attachment {
+  flex-wrap: wrap;
+  overflow-wrap: anywhere;
+}
+
+.ui-attachment-list .ui-attachment > * {
+  min-width: 0;
+}
+
+.ui-attachment-preview {
+  display: grid;
+  min-width: 0;
+  gap: var(--ui-space-related);
+  margin: 0;
+  border: var(--ui-border-width, 1px) solid hsl(var(--line));
+  border-radius: var(--ui-radius);
+  padding: var(--ui-space-inset);
+  background: hsl(var(--surface));
+  color: hsl(var(--ink));
+  overflow-wrap: anywhere;
+}
+
+.ui-attachment-preview [data-slot="attachment-preview-media"] img {
+  display: block;
+  width: 100%;
+  max-height: 28rem;
+  object-fit: contain;
+}
+
+.ui-attachment-preview [data-slot="attachment-preview-fallback"] {
+  margin: 0;
+  color: hsl(var(--ink-muted));
+}
+
+.ui-attachment-preview [data-slot="attachment-preview-actions"] {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ui-space-related);
+}
+
 .ui-bubble {
   max-width: min(42rem, 100%);
   border: var(--ui-border-width, 1px) solid hsl(var(--line));
@@ -4402,6 +4456,46 @@ lumen-dialog-close {
   stroke-width: 1.5;
 }
 
+/* Datum marks remain decorative; the actions disclosure supplies native keyboard controls. */
+.ui-chart [data-ui-chart-datum] {
+  cursor: pointer;
+}
+
+.ui-chart svg .ui-chart__datum-hit {
+  fill: transparent;
+  stroke: none;
+  pointer-events: all;
+}
+
+
+.ui-chart__actions {
+  min-width: 0;
+}
+
+.ui-chart__actions summary {
+  cursor: pointer;
+}
+
+.ui-chart__actions ul {
+  display: grid;
+  gap: var(--ui-space-related);
+  padding: 0;
+  list-style: none;
+}
+
+.ui-chart__actions .ui-button {
+  height: auto;
+  min-height: 44px;
+  max-width: 100%;
+  white-space: normal;
+  text-align: start;
+}
+
+.ui-chart__actions .ui-button__content {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
 .ui-chart__data,
 .ui-chart__inspection {
   border-top: var(--ui-border-width, 1px) solid hsl(var(--line));
@@ -4577,6 +4671,7 @@ lumen-dialog-close {
 }
 
 .ui-chart__crosshair {
+  pointer-events: none;
   stroke: hsl(var(--chart-selection));
 }
 

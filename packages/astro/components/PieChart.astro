@@ -1,7 +1,7 @@
 ---
 import type { HTMLAttributes } from 'astro/types'
 
-import {
+import { createLumenChartDatumActivation,
   createLumenPieGeometry,
   formatLumenChartSummary,
   getLumenChartToneClassName,
@@ -12,7 +12,10 @@ import {
   type LumenPieChartVariant,
   resolveLumenChartLabels } from '@santi020k/lumen-core'
 
+import { createChartDatumAction } from '../runtime/chart-actions'
+
 import Chart from './Chart.astro'
+import ChartDatumActions from './ChartDatumActions.astro'
 
 interface Props extends HTMLAttributes<'figure'> {
   caption?: string
@@ -21,6 +24,7 @@ interface Props extends HTMLAttributes<'figure'> {
   class?: string | null
   className?: string
   description?: string
+  drilldown?: boolean
   glass?: boolean | 'subtle' | 'strong'
   heading?: string
   labels?: Partial<LumenChartLabels>
@@ -39,6 +43,7 @@ const {
   class: classProp = '',
   className = '',
   description,
+  drilldown = false,
   glass = false,
   heading,
   labels,
@@ -66,6 +71,21 @@ const percentageFor = (percentage: number) => new Intl.NumberFormat(undefined, {
   maximumFractionDigits: percentage < 0.01 ? 1 : 0,
   style: 'percent'
 }).format(percentage)
+
+const datumActions = drilldown ?
+geometry.slices.map((slice, index) => {
+  const datum = renderedSeries.data[index]
+
+  return datum ?
+createChartDatumAction(
+    createLumenChartDatumActivation(series.id, datum),
+    `${slice.label} · ${series.label}: ${valueFormatter(slice.value)}`,
+    resolvedLabels
+  ) :
+null
+}) :
+[]
+
 ---
 
 <Chart
@@ -76,6 +96,7 @@ const percentageFor = (percentage: number) => new Intl.NumberFormat(undefined, {
   {heading}
   {summary}
   {...rest}
+  data-ui-chart-activation={drilldown || undefined}
 >
   {
     showLegend && hasData && (
@@ -98,9 +119,10 @@ const percentageFor = (percentage: number) => new Intl.NumberFormat(undefined, {
     >
       <g class="ui-pie-chart__slices">
         {
-          geometry.slices.map(slice => (
+          geometry.slices.map((slice, index) => (
             <path
               class={getLumenChartToneClassName(slice.tone)}
+              data-ui-chart-datum={datumActions[index]?.serialized}
               d={slice.path}
               fill-rule="evenodd"
             >
@@ -153,4 +175,5 @@ const percentageFor = (percentage: number) => new Intl.NumberFormat(undefined, {
       </details>
     )
   }
+  {drilldown && <ChartDatumActions actions={datumActions} label={resolvedLabels.exploreData} />}
 </Chart>
