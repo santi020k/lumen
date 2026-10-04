@@ -15,7 +15,8 @@
       "project": ["src/**/*.{astro,ts,tsx}", "scripts/**/*.{js,mjs}"]
     },
     "apps/playground-react-native": {
-      "entry": ["src/fixtures/TextLayoutProbe.tsx"]
+      "entry": ["src/fixtures/TextLayoutProbe.tsx"],
+      "project": ["src/**/*.{ts,tsx}", "plugins/*.{cjs,ts}"]
     },
     "packages/astro": {
       "entry": ["components/**/*.astro", "strict-props.fixture.astro"],
@@ -36,7 +37,8 @@
       "project": ["src/**/*.ts"]
     },
     "packages/react-native": {
-      "entry": ["src/static-icon-exports.generated.ts"]
+      "entry": ["src/static-icon-exports.generated.ts"],
+      "project": ["src/**/*.{ts,tsx}"]
     },
     "packages/react": {
       "project": ["src/**/*.{ts,tsx}"]

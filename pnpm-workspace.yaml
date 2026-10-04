@@ -121,6 +121,7 @@ overrides:
 patchedDependencies:
   braces@3.0.3: patches/braces@3.0.3.patch
   node-forge@1.4.0: patches/node-forge@1.4.0.patch
+  react-native@0.86.3: patches/react-native@0.86.3.patch
 peerDependencyRules:
   allowedVersions:
     eslint: "10"

@@ -562,3 +562,12 @@ labeled `ranges`. A strong actual bar, target marker, readable value labels, and
 data work together. Domains include zero and all measurements; invalid inputs fail closed.
 Null values stay distinct from zero. See the [chart guide](../../docs/data-visualization.md#actual-values-and-targets)
 for the input, localization, and domain contracts.
+
+### React Native 0.86.3 live iOS text resizing
+
+This renderer version can retain stale text geometry after a live system Text Size change.
+The Lumen playground applies the exact-version source patch in
+`patches/react-native@0.86.3.patch` and builds iOS React Native from source. See
+[the playground instructions](../../apps/playground-react-native/README.md#live-ios-text-resizing)
+for the patch, rebuild requirements, and mounted-draft regression check. Installing Lumen alone
+does not change the host application's native renderer. Native font scaling remains enabled.

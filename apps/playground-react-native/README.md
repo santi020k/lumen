@@ -138,3 +138,24 @@ Open Settings to switch between Normal, Studio, Glass and santi020k without rese
 inputs. Light, dark and system appearance remain independent. Glass keeps the adapter's opaque
 material fallback. See [the playground guide](../../docs/playgrounds.md#appearance-comparison)
 for browser regression checks and reproducible preview links.
+
+## Live iOS text resizing
+
+The workspace applies `patches/react-native@0.86.3.patch` through pnpm's exact-version
+`patchedDependencies`. The Expo build-properties configuration builds React Native from source
+and disables precompiled modules, so the corrected Fabric/Yoga layout code reaches iOS builds.
+Installing a JavaScript update alone cannot update the native renderer. Regenerate native projects
+and rebuild the app after installing dependencies.
+
+The patch invalidates Yoga configuration and paragraph/prepared-layout caches when the system
+font multiplier changes. It retains mounted input state and native text scaling; it does not
+remount screens or disable accessibility scaling. `src/fixtures/TextLayoutProbe.tsx` is the local
+regression fixture. On an already mounted screen, edit the draft, grow system Text Size from the
+standard setting to its maximum, scroll to the paragraph's final sentence, and restore the standard
+setting. Both plain React Native and Lumen text must wrap and the edited draft must survive.
+
+This correction is specific to React Native 0.86.3. Reevaluate it against upstream changes before
+upgrading. Native iOS source compilation takes longer than using the prebuilt renderer. The patch
+is local application configuration, not a fix automatically installed by the published Lumen
+package. Downstream apps affected by this version must apply the patch and rebuild their native
+iOS renderer themselves. Android source builds and physical-device behavior need separate checks.

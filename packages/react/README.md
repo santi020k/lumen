@@ -25,6 +25,9 @@
 
 **Package:** `@santi020k/lumen-react`
 
+Production builds compact component JavaScript without renaming identifiers or changing the
+ES2022 target. Declaration files and public imports retain their existing contracts.
+
 **On this page:** [Install](#install) · [Usage](#usage) · [Dropdown menus](#dropdown-menus) · [Language selection](#language-selection) · [Forms](#forms) · [Resources](#resources)
 
 ---
