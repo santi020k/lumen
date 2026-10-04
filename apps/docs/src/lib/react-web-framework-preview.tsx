@@ -24,8 +24,8 @@ export const ReactWebFrameworkPreview = () => {
       <div className="web-framework-preview__heading">
         <div>
           <Badge variant="secondary">React 19</Badge>
-          <h2>Release control</h2>
-          <p>State and events are owned by the React adapter.</p>
+          <h2>Launch workspace</h2>
+          <p>Your next release, coming together.</p>
         </div>
         <Button
           onClick={() => {
@@ -37,8 +37,8 @@ export const ReactWebFrameworkPreview = () => {
       </div>
       <Card>
         <CardHeader>
-          <CardTitle>Web readiness</CardTitle>
-          <CardDescription>Interactive primitives with shared Lumen tokens.</CardDescription>
+          <CardTitle>Release readiness</CardTitle>
+          <CardDescription>Move your release forward. Hit Advance to see progress and feedback update.</CardDescription>
         </CardHeader>
         <CardContent className="web-framework-preview__stack">
           <Progress aria-label="React web readiness" value={progress} />

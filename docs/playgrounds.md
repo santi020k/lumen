@@ -51,6 +51,10 @@ browser preview for a quick evaluation or install a native gallery to explore de
 | Android phones and tablets | [Google Play](https://play.google.com/store/apps/details?id=com.santi020k.lumen.playground.compose) | [Android guide](https://lumen.santi020k.com/docs/android/playground#reference) and [Compose app source](../apps/playground-android) |
 | React Native and Expo | [Browser preview](https://lumen.santi020k.com/docs/react-native/playground#preview) | [Local Expo guide](https://lumen.santi020k.com/docs/react-native/playground#run) and [app source](../apps/playground-react-native) |
 
+The web playground opens with a live release workspace. Switch between Astro, React, and Web
+Components, advance the readiness state, and try keyboard navigation in the detail tabs. The
+illustrated cards below lead to component examples, theme customization, and complete templates.
+
 Use the playgrounds as a practical adoption path:
 
 1. Find a component and try its input, focus, loading, disabled, or error states where available.
