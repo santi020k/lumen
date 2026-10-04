@@ -84,7 +84,9 @@ const validOutliers = (value: unknown, missing: boolean): boolean => {
 
   if (!Array.isArray(value)) return false
 
-  if (!value.every((item: unknown) => typeof item === 'number' && Number.isFinite(item))) return false
+  const entries: unknown[] = Array.from(value)
+
+  if (!entries.every(item => typeof item === 'number' && Number.isFinite(item))) return false
 
   return !missing || value.length === 0
 }
@@ -171,7 +173,7 @@ const calendarObservationInRange = (date: string, start: number, end: number): b
 const calendarDates = (data: readonly LumenCalendarHeatmapDatum[], start: number, end: number) => {
   const dates = new Map<string, number | null>()
 
-  const valid = data.every(item => {
+  const valid = Array.from(data).every(item => {
     if (!isLumenCalendarHeatmapDatum(item) || dates.has(item.date)) return false
 
     if (!calendarObservationInRange(item.date, start, end)) return false
@@ -216,7 +218,7 @@ export const createLumenFunnelGeometry = (data: readonly LumenFunnelDatum[]) => 
   const ids = new Set<string>()
   let max = 0
 
-  const valid = data.every(item => {
+  const valid = Array.from(data).every(item => {
     if (!isLumenFunnelDatum(item) || ids.has(item.id)) return false
 
     ids.add(item.id)
@@ -238,7 +240,7 @@ export const createLumenFunnelGeometry = (data: readonly LumenFunnelDatum[]) => 
 export const createLumenBoxPlotGeometry = (data: readonly LumenBoxPlotDatum[], options: LumenBoxPlotOptions = {}) => {
   const ids = new Set<string>()
 
-  const validData = data.every(item => {
+  const validData = Array.from(data).every(item => {
     if (!isLumenBoxPlotDatum(item) || ids.has(item.id)) return false
 
     ids.add(item.id)

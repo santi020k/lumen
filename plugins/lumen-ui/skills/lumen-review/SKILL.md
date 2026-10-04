@@ -24,6 +24,11 @@ loading/error/empty feedback, touch targets, reduced motion, and phone/desktop l
 project checks and rendered evidence when permitted; distinguish source findings from verified
 behavior. Native reviews use platform semantics and supported target availability.
 
+For visualization, check that the encoding answers the product question, the selected chart exists
+in the installed adapter, and its data shape preserves unique identities, missing values, and real
+zeros. Verify localized context, readable exact data, and supported keyboard inspection. Applications
+own aggregation, conversion rates, binning, and statistical policy; charts must not invent them.
+
 Use `lumen doctor --json` or `lumen doctor-native --json` for existing diagnostics when installed.
 Explain applicability instead of treating every advisory as a defect. Do not upload private
 source, credentials, or user data to the public catalog service.

@@ -1,0 +1,67 @@
+name: Deploy MCP
+
+on:
+  workflow_run:
+    workflows: [Release]
+    branches: [main]
+    types: [completed]
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-mcp-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: >-
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success') ||
+      (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: production
+    steps:
+      - name: Check out the released revision
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.0
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+
+      - name: Set up pnpm workspace
+        uses: santi020k/quality/actions/setup-pnpm@ffa37774f75b2b8e761fe3d71e7046cdb6694a69 # v1
+        with:
+          node-version: 22.x
+
+      - name: Verify approval and immutable release revision
+        run: |
+          test "$(git rev-parse HEAD)" = "$(git rev-parse origin/main)"
+          node scripts/check-lumen-4-contract.mjs --require-approved
+          node scripts/check-approved-release-revision.mjs
+          version="$(node -p "require('./packages/lumen/package.json').version")"
+          test "$(git rev-parse "v${version}^{commit}")" = "$(git rev-parse HEAD)"
+
+      - name: Verify the catalog package is published
+        run: node scripts/check-hosted-mcp.mjs --published-only
+
+      - name: Validate and build the MCP catalog
+        run: |
+          pnpm run check:mcp-snapshot
+          pnpm --filter @santi020k/lumen-mcp run typecheck
+          pnpm --filter @santi020k/lumen-mcp run lint
+          pnpm --filter @santi020k/lumen-mcp test
+          pnpm --filter @santi020k/lumen-mcp run build
+          node packages/mcp/scripts/evaluate.mjs
+
+      - name: Deploy the approved catalog
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          test -n "$CLOUDFLARE_API_TOKEN"
+          test -n "$CLOUDFLARE_ACCOUNT_ID"
+          pnpm exec wrangler deploy --config wrangler.mcp.jsonc
+
+      - name: Verify hosted version, catalog, tools, and components
+        run: node scripts/check-hosted-mcp.mjs
