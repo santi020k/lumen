@@ -429,7 +429,9 @@ import { LumenButton, LumenProvider } from '@santi020k/lumen-react-native/founda
 ```
 
 Run `pnpm run measure:react-native-imports` from the repository to compare production Hermes
-bytecode for a platform baseline, root button, root icon, and foundation button. Build time is a
+bytecode for a platform baseline, root button, root icon, foundation button, and matching
+four-icon navigation fixtures using root or static graphics imports. Both static graphics
+fixtures use canonical generated artwork and retain the existing overhead budget. Build time is a
 local build measurement; it does not establish native startup latency or scrolling performance.
 
 

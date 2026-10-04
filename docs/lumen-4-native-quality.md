@@ -545,3 +545,34 @@ lint report, APKs and source hashes are under `.build/native-quality-android-pri
 the build log is `.build/native-quality-android-primitive-state.log`. Actual process death,
 hardware, the renderer fix, stability qualification and local release integration remain
 open, including the existing canonical bundle-budget failure.
+
+### Canonical navigation graphic import comparison
+
+The Hermes benchmark now compares four matching icon-button controls (Home, Search,
+Activity and Settings) through the root catalog and the static graphics entrypoint.
+Both use the same Lumen renderer and canonical generated artwork. The static fixture
+extracts only the selected declarations with the TypeScript syntax tree, replacing the
+previous text-delimiter extraction. Three regression tests cover comment/string
+lookalikes, missing or duplicate declarations and adjacent declarations; they are now
+part of canonical validation. No public icon subpath or production dependency was added.
+
+Three Android exports per fixture passed the unchanged budgets. The four-icon static
+fixture measured 1,636,454 bytes versus 6,254,003 through the root catalog, a reduction
+of 4,617,549 bytes for these matching fixtures. This supports continuing the per-icon
+import investigation; copying fixture declarations is not a public consumer API.
+The platform baseline was 1,429,229 bytes, foundations 1,451,478 and the single static
+search graphic 1,634,493. Native startup and scrolling improvements are not established
+by bytecode size. Full samples are in `.build/native-quality-navigation-imports-android.log`.
+
+Three iOS exports per fixture also passed: the matching static navigation fixture was
+1,631,102 bytes versus 6,248,221 through the root catalog, a reduction of 4,617,119 bytes.
+The iOS baseline was 1,424,196, foundations 1,446,437 and single static
+graphics 1,629,153 bytes. Full iOS samples and a source-hash report are under
+`.build/native-quality-navigation-imports-ios.log` and
+`.build/native-quality-navigation-imports-report.json`. An Android-run formatting change
+added only a blank line; the fixture sources and extracted artwork were unchanged.
+
+Root type checking and zero-warning lint passed all 23 tasks. Canonical validation
+passed the new fixture tests and monorepo build, then failed the unchanged web bundle
+budgets. Its log is `.build/native-quality-navigation-imports-validate.log`; later
+checks and local release integration remain incomplete.
