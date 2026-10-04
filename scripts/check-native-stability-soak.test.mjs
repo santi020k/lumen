@@ -98,6 +98,16 @@ test('accepts two chronological ordinary-release stability iterations', async ()
   assert.match(result.stdout, /Validated 2\/2 native stability soak iterations/)
 })
 
+test('rejects a stale reviewed API hash before accepting soak evidence', async () => {
+  const result = await runLedger(ledger => {
+    ledger.baselines.reactNative.sha256 = '0'.repeat(64)
+  })
+
+  assert.equal(result.status, 1)
+
+  assert.match(result.stderr, /reactNative compatibility baseline changed; review it and restart/u)
+})
+
 test('rejects a stability iteration dated in the future', async () => {
   const result = await runLedger(ledger => {
     ledger.iterations[1].date = '9999-12-31'

@@ -644,3 +644,20 @@ incomplete. Gradle 9.8 also reports `Configuration.setVisible(boolean)` deprecat
 configuration/plugin graph; no repository build script invokes that method. No rule was weakened.
 This evidence covers this emulator workflow and actual stopped-process restoration, not removed
 tasks, app-storage persistence, physical devices, startup/scrolling budgets or stability soak.
+
+### Icon API baseline and qualification ledger
+
+The final qualification audit caught a stale React Native API digest in the stability ledger after
+the additive per-icon API change at `eb25e894`. Comparing the candidate with `b5b2a05e` confirms
+that root, datetime, foundations and graphics contracts are identical; the only baseline addition
+is the reviewed `icons/*` family with 2,437 supported graphics. The ledger now records the current
+reviewed React Native digest. Its iteration list was and remains empty, so no completed evidence
+was removed or fabricated. A regression test requires stale hashes to fail before any soak
+iteration can be accepted. The checker validates all seven baseline hashes and still reports
+`0/2` completed iterations. Five real-consumer records and all 22 physical-device evidence slots
+remain incomplete. Structural checker success does not establish qualification or stable readiness.
+
+All 20 soak-ledger regression tests passed after the digest update, as did repository type checks
+and zero-warning lint (23 tasks each). The canonical validation gate again passed all 14 builds
+before the existing web bundle-size failures. The required-complete soak check still rejects the
+empty iteration list; no release or remote integration was performed.
