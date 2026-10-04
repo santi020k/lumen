@@ -117,6 +117,8 @@
 
 ### Patch Changes
 
+- Improve inactive CodeTabs label contrast in the shared stylesheet so framework selectors remain readable in the light theme.
+
 - Reject unsafe external component names before wrapper generation. Keep schedule availability
 checks conservative for malformed intervals and report invalid resize or recurrence inputs
 explicitly without changing persisted event records.

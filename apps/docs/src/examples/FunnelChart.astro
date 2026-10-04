@@ -1,7 +1,16 @@
 ---
 import { FunnelChart } from '@santi020k/lumen-astro'
 
-import { chartDemoFunnel } from '../lib/chart-demo-data'
+const data = [
+  { id: 'visited', label: 'Visited', value: 600 },
+  { id: 'signed-up', label: 'Signed up', value: 180 },
+  { id: 'activated', label: 'Activated', value: 96 }
+]
 ---
 
-<FunnelChart aria-label="Illustrative funnel-chart" heading="FunnelChart" data={chartDemoFunnel} />
+<FunnelChart
+  aria-label="Activation funnel"
+  heading="Activation funnel"
+  description="People in the August acquisition cohort"
+  data={data}
+/>

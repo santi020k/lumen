@@ -198,15 +198,29 @@ test.describe('touch inspection', () => {
   })
 })
 
-for (const width of [390, 1440]) {
+const expectGuideHeading = async (page: Page, name: string): Promise<void> => {
+  const heading = page.getByRole('heading', { name, exact: true })
+
+  await expect(heading).toBeInViewport()
+  const obscured = await heading.evaluate(element => {
+    const bottom = Math.max(...Array.from(document.querySelectorAll('.docs-site-header, .docs-mobile-navigation-bar'))
+      .map(header => header.getBoundingClientRect().bottom))
+
+    return element.getBoundingClientRect().top < bottom
+  })
+
+  expect(obscured).toBe(false)
+}
+
+for (const width of [373, 390, 1440]) {
   test(`chart documentation provides keyboard-accessible recipes at ${width}px`, async ({ page, context }) => {
     await context.grantPermissions(['clipboard-read', 'clipboard-write'])
     await page.setViewportSize({ width, height: 1000 })
     await page.goto('/docs/web/data-visualization')
     await page.getByRole('navigation', { name: 'Data visualization guide' }).getByRole('link', { name: 'Code examples' }).click()
-    await expect(page.getByRole('heading', { name: 'From a question to a chart.' })).toBeInViewport()
+    await expectGuideHeading(page, 'From a question to a chart.')
 
-    for (const name of ['LollipopChart', 'DumbbellChart', 'BulletChart']) {
+    for (const name of ['CalendarHeatmap', 'FunnelChart', 'BoxPlot', 'LollipopChart', 'DumbbellChart', 'BulletChart']) {
       const tabs = page.getByRole('tablist', { name: `${name} code framework` })
       await tabs.getByRole('tab', { name: 'Astro', exact: true }).focus()
       await page.keyboard.press('End')
@@ -222,7 +236,7 @@ for (const width of [390, 1440]) {
     }
 
     await page.getByRole('navigation', { name: 'Data visualization guide' }).getByRole('link', { name: 'Choose a chart' }).click()
-    await expect(page.getByRole('heading', { name: 'Start with the question.' })).toBeInViewport()
+    await expectGuideHeading(page, 'Start with the question.')
     expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)).toBe(false)
     await page.getByRole('table', { name: 'Chart selection guide' }).getByRole('link', { name: 'DumbbellChart', exact: true }).click()
     await expect(page.getByRole('heading', { name: 'DumbbellChart', exact: true })).toBeVisible()

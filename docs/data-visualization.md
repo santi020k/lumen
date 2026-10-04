@@ -9,7 +9,8 @@ decisions.
 The [interactive guide](https://lumen.santi020k.com/docs/web/data-visualization) includes the gallery,
 chart-selection guidance, framework setup, and copyable examples for Astro, React, and Elements.
 Start with [comparison recipes](https://lumen.santi020k.com/docs/web/data-visualization#chart-recipes)
-for LollipopChart, DumbbellChart, and BulletChart. Each recipe links to its full API reference.
+for CalendarHeatmap, FunnelChart, BoxPlot, LollipopChart, DumbbellChart, and BulletChart.
+Each recipe includes its own sample data and links to the full API reference.
 
 ## Install and render
 
@@ -28,6 +29,9 @@ functions in a client component rather than passing functions across the server/
 
 | Question | Component | Notes |
 | --- | --- | --- |
+| Which days have the most activity? | `CalendarHeatmap` | Use strict date-only identities and preserve missing days. |
+| How do stages compare for a cohort? | `FunnelChart` | Supply nonnegative counts in stage order; the application owns conversion rates. |
+| How do distributions compare? | `BoxPlot` | Supply precomputed quartiles, whisker bounds, and outliers using one consistent policy. |
 | What direction is one compact metric moving? | `Sparkline` | Supply a concise accessible label; omit axes and legends. |
 | How do categories compare? | `BarChart` | Group related series; stack only when the combined total matters. |
 | How does a value change in order or time? | `LineChart` | Use area fill sparingly and preserve `null` values as honest gaps. |
@@ -277,7 +281,8 @@ semantic success, warning, and danger tones for data that truly carries those me
 ## Platform implementation
 
 - Astro, React, and Elements ship sparkline, line, bar, pie, scatter, heatmap, range, combo,
-  waterfall, histogram, bullet, lollipop, and dumbbell charts using SVG or HTML/CSS renderers and
+  waterfall, histogram, bullet, lollipop, dumbbell, calendar heatmap, funnel, and box plot charts
+  using SVG or HTML/CSS renderers and
   accessible data alternatives.
 - React Native uses `react-native-svg`, shared geometry, Lumen theme tokens, and native accessible
   data controls.

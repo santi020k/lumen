@@ -1,12 +1,18 @@
 ---
 import { Callout, CodeTabs, Link, Table } from '@santi020k/lumen-astro'
 
+import boxPlotSource from '../examples/BoxPlot.astro?raw'
 import bulletSource from '../examples/BulletChart.astro?raw'
+import calendarSource from '../examples/CalendarHeatmap.astro?raw'
 import dumbbellSource from '../examples/DumbbellChart.astro?raw'
+import funnelSource from '../examples/FunnelChart.astro?raw'
 import lollipopSource from '../examples/LollipopChart.astro?raw'
 import { buildSnippets } from '../lib/snippets'
 
 const charts = [
+  ['Read daily activity', 'CalendarHeatmap', 'calendar-heatmap', 'Date-only observations; omitted days stay missing.'],
+  ['Compare process stages', 'FunnelChart', 'funnel-chart', 'Nonnegative counts for the same cohort, in your chosen stage order.'],
+  ['Compare distributions', 'BoxPlot', 'box-plot', 'Precomputed quartiles, whisker bounds, and explicit outliers.'],
   ['Rank categories', 'LollipopChart', 'lollipop-chart', 'One value per category; sort the rows in your application.'],
   ['Compare two observations', 'DumbbellChart', 'dumbbell-chart', 'Previous and current values in the same unit.'],
   ['Track a target', 'BulletChart', 'bullet-chart', 'One actual value, a target, and optional performance ranges.'],
@@ -23,6 +29,30 @@ const charts = [
 ] as const
 
 const recipes = [
+  {
+    name: 'CalendarHeatmap',
+slug: 'calendar-heatmap',
+title: 'See the rhythm of a week.',
+    description: 'Use a calendar when the day itself matters. This example includes an observed zero and an unavailable day, which remain visibly different.',
+    source: calendarSource,
+    note: 'Use YYYY-MM-DD dates and an inclusive startDate/endDate range. Duplicate dates and observations outside the range are invalid. weekStartsOn=1 starts on Monday; weekdayLabels still uses Sunday-first order. When formatting date-only identities with Intl.DateTimeFormat, specify UTC to avoid shifting a day.'
+  },
+  {
+    name: 'FunnelChart',
+slug: 'funnel-chart',
+title: 'Follow a cohort through each stage.',
+    description: 'A common scale makes the relative stage sizes clear. Supply counts from the same population and measurement window so readers can make a meaningful comparison.',
+    source: funnelSource,
+    note: 'Stage order is preserved, including increases. Values must be nonnegative or null. Your application defines cohorts and conversion rates; Lumen does not infer percentages or reorder the funnel.'
+  },
+  {
+    name: 'BoxPlot',
+slug: 'box-plot',
+title: 'Show the spread behind an average.',
+    description: 'Compare the median, middle two quartiles, whiskers, and outliers for each group. Supply statistics you have already computed using a consistent method.',
+    source: boxPlotSource,
+    note: 'min and max are whisker bounds, not necessarily sample extremes. Keep min ≤ q1 ≤ median ≤ q3 ≤ max and include outliers in the domain. Use null for all five statistics when a summary is unavailable. Your application owns the quartile and outlier policy.'
+  },
   {
     name: 'LollipopChart',
 slug: 'lollipop-chart',
@@ -159,7 +189,7 @@ defineLumenElements(['LollipopChart', 'DumbbellChart', 'BulletChart'])` }
     <header class="chart-guide-heading">
       <span class="chart-guide-step">06 / Go native</span>
       <h2 id="native-charts-title">The same questions, on every platform.</h2>
-      <p>Use <code>LumenLollipopChart</code>, <code>LumenDumbbellChart</code>, and <code>LumenBulletChart</code> in native apps. Their reference pages include platform-specific examples and properties.</p>
+      <p>CalendarHeatmap, FunnelChart, BoxPlot, LollipopChart, DumbbellChart, and BulletChart all have native counterparts with the <code>Lumen</code> prefix. Their reference pages include platform-specific examples and properties.</p>
     </header>
     <Table layout="records">
       <table role="table">
@@ -178,7 +208,7 @@ defineLumenElements(['LollipopChart', 'DumbbellChart', 'BulletChart'])` }
 
 <style>
   .chart-guide { display: grid; gap: 4rem; min-width: 0; }
-  .chart-guide section, .chart-recipe { display: grid; gap: 1.5rem; min-width: 0; scroll-margin-top: calc(var(--docs-sticky-offset, 10rem) + 1rem); }
+  .chart-guide section, .chart-recipe { display: grid; gap: 1.5rem; min-width: 0; }
   .chart-guide section { border-top: 1px solid hsl(var(--line)); padding-top: 2rem; }
   .chart-guide-heading { display: grid; gap: 0.75rem; }
   .chart-guide-step { color: hsl(var(--brand)); font-size: 0.6875rem; font-weight: 650; letter-spacing: 0.1em; text-transform: uppercase; }

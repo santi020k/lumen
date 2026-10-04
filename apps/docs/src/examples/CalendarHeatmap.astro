@@ -1,7 +1,23 @@
 ---
 import { CalendarHeatmap } from '@santi020k/lumen-astro'
 
-import { chartDemoCalendar } from '../lib/chart-demo-data'
+const data = [
+  { date: '2026-08-01', value: 3 },
+  { date: '2026-08-02', value: 0 },
+  { date: '2026-08-03', value: null },
+  { date: '2026-08-04', value: 8 },
+  { date: '2026-08-05', value: 5 },
+  { date: '2026-08-06', value: 2 },
+  { date: '2026-08-07', value: 6 }
+]
 ---
 
-<CalendarHeatmap aria-label="Illustrative calendar-heatmap" heading="CalendarHeatmap" data={chartDemoCalendar} startDate="2026-08-01" endDate="2026-08-28" />
+<CalendarHeatmap
+  aria-label="Daily activity"
+  heading="Daily activity"
+  description="Contributions · August 1–7, 2026"
+  data={data}
+  startDate="2026-08-01"
+  endDate="2026-08-07"
+  weekStartsOn={1}
+/>

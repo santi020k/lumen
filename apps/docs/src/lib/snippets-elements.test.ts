@@ -41,6 +41,9 @@ test('connects the copied Elements Toast example through the public controller',
 })
 
 test.each([
+  { name: 'CalendarHeatmap', value: '2026-08-07', label: 'Not available', rows: 7 },
+  { name: 'FunnelChart', value: '600', label: 'Activated', rows: 3 },
+  { name: 'BoxPlot', value: '190 ms', label: 'Median', rows: 2 },
   { name: 'LollipopChart', value: '91', label: 'Score', rows: 3 },
   { name: 'DumbbellChart', value: '91', label: 'Previous', rows: 3 },
   { name: 'BulletChart', value: '86%', label: 'Goal', rows: 5 }

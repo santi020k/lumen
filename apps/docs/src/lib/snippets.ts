@@ -902,6 +902,85 @@ const compoundDescriptionsElementsExample = `${elementsHeader}
 `
 
 const elementsOverrides: Record<string, string> = {
+  CalendarHeatmap: `<lumen-calendar-heatmap
+  id="example-calendar-heatmap"
+  aria-label="Daily activity"
+  heading="Daily activity"
+  description="Contributions · August 1–7, 2026"
+  start-date="2026-08-01" end-date="2026-08-07"
+  week-starts-on="1"
+></lumen-calendar-heatmap>
+
+<!-- In a module processed by your bundler, after the chart markup. -->
+<script type="module">
+import { defineLumenElements, LumenCalendarHeatmapElement } from '@santi020k/lumen-elements'
+
+defineLumenElements(['CalendarHeatmap'])
+
+const chart = document.getElementById('example-calendar-heatmap')
+
+if (chart instanceof LumenCalendarHeatmapElement) {
+  chart.data = [
+    { date: '2026-08-01', value: 3 },
+    { date: '2026-08-02', value: 0 },
+    { date: '2026-08-03', value: null },
+    { date: '2026-08-04', value: 8 },
+    { date: '2026-08-05', value: 5 },
+    { date: '2026-08-06', value: 2 },
+    { date: '2026-08-07', value: 6 }
+  ]
+}
+</script>
+`,
+  FunnelChart: `<lumen-funnel-chart
+  id="example-funnel-chart"
+  aria-label="Activation funnel"
+  heading="Activation funnel"
+  description="People in the August acquisition cohort"
+></lumen-funnel-chart>
+
+<!-- In a module processed by your bundler, after the chart markup. -->
+<script type="module">
+import { defineLumenElements, LumenFunnelChartElement } from '@santi020k/lumen-elements'
+
+defineLumenElements(['FunnelChart'])
+
+const chart = document.getElementById('example-funnel-chart')
+
+if (chart instanceof LumenFunnelChartElement) {
+  chart.data = [
+    { id: 'visited', label: 'Visited', value: 600 },
+    { id: 'signed-up', label: 'Signed up', value: 180 },
+    { id: 'activated', label: 'Activated', value: 96 }
+  ]
+}
+</script>
+`,
+  BoxPlot: `<lumen-box-plot
+  id="example-box-plot"
+  aria-label="Response-time distribution"
+  heading="Response-time distribution"
+  description="Precomputed statistics · milliseconds"
+  domain-min="0" domain-max="200"
+></lumen-box-plot>
+
+<!-- In a module processed by your bundler, after the chart markup. -->
+<script type="module">
+import { defineLumenElements, LumenBoxPlotElement } from '@santi020k/lumen-elements'
+
+defineLumenElements(['BoxPlot'])
+
+const chart = document.getElementById('example-box-plot')
+
+if (chart instanceof LumenBoxPlotElement) {
+  chart.data = [
+    { id: 'search', label: 'Search', min: 40, q1: 58, median: 72, q3: 92, max: 115, outliers: [140] },
+    { id: 'checkout', label: 'Checkout', min: 65, q1: 80, median: 105, q3: 130, max: 160, outliers: [190] }
+  ]
+  chart.valueFormatter = value => String(value) + ' ms'
+}
+</script>
+`,
   LollipopChart: `<lumen-lollipop-chart
   id="example-lollipop-chart"
   aria-label="Team performance, current quarter"

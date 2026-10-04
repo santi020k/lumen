@@ -2958,6 +2958,18 @@ const apiReferenceByComponent = {
 } satisfies Record<LumenComponentName, readonly ComponentApiRow[]>
 
 const componentGuidanceByName: Partial<Record<string, ComponentGuidance>> = {
+  CalendarHeatmap: {
+    when: 'Use for daily observations where calendar position reveals a pattern. Supply strict date-only identities and an inclusive date range; missing days remain unavailable.',
+    distinction: 'Use Heatmap for an arbitrary matrix or LineChart for precise elapsed-time comparison. Format date-only identities with an explicit time zone to avoid shifting a day.'
+  },
+  FunnelChart: {
+    when: 'Use to compare nonnegative counts across ordered stages for a consistent cohort and time window. The supplied stage order is retained.',
+    distinction: 'Use BarChart for unrelated categories. The application defines conversion rates, cohort membership, and aggregation; Lumen does not infer them.'
+  },
+  BoxPlot: {
+    when: 'Use to compare precomputed distributions: quartiles, a median, whisker bounds, and explicit outliers. Apply the same statistical method to every group.',
+    distinction: 'Use Histogram to show bin counts or RangeChart for low/high intervals. min and max are whisker bounds; a custom domain must also enclose outliers.'
+  },
   LollipopChart: {
     when: 'Use for one value per category when ranking or comparing magnitudes on a shared zero-based scale. The application owns row order; sort before passing data.',
     distinction: 'Use DumbbellChart for paired observations and BarChart for grouped or stacked series. Keep null measurements distinct from zero, and retain the exact data disclosure.'

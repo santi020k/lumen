@@ -1,7 +1,17 @@
 ---
 import { BoxPlot } from '@santi020k/lumen-astro'
 
-import { chartDemoBoxPlots } from '../lib/chart-demo-data'
+const data = [
+  { id: 'search', label: 'Search', min: 40, q1: 58, median: 72, q3: 92, max: 115, outliers: [140] },
+  { id: 'checkout', label: 'Checkout', min: 65, q1: 80, median: 105, q3: 130, max: 160, outliers: [190] }
+]
 ---
 
-<BoxPlot aria-label="Illustrative box-plot" heading="BoxPlot" data={chartDemoBoxPlots} />
+<BoxPlot
+  aria-label="Response-time distribution"
+  heading="Response-time distribution"
+  description="Precomputed statistics · milliseconds"
+  data={data}
+  domain={{ min: 0, max: 200 }}
+  formatValue={value => `${value} ms`}
+/>
