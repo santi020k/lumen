@@ -17,6 +17,7 @@ catalog:
   "@commitlint/cli": ^21.2.3
   "@commitlint/config-conventional": ^21.2.3
   "@expo/metro-runtime": ^57.0.16
+  "@figma/plugin-typings": 1.140.0
   "@fortawesome/free-brands-svg-icons": ^7.3.1
   "@hookform/resolvers": ^5.9.1
   "@lucide/icons": ^1.50.0
@@ -36,6 +37,7 @@ catalog:
   "@santi020k/eslint-config-react": ^3.1.2
   "@santi020k/eslint-config-testing": ^3.1.3
   "@santi020k/eslint-config-tools": ^3.1.3
+  "@santi020k/eslint-config-vite": 3.1.2
   "@santi020k/og": 1.1.1
   "@santi020k/theme": ^2.0.1
   "@tailwindcss/vite": ^4.3.3
