@@ -28,7 +28,10 @@ describe('React Native playground model', () => {
       'Scatter chart',
       'Waterfall chart',
       'Range chart',
-      'Combo chart'
+      'Combo chart',
+      'Bullet chart',
+      'Lollipop chart',
+      'Dumbbell chart'
     ])
 
     expect(getVisibleComponentNames('', 'actions', false)).toEqual([
@@ -54,6 +57,8 @@ describe('React Native playground model', () => {
   test('accepts component IDs, padded text, and collapsed labels', () => {
     expect(getVisibleComponentNames('  DATE-range_field  ', 'forms', false)).toEqual(['Date range field'])
     expect(getVisibleComponentNames('IconButton', 'all', false)).toEqual(['Icon button'])
+    expect(getVisibleComponentNames('lollipop-chart', 'data', true)).toEqual(['Lollipop chart'])
+    expect(getVisibleComponentNames('dumbbell-chart', 'data', true)).toEqual(['Dumbbell chart'])
     expect(getVisibleComponentNames('  \t ', 'actions', false)).toEqual(getVisibleComponentNames('', 'actions', false))
     expect(getVisibleComponentNames('button', 'forms', false)).toEqual([])
     expect(getVisibleComponentNames('does-not-exist', 'all', false)).toEqual([])
