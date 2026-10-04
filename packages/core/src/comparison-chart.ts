@@ -48,7 +48,7 @@ export const createLumenComparisonGeometry = (
   let min = 0
   let max = 0
 
-  const validData = data.every(item => {
+  const validData = Array.from(data).every(item => {
     if (!isLumenComparisonDatum(item) || ids.has(item.id)) return false
 
     ids.add(item.id)

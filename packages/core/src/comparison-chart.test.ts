@@ -1,8 +1,16 @@
 import { describe, expect, test } from 'vitest'
 
-import { createLumenComparisonGeometry } from './comparison-chart.js'
+import { createLumenComparisonGeometry, type LumenComparisonDatum } from './comparison-chart.js'
 
 describe('comparison chart geometry', () => {
+  test.each([null, 0, 1])('rejects sparse comparisons with populated index %s', populatedIndex => {
+    const data = Array<LumenComparisonDatum>(2)
+
+    if (populatedIndex !== null) data[populatedIndex] = { id: 'a', label: 'A', value: 0 }
+
+    expect(createLumenComparisonGeometry(data)).toMatchObject({ valid: false, rows: [] })
+    expect(data).toHaveLength(2)
+  })
   test('preserves row order and uses one scale for increasing and decreasing pairs', () => {
     const data = [{ id: 'a', label: 'A', reference: 20, value: 80 }, { id: 'b', label: 'B', reference: 90, value: 30 }]
     const model = createLumenComparisonGeometry(data, { paired: true, domain: { min: 0, max: 100 } })
