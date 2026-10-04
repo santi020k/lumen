@@ -22,6 +22,7 @@ export {
   LumenPasswordField,
   type LumenPasswordFieldProps
 } from './advanced-form-components.js'
+export { LumenBreadcrumb, type LumenBreadcrumbItem, type LumenBreadcrumbProps } from './breadcrumb-components.js'
 export {
   LumenBarChart,
   type LumenBarChartProps,
@@ -239,6 +240,8 @@ export {
   type LumenAvatarSize,
   type LumenCardVariant
 } from './shared-recipes.js'
+export { type LumenStepItem, LumenStepper, type LumenStepperProps } from './stepper-components.js'
+export { type LumenStepState, resolveLumenStepState } from './stepper-recipes.js'
 export {
   LumenBanner,
   type LumenBannerProps,
@@ -274,6 +277,7 @@ export {
   type LumenThemeOptions,
   type LumenThemePreset } from './theme.js'
 export { useLumenTheme } from './theme-context.js'
+export { LumenTimeline, LumenTimelineItem, type LumenTimelineItemProps, type LumenTimelineProps } from './timeline-components.js'
 export {
   type LumenChartColor,
   lumenChartColorTokens,

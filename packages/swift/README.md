@@ -632,3 +632,13 @@ maximum is clamped to 1 through 100. Out-of-range display values are clamped wit
 rewriting host state. Disabled and read-only controls cannot emit edits. Supply
 `formatOption` to localize accessible option names (the neutral default is `3 / 5`).
 The host owns persistence and may reset the controlled value to zero.
+
+## Progress, history and location
+
+`LumenStepper` presents controlled complete/current/upcoming steps, stable IDs,
+descriptions and localized state labels. Vertical is the native default; horizontal
+layout scrolls. `LumenTimeline` and `LumenTimelineItem` retain host content and
+actions with optional decorative markers. `LumenBreadcrumb` reports ancestor IDs
+through `onNavigate`; current and disabled locations cannot navigate. The host
+owns routing, event ordering and workflow updates. See the
+[native component contracts](../../docs/native-components.md) for platform parameters.

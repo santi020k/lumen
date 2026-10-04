@@ -1186,3 +1186,28 @@ for application validation. Only an enabled, editable selection invokes an updat
 
 Catalog integration and playground verification are tracked in
 [native catalog parity completion](native-catalog-parity-plan.md).
+
+## Stepper, timeline and breadcrumb
+
+`LumenStepper` presents a host-owned ordered workflow. Each `LumenStepItem` has a
+stable ID, title and optional description. The zero-based `currentStep` resolves
+to complete, current or upcoming (`LumenStepState`). Negative progress resolves
+to the first step; progress at or beyond the item count means all steps are complete.
+The component does not navigate or advance workflow state. Vertical layout is the
+native default; horizontal layout scrolls to retain large text. `formatState`
+localizes visible and accessible state labels. React Native accepts `orientation`;
+SwiftUI and Compose use `horizontal`. React Native and Compose expose
+`resolveLumenStepState`; SwiftUI exposes `LumenStepState.resolve`.
+
+`LumenTimeline` contains `LumenTimelineItem` children and a localized group label.
+Each item accepts application content and an optional decorative dot. Rich content
+and its actions remain host-owned and independently accessible. SwiftUI uses view
+builder slots and Compose uses a column content slot; React Native uses children.
+Event ordering, date formatting and requests belong to the application.
+
+`LumenBreadcrumb` accepts a localized group label and stable `LumenBreadcrumbItem`
+locations. The final location is the current page and cannot navigate. Earlier
+locations emit their ID through `onNavigate`; the host performs routing. Disabled
+locations reject navigation. `currentLabel` localizes current-page semantics, and
+the trail scrolls horizontally. SwiftUI honors environment disabled state; React
+Native accepts `disabled` and Compose accepts `enabled`. Empty trails are valid.

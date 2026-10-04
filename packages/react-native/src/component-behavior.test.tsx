@@ -11,6 +11,7 @@ import { LumenBrandGithubIconGraphic } from './static-icons/brand-github.generat
 import { LumenSearchIconGraphic } from './static-icons/search.generated.js'
 import { LumenButtonGroup, LumenChip, LumenFieldGroup, LumenTextarea, LumenToast } from './additional-components.js'
 import { LumenAutocomplete, LumenInputOTP, LumenNumberField, LumenPasswordField } from './advanced-form-components.js'
+import { LumenBreadcrumb } from './breadcrumb-components.js'
 import { LumenBarChart, LumenComboChart, LumenHeatmap, LumenHistogram, LumenLineChart, LumenRangeChart, LumenScatterChart, LumenWaterfallChart } from './chart-components.js'
 import { LumenImageComparison } from './comparison-components.js'
 import { LumenDateField, LumenDateRangeField } from './datetime-components.js'
@@ -27,8 +28,11 @@ import { LumenProvider } from './provider.js'
 import { LumenRating } from './rating-components.js'
 import { resolveLumenRating } from './rating-recipes.js'
 import { LumenCheckbox, LumenTabs } from './selection-components.js'
+import { LumenStepper } from './stepper-components.js'
+import { resolveLumenStepState } from './stepper-recipes.js'
 import { LumenBanner, LumenErrorState, LumenStatusBar } from './structured-components.js'
 import { LumenTimeField } from './time-components.js'
+import { LumenTimeline, LumenTimelineItem } from './timeline-components.js'
 import { LumenPicker, LumenRangeSlider, LumenSlider } from './value-components.js'
 
 Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true })
@@ -2374,5 +2378,82 @@ describe('rating controlled selection', () => {
     })
     expect(onValueChange).toHaveBeenCalledTimes(1)
     expect(readProp(locked, 'disabled')).toBe(true)
+  })
+})
+
+describe('progress and history contracts', () => {
+  test('normalizes step progress without changing host state', () => {
+    expect(resolveLumenStepState(0, -1, 3)).toBe('current')
+    expect(resolveLumenStepState(0, Number.NaN, 3)).toBe('current')
+    expect(resolveLumenStepState(1, 1.9, 3)).toBe('current')
+    expect(resolveLumenStepState(2, 99, 3)).toBe('complete')
+    expect(resolveLumenStepState(2, 1, 3)).toBe('upcoming')
+  })
+
+  test('presents localized controlled progression and accepts an empty workflow', async () => {
+    const steps = [{ id: 'prepare', title: 'Prepare' }, { id: 'review', title: 'Review', description: 'Confirm details' }]
+    const root = await renderNative(
+      <LumenStepper
+        label="Workflow"
+        steps={steps}
+        currentStep={1}
+        formatState={state => `Localized ${state}`}
+      />
+    )
+    const review = findByAccessibilityLabel(root, '2 / 2, Review, Confirm details')
+    expect(readProp(review, 'accessibilityValue')).toEqual({ text: 'Localized current' })
+    expect(readProp(review, 'accessibilityState')).toEqual({ selected: true })
+    act(() => {
+      root.render(<LumenProvider><LumenStepper label="Workflow" steps={steps} currentStep={2} /></LumenProvider>)
+    })
+    expect(readProp(findByAccessibilityLabel(root, '2 / 2, Review, Confirm details'), 'accessibilityValue'))
+      .toEqual({ text: 'Complete' })
+    act(() => {
+      root.render(<LumenProvider><LumenStepper label="Workflow" steps={[]} currentStep={0} /></LumenProvider>)
+    })
+    expect(root.container.queryAll(instance => readProp(instance, 'accessible') === true)).toHaveLength(0)
+  })
+
+  test('keeps timeline content actions accessible and host owned', async () => {
+    const onPress = vi.fn()
+    const root = await renderNative(
+      <LumenTimeline label="History">
+        <LumenTimelineItem>
+          <LumenText>Approved</LumenText>
+          <LumenButton onPress={onPress}>View approval</LumenButton>
+        </LumenTimelineItem>
+      </LumenTimeline>
+    )
+    const button = findByAccessibilityRole(root, 'button')
+    act(() => {
+      callAction(readProp(button, 'onPress'), 'Missing timeline action')
+    })
+    expect(onPress).toHaveBeenCalledOnce()
+  })
+
+  test('breadcrumb reports navigation IDs and cannot navigate current or disabled locations', async () => {
+    const onNavigate = vi.fn<(id: string) => void>()
+    const items = [{ id: 'home', label: 'Home' },
+      { id: 'private', label: 'Private', disabled: true },
+      { id: 'current', label: 'Details' }]
+    const root = await renderNative(
+      <LumenBreadcrumb
+        label="Location"
+        items={items}
+        onNavigate={onNavigate}
+        currentLabel="Here"
+      />
+    )
+    const home = findByAccessibilityLabel(root, 'Home')
+    act(() => {
+      callAction(readProp(home, 'onPress'), 'Missing breadcrumb action')
+    })
+    expect(onNavigate).toHaveBeenCalledExactlyOnceWith('home')
+    const locked = findByAccessibilityLabel(root, 'Private')
+    act(() => {
+      callAction(readProp(locked, 'onPress'), 'Missing disabled breadcrumb action')
+    })
+    expect(readProp(findByAccessibilityLabel(root, 'Details'), 'onPress')).toBeUndefined()
+    expect(readProp(findByAccessibilityLabel(root, 'Details'), 'accessibilityValue')).toEqual({ text: 'Here' })
   })
 })

@@ -25,7 +25,7 @@ its reference behavior, documented public API, regression tests and rendered int
 | Gap | Implementation status | Verification status |
 | --- | --- | --- |
 | `Agenda` | Pending in all three adapters | Pending |
-| `Breadcrumb` | Pending in all three adapters | Pending |
+| `Breadcrumb` | Initial implementation in all three adapters | Focused native regression checks; playground/rendered and full API baseline checks pending |
 | `Calendar` | Pending in all three adapters | Pending |
 | `Carousel` | Pending in all three adapters | Pending |
 | `Command` | Pending in all three adapters | Pending |
@@ -40,8 +40,8 @@ its reference behavior, documented public API, regression tests and rendered int
 | `Tree` | Pending in all three adapters | Pending |
 | `TreeGrid` | Pending in all three adapters | Pending |
 | `Rating` | Initial implementation in all three adapters | Swift model/API tests and Compose model test passed; React Native behavior tests and type checking passed; zero-warning React Native lint and API classification passed; rendered checks pending |
-| `Timeline` | Pending in all three adapters | Pending |
-| `Stepper` | Pending in all three adapters | Pending |
+| `Timeline` | Initial implementation in all three adapters | Focused native regression checks; playground/rendered and full API baseline checks pending |
+| `Stepper` | Initial implementation in all three adapters | Focused native regression checks; playground/rendered and full API baseline checks pending |
 | `Tour` | Pending in all three adapters | Pending |
 | `Transfer` | Pending in all three adapters | Pending |
 | `Cascader` | Pending in all three adapters | Pending |
