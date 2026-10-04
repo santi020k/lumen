@@ -1,7 +1,7 @@
 ---
 import '@santi020k/lumen/styles.css'
 
-import { BarChart, ComboChart, Container, Heatmap, LineChart, PieChart, RangeChart, ScatterChart, Stack, Typography } from '@santi020k/lumen-astro'
+import { BarChart, Button, ComboChart, Container, Heatmap, LineChart, PieChart, RangeChart, ScatterChart, Stack, Typography } from '@santi020k/lumen-astro'
 import UIPrimitives from '@santi020k/lumen-astro/runtime'
 import type { LumenChartLabels, LumenChartSeries } from '@santi020k/lumen-core'
 
@@ -77,20 +77,27 @@ x: 'X'
         <Heatmap data-chart-example="empty" aria-label="Empty" drilldown {labels} data={[]} showTable={false} />
         <Typography><h2>React</h2></Typography>
         <div data-react-chart-mount></div>
+        <Typography><h2>Elements</h2></Typography>
+        <p role="status" data-elements-activation-result data-count="0" style="overflow-wrap: anywhere">Sin selección</p>
+        <Button data-elements-update>Actualizar datos Elements</Button>
+        <Stack gap="section" data-elements-chart-mount />
       </Stack>
     </Container>
     <UIPrimitives />
     <script>
       import { createElement } from 'react'
-      import { createRoot } from 'react-dom/client'
+import { createRoot } from 'react-dom/client'
 
-      import { parseLumenChartDatumActivation } from '@santi020k/lumen-core'
+import { parseLumenChartDatumActivation } from '@santi020k/lumen-core'
 
-      import { ReactChartActivationDemo } from '../../lib/react-chart-activation'
+import { mountElementsChartActivation } from '../../lib/elements-chart-activation'
+import { ReactChartActivationDemo } from '../../lib/react-chart-activation'
 
       const mount = document.querySelector<HTMLElement>('[data-react-chart-mount]')
 
       if (mount) createRoot(mount).render(createElement(ReactChartActivationDemo))
+
+      mountElementsChartActivation()
 
       const result = document.querySelector<HTMLElement>('[data-activation-result]')
       let count = 0
@@ -109,6 +116,6 @@ x: 'X'
 
         result.textContent = JSON.stringify(detail)
       })
-    </script>
+</script>
   </body>
 </html>

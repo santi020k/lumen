@@ -145,6 +145,20 @@ ancestors suppress callbacks. Stable action identities preserve button focus whe
 the callback always receives the currently rendered values. Apps should handle stale data and
 permissions again when carrying out the chosen operation.
 
+## Elements chart actions
+
+Set `drilldown` on BarChart, LineChart, PieChart, ScatterChart, ComboChart, Heatmap, or RangeChart
+hosts to enable datum activation. Elements supplies its own controller lifecycle; listen for
+`ui:chart-datum-activate` on the host and validate unknown event details with
+`parseLumenChartDatumActivation` from core before using them at application boundaries.
+
+The event uses the same original identities and finite values as Astro and React. Native action
+buttons remain available with hidden tables or suppressed line markers. Use `explore-data-label`
+and `datum-action-prefix`, or the host's `datumActionFormatter(context)` property, for localization.
+When data updates, Elements retains the disclosure state and restores focus to the same available
+action. Disconnection destroys the controller; reconnection enhances once. Disabled, inert, hidden,
+and cancelled interactions do not activate a datum.
+
 ## Accessibility
 
 Every data chart needs a useful accessible name. Lumen adds a factual generated summary describing

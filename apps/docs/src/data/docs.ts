@@ -767,8 +767,9 @@ const apiRow = (
 })
 
 const chartDatumApiRows = [
-  apiRow('drilldown', 'boolean (Astro)', 'false', 'Enables plotted datum actions and an equivalent native button disclosure, including with hidden tables. Requires UIPrimitives.'),
+  apiRow('drilldown', 'boolean (Astro / Elements attribute)', 'false', 'Enables plotted datum actions and an equivalent native button disclosure, including with hidden tables. Astro requires UIPrimitives; Elements owns its lifecycle.'),
   apiRow('onDatumActivate', '(detail: LumenChartDatumActivationDetail) => void (React)', '-', 'Enables React datum actions and receives validated values with raw identities. Navigation and filtering remain application owned.'),
+  apiRow('explore-data-label, datum-action-prefix, datumActionFormatter', 'string attributes, (context: string) => string property (Elements)', 'English labels', 'Localizes the Elements disclosure and datum actions.'),
   apiRow('labels.exploreData, labels.formatDatumAction', 'string, (context: string) => string', 'English labels', 'Localizes the actions disclosure and each contextual datum button.')
 ] as const
 
@@ -986,7 +987,7 @@ const keyboardInteractionsByComponent: Partial<
 }
 
 export const runtimeEvents: RuntimeEventRow[] = [
-  { detail: 'LumenChartDatumActivationDetail: series { seriesId, x, y, datumId? }, heatmap { x, y, value, datumId? }, range { x, low, high, datumId? }', name: 'ui:chart-datum-activate', target: 'Astro data chart figure', when: 'Fires once after a plotted datum or its native action button is activated. Requires drilldown and UIPrimitives; React uses onDatumActivate instead.' },
+  { detail: 'LumenChartDatumActivationDetail: series { seriesId, x, y, datumId? }, heatmap { x, y, value, datumId? }, range { x, low, high, datumId? }', name: 'ui:chart-datum-activate', target: 'Astro chart figure or Elements data chart host', when: 'Fires once after a plotted datum or its native action button is activated. Requires drilldown. Astro uses UIPrimitives, Elements owns its lifecycle, and React uses onDatumActivate instead.' },
   { detail: '{ state: "error" | "loading" | "ready" | "unavailable" }', name: 'ui:attachment-preview-change', target: 'AttachmentPreview root', when: 'Fires after a preview state changes. The event never includes the file URL.' },
   { detail: '{ value: number }', name: 'ui:image-comparison-change', target: 'ImageComparison root', when: 'Fires as the native range changes the percentage of the after image revealed.' },
   {

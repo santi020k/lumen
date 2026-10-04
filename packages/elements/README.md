@@ -577,3 +577,23 @@ than nesting controls inside a linked Attachment. The application retains file v
 authorization, persistence, and object URL cleanup. See the
 [attachment composition recipe](../../docs/consumer-ui-recipes.md#attachment-previews-and-file-lists)
 for adapter props, slots, child contracts, retry identity, and safe state events.
+
+### Chart datum actions
+
+All seven data charts accept the opt-in `drilldown` attribute. Each plotted observation gains a
+pointer target and a matching native button under an accessible disclosure, even with
+`show-table="false"`. Listen for the bubbling, composed `ui:chart-datum-activate` event on the chart
+host; its validated `LumenChartDatumActivationDetail` contains original data identities and values.
+Missing measurements and invalid ranges have no actions; pie charts expose only positive slices.
+
+```html
+<lumen-bar-chart drilldown explore-data-label="Explore chart data"
+  datum-action-prefix="Open details: " show-table="false"></lumen-bar-chart>
+```
+
+Use the `explore-data-label` and `datum-action-prefix` attributes for localized text, or assign a
+`datumActionFormatter(context)` property for a contextual label formatter. The exported
+`LumenChartDatumActionsElement` type describes this host property contract. Updating series, data,
+or labels preserves the open disclosure and restores focus to the same available action. Chart
+hosts own their controller lifecycle across disconnect/reconnect; mixed Astro pages leave these
+hosts to Elements. Application code owns navigation, requests, and filtering.
