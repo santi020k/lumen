@@ -62,6 +62,12 @@
 
 ### Patch Changes
 
+- Reduce published web artifact sizes within the existing v4 budgets. React compacts its component build
+  without renaming identifiers, Web Components use native private methods for internal behavior, and
+  the shared stylesheet retains the same rules with concise section comments. Public APIs stay unchanged.
+- Updated dependencies []:
+  - @santi020k/lumen@4.0.0
+
 - Reject malformed Astro action errors and inherited icon names, preserve plain markup prose without syntax highlighting, and normalize form-error records whose field is named `fields`, exclude blank numeric chart coordinates, preserve literal slash-star text during markup migrations, and detect existing recipe conflicts before writing files.
 
   Validate externally associated native form controls on submission in Astro and Web Components.

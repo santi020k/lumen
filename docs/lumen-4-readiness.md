@@ -4,29 +4,85 @@ This working record tracks the local `release/v4.0.0` candidate. It is not publi
 production qualification evidence. Consumer audits inspect application source; application
 data, deployment, and migration remain owned by those projects.
 
-## Release preparation checkpoint
+## Release preparation checkpoint — October 4
 
-Release preparation based on consolidation candidate `79e6b066` consumed 36 pending Changesets
-through the installed Changesets generator in an isolated metadata workspace. Their generated
-notes are folded into the ten existing, unpublished `4.0.0` changelogs. The duplicate Core
-`4.0.0` heading was consolidated; earlier published release entries and all package versions
-remain unchanged. The publication scope still resolves all ten unpublished npm packages.
-Changesets status reports no pending release notes, rather than scheduling accidental `5.0.0`,
-`4.1.0` and `4.0.1` releases. Subsequent stabilization commits require the same note reconciliation
-before the final candidate is approved.
+The isolated `chore/v4-release-preparation` branch combines consolidation `79e6b066`, native and
+web quality integration `a775f1cd`, live iOS renderer/bundle corrections `bd40105d`, and explicit
+Astro parser resolution `cb31915d`. It preserves all existing checkouts and historical stashes.
+The selected `release/v4.0.0` integration branch remains at `50990a22` while the security gate fails.
 
-The release-canary workflow now skips its pull-request comparison fetch on manual dispatch.
-A regression executes its actual classification command with empty pull-request references and
-checks that every canary surface and all ten public npm packages remain selected. The workflow
-and classifier suites pass 40 checks; this does not claim a remote Actions run.
+All pending Changesets were processed through the installed generator in an isolated metadata
+workspace and folded into the ten existing, unpublished `4.0.0` changelogs. This prevents unintended
+`5.0.0`, `4.1.0`, and `4.0.1` releases. The duplicate Core heading was consolidated; earlier published
+entries and package versions remain unchanged. New stabilization notes are reconciled into the same
+candidate. The publication scope still resolves all ten unpublished npm packages.
 
-Local canonical validation reaches the guarded security check after successful build, types,
-tests, lint, spelling and registry checks. The remaining `http-cache-semantics` finding still
-blocks the gate; the approved Forge and Braces patch checks pass. Keep the v4 contract in draft
-and preserve the release-age policy. Final native integration, qualification policy alignment,
-complete device and consumer evidence, and exact-revision approval remain separate requirements.
-No release branch push, publication, deployment or final release integration is established by
-this checkpoint.
+Manual release-canary dispatch now skips the pull-request comparison fetch. Its regression executes
+the actual classification command with empty pull-request references and verifies every canary
+surface and all ten npm packages. The workflow/classifier suites pass 40 checks; this is local
+workflow validation, not an Actions run.
+
+Browser stabilization corrected Safari popup dismissal: pointer activation now focuses the trigger
+so Escape reaches the disclosure, while canceled clicks retain application control. Mounted tests
+cover an already focused external control, menu focus, nested dismissal, and both anchored and
+application-positioned panels. Desktop/mobile Chromium and WebKit conformance passes all 136 checks.
+Desktop and phone dashboard screenshots were inspected. The preview's record-details sentence also
+retains its space before the client name.
+
+The exact-version React Native renderer patch is combined with the approved Forge and Braces
+patches. Frozen-lockfile installation passes without weakening the release-age policy. The renderer's
+source-build and simulator evidence remains in [native quality](lumen-4-native-quality.md#local-renderer-correction-and-bundle-gate-follow-up);
+this preparation run does not relabel it as physical-device qualification. The React and Elements
+bundles retain their public contracts after artifact reductions.
+
+### Current verification and remaining gates
+
+Canonical `pnpm run validate` passes build, strict types, 1,442 tests in 137 files, zero-warning lint,
+spelling, Knip, registry checks and all nine security guard tests. It stops at the remaining high
+`http-cache-semantics` advisory. After the parser integration, a fresh frozen install and all 23 lint
+tasks pass again. Local Swift tests pass all 68 cases; Compose `test lint apiCheck` completes all 99
+tasks. These native sources are unchanged by the final renderer and web integration.
+
+The final web artifacts pass all 1,526 accessibility/responsive checks and all 136 framework
+conformance checks. Publish dry runs validate all ten package contents; clean Core, umbrella, Astro,
+React, React Hook Form, Elements, Next.js and brand-icon consumers pass. The packed React Native
+consumer passes install, peer, contents and strict types, and packed MCP consumers pass both stdio
+and Streamable HTTP. These post-security checks were run separately because the canonical gate
+stops at the advisory. A metadata comparison against `79e6b066` confirms unchanged published
+changelog history, ten public versions at `4.0.0`, one v4 entry per package and no pending Changesets.
+
+| Gate | Current evidence | Required next action |
+| --- | --- | --- |
+| Security | Forge and Braces patches verified; cache advisory still fails | Preserve the 24-hour hold. After October 4, 21:56:05 Colombia time, resolve the age-eligible cache dependency and rerun the guarded audit and canonical gate. See [dependency review](lumen-4-dependencies.md#cache-advisory-correction) for why version metadata alone is not proof of a behavior fix. |
+| Native stability | Zero of two iterations; seven current baseline hashes | Align the old pre-2.0-only checker with the approved v4 qualification policy, then collect two distinct iterations with immutable artifact and consumer evidence. Local checks do not count automatically. |
+| Real native consumers | All five adapter records remain incomplete | Verify the final candidate in React Native, SwiftUI, Compose, WidgetKit and Wear consumers and record exact revisions and permanent proof. |
+| Physical devices | All 22 minimum/current slots remain incomplete | Complete the documented interaction, accessibility, text-scale and state checks on the required hardware. |
+| Approval and publication | V4 contract remains draft; no remote release action | Resolve the qualification gates, review the final revision, record explicit approval, and use the GitHub release workflow. |
+
+The pending qualification decision is whether v4 uses published prerelease artifacts or explicitly
+approved local candidate builds for its two iterations. Published candidates retain the existing
+published-artifact evidence requirement and are the recommended route. The current checker accepts
+only ordinary versions below 2.0, so neither option can be called complete without an intentional
+contract update. No exception or evidence was invented during preparation.
+
+### Release execution and recovery
+
+After the security gate passes, merge the validated preparation branch into a clean, idle
+`release/v4.0.0` worktree and rerun the merged-candidate checks. Before an authorized first push,
+obtain the required fresh independent review against `main` and resolve every finding. Prepare the
+`release/v4.0.0` to `main` pull request with the coordinated versions, changelogs, and
+[v4 migration guidance](migrating-to-lumen.md#migrating-from-version-3-to-version-4). Remote pushes,
+PR creation, merges, publication and deployment remain separately authorized actions.
+
+GitHub Actions must create the immutable release tag and coordinate publication from the merged
+commit. Apple build/distribution belongs in Xcode Cloud. Verify published package provenance,
+clean consumers, native artifact revisions and deployed smoke checks before retiring the branch.
+If release automation fails, diagnose and rerun it. Never replace a published tag or republish an
+existing version. A regression after publication requires a corrective version; affected consumers
+can restore their previously tested dependency lockfile and application revision together. Restore
+source-level API usage with the dependency version, preserve consumer data, and rebuild native apps
+when their linked artifacts change. No data migration or production data mutation is part of this
+candidate preparation.
 
 ## October 3 complete branch consolidation candidate
 

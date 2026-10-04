@@ -62,7 +62,15 @@
 
 ### Patch Changes
 
-- Keep keyboard focus on pointer-opened popover triggers so Escape dismisses the popup in Safari, including desktop and narrow dashboard layouts.
+- Reduce published web artifact sizes within the existing v4 budgets. React compacts its component build
+  without renaming identifiers, Web Components use native private methods for internal behavior, and
+  the shared stylesheet retains the same rules with concise section comments. Public APIs stay unchanged.
+
+- Focus the popup trigger on pointer activation so popovers with arbitrary content keep an Escape
+  dismissal path in Safari. Honor canceled activation and preserve menu item focus and application-owned
+  positioning.
+- Updated dependencies []:
+  - @santi020k/lumen@4.0.0
 
 - Keep anchor navigation working with malformed fragments and short pages. Preserve native dialog autofocus, dismiss only genuine backdrop presses, and restore anonymous triggers without requiring a secure-context UUID API. Clear phone validation references when their error element is removed. Keep React and Elements tab keyboard navigation within its own tab group and skip disabled tabs across all web adapters.
 

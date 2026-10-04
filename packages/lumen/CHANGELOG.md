@@ -4,6 +4,10 @@
 
 ### Patch Changes
 
+- Reduce published web artifact sizes within the existing v4 budgets. React compacts its component build
+  without renaming identifiers, Web Components use native private methods for internal behavior, and
+  the shared stylesheet retains the same rules with concise section comments. Public APIs stay unchanged.
+
 - Keep Compose adaptive list/detail content in one pane at accessibility font scales of 2 or larger.
   The Android Workspace example now uses the shared scaffold while retaining selection, drafts and Back navigation.
 

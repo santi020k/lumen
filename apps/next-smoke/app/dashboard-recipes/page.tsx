@@ -69,6 +69,7 @@ export default function DashboardRecipes() {
           renderDetails={row => (
             <p>
               Record details for
+              {' '}
               {typeof row.client === 'string' ? row.client : ''}
             </p>
           )}
