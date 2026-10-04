@@ -3,8 +3,6 @@
 ## 4.0.0
 
 - Keep sparkline endpoints circular and line strokes uniform when a chart stretches to fit a wide or shallow container.
-- Updated dependencies [`71071bc`, `9d27933`]:
-  - @santi020k/lumen@4.0.1
 
 ### Major Changes
 
