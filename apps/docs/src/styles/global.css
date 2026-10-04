@@ -243,7 +243,6 @@ body {
 
 .docs-header-count {
   border-color: hsl(var(--line) / 0.7);
-  color: hsl(var(--ink-muted));
   font-family: var(--santi020k-font-mono, ui-monospace, monospace);
   font-size: 0.64rem;
 }

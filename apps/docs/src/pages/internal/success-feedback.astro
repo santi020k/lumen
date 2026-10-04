@@ -1,0 +1,43 @@
+---
+import { createElement } from 'react'
+import { renderToStaticMarkup } from 'react-dom/server'
+
+import '@santi020k/lumen/styles.css'
+
+import { Alert, Container, Stack, Toast } from '@santi020k/lumen-astro'
+import { Alert as ReactAlert, Toast as ReactToast } from '@santi020k/lumen-react'
+
+const reactFeedback = renderToStaticMarkup(createElement('section', { 'aria-label': 'React feedback' }, createElement(ReactAlert, { variant: 'success' }, 'React preferences saved.'), createElement(ReactToast, { variant: 'success' }, 'React changes saved.')))
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Success feedback contrast fixture</title>
+  </head>
+  <body>
+    <Container as="main">
+      <Stack gap="section">
+        <h1>Success feedback</h1>
+        <Alert variant="success">Astro preferences saved.</Alert>
+        <Toast variant="success">Astro changes saved.</Toast>
+        <Fragment set:html={reactFeedback} />
+        <lumen-alert variant="success">Elements preferences saved.</lumen-alert>
+        <lumen-toast variant="success">Elements changes saved.</lumen-toast>
+      </Stack>
+    </Container>
+    <script>
+      import { defineLumenElements } from '@santi020k/lumen-elements'
+
+      defineLumenElements(['Alert', 'Toast'])
+    </script>
+  </body>
+</html>
+
+<style>
+  body { margin: 0; background: hsl(var(--canvas)); color: hsl(var(--ink)); font-family: var(--ui-font); }
+  main { padding-block: var(--ui-space-section); }
+</style>

@@ -86,6 +86,12 @@
 
 ### Patch Changes
 
+- Copy ordinary Code and CodeTabs snippets from their rendered code content, avoiding a duplicate
+  source attribute that can confuse HTML heading audits. Explicit highlighted source remains supported.
+
+- Keep success Alert and Toast text readable on their tinted surfaces by using the semantic
+  ink color. Success borders and backgrounds retain their status color across web adapters.
+
 - Keep disclosure keyboard navigation on available controls: skip hidden and inert regions,
 CSS-invisible controls, and native disabled controls while preserving enabled legend actions
 and controls restored by removing inert.

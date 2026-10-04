@@ -117,6 +117,9 @@
 
 ### Patch Changes
 
+- Keep success Alert and Toast text readable on their tinted surfaces by using the semantic
+  ink color. Success borders and backgrounds retain their status color across web adapters.
+
 - Improve inactive CodeTabs label contrast in the shared stylesheet so framework selectors remain readable in the light theme.
 
 - Reject unsafe external component names before wrapper generation. Keep schedule availability

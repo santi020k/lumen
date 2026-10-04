@@ -72,21 +72,25 @@ and include validation, loading, success, and platform-native accessibility stat
 ---
 
 <DocsLayout
-  description="Install the portable Lumen UI agent skill for Codex, Claude Code, Cursor, and other AI coding tools."
-  title="AI skill - Lumen UI"
+  description="Build accessible interfaces with AI coding agents using Lumen skills, focused MCP context, and real component APIs. Start with a working Astro or React example."
+  title="Build UI with AI coding agents - Lumen UI"
 >
   <div class="skill-page">
     <DocsPageHero
-      description="A portable Agent Skill that teaches coding assistants how to select, compose, theme, and verify Lumen components across web and native applications."
+      description="Give your coding agent reusable components and precise API guidance. The portable Lumen skill teaches it to select, compose, theme, and verify interfaces across web and native applications."
       eyebrow="AI-native UI"
       stats={[
         { label: 'Install', value: '1 command' },
         { label: 'Targets', value: 6 },
         { label: 'Format', value: 'SKILL.md' }
       ]}
-      title="Give your AI the Lumen design system."
+      title="Build interfaces with AI and Lumen."
     >
       <Fragment slot="actions">
+        <DocsActionLink href="/guides/build-ui-with-ai">
+          Build a working example
+          <Icon decorative name="arrow-right" size="sm" />
+        </DocsActionLink>
         <DocsActionLink href="#install">
           Install the skill
           <Icon decorative name="arrow-down" size="sm" />
@@ -120,6 +124,22 @@ and include validation, loading, success, and platform-native accessibility stat
         </div>
       </div>
     </DocsPageHero>
+
+    <section class="skill-section" aria-labelledby="efficiency-title">
+      <div class="skill-section__heading">
+        <div>
+          <p>Purposeful context</p>
+          <h2 id="efficiency-title">Spend context on the interface you need.</h2>
+        </div>
+        <p>
+          Compose existing components instead of generating each primitive. Search for the task,
+          read the matching framework usage, and request full source only when it helps.
+          This workflow is designed to reduce repetitive code and unnecessary AI context;
+          it does not guarantee lower token use on every task.{' '}
+          <Link href="/guides/measure-ai-ui-token-usage">Read the measurement method</Link>.
+        </p>
+      </div>
+    </section>
 
     <section class="skill-section" id="install" aria-labelledby="install-title">
       <div class="skill-section__heading">

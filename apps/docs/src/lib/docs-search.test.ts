@@ -20,6 +20,13 @@ const item = (
 
 describe('docs search ranking', () => {
   test.each([
+    ['ai react', '/guides/build-ui-with-ai'],
+    ['ai token usage', '/guides/measure-ai-ui-token-usage']
+  ])('finds the practical AI guide for %s', (query, href) => {
+    expect(getMatchedSearchItems(docsSearchIndex, query).some(result => result.href === href)).toBe(true)
+  })
+
+  test.each([
     ['migration v1 v2', '/docs/migrations/v1-to-v2'],
     ['migration v2 v3', '/docs/migrations/v2-to-v3'],
     ['migration v3 v4', '/docs/migrations/v3-to-v4']

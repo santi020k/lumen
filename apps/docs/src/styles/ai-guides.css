@@ -1,0 +1,23 @@
+.ai-guide {
+  padding-block: var(--ui-space-section);
+}
+
+.ai-guide .ui-prose h1 {
+  margin-block: 1rem 0.5em;
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-weight: 900;
+  letter-spacing: -0.055em;
+  line-height: 1.08;
+  text-wrap: balance;
+}
+
+.ai-guide .ui-prose h2 {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+
+.ai-guide > .ui-stack > .ui-prose:first-child > p:first-of-type {
+  font-size: 1.125rem;
+}

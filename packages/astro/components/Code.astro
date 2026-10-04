@@ -84,7 +84,7 @@ const renderedCode = hasCode ? renderLumenCodeHtml(code, language) : ''
             <button
               aria-label={copyLabel}
               class="ui-code__copy"
-              data-copy-value={code}
+              data-copy-value={highlighted ? code : undefined}
               data-copy-label={copyLabel}
               data-copy-copied-label={copiedLabel}
               data-copy-error-label={errorLabel}

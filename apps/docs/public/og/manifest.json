@@ -19,7 +19,7 @@
     },
     "/docs": {
       "alt": "Documentation - Lumen UI — Lumen UI",
-      "description": "Choose the Lumen UI documentation for Web, React Native, Apple platforms, or Android, and explore their shared foundations.",
+      "description": "Build accessible web and native interfaces with Lumen components, AI agent skills, and framework-specific API guidance.",
       "images": [
         {
           "format": "webp",
@@ -34,8 +34,8 @@
       "title": "Documentation - Lumen UI"
     },
     "/": {
-      "alt": "Lumen UI — Crafted primitives for web and native platforms — Lumen UI",
-      "description": "Lumen is a crafted multi-framework UI system with 182 accessible primitives for Web, React Native, Apple platforms, and Android.",
+      "alt": "Lumen UI — Accessible Components for AI Coding Agents — Lumen UI",
+      "description": "Build with AI using 182 accessible primitives, agent skills, and focused MCP context. One UI library for web and native apps.",
       "images": [
         {
           "format": "webp",
@@ -47,7 +47,7 @@
         }
       ],
       "pathname": "/",
-      "title": "Lumen UI — Crafted primitives for web and native platforms"
+      "title": "Lumen UI — Accessible Components for AI Coding Agents"
     },
     "/templates": {
       "alt": "Product-ready templates. Free and open source. — Lumen UI",
@@ -81,9 +81,41 @@
       "pathname": "/guides",
       "title": "Start with a product problem."
     },
+    "/guides/build-ui-with-ai": {
+      "alt": "Build accessible UI with AI in Astro and React — Lumen UI",
+      "description": "Build and verify an accessible notification panel in Astro or React with AI coding agents, Lumen components, and focused MCP context.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "guides--build-ui-with-ai.webp",
+          "primary": true,
+          "url": "/og/pages/guides--build-ui-with-ai.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/guides/build-ui-with-ai",
+      "title": "Build accessible UI with AI in Astro and React"
+    },
+    "/guides/measure-ai-ui-token-usage": {
+      "alt": "Measure AI token usage when building UI — Lumen UI",
+      "description": "Measure AI token usage, tool context, retries, and accessible UI quality when comparing a component library with building from scratch.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "guides--measure-ai-ui-token-usage.webp",
+          "primary": true,
+          "url": "/og/pages/guides--measure-ai-ui-token-usage.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/guides/measure-ai-ui-token-usage",
+      "title": "Measure AI token usage when building UI"
+    },
     "/guides/ship-a-settings-screen": {
-      "alt": "Ship an accessible settings screen. — Lumen UI",
-      "description": "Build and verify a responsive account settings surface in every supported framework.",
+      "alt": "Ship an accessible settings screen — Lumen UI",
+      "description": "Evaluate Lumen with a production-shaped account surface that includes forms, states, theming, and accessibility checks.",
       "images": [
         {
           "format": "webp",
@@ -95,7 +127,7 @@
         }
       ],
       "pathname": "/guides/ship-a-settings-screen",
-      "title": "Ship an accessible settings screen."
+      "title": "Ship an accessible settings screen"
     },
     "/community": {
       "alt": "Made with Lumen. — Lumen UI",
@@ -130,8 +162,8 @@
       "title": "Prove the system before you commit."
     },
     "/docs/ai-skill": {
-      "alt": "Give your AI the design system. — Lumen UI",
-      "description": "Install the portable skill so coding agents select and verify real Lumen components.",
+      "alt": "Build interfaces with AI and Lumen. — Lumen UI",
+      "description": "Use reusable components, focused MCP context, and precise API guidance for coding agents.",
       "images": [
         {
           "format": "webp",
@@ -143,7 +175,7 @@
         }
       ],
       "pathname": "/docs/ai-skill",
-      "title": "Give your AI the design system."
+      "title": "Build interfaces with AI and Lumen."
     },
     "/docs/mcp": {
       "alt": "Real component contracts for AI agents. — Lumen UI",

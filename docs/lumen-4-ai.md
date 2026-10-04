@@ -26,6 +26,10 @@ claude plugin validate . --strict
 
 ## Actual agent benchmarks
 
+For the matched scratch/documentation/skill-and-MCP token comparison, use
+[the AI efficiency protocol](ai-efficiency.md). Its token totals, repair attempts, and quality
+checks are separate from the contract-conformance fixtures below.
+
 `pnpm run eval:agents` invokes installed Codex and Claude CLIs with the existing authenticated
 sessions, serially. It can consume account usage. It runs synthetic local fixtures, leaves agent
 transcripts and evidence outside the repository, and never publishes or commits generated fixtures.

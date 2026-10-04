@@ -5,6 +5,10 @@ polished rather than flashy.
 
 ## Positioning
 
+- An open-source UI library built for AI-assisted development of accessible web and native interfaces.
+- Reusable components, precise API guidance, and focused context for coding agents.
+- Describe token efficiency as a design goal; publish savings only with a reproducible comparison
+  and its model, tasks, quality checks, and limitations. Follow [the claim ledger](marketing/STRATEGY.md).
 - Multi-framework primitives with Astro as the reference implementation.
 - Standalone CSS that renders without consumer Tailwind configuration.
 - Practical defaults for real product interfaces, docs, tools, and dashboards.

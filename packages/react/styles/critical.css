@@ -672,7 +672,7 @@
 .ui-toast--success {
   border-color: hsl(var(--success) / 0.36);
   background: hsl(var(--success) / 0.08);
-  color: hsl(var(--success));
+  color: hsl(var(--ink));
 }
 
 .ui-alert--warning,
