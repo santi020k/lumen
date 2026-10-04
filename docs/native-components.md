@@ -1052,7 +1052,7 @@ provider suggestions, physical TalkBack behavior, or consumer qualification.
 ### Compose v4 product controls
 
 The Android-specific catalog also includes `LumenTopAppBar`, `LumenSwipeActions`,
-`LumenMultiSelect` and `LumenAdaptiveListDetailScaffold`.
+and `LumenAdaptiveListDetailScaffold`.
 
 - App bars provide small, medium, and large sizes and named navigation/action slots. Remember a
   `LumenTopAppBarScrollBehavior` with `rememberLumenTopAppBarScrollBehavior`, then attach its
@@ -1065,16 +1065,6 @@ The Android-specific catalog also includes `LumenTopAppBar`, `LumenSwipeActions`
   expose the same operations without gestures. Set `enabled = false` while busy. Destructive
   actions use the danger intent; confirmation, undo, persistence and actual removal belong to the
   application. Use stable lazy-list keys for each record.
-- Multi-select takes `LumenSelectionOption` results and a controlled `Set<String>`. Selection is
-  immediate; Done or outside dismissal closes the dialog without reverting changes. The application
-  owns `query`, filtering, asynchronous results, cancellation and retry. Loading and results errors
-  hide stale selectable results. Options require unique non-empty values and labels. Selections
-  absent from current results remain visible with their raw value as a fallback label and can be
-  removed; keep stable human-readable values or retain selected options in results when friendly
-  chip labels are needed. Disabled options cannot be selected or removed while present. Read-only
-  and disabled states dismiss selection and prevent edits. `errorMessage` is form validation;
-  `resultsErrorMessage` is a separate recoverable search failure. Localize search, completion,
-  empty/loading/retry, selection count and chip-removal labels.
 - Adaptive list/detail scaffolds are full-window layouts backed by Material Adaptive 1.3.0.
   Window size, posture and separating hinges determine the pane arrangement. A null `selectedKey`
   prioritizes the list and shows `emptyDetail` beside it in wide windows; a selection prioritizes
@@ -1164,3 +1154,20 @@ LumenRangeSlider("Capacidad", value: $capacity, in: 0...100, step: 10,
 LumenRangeSlider("Capacidad", capacity, { capacity = it }, valueRange = 0f..100f,
     steps = 9, startLabel = "Mínimo", endLabel = "Máximo", formatValue = { "${it.toInt()} %" })
 ```
+
+## Native multiple selection
+
+`LumenMultiSelect` is shared across React Native, SwiftUI and Compose. Compose takes
+`LumenSelectionOption` results, while SwiftUI and React Native reuse their `LumenAutocompleteOption`
+models. A controlled string set holds selections. Selection is
+immediate; Done or outside dismissal closes the dialog without reverting changes. The application
+owns `query`, filtering, asynchronous results, cancellation and retry. Loading and results errors
+hide stale selectable results. Options require unique non-empty values and labels. Selections
+absent from current results remain visible with their raw value as a fallback label and can be
+removed; keep stable human-readable values or retain selected options in results when friendly
+chip labels are needed. Disabled options cannot be selected or removed while present. Read-only
+and disabled states dismiss selection and prevent edits. `errorMessage` is form validation;
+`resultsErrorMessage` is a separate recoverable search failure. Localize search, completion,
+empty/loading/retry, selection count and chip-removal labels.
+
+See the [complete web-to-native audit](lumen-4-web-native-audit.md) for the remaining catalog gaps.

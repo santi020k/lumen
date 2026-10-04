@@ -1603,6 +1603,7 @@ const Playground = ({
             'Number field',
             'Time field',
             'Autocomplete',
+            'Multi select',
             'Password field',
             'Input OTP',
             'Image comparison',

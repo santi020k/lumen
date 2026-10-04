@@ -72,6 +72,7 @@ enum PlaygroundCatalog {
                 "Number field",
                 "Password field",
                 "Input OTP",
+                "Multi select",
                 "Shortcut recorder",
                 "Symbol picker"
             ]

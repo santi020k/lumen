@@ -54,7 +54,8 @@
         "autocomplete",
         "number-field",
         "password-field",
-        "input-otp"
+        "input-otp",
+        "multi-select"
       ]
     },
     {
@@ -202,11 +203,6 @@
         "id": "swipe-actions",
         "label": "Swipe actions",
         "category": "actions"
-      },
-      {
-        "id": "multi-select",
-        "label": "Multi select",
-        "category": "forms"
       },
       {
         "id": "adaptive-list-detail-scaffold",

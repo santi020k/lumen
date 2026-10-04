@@ -130,6 +130,7 @@ export {
   type LumenImageProps,
   type LumenImageRadius
 } from './media-components.js'
+export { LumenMultiSelect, type LumenMultiSelectProps } from './multi-select-components.js'
 export {
   LumenAlertDialog,
   type LumenAlertDialogProps,
