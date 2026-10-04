@@ -4,6 +4,58 @@ This working record tracks the local `release/v4.0.0` candidate. It is not publi
 production qualification evidence. Consumer audits inspect application source; application
 data, deployment, and migration remain owned by those projects.
 
+## October 3 complete branch consolidation candidate
+
+The isolated `chore/v4-consolidation` candidate through `fdcfab80` starts from the selected
+`release/v4.0.0` at `50990a22`. The release branch has not advanced: the combined candidate is
+committed and reviewable, but the size and security gates below still fail. Local integration
+requires resolving those failures or an explicit owner-approved exception. Nothing was pushed,
+published, or deployed.
+
+Git ancestry checks after refreshing remote refs confirm containment of every local branch,
+every fetched remote branch, and all 21 worktree heads at the final inventory. Completed source
+tips include dashboard composition (`cedf45a2`, `ac3da775`), dashboard improvements (`1a50a05f`),
+data visualization (`55a1032f`), native parity (`7b0cb3ae`), native quality (`b6dbe7ea`), playground
+appearances (`d8aa397f`), and playground discovery (`653524fe`). Work added by other tasks after
+this inventory is outside this snapshot.
+
+The two remaining dirty source checkouts are preserved in place. The dashboard checkout's
+pending data-view URL, editor initialization, and form-reset changes are already represented
+by `bd11bc02` and its stronger typing, reset cancellation, and external-form handling. Its form
+changeset is also present with corrected native value-setter terminology. All ten pending
+documentation images and all 428 routes from the older image manifest are present in the
+regenerated 448-route manifest. All eight historical stashes and all original branches and
+checkouts remain preserved.
+
+Merge resolutions retain chart datum activation together with axis formatters, explicit domains,
+reference overlays, accessible tables, and dashboard composition. Scatter-chart hit targets
+remain usable at plot boundaries without exposing off-plot data. The combined native API and
+web API inventories retain reviewed classifications; MCP data, native stability hashes, registry
+data, and social assets were regenerated. Closed native disclosure contents are correctly
+excluded from the visible-focus test scan. Android toast timing now honors accessible reading
+time and cancels stale recommendations after updates or removal.
+
+Validation of the combined code passed the 14-task build, 23-task strict typecheck, zero-warning
+lint, 1,434 tests in 136 files, 45 browser checks, 68 Swift tests, and Compose `test lint apiCheck`.
+The six chart-activation browser checks passed again after the final React formatting change.
+Web/native contracts and API checks, Knip, spelling, registry/MCP/plugin consistency, package
+dry runs, consumer package checks, React Native package checks, and MCP stdio/HTTP smoke checks
+also passed. Desktop and mobile homepage screenshots compare the original release with the
+candidate; playground and chart pages were inspected at both widths. Native evidence schema
+checks do not establish device or store qualification; the stability ledger still has zero of
+two required iterations.
+
+The final `pnpm run validate` passed its prerequisite checks and build, then stopped at
+`check:bundle-size`: `packages/lumen/styles.css` is 213,671 bytes raw and 34,856 bytes gzip,
+against unchanged combined limits of 208,000 and 34,000. Other measured bundles pass. Running
+`pnpm run check:security` separately still reports three high advisories:
+[node-forge](https://github.com/advisories/GHSA-86w9-cpqp-85rv),
+[http-cache-semantics](https://github.com/advisories/GHSA-ch52-4w7c-c8xp), and
+[braces](https://github.com/advisories/GHSA-vfj7-8cjw-p6xm).
+The latest audit now identifies `http-cache-semantics >=4.3.0` as patched;
+the other two have no patched version listed. No budgets, audit exclusions, or dependency
+overrides were weakened to make these gates pass.
+
 ## October 3 pending-work integration
 
 The release checkout's pending form reset, rich-text initialization and data-view URL fixes are
