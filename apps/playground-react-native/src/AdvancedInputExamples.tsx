@@ -1,6 +1,7 @@
 // cspell:words Limpiar seleccionadas Quitar
 import { type ReactElement, useState } from 'react'
 import { View } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import {
   LumenAutocomplete, LumenButton, LumenImageComparison, LumenInputOTP,   LumenMultiSelect, LumenNumberField,
@@ -89,6 +90,7 @@ const MultiSelectExample = ({ spanish, readOnly, visible }: {
   readOnly: boolean
   visible: boolean
 }): ReactElement | null => {
+  const safeAreaInsets = useSafeAreaInsets()
   const [values, setValues] = useState<ReadonlySet<string>>(() => new Set(['bogota', 'retained-city']))
   const [query, setQuery] = useState('')
   const [state, setState] = useState('ready')
@@ -109,6 +111,7 @@ const MultiSelectExample = ({ spanish, readOnly, visible }: {
       />
       <LumenMultiSelect
         label={copy.city}
+        safeAreaInsets={safeAreaInsets}
         values={values}
         onValuesChange={setValues}
         query={query}

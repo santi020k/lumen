@@ -45,7 +45,8 @@ visionOS, matching the existing editable slider; tvOS and watchOS inventories re
 Compose. The host owns search and results; missing selections retain their value, loading/errors
 hide stale results, and disabled/read-only states block changes and close the presentation. Swift
 search also accepts a localized clear label. Native conventions remain: SwiftUI bindings and
-sheets, React Native callbacks and a virtualized modal list, and Compose Material dialogs.
+sheets, React Native callbacks and a virtualized modal list, and Compose Material dialogs. React
+Native forwards application-owned safe-area insets into the embedded sheet.
 
 The [complete web-to-native audit](lumen-4-web-native-audit.md) records every one of the 182 web
 entries: 70 semantic counterparts, 61 native compositions, 27 platform/host responsibilities and
@@ -57,7 +58,7 @@ Calendar/scheduling, command search, rich-text/mention editing and board interac
 consumer-driven contracts. Compose tooltip coverage remains asymmetric. Physical-device assistive
 technology and consumer qualification are still separate evidence gates.
 
-The follow-up passes 202 React Native behavioral/model tests and 86 Swift tests. The iPhone Release
+The follow-up passes 203 React Native behavioral/model tests and 86 Swift tests. The iPhone Release
 UI test verifies immediate selection, retained filtered values, named removal and read-only rejection.
 The Expo web preview checks phone and desktop widths, loading/empty/retry, Spanish labels and
 read-only behavior. Both native documentation captures use the repository screenshot synchronization

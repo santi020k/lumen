@@ -4,7 +4,8 @@
 
 - Add controlled MultiSelect to React Native and SwiftUI alongside Compose, retaining selections
   outside filtered results, blocking disabled/read-only edits, and exposing loading/retry and localized
-  action labels. Add a complete, checked web-to-native catalog audit for the remaining v4 gaps.
+  action labels. Forward application safe-area insets into the React Native sheet. Add a complete,
+  checked web-to-native catalog audit for the remaining v4 gaps.
 
 ### Minor Changes
 

@@ -5,7 +5,7 @@ import { LumenFieldGroup } from './additional-components.js'
 import type { LumenAutocompleteOption } from './advanced-form-components.js'
 import { LumenSearchField } from './form-components.js'
 import { LumenButton, LumenText } from './foundation-primitives.js'
-import { LumenSheet } from './overlay-components.js'
+import { LumenSheet, type LumenSheetProps } from './overlay-components.js'
 import { LumenCheckbox } from './selection-components.js'
 
 export interface LumenMultiSelectProps {
@@ -28,6 +28,7 @@ export interface LumenMultiSelectProps {
   removeLabel?: (label: string) => string
   resultsErrorMessage?: string
   retryLabel?: string
+  safeAreaInsets?: NonNullable<LumenSheetProps['safeAreaInsets']>
   searchLabel?: string
   selectionLabel?: (count: number) => string
   values: ReadonlySet<string>
@@ -157,6 +158,7 @@ const MultiSelectControl = (props: LumenMultiSelectProps): ReactElement => {
       <SelectedValues {...props} editable={editable} />
       <LumenSheet
         avoidKeyboard
+        {...(props.safeAreaInsets === undefined ? {} : { safeAreaInsets: props.safeAreaInsets })}
         initialFocusRef={searchRef}
         returnFocusRef={triggerRef}
         title={props.label}

@@ -5216,6 +5216,7 @@ LumenTopAppBar("Projects", scrollBehavior = behavior,
       property('chooseLabel / searchLabel / clearSearchLabel / doneLabel', { android: 'String', apple: 'String', 'react-native': 'string' }, 'English defaults', 'Localizes selection and dialog actions.'),
       property('emptyLabel / loadingLabel / retryLabel', { android: 'String', apple: 'String', 'react-native': 'string' }, 'English defaults', 'Localizes result states.'),
       property('selectionLabel / removeLabel', { android: '(Int) -> String / (String) -> String', apple: '(Int) -> String / (String) -> String', 'react-native': '(count: number) => string / (label: string) => string' }, 'English formatters', 'Localizes counts and chip removal.'),
+      property({ 'react-native': 'safeAreaInsets' }, { 'react-native': 'LumenSafeAreaInsets' }, 'None', 'Passes the application safe-area provider insets into the native sheet.'),
       property({ android: 'modifier' }, { android: 'Modifier' }, { android: 'Modifier' }, 'Applies field layout.')
     ],
     slug: 'multi-select',

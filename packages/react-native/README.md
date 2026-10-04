@@ -605,7 +605,8 @@ adapter's binding and step conventions.
 
 `LumenMultiSelect` accepts a controlled `ReadonlySet<string>` and reuses `LumenAutocompleteOption`.
 `onValuesChange` receives a fresh `Set<string>`, so ordinary `useState(new Set<string>())` setters
-work without casts and the input set remains untouched.
+work without casts and the input set remains untouched. Pass `safeAreaInsets` from the application
+safe-area provider to keep modal actions clear of system indicators.
 The application supplies filtered options and owns query, requests, cancellation and persistence.
 Selection is immediate; closing does not revert it. Missing selected options retain their raw value
 and can be removed. Disabled options cannot be changed while present. Loading or search failure

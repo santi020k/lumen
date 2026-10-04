@@ -2319,3 +2319,13 @@ describe('multiple selection option identity', () => {
     await expect(renderNative(<LumenMultiSelect label="Teams" values={new Set<string>()} onValuesChange={() => undefined} query="" onQueryChange={() => undefined} options={options} />)).rejects.toThrow('MultiSelect options require')
   })
 })
+
+test('multiple selection forwards application safe-area insets to its modal', async () => {
+  const root = await renderNative(<LumenMultiSelect label="Teams" values={new Set<string>()} onValuesChange={() => undefined} query="" onQueryChange={() => undefined} options={[]} safeAreaInsets={{ bottom: 96 }} />)
+  const panels = root.container.queryAll(instance => {
+    const style = readProp(instance, 'style')
+
+    return typeof style === 'object' && style !== null && 'paddingBottom' in style && style.paddingBottom === 96
+  })
+  expect(panels.length).toBeGreaterThan(0)
+})
