@@ -25,10 +25,9 @@ import {
   Tabs
 } from '@santi020k/lumen-astro'
 
+import HomePlatformShowcase from '../components/HomePlatformShowcase.astro'
 import HomeWorkbench from '../components/HomeWorkbench.astro'
 import { frameworkSetups } from '../data/docs'
-import type { DocsPlatformId } from '../data/platforms'
-import { productPlatformGuides } from '../data/platforms'
 import { showcaseProjects } from '../data/showcase'
 import { documentedComponentCount, primaryPageMetadata } from '../data/site-metadata'
 import BaseLayout from '../layouts/BaseLayout.astro'
@@ -47,43 +46,6 @@ const heroInstallers = frameworkSetups.map(setup => ({
   icon: installerIcons[setup.id],
   id: setup.id,
   label: setup.label
-}))
-
-const platformPresentation = {
-  android: {
-    icon: 'bot',
-    preview: '/native-previews/android-compose.png',
-    runtime: 'Jetpack Compose · Material 3'
-  },
-  apple: {
-    icon: 'apple',
-    preview: '/native-previews/apple-native.png',
-    runtime: 'SwiftUI · five Apple platforms'
-  },
-  foundations: {
-    icon: 'layers-3',
-    preview: undefined,
-    runtime: 'One canonical token source'
-  },
-  'react-native': {
-    icon: 'smartphone',
-    preview: '/native-previews/react-native-android.png',
-    runtime: 'React Native · Expo ready'
-  },
-  web: {
-    icon: 'panels-top-left',
-    preview: undefined,
-    runtime: 'Astro · React · Web Components'
-  }
-} satisfies Record<DocsPlatformId, {
-  icon: string
-  preview: string | undefined
-  runtime: string
-}>
-
-const platformShowcase = productPlatformGuides.map(guide => ({
-  ...guide,
-  ...platformPresentation[guide.id]
 }))
 
 const principles = [
@@ -260,7 +222,7 @@ const useCases: readonly UseCase[] = featuredProjects.flatMap(name => {
               Share semantic color, type, spacing, motion, and component intent—then let each
               platform render and behave the way its users expect.
             </p>
-            <Marker variant="success">Native adapters are supported for Lumen 2</Marker>
+            <Marker variant="success">Shared foundations. Platform-native behavior.</Marker>
             <ButtonLink href="/docs/foundations" showArrow variant="inline">
               Explore shared foundations
             </ButtonLink>
@@ -268,54 +230,7 @@ const useCases: readonly UseCase[] = featuredProjects.flatMap(name => {
         </div>
       </ScrollReveal>
 
-      <RevealGroup class="home-platforms__grid" stagger={70}>
-        {platformShowcase.map((platform, index) => (
-          <Card
-            as="article"
-            class:list={[
-              'home-platform',
-              { 'home-platform--web': platform.id === 'web' }
-            ]}
-          >
-            <div class="home-platform__visual">
-              {platform.preview ?
-(
-                <Image
-                  alt={`${platform.label} Lumen component gallery`}
-                  height={platform.id === 'apple' ? 1440 : 1920}
-                  src={platform.preview}
-                  width={platform.id === 'apple' ? 1640 : 1080}
-                />
-              ) :
-(
-                <div class="home-platform__web-canvas" aria-hidden="true">
-                  <span><Icon decorative name="asterisk" size="sm" />Astro</span>
-                  <span><Icon decorative name="atom" size="sm" />React</span>
-                  <span><Icon decorative name="blocks" size="sm" />Elements</span>
-                  <div>
-                    <i></i><i></i><i></i>
-                  </div>
-                </div>
-              )}
-              <span class="home-platform__number" aria-hidden="true">0{index + 1}</span>
-            </div>
-            <div class="home-platform__body">
-              <div class="home-platform__meta">
-                <span><Icon decorative name={platform.icon} size="sm" />{platform.runtime}</span>
-                <div>
-                  <Marker variant="success">{platform.status}</Marker>
-                </div>
-              </div>
-              <h3>{platform.label}</h3>
-              <p>{platform.summary}</p>
-              <code>{platform.packageName}</code>
-              <ButtonLink href={platform.href} showArrow variant="inline">
-                Build for {platform.shortLabel}
-              </ButtonLink>
-            </div>
-          </Card>
-        ))}
-      </RevealGroup>
+      <HomePlatformShowcase />
     </section>
 
     <section class="home-section home-container" aria-labelledby="components-title">
@@ -1438,227 +1353,6 @@ const useCases: readonly UseCase[] = featuredProjects.flatMap(name => {
     position: relative;
   }
 
-  .home-platforms::before {
-    position: absolute;
-    top: clamp(8rem, 15vw, 13rem);
-    right: -12%;
-    z-index: -1;
-    width: 28rem;
-    height: 28rem;
-    border-radius: 50%;
-    background: hsl(var(--brand) / .1);
-    filter: blur(90px);
-    content: "";
-    pointer-events: none;
-  }
-
-  .home-platforms__grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1rem;
-    margin-top: clamp(2.5rem, 5vw, 4rem);
-  }
-
-  .home-platform {
-    display: grid;
-    min-width: 0;
-    grid-template-rows: 18rem 1fr;
-    overflow: hidden;
-    border-color: hsl(var(--line) / .78);
-    background: hsl(var(--surface) / .9);
-    box-shadow: 0 26px 72px -58px hsl(var(--ink) / .72);
-    padding: 0;
-  }
-
-  .home-platform__visual {
-    position: relative;
-    display: grid;
-    min-width: 0;
-    place-items: end center;
-    overflow: hidden;
-    border-bottom: 1px solid hsl(var(--line) / .72);
-    background:
-      linear-gradient(hsl(var(--line) / .23) 1px, transparent 1px),
-      linear-gradient(90deg, hsl(var(--line) / .23) 1px, transparent 1px),
-      radial-gradient(circle at 50% 118%, hsl(var(--brand) / .22), transparent 48%),
-      hsl(var(--surface-muted) / .72);
-    background-size: 2rem 2rem, 2rem 2rem, auto, auto;
-    padding: 2.2rem 2.2rem 0;
-  }
-
-  .home-platform__visual::after {
-    position: absolute;
-    inset: auto 0 0;
-    height: 28%;
-    background: linear-gradient(transparent, hsl(var(--ink) / .08));
-    content: "";
-    pointer-events: none;
-  }
-
-  .home-platform__visual :global(.ui-image) {
-    position: relative;
-    z-index: 1;
-    display: block;
-    width: auto;
-    max-width: min(88%, 18rem);
-    height: calc(100% + .65rem);
-    border: 1px solid hsl(var(--line));
-    border-bottom: 0;
-    border-radius: 1.15rem 1.15rem 0 0;
-    background: hsl(var(--canvas));
-    box-shadow: 0 1.6rem 3.5rem -1.8rem hsl(var(--ink) / .65);
-    object-fit: cover;
-    object-position: top center;
-  }
-
-  .home-platform__number {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    z-index: 2;
-    color: hsl(var(--ink-muted));
-    font: 700 .67rem/1 var(--santi020k-font-mono, monospace);
-    letter-spacing: .08em;
-  }
-
-  .home-platform__web-canvas {
-    position: relative;
-    z-index: 1;
-    display: grid;
-    width: min(100%, 25rem);
-    height: calc(100% - .25rem);
-    grid-template-columns: repeat(3, auto);
-    grid-template-rows: auto 1fr;
-    justify-content: start;
-    gap: .55rem;
-    overflow: hidden;
-    border: 1px solid hsl(var(--line));
-    border-bottom: 0;
-    border-radius: 1.15rem 1.15rem 0 0;
-    background: hsl(var(--canvas));
-    box-shadow: 0 1.6rem 3.5rem -1.8rem hsl(var(--ink) / .65);
-    padding: 1rem;
-  }
-
-  .home-platform__web-canvas > span {
-    display: inline-flex;
-    align-items: center;
-    gap: .35rem;
-    border: 1px solid hsl(var(--line) / .8);
-    border-radius: 999px;
-    background: hsl(var(--surface));
-    padding: .4rem .55rem;
-    color: hsl(var(--ink-soft));
-    font-size: .64rem;
-    font-weight: 750;
-  }
-
-  .home-platform__web-canvas > span:first-child,
-  .home-platform__web-canvas > span:first-child :global(.ui-icon) {
-    color: hsl(var(--brand));
-  }
-
-  .home-platform__web-canvas > div {
-    display: grid;
-    grid-column: 1 / -1;
-    grid-template-columns: .7fr 1.3fr;
-    grid-template-rows: .65fr .35fr;
-    gap: .65rem;
-    border-top: 1px solid hsl(var(--line) / .72);
-    padding-top: 1rem;
-  }
-
-  .home-platform__web-canvas i {
-    display: block;
-    border: 1px solid hsl(var(--line) / .72);
-    border-radius: .65rem;
-    background: hsl(var(--surface-muted));
-  }
-
-  .home-platform__web-canvas i:first-child {
-    grid-row: 1 / -1;
-  }
-
-  .home-platform__web-canvas i:nth-child(2) {
-    background: linear-gradient(135deg, hsl(var(--brand-soft)), hsl(var(--surface)));
-  }
-
-  .home-platform__body {
-    display: flex;
-    min-width: 0;
-    flex-direction: column;
-    align-items: flex-start;
-    padding: clamp(1.25rem, 3vw, 1.75rem);
-  }
-
-  .home-platform__meta {
-    display: flex;
-    width: 100%;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 1rem;
-  }
-
-  .home-platform__meta > span {
-    display: inline-flex;
-    min-width: 0;
-    align-items: center;
-    gap: .45rem;
-    color: hsl(var(--ink-muted));
-    font-size: .68rem;
-    font-weight: 750;
-    letter-spacing: .03em;
-  }
-
-  .home-platform__meta > span :global(.ui-icon) {
-    flex: 0 0 auto;
-    color: hsl(var(--brand));
-  }
-
-  .home-platform__meta > div {
-    display: flex;
-    flex: 0 0 auto;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-    gap: .35rem;
-  }
-
-  .home-platform h3 {
-    margin: 1.65rem 0 0;
-    color: hsl(var(--ink));
-    font-family: var(--app-font-display), sans-serif;
-    font-size: clamp(1.55rem, 3vw, 2.1rem);
-    font-weight: 780;
-    letter-spacing: -.025em;
-    line-height: 1.08;
-  }
-
-  .home-platform__body > p {
-    max-width: 35rem;
-    margin: .75rem 0 1.35rem;
-    color: hsl(var(--ink-soft));
-    font-size: .84rem;
-    line-height: 1.65;
-  }
-
-  .home-platform__body > code {
-    max-width: 100%;
-    overflow: hidden;
-    border: 1px solid hsl(var(--line) / .78);
-    border-radius: .55rem;
-    background: hsl(var(--surface-muted) / .72);
-    padding: .46rem .58rem;
-    color: hsl(var(--ink-soft));
-    font-size: .65rem;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .home-platform__body > :global(.ui-button-link) {
-    margin-top: auto;
-    padding-top: 1.35rem;
-  }
-
   @media (max-width: 960px) {
     .home-proof__inner {
       grid-template-columns: 1fr auto;
@@ -1813,22 +1507,6 @@ const useCases: readonly UseCase[] = featuredProjects.flatMap(name => {
       grid-template-columns: 1fr;
     }
 
-    .home-platforms__grid {
-      grid-template-columns: 1fr;
-    }
-
-    .home-platform {
-      grid-template-rows: 15rem 1fr;
-    }
-
-    .home-platform__visual {
-      padding: 1.75rem 1rem 0;
-    }
-
-    .home-platform__body {
-      min-height: 20rem;
-    }
-
     .home-specimen__swatches span::before {
       height: 4rem;
     }
@@ -1851,28 +1529,6 @@ const useCases: readonly UseCase[] = featuredProjects.flatMap(name => {
 
     .home-specimen__center :global(.ui-button-group) {
       transform: scale(.86);
-    }
-
-    .home-platform__meta {
-      display: grid;
-    }
-
-    .home-platform__meta > div {
-      justify-content: flex-start;
-    }
-
-    .home-platform__web-canvas {
-      grid-template-columns: repeat(3, 1fr);
-      padding: .8rem;
-    }
-
-    .home-platform__web-canvas > span {
-      justify-content: center;
-      padding-inline: .35rem;
-    }
-
-    .home-platform__web-canvas > span :global(.ui-icon) {
-      display: none;
     }
   }
 </style>

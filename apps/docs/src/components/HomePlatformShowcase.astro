@@ -1,0 +1,296 @@
+---
+import { Badge, ButtonLink, Card, Icon, Image, Tabs } from '@santi020k/lumen-astro'
+
+import androidPreview from '../assets/platforms/android.webp'
+import applePreview from '../assets/platforms/apple.webp'
+import reactNativePreview from '../assets/platforms/react-native.webp'
+import webPreview from '../assets/platforms/web.webp'
+
+const platforms = [
+  {
+    caption: 'Web · Lumen component canvas',
+    description: 'Compose complete product interfaces with the same components, tokens, and accessible interactions in your favorite web framework.',
+    features: ['Astro', 'React', 'Web Components'],
+    href: '/docs/web',
+    icon: 'panels-top-left',
+    id: 'web',
+    image: webPreview,
+    imageAlt: 'Lumen web workspace with navigation, metric cards, a revenue chart, and a quick-add form.',
+    label: 'Web',
+    title: 'A complete toolkit for the web.'
+  },
+  {
+    caption: 'React Native · browser preview',
+    description: 'Bring the same visual language to iOS and Android with native controls, shared tokens, and React state that feels familiar.',
+    features: ['iOS + Android', 'Expo ready', 'Native accessibility'],
+    href: '/docs/react-native',
+    icon: 'smartphone',
+    id: 'react-native',
+    image: reactNativePreview,
+    imageAlt: 'Lumen React Native contributor profile with a name field, role selector, preference switch, and save action.',
+    label: 'React Native',
+    title: 'Your React workflow. Native controls.'
+  },
+  {
+    caption: 'SwiftUI · iPhone playground',
+    description: 'Build for Apple platforms with SwiftUI components that respect Dynamic Type, VoiceOver, and the way people use their devices.',
+    features: ['SwiftUI', 'Swift Package Manager', 'Adaptive layouts'],
+    href: '/docs/apple',
+    icon: 'apple',
+    id: 'apple',
+    image: applePreview,
+    imageAlt: 'Lumen SwiftUI iPhone app showing a release form, native date picker, accessibility checklist, and success feedback.',
+    label: 'Apple',
+    title: 'At home on Apple platforms.'
+  },
+  {
+    caption: 'Jetpack Compose · Android playground',
+    description: 'Use Lumen through Jetpack Compose and Material 3, with Android interaction patterns and accessibility built into the foundations.',
+    features: ['Jetpack Compose', 'Material 3', 'TalkBack'],
+    href: '/docs/android',
+    icon: 'bot',
+    id: 'android',
+    image: androidPreview,
+    imageAlt: 'Lumen Android app showing a release checklist with an outlined text field, checkbox, actions, and bottom navigation.',
+    label: 'Android',
+    title: 'Distinctly Android. Recognizably Lumen.'
+  }
+] as const
+---
+
+<Card class="platform-showcase">
+  <Tabs class="platform-showcase__tabs">
+    <div class="platform-showcase__navigation" role="tablist" aria-label="Explore Lumen platforms">
+      {platforms.map((platform, index) => (
+        <button
+          aria-controls={`platform-panel-${platform.id}`}
+          aria-selected={index === 0 ? 'true' : 'false'}
+          id={`platform-tab-${platform.id}`}
+          role="tab"
+          tabindex={index === 0 ? 0 : -1}
+          type="button"
+        >
+          <Icon decorative name={platform.icon} size="sm" />
+          {platform.label}
+        </button>
+      ))}
+    </div>
+    {platforms.map((platform, index) => (
+      <section
+        aria-labelledby={`platform-tab-${platform.id}`}
+        class:list={['platform-showcase__panel', { 'platform-showcase__panel--web': platform.id === 'web' }]}
+        hidden={index !== 0}
+        id={`platform-panel-${platform.id}`}
+        role="tabpanel"
+        tabindex="0"
+      >
+        <div class="platform-showcase__copy">
+          <span class="platform-showcase__label"><Icon decorative name={platform.icon} />{platform.label}</span>
+          <h3>{platform.title}</h3>
+          <p>{platform.description}</p>
+          <div class="platform-showcase__features">
+            {platform.features.map(feature => <Badge variant="outline">{feature}</Badge>)}
+          </div>
+          <ButtonLink href={platform.href} showArrow variant="primary">Build for {platform.label}</ButtonLink>
+        </div>
+        <figure class="platform-showcase__preview">
+          <div class="platform-showcase__frame">
+            <Image alt={platform.imageAlt} fit="contain" radius="none" src={platform.image} />
+          </div>
+          <figcaption>
+            <span>{platform.caption}</span>
+            <ButtonLink
+              aria-label={`Open ${platform.label} screenshot at full size`}
+              href={platform.image.src}
+              rel="noopener noreferrer"
+              target="_blank"
+              variant="inline"
+            >
+              View full size <Icon decorative name="maximize-2" size="sm" />
+            </ButtonLink>
+          </figcaption>
+        </figure>
+      </section>
+    ))}
+  </Tabs>
+</Card>
+
+<style>
+  .platform-showcase {
+    margin-top: clamp(2rem, 4vw, 3rem);
+    overflow: hidden;
+    border-color: hsl(var(--line));
+    background: hsl(var(--surface));
+    padding: 0;
+    box-shadow: 0 1.5rem 4rem -3rem hsl(var(--ink) / .25);
+  }
+
+  .platform-showcase__tabs {
+    gap: 0;
+  }
+
+  .platform-showcase__navigation[role="tablist"] {
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: .5rem;
+    overflow: visible;
+    border: 0;
+    border-bottom: 1px solid hsl(var(--line));
+    border-radius: 0;
+    background: hsl(var(--surface));
+    padding: .75rem;
+  }
+
+  .platform-showcase__navigation [role="tab"] {
+    display: flex;
+    min-height: 3.25rem;
+    align-items: center;
+    justify-content: center;
+    gap: .65rem;
+    border-radius: .6rem;
+    color: hsl(var(--ink-soft));
+    font-size: .9rem;
+    font-weight: 650;
+  }
+
+  .platform-showcase__navigation [role="tab"][aria-selected="true"] {
+    background: hsl(var(--brand-soft));
+    color: hsl(var(--brand));
+    box-shadow: none;
+  }
+
+  .platform-showcase__panel:not([hidden]) {
+    display: grid;
+    grid-template-columns: minmax(0, .85fr) minmax(0, 1.4fr);
+    min-height: 37rem;
+    padding: 0;
+  }
+
+  .platform-showcase__panel[hidden] {
+    display: none;
+  }
+
+  .platform-showcase__copy {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    padding: clamp(1.5rem, 4vw, 3rem);
+  }
+
+  .platform-showcase__label {
+    display: inline-flex;
+    align-items: center;
+    gap: .6rem;
+    color: hsl(var(--brand));
+    font-size: .8rem;
+    font-weight: 650;
+  }
+
+  .platform-showcase__copy h3 {
+    margin: 1.25rem 0 0;
+    color: hsl(var(--ink));
+    font-family: var(--app-font-display), sans-serif;
+    font-size: clamp(1.8rem, 3.2vw, 2.7rem);
+    font-weight: 750;
+    letter-spacing: -.035em;
+    line-height: 1.12;
+    text-wrap: balance;
+  }
+
+  .platform-showcase__copy p {
+    margin: 1.1rem 0 0;
+    color: hsl(var(--ink-soft));
+    font-size: .9rem;
+    line-height: 1.75;
+  }
+
+  .platform-showcase__features {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .4rem;
+    margin: 1.5rem 0 2rem;
+  }
+
+  .platform-showcase__preview {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.25rem;
+    margin: 0;
+    border-left: 1px solid hsl(var(--line));
+    background: radial-gradient(ellipse at 50% 40%, hsl(var(--brand-soft)), transparent 75%), hsl(var(--surface-muted));
+    padding: 2rem;
+  }
+
+  .platform-showcase__frame {
+    width: 14rem;
+    max-width: 100%;
+    overflow: hidden;
+    border: 1px solid hsl(var(--line));
+    border-radius: 1.35rem;
+    box-shadow: 0 1.5rem 3rem -1.25rem hsl(var(--ink) / .25);
+  }
+
+  .platform-showcase__frame :global(.ui-image) {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .platform-showcase__panel--web .platform-showcase__frame {
+    width: 100%;
+    border-radius: .75rem;
+  }
+
+  .platform-showcase__preview figcaption {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .4rem;
+    color: hsl(var(--ink-soft));
+    font-size: .72rem;
+    line-height: 1.5;
+    text-align: center;
+  }
+
+  @media (max-width: 760px) {
+    .platform-showcase__navigation[role="tablist"] {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: .25rem;
+      padding: .5rem;
+    }
+
+    .platform-showcase__navigation [role="tab"] {
+      min-height: 2.75rem;
+      font-size: .82rem;
+    }
+
+    .platform-showcase__panel:not([hidden]) {
+      grid-template-columns: minmax(0, 1fr);
+      min-height: 0;
+    }
+
+    .platform-showcase__copy {
+      padding: 1.5rem;
+    }
+
+    .platform-showcase__copy h3 {
+      max-width: 20ch;
+    }
+
+    .platform-showcase__features {
+      margin-block: 1rem 1.5rem;
+    }
+
+    .platform-showcase__preview {
+      border-top: 1px solid hsl(var(--line));
+      border-left: 0;
+      padding: 1.75rem 1rem;
+    }
+  }
+</style>
