@@ -1,0 +1,34 @@
+---
+import { createElement } from 'react'
+import { renderToStaticMarkup } from 'react-dom/server'
+
+import '@santi020k/lumen/styles.css'
+
+import { Sparkline } from '@santi020k/lumen-astro'
+import { Sparkline as ReactSparkline } from '@santi020k/lumen-react'
+
+const values = [12000, 24000, 21000, 36000, 32000, 48290]
+const reactMarkup = renderToStaticMarkup(createElement(ReactSparkline, { id: 'react-trend', label: 'Revenue trend', values }))
+---
+
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Sparkline layout verification</title>
+  </head>
+  <body>
+    <main>
+      <Sparkline id="astro-trend" label="Revenue trend" values={values} />
+      <Fragment set:html={reactMarkup} />
+      <lumen-sparkline id="elements-trend" label="Revenue trend" values={JSON.stringify(values)}></lumen-sparkline>
+    </main>
+    <script>
+      import { defineLumenElements } from '@santi020k/lumen-elements/define'
+
+      defineLumenElements(['Sparkline'])
+    </script>
+  </body>
+</html>

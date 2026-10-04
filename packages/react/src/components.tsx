@@ -965,15 +965,14 @@ export const Sparkline = ({
             <path className="ui-sparkline__area" d={path} key={path} />
           ))}
         <path className="ui-sparkline__line" d={geometry.path} />
-        {showEndpoint && endpoint && (
-          <circle
-            className="ui-sparkline__endpoint"
-            cx={endpoint.xCoordinate}
-            cy={endpoint.yCoordinate}
-            r="2.5"
-          />
-        )}
       </svg>
+      {showEndpoint && endpoint && (
+        <span
+          aria-hidden="true"
+          className="ui-sparkline__endpoint"
+          style={{ left: `${endpoint.xCoordinate / 120 * 100}%`, top: `${endpoint.yCoordinate / 40 * 100}%` }}
+        />
+      )}
       <span className="ui-sr-only">{label}</span>
     </span>
   )
