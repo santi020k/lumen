@@ -67,9 +67,9 @@ const page = site.page({
   } :
 {}),
   description,
-  image: { alt: title, url: socialImageUrl },
+  image: { alt: `${title} social preview`, height: 630, type: 'image/webp', url: socialImageUrl, width: 1200 },
   pathname: Astro.url.pathname,
-  robots: { index: !noindex },
+  robots: { index: !noindex, maxImagePreview: 'large' },
   title,
   type: article ? 'article' : 'website'
 })
@@ -135,7 +135,11 @@ const pageStructuredData = article ?
     '@type': 'WebPage',
     description,
     isPartOf: defineSchema({ '@id': websiteId.href, '@type': 'WebSite' }),
+    inLanguage: 'en',
+    isAccessibleForFree: true,
+    primaryImageOfPage: defineSchema({ '@type': 'ImageObject', contentUrl: socialImageUrl, height: 630, width: 1200 }),
     name: title,
+    ...(Astro.url.pathname.startsWith('/docs') ? { about: defineSchema({ '@id': softwareId.href, '@type': 'SoftwareSourceCode' }) } : {}),
     url: canonicalUrl.href
   })
 

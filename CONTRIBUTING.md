@@ -99,7 +99,7 @@ When adding a guide:
    `BaseLayout` so article, social, breadcrumb, and RSS metadata stay aligned.
 3. Teach one concrete product outcome with working code, important product states, accessibility
    checks, and a clear next step.
-4. Add the guide to the documentation search index and generated social-image catalog.
+4. Add the guide to the documentation search index; the build includes its social image automatically.
 5. Run the docs typecheck, tests, lint, and build before opening a pull request.
 
 Component reference examples live in `apps/docs/src/examples/<Name>.astro`. Keep data declarations
@@ -119,8 +119,12 @@ keep copyable code next to the preview, using `FrameworkExample` for adapter tab
 link to the canonical component pages; their selection, data, and interpretation guidance lives in
 `apps/docs/src/data/chart-guides.ts`. Do not duplicate chart API reference pages.
 
-For a new documentation route, update the relevant navigation and search metadata, add it to
-`apps/docs/scripts/generate-og-images.mjs`, and regenerate social images. `DocsLayout` builds an
+For a new documentation route, update the relevant navigation and search metadata, then run the
+docs build. Social images are derived from the final indexable HTML metadata, so
+new routes are included automatically without maintaining a separate route catalog. Use accurate,
+specific titles and descriptions in the page layout; those also drive the card and route manifest.
+Native component cards reuse the verified native captures. Run
+`pnpm --filter @santi020k/lumen-docs run check:og` and `pnpm --filter @santi020k/lumen-docs run audit:seo` after building. `DocsLayout` builds an
 accessible section menu from page headings; pass explicit `pageNavigation` entries when sections
 need different labels or a stable server-rendered menu. Preserve old deep links with an onward link
 or a focused redirect. See [the navigation audit](docs/documentation-navigation-audit.md) for the
