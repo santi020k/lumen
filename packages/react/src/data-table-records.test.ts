@@ -128,7 +128,7 @@ test('expands records by explicit IDs even when ordinary value cells repeat', as
   expect(element('[data-value="first"] button').getAttribute('aria-expanded')).toBe('true')
   expect(element('[data-value="second"] button').getAttribute('aria-expanded')).toBe('false')
   expect(container.querySelectorAll('[data-ui-datatable-detail]')).toHaveLength(1)
-  await render({ rows: records, expandedRowIds: undefined })
+  await render({ rows: records })
   await click('[data-value="second"] button')
   expect(element('[data-ui-datatable-detail]').textContent).toBe('Notes for Second')
   expect(container.querySelectorAll('[data-ui-datatable-detail]')).toHaveLength(1)

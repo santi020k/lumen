@@ -242,7 +242,7 @@ export const ToastProvider = ({
 
   const dismiss = useCallback((id?: string) => {
     setToasts(current => {
-      const targetId = id ?? current.filter(toast => toast.open).at(-1)?.id
+      const targetId = id ?? current.filter(toast => toast.open).pop()?.id
 
       return current.map(toast => toast.id === targetId ? { ...toast, open: false } : toast)
     })

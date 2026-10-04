@@ -2085,9 +2085,9 @@ export const useCalendar = ({
 
   useEffect(() => {
     const root = rootRef.current
-    const activeElement = root?.ownerDocument.activeElement
 
-    if (root?.contains(activeElement ?? null) && activeElement?.getAttribute('role') === 'gridcell') {
+    if (root?.contains(root.ownerDocument.activeElement) &&
+      root.ownerDocument.activeElement?.getAttribute('role') === 'gridcell') {
       root.querySelector<HTMLElement>('[role="gridcell"][tabindex="0"]')?.focus({ preventScroll: true })
     }
   }, [focusIso])
