@@ -185,6 +185,8 @@
 - Updated dependencies []:
   - @santi020k/lumen-core@4.0.0
 
+- Reject malformed Astro Bullet range containers, exclude missing heatmap observations from drilldown formatters and targets, keep generated code-region names current after label updates and reconnects, and safely format native image comparison percentages with malformed locales.
+
 ### Migration, Direction and Data Collections
 
 - Add v3 and v4 source migration previews with optional coordinated pnpm dependency upgrades. Preserve

@@ -200,3 +200,28 @@ test('rejects malformed replacement attributes and does not activate after unmou
   target.click()
   expect(activate).not.toHaveBeenCalled()
 })
+
+test('does not format unavailable heatmap measurements for datum actions', () => {
+  const formatValue = vi.fn((value: number) => {
+    if (!Number.isFinite(value)) throw new Error('Missing measurement reached formatter')
+    return String(value)
+  })
+  const activate = vi.fn<Activate>()
+  act(() => {
+    root.render(createElement(Heatmap, {
+      data: [{ x: 'A', y: 'Row', value: NaN }, { x: 'B', y: 'Row', value: Infinity }, { x: 'C', y: 'Row', value: null }, { x: 'D', y: 'Row', value: 0 }],
+      formatValue,
+      onDatumActivate: activate,
+      showLegend: false
+    }))
+  })
+  expect(formatValue.mock.calls.every(([value]) => Number.isFinite(value))).toBe(true)
+  expect(container.querySelectorAll('rect[data-ui-chart-datum]')).toHaveLength(1)
+  expect(container.querySelectorAll('button[data-ui-chart-datum]')).toHaveLength(1)
+  expect(container.querySelector('rect[data-ui-chart-datum] title')?.textContent).toContain('0')
+  expect(container.querySelector('tbody')?.textContent).toContain('Not available')
+  act(() => {
+    button().click()
+  })
+  expect(activate).toHaveBeenCalledWith(expect.objectContaining({ x: 'D', value: 0 }))
+})

@@ -1,6 +1,8 @@
 import { type ReactElement, useState } from 'react'
 import { I18nManager, type ImageSourcePropType, View, type ViewProps, type ViewStyle } from 'react-native'
 
+import { formatLumenImageComparisonValue } from '@santi020k/lumen-core'
+
 import { LumenText } from './foundation-primitives.js'
 import { LumenImage, type LumenImageFit } from './media-components.js'
 import { useLumenTheme } from './theme-context.js'
@@ -38,7 +40,7 @@ export const LumenImageComparison = ({
   const [width, setWidth] = useState(0)
   const position = comparisonPosition(value)
   const ratio = comparisonRatio(aspectRatio)
-  const percentage = new Intl.NumberFormat(locale, { style: 'percent' }).format(position)
+  const percentage = formatLumenImageComparisonValue(position * 100, '', locale).trim()
   const rtl = I18nManager.isRTL
 
   return (

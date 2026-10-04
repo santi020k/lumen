@@ -103,6 +103,8 @@
 
 - Avoid calling application BulletChart formatters when measurements or configuration are invalid; render the invalid-data fallback consistently across web and native adapters.
 
+- Reject malformed Astro Bullet range containers, exclude missing heatmap observations from drilldown formatters and targets, keep generated code-region names current after label updates and reconnects, and safely format native image comparison percentages with malformed locales.
+
 ### Native Advanced Inputs
 
 - Add React Native and SwiftUI number, time, autocomplete, password, numeric OTP and image comparison

@@ -155,3 +155,36 @@ test('cancels pending copy feedback when the source is removed and copying is di
   await Promise.resolve()
   expect(success).not.toHaveBeenCalled()
 })
+
+test('refreshes generated code labels while preserving authored replacements', async () => {
+  const { code } = renderCode()
+  const pre = code.querySelector('pre')
+  if (!pre) throw new Error('Expected code region')
+  code.setAttribute('code-label', 'Updated source')
+  await vi.waitFor(() => {
+    expect(pre.getAttribute('aria-label')).toBe('Updated source')
+  })
+  pre.setAttribute('aria-label', 'Authored replacement')
+  code.setAttribute('code-label', 'Another source')
+  await Promise.resolve()
+  await Promise.resolve()
+  expect(pre.getAttribute('aria-label')).toBe('Authored replacement')
+})
+
+test('refreshes inherited generated labels when reconnecting under another code-tabs container', async () => {
+  const { code } = renderCode()
+  code.removeAttribute('code-label')
+  const first = document.createElement('lumen-code-tabs')
+  const second = document.createElement('lumen-code-tabs')
+  first.setAttribute('code-label', 'First source')
+  second.setAttribute('code-label', 'Second source')
+  document.body.append(first, second)
+  first.append(code)
+  await vi.waitFor(() => {
+    expect(code.querySelector('pre')?.getAttribute('aria-label')).toBe('First source')
+  })
+  second.append(code)
+  await vi.waitFor(() => {
+    expect(code.querySelector('pre')?.getAttribute('aria-label')).toBe('Second source')
+  })
+})

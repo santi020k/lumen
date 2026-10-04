@@ -24,7 +24,7 @@ interface Props extends HTMLAttributes<'figure'>, LumenBulletOptions {
 
 const { class: classProp, className, domain, formatValue = String, labels, ranges, showTable = true, summary, target, targetLabel = 'Target', tone = 'series-1', value, valueLabel, ...props } = Astro.props
 const text = resolveLumenChartLabels(labels)
-const model = createLumenBulletGeometry(value, target, { ...(domain ? { domain } : {}), ...(ranges ? { ranges } : {}) })
+const model = createLumenBulletGeometry(value, target, { domain, ranges })
 const title = valueLabel ?? text.value
 const actual = model.valid && value !== null ? formatValue(value) : text.notAvailable
 const factual = model.valid ? `${title}: ${actual}. ${targetLabel}: ${formatValue(target)}.` : text.invalidData

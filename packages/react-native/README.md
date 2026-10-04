@@ -518,7 +518,7 @@ and `LumenIconButton`. The same `react-native-svg` peer is required.
 ## Advanced native inputs
 
 `LumenNumberField`, `LumenAutocomplete`, `LumenPasswordField`, `LumenInputOTP` and
-`LumenImageComparison` are root exports. `LumenTimeField` and `LumenTimeSelection` live in
+`LumenImageComparison` are root exports. Image comparison percentage labels fall back to English formatting when a locale is malformed. `LumenTimeField` and `LumenTimeSelection` live in
 `@santi020k/lumen-react-native/datetime`, alongside the optional native picker integration.
 
 ```tsx

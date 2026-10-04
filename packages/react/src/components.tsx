@@ -1795,12 +1795,14 @@ export const Heatmap = ({
   const hasData = availableCells.length > 0
 
   const datumActions = onDatumActivate ?
-    geometry.cells.map(cell => createReactChartDatumAction(
+    availableCells.map(cell => createReactChartDatumAction(
       createLumenHeatmapDatumActivation(cell),
       `${cell.xLabel ?? cell.x} · ${cell.yLabel ?? cell.y}: ${cell.label ?? formatValue(cell.value ?? 0)}`,
       resolvedLabels
     )) :
     []
+
+  const datumActionByCell = new Map(availableCells.map((cell, index) => [cell, datumActions[index]]))
 
   return (
     <DatumChart onDatumActivate={onDatumActivate} className={composeClassName('ui-heatmap', className)} summary={summary ?? resolvedLabels.formatHeatmapSummary(availableCells.length)} {...props}>
@@ -1818,13 +1820,13 @@ export const Heatmap = ({
             {geometry.yTicks.map(tick => <text className="ui-heatmap__row-label" key={getChartCategoryKey(tick.value)} textAnchor="end" dominantBaseline="middle" x="108" y={tick.position}>{tick.label}</text>)}
           </g>
           <g className="ui-heatmap__cells">
-            {geometry.cells.map((cell, index) => {
+            {geometry.cells.map(cell => {
               const missing = cell.value === null || !Number.isFinite(cell.value)
 
               return (
                 <g key={JSON.stringify([cell.x, cell.y])}>
                   <rect
-                    data-ui-chart-datum={datumActions[index]?.serialized}
+                    data-ui-chart-datum={datumActionByCell.get(cell)?.serialized}
                     height={Math.max(0, cell.height - 2)}
                     width={Math.max(0, cell.width - 2)}
                     x={cell.xCoordinate + 1}

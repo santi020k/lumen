@@ -801,7 +801,7 @@ require `UIPrimitives`.
 Each available plotted datum has an equivalent native button in the actions disclosure, even
 with `showTable={false}` or hidden line markers. Translate `labels.exploreData` and
 `labels.formatDatumAction(context)` alongside the chart's existing labels and value formatters.
-Missing observations have no action; pie actions cover only positive slices. Updated values and
+Missing observations have no action and never reach datum-action value formatters; pie actions cover only positive slices. Updated values and
 callbacks take effect on rerender, while stable datum identities retain focused action buttons.
 The chart's native `onClick` can cancel activation with `event.preventDefault()`.
 

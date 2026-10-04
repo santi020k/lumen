@@ -25,17 +25,20 @@ interface Props extends HTMLAttributes<'figure'>, LumenHeatmapOptions {
 
 const { colorScale = 'sequential', midpoint = 0, domain, showLegend = true, caption, class: classProp = '', className = '', data, description, drilldown = false, formatValue = String, heading, labels, showTable = true, summary: summaryProp, ...rest } = Astro.props
 const geometry = createLumenHeatmapModel(data, { colorScale, midpoint, ...(domain ? { domain } : {}) })
-const hasData = geometry.cells.some(cell => cell.value !== null && Number.isFinite(cell.value))
+const availableCells = geometry.cells.filter(cell => cell.value !== null && Number.isFinite(cell.value))
+const hasData = availableCells.length > 0
 const resolvedLabels = resolveLumenChartLabels(labels)
-const summary = summaryProp ?? resolvedLabels.formatHeatmapSummary(geometry.cells.filter(cell => cell.value !== null && Number.isFinite(cell.value)).length)
+const summary = summaryProp ?? resolvedLabels.formatHeatmapSummary(availableCells.length)
 
 const datumActions = drilldown ?
-geometry.cells.map(cell => createChartDatumAction(
+availableCells.map(cell => createChartDatumAction(
   createLumenHeatmapDatumActivation(cell),
   `${cell.xLabel ?? cell.x} · ${cell.yLabel ?? cell.y}: ${cell.label ?? formatValue(cell.value ?? 0)}`,
   resolvedLabels
 )) :
 []
+
+const datumActionByCell = new Map(availableCells.map((cell, index) => [cell, datumActions[index]]))
 
 ---
 
@@ -53,12 +56,12 @@ hidden={geometry.cells.length === 0}
         {geometry.xTicks.map(tick => <text text-anchor={tick.textAnchor} x={tick.position} y="298">{tick.label}</text>)}
         {geometry.yTicks.map(tick => <text class="ui-heatmap__row-label" text-anchor="end" dominant-baseline="middle" x="108" y={tick.position}>{tick.label}</text>)}
       </g>
-      <g class="ui-heatmap__cells">{geometry.cells.map((cell, index) => {
+      <g class="ui-heatmap__cells">{geometry.cells.map(cell => {
         const missing = cell.value === null || !Number.isFinite(cell.value)
 
         return (
 <g>
-          <rect data-ui-chart-datum={datumActions[index]?.serialized} height={Math.max(0, cell.height - 2)} width={Math.max(0, cell.width - 2)} x={cell.xCoordinate + 1} y={cell.yCoordinate + 1} style={{ fill: getLumenHeatmapColor(cell.value, geometry.domain, colorScale, geometry.midpoint) }}>
+          <rect data-ui-chart-datum={datumActionByCell.get(cell)?.serialized} height={Math.max(0, cell.height - 2)} width={Math.max(0, cell.width - 2)} x={cell.xCoordinate + 1} y={cell.yCoordinate + 1} style={{ fill: getLumenHeatmapColor(cell.value, geometry.domain, colorScale, geometry.midpoint) }}>
             <title>{`${cell.xLabel ?? cell.x} · ${cell.yLabel ?? cell.y}: ${missing ? resolvedLabels.notAvailable : cell.label ?? formatValue(cell.value ?? 0)}`}</title>
           </rect>
           {missing && <text class="ui-heatmap__missing" text-anchor="middle" dominant-baseline="middle" x={cell.xCoordinate + cell.width / 2} y={cell.yCoordinate + cell.height / 2}>×</text>}

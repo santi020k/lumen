@@ -304,7 +304,7 @@ assert.ok(foundationConstructors.has('lumen-visually-hidden'))
   await writeFile(
     join(consumerDirectory, 'src', 'pages', 'index.astro'),
     `---
-import { Badge, BulletChart, Card, CopyButton, RevealGroup, ScrollReveal, Stat } from '@santi020k/lumen-astro'
+import { Badge, BulletChart, Card, CopyButton, Heatmap, RevealGroup, ScrollReveal, Stat } from '@santi020k/lumen-astro'
 import UIPrimitives from '@santi020k/lumen-astro/runtime'
 import '@santi020k/lumen-astro/styles.css'
 import '@santi020k/lumen-elements/styles.css'
@@ -312,6 +312,12 @@ const finiteBulletValue = (value: number): string => {
   if (!Number.isFinite(value)) throw new Error('Invalid bullet measurements reached the formatter')
   return String(value)
 }
+const invalidRanges = [null, false].map(ranges => {
+  const props = { value: 10, target: 20, ranges: [] }
+  Object.defineProperty(props, 'ranges', { value: ranges })
+  return props
+})
+const unavailableHeatmap = [NaN, Infinity, null].map((value, index) => ({ x: index, y: 'Missing', value }))
 ---
 
 <Card>
@@ -321,6 +327,8 @@ const finiteBulletValue = (value: number): string => {
   <p>Packed Astro consumer</p>
   <BulletChart value={NaN} target={20} formatValue={finiteBulletValue} labels={{ invalidData: 'Invalid bullet data fallback' }} />
   <BulletChart value={10} target={Infinity} formatValue={finiteBulletValue} labels={{ invalidData: 'Invalid bullet data fallback' }} />
+  {invalidRanges.map(props => <BulletChart {...props} formatValue={() => { throw new Error('Malformed ranges reached the formatter') }} labels={{ invalidData: 'Invalid bullet data fallback' }} />)}
+  <Heatmap data={unavailableHeatmap} drilldown showLegend={false} formatValue={finiteBulletValue} labels={{ empty: 'Missing heatmap fallback' }} />
 </Card>
 
 <UIPrimitives />
@@ -433,7 +441,11 @@ export default function Page() {
 
   assert.match(astroHtml, /Foundation bundle ready/)
 
-  assert.equal(astroHtml.match(/Invalid bullet data fallback/g)?.length, 4)
+  assert.equal(astroHtml.match(/Invalid bullet data fallback/g)?.length, 8)
+
+  assert.match(astroHtml, /Missing heatmap fallback/)
+
+  assert.doesNotMatch(astroHtml, /data-ui-chart-datum=/)
 
   process.stdout.write(
     'Packed Core, umbrella, React, React Hook Form, Elements, Astro, Next.js, and brand-icon packages passed clean-consumer smoke tests\n'

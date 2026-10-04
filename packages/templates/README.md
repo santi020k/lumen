@@ -46,6 +46,9 @@ and runtime setup, then adapt the generated files to the application's data and 
 Available families are analytics dashboard, SaaS admin, commerce dashboard, project workspace,
 and authentication/onboarding. Preview them in the gallery before choosing a recipe.
 
+Dashboard metric cards own their frame and spacing. Their public `Stat` uses the bare
+variant, and change badges wrap below the value when a narrow card needs more room.
+
 ## Workspace API
 
 Within this repository, declare the dependency with `workspace:*`. The root entry exports the

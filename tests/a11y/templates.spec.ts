@@ -103,3 +103,27 @@ test('template theme and onboarding choice remain keyboard operable', async ({ p
   await personal.press('Space')
   await expect(personal).toBeChecked()
 })
+
+for (const slug of ['analytics-dashboard', 'saas-admin', 'commerce-dashboard']) {
+  for (const width of [375, 1280, 1600]) {
+    test(`${slug} preserves readable metric values at ${width}px`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 1000 })
+      await page.goto(`/templates/${slug}`)
+      const metrics = page.locator('.template-metric')
+      expect(await metrics.count()).toBeGreaterThan(0)
+      for (const metric of await metrics.all()) {
+        const valueLines = await metric.locator('[data-slot="stat-value"]').evaluate(value => {
+          const range = document.createRange()
+          range.selectNodeContents(value)
+          return range.getClientRects().length
+        })
+        expect(valueLines).toBe(1)
+        const bounds = await metric.boundingBox()
+        const badgeBounds = await metric.locator('.template-metric__summary > span[data-variant]').boundingBox()
+        if (!bounds || !badgeBounds) throw new Error('Expected visible metric and change badge')
+        expect(badgeBounds.x).toBeGreaterThanOrEqual(bounds.x)
+        expect(badgeBounds.x + badgeBounds.width).toBeLessThanOrEqual(bounds.x + bounds.width)
+      }
+    })
+  }
+}

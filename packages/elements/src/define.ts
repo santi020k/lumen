@@ -6525,7 +6525,7 @@ class LumenHeatmapBehaviorElement extends LumenStructuredChartBehaviorElement {
     const cells = geometry.cells.map(cell => {
       const missing = cell.value === null || !Number.isFinite(cell.value)
       const color = getLumenHeatmapColor(cell.value, geometry.domain, colorScale, geometry.midpoint)
-      const context = `${cell.xLabel ?? cell.x} · ${cell.yLabel ?? cell.y}: ${cell.label ?? this.valueFormatter(cell.value ?? 0)}`
+      const context = `${cell.xLabel ?? cell.x} · ${cell.yLabel ?? cell.y}: ${cell.label ?? (missing ? labels.notAvailable : this.valueFormatter(cell.value ?? 0))}`
       const attributes = this.datumAttributes(createLumenHeatmapDatumActivation(cell), context)
 
       return `<g><rect${attributes} height="${Math.max(0, cell.height - 2)}" width="${Math.max(0, cell.width - 2)}" x="${cell.xCoordinate + 1}" y="${cell.yCoordinate + 1}" style="fill:${color}"><title>${escapeChartHtml(cell.xLabel ?? cell.x)} · ${escapeChartHtml(cell.yLabel ?? cell.y)}: ${escapeChartHtml(missing ? labels.notAvailable : cell.label ?? this.valueFormatter(cell.value ?? 0))}</title></rect>${missing ? `<text class="ui-heatmap__missing" text-anchor="middle" dominant-baseline="middle" x="${cell.xCoordinate + cell.width / 2}" y="${cell.yCoordinate + cell.height / 2}">×</text>` : ''}</g>`
@@ -9075,7 +9075,11 @@ class LumenCodeBehaviorElement extends LumenElement {
     if (!pre.hasAttribute('aria-labelledby')) defaults.set('aria-label', this.#label('code-label', 'Code example'))
 
     for (const [name, value] of defaults) {
-      if (!pre.hasAttribute(name)) {
+      const currentValue = pre.getAttribute(name)
+      const generatedValue = attributes.get(name)
+      const ownsCurrentValue = generatedValue !== undefined && currentValue === generatedValue
+
+      if (currentValue === null || ownsCurrentValue) {
         pre.setAttribute(name, value)
 
         attributes.set(name, value)

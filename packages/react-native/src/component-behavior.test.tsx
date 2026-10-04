@@ -2026,6 +2026,12 @@ describe('advanced native inputs', () => {
     expect(currentCallback).toHaveBeenCalledExactlyOnceWith({ hour: 13, minute: 30 })
   })
 
+  test.each(['en--US', 'invalid_tag', '💥'])('image comparison falls back for malformed locale %s', async locale => {
+    const root = await renderNative(<LumenImageComparison label="Comparison" before={{ uri: 'fixture:before' }} after={{ uri: 'fixture:after' }} value={0.25} locale={locale} onValueChange={() => {}} />)
+    const control = findByAccessibilityRole(root, 'adjustable')
+    expect(readProp(control, 'accessibilityValue')).toMatchObject({ text: 'After 25%' })
+  })
+
   test('image comparison exposes one adjustable control and localized after percentage', async () => {
     const root = await renderNative(<LumenImageComparison label="Comparison" before={{ uri: 'fixture:before' }} after={{ uri: 'fixture:after' }} value={0.25} locale="es-CO" onValueChange={() => {}} />)
     const control = findByAccessibilityRole(root, 'adjustable')
