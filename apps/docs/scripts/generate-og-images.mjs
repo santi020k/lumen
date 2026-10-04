@@ -5,8 +5,12 @@ import { createCards, pathnameOutput } from '@santi020k/og'
 import { definePageMetadata } from '@santi020k/og/metadata'
 import { definePresetConfig } from '@santi020k/og/presets'
 
+import { chartTopics } from '../src/data/chart-topics.ts'
 import { componentDocs } from '../src/data/docs.ts'
+import { mcpGuideTopics } from '../src/data/mcp-guides.ts'
 import { getNativeComponentsForPlatform } from '../src/data/native-components.ts'
+import { nativeGuideTopics } from '../src/data/native-guide-topics.ts'
+import { reactHookGuides } from '../src/data/react-hooks.ts'
 import { primaryPageMetadata } from '../src/data/site-metadata.ts'
 import { toSlug } from '../src/lib/routes.ts'
 
@@ -87,6 +91,11 @@ const pages = [
   page('/docs/theme-playground', 'Build a theme from semantic roles.', 'Tune color roles, preview accessible components, and export the resulting CSS.', 'Theme playground'),
   ...supportingPages.map(([pathname, title, description, badge]) => page(pathname, title, description, badge)),
   ...nativePages,
+  ...chartTopics.slice(1).map(topic => page(topic.href, `Charts: ${topic.label}`, topic.description, 'Data visualization')),
+  ...mcpGuideTopics.slice(1).map(topic => page(topic.href, `MCP: ${topic.label}`, topic.description, 'AI integration')),
+  ...nativeGuideTopics.map(topic => page(topic.href, topic.title, topic.description, 'Native guides')),
+  page('/docs/frameworks/react/hooks', 'React hooks', 'Explore 19 React behavior hooks by task with full API tables and usage examples.', 'Hooks'),
+  ...reactHookGuides.map(hook => page(hook.href, hook.name, hook.metadataDescription, 'React hooks')),
   ...componentDocs.map(component => page(
     `/docs/components/${toSlug(component.name)}`,
     component.name,

@@ -4609,6 +4609,582 @@
       "pathname": "/docs/android/components/adaptive-list-detail-scaffold",
       "title": "Adaptive list detail scaffold"
     },
+    "/docs/web/data-visualization/setup": {
+      "alt": "Charts: Setup — Lumen UI",
+      "description": "Install styles and configure Astro, React, or Web Components.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--web--data-visualization--setup.webp",
+          "primary": true,
+          "url": "/og/pages/docs--web--data-visualization--setup.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/web/data-visualization/setup",
+      "title": "Charts: Setup"
+    },
+    "/docs/web/data-visualization/gallery": {
+      "alt": "Charts: Interactive gallery — Lumen UI",
+      "description": "Compare the same dataset across three framework renderers.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--web--data-visualization--gallery.webp",
+          "primary": true,
+          "url": "/og/pages/docs--web--data-visualization--gallery.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/web/data-visualization/gallery",
+      "title": "Charts: Interactive gallery"
+    },
+    "/docs/web/data-visualization/data": {
+      "alt": "Charts: Data & formatting — Lumen UI",
+      "description": "Prepare data, choose domains, and format values without losing meaning.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--web--data-visualization--data.webp",
+          "primary": true,
+          "url": "/og/pages/docs--web--data-visualization--data.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/web/data-visualization/data",
+      "title": "Charts: Data & formatting"
+    },
+    "/docs/web/data-visualization/accessibility": {
+      "alt": "Charts: Accessibility — Lumen UI",
+      "description": "Provide readable values, keyboard access, and clear chart descriptions.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--web--data-visualization--accessibility.webp",
+          "primary": true,
+          "url": "/og/pages/docs--web--data-visualization--accessibility.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/web/data-visualization/accessibility",
+      "title": "Charts: Accessibility"
+    },
+    "/docs/web/data-visualization/native": {
+      "alt": "Charts: Native charts — Lumen UI",
+      "description": "Use chart counterparts on React Native, SwiftUI, and Compose.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--web--data-visualization--native.webp",
+          "primary": true,
+          "url": "/og/pages/docs--web--data-visualization--native.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/web/data-visualization/native",
+      "title": "Charts: Native charts"
+    },
+    "/docs/mcp/clients": {
+      "alt": "MCP: Connect a client — Lumen UI",
+      "description": "Install a plugin or copy the configuration for your MCP client.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--mcp--clients.webp",
+          "primary": true,
+          "url": "/og/pages/docs--mcp--clients.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/mcp/clients",
+      "title": "MCP: Connect a client"
+    },
+    "/docs/mcp/reference": {
+      "alt": "MCP: Tools and resources — Lumen UI",
+      "description": "Explore every tool, browsable resource, and the recommended agent workflow.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--mcp--reference.webp",
+          "primary": true,
+          "url": "/og/pages/docs--mcp--reference.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/mcp/reference",
+      "title": "MCP: Tools and resources"
+    },
+    "/docs/react-native/installation": {
+      "alt": "React Native Installation — Lumen UI",
+      "description": "Check requirements, install the package, and configure your first native screen. Learn how with Lumen for React Native.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--installation.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--installation.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/installation",
+      "title": "React Native Installation"
+    },
+    "/docs/react-native/theming": {
+      "alt": "React Native Theming — Lumen UI",
+      "description": "Apply semantic tokens, follow system appearance, and verify light and dark themes. Learn how with Lumen for React Native.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--theming.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--theming.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/theming",
+      "title": "React Native Theming"
+    },
+    "/docs/react-native/ai": {
+      "alt": "React Native Build with AI — Lumen UI",
+      "description": "Give your coding agent platform-specific prompts, package context, and accessibility requirements. Learn how with Lumen for React Native.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--ai.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--ai.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/ai",
+      "title": "React Native Build with AI"
+    },
+    "/docs/apple/installation": {
+      "alt": "Apple Installation — Lumen UI",
+      "description": "Check requirements, install the package, and configure your first native screen. Learn how with Lumen for Apple / SwiftUI.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--installation.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--installation.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/installation",
+      "title": "Apple Installation"
+    },
+    "/docs/apple/theming": {
+      "alt": "Apple Theming — Lumen UI",
+      "description": "Apply semantic tokens, follow system appearance, and verify light and dark themes. Learn how with Lumen for Apple / SwiftUI.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--theming.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--theming.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/theming",
+      "title": "Apple Theming"
+    },
+    "/docs/apple/ai": {
+      "alt": "Apple Build with AI — Lumen UI",
+      "description": "Give your coding agent platform-specific prompts, package context, and accessibility requirements. Learn how with Lumen for Apple / SwiftUI.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--ai.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--ai.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/ai",
+      "title": "Apple Build with AI"
+    },
+    "/docs/android/installation": {
+      "alt": "Android Installation — Lumen UI",
+      "description": "Check requirements, install the package, and configure your first native screen. Learn how with Lumen for Android / Compose.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--installation.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--installation.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/installation",
+      "title": "Android Installation"
+    },
+    "/docs/android/theming": {
+      "alt": "Android Theming — Lumen UI",
+      "description": "Apply semantic tokens, follow system appearance, and verify light and dark themes. Learn how with Lumen for Android / Compose.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--theming.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--theming.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/theming",
+      "title": "Android Theming"
+    },
+    "/docs/android/ai": {
+      "alt": "Android Build with AI — Lumen UI",
+      "description": "Give your coding agent platform-specific prompts, package context, and accessibility requirements. Learn how with Lumen for Android / Compose.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--ai.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--ai.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/ai",
+      "title": "Android Build with AI"
+    },
+    "/docs/frameworks/react/hooks": {
+      "alt": "React hooks — Lumen UI",
+      "description": "Explore 19 React behavior hooks by task with full API tables and usage examples.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--frameworks--react--hooks.webp",
+          "primary": true,
+          "url": "/og/pages/docs--frameworks--react--hooks.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/frameworks/react/hooks",
+      "title": "React hooks"
+    },
+    "/docs/frameworks/react/hooks/use-dialog": {
+      "alt": "useDialog — Lumen UI",
+      "description": "Manages modal and alert dialog lifecycle — open, close, focus trapping, backdrop click dismiss, and Escape key handling. Spreads props onto a dialog element.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--frameworks--react--hooks--use-dialog.webp",
+          "primary": true,
+          "url": "/og/pages/docs--frameworks--react--hooks--use-dialog.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/frameworks/react/hooks/use-dialog",
+      "title": "useDialog"
+    },
+    "/docs/frameworks/react/hooks/use-popover": {
+      "alt": "usePopover — Lumen UI",
+      "description": "Manages popover disclosure — toggle, outside click close, Escape key dismiss, and arrow key navigation through focusable panel items.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--frameworks--react--hooks--use-popover.webp",
+          "primary": true,
+          "url": "/og/pages/docs--frameworks--react--hooks--use-popover.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/frameworks/react/hooks/use-popover",
+      "title": "usePopover"
+    },
+    "/docs/frameworks/react/hooks/use-dropdown-menu": {
+      "alt": "useDropdownMenu — Lumen UI",
+      "description": "Manages dropdown menu disclosure — identical API to usePopover but sets aria-haspopup to \"menu\" for correct ARIA semantics on menu triggers.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--frameworks--react--hooks--use-dropdown-menu.webp",
+          "primary": true,
+          "url": "/og/pages/docs--frameworks--react--hooks--use-dropdown-menu.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/frameworks/react/hooks/use-dropdown-menu",
+      "title": "useDropdownMenu"
+    },
+    "/docs/frameworks/react/hooks/use-language-toggle": {
+      "alt": "useLanguageToggle — Lumen UI",
+      "description": "Coordinates controlled or uncontrolled locale cycling, persistence, and document language synchronization for React applications.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--frameworks--react--hooks--use-language-toggle.webp",
+          "primary": true,
+          "url": "/og/pages/docs--frameworks--react--hooks--use-language-toggle.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/frameworks/react/hooks/use-language-toggle",
+      "title": "useLanguageToggle"
+    },
+    "/docs/frameworks/react/hooks/use-context-menu": {
+      "alt": "useContextMenu — Lumen UI",
+      "description": "Binds a trigger to a context menu that opens on right-click or Shift+F10 and supports Escape and roving item focus.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--frameworks--react--hooks--use-context-menu.webp",
+          "primary": true,
+          "url": "/og/pages/docs--frameworks--react--hooks--use-context-menu.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/frameworks/react/hooks/use-context-menu",
+      "title": "useContextMenu"
+    },
+    "/docs/frameworks/react/hooks/use-tabs": {
+      "alt": "useTabs — Lumen UI",
+      "description": "Manages a tabbed interface with controlled/uncontrolled value, arrow key navigation, roving tabindex, and automatic ARIA attributes for tab triggers and panels.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--frameworks--react--hooks--use-tabs.webp",
+          "primary": true,
+          "url": "/og/pages/docs--frameworks--react--hooks--use-tabs.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/frameworks/react/hooks/use-tabs",
+      "title": "useTabs"
+    },
+    "/docs/frameworks/react/hooks/use-select": {
+      "alt": "useSelect — Lumen UI",
+      "description": "Manages a fully custom select with native select fallback, ARIA listbox, typeahead character search, keyboard navigation, and external form integration.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--frameworks--react--hooks--use-select.webp",
+          "primary": true,
+          "url": "/og/pages/docs--frameworks--react--hooks--use-select.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/frameworks/react/hooks/use-select",
+      "title": "useSelect"
+    },
+    "/docs/frameworks/react/hooks/use-tooltip": {
+      "alt": "useTooltip — Lumen UI",
+      "description": "Manages tooltip show/hide with configurable delay, hover and focus triggers, and Escape key dismissal.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--frameworks--react--hooks--use-tooltip.webp",
+          "primary": true,
+          "url": "/og/pages/docs--frameworks--react--hooks--use-tooltip.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/frameworks/react/hooks/use-tooltip",
+      "title": "useTooltip"
+    },
+    "/docs/frameworks/react/hooks/use-toast": {
+      "alt": "useToast — Lumen UI",
+      "description": "Consumes the ToastProvider context to create, update, and dismiss toast notifications. Requires a ToastProvider ancestor in the component tree.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--frameworks--react--hooks--use-toast.webp",
+          "primary": true,
+          "url": "/og/pages/docs--frameworks--react--hooks--use-toast.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/frameworks/react/hooks/use-toast",
+      "title": "useToast"
+    },
+    "/docs/frameworks/react/hooks/use-form-validation": {
+      "alt": "useFormValidation — Lumen UI",
+      "description": "Enhances native HTML form validation with custom error messages via data-error-* attributes, live field description syncing, and programmatic validity control.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--frameworks--react--hooks--use-form-validation.webp",
+          "primary": true,
+          "url": "/og/pages/docs--frameworks--react--hooks--use-form-validation.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/frameworks/react/hooks/use-form-validation",
+      "title": "useFormValidation"
+    },
+    "/docs/frameworks/react/hooks/use-calendar": {
+      "alt": "useCalendar — Lumen UI",
+      "description": "Builds an Astro-compatible calendar grid with hidden input value, min/max clamping, month navigation, selection, and roving keyboard focus.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--frameworks--react--hooks--use-calendar.webp",
+          "primary": true,
+          "url": "/og/pages/docs--frameworks--react--hooks--use-calendar.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/frameworks/react/hooks/use-calendar",
+      "title": "useCalendar"
+    },
+    "/docs/frameworks/react/hooks/use-date-range-picker": {
+      "alt": "useDateRangePicker — Lumen UI",
+      "description": "Keeps paired native date inputs constrained so the end date cannot be before the start date.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--frameworks--react--hooks--use-date-range-picker.webp",
+          "primary": true,
+          "url": "/og/pages/docs--frameworks--react--hooks--use-date-range-picker.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/frameworks/react/hooks/use-date-range-picker",
+      "title": "useDateRangePicker"
+    },
+    "/docs/frameworks/react/hooks/use-input-otp": {
+      "alt": "useInputOTP — Lumen UI",
+      "description": "Builds an Astro-compatible OTP field with a native input, visual segments, sanitized values, and caret navigation.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--frameworks--react--hooks--use-input-otp.webp",
+          "primary": true,
+          "url": "/og/pages/docs--frameworks--react--hooks--use-input-otp.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/frameworks/react/hooks/use-input-otp",
+      "title": "useInputOTP"
+    },
+    "/docs/frameworks/react/hooks/use-rich-text-editor": {
+      "alt": "useRichTextEditor — Lumen UI",
+      "description": "Provides rich text editing commands, values, shortcuts, active toolbar state, and HTML/text change details.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--frameworks--react--hooks--use-rich-text-editor.webp",
+          "primary": true,
+          "url": "/og/pages/docs--frameworks--react--hooks--use-rich-text-editor.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/frameworks/react/hooks/use-rich-text-editor",
+      "title": "useRichTextEditor"
+    },
+    "/docs/frameworks/react/hooks/use-schedule": {
+      "alt": "useSchedule — Lumen UI",
+      "description": "Provides props for schedule/agenda slot and event elements, and emits change details when a slot or event is interacted with.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--frameworks--react--hooks--use-schedule.webp",
+          "primary": true,
+          "url": "/og/pages/docs--frameworks--react--hooks--use-schedule.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/frameworks/react/hooks/use-schedule",
+      "title": "useSchedule"
+    },
+    "/docs/frameworks/react/hooks/use-kanban": {
+      "alt": "useKanban — Lumen UI",
+      "description": "Provides controlled Kanban move requests and accessible props for boards, columns, items, and dedicated drag handles across keyboard, mouse, and touch input.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--frameworks--react--hooks--use-kanban.webp",
+          "primary": true,
+          "url": "/og/pages/docs--frameworks--react--hooks--use-kanban.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/frameworks/react/hooks/use-kanban",
+      "title": "useKanban"
+    },
+    "/docs/frameworks/react/hooks/use-resizable": {
+      "alt": "useResizable — Lumen UI",
+      "description": "Provides pane sizing props and separator handle props for horizontal or vertical resizable groups.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--frameworks--react--hooks--use-resizable.webp",
+          "primary": true,
+          "url": "/og/pages/docs--frameworks--react--hooks--use-resizable.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/frameworks/react/hooks/use-resizable",
+      "title": "useResizable"
+    },
+    "/docs/frameworks/react/hooks/use-theme-builder": {
+      "alt": "useThemeBuilder — Lumen UI",
+      "description": "Interactive theme builder with controllable hue, accent, mode (generated/manual), scheme (light/dark), color pickers, and export in CSS, Figma variables, or design token formats.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--frameworks--react--hooks--use-theme-builder.webp",
+          "primary": true,
+          "url": "/og/pages/docs--frameworks--react--hooks--use-theme-builder.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/frameworks/react/hooks/use-theme-builder",
+      "title": "useThemeBuilder"
+    },
+    "/docs/frameworks/react/hooks/use-theme-toggle": {
+      "alt": "useThemeToggle — Lumen UI",
+      "description": "Synchronizes a light or dark theme with the document, local storage, and the shared theme-change event, with an optional pointer-origin transition that respects reduced motion.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--frameworks--react--hooks--use-theme-toggle.webp",
+          "primary": true,
+          "url": "/og/pages/docs--frameworks--react--hooks--use-theme-toggle.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/frameworks/react/hooks/use-theme-toggle",
+      "title": "useThemeToggle"
+    },
     "/docs/components/accordion": {
       "alt": "Accordion — Lumen UI",
       "description": "Stacks collapsible content sections. Usage examples for Astro, React, and Elements.",

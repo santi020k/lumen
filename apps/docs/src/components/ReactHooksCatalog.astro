@@ -1,0 +1,95 @@
+---
+import { Icon, Link } from '@santi020k/lumen-astro'
+
+import { reactHookGroups, reactHookGuides } from '../data/react-hooks'
+---
+
+<div class="hook-catalog">
+  {reactHookGroups.map(group => (
+    <section aria-labelledby={group.id} class="hook-catalog__group">
+      <div class="docs-section-heading">
+        <h2 id={group.id}>{group.title}</h2>
+        <p>{group.description}</p>
+      </div>
+      <div class="hook-catalog__links">
+        {reactHookGuides.filter(hook => hook.groupId === group.id).map(hook => (
+          <Link class="hook-catalog__link" href={hook.href} variant="inherit">
+            <div>
+              <h3>{hook.name}</h3>
+              <p>{hook.description}</p>
+              <span>{hook.componentName} · Options, controller, and example</span>
+            </div>
+            <Icon decorative name="arrow-up-right" size="sm" />
+          </Link>
+        ))}
+      </div>
+    </section>
+  ))}
+</div>
+
+<style>
+  .hook-catalog,
+  .hook-catalog__group {
+    display: grid;
+    min-width: 0;
+    gap: 1.25rem;
+  }
+
+  .hook-catalog { gap: 2.5rem; }
+
+  .hook-catalog__links {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+
+  :global(.hook-catalog__link) {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    min-width: 0;
+    padding: 1.25rem;
+    border: 1px solid hsl(var(--line));
+    border-radius: var(--ui-radius-lg);
+    background: hsl(var(--surface));
+    text-decoration: none;
+  }
+
+  :global(.hook-catalog__link:hover) {
+    border-color: hsl(var(--brand) / 0.5);
+    background: hsl(var(--brand-soft) / 0.4);
+  }
+
+  :global(.hook-catalog__link:focus-visible) {
+    outline: 2px solid hsl(var(--brand));
+    outline-offset: 3px;
+  }
+
+  .hook-catalog__link h3 {
+    color: hsl(var(--ink));
+    font-family: var(--font-mono);
+    font-size: 0.95rem;
+    font-weight: 750;
+    overflow-wrap: anywhere;
+  }
+
+  .hook-catalog__link p {
+    margin-top: 0.5rem;
+    color: hsl(var(--ink-soft));
+    font-size: 0.85rem;
+    line-height: 1.7;
+  }
+
+  .hook-catalog__link span {
+    display: block;
+    margin-top: 0.75rem;
+    color: hsl(var(--ink-soft));
+    font-size: 0.75rem;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 48rem) {
+    .hook-catalog__links { grid-template-columns: minmax(0, 1fr); }
+  }
+</style>

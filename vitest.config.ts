@@ -79,7 +79,8 @@ export default defineConfig({
       project('templates', 'packages/templates'),
       project('next-smoke', 'apps/next-smoke', { passWithNoTests: true }),
       project('template-showcase', 'apps/templates', { passWithNoTests: true }),
-      project('docs', 'apps/docs', { passWithNoTests: true })
+      project('docs', 'apps/docs', { passWithNoTests: true }),
+      project('figma-plugin', 'apps/figma-plugin')
     ],
     restoreMocks: true
   }

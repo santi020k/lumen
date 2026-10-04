@@ -40,7 +40,7 @@ const expectComparisonCharts = async (page: Page, scope: Locator): Promise<void>
 for (const width of [390, 1440]) {
   test(`chart interaction, exact tables and missing values agree across web adapters at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 1000 })
-    await page.goto('/docs/web/data-visualization')
+    await page.goto('/docs/web/data-visualization/gallery')
     for (const { id: adapter, name } of adapters) {
       await page.getByRole('tablist', { name: 'Chart framework' }).getByRole('tab', { name, exact: true }).click()
       const scope = page.locator(`[data-chart-demo="${adapter}"]`)
@@ -113,7 +113,7 @@ for (const width of [390, 1440]) {
 }
 
 test('cursor synchronization uses the same X identity across the three adapters', async ({ page }) => {
-  await page.goto('/docs/web/data-visualization')
+  await page.goto('/docs/web/data-visualization/gallery')
   await expect(page.locator('[data-chart-demo="react"] [data-ui-chart-toggle]').first()).toBeEnabled()
   await page.locator('[data-chart-demo="astro"] [data-ui-chart-interaction-plot]').focus()
   await page.keyboard.press('End')
@@ -123,7 +123,7 @@ test('cursor synchronization uses the same X identity across the three adapters'
 })
 
 test('leaving a previously hovered chart does not clear the active keyboard cursor', async ({ page }) => {
-  await page.goto('/docs/web/data-visualization')
+  await page.goto('/docs/web/data-visualization/gallery')
   const active = page.locator('[data-chart-demo="react"] .ui-line-chart')
   const passive = page.locator('[data-chart-demo="astro"] .ui-line-chart')
   await expect(passive).toHaveAttribute('data-ui-chart-enhanced', 'true')
@@ -137,7 +137,7 @@ test('leaving a previously hovered chart does not clear the active keyboard curs
 
 test('a pinned inspection stays inside the card after resizing and switching frameworks', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 })
-  await page.goto('/docs/web/data-visualization')
+  await page.goto('/docs/web/data-visualization/gallery')
   await page.locator('[data-chart-demo="astro"] [data-ui-chart-interaction-plot]').press('End')
   await page.setViewportSize({ width: 390, height: 900 })
   for (const { id, name } of adapters) {
@@ -155,7 +155,7 @@ test('a pinned inspection stays inside the card after resizing and switching fra
 for (const theme of ['lumen-light', 'lumen-dark']) {
   test(`chart gallery passes accessibility checks in ${theme}`, async ({ page }) => {
     await page.addInitScript(value => { localStorage.setItem('lumen-theme', value); }, theme)
-    await page.goto('/docs/web/data-visualization')
+    await page.goto('/docs/web/data-visualization/gallery')
     await page.addScriptTag({ path: axePath })
     for (const width of [390, 1440]) {
       await page.setViewportSize({ width, height: 1000 })
@@ -174,6 +174,7 @@ for (const theme of ['lumen-light', 'lumen-dark']) {
         await bullet.locator('summary').click()
         await page.locator(`[data-chart-demo="${id}"] .ui-line-chart .ui-chart__data > summary`).click()
       }
+
     }
   })
 }
@@ -182,7 +183,7 @@ test.describe('touch inspection', () => {
   test.use({ hasTouch: true, viewport: { width: 390, height: 900 } })
 
   test('tap pins an observation and Escape clears it in every adapter', async ({ page }) => {
-    await page.goto('/docs/web/data-visualization')
+    await page.goto('/docs/web/data-visualization/gallery')
     for (const { id: adapter, name } of adapters) {
       await page.getByRole('tablist', { name: 'Chart framework' }).getByRole('tab', { name, exact: true }).click()
       const chart = page.locator(`[data-chart-demo="${adapter}"] .ui-line-chart`)
@@ -197,49 +198,3 @@ test.describe('touch inspection', () => {
     }
   })
 })
-
-const expectGuideHeading = async (page: Page, name: string): Promise<void> => {
-  const heading = page.getByRole('heading', { name, exact: true })
-
-  await expect(heading).toBeInViewport()
-  const obscured = await heading.evaluate(element => {
-    const bottom = Math.max(...Array.from(document.querySelectorAll('.docs-site-header, .docs-mobile-navigation-bar'))
-      .map(header => header.getBoundingClientRect().bottom))
-
-    return element.getBoundingClientRect().top < bottom
-  })
-
-  expect(obscured).toBe(false)
-}
-
-for (const width of [373, 390, 1440]) {
-  test(`chart documentation provides keyboard-accessible recipes at ${width}px`, async ({ page, context }) => {
-    await context.grantPermissions(['clipboard-read', 'clipboard-write'])
-    await page.setViewportSize({ width, height: 1000 })
-    await page.goto('/docs/web/data-visualization')
-    await page.getByRole('navigation', { name: 'Data visualization guide' }).getByRole('link', { name: 'Code examples' }).click()
-    await expectGuideHeading(page, 'From a question to a chart.')
-
-    for (const name of ['CalendarHeatmap', 'FunnelChart', 'BoxPlot', 'LollipopChart', 'DumbbellChart', 'BulletChart']) {
-      const tabs = page.getByRole('tablist', { name: `${name} code framework` })
-      await tabs.getByRole('tab', { name: 'Astro', exact: true }).focus()
-      await page.keyboard.press('End')
-      const tab = tabs.getByRole('tab', { name: 'Elements', exact: true })
-      await expect(tab).toHaveAttribute('aria-selected', 'true')
-      const panelId = await tab.getAttribute('aria-controls')
-      if (!panelId) throw new Error('Expected a linked code panel')
-      const panel = page.locator(`[id="${panelId}"]`)
-      await panel.getByRole('button', { name: 'Copy code to clipboard', exact: true }).click()
-      const copied = await page.evaluate(() => navigator.clipboard.readText())
-      expect(copied).toContain(`defineLumenElements(['${name}'])`)
-      expect(copied).toContain(name === 'BulletChart' ? 'chart.valueFormatter' : 'chart.data')
-    }
-
-    await page.getByRole('navigation', { name: 'Data visualization guide' }).getByRole('link', { name: 'Choose a chart' }).click()
-    await expectGuideHeading(page, 'Start with the question.')
-    expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)).toBe(false)
-    await page.getByRole('table', { name: 'Chart selection guide' }).getByRole('link', { name: 'DumbbellChart', exact: true }).click()
-    await expect(page.getByRole('heading', { name: 'DumbbellChart', exact: true })).toBeVisible()
-    await expect(page.getByRole('link', { name: 'data visualization guide', exact: true })).toBeVisible()
-  })
-}

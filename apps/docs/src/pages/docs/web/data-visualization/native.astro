@@ -1,0 +1,41 @@
+---
+import { Link, Table } from '@santi020k/lumen-astro'
+
+import { chartGuides } from '../../../../data/chart-guides'
+import { getNativeComponentsForPlatform } from '../../../../data/native-components'
+import ChartGuideLayout from '../../../../layouts/ChartGuideLayout.astro'
+
+const platforms = [{ id: 'react-native', label: 'React Native' }, { id: 'apple', label: 'SwiftUI' }, { id: 'android', label: 'Compose' }] as const
+const nativeCharts = chartGuides.map(guide => ({ ...guide, platforms: platforms.filter(platform => getNativeComponentsForPlatform(platform.id).some(component => component.slug === guide.slug)) }))
+---
+<ChartGuideLayout title="Charts on native platforms" description="Find chart components and platform-specific usage for React Native, SwiftUI, and Compose.">
+  <section id="native-charts" aria-labelledby="native-charts-title">
+    <header class="chart-guide-heading">
+      <span class="chart-guide-step">06 / Go native</span>
+      <h2 id="native-charts-title">The same questions, on every platform.</h2>
+      <p>CalendarHeatmap, FunnelChart, BoxPlot, LollipopChart, DumbbellChart, and BulletChart all have native counterparts with the <code>Lumen</code> prefix. Their reference pages include platform-specific examples and properties.</p>
+    </header>
+    <Table class="chart-guide-table" layout="records">
+      <table role="table">
+        <caption>Native comparison chart conventions</caption>
+        <thead role="rowgroup"><tr role="row"><th scope="col" role="columnheader">Platform</th><th scope="col" role="columnheader">Domain & formatting</th><th scope="col" role="columnheader">Examples</th></tr></thead>
+        <tbody role="rowgroup">
+          <tr role="row"><th role="rowheader" scope="row" data-label="Platform">React Native</th><td role="cell" data-label="Domain & formatting"><code>{'{ min: 0, max: 100 }'}</code> · <code>formatValue</code></td><td role="cell" data-label="Examples"><Link href="/docs/react-native/components/lollipop-chart">Ranking</Link> · <Link href="/docs/react-native/components/dumbbell-chart">Comparison</Link> · <Link href="/docs/react-native/components/bullet-chart">Target</Link></td></tr>
+          <tr role="row"><th role="rowheader" scope="row" data-label="Platform">SwiftUI</th><td role="cell" data-label="Domain & formatting"><code>0...100</code> · <code>labels.formatValue</code></td><td role="cell" data-label="Examples"><Link href="/docs/apple/components/lollipop-chart">Ranking</Link> · <Link href="/docs/apple/components/dumbbell-chart">Comparison</Link> · <Link href="/docs/apple/components/bullet-chart">Target</Link></td></tr>
+          <tr role="row"><th role="rowheader" scope="row" data-label="Platform">Compose</th><td role="cell" data-label="Domain & formatting"><code>0.0..100.0</code> · <code>labels.formatValue</code></td><td role="cell" data-label="Examples"><Link href="/docs/android/components/lollipop-chart">Ranking</Link> · <Link href="/docs/android/components/dumbbell-chart">Comparison</Link> · <Link href="/docs/android/components/bullet-chart">Target</Link></td></tr>
+        </tbody>
+      </table>
+    </Table>
+    <h3>Find your chart on each platform</h3>
+    <Table class="chart-guide-table" layout="records">
+      <table role="table">
+        <caption>Available native chart guides</caption>
+        <thead role="rowgroup"><tr role="row"><th scope="col" role="columnheader">Chart</th><th scope="col" role="columnheader">Platform reference</th></tr></thead>
+        <tbody role="rowgroup">{nativeCharts.map(chart => (
+          <tr role="row"><th scope="row" role="rowheader" data-label="Chart">{chart.name}</th><td role="cell" data-label="Platform reference">{chart.platforms.length ? chart.platforms.map((platform, index) => <Fragment>{index > 0 && ' · '}<Link href={`/docs/${platform.id}/components/${chart.slug}`}>{platform.label}</Link></Fragment>) : 'Web only'}</td></tr>
+        ))}</tbody>
+      </table>
+    </Table>
+    <p>Native charts use <code>label</code> for the accessible name and <code>showData</code> for the readable data disclosure. Follow your platform’s theme setup; preserve the same units, row order, and missing measurements across renderers.</p>
+  </section>
+</ChartGuideLayout>

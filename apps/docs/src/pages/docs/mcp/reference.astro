@@ -1,0 +1,90 @@
+---
+import { Card, Icon } from '@santi020k/lumen-astro'
+
+import DocsPageHero from '../../../components/DocsPageHero.astro'
+import McpGuideLayout from '../../../components/McpGuideLayout.astro'
+import { resources, tools, workflow } from '../../../data/mcp-guides'
+---
+
+<McpGuideLayout
+  title="MCP tools, resources, and workflow reference — Lumen UI"
+  description="Browse all Lumen MCP tools and resource URIs, including component discovery, native contracts, compatibility checks, catalog diagnostics, tokens, and recipes."
+  pageNavigation={[
+    { id: 'tools-title', label: 'Tools' },
+    { id: 'resources-title', label: 'Resources' },
+    { id: 'workflow-title', label: 'Agent workflow' }
+  ]}
+>
+  <DocsPageHero compact eyebrow="MCP / Reference" title="Read the right contract." description="Use focused tools and stable resources to build from the catalog, check compatibility, and keep your agent’s context current." stats={[{ label: 'Tools', value: tools.length }, { label: 'Resources', value: resources.length }]} />
+    <section class="mcp-section" aria-labelledby="tools-title">
+      <div class="mcp-section__heading">
+        <div>
+          <p>What agents can do</p>
+          <h2 id="tools-title">Focused MCP tools</h2>
+        </div>
+        <p>
+          Every tool returns readable text plus validated structured content, grounded in the same
+          catalog, docs, web and native source, tokens, and rules the packages ship.
+        </p>
+      </div>
+
+      <div class="mcp-tools">
+        {tools.map(([name, description, icon]) => (
+          <Card class="mcp-tool-card" variant="muted">
+            <span class="mcp-tool-card__icon">
+              <Icon decorative name={icon} />
+            </span>
+            <code>{name}</code>
+            <p>{description}</p>
+          </Card>
+        ))}
+      </div>
+    </section>
+
+    <section class="mcp-section" aria-labelledby="resources-title">
+      <div class="mcp-section__heading">
+        <div>
+          <p>Stable context</p>
+          <h2 id="resources-title">Browsable MCP resources</h2>
+        </div>
+        <p>
+          Clients can read or cache stable catalog context without calling a tool. Component and
+          recipe templates are enumerable and support name completion.
+        </p>
+      </div>
+
+      <div class="mcp-resources">
+        {resources.map(([uri, description]) => (
+          <Card class="mcp-resource-card" variant="muted">
+            <code>{uri}</code>
+            <p>{description}</p>
+          </Card>
+        ))}
+      </div>
+    </section>
+
+    <section class="mcp-section" aria-labelledby="workflow-title">
+      <div class="mcp-section__heading">
+        <div>
+          <p>How agents use it</p>
+          <h2 id="workflow-title">Discover, read, and stay on-system</h2>
+        </div>
+        <p>
+          Start compact, read the target framework or platform usage contract, and request full source only
+          when the imports, examples, accessibility notes, and API rows are insufficient.
+        </p>
+      </div>
+
+      <ol class="mcp-workflow">
+        {workflow.map(([step, title, description]) => (
+          <li>
+            <span>{step}</span>
+            <div>
+              <h3>{title}</h3>
+              <p>{description}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </section>
+</McpGuideLayout>

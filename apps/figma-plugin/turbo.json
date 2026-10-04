@@ -1,0 +1,8 @@
+{
+  "extends": ["//"],
+  "tasks": {
+    "build": { "inputs": ["$TURBO_EXTENDS$", "$TURBO_ROOT$/registry/figma-design-map.json"] },
+    "test": { "inputs": ["$TURBO_EXTENDS$", "$TURBO_ROOT$/registry/figma-design-map.json"] },
+    "typecheck": { "inputs": ["$TURBO_EXTENDS$", "$TURBO_ROOT$/registry/figma-design-map.json"] }
+  }
+}

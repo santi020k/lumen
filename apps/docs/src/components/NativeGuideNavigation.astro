@@ -1,0 +1,30 @@
+---
+import { Link } from '@santi020k/lumen-astro'
+
+import type { NativePlatformId } from '../data/native-components'
+import { getNativeGuideTopics, type NativeGuideTopicId } from '../data/native-guide-topics'
+import { getPlatformGuide } from '../data/platforms'
+
+interface Props { platform: NativePlatformId, current?: NativeGuideTopicId }
+
+const { platform, current } = Astro.props
+const guide = getPlatformGuide(platform)
+const labels = { installation: 'Installation', theming: 'Theming', ai: 'Build with AI' }
+---
+
+<nav class="native-guide-navigation" aria-label={`${guide.shortLabel} guides`}>
+  <Link href={guide.href} variant="inherit">Overview</Link>
+  {getNativeGuideTopics(platform).map(topic => (
+    <Link href={topic.href} variant="inherit" aria-current={topic.id === current ? 'page' : undefined}>{labels[topic.id]}</Link>
+  ))}
+  <Link href={`${guide.href}/components`} variant="inherit">Components</Link>
+  <Link href={`${guide.href}/playground`} variant="inherit">Playground</Link>
+</nav>
+
+<style>
+  .native-guide-navigation { display: flex; flex-wrap: wrap; gap: 0.4rem; padding-block: 1rem; border-bottom: 1px solid hsl(var(--line)); }
+  .native-guide-navigation :global(a) { display: inline-flex; align-items: center; min-height: 2.75rem; padding: 0.55rem 0.85rem; border-radius: 0.6rem; color: hsl(var(--ink-soft)); font-size: 0.875rem; font-weight: 700; text-decoration: none; }
+  .native-guide-navigation :global(a:hover) { background: hsl(var(--surface-muted)); }
+  .native-guide-navigation :global(a[aria-current='page']) { background: hsl(var(--brand-soft)); color: hsl(var(--brand)); }
+  .native-guide-navigation :global(a:focus-visible) { outline: 2px solid hsl(var(--brand)); outline-offset: 2px; }
+</style>

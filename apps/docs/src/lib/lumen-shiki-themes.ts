@@ -7,7 +7,7 @@ const lumenLightTokenColors = [
   },
   {
     scope: ['constant', 'number', 'support.constant', 'variable.other.constant'],
-    settings: { foreground: '#0d9488' }
+    settings: { foreground: '#0f766e' }
   },
   {
     scope: ['entity.name.function', 'meta.function-call', 'support.function'],
