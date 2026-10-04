@@ -853,7 +853,7 @@ React adds direct component and hook entries; Elements adds a granular VirtualLi
 that shares its constructor with complete registration. Equivalent minified ImageComparison
 consumers traverse five modules instead of 2,026 with identical raw output. Equivalent Elements
 VirtualList registration uses seven modules and 2,973 gzip bytes instead of the full catalog's
-2,008 modules and 488,057 gzip bytes. These synthetic measurements are reproducible with
+2,008 modules and 488,079 gzip bytes. These synthetic measurements are reproducible with
 `pnpm run measure:selective-imports`; root imports remain supported.
 
 The web form audit fixes controlled React Segmented selection, React Select accessible descriptions,

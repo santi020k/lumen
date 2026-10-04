@@ -4,15 +4,14 @@
     ".": {
       "entry": ["scripts/check-maven-pom-metadata.mjs", "scripts/report-android-workspace-runtime.mjs"],
       "ignoreBinaries": ["infisical", "pod", "quality", "swift"],
-      "project": ["*.js", "scripts/*.mjs"]
+      "project": ["*.{js,css}", "scripts/*.mjs"]
     },
     "apps/docs": {
       "entry": ["src/pages/**/*.astro", "scripts/**/*.{js,mjs}"],
       "ignoreDependencies": [
-        "@santi020k/lumen-playground-react-native",
-        "tailwindcss"
+        "@santi020k/lumen-playground-react-native"
       ],
-      "project": ["src/**/*.{astro,ts,tsx}", "scripts/**/*.{js,mjs}"]
+      "project": ["src/**/*.{astro,css,ts,tsx}", "scripts/**/*.{js,mjs}"]
     },
     "apps/playground-react-native": {
       "entry": ["src/fixtures/TextLayoutProbe.tsx"],
@@ -29,8 +28,9 @@
       "project": ["src/**/*.ts"]
     },
     "packages/lumen": {
+      "entry": ["src/index.ts", "src/cli.ts", "bin/*.mjs", "templates/shared/common/src/lumen/lumen-template.css"],
       "ignoreDependencies": ["@types/react", "react"],
-      "project": ["bin/*.mjs", "src/**/*.ts"]
+      "project": ["bin/*.mjs", "**/*.{css,ts}"]
     },
     "packages/mcp": {
       "entry": ["src/cloudflare-worker.ts"],

@@ -119,7 +119,7 @@ remain supported. Interactive React entries preserve their client boundary for N
 The minified equivalent-consumer benchmark uses external React and reports module graph size as
 well as raw/gzip output. In the final October 4 run, ImageComparison traversed 2,026 modules from
 root and five from its selective entry, with identical 4,599-byte raw output (1,979 vs 1,985 gzip).
-VirtualList registration measured 1,474,825 raw / 488,057 gzip through the full catalog and
+VirtualList registration measured 1,474,882 raw / 488,079 gzip through the full catalog and
 7,215 raw / 2,973 gzip through its granular entry. These are synthetic consumer measurements,
 not application download sizes or a promise that every selective import reduces final output.
 Run the benchmark against the final candidate after rebuilding packages; output varies with

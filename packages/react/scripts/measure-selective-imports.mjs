@@ -1,17 +1,16 @@
 import assert from 'node:assert/strict'
-import { createRequire } from 'node:module'
 import { resolve } from 'node:path'
 import { gzipSync } from 'node:zlib'
 
-const require = createRequire(new URL('../packages/react/package.json', import.meta.url))
-const { build } = require('esbuild')
-const root = resolve(import.meta.dirname, '..')
+import { build } from 'esbuild'
+
+const root = resolve(import.meta.dirname, '../../..')
 
 const scenarios = {
-  'react-root': "export { ImageComparison } from '@santi020k/lumen-react'",
-  'react-selective': "export { ImageComparison } from '@santi020k/lumen-react/components/image-comparison'",
-  'elements-root': "import { defineLumenElements } from '@santi020k/lumen-elements/define'; defineLumenElements(['VirtualList'])",
-  'elements-selective': "import { defineLumenVirtualList } from '@santi020k/lumen-elements/components/virtual-list'; defineLumenVirtualList()"
+  'react-root': 'export { ImageComparison } from \'@santi020k/lumen-react\'',
+  'react-selective': 'export { ImageComparison } from \'@santi020k/lumen-react/components/image-comparison\'',
+  'elements-root': 'import { defineLumenElements } from \'@santi020k/lumen-elements/define\'; defineLumenElements([\'VirtualList\'])',
+  'elements-selective': 'import { defineLumenVirtualList } from \'@santi020k/lumen-elements/components/virtual-list\'; defineLumenVirtualList()'
 }
 
 const results = {}

@@ -261,8 +261,8 @@
       "id": "web-control-visual-size",
       "kind": "breaking",
       "currentContract": "Select, PhoneInput and Segmented use size for visual density; Select also accepts the visual md alias.",
-      "replacement": "visualSize in Astro/React and visual-size in Elements use default, sm or lg. Native input/select size remains numeric.",
-      "migration": "Run lumen migrate v4 for recognized literals. Change wrapper, spread and dynamic visual size props manually; map Select md to default. Keep numeric size; PhoneInput forwards it through inputProps.size. Button, icon, container and native-platform sizes are unchanged.",
+      "replacement": "visualSize in Astro/React and visual-size in Elements use default, sm or lg. Native input/select size remains numeric. Elements Select uses ui-select-field for its frame and ui-select for its native input and trigger.",
+      "migration": "Run lumen migrate v4 for recognized literals. Change wrapper, spread and dynamic visual size props manually; map Select md to default. Keep numeric size; PhoneInput forwards it through inputProps.size. Button, icon, container and native-platform sizes are unchanged. Update Elements Select host CSS selectors from ui-select to ui-select-field.",
       "packages": [
         "@santi020k/lumen-core",
         "@santi020k/lumen-astro",
