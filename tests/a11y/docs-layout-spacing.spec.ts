@@ -1,5 +1,28 @@
 import { expect, test } from '@playwright/test'
 
+for (const width of [390, 1440]) {
+  test(`homepage final section meets the footer at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 900 })
+    await page.goto('/')
+    await page.evaluate(() => document.fonts.ready)
+
+    const layout = await page.evaluate(() => {
+      const section = document.querySelector('.home-principles')
+      const footer = document.querySelector('.docs-site-footer')
+
+      if (!section || !footer) throw new Error('Missing homepage section or footer')
+
+      return {
+        gap: footer.getBoundingClientRect().top - section.getBoundingClientRect().bottom,
+        overflow: document.documentElement.scrollWidth - window.innerWidth
+      }
+    })
+
+    expect(Math.abs(layout.gap)).toBeLessThanOrEqual(1)
+    expect(layout.overflow).toBeLessThanOrEqual(0)
+  })
+}
+
 for (const theme of ['lumen-light', 'lumen-dark']) {
   test(`docs navigation and footer maintain compact spacing in ${theme}`, async ({ page }) => {
     await page.addInitScript(value => {
