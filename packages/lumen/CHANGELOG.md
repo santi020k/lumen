@@ -2,6 +2,10 @@
 
 ## 4.0.0
 
+- Map Compose Material surface containers and navigation selection colors to Lumen semantic tokens, removing fallback purple from adaptive bottom bars and rails.
+
+- Keep sparkline endpoints circular and line strokes uniform when a chart stretches to fit a wide or shallow container.
+
 - Add controlled MultiSelect to React Native and SwiftUI alongside Compose, retaining selections
   outside filtered results, blocking disabled/read-only edits, and exposing loading/retry and localized
   action labels. Forward application safe-area insets into the React Native sheet. Add a complete,

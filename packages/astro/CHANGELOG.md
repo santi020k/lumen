@@ -2,6 +2,10 @@
 
 ## 4.0.0
 
+- Keep sparkline endpoints circular and line strokes uniform when a chart stretches to fit a wide or shallow container.
+- Updated dependencies [`71071bc`, `9d27933`]:
+  - @santi020k/lumen@4.0.1
+
 ### Major Changes
 
 - Finalize web form visual sizing with visualSize/visual-size on Select, PhoneInput and Segmented, preserving native numeric size. Add conservative literal migration previews and a complete machine-readable v4 breaking inventory. Fix controlled Segmented ownership, Select accessibility/callback/reset behavior, Elements scalar reconnection and reset defaults, and multiple-select submission. Add selective React component and Elements VirtualList imports with measured bundle and packed-consumer checks. Existing root imports remain supported.
