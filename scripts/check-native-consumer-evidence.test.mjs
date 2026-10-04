@@ -278,3 +278,18 @@ test('rejects an upgrade outside the two stability iterations', async () => {
 
   assert.match(result.stderr, /upgrade must start at native stability iteration 1/)
 })
+
+
+test('default consumer readiness accepts incomplete optional evidence without warnings', async () => {
+  const manifest = JSON.parse(await readFile(resolve(repositoryRoot, 'package.json'), 'utf8'))
+  const command = manifest.scripts['check:native-consumer-readiness'].split(' ')
+  const result = spawnSync(process.execPath, command.slice(1), { cwd: repositoryRoot, encoding: 'utf8' })
+
+  assert.equal(result.status, 0, result.stderr)
+
+  assert.equal(result.stderr, '')
+
+  assert.match(result.stdout, /Completion is optional/)
+
+  assert.doesNotMatch(result.stdout, /incomplete|0\/2/)
+})

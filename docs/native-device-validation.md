@@ -1,7 +1,9 @@
 # Native device validation
 
-Version 2 publication remains gated until native accessibility and interaction contracts have evidence from
-representative physical devices. Unit tests and simulator builds protect API and semantic regressions,
+Physical-device qualification is optional for current releases. Missing passes do not block
+publication or produce warnings during normal validation. See the current
+[native release policy](native-release-runbook.md#current-release-policy). Unit tests and simulator
+builds protect API and semantic regressions,
 but they do not prove screen-reader announcements, focus order, touch ergonomics, text scaling, or
 reduced-motion behavior on hardware.
 
@@ -11,10 +13,12 @@ complete pass additionally requires the exact lowercase 40-character revision, a
 URL for that revision in the Lumen repository, and a separate permanent workflow, pipeline, job,
 signed-build, artifact, or Lumen revision-pinned test record. Mutable branch and
 workflow-definition pages, query strings, fragments, unrelated repositories or revisions, and
-local notes cannot satisfy release readiness. Completed passes cannot be dated in the future. Run
-`pnpm run check:native-device-evidence` to validate its structure. Release readiness additionally
-requires `pnpm run check:native-device-readiness`, which fails until both minimum and current passes
-are complete for every adapter and platform. For the initial coordinated Lumen 2 launch, every
+local notes cannot satisfy complete device qualification. Completed passes cannot be dated in the future. Run
+`pnpm run check:native-device-evidence` to validate its structure. The
+`pnpm run check:native-device-readiness` command also validates optional records without
+requiring completion. Use `node scripts/check-native-device-evidence.mjs --require-complete` only
+for a strict qualification report requiring minimum and current passes for every adapter/platform.
+Under the historical Lumen 2 qualification plan, every
 complete minimum and current pass must test the exact revision recorded in the contract's
 `approval.reviewedRevision`; changing the candidate requires a new approval and fresh device
 evidence for that revision.

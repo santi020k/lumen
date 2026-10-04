@@ -327,6 +327,9 @@ if (requireComplete && remainingIterations > 0) {
 }
 
 process.stdout.write(
-  `Validated ${ledger.iterations.length}/${ledger.requiredIterations} native stability soak `
-    + `iterations against ${Object.keys(expectedBaselines).length} reviewed API baselines.\n`
+  requireComplete
+    ? `Validated ${ledger.iterations.length}/${ledger.requiredIterations} native stability soak `
+      + `iterations against ${Object.keys(expectedBaselines).length} reviewed API baselines.\n`
+    : `Validated native stability evidence against ${Object.keys(expectedBaselines).length} reviewed API baselines. `
+      + `Completion is optional.\n`
 )

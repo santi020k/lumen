@@ -4,7 +4,26 @@ This runbook turns the [Lumen 2 readiness plan](lumen-2-readiness.md) into an ex
 sequence. It does not authorize publishing, tagging, merging, or changing physical devices. Each
 external action still requires the maintainer's explicit approval.
 
-## Release policy
+## Current release policy
+
+Native real-consumer qualification, physical-device passes, and the two-iteration stability soak
+are optional evidence collection for current and future releases, including Lumen 4. Missing
+completion records do not block launch and normal validation does not warn about them. Existing
+records remain accurate; structural validation still rejects malformed or contradictory evidence.
+
+The three `check:native-*-readiness` commands validate optional records by default. To request a
+strict completion report, invoke the corresponding checker with `--require-complete`, for example
+`node scripts/check-native-device-evidence.mjs --require-complete`. This is an opt-in qualification
+report, not a publication prerequisite. `check:native-stable-readiness` is the historical Lumen 2
+qualification report and is not part of the current release workflow.
+
+Builds, automated tests, accessibility checks, package-consumer canaries, compatibility and migration
+checks, security checks, provenance, and explicit release approval remain required where configured.
+
+## Historical Lumen 2 release plan
+
+The sections below preserve the original Lumen 2 qualification plan. Its evidence-completion
+requirements do not override the current optional-evidence policy above.
 
 Continue publishing ordinary releases on the existing version lines while the supported Lumen 2
 contract gathers launch evidence. Do not create a separate version train solely for that evidence.

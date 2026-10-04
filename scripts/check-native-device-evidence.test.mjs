@@ -267,3 +267,18 @@ test('rejects a partial pass without explicit blocking issues', async () => {
 
   assert.match(result.stderr, /partial pass requires blocking issues/)
 })
+
+
+test('default device readiness accepts incomplete optional evidence without warnings', async () => {
+  const manifest = JSON.parse(await readFile(resolve(repositoryRoot, 'package.json'), 'utf8'))
+  const command = manifest.scripts['check:native-device-readiness'].split(' ')
+  const result = spawnSync(process.execPath, command.slice(1), { cwd: repositoryRoot, encoding: 'utf8' })
+
+  assert.equal(result.status, 0, result.stderr)
+
+  assert.equal(result.stderr, '')
+
+  assert.match(result.stdout, /Completion is optional/)
+
+  assert.doesNotMatch(result.stdout, /incomplete|0\/2/)
+})

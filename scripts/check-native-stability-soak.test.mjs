@@ -91,7 +91,7 @@ const runLedger = async (mutate, checkerArguments = []) => {
 }
 
 test('accepts two chronological ordinary-release stability iterations', async () => {
-  const result = await runLedger(() => {})
+  const result = await runLedger(() => {}, ['--require-complete'])
 
   assert.equal(result.status, 0, result.stderr)
 
@@ -307,4 +307,19 @@ test('rejects version 2 because it is the graduation release, not soak evidence'
   assert.equal(result.status, 1)
 
   assert.match(result.stderr, /must remain on its pre-2\.0 release line/)
+})
+
+
+test('default stability readiness accepts incomplete optional evidence without warnings', async () => {
+  const manifest = JSON.parse(await readFile(resolve(repositoryRoot, 'package.json'), 'utf8'))
+  const command = manifest.scripts['check:native-stability-readiness'].split(' ')
+  const result = spawnSync(process.execPath, command.slice(1), { cwd: repositoryRoot, encoding: 'utf8' })
+
+  assert.equal(result.status, 0, result.stderr)
+
+  assert.equal(result.stderr, '')
+
+  assert.match(result.stdout, /Completion is optional/)
+
+  assert.doesNotMatch(result.stdout, /incomplete|0\/2/)
 })

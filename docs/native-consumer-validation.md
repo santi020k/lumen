@@ -2,11 +2,15 @@
 
 <!-- cspell:words Roadscore -->
 
-This document records candidate and qualifying applications for the real-consumer gate in the
-[Lumen 2 readiness plan](lumen-2-readiness.md). A repository reference alone is discovery evidence,
+This document records candidate and qualifying applications from the historical real-consumer
+plan in the [Lumen 2 readiness plan](lumen-2-readiness.md). A repository reference alone is discovery evidence,
 not proof that an adapter is production-ready.
 
-## Qualification requirements
+Real-consumer qualification is optional for current releases. Missing completed records do not
+block publication or produce warnings during normal validation. See the current
+[native release policy](native-release-runbook.md#current-release-policy).
+
+## Optional qualification requirements
 
 A qualifying consumer must:
 
@@ -22,11 +26,13 @@ build does not by itself establish that the application is active or shipped.
 
 `registry/native-consumer-evidence.json` is the machine-readable qualification ledger. Run
 `pnpm run check:native-consumer-evidence` after updating a technical record and
-`pnpm run check:native-consumer-readiness` for the stable-release gate. A Complete entry requires
+`pnpm run check:native-consumer-readiness` to validate optional records without requiring completion.
+Use `node scripts/check-native-consumer-evidence.mjs --require-complete` only when requesting a
+strict qualification report. A Complete entry requires
 an owner-confirmed active product, an immutable published-artifact upgrade, supported component
 usage, installation and theming review, accessibility and integration checks, a signed application
 artifact, immutable HTTPS evidence, and no blocking findings. Prose in this document cannot bypass
-that gate.
+the recorded evidence requirements.
 
 For a Complete record, the checker requires an external HTTPS repository, an immutable revision
 URL containing the exact lowercase 40-character consumer upgrade commit, and a permanent workflow,

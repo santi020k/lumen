@@ -358,6 +358,7 @@ if (requireComplete && incompleteAdapters.length === 0) {
 }
 
 process.stdout.write(
-  `Validated ${ledger.adapters.length} native real-consumer records; `
-    + `${incompleteAdapters.length} remain incomplete.\n`
+  requireComplete
+    ? `Validated ${ledger.adapters.length} native real-consumer records; ${incompleteAdapters.length} remain incomplete.\n`
+    : `Validated ${ledger.adapters.length} native real-consumer records. Completion is optional.\n`
 )

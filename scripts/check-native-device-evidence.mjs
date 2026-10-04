@@ -318,6 +318,7 @@ if (requireComplete) {
 }
 
 process.stdout.write(
-  `Validated ${evidence.adapters.length * 2} native physical-device evidence slots; `
-    + `${incompletePasses.length} remain incomplete.\n`
+  requireComplete
+    ? `Validated ${evidence.adapters.length * 2} native physical-device evidence slots; ${incompletePasses.length} remain incomplete.\n`
+    : `Validated native physical-device evidence. Completion is optional.\n`
 )

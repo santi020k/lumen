@@ -25,8 +25,14 @@ dependency, icon, web, and Compose-field work. Integrate only completed, verifie
   translations, right-to-left layouts, large text, contrast, and reduced motion.
 - Workflows: searchable list/detail, keyboard-heavy editing, and chart-dashboard recipes with
   loading, empty, error, retry and success states.
-- Qualification: exact-candidate real-consumer and physical-device checks, two native stability
-  iterations, aligned API baselines, migration guidance, Changeset, and canonical validation.
+- Release validation: aligned API baselines, migration guidance, Changeset, and canonical validation.
+
+## Optional qualification evidence
+
+Exact-candidate real-consumer checks, physical-device passes, and the two native stability iterations
+are optional evidence collection. Their absence does not block launch or warn during default
+validation. Historical incomplete-qualification statements below describe evidence coverage, not
+current release blockers. See the [current release policy](native-release-runbook.md#current-release-policy).
 
 ## Implementation and evidence
 

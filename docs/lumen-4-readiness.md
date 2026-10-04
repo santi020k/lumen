@@ -5,6 +5,19 @@ production qualification evidence. Consumer audits inspect application source; a
 data, deployment, and migration remain owned by those projects.
 
 
+## Optional native evidence policy — October 4
+
+The owner has confirmed that native real-consumer records, physical-device passes, and stability
+soak iterations are optional for launch. Their absence does not block Lumen 4 publication. Default
+evidence and readiness commands validate recorded structure without incomplete-evidence warnings;
+strict completion reports remain available through explicit `--require-complete` requests. Existing
+records are preserved, with no unverified results marked complete. This policy supersedes historical
+qualification-blocker statements in this working record. See the
+[current release policy](native-release-runbook.md#current-release-policy).
+
+The v4 contract still requires explicit approval of the final reviewed revision. Automated release
+checks, package-consumer canaries, compatibility, security, and provenance remain required.
+
 ## Release PR candidate — October 4
 
 The release checkout now contains every local branch tip and all existing remote branch tips.
@@ -35,8 +48,8 @@ reports no actionable findings and independently passes 30 tests across four foc
 
 The owner has authorized pushing this release branch, creating its pull request and addressing
 Codex review findings and GitHub Actions failures. Remote merge, publication and deployment are
-outside this request. The draft v4 approval record and incomplete native qualification evidence
-remain protected publication gates; this preparation does not invent approval or qualification.
+outside this request. The draft v4 approval record remains a protected publication gate. Native qualification evidence
+is optional; this preparation does not invent approval or qualification.
 
 ## Release preparation checkpoint — October 4
 
