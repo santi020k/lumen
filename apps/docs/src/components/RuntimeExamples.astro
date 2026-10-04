@@ -1,0 +1,142 @@
+---
+import {
+  Accordion,
+  Badge,
+  Button,
+  Card,
+  CodeTabs,
+  Dialog,
+  Link,
+  Stack,
+  Tabs,
+  TabsList,
+  TabsPanel,
+  TabsTrigger
+} from '@santi020k/lumen-astro'
+
+interface Props {
+  idPrefix: string
+}
+
+const { idPrefix } = Astro.props
+const dialogId = `${idPrefix}-runtime-dialog`
+const dialogTitleId = `${dialogId}-title`
+
+const examples = [
+  {
+    code: `---
+import { Tabs, TabsList, TabsPanel, TabsTrigger } from '@santi020k/lumen-astro'
+---
+
+<Tabs initialValue="overview">
+  <TabsList aria-label="Workspace view">
+    <TabsTrigger value="overview">Overview</TabsTrigger>
+    <TabsTrigger value="activity">Activity</TabsTrigger>
+  </TabsList>
+  <TabsPanel value="overview">
+    <p>Your workspace is ready.</p>
+  </TabsPanel>
+  <TabsPanel value="activity">
+    <p>No new activity today.</p>
+  </TabsPanel>
+</Tabs>`,
+    label: 'Tabs',
+    language: 'astro',
+    value: 'tabs'
+  },
+  {
+    code: `---
+import { Button, Dialog } from '@santi020k/lumen-astro'
+---
+
+<Button data-ui-dialog-trigger="workspace-help">Open workspace help</Button>
+<Dialog id="workspace-help" aria-labelledby="workspace-help-title">
+  <h2 id="workspace-help-title">Workspace help</h2>
+  <p>Keep your team settings in one place.</p>
+  <footer>
+    <Button data-ui-dialog-close>Close help</Button>
+  </footer>
+</Dialog>`,
+    label: 'Dialog',
+    language: 'astro',
+    value: 'dialog'
+  },
+  {
+    code: `---
+import { Accordion } from '@santi020k/lumen-astro'
+---
+
+<Accordion>
+  <details>
+    <summary>Does this need JavaScript?</summary>
+    <p>Native details can open and close without the runtime.</p>
+  </details>
+</Accordion>`,
+    label: 'Native disclosure',
+    language: 'astro',
+    value: 'disclosure'
+  }
+] as const
+---
+
+<div class="runtime-examples" data-runtime-examples>
+  <div class="runtime-examples__grid">
+    <Card as="article">
+      <Stack gap="group">
+        <Badge variant="outline">Switch content</Badge>
+        <h3>Try the tabs</h3>
+        <p>Focus a tab and use the arrow keys to switch views.</p>
+        <Tabs initialValue="overview">
+          <TabsList aria-label="Workspace view">
+            <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="activity">Activity</TabsTrigger>
+          </TabsList>
+          <TabsPanel value="overview"><p>Your workspace is ready.</p></TabsPanel>
+          <TabsPanel value="activity"><p>No new activity today.</p></TabsPanel>
+        </Tabs>
+        <Link href="/docs/components/tabs">Tabs API and examples</Link>
+      </Stack>
+    </Card>
+    <Card as="article">
+      <Stack gap="group">
+        <Badge variant="outline">Open an overlay</Badge>
+        <h3>Try the dialog</h3>
+        <p>Open help, press Escape to dismiss it, then check where focus returns.</p>
+        <Button type="button" data-ui-dialog-trigger={dialogId}>Open workspace help</Button>
+        <Dialog id={dialogId} aria-labelledby={dialogTitleId}>
+          <h2 id={dialogTitleId}>Workspace help</h2>
+          <p>Keep your team settings in one place.</p>
+          <footer><Button type="button" data-ui-dialog-close>Close help</Button></footer>
+        </Dialog>
+        <Link href="/docs/components/dialog">Dialog API and examples</Link>
+      </Stack>
+    </Card>
+    <Card as="article">
+      <Stack gap="group">
+        <Badge variant="outline">Native HTML behavior</Badge>
+        <h3>Try the disclosure</h3>
+        <p>Click the question or focus it and press Enter. This also works without JavaScript.</p>
+        <Accordion>
+          <details>
+            <summary>Does this need JavaScript?</summary>
+            <p>Native details can open and close without the runtime.</p>
+          </details>
+        </Accordion>
+        <Link href="/docs/components/accordion">Accordion API and examples</Link>
+      </Stack>
+    </Card>
+  </div>
+  <div class="runtime-examples__code">
+    <p>Copy a demo · Astro snippets assume styles and UIPrimitives are already mounted in your root layout.</p>
+    <CodeTabs ariaLabel="Interactive example source" items={examples} />
+  </div>
+</div>
+
+<style>
+  .runtime-examples, .runtime-examples__grid, .runtime-examples__code { display: grid; gap: 1.5rem; min-width: 0; }
+  .runtime-examples__grid { align-items: start; }
+  .runtime-examples__grid > :global([data-slot="card"]) { min-width: 0; }
+  h3 { margin: 0; color: hsl(var(--ink)); font-size: 1rem; font-weight: 800; }
+  p { margin: 0; color: hsl(var(--ink-soft)); font-size: 0.875rem; line-height: 1.6; }
+  @media (min-width: 64rem) { .runtime-examples__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+</style>
