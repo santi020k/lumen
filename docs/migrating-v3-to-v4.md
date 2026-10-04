@@ -254,3 +254,12 @@ compose TextField with the Core decimal helpers; do not coerce financial values 
 
 See the [native component contracts](native-components.md) and
 [form submission error recipe](native-patterns.md#pattern-form-submission-errors).
+
+### Optional React Native per-icon imports
+
+For fixed icons, import the graphic from `@santi020k/lumen-react-native/icons/search` (for example,
+`LumenSearchIconGraphic`) and pass it to `LumenIcon` or `LumenIconButton` from the `graphics`
+entrypoint. Brand paths replace the namespace colon with a hyphen: `brand:github` uses
+`icons/brand-github` and `LumenBrandGithubIconGraphic`. These additions do not require changing
+existing root `name` lookups. Keep the root lookup when the icon name is dynamic; it includes the
+full catalog. See the [React Native package guide](../packages/react-native/README.md#canonical-per-icon-imports).

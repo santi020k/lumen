@@ -31,6 +31,10 @@
     "./graphics": {
       "types": "./dist/graphics.d.ts",
       "import": "./dist/graphics.js"
+    },
+    "./icons/*": {
+      "types": "./dist/static-icons/*.generated.d.ts",
+      "import": "./dist/static-icons/*.generated.js"
     }
   },
   "files": [

@@ -576,3 +576,40 @@ Root type checking and zero-warning lint passed all 23 tasks. Canonical validati
 passed the new fixture tests and monorepo build, then failed the unchanged web bundle
 budgets. Its log is `.build/native-quality-navigation-imports-validate.log`; later
 checks and local release integration remain incomplete.
+
+### Canonical React Native icon modules
+
+The candidate adds `@santi020k/lumen-react-native/icons/<name>` for all 2,437 canonical graphics.
+Use these with the existing `graphics` entrypoint; dynamic root lookups remain unchanged. Brand
+paths replace the namespace colon with a hyphen. Both representations are generated from one
+catalog and one rendering function. A prototype that made the root catalog import every separate
+module added 804,689 bytes to Android root navigation and exceeded the unchanged 6 MiB budget.
+The accepted layout retains the single-module root catalog and emits optional per-icon modules.
+
+Three production Hermes exports per fixture passed the existing Android and iOS budgets. The
+four-icon public per-icon navigation fixture measured 1637596 bytes on Android and
+1632243 bytes on iOS, compared with 6254003 and 6248221 bytes respectively for matching
+root navigation. These are bundle-size checks; they do not establish startup latency, native
+scrolling performance, physical-device accessibility or stability-soak qualification.
+
+The new API tests reject unclassified declaration forms, extra directory members, mismatched
+index paths and unreviewed package targets. The baseline checks every member and classifies 2,742
+exports across five entrypoints/families (2,700 unique symbols). Root `pnpm run typecheck` and
+`pnpm run lint` passed all 23 tasks; `pnpm run test` passed all 1,314 tests in 119 files with local
+HTTP test listeners enabled. All 138 React Native tests passed, including matching interface and
+brand geometry and accessible labels. The clean packed package passed installation, peer,
+contents and strict TypeScript consumer checks for both public icon paths. Generated icon checks,
+native contracts and v4 migration checks also passed.
+
+`pnpm run validate` passed its earlier checks and all 14 build tasks, then stopped at the existing
+web bundle overruns: CSS 199.7 KiB raw/32.4 KiB gzip, React components 168.1/34.7 KiB and Elements
+44.4 KiB gzip. Budgets remain unchanged. Later canonical steps are not implied green, and local
+release integration remains incomplete. Logs and source-hashed reports are preserved under
+`.build/native-quality-static-icon-*`; measurements used source base `b5b2a05e` plus this task's
+uncommitted public API, generator and fixture changes, before their focused commit.
+
+The first commit attempt exposed canonical brand-name spell diagnostics. A generated dictionary
+now supplies exact catalog vocabulary only for the per-icon modules, export index and reviewed API
+baseline. Prose remains checked; no ignore path or quality rule was widened. The generator changed
+after the measurements solely to emit this dictionary; every recorded runtime/package input still
+matches its measurement hash. Generated-source validation and the vocabulary check passed.

@@ -25,7 +25,7 @@ the same way as handwritten exports; their generator remains the editing source 
 
 | Adapter | Public inventory | Classification | Compatibility enforcement | Remaining work |
 | --- | --- | --- | --- | --- |
-| React Native | 263 unique exports across the package root, datetime, foundations, and graphics entrypoints | 263 Supported; 0 Experimental phone exports; 0 Deprecated | `pnpm run check:native-api-baseline` compares all four TypeScript entrypoints with `registry/native-api-baseline.json` | Retain the approved baseline across two ordinary stability iterations |
+| React Native | 2,700 unique exports across the package root, datetime, foundations, graphics and per-icon entrypoints | 2700 Supported; 0 Experimental phone exports; 0 Deprecated | `pnpm run check:native-api-baseline` compares the four TypeScript entrypoints and every classified icon-family member with `registry/native-api-baseline.json` | Retain the approved baseline across two ordinary stability iterations |
 | SwiftUI | Current symbol graphs: 3,197 macOS, 3,174 iOS, 3,005 tvOS, 3,174 visionOS, and 3,025 watchOS symbols | Every classified symbol is Supported on each platform; 0 Experimental, Deprecated, or Unclassified | `pnpm run check:swift-api-baseline` rebuilds every declared platform and compares it with `registry/swift-api-baseline.json`; `pnpm run check:swift-source-compatibility` checks the reviewed initializer replacements, seven sheet diagnostics, and four icon enum additions relative to `v3.0.1` for the v4 candidate | Keep the current major contract and migration guidance aligned with intentional signature changes |
 
 | WidgetKit | Reviewed `LumenWidgetUI` symbol graphs: 71 each on macOS, iOS, and watchOS | 71 Supported; 0 Experimental, Deprecated, or Unclassified on every supported widget platform | `pnpm run check:swift-api-baseline` rebuilds both Swift products and compares `registry/swift-widget-api-baseline.json` | Keep the focused product independent from the complete `LumenUI` application catalog |
@@ -39,6 +39,11 @@ export from the root or an approved subpath must appear in exactly one classific
 sorted, and wildcard exports are rejected because they can bypass classification. An optional entrypoint may re-export an existing symbol while retaining the same reviewed
 classification. An intentional API change updates implementation, types,
 documentation, tests, the baseline, and migration notes together.
+
+The approved `./icons/*` package path is a bounded family, not a TypeScript wildcard export.
+Its aggregate source names every graphic, and the checker compares each member's single named
+export, its aggregate module path and the package export targets with the reviewed classification.
+Additional files, extra exports, missing members and changed mappings fail the gate.
 
 The baseline check is part of `pnpm run validate`. A changed entrypoint therefore fails before a
 new symbol can be published without an explicit classification.

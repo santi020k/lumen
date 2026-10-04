@@ -2,7 +2,7 @@ import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 
-import ts from 'typescript'
+import { collectTypeScriptExports, validateIconMembers } from './lib/native-api-exports.mjs'
 
 const repositoryRoot = resolve(import.meta.dirname, '..')
 const baselinePath = resolve(repositoryRoot, 'registry/native-api-baseline.json')
@@ -11,31 +11,6 @@ const classifications = ['supported', 'experimental', 'deprecated']
 const maturities = new Set(['stable'])
 const nativeApiAuditPath = resolve(repositoryRoot, 'docs/native-api-audit.md')
 const nativeApiAudit = await readFile(nativeApiAuditPath, 'utf8')
-
-const collectTypeScriptExports = (entrypoint, source) => {
-  const sourceFile = ts.createSourceFile(
-    entrypoint,
-    source,
-    ts.ScriptTarget.Latest,
-    true,
-    ts.ScriptKind.TS
-  )
-
-  const exports = []
-
-  for (const statement of sourceFile.statements) {
-    if (!ts.isExportDeclaration(statement)) continue
-
-    assert.ok(
-      statement.exportClause && ts.isNamedExports(statement.exportClause),
-      `${entrypoint} must use named exports so the native API baseline can classify every symbol`
-    )
-
-    for (const element of statement.exportClause.elements) exports.push(element.name.text)
-  }
-
-  return exports.sort()
-}
 
 const validateClassification = (adapterName, adapter) => {
   assert.ok(maturities.has(adapter.maturity), `${adapterName} has an invalid maturity`)
@@ -106,6 +81,12 @@ for (const [adapterName, adapter] of Object.entries(baseline.adapters)) {
       subpathExportedNames,
       `${subpathLabel} public exports changed; classify intentional additions and removals in ${baselinePath}`
     )
+
+    if (subpathContract.membersDirectory !== undefined) {
+      assert.equal(subpath, './icons/*', 'Only the reviewed icon family may declare directory members')
+
+      await validateIconMembers(repositoryRoot, subpathContract, subpathSource, subpathClassifiedNames)
+    }
 
     entrypointClassifications.push(subpathContract)
 

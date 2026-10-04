@@ -45,7 +45,11 @@ await mkdir(benchmarkRoot, { recursive: true })
 
 const fixtureRoot = await mkdtemp(join(benchmarkRoot, 'native-import-benchmark-'))
 const manifest = JSON.parse(await readFile(join(playgroundRoot, 'package.json'), 'utf8'))
-const iconSource = await readFile(join(repositoryRoot, 'packages/react-native/src/icons.generated.tsx'), 'utf8')
+
+const iconSource = (await Promise.all(['house', 'search', 'chart-no-axes-combined', 'settings'].map(name => (
+  readFile(join(repositoryRoot, `packages/react-native/src/static-icons/${name}.generated.tsx`), 'utf8')
+)))).join('\n')
+
 const search = extractNativeGraphics(iconSource, ['LumenSearchIconGraphic'])
 
 const navigation = extractNativeGraphics(iconSource, [
@@ -73,6 +77,19 @@ import { View } from 'react-native'
 import { ${navigation.elements.join(', ')} } from 'react-native-svg'
 import { LumenIconButton, LumenProvider, type LumenIconGraphicProps } from '@santi020k/lumen-react-native/graphics'
 ${navigation.source}
+export default function App() { return <LumenProvider><View style={{ flexDirection: 'row' }}>
+  <LumenIconButton icon={LumenHouseIconGraphic} label="Home" />
+  <LumenIconButton icon={LumenSearchIconGraphic} label="Search" />
+  <LumenIconButton icon={LumenChartNoAxesCombinedIconGraphic} label="Activity" />
+  <LumenIconButton icon={LumenSettingsIconGraphic} label="Settings" />
+</View></LumenProvider> }
+`,
+  'catalog-navigation': `import { View } from 'react-native'
+import { LumenIconButton, LumenProvider } from '@santi020k/lumen-react-native/graphics'
+import { LumenHouseIconGraphic } from '@santi020k/lumen-react-native/icons/house'
+import { LumenSearchIconGraphic } from '@santi020k/lumen-react-native/icons/search'
+import { LumenChartNoAxesCombinedIconGraphic } from '@santi020k/lumen-react-native/icons/chart-no-axes-combined'
+import { LumenSettingsIconGraphic } from '@santi020k/lumen-react-native/icons/settings'
 export default function App() { return <LumenProvider><View style={{ flexDirection: 'row' }}>
   <LumenIconButton icon={LumenHouseIconGraphic} label="Home" />
   <LumenIconButton icon={LumenSearchIconGraphic} label="Search" />
@@ -167,6 +184,8 @@ try {
     }
   }
 
+  process.stdout.write(`${JSON.stringify(report, null, 2)}\n`)
+
   if (process.argv.includes('--check')) {
     const budgets = JSON.parse(await readFile(join(repositoryRoot, 'registry', 'react-native-import-budgets.json'), 'utf8'))
     const baseline = report.scenarios.baseline.bundleBytes
@@ -178,12 +197,13 @@ try {
 
     assert.ok(report.scenarios['graphics-navigation'].bundleBytes - baseline <= budgets.graphicsOverheadBytes, 'Static navigation graphics exceed their Hermes overhead budget')
 
+    assert.ok(report.scenarios['catalog-navigation'].bundleBytes - baseline <= budgets.graphicsOverheadBytes, 'Canonical navigation graphics exceed their Hermes overhead budget')
+
     assert.ok(report.scenarios['root-navigation'].bundleBytes <= budgets.rootBundleBytes, 'Root navigation exceeds its Hermes bundle budget')
 
     assert.ok(report.scenarios['root-icon'].bundleBytes <= budgets.rootBundleBytes, 'Root import exceeds its Hermes bundle budget')
   }
 
-  process.stdout.write(`${JSON.stringify(report, null, 2)}\n`)
 } finally {
   await rm(fixtureRoot, { force: true, recursive: true })
 }

@@ -7,6 +7,8 @@ import { getLumenPhoneCountry } from '@santi020k/lumen-core'
 import { createRoot, type Root, type TestInstance } from 'test-renderer'
 import { afterEach, describe, expect, test, vi } from 'vitest'
 
+import { LumenBrandGithubIconGraphic } from './static-icons/brand-github.generated.js'
+import { LumenSearchIconGraphic } from './static-icons/search.generated.js'
 import { LumenButtonGroup, LumenChip, LumenFieldGroup, LumenTextarea, LumenToast } from './additional-components.js'
 import { LumenAutocomplete, LumenInputOTP, LumenNumberField, LumenPasswordField } from './advanced-form-components.js'
 import { LumenImageComparison } from './comparison-components.js'
@@ -1422,6 +1424,30 @@ describe('Static graphic icon accessibility', () => {
     const buttons = root.container.queryAll(instance => readProp(instance, 'accessibilityRole') === 'button')
     expect(buttons.map(button => readProp(button, 'accessibilityLabel'))).toEqual(['Named search action', 'Custom search action'])
     expect(buttons.map(button => readProp(button, 'accessibilityState'))).toEqual([{ disabled: true }, { disabled: true }])
+  })
+
+  test('canonical per-icon imports match named artwork and preserve accessible labels', async () => {
+    const root = await renderNative(
+      <>
+        <LumenIcon name="search" label="Named search" size="lg" strokeWidth={3} />
+        <GraphicIcon icon={LumenSearchIconGraphic} label="Static search" size="lg" strokeWidth={3} />
+        <LumenIcon name="brand:github" decorative />
+        <GraphicIcon icon={LumenBrandGithubIconGraphic} decorative />
+      </>
+    )
+    const graphics = root.container.queryAll(instance => instance.type === 'Svg')
+    expect(graphics).toHaveLength(4)
+    const geometry = (graphic: TestInstance | undefined): unknown => {
+      if (!graphic) throw new Error('Missing canonical SVG')
+      return {
+        props: Object.fromEntries(Object.entries(graphic.props).filter(([name]) => name !== 'children')),
+        children: graphic.children.filter(child => typeof child !== 'string').map(child => ({ type: child.type, props: child.props }))
+      }
+    }
+    expect(geometry(graphics[0])).toEqual(geometry(graphics[1]))
+    expect(geometry(graphics[2])).toEqual(geometry(graphics[3]))
+    const icons = root.container.queryAll(instance => readProp(instance, 'accessibilityRole') === 'image')
+    expect(icons.map(icon => readProp(icon, 'accessibilityLabel'))).toEqual(['Named search', 'Static search'])
   })
 
   test('keeps graphic buttons named and announces disabled state', async () => {
