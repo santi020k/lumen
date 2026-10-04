@@ -174,6 +174,11 @@ for (const theme of ['lumen-light', 'lumen-dark']) {
         await bullet.locator('summary').click()
         await page.locator(`[data-chart-demo="${id}"] .ui-line-chart .ui-chart__data > summary`).click()
       }
+      const recipeDisclosures = page.locator('.chart-recipe-code > summary')
+      for (const disclosure of await recipeDisclosures.all()) await disclosure.click()
+      const guideReport: unknown = await page.evaluate('axe.run("[data-chart-guide]")')
+      expect(guideReport).toMatchObject({ violations: [] })
+      for (const disclosure of await recipeDisclosures.all()) await disclosure.click()
     }
   })
 }
@@ -217,11 +222,22 @@ for (const width of [373, 390, 1440]) {
     await context.grantPermissions(['clipboard-read', 'clipboard-write'])
     await page.setViewportSize({ width, height: 1000 })
     await page.goto('/docs/web/data-visualization')
-    await page.getByRole('navigation', { name: 'Data visualization guide' }).getByRole('link', { name: 'Code examples' }).click()
+    await page.getByRole('navigation', { name: 'Data visualization guide' }).getByRole('link', { name: 'Live examples' }).click()
     await expectGuideHeading(page, 'From a question to a chart.')
 
     for (const name of ['CalendarHeatmap', 'FunnelChart', 'BoxPlot', 'LollipopChart', 'DumbbellChart', 'BulletChart']) {
+      const preview = page.locator(`[data-chart-recipe-preview="${name}"]`)
+      await expect(preview.locator('figure')).toBeVisible()
+      const dataDisclosure = preview.locator('summary')
+      await dataDisclosure.press('Enter')
+      await expect(preview.locator('table')).toBeVisible()
+      await dataDisclosure.press('Space')
+      await expect(preview.locator('table')).toBeHidden()
+      const codeDisclosure = page.getByText(`View ${name} code`, { exact: true }).locator('..')
       const tabs = page.getByRole('tablist', { name: `${name} code framework` })
+      await expect(tabs).toBeHidden()
+      await codeDisclosure.press('Enter')
+      await expect(tabs).toBeVisible()
       await tabs.getByRole('tab', { name: 'Astro', exact: true }).focus()
       await page.keyboard.press('End')
       const tab = tabs.getByRole('tab', { name: 'Elements', exact: true })
@@ -233,6 +249,10 @@ for (const width of [373, 390, 1440]) {
       const copied = await page.evaluate(() => navigator.clipboard.readText())
       expect(copied).toContain(`defineLumenElements(['${name}'])`)
       expect(copied).toContain(name === 'BulletChart' ? 'chart.valueFormatter' : 'chart.data')
+      expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)).toBe(false)
+      await expect(preview.locator('figure')).toBeVisible()
+      await codeDisclosure.press('Space')
+      await expect(tabs).toBeHidden()
     }
 
     await page.getByRole('navigation', { name: 'Data visualization guide' }).getByRole('link', { name: 'Choose a chart' }).click()
