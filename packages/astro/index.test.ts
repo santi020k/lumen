@@ -280,7 +280,7 @@ describe('@santi020k/lumen-astro package surface', () => {
     ])
 
     for (const component of [input, nativeSelect]) {
-      expect(component).toContain('visualSize?: \'default\' | \'lg\' | \'sm\'')
+      expect(component).toContain('visualSize?: LumenControlVisualSize')
       expect(component).toContain('const resolvedVisualSize = visualSize ?? \'default\'')
       expect(component).toContain('size={size}')
       expect(component).not.toContain('legacyVisualSize')

@@ -172,7 +172,8 @@
     "test:native-api-exports": "node --test scripts/native-api-exports.test.mjs",
     "test:react-native-import-fixtures": "node --test scripts/react-native-import-fixtures.test.mjs",
     "check:security:raw": "pnpm audit --prod --audit-level moderate",
-    "test:security-patches": "node --test scripts/security-patches.test.mjs"
+    "test:security-patches": "node --test scripts/security-patches.test.mjs",
+    "measure:selective-imports": "node scripts/measure-selective-imports.mjs"
   },
   "devDependencies": {
     "@changesets/changelog-github": "catalog:",

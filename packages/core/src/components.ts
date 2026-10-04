@@ -1,3 +1,6 @@
+/** Visual density of web form controls; native HTML size remains numeric. */
+export type LumenControlVisualSize = 'default' | 'lg' | 'sm'
+
 export const lumenComponentNames = [
   'Accordion',
   'Alert',

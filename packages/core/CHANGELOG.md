@@ -167,6 +167,8 @@ explicitly without changing persisted event records.
 
 ### Major Changes
 
+- Finalize web form visual sizing with visualSize/visual-size on Select, PhoneInput and Segmented, preserving native numeric size. Add conservative literal migration previews and a complete machine-readable v4 breaking inventory. Fix controlled Segmented ownership, Select accessibility/callback/reset behavior, Elements scalar reconnection and reset defaults, and multiple-select submission. Add selective React component and Elements VirtualList imports with measured bundle and packed-consumer checks. Existing root imports remain supported.
+
 - Preserve VirtualList scroll height with fixed-height row windows and inert spacers across web
   adapters. Refresh changing rows and resized containers, retain keyboard focus, and restore row
   state on cleanup. Range endpoints are inclusive; empty lists report endIndex -1.

@@ -92,7 +92,7 @@
     "Illustration": "77e9dc132bcee5218ea35c13e5bcbbdec632d55d2ffa8b7574ab04e7149b64f6",
     "Image": "33a2c4f666963faffbf1c6a6183901f07867abf950fa2acd1895425141629c29",
     "ImageComparison": "83f11464a42391bbd60148e92310ae49f47d8d1dd583382f08df9d8fa1fb134a",
-    "Input": "34b776884e958a371e7711439d2b28718d97139a9e9e3caa06171d1dada3c22f",
+    "Input": "a1823cc7edf162e76682140cd50da749141fae33cf7d82286f263d8d4d5ec0e3",
     "InputGroup": "f791475cbbebd076a87472123bceffb73ab019431d520ee30b7df2da1e3f677d",
     "InputOTP": "98716a167fc628eccbd8e17b09691cfd48f356097bc9cc14052f5782958926ca",
     "Item": "62517c6eafc36509f3f79281552188da799dc7e9246567e2e59737fd5f8e6d44",
@@ -111,14 +111,14 @@
     "Message": "0e981ff747a53eaaabd62f7858a1f599832807f30fb910eed08485e544520453",
     "MessageScroller": "75adc34c29efca8f4529a238111637dc5a2703a9ea27fa1b0ee4ce232325e9eb",
     "Meter": "24c87efd240f2c0e230144ae44f2227293c81aa9ad7537a315f1bdf04c6a8d63",
-    "NativeSelect": "6f159a5a52800e764555870ee8e454d4f232c014120d8cf73e0b78e2d865c3d2",
+    "NativeSelect": "416ca1700213119aaabda7ba248e31438329fe726a8d87ec0a90cf1df5c3efb0",
     "NavigationMenu": "67dfa5534cb5dd05abb595053043b430a7d95e8723a2cb17ec71c5e83dd0fc5a",
     "Note": "f2d1b9cbcc93028eaa870f8fb51a0bcf5fa31d35bac93c81630e427e9691b1d0",
     "NumberField": "e6dca1577aacf0c8d8d57f08829d9e7a9cd29e4d669defac0ea18a2f393794f7",
     "Pagination": "9353552ecbc1ff1e4dd68347f3ba1c25edc4a75d6a4de3cacfb3d5a69f57f600",
     "Particles": "db074fe53b8a358b3176f5055c2e9a201ce9e93918722dbbd4194dbe3fbcdda0",
     "PasswordField": "3db95b17e16e625dfbfd8bb52355f03657aca7a421d1bdd7ba5428d783897cea",
-    "PhoneInput": "3bbc38c4d1ec752fcdcb6ec9bb4a336c58f4c861a47238557e97f6b070e66249",
+    "PhoneInput": "dd3d858299affe0726628c17f51fb451b519e332ecf7f8dcc4263808999aa61a",
     "PieChart": "7a70bca11f78a5fa8b31e8c2d4fc037ff2654d04eb3cb1e1e9cad23d726ec17c",
     "Pill": "967478ba6c4032d089c8e95ea00d1d26ebaa5b852e2c63edc515a6d57aa097c2",
     "Popconfirm": "bd0a5e938920db4dca3dd907698dcbbfd9e1dd0ab3e7a303ba84afb213eb78df",
@@ -138,8 +138,8 @@
     "ScrollProgress": "d8197f0ddb126796e75ceb4c67e50bd6fd275a4793332a8a09950a721b7967ba",
     "ScrollReveal": "5786f8460a043a4798afc7d2b13b5ab81ddba1c7cd798d67ca6f1db48c586fc0",
     "SearchField": "7f0e9925b7aa43f8ae1620714caa52891b4c27a9b5ab901400a151ba97d998a8",
-    "Segmented": "ae8be5fd5d4f7da3935c922f21c1940e23daf804baed28e281046bc8874f6acc",
-    "Select": "19a1532737b8c31d87c733896e9826577fa500c865248235b3ab9caf7652397e",
+    "Segmented": "98e20342661a93a9dbde82852ad354e785819cb4dd3d642c43c2be01f7057380",
+    "Select": "6bb1ccfdc953ab3a165673edf68b2ecb116d9665b256d422355a36d90f4d777d",
     "Separator": "c854e45f8800027d584360236313e587740593dc705f981bc73120e7731b4d2c",
     "Sheet": "01b002605ec7c05186e36ef79fa9d8f11d97e7d941435ef27eebfc0a28743cf1",
     "Sidebar": "c515e0446c9a60f9b3fe561396e3d446fce1863796eec5b4f0c590a55f3cd25f",
@@ -178,7 +178,7 @@
     "TreeGrid": "781bc67c43247b4c889f19c26eea0a9eeaad0827bb8a8f92233f25a81e7974b0",
     "TreeSelect": "5a3a9bab878fe98575abe2bb9641de54a601f2ef9cf5f21c24649afca7377f92",
     "Typography": "7fd507ce83c2bb06836eda0d7fc703e19b8cdf7d5a385c187d4dbbd8e99d9f5e",
-    "VirtualList": "90df254e46ea4005ba267725900fe1a8ae430d8bc753a685c30a0739a2cdcfd6",
+    "VirtualList": "94bc882292a2abe9aeaf25e99d99373c42a2f0f5151e40257f5d1800df5e766a",
     "VisuallyHidden": "ea4ee41c8142ce7b450516f43b6380cf84d3d915186564d6149c8a6ffd40b291",
     "WaterfallChart": "d36a92e0820a913f426749c20bffcc9e2856f1b47f6be4ca2691e6edc562f0c2",
     "Watermark": "d992ac14611a040fb4a423d60078cfb262b69e394774258f714a3ad8de421b1e"
@@ -648,6 +648,10 @@
           "import": "./dist/icons.js",
           "types": "./dist/icons.d.ts"
         },
+        "./image-comparison": {
+          "import": "./dist/image-comparison.js",
+          "types": "./dist/image-comparison.d.ts"
+        },
         "./package.json": "./package.json",
         "./phone": {
           "import": "./dist/phone.js",
@@ -672,6 +676,14 @@
         "./tokens": {
           "import": "./dist/tokens.js",
           "types": "./dist/tokens.d.ts"
+        },
+        "./virtual-list": {
+          "import": "./dist/virtual-list.js",
+          "types": "./dist/virtual-list.d.ts"
+        },
+        "./virtual-window": {
+          "import": "./dist/virtual-window.js",
+          "types": "./dist/virtual-window.d.ts"
         }
       },
       "packageJson": "packages/core/package.json",
@@ -730,6 +742,7 @@
         "LumenComponentBehavior",
         "LumenComponentName",
         "LumenContrastScore",
+        "LumenControlVisualSize",
         "LumenDataRecord",
         "LumenDataViewServerRequest",
         "LumenDataViewState",
@@ -1130,6 +1143,7 @@
         "LumenComponentBehavior",
         "LumenComponentName",
         "LumenContrastScore",
+        "LumenControlVisualSize",
         "LumenDataRecord",
         "LumenDataViewServerRequest",
         "LumenDataViewState",
@@ -1514,6 +1528,10 @@
         "./components/image-comparison": {
           "import": "./dist/components/image-comparison.js",
           "types": "./dist/components/image-comparison.d.ts"
+        },
+        "./components/virtual-list": {
+          "import": "./dist/components/virtual-list.js",
+          "types": "./dist/components/virtual-list.d.ts"
         },
         "./define": {
           "import": "./dist/define.js",
@@ -2533,6 +2551,50 @@
         ".": {
           "import": "./dist/index.js",
           "types": "./dist/index.d.ts"
+        },
+        "./components/attachments": {
+          "import": "./dist/attachments.js",
+          "types": "./dist/attachments.d.ts"
+        },
+        "./components/bullet-chart": {
+          "import": "./dist/bullet-chart.js",
+          "types": "./dist/bullet-chart.d.ts"
+        },
+        "./components/comparison-chart": {
+          "import": "./dist/comparison-chart.js",
+          "types": "./dist/comparison-chart.d.ts"
+        },
+        "./components/data-table": {
+          "import": "./dist/data-table.js",
+          "types": "./dist/data-table.d.ts"
+        },
+        "./components/date-range-calendar": {
+          "import": "./dist/date-range-calendar.js",
+          "types": "./dist/date-range-calendar.d.ts"
+        },
+        "./components/date-range-input": {
+          "import": "./dist/date-range-input.js",
+          "types": "./dist/date-range-input.d.ts"
+        },
+        "./components/expanded-charts": {
+          "import": "./dist/expanded-charts.js",
+          "types": "./dist/expanded-charts.d.ts"
+        },
+        "./components/image-comparison": {
+          "import": "./dist/image-comparison.js",
+          "types": "./dist/image-comparison.d.ts"
+        },
+        "./components/interval-charts": {
+          "import": "./dist/interval-charts.js",
+          "types": "./dist/interval-charts.d.ts"
+        },
+        "./components/virtual-list": {
+          "import": "./dist/virtual-list.js",
+          "types": "./dist/virtual-list.d.ts"
+        },
+        "./hooks": {
+          "import": "./dist/hooks.js",
+          "types": "./dist/hooks.d.ts"
         },
         "./icons": {
           "import": "./dist/icons.js",

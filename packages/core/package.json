@@ -67,6 +67,18 @@
     "./icon-data": {
       "types": "./dist/icon-data.generated.d.ts",
       "import": "./dist/icon-data.generated.js"
+    },
+    "./image-comparison": {
+      "types": "./dist/image-comparison.d.ts",
+      "import": "./dist/image-comparison.js"
+    },
+    "./virtual-list": {
+      "types": "./dist/virtual-list.d.ts",
+      "import": "./dist/virtual-list.js"
+    },
+    "./virtual-window": {
+      "types": "./dist/virtual-window.d.ts",
+      "import": "./dist/virtual-window.js"
     }
   },
   "files": [

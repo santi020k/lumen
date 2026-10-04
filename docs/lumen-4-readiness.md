@@ -845,3 +845,38 @@ activation, React chart recipe, and Elements activation helper entries. The help
 are respectively 3922 / 1152, 1526 / 590, and 4456 / 1331 raw / gzip bytes. Existing unrelated entry
 limits remain unchanged. The crosshair fix adds one CSS declaration beyond the table snapshot;
 the checker measures final files again during validation.
+
+### Final web contracts and selective imports
+
+The final adjustment set follows imports, form behavior, visual sizing, then migration inventory.
+React adds direct component and hook entries; Elements adds a granular VirtualList registration
+that shares its constructor with complete registration. Equivalent minified ImageComparison
+consumers traverse five modules instead of 2,026 with identical raw output. Equivalent Elements
+VirtualList registration uses seven modules and 2,973 gzip bytes instead of the full catalog's
+2,008 modules and 488,057 gzip bytes. These synthetic measurements are reproducible with
+`pnpm run measure:selective-imports`; root imports remain supported.
+
+The web form audit fixes controlled React Segmented selection, React Select accessible descriptions,
+user callback counts and accepted/canceled reset ownership, Elements scalar reconnect listeners and
+checked reset defaults, and multiple NativeSelect submission. A supplied Elements Select child
+receives the enhanced fallback classes instead of remaining visible alongside the trigger.
+Native form ownership, disabled fieldset containers, selected disabled options and reset cancellation retain
+browser semantics. See [form contracts](form-controls.md).
+
+Select, PhoneInput and Segmented use `visualSize`/`visual-size`, matching Input and NativeSelect.
+The shared Core type accepts default, sm and lg. Numeric input/select size remains native; the
+PhoneInput native width stays in inputProps.size. Conservative CLI migration handles recognized
+literals and aliases, maps Select md to default, and leaves dynamic, duplicated or spread values
+for review. Button, icon, container and native-platform sizing retain their existing APIs.
+
+Seven explicit web entries complete the machine-readable breaking inventory: content flow, visual
+sizing, form ownership, Combobox focus, phone input identity, virtual ranges, and rich-text command
+ownership. The generator updates the CLI contract and MCP snapshot, and tests protect the complete
+inventory and package-filtered web/native guidance. The new Core sizing type is classified as
+supported in the regenerated public API baseline. A scoped Changeset was processed through the
+configured generator in a scratch metadata workspace and folded into the existing unpublished
+4.0.0 changelogs, preserving versions and prior history.
+
+Rendered verification covers desktop/mobile Chromium and WebKit, with synthetic density screenshots,
+and the five affected Astro form pages at 390 and 1440 pixels. The reset helper uses the React
+package's existing production minification; its bytes remain included in the unchanged hook budget.

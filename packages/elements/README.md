@@ -36,6 +36,13 @@ Web Components for Lumen UI.
 
 This package registers standards-based custom elements for the shared Lumen primitive catalog.
 
+See the [shared web form contracts](../../docs/form-controls.md) for value ownership, reset,
+submission, disabled state, and event behavior.
+
+Form controls use `visualSize` (`visual-size` in Elements) with `default`, `sm` and `lg`.
+Select, PhoneInput and Segmented follow Input and NativeSelect; numeric input/select `size` keeps
+its native meaning. See the [v4 migration guide](../../docs/migrating-v3-to-v4.md#form-control-visual-sizing).
+
 ## Install
 
 ```bash
@@ -120,6 +127,18 @@ constructor used by the complete catalog. The Combobox entrypoint includes its f
 selection, dismissal, and focus behavior without importing the complete catalog. Other components
 still use `defineLumenElements`; do not replace the full entrypoint when the application needs a
 behavior-backed element that does not yet have a granular module.
+
+VirtualList also has an independent registration entrypoint, including windowing and cleanup:
+
+```ts
+import { defineLumenVirtualList } from '@santi020k/lumen-elements/components/virtual-list'
+
+defineLumenVirtualList()
+```
+
+It registers the same constructor as the full catalog and accepts an optional registry. Pair it
+with the matching stylesheet. `pnpm run measure:selective-imports` compares this entry with the
+complete catalog using an equivalent single-component consumer.
 
 Foundation-only pages can register fifteen layout, composition, and accessibility elements as one
 small implementation-level bundle:
