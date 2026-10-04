@@ -822,3 +822,34 @@ snapshot and evaluation, and clean packed React Native consumer also passed. Can
 passed all 14 build tasks and stopped at the same CSS, React and Elements bundle-budget overruns.
 No budget was raised. Logs remain under `.build/native-quality-slider-rtl-*`; local release
 integration and the remaining native qualification requirements are incomplete.
+
+### Native slider accessibility exposure
+
+The isolated iOS Release RTL probe at `adcd19a6` displayed both sliders but exposed neither
+as an adjustable element in Device Hub's native accessibility tree. The slider track now sets
+`accessible`, and the component regressions require that explicit exposure in both native
+directions. Package guidance and a Changeset describe the correction; the API remains unchanged.
+
+The rebuilt probe exposed an enabled Volume slider and a disabled Disabled volume slider,
+including current value and increment/decrement actions. Native increment changed the controlled
+value from 25 to 30; decrement returned it to 25. Attempting increment on the disabled slider
+left it at 25. Clicking the enabled control through its accessibility element selected 50.
+Coordinate endpoint clicks and drags did not change the control through Device Hub, so native
+endpoint/drag verification remains open. This is native accessibility-action evidence, not
+VoiceOver speech, Android, physical-device or stability qualification.
+
+Both artifacts, source hashes, screenshots and the corrected accessibility tree remain local
+under `.build/native-quality-slider-rtl-runtime` and
+`.build/native-quality-slider-accessible-runtime`. All 76 installed corrected application files
+matched the preserved artifact. The corrected probe also changed its diagnostic background to
+light, so these screenshots are not a matched pixel-regression comparison. The in-app restoration
+control cleared the temporary force-RTL preference, verified as false in the qualification app's
+preferences; the original host entrypoint and previously preserved app were restored.
+
+All 1,334 JavaScript tests and all 23 root type-check and zero-warning lint tasks passed. Apple
+build logs retain external React umbrella-header and native dependency warnings without
+suppression. Remaining qualification requirements and local release integration remain open.
+
+The packed React Native consumer, unchanged API classification and regenerated MCP snapshot and
+evaluation passed. Canonical validation again passed all 14 build tasks before the unchanged
+CSS, React and Elements bundle-budget failures. No limits were raised or failed gate bypassed.

@@ -249,6 +249,7 @@ describe('Lumen React Native component behavior', () => {
       <LumenSlider label="Volume" min={20} max={120} step={10} value={70} onValueChange={onValueChange} />
     )
     const slider = findByAccessibilityRole(root, 'adjustable')
+    expect(readProp(slider, 'accessible')).toBe(true)
     const dispatch = async (property: string, nativeEvent: unknown): Promise<void> => {
       const handler = readProp(slider, property)
       if (typeof handler !== 'function') throw new Error(`Missing slider ${property} callback`)

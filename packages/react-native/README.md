@@ -224,7 +224,7 @@ the application supplies the active panel, so routing and data ownership stay ou
 
 Picker, Slider, and Gauge complete the shared phone control contract without adding another native
 dependency. Picker values remain controlled, Slider supports touch/drag plus screen-reader
-increment and decrement actions. Slider touch values follow the native right-to-left direction;
+increment and decrement actions through one accessible adjustable track. Slider touch values follow the native right-to-left direction;
 its minimum and fill start at the leading edge, while accessibility increment always increases
 the numeric value. Gauge normalizes invalid ranges before exposing progress
 semantics:

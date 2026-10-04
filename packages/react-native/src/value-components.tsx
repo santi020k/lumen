@@ -239,6 +239,7 @@ export const LumenSlider = ({
         </Text>
       </View>
       <View
+        accessible
         accessibilityActions={[{ name: 'decrement' }, { name: 'increment' }]}
         accessibilityLabel={label}
         accessibilityRole="adjustable"
