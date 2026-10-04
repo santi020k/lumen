@@ -38,6 +38,11 @@
 
 ### Minor Changes
 
+- Add CalendarHeatmap, FunnelChart, and BoxPlot across web and native adapters with shared validation,
+  semantic chart colors, localized formatting, responsive layouts, and accessible exact data.
+  Calendar heatmaps use explicit Gregorian date-only ranges; funnels preserve supplied stage order;
+  box plots accept precomputed quartiles, whiskers, and outliers without performing application statistics.
+
 - Add canonical Default, Studio and Glass appearance presets, scoped web styling and ThemeBuilder radius, spacing and border customization. Native adapters expose preset palettes and explicit surface material with opaque fallbacks. Swift and Compose consumers must rebuild for the updated theme and surface signatures; see the appearance presets guide.
 
 - Add attachment list and browser-owned image preview composition with localized fallback states,
@@ -89,6 +94,13 @@
   Refine BulletChart with a slimmer track, quieter range bands, and a capped target marker.
 
 ### Patch Changes
+
+- Prevent combobox option clicks from submitting forms, preserve application-hidden options during
+  filtering, and restore filter-owned visibility on cleanup. Support mounted virtual lists in
+  same-origin iframe documents. Respect disabled fieldset ancestors and current form ownership for
+  combobox resets. Bind Web Component comboboxes when children arrive or are replaced after connection.
+
+  Compose consecutive functional updates through uncontrolled React hook setters without losing earlier updates or duplicating change notifications.
 
 - Restore the Mentions caret with the committed value instead of a delayed animation frame,
 so immediate edits and focus changes cannot be overwritten. Controlled values wait for the

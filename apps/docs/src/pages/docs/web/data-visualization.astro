@@ -1,9 +1,9 @@
 ---
-import { Badge, BulletChart, DumbbellChart, Heatmap, Histogram, Icon, LineChart, Link, LollipopChart, PieChart, Sparkline, Stat, Tabs, TabsList, TabsPanel, TabsTrigger, WaterfallChart } from '@santi020k/lumen-astro'
+import { Badge, BoxPlot, BulletChart, CalendarHeatmap, DumbbellChart, FunnelChart, Heatmap, Histogram, Icon, LineChart, Link, LollipopChart, PieChart, Sparkline, Stat, Tabs, TabsList, TabsPanel, TabsTrigger, WaterfallChart } from '@santi020k/lumen-astro'
 
 import ChartUsageGuide from '../../../components/ChartUsageGuide.astro'
 import DocsLayout from '../../../layouts/DocsLayout.astro'
-import { chartDemoBins, chartDemoBulletRanges, chartDemoChannels, chartDemoComparisons, chartDemoHeatmap, chartDemoMetrics, chartDemoSeries, chartDemoWaterfall } from '../../../lib/chart-demo-data'
+import { chartDemoBins, chartDemoBoxPlots, chartDemoBulletRanges, chartDemoCalendar, chartDemoChannels, chartDemoComparisons, chartDemoFunnel, chartDemoHeatmap, chartDemoMetrics, chartDemoSeries, chartDemoWaterfall } from '../../../lib/chart-demo-data'
 ---
 
 <DocsLayout title="Data visualization: examples & usage — Lumen UI" description="Explore accessible charts, choose the right visualization, and copy working Astro, React, and Web Component examples. Learn data contracts, formatting, and native usage." breadcrumbs={[{ href: '/docs/web', label: 'Web' }, { href: '/docs/web/data-visualization', label: 'Data visualization' }]}>
@@ -55,6 +55,9 @@ import { chartDemoBins, chartDemoBulletRanges, chartDemoChannels, chartDemoCompa
         </div>
         <TabsPanel value="astro">
           <section class="viz-chart-grid" data-chart-demo="astro" aria-label="Astro charts">
+            <CalendarHeatmap aria-label="Astro daily activity" heading="Daily activity" description="August 2026 · missing days stay distinct" data={chartDemoCalendar} startDate="2026-08-01" endDate="2026-08-28" />
+            <FunnelChart aria-label="Astro activation funnel" heading="From visit to subscription" data={chartDemoFunnel} />
+            <BoxPlot aria-label="Astro response distribution" heading="Response distribution" description="Precomputed summary · minutes" data={chartDemoBoxPlots} />
             <LineChart class="viz-main-chart" aria-label="Astro request volume" heading="Request volume" description="Requests and completions · 09:00–12:00" series={chartDemoSeries} xScale="linear" area markers="none" interactive syncGroup="visualization-demo" annotations={[{ id: 'target', label: 'Capacity target', value: 160 }]} />
     <LollipopChart aria-label="Astro team rankings" heading="Team performance" description="Current score · shared scale" data={chartDemoComparisons} domain={{ min: 0, max: 100 }} valueLabel="Score" />
     <DumbbellChart aria-label="Astro team comparison" heading="Progress by team" description="Previous quarter to current quarter" data={chartDemoComparisons} domain={{ min: 0, max: 100 }} referenceLabel="Previous" valueLabel="Current" />
@@ -70,6 +73,9 @@ import { chartDemoBins, chartDemoBulletRanges, chartDemoChannels, chartDemoCompa
         </TabsPanel>
         <TabsPanel value="elements">
           <section class="viz-chart-grid" data-chart-demo="elements" aria-label="Web Component charts">
+            <lumen-calendar-heatmap aria-label="Elements daily activity" heading="Daily activity" data={JSON.stringify(chartDemoCalendar)} start-date="2026-08-01" end-date="2026-08-28"></lumen-calendar-heatmap>
+            <lumen-funnel-chart aria-label="Elements activation funnel" heading="From visit to subscription" data={JSON.stringify(chartDemoFunnel)}></lumen-funnel-chart>
+            <lumen-box-plot aria-label="Elements response distribution" heading="Response distribution" data={JSON.stringify(chartDemoBoxPlots)}></lumen-box-plot>
             <lumen-line-chart class="viz-main-chart" aria-label="Elements request volume" heading="Request volume" description="Requests and completions · 09:00–12:00" series={JSON.stringify(chartDemoSeries)} x-scale="linear" area markers="none" interactive sync-group="visualization-demo" annotations={JSON.stringify([{ id: 'target', label: 'Capacity target', value: 160 }])}></lumen-line-chart>
             <lumen-lollipop-chart aria-label="Elements team rankings" heading="Team performance" description="Current score · shared scale" data={JSON.stringify(chartDemoComparisons)} domain-min="0" domain-max="100" value-label="Score"></lumen-lollipop-chart>
             <lumen-dumbbell-chart aria-label="Elements team comparison" heading="Progress by team" description="Previous quarter to current quarter" data={JSON.stringify(chartDemoComparisons)} domain-min="0" domain-max="100" reference-label="Previous" value-label="Current"></lumen-dumbbell-chart>
@@ -107,7 +113,7 @@ import { ReactChartDemo } from '../../../lib/react-chart-demo'
 
     container.dataset.mounted = 'true'
 
-    defineLumenElements(['LollipopChart', 'DumbbellChart', 'BulletChart', 'LineChart', 'WaterfallChart', 'Histogram', 'Heatmap', 'PieChart'])
+    defineLumenElements(['CalendarHeatmap', 'FunnelChart', 'BoxPlot', 'LollipopChart', 'DumbbellChart', 'BulletChart', 'LineChart', 'WaterfallChart', 'Histogram', 'Heatmap', 'PieChart'])
 
     root = createRoot(container)
 

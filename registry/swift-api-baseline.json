@@ -1417,6 +1417,85 @@
           "precise": "s:7LumenUI0A11CubicBezierV2y2Sdvp"
         },
         {
+          "declaration": "@MainActor struct LumenFunnelChart",
+          "kind": "swift.struct",
+          "path": [
+            "LumenFunnelChart"
+          ],
+          "precise": "s:7LumenUI0A11FunnelChartV"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenFunnelChart",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A11FunnelChartV4bodyQrvp"
+        },
+        {
+          "declaration": "@MainActor init(data: [LumenFunnelDatum], label: String, heading: String? = nil, description: String? = nil, labels: LumenChartLabels = .english, showData: Bool = true)",
+          "kind": "swift.init",
+          "path": [
+            "LumenFunnelChart",
+            "init(data:label:heading:description:labels:showData:)"
+          ],
+          "precise": "s:7LumenUI0A11FunnelChartV4data5label7heading11description6labels8showDataACSayAA0aC5DatumVG_S2SSgAmA0aD6LabelsVSbtcfc"
+        },
+        {
+          "declaration": "struct LumenFunnelDatum",
+          "kind": "swift.struct",
+          "path": [
+            "LumenFunnelDatum"
+          ],
+          "precise": "s:7LumenUI0A11FunnelDatumV"
+        },
+        {
+          "declaration": "init(id: String, label: String, value: Double?, tone: LumenChartTone? = nil)",
+          "kind": "swift.init",
+          "path": [
+            "LumenFunnelDatum",
+            "init(id:label:value:tone:)"
+          ],
+          "precise": "s:7LumenUI0A11FunnelDatumV2id5label5value4toneACSS_SSSdSgAA0A9ChartToneOSgtcfc"
+        },
+        {
+          "declaration": "let id: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenFunnelDatum",
+            "id"
+          ],
+          "precise": "s:7LumenUI0A11FunnelDatumV2idSSvp"
+        },
+        {
+          "declaration": "let tone: LumenChartTone?",
+          "kind": "swift.property",
+          "path": [
+            "LumenFunnelDatum",
+            "tone"
+          ],
+          "precise": "s:7LumenUI0A11FunnelDatumV4toneAA0A9ChartToneOSgvp"
+        },
+        {
+          "declaration": "let label: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenFunnelDatum",
+            "label"
+          ],
+          "precise": "s:7LumenUI0A11FunnelDatumV5labelSSvp"
+        },
+        {
+          "declaration": "let value: Double?",
+          "kind": "swift.property",
+          "path": [
+            "LumenFunnelDatum",
+            "value"
+          ],
+          "precise": "s:7LumenUI0A11FunnelDatumV5valueSdSgvp"
+        },
+        {
           "declaration": "enum LumenGraphicSize",
           "kind": "swift.enum",
           "path": [
@@ -2115,6 +2194,104 @@
             "neutral"
           ],
           "precise": "s:7LumenUI0A12BackdropToneO7neutralyA2CmF"
+        },
+        {
+          "declaration": "struct LumenBoxPlotDatum",
+          "kind": "swift.struct",
+          "path": [
+            "LumenBoxPlotDatum"
+          ],
+          "precise": "s:7LumenUI0A12BoxPlotDatumV"
+        },
+        {
+          "declaration": "init(id: String, label: String, min: Double?, q1: Double?, median: Double?, q3: Double?, max: Double?, outliers: [Double] = [], tone: LumenChartTone? = nil)",
+          "kind": "swift.init",
+          "path": [
+            "LumenBoxPlotDatum",
+            "init(id:label:min:q1:median:q3:max:outliers:tone:)"
+          ],
+          "precise": "s:7LumenUI0A12BoxPlotDatumV2id5label3min2q16median2q33max8outliers4toneACSS_SSSdSgA4MSaySdGAA0A9ChartToneOSgtcfc"
+        },
+        {
+          "declaration": "let id: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotDatum",
+            "id"
+          ],
+          "precise": "s:7LumenUI0A12BoxPlotDatumV2idSSvp"
+        },
+        {
+          "declaration": "let q1: Double?",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotDatum",
+            "q1"
+          ],
+          "precise": "s:7LumenUI0A12BoxPlotDatumV2q1SdSgvp"
+        },
+        {
+          "declaration": "let q3: Double?",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotDatum",
+            "q3"
+          ],
+          "precise": "s:7LumenUI0A12BoxPlotDatumV2q3SdSgvp"
+        },
+        {
+          "declaration": "let max: Double?",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotDatum",
+            "max"
+          ],
+          "precise": "s:7LumenUI0A12BoxPlotDatumV3maxSdSgvp"
+        },
+        {
+          "declaration": "let min: Double?",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotDatum",
+            "min"
+          ],
+          "precise": "s:7LumenUI0A12BoxPlotDatumV3minSdSgvp"
+        },
+        {
+          "declaration": "let tone: LumenChartTone?",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotDatum",
+            "tone"
+          ],
+          "precise": "s:7LumenUI0A12BoxPlotDatumV4toneAA0A9ChartToneOSgvp"
+        },
+        {
+          "declaration": "let label: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotDatum",
+            "label"
+          ],
+          "precise": "s:7LumenUI0A12BoxPlotDatumV5labelSSvp"
+        },
+        {
+          "declaration": "let median: Double?",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotDatum",
+            "median"
+          ],
+          "precise": "s:7LumenUI0A12BoxPlotDatumV6medianSdSgvp"
+        },
+        {
+          "declaration": "let outliers: [Double]",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotDatum",
+            "outliers"
+          ],
+          "precise": "s:7LumenUI0A12BoxPlotDatumV8outliersSaySdGvp"
         },
         {
           "declaration": "enum LumenButtonIntent",
@@ -2956,6 +3133,77 @@
             "warning"
           ],
           "precise": "s:7LumenUI0A13BannerVariantO7warningyA2CmF"
+        },
+        {
+          "declaration": "struct LumenBoxPlotLabels",
+          "kind": "swift.struct",
+          "path": [
+            "LumenBoxPlotLabels"
+          ],
+          "precise": "s:7LumenUI0A13BoxPlotLabelsV"
+        },
+        {
+          "declaration": "let firstQuartile: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotLabels",
+            "firstQuartile"
+          ],
+          "precise": "s:7LumenUI0A13BoxPlotLabelsV13firstQuartileSSvp"
+        },
+        {
+          "declaration": "let thirdQuartile: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotLabels",
+            "thirdQuartile"
+          ],
+          "precise": "s:7LumenUI0A13BoxPlotLabelsV13thirdQuartileSSvp"
+        },
+        {
+          "declaration": "let median: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotLabels",
+            "median"
+          ],
+          "precise": "s:7LumenUI0A13BoxPlotLabelsV6medianSSvp"
+        },
+        {
+          "declaration": "let maximum: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotLabels",
+            "maximum"
+          ],
+          "precise": "s:7LumenUI0A13BoxPlotLabelsV7maximumSSvp"
+        },
+        {
+          "declaration": "init(minimum: String = \"Lower whisker\", firstQuartile: String = \"First quartile\", median: String = \"Median\", thirdQuartile: String = \"Third quartile\", maximum: String = \"Upper whisker\", outliers: String = \"Outliers\")",
+          "kind": "swift.init",
+          "path": [
+            "LumenBoxPlotLabels",
+            "init(minimum:firstQuartile:median:thirdQuartile:maximum:outliers:)"
+          ],
+          "precise": "s:7LumenUI0A13BoxPlotLabelsV7minimum13firstQuartile6median05thirdH07maximum8outliersACSS_S5Stcfc"
+        },
+        {
+          "declaration": "let minimum: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotLabels",
+            "minimum"
+          ],
+          "precise": "s:7LumenUI0A13BoxPlotLabelsV7minimumSSvp"
+        },
+        {
+          "declaration": "let outliers: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotLabels",
+            "outliers"
+          ],
+          "precise": "s:7LumenUI0A13BoxPlotLabelsV8outliersSSvp"
         },
         {
           "declaration": "struct LumenButtonMetrics",
@@ -3868,6 +4116,32 @@
             "aurora"
           ],
           "precise": "s:7LumenUI0A15BackdropVariantO6aurorayA2CmF"
+        },
+        {
+          "declaration": "@MainActor struct LumenCalendarHeatmap",
+          "kind": "swift.struct",
+          "path": [
+            "LumenCalendarHeatmap"
+          ],
+          "precise": "s:7LumenUI0A15CalendarHeatmapV"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenCalendarHeatmap",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A15CalendarHeatmapV4bodyQrvp"
+        },
+        {
+          "declaration": "@MainActor init(data: [LumenCalendarHeatmapDatum], label: String, startDate: String, endDate: String, weekStartsOn: Int = 0, domain: ClosedRange<Double>? = nil, heading: String? = nil, description: String? = nil, labels: LumenChartLabels = .english, weekdayLabels: [String]? = nil, formatDate: @escaping @Sendable (String) -> String = { $0 }, showData: Bool = true)",
+          "kind": "swift.init",
+          "path": [
+            "LumenCalendarHeatmap",
+            "init(data:label:startDate:endDate:weekStartsOn:domain:heading:description:labels:weekdayLabels:formatDate:showData:)"
+          ],
+          "precise": "s:7LumenUI0A15CalendarHeatmapV4data5label9startDate03endH012weekStartsOn6domain7heading11description6labels13weekdayLabels06formatH08showDataACSayAA0acD5DatumVG_S3SSiSNySdGSgSSSgAuA0a5ChartR0VSaySSGSgS2ScSbtcfc"
         },
         {
           "declaration": "struct LumenComparisonDatum",
@@ -5022,6 +5296,41 @@
           "precise": "s:7LumenUI0A19SliderConfigurationV7resolve6bounds4stepACSNySdG_SdSgtFZ"
         },
         {
+          "declaration": "struct LumenCalendarHeatmapDatum",
+          "kind": "swift.struct",
+          "path": [
+            "LumenCalendarHeatmapDatum"
+          ],
+          "precise": "s:7LumenUI0A20CalendarHeatmapDatumV"
+        },
+        {
+          "declaration": "init(date: String, value: Double?)",
+          "kind": "swift.init",
+          "path": [
+            "LumenCalendarHeatmapDatum",
+            "init(date:value:)"
+          ],
+          "precise": "s:7LumenUI0A20CalendarHeatmapDatumV4date5valueACSS_SdSgtcfc"
+        },
+        {
+          "declaration": "let date: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenCalendarHeatmapDatum",
+            "date"
+          ],
+          "precise": "s:7LumenUI0A20CalendarHeatmapDatumV4dateSSvp"
+        },
+        {
+          "declaration": "let value: Double?",
+          "kind": "swift.property",
+          "path": [
+            "LumenCalendarHeatmapDatum",
+            "value"
+          ],
+          "precise": "s:7LumenUI0A20CalendarHeatmapDatumV5valueSdSgvp"
+        },
+        {
           "declaration": "enum LumenButtonGroupOrientation",
           "kind": "swift.enum",
           "path": [
@@ -6047,6 +6356,32 @@
             "init(_:isOn:)"
           ],
           "precise": "s:7LumenUI0A6ToggleVAA05SwiftB04TextVRszrlE_4isOnACyAFGAD18LocalizedStringKeyV_AD7BindingVySbGtcfc"
+        },
+        {
+          "declaration": "@MainActor struct LumenBoxPlot",
+          "kind": "swift.struct",
+          "path": [
+            "LumenBoxPlot"
+          ],
+          "precise": "s:7LumenUI0A7BoxPlotV"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlot",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A7BoxPlotV4bodyQrvp"
+        },
+        {
+          "declaration": "@MainActor init(data: [LumenBoxPlotDatum], label: String, domain: ClosedRange<Double>? = nil, heading: String? = nil, description: String? = nil, labels: LumenChartLabels = .english, statisticLabels: LumenBoxPlotLabels = .init(), showData: Bool = true)",
+          "kind": "swift.init",
+          "path": [
+            "LumenBoxPlot",
+            "init(data:label:domain:heading:description:labels:statisticLabels:showData:)"
+          ],
+          "precise": "s:7LumenUI0A7BoxPlotV4data5label6domain7heading11description6labels15statisticLabels8showDataACSayAA0acD5DatumVG_SSSNySdGSgSSSgAqA0a5ChartL0VAA0acdL0VSbtcfc"
         },
         {
           "declaration": "@MainActor struct LumenDivider",
@@ -30869,6 +31204,85 @@
           "precise": "s:7LumenUI0A11CubicBezierV2y2Sdvp"
         },
         {
+          "declaration": "@MainActor struct LumenFunnelChart",
+          "kind": "swift.struct",
+          "path": [
+            "LumenFunnelChart"
+          ],
+          "precise": "s:7LumenUI0A11FunnelChartV"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenFunnelChart",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A11FunnelChartV4bodyQrvp"
+        },
+        {
+          "declaration": "@MainActor init(data: [LumenFunnelDatum], label: String, heading: String? = nil, description: String? = nil, labels: LumenChartLabels = .english, showData: Bool = true)",
+          "kind": "swift.init",
+          "path": [
+            "LumenFunnelChart",
+            "init(data:label:heading:description:labels:showData:)"
+          ],
+          "precise": "s:7LumenUI0A11FunnelChartV4data5label7heading11description6labels8showDataACSayAA0aC5DatumVG_S2SSgAmA0aD6LabelsVSbtcfc"
+        },
+        {
+          "declaration": "struct LumenFunnelDatum",
+          "kind": "swift.struct",
+          "path": [
+            "LumenFunnelDatum"
+          ],
+          "precise": "s:7LumenUI0A11FunnelDatumV"
+        },
+        {
+          "declaration": "init(id: String, label: String, value: Double?, tone: LumenChartTone? = nil)",
+          "kind": "swift.init",
+          "path": [
+            "LumenFunnelDatum",
+            "init(id:label:value:tone:)"
+          ],
+          "precise": "s:7LumenUI0A11FunnelDatumV2id5label5value4toneACSS_SSSdSgAA0A9ChartToneOSgtcfc"
+        },
+        {
+          "declaration": "let id: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenFunnelDatum",
+            "id"
+          ],
+          "precise": "s:7LumenUI0A11FunnelDatumV2idSSvp"
+        },
+        {
+          "declaration": "let tone: LumenChartTone?",
+          "kind": "swift.property",
+          "path": [
+            "LumenFunnelDatum",
+            "tone"
+          ],
+          "precise": "s:7LumenUI0A11FunnelDatumV4toneAA0A9ChartToneOSgvp"
+        },
+        {
+          "declaration": "let label: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenFunnelDatum",
+            "label"
+          ],
+          "precise": "s:7LumenUI0A11FunnelDatumV5labelSSvp"
+        },
+        {
+          "declaration": "let value: Double?",
+          "kind": "swift.property",
+          "path": [
+            "LumenFunnelDatum",
+            "value"
+          ],
+          "precise": "s:7LumenUI0A11FunnelDatumV5valueSdSgvp"
+        },
+        {
           "declaration": "enum LumenGraphicSize",
           "kind": "swift.enum",
           "path": [
@@ -31567,6 +31981,104 @@
             "neutral"
           ],
           "precise": "s:7LumenUI0A12BackdropToneO7neutralyA2CmF"
+        },
+        {
+          "declaration": "struct LumenBoxPlotDatum",
+          "kind": "swift.struct",
+          "path": [
+            "LumenBoxPlotDatum"
+          ],
+          "precise": "s:7LumenUI0A12BoxPlotDatumV"
+        },
+        {
+          "declaration": "init(id: String, label: String, min: Double?, q1: Double?, median: Double?, q3: Double?, max: Double?, outliers: [Double] = [], tone: LumenChartTone? = nil)",
+          "kind": "swift.init",
+          "path": [
+            "LumenBoxPlotDatum",
+            "init(id:label:min:q1:median:q3:max:outliers:tone:)"
+          ],
+          "precise": "s:7LumenUI0A12BoxPlotDatumV2id5label3min2q16median2q33max8outliers4toneACSS_SSSdSgA4MSaySdGAA0A9ChartToneOSgtcfc"
+        },
+        {
+          "declaration": "let id: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotDatum",
+            "id"
+          ],
+          "precise": "s:7LumenUI0A12BoxPlotDatumV2idSSvp"
+        },
+        {
+          "declaration": "let q1: Double?",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotDatum",
+            "q1"
+          ],
+          "precise": "s:7LumenUI0A12BoxPlotDatumV2q1SdSgvp"
+        },
+        {
+          "declaration": "let q3: Double?",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotDatum",
+            "q3"
+          ],
+          "precise": "s:7LumenUI0A12BoxPlotDatumV2q3SdSgvp"
+        },
+        {
+          "declaration": "let max: Double?",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotDatum",
+            "max"
+          ],
+          "precise": "s:7LumenUI0A12BoxPlotDatumV3maxSdSgvp"
+        },
+        {
+          "declaration": "let min: Double?",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotDatum",
+            "min"
+          ],
+          "precise": "s:7LumenUI0A12BoxPlotDatumV3minSdSgvp"
+        },
+        {
+          "declaration": "let tone: LumenChartTone?",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotDatum",
+            "tone"
+          ],
+          "precise": "s:7LumenUI0A12BoxPlotDatumV4toneAA0A9ChartToneOSgvp"
+        },
+        {
+          "declaration": "let label: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotDatum",
+            "label"
+          ],
+          "precise": "s:7LumenUI0A12BoxPlotDatumV5labelSSvp"
+        },
+        {
+          "declaration": "let median: Double?",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotDatum",
+            "median"
+          ],
+          "precise": "s:7LumenUI0A12BoxPlotDatumV6medianSdSgvp"
+        },
+        {
+          "declaration": "let outliers: [Double]",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotDatum",
+            "outliers"
+          ],
+          "precise": "s:7LumenUI0A12BoxPlotDatumV8outliersSaySdGvp"
         },
         {
           "declaration": "enum LumenButtonIntent",
@@ -32320,6 +32832,77 @@
             "warning"
           ],
           "precise": "s:7LumenUI0A13BannerVariantO7warningyA2CmF"
+        },
+        {
+          "declaration": "struct LumenBoxPlotLabels",
+          "kind": "swift.struct",
+          "path": [
+            "LumenBoxPlotLabels"
+          ],
+          "precise": "s:7LumenUI0A13BoxPlotLabelsV"
+        },
+        {
+          "declaration": "let firstQuartile: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotLabels",
+            "firstQuartile"
+          ],
+          "precise": "s:7LumenUI0A13BoxPlotLabelsV13firstQuartileSSvp"
+        },
+        {
+          "declaration": "let thirdQuartile: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotLabels",
+            "thirdQuartile"
+          ],
+          "precise": "s:7LumenUI0A13BoxPlotLabelsV13thirdQuartileSSvp"
+        },
+        {
+          "declaration": "let median: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotLabels",
+            "median"
+          ],
+          "precise": "s:7LumenUI0A13BoxPlotLabelsV6medianSSvp"
+        },
+        {
+          "declaration": "let maximum: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotLabels",
+            "maximum"
+          ],
+          "precise": "s:7LumenUI0A13BoxPlotLabelsV7maximumSSvp"
+        },
+        {
+          "declaration": "init(minimum: String = \"Lower whisker\", firstQuartile: String = \"First quartile\", median: String = \"Median\", thirdQuartile: String = \"Third quartile\", maximum: String = \"Upper whisker\", outliers: String = \"Outliers\")",
+          "kind": "swift.init",
+          "path": [
+            "LumenBoxPlotLabels",
+            "init(minimum:firstQuartile:median:thirdQuartile:maximum:outliers:)"
+          ],
+          "precise": "s:7LumenUI0A13BoxPlotLabelsV7minimum13firstQuartile6median05thirdH07maximum8outliersACSS_S5Stcfc"
+        },
+        {
+          "declaration": "let minimum: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotLabels",
+            "minimum"
+          ],
+          "precise": "s:7LumenUI0A13BoxPlotLabelsV7minimumSSvp"
+        },
+        {
+          "declaration": "let outliers: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotLabels",
+            "outliers"
+          ],
+          "precise": "s:7LumenUI0A13BoxPlotLabelsV8outliersSSvp"
         },
         {
           "declaration": "struct LumenButtonMetrics",
@@ -33232,6 +33815,32 @@
             "aurora"
           ],
           "precise": "s:7LumenUI0A15BackdropVariantO6aurorayA2CmF"
+        },
+        {
+          "declaration": "@MainActor struct LumenCalendarHeatmap",
+          "kind": "swift.struct",
+          "path": [
+            "LumenCalendarHeatmap"
+          ],
+          "precise": "s:7LumenUI0A15CalendarHeatmapV"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenCalendarHeatmap",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A15CalendarHeatmapV4bodyQrvp"
+        },
+        {
+          "declaration": "@MainActor init(data: [LumenCalendarHeatmapDatum], label: String, startDate: String, endDate: String, weekStartsOn: Int = 0, domain: ClosedRange<Double>? = nil, heading: String? = nil, description: String? = nil, labels: LumenChartLabels = .english, weekdayLabels: [String]? = nil, formatDate: @escaping @Sendable (String) -> String = { $0 }, showData: Bool = true)",
+          "kind": "swift.init",
+          "path": [
+            "LumenCalendarHeatmap",
+            "init(data:label:startDate:endDate:weekStartsOn:domain:heading:description:labels:weekdayLabels:formatDate:showData:)"
+          ],
+          "precise": "s:7LumenUI0A15CalendarHeatmapV4data5label9startDate03endH012weekStartsOn6domain7heading11description6labels13weekdayLabels06formatH08showDataACSayAA0acD5DatumVG_S3SSiSNySdGSgSSSgAuA0a5ChartR0VSaySSGSgS2ScSbtcfc"
         },
         {
           "declaration": "struct LumenComparisonDatum",
@@ -34334,6 +34943,41 @@
           "precise": "s:7LumenUI0A19SliderConfigurationV7resolve6bounds4stepACSNySdG_SdSgtFZ"
         },
         {
+          "declaration": "struct LumenCalendarHeatmapDatum",
+          "kind": "swift.struct",
+          "path": [
+            "LumenCalendarHeatmapDatum"
+          ],
+          "precise": "s:7LumenUI0A20CalendarHeatmapDatumV"
+        },
+        {
+          "declaration": "init(date: String, value: Double?)",
+          "kind": "swift.init",
+          "path": [
+            "LumenCalendarHeatmapDatum",
+            "init(date:value:)"
+          ],
+          "precise": "s:7LumenUI0A20CalendarHeatmapDatumV4date5valueACSS_SdSgtcfc"
+        },
+        {
+          "declaration": "let date: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenCalendarHeatmapDatum",
+            "date"
+          ],
+          "precise": "s:7LumenUI0A20CalendarHeatmapDatumV4dateSSvp"
+        },
+        {
+          "declaration": "let value: Double?",
+          "kind": "swift.property",
+          "path": [
+            "LumenCalendarHeatmapDatum",
+            "value"
+          ],
+          "precise": "s:7LumenUI0A20CalendarHeatmapDatumV5valueSdSgvp"
+        },
+        {
           "declaration": "enum LumenButtonGroupOrientation",
           "kind": "swift.enum",
           "path": [
@@ -35359,6 +36003,32 @@
             "init(_:isOn:)"
           ],
           "precise": "s:7LumenUI0A6ToggleVAA05SwiftB04TextVRszrlE_4isOnACyAFGAD18LocalizedStringKeyV_AD7BindingVySbGtcfc"
+        },
+        {
+          "declaration": "@MainActor struct LumenBoxPlot",
+          "kind": "swift.struct",
+          "path": [
+            "LumenBoxPlot"
+          ],
+          "precise": "s:7LumenUI0A7BoxPlotV"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlot",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A7BoxPlotV4bodyQrvp"
+        },
+        {
+          "declaration": "@MainActor init(data: [LumenBoxPlotDatum], label: String, domain: ClosedRange<Double>? = nil, heading: String? = nil, description: String? = nil, labels: LumenChartLabels = .english, statisticLabels: LumenBoxPlotLabels = .init(), showData: Bool = true)",
+          "kind": "swift.init",
+          "path": [
+            "LumenBoxPlot",
+            "init(data:label:domain:heading:description:labels:statisticLabels:showData:)"
+          ],
+          "precise": "s:7LumenUI0A7BoxPlotV4data5label6domain7heading11description6labels15statisticLabels8showDataACSayAA0acD5DatumVG_SSSNySdGSgSSSgAqA0a5ChartL0VAA0acdL0VSbtcfc"
         },
         {
           "declaration": "@MainActor struct LumenDivider",
@@ -59954,6 +60624,85 @@
           "precise": "s:7LumenUI0A11CubicBezierV2y2Sdvp"
         },
         {
+          "declaration": "@MainActor struct LumenFunnelChart",
+          "kind": "swift.struct",
+          "path": [
+            "LumenFunnelChart"
+          ],
+          "precise": "s:7LumenUI0A11FunnelChartV"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenFunnelChart",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A11FunnelChartV4bodyQrvp"
+        },
+        {
+          "declaration": "@MainActor init(data: [LumenFunnelDatum], label: String, heading: String? = nil, description: String? = nil, labels: LumenChartLabels = .english, showData: Bool = true)",
+          "kind": "swift.init",
+          "path": [
+            "LumenFunnelChart",
+            "init(data:label:heading:description:labels:showData:)"
+          ],
+          "precise": "s:7LumenUI0A11FunnelChartV4data5label7heading11description6labels8showDataACSayAA0aC5DatumVG_S2SSgAmA0aD6LabelsVSbtcfc"
+        },
+        {
+          "declaration": "struct LumenFunnelDatum",
+          "kind": "swift.struct",
+          "path": [
+            "LumenFunnelDatum"
+          ],
+          "precise": "s:7LumenUI0A11FunnelDatumV"
+        },
+        {
+          "declaration": "init(id: String, label: String, value: Double?, tone: LumenChartTone? = nil)",
+          "kind": "swift.init",
+          "path": [
+            "LumenFunnelDatum",
+            "init(id:label:value:tone:)"
+          ],
+          "precise": "s:7LumenUI0A11FunnelDatumV2id5label5value4toneACSS_SSSdSgAA0A9ChartToneOSgtcfc"
+        },
+        {
+          "declaration": "let id: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenFunnelDatum",
+            "id"
+          ],
+          "precise": "s:7LumenUI0A11FunnelDatumV2idSSvp"
+        },
+        {
+          "declaration": "let tone: LumenChartTone?",
+          "kind": "swift.property",
+          "path": [
+            "LumenFunnelDatum",
+            "tone"
+          ],
+          "precise": "s:7LumenUI0A11FunnelDatumV4toneAA0A9ChartToneOSgvp"
+        },
+        {
+          "declaration": "let label: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenFunnelDatum",
+            "label"
+          ],
+          "precise": "s:7LumenUI0A11FunnelDatumV5labelSSvp"
+        },
+        {
+          "declaration": "let value: Double?",
+          "kind": "swift.property",
+          "path": [
+            "LumenFunnelDatum",
+            "value"
+          ],
+          "precise": "s:7LumenUI0A11FunnelDatumV5valueSdSgvp"
+        },
+        {
           "declaration": "enum LumenImageRadius",
           "kind": "swift.enum",
           "path": [
@@ -60278,6 +61027,104 @@
             "warning"
           ],
           "precise": "s:7LumenUI0A12AlertVariantO7warningyA2CmF"
+        },
+        {
+          "declaration": "struct LumenBoxPlotDatum",
+          "kind": "swift.struct",
+          "path": [
+            "LumenBoxPlotDatum"
+          ],
+          "precise": "s:7LumenUI0A12BoxPlotDatumV"
+        },
+        {
+          "declaration": "init(id: String, label: String, min: Double?, q1: Double?, median: Double?, q3: Double?, max: Double?, outliers: [Double] = [], tone: LumenChartTone? = nil)",
+          "kind": "swift.init",
+          "path": [
+            "LumenBoxPlotDatum",
+            "init(id:label:min:q1:median:q3:max:outliers:tone:)"
+          ],
+          "precise": "s:7LumenUI0A12BoxPlotDatumV2id5label3min2q16median2q33max8outliers4toneACSS_SSSdSgA4MSaySdGAA0A9ChartToneOSgtcfc"
+        },
+        {
+          "declaration": "let id: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotDatum",
+            "id"
+          ],
+          "precise": "s:7LumenUI0A12BoxPlotDatumV2idSSvp"
+        },
+        {
+          "declaration": "let q1: Double?",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotDatum",
+            "q1"
+          ],
+          "precise": "s:7LumenUI0A12BoxPlotDatumV2q1SdSgvp"
+        },
+        {
+          "declaration": "let q3: Double?",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotDatum",
+            "q3"
+          ],
+          "precise": "s:7LumenUI0A12BoxPlotDatumV2q3SdSgvp"
+        },
+        {
+          "declaration": "let max: Double?",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotDatum",
+            "max"
+          ],
+          "precise": "s:7LumenUI0A12BoxPlotDatumV3maxSdSgvp"
+        },
+        {
+          "declaration": "let min: Double?",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotDatum",
+            "min"
+          ],
+          "precise": "s:7LumenUI0A12BoxPlotDatumV3minSdSgvp"
+        },
+        {
+          "declaration": "let tone: LumenChartTone?",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotDatum",
+            "tone"
+          ],
+          "precise": "s:7LumenUI0A12BoxPlotDatumV4toneAA0A9ChartToneOSgvp"
+        },
+        {
+          "declaration": "let label: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotDatum",
+            "label"
+          ],
+          "precise": "s:7LumenUI0A12BoxPlotDatumV5labelSSvp"
+        },
+        {
+          "declaration": "let median: Double?",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotDatum",
+            "median"
+          ],
+          "precise": "s:7LumenUI0A12BoxPlotDatumV6medianSdSgvp"
+        },
+        {
+          "declaration": "let outliers: [Double]",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotDatum",
+            "outliers"
+          ],
+          "precise": "s:7LumenUI0A12BoxPlotDatumV8outliersSaySdGvp"
         },
         {
           "declaration": "enum LumenButtonIntent",
@@ -60934,6 +61781,77 @@
             "warning"
           ],
           "precise": "s:7LumenUI0A13BannerVariantO7warningyA2CmF"
+        },
+        {
+          "declaration": "struct LumenBoxPlotLabels",
+          "kind": "swift.struct",
+          "path": [
+            "LumenBoxPlotLabels"
+          ],
+          "precise": "s:7LumenUI0A13BoxPlotLabelsV"
+        },
+        {
+          "declaration": "let firstQuartile: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotLabels",
+            "firstQuartile"
+          ],
+          "precise": "s:7LumenUI0A13BoxPlotLabelsV13firstQuartileSSvp"
+        },
+        {
+          "declaration": "let thirdQuartile: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotLabels",
+            "thirdQuartile"
+          ],
+          "precise": "s:7LumenUI0A13BoxPlotLabelsV13thirdQuartileSSvp"
+        },
+        {
+          "declaration": "let median: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotLabels",
+            "median"
+          ],
+          "precise": "s:7LumenUI0A13BoxPlotLabelsV6medianSSvp"
+        },
+        {
+          "declaration": "let maximum: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotLabels",
+            "maximum"
+          ],
+          "precise": "s:7LumenUI0A13BoxPlotLabelsV7maximumSSvp"
+        },
+        {
+          "declaration": "init(minimum: String = \"Lower whisker\", firstQuartile: String = \"First quartile\", median: String = \"Median\", thirdQuartile: String = \"Third quartile\", maximum: String = \"Upper whisker\", outliers: String = \"Outliers\")",
+          "kind": "swift.init",
+          "path": [
+            "LumenBoxPlotLabels",
+            "init(minimum:firstQuartile:median:thirdQuartile:maximum:outliers:)"
+          ],
+          "precise": "s:7LumenUI0A13BoxPlotLabelsV7minimum13firstQuartile6median05thirdH07maximum8outliersACSS_S5Stcfc"
+        },
+        {
+          "declaration": "let minimum: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotLabels",
+            "minimum"
+          ],
+          "precise": "s:7LumenUI0A13BoxPlotLabelsV7minimumSSvp"
+        },
+        {
+          "declaration": "let outliers: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotLabels",
+            "outliers"
+          ],
+          "precise": "s:7LumenUI0A13BoxPlotLabelsV8outliersSSvp"
         },
         {
           "declaration": "struct LumenButtonMetrics",
@@ -61656,6 +62574,32 @@
           "precise": "s:7LumenUI0A14WaterfallDatumV5valueSdvp"
         },
         {
+          "declaration": "@MainActor struct LumenCalendarHeatmap",
+          "kind": "swift.struct",
+          "path": [
+            "LumenCalendarHeatmap"
+          ],
+          "precise": "s:7LumenUI0A15CalendarHeatmapV"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenCalendarHeatmap",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A15CalendarHeatmapV4bodyQrvp"
+        },
+        {
+          "declaration": "@MainActor init(data: [LumenCalendarHeatmapDatum], label: String, startDate: String, endDate: String, weekStartsOn: Int = 0, domain: ClosedRange<Double>? = nil, heading: String? = nil, description: String? = nil, labels: LumenChartLabels = .english, weekdayLabels: [String]? = nil, formatDate: @escaping @Sendable (String) -> String = { $0 }, showData: Bool = true)",
+          "kind": "swift.init",
+          "path": [
+            "LumenCalendarHeatmap",
+            "init(data:label:startDate:endDate:weekStartsOn:domain:heading:description:labels:weekdayLabels:formatDate:showData:)"
+          ],
+          "precise": "s:7LumenUI0A15CalendarHeatmapV4data5label9startDate03endH012weekStartsOn6domain7heading11description6labels13weekdayLabels06formatH08showDataACSayAA0acD5DatumVG_S3SSiSNySdGSgSSSgAuA0a5ChartR0VSaySSGSgS2ScSbtcfc"
+        },
+        {
           "declaration": "struct LumenComparisonDatum",
           "kind": "swift.struct",
           "path": [
@@ -62280,6 +63224,41 @@
             "fraction"
           ],
           "precise": "s:7LumenUI0A18WatchProgressValueV8fractionSdvp"
+        },
+        {
+          "declaration": "struct LumenCalendarHeatmapDatum",
+          "kind": "swift.struct",
+          "path": [
+            "LumenCalendarHeatmapDatum"
+          ],
+          "precise": "s:7LumenUI0A20CalendarHeatmapDatumV"
+        },
+        {
+          "declaration": "init(date: String, value: Double?)",
+          "kind": "swift.init",
+          "path": [
+            "LumenCalendarHeatmapDatum",
+            "init(date:value:)"
+          ],
+          "precise": "s:7LumenUI0A20CalendarHeatmapDatumV4date5valueACSS_SdSgtcfc"
+        },
+        {
+          "declaration": "let date: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenCalendarHeatmapDatum",
+            "date"
+          ],
+          "precise": "s:7LumenUI0A20CalendarHeatmapDatumV4dateSSvp"
+        },
+        {
+          "declaration": "let value: Double?",
+          "kind": "swift.property",
+          "path": [
+            "LumenCalendarHeatmapDatum",
+            "value"
+          ],
+          "precise": "s:7LumenUI0A20CalendarHeatmapDatumV5valueSdSgvp"
         },
         {
           "declaration": "enum LumenButtonGroupOrientation",
@@ -63141,6 +64120,32 @@
             "size3xl"
           ],
           "precise": "s:7LumenUI0A6RadiusO7size3xl14CoreFoundation7CGFloatVvpZ"
+        },
+        {
+          "declaration": "@MainActor struct LumenBoxPlot",
+          "kind": "swift.struct",
+          "path": [
+            "LumenBoxPlot"
+          ],
+          "precise": "s:7LumenUI0A7BoxPlotV"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlot",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A7BoxPlotV4bodyQrvp"
+        },
+        {
+          "declaration": "@MainActor init(data: [LumenBoxPlotDatum], label: String, domain: ClosedRange<Double>? = nil, heading: String? = nil, description: String? = nil, labels: LumenChartLabels = .english, statisticLabels: LumenBoxPlotLabels = .init(), showData: Bool = true)",
+          "kind": "swift.init",
+          "path": [
+            "LumenBoxPlot",
+            "init(data:label:domain:heading:description:labels:statisticLabels:showData:)"
+          ],
+          "precise": "s:7LumenUI0A7BoxPlotV4data5label6domain7heading11description6labels15statisticLabels8showDataACSayAA0acD5DatumVG_SSSNySdGSgSSSgAqA0a5ChartL0VAA0acdL0VSbtcfc"
         },
         {
           "declaration": "@MainActor struct LumenDivider",
@@ -87666,6 +88671,85 @@
           "precise": "s:7LumenUI0A11CubicBezierV2y2Sdvp"
         },
         {
+          "declaration": "@MainActor struct LumenFunnelChart",
+          "kind": "swift.struct",
+          "path": [
+            "LumenFunnelChart"
+          ],
+          "precise": "s:7LumenUI0A11FunnelChartV"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenFunnelChart",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A11FunnelChartV4bodyQrvp"
+        },
+        {
+          "declaration": "@MainActor init(data: [LumenFunnelDatum], label: String, heading: String? = nil, description: String? = nil, labels: LumenChartLabels = .english, showData: Bool = true)",
+          "kind": "swift.init",
+          "path": [
+            "LumenFunnelChart",
+            "init(data:label:heading:description:labels:showData:)"
+          ],
+          "precise": "s:7LumenUI0A11FunnelChartV4data5label7heading11description6labels8showDataACSayAA0aC5DatumVG_S2SSgAmA0aD6LabelsVSbtcfc"
+        },
+        {
+          "declaration": "struct LumenFunnelDatum",
+          "kind": "swift.struct",
+          "path": [
+            "LumenFunnelDatum"
+          ],
+          "precise": "s:7LumenUI0A11FunnelDatumV"
+        },
+        {
+          "declaration": "init(id: String, label: String, value: Double?, tone: LumenChartTone? = nil)",
+          "kind": "swift.init",
+          "path": [
+            "LumenFunnelDatum",
+            "init(id:label:value:tone:)"
+          ],
+          "precise": "s:7LumenUI0A11FunnelDatumV2id5label5value4toneACSS_SSSdSgAA0A9ChartToneOSgtcfc"
+        },
+        {
+          "declaration": "let id: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenFunnelDatum",
+            "id"
+          ],
+          "precise": "s:7LumenUI0A11FunnelDatumV2idSSvp"
+        },
+        {
+          "declaration": "let tone: LumenChartTone?",
+          "kind": "swift.property",
+          "path": [
+            "LumenFunnelDatum",
+            "tone"
+          ],
+          "precise": "s:7LumenUI0A11FunnelDatumV4toneAA0A9ChartToneOSgvp"
+        },
+        {
+          "declaration": "let label: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenFunnelDatum",
+            "label"
+          ],
+          "precise": "s:7LumenUI0A11FunnelDatumV5labelSSvp"
+        },
+        {
+          "declaration": "let value: Double?",
+          "kind": "swift.property",
+          "path": [
+            "LumenFunnelDatum",
+            "value"
+          ],
+          "precise": "s:7LumenUI0A11FunnelDatumV5valueSdSgvp"
+        },
+        {
           "declaration": "enum LumenGraphicSize",
           "kind": "swift.enum",
           "path": [
@@ -88364,6 +89448,104 @@
             "neutral"
           ],
           "precise": "s:7LumenUI0A12BackdropToneO7neutralyA2CmF"
+        },
+        {
+          "declaration": "struct LumenBoxPlotDatum",
+          "kind": "swift.struct",
+          "path": [
+            "LumenBoxPlotDatum"
+          ],
+          "precise": "s:7LumenUI0A12BoxPlotDatumV"
+        },
+        {
+          "declaration": "init(id: String, label: String, min: Double?, q1: Double?, median: Double?, q3: Double?, max: Double?, outliers: [Double] = [], tone: LumenChartTone? = nil)",
+          "kind": "swift.init",
+          "path": [
+            "LumenBoxPlotDatum",
+            "init(id:label:min:q1:median:q3:max:outliers:tone:)"
+          ],
+          "precise": "s:7LumenUI0A12BoxPlotDatumV2id5label3min2q16median2q33max8outliers4toneACSS_SSSdSgA4MSaySdGAA0A9ChartToneOSgtcfc"
+        },
+        {
+          "declaration": "let id: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotDatum",
+            "id"
+          ],
+          "precise": "s:7LumenUI0A12BoxPlotDatumV2idSSvp"
+        },
+        {
+          "declaration": "let q1: Double?",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotDatum",
+            "q1"
+          ],
+          "precise": "s:7LumenUI0A12BoxPlotDatumV2q1SdSgvp"
+        },
+        {
+          "declaration": "let q3: Double?",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotDatum",
+            "q3"
+          ],
+          "precise": "s:7LumenUI0A12BoxPlotDatumV2q3SdSgvp"
+        },
+        {
+          "declaration": "let max: Double?",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotDatum",
+            "max"
+          ],
+          "precise": "s:7LumenUI0A12BoxPlotDatumV3maxSdSgvp"
+        },
+        {
+          "declaration": "let min: Double?",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotDatum",
+            "min"
+          ],
+          "precise": "s:7LumenUI0A12BoxPlotDatumV3minSdSgvp"
+        },
+        {
+          "declaration": "let tone: LumenChartTone?",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotDatum",
+            "tone"
+          ],
+          "precise": "s:7LumenUI0A12BoxPlotDatumV4toneAA0A9ChartToneOSgvp"
+        },
+        {
+          "declaration": "let label: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotDatum",
+            "label"
+          ],
+          "precise": "s:7LumenUI0A12BoxPlotDatumV5labelSSvp"
+        },
+        {
+          "declaration": "let median: Double?",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotDatum",
+            "median"
+          ],
+          "precise": "s:7LumenUI0A12BoxPlotDatumV6medianSdSgvp"
+        },
+        {
+          "declaration": "let outliers: [Double]",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotDatum",
+            "outliers"
+          ],
+          "precise": "s:7LumenUI0A12BoxPlotDatumV8outliersSaySdGvp"
         },
         {
           "declaration": "enum LumenButtonIntent",
@@ -89117,6 +90299,77 @@
             "warning"
           ],
           "precise": "s:7LumenUI0A13BannerVariantO7warningyA2CmF"
+        },
+        {
+          "declaration": "struct LumenBoxPlotLabels",
+          "kind": "swift.struct",
+          "path": [
+            "LumenBoxPlotLabels"
+          ],
+          "precise": "s:7LumenUI0A13BoxPlotLabelsV"
+        },
+        {
+          "declaration": "let firstQuartile: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotLabels",
+            "firstQuartile"
+          ],
+          "precise": "s:7LumenUI0A13BoxPlotLabelsV13firstQuartileSSvp"
+        },
+        {
+          "declaration": "let thirdQuartile: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotLabels",
+            "thirdQuartile"
+          ],
+          "precise": "s:7LumenUI0A13BoxPlotLabelsV13thirdQuartileSSvp"
+        },
+        {
+          "declaration": "let median: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotLabels",
+            "median"
+          ],
+          "precise": "s:7LumenUI0A13BoxPlotLabelsV6medianSSvp"
+        },
+        {
+          "declaration": "let maximum: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotLabels",
+            "maximum"
+          ],
+          "precise": "s:7LumenUI0A13BoxPlotLabelsV7maximumSSvp"
+        },
+        {
+          "declaration": "init(minimum: String = \"Lower whisker\", firstQuartile: String = \"First quartile\", median: String = \"Median\", thirdQuartile: String = \"Third quartile\", maximum: String = \"Upper whisker\", outliers: String = \"Outliers\")",
+          "kind": "swift.init",
+          "path": [
+            "LumenBoxPlotLabels",
+            "init(minimum:firstQuartile:median:thirdQuartile:maximum:outliers:)"
+          ],
+          "precise": "s:7LumenUI0A13BoxPlotLabelsV7minimum13firstQuartile6median05thirdH07maximum8outliersACSS_S5Stcfc"
+        },
+        {
+          "declaration": "let minimum: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotLabels",
+            "minimum"
+          ],
+          "precise": "s:7LumenUI0A13BoxPlotLabelsV7minimumSSvp"
+        },
+        {
+          "declaration": "let outliers: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotLabels",
+            "outliers"
+          ],
+          "precise": "s:7LumenUI0A13BoxPlotLabelsV8outliersSSvp"
         },
         {
           "declaration": "struct LumenButtonMetrics",
@@ -90029,6 +91282,32 @@
             "aurora"
           ],
           "precise": "s:7LumenUI0A15BackdropVariantO6aurorayA2CmF"
+        },
+        {
+          "declaration": "@MainActor struct LumenCalendarHeatmap",
+          "kind": "swift.struct",
+          "path": [
+            "LumenCalendarHeatmap"
+          ],
+          "precise": "s:7LumenUI0A15CalendarHeatmapV"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenCalendarHeatmap",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A15CalendarHeatmapV4bodyQrvp"
+        },
+        {
+          "declaration": "@MainActor init(data: [LumenCalendarHeatmapDatum], label: String, startDate: String, endDate: String, weekStartsOn: Int = 0, domain: ClosedRange<Double>? = nil, heading: String? = nil, description: String? = nil, labels: LumenChartLabels = .english, weekdayLabels: [String]? = nil, formatDate: @escaping @Sendable (String) -> String = { $0 }, showData: Bool = true)",
+          "kind": "swift.init",
+          "path": [
+            "LumenCalendarHeatmap",
+            "init(data:label:startDate:endDate:weekStartsOn:domain:heading:description:labels:weekdayLabels:formatDate:showData:)"
+          ],
+          "precise": "s:7LumenUI0A15CalendarHeatmapV4data5label9startDate03endH012weekStartsOn6domain7heading11description6labels13weekdayLabels06formatH08showDataACSayAA0acD5DatumVG_S3SSiSNySdGSgSSSgAuA0a5ChartR0VSaySSGSgS2ScSbtcfc"
         },
         {
           "declaration": "struct LumenComparisonDatum",
@@ -91131,6 +92410,41 @@
           "precise": "s:7LumenUI0A19SliderConfigurationV7resolve6bounds4stepACSNySdG_SdSgtFZ"
         },
         {
+          "declaration": "struct LumenCalendarHeatmapDatum",
+          "kind": "swift.struct",
+          "path": [
+            "LumenCalendarHeatmapDatum"
+          ],
+          "precise": "s:7LumenUI0A20CalendarHeatmapDatumV"
+        },
+        {
+          "declaration": "init(date: String, value: Double?)",
+          "kind": "swift.init",
+          "path": [
+            "LumenCalendarHeatmapDatum",
+            "init(date:value:)"
+          ],
+          "precise": "s:7LumenUI0A20CalendarHeatmapDatumV4date5valueACSS_SdSgtcfc"
+        },
+        {
+          "declaration": "let date: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenCalendarHeatmapDatum",
+            "date"
+          ],
+          "precise": "s:7LumenUI0A20CalendarHeatmapDatumV4dateSSvp"
+        },
+        {
+          "declaration": "let value: Double?",
+          "kind": "swift.property",
+          "path": [
+            "LumenCalendarHeatmapDatum",
+            "value"
+          ],
+          "precise": "s:7LumenUI0A20CalendarHeatmapDatumV5valueSdSgvp"
+        },
+        {
           "declaration": "enum LumenButtonGroupOrientation",
           "kind": "swift.enum",
           "path": [
@@ -92156,6 +93470,32 @@
             "init(_:isOn:)"
           ],
           "precise": "s:7LumenUI0A6ToggleVAA05SwiftB04TextVRszrlE_4isOnACyAFGAD18LocalizedStringKeyV_AD7BindingVySbGtcfc"
+        },
+        {
+          "declaration": "@MainActor struct LumenBoxPlot",
+          "kind": "swift.struct",
+          "path": [
+            "LumenBoxPlot"
+          ],
+          "precise": "s:7LumenUI0A7BoxPlotV"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlot",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A7BoxPlotV4bodyQrvp"
+        },
+        {
+          "declaration": "@MainActor init(data: [LumenBoxPlotDatum], label: String, domain: ClosedRange<Double>? = nil, heading: String? = nil, description: String? = nil, labels: LumenChartLabels = .english, statisticLabels: LumenBoxPlotLabels = .init(), showData: Bool = true)",
+          "kind": "swift.init",
+          "path": [
+            "LumenBoxPlot",
+            "init(data:label:domain:heading:description:labels:statisticLabels:showData:)"
+          ],
+          "precise": "s:7LumenUI0A7BoxPlotV4data5label6domain7heading11description6labels15statisticLabels8showDataACSayAA0acD5DatumVG_SSSNySdGSgSSSgAqA0a5ChartL0VAA0acdL0VSbtcfc"
         },
         {
           "declaration": "@MainActor struct LumenDivider",
@@ -116751,6 +118091,85 @@
           "precise": "s:7LumenUI0A11CubicBezierV2y2Sdvp"
         },
         {
+          "declaration": "@MainActor struct LumenFunnelChart",
+          "kind": "swift.struct",
+          "path": [
+            "LumenFunnelChart"
+          ],
+          "precise": "s:7LumenUI0A11FunnelChartV"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenFunnelChart",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A11FunnelChartV4bodyQrvp"
+        },
+        {
+          "declaration": "@MainActor init(data: [LumenFunnelDatum], label: String, heading: String? = nil, description: String? = nil, labels: LumenChartLabels = .english, showData: Bool = true)",
+          "kind": "swift.init",
+          "path": [
+            "LumenFunnelChart",
+            "init(data:label:heading:description:labels:showData:)"
+          ],
+          "precise": "s:7LumenUI0A11FunnelChartV4data5label7heading11description6labels8showDataACSayAA0aC5DatumVG_S2SSgAmA0aD6LabelsVSbtcfc"
+        },
+        {
+          "declaration": "struct LumenFunnelDatum",
+          "kind": "swift.struct",
+          "path": [
+            "LumenFunnelDatum"
+          ],
+          "precise": "s:7LumenUI0A11FunnelDatumV"
+        },
+        {
+          "declaration": "init(id: String, label: String, value: Double?, tone: LumenChartTone? = nil)",
+          "kind": "swift.init",
+          "path": [
+            "LumenFunnelDatum",
+            "init(id:label:value:tone:)"
+          ],
+          "precise": "s:7LumenUI0A11FunnelDatumV2id5label5value4toneACSS_SSSdSgAA0A9ChartToneOSgtcfc"
+        },
+        {
+          "declaration": "let id: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenFunnelDatum",
+            "id"
+          ],
+          "precise": "s:7LumenUI0A11FunnelDatumV2idSSvp"
+        },
+        {
+          "declaration": "let tone: LumenChartTone?",
+          "kind": "swift.property",
+          "path": [
+            "LumenFunnelDatum",
+            "tone"
+          ],
+          "precise": "s:7LumenUI0A11FunnelDatumV4toneAA0A9ChartToneOSgvp"
+        },
+        {
+          "declaration": "let label: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenFunnelDatum",
+            "label"
+          ],
+          "precise": "s:7LumenUI0A11FunnelDatumV5labelSSvp"
+        },
+        {
+          "declaration": "let value: Double?",
+          "kind": "swift.property",
+          "path": [
+            "LumenFunnelDatum",
+            "value"
+          ],
+          "precise": "s:7LumenUI0A11FunnelDatumV5valueSdSgvp"
+        },
+        {
           "declaration": "enum LumenImageRadius",
           "kind": "swift.enum",
           "path": [
@@ -117195,6 +118614,104 @@
             "warning"
           ],
           "precise": "s:7LumenUI0A12AlertVariantO7warningyA2CmF"
+        },
+        {
+          "declaration": "struct LumenBoxPlotDatum",
+          "kind": "swift.struct",
+          "path": [
+            "LumenBoxPlotDatum"
+          ],
+          "precise": "s:7LumenUI0A12BoxPlotDatumV"
+        },
+        {
+          "declaration": "init(id: String, label: String, min: Double?, q1: Double?, median: Double?, q3: Double?, max: Double?, outliers: [Double] = [], tone: LumenChartTone? = nil)",
+          "kind": "swift.init",
+          "path": [
+            "LumenBoxPlotDatum",
+            "init(id:label:min:q1:median:q3:max:outliers:tone:)"
+          ],
+          "precise": "s:7LumenUI0A12BoxPlotDatumV2id5label3min2q16median2q33max8outliers4toneACSS_SSSdSgA4MSaySdGAA0A9ChartToneOSgtcfc"
+        },
+        {
+          "declaration": "let id: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotDatum",
+            "id"
+          ],
+          "precise": "s:7LumenUI0A12BoxPlotDatumV2idSSvp"
+        },
+        {
+          "declaration": "let q1: Double?",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotDatum",
+            "q1"
+          ],
+          "precise": "s:7LumenUI0A12BoxPlotDatumV2q1SdSgvp"
+        },
+        {
+          "declaration": "let q3: Double?",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotDatum",
+            "q3"
+          ],
+          "precise": "s:7LumenUI0A12BoxPlotDatumV2q3SdSgvp"
+        },
+        {
+          "declaration": "let max: Double?",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotDatum",
+            "max"
+          ],
+          "precise": "s:7LumenUI0A12BoxPlotDatumV3maxSdSgvp"
+        },
+        {
+          "declaration": "let min: Double?",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotDatum",
+            "min"
+          ],
+          "precise": "s:7LumenUI0A12BoxPlotDatumV3minSdSgvp"
+        },
+        {
+          "declaration": "let tone: LumenChartTone?",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotDatum",
+            "tone"
+          ],
+          "precise": "s:7LumenUI0A12BoxPlotDatumV4toneAA0A9ChartToneOSgvp"
+        },
+        {
+          "declaration": "let label: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotDatum",
+            "label"
+          ],
+          "precise": "s:7LumenUI0A12BoxPlotDatumV5labelSSvp"
+        },
+        {
+          "declaration": "let median: Double?",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotDatum",
+            "median"
+          ],
+          "precise": "s:7LumenUI0A12BoxPlotDatumV6medianSdSgvp"
+        },
+        {
+          "declaration": "let outliers: [Double]",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotDatum",
+            "outliers"
+          ],
+          "precise": "s:7LumenUI0A12BoxPlotDatumV8outliersSaySdGvp"
         },
         {
           "declaration": "enum LumenButtonIntent",
@@ -117886,6 +119403,77 @@
             "warning"
           ],
           "precise": "s:7LumenUI0A13BannerVariantO7warningyA2CmF"
+        },
+        {
+          "declaration": "struct LumenBoxPlotLabels",
+          "kind": "swift.struct",
+          "path": [
+            "LumenBoxPlotLabels"
+          ],
+          "precise": "s:7LumenUI0A13BoxPlotLabelsV"
+        },
+        {
+          "declaration": "let firstQuartile: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotLabels",
+            "firstQuartile"
+          ],
+          "precise": "s:7LumenUI0A13BoxPlotLabelsV13firstQuartileSSvp"
+        },
+        {
+          "declaration": "let thirdQuartile: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotLabels",
+            "thirdQuartile"
+          ],
+          "precise": "s:7LumenUI0A13BoxPlotLabelsV13thirdQuartileSSvp"
+        },
+        {
+          "declaration": "let median: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotLabels",
+            "median"
+          ],
+          "precise": "s:7LumenUI0A13BoxPlotLabelsV6medianSSvp"
+        },
+        {
+          "declaration": "let maximum: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotLabels",
+            "maximum"
+          ],
+          "precise": "s:7LumenUI0A13BoxPlotLabelsV7maximumSSvp"
+        },
+        {
+          "declaration": "init(minimum: String = \"Lower whisker\", firstQuartile: String = \"First quartile\", median: String = \"Median\", thirdQuartile: String = \"Third quartile\", maximum: String = \"Upper whisker\", outliers: String = \"Outliers\")",
+          "kind": "swift.init",
+          "path": [
+            "LumenBoxPlotLabels",
+            "init(minimum:firstQuartile:median:thirdQuartile:maximum:outliers:)"
+          ],
+          "precise": "s:7LumenUI0A13BoxPlotLabelsV7minimum13firstQuartile6median05thirdH07maximum8outliersACSS_S5Stcfc"
+        },
+        {
+          "declaration": "let minimum: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotLabels",
+            "minimum"
+          ],
+          "precise": "s:7LumenUI0A13BoxPlotLabelsV7minimumSSvp"
+        },
+        {
+          "declaration": "let outliers: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlotLabels",
+            "outliers"
+          ],
+          "precise": "s:7LumenUI0A13BoxPlotLabelsV8outliersSSvp"
         },
         {
           "declaration": "struct LumenButtonMetrics",
@@ -118608,6 +120196,32 @@
           "precise": "s:7LumenUI0A14WaterfallDatumV5valueSdvp"
         },
         {
+          "declaration": "@MainActor struct LumenCalendarHeatmap",
+          "kind": "swift.struct",
+          "path": [
+            "LumenCalendarHeatmap"
+          ],
+          "precise": "s:7LumenUI0A15CalendarHeatmapV"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenCalendarHeatmap",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A15CalendarHeatmapV4bodyQrvp"
+        },
+        {
+          "declaration": "@MainActor init(data: [LumenCalendarHeatmapDatum], label: String, startDate: String, endDate: String, weekStartsOn: Int = 0, domain: ClosedRange<Double>? = nil, heading: String? = nil, description: String? = nil, labels: LumenChartLabels = .english, weekdayLabels: [String]? = nil, formatDate: @escaping @Sendable (String) -> String = { $0 }, showData: Bool = true)",
+          "kind": "swift.init",
+          "path": [
+            "LumenCalendarHeatmap",
+            "init(data:label:startDate:endDate:weekStartsOn:domain:heading:description:labels:weekdayLabels:formatDate:showData:)"
+          ],
+          "precise": "s:7LumenUI0A15CalendarHeatmapV4data5label9startDate03endH012weekStartsOn6domain7heading11description6labels13weekdayLabels06formatH08showDataACSayAA0acD5DatumVG_S3SSiSNySdGSgSSSgAuA0a5ChartR0VSaySSGSgS2ScSbtcfc"
+        },
+        {
           "declaration": "struct LumenComparisonDatum",
           "kind": "swift.struct",
           "path": [
@@ -119284,6 +120898,41 @@
             "fraction"
           ],
           "precise": "s:7LumenUI0A18WatchProgressValueV8fractionSdvp"
+        },
+        {
+          "declaration": "struct LumenCalendarHeatmapDatum",
+          "kind": "swift.struct",
+          "path": [
+            "LumenCalendarHeatmapDatum"
+          ],
+          "precise": "s:7LumenUI0A20CalendarHeatmapDatumV"
+        },
+        {
+          "declaration": "init(date: String, value: Double?)",
+          "kind": "swift.init",
+          "path": [
+            "LumenCalendarHeatmapDatum",
+            "init(date:value:)"
+          ],
+          "precise": "s:7LumenUI0A20CalendarHeatmapDatumV4date5valueACSS_SdSgtcfc"
+        },
+        {
+          "declaration": "let date: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenCalendarHeatmapDatum",
+            "date"
+          ],
+          "precise": "s:7LumenUI0A20CalendarHeatmapDatumV4dateSSvp"
+        },
+        {
+          "declaration": "let value: Double?",
+          "kind": "swift.property",
+          "path": [
+            "LumenCalendarHeatmapDatum",
+            "value"
+          ],
+          "precise": "s:7LumenUI0A20CalendarHeatmapDatumV5valueSdSgvp"
         },
         {
           "declaration": "enum LumenButtonGroupOrientation",
@@ -120092,6 +121741,32 @@
             "size3xl"
           ],
           "precise": "s:7LumenUI0A6RadiusO7size3xl14CoreFoundation7CGFloatVvpZ"
+        },
+        {
+          "declaration": "@MainActor struct LumenBoxPlot",
+          "kind": "swift.struct",
+          "path": [
+            "LumenBoxPlot"
+          ],
+          "precise": "s:7LumenUI0A7BoxPlotV"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenBoxPlot",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A7BoxPlotV4bodyQrvp"
+        },
+        {
+          "declaration": "@MainActor init(data: [LumenBoxPlotDatum], label: String, domain: ClosedRange<Double>? = nil, heading: String? = nil, description: String? = nil, labels: LumenChartLabels = .english, statisticLabels: LumenBoxPlotLabels = .init(), showData: Bool = true)",
+          "kind": "swift.init",
+          "path": [
+            "LumenBoxPlot",
+            "init(data:label:domain:heading:description:labels:statisticLabels:showData:)"
+          ],
+          "precise": "s:7LumenUI0A7BoxPlotV4data5label6domain7heading11description6labels15statisticLabels8showDataACSayAA0acD5DatumVG_SSSNySdGSgSSSgAqA0a5ChartL0VAA0acdL0VSbtcfc"
         },
         {
           "declaration": "@MainActor struct LumenDivider",

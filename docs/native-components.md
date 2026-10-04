@@ -1120,3 +1120,12 @@ SwiftUI autocomplete uses `Binding<Value?>` with Hashable option values; React N
 Selection updates the query label before the selection callback/binding. The host clears stale
 selection when queries change. Loading hides results; result errors can expose Retry. Disabling
 or making the field read-only dismisses results without reopening them after re-enabling.
+
+## Daily activity, conversion stages, and distributions
+
+`LumenCalendarHeatmap`, `LumenFunnelChart`, and `LumenBoxPlot` are supported across React Native,
+SwiftUI, and Compose. The calendar uses explicit Gregorian date-only bounds, funnels retain
+supplied stages, and box plots render precomputed statistics. Every chart preserves missing values
+and supplies a visible expandable exact data list plus an accessible alternative when hidden.
+See [data visualization](data-visualization.md#calendars-funnels-and-box-plots) for contracts,
+formatters, domain validation, and the boundary between application statistics and presentation.

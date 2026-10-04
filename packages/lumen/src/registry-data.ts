@@ -2878,6 +2878,51 @@ export const lumenRegistry = {
       ]
     },
     {
+      name: 'CalendarHeatmap',
+      type: 'component',
+      category: 'Data display',
+      description: 'Shows daily activity on a date-only calendar with explicit missing observations.',
+      files: [
+        'packages/astro/components/CalendarHeatmap.astro',
+        'packages/astro/components/Chart.astro',
+        'packages/astro/styles/lumen.css'
+      ],
+      dependencies: [
+        'Chart',
+        'styles'
+      ]
+    },
+    {
+      name: 'FunnelChart',
+      type: 'component',
+      category: 'Data display',
+      description: 'Compares ordered conversion stages without inferring conversion rates.',
+      files: [
+        'packages/astro/components/FunnelChart.astro',
+        'packages/astro/components/Chart.astro',
+        'packages/astro/styles/lumen.css'
+      ],
+      dependencies: [
+        'Chart',
+        'styles'
+      ]
+    },
+    {
+      name: 'BoxPlot',
+      type: 'component',
+      category: 'Data display',
+      description: 'Shows precomputed quartiles, whiskers, medians, and outliers on one numeric scale.',
+      files: [
+        'packages/astro/components/BoxPlot.astro',
+        'packages/astro/components/Chart.astro',
+        'packages/astro/styles/lumen.css'
+      ],
+      dependencies: [
+        'Chart',
+        'styles'
+      ]
+    },
+    {
       name: 'BulletChart',
       type: 'component',
       category: 'Data display',

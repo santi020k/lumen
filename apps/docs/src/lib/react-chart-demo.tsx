@@ -1,6 +1,6 @@
-import { BulletChart, DumbbellChart, Heatmap, Histogram, LineChart, LollipopChart, PieChart, WaterfallChart } from '@santi020k/lumen-react'
+import { BoxPlot, BulletChart, CalendarHeatmap, DumbbellChart, FunnelChart, Heatmap, Histogram, LineChart, LollipopChart, PieChart, WaterfallChart } from '@santi020k/lumen-react'
 
-import { chartDemoBins, chartDemoBulletRanges, chartDemoChannels, chartDemoComparisons, chartDemoHeatmap, chartDemoSeries, chartDemoWaterfall } from './chart-demo-data'
+import { chartDemoBins, chartDemoBoxPlots, chartDemoBulletRanges, chartDemoCalendar, chartDemoChannels, chartDemoComparisons, chartDemoFunnel, chartDemoHeatmap, chartDemoSeries, chartDemoWaterfall } from './chart-demo-data'
 
 export const ReactChartDemo = () => (
   <div className="viz-chart-grid">
@@ -11,6 +11,9 @@ export const ReactChartDemo = () => (
     <WaterfallChart aria-label="React balance changes" heading="Revenue movement" description="Opening balance to closing · USD, thousands" data={chartDemoWaterfall} valueLabel="USD, thousands" />
     <Histogram aria-label="React response times" heading="Response time" description="Distribution of requests · milliseconds" bins={chartDemoBins} tone="series-3" />
     <PieChart aria-label="React traffic sources" heading="Traffic sources" description="Share of acquisition by channel" series={chartDemoChannels} centerValue="48%" centerLabel="Organic" />
+    <CalendarHeatmap aria-label="React daily contributions" heading="Daily contributions" description="August 2026 · missing days stay distinct from zero" startDate="2026-08-01" endDate="2026-08-28" data={chartDemoCalendar} />
+    <FunnelChart aria-label="React signup stages" heading="Signup stages" description="Ordered observations · no derived conversion estimates" data={chartDemoFunnel} />
+    <BoxPlot aria-label="React response time distributions" heading="Response time by region" description="Precomputed quartiles and outliers · milliseconds" data={chartDemoBoxPlots} />
     <Heatmap aria-label="React daily difference" heading="Activity patterns" description="Difference from baseline · every two hours" data={chartDemoHeatmap} colorScale="diverging" />
   </div>
 )

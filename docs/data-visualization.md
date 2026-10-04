@@ -450,3 +450,58 @@ to `.valueFormatter`, not string attributes.
 - Native charts use `label` and `showData`. React Native formats through `formatValue`; SwiftUI and
   Compose use `labels.formatValue`. Their domain types are `{ min, max }`, a Swift closed range,
   and a Kotlin closed floating-point range respectively. Follow each platform's theme setup.
+
+## Calendars, funnels, and box plots
+
+`CalendarHeatmap`, `FunnelChart`, and `BoxPlot` are available in Astro, React, and Elements, with
+`LumenCalendarHeatmap`, `LumenFunnelChart`, and `LumenBoxPlot` in React Native, SwiftUI, and Compose.
+All share validation, semantic chart colors, factual summaries, and exact accessible data.
+Keep `showTable` (web) or `showData` (native) enabled for a visible data disclosure. When hidden,
+exact facts remain available to assistive technology.
+
+### Daily activity
+
+Calendar heatmaps accept `{ date, value }` observations and required `startDate` / `endDate`
+identities in strict `YYYY-MM-DD` form. Dates use the proleptic Gregorian calendar, years 0001–9999,
+independent of device timezone and daylight saving time. The inclusive range is limited to 3660 days
+and must contain every observation. Duplicate dates, invalid dates, and non-finite measurements
+produce the invalid-data state. Omitted days and explicit `null` values stay missing; zero is measured.
+
+`weekStartsOn` defaults to `0` (Sunday); use `1` for Monday. Custom `weekdayLabels` use Sunday-first
+indexing. The plot scrolls within its card for long ranges; missing cells display a cross. A numeric
+legend explains the intensity scale. `domain` must be finite, increasing and contain all measurements.
+Supply `formatDate` and `formatValue` for application language and units (native number formatting
+uses the existing chart labels contract). Elements uses `start-date`, `end-date`, `week-starts-on`,
+and `domain-min` / `domain-max`, plus typed formatter and label properties.
+
+```astro
+<CalendarHeatmap aria-label="Daily activity" startDate="2026-08-01" endDate="2026-08-28"
+  data={[{ date: '2026-08-01', value: 3 }, { date: '2026-08-02', value: 0 }]} />
+```
+
+### Conversion stages
+
+Funnels accept `{ id, label, value, tone? }` rows. IDs must be unique and nonempty; labels must be
+nonempty. Values are nullable, finite and nonnegative. Stage order is preserved, including increases
+between stages. Centered bars use one scale based on the largest stage, and visible text preserves
+exact values. All-zero stages remain zero rather than becoming full-width bars.
+
+Applications own stage definitions, cohort alignment, aggregation and conversion percentages.
+Lumen does not infer rates or reorder stages. Use `formatValue` and chart `labels` to localize values.
+
+### Distribution summaries
+
+Box plots accept `{ id, label, min, q1, median, q3, max, outliers?, tone? }` rows with precomputed
+statistics. `min` and `max` are the lower and upper **whisker bounds**, so supplied outliers can lie
+outside them. The ordered contract is `min ≤ q1 ≤ median ≤ q3 ≤ max`. Every statistic must be finite,
+or all five must be `null` to represent a missing summary. Missing summaries cannot carry outliers.
+Outliers must be finite. IDs must be unique; input order remains unchanged.
+
+Every row shares a numeric domain enclosing all statistics and outliers. Explicit domains that
+truncate observations fail closed. Equal statistics remain visible, and numeric extremes produce
+finite positions. The box shows the middle two quartiles, a contrasting median, capped whiskers,
+and outlined outlier dots. Format every statistic with the same unit. `statisticLabels` customizes
+whisker, quartile, median and outlier names; SwiftUI uses `LumenBoxPlotLabels`.
+
+Applications own sample selection, quartile algorithms, whisker policy and outlier detection.
+Lumen renders the supplied summaries without changing their statistical meaning.

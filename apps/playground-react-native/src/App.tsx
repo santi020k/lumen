@@ -36,9 +36,11 @@ import {
   LumenBadge,
   LumenBanner,
   LumenBarChart,
+  LumenBoxPlot,
   LumenBulletChart,
   LumenButton,
   LumenButtonGroup,
+  LumenCalendarHeatmap,
   LumenCard,
   LumenCheckbox,
   LumenChip,
@@ -50,6 +52,7 @@ import {
   LumenEmptyState,
   LumenErrorState,
   LumenFieldGroup,
+  LumenFunnelChart,
   LumenGauge,
   LumenGraphic,
   LumenHeatmap,
@@ -1062,6 +1065,15 @@ const SettingsScreen = ({
 
 const IntervalChartExamples = ({ isVisible }: { isVisible: (name: string) => boolean }): ReactElement => (
   <>
+    {isVisible('Calendar heatmap') && (
+      <LumenCalendarHeatmap testID="component-calendar-heatmap" label="Daily activity" heading="Daily activity" startDate="2026-01-01" endDate="2026-03-31" data={Array.from({ length: 90 }, (_, index) => ({ date: new Date(Date.UTC(2026, 0, index + 1)).toISOString().slice(0, 10), value: index % 11 === 0 ? null : (index * 7) % 30 }))} />
+    )}
+    {isVisible('Funnel chart') && (
+      <LumenFunnelChart testID="component-funnel-chart" label="Signup stages" heading="Signup stages" data={[{ id: 'visits', label: 'Visits', value: 1200 }, { id: 'started', label: 'Started', value: 720 }, { id: 'completed', label: 'Completed', value: 360 }]} />
+    )}
+    {isVisible('Box plot') && (
+      <LumenBoxPlot testID="component-box-plot" label="Response time distribution" heading="Response time distribution" description="Milliseconds · supplied five-number summaries" data={[{ id: 'api', label: 'API', min: 12, q1: 24, median: 35, q3: 48, max: 70, outliers: [95] }, { id: 'worker', label: 'Worker', min: 18, q1: 30, median: 46, q3: 64, max: 90, outliers: [110] }]} />
+    )}
     {isVisible('Waterfall chart') && (
       <LumenWaterfallChart
         label="Revenue movement"
@@ -1573,7 +1585,7 @@ const Playground = ({
           </ComponentSection>
         </Visibility>
 
-        <Visibility visible={isAnyVisible('Sparkline', 'Line chart', 'Bar chart', 'Pie chart', 'Scatter chart', 'Waterfall chart', 'Histogram', 'Bullet chart', 'Lollipop chart', 'Dumbbell chart', 'Heatmap', 'Range chart', 'Combo chart')}>
+        <Visibility visible={isAnyVisible('Calendar heatmap', 'Funnel chart', 'Box plot', 'Sparkline', 'Line chart', 'Bar chart', 'Pie chart', 'Scatter chart', 'Waterfall chart', 'Histogram', 'Bullet chart', 'Lollipop chart', 'Dumbbell chart', 'Heatmap', 'Range chart', 'Combo chart')}>
           <ComponentSection
             description="Tokenized plots include a factual accessibility summary and readable fallback data."
             title="Data visualization"

@@ -2637,3 +2637,33 @@ lumen-dialog.ui-dialog:not([hidden]):has(> [data-slot="dialog-body"]) {
     0 40px 96px hsl(0 0% 0% / 0.38);
 }
 }
+
+@layer lumen.components {
+.ui-calendar-heatmap__range { color: hsl(var(--ink-soft)); font-size: .875rem; margin: 0; }
+
+.ui-calendar-heatmap__plot { overflow-x: auto; max-width: 100%; padding: .5rem 0; }
+
+.ui-calendar-heatmap__plot svg { display: block; width: auto; max-width: none; min-width: 240px; }
+
+.ui-calendar-heatmap__weekday { fill: hsl(var(--chart-axis)); font-size: 11px; }
+
+.ui-calendar-heatmap__cell { fill: hsl(var(--chart-series-1)); }
+
+.ui-calendar-heatmap__cell[data-missing] { fill: hsl(var(--surface-muted)); stroke: hsl(var(--line)); }
+
+.ui-calendar-heatmap__missing { fill: hsl(var(--ink-muted)); font-size: 12px; }
+
+.ui-calendar-heatmap__legend { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; font-size: .75rem; color: hsl(var(--ink-soft)); font-variant-numeric: tabular-nums; }
+
+.ui-calendar-heatmap__scale { width: 5rem; height: .5rem; border-radius: var(--ui-radius-sm); background: linear-gradient(to right, hsl(var(--chart-series-1) / .15), hsl(var(--chart-series-1))); }
+
+:is(.ui-calendar-heatmap, .ui-funnel-chart, .ui-box-plot) [tabindex="0"]:focus-visible { outline: 2px solid hsl(var(--brand)); outline-offset: 2px; }
+
+@media (forced-colors: active) {
+.ui-calendar-heatmap__cell { fill: Highlight; stroke: CanvasText; }
+
+.ui-calendar-heatmap__cell[data-missing] { fill: Canvas; }
+
+.ui-calendar-heatmap__missing, .ui-calendar-heatmap__weekday { fill: CanvasText; }
+}
+}

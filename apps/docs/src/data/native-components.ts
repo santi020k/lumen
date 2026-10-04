@@ -447,6 +447,57 @@ const chartDefinitions: ComponentDefinition[] = [
     ]
   },
   {
+    name: 'Calendar heatmap',
+    slug: 'calendar-heatmap',
+    category: 'Data display',
+    summary: 'Shows daily activity with explicit missing dates and a numeric intensity legend.',
+    accessibility: 'Retains exact date and value facts, including when the visible data list is hidden.',
+    guidance: 'Use Gregorian date-only identities and an inclusive range of at most 3660 days. Missing days stay distinct from zero.',
+    exports: { android: 'LumenCalendarHeatmap', apple: 'LumenCalendarHeatmap', 'react-native': 'LumenCalendarHeatmap' },
+    examples: {
+      android: 'LumenCalendarHeatmap(data = listOf(LumenCalendarHeatmapDatum("2026-08-01", 3.0)), label = "Daily activity", startDate = "2026-08-01", endDate = "2026-08-28")',
+      apple: 'LumenCalendarHeatmap(data: [.init(date: "2026-08-01", value: 3)], label: "Daily activity", startDate: "2026-08-01", endDate: "2026-08-28")',
+      'react-native': '<LumenCalendarHeatmap label="Daily activity" startDate="2026-08-01" endDate="2026-08-28" data={[{ date: "2026-08-01", value: 3 }]} />'
+    },
+    properties: [
+      property('data', 'LumenCalendarHeatmapDatum[]', 'Required', 'Date-only identity and nullable finite value.'),
+      property('startDate, endDate', 'YYYY-MM-DD', 'Required', 'Inclusive range. Duplicate, invalid or out-of-range dates fail closed.'),
+      property('weekStartsOn', '0 or 1', '0', 'Sunday or Monday. weekdayLabels is always Sunday-indexed.'),
+      property('formatDate, labels', 'Localized formatters and labels', 'Platform defaults', 'Formats dates and exact measurements consistently.'),
+      property('showData', 'Boolean', 'true', 'Provides the visible expandable exact values.')
+    ]
+  },
+  {
+    name: 'Funnel chart',
+    slug: 'funnel-chart',
+    category: 'Data display',
+    summary: 'Compares ordered nonnegative conversion stages with exact measurements.',
+    accessibility: 'Visible values and an expandable data list distinguish missing stages from zero.',
+    guidance: 'Preserve input order and use aligned cohorts. Applications own conversion percentages and aggregation.',
+    exports: { android: 'LumenFunnelChart', apple: 'LumenFunnelChart', 'react-native': 'LumenFunnelChart' },
+    examples: {
+      android: 'LumenFunnelChart(data = listOf(LumenFunnelDatum("visits", "Visits", 4800.0)), label = "Activation funnel")',
+      apple: 'LumenFunnelChart(data: [.init(id: "visits", label: "Visits", value: 4800)], label: "Activation funnel")',
+      'react-native': '<LumenFunnelChart label="Activation funnel" data={[{ id: "visits", label: "Visits", value: 4800 }]} />'
+    },
+    properties: [property('data', 'LumenFunnelDatum[]', 'Required', 'Unique nonempty IDs, labels, nullable nonnegative finite values, and optional tone.'), property('labels', 'Localized chart labels', 'English', 'Formats exact values and empty/invalid/missing states.'), property('showData', 'Boolean', 'true', 'Provides the visible expandable exact values.')]
+  },
+  {
+    name: 'Box plot',
+    slug: 'box-plot',
+    category: 'Data display',
+    summary: 'Shows precomputed quartiles, whiskers and outliers on one numeric scale.',
+    accessibility: 'Provides exact statistics with a contrasting median and outlined outliers.',
+    guidance: 'Supply ordered statistics or five null values for a missing summary. Applications own statistical methods.',
+    exports: { android: 'LumenBoxPlot', apple: 'LumenBoxPlot', 'react-native': 'LumenBoxPlot' },
+    examples: {
+      android: 'LumenBoxPlot(data = listOf(LumenBoxPlotDatum("north", "North", 12.0, 22.0, 31.0, 44.0, 61.0)), label = "Response distribution")',
+      apple: 'LumenBoxPlot(data: [.init(id: "north", label: "North", min: 12, q1: 22, median: 31, q3: 44, max: 61)], label: "Response distribution")',
+      'react-native': '<LumenBoxPlot label="Response distribution" data={[{ id: "north", label: "North", min: 12, q1: 22, median: 31, q3: 44, max: 61 }]} />'
+    },
+    properties: [property('data', 'LumenBoxPlotDatum[]', 'Required', 'Precomputed min/q1/median/q3/max plus optional finite outliers. min/max are whisker bounds.'), property('domain', 'Finite numeric range', 'Automatic', 'Encloses every statistic and outlier.'), property('statisticLabels, labels', 'Localized statistic names and formatting', 'English', 'Names quartiles, median, whiskers and outliers.'), property('showData', 'Boolean', 'true', 'Provides the visible expandable exact statistics.')]
+  },
+  {
     name: 'Bullet chart',
     slug: 'bullet-chart',
     category: 'Data display',

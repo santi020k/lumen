@@ -268,6 +268,16 @@ Use `LumenTheme(preset = LumenThemePreset.Studio)` or customize `LumenThemeValue
 
 ## Data visualization
 
+`LumenCalendarHeatmap`, `LumenFunnelChart`, and `LumenBoxPlot` extend the chart catalog.
+Calendar heatmaps use inclusive UTC `YYYY-MM-DD` ranges (up to 3,660 days), preserve missing dates,
+and scroll week columns horizontally. Funnels preserve declared stage order and show supplied values;
+they do not infer conversion percentages. Box plots accept ordered five-number summaries with
+optional supplied outliers, which remain included in the numeric domain and readable disclosure.
+Missing measurements use × marks; exact values remain available through the expandable data list.
+Invalid input produces the invalid-data state before application formatters run. Pass translated
+chart labels, date/value formatters, and box-plot statistic labels for localized output.
+
+
 Heatmaps include labeled axes, a numeric color legend, and × markers for missing measurements.
 Use a diverging color scale around a meaningful midpoint for signed data. The plot and expandable
 list preserve zero and use the first measurement at each coordinate. See the

@@ -8428,3 +8428,35 @@ a.ui-pill:focus-visible {
 }
 }
 /* END:generated-theme-presets */
+
+@layer lumen.components {
+  .ui-calendar-heatmap__range { color: hsl(var(--ink-soft)); font-size: .875rem; margin: 0; }
+  .ui-calendar-heatmap__plot { overflow-x: auto; max-width: 100%; padding: .5rem 0; }
+  .ui-calendar-heatmap__plot svg { display: block; width: auto; max-width: none; min-width: 240px; }
+  .ui-calendar-heatmap__weekday { fill: hsl(var(--chart-axis)); font-size: 11px; }
+  .ui-calendar-heatmap__cell { fill: hsl(var(--chart-series-1)); }
+  .ui-calendar-heatmap__cell[data-missing] { fill: hsl(var(--surface-muted)); stroke: hsl(var(--line)); }
+  .ui-calendar-heatmap__missing { fill: hsl(var(--ink-muted)); font-size: 12px; }
+  .ui-calendar-heatmap__legend { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; font-size: .75rem; color: hsl(var(--ink-soft)); font-variant-numeric: tabular-nums; }
+  .ui-calendar-heatmap__scale { width: 5rem; height: .5rem; border-radius: var(--ui-radius-sm); background: linear-gradient(to right, hsl(var(--chart-series-1) / .15), hsl(var(--chart-series-1))); }
+  .ui-funnel-chart__rows, .ui-box-plot__rows { display: grid; gap: 1rem; margin: 0; padding: .5rem; list-style: none; }
+  .ui-funnel-chart__label, .ui-box-plot__label { display: flex; justify-content: space-between; align-items: baseline; gap: .5rem 1rem; flex-wrap: wrap; font-size: .875rem; overflow-wrap: anywhere; }
+  .ui-funnel-chart__label strong, .ui-box-plot__label strong { font-variant-numeric: tabular-nums; }
+  .ui-funnel-chart__track { display: flex; justify-content: center; height: 1.75rem; margin-top: .5rem; background: hsl(var(--surface-muted)); border-radius: var(--ui-radius-sm); }
+  .ui-funnel-chart__bar { display: block; height: 100%; background: var(--ui-chart-color, hsl(var(--chart-series-1))); border-radius: var(--ui-radius-sm); }
+  .ui-box-plot__track { position: relative; height: 2.5rem; margin: .5rem .375rem 0; }
+  .ui-box-plot__track::before { content: ""; position: absolute; inset: 50% 0 auto; height: 1px; background: hsl(var(--line)); }
+  .ui-box-plot__whisker { position: absolute; top: calc(50% - 1px); height: 2px; background: var(--ui-chart-color, hsl(var(--chart-series-1))); }
+  .ui-box-plot__cap, .ui-box-plot__median { position: absolute; top: 20%; height: 60%; width: 2px; transform: translateX(-50%); background: var(--ui-chart-color, hsl(var(--chart-series-1))); }
+  .ui-box-plot__box { position: absolute; top: 10%; height: 80%; box-sizing: border-box; min-width: 2px; background: color-mix(in srgb, var(--ui-chart-color, hsl(var(--chart-series-1))) 25%, hsl(var(--surface))); border: 2px solid var(--ui-chart-color, hsl(var(--chart-series-1))); border-radius: 3px; }
+  .ui-box-plot__median { top: 10%; height: 80%; width: 3px; background: hsl(var(--ink)); }
+  .ui-box-plot__outlier { position: absolute; top: 50%; transform: translate(-50%, -50%); width: 7px; height: 7px; border-radius: 50%; border: 2px solid var(--ui-chart-color, hsl(var(--chart-series-1))); background: hsl(var(--surface)); }
+  :is(.ui-calendar-heatmap, .ui-funnel-chart, .ui-box-plot) [tabindex="0"]:focus-visible { outline: 2px solid hsl(var(--brand)); outline-offset: 2px; }
+  @media (forced-colors: active) {
+    .ui-calendar-heatmap__cell { fill: Highlight; stroke: CanvasText; }
+    .ui-calendar-heatmap__cell[data-missing] { fill: Canvas; }
+    .ui-calendar-heatmap__missing, .ui-calendar-heatmap__weekday { fill: CanvasText; }
+    .ui-funnel-chart__bar, .ui-box-plot__whisker, .ui-box-plot__cap, .ui-box-plot__median { background: CanvasText; }
+    .ui-box-plot__box, .ui-box-plot__outlier { border-color: CanvasText; background: Canvas; }
+  }
+}

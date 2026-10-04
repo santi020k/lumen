@@ -1996,6 +1996,25 @@ const apiReferenceByComponent = {
     apiRow('aria-label', 'string', 'unset', 'Names the chart figure; include the measurement and reporting period.'),
     apiRow('showTable', 'boolean', 'true', 'Keeps the keyboard-accessible exact data disclosure available.')
   ],
+  CalendarHeatmap: [
+    apiRow('data', 'readonly LumenCalendarHeatmapDatum[]', 'required', 'ISO date-only identities and nullable finite values. Omitted dates remain missing.'),
+    apiRow('startDate, endDate', 'YYYY-MM-DD', 'required', 'Inclusive Gregorian range, at most 3660 days. Duplicate or out-of-range observations are invalid.'),
+    apiRow('weekStartsOn', '0 | 1', '0', 'Sunday or Monday. weekdayLabels always uses Sunday-first indexing.'),
+    apiRow('domain', 'LumenChartDomain', 'automatic', 'Finite increasing domain enclosing every supplied observation.'),
+    apiRow('formatDate, formatValue, weekdayLabels, labels', 'Formatters and localized labels', 'date identity / English', 'Formats the date range, axes, summary and exact data alternative.'),
+    apiRow('showTable', 'boolean', 'true', 'Shows a keyboard-accessible table; hidden tables retain an exact screen-reader alternative.')
+  ],
+  FunnelChart: [
+    apiRow('data', 'readonly LumenFunnelDatum[]', 'required', 'Unique nonempty id and label with a nullable nonnegative finite value. Preserves input order.'),
+    apiRow('formatValue, labels', 'Formatter and chart labels', 'String / English', 'Uses the same units for visible values and accessible data.'),
+    apiRow('showTable', 'boolean', 'true', 'Shows exact stage values. Lumen does not infer conversion percentages.')
+  ],
+  BoxPlot: [
+    apiRow('data', 'readonly LumenBoxPlotDatum[]', 'required', 'Precomputed min, q1, median, q3, max and optional outliers. All five null represents a missing summary.'),
+    apiRow('domain', 'LumenChartDomain', 'automatic', 'Includes all whiskers, quartiles and outliers. Invalid or unordered summaries fail closed.'),
+    apiRow('formatValue, statisticLabels, labels', 'Formatter and localized labels', 'English', 'Names and formats every statistic in visible and accessible content.'),
+    apiRow('showTable', 'boolean', 'true', 'Retains exact statistics and outliers in a keyboard-accessible data disclosure.')
+  ],
   BulletChart: [
     apiRow('value, target', 'number | null, number', 'required', 'Compares a measured value with a target. Null is unavailable, zero remains a real value.'),
     apiRow('ranges', 'LumenBulletRange[]', '[]', 'Uses labeled, finite, unique range ends. Ranges are sorted without mutating input.'),
@@ -4373,6 +4392,24 @@ export const componentDocs: ComponentDoc[] = (
       'Layout',
       'Keeps meaningful content available to assistive technology without displaying it.',
       '<Button><Icon name="search" decorative /><VisuallyHidden>Search</VisuallyHidden></Button>'
+    ],
+    [
+      'CalendarHeatmap',
+      'Data display',
+      'Shows daily patterns with explicit missing observations.',
+      '<CalendarHeatmap aria-label="Daily activity" startDate="2026-08-01" endDate="2026-08-28" data={[{ date: "2026-08-01", value: 3 }]} />'
+    ],
+    [
+      'FunnelChart',
+      'Data display',
+      'Compares ordered conversion stages without inferred percentages.',
+      '<FunnelChart aria-label="Activation funnel" data={[{ id: "visits", label: "Visits", value: 4800 }, { id: "paid", label: "Paid", value: 640 }]} />'
+    ],
+    [
+      'BoxPlot',
+      'Data display',
+      'Shows precomputed quartiles, whiskers and outliers.',
+      '<BoxPlot aria-label="Response distribution" data={[{ id: "north", label: "North", min: 12, q1: 22, median: 31, q3: 44, max: 61, outliers: [73] }]} />'
     ],
     [
       'BulletChart',

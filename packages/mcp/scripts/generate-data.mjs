@@ -915,6 +915,7 @@ const loadWorkspaceFiles = async p => ({
     await readIfExists(p('packages/react/src/interval-charts.tsx')),
     await readIfExists(p('packages/react/src/bullet-chart.tsx')),
     await readIfExists(p('packages/react/src/comparison-chart.tsx')),
+    await readIfExists(p('packages/react/src/expanded-charts.tsx')),
     await readIfExists(p('packages/react/src/chart-interaction.tsx')),
     await readIfExists(p('packages/react/src/data-table.tsx')),
     await readIfExists(p('packages/react/src/server-components.tsx')),

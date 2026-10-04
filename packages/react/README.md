@@ -844,3 +844,42 @@ Use `LollipopChart` for zero-based rankings and `DumbbellChart` for paired measu
 `LumenLollipopChart` and `LumenDumbbellChart`). Supply ordered comparison data with `id`, `label`,
 nullable `value`, optional nullable `reference`, and optional `tone`. Both charts preserve missing
 values and expose exact data. See the [shared visualization contract](../../docs/data-visualization.md#rankings-and-paired-comparisons).
+
+
+### Calendar activity, ordered stages and distributions
+
+`CalendarHeatmap`, `FunnelChart`, and `BoxPlot` share validated geometry with every Lumen adapter.
+CalendarHeatmap takes date-only UTC `startDate`/`endDate`, nullable `{ date, value }` data and optional
+`weekStartsOn` (0 for Sunday or 1 for Monday). It fills omitted dates as missing, keeps zero distinct,
+and limits the inclusive range to 3,660 days. `weekdayLabels` always indexes Sunday through Saturday;
+`formatDate` customizes readable dates without changing their identity.
+
+FunnelChart takes ordered `{ id, label, value, tone? }` stages with nonnegative nullable values.
+Stages retain the supplied order, including increasing values; the chart derives no conversion rates.
+BoxPlot takes precomputed `{ id, label, min, q1, median, q3, max, outliers?, tone? }` statistics.
+Statistics must be ordered and finite, or all five must be null for a missing row. Explicit domains
+must contain all observations and outliers. `statisticLabels` localizes the six statistic names.
+
+All three accept `formatValue`, chart `labels`, `summary`, and `showTable` (default true).
+Exact data and missing measurements remain readable; invalid input fails closed instead of dropping
+observations or clipping the domain. Prefer retaining the data table for complete visual inspection.
+
+```tsx
+import { BoxPlot, CalendarHeatmap, FunnelChart } from '@santi020k/lumen-react'
+
+<CalendarHeatmap heading="Daily visits" startDate="2026-01-01" endDate="2026-01-31"
+  data={[{ date: '2026-01-01', value: 42 }]} />
+<FunnelChart heading="Checkout stages" data={[
+  { id: 'view', label: 'Viewed', value: 120 },
+  { id: 'paid', label: 'Paid', value: 32 }
+]} />
+<BoxPlot heading="Response times" data={[
+  { id: 'api', label: 'API', min: 20, q1: 45, median: 60, q3: 90, max: 140, outliers: [210] }
+]} />
+```
+
+## Hook state updates
+
+Public hook setters accept React functional updates. In uncontrolled mode, consecutive calls in
+one event compose against the latest pending value. Change callbacks run once per setter call,
+including under Strict Mode. Controlled values remain owned by the application.

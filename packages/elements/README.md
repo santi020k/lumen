@@ -657,3 +657,37 @@ Use `LollipopChart` for zero-based rankings and `DumbbellChart` for paired measu
 `LumenLollipopChart` and `LumenDumbbellChart`). Supply ordered comparison data with `id`, `label`,
 nullable `value`, optional nullable `reference`, and optional `tone`. Both charts preserve missing
 values and expose exact data. See the [shared visualization contract](../../docs/data-visualization.md#rankings-and-paired-comparisons).
+
+
+### Calendar activity, ordered stages and distributions
+
+`CalendarHeatmap`, `FunnelChart`, and `BoxPlot` share validated geometry with every Lumen adapter.
+CalendarHeatmap takes date-only UTC `startDate`/`endDate`, nullable `{ date, value }` data and optional
+`weekStartsOn` (0 for Sunday or 1 for Monday). It fills omitted dates as missing, keeps zero distinct,
+and limits the inclusive range to 3,660 days. `weekdayLabels` always indexes Sunday through Saturday;
+`dateFormatter` customizes readable dates without changing their identity.
+
+FunnelChart takes ordered `{ id, label, value, tone? }` stages with nonnegative nullable values.
+Stages retain the supplied order, including increasing values; the chart derives no conversion rates.
+BoxPlot takes precomputed `{ id, label, min, q1, median, q3, max, outliers?, tone? }` statistics.
+Statistics must be ordered and finite, or all five must be null for a missing row. Explicit domains
+must contain all observations and outliers. `statisticLabels` localizes the six statistic names.
+
+All three accept `valueFormatter`, chart `labels`, `summary`, and `show-table` (default true).
+Exact data and missing measurements remain readable; invalid input fails closed instead of dropping
+observations or clipping the domain. Prefer retaining the data table for complete visual inspection.
+
+Register `CalendarHeatmap`, `FunnelChart`, and `BoxPlot` through `defineLumenElements`.
+Use `<lumen-calendar-heatmap start-date="2026-01-01" end-date="2026-01-31">`,
+`<lumen-funnel-chart>`, and `<lumen-box-plot>`. Assign typed `data`, `labels`, `valueFormatter`,
+`dateFormatter`/`weekdayLabels` (calendar), and `statisticLabels` (box) properties, or supply JSON
+`data` attributes. Calendar supports `week-starts-on` and JSON `weekday-labels`; domains use
+`domain-min`/`domain-max`. Box statistic attributes are `min-label`, `q1-label`, `median-label`,
+`q3-label`, `max-label`, and `outliers-label`. `show-table="false"` hides exact-data disclosure;
+provide an application-owned summary when additional interpretation is useful.
+
+## Combobox lifecycle
+
+`lumen-combobox` enhances its input and listbox when both are available. Children can arrive after
+connection or be replaced by an application renderer. Disconnecting the host releases listeners
+and observers; reconnecting binds the current children.

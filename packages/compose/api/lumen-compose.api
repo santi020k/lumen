@@ -57,6 +57,12 @@ public final class com/santi020k/lumen/ContentComponentsKt {
 	public static final fun resolveLumenSkeletonHeight-0680j_4 (F)F
 }
 
+public final class com/santi020k/lumen/ExpandedChartComponentsKt {
+	public static final fun LumenBoxPlot (Ljava/util/List;Ljava/lang/String;Landroidx/compose/ui/Modifier;Lkotlin/ranges/ClosedFloatingPointRange;Ljava/lang/String;Ljava/lang/String;Lcom/santi020k/lumen/LumenChartLabels;Lcom/santi020k/lumen/LumenBoxPlotStatisticLabels;ZLandroidx/compose/runtime/Composer;II)V
+	public static final fun LumenCalendarHeatmap (Ljava/util/List;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Landroidx/compose/ui/Modifier;ILkotlin/ranges/ClosedFloatingPointRange;Ljava/lang/String;Ljava/lang/String;Lcom/santi020k/lumen/LumenChartLabels;ZLkotlin/jvm/functions/Function1;Ljava/util/List;Landroidx/compose/runtime/Composer;III)V
+	public static final fun LumenFunnelChart (Ljava/util/List;Ljava/lang/String;Landroidx/compose/ui/Modifier;Ljava/lang/String;Ljava/lang/String;Lcom/santi020k/lumen/LumenChartLabels;ZLandroidx/compose/runtime/Composer;II)V
+}
+
 public final class com/santi020k/lumen/FormComponentsKt {
 	public static final fun LumenDateField (Ljava/lang/String;Ljava/lang/Long;Lkotlin/jvm/functions/Function1;Landroidx/compose/ui/Modifier;Ljava/lang/Long;Ljava/lang/Long;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ZLandroidx/compose/runtime/Composer;III)V
 	public static final fun LumenDateRangeField (Ljava/lang/String;Lcom/santi020k/lumen/LumenDateRangeSelection;Lkotlin/jvm/functions/Function1;Landroidx/compose/ui/Modifier;Ljava/lang/Long;Ljava/lang/Long;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ZLandroidx/compose/runtime/Composer;III)V
@@ -206,6 +212,59 @@ public final class com/santi020k/lumen/LumenBarChartLayout : java/lang/Enum {
 	public static fun values ()[Lcom/santi020k/lumen/LumenBarChartLayout;
 }
 
+public final class com/santi020k/lumen/LumenBoxPlotDatum {
+	public static final field $stable I
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/Double;Ljava/lang/Double;Ljava/lang/Double;Ljava/lang/Double;Ljava/lang/Double;Ljava/util/List;Lcom/santi020k/lumen/LumenChartTone;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/Double;Ljava/lang/Double;Ljava/lang/Double;Ljava/lang/Double;Ljava/lang/Double;Ljava/util/List;Lcom/santi020k/lumen/LumenChartTone;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/Double;
+	public final fun component4 ()Ljava/lang/Double;
+	public final fun component5 ()Ljava/lang/Double;
+	public final fun component6 ()Ljava/lang/Double;
+	public final fun component7 ()Ljava/lang/Double;
+	public final fun component8 ()Ljava/util/List;
+	public final fun component9 ()Lcom/santi020k/lumen/LumenChartTone;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/Double;Ljava/lang/Double;Ljava/lang/Double;Ljava/lang/Double;Ljava/lang/Double;Ljava/util/List;Lcom/santi020k/lumen/LumenChartTone;)Lcom/santi020k/lumen/LumenBoxPlotDatum;
+	public static synthetic fun copy$default (Lcom/santi020k/lumen/LumenBoxPlotDatum;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Double;Ljava/lang/Double;Ljava/lang/Double;Ljava/lang/Double;Ljava/lang/Double;Ljava/util/List;Lcom/santi020k/lumen/LumenChartTone;ILjava/lang/Object;)Lcom/santi020k/lumen/LumenBoxPlotDatum;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getId ()Ljava/lang/String;
+	public final fun getLabel ()Ljava/lang/String;
+	public final fun getMax ()Ljava/lang/Double;
+	public final fun getMedian ()Ljava/lang/Double;
+	public final fun getMin ()Ljava/lang/Double;
+	public final fun getOutliers ()Ljava/util/List;
+	public final fun getQ1 ()Ljava/lang/Double;
+	public final fun getQ3 ()Ljava/lang/Double;
+	public final fun getTone ()Lcom/santi020k/lumen/LumenChartTone;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/santi020k/lumen/LumenBoxPlotStatisticLabels {
+	public static final field $stable I
+	public fun <init> ()V
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Ljava/lang/String;
+	public final fun component6 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lcom/santi020k/lumen/LumenBoxPlotStatisticLabels;
+	public static synthetic fun copy$default (Lcom/santi020k/lumen/LumenBoxPlotStatisticLabels;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lcom/santi020k/lumen/LumenBoxPlotStatisticLabels;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getMax ()Ljava/lang/String;
+	public final fun getMedian ()Ljava/lang/String;
+	public final fun getMin ()Ljava/lang/String;
+	public final fun getOutliers ()Ljava/lang/String;
+	public final fun getQ1 ()Ljava/lang/String;
+	public final fun getQ3 ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
 public final class com/santi020k/lumen/LumenBulletRange {
 	public static final field $stable I
 	public fun <init> (DLjava/lang/String;Lcom/santi020k/lumen/LumenChartTone;)V
@@ -259,6 +318,20 @@ public final class com/santi020k/lumen/LumenButtonMetrics {
 
 public final class com/santi020k/lumen/LumenButtonMetrics$Companion {
 	public final fun resolve (Lcom/santi020k/lumen/LumenControlSize;)Lcom/santi020k/lumen/LumenButtonMetrics;
+}
+
+public final class com/santi020k/lumen/LumenCalendarHeatmapDatum {
+	public static final field $stable I
+	public fun <init> (Ljava/lang/String;Ljava/lang/Double;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/Double;
+	public final fun copy (Ljava/lang/String;Ljava/lang/Double;)Lcom/santi020k/lumen/LumenCalendarHeatmapDatum;
+	public static synthetic fun copy$default (Lcom/santi020k/lumen/LumenCalendarHeatmapDatum;Ljava/lang/String;Ljava/lang/Double;ILjava/lang/Object;)Lcom/santi020k/lumen/LumenCalendarHeatmapDatum;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDate ()Ljava/lang/String;
+	public final fun getValue ()Ljava/lang/Double;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/santi020k/lumen/LumenCardPalette {
@@ -774,6 +847,25 @@ public final class com/santi020k/lumen/LumenFloatingActionButtonSize : java/lang
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lcom/santi020k/lumen/LumenFloatingActionButtonSize;
 	public static fun values ()[Lcom/santi020k/lumen/LumenFloatingActionButtonSize;
+}
+
+public final class com/santi020k/lumen/LumenFunnelDatum {
+	public static final field $stable I
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/Double;Lcom/santi020k/lumen/LumenChartTone;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/Double;Lcom/santi020k/lumen/LumenChartTone;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/Double;
+	public final fun component4 ()Lcom/santi020k/lumen/LumenChartTone;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/Double;Lcom/santi020k/lumen/LumenChartTone;)Lcom/santi020k/lumen/LumenFunnelDatum;
+	public static synthetic fun copy$default (Lcom/santi020k/lumen/LumenFunnelDatum;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Double;Lcom/santi020k/lumen/LumenChartTone;ILjava/lang/Object;)Lcom/santi020k/lumen/LumenFunnelDatum;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getId ()Ljava/lang/String;
+	public final fun getLabel ()Ljava/lang/String;
+	public final fun getTone ()Lcom/santi020k/lumen/LumenChartTone;
+	public final fun getValue ()Ljava/lang/Double;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/santi020k/lumen/LumenGraphicSize : java/lang/Enum {
