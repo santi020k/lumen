@@ -1,6 +1,11 @@
 version: "0.2"
 language: en
 words:
+  - inválidos
+  - Inicio
+  - Proceso
+  - Grupo
+  - Mediana
   - constexpr
   - Layoutable
   - autocorrection

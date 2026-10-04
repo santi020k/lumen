@@ -159,6 +159,7 @@ export {
   type LumenErrorStateLayout,
   lumenErrorStateLayouts
 } from './error-state.js'
+export * from './extended-charts.js'
 export {
   createFigmaVariableName,
   exportThemeDesignTokens,

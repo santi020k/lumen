@@ -15,14 +15,30 @@
     {
       "name": "page-header",
       "type": "recipe",
-      "components": ["Badge", "Breadcrumb", "Button", "Link", "Stack", "Typography"],
-      "files": ["docs/consumer-ui-recipes.md"]
+      "components": [
+        "Badge",
+        "Breadcrumb",
+        "Button",
+        "Link",
+        "Stack",
+        "Typography"
+      ],
+      "files": [
+        "docs/consumer-ui-recipes.md"
+      ]
     },
     {
       "name": "section-header",
       "type": "recipe",
-      "components": ["Badge", "Button", "Stack", "Typography"],
-      "files": ["docs/consumer-ui-recipes.md"]
+      "components": [
+        "Badge",
+        "Button",
+        "Stack",
+        "Typography"
+      ],
+      "files": [
+        "docs/consumer-ui-recipes.md"
+      ]
     },
     {
       "name": "content-flow-header",
@@ -431,7 +447,9 @@
         "packages/astro/components/AttachmentList.astro",
         "packages/astro/styles/lumen.css"
       ],
-      "dependencies": ["styles"]
+      "dependencies": [
+        "styles"
+      ]
     },
     {
       "name": "AttachmentPreview",
@@ -442,7 +460,9 @@
         "packages/astro/components/AttachmentPreview.astro",
         "packages/astro/styles/lumen.css"
       ],
-      "dependencies": ["styles"]
+      "dependencies": [
+        "styles"
+      ]
     },
     {
       "name": "Autocomplete",
@@ -524,7 +544,11 @@
         "packages/astro/runtime/UIPrimitives.astro",
         "packages/astro/styles/lumen.css"
       ],
-      "dependencies": ["Button", "Chart", "styles"]
+      "dependencies": [
+        "Button",
+        "Chart",
+        "styles"
+      ]
     },
     {
       "name": "Breadcrumb",
@@ -1670,7 +1694,11 @@
         "packages/astro/runtime/UIPrimitives.astro",
         "packages/astro/styles/lumen.css"
       ],
-      "dependencies": ["Button", "Chart", "styles"]
+      "dependencies": [
+        "Button",
+        "Chart",
+        "styles"
+      ]
     },
     {
       "name": "Pill",
@@ -2765,7 +2793,11 @@
         "packages/astro/styles/lumen.css",
         "packages/react/src/components.tsx"
       ],
-      "dependencies": ["Button", "Chart", "styles"]
+      "dependencies": [
+        "Button",
+        "Chart",
+        "styles"
+      ]
     },
     {
       "name": "Heatmap",
@@ -2782,7 +2814,11 @@
         "packages/astro/styles/lumen.css",
         "packages/react/src/components.tsx"
       ],
-      "dependencies": ["Button", "Chart", "styles"]
+      "dependencies": [
+        "Button",
+        "Chart",
+        "styles"
+      ]
     },
     {
       "name": "RangeChart",
@@ -2799,7 +2835,11 @@
         "packages/astro/styles/lumen.css",
         "packages/react/src/components.tsx"
       ],
-      "dependencies": ["Button", "Chart", "styles"]
+      "dependencies": [
+        "Button",
+        "Chart",
+        "styles"
+      ]
     },
     {
       "name": "ComboChart",
@@ -2816,7 +2856,11 @@
         "packages/astro/styles/lumen.css",
         "packages/react/src/components.tsx"
       ],
-      "dependencies": ["Button", "Chart", "styles"]
+      "dependencies": [
+        "Button",
+        "Chart",
+        "styles"
+      ]
     },
     {
       "name": "VisuallyHidden",
@@ -2828,6 +2872,51 @@
         "packages/astro/styles/lumen.css"
       ],
       "dependencies": [
+        "styles"
+      ]
+    },
+    {
+      "name": "CalendarHeatmap",
+      "type": "component",
+      "category": "Data display",
+      "description": "Shows daily activity on a date-only calendar with explicit missing observations.",
+      "files": [
+        "packages/astro/components/CalendarHeatmap.astro",
+        "packages/astro/components/Chart.astro",
+        "packages/astro/styles/lumen.css"
+      ],
+      "dependencies": [
+        "Chart",
+        "styles"
+      ]
+    },
+    {
+      "name": "FunnelChart",
+      "type": "component",
+      "category": "Data display",
+      "description": "Compares ordered conversion stages without inferring conversion rates.",
+      "files": [
+        "packages/astro/components/FunnelChart.astro",
+        "packages/astro/components/Chart.astro",
+        "packages/astro/styles/lumen.css"
+      ],
+      "dependencies": [
+        "Chart",
+        "styles"
+      ]
+    },
+    {
+      "name": "BoxPlot",
+      "type": "component",
+      "category": "Data display",
+      "description": "Shows precomputed quartiles, whiskers, medians, and outliers on one numeric scale.",
+      "files": [
+        "packages/astro/components/BoxPlot.astro",
+        "packages/astro/components/Chart.astro",
+        "packages/astro/styles/lumen.css"
+      ],
+      "dependencies": [
+        "Chart",
         "styles"
       ]
     },

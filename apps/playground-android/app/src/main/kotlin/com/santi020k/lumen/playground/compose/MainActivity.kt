@@ -81,6 +81,12 @@ import com.santi020k.lumen.LumenGraphicSize
 import com.santi020k.lumen.LumenGraphicTone
 import com.santi020k.lumen.LumenGraphicVariant
 import com.santi020k.lumen.LumenHeatmap
+import com.santi020k.lumen.LumenCalendarHeatmap
+import com.santi020k.lumen.LumenCalendarHeatmapDatum
+import com.santi020k.lumen.LumenFunnelChart
+import com.santi020k.lumen.LumenFunnelDatum
+import com.santi020k.lumen.LumenBoxPlot
+import com.santi020k.lumen.LumenBoxPlotDatum
 import com.santi020k.lumen.LumenChartLabels
 import com.santi020k.lumen.LumenHeatmapColorScale
 import com.santi020k.lumen.LumenComparisonDatum
@@ -430,7 +436,7 @@ private fun PlaygroundContent(
                             FeedbackStatesExample()
                             PullToRefreshExample()
                         }
-                        "Data" -> if (initialComponent == "Image comparison") { ImageComparisonExample() } else Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                        "Data" -> if (initialComponent in setOf("Calendar heatmap", "Funnel chart", "Box plot")) { ChartExample(setOf(initialComponent)) } else if (initialComponent == "Image comparison") { ImageComparisonExample() } else Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                             ImageComparisonExample()
                             DataExample(saved = saved, onToggleSaved = { saved = !saved })
                             DisclosureExample(
@@ -1355,6 +1361,15 @@ private fun ChartExample(visibleNames: Set<String>) {
         LumenHistogram(label = "Response times", heading = "Response time", description = "Distribution of requests · milliseconds", data = listOf(3, 8, 18, 34, 48, 57, 51, 37, 26, 15, 8, 3).mapIndexed { index, count ->
             LumenHistogramBin(index * 25.0, (index + 1) * 25.0, count.toDouble())
         })
+    }
+    if ("Calendar heatmap" in visibleNames) {
+        LumenCalendarHeatmap(label = "Daily activity", heading = "Daily activity", startDate = "2026-01-01", endDate = "2026-01-31", data = (1..31).map { day -> LumenCalendarHeatmapDatum("2026-01-${day.toString().padStart(2, '0')}", if (day % 11 == 0) null else ((day * 7) % 30).toDouble()) })
+    }
+    if ("Funnel chart" in visibleNames) {
+        LumenFunnelChart(label = "Signup stages", heading = "Signup stages", data = listOf(LumenFunnelDatum("visits", "Visits", 1200.0), LumenFunnelDatum("started", "Started", 720.0), LumenFunnelDatum("completed", "Completed", 360.0)))
+    }
+    if ("Box plot" in visibleNames) {
+        LumenBoxPlot(label = "Response time distribution", heading = "Response time distribution", description = "Milliseconds · supplied five-number summaries", data = listOf(LumenBoxPlotDatum("api", "API", 12.0, 24.0, 35.0, 48.0, 70.0, listOf(95.0)), LumenBoxPlotDatum("worker", "Worker", 18.0, 30.0, 46.0, 64.0, 90.0, listOf(110.0))))
     }
     if ("Heatmap" in visibleNames) {
         LumenHeatmap(

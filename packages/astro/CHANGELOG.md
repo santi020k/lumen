@@ -38,6 +38,11 @@
 
 ### Minor Changes
 
+- Add CalendarHeatmap, FunnelChart, and BoxPlot across web and native adapters with shared validation,
+  semantic chart colors, localized formatting, responsive layouts, and accessible exact data.
+  Calendar heatmaps use explicit Gregorian date-only ranges; funnels preserve supplied stage order;
+  box plots accept precomputed quartiles, whiskers, and outliers without performing application statistics.
+
 - Add canonical Default, Studio and Glass appearance presets, scoped web styling and ThemeBuilder radius, spacing and border customization. Native adapters expose preset palettes and explicit surface material with opaque fallbacks. Swift and Compose consumers must rebuild for the updated theme and surface signatures; see the appearance presets guide.
 
 - Add opt-in Astro chart drilldown with matching pointer and native keyboard actions, localized

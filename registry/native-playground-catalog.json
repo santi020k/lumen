@@ -99,7 +99,10 @@
         "image-comparison",
         "bullet-chart",
         "lollipop-chart",
-        "dumbbell-chart"
+        "dumbbell-chart",
+        "calendar-heatmap",
+        "funnel-chart",
+        "box-plot"
       ]
     },
     {

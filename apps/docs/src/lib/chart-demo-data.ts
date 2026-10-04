@@ -1,4 +1,4 @@
-import type { LumenChartSeries, LumenHeatmapDatum, LumenHistogramBin, LumenWaterfallDatum } from '@santi020k/lumen-core'
+import type { LumenBoxPlotDatum, LumenCalendarHeatmapDatum, LumenChartSeries, LumenFunnelDatum, LumenHeatmapDatum, LumenHistogramBin, LumenWaterfallDatum } from '@santi020k/lumen-core'
 
 const timeline = (values: readonly (number | null)[]) => values.map((y, index) => {
   const x = index < 2 ? index : Math.round((index - 1) * 180 / (values.length - 2))
@@ -91,4 +91,20 @@ export const chartDemoComparisons = [
   { id: 'engineering', label: 'Engineering', reference: 76, value: 91 },
   { id: 'support', label: 'Support', reference: 81, value: 74 },
   { id: 'operations', label: 'Operations', reference: 54, value: 83 }
+]
+
+export const chartDemoCalendar: readonly LumenCalendarHeatmapDatum[] = Array.from({ length: 28 }, (_, index) => ({
+  date: `2026-08-${String(index + 1).padStart(2, '0')}`,
+  value: index === 7 || index === 15 ? null : index % 9
+}))
+export const chartDemoFunnel: readonly LumenFunnelDatum[] = [
+  { id: 'visits', label: 'Visits', value: 4800 },
+  { id: 'registered', label: 'Registered', value: 2100 },
+  { id: 'activated', label: 'Activated', value: 1250 },
+  { id: 'paid', label: 'Paid', value: 640 }
+]
+export const chartDemoBoxPlots: readonly LumenBoxPlotDatum[] = [
+  { id: 'north', label: 'North team', min: 12, q1: 22, median: 31, q3: 44, max: 61, outliers: [8, 73] },
+  { id: 'south', label: 'South team', min: 16, q1: 29, median: 38, q3: 48, max: 66, outliers: [78] },
+  { id: 'east', label: 'East team', min: 10, q1: 18, median: 24, q3: 36, max: 53 }
 ]

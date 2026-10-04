@@ -1,6 +1,5 @@
 /* eslint-disable complexity */
 
-import { isLumenDateBoundsValid, parseLumenDate as parseCalendarDate, resolveLumenDateLabels, resolveLumenDateLocale } from '@santi020k/lumen-core'
 import {
   alignLumenChartSeries,
   coerceThemeBuilderExportFormat,
@@ -42,9 +41,13 @@ import {
   getLumenRichTextShortcut,
   hasLumenChartData,
   hasLumenPieData,
+  isLumenDateBoundsValid,
   isLumenRichTextToggleCommand,
   type LumenAttachmentPreviewController,
+  type LumenBoxPlotDatum,
+  type LumenBoxPlotStatisticLabels,
   type LumenBulletRange,
+  type LumenCalendarHeatmapDatum,
   type LumenChartLabels,
   type LumenChartSeries,
   type LumenChartTone,
@@ -53,6 +56,7 @@ import {
   type LumenComparisonDatum,
   type LumenComponentName,
   lumenComponentNames,
+  type LumenFunnelDatum,
   type LumenHistogramBin,
   type LumenIllustrationName,
   type LumenKanbanMoveDetail,
@@ -68,11 +72,14 @@ import {
   type LumenWaterfallDatum,
   normalizeLumenLocales,
   normalizeThemeBuilderHex,
+  parseLumenDate as parseCalendarDate,
   parseThemeCss,
   renderLumenIconSvg,
   renderLumenIllustrationSvg,
   resolveLumenChartLabels,
   resolveLumenChartTone,
+  resolveLumenDateLabels,
+  resolveLumenDateLocale,
   resolveLumenPhoneNumber,
   scaleLumenChartValue,
   scoreThemeContrast,
@@ -148,6 +155,7 @@ import {
   type LumenElementConfig,
   type LumenElementConstructor
 } from './element-base.js'
+import { boxPlotHtml, calendarHeatmapHtml, funnelChartHtml, parseBoxPlotData, parseCalendarHeatmapData, parseFunnelData } from './expanded-chart-html.js'
 
 export { LumenElement } from './element-base.js'
 
@@ -684,6 +692,9 @@ const elementConfigs = {
   },
   LollipopChart: { baseClassName: 'ui-chart ui-comparison-chart ui-lollipop-chart', role: 'figure', tagName: 'lumen-lollipop-chart', attributeClasses: { presentation: { bare: 'ui-chart--bare' } } },
   DumbbellChart: { baseClassName: 'ui-chart ui-comparison-chart ui-dumbbell-chart', role: 'figure', tagName: 'lumen-dumbbell-chart', attributeClasses: { presentation: { bare: 'ui-chart--bare' } } },
+  CalendarHeatmap: { baseClassName: 'ui-chart ui-calendar-heatmap', role: 'figure', tagName: 'lumen-calendar-heatmap', attributeClasses: { presentation: { bare: 'ui-chart--bare' } } },
+  FunnelChart: { baseClassName: 'ui-chart ui-funnel-chart', role: 'figure', tagName: 'lumen-funnel-chart', attributeClasses: { presentation: { bare: 'ui-chart--bare' } } },
+  BoxPlot: { baseClassName: 'ui-chart ui-box-plot', role: 'figure', tagName: 'lumen-box-plot', attributeClasses: { presentation: { bare: 'ui-chart--bare' } } },
   BulletChart: { baseClassName: 'ui-chart ui-bullet-chart', role: 'figure', tagName: 'lumen-bullet-chart', attributeClasses: { presentation: { bare: 'ui-chart--bare' } } },
   Histogram: { baseClassName: 'ui-chart ui-histogram', role: 'figure', tagName: 'lumen-histogram', attributeClasses: { presentation: { bare: 'ui-chart--bare' } } },
   WaterfallChart: { baseClassName: 'ui-chart ui-waterfall-chart', role: 'figure', tagName: 'lumen-waterfall-chart', attributeClasses: { presentation: { bare: 'ui-chart--bare' } } },
@@ -1465,6 +1476,16 @@ const elementConfigs = {
 >
 
 const observedAttributeNames = [
+  'start-date',
+  'end-date',
+  'week-starts-on',
+  'weekday-labels',
+  'min-label',
+  'q1-label',
+  'median-label',
+  'q3-label',
+  'max-label',
+  'outliers-label',
   'reference-label',
   'target',
   'ranges',
@@ -6558,6 +6579,155 @@ class LumenWaterfallChartBehaviorElement extends LumenStructuredChartBehaviorEle
     const model = createLumenWaterfallGeometry(this.data, { formatValue: this.valueFormatter })
 
     this.innerHTML = chartHeaderHtml(this) + intervalChartHtml(model, labels, this.valueFormatter, this.valueFormatter, this.getAttribute('value-label') ?? labels.value, chartBooleanAttribute(this, 'show-table', true), this.getAttribute('summary')) + chartCaptionHtml(this)
+  }
+}
+
+abstract class LumenExpandedChartElement extends LumenStructuredChartBehaviorElement {
+  #labels: Partial<LumenChartLabels> = {}
+  get labels(): Partial<LumenChartLabels> {
+    return this.#labels
+  }
+
+  set labels(value: Partial<LumenChartLabels>) {
+    this.#labels = value
+
+    if (this.isConnected) this.renderChart()
+  }
+
+  protected get chartLabels(): Readonly<LumenChartLabels> {
+    return { ...chartLabelsFor(this), ...this.#labels }
+  }
+}
+
+export class LumenCalendarHeatmapElement extends LumenExpandedChartElement {
+  static override config = { ...elementConfigs.CalendarHeatmap, observedAttributes: observedAttributeNames }
+  #data: readonly LumenCalendarHeatmapDatum[] | undefined
+  #dateFormatter: (date: string) => string = String
+  #weekdayLabels: readonly string[] | undefined
+  get data(): readonly LumenCalendarHeatmapDatum[] {
+    return this.#data ?? parseCalendarHeatmapData(this.getAttribute('data'))
+  }
+
+  set data(value: readonly LumenCalendarHeatmapDatum[]) {
+    this.#data = value
+
+    if (this.isConnected) this.renderChart()
+  }
+
+  get dateFormatter(): (date: string) => string {
+    return this.#dateFormatter
+  }
+
+  set dateFormatter(value: (date: string) => string) {
+    this.#dateFormatter = value
+
+    if (this.isConnected) this.renderChart()
+  }
+
+  get weekdayLabels(): readonly string[] {
+    if (this.#weekdayLabels) return this.#weekdayLabels
+
+    try {
+      const parsed: unknown = JSON.parse(this.getAttribute('weekday-labels') ?? 'null')
+
+      if (Array.isArray(parsed) && parsed.length === 7 && parsed.every((label: unknown) => typeof label === 'string')) return parsed
+    } catch { /* Fall back to readable weekday labels. */ }
+
+    return ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+  }
+
+  set weekdayLabels(value: readonly string[]) {
+    this.#weekdayLabels = value
+
+    if (this.isConnected) this.renderChart()
+  }
+
+  get startDate(): string {
+    return this.getAttribute('start-date') ?? ''
+  }
+
+  set startDate(value: string) {
+    this.setAttribute('start-date', value)
+  }
+
+  get endDate(): string {
+    return this.getAttribute('end-date') ?? ''
+  }
+
+  set endDate(value: string) {
+    this.setAttribute('end-date', value)
+  }
+
+  get weekStartsOn(): 0 | 1 {
+    return this.getAttribute('week-starts-on') === '1' ? 1 : 0
+  }
+
+  set weekStartsOn(value: 0 | 1) {
+    this.setAttribute('week-starts-on', String(value))
+  }
+
+  protected renderChart() {
+    this.innerHTML = chartHeaderHtml(this) +
+      calendarHeatmapHtml(
+        this, this.data, this.chartLabels, this.valueFormatter, this.dateFormatter, this.weekdayLabels
+      ) + chartCaptionHtml(this)
+  }
+}
+export class LumenFunnelChartElement extends LumenExpandedChartElement {
+  static override config = { ...elementConfigs.FunnelChart, observedAttributes: observedAttributeNames }
+  #data: readonly LumenFunnelDatum[] | undefined
+  get data(): readonly LumenFunnelDatum[] {
+    return this.#data ?? parseFunnelData(this.getAttribute('data'))
+  }
+
+  set data(value: readonly LumenFunnelDatum[]) {
+    this.#data = value
+
+    if (this.isConnected) this.renderChart()
+  }
+
+  protected renderChart() {
+    this.innerHTML = chartHeaderHtml(this) +
+      funnelChartHtml(this, this.data, this.chartLabels, this.valueFormatter) + chartCaptionHtml(this)
+  }
+}
+export class LumenBoxPlotElement extends LumenExpandedChartElement {
+  static override config = { ...elementConfigs.BoxPlot, observedAttributes: observedAttributeNames }
+  #data: readonly LumenBoxPlotDatum[] | undefined
+  #statisticLabels: Partial<LumenBoxPlotStatisticLabels> = {}
+  get data(): readonly LumenBoxPlotDatum[] {
+    return this.#data ?? parseBoxPlotData(this.getAttribute('data'))
+  }
+
+  set data(value: readonly LumenBoxPlotDatum[]) {
+    this.#data = value
+
+    if (this.isConnected) this.renderChart()
+  }
+
+  get statisticLabels(): Partial<LumenBoxPlotStatisticLabels> {
+    return this.#statisticLabels
+  }
+
+  set statisticLabels(value: Partial<LumenBoxPlotStatisticLabels>) {
+    this.#statisticLabels = value
+
+    if (this.isConnected) this.renderChart()
+  }
+
+  protected renderChart() {
+    const attributeLabels: Partial<LumenBoxPlotStatisticLabels> = {}
+
+    for (const key of ['min', 'q1', 'median', 'q3', 'max', 'outliers'] as const) {
+      const label = this.getAttribute(`${key}-label`)
+
+      if (label !== null) attributeLabels[key] = label
+    }
+
+    this.innerHTML = chartHeaderHtml(this) +
+      boxPlotHtml(this, this.data, this.chartLabels, this.valueFormatter, {
+        ...attributeLabels, ...this.#statisticLabels
+      }) + chartCaptionHtml(this)
   }
 }
 
@@ -11658,6 +11828,9 @@ const behaviorElementClasses: Partial<
   DropdownMenu: LumenDisclosureBehaviorElement,
   FileUpload: LumenFileUploadBehaviorElement,
   Graphic: LumenGraphicBehaviorElement,
+  CalendarHeatmap: LumenCalendarHeatmapElement,
+  FunnelChart: LumenFunnelChartElement,
+  BoxPlot: LumenBoxPlotElement,
   Heatmap: LumenHeatmapBehaviorElement,
   Histogram: LumenHistogramBehaviorElement,
   WaterfallChart: LumenWaterfallChartBehaviorElement,
@@ -11712,6 +11885,9 @@ const granularElementClasses: Partial<
   ChangeSummary: GranularLumenChangeSummaryElement,
   FilterBar: GranularLumenFilterBarElement,
   Badge: GranularLumenBadgeElement,
+  CalendarHeatmap: LumenCalendarHeatmapElement,
+  FunnelChart: LumenFunnelChartElement,
+  BoxPlot: LumenBoxPlotElement,
   BulletChart: LumenBulletChartElement,
   LollipopChart: LumenLollipopChartElement,
   DumbbellChart: LumenDumbbellChartElement,

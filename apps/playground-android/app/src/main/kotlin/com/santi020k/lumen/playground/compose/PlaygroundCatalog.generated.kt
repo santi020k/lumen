@@ -110,7 +110,10 @@ internal val playgroundSections = listOf(
             "Image comparison",
             "Bullet chart",
             "Lollipop chart",
-            "Dumbbell chart"
+            "Dumbbell chart",
+            "Calendar heatmap",
+            "Funnel chart",
+            "Box plot"
         )
     ),
     PlaygroundSection(

@@ -718,7 +718,7 @@ struct ComponentsCatalogView: View {
 
     @ViewBuilder
     private var chartSection: some View {
-        if matches("Sparkline", "Line chart", "Bar chart", "Pie chart", "Scatter chart", "Waterfall chart", "Histogram", "Bullet chart", "Lollipop chart", "Dumbbell chart", "Heatmap", "Range chart", "Combo chart") {
+        if matches("Sparkline", "Line chart", "Bar chart", "Pie chart", "Scatter chart", "Waterfall chart", "Histogram", "Bullet chart", "Lollipop chart", "Dumbbell chart", "Calendar heatmap", "Funnel chart", "Box plot", "Heatmap", "Range chart", "Combo chart") {
             PlaygroundSection(
                 "Data visualization",
                 description: "Tokenized plots include a factual accessibility summary and readable fallback data."
@@ -815,6 +815,28 @@ struct ComponentsCatalogView: View {
                         LumenBulletRange(end: 90, label: "Consistent"),
                         LumenBulletRange(end: 100, label: "Excellent")
                     ], heading: "On-time delivery", description: "Actual performance against the service target", labels: LumenChartLabels(formatValue: { "\($0.formatted())%" }))
+                }
+                if isVisible("Calendar heatmap") {
+                    let calendarData: [LumenCalendarHeatmapDatum] = (1...30).filter { $0 != 12 }.map { (day: Int) -> LumenCalendarHeatmapDatum in
+                        let date = String(format: "2026-09-%02d", day)
+                        let amount = day == 1 ? 0 : (day * 7) % 18
+                        return LumenCalendarHeatmapDatum(date: date, value: Double(amount))
+                    }
+                    LumenCalendarHeatmap(data: calendarData, label: "Daily activity", startDate: "2026-09-01", endDate: "2026-11-30", heading: "Daily activity", description: "Missing days stay distinct from zero")
+                }
+                if isVisible("Funnel chart") {
+                    LumenFunnelChart(data: [
+                        .init(id: "visits", label: "Visits", value: 1200),
+                        .init(id: "trial", label: "Trial", value: 780),
+                        .init(id: "activated", label: "Activated", value: 420),
+                        .init(id: "subscribed", label: "Subscribed", value: 210)
+                    ], label: "Signup stages", heading: "Signup stages", description: "Observed counts in application-defined order")
+                }
+                if isVisible("Box plot") {
+                    LumenBoxPlot(data: [
+                        .init(id: "weekday", label: "Weekday", min: 12, q1: 28, median: 42, q3: 61, max: 82, outliers: [103]),
+                        .init(id: "weekend", label: "Weekend", min: 8, q1: 18, median: 29, q3: 46, max: 70, outliers: [91])
+                    ], label: "Response-time distribution", heading: "Response times", description: "Application-computed quartiles and outliers · milliseconds")
                 }
                 if isVisible("Histogram") {
                     LumenHistogram(label: "Response times", data: [3, 8, 18, 34, 48, 57, 51, 37, 26, 15, 8, 3].enumerated().map { index, count in

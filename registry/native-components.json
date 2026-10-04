@@ -847,6 +847,39 @@
         "swiftUI": "LumenImageComparison",
         "compose": "LumenImageComparison"
       }
+    },
+    {
+      "id": "calendar-heatmap",
+      "tier": "shared",
+      "contract": "Shows daily activity on a date-only calendar with explicit missing observations.",
+      "accessibility": "Provides exact values in an accessible expandable data list, localized formatting, and missing-value labels.",
+      "symbols": {
+        "reactNative": "LumenCalendarHeatmap",
+        "swiftUI": "LumenCalendarHeatmap",
+        "compose": "LumenCalendarHeatmap"
+      }
+    },
+    {
+      "id": "funnel-chart",
+      "tier": "shared",
+      "contract": "Compares ordered conversion stages without inferring conversion rates.",
+      "accessibility": "Provides exact values in an accessible expandable data list, localized formatting, and missing-value labels.",
+      "symbols": {
+        "reactNative": "LumenFunnelChart",
+        "swiftUI": "LumenFunnelChart",
+        "compose": "LumenFunnelChart"
+      }
+    },
+    {
+      "id": "box-plot",
+      "tier": "shared",
+      "contract": "Shows precomputed quartiles, whiskers, medians, and outliers on one numeric scale.",
+      "accessibility": "Provides exact values in an accessible expandable data list, localized formatting, and missing-value labels.",
+      "symbols": {
+        "reactNative": "LumenBoxPlot",
+        "swiftUI": "LumenBoxPlot",
+        "compose": "LumenBoxPlot"
+      }
     }
   ],
   "platformComponents": [

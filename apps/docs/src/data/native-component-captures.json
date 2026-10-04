@@ -102,6 +102,16 @@
       "width": 900
     },
     {
+      "alt": "Box plot rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2008,
+      "platform": "android",
+      "sha256": "89c84e00e3c32e2cbc3cc4e7ea98749d37dd6caffd617dc291c9457c6335c15c",
+      "slug": "box-plot",
+      "src": "/native-components/android/box-plot.webp",
+      "width": 900
+    },
+    {
       "alt": "Bullet chart rendered in the Android phone emulator Lumen playground",
       "device": "Android phone emulator",
       "height": 2008,
@@ -129,6 +139,16 @@
       "sha256": "566b6b7d2da18a8ac7838db3c3b6ef1423fb38bda4b40a2d10eefe3248662bb1",
       "slug": "button-group",
       "src": "/native-components/android/button-group.webp",
+      "width": 900
+    },
+    {
+      "alt": "Calendar heatmap rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2008,
+      "platform": "android",
+      "sha256": "8150064e06af8f8d6b759b4b0a48d04d20c1bd73e219d4a6186e60e52d884129",
+      "slug": "calendar-heatmap",
+      "src": "/native-components/android/calendar-heatmap.webp",
       "width": 900
     },
     {
@@ -259,6 +279,16 @@
       "sha256": "0908ebf1d839ea0981c6901b7fe560092bad4700c8160ee9ce809001bd2cc102",
       "slug": "floating-action-button",
       "src": "/native-components/android/floating-action-button.webp",
+      "width": 900
+    },
+    {
+      "alt": "Funnel chart rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2008,
+      "platform": "android",
+      "sha256": "12d9e94a0fd643976463119125e60161da8ec875ebc431e8661f93e22b480357",
+      "slug": "funnel-chart",
+      "src": "/native-components/android/funnel-chart.webp",
       "width": 900
     },
     {
@@ -922,6 +952,16 @@
       "width": 900
     },
     {
+      "alt": "Box plot rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "209aa0928114f6e7f20be46e587cfc0c953b124d790d56027ddae89af7ce54c4",
+      "slug": "box-plot",
+      "src": "/native-components/apple/box-plot.webp",
+      "width": 900
+    },
+    {
       "alt": "Bullet chart rendered in the iPhone simulator Lumen playground",
       "device": "iPhone simulator",
       "height": 1957,
@@ -949,6 +989,16 @@
       "sha256": "a99a199102297c748a4010b3d8c16880d9658094bf786fb517b59b294a06be07",
       "slug": "button-group",
       "src": "/native-components/apple/button-group.webp",
+      "width": 900
+    },
+    {
+      "alt": "Calendar heatmap rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "5d0bcb45cb7c5b4547e80bc961c75e1e54dcc2ae1eb2a7e88d391d576f83aefd",
+      "slug": "calendar-heatmap",
+      "src": "/native-components/apple/calendar-heatmap.webp",
       "width": 900
     },
     {
@@ -1069,6 +1119,16 @@
       "sha256": "8e47f886193c0f474df41cf145ffd9721903832205f36e719e22cca19098a54b",
       "slug": "field-group",
       "src": "/native-components/apple/field-group.webp",
+      "width": 900
+    },
+    {
+      "alt": "Funnel chart rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "4c45d61bacd4d89af612d9875b9ee8f77c7338a59c52b6280db6b39c11adbf53",
+      "slug": "funnel-chart",
+      "src": "/native-components/apple/funnel-chart.webp",
       "width": 900
     },
     {
@@ -1652,6 +1712,16 @@
       "width": 900
     },
     {
+      "alt": "Box plot rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 633,
+      "platform": "react-native",
+      "sha256": "e4fc0cea14d9614553de0f6805dbe090d2365cc611bc3607dddf18f8ef6023f5",
+      "slug": "box-plot",
+      "src": "/native-components/react-native/box-plot.webp",
+      "width": 900
+    },
+    {
       "alt": "Bullet chart rendered in the Expo web renderer Lumen playground",
       "device": "Expo web renderer",
       "height": 633,
@@ -1679,6 +1749,16 @@
       "sha256": "dfb74fba0647a7abffb8e103c86512466e73cdb83e237d74f5d1621607862e94",
       "slug": "button-group",
       "src": "/native-components/react-native/button-group.webp",
+      "width": 900
+    },
+    {
+      "alt": "Calendar heatmap rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 633,
+      "platform": "react-native",
+      "sha256": "3790f82e159d4367e803a91e126a25c363b7d9f699e7a0d3e2bd4fa71f70544b",
+      "slug": "calendar-heatmap",
+      "src": "/native-components/react-native/calendar-heatmap.webp",
       "width": 900
     },
     {
@@ -1809,6 +1889,16 @@
       "sha256": "65ebbf16c0be160045b4ac4ea9d1fcf263aae66238057b1f5ec7a4a3905a9af1",
       "slug": "field-group",
       "src": "/native-components/react-native/field-group.webp",
+      "width": 900
+    },
+    {
+      "alt": "Funnel chart rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 633,
+      "platform": "react-native",
+      "sha256": "2ae5dde377e153175d1de3c0dcfcd5198ea48623fe7929c2b9bdbbe93e858d04",
+      "slug": "funnel-chart",
+      "src": "/native-components/react-native/funnel-chart.webp",
       "width": 900
     },
     {

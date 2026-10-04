@@ -1,0 +1,50 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+import { createLumenFunnelGeometry, getLumenChartToneClassName, type LumenChartLabels, type LumenFunnelDatum, resolveLumenChartLabels } from '@santi020k/lumen-core'
+
+import Chart from './Chart.astro'
+
+interface Props extends HTMLAttributes<'figure'> {
+  data: readonly LumenFunnelDatum[]
+  className?: string
+  heading?: string
+  description?: string
+  caption?: string
+  presentation?: 'bare' | 'default'
+  summary?: string
+  formatValue?: (value: number) => string
+  labels?: Partial<LumenChartLabels>
+  showTable?: boolean
+}
+
+const { data, formatValue = String, labels, showTable = true, summary, class: classProp, className, ...props } = Astro.props
+const text = resolveLumenChartLabels(labels)
+const model = createLumenFunnelGeometry(data)
+const format = (value: number | null) => value === null ? text.notAvailable : formatValue(value)
+const fallback = model.valid ? text.empty : text.invalidData
+const factual = !model.valid || model.rows.length === 0 ? fallback : model.rows.map(row => `${row.label}: ${format(row.value)}`).join('. ')
+---
+<Chart {...props} class:list={['ui-funnel-chart', classProp, className]} summary={summary ?? factual}>
+  {!model.valid || model.rows.length === 0 ?
+<p class="ui-chart__empty" role="status">{model.valid ? text.empty : text.invalidData}</p> :
+(
+<>
+    <ol class="ui-funnel-chart__rows">{model.rows.map((row, index) => (
+<li class={getLumenChartToneClassName(row.tone, index)}><div class="
+  ui-funnel-chart__label
+"
+                                                        ><span>{row.label}</span><strong>{format(row.value)}</strong></div><div
+class="ui-funnel-chart__track"
+aria-hidden="true"
+                                                                                                                           >{row.ratio !== null && (
+<span
+class="ui-funnel-chart__bar"
+style={{ width: `${row.ratio * 100}%` }}
+/>
+)}</div></li>
+))}</ol>
+    {showTable && <details class="ui-chart__data"><summary>{text.viewData}</summary><div role="group" tabindex="0" aria-label={text.chartData}><table><thead><tr><th scope="col">{text.category}</th><th scope="col">{text.value}</th></tr></thead><tbody>{model.rows.map(row => <tr><th scope="row">{row.label}</th><td>{format(row.value)}</td></tr>)}</tbody></table></div></details>}
+  </>
+)}
+</Chart>

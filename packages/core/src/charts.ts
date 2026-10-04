@@ -2029,3 +2029,5 @@ export const createLumenRangeGeometry = (
     points: segments.flat()
   }
 }
+
+export * from './extended-charts.js'

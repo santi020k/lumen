@@ -664,3 +664,10 @@ Use `LollipopChart` for zero-based rankings and `DumbbellChart` for paired measu
 `LumenLollipopChart` and `LumenDumbbellChart`). Supply ordered comparison data with `id`, `label`,
 nullable `value`, optional nullable `reference`, and optional `tone`. Both charts preserve missing
 values and expose exact data. See the [shared visualization contract](../../docs/data-visualization.md#rankings-and-paired-comparisons).
+
+### Calendars, funnels, and distributions
+
+Use `CalendarHeatmap` for daily date-only observations with an explicit start/end range,
+`FunnelChart` for ordered nonnegative stages, and `BoxPlot` for precomputed quartiles, whiskers,
+and outliers. All retain missing values and expose exact data. See the
+[data visualization guide](../../docs/data-visualization.md#calendars-funnels-and-box-plots).

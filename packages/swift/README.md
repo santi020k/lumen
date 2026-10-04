@@ -563,3 +563,43 @@ Use `LollipopChart` for zero-based rankings and `DumbbellChart` for paired measu
 `LumenLollipopChart` and `LumenDumbbellChart`). Supply ordered comparison data with `id`, `label`,
 nullable `value`, optional nullable `reference`, and optional `tone`. Both charts preserve missing
 values and expose exact data. See the [shared visualization contract](../../docs/data-visualization.md#rankings-and-paired-comparisons).
+
+
+### Calendar activity, funnels, and distributions
+
+`LumenCalendarHeatmap` takes `LumenCalendarHeatmapDatum(date:value:)` and required ISO date-only
+`startDate` / `endDate` strings. It uses proleptic Gregorian UTC dates, seven day rows and week
+columns, with horizontal scrolling for long ranges. `weekStartsOn` accepts `0` (Sunday) or `1`
+(Monday); optional `weekdayLabels` contain seven Sunday-indexed application-localized labels.
+Defaults use the environment locale. `formatDate` customizes exact date and week labels.
+Ranges include at most 3,660 days; invalid dates, duplicates, out-of-range measurements and
+nonfinite values fail closed. Omitted days remain missing rather than becoming zero.
+
+`LumenFunnelChart` accepts ordered `LumenFunnelDatum` stages with nonnegative finite nullable
+values. Centered horizontal bars normalize to the largest measured stage, including funnels that
+increase. The application owns conversion calculations and stage order.
+
+`LumenBoxPlot` accepts `LumenBoxPlotDatum` with precomputed `min`, `q1`, `median`, `q3`, `max`
+and `outliers`. Statistics must be all missing or all finite and ordered; missing statistics cannot
+have outliers. All rows share one domain, including outliers. Supply `statisticLabels` using
+`LumenBoxPlotLabels` to localize quartiles and other statistic labels.
+
+```swift
+LumenFunnelChart(data: [
+    .init(id: "visit", label: "Visits", value: 1200),
+    .init(id: "trial", label: "Trials", value: 420)
+], label: "Signup stages", heading: "Signup stages")
+
+LumenBoxPlot(data: [
+    .init(id: "weekday", label: "Weekday", min: 12, q1: 28, median: 42, q3: 61, max: 82, outliers: [103])
+], label: "Response time", heading: "Response time")
+
+LumenCalendarHeatmap(data: [.init(date: "2026-09-01", value: 0)],
+    label: "Daily activity", startDate: "2026-09-01", endDate: "2026-09-30")
+```
+
+All three use `LumenChartLabels` for application-localized numeric formatting, missing and invalid
+states, and expandable exact data. Funnel and box rows require unique IDs and nonempty labels.
+Optional increasing calendar/box domains must include every observed value; omitted domains
+resolve from measurements with finite padding for constant values. No raw-sample aggregation is
+performed. Native fonts, semantic chart colors and adaptive row labels preserve text accessibility.

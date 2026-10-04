@@ -333,3 +333,10 @@ Scatter geometry supports positive logarithmic X coordinates, explicit domains, 
 reference projection. `createLumenScatterReferences`, `scaleLumenScatterX`, and
 `getLumenScatterXTicks` use the same coordinate contract as `createLumenScatterGeometry`.
 See [consumer UI recipes](../../docs/consumer-ui-recipes.md) for application ownership boundaries.
+
+## Extended chart models
+
+`createLumenCalendarHeatmapGeometry`, `createLumenFunnelGeometry`, and
+`createLumenBoxPlotGeometry` validate complete datasets and provide normalized geometry.
+See [data visualization](../../docs/data-visualization.md) for date-only identities, ordered
+stages, precomputed quartiles, missing values, and domain rules.

@@ -35,7 +35,7 @@
     },
     "/": {
       "alt": "Lumen UI — Crafted primitives for web and native platforms — Lumen UI",
-      "description": "Lumen is a crafted multi-framework UI system with 179 accessible primitives for Web, React Native, Apple platforms, and Android.",
+      "description": "Lumen is a crafted multi-framework UI system with 182 accessible primitives for Web, React Native, Apple platforms, and Android.",
       "images": [
         {
           "format": "webp",
@@ -880,6 +880,54 @@
       ],
       "pathname": "/docs/react-native/components/dumbbell-chart",
       "title": "Dumbbell chart"
+    },
+    "/docs/react-native/components/calendar-heatmap": {
+      "alt": "Calendar heatmap — Lumen UI",
+      "description": "Shows daily activity with explicit missing dates and a numeric intensity legend.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--calendar-heatmap.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--calendar-heatmap.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/calendar-heatmap",
+      "title": "Calendar heatmap"
+    },
+    "/docs/react-native/components/funnel-chart": {
+      "alt": "Funnel chart — Lumen UI",
+      "description": "Compares ordered nonnegative conversion stages with exact measurements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--funnel-chart.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--funnel-chart.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/funnel-chart",
+      "title": "Funnel chart"
+    },
+    "/docs/react-native/components/box-plot": {
+      "alt": "Box plot — Lumen UI",
+      "description": "Shows precomputed quartiles, whiskers and outliers on one numeric scale.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--box-plot.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--box-plot.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/box-plot",
+      "title": "Box plot"
     },
     "/docs/react-native/components/bullet-chart": {
       "alt": "Bullet chart — Lumen UI",
@@ -1952,6 +2000,54 @@
       ],
       "pathname": "/docs/apple/components/dumbbell-chart",
       "title": "Dumbbell chart"
+    },
+    "/docs/apple/components/calendar-heatmap": {
+      "alt": "Calendar heatmap — Lumen UI",
+      "description": "Shows daily activity with explicit missing dates and a numeric intensity legend.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--calendar-heatmap.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--calendar-heatmap.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/calendar-heatmap",
+      "title": "Calendar heatmap"
+    },
+    "/docs/apple/components/funnel-chart": {
+      "alt": "Funnel chart — Lumen UI",
+      "description": "Compares ordered nonnegative conversion stages with exact measurements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--funnel-chart.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--funnel-chart.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/funnel-chart",
+      "title": "Funnel chart"
+    },
+    "/docs/apple/components/box-plot": {
+      "alt": "Box plot — Lumen UI",
+      "description": "Shows precomputed quartiles, whiskers and outliers on one numeric scale.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--box-plot.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--box-plot.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/box-plot",
+      "title": "Box plot"
     },
     "/docs/apple/components/bullet-chart": {
       "alt": "Bullet chart — Lumen UI",
@@ -3200,6 +3296,54 @@
       ],
       "pathname": "/docs/android/components/dumbbell-chart",
       "title": "Dumbbell chart"
+    },
+    "/docs/android/components/calendar-heatmap": {
+      "alt": "Calendar heatmap — Lumen UI",
+      "description": "Shows daily activity with explicit missing dates and a numeric intensity legend.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--calendar-heatmap.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--calendar-heatmap.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/calendar-heatmap",
+      "title": "Calendar heatmap"
+    },
+    "/docs/android/components/funnel-chart": {
+      "alt": "Funnel chart — Lumen UI",
+      "description": "Compares ordered nonnegative conversion stages with exact measurements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--funnel-chart.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--funnel-chart.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/funnel-chart",
+      "title": "Funnel chart"
+    },
+    "/docs/android/components/box-plot": {
+      "alt": "Box plot — Lumen UI",
+      "description": "Shows precomputed quartiles, whiskers and outliers on one numeric scale.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--box-plot.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--box-plot.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/box-plot",
+      "title": "Box plot"
     },
     "/docs/android/components/bullet-chart": {
       "alt": "Bullet chart — Lumen UI",
@@ -7184,6 +7328,54 @@
       ],
       "pathname": "/docs/components/visually-hidden",
       "title": "VisuallyHidden"
+    },
+    "/docs/components/calendar-heatmap": {
+      "alt": "CalendarHeatmap — Lumen UI",
+      "description": "Shows daily patterns with explicit missing observations. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--calendar-heatmap.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--calendar-heatmap.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/calendar-heatmap",
+      "title": "CalendarHeatmap"
+    },
+    "/docs/components/funnel-chart": {
+      "alt": "FunnelChart — Lumen UI",
+      "description": "Compares ordered conversion stages without inferred percentages. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--funnel-chart.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--funnel-chart.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/funnel-chart",
+      "title": "FunnelChart"
+    },
+    "/docs/components/box-plot": {
+      "alt": "BoxPlot — Lumen UI",
+      "description": "Shows precomputed quartiles, whiskers and outliers. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--box-plot.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--box-plot.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/box-plot",
+      "title": "BoxPlot"
     },
     "/docs/components/bullet-chart": {
       "alt": "BulletChart — Lumen UI",

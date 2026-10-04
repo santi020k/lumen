@@ -110,7 +110,10 @@ export const componentCategories: readonly ComponentCategoryDefinition[] = [
       "Image comparison",
       "Bullet chart",
       "Lollipop chart",
-      "Dumbbell chart"
+      "Dumbbell chart",
+      "Calendar heatmap",
+      "Funnel chart",
+      "Box plot"
     ],
     value: 'data'
   },
