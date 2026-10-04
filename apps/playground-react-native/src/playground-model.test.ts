@@ -31,7 +31,8 @@ describe('React Native playground model', () => {
       'Combo chart',
       'Bullet chart',
       'Lollipop chart',
-      'Dumbbell chart'
+      'Dumbbell chart',
+      'Funnel chart'
     ])
 
     expect(getVisibleComponentNames('', 'actions', false)).toEqual([
@@ -59,6 +60,7 @@ describe('React Native playground model', () => {
     expect(getVisibleComponentNames('IconButton', 'all', false)).toEqual(['Icon button'])
     expect(getVisibleComponentNames('lollipop-chart', 'data', true)).toEqual(['Lollipop chart'])
     expect(getVisibleComponentNames('dumbbell-chart', 'data', true)).toEqual(['Dumbbell chart'])
+    expect(getVisibleComponentNames('funnel-chart', 'data', true)).toEqual(['Funnel chart'])
     expect(getVisibleComponentNames('  \t ', 'actions', false)).toEqual(getVisibleComponentNames('', 'actions', false))
     expect(getVisibleComponentNames('button', 'forms', false)).toEqual([])
     expect(getVisibleComponentNames('does-not-exist', 'all', false)).toEqual([])
