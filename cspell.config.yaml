@@ -1,6 +1,32 @@
 version: "0.2"
 language: en
 words:
+  - RGBA
+  - RRGGBB
+  - RRGGBBAA
+  - CFURL
+  - zxing
+  - grayscale
+  - failable
+  - nonopaque
+  - noncompact
+  - nonoverlapping
+  - nonselectable
+  - noninteractive
+  - barcodes
+  - symbologies
+  - generar
+  - Exceso
+  - Restaurar
+  - inválido
+  - Transparente
+  - Deshabilitado
+  - acento
+  - Azul
+  - Rojo
+  - Matiz
+  - Saturación
+  - Opacidad
   - xhigh
   - focusable
   - tabindex
