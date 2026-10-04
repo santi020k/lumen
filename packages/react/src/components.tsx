@@ -71,6 +71,7 @@ import {
   type LumenCodeToken,
   lumenCodeTokenClassNames,
   type LumenComboSeries,
+  type LumenControlVisualSize,
   type LumenErrorStateAnnouncement,
   type LumenErrorStateKind,
   type LumenErrorStateLayout,
@@ -4063,7 +4064,7 @@ export const MessageScroller = ({
 export interface NativeSelectProps extends ComponentPropsWithRef<'select'> {
   options?: SelectOption[]
   placeholder?: string
-  visualSize?: 'default' | 'lg' | 'sm'
+  visualSize?: LumenControlVisualSize
 }
 
 export const NativeSelect = ({
@@ -4121,7 +4122,7 @@ export interface PhoneInputProps extends Omit<
   readOnly?: boolean
   required?: boolean
   errorMessage?: string
-  inputProps?: Omit<ComponentPropsWithoutRef<'input'>, 'value' | 'defaultValue' | 'onChange' | 'name' | 'size' | 'type'>
+  inputProps?: Omit<ComponentPropsWithoutRef<'input'>, 'value' | 'defaultValue' | 'onChange' | 'name' | 'type'>
   inputRef?: Ref<HTMLInputElement>
   countryLabel?: string
   countryName?: string
@@ -4133,18 +4134,18 @@ export interface PhoneInputProps extends Omit<
   onValueChange?: (value: LumenPhoneNumber) => void
   placeholder?: string
   showValidationError?: boolean
-  size?: 'default' | 'lg' | 'sm'
+  visualSize?: LumenControlVisualSize
   value?: LumenPhoneNumber
 }
 
 const emptyPhoneInputProps: NonNullable<PhoneInputProps['inputProps']> = {}
 
-const phoneInputSizeModifiers = (size: 'default' | 'lg' | 'sm') => {
-  if (size === 'sm') {
+const phoneInputSizeModifiers = (visualSize: LumenControlVisualSize) => {
+  if (visualSize === 'sm') {
     return { inputClass: 'ui-input--sm', selectClass: 'ui-select--sm' }
   }
 
-  if (size === 'lg') {
+  if (visualSize === 'lg') {
     return { inputClass: 'ui-input--lg', selectClass: 'ui-select--lg' }
   }
 
@@ -4159,7 +4160,7 @@ interface ResolvedMetadataPhoneInputProps extends Omit<PhoneInputProps, 'countri
   name: string
   placeholder: string
   showValidationError: boolean
-  size: 'default' | 'lg' | 'sm'
+  visualSize: LumenControlVisualSize
 }
 
 const getPhoneInputOptions = (
@@ -4293,11 +4294,11 @@ const MetadataPhoneInput = ({
   onValueChange,
   placeholder,
   showValidationError,
-  size,
+  visualSize,
   value,
   ...props
 }: ResolvedMetadataPhoneInputProps) => {
-  const { selectClass, inputClass } = phoneInputSizeModifiers(size)
+  const { selectClass, inputClass } = phoneInputSizeModifiers(visualSize)
   const isDisabled = [disabled, inputProps.disabled].some(Boolean)
   const isReadOnly = [readOnly, inputProps.readOnly].some(Boolean)
   const generatedId = useId()
@@ -4429,7 +4430,7 @@ const MetadataPhoneInput = ({
         data-invalid={getBooleanAttribute(invalid)}
         data-phone-enhanced="true"
         data-readonly={getBooleanAttribute(isReadOnly)}
-        data-size={size}
+        data-size={visualSize}
         data-slot="phone-input"
         {...props}
       >
@@ -4519,11 +4520,11 @@ const LegacyPhoneInput = ({
   onValueChange: _onValueChange,
   placeholder = 'Phone number',
   showValidationError: _showValidationError,
-  size = 'default',
+  visualSize = 'default',
   value: _value,
   ...props
 }: PhoneInputProps & { countries: SelectOption[] }) => {
-  const { inputClass, selectClass } = phoneInputSizeModifiers(size)
+  const { inputClass, selectClass } = phoneInputSizeModifiers(visualSize)
   const numberAttributes = resolveLegacyPhoneAttributes(inputProps, { disabled, readOnly, required, id })
 
   return (
@@ -4532,7 +4533,7 @@ const LegacyPhoneInput = ({
       {...props}
       data-disabled={getBooleanAttribute([disabled, inputProps.disabled].some(Boolean))}
       data-readonly={getBooleanAttribute([readOnly, inputProps.readOnly].some(Boolean))}
-      data-size={size}
+      data-size={visualSize}
       data-slot="phone-input"
     >
       <span className="ui-phone-input__picker">
@@ -4580,7 +4581,7 @@ export const PhoneInput = (props: PhoneInputProps) => {
       name={props.name ?? 'phone'}
       placeholder={props.placeholder ?? 'Phone number'}
       showValidationError={props.showValidationError ?? true}
-      size={props.size ?? 'default'}
+      visualSize={props.visualSize ?? 'default'}
     />
   )
 }
@@ -4970,17 +4971,16 @@ export interface SelectProps
     'options' |
     'placeholder' |
     'required' |
-    'size' |
     'value'
   >,
   SelectOptions {
   glass?: LumenGlassProp
   inputRef?: Ref<HTMLSelectElement>
   onChange?: ComponentPropsWithoutRef<'select'>['onChange']
-  size?: 'default' | 'lg' | 'md' | 'sm'
+  visualSize?: LumenControlVisualSize
 }
 
-const getSelectSizeClass = (size: SelectProps['size']) => {
+const getSelectSizeClass = (size: SelectProps['visualSize']) => {
   if (size === 'sm') return 'ui-select--sm'
 
   if (size === 'lg') return 'ui-select--lg'
@@ -5002,7 +5002,7 @@ export const Select = ({
   options = emptyOptions,
   placeholder,
   required = false,
-  size = 'default',
+  visualSize = 'default',
   value,
   ...props
 }: SelectProps) => {
@@ -5018,7 +5018,7 @@ export const Select = ({
     value
   })
 
-  const sizeClass = getSelectSizeClass(size)
+  const sizeClass = getSelectSizeClass(visualSize)
 
   return (
     <div
@@ -5055,6 +5055,11 @@ export const Select = ({
       <div {...select.controlProps} className="ui-select__control">
         <button
           {...select.triggerProps}
+          aria-label={props['aria-label']}
+          aria-labelledby={props['aria-labelledby']}
+          aria-describedby={props['aria-describedby']}
+          aria-invalid={props['aria-invalid']}
+          aria-errormessage={props['aria-errormessage']}
           className={composeClassName(
             'ui-select ui-select__trigger', sizeClass
           )}
@@ -7431,7 +7436,7 @@ export interface SegmentedProps extends Omit<
   name?: string
   onValueChange?: (value: string) => void
   options?: SelectOption[]
-  size?: 'default' | 'lg' | 'sm'
+  visualSize?: LumenControlVisualSize
   value?: string
 }
 export const Segmented = ({
@@ -7441,13 +7446,13 @@ export const Segmented = ({
   name = 'segmented',
   onValueChange,
   options = emptyOptions,
-  size = 'default',
-  value = defaultValue,
+  visualSize = 'default',
+  value,
   ...props
 }: SegmentedProps) => (
   <div
     className={composeClassName(
-      'ui-segmented', size === 'sm' && 'ui-segmented--sm', size === 'lg' && 'ui-segmented--lg', className
+      'ui-segmented', visualSize === 'sm' && 'ui-segmented--sm', visualSize === 'lg' && 'ui-segmented--lg', className
     )}
     role="group"
     {...props}
@@ -7455,7 +7460,8 @@ export const Segmented = ({
     {options.map(normalizeOption).map(option => (
       <label className="ui-segmented__option" key={option.value}>
         <input
-          defaultChecked={value === option.value}
+          checked={value === undefined ? undefined : value === option.value}
+          defaultChecked={value === undefined ? defaultValue === option.value : undefined}
           className="ui-segmented__input"
           disabled={option.disabled}
           name={name}

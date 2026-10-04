@@ -38,7 +38,9 @@ lumen migrate v4 --apply
 ```
 
 It rewrites literal Stack/Grid gaps from v3 `md`/`lg`/`xl` to v4 `group`/`xl`/`2xl`, including
-import aliases. Dynamic values, spreads, application CSS, component behavior and native contracts
+import aliases. It also moves literal visual sizes on Select, PhoneInput and Segmented to
+`visualSize` / `visual-size`, mapping Select's old `md` alias to `default`. Numeric Select sizes
+remain native. Dynamic values, spreads, application CSS, component behavior and native contracts
 need manual review. Source-only migration supports applications using any package manager.
 
 Add `--dependencies` to inventory or, with `--apply`, upgrade the coordinated npm family to
@@ -51,6 +53,36 @@ later edits to migrated files require manual review. The command does not replac
 below or the consumer's diagnostics, build, and interaction tests. `lumen migrate v2` continues to
 handle only the earlier v1 → v2 contracts.
 
+
+## Form control visual sizing
+
+Select, PhoneInput and Segmented now use `visualSize` in Astro/React and `visual-size` in Elements,
+matching Input and NativeSelect. Supported values are `default`, `sm` and `lg`; Select's old `md`
+alias becomes `default`. These names describe appearance rather than the native control's row or
+character count. Replace visual `size` props and update shared wrappers, spreads and dynamic values.
+
+```tsx
+// V3
+<Select size="lg" />
+<PhoneInput size="sm" />
+// V4
+<Select visualSize="lg" />
+<PhoneInput visualSize="sm" />
+```
+
+Numeric `size` remains native on Input, NativeSelect and Select. PhoneInput's native input size uses
+`inputProps.size`. Button/action, icon, container and native-platform sizing APIs remain unchanged.
+The CLI rewrites recognized literal visual sizes, including aliases and Elements attributes;
+dynamic, duplicated or spread props require review. Existing v4 migration ledgers still protect
+previously migrated files from repeated spacing rewrites.
+
+React Segmented now honors controlled `value`; update it through `onValueChange` to accept a new
+selection, or use `defaultValue` for uncontrolled behavior. Elements scalar `checked` changes the
+current selection without altering `defaultChecked`. Reconnected controls preserve events and
+reset defaults; multiple NativeSelect submits all selected enabled options. Elements Select now
+uses `ui-select-field` on its host and keeps `ui-select` on the native input and visible trigger;
+update host-specific CSS selectors to avoid styling the frame as a second control. See the
+[web form contracts](form-controls.md) for event and reset behavior.
 
 ## Content flow and layout spacing
 

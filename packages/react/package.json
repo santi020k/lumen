@@ -30,6 +30,50 @@
     "./icons": {
       "types": "./dist/icons.d.ts",
       "import": "./dist/icons.js"
+    },
+    "./components/attachments": {
+      "types": "./dist/attachments.d.ts",
+      "import": "./dist/attachments.js"
+    },
+    "./components/bullet-chart": {
+      "types": "./dist/bullet-chart.d.ts",
+      "import": "./dist/bullet-chart.js"
+    },
+    "./components/comparison-chart": {
+      "types": "./dist/comparison-chart.d.ts",
+      "import": "./dist/comparison-chart.js"
+    },
+    "./components/data-table": {
+      "types": "./dist/data-table.d.ts",
+      "import": "./dist/data-table.js"
+    },
+    "./components/date-range-calendar": {
+      "types": "./dist/date-range-calendar.d.ts",
+      "import": "./dist/date-range-calendar.js"
+    },
+    "./components/date-range-input": {
+      "types": "./dist/date-range-input.d.ts",
+      "import": "./dist/date-range-input.js"
+    },
+    "./components/expanded-charts": {
+      "types": "./dist/expanded-charts.d.ts",
+      "import": "./dist/expanded-charts.js"
+    },
+    "./components/image-comparison": {
+      "types": "./dist/image-comparison.d.ts",
+      "import": "./dist/image-comparison.js"
+    },
+    "./components/interval-charts": {
+      "types": "./dist/interval-charts.d.ts",
+      "import": "./dist/interval-charts.js"
+    },
+    "./components/virtual-list": {
+      "types": "./dist/virtual-list.d.ts",
+      "import": "./dist/virtual-list.js"
+    },
+    "./hooks": {
+      "types": "./dist/hooks.d.ts",
+      "import": "./dist/hooks.js"
     }
   },
   "files": [
@@ -52,7 +96,8 @@
     "test:coverage": "vitest run --config ../../vitest.config.ts --project react --coverage",
     "lint": "eslint . --no-warn-ignored --max-warnings=0",
     "lint:fix": "eslint . --fix --no-warn-ignored --max-warnings=0",
-    "clean": "rm -rf dist coverage"
+    "clean": "rm -rf dist coverage",
+    "measure:selective-imports": "node scripts/measure-selective-imports.mjs"
   },
   "dependencies": {
     "@santi020k/lumen": "workspace:^",

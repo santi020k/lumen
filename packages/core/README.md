@@ -55,6 +55,8 @@ pnpm add @santi020k/lumen-core
 
 Core provides data and helpers; it does not register elements, render components, or load CSS.
 Use documented subpath exports such as `/charts`, `/phone`, and `/icon-data` for focused imports.
+Image-comparison helpers use `/image-comparison`; DOM windowing uses
+`/virtual-list`, and data-renderer window calculations use `/virtual-window`.
 
 ## Data view state
 

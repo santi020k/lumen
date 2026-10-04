@@ -1,4 +1,4 @@
-import { composeClassName } from '@santi020k/lumen-core'
+import { composeClassName } from '@santi020k/lumen-core/tokens'
 
 export type LumenCustomElementRegistry = Pick<
   CustomElementRegistry,

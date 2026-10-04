@@ -32,6 +32,10 @@
 Production-ready Astro primitives for Lumen UI. The stylesheet is standalone CSS, so no Tailwind
 configuration is required to render the components.
 
+Form controls use `visualSize` (`visual-size` in Elements) with `default`, `sm` and `lg`.
+Select, PhoneInput and Segmented follow Input and NativeSelect; numeric input/select `size` keeps
+its native meaning. See the [v4 migration guide](../../docs/migrating-v3-to-v4.md#form-control-visual-sizing).
+
 ## Install
 
 Requires Astro 5 or newer in the consuming application.

@@ -20,7 +20,6 @@ import {
   createLumenRangeDatumActivation,
   createLumenRangeGeometry,
   createLumenScatterGeometry,
-  createLumenVirtualListController,
   createLumenWaterfallGeometry,
   createThemeBuilderTokens,
   executeLumenRichTextCommand,
@@ -145,6 +144,10 @@ import {
   LumenImageComparisonElement as GranularLumenImageComparisonElement,
   lumenImageComparisonElementConfig
 } from './components/image-comparison.js'
+import {
+  LumenVirtualListElement as GranularLumenVirtualListElement,
+  lumenVirtualListElementConfig
+} from './components/virtual-list.js'
 import { bulletChartHtml, bulletNumberAttribute, parseBulletRanges } from './bullet-chart-html.js'
 import { LumenDatumChartElement } from './chart-activation.js'
 import { chartAnnotationHtml, chartCaptionHtml, chartDataTableHtml, chartDomainAttributes, chartHeaderHtml, chartInspectionHtml, chartNumberAttribute, escapeChartHtml, heatmapDataTableHtml, interactiveChartLegendHtml, intervalChartHtml, parseChartAnnotations, parseHeatmapData, parseHistogramBins, parseRangeData, parseWaterfallData, rangeDataTableHtml, scatterDataTableHtml, scatterPlotHtml } from './chart-html.js'
@@ -985,11 +988,9 @@ const elementConfigs = {
     tagName: 'lumen-search-field'
   },
   Select: {
-    attributeClasses: {
-      ...glassAttributeClasses('ui-select-field--glass'),
-      size: { lg: 'ui-select--lg', sm: 'ui-select--sm' }
-    },
-    baseClassName: 'ui-select',
+    attributeClasses: glassAttributeClasses('ui-select-field--glass'),
+    observedAttributes: ['glass', 'size', 'visual-size'],
+    baseClassName: 'ui-select-field',
     tagName: 'lumen-select'
   },
   Separator: lumenSeparatorElementConfig,
@@ -1123,12 +1124,7 @@ const elementConfigs = {
     tagName: 'lumen-tree-grid'
   },
   Typography: lumenTypographyElementConfig,
-  VirtualList: {
-    attributeClasses: glassAttributeClasses('ui-virtual-list--glass'),
-    baseClassName: 'ui-virtual-list',
-    defaults: { 'data-ui-virtual-list': '', tabindex: '0' },
-    tagName: 'lumen-virtual-list'
-  },
+  VirtualList: lumenVirtualListElementConfig,
   VisuallyHidden: lumenVisuallyHiddenElementConfig,
   LanguageToggle: {
     baseClassName: 'ui-language-toggle',
@@ -1381,7 +1377,7 @@ const elementConfigs = {
   },
   Segmented: {
     attributeClasses: {
-      size: { lg: 'ui-segmented--lg', sm: 'ui-segmented--sm' }
+      'visual-size': { lg: 'ui-segmented--lg', sm: 'ui-segmented--sm' }
     },
     baseClassName: 'ui-segmented',
     defaults: { role: 'group' },
@@ -5242,6 +5238,7 @@ class LumenScalarFormControlElement extends LumenElement {
   private defaultValueState = ''
   private eventController: AbortController | undefined
   private internals: ElementInternals | undefined
+  private formDisabledState = false
 
   constructor() {
     super()
@@ -5267,6 +5264,8 @@ class LumenScalarFormControlElement extends LumenElement {
       this.control.checked = checked
 
       this.#syncFormState()
+
+      return
     }
 
     this.toggleAttribute('checked', checked)
@@ -5333,7 +5332,7 @@ class LumenScalarFormControlElement extends LumenElement {
     return (
       this.internals?.validity ??
       this.control?.validity ??
-      ({} as ValidityState)
+      this.ownerDocument.createElement('input').validity
     )
   }
 
@@ -5365,10 +5364,12 @@ class LumenScalarFormControlElement extends LumenElement {
     const Constructor = this
       .constructor as typeof LumenScalarFormControlElement
 
-    this.defaultValueState = this.getAttribute('value') ??
-      (Constructor.nativeTagName === 'textarea' ? this.textContent : '')
+    if (!this.control) {
+      this.defaultValueState = this.getAttribute('value') ??
+        (Constructor.nativeTagName === 'textarea' ? this.textContent : '')
 
-    this.defaultCheckedState = this.hasAttribute('checked')
+      this.defaultCheckedState = this.hasAttribute('checked')
+    }
 
     this.#ensureControl()
 
@@ -5376,6 +5377,8 @@ class LumenScalarFormControlElement extends LumenElement {
       !this.hasAttribute('value')) this.defaultValueState = this.control.value
 
     this.#syncControlAttributes()
+
+    this.#bindControlEvents()
 
     this.#syncFormState()
   }
@@ -5406,7 +5409,7 @@ class LumenScalarFormControlElement extends LumenElement {
     if (name === 'checked' && this.control instanceof HTMLInputElement) {
       this.defaultCheckedState = value !== null
 
-      this.control.checked = this.defaultCheckedState
+      this.control.defaultChecked = this.defaultCheckedState
     }
 
     this.#syncFormState()
@@ -5425,13 +5428,21 @@ class LumenScalarFormControlElement extends LumenElement {
   }
 
   formDisabledCallback(disabled: boolean): void {
+    this.formDisabledState = disabled
+
     if (this.control) this.control.disabled = disabled || this.disabled
+
+    this.#syncFormState()
   }
 
   formResetCallback(): void {
     if (!this.control) return
 
-    this.control.value = this.defaultValueState
+    if (this.control instanceof HTMLSelectElement && !this.hasAttribute('value')) {
+      for (const option of this.control.options) option.selected = option.defaultSelected
+
+      if (!this.control.multiple && this.control.selectedIndex < 0) this.control.selectedIndex = 0
+    } else this.control.value = this.defaultValueState
 
     if (this.control instanceof HTMLInputElement) {
       this.control.checked = this.defaultCheckedState
@@ -5442,6 +5453,13 @@ class LumenScalarFormControlElement extends LumenElement {
 
   formStateRestoreCallback(state: File | FormData | string | null): void {
     if (typeof state === 'string') this.value = state
+    else if (state instanceof FormData && this.control instanceof HTMLSelectElement) {
+      const values = new Set(state.getAll(this.name))
+
+      for (const option of this.control.options) option.selected = values.has(option.value)
+
+      this.#syncFormState()
+    }
   }
 
   reportValidity(): boolean {
@@ -5484,6 +5502,8 @@ class LumenScalarFormControlElement extends LumenElement {
     }
 
     if (control instanceof HTMLSelectElement) {
+      control.multiple = this.hasAttribute('multiple')
+
       control.append(...[...this.children].filter(child => child instanceof HTMLOptionElement ||
         child instanceof HTMLOptGroupElement))
     }
@@ -5501,6 +5521,12 @@ class LumenScalarFormControlElement extends LumenElement {
     this.replaceChildren(control)
 
     this.control = control
+  }
+
+  #bindControlEvents(): void {
+    const control = this.control
+
+    if (!control) return
 
     this.eventController?.abort()
 
@@ -5543,6 +5569,8 @@ class LumenScalarFormControlElement extends LumenElement {
         this.getAttribute('type') ?? this.config.defaults?.type ?? 'text'
     }
 
+    control.disabled = this.disabled || this.formDisabledState
+
     if (this.id) control.id = `${this.id}-control`
 
     if (this.internals) {
@@ -5563,11 +5591,12 @@ class LumenScalarFormControlElement extends LumenElement {
       control instanceof HTMLInputElement &&
       ['checkbox', 'radio'].includes(control.type)
 
-    const submittedValue =
-      checkedControl && !control.checked ? null : control.value
+    const submittedValue = this.#submittedValue(control, checkedControl)
 
     if (this.internals) {
-      this.internals.setFormValue(submittedValue, control.value)
+      const state = control instanceof HTMLSelectElement && control.multiple ? submittedValue : control.value
+
+      this.internals.setFormValue(submittedValue, state)
 
       if (control.validity.valid) {
         this.internals.setValidity({})
@@ -5583,6 +5612,31 @@ class LumenScalarFormControlElement extends LumenElement {
     } else {
       this.setAttribute('aria-invalid', 'true')
     }
+  }
+
+  #submittedValue(
+    control: LumenScalarNativeControl,
+    checkedControl: boolean
+  ): FormData | string | null {
+    if (control.disabled || (checkedControl && control instanceof HTMLInputElement && !control.checked)) return null
+
+    if (control instanceof HTMLSelectElement && control.multiple) {
+      if (!this.name) return null
+
+      const values = new FormData()
+
+      for (const option of control.selectedOptions) {
+        const disabledGroup = option.parentElement instanceof HTMLOptGroupElement && option.parentElement.disabled
+
+        if (!option.disabled && !disabledGroup) {
+          values.append(this.name, option.value)
+        }
+      }
+
+      return values
+    }
+
+    return control.value
   }
 }
 
@@ -7537,6 +7591,33 @@ class LumenSelectBehaviorElement extends LumenElement {
     }
   }
 
+  override attributeChangedCallback(name: string, previous: string | null, value: string | null): void {
+    super.attributeChangedCallback(name, previous, value)
+
+    if (previous === value) return
+
+    if (name === 'size' && value === null) this.querySelector('select')?.removeAttribute('size')
+
+    if (name === 'visual-size' || name === 'size') this.#syncVisualSize()
+  }
+
+  #syncVisualSize(): void {
+    const visualSize = this.getAttribute('visual-size')
+    const select = this.querySelector<HTMLSelectElement>('[data-ui-select-native]')
+
+    for (const control of this.querySelectorAll('[data-ui-select-native], [data-ui-select-trigger]')) {
+      control.classList.toggle('ui-select--sm', visualSize === 'sm')
+
+      control.classList.toggle('ui-select--lg', visualSize === 'lg')
+    }
+
+    if (select) {
+      const size = this.getAttribute('size')
+
+      if (size !== null) select.setAttribute('size', size)
+    }
+  }
+
   #setupSelect(signal: AbortSignal): void {
     const select = this.#ensureNativeSelect()
     const control = this.#ensureControl(select)
@@ -7550,6 +7631,8 @@ class LumenSelectBehaviorElement extends LumenElement {
     if (!trigger || !listbox) return
 
     this.#renderOptions(select, listbox)
+
+    this.#syncVisualSize()
 
     control.hidden = false
 
@@ -7727,7 +7810,13 @@ class LumenSelectBehaviorElement extends LumenElement {
       '[data-ui-select-native], select'
     )
 
-    if (existing) return existing
+    if (existing) {
+      existing.classList.add('ui-select', 'ui-select__native')
+
+      existing.dataset.uiSelectNative = ''
+
+      return existing
+    }
 
     const select = document.createElement('select')
 
@@ -8386,26 +8475,6 @@ class LumenDataTableBehaviorElement extends LumenElement {
     } else {
       inputs?.replaceChildren()
     }
-  }
-}
-
-class LumenVirtualListBehaviorElement extends LumenElement {
-  private virtualListController: { destroy: () => void } | undefined
-
-  override connectedCallback() {
-    super.connectedCallback()
-
-    if (!hasDocument()) return
-
-    this.virtualListController?.destroy()
-
-    this.virtualListController = createLumenVirtualListController(this)
-  }
-
-  override disconnectedCallback() {
-    this.virtualListController?.destroy()
-
-    this.virtualListController = undefined
   }
 }
 
@@ -11762,7 +11831,17 @@ class LumenPhoneInputBehaviorElement extends LumenElement {
 
     controls?.toggleAttribute('data-readonly', this.numberInput.readOnly)
 
-    if (controls) controls.dataset.size = this.getAttribute('size') ?? 'default'
+    if (controls) controls.dataset.size = this.getAttribute('visual-size') ?? 'default'
+
+    const visualSize = this.getAttribute('visual-size')
+
+    this.numberInput.classList.toggle('ui-input--sm', visualSize === 'sm')
+
+    this.numberInput.classList.toggle('ui-input--lg', visualSize === 'lg')
+
+    this.countrySelect.classList.toggle('ui-select--sm', visualSize === 'sm')
+
+    this.countrySelect.classList.toggle('ui-select--lg', visualSize === 'lg')
 
     this.numberInput.id = this.getAttribute('input-id') ?? (this.numberInput.id || createId('phone-number'))
 
@@ -11915,8 +11994,7 @@ const behaviorElementClasses: Partial<
   Tour: LumenTourBehaviorElement,
   Transfer: LumenTransferBehaviorElement,
   TreeSelect: LumenTreeSelectBehaviorElement,
-  Tooltip: LumenTooltipBehaviorElement,
-  VirtualList: LumenVirtualListBehaviorElement
+  Tooltip: LumenTooltipBehaviorElement
 }
 
 export class LumenDialogElement extends LumenDialogBehaviorElement {
@@ -11955,7 +12033,8 @@ const granularElementClasses: Partial<
   Spinner: GranularLumenSpinnerElement,
   Stack: GranularLumenStackElement,
   Typography: GranularLumenTypographyElement,
-  VisuallyHidden: GranularLumenVisuallyHiddenElement
+  VisuallyHidden: GranularLumenVisuallyHiddenElement,
+  VirtualList: GranularLumenVirtualListElement
 }
 
 const elementClasses = Object.fromEntries(

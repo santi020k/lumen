@@ -2,7 +2,14 @@
 
 ## 4.0.0
 
+- Add controlled MultiSelect to React Native and SwiftUI alongside Compose, retaining selections
+  outside filtered results, blocking disabled/read-only edits, and exposing loading/retry and localized
+  action labels. Forward application safe-area insets into the React Native sheet. Add a complete,
+  checked web-to-native catalog audit for the remaining v4 gaps.
+
 ### Major Changes
+
+- Finalize web form visual sizing with visualSize/visual-size on Select, PhoneInput and Segmented, preserving native numeric size. Add conservative literal migration previews and a complete machine-readable v4 breaking inventory. Fix controlled Segmented ownership, Select accessibility/callback/reset behavior, Elements scalar reconnection and reset defaults, and multiple-select submission. Add selective React component and Elements VirtualList imports with measured bundle and packed-consumer checks. Existing root imports remain supported.
 
 - Refine v4 reading rhythm and responsive page gutters, allow interactive Card content to overflow,
   and wrap long actions in wrapping Stacks. Move media clipping into AspectRatio when upgrading.

@@ -224,6 +224,213 @@
       "signals": [
         "LumenPhoneInput"
       ]
+    },
+    {
+      "id": "web-content-flow",
+      "kind": "breaking",
+      "currentContract": "Explicit v3 Stack/Grid gaps use a separate scale; cards and reading blocks rely on child margins and clipped overflow.",
+      "replacement": "Canonical web gaps, parent-owned spacing, Card density and visible overflow, responsive Container gutters and trimmed reading-block margins.",
+      "migration": "Map literal web gaps md/lg/xl to group/xl/2xl with lumen migrate v4. Review Card density, compensating margins and clipping; put media clipping in AspectRatio. Native spacing is unchanged.",
+      "packages": [
+        "@santi020k/lumen-core",
+        "@santi020k/lumen-astro",
+        "@santi020k/lumen-react",
+        "@santi020k/lumen-elements"
+      ],
+      "evidence": [
+        "docs/content-flow.md"
+      ],
+      "docs": [
+        "docs/migrating-v3-to-v4.md",
+        "docs/content-flow.md"
+      ],
+      "tests": [
+        "pnpm run test",
+        "pnpm run test:framework-conformance"
+      ],
+      "signals": [
+        "Stack",
+        "Grid",
+        "Card",
+        "Container",
+        "Prose",
+        "Typography"
+      ]
+    },
+    {
+      "id": "web-control-visual-size",
+      "kind": "breaking",
+      "currentContract": "Select, PhoneInput and Segmented use size for visual density; Select also accepts the visual md alias.",
+      "replacement": "visualSize in Astro/React and visual-size in Elements use default, sm or lg. Native input/select size remains numeric. Elements Select uses ui-select-field for its frame and ui-select for its native input and trigger.",
+      "migration": "Run lumen migrate v4 for recognized literals. Change wrapper, spread and dynamic visual size props manually; map Select md to default. Keep numeric size; PhoneInput forwards it through inputProps.size. Button, icon, container and native-platform sizes are unchanged. Update Elements Select host CSS selectors from ui-select to ui-select-field.",
+      "packages": [
+        "@santi020k/lumen-core",
+        "@santi020k/lumen-astro",
+        "@santi020k/lumen-react",
+        "@santi020k/lumen-elements"
+      ],
+      "evidence": [
+        "docs/form-controls.md"
+      ],
+      "docs": [
+        "docs/migrating-v3-to-v4.md",
+        "docs/form-controls.md"
+      ],
+      "tests": [
+        "pnpm run test",
+        "pnpm run test:framework-conformance"
+      ],
+      "signals": [
+        "Select",
+        "PhoneInput",
+        "Segmented",
+        "visualSize",
+        "visual-size"
+      ]
+    },
+    {
+      "id": "web-form-value-ownership",
+      "kind": "breaking",
+      "currentContract": "React Segmented does not retain controlled owner state; React Select popup interactions and resets can diverge from native submission. Elements scalar reconnection, checked defaults and multiple selections can diverge from native forms.",
+      "replacement": "Controlled values remain owner-held; accepted resets restore defaults silently and cancelled resets retain drafts. Each documented user callback fires once. Elements retain listeners and reset defaults after relocation and submit every enabled selected option.",
+      "migration": "Use value/onValueChange or defaultValue deliberately. Listen on Elements hosts and use checked for current state, defaultChecked for the reset baseline. Remove compensating reset or duplicate event handlers after verifying native and external form submission.",
+      "packages": [
+        "@santi020k/lumen-core",
+        "@santi020k/lumen-astro",
+        "@santi020k/lumen-react",
+        "@santi020k/lumen-elements"
+      ],
+      "evidence": [
+        "docs/form-controls.md"
+      ],
+      "docs": [
+        "docs/form-controls.md",
+        "docs/migrating-v3-to-v4.md"
+      ],
+      "tests": [
+        "pnpm run test",
+        "pnpm run test:framework-conformance"
+      ],
+      "signals": [
+        "Segmented",
+        "Select",
+        "NativeSelect",
+        "checked",
+        "defaultChecked",
+        "form.reset"
+      ]
+    },
+    {
+      "id": "web-combobox-focus",
+      "kind": "breaking",
+      "currentContract": "Editable Combobox consumers may assume option buttons receive focus and parent Escape handlers always dismiss.",
+      "replacement": "Input focus remains stable with aria-activedescendant; nested controls consume their own Escape.",
+      "migration": "Update focus assertions and option styling to active-descendant/selected state. Parent handlers must honor defaultPrevented; Enter without an active option retains native form behavior.",
+      "packages": [
+        "@santi020k/lumen-core",
+        "@santi020k/lumen-astro",
+        "@santi020k/lumen-react",
+        "@santi020k/lumen-elements"
+      ],
+      "evidence": [
+        "docs/migrating-v3-to-v4.md"
+      ],
+      "docs": [
+        "docs/migrating-v3-to-v4.md"
+      ],
+      "tests": [
+        "pnpm run test",
+        "pnpm run test:framework-conformance"
+      ],
+      "signals": [
+        "Combobox",
+        "aria-activedescendant",
+        "Escape"
+      ]
+    },
+    {
+      "id": "web-phone-input-identity",
+      "kind": "breaking",
+      "currentContract": "Web PhoneInput id may be treated as a frame identifier.",
+      "replacement": "Astro/React id identifies the number input that receives focus; Elements retains host id and uses input-id for its input.",
+      "migration": "Update labels and DOM queries; use Elements input-id for the input that receives focus. Native phone contracts are covered separately.",
+      "packages": [
+        "@santi020k/lumen-core",
+        "@santi020k/lumen-astro",
+        "@santi020k/lumen-react",
+        "@santi020k/lumen-elements"
+      ],
+      "evidence": [
+        "docs/migrating-v3-to-v4.md"
+      ],
+      "docs": [
+        "docs/migrating-v3-to-v4.md"
+      ],
+      "tests": [
+        "pnpm run test",
+        "pnpm run test:framework-conformance"
+      ],
+      "signals": [
+        "PhoneInput",
+        "input-id"
+      ]
+    },
+    {
+      "id": "web-virtual-list-ranges",
+      "kind": "breaking",
+      "currentContract": "Consumers may interpret virtual-list range endpoints as exclusive.",
+      "replacement": "Fixed-height windows report inclusive endpoints and endIndex -1 for empty lists. Mounted DOM remains the default; opt-in data rendering mounts visible rows and focused neighbors.",
+      "migration": "Update exclusive-end calculations and empty handling. Use stable unique keys and external state for opt-in data rendering; variable-height lists need a different strategy. Existing root imports remain supported; selective component imports are additive.",
+      "packages": [
+        "@santi020k/lumen-core",
+        "@santi020k/lumen-astro",
+        "@santi020k/lumen-react",
+        "@santi020k/lumen-elements"
+      ],
+      "evidence": [
+        "docs/virtual-list-data.md"
+      ],
+      "docs": [
+        "docs/migrating-v3-to-v4.md",
+        "docs/virtual-list-data.md"
+      ],
+      "tests": [
+        "pnpm run test",
+        "pnpm run test:framework-conformance"
+      ],
+      "signals": [
+        "VirtualList",
+        "endIndex"
+      ]
+    },
+    {
+      "id": "web-rich-text-command-ownership",
+      "kind": "breaking",
+      "currentContract": "External editor integrations may execute commands during completion events or fall back to browser commands after failure.",
+      "replacement": "Cancelable ui:editor-command-request owns execution; ui:editor-command reports completion without execution.",
+      "migration": "External engines must preventDefault on the request and set detail.executed synchronously; React can supply commandHandler. Remove completion handlers that execute commands again. Failed external commands do not fall back.",
+      "packages": [
+        "@santi020k/lumen-core",
+        "@santi020k/lumen-astro",
+        "@santi020k/lumen-react",
+        "@santi020k/lumen-elements"
+      ],
+      "evidence": [
+        "docs/migrating-v3-to-v4.md"
+      ],
+      "docs": [
+        "docs/migrating-v3-to-v4.md",
+        "docs/ai-usage.md"
+      ],
+      "tests": [
+        "pnpm run test",
+        "pnpm run test:framework-conformance"
+      ],
+      "signals": [
+        "ui:editor-command-request",
+        "ui:editor-command",
+        "commandHandler"
+      ]
     }
   ],
   "swiftApiBaseline": "v3.0.1"

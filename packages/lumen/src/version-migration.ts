@@ -17,7 +17,7 @@ export type LumenMigrationVersion = 'v3' | 'v4'
 export interface LumenVersionMigrationFinding {
   column: number
   file: string
-  kind: 'layout-gap' | 'component-review' | 'native-review' | 'embedded-mcp-sdk'
+  kind: 'control-size' | 'layout-gap' | 'component-review' | 'native-review' | 'embedded-mcp-sdk'
   line: number
   message: string
 }
