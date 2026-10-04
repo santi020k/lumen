@@ -499,6 +499,38 @@ and physical-device behavior remain unverified. Package documentation, a Changes
 regenerated MCP snapshot describe the correction. Local logs remain under
 `.build/native-quality-toast-timeout-*`.
 
+### Current completion audit
+
+The audit at `14c0cda1` does not prove completion of the Required outcomes above. Current
+readiness commands still report five incomplete real-consumer records, 22 incomplete physical-device
+slots and zero of two stability iterations. Preserve the historical records; they do not qualify
+this candidate. The consumer audit is source/design evidence, not a consumer upgrade pass.
+
+| Required outcome | Available evidence | Work still required |
+| --- | --- | --- |
+| Sheets/forms | Historical native keyboard/save/draft tests and current unit contracts | Rebuild affected hosts for the final candidate; complete device focus/dismissal checks |
+| Android adaptation/state | Lazy record list, Activity recreation and process-death tests | Workspace still uses its own width split rather than the public hinge-aware scaffold; migration decision pending |
+| Apple adaptation | Historical iPhone/iPad Release UI tests and large-text observations | Exact-candidate device accessibility and runtime qualification |
+| React Native integration | Native-host flow history, strict packed consumer and current behavioral tests | Exact-candidate native host checks for announcement delivery, timeout settings and live text scaling |
+| Performance | Production Hermes budgets and two preserved Android runtime runs | Stable startup/scrolling baselines and frame/hitch evidence; emulator variance is unexplained |
+| Localization/accessibility | English/Spanish local examples and automated semantic/layout checks | Physical screen-reader, alternate input, RTL, contrast, motion and maximum-text evidence |
+| Workflows | Search/edit/save/retry/chart examples with local tests | Repeat affected complete journeys against the final native candidate |
+| Qualification/contracts | Reviewed APIs, Changesets and migration documentation | Final consumers/devices, aligned stability policy and two qualifying iterations |
+| Validation/integration | 1,332 JS tests, 23 type/lint tasks and packed consumer pass | Resolve canonical web size failures, rerun full gate and integrate locally into `release/v4.0.0` |
+
+Source review confirms Workspace already uses `LazyColumn` with stable record keys. The runtime
+variation alone does not justify attributing delays to rendering every record or adopting a
+speculative optimization. Its hand-written width split lacks the public scaffold's window/hinge
+policy and currently collapses at font scale 2; any migration must preserve that large-text behavior,
+selection, draft state and Back behavior. The proposed migration awaits the user's choice.
+
+The stability checker still requires ordinary, published pre-2.0 versions and published-artifact
+verification, while v4 readiness requires two iterations for the changed baseline. This mismatch is
+not resolved by rerunning benchmarks or changing a version number. The user has been asked to choose
+between two published v4 prereleases with consumer/device evidence and two local candidate builds;
+the latter removes the existing published-artifact requirement. No policy or publication action has
+been adopted while that choice is pending.
+
 ### Outstanding scope and blockers
 
 The complete Required outcomes list remains authoritative. Broader phone/tablet runtime qualification and physical-device keyboard/focus and screen-reader checks,
