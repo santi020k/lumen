@@ -1,22 +1,33 @@
 ---
 import { Badge, BulletChart, DumbbellChart, Heatmap, Histogram, Icon, LineChart, Link, LollipopChart, PieChart, Sparkline, Stat, Tabs, TabsList, TabsPanel, TabsTrigger, WaterfallChart } from '@santi020k/lumen-astro'
 
+import ChartUsageGuide from '../../../components/ChartUsageGuide.astro'
 import DocsLayout from '../../../layouts/DocsLayout.astro'
 import { chartDemoBins, chartDemoBulletRanges, chartDemoChannels, chartDemoComparisons, chartDemoHeatmap, chartDemoMetrics, chartDemoSeries, chartDemoWaterfall } from '../../../lib/chart-demo-data'
 ---
 
-<DocsLayout title="Interactive data visualization — Lumen UI" description="Inspect shared chart behavior, honest time spacing, distributions, balance changes, and missing observations across the three web adapters." breadcrumbs={[{ href: '/docs/web', label: 'Web' }, { href: '/docs/web/data-visualization', label: 'Data visualization' }]}>
+<DocsLayout title="Data visualization: examples & usage — Lumen UI" description="Explore accessible charts, choose the right visualization, and copy working Astro, React, and Web Component examples. Learn data contracts, formatting, and native usage." breadcrumbs={[{ href: '/docs/web', label: 'Web' }, { href: '/docs/web/data-visualization', label: 'Data visualization' }]}>
   <div class="viz-gallery">
     <section class="viz-intro">
       <p class="viz-eyebrow"><span aria-hidden="true"></span>Lumen / Data visualization</p>
       <h1>Data, in its<br /><em>best light.</em></h1>
       <div class="viz-intro-bottom">
         <p>Find the pattern. Follow the detail. Beautiful, accessible charts that make every observation count.</p>
-        <Link href="/docs/components/line-chart">Explore the API <Icon name="arrow-up-right" decorative size="sm" /></Link>
+        <Link href="#chart-recipes">Start building <Icon name="arrow-up-right" decorative size="sm" /></Link>
       </div>
     </section>
 
-    <section class="viz-workspace" aria-label="Interactive visualization gallery">
+    <nav class="viz-guide-nav" aria-label="Data visualization guide">
+      <Link href="#chart-gallery">Gallery</Link>
+      <Link href="#choose-a-chart">Choose a chart</Link>
+      <Link href="#chart-setup">Setup</Link>
+      <Link href="#chart-recipes">Code examples</Link>
+      <Link href="#chart-data">Data & formatting</Link>
+      <Link href="#chart-accessibility">Accessibility</Link>
+      <Link href="#native-charts">Native</Link>
+    </nav>
+
+    <section id="chart-gallery" class="viz-workspace" aria-label="Interactive visualization gallery">
       <header class="viz-workspace-heading">
         <div><p class="viz-eyebrow">The overview</p><h2>A clearer picture.</h2></div>
         <Badge variant="outline">Illustrative dataset</Badge>
@@ -70,8 +81,10 @@ import { chartDemoBins, chartDemoBulletRanges, chartDemoChannels, chartDemoCompa
           </section>
         </TabsPanel>
       </Tabs>
-      <div class="viz-instructions"><Icon name="mouse-pointer-2" decorative size="sm" /><p>Hover or tap to explore. Use arrow keys to inspect, Escape to clear, and the legend to compare. Switch frameworks to keep exploring the same observation.</p></div>
+      <div class="viz-instructions"><Icon name="mouse-pointer-2" decorative size="sm" /><p>Explore Request volume with pointer, touch, or arrow keys; use Escape to clear and its legend to compare. Open “View chart data” on any chart for exact values. Switch frameworks to inspect the same dataset.</p></div>
     </section>
+
+    <ChartUsageGuide />
 
     <footer class="viz-footer"><p>Designed to reveal more.</p><span>Semantic colors · Keyboard accessible · Exact source data</span><Link href="/docs/components">Explore the component library <Icon name="arrow-up-right" decorative size="sm" /></Link></footer>
   </div>
@@ -113,6 +126,9 @@ import { ReactChartDemo } from '../../../lib/react-chart-demo'
 </script>
 
 <style>
+  .viz-guide-nav { display: flex; flex-wrap: wrap; gap: 0.75rem 1.5rem; padding-block: 1rem; border-block: 1px solid hsl(var(--line)); }
+  .viz-guide-nav :global(a) { font-size: 0.75rem; padding-block: 0.25rem; }
+  #chart-gallery { scroll-margin-top: calc(var(--docs-sticky-offset, 10rem) + 1rem); }
   .viz-gallery { display: grid; gap: 2.5rem; }
   .viz-intro { display: grid; grid-template-columns: 1.1fr 1fr; gap: 1rem 2rem; padding-block: 1rem 0; align-items: end; }
   .viz-intro > .viz-eyebrow { grid-column: 1 / -1; margin-bottom: 0; }

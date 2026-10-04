@@ -1975,17 +1975,25 @@ const apiReferenceByComponent = {
     )
   ],
   LollipopChart: [
-    apiRow('data', 'readonly LumenComparisonDatum[]', 'required', 'Stable id, label, nullable value, optional reference and tone. Input order is preserved.'),
+    apiRow('data', 'readonly LumenComparisonDatum[]', 'required', 'Unique non-empty id, label, nullable finite value, and optional tone. Input order is preserved; reference is not plotted.'),
     apiRow('domain', 'LumenChartDomain', 'automatic', 'Must include zero and every displayed measurement.'),
-    apiRow('formatValue, labels', 'Formatter and chart labels', 'English', 'Formats visible values and the exact data table.'),
-    apiRow('valueLabel, referenceLabel', 'string', 'Value / Before', 'Names the observations; referenceLabel applies to paired comparisons.'),
+    apiRow('formatValue', '(value: number) => string', 'String', 'Formats numeric values, ticks, and exact data. Keep the source data numeric.'),
+    apiRow('labels', 'Partial<LumenChartLabels>', 'English', 'Localizes unavailable, empty, invalid-data, and data-disclosure text.'),
+    apiRow('valueLabel', 'string', 'labels.value', 'Names the measured value in the row header and exact table.'),
+    apiRow('heading, description, caption, summary', 'string', 'unset', 'Supplies visible context, a caption, and an optional screen-reader summary.'),
+    apiRow('presentation', '"default" | "bare"', '"default"', 'Uses bare inside a parent surface that already provides padding and a border.'),
+    apiRow('aria-label', 'string', 'unset', 'Names the chart figure; include the measurement and reporting period.'),
     apiRow('showTable', 'boolean', 'true', 'Keeps the keyboard-accessible exact data disclosure available.')
   ],
   DumbbellChart: [
-    apiRow('data', 'readonly LumenComparisonDatum[]', 'required', 'Stable id, label, nullable value, optional reference and tone. Input order is preserved.'),
+    apiRow('data', 'readonly LumenComparisonDatum[]', 'required', 'Unique non-empty id, label, nullable finite value, optional nullable reference and tone. Input order is preserved.'),
     apiRow('domain', 'LumenChartDomain', 'automatic', 'Must include zero and every displayed measurement.'),
-    apiRow('formatValue, labels', 'Formatter and chart labels', 'English', 'Formats visible values and the exact data table.'),
-    apiRow('valueLabel, referenceLabel', 'string', 'Value / Before', 'Names the observations; referenceLabel applies to paired comparisons.'),
+    apiRow('formatValue', '(value: number) => string', 'String', 'Formats numeric values, ticks, and exact data. Keep the source data numeric.'),
+    apiRow('labels', 'Partial<LumenChartLabels>', 'English', 'Localizes unavailable, empty, invalid-data, and data-disclosure text.'),
+    apiRow('valueLabel, referenceLabel', 'string', 'Value / Before', 'Names the current and reference observations. Missing endpoints are never converted to zero.'),
+    apiRow('heading, description, caption, summary', 'string', 'unset', 'Supplies visible context, a caption, and an optional screen-reader summary.'),
+    apiRow('presentation', '"default" | "bare"', '"default"', 'Uses bare inside a parent surface that already provides padding and a border.'),
+    apiRow('aria-label', 'string', 'unset', 'Names the chart figure; include the measurement and reporting period.'),
     apiRow('showTable', 'boolean', 'true', 'Keeps the keyboard-accessible exact data disclosure available.')
   ],
   BulletChart: [
@@ -1993,6 +2001,9 @@ const apiReferenceByComponent = {
     apiRow('ranges', 'LumenBulletRange[]', '[]', 'Uses labeled, finite, unique range ends. Ranges are sorted without mutating input.'),
     apiRow('domain', 'LumenChartDomain', 'automatic', 'Must include zero, the actual value, target, and all range ends. Invalid input fails closed.'),
     apiRow('formatValue, valueLabel, targetLabel, labels', 'formatters and labels', 'String, Value, Target', 'Localizes the visible values and exact data inspection.'),
+    apiRow('heading, description, caption, summary', 'string', 'unset', 'Supplies visible context, a caption, and an optional screen-reader summary.'),
+    apiRow('presentation', '"default" | "bare"', '"default"', 'Uses bare inside a parent surface that already provides padding and a border.'),
+    apiRow('aria-label', 'string', 'unset', 'Names the chart figure; include the measurement and reporting period.'),
     apiRow('showTable', 'boolean', 'true', 'Exposes the actual, target, and exact range boundaries.')
   ],
   Histogram: [
@@ -2928,6 +2939,18 @@ const apiReferenceByComponent = {
 } satisfies Record<LumenComponentName, readonly ComponentApiRow[]>
 
 const componentGuidanceByName: Partial<Record<string, ComponentGuidance>> = {
+  LollipopChart: {
+    when: 'Use for one value per category when ranking or comparing magnitudes on a shared zero-based scale. The application owns row order; sort before passing data.',
+    distinction: 'Use DumbbellChart for paired observations and BarChart for grouped or stacked series. Keep null measurements distinct from zero, and retain the exact data disclosure.'
+  },
+  DumbbellChart: {
+    when: 'Use to compare two observations per category in the same unit. Name both endpoints with referenceLabel and valueLabel; outlined and filled dots distinguish their roles.',
+    distinction: 'Use LineChart for a sequence of observations and BulletChart for one value against a target. A missing endpoint stays unavailable and does not produce a connector.'
+  },
+  BulletChart: {
+    when: 'Use to compare a measured value with a target and optional labeled performance ranges. Describe the unit and period, and keep the actual value distinct from a percent-of-target score.',
+    distinction: 'Use DumbbellChart to compare pairs across categories. An explicit bullet domain must contain zero, the actual, the target, and every range end; ranges do not infer success or failure.'
+  },
   Card: {
     when: 'Use for a distinct content surface. Card owns its inset and the gap between its visible parts; choose compact, comfortable or spacious density.',
     distinction: 'Use Stack for unframed content groups. Use CardHeader, CardContent and CardFooter without extra external margins; nest Stack inside the body and let footer actions wrap. Card permits interactive overflow; use AspectRatio for media clipping.'
@@ -3193,6 +3216,9 @@ const componentGuidanceByName: Partial<Record<string, ComponentGuidance>> = {
 }
 
 const adapterNotesByComponent: Partial<Record<LumenComponentName, readonly FrameworkUsageNote[]>> = {
+  LollipopChart: [{ framework: 'Elements', text: 'Register LollipopChart, assign numeric rows to the data property or a JSON data attribute, and use domain-min/domain-max for a shared scale. Assign a function to valueFormatter for units; functions cannot be HTML attributes.' }],
+  DumbbellChart: [{ framework: 'Elements', text: 'Register DumbbellChart and assign rows with value and reference through the data property or a JSON data attribute. Use reference-label/value-label for the endpoint names and the valueFormatter property for units.' }],
+  BulletChart: [{ framework: 'Elements', text: 'Register BulletChart. Use numeric value/target attributes and a ranges property or JSON attribute; assign valueFormatter as a function. Remove the value attribute, or set the value property to null, for an unavailable observation.' }],
   DataTable: [{
     framework: 'React',
     text: 'The React example demonstrates data rendering and sortable columns. The selection-count listener in the Astro demo is tied to Astro runtime events and is omitted from the React example.'
@@ -4358,7 +4384,7 @@ export const componentDocs: ComponentDoc[] = (
       'LollipopChart',
       'Data display',
       'Rank categories using a dot and a zero-based stem.',
-      '<LollipopChart aria-label="Team performance" data={[{ id: "design", label: "Design", reference: 62, value: 88 }, { id: "engineering", label: "Engineering", reference: 76, value: 91 }]} />'
+      '<LollipopChart aria-label="Team performance" data={[{ id: "design", label: "Design", value: 88 }, { id: "engineering", label: "Engineering", value: 91 }]} />'
     ],
     [
       'DumbbellChart',

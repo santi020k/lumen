@@ -902,6 +902,85 @@ const compoundDescriptionsElementsExample = `${elementsHeader}
 `
 
 const elementsOverrides: Record<string, string> = {
+  LollipopChart: `<lumen-lollipop-chart
+  id="example-lollipop-chart"
+  aria-label="Team performance, current quarter"
+  heading="Team performance"
+  description="Score out of 100 · highest first"
+  domain-min="0" domain-max="100"
+  value-label="Score"
+></lumen-lollipop-chart>
+
+<!-- In a module processed by your bundler, after the chart markup. -->
+<script type="module">
+import { defineLumenElements, LumenLollipopChartElement } from '@santi020k/lumen-elements'
+
+defineLumenElements(['LollipopChart'])
+
+const chart = document.getElementById('example-lollipop-chart')
+
+if (chart instanceof LumenLollipopChartElement) {
+  chart.data = [
+    { id: 'engineering', label: 'Engineering', value: 91 },
+    { id: 'design', label: 'Design', value: 88 },
+    { id: 'support', label: 'Support', value: 74 }
+  ]
+}
+</script>
+`,
+  DumbbellChart: `<lumen-dumbbell-chart
+  id="example-dumbbell-chart"
+  aria-label="Progress by team, current quarter"
+  heading="Progress by team"
+  description="Score out of 100 · previous to current quarter"
+  domain-min="0" domain-max="100"
+  reference-label="Previous" value-label="Current"
+></lumen-dumbbell-chart>
+
+<!-- In a module processed by your bundler, after the chart markup. -->
+<script type="module">
+import { defineLumenElements, LumenDumbbellChartElement } from '@santi020k/lumen-elements'
+
+defineLumenElements(['DumbbellChart'])
+
+const chart = document.getElementById('example-dumbbell-chart')
+
+if (chart instanceof LumenDumbbellChartElement) {
+  chart.data = [
+    { id: 'design', label: 'Design', reference: 62, value: 88 },
+    { id: 'engineering', label: 'Engineering', reference: 76, value: 91 },
+    { id: 'support', label: 'Support', reference: 81, value: 74 }
+  ]
+}
+</script>
+`,
+  BulletChart: `<lumen-bullet-chart
+  id="example-bullet-chart"
+  aria-label="On-time delivery, current quarter"
+  heading="On-time delivery"
+  description="Completed deliveries within the service window"
+  domain-min="0" domain-max="100"
+  value="86" target="95" value-label="Actual" target-label="Goal"
+></lumen-bullet-chart>
+
+<!-- In a module processed by your bundler, after the chart markup. -->
+<script type="module">
+import { defineLumenElements, LumenBulletChartElement } from '@santi020k/lumen-elements'
+
+defineLumenElements(['BulletChart'])
+
+const chart = document.getElementById('example-bullet-chart')
+
+if (chart instanceof LumenBulletChartElement) {
+  chart.ranges = [
+    { end: 70, label: 'Developing' },
+    { end: 90, label: 'Consistent' },
+    { end: 100, label: 'Excellent' }
+  ]
+  chart.valueFormatter = value => String(value) + '%'
+}
+</script>
+`,
   AttachmentList: `${elementsHeader}
 <lumen-attachment-list aria-label="Files">
   <li><lumen-attachment><strong>Example file</strong><button type="button">Remove</button></lumen-attachment></li>

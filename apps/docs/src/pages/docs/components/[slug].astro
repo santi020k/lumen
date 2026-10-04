@@ -203,6 +203,10 @@ export function HeroImage() {
       </aside>
     )}
 
+    {relatedCollection?.title === 'Data visualization' && (
+      <Note><p>New to charts? Read the <Link href="/docs/web/data-visualization#chart-recipes">data visualization guide</Link> for setup, copyable examples, chart selection, formatting, and accessibility.</p></Note>
+    )}
+
     {relatedCollection && relatedComponents.length > 0 && (
       <aside class="component-doc-related" aria-labelledby="related-components-title">
         <div>

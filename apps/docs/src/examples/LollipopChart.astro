@@ -1,4 +1,18 @@
 ---
 import { LollipopChart } from '@santi020k/lumen-astro'
+
+const data = [
+  { id: 'engineering', label: 'Engineering', value: 91 },
+  { id: 'design', label: 'Design', value: 88 },
+  { id: 'support', label: 'Support', value: 74 }
+]
 ---
-<LollipopChart aria-label="Team performance" data={[{ id: 'design', label: 'Design', reference: 62, value: 88 }, { id: 'engineering', label: 'Engineering', reference: 76, value: 91 }]} />
+
+<LollipopChart
+  aria-label="Team scores, current quarter"
+  heading="Team performance"
+  description="Score out of 100 · highest first"
+  data={data}
+  domain={{ min: 0, max: 100 }}
+  valueLabel="Score"
+/>

@@ -2,9 +2,27 @@
 
 Lumen provides one visualization foundation across web and native adapters: canonical semantic
 chart colors and metrics, shared TypeScript geometry and validation helpers, framework-native
-renderers, factual accessibility summaries, and readable fallback data. Applications continue to
+renderers, accessible context, and readable fallback data. Applications continue to
 own aggregation, statistics, units, locale formatting, streaming cadence, annotation content, and domain
 decisions.
+
+The [interactive guide](https://lumen.santi020k.com/docs/web/data-visualization) includes the gallery,
+chart-selection guidance, framework setup, and copyable examples for Astro, React, and Elements.
+Start with [comparison recipes](https://lumen.santi020k.com/docs/web/data-visualization#chart-recipes)
+for LollipopChart, DumbbellChart, and BulletChart. Each recipe links to its full API reference.
+
+## Install and render
+
+Charts ship in the existing adapter packages; no separate chart package is required. Install your
+adapter with `pnpm add @santi020k/lumen-astro`, `pnpm add @santi020k/lumen-react`, or
+`pnpm add @santi020k/lumen-elements`, and import its `styles.css` entry once in your application shell.
+Use the complete stylesheet for the chart catalog.
+
+Astro renders comparison charts and native data disclosures without JavaScript. Mount
+`UIPrimitives` from `@santi020k/lumen-astro/runtime` once for interactive LineChart and Lumen tabs.
+React owns its interaction. Elements requires `defineLumenElements` in a browser entry processed by
+your bundler; register only the components you use. In React Server Components apps, keep formatter
+functions in a client component rather than passing functions across the server/client boundary.
 
 ## Choose the lightest chart that answers the question
 
@@ -30,7 +48,7 @@ an application-selected engine while consuming Lumen chart tokens and accessibil
 
 ## Data contracts and reliability
 
-Web and React Native use `LumenChartSeries` and `LumenChartDatum`. A datum has a stable `x`, a
+Series-based web and React Native charts use `LumenChartSeries` and `LumenChartDatum`. A datum has a stable `x`, a
 finite `y` or `null`, and optional `id`, visible labels, tone, and bubble `size`. Core helpers cover
 categorical alignment, linear and time scales, nice ticks, grouped and stacked bars, line gaps,
 scatter/bubble points, heatmap cells, range bands, deterministic downsampling, bounded live-data
@@ -233,9 +251,10 @@ and cancelled interactions do not activate a datum.
 
 ## Accessibility
 
-Every data chart needs a useful accessible name. Lumen adds a factual generated summary describing
-series count, available points, range, and missing values; pass `summary` when domain context is
-more useful. Web charts expose a full-width disclosure table with sticky headers and a bounded, keyboard-scrollable
+Every data chart needs a useful accessible name. Supply visible `heading` and `description` context,
+including units and the reporting period. Series charts can generate factual summaries of counts,
+range, and missing values. Web comparison charts expose labeled rows; provide `summary` when a
+written takeaway would help. Do not assume that a chart generates a domain-specific interpretation. Web charts expose a full-width disclosure table with sticky headers and a bounded, keyboard-scrollable
 body. Native charts pair their visual plot with an expandable, bounded data list, and controlled selection is available where the adapter supports it.
 
 Keep visual marks decorative to assistive technology, retain the summary and fallback data, and
@@ -257,8 +276,9 @@ semantic success, warning, and danger tones for data that truly carries those me
 
 ## Platform implementation
 
-- Astro, React, and Elements ship the full sparkline, line, bar, pie, scatter, heatmap, range, and
-  combo family with dependency-free SVG renderers, factual summaries, and semantic data tables.
+- Astro, React, and Elements ship sparkline, line, bar, pie, scatter, heatmap, range, combo,
+  waterfall, histogram, bullet, lollipop, and dumbbell charts using SVG or HTML/CSS renderers and
+  accessible data alternatives.
 - React Native uses `react-native-svg`, shared geometry, Lumen theme tokens, and native accessible
   data controls.
 - SwiftUI uses Swift Charts where available and a tokenized `Canvas` pie/donut implementation that
@@ -314,3 +334,119 @@ every value even when the axis selects fewer labels.
 
 React Native line, bar, scatter, range, and combo charts recompute their geometry when the container
 resizes. This keeps the complete plot visible with fixed-size axis text and a compact phone height.
+
+
+## Copyable comparison recipes
+
+These examples assume the shared stylesheet is already loaded. For Astro, use the same component
+props from `@santi020k/lumen-astro`, move data declarations into the component script between `---` fences, and omit the React
+function wrapper. The interactive guide contains complete examples for each web framework.
+
+```tsx
+import { DumbbellChart, LollipopChart } from '@santi020k/lumen-react'
+
+const data = [
+  { id: 'design', label: 'Design', reference: 62, value: 88 },
+  { id: 'engineering', label: 'Engineering', reference: 76, value: 91 },
+  { id: 'support', label: 'Support', reference: 81, value: 74 }
+]
+
+export function TeamComparison() {
+  return (
+    <DumbbellChart
+      aria-label="Team scores, previous and current quarter"
+      heading="Progress by team"
+      description="Score out of 100"
+      data={data}
+      domain={{ min: 0, max: 100 }}
+      referenceLabel="Previous"
+      valueLabel="Current"
+    />
+  )
+}
+
+export function TeamRanking() {
+  return (
+    <LollipopChart
+      aria-label="Team scores, current quarter"
+      heading="Team performance"
+      description="Score out of 100 · highest first"
+      data={data.toSorted((left, right) => right.value - left.value)}
+      domain={{ min: 0, max: 100 }}
+      valueLabel="Score"
+    />
+  )
+}
+```
+
+The ranking example has no missing values; when sorting nullable measurements, explicitly choose
+where missing rows belong. LollipopChart does not plot the optional `reference`. DumbbellChart
+preserves the available endpoint when the other is `null` and omits its connector.
+
+```tsx
+import { BulletChart } from '@santi020k/lumen-react'
+
+export function DeliveryTarget() {
+  return (
+    <BulletChart
+      aria-label="Delivery performance, current quarter"
+      heading="On-time delivery"
+      description="Completed deliveries within the service window"
+      value={86}
+      target={95}
+      ranges={[
+        { end: 70, label: 'Developing' },
+        { end: 90, label: 'Consistent' },
+        { end: 100, label: 'Excellent' }
+      ]}
+      domain={{ min: 0, max: 100 }}
+      valueLabel="Actual"
+      targetLabel="Goal"
+      formatValue={value => `${value}%`}
+    />
+  )
+}
+```
+
+For Elements, register the element before assigning its typed data and formatter properties:
+
+```ts
+import {
+  defineLumenElements,
+  LumenDumbbellChartElement
+} from '@santi020k/lumen-elements'
+
+defineLumenElements(['DumbbellChart'])
+
+const chart = document.querySelector('lumen-dumbbell-chart')
+if (chart instanceof LumenDumbbellChartElement) {
+  chart.data = [
+    { id: 'design', label: 'Design', reference: 62, value: 88 },
+    { id: 'support', label: 'Support', reference: 81, value: null }
+  ]
+  chart.valueFormatter = value => `${value} points`
+}
+```
+
+Use `domain-min="0" domain-max="100" reference-label="Previous" value-label="Current"` on the
+matching `<lumen-dumbbell-chart>` markup, together with `aria-label`, `heading`, and `description`.
+The script must run after that markup exists. After assigning `.data`, update that property on
+subsequent renders; it takes precedence over the JSON attribute. Formatters are functions assigned
+to `.valueFormatter`, not string attributes.
+
+## Units, localization, and states
+
+- Keep source values numeric. A formatted string such as `"86%"` is not chart data. The bullet
+  example stores percentage points (86) and appends `%`; `Intl.NumberFormat` with `style: 'percent'`
+  expects a fraction (0.86) and a matching domain, target, and range scale.
+- Use `labels` for missing, empty, invalid, and data-disclosure messages; use `referenceLabel`,
+  `valueLabel`, and `targetLabel` for observation names. Elements exposes `not-available-label`,
+  `view-data-label`, and other chart label attributes, plus formatter properties.
+- An empty array means no rows. It does not mean a request is loading. Keep fetching, retries,
+  loading skeletons, and error recovery in the application. Invalid comparison data fails closed
+  instead of displaying a partial ranking.
+- Use `presentation="bare"` when an enclosing Card already provides the surface. Keep exact data
+  available with `showTable` unless an equivalent accessible data view is present nearby.
+- Native charts use `label` and `showData`. React Native formats through `formatValue`; SwiftUI and
+  Compose use `labels.formatValue`. Their domain types are `{ min, max }`, a Swift closed range,
+  and a Kotlin closed floating-point range respectively. Follow each platform's theme setup.

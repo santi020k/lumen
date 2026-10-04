@@ -173,9 +173,9 @@
       "RangeChart": "724f95ebb9bfc8aad182789adf93c3c242e2797a9ab299a8df014cb5c3b7f352",
       "ComboChart": "6124f3a0304174936c5969b4d5c2541ff3c5d48dc9247f87fec6dc678dafda9d",
       "VisuallyHidden": "10562829ec1f598aacc2ad819e93c0cd3b257c7eec60818854a08723d9dcc888",
-      "BulletChart": "32b4e4de7ece1f4830401d0778525cbab0edb2a9e6dcb19e35d0bb54445f7ed3",
-      "LollipopChart": "97eb312d75a7eee54cb435c09a2a5d82db23cf1776ff78c71fc6cf79df752bf2",
-      "DumbbellChart": "f90529647a2b0e7c1959a76460e0c1f84ccaca787f0e2c34683d864404882218",
+      "BulletChart": "59bb69312b0090fb2d011560beaf19efd80cf64cd1c037f7b6f81620f6b5698d",
+      "LollipopChart": "1181d7a7bf0feb93bee378b55aee0549332b92409a4fd48e0609e5815f201d0f",
+      "DumbbellChart": "209bfba9c330a37faf34cbca34566a43d1b946c35e8c496b7c355515170a2473",
       "Histogram": "5112f4f7ed4023b0e0600359397a9a10bb34749992720b922b3b8136396d671c",
       "WaterfallChart": "e9e2f3022cee121082fc73bfeb814d7b385791fcf563aa8b27c8f30a61fc92bf",
       "ChangeSummary": "31b2138f65c7c57dd21f07986e92c5cc3626a766368fc6e1e46a3590bd2c5829",
@@ -188,8 +188,8 @@
       "Pie chart": "7bd1f48c9161377d06a081c1244edb28cdefcf5304d887da75bb78e8a1ac8f67",
       "Scatter chart": "a8b4124d3ea35dfee1d9a2c79221b6f723c986a84a8a1945e5b4804c4549216b",
       "Waterfall chart": "04aeff745030bb5780070ebeb63ead1f596f4fcf4ae2b00303e64a7bc62cc541",
-      "Lollipop chart": "a865072389f91ed7418fc7a4a8647b97eda6964f1e76a4e99c82781b2ef058d1",
-      "Dumbbell chart": "0aa17da4018b750f8a5db5bdc013d2e7c732995eda1b2007583ab78e9d4a310b",
+      "Lollipop chart": "7652b9d7cf3be3ca7ecf6604306de9b4a049d1e71c7d9b6e4429fc0ac022d84a",
+      "Dumbbell chart": "5c3a531815dcde7d969e208bc1c75bc0b91d71ad8d022a17d8a7fbb194210d18",
       "Bullet chart": "81eccfe1bbef756f0743611d158bb4a38815599e476337fa4ed7e4a9d6e58b3f",
       "Histogram": "42538b0ec8eb5f24080485dce1040ce4e4b971763d71c628e12aeab219c180c9",
       "Heatmap": "02036cae9dd6a95ceaed14db88a8635b81af2d998bc00ab525ad4d05135083d6",
@@ -39095,6 +39095,24 @@
           "values": "formatters and labels"
         },
         {
+          "attribute": "heading, description, caption, summary",
+          "defaultValue": "unset",
+          "description": "Supplies visible context, a caption, and an optional screen-reader summary.",
+          "values": "string"
+        },
+        {
+          "attribute": "presentation",
+          "defaultValue": "\"default\"",
+          "description": "Uses bare inside a parent surface that already provides padding and a border.",
+          "values": "\"default\" | \"bare\""
+        },
+        {
+          "attribute": "aria-label",
+          "defaultValue": "unset",
+          "description": "Names the chart figure; include the measurement and reporting period.",
+          "values": "string"
+        },
+        {
           "attribute": "showTable",
           "defaultValue": "true",
           "description": "Exposes the actual, target, and exact range boundaries.",
@@ -39224,6 +39242,8 @@
             "ranges",
             "domain",
             "formatValue, valueLabel, targetLabel, labels",
+            "heading, description, caption, summary",
+            "aria-label",
             "showTable",
             "class, className",
             "...native attributes"
@@ -39302,20 +39322,40 @@
         "elements": true,
         "react": true
       },
-      "guidance": null,
+      "guidance": {
+        "when": "Use to compare a measured value with a target and optional labeled performance ranges. Describe the unit and period, and keep the actual value distinct from a percent-of-target score.",
+        "distinction": "Use DumbbellChart to compare pairs across categories. An explicit bullet domain must contain zero, the actual, the target, and every range end; ranges do not infer success or failure."
+      },
       "kebab": "bullet-chart",
       "keyboardInteractions": [],
       "keywords": [
+        "across",
+        "actual",
         "and",
         "breakdowns",
+        "bullet",
         "bulletchart",
         "categorical",
+        "categories",
         "compact",
+        "compare",
         "compares",
         "comparisons",
+        "contain",
         "custom",
         "data",
+        "describe",
         "display",
+        "distinct",
+        "domain",
+        "dumbbellchart",
+        "end",
+        "every",
+        "explicit",
+        "failure",
+        "from",
+        "infer",
+        "keep",
         "labeled",
         "marks",
         "match",
@@ -39323,21 +39363,32 @@
         "measured",
         "metrics",
         "mixed",
+        "must",
+        "not",
         "optional",
         "ordered",
+        "pairs",
         "part",
+        "percent",
         "performance",
+        "period",
         "plots",
         "question",
+        "range",
         "ranges",
         "relationships",
+        "score",
+        "success",
         "target",
         "the",
         "trends",
+        "unit",
+        "use",
         "value",
         "visualization",
         "whole",
-        "with"
+        "with",
+        "zero"
       ],
       "name": "BulletChart",
       "props": [
@@ -39421,7 +39472,7 @@
         {
           "attribute": "data",
           "defaultValue": "required",
-          "description": "Stable id, label, nullable value, optional reference and tone. Input order is preserved.",
+          "description": "Unique non-empty id, label, nullable finite value, and optional tone. Input order is preserved; reference is not plotted.",
           "values": "readonly LumenComparisonDatum[]"
         },
         {
@@ -39431,15 +39482,39 @@
           "values": "LumenChartDomain"
         },
         {
-          "attribute": "formatValue, labels",
-          "defaultValue": "English",
-          "description": "Formats visible values and the exact data table.",
-          "values": "Formatter and chart labels"
+          "attribute": "formatValue",
+          "defaultValue": "String",
+          "description": "Formats numeric values, ticks, and exact data. Keep the source data numeric.",
+          "values": "(value: number) => string"
         },
         {
-          "attribute": "valueLabel, referenceLabel",
-          "defaultValue": "Value / Before",
-          "description": "Names the observations; referenceLabel applies to paired comparisons.",
+          "attribute": "labels",
+          "defaultValue": "English",
+          "description": "Localizes unavailable, empty, invalid-data, and data-disclosure text.",
+          "values": "Partial<LumenChartLabels>"
+        },
+        {
+          "attribute": "valueLabel",
+          "defaultValue": "labels.value",
+          "description": "Names the measured value in the row header and exact table.",
+          "values": "string"
+        },
+        {
+          "attribute": "heading, description, caption, summary",
+          "defaultValue": "unset",
+          "description": "Supplies visible context, a caption, and an optional screen-reader summary.",
+          "values": "string"
+        },
+        {
+          "attribute": "presentation",
+          "defaultValue": "\"default\"",
+          "description": "Uses bare inside a parent surface that already provides padding and a border.",
+          "values": "\"default\" | \"bare\""
+        },
+        {
+          "attribute": "aria-label",
+          "defaultValue": "unset",
+          "description": "Names the chart figure; include the measurement and reporting period.",
           "values": "string"
         },
         {
@@ -39486,7 +39561,7 @@
       "frameworkDetails": {
         "astro": {
           "available": true,
-          "example": "<LollipopChart aria-label=\"Team performance\" data={[{ id: \"design\", label: \"Design\", reference: 62, value: 88 }, { id: \"engineering\", label: \"Engineering\", reference: 76, value: 91 }]} />",
+          "example": "<LollipopChart aria-label=\"Team performance\" data={[{ id: \"design\", label: \"Design\", value: 88 }, { id: \"engineering\", label: \"Engineering\", value: 91 }]} />",
           "importStatement": "import { LollipopChart } from '@santi020k/lumen-astro'",
           "language": "astro",
           "packageName": "@santi020k/lumen-astro",
@@ -39500,8 +39575,11 @@
             "presentation",
             "data",
             "domain",
-            "formatValue, labels",
-            "valueLabel, referenceLabel",
+            "formatValue",
+            "labels",
+            "valueLabel",
+            "heading, description, caption, summary",
+            "aria-label",
             "showTable",
             "class, className",
             "...native attributes"
@@ -39524,7 +39602,7 @@
         },
         "react": {
           "available": true,
-          "example": "<LollipopChart aria-label=\"Team performance\" data={[{ id: \"design\", label: \"Design\", reference: 62, value: 88 }, { id: \"engineering\", label: \"Engineering\", reference: 76, value: 91 }]} />",
+          "example": "<LollipopChart aria-label=\"Team performance\" data={[{ id: \"design\", label: \"Design\", value: 88 }, { id: \"engineering\", label: \"Engineering\", value: 91 }]} />",
           "importStatement": "import { LollipopChart } from '@santi020k/lumen-react'",
           "language": "tsx",
           "packageName": "@santi020k/lumen-react",
@@ -39539,39 +39617,76 @@
         "elements": true,
         "react": true
       },
-      "guidance": null,
+      "guidance": {
+        "when": "Use for one value per category when ranking or comparing magnitudes on a shared zero-based scale. The application owns row order; sort before passing data.",
+        "distinction": "Use DumbbellChart for paired observations and BarChart for grouped or stacked series. Keep null measurements distinct from zero, and retain the exact data disclosure."
+      },
       "kebab": "lollipop-chart",
       "keyboardInteractions": [],
       "keywords": [
         "and",
+        "application",
+        "barchart",
         "based",
+        "before",
         "breakdowns",
         "categorical",
         "categories",
+        "category",
         "compact",
+        "comparing",
         "comparisons",
         "custom",
         "data",
+        "disclosure",
         "display",
+        "distinct",
         "dot",
+        "dumbbellchart",
+        "exact",
+        "for",
+        "from",
+        "grouped",
+        "keep",
         "lollipopchart",
+        "magnitudes",
         "marks",
         "match",
         "matrices",
+        "measurements",
         "metrics",
         "mixed",
+        "null",
+        "observations",
+        "one",
+        "order",
         "ordered",
+        "owns",
+        "paired",
         "part",
+        "passing",
+        "per",
         "plots",
         "question",
         "ranges",
         "rank",
+        "ranking",
         "relationships",
+        "retain",
+        "row",
+        "scale",
+        "series",
+        "shared",
+        "sort",
+        "stacked",
         "stem",
         "the",
         "trends",
+        "use",
         "using",
+        "value",
         "visualization",
+        "when",
         "whole",
         "zero"
       ],
@@ -39586,7 +39701,7 @@
         {
           "attribute": "data",
           "defaultValue": "required",
-          "description": "Stable id, label, nullable value, optional reference and tone. Input order is preserved.",
+          "description": "Unique non-empty id, label, nullable finite value, optional nullable reference and tone. Input order is preserved.",
           "values": "readonly LumenComparisonDatum[]"
         },
         {
@@ -39596,15 +39711,39 @@
           "values": "LumenChartDomain"
         },
         {
-          "attribute": "formatValue, labels",
+          "attribute": "formatValue",
+          "defaultValue": "String",
+          "description": "Formats numeric values, ticks, and exact data. Keep the source data numeric.",
+          "values": "(value: number) => string"
+        },
+        {
+          "attribute": "labels",
           "defaultValue": "English",
-          "description": "Formats visible values and the exact data table.",
-          "values": "Formatter and chart labels"
+          "description": "Localizes unavailable, empty, invalid-data, and data-disclosure text.",
+          "values": "Partial<LumenChartLabels>"
         },
         {
           "attribute": "valueLabel, referenceLabel",
           "defaultValue": "Value / Before",
-          "description": "Names the observations; referenceLabel applies to paired comparisons.",
+          "description": "Names the current and reference observations. Missing endpoints are never converted to zero.",
+          "values": "string"
+        },
+        {
+          "attribute": "heading, description, caption, summary",
+          "defaultValue": "unset",
+          "description": "Supplies visible context, a caption, and an optional screen-reader summary.",
+          "values": "string"
+        },
+        {
+          "attribute": "presentation",
+          "defaultValue": "\"default\"",
+          "description": "Uses bare inside a parent surface that already provides padding and a border.",
+          "values": "\"default\" | \"bare\""
+        },
+        {
+          "attribute": "aria-label",
+          "defaultValue": "unset",
+          "description": "Names the chart figure; include the measurement and reporting period.",
           "values": "string"
         },
         {
@@ -39665,8 +39804,11 @@
             "presentation",
             "data",
             "domain",
-            "formatValue, labels",
+            "formatValue",
+            "labels",
             "valueLabel, referenceLabel",
+            "heading, description, caption, summary",
+            "aria-label",
             "showTable",
             "class, className",
             "...native attributes"
@@ -39704,39 +39846,72 @@
         "elements": true,
         "react": true
       },
-      "guidance": null,
+      "guidance": {
+        "when": "Use to compare two observations per category in the same unit. Name both endpoints with referenceLabel and valueLabel; outlined and filled dots distinguish their roles.",
+        "distinction": "Use LineChart for a sequence of observations and BulletChart for one value against a target. A missing endpoint stays unavailable and does not produce a connector."
+      },
       "kebab": "dumbbell-chart",
       "keyboardInteractions": [],
       "keywords": [
+        "against",
         "and",
+        "both",
         "breakdowns",
+        "bulletchart",
         "categorical",
         "category",
         "compact",
         "compare",
         "comparisons",
         "connected",
+        "connector",
         "custom",
         "data",
         "display",
+        "distinguish",
+        "does",
         "dots",
         "dumbbellchart",
+        "endpoint",
+        "endpoints",
+        "filled",
+        "for",
+        "linechart",
         "marks",
         "match",
         "matrices",
         "measurements",
         "metrics",
+        "missing",
         "mixed",
+        "name",
+        "not",
+        "observations",
+        "one",
         "ordered",
+        "outlined",
         "part",
         "per",
         "plots",
+        "produce",
         "question",
         "ranges",
+        "referencelabel",
         "relationships",
+        "roles",
+        "same",
+        "sequence",
+        "stays",
+        "target",
         "the",
+        "their",
         "trends",
         "two",
+        "unavailable",
+        "unit",
+        "use",
+        "value",
+        "valuelabel",
         "visualization",
         "whole",
         "with"
@@ -40904,7 +41079,7 @@
     "readme": "<p align=\"center\">\n  <a href=\"https://lumen.santi020k.com\">\n    <img src=\"./apps/docs/public/logo.svg\" alt=\"Lumen UI\" width=\"233\" height=\"60\">\n  </a>\n</p>\n\n<h1 align=\"center\">Lumen UI</h1>\n\n<p align=\"center\">\n  A cross-platform UI system with 150+ web primitives and shared native foundations.\n</p>\n\n<p align=\"center\">\n  <a href=\"https://lumen.santi020k.com\">Documentation</a>\n  ·\n  <a href=\"https://lumen.santi020k.com/docs/components\">Components</a>\n  ·\n  <a href=\"https://lumen.santi020k.com/#playgrounds\">Try the playgrounds</a>\n  ·\n  <a href=\"https://www.figma.com/community/file/1662337342676541513\">Figma library</a>\n  ·\n  <a href=\"https://apps.apple.com/app/id6805250815\">iPhone and iPad app</a>\n  ·\n  <a href=\"https://play.google.com/store/apps/details?id=com.santi020k.lumen.playground.compose\">Android app</a>\n  ·\n  <a href=\"https://github.com/santi020k/lumen/issues\">Issues</a>\n</p>\n\n<p align=\"center\">\n  <a href=\"https://github.com/santi020k/lumen/actions\"><img alt=\"GitHub Actions\" src=\"https://img.shields.io/github/actions/workflow/status/santi020k/lumen/ci.yml?branch=main&style=flat-square\"></a>\n  <a href=\"https://github.com/santi020k/lumen/actions/workflows/codeql.yml\"><img alt=\"CodeQL\" src=\"https://github.com/santi020k/lumen/actions/workflows/codeql.yml/badge.svg\"></a>\n  <a href=\"https://www.npmjs.com/package/@santi020k/lumen-astro\"><img alt=\"npm version\" src=\"https://img.shields.io/npm/v/@santi020k/lumen-astro?style=flat-square&label=npm\"></a>\n  <a href=\"./LICENSE\"><img alt=\"MIT license\" src=\"https://img.shields.io/badge/license-MIT-111827?style=flat-square\"></a>\n</p>\n\nLumen gives applications a consistent visual language without tying them to one rendering model.\nIts packages share tokens, component contracts, styles, and interaction patterns while keeping each\nframework and platform's native authoring experience.\n\n- **Framework native:** Astro components, React primitives, and standards-based custom elements.\n- **Native foundations:** generated React Native, SwiftUI, and Jetpack Compose tokens plus the\n  complete shared interface and namespaced brand icon catalogs preserve the same semantic roles and\n  artwork without introducing DOM or CSS assumptions.\n- **Accessible by default:** semantic markup, keyboard paths, focus management, and reduced-motion\n  support are built into the primitives.\n- **Standalone CSS:** no Tailwind configuration is required. Tailwind users get an explicit layer\n  integration.\n- **Progressively enhanced:** Astro interactions use a small client runtime instead of requiring an\n  application framework.\n- **Ready for design and AI workflows:** published Figma resources, a portable agent skill, an MCP\n  server, `llms.txt`, a machine-readable registry, and a cross-platform release manifest ship\n  alongside the component system.\n- **Product-ready templates:** five responsive dashboard and application families are available as\n  live previews and installable Astro, React, and Elements recipes.\n\n**Explore:** [Dashboards and templates](#dashboards-and-templates) · [Web quick start](#web-quick-start) · [Native playgrounds](#native-playgrounds) · [Tailwind CSS](#tailwind-css) · [Packages](#packages) · [Community](#community)\n\n## Lumen 4 candidate\n\nThe v4 release branch brings consumer-driven date selection, chart readability, clipboard feedback,\nloading states, native layout improvements and a new ImageComparison primitive. Start with the\n[v3 → v4 migration guide](docs/migrating-v3-to-v4.md), [consumer audit](docs/lumen-4-consumer-audit.md),\nand [local readiness record](docs/lumen-4-readiness.md). The refreshed community gallery includes\npublished consumer screenshots; it does not imply those applications already run this candidate.\n\nFor existing applications, start with [v1 → v2](docs/migrating-v1-to-v2.md) when needed, then\n[v2 → v3](docs/migrating-v2-to-v3.md) before\n[v3 → v4](docs/migrating-v3-to-v4.md). For initial adoption, use\n[Migrating to Lumen](docs/migrating-to-lumen.md).\n\n## Appearance presets\n\nChoose an appearance preset or customize the existing themes with the [appearance guide](docs/appearance-presets.md). The Studio preset uses PostLens as its visual reference.\n\n## Dashboards and templates\n\nExplore the [template gallery](https://lumen.santi020k.com/templates) for complete analytics,\nSaaS admin, commerce, project workspace, and authentication/onboarding experiences. Each family\nuses public Lumen primitives and semantic tokens, includes responsive and accessibility coverage,\nand ships through the CLI for all three framework targets:\n\n```bash\nlumen add analytics-dashboard\nlumen add commerce-dashboard --target react\nlumen add auth-onboarding --target elements\n```\n\n## Web quick start\n\nInstall the package for your framework:\n\n```bash\n# Astro\npnpm add @santi020k/lumen-astro\n\n# React\npnpm add @santi020k/lumen-react\n\n# Web Components\npnpm add @santi020k/lumen-elements\n```\n\n### Astro\n\nImport the stylesheet and mount `UIPrimitives` once in your root layout. The runtime enhances all\ninteractive Lumen markup on the page.\n\n```astro\n---\nimport '@santi020k/lumen-astro/styles.css'\nimport UIPrimitives from '@santi020k/lumen-astro/runtime'\n---\n\n<html lang=\"en\">\n  <body>\n    <slot />\n    <UIPrimitives />\n  </body>\n</html>\n```\n\n```astro\n---\nimport { Button, Card, Input } from '@santi020k/lumen-astro'\n---\n\n<Card>\n  <label for=\"email\">Email</label>\n  <Input id=\"email\" name=\"email\" type=\"email\" placeholder=\"you@example.com\" />\n  <Button>Subscribe</Button>\n</Card>\n```\n\n### React\n\nLoad the stylesheet once from your app entry or global CSS:\n\n```tsx\nimport '@santi020k/lumen-react/styles.css'\nimport { Button, Card, Input } from '@santi020k/lumen-react'\n\nexport function SubscribeForm() {\n  return (\n    <Card>\n      <label htmlFor=\"email\">Email</label>\n      <Input id=\"email\" name=\"email\" type=\"email\" placeholder=\"you@example.com\" />\n      <Button>Subscribe</Button>\n    </Card>\n  )\n}\n```\n\n### Web Components\n\nImport the styles and register the elements once:\n\n```html\n<style>\n  @import \"@santi020k/lumen-elements/styles.css\";\n</style>\n\n<script type=\"module\">\n  import { defineLumenElements } from '@santi020k/lumen-elements/define'\n\n  defineLumenElements()\n</script>\n\n<lumen-card>\n  <label for=\"email\">Email</label>\n  <lumen-input id=\"email\" name=\"email\" type=\"email\" placeholder=\"you@example.com\"></lumen-input>\n  <lumen-button>Subscribe</lumen-button>\n</lumen-card>\n```\n\nSee the [Web documentation](https://lumen.santi020k.com/docs/web) for installation, theming,\ncomponent examples, and API details.\n\nFor failure states, use the [error-handling guide](./docs/error-handling.md) to choose between field\nfeedback, summaries, persistent alerts, transient toasts, and the `ErrorState` recovery surface.\nLumen owns presentation and accessibility; applications retain logging, retry, and exception policy.\n\nFor native applications, choose the [React Native](https://lumen.santi020k.com/docs/react-native),\n[Apple / SwiftUI](https://lumen.santi020k.com/docs/apple), or\n[Android / Compose](https://lumen.santi020k.com/docs/android) guide. The\n[shared foundations](https://lumen.santi020k.com/docs/foundations) explain the cross-platform token\nand component contract; repository contributors can also use the\n[cross-platform architecture](./docs/cross-platform.md) and\n[native component reference](./docs/native-components.md).\n\n> **Native platform status for Lumen 2.** React Native, SwiftUI, Compose, and Wear OS use the frozen\n> supported contract. Package, migration, build, security, artifact, and stability checks gate the\n> initial release. The incomplete external-consumer and physical-device matrices remain published\n> as post-release qualification work; review them before choosing a production adapter.\n\n## Native playgrounds\n\nTry Lumen before adding it to your project. The [playground section](https://lumen.santi020k.com/#playgrounds)\nbrings together the browser demos and native apps. Explore component states and themes, then use\nthe open-source apps as implementation references. Start with the\n[web playground](https://lumen.santi020k.com/docs/web/playground) for Astro, React, and Web Components,\nor choose a native gallery:\n\n- [`apps/playground-react-native`](./apps/playground-react-native) runs through Expo on the web,\n  iOS, and Android. [Try the browser preview](https://lumen.santi020k.com/docs/react-native/playground#preview)\n  or use the local setup guide for native evaluation. EAS profiles cover TestFlight, Android App\n  Bundles, and APKs; this gallery has no separate public store listing.\n- [`apps/playground-apple`](./apps/playground-apple) is available on the\n  [App Store](https://apps.apple.com/app/id6805250815) for iPhone, iPad, and Mac. It also builds as\n  an iOS Xcode app or macOS Swift Package executable for local exploration.\n- [`apps/playground-android`](./apps/playground-android) builds a native Compose application and a\n  directly installable debug APK. It is also available on\n  [Google Play](https://play.google.com/store/apps/details?id=com.santi020k.lumen.playground.compose)\n  for Android phones and tablets.\n\nSee the [playground workflow](./docs/playgrounds.md) for a platform chooser, reference-app source,\nand run, capture, and distribution commands. Store builds follow their own release schedule and\nmay differ from the current repository candidate.\n\n## Tailwind CSS\n\nKeep the layer prelude, Tailwind import, and Lumen stylesheet in the same shared CSS entry. Replace\n`lumen-astro` with the package for your framework.\n\n```css\n@import \"@santi020k/lumen-astro/layers.css\";\n@import \"tailwindcss\";\n@import \"@santi020k/lumen-astro/styles.css\";\n```\n\nThis order places Tailwind base styles before Lumen components and Tailwind utilities above Lumen\ncomponent defaults.\n\n## Packages\n\n| Package | Purpose |\n| --- | --- |\n| [`@santi020k/lumen-astro`](./packages/astro) | Reference implementation, Astro components, and progressive-enhancement runtime |\n| [`@santi020k/lumen-react`](./packages/react) | React components and behavior hooks |\n| [`@santi020k/lumen-react-hook-form`](./packages/react-hook-form) | Optional React Hook Form adapters for composite controls |\n| [`@santi020k/lumen-elements`](./packages/elements) | Standards-based Web Components |\n| [`@santi020k/lumen-core`](./packages/core) | Shared tokens, metadata, class helpers, and behavior contracts |\n| [`@santi020k/lumen-tokens`](./packages/tokens) | Canonical platform-neutral design token source |\n| [`@santi020k/lumen-react-native`](./packages/react-native) | React Native foundations and native primitives |\n| [`LumenUI`](./packages/swift) | Swift Package for iOS, iPadOS, macOS, tvOS, visionOS, and watchOS foundations and native primitives |\n| [`LumenWidgetUI`](./packages/swift-widget) | Focused WidgetKit-safe semantic text, icon, badge, and compact-stat foundations |\n| [`lumen-compose`](./packages/compose) | Android library for Jetpack Compose foundations and native primitives |\n| [`lumen-compose-wear`](./packages/compose/wear) | Focused Wear OS primitives for at-a-glance round-screen actions, progress, status, metrics, and rows |\n| [`@santi020k/lumen-icons-brand`](./packages/icons-brand) | Optional namespaced brand icons for web `Icon` adapters  |\n| [`@santi020k/lumen`](./packages/lumen) | Umbrella package, CLI, registry metadata, and public package map |\n| [`@santi020k/lumen-mcp`](./packages/mcp) | MCP server for component discovery and source retrieval |\n\n## AI and design workflows\n\nInstall the portable Lumen skill in Codex, Claude Code, Cursor, Windsurf, and other compatible\ncoding agents:\n\n```bash\nnpx skills add santi020k/lumen --skill lumen-ui\n```\n\nThe skill teaches agents how to select, compose, theme, and verify Lumen primitives. Pair it with\n[`@santi020k/lumen-mcp`](./packages/mcp) when an agent needs to search the live catalog or retrieve\ncurrent source, props, tokens, and usage rules.\n\nFor ChatGPT and Codex, install the published\n[Lumen UI plugin](https://chatgpt.com/plugins/plugin_asdk_app_6a8f6c526c5481918eb8a48806fa112b)\nfrom the Plugins Directory. Select **Install plugin**, then mention **@Lumen UI** in a request such\nas “Find the right Lumen components for an accessible React settings screen.” Version 1.0.0 bundles\nthe skill with the hosted, read-only catalog; no separate Lumen account or local MCP setup is needed.\n\nAdditional machine-readable surfaces include:\n\n- [`llms.txt`](./llms.txt) for a concise project map.\n- [`docs/ai-usage.md`](./docs/ai-usage.md) for downstream generation examples.\n- [`docs/styling-contract.md`](./docs/styling-contract.md) for stable parts and component variables.\n- [`docs/import-and-icon-performance.md`](./docs/import-and-icon-performance.md) for repeatable import and icon evidence.\n- [`docs/graphics.md`](./docs/graphics.md) for portable decorative artwork across web and native platforms.\n- [`docs/consumer-regression-fixtures.md`](./docs/consumer-regression-fixtures.md) for production-shaped local coverage.\n- [`docs/project-adoption.md`](./docs/project-adoption.md) for the sibling-project audit and staged\n  web and native migration strategy.\n- [`registry/lumen.registry.json`](./registry/lumen.registry.json) for recipes and installable file\n  groups.\n- [`docs/figma.md`](./docs/figma.md) for Figma variables and Code Connect workflows.\n- [`plugins/lumen-ui`](./plugins/lumen-ui) for the packaged Codex and ChatGPT plugin, with its\n  [submission and review record](./docs/openai-plugin-submission.md).\n- [`.claude-plugin/marketplace.json`](./.claude-plugin/marketplace.json) for the Claude Code\n  marketplace, with its [installation and submission guide](./docs/claude-code-plugin.md).\n- [`docs/cross-platform.md`](./docs/cross-platform.md) for the native architecture, support tiers,\n  and component-parity policy.\n- [`docs/native-patterns.md`](./docs/native-patterns.md) for developed native compositions and the\n  boundary between Lumen presentation and platform-owned application structure.\n\n## Contributing\n\nLumen is a pnpm workspace. Astro is the reference implementation; shared contracts belong in\n`packages/core`, while framework-specific behavior stays in its adapter package.\n\n```bash\npnpm install\npnpm run dev\npnpm run validate\n```\n\nRead [`CONTRIBUTING.md`](./CONTRIBUTING.md) before opening a pull request. User-visible package\nchanges require a changeset.\n\n## Community\n\n[Feedback & support](https://lumen.santi020k.com/support) connects ideas, questions, bug reports,\nand the [public roadmap](https://lumen.santi020k.com/support#roadmap). Discuss improvements on GitHub\nand follow accepted work through implementation and release.\n\nLumen is free and MIT licensed while the project focuses on adoption, public examples, and\nreal-world feedback.\n\n- Explore task-oriented [guides](https://lumen.santi020k.com/guides).\n- Share a public project in the [community showcase](https://lumen.santi020k.com/community).\n- Evaluate the system with the open [team adoption path](https://lumen.santi020k.com/teams).\n- Tell us what would improve your next build through the\n  [adoption survey](https://github.com/santi020k/lumen/issues/new?template=adoption-feedback.yml).\n\nMaintainers can use the [exposure playbook](./docs/exposure-playbook.md) for publishing cadence,\ncampaign measurement, video scripts, and launch copy, and the\n[marketing package](./docs/marketing/README.md) for execution-ready copy, channel decisions, a\nfour-week calendar, asset briefs, an approval queue, and a community-response library.\n\n## Find your next step\n\n| Resource | Use it for |\n| --- | --- |\n| [Cross-platform architecture](docs/cross-platform.md) | Shared foundations and adapter responsibilities. |\n| [Native compatibility](docs/native-compatibility.md) | Supported toolchains and platform baselines. |\n| [Native release runbook](docs/native-release-runbook.md) | Artifact qualification and distribution gates. |\n\n## License\n\nLumen's original code and artwork are available under the [MIT License](./LICENSE). Generated\ninterface icons retain the Lucide ISC or Feather MIT terms, and generated brand icons retain Font\nAwesome Free's CC BY 4.0 terms. The native packages include the required attribution and license\nnotices; see [`icons/THIRD_PARTY_NOTICES.md`](./icons/THIRD_PARTY_NOTICES.md).\n"
   },
   "meta": {
-    "catalogHash": "eb77017b7265c6a5ca92396e6a6fd9497fcba8ba609c17745aabc4325e9ab533",
+    "catalogHash": "0109a14354f454a8083b448159a4b069c4352bcebf45092df5bfaed4b4061e1b",
     "componentCount": 179,
     "nativeComponentCount": 97,
     "packages": [
@@ -41716,15 +41891,33 @@
           "api": [
             {
               "defaultValue": "Required",
-              "description": "Stable id, category label, nullable value, optional reference and tone.",
+              "description": "Unique id, category label, nullable finite value, optional reference and tone. Input order is preserved.",
               "name": "data",
               "values": "LumenComparisonDatum[]"
             },
             {
+              "defaultValue": "label required",
+              "description": "Provides the accessible name and optional visible context.",
+              "name": "label, heading, description",
+              "values": "String"
+            },
+            {
               "defaultValue": "Automatic",
-              "description": "Includes zero and all displayed measurements.",
+              "description": "Includes zero and all displayed measurements. React Native uses { min, max }; SwiftUI and Compose use closed ranges.",
               "name": "domain",
               "values": "Finite numeric range"
+            },
+            {
+              "defaultValue": "English",
+              "description": "Names the measure and localizes empty, missing, invalid, and disclosure text.",
+              "name": "valueLabel, labels",
+              "values": "Localized chart labels"
+            },
+            {
+              "defaultValue": "Platform default",
+              "description": "React Native accepts formatValue; SwiftUI and Compose use labels.formatValue.",
+              "name": "formatValue / labels.formatValue",
+              "values": "Number formatter"
             },
             {
               "defaultValue": "true",
@@ -41733,7 +41926,7 @@
               "values": "Boolean"
             }
           ],
-          "example": "LumenLollipopChart(data = listOf(LumenComparisonDatum(\"design\", \"Design\", 88.0, 62.0)), label = \"Team performance\")",
+          "example": "LumenLollipopChart(\n  data = listOf(LumenComparisonDatum(\"design\", \"Design\", 88.0)),\n  label = \"Team scores, current quarter\",\n  domain = 0.0..100.0,\n  heading = \"Team performance\",\n  valueLabel = \"Score\"\n)",
           "exportName": "LumenLollipopChart",
           "importStatement": "import com.santi020k.lumen.LumenLollipopChart",
           "install": "Include packages/compose from a shallow Git checkout pinned to the Lumen release tag, then add implementation(project(\":lumen-compose\")).",
@@ -41748,15 +41941,33 @@
           "api": [
             {
               "defaultValue": "Required",
-              "description": "Stable id, category label, nullable value, optional reference and tone.",
+              "description": "Unique id, category label, nullable finite value, optional reference and tone. Input order is preserved.",
               "name": "data",
               "values": "LumenComparisonDatum[]"
             },
             {
+              "defaultValue": "label required",
+              "description": "Provides the accessible name and optional visible context.",
+              "name": "label, heading, description",
+              "values": "String"
+            },
+            {
               "defaultValue": "Automatic",
-              "description": "Includes zero and all displayed measurements.",
+              "description": "Includes zero and all displayed measurements. React Native uses { min, max }; SwiftUI and Compose use closed ranges.",
               "name": "domain",
               "values": "Finite numeric range"
+            },
+            {
+              "defaultValue": "English",
+              "description": "Names the measure and localizes empty, missing, invalid, and disclosure text.",
+              "name": "valueLabel, labels",
+              "values": "Localized chart labels"
+            },
+            {
+              "defaultValue": "Platform default",
+              "description": "React Native accepts formatValue; SwiftUI and Compose use labels.formatValue.",
+              "name": "formatValue / labels.formatValue",
+              "values": "Number formatter"
             },
             {
               "defaultValue": "true",
@@ -41765,7 +41976,7 @@
               "values": "Boolean"
             }
           ],
-          "example": "<LumenLollipopChart label=\"Team performance\" data={[{ id: \"design\", label: \"Design\", value: 88, reference: 62 }]} />",
+          "example": "<LumenLollipopChart\n  label=\"Team scores, current quarter\"\n  heading=\"Team performance\"\n  data={[{ id: 'design', label: 'Design', value: 88 }]}\n  domain={{ min: 0, max: 100 }}\n  valueLabel=\"Score\"\n/>",
           "exportName": "LumenLollipopChart",
           "importStatement": "import { LumenLollipopChart } from '@santi020k/lumen-react-native'",
           "install": "pnpm add @santi020k/lumen-react-native",
@@ -41780,15 +41991,33 @@
           "api": [
             {
               "defaultValue": "Required",
-              "description": "Stable id, category label, nullable value, optional reference and tone.",
+              "description": "Unique id, category label, nullable finite value, optional reference and tone. Input order is preserved.",
               "name": "data",
               "values": "LumenComparisonDatum[]"
             },
             {
+              "defaultValue": "label required",
+              "description": "Provides the accessible name and optional visible context.",
+              "name": "label, heading, description",
+              "values": "String"
+            },
+            {
               "defaultValue": "Automatic",
-              "description": "Includes zero and all displayed measurements.",
+              "description": "Includes zero and all displayed measurements. React Native uses { min, max }; SwiftUI and Compose use closed ranges.",
               "name": "domain",
               "values": "Finite numeric range"
+            },
+            {
+              "defaultValue": "English",
+              "description": "Names the measure and localizes empty, missing, invalid, and disclosure text.",
+              "name": "valueLabel, labels",
+              "values": "Localized chart labels"
+            },
+            {
+              "defaultValue": "Platform default",
+              "description": "React Native accepts formatValue; SwiftUI and Compose use labels.formatValue.",
+              "name": "formatValue / labels.formatValue",
+              "values": "Number formatter"
             },
             {
               "defaultValue": "true",
@@ -41797,7 +42026,7 @@
               "values": "Boolean"
             }
           ],
-          "example": "LumenLollipopChart(data: [.init(id: \"design\", label: \"Design\", value: 88, reference: 62)], label: \"Team performance\")",
+          "example": "LumenLollipopChart(\n  data: [.init(id: \"design\", label: \"Design\", value: 88)],\n  label: \"Team scores, current quarter\",\n  domain: 0...100,\n  heading: \"Team performance\",\n  valueLabel: \"Score\"\n)",
           "exportName": "LumenLollipopChart",
           "importStatement": "import LumenUI",
           "install": "Add https://github.com/santi020k/lumen with Swift Package Manager, pin an exact or compatible release version, and link the LumenUI product to the application target.",
@@ -41824,15 +42053,33 @@
           "api": [
             {
               "defaultValue": "Required",
-              "description": "Stable id, category label, nullable value, optional reference and tone.",
+              "description": "Unique id, category label, nullable finite value, optional reference and tone. Input order is preserved.",
               "name": "data",
               "values": "LumenComparisonDatum[]"
             },
             {
+              "defaultValue": "label required",
+              "description": "Provides the accessible name and optional visible context.",
+              "name": "label, heading, description",
+              "values": "String"
+            },
+            {
               "defaultValue": "Automatic",
-              "description": "Includes zero and all displayed measurements.",
+              "description": "Includes zero and all displayed measurements. React Native uses { min, max }; SwiftUI and Compose use closed ranges.",
               "name": "domain",
               "values": "Finite numeric range"
+            },
+            {
+              "defaultValue": "English",
+              "description": "Names the measure and localizes empty, missing, invalid, and disclosure text. DumbbellChart also accepts referenceLabel (Before).",
+              "name": "valueLabel, labels",
+              "values": "Localized chart labels"
+            },
+            {
+              "defaultValue": "Platform default",
+              "description": "React Native accepts formatValue; SwiftUI and Compose use labels.formatValue.",
+              "name": "formatValue / labels.formatValue",
+              "values": "Number formatter"
             },
             {
               "defaultValue": "true",
@@ -41841,7 +42088,7 @@
               "values": "Boolean"
             }
           ],
-          "example": "LumenDumbbellChart(data = listOf(LumenComparisonDatum(\"design\", \"Design\", 88.0, 62.0)), label = \"Team performance\")",
+          "example": "LumenDumbbellChart(\n  data = listOf(\n    LumenComparisonDatum(\"design\", \"Design\", value = 88.0, reference = 62.0),\n    LumenComparisonDatum(\"support\", \"Support\", value = 74.0, reference = 81.0)\n  ),\n  label = \"Team scores, previous and current quarter\",\n  domain = 0.0..100.0,\n  heading = \"Progress by team\",\n  referenceLabel = \"Previous\",\n  valueLabel = \"Current\"\n)",
           "exportName": "LumenDumbbellChart",
           "importStatement": "import com.santi020k.lumen.LumenDumbbellChart",
           "install": "Include packages/compose from a shallow Git checkout pinned to the Lumen release tag, then add implementation(project(\":lumen-compose\")).",
@@ -41856,15 +42103,33 @@
           "api": [
             {
               "defaultValue": "Required",
-              "description": "Stable id, category label, nullable value, optional reference and tone.",
+              "description": "Unique id, category label, nullable finite value, optional reference and tone. Input order is preserved.",
               "name": "data",
               "values": "LumenComparisonDatum[]"
             },
             {
+              "defaultValue": "label required",
+              "description": "Provides the accessible name and optional visible context.",
+              "name": "label, heading, description",
+              "values": "String"
+            },
+            {
               "defaultValue": "Automatic",
-              "description": "Includes zero and all displayed measurements.",
+              "description": "Includes zero and all displayed measurements. React Native uses { min, max }; SwiftUI and Compose use closed ranges.",
               "name": "domain",
               "values": "Finite numeric range"
+            },
+            {
+              "defaultValue": "English",
+              "description": "Names the measure and localizes empty, missing, invalid, and disclosure text. DumbbellChart also accepts referenceLabel (Before).",
+              "name": "valueLabel, labels",
+              "values": "Localized chart labels"
+            },
+            {
+              "defaultValue": "Platform default",
+              "description": "React Native accepts formatValue; SwiftUI and Compose use labels.formatValue.",
+              "name": "formatValue / labels.formatValue",
+              "values": "Number formatter"
             },
             {
               "defaultValue": "true",
@@ -41873,7 +42138,7 @@
               "values": "Boolean"
             }
           ],
-          "example": "<LumenDumbbellChart label=\"Team performance\" data={[{ id: \"design\", label: \"Design\", value: 88, reference: 62 }]} />",
+          "example": "<LumenDumbbellChart\n  label=\"Team scores, previous and current quarter\"\n  heading=\"Progress by team\"\n  data={[\n    { id: 'design', label: 'Design', value: 88, reference: 62 },\n    { id: 'support', label: 'Support', value: 74, reference: 81 }\n  ]}\n  domain={{ min: 0, max: 100 }}\n  referenceLabel=\"Previous\"\n  valueLabel=\"Current\"\n/>",
           "exportName": "LumenDumbbellChart",
           "importStatement": "import { LumenDumbbellChart } from '@santi020k/lumen-react-native'",
           "install": "pnpm add @santi020k/lumen-react-native",
@@ -41888,15 +42153,33 @@
           "api": [
             {
               "defaultValue": "Required",
-              "description": "Stable id, category label, nullable value, optional reference and tone.",
+              "description": "Unique id, category label, nullable finite value, optional reference and tone. Input order is preserved.",
               "name": "data",
               "values": "LumenComparisonDatum[]"
             },
             {
+              "defaultValue": "label required",
+              "description": "Provides the accessible name and optional visible context.",
+              "name": "label, heading, description",
+              "values": "String"
+            },
+            {
               "defaultValue": "Automatic",
-              "description": "Includes zero and all displayed measurements.",
+              "description": "Includes zero and all displayed measurements. React Native uses { min, max }; SwiftUI and Compose use closed ranges.",
               "name": "domain",
               "values": "Finite numeric range"
+            },
+            {
+              "defaultValue": "English",
+              "description": "Names the measure and localizes empty, missing, invalid, and disclosure text. DumbbellChart also accepts referenceLabel (Before).",
+              "name": "valueLabel, labels",
+              "values": "Localized chart labels"
+            },
+            {
+              "defaultValue": "Platform default",
+              "description": "React Native accepts formatValue; SwiftUI and Compose use labels.formatValue.",
+              "name": "formatValue / labels.formatValue",
+              "values": "Number formatter"
             },
             {
               "defaultValue": "true",
@@ -41905,7 +42188,7 @@
               "values": "Boolean"
             }
           ],
-          "example": "LumenDumbbellChart(data: [.init(id: \"design\", label: \"Design\", value: 88, reference: 62)], label: \"Team performance\")",
+          "example": "LumenDumbbellChart(\n  data: [\n    .init(id: \"design\", label: \"Design\", value: 88, reference: 62),\n    .init(id: \"support\", label: \"Support\", value: 74, reference: 81)\n  ],\n  label: \"Team scores, previous and current quarter\",\n  domain: 0...100,\n  heading: \"Progress by team\",\n  referenceLabel: \"Previous\",\n  valueLabel: \"Current\"\n)",
           "exportName": "LumenDumbbellChart",
           "importStatement": "import LumenUI",
           "install": "Add https://github.com/santi020k/lumen with Swift Package Manager, pin an exact or compatible release version, and link the LumenUI product to the application target.",

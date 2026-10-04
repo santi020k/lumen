@@ -39,3 +39,40 @@ test('connects the copied Elements Toast example through the public controller',
   expect(code).toContain('LumenToast.create(')
   expect(code).not.toContain('lumen-toast-demo')
 })
+
+test.each([
+  { name: 'LollipopChart', value: '91', label: 'Score', rows: 3 },
+  { name: 'DumbbellChart', value: '91', label: 'Previous', rows: 3 },
+  { name: 'BulletChart', value: '86%', label: 'Goal', rows: 5 }
+])('copied $name example renders its data and units', async ({ name, value, label, rows }) => {
+  const { runInNewContext } = await import('node:vm')
+  const elements = await import('@santi020k/lumen-elements')
+  const testPath = expect.getState().testPath
+
+  if (!testPath) throw new Error('Expected the active Vitest test path')
+
+  const source = readFileSync(join(dirname(testPath), `../examples/${name}.astro`), 'utf8')
+  const code = buildSnippets(name, source)[2]?.code ?? ''
+  const template = document.createElement('template')
+
+  template.innerHTML = code
+
+  const script = template.content.querySelector('script')
+
+  if (!script?.textContent) throw new Error('Expected a runnable Elements example')
+
+  const scriptSource = script.textContent
+
+  script.remove()
+  document.body.replaceChildren(template.content)
+  runInNewContext(scriptSource.replace(/^import .* from '@santi020k\/lumen-elements'$/mu, ''), {
+    ...elements,
+    document
+  })
+
+  expect(document.body.querySelector('.ui-chart__empty')).toBeNull()
+  expect(document.body.textContent).toContain(value)
+  expect(document.body.textContent).toContain(label)
+  expect(document.body.querySelectorAll('tbody tr')).toHaveLength(rows)
+  document.body.replaceChildren()
+})

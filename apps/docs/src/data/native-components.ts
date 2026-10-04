@@ -363,11 +363,36 @@ const chartDefinitions: ComponentDefinition[] = [
     guidance: 'Preserve missing measurements as null and provide a zero-inclusive domain. The application owns row ordering.',
     exports: { android: 'LumenLollipopChart', apple: 'LumenLollipopChart', 'react-native': 'LumenLollipopChart' },
     examples: {
-      android: 'LumenLollipopChart(data = listOf(LumenComparisonDatum("design", "Design", 88.0, 62.0)), label = "Team performance")',
-      apple: 'LumenLollipopChart(data: [.init(id: "design", label: "Design", value: 88, reference: 62)], label: "Team performance")',
-      'react-native': '<LumenLollipopChart label="Team performance" data={[{ id: "design", label: "Design", value: 88, reference: 62 }]} />'
+      android: `LumenLollipopChart(
+  data = listOf(LumenComparisonDatum("design", "Design", 88.0)),
+  label = "Team scores, current quarter",
+  domain = 0.0..100.0,
+  heading = "Team performance",
+  valueLabel = "Score"
+)`,
+      apple: `LumenLollipopChart(
+  data: [.init(id: "design", label: "Design", value: 88)],
+  label: "Team scores, current quarter",
+  domain: 0...100,
+  heading: "Team performance",
+  valueLabel: "Score"
+)`,
+      'react-native': `<LumenLollipopChart
+  label="Team scores, current quarter"
+  heading="Team performance"
+  data={[{ id: 'design', label: 'Design', value: 88 }]}
+  domain={{ min: 0, max: 100 }}
+  valueLabel="Score"
+/>`
     },
-    properties: [property('data', 'LumenComparisonDatum[]', 'Required', 'Stable id, category label, nullable value, optional reference and tone.'), property('domain', 'Finite numeric range', 'Automatic', 'Includes zero and all displayed measurements.'), property('showData', 'Boolean', 'true', 'Provides the expandable exact values.')]
+    properties: [
+      property('data', 'LumenComparisonDatum[]', 'Required', 'Unique id, category label, nullable finite value, optional reference and tone. Input order is preserved.'),
+      property('label, heading, description', 'String', 'label required', 'Provides the accessible name and optional visible context.'),
+      property('domain', 'Finite numeric range', 'Automatic', 'Includes zero and all displayed measurements. React Native uses { min, max }; SwiftUI and Compose use closed ranges.'),
+      property('valueLabel, labels', 'Localized chart labels', 'English', 'Names the measure and localizes empty, missing, invalid, and disclosure text.'),
+      property('formatValue / labels.formatValue', 'Number formatter', 'Platform default', 'React Native accepts formatValue; SwiftUI and Compose use labels.formatValue.'),
+      property('showData', 'Boolean', 'true', 'Provides the expandable exact values.')
+    ]
   },
   {
     name: 'Dumbbell chart',
@@ -378,11 +403,48 @@ const chartDefinitions: ComponentDefinition[] = [
     guidance: 'Preserve missing measurements as null and provide a zero-inclusive domain. The application owns row ordering.',
     exports: { android: 'LumenDumbbellChart', apple: 'LumenDumbbellChart', 'react-native': 'LumenDumbbellChart' },
     examples: {
-      android: 'LumenDumbbellChart(data = listOf(LumenComparisonDatum("design", "Design", 88.0, 62.0)), label = "Team performance")',
-      apple: 'LumenDumbbellChart(data: [.init(id: "design", label: "Design", value: 88, reference: 62)], label: "Team performance")',
-      'react-native': '<LumenDumbbellChart label="Team performance" data={[{ id: "design", label: "Design", value: 88, reference: 62 }]} />'
+      android: `LumenDumbbellChart(
+  data = listOf(
+    LumenComparisonDatum("design", "Design", value = 88.0, reference = 62.0),
+    LumenComparisonDatum("support", "Support", value = 74.0, reference = 81.0)
+  ),
+  label = "Team scores, previous and current quarter",
+  domain = 0.0..100.0,
+  heading = "Progress by team",
+  referenceLabel = "Previous",
+  valueLabel = "Current"
+)`,
+      apple: `LumenDumbbellChart(
+  data: [
+    .init(id: "design", label: "Design", value: 88, reference: 62),
+    .init(id: "support", label: "Support", value: 74, reference: 81)
+  ],
+  label: "Team scores, previous and current quarter",
+  domain: 0...100,
+  heading: "Progress by team",
+  referenceLabel: "Previous",
+  valueLabel: "Current"
+)`,
+      'react-native': `<LumenDumbbellChart
+  label="Team scores, previous and current quarter"
+  heading="Progress by team"
+  data={[
+    { id: 'design', label: 'Design', value: 88, reference: 62 },
+    { id: 'support', label: 'Support', value: 74, reference: 81 }
+  ]}
+  domain={{ min: 0, max: 100 }}
+  referenceLabel="Previous"
+  valueLabel="Current"
+/>`
     },
-    properties: [property('data', 'LumenComparisonDatum[]', 'Required', 'Stable id, category label, nullable value, optional reference and tone.'), property('domain', 'Finite numeric range', 'Automatic', 'Includes zero and all displayed measurements.'), property('showData', 'Boolean', 'true', 'Provides the expandable exact values.')]
+    properties: [
+      property('data', 'LumenComparisonDatum[]', 'Required', 'Unique id, category label, nullable finite value, optional reference and tone. Input order is preserved.'),
+      property('label, heading, description', 'String', 'label required', 'Provides the accessible name and optional visible context.'),
+      property('domain', 'Finite numeric range', 'Automatic', 'Includes zero and all displayed measurements. React Native uses { min, max }; SwiftUI and Compose use closed ranges.'),
+      property('valueLabel, labels', 'Localized chart labels', 'English', 'Names the measure and localizes empty, missing, invalid, and disclosure text. DumbbellChart also accepts referenceLabel (Before).'),
+      property('formatValue / labels.formatValue', 'Number formatter', 'Platform default', 'React Native accepts formatValue; SwiftUI and Compose use labels.formatValue.'),
+      property('showData', 'Boolean', 'true', 'Provides the expandable exact values.')
+    ]
   },
   {
     name: 'Bullet chart',

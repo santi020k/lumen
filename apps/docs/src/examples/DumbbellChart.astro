@@ -1,4 +1,19 @@
 ---
 import { DumbbellChart } from '@santi020k/lumen-astro'
+
+const data = [
+  { id: 'design', label: 'Design', reference: 62, value: 88 },
+  { id: 'engineering', label: 'Engineering', reference: 76, value: 91 },
+  { id: 'support', label: 'Support', reference: 81, value: 74 }
+]
 ---
-<DumbbellChart aria-label="Team performance" data={[{ id: 'design', label: 'Design', reference: 62, value: 88 }, { id: 'engineering', label: 'Engineering', reference: 76, value: 91 }]} />
+
+<DumbbellChart
+  aria-label="Team scores, previous and current quarter"
+  heading="Progress by team"
+  description="Score out of 100 · previous to current quarter"
+  data={data}
+  domain={{ min: 0, max: 100 }}
+  referenceLabel="Previous"
+  valueLabel="Current"
+/>

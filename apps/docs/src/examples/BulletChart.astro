@@ -1,7 +1,22 @@
 ---
 import { BulletChart } from '@santi020k/lumen-astro'
 
-import { chartDemoBulletRanges } from '../lib/chart-demo-data'
+const ranges = [
+  { end: 70, label: 'Developing' },
+  { end: 90, label: 'Consistent' },
+  { end: 100, label: 'Excellent' }
+]
 ---
 
-<BulletChart aria-label="Illustrative delivery performance" heading="On-time delivery" description="Actual performance against the service target" value={86} target={95} ranges={chartDemoBulletRanges} formatValue={value => `${value}%`} />
+<BulletChart
+  aria-label="Delivery performance, current quarter"
+  heading="On-time delivery"
+  description="Completed deliveries within the service window"
+  value={86}
+  target={95}
+  ranges={ranges}
+  domain={{ min: 0, max: 100 }}
+  valueLabel="Actual"
+  targetLabel="Goal"
+  formatValue={value => `${value}%`}
+/>
