@@ -28,7 +28,8 @@ for (const width of [390, 1280]) {
             await expect(disclosure).toContainText('73')
           }
           await disclosure.locator('summary').press('Enter')
-          await chart.evaluate(element => { window.scrollBy(0, element.getBoundingClientRect().top - 180) })
+          // Keep the chart below the stacked mobile documentation navigation.
+          await chart.evaluate(element => { window.scrollBy(0, element.getBoundingClientRect().top - 260) })
           await chart.screenshot({ path: testInfo.outputPath(`${className}-${width}-${theme}.png`) })
         }
         const dimensions = await page.evaluate(() => ({ width: document.documentElement.clientWidth,

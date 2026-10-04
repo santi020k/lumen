@@ -65,7 +65,9 @@ export const funnelChartHtml = (
 }
 
 export type BoxPlotStatisticLabels = LumenBoxPlotStatisticLabels
-export const defaultBoxPlotStatistics: Readonly<BoxPlotStatisticLabels> = { min: 'Lower whisker', q1: 'First quartile', median: 'Median', q3: 'Third quartile', max: 'Upper whisker', outliers: 'Outliers' }
+
+const defaultBoxPlotStatistics: Readonly<BoxPlotStatisticLabels> = { min: 'Lower whisker', q1: 'First quartile', median: 'Median', q3: 'Third quartile', max: 'Upper whisker', outliers: 'Outliers' }
+
 export const boxPlotHtml = (
   element: HTMLElement,
   data: readonly LumenBoxPlotDatum[],
