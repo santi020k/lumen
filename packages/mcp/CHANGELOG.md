@@ -97,6 +97,24 @@
   and matching pointer payloads. Preserve focused action identity across value updates and keep
   Astro's runtime from enhancing React-owned chart roots on mixed-framework pages.
 
+- Clarify border ownership for composed surfaces, including disabling default image rounding inside
+  rounded frames and preserving focus indicators when clipping artwork.
+
+- Polish shared Select keyboard activation, accessible popup names, and focus-leave dismissal.
+  Use enhanced Lumen selectors for documentation theme and scope controls, retaining progressive
+  enhancement and resilient preference handling.
+
+  Refresh compatible dependencies and remove unused MDX support, the duplicate root Next
+  declaration, the monolithic MCP SDK, and obsolete dependency overrides. Migrate MCP to the
+  split v2 SDK with unchanged stdio, HTTP, and Worker wire contracts. Programmatic consumers
+  must use v2 SDK transports and types with the returned server object; see the v4 migration guide.
+
+  Regenerate the shared Lucide catalog with four additional icon names and updated nut artwork.
+  Swift exhaustive icon switches must handle the new cases or provide an unknown default.
+
+  Batch React ImageComparison form resets into one scheduled update and cancel pending work
+  during cleanup, preserving controlled values and canceled resets.
+
 ### Migration, Direction and Data Collections
 
 - Add v3 and v4 source migration previews with optional coordinated pnpm dependency upgrades. Preserve
@@ -106,6 +124,7 @@
   Correct inherited RTL horizontal navigation in tabs, calendars and pane resizing. Add an opt-in
   VirtualList data renderer that mounts only the visible window and focused neighbors, with stable
   keys and a shared DOM controller for Astro and Elements.
+
 ### Appearance Presets
 
 - Add Default, Studio and Glass appearance presets with semantic palette and surface customization.
@@ -141,26 +160,6 @@
   contracts, and review custom button selectors against the content wrapper. Loading actions now
   prevent repeated activation. See `docs/migrating-to-lumen.md` for the full v4 migration. No
   application data migration is performed, and this candidate is not publication authorization.
-
-### Patch Changes
-
-- Clarify border ownership for composed surfaces, including disabling default image rounding inside
-  rounded frames and preserving focus indicators when clipping artwork.
-
-- Polish shared Select keyboard activation, accessible popup names, and focus-leave dismissal.
-  Use enhanced Lumen selectors for documentation theme and scope controls, retaining progressive
-  enhancement and resilient preference handling.
-
-  Refresh compatible dependencies and remove unused MDX support, the duplicate root Next
-  declaration, the monolithic MCP SDK, and obsolete dependency overrides. Migrate MCP to the
-  split v2 SDK with unchanged stdio, HTTP, and Worker wire contracts. Programmatic consumers
-  must use v2 SDK transports and types with the returned server object; see the v4 migration guide.
-
-  Regenerate the shared Lucide catalog with four additional icon names and updated nut artwork.
-  Swift exhaustive icon switches must handle the new cases or provide an unknown default.
-
-  Batch React ImageComparison form resets into one scheduled update and cancel pending work
-  during cleanup, preserving controlled values and canceled resets.
 
 ## 3.0.1
 

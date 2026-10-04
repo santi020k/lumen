@@ -58,6 +58,8 @@
   distinctly from measured zero. Duplicate coordinates use the first observation consistently.
   Existing category line spacing remains the default. Native component coverage is unchanged.
 
+- Add ImageComparison for Astro, React, and Web Components with aligned media clipping, a labelled native range control, localized accessible values, and controlled React state. Preserve media framing across reveal changes and support writing direction without pointer-only interaction.
+
 ### Patch Changes
 
 - Reject malformed Astro action errors and inherited icon names, preserve plain markup prose without syntax highlighting, and normalize form-error records whose field is named `fields`, exclude blank numeric chart coordinates, preserve literal slash-star text during markup migrations, and detect existing recipe conflicts before writing files.
@@ -84,12 +86,28 @@
 
 - Close shared Combobox options and clear stale active-option state after an accepted native form reset. Refilter against the restored input value, preserve canceled resets, and cancel deferred work when the controller is destroyed.
 
+- Correct Astro runtime metadata for overlay, selection, navigation, and form primitives so tooling and generated integration guidance include UIPrimitives when their interactions require it.
+
+- Polish shared Select keyboard activation, accessible popup names, and focus-leave dismissal.
+  Use enhanced Lumen selectors for documentation theme and scope controls, retaining progressive
+  enhancement and resilient preference handling.
+
+  Refresh compatible dependencies and remove unused MDX support, the duplicate root Next
+  declaration, the monolithic MCP SDK, and obsolete dependency overrides. Migrate MCP to the
+  split v2 SDK with unchanged stdio, HTTP, and Worker wire contracts. Programmatic consumers
+  must use v2 SDK transports and types with the returned server object; see the v4 migration guide.
+
+  Regenerate the shared Lucide catalog with four additional icon names and updated nut artwork.
+  Swift exhaustive icon switches must handle the new cases or provide an unknown default.
+
+  Batch React ImageComparison form resets into one scheduled update and cancel pending work
+  during cleanup, preserving controlled values and canceled resets.
+
 ### Native Advanced Inputs
 
 - Add React Native and SwiftUI number, time, autocomplete, password, numeric OTP and image comparison
   controls alongside Compose. Add exact decimal, numeric OTP and same-day time helpers in Core,
   bilingual playground examples and an application-owned form-error summary recipe.
-
 
 ### Migration, Direction and Data Collections
 
@@ -100,6 +118,7 @@
   Correct inherited RTL horizontal navigation in tabs, calendars and pane resizing. Add an opt-in
   VirtualList data renderer that mounts only the visible window and focused neighbors, with stable
   keys and a shared DOM controller for Astro and Elements.
+
 ### Appearance Presets
 
 - Add Default, Studio and Glass appearance presets with semantic palette and surface customization.
@@ -147,69 +166,12 @@
   prevent repeated activation. See `docs/migrating-to-lumen.md` for the full v4 migration. No
   application data migration is performed, and this candidate is not publication authorization.
 
-### Minor Changes
-
-- Add ImageComparison for Astro, React, and Web Components with aligned media clipping, a labelled native range control, localized accessible values, and controlled React state. Preserve media framing across reveal changes and support writing direction without pointer-only interaction.
-
-### Major Changes
 - Keep editable Combobox focus in the input with active-descendant navigation, composition-safe
   shortcuts and live option updates. Report React selection through onChange for controlled forms.
   Dismiss only the innermost active popup on Escape and preserve canceled events and text editing.
 
   Migration: use aria-activedescendant and aria-selected instead of focusing option buttons. Enter
   commits only an active option in an open list; otherwise native form behavior remains available.
-
-- Preserve VirtualList scroll height with fixed-height row windows and inert spacers across web
-  adapters. Refresh changing rows and resized containers, retain keyboard focus, and restore row
-  state on cleanup. Range endpoints are inclusive; empty lists report endIndex -1.
-
-  Add cancelable rich-text command requests and a React commandHandler option so external engines
-  can execute commands once without a browser fallback. Existing command events report completion.
-
-- Prepare the coordinated Lumen 4 family from twenty real consumer audits.
-
-  - Make chart axes readable, preserve complete detail labels, center single observations, use
-    deterministic duplicate handling, and expose formatted native axes and compact plot layouts.
-  - Add controlled date-range drafting with strict calendar bounds, localized labels, and safe
-    disabled/read-only behavior. Keep form labels and keyboard focus attached to the active control.
-  - Keep server-paginated tables in supplied order with controlled manual sorting, and make dialog
-    dismissal and opener restoration explicit for pending and nested workflows.
-  - Preserve native hidden semantics, loading-button dimensions, and disabled slotted activation.
-  - Give code-copy actions localized success and failure feedback, preserve normal navigation Tab
-    order, and improve readable prose and code-theme defaults.
-  - Add ImageComparison with a fixed image frame, native range control, RTL support, and matching
-    Astro, React, and Web Component contracts.
-  - Improve native slider announcements, long text layout, and contextual symbol selection.
-  - Refresh usage examples, migration guidance, machine-readable contracts, and the public consumer
-    showcase. Token, icon, and form-integration packages join the coordinated major family.
-
-  Migration: use unique stable chart X values, rebuild native consumers for updated initializer
-  contracts, and review custom button selectors against the content wrapper. Loading actions now
-  prevent repeated activation. See `docs/migrating-to-lumen.md` for the full v4 migration. No
-  application data migration is performed, and this candidate is not publication authorization.
-
-### Minor Changes
-
-- Add ImageComparison for Astro, React, and Web Components with aligned media clipping, a labelled native range control, localized accessible values, and controlled React state. Preserve media framing across reveal changes and support writing direction without pointer-only interaction.
-
-### Patch Changes
-
-- Correct Astro runtime metadata for overlay, selection, navigation, and form primitives so tooling and generated integration guidance include UIPrimitives when their interactions require it.
-
-- Polish shared Select keyboard activation, accessible popup names, and focus-leave dismissal.
-  Use enhanced Lumen selectors for documentation theme and scope controls, retaining progressive
-  enhancement and resilient preference handling.
-
-  Refresh compatible dependencies and remove unused MDX support, the duplicate root Next
-  declaration, the monolithic MCP SDK, and obsolete dependency overrides. Migrate MCP to the
-  split v2 SDK with unchanged stdio, HTTP, and Worker wire contracts. Programmatic consumers
-  must use v2 SDK transports and types with the returned server object; see the v4 migration guide.
-
-  Regenerate the shared Lucide catalog with four additional icon names and updated nut artwork.
-  Swift exhaustive icon switches must handle the new cases or provide an unknown default.
-
-  Batch React ImageComparison form resets into one scheduled update and cancel pending work
-  during cleanup, preserving controlled values and canceled resets.
 
 ## 3.0.1
 

@@ -4,6 +4,9 @@
 
 ### Patch Changes
 
+- Updated dependencies [`cc91b3e`, `c71c50a`, `ef5187d`, `788125f`, `55a1032`, `19964b1`, `20aa235`, `85f332c`, `0ea4a4e`, `79d9b0a`, `4e80faa`, `bd11bc0`, `bd11bc0`, `1639935`, `059aae9`, `177aedf`, `aba0839`]:
+  - @santi020k/lumen-react@4.0.0
+
 - Updated dependencies []:
   - @santi020k/lumen-react@4.0.0
 
@@ -30,11 +33,6 @@
   contracts, and review custom button selectors against the content wrapper. Loading actions now
   prevent repeated activation. See `docs/migrating-to-lumen.md` for the full v4 migration. No
   application data migration is performed, and this candidate is not publication authorization.
-
-### Patch Changes
-
-- Updated dependencies []:
-  - @santi020k/lumen-react@4.0.0
 
 ## 3.0.0
 

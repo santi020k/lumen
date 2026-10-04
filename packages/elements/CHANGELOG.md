@@ -22,6 +22,20 @@
   16/24/32px layouts to group/xl/2xl. Default Stack/Grid spacing remains 16px. Comfortable Card
   insets become 24px, and direct child margins no longer stack with layout gaps.
 
+- Keep editable Combobox focus in the input with active-descendant navigation, composition-safe
+  shortcuts and live option updates. Report React selection through onChange for controlled forms.
+  Dismiss only the innermost active popup on Escape and preserve canceled events and text editing.
+
+  Migration: use aria-activedescendant and aria-selected instead of focusing option buttons. Enter
+  commits only an active option in an open list; otherwise native form behavior remains available.
+
+- Preserve VirtualList scroll height with fixed-height row windows and inert spacers across web
+  adapters. Refresh changing rows and resized containers, retain keyboard focus, and restore row
+  state on cleanup. Range endpoints are inclusive; empty lists report endIndex -1.
+
+  Add cancelable rich-text command requests and a React commandHandler option so external engines
+  can execute commands once without a browser fallback. Existing command events report completion.
+
 ### Minor Changes
 
 - Add canonical Default, Studio and Glass appearance presets, scoped web styling and ThemeBuilder radius, spacing and border customization. Native adapters expose preset palettes and explicit surface material with opaque fallbacks. Swift and Compose consumers must rebuild for the updated theme and surface signatures; see the appearance presets guide.
@@ -60,13 +74,13 @@
   distinctly from measured zero. Duplicate coordinates use the first observation consistently.
   Existing category line spacing remains the default. Native component coverage is unchanged.
 
+- Add ImageComparison for Astro, React, and Web Components with aligned media clipping, a labelled native range control, localized accessible values, and controlled React state. Preserve media framing across reveal changes and support writing direction without pointer-only interaction.
+
 ### Patch Changes
 
 - Reduce published web artifact sizes within the existing v4 budgets. React compacts its component build
   without renaming identifiers, Web Components use native private methods for internal behavior, and
   the shared stylesheet retains the same rules with concise section comments. Public APIs stay unchanged.
-- Updated dependencies []:
-  - @santi020k/lumen@4.0.0
 
 - Reject malformed Astro action errors and inherited icon names, preserve plain markup prose without syntax highlighting, and normalize form-error records whose field is named `fields`, exclude blank numeric chart coordinates, preserve literal slash-star text during markup migrations, and detect existing recipe conflicts before writing files.
 
@@ -99,55 +113,10 @@
   references to the plot. Retain keyboard-accessible chart data tables across the web adapters.
 
 - Close shared Combobox options and clear stale active-option state after an accepted native form reset. Refilter against the restored input value, preserve canceled resets, and cancel deferred work when the controller is destroyed.
-- Updated dependencies []:
+
+- Updated dependencies [`dcbb1c0`, `c71c50a`, `7163f95`, `ef5187d`, `788125f`, `55a1032`, `551f903`, `1150318`, `19964b1`, `20aa235`, `85f332c`, `0ea4a4e`, `3cc6c23`, `bd11bc0`, `4ba4561`, `7a17060`, `79d9b0a`, `11c8574`, `edf9cbe`, `a5d6fe4`, `07a4a31`, `4dbb3b0`, `059aae9`, `bd11bc0`, `aba0839`]:
   - @santi020k/lumen-core@4.0.0
   - @santi020k/lumen@4.0.0
-
-### Migration, Direction and Data Collections
-
-- Add v3 and v4 source migration previews with optional coordinated pnpm dependency upgrades. Preserve
-  explicit v3 layout gaps, report product and native review boundaries, and prevent repeated v4 applies
-  from rewriting spacing twice.
-
-  Correct inherited RTL horizontal navigation in tabs, calendars and pane resizing. Add an opt-in
-  VirtualList data renderer that mounts only the visible window and focused neighbors, with stable
-  keys and a shared DOM controller for Astro and Elements.
-- Updated dependencies []:
-  - @santi020k/lumen@4.0.0
-  - @santi020k/lumen-core@4.0.0
-### Appearance Presets
-
-- Add Default, Studio and Glass appearance presets with semantic palette and surface customization.
-  Glass remains explicit per surface with opaque native fallbacks. See the appearance presets guide;
-  Swift and Compose consumers must rebuild for the updated initializer signatures.
-
-### Phone Input Improvements
-
-- Polish international phone inputs with shared offline flag artwork, compact country selectors,
-  continuous borders, consistent spacing, visible validation, and complete disabled/read-only states.
-  Expose input attributes and refs directly, and add reusable country flags and read-only phone views.
-
-  In v4, Astro and React PhoneInput `id` labels the actual number input. Web Components expose
-  `input-id` and render the visual phone frame inside the host. Remove consumer flag overlays and
-  DOM attribute patches; use the public props and stable phone parts instead.
-
-### Major Changes
-
-- Keep editable Combobox focus in the input with active-descendant navigation, composition-safe
-  shortcuts and live option updates. Report React selection through onChange for controlled forms.
-  Dismiss only the innermost active popup on Escape and preserve canceled events and text editing.
-
-  Migration: use aria-activedescendant and aria-selected instead of focusing option buttons. Enter
-  commits only an active option in an open list; otherwise native form behavior remains available.
-
-- Preserve VirtualList scroll height with fixed-height row windows and inert spacers across web
-  adapters. Refresh changing rows and resized containers, retain keyboard focus, and restore row
-  state on cleanup. Range endpoints are inclusive; empty lists report endIndex -1.
-
-  Add cancelable rich-text command requests and a React commandHandler option so external engines
-  can execute commands once without a browser fallback. Existing command events report completion.
-
-### Patch Changes
 
 - Updated dependencies []:
   - @santi020k/lumen-core@4.0.0
@@ -175,15 +144,35 @@
   prevent repeated activation. See `docs/migrating-to-lumen.md` for the full v4 migration. No
   application data migration is performed, and this candidate is not publication authorization.
 
-### Minor Changes
+### Migration, Direction and Data Collections
 
-- Add ImageComparison for Astro, React, and Web Components with aligned media clipping, a labelled native range control, localized accessible values, and controlled React state. Preserve media framing across reveal changes and support writing direction without pointer-only interaction.
+- Add v3 and v4 source migration previews with optional coordinated pnpm dependency upgrades. Preserve
+  explicit v3 layout gaps, report product and native review boundaries, and prevent repeated v4 applies
+  from rewriting spacing twice.
 
-### Patch Changes
+  Correct inherited RTL horizontal navigation in tabs, calendars and pane resizing. Add an opt-in
+  VirtualList data renderer that mounts only the visible window and focused neighbors, with stable
+  keys and a shared DOM controller for Astro and Elements.
 
 - Updated dependencies []:
-  - @santi020k/lumen-core@4.0.0
   - @santi020k/lumen@4.0.0
+  - @santi020k/lumen-core@4.0.0
+
+### Appearance Presets
+
+- Add Default, Studio and Glass appearance presets with semantic palette and surface customization.
+  Glass remains explicit per surface with opaque native fallbacks. See the appearance presets guide;
+  Swift and Compose consumers must rebuild for the updated initializer signatures.
+
+### Phone Input Improvements
+
+- Polish international phone inputs with shared offline flag artwork, compact country selectors,
+  continuous borders, consistent spacing, visible validation, and complete disabled/read-only states.
+  Expose input attributes and refs directly, and add reusable country flags and read-only phone views.
+
+  In v4, Astro and React PhoneInput `id` labels the actual number input. Web Components expose
+  `input-id` and render the visual phone frame inside the host. Remove consumer flag overlays and
+  DOM attribute patches; use the public props and stable phone parts instead.
 
 ## 3.0.1
 
