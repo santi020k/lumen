@@ -1706,17 +1706,24 @@ export const ScatterChart = ({
                 </circle>
               ))}
             </g>
-            {onDatumActivate && geometry.points.map((point, index) => (
-              <circle
-                className="ui-chart__datum-hit"
-                key={`${point.seriesId}:${point.id ?? getChartCategoryKey(point.x)}`}
-                cx={point.xCoordinate}
-                cy={point.yCoordinate}
-                r={Math.max(10, point.radius)}
-                data-ui-chart-datum={datumActions[index]?.serialized}
-              />
-            ))}
           </ScatterPlotClip>
+          {onDatumActivate && geometry.points.map((point, index) => {
+            const visible = point.xCoordinate >= 44 && point.xCoordinate <= geometry.width - 44 &&
+              point.yCoordinate >= 44 && point.yCoordinate <= geometry.height - 44
+
+            return visible ?
+              (
+                <circle
+                  className="ui-chart__datum-hit"
+                  key={`${point.seriesId}:${point.id ?? getChartCategoryKey(point.x)}`}
+                  cx={point.xCoordinate}
+                  cy={point.yCoordinate}
+                  r={Math.max(10, point.radius)}
+                  data-ui-chart-datum={datumActions[index]?.serialized}
+                />
+              ) :
+              null
+          })}
         </svg>
       </div>
       {referenceGeometry.length > 0 && (

@@ -6158,13 +6158,9 @@ class LumenScatterChartBehaviorElement extends LumenDataChartBehaviorElement {
       const context = `${point.xLabel ?? this.categoryFormatter(point.x)} · ${point.seriesLabel}: ${point.label ?? this.valueFormatter(point.y ?? 0)}`
       const attributes = this.datumAttributes(createLumenChartDatumActivation(point.seriesId, point), context)
 
-      return [
-        attributes ? `<circle class="ui-chart__datum-hit"${attributes} cx="${point.xCoordinate}" cy="${point.yCoordinate}" r="${Math.max(10, point.radius)}"></circle>` : '',
-        `<circle class="ui-chart-tone--${point.tone}"${attributes} cx="${point.xCoordinate}"`,
-        ` cy="${point.yCoordinate}" r="${point.radius}"><title>`,
-        `${escapeChartHtml(point.xLabel ?? this.categoryFormatter(point.x))} · ${escapeChartHtml(point.seriesLabel)}: `,
-        `${escapeChartHtml(point.label ?? this.valueFormatter(point.y ?? 0))}</title></circle>`
-      ].join('')
+      if (point.xCoordinate < 44 || point.xCoordinate > geometry.width - 44 || point.yCoordinate < 44 || point.yCoordinate > geometry.height - 44) return ''
+
+      return attributes ? `<circle class="ui-chart__datum-hit"${attributes} cx="${point.xCoordinate}" cy="${point.yCoordinate}" r="${Math.max(10, point.radius)}"></circle>` : ''
     }).join('')
 
     this.renderChartContent([

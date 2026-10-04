@@ -164,7 +164,7 @@ export const intervalChartHtml = (
 export const scatterPlotHtml = (
   geometry: LumenScatterGeometry, referenceItems: readonly LumenScatterReference[], xScale: LumenScatterScaleType,
   plotId: string, formatX: (value: number | string) => string,
-  formatY: (value: number) => string, labels: LumenChartLabels, datumMarks?: string
+  formatY: (value: number) => string, labels: LumenChartLabels, datumTargets = ''
 ): string => {
   const referenceGeometry = createLumenScatterReferences(referenceItems, geometry, xScale)
 
@@ -172,7 +172,7 @@ export const scatterPlotHtml = (
     `<rect x="${Math.min(reference.x1, reference.x2)}" y="${Math.min(reference.y1, reference.y2)}" width="${Math.abs(reference.x2 - reference.x1)}" height="${Math.abs(reference.y2 - reference.y1)}"><title>${escapeChartHtml(reference.label)}</title></rect>` :
     `<line x1="${reference.x1}" x2="${reference.x2}" y1="${reference.y1}" y2="${reference.y2}"><title>${escapeChartHtml(reference.label)}</title></line>`).join('')
 
-  const marks = datumMarks ?? geometry.points.map(point => [
+  const marks = geometry.points.map(point => [
     `<circle class="ui-chart-tone--${point.tone}" cx="${point.xCoordinate}"`,
     ` cy="${point.yCoordinate}" r="${point.radius}"><title>`,
     `${escapeChartHtml(point.xLabel ?? formatX(point.x))} · ${escapeChartHtml(point.seriesLabel)}: `,
@@ -182,7 +182,7 @@ export const scatterPlotHtml = (
   return [
     `<div class="ui-chart__plot" role="region" tabindex="0" aria-label="${escapeChartHtml(labels.chartData)}"><svg aria-hidden="true" viewBox="0 0 ${geometry.width} ${geometry.height}">`,
     `<defs><clipPath id="${plotId}"><rect x="44" y="44" width="${geometry.width - 88}" height="${geometry.height - 88}"></rect></clipPath></defs>`,
-    `<g class="ui-scatter-chart__references" clip-path="url(#${plotId})">${references}</g><g class="ui-scatter-chart__marks" clip-path="url(#${plotId})">${marks}</g></svg></div>`,
+    `<g class="ui-scatter-chart__references" clip-path="url(#${plotId})">${references}</g><g class="ui-scatter-chart__marks" clip-path="url(#${plotId})">${marks}</g>${datumTargets}</svg></div>`,
     `<ul class="ui-scatter-chart__reference-labels">${referenceGeometry.map(item => `<li>${escapeChartHtml(item.label)}</li>`).join('')}</ul>`
   ].join('')
 }

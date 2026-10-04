@@ -2,7 +2,7 @@
   "$schema": "https://unpkg.com/knip@6/schema.json",
   "workspaces": {
     ".": {
-      "entry": ["scripts/check-maven-pom-metadata.mjs"],
+      "entry": ["scripts/check-maven-pom-metadata.mjs", "scripts/report-android-workspace-runtime.mjs"],
       "ignoreBinaries": ["infisical", "pod", "quality", "swift"],
       "project": ["*.js", "scripts/*.mjs"]
     },
@@ -13,6 +13,9 @@
         "tailwindcss"
       ],
       "project": ["src/**/*.{astro,ts,tsx}", "scripts/**/*.{js,mjs}"]
+    },
+    "apps/playground-react-native": {
+      "entry": ["src/fixtures/TextLayoutProbe.tsx"]
     },
     "packages/astro": {
       "entry": ["components/**/*.astro", "strict-props.fixture.astro"],
@@ -31,6 +34,9 @@
     "packages/mcp": {
       "entry": ["src/cloudflare-worker.ts"],
       "project": ["src/**/*.ts"]
+    },
+    "packages/react-native": {
+      "entry": ["src/static-icon-exports.generated.ts"]
     },
     "packages/react": {
       "project": ["src/**/*.{ts,tsx}"]

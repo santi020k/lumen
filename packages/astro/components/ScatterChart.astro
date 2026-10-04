@@ -111,8 +111,7 @@ geometry.points.map(point => createChartDatumAction(
         <rect x={Math.min(reference.x1, reference.x2)} y={Math.min(reference.y1, reference.y2)} width={Math.abs(reference.x2 - reference.x1)} height={Math.abs(reference.y2 - reference.y1)}><title>{reference.label}</title></rect> :
         <line x1={reference.x1} x2={reference.x2} y1={reference.y1} y2={reference.y2}><title>{reference.label}</title></line>)}</g>
       <g class="ui-scatter-chart__marks" clip-path={`url(#${plotId})`}>{geometry.points.map((point, index) => <circle data-ui-chart-datum={datumActions[index]?.serialized} class={getLumenChartToneClassName(point.tone)} cx={point.xCoordinate} cy={point.yCoordinate} r={point.radius}><title>{`${point.xLabel ?? formatX(point.x)} · ${point.seriesLabel}: ${point.label ?? formatY(point.y ?? 0)}`}</title></circle>)}</g>
-      <g clip-path={`url(#${plotId})`}>
-      {drilldown && geometry.points.map((point, index) => (
+      {drilldown && geometry.points.map((point, index) => point.xCoordinate >= 44 && point.xCoordinate <= geometry.width - 44 && point.yCoordinate >= 44 && point.yCoordinate <= geometry.height - 44 && (
         <circle
 class="ui-chart__datum-hit"
 cx={point.xCoordinate}
@@ -121,7 +120,7 @@ r={Math.max(10, point.radius)}
           data-ui-chart-datum={datumActions[index]?.serialized}
         />
       ))}
-      </g>
+
     </svg>
   </div>
   {referenceGeometry.length > 0 && (

@@ -132,6 +132,11 @@ const getDarkThemeAccessibilityReport = async (page: Page) => page.evaluate(() =
   )
 
   const isElementVisible = (element: Element) => {
+    const closedDisclosure = element.closest('details:not([open])')
+
+    // Closed native disclosures can retain layout boxes for their hidden contents.
+    if (closedDisclosure && !closedDisclosure.querySelector(':scope > summary')?.contains(element)) return false
+
     const style = window.getComputedStyle(element)
     const rect = element.getBoundingClientRect()
 
