@@ -201,7 +201,7 @@ jobs:
         run: pnpm exec playwright install --with-deps chromium firefox webkit
 
       - name: Run cross-browser interaction contracts
-        run: pnpm run test:interactions && pnpm run test:framework-conformance
+        run: pnpm run test:interactions && pnpm run test:framework-conformance && pnpm run test:figma-plugin
 
       - name: Enforce web unit coverage
         run: pnpm run test:web-coverage

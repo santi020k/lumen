@@ -1,0 +1,38 @@
+{
+  "name": "@santi020k/lumen-figma-plugin",
+  "version": "0.1.0-beta.1",
+  "private": true,
+  "description": "Beta Figma plugin for Lumen component analysis and Astro AI handoff.",
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "dev": "vite --host 127.0.0.1 --port 4348",
+    "lint": "eslint . --no-warn-ignored --max-warnings=0",
+    "test": "vitest run --config ../../vitest.config.ts --project figma-plugin",
+    "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.plugin.json --noEmit",
+    "verify:generated": "node scripts/verify-generated.mjs"
+  },
+  "dependencies": {
+    "@santi020k/lumen-react": "workspace:^",
+    "react": "catalog:",
+    "react-dom": "catalog:"
+  },
+  "devDependencies": {
+    "@astrojs/compiler": "catalog:",
+    "@figma/plugin-typings": "catalog:",
+    "@santi020k/lumen-astro": "workspace:^",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "esbuild": "catalog:",
+    "typescript": "catalog:",
+    "vite": "catalog:",
+    "vitest": "catalog:"
+  },
+  "engines": {
+    "node": "^22.22.2 || ^24.15.0 || >=26.0.0"
+  },
+  "author": {
+    "name": "Santiago Molina",
+    "url": "https://santi020k.com"
+  }
+}
