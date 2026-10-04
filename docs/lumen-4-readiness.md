@@ -4,6 +4,56 @@ This working record tracks the local `release/v4.0.0` candidate. It is not publi
 production qualification evidence. Consumer audits inspect application source; application
 data, deployment, and migration remain owned by those projects.
 
+## October 4 stabilization verification
+
+The isolated `chore/v4-stabilization` candidate contains consolidation `79e6b066`, native
+stabilization through `4ba45611`, and quality audit `be656d7e`. The integration commits are
+`780503f5` and `a775f1cd`; ancestry checks confirm all three sources and the selected release
+base `50990a22` are contained. Source checkouts, branches and unrelated work remain preserved.
+
+Browser verification found four WebKit failures in dashboard popup dismissal. Commit `16399353`
+focuses the React disclosure trigger on pointer activation so Escape remains reachable when the
+panel contains ordinary content. It also honors canceled clicks before changing focus or state.
+Mounted regressions cover anchored and application-owned positioning, canceled activation and
+existing nested keyboard behavior. All 136 framework tests pass across desktop/mobile Chromium
+and WebKit; the accessibility and responsive suite passes all 1,526 tests. The 320/1440-pixel
+WebKit dashboard captures were inspected after dismissal, including the restored focus ring.
+
+Commit `cb31915d` fixes clean Astro lint runs by declaring the already-resolved TypeScript parser
+as a root development dependency and supplying it explicitly through the shared ESLint config.
+The Astro plugin resolves this parser from the consumer workspace, as described in its
+[installation guidance](https://ota-meshi.github.io/eslint-plugin-astro/user-guide/#installation).
+No rules were disabled. The manifest and lockfile retain parser 8.71.0; no transitive package
+versions changed. Frozen installation and the affected package lint commands pass.
+
+Forty pending Changesets were consumed through the configured Changesets generator in a scratch
+worktree. Their generated notes are folded into the unpublished 4.0.0 entries, with dependency
+references aligned to 4.0.0, repeated sections combined and nine exact duplicate entries removed.
+All ten public npm package versions and every previously published changelog entry are unchanged.
+The release-scope resolver still selects all ten unpublished packages. The scratch worktree was
+archived after transferring the generated notes.
+
+The final `pnpm run validate` passes its prerequisite checks, all 14 build tasks, 24 type-check/build
+tasks, 1,441 tests in 137 files, 23 lint/build tasks with zero lint warnings, spelling, Knip,
+registry/MCP/plugin consistency and the nine security guard tests. It then fails on exactly one
+unmitigated high advisory: `http-cache-semantics` 4.2.0. Package-content dry runs, clean web-consumer
+smokes, the packed React Native consumer, and external MCP stdio/HTTP smoke checks pass separately.
+Fresh native checks also pass: 68 Swift tests and Compose `test lint apiCheck` (99 tasks).
+
+Local release integration remains incomplete because the canonical security gate fails.
+`release/v4.0.0` remains at `50990a22`. The 24-hour hold permits reassessing cache version 4.3.0
+after October 4 at 21:56 Colombia time; no age exception or cache-advisory suppression was applied.
+See the [dependency investigation](lumen-4-dependencies.md#consolidation-security-investigation)
+before treating a version change as a demonstrated fix.
+
+Complete-qualification checks still fail for all five native consumer records, all 22 physical
+device slots and both stability iterations. The pre-v2 stability policy mismatch remains as
+documented in the native quality record, and the v4 publication contract remains draft. No
+qualification evidence was invented or marked complete. Concurrent release preparation is
+integrating the later native commit `bd40105d`; the results in this section do not qualify that
+additional commit or claim that the other active candidate has passed. No remote release action
+was taken by this stabilization task.
+
 ## October 3 complete branch consolidation candidate
 
 The owner subsequently approved raising the combined stylesheet budget. The new 220,000-byte

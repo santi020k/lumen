@@ -2,38 +2,25 @@
 
 ## 4.0.0
 
-### Migration, Direction and Data Collections
-
-- Add v3 and v4 source migration previews with optional coordinated pnpm dependency upgrades. Preserve
-  explicit v3 layout gaps, report product and native review boundaries, and prevent repeated v4 applies
-  from rewriting spacing twice.
-
-  Correct inherited RTL horizontal navigation in tabs, calendars and pane resizing. Add an opt-in
-  VirtualList data renderer that mounts only the visible window and focused neighbors, with stable
-  keys and a shared DOM controller for Astro and Elements.
-
-### Patch Changes
-
-- Updated dependencies []:
-  - @santi020k/lumen@4.0.0
-  - @santi020k/lumen-core@4.0.0
-### Appearance Presets
-
-- Add Default, Studio and Glass appearance presets with semantic palette and surface customization.
-  Glass remains explicit per surface with opaque native fallbacks. See the appearance presets guide;
-  Swift and Compose consumers must rebuild for the updated initializer signatures.
-
-### Phone Input Improvements
-
-- Polish international phone inputs with shared offline flag artwork, compact country selectors,
-  continuous borders, consistent spacing, visible validation, and complete disabled/read-only states.
-  Expose input attributes and refs directly, and add reusable country flags and read-only phone views.
-
-  In v4, Astro and React PhoneInput `id` labels the actual number input. Web Components expose
-  `input-id` and render the visual phone frame inside the host. Remove consumer flag overlays and
-  DOM attribute patches; use the public props and stable phone parts instead.
-
 ### Major Changes
+
+- Refine v4 reading rhythm and responsive page gutters, allow interactive Card content to overflow,
+  and wrap long actions in wrapping Stacks. Move media clipping into AspectRatio when upgrading.
+  Container gutters now grow from 16px to 32px; override --ui-container-gutter to preserve fixed
+  product gutters. Prose and Typography trim their outer child margins and separate headings from
+  preceding paragraphs. Add four installable content-flow recipes for all web adapters and return
+  complete framework examples through MCP recipe discovery.
+
+  Elements Stack now honors align, justify, and wrap attributes, including boolean-presence wrap,
+  so installed compositions wrap long actions consistently across the web adapters.
+  Include CLI starter templates in the published umbrella package and verify all twelve new
+  compositions install from a packed consumer, rather than only from the repository checkout.
+
+- Prepare the v4 content-flow contract: canonical gap sizes, semantic related/group/section gaps,
+  Card density and parent-owned part spacing, wrapping footer actions, and generated spacing tokens
+  available through CSS and MCP. Explicit md/lg/xl layout gaps now mean 12/16/24px; migrate old
+  16/24/32px layouts to group/xl/2xl. Default Stack/Grid spacing remains 16px. Comfortable Card
+  insets become 24px, and direct child margins no longer stack with layout gaps.
 
 - Keep editable Combobox focus in the input with active-descendant navigation, composition-safe
   shortcuts and live option updates. Report React selection through onChange for controlled forms.
@@ -49,7 +36,93 @@
   Add cancelable rich-text command requests and a React commandHandler option so external engines
   can execute commands once without a browser fallback. Existing command events report completion.
 
+### Minor Changes
+
+- Add canonical Default, Studio and Glass appearance presets, scoped web styling and ThemeBuilder radius, spacing and border customization. Native adapters expose preset palettes and explicit surface material with opaque fallbacks. Swift and Compose consumers must rebuild for the updated theme and surface signatures; see the appearance presets guide.
+
+- Add attachment list and browser-owned image preview composition with localized fallback states,
+  retry identity, safe state events, and independent application-owned file actions.
+
+- Add BulletChart across Astro, React, Web Components, React Native, SwiftUI, and Compose.
+  Compare actual values with targets and labeled qualitative ranges using an honest zero-inclusive
+  domain. Preserve missing measurements, localized exact data, responsive typography, and native
+  accessibility. Existing chart APIs remain compatible.
+
+- Add dashboard filter and change-summary composition, richer responsive React DataTable records and
+  shared sorting controls, top-layer React overlays with collision placement and focus handoff, and
+  ScatterChart logarithmic X scales, independent formatting, explicit domains, and labeled references.
+  Document host-owned freshness, import review, activity inbox, and persistent Kanban recipes.
+  Keep controlled filter disclosure under host ownership and advance manual table sorting from the
+  authored header state without changing server row order.
+
+- Add DialogHeader, DialogTitle, DialogBody, DialogFooter, and DialogClose across the web adapters. Compound dialogs keep their header and actions visible while long task content scrolls. Close actions honor cancelled clicks and disabled controls.
+
+  FileUpload accepts localized selected-file count labels and clears selected-file feedback after an accepted native form reset.
+
+- Add callback-driven datum actions to all seven React data charts, with localized native buttons
+  and matching pointer payloads. Preserve focused action identity across value updates and keep
+  Astro's runtime from enhancing React-owned chart roots on mixed-framework pages.
+
+- Add DescriptionItem, DescriptionTerm, and DescriptionDetail for rich description values across the web adapters. Astro and React preserve native definition-list markup; Web Components provide explicit group, term, and definition roles. Long values wrap within their grid column.
+
+- Add Histogram and WaterfallChart to the web catalog with explicit data contracts, shared geometry,
+  validation, accessible summaries, and source tables. Add continuous numeric and time axes,
+  reference annotations, optional keyboard and pointer inspection, interactive legends, and cursor
+  synchronization to LineChart. React supports controlled cursor selection.
+
+  Heatmaps now label axes, display a sequential or diverging color legend, and mark missing cells
+  distinctly from measured zero. Duplicate coordinates use the first observation consistently.
+  Existing category line spacing remains the default. Native component coverage is unchanged.
+
+- Add ImageComparison for Astro, React, and Web Components with aligned media clipping, a labelled native range control, localized accessible values, and controlled React state. Preserve media framing across reveal changes and support writing direction without pointer-only interaction.
+
+- Add a controlled React DateRangeCalendar with visible endpoint calendars, inclusive
+  range highlighting, bounded presets, keyboard navigation and responsive shared styles.
+  Consumers own draft state and confirmation actions.
+
+  Add DateRangeInput for polished input-attached selection, draft Apply/Cancel,
+  localized validation and summaries, optional form entries, viewport-aware positioning,
+  keyboard dismissal and a separately scrolling body with visible actions.
+
 ### Patch Changes
+
+- Keep anchor navigation working with malformed fragments and short pages. Preserve native dialog autofocus, dismiss only genuine backdrop presses, and restore anonymous triggers without requiring a secure-context UUID API. Clear phone validation references when their error element is removed. Keep React and Elements tab keyboard navigation within its own tab group and skip disabled tabs across all web adapters.
+
+- Refine web chart presentation with responsive plots, fading area fills, quieter grids, compact
+  legends, clearer typography, and a floating inspection panel that stays inside the chart. Improve
+  heatmap legend alignment and preserve all row labels at narrow sizes. The default line aspect ratio
+  is wider and pie charts are more compact; existing data contracts and imports remain unchanged.
+
+- Repair chart data disclosures with full-width controls, bounded keyboard scrolling, and sticky
+  headers across the web adapters. Add WaterfallChart and Histogram to React Native, SwiftUI, and
+  Compose, with matching invalid-input behavior, exact values, and native expandable data lists.
+
+- Initialize native rich-text toolbar toggle states on mount so assistive technology can read their pressed state before the first editing interaction. Preserve external engine ownership of toolbar state.
+
+- Fix four React form correctness issues: `DatePicker` calendar selection now sets the native input
+  value through the native prototype setter, deliberately bypassing React's tracking, so `onChange`
+  fires exactly once; `PhoneInput` defers its form reset past the default action and honors a
+  cancelled reset, a disconnected or unmounted control, and a controlled value; `DateRangeInput`
+  attaches its reset listener even without `name`, using an always-present wrapper ref that respects
+  an explicit `form` id as well as the nearest ancestor form; and `Combobox` now supports native form
+  reset, restoring an uncontrolled `defaultValue`, preserving a controlled value, and closing options
+  without emitting `onChange`.
+
+- Focus the popup trigger on pointer activation so popovers with arbitrary content keep an Escape
+  dismissal path in Safari. Honor canceled activation and preserve menu item focus and application-owned
+  positioning.
+
+- Preserve accessible scatter datum actions alongside reference overlays and independent axis
+  formatters. Keep pointer targets usable at domain boundaries while clipping visual marks and
+  references to the plot. Retain keyboard-accessible chart data tables across the web adapters.
+
+- Updated dependencies [`dcbb1c0`, `c71c50a`, `7163f95`, `ef5187d`, `788125f`, `55a1032`, `551f903`, `1150318`, `19964b1`, `20aa235`, `85f332c`, `0ea4a4e`, `3cc6c23`, `bd11bc0`, `4ba4561`, `7a17060`, `79d9b0a`, `11c8574`, `edf9cbe`, `a5d6fe4`, `07a4a31`, `4dbb3b0`, `059aae9`, `bd11bc0`, `aba0839`]:
+  - @santi020k/lumen-core@4.0.0
+  - @santi020k/lumen@4.0.0
+
+- Updated dependencies []:
+  - @santi020k/lumen@4.0.0
+  - @santi020k/lumen-core@4.0.0
 
 - Updated dependencies []:
   - @santi020k/lumen-core@4.0.0
@@ -77,20 +150,6 @@
   prevent repeated activation. See `docs/migrating-to-lumen.md` for the full v4 migration. No
   application data migration is performed, and this candidate is not publication authorization.
 
-### Minor Changes
-
-- Add ImageComparison for Astro, React, and Web Components with aligned media clipping, a labelled native range control, localized accessible values, and controlled React state. Preserve media framing across reveal changes and support writing direction without pointer-only interaction.
-
-- Add a controlled React DateRangeCalendar with visible endpoint calendars, inclusive
-  range highlighting, bounded presets, keyboard navigation and responsive shared styles.
-  Consumers own draft state and confirmation actions.
-
-  Add DateRangeInput for polished input-attached selection, draft Apply/Cancel,
-  localized validation and summaries, optional form entries, viewport-aware positioning,
-  keyboard dismissal and a separately scrolling body with visible actions.
-
-### Patch Changes
-
 - Polish shared Select keyboard activation, accessible popup names, and focus-leave dismissal.
   Use enhanced Lumen selectors for documentation theme and scope controls, retaining progressive
   enhancement and resilient preference handling.
@@ -106,9 +165,31 @@
   Batch React ImageComparison form resets into one scheduled update and cancel pending work
   during cleanup, preserving controlled values and canceled resets.
 
-- Updated dependencies []:
-  - @santi020k/lumen-core@4.0.0
-  - @santi020k/lumen@4.0.0
+### Migration, Direction and Data Collections
+
+- Add v3 and v4 source migration previews with optional coordinated pnpm dependency upgrades. Preserve
+  explicit v3 layout gaps, report product and native review boundaries, and prevent repeated v4 applies
+  from rewriting spacing twice.
+
+  Correct inherited RTL horizontal navigation in tabs, calendars and pane resizing. Add an opt-in
+  VirtualList data renderer that mounts only the visible window and focused neighbors, with stable
+  keys and a shared DOM controller for Astro and Elements.
+
+### Appearance Presets
+
+- Add Default, Studio and Glass appearance presets with semantic palette and surface customization.
+  Glass remains explicit per surface with opaque native fallbacks. See the appearance presets guide;
+  Swift and Compose consumers must rebuild for the updated initializer signatures.
+
+### Phone Input Improvements
+
+- Polish international phone inputs with shared offline flag artwork, compact country selectors,
+  continuous borders, consistent spacing, visible validation, and complete disabled/read-only states.
+  Expose input attributes and refs directly, and add reusable country flags and read-only phone views.
+
+  In v4, Astro and React PhoneInput `id` labels the actual number input. Web Components expose
+  `input-id` and render the visual phone frame inside the host. Remove consumer flag overlays and
+  DOM attribute patches; use the public props and stable phone parts instead.
 
 ## 3.0.1
 
