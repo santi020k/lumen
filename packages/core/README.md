@@ -378,3 +378,6 @@ Comparison chart geometry follows the same rule. Use explicit `null` measurement
 observations; invalid datasets return no plotted rows or cells.
 See [data visualization](../../docs/data-visualization.md) for date-only identities, ordered
 stages, precomputed quartiles, missing values, and domain rules.
+
+`isLumenTimeSelection` narrows unknown decoded values to valid same-day wall-clock selections.
+`isLumenTimeInBounds` returns false for malformed selections and preserves explicit bounds validation.

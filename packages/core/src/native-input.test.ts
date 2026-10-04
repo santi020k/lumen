@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest'
 
-import { isLumenDecimalInBounds, isLumenTimeInBounds, normalizeLumenNumericOTP, parseLumenDecimalDraft, stepLumenDecimalDraft } from './native-input.js'
+import { isLumenDecimalInBounds, isLumenTimeInBounds, isLumenTimeSelection, normalizeLumenNumericOTP, parseLumenDecimalDraft, stepLumenDecimalDraft } from './native-input.js'
 
 describe('native input contracts', () => {
   test('preserves empty and intermediate localized decimal drafts', () => {
@@ -51,4 +51,32 @@ test.each(['invalid_tag', 'en--US', '💥'])('uses English decimal symbols for m
   expect(parseLumenDecimalDraft('12,3', locale).kind).toBe('invalid')
   expect(isLumenDecimalInBounds('1.5', { locale, min: '1', max: '2' })).toBe(true)
   expect(stepLumenDecimalDraft('1.5', 1, { locale, step: '0.2' })).toBe('1.7')
+})
+
+test.each([null,
+  undefined,
+  0,
+  '12:00',
+  [],
+  {},
+  { hour: 12 },
+  { hour: '12', minute: 0 },
+  { hour: 12, minute: null },
+  { hour: NaN, minute: 0 },
+  { hour: 12, minute: Infinity },
+  { hour: -1, minute: 0 },
+  { hour: 12, minute: 60 },
+  { hour: 1.5, minute: 0 }
+])('time validators reject malformed decoded selections safely: %j', value => {
+  expect(isLumenTimeSelection(value)).toBe(false)
+  expect(isLumenTimeInBounds(value)).toBe(false)
+})
+
+test('time selection predicates narrow valid decoded midnight and end-of-day values', () => {
+  for (const value of [{ hour: 0, minute: 0 }, { hour: 23, minute: 59 }]) {
+    const decoded: unknown = value
+    expect(isLumenTimeSelection(decoded)).toBe(true)
+    if (!isLumenTimeSelection(decoded)) throw new Error('Expected valid decoded time')
+    expect(isLumenTimeInBounds(decoded, value, value)).toBe(true)
+  }
 })

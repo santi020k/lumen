@@ -144,3 +144,14 @@ describe('Lumen Figma beta conversion', () => {
     expect(isPluginMessage({ type: 'error', message: 'Select a frame' })).toBe(true)
   })
 })
+
+test('audits nested token overrides once below recognized and unsupported instances', () => {
+  const child = designNode({ id: 'override', unboundPaints: 1, tokens: [{ name: 'custom/nested', field: 'fills' }] })
+  for (const parent of [componentNode('Button', { Label: 'Save', Variant: 'Default', Size: 'Default' }, [child]),
+    designNode({ type: 'INSTANCE', children: [child] })]) {
+    const result = analyzeSelection(designNode({ children: [parent] }))
+    expect(result.findings.filter(finding => finding.nodeId === 'override' && finding.message.includes('visible paints'))).toHaveLength(1)
+    expect(result.findings.filter(finding => finding.nodeId === 'override' && finding.message.includes('custom/nested'))).toHaveLength(1)
+    expect(result.code).not.toContain('custom/nested')
+  }
+})

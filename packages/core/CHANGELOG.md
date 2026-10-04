@@ -4,6 +4,8 @@
 
 ### Patch Changes
 
+- Safely validate unknown decoded time selections before checking time bounds.
+
 - Keep chart annotation IDs unique, preserve RTL range calendar navigation, and associate phone country values with explicit external forms.
 
 - Reject overflowing theme dimension scales, preserve iframe virtual-list focus and control reuse, and count only measured days in Swift calendar heatmap summaries.

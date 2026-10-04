@@ -54,8 +54,9 @@ alignment, typography, images, and custom visual overrides require review.
 
 The handoff records the target package version, selected structure, layout values, visible text,
 properties, paint-variable names, and findings. Color names map through
-[`registry/figma-design-map.json`](../../registry/figma-design-map.json). Unbound paints and unknown
-color variables are reported. This beta does not claim a full token, contrast, or accessibility audit.
+[`registry/figma-design-map.json`](../../registry/figma-design-map.json). Unbound visible solid paints and unknown
+color variables are reported across the complete visible subtree, including recognized instances.
+Image and gradient paints do not require semantic solid-color bindings. This beta does not claim a full token, contrast, or accessibility audit.
 
 Exports are component fragments. Load the stylesheet and Astro runtime once at the application
 boundary, as described in the handoff. Generated IDs are unique within one export; namespace them

@@ -219,9 +219,13 @@ export const normalizeLumenNumericOTP = (proposal: string, length = 6): string |
 
 export interface LumenTimeSelection { hour: number, minute: number }
 
-export const isLumenTimeSelection = (value: LumenTimeSelection): boolean => (
-  Number.isInteger(value.hour) && value.hour >= 0 && value.hour < 24 &&
-  Number.isInteger(value.minute) && value.minute >= 0 && value.minute < 60
+const isTimePart = (value: unknown, limit: number): value is number => (
+  typeof value === 'number' && Number.isInteger(value) && value >= 0 && value < limit
+)
+
+export const isLumenTimeSelection = (value: unknown): value is LumenTimeSelection => (
+  typeof value === 'object' && value !== null && !Array.isArray(value) &&
+  'hour' in value && 'minute' in value && isTimePart(value.hour, 24) && isTimePart(value.minute, 60)
 )
 
 const timeMinutes = (time: LumenTimeSelection): number => time.hour * 60 + time.minute
@@ -237,7 +241,7 @@ const validateTimeBounds = (min?: LumenTimeSelection, max?: LumenTimeSelection):
 }
 
 export const isLumenTimeInBounds = (
-  value: LumenTimeSelection,
+  value: unknown,
   min?: LumenTimeSelection,
   max?: LumenTimeSelection
 ): boolean => {

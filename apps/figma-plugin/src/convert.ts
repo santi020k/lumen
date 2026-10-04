@@ -46,6 +46,8 @@ export const analyzeSelection = (selection: DesignNode): Analysis => {
     for (const token of node.tokens) {
       if (!Object.hasOwn(designMap.tokenMap, token.name)) issue(node, `Review variable ${token.name}; it has no shared color mapping.`)
     }
+
+    node.children.forEach(auditTokens)
   }
 
   const renderInput = (node: DesignNode, id: string, label?: string, describedBy?: string) => {
@@ -146,8 +148,6 @@ export const analyzeSelection = (selection: DesignNode): Analysis => {
   }
 
   const render = (node: DesignNode): string => {
-    auditTokens(node)
-
     const component = identifyComponent(node)
 
     if (component) {
@@ -176,6 +176,8 @@ export const analyzeSelection = (selection: DesignNode): Analysis => {
 
     return '<!-- Custom visual omitted. See the design context in the AI handoff. -->'
   }
+
+  auditTokens(selection)
 
   const markup = render(selection)
   const code = `---\n${imports.size ? `import { ${[...imports].sort().join(', ')} } from '@santi020k/lumen-astro'\n` : ''}---\n\n<!-- Lumen for Figma BETA: review findings before integrating. -->\n${markup}\n`

@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { act, createElement, useState } from 'react'
+import { act, createElement, isValidElement, useState } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 
 import { afterEach, beforeEach, expect, test, vi } from 'vitest'
@@ -134,4 +134,46 @@ test('expands records by explicit IDs even when ordinary value cells repeat', as
   expect(container.querySelectorAll('[data-ui-datatable-detail]')).toHaveLength(1)
   await render({ rows: [{ ...records[0], rowValue: 'override' }], expandedRowIds: ['override'] })
   expect(element('[data-value="override"] button').getAttribute('aria-expanded')).toBe('true')
+})
+
+test.each([null, 1, 'row', [], { name: { label: [] } }, { id: {} }, { value: false }])(
+  'fails closed before sorting or rendering malformed decoded table rows: %j', async malformed => {
+    for (const layout of ['records', undefined] as const) {
+      await run(() => {
+        const view: unknown = Reflect.apply(createElement, undefined, [DataTable, {
+          columns,
+          rows: [rows[0], malformed],
+          layout,
+          defaultSort: { direction: 'ascending', key: 'name' },
+          renderDetails: () => 'Details'
+        }])
+        if (!isValidElement(view)) throw new Error('Expected table element')
+        root.render(view)
+      })
+      expect(container.querySelectorAll('tbody tr')).toHaveLength(0)
+      expect(container.querySelectorAll('[data-ui-datatable-detail]')).toHaveLength(0)
+    }
+  }
+)
+
+test.each([null, 1, 'rows', {}])('fails closed on a malformed decoded table collection: %j', rows => run(() => {
+  const view: unknown = Reflect.apply(createElement, undefined, [DataTable, { columns, rows }])
+  if (!isValidElement(view)) throw new Error('Expected table element')
+  root.render(view)
+  expect(container.querySelectorAll('tbody tr')).toHaveLength(0)
+}))
+
+test('fails closed before client sorting a sparse row collection', async () => {
+  const sparseRows: unknown[] = [rows[0]]
+  sparseRows.length = 2
+  await run(() => {
+    const view: unknown = Reflect.apply(createElement, undefined, [DataTable, {
+      columns,
+      rows: sparseRows,
+      defaultSort: { direction: 'ascending', key: 'name' }
+    }])
+    if (!isValidElement(view)) throw new Error('Expected table element')
+    root.render(view)
+  })
+  expect(container.querySelectorAll('tbody tr')).toHaveLength(0)
 })

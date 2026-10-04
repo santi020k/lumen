@@ -56,9 +56,9 @@ const readPaints = async (node: SceneNode, resolveVariable: (id: string) => Prom
     if (typeof paints === 'symbol') continue
 
     for (const paint of paints) {
-      if (paint.visible === false) continue
+      if (paint.visible === false || paint.type !== 'SOLID') continue
 
-      const binding = paint.type === 'SOLID' ? paint.boundVariables?.color : undefined
+      const binding = paint.boundVariables?.color
 
       if (binding) tokens.push({ name: await resolveVariable(binding.id), field })
       else unboundPaints += 1

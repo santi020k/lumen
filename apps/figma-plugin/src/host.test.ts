@@ -17,6 +17,8 @@ interface MockNode {
   visible: boolean
   characters: string
   children: MockNode[]
+  fills?: readonly Paint[]
+  strokes?: readonly Paint[]
   componentProperties: Record<string, { type: string, value: string | boolean }>
   getMainComponentAsync: () => Promise<{ key: string, name: string, parent: null } | null>
 }
@@ -178,4 +180,21 @@ describe('Figma host lifecycle', () => {
     const manifest: unknown = JSON.parse(await readFile(new URL('../manifest.json', import.meta.url), 'utf8'))
     expect(manifest).toMatchObject({ documentAccess: 'dynamic-page', networkAccess: { allowedDomains: ['none'] } })
   })
+})
+
+test('audits only detached visible solid fills and strokes', async () => {
+  const app = host([node({
+    fills: [
+      { type: 'IMAGE', imageHash: 'fixture', scaleMode: 'FILL' },
+      { type: 'GRADIENT_LINEAR', gradientStops: [], gradientTransform: [[1, 0, 0], [0, 1, 0]] },
+      { type: 'SOLID', color: { r: 1, g: 0, b: 0 }, visible: false },
+      { type: 'SOLID', color: { r: 1, g: 0, b: 0 } }
+    ],
+    strokes: [{ type: 'SOLID', color: { r: 0, g: 0, b: 1 } }]
+  })])
+  await app.send({ type: 'analyze' })
+  const message = app.messages.at(-1)
+  if (message?.type !== 'result') throw new Error('Expected paint audit result.')
+  expect(message.result.findings.some(finding => finding.message.includes('2 visible paints'))).toBe(true)
+  expect(message.result.findings.filter(finding => finding.message.includes('visible paints'))).toHaveLength(1)
 })
