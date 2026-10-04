@@ -179,6 +179,8 @@
 
   Fit web bar charts to narrow cards across Astro, React, and Web Components, reserving more room for horizontal category labels and spacing value-axis labels to avoid overlap.
 
+- Avoid calling application BulletChart formatters when measurements or configuration are invalid; render the invalid-data fallback consistently across web and native adapters.
+
 ### Migration, Direction and Data Collections
 
 - Add v3 and v4 source migration previews with optional coordinated pnpm dependency upgrades. Preserve

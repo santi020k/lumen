@@ -471,7 +471,9 @@ precedence. Copy emits `ui:copy-success` or `ui:copy-error` and announces feedba
 in a live region. Clipboard failures leave the source available for manual copy.
 
 Unwrapped `pre` children receive `tabindex="0"` and region semantics while keeping
-authored accessible names. With `wrap="true"`, the component does not add an extra
+authored accessible names. Changing to `wrap="true"` removes only enhancer-added focus attributes.
+Disabling `copy` removes only generated copy controls and cancels pending feedback.
+With `wrap="true"`, the component does not add an extra
 tab stop. Keep native `pre` and `code` children rather than placing source text in
 HTML attributes.
 

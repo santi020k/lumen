@@ -181,6 +181,10 @@
 - Updated dependencies []:
   - @santi020k/lumen-core@4.0.0
 
+- Validate decoded BulletChart range containers and avoid formatting invalid measurements. Fall back safely for malformed decimal locale tags. Resume React toast timeouts after keyboard focus leaves while preserving overlapping hover pauses. Remove only enhancer-owned Code copy controls and focus attributes when configuration changes, and cancel stale clipboard feedback.
+- Updated dependencies []:
+  - @santi020k/lumen-core@4.0.0
+
 ### Migration, Direction and Data Collections
 
 - Add v3 and v4 source migration previews with optional coordinated pnpm dependency upgrades. Preserve

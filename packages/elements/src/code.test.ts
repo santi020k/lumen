@@ -68,3 +68,90 @@ test('supports code children inserted after connection and keeps authored region
   })
   expect(code.querySelector('pre')?.getAttribute('aria-label')).toBe('Authored name')
 })
+
+test.each(['removed', 'false'])('removes only generated copy UI when copy is %s and can enable it again', async mode => {
+  const writeText = vi.fn().mockResolvedValue(undefined)
+  vi.stubGlobal('navigator', { clipboard: { writeText } })
+  const { code, button } = renderCode()
+  const authored = document.createElement('span')
+  authored.dataset.uiCodeStatus = ''
+  authored.textContent = 'Authored status'
+  code.append(authored)
+  if (mode === 'removed') code.removeAttribute('copy')
+  else code.setAttribute('copy', 'false')
+  await vi.waitFor(() => {
+    expect(button.isConnected).toBe(false)
+    expect(code.querySelector('button')).toBeNull()
+    expect(code.querySelector('[role="status"]')).toBeNull()
+  })
+  expect(authored.isConnected).toBe(true)
+  expect(authored.textContent).toBe('Authored status')
+  code.setAttribute('copy', '')
+  await vi.waitFor(() => {
+    expect(code.querySelector('button')).not.toBeNull()
+  })
+  code.querySelector('button')?.click()
+  await vi.waitFor(() => {
+    expect(writeText).toHaveBeenCalledOnce()
+  })
+})
+
+test('removes generated scroll semantics on wrap changes and preserves authored replacements', async () => {
+  const { code } = renderCode()
+  const pre = code.querySelector('pre')
+  if (!pre) throw new Error('Expected code region')
+  code.setAttribute('wrap', 'true')
+  await vi.waitFor(() => {
+    expect(pre.hasAttribute('tabindex')).toBe(false)
+    expect(pre.hasAttribute('role')).toBe(false)
+    expect(pre.hasAttribute('aria-label')).toBe(false)
+  })
+  code.setAttribute('wrap', 'false')
+  await vi.waitFor(() => {
+    expect(pre.tabIndex).toBe(0)
+  })
+  pre.setAttribute('tabindex', '-1')
+  pre.setAttribute('role', 'group')
+  pre.setAttribute('aria-label', 'Authored replacement')
+  code.setAttribute('wrap', 'true')
+  await vi.waitFor(() => {
+    expect(pre.getAttribute('tabindex')).toBe('-1')
+    expect(pre.getAttribute('role')).toBe('group')
+    expect(pre.getAttribute('aria-label')).toBe('Authored replacement')
+  })
+})
+
+test('keeps pre-authored keyboard and naming attributes when enabling wrap', async () => {
+  const code = document.createElement('lumen-code')
+  code.setAttribute('variant', 'block')
+  code.innerHTML = '<pre tabindex="0" role="group" aria-labelledby="source-heading"><code>x</code></pre>'
+  document.body.append(code)
+  code.setAttribute('wrap', 'true')
+  await Promise.resolve()
+  await Promise.resolve()
+  expect(code.querySelector('pre')?.outerHTML).toContain('tabindex="0" role="group" aria-labelledby="source-heading"')
+})
+
+test('cancels pending copy feedback when the source is removed and copying is disabled', async () => {
+  let completeClipboard: (() => void) | undefined
+  const pending = new Promise<void>(resolve => {
+    completeClipboard = resolve
+  })
+  const writeText = vi.fn(() => pending)
+  vi.stubGlobal('navigator', { clipboard: { writeText } })
+  const { code, button } = renderCode()
+  const success = vi.fn()
+  code.addEventListener('ui:copy-success', success)
+  button.click()
+  expect(writeText).toHaveBeenCalledOnce()
+  code.querySelector('pre')?.remove()
+  code.removeAttribute('copy')
+  await vi.waitFor(() => {
+    expect(code.querySelector('button')).toBeNull()
+    expect(code.querySelector('[role="status"]')).toBeNull()
+  })
+  completeClipboard?.()
+  await pending
+  await Promise.resolve()
+  expect(success).not.toHaveBeenCalled()
+})

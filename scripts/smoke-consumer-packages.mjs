@@ -304,10 +304,14 @@ assert.ok(foundationConstructors.has('lumen-visually-hidden'))
   await writeFile(
     join(consumerDirectory, 'src', 'pages', 'index.astro'),
     `---
-import { Badge, Card, CopyButton, RevealGroup, ScrollReveal, Stat } from '@santi020k/lumen-astro'
+import { Badge, BulletChart, Card, CopyButton, RevealGroup, ScrollReveal, Stat } from '@santi020k/lumen-astro'
 import UIPrimitives from '@santi020k/lumen-astro/runtime'
 import '@santi020k/lumen-astro/styles.css'
 import '@santi020k/lumen-elements/styles.css'
+const finiteBulletValue = (value: number): string => {
+  if (!Number.isFinite(value)) throw new Error('Invalid bullet measurements reached the formatter')
+  return String(value)
+}
 ---
 
 <Card>
@@ -315,6 +319,8 @@ import '@santi020k/lumen-elements/styles.css'
   <CopyButton value="Packed copy value" />
   <RevealGroup as="ul"><ScrollReveal as="li"><Stat label="Checks" value="4" /></ScrollReveal></RevealGroup>
   <p>Packed Astro consumer</p>
+  <BulletChart value={NaN} target={20} formatValue={finiteBulletValue} labels={{ invalidData: 'Invalid bullet data fallback' }} />
+  <BulletChart value={10} target={Infinity} formatValue={finiteBulletValue} labels={{ invalidData: 'Invalid bullet data fallback' }} />
 </Card>
 
 <UIPrimitives />
@@ -426,6 +432,8 @@ export default function Page() {
   assert.match(astroHtml, /Granular elements ready/)
 
   assert.match(astroHtml, /Foundation bundle ready/)
+
+  assert.equal(astroHtml.match(/Invalid bullet data fallback/g)?.length, 4)
 
   process.stdout.write(
     'Packed Core, umbrella, React, React Hook Form, Elements, Astro, Next.js, and brand-icon packages passed clean-consumer smoke tests\n'

@@ -111,3 +111,14 @@ test('comparison charts retain exact data and distinguish absent points from zer
   })
   expect(container.querySelector('[role="status"]')?.textContent).toContain('invalid')
 })
+
+test.each([NaN, Infinity, -Infinity])('does not format invalid bullet measurements %#', value => {
+  const formatValue = vi.fn(() => {
+    throw new Error('Invalid measurements must not reach the application formatter')
+  })
+  act(() => {
+    root.render(createElement(BulletChart, { value, target: 20, formatValue }))
+  })
+  expect(formatValue).not.toHaveBeenCalled()
+  expect(container.querySelector('[role="status"]')?.textContent).toContain('invalid')
+})

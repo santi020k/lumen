@@ -8991,6 +8991,9 @@ class LumenCodeBehaviorElement extends LumenElement {
   private observer: MutationObserver | undefined
   private resetTimer: ReturnType<typeof globalThis.setTimeout> | undefined
   private operation = 0
+  private generatedCopyButton: HTMLButtonElement | undefined
+  private generatedCopyStatus: HTMLElement | undefined
+  private readonly generatedFocusAttributes = new Map<HTMLElement, Map<string, string>>()
 
   override connectedCallback() {
     super.connectedCallback()
@@ -9035,24 +9038,63 @@ class LumenCodeBehaviorElement extends LumenElement {
     return this.getAttribute(name) ?? this.closest('lumen-code-tabs')?.getAttribute(name) ?? fallback
   }
 
-  #updateCode() {
-    if (this.getAttribute('variant') !== 'block') return
+  #copyEnabled() {
+    return this.getAttribute('variant') === 'block' && this.hasAttribute('copy') && this.getAttribute('copy') !== 'false'
+  }
 
-    const pre = this.querySelector('pre')
+  #removeGeneratedCopyUI() {
+    this.operation += 1
 
-    if (!pre) return
+    globalThis.clearTimeout(this.resetTimer)
 
-    if (this.getAttribute('wrap') !== 'true') {
-      if (!pre.hasAttribute('tabindex')) pre.tabIndex = 0
+    this.generatedCopyButton?.remove()
 
-      if (!pre.hasAttribute('role')) pre.setAttribute('role', 'region')
+    this.generatedCopyStatus?.remove()
 
-      if (!pre.hasAttribute('aria-label') && !pre.hasAttribute('aria-labelledby')) {
-        pre.setAttribute('aria-label', this.#label('code-label', 'Code example'))
+    this.generatedCopyButton = undefined
+
+    this.generatedCopyStatus = undefined
+  }
+
+  #updateFocusAttributes(pre: HTMLElement | null, scrollable: boolean) {
+    if (!scrollable || !pre) {
+      for (const [element, attributes] of this.generatedFocusAttributes) {
+        for (const [name, value] of attributes) {
+          if (element.getAttribute(name) === value) element.removeAttribute(name)
+        }
+      }
+
+      this.generatedFocusAttributes.clear()
+
+      return
+    }
+
+    const attributes = this.generatedFocusAttributes.get(pre) ?? new Map<string, string>()
+    const defaults = new Map([['tabindex', '0'], ['role', 'region']])
+
+    if (!pre.hasAttribute('aria-labelledby')) defaults.set('aria-label', this.#label('code-label', 'Code example'))
+
+    for (const [name, value] of defaults) {
+      if (!pre.hasAttribute(name)) {
+        pre.setAttribute(name, value)
+
+        attributes.set(name, value)
       }
     }
 
-    if (!this.hasAttribute('copy') || this.getAttribute('copy') === 'false') return
+    this.generatedFocusAttributes.set(pre, attributes)
+  }
+
+  #updateCode() {
+    const pre = this.querySelector('pre')
+
+    this.#updateFocusAttributes(pre, this.getAttribute('variant') === 'block' && this.getAttribute('wrap') !== 'true')
+
+    if (!pre || !this.#copyEnabled()) {
+      this.#removeGeneratedCopyUI()
+
+      return
+    }
 
     let button = this.querySelector<HTMLButtonElement>('[data-ui-code-copy]')
 
@@ -9095,6 +9137,8 @@ class LumenCodeBehaviorElement extends LumenElement {
 
       header.append(button)
 
+      this.generatedCopyButton = button
+
       const status = document.createElement('span')
 
       status.className = 'ui-sr-only'
@@ -9106,6 +9150,8 @@ class LumenCodeBehaviorElement extends LumenElement {
       status.setAttribute('aria-live', 'polite')
 
       this.append(status)
+
+      this.generatedCopyStatus = status
     }
 
     if (button.dataset.state === 'idle') {
@@ -9118,6 +9164,8 @@ class LumenCodeBehaviorElement extends LumenElement {
   }
 
   async #copy(button: HTMLButtonElement) {
+    if (!this.#copyEnabled()) return
+
     const operation = ++this.operation
 
     globalThis.clearTimeout(this.resetTimer)

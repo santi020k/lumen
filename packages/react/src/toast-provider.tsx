@@ -54,11 +54,14 @@ const ToastItem = ({ onDismiss, toast }: ToastItemProps) => {
   const timerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
   const remainingRef = useRef(toast.duration ?? defaultToastDuration)
   const startedAtRef = useRef(0)
+  const pauseReasonsRef = useRef(new Set<'focus' | 'hover'>())
   const dismiss = useToast().dismiss
 
   const clearTimer = useCallback(() => {
     if (timerRef.current) {
       clearTimeout(timerRef.current)
+
+      timerRef.current = undefined
     }
   }, [])
 
@@ -67,7 +70,7 @@ const ToastItem = ({ onDismiss, toast }: ToastItemProps) => {
 
     clearTimer()
 
-    if (!Number.isFinite(remaining) || remaining <= 0) return
+    if (!Number.isFinite(remaining) || remaining <= 0 || pauseReasonsRef.current.size > 0) return
 
     startedAtRef.current = Date.now()
 
@@ -76,16 +79,22 @@ const ToastItem = ({ onDismiss, toast }: ToastItemProps) => {
     }, remaining)
   }, [clearTimer, dismiss, toast.id])
 
-  const pauseTimer = useCallback(() => {
-    clearTimer()
+  const pauseTimer = useCallback((reason: 'focus' | 'hover') => {
+    pauseReasonsRef.current.add(reason)
+
+    if (timerRef.current === undefined) return
 
     remainingRef.current = Math.max(
       0, remainingRef.current - (Date.now() - startedAtRef.current)
     )
+
+    clearTimer()
   }, [clearTimer])
 
-  const resumeTimer = useCallback(() => {
-    if (remainingRef.current > 0) {
+  const resumeTimer = useCallback((reason: 'focus' | 'hover') => {
+    const wasPaused = pauseReasonsRef.current.delete(reason)
+
+    if (wasPaused && pauseReasonsRef.current.size === 0 && remainingRef.current > 0) {
       startTimer()
     }
   }, [startTimer])
@@ -122,7 +131,12 @@ const ToastItem = ({ onDismiss, toast }: ToastItemProps) => {
       data-ui-toast
       data-variant={toast.variant}
       id={toast.id}
-      onFocus={pauseTimer}
+      onBlur={event => {
+        if (!event.currentTarget.contains(event.relatedTarget)) resumeTimer('focus')
+      }}
+      onFocus={event => {
+        if (!event.currentTarget.contains(event.relatedTarget)) pauseTimer('focus')
+      }}
       onKeyDown={event => {
         if (event.defaultPrevented || event.nativeEvent.isComposing) return
 
@@ -132,8 +146,12 @@ const ToastItem = ({ onDismiss, toast }: ToastItemProps) => {
 
         dismiss(toast.id)
       }}
-      onMouseEnter={pauseTimer}
-      onMouseLeave={resumeTimer}
+      onMouseEnter={() => {
+        pauseTimer('hover')
+      }}
+      onMouseLeave={() => {
+        resumeTimer('hover')
+      }}
       ref={toastRef}
       role={toast.variant === 'destructive' ? 'alert' : 'status'}
     >

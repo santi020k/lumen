@@ -115,6 +115,8 @@
 
 - Validate decoded heatmap cells through the shared normalizeLumenHeatmapData helper before geometry or native category formatting. Fail closed for malformed rows while preserving unavailable measurements. Execute React rich-text toolbar and keyboard commands in the editor root's owning document, including same-origin iframe portals.
 
+- Validate decoded BulletChart range containers and avoid formatting invalid measurements. Fall back safely for malformed decimal locale tags. Resume React toast timeouts after keyboard focus leaves while preserving overlapping hover pauses. Remove only enhancer-owned Code copy controls and focus attributes when configuration changes, and cancel stale clipboard feedback.
+
 ### Native Advanced Inputs
 
 - Add React Native and SwiftUI number, time, autocomplete, password, numeric OTP and image comparison

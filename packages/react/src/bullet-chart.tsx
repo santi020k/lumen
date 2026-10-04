@@ -41,7 +41,7 @@ const BulletContent = ({
   const text = resolveLumenChartLabels(labels)
   const model = createLumenBulletGeometry(value, target, { domain, ranges })
   const title = valueLabel ?? text.value
-  const actual = value === null ? text.notAvailable : formatValue(value)
+  const actual = model.valid && value !== null ? formatValue(value) : text.notAvailable
   const factual = model.valid ? `${title}: ${actual}. ${targetLabel}: ${formatValue(target)}.` : text.invalidData
 
   return (

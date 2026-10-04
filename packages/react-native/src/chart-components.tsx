@@ -1530,6 +1530,19 @@ const bulletTickAlignment = (index: number): 'left' | 'right' | 'center' => {
   return index === 2 ? 'right' : 'center'
 }
 
+const nativeBulletRows = (
+  model: ReturnType<typeof createLumenBulletGeometry>, actual: string, title: string,
+  targetLabel: string, formatValue: (value: number) => string
+) => {
+  if (!model.valid) return []
+
+  return [
+    { id: 'actual', label: `${title}: ${actual}` },
+    { id: 'target', label: `${targetLabel}: ${formatValue(model.target)}` },
+    ...model.ranges.map(range => ({ id: `range:${range.end}`, label: `${range.label}: ${formatValue(range.start)}–${formatValue(range.end)}` }))
+  ]
+}
+
 const LumenBulletContent = ({
   domain, formatValue, labels, ranges, showData, summary, target,
   targetLabel, tone, value, valueLabel, ...props
@@ -1538,14 +1551,9 @@ const LumenBulletContent = ({
   const text = resolveLumenChartLabels(labels)
   const model = createLumenBulletGeometry(value, target, { domain, ranges })
   const title = valueLabel ?? text.value
-  const actual = value === null ? text.notAvailable : formatValue(value)
+  const actual = model.valid && value !== null ? formatValue(value) : text.notAvailable
   const factual = model.valid ? `${title}: ${actual}. ${targetLabel}: ${formatValue(target)}.` : text.invalidData
-
-  const rows = [
-    { id: 'actual', label: `${title}: ${actual}` },
-    { id: 'target', label: `${targetLabel}: ${formatValue(target)}` },
-    ...model.ranges.map(range => ({ id: `range:${range.end}`, label: `${range.label}: ${formatValue(range.start)}–${formatValue(range.end)}` }))
-  ]
+  const rows = nativeBulletRows(model, actual, title, targetLabel, formatValue)
 
   return (
     <LumenChartFrame {...props} summary={summary ?? factual}>

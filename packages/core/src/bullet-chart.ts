@@ -22,6 +22,14 @@ const validBulletRange = (range: unknown): range is LumenBulletRange => {
     validBulletTone('tone' in range ? range.tone : undefined)
 }
 
+const validatedBulletRanges = (input: unknown): LumenBulletRange[] | null => {
+  if (!Array.isArray(input)) return null
+
+  const rows: unknown[] = Array.from(input)
+
+  return rows.every(validBulletRange) ? rows : null
+}
+
 const automaticBulletDomain = (values: readonly number[]): LumenChartDomain => {
   let minimum = 0
   let maximum = 0
@@ -56,9 +64,10 @@ const orderedBulletRanges = (ranges: readonly LumenBulletRange[], domain: LumenC
 }
 
 const resolveBulletModel = (value: number | null, target: number, options: LumenBulletOptions) => {
-  const inputRanges = options.ranges ?? []
-  const finiteRanges = inputRanges.every(validBulletRange)
-  const ranges = finiteRanges ? [...inputRanges].sort((left, right) => left.end - right.end) : []
+  const { ranges: configuredRanges = [] } = options
+  const inputRanges = validatedBulletRanges(configuredRanges)
+  const finiteRanges = inputRanges !== null
+  const ranges = [...inputRanges ?? []].sort((left, right) => left.end - right.end)
   const values = [0, target, ...ranges.map(range => range.end), ...value === null ? [] : [value]]
   const requested = options.domain ?? automaticBulletDomain(values)
   const domain = validBulletDomain(requested) ? requested : { min: 0, max: 1 }

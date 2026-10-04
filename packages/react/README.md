@@ -440,6 +440,8 @@ ARIA, keyboard, Escape, dismissal, context menu, form
 validation, calendar grids, OTP segmentation, date range syncing, rich text command, schedule
 drag/drop, controlled Kanban move requests, theme export and switching, resizable pane sizing, and
 toast controller semantics for React applications.
+Toast timeouts pause while hovered or focused and resume only after both interactions end;
+moving focus between a toast's controls preserves its remaining duration.
 `useRichTextEditor` also provides `getEditableProps`, value-bearing commands, common formatting
 shortcuts, active toolbar state, and `{ html, text }` change details.
 `DataTable` can render structured `columns` and `rows`; sortable columns use native header buttons,
@@ -825,6 +827,7 @@ start/end alignment, and focus handoff. Set `positioning="none"` for application
 `BulletChart` compares a nullable actual `value` with a finite `target` and optional
 labeled `ranges`. A strong actual bar, target marker, readable value labels, and expandable exact
 data work together. Domains include zero and all measurements; invalid inputs fail closed.
+Invalid measurements do not reach `formatValue`.
 Null values stay distinct from zero. See the [chart guide](../../docs/data-visualization.md#actual-values-and-targets)
 for the input, localization, and domain contracts.
 

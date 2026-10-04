@@ -293,6 +293,7 @@ input. `isLumenDecimalInBounds(value, { locale, min, max, step })` validates com
 floating-point conversion. Bounds and steps use ASCII decimal strings; drafts use localized decimal
 separators and Unicode decimal digits. Grouping, exponents, whitespace and inputs exceeding 128
 characters are rejected. Empty drafts stay distinct from zero; unfinished drafts cannot step.
+Malformed locale tags safely use English decimal symbols.
 Applications own units, currency policy, required validation and submission serialization.
 
 `normalizeLumenNumericOTP(proposal, length)` normalizes Unicode decimal digits, whitespace and hyphens

@@ -19,7 +19,7 @@ const ToastActions = () => {
       toast.update('save', { title: 'Saved', variant: 'success' })
     }
   }, 'Complete'), createElement('button', {
-    onClick: () => toast.create({ duration: 1000, id: 'timed', title: 'Temporary' })
+    onClick: () => toast.create({ duration: 1000, id: 'timed', title: 'Temporary', action: { label: 'Retry' } })
   }, 'Timed'))
 }
 
@@ -89,4 +89,54 @@ test('enforces the viewport limit and expires timed notifications', async () => 
 
   await act(() => vi.advanceTimersByTimeAsync(240))
   expect(container.querySelectorAll('[data-ui-toast]')).toHaveLength(0)
+})
+
+test('resumes after keyboard focus leaves without subtracting time for internal focus changes', async () => {
+  await clickButton('Timed')
+  const toast = container.querySelector<HTMLElement>('#timed')
+  const action = toast?.querySelector<HTMLButtonElement>('.ui-toast__action')
+  const dismiss = toast?.querySelector<HTMLButtonElement>('.ui-toast__dismiss')
+  if (!toast || !action || !dismiss) throw new Error('Expected timed toast controls')
+  await act(() => vi.advanceTimersByTimeAsync(100))
+  act(() => {
+    action.focus()
+  })
+  await act(() => vi.advanceTimersByTimeAsync(2000))
+  act(() => {
+    dismiss.focus()
+  })
+  await act(() => vi.advanceTimersByTimeAsync(2000))
+  expect(toast.dataset.state).toBe('open')
+  act(() => {
+    dismiss.blur()
+  })
+  await act(() => vi.advanceTimersByTimeAsync(899))
+  expect(toast.dataset.state).toBe('open')
+  await act(() => vi.advanceTimersByTimeAsync(1))
+  expect(toast.dataset.state).toBe('closed')
+})
+
+test('keeps overlapping pointer and keyboard pauses until both end', async () => {
+  await clickButton('Timed')
+  const toast = container.querySelector<HTMLElement>('#timed')
+  const action = toast?.querySelector<HTMLButtonElement>('.ui-toast__action')
+  if (!toast || !action) throw new Error('Expected toast action')
+  await act(() => vi.advanceTimersByTimeAsync(100))
+  act(() => {
+    toast.dispatchEvent(new MouseEvent('mouseover', { bubbles: true }))
+  })
+  await act(() => vi.advanceTimersByTimeAsync(200))
+  act(() => {
+    action.focus()
+  })
+  act(() => {
+    toast.dispatchEvent(new MouseEvent('mouseout', { bubbles: true, relatedTarget: document.body }))
+  })
+  await act(() => vi.advanceTimersByTimeAsync(2000))
+  expect(toast.dataset.state).toBe('open')
+  act(() => {
+    action.blur()
+  })
+  await act(() => vi.advanceTimersByTimeAsync(900))
+  expect(toast.dataset.state).toBe('closed')
 })

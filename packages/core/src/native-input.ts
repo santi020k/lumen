@@ -10,8 +10,16 @@ export interface LumenDecimalOptions {
   step?: string
 }
 
+const decimalFormatter = (locale?: string): Intl.NumberFormat => {
+  try {
+    return new Intl.NumberFormat(locale, { useGrouping: false })
+  } catch {
+    return new Intl.NumberFormat('en', { useGrouping: false })
+  }
+}
+
 const decimalSymbols = (locale?: string): { decimal: string, digits: readonly string[], minus: string } => {
-  const formatter = new Intl.NumberFormat(locale, { useGrouping: false })
+  const formatter = decimalFormatter(locale)
   const parts = formatter.formatToParts(-1.1)
 
   return {

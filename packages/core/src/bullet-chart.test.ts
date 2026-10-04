@@ -57,3 +57,13 @@ test('bullet charts retain finite positions at numeric extremes and an all-zero 
   expect(extreme.ticks.map(tick => tick.position)).toEqual([0, 0.5, 1])
   expect(createLumenBulletGeometry(0, 0).domain).toEqual({ min: 0, max: 1 })
 })
+
+test.each([{}, 'ranges', false, null, 42, Array.from({ length: 2 })])('rejects malformed decoded range containers %#', ranges => {
+  const options = { ranges: [] }
+  Object.defineProperty(options, 'ranges', { value: ranges })
+  const model = createLumenBulletGeometry(10, 20, options)
+
+  expect(model.valid).toBe(false)
+  expect(model.ranges).toEqual([])
+  expect(model.ticks).toEqual([])
+})

@@ -101,6 +101,8 @@
 - Updated dependencies []:
   - @santi020k/lumen-core@4.0.0
 
+- Avoid calling application BulletChart formatters when measurements or configuration are invalid; render the invalid-data fallback consistently across web and native adapters.
+
 ### Native Advanced Inputs
 
 - Add React Native and SwiftUI number, time, autocomplete, password, numeric OTP and image comparison

@@ -8,6 +8,7 @@ import { describe, expect, test, vi } from 'vitest'
 
 import {
   LumenBarChart,
+  LumenBulletChart,
   LumenComboChart,
   LumenHeatmap,
   LumenHistogram,
@@ -563,4 +564,16 @@ describe('native interval chart adapters', () => {
     })
     expect(data[0]?.start).toBe(20)
   })
+})
+
+test.each([{ value: NaN, target: 20 }, { value: Infinity, target: 20 }, { value: 10, target: Infinity }])('does not format invalid native bullet measurements %#', input => {
+  const formatValue = vi.fn(() => {
+    throw new Error('Invalid bullet model must not invoke application formatters')
+  })
+  const chart = LumenBulletChart({ ...input, formatValue, label: 'Bullet' })
+  if (typeof chart.type !== 'function') throw new Error('Expected native bullet content')
+  const rendered: unknown = Reflect.apply(chart.type, undefined, [chart.props])
+  if (!isValidElement<ChartFrameOutputProps>(rendered)) throw new Error('Expected native chart frame')
+  expect(formatValue).not.toHaveBeenCalled()
+  expect(rendered.props.summary).toContain('invalid')
 })

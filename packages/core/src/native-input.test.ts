@@ -45,3 +45,10 @@ describe('native input contracts', () => {
     )).toThrow(RangeError)
   })
 })
+
+test.each(['invalid_tag', 'en--US', '💥'])('uses English decimal symbols for malformed locale %s', locale => {
+  expect(parseLumenDecimalDraft('-12.3', locale)).toEqual({ coefficient: -123n, kind: 'valid', scale: 1 })
+  expect(parseLumenDecimalDraft('12,3', locale).kind).toBe('invalid')
+  expect(isLumenDecimalInBounds('1.5', { locale, min: '1', max: '2' })).toBe(true)
+  expect(stepLumenDecimalDraft('1.5', 1, { locale, step: '0.2' })).toBe('1.7')
+})
