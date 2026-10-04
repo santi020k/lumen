@@ -4,6 +4,10 @@
 
 ### Minor Changes
 
+- Add controlled native range filters with independently named and formatted endpoints, domain
+  stepping, crossing protection, and disabled/read-only behavior. SwiftUI now exposes the same
+  semantic range contract; Compose retains native two-thumb rendering.
+
 - Add CalendarHeatmap, FunnelChart, and BoxPlot across web and native adapters with shared validation,
   semantic chart colors, localized formatting, responsive layouts, and accessible exact data.
   Calendar heatmaps use explicit Gregorian date-only ranges; funnels preserve supplied stage order;

@@ -57,3 +57,26 @@ export const stepLumenSliderValue = (
   value.max,
   value.step
 ).value
+
+/** Reject unusable bounds before constructing native controls. Never mutate caller state. */
+export const resolveLumenRangeValue = (
+  value: readonly [number, number],
+  min: number,
+  max: number,
+  step?: number
+): readonly [number, number] => {
+  if (!Number.isFinite(min) || !Number.isFinite(max) || min >= max || !Number.isFinite(max - min)) {
+    throw new RangeError('Range bounds must be finite, increasing, and have a finite span.')
+  }
+
+  if (step !== undefined && (!Number.isFinite(step) || step <= 0 || !Number.isFinite((max - min) / step))) {
+    throw new RangeError('Range step must be finite, positive, and representable within the bounds.')
+  }
+
+  if ((max - min) / 100 === 0) throw new RangeError('Range span must support adjustment.')
+
+  const start = resolveLumenSliderValue(finiteOr(value[0], min), min, max, step).value
+  const end = resolveLumenSliderValue(finiteOr(value[1], max), min, max, step).value
+
+  return [Math.min(start, end), Math.max(start, end)]
+}

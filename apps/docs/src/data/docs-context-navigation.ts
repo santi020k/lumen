@@ -47,6 +47,8 @@ const contextLinks: Record<DocsPlatformId | 'all', DocsContextLink[]> = {
     { href: '/docs/foundations', label: 'Overview', match: 'exact' },
     { href: '/docs/foundations#tokens-in-use', label: 'Color roles' },
     { href: '/docs/foundations#composition-in-use', label: 'Composition' },
+    { href: '/docs/foundations#foundation-scales', label: 'Space and surfaces' },
+    { href: '/docs/foundations#foundation-motion', label: 'Motion' },
     { href: '/docs/foundations#installation', label: 'Use the tokens' },
     { href: '/docs/foundations#components', label: 'Coverage' },
     { href: '/docs/foundations#principles', label: 'Principles' }

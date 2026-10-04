@@ -4,6 +4,7 @@ import { Breadcrumb, CodeTabs, Link, Note } from '@santi020k/lumen-astro'
 import CodeBlock from '../../../components/CodeBlock.astro'
 import DocsActionLink from '../../../components/DocsActionLink.astro'
 import DocsPageHero from '../../../components/DocsPageHero.astro'
+import FrameworkLiveExample from '../../../components/FrameworkLiveExample.astro'
 import { frameworkGuides, frameworkSetups } from '../../../data/docs'
 import { reactHookGuides } from '../../../data/react-hooks'
 import DocsLayout from '../../../layouts/DocsLayout.astro'
@@ -23,6 +24,7 @@ if (!guide || !setup) {
     { href: '/docs/frameworks/react', label: 'React' }
   ]}
   pageNavigation={[
+    { id: 'live-example-title', label: 'Live React example' },
     { id: 'install-title', label: 'Installation' },
     { id: 'overview-title', label: 'React behavior' },
     { id: 'hooks-title', label: 'Find a hook' }
@@ -58,6 +60,8 @@ if (!guide || !setup) {
         </DocsActionLink>
       </Fragment>
     </DocsPageHero>
+
+    <FrameworkLiveExample framework="react" />
 
     <section class="docs-section space-y-4" aria-labelledby="install-title">
       <div class="docs-section-heading">

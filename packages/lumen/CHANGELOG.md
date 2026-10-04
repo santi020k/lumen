@@ -38,6 +38,9 @@
 
 ### Minor Changes
 
+- Extend native range filters to React Native and SwiftUI with independently named endpoints,
+  localized formatting, controlled domain stepping, and disabled/read-only protection.
+
 - Add CalendarHeatmap, FunnelChart, and BoxPlot across web and native adapters with shared validation,
   semantic chart colors, localized formatting, responsive layouts, and accessible exact data.
   Calendar heatmaps use explicit Gregorian date-only ranges; funnels preserve supplied stage order;
@@ -116,6 +119,10 @@
   Refine BulletChart with a slimmer track, quieter range bands, and a capped target marker.
 
 ### Patch Changes
+
+- Refine Accordion and Collapsible with aligned container-owned content insets, calmer borders and
+  heading weight, and a fixed circular toggle background. Preserve keyboard focus, reduced motion,
+  flush styling, and native disclosure behavior without JavaScript across the web adapters.
 
 - Improve inactive CodeTabs label contrast in the shared stylesheet so framework selectors remain readable in the light theme.
 

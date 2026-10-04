@@ -1,3 +1,4 @@
+// cspell:words Capacidad
 import Foundation
 import LumenUI
 import SwiftUI
@@ -27,6 +28,7 @@ struct ComponentsCatalogView: View {
             displayName: "Colombia"
         )
     )
+    @State private var capacityRange: ClosedRange<Double> = 20...80
     @State private var progress = 76.0
     @State private var query = ""
     @State private var releaseDate = Date()
@@ -479,6 +481,7 @@ struct ComponentsCatalogView: View {
             "Settings row",
             "Picker",
             "Slider",
+            "Range slider",
             "Date field",
             "Date range field",
             "Search field",
@@ -605,6 +608,13 @@ struct ComponentsCatalogView: View {
                             step: 1,
                             valueLabel: "\(Int(progress))%"
                         )
+                    }
+                    if matches("Range slider") {
+                        LumenRangeSlider("Capacity", value: $capacityRange, in: 0...100, step: 10,
+                            formatValue: { "\(Int($0))%" })
+                        LumenRangeSlider("Capacidad", value: .constant(20...80), in: 0...100,
+                            readOnly: true, startLabel: "Mínimo", endLabel: "Máximo",
+                            formatValue: { "\(Int($0)) %" })
                     }
                     if matches("Date field") {
                         LumenDateField(
