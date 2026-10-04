@@ -39,8 +39,6 @@ export const renderChangelogInline = (value: string): string => {
   return html + renderCode(value.slice(cursor))
 }
 
-// The parser intentionally keeps the small Changesets heading-and-list state machine together.
-// eslint-disable-next-line complexity
 export const parseChangelog = (source: string): ChangelogRelease[] => {
   const releases: ChangelogRelease[] = []
   let release: ChangelogRelease | undefined
@@ -76,7 +74,7 @@ export const parseChangelog = (source: string): ChangelogRelease[] => {
     if (versionMatch) {
       flushEntry()
 
-      release = { sections: [], version: versionMatch[1] ?? '' }
+      release = { sections: [], version: versionMatch[0].slice(3) }
 
       releases.push(release)
 
@@ -88,7 +86,7 @@ export const parseChangelog = (source: string): ChangelogRelease[] => {
     if (sectionMatch && release) {
       flushEntry()
 
-      section = { entries: [], title: sectionMatch[1] ?? '' }
+      section = { entries: [], title: sectionMatch[0].slice(4) }
 
       release.sections.push(section)
 
@@ -98,7 +96,7 @@ export const parseChangelog = (source: string): ChangelogRelease[] => {
     if (entryMatch && section) {
       flushEntry()
 
-      entryLines = [entryMatch[1] ?? '']
+      entryLines = [entryMatch[0].slice(2)]
 
       continue
     }

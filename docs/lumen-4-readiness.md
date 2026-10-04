@@ -98,6 +98,60 @@ behavior review above does not support calling this a demonstrated behavior fix;
 the other two have no patched version listed. No budgets, audit exclusions, or dependency
 overrides were weakened to make these gates pass.
 
+## October 3 quality audit
+
+The audit branch starts from release candidate `50990a22`. It corrects the local Figma Code Connect
+types, removes duplicate declarations and unsafe double assertions, and includes those templates
+in both canonical and affected type checks. Elements test fixtures now require missing nodes to
+fail explicitly instead of using non-null assertions; generic custom-event payloads use `unknown`.
+
+React uses its supported React 19 context API. Toast rendering and its context now live in separate
+modules, removing the mixed-export and declaration-order exceptions while preserving public exports.
+The extracted toast modules remain included in the original hooks bundle budget. Small controller,
+theme-builder, registry and documentation refactors remove unnecessary complexity, formatting and
+nested-conditional suppressions. The Next.js smoke app's type check now depends on its own build,
+preventing simultaneous tasks from overwriting generated route types.
+
+The explicit TypeScript `any` syntax scan found no occurrences in 391 TypeScript files.
+The same eleven-file diagnostic scan with inline ESLint exceptions disabled fell from 365 to 66
+diagnostics: 60 complexity findings and six existing React composition/state exceptions. Those
+remaining exceptions are still maintenance work; this audit does not claim every suppression was
+removed. No lint rule was weakened and no new suppression was added.
+
+Local verification passed:
+
+- Canonical zero-warning lint and type checks, including the Figma templates.
+- The full 120-file, 1,315-test suite, including two mounted React toast regressions; subsequent
+  Elements and React fixture checks passed 394 tests.
+- All 128 desktop/mobile Chromium and WebKit framework conformance checks.
+- All 87 website interaction and dark-theme accessibility checks, plus three focused browser
+  regressions after the final DataTable sorting refactor.
+- An uncached combined Next.js build/typecheck and the affected build/typecheck/lint/test pipeline
+  against `50990a22`.
+- API baselines, generated MCP/plugin/registry checks, spelling, unused-code checks, publish dry-run
+  and packed consumer, React Native and MCP smoke checks. The reviewed DialogClose fingerprint was
+  regenerated after its equivalent React context implementation changed.
+
+The exhaustive `pnpm run validate` still fails `pnpm run check:bundle-size` on inherited limits:
+shared CSS is 199.7 KiB raw / 32.4 KiB gzip against 199.2 / 32.2 KiB, React components are
+168.0 / 34.7 KiB against 167.0 / 34.2 KiB, and Elements gzip is 44.4 KiB against 43.9 KiB.
+The ceilings remain unchanged. Later validation commands were run separately to expose additional
+failures; that diagnostic run is not a passing exhaustive gate.
+
+`pnpm run check:security` reports three high advisories:
+[`node-forge`](https://github.com/advisories/GHSA-86w9-cpqp-85rv),
+[`braces`](https://github.com/advisories/GHSA-vfj7-8cjw-p6xm) and
+[`http-cache-semantics`](https://github.com/advisories/GHSA-ch52-4w7c-c8xp). The first two have no patched
+release at audit time. The npm registry lists `http-cache-semantics` 4.3.0 as patched, published at
+02:56 UTC on October 4; an isolated install confirms the repository's 24-hour release-age policy
+rejects it with `ERR_PNPM_NO_MATURE_MATCHING_VERSION`. No dependency, exception or age policy changed.
+
+Local integration into `release/v4.0.0` remains blocked by these failing gates. The focused audit work
+is preserved on `fix/quality-audit`; nothing was pushed, published or deployed. Next steps are to
+reduce the oversized bundles, update the patched dependency after its release-age window, resolve
+the two remaining upstream advisories, rerun the exhaustive gate and integrate the verified commit.
+Native evidence here is limited to repository checks and package tests, not new device qualification.
+
 ## October 3 pending-work integration
 
 The release checkout's pending form reset, rich-text initialization and data-view URL fixes are

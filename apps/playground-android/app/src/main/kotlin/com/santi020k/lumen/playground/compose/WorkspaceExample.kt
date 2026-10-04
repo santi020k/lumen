@@ -2,10 +2,9 @@ package com.santi020k.lumen.playground.compose
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.padding
@@ -21,8 +20,7 @@ import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.dp
+import com.santi020k.lumen.LumenAdaptiveListDetailScaffold
 import com.santi020k.lumen.LumenBarChart
 import com.santi020k.lumen.LumenChartDatum
 import com.santi020k.lumen.LumenChartLabels
@@ -59,12 +57,16 @@ internal fun WorkspaceExample(onBack: () -> Unit) {
     var state by rememberSaveable { mutableStateOf("success") }
     val text: (String, String) -> String = { english, translation -> if (spanish) translation else english }
 
-    BoxWithConstraints(Modifier.fillMaxSize().statusBarsPadding()) {
-        val wide = maxWidth >= 840.dp && LocalDensity.current.fontScale < 2f
-        BackHandler(enabled = selected != null && !wide && !editing) { selected = null }
-        Row(Modifier.fillMaxSize()) {
-            if (wide || selected == null) {
-                LazyColumn(Modifier.weight(1f).padding(LumenSpacing.Md), verticalArrangement = Arrangement.spacedBy(LumenSpacing.Sm)) {
+    Box(Modifier.fillMaxSize().statusBarsPadding()) {
+        LumenAdaptiveListDetailScaffold(
+            selectedKey = selected?.toString(),
+            onBack = { selected = null },
+            listLabel = text("Records", "Registros"),
+            detailLabel = text("Record details", "Detalles del registro"),
+            backLabel = text("Back", "Volver"),
+            modifier = Modifier.fillMaxSize(),
+            listPane = {
+                LazyColumn(Modifier.fillMaxSize().padding(LumenSpacing.Md), verticalArrangement = Arrangement.spacedBy(LumenSpacing.Sm)) {
                     item {
                         Column(verticalArrangement = Arrangement.spacedBy(LumenSpacing.Md)) {
                             LumenButton(onClick = onBack, intent = LumenButtonIntent.Quiet) { Text(text("Back to examples", "Volver a ejemplos")) }
@@ -84,30 +86,31 @@ internal fun WorkspaceExample(onBack: () -> Unit) {
                     }
                     if (visible.isEmpty()) item { WorkspacePlaceholder(state, spanish) { state = "success" } }
                 }
-            }
-            selected?.let { index ->
-                Column(Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(LumenSpacing.Md), verticalArrangement = Arrangement.spacedBy(LumenSpacing.Lg)) {
-                    if (!wide) LumenButton(onClick = { selected = null }, intent = LumenButtonIntent.Quiet) { Text(text("Back", "Volver")) }
-                    LumenText(names[index])
-                    if (saved) LumenText(text("Changes saved locally", "Cambios guardados localmente"))
-                    LumenButton(onClick = { draftName = names[index]; draftNote = notes[index]; saved = false; editing = true }) { Text(text("Edit record", "Editar registro")) }
-                    LumenText(notes[index])
-                    if (state == "success") {
-                        val chartData = listOf(3, 7, 4, 8, 5).mapIndexed { day, count ->
-                            LumenChartDatum(day.toString(), LumenChartX.Category((day + 1).toString()), count.toDouble())
-                        }
-                        val chartLabels = if (spanish) LumenChartLabels(
-                            chartData = "Datos del gráfico", empty = "No hay datos disponibles.",
-                            notAvailable = "No disponible", size = "Tamaño",
-                            formatSummary = { "Actividad semanal, cinco valores." }
-                        ) else LumenChartLabels()
-                        LumenBarChart(
-                            label = text("Weekly activity", "Actividad semanal"),
-                            series = listOf(LumenChartSeries("activity", text("Changes", "Cambios"), chartData)),
-                            labels = chartLabels
-                        )
-                    } else WorkspacePlaceholder(state, spanish) { state = "success" }
-                }
+            },
+            emptyDetail = { LumenText(text("Choose a record", "Elige un registro")) }
+        ) { key, detailOnly ->
+            val index = key.toInt()
+            BackHandler(enabled = detailOnly && !editing) { selected = null }
+            Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(LumenSpacing.Md), verticalArrangement = Arrangement.spacedBy(LumenSpacing.Lg)) {
+                LumenText(names[index])
+                if (saved) LumenText(text("Changes saved locally", "Cambios guardados localmente"))
+                LumenButton(onClick = { draftName = names[index]; draftNote = notes[index]; saved = false; editing = true }) { Text(text("Edit record", "Editar registro")) }
+                LumenText(notes[index])
+                if (state == "success") {
+                    val chartData = listOf(3, 7, 4, 8, 5).mapIndexed { day, count ->
+                        LumenChartDatum(day.toString(), LumenChartX.Category((day + 1).toString()), count.toDouble())
+                    }
+                    val chartLabels = if (spanish) LumenChartLabels(
+                        chartData = "Datos del gráfico", empty = "No hay datos disponibles.",
+                        notAvailable = "No disponible", size = "Tamaño",
+                        formatSummary = { "Actividad semanal, cinco valores." }
+                    ) else LumenChartLabels()
+                    LumenBarChart(
+                        label = text("Weekly activity", "Actividad semanal"),
+                        series = listOf(LumenChartSeries("activity", text("Changes", "Cambios"), chartData)),
+                        labels = chartLabels
+                    )
+                } else WorkspacePlaceholder(state, spanish) { state = "success" }
             }
         }
         LumenSheet(visible = editing, onDismiss = { editing = false }, dismissible = false, title = text("Edit record", "Editar registro"), actions = {

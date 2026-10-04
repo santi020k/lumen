@@ -2,6 +2,14 @@
 
 ## 4.0.0
 
+### Patch Changes
+
+- Expose Slider tracks as accessible adjustable controls on native platforms so screen readers can
+  reach their value and increment/decrement actions.
+
+- Align Slider touch and drag values with native right-to-left layouts. Position the thumb from the
+  logical leading edge while preserving numeric screen-reader increment and decrement actions.
+
 ### Minor Changes
 
 - Add canonical Default, Studio and Glass appearance presets, scoped web styling and ThemeBuilder radius, spacing and border customization. Native adapters expose preset palettes and explicit surface material with opaque fallbacks. Swift and Compose consumers must rebuild for the updated theme and surface signatures; see the appearance presets guide.

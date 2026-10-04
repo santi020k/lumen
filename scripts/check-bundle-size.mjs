@@ -31,7 +31,13 @@ const allBudgets = [
   // Combined v4 features measure 213,671 bytes raw / 34,856 gzip; allow about 3% headroom.
   { file: 'packages/lumen/styles.css', gzip: 36_000, packageName: '@santi020k/lumen', raw: 220_000 },
   { file: 'packages/react/dist/components.js', gzip: 37_000, packageName: '@santi020k/lumen-react', raw: 183_000 },
-  { file: 'packages/react/dist/hooks.js', gzip: 20_000, packageName: '@santi020k/lumen-react', raw: 100_000 },
+  {
+    file: 'packages/react/dist/hooks.js',
+    gzip: 20_000,
+    packageName: '@santi020k/lumen-react',
+    raw: 100_000,
+    relatedFiles: ['packages/react/dist/toast-context.js', 'packages/react/dist/toast-provider.js']
+  },
   { file: 'packages/elements/dist/define.js', gzip: 47_000, packageName: '@santi020k/lumen-elements', raw: 261_000 }
 ]
 
@@ -53,20 +59,27 @@ const formatBytes = (bytes) => `${(bytes / 1024).toFixed(1)} KiB`
 const failures = []
 
 for (const budget of budgets) {
-  const source = await readFile(new URL(`../${budget.file}`, import.meta.url))
+  // Keep extracted modules within their original budget instead of dropping their bytes.
+  const files = [budget.file, ...(budget.relatedFiles ?? [])]
+
+  const source = Buffer.concat(await Promise.all(files.map(file => (
+    readFile(new URL(`../${file}`, import.meta.url))
+  ))))
+
   const raw = source.byteLength
   const gzip = gzipSync(source, { level: 9 }).byteLength
+  const label = files.join(' + ')
 
   process.stdout.write(
-    `${budget.file}: ${formatBytes(raw)} raw, ${formatBytes(gzip)} gzip\n`
+    `${label}: ${formatBytes(raw)} raw, ${formatBytes(gzip)} gzip\n`
   )
 
   if (raw > budget.raw) {
-    failures.push(`${budget.file} raw size ${formatBytes(raw)} exceeds ${formatBytes(budget.raw)}`)
+    failures.push(`${label} raw size ${formatBytes(raw)} exceeds ${formatBytes(budget.raw)}`)
   }
 
   if (gzip > budget.gzip) {
-    failures.push(`${budget.file} gzip size ${formatBytes(gzip)} exceeds ${formatBytes(budget.gzip)}`)
+    failures.push(`${label} gzip size ${formatBytes(gzip)} exceeds ${formatBytes(budget.gzip)}`)
   }
 }
 

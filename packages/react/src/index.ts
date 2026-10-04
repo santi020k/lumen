@@ -12,6 +12,7 @@ export * from './date-range-input.js'
 export * from './hooks.js'
 export * from './image-comparison.js'
 export * from './interval-charts.js'
+export { ToastProvider } from './toast-provider.js'
 export {
   type LumenChartDatumActivationDetail,
   type LumenComponentName,

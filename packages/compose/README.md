@@ -489,6 +489,10 @@ Swipe gestures follow logical start/end in RTL. Visible buttons and named access
 provide alternatives. Gestures reset before callbacks and are not saved across recreation.
 Applications own confirmation, undo and mutations. Use stable record keys in lazy lists.
 
+The adaptive list/detail scaffold follows window size and separating hinges. At font scales of
+2 or larger it shows one pane, preserving usable text width. Keep selection and drafts in
+application-owned saved state, and use the detail slot’s `detailOnly` value for system Back handling.
+
 Multi-select edits apply immediately, including when the dialog is dismissed. Search results,
 selection, loading and retry are controlled by the host. Missing selected options use their raw
 value as a chip label; retain selected options when friendly labels are required. Read-only and

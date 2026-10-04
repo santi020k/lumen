@@ -1,11 +1,7 @@
-/* eslint-disable @eslint-react/no-context-provider, @eslint-react/no-use-context */
-/* eslint-disable react-refresh/only-export-components */
-/* Public hooks, explicit context providers, and their small helpers intentionally share this module. */
 'use client'
 
 import {
   type ComponentPropsWithRef,
-  createContext,
   type CSSProperties,
   type Dispatch,
   type JSX,
@@ -17,7 +13,6 @@ import {
   type RefObject,
   type SetStateAction,
   useCallback,
-  useContext,
   useEffect,
   useId,
   useMemo,
@@ -47,6 +42,8 @@ import { isLumenDateBoundsValid as isCalendarBoundsValid, parseLumenDate as pars
 
 import { useDialogLifecycle } from './dialog-lifecycle.js'
 import { type FloatingPanelOptions, useFloatingPanel } from './floating-panel.js'
+
+export { useToast } from './toast-context.js'
 
 type ChangeHandler<T> = (value: T) => void
 
@@ -413,7 +410,8 @@ export interface DateRangePickerController {
   syncRange: (root?: HTMLElement | null) => DateRangePickerChangeDetail
 }
 
-export { type RichTextEditorCommandDetail, type RichTextEditorController, type RichTextEditorOptions, useRichTextEditor } from './rich-text-editor.js'
+export type { RichTextEditorCommandDetail, RichTextEditorController, RichTextEditorOptions } from './rich-text-editor.js'
+export { useRichTextEditor } from './rich-text-editor.js'
 
 export interface ScheduleChangeDetail {
   eventId?: string
@@ -567,11 +565,6 @@ export interface ThemeBuilderController extends ThemeBuilderChangeDetail {
   setScheme: Dispatch<SetStateAction<LumenThemeBuilderScheme>>
   setSecondaryColor: Dispatch<SetStateAction<string>>
 }
-
-const defaultToastDuration = 5000
-const defaultToastMax = 5
-const closeDelay = 240
-const ToastContext = createContext<ToastApi | null>(null)
 
 const focusableSelector = [
   'a[href]',
@@ -1864,7 +1857,7 @@ export const useFormValidation = ({
   }
 }
 
-/* eslint-disable @stylistic/padding-line-between-statements, complexity, no-nested-ternary -- Calendar mirrors Astro's UTC date grid and keyboard runtime. */
+/* eslint-disable complexity -- Calendar mirrors Astro's UTC date grid and keyboard runtime. */
 const calendarMonthPattern = /^\d{4}-\d{2}$/
 
 const parseCalendarMonth = (value: string | null | undefined): Date | null => {
@@ -1884,16 +1877,20 @@ const createCalendarDate = (year: number, month: number, day: number): Date => {
 const formatCalendarDate = (date: Date): string => date.toISOString().split('T')[0] ?? ''
 const formatCalendarMonth = (date: Date): string => formatCalendarDate(date).slice(0, -3)
 const startOfCalendarMonth = (date: Date): Date => createCalendarDate(date.getUTCFullYear(), date.getUTCMonth(), 1)
+
 const addCalendarDays = (date: Date, days: number): Date => createCalendarDate(
   date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate() + days
 )
+
 const getCalendarDaysInMonth = (date: Date): number => createCalendarDate(
   date.getUTCFullYear(), date.getUTCMonth() + 1, 0
 ).getUTCDate()
+
 const addCalendarMonths = (date: Date, months: number): Date => {
   const targetMonth = createCalendarDate(
     date.getUTCFullYear(), date.getUTCMonth() + months, 1
   )
+
   const day = Math.min(
     date.getUTCDate(), getCalendarDaysInMonth(targetMonth)
   )
@@ -1974,6 +1971,8 @@ const getCalendarFocusDate = (
   return month
 }
 
+const formatSelectedCalendarDate = (value: Date | null): string => value ? formatCalendarDate(value) : ''
+
 export const useCalendar = ({
   defaultValue,
   disabled: requestedDisabled = false,
@@ -1997,21 +1996,26 @@ export const useCalendar = ({
   const defaultDate = parseCalendarDate(defaultValue)
   const controlledDate = parseCalendarDate(controlledValue)
   const [uncontrolledValue, setUncontrolledValue] = useState(() => defaultDate ? formatCalendarDate(defaultDate) : '')
+
   const selectedValue =
     controlledValue === undefined ?
       uncontrolledValue :
-      controlledDate ?
-        formatCalendarDate(controlledDate) :
-        ''
+      formatSelectedCalendarDate(controlledDate)
+
   const selectedDate = parseCalendarDate(selectedValue)
+
   const initialMonth =
     parseCalendarMonth(month) ??
     (selectedDate ? startOfCalendarMonth(selectedDate) : null) ??
     startOfCalendarMonth(getCalendarToday())
+
   const [visibleMonthValue, setVisibleMonthValue] = useState(() => formatCalendarMonth(initialMonth))
+
   const visibleMonth =
     parseCalendarMonth(month ?? visibleMonthValue) ?? initialMonth
+
   const [focusValue, setFocusValue] = useState<string | null>(null)
+
   useEffect(() => {
     const root = rootRef.current
     const owner = root?.closest('form')
@@ -2031,6 +2035,7 @@ export const useCalendar = ({
         const resetMonth = parseCalendarMonth(month) ?? startOfCalendarMonth(date ?? getCalendarToday())
 
         setVisibleMonthValue(formatCalendarMonth(resetMonth))
+
         setFocusValue(null)
       })
     }
@@ -2041,6 +2046,7 @@ export const useCalendar = ({
       active = false
 
       globalThis.clearTimeout(resetTimer)
+
       owner?.removeEventListener('reset', reset)
     }
   }, [controlledValue, defaultValue, month])
@@ -2048,7 +2054,9 @@ export const useCalendar = ({
   const focusDate = getCalendarFocusDate(
     disabled, visibleMonth, minDate, maxDate, selectedDate, parseCalendarDate(focusValue)
   )
+
   const focusIso = formatCalendarDate(focusDate)
+
   useEffect(() => {
     const root = rootRef.current
 
@@ -2060,6 +2068,7 @@ export const useCalendar = ({
   const selectedIso = selectedDate ? formatCalendarDate(selectedDate) : ''
   const currentLocale = getCalendarLocale(locale)
   const navigationLabels = { ...resolveDateControlLabels(currentLocale), ...labels }
+
   const monthFormatter = useMemo(
     () => new Intl.DateTimeFormat(currentLocale, {
       month: 'long',
@@ -2067,6 +2076,7 @@ export const useCalendar = ({
       year: 'numeric'
     }), [currentLocale]
   )
+
   const dayFormatter = useMemo(
     () => new Intl.DateTimeFormat(currentLocale, {
       day: 'numeric',
@@ -2076,25 +2086,30 @@ export const useCalendar = ({
       year: 'numeric'
     }), [currentLocale]
   )
+
   const weekdayFormatter = useMemo(
     () => new Intl.DateTimeFormat(currentLocale, {
       timeZone: 'UTC',
       weekday: 'short'
     }), [currentLocale]
   )
+
   const todayIso = formatCalendarDate(getCalendarToday())
   const label = monthFormatter.format(visibleMonth)
+
   const weekdays = useMemo(
     () => Array.from(
       { length: 7 }, (_, index) => weekdayFormatter.format(new Date(Date.UTC(2026, 0, 5 + index)))
     ), [weekdayFormatter]
   )
+
   const weeks = useMemo(() => {
     const firstCell = getCalendarGridStart(visibleMonth)
 
     return Array.from({ length: 6 }, (_, rowIndex) => Array.from({ length: 7 }, (_, columnIndex): CalendarDay => {
       const date = addCalendarDays(firstCell, rowIndex * 7 + columnIndex)
       const dateIso = formatCalendarDate(date)
+
       const unavailable = isCalendarDateDisabled(
         disabled, date, minDate, maxDate
       )
@@ -2130,6 +2145,7 @@ export const useCalendar = ({
     const nextDate = clampCalendarDate(date, minDate, maxDate)
 
     setVisibleMonthValue(formatCalendarMonth(startOfCalendarMonth(nextDate)))
+
     setFocusValue(formatCalendarDate(nextDate))
   }
 
@@ -2151,12 +2167,15 @@ export const useCalendar = ({
     }
 
     setVisibleMonthValue(formatCalendarMonth(startOfCalendarMonth(nextDate)))
+
     setFocusValue(nextValue)
+
     onValueChange?.(nextValue)
   }
 
   const moveFocus = (currentDate: Date, key: string): void => {
     const column = (currentDate.getUTCDay() + 6) % 7
+
     const keyOffsets: Record<string, number> = {
       ArrowDown: 7,
       ArrowLeft: -1,
@@ -2184,8 +2203,10 @@ export const useCalendar = ({
 
   const previousMonthLastDay = addCalendarDays(visibleMonth, -1)
   const nextMonthFirstDay = addCalendarMonths(visibleMonth, 1)
+
   const previousDisabled =
     disabled || compareCalendarDates(previousMonthLastDay, minDate) < 0
+
   const nextDisabled =
     disabled || compareCalendarDates(nextMonthFirstDay, maxDate) > 0
 
@@ -2277,6 +2298,7 @@ export const useCalendar = ({
         )
 
         setVisibleMonthValue(formatCalendarMonth(nextMonth))
+
         setFocusValue(
           formatCalendarDate(
             getCalendarFocusDate(
@@ -2300,6 +2322,7 @@ export const useCalendar = ({
         )
 
         setVisibleMonthValue(formatCalendarMonth(previousMonth))
+
         setFocusValue(
           formatCalendarDate(
             getCalendarFocusDate(
@@ -2329,7 +2352,7 @@ export const useCalendar = ({
     weeks
   }
 }
-/* eslint-enable @stylistic/padding-line-between-statements, complexity, no-nested-ternary */
+/* eslint-enable complexity */
 
 const defaultInputOtpLength = 6
 const defaultInputOtpPattern = '[0-9]*'
@@ -3157,19 +3180,15 @@ export const useKanban = ({
   }
 }
 
-/* eslint-disable @stylistic/padding-line-between-statements, @eslint-react/set-state-in-effect */
-/* eslint-disable @typescript-eslint/prefer-optional-chain, complexity, no-nested-ternary */
+/* eslint-disable @eslint-react/set-state-in-effect */
+/* eslint-disable complexity */
 /* Resizable mirrors Astro's compact pane sizing runtime. */
 const parseResizableNumberList = (
   value: number | number[] | undefined,
   count: number,
   fallback: number
 ): number[] => {
-  const values = Array.isArray(value) ?
-    value :
-    value === undefined ?
-      [] :
-      [value]
+  const values = typeof value === 'number' ? [value] : (value ?? [])
 
   return Array.from(
     { length: count }, (_, index) => values[index] ?? values[0] ?? fallback
@@ -3178,11 +3197,13 @@ const parseResizableNumberList = (
 
 const normalizeResizableSizes = (sizes: number[], count: number): number[] => {
   const fallbackSize = 100 / Math.max(1, count)
+
   const usableSizes = Array.from({ length: count }, (_, index) => {
     const size = sizes[index] ?? fallbackSize
 
     return Number.isFinite(size) && size > 0 ? size : fallbackSize
   })
+
   const total = usableSizes.reduce((sum, size) => sum + size, 0)
 
   if (total <= 0) return Array.from({ length: count }, () => fallbackSize)
@@ -3192,11 +3213,11 @@ const normalizeResizableSizes = (sizes: number[], count: number): number[] => {
 
 const serializeResizableSize = (
   value: number | number[] | undefined
-): string | undefined => Array.isArray(value) ?
-  value.join(',') :
-  value === undefined ?
-    undefined :
-    String(value)
+): string | undefined => {
+  if (value === undefined) return undefined
+
+  return Array.isArray(value) ? value.join(',') : String(value)
+}
 
 export const useResizable = ({
   defaultSizes,
@@ -3209,18 +3230,22 @@ export const useResizable = ({
 }: ResizableOptions = {}): ResizableController => {
   const panelCount = Math.max(0, Math.floor(panelCountOption))
   const rootRef = useRef<HTMLDivElement | null>(null)
+
   const dragRef = useRef<{
     containerSize: number
     index: number
     startPosition: number
     startSize: number
   } | null>(null)
+
   const minSizes = useMemo(
     () => parseResizableNumberList(minSize, panelCount, 12), [minSize, panelCount]
   )
+
   const maxSizes = useMemo(
     () => parseResizableNumberList(maxSize, panelCount, 88), [maxSize, panelCount]
   )
+
   const initialSizes = useMemo(
     () => normalizeResizableSizes(
       parseResizableNumberList(
@@ -3228,14 +3253,18 @@ export const useResizable = ({
       ), panelCount
     ), [defaultSizes, panelCount]
   )
+
   const [sizes, setSizes] = useState(initialSizes)
   const axis = direction === 'horizontal' ? 'clientX' : 'clientY'
   const sizeProperty = direction === 'horizontal' ? 'width' : 'height'
+
   const separatorOrientation =
     direction === 'horizontal' ? 'vertical' : 'horizontal'
+
   const panelIndexes = useMemo(
     () => Array.from({ length: panelCount }, (_, index) => index), [panelCount]
   )
+
   const handleIndexes = useMemo(
     () => Array.from({ length: Math.max(0, panelCount - 1) }, (_, index) => index), [panelCount]
   )
@@ -3262,15 +3291,19 @@ export const useResizable = ({
         const nextSizes = [...currentSizes]
         const nextIndex = index + 1
         const total = (nextSizes[index] ?? 0) + (nextSizes[nextIndex] ?? 0)
+
         const min = Math.max(
           minSizes[index] ?? 0, total - (maxSizes[nextIndex] ?? 100)
         )
+
         const max = Math.min(
           maxSizes[index] ?? 100, total - (minSizes[nextIndex] ?? 0)
         )
+
         const paneSize = Math.min(max, Math.max(min, nextSize))
 
         nextSizes[index] = paneSize
+
         nextSizes[nextIndex] = total - paneSize
 
         return nextSizes
@@ -3311,6 +3344,7 @@ export const useResizable = ({
       }),
       onKeyDown: composeHandlers(props.onKeyDown, event => {
         const step = event.shiftKey ? 10 : 2
+
         const keyDeltas: Record<string, number> =
           direction === 'horizontal' ?
             { ArrowLeft: -step, ArrowRight: step } :
@@ -3359,14 +3393,14 @@ export const useResizable = ({
         }
 
         event.currentTarget.dataset.active = 'true'
+
         event.currentTarget.setPointerCapture(event.pointerId)
       }),
       onPointerMove: composeHandlers(props.onPointerMove, event => {
         const drag = dragRef.current
 
         if (
-          !drag ||
-          drag.index !== index ||
+          drag?.index !== index ||
           event.currentTarget.dataset.active !== 'true'
         )
           return
@@ -3433,7 +3467,7 @@ export const useResizable = ({
     sizes
   }
 }
-/* eslint-enable @stylistic/padding-line-between-statements, @eslint-react/set-state-in-effect, @typescript-eslint/prefer-optional-chain, complexity, no-nested-ternary */
+/* eslint-enable @eslint-react/set-state-in-effect, complexity */
 
 export const useThemeBuilder = ({
   radiusScale,
@@ -3772,307 +3806,6 @@ export const useTooltip = ({
       role: 'tooltip'
     }
   }
-}
-
-const createToastId = (): string => {
-  if (
-    typeof crypto !== 'undefined' &&
-    typeof crypto.randomUUID === 'function'
-  ) {
-    return `ui-toast-${crypto.randomUUID()}`
-  }
-
-  return `ui-toast-${Math.random().toString(36).slice(2)}`
-}
-
-const getToastVariantClass = (variant: ToastVariant): string | false => {
-  if (variant === 'success') return 'ui-toast--success'
-
-  if (variant === 'warning') return 'ui-toast--warning'
-
-  if (variant === 'destructive') return 'ui-toast--destructive'
-
-  return false
-}
-
-const createToastRecord = (
-  detail: ToastDetail,
-  placement: ToastPlacement
-): ToastRecord => ({
-  ...detail,
-  id: detail.id ?? createToastId(),
-  open: true,
-  placement: detail.placement ?? placement,
-  title: detail.title ?? 'Notification',
-  variant: detail.variant ?? 'default'
-})
-
-export const ToastProvider = ({
-  children,
-  maxCount = defaultToastMax,
-  placement = 'bottom-right'
-}: ToastProviderProps) => {
-  const [toasts, setToasts] = useState<ToastRecord[]>([])
-
-  const removeToast = useCallback((id: string) => {
-    setToasts(current => current.filter(toast => toast.id !== id))
-  }, [])
-
-  const dismiss = useCallback((id?: string) => {
-    setToasts(current => current.map(toast => {
-      if (id && toast.id !== id) return toast
-
-      return { ...toast, open: false }
-    }))
-  }, [])
-
-  const create = useCallback(
-    (detail: ToastDetail): string => {
-      const record = createToastRecord(detail, placement)
-      const stackMax = detail.max ?? maxCount
-
-      setToasts(current => {
-        const next = current.some(toast => toast.id === record.id) ?
-          current.map(toast => (toast.id === record.id ? record : toast)) :
-          [...current, record]
-
-        const samePlacement = next.filter(
-          toast => toast.placement === record.placement
-        )
-
-        const staleIds = samePlacement
-          .slice(0, Math.max(0, samePlacement.length - stackMax))
-          .map(toast => toast.id)
-
-        return next.map(toast => staleIds.includes(toast.id) ? { ...toast, open: false } : toast)
-      })
-
-      return record.id
-    }, [maxCount, placement]
-  )
-
-  const update = useCallback((id: string, detail: ToastDetail) => {
-    setToasts(current => current.map(toast => {
-      if (toast.id !== id) return toast
-
-      return {
-        ...toast,
-        ...detail,
-        id,
-        open: true,
-        placement: detail.placement ?? toast.placement,
-        title: detail.title ?? toast.title,
-        variant: detail.variant ?? toast.variant
-      }
-    }))
-  }, [])
-
-  const api = useMemo<ToastApi>(
-    () => ({
-      create,
-      dismiss,
-      toasts,
-      update
-    }), [create, dismiss, toasts, update]
-  )
-
-  const placements = [
-    ...new Set([placement, ...toasts.map(toast => toast.placement)])
-  ]
-
-  return (
-    <ToastContext.Provider value={api}>
-      {children}
-      {placements.map(item => (
-        // eslint-disable-next-line no-use-before-define -- ToastViewport is kept with the toast rendering helpers below.
-        <ToastViewport
-          key={item}
-          maxCount={maxCount}
-          placement={item}
-          removeToast={removeToast}
-          toasts={toasts.filter(toast => toast.placement === item)}
-        />
-      ))}
-    </ToastContext.Provider>
-  )
-}
-
-export const useToast = (): ToastApi => {
-  const api = useContext(ToastContext)
-
-  if (!api) {
-    throw new Error('useToast must be used inside a ToastProvider.')
-  }
-
-  return api
-}
-
-interface ToastViewportProps {
-  maxCount: number
-  placement: ToastPlacement
-  removeToast: (id: string) => void
-  toasts: ToastRecord[]
-}
-
-const ToastViewport = ({
-  maxCount,
-  placement,
-  removeToast,
-  toasts
-}: ToastViewportProps) => (
-  <div
-    aria-atomic="false"
-    aria-label="Notifications"
-    aria-live="polite"
-    className="ui-tvp"
-    data-placement={placement}
-    data-ui-toast-viewport
-    data-ui-toast-max={maxCount}
-  >
-    {toasts.map(toast => (
-      // eslint-disable-next-line no-use-before-define -- ToastItem is declared with the toast rendering helpers below.
-      <ToastItem
-        key={toast.id}
-        onDismiss={() => {
-          removeToast(toast.id)
-        }}
-        toast={toast}
-      />
-    ))}
-  </div>
-)
-
-interface ToastItemProps {
-  onDismiss: () => void
-  toast: ToastRecord
-}
-
-const ToastItem = ({ onDismiss, toast }: ToastItemProps) => {
-  const toastRef = useRef<HTMLElement | null>(null)
-  const timerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
-  const remainingRef = useRef(toast.duration ?? defaultToastDuration)
-  const startedAtRef = useRef(0)
-  const dismiss = useToast().dismiss
-
-  const clearTimer = useCallback(() => {
-    if (timerRef.current) {
-      clearTimeout(timerRef.current)
-    }
-  }, [])
-
-  const startTimer = useCallback(() => {
-    const remaining = remainingRef.current
-
-    clearTimer()
-
-    if (!Number.isFinite(remaining) || remaining <= 0) return
-
-    startedAtRef.current = Date.now()
-
-    timerRef.current = setTimeout(() => {
-      dismiss(toast.id)
-    }, remaining)
-  }, [clearTimer, dismiss, toast.id])
-
-  const pauseTimer = useCallback(() => {
-    clearTimer()
-
-    remainingRef.current = Math.max(
-      0, remainingRef.current - (Date.now() - startedAtRef.current)
-    )
-  }, [clearTimer])
-
-  const resumeTimer = useCallback(() => {
-    if (remainingRef.current > 0) {
-      startTimer()
-    }
-  }, [startTimer])
-
-  useEffect(() => {
-    remainingRef.current = toast.duration ?? defaultToastDuration
-
-    startTimer()
-
-    return clearTimer
-  }, [clearTimer, startTimer, toast.duration])
-
-  useEffect(() => {
-    if (!toast.open) {
-      const timer = setTimeout(onDismiss, closeDelay)
-
-      return () => {
-        clearTimeout(timer)
-      }
-    }
-  }, [onDismiss, toast.open])
-
-  const action = toast.action
-  const description = toast.description ?? ''
-  const variantClass = getToastVariantClass(toast.variant)
-
-  return (
-    <aside
-      aria-live={toast.variant === 'destructive' ? 'assertive' : 'polite'}
-      className={composeClassName('ui-toast', variantClass)}
-      data-description={description}
-      data-state={toast.open ? 'open' : 'closed'}
-      data-title={toast.title}
-      data-ui-toast
-      data-variant={toast.variant}
-      id={toast.id}
-      onFocus={pauseTimer}
-      onKeyDown={event => {
-        if (event.defaultPrevented || event.nativeEvent.isComposing) return
-
-        if (event.key !== 'Escape') return
-
-        event.preventDefault()
-
-        dismiss(toast.id)
-      }}
-      onMouseEnter={pauseTimer}
-      onMouseLeave={resumeTimer}
-      ref={toastRef}
-      role={toast.variant === 'destructive' ? 'alert' : 'status'}
-    >
-      <div className="ui-toast__body">
-        <strong>{toast.title}</strong>
-        {description && <p>{description}</p>}
-      </div>
-      {action?.label && (
-        <button
-          className="
-            ui-button ui-button--secondary ui-button--sm ui-toast__action
-          "
-          onClick={event => {
-            action.onClick?.(event, toastRef.current)
-
-            toastRef.current?.dispatchEvent(
-              new CustomEvent(action.event ?? 'ui:toast-action', {
-                bubbles: true,
-                detail: { id: toast.id, value: action.value }
-              })
-            )
-
-            dismiss(toast.id)
-          }}
-          type="button"
-        >
-          {action.label}
-        </button>
-      )}
-      <button
-        aria-label="Dismiss notification"
-        className="ui-toast__dismiss"
-        onClick={() => {
-          dismiss(toast.id)
-        }}
-        type="button"
-      >
-        Dismiss
-      </button>
-    </aside>
-  )
 }
 
 export const useThemeToggle = (defaultTheme = 'light') => {

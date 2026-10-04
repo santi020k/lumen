@@ -26,10 +26,11 @@ import { LumenProvider } from './provider.js'
 import { LumenCheckbox, LumenTabs } from './selection-components.js'
 import { LumenBanner, LumenErrorState, LumenStatusBar } from './structured-components.js'
 import { LumenTimeField } from './time-components.js'
-import { LumenPicker } from './value-components.js'
+import { LumenPicker, LumenSlider } from './value-components.js'
 
 Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true })
 
+const nativeDirection = vi.hoisted(() => ({ isRTL: false }))
 const nativePlatform = vi.hoisted(() => ({ OS: 'ios' }))
 const nativeMotion = vi.hoisted(() => ({ enabled: false }))
 const accessibilityFocus = vi.hoisted(() => vi.fn())
@@ -68,7 +69,7 @@ vi.mock('react-native', async () => {
     },
     ActivityIndicator: hostComponent('ActivityIndicator'),
     FlatList: hostComponent('FlatList'),
-    I18nManager: { isRTL: false },
+    I18nManager: nativeDirection,
     Image: hostComponent('Image'),
     KeyboardAvoidingView: hostComponent('KeyboardAvoidingView'),
     Modal: hostComponent('Modal'),
@@ -223,6 +224,7 @@ const findHostComponent = (root: Root, type: string): TestInstance => {
 }
 
 afterEach(async () => {
+  nativeDirection.isRTL = false
   const roots = mountedRoots.splice(0)
 
   await act(async () => {
@@ -238,6 +240,39 @@ afterEach(async () => {
 })
 
 describe('Lumen React Native component behavior', () => {
+  test.each([
+    { rtl: false, values: [20, 50, 120, 20, 120] },
+    { rtl: true, values: [120, 100, 20, 120, 20] }
+  ])('slider touch follows RTL=$rtl while accessibility values remain numeric', async ({ rtl, values }) => {
+    nativeDirection.isRTL = rtl
+    const onValueChange = vi.fn<(value: number) => void>()
+    const root = await renderNative(
+      <LumenSlider label="Volume" min={20} max={120} step={10} value={70} onValueChange={onValueChange} />
+    )
+    const slider = findByAccessibilityRole(root, 'adjustable')
+    expect(readProp(slider, 'accessible')).toBe(true)
+    const dispatch = async (property: string, nativeEvent: unknown): Promise<void> => {
+      const handler = readProp(slider, property)
+      if (typeof handler !== 'function') throw new Error(`Missing slider ${property} callback`)
+      await act(async () => {
+        Reflect.apply(handler, undefined, [{ nativeEvent }])
+        await Promise.resolve()
+      })
+    }
+    await dispatch('onLayout', { layout: { width: 200 } })
+    for (const [index, position] of [0, 50, 200, -50, 250].entries()) {
+      for (const event of ['onResponderGrant', 'onResponderMove']) {
+        await dispatch(event, { locationX: position })
+        expect(onValueChange).toHaveBeenLastCalledWith(values[index])
+      }
+    }
+    await dispatch('onAccessibilityAction', { actionName: 'increment' })
+    expect(onValueChange).toHaveBeenLastCalledWith(80)
+    await dispatch('onAccessibilityAction', { actionName: 'decrement' })
+    expect(onValueChange).toHaveBeenLastCalledWith(60)
+    expect(readProp(slider, 'accessibilityValue')).toMatchObject({ min: 20, max: 120, now: 70 })
+  })
+
   test('uses the Android accessibility timeout before dismissing a toast', async () => {
     nativePlatform.OS = 'android'
     vi.useFakeTimers()

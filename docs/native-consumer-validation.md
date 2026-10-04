@@ -387,3 +387,69 @@ prerelease does not count as an ordinary stability-soak iteration.
 4. Convert the successful Coolstead technical upgrade into immutable consumer evidence and record
    its installed behavior on representative Mac hardware; use Workscene if a second independent
    macOS consumer is needed.
+
+## Lumen 4 local RoadScore compatibility
+
+Committed RoadScore source `487ba1024aa003aa5e41c8f00b927ef2d8f614c8` was copied into an ignored,
+isolated directory and tested against packed Lumen v4 candidate `b6dbe7ea`. The original checkout
+had ten dirty paths; its status remained unchanged, and those uncommitted changes were excluded.
+The copied dependency catalog moved the mobile application's Lumen dependency from 2.1.0 to the
+exact local 4.0.0 tarball. The core override was scoped to React Native so the website retained its
+existing Lumen dependency graph. No consumer application source was changed.
+
+Using RoadScore's declared pnpm 11.24.0 and Node 22.23.1:
+
+- exact resolution showed React Native and its core dependency at 4.0.0 from the packed archives;
+- the shared deck-contract package exports TypeScript source and has no standalone build script;
+- mobile `typecheck` and `lint -- --max-warnings=0` passed;
+- all 180 mobile tests passed; and
+- `expo export --platform all` produced Android and iOS Hermes bytecode and the web export.
+
+The attempted `pnpm --filter @santi020k/roadscore-deck-contracts run build` reported
+`ERR_PNPM_RECURSIVE_RUN_NO_SCRIPT`; it is not a build pass. The mobile typecheck and production
+exports consumed the shared source directly. Its declared typecheck, zero-warning lint and all
+12 tests subsequently passed.
+
+The peer check failed identically in the original checkout and candidate copy: existing ESLint
+plugins exclude ESLint 10 and TypeScript ESLint 8.56.1 excludes TypeScript 6.0.3. No incompatible
+range was suppressed or dependency upgraded for this library-focused check. Expo export also
+reported the existing `/app` experimental base path and conflicting terminal color variables;
+these are not native runtime or accessibility findings.
+
+Source/archive hashes, package hashes, dependency resolution, test/build/export logs, original
+status and exported artifact hashes remain local under `.build/native-quality-roadscore-v4-*`.
+This is local source/package compatibility evidence. It does not prove signed native compilation,
+installation, device accessibility, an adopted consumer upgrade, current active-product status,
+published-artifact qualification or either stability iteration. The historical consumer ledger
+remains unchanged and incomplete. See [v4 native quality](lumen-4-native-quality.md) for the final
+candidate requirements and remaining release gates.
+
+## Lumen 4 local ContracTrack compatibility
+
+Committed ContracTrack source `ddc1687b67e13e968a31cbc9995b7cfee5bd5b7b` was copied into an
+ignored, isolated directory and tested against Lumen candidate `ed125c78`. The original checkout
+was clean and its revision and status remained unchanged. Only the copied dependency metadata
+changed: Compose and Wear resolved local staged Maven 4.0.0 artifacts instead of 2.1.0; Swift
+Package Manager used the local candidate instead of the remote 2.1.0 package. XcodeGen regenerated
+the copied project. No consumer application source changed.
+
+The maintained consumer commands produced:
+
+- exact 4.0.0 dependency resolution for the Android phone and Wear applications;
+- `testDebugUnitTest lint assembleDebug`: 119 phone tests and seven Wear tests, with zero failures,
+  errors or skipped tests, zero lint errors and warnings, and both debug APKs; and
+- unsigned Debug builds of `BetweenContractions`, `BetweenContractionsMac` and
+  `BetweenContractionsWatch` for generic iOS Simulator, macOS and watchOS Simulator destinations.
+
+The iOS build reported `Metadata extraction skipped, no AppIntents.framework dependency found`.
+The warning belongs to `BetweenContractionsNotificationService`, which has no App Intents
+dependency; other application targets do use App Intents. The build succeeded. Android also reported Gradle deprecation notices. These results do not establish a
+warning-free external toolchain. The current Apple source imports `LumenUI`, not `LumenWidgetUI`;
+compiling its widget extensions does not qualify Lumen's WidgetKit adapter.
+
+Source hashes for 8,142 native files were recorded after builds started and matched after all
+builds completed. Logs, APK hashes, Apple artifact file hashes and the original-checkout comparison
+remain local under `.build/native-quality-contractrack-v4-*`. The after-start capture is not
+before-build provenance. These are local compatibility checks, not installed runtime, hardware
+accessibility, production signing, published-artifact adoption or stability-iteration evidence.
+The historical qualification ledger remains unchanged and incomplete.

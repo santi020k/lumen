@@ -59,6 +59,12 @@ Set `TURBO_SCM_BASE` and, when needed, `TURBO_SCM_HEAD` to compare another range
 `build:affected`, `typecheck:affected`, `test:affected`, and `lint:affected` commands when iterating
 on one kind of check.
 
+The canonical `pnpm run typecheck` also checks the local Figma Code Connect templates and their
+shared ambient types with `pnpm run typecheck:figma`.
+
+The Next.js smoke app runs type checking after its own build so the two tasks do not overwrite
+the same generated route types during combined checks.
+
 Use `pnpm run validate` for broad cross-package changes, release work, and final confidence before
 publishing. It intentionally remains exhaustive.
 
