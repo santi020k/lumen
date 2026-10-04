@@ -1,5 +1,5 @@
 // cspell:words Espacios Configuración Cambios guardados Registro actualizado Otro
-import { act, type ComponentRef, createRef, type ReactElement, type Ref, StrictMode, useState } from 'react'
+import { act, type ComponentRef, createRef, type ReactElement, type Ref, StrictMode, useImperativeHandle, useState } from 'react'
 import type { View } from 'react-native'
 
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker'
@@ -15,6 +15,7 @@ import { LumenImageComparison } from './comparison-components.js'
 import { LumenDateField, LumenDateRangeField } from './datetime-components.js'
 import { LumenSearchField, LumenToggle } from './form-components.js'
 import { LumenIcon as GraphicIcon, LumenIconButton as GraphicIconButton, type LumenIconGraphicProps } from './graphics.js'
+import { type LumenToastHookController, type LumenToastHookOptions, useToast } from './hooks.js'
 import { LumenAlertDialog, LumenMenu, LumenSheet } from './overlay-components.js'
 import { LumenPhoneInput } from './phone-components.js'
 import { resolveLumenPhoneInputValue } from './phone-recipes.js'
@@ -32,6 +33,8 @@ const nativePlatform = vi.hoisted(() => ({ OS: 'ios' }))
 const nativeMotion = vi.hoisted(() => ({ enabled: false }))
 const accessibilityFocus = vi.hoisted(() => vi.fn())
 const accessibilityAnnouncement = vi.hoisted(() => vi.fn<(message: string, options: { queue: boolean }) => void>())
+type RecommendedTimeout = (duration: number) => Promise<number>
+const accessibilityTimeout = vi.hoisted(() => vi.fn<RecommendedTimeout>(duration => Promise.resolve(duration)))
 const nativeWindow = vi.hoisted(() => ({ fontScale: 1, height: 800, scale: 2, width: 400 }))
 const safeAreaInsets = vi.hoisted(() => ({
   bottom: 34,
@@ -58,6 +61,7 @@ vi.mock('react-native', async () => {
     AccessibilityInfo: {
       addEventListener: () => ({ remove: vi.fn() }),
       announceForAccessibilityWithOptions: accessibilityAnnouncement,
+      getRecommendedTimeoutMillis: accessibilityTimeout,
       isReduceMotionEnabled: () => Promise.resolve(nativeMotion.enabled),
       sendAccessibilityEvent: accessibilityFocus
     },
@@ -105,6 +109,36 @@ vi.mock('react-native-svg', async () => {
 })
 
 const mountedRoots: Root[] = []
+
+interface ToastProbeProps {
+  ref: Ref<LumenToastHookController>
+  options?: LumenToastHookOptions
+}
+
+const ToastProbe = ({ ref, options }: ToastProbeProps): ReactElement | null => {
+  const controller = useToast(options)
+
+  useImperativeHandle(ref, () => controller, [controller])
+
+  return null
+}
+
+const readToastController = (ref: { current: LumenToastHookController | null }): LumenToastHookController => {
+  if (!ref.current) throw new Error('Toast controller is not mounted')
+
+  return ref.current
+}
+
+const deferredTimeout = () => {
+  let complete: (duration: number) => void = () => {
+    throw new Error('Missing timeout resolver')
+  }
+  const promise = new Promise<number>(resolve => {
+    complete = resolve
+  })
+
+  return { promise, resolve: complete }
+}
 
 const renderNative = async (element: ReactElement): Promise<Root> => {
   const root = createRoot({
@@ -197,10 +231,159 @@ afterEach(async () => {
   nativeWindow.fontScale = 1
   nativePlatform.OS = 'ios'
   accessibilityAnnouncement.mockClear()
+  accessibilityTimeout.mockReset().mockImplementation(duration => Promise.resolve(duration))
+  vi.useRealTimers()
   vi.unstubAllGlobals()
 })
 
 describe('Lumen React Native component behavior', () => {
+  test('uses the Android accessibility timeout before dismissing a toast', async () => {
+    nativePlatform.OS = 'android'
+    vi.useFakeTimers()
+    accessibilityTimeout.mockResolvedValue(20_000)
+    const ref = createRef<LumenToastHookController>()
+
+    await renderNative(<ToastProbe ref={ref} />)
+    await act(async () => {
+      readToastController(ref).create({ title: 'Saved' })
+      await Promise.resolve()
+    })
+
+    expect(accessibilityTimeout).toHaveBeenCalledExactlyOnceWith(5000)
+
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(19_999)
+    })
+    expect(readToastController(ref).toasts).toHaveLength(1)
+
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(1)
+    })
+    expect(readToastController(ref).toasts).toHaveLength(0)
+  })
+
+  test.each(['shorter', 'invalid', 'oversized', 'rejected'])('retains the requested duration when Android returns a %s recommendation', async result => {
+    nativePlatform.OS = 'android'
+    vi.useFakeTimers()
+
+    if (result === 'rejected') accessibilityTimeout.mockRejectedValue(new Error('Native timeout unavailable'))
+    else if (result === 'shorter') accessibilityTimeout.mockResolvedValue(1)
+    else if (result === 'oversized') accessibilityTimeout.mockResolvedValue(Number.MAX_SAFE_INTEGER)
+    else accessibilityTimeout.mockResolvedValue(Number.NaN)
+
+    const ref = createRef<LumenToastHookController>()
+
+    await renderNative(<ToastProbe ref={ref} />)
+    await act(async () => {
+      readToastController(ref).create({ duration: 1000, title: 'Saved' })
+      await Promise.resolve()
+    })
+    expect(accessibilityTimeout).toHaveBeenCalledExactlyOnceWith(1000)
+
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(999)
+    })
+    expect(readToastController(ref).toasts).toHaveLength(1)
+
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(1)
+    })
+    expect(readToastController(ref).toasts).toHaveLength(0)
+  })
+
+  test.each(['dismiss', 'clear', 'unmount', 'evict'])('ignores late Android timeout results after %s', async operation => {
+    nativePlatform.OS = 'android'
+    vi.useFakeTimers()
+    const pending = deferredTimeout()
+
+    accessibilityTimeout.mockReturnValueOnce(pending.promise)
+
+    const ref = createRef<LumenToastHookController>()
+    const root = await renderNative(<ToastProbe options={{ maxCount: 1 }} ref={ref} />)
+    let id = ''
+
+    await act(async () => {
+      id = readToastController(ref).create({ title: 'Saved' })
+      await Promise.resolve()
+    })
+    expect(accessibilityTimeout).toHaveBeenCalledExactlyOnceWith(5000)
+
+    await act(async () => {
+      if (operation === 'dismiss') readToastController(ref).dismiss(id)
+      if (operation === 'clear') readToastController(ref).clear()
+      if (operation === 'unmount') root.unmount()
+      if (operation === 'evict') readToastController(ref).create({ duration: 0, title: 'Persistent replacement' })
+      await Promise.resolve()
+    })
+    await act(async () => {
+      pending.resolve(20_000)
+      await Promise.resolve()
+    })
+
+    expect(vi.getTimerCount()).toBe(0)
+  })
+
+  test('ignores stale Android recommendations when a toast duration is updated', async () => {
+    nativePlatform.OS = 'android'
+    vi.useFakeTimers()
+    const pending = deferredTimeout()
+
+    accessibilityTimeout.mockReturnValueOnce(pending.promise).mockResolvedValueOnce(10_000)
+
+    const ref = createRef<LumenToastHookController>()
+
+    await renderNative(<ToastProbe ref={ref} />)
+    await act(async () => {
+      const id = readToastController(ref).create({ title: 'Saved' })
+
+      readToastController(ref).update(id, { duration: 1000 })
+      await Promise.resolve()
+    })
+    expect(accessibilityTimeout).toHaveBeenNthCalledWith(1, 5000)
+    expect(accessibilityTimeout).toHaveBeenNthCalledWith(2, 1000)
+    expect(accessibilityTimeout).toHaveBeenCalledTimes(2)
+
+    await act(async () => {
+      pending.resolve(100_000)
+      await Promise.resolve()
+      await vi.advanceTimersByTimeAsync(10_000)
+    })
+
+    expect(readToastController(ref).toasts).toHaveLength(0)
+    expect(vi.getTimerCount()).toBe(0)
+  })
+
+  test('keeps explicitly persistent Android toasts without requesting a timeout', async () => {
+    nativePlatform.OS = 'android'
+    vi.useFakeTimers()
+    const ref = createRef<LumenToastHookController>()
+
+    await renderNative(<ToastProbe ref={ref} />)
+    await act(async () => {
+      for (const duration of [0, -1, Number.POSITIVE_INFINITY]) readToastController(ref).create({ duration, title: 'Saved' })
+      await vi.advanceTimersByTimeAsync(100_000)
+    })
+
+    expect(readToastController(ref).toasts).toHaveLength(3)
+    expect(accessibilityTimeout).not.toHaveBeenCalled()
+    expect(vi.getTimerCount()).toBe(0)
+  })
+
+  test.each(['ios', 'web'])('preserves the requested %s toast duration without Android timeout calls', async platform => {
+    nativePlatform.OS = platform
+    vi.useFakeTimers()
+    const ref = createRef<LumenToastHookController>()
+
+    await renderNative(<ToastProbe ref={ref} />)
+    await act(async () => {
+      readToastController(ref).create({ duration: 1000, title: 'Saved' })
+      await vi.advanceTimersByTimeAsync(1000)
+    })
+
+    expect(readToastController(ref).toasts).toHaveLength(0)
+    expect(accessibilityTimeout).not.toHaveBeenCalled()
+  })
+
   test('keeps enlarged navigation labels readable and preserves destination semantics', async () => {
     const select = vi.fn()
     const reselect = vi.fn()

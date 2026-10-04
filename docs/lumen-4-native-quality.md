@@ -481,6 +481,24 @@ iOS passed every unchanged import budget. The canonical gate still stops at the 
 CSS, React and Elements size limits; local release integration remains incomplete. Import logs
 and post-export committed runtime source hashes remain under `.build/native-quality-rn-announcements-*`.
 
+### Android notification reading time
+
+React Native's `useToast` now asks Android for its recommended accessibility timeout before
+scheduling automatic dismissal. It retains at least the requested duration, falls back to it on
+failed or invalid recommendations, and preserves explicitly persistent toasts. Request tokens
+prevent late native responses from restarting timers after duration updates, dismissal, clearing,
+eviction or unmount. iOS/web timing and the public API are unchanged.
+
+Thirteen new behavioral cases cover longer reading time, shorter/invalid/oversized/rejected native
+results, cancellation races, updated durations, persistent messages and iOS/web behavior. The
+extended-reading-time regression failed against the previous hook; the corrected package passed
+156 React Native tests. The full JavaScript suite passed 1,332 tests, repository type checking and
+zero-warning lint passed 23 tasks each, and the clean packed consumer passed. These checks exercise
+the native API boundary using controlled recommendations; actual Android accessibility settings
+and physical-device behavior remain unverified. Package documentation, a Changeset and the
+regenerated MCP snapshot describe the correction. Local logs remain under
+`.build/native-quality-toast-timeout-*`.
+
 ### Outstanding scope and blockers
 
 The complete Required outcomes list remains authoritative. Broader phone/tablet runtime qualification and physical-device keyboard/focus and screen-reader checks,

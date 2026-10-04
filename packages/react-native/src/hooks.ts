@@ -6,6 +6,7 @@ import {
   useRef,
   useState
 } from 'react'
+import { AccessibilityInfo, Platform } from 'react-native'
 
 import {
   getLumenLocalePair,
@@ -316,6 +317,7 @@ export const useToast = ({
   const instanceId = useId().replaceAll(':', '')
   const nextIdRef = useRef(0)
   const timersRef = useRef(new Map<string, ReturnType<typeof setTimeout>>())
+  const timeoutRequestsRef = useRef(new Map<string, symbol>())
   const [toasts, setToasts] = useState<LumenToastRecord[]>([])
 
   const clearTimer = useCallback((id: string) => {
@@ -324,6 +326,8 @@ export const useToast = ({
     if (timer) clearTimeout(timer)
 
     timersRef.current.delete(id)
+
+    timeoutRequestsRef.current.delete(id)
   }, [])
 
   const dismiss = useCallback((id: string) => {
@@ -339,9 +343,29 @@ export const useToast = ({
 
     if (!Number.isFinite(resolvedDuration) || resolvedDuration <= 0) return
 
-    timersRef.current.set(id, setTimeout(() => {
-      dismiss(id)
-    }, resolvedDuration))
+    const request = Symbol(id)
+
+    timeoutRequestsRef.current.set(id, request)
+
+    const startTimer = (recommendedDuration: number) => {
+      if (timeoutRequestsRef.current.get(id) !== request) return
+
+      const accessibleDuration = Number.isSafeInteger(recommendedDuration) && recommendedDuration <= 2_147_483_647 ?
+        Math.max(resolvedDuration, recommendedDuration) :
+        resolvedDuration
+
+      timersRef.current.set(id, setTimeout(() => {
+        dismiss(id)
+      }, accessibleDuration))
+    }
+
+    if (Platform.OS === 'android') {
+      void AccessibilityInfo.getRecommendedTimeoutMillis(resolvedDuration).then(startTimer, () => {
+        startTimer(resolvedDuration)
+      })
+    } else {
+      startTimer(resolvedDuration)
+    }
   }, [clearTimer, defaultDuration, dismiss])
 
   const create = useCallback((detail: LumenToastDetail): string => {
@@ -366,7 +390,7 @@ export const useToast = ({
   }, [scheduleDismiss])
 
   const clear = useCallback(() => {
-    for (const id of timersRef.current.keys()) clearTimer(id)
+    for (const id of timeoutRequestsRef.current.keys()) clearTimer(id)
 
     setToasts([])
   }, [clearTimer])
@@ -375,12 +399,14 @@ export const useToast = ({
     for (const timer of timersRef.current.values()) clearTimeout(timer)
 
     timersRef.current.clear()
+
+    timeoutRequestsRef.current.clear()
   }, [])
 
   useEffect(() => {
     const activeIds = new Set(toasts.map(toast => toast.id))
 
-    for (const id of timersRef.current.keys()) {
+    for (const id of timeoutRequestsRef.current.keys()) {
       if (!activeIds.has(id)) clearTimer(id)
     }
   }, [clearTimer, toasts])
