@@ -853,3 +853,27 @@ suppression. Remaining qualification requirements and local release integration 
 The packed React Native consumer, unchanged API classification and regenerated MCP snapshot and
 evaluation passed. Canonical validation again passed all 14 build tasks before the unchanged
 CSS, React and Elements bundle-budget failures. No limits were raised or failed gate bypassed.
+
+### Current committed Hermes import measurements
+
+Candidate `81e096c9`, including slider RTL and native accessibility exposure, passed three
+production Hermes exports for each of eight fixtures on both Android and iOS. All unchanged
+import-size budgets passed. The 2,558 React Native/core source files captured before measurement
+still matched after both platforms completed. Raw samples and reports remain local under
+`.build/native-quality-current-import-*`.
+
+| Import fixture | Android bytes | iOS bytes |
+| --- | ---: | ---: |
+| baseline | 1,429,228 | 1,424,195 |
+| root-no-icon | 6,255,231 | 6,249,033 |
+| foundations | 1,451,478 | 1,446,437 |
+| graphics | 1,634,493 | 1,629,152 |
+| graphics-navigation | 1,636,454 | 1,631,101 |
+| catalog-navigation | 1,637,596 | 1,632,243 |
+| root-navigation | 6,255,464 | 6,249,261 |
+| root-icon | 6,255,296 | 6,249,102 |
+
+These medians measure imported bytecode. Export duration is a build-host observation, not
+application startup or frame smoothness. Physical-device accessibility, real-consumer completion
+and two qualifying stability iterations remain open, as do the previously recorded canonical
+web-size failures and local release integration.
