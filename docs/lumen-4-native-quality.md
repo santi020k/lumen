@@ -481,3 +481,22 @@ interaction. The app, report and privacy-safe editor/saved screenshots are under
 long-note persistence and feedback check at default text size, while live large-text
 clipping, software-keyboard qualification, screen readers, hardware, runtime performance,
 stability iterations, the canonical gate and local release integration remain open.
+
+### Reconciled Android long-note restoration
+
+The task branch reconciled release revision `50990a22` without conflicts at `92206288`.
+The Activity recreation test now enters a 1,160-character unsaved note as well as a new
+name, recreates the Activity, verifies the exact draft, saves, recreates again and reopens
+the editor to verify the exact saved note. All six playground instrumentation tests
+passed on the Android 17/API 37 emulator in the isolated qualification host. Native lint
+completed with 26 existing warnings or hints; this remains separate from actual process
+death and physical-device qualification. The passing XML, APKs, source hashes and report
+are preserved under `.build/native-quality-android-long-note-restoration`.
+
+The reconciled shared native contracts, React Native API baseline and Compose API
+classification passed. Root type checking and zero-warning JavaScript lint each passed
+all 23 tasks. Canonical validation first hit sandbox-denied loopback fixture
+servers, then passed that step and the monorepo build with the required access. It still
+failed the unchanged CSS, React and Elements bundle limits recorded above. The fresh
+log is `.build/native-quality-reconciled-final-validate-loopback.log`; later steps are
+not implied green and local release integration remains incomplete.

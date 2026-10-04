@@ -59,18 +59,24 @@ class WorkspaceActivityTest {
 
     @Test
     fun activityRecreationKeepsNavigationAndUnsavedWorkspaceDraft() {
+        val note = "A long keyboard-edited note. ".repeat(40)
         composeRule.onNodeWithText("Examples", substring = false).performClick()
         composeRule.onNodeWithText("Workspace", substring = false).performClick()
         composeRule.onNode(hasSetTextAction() and hasText("Search records")).performTextReplacement("Lumen 200")
         composeRule.onNode(hasText("Lumen 200") and !hasSetTextAction()).performClick()
         composeRule.onNodeWithText("Edit record").performClick()
         composeRule.onNode(hasSetTextAction() and hasText("Name")).performTextReplacement("Retained draft")
+        composeRule.onNode(hasSetTextAction() and hasText("Notes"))
+            .performScrollTo().performTextReplacement(note)
         composeRule.activityRule.scenario.recreate()
         composeRule.onNodeWithText("Retained draft").assertIsDisplayed()
+        composeRule.onNode(hasSetTextAction() and hasText("Notes") and hasText(note)).assertExists()
         composeRule.onNodeWithText("Save", substring = false).performClick()
         composeRule.onNodeWithText("Changes saved locally").assertIsDisplayed()
         composeRule.activityRule.scenario.recreate()
         composeRule.onNodeWithText("Retained draft").assertIsDisplayed()
         composeRule.onNodeWithText("Changes saved locally").assertIsDisplayed()
+        composeRule.onNodeWithText("Edit record").performClick()
+        composeRule.onNode(hasSetTextAction() and hasText("Notes") and hasText(note)).assertExists()
     }
 }
