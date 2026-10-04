@@ -820,6 +820,11 @@ private fun ThemePreview(
                     }
                 }
             )
+            LumenText(
+                "Normal keeps the classic Lumen look. Studio uses neutral surfaces. Glass uses rounded surfaces with an opaque material fallback on Android.",
+                variant = LumenTextVariant.Caption,
+                tone = LumenTextTone.Muted
+            )
             LumenToggle(
                 label = "Dark theme",
                 checked = darkTheme,

@@ -131,3 +131,10 @@ states, and writes PNG sources beneath `test-results/react-native-components`. T
 ignored verification evidence; `pnpm run sync:native-captures` publishes optimized WebP copies and
 the checked-in integrity manifest. The operating-system share sheet must still be verified on iOS
 or Android because browser support is environment-dependent.
+
+## Appearance comparison
+
+Open Settings to switch between Normal, Studio, Glass and santi020k without resetting example
+inputs. Light, dark and system appearance remain independent. Glass keeps the adapter's opaque
+material fallback. See [the playground guide](../../docs/playgrounds.md#appearance-comparison)
+for browser regression checks and reproducible preview links.

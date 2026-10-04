@@ -29,6 +29,25 @@ The native Apple and Android galleries are also prepared as one public **Lumen P
 See [Publishing Lumen Playground](playground-publication.md) for listing copy, shared assets,
 privacy declarations, signed release candidates, staged testing, and production gates.
 
+## Appearance comparison
+
+In the Apple, Compose and React Native phone playgrounds, open **Settings → Appearance**
+and choose **Normal**, **Studio** or **Glass**. The existing **santi020k** brand theme remains
+available. The selection updates the whole gallery without resetting navigation or example inputs;
+light and dark appearance stay independent. Preferences remain local to the current app session.
+
+Studio uses PostLens-inspired neutral surfaces, monochrome actions and compact corners. Glass
+uses the shared rounded appearance. Apple Settings includes an explicit supporting material preview
+with Reduce Transparency and increased-contrast fallbacks; Compose and React Native use opaque
+material fallbacks. Dense content and status surfaces remain legible. See
+[appearance presets](appearance-presets.md) for the public theme APIs and customization options.
+
+The React Native web preview also accepts `?destination=settings&theme=studio` or `theme=glass`
+for reproducible appearance review. Existing `theme=lumen` and `theme=santi020k` links still work.
+With the React Native web preview running, verify keyboard selection, retained input and responsive
+layouts with `pnpm --filter @santi020k/lumen-playground-react-native test:appearance:web`.
+Set `LUMEN_REACT_NATIVE_URL` when the preview uses a different port.
+
 ## Lumen 4 candidate
 
 The repository playground consumes the current local Lumen 4 adapter; it does not depend on

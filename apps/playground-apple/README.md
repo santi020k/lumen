@@ -21,7 +21,8 @@ primary destinations are Home, Examples, Components, and Settings:
   including loading, empty, error, success, disabled, validation, and destructive states.
 - Components adds the shared six-category discovery structure to the searchable catalog while preserving the
   deterministic launch filters used by screenshot automation.
-- Settings covers Appearance, Accessibility, Runtime localization, App and platform, and Privacy
+- Settings offers Normal, Studio, Glass and santi020k themes alongside light/dark appearance,
+  Accessibility, Runtime localization, App and platform, and Privacy
   and resources using native SwiftUI behavior.
 
 To run on iOS, open `LumenApplePlayground.xcodeproj`, select an iPhone simulator, and press

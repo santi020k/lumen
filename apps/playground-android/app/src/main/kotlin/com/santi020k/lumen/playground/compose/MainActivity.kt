@@ -179,18 +179,24 @@ class MainActivity : ComponentActivity() {
 }
 
 internal enum class PlaygroundThemePreset(val label: String) {
-    Lumen("Lumen"),
+    Lumen("Normal"),
+    Studio("Studio"),
+    Glass("Glass"),
     Santi020k("santi020k");
 
-    fun values(darkTheme: Boolean): LumenThemeValues = LumenThemeValues(
-        colors = when {
-            this == Santi020k && darkTheme -> santi020kDark
-            this == Santi020k -> santi020kLight
-            darkTheme -> com.santi020k.lumen.LumenColors.Dark
-            else -> com.santi020k.lumen.LumenColors.Light
-        },
-        isDark = darkTheme
-    )
+    fun values(darkTheme: Boolean): LumenThemeValues = when (this) {
+        Studio -> LumenThemeValues.preset(com.santi020k.lumen.LumenThemePreset.Studio, darkTheme)
+        Glass -> LumenThemeValues.preset(com.santi020k.lumen.LumenThemePreset.Glass, darkTheme)
+        else -> LumenThemeValues(
+            colors = when {
+                this == Santi020k && darkTheme -> santi020kDark
+                this == Santi020k -> santi020kLight
+                darkTheme -> com.santi020k.lumen.LumenColors.Dark
+                else -> com.santi020k.lumen.LumenColors.Light
+            },
+            isDark = darkTheme
+        )
+    }
 
     private companion object {
         val santi020kLight = palette(
