@@ -2352,7 +2352,6 @@ const initInputOtpFields = (scope: ParentNode): void => {
 }
 
 /* cspell:ignore Datatable datatable */
-/* eslint-disable @stylistic/padding-line-between-statements, no-nested-ternary */
 const getDataTableSortValue = (
   cell: HTMLTableCellElement | undefined
 ): string => cell?.dataset.sortValue ?? cell?.textContent?.trim() ?? ''
@@ -2360,6 +2359,7 @@ const getDataTableSortValue = (
 const compareDataTableValues = (value: string, other: string, sortType: string | undefined): number => {
   const numericValue = Number(value.replace(/,/g, ''))
   const numericOther = Number(other.replace(/,/g, ''))
+
   const useNumeric = sortType === 'number' || (
     sortType !== 'string' &&
     value.trim() !== '' &&
@@ -2412,6 +2412,7 @@ const updateDataTableSort = (
 ): void => {
   for (const item of table.querySelectorAll<HTMLTableCellElement>('thead th[aria-sort]')) {
     item.setAttribute('aria-sort', item === header ? direction : 'none')
+
     item.dataset.sort = item === header ? direction : 'none'
   }
 
@@ -2422,6 +2423,12 @@ const updateDataTableSort = (
   } else {
     root.dataset.uiDatatableSortColumn = header.dataset.uiDatatableColumn ?? ''
   }
+}
+
+const nextDataTableSortDirection = (direction: string | null): 'ascending' | 'descending' | 'none' => {
+  if (direction === 'none') return 'ascending'
+
+  return direction === 'ascending' ? 'descending' : 'none'
 }
 
 const initDataTableSorting = (root: HTMLElement, table: HTMLTableElement): void => {
@@ -2440,13 +2447,17 @@ const initDataTableSorting = (root: HTMLElement, table: HTMLTableElement): void 
     if (columnIndex < 0) continue
 
     header.dataset.uiDatatableSortBound = 'true'
+
     header.dataset.uiDatatableColumn = String(columnIndex)
+
     header.setAttribute('aria-sort', 'none')
 
     const button = document.createElement('button')
 
     button.type = 'button'
+
     button.className = 'ui-data-table__sort'
+
     button.dataset.uiDatatableSort = ''
 
     while (header.firstChild) {
@@ -2458,13 +2469,13 @@ const initDataTableSorting = (root: HTMLElement, table: HTMLTableElement): void 
     button.addEventListener('click', () => {
       const currentColumn = root.dataset.uiDatatableSortColumn
       const currentDirection = header.getAttribute('aria-sort')
-      const nextDirection = currentColumn !== String(columnIndex) || currentDirection === 'none' ?
-        'ascending' :
-        currentDirection === 'ascending' ?
-          'descending' :
-          'none'
+
+      const nextDirection = currentColumn === String(columnIndex) ?
+        nextDataTableSortDirection(currentDirection) :
+        'ascending'
 
       updateDataTableSort(root, table, header, nextDirection)
+
       sortDataTableRows(table, header, columnIndex, nextDirection)
     })
   }
@@ -2504,6 +2515,7 @@ const syncDataTableSelection = (
 
     if (selected) {
       row.dataset.state = 'selected'
+
       selectedValues.push(getDataTableRowValue(row, index))
     } else {
       delete row.dataset.state
@@ -2511,6 +2523,7 @@ const syncDataTableSelection = (
   })
 
   selectAll.checked = rows.length > 0 && selectedValues.length === rows.length
+
   selectAll.indeterminate = selectedValues.length > 0 && selectedValues.length < rows.length
 
   const name = root.dataset.uiDatatableName
@@ -2519,8 +2532,11 @@ const syncDataTableSelection = (
   if (name) {
     if (!inputs) {
       inputs = document.createElement('div')
+
       inputs.hidden = true
+
       inputs.dataset.uiDatatableInputs = ''
+
       root.append(inputs)
     }
 
@@ -2528,7 +2544,9 @@ const syncDataTableSelection = (
       const input = document.createElement('input')
 
       input.type = 'hidden'
+
       input.name = name
+
       input.value = value
 
       return input
@@ -2558,16 +2576,24 @@ const initDataTableSelection = (root: HTMLElement, table: HTMLTableElement): voi
   const selectAll = document.createElement('input')
 
   headerCell.className = 'ui-data-table__selection'
+
   headerCell.scope = 'col'
+
   selectAll.type = 'checkbox'
+
   selectAll.className = 'ui-data-table__checkbox'
+
   selectAll.dataset.uiDatatableSelectAll = ''
+
   selectAll.setAttribute('aria-label', 'Select all rows')
+
   headerCell.append(selectAll)
+
   headRow.prepend(headerCell)
 
   getDataTableRows(table).forEach((row, index) => {
     row.dataset.uiDatatableRow = ''
+
     row.dataset.value = getDataTableRowValue(row, index)
 
     const cell = document.createElement('td')
@@ -2575,15 +2601,23 @@ const initDataTableSelection = (root: HTMLElement, table: HTMLTableElement): voi
     const selected = row.dataset.state === 'selected' || row.getAttribute('aria-selected') === 'true'
 
     cell.className = 'ui-data-table__selection'
+
     checkbox.type = 'checkbox'
+
     checkbox.className = 'ui-data-table__checkbox'
+
     checkbox.dataset.uiDatatableRowSelect = ''
+
     checkbox.checked = selected
+
     checkbox.defaultChecked = selected
+
     checkbox.setAttribute('aria-label', `Select row ${index + 1}`)
+
     checkbox.addEventListener('change', () => syncDataTableSelection(root, table, selectAll, true))
 
     cell.append(checkbox)
+
     row.prepend(cell)
   })
 
@@ -2613,10 +2647,10 @@ const initDataTables = (scope: ParentNode): void => {
     root.dataset.uiBound = 'true'
 
     initDataTableSelection(root, table)
+
     initDataTableSorting(root, table)
   }
 }
-/* eslint-enable @stylistic/padding-line-between-statements, no-nested-ternary */
 
 const createCalendarDate = (year: number, month: number, day: number): Date => {
   const date = new Date(0)
@@ -3732,7 +3766,7 @@ const getRichTextCommandValue = (control: HTMLElement): string | undefined => {
 const syncRichTextCommandStates = (root: HTMLElement): void => {
   if (root.dataset.uiEditorNativeState === 'false') return
 
-  const commandDocument = document as unknown as RichTextCommandDocument
+  const commandDocument: RichTextCommandDocument = document
 
   for (const control of root.querySelectorAll<HTMLElement>('[data-ui-editor-command]')) {
     const command = control.dataset.uiEditorCommand ?? ''
@@ -3778,7 +3812,7 @@ const executeRichTextCommand = (
 ): boolean => {
   if (!command) return false
 
-  const commandDocument = document as unknown as RichTextCommandDocument
+  const commandDocument: RichTextCommandDocument = document
 
   const executed = executeLumenRichTextCommand(root, { command, ...(value === undefined ? {} : { value }) }, () => {
     if (typeof commandDocument.execCommand !== 'function') return false

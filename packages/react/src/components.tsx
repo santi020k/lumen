@@ -1,7 +1,5 @@
 'use client'
 
-/* eslint-disable @eslint-react/no-children-only, @eslint-react/no-context-provider, @eslint-react/no-use-context */
-/* React 19 ref props and context providers stay explicit; polymorphic composition clones one child. */
 import type {
   ChangeEvent,
   ComponentPropsWithoutRef,
@@ -22,8 +20,8 @@ import {
   createElement,
   Fragment,
   isValidElement,
+  use,
   useCallback,
-  useContext,
   useEffect,
   useId,
   useMemo,
@@ -644,7 +642,7 @@ export const Button = ({
   )
 
   if (asChild) {
-    const child = Children.only(children)
+    const child = children
 
     if (!isValidElement<ButtonChildProps>(child)) {
       throw new TypeError(
@@ -2882,7 +2880,7 @@ export const DialogFooter = ({ className, ...props }: DialogFooterProps) => (
 
 export type DialogCloseProps = ButtonProps
 export const DialogClose = ({ className, onClick, ...props }: DialogCloseProps) => {
-  const close = useContext(DialogCloseContext)
+  const close = use(DialogCloseContext)
 
   return (
     <Button
@@ -2972,7 +2970,7 @@ export const DropdownMenu = ({
   const menu = useDropdownMenu({ defaultOpen, onOpenChange, open })
 
   return (
-    <DropdownMenuContext.Provider value={menu}>
+    <DropdownMenuContext value={menu}>
       <menu
         {...menu.rootProps}
         {...props}
@@ -2984,7 +2982,7 @@ export const DropdownMenu = ({
       >
         {children}
       </menu>
-    </DropdownMenuContext.Provider>
+    </DropdownMenuContext>
   )
 }
 
@@ -2995,7 +2993,7 @@ export const DropdownMenuTrigger = ({
   ...props
 }: DropdownMenuTriggerProps) => {
   const menu = requireContext(
-    useContext(DropdownMenuContext), 'DropdownMenuTrigger'
+    use(DropdownMenuContext), 'DropdownMenuTrigger'
   )
 
   return (
@@ -3016,7 +3014,7 @@ export const DropdownMenuContent = ({
   ...props
 }: DropdownMenuContentProps) => {
   const menu = requireContext(
-    useContext(DropdownMenuContext), 'DropdownMenuContent'
+    use(DropdownMenuContext), 'DropdownMenuContent'
   )
 
   return (
@@ -3043,7 +3041,7 @@ export const DropdownMenuItem = ({
   ...props
 }: DropdownMenuItemProps) => {
   const menu = requireContext(
-    useContext(DropdownMenuContext), 'DropdownMenuItem'
+    use(DropdownMenuContext), 'DropdownMenuItem'
   )
 
   return (
@@ -4518,7 +4516,7 @@ export const Popover = ({
   const popover = usePopover({ defaultOpen, onOpenChange, open })
 
   return (
-    <PopoverContext.Provider value={popover}>
+    <PopoverContext value={popover}>
       <div
         {...popover.rootProps}
         {...props}
@@ -4530,7 +4528,7 @@ export const Popover = ({
       >
         {children}
       </div>
-    </PopoverContext.Provider>
+    </PopoverContext>
   )
 }
 
@@ -4540,7 +4538,7 @@ export const PopoverTrigger = ({
   onKeyDown,
   ...props
 }: PopoverTriggerProps) => {
-  const popover = requireContext(useContext(PopoverContext), 'PopoverTrigger')
+  const popover = requireContext(use(PopoverContext), 'PopoverTrigger')
 
   return (
     <button
@@ -4555,7 +4553,7 @@ export const PopoverTrigger = ({
 
 export type PopoverPanelProps = ComponentPropsWithoutRef<'div'>
 export const PopoverPanel = ({ onKeyDown, ...props }: PopoverPanelProps) => {
-  const popover = requireContext(useContext(PopoverContext), 'PopoverPanel')
+  const popover = requireContext(use(PopoverContext), 'PopoverPanel')
 
   return (
     <div
@@ -4575,7 +4573,7 @@ export const RadioGroup = ({ className, ...props }: RadioGroupProps) => (
   />
 )
 
-/* eslint-disable @stylistic/padding-line-between-statements, @eslint-react/no-array-index-key */
+/* eslint-disable @eslint-react/no-array-index-key */
 /* eslint-disable @eslint-react/no-children-to-array, @eslint-react/no-clone-element */
 /* Resizable preserves pane element tags while injecting pane sizing props and handles. */
 interface ResizablePaneProps {
@@ -4623,6 +4621,7 @@ export const Resizable = ({
   ...props
 }: ResizableProps) => {
   const panes = Children.toArray(children)
+
   const resizable = useResizable({
     defaultSizes,
     direction,
@@ -4649,7 +4648,7 @@ export const Resizable = ({
     </div>
   )
 }
-/* eslint-enable @stylistic/padding-line-between-statements, @eslint-react/no-array-index-key, @eslint-react/no-children-to-array, @eslint-react/no-clone-element */
+/* eslint-enable @eslint-react/no-array-index-key, @eslint-react/no-children-to-array, @eslint-react/no-clone-element */
 
 export interface RichTextEditorProps extends ComponentPropsWithoutRef<'section'> {
   glass?: LumenGlassProp
@@ -5504,7 +5503,7 @@ export const Tabs = ({
   const tabs = useTabs({ defaultValue, onValueChange, orientation, value })
 
   return (
-    <TabsContext.Provider value={tabs}>
+    <TabsContext value={tabs}>
       <div
         {...tabs.rootProps}
         {...props}
@@ -5514,13 +5513,13 @@ export const Tabs = ({
       >
         {children}
       </div>
-    </TabsContext.Provider>
+    </TabsContext>
   )
 }
 
 export type TabsListProps = ComponentPropsWithoutRef<'div'>
 export const TabsList = ({ ...props }: TabsListProps) => {
-  const tabs = requireContext(useContext(TabsContext), 'TabsList')
+  const tabs = requireContext(use(TabsContext), 'TabsList')
 
   return <div {...tabs.listProps} {...props} />
 }
@@ -5534,7 +5533,7 @@ export const TabsTrigger = ({
   value,
   ...props
 }: TabsTriggerProps) => {
-  const tabs = requireContext(useContext(TabsContext), 'TabsTrigger')
+  const tabs = requireContext(use(TabsContext), 'TabsTrigger')
 
   return (
     <button
@@ -5552,7 +5551,7 @@ export interface TabsPanelProps extends ComponentPropsWithoutRef<'div'> {
   value: string
 }
 export const TabsPanel = ({ value, ...props }: TabsPanelProps) => {
-  const tabs = requireContext(useContext(TabsContext), 'TabsPanel')
+  const tabs = requireContext(use(TabsContext), 'TabsPanel')
 
   return <div {...tabs.getPanelProps(value, props)} />
 }
@@ -5796,7 +5795,7 @@ export const Tooltip = ({
   const tooltip = useTooltip({ defaultOpen, delay, onOpenChange, open })
 
   return (
-    <TooltipContext.Provider value={tooltip}>
+    <TooltipContext value={tooltip}>
       <span
         {...tooltip.rootProps}
         {...props}
@@ -5811,13 +5810,13 @@ export const Tooltip = ({
       >
         {children}
       </span>
-    </TooltipContext.Provider>
+    </TooltipContext>
   )
 }
 
 export type TooltipContentProps = ComponentPropsWithoutRef<'span'>
 export const TooltipContent = ({ ...props }: TooltipContentProps) => {
-  const tooltip = requireContext(useContext(TooltipContext), 'TooltipContent')
+  const tooltip = requireContext(use(TooltipContext), 'TooltipContent')
 
   return <span {...tooltip.tooltipProps} {...props} />
 }
@@ -6796,7 +6795,7 @@ export const ButtonLink = ({
   )
 
   if (asChild) {
-    const child = Children.only(children)
+    const child = children
 
     if (!isValidElement<ButtonChildProps>(child)) {
       throw new Error(
