@@ -62,6 +62,8 @@
 
 ### Patch Changes
 
+- Keep keyboard focus on pointer-opened popover triggers so Escape dismisses the popup in Safari, including desktop and narrow dashboard layouts.
+
 - Keep anchor navigation working with malformed fragments and short pages. Preserve native dialog autofocus, dismiss only genuine backdrop presses, and restore anonymous triggers without requiring a secure-context UUID API. Clear phone validation references when their error element is removed. Keep React and Elements tab keyboard navigation within its own tab group and skip disabled tabs across all web adapters.
 
 - Refine web chart presentation with responsive plots, fading area fills, quieter grids, compact
