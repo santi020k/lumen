@@ -25,6 +25,9 @@
 
 **Package:** `@santi020k/lumen-elements`
 
+Internal behavior methods use native JavaScript private members. Public properties, events and
+registration APIs retain their existing contracts.
+
 **On this page:** [Install](#install) · [Usage](#usage) · [Language selection](#language-selection) · [Forms](#forms) · [Context navigation](#context-navigation) · [Resources](#resources)
 
 ---

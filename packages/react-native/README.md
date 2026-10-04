@@ -531,3 +531,12 @@ slider provides touch, keyboard and screen-reader adjustment; supply localized i
 
 See the [shared advanced contracts](../../docs/native-components.md#shared-v4-advanced-controls)
 and the [native form-error recipe](../../docs/native-patterns.md#pattern-form-submission-errors).
+
+### React Native 0.86.3 live iOS text resizing
+
+This renderer version can retain stale text geometry after a live system Text Size change.
+The Lumen playground applies the exact-version source patch in
+`patches/react-native@0.86.3.patch` and builds iOS React Native from source. See
+[the playground instructions](../../apps/playground-react-native/README.md#live-ios-text-resizing)
+for the patch, rebuild requirements, and mounted-draft regression check. Installing Lumen alone
+does not change the host application's native renderer. Native font scaling remains enabled.

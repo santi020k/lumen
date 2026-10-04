@@ -5044,7 +5044,7 @@ class LumenScalarFormControlElement extends LumenElement {
     if (this.control instanceof HTMLInputElement) {
       this.control.checked = checked
 
-      this.syncFormState()
+      this.#syncFormState()
     }
 
     this.toggleAttribute('checked', checked)
@@ -5123,7 +5123,7 @@ class LumenScalarFormControlElement extends LumenElement {
     if (this.control) {
       this.control.value = value
 
-      this.syncFormState()
+      this.#syncFormState()
 
       return
     }
@@ -5148,14 +5148,14 @@ class LumenScalarFormControlElement extends LumenElement {
 
     this.defaultCheckedState = this.hasAttribute('checked')
 
-    this.ensureControl()
+    this.#ensureControl()
 
     if (this.control instanceof HTMLSelectElement &&
       !this.hasAttribute('value')) this.defaultValueState = this.control.value
 
-    this.syncControlAttributes()
+    this.#syncControlAttributes()
 
-    this.syncFormState()
+    this.#syncFormState()
   }
 
   override disconnectedCallback() {
@@ -5173,7 +5173,7 @@ class LumenScalarFormControlElement extends LumenElement {
 
     if (previousValue === value || !this.control) return
 
-    this.syncControlAttributes()
+    this.#syncControlAttributes()
 
     if (name === 'value') {
       this.defaultValueState = value ?? ''
@@ -5187,13 +5187,13 @@ class LumenScalarFormControlElement extends LumenElement {
       this.control.checked = this.defaultCheckedState
     }
 
-    this.syncFormState()
+    this.#syncFormState()
   }
 
   checkValidity(): boolean {
     const valid = this.control?.checkValidity() ?? true
 
-    this.syncFormState()
+    this.#syncFormState()
 
     return valid
   }
@@ -5215,7 +5215,7 @@ class LumenScalarFormControlElement extends LumenElement {
       this.control.checked = this.defaultCheckedState
     }
 
-    this.syncFormState()
+    this.#syncFormState()
   }
 
   formStateRestoreCallback(state: File | FormData | string | null): void {
@@ -5225,7 +5225,7 @@ class LumenScalarFormControlElement extends LumenElement {
   reportValidity(): boolean {
     const valid = this.control?.reportValidity() ?? true
 
-    this.syncFormState()
+    this.#syncFormState()
 
     return valid
   }
@@ -5233,10 +5233,10 @@ class LumenScalarFormControlElement extends LumenElement {
   setCustomValidity(message: string): void {
     this.control?.setCustomValidity(message)
 
-    this.syncFormState()
+    this.#syncFormState()
   }
 
-  private ensureControl(): void {
+  #ensureControl(): void {
     const existingControl = this.querySelector<LumenScalarNativeControl>(
       '[data-ui-element-control]'
     )
@@ -5289,7 +5289,7 @@ class LumenScalarFormControlElement extends LumenElement {
         eventName, event => {
           event.stopPropagation()
 
-          this.syncFormState()
+          this.#syncFormState()
 
           this.dispatchEvent(
             new Event(eventName, { bubbles: true, composed: true })
@@ -5299,7 +5299,7 @@ class LumenScalarFormControlElement extends LumenElement {
     }
   }
 
-  private syncControlAttributes(): void {
+  #syncControlAttributes(): void {
     const control = this.control
 
     if (!control) return
@@ -5332,7 +5332,7 @@ class LumenScalarFormControlElement extends LumenElement {
     }
   }
 
-  private syncFormState(): void {
+  #syncFormState(): void {
     const control = this.control
 
     if (!control) return
@@ -5850,22 +5850,22 @@ class LumenSparklineBehaviorElement extends LumenElement {
   set values(value: readonly number[]) {
     this.#values = value
 
-    this.renderSparkline()
+    this.#renderSparkline()
   }
 
   override connectedCallback() {
     super.connectedCallback()
 
-    this.renderSparkline()
+    this.#renderSparkline()
   }
 
   override attributeChangedCallback() {
     super.attributeChangedCallback()
 
-    if (this.isConnected) this.renderSparkline()
+    if (this.isConnected) this.#renderSparkline()
   }
 
-  private renderSparkline() {
+  #renderSparkline() {
     const values = this.values
 
     if (values.length === 0) {
@@ -6228,7 +6228,7 @@ class LumenPieChartBehaviorElement extends LumenDataChartBehaviorElement {
         `<div class="ui-pie-chart__center" aria-hidden="true">${centerValue ? `<strong>${escapeChartHtml(centerValue)}</strong>` : ''}${centerLabel ? `<span>${escapeChartHtml(centerLabel)}</span>` : ''}</div>` :
         ''
 
-    const table = showTable ? this.pieDataTable(geometry.slices, chartLabels) : ''
+    const table = showTable ? this.#pieDataTable(geometry.slices, chartLabels) : ''
 
     this.innerHTML = [
       chartHeaderHtml(this),
@@ -6243,7 +6243,7 @@ class LumenPieChartBehaviorElement extends LumenDataChartBehaviorElement {
     ].join('')
   }
 
-  private pieDataTable(
+  #pieDataTable(
     slices: readonly LumenPieGeometrySlice[], labels: Readonly<LumenChartLabels>
   ): string {
     const rows = slices
@@ -6562,16 +6562,16 @@ class LumenIconBehaviorElement extends LumenElement {
   override connectedCallback() {
     super.connectedCallback()
 
-    this.renderIcon()
+    this.#renderIcon()
   }
 
   override attributeChangedCallback() {
     super.attributeChangedCallback()
 
-    this.renderIcon()
+    this.#renderIcon()
   }
 
-  private renderIcon() {
+  #renderIcon() {
     const name = this.getAttribute('name')
     const label = this.getAttribute('label') ?? this.getAttribute('aria-label')
     const isDecorative = this.hasAttribute('decorative') || !label
@@ -6604,16 +6604,16 @@ class LumenGraphicBehaviorElement extends LumenElement {
   override connectedCallback() {
     super.connectedCallback()
 
-    this.syncAccessibility()
+    this.#syncAccessibility()
   }
 
   override attributeChangedCallback() {
     super.attributeChangedCallback()
 
-    this.syncAccessibility()
+    this.#syncAccessibility()
   }
 
-  private syncAccessibility() {
+  #syncAccessibility() {
     const label = this.getAttribute('label')
 
     if (label) {
@@ -6636,16 +6636,16 @@ class LumenIllustrationBehaviorElement extends LumenElement {
   override connectedCallback() {
     super.connectedCallback()
 
-    this.renderIllustration()
+    this.#renderIllustration()
   }
 
   override attributeChangedCallback() {
     super.attributeChangedCallback()
 
-    this.renderIllustration()
+    this.#renderIllustration()
   }
 
-  private renderIllustration() {
+  #renderIllustration() {
     const label = this.getAttribute('label')
     const variant = this.getAttribute('variant')
 
@@ -6685,7 +6685,7 @@ class LumenDialogBehaviorElement extends LumenElement {
 
     this.abortController = new AbortController()
 
-    this.setupDialog(this.abortController.signal)
+    this.#setupDialog(this.abortController.signal)
   }
 
   override disconnectedCallback() {
@@ -6695,57 +6695,57 @@ class LumenDialogBehaviorElement extends LumenElement {
   }
 
   show(trigger?: HTMLElement): void {
-    this.openDialog(trigger)
+    this.#openDialog(trigger)
   }
 
   close(): void {
-    this.closeDialog()
+    this.#closeDialog()
   }
 
-  private get isAlertDialog(): boolean {
+  get #isAlertDialog(): boolean {
     return (
       this.hasAttribute('data-ui-alert-dialog') ||
       this.tagName.toLowerCase() === 'lumen-alert-dialog'
     )
   }
 
-  private get nativeDialog(): HTMLDialogElement | null {
+  get #nativeDialog(): HTMLDialogElement | null {
     const dialog = this.querySelector('dialog')
 
     return dialog instanceof HTMLDialogElement ? dialog : null
   }
 
-  private get dialogRoot(): HTMLElement {
-    return this.nativeDialog ?? this
+  get #dialogRoot(): HTMLElement {
+    return this.#nativeDialog ?? this
   }
 
-  private setupDialog(signal: AbortSignal): void {
-    const dialog = this.dialogRoot
+  #setupDialog(signal: AbortSignal): void {
+    const dialog = this.#dialogRoot
 
     const initiallyOpen =
-      this.hasAttribute('open') || this.nativeDialog?.open === true
+      this.hasAttribute('open') || this.#nativeDialog?.open === true
 
     dialog.setAttribute('aria-modal', 'true')
 
-    dialog.setAttribute('role', this.isAlertDialog ? 'alertdialog' : 'dialog')
+    dialog.setAttribute('role', this.#isAlertDialog ? 'alertdialog' : 'dialog')
 
-    if (!this.nativeDialog) {
+    if (!this.#nativeDialog) {
       this.hidden = !initiallyOpen
 
       this.dataset.state = initiallyOpen ? 'open' : 'closed'
     }
 
-    this.nativeDialog?.addEventListener(
+    this.#nativeDialog?.addEventListener(
       'click', event => {
-        if (event.target === this.nativeDialog && !this.isAlertDialog) {
-          this.closeDialog()
+        if (event.target === this.#nativeDialog && !this.#isAlertDialog) {
+          this.#closeDialog()
         }
       }, { signal }
     )
 
-    this.nativeDialog?.addEventListener(
+    this.#nativeDialog?.addEventListener(
       'close', () => {
-        this.returnFocus()
+        this.#returnFocus()
       }, { signal }
     )
 
@@ -6765,7 +6765,7 @@ class LumenDialogBehaviorElement extends LumenElement {
 
         if (closeButton && owner === this && !event.defaultPrevented &&
           !nativeButton?.disabled && closeButton.getAttribute('aria-disabled') !== 'true') {
-          this.closeDialog()
+          this.#closeDialog()
         }
       }, { signal }
     )
@@ -6777,14 +6777,14 @@ class LumenDialogBehaviorElement extends LumenElement {
         if (event.key === 'Escape') {
           event.preventDefault()
 
-          this.closeDialog()
+          this.#closeDialog()
 
           return
         }
 
         if (event.key !== 'Tab') return
 
-        this.trapFocus(event)
+        this.#trapFocus(event)
       }, { signal }
     )
 
@@ -6805,32 +6805,32 @@ class LumenDialogBehaviorElement extends LumenElement {
 
         if (!trigger || targetId !== this.id) return
 
-        this.openDialog(trigger)
+        this.#openDialog(trigger)
       }, { signal }
     )
 
     document.addEventListener(
       'pointerdown', event => {
-        if (!this.isOpen() || this.isAlertDialog) return
+        if (!this.#isOpen() || this.#isAlertDialog) return
 
         const target = getOwnedTarget(event)
 
         if (!target || this.contains(target)) return
 
-        this.closeDialog()
+        this.#closeDialog()
       }, { signal }
     )
   }
 
-  private isOpen(): boolean {
+  #isOpen(): boolean {
     return (
-      this.nativeDialog?.open === true ||
+      this.#nativeDialog?.open === true ||
       this.hasAttribute('open') ||
       this.dataset.state === 'open'
     )
   }
 
-  private openDialog(trigger?: HTMLElement): void {
+  #openDialog(trigger?: HTMLElement): void {
     if (trigger) {
       if (!trigger.id) {
         trigger.id = createId('ui-trigger')
@@ -6839,7 +6839,7 @@ class LumenDialogBehaviorElement extends LumenElement {
       this.lastTrigger = trigger
     }
 
-    const dialog = this.nativeDialog
+    const dialog = this.#nativeDialog
 
     if (dialog) {
       if (typeof dialog.showModal === 'function' && !dialog.open) {
@@ -6855,11 +6855,11 @@ class LumenDialogBehaviorElement extends LumenElement {
       this.dataset.state = 'open'
     }
 
-    getFocusable(this.dialogRoot)[0]?.focus({ preventScroll: true })
+    getFocusable(this.#dialogRoot)[0]?.focus({ preventScroll: true })
   }
 
-  private closeDialog(): void {
-    const dialog = this.nativeDialog
+  #closeDialog(): void {
+    const dialog = this.#nativeDialog
 
     if (dialog?.open) {
       dialog.close()
@@ -6874,16 +6874,16 @@ class LumenDialogBehaviorElement extends LumenElement {
 
       this.dataset.state = 'closed'
 
-      this.returnFocus()
+      this.#returnFocus()
     }
   }
 
-  private returnFocus(): void {
+  #returnFocus(): void {
     this.lastTrigger?.focus({ preventScroll: true })
   }
 
-  private trapFocus(event: KeyboardEvent): void {
-    const focusable = getFocusable(this.dialogRoot)
+  #trapFocus(event: KeyboardEvent): void {
+    const focusable = getFocusable(this.#dialogRoot)
 
     if (!focusable.length) return
 
@@ -6920,7 +6920,7 @@ class LumenDisclosureBehaviorElement extends LumenElement {
 
     this.abortController = new AbortController()
 
-    this.setupDisclosure(this.abortController.signal)
+    this.#setupDisclosure(this.abortController.signal)
   }
 
   override disconnectedCallback() {
@@ -6929,7 +6929,7 @@ class LumenDisclosureBehaviorElement extends LumenElement {
     this.abortController = undefined
   }
 
-  private setupDisclosure(signal: AbortSignal): void {
+  #setupDisclosure(signal: AbortSignal): void {
     const trigger = this.querySelector<HTMLElement>('[data-ui-trigger]')
 
     if (!trigger) return
@@ -7056,7 +7056,7 @@ class LumenTabsBehaviorElement extends LumenElement {
 
     this.abortController = new AbortController()
 
-    this.setupTabs(this.abortController.signal)
+    this.#setupTabs(this.abortController.signal)
   }
 
   override disconnectedCallback() {
@@ -7065,7 +7065,7 @@ class LumenTabsBehaviorElement extends LumenElement {
     this.abortController = undefined
   }
 
-  private setupTabs(signal: AbortSignal): void {
+  #setupTabs(signal: AbortSignal): void {
     const tabs = [...this.querySelectorAll<HTMLElement>('[role="tab"]')]
       .filter(tab => tab.closest('lumen-tabs, lumen-code-tabs, [data-ui-tabs]') === this)
 
@@ -7174,7 +7174,7 @@ class LumenSelectBehaviorElement extends LumenElement {
 
     this.abortController = new AbortController()
 
-    this.setupSelect(this.abortController.signal)
+    this.#setupSelect(this.abortController.signal)
   }
 
   override disconnectedCallback() {
@@ -7189,9 +7189,9 @@ class LumenSelectBehaviorElement extends LumenElement {
     }
   }
 
-  private setupSelect(signal: AbortSignal): void {
-    const select = this.ensureNativeSelect()
-    const control = this.ensureControl(select)
+  #setupSelect(signal: AbortSignal): void {
+    const select = this.#ensureNativeSelect()
+    const control = this.#ensureControl(select)
 
     const trigger = control.querySelector<HTMLButtonElement>(
       '[data-ui-select-trigger]'
@@ -7201,7 +7201,7 @@ class LumenSelectBehaviorElement extends LumenElement {
 
     if (!trigger || !listbox) return
 
-    this.renderOptions(select, listbox)
+    this.#renderOptions(select, listbox)
 
     control.hidden = false
 
@@ -7257,16 +7257,16 @@ class LumenSelectBehaviorElement extends LumenElement {
       )
     }
 
-    this.syncValue(select, trigger)
+    this.#syncValue(select, trigger)
 
-    this.closeSelect(trigger, listbox)
+    this.#closeSelect(trigger, listbox)
 
     trigger.addEventListener(
       'click', () => {
         if (trigger.getAttribute('aria-expanded') === 'true') {
-          this.closeSelect(trigger, listbox)
+          this.#closeSelect(trigger, listbox)
         } else {
-          this.openSelect(trigger, listbox)
+          this.#openSelect(trigger, listbox)
         }
       }, { signal }
     )
@@ -7275,12 +7275,12 @@ class LumenSelectBehaviorElement extends LumenElement {
       'keydown', event => {
         if (event.defaultPrevented || event.isComposing) return
 
-        if (this.handleTypeahead(event)) return
+        if (this.#handleTypeahead(event)) return
 
         if (event.key === 'Escape' && !listbox.hidden) {
           event.preventDefault()
 
-          this.closeSelect(trigger, listbox)
+          this.#closeSelect(trigger, listbox)
 
           return
         }
@@ -7291,38 +7291,38 @@ class LumenSelectBehaviorElement extends LumenElement {
 
         event.preventDefault()
 
-        this.openSelect(trigger, listbox)
+        this.#openSelect(trigger, listbox)
 
         if (event.key === 'Enter' || event.key === ' ') {
-          (this.getSelectedItem() ?? this.getEnabledItems()[0])?.focus()
+          (this.#getSelectedItem() ?? this.#getEnabledItems()[0])?.focus()
 
           return
         }
 
-        this.focusOption(event.key)
+        this.#focusOption(event.key)
       }, { signal }
     )
 
     select.addEventListener(
       'change', () => {
-        this.syncValue(select, trigger)
+        this.#syncValue(select, trigger)
       }, { signal }
     )
 
     select.form?.addEventListener(
       'reset', () => {
         globalThis.setTimeout(() => {
-          this.syncValue(select, trigger)
+          this.#syncValue(select, trigger)
         })
       }, { signal }
     )
 
-    for (const item of this.getItems()) {
+    for (const item of this.#getItems()) {
       item.tabIndex = -1
 
       item.addEventListener(
         'click', () => {
-          this.selectOption(select, trigger, listbox, item)
+          this.#selectOption(select, trigger, listbox, item)
         }, { signal }
       )
 
@@ -7330,12 +7330,12 @@ class LumenSelectBehaviorElement extends LumenElement {
         'keydown', event => {
           if (event.defaultPrevented || event.isComposing) return
 
-          if (this.handleTypeahead(event, item)) return
+          if (this.#handleTypeahead(event, item)) return
 
           if (event.key === 'Escape' && !listbox.hidden) {
             event.preventDefault()
 
-            this.closeSelect(trigger, listbox)
+            this.#closeSelect(trigger, listbox)
 
             trigger.focus({ preventScroll: true })
 
@@ -7345,7 +7345,7 @@ class LumenSelectBehaviorElement extends LumenElement {
           if (event.key === 'Enter' || event.key === ' ') {
             event.preventDefault()
 
-            this.selectOption(select, trigger, listbox, item)
+            this.#selectOption(select, trigger, listbox, item)
 
             return
           }
@@ -7356,7 +7356,7 @@ class LumenSelectBehaviorElement extends LumenElement {
 
           event.preventDefault()
 
-          this.focusOption(event.key, item)
+          this.#focusOption(event.key, item)
         }, { signal }
       )
     }
@@ -7369,12 +7369,12 @@ class LumenSelectBehaviorElement extends LumenElement {
 
         if (!target || this.contains(target)) return
 
-        this.closeSelect(trigger, listbox)
+        this.#closeSelect(trigger, listbox)
       }, { signal }
     )
   }
 
-  private ensureNativeSelect(): HTMLSelectElement {
+  #ensureNativeSelect(): HTMLSelectElement {
     const existing = this.querySelector<HTMLSelectElement>(
       '[data-ui-select-native], select'
     )
@@ -7408,7 +7408,7 @@ class LumenSelectBehaviorElement extends LumenElement {
     return select
   }
 
-  private ensureControl(select: HTMLSelectElement): HTMLElement {
+  #ensureControl(select: HTMLSelectElement): HTMLElement {
     const existing = this.querySelector<HTMLElement>(
       '[data-ui-select-control]'
     )
@@ -7466,7 +7466,7 @@ class LumenSelectBehaviorElement extends LumenElement {
     return control
   }
 
-  private renderOptions(select: HTMLSelectElement, listbox: HTMLElement): void {
+  #renderOptions(select: HTMLSelectElement, listbox: HTMLElement): void {
     const items = [...select.options]
       .filter(option => !option.hasAttribute('data-ui-select-placeholder'))
       .map(option => {
@@ -7494,7 +7494,7 @@ class LumenSelectBehaviorElement extends LumenElement {
     listbox.replaceChildren(...items)
   }
 
-  private syncValue(select: HTMLSelectElement, trigger: HTMLElement): void {
+  #syncValue(select: HTMLSelectElement, trigger: HTMLElement): void {
     const value = this.querySelector<HTMLElement>('[data-ui-select-value]')
 
     if (!value) return
@@ -7523,14 +7523,14 @@ class LumenSelectBehaviorElement extends LumenElement {
       'aria-expanded', trigger.getAttribute('aria-expanded') ?? 'false'
     )
 
-    for (const item of this.getItems()) {
+    for (const item of this.#getItems()) {
       item.setAttribute(
         'aria-selected', String(hasSelection && item.dataset.value === select.value)
       )
     }
   }
 
-  private openSelect(trigger: HTMLElement, listbox: HTMLElement): void {
+  #openSelect(trigger: HTMLElement, listbox: HTMLElement): void {
     trigger.setAttribute('aria-expanded', 'true')
 
     listbox.hidden = false
@@ -7538,7 +7538,7 @@ class LumenSelectBehaviorElement extends LumenElement {
     listbox.dataset.state = 'open'
   }
 
-  private closeSelect(trigger: HTMLElement, listbox: HTMLElement): void {
+  #closeSelect(trigger: HTMLElement, listbox: HTMLElement): void {
     trigger.setAttribute('aria-expanded', 'false')
 
     listbox.hidden = true
@@ -7546,24 +7546,24 @@ class LumenSelectBehaviorElement extends LumenElement {
     listbox.dataset.state = 'closed'
   }
 
-  private getItems(): HTMLElement[] {
+  #getItems(): HTMLElement[] {
     return [...this.querySelectorAll<HTMLElement>(selectOptionSelector)]
   }
 
-  private getEnabledItems(): HTMLElement[] {
-    return this.getItems().filter(
+  #getEnabledItems(): HTMLElement[] {
+    return this.#getItems().filter(
       item => !item.hasAttribute('disabled') &&
         item.getAttribute('aria-disabled') !== 'true'
     )
   }
 
-  private getSelectedItem(): HTMLElement | undefined {
-    return this.getEnabledItems().find(
+  #getSelectedItem(): HTMLElement | undefined {
+    return this.#getEnabledItems().find(
       item => item.getAttribute('aria-selected') === 'true'
     )
   }
 
-  private selectOption(
+  #selectOption(
     select: HTMLSelectElement,
     trigger: HTMLElement,
     listbox: HTMLElement,
@@ -7581,19 +7581,19 @@ class LumenSelectBehaviorElement extends LumenElement {
 
     select.dispatchEvent(new Event('change', { bubbles: true }))
 
-    this.syncValue(select, trigger)
+    this.#syncValue(select, trigger)
 
-    this.closeSelect(trigger, listbox)
+    this.#closeSelect(trigger, listbox)
 
     trigger.focus({ preventScroll: true })
   }
 
-  private focusOption(key: string, currentItem?: HTMLElement): void {
-    const items = this.getEnabledItems()
+  #focusOption(key: string, currentItem?: HTMLElement): void {
+    const items = this.#getEnabledItems()
 
     if (!items.length) return
 
-    const current = currentItem ?? this.getSelectedItem() ?? items[0]
+    const current = currentItem ?? this.#getSelectedItem() ?? items[0]
 
     if (!current) return
 
@@ -7609,7 +7609,7 @@ class LumenSelectBehaviorElement extends LumenElement {
     nextItem?.focus()
   }
 
-  private handleTypeahead(
+  #handleTypeahead(
     event: KeyboardEvent,
     currentItem?: HTMLElement
   ): boolean {
@@ -7631,20 +7631,20 @@ class LumenSelectBehaviorElement extends LumenElement {
     const listbox = this.querySelector<HTMLElement>('[data-ui-select-list]')
 
     if (trigger && listbox) {
-      this.openSelect(trigger, listbox)
+      this.#openSelect(trigger, listbox)
     }
 
-    this.focusTypeaheadOption(currentItem)
+    this.#focusTypeaheadOption(currentItem)
 
     return true
   }
 
-  private focusTypeaheadOption(currentItem?: HTMLElement): void {
-    const items = this.getEnabledItems()
+  #focusTypeaheadOption(currentItem?: HTMLElement): void {
+    const items = this.#getEnabledItems()
 
     if (!items.length || !this.typeahead) return
 
-    const current = currentItem ?? this.getSelectedItem() ?? items[0]
+    const current = currentItem ?? this.#getSelectedItem() ?? items[0]
 
     if (!current) return
 
@@ -7685,7 +7685,7 @@ class LumenDataTableBehaviorElement extends LumenElement {
 
     this.abortController = new AbortController()
 
-    this.setupDataTable(this.abortController.signal)
+    this.#setupDataTable(this.abortController.signal)
   }
 
   override disconnectedCallback() {
@@ -7694,17 +7694,17 @@ class LumenDataTableBehaviorElement extends LumenElement {
     this.abortController = undefined
   }
 
-  private setupDataTable(signal: AbortSignal): void {
+  #setupDataTable(signal: AbortSignal): void {
     const table = this.querySelector<HTMLTableElement>('table')
 
     if (!table) return
 
-    this.setupSelection(table, signal)
+    this.#setupSelection(table, signal)
 
-    this.setupSorting(table, signal)
+    this.#setupSorting(table, signal)
   }
 
-  private setupSorting(table: HTMLTableElement, signal: AbortSignal): void {
+  #setupSorting(table: HTMLTableElement, signal: AbortSignal): void {
     const body = table.tBodies[0]
 
     if (!body) return
@@ -7734,7 +7734,7 @@ class LumenDataTableBehaviorElement extends LumenElement {
         'aria-sort', header.getAttribute('aria-sort') ?? 'none'
       )
 
-      const button = this.ensureSortButton(header)
+      const button = this.#ensureSortButton(header)
 
       button.addEventListener(
         'click', () => {
@@ -7742,15 +7742,15 @@ class LumenDataTableBehaviorElement extends LumenElement {
             this.dataset.uiDatatableSortColumn, columnIndex, header.getAttribute('aria-sort')
           )
 
-          this.updateSort(table, header, nextDirection)
+          this.#updateSort(table, header, nextDirection)
 
-          this.sortRows(table, header, columnIndex, nextDirection)
+          this.#sortRows(table, header, columnIndex, nextDirection)
         }, { signal }
       )
     }
   }
 
-  private ensureSortButton(header: HTMLTableCellElement): HTMLButtonElement {
+  #ensureSortButton(header: HTMLTableCellElement): HTMLButtonElement {
     const existing = header.querySelector<HTMLButtonElement>(
       '[data-ui-datatable-sort]'
     )
@@ -7774,7 +7774,7 @@ class LumenDataTableBehaviorElement extends LumenElement {
     return button
   }
 
-  private updateSort(
+  #updateSort(
     table: HTMLTableElement,
     header: HTMLTableCellElement,
     direction: DataTableSortDirection
@@ -7797,7 +7797,7 @@ class LumenDataTableBehaviorElement extends LumenElement {
     }
   }
 
-  private sortRows(
+  #sortRows(
     table: HTMLTableElement,
     header: HTMLTableCellElement,
     columnIndex: number,
@@ -7834,7 +7834,7 @@ class LumenDataTableBehaviorElement extends LumenElement {
     }
   }
 
-  private setupSelection(table: HTMLTableElement, signal: AbortSignal): void {
+  #setupSelection(table: HTMLTableElement, signal: AbortSignal): void {
     const selectable =
       this.dataset.uiDatatableSelectable === 'true' ||
       this.hasAttribute('selectable')
@@ -7846,14 +7846,14 @@ class LumenDataTableBehaviorElement extends LumenElement {
 
     if (!headRow || !body) return
 
-    const selectAll = this.ensureSelectAll(headRow)
+    const selectAll = this.#ensureSelectAll(headRow)
 
     for (const [index, row] of getDataTableRows(table).entries()) {
-      const checkbox = this.ensureRowSelect(row, index)
+      const checkbox = this.#ensureRowSelect(row, index)
 
       checkbox.addEventListener(
         'change', () => {
-          this.syncSelection(table, selectAll, true)
+          this.#syncSelection(table, selectAll, true)
         }, { signal }
       )
     }
@@ -7866,22 +7866,22 @@ class LumenDataTableBehaviorElement extends LumenElement {
           checkbox.checked = selectAll.checked
         }
 
-        this.syncSelection(table, selectAll, true)
+        this.#syncSelection(table, selectAll, true)
       }, { signal }
     )
 
     this.closest('form')?.addEventListener(
       'reset', () => {
         globalThis.setTimeout(() => {
-          this.syncSelection(table, selectAll, true)
+          this.#syncSelection(table, selectAll, true)
         })
       }, { signal }
     )
 
-    this.syncSelection(table, selectAll)
+    this.#syncSelection(table, selectAll)
   }
 
-  private ensureSelectAll(headRow: HTMLTableRowElement): HTMLInputElement {
+  #ensureSelectAll(headRow: HTMLTableRowElement): HTMLInputElement {
     const existing = headRow.querySelector<HTMLInputElement>(
       '[data-ui-datatable-select-all]'
     )
@@ -7910,7 +7910,7 @@ class LumenDataTableBehaviorElement extends LumenElement {
     return selectAll
   }
 
-  private ensureRowSelect(
+  #ensureRowSelect(
     row: HTMLTableRowElement,
     index: number
   ): HTMLInputElement {
@@ -7952,7 +7952,7 @@ class LumenDataTableBehaviorElement extends LumenElement {
     return checkbox
   }
 
-  private syncSelection(
+  #syncSelection(
     table: HTMLTableElement,
     selectAll: HTMLInputElement,
     dispatch = false
@@ -7984,7 +7984,7 @@ class LumenDataTableBehaviorElement extends LumenElement {
     selectAll.indeterminate =
       selectedValues.length > 0 && selectedValues.length < rows.length
 
-    this.syncSelectionInputs(selectedValues)
+    this.#syncSelectionInputs(selectedValues)
 
     if (dispatch) {
       const detail = { values: selectedValues }
@@ -7998,7 +7998,7 @@ class LumenDataTableBehaviorElement extends LumenElement {
     }
   }
 
-  private syncSelectionInputs(selectedValues: string[]): void {
+  #syncSelectionInputs(selectedValues: string[]): void {
     const name = this.dataset.uiDatatableName
     let inputs = this.querySelector<HTMLElement>('[data-ui-datatable-inputs]')
 
@@ -8068,7 +8068,7 @@ class LumenThemeBuilderBehaviorElement extends LumenElement {
 
     this.abortController = new AbortController()
 
-    this.setupThemeBuilder(this.abortController.signal)
+    this.#setupThemeBuilder(this.abortController.signal)
   }
 
   override disconnectedCallback() {
@@ -8077,7 +8077,7 @@ class LumenThemeBuilderBehaviorElement extends LumenElement {
     this.abortController = undefined
   }
 
-  private setupThemeBuilder(signal: AbortSignal): void {
+  #setupThemeBuilder(signal: AbortSignal): void {
     const brandHue = this.querySelector<HTMLInputElement>(
       '[data-ui-theme-brand-hue], [data-ui-theme-hue]'
     )
@@ -8140,7 +8140,7 @@ class LumenThemeBuilderBehaviorElement extends LumenElement {
       button.setAttribute('aria-pressed', String(button.getAttribute('data-ui-theme-preset') === (currentPreset ?? 'custom')))
     }
 
-    this.setPressedState(presetButtons, 'data-ui-theme-preset', currentPreset ?? 'custom')
+    this.#setPressedState(presetButtons, 'data-ui-theme-preset', currentPreset ?? 'custom')
 
     const importButton = this.querySelector<HTMLButtonElement>(
       '[data-ui-theme-import]'
@@ -8159,14 +8159,14 @@ class LumenThemeBuilderBehaviorElement extends LumenElement {
     )
 
     this.currentExportFormat = coerceThemeBuilderExportFormat(
-      this.getButtonValue(
+      this.#getButtonValue(
         exportFormatButtons, 'data-ui-theme-export-format', 'css'
       )
     )
 
     this.currentScheme = coerceThemeBuilderScheme(
-      this.getButtonValue(
-        schemeButtons, 'data-ui-theme-scheme', this.getDefaultScheme()
+      this.#getButtonValue(
+        schemeButtons, 'data-ui-theme-scheme', this.#getDefaultScheme()
       )
     )
 
@@ -8203,7 +8203,7 @@ class LumenThemeBuilderBehaviorElement extends LumenElement {
           this.getAttribute('data-ui-theme-brand-hue') ??
           this.getAttribute('data-ui-theme-hue') ??
           null,
-        mode: this.getButtonValue(
+        mode: this.#getButtonValue(
           modeButtons, 'data-ui-theme-mode', 'generated'
         ),
         primaryColor: primaryHex?.value ?? primaryColor?.value ?? null,
@@ -8215,13 +8215,13 @@ class LumenThemeBuilderBehaviorElement extends LumenElement {
 
       this.currentTokens = result.tokens
 
-      const target = this.getTarget()
+      const target = this.#getTarget()
 
       if (target) {
-        this.applyTokens(target, result.tokens, result.scheme)
+        this.#applyTokens(target, result.tokens, result.scheme)
       }
 
-      this.writeExport(output)
+      this.#writeExport(output)
 
       updateContrastUi(result.tokens)
 
@@ -8241,13 +8241,13 @@ class LumenThemeBuilderBehaviorElement extends LumenElement {
       }, { signal })
     }
 
-    this.bindHueInputs(brandHue, brandHueNumber, update, signal)
+    this.#bindHueInputs(brandHue, brandHueNumber, update, signal)
 
-    this.bindHueInputs(accentHue, accentHueNumber, update, signal)
+    this.#bindHueInputs(accentHue, accentHueNumber, update, signal)
 
-    this.bindHexInputs(primaryColor, primaryHex, update, signal)
+    this.#bindHexInputs(primaryColor, primaryHex, update, signal)
 
-    this.bindHexInputs(secondaryColor, secondaryHex, update, signal)
+    this.#bindHexInputs(secondaryColor, secondaryHex, update, signal)
 
     for (const button of exportFormatButtons) {
       button.addEventListener(
@@ -8256,11 +8256,11 @@ class LumenThemeBuilderBehaviorElement extends LumenElement {
             button.getAttribute('data-ui-theme-export-format')
           )
 
-          this.setPressedState(
+          this.#setPressedState(
             exportFormatButtons, 'data-ui-theme-export-format', this.currentExportFormat
           )
 
-          this.writeExport(output)
+          this.#writeExport(output)
         }, { signal }
       )
     }
@@ -8268,7 +8268,7 @@ class LumenThemeBuilderBehaviorElement extends LumenElement {
     for (const button of modeButtons) {
       button.addEventListener(
         'click', () => {
-          this.setPressedState(
+          this.#setPressedState(
             modeButtons, 'data-ui-theme-mode', coerceThemeBuilderMode(button.getAttribute('data-ui-theme-mode'))
           )
 
@@ -8281,7 +8281,7 @@ class LumenThemeBuilderBehaviorElement extends LumenElement {
       button.addEventListener('click', () => {
         currentPreset = button.getAttribute('data-ui-theme-preset') === 'custom' ? null : coerceThemePreset(button.getAttribute('data-ui-theme-preset'))
 
-        this.setPressedState(presetButtons, 'data-ui-theme-preset', currentPreset ?? 'custom')
+        this.#setPressedState(presetButtons, 'data-ui-theme-preset', currentPreset ?? 'custom')
 
         update()
       }, { signal })
@@ -8294,7 +8294,7 @@ class LumenThemeBuilderBehaviorElement extends LumenElement {
             button.getAttribute('data-ui-theme-scheme')
           )
 
-          this.setPressedState(
+          this.#setPressedState(
             schemeButtons, 'data-ui-theme-scheme', this.currentScheme
           )
 
@@ -8306,7 +8306,7 @@ class LumenThemeBuilderBehaviorElement extends LumenElement {
     exportButton?.addEventListener(
       'click', () => {
         if (this.currentTokens) {
-          this.writeExport(output)
+          this.#writeExport(output)
         } else {
           update(false)
         }
@@ -8341,13 +8341,13 @@ class LumenThemeBuilderBehaviorElement extends LumenElement {
 
         this.currentTokens = parsed
 
-        const target = this.getTarget()
+        const target = this.#getTarget()
 
         if (target) {
-          this.applyTokens(target, this.currentTokens, this.currentScheme)
+          this.#applyTokens(target, this.currentTokens, this.currentScheme)
         }
 
-        this.writeExport(output)
+        this.#writeExport(output)
 
         updateContrastUi(this.currentTokens)
 
@@ -8374,13 +8374,13 @@ class LumenThemeBuilderBehaviorElement extends LumenElement {
           this.currentTokens, 'ink', 'canvas'
         )
 
-        const target = this.getTarget()
+        const target = this.#getTarget()
 
         if (target) {
-          this.applyTokens(target, this.currentTokens, this.currentScheme)
+          this.#applyTokens(target, this.currentTokens, this.currentScheme)
         }
 
-        this.writeExport(output)
+        this.#writeExport(output)
 
         updateContrastUi(this.currentTokens)
 
@@ -8402,13 +8402,13 @@ class LumenThemeBuilderBehaviorElement extends LumenElement {
     update(false)
   }
 
-  private getDefaultScheme(): LumenThemeBuilderScheme {
+  #getDefaultScheme(): LumenThemeBuilderScheme {
     return document.documentElement.dataset.theme?.includes('dark') ?
       'dark' :
       'light'
   }
 
-  private getTarget(): HTMLElement | null {
+  #getTarget(): HTMLElement | null {
     const selector = this.dataset.uiThemeTarget
 
     if (!selector) return document.documentElement
@@ -8420,7 +8420,7 @@ class LumenThemeBuilderBehaviorElement extends LumenElement {
     }
   }
 
-  private getButtonValue(
+  #getButtonValue(
     buttons: HTMLButtonElement[],
     attribute: string,
     fallback: string
@@ -8437,7 +8437,7 @@ class LumenThemeBuilderBehaviorElement extends LumenElement {
     )
   }
 
-  private setPressedState(
+  #setPressedState(
     buttons: HTMLButtonElement[],
     attribute: string,
     value: string
@@ -8455,7 +8455,7 @@ class LumenThemeBuilderBehaviorElement extends LumenElement {
     }
   }
 
-  private bindHueInputs(
+  #bindHueInputs(
     range: HTMLInputElement | null,
     number: HTMLInputElement | null,
     onChange: () => void,
@@ -8485,7 +8485,7 @@ class LumenThemeBuilderBehaviorElement extends LumenElement {
     )
   }
 
-  private bindHexInputs(
+  #bindHexInputs(
     color: HTMLInputElement | null,
     text: HTMLInputElement | null,
     onChange: () => void,
@@ -8520,7 +8520,7 @@ class LumenThemeBuilderBehaviorElement extends LumenElement {
     )
   }
 
-  private applyTokens(
+  #applyTokens(
     target: HTMLElement,
     tokens: LumenThemeTokens,
     scheme: LumenThemeBuilderScheme
@@ -8532,7 +8532,7 @@ class LumenThemeBuilderBehaviorElement extends LumenElement {
     }
   }
 
-  private writeExport(
+  #writeExport(
     output: HTMLTextAreaElement | HTMLOutputElement | null
   ): void {
     if (!this.currentTokens) return
@@ -8560,7 +8560,7 @@ class LumenTooltipBehaviorElement extends LumenElement {
 
     this.abortController = new AbortController()
 
-    this.setupTooltip(this.abortController.signal)
+    this.#setupTooltip(this.abortController.signal)
   }
 
   override disconnectedCallback() {
@@ -8568,10 +8568,10 @@ class LumenTooltipBehaviorElement extends LumenElement {
 
     this.abortController = undefined
 
-    this.clearTimer()
+    this.#clearTimer()
   }
 
-  private setupTooltip(signal: AbortSignal): void {
+  #setupTooltip(signal: AbortSignal): void {
     const tip = this.querySelector<HTMLElement>('[role="tooltip"]')
 
     const trigger = this.querySelector<HTMLElement>(
@@ -8597,7 +8597,7 @@ class LumenTooltipBehaviorElement extends LumenElement {
     }
 
     const show = (delay: number): void => {
-      this.clearTimer()
+      this.#clearTimer()
 
       this.showTimer = globalThis.setTimeout(() => {
         tip.style.removeProperty('visibility')
@@ -8605,7 +8605,7 @@ class LumenTooltipBehaviorElement extends LumenElement {
     }
 
     const hide = (): void => {
-      this.clearTimer()
+      this.#clearTimer()
 
       tip.style.visibility = 'hidden'
     }
@@ -8639,7 +8639,7 @@ class LumenTooltipBehaviorElement extends LumenElement {
     )
   }
 
-  private clearTimer(): void {
+  #clearTimer(): void {
     if (!this.showTimer) return
 
     globalThis.clearTimeout(this.showTimer)
@@ -8801,16 +8801,16 @@ class LumenProgressBehaviorElement extends LumenElement {
   override connectedCallback() {
     super.connectedCallback()
 
-    this.update()
+    this.#update()
   }
 
   override attributeChangedCallback() {
     super.attributeChangedCallback()
 
-    if (this.isConnected) this.update()
+    if (this.isConnected) this.#update()
   }
 
-  private update() {
+  #update() {
     const parsedMax = Number(this.getAttribute('max'))
     const max = Number.isFinite(parsedMax) && parsedMax > 0 ? parsedMax : 100
     const parsedValue = Number(this.getAttribute('value'))
@@ -8857,7 +8857,7 @@ class LumenCodeBehaviorElement extends LumenElement {
     this.observer?.disconnect()
 
     this.observer = new MutationObserver(() => {
-      this.updateCode()
+      this.#updateCode()
     })
 
     this.observer.observe(this, {
@@ -8870,10 +8870,10 @@ class LumenCodeBehaviorElement extends LumenElement {
     this.addEventListener('click', event => {
       const button = event.target instanceof Element ? event.target.closest<HTMLButtonElement>('[data-ui-code-copy]') : null
 
-      if (button?.closest('lumen-code') === this) void this.copy(button)
+      if (button?.closest('lumen-code') === this) void this.#copy(button)
     }, { signal: this.abortController.signal })
 
-    this.updateCode()
+    this.#updateCode()
   }
 
   override disconnectedCallback() {
@@ -8886,11 +8886,11 @@ class LumenCodeBehaviorElement extends LumenElement {
     globalThis.clearTimeout(this.resetTimer)
   }
 
-  private label(name: string, fallback: string) {
+  #label(name: string, fallback: string) {
     return this.getAttribute(name) ?? this.closest('lumen-code-tabs')?.getAttribute(name) ?? fallback
   }
 
-  private updateCode() {
+  #updateCode() {
     if (this.getAttribute('variant') !== 'block') return
 
     const pre = this.querySelector('pre')
@@ -8903,7 +8903,7 @@ class LumenCodeBehaviorElement extends LumenElement {
       if (!pre.hasAttribute('role')) pre.setAttribute('role', 'region')
 
       if (!pre.hasAttribute('aria-label') && !pre.hasAttribute('aria-labelledby')) {
-        pre.setAttribute('aria-label', this.label('code-label', 'Code example'))
+        pre.setAttribute('aria-label', this.#label('code-label', 'Code example'))
       }
     }
 
@@ -8964,7 +8964,7 @@ class LumenCodeBehaviorElement extends LumenElement {
     }
 
     if (button.dataset.state === 'idle') {
-      const label = this.label('copy-label', 'Copy code to clipboard')
+      const label = this.#label('copy-label', 'Copy code to clipboard')
 
       button.setAttribute('aria-label', label)
 
@@ -8972,13 +8972,13 @@ class LumenCodeBehaviorElement extends LumenElement {
     }
   }
 
-  private async copy(button: HTMLButtonElement) {
+  async #copy(button: HTMLButtonElement) {
     const operation = ++this.operation
 
     globalThis.clearTimeout(this.resetTimer)
 
-    const label = this.label('copy-label', 'Copy code to clipboard')
-    let feedback = this.label('copied-label', 'Code copied to clipboard')
+    const label = this.#label('copy-label', 'Copy code to clipboard')
+    let feedback = this.#label('copied-label', 'Code copied to clipboard')
     let state: 'copied' | 'error' = 'copied'
 
     try {
@@ -8997,7 +8997,7 @@ class LumenCodeBehaviorElement extends LumenElement {
 
       state = 'error'
 
-      feedback = this.label('error-label', 'Could not copy code. Select and copy it manually.')
+      feedback = this.#label('error-label', 'Could not copy code. Select and copy it manually.')
 
       button.dispatchEvent(new CustomEvent('ui:copy-error', { bubbles: true, detail: { error } }))
     }
@@ -9035,9 +9035,9 @@ class LumenCopyButtonBehaviorElement extends LumenElement {
   override connectedCallback() {
     super.connectedCallback()
 
-    this.ensureStateContent()
+    this.#ensureStateContent()
 
-    this.updateStateContent('idle')
+    this.#updateStateContent('idle')
 
     this.abortController?.abort()
 
@@ -9066,7 +9066,7 @@ class LumenCopyButtonBehaviorElement extends LumenElement {
     globalThis.clearTimeout(this.resetTimer)
   }
 
-  private ensureStateContent() {
+  #ensureStateContent() {
     let idleContent = this.querySelector<HTMLElement>('[data-slot="copy-idle"]')
 
     if (!idleContent) {
@@ -9103,7 +9103,7 @@ class LumenCopyButtonBehaviorElement extends LumenElement {
     }
   }
 
-  private updateStateContent(state: 'copied' | 'error' | 'idle') {
+  #updateStateContent(state: 'copied' | 'error' | 'idle') {
     const slots = {
       copied: 'copy-copied',
       error: 'copy-error',
@@ -9144,7 +9144,7 @@ class LumenCopyButtonBehaviorElement extends LumenElement {
 
       this.dataset.state = 'copied'
 
-      this.updateStateContent('copied')
+      this.#updateStateContent('copied')
 
       this.setAttribute('aria-label', copiedLabel)
 
@@ -9161,7 +9161,7 @@ class LumenCopyButtonBehaviorElement extends LumenElement {
     } catch (error) {
       this.dataset.state = 'error'
 
-      this.updateStateContent('error')
+      this.#updateStateContent('error')
 
       this.setAttribute('aria-label', errorLabel)
 
@@ -9188,7 +9188,7 @@ class LumenCopyButtonBehaviorElement extends LumenElement {
     this.resetTimer = globalThis.setTimeout(() => {
       this.dataset.state = 'idle'
 
-      this.updateStateContent('idle')
+      this.#updateStateContent('idle')
 
       this.setAttribute('aria-label', label)
     }, resetAfter)
@@ -10098,54 +10098,54 @@ class LumenKanbanBoardBehaviorElement extends LumenElement {
 
     const { signal } = this.abortController
 
-    this.initializeHandles()
+    this.#initializeHandles()
 
     this.mutationObserver?.disconnect()
 
     this.mutationObserver = new MutationObserver(() => {
-      this.initializeHandles()
+      this.#initializeHandles()
     })
 
     this.mutationObserver.observe(this, { childList: true, subtree: true })
 
     this.addEventListener('dragstart', event => {
-      this.onDragStart(event)
+      this.#onDragStart(event)
     }, { signal })
 
     this.addEventListener('dragend', () => {
-      this.clearDragState()
+      this.#clearDragState()
     }, { signal })
 
     this.addEventListener('dragover', event => {
-      this.onDragOver(event)
+      this.#onDragOver(event)
     }, { signal })
 
     this.addEventListener('dragleave', event => {
-      this.onDragLeave(event)
+      this.#onDragLeave(event)
     }, { signal })
 
     this.addEventListener('drop', event => {
-      this.onDrop(event)
+      this.#onDrop(event)
     }, { signal })
 
     this.addEventListener('keydown', event => {
-      this.onKeyDown(event)
+      this.#onKeyDown(event)
     }, { signal })
 
     this.addEventListener('pointerdown', event => {
-      this.onPointerDown(event)
+      this.#onPointerDown(event)
     }, { signal })
 
     this.addEventListener('pointermove', event => {
-      this.onPointerMove(event)
+      this.#onPointerMove(event)
     }, { signal })
 
     this.addEventListener('pointerup', event => {
-      this.onPointerUp(event)
+      this.#onPointerUp(event)
     }, { signal })
 
     this.addEventListener('pointercancel', () => {
-      this.clearDragState()
+      this.#clearDragState()
     }, { signal })
   }
 
@@ -10158,15 +10158,15 @@ class LumenKanbanBoardBehaviorElement extends LumenElement {
 
     this.mutationObserver = undefined
 
-    this.clearDragState()
+    this.#clearDragState()
   }
 
-  private initializeHandles(): void {
+  #initializeHandles(): void {
     for (const handle of this.querySelectorAll<HTMLElement>('[data-ui-kanban-handle]'))
       handle.draggable = true
   }
 
-  private getItem(target: EventTarget | null): HTMLElement | null {
+  #getItem(target: EventTarget | null): HTMLElement | null {
     const item = target instanceof Element ?
       target.closest<HTMLElement>('[data-ui-kanban-item]') :
       null
@@ -10176,7 +10176,7 @@ class LumenKanbanBoardBehaviorElement extends LumenElement {
       null
   }
 
-  private getColumn(target: EventTarget | null): HTMLElement | null {
+  #getColumn(target: EventTarget | null): HTMLElement | null {
     const column = target instanceof Element ?
       target.closest<HTMLElement>(kanbanColumnSelector) :
       null
@@ -10186,7 +10186,7 @@ class LumenKanbanBoardBehaviorElement extends LumenElement {
       null
   }
 
-  private requestMove(
+  #requestMove(
     item: HTMLElement,
     targetColumn: HTMLElement,
     input: LumenKanbanMoveDetail['input']
@@ -10208,16 +10208,16 @@ class LumenKanbanBoardBehaviorElement extends LumenElement {
       detail
     }))
 
-    if (accepted) this.announce(`Move requested to ${this.columnLabel(targetColumn)}.`)
+    if (accepted) this.#announce(`Move requested to ${this.#columnLabel(targetColumn)}.`)
   }
 
-  private columnLabel(column: HTMLElement): string {
+  #columnLabel(column: HTMLElement): string {
     return column.getAttribute('aria-label') ||
       column.querySelector('h2, h3, [data-ui-kanban-column-label]')?.textContent.trim() ||
       getKanbanColumnValue(column)
   }
 
-  private announce(message: string): void {
+  #announce(message: string): void {
     let live = this.querySelector<HTMLElement>('[data-ui-kanban-live]')
 
     if (!live) {
@@ -10237,12 +10237,12 @@ class LumenKanbanBoardBehaviorElement extends LumenElement {
     live.textContent = message
   }
 
-  private onDragStart(event: DragEvent): void {
+  #onDragStart(event: DragEvent): void {
     const handle = event.target instanceof Element ?
       event.target.closest<HTMLElement>('[data-ui-kanban-handle]') :
       null
 
-    const item = this.getItem(handle)
+    const item = this.#getItem(handle)
 
     if (!handle || !item || item.getAttribute('aria-busy') === 'true') {
       event.preventDefault()
@@ -10257,8 +10257,8 @@ class LumenKanbanBoardBehaviorElement extends LumenElement {
     item.dataset.state = 'dragging'
   }
 
-  private onDragOver(event: DragEvent): void {
-    const column = this.getColumn(event.target)
+  #onDragOver(event: DragEvent): void {
+    const column = this.#getColumn(event.target)
 
     if (!column) return
 
@@ -10269,8 +10269,8 @@ class LumenKanbanBoardBehaviorElement extends LumenElement {
     if (event.dataTransfer) event.dataTransfer.dropEffect = 'move'
   }
 
-  private onDragLeave(event: DragEvent): void {
-    const column = this.getColumn(event.target)
+  #onDragLeave(event: DragEvent): void {
+    const column = this.#getColumn(event.target)
 
     if (
       !column ||
@@ -10280,8 +10280,8 @@ class LumenKanbanBoardBehaviorElement extends LumenElement {
     delete column.dataset.state
   }
 
-  private onDrop(event: DragEvent): void {
-    const column = this.getColumn(event.target)
+  #onDrop(event: DragEvent): void {
+    const column = this.#getColumn(event.target)
     const itemId = event.dataTransfer?.getData('text/plain') ?? ''
 
     const item = [...this.querySelectorAll<HTMLElement>('[data-ui-kanban-item]')]
@@ -10291,20 +10291,20 @@ class LumenKanbanBoardBehaviorElement extends LumenElement {
 
     event.preventDefault()
 
-    this.requestMove(item, column, 'pointer')
+    this.#requestMove(item, column, 'pointer')
 
-    this.clearDragState()
+    this.#clearDragState()
   }
 
-  private onKeyDown(event: KeyboardEvent): void {
+  #onKeyDown(event: KeyboardEvent): void {
     if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return
 
     const handle = event.target instanceof Element ?
       event.target.closest<HTMLElement>('[data-ui-kanban-handle]') :
       null
 
-    const item = this.getItem(handle)
-    const currentColumn = this.getColumn(item)
+    const item = this.#getItem(handle)
+    const currentColumn = this.#getColumn(item)
 
     if (!handle || !item || !currentColumn || item.getAttribute('aria-busy') === 'true') return
 
@@ -10318,17 +10318,17 @@ class LumenKanbanBoardBehaviorElement extends LumenElement {
 
     event.preventDefault()
 
-    this.requestMove(item, target, 'keyboard')
+    this.#requestMove(item, target, 'keyboard')
   }
 
-  private onPointerDown(event: PointerEvent): void {
+  #onPointerDown(event: PointerEvent): void {
     if (event.pointerType === 'mouse') return
 
     const handle = event.target instanceof Element ?
       event.target.closest<HTMLElement>('[data-ui-kanban-handle]') :
       null
 
-    const item = this.getItem(handle)
+    const item = this.#getItem(handle)
 
     if (!handle || !item || item.getAttribute('aria-busy') === 'true') return
 
@@ -10342,7 +10342,7 @@ class LumenKanbanBoardBehaviorElement extends LumenElement {
     }
   }
 
-  private onPointerMove(event: PointerEvent): void {
+  #onPointerMove(event: PointerEvent): void {
     if (this.pointer?.pointerId !== event.pointerId) return
 
     if (!this.pointer.active && Math.hypot(
@@ -10356,7 +10356,7 @@ class LumenKanbanBoardBehaviorElement extends LumenElement {
 
     this.pointer.item.dataset.state = 'dragging'
 
-    const target = this.getColumn(document.elementFromPoint(event.clientX, event.clientY))
+    const target = this.#getColumn(document.elementFromPoint(event.clientX, event.clientY))
 
     for (const column of this.querySelectorAll<HTMLElement>(kanbanColumnSelector)) {
       if (column === target) column.dataset.state = 'drop-target'
@@ -10364,19 +10364,19 @@ class LumenKanbanBoardBehaviorElement extends LumenElement {
     }
   }
 
-  private onPointerUp(event: PointerEvent): void {
+  #onPointerUp(event: PointerEvent): void {
     const pointer = this.pointer
 
     if (pointer?.pointerId !== event.pointerId) return
 
-    const target = this.getColumn(document.elementFromPoint(event.clientX, event.clientY))
+    const target = this.#getColumn(document.elementFromPoint(event.clientX, event.clientY))
 
-    if (pointer.active && target) this.requestMove(pointer.item, target, 'pointer')
+    if (pointer.active && target) this.#requestMove(pointer.item, target, 'pointer')
 
-    this.clearDragState()
+    this.#clearDragState()
   }
 
-  private clearDragState(): void {
+  #clearDragState(): void {
     this.pointer = undefined
 
     for (const item of this.querySelectorAll<HTMLElement>('[data-ui-kanban-item]'))
@@ -10433,7 +10433,7 @@ class LumenLanguageToggleBehaviorElement extends LumenElement {
     if (!this.hasAttribute('value')) {
       document.documentElement.lang = next.value
 
-      this.sync(next.value)
+      this.#sync(next.value)
 
       const storageKey = this.getAttribute('storage-key')
 
@@ -10456,7 +10456,7 @@ class LumenLanguageToggleBehaviorElement extends LumenElement {
   override connectedCallback() {
     super.connectedCallback()
 
-    this.initialize(true)
+    this.#initialize(true)
 
     this.addEventListener('click', this.handleClick)
   }
@@ -10476,10 +10476,10 @@ class LumenLanguageToggleBehaviorElement extends LumenElement {
       this.isConnected &&
       name &&
       ['default-value', 'label-template', 'locales', 'value'].includes(name)
-    ) this.initialize(false)
+    ) this.#initialize(false)
   }
 
-  private initialize(readStorage: boolean): void {
+  #initialize(readStorage: boolean): void {
     this.locales = parseLanguageLocales(this.getAttribute('locales'))
 
     const controlled = this.hasAttribute('value')
@@ -10505,12 +10505,12 @@ class LumenLanguageToggleBehaviorElement extends LumenElement {
 
     const { current } = getLumenLocalePair(this.locales, requestedValue)
 
-    this.sync(current.value)
+    this.#sync(current.value)
 
     if (!controlled) document.documentElement.lang = current.value
   }
 
-  private sync(value: string): void {
+  #sync(value: string): void {
     const { current, next } = getLumenLocalePair(this.locales, value)
 
     const template = this.getAttribute('label-template') ??
@@ -10707,13 +10707,13 @@ class LumenAnimatedNumberBehaviorElement extends LumenElement {
   override connectedCallback() {
     super.connectedCallback()
 
-    this.animateValue()
+    this.#animateValue()
   }
 
   override attributeChangedCallback() {
     super.attributeChangedCallback()
 
-    if (this.isConnected) this.animateValue()
+    if (this.isConnected) this.#animateValue()
   }
 
   override disconnectedCallback() {
@@ -10723,7 +10723,7 @@ class LumenAnimatedNumberBehaviorElement extends LumenElement {
       cancelAnimationFrame(this.animationFrame)
   }
 
-  private animateValue() {
+  #animateValue() {
     if (!hasDocument()) return
 
     this.observer?.disconnect()
@@ -10927,16 +10927,16 @@ export class LumenCountryFlagElement extends LumenElement {
   override connectedCallback() {
     super.connectedCallback()
 
-    this.renderFlag()
+    this.#renderFlag()
   }
 
   override attributeChangedCallback(name: string, previous: string | null, value: string | null) {
     super.attributeChangedCallback(name, previous, value)
 
-    if (previous !== value && this.isConnected) this.renderFlag()
+    if (previous !== value && this.isConnected) this.#renderFlag()
   }
 
-  private renderFlag() {
+  #renderFlag() {
     const country = this.getAttribute('country') ?? ''
     const source = getLumenPhoneFlagSource(country)
     const decorative = this.hasAttribute('decorative')
@@ -10975,16 +10975,16 @@ export class LumenPhoneNumberElement extends LumenElement {
   override connectedCallback() {
     super.connectedCallback()
 
-    this.renderNumber()
+    this.#renderNumber()
   }
 
   override attributeChangedCallback(name: string, previous: string | null, value: string | null) {
     super.attributeChangedCallback(name, previous, value)
 
-    if (previous !== value && this.isConnected) this.renderNumber()
+    if (previous !== value && this.isConnected) this.#renderNumber()
   }
 
-  private renderNumber() {
+  #renderNumber() {
     const country = getLumenPhoneCountry(this.getAttribute('country') ?? 'US', { locale: this.getAttribute('locale') ?? 'en' })
 
     if (!country) {
@@ -11050,16 +11050,16 @@ class LumenPhoneInputBehaviorElement extends LumenElement {
 
     if (previousValue === value || !this.numberInput || !this.countrySelect) return
 
-    this.syncInputAttributes()
+    this.#syncInputAttributes()
 
-    this.syncCountrySubmission()
+    this.#syncCountrySubmission()
 
-    if (['disabled', 'readonly', 'required', 'error-message', 'show-validation-error', 'invalid-number-message'].includes(name)) this.commit()
+    if (['disabled', 'readonly', 'required', 'error-message', 'show-validation-error', 'invalid-number-message'].includes(name)) this.#commit()
 
     if (name === 'value') {
       this.numberInput.value = value ?? ''
 
-      this.commit()
+      this.#commit()
     }
 
     if (name === 'country' && value) {
@@ -11070,7 +11070,7 @@ class LumenPhoneInputBehaviorElement extends LumenElement {
       if (countryOption) {
         this.countrySelect.value = countryOption.value
 
-        this.commit()
+        this.#commit()
       }
     }
   }
@@ -11080,15 +11080,15 @@ class LumenPhoneInputBehaviorElement extends LumenElement {
 
     if (!hasDocument()) return
 
-    this.ensureControls()
+    this.#ensureControls()
 
-    this.bindControls()
+    this.#bindControls()
 
     const controls = this.querySelector<HTMLElement>('.ui-phone-input')
 
     if (controls) controls.dataset.phoneEnhanced = 'true'
 
-    this.commit()
+    this.#commit()
   }
 
   override disconnectedCallback() {
@@ -11097,7 +11097,7 @@ class LumenPhoneInputBehaviorElement extends LumenElement {
     this.eventController = undefined
   }
 
-  private bindControls() {
+  #bindControls() {
     if (!this.countrySelect || !this.numberInput) return
 
     this.eventController?.abort()
@@ -11107,32 +11107,32 @@ class LumenPhoneInputBehaviorElement extends LumenElement {
     const options = { signal: this.eventController.signal }
 
     this.countrySelect.addEventListener('change', () => {
-      this.commit()
+      this.#commit()
     }, options)
 
     this.numberInput.addEventListener('input', () => {
-      this.commit()
+      this.#commit()
     }, options)
 
     this.numberInput.form?.addEventListener('reset', () => {
       queueMicrotask(() => {
-        this.commit()
+        this.#commit()
       })
     }, options)
   }
 
-  private commit() {
+  #commit() {
     if (!this.countrySelect || !this.numberInput) return
 
     const selectedOption = this.countrySelect.selectedOptions[0]
     const regionCode = selectedOption?.dataset.region ?? this.countrySelect.value
-    const country = getLumenPhoneCountry(regionCode, this.phoneOptions)
+    const country = getLumenPhoneCountry(regionCode, this.#phoneOptions)
 
     if (!country) return
 
-    const detected = resolveLumenPhoneNumber(country, this.numberInput.value, this.phoneOptions)
+    const detected = resolveLumenPhoneNumber(country, this.numberInput.value, this.#phoneOptions)
     const allowed = [...this.countrySelect.options].some(option => option.value === detected.country.regionCode)
-    const phoneNumber = allowed ? detected : resolveLumenPhoneNumber(country, detected.nationalNumber.startsWith('+') ? detected.nationalNumber.slice(1) : detected.nationalNumber, this.phoneOptions)
+    const phoneNumber = allowed ? detected : resolveLumenPhoneNumber(country, detected.nationalNumber.startsWith('+') ? detected.nationalNumber.slice(1) : detected.nationalNumber, this.#phoneOptions)
     const hasInput = phoneNumber.nationalNumber.length > 0
 
     const invalidMessage = this.getAttribute('invalid-number-message') ??
@@ -11180,7 +11180,7 @@ class LumenPhoneInputBehaviorElement extends LumenElement {
 
     if (code) code.textContent = phoneNumber.country.callingCode
 
-    this.syncCountrySubmission()
+    this.#syncCountrySubmission()
 
     this.dataset.e164 = phoneNumber.e164 ?? ''
 
@@ -11192,7 +11192,7 @@ class LumenPhoneInputBehaviorElement extends LumenElement {
     }))
   }
 
-  private syncCountrySubmission() {
+  #syncCountrySubmission() {
     if (!this.numberInput || !this.countrySelect) return
 
     const existing = this.querySelector<HTMLInputElement>('[data-ui-phone-country-value]')
@@ -11216,7 +11216,7 @@ class LumenPhoneInputBehaviorElement extends LumenElement {
     if (!existing) this.append(hidden)
   }
 
-  private ensureControls() {
+  #ensureControls() {
     this.countrySelect = this.querySelector<HTMLSelectElement>('.ui-phone-input__country') ?? undefined
 
     this.numberInput = this.querySelector<HTMLInputElement>('.ui-phone-input__number') ?? undefined
@@ -11309,9 +11309,9 @@ class LumenPhoneInputBehaviorElement extends LumenElement {
       this.append(error)
     }
 
-    this.syncInputAttributes()
+    this.#syncInputAttributes()
 
-    this.populateCountries()
+    this.#populateCountries()
 
     this.countrySelect.setAttribute('aria-label', this.getAttribute('country-label') ?? 'Country code')
 
@@ -11330,7 +11330,7 @@ class LumenPhoneInputBehaviorElement extends LumenElement {
     this.numberInput.value = this.getAttribute('value') ?? this.numberInput.value
   }
 
-  private syncInputAttributes() {
+  #syncInputAttributes() {
     if (!this.numberInput || !this.countrySelect) return
 
     this.numberInput.disabled = this.hasAttribute('disabled')
@@ -11374,16 +11374,16 @@ class LumenPhoneInputBehaviorElement extends LumenElement {
     }
   }
 
-  private get phoneOptions() {
+  get #phoneOptions() {
     const locale = (this.getAttribute('locale') ?? this.lang) || document.documentElement.lang
 
     return locale ? { locale } : {}
   }
 
-  private populateCountries() {
+  #populateCountries() {
     if (!this.countrySelect || this.countrySelect.options.length > 0) return
 
-    const countries = getLumenPhoneCountries(this.phoneOptions)
+    const countries = getLumenPhoneCountries(this.#phoneOptions)
     const requestedCountry = this.getAttribute('country') ?? 'US'
 
     for (const country of countries) {

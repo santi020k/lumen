@@ -898,3 +898,44 @@ reported in `apps/playground-android/app/build/reports/lint-results-debug.txt`; 
 library lint passed. Logs are preserved under
 `.build/native-quality-adaptive-*`. This local emulator evidence does not qualify real folding
 hardware, spoken TalkBack, physical-device slots or a published stability iteration.
+
+## Local renderer correction and bundle gate follow-up
+
+An unchanged source-built React Native 0.86.3 baseline reproduced live iOS text clipping:
+standard scale 1.000 gave four lines; maximum scale 3.571 incorrectly gave one line.
+The exact-version pnpm patch now tracks the font multiplier through Yoga configuration and
+paragraph content/prepared-layout caches. The iOS playground builds the renderer from source
+and disables precompiled modules. No font scaling is disabled and no input subtree is remounted.
+
+The local Release simulator candidate changed both plain React Native and Lumen paragraphs
+from four lines to fifteen at maximum scale (widest line 350 points). The edited draft remained
+`Edited draft survives live scaling`; restoring standard scale returned both paragraphs to
+four lines. Touch scrolling reached the Lumen paragraph's final sentence. Evidence is under
+`.build/native-quality-renderer-source-probe`, including the unchanged baseline, candidate
+screenshots and the clean source build log. This is local simulator evidence, not physical-device,
+spoken VoiceOver, published-consumer, startup or soak qualification. Downstream apps must apply
+the host patch and rebuild; the public Lumen npm package cannot replace a precompiled renderer.
+
+The existing web bundle limits now pass without raising limits: CSS 198.2 KiB raw/32.1 KiB gzip,
+React components 130.9/31.2 KiB and Elements registration 176.2/43.7 KiB. CSS cleanup only shortens
+comments; React uses the existing esbuild catalog to compact emitted ES2022 syntax/whitespace;
+Elements uses native private methods to compact internal names. Public declarations and exports
+remain unchanged. All 1,334 JavaScript tests, 23 strict type-check tasks, 23 zero-warning lint
+tasks and the 1,470-export web API baseline passed. Critical CSS generation also passed unchanged.
+
+The clean source build passed again after removing diagnostic logging and invalidating prepared
+text layouts. The five installed pnpm-patched renderer source files exactly match the built
+sources (`final-source.json`). The full playground Release build also booted successfully:
+a mounted workspace name draft survived the live maximum-scale change, Save committed it, and
+returning to standard scale retained `Live sizing saved draft`. The maximum-size editor screenshot
+is `final-workspace-maximum.png`. Simulator Text Size was restored to standard after the check.
+Packed web consumers passed, including React, Elements, Astro, Next.js and brand-icon imports.
+
+Knip now explicitly recognizes the diagnostic text-layout entrypoint, generated static-icon API
+catalog and runtime-report CLI. These files are intentionally used by native verification and
+source-contract tooling rather than the public application entrypoint; no ignore rules were added.
+The existing Next.js cache corruption was preserved and a clean rebuild passed. Fresh security
+audit still reports three high advisories: `node-forge` (no patched version listed),
+`http-cache-semantics` (patched in 4.3.0), and `braces` (no patched version listed). Canonical
+validation and local `release/v4.0.0` integration remain incomplete while required gates fail.
+No audit exemption, budget increase, publication or remote integration was performed.

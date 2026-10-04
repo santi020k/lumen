@@ -5311,12 +5311,7 @@ lumen-dialog-close {
 }
 
 @layer lumen.glass {
-/* ---------------------------------------------------------------------------
- * Liquid Glass layer
- * Declared after component base styles so glass variants win the cascade.
- * Recipe: frosted fill + specular top edge + inner ring + soft bottom shading
- * + refraction tint + layered depth shadows + saturated backdrop blur.
- * ------------------------------------------------------------------------- */
+/* Liquid Glass follows base styles: frosted fill, specular edges, refraction and depth. */
 
 .ui-glass,
 .ui-glass-subtle,
@@ -5584,11 +5579,7 @@ lumen-dialog-close {
   }
 }
 
-/* ---------------------------------------------------------------------------
- * Motion: overlay entry/exit animations
- * Uses @starting-style + allow-discrete; prefers-reduced-motion collapses
- * every transition via the global override at the end of this file.
- * ------------------------------------------------------------------------- */
+/* Overlay motion uses @starting-style and allow-discrete; reduced-motion overrides follow. */
 
 @layer lumen.components {
   .ui-dialog,
@@ -5807,9 +5798,7 @@ lumen-dialog-close {
   }
 }
 
-/* ---------------------------------------------------------------------------
- * Container queries: components respond to their container, not the viewport
- * ------------------------------------------------------------------------- */
+/* Container queries adapt components to their container size. */
 
 @layer lumen.components {
   .ui-sidebar {
@@ -5845,12 +5834,7 @@ lumen-dialog-close {
   }
 }
 
-/* ---------------------------------------------------------------------------
- * Top-layer mode for floating surfaces
- * The runtime promotes panels to [popover] and wires anchor-name /
- * position-anchor inline when the browser supports CSS anchor positioning.
- * Unsupported browsers keep the absolute-position fallback above.
- * ------------------------------------------------------------------------- */
+/* Top-layer panels use popovers and CSS anchors when supported; otherwise absolute positioning. */
 
 @layer lumen.components {
   .ui-popover > [popover],
@@ -5899,10 +5883,7 @@ lumen-dialog-close {
   }
 }
 
-/* ---------------------------------------------------------------------------
- * Glass extensions: intensity on wrapper components + pointer-tracked
- * specular highlight (opt-in via data-ui-glass-track).
- * ------------------------------------------------------------------------- */
+/* Glass intensity and pointer-tracked highlights opt in with data-ui-glass-track. */
 
 @layer lumen.glass {
   .ui-popover--glass:is(.ui-glass-subtle, .ui-glass-strong),
@@ -6377,11 +6358,7 @@ a.ui-pill:focus-visible {
   aspect-ratio: 1 / 1;
 }
 
-/* ==========================================================================
-   Parity components (Stepper, FileUpload, Tour, Anchor, Segmented, Toolbar,
-   Descriptions, Popconfirm, Transfer, Cascader, TreeSelect, Mentions, QRCode,
-   Watermark, Affix, SpeedDial)
-   ========================================================================== */
+/* Additional interactive primitives. */
 
 /* Stepper */
 .ui-stepper {
