@@ -66,11 +66,13 @@ enum PlaygroundCatalog {
                 "Tabs",
                 "Picker",
                 "Slider",
+                "Range slider",
                 "Time field",
                 "Autocomplete",
                 "Number field",
                 "Password field",
                 "Input OTP",
+                "Multi select",
                 "Shortcut recorder",
                 "Symbol picker"
             ]

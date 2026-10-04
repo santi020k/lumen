@@ -545,7 +545,7 @@ const elementsTag = (source: string, tag: MarkupTag): string => {
   return `<${name}${formBehavior}${attributes}${ending}${closing}`
 }
 
-const toElementsSnippet = (body: string): string => {
+const toElementsSnippet = (body: string, registrations?: string[]): string => {
   const source = stripEmbeddedAstroBlocks(body)
 
   const output = transformMarkup(source, tag => ({
@@ -553,21 +553,123 @@ const toElementsSnippet = (body: string): string => {
     text: elementsTag(source, tag)
   }))
 
-  return `${elementsHeader}\n\n${output}\n`
+  const header = registrations ?
+    `<script type="module">
+  import { defineLumenElements } from '@santi020k/lumen-elements/define'
+
+  defineLumenElements([${registrations.map(name => `'${name}'`).join(', ')}])
+</script>` :
+    elementsHeader
+
+  return `${header}\n\n${output}\n`
 }
 
 const elementsDataCharts = new Set([
-  'BarChart', 'ComboChart', 'Heatmap', 'LineChart', 'PieChart', 'RangeChart', 'ScatterChart', 'Histogram', 'WaterfallChart'
+  'BarChart', 'CalendarHeatmap', 'ComboChart', 'Heatmap', 'LineChart', 'PieChart', 'RangeChart', 'ScatterChart', 'Sparkline', 'Histogram', 'WaterfallChart'
 ])
 
+const snippetAttribute = (body: string, start: number) => {
+  if (body[start] === '{') {
+    const end = expressionEnd(body, start)
+    const expression = body.slice(start + 1, end - 1).trim()
+
+    return { end, expression, name: expression, value: undefined }
+  }
+
+  const nameEnd = attributeNameEnd(body, start)
+  const afterName = whitespaceEnd(body, nameEnd)
+  const valueStart = body[afterName] === '=' ? whitespaceEnd(body, afterName + 1) : undefined
+  const end = valueStart === undefined ? nameEnd : attributeValueEnd(body, valueStart)
+
+  const expression = valueStart !== undefined && body[valueStart] === '{' ?
+    body.slice(valueStart + 1, end - 1).trim() :
+    undefined
+
+  const value = valueStart === undefined ? undefined : body.slice(valueStart, end)
+
+  return { end, expression, name: body.slice(start, nameEnd), value }
+}
+
+const statContentChild = (name: string, value: string | undefined): string | undefined => {
+  if (!['label', 'value'].includes(name) || !value || !['"', '\''].includes(value[0] ?? '')) return undefined
+
+  const component = name === 'label' ? 'StatLabel' : 'StatValue'
+  const text = value.slice(1, -1).replaceAll('<', '&lt;').replaceAll('>', '&gt;')
+
+  return `<${component}>${text}</${component}>`
+}
+
+const elementsStatContent = (body: string): string => transformMarkup(body, (tag, start) => {
+  if (tag.name !== 'Stat' || !tag.selfClosing) return { end: tag.end, text: body.slice(start, tag.end) }
+
+  const attributes: string[] = []
+  const children: string[] = []
+  const end = tag.end - 2
+  let cursor = tag.nameEnd
+
+  while (cursor < end) {
+    const nameStart = whitespaceEnd(body, cursor)
+
+    if (nameStart >= end) break
+
+    const attribute = snippetAttribute(body, nameStart)
+    const child = statContentChild(attribute.name, attribute.value)
+
+    if (child) children.push(child)
+    else attributes.push(body.slice(cursor, attribute.end))
+
+    cursor = attribute.end
+  }
+
+  return { end: tag.end, text: `<Stat${attributes.join('')}>${children.join('')}</Stat>` }
+})
+
+const chartDataBinding = (body: string, name: string, attribute: string, id: string) => {
+  let expression = attribute
+
+  const markup = transformMarkup(body, (tag, start) => {
+    if (tag.closing || tag.name !== name) return { end: tag.end, text: body.slice(start, tag.end) }
+
+    const attributes: string[] = []
+    const attributesEnd = tag.end - (tag.selfClosing ? 2 : 1)
+    let cursor = tag.nameEnd
+
+    while (cursor < attributesEnd) {
+      const nameStart = whitespaceEnd(body, cursor)
+
+      if (nameStart >= attributesEnd) break
+
+      const binding = snippetAttribute(body, nameStart)
+
+      if (binding.name === attribute && binding.expression !== undefined) {
+        expression = binding.expression
+      } else {
+        attributes.push(body.slice(cursor, binding.end))
+      }
+
+      cursor = binding.end
+    }
+
+    return {
+      end: tag.end,
+      text: `<${name} id="${id}"${attributes.join('')}${tag.selfClosing ? ' />' : '>'}`
+    }
+  })
+
+  return { expression, markup }
+}
+
 const toElementsDataChartSnippet = (name: string, body: string, frontmatter: string): string => {
-  let attribute = ['Heatmap', 'RangeChart', 'WaterfallChart'].includes(name) ? 'data' : 'series'
+  let attribute = ['CalendarHeatmap', 'Heatmap', 'RangeChart', 'WaterfallChart'].includes(name) ? 'data' : 'series'
 
   if (name === 'Histogram') attribute = 'bins'
+  else if (name === 'Sparkline') attribute = 'values'
 
   const id = `example-${toKebabCase(name)}`
-  const dataExpression = name === 'PieChart' ? '[series]' : attribute
-  const markup = toElementsSnippet(body.replace(`{${attribute}}`, '').replace(`<${name}`, `<${name} id="${id}"`))
+  const exampleBody = name === 'Sparkline' ? elementsStatContent(body) : body
+  const binding = chartDataBinding(exampleBody, name, attribute, id)
+  const dataExpression = name === 'PieChart' ? `[${binding.expression}]` : binding.expression
+  const markup = toElementsSnippet(binding.markup, usedComponents(binding.markup))
 
   const declarations = ts.transpileModule(reactDeclarations(frontmatter), {
     compilerOptions: { target: ts.ScriptTarget.ESNext }
@@ -902,36 +1004,6 @@ const compoundDescriptionsElementsExample = `${elementsHeader}
 `
 
 const elementsOverrides: Record<string, string> = {
-  CalendarHeatmap: `<lumen-calendar-heatmap
-  id="example-calendar-heatmap"
-  aria-label="Daily activity"
-  heading="Daily activity"
-  description="Contributions · August 1–7, 2026"
-  start-date="2026-08-01" end-date="2026-08-07"
-  week-starts-on="1"
-></lumen-calendar-heatmap>
-
-<!-- In a module processed by your bundler, after the chart markup. -->
-<script type="module">
-import { defineLumenElements, LumenCalendarHeatmapElement } from '@santi020k/lumen-elements'
-
-defineLumenElements(['CalendarHeatmap'])
-
-const chart = document.getElementById('example-calendar-heatmap')
-
-if (chart instanceof LumenCalendarHeatmapElement) {
-  chart.data = [
-    { date: '2026-08-01', value: 3 },
-    { date: '2026-08-02', value: 0 },
-    { date: '2026-08-03', value: null },
-    { date: '2026-08-04', value: 8 },
-    { date: '2026-08-05', value: 5 },
-    { date: '2026-08-06', value: 2 },
-    { date: '2026-08-07', value: 6 }
-  ]
-}
-</script>
-`,
   FunnelChart: `<lumen-funnel-chart
   id="example-funnel-chart"
   aria-label="Activation funnel"
@@ -983,7 +1055,7 @@ if (chart instanceof LumenBoxPlotElement) {
 `,
   LollipopChart: `<lumen-lollipop-chart
   id="example-lollipop-chart"
-  aria-label="Team performance, current quarter"
+  aria-label="Team scores, current quarter"
   heading="Team performance"
   description="Score out of 100 · highest first"
   domain-min="0" domain-max="100"
@@ -1009,7 +1081,7 @@ if (chart instanceof LumenLollipopChartElement) {
 `,
   DumbbellChart: `<lumen-dumbbell-chart
   id="example-dumbbell-chart"
-  aria-label="Progress by team, current quarter"
+  aria-label="Team scores, previous and current quarter"
   heading="Progress by team"
   description="Score out of 100 · previous to current quarter"
   domain-min="0" domain-max="100"
@@ -1035,7 +1107,7 @@ if (chart instanceof LumenDumbbellChartElement) {
 `,
   BulletChart: `<lumen-bullet-chart
   id="example-bullet-chart"
-  aria-label="On-time delivery, current quarter"
+  aria-label="Delivery performance, current quarter"
   heading="On-time delivery"
   description="Completed deliveries within the service window"
   domain-min="0" domain-max="100"

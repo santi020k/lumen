@@ -1,0 +1,43 @@
+---
+import { Breadcrumb, Link, Note } from '@santi020k/lumen-astro'
+
+import DocsPageHero from '../../../../../components/DocsPageHero.astro'
+import ReactHooksCatalog from '../../../../../components/ReactHooksCatalog.astro'
+import { reactHookGroups, reactHookGuides } from '../../../../../data/react-hooks'
+import DocsLayout from '../../../../../layouts/DocsLayout.astro'
+
+const breadcrumbs = [
+  { href: '/docs', label: 'Docs' },
+  { href: '/docs/web', label: 'Web' },
+  { href: '/docs/frameworks/react', label: 'React' },
+  { href: '/docs/frameworks/react/hooks', label: 'Hooks' }
+]
+---
+
+<DocsLayout
+  {breadcrumbs}
+  description="Browse every documented Lumen React behavior hook. Each hook has its own options, controller reference, copyable example, and related component preview."
+  pageNavigation={reactHookGroups.map(group => ({ id: group.id, label: group.title }))}
+  title="React hooks reference — Lumen UI"
+>
+  <div class="framework-page">
+    <Breadcrumb class="docs-breadcrumb">
+      <ol>
+        {breadcrumbs.map((item, index) => (
+          <li>{index === breadcrumbs.length - 1 ? <span aria-current="page">{item.label}</span> : <Link href={item.href}>{item.label}</Link>}</li>
+        ))}
+      </ol>
+    </Breadcrumb>
+    <DocsPageHero
+      compact
+      description="Choose the behavior you need. Each hook opens a focused guide with its own example, options, return values, and component preview."
+      eyebrow="React reference"
+      stats={[{ label: 'Hooks', value: reactHookGuides.length }, { label: 'Groups', value: reactHookGroups.length }, { label: 'Runtime', value: 'React' }]}
+      title="Behavior, one hook at a time."
+    />
+    <Note>
+      <p>Start with <Link href="/docs/frameworks/react">React installation and setup</Link>. In an application with React Server Components, call these hooks from a client component. React Native has <Link href="/docs/react-native/hooks">its own native controllers</Link>.</p>
+    </Note>
+    <ReactHooksCatalog />
+  </div>
+</DocsLayout>

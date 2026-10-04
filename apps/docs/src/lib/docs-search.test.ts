@@ -19,6 +19,17 @@ const item = (
 })
 
 describe('docs search ranking', () => {
+  test('matches short queries at word starts without matching inside unrelated words', () => {
+    const results = getMatchedSearchItems([
+      item('Card', 'Component', 'available react native container'),
+      item('Build with AI', 'Recipe', 'ai react guide')
+    ], 'ai react')
+
+    expect(results.map(result => result.title)).toEqual(['Build with AI'])
+
+    expect(getMatchedSearchItems([item('Button', 'Component')], 'bu').map(result => result.title)).toEqual(['Button'])
+  })
+
   test.each([
     ['ai react', '/guides/build-ui-with-ai'],
     ['ai token usage', '/guides/measure-ai-ui-token-usage']

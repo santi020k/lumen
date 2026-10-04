@@ -13,7 +13,7 @@ const size = instance.getEnum('Size', {
 })
 
 export default {
-  example: figma.code`<Input placeholder="${placeholder}" size="${size}" />`,
+  example: figma.code`<Input placeholder="${placeholder}" visualSize="${size}" />`,
   id: 'lumen-astro-input',
   imports: ['import { Input } from "@santi020k/lumen-astro"'],
   metadata: { nestable: true }

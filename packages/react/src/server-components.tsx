@@ -6,7 +6,7 @@ import {
   type ElementType
 } from 'react'
 
-import { composeClassName } from '@santi020k/lumen-core'
+import { composeClassName, type LumenControlVisualSize } from '@santi020k/lumen-core'
 
 export type LumenGlassProp = boolean | 'strong' | 'subtle'
 
@@ -228,7 +228,7 @@ export const Grid = ({
 }
 
 export interface InputProps extends ComponentPropsWithRef<'input'> {
-  visualSize?: 'default' | 'lg' | 'sm'
+  visualSize?: LumenControlVisualSize
 }
 
 export const Input = ({

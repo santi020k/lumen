@@ -1,6 +1,71 @@
+// cspell:words Capacidad
 import XCTest
 
 final class AdvancedInputTests: XCTestCase {
+    @MainActor
+    func testMultiSelectRetainsFilteredValuesAndAppliesImmediately() {
+        let app = open("Multi select")
+        let choose = app.buttons["Choose cities · 2 selected"]
+        reveal(choose, in: app)
+        choose.tap()
+        let option = app.buttons["Medellín"]
+        XCTAssertTrue(option.waitForExistence(timeout: 5))
+        option.tap()
+        let search = app.textFields["Search cities"]
+        search.tap()
+        search.typeText("Bog")
+        XCTAssertFalse(app.buttons["Medellín"].exists)
+        app.buttons["Done"].tap()
+        XCTAssertTrue(app.buttons["Choose cities · 3 selected"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["Remove retained-city"].exists)
+        let remove = app.buttons["Remove medellin"]
+        reveal(remove, in: app)
+        remove.tap()
+        XCTAssertTrue(app.buttons["Choose cities · 2 selected"].exists)
+        let readOnly = app.switches["Read-only examples"]
+        reveal(readOnly, in: app)
+        tapSwitch(readOnly)
+        XCTAssertFalse(app.buttons["Choose cities · 2 selected"].isEnabled)
+        capture("Native MultiSelect retained selections and read-only controls", app: app)
+    }
+
+    @MainActor
+    func testRangeEndpointsAdjustAndReadOnlyValuesRemainAccessible() {
+        let app = XCUIApplication()
+        app.launchArguments = ["--component", "Range slider"]
+        app.launch()
+        XCTAssertTrue(app.staticTexts["Forms"].waitForExistence(timeout: 10))
+        let minimum = app.sliders["Capacity · Minimum"]
+        reveal(minimum, in: app)
+        minimum.adjust(toNormalizedSliderPosition: 0.3)
+        let startText = minimum.value as? String
+        guard let startText, let start = Double(startText.replacingOccurrences(of: "%", with: "")) else {
+            XCTFail("Missing formatted minimum")
+            return
+        }
+        XCTAssertGreaterThan(start, 20)
+        XCTAssertLessThanOrEqual(start, 80)
+        XCTAssertEqual(start.truncatingRemainder(dividingBy: 10), 0)
+        let maximum = app.sliders["Capacity · Maximum"]
+        reveal(maximum, in: app)
+        XCTAssertEqual(maximum.value as? String, "80%")
+        maximum.adjust(toNormalizedSliderPosition: 0.6)
+        guard let endText = maximum.value as? String,
+            let end = Double(endText.replacingOccurrences(of: "%", with: "")) else {
+            XCTFail("Missing formatted maximum")
+            return
+        }
+        XCTAssertLessThan(end, 80)
+        XCTAssertGreaterThanOrEqual(end, start)
+        XCTAssertEqual(end.truncatingRemainder(dividingBy: 10), 0)
+        XCTAssertEqual(minimum.value as? String, startText)
+        let readOnly = app.sliders["Capacidad · Mínimo"]
+        reveal(readOnly, in: app)
+        XCTAssertFalse(readOnly.isEnabled)
+        XCTAssertEqual(readOnly.value as? String, "20 %")
+        capture("Native range endpoints and localized read-only values", app: app)
+    }
+
     @MainActor
     func testPasswordRevealResetsAfterDisabling() {
         let app = open("Password field")

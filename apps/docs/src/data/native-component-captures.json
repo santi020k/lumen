@@ -1262,6 +1262,16 @@
       "width": 900
     },
     {
+      "alt": "Multi select rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "29e5019154e380c9422a460ccb0f9523675bacd2e82e5df5f1ed1d5e4d0fa64c",
+      "slug": "multi-select",
+      "src": "/native-components/apple/multi-select.webp",
+      "width": 900
+    },
+    {
       "alt": "Navigation bar rendered in the iPhone simulator Lumen playground",
       "device": "iPhone simulator",
       "height": 1957,
@@ -1329,6 +1339,16 @@
       "sha256": "53eec3668b3687fb6c34382c7cb1dbe24849a16d17140d866c6543434bdfdea3",
       "slug": "range-chart",
       "src": "/native-components/apple/range-chart.webp",
+      "width": 900
+    },
+    {
+      "alt": "Range slider rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "202eed3fc6e90c1c783d32a5f26e2edb1bb5be4efd0270c94b2aa98a0aad9b16",
+      "slug": "range-slider",
+      "src": "/native-components/apple/range-slider.webp",
       "width": 900
     },
     {
@@ -2022,6 +2042,16 @@
       "width": 900
     },
     {
+      "alt": "Multi select rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 633,
+      "platform": "react-native",
+      "sha256": "4779ce41b67abaf74c70fbea8e9c214541d9f0529b77937a983e3a441f732eb1",
+      "slug": "multi-select",
+      "src": "/native-components/react-native/multi-select.webp",
+      "width": 900
+    },
+    {
       "alt": "Navigation accessory rendered in the Expo web renderer Lumen playground",
       "device": "Expo web renderer",
       "height": 633,
@@ -2100,6 +2130,16 @@
       "slug": "range-chart",
       "src": "/native-components/react-native/range-chart.webp",
       "width": 900
+    },
+    {
+      "alt": "Range slider rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 292,
+      "platform": "react-native",
+      "sha256": "9da0e9085c29e063c7aed0b34217d2d161ba8d79e20b93a61e64e7745ba95d26",
+      "slug": "range-slider",
+      "src": "/native-components/react-native/range-slider.webp",
+      "width": 670
     },
     {
       "alt": "Refresh control rendered in the Expo web renderer Lumen playground",

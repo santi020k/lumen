@@ -1,3 +1,4 @@
+// cspell:words Capacidad
 import {
   type ReactElement,
   type ReactNode,
@@ -75,6 +76,7 @@ import {
   LumenProvider,
   LumenRadioGroup,
   LumenRangeChart,
+  LumenRangeSlider,
   LumenRefreshControl,
   LumenScatterChart,
   LumenSearchField,
@@ -1434,6 +1436,7 @@ const Playground = ({
   const [termsAccepted, setTermsAccepted] = useState(false)
   const [profile, setProfile] = useState('balanced')
   const [region, setRegion] = useState('americas')
+  const [speedRange, setSpeedRange] = useState<readonly [number, number]>([2_000, 4_000])
   const [minimumSpeed, setMinimumSpeed] = useState(2_400)
   const [density, setDensity] = useState('comfortable')
   const [detailsExpanded, setDetailsExpanded] = useState(true)
@@ -1600,6 +1603,7 @@ const Playground = ({
             'Number field',
             'Time field',
             'Autocomplete',
+            'Multi select',
             'Password field',
             'Input OTP',
             'Image comparison',
@@ -1613,6 +1617,7 @@ const Playground = ({
             'Phone input',
             'Picker',
             'Slider',
+            'Range slider',
             'Checkbox',
             'Radio group',
             'Segmented control',
@@ -1682,6 +1687,26 @@ const Playground = ({
                 step={100}
                 value={minimumSpeed}
                 valueLabel={`${minimumSpeed} RPM`}
+              />
+            </View>
+            <View testID="component-range-slider">
+              <LumenRangeSlider
+                label="Speed range"
+                value={speedRange}
+                onValueChange={setSpeedRange}
+                min={1_000}
+                max={5_000}
+                step={100}
+                formatValue={value => `${value} RPM`}
+              />
+              <LumenRangeSlider
+                label="Capacidad"
+                value={[20, 80]}
+                onValueChange={() => undefined}
+                readOnly
+                startLabel="Mínimo"
+                endLabel="Máximo"
+                formatValue={value => `${value} %`}
               />
             </View>
             <LumenFieldGroup

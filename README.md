@@ -287,6 +287,8 @@ Additional machine-readable surfaces include:
 - [`registry/lumen.registry.json`](./registry/lumen.registry.json) for recipes and installable file
   groups.
 - [`docs/figma.md`](./docs/figma.md) for Figma variables and Code Connect workflows.
+- [`apps/figma-plugin/README.md`](./apps/figma-plugin/README.md) for the **beta** Figma plugin,
+  Astro starters, and AI handoff.
 - [`plugins/lumen-ui`](./plugins/lumen-ui) for the packaged Codex and ChatGPT plugin, with its
   [submission and review record](./docs/openai-plugin-submission.md).
 - [`.claude-plugin/marketplace.json`](./.claude-plugin/marketplace.json) for the Claude Code

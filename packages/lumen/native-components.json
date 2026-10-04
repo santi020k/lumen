@@ -880,6 +880,28 @@
         "swiftUI": "LumenBoxPlot",
         "compose": "LumenBoxPlot"
       }
+    },
+    {
+      "id": "range-slider",
+      "tier": "shared",
+      "contract": "Controlled bounded numeric interval with independently adjustable endpoints and native step conventions",
+      "accessibility": "Separately named and formatted lower and upper controls; read-only and disabled states prevent adjustment",
+      "symbols": {
+        "reactNative": "LumenRangeSlider",
+        "swiftUI": "LumenRangeSlider",
+        "compose": "LumenRangeSlider"
+      }
+    },
+    {
+      "id": "multi-select",
+      "tier": "shared",
+      "contract": "Controlled multiple selection with caller-owned search results, chips, validation, loading and retry",
+      "accessibility": "Named native checkbox options, dialog focus, retained selections and disabled or read-only behavior",
+      "symbols": {
+        "reactNative": "LumenMultiSelect",
+        "swiftUI": "LumenMultiSelect",
+        "compose": "LumenMultiSelect"
+      }
     }
   ],
   "platformComponents": [
@@ -1095,26 +1117,6 @@
       "contract": "Logical start and end list actions with transient gesture state and application-owned operations",
       "accessibility": "RTL-aware gestures, named custom accessibility actions, visible keyboard buttons, and disabled states",
       "symbol": "LumenSwipeActions"
-    },
-    {
-      "id": "multi-select",
-      "adapter": "compose",
-      "platforms": [
-        "Android"
-      ],
-      "contract": "Controlled multiple selection with caller-owned search results, chips, validation, loading and retry",
-      "accessibility": "Named native checkbox options, dialog focus, retained selections and disabled or read-only behavior",
-      "symbol": "LumenMultiSelect"
-    },
-    {
-      "id": "range-slider",
-      "adapter": "compose",
-      "platforms": [
-        "Android"
-      ],
-      "contract": "Controlled bounded numeric interval with native continuous or stepped adjustment",
-      "accessibility": "Separately named and formatted lower and upper thumbs with keyboard and accessibility adjustment",
-      "symbol": "LumenRangeSlider"
     },
     {
       "id": "adaptive-list-detail-scaffold",

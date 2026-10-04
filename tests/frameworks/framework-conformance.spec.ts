@@ -1,3 +1,4 @@
+// cspell:words teléfono
 import { expect, test } from "@playwright/test";
 
 import { verifyFocusNavigation } from '../a11y/focus-navigation.js';
@@ -33,12 +34,15 @@ for (const framework of ['React', 'Elements']) {
     await expect(input).toHaveAttribute('aria-expanded', 'true');
     await input.press('Tab');
     await expect(page.getByRole('textbox', { name: `After ${framework} mentions`, exact: true })).toBeFocused();
+    await expect(input).toHaveAttribute('aria-expanded', 'false');
     await page.keyboard.press('Shift+Tab');
     await expect(input).toBeFocused();
     await input.fill('@a');
+    await expect(input).toHaveAttribute('aria-expanded', 'true');
     await input.press('Enter');
     await expect(input).toHaveValue('@alice ');
     await input.fill('@b');
+    await expect(input).toHaveAttribute('aria-expanded', 'true');
     await page.locator(framework === 'React' ? '[data-ui-mentions]' : 'lumen-mentions').getByRole('option', { name: 'bob', exact: true }).click();
     await expect(input).toHaveValue('@bob ');
   });
@@ -428,3 +432,117 @@ for (const width of [320, 1440]) {
     await page.screenshot({ path: testInfo.outputPath(`dashboard-${width}.png`), fullPage: true });
   });
 }
+
+test('Elements scalar controls retain form events, defaults, and disabled state after relocation', async ({ page }) => {
+  await page.goto('/visual/elements');
+  await page.evaluate(async () => {
+    await customElements.whenDefined('lumen-input');
+    const form = document.createElement('form');
+    form.id = 'scalar-contract';
+    form.innerHTML = '<fieldset><lumen-input id="scalar-email" name="email" type="email" value="first@example.com"></lumen-input><lumen-checkbox id="scalar-check" checked name="updates" value="yes"></lumen-checkbox></fieldset>';
+    document.body.prepend(form);
+    const host = form.querySelector('lumen-input');
+    if (!host) throw new Error('Expected scalar input');
+    host.addEventListener('input', event => {
+      host.setAttribute('data-event-target', event.target === host ? 'host' : 'child');
+      host.setAttribute('data-event-count', String(Number(host.getAttribute('data-event-count') ?? 0) + 1));
+    });
+    host.remove();
+    host.setAttribute('form', form.id);
+    document.body.append(host);
+  });
+  const host = page.locator('#scalar-email');
+  await host.locator('input').fill('updated@example.com');
+  await expect(host).toHaveAttribute('data-event-target', 'host');
+  await expect(host).toHaveAttribute('data-event-count', '1');
+  const submitted = await page.locator('#scalar-contract').evaluate(form => {
+    if (!(form instanceof HTMLFormElement)) throw new Error('Expected form');
+    return new FormData(form).get('email');
+  });
+  expect(submitted).toBe('updated@example.com');
+  const checkbox = page.locator('#scalar-check');
+  await checkbox.evaluate(element => { Reflect.set(element, 'checked', false); });
+  await page.locator('#scalar-contract').evaluate(form => {
+    if (!(form instanceof HTMLFormElement)) throw new Error('Expected form');
+    form.addEventListener('reset', event => { event.preventDefault(); }, { once: true });
+    form.reset();
+  });
+  await expect(checkbox.locator('input')).not.toBeChecked();
+  await page.locator('#scalar-contract').evaluate(form => {
+    if (!(form instanceof HTMLFormElement)) throw new Error('Expected form');
+    form.reset();
+  });
+  await expect(checkbox.locator('input')).toBeChecked();
+  await expect(host.locator('input')).toHaveValue('first@example.com');
+  await expect(host).toHaveAttribute('data-event-count', '1');
+  await page.locator('#scalar-contract fieldset').evaluate(element => {
+    if (!(element instanceof HTMLFieldSetElement)) throw new Error('Expected fieldset');
+    element.disabled = true;
+  });
+  await checkbox.evaluate(element => { element.setAttribute('aria-label', 'Updates'); });
+  await expect(checkbox.locator('input')).toBeDisabled();
+  expect(await checkbox.locator('input').evaluate(element => {
+    if (!(element instanceof HTMLInputElement)) throw new Error('Expected input');
+    return element.disabled;
+  })).toBe(true);
+});
+
+test('Elements native multiple select submits and resets every selected option', async ({ page }) => {
+  await page.goto('/visual/elements');
+  await page.evaluate(async () => {
+    await customElements.whenDefined('lumen-native-select');
+    const form = document.createElement('form');
+    form.id = 'multiple-contract';
+    form.innerHTML = '<lumen-native-select name="roles" multiple><option selected value="editor">Editor</option><option selected value="reviewer">Reviewer</option><option value="viewer">Viewer</option></lumen-native-select>';
+    document.body.prepend(form);
+  });
+  const values = () => page.locator('#multiple-contract').evaluate(form => {
+    if (!(form instanceof HTMLFormElement)) throw new Error('Expected form');
+    return new FormData(form).getAll('roles');
+  });
+  expect(await values()).toEqual(['editor', 'reviewer']);
+  await page.locator('#multiple-contract select').selectOption(['viewer', 'reviewer']);
+  expect(await values()).toEqual(['reviewer', 'viewer']);
+  await page.locator('#multiple-contract').evaluate(form => {
+    if (!(form instanceof HTMLFormElement)) throw new Error('Expected form');
+    form.reset();
+  });
+  expect(await values()).toEqual(['editor', 'reviewer']);
+});
+
+test('visualSize renders equivalent form densities and preserves keyboard selection', async ({ page }, testInfo) => {
+  await page.goto('/visual/control-sizes');
+  await expect(page.getByRole('heading', { name: 'Visual form sizes' })).toBeVisible();
+  const heights: number[] = [];
+  for (const visualSize of ['sm', 'default', 'lg']) {
+    const group = page.locator(`[data-visual-size="${visualSize}"]`);
+    const react = group.getByRole('combobox', { name: `React estado ${visualSize}` });
+    const elements = group.getByRole('combobox', { name: `Elements estado ${visualSize}` });
+    await expect(elements).toBeVisible();
+    const fallback = group.locator('lumen-select select');
+    await expect(fallback).toHaveCSS('opacity', '0');
+    await expect(fallback).toHaveCSS('position', 'absolute');
+    await expect(fallback).toHaveCSS('pointer-events', 'none');
+    await expect(fallback).toHaveAttribute('tabindex', '-1');
+    const reactBox = await react.boundingBox();
+    const elementsBox = await elements.boundingBox();
+    if (!reactBox || !elementsBox) throw new Error('Expected rendered select bounds');
+    expect(elementsBox.height).toBeCloseTo(reactBox.height, 0);
+    heights.push(reactBox.height);
+    await react.focus();
+    await page.keyboard.press('ArrowDown');
+    await page.keyboard.press('End');
+    await page.keyboard.press('Enter');
+    await expect(react).toContainText('Pendiente');
+    const reactPhone = group.getByRole('textbox', { name: `React teléfono ${visualSize}` });
+    const elementsPhone = group.getByRole('textbox', { name: `Elements teléfono ${visualSize}` });
+    const reactPhoneBox = await reactPhone.boundingBox();
+    const elementsPhoneBox = await elementsPhone.boundingBox();
+    if (!reactPhoneBox || !elementsPhoneBox) throw new Error('Expected rendered phone bounds');
+    expect(elementsPhoneBox.height).toBeCloseTo(reactPhoneBox.height, 0);
+  }
+  expect(heights[0]).toBeLessThan(heights[1] ?? 0);
+  expect(heights[1]).toBeLessThan(heights[2] ?? 0);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+  await page.screenshot({ path: testInfo.outputPath('visual-form-sizes.png'), fullPage: true });
+});

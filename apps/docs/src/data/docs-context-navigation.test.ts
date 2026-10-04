@@ -75,6 +75,8 @@ describe('documentation context navigation', () => {
 describe('current documentation destination', () => {
   test.each([
     ['', 'Overview'],
+    ['#tokens-in-use', 'Color roles'],
+    ['#composition-in-use', 'Composition'],
     ['#installation', 'Use the tokens'],
     ['#components', 'Coverage'],
     ['#component%73', 'Coverage'],
@@ -85,11 +87,11 @@ describe('current documentation destination', () => {
     expect(getCurrentDocsContextLink(getDocsContextLinks('foundations'), '/docs/foundations/', hash)?.label).toBe(label)
   })
 
-  test('uses native platform section anchors only on their overview page', () => {
+  test('selects dedicated native guides without leaking their state into component pages', () => {
     const links = getDocsContextLinks('apple')
 
-    expect(getCurrentDocsContextLink(links, '/docs/apple', '#installation')?.label).toBe('Install')
-    expect(getCurrentDocsContextLink(links, '/docs/apple', '#theme')?.label).toBe('Theme')
+    expect(getCurrentDocsContextLink(links, '/docs/apple/installation')?.label).toBe('Install')
+    expect(getCurrentDocsContextLink(links, '/docs/apple/theming')?.label).toBe('Theme')
     expect(getCurrentDocsContextLink(links, '/docs/apple/components/button', '#theme')?.label).toBe('Components')
   })
 

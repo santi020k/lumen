@@ -136,6 +136,8 @@ const applePhoneTabletAndMacOnlySlugs = new Set([
   'settings-row',
   'skeleton',
   'slider',
+  'range-slider',
+  'multi-select',
   'tabs',
   'textarea',
   'toggle'
@@ -5192,49 +5194,77 @@ LumenTopAppBar("Projects", scrollBehavior = behavior,
   {
     accessibility: 'Uses a native dialog with named checkbox options, removal actions, validation, and read-only or disabled behavior.',
     category: 'Forms',
-    examples: { android: `LumenMultiSelect(
+    examples: {
+      apple: 'LumenMultiSelect("Teams", values: $teams, query: $query, options: matchingTeams)',
+      'react-native': `<LumenMultiSelect label="Teams" values={teams} onValuesChange={setTeams}
+  query={query} onQueryChange={setQuery} options={matchingTeams} />`,
+      android: `LumenMultiSelect(
     label = "Teams", options = matchingTeams, values = selectedTeams,
     onValuesChange = { selectedTeams = it }, query = query, onQueryChange = { query = it },
     loading = searching, resultsErrorMessage = searchError, onRetry = ::retrySearch
 )` },
-    exports: { android: 'LumenMultiSelect' },
+    exports: { android: 'LumenMultiSelect', apple: 'LumenMultiSelect', 'react-native': 'LumenMultiSelect' },
     guidance: 'Selection applies immediately. The host owns search, asynchronous results, cancellation, and persistence. Missing selected options retain their raw value as a chip label. Localize every string and count/removal formatter.',
     name: 'Multi select',
     properties: [
-      property('label / options', 'String / List<LumenSelectionOption>', 'Required', 'Names the field and supplies uniquely identified, readable results.'),
-      property('values / onValuesChange', 'Set<String> / (Set<String>) -> Unit', 'Required', 'Controls selection independently from visible results.'),
-      property('query / onQueryChange', 'String / (String) -> Unit', 'Required', 'Controls caller-owned search.'),
-      property('loading / resultsErrorMessage / onRetry', 'Boolean / String? / (() -> Unit)?', 'false / null / null', 'Provides loading, safe error, and recovery states.'),
-      property('description / errorMessage', 'String?', 'null', 'Provides help and separate form validation.'),
-      property('enabled / readOnly', 'Boolean', 'true / false', 'Blocks editing and dismisses selection.'),
-      property('chooseLabel / searchLabel / clearSearchLabel / doneLabel', 'String', 'English defaults', 'Localizes selection and dialog actions.'),
-      property('emptyLabel / loadingLabel / retryLabel', 'String', 'English defaults', 'Localizes result states.'),
-      property('selectionLabel / removeLabel', '(Int) -> String / (String) -> String', 'English formatters', 'Localizes counts and chip removal.'),
-      property('modifier', 'Modifier', 'Modifier', 'Applies field layout.')
+      property('label / options', { android: 'String / List<LumenSelectionOption>', apple: 'String / [LumenAutocompleteOption<String>]', 'react-native': 'string / readonly LumenAutocompleteOption[]' }, 'Required', 'Names the field and supplies uniquely identified, readable results.'),
+      property({ android: 'values / onValuesChange', apple: 'values', 'react-native': 'values / onValuesChange' }, { android: 'Set<String> / (Set<String>) -> Unit', apple: 'Binding<Set<String>>', 'react-native': 'ReadonlySet<string> / (values: Set<string>) => void' }, 'Required', 'Controls selection independently from visible results.'),
+      property({ android: 'query / onQueryChange', apple: 'query', 'react-native': 'query / onQueryChange' }, { android: 'String / (String) -> Unit', apple: 'Binding<String>', 'react-native': 'string / callback' }, 'Required', 'Controls caller-owned search.'),
+      property('loading / resultsErrorMessage / onRetry', { android: 'Boolean / String? / (() -> Unit)?', apple: 'Bool / String? / (() -> Void)?', 'react-native': 'boolean / string / callback' }, 'false / null / null', 'Provides loading, safe error, and recovery states.'),
+      property('description / errorMessage', { android: 'String?', apple: 'String?', 'react-native': 'string' }, 'None', 'Provides help and separate form validation.'),
+      property({ android: 'enabled / readOnly', apple: 'disabled / readOnly', 'react-native': 'enabled / readOnly' }, { android: 'Boolean', apple: 'Bool', 'react-native': 'boolean' }, 'true / false', 'Blocks editing and dismisses selection.'),
+      property('chooseLabel / searchLabel / clearSearchLabel / doneLabel', { android: 'String', apple: 'String', 'react-native': 'string' }, 'English defaults', 'Localizes selection and dialog actions.'),
+      property('emptyLabel / loadingLabel / retryLabel', { android: 'String', apple: 'String', 'react-native': 'string' }, 'English defaults', 'Localizes result states.'),
+      property('selectionLabel / removeLabel', { android: '(Int) -> String / (String) -> String', apple: '(Int) -> String / (String) -> String', 'react-native': '(count: number) => string / (label: string) => string' }, 'English formatters', 'Localizes counts and chip removal.'),
+      property({ 'react-native': 'safeAreaInsets' }, { 'react-native': 'LumenSafeAreaInsets' }, 'None', 'Passes the application safe-area provider insets into the native sheet.'),
+      property({ android: 'modifier' }, { android: 'Modifier' }, { android: 'Modifier' }, 'Applies field layout.')
     ],
     slug: 'multi-select',
-    summary: 'Select multiple searchable options with controlled chips and result states.'
+    summary: 'Select multiple searchable options with controlled values and result states.'
   },
   {
     accessibility: 'Exposes separately named lower and upper native thumbs with formatted spoken values and keyboard adjustment.',
     category: 'Forms',
-    examples: { android: `LumenRangeSlider("Capacity", capacity, { capacity = it },
+    examples: {
+      apple: `LumenRangeSlider("Capacity", value: $capacity, in: 0...100, step: 10,
+    formatValue: { "\\(Int($0))%" })`,
+      'react-native': `<LumenRangeSlider label="Capacity" value={capacity} onValueChange={setCapacity}
+  min={0} max={100} step={10} formatValue={value => String(value) + '%'} />`,
+      android: `LumenRangeSlider("Capacity", capacity, { capacity = it },
     valueRange = 0f..100f, steps = 9, startLabel = "Minimum", endLabel = "Maximum",
     formatValue = { "\${it.toInt()}%" })` },
-    exports: { android: 'LumenRangeSlider' },
+    exports: { android: 'LumenRangeSlider', apple: 'LumenRangeSlider', 'react-native': 'LumenRangeSlider' },
     guidance: 'Bounds must be finite, increasing, and have a finite span. Nonfinite values fall back to bounds; reversed endpoints reorder for display without changing host state. Keep exact financial arithmetic in the application.',
     name: 'Range slider',
     properties: [
-      property('label / value / onValueChange', 'String / ClosedFloatingPointRange<Float> / callback', 'Required', 'Names and controls the numeric interval.'),
-      property('valueRange', 'ClosedFloatingPointRange<Float>', '0f..1f', 'Provides valid inclusive bounds.'),
-      property('steps', 'Int', '0', 'Sets 0–10,000 intermediate stops; zero is continuous.'),
-      property('startLabel / endLabel / formatValue', 'String / String / (Float) -> String', 'Minimum / Maximum / numeric text', 'Localizes both thumb names and values.'),
-      property('enabled / readOnly', 'Boolean', 'true / false', 'Blocks adjustment while retaining values.'),
-      property('onValueChangeFinished', '(() -> Unit)?', 'null', 'Reports the end of native adjustment.'),
-      property('modifier', 'Modifier', 'Modifier', 'Applies field layout.')
+      property({ android: 'label / value / onValueChange', apple: 'label / value', 'react-native': 'label / value / onValueChange' },
+        { android: 'String / ClosedFloatingPointRange<Float> / callback', apple: 'LocalizedStringKey / Binding<ClosedRange<Double>>', 'react-native': 'string / readonly [number, number] / callback' },
+        'Required',
+        'Names and controls the numeric interval.'),
+      property({ android: 'valueRange', apple: 'in', 'react-native': 'min / max' },
+        { android: 'ClosedFloatingPointRange<Float>', apple: 'ClosedRange<Double>', 'react-native': 'number' },
+        { android: '0f..1f', apple: '0...100', 'react-native': '0 / 100' },
+        'Provides valid inclusive bounds.'),
+      property({ android: 'steps', apple: 'step', 'react-native': 'step' },
+        { android: 'Int', apple: 'Double?', 'react-native': 'number' },
+        { android: '0', apple: 'nil', 'react-native': 'span / 100' },
+        'Compose counts intermediate stops; Swift and React Native use positive increments.'),
+      property('startLabel / endLabel / formatValue',
+        { android: 'String / String / (Float) -> String', apple: 'LocalizedStringKey / LocalizedStringKey / (Double) -> String', 'react-native': 'string / string / (number) => string' },
+        'Minimum / Maximum / numeric text',
+        'Localizes both endpoint names and values.'),
+      property({ android: 'enabled / readOnly', apple: 'disabled / readOnly', 'react-native': 'enabled / readOnly' },
+        { android: 'Boolean', apple: 'Bool', 'react-native': 'boolean' },
+        'Enabled / editable',
+        'Blocks adjustment while retaining values.'),
+      property({ android: 'onValueChangeFinished' }, { android: '(() -> Unit)?' }, { android: 'null' }, 'Reports the end of native adjustment.'),
+      property({ android: 'modifier', 'react-native': 'style' },
+        { android: 'Modifier', 'react-native': 'StyleProp<ViewStyle>' },
+        'None',
+        'Applies control layout.')
     ],
     slug: 'range-slider',
-    summary: 'Choose bounded numeric intervals with two native adjustable thumbs.'
+    summary: 'Choose bounded numeric intervals with independently adjustable native endpoints.'
   },
   {
     accessibility: 'Names both panes and exposes compact back navigation without owning application routing or selection.',

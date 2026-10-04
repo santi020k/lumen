@@ -1,6 +1,10 @@
 {
   "$schema": "https://unpkg.com/knip@6/schema.json",
   "workspaces": {
+    "apps/figma-plugin": {
+      "entry": ["src/plugin.ts", "src/ui.tsx"],
+      "project": ["src/**/*.{ts,tsx}", "scripts/*.mjs"]
+    },
     ".": {
       "entry": ["scripts/check-maven-pom-metadata.mjs", "scripts/report-android-workspace-runtime.mjs"],
       "ignoreBinaries": ["codex", "infisical", "pod", "quality", "swift"],

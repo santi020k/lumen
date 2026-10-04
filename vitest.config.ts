@@ -6,6 +6,10 @@ import { defineConfig } from 'vitest/config'
 const root = fileURLToPath(new URL('.', import.meta.url))
 
 const alias = {
+  '@santi020k/lumen-core/image-comparison': fileURLToPath(new URL('./packages/core/src/image-comparison.ts', import.meta.url)),
+  '@santi020k/lumen-core/tokens': fileURLToPath(new URL('./packages/core/src/tokens.ts', import.meta.url)),
+  '@santi020k/lumen-core/virtual-list': fileURLToPath(new URL('./packages/core/src/virtual-list.ts', import.meta.url)),
+  '@santi020k/lumen-core/virtual-window': fileURLToPath(new URL('./packages/core/src/virtual-window.ts', import.meta.url)),
   '@santi020k/lumen-core/icon-data': fileURLToPath(new URL('./packages/core/src/icon-data.generated.ts', import.meta.url)),
   '@santi020k/lumen': fileURLToPath(new URL('./packages/lumen/src/index.ts', import.meta.url)),
   '@santi020k/lumen-core': fileURLToPath(new URL('./packages/core/src/index.ts', import.meta.url)),
@@ -75,7 +79,8 @@ export default defineConfig({
       project('templates', 'packages/templates'),
       project('next-smoke', 'apps/next-smoke', { passWithNoTests: true }),
       project('template-showcase', 'apps/templates', { passWithNoTests: true }),
-      project('docs', 'apps/docs', { passWithNoTests: true })
+      project('docs', 'apps/docs', { passWithNoTests: true }),
+      project('figma-plugin', 'apps/figma-plugin')
     ],
     restoreMocks: true
   }

@@ -2205,29 +2205,20 @@
 .ui-accordion {
   display: grid;
   min-width: 0;
-  gap: 0.75rem;
+  gap: var(--ui-space-md);
 }
 
 .ui-accordion details,
 .ui-collapsible {
+  --ui-disclosure-inset: var(--ui-space-lg);
   min-width: 0;
   overflow: clip;
+  padding-inline: var(--ui-disclosure-inset);
   border: var(--ui-border-width, 1px) solid hsl(var(--line));
   border-radius: var(--ui-radius-lg);
   background: hsl(var(--surface));
   color: hsl(var(--ink-soft));
-  box-shadow: var(--ui-shadow-sm);
-  transition:
-    border-color var(--ui-duration-fast) var(--ui-ease),
-    box-shadow var(--ui-duration-fast) var(--ui-ease);
-}
-
-.ui-accordion details[open],
-.ui-collapsible[open] {
-  border-color: hsl(var(--brand) / 0.38);
-  box-shadow:
-    0 0 0 1px hsl(var(--brand) / 0.08),
-    var(--ui-shadow-sm);
+  transition: border-color var(--ui-duration-fast) var(--ui-ease);
 }
 
 .ui-accordion--flush {
@@ -2236,6 +2227,7 @@
 }
 
 .ui-accordion--flush details {
+  --ui-disclosure-inset: var(--ui-space-xs);
   overflow: visible;
   border: 0;
   border-bottom: var(--ui-border-width, 1px) solid hsl(var(--line));
@@ -2252,17 +2244,18 @@
 
 .ui-accordion summary,
 .ui-collapsible summary {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 1rem;
+  position: relative;
+  display: block;
+  margin-inline: calc(-1 * var(--ui-disclosure-inset));
   cursor: pointer;
   list-style: none;
   color: hsl(var(--ink));
-  font-weight: 650;
-  line-height: 1.35;
+  font-weight: 600;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
   min-height: 3.5rem;
-  padding: 1rem 1.125rem;
+  padding: var(--ui-space-lg) var(--ui-disclosure-inset);
+  padding-inline-end: calc(var(--ui-disclosure-inset) + 2rem + var(--ui-space-md));
   transition:
     background-color var(--ui-duration-fast) var(--ui-ease),
     color var(--ui-duration-fast) var(--ui-ease);
@@ -2275,17 +2268,17 @@
 
 .ui-accordion details[open] > summary,
 .ui-collapsible[open] > summary {
-  color: hsl(var(--brand));
+  padding-block-end: var(--ui-space-md);
 }
 
 .ui-accordion details[open],
 .ui-collapsible[open] {
-  padding-block-end: 1rem;
+  padding-block-end: var(--ui-space-lg);
 }
 
 .ui-accordion details > :not(summary),
 .ui-collapsible > :not(summary) {
-  margin-inline: 1.125rem;
+  margin-inline: 0;
 }
 
 .ui-accordion summary::-webkit-details-marker,
@@ -2293,33 +2286,52 @@
   display: none;
 }
 
+.ui-accordion summary::before,
+.ui-collapsible summary::before {
+  position: absolute;
+  inset-inline-end: var(--ui-disclosure-inset);
+  top: var(--ui-space-md);
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: hsl(var(--surface-muted));
+  content: "";
+  pointer-events: none;
+  transition: background-color var(--ui-duration-fast) var(--ui-ease);
+}
+
 .ui-accordion summary::after,
 .ui-collapsible summary::after {
+  position: absolute;
+  inset-inline-end: calc(var(--ui-disclosure-inset) + 0.75rem);
+  top: calc(var(--ui-space-md) + 0.6875rem);
   width: 0.5rem;
   height: 0.5rem;
   border-right: 1.5px solid hsl(var(--ink-muted));
   border-bottom: 1.5px solid hsl(var(--ink-muted));
   content: "";
   border-radius: 1px;
-  box-shadow: 0 0 0 0.45rem hsl(var(--surface-muted));
-  transform: rotate(45deg) translate(-0.1rem, -0.1rem);
+  pointer-events: none;
+  transform: rotate(45deg);
   transition:
     border-color var(--ui-duration-fast) var(--ui-ease),
-    box-shadow var(--ui-duration-fast) var(--ui-ease),
     transform var(--ui-duration-fast) var(--ui-ease);
+}
+
+.ui-accordion details[open] > summary::before,
+.ui-collapsible[open] > summary::before {
+  background: hsl(var(--brand-soft));
 }
 
 .ui-accordion details[open] > summary::after,
 .ui-collapsible[open] > summary::after {
   border-color: hsl(var(--brand));
-  box-shadow: 0 0 0 0.45rem hsl(var(--brand-soft));
-  transform: rotate(225deg) translate(-0.1rem, -0.1rem);
+  transform: translateY(0.1875rem) rotate(225deg);
 }
 
 .ui-accordion summary:hover::after,
 .ui-collapsible summary:hover::after {
   border-color: hsl(var(--brand));
-  box-shadow: 0 0 0 0.45rem hsl(var(--brand-soft));
 }
 
 .ui-accordion summary:focus-visible,
@@ -2330,12 +2342,12 @@
 }
 
 .ui-accordion--flush details[open] {
-  padding-block-end: 1.25rem;
+  padding-block-end: var(--ui-space-lg);
 }
 
 .ui-accordion--flush summary {
   min-height: 4rem;
-  padding: 1.125rem 0.25rem;
+  padding-block: var(--ui-space-lg);
 }
 
 .ui-accordion--flush summary:hover {
@@ -2348,11 +2360,12 @@
   color: hsl(var(--ink));
 }
 
-.ui-accordion--flush details > :not(summary) {
-  margin-inline: 0.25rem;
+.ui-accordion--flush summary::before {
+  display: none;
 }
 
 .ui-accordion--flush details[open] > summary::before {
+  display: block;
   width: 0.2rem;
   height: 1.25rem;
   border-radius: 999px;
@@ -2360,17 +2373,19 @@
   content: "";
   position: absolute;
   inset-inline-start: -0.875rem;
-}
-
-.ui-accordion--flush summary {
-  position: relative;
+  top: var(--ui-space-lg);
 }
 
 .ui-accordion p,
 .ui-collapsible p {
   color: hsl(var(--ink-soft));
-  margin-block-end: 0;
+  margin-block: 0;
   line-height: 1.6;
+}
+
+.ui-accordion details > :not(summary) + :not(summary),
+.ui-collapsible > :not(summary) + :not(summary) {
+  margin-block-start: var(--ui-space-related);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -2378,6 +2393,8 @@
   .ui-collapsible,
   .ui-accordion summary,
   .ui-collapsible summary,
+  .ui-accordion summary::before,
+  .ui-collapsible summary::before,
   .ui-accordion summary::after,
   .ui-collapsible summary::after {
     transition: none;

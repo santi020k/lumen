@@ -1,0 +1,15 @@
+---
+import { Link, NavigationMenu } from '@santi020k/lumen-astro'
+
+import { chartTopics } from '../data/chart-topics'
+
+const currentPath = Astro.url.pathname.replace(/\/$/, '')
+---
+<NavigationMenu aria-label="Data visualization guide" class="chart-topic-nav" variant="unstyled">
+  {chartTopics.map(topic => <Link href={topic.href} aria-current={currentPath === topic.href ? 'page' : undefined}>{topic.label}</Link>)}
+</NavigationMenu>
+<style>
+  .chart-topic-nav { display: flex; flex-wrap: wrap; gap: .5rem; padding-block: .75rem; border-block: 1px solid hsl(var(--line)); }
+  .chart-topic-nav :global(a) { padding: .65rem .8rem; font-size: .75rem; border-radius: var(--ui-radius-md); }
+  .chart-topic-nav :global(a[aria-current]) { background: hsl(var(--brand-soft)); color: hsl(var(--brand)); }
+</style>

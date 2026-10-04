@@ -1,4 +1,4 @@
-import { getNativeComponentsForPlatform } from './native-components'
+import { getNativeComponentsForPlatform } from './native-components.ts'
 
 export type DocsPlatformId = 'android' | 'apple' | 'foundations' | 'react-native' | 'web'
 

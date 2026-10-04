@@ -1,6 +1,8 @@
 ---
 import {
+  Accordion,
   Badge,
+  Button,
   Card,
   Field,
   Input,
@@ -8,6 +10,7 @@ import {
   Link,
   Marker,
   Progress,
+  Stack,
   Switch,
   Toggle,
   ToggleGroup
@@ -16,6 +19,7 @@ import {
 import CodeBlock from '../../../components/CodeBlock.astro'
 import DocsActionLink from '../../../components/DocsActionLink.astro'
 import FrameworkSetupTabs from '../../../components/FrameworkSetupTabs.astro'
+import RuntimeExamples from '../../../components/RuntimeExamples.astro'
 import {
   componentDocs,
   frameworkGuides,
@@ -224,6 +228,27 @@ const customThemeSetup = themeSetups.find(setup => setup.label === 'Custom theme
         brand can be expressed through the same token contract.
       </p>
     </div>
+    <div class="theme-comparison" aria-label="The same components in light and dark themes">
+      {(['light', 'dark'] as const).map(theme => (
+        <figure class="theme-comparison__sample" data-theme={theme}>
+          <figcaption>{theme === 'light' ? 'Light' : 'Dark'} · same components, different tokens</figcaption>
+          <Card>
+            <Stack gap="group">
+              <Stack direction="horizontal" justify="between" align="center" wrap>
+                <strong>Workspace settings</strong>
+                <Badge variant="success">Active</Badge>
+              </Stack>
+              <Field>
+                <Label for={`theme-${theme}-workspace`}>Workspace name</Label>
+                <Input id={`theme-${theme}-workspace`} value="Lumen Labs" />
+              </Field>
+              <Button type="button">Save changes</Button>
+            </Stack>
+          </Card>
+        </figure>
+      ))}
+    </div>
+    <p class="theme-comparison__note">Illustrative previews · buttons do not save data. <Link href="/docs/theme-playground">Try your own palette in the theme playground</Link>.</p>
     <div class="
       grid gap-4
       lg:grid-cols-2
@@ -271,17 +296,25 @@ const customThemeSetup = themeSetups.find(setup => setup.label === 'Custom theme
       </p>
     </div>
     <div
-      class="docs-glass-demo"
+      class="docs-glass-demo glass-comparison"
       style="background: radial-gradient(circle at 20% 10%, hsl(var(--brand) / 0.28), transparent 34%), radial-gradient(circle at 85% 80%, hsl(var(--accent) / 0.24), transparent 34%), linear-gradient(135deg, hsl(var(--canvas)), hsl(var(--surface-muted)));"
     >
-      <Card class="max-w-sm space-y-3 p-5" glass>
-        <Badge variant="outline">Glass</Badge>
-        <h3 class="text-xl font-black text-ink">Translucent by design</h3>
-        <p class="text-sm/7 text-ink-soft">
-          Shared tokens control blur, saturation, borders, highlights, and shadow depth across
-          light and dark themes.
-        </p>
-      </Card>
+      {([
+        { label: 'Solid surface', glass: false, usage: '<Card>' },
+        { label: 'Subtle glass', glass: 'subtle', usage: '<Card glass="subtle">' },
+        { label: 'Strong glass', glass: 'strong', usage: '<Card glass="strong">' }
+      ] as const).map(surface => (
+        <figure class="glass-comparison__sample">
+          <Card glass={surface.glass}>
+            <Stack gap="group">
+              <Badge variant="outline">Workspace</Badge>
+              <h3 class="text-xl font-black text-ink">Launch window</h3>
+              <p class="text-sm/7 text-ink-soft">The same content on three surface treatments.</p>
+            </Stack>
+          </Card>
+          <figcaption><strong>{surface.label}</strong><code>{surface.usage}</code></figcaption>
+        </figure>
+      ))}
     </div>
     <div class="
       grid gap-4
@@ -335,6 +368,10 @@ const customThemeSetup = themeSetups.find(setup => setup.label === 'Custom theme
         that runtime include.
       </p>
     </div>
+    <RuntimeExamples idPrefix="web" />
+    <Accordion class="runtime-reference">
+      <details>
+        <summary>More runtime behaviors</summary>
     <div class="
       grid gap-4
       md:grid-cols-2
@@ -347,6 +384,8 @@ const customThemeSetup = themeSetups.find(setup => setup.label === 'Custom theme
         </Card>
       ))}
     </div>
+      </details>
+    </Accordion>
   </section>
 
   <Card as="section" class="docs-next" variant="muted" aria-labelledby="next-title">
@@ -364,6 +403,19 @@ const customThemeSetup = themeSetups.find(setup => setup.label === 'Custom theme
 </DocsLayout>
 
 <style>
+  .glass-comparison { display: grid; gap: 1.5rem; }
+  .glass-comparison__sample { display: grid; align-content: start; gap: 1rem; min-width: 0; margin: 0; }
+  .glass-comparison__sample figcaption { display: grid; gap: 0.5rem; color: hsl(var(--ink)); font-size: 0.875rem; }
+  .glass-comparison__sample code { overflow-wrap: anywhere; }
+  :global(.runtime-reference) { margin-top: 1.5rem; }
+  @media (min-width: 64rem) { .glass-comparison { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+  .theme-comparison { display: grid; gap: 1rem; margin-bottom: 1rem; }
+  .theme-comparison__sample { display: grid; gap: 1rem; min-width: 0; margin: 0; padding: 1.5rem; border: 1px solid hsl(var(--line)); border-radius: 1rem; background: hsl(var(--canvas)); color: hsl(var(--ink)); }
+  .theme-comparison__sample figcaption { color: hsl(var(--ink-soft)); font-size: 0.875rem; }
+  .theme-comparison__note { margin-bottom: 1.5rem; color: hsl(var(--ink-soft)); font-size: 0.875rem; line-height: 1.6; }
+  @media (min-width: 48rem) { .theme-comparison { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
   .docs-intro-hero {
     position: relative;
     isolation: isolate;

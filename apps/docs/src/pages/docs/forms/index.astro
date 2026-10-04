@@ -1,5 +1,6 @@
 ---
 import {
+  Badge,
   Breadcrumb,
   Card,
   ErrorSummary,
@@ -157,29 +158,55 @@ const serialization = [
       <div class="docs-section-heading">
         <h2 class="text-2xl font-bold text-ink" id="choose-title">Choose one validation owner</h2>
       </div>
-      <Stack gap="group">
-        <Card variant="muted">
-          <h3 class="font-bold text-ink">Native mode</h3>
-          <p class="mt-2 text-sm/6 text-ink-soft">
-            Use Form plus native attributes such as required, pattern, min, and max. Astro and
-            Elements can enhance the same validity events; React can use useFormValidation.
-          </p>
+      <p class="text-sm/6 text-ink-soft">Three illustrative error snapshots, rendered with Astro. Follow the matching guide to connect validation and submission.</p>
+      <div class="validation-examples">
+        <Card as="article">
+          <Stack gap="group">
+            <Badge variant="outline">Browser → field</Badge>
+            <div>
+              <h3 class="font-bold text-ink">Native mode</h3>
+              <p class="mt-2 text-sm/6 text-ink-soft">Start with required, pattern, min, and max. Astro and Elements enhance validity events; React can use useFormValidation.</p>
+            </div>
+            <Field controlId="native-mode-email" data-invalid="true" describedBy="native-mode-error">
+              <Label for="native-mode-email">Email</Label>
+              <Input id="native-mode-email" type="email" required aria-invalid="true" aria-describedby="native-mode-error" placeholder="you@example.com" />
+              <FieldError id="native-mode-error" message="Email is required." />
+            </Field>
+            <Link href="#building-blocks">See the native form example</Link>
+          </Stack>
         </Card>
-        <Card variant="muted">
-          <h3 class="font-bold text-ink">Managed React mode</h3>
-          <p class="mt-2 text-sm/6 text-ink-soft">
-            React Hook Form owns validation and touched/dirty state. Lumen reflects the result.
-            Do not mount useFormValidation on the same form unless duplicate validation is intentional.
-          </p>
+        <Card as="article">
+          <Stack gap="group">
+            <Badge variant="outline">React state → field</Badge>
+            <div>
+              <h3 class="font-bold text-ink">Managed React mode</h3>
+              <p class="mt-2 text-sm/6 text-ink-soft">React Hook Form owns validation and touched/dirty state. Lumen reflects the result. Avoid a second validation controller.</p>
+            </div>
+            <Field controlId="managed-mode-email" data-invalid="true" describedBy="managed-mode-error">
+              <Label for="managed-mode-email">Email</Label>
+              <Input id="managed-mode-email" type="email" value="maya@" aria-invalid="true" aria-describedby="managed-mode-error" />
+              <FieldError id="managed-mode-error" message="Enter a complete email address." />
+            </Field>
+            <Link href="/docs/forms/react-hook-form">Copy the React Hook Form recipe</Link>
+          </Stack>
         </Card>
-        <Card variant="muted">
-          <h3 class="font-bold text-ink">Server-first Astro mode</h3>
-          <p class="mt-2 text-sm/6 text-ink-soft">
-            Astro Actions parse and validate the POST. Render returned values and normalized errors
-            on the server, then redirect after success.
-          </p>
+        <Card as="article">
+          <Stack gap="group">
+            <Badge variant="outline">POST → server → summary</Badge>
+            <div>
+              <h3 class="font-bold text-ink">Server-first Astro mode</h3>
+              <p class="mt-2 text-sm/6 text-ink-soft">Astro Actions validate the POST. Render returned values and normalized errors, then redirect after success.</p>
+            </div>
+            <ErrorSummary errors={{ fields: [{ controlId: 'server-mode-email', message: 'This email is already in use.', name: 'email' }], form: [] }} />
+            <Field controlId="server-mode-email" data-invalid="true" describedBy="server-mode-error">
+              <Label for="server-mode-email">Email</Label>
+              <Input id="server-mode-email" type="email" value="maya@example.com" aria-invalid="true" aria-describedby="server-mode-error" />
+              <FieldError id="server-mode-error" message="This email is already in use." />
+            </Field>
+            <Link href="/docs/forms/astro-actions">Copy the Astro Actions recipe</Link>
+          </Stack>
         </Card>
-      </Stack>
+      </div>
     </section>
 
     <section class="docs-section mt-10 space-y-5" aria-labelledby="serialization-title">
@@ -216,3 +243,9 @@ const serialization = [
     </section>
   </div>
 </DocsLayout>
+
+<style>
+  .validation-examples { display: grid; align-items: start; gap: 1rem; min-width: 0; }
+  .validation-examples > :global([data-slot="card"]) { min-width: 0; }
+  @media (min-width: 64rem) { .validation-examples { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+</style>

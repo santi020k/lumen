@@ -2,7 +2,16 @@
 
 ## 4.0.0
 
+- Add controlled MultiSelect to React Native and SwiftUI alongside Compose, retaining selections
+  outside filtered results, blocking disabled/read-only edits, and exposing loading/retry and localized
+  action labels. Forward application safe-area insets into the React Native sheet. Add a complete,
+  checked web-to-native catalog audit for the remaining v4 gaps.
+
 ### Minor Changes
+
+- Add controlled native range filters with independently named and formatted endpoints, domain
+  stepping, crossing protection, and disabled/read-only behavior. SwiftUI now exposes the same
+  semantic range contract; Compose retains native two-thumb rendering.
 
 - Add CalendarHeatmap, FunnelChart, and BoxPlot across web and native adapters with shared validation,
   semantic chart colors, localized formatting, responsive layouts, and accessible exact data.

@@ -1,185 +1,137 @@
 ---
-import { Badge, BoxPlot, BulletChart, CalendarHeatmap, DumbbellChart, FunnelChart, Heatmap, Histogram, Icon, LineChart, Link, LollipopChart, PieChart, Sparkline, Stat, Tabs, TabsList, TabsPanel, TabsTrigger, WaterfallChart } from '@santi020k/lumen-astro'
+import { ButtonLink, Card, Form, Icon, Input, Label, Link, Select } from '@santi020k/lumen-astro'
 
-import ChartUsageGuide from '../../../components/ChartUsageGuide.astro'
+import ChartGuideNavigation from '../../../components/ChartGuideNavigation.astro'
+import ChartPreviewTile from '../../../components/ChartPreviewTile.astro'
+import { chartGuides } from '../../../data/chart-guides'
+import { chartTopics } from '../../../data/chart-topics'
 import DocsLayout from '../../../layouts/DocsLayout.astro'
-import { chartDemoBins, chartDemoBoxPlots, chartDemoBulletRanges, chartDemoCalendar, chartDemoChannels, chartDemoComparisons, chartDemoFunnel, chartDemoHeatmap, chartDemoMetrics, chartDemoSeries, chartDemoWaterfall } from '../../../lib/chart-demo-data'
+
+const categories = [...new Set(chartGuides.map(guide => guide.category))]
+const guideAnchors = ['chart-setup', 'chart-gallery', 'chart-data', 'chart-accessibility', 'native-charts']
 ---
-
-<DocsLayout title="Data visualization: examples & usage — Lumen UI" description="Explore accessible charts, choose the right visualization, and copy working Astro, React, and Web Component examples. Learn data contracts, formatting, and native usage." breadcrumbs={[{ href: '/docs/web', label: 'Web' }, { href: '/docs/web/data-visualization', label: 'Data visualization' }]}>
-  <div class="viz-gallery">
-    <section class="viz-intro">
-      <p class="viz-eyebrow"><span aria-hidden="true"></span>Lumen / Data visualization</p>
-      <h1>Data, in its<br /><em>best light.</em></h1>
-      <div class="viz-intro-bottom">
-        <p>Find the pattern. Follow the detail. Beautiful, accessible charts that make every observation count.</p>
-        <Link href="#chart-recipes">Start building <Icon name="arrow-up-right" decorative size="sm" /></Link>
+<DocsLayout title="Chart guides & data visualization — Lumen UI" description="Choose from 16 accessible chart types. Explore visual examples, copy Astro, React, and Web Component code, and learn each chart's data contract." breadcrumbs={[{ href: '/docs', label: 'Docs' }, { href: '/docs/web', label: 'Web' }, { href: '/docs/web/data-visualization', label: 'Data visualization' }]}>
+  <div class="chart-directory">
+    <header class="chart-directory-hero">
+      <p class="chart-directory-eyebrow">Lumen / Data visualization</p>
+      <h1>A chart for<br /><em>every question.</em></h1>
+      <p>Choose a visual, then explore its live example, code, data shape, and API on a dedicated page.</p>
+      <div class="chart-directory-actions">
+        <ButtonLink href="/docs/web/data-visualization/gallery" variant="primary">Open interactive gallery <Icon name="arrow-up-right" decorative size="sm" /></ButtonLink>
+        <Link href="/docs/web/data-visualization/setup">Set up your framework</Link>
+      </div>
+    </header>
+    <ChartGuideNavigation />
+    <section id="chart-recipes" aria-labelledby="choose-chart-title">
+      <div class="chart-directory-heading" id="choose-a-chart"><h2 id="choose-chart-title">Find the right chart.</h2><p data-chart-count aria-live="polite">{chartGuides.length} chart guides</p></div>
+      <Form enhance={false} class="chart-directory-filters" role="search" aria-label="Find a chart" onsubmit="return false">
+        <div><Label for="chart-search">Search charts</Label><Input id="chart-search" type="search" placeholder="Try trend, target, or distribution…" data-chart-search-input /></div>
+        <div><Label for="chart-category">Your question</Label><Select id="chart-category" data-chart-category-input><option value="">All chart types</option>{categories.map(category => <option value={category}>{category}</option>)}</Select></div>
+      </Form>
+      <div class="chart-directory-grid" data-docs-toc-ignore>{chartGuides.map(guide => <ChartPreviewTile guide={guide} />)}</div>
+      <p class="chart-directory-empty" data-chart-empty hidden>No charts match. Try another question or clear the search.</p>
+    </section>
+    <section aria-labelledby="chart-guides-title">
+      <div class="chart-directory-heading"><h2 id="chart-guides-title">Build with confidence.</h2><p>Focused guides for the details.</p></div>
+      <div class="chart-guide-links">
+        {chartTopics.slice(1).map((topic, index) => <Card id={guideAnchors[index]} variant="muted"><h3><Link href={topic.href}>{topic.label} <Icon name="arrow-up-right" decorative size="sm" /></Link></h3><p>{topic.description}</p></Card>)}
       </div>
     </section>
-
-    <nav class="viz-guide-nav" aria-label="Data visualization guide">
-      <Link href="#chart-gallery">Gallery</Link>
-      <Link href="#choose-a-chart">Choose a chart</Link>
-      <Link href="#chart-setup">Setup</Link>
-      <Link href="#chart-recipes">Code examples</Link>
-      <Link href="#chart-data">Data & formatting</Link>
-      <Link href="#chart-accessibility">Accessibility</Link>
-      <Link href="#native-charts">Native</Link>
-    </nav>
-
-    <section id="chart-gallery" class="viz-workspace" aria-label="Interactive visualization gallery">
-      <header class="viz-workspace-heading">
-        <div><p class="viz-eyebrow">The overview</p><h2>A clearer picture.</h2></div>
-        <Badge variant="outline">Illustrative dataset</Badge>
-      </header>
-      <div class="viz-metrics">
-        {chartDemoMetrics.map((metric, index) => (
-          <Stat variant="bare" label={metric.label} value={metric.value}>
-            <p>Observed, 09:00–12:00</p>
-            <Sparkline values={metric.values} tone={index === 0 ? 'series-1' : 'series-2'} area label={`${metric.label} trend`} />
-          </Stat>
-        ))}
-        <Stat variant="bare" label="Response samples" value={String(chartDemoBins.reduce((sum, bin) => sum + bin.count, 0))}>
-          <p>12 intervals · 0–300 ms</p>
-          <Sparkline values={chartDemoBins.map(bin => bin.count)} tone="series-3" area label="Response-time distribution" />
-        </Stat>
-      </div>
-      <Tabs class="viz-frameworks" initialValue="astro">
-        <div class="viz-toolbar">
-          <TabsList aria-label="Chart framework">
-            <TabsTrigger value="astro">Astro</TabsTrigger>
-            <TabsTrigger value="react">React</TabsTrigger>
-            <TabsTrigger value="elements">Web Components</TabsTrigger>
-          </TabsList>
-          <span>One system. Three renderers.</span>
-        </div>
-        <TabsPanel value="astro">
-          <section class="viz-chart-grid" data-chart-demo="astro" aria-label="Astro charts">
-            <CalendarHeatmap aria-label="Astro daily activity" heading="Daily activity" description="August 2026 · missing days stay distinct" data={chartDemoCalendar} startDate="2026-08-01" endDate="2026-08-28" />
-            <FunnelChart aria-label="Astro activation funnel" heading="From visit to subscription" data={chartDemoFunnel} />
-            <BoxPlot aria-label="Astro response distribution" heading="Response distribution" description="Precomputed summary · minutes" data={chartDemoBoxPlots} />
-            <LineChart class="viz-main-chart" aria-label="Astro request volume" heading="Request volume" description="Requests and completions · 09:00–12:00" series={chartDemoSeries} xScale="linear" area markers="none" interactive syncGroup="visualization-demo" annotations={[{ id: 'target', label: 'Capacity target', value: 160 }]} />
-    <LollipopChart aria-label="Astro team rankings" heading="Team performance" description="Current score · shared scale" data={chartDemoComparisons} domain={{ min: 0, max: 100 }} valueLabel="Score" />
-    <DumbbellChart aria-label="Astro team comparison" heading="Progress by team" description="Previous quarter to current quarter" data={chartDemoComparisons} domain={{ min: 0, max: 100 }} referenceLabel="Previous" valueLabel="Current" />
-            <BulletChart aria-label="Astro delivery performance" heading="On-time delivery" description="Actual performance against the service target" value={86} target={95} ranges={chartDemoBulletRanges} formatValue={value => `${value}%`} />
-            <WaterfallChart aria-label="Astro balance changes" heading="Revenue movement" description="Opening balance to closing · USD, thousands" data={chartDemoWaterfall} valueLabel="USD, thousands" />
-            <Histogram aria-label="Astro response times" heading="Response time" description="Distribution of requests · milliseconds" bins={chartDemoBins} tone="series-3" />
-            <PieChart aria-label="Astro traffic sources" heading="Traffic sources" description="Share of acquisition by channel" series={chartDemoChannels} centerValue="48%" centerLabel="Organic" />
-            <Heatmap aria-label="Astro daily difference" heading="Activity patterns" description="Difference from baseline · every two hours" data={chartDemoHeatmap} colorScale="diverging" />
-          </section>
-        </TabsPanel>
-        <TabsPanel value="react">
-          <section data-chart-demo="react" aria-label="React charts"><div data-react-chart-demo><p>Loading the React example…</p></div></section>
-        </TabsPanel>
-        <TabsPanel value="elements">
-          <section class="viz-chart-grid" data-chart-demo="elements" aria-label="Web Component charts">
-            <lumen-calendar-heatmap aria-label="Elements daily activity" heading="Daily activity" data={JSON.stringify(chartDemoCalendar)} start-date="2026-08-01" end-date="2026-08-28"></lumen-calendar-heatmap>
-            <lumen-funnel-chart aria-label="Elements activation funnel" heading="From visit to subscription" data={JSON.stringify(chartDemoFunnel)}></lumen-funnel-chart>
-            <lumen-box-plot aria-label="Elements response distribution" heading="Response distribution" data={JSON.stringify(chartDemoBoxPlots)}></lumen-box-plot>
-            <lumen-line-chart class="viz-main-chart" aria-label="Elements request volume" heading="Request volume" description="Requests and completions · 09:00–12:00" series={JSON.stringify(chartDemoSeries)} x-scale="linear" area markers="none" interactive sync-group="visualization-demo" annotations={JSON.stringify([{ id: 'target', label: 'Capacity target', value: 160 }])}></lumen-line-chart>
-            <lumen-lollipop-chart aria-label="Elements team rankings" heading="Team performance" description="Current score · shared scale" data={JSON.stringify(chartDemoComparisons)} domain-min="0" domain-max="100" value-label="Score"></lumen-lollipop-chart>
-            <lumen-dumbbell-chart aria-label="Elements team comparison" heading="Progress by team" description="Previous quarter to current quarter" data={JSON.stringify(chartDemoComparisons)} domain-min="0" domain-max="100" reference-label="Previous" value-label="Current"></lumen-dumbbell-chart>
-            <lumen-bullet-chart aria-label="Elements delivery performance" heading="On-time delivery" description="Actual performance against the service target · percent" value="86" target="95" ranges={JSON.stringify(chartDemoBulletRanges)}></lumen-bullet-chart>
-            <lumen-waterfall-chart aria-label="Elements balance changes" heading="Revenue movement" description="Opening balance to closing · USD, thousands" value-label="USD, thousands" data={JSON.stringify(chartDemoWaterfall)}></lumen-waterfall-chart>
-            <lumen-histogram aria-label="Elements response times" heading="Response time" description="Distribution of requests · milliseconds" tone="series-3" bins={JSON.stringify(chartDemoBins)}></lumen-histogram>
-            <lumen-pie-chart aria-label="Elements traffic sources" heading="Traffic sources" description="Share of acquisition by channel" series={JSON.stringify([chartDemoChannels])} center-value="48%" center-label="Organic"></lumen-pie-chart>
-            <lumen-heatmap aria-label="Elements daily difference" heading="Activity patterns" description="Difference from baseline · every two hours" data={JSON.stringify(chartDemoHeatmap)} color-scale="diverging"></lumen-heatmap>
-          </section>
-        </TabsPanel>
-      </Tabs>
-      <div class="viz-instructions"><Icon name="mouse-pointer-2" decorative size="sm" /><p>Explore Request volume with pointer, touch, or arrow keys; use Escape to clear and its legend to compare. Open “View chart data” on any chart for exact values. Switch frameworks to inspect the same dataset.</p></div>
-    </section>
-
-    <ChartUsageGuide />
-
-    <footer class="viz-footer"><p>Designed to reveal more.</p><span>Semantic colors · Keyboard accessible · Exact source data</span><Link href="/docs/components">Explore the component library <Icon name="arrow-up-right" decorative size="sm" /></Link></footer>
+    <p class="chart-directory-support">Need a compact metric or a custom figure? Explore <Link href="/docs/components/stat">Stat</Link>, <Link href="/docs/components/meter">Meter</Link>, and <Link href="/docs/components/chart">Chart</Link>.</p>
   </div>
 </DocsLayout>
-
 <script>
-  import { createElement } from 'react'
-import { createRoot, type Root } from 'react-dom/client'
-
-import { defineLumenElements } from '@santi020k/lumen-elements'
-
-import { ReactChartDemo } from '../../../lib/react-chart-demo'
-
-  let root: Root | undefined
-
-  const mount = () => {
-    const container = document.querySelector<HTMLElement>('[data-react-chart-demo]')
-
-    if (!container || container.dataset.mounted) return
-
-    container.dataset.mounted = 'true'
-
-    defineLumenElements(['CalendarHeatmap', 'FunnelChart', 'BoxPlot', 'LollipopChart', 'DumbbellChart', 'BulletChart', 'LineChart', 'WaterfallChart', 'Histogram', 'Heatmap', 'PieChart'])
-
-    root = createRoot(container)
-
-    root.render(createElement(ReactChartDemo))
+  const legacyTargets: Record<string, string> = {
+    'chart-gallery': '/docs/web/data-visualization/gallery',
+    'chart-setup': '/docs/web/data-visualization/setup',
+    'chart-data': '/docs/web/data-visualization/data',
+    'chart-accessibility': '/docs/web/data-visualization/accessibility',
+    'native-charts': '/docs/web/data-visualization/native'
   }
 
-  mount()
+  const getLegacyTarget = (directory: HTMLElement): string | undefined => {
+    const anchor = window.location.hash.slice(1)
+    const legacyChart = [...directory.querySelectorAll<HTMLElement>('[data-chart-tile]')].find(card => card.id === anchor)
 
-  document.addEventListener('astro:page-load', mount)
+    return legacyTargets[anchor] ?? legacyChart?.querySelector<HTMLAnchorElement>('a')?.getAttribute('href') ?? undefined
+  }
 
-  document.addEventListener('astro:before-swap', () => {
-    root?.unmount()
+  const initializeChartDirectory = () => {
+    const directory = document.querySelector<HTMLElement>('.chart-directory')
 
-    root = undefined
-  })
+    if (!directory) return
+
+    const target = getLegacyTarget(directory)
+
+    if (target) {
+ window.location.replace(target)
+
+ return
+}
+
+    if (directory.dataset.ready) return
+
+    directory.dataset.ready = 'true'
+
+    const search = directory.querySelector<HTMLInputElement>('[data-chart-search-input]')
+    const category = directory.querySelector<HTMLSelectElement>('[data-chart-category-input]')
+    const cards = [...directory.querySelectorAll<HTMLElement>('[data-chart-tile]')]
+    const count = directory.querySelector<HTMLElement>('[data-chart-count]')
+    const empty = directory.querySelector<HTMLElement>('[data-chart-empty]')
+
+    if (!search || !category || !count || !empty) return
+
+    const update = () => {
+      const query = search.value.trim().toLowerCase()
+      const selected = category.value
+      let visible = 0
+
+      for (const card of cards) {
+        const matchesQuery = card.dataset.chartSearch?.includes(query)
+        const matchesCategory = !selected || card.dataset.chartCategory === selected
+
+        card.hidden = !(matchesQuery && matchesCategory)
+
+        if (!card.hidden) visible += 1
+      }
+
+      count.textContent = `${visible} chart ${visible === 1 ? 'guide' : 'guides'}`
+
+      empty.hidden = visible > 0
+    }
+
+    search.addEventListener('input', update)
+
+    category.addEventListener('change', update)
+
+    update()
+  }
+
+  initializeChartDirectory()
+
+  document.addEventListener('astro:page-load', initializeChartDirectory)
+
+  window.addEventListener('hashchange', initializeChartDirectory)
 </script>
-
 <style>
-  .viz-guide-nav { display: flex; flex-wrap: wrap; gap: 0.75rem 1.5rem; padding-block: 1rem; border-block: 1px solid hsl(var(--line)); }
-  .viz-guide-nav :global(a) { font-size: 0.75rem; padding-block: 0.25rem; }
-  .viz-gallery { display: grid; gap: 2.5rem; }
-  .viz-intro { display: grid; grid-template-columns: 1.1fr 1fr; gap: 1rem 2rem; padding-block: 1rem 0; align-items: end; }
-  .viz-intro > .viz-eyebrow { grid-column: 1 / -1; margin-bottom: 0; }
-  .viz-eyebrow { display: flex; align-items: center; gap: 0.625rem; margin: 0 0 1.25rem; color: hsl(var(--ink-soft)); font-size: 0.625rem; font-weight: 650; letter-spacing: 0.16em; text-transform: uppercase; }
-  .viz-eyebrow > span { width: 0.5rem; height: 0.5rem; border-radius: 50%; background: hsl(var(--brand)); box-shadow: 0 0 0 4px hsl(var(--brand) / 0.1); }
-  .viz-intro h1 { margin: 0; font-size: clamp(2.5rem, 4.5vw, 4rem); font-weight: 650; letter-spacing: -0.065em; line-height: 1.04; }
-  .viz-intro em { color: hsl(var(--brand)); font-style: normal; }
-  .viz-intro-bottom { display: flex; flex-direction: column; align-items: start; gap: 0.875rem; }
-  .viz-intro-bottom p { max-width: 31rem; margin: 0; color: hsl(var(--ink-soft)); font-size: 0.875rem; line-height: 1.8; }
-  .viz-intro-bottom :global(a) { flex-shrink: 0; display: flex; align-items: center; gap: 0.5rem; font-size: 0.75rem; }
-  .viz-workspace { display: grid; gap: 1.5rem; min-width: 0; }
-  .viz-workspace-heading { display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
-  .viz-workspace-heading .viz-eyebrow { margin-bottom: 0.375rem; }
-  .viz-workspace-heading h2 { margin: 0; font-size: 1.375rem; font-weight: 600; letter-spacing: -0.04em; }
-  .viz-workspace-heading :global(.ui-badge) { width: auto; font-size: 0.625rem; }
-  .viz-metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-block: 1px solid hsl(var(--line)); padding-block: 1.5rem; }
-  .viz-metrics :global(.ui-stat) { position: relative; min-width: 0; padding: 0 1.25rem; border-inline-start: 1px solid hsl(var(--line)); }
-  .viz-metrics :global(.ui-stat:first-child) { padding-inline-start: 0; border: 0; }
-  .viz-metrics :global(.ui-stat-label) { font-size: 0.6875rem; font-weight: 550; color: hsl(var(--ink-soft)); }
-  .viz-metrics :global(.ui-stat-value) { margin-block: 0.5rem; font-size: clamp(1.75rem, 3.5vw, 2.5rem); font-weight: 600; letter-spacing: -0.055em; line-height: 1; }
-  .viz-metrics p { margin: 0; font-size: 0.625rem; color: hsl(var(--ink-soft)); }
-  .viz-metrics :global(.ui-sparkline) { position: absolute; inset-inline-end: 1.25rem; top: 1.25rem; width: 4rem; height: 2rem; }
-  .viz-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
-  .viz-toolbar > span { color: hsl(var(--ink-soft)); font-size: 0.625rem; }
-  .viz-toolbar :global([role="tablist"]) { margin: 0; }
-  .viz-toolbar :global([role="tab"]) { font-size: 0.6875rem; }
-  .viz-frameworks :global([role="tabpanel"]) { margin-top: 1.25rem; padding: 0; border: 0; outline-offset: 0.375rem; }
-  .viz-gallery :global(.viz-chart-grid) { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; align-items: start; }
-  .viz-gallery :global(.viz-main-chart) { grid-column: 1 / -1; }
-  .viz-gallery :global(.viz-main-chart .ui-chart__plot) { margin-top: -0.5rem; }
-  .viz-instructions { display: flex; gap: 0.625rem; align-items: start; color: hsl(var(--ink-soft)); }
-  .viz-instructions :global(svg) { flex-shrink: 0; margin-top: 0.1rem; }
-  .viz-instructions p { margin: 0; font-size: 0.6875rem; line-height: 1.8; }
-  .viz-footer { display: grid; gap: 0.75rem; border-top: 1px solid hsl(var(--line)); padding-block: 2rem; }
-  .viz-footer p { margin: 0; font-size: 1.5rem; font-weight: 600; letter-spacing: -0.04em; }
-  .viz-footer span { color: hsl(var(--ink-soft)); font-size: 0.75rem; }
-  .viz-footer :global(a) { display: flex; align-items: center; gap: 0.5rem; width: fit-content; margin-top: 0.75rem; font-size: 0.75rem; }
-  @media (max-width: 640px) {
-    .viz-gallery { gap: 2.5rem; }
-    .viz-intro { grid-template-columns: 1fr; }
-    .viz-intro-bottom { align-items: start; flex-direction: column; gap: 1rem; }
-    .viz-gallery :global(.viz-chart-grid) { grid-template-columns: minmax(0, 1fr); }
-    .viz-metrics { grid-template-columns: 1fr; padding-block: 0; }
-    .viz-metrics :global(.ui-stat), .viz-metrics :global(.ui-stat:first-child) { padding: 1rem 0; border: 0; }
-    .viz-metrics :global(.ui-stat + .ui-stat) { border-top: 1px solid hsl(var(--line)); }
-    .viz-metrics :global(.ui-sparkline) { width: 6rem; height: 2.5rem; top: 2rem; inset-inline-end: 0; }
-    .viz-toolbar > span { display: none; }
-  }
+  .chart-directory, .chart-directory section { display: grid; gap: 1.5rem; min-width: 0; }
+  .chart-directory { gap: 2.5rem; }
+  .chart-directory-hero { display: grid; gap: 1.25rem; max-width: 48rem; }
+  .chart-directory h1 { margin: 0; font-size: clamp(2.5rem, 5vw, 4rem); letter-spacing: -.06em; line-height: 1.05; font-weight: 650; }
+  .chart-directory h1 em { font-style: normal; color: hsl(var(--brand)); }
+  .chart-directory-hero > p { max-width: 38rem; margin: 0; color: hsl(var(--ink-soft)); font-size: .9375rem; line-height: 1.8; }
+  .chart-directory-hero .chart-directory-eyebrow { color: hsl(var(--brand)); font-size: .6875rem; letter-spacing: .12em; text-transform: uppercase; }
+  .chart-directory-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 1.25rem; font-size: .8125rem; }
+  .chart-directory-heading { display: flex; flex-wrap: wrap; gap: .5rem 1rem; justify-content: space-between; align-items: baseline; }
+  .chart-directory h2 { margin: 0; font-size: 1.5rem; letter-spacing: -.035em; }
+  .chart-directory-heading p, .chart-directory-support, .chart-directory-empty { margin: 0; color: hsl(var(--ink-soft)); font-size: .8125rem; line-height: 1.75; }
+  .chart-directory-filters { display: grid; grid-template-columns: minmax(0,1fr) minmax(12rem,.45fr); gap: 1rem; }
+  .chart-directory-filters > div { display: grid; gap: .5rem; }
+  .chart-directory-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 1rem; }
+  .chart-directory-grid :global([hidden]) { display: none; }
+  .chart-guide-links { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 1rem; }
+  .chart-guide-links h3 { margin: 0 0 .75rem; font-size: .9375rem; }
+  .chart-guide-links p { margin: 0; color: hsl(var(--ink-soft)); font-size: .8125rem; line-height: 1.65; }
+  @media(max-width: 70rem) { .chart-directory-grid, .chart-guide-links { grid-template-columns: repeat(2,minmax(0,1fr)); } }
+  @media(max-width: 40rem) { .chart-directory-grid, .chart-guide-links, .chart-directory-filters { grid-template-columns: minmax(0,1fr); } }
 </style>

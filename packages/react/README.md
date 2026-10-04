@@ -37,6 +37,13 @@ React primitives for Lumen UI.
 This package provides React components for the shared Lumen primitive catalog using the standalone
 Lumen stylesheet.
 
+See the [shared web form contracts](../../docs/form-controls.md) for value ownership, reset,
+submission, disabled state, and event behavior.
+
+Form controls use `visualSize` (`visual-size` in Elements) with `default`, `sm` and `lg`.
+Select, PhoneInput and Segmented follow Input and NativeSelect; numeric input/select `size` keeps
+its native meaning. See the [v4 migration guide](../../docs/migrating-v3-to-v4.md#form-control-visual-sizing).
+
 ## Install
 
 Requires React 19 or newer in the consuming application.
@@ -65,6 +72,25 @@ stylesheet and remains materially smaller than the complete catalog.
 The stylesheet defaults `--ui-font` to `"Montserrat", "Avenir Next", "Segoe UI", sans-serif`.
 It declares the family stack but does not bundle or load font files. Load Montserrat once through
 your preferred delivery path, or override `--ui-font` in application CSS.
+
+## Selective imports
+
+Root imports remain supported. Standalone component entrypoints include `/components/attachments`,
+`/components/bullet-chart`, `/components/comparison-chart`, `/components/data-table`,
+`/components/date-range-calendar`, `/components/date-range-input`, `/components/expanded-charts`,
+`/components/image-comparison`, `/components/interval-charts`, and `/components/virtual-list`.
+Import behavior hooks from `/hooks`; use `/server` for the server-safe primitive catalog.
+Load the existing stylesheet once, regardless of the import path.
+
+```tsx
+import { ImageComparison } from '@santi020k/lumen-react/components/image-comparison'
+import { VirtualList } from '@santi020k/lumen-react/components/virtual-list'
+```
+
+These entries use the same implementation and types as root imports. Interactive entries retain
+`use client` for React Server Component consumers. A smaller module graph does not guarantee a
+smaller final bundle: a bundler can already remove unused root exports. Run the repository's
+`pnpm run measure:selective-imports` benchmark for the measured comparison.
 
 ## Appearance presets
 

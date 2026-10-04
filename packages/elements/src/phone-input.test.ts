@@ -73,3 +73,18 @@ test('registers reusable flag and phone number views with the phone family', () 
   number.setAttribute('value', '3')
   expect(number.querySelector('a')).toBeNull()
 })
+
+test('visual-size updates both phone controls and removes stale size modifiers', () => {
+  const { host, input, select } = mount()
+
+  host.setAttribute('visual-size', 'sm')
+  expect(input.classList.contains('ui-input--sm')).toBe(true)
+  expect(select.classList.contains('ui-select--sm')).toBe(true)
+  host.setAttribute('visual-size', 'lg')
+  expect(input.classList.contains('ui-input--sm')).toBe(false)
+  expect(input.classList.contains('ui-input--lg')).toBe(true)
+  expect(select.classList.contains('ui-select--lg')).toBe(true)
+  host.removeAttribute('visual-size')
+  expect(input.classList.contains('ui-input--lg')).toBe(false)
+  expect(select.classList.contains('ui-select--lg')).toBe(false)
+})

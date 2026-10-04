@@ -103,6 +103,7 @@ export {
   lumenComponentBehavior,
   type LumenComponentName,
   lumenComponentNames,
+  type LumenControlVisualSize,
   type LumenGlobalBehavior,
   lumenGlobalBehaviors,
   lumenPackages,

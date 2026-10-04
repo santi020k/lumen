@@ -9,7 +9,13 @@ import { validateContractApproval } from './check-lumen-3-contract.mjs'
 const repositoryRoot = resolve(import.meta.dirname, '..')
 const consumerChangeId = 'consumer-driven-component-polish'
 const swiftChangeId = 'swift-native-control-polish'
-const requiredChangeIds = [consumerChangeId, swiftChangeId]
+
+const requiredChangeIds = [
+  consumerChangeId, swiftChangeId,
+  'web-content-flow', 'web-control-visual-size', 'web-form-value-ownership',
+  'web-combobox-focus', 'web-phone-input-identity', 'web-virtual-list-ranges',
+  'web-rich-text-command-ownership'
+]
 
 const reviewedIconCaseDiagnostics = new Set([
   'enumelement LumenIconName.bangladeshiTaka has been added as a new enum case',

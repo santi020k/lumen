@@ -2551,7 +2551,7 @@ pre:where(:not(.ui-code pre)) code {
 
 .component-doc-heading p {
   margin: 0;
-  color: hsl(var(--ink-muted));
+  color: hsl(var(--ink-soft));
   font-size: 0.65rem;
   font-weight: 800;
   letter-spacing: 0.1em;

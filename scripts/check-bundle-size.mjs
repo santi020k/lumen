@@ -36,7 +36,7 @@ const allBudgets = [
     gzip: 20_000,
     packageName: '@santi020k/lumen-react',
     raw: 100_000,
-    relatedFiles: ['packages/react/dist/toast-context.js', 'packages/react/dist/toast-provider.js']
+    relatedFiles: ['packages/react/dist/toast-context.js', 'packages/react/dist/toast-provider.js', 'packages/react/dist/select-form.js']
   },
   { file: 'packages/elements/dist/define.js', gzip: 47_000, packageName: '@santi020k/lumen-elements', raw: 261_000 }
 ]

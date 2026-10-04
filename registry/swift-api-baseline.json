@@ -1619,6 +1619,32 @@
           "precise": "s:7LumenUI0A11ImageRadiusO4noneyA2CmF"
         },
         {
+          "declaration": "@MainActor struct LumenMultiSelect",
+          "kind": "swift.struct",
+          "path": [
+            "LumenMultiSelect"
+          ],
+          "precise": "s:7LumenUI0A11MultiSelectV"
+        },
+        {
+          "declaration": "@MainActor init(_ label: String, values: Binding<Set<String>>, query: Binding<String>, options: [LumenAutocompleteOption<String>], description: String? = nil, errorMessage: String? = nil, loading: Bool = false, resultsErrorMessage: String? = nil, onRetry: (() -> Void)? = nil, readOnly: Bool = false, chooseLabel: String = \"Choose options\", searchLabel: String = \"Search options\", clearSearchLabel: String = \"Clear search\", doneLabel: String = \"Done\", emptyLabel: String = \"No matching options\", loadingLabel: String = \"Loading options\", retryLabel: String = \"Retry\", selectionLabel: @escaping (Int) -> String = { \"\\($0) selected\" }, removeLabel: @escaping (String) -> String = { \"Remove \\($0)\" })",
+          "kind": "swift.init",
+          "path": [
+            "LumenMultiSelect",
+            "init(_:values:query:options:description:errorMessage:loading:resultsErrorMessage:onRetry:readOnly:chooseLabel:searchLabel:clearSearchLabel:doneLabel:emptyLabel:loadingLabel:retryLabel:selectionLabel:removeLabel:)"
+          ],
+          "precise": "s:7LumenUI0A11MultiSelectV_6values5query7options11description12errorMessage7loading012resultsErrorJ07onRetry8readOnly11chooseLabel06searchS0011clearSearchS004doneS005emptyS00kS005retryS009selectionS006removeS0ACSS_05SwiftB07BindingVyShySSGGAXySSGSayAA0A18AutocompleteOptionVySSGGSSSgA4_SbA4_yycSgSbS8SSicS2Sctcfc"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenMultiSelect",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A11MultiSelectV4bodyQrvp"
+        },
+        {
           "declaration": "@MainActor struct LumenNumberField",
           "kind": "swift.struct",
           "path": [
@@ -1742,12 +1768,47 @@
           "precise": "s:7LumenUI0A11PickerStyleO9segmentedyA2CmF"
         },
         {
+          "declaration": "@MainActor struct LumenRangeSlider",
+          "kind": "swift.struct",
+          "path": [
+            "LumenRangeSlider"
+          ],
+          "precise": "s:7LumenUI0A11RangeSliderV"
+        },
+        {
+          "declaration": "@MainActor init(_ label: LocalizedStringKey, value: Binding<ClosedRange<Double>>, in bounds: ClosedRange<Double> = 0...100, step: Double? = nil, readOnly: Bool = false, startLabel: LocalizedStringKey = \"Minimum\", endLabel: LocalizedStringKey = \"Maximum\", formatValue: @escaping (Double) -> String = { String($0) })",
+          "kind": "swift.init",
+          "path": [
+            "LumenRangeSlider",
+            "init(_:value:in:step:readOnly:startLabel:endLabel:formatValue:)"
+          ],
+          "precise": "s:7LumenUI0A11RangeSliderV_5value2in4step8readOnly10startLabel03endK011formatValueAC05SwiftB018LocalizedStringKeyV_AK7BindingVySNySdGGAPSdSgSbA2MSSSdctcfc"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenRangeSlider",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A11RangeSliderV4bodyQrvp"
+        },
+        {
           "declaration": "@MainActor struct LumenSearchField",
           "kind": "swift.struct",
           "path": [
             "LumenSearchField"
           ],
           "precise": "s:7LumenUI0A11SearchFieldV"
+        },
+        {
+          "declaration": "@MainActor init(_ prompt: String = \"Search\", text: Binding<String>, clearLabel: String)",
+          "kind": "swift.init",
+          "path": [
+            "LumenSearchField",
+            "init(_:text:clearLabel:)"
+          ],
+          "precise": "s:7LumenUI0A11SearchFieldV_4text10clearLabelACSS_05SwiftB07BindingVySSGSStcfc"
         },
         {
           "declaration": "@MainActor init(_ prompt: String = \"Search\", text: Binding<String>)",
@@ -31406,6 +31467,32 @@
           "precise": "s:7LumenUI0A11ImageRadiusO4noneyA2CmF"
         },
         {
+          "declaration": "@MainActor struct LumenMultiSelect",
+          "kind": "swift.struct",
+          "path": [
+            "LumenMultiSelect"
+          ],
+          "precise": "s:7LumenUI0A11MultiSelectV"
+        },
+        {
+          "declaration": "@MainActor init(_ label: String, values: Binding<Set<String>>, query: Binding<String>, options: [LumenAutocompleteOption<String>], description: String? = nil, errorMessage: String? = nil, loading: Bool = false, resultsErrorMessage: String? = nil, onRetry: (() -> Void)? = nil, readOnly: Bool = false, chooseLabel: String = \"Choose options\", searchLabel: String = \"Search options\", clearSearchLabel: String = \"Clear search\", doneLabel: String = \"Done\", emptyLabel: String = \"No matching options\", loadingLabel: String = \"Loading options\", retryLabel: String = \"Retry\", selectionLabel: @escaping (Int) -> String = { \"\\($0) selected\" }, removeLabel: @escaping (String) -> String = { \"Remove \\($0)\" })",
+          "kind": "swift.init",
+          "path": [
+            "LumenMultiSelect",
+            "init(_:values:query:options:description:errorMessage:loading:resultsErrorMessage:onRetry:readOnly:chooseLabel:searchLabel:clearSearchLabel:doneLabel:emptyLabel:loadingLabel:retryLabel:selectionLabel:removeLabel:)"
+          ],
+          "precise": "s:7LumenUI0A11MultiSelectV_6values5query7options11description12errorMessage7loading012resultsErrorJ07onRetry8readOnly11chooseLabel06searchS0011clearSearchS004doneS005emptyS00kS005retryS009selectionS006removeS0ACSS_05SwiftB07BindingVyShySSGGAXySSGSayAA0A18AutocompleteOptionVySSGGSSSgA4_SbA4_yycSgSbS8SSicS2Sctcfc"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenMultiSelect",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A11MultiSelectV4bodyQrvp"
+        },
+        {
           "declaration": "@MainActor struct LumenNumberField",
           "kind": "swift.struct",
           "path": [
@@ -31529,12 +31616,47 @@
           "precise": "s:7LumenUI0A11PickerStyleO9segmentedyA2CmF"
         },
         {
+          "declaration": "@MainActor struct LumenRangeSlider",
+          "kind": "swift.struct",
+          "path": [
+            "LumenRangeSlider"
+          ],
+          "precise": "s:7LumenUI0A11RangeSliderV"
+        },
+        {
+          "declaration": "@MainActor init(_ label: LocalizedStringKey, value: Binding<ClosedRange<Double>>, in bounds: ClosedRange<Double> = 0...100, step: Double? = nil, readOnly: Bool = false, startLabel: LocalizedStringKey = \"Minimum\", endLabel: LocalizedStringKey = \"Maximum\", formatValue: @escaping (Double) -> String = { String($0) })",
+          "kind": "swift.init",
+          "path": [
+            "LumenRangeSlider",
+            "init(_:value:in:step:readOnly:startLabel:endLabel:formatValue:)"
+          ],
+          "precise": "s:7LumenUI0A11RangeSliderV_5value2in4step8readOnly10startLabel03endK011formatValueAC05SwiftB018LocalizedStringKeyV_AK7BindingVySNySdGGAPSdSgSbA2MSSSdctcfc"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenRangeSlider",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A11RangeSliderV4bodyQrvp"
+        },
+        {
           "declaration": "@MainActor struct LumenSearchField",
           "kind": "swift.struct",
           "path": [
             "LumenSearchField"
           ],
           "precise": "s:7LumenUI0A11SearchFieldV"
+        },
+        {
+          "declaration": "@MainActor init(_ prompt: String = \"Search\", text: Binding<String>, clearLabel: String)",
+          "kind": "swift.init",
+          "path": [
+            "LumenSearchField",
+            "init(_:text:clearLabel:)"
+          ],
+          "precise": "s:7LumenUI0A11SearchFieldV_4text10clearLabelACSS_05SwiftB07BindingVySSGSStcfc"
         },
         {
           "declaration": "@MainActor init(_ prompt: String = \"Search\", text: Binding<String>)",
@@ -88873,6 +88995,32 @@
           "precise": "s:7LumenUI0A11ImageRadiusO4noneyA2CmF"
         },
         {
+          "declaration": "@MainActor struct LumenMultiSelect",
+          "kind": "swift.struct",
+          "path": [
+            "LumenMultiSelect"
+          ],
+          "precise": "s:7LumenUI0A11MultiSelectV"
+        },
+        {
+          "declaration": "@MainActor init(_ label: String, values: Binding<Set<String>>, query: Binding<String>, options: [LumenAutocompleteOption<String>], description: String? = nil, errorMessage: String? = nil, loading: Bool = false, resultsErrorMessage: String? = nil, onRetry: (() -> Void)? = nil, readOnly: Bool = false, chooseLabel: String = \"Choose options\", searchLabel: String = \"Search options\", clearSearchLabel: String = \"Clear search\", doneLabel: String = \"Done\", emptyLabel: String = \"No matching options\", loadingLabel: String = \"Loading options\", retryLabel: String = \"Retry\", selectionLabel: @escaping (Int) -> String = { \"\\($0) selected\" }, removeLabel: @escaping (String) -> String = { \"Remove \\($0)\" })",
+          "kind": "swift.init",
+          "path": [
+            "LumenMultiSelect",
+            "init(_:values:query:options:description:errorMessage:loading:resultsErrorMessage:onRetry:readOnly:chooseLabel:searchLabel:clearSearchLabel:doneLabel:emptyLabel:loadingLabel:retryLabel:selectionLabel:removeLabel:)"
+          ],
+          "precise": "s:7LumenUI0A11MultiSelectV_6values5query7options11description12errorMessage7loading012resultsErrorJ07onRetry8readOnly11chooseLabel06searchS0011clearSearchS004doneS005emptyS00kS005retryS009selectionS006removeS0ACSS_05SwiftB07BindingVyShySSGGAXySSGSayAA0A18AutocompleteOptionVySSGGSSSgA4_SbA4_yycSgSbS8SSicS2Sctcfc"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenMultiSelect",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A11MultiSelectV4bodyQrvp"
+        },
+        {
           "declaration": "@MainActor struct LumenNumberField",
           "kind": "swift.struct",
           "path": [
@@ -88996,12 +89144,47 @@
           "precise": "s:7LumenUI0A11PickerStyleO9segmentedyA2CmF"
         },
         {
+          "declaration": "@MainActor struct LumenRangeSlider",
+          "kind": "swift.struct",
+          "path": [
+            "LumenRangeSlider"
+          ],
+          "precise": "s:7LumenUI0A11RangeSliderV"
+        },
+        {
+          "declaration": "@MainActor init(_ label: LocalizedStringKey, value: Binding<ClosedRange<Double>>, in bounds: ClosedRange<Double> = 0...100, step: Double? = nil, readOnly: Bool = false, startLabel: LocalizedStringKey = \"Minimum\", endLabel: LocalizedStringKey = \"Maximum\", formatValue: @escaping (Double) -> String = { String($0) })",
+          "kind": "swift.init",
+          "path": [
+            "LumenRangeSlider",
+            "init(_:value:in:step:readOnly:startLabel:endLabel:formatValue:)"
+          ],
+          "precise": "s:7LumenUI0A11RangeSliderV_5value2in4step8readOnly10startLabel03endK011formatValueAC05SwiftB018LocalizedStringKeyV_AK7BindingVySNySdGGAPSdSgSbA2MSSSdctcfc"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenRangeSlider",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A11RangeSliderV4bodyQrvp"
+        },
+        {
           "declaration": "@MainActor struct LumenSearchField",
           "kind": "swift.struct",
           "path": [
             "LumenSearchField"
           ],
           "precise": "s:7LumenUI0A11SearchFieldV"
+        },
+        {
+          "declaration": "@MainActor init(_ prompt: String = \"Search\", text: Binding<String>, clearLabel: String)",
+          "kind": "swift.init",
+          "path": [
+            "LumenSearchField",
+            "init(_:text:clearLabel:)"
+          ],
+          "precise": "s:7LumenUI0A11SearchFieldV_4text10clearLabelACSS_05SwiftB07BindingVySSGSStcfc"
         },
         {
           "declaration": "@MainActor init(_ prompt: String = \"Search\", text: Binding<String>)",

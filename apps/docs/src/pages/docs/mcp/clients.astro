@@ -1,0 +1,75 @@
+---
+import { Badge, Callout, Card, CodeTabs } from '@santi020k/lumen-astro'
+
+import CodeBlock from '../../../components/CodeBlock.astro'
+import DocsActionLink from '../../../components/DocsActionLink.astro'
+import DocsPageHero from '../../../components/DocsPageHero.astro'
+import McpGuideLayout from '../../../components/McpGuideLayout.astro'
+import { claudeConfig, claudePluginGuideUrl, claudePluginInstall, codexConfig, cursorConfig, genericConfig, httpCommand, packageName, pluginUrl } from '../../../data/mcp-guides'
+
+const clientConfigurations = [
+  { value: 'codex', label: 'Codex', language: 'toml', code: codexConfig },
+  { value: 'claude', label: 'Claude Desktop', language: 'json', code: claudeConfig },
+  { value: 'cursor', label: 'Cursor', language: 'json', code: cursorConfig },
+  { value: 'stdio', label: 'Any stdio client', language: 'json', code: genericConfig },
+  { value: 'http', label: 'Streamable HTTP', language: 'bash', code: httpCommand }
+]
+---
+
+<McpGuideLayout
+  title="MCP client setup and plugins — Lumen UI"
+  description="Connect Lumen to Codex, Claude Desktop, Cursor, or any stdio or HTTP MCP client. Copy working configurations or install the bundled Lumen UI plugin."
+  pageNavigation={[
+    { id: 'setup-title', label: 'Client configuration' },
+    { id: 'plugin-title', label: 'ChatGPT and Codex plugin' },
+    { id: 'claude-plugin-title', label: 'Claude Code plugin' }
+  ]}
+>
+  <DocsPageHero compact eyebrow="MCP / Setup" title="Connect your client." description="Choose a local MCP server or install a plugin that includes the workflow skill and catalog together." />
+  <section class="mcp-section" aria-labelledby="setup-title">
+    <div class="mcp-section__heading">
+      <div><p>Local server</p><h2 id="setup-title">Run with npx over stdio or HTTP</h2></div>
+      <p>The server ships a self-contained snapshot of the catalog, so no repository checkout is required. With Node.js 20.20 or newer, point your MCP client at <code>npx -y {packageName}</code>.</p>
+    </div>
+    <CodeTabs ariaLabel="MCP client configuration" items={clientConfigurations} />
+    <div class="mcp-client-notes">
+      <p>Save the configuration in <code>.codex/config.toml</code> for Codex, <code>claude_desktop_config.json</code> for Claude Desktop, or <code>.cursor/mcp.json</code> for Cursor. For another stdio client, adapt the generic configuration to its server settings.</p>
+      <p>Codex also supports the command <code>codex mcp add lumen -- npx -y {packageName}</code>.</p>
+      <Callout title="Hosting the HTTP transport">
+        Streamable HTTP supports local or self-hosted use, with safe response headers and bounded request rates. Public hosting must terminate TLS, set the exact allowed host, and configure authentication if the deployed data requires it.
+      </Callout>
+    </div>
+  </section>
+
+    <Card as="section" class="mcp-file-card" aria-labelledby="plugin-title" glass="subtle">
+      <div>
+        <Badge>Published · 1.0.0</Badge>
+        <h2 id="plugin-title">Lumen UI for ChatGPT and Codex</h2>
+        <p>
+          Open Lumen UI in the Plugins Directory and select <strong>Install plugin</strong>.
+          Then mention <strong>@Lumen UI</strong> in a request or choose a starter prompt.
+          The plugin bundles the workflow skill and hosted, read-only public catalog, with no
+          separate Lumen account, API key, or local server setup.
+        </p>
+      </div>
+      <p>Try: “Find the right Lumen components for an accessible React settings screen.”</p>
+      <DocsActionLink href={pluginUrl} target="_blank" rel="noopener noreferrer">
+        Install Lumen UI
+      </DocsActionLink>
+    </Card>
+
+    <Card as="section" class="mcp-file-card" aria-labelledby="claude-plugin-title" glass="subtle">
+      <div>
+        <Badge>Claude Code plugin</Badge>
+        <h2 id="claude-plugin-title">Install the skill and live catalog together</h2>
+        <p>
+          Add Lumen's repository marketplace, then install one plugin that bundles the portable
+          workflow skill with the latest published read-only MCP catalog.
+        </p>
+      </div>
+      <CodeBlock code={claudePluginInstall} lang="text" title="Claude Code" />
+      <DocsActionLink href={claudePluginGuideUrl} target="_blank" rel="noopener noreferrer">
+        Read the Claude Code guide
+      </DocsActionLink>
+    </Card>
+</McpGuideLayout>

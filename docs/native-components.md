@@ -1,5 +1,7 @@
 # Native component reference
 
+<!-- cspell:words Capacidad -->
+
 Lumen's React Native, SwiftUI, and Jetpack Compose adapters share semantic contracts while using
 each platform's rendering, image, focus, and accessibility systems. This reference covers setup,
 the supported component surface, platform mappings, and the checks required for a component to be
@@ -268,6 +270,7 @@ owned.
 | Section header    | `LumenSectionHeader`    | `LumenSectionHeader`     | `LumenSectionHeader`    | Section identity, optional count, and trailing actions                        |
 | Status bar        | `LumenStatusBar`        | `LumenStatusBar`         | `LumenStatusBar`        | Wrapping status message with ordered trailing content at its intrinsic size     |
 | Picker            | `LumenPicker`           | `LumenPicker`            | `LumenPicker`           | Controlled single-value selection with native or accessible menu presentation |
+| Range slider | `LumenRangeSlider` | `LumenRangeSlider` | `LumenRangeSlider` | Controlled interval with independently named adjustable endpoints |
 | Slider            | `LumenSlider`           | `LumenSlider`            | `LumenSlider`           | Native or dependency-free continuous and stepped range input                  |
 | Gauge             | `LumenGauge`            | `LumenGauge`             | `LumenGauge`            | Clamped circular metric with a formatted accessible value                     |
 | Sheet             | `LumenSheet`            | `lumenSheet`             | `LumenSheet`            | Safe-area-aware supplemental surface with reachable actions                   |
@@ -1049,7 +1052,7 @@ provider suggestions, physical TalkBack behavior, or consumer qualification.
 ### Compose v4 product controls
 
 The Android-specific catalog also includes `LumenTopAppBar`, `LumenSwipeActions`,
-`LumenMultiSelect`, `LumenRangeSlider`, and `LumenAdaptiveListDetailScaffold`.
+and `LumenAdaptiveListDetailScaffold`.
 
 - App bars provide small, medium, and large sizes and named navigation/action slots. Remember a
   `LumenTopAppBarScrollBehavior` with `rememberLumenTopAppBarScrollBehavior`, then attach its
@@ -1062,22 +1065,6 @@ The Android-specific catalog also includes `LumenTopAppBar`, `LumenSwipeActions`
   expose the same operations without gestures. Set `enabled = false` while busy. Destructive
   actions use the danger intent; confirmation, undo, persistence and actual removal belong to the
   application. Use stable lazy-list keys for each record.
-- Multi-select takes `LumenSelectionOption` results and a controlled `Set<String>`. Selection is
-  immediate; Done or outside dismissal closes the dialog without reverting changes. The application
-  owns `query`, filtering, asynchronous results, cancellation and retry. Loading and results errors
-  hide stale selectable results. Options require unique non-empty values and labels. Selections
-  absent from current results remain visible with their raw value as a fallback label and can be
-  removed; keep stable human-readable values or retain selected options in results when friendly
-  chip labels are needed. Disabled options cannot be selected or removed while present. Read-only
-  and disabled states dismiss selection and prevent edits. `errorMessage` is form validation;
-  `resultsErrorMessage` is a separate recoverable search failure. Localize search, completion,
-  empty/loading/retry, selection count and chip-removal labels.
-- Range sliders expose separately labeled native lower and upper thumbs. Bounds must be finite,
-  strictly increasing, and have a finite span. Values are clamped and reversed endpoints reordered;
-  nonfinite endpoints fall back to the corresponding bound without writing to host state. `steps`
-  accepts 0–10,000 intermediate stops; zero means continuous adjustment. Supply translated
-  `startLabel`, `endLabel`, and `formatValue` for spoken and visible values. Read-only or disabled
-  states prevent adjustment. Units, persistence, and exact financial amounts belong to the host.
 - Adaptive list/detail scaffolds are full-window layouts backed by Material Adaptive 1.3.0.
   Window size, posture and separating hinges determine the pane arrangement. A null `selectedKey`
   prioritizes the list and shows `emptyDetail` beside it in wide windows; a selection prioritizes
@@ -1129,3 +1116,58 @@ supplied stages, and box plots render precomputed statistics. Every chart preser
 and supplies a visible expandable exact data list plus an accessible alternative when hidden.
 See [data visualization](data-visualization.md#calendars-funnels-and-box-plots) for contracts,
 formatters, domain validation, and the boundary between application statistics and presentation.
+
+
+## Native range filters
+
+`LumenRangeSlider` is available in all three native adapters. React Native and SwiftUI compose two
+independent Lumen sliders vertically so both endpoints remain reachable without overlapping thumbs.
+Compose retains its Material two-thumb range slider. Both endpoints have independent localized
+names and formatted spoken values. Applications own the interval, units, filtering and persistence.
+
+Bounds must be finite, strictly increasing, and have a finite span. Values are clamped before display;
+React Native and Compose reorder reversed endpoints. Swift uses `ClosedRange<Double>`, which already
+requires ordered endpoints. Nonfinite values fall back to the corresponding bound. Display
+normalization never writes to host state. Adjustment preserves the opposite endpoint and prevents
+crossing; equal endpoints are valid. Read-only and disabled controls reject adjustment.
+
+React Native uses `readonly [number, number]`, `min`, `max`, and an optional positive numeric `step`
+(default: one hundredth of the span). SwiftUI uses a `Binding<ClosedRange<Double>>`, `in:`, and an
+optional positive `step` (default: continuous). React Native and Swift snap explicit steps against
+the full domain rather than changing the step origin when an endpoint moves. Compose uses
+`valueRange` and `steps` (0–10,000 intermediate stops; zero means continuous). For 0–100 in increments
+of ten, use `step={10}`, `step: 10`, or `steps = 9`, respectively. A step must be finite, positive,
+and representable in its domain. Keep exact monetary arithmetic in the application.
+
+```tsx
+<LumenRangeSlider label="Capacidad" value={capacity} onValueChange={setCapacity}
+  min={0} max={100} step={10} startLabel="Mínimo" endLabel="Máximo"
+  formatValue={value => `${value} %`} />
+```
+
+```swift
+LumenRangeSlider("Capacidad", value: $capacity, in: 0...100, step: 10,
+    startLabel: "Mínimo", endLabel: "Máximo", formatValue: { "\(Int($0)) %" })
+```
+
+```kotlin
+LumenRangeSlider("Capacidad", capacity, { capacity = it }, valueRange = 0f..100f,
+    steps = 9, startLabel = "Mínimo", endLabel = "Máximo", formatValue = { "${it.toInt()} %" })
+```
+
+## Native multiple selection
+
+`LumenMultiSelect` is shared across React Native, SwiftUI and Compose. Compose takes
+`LumenSelectionOption` results, while SwiftUI and React Native reuse their `LumenAutocompleteOption`
+models. A controlled string set holds selections. Selection is
+immediate; Done or outside dismissal closes the dialog without reverting changes. The application
+owns `query`, filtering, asynchronous results, cancellation and retry. Loading and results errors
+hide stale selectable results. Options require unique non-empty values and labels. Selections
+absent from current results remain visible with their raw value as a fallback label and can be
+removed; keep stable human-readable values or retain selected options in results when friendly
+chip labels are needed. Disabled options cannot be selected or removed while present. Read-only
+and disabled states dismiss selection and prevent edits. `errorMessage` is form validation;
+`resultsErrorMessage` is a separate recoverable search failure. Localize search, completion,
+empty/loading/retry, selection count and chip-removal labels.
+
+See the [complete web-to-native audit](lumen-4-web-native-audit.md) for the remaining catalog gaps.

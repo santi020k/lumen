@@ -602,7 +602,10 @@ export const componentCollections: ComponentCollection[] = [
       'BulletChart',
       'LollipopChart',
       'DumbbellChart',
-      'WaterfallChart'
+      'WaterfallChart',
+      'CalendarHeatmap',
+      'FunnelChart',
+      'BoxPlot'
     ]
   },
   {

@@ -603,3 +603,24 @@ states, and expandable exact data. Funnel and box rows require unique IDs and no
 Optional increasing calendar/box domains must include every observed value; omitted domains
 resolve from measurements with finite padding for constant values. No raw-sample aggregation is
 performed. Native fonts, semantic chart colors and adaptive row labels preserve text accessibility.
+
+`LumenRangeSlider` provides a controlled numeric interval with independently named endpoints,
+localized value formatting, and disabled/read-only protection. See the
+[native range-filter contract](../../docs/native-components.md#native-range-filters) for each
+adapter's binding and step conventions.
+
+## Multiple selection
+
+On iOS, macOS and visionOS, `LumenMultiSelect` binds a `Set<String>` and a search query, reusing
+`LumenAutocompleteOption<String>` results. The application supplies filtering, requests and
+persistence. Selection applies immediately; dismissal does not revert it. Missing selected options
+retain their raw value and can be removed. Disabled options cannot be changed while present.
+Loading or search failure hides stale results; `errorMessage` is form validation, while
+`resultsErrorMessage` and `onRetry` describe search recovery. Read-only and `.disabled(true)` states
+close the sheet. Localize all action/result labels and count/removal formatters.
+`LumenSearchField` also accepts `clearLabel` to localize its clear action.
+
+```swift
+LumenMultiSelect("Teams", values: $teams, query: $query, options: matchingTeams,
+                 loading: searching, resultsErrorMessage: searchError, onRetry: retrySearch)
+```

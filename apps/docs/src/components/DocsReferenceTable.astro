@@ -13,10 +13,10 @@ const { columns, labelledBy, rows } = Astro.props
 <Table
   aria-labelledby={labelledBy}
   class="docs-reference-table"
-  role="region"
+  role="group"
   tabindex="0"
 >
-  <table>
+  <table aria-labelledby={labelledBy}>
     <thead>
       <tr>
         {columns.map(column => <th scope="col">{column}</th>)}
@@ -67,7 +67,7 @@ const { columns, labelledBy, rows } = Astro.props
   }
 
   thead th {
-    color: hsl(var(--ink-muted));
+    color: hsl(var(--ink-soft));
     font-size: 0.7rem;
     font-weight: 800;
     letter-spacing: 0.06em;
