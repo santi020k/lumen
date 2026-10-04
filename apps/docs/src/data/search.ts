@@ -16,6 +16,7 @@ import {
   runtimeEvents,
   themeSetups
 } from './docs'
+import { publishedGuides } from './guides'
 import { mcpGuideTopics } from './mcp-guides'
 import { getNativeComponentsForPlatform } from './native-components'
 import { nativeGuidePlatforms, nativeGuideTopics } from './native-guide-topics'
@@ -250,17 +251,14 @@ const recipeItems: DocsSearchItem[] = [
     title: 'Lumen MCP server',
     type: 'Recipe'
   },
-  {
+  ...publishedGuides.map(guide => ({
     category: 'Guides',
-    description:
-      'Build and verify a production-shaped account settings screen in Astro, React, or Web Components.',
-    href: '/guides/ship-a-settings-screen',
-    keywords: normalizeKeywords(
-      'guide tutorial account settings screen evaluation form validation keyboard accessibility astro react web components'
-    ),
-    title: 'Ship an accessible settings screen',
-    type: 'Recipe'
-  },
+    description: guide.description,
+    href: guide.href,
+    keywords: normalizeKeywords('guide tutorial', guide.title, guide.description),
+    title: guide.title,
+    type: 'Recipe' as const
+  })),
   {
     category: 'Community',
     description:

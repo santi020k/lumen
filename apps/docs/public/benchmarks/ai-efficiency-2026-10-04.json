@@ -1,0 +1,681 @@
+{
+  "generatedBy": "pnpm run report:ai-efficiency",
+  "evidence": "local candidate experiment",
+  "schemaVersion": 1,
+  "createdAt": "2026-10-04T16:11:07.218Z",
+  "model": "gpt-6-astra",
+  "effort": "xhigh",
+  "cli": "codex-cli 0.159.0-alpha.12.1",
+  "revision": "972348dec4333b8b597c6cee57c96a4896c22171",
+  "revisionRole": "checkout-base",
+  "hashes": {
+    "harness": "4161cb166c80f20dd1ded9b9b0810f19f3330ed03e610219612b1681d029b5b8",
+    "verifier": "1b783743e1631274980a9c15f70062fcaa5fd13a0fb1d1d2115ed6d848508370",
+    "metrics": "28a71efddf8e835b53614d645fd37cf087631175494d9a4b75087ae6464919fe",
+    "stylesheet": "a53239226d49f29a2a7809ddf92ffe904210b3c491bfd99cad2843899a82924e",
+    "react": "8edc0fde33cd424d93434d217e59ea2cf8682434a9789a2da7c8ad8e6e911e54",
+    "catalog": "80966dbee5888713b9c2d9ca47f81b7e7eaf65b34604f515ae8a5a1666afcb7f",
+    "skill": "240d1cb15f0df9c24ff069879749409edddcc803e92c4520c174ee4345592d9f"
+  },
+  "repetitions": 3,
+  "maxAttempts": 2,
+  "scenarios": [
+    {
+      "id": "profile-dialog",
+      "prompt": "Build a profile settings screen with the main h1 Profile. The Edit profile button opens a modal dialog named Profile settings. Its Display name text field initially contains Ada and receives focus on opening. Editing the field persists across closing and reopening. Escape and the Cancel button both close the dialog and return focus to Edit profile. Trap keyboard focus while the modal is open."
+    },
+    {
+      "id": "notification-settings",
+      "prompt": "Build a settings screen with the main h1 Notification settings. The Email address field initially contains ada@example.com. Show delivery details toggles the initially hidden text Weekly summaries arrive on Monday. without clearing edited input. Save preferences displays a status region containing Preferences saved for <email>. using the current field value. This is an in-memory demo, with no network or persistence across page reloads."
+    }
+  ],
+  "runs": [
+    {
+      "case": "profile-dialog",
+      "mode": "scratch",
+      "repetition": 1,
+      "status": "passed",
+      "durationMs": 154374,
+      "usage": {
+        "inputTokens": 111968,
+        "cachedInputTokens": 91136,
+        "outputTokens": 4553,
+        "totalTokens": 116521,
+        "toolCalls": 4
+      },
+      "attempts": [
+        {
+          "attempt": 1,
+          "usage": {
+            "inputTokens": 111968,
+            "cachedInputTokens": 91136,
+            "outputTokens": 4553,
+            "totalTokens": 116521,
+            "toolCalls": 4
+          },
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "case": "profile-dialog",
+      "mode": "docs",
+      "repetition": 1,
+      "status": "passed",
+      "durationMs": 226540,
+      "usage": {
+        "inputTokens": 483746,
+        "cachedInputTokens": 405760,
+        "outputTokens": 5936,
+        "totalTokens": 489682,
+        "toolCalls": 22
+      },
+      "attempts": [
+        {
+          "attempt": 1,
+          "usage": {
+            "inputTokens": 260926,
+            "cachedInputTokens": 212480,
+            "outputTokens": 4408,
+            "totalTokens": 265334,
+            "toolCalls": 10
+          },
+          "status": "failed"
+        },
+        {
+          "attempt": 2,
+          "usage": {
+            "inputTokens": 222820,
+            "cachedInputTokens": 193280,
+            "outputTokens": 1528,
+            "totalTokens": 224348,
+            "toolCalls": 12
+          },
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "case": "profile-dialog",
+      "mode": "skill-mcp",
+      "repetition": 1,
+      "status": "passed",
+      "durationMs": 267841,
+      "usage": {
+        "inputTokens": 685261,
+        "cachedInputTokens": 603392,
+        "outputTokens": 6890,
+        "totalTokens": 692151,
+        "toolCalls": 45
+      },
+      "attempts": [
+        {
+          "attempt": 1,
+          "usage": {
+            "inputTokens": 279403,
+            "cachedInputTokens": 238464,
+            "outputTokens": 3923,
+            "totalTokens": 283326,
+            "toolCalls": 26
+          },
+          "status": "failed"
+        },
+        {
+          "attempt": 2,
+          "usage": {
+            "inputTokens": 405858,
+            "cachedInputTokens": 364928,
+            "outputTokens": 2967,
+            "totalTokens": 408825,
+            "toolCalls": 19
+          },
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "case": "notification-settings",
+      "mode": "docs",
+      "repetition": 1,
+      "status": "passed",
+      "durationMs": 154903,
+      "usage": {
+        "inputTokens": 248642,
+        "cachedInputTokens": 196096,
+        "outputTokens": 5377,
+        "totalTokens": 254019,
+        "toolCalls": 10
+      },
+      "attempts": [
+        {
+          "attempt": 1,
+          "usage": {
+            "inputTokens": 248642,
+            "cachedInputTokens": 196096,
+            "outputTokens": 5377,
+            "totalTokens": 254019,
+            "toolCalls": 10
+          },
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "case": "notification-settings",
+      "mode": "skill-mcp",
+      "repetition": 1,
+      "status": "passed",
+      "durationMs": 333092,
+      "usage": {
+        "inputTokens": 580768,
+        "cachedInputTokens": 494848,
+        "outputTokens": 6129,
+        "totalTokens": 586897,
+        "toolCalls": 50
+      },
+      "attempts": [
+        {
+          "attempt": 1,
+          "usage": {
+            "inputTokens": 354615,
+            "cachedInputTokens": 307200,
+            "outputTokens": 3894,
+            "totalTokens": 358509,
+            "toolCalls": 25
+          },
+          "status": "failed"
+        },
+        {
+          "attempt": 2,
+          "usage": {
+            "inputTokens": 226153,
+            "cachedInputTokens": 187648,
+            "outputTokens": 2235,
+            "totalTokens": 228388,
+            "toolCalls": 25
+          },
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "case": "notification-settings",
+      "mode": "scratch",
+      "repetition": 1,
+      "status": "passed",
+      "durationMs": 172933,
+      "usage": {
+        "inputTokens": 117744,
+        "cachedInputTokens": 101504,
+        "outputTokens": 3996,
+        "totalTokens": 121740,
+        "toolCalls": 7
+      },
+      "attempts": [
+        {
+          "attempt": 1,
+          "usage": {
+            "inputTokens": 117744,
+            "cachedInputTokens": 101504,
+            "outputTokens": 3996,
+            "totalTokens": 121740,
+            "toolCalls": 7
+          },
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "case": "profile-dialog",
+      "mode": "docs",
+      "repetition": 2,
+      "status": "passed",
+      "durationMs": 343393,
+      "usage": {
+        "inputTokens": 596744,
+        "cachedInputTokens": 521216,
+        "outputTokens": 6851,
+        "totalTokens": 603595,
+        "toolCalls": 19
+      },
+      "attempts": [
+        {
+          "attempt": 1,
+          "usage": {
+            "inputTokens": 346335,
+            "cachedInputTokens": 305280,
+            "outputTokens": 5192,
+            "totalTokens": 351527,
+            "toolCalls": 10
+          },
+          "status": "failed"
+        },
+        {
+          "attempt": 2,
+          "usage": {
+            "inputTokens": 250409,
+            "cachedInputTokens": 215936,
+            "outputTokens": 1659,
+            "totalTokens": 252068,
+            "toolCalls": 9
+          },
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "case": "profile-dialog",
+      "mode": "skill-mcp",
+      "repetition": 2,
+      "status": "passed",
+      "durationMs": 346644,
+      "usage": {
+        "inputTokens": 1037195,
+        "cachedInputTokens": 934400,
+        "outputTokens": 7087,
+        "totalTokens": 1044282,
+        "toolCalls": 50
+      },
+      "attempts": [
+        {
+          "attempt": 1,
+          "usage": {
+            "inputTokens": 278418,
+            "cachedInputTokens": 237696,
+            "outputTokens": 3986,
+            "totalTokens": 282404,
+            "toolCalls": 25
+          },
+          "status": "failed"
+        },
+        {
+          "attempt": 2,
+          "usage": {
+            "inputTokens": 758777,
+            "cachedInputTokens": 696704,
+            "outputTokens": 3101,
+            "totalTokens": 761878,
+            "toolCalls": 25
+          },
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "case": "profile-dialog",
+      "mode": "scratch",
+      "repetition": 2,
+      "status": "passed",
+      "durationMs": 171737,
+      "usage": {
+        "inputTokens": 104503,
+        "cachedInputTokens": 86784,
+        "outputTokens": 4697,
+        "totalTokens": 109200,
+        "toolCalls": 3
+      },
+      "attempts": [
+        {
+          "attempt": 1,
+          "usage": {
+            "inputTokens": 104503,
+            "cachedInputTokens": 86784,
+            "outputTokens": 4697,
+            "totalTokens": 109200,
+            "toolCalls": 3
+          },
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "case": "notification-settings",
+      "mode": "skill-mcp",
+      "repetition": 2,
+      "status": "passed",
+      "durationMs": 272008,
+      "usage": {
+        "inputTokens": 457468,
+        "cachedInputTokens": 346624,
+        "outputTokens": 5889,
+        "totalTokens": 463357,
+        "toolCalls": 43
+      },
+      "attempts": [
+        {
+          "attempt": 1,
+          "usage": {
+            "inputTokens": 192810,
+            "cachedInputTokens": 154880,
+            "outputTokens": 3712,
+            "totalTokens": 196522,
+            "toolCalls": 20
+          },
+          "status": "failed"
+        },
+        {
+          "attempt": 2,
+          "usage": {
+            "inputTokens": 264658,
+            "cachedInputTokens": 191744,
+            "outputTokens": 2177,
+            "totalTokens": 266835,
+            "toolCalls": 23
+          },
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "case": "notification-settings",
+      "mode": "scratch",
+      "repetition": 2,
+      "status": "passed",
+      "durationMs": 199842,
+      "usage": {
+        "inputTokens": 208620,
+        "cachedInputTokens": 164224,
+        "outputTokens": 4126,
+        "totalTokens": 212746,
+        "toolCalls": 10
+      },
+      "attempts": [
+        {
+          "attempt": 1,
+          "usage": {
+            "inputTokens": 89224,
+            "cachedInputTokens": 67200,
+            "outputTokens": 3461,
+            "totalTokens": 92685,
+            "toolCalls": 3
+          },
+          "status": "failed"
+        },
+        {
+          "attempt": 2,
+          "usage": {
+            "inputTokens": 119396,
+            "cachedInputTokens": 97024,
+            "outputTokens": 665,
+            "totalTokens": 120061,
+            "toolCalls": 7
+          },
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "case": "notification-settings",
+      "mode": "docs",
+      "repetition": 2,
+      "status": "passed",
+      "durationMs": 188440,
+      "usage": {
+        "inputTokens": 296547,
+        "cachedInputTokens": 256896,
+        "outputTokens": 5189,
+        "totalTokens": 301736,
+        "toolCalls": 11
+      },
+      "attempts": [
+        {
+          "attempt": 1,
+          "usage": {
+            "inputTokens": 296547,
+            "cachedInputTokens": 256896,
+            "outputTokens": 5189,
+            "totalTokens": 301736,
+            "toolCalls": 11
+          },
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "case": "profile-dialog",
+      "mode": "skill-mcp",
+      "repetition": 3,
+      "status": "passed",
+      "durationMs": 327824,
+      "usage": {
+        "inputTokens": 566982,
+        "cachedInputTokens": 494208,
+        "outputTokens": 7015,
+        "totalTokens": 573997,
+        "toolCalls": 36
+      },
+      "attempts": [
+        {
+          "attempt": 1,
+          "usage": {
+            "inputTokens": 275386,
+            "cachedInputTokens": 235776,
+            "outputTokens": 4054,
+            "totalTokens": 279440,
+            "toolCalls": 22
+          },
+          "status": "failed"
+        },
+        {
+          "attempt": 2,
+          "usage": {
+            "inputTokens": 291596,
+            "cachedInputTokens": 258432,
+            "outputTokens": 2961,
+            "totalTokens": 294557,
+            "toolCalls": 14
+          },
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "case": "profile-dialog",
+      "mode": "scratch",
+      "repetition": 3,
+      "status": "passed",
+      "durationMs": 176757,
+      "usage": {
+        "inputTokens": 119694,
+        "cachedInputTokens": 102144,
+        "outputTokens": 4934,
+        "totalTokens": 124628,
+        "toolCalls": 4
+      },
+      "attempts": [
+        {
+          "attempt": 1,
+          "usage": {
+            "inputTokens": 119694,
+            "cachedInputTokens": 102144,
+            "outputTokens": 4934,
+            "totalTokens": 124628,
+            "toolCalls": 4
+          },
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "case": "profile-dialog",
+      "mode": "docs",
+      "repetition": 3,
+      "status": "passed",
+      "durationMs": 243693,
+      "usage": {
+        "inputTokens": 508260,
+        "cachedInputTokens": 433536,
+        "outputTokens": 6405,
+        "totalTokens": 514665,
+        "toolCalls": 19
+      },
+      "attempts": [
+        {
+          "attempt": 1,
+          "usage": {
+            "inputTokens": 314262,
+            "cachedInputTokens": 268544,
+            "outputTokens": 4674,
+            "totalTokens": 318936,
+            "toolCalls": 12
+          },
+          "status": "failed"
+        },
+        {
+          "attempt": 2,
+          "usage": {
+            "inputTokens": 193998,
+            "cachedInputTokens": 164992,
+            "outputTokens": 1731,
+            "totalTokens": 195729,
+            "toolCalls": 7
+          },
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "case": "notification-settings",
+      "mode": "scratch",
+      "repetition": 3,
+      "status": "passed",
+      "durationMs": 128958,
+      "usage": {
+        "inputTokens": 103485,
+        "cachedInputTokens": 86528,
+        "outputTokens": 3825,
+        "totalTokens": 107310,
+        "toolCalls": 3
+      },
+      "attempts": [
+        {
+          "attempt": 1,
+          "usage": {
+            "inputTokens": 103485,
+            "cachedInputTokens": 86528,
+            "outputTokens": 3825,
+            "totalTokens": 107310,
+            "toolCalls": 3
+          },
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "case": "notification-settings",
+      "mode": "docs",
+      "repetition": 3,
+      "status": "passed",
+      "durationMs": 150058,
+      "usage": {
+        "inputTokens": 233783,
+        "cachedInputTokens": 197504,
+        "outputTokens": 4356,
+        "totalTokens": 238139,
+        "toolCalls": 10
+      },
+      "attempts": [
+        {
+          "attempt": 1,
+          "usage": {
+            "inputTokens": 233783,
+            "cachedInputTokens": 197504,
+            "outputTokens": 4356,
+            "totalTokens": 238139,
+            "toolCalls": 10
+          },
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "case": "notification-settings",
+      "mode": "skill-mcp",
+      "repetition": 3,
+      "status": "passed",
+      "durationMs": 136321,
+      "usage": {
+        "inputTokens": 221866,
+        "cachedInputTokens": 176640,
+        "outputTokens": 3792,
+        "totalTokens": 225658,
+        "toolCalls": 18
+      },
+      "attempts": [
+        {
+          "attempt": 1,
+          "usage": {
+            "inputTokens": 221866,
+            "cachedInputTokens": 176640,
+            "outputTokens": 3792,
+            "totalTokens": 225658,
+            "toolCalls": 18
+          },
+          "status": "passed"
+        }
+      ]
+    }
+  ],
+  "summary": [
+    {
+      "case": "profile-dialog",
+      "mode": "scratch",
+      "runs": 3,
+      "passed": 3,
+      "measured": 3,
+      "medianTotalTokens": 116521,
+      "medianDurationMs": 171737,
+      "totalTokens": 350349
+    },
+    {
+      "case": "profile-dialog",
+      "mode": "docs",
+      "runs": 3,
+      "passed": 3,
+      "measured": 3,
+      "medianTotalTokens": 514665,
+      "medianDurationMs": 243693,
+      "totalTokens": 1607942
+    },
+    {
+      "case": "profile-dialog",
+      "mode": "skill-mcp",
+      "runs": 3,
+      "passed": 3,
+      "measured": 3,
+      "medianTotalTokens": 692151,
+      "medianDurationMs": 327824,
+      "totalTokens": 2310430
+    },
+    {
+      "case": "notification-settings",
+      "mode": "docs",
+      "runs": 3,
+      "passed": 3,
+      "measured": 3,
+      "medianTotalTokens": 254019,
+      "medianDurationMs": 154903,
+      "totalTokens": 793894
+    },
+    {
+      "case": "notification-settings",
+      "mode": "skill-mcp",
+      "runs": 3,
+      "passed": 3,
+      "measured": 3,
+      "medianTotalTokens": 463357,
+      "medianDurationMs": 272008,
+      "totalTokens": 1275912
+    },
+    {
+      "case": "notification-settings",
+      "mode": "scratch",
+      "runs": 3,
+      "passed": 3,
+      "measured": 3,
+      "medianTotalTokens": 121740,
+      "medianDurationMs": 172933,
+      "totalTokens": 441796
+    }
+  ]
+}

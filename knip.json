@@ -7,7 +7,7 @@
     },
     ".": {
       "entry": ["scripts/check-maven-pom-metadata.mjs", "scripts/report-android-workspace-runtime.mjs"],
-      "ignoreBinaries": ["infisical", "pod", "quality", "swift"],
+      "ignoreBinaries": ["codex", "infisical", "pod", "quality", "swift"],
       "project": ["*.{js,css}", "scripts/*.mjs"]
     },
     "apps/docs": {

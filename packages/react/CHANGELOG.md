@@ -99,6 +99,9 @@
 
 - Show category labels and value scales in combo and range charts, with visible line markers in combo charts.
 
+- Keep success Alert and Toast text readable on their tinted surfaces by using the semantic
+  ink color. Success borders and backgrounds retain their status color across web adapters.
+
 - Prevent combobox option clicks from submitting forms, preserve application-hidden options during
   filtering, and restore filter-owned visibility on cleanup. Support mounted virtual lists in
   same-origin iframe documents. Respect disabled fieldset ancestors and current form ownership for

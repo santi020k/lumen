@@ -6,6 +6,8 @@ Use these files first when generating, reviewing, or migrating apps that use Lum
 
 - README.md: public overview and package strategy.
 - docs/ai-usage.md: AI-focused setup, package selection, and component selection.
+- https://lumen.santi020k.com/guides/build-ui-with-ai: tested Astro and React adoption example with a reusable prompt.
+- docs/ai-efficiency.md: reproducible AI token measurement, quality checks, and limits on efficiency claims.
 - skills/lumen-ui/SKILL.md: portable Agent Skill for building, reviewing, and theming Lumen interfaces.
 - docs/feature-roadmap.md: competitor-informed gaps and implementation priorities.
 - registry/lumen.registry.json: installable component, recipe, and documentation manifest.

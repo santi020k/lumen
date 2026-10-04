@@ -19,6 +19,7 @@ import {
   Image,
   Input,
   Label,
+  Link,
   Marker,
   RevealGroup,
   ScrollReveal,
@@ -157,16 +158,16 @@ const useCases: readonly UseCase[] = featuredProjects.flatMap(name => {
           <span>{componentCount} primitives</span>
         </Eyebrow>
         <h1>
-          Build interfaces<br />
-          people <em>want</em> to use.
+          The UI library<br />
+          built for <em>AI.</em>
         </h1>
         <p class="home-hero__lede">
-          A cross-platform UI system for Web, React Native, Apple platforms, and Android.
-          Accessible by default, beautifully tokenized, and native to every environment.
+          Accessible components for web and native apps, with skills and precise API guidance
+          for your coding agent. Designed to reduce repetitive UI code and unnecessary AI context.
         </p>
         <div class="home-hero__actions">
-          <ButtonLink class="home-button-lg" href="/docs" showArrow variant="primary">
-            Start building
+          <ButtonLink class="home-button-lg" href="/guides/build-ui-with-ai" showArrow variant="primary">
+            Build with AI
           </ButtonLink>
           <ButtonLink class="home-button-lg" href="#playgrounds" variant="secondary">
             Try the playgrounds
@@ -210,6 +211,53 @@ const useCases: readonly UseCase[] = featuredProjects.flatMap(name => {
           {categories.map(category => <Badge variant="outline">{category}</Badge>)}
         </div>
       </div>
+    </section>
+
+    <section class="home-section home-container home-ai" id="ai-native" aria-labelledby="ai-title">
+      <ScrollReveal animation="slide-up">
+        <div class="home-section__head home-ai__copy">
+          <Eyebrow>Built for AI-assisted development</Eyebrow>
+          <h2 id="ai-title">Give your agent the pieces.<br />Keep your focus on the product.</h2>
+          <p>
+            Compose existing components, retrieve only the API guidance you need, and follow a
+            shared design language. The portable skill and MCP catalog guide your agent from a
+            product request to implementation and verification.
+          </p>
+          <div class="home-ai__actions">
+            <ButtonLink href="/docs/ai-skill" showArrow variant="primary">
+              Explore the AI skill
+            </ButtonLink>
+            <ButtonLink href="/docs/mcp" variant="inline">
+              Add live MCP context
+            </ButtonLink>
+          </div>
+          <p>
+            AI token usage depends on your model and task.{' '}
+            <Link href="/guides/measure-ai-ui-token-usage">See how we measure efficiency</Link>.
+          </p>
+        </div>
+      </ScrollReveal>
+      <ScrollReveal animation="scale" delay={100}>
+        <Card class="home-ai__terminal">
+          <Code
+            code={aiSkillInstallCommand}
+            copy
+            copiedLabel="AI skill install command copied"
+            copyLabel="Copy AI skill install command"
+            label="Agent Skills"
+            language="shell"
+            variant="block"
+            wrap
+          />
+          <div class="home-ai__agent-flow">
+            <span><Icon decorative name="scan-search" size="sm" /> Detect framework</span>
+            <span><Icon decorative name="blocks" size="sm" /> Select primitives</span>
+            <span><Icon decorative name="palette" size="sm" /> Apply tokens</span>
+            <span><Icon decorative name="shield-check" size="sm" /> Verify behavior</span>
+          </div>
+
+        </Card>
+      </ScrollReveal>
     </section>
 
     <section class="home-section home-container home-playgrounds" id="playgrounds" aria-labelledby="playgrounds-title">
@@ -516,49 +564,6 @@ const useCases: readonly UseCase[] = featuredProjects.flatMap(name => {
           ))}
         </RevealGroup>
       </div>
-    </section>
-
-    <section class="home-section home-container home-ai" id="ai-native" aria-labelledby="ai-title">
-      <ScrollReveal animation="slide-up">
-        <div class="home-section__head home-ai__copy">
-          <Eyebrow>AI-native UI</Eyebrow>
-          <h2 id="ai-title">Give your coding agent the Lumen design system.</h2>
-          <p>
-            Install one portable skill for Codex, Claude Code, Cursor, Windsurf, and other Agent
-            Skills clients. It teaches your AI to choose real Lumen primitives, respect the current
-            framework, use semantic tokens, and verify accessible interactions.
-          </p>
-          <div class="home-ai__actions">
-            <ButtonLink href="/docs/ai-skill" showArrow variant="primary">
-              Explore the AI skill
-            </ButtonLink>
-            <ButtonLink href="/docs/mcp" variant="inline">
-              Add live MCP context
-            </ButtonLink>
-          </div>
-        </div>
-      </ScrollReveal>
-      <ScrollReveal animation="scale" delay={100}>
-        <Card class="home-ai__terminal">
-          <Code
-            code={aiSkillInstallCommand}
-            copy
-            copiedLabel="AI skill install command copied"
-            copyLabel="Copy AI skill install command"
-            label="Agent Skills"
-            language="shell"
-            variant="block"
-            wrap
-          />
-          <div class="home-ai__agent-flow">
-            <span><Icon decorative name="scan-search" size="sm" /> Detect framework</span>
-            <span><Icon decorative name="blocks" size="sm" /> Select primitives</span>
-            <span><Icon decorative name="palette" size="sm" /> Apply tokens</span>
-            <span><Icon decorative name="shield-check" size="sm" /> Verify behavior</span>
-          </div>
-
-        </Card>
-      </ScrollReveal>
     </section>
 
   </main>

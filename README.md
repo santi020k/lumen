@@ -7,7 +7,7 @@
 <h1 align="center">Lumen UI</h1>
 
 <p align="center">
-  A cross-platform UI system with 150+ web primitives and shared native foundations.
+  An open-source UI library built for AI-assisted development, with 150+ accessible web primitives and shared native foundations.
 </p>
 
 <p align="center">
@@ -36,6 +36,12 @@
 Lumen gives applications a consistent visual language without tying them to one rendering model.
 Its packages share tokens, component contracts, styles, and interaction patterns while keeping each
 framework and platform's native authoring experience.
+
+Give your coding agent reusable components, a portable skill, and focused MCP context. Lumen is
+designed to reduce repetitive UI code and unnecessary AI context. Actual token usage depends on the
+model, task, discovery, and corrections; it is not a guaranteed saving. Start with the
+[AI build guide](https://lumen.santi020k.com/guides/build-ui-with-ai) and
+[efficiency measurement method](docs/ai-efficiency.md).
 
 - **Framework native:** Astro components, React primitives, and standards-based custom elements.
 - **Native foundations:** generated React Native, SwiftUI, and Jetpack Compose tokens plus the

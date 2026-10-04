@@ -7,6 +7,7 @@ import { definePresetConfig } from '@santi020k/og/presets'
 
 import { chartTopics } from '../src/data/chart-topics.ts'
 import { componentDocs } from '../src/data/docs.ts'
+import { publishedGuides } from '../src/data/guides.ts'
 import { mcpGuideTopics } from '../src/data/mcp-guides.ts'
 import { getNativeComponentsForPlatform } from '../src/data/native-components.ts'
 import { nativeGuideTopics } from '../src/data/native-guide-topics.ts'
@@ -82,10 +83,10 @@ const pages = [
   )),
   page('/templates', 'Product-ready templates. Free and open source.', 'Install complete analytics, SaaS, commerce, workspace, and onboarding experiences.', 'Templates'),
   page('/guides', 'Start with a product problem.', 'Task-oriented tutorials for accessible, production-shaped workflows.', 'Guides'),
-  page('/guides/ship-a-settings-screen', 'Ship an accessible settings screen.', 'Build and verify a responsive account settings surface in every supported framework.', 'Guide'),
+  ...publishedGuides.map(guide => page(guide.href, guide.title, guide.description, 'Guide')),
   page('/community', 'Made with Lumen.', 'Explore projects built with Lumen, share your work, and shape the roadmap.', 'Community'),
   page('/teams', 'Prove the system before you commit.', 'Evaluate Lumen with a real product surface, real constraints, and no sales gate.', 'For teams'),
-  page('/docs/ai-skill', 'Give your AI the design system.', 'Install the portable skill so coding agents select and verify real Lumen components.', 'AI skill'),
+  page('/docs/ai-skill', 'Build interfaces with AI and Lumen.', 'Use reusable components, focused MCP context, and precise API guidance for coding agents.', 'AI skill'),
   page('/docs/mcp', 'Real component contracts for AI agents.', 'Connect agents to structured components, tokens, recipes, and usage rules.', 'MCP server'),
   page('/docs/figma', 'One product language from design to code.', 'Use semantic variables, component variants, and Code Connect mappings.', 'Figma'),
   page('/docs/theme-playground', 'Build a theme from semantic roles.', 'Tune color roles, preview accessible components, and export the resulting CSS.', 'Theme playground'),

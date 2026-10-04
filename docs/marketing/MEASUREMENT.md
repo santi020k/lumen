@@ -33,6 +33,17 @@ size to act on.
 
 ## Monthly review routine
 
+For the AI positioning rollout, record the deployment date and compare matched 28-day Search Console
+windows for the homepage, `/guides/build-ui-with-ai`, `/guides/measure-ai-ui-token-usage`,
+`/docs/ai-skill`, and `/docs/mcp`. Track query impressions, clicks, click-through rate, and average
+position for relevant AI/UI intents. Mark low-volume or unavailable data explicitly. These are
+observational comparisons, not proof that a copy change caused a ranking increase. Use existing
+access only; no analytics service or tracking is enabled by the content update.
+
+Keep website discovery metrics separate from the [AI token evaluation](../ai-efficiency.md).
+Search clicks cannot establish token savings, and a local generation benchmark cannot establish
+search demand or conversion gains.
+
 1. Pull the current value for each metric row above from its listed source.
 2. Compare against the prior month's entry in the review log below.
 3. Note which `PUBLISHING_QUEUE.md` items shipped that month, if any, so a metric change can be

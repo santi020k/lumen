@@ -1,0 +1,69 @@
+---
+import { Alert, Button, Card, CardContent, CardHeader, CardTitle, Field, Input, Label, Stack } from '@santi020k/lumen-astro'
+---
+
+<Card as="section" aria-labelledby="ai-preferences-title">
+  <CardHeader>
+    <CardTitle as="h2" id="ai-preferences-title">Notification preferences</CardTitle>
+  </CardHeader>
+  <CardContent>
+    <form id="ai-preferences-form">
+      <Stack gap="group">
+        <Field>
+          <Label for="ai-preferences-email">Email address</Label>
+          <Input id="ai-preferences-email" name="email" required type="email" value="ada@example.com" />
+        </Field>
+        <Stack direction="horizontal" gap="related" wrap>
+          <Button aria-controls="ai-delivery-details" aria-expanded="false" id="ai-details-toggle" type="button" variant="outline">
+            Show delivery details
+          </Button>
+          <Button type="submit">Save preferences</Button>
+        </Stack>
+        <p hidden id="ai-delivery-details">Weekly summaries arrive on Monday.</p>
+        <Alert hidden id="ai-preferences-result" role="status" variant="success" />
+      </Stack>
+    </form>
+  </CardContent>
+</Card>
+
+<script>
+  const initializePreferences = () => {
+    const form = document.querySelector<HTMLFormElement>('#ai-preferences-form')
+
+    if (!form || form.dataset.preferencesBound === 'true') return
+
+    const toggle = form.querySelector<HTMLButtonElement>('#ai-details-toggle')
+    const details = form.querySelector<HTMLElement>('#ai-delivery-details')
+    const result = form.querySelector<HTMLElement>('#ai-preferences-result')
+
+    if (!toggle || !details || !result) return
+
+    form.dataset.preferencesBound = 'true'
+
+    toggle.addEventListener('click', () => {
+      details.hidden = !details.hidden
+
+      toggle.setAttribute('aria-expanded', String(!details.hidden))
+    })
+
+    form.addEventListener('submit', event => {
+      event.preventDefault()
+
+      const email = new FormData(form).get('email')
+
+      if (typeof email !== 'string') return
+
+      result.textContent = `Preferences saved for ${email}.`
+
+      result.hidden = false
+    })
+
+    form.addEventListener('input', () => {
+ result.hidden = true
+})
+  }
+
+  initializePreferences()
+
+  document.addEventListener('astro:page-load', initializePreferences)
+</script>
