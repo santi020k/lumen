@@ -460,3 +460,24 @@ actual tested revision; historical records retain their original attribution and
 
 See [runtime performance](native-runtime-performance.md), [native patterns](native-patterns.md), [device validation](native-device-validation.md),
 [consumer qualification](native-consumer-validation.md), and [v4 readiness](lumen-4-readiness.md).
+
+### React Native iOS long-note verification
+
+A fresh iOS Release host built and launched from committed revision `20e9a89b` on the
+task-owned iPhone 17 Pro iOS 27 Simulator. The public playground entrypoint was restored
+from the diagnostic probe; scene support remained enabled and OTA updates disabled.
+Native Home → Examples → Workspace navigation, searching for record 200, editing and
+saving a 1,160-character note succeeded. The saved confirmation and Edit action were
+visibly above the long note. Reopening the editor exposed the exact saved value, verified
+against the synthetic input, before cancelling.
+
+This run used Device Hub keyboard capture. The software keyboard remained hidden, so
+it does not qualify keyboard-visible Save or physical-device focus behavior. Standard
+text size remained 3 and keyboard capture was restored to off. The preserved app's 76
+installed file hashes and all 258 captured host/library input hashes matched after the
+interaction. The app, report and privacy-safe editor/saved screenshots are under
+`.build/native-quality-react-native-ios-long-note-runtime`; the native build log is
+`.build/native-quality-react-native-ios-long-note-build.log`. This closes the native iOS
+long-note persistence and feedback check at default text size, while live large-text
+clipping, software-keyboard qualification, screen readers, hardware, runtime performance,
+stability iterations, the canonical gate and local release integration remain open.
