@@ -75,6 +75,10 @@
 
 - Add ImageComparison for Astro, React, and Web Components with aligned media clipping, a labelled native range control, localized accessible values, and controlled React state. Preserve media framing across reveal changes and support writing direction without pointer-only interaction.
 
+- Add LollipopChart and DumbbellChart across Astro, React, Elements, React Native, SwiftUI, and Compose.
+  The charts preserve missing values, share a zero-inclusive domain, and provide readable exact data.
+  Refine BulletChart with a slimmer track, quieter range bands, and a capped target marker.
+
 ### Patch Changes
 
 - Reject malformed Astro action errors and inherited icon names, preserve plain markup prose without syntax highlighting, and normalize form-error records whose field is named `fields`, exclude blank numeric chart coordinates, preserve literal slash-star text during markup migrations, and detect existing recipe conflicts before writing files.
@@ -170,6 +174,10 @@
 
   Batch React ImageComparison form resets into one scheduled update and cancel pending work
   during cleanup, preserving controlled values and canceled resets.
+
+- Fit line, bar, scatter, range, and combo chart geometry to the available container width. Keep every plotted value visible on phones with readable axis text and a compact plot height, and resize when the container changes.
+
+  Fit web bar charts to narrow cards across Astro, React, and Web Components, reserving more room for horizontal category labels and spacing value-axis labels to avoid overlap.
 
 ### Migration, Direction and Data Collections
 

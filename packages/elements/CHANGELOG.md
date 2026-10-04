@@ -76,6 +76,10 @@
 
 - Add ImageComparison for Astro, React, and Web Components with aligned media clipping, a labelled native range control, localized accessible values, and controlled React state. Preserve media framing across reveal changes and support writing direction without pointer-only interaction.
 
+- Add LollipopChart and DumbbellChart across Astro, React, Elements, React Native, SwiftUI, and Compose.
+  The charts preserve missing values, share a zero-inclusive domain, and provide readable exact data.
+  Refine BulletChart with a slimmer track, quieter range bands, and a capped target marker.
+
 ### Patch Changes
 
 - Reduce published web artifact sizes within the existing v4 budgets. React compacts its component build
@@ -143,6 +147,10 @@
   contracts, and review custom button selectors against the content wrapper. Loading actions now
   prevent repeated activation. See `docs/migrating-to-lumen.md` for the full v4 migration. No
   application data migration is performed, and this candidate is not publication authorization.
+
+- Fit line, bar, scatter, range, and combo chart geometry to the available container width. Keep every plotted value visible on phones with readable axis text and a compact plot height, and resize when the container changes.
+
+  Fit web bar charts to narrow cards across Astro, React, and Web Components, reserving more room for horizontal category labels and spacing value-axis labels to avoid overlap.
 
 ### Migration, Direction and Data Collections
 

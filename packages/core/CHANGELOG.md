@@ -60,6 +60,10 @@
 
 - Add ImageComparison for Astro, React, and Web Components with aligned media clipping, a labelled native range control, localized accessible values, and controlled React state. Preserve media framing across reveal changes and support writing direction without pointer-only interaction.
 
+- Add LollipopChart and DumbbellChart across Astro, React, Elements, React Native, SwiftUI, and Compose.
+  The charts preserve missing values, share a zero-inclusive domain, and provide readable exact data.
+  Refine BulletChart with a slimmer track, quieter range bands, and a capped target marker.
+
 ### Patch Changes
 
 - Prevent a shared Combobox observer loop when an open field becomes disabled or read-only. Keep Android TimeField bounds, error labels, and callbacks current while its native dialog is open. Preserve localized negative Swift NumberField drafts and repeated stepping in Arabic and Persian locales.
@@ -104,6 +108,8 @@
 
   Batch React ImageComparison form resets into one scheduled update and cancel pending work
   during cleanup, preserving controlled values and canceled resets.
+
+- Preserve a positive line-chart plotting width with verbose value formatters in narrow frames, keeping category ticks and rendered coordinates aligned.
 
 ### Native Advanced Inputs
 

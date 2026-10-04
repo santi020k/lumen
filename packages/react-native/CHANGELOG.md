@@ -44,6 +44,10 @@
 
   Add an optional React Native graphics entrypoint for statically imported, app-owned SVG components. It shares root icon behavior while avoiding the full named catalog; root name and custom icon APIs remain available.
 
+- Add LollipopChart and DumbbellChart across Astro, React, Elements, React Native, SwiftUI, and Compose.
+  The charts preserve missing values, share a zero-inclusive domain, and provide readable exact data.
+  Refine BulletChart with a slimmer track, quieter range bands, and a capped target marker.
+
 ### Patch Changes
 
 - Prevent a shared Combobox observer loop when an open field becomes disabled or read-only. Keep Android TimeField bounds, error labels, and callbacks current while its native dialog is open. Preserve localized negative Swift NumberField drafts and repeated stepping in Arabic and Persian locales.
@@ -88,6 +92,10 @@
 
 - Updated dependencies []:
   - @santi020k/lumen-core@4.0.0
+
+- Fit line, bar, scatter, range, and combo chart geometry to the available container width. Keep every plotted value visible on phones with readable axis text and a compact plot height, and resize when the container changes.
+
+  Fit web bar charts to narrow cards across Astro, React, and Web Components, reserving more room for horizontal category labels and spacing value-axis labels to avoid overlap.
 
 ### Native Advanced Inputs
 
