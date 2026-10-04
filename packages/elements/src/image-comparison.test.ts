@@ -104,3 +104,24 @@ test('form reset restores the initial reveal after moving to another parent and 
   expect(frame.style.getPropertyValue('--ui-image-comparison-position')).toBe('25%')
   expect(listener).toHaveBeenCalledOnce()
 })
+
+test.each(['attribute', 'property', 'removed'])('reset uses the latest external %s baseline without retaining user edits', async mode => {
+  const { element, input } = fixture(25)
+  const form = document.createElement('form')
+  form.append(element)
+  document.body.append(form)
+  element.setAttribute('name', 'reveal')
+  input.value = '75'
+  input.dispatchEvent(new Event('input', { bubbles: true }))
+  if (mode === 'attribute') element.setAttribute('value', '40')
+  else if (mode === 'property') element.value = 40
+  else element.removeAttribute('value')
+  element.setAttribute('label', 'Updated label')
+  input.value = '90'
+  input.dispatchEvent(new Event('input', { bubbles: true }))
+  form.reset()
+  await new Promise(resolve => window.setTimeout(resolve))
+  expect(element.value).toBe(mode === 'removed' ? 50 : 40)
+  expect(input.value).toBe(mode === 'removed' ? '50' : '40')
+  expect(new FormData(form).get('reveal')).toBe(input.value)
+})

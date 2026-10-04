@@ -26,6 +26,7 @@ export class LumenImageComparisonElement extends LumenElement {
   private beforeLabel: HTMLSpanElement | undefined
   private afterLabel: HTMLSpanElement | undefined
   private controlLabel: HTMLSpanElement | undefined
+  private reflectingInput = false
 
   get value(): number {
     return normalizeLumenImageComparisonValue(this.getAttribute('value'))
@@ -51,8 +52,10 @@ export class LumenImageComparisonElement extends LumenElement {
     this.abortController = undefined
   }
 
-  override attributeChangedCallback(): void {
+  override attributeChangedCallback(name: string): void {
     super.attributeChangedCallback()
+
+    if (name === 'value' && this.range && !this.reflectingInput) this.range.defaultValue = String(this.value)
 
     this.update()
   }
@@ -71,7 +74,13 @@ export class LumenImageComparisonElement extends LumenElement {
     this.range.addEventListener('input', () => {
       if (!this.range || this.range.disabled) return
 
-      this.value = this.range.valueAsNumber
+      this.reflectingInput = true
+
+      try {
+        this.value = this.range.valueAsNumber
+      } finally {
+        this.reflectingInput = false
+      }
 
       this.dispatchEvent(new CustomEvent<LumenImageComparisonChangeDetail>('ui:image-comparison-change', {
         bubbles: true,

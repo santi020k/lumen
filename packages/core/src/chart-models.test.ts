@@ -11,6 +11,29 @@ import {
 import { createLumenHeatmapGeometry, normalizeLumenHeatmapData } from './charts.js'
 
 test.each([null,
+  1,
+  'annotation',
+  [],
+  {},
+  { id: 'a', label: 'A', value: 1, axis: 'z' },
+  { id: 'a', label: null, value: 1 },
+  { id: 'a', label: 'A', value: Infinity },
+  { id: 'a', label: 'A', value: 1, tone: 'invalid' }
+])('line charts ignore malformed decoded annotations: %j', annotation => {
+  const valid = { id: 'target', label: 'Target', value: 5 }
+  const model: unknown = Reflect.apply(createLumenLineChartModel, undefined, [
+    [{ id: 'a', label: 'A', data: [{ x: 'A', y: 0 }, { x: 'B', y: 10 }] }],
+    { annotations: [annotation, valid] }
+  ])
+  expect(model).toMatchObject({ annotationMarks: [{ ...valid, axis: 'y' }] })
+})
+
+test.each([null, 1, {}])('line charts ignore malformed annotation containers: %j', annotations => {
+  const model: unknown = Reflect.apply(createLumenLineChartModel, undefined, [[], { annotations }])
+  expect(model).toMatchObject({ annotationMarks: [] })
+})
+
+test.each([null,
   undefined,
   1,
   'cell',

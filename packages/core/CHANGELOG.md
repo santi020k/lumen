@@ -2,6 +2,8 @@
 
 ## 4.0.0
 
+- Validate decoded chart annotations, restore chart legend inspection state on teardown, refresh external image-comparison reset values, restore iframe dialog focus, and preserve uncontrolled filter disclosure state.
+
 ### Minor Changes
 
 - Add CalendarHeatmap, FunnelChart, and BoxPlot across web and native adapters with shared validation,

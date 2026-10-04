@@ -36,6 +36,9 @@ Web Components for Lumen UI.
 
 This package registers standards-based custom elements for the shared Lumen primitive catalog.
 
+`ImageComparison` form resets restore the latest externally configured `value`; user range input
+does not replace that reset baseline.
+
 See the [shared web form contracts](../../docs/form-controls.md) for value ownership, reset,
 submission, disabled state, and event behavior.
 

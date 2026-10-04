@@ -39,6 +39,25 @@ const chartSize = (value: number | undefined, fallback: number): number => {
 
 const chartKey = (value: number | string): string => `${typeof value}:${String(value)}`
 
+const isAnnotationRecord = (value: unknown): value is Record<string, unknown> => (
+  typeof value === 'object' && value !== null && !Array.isArray(value)
+)
+
+const isAnnotationValue = (value: unknown): value is number | string => (
+  typeof value === 'string' || (typeof value === 'number' && Number.isFinite(value))
+)
+
+const isAnnotationAxis = (value: unknown): boolean => value === undefined || value === 'x' || value === 'y'
+
+const isAnnotationTone = (value: unknown): boolean => (
+  value === undefined || lumenChartTones.some(tone => tone === value)
+)
+
+const isChartAnnotation = (value: unknown): value is LumenChartAnnotation => (
+  isAnnotationRecord(value) && typeof value.id === 'string' && typeof value.label === 'string' &&
+  isAnnotationValue(value.value) && isAnnotationAxis(value.axis) && isAnnotationTone(value.tone)
+)
+
 const resolveDomain = (automatic: LumenChartDomain, requested?: Partial<LumenChartDomain>): LumenChartDomain => {
   const min = requested?.min !== undefined && Number.isFinite(requested.min) ? requested.min : automatic.min
   const max = requested?.max !== undefined && Number.isFinite(requested.max) ? requested.max : automatic.max
@@ -107,7 +126,9 @@ export const createLumenLineChartModel = (
     { end: width - padding, positions, start: paddingLeft }
   ).filter(tick => tick.position >= paddingLeft && tick.position <= width - padding)
 
-  const annotationMarks = annotations.flatMap(annotation => {
+  const validAnnotations = Array.isArray(annotations) ? annotations.filter(isChartAnnotation) : []
+
+  const annotationMarks = validAnnotations.flatMap(annotation => {
     const axis = annotation.axis ?? 'y'
     let value: number | null = null
 

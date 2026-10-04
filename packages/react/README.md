@@ -692,7 +692,8 @@ count as backdrop dismissal. Consumer `onCancel` or `onClick` handlers can preve
 the corresponding default action.
 
 A controlled dialog can open without hook trigger props: it captures the focused
-opener before opening and returns focus on close or unmount. StrictMode replay
+opener before opening and returns focus on close or unmount, including when rendered into an iframe.
+Focus capture and restoration use the dialog's own document. StrictMode replay
 preserves that opener, and cleanup does not steal focus from a nested or
 replacement dialog. Hook trigger props remain useful when the same component
 owns the opener and dialog. Keep an accessible dialog name and logical initial
@@ -843,6 +844,8 @@ The chart's native `onClick` can cancel activation with `event.preventDefault()`
 `FilterBar` groups host-owned filtering controls, active criteria, reset actions, and a polite
 result announcement. `ChangeSummary` presents explicit before/after values and application-owned
 changed state. Neither component owns requests, persistence, parsing, or financial policy.
+Omit `FilterBar.open` for native disclosure ownership. Unrelated rerenders preserve native toggles
+when `defaultOpen` is unchanged. Pass `open` and `onOpenChange` for application-controlled disclosure.
 
 ScatterChart supports independent X/Y formatting, explicit domains, logarithmic positive X values,
 and labeled reference lines/regions. See [consumer UI recipes](../../docs/consumer-ui-recipes.md)

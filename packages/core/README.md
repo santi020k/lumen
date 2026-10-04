@@ -137,6 +137,9 @@ The package root also exports `createLumenLineChartModel`, `createLumenWaterfall
 `createLumenHistogramGeometry`, and `createLumenHeatmapModel`. These pure models share web geometry,
 validation, ticks, and annotations. The optional `createLumenChartInteractionController` owns only
 DOM listeners and cursor/legend state; call `destroy()` when removing its surface.
+Line chart models ignore malformed annotation entries and containers before reading overlay fields.
+Destroying a chart controller restores series marks, inspection values, and legend pressed state
+so rebinding starts with all series visible.
 Waterfall and histogram geometry accept arrays of unknown decoded rows, validate their complete
 shape before accumulation or sorting, and return `valid: false` with empty marks when a row is
 malformed. Typed component props continue to use `LumenWaterfallDatum` and `LumenHistogramBin`.

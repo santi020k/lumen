@@ -2,6 +2,8 @@
 
 ## 4.0.0
 
+- Validate decoded chart annotations, restore chart legend inspection state on teardown, refresh external image-comparison reset values, restore iframe dialog focus, and preserve uncontrolled filter disclosure state.
+
 - Keep sparkline endpoints circular and line strokes uniform when a chart stretches to fit a wide or shallow container.
 
 ### Major Changes
