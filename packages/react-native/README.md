@@ -151,7 +151,11 @@ normally. Lumen also exports native adaptations of reusable web behavior contrac
 - `useSelect` normalizes string or numeric options for `LumenPicker` and app-owned pickers;
 - `useLanguageToggle` cycles locale state without mutating the browser document or local storage;
 - `useThemeToggle` supplies explicit light/dark state that can be spread onto `LumenProvider`; and
-- `useToast` owns a bounded native notification queue rendered with `LumenToast`.
+- `useToast` owns a bounded native notification queue rendered with `LumenToast`. On Android,
+  automatic dismissal respects the system accessibility timeout and never shortens the requested
+  duration. If the native recommendation fails or is invalid, the requested duration is retained.
+  Zero, negative or nonfinite durations remain persistent until dismissed; iOS/web timing is unchanged.
+  Cleared, dismissed, evicted or unmounted toasts ignore late timeout responses.
 
 The package also exports `useLumenTheme` for semantic theme access and
 `useLumenNavigationBarVisibility` for native scroll-responsive navigation. Browser-specific hooks
