@@ -1,4 +1,4 @@
-// cspell:words keyboardqualification
+// cspell:words keyboardqualification performancequalification
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.plugin.compose")
@@ -74,6 +74,13 @@ android {
         }
         getByName("release") {
             signingConfig = signingConfigs.findByName("release")
+        }
+        create("benchmark") {
+            initWith(getByName("release"))
+            applicationIdSuffix = ".performancequalification"
+            signingConfig = signingConfigs.getByName("debug")
+            isDebuggable = false
+            matchingFallbacks += "release"
         }
     }
 }

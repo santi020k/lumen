@@ -1,5 +1,7 @@
 # Lumen 4 native quality
 
+<!-- cspell:words performancequalification -->
+
 <!-- cspell:words Automator logcat -->
 
 This record tracks the native improvements authorized for the v4 candidate. The implementation
@@ -118,6 +120,37 @@ unfinished frames, timestamp precision, duplicate rows, malformed bounds and fut
 
 Run `pnpm run measure:android-workspace --serial <device>` from a clean committed checkout.
 See [runtime performance](native-runtime-performance.md) for setup, raw artifacts and limitations.
+
+### Isolated Android runtime collector
+
+A separate development-signed, non-debuggable `benchmark` variant now uses the
+`.performancequalification` application ID. The separate test driver collects five process-cold
+launches and six cumulative frame snapshots while scrolling the actual Workspace record list.
+Only the test driver uses the UI Automator Shell dependency and its loopback Internet permission;
+the library and playground runtime permissions are unchanged. Three reporter tests cover sample
+completeness, warm-launch rejection, deduplication and future-completion exclusion, alongside the
+six existing parser tests. The canonical validation command includes the reporter tests.
+
+Two local Android 17/API 37 emulator runs at 1280×2856, density 480 and font scale 1.0 produced:
+
+| Run | Cold launch median / p95 | Eligible frames | Frame median / p95 | Missed deadlines |
+| --- | --- | ---: | --- | --- |
+| First | 314 / 337 ms | 151 | 32.0 / 51.3 ms | 29 (19.2%) |
+| Repeat | 301 / 446 ms | 123 | 61.1 / 128.1 ms | 98 (79.7%) |
+
+Both moved visible record IDs from 001–009 to 047–060 and excluded no future completions.
+Each instrumentation test passed; driver lint reported zero errors and warnings. The existing
+process-death restoration test also passed again with the expanded driver. The large scrolling
+variation prevents choosing a regression threshold or claiming an optimization. These runs use a
+different collection workflow from the earlier measurements above and are not directly comparable.
+They establish neither physical-device readiness, full time-to-interactive nor stability iterations.
+
+Both raw runs remain local under `.build/native-quality-android-runtime-benchmark-first` and
+`.build/native-quality-android-runtime-benchmark`. The repeat report records source base `d5ed5305`
+plus the then-uncommitted benchmark/driver changes, source hashes, test results, lint and preserved
+APKs. Runtime input hashes matched after the run; the installed benchmark APK matched preserved
+SHA-256 `8f5e59aa6f749e7114c07cf162c55886267fd6fdaeb9c0257244cf0505516899`.
+See [runtime performance](native-runtime-performance.md) for the isolated workflow.
 
 ### Apple scrolling hitch fixture
 

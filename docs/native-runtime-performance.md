@@ -5,6 +5,23 @@ Keep these measurements separate and bind runtime evidence to the exact source r
 installed artifact. Emulator results are local regression evidence; they do not qualify hardware
 accessibility, screen readers, or release stability iterations.
 
+## Isolated instrumented Android benchmark
+
+Prefer the [isolated runtime measurement workflow](../apps/playground-android/README.md#isolated-runtime-measurements)
+when preserving an existing installation. The separate benchmark variant inherits release settings
+and uses development signing; it is not debuggable and has a dedicated application ID. The
+instrumentation driver runs five process-cold launches and six actual list scrolls without running
+inside the measured process. It records raw Activity Manager and frame snapshots plus the observed
+record ranges. The selected test class and target package must match.
+
+After pulling the exact sample directory recorded in the test log, run
+`node scripts/report-android-workspace-runtime.mjs --input <directory> --output <report.json>`.
+The reporter uses the same strict parsers as the collector below. Preserve the source and installed
+APK hashes, native test result, raw samples and device settings together. A Measured or Partial
+report is observation data; neither means the candidate passes a performance budget or qualifies
+physical hardware. The collector below installs under the normal app ID; use the isolated workflow
+when that installation must be preserved.
+
 ## Android workspace collector
 
 With a clean committed checkout, JDK 21, the Android SDK, and its standard development keystore:
