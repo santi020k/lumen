@@ -474,6 +474,13 @@ empty messages and Android/web behavior. All 143 React Native tests passed, with
 API classification. These tests verify calls and semantics, not successful VoiceOver delivery or
 physical-device qualification. Package documentation and a Changeset describe the correction.
 
+At committed runtime revision `373eb37a`, the full JavaScript suite passed 1,319 tests; repository
+type checking and zero-warning lint passed 23 tasks each. The clean packed React Native consumer
+and regenerated MCP snapshot/evaluation passed. Three Hermes exports per fixture on Android and
+iOS passed every unchanged import budget. The canonical gate still stops at the unchanged web
+CSS, React and Elements size limits; local release integration remains incomplete. Import logs
+and post-export committed runtime source hashes remain under `.build/native-quality-rn-announcements-*`.
+
 ### Outstanding scope and blockers
 
 The complete Required outcomes list remains authoritative. Broader phone/tablet runtime qualification and physical-device keyboard/focus and screen-reader checks,
