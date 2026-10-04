@@ -571,3 +571,10 @@ The Lumen playground applies the exact-version source patch in
 [the playground instructions](../../apps/playground-react-native/README.md#live-ios-text-resizing)
 for the patch, rebuild requirements, and mounted-draft regression check. Installing Lumen alone
 does not change the host application's native renderer. Native font scaling remains enabled.
+
+### Rankings and paired comparisons
+
+Use `LollipopChart` for zero-based rankings and `DumbbellChart` for paired measurements (native
+`LumenLollipopChart` and `LumenDumbbellChart`). Supply ordered comparison data with `id`, `label`,
+nullable `value`, optional nullable `reference`, and optional `tone`. Both charts preserve missing
+values and expose exact data. See the [shared visualization contract](../../docs/data-visualization.md#rankings-and-paired-comparisons).

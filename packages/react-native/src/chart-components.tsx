@@ -12,6 +12,7 @@ import {
   alignLumenChartSeries,
   createLumenBarGeometry,
   createLumenBulletGeometry,
+  createLumenComparisonGeometry,
   createLumenHeatmapModel,
   createLumenHistogramGeometry,
   createLumenLineGeometry,
@@ -37,6 +38,8 @@ import {
   type LumenChartSeries,
   type LumenChartTone,
   type LumenComboSeries,
+  type LumenComparisonDatum,
+  type LumenComparisonOptions,
   type LumenHeatmapDatum,
   type LumenHeatmapOptions,
   type LumenHistogramBin,
@@ -1551,12 +1554,15 @@ const LumenBulletContent = ({
               </Text>
             </View>
             <View accessibilityElementsHidden importantForAccessibility="no-hide-descendants" aria-hidden style={{ paddingVertical: theme.spacing.sm, gap: theme.spacing.md }}>
-              <View style={{ height: 48, backgroundColor: theme.colors.surfaceMuted, borderRadius: theme.radii.sm }}>
+              <View style={{ height: 40, backgroundColor: theme.colors.surfaceMuted, borderRadius: theme.radii.sm }}>
                 {model.ranges.map((range, index) => (
-                  <View key={range.end} style={{ position: 'absolute', top: 0, bottom: 0, left: `${range.startRatio * 100}%`, width: `${(range.endRatio - range.startRatio) * 100}%`, backgroundColor: lumenChartToneColor(range.tone ?? 'neutral', theme), opacity: 0.12 + index / Math.max(1, model.ranges.length - 1) * 0.2, borderRightWidth: 1, borderColor: theme.colors.surface }} />
+                  <View key={range.end} style={{ position: 'absolute', top: 0, bottom: 0, left: `${range.startRatio * 100}%`, width: `${(range.endRatio - range.startRatio) * 100}%`, backgroundColor: lumenChartToneColor(range.tone ?? 'neutral', theme), opacity: 0.08 + index / Math.max(1, model.ranges.length - 1) * 0.14, borderRightWidth: 1, borderColor: theme.colors.surface }} />
                 ))}
-                {value !== null && <View style={{ position: 'absolute', top: 16, height: 16, left: `${model.valueStartRatio * 100}%`, width: `${model.valueWidthRatio * 100}%`, borderRadius: 2, backgroundColor: lumenChartToneColor(tone, theme) }} />}
-                <View style={{ position: 'absolute', top: -6, bottom: -6, left: `${model.targetRatio * 100}%`, width: 5, marginLeft: -2.5, borderWidth: 1, borderColor: theme.colors.surface, backgroundColor: theme.colors.ink, borderRadius: 1 }} />
+                {value !== null && <View style={{ position: 'absolute', top: 12, height: 16, left: `${model.valueStartRatio * 100}%`, width: `${model.valueWidthRatio * 100}%`, borderRadius: 2, backgroundColor: lumenChartToneColor(tone, theme) }} />}
+                <View style={{ position: 'absolute', top: -6, bottom: -6, left: `${model.targetRatio * 100}%`, width: 5, marginLeft: -2.5, borderWidth: 1, borderColor: theme.colors.surface, backgroundColor: theme.colors.ink, borderRadius: 1 }}>
+                  <View style={{ position: 'absolute', top: 0, left: -3, width: 9, height: 3, backgroundColor: theme.colors.ink }} />
+                  <View style={{ position: 'absolute', bottom: 0, left: -3, width: 9, height: 3, backgroundColor: theme.colors.ink }} />
+                </View>
               </View>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', gap: theme.spacing.sm }}>
                 {model.ticks.map((tick, index) => <Text key={tick.position} style={{ flex: 1, textAlign: bulletTickAlignment(index), color: theme.colors.inkSoft, fontSize: theme.fontSizes.xs, fontVariant: ['tabular-nums'] }}>{formatValue(tick.value)}</Text>)}
@@ -1586,4 +1592,82 @@ const LumenBulletContent = ({
 
 export const LumenBulletChart = (props: LumenBulletChartProps): ReactElement => (
   <LumenBulletContent {...resolveNativeBulletProps(props)} />
+)
+
+export interface LumenComparisonChartProps extends LumenIntervalChartProps, Omit<LumenComparisonOptions, 'paired'> {
+  data: readonly LumenComparisonDatum[]
+  referenceLabel?: string
+}
+
+type ResolvedComparisonProps = LumenComparisonChartProps & Required<Pick<LumenComparisonChartProps, 'formatValue' | 'referenceLabel' | 'showData'>>
+
+const resolveComparisonProps = (props: LumenComparisonChartProps): ResolvedComparisonProps => ({
+  ...props, formatValue: props.formatValue ?? String, referenceLabel: props.referenceLabel ?? 'Before', showData: props.showData ?? true
+})
+
+const LumenComparisonChart = ({
+  data, domain, paired, formatValue, labels, referenceLabel, valueLabel, showData, summary, ...props
+}: ResolvedComparisonProps & { paired: boolean }): ReactElement => {
+  const theme = useLumenTheme()
+  const text = resolveLumenChartLabels(labels)
+  const title = valueLabel ?? text.value
+  const model = createLumenComparisonGeometry(data, { domain, paired })
+  const format = (value: number | null) => value === null ? text.notAvailable : formatValue(value)
+  const rows = model.rows.map(row => ({ id: row.id, label: `${row.label}. ${paired ? `${referenceLabel}: ${format(row.reference)}. ` : ''}${title}: ${format(row.value)}.` }))
+
+  return (
+    <LumenChartFrame {...props} summary={summary ?? (model.valid ? `${text.category}: ${rows.length}.` : text.invalidData)}>
+      {!model.valid || !rows.length ?
+        <Text style={{ color: theme.colors.inkSoft }}>{model.valid ? text.empty : text.invalidData}</Text> :
+        (
+          <>
+            <Text style={{ color: theme.colors.inkSoft, fontSize: theme.fontSizes.xs }}>{paired ? `${referenceLabel} → ${title}` : title}</Text>
+            {model.rows.map((row, index) => {
+              const color = lumenChartToneColor(resolveLumenChartTone(row.tone, index), theme)
+
+              return (
+                <View key={row.id} style={{ gap: theme.spacing.xs, paddingHorizontal: 8 }}>
+                  <View style={{ flexDirection: 'row', justifyContent: 'space-between', flexWrap: 'wrap', gap: theme.spacing.sm }}>
+                    <Text style={{ color: theme.colors.ink, fontSize: theme.fontSizes.sm }}>{row.label}</Text>
+                    <Text style={{ color: theme.colors.inkSoft, fontSize: theme.fontSizes.sm, fontVariant: ['tabular-nums'] }}>
+                      {paired ? `${format(row.reference)} → ` : ''}
+                      <Text style={{ fontWeight: '700', color: theme.colors.ink }}>{format(row.value)}</Text>
+                    </Text>
+                  </View>
+                  <View accessibilityElementsHidden importantForAccessibility="no-hide-descendants" aria-hidden style={{ height: 24 }}>
+                    <View style={{ position: 'absolute', top: 11.5, height: 1, left: 0, right: 0, backgroundColor: theme.colors.line }} />
+                    {row.valuePosition !== null && row.referencePosition !== null && <View style={{ position: 'absolute', top: 10, height: 4, left: `${row.start * 100}%`, width: `${row.width * 100}%`, backgroundColor: color, opacity: 0.5 }} />}
+                    {paired && row.referencePosition !== null && <View style={{ position: 'absolute', top: 7, height: 10, width: 10, marginLeft: -5, left: `${row.referencePosition * 100}%`, borderRadius: 5, borderWidth: 2, borderColor: color, backgroundColor: theme.colors.surface }} />}
+                    {row.valuePosition !== null && <View style={{ position: 'absolute', top: 5, height: 14, width: 14, marginLeft: -7, left: `${row.valuePosition * 100}%`, borderRadius: 7, borderWidth: 2, borderColor: theme.colors.surface, backgroundColor: color }} />}
+                  </View>
+                </View>
+              )
+            })}
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 8 }}>
+              {model.ticks.map((tick, index) => (
+                <Text
+                  key={tick}
+                  style={{
+                    flex: 1,
+                    textAlign: bulletTickAlignment(index),
+                    color: theme.colors.inkSoft,
+                    fontSize: theme.fontSizes.xs
+                  }}
+                >
+                  {formatValue(tick)}
+                </Text>
+              ))}
+            </View>
+            {showData && <LumenChartStructuredDataList labels={text} rows={rows} />}
+          </>
+        )}
+    </LumenChartFrame>
+  )
+}
+
+export const LumenLollipopChart = (props: LumenComparisonChartProps): ReactElement => (
+  <LumenComparisonChart {...resolveComparisonProps(props)} paired={false} />
+)
+export const LumenDumbbellChart = (props: LumenComparisonChartProps): ReactElement => (
+  <LumenComparisonChart {...resolveComparisonProps(props)} paired />
 )

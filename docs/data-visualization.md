@@ -19,6 +19,8 @@ decisions.
 | How does uncertainty or an interval change? | `RangeChart` | Supply low and high values in the same unit and domain. |
 | How do magnitudes and trends compare together? | `ComboChart` | Mix bars, lines, and areas only when they share a meaningful value domain. |
 | Which changes explain a final balance? | `WaterfallChart` | Use signed deltas and explicit totals on web and native. |
+| Which categories rank highest? | `LollipopChart` | Shows a value dot and a zero-based stem on a common scale. |
+| How did each category change? | `DumbbellChart` | Connects an outlined reference dot with a filled current dot. |
 | How does the actual value compare with a target? | `BulletChart` | Use a zero-inclusive domain and optional labeled ranges on web and native. |
 | How are observations distributed? | `Histogram` | Supply explicit bins and counts on web and native. |
 
@@ -284,3 +286,21 @@ Astro and React accept `formatValue`, `targetLabel`, `valueLabel`, and `labels`.
 `domain-min`/`domain-max`, `target-label`, and a `valueFormatter` property. Removing the Elements
 `value` attribute represents a missing observation. Native adapters use their existing labels and
 number formatter contracts. Keep `showTable` (web) or `showData` (native) enabled for exact values.
+
+## Rankings and paired comparisons
+
+`LollipopChart` and `DumbbellChart` (native `LumenLollipopChart` and `LumenDumbbellChart`)
+accept `data` entries with a stable `id`, a `label`, nullable `value`, optional nullable `reference`,
+and optional `tone`. All six adapters retain input order; the application owns ranking and sorting.
+Lollipop stems begin at zero. Dumbbells join reference and current measurements, including decreases.
+An outlined reference dot and a filled value dot distinguish the measurements without relying on hue.
+
+Every row shares one zero-inclusive domain. An explicit domain must enclose every displayed value.
+Non-finite values, blank identities or labels, duplicate IDs, and truncated domains fail closed.
+Missing measurements keep their readable row; they never become zero or a connector to a missing dot.
+Empty datasets show the localized empty state. The source array is never mutated.
+
+Use `referenceLabel` and `valueLabel` for the column meanings and `formatValue` (native Apple/Android
+`labels.formatValue`) for consistent units. Elements exposes `data` as a typed property or JSON
+attribute, `valueFormatter`, `reference-label`, `value-label`, `domain-min`, and `domain-max`.
+The exact table or native data list stays available through `showTable` or `showData`.

@@ -133,23 +133,25 @@ public struct LumenBulletChart: View {
         VStack(spacing: LumenSpacing.md) {
             Canvas { context, size in
                 let top = 6.0
-                let height = 48.0
+                let height = 40.0
                 context.fill(Path(roundedRect: CGRect(x: 0, y: top, width: size.width, height: height), cornerRadius: 3), with: .color(theme.colors.surfaceMuted))
                 for (index, band) in model.ranges.enumerated() {
                     let left = model.position(band.start) * size.width
                     let width = (model.position(band.range.end) - model.position(band.start)) * size.width
-                    let opacity = 0.12 + Double(index) / Double(max(1, model.ranges.count - 1)) * 0.2
+                    let opacity = 0.08 + Double(index) / Double(max(1, model.ranges.count - 1)) * 0.14
                     context.fill(Path(CGRect(x: left, y: top, width: max(0, width - 1), height: height)), with: .color(theme.chartColor(band.range.tone ?? .neutral).opacity(opacity)))
                 }
                 if let value {
                     let zero = model.position(0) * size.width
                     let actual = model.position(value) * size.width
-                    context.fill(Path(roundedRect: CGRect(x: min(zero, actual), y: 22, width: abs(actual - zero), height: 16), cornerRadius: 2), with: .color(theme.chartColor(tone)))
+                    context.fill(Path(roundedRect: CGRect(x: min(zero, actual), y: 18, width: abs(actual - zero), height: 16), cornerRadius: 2), with: .color(theme.chartColor(tone)))
                 }
                 let marker = model.position(target) * size.width
-                context.fill(Path(CGRect(x: marker - 2.5, y: 0, width: 5, height: 60)), with: .color(theme.colors.surface))
-                context.fill(Path(CGRect(x: marker - 1.5, y: 0, width: 3, height: 60)), with: .color(theme.colors.ink))
-            }.frame(height: 60)
+                context.fill(Path(CGRect(x: marker - 2.5, y: 0, width: 5, height: 52)), with: .color(theme.colors.surface))
+                context.fill(Path(CGRect(x: marker - 1.5, y: 0, width: 3, height: 52)), with: .color(theme.colors.ink))
+                context.fill(Path(CGRect(x: marker - 4.5, y: 0, width: 9, height: 3)), with: .color(theme.colors.ink))
+                context.fill(Path(CGRect(x: marker - 4.5, y: 49, width: 9, height: 3)), with: .color(theme.colors.ink))
+            }.frame(height: 52)
             HStack(alignment: .top, spacing: LumenSpacing.sm) {
                 ForEach(Array(model.ticks.enumerated()), id: \.offset) { index, tick in
                     Text(labels.formatValue(tick)).font(.caption).monospacedDigit().foregroundStyle(theme.colors.inkSoft)

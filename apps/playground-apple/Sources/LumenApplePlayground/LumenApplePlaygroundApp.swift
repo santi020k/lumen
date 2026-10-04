@@ -718,7 +718,7 @@ struct ComponentsCatalogView: View {
 
     @ViewBuilder
     private var chartSection: some View {
-        if matches("Sparkline", "Line chart", "Bar chart", "Pie chart", "Scatter chart", "Waterfall chart", "Histogram", "Bullet chart", "Heatmap", "Range chart", "Combo chart") {
+        if matches("Sparkline", "Line chart", "Bar chart", "Pie chart", "Scatter chart", "Waterfall chart", "Histogram", "Bullet chart", "Lollipop chart", "Dumbbell chart", "Heatmap", "Range chart", "Combo chart") {
             PlaygroundSection(
                 "Data visualization",
                 description: "Tokenized plots include a factual accessibility summary and readable fallback data."
@@ -802,6 +802,12 @@ struct ComponentsCatalogView: View {
                         .init(id: "other", label: "Other", value: -10),
                         .init(id: "closing", label: "Closing", value: 185, kind: .total)
                     ], heading: "Revenue movement", description: "Opening balance to closing · USD, thousands", valueLabel: "USD, thousands")
+                }
+                if isVisible("Lollipop chart") {
+                    LumenLollipopChart(data: [.init(id: "design", label: "Design", value: 88, reference: 62), .init(id: "engineering", label: "Engineering", value: 91, reference: 76), .init(id: "support", label: "Support", value: 74, reference: 81), .init(id: "operations", label: "Operations", value: 83, reference: 54)], label: "Team performance", domain: 0...100, heading: "Team performance", valueLabel: "Current")
+                }
+                if isVisible("Dumbbell chart") {
+                    LumenDumbbellChart(data: [.init(id: "design", label: "Design", value: 88, reference: 62), .init(id: "engineering", label: "Engineering", value: 91, reference: 76), .init(id: "support", label: "Support", value: 74, reference: 81), .init(id: "operations", label: "Operations", value: 83, reference: 54)], label: "Progress by team", domain: 0...100, heading: "Progress by team", valueLabel: "Current")
                 }
                 if isVisible("Bullet chart") {
                     LumenBulletChart(label: "Delivery performance", value: 86, target: 95, ranges: [

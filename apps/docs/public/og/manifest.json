@@ -35,7 +35,7 @@
     },
     "/": {
       "alt": "Lumen UI — Crafted primitives for web and native platforms — Lumen UI",
-      "description": "Lumen is a crafted multi-framework UI system with 177 accessible primitives for Web, React Native, Apple platforms, and Android.",
+      "description": "Lumen is a crafted multi-framework UI system with 179 accessible primitives for Web, React Native, Apple platforms, and Android.",
       "images": [
         {
           "format": "webp",
@@ -848,6 +848,38 @@
       ],
       "pathname": "/docs/react-native/components/waterfall-chart",
       "title": "Waterfall chart"
+    },
+    "/docs/react-native/components/lollipop-chart": {
+      "alt": "Lollipop chart — Lumen UI",
+      "description": "Rank categories using a dot and a zero-based stem.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--lollipop-chart.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--lollipop-chart.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/lollipop-chart",
+      "title": "Lollipop chart"
+    },
+    "/docs/react-native/components/dumbbell-chart": {
+      "alt": "Dumbbell chart — Lumen UI",
+      "description": "Compare two measurements per category with connected dots.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--dumbbell-chart.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--dumbbell-chart.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/dumbbell-chart",
+      "title": "Dumbbell chart"
     },
     "/docs/react-native/components/bullet-chart": {
       "alt": "Bullet chart — Lumen UI",
@@ -1888,6 +1920,38 @@
       ],
       "pathname": "/docs/apple/components/waterfall-chart",
       "title": "Waterfall chart"
+    },
+    "/docs/apple/components/lollipop-chart": {
+      "alt": "Lollipop chart — Lumen UI",
+      "description": "Rank categories using a dot and a zero-based stem.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--lollipop-chart.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--lollipop-chart.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/lollipop-chart",
+      "title": "Lollipop chart"
+    },
+    "/docs/apple/components/dumbbell-chart": {
+      "alt": "Dumbbell chart — Lumen UI",
+      "description": "Compare two measurements per category with connected dots.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--dumbbell-chart.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--dumbbell-chart.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/dumbbell-chart",
+      "title": "Dumbbell chart"
     },
     "/docs/apple/components/bullet-chart": {
       "alt": "Bullet chart — Lumen UI",
@@ -3104,6 +3168,38 @@
       ],
       "pathname": "/docs/android/components/waterfall-chart",
       "title": "Waterfall chart"
+    },
+    "/docs/android/components/lollipop-chart": {
+      "alt": "Lollipop chart — Lumen UI",
+      "description": "Rank categories using a dot and a zero-based stem.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--lollipop-chart.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--lollipop-chart.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/lollipop-chart",
+      "title": "Lollipop chart"
+    },
+    "/docs/android/components/dumbbell-chart": {
+      "alt": "Dumbbell chart — Lumen UI",
+      "description": "Compare two measurements per category with connected dots.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--dumbbell-chart.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--dumbbell-chart.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/dumbbell-chart",
+      "title": "Dumbbell chart"
     },
     "/docs/android/components/bullet-chart": {
       "alt": "Bullet chart — Lumen UI",
@@ -7104,6 +7200,38 @@
       ],
       "pathname": "/docs/components/bullet-chart",
       "title": "BulletChart"
+    },
+    "/docs/components/lollipop-chart": {
+      "alt": "LollipopChart — Lumen UI",
+      "description": "Rank categories using a dot and a zero-based stem. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--lollipop-chart.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--lollipop-chart.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/lollipop-chart",
+      "title": "LollipopChart"
+    },
+    "/docs/components/dumbbell-chart": {
+      "alt": "DumbbellChart — Lumen UI",
+      "description": "Compare two measurements per category with connected dots. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--dumbbell-chart.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--dumbbell-chart.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/dumbbell-chart",
+      "title": "DumbbellChart"
     },
     "/docs/components/histogram": {
       "alt": "Histogram — Lumen UI",

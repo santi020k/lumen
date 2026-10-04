@@ -46,6 +46,7 @@ import {
   LumenComboChart,
   LumenDisclosure,
   LumenDivider,
+  LumenDumbbellChart,
   LumenEmptyState,
   LumenErrorState,
   LumenFieldGroup,
@@ -59,6 +60,7 @@ import {
   LumenImage,
   LumenLineChart,
   LumenListRow,
+  LumenLollipopChart,
   LumenMenu,
   LumenNavigationAccessory,
   LumenNavigationBar,
@@ -1076,6 +1078,12 @@ const IntervalChartExamples = ({ isVisible }: { isVisible: (name: string) => boo
         ]}
       />
     )}
+    {isVisible('Lollipop chart') && (
+      <LumenLollipopChart testID="component-lollipop-chart" label="Team performance" heading="Team performance" data={[{ id: 'design', label: 'Design', reference: 62, value: 88 }, { id: 'engineering', label: 'Engineering', reference: 76, value: 91 }, { id: 'support', label: 'Support', reference: 81, value: 74 }, { id: 'operations', label: 'Operations', reference: 54, value: 83 }]} domain={{ min: 0, max: 100 }} referenceLabel="Previous" valueLabel="Current" />
+    )}
+    {isVisible('Dumbbell chart') && (
+      <LumenDumbbellChart testID="component-dumbbell-chart" label="Progress by team" heading="Progress by team" data={[{ id: 'design', label: 'Design', reference: 62, value: 88 }, { id: 'engineering', label: 'Engineering', reference: 76, value: 91 }, { id: 'support', label: 'Support', reference: 81, value: 74 }, { id: 'operations', label: 'Operations', reference: 54, value: 83 }]} domain={{ min: 0, max: 100 }} referenceLabel="Previous" valueLabel="Current" />
+    )}
     {isVisible('Bullet chart') && (
       <LumenBulletChart testID="component-bullet-chart" label="Delivery performance" heading="On-time delivery" description="Actual performance against the service target" value={86} target={95} ranges={[{ end: 70, label: 'Developing' }, { end: 90, label: 'Consistent' }, { end: 100, label: 'Excellent' }]} formatValue={value => `${value}%`} />
     )}
@@ -1565,7 +1573,7 @@ const Playground = ({
           </ComponentSection>
         </Visibility>
 
-        <Visibility visible={isAnyVisible('Sparkline', 'Line chart', 'Bar chart', 'Pie chart', 'Scatter chart', 'Waterfall chart', 'Histogram', 'Bullet chart', 'Heatmap', 'Range chart', 'Combo chart')}>
+        <Visibility visible={isAnyVisible('Sparkline', 'Line chart', 'Bar chart', 'Pie chart', 'Scatter chart', 'Waterfall chart', 'Histogram', 'Bullet chart', 'Lollipop chart', 'Dumbbell chart', 'Heatmap', 'Range chart', 'Combo chart')}>
           <ComponentSection
             description="Tokenized plots include a factual accessibility summary and readable fallback data."
             title="Data visualization"

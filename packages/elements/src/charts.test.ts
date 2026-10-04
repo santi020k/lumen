@@ -78,3 +78,16 @@ test('bullet attributes reject invalid targets and malformed ranges instead of c
   element.setAttribute('target', '')
   expect(element.querySelector('[role="status"]')?.textContent).toContain('invalid')
 })
+
+test('comparison charts retain paired values, zero, missing observations and safe labels', () => {
+  const element = chart('lumen-dumbbell-chart', { data: JSON.stringify([{ id: 'a', label: '<img src=x>', value: 0, reference: 80 }, { id: 'b', label: 'B', value: null, reference: 60 }]) })
+  expect(element.querySelector('img')).toBeNull()
+  expect(element.querySelectorAll('.ui-comparison-chart__dot')).toHaveLength(1)
+  expect(element.querySelectorAll('.ui-comparison-chart__reference')).toHaveLength(2)
+  expect(element.querySelector('tbody')?.textContent).toContain('Not available')
+  element.setAttribute('reference-label', 'Previous')
+  expect(element.querySelector('thead')?.textContent).toContain('Previous')
+  element.setAttribute('data', 'invalid')
+  expect(element.querySelector('[role="status"]')?.textContent).toContain('invalid')
+  expect(element.querySelector('table')).toBeNull()
+})

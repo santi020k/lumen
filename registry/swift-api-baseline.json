@@ -2993,6 +2993,58 @@
           "precise": "s:7LumenUI0A13ButtonMetricsV9minHeight14CoreFoundation7CGFloatVvp"
         },
         {
+          "declaration": "@MainActor struct LumenDumbbellChart",
+          "kind": "swift.struct",
+          "path": [
+            "LumenDumbbellChart"
+          ],
+          "precise": "s:7LumenUI0A13DumbbellChartV"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenDumbbellChart",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A13DumbbellChartV4bodyQrvp"
+        },
+        {
+          "declaration": "@MainActor init(data: [LumenComparisonDatum], label: String, domain: ClosedRange<Double>? = nil, heading: String? = nil, description: String? = nil, labels: LumenChartLabels = .english, referenceLabel: String = \"Before\", valueLabel: String? = nil, showData: Bool = true)",
+          "kind": "swift.init",
+          "path": [
+            "LumenDumbbellChart",
+            "init(data:label:domain:heading:description:labels:referenceLabel:valueLabel:showData:)"
+          ],
+          "precise": "s:7LumenUI0A13DumbbellChartV4data5label6domain7heading11description6labels14referenceLabel05valueL08showDataACSayAA0A15ComparisonDatumVG_SSSNySdGSgSSSgArA0aD6LabelsVSSARSbtcfc"
+        },
+        {
+          "declaration": "@MainActor struct LumenLollipopChart",
+          "kind": "swift.struct",
+          "path": [
+            "LumenLollipopChart"
+          ],
+          "precise": "s:7LumenUI0A13LollipopChartV"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenLollipopChart",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A13LollipopChartV4bodyQrvp"
+        },
+        {
+          "declaration": "@MainActor init(data: [LumenComparisonDatum], label: String, domain: ClosedRange<Double>? = nil, heading: String? = nil, description: String? = nil, labels: LumenChartLabels = .english, valueLabel: String? = nil, showData: Bool = true)",
+          "kind": "swift.init",
+          "path": [
+            "LumenLollipopChart",
+            "init(data:label:domain:heading:description:labels:valueLabel:showData:)"
+          ],
+          "precise": "s:7LumenUI0A13LollipopChartV4data5label6domain7heading11description6labels10valueLabel8showDataACSayAA0A15ComparisonDatumVG_SSSNySdGSgSSSgAqA0aD6LabelsVAQSbtcfc"
+        },
+        {
           "declaration": "@MainActor struct LumenNavigationBar<Selection> where Selection : Hashable",
           "kind": "swift.struct",
           "path": [
@@ -3816,6 +3868,68 @@
             "aurora"
           ],
           "precise": "s:7LumenUI0A15BackdropVariantO6aurorayA2CmF"
+        },
+        {
+          "declaration": "struct LumenComparisonDatum",
+          "kind": "swift.struct",
+          "path": [
+            "LumenComparisonDatum"
+          ],
+          "precise": "s:7LumenUI0A15ComparisonDatumV"
+        },
+        {
+          "declaration": "init(id: String, label: String, value: Double?, reference: Double? = nil, tone: LumenChartTone? = nil)",
+          "kind": "swift.init",
+          "path": [
+            "LumenComparisonDatum",
+            "init(id:label:value:reference:tone:)"
+          ],
+          "precise": "s:7LumenUI0A15ComparisonDatumV2id5label5value9reference4toneACSS_SSSdSgAiA0A9ChartToneOSgtcfc"
+        },
+        {
+          "declaration": "let id: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenComparisonDatum",
+            "id"
+          ],
+          "precise": "s:7LumenUI0A15ComparisonDatumV2idSSvp"
+        },
+        {
+          "declaration": "let tone: LumenChartTone?",
+          "kind": "swift.property",
+          "path": [
+            "LumenComparisonDatum",
+            "tone"
+          ],
+          "precise": "s:7LumenUI0A15ComparisonDatumV4toneAA0A9ChartToneOSgvp"
+        },
+        {
+          "declaration": "let label: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenComparisonDatum",
+            "label"
+          ],
+          "precise": "s:7LumenUI0A15ComparisonDatumV5labelSSvp"
+        },
+        {
+          "declaration": "let value: Double?",
+          "kind": "swift.property",
+          "path": [
+            "LumenComparisonDatum",
+            "value"
+          ],
+          "precise": "s:7LumenUI0A15ComparisonDatumV5valueSdSgvp"
+        },
+        {
+          "declaration": "let reference: Double?",
+          "kind": "swift.property",
+          "path": [
+            "LumenComparisonDatum",
+            "reference"
+          ],
+          "precise": "s:7LumenUI0A15ComparisonDatumV9referenceSdSgvp"
         },
         {
           "declaration": "enum LumenDateFieldBounds",
@@ -32243,6 +32357,58 @@
           "precise": "s:7LumenUI0A13ButtonMetricsV9minHeight14CoreFoundation7CGFloatVvp"
         },
         {
+          "declaration": "@MainActor struct LumenDumbbellChart",
+          "kind": "swift.struct",
+          "path": [
+            "LumenDumbbellChart"
+          ],
+          "precise": "s:7LumenUI0A13DumbbellChartV"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenDumbbellChart",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A13DumbbellChartV4bodyQrvp"
+        },
+        {
+          "declaration": "@MainActor init(data: [LumenComparisonDatum], label: String, domain: ClosedRange<Double>? = nil, heading: String? = nil, description: String? = nil, labels: LumenChartLabels = .english, referenceLabel: String = \"Before\", valueLabel: String? = nil, showData: Bool = true)",
+          "kind": "swift.init",
+          "path": [
+            "LumenDumbbellChart",
+            "init(data:label:domain:heading:description:labels:referenceLabel:valueLabel:showData:)"
+          ],
+          "precise": "s:7LumenUI0A13DumbbellChartV4data5label6domain7heading11description6labels14referenceLabel05valueL08showDataACSayAA0A15ComparisonDatumVG_SSSNySdGSgSSSgArA0aD6LabelsVSSARSbtcfc"
+        },
+        {
+          "declaration": "@MainActor struct LumenLollipopChart",
+          "kind": "swift.struct",
+          "path": [
+            "LumenLollipopChart"
+          ],
+          "precise": "s:7LumenUI0A13LollipopChartV"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenLollipopChart",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A13LollipopChartV4bodyQrvp"
+        },
+        {
+          "declaration": "@MainActor init(data: [LumenComparisonDatum], label: String, domain: ClosedRange<Double>? = nil, heading: String? = nil, description: String? = nil, labels: LumenChartLabels = .english, valueLabel: String? = nil, showData: Bool = true)",
+          "kind": "swift.init",
+          "path": [
+            "LumenLollipopChart",
+            "init(data:label:domain:heading:description:labels:valueLabel:showData:)"
+          ],
+          "precise": "s:7LumenUI0A13LollipopChartV4data5label6domain7heading11description6labels10valueLabel8showDataACSayAA0A15ComparisonDatumVG_SSSNySdGSgSSSgAqA0aD6LabelsVAQSbtcfc"
+        },
+        {
           "declaration": "@MainActor struct LumenNavigationBar<Selection> where Selection : Hashable",
           "kind": "swift.struct",
           "path": [
@@ -33066,6 +33232,68 @@
             "aurora"
           ],
           "precise": "s:7LumenUI0A15BackdropVariantO6aurorayA2CmF"
+        },
+        {
+          "declaration": "struct LumenComparisonDatum",
+          "kind": "swift.struct",
+          "path": [
+            "LumenComparisonDatum"
+          ],
+          "precise": "s:7LumenUI0A15ComparisonDatumV"
+        },
+        {
+          "declaration": "init(id: String, label: String, value: Double?, reference: Double? = nil, tone: LumenChartTone? = nil)",
+          "kind": "swift.init",
+          "path": [
+            "LumenComparisonDatum",
+            "init(id:label:value:reference:tone:)"
+          ],
+          "precise": "s:7LumenUI0A15ComparisonDatumV2id5label5value9reference4toneACSS_SSSdSgAiA0A9ChartToneOSgtcfc"
+        },
+        {
+          "declaration": "let id: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenComparisonDatum",
+            "id"
+          ],
+          "precise": "s:7LumenUI0A15ComparisonDatumV2idSSvp"
+        },
+        {
+          "declaration": "let tone: LumenChartTone?",
+          "kind": "swift.property",
+          "path": [
+            "LumenComparisonDatum",
+            "tone"
+          ],
+          "precise": "s:7LumenUI0A15ComparisonDatumV4toneAA0A9ChartToneOSgvp"
+        },
+        {
+          "declaration": "let label: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenComparisonDatum",
+            "label"
+          ],
+          "precise": "s:7LumenUI0A15ComparisonDatumV5labelSSvp"
+        },
+        {
+          "declaration": "let value: Double?",
+          "kind": "swift.property",
+          "path": [
+            "LumenComparisonDatum",
+            "value"
+          ],
+          "precise": "s:7LumenUI0A15ComparisonDatumV5valueSdSgvp"
+        },
+        {
+          "declaration": "let reference: Double?",
+          "kind": "swift.property",
+          "path": [
+            "LumenComparisonDatum",
+            "reference"
+          ],
+          "precise": "s:7LumenUI0A15ComparisonDatumV9referenceSdSgvp"
         },
         {
           "declaration": "enum LumenDateFieldBounds",
@@ -60743,6 +60971,58 @@
           "precise": "s:7LumenUI0A13ButtonMetricsV9minHeight14CoreFoundation7CGFloatVvp"
         },
         {
+          "declaration": "@MainActor struct LumenDumbbellChart",
+          "kind": "swift.struct",
+          "path": [
+            "LumenDumbbellChart"
+          ],
+          "precise": "s:7LumenUI0A13DumbbellChartV"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenDumbbellChart",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A13DumbbellChartV4bodyQrvp"
+        },
+        {
+          "declaration": "@MainActor init(data: [LumenComparisonDatum], label: String, domain: ClosedRange<Double>? = nil, heading: String? = nil, description: String? = nil, labels: LumenChartLabels = .english, referenceLabel: String = \"Before\", valueLabel: String? = nil, showData: Bool = true)",
+          "kind": "swift.init",
+          "path": [
+            "LumenDumbbellChart",
+            "init(data:label:domain:heading:description:labels:referenceLabel:valueLabel:showData:)"
+          ],
+          "precise": "s:7LumenUI0A13DumbbellChartV4data5label6domain7heading11description6labels14referenceLabel05valueL08showDataACSayAA0A15ComparisonDatumVG_SSSNySdGSgSSSgArA0aD6LabelsVSSARSbtcfc"
+        },
+        {
+          "declaration": "@MainActor struct LumenLollipopChart",
+          "kind": "swift.struct",
+          "path": [
+            "LumenLollipopChart"
+          ],
+          "precise": "s:7LumenUI0A13LollipopChartV"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenLollipopChart",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A13LollipopChartV4bodyQrvp"
+        },
+        {
+          "declaration": "@MainActor init(data: [LumenComparisonDatum], label: String, domain: ClosedRange<Double>? = nil, heading: String? = nil, description: String? = nil, labels: LumenChartLabels = .english, valueLabel: String? = nil, showData: Bool = true)",
+          "kind": "swift.init",
+          "path": [
+            "LumenLollipopChart",
+            "init(data:label:domain:heading:description:labels:valueLabel:showData:)"
+          ],
+          "precise": "s:7LumenUI0A13LollipopChartV4data5label6domain7heading11description6labels10valueLabel8showDataACSayAA0A15ComparisonDatumVG_SSSNySdGSgSSSgAqA0aD6LabelsVAQSbtcfc"
+        },
+        {
           "declaration": "@MainActor struct LumenNavigationBar<Selection> where Selection : Hashable",
           "kind": "swift.struct",
           "path": [
@@ -61374,6 +61654,68 @@
             "value"
           ],
           "precise": "s:7LumenUI0A14WaterfallDatumV5valueSdvp"
+        },
+        {
+          "declaration": "struct LumenComparisonDatum",
+          "kind": "swift.struct",
+          "path": [
+            "LumenComparisonDatum"
+          ],
+          "precise": "s:7LumenUI0A15ComparisonDatumV"
+        },
+        {
+          "declaration": "init(id: String, label: String, value: Double?, reference: Double? = nil, tone: LumenChartTone? = nil)",
+          "kind": "swift.init",
+          "path": [
+            "LumenComparisonDatum",
+            "init(id:label:value:reference:tone:)"
+          ],
+          "precise": "s:7LumenUI0A15ComparisonDatumV2id5label5value9reference4toneACSS_SSSdSgAiA0A9ChartToneOSgtcfc"
+        },
+        {
+          "declaration": "let id: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenComparisonDatum",
+            "id"
+          ],
+          "precise": "s:7LumenUI0A15ComparisonDatumV2idSSvp"
+        },
+        {
+          "declaration": "let tone: LumenChartTone?",
+          "kind": "swift.property",
+          "path": [
+            "LumenComparisonDatum",
+            "tone"
+          ],
+          "precise": "s:7LumenUI0A15ComparisonDatumV4toneAA0A9ChartToneOSgvp"
+        },
+        {
+          "declaration": "let label: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenComparisonDatum",
+            "label"
+          ],
+          "precise": "s:7LumenUI0A15ComparisonDatumV5labelSSvp"
+        },
+        {
+          "declaration": "let value: Double?",
+          "kind": "swift.property",
+          "path": [
+            "LumenComparisonDatum",
+            "value"
+          ],
+          "precise": "s:7LumenUI0A15ComparisonDatumV5valueSdSgvp"
+        },
+        {
+          "declaration": "let reference: Double?",
+          "kind": "swift.property",
+          "path": [
+            "LumenComparisonDatum",
+            "reference"
+          ],
+          "precise": "s:7LumenUI0A15ComparisonDatumV9referenceSdSgvp"
         },
         {
           "declaration": "@MainActor struct LumenIconButtonStyle",
@@ -88812,6 +89154,58 @@
           "precise": "s:7LumenUI0A13ButtonMetricsV9minHeight14CoreFoundation7CGFloatVvp"
         },
         {
+          "declaration": "@MainActor struct LumenDumbbellChart",
+          "kind": "swift.struct",
+          "path": [
+            "LumenDumbbellChart"
+          ],
+          "precise": "s:7LumenUI0A13DumbbellChartV"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenDumbbellChart",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A13DumbbellChartV4bodyQrvp"
+        },
+        {
+          "declaration": "@MainActor init(data: [LumenComparisonDatum], label: String, domain: ClosedRange<Double>? = nil, heading: String? = nil, description: String? = nil, labels: LumenChartLabels = .english, referenceLabel: String = \"Before\", valueLabel: String? = nil, showData: Bool = true)",
+          "kind": "swift.init",
+          "path": [
+            "LumenDumbbellChart",
+            "init(data:label:domain:heading:description:labels:referenceLabel:valueLabel:showData:)"
+          ],
+          "precise": "s:7LumenUI0A13DumbbellChartV4data5label6domain7heading11description6labels14referenceLabel05valueL08showDataACSayAA0A15ComparisonDatumVG_SSSNySdGSgSSSgArA0aD6LabelsVSSARSbtcfc"
+        },
+        {
+          "declaration": "@MainActor struct LumenLollipopChart",
+          "kind": "swift.struct",
+          "path": [
+            "LumenLollipopChart"
+          ],
+          "precise": "s:7LumenUI0A13LollipopChartV"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenLollipopChart",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A13LollipopChartV4bodyQrvp"
+        },
+        {
+          "declaration": "@MainActor init(data: [LumenComparisonDatum], label: String, domain: ClosedRange<Double>? = nil, heading: String? = nil, description: String? = nil, labels: LumenChartLabels = .english, valueLabel: String? = nil, showData: Bool = true)",
+          "kind": "swift.init",
+          "path": [
+            "LumenLollipopChart",
+            "init(data:label:domain:heading:description:labels:valueLabel:showData:)"
+          ],
+          "precise": "s:7LumenUI0A13LollipopChartV4data5label6domain7heading11description6labels10valueLabel8showDataACSayAA0A15ComparisonDatumVG_SSSNySdGSgSSSgAqA0aD6LabelsVAQSbtcfc"
+        },
+        {
           "declaration": "@MainActor struct LumenNavigationBar<Selection> where Selection : Hashable",
           "kind": "swift.struct",
           "path": [
@@ -89635,6 +90029,68 @@
             "aurora"
           ],
           "precise": "s:7LumenUI0A15BackdropVariantO6aurorayA2CmF"
+        },
+        {
+          "declaration": "struct LumenComparisonDatum",
+          "kind": "swift.struct",
+          "path": [
+            "LumenComparisonDatum"
+          ],
+          "precise": "s:7LumenUI0A15ComparisonDatumV"
+        },
+        {
+          "declaration": "init(id: String, label: String, value: Double?, reference: Double? = nil, tone: LumenChartTone? = nil)",
+          "kind": "swift.init",
+          "path": [
+            "LumenComparisonDatum",
+            "init(id:label:value:reference:tone:)"
+          ],
+          "precise": "s:7LumenUI0A15ComparisonDatumV2id5label5value9reference4toneACSS_SSSdSgAiA0A9ChartToneOSgtcfc"
+        },
+        {
+          "declaration": "let id: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenComparisonDatum",
+            "id"
+          ],
+          "precise": "s:7LumenUI0A15ComparisonDatumV2idSSvp"
+        },
+        {
+          "declaration": "let tone: LumenChartTone?",
+          "kind": "swift.property",
+          "path": [
+            "LumenComparisonDatum",
+            "tone"
+          ],
+          "precise": "s:7LumenUI0A15ComparisonDatumV4toneAA0A9ChartToneOSgvp"
+        },
+        {
+          "declaration": "let label: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenComparisonDatum",
+            "label"
+          ],
+          "precise": "s:7LumenUI0A15ComparisonDatumV5labelSSvp"
+        },
+        {
+          "declaration": "let value: Double?",
+          "kind": "swift.property",
+          "path": [
+            "LumenComparisonDatum",
+            "value"
+          ],
+          "precise": "s:7LumenUI0A15ComparisonDatumV5valueSdSgvp"
+        },
+        {
+          "declaration": "let reference: Double?",
+          "kind": "swift.property",
+          "path": [
+            "LumenComparisonDatum",
+            "reference"
+          ],
+          "precise": "s:7LumenUI0A15ComparisonDatumV9referenceSdSgvp"
         },
         {
           "declaration": "enum LumenDateFieldBounds",
@@ -117467,6 +117923,58 @@
           "precise": "s:7LumenUI0A13ButtonMetricsV9minHeight14CoreFoundation7CGFloatVvp"
         },
         {
+          "declaration": "@MainActor struct LumenDumbbellChart",
+          "kind": "swift.struct",
+          "path": [
+            "LumenDumbbellChart"
+          ],
+          "precise": "s:7LumenUI0A13DumbbellChartV"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenDumbbellChart",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A13DumbbellChartV4bodyQrvp"
+        },
+        {
+          "declaration": "@MainActor init(data: [LumenComparisonDatum], label: String, domain: ClosedRange<Double>? = nil, heading: String? = nil, description: String? = nil, labels: LumenChartLabels = .english, referenceLabel: String = \"Before\", valueLabel: String? = nil, showData: Bool = true)",
+          "kind": "swift.init",
+          "path": [
+            "LumenDumbbellChart",
+            "init(data:label:domain:heading:description:labels:referenceLabel:valueLabel:showData:)"
+          ],
+          "precise": "s:7LumenUI0A13DumbbellChartV4data5label6domain7heading11description6labels14referenceLabel05valueL08showDataACSayAA0A15ComparisonDatumVG_SSSNySdGSgSSSgArA0aD6LabelsVSSARSbtcfc"
+        },
+        {
+          "declaration": "@MainActor struct LumenLollipopChart",
+          "kind": "swift.struct",
+          "path": [
+            "LumenLollipopChart"
+          ],
+          "precise": "s:7LumenUI0A13LollipopChartV"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenLollipopChart",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A13LollipopChartV4bodyQrvp"
+        },
+        {
+          "declaration": "@MainActor init(data: [LumenComparisonDatum], label: String, domain: ClosedRange<Double>? = nil, heading: String? = nil, description: String? = nil, labels: LumenChartLabels = .english, valueLabel: String? = nil, showData: Bool = true)",
+          "kind": "swift.init",
+          "path": [
+            "LumenLollipopChart",
+            "init(data:label:domain:heading:description:labels:valueLabel:showData:)"
+          ],
+          "precise": "s:7LumenUI0A13LollipopChartV4data5label6domain7heading11description6labels10valueLabel8showDataACSayAA0A15ComparisonDatumVG_SSSNySdGSgSSSgAqA0aD6LabelsVAQSbtcfc"
+        },
+        {
           "declaration": "@MainActor struct LumenNavigationBar<Selection> where Selection : Hashable",
           "kind": "swift.struct",
           "path": [
@@ -118098,6 +118606,68 @@
             "value"
           ],
           "precise": "s:7LumenUI0A14WaterfallDatumV5valueSdvp"
+        },
+        {
+          "declaration": "struct LumenComparisonDatum",
+          "kind": "swift.struct",
+          "path": [
+            "LumenComparisonDatum"
+          ],
+          "precise": "s:7LumenUI0A15ComparisonDatumV"
+        },
+        {
+          "declaration": "init(id: String, label: String, value: Double?, reference: Double? = nil, tone: LumenChartTone? = nil)",
+          "kind": "swift.init",
+          "path": [
+            "LumenComparisonDatum",
+            "init(id:label:value:reference:tone:)"
+          ],
+          "precise": "s:7LumenUI0A15ComparisonDatumV2id5label5value9reference4toneACSS_SSSdSgAiA0A9ChartToneOSgtcfc"
+        },
+        {
+          "declaration": "let id: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenComparisonDatum",
+            "id"
+          ],
+          "precise": "s:7LumenUI0A15ComparisonDatumV2idSSvp"
+        },
+        {
+          "declaration": "let tone: LumenChartTone?",
+          "kind": "swift.property",
+          "path": [
+            "LumenComparisonDatum",
+            "tone"
+          ],
+          "precise": "s:7LumenUI0A15ComparisonDatumV4toneAA0A9ChartToneOSgvp"
+        },
+        {
+          "declaration": "let label: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenComparisonDatum",
+            "label"
+          ],
+          "precise": "s:7LumenUI0A15ComparisonDatumV5labelSSvp"
+        },
+        {
+          "declaration": "let value: Double?",
+          "kind": "swift.property",
+          "path": [
+            "LumenComparisonDatum",
+            "value"
+          ],
+          "precise": "s:7LumenUI0A15ComparisonDatumV5valueSdSgvp"
+        },
+        {
+          "declaration": "let reference: Double?",
+          "kind": "swift.property",
+          "path": [
+            "LumenComparisonDatum",
+            "reference"
+          ],
+          "precise": "s:7LumenUI0A15ComparisonDatumV9referenceSdSgvp"
         },
         {
           "declaration": "@MainActor struct LumenIconButtonStyle",

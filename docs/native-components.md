@@ -777,6 +777,13 @@ three native adapters. It retains a zero-inclusive baseline, distinguishes null 
 provides a readable value, target marker, and expandable exact measurements. See the
 [comparison contract](data-visualization.md#actual-values-and-targets).
 
+`LumenLollipopChart` presents ordered rankings with a zero-inclusive stem, while
+`LumenDumbbellChart` connects a previous and current value on the same scale. Both accept
+`LumenComparisonDatum` rows on React Native, SwiftUI, and Compose, preserve the supplied order,
+and keep missing measurements distinct from zero. Category labels, formatted values, and an
+expandable exact-data list remain available independently of the decorative marks. Set
+`referenceLabel` and `valueLabel` to describe the two measurements in a paired comparison.
+
 `LumenWaterfallChart` and `LumenHistogram` are available in React Native, SwiftUI, and Compose.
 Waterfalls preserve signed deltas and explicit total resets; invalid steps reject the whole plot.
 Histograms preserve numeric bin widths and gaps, require density for unequal widths, and retain

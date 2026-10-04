@@ -106,7 +106,7 @@
       "device": "Android phone emulator",
       "height": 2008,
       "platform": "android",
-      "sha256": "661a0c4e70559f2366bdd2ea550fb10f356e113eb142d7411e213972447d68a8",
+      "sha256": "f2eda05a69f45ba67439fe59fdc618e87eeab7a296a5cba1adcc1849d326a256",
       "slug": "bullet-chart",
       "src": "/native-components/android/bullet-chart.webp",
       "width": 900
@@ -209,6 +209,16 @@
       "sha256": "3977accd49b7d901895b99b7f432a7a7ebe952eabba3f7b4c861cb3746427dcd",
       "slug": "divider",
       "src": "/native-components/android/divider.webp",
+      "width": 900
+    },
+    {
+      "alt": "Dumbbell chart rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2008,
+      "platform": "android",
+      "sha256": "7dc8a75484e3dc871bcbd33e32ed0d3085a70c75479353d3bacc311d3861586d",
+      "slug": "dumbbell-chart",
+      "src": "/native-components/android/dumbbell-chart.webp",
       "width": 900
     },
     {
@@ -369,6 +379,16 @@
       "sha256": "b75fdc32a14d2fb5f6ff08586b6d12059c463e394e47d86c4e27c1f5bed76b82",
       "slug": "list-row",
       "src": "/native-components/android/list-row.webp",
+      "width": 900
+    },
+    {
+      "alt": "Lollipop chart rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2008,
+      "platform": "android",
+      "sha256": "f839db1d77009ae94d15941d5a016936bb31689f710903688b8b4b3a72a28e36",
+      "slug": "lollipop-chart",
+      "src": "/native-components/android/lollipop-chart.webp",
       "width": 900
     },
     {
@@ -906,7 +926,7 @@
       "device": "iPhone simulator",
       "height": 1957,
       "platform": "apple",
-      "sha256": "5a55c1e82c8356201a6d005e0561ec7f35bbb66ad1c2cc4b40e3482d5b02458c",
+      "sha256": "e37c2b2577ede11c05db7a6fd7956ba65a6df3fc21332e466ae7cfc4d087d780",
       "slug": "bullet-chart",
       "src": "/native-components/apple/bullet-chart.webp",
       "width": 900
@@ -1009,6 +1029,16 @@
       "sha256": "627a552eef9efe6204b114b7f75b223559244e5a79fb93fddf85f5ac434cfe70",
       "slug": "divider",
       "src": "/native-components/apple/divider.webp",
+      "width": 900
+    },
+    {
+      "alt": "Dumbbell chart rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "56fdfca3936f65c2e34891c9bf780786524b761e792ecb6e653d3d61618adade",
+      "slug": "dumbbell-chart",
+      "src": "/native-components/apple/dumbbell-chart.webp",
       "width": 900
     },
     {
@@ -1149,6 +1179,16 @@
       "sha256": "024f046ddd59a85e9a73d12403bb85fef608e732123eeb4eecc4265dd97786ca",
       "slug": "list-row",
       "src": "/native-components/apple/list-row.webp",
+      "width": 900
+    },
+    {
+      "alt": "Lollipop chart rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "a535882abb96d82eecfba61a0c204cfd76917f7d0f66ed21e0e631113b2cbd7c",
+      "slug": "lollipop-chart",
+      "src": "/native-components/apple/lollipop-chart.webp",
       "width": 900
     },
     {
@@ -1616,7 +1656,7 @@
       "device": "Expo web renderer",
       "height": 633,
       "platform": "react-native",
-      "sha256": "732a12e8bef31265bd773df648841883b671f08fbb99ff26780a3b8c71ba444c",
+      "sha256": "2c7aa2f7fa86b11fbd2f0902a90181702a1305c5c0a9f9a45847fc2e9ae853c1",
       "slug": "bullet-chart",
       "src": "/native-components/react-native/bullet-chart.webp",
       "width": 900
@@ -1729,6 +1769,16 @@
       "sha256": "a058eef62c0137e4ee629c11422058ba1e66ecb2e1a0849066e186075753f854",
       "slug": "divider",
       "src": "/native-components/react-native/divider.webp",
+      "width": 900
+    },
+    {
+      "alt": "Dumbbell chart rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 633,
+      "platform": "react-native",
+      "sha256": "d8b3d88af9387eef33c7b9656d4d58e1a1322b324eb9568a0ab2ae461ef179ff",
+      "slug": "dumbbell-chart",
+      "src": "/native-components/react-native/dumbbell-chart.webp",
       "width": 900
     },
     {
@@ -1859,6 +1909,16 @@
       "sha256": "6019e75412160f4b9445f83932a201ea514303d4f2c3b2048309be9cb9edbe3e",
       "slug": "list-row",
       "src": "/native-components/react-native/list-row.webp",
+      "width": 900
+    },
+    {
+      "alt": "Lollipop chart rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 633,
+      "platform": "react-native",
+      "sha256": "2cd7ef37be3cb655769e2bf5030bef857d544babd510fc7f171b84d0225021bf",
+      "slug": "lollipop-chart",
+      "src": "/native-components/react-native/lollipop-chart.webp",
       "width": 900
     },
     {

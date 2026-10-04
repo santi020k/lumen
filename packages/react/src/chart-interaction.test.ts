@@ -90,3 +90,24 @@ test('bullet charts keep localized actual and target values readable and update 
   expect(container.querySelector('[role="status"]')?.textContent).toContain('invalid')
   expect(container.querySelector('.ui-bullet-chart__target')).toBeNull()
 })
+
+test('comparison charts retain exact data and distinguish absent points from zero', async () => {
+  const { DumbbellChart, LollipopChart } = await import('./comparison-chart.js')
+  const data = [{ id: 'a', label: 'A', value: 0, reference: 80 }, { id: 'b', label: 'B', value: null, reference: 60 }]
+  act(() => {
+    root.render(createElement(DumbbellChart, { data, referenceLabel: 'Previous', valueLabel: 'Current', formatValue: value => `${value}%` }))
+  })
+  expect(container.querySelectorAll('.ui-comparison-chart__dot')).toHaveLength(1)
+  expect(container.querySelectorAll('.ui-comparison-chart__reference')).toHaveLength(2)
+  expect(container.querySelector('thead')?.textContent).toBe('CategoryPreviousCurrent')
+  expect(container.querySelector('tbody')?.textContent).toBe('A80%0%B60%Not available')
+  act(() => {
+    root.render(createElement(LollipopChart, { data, showTable: false }))
+  })
+  expect(container.querySelector('.ui-comparison-chart__reference')).toBeNull()
+  expect(container.querySelector('details')).toBeNull()
+  act(() => {
+    root.render(createElement(DumbbellChart, { data, domain: { min: 0, max: 50 } }))
+  })
+  expect(container.querySelector('[role="status"]')?.textContent).toContain('invalid')
+})

@@ -355,6 +355,36 @@ const chartDefinitions: ComponentDefinition[] = [
     'Provides labeled axes, a factual summary, and expandable source values; invalid changes fail closed.'
   ),
   {
+    name: 'Lollipop chart',
+    slug: 'lollipop-chart',
+    category: 'Data display',
+    summary: 'Rank categories using a dot and a zero-based stem.',
+    accessibility: 'Keeps category labels and exact values available independently of the decorative stems and dots.',
+    guidance: 'Preserve missing measurements as null and provide a zero-inclusive domain. The application owns row ordering.',
+    exports: { android: 'LumenLollipopChart', apple: 'LumenLollipopChart', 'react-native': 'LumenLollipopChart' },
+    examples: {
+      android: 'LumenLollipopChart(data = listOf(LumenComparisonDatum("design", "Design", 88.0, 62.0)), label = "Team performance")',
+      apple: 'LumenLollipopChart(data: [.init(id: "design", label: "Design", value: 88, reference: 62)], label: "Team performance")',
+      'react-native': '<LumenLollipopChart label="Team performance" data={[{ id: "design", label: "Design", value: 88, reference: 62 }]} />'
+    },
+    properties: [property('data', 'LumenComparisonDatum[]', 'Required', 'Stable id, category label, nullable value, optional reference and tone.'), property('domain', 'Finite numeric range', 'Automatic', 'Includes zero and all displayed measurements.'), property('showData', 'Boolean', 'true', 'Provides the expandable exact values.')]
+  },
+  {
+    name: 'Dumbbell chart',
+    slug: 'dumbbell-chart',
+    category: 'Data display',
+    summary: 'Compare two measurements per category with connected dots.',
+    accessibility: 'Keeps exact values available and uses filled and outlined dots for paired measurements.',
+    guidance: 'Preserve missing measurements as null and provide a zero-inclusive domain. The application owns row ordering.',
+    exports: { android: 'LumenDumbbellChart', apple: 'LumenDumbbellChart', 'react-native': 'LumenDumbbellChart' },
+    examples: {
+      android: 'LumenDumbbellChart(data = listOf(LumenComparisonDatum("design", "Design", 88.0, 62.0)), label = "Team performance")',
+      apple: 'LumenDumbbellChart(data: [.init(id: "design", label: "Design", value: 88, reference: 62)], label: "Team performance")',
+      'react-native': '<LumenDumbbellChart label="Team performance" data={[{ id: "design", label: "Design", value: 88, reference: 62 }]} />'
+    },
+    properties: [property('data', 'LumenComparisonDatum[]', 'Required', 'Stable id, category label, nullable value, optional reference and tone.'), property('domain', 'Finite numeric range', 'Automatic', 'Includes zero and all displayed measurements.'), property('showData', 'Boolean', 'true', 'Provides the expandable exact values.')]
+  },
+  {
     name: 'Bullet chart',
     slug: 'bullet-chart',
     category: 'Data display',

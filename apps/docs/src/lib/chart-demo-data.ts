@@ -85,3 +85,10 @@ export const chartDemoBulletRanges = [
   { end: 90, label: 'Consistent' },
   { end: 100, label: 'Excellent' }
 ]
+
+export const chartDemoComparisons = [
+  { id: 'design', label: 'Design', reference: 62, value: 88 },
+  { id: 'engineering', label: 'Engineering', reference: 76, value: 91 },
+  { id: 'support', label: 'Support', reference: 81, value: 74 },
+  { id: 'operations', label: 'Operations', reference: 54, value: 83 }
+]

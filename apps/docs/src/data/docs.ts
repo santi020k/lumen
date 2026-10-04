@@ -600,6 +600,8 @@ export const componentCollections: ComponentCollection[] = [
       'ComboChart',
       'Histogram',
       'BulletChart',
+      'LollipopChart',
+      'DumbbellChart',
       'WaterfallChart'
     ]
   },
@@ -1971,6 +1973,20 @@ const apiReferenceByComponent = {
     apiRow(
       'target, rel', 'anchor attributes', '-', 'Forwards native navigation and relationship attributes.'
     )
+  ],
+  LollipopChart: [
+    apiRow('data', 'readonly LumenComparisonDatum[]', 'required', 'Stable id, label, nullable value, optional reference and tone. Input order is preserved.'),
+    apiRow('domain', 'LumenChartDomain', 'automatic', 'Must include zero and every displayed measurement.'),
+    apiRow('formatValue, labels', 'Formatter and chart labels', 'English', 'Formats visible values and the exact data table.'),
+    apiRow('valueLabel, referenceLabel', 'string', 'Value / Before', 'Names the observations; referenceLabel applies to paired comparisons.'),
+    apiRow('showTable', 'boolean', 'true', 'Keeps the keyboard-accessible exact data disclosure available.')
+  ],
+  DumbbellChart: [
+    apiRow('data', 'readonly LumenComparisonDatum[]', 'required', 'Stable id, label, nullable value, optional reference and tone. Input order is preserved.'),
+    apiRow('domain', 'LumenChartDomain', 'automatic', 'Must include zero and every displayed measurement.'),
+    apiRow('formatValue, labels', 'Formatter and chart labels', 'English', 'Formats visible values and the exact data table.'),
+    apiRow('valueLabel, referenceLabel', 'string', 'Value / Before', 'Names the observations; referenceLabel applies to paired comparisons.'),
+    apiRow('showTable', 'boolean', 'true', 'Keeps the keyboard-accessible exact data disclosure available.')
   ],
   BulletChart: [
     apiRow('value, target', 'number | null, number', 'required', 'Compares a measured value with a target. Null is unavailable, zero remains a real value.'),
@@ -4337,6 +4353,18 @@ export const componentDocs: ComponentDoc[] = (
       'Data display',
       'Compares a measured value with a target and optional labeled performance ranges.',
       '<BulletChart aria-label="Delivery performance" heading="On-time delivery" value={86} target={95} ranges={[{ end: 70, label: "Developing" }, { end: 90, label: "Consistent" }, { end: 100, label: "Excellent" }]} formatValue={value => `${value}%`} />'
+    ],
+    [
+      'LollipopChart',
+      'Data display',
+      'Rank categories using a dot and a zero-based stem.',
+      '<LollipopChart aria-label="Team performance" data={[{ id: "design", label: "Design", reference: 62, value: 88 }, { id: "engineering", label: "Engineering", reference: 76, value: 91 }]} />'
+    ],
+    [
+      'DumbbellChart',
+      'Data display',
+      'Compare two measurements per category with connected dots.',
+      '<DumbbellChart aria-label="Team performance" data={[{ id: "design", label: "Design", reference: 62, value: 88 }, { id: "engineering", label: "Engineering", reference: 76, value: 91 }]} />'
     ],
     [
       'Histogram',

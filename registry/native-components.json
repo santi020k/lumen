@@ -475,6 +475,28 @@
       }
     },
     {
+      "id": "lollipop-chart",
+      "tier": "shared",
+      "contract": "Rank categories using a dot and a zero-based stem. Uses a shared zero-inclusive domain and preserves missing measurements.",
+      "accessibility": "Provides visible category values and an expandable exact data list. Outlined and filled dots distinguish paired measurements.",
+      "symbols": {
+        "reactNative": "LumenLollipopChart",
+        "swiftUI": "LumenLollipopChart",
+        "compose": "LumenLollipopChart"
+      }
+    },
+    {
+      "id": "dumbbell-chart",
+      "tier": "shared",
+      "contract": "Compare two measurements per category with connected dots. Uses a shared zero-inclusive domain and preserves missing measurements.",
+      "accessibility": "Provides visible category values and an expandable exact data list. Outlined and filled dots distinguish paired measurements.",
+      "symbols": {
+        "reactNative": "LumenDumbbellChart",
+        "swiftUI": "LumenDumbbellChart",
+        "compose": "LumenDumbbellChart"
+      }
+    },
+    {
       "id": "histogram",
       "tier": "shared",
       "contract": "Explicit numeric bins preserve widths and gaps; unequal widths require count-per-unit density",

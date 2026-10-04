@@ -63,7 +63,7 @@ const BulletContent = ({
             <div aria-hidden="true" className="ui-bullet-chart__plot">
               <div className="ui-bullet-chart__track">
                 {model.ranges.map((range, index) => (
-                  <span key={range.end} className={composeClassName('ui-bullet-chart__range', getLumenChartToneClassName(range.tone ?? 'neutral'))} style={{ left: `${range.startRatio * 100}%`, width: `${(range.endRatio - range.startRatio) * 100}%`, opacity: 0.12 + index / Math.max(1, model.ranges.length - 1) * 0.2 }} />
+                  <span key={range.end} className={composeClassName('ui-bullet-chart__range', getLumenChartToneClassName(range.tone ?? 'neutral'))} style={{ left: `${range.startRatio * 100}%`, width: `${(range.endRatio - range.startRatio) * 100}%`, opacity: 0.08 + index / Math.max(1, model.ranges.length - 1) * 0.14 }} />
                 ))}
                 {value !== null && <span className={composeClassName('ui-bullet-chart__bar', getLumenChartToneClassName(tone))} style={{ left: `${model.valueStartRatio * 100}%`, width: `${model.valueWidthRatio * 100}%` }} />}
                 <span className="ui-bullet-chart__target" style={{ left: `${model.targetRatio * 100}%` }} />
@@ -73,7 +73,7 @@ const BulletContent = ({
             {model.ranges.length > 0 && (
               <ul className="ui-bullet-chart__ranges">
                 {model.ranges.map(range => (
-                  <li key={range.end}>
+                  <li className={getLumenChartToneClassName(range.tone ?? 'neutral')} key={range.end}>
                     <span>{range.label}</span>
                     <span>
                       {formatValue(range.start)}

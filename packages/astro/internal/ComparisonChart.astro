@@ -1,0 +1,69 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+import { createLumenComparisonGeometry, getLumenChartToneClassName, type LumenChartLabels, type LumenComparisonDatum, type LumenComparisonOptions, resolveLumenChartLabels } from '@santi020k/lumen-core'
+
+import Chart from '../components/Chart.astro'
+
+interface Props extends HTMLAttributes<'figure'>, LumenComparisonOptions {
+  data: readonly LumenComparisonDatum[]
+  className?: string
+  heading?: string
+  description?: string
+  caption?: string
+  presentation?: 'bare' | 'default'
+  summary?: string
+  formatValue?: (value: number) => string
+  labels?: Partial<LumenChartLabels>
+  referenceLabel?: string
+  valueLabel?: string
+  showTable?: boolean
+}
+
+const { data, domain, paired = false, formatValue = String, labels, referenceLabel = 'Before', valueLabel, showTable = true, class: classProp, className, ...props } = Astro.props
+const text = resolveLumenChartLabels(labels)
+const title = valueLabel ?? text.value
+const model = createLumenComparisonGeometry(data, { domain, paired })
+const format = (value: number | null) => value === null ? text.notAvailable : formatValue(value)
+---
+<Chart
+{...props}
+class:list={['ui-comparison-chart', classProp, className]}
+>
+  {!model.valid || model.rows.length === 0 ?
+<p class="ui-chart__empty" role="status">{model.valid ? text.empty : text.invalidData}</p> :
+(
+<>
+    <div class="ui-comparison-chart__legend"><span>{text.category}</span><span>{paired ? `${referenceLabel} → ${title}` : title}</span></div>
+    <ul class="ui-comparison-chart__rows">
+      {model.rows.map((row, index) => (
+<li class={getLumenChartToneClassName(row.tone, index)}>
+        <div class="ui-comparison-chart__label"><span>{row.label}</span><span>{paired && <>{format(row.reference)} <span aria-hidden="true">→</span> </>}<strong>{format(row.value)}</strong></span></div>
+        <div class="ui-comparison-chart__track" aria-hidden="true">
+          {row.valuePosition !== null && row.referencePosition !== null && (
+<span
+class="ui-comparison-chart__connector"
+style={{ left: `${row.start * 100}%`, width: `${row.width * 100}%` }}
+/>
+)}
+          {paired && row.referencePosition !== null && (
+<span
+class="ui-comparison-chart__reference"
+style={{ left: `${row.referencePosition * 100}%` }}
+/>
+)}
+          {row.valuePosition !== null && <span class="ui-comparison-chart__dot" style={{ left: `${row.valuePosition * 100}%` }} />}
+        </div>
+      </li>
+))}
+    </ul>
+    <div class="ui-bullet-chart__ticks" aria-hidden="true">{model.ticks.map(tick => <span>{formatValue(tick)}</span>)}</div>
+    {showTable && (
+<details class="ui-chart__data"><summary>{text.viewData}</summary><div role="group" tabindex="0" aria-label={text.chartData}><table>
+      <thead><tr><th scope="col">{text.category}</th>{paired && <th scope="col">{referenceLabel}</th>}<th scope="col">{title}</th></tr></thead>
+      <tbody>{model.rows.map(row => <tr><th scope="row">{row.label}</th>{paired && <td>{format(row.reference)}</td>}<td>{format(row.value)}</td></tr>)}</tbody>
+    </table></div></details>
+)}
+  </>
+)}
+</Chart>

@@ -43,7 +43,7 @@ const factual = model.valid ? `${title}: ${actual}. ${targetLabel}: ${formatValu
           {model.ranges.map((range, index) => (
 <span
 class:list={['ui-bullet-chart__range', getLumenChartToneClassName(range.tone ?? 'neutral')]}
-style={{ left: `${range.startRatio * 100}%`, width: `${(range.endRatio - range.startRatio) * 100}%`, opacity: 0.12 + index / Math.max(1, model.ranges.length - 1) * 0.2 }}
+style={{ left: `${range.startRatio * 100}%`, width: `${(range.endRatio - range.startRatio) * 100}%`, opacity: 0.08 + index / Math.max(1, model.ranges.length - 1) * 0.14 }}
 />
 ))}
           {value !== null && <span class:list={['ui-bullet-chart__bar', getLumenChartToneClassName(tone)]} style={{ left: `${model.valueStartRatio * 100}%`, width: `${model.valueWidthRatio * 100}%` }} />}
@@ -51,7 +51,7 @@ style={{ left: `${range.startRatio * 100}%`, width: `${(range.endRatio - range.s
         </div>
         <div class="ui-bullet-chart__ticks">{model.ticks.map(tick => <span>{formatValue(tick.value)}</span>)}</div>
       </div>
-      {model.ranges.length > 0 && <ul class="ui-bullet-chart__ranges">{model.ranges.map(range => <li><span>{range.label}</span><span>{formatValue(range.start)}–{formatValue(range.end)}</span></li>)}</ul>}
+      {model.ranges.length > 0 && <ul class="ui-bullet-chart__ranges">{model.ranges.map(range => <li class={getLumenChartToneClassName(range.tone ?? 'neutral')}><span>{range.label}</span><span>{formatValue(range.start)}–{formatValue(range.end)}</span></li>)}</ul>}
       {showTable && (
 <details class="ui-chart__data"><summary>{text.viewData}</summary><div role="group" tabindex="0" aria-label={text.chartData}><table>
         <thead><tr><th scope="col">{text.category}</th><th scope="col">{text.value}</th></tr></thead>

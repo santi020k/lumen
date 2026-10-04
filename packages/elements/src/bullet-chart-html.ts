@@ -53,11 +53,11 @@ export const bulletChartHtml = (
   const targetLabel = element.getAttribute('target-label') ?? 'Target'
   const tone = lumenChartTones.find(candidate => candidate === element.getAttribute('tone')) ?? 'series-1'
   const summary = element.getAttribute('summary') ?? `${text.value}: ${actual}. ${targetLabel}: ${format(target)}.`
-  const bands = model.ranges.map((range, index) => `<span class="ui-bullet-chart__range ${getLumenChartToneClassName(range.tone ?? 'neutral')}" style="left:${range.startRatio * 100}%;width:${(range.endRatio - range.startRatio) * 100}%;opacity:${0.12 + index / Math.max(1, model.ranges.length - 1) * 0.2}"></span>`).join('')
+  const bands = model.ranges.map((range, index) => `<span class="ui-bullet-chart__range ${getLumenChartToneClassName(range.tone ?? 'neutral')}" style="left:${range.startRatio * 100}%;width:${(range.endRatio - range.startRatio) * 100}%;opacity:${0.08 + index / Math.max(1, model.ranges.length - 1) * 0.14}"></span>`).join('')
   const bar = value === null ? '' : `<span class="ui-bullet-chart__bar ${getLumenChartToneClassName(tone)}" style="left:${model.valueStartRatio * 100}%;width:${model.valueWidthRatio * 100}%"></span>`
   const ticks = model.ticks.map(tick => `<span>${escapeChartHtml(format(tick.value))}</span>`).join('')
   const rangeValue = (range: typeof model.ranges[number]) => `${format(range.start)}–${format(range.end)}`
-  const legend = model.ranges.length ? `<ul class="ui-bullet-chart__ranges">${model.ranges.map(range => `<li><span>${escapeChartHtml(range.label)}</span><span>${escapeChartHtml(rangeValue(range))}</span></li>`).join('')}</ul>` : ''
+  const legend = model.ranges.length ? `<ul class="ui-bullet-chart__ranges">${model.ranges.map(range => `<li class="${getLumenChartToneClassName(range.tone ?? 'neutral')}"><span>${escapeChartHtml(range.label)}</span><span>${escapeChartHtml(rangeValue(range))}</span></li>`).join('')}</ul>` : ''
 
   const rows = [
     [text.value, actual],

@@ -97,7 +97,9 @@
         "status-bar",
         "gauge",
         "image-comparison",
-        "bullet-chart"
+        "bullet-chart",
+        "lollipop-chart",
+        "dumbbell-chart"
       ]
     },
     {

@@ -14,7 +14,12 @@ const outputDirectory = resolve(
 )
 
 const baseURL = process.env.LUMEN_REACT_NATIVE_URL ?? 'http://127.0.0.1:8081/'
-const components = nativeComponentDocs.filter(component => component.implementations['react-native'])
+const requested = process.argv.find(argument => argument.startsWith('--components='))?.slice('--components='.length).split(',')
+const available = nativeComponentDocs.filter(component => component.implementations['react-native'])
+
+if (requested?.some(slug => !available.some(component => component.slug === slug))) throw new Error('Unknown component capture slug')
+
+const components = available.filter(component => !requested || requested.includes(component.slug))
 
 await mkdir(outputDirectory, { recursive: true })
 
@@ -40,6 +45,10 @@ try {
     }
 
     const focusedExample = page.getByTestId(`component-${component.slug}`)
+
+    if (['bullet-chart', 'dumbbell-chart', 'lollipop-chart'].includes(component.slug)) {
+      await focusedExample.waitFor({ state: 'visible' })
+    }
 
     if (await focusedExample.count() === 1) {
       await focusedExample.scrollIntoViewIfNeeded()

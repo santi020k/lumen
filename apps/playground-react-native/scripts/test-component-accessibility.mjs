@@ -257,6 +257,34 @@ try {
       await expect(dialog).toBeHidden()
     }
   }
+
+  for (const width of [390, 1280]) {
+    await page.setViewportSize({ width, height: 900 })
+
+    for (const name of ['Lollipop chart', 'Dumbbell chart']) {
+      url.searchParams.set('component', name)
+
+      await page.goto(url.href, { waitUntil: 'load' })
+
+      const comparison = page.getByTestId(`component-${name.toLowerCase().replace(' ', '-')}`)
+
+      await expect(comparison).toBeVisible()
+
+      await expect(comparison.getByText('Support', { exact: true })).toBeVisible()
+
+      const disclosure = comparison.getByRole('button', { name: 'View chart data' })
+
+      await disclosure.focus()
+
+      await page.keyboard.press('Enter')
+
+      await expect(comparison.getByText(name === 'Dumbbell chart' ? 'Support. Previous: 81. Current: 74.' : 'Support. Current: 74.', { exact: true })).toBeVisible()
+
+      const bounds = await comparison.boundingBox()
+
+      assert.ok(bounds && bounds.x >= 0 && bounds.x + bounds.width <= width)
+    }
+  }
 } finally {
   await browser.close()
 }

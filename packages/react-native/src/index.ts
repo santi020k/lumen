@@ -56,6 +56,7 @@ export {
   LumenWaterfallChart,
   type LumenWaterfallChartProps,
   type LumenWaterfallDatum } from './chart-components.js'
+export { type LumenComparisonChartProps, LumenDumbbellChart, LumenLollipopChart } from './chart-components.js'
 export {
   LumenImageComparison,
   type LumenImageComparisonProps
@@ -300,6 +301,7 @@ export {
   LumenSlider,
   type LumenSliderProps
 } from './value-components.js'
+export type { LumenComparisonDatum } from '@santi020k/lumen-core'
 export {
   createEmptyLumenPhoneNumber,
   getLumenPhoneCountries,

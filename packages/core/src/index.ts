@@ -96,6 +96,7 @@ export {
   tokenizeLumenCode
 } from './code.js'
 export { createLumenComboboxController, type LumenComboboxController } from './combobox.js'
+export { createLumenComparisonGeometry, isLumenComparisonDatum, type LumenComparisonDatum, type LumenComparisonOptions } from './comparison-chart.js'
 export {
   type LumenComponentBehavior,
   lumenComponentBehavior,

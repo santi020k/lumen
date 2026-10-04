@@ -513,3 +513,10 @@ labeled `ranges`. A strong actual bar, target marker, readable value labels, and
 data work together. Domains include zero and all measurements; invalid inputs fail closed.
 Null values stay distinct from zero. See the [chart guide](../../docs/data-visualization.md#actual-values-and-targets)
 for the input, localization, and domain contracts.
+
+### Rankings and paired comparisons
+
+Use `LollipopChart` for zero-based rankings and `DumbbellChart` for paired measurements (native
+`LumenLollipopChart` and `LumenDumbbellChart`). Supply ordered comparison data with `id`, `label`,
+nullable `value`, optional nullable `reference`, and optional `tone`. Both charts preserve missing
+values and expose exact data. See the [shared visualization contract](../../docs/data-visualization.md#rankings-and-paired-comparisons).

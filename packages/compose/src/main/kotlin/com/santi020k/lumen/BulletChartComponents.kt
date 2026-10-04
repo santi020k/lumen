@@ -99,24 +99,26 @@ fun LumenBulletChart(
 private fun LumenBulletPlot(model: LumenBulletModel, value: Double?, target: Double, tone: LumenChartTone, labels: LumenChartLabels) {
     val theme = LocalLumenTheme.current
     Column(verticalArrangement = Arrangement.spacedBy(LumenSpacing.Md), modifier = Modifier.clearAndSetSemantics {}) {
-        Canvas(Modifier.fillMaxWidth().height(60.dp)) {
+        Canvas(Modifier.fillMaxWidth().height(52.dp)) {
             val top = 6.dp.toPx()
-            val height = 48.dp.toPx()
+            val height = 40.dp.toPx()
             drawRect(theme.colors.surfaceMuted, Offset(0f, top), Size(size.width, height))
             model.ranges.forEachIndexed { index, band ->
                 val left = model.position(band.start) * size.width
                 val width = (model.position(band.range.end) - model.position(band.start)) * size.width
-                val opacity = 0.12f + index.toFloat() / max(1, model.ranges.size - 1) * 0.2f
+                val opacity = 0.08f + index.toFloat() / max(1, model.ranges.size - 1) * 0.14f
                 drawRect(theme.chartColor(band.range.tone ?: LumenChartTone.Neutral).copy(alpha = opacity), Offset(left, top), Size(max(0f, width - 1.dp.toPx()), height))
             }
             if (value != null) {
                 val zero = model.position(0.0) * size.width
                 val actual = model.position(value) * size.width
-                drawRect(theme.chartColor(tone), Offset(min(zero, actual), 22.dp.toPx()), Size(abs(actual - zero), 16.dp.toPx()))
+                drawRect(theme.chartColor(tone), Offset(min(zero, actual), 18.dp.toPx()), Size(abs(actual - zero), 16.dp.toPx()))
             }
             val marker = model.position(target) * size.width
             drawRect(theme.colors.surface, Offset(marker - 2.5.dp.toPx(), 0f), Size(5.dp.toPx(), size.height))
             drawRect(theme.colors.ink, Offset(marker - 1.5.dp.toPx(), 0f), Size(3.dp.toPx(), size.height))
+            drawRect(theme.colors.ink, Offset(marker - 4.5.dp.toPx(), 0f), Size(9.dp.toPx(), 3.dp.toPx()))
+            drawRect(theme.colors.ink, Offset(marker - 4.5.dp.toPx(), size.height - 3.dp.toPx()), Size(9.dp.toPx(), 3.dp.toPx()))
         }
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(LumenSpacing.Sm)) {
             model.ticks.forEachIndexed { index, tick ->

@@ -1,8 +1,8 @@
 ---
-import { Badge, BulletChart, Heatmap, Histogram, Icon, LineChart, Link, PieChart, Sparkline, Stat, Tabs, TabsList, TabsPanel, TabsTrigger, WaterfallChart } from '@santi020k/lumen-astro'
+import { Badge, BulletChart, DumbbellChart, Heatmap, Histogram, Icon, LineChart, Link, LollipopChart, PieChart, Sparkline, Stat, Tabs, TabsList, TabsPanel, TabsTrigger, WaterfallChart } from '@santi020k/lumen-astro'
 
 import DocsLayout from '../../../layouts/DocsLayout.astro'
-import { chartDemoBins, chartDemoBulletRanges, chartDemoChannels, chartDemoHeatmap, chartDemoMetrics, chartDemoSeries, chartDemoWaterfall } from '../../../lib/chart-demo-data'
+import { chartDemoBins, chartDemoBulletRanges, chartDemoChannels, chartDemoComparisons, chartDemoHeatmap, chartDemoMetrics, chartDemoSeries, chartDemoWaterfall } from '../../../lib/chart-demo-data'
 ---
 
 <DocsLayout title="Interactive data visualization — Lumen UI" description="Inspect shared chart behavior, honest time spacing, distributions, balance changes, and missing observations across the three web adapters." breadcrumbs={[{ href: '/docs/web', label: 'Web' }, { href: '/docs/web/data-visualization', label: 'Data visualization' }]}>
@@ -45,6 +45,8 @@ import { chartDemoBins, chartDemoBulletRanges, chartDemoChannels, chartDemoHeatm
         <TabsPanel value="astro">
           <section class="viz-chart-grid" data-chart-demo="astro" aria-label="Astro charts">
             <LineChart class="viz-main-chart" aria-label="Astro request volume" heading="Request volume" description="Requests and completions · 09:00–12:00" series={chartDemoSeries} xScale="linear" area markers="none" interactive syncGroup="visualization-demo" annotations={[{ id: 'target', label: 'Capacity target', value: 160 }]} />
+    <LollipopChart aria-label="Astro team rankings" heading="Team performance" description="Current score · shared scale" data={chartDemoComparisons} domain={{ min: 0, max: 100 }} valueLabel="Score" />
+    <DumbbellChart aria-label="Astro team comparison" heading="Progress by team" description="Previous quarter to current quarter" data={chartDemoComparisons} domain={{ min: 0, max: 100 }} referenceLabel="Previous" valueLabel="Current" />
             <BulletChart aria-label="Astro delivery performance" heading="On-time delivery" description="Actual performance against the service target" value={86} target={95} ranges={chartDemoBulletRanges} formatValue={value => `${value}%`} />
             <WaterfallChart aria-label="Astro balance changes" heading="Revenue movement" description="Opening balance to closing · USD, thousands" data={chartDemoWaterfall} valueLabel="USD, thousands" />
             <Histogram aria-label="Astro response times" heading="Response time" description="Distribution of requests · milliseconds" bins={chartDemoBins} tone="series-3" />
@@ -58,6 +60,8 @@ import { chartDemoBins, chartDemoBulletRanges, chartDemoChannels, chartDemoHeatm
         <TabsPanel value="elements">
           <section class="viz-chart-grid" data-chart-demo="elements" aria-label="Web Component charts">
             <lumen-line-chart class="viz-main-chart" aria-label="Elements request volume" heading="Request volume" description="Requests and completions · 09:00–12:00" series={JSON.stringify(chartDemoSeries)} x-scale="linear" area markers="none" interactive sync-group="visualization-demo" annotations={JSON.stringify([{ id: 'target', label: 'Capacity target', value: 160 }])}></lumen-line-chart>
+            <lumen-lollipop-chart aria-label="Elements team rankings" heading="Team performance" description="Current score · shared scale" data={JSON.stringify(chartDemoComparisons)} domain-min="0" domain-max="100" value-label="Score"></lumen-lollipop-chart>
+            <lumen-dumbbell-chart aria-label="Elements team comparison" heading="Progress by team" description="Previous quarter to current quarter" data={JSON.stringify(chartDemoComparisons)} domain-min="0" domain-max="100" reference-label="Previous" value-label="Current"></lumen-dumbbell-chart>
             <lumen-bullet-chart aria-label="Elements delivery performance" heading="On-time delivery" description="Actual performance against the service target · percent" value="86" target="95" ranges={JSON.stringify(chartDemoBulletRanges)}></lumen-bullet-chart>
             <lumen-waterfall-chart aria-label="Elements balance changes" heading="Revenue movement" description="Opening balance to closing · USD, thousands" value-label="USD, thousands" data={JSON.stringify(chartDemoWaterfall)}></lumen-waterfall-chart>
             <lumen-histogram aria-label="Elements response times" heading="Response time" description="Distribution of requests · milliseconds" tone="series-3" bins={JSON.stringify(chartDemoBins)}></lumen-histogram>
@@ -90,7 +94,7 @@ import { ReactChartDemo } from '../../../lib/react-chart-demo'
 
     container.dataset.mounted = 'true'
 
-    defineLumenElements(['BulletChart', 'LineChart', 'WaterfallChart', 'Histogram', 'Heatmap', 'PieChart'])
+    defineLumenElements(['LollipopChart', 'DumbbellChart', 'BulletChart', 'LineChart', 'WaterfallChart', 'Histogram', 'Heatmap', 'PieChart'])
 
     root = createRoot(container)
 

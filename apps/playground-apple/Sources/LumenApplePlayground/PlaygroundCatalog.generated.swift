@@ -112,7 +112,9 @@ enum PlaygroundCatalog {
                 "Status bar",
                 "Gauge",
                 "Image comparison",
-                "Bullet chart"
+                "Bullet chart",
+                "Lollipop chart",
+                "Dumbbell chart"
             ]
         ),
         (

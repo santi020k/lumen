@@ -83,6 +83,9 @@ import com.santi020k.lumen.LumenGraphicVariant
 import com.santi020k.lumen.LumenHeatmap
 import com.santi020k.lumen.LumenChartLabels
 import com.santi020k.lumen.LumenHeatmapColorScale
+import com.santi020k.lumen.LumenComparisonDatum
+import com.santi020k.lumen.LumenDumbbellChart
+import com.santi020k.lumen.LumenLollipopChart
 import com.santi020k.lumen.LumenBulletChart
 import com.santi020k.lumen.LumenBulletRange
 import com.santi020k.lumen.LumenHistogram
@@ -1336,6 +1339,12 @@ private fun ChartExample(visibleNames: Set<String>) {
             LumenWaterfallDatum("other", "Other", -10.0),
             LumenWaterfallDatum("closing", "Closing", 185.0, LumenWaterfallKind.Total)
         ))
+    }
+    if ("Lollipop chart" in visibleNames) {
+        LumenLollipopChart(data = listOf(LumenComparisonDatum("design", "Design", 88.0, 62.0), LumenComparisonDatum("engineering", "Engineering", 91.0, 76.0), LumenComparisonDatum("support", "Support", 74.0, 81.0), LumenComparisonDatum("operations", "Operations", 83.0, 54.0)), label = "Team performance", domain = 0.0..100.0, heading = "Team performance", valueLabel = "Current")
+    }
+    if ("Dumbbell chart" in visibleNames) {
+        LumenDumbbellChart(data = listOf(LumenComparisonDatum("design", "Design", 88.0, 62.0), LumenComparisonDatum("engineering", "Engineering", 91.0, 76.0), LumenComparisonDatum("support", "Support", 74.0, 81.0), LumenComparisonDatum("operations", "Operations", 83.0, 54.0)), label = "Progress by team", domain = 0.0..100.0, heading = "Progress by team", valueLabel = "Current")
     }
     if ("Bullet chart" in visibleNames) {
         LumenBulletChart(value = 86.0, target = 95.0, label = "Delivery performance", heading = "On-time delivery", description = "Actual performance against the service target", ranges = listOf(

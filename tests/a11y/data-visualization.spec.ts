@@ -23,6 +23,20 @@ const expectScrollableDataPanel = async (page: Page, chart: Locator, chartWidth:
   await expect(tableRegion.locator('tbody tr').last()).toBeInViewport()
 }
 
+const expectComparisonCharts = async (page: Page, scope: Locator): Promise<void> => {
+  for (const kind of ['lollipop', 'dumbbell']) {
+    const comparison = scope.locator(`.ui-${kind}-chart`)
+    await expect(comparison.locator('.ui-comparison-chart__dot')).toHaveCount(4)
+    await expect(comparison.locator('.ui-comparison-chart__reference')).toHaveCount(kind === 'dumbbell' ? 4 : 0)
+    await comparison.locator('summary').focus()
+    await page.keyboard.press('Enter')
+    await expect(comparison.locator('tbody tr')).toHaveCount(4)
+    await expect(comparison.locator('tbody')).toContainText('Support')
+    await expect(comparison.locator('tbody')).toContainText('74')
+    await comparison.locator('summary').press('Enter')
+  }
+}
+
 for (const width of [390, 1440]) {
   test(`chart interaction, exact tables and missing values agree across web adapters at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 1000 })
@@ -81,6 +95,7 @@ for (const width of [390, 1440]) {
       const targetBounds = await bullet.locator('.ui-bullet-chart__target').boundingBox()
       if (!bulletBounds || !targetBounds) throw new Error('Expected a visible target chart')
       expect(targetBounds.x + targetBounds.width).toBeLessThan(bulletBounds.x + bulletBounds.width)
+      await expectComparisonCharts(page, scope)
       await expect(scope.locator('.ui-heatmap__missing')).toHaveCount(1)
       await expect(scope.locator('.ui-heatmap__legend')).toContainText('Not available')
       await expect(scope.locator('.ui-histogram .ui-bar-chart__marks rect')).toHaveCount(12)

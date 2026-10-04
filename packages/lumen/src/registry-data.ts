@@ -2893,6 +2893,38 @@ export const lumenRegistry = {
       ]
     },
     {
+      name: 'LollipopChart',
+      type: 'component',
+      category: 'Data display',
+      description: 'Rank categories using a dot and a zero-based stem.',
+      files: [
+        'packages/astro/components/LollipopChart.astro',
+        'packages/astro/internal/ComparisonChart.astro',
+        'packages/astro/components/Chart.astro',
+        'packages/astro/styles/lumen.css'
+      ],
+      dependencies: [
+        'Chart',
+        'styles'
+      ]
+    },
+    {
+      name: 'DumbbellChart',
+      type: 'component',
+      category: 'Data display',
+      description: 'Compare two measurements per category with connected dots.',
+      files: [
+        'packages/astro/components/DumbbellChart.astro',
+        'packages/astro/internal/ComparisonChart.astro',
+        'packages/astro/components/Chart.astro',
+        'packages/astro/styles/lumen.css'
+      ],
+      dependencies: [
+        'Chart',
+        'styles'
+      ]
+    },
+    {
       name: 'Histogram',
       type: 'component',
       category: 'Data display',

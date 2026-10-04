@@ -50,6 +50,7 @@ import {
   type LumenChartTone,
   lumenChartTones,
   type LumenComboSeries,
+  type LumenComparisonDatum,
   type LumenComponentName,
   lumenComponentNames,
   type LumenHistogramBin,
@@ -140,6 +141,7 @@ import {
 import { bulletChartHtml, bulletNumberAttribute, parseBulletRanges } from './bullet-chart-html.js'
 import { LumenDatumChartElement } from './chart-activation.js'
 import { chartAnnotationHtml, chartCaptionHtml, chartDataTableHtml, chartDomainAttributes, chartHeaderHtml, chartInspectionHtml, chartNumberAttribute, escapeChartHtml, heatmapDataTableHtml, interactiveChartLegendHtml, intervalChartHtml, parseChartAnnotations, parseHeatmapData, parseHistogramBins, parseRangeData, parseWaterfallData, rangeDataTableHtml, scatterDataTableHtml, scatterPlotHtml } from './chart-html.js'
+import { comparisonChartHtml, parseComparisonData } from './comparison-chart-html.js'
 import {
   createLumenElementClass as createStandaloneLumenElementClass,
   LumenElement,
@@ -680,6 +682,8 @@ const elementConfigs = {
     defaults: { 'data-ui-hover-card': '' },
     tagName: 'lumen-hover-card'
   },
+  LollipopChart: { baseClassName: 'ui-chart ui-comparison-chart ui-lollipop-chart', role: 'figure', tagName: 'lumen-lollipop-chart', attributeClasses: { presentation: { bare: 'ui-chart--bare' } } },
+  DumbbellChart: { baseClassName: 'ui-chart ui-comparison-chart ui-dumbbell-chart', role: 'figure', tagName: 'lumen-dumbbell-chart', attributeClasses: { presentation: { bare: 'ui-chart--bare' } } },
   BulletChart: { baseClassName: 'ui-chart ui-bullet-chart', role: 'figure', tagName: 'lumen-bullet-chart', attributeClasses: { presentation: { bare: 'ui-chart--bare' } } },
   Histogram: { baseClassName: 'ui-chart ui-histogram', role: 'figure', tagName: 'lumen-histogram', attributeClasses: { presentation: { bare: 'ui-chart--bare' } } },
   WaterfallChart: { baseClassName: 'ui-chart ui-waterfall-chart', role: 'figure', tagName: 'lumen-waterfall-chart', attributeClasses: { presentation: { bare: 'ui-chart--bare' } } },
@@ -1461,6 +1465,7 @@ const elementConfigs = {
 >
 
 const observedAttributeNames = [
+  'reference-label',
   'target',
   'ranges',
   'target-label',
@@ -6545,6 +6550,30 @@ class LumenWaterfallChartBehaviorElement extends LumenStructuredChartBehaviorEle
   }
 }
 
+abstract class LumenComparisonChartElement extends LumenStructuredChartBehaviorElement {
+  #comparisonData: readonly LumenComparisonDatum[] | undefined
+  get data(): readonly LumenComparisonDatum[] {
+    return this.#comparisonData ?? parseComparisonData(this.getAttribute('data'))
+  }
+
+  set data(value: readonly LumenComparisonDatum[]) {
+    this.#comparisonData = value
+
+    if (this.isConnected) this.renderChart()
+  }
+
+  protected renderChart() {
+    this.innerHTML = chartHeaderHtml(this) + comparisonChartHtml(this, this.data, this.localName === 'lumen-dumbbell-chart', chartLabelsFor(this), this.valueFormatter) + chartCaptionHtml(this)
+  }
+}
+
+export class LumenLollipopChartElement extends LumenComparisonChartElement {
+  static override config = { ...elementConfigs.LollipopChart, observedAttributes: observedAttributeNames }
+}
+export class LumenDumbbellChartElement extends LumenComparisonChartElement {
+  static override config = { ...elementConfigs.DumbbellChart, observedAttributes: observedAttributeNames }
+}
+
 export class LumenBulletChartElement extends LumenStructuredChartBehaviorElement {
   static override config = { ...elementConfigs.BulletChart, observedAttributes: observedAttributeNames }
 
@@ -11621,6 +11650,8 @@ const granularElementClasses: Partial<
   FilterBar: GranularLumenFilterBarElement,
   Badge: GranularLumenBadgeElement,
   BulletChart: LumenBulletChartElement,
+  LollipopChart: LumenLollipopChartElement,
+  DumbbellChart: LumenDumbbellChartElement,
   Button: GranularLumenButtonElement,
   Card: GranularLumenCardElement,
   CardContent: GranularLumenCardContentElement,

@@ -98,6 +98,8 @@ components=(
     "Pie chart"
     "Scatter chart"
     "Waterfall chart"
+    "Lollipop chart"
+    "Dumbbell chart"
     "Bullet chart"
     "Histogram"
     "Heatmap"
@@ -143,8 +145,9 @@ for component in "${components[@]}"; do
         "Backdrop") scroll_count=1 ;;
         "Illustration") scroll_count=2 ;;
         "Image") scroll_count=2 ;;
-        "Heatmap"|"Bullet chart") scroll_count=4 ;;
-        "Sparkline"|"Line chart"|"Bar chart"|"Pie chart"|"Scatter chart"|"Waterfall chart"|"Bullet chart"|"Histogram"|"Heatmap"|"Range chart"|"Combo chart") scroll_count=2 ;;
+        "Heatmap"|"Lollipop chart"|"Dumbbell chart") scroll_count=4 ;;
+        "Bullet chart") scroll_count=5 ;;
+        "Sparkline"|"Line chart"|"Bar chart"|"Pie chart"|"Scatter chart"|"Waterfall chart"|"Histogram"|"Range chart"|"Combo chart") scroll_count=2 ;;
         "Card"|"Avatar"|"List row") scroll_count=1 ;;
         "Empty state") scroll_count=3 ;;
         "Error state") scroll_count=4 ;;
