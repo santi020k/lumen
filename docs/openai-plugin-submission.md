@@ -230,3 +230,28 @@ preserves existing output. It requires the system `zip` executable.
 Before uploading, verify the deployed catalog reports 4.0.0 and exposes all fourteen tools,
 including `lumen_check_compatibility` and `lumen_get_migration`. Check both a matching v4 consumer
 and an older consumer: the latter must use installed contracts without silently upgrading.
+
+## Automated catalog rollout
+
+The `Deploy MCP` GitHub workflow follows a successful `Release` run on `main`. It checks out that
+release's exact revision, requires the approved v4 contract and an immutable version tag at that
+revision, and rejects a revision that is no longer the current `main`. It also requires the exact
+MCP npm version to exist before deployment. A manual rerun is restricted to `main` and enforces the
+same gates. A successful release-preparation run without a published tag cannot deploy.
+
+The production job reuses the existing `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` repository
+secrets used by docs deployment. The token must permit Worker deployment for the configured account;
+secret-name availability alone does not establish that permission. No new secret values are created
+or copied by this workflow. The existing Worker configuration and verification challenge remain
+owned by the deployment environment.
+
+After deployment, `node scripts/check-hosted-mcp.mjs` checks health, server version, the exact catalog
+hash and component counts, compatibility/migration tool discovery, catalog integrity, and usage
+retrieval for existing components and the visualization catalog. Use `--published-only` for the npm
+preflight. Failed deployment or smoke checks leave the rollout incomplete; diagnose and rerun the
+workflow. Correct faulty released behavior with a new reviewed commit/version rather than moving a
+published tag. This job does not merge the release PR or approve a draft contract.
+
+Only after hosted smoke checks pass, upload the generated Codex archive for directory review and
+publish the approved plugin version. Directory submission and approval remain a human boundary;
+archive generation and local checks do not update users' installed plugins or skills automatically.

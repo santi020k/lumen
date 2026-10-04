@@ -45,6 +45,8 @@ const contextLinks: Record<DocsPlatformId | 'all', DocsContextLink[]> = {
   apple: sharedNativeLinks('apple'),
   foundations: [
     { href: '/docs/foundations', label: 'Overview', match: 'exact' },
+    { href: '/docs/foundations#tokens-in-use', label: 'Color roles' },
+    { href: '/docs/foundations#composition-in-use', label: 'Composition' },
     { href: '/docs/foundations#installation', label: 'Use the tokens' },
     { href: '/docs/foundations#components', label: 'Coverage' },
     { href: '/docs/foundations#principles', label: 'Principles' }

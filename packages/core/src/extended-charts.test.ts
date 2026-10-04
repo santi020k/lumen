@@ -1,9 +1,25 @@
 import { describe, expect, test } from 'vitest'
 
 import { createLumenBoxPlotGeometry, createLumenCalendarHeatmapGeometry, createLumenFunnelGeometry,
-  isLumenBoxPlotDatum, isLumenCalendarHeatmapDatum, isLumenFunnelDatum, parseLumenCalendarDate } from './extended-charts.js'
+  isLumenBoxPlotDatum, isLumenCalendarHeatmapDatum, isLumenFunnelDatum, type LumenBoxPlotDatum,
+  type LumenCalendarHeatmapDatum, type LumenFunnelDatum, parseLumenCalendarDate } from './extended-charts.js'
+
+const sparseRows = <T>(row: T, populatedIndex: number | null): T[] => {
+  const rows = Array<T>(2)
+
+  if (populatedIndex !== null) rows[populatedIndex] = row
+
+  return rows
+}
 
 describe('calendar heatmap', () => {
+  test.each([null, 0, 1])('rejects sparse observations with populated index %s', populatedIndex => {
+    const data = sparseRows<LumenCalendarHeatmapDatum>({ date: '2024-01-01', value: 0 }, populatedIndex)
+    expect(createLumenCalendarHeatmapGeometry(data, {
+      startDate: '2024-01-01', endDate: '2024-01-02'
+    })).toMatchObject({ valid: false, cells: [], weekCount: 0 })
+    expect(data).toHaveLength(2)
+  })
   test('aligns leap days with the selected week start and preserves missing versus zero', () => {
     const data = [{ date: '2024-02-29', value: 0 }, { date: '2024-03-02', value: 3 }]
     const model = createLumenCalendarHeatmapGeometry(data, { startDate: '2024-02-28', endDate: '2024-03-04', weekStartsOn: 1 })
@@ -47,6 +63,11 @@ describe('calendar heatmap', () => {
 })
 
 describe('funnel chart', () => {
+  test.each([null, 0, 1])('rejects sparse stages with populated index %s', populatedIndex => {
+    const data = sparseRows<LumenFunnelDatum>({ id: 'a', label: 'A', value: 0 }, populatedIndex)
+    expect(createLumenFunnelGeometry(data)).toEqual({ valid: false, rows: [], max: 0 })
+    expect(data).toHaveLength(2)
+  })
   test('retains stage order, missing values, zero and increases', () => {
     const model = createLumenFunnelGeometry([{ id: 'a', label: 'Visit', value: 10 },
       { id: 'b', label: 'Signup', value: null },
@@ -72,6 +93,18 @@ describe('funnel chart', () => {
 
 describe('box plot', () => {
   const row = { id: 'a', label: 'A', min: 1, q1: 2, median: 3, q3: 4, max: 5, outliers: [-2, 8] }
+  test.each([null, 0, 1])('rejects sparse summaries with populated index %s', populatedIndex => {
+    const data = sparseRows<LumenBoxPlotDatum>(row, populatedIndex)
+    expect(createLumenBoxPlotGeometry(data)).toMatchObject({ valid: false, rows: [] })
+    expect(data).toHaveLength(2)
+  })
+  test.each([null, 0, 1])('rejects sparse outliers with populated index %s', populatedIndex => {
+    const outliers = sparseRows(-2, populatedIndex)
+    const data = { ...row, outliers }
+    expect(isLumenBoxPlotDatum(data)).toBe(false)
+    expect(createLumenBoxPlotGeometry([data])).toMatchObject({ valid: false, rows: [] })
+    expect(outliers).toHaveLength(2)
+  })
   test('uses one scale for quartiles, whiskers and outliers', () => {
     const model = createLumenBoxPlotGeometry([row])
     expect(model.valid).toBe(true)

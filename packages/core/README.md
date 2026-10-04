@@ -357,5 +357,8 @@ See [consumer UI recipes](../../docs/consumer-ui-recipes.md) for application own
 
 `createLumenCalendarHeatmapGeometry`, `createLumenFunnelGeometry`, and
 `createLumenBoxPlotGeometry` validate complete datasets and provide normalized geometry.
+Sparse datasets and sparse box-plot outlier arrays are invalid, including empty array slots.
+Comparison chart geometry follows the same rule. Use explicit `null` measurements for missing
+observations; invalid datasets return no plotted rows or cells.
 See [data visualization](../../docs/data-visualization.md) for date-only identities, ordered
 stages, precomputed quartiles, missing values, and domain rules.
