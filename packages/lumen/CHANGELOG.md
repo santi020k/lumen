@@ -112,6 +112,10 @@
 
 ### Patch Changes
 
+- Reject unsafe external component names before wrapper generation. Keep schedule availability
+checks conservative for malformed intervals and report invalid resize or recurrence inputs
+explicitly without changing persisted event records.
+
 - Reduce published web artifact sizes within the existing v4 budgets. React compacts its component build
   without renaming identifiers, Web Components use native private methods for internal behavior, and
   the shared stylesheet retains the same rules with concise section comments. Public APIs stay unchanged.

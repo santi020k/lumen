@@ -1,9 +1,48 @@
 import { expect, test } from "@playwright/test";
 
+import { verifyFocusNavigation } from '../a11y/focus-navigation.js';
+
+test('React disclosure navigation skips unavailable controls and restores newly available actions', async ({ page }) => {
+  await page.goto('/dashboard-recipes');
+  await page.getByRole('button', { name: 'Open record actions' }).click();
+  await verifyFocusNavigation(page.getByRole('region', { name: 'Record actions' }));
+});
+
+test('Elements disclosure navigation skips unavailable controls and restores newly available actions', async ({ page }) => {
+  await page.goto('/visual/elements');
+  await page.evaluate(async () => {
+    await customElements.whenDefined('lumen-popover');
+    const root = document.createElement('lumen-popover');
+    root.innerHTML = '<button data-ui-trigger aria-controls="focus-panel">Focus navigation</button><div id="focus-panel" hidden></div>';
+    document.body.prepend(root);
+  });
+  await page.getByRole('button', { name: 'Focus navigation', exact: true }).click();
+  await verifyFocusNavigation(page.locator('#focus-panel'));
+});
+
 const adapters = [
   { label: "React", path: "/visual/react" },
   { label: "Elements", path: "/visual/elements" },
 ] as const;
+
+for (const framework of ['React', 'Elements']) {
+  test(`${framework} Mentions keeps suggestions out of the Tab sequence without losing selection`, async ({ page }) => {
+    await page.goto('/visual/mentions');
+    const input = page.getByRole('combobox', { name: `${framework} mentions`, exact: true });
+    await input.fill('@');
+    await expect(input).toHaveAttribute('aria-expanded', 'true');
+    await input.press('Tab');
+    await expect(page.getByRole('textbox', { name: `After ${framework} mentions`, exact: true })).toBeFocused();
+    await page.keyboard.press('Shift+Tab');
+    await expect(input).toBeFocused();
+    await input.fill('@a');
+    await input.press('Enter');
+    await expect(input).toHaveValue('@alice ');
+    await input.fill('@b');
+    await page.locator(framework === 'React' ? '[data-ui-mentions]' : 'lumen-mentions').getByRole('option', { name: 'bob', exact: true }).click();
+    await expect(input).toHaveValue('@bob ');
+  });
+}
 
 test('Elements Combobox restores native form state without a stale active option', async ({ page }) => {
   await page.goto('/visual/elements');

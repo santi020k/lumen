@@ -655,6 +655,30 @@ describe('@santi020k/lumen-elements', () => {
     expect(dialog.hidden).toBe(true)
   })
 
+  test.each([
+    '<div inert><button>Unavailable</button></div>',
+    '<fieldset disabled><button tabindex="0">Unavailable</button></fieldset>',
+    '<div hidden><button>Unavailable</button></div>',
+    '<button disabled tabindex="0">Unavailable</button>'
+  ])('disclosure navigation skips unavailable controls: %s', markup => {
+    document.body.innerHTML = `
+      <lumen-popover>
+        <button data-ui-trigger aria-controls="focus-panel">Open</button>
+        <div id="focus-panel" hidden>${markup}<button id="available-action">Available</button></div>
+      </lumen-popover>
+    `
+    const trigger = requireValue(document.querySelector<HTMLButtonElement>('[data-ui-trigger]'))
+    const unavailable = requireValue(document.querySelector<HTMLButtonElement>('#focus-panel button'))
+    const available = requireValue(document.querySelector<HTMLButtonElement>('#available-action'))
+    const focus = vi.spyOn(unavailable, 'focus')
+    press(trigger, 'ArrowDown')
+    expect(focus).not.toHaveBeenCalled()
+    expect(document.activeElement).toBe(available)
+    press(available, 'Home')
+    expect(focus).not.toHaveBeenCalled()
+    expect(document.activeElement).toBe(available)
+  })
+
   test('popover and dropdown disclosure listeners clean up across reconnects', () => {
     document.body.innerHTML = `
       <lumen-popover id="popover">
@@ -1939,6 +1963,8 @@ describe('@santi020k/lumen-elements', () => {
     expect(input.getAttribute('aria-label')).toBe('Mentions')
     expect(options[0]?.hidden).toBe(false)
     expect(options[1]?.hidden).toBe(true)
+    expect(options[0]?.tabIndex).toBe(-1)
+    expect(options[1]?.tabIndex).toBe(-1)
 
     input.dispatchEvent(new KeyboardEvent('keydown', { bubbles: true, key: 'Enter' }))
 

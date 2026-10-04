@@ -4,6 +4,7 @@ import type { LumenComponentName } from '../../packages/core/src/components.js'
 
 import { verifyAstroChartActivation } from './chart-activation.js'
 import { runtimeBehaviorComponentNames } from './component-coverage.js'
+import { verifyFocusNavigation } from './focus-navigation.js'
 
 const openPreview = async (page: Page, slug: string) => {
   await page.goto(`/docs/components/${slug}`)
@@ -11,6 +12,13 @@ const openPreview = async (page: Page, slug: string) => {
 }
 
 type BehaviorTestBody = (fixtures: { page: Page }) => Promise<void>
+
+test('Popover navigates available controls and restores newly available actions', async ({ page }) => {
+  await openPreview(page, 'popover')
+  const preview = page.locator('.component-doc-preview')
+  await preview.getByRole('button', { name: 'Invite teammates' }).click()
+  await verifyFocusNavigation(preview.locator('[data-ui-popover] > div').last())
+})
 
 const registeredBehaviorComponents = new Set<LumenComponentName>()
 
@@ -342,6 +350,100 @@ behaviorTest(['Toast', 'ToastViewport'], 'Toast creates a live notification in t
 
   await expect(toast).toContainText('Published')
   await expect(toast).toContainText('The latest version is now live.')
+})
+
+const invokeLumenInitUiPrimitives = (page: Page): Promise<void> => page.evaluate(() => {
+  (window as Window & { LumenInitUiPrimitives?: (scope?: ParentNode) => void }).LumenInitUiPrimitives?.()
+})
+
+test('Toast binds static markup added after the initial runtime pass without duplicating per-toast dismissal', async ({ page }) => {
+  await openPreview(page, 'toast')
+
+  const preview = page.locator('.component-doc-preview')
+  const existingToast = preview.locator('[data-ui-toast]').first()
+
+  await expect(existingToast).toHaveAttribute('data-ui-bound', 'true')
+
+  await preview.evaluate(root => {
+    const toast = document.createElement('aside')
+
+    toast.id = 'late-static-toast'
+    toast.dataset.uiToast = ''
+    toast.setAttribute('role', 'status')
+    toast.textContent = 'Late static toast'
+    root.append(toast)
+  })
+
+  const lateToast = page.locator('#late-static-toast')
+
+  await expect(lateToast).not.toHaveAttribute('data-ui-bound', 'true')
+
+  // The once-only document API guard must not block binding markup discovered on a later pass.
+  await invokeLumenInitUiPrimitives(page)
+
+  await expect(lateToast).toHaveAttribute('data-ui-bound', 'true')
+
+  await lateToast.evaluate(element => {
+    let removeCalls = 0
+
+    Object.defineProperty(element, 'remove', {
+      value: () => { removeCalls += 1 }
+    })
+
+    Object.defineProperty(element, 'removeCalls', {
+      get: () => removeCalls
+    })
+  })
+
+  // Repeated initialization after client navigation must not rebind an already-bound toast.
+  await invokeLumenInitUiPrimitives(page)
+  await invokeLumenInitUiPrimitives(page)
+
+  await lateToast.evaluate(element => {
+    element.dispatchEvent(new KeyboardEvent('keydown', { bubbles: true, cancelable: true, key: 'Escape' }))
+  })
+
+  await expect(lateToast).toHaveAttribute('data-state', 'closed')
+  await expect.poll(() => lateToast.evaluate(element => {
+    const calls: unknown = Reflect.get(element, 'removeCalls')
+    if (typeof calls !== 'number') throw new Error('Expected dismissal count')
+    return calls
+  })).toBe(1)
+})
+
+test('Toast ignores canceled and composing Escape keydown events', async ({ page }) => {
+  await openPreview(page, 'toast')
+
+  const toast = page.locator('.component-doc-preview [data-ui-toast]').first()
+
+  await expect(toast).toHaveAttribute('data-ui-bound', 'true')
+
+  await toast.evaluate(element => {
+    element.dispatchEvent(new KeyboardEvent('keydown', {
+      bubbles: true,
+      cancelable: true,
+      isComposing: true,
+      key: 'Escape'
+    }))
+  })
+
+  await expect(toast).not.toHaveAttribute('data-state', 'closed')
+
+  await page.evaluate(() => {
+    document.addEventListener('keydown', event => { event.preventDefault() }, { capture: true, once: true })
+  })
+
+  await toast.evaluate(element => {
+    element.dispatchEvent(new KeyboardEvent('keydown', { bubbles: true, cancelable: true, key: 'Escape' }))
+  })
+
+  await expect(toast).not.toHaveAttribute('data-state', 'closed')
+
+  await toast.evaluate(element => {
+    element.dispatchEvent(new KeyboardEvent('keydown', { bubbles: true, cancelable: true, key: 'Escape' }))
+  })
+
+  await expect(toast).toHaveAttribute('data-state', 'closed')
 })
 
 behaviorTest(['Tour'], 'Tour opens from its linked trigger and closes from its action', async ({ page }) => {
@@ -865,6 +967,48 @@ behaviorTest(['Mentions'], 'Mentions filters suggestions and inserts the selecte
   await expect(input).toHaveValue('Hello @alice ')
   await expect(list).toBeHidden()
   await expect(input).toHaveAttribute('aria-expanded', 'false')
+})
+
+test('Mentions keeps option buttons out of the tab sequence while keyboard and pointer selection still work', async ({ page }) => {
+  await openPreview(page, 'mentions')
+
+  const root = page.locator('.component-doc-preview [data-ui-mentions]')
+  const input = root.locator('[data-ui-mentions-input]')
+  const list = root.locator('[data-ui-mentions-list]')
+  const aliceOption = root.getByRole('option', { name: 'alice' })
+
+  await root.evaluate(element => {
+    const nextField = document.createElement('input')
+
+    nextField.type = 'text'
+    nextField.setAttribute('aria-label', 'Next field')
+    element.insertAdjacentElement('afterend', nextField)
+  })
+
+  const nextField = page.getByRole('textbox', { name: 'Next field' })
+
+  await input.fill('Hello @al')
+  await expect(list).toBeVisible()
+  await expect(aliceOption).toHaveAttribute('tabindex', '-1')
+
+  await input.focus()
+  await page.keyboard.press('Tab')
+  await expect(nextField).toBeFocused()
+
+  await page.keyboard.press('Shift+Tab')
+  await expect(input).toBeFocused()
+
+  await input.fill('Hello @al')
+  await expect(list).toBeVisible()
+  await input.press('Enter')
+  await expect(input).toHaveValue('Hello @alice ')
+  await expect(list).toBeHidden()
+
+  await input.fill('Hello @al')
+  await expect(list).toBeVisible()
+  await aliceOption.click()
+  await expect(input).toHaveValue('Hello @alice ')
+  await expect(list).toBeHidden()
 })
 
 behaviorTest(['TreeSelect'], 'TreeSelect commits a node and closes its disclosure', async ({ page }) => {

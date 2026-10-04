@@ -24,6 +24,7 @@ import {
   useCallback,
   useEffect,
   useId,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState
@@ -7845,10 +7846,27 @@ export const Mentions = ({
 }: MentionsProps) => {
   const generatedId = useId()
   const inputRef = useRef<HTMLTextAreaElement>(null)
+  const pendingCaretRef = useRef<{ position: number, value: string } | null>(null)
   const [activeIndex, setActiveIndex] = useState(-1)
   const [internalValue, setInternalValue] = useState(defaultValue)
   const [query, setQuery] = useState<string | null>(null)
   const currentValue = value ?? internalValue
+
+  useLayoutEffect(() => {
+    const pending = pendingCaretRef.current
+    const input = inputRef.current
+
+    if (!pending) return
+
+    pendingCaretRef.current = null
+
+    if (!input || currentValue !== pending.value) return
+
+    input.focus()
+
+    input.setSelectionRange(pending.position, pending.position)
+  }, [currentValue])
+
   const listId = `ui-mentions-${generatedId}-list`
   const escapedTrigger = trigger.replaceAll(/[.*+?^${}()|[\]\\]/g, '\\$&')
   const normalizedOptions = options.map(normalizeOption)
@@ -7886,15 +7904,11 @@ export const Mentions = ({
 
     const nextValue = before + currentValue.slice(caret)
 
+    pendingCaretRef.current = { position: before.length, value: nextValue }
+
     setNextValue(nextValue)
 
     closeList()
-
-    requestAnimationFrame(() => {
-      inputRef.current?.focus()
-
-      inputRef.current?.setSelectionRange(before.length, before.length)
-    })
   }
 
   const handleKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>): void => {
@@ -7948,8 +7962,14 @@ export const Mentions = ({
         className="ui-textarea ui-mentions__input"
         data-ui-mentions-input
         name={name}
-        onBlur={closeList}
+        onBlur={() => {
+          pendingCaretRef.current = null
+
+          closeList()
+        }}
         onChange={event => {
+          pendingCaretRef.current = null
+
           const nextValue = event.currentTarget.value
 
           const match = new RegExp(`${escapedTrigger}(\\w*)$`)
@@ -7992,6 +8012,7 @@ export const Mentions = ({
                 event.preventDefault()
               }}
               role="option"
+              tabIndex={-1}
               type="button"
             >
               {option.label}

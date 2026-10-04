@@ -42,7 +42,7 @@ export default defineConfig({
   forbidOnly: Boolean(process.env.CI),
   fullyParallel: true,
   projects,
-  grep: /\b(?:Calendar navigates|CodeTabs switches|Combobox filters|DataTable sorts|Dialog opens|Mentions filters|Resizable changes|Select commits|Tabs switches|Tooltip opens)/,
+  grep: /\b(?:Calendar navigates|CodeTabs switches|Combobox filters|DataTable sorts|Dialog opens|Mentions|Popover navigates|Resizable changes|Select commits|Tabs switches|Toast|Tooltip opens)/,
   reporter: process.env.CI ? 'github' : 'list',
   retries: process.env.CI ? 2 : 0,
   testDir: './tests/a11y',

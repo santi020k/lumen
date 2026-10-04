@@ -124,6 +124,14 @@ Popover, dropdown menu, tabs, and tooltip parts expose the DOM and ARIA contract
 shared progressive-enhancement runtime. Prefer these parts over recreating roles and `data-ui-*`
 attributes by hand.
 
+Disclosure keyboard navigation skips hidden or inert regions, invisible controls, and native
+disabled controls, including a disabled fieldset. Available controls in a fieldset's first legend
+retain their native keyboard behavior; removing `inert` makes a region available again.
+
+Mentions keeps suggestion navigation on the textarea through `aria-activedescendant`; suggestion
+buttons are excluded from the Tab sequence. Static Toast markup is enhanced again after client
+navigation, retaining Escape dismissal without duplicate listeners.
+
 Tabs keep the selected trigger visible when a narrow tab list scrolls horizontally and emit a
 typed `ui:tabs-change` event. Import `LumenTabsChangeDetail` or `LumenTabsChangeEvent` from this
 package when application behavior follows the selected value.
