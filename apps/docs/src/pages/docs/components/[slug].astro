@@ -250,9 +250,18 @@ undefined}
         </div>
       </div>
       <p class="max-w-2xl text-sm/7 text-ink-soft">
-        Choose Astro, React, or Elements to compare native usage against the shared visual output.
-        Each example assumes the framework-level setup is already complete.
+        {chartGuide ?
+          'Explore the live chart, then open its code for Astro, React, or Elements.' :
+          'Choose Astro, React, or Elements to compare native usage against the shared visual output. Each example assumes the framework-level setup is already complete.'}
       </p>
+      <FrameworkExample
+        componentName={component.name}
+        codeCollapsed={Boolean(chartGuide)}
+        groupId={`code-${componentSlug}`}
+        snippets={snippets}
+      >
+        <Example />
+      </FrameworkExample>
       {component.adapterNotes && (
         <Note label="Framework differences">
           {component.adapterNotes.map(note => (
@@ -263,14 +272,6 @@ undefined}
           ))}
         </Note>
       )}
-      <FrameworkExample
-        componentName={component.name}
-        codeCollapsed={Boolean(chartGuide)}
-        groupId={`code-${componentSlug}`}
-        snippets={snippets}
-      >
-        <Example />
-      </FrameworkExample>
     </section>
 
     {chartGuide && <ChartUsageDetails guide={chartGuide} />}
