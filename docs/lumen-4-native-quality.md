@@ -527,3 +527,21 @@ installed C++ sources alone would not verify a native fix. The live-versus-cold 
 narrows the investigation to layout invalidation during scaling; it does not prove an
 exact cache cause, qualify large text or justify disabling font scaling or resetting
 application state. No renderer patch or production build configuration changed.
+
+### Compose primitive state and Modifier cleanup
+
+Six private playground numeric states now use Compose's specialized integer or float
+state factories instead of boxed generic state. The adaptive list/detail example now
+places its optional Modifier first, defaults it to `Modifier`, and applies its fill
+behavior internally. The fixed-height catalog call uses named arguments; the full-window
+call retains its existing fill behavior. No public library contract or dependency changed.
+
+All six Android playground instrumentation tests passed again on the Android 17/API 37
+emulator. Native lint completed with 18 remaining launcher-asset/resource findings, down
+from 26; all six numeric-state and both Modifier findings are absent from the new report.
+This is not a zero-warning native gate or a measured startup/scrolling improvement. Root
+type checking and zero-warning JavaScript lint each passed all 23 tasks. The test XML,
+lint report, APKs and source hashes are under `.build/native-quality-android-primitive-state`;
+the build log is `.build/native-quality-android-primitive-state.log`. Actual process death,
+hardware, the renderer fix, stability qualification and local release integration remain
+open, including the existing canonical bundle-budget failure.
