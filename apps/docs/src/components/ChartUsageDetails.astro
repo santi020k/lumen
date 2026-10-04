@@ -1,0 +1,43 @@
+---
+import { Code, Link } from '@santi020k/lumen-astro'
+
+import type { ChartGuide } from '../data/chart-guides'
+import { getChartGuide } from '../data/chart-guides'
+
+interface Props { guide: ChartGuide }
+
+const { guide } = Astro.props
+const related = guide.related.map(getChartGuide).filter(item => item !== undefined)
+---
+<div class="chart-usage-details">
+  <section aria-labelledby="chart-reading-title">
+    <h2 id="chart-reading-title">When to use {guide.name}</h2>
+    <p>{guide.when}</p>
+    <ul>{guide.readingNotes.map(note => <li>{note}</li>)}</ul>
+  </section>
+  <section aria-labelledby="chart-data-title">
+    <h2 id="chart-data-title">Prepare the data</h2>
+    <Code code={guide.dataShape} language="ts" variant="block" copy wrap />
+    <ul>{guide.dataNotes.map(note => <li>{note}</li>)}</ul>
+    <p><Link href="/docs/web/data-visualization/data">Shared data and formatting guidance →</Link></p>
+  </section>
+  <section aria-labelledby="chart-pitfalls-title">
+    <h2 id="chart-pitfalls-title">Avoid misleading comparisons</h2>
+    <ul>{guide.pitfalls.map(note => <li>{note}</li>)}</ul>
+    <p><Link href="/docs/web/data-visualization/accessibility">Chart accessibility and keyboard guidance →</Link></p>
+  </section>
+  <nav aria-label={`Alternatives to ${guide.name}`}>
+    <span>Compare with</span>
+    {related.map(item => <Link href={`/docs/components/${item.slug}`}>{item.name}</Link>)}
+    <Link href="/docs/web/data-visualization">All chart types →</Link>
+  </nav>
+</div>
+<style>
+  .chart-usage-details { display: grid; gap: 2rem; margin-block: 2rem; }
+  .chart-usage-details section { display: grid; gap: 1rem; min-width: 0; }
+  .chart-usage-details h2 { margin: 0; font-size: 1.375rem; letter-spacing: -.025em; }
+  .chart-usage-details p, .chart-usage-details li { margin: 0; color: hsl(var(--ink-soft)); font-size: .875rem; line-height: 1.8; }
+  .chart-usage-details ul { display: grid; gap: .6rem; margin: 0; padding-inline-start: 1.25rem; }
+  .chart-usage-details nav { display: flex; flex-wrap: wrap; gap: .75rem 1.25rem; border-block: 1px solid hsl(var(--line)); padding-block: 1rem; font-size: .8125rem; }
+  .chart-usage-details nav > span { color: hsl(var(--ink-soft)); }
+</style>

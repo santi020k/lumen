@@ -1,0 +1,153 @@
+---
+import type { InferGetStaticPropsType } from 'astro'
+
+import { Badge, Breadcrumb, Link, Note, Pagination } from '@santi020k/lumen-astro'
+
+import CodeBlock from '../../../../../components/CodeBlock.astro'
+import DocsActionLink from '../../../../../components/DocsActionLink.astro'
+import DocsPageHero from '../../../../../components/DocsPageHero.astro'
+import DocsReferenceTable from '../../../../../components/DocsReferenceTable.astro'
+import { reactHookGuides } from '../../../../../data/react-hooks'
+import DocsLayout from '../../../../../layouts/DocsLayout.astro'
+import { getExample } from '../../../../../lib/examples'
+
+export const getStaticPaths = () => reactHookGuides.map(hook => ({
+  params: { slug: hook.slug },
+  props: { hook }
+}))
+
+type Props = InferGetStaticPropsType<typeof getStaticPaths>
+
+const { hook } = Astro.props
+const { component: Preview } = getExample(hook.componentName)
+const index = reactHookGuides.findIndex(item => item.name === hook.name)
+const previous = reactHookGuides[index - 1]
+const next = reactHookGuides[index + 1]
+
+const breadcrumbs = [
+  { href: '/docs', label: 'Docs' },
+  { href: '/docs/web', label: 'Web' },
+  { href: '/docs/frameworks/react', label: 'React' },
+  { href: '/docs/frameworks/react/hooks', label: 'Hooks' },
+  { href: hook.href, label: hook.name }
+]
+---
+
+<DocsLayout
+  {breadcrumbs}
+  description={`${hook.metadataDescription} React usage, options, controller return values, and a ${hook.componentName} component preview.`}
+  pageNavigation={[
+    { id: 'preview', label: 'Component preview' },
+    { id: 'usage', label: 'React usage' },
+    { id: 'options', label: 'Options' },
+    { id: 'controller', label: 'Return values' }
+  ]}
+  title={`${hook.name}: React hook examples & API — Lumen UI`}
+>
+  <div class="hook-reference">
+    <Breadcrumb class="docs-breadcrumb">
+      <ol>
+        {breadcrumbs.map((item, breadcrumbIndex) => (
+          <li>{breadcrumbIndex === breadcrumbs.length - 1 ? <span aria-current="page">{item.label}</span> : <Link href={item.href}>{item.label}</Link>}</li>
+        ))}
+      </ol>
+    </Breadcrumb>
+    <DocsPageHero compact description={hook.description} eyebrow={hook.groupTitle} title={hook.name}>
+      <Fragment slot="actions">
+        <DocsActionLink href="#usage">Copy React example</DocsActionLink>
+        <DocsActionLink href={hook.componentHref} variant="outline">{hook.componentName} component</DocsActionLink>
+      </Fragment>
+    </DocsPageHero>
+
+    <section class="hook-reference__section" aria-labelledby="preview">
+      <div class="docs-section-heading">
+        <Badge class="w-fit" variant="outline">Live component preview · Astro</Badge>
+        <h2 id="preview">Explore {hook.componentName}</h2>
+        <p>Try the component this hook connects to. The preview uses the Astro adapter; the React example below uses <code>{hook.name}</code>.</p>
+      </div>
+      <div class="hook-reference__preview docs-preview"><Preview /></div>
+    </section>
+
+    <section class="hook-reference__section" aria-labelledby="usage">
+      <div class="docs-section-heading">
+        <h2 id="usage">React usage</h2>
+        <p>Import from <code>@santi020k/lumen-react</code> and spread the controller props onto the matching components.</p>
+      </div>
+      <CodeBlock code={hook.code} lang="tsx" title={`${hook.name} example`} />
+      <Note>
+        <p>Load <code>@santi020k/lumen-react/styles.css</code> once in your application. With React Server Components, put <code>'use client'</code> at the top of the module that calls the hook. Follow the <Link href="/docs/frameworks/react">React setup guide</Link> for the framework boundary.</p>
+      </Note>
+    </section>
+
+    <section class="hook-reference__section" aria-labelledby="options">
+      <div class="docs-section-heading"><h2 id="options">Options</h2></div>
+      {hook.options.length > 0 ?
+(
+        <DocsReferenceTable
+          columns={['Property', 'Type', 'Default', 'Description']}
+          labelledBy="options"
+          rows={hook.options.map(row => [row.name, row.type, row.defaultValue, row.description])}
+        />
+      ) :
+<p class="hook-reference__copy">Call <code>{hook.name}()</code> without options.</p>}
+    </section>
+
+    <section class="hook-reference__section" aria-labelledby="controller">
+      <div class="docs-section-heading"><h2 id="controller">Controller return values</h2></div>
+      <DocsReferenceTable
+        columns={['Property', 'Type', 'Description']}
+        labelledBy="controller"
+        rows={hook.controller.map(row => [row.name, row.type, row.description])}
+      />
+    </section>
+
+    <Pagination
+aria-label="React hook guides"
+class="hook-reference__pagination"
+    >
+      {previous && <Link href={previous.href}>← {previous.name}</Link>}
+      <Link href="/docs/frameworks/react/hooks">All React hooks</Link>
+      {next && <Link href={next.href}>{next.name} →</Link>}
+    </Pagination>
+  </div>
+</DocsLayout>
+
+<style>
+  .hook-reference,
+  .hook-reference__section {
+    display: grid;
+    min-width: 0;
+    gap: 1.25rem;
+  }
+
+  .hook-reference { gap: 2.5rem; }
+
+  .hook-reference__section { padding-top: 0.5rem; }
+
+  .hook-reference__preview {
+    display: grid;
+    align-content: center;
+    min-width: 0;
+    min-height: 12rem;
+    overflow-x: auto;
+    padding: clamp(1rem, 3vw, 2rem);
+    border: 1px solid hsl(var(--line));
+    border-radius: var(--ui-radius-lg);
+    background: hsl(var(--surface-muted) / 0.5);
+  }
+
+  .hook-reference__copy {
+    color: hsl(var(--ink-soft));
+    font-size: 0.875rem;
+    line-height: 1.7;
+  }
+
+  :global(.hook-reference__pagination) {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 1rem;
+    border-top: 1px solid hsl(var(--line));
+    padding-top: 1.5rem;
+  }
+</style>

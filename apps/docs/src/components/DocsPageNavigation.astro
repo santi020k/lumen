@@ -1,0 +1,210 @@
+---
+import { Collapsible, Link } from '@santi020k/lumen-astro'
+
+import type { DocsPageNavigationItem } from '../lib/docs-page-navigation'
+import { normalizePageNavigation } from '../lib/docs-page-navigation'
+
+interface Props {
+  items?: DocsPageNavigationItem[] | false | undefined
+}
+
+const { items } = Astro.props
+const sections = normalizePageNavigation(items === false ? [] : items ?? [])
+---
+
+<div
+  class="docs-page-navigation"
+  data-docs-page-navigation
+  data-automatic={items === undefined ? 'true' : 'false'}
+  hidden={sections.length < 3}
+>
+  <Collapsible class="docs-page-navigation__disclosure">
+    <summary>
+      <span class="docs-page-navigation__label">On this page</span>
+      <span class="docs-page-navigation__current" data-docs-page-current>{sections[0]?.label}</span>
+    </summary>
+    <nav class="docs-page-navigation__panel" aria-label="On this page">
+      <ol data-docs-page-links>
+        {sections.map(section => (
+          <li><Link href={`#${section.id}`} data-docs-page-link>{section.label}</Link></li>
+        ))}
+      </ol>
+    </nav>
+  </Collapsible>
+  <template data-docs-page-link-template>
+    <li><Link href="#" data-docs-page-link></Link></li>
+  </template>
+</div>
+
+<script>
+  import { collectDocsPageSections, getActivePageSection } from '../lib/docs-page-navigation'
+
+  let teardown: (() => void) | undefined
+
+  const populateNavigation = (root: HTMLElement, content: HTMLElement, list: HTMLOListElement): void => {
+    if (root.dataset.automatic !== 'true') return
+
+    const sections = collectDocsPageSections(content)
+    const template = root.querySelector<HTMLTemplateElement>('[data-docs-page-link-template]')
+
+    if (!template) return
+
+    list.replaceChildren()
+
+    for (const section of sections) {
+      const item = template.content.firstElementChild?.cloneNode(true)
+
+      if (!(item instanceof HTMLElement)) continue
+
+      const link = item.querySelector<HTMLAnchorElement>('[data-docs-page-link]')
+
+      if (!link) continue
+
+      link.href = `#${section.id}`
+
+      link.textContent = section.label
+
+      list.append(item)
+    }
+
+    root.hidden = sections.length < 3
+  }
+
+  const bindNavigation = (
+    root: HTMLElement,
+    list: HTMLOListElement,
+    disclosure: HTMLDetailsElement,
+    current: HTMLElement
+  ): (() => void) => {
+    const links = Array.from(list.querySelectorAll<HTMLAnchorElement>('[data-docs-page-link]'))
+
+    const sections = links.flatMap(link => {
+      const id = (link.getAttribute('href') ?? '').slice(1)
+      const target = document.getElementById(id)
+
+      return target ? [{ id, link, target }] : []
+    })
+
+    const events = new AbortController()
+    let frame = 0
+
+    const updateCurrent = (): void => {
+      frame = 0
+
+      const bar = root.closest<HTMLElement>('.docs-mobile-navigation-bar')
+
+      const activeId = getActivePageSection(
+        sections.map(section => ({ id: section.id, top: section.target.getBoundingClientRect().top })),
+        (bar?.getBoundingClientRect().bottom ?? 0) + 24
+      )
+
+      for (const section of sections) {
+        if (section.id === activeId) {
+          section.link.setAttribute('aria-current', 'location')
+
+          current.textContent = section.link.textContent
+        } else section.link.removeAttribute('aria-current')
+      }
+    }
+
+    const scheduleUpdate = (): void => {
+      if (!frame) frame = requestAnimationFrame(updateCurrent)
+    }
+
+    list.addEventListener('click', event => {
+      if (!(event.target instanceof Element)) return
+
+      const link = event.target.closest<HTMLAnchorElement>('[data-docs-page-link]')
+      const section = sections.find(item => item.link === link)
+
+      if (!section || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
+
+      disclosure.open = false
+
+      // Keep native hash navigation, and move keyboard focus into the chosen section.
+      section.target.setAttribute('tabindex', '-1')
+
+      section.target.focus({ preventScroll: true })
+
+      scheduleUpdate()
+    }, { signal: events.signal })
+
+    document.addEventListener('click', event => {
+      if (event.target instanceof Node && !root.contains(event.target)) disclosure.open = false
+    }, { signal: events.signal })
+
+    root.addEventListener('keydown', event => {
+      if (event.key !== 'Escape' || !disclosure.open) return
+
+      disclosure.open = false
+
+      disclosure.querySelector('summary')?.focus()
+    }, { signal: events.signal })
+
+    window.addEventListener('scroll', scheduleUpdate, { passive: true, signal: events.signal })
+
+    window.addEventListener('resize', scheduleUpdate, { passive: true, signal: events.signal })
+
+    window.addEventListener('hashchange', scheduleUpdate, { signal: events.signal })
+
+    updateCurrent()
+
+    // Automatically generated anchors must also work when opened directly in a new tab.
+    if (root.dataset.automatic === 'true' && location.hash) {
+      const target = sections.find(section => `#${encodeURIComponent(section.id)}` === location.hash || `#${section.id}` === location.hash)?.target
+
+      target?.scrollIntoView({ behavior: 'instant', block: 'start' })
+    }
+
+    return () => {
+      events.abort()
+
+      cancelAnimationFrame(frame)
+    }
+  }
+
+  const initializePageNavigation = (): void => {
+    teardown?.()
+
+    const root = document.querySelector<HTMLElement>('[data-docs-page-navigation]')
+    const content = document.querySelector<HTMLElement>('.docs-content')
+
+    if (!root || !content) return
+
+    const list = root.querySelector<HTMLOListElement>('[data-docs-page-links]')
+    const disclosure = root.querySelector<HTMLDetailsElement>('details')
+    const current = root.querySelector<HTMLElement>('[data-docs-page-current]')
+
+    if (!list || !disclosure || !current) return
+
+    populateNavigation(root, content, list)
+
+    if (root.hidden) return
+
+    teardown = bindNavigation(root, list, disclosure, current)
+  }
+
+  initializePageNavigation()
+
+  document.addEventListener('astro:page-load', initializePageNavigation)
+
+  document.addEventListener('astro:before-swap', () => teardown?.())
+</script>
+
+<style>
+  .docs-page-navigation { flex: 1; min-width: 0; }
+  .docs-page-navigation[hidden] { display: none; }
+  .docs-page-navigation :global(.docs-page-navigation__disclosure) { position: static; overflow: visible; padding: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
+  .docs-page-navigation :global(.docs-page-navigation__disclosure > summary) { position: relative; display: flex; align-items: center; gap: 0.75rem; min-height: 2.5rem; margin: 0; padding: 0.5rem 1.9rem 0.5rem 0.5rem; border: 0; border-radius: 0.5rem; background: transparent; font-size: 0.75rem; }
+  .docs-page-navigation :global(.docs-page-navigation__disclosure > summary::after) { position: absolute; right: 0.5rem; }
+  .docs-page-navigation__label { flex-shrink: 0; color: hsl(var(--ink)); font-weight: 800; }
+  .docs-page-navigation__current { overflow: hidden; color: hsl(var(--ink-soft)); font-weight: 500; text-overflow: ellipsis; white-space: nowrap; }
+  .docs-page-navigation :global(.docs-page-navigation__panel) { position: absolute; z-index: 30; top: calc(100% + 0.25rem); right: 0; left: 0; overflow: auto; max-height: min(55dvh, 26rem); margin: 0; padding: 0.75rem; border: 1px solid hsl(var(--line)); border-radius: 0.8rem; background: hsl(var(--surface)); box-shadow: 0 12px 32px hsl(var(--ink) / 0.12); overscroll-behavior: contain; }
+  .docs-page-navigation ol { display: grid; gap: 0.25rem; margin: 0; padding: 0; list-style: none; }
+  .docs-page-navigation li { min-width: 0; }
+  .docs-page-navigation :global([data-docs-page-link]) { display: flex; align-items: center; min-height: 2.75rem; padding: 0.55rem 0.75rem; border-radius: 0.4rem; color: hsl(var(--ink-soft)); font-size: 0.8125rem; font-weight: 600; line-height: 1.5; text-decoration: none; }
+  .docs-page-navigation :global([data-docs-page-link]:hover) { color: hsl(var(--ink)); background: hsl(var(--surface-muted)); }
+  .docs-page-navigation :global([aria-current='location']) { color: hsl(var(--brand)); background: hsl(var(--brand-soft)); box-shadow: inset 3px 0 hsl(var(--brand)); }
+  @media (min-width: 48rem) { .docs-page-navigation ol { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 30rem) { .docs-page-navigation :global(.docs-page-navigation__disclosure > summary) { gap: 0.5rem; } .docs-page-navigation__current { font-size: 0.6875rem; } }
+</style>

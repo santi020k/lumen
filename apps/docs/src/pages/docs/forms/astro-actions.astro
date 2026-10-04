@@ -3,6 +3,7 @@ import { Breadcrumb, Card, Link, Stack } from '@santi020k/lumen-astro'
 
 import CodeBlock from '../../../components/CodeBlock.astro'
 import DocsPageHero from '../../../components/DocsPageHero.astro'
+import FormStateExample from '../../../components/FormStateExample.astro'
 import DocsLayout from '../../../layouts/DocsLayout.astro'
 
 const actionDefinition = `// src/actions/index.ts
@@ -98,6 +99,8 @@ const fileExample = `<Form
       ]}
       title="Server-first forms with Astro Actions"
     />
+
+    <FormStateExample idPrefix="astro-actions" />
 
     <section class="docs-section space-y-5" aria-labelledby="action-title">
       <div class="docs-section-heading">

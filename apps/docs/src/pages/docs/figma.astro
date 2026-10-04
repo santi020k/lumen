@@ -1,5 +1,5 @@
 ---
-import { Badge, Card, Icon } from '@santi020k/lumen-astro'
+import { Badge, Card, CodeTabs, Icon } from '@santi020k/lumen-astro'
 
 import DocsActionLink from '../../components/DocsActionLink.astro'
 import DocsPageHero from '../../components/DocsPageHero.astro'
@@ -7,11 +7,12 @@ import DocsLayout from '../../layouts/DocsLayout.astro'
 
 const figmaCommunityUrl = 'https://www.figma.com/community/file/1662337342676541513'
 const figmaFileKey = 'luQW2pTQ3jGGxSFPAAsfa9'
+const pluginSetup = 'pnpm install --frozen-lockfile\npnpm exec turbo run build --filter=@santi020k/lumen-figma-plugin'
 
 const figmaDetails = [
   [
     'Variables',
-    'Color includes 15 semantic tokens with Light and Dark modes. Radius includes sm, md, and lg values.',
+    'Semantic colors, radius, and effects connect component appearance to shared design decisions.',
     'swatch-book'
   ],
   [
@@ -26,7 +27,7 @@ const figmaDetails = [
   ],
   [
     'Code workflow',
-    'Use the file for variable references, component review, and future Code Connect mappings.',
+    'Use Code Connect mappings and the beta plugin to bring Lumen components into an Astro handoff.',
     'code-xml'
   ]
 ] as const
@@ -47,13 +48,18 @@ const workflow = [
       description="Design and implementation share one semantic language. Explore variables, component variants, and handoff patterns that map directly to Lumen code."
       eyebrow="Design handoff"
       stats={[
-        { label: 'Color tokens', value: 15 },
-        { label: 'Modes', value: 2 },
-        { label: 'Code targets', value: 3 }
+        { label: 'Plugin stage', value: 'Beta' },
+        { label: 'Mapped components', value: 6 },
+        { label: 'Plugin target', value: 'Astro' }
       ]}
       title="One system from canvas to code."
     >
       <Fragment slot="actions">
+        <DocsActionLink
+          href="#plugin-beta"
+          variant="outline"
+        >Explore the beta plugin
+        </DocsActionLink>
         <DocsActionLink
           href={figmaCommunityUrl}
           target="_blank"
@@ -86,6 +92,38 @@ const workflow = [
         </div>
       </div>
     </DocsPageHero>
+
+    <Card as="section" class="figma-plugin-card" aria-labelledby="plugin-title" id="plugin-beta">
+      <div class="figma-plugin-card__title">
+        <h2 id="plugin-title">Lumen for Figma</h2>
+        <Badge variant="outline">Beta version</Badge>
+      </div>
+      <p>
+        Select a design built with Lumen, inspect its components, and take an Astro starter into
+        your project. The AI handoff gives your coding agent the selected structure, component
+        properties, semantic color references, and items that need review.
+      </p>
+      <p>
+        The beta recognizes Button, Input, Field, Card, Tabs, and Dialog. It runs locally and makes
+        no AI calls. Your coding agent handles application integration and validation. Generated
+        code, responsive layouts, custom layers, and action behavior still need review.
+      </p>
+      <CodeTabs
+        ariaLabel="Build the beta Figma plugin"
+        items={[{ value: 'setup', label: 'Build the development plugin', language: 'bash', code: pluginSetup }]}
+      />
+      <p>
+        In Figma desktop, choose <strong>Plugins → Development → Import plugin from manifest</strong>
+        and select <code>apps/figma-plugin/dist/manifest.json</code>. This is a development beta;
+        the Community listing below contains the design library.
+      </p>
+      <DocsActionLink
+        href="https://github.com/santi020k/lumen/blob/main/apps/figma-plugin/README.md"
+        rel="noopener noreferrer"
+        target="_blank"
+        variant="outline"
+      >Beta setup and limitations<Icon decorative name="arrow-up-right" size="sm" /></DocsActionLink>
+    </Card>
 
     <section class="figma-section" aria-labelledby="library-title">
       <div class="figma-section__heading">
@@ -157,6 +195,33 @@ const workflow = [
 </DocsLayout>
 
 <style>
+  .figma-plugin-card {
+    display: grid;
+    gap: 1.1rem;
+    padding: clamp(1.25rem, 3vw, 2rem);
+    scroll-margin-top: 8rem;
+  }
+
+  .figma-plugin-card__title {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .figma-plugin-card h2 {
+    margin: 0;
+    font-size: clamp(1.4rem, 3vw, 2rem);
+  }
+
+  .figma-plugin-card p {
+    color: hsl(var(--ink-soft));
+    line-height: 1.7;
+    overflow-wrap: anywhere;
+  }
+
+  .figma-plugin-card > :global(.ui-button) { width: fit-content; }
+
   .figma-page {
     display: grid;
     gap: 3.5rem;

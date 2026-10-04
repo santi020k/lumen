@@ -1,0 +1,119 @@
+---
+import { Badge, Button, Card, Stack, Typography } from '@santi020k/lumen-astro'
+
+import tokens from '../../../../tokens/lumen.tokens.json'
+
+const fontSizes = ['xs', 'sm', 'md', 'lg', 'xl', '2xl'] as const
+const spacing = ['xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl'] as const
+const radii = ['sm', 'default', 'lg'] as const
+const elevations = ['sm', 'md', 'lg'] as const
+const timings = ['fast', 'default', 'slow'] as const
+---
+<section class="docs-section" id="foundation-scales" aria-labelledby="foundation-scales-title">
+  <div class="docs-section-heading">
+    <p>Compare the foundations</p>
+    <h2 id="foundation-scales-title">Space, type, and surface</h2>
+    <p>These examples use the live Lumen variables, so theme and preset changes carry through.</p>
+  </div>
+  <div class="foundation-scale-grid">
+    <Card>
+      <h3>Spacing scale</h3>
+      <p>Bars magnify each spacing token four times so the differences are easy to compare.</p>
+      <figure aria-label="Spacing token comparison">
+        {spacing.map(size => <div class="spacing-row"><code>{size}</code><span style={`width: calc(var(--ui-space-${size}) * 4);`} aria-hidden="true"></span></div>)}
+        <figcaption>related = sm · group = lg · section = 2xl</figcaption>
+      </figure>
+    </Card>
+    <Card>
+      <h3>Reading hierarchy</h3>
+      <div class="type-samples" aria-label="Canonical type scale">
+        {fontSizes.map(size => <figure><span style={`font-size: ${tokens.typography['font-size'][size].$value.value / 16}rem;`} aria-hidden="true">Aa</span><figcaption>{size}</figcaption></figure>)}
+      </div>
+      <Typography>
+        <h4 style={`font-size: ${tokens.typography['font-size'].xl.$value.value / 16}rem; font-weight: ${tokens.typography['font-weight'].bold.$value};`}>Workspace overview</h4>
+        <p>A clear heading introduces the idea. Body text gives it enough context to act.</p>
+        <p><small>Supporting text adds a detail without competing with the heading.</small></p>
+      </Typography>
+      <Badge variant="outline">Typography owns the reading rhythm</Badge>
+    </Card>
+    <Card>
+      <h3>Corner radius</h3>
+      <div class="surface-samples">
+        {radii.map(size => <figure><span class="radius-sample" style={`border-radius: var(--ui-radius${size === 'default' ? '' : `-${size}`});`} aria-hidden="true"></span><figcaption>{size}</figcaption></figure>)}
+      </div>
+      <p>Use the shared radius scale to keep controls and surfaces related.</p>
+    </Card>
+    <Card>
+      <h3>Elevation</h3>
+      <div class="surface-samples">
+        {elevations.map(size => <figure><span class="elevation-sample" style={`box-shadow: var(--ui-shadow-${size});`} aria-hidden="true"></span><figcaption>{size}</figcaption></figure>)}
+      </div>
+      <p>Shadows follow the current theme. Pair elevation with a clear border and hierarchy.</p>
+    </Card>
+  </div>
+</section>
+<section class="docs-section" id="foundation-motion" aria-labelledby="foundation-motion-title" data-foundation-motion>
+  <div class="docs-section-heading">
+    <p>Motion with a purpose</p>
+    <h2 id="foundation-motion-title">Compare transition timing</h2>
+    <p>Replay a single transition using the fast, default, and slow duration tokens. Reduced motion keeps the markers still.</p>
+  </div>
+  <Card>
+    <Stack gap="group">
+      {timings.map(speed => (
+<div class="motion-row"><code>{speed}</code><div class="motion-track"><span data-motion-marker style={`--example-duration: var(--ui-duration${speed === 'default' ? '' : `-${speed}`});`} aria-hidden="true"></span></div></div>
+))}
+      <Button data-replay-motion inert>Replay motion</Button>
+      <p role="status" data-motion-status>Enable JavaScript to replay the timing comparison.</p>
+    </Stack>
+  </Card>
+</section>
+<script>
+  const root = document.querySelector('[data-foundation-motion]')
+  const button = root?.querySelector('button')
+  const status = root?.querySelector('[data-motion-status]')
+
+  if (root && button && status) {
+    button.inert = false
+
+    status.textContent = 'Ready to replay. Each marker uses the same easing.'
+
+    button.addEventListener('click', () => {
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+      for (const marker of root.querySelectorAll<HTMLElement>('[data-motion-marker]')) {
+        for (const animation of marker.getAnimations()) animation.cancel()
+
+        if (reduced) continue
+
+        const style = getComputedStyle(marker)
+        const duration = style.getPropertyValue('--example-duration').trim()
+        const milliseconds = Number.parseFloat(duration) * (duration.endsWith('ms') ? 1 : 1000)
+
+        marker.animate([{ transform: 'translateX(0)' }, { transform: 'translateX(5rem)' }], {
+          duration: milliseconds,
+          easing: style.getPropertyValue('--ui-ease').trim(),
+          fill: 'forwards'
+        })
+      }
+
+      status.textContent = reduced ? 'Reduced motion is enabled. Markers stay still.' : 'Timing comparison replayed: fast, default, and slow.'
+    })
+  }
+</script>
+<style>
+  h3 { font-weight: 700; }
+  .type-samples { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--ui-space-group); }
+  .foundation-scale-grid { display: grid; gap: var(--ui-space-group); }
+  figure { margin: 0; display: grid; gap: var(--ui-space-related); min-width: 0; }
+  figcaption { font-size: 0.875rem; color: hsl(var(--ink-soft)); }
+  .spacing-row, .motion-row { display: grid; grid-template-columns: 4rem minmax(0, 1fr); align-items: center; gap: var(--ui-space-related); }
+  .spacing-row span { height: var(--ui-space-related); border-radius: var(--ui-radius-sm); background: hsl(var(--brand-solid)); max-width: 100%; }
+  .surface-samples { display: flex; flex-wrap: wrap; gap: var(--ui-space-xl); padding-block: var(--ui-space-related); }
+  .radius-sample, .elevation-sample { display: block; width: 3.5rem; height: 3.5rem; background: hsl(var(--surface-muted)); border: 1px solid hsl(var(--line)); }
+  .radius-sample { background: hsl(var(--brand-soft)); border-color: hsl(var(--brand)); }
+  .elevation-sample { border-radius: var(--ui-radius); }
+  .motion-track { height: 2rem; background: hsl(var(--surface-muted)); border-radius: var(--ui-radius); }
+  .motion-track span { display: block; height: 2rem; width: 2rem; border-radius: var(--ui-radius); background: hsl(var(--brand-solid)); }
+  @media (min-width: 48rem) { .foundation-scale-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+</style>

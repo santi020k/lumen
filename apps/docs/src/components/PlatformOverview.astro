@@ -1,64 +1,39 @@
 ---
-import {
-  Badge,
-  ButtonLink,
-  Card,
-  CodeTabs,
-  Icon,
-  Link,
-  Marker,
-  QRCode
-} from '@santi020k/lumen-astro'
+import { Badge, ButtonLink, Card, CodeTabs, Icon, Link, Marker } from '@santi020k/lumen-astro'
 
+import { getNativeComponentsForPlatform } from '../data/native-components'
+import { getNativeGuideTopics } from '../data/native-guide-topics'
 import type { PlatformGuide } from '../data/platforms'
 import DocsLayout from '../layouts/DocsLayout.astro'
 
-import CodeBlock from './CodeBlock.astro'
 import FoundationVisuals from './FoundationVisuals.astro'
 import NativePlatformPreview from './NativePlatformPreview.astro'
-import PlatformShipping from './PlatformShipping.astro'
-import PlatformStoreAvailability from './PlatformStoreAvailability.astro'
 
-interface Props {
-  guide: PlatformGuide
-}
+interface Props { guide: PlatformGuide }
 
 const { guide } = Astro.props
-const hasNativeCatalog = guide.id === 'android' || guide.id === 'apple' || guide.id === 'react-native'
+const nativePlatform = guide.id === 'android' || guide.id === 'apple' || guide.id === 'react-native' ? guide.id : undefined
+const hasNativeCatalog = nativePlatform !== undefined
+const components = nativePlatform ? getNativeComponentsForPlatform(nativePlatform) : []
+const featuredComponents = components.filter(component => ['button', 'text-field', 'card', 'alert', 'line-chart', 'calendar-heatmap'].includes(component.slug))
+const categories = [...new Set(components.map(component => component.category))]
+const nativeTopics = nativePlatform ? getNativeGuideTopics(nativePlatform) : []
+const topicLabels = { installation: 'Install and configure', theming: 'Theme and appearance', ai: 'Build with AI' }
 
-const nativeAiPrompts = {
-  android: `Use $lumen-ui to build this screen with Jetpack Compose.
-Use the local lumen-compose module, LumenTheme, and public Compose components.
-Preserve Android navigation and state, and include loading, empty, error, and TalkBack behavior.`,
-  apple: `Use $lumen-ui to build this screen in SwiftUI.
-Use the LumenUI Swift package and public SwiftUI components.
-Preserve native navigation and state, and include loading, empty, error, Dynamic Type, and VoiceOver behavior.`,
-  'react-native': `Use $lumen-ui to build this screen in the existing React Native app.
-Use @santi020k/lumen-react-native and mount one LumenProvider at the app root.
-Preserve navigation and state, and include loading, empty, error, and native accessibility behavior.`
-} as const
-
-const nativeAiPrompt = hasNativeCatalog ? nativeAiPrompts[guide.id as keyof typeof nativeAiPrompts] : undefined
-
-const nativeGuideLinks = hasNativeCatalog ?
-[
-  ['download', 'Install and configure', 'Requirements, package setup, and your first native screen.', '#installation'],
-  ['palette', 'Theme and appearance', 'Follow the system or save an application appearance preference.', '#theme'],
-  ['play', 'Run the playground', 'Open the native gallery on a simulator, emulator, or device.', `${guide.href}/playground`],
-  ['box', 'Component reference', `Browse every ${guide.shortLabel} primitive, example, API, and accessibility note.`, `${guide.href}/components`],
-  ['shapes', 'Interface icon names', 'Search and copy any shared Lucide interface icon name.', '/docs/icons#icon-catalog'],
-  ['badge', 'Brand icon names', 'Search and copy any namespaced Font Awesome brand icon name.', '/docs/brand-icons#brand-icon-catalog'],
-  ['sparkles', 'Use with AI', 'Give a coding agent the package-aware Lumen workflow.', '#ai-usage'],
-  ['landmark', 'Platform contract', `Understand how Lumen follows ${guide.shortLabel} conventions.`, '#principles']
-] as const :
-[]
+const nativeGuideLinks = [
+  ...nativeTopics.map(topic => ({ icon: topic.icon, label: topicLabels[topic.id], description: topic.description, href: topic.href, hash: topic.legacyHash })),
+  { icon: 'play', label: 'Try the playground', description: 'Explore the gallery, inspect its source, and run it on your device.', href: `${guide.href}/playground`, hash: '#playground' },
+  { icon: 'box', label: 'Component reference', description: `Explore ${components.length} primitives with native examples, APIs, and accessibility notes.`, href: `${guide.href}/components`, hash: '#components' },
+  { icon: 'landmark', label: 'Platform contract', description: `See how Lumen follows ${guide.shortLabel} conventions.`, href: '#principles', hash: '' }
+]
 ---
 
 <DocsLayout
+  breadcrumbs={[{ href: guide.href, label: guide.shortLabel }]}
   description={guide.summary}
   title={`${guide.title} - Lumen UI`}
 >
-  <section class="platform-hero" aria-labelledby="platform-title">
+  <section class:list={['platform-hero', { 'platform-hero--native': hasNativeCatalog }]} aria-labelledby="platform-title">
     <div class="platform-hero__copy">
       <div class="platform-hero__eyebrow">
         <Badge variant="outline">{guide.eyebrow}</Badge>
@@ -67,7 +42,7 @@ const nativeGuideLinks = hasNativeCatalog ?
       <h1 id="platform-title">{guide.title}</h1>
       <p>{guide.summary}</p>
       <div class="platform-hero__actions">
-        <ButtonLink href="#installation" showArrow>Start building</ButtonLink>
+        <ButtonLink href={hasNativeCatalog ? `${guide.href}/installation` : '#installation'} showArrow>Start building</ButtonLink>
         <ButtonLink href={hasNativeCatalog ? `${guide.href}/components` : '#components'} variant="secondary">
           {hasNativeCatalog ? 'Browse components' : 'View coverage'}
         </ButtonLink>
@@ -82,26 +57,57 @@ const nativeGuideLinks = hasNativeCatalog ?
   </section>
 
   {hasNativeCatalog && (
-    <nav class="platform-guide-map" aria-labelledby="platform-guide-map-title">
-      <div class="platform-guide-map__heading">
-        <p>Everything in one place</p>
-        <h2 id="platform-guide-map-title">The complete {guide.shortLabel} guide</h2>
-        <p>Installation, appearance, examples, and API guidance stay together in the {guide.shortLabel} documentation.</p>
-      </div>
-      <div class="platform-guide-map__links">
-        {nativeGuideLinks.map(([icon, label, description, href]) => (
-          <Link class="platform-guide-map__link" href={href} variant="inherit">
-            <span><Icon decorative name={icon} size="sm" /></span>
-            <span><strong>{label}</strong><small>{description}</small></span>
-            <Icon decorative name="arrow-right" size="sm" />
-          </Link>
-        ))}
-      </div>
-    </nav>
+    <div data-native-platform={nativePlatform}>
+      <NativePlatformPreview guide={guide} />
+      <nav class="platform-guide-map" aria-labelledby="platform-guide-map-title">
+        <div class="platform-guide-map__heading">
+          <p>Pick your next step</p>
+          <h2 id="platform-guide-map-title">Build with {guide.shortLabel}</h2>
+          <p>Focused guides keep setup, appearance, and component details one click away.</p>
+        </div>
+        <div class="platform-guide-map__links">
+          {nativeGuideLinks.map(link => (
+            <Link
+              class="platform-guide-map__link"
+              id={link.hash && link.hash !== '#components' ? link.hash.slice(1) : undefined}
+              data-native-legacy-hash={link.hash || undefined}
+              href={link.href}
+              variant="inherit"
+            >
+              <span><Icon decorative name={link.icon} size="sm" /></span>
+              <span><strong>{link.label}</strong><small>{link.description}</small></span>
+              <Icon decorative name="arrow-right" size="sm" />
+            </Link>
+          ))}
+        </div>
+      </nav>
+      <section class="docs-section" id="components" aria-labelledby="components-title">
+        <div class="docs-section-heading">
+          <p>Component library</p>
+          <h2 id="components-title">Start with the building blocks</h2>
+          <p>{guide.componentNote}</p>
+        </div>
+        <div class="platform-featured-components">
+          {featuredComponents.map(component => (
+            <Link class="platform-featured-component" href={`${guide.href}/components/${component.slug}`} variant="inherit">
+              <strong>{component.name}<Icon decorative name="arrow-up-right" size="sm" /></strong>
+              <span>{component.summary}</span>
+            </Link>
+          ))}
+        </div>
+        <nav class="platform-category-links" aria-label={`${guide.shortLabel} component categories`}>
+          {categories.map(category => (
+            <Link href={`${guide.href}/components#category-${category.replaceAll(' ', '-').toLowerCase()}`}>{category}</Link>
+          ))}
+        </nav>
+        <ButtonLink href={`${guide.href}/components`} showArrow>Explore all {components.length} components</ButtonLink>
+      </section>
+    </div>
   )}
 
   {guide.id === 'foundations' && <FoundationVisuals />}
-
+  {!hasNativeCatalog && (
+    <>
   <section class="docs-section" id="installation" aria-labelledby="installation-title">
     <div class="docs-section-heading">
       <p>Get started</p>
@@ -141,144 +147,23 @@ const nativeGuideLinks = hasNativeCatalog ?
     />
   </section>
 
-  {guide.playgroundCommands && guide.playgroundNote && (
-    <section class="docs-section" id="playground" aria-labelledby="playground-title">
-      <div class="docs-section-heading">
-        <p>Try every component</p>
-        <h2 id="playground-title">Run the {guide.shortLabel} playground</h2>
-        <p>{guide.playgroundNote}</p>
-      </div>
-      {guide.storeAvailability && (
-        <PlatformStoreAvailability availability={guide.storeAvailability} headingLevel="h3" />
-      )}
-      {guide.playgroundLaunch && (
-        <Card as="section" class="platform-playground-launch" variant="muted" aria-labelledby="playground-launch-title">
-          <div class="platform-playground-launch__copy">
-            <div class="platform-playground-launch__badges">
-              <Badge variant="outline">Expo Go</Badge>
-              {guide.playgroundLaunch.compatibilityNote && <Badge variant="warning">SDK compatibility required</Badge>}
-            </div>
-            <h3 id="playground-launch-title">Open the live React Native playground</h3>
-            <p>
-              Install Expo Go, then scan the QR code with your device or open the link directly.
-              It loads the latest published Lumen playground without cloning the repository.
-            </p>
-            {guide.playgroundLaunch.compatibilityNote && (
-              <p class="platform-playground-launch__compatibility">
-                {guide.playgroundLaunch.compatibilityNote}
-              </p>
-            )}
-            <ButtonLink
-              href={guide.playgroundLaunch.url}
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              Open in Expo Go
-            </ButtonLink>
-          </div>
-          <div class="platform-playground-launch__visual">
-            <QRCode
-              aria-label="Scan to open the Lumen React Native playground in Expo Go"
-              class="platform-playground-launch__qr"
-              size={176}
-              value={guide.playgroundLaunch.url}
-            />
-            <span>Scan with Expo Go</span>
-          </div>
-        </Card>
-      )}
-      <CodeTabs
-        ariaLabel={`${guide.label} playground commands`}
-        items={guide.playgroundCommands}
-        storageKey={`lumen-${guide.id}-playground`}
-      />
-      {guide.shippingNotes && <PlatformShipping notes={guide.shippingNotes} />}
-    </section>
+      <section class="docs-section" id="components" aria-labelledby="components-title">
+        <div class="docs-section-heading">
+          <p>Supported surface</p>
+          <h2 id="components-title">Components and capabilities</h2>
+          <p>{guide.componentNote}</p>
+        </div>
+        <div class="platform-components" role="list" aria-label={`${guide.label} support`}>
+          {guide.components.map(component => (
+            <Card class="platform-component" role="listitem" variant="muted">
+              <Icon decorative name="check" size="sm" />
+              <span>{component}</span>
+            </Card>
+          ))}
+        </div>
+      </section>
+    </>
   )}
-
-  {guide.theme && (
-    <section class="docs-section" id="theme" aria-labelledby="theme-title">
-      <div class="docs-section-heading">
-        <p>Appearance</p>
-        <h2 id="theme-title">Choose and change the theme</h2>
-        <p>{guide.theme.description}</p>
-      </div>
-      <CodeTabs
-        ariaLabel={`${guide.label} theme examples`}
-        items={guide.theme.examples}
-        storageKey={`lumen-${guide.id}-theme`}
-      />
-      <div class="platform-theme-grid">
-        <Card as="section" class="platform-theme-note" variant="muted" aria-labelledby="theme-roles-title">
-          <Icon decorative name="palette" size="sm" />
-          <div><h3 id="theme-roles-title">Style with semantic roles</h3><p>{guide.theme.note}</p></div>
-        </Card>
-        <Card as="section" class="platform-theme-checklist" variant="muted" aria-labelledby="theme-checklist-title">
-          <div><Icon decorative name="list-checks" size="sm" /><h3 id="theme-checklist-title">Verify both appearances</h3></div>
-          <ul>{guide.theme.verification.map(item => <li>{item}</li>)}</ul>
-        </Card>
-      </div>
-    </section>
-  )}
-
-  {nativeAiPrompt && (
-    <section class="docs-section" id="ai-usage" aria-labelledby="ai-usage-title">
-      <div class="docs-section-heading">
-        <p>Continue with AI</p>
-        <h2 id="ai-usage-title">Give your coding tool the Lumen workflow</h2>
-        <p>
-          Install the portable skill once, open your application in a compatible coding tool, and
-          name the target platform in the request. The skill reads the native package and
-          documentation before selecting components.
-        </p>
-      </div>
-      <div class="platform-ai-grid">
-        <Card as="article" class="platform-ai-card" variant="muted">
-          <Badge variant="outline">1 · Install the skill</Badge>
-          <CodeBlock code="npx skills add santi020k/lumen --skill lumen-ui" lang="bash" title="Terminal" />
-          <p>Follow the installer prompts and select the AI coding tools available on your machine.</p>
-        </Card>
-        <Card as="article" class="platform-ai-card" variant="muted">
-          <Badge variant="outline">2 · Ask for the native target</Badge>
-          <CodeBlock code={nativeAiPrompt} title="Prompt" />
-          <p>Review the generated package imports, component states, and platform accessibility behavior.</p>
-        </Card>
-      </div>
-      <Card as="section" class="platform-ai-note" variant="muted">
-        <Icon decorative name="info" size="sm" />
-        <p>
-          The Agent Skill and optional MCP server cover web and native adapters. MCP can list the
-          components available for this platform and return installation, setup, API examples,
-          accessibility guidance, and reference source for each documented native component.
-        </p>
-        <Link href="/docs/ai-skill">Open the complete AI setup guide</Link>
-      </Card>
-    </section>
-  )}
-
-  <NativePlatformPreview guide={guide} />
-
-  <section class="docs-section" id="components" aria-labelledby="components-title">
-    <div class="docs-section-heading">
-      <p>Supported surface</p>
-      <h2 id="components-title">Components and capabilities</h2>
-      <p>{guide.componentNote}</p>
-    </div>
-    <div class="platform-components" role="list" aria-label={`${guide.label} support`}>
-      {guide.components.map(component => (
-        <Card class="platform-component" role="listitem" variant="muted">
-          <Icon decorative name="check" size="sm" />
-          <span>{component}</span>
-        </Card>
-      ))}
-    </div>
-    {hasNativeCatalog && (
-      <div class="platform-components__action">
-        <ButtonLink href={`${guide.href}/components`} showArrow>Open the full component reference</ButtonLink>
-      </div>
-    )}
-  </section>
-
   <section class="docs-section" id="principles" aria-labelledby="principles-title">
     <div class="docs-section-heading">
       <p>Platform contract</p>
@@ -299,6 +184,7 @@ const nativeGuideLinks = hasNativeCatalog ?
     <h2 id="related-title">Continue exploring</h2>
     <p>Move between platform guidance without losing the shared Lumen design language.</p>
     <div class="platform-related">
+      {hasNativeCatalog && <><Link href="/docs/icons#icon-catalog">Interface icon names</Link><Link href="/docs/brand-icons#brand-icon-catalog">Brand icon names</Link></>}
       {guide.relatedLinks.map(link => {
         const isExternal = link.href.startsWith('http')
 
@@ -317,6 +203,25 @@ const nativeGuideLinks = hasNativeCatalog ?
   </Card>
 </DocsLayout>
 
+<script>
+  const followLegacyNativeHash = () => {
+    const overview = document.querySelector('[data-native-platform]')
+
+    if (!overview || !window.location.hash) return
+
+    const link = [...overview.querySelectorAll<HTMLAnchorElement>('a[data-native-legacy-hash]')]
+      .find(candidate => candidate.dataset.nativeLegacyHash === window.location.hash)
+
+    if (link) window.location.replace(link.href)
+  }
+
+  followLegacyNativeHash()
+
+  document.addEventListener('astro:page-load', followLegacyNativeHash)
+
+  window.addEventListener('hashchange', followLegacyNativeHash)
+</script>
+
 <style>
   .platform-hero {
     display: grid;
@@ -334,56 +239,6 @@ const nativeGuideLinks = hasNativeCatalog ?
     display: grid;
     align-content: center;
     gap: 1.25rem;
-  }
-
-  .platform-playground-launch {
-    display: grid;
-    align-items: center;
-    gap: 1.5rem;
-    margin-bottom: 1.5rem;
-    padding: clamp(1.25rem, 4vw, 2rem);
-  }
-
-  .platform-playground-launch__copy {
-    display: grid;
-    justify-items: start;
-    gap: 0.75rem;
-  }
-
-  .platform-playground-launch__copy h3,
-  .platform-playground-launch__copy p {
-    margin: 0;
-  }
-
-  .platform-playground-launch__badges {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-
-  .platform-playground-launch__compatibility {
-    color: hsl(var(--warning));
-    font-size: 0.875rem;
-  }
-
-  .platform-playground-launch__visual {
-    display: grid;
-    justify-self: center;
-    justify-items: center;
-    gap: 0.5rem;
-    color: hsl(var(--ink-muted));
-    font-size: 0.75rem;
-    font-weight: 700;
-  }
-
-  :global(.platform-playground-launch__qr .ui-qr-code__value) {
-    display: none;
-  }
-
-  @media (min-width: 44rem) {
-    .platform-playground-launch {
-      grid-template-columns: minmax(0, 1fr) auto;
-    }
   }
 
   .platform-hero__eyebrow,
@@ -419,7 +274,7 @@ const nativeGuideLinks = hasNativeCatalog ?
   }
 
   .platform-hero__package span {
-    color: hsl(var(--ink-muted));
+    color: hsl(var(--ink-soft));
     font-size: 0.75rem;
     font-weight: 800;
     letter-spacing: 0.12em;
@@ -438,12 +293,6 @@ const nativeGuideLinks = hasNativeCatalog ?
     color: hsl(var(--ink-soft));
     font-size: 0.875rem;
     line-height: 1.65;
-  }
-
-  .platform-theme-note > div {
-    display: grid;
-    gap: 0.35rem;
-    min-width: 0;
   }
 
   .platform-guide-map {
@@ -476,16 +325,13 @@ const nativeGuideLinks = hasNativeCatalog ?
     font-weight: 900;
   }
 
-  .platform-guide-map__heading > p:last-child,
-  .platform-theme-note p,
-  .platform-theme-checklist ul {
+  .platform-guide-map__heading > p:last-child {
     color: hsl(var(--ink-soft));
     font-size: 0.875rem;
     line-height: 1.6;
   }
 
-  .platform-guide-map__links,
-  .platform-theme-grid {
+  .platform-guide-map__links {
     display: grid;
     gap: 0.75rem;
   }
@@ -525,9 +371,7 @@ const nativeGuideLinks = hasNativeCatalog ?
     gap: 0.15rem;
   }
 
-  .platform-guide-map__link strong,
-  .platform-theme-note h3,
-  .platform-theme-checklist h3 {
+  .platform-guide-map__link strong {
     color: hsl(var(--ink));
     font-size: 0.875rem;
     font-weight: 800;
@@ -540,73 +384,13 @@ const nativeGuideLinks = hasNativeCatalog ?
   }
 
   .platform-guide-map__link > :global(svg:last-child) {
-    color: hsl(var(--ink-muted));
-  }
-
-  .platform-theme-grid {
-    margin-top: 1rem;
-  }
-
-  :global(.platform-theme-note),
-  :global(.platform-theme-checklist) {
-    display: grid;
-    gap: 0.75rem;
-    padding: 1.25rem;
-  }
-
-  :global(.platform-theme-note) {
-    grid-template-columns: auto minmax(0, 1fr);
-  }
-
-  .platform-theme-checklist > div {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-  }
-
-  .platform-theme-checklist ul {
-    display: grid;
-    gap: 0.5rem;
-    margin: 0;
-    padding-left: 1.25rem;
+    color: hsl(var(--ink-soft));
   }
 
   .platform-components {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
     gap: 0.75rem;
-  }
-
-  .platform-ai-grid {
-    display: grid;
-    gap: 1rem;
-  }
-
-  :global(.platform-ai-card) {
-    display: grid;
-    align-content: start;
-    gap: 1rem;
-    min-width: 0;
-    padding: 1.25rem;
-  }
-
-  .platform-ai-card > p,
-  .platform-ai-note p {
-    color: hsl(var(--ink-soft));
-    font-size: 0.875rem;
-    line-height: 1.6;
-  }
-
-  :global(.platform-ai-note) {
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
-    gap: 0.75rem;
-    margin-top: 1rem;
-    padding: 1rem;
-  }
-
-  .platform-ai-note :global(a) {
-    grid-column: 2;
   }
 
   :global(.platform-prerequisites) {
@@ -744,17 +528,23 @@ const nativeGuideLinks = hasNativeCatalog ?
       grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
-    .platform-ai-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
     .platform-guide-map {
       grid-template-columns: minmax(14rem, 0.65fr) minmax(0, 1.35fr);
     }
 
-    .platform-guide-map__links,
-    .platform-theme-grid {
+    .platform-guide-map__links {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
+
+  .platform-hero--native { min-height: 0; }
+  .platform-featured-components { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); gap: 0.75rem; }
+  .platform-featured-components :global(.platform-featured-component) { display: grid; gap: 0.5rem; padding: 1.25rem; border: 1px solid hsl(var(--line)); border-radius: 0.9rem; background: hsl(var(--surface)); text-decoration: none; }
+  .platform-featured-component strong { display: flex; justify-content: space-between; gap: 0.5rem; color: hsl(var(--ink)); font-size: 1rem; }
+  .platform-featured-component span { color: hsl(var(--ink-soft)); font-size: 0.875rem; line-height: 1.6; }
+  .platform-featured-components :global(.platform-featured-component:hover) { border-color: hsl(var(--brand)); background: hsl(var(--brand-soft)); }
+  .platform-featured-components :global(.platform-featured-component:focus-visible) { outline: 2px solid hsl(var(--brand)); outline-offset: 2px; }
+  .platform-category-links { display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; margin-block: 1.25rem; }
+  .platform-category-links :global(a) { display: inline-flex; align-items: center; min-height: 2.75rem; font-size: 0.875rem; }
+  @media (min-width: 56rem) { .platform-hero--native { min-height: 0; } }
 </style>

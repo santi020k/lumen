@@ -40,6 +40,33 @@ for (const width of [390, 1440]) {
         await expect(examples.locator('details')).toHaveAttribute('open', '')
         await expect(examples.getByText('Native details can open and close without the runtime.', { exact: true })).toBeVisible()
 
+        const disclosureLayout = await examples.locator('details').evaluate(element => {
+          const heading = element.querySelector('summary')
+          const body = element.querySelector('p')
+          if (!heading || !body) throw new Error('Expected a disclosure heading and body')
+
+          const itemBox = element.getBoundingClientRect()
+          const bodyBox = body.getBoundingClientRect()
+          const headingStyle = getComputedStyle(heading)
+          const indicatorStyle = getComputedStyle(heading, '::before')
+          return {
+            bodyInset: bodyBox.left - itemBox.left,
+            headingInset: heading.getBoundingClientRect().left + Number.parseFloat(headingStyle.paddingLeft) - itemBox.left,
+            indicatorTransform: indicatorStyle.transform,
+            rightInset: itemBox.right - bodyBox.right
+          }
+        })
+        // The page resets paragraph margins; the disclosure still owns its content inset.
+        expect(disclosureLayout.bodyInset).toBeGreaterThanOrEqual(16)
+        expect(disclosureLayout.rightInset).toBeGreaterThanOrEqual(16)
+        expect(Math.abs(disclosureLayout.bodyInset - disclosureLayout.headingInset)).toBeLessThan(1)
+        expect(disclosureLayout.indicatorTransform).toBe('none')
+        await expect(summary).toHaveCSS('outline-width', '2px')
+
+        await page.keyboard.press('Space')
+        await expect(examples.locator('details')).not.toHaveAttribute('open')
+        await expect(examples.getByText('Native details can open and close without the runtime.', { exact: true })).not.toBeVisible()
+
         await examples.getByRole('tab', { name: 'Dialog', exact: true }).click()
         await expect(examples.locator('[role="tabpanel"][data-value="dialog"]')).toContainText('aria-labelledby')
         expect(await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth)).toBe(false)

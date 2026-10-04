@@ -209,6 +209,21 @@ describe('data-driven snippets', () => {
     expect(code).toContain('"--ui-gap": "1rem"')
     expect(code).toContain('"fontFamily": "\'Example\'"')
   })
+
+  test('binds explicit and inline chart expressions without retaining Astro attributes', () => {
+    const code = buildSnippets('Sparkline', '<Sparkline label="A small trend" values={[1, 3, 2]} area />')[2]?.code
+
+    expect(code).toContain('setAttribute(\'values\', JSON.stringify([1, 3, 2]))')
+    expect(code).toContain('label="A small trend"')
+    expect(code).not.toContain('values={')
+  })
+
+  test('advances through unfinished chart bindings without backtracking', () => {
+    const source = `<Sparkline values={${'{'.repeat(20_000)}"unfinished"`
+    const code = buildSnippets('Sparkline', source)[2]?.code
+
+    expect(code).toContain(source)
+  })
 })
 
 test('retains public compound imports alongside their root component', () => {

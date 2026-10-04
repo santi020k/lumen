@@ -1,0 +1,40 @@
+import { expect, test } from '@playwright/test'
+
+for (const width of [390, 1440]) {
+  test(`beta preview exports the selected design at ${width}px`, async ({ page }, testInfo) => {
+    await page.setViewportSize({ width, height: 900 })
+    await page.goto('/')
+    await expect(page.getByText('Local preview · Synthetic settings screen. No Figma file is connected.')).toBeVisible()
+    await page.getByRole('button', { name: 'Inspect selection' }).click()
+    await expect(page.getByText('6 verified')).toBeVisible()
+    const tabs = page.getByRole('tablist', { name: 'Conversion output' })
+    await tabs.getByRole('tab', { name: 'Astro starter' }).focus()
+    await page.keyboard.press('ArrowRight')
+    await expect(tabs.getByRole('tab', { name: 'AI handoff' })).toHaveAttribute('aria-selected', 'true')
+    const download = page.waitForEvent('download')
+    await page.getByRole('button', { name: 'Save AI handoff' }).click()
+    expect((await download).suggestedFilename()).toBe('lumen-figma-handoff.md')
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true)
+    await page.screenshot({ path: testInfo.outputPath(`plugin-${width}.png`), fullPage: true })
+  })
+
+  test(`generated Astro labels, tabs, and dialog work at ${width}px`, async ({ page }, testInfo) => {
+    await page.setViewportSize({ width, height: 900 })
+    await page.goto('http://127.0.0.1:4762')
+    await expect(page.getByLabel('Workspace name')).toHaveAttribute('aria-describedby', /-help$/u)
+    await page.getByRole('tab', { name: 'Profile' }).focus()
+    await page.keyboard.press('ArrowRight')
+    await expect(page.getByRole('tab', { name: 'Team' })).toHaveAttribute('aria-selected', 'true')
+    await expect(page.getByRole('tabpanel')).toContainText('details content')
+    const trigger = page.getByRole('button', { name: 'Open dialog' })
+    await trigger.click()
+    const dialog = page.getByRole('dialog', { name: 'Archive workspace' })
+    await expect(dialog).toBeVisible()
+    await expect(dialog.getByRole('button', { name: 'Cancel' })).toBeFocused()
+    await page.keyboard.press('Escape')
+    await expect(dialog).not.toBeVisible()
+    await expect(trigger).toBeFocused()
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true)
+    await page.screenshot({ path: testInfo.outputPath(`generated-${width}.png`), fullPage: true })
+  })
+}

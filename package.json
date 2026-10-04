@@ -172,7 +172,8 @@
     "test:native-api-exports": "node --test scripts/native-api-exports.test.mjs",
     "test:react-native-import-fixtures": "node --test scripts/react-native-import-fixtures.test.mjs",
     "check:security:raw": "pnpm audit --prod --audit-level moderate",
-    "test:security-patches": "node --test scripts/security-patches.test.mjs"
+    "test:security-patches": "node --test scripts/security-patches.test.mjs",
+    "test:figma-plugin": "playwright test -c playwright.figma.config.ts"
   },
   "devDependencies": {
     "@changesets/changelog-github": "catalog:",
@@ -193,6 +194,7 @@
     "@santi020k/eslint-config-react": "catalog:",
     "@santi020k/eslint-config-testing": "catalog:",
     "@santi020k/eslint-config-tools": "catalog:",
+    "@santi020k/eslint-config-vite": "catalog:",
     "@types/node": "catalog:",
     "@typescript-eslint/parser": "catalog:",
     "@vitest/coverage-v8": "catalog:",

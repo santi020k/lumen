@@ -1,0 +1,15 @@
+---
+import NativeGuideContent from '../../../components/NativeGuideContent.astro'
+import { type NativeGuideTopic, nativeGuideTopics } from '../../../data/native-guide-topics'
+
+export const getStaticPaths = () => nativeGuideTopics.map(topic => ({
+  params: { platform: topic.platform, topic: topic.id },
+  props: { topic }
+}))
+
+interface Props { topic: NativeGuideTopic }
+
+const { topic } = Astro.props
+---
+
+<NativeGuideContent {topic} />
