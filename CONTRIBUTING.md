@@ -116,12 +116,26 @@ verify something they could not confidently complete before reading it.
 
 ## Publishing
 
-All work merges into `main`; contributors do not create or merge a separate release branch.
+Prepare every non-initial release in `release/v<semver>` and open its pull request into `main`.
 
-1. Each user-visible pull request includes a changeset.
-2. After it merges, the release workflow creates or updates `changeset-release/main`.
-3. Merge that automated pull request when the accumulated changes are ready to publish.
-4. The merge publishes the packages and creates the GitHub releases automatically.
+1. Each user-visible change includes a Changeset. Use the installed generator to prepare package
+   versions and changelogs, including any generated `changeset-release/main` work in the selected
+   release branch.
+2. For a coordinated major release such as v4, fold stabilization notes into the prepared, unpublished
+   version. Consume its Changesets so publishing does not introduce another version bump.
+3. Run the canonical validation and release gates, complete the independent pre-push review, and
+   resolve every finding. Include migration guidance and a recovery plan in the release pull request.
+4. Obtain explicit release approval and merge the authorized `release/v<semver>` pull request after
+   required checks and reviews pass. The workflow detects package manifest and release manifest
+   changes as well as pending Changesets, so a prepared release starts publication automatically.
+5. GitHub Actions publishes packages and creates immutable release tags and GitHub releases from the
+   merged commit. Apple builds and distribution run in Xcode Cloud. Verify provenance, published
+   consumers and deployed smoke checks before retiring the release branch.
+
+The Changesets action can still create or update its version-preparation pull request when pending
+Changesets reach `main`. Integrate that generated preparation into the selected release branch;
+its automatic branch does not replace the reviewed release pull request. Never publish a subsequent
+release directly from a developer machine.
 
 Feature pull requests run affected package checks plus the platform and integration gates selected
 from their changed paths. The automated release pull request resolves the exact Changesets package

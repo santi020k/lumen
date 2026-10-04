@@ -2,7 +2,7 @@ import assert from 'node:assert/strict'
 import { spawnSync } from 'node:child_process'
 import { mkdtemp, readFile, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
-import { join, resolve } from 'node:path'
+import { join, matchesGlob, resolve } from 'node:path'
 import test from 'node:test'
 
 // cspell:words predev vnext
@@ -17,6 +17,31 @@ const [ci, canary, release, docsManifestSource, versionPackages] = await Promise
   readRepositoryFile('apps/docs/package.json'),
   readRepositoryFile('scripts/version-packages.mjs')
 ])
+
+test('prepared package versions trigger publication without pending Changesets', async () => {
+  const pushConfiguration = release.slice(release.indexOf('  push:'), release.indexOf('  workflow_dispatch:'))
+
+  assert.match(pushConfiguration, /branches: \[main\]/u)
+
+  const patterns = pushConfiguration.split('\n').filter(line => line.trimStart().startsWith('- '))
+    .map(line => JSON.parse(line.trim().slice(2)))
+
+  const manifest = JSON.parse(await readRepositoryFile('registry/release-manifest.json'))
+  const packages = Object.keys(manifest.release.npm.packages)
+
+  for (const name of packages) {
+    const directory = name === '@santi020k/lumen' ? 'lumen' : name.replace('@santi020k/lumen-', '')
+    const path = `packages/${directory}/package.json`
+
+    assert.ok(patterns.some(pattern => matchesGlob(path, pattern)), `${path} must trigger publication`)
+  }
+
+  for (const path of ['.changeset/release-note.md', 'registry/release-manifest.json', '.github/workflows/release.yml']) {
+    assert.ok(patterns.some(pattern => matchesGlob(path, pattern)), `${path} must trigger publication`)
+  }
+
+  assert.ok(!patterns.some(pattern => matchesGlob('apps/docs/src/pages/index.astro', pattern)))
+})
 
 test('CI delegates path decisions and keeps package-family gates independent', () => {
   assert.match(ci, /node scripts\/classify-workflow-paths\.mjs ci/u)
