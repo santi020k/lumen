@@ -266,6 +266,13 @@ export {
   type LumenMetricTone
 } from './structured-recipes.js'
 export {
+  LumenDataTable, type LumenDataTableProps, LumenTable, type LumenTableProps
+} from './table-components.js'
+export { getLumenTableCell, type LumenTableCell, type LumenTableColumn,
+  type LumenTableRow, type LumenTableSort, type LumenTableSortMode,
+  type LumenTableSortValue, nextLumenTableSort, sortLumenTableRows,
+  toggleLumenTableRow, toggleLumenTableVisibleRows, validateLumenTable } from './table-recipes.js'
+export {
   createLumenTheme,
   type LumenAppearance,
   type LumenChartColorPalette,

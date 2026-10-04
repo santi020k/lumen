@@ -31,6 +31,8 @@ import { LumenCheckbox, LumenTabs } from './selection-components.js'
 import { LumenStepper } from './stepper-components.js'
 import { resolveLumenStepState } from './stepper-recipes.js'
 import { LumenBanner, LumenErrorState, LumenStatusBar } from './structured-components.js'
+import { LumenDataTable } from './table-components.js'
+import type { LumenTableRow } from './table-recipes.js'
 import { LumenTimeField } from './time-components.js'
 import { LumenTimeline, LumenTimelineItem } from './timeline-components.js'
 import { LumenPicker, LumenRangeSlider, LumenSlider } from './value-components.js'
@@ -2455,5 +2457,93 @@ describe('progress and history contracts', () => {
     })
     expect(readProp(findByAccessibilityLabel(root, 'Details'), 'onPress')).toBeUndefined()
     expect(readProp(findByAccessibilityLabel(root, 'Details'), 'accessibilityValue')).toEqual({ text: 'Here' })
+  })
+})
+
+describe('data table controlled interactions', () => {
+  const columns = [{ key: 'amount', label: 'Amount', sortable: true }]
+  const rows: readonly LumenTableRow[] = [
+    { id: 'one', label: 'One', cells: { amount: { text: '20', sortValue: 20 } } },
+    { id: 'two', label: 'Two', cells: { amount: { text: '2', sortValue: 2 } }, disabled: true }
+  ]
+  test('emits manual sort requests without reordering and retains hidden selections', async () => {
+    const onSortChange = vi.fn()
+    const onSelectionChange = vi.fn()
+    const root = await renderNative(
+      <LumenDataTable
+        label="Records"
+        columns={columns}
+        rows={rows}
+        onSortChange={onSortChange}
+        onSelectionChange={onSelectionChange}
+        selectedIds={new Set(['hidden'])}
+      />
+    )
+    act(() => {
+      callAction(readProp(findByAccessibilityLabel(root, 'Amount'), 'onPress'), 'Missing sort action')
+    })
+    expect(onSortChange).toHaveBeenCalledWith({ key: 'amount', direction: 'ascending' })
+    act(() => {
+      callAction(readProp(findByAccessibilityLabel(root, 'Select visible'), 'onPress'), 'Missing bulk selection')
+    })
+    expect(onSelectionChange).toHaveBeenCalledWith(new Set(['hidden', 'one']))
+    expect(root.container.queryAll(instance => readProp(instance, 'accessible') === true)
+      .map(instance => readProp(instance, 'accessibilityLabel'))).toEqual(['Amount, 20', 'Amount, 2'])
+  })
+  test('loading and error states hide stale controls; retry remains host owned', async () => {
+    const onRetry = vi.fn()
+    const root = await renderNative(
+      <LumenDataTable
+        label="Records"
+        columns={columns}
+        rows={rows}
+        loading
+        loadingLabel="Fetching"
+        onSortChange={vi.fn()}
+      />
+    )
+    expect(readProp(findByAccessibilityRole(root, 'progressbar'), 'children')).toBe('Fetching')
+    expect(root.container.queryAll(instance => readProp(instance, 'accessibilityRole') === 'button')).toHaveLength(0)
+    act(() => {
+      root.render(
+        <LumenProvider>
+          <LumenDataTable
+            label="Records"
+            columns={columns}
+            rows={rows}
+            error="Try again"
+            onRetry={onRetry}
+            retryLabel="Reload"
+          />
+        </LumenProvider>
+      )
+    })
+    act(() => {
+      callAction(readProp(findByAccessibilityRole(root, 'button'), 'onPress'), 'Missing retry')
+    })
+    expect(onRetry).toHaveBeenCalledOnce()
+    expect(root.container.queryAll(instance => readProp(instance, 'accessibilityRole') === 'checkbox')).toHaveLength(0)
+  })
+  test('read-only tables block both sort and selection callbacks', async () => {
+    const onSortChange = vi.fn()
+    const onSelectionChange = vi.fn()
+    const root = await renderNative(
+      <LumenDataTable
+        label="Records"
+        columns={columns}
+        rows={rows}
+        readOnly
+        onSortChange={onSortChange}
+        onSelectionChange={onSelectionChange}
+      />
+    )
+    act(() => {
+      callAction(readProp(findByAccessibilityLabel(root, 'Amount'), 'onPress'), 'Missing guarded sort')
+    })
+    act(() => {
+      callAction(readProp(findByAccessibilityLabel(root, 'Select visible'), 'onPress'), 'Missing guarded selection')
+    })
+    expect(onSortChange).not.toHaveBeenCalled()
+    expect(onSelectionChange).not.toHaveBeenCalled()
   })
 })

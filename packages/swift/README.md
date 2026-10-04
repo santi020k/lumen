@@ -642,3 +642,14 @@ actions with optional decorative markers. `LumenBreadcrumb` reports ancestor IDs
 through `onNavigate`; current and disabled locations cannot navigate. The host
 owns routing, event ordering and workflow updates. See the
 [native component contracts](../../docs/native-components.md) for platform parameters.
+
+## Tables
+
+`LumenTable` renders stable, labelled records using host-formatted cells, with a
+horizontal table layout available. `LumenDataTable` adds controlled sorting and
+row selection. Manual sorting preserves server order by default; explicit client
+sorting is stable and keeps missing values last. Selections retain filtered IDs;
+visible bulk actions skip disabled rows. Loading/error states hide stale controls.
+Supply localized labels and `formatSort`; the host owns requests and persistence.
+See the [native contracts](../../docs/native-components.md) for parameter names
+and typed cell/column/row examples.

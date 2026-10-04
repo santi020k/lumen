@@ -30,12 +30,12 @@ its reference behavior, documented public API, regression tests and rendered int
 | `Carousel` | Pending in all three adapters | Pending |
 | `Command` | Pending in all three adapters | Pending |
 | `ColorPicker` | Pending in all three adapters | Pending |
-| `DataTable` | Pending in all three adapters | Pending |
+| `DataTable` | Initial implementation in all three adapters | Sorting, selection, identity and state regressions; playground/rendered and full API baseline checks pending |
 | `KanbanBoard` | Pending in all three adapters | Pending |
 | `KanbanColumn` | Pending in all three adapters | Pending |
 | `RichTextEditor` | Pending in all three adapters | Pending |
 | `Schedule` | Pending in all three adapters | Pending |
-| `Table` | Pending in all three adapters | Pending |
+| `Table` | Initial implementation in all three adapters | Sorting, selection, identity and state regressions; playground/rendered and full API baseline checks pending |
 | `Tooltip` | Compose exists; SwiftUI and React Native pending | Pending |
 | `Tree` | Pending in all three adapters | Pending |
 | `TreeGrid` | Pending in all three adapters | Pending |
@@ -58,3 +58,8 @@ Rating uses whole integers, zero for unrated, and a bounded maximum of 1 through
 Hosts localize each option through a formatter; no host value is silently rewritten.
 Remaining Rating work includes disabled behavior coverage, playground examples,
 visual verification, documentation, registry and API baseline updates.
+
+Table/DataTable use stable identities and host-formatted cells. Manual sorting
+retains server order; explicit client sorting is stable with missing values last.
+Selection retains hidden IDs and skips disabled rows. Status states hide stale
+controls. The preceding full Compose unit/lint run passed before table changes.

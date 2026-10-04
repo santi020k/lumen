@@ -1211,3 +1211,81 @@ locations emit their ID through `onNavigate`; the host performs routing. Disable
 locations reject navigation. `currentLabel` localizes current-page semantics, and
 the trail scrolls horizontally. SwiftUI honors environment disabled state; React
 Native accepts `disabled` and Compose accepts `enabled`. Empty trails are valid.
+
+## Table and data table
+
+`LumenTable` displays a localized label, `LumenTableColumn` definitions and stable
+`LumenTableRow` records. Each `LumenTableCell` carries preformatted display text
+and an optional typed `LumenTableSortValue`. Column keys and row IDs must be
+nonempty and unique; invalid input displays `invalidLabel` without partial rows.
+Missing cells use `missingLabel`. Native defaults use labelled record cards;
+`layout` also supports a horizontally scrolling table with aligned columns.
+
+`LumenDataTable` adds controlled sorting and selection. Manual sorting is the
+default: sort requests do not reorder server rows. Explicit client mode sorts a
+copy, keeps equal values in input order and places missing/nonfinite values last
+in either direction. Mixed values have a consistent type order: numbers, booleans,
+then localized text (reversed for descending); missing values always remain last.
+`LumenTableSort` cycles ascending, descending and unsorted. Unknown keys and columns without sorting support do not reorder rows. `formatSort` localizes status labels.
+
+React Native and Compose accept `sort`, `onSortChange`, `selectedIds` and
+`onSelectionChange`; SwiftUI takes optional `sort` and `selection` bindings.
+Selection uses stable IDs, retains filtered-out IDs and never changes disabled
+records. The bulk action selects or deselects only visible enabled records, and
+its labels are localizable through `selectAllLabel` and `deselectAllLabel`.
+Disabled and read-only states block sort and selection changes.
+
+Loading and error states hide stale table controls. `loadingLabel`, `emptyLabel`,
+`error`, `retryLabel` and optional `onRetry` keep status and recovery host-owned.
+Persistence, pagination, remote sorting, requests and cell formatting remain
+application responsibilities. SwiftUI and Compose expose `LumenTableModel`,
+`LumenTableSortMode`, `LumenTableSortDirection` and `LumenTableLayout`.
+React Native exports `validateLumenTable`, `getLumenTableCell`,
+`nextLumenTableSort`, `sortLumenTableRows`, `toggleLumenTableRow` and
+`toggleLumenTableVisibleRows` for the same behaviors. JavaScript cell lookup
+excludes inherited properties; an invalid locale falls back to the device locale.
+
+```tsx
+import { useState } from 'react'
+import { LumenDataTable, type LumenTableSort } from '@santi020k/lumen-react-native'
+
+function RecordsExample() {
+  const [sort, setSort] = useState<LumenTableSort | null>(null)
+  const [selectedIds, setSelectedIds] = useState(new Set<string>())
+
+  return <LumenDataTable label="Records"
+    columns={[{ key: 'quantity', label: 'Quantity', sortable: true }]}
+    rows={[{ id: 'one', label: 'First record', cells: { quantity: { text: '2', sortValue: 2 } } }]}
+    sort={sort} onSortChange={setSort} sortMode="client"
+    selectedIds={selectedIds} onSelectionChange={setSelectedIds} />
+}
+```
+
+```swift
+struct RecordsExample: View {
+    @State private var sort: LumenTableSort?
+    @State private var selection: Set<String> = []
+
+    var body: some View {
+        LumenDataTable("Records",
+            columns: [LumenTableColumn(key: "quantity", label: "Quantity", sortable: true)],
+            rows: [LumenTableRow(id: "one", label: "First record",
+                cells: ["quantity": LumenTableCell("2", sortValue: .number(2))])],
+            sort: $sort, sortMode: .client, selection: $selection)
+    }
+}
+```
+
+```kotlin
+@Composable
+fun RecordsExample() {
+    var sort by remember { mutableStateOf<LumenTableSort?>(null) }
+    var selection by remember { mutableStateOf(emptySet<String>()) }
+    LumenDataTable("Records",
+        columns = listOf(LumenTableColumn("quantity", "Quantity", sortable = true)),
+        rows = listOf(LumenTableRow("one", "First record",
+            mapOf("quantity" to LumenTableCell("2", LumenTableSortValue.Number(2.0))))),
+        sort = sort, sortMode = LumenTableSortMode.Client, onSortChange = { sort = it },
+        selectedIds = selection, onSelectionChange = { selection = it })
+}
+```
