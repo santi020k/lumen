@@ -400,10 +400,15 @@ existing Lumen dependency graph. No consumer application source was changed.
 Using RoadScore's declared pnpm 11.24.0 and Node 22.23.1:
 
 - exact resolution showed React Native and its core dependency at 4.0.0 from the packed archives;
-- the shared deck-contract package build passed;
+- the shared deck-contract package exports TypeScript source and has no standalone build script;
 - mobile `typecheck` and `lint -- --max-warnings=0` passed;
 - all 180 mobile tests passed; and
 - `expo export --platform all` produced Android and iOS Hermes bytecode and the web export.
+
+The attempted `pnpm --filter @santi020k/roadscore-deck-contracts run build` reported
+`ERR_PNPM_RECURSIVE_RUN_NO_SCRIPT`; it is not a build pass. The mobile typecheck and production
+exports consumed the shared source directly. Its declared typecheck, zero-warning lint and all
+12 tests subsequently passed.
 
 The peer check failed identically in the original checkout and candidate copy: existing ESLint
 plugins exclude ESLint 10 and TypeScript ESLint 8.56.1 excludes TypeScript 6.0.3. No incompatible
