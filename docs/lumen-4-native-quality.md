@@ -500,3 +500,30 @@ servers, then passed that step and the monorepo build with the required access. 
 failed the unchanged CSS, React and Elements bundle limits recorded above. The fresh
 log is `.build/native-quality-reconciled-final-validate-loopback.log`; later steps are
 not implied green and local release integration remains incomplete.
+
+### Maintained text probe: live scaling versus cold launch
+
+The maintained diagnostic fixture built in the isolated iOS Release host at `a1d5d60f`
+and ran on the task-owned iPhone 17 Pro iOS 27 Simulator. At default scale 1.000,
+plain React Native and Lumen paragraphs each reported four lines, widest 360. The field
+was edited to a synthetic value before changing text size live to 11 (scale 3.571).
+The exact edited draft remained in the native field, while both paragraphs visibly
+clipped and reported one line, widest 362. This verifies edited-draft retention through
+the live change separately from the failed text layout.
+
+Relaunching the unchanged artifact at the same maximum size produced 15 lines, widest
+350, for both paragraphs. Inspected top and lower screenshots showed wrapping and the
+paragraph's final sentence. The probe's in-memory field reset to its initial value on
+relaunch; this is not persisted-draft qualification. Returning to text size 3 restored
+both four-line measurements. All 76 installed probe files and captured input hashes
+matched after testing. The artifact, raw accessibility observations and screenshots
+are under `.build/native-quality-text-layout-probe-maintained`. The original host
+entrypoint and preserved public playground app were restored with matching file hashes;
+keyboard capture remained off and the sidebar was restored.
+
+The matching [upstream issue](https://github.com/react/react-native/issues/57512) remains
+open. The generated host enables React Native's prebuilt core by default, so editing
+installed C++ sources alone would not verify a native fix. The live-versus-cold result
+narrows the investigation to layout invalidation during scaling; it does not prove an
+exact cache cause, qualify large text or justify disabling font scaling or resetting
+application state. No renderer patch or production build configuration changed.
