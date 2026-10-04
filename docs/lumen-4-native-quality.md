@@ -1,5 +1,7 @@
 # Lumen 4 native quality
 
+<!-- cspell:words Automator logcat -->
+
 This record tracks the native improvements authorized for the v4 candidate. The implementation
 branch is `feature/native-v4-quality`, originally based on release commit `d0e9eeb5` and reconciled with committed release revisions `28659627`, `5831f8f0` and `04178a3d`. Preserve concurrent v4
 dependency, icon, web, and Compose-field work. Integrate only completed, verified task changes into
@@ -41,7 +43,7 @@ explicit React Native sheet focus targets with a compact-height/large-text scrol
   in the macOS playground and the iPad simulator Xcode build passed; iPad simulator interactions verified search, record selection, initial edit focus, keyboard-visible Save, saved feedback, Spanish chart descriptions, and error/retry recovery. The flow was repeated against reconciled code revision `1d7acc749fbb80e720a70a2e982c7aa0f1dcb095`. At maximum accessibility text size, Spanish sheet actions stacked and Save remained reachable with the keyboard visible. A swipe-dismiss attempt left the protected sheet open. Typed notes persisted. A later Release-mode XCTest run on the iPad Pro 13-inch (M5), iOS 27 Simulator, passed all three workspace tests, including typing and saving a long note through the native keyboard and verifying the exact saved text. Temporary keyboard and saved-note screenshots were inspected. Five responsive-launch samples averaged 4.935 seconds with 21.341% relative standard deviation; five scrolling/deceleration durations averaged 2.553 seconds. The bundle contains duration samples only, without frame or hitch counts. These host-dependent samples do not establish performance budgets. This run used the candidate worktree based on `156dd6e8` plus the new UI-test fixture, before its commit. The final committed fixture at `038e46f4a1dc751a1cea7ca778f631c9794d52b1` then passed all three tests on the iPhone 17 Pro iOS 27 Simulator, including an explicit keyboard-visible assertion. Phone launch samples averaged 5.472 seconds with 23.658% relative standard deviation; scrolling/deceleration duration averaged 2.570 seconds. Its raw result bundle, source/artifact report and inspected screenshots remain local under `.build/native-quality-apple-performance-iphone*`. The phone artifact checksum was captured after testing, but the shared build output was subsequently replaced by the tablet build; the phone report records that limitation. The final keyboard/save fixture also passed on iPad at source revision `5444fada`, with only documentation changing during the run. That built app is preserved with its checksum, result bundle and inspected screenshots under `.build/native-quality-apple-keyboard-ipad-committed*`. XCTest encountered three 60-second animation-idle waits but continued and verified keyboard visibility, reachable Save and the exact saved note; this is behavioral evidence, not a latency pass. Physical-device qualification and frame-smoothness measurements remain pending. Temporary screenshots were inspected and the original simulator text size was restored. API extraction succeeded on all five Apple
   targets; the reconciled source-compatibility gate validated 17 explicitly reviewed v4 diagnostics, including four icon enum additions.
 - Compose: compilation and unit tests passed. The Android adaptive workspace debug APK compiled
-  against the local library; three workspace instrumentation tests passed for saved-state restoration, editing, cancel and retry, including actual Activity recreation with an open draft and a saved record. Parent destination and pattern selection now use saved state. Process-death qualification remains pending. All 19 root instrumentation tests passed on the
+  against the local library; three workspace instrumentation tests passed for saved-state restoration, editing, cancel and retry, including actual Activity recreation with an open draft and a saved record. Parent destination and pattern selection now use saved state. These earlier tests cover Activity recreation; see the separate process-death evidence below. All 19 root instrumentation tests passed on the
   Pixel 10 Pro Android 17 emulator, including translated accessibility descriptions and a long
   form whose pinned Save action remains visible before and after body scrolling. API dumps and
   declaration classifications were regenerated and checked.
@@ -613,3 +615,32 @@ now supplies exact catalog vocabulary only for the per-icon modules, export inde
 baseline. Prose remains checked; no ignore path or quality rule was widened. The generator changed
 after the measurements solely to emit this dictionary; every recorded runtime/package input still
 matches its measurement hash. Generated-source validation and the vocabulary check passed.
+
+### Android stopped-process restoration
+
+A separate `restoration-driver` instrumentation application now exercises process death without
+killing its own runner. It edits record 200, retains an exact 1,160-character unsaved note, sends
+the isolated playground to the background and uses `am kill`. The test requires the old PID to
+disappear before resuming the existing task in a new process, then verifies the exact draft. It
+saves the record, kills the background process again, and verifies the restored title, saved
+feedback and exact reopened note. The final Android 17/API 37 emulator run passed one test with
+zero failures and errors; Final PID transitions were `9155 -> 9541 -> 9755` and are retained in the preserved test log. Driver lint passed with zero
+warnings and errors after fixing its backup configuration and missing icon.
+
+The opt-in `lumenQualification=true` debug profile installs only the separate qualification app.
+Generated manifests confirm the normal debug and release package IDs remain unchanged, including
+release with the qualification flag enabled. The driver rejects every target package except that
+isolated installation. Its UI Automator 2.4.0 dependency is test-only and was verified against
+Google Maven and the official stable release notes. It is absent from the phone library and app
+runtime dependencies.
+
+Source base `eb25e894` plus this task's driver, debug profile and documentation changes was used
+before the focused commit. Preserved APKs, exact installed-target checksum, source hashes, passing
+instrumentation XML, logcat, zero-issue driver lint and manifest comparisons live under
+`.build/native-quality-android-process-restoration`. Repository type checking and zero-warning
+lint each passed all 23 tasks. `pnpm run validate` again stopped at the unchanged web CSS, React
+and Elements size overruns after all 14 build tasks passed; release integration remains
+incomplete. Gradle 9.8 also reports `Configuration.setVisible(boolean)` deprecation in the build
+configuration/plugin graph; no repository build script invokes that method. No rule was weakened.
+This evidence covers this emulator workflow and actual stopped-process restoration, not removed
+tasks, app-storage persistence, physical devices, startup/scrolling budgets or stability soak.

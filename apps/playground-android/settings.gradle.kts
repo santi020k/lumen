@@ -24,6 +24,7 @@ dependencyResolutionManagement {
 rootProject.name = "lumen-android-playground"
 include(":app")
 include(":wear")
+include(":restoration-driver")
 
 if (!lumenComposeRepository.isPresent) {
     includeBuild("../../packages/compose") {
