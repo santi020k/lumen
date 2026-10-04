@@ -55,6 +55,7 @@ struct PlaygroundAdvancedInputsView: View {
                     }
                 }
                 .environment(\.locale, Locale(identifier: spanish ? "es_CO" : "en_US"))
+                .task(id: spanish) { amount = spanish ? "12,5" : "12.5" }
             }
         }
     }
@@ -68,7 +69,7 @@ struct PlaygroundAdvancedInputsView: View {
 
     private var autocomplete: some View {
         VStack(alignment: .leading, spacing: LumenSpacing.md) {
-            LumenSegmentedControl("Result state", selection: $resultState, options: [
+            LumenSegmentedControl(copy("Result state", "Estado de resultados"), selection: $resultState, options: [
                 LumenSelectionOption(copy("Ready", "Listo"), value: "ready"),
                 LumenSelectionOption(copy("Loading", "Cargando"), value: "loading"),
                 LumenSelectionOption(copy("Empty", "Vacío"), value: "empty"),

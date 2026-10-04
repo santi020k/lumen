@@ -69,6 +69,21 @@ See [native runtime performance](../../docs/native-runtime-performance.md) for t
 metric interpretation and result-bundle inspection. This scheme does not change archive or
 distribution schemes.
 
+The same scheme includes `AdvancedInputTests` for native password reveal/reset, exact number
+stepping, Spanish drafts, autocomplete selection and captures of all six advanced controls. Run
+only these tests on a dedicated simulator with:
+
+```bash
+xcodebuild -project apps/playground-apple/LumenApplePlayground.xcodeproj \
+  -scheme LumenApplePlaygroundPerformance \
+  -destination 'platform=iOS Simulator,id=<owned-simulator-udid>' \
+  -only-testing:LumenApplePlaygroundUITests/AdvancedInputTests \
+  CODE_SIGNING_ALLOWED=NO test
+```
+
+Simulator results complement the unit tests and do not replace physical-device autofill,
+VoiceOver, TalkBack or minimum-operating-system qualification.
+
 ## Component screenshots
 
 Every catalog entry accepts a launch filter so visual evidence is deterministic. In Xcode, add

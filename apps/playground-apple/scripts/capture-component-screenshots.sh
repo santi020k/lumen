@@ -13,6 +13,7 @@ components=(
   "Theme" "Text" "Surface" "Icon" "Icon button" "Button" "Button group"
   "Text field" "Textarea" "Field group" "Phone input" "Toggle" "Settings row" "Checkbox"
   "Radio group" "Segmented control" "Picker" "Slider" "Date field" "Date range field" "Search field"
+  "Number field" "Time field" "Autocomplete" "Password field" "Input OTP" "Image comparison"
   "Tabs"
   "Chip" "Badge" "Link" "Divider" "Spinner" "Card" "Alert" "Alert dialog"
   "Toast" "Banner" "Progress" "Skeleton" "Graphic" "Backdrop" "Illustration" "Image"
