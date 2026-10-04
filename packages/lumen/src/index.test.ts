@@ -417,6 +417,49 @@ describe('@santi020k/lumen umbrella package', () => {
     }
   })
 
+  test.each(['astro', 'react', 'elements'] as const)('rejects unsafe component names before any %s installation writes', async target => {
+    const cwd = await mkdtemp(join(tmpdir(), 'lumen-unsafe-component-'))
+    try {
+      for (const name of ['Unsafe`Name', 'Unsafe\'Name', 'Unsafe\nName', 'Card\n', 'Card\r', 'Card\u2028', 'Unsafe/Name', 'Unsafe.Name', '1Unsafe', 'class', 'await', 'eval', 'Card$Name']) {
+        const registry = {
+          components: [{ category: 'Layout', description: 'Untrusted wrapper', files: [], name, type: 'component' as const }],
+          description: 'Test registry',
+          items: [],
+          name: 'test',
+          packages: [],
+          version: 1
+        }
+        await expect(addLumenRegistryItem(name, { cwd, registry, target })).rejects.toThrow('safe identifiers')
+        expect(existsSync(join(cwd, 'src'))).toBe(false)
+        const registryPath = join(cwd, 'registry.json')
+        await writeFile(registryPath, JSON.stringify(registry), 'utf8')
+        await expect(loadLumenRegistry(registryPath)).rejects.toThrow()
+      }
+    } finally {
+      await rm(cwd, { force: true, recursive: true })
+    }
+  })
+
+  test.each(['Custom_Card', '_CustomCard', 'customCard'])('retains safe external component identifier %s', async name => {
+    const cwd = await mkdtemp(join(tmpdir(), 'lumen-safe-component-'))
+    try {
+      const result = await addLumenRegistryItem(name, {
+        cwd,
+        registry: {
+          components: [{ category: 'Layout', description: 'Safe wrapper', files: [], name, type: 'component' }],
+          description: 'Test registry',
+          items: [],
+          name: 'test',
+          packages: [],
+          version: 1
+        }
+      })
+      expect(result.added).toHaveLength(1)
+    } finally {
+      await rm(cwd, { force: true, recursive: true })
+    }
+  })
+
   test('installs inline files from external registry manifests', async () => {
     const cwd = await mkdtemp(join(tmpdir(), 'lumen-external-'))
     const registryPath = join(cwd, 'registry.json')

@@ -249,3 +249,159 @@ describe('Combobox DOM controller', () => {
     expect(list.hidden).toBe(true)
   })
 })
+
+test('selecting an option cancels its native form submission', () => {
+  const form = document.createElement('form')
+  const { input, list } = fixture(form)
+  const submit = vi.fn((event: SubmitEvent) => {
+    event.preventDefault()
+  })
+
+  form.addEventListener('submit', submit)
+  const option = list.querySelector<HTMLButtonElement>('[data-value="astro"]')
+
+  if (!option) throw new Error('Expected option')
+
+  input.focus()
+  option.click()
+  expect(input.value).toBe('astro')
+  expect(submit).not.toHaveBeenCalled()
+})
+
+test('filtering preserves application-hidden options and restores only its own changes', async () => {
+  const { input, list, controller } = fixture()
+  const astro = list.querySelector<HTMLElement>('[data-value="astro"]')
+  const react = list.querySelector<HTMLElement>('[data-value="react"]')
+
+  if (!astro || !react) throw new Error('Expected options')
+
+  astro.hidden = true
+  type(input, 'vue')
+  expect(react.hidden).toBe(true)
+  type(input, '')
+  await Promise.resolve()
+  expect(astro.hidden).toBe(true)
+  expect(react.hidden).toBe(false)
+  react.hidden = true
+  await Promise.resolve()
+  expect(react.hidden).toBe(true)
+  astro.hidden = false
+  type(input, 'vue')
+  expect(astro.hidden).toBe(true)
+  controller.destroy()
+  expect(astro.hidden).toBe(false)
+  expect(react.hidden).toBe(true)
+})
+
+test('closes and refuses selection when an ancestor fieldset becomes disabled', async () => {
+  const { root, input, list } = fixture()
+  const fieldset = document.createElement('fieldset')
+
+  root.before(fieldset)
+  fieldset.append(root)
+  input.focus()
+  press(input, 'ArrowDown')
+  fieldset.disabled = true
+  // An event still reaches a disabled input when an application dispatches it.
+  press(input, 'Enter')
+  expect(input.value).toBe('')
+  await Promise.resolve()
+  expect(list.hidden).toBe(true)
+  fieldset.disabled = false
+  await Promise.resolve()
+  press(input, 'ArrowDown')
+  expect(activeText(input)).toBe('Astro')
+})
+
+test('tracks current form ownership for resets after initialization', () => {
+  vi.useFakeTimers()
+  const { input, list } = fixture()
+  const form = document.createElement('form')
+
+  form.id = 'late-combobox-form'
+  document.body.append(form)
+  input.setAttribute('form', form.id)
+  type(input, 'rea')
+  press(input, 'ArrowDown')
+  form.reset()
+  vi.runAllTimers()
+  expect(input.value).toBe('')
+  expect(list.hidden).toBe(true)
+  expect(input.hasAttribute('aria-activedescendant')).toBe(false)
+})
+
+test('preserves application re-hiding while filtered, even before observer delivery', async () => {
+  const { input, list } = fixture()
+  const react = list.querySelector<HTMLElement>('[data-value="react"]')
+
+  if (!react) throw new Error('Expected option')
+
+  type(input, 'vue')
+  react.hidden = true
+  type(input, '')
+  await Promise.resolve()
+  expect(react.hidden).toBe(true)
+})
+
+test('repeated filter transitions retain filter ownership before observer delivery', async () => {
+  const { input, list, controller } = fixture()
+  const react = list.querySelector<HTMLElement>('[data-value="react"]')
+
+  if (!react) throw new Error('Expected option')
+
+  type(input, 'vue')
+  type(input, '')
+  type(input, 'vue')
+  await Promise.resolve()
+  controller.destroy()
+  expect(react.hidden).toBe(false)
+})
+
+test('handles resets and disabled fieldset ancestors inside a shadow root', async () => {
+  vi.useFakeTimers()
+  const host = document.createElement('div')
+
+  document.body.append(host)
+  const shadow = host.attachShadow({ mode: 'open' })
+  const form = document.createElement('form')
+  const fieldset = document.createElement('fieldset')
+  const root = document.createElement('div')
+
+  root.innerHTML = '<input role="combobox"><div role="listbox"><button type="button" role="option" data-value="react">React</button></div>'
+  fieldset.append(root)
+  form.append(fieldset)
+  shadow.append(form)
+  const input = root.querySelector('input')
+  const list = root.querySelector<HTMLElement>('[role="listbox"]')
+
+  if (!input || !list) throw new Error('Expected shadow controls')
+
+  cleanups.push(createLumenComboboxController(root).destroy)
+  type(input, 'rea')
+  press(input, 'ArrowDown')
+  form.reset()
+  vi.runAllTimers()
+  expect(input.value).toBe('')
+  expect(list.hidden).toBe(true)
+  expect(input.hasAttribute('aria-activedescendant')).toBe(false)
+  type(input, 'rea')
+  press(input, 'ArrowDown')
+  fieldset.disabled = true
+  await Promise.resolve()
+  expect(list.hidden).toBe(true)
+})
+
+test('preserves application visibility after synchronous unhide and re-hide', () => {
+  const { input, list, controller } = fixture()
+  const react = list.querySelector<HTMLElement>('[data-value="react"]')
+
+  if (!react) throw new Error('Expected option')
+
+  type(input, 'vue')
+  react.hidden = false
+  react.hidden = true
+  type(input, '')
+  expect(react.hidden).toBe(true)
+  controller.destroy()
+  expect(react.hidden).toBe(true)
+})

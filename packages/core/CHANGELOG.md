@@ -71,6 +71,17 @@
 
 ### Patch Changes
 
+- Prevent combobox option clicks from submitting forms, preserve application-hidden options during
+  filtering, and restore filter-owned visibility on cleanup. Support mounted virtual lists in
+  same-origin iframe documents. Respect disabled fieldset ancestors and current form ownership for
+  combobox resets. Bind Web Component comboboxes when children arrive or are replaced after connection.
+
+  Compose consecutive functional updates through uncontrolled React hook setters without losing earlier updates or duplicating change notifications.
+
+- Reject unsafe external component names before wrapper generation. Keep schedule availability
+checks conservative for malformed intervals and report invalid resize or recurrence inputs
+explicitly without changing persisted event records.
+
 - Prevent a shared Combobox observer loop when an open field becomes disabled or read-only. Keep Android TimeField bounds, error labels, and callbacks current while its native dialog is open. Preserve localized negative Swift NumberField drafts and repeated stepping in Arabic and Persian locales.
 
 - Reject malformed Astro action errors and inherited icon names, preserve plain markup prose without syntax highlighting, and normalize form-error records whose field is named `fields`, exclude blank numeric chart coordinates, preserve literal slash-star text during markup migrations, and detect existing recipe conflicts before writing files.

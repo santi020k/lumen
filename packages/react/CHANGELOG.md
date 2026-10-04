@@ -95,6 +95,24 @@
 
 ### Patch Changes
 
+- Prevent combobox option clicks from submitting forms, preserve application-hidden options during
+  filtering, and restore filter-owned visibility on cleanup. Support mounted virtual lists in
+  same-origin iframe documents. Respect disabled fieldset ancestors and current form ownership for
+  combobox resets. Bind Web Component comboboxes when children arrive or are replaced after connection.
+
+  Compose consecutive functional updates through uncontrolled React hook setters without losing earlier updates or duplicating change notifications.
+
+- Restore the Mentions caret with the committed value instead of a delayed animation frame,
+so immediate edits and focus changes cannot be overwritten. Controlled values wait for the
+host update and cancel pending caret restoration when the field is edited or blurred.
+
+- Keep disclosure keyboard navigation on available controls: skip hidden and inert regions,
+CSS-invisible controls, and native disabled controls while preserving enabled legend actions
+and controls restored by removing inert.
+- Keep Mentions suggestion buttons out of the form's Tab sequence while retaining keyboard and
+pointer selection. Rebind static Astro toast markup after client navigation without duplicating
+Escape dismissal or the document toast API.
+
 - Reduce published web artifact sizes within the existing v4 budgets. React compacts its component build
   without renaming identifiers, Web Components use native private methods for internal behavior, and
   the shared stylesheet retains the same rules with concise section comments. Public APIs stay unchanged.

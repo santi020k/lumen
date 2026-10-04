@@ -57,6 +57,7 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
           data-value={option.value}
           id={`${listId}-option-${index}`}
           role="option"
+          tabindex={-1}
           type="button"
         >
           {option.label}

@@ -1627,8 +1627,12 @@ const createId = (prefix: string): string => {
 
 const isElementVisible = (element: HTMLElement): boolean => {
   if (typeof element.checkVisibility === 'function') {
-    return element.checkVisibility()
+    return element.checkVisibility({ visibilityProperty: true })
   }
+
+  const visibility = getComputedStyle(element).visibility
+
+  if (visibility === 'hidden' || visibility === 'collapse') return false
 
   return element.offsetParent !== null || element.getClientRects().length > 0
 }
@@ -1637,7 +1641,7 @@ const getFocusable = (root: ParentNode | null): HTMLElement[] => {
   if (!root) return []
 
   return [...root.querySelectorAll<HTMLElement>(focusableSelector)].filter(
-    element => !element.hasAttribute('hidden') && isElementVisible(element)
+    element => !element.matches(':disabled') && !element.closest('[hidden], [inert]') && isElementVisible(element)
   )
 }
 
@@ -9982,6 +9986,8 @@ class LumenMentionsBehaviorElement extends LumenElement {
       option.id ||= `${list.id}-option-${index}`
 
       option.setAttribute('aria-selected', 'false')
+
+      option.tabIndex = -1
     }
 
     const setActive = (index: number): void => {

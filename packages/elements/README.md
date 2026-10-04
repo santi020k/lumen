@@ -326,6 +326,13 @@ document-level toast controller events.
 
 ## Interactive behavior
 
+Disclosure keyboard navigation skips hidden or inert regions, invisible controls, and native
+disabled controls, including a disabled fieldset. Available controls in a fieldset's first legend
+retain their native keyboard behavior; removing `inert` makes a region available again.
+
+Mentions keeps suggestion navigation on the textarea through `aria-activedescendant`; suggestion
+buttons are excluded from the Tab sequence while Enter and pointer selection still insert a mention.
+
 Registering the elements wires behavior-heavy primitives without a framework runtime. DataTable,
 Dialog, Popover, DropdownMenu, ContextMenu, Tabs, Select, ThemeBuilder, Toast, Tooltip, forms,
 Calendar, InputOTP, DateRangePicker, RichTextEditor, Schedule, Resizable, and VirtualList track the
@@ -678,3 +685,9 @@ Use `<lumen-calendar-heatmap start-date="2026-01-01" end-date="2026-01-31">`,
 `domain-min`/`domain-max`. Box statistic attributes are `min-label`, `q1-label`, `median-label`,
 `q3-label`, `max-label`, and `outliers-label`. `show-table="false"` hides exact-data disclosure;
 provide an application-owned summary when additional interpretation is useful.
+
+## Combobox lifecycle
+
+`lumen-combobox` enhances its input and listbox when both are available. Children can arrive after
+connection or be replaced by an application renderer. Disconnecting the host releases listeners
+and observers; reconnecting binds the current children.

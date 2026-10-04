@@ -8,6 +8,7 @@ import {
   type LumenRegistryEntry,
   type LumenRegistryFile
 } from './registry.js'
+import { isSafeRegistryComponentName } from './registry-component-name.js'
 import { assertSafeRegistryFilePath } from './registry-path.js'
 
 interface LumenRecipeFile {
@@ -156,6 +157,10 @@ declare global {
 }
 
 const createComponentFile = (name: string, target: LumenAddTarget): LumenRecipeFile => {
+  if (!isSafeRegistryComponentName(name)) {
+    throw new Error('Registry component names must be safe identifiers without reserved keywords.')
+  }
+
   if (target === 'react') return createReactComponentFile(name)
 
   if (target === 'elements') return createElementsComponentFile(name)

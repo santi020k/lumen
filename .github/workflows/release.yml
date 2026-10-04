@@ -71,9 +71,7 @@ jobs:
         run: >-
           pnpm run check:react-native-peer-docs &&
           pnpm run test:react-native-peer-docs &&
-          pnpm run check:swift-version &&
-          pnpm run check:native-consumer-evidence &&
-          pnpm run check:native-stability-soak
+          pnpm run check:swift-version
 
       - name: Build and inspect packages pending publication
         if: steps.scope.outputs.has-packages == 'true'

@@ -1,5 +1,6 @@
 import { readFile, stat } from 'node:fs/promises'
 
+import { isSafeRegistryComponentName } from './registry-component-name.js'
 import { lumenRegistry } from './registry-data.js'
 import { isSafeRegistryFilePath } from './registry-path.js'
 import type {
@@ -105,7 +106,7 @@ const isRegistryComponent = (value: unknown): value is LumenRegistryComponent =>
   const component = value as Partial<LumenRegistryComponent>
 
   return (
-    isNonEmptyString(component.name) &&
+    isSafeRegistryComponentName(component.name) &&
     component.type === 'component' &&
     isNonEmptyString(component.description) &&
     isNonEmptyString(component.category) &&

@@ -104,6 +104,13 @@ Compose dropdown menus from the public trigger, content, item, and separator par
 menu after a successful selection; preventing the item's click event keeps it open. Disabled items
 remain unavailable, and `status` adds short trailing context to the item.
 
+Disclosure keyboard navigation skips hidden or inert regions, invisible controls, and native
+disabled controls, including a disabled fieldset. Available controls in a fieldset's first legend
+retain their native keyboard behavior; removing `inert` makes a region available again.
+
+Mentions keeps suggestion navigation on the textarea through `aria-activedescendant`; suggestion
+buttons are excluded from the Tab sequence while Enter and pointer selection still insert a mention.
+
 ```tsx
 import {
   DropdownMenu,
@@ -870,3 +877,9 @@ import { BoxPlot, CalendarHeatmap, FunnelChart } from '@santi020k/lumen-react'
   { id: 'api', label: 'API', min: 20, q1: 45, median: 60, q3: 90, max: 140, outliers: [210] }
 ]} />
 ```
+
+## Hook state updates
+
+Public hook setters accept React functional updates. In uncontrolled mode, consecutive calls in
+one event compose against the latest pending value. Change callbacks run once per setter call,
+including under Strict Mode. Controlled values remain owned by the application.
