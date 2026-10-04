@@ -49,6 +49,9 @@
 
 ### Minor Changes
 
+- Add controlled native Tree components and graph models for React Native, SwiftUI
+  and Compose, with explicit invalid/status states and inherited disabled branches.
+
 - Extend native range filters to React Native and SwiftUI with independently named endpoints,
   localized formatting, controlled domain stepping, and disabled/read-only protection.
 

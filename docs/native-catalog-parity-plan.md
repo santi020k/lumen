@@ -94,7 +94,9 @@ Rendered capture coverage passes with 305 captures, and native API baselines are
 classified. Canonical `pnpm run validate` passes on the prepared merge with release commit
 `a18bb023`: 1,968 tests, strict types, zero-warning lint,
 spelling, unused-export checks, builds, security checks and packed consumer smoke tests.
-Local release integration remains pending while the release checkout belongs to another active chat.
-The implementation is preserved in `12215e1b`; the prepared merge stays on the task branch.
+Release integration and branch pushes are coordinated with the release chat. The 14 native
+Changesets were processed by the configured generator and folded into the unpublished `4.0.0`
+changelogs, preserving package versions and published history. Publication approval remains separate.
+The implementation is preserved in `12215e1b`; `daed9441` incorporates the current release base.
 Android consumer captures revealed a narrow calendar grid defect; the correction now
 passes actual geometry and date-selection checks at 268/350/390dp in both themes.
