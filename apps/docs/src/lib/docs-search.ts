@@ -11,9 +11,11 @@ const COMPONENT_SCORE_BOOST = 75
 
 export const normalizeSearchText = (value: string): string => value.toLowerCase().normalize('NFKD').replaceAll(/[\u0300-\u036f]/g, '')
 
-const includesSearchToken = (value: string, token: string): boolean => token.length > 2 ?
-  value.includes(token) :
-  value.split(/[^\p{L}\p{N}]+/u).some(word => word.startsWith(token))
+const includesSearchToken = (value: string, token: string): boolean => {
+  if (token.length > 2 || /[^\p{L}\p{N}]/u.test(token)) return value.includes(token)
+
+  return value.split(/[^\p{L}\p{N}]+/u).some(word => word.startsWith(token))
+}
 
 const scoreSearchItem = (item: DocsSearchItem, query: string): number => {
   const title = normalizeSearchText(item.title)

@@ -30,6 +30,12 @@ describe('docs search ranking', () => {
     expect(getMatchedSearchItems([item('Button', 'Component')], 'bu').map(result => result.title)).toEqual(['Button'])
   })
 
+  test('preserves punctuation in exact guide titles', () => {
+    const guide = item('Data & formatting', 'Recipe')
+
+    expect(getMatchedSearchItems([guide], 'data & formatting')).toEqual([guide])
+  })
+
   test.each([
     ['ai react', '/guides/build-ui-with-ai'],
     ['ai token usage', '/guides/measure-ai-ui-token-usage']
