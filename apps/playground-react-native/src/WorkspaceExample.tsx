@@ -1,5 +1,5 @@
 import { type ComponentRef, type ReactElement, useEffect, useRef, useState } from 'react'
-import { BackHandler, FlatList, ScrollView, type TextInput, useWindowDimensions, View } from 'react-native'
+import { BackHandler, FlatList, Platform, ScrollView, type TextInput, useWindowDimensions, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import {
@@ -110,6 +110,8 @@ const useWorkspaceBackNavigation = (
   onBack: () => void
 ): void => {
   useEffect(() => {
+    if (Platform.OS !== 'android') return
+
     const subscription = BackHandler.addEventListener('hardwareBackPress', () => {
       if (!selected || wide || draft) return false
 
@@ -251,7 +253,7 @@ export const WorkspaceExample = ({ onBack }: { onBack: () => void }): ReactEleme
               </LumenButton>
             )}
             <LumenText variant="title">{selected.name}</LumenText>
-            <LumenText>{selected.note}</LumenText>
+            {saved && <LumenStatusBar message={text.saved} tone="success" />}
             <LumenButton
               ref={editRef}
               onPress={() => {
@@ -262,7 +264,7 @@ export const WorkspaceExample = ({ onBack }: { onBack: () => void }): ReactEleme
             >
               {text.edit}
             </LumenButton>
-            {saved && <LumenStatusBar message={text.saved} tone="success" />}
+            <LumenText>{selected.note}</LumenText>
             {state === 'success' ?
               (
                 <LumenBarChart

@@ -369,7 +369,7 @@ failed accessibility result; neither font scaling nor application state was disa
 
 ### Android long-note keyboard regression
 
-The new Activity test opens the Workspace editor, focuses Notes, enters a 1,120-character note,
+The new Activity test opens the Workspace editor, focuses Notes, enters a 1,160-character note,
 and requires Save to remain displayed while the sheet dialog's actual IME insets report a visible
 keyboard. It then saves, checks visible confirmation, reopens the editor and verifies the exact
 note. The first run exposed a test-harness error: pinned Save has no scroll ancestor. After fixing
@@ -390,6 +390,39 @@ final six-test result are retained there. The full log is
 `.build/native-quality-android-keyboard-final-test.log`. The computer-use tool does not expose the
 Android emulator, so before-and-after visual screenshots remain unverified. This emulator pass
 neither proves process-death restoration nor qualifies physical devices, large text or screen readers.
+
+### React Native and SwiftUI long-note feedback
+
+Both reference workspaces now place save confirmation and Edit above the note, matching the
+Android correction. React Native's phone web preview previously returned focus to Edit below the
+long note and scrolled the title above the viewport (top -344.5); after the change, the title stays
+visible at top 72. Phone 390×844 and desktop 1280×900 before-and-after screenshots were inspected
+with the same record, 1,160-character note and light theme. Reopening the editor preserved the
+exact note on both layouts. The maintained web accessibility canary now repeats that workflow,
+requires focus restoration and fully visible title/confirmation, and verifies exact draft retention.
+It passed in English and Spanish against a fresh production web export. The unsupported web BackHandler warning also
+revealed that the Workspace hook registered on every platform; it now registers only on Android.
+App type checking, zero-warning lint and all ten unit tests passed. These web checks do not prove
+the revised layout in React Native's iOS or Android host. Screenshots, source hashes and the stale
+preview excluded from verification are retained under `.build/native-quality-rn-long-note`.
+
+The SwiftUI Release test was strengthened to enter the same long note through the native keyboard,
+require visible confirmation and Edit after saving, and reopen the editor to compare the exact
+note. The baseline failed its confirmation visibility assertion; the corrected iPhone 17 Pro iOS
+27 Simulator run passed. Before-and-after saved-note screenshots and the keyboard-visible Save
+screenshot were inspected. Both runs used separate task-owned simulators of the same model and OS
+with default text size; the source inputs and twelve-file application manifests are preserved under
+`.build/native-quality-apple-long-note`. The after result bundle is
+`/private/tmp/lumen-native-quality-long-note-after.xcresult`. Baseline result finalization waited on
+Xcode simulator diagnostic collection; its live process was preserved until it ended, and the after
+run used separate simulator and build paths. Build/runtime logs retain SDK metadata and Simulator
+accessibility class warnings. This is one focused native behavioral pass, not a
+performance, physical-device, large-text, screen-reader or stability qualification.
+
+Repository type checking and zero-warning ESLint passed 23 tasks each. A fresh
+`pnpm run check:bundle-size` still failed the unchanged CSS, React and Elements budgets; its exact
+diagnostics are preserved in `.build/native-quality-long-note-bundle-check.log`. No budgets were
+raised. The full release gate and local integration remain incomplete.
 
 ### Outstanding scope and blockers
 

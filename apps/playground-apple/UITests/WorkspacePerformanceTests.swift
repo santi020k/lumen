@@ -54,7 +54,7 @@ final class WorkspacePerformanceTests: XCTestCase {
         let noteEditor = app.textViews.firstMatch
         XCTAssertTrue(noteEditor.waitForExistence(timeout: 10))
         noteEditor.tap()
-        let notes = "Long workspace note. " + String(repeating: "Validated record notes. ", count: 12)
+        let notes = String(repeating: "A long keyboard-edited note. ", count: 40)
         noteEditor.typeText(notes)
         let save = app.buttons["Save"]
         XCTAssertTrue(app.keyboards.firstMatch.exists)
@@ -66,11 +66,15 @@ final class WorkspacePerformanceTests: XCTestCase {
         save.tap()
         let savedNotes = app.staticTexts.matching(NSPredicate(format: "label == %@", notes)).firstMatch
         XCTAssertTrue(savedNotes.waitForExistence(timeout: 10))
-        XCTAssertTrue(app.staticTexts["Changes saved locally"].exists)
         let saved = XCTAttachment(screenshot: app.screenshot())
         saved.name = "Workspace saved notes"
         saved.lifetime = .keepAlways
         add(saved)
+        XCTAssertTrue(app.staticTexts["Changes saved locally"].isHittable)
+        XCTAssertTrue(edit.isHittable)
+        edit.tap()
+        XCTAssertTrue(noteEditor.waitForExistence(timeout: 10))
+        XCTAssertEqual(noteEditor.value as? String, notes)
     }
 
     @MainActor

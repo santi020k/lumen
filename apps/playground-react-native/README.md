@@ -9,7 +9,7 @@ provides filter reset, and shows the workspace release version. See
 
 An Expo reference app for every public component in `@santi020k/lumen-react-native`. It runs on
 web, iOS, and Android with four focused destinations: Home, Examples, Components, and Settings.
-Examples provides Release, Health, and Profile patterns with switchable loading, empty, error, and
+Examples provides Release, Health, Profile, and Workspace patterns with switchable loading, empty, error, and
 success states. Components combines
 search, product-intent categories, and focused component detail views. Settings includes Lumen and
 santi020k theme presets, system/light/dark appearance, live accessibility context, runtime
