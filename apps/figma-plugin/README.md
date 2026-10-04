@@ -87,6 +87,62 @@ Figma acceptance or Community publication.
 Astro props, and regression tests. Component snapshots are design data, never executable code or
 instructions. Build output is ignored and reproducible; do not commit `dist/`.
 
-The Figma account-library creation tool rejected creation with the current account permissions during
-initial development. This repository build remains usable as a local development plugin. A hosted
-plugin or public listing requires separate permission and publication verification.
+## Automated candidates
+
+The [Figma plugin candidate workflow](../../.github/workflows/figma-plugin.yml) runs on relevant pull
+requests and changes merged into `main`. It can also be dispatched in GitHub Actions. It builds,
+type-checks, lints, runs the plugin and packaging tests, and verifies the browser export flow and
+generated Astro interactions before uploading an artifact retained for 30 days. It requires no Figma
+credentials and has read-only repository permissions.
+
+Each artifact contains a ZIP named with the beta version and Git revision, a SHA-256 checksum, and
+`release.json` with the full source revision, plugin ID, and per-file checksums. The ZIP includes
+only the runtime files and release metadata. Pull request artifacts are review candidates; use the
+artifact from the approved, merged `main` commit for Community publication.
+
+To reproduce packaging locally after building workspace dependencies:
+
+```bash
+pnpm --filter @santi020k/lumen-figma-plugin run package
+```
+
+Packaging uses the system `zip` command (macOS and Ubuntu runners include it). Packaging tests also
+use `unzip`. Output goes to `dist/artifacts/`. Local changes add `-dirty` to the ZIP name and set
+`dirty: true` in its metadata. CI refuses to package a dirty checkout. A missing Figma plugin ID
+produces a development candidate, never a claim of Community readiness.
+
+## Figma Community publication
+
+**Beta version · Not yet published to Community.** Classic plugins can be published on any Figma
+plan. The earlier account permission denial concerned the connector's generative-plugin tool;
+it does not establish a restriction on publishing this classic plugin.
+
+Figma's [documented publication flow](https://help.figma.com/hc/en-us/articles/360042293394-Publish-classic-plugins-to-the-Figma-Community)
+requires the desktop app. No supported unattended Community publishing API or CLI was found.
+GitHub Actions automates candidate preparation; submitting and updating the listing is the remaining
+manual boundary. A successful workflow does not establish Figma host compatibility or publication.
+
+1. Create the development plugin in Figma desktop using the intended Community publisher account.
+   Enable two-factor authentication and retain the plugin ID assigned by Figma. Add that ID to the
+   source `manifest.json` through the normal reviewed release branch; do not invent an ID or edit
+   only the generated manifest. See [Figma's manifest reference](https://developers.figma.com/docs/plugins/manifest/).
+2. Download the candidate from the approved `main` commit, verify its checksum, and extract it.
+   Import its `manifest.json` in Figma desktop. Confirm the full revision, version, registered ID,
+   and `dirty: false` in `release.json`.
+3. Verify real Lumen selections, empty/multiple selections, selection changes, clipboard, and
+   downloads in Figma. The browser tests do not replace this host check.
+4. In **Plugins → Manage plugins**, publish **Lumen for Figma · Beta**. Prepare an icon, thumbnail,
+   description, and support link. Use the existing [Lumen support page](https://lumen.santi020k.com/support).
+   Describe the six supported components, Astro starter, and AI handoff accurately: the beta does
+   not run an AI model or send design data to a server. Retain the Beta label in the listing and docs.
+5. Submit for Figma's initial review. After approval, verify the public install/run flow and record
+   the listing URL in this guide and the docs page. Until then, keep the development-only status.
+
+For subsequent updates, increment this app's version, describe changes in the reviewed release PR,
+and repeat the automated candidate and desktop publishing steps. Preserve the approved ZIP and
+checksums before Actions retention expires. Follow the repository release workflow; do not publish
+from an unmerged local checkout. No GitHub secret, remote JavaScript loader, or paid runner is needed.
+
+For recovery, republish the last verified bundle through Figma desktop, retaining its source
+revision and recording the rollback in the listing's version notes. Figma distributes updates to
+all users and does not let them select an older version; see [plugin version management](https://developers.figma.com/docs/plugins/#plugin-management).

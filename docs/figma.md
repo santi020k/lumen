@@ -21,6 +21,10 @@ See the [plugin setup and limitations](../apps/figma-plugin/README.md). The beta
 repository development build, not a published Figma Community plugin. The existing Community link
 below points to the design library.
 
+GitHub Actions prepares tested beta ZIPs with source revisions and checksums. See the
+[Community publishing guide](../apps/figma-plugin/README.md#figma-community-publication) for the
+remaining Figma desktop registration, host verification, and submission steps.
+
 ## Figma Library File
 
 The Lumen Figma library lives at
