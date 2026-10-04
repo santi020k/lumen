@@ -4,6 +4,30 @@ This working record tracks the local `release/v4.0.0` candidate. It is not publi
 production qualification evidence. Consumer audits inspect application source; application
 data, deployment, and migration remain owned by those projects.
 
+## Release preparation checkpoint
+
+Release preparation based on consolidation candidate `79e6b066` consumed 36 pending Changesets
+through the installed Changesets generator in an isolated metadata workspace. Their generated
+notes are folded into the ten existing, unpublished `4.0.0` changelogs. The duplicate Core
+`4.0.0` heading was consolidated; earlier published release entries and all package versions
+remain unchanged. The publication scope still resolves all ten unpublished npm packages.
+Changesets status reports no pending release notes, rather than scheduling accidental `5.0.0`,
+`4.1.0` and `4.0.1` releases. Subsequent stabilization commits require the same note reconciliation
+before the final candidate is approved.
+
+The release-canary workflow now skips its pull-request comparison fetch on manual dispatch.
+A regression executes its actual classification command with empty pull-request references and
+checks that every canary surface and all ten public npm packages remain selected. The workflow
+and classifier suites pass 40 checks; this does not claim a remote Actions run.
+
+Local canonical validation reaches the guarded security check after successful build, types,
+tests, lint, spelling and registry checks. The remaining `http-cache-semantics` finding still
+blocks the gate; the approved Forge and Braces patch checks pass. Keep the v4 contract in draft
+and preserve the release-age policy. Final native integration, qualification policy alignment,
+complete device and consumer evidence, and exact-revision approval remain separate requirements.
+No release branch push, publication, deployment or final release integration is established by
+this checkpoint.
+
 ## October 3 complete branch consolidation candidate
 
 The owner subsequently approved raising the combined stylesheet budget. The new 220,000-byte

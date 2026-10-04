@@ -2,6 +2,66 @@
 
 ## 4.0.0
 
+### Minor Changes
+
+- Add canonical Default, Studio and Glass appearance presets, scoped web styling and ThemeBuilder radius, spacing and border customization. Native adapters expose preset palettes and explicit surface material with opaque fallbacks. Swift and Compose consumers must rebuild for the updated theme and surface signatures; see the appearance presets guide.
+
+- Add BulletChart across Astro, React, Web Components, React Native, SwiftUI, and Compose.
+  Compare actual values with targets and labeled qualitative ranges using an honest zero-inclusive
+  domain. Preserve missing measurements, localized exact data, responsive typography, and native
+  accessibility. Existing chart APIs remain compatible.
+
+- Close advanced-input and media gaps across React Native, SwiftUI and Compose with number, time,
+  autocomplete, password, numeric OTP and image comparison controls. Preserve controlled state,
+  localized drafts, native secure entry and autofill hints, explicit cancellation and accessible
+  adjustment. Add exact bounded decimal, numeric OTP and same-day time helpers for web and native
+  consumers, plus bilingual native playground examples and a form-submission error recipe.
+
+- Add canonical per-icon graphic imports through `icons/<name>` for use with the lightweight
+  `graphics` entrypoint. Preserve dynamic named root lookups and generate both layouts from the
+  shared artwork. Brand paths use `icons/brand-<name>`.
+
+- Repair chart data disclosures with full-width controls, bounded keyboard scrolling, and sticky
+  headers across the web adapters. Add WaterfallChart and Histogram to React Native, SwiftUI, and
+  Compose, with matching invalid-input behavior, exact values, and native expandable data lists.
+
+- Bring labeled sequential and diverging heatmaps to React Native, SwiftUI, and Compose with
+  numeric legends, explicit missing-value markers, responsive axes, and consistent exact-value
+  disclosures. Keep duplicate coordinates deterministic and numeric scaling finite at extreme values.
+
+  Swift and Compose consumers should rebuild for the defaulted heatmap options added in v4.
+
+- Improve native sheet scrolling, dismissal protection, keyboard integration, and accessibility text
+  layouts. React Native sheets accept explicit initial and return focus targets. Required-field and
+  tab-panel descriptions are caller-localizable in React Native and Compose. SwiftUI rows and section
+  headers stack at accessibility text sizes. SwiftUI and Compose consumers must rebuild for the
+  updated sheet signatures; application-owned lazy or virtualized sheet content should disable the
+  additional scrolling wrapper.
+
+  Add the optional React Native foundations entrypoint, which shares root implementations and avoids eager full-catalog imports.
+
+  Native horizontal button groups wrap or stack when space is limited and switch to vertical layouts at accessibility text sizes.
+
+  Add an optional React Native graphics entrypoint for statically imported, app-owned SVG components. It shares root icon behavior while avoiding the full named catalog; root name and custom icon APIs remain available.
+
+### Patch Changes
+
+- Vertically center Picker option labels within their touch targets to match the selected-value trigger.
+
+- Respect Android accessibility time-to-action settings when automatically dismissing native toasts.
+  Never shorten the requested duration; retain it if the native timeout recommendation fails or is
+  invalid. Ignore stale recommendations after updates, dismissal, eviction, clearing or unmount,
+  while preserving persistent toasts and iOS/web durations.
+
+- Announce Toast and ErrorState title/description updates on iOS using native accessibility APIs.
+  Polite announcements queue behind speech; assertive errors interrupt it, and off disables error
+  announcements. Avoid repeated speech for unchanged copy while retaining Android/web live regions
+  and independently operable actions.
+
+- Allow navigation destination labels to wrap at accessibility text sizes instead of truncating their visible names.
+- Updated dependencies []:
+  - @santi020k/lumen-core@4.0.0
+
 ### Native Advanced Inputs
 
 - Add React Native and SwiftUI number, time, autocomplete, password, numeric OTP and image comparison

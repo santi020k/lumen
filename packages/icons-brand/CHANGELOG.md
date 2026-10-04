@@ -2,6 +2,11 @@
 
 ## 4.0.0
 
+### Patch Changes
+
+- Updated dependencies []:
+  - @santi020k/lumen-core@4.0.0
+
 ### Major Changes
 
 - Prepare the coordinated Lumen 4 family from twenty real consumer audits.
