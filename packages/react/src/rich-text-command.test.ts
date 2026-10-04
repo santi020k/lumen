@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 import { act, createElement } from 'react'
+import { createPortal } from 'react-dom'
 import { createRoot, type Root } from 'react-dom/client'
 
 import { afterEach, beforeEach, expect, test, vi } from 'vitest'
@@ -70,6 +71,27 @@ test('ordinary editing retains the browser command and notification behavior', a
   container.querySelector('button')?.click()
   expect(fallback).toHaveBeenCalledExactlyOnceWith('bold')
   expect(completion).toHaveBeenCalledExactlyOnceWith({ command: 'bold', executed: true })
+})
+
+test('toolbar and keyboard commands use the document that owns a portaled editor', async () => {
+  const frame = document.createElement('iframe')
+  container.append(frame)
+  const frameDocument = frame.contentDocument
+  if (!frameDocument) throw new Error('Expected iframe document')
+  const frameFallback = vi.fn(() => true)
+  Object.defineProperty(frameDocument, 'execCommand', { configurable: true, value: frameFallback })
+  await act(async () => {
+    root.render(createPortal(createElement(Editor), frameDocument.body))
+    await Promise.resolve()
+  })
+  frameDocument.querySelector('button')?.click()
+  const editable = frameDocument.querySelector<HTMLElement>('[contenteditable]')
+  if (!editable) throw new Error('Expected portaled editor')
+  editable.dispatchEvent(new KeyboardEvent('keydown', { key: 'b', ctrlKey: true, bubbles: true, cancelable: true }))
+  expect(frameFallback).toHaveBeenCalledTimes(2)
+  expect(frameFallback).toHaveBeenNthCalledWith(1, 'bold')
+  expect(frameFallback).toHaveBeenNthCalledWith(2, 'bold')
+  expect(fallback).not.toHaveBeenCalled()
 })
 
 test('initializes toggle accessibility state before the first editing interaction', () => {

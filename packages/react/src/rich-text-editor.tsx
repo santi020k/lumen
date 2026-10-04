@@ -119,6 +119,12 @@ const syncRichTextCommandStates = (root: HTMLElement | null): void => {
   }
 }
 
+const getRichTextCommandDocument = (root: HTMLElement | null): Document | undefined => {
+  if (root) return root.ownerDocument
+
+  return typeof document === 'undefined' ? undefined : document
+}
+
 export const useRichTextEditor = ({
   commandHandler,
   nativeState = !commandHandler,
@@ -156,11 +162,7 @@ export const useRichTextEditor = ({
     (command, root = rootRef.current, value) => {
       if (!command) return false
 
-      const commandDocument =
-        typeof document === 'undefined' ?
-          undefined :
-          document
-
+      const commandDocument = getRichTextCommandDocument(root)
       const request: LumenRichTextCommandRequest = { command, ...(value === undefined ? {} : { value }) }
       const fallback = () => executeRichTextDocumentCommand(commandDocument, command, value)
       const executed = executeLumenRichTextCommand(root, request, fallback, commandHandler)

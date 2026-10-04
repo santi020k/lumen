@@ -1852,6 +1852,36 @@ interface LumenHeatmapCellContext {
   yIndexes: ReadonlyMap<string, number>
 }
 
+const isHeatmapRecord = (value: unknown): value is Record<string, unknown> => {
+  if (Array.isArray(value)) return false
+
+  return typeof value === 'object' && value !== null
+}
+
+const isHeatmapCoordinate = (value: unknown): value is number | string => typeof value === 'string' || (typeof value === 'number' && Number.isFinite(value))
+const isOptionalHeatmapLabel = (value: unknown): boolean => value === undefined || typeof value === 'string'
+
+const isHeatmapTone = (value: unknown): boolean => {
+  if (value === undefined) return true
+
+  return lumenChartTones.some(tone => tone === value)
+}
+
+const isHeatmapDatum = (datum: unknown): datum is LumenHeatmapDatum => {
+  if (!isHeatmapRecord(datum)) return false
+
+  return isHeatmapCoordinate(datum.x) && isHeatmapCoordinate(datum.y) &&
+    (datum.value === null || typeof datum.value === 'number') &&
+    [datum.id, datum.label, datum.xLabel, datum.yLabel].every(isOptionalHeatmapLabel) && isHeatmapTone(datum.tone)
+}
+
+/** Reject the whole decoded collection before adapters read or format cell fields. */
+export const normalizeLumenHeatmapData = (data: readonly unknown[]): LumenHeatmapDatum[] => {
+  const rows = Array.from(data)
+
+  return rows.every(isHeatmapDatum) ? rows : []
+}
+
 const createLumenHeatmapCell = (
   datum: LumenHeatmapDatum,
   context: LumenHeatmapCellContext
@@ -1875,10 +1905,11 @@ const createLumenHeatmapCell = (
 }
 
 export const createLumenHeatmapGeometry = (
-  data: readonly LumenHeatmapDatum[],
+  rawData: readonly unknown[],
   width = 640,
   height = 320
 ): LumenHeatmapGeometry => {
+  const data = normalizeLumenHeatmapData(rawData)
   const xCategories = uniqueLumenChartCategories(data.map(datum => datum.x))
   const yCategories = uniqueLumenChartCategories(data.map(datum => datum.y))
   const domain = getLumenChartDomain(data.map(datum => datum.value), false)

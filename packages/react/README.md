@@ -678,6 +678,8 @@ engine owns it. See the [editor guidance](../../docs/ai-usage.md).
 With native state enabled, `useRichTextEditor` initializes toolbar toggle states on mount,
 including `aria-pressed`, before the first editing interaction. External command handlers
 disable this synchronization by default so the application can own toolbar state.
+Native toolbar and keyboard commands execute in the editor root's owning document, including
+editors portaled into a same-origin iframe.
 
 ## Phone presentation in v4
 

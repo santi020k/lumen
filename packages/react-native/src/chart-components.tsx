@@ -40,12 +40,12 @@ import {
   type LumenComboSeries,
   type LumenComparisonDatum,
   type LumenComparisonOptions,
-  type LumenHeatmapDatum,
   type LumenHeatmapOptions,
   type LumenHistogramBin,
   type LumenPieChartVariant,
   type LumenRangeDatum,
   type LumenWaterfallDatum,
+  normalizeLumenHeatmapData,
   resolveLumenChartLabels,
   resolveLumenChartTone,
   scaleLumenChartValue
@@ -868,7 +868,7 @@ export const LumenScatterChart = ({
 }
 
 export interface LumenHeatmapProps extends Omit<ViewProps, 'children'>, LumenHeatmapOptions {
-  data: readonly LumenHeatmapDatum[]
+  data: readonly unknown[]
   description?: string
   formatCategory?: (value: number | string) => string
   formatValue?: (value: number) => string
@@ -1065,7 +1065,7 @@ export const LumenHeatmap = ({
   const theme = useLumenTheme()
   const categoryFormatter = resolveLumenChartCategoryFormatter(formatCategory)
 
-  const model = createLumenHeatmapModel(data.map(datum => ({
+  const model = createLumenHeatmapModel(normalizeLumenHeatmapData(data).map(datum => ({
     ...datum, xLabel: datum.xLabel ?? categoryFormatter(datum.x), yLabel: datum.yLabel ?? categoryFormatter(datum.y)
   })), { colorScale, ...(domain ? { domain } : {}), ...(midpoint === undefined ? {} : { midpoint }) })
 

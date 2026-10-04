@@ -310,6 +310,18 @@ describe('Lumen React Native chart components', () => {
     expect(fallback.selectedX).toBe(x)
   })
 
+  test.each([null, { x: 'X', y: 'Y', value: 1, xLabel: null }])('heatmap rejects decoded rows before native formatting: %j', datum => {
+    const formatCategory = vi.fn((value: number | string) => String(value))
+    const heatmap = LumenHeatmap({
+      data: [{ x: 'Valid', y: 'Row', value: 2 }, datum],
+      label: 'Activity',
+      formatCategory
+    }) as ReactElement<ChartFrameOutputProps>
+    expect(formatCategory).not.toHaveBeenCalled()
+    expect(heatmap.props.summary).toBe('No chart data available.')
+    expect(dataOutput(heatmap).rows).toEqual([])
+  })
+
   test('exposes missing heatmap and range values through readable rows', () => {
     const heatmap = LumenHeatmap({
       data: [{ value: null, x: 'Monday', y: 'Morning' }],

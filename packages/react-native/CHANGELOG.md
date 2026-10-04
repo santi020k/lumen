@@ -97,6 +97,10 @@
 
   Fit web bar charts to narrow cards across Astro, React, and Web Components, reserving more room for horizontal category labels and spacing value-axis labels to avoid overlap.
 
+- Validate decoded heatmap cells through the shared normalizeLumenHeatmapData helper before geometry or native category formatting. Fail closed for malformed rows while preserving unavailable measurements. Execute React rich-text toolbar and keyboard commands in the editor root's owning document, including same-origin iframe portals.
+- Updated dependencies []:
+  - @santi020k/lumen-core@4.0.0
+
 ### Native Advanced Inputs
 
 - Add React Native and SwiftUI number, time, autocomplete, password, numeric OTP and image comparison

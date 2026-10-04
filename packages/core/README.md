@@ -117,6 +117,11 @@ DOM listeners and cursor/legend state; call `destroy()` when removing its surfac
 Waterfall and histogram geometry accept arrays of unknown decoded rows, validate their complete
 shape before accumulation or sorting, and return `valid: false` with empty marks when a row is
 malformed. Typed component props continue to use `LumenWaterfallDatum` and `LumenHistogramBin`.
+`normalizeLumenHeatmapData` validates decoded cell arrays before adapters read coordinates or
+format labels. It returns an empty array when any row has malformed coordinates, measurement
+types, labels, identity, or tone. Heatmap geometry and models use it internally. Explicit `null`
+and non-finite numeric measurements retain the existing missing-cell behavior; numeric coordinates
+must be finite.
 
 
 `@santi020k/lumen-core/charts` exports the shared `LumenChartSeries` contract plus deterministic

@@ -8,6 +8,28 @@ import {
   getLumenHeatmapColor,
   getLumenHeatmapColorMix
 } from './chart-models.js'
+import { createLumenHeatmapGeometry, normalizeLumenHeatmapData } from './charts.js'
+
+test.each([null,
+  undefined,
+  1,
+  'cell',
+  [],
+  {},
+  { x: null, y: 'Y', value: 1 },
+  { x: 'X', y: Infinity, value: 1 },
+  { x: 'X', y: 'Y', value: '1' },
+  { x: 'X', y: 'Y', value: 1, label: null },
+  { x: 'X', y: 'Y', value: 1, id: 1 },
+  { x: 'X', y: 'Y', value: 1, tone: 'other' },
+  { x: 'X', y: 'Y', value: 1, xLabel: 1 },
+  { x: 'X', y: 'Y', value: 1, yLabel: [] }
+])('heatmap rejects malformed decoded cells before any coordinate access: %j', cell => {
+  const data = [{ x: 'Valid', y: 'Row', value: 2 }, cell]
+  expect(normalizeLumenHeatmapData(data)).toEqual([])
+  expect(createLumenHeatmapGeometry(data)).toMatchObject({ cells: [], xCategories: [], yCategories: [] })
+  expect(createLumenHeatmapModel(data)).toMatchObject({ cells: [], xTicks: [], yTicks: [] })
+})
 
 describe('continuous line chart model', () => {
   for (const width of [240, 320]) {

@@ -15,7 +15,7 @@ import {
   type LumenChartSeries,
   type LumenChartTone,
   lumenChartTones,
-  type LumenHeatmapDatum,
+  normalizeLumenHeatmapData,
   scaleLumenChartValue
 } from './charts.js'
 
@@ -409,11 +409,11 @@ const heatmapLegendBackground = (colorScale: LumenHeatmapOptions['colorScale'], 
 
 /** One cell per coordinate, including explicit missing measurements. */
 export const createLumenHeatmapModel = (
-  data: readonly LumenHeatmapDatum[], options: LumenHeatmapOptions = {}
+  data: readonly unknown[], options: LumenHeatmapOptions = {}
 ) => {
   const seen = new Set<string>()
 
-  const cells = data.filter(cell => {
+  const cells = normalizeLumenHeatmapData(data).filter(cell => {
     const key = JSON.stringify([cell.x, cell.y])
 
     if (seen.has(key)) return false

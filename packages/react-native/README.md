@@ -357,6 +357,10 @@ Start with `createLumenTheme(scheme, { preset: 'studio' })` or `<LumenProvider p
 ## Data visualization
 
 Heatmaps include labeled axes, a numeric color legend, and × markers for missing measurements.
+`LumenHeatmap.data` accepts arrays of unknown decoded rows and validates the complete collection
+before formatting categories. Malformed rows produce the empty state without calling application
+formatters. Use `LumenHeatmapDatum` to author typed rows; `null` and non-finite numeric measurements
+remain unavailable cells, while numeric coordinates must be finite.
 Use a diverging color scale around a meaningful midpoint for signed data. The plot and expandable
 list preserve zero and use the first measurement at each coordinate. See the
 [native heatmap options](../../docs/data-visualization.md#native-heatmaps) for domain and formatting APIs.

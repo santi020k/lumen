@@ -79,6 +79,7 @@ export {
   type LumenScatterGeometry,
   type LumenScatterGeometryOptions,
   type LumenScatterGeometryPoint,
+  normalizeLumenHeatmapData,
   parseLumenChartDatumActivation,
   resolveLumenChartLabels,
   resolveLumenChartTone,

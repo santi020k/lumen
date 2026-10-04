@@ -113,6 +113,8 @@
 
 - Validate malformed decoded waterfall and histogram rows before accumulation or sorting, and fail closed with empty geometry. Reset Elements calendars to their latest configured value and focus form-owned external controls from error summaries. Align image-comparison crops and dividers with native range direction in LTR and RTL. Preserve decorative and custom accessibility descriptions for Compose flag text fallbacks.
 
+- Validate decoded heatmap cells through the shared normalizeLumenHeatmapData helper before geometry or native category formatting. Fail closed for malformed rows while preserving unavailable measurements. Execute React rich-text toolbar and keyboard commands in the editor root's owning document, including same-origin iframe portals.
+
 ### Native Advanced Inputs
 
 - Add React Native and SwiftUI number, time, autocomplete, password, numeric OTP and image comparison
