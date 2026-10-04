@@ -141,19 +141,19 @@ func parseLumenDecimalDraft(_ value: String, locale: Locale) -> LumenDecimalDraf
     let separator = formatter.decimalSeparator ?? "."
     let minus = formatter.minusSign ?? "-"
     var digits: [Int] = []
-    var negative = false
+    let sign = !minus.isEmpty && value.hasPrefix(minus) ? minus : "-"
+    let negative = value.hasPrefix(sign)
+    let unsigned = value.dropFirst(negative ? sign.count : 0)
     var decimalSeen = false
     var lastWasDecimal = false
     var scale = 0
-    for (index, character) in value.enumerated() {
+    for character in unsigned {
         if character.unicodeScalars.count == 1,
            character.unicodeScalars.first?.properties.generalCategory == .decimalNumber,
            let digit = character.wholeNumberValue {
             digits.append(digit)
             if decimalSeen { scale += 1 }
             lastWasDecimal = false
-        } else if index == 0 && (String(character) == minus || character == "-") {
-            negative = true
         } else if String(character) == separator && !decimalSeen {
             decimalSeen = true
             lastWasDecimal = true

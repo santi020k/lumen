@@ -209,6 +209,30 @@ describe('Combobox DOM controller', () => {
     root.remove()
   })
 
+  test.each(['disabled', 'readOnly'] as const)('settles observer deliveries when an open input becomes %s', async state => {
+    const { input, list, controller } = fixture()
+    input.focus()
+    press(input, 'ArrowDown')
+    const hiddenWrites = vi.spyOn(list, 'hidden', 'set')
+    try {
+      input[state] = true
+      // Drain several observer deliveries without using a timer that a mutation loop could starve.
+      for (let delivery = 0; delivery < 5; delivery += 1) await Promise.resolve()
+      expect(list.hidden).toBe(true)
+      expect(input.getAttribute('aria-expanded')).toBe('false')
+      expect(input.hasAttribute('aria-activedescendant')).toBe(false)
+      expect(hiddenWrites).toHaveBeenCalledOnce()
+      input[state] = false
+      await Promise.resolve()
+      press(input, 'ArrowDown')
+      expect(list.hidden).toBe(false)
+      expect(activeText(input)).toBe('Astro')
+    } finally {
+      controller.destroy()
+      hiddenWrites.mockRestore()
+    }
+  })
+
   test('respects readonly and disabled inputs and releases listeners on destroy', () => {
     const { input, list, controller } = fixture()
 

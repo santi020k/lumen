@@ -35,6 +35,29 @@ import Testing
     #expect(bounded.stepped(parseLumenDecimalDraft("0,1", locale: spanish), direction: 1, locale: spanish) == "0,3")
 }
 
+@Test func negativeLocalizedDecimalsRoundTripAndKeepStepping() {
+    let english = Locale(identifier: "en_US_POSIX")
+    let configuration = LumenNumberConfiguration(min: nil, max: nil, step: "0.5")
+    for identifier in ["ar_EG", "fa_IR"] {
+        let locale = Locale(identifier: identifier)
+        let formatter = NumberFormatter()
+        formatter.locale = locale
+        let minus = formatter.minusSign ?? "-"
+        #expect(parseLumenDecimalDraft(minus, locale: locale) == .incomplete)
+        var draft = parseLumenDecimalDraft("0", locale: locale)
+        for expected in ["-0.5", "-1", "-1.5"] {
+            guard let next = configuration.stepped(draft, direction: -1, locale: locale) else {
+                Issue.record("Localized negative draft could not be stepped")
+                return
+            }
+            draft = parseLumenDecimalDraft(next, locale: locale)
+            #expect(draft == parseLumenDecimalDraft(expected, locale: english))
+            #expect(parseLumenDecimalDraft(minus + next, locale: locale) == .invalid)
+            #expect(parseLumenDecimalDraft(next + minus, locale: locale) == .invalid)
+        }
+    }
+}
+
 @Test func numericOTPHandlesLocalizedPasteAndRejectsInvalidOrExcessInput() {
     #expect(normalizeLumenNumericOTP("١٢٣-４５６", length: 6) == "123456")
     #expect(normalizeLumenNumericOTP("123 456", length: 6) == "123456")

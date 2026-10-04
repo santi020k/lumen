@@ -66,7 +66,7 @@ export const createLumenComboboxController = (root: HTMLElement): LumenComboboxC
   const close = (): void => {
     input.setAttribute('aria-expanded', 'false')
 
-    list.hidden = true
+    if (!list.hidden) list.hidden = true
 
     list.dataset.state = 'closed'
 

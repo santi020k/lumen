@@ -1944,6 +1944,46 @@ describe('advanced native inputs', () => {
     expect(onValueChange).not.toHaveBeenCalled()
   })
 
+  test('Android time validates current bounds and uses the current callback while the dialog is open', async () => {
+    nativePlatform.OS = 'android'
+    const openingCallback = vi.fn()
+    const currentCallback = vi.fn()
+    const props = { label: 'Time', locale: 'en-US', value: null }
+    const root = await renderNative(
+      <LumenTimeField {...props} minTime={{ hour: 9, minute: 0 }} onValueChange={openingCallback} />
+    )
+    const chooseAfterUpdate = async (hour: number): Promise<void> => {
+      await runNativeAction(() => {
+        root.render(
+          <LumenProvider>
+            <LumenTimeField {...props} minTime={{ hour: 9, minute: 0 }} onValueChange={openingCallback} />
+          </LumenProvider>
+        )
+      })
+      await runNativeAction(() => {
+        callAction(readProp(findByAccessibilityLabel(root, 'Time, Choose a time'), 'onPress'), 'Missing time trigger')
+      })
+      const options = vi.mocked(DateTimePickerAndroid.open).mock.calls.at(-1)?.[0]
+      if (!options?.onValueChange) throw new Error('Missing Android time handler')
+      const change = options.onValueChange
+      await runNativeAction(() => {
+        root.render(<LumenProvider><LumenTimeField {...props} minTime={{ hour: 12, minute: 0 }} maxTime={{ hour: 17, minute: 0 }} onValueChange={currentCallback} rangeErrorLabel="Choose an afternoon time" /></LumenProvider>)
+      })
+      await runNativeAction(() => {
+        change({ nativeEvent: { timestamp: 0, utcOffset: 0 } }, new Date(2000, 0, 1, hour, 30))
+      })
+    }
+    await chooseAfterUpdate(10)
+    expect(openingCallback).not.toHaveBeenCalled()
+    expect(currentCallback).not.toHaveBeenCalled()
+    expect(root.container.queryAll(instance => readProp(instance, 'children') === 'Choose an afternoon time').length).toBeGreaterThan(0)
+    await chooseAfterUpdate(18)
+    expect(currentCallback).not.toHaveBeenCalled()
+    await chooseAfterUpdate(13)
+    expect(openingCallback).not.toHaveBeenCalled()
+    expect(currentCallback).toHaveBeenCalledExactlyOnceWith({ hour: 13, minute: 30 })
+  })
+
   test('image comparison exposes one adjustable control and localized after percentage', async () => {
     const root = await renderNative(<LumenImageComparison label="Comparison" before={{ uri: 'fixture:before' }} after={{ uri: 'fixture:after' }} value={0.25} locale="es-CO" onValueChange={() => {}} />)
     const control = findByAccessibilityRole(root, 'adjustable')

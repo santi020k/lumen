@@ -1,4 +1,4 @@
-import { type ChangeEvent, createElement, type ReactElement, useEffect, useRef, useState } from 'react'
+import { type ChangeEvent, createElement, type ReactElement, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { Platform } from 'react-native'
 
 import { DateTimePickerAndroid, type DateTimePickerChangeEvent } from '@react-native-community/datetimepicker'
@@ -109,6 +109,12 @@ const LumenTimeFieldControl = ({
     } else setSelectionError(labels.rangeError)
   }
 
+  const androidChangeRef = useRef(onAndroidChange)
+
+  useLayoutEffect(() => {
+    androidChangeRef.current = onAndroidChange
+  })
+
   const open = (): void => {
     if (!editable) return
 
@@ -124,7 +130,9 @@ const LumenTimeFieldControl = ({
         onDismiss: () => {
           androidOpenRef.current = false
         },
-        onValueChange: onAndroidChange,
+        onValueChange: (event, date) => {
+          androidChangeRef.current(event, date)
+        },
         value: dateForTime(initial) })
     } else setExpanded(true)
   }
