@@ -4449,7 +4449,8 @@ lumen-dialog-close {
   text-align: center;
 }
 
-.ui-chart svg :where(path, polyline, line) {
+.ui-chart svg :where(path, polyline, line),
+.ui-sparkline__line {
   vector-effect: non-scaling-stroke;
   stroke-linecap: round;
   stroke-linejoin: round;
@@ -4999,8 +5000,7 @@ lumen-dialog-close {
   stroke: none;
 }
 
-.ui-line-chart__point,
-.ui-sparkline__endpoint {
+.ui-line-chart__point {
   fill: hsl(var(--surface));
   stroke: var(--ui-chart-color);
   stroke-width: 2;
@@ -5028,10 +5028,24 @@ lumen-dialog-close {
 }
 
 .ui-sparkline {
+  position: relative;
   display: inline-flex;
   width: 8rem;
   height: 2.5rem;
   color: hsl(var(--ink));
+}
+
+/* Keep the marker circular when the trend SVG stretches to fit its container. */
+.ui-sparkline__endpoint {
+  position: absolute;
+  box-sizing: border-box;
+  width: 7px;
+  height: 7px;
+  transform: translate(-50%, -50%);
+  border: 2px solid var(--ui-chart-color);
+  border-radius: 50%;
+  background: hsl(var(--surface));
+  pointer-events: none;
 }
 
 .ui-sparkline svg {

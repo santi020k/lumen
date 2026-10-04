@@ -5960,7 +5960,7 @@ class LumenSparklineBehaviorElement extends LumenElement {
 
     this.setAttribute('role', 'img')
 
-    this.innerHTML = `<svg aria-hidden="true" preserveAspectRatio="none" viewBox="0 0 120 40">${area ? geometry.areaPaths.map(path => `<path class="ui-sparkline__area" d="${path}"></path>`).join('') : ''}<path class="ui-sparkline__line" d="${geometry.path}"></path>${showEndpoint && endpoint ? `<circle class="ui-sparkline__endpoint" cx="${endpoint.xCoordinate}" cy="${endpoint.yCoordinate}" r="2.5"></circle>` : ''}</svg><span class="ui-sr-only">${escapeChartHtml(label)}</span>`
+    this.innerHTML = `<svg aria-hidden="true" preserveAspectRatio="none" viewBox="0 0 120 40">${area ? geometry.areaPaths.map(path => `<path class="ui-sparkline__area" d="${path}"></path>`).join('') : ''}<path class="ui-sparkline__line" d="${geometry.path}"></path></svg>${showEndpoint && endpoint ? `<span aria-hidden="true" class="ui-sparkline__endpoint" style="left:${endpoint.xCoordinate / 120 * 100}%;top:${endpoint.yCoordinate / 40 * 100}%"></span>` : ''}<span class="ui-sr-only">${escapeChartHtml(label)}</span>`
   }
 }
 

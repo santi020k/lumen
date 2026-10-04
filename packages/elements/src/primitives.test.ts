@@ -251,6 +251,18 @@ describe('@santi020k/lumen-elements primitives', () => {
     expect(classesOf(stat)).toEqual(['ui-stat', 'ui-stat--glass'].sort())
   })
 
+  test('positions sparkline endpoints outside the stretched SVG and honors visibility', () => {
+    const sparkline = connect('lumen-sparkline', { values: '4,8' })
+    const endpoint = sparkline.querySelector('.ui-sparkline__endpoint')
+    expect(endpoint?.tagName).toBe('SPAN')
+    expect(endpoint?.getAttribute('style')).toBe('left:97.5%;top:7.5%')
+    expect(endpoint?.closest('svg')).toBeNull()
+    sparkline.setAttribute('show-endpoint', 'false')
+    expect(sparkline.querySelector('.ui-sparkline__endpoint')).toBeNull()
+    sparkline.setAttribute('values', '[]')
+    expect(sparkline.querySelector('.ui-sparkline__endpoint')).toBeNull()
+  })
+
   test('renders chart elements from serializable data with accessible tables', () => {
     const series = JSON.stringify([
       {
@@ -326,6 +338,7 @@ describe('@santi020k/lumen-elements primitives', () => {
     expect(sparkline.getAttribute('role')).toBe('img')
     expect(sparkline.getAttribute('aria-label')).toBe('Downloads increased from 4 to 8')
     expect(sparkline.querySelector('.ui-sparkline__line')).not.toBeNull()
+
     expect(scatter.querySelectorAll('.ui-scatter-chart__marks circle')).toHaveLength(2)
     expect(scatter.querySelector('details table')?.textContent).toContain('Size')
     expect(scatter.querySelector('details table')?.textContent).toContain('20')

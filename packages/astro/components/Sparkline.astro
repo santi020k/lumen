@@ -57,16 +57,15 @@ const endpoint = geometry.points[geometry.points.length - 1]
       ))
     }
     <path class="ui-sparkline__line" d={geometry.path} />
-    {
-      showEndpoint && endpoint && (
-        <circle
-          class="ui-sparkline__endpoint"
-          cx={endpoint.xCoordinate}
-          cy={endpoint.yCoordinate}
-          r="2.5"
-        />
-      )
-    }
   </svg>
+  {
+    showEndpoint && endpoint && (
+      <span
+        aria-hidden="true"
+        class="ui-sparkline__endpoint"
+        style={{ left: `${endpoint.xCoordinate / 120 * 100}%`, top: `${endpoint.yCoordinate / 40 * 100}%` }}
+      />
+    )
+  }
   <span class="ui-sr-only">{label}</span>
 </span>
