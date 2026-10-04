@@ -104,6 +104,22 @@ test('picker links labels to the visible control and localizes date, calendar an
   expect(document.activeElement).toBe(node('#date'))
 })
 
+test.each(['2026-07-12', '', 'invalid'])('calendar resets to its latest configured value: %s', async value => {
+  document.body.innerHTML = '<form><lumen-calendar month="2026-07" value="2026-07-03" name="date"></lumen-calendar></form>'
+  enhanceLumenCalendars(document)
+  node('lumen-calendar').setAttribute('value', value)
+  await tick()
+  node('[data-date="2026-07-15"]').click()
+  expect(input('[data-ui-calendar-input]').value).toBe('2026-07-15')
+  const form = node('form')
+  if (!(form instanceof HTMLFormElement)) throw new Error('Expected form')
+  form.reset()
+  await tick()
+  const expected = value === 'invalid' ? '' : value
+  expect(new FormData(form).get('date')).toBe(expected)
+  expect(document.querySelector('[data-ui-calendar-day][aria-selected="true"]')?.getAttribute('data-date') ?? '').toBe(expected)
+})
+
 test('picker cannot open or mutate readonly values and closes after becoming disabled', async () => {
   picker('readonly')
   node('#date').click()

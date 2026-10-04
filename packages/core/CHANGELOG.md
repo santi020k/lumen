@@ -111,6 +111,8 @@
 
 - Preserve a positive line-chart plotting width with verbose value formatters in narrow frames, keeping category ticks and rendered coordinates aligned.
 
+- Validate malformed decoded waterfall and histogram rows before accumulation or sorting, and fail closed with empty geometry. Reset Elements calendars to their latest configured value and focus form-owned external controls from error summaries. Align image-comparison crops and dividers with native range direction in LTR and RTL. Preserve decorative and custom accessibility descriptions for Compose flag text fallbacks.
+
 ### Native Advanced Inputs
 
 - Add React Native and SwiftUI number, time, autocomplete, password, numeric OTP and image comparison

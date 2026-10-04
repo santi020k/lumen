@@ -1809,7 +1809,11 @@ const initLumenForms = (scope: ParentNode): void => {
       const controlId = link?.hash.slice(1)
       const control = controlId ? document.getElementById(controlId) : null
 
-      if (!link || !(control instanceof HTMLElement) || !form.contains(control))
+      const belongsToForm = isNativeFormControl(control) ?
+        control.form === form :
+        control instanceof HTMLElement && form.contains(control)
+
+      if (!link || !(control instanceof HTMLElement) || !belongsToForm)
         return
 
       event.preventDefault()
@@ -4031,7 +4035,7 @@ const initCalendars = (scope: ParentNode): void => {
 
     if (!input) continue
 
-    const initialValue = input.value
+    let resetValue = input.value
 
     root.dataset.uiBound = 'true'
 
@@ -4133,6 +4137,10 @@ const initCalendars = (scope: ParentNode): void => {
           root.dataset.uiCalendarValue = parseCalendarDate(root.getAttribute('value')) ? root.getAttribute('value') ?? '' : ''
 
           input.value = root.dataset.uiCalendarValue
+
+          input.defaultValue = input.value
+
+          resetValue = input.value
         }
 
         if (mutation.attributeName === 'month') {
@@ -4153,9 +4161,9 @@ const initCalendars = (scope: ParentNode): void => {
       globalThis.setTimeout(() => {
         if (event.defaultPrevented || !root.isConnected) return
 
-        root.dataset.uiCalendarValue = initialValue
+        root.dataset.uiCalendarValue = resetValue
 
-        input.value = initialValue
+        input.value = resetValue
 
         root.dataset.uiCalendarMonth =
           root.dataset.uiCalendarInitialMonth ?? root.dataset.uiCalendarMonth

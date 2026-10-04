@@ -78,6 +78,22 @@ describe('continuous line chart model', () => {
 })
 
 describe('waterfall geometry', () => {
+  test.each([null,
+    undefined,
+    1,
+    'row',
+    [],
+    {},
+    { id: 1, label: 'A', value: 2 },
+    { id: 'a', label: null, value: 2 },
+    { id: 'a', label: 'A', value: '2' },
+    { id: 'a', label: 'A', value: 2, kind: 'other' },
+    { id: 'a', label: 'A', value: 2, tone: 'other' }
+  ])('rejects malformed decoded waterfall rows: %j', row => {
+    const model = createLumenWaterfallGeometry([{ id: 'valid', label: 'Valid', value: 3 }, row])
+    expect(model).toMatchObject({ marks: [], connectors: [], categoryTicks: [], valid: false })
+  })
+
   test('reserves axis space using the renderer font size and keeps a positive plotting width', () => {
     const data = [{ id: 'value', label: 'Value', value: 120 }]
     const native = createLumenWaterfallGeometry(data, { width: 266, axisFontSize: 12 })
@@ -115,6 +131,21 @@ describe('waterfall geometry', () => {
 })
 
 describe('histogram geometry', () => {
+  test.each([null,
+    undefined,
+    1,
+    'bin',
+    [],
+    {},
+    { start: '0', end: 10, count: 1 },
+    { start: 0, end: null, count: 1 },
+    { start: 0, end: 10, count: '1' },
+    { start: 0, end: 10, count: 1, label: null }
+  ])('rejects malformed decoded histogram bins before sorting: %j', bin => {
+    const model = createLumenHistogramGeometry([{ start: 10, end: 20, count: 3 }, bin])
+    expect(model).toMatchObject({ bins: [], marks: [], categoryTicks: [], valid: false, xDomain: { min: 0, max: 1 } })
+  })
+
   test('keeps gaps and zero bins, and sorts without mutating the input', () => {
     const bins = [{ start: 20, end: 30, count: 0 }, { start: 0, end: 10, count: 4 }]
     const model = createLumenHistogramGeometry(bins)

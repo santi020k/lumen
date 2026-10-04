@@ -331,6 +331,9 @@ Astro runtime's data event, validation, calendar grids, OTP segmentation, date r
 text command, context menu, schedule drag/drop, resizable pane sizing, theme export, ARIA,
 keyboard, Escape, dismissal, and toast controller semantics while keeping markup declarative and
 Declarative-Shadow-DOM friendly.
+Calendar form resets restore the latest configured `value` attribute; interactive date selections
+do not replace that reset baseline. Form error summaries can focus associated native controls
+outside the form subtree when their `form` attribute names that form.
 FileUpload, Tour, Anchor, CopyButton, Progress, ScrollProgress, Transfer, Mentions, Cascader, and TreeSelect also run directly through
 their registered custom elements; no Astro runtime or host controller is required.
 Rich text controls may provide `data-ui-editor-value` for commands such as `formatBlock` and

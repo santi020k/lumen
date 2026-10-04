@@ -40,6 +40,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.error
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
@@ -215,7 +216,9 @@ fun LumenCountryFlag(regionCode: String, modifier: Modifier = Modifier, contentD
     if (resource != null) {
         Image(painterResource(resource), contentDescription, modifier.size(width = 24.dp, height = 18.dp).clip(RoundedCornerShape(2.dp)))
     } else {
-        Text(regionCode.uppercase(Locale.ROOT).take(2), modifier = modifier)
+        Text(regionCode.uppercase(Locale.ROOT).take(2), modifier = modifier.clearAndSetSemantics {
+            if (contentDescription != null) this.contentDescription = contentDescription
+        })
     }
 }
 

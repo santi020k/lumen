@@ -1,5 +1,37 @@
 import { expect, test } from '@playwright/test'
 
+for (const direction of ['ltr', 'rtl']) {
+  test(`image comparison divider and crop match range direction in ${direction}`, async ({ page }) => {
+    await page.goto('/docs/components/image-comparison')
+    const comparison = page.locator('.ui-image-comparison')
+    await comparison.evaluate((element, dir) => {
+      element.setAttribute('dir', dir)
+    }, direction)
+    const range = comparison.getByRole('slider')
+    await expect(range).toBeEnabled()
+    for (const value of [0, 25, 75, 100]) {
+      await range.fill(String(value))
+      const frame = comparison.locator('.ui-image-comparison__frame')
+      const bounds = await frame.evaluate(element => {
+        const rect = element.getBoundingClientRect()
+        const style = getComputedStyle(element)
+        const leftBorder = Number.parseFloat(style.borderLeftWidth)
+        const rightBorder = Number.parseFloat(style.borderRightWidth)
+
+        return { x: rect.x + leftBorder, width: rect.width - leftBorder - rightBorder }
+      })
+      const divider = await comparison.locator('.ui-image-comparison__divider').boundingBox()
+      if (!divider) throw new Error('Expected comparison geometry')
+      const ratio = direction === 'ltr' ? value / 100 : 1 - value / 100
+      const dividerEdge = direction === 'ltr' ? divider.x : divider.x + divider.width
+      expect(dividerEdge).toBeCloseTo(bounds.x + bounds.width * ratio, 1)
+      await expect(comparison.locator('.ui-image-comparison__after')).toHaveCSS('clip-path',
+        direction === 'ltr' ? `inset(0px ${100 - value}% 0px 0px)` : `inset(0px 0px 0px ${100 - value}%)`)
+      await expect(range).toHaveAttribute('aria-valuetext', `${value}% Color adjusted`)
+    }
+  })
+}
+
 for (const width of [320, 1440]) {
   for (const theme of ['light', 'dark']) {
     test(`image comparison preserves framing at ${width}px in ${theme}`, async ({ page }) => {

@@ -26,3 +26,24 @@ test('validates required controls associated outside the form', () => {
   form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }))
   expect(valid).toHaveBeenCalledOnce()
 })
+
+test('error summary focuses external controls owned by the form and ignores other forms', () => {
+  document.body.innerHTML = `<form id="owner" data-ui-form><div data-ui-error-summary>
+    <a href="#owned">Email</a><a href="#other">Other form</a></div></form>
+    <input id="owned" required form="owner"><form id="second"></form><input id="other" form="second">`
+  const owned = document.querySelector<HTMLInputElement>('#owned')
+  const links = document.querySelectorAll<HTMLAnchorElement>('a')
+  if (!owned || !links[0] || !links[1]) throw new Error('Expected external control fixture')
+  const scroll = vi.fn()
+  owned.scrollIntoView = scroll
+  enhanceLumenForms(document)
+  const ownedClick = new MouseEvent('click', { bubbles: true, cancelable: true })
+  links[0].dispatchEvent(ownedClick)
+  expect(ownedClick.defaultPrevented).toBe(true)
+  expect(document.activeElement).toBe(owned)
+  expect(scroll).toHaveBeenCalledOnce()
+  const otherClick = new MouseEvent('click', { bubbles: true, cancelable: true })
+  links[1].dispatchEvent(otherClick)
+  expect(otherClick.defaultPrevented).toBe(false)
+  expect(document.activeElement).toBe(owned)
+})

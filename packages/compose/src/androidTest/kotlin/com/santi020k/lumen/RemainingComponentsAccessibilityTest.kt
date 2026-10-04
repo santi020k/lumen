@@ -46,6 +46,28 @@ class RemainingComponentsAccessibilityTest {
     val composeRule = createAndroidComposeRule<ComponentActivity>()
 
     @Test
+    fun unsupportedCountryFlagsHonorDecorativeAndCustomDescriptions() {
+        composeRule.setContent {
+            LumenTheme {
+                Column {
+                    LumenCountryFlag("ZZ", Modifier.testTag("decorative-flag"), contentDescription = null)
+                    LumenCountryFlag("ZZ", Modifier.testTag("named-flag"), contentDescription = "Custom region")
+                }
+            }
+        }
+        composeRule.onNodeWithTag("decorative-flag").assert(
+            SemanticsMatcher("Decorative flag has no accessible text or description") {
+                !it.config.contains(SemanticsProperties.Text) && !it.config.contains(SemanticsProperties.ContentDescription)
+            }
+        )
+        composeRule.onNodeWithTag("named-flag").assert(
+            SemanticsMatcher.expectValue(SemanticsProperties.ContentDescription, listOf("Custom region"))
+        ).assert(SemanticsMatcher("Fallback region text is not announced separately") {
+            !it.config.contains(SemanticsProperties.Text)
+        })
+    }
+
+    @Test
     fun passwordRevealKeepsPasswordAndAutofillSemanticsAndCanBeHidden() {
         val value = mutableStateOf("sample-only")
         var submitted = 0

@@ -14,6 +14,7 @@ import {
   type LumenChartScaleType,
   type LumenChartSeries,
   type LumenChartTone,
+  lumenChartTones,
   type LumenHeatmapDatum,
   scaleLumenChartValue
 } from './charts.js'
@@ -200,15 +201,39 @@ const intervalFrame = (values: readonly number[], options: LumenIntervalChartOpt
   return { bottom, domain, height, left, right, ticks, top, width, y }
 }
 
+const isChartRecord = (value: unknown): value is Record<string, unknown> => {
+  if (Array.isArray(value)) return false
+
+  return typeof value === 'object' && value !== null
+}
+
+const isWaterfallKind = (kind: unknown): boolean => kind === undefined || kind === 'delta' || kind === 'total'
+
+const isOptionalChartTone = (tone: unknown): boolean => {
+  if (tone === undefined) return true
+
+  return lumenChartTones.some(candidate => candidate === tone)
+}
+
+const isWaterfallDatum = (datum: unknown): datum is LumenWaterfallDatum => {
+  if (!isChartRecord(datum)) return false
+
+  return typeof datum.id === 'string' && typeof datum.label === 'string' &&
+    typeof datum.value === 'number' && Number.isFinite(datum.value) &&
+    isWaterfallKind(datum.kind) && isOptionalChartTone(datum.tone)
+}
+
 /** Invalid steps fail closed: silently dropping a change would misstate every later balance. */
 export const createLumenWaterfallGeometry = (
-  data: readonly LumenWaterfallDatum[],
+  data: readonly unknown[],
   options: LumenIntervalChartOptions = {}
 ) => {
   const ids = new Set<string>()
   let balance = 0
+  const entries = Array.from(data)
+  const rows = entries.every(isWaterfallDatum) ? entries : null
 
-  const steps = data.map(datum => {
+  const steps = (rows ?? []).map(datum => {
     const start = datum.kind === 'total' ? 0 : balance
     const end = datum.kind === 'total' ? datum.value : balance + datum.value
 
@@ -217,7 +242,7 @@ export const createLumenWaterfallGeometry = (
     return { ...datum, end, start }
   })
 
-  const valid = steps.every(step => {
+  const valid = rows !== null && steps.every(step => {
     if (!Number.isFinite(step.value) || !Number.isFinite(step.end) || ids.has(step.id)) return false
 
     ids.add(step.id)
@@ -293,14 +318,32 @@ const histogramDomain = (bins: readonly LumenHistogramBin[]): LumenChartDomain =
   min: bins[0]?.start ?? 0, max: bins.at(-1)?.end ?? 1
 })
 
+const isHistogramBin = (bin: unknown): bin is LumenHistogramBin => {
+  if (!isChartRecord(bin)) return false
+
+  return typeof bin.start === 'number' && Number.isFinite(bin.start) &&
+    typeof bin.end === 'number' && Number.isFinite(bin.end) &&
+    typeof bin.count === 'number' && Number.isFinite(bin.count) &&
+    (bin.label === undefined || typeof bin.label === 'string')
+}
+
+const normalizeHistogramBins = (data: readonly unknown[], frequency: 'count' | 'density') => {
+  const entries = Array.from(data)
+
+  if (!entries.every(isHistogramBin)) return { bins: [], valid: false }
+
+  const bins = entries.sort((a, b) => a.start - b.start)
+
+  return { bins, valid: validHistogramBins(bins, frequency) }
+}
+
 /** Bins are supplied by the application. Their numeric widths remain visible. */
 export const createLumenHistogramGeometry = (
-  data: readonly LumenHistogramBin[],
+  data: readonly unknown[],
   options: LumenHistogramOptions = {}
 ) => {
-  const bins = [...data].sort((a, b) => a.start - b.start)
   const frequency = options.frequency ?? 'count'
-  const valid = validHistogramBins(bins, frequency)
+  const { bins, valid } = normalizeHistogramBins(data, frequency)
   const valueFor = (bin: LumenHistogramBin): number => frequency === 'density' ? bin.count / (bin.end - bin.start) : bin.count
   const finite = valid && bins.every(bin => Number.isFinite(valueFor(bin)))
   const frame = intervalFrame(finite ? bins.map(valueFor) : [], options)
