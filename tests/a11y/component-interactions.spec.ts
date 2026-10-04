@@ -32,6 +32,10 @@ test('Dialog opens with native autofocus and dismisses only genuine backdrop pre
   })
   await trigger.click()
   await expect(dialog.getByRole('textbox', { name: 'Autofocus field' })).toBeFocused()
+  // Backdrop coordinates must use the settled opening-transition geometry.
+  await dialog.evaluate(async element => {
+    await Promise.all(element.getAnimations().map(animation => animation.finished))
+  })
   const bounds = await dialog.boundingBox()
   if (!bounds) throw new Error('Expected an open dialog')
   await page.mouse.click(bounds.x + 4, bounds.y + 4)
