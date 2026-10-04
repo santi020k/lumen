@@ -58,7 +58,8 @@
   },
   "dependencies": {
     "@santi020k/lumen-core": "workspace:^",
-    "semver": "catalog:"
+    "semver": "catalog:",
+    "typescript": "catalog:"
   },
   "devDependencies": {
     "@types/node": "catalog:",
@@ -67,7 +68,6 @@
     "@vitest/coverage-v8": "catalog:",
     "react": "catalog:",
     "tailwindcss": "catalog:",
-    "typescript": "catalog:",
     "vitest": "catalog:"
   },
   "peerDependencies": {

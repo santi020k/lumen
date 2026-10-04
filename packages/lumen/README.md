@@ -143,7 +143,11 @@ or package-manager requirement. Native Swift/Maven pins remain application-owned
 V4 apply records output fingerprints in `.lumen/migrations-v4.json`. Commit that ledger with the
 source changes: repeated applies skip migrated files, and later edits to them require manual review.
 The pure `migrateLumenVersionSource` API assumes v3 input and does not maintain that filesystem ledger.
-Markup migrations preserve literal slash-star text; script comments remain excluded from rewrites.
+Markup migrations preserve literal slash-star text; script comments and regex literals remain
+excluded from rewrites. The umbrella package includes TypeScript as a runtime dependency so
+the migration scanner can distinguish regex literals from division using compiler grammar.
+Files that exceed the parser nesting limit remain unchanged and receive a manual-review finding.
+Dependency inventory recognizes root and nested manifests using platform-native paths.
 Review the actual application at mobile and desktop widths after applying a migration.
 
 ### Lumen v2 migration

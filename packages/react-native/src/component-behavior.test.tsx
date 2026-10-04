@@ -1917,6 +1917,20 @@ describe('advanced native inputs', () => {
     expect(readProp(findByAccessibilityLabel(root, 'City'), 'accessibilityState')).toMatchObject({ expanded: false })
   })
 
+  test.each(['ios', 'android', 'web'])('time formatting tolerates malformed locales on %s', async platform => {
+    nativePlatform.OS = platform
+    for (const locale of ['not_a_locale', 'en--US', '💥']) {
+      const props = { label: 'Time', value: { hour: 9, minute: 30 }, locale, onValueChange: vi.fn() }
+      const root = await renderNative(<LumenTimeField {...props} is24Hour />)
+
+      expect(findByAccessibilityLabel(root, 'Time, 09:30')).toBeDefined()
+      await runNativeAction(() => {
+        root.render(<LumenProvider><LumenTimeField {...props} is24Hour={false} /></LumenProvider>)
+      })
+      expect(findByAccessibilityLabel(root, 'Time, 9:30 AM')).toBeDefined()
+    }
+  })
+
   test('time selection requires confirmation and cancellation preserves the value', async () => {
     nativePlatform.OS = 'ios'
     const onValueChange = vi.fn()

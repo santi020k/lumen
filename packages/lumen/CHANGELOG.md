@@ -194,6 +194,8 @@
 - Updated dependencies []:
   - @santi020k/lumen-core@4.0.0
 
+- Preserve regex literals during source migration with the existing TypeScript compiler parser as a runtime dependency; leave parser-exhausting input unchanged for manual review and recognize manifests on platform-native paths. Reject malformed serialized heatmap datasets atomically and guard native time display against malformed locales while preserving hour-format preferences.
+
 ### Native Advanced Inputs
 
 - Add React Native and SwiftUI number, time, autocomplete, password, numeric OTP and image comparison

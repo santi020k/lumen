@@ -507,6 +507,28 @@ describe('@santi020k/lumen-elements primitives', () => {
     expect(combo.querySelector('.ui-line-chart__line')).toBeNull()
   })
 
+  test.each([null, {}, { x: 'Bad', y: 'Morning', value: '8' }, { x: 'Bad', y: 'Morning', value: 2, label: 4 }, { x: 'Bad', y: 'Morning', value: 2, tone: 'invalid' }])('rejects a corrupted heatmap collection atomically: %j', malformed => {
+    const heatmap = connect('lumen-heatmap', {
+      data: JSON.stringify([{ value: 8, x: 'Mon', y: 'Morning' }, malformed])
+    })
+
+    expect(heatmap.querySelectorAll('.ui-heatmap__cells rect')).toHaveLength(0)
+    expect(heatmap.querySelector('details table tbody tr')).toBeNull()
+    expect(heatmap.querySelector('.ui-chart__empty')?.textContent).toBe('No chart data available.')
+
+    heatmap.setAttribute('data', JSON.stringify([{ value: 8, x: 'Mon', y: 'Morning', tone: 'brand' }]))
+    expect(heatmap.querySelectorAll('.ui-heatmap__cells rect')).toHaveLength(1)
+  })
+
+  test('retains nonfinite JSON heatmap measurements as missing cells alongside finite zero', () => {
+    const heatmap = connect('lumen-heatmap', { data: '[{"x":"A","y":"Row","value":1e309},{"x":"B","y":"Row","value":0}]' })
+
+    expect(heatmap.querySelectorAll('.ui-heatmap__cells rect')).toHaveLength(2)
+    expect(heatmap.querySelectorAll('.ui-heatmap__missing')).toHaveLength(1)
+    expect(heatmap.querySelector('details table')?.textContent).toContain('Not available')
+    expect(heatmap.querySelectorAll('details table tbody tr')[1]?.textContent).toContain('0')
+  })
+
   test('marks unavailable heatmap cells while preserving semantic table gaps', () => {
     const data = JSON.stringify([
       { value: 8, x: 'Mon', y: 'Morning' },

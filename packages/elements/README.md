@@ -262,6 +262,8 @@ The web visualization milestone adds `WaterfallChart` for signed changes and exp
 `Histogram` for precomputed numeric bins (`frequency="density"` for unequal widths). Line charts
 support explicit continuous axes, annotations, optional keyboard/pointer/touch inspection, and
 synchronized cursors. Heatmaps show labeled axes, a color legend, and explicit missing cells.
+Heatmap JSON is validated as a complete collection: a malformed row rejects the dataset instead
+of displaying a partial result. Null and nonfinite numeric measurements remain missing cells.
 See the [visualization contracts](../../docs/data-visualization.md) and
 [interactive web example](https://lumen.santi020k.com/docs/web/data-visualization).
 

@@ -15,6 +15,58 @@ describe('versioned source migrations', () => {
     )
   })
 
+  test.each([
+    'const pattern = /<Stack gap="md">/g',
+    String.raw`const pattern = /<Grid gap="lg"\/>/u`,
+    String.raw`const pattern = /[\/]<Stack gap="md">/`,
+    'const pattern = /[<Stack gap="md">/]/',
+    'const patterns = [/<Stack gap="md">/, /<Grid gap="lg">/]',
+    'const pattern = flag ? /<Stack gap="md">/ : /<Grid gap="lg">/',
+    'function match() { return /<Stack gap="md">/ }',
+    'if (flag) /<Stack gap="md">/.test(text)',
+    'while (flag) /<Grid gap="lg">/.test(text)',
+    'const pattern = /* keep */ /<Stack gap="md">/',
+    'if (flag) {} /<Stack gap="md">/.test(text)',
+    'function match() {} /<Stack gap="md">/.test(text)',
+    'for await (const item of items) /<Stack gap="md">/.test(item)',
+    'const read = () => {}; /<Stack gap="md">/.test(text)',
+    'const read = { value: 1 }; /<Stack gap="md">/.test(text)',
+    'class Example {} /<Stack gap="md">/.test(text)',
+    'if (flag) {} else /<Stack gap="md">/.test(text)',
+    'do /<Stack gap="md">/.test(text); while (flag)',
+    'const matched = value < /<Stack gap="md">/.test(text)',
+    String.raw`const pattern = /import { Stack } from "@santi020k\/lumen-react"/`
+  ])('preserves regex literals while migrating actual JSX: %s', expression => {
+    const source = `import { Stack, Grid } from '@santi020k/lumen-react'\n${expression}\nexport const View = () => <Stack gap="md"><Grid gap="lg" /></Stack>`
+    const result = migrateLumenVersionSource(source, 'Screen.tsx', 'v4')
+
+    expect(result.source).toContain(expression)
+    expect(result.source).toContain('<Stack gap="group"><Grid gap="xl" /></Stack>')
+    expect(result.changes).toHaveLength(2)
+  })
+
+  test.each(['count / <Stack gap="md" />', 'read() / <Stack gap="md" />', 'values[0] / <Stack gap="md" />', 'count++ / <Stack gap="md" />', '({ value: 1 }) / <Stack gap="md" />'])('distinguishes division from regex before JSX: %s', expression => {
+    const source = `import { Stack } from '@santi020k/lumen-react'\nconst value = ${expression}`
+
+    expect(migrateLumenVersionSource(source, 'Screen.tsx', 'v4').source).toContain('gap="group"')
+  })
+
+  test.each(['function() {}', 'class {}'])('preserves division after an expression body while migrating following JSX: %s', expression => {
+    const source = `import { Stack } from '@santi020k/lumen-react'\nconst ratio = ${expression} / 2; const View = <Stack gap="md" />`
+    const result = migrateLumenVersionSource(source, 'Screen.tsx', 'v4')
+
+    expect(result.changes).toHaveLength(1)
+    expect(result.source).toContain(`${expression} / 2; const View = <Stack gap="group" />`)
+  })
+
+  test('preserves adversarial-length regex bodies without interpreting their markup', () => {
+    const source = `import { Stack } from '@santi020k/lumen-react'\nconst pattern = /${'<Stack gap="md">'.repeat(20_000)}/\nconst View = <Stack gap="md" />`
+    const result = migrateLumenVersionSource(source, 'Screen.tsx', 'v4')
+
+    expect(result.changes).toHaveLength(1)
+    expect(result.source).toBe(source.slice(0, -6) + 'group" />')
+  })
+
   test('combines v4 layout and SDK migrations without changing previews or repeating edits', async () => {
     const root = await mkdtemp(join(tmpdir(), 'lumen-combined-migration-'))
     const sdkSource = 'import { Client } from \'@modelcontextprotocol/sdk/client/index.js\'\n'
@@ -116,11 +168,38 @@ const example = '<Flow gap="md" />'
     expect(migrateLumenVersionSource('.ui-button > span { display: none; }', 'theme.css', 'v4').manualReview).toHaveLength(1)
   })
 
-  test('handles long malformed markup and many findings without backtracking', () => {
+  test('fails closed with manual review when malformed input exceeds parser nesting limits', () => {
     const source = `import { Stack } from '@santi020k/lumen-react'\n${'<Stack gap="md" />\n'.repeat(10_000)}<Stack gap="${'x'.repeat(200_000)}`
+    const result = migrateLumenVersionSource(source, 'large.tsx', 'v4')
 
-    expect(migrateLumenVersionSource(source, 'large.tsx', 'v4').changes).toHaveLength(10_000)
+    expect(result.source).toBe(source)
+    expect(result.changes).toEqual([])
+    expect(result.manualReview).toHaveLength(1)
+    expect(result.manualReview[0]?.kind).toBe('component-review')
+    expect(result.manualReview[0]?.message).toContain('nesting limit')
   }, 5000)
+
+  test('migrates many valid JSX declarations without losing edits or source positions', () => {
+    const source = `import { Stack } from '@santi020k/lumen-react'\n${Array.from({ length: 10_000 }, (_value, index) => `const View${index} = <Stack gap="md" />;`).join('\n')}`
+    const result = migrateLumenVersionSource(source, 'large.tsx', 'v4')
+
+    expect(result.changes).toHaveLength(10_000)
+    expect(result.source.match(/gap="group"/gu)).toHaveLength(10_000)
+    expect(result.changes.at(-1)?.line).toBe(10_001)
+  }, 5000)
+
+  test('preserves regex literals in Astro frontmatter while migrating the rendered layout', () => {
+    const source = String.raw`---
+import { Stack } from '@santi020k/lumen-astro'
+const pattern = /<Stack gap="md">/
+---
+<Stack gap="md" />`
+    const result = migrateLumenVersionSource(source, 'page.astro', 'v4')
+
+    expect(result.source.slice(0, result.source.indexOf('\n---', 3))).toBe(source.slice(0, source.indexOf('\n---', 3)))
+    expect(result.changes).toHaveLength(1)
+    expect(result.source).toContain('<Stack gap="group" />')
+  })
 
   test('preview preserves files and repeated apply cannot rewrite overlapping gap names twice', async () => {
     const root = await mkdtemp(join(tmpdir(), 'lumen-version-migration-'))

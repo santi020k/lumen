@@ -34,6 +34,17 @@ import { Other } from '@modelcontextprotocol/sdk/types.js'
     expect(migrateLumenV4Source(source)).toEqual({ changes: [], source })
   })
 
+  test('preserves regex examples while migrating the following real SDK import', () => {
+    const source = String.raw`const pattern = /import { Client } from "@modelcontextprotocol\/sdk\/client\/index.js"/
+import { Client } from '@modelcontextprotocol/sdk/client/index.js'
+`
+    const result = migrateLumenV4Source(source, 'server.ts')
+
+    expect(result.changes).toHaveLength(1)
+    expect(result.source.split('\n')[0]).toBe(source.split('\n')[0])
+    expect(result.source).toContain('import { Client } from \'@modelcontextprotocol/client\'')
+  })
+
   test('handles adversarial-length unclosed input without edits', () => {
     for (const prefix of ['/*', '"', '`', '//']) {
       const source = prefix + 'import x from \'@modelcontextprotocol/sdk/server/mcp.js\' '.repeat(20000)
@@ -61,6 +72,32 @@ import { Other } from '@modelcontextprotocol/sdk/types.js'
     const source = 'import '.repeat(50000)
 
     expect(migrateLumenV4Source(source)).toEqual({ changes: [], source })
+  })
+
+  test('inventories root and nested manifests without scanning them as source files', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'lumen-v4-manifests-'))
+    try {
+      const nested = join(root, 'apps', 'consumer')
+      for (const name of ['lumen-react', 'lumen-astro']) {
+        const installed = join(root, 'node_modules', '@santi020k', name)
+        await mkdir(installed, { recursive: true })
+        await writeFile(join(installed, 'package.json'), JSON.stringify({ version: '3.0.1' }))
+      }
+      await mkdir(nested, { recursive: true })
+      await writeFile(join(root, 'package.json'), JSON.stringify({ dependencies: { '@santi020k/lumen-react': '^3.0.1' } }))
+      await writeFile(join(nested, 'package.json'), JSON.stringify({ devDependencies: { '@santi020k/lumen-astro': '^3.0.1' } }))
+      await writeFile(join(nested, 'screen.ts'), '// Lumen consumer')
+
+      const result = await migrateLumenV4({ cwd: root })
+
+      expect(result.filesScanned).toBe(1)
+      expect(result.packageVersions).toEqual({
+        'package.json:@santi020k/lumen-react': '3.0.1',
+        [`${join('apps', 'consumer', 'package.json')}:@santi020k/lumen-astro`]: '3.0.1'
+      })
+    } finally {
+      await rm(root, { recursive: true, force: true })
+    }
   })
 
   test('previews by default, inventories versions, applies safe edits, and retains manual reviews', async () => {

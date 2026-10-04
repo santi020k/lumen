@@ -17,7 +17,7 @@ import {
   type LumenScatterGeometryPoint,
   type LumenScatterReference,
   type LumenScatterScaleType,
-  type LumenWaterfallDatum } from '@santi020k/lumen-core'
+  type LumenWaterfallDatum,  normalizeLumenHeatmapData } from '@santi020k/lumen-core'
 
 export const escapeChartHtml = (value: number | string): string => String(value)
   .replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')
@@ -316,39 +316,10 @@ export const chartCaptionHtml = (element: HTMLElement): string => {
   return caption ? `<figcaption>${escapeChartHtml(caption)}</figcaption>` : ''
 }
 
-const isChartCoordinate = (value: unknown): value is number | string => typeof value === 'string' || typeof value === 'number'
-
 export const parseHeatmapData = (value: string | null): LumenHeatmapDatum[] => {
-  if (!value) return []
+  const parsed = jsonArray(value)
 
-  try {
-    const parsed: unknown = JSON.parse(value)
-
-    if (!Array.isArray(parsed)) return []
-
-    return parsed.flatMap(candidate => {
-      const record = chartRecord(candidate)
-
-      if (
-        !isChartCoordinate(record.x) ||
-        !isChartCoordinate(record.y) ||
-        (record.value !== null &&
-          (typeof record.value !== 'number' || !Number.isFinite(record.value)))
-      ) return []
-
-      return [{
-        ...(typeof record.id === 'string' ? { id: record.id } : {}),
-        ...(typeof record.label === 'string' ? { label: record.label } : {}),
-        value: record.value,
-        x: record.x,
-        ...(typeof record.xLabel === 'string' ? { xLabel: record.xLabel } : {}),
-        y: record.y,
-        ...(typeof record.yLabel === 'string' ? { yLabel: record.yLabel } : {})
-      }]
-    })
-  } catch {
-    return []
-  }
+  return normalizeLumenHeatmapData(parsed ?? [])
 }
 
 export const parseRangeData = (value: string | null): LumenRangeDatum[] => {

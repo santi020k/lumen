@@ -58,9 +58,17 @@ const timeDisplay = (
 ): string => {
   if (!value) return placeholder
 
-  return new Intl.DateTimeFormat(locale, {
+  const options: Intl.DateTimeFormatOptions = {
     hour: 'numeric', ...(is24Hour === undefined ? {} : { hour12: !is24Hour }), minute: '2-digit'
-  }).format(dateForTime(value))
+  }
+
+  try {
+    return new Intl.DateTimeFormat(locale, options).format(dateForTime(value))
+  } catch (error: unknown) {
+    if (!(error instanceof RangeError)) throw error
+
+    return new Intl.DateTimeFormat('en', options).format(dateForTime(value))
+  }
 }
 
 const supportingProps = (description?: string, errorMessage?: string) => ({

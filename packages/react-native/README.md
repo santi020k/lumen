@@ -519,7 +519,8 @@ and `LumenIconButton`. The same `react-native-svg` peer is required.
 
 `LumenNumberField`, `LumenAutocomplete`, `LumenPasswordField`, `LumenInputOTP` and
 `LumenImageComparison` are root exports. Image comparison percentage labels fall back to English formatting when a locale is malformed. `LumenTimeField` and `LumenTimeSelection` live in
-`@santi020k/lumen-react-native/datetime`, alongside the optional native picker integration.
+`@santi020k/lumen-react-native/datetime`, alongside the optional native picker integration. Time display falls back to English for malformed
+locale tags while preserving the requested 12-hour or 24-hour format.
 
 ```tsx
 <LumenNumberField

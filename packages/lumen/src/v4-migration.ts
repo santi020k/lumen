@@ -1,7 +1,9 @@
 import { readdir, readFile, writeFile } from 'node:fs/promises'
 import { createRequire } from 'node:module'
-import { extname, join, relative, resolve } from 'node:path'
+import { basename, extname, join, relative, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
+
+import { scriptRegexRanges } from './source-script-ranges.js'
 
 // cspell:words swiftpm
 
@@ -98,11 +100,19 @@ const tokenAt = (source: string, start: number): Token | number => {
   return { end: start + 1, kind: 'punctuation', start, value: character }
 }
 
-const tokenize = (source: string): Token[] => {
+const tokenize = (source: string, exclusions: ReadonlyMap<number, number>): Token[] => {
   const tokens: Token[] = []
   let cursor = 0
 
   while (cursor < source.length) {
+    const excludedEnd = exclusions.get(cursor)
+
+    if (excludedEnd !== undefined) {
+      cursor = excludedEnd
+
+      continue
+    }
+
     const token = tokenAt(source, cursor)
 
     if (typeof token === 'number') cursor = token
@@ -190,12 +200,16 @@ export const migrateLumenV4Source = (source: string, file = '<source>'): {
   changes: LumenV4MigrationFinding[]
   source: string
 } => {
+  const exclusions = scriptRegexRanges(source, file)
+
+  if (!exclusions) return { changes: [], source }
+
   const edits: SourceEdit[] = []
   const changes: LumenV4MigrationFinding[] = []
   const state: ImportState = { afterFrom: false, inImport: false }
   const position: SourcePosition = { blankPrefix: true, column: 1, cursor: 0, line: 1 }
 
-  for (const token of tokenize(source)) {
+  for (const token of tokenize(source, exclusions)) {
     advancePosition(source, token.start, position)
 
     const edit = planImport(source, token, state, position.blankPrefix)
@@ -368,7 +382,7 @@ export const migrateLumenV4 = async (
   }
 
   for (const path of await discover(root)) {
-    if (path.endsWith('/package.json')) {
+    if (basename(path) === 'package.json') {
       for (const [name, version] of Object.entries(await inventory(path))) {
         report.packageVersions[`${relative(root, path)}:${name}`] = version
       }

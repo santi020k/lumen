@@ -1,3 +1,4 @@
+import { scriptRegexRanges } from './source-script-ranges.js'
 import {
   findBalancedEnd, findImportStatements, findMarkupTagEnd,
   getMarkupStart, getTagNameEnd, parseMarkupAttributes, parseNamedImports
@@ -37,6 +38,7 @@ interface Edit { end: number, replacement: string, start: number }
 interface SourceContext extends LumenVersionSourceMigration {
   components: Map<string, string>
   edits: Edit[]
+  regexRanges: ReadonlyMap<number, number>
   finding: (offset: number, kind: LumenVersionMigrationFinding['kind'], message: string) => LumenVersionMigrationFinding
 }
 
@@ -93,12 +95,12 @@ const skipNonMarkup = (source: string, cursor: number, script: boolean): number 
   return cursor
 }
 
-const realImportStarts = (source: string): Set<number> => {
+const realImportStarts = (source: string, exclusions: ReadonlyMap<number, number>): Set<number> => {
   const offsets = new Set<number>()
   let cursor = 0
 
   while (cursor < source.length) {
-    const next = skipNonMarkup(source, cursor, true)
+    const next = exclusions.get(cursor) ?? skipNonMarkup(source, cursor, true)
 
     if (next !== cursor) {
       cursor = next
@@ -114,9 +116,9 @@ const realImportStarts = (source: string): Set<number> => {
   return offsets
 }
 
-const collectComponents = (source: string): Map<string, string> => {
+const collectComponents = (source: string, exclusions: ReadonlyMap<number, number>): Map<string, string> => {
   const components = new Map<string, string>()
-  const offsets = realImportStarts(source)
+  const offsets = realImportStarts(source, exclusions)
 
   for (const module of ['@santi020k/lumen-astro', '@santi020k/lumen-react']) {
     for (const statement of findImportStatements(source, module)) {
@@ -192,13 +194,22 @@ const inspectTag = (context: SourceContext, tag: Tag): void => {
   if (component === 'Stack' || component === 'Grid') inspectGap(context, tag)
 }
 
+const markupSkipper = (
+  source: string, exclusions: ReadonlyMap<number, number>, script: boolean
+): ((cursor: number) => number) => {
+  if (!script) return cursor => skipNonMarkup(source, cursor, false)
+
+  return cursor => exclusions.get(cursor) ?? skipNonMarkup(source, cursor, true)
+}
+
 const scanMarkup = (context: SourceContext, file: string): void => {
   const script = !['.astro', '.html', '.htm'].some(extension => file.endsWith(extension))
   const source = context.source
+  const skip = markupSkipper(source, context.regexRanges, script)
   let cursor = getMarkupStart(source, file)
 
   while (cursor < source.length) {
-    const next = skipNonMarkup(source, cursor, script)
+    const next = skip(cursor)
 
     if (next !== cursor) {
       cursor = next
@@ -289,6 +300,14 @@ export const migrateLumenVersionSource = (
 
   if (version === 'v3' || file.endsWith('.css')) return { changes: [], manualReview, source }
 
+  const regexRanges = scriptRegexRanges(source, file)
+
+  if (!regexRanges) {
+    manualReview.push({ file, line: 1, column: 1, kind: 'component-review', message: 'The source exceeds the syntax parser nesting limit; review this file manually.' })
+
+    return { changes: [], manualReview, source }
+  }
+
   const starts = lineStarts(source)
 
   const context: SourceContext = {
@@ -296,7 +315,8 @@ export const migrateLumenVersionSource = (
     manualReview,
     changes: [],
     edits: [],
-    components: collectComponents(source),
+    regexRanges,
+    components: collectComponents(source, regexRanges),
     finding: (offset, kind, message) => ({ ...location(starts, offset), file, kind, message })
   }
 
