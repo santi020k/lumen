@@ -79,6 +79,14 @@ non-integer or negative recurrence counts produce `RangeError`. Applications own
 recovery feedback. `parseScheduleEvents` preserves structurally valid records with malformed
 date-times so applications can repair the original data; these helpers do not rewrite storage.
 
+## Data view state
+
+`serializeDataViewState` and `parseDataViewState` preserve named filters, including names that
+match built-in object properties, as ordinary own properties. Repeated filter parameters use
+the last value. `createDataViewRequestUrl` and `createDataViewServerRequest` append state to
+an endpoint's query before its fragment, preserving existing query parameters and fragment text.
+Import these helpers from the root or `@santi020k/lumen-core/data`.
+
 ## Appearance presets
 
 Use `createThemePreset('studio', { scheme: 'dark', overrides: { 'ui-radius': '0.75rem' } })` for a named starting point. Default, Studio and Glass share the [appearance contract](../../docs/appearance-presets.md).
