@@ -142,6 +142,7 @@ for component in "${components[@]}"; do
         "Backdrop") scroll_count=1 ;;
         "Illustration") scroll_count=2 ;;
         "Image") scroll_count=2 ;;
+        "Heatmap") scroll_count=4 ;;
         "Sparkline"|"Line chart"|"Bar chart"|"Pie chart"|"Scatter chart"|"Waterfall chart"|"Histogram"|"Heatmap"|"Range chart"|"Combo chart") scroll_count=2 ;;
         "Card"|"Avatar"|"List row") scroll_count=1 ;;
         "Empty state") scroll_count=3 ;;

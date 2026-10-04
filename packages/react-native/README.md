@@ -345,9 +345,14 @@ Start with `createLumenTheme(scheme, { preset: 'studio' })` or `<LumenProvider p
 
 ## Data visualization
 
+Heatmaps include labeled axes, a numeric color legend, and × markers for missing measurements.
+Use a diverging color scale around a meaningful midpoint for signed data. The plot and expandable
+list preserve zero and use the first measurement at each coordinate. See the
+[native heatmap options](../../docs/data-visualization.md#native-heatmaps) for domain and formatting APIs.
+
 `LumenSparkline`, `LumenLineChart`, `LumenBarChart`, `LumenPieChart`, `LumenScatterChart`,
 `LumenHeatmap`, `LumenRangeChart`, `LumenComboChart`, `LumenWaterfallChart`, and `LumenHistogram` use shared geometry and generated chart
-tokens while rendering with `react-native-svg`. Data charts expose a concise image summary and a
+tokens while rendering with `react-native-svg`. Data charts expose a concise image summary and an
 expandable readable data list; selection remains controlled by the application. Line and bar charts render
 category and value axes even when the readable list is hidden. Dense axes select labels without
 removing data, and narrow plots scroll horizontally.

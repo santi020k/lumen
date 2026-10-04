@@ -266,7 +266,7 @@
       "device": "Android phone emulator",
       "height": 2008,
       "platform": "android",
-      "sha256": "8befa872385745fee3e397b095f4e8c6c59a676692e6817b314909cb6ec6cc56",
+      "sha256": "1b8748bfd148f1bcbaa1e339335b45508c21ae7f6d5e94d5489970f0f0f88f1e",
       "slug": "heatmap",
       "src": "/native-components/android/heatmap.webp",
       "width": 900
@@ -1046,7 +1046,7 @@
       "device": "iPhone simulator",
       "height": 1957,
       "platform": "apple",
-      "sha256": "fb5b611186bf455c0db5031121735b83540ee18f92f3eefc927fa21a37f83f95",
+      "sha256": "76767e747d790ac40b9b0dc1a304585e0a931a56316fa7ec0f567a83ee49771b",
       "slug": "heatmap",
       "src": "/native-components/apple/heatmap.webp",
       "width": 900
@@ -1756,7 +1756,7 @@
       "device": "Expo web renderer",
       "height": 633,
       "platform": "react-native",
-      "sha256": "74f092906625bbd60defd5445ac6e1db9cc80d861f44bc67e6e68c7ec7510209",
+      "sha256": "670c89b8cfea967fd37bd7339f61460bd207be0b70a9fa69eb5f760faa96f652",
       "slug": "heatmap",
       "src": "/native-components/react-native/heatmap.webp",
       "width": 900

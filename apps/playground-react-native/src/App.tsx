@@ -1206,13 +1206,18 @@ const ChartExamples = ({
     <IntervalChartExamples isVisible={isVisible} />
     {isVisible('Heatmap') && (
       <LumenHeatmap
-        data={[
-          { value: 18, x: 'Mon', y: 'Morning' },
-          { value: 32, x: 'Tue', y: 'Morning' },
-          { value: 47, x: 'Mon', y: 'Evening' },
-          { value: null, x: 'Tue', y: 'Evening' }
-        ]}
-        label="Activity by day and period"
+        colorScale="diverging"
+        heading="Weekly activity"
+        description="Change from typical activity · by day and hour"
+        data={['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].flatMap((day, row) => (
+          Array.from({ length: 12 }, (_, column) => {
+            const typical = Math.round(Math.sin((column - 3) / 2) * 14 + Math.cos(row) * 6)
+            const value = row === 0 && column === 0 ? 0 : typical
+
+            return { value: row === 4 && column === 6 ? null : value, x: `${column + 8}:00`, y: day }
+          })
+        ))}
+        label="Change in activity by day and hour"
       />
     )}
     {isVisible('Range chart') && (

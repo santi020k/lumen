@@ -81,6 +81,7 @@
     "LumenGraphicTone",
     "LumenGraphicVariant",
     "LumenHeatmap",
+    "LumenHeatmapColorScale",
     "LumenHeatmapDatum",
     "LumenHistogram",
     "LumenHistogramBin",

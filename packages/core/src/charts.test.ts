@@ -95,6 +95,19 @@ describe('Lumen chart helpers', () => {
     expect(getLumenChartTicks(domain, 3)).toEqual([0, 5, 10])
   })
 
+  test('scales finite domains that span opposite numeric extremes', () => {
+    const domain = { min: -Number.MAX_VALUE, max: Number.MAX_VALUE }
+    expect(scaleLumenChartValue(0, domain, 0, 100)).toBe(50)
+    expect(scaleLumenChartValue(domain.min, domain, 0, 100)).toBe(0)
+    expect(scaleLumenChartValue(domain.max, domain, 0, 100)).toBe(100)
+    expect(scaleLumenChartValue(1, { min: NaN, max: 10 }, 4, 100)).toBe(4)
+    const largestDomain = getLumenChartDomain([Number.MAX_VALUE], false)
+    expect(largestDomain.max).toBe(Number.MAX_VALUE)
+    expect(largestDomain.min).toBeGreaterThan(0)
+    expect(largestDomain.min).toBeLessThan(largestDomain.max)
+    expect(getLumenChartDomain([Number.MIN_VALUE], false)).toEqual({ min: 0, max: Number.MIN_VALUE * 2 })
+  })
+
   test('reserves enough axis padding for long formatted values', () => {
     expect(getLumenChartAxisPadding(['$ 0', '$ 3.000.000'])).toBe(93)
     expect(getLumenChartAxisPadding(['0'], 60)).toBe(60)

@@ -5,7 +5,8 @@ import {
   createLumenHistogramGeometry,
   createLumenLineChartModel,
   createLumenWaterfallGeometry,
-  getLumenHeatmapColor
+  getLumenHeatmapColor,
+  getLumenHeatmapColorMix
 } from './chart-models.js'
 
 describe('continuous line chart model', () => {
@@ -149,4 +150,18 @@ test('diverging color domains and legends agree at their neutral midpoint', () =
   expect(custom.midpointPercent).toBe(25)
   const invalid = createLumenHeatmapModel(data, { colorScale: 'diverging', domain: { min: 1, max: 5 } })
   expect(invalid.domain).toEqual(automatic.domain)
+})
+
+test('native and web heatmap weights preserve zero, signs, clamping, and extreme domains', () => {
+  const domain = { min: -10, max: 20 }
+  expect(getLumenHeatmapColorMix(null, domain)).toBeNull()
+  expect(getLumenHeatmapColorMix(NaN, domain)).toBeNull()
+  expect(getLumenHeatmapColorMix(0, domain, 'diverging')).toEqual({ base: 'divergingMid', overlay: 'divergingPositive', ratio: 0 })
+  expect(getLumenHeatmapColorMix(-5, domain, 'diverging')).toMatchObject({ overlay: 'divergingNegative', ratio: 0.5 })
+  expect(getLumenHeatmapColorMix(10, domain, 'diverging')).toMatchObject({ overlay: 'divergingPositive', ratio: 0.5 })
+  expect(getLumenHeatmapColorMix(30, domain, 'diverging')?.ratio).toBe(1)
+  expect(getLumenHeatmapColorMix(-30, domain, 'diverging')?.ratio).toBe(1)
+  expect(getLumenHeatmapColorMix(0, { min: -Number.MAX_VALUE, max: Number.MAX_VALUE })?.ratio).toBe(0.5)
+  const extreme = createLumenHeatmapModel([{ x: 'X', y: 'Y', value: Number.MAX_VALUE }], { colorScale: 'diverging' })
+  expect(extreme.midpointPercent).toBe(50)
 })

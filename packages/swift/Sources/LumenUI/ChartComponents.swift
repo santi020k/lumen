@@ -29,6 +29,8 @@ public struct LumenChartLabels: Sendable {
     public let value: String
     public let count: String
     public let density: String
+    public let column: String
+    public let row: String
     public let formatValue: @Sendable (Double) -> String
     public let formatHeatmapSummary: @Sendable (Int) -> String
     public let formatRangeSummary: @Sendable (Int) -> String
@@ -45,6 +47,8 @@ public struct LumenChartLabels: Sendable {
         value: String = "Value",
         count: String = "Count",
         density: String = "Density",
+        column: String = "Column",
+        row: String = "Row",
         formatValue: @escaping @Sendable (Double) -> String = { $0.formatted() },
         formatHeatmapSummary: @escaping @Sendable (Int) -> String = { count in
             count == 0 ? "No chart data available." : "\(count) heatmap \(count == 1 ? "cell" : "cells")."
@@ -64,6 +68,8 @@ public struct LumenChartLabels: Sendable {
         self.value = value
         self.count = count
         self.density = density
+        self.column = column
+        self.row = row
         self.formatValue = formatValue
         self.formatHeatmapSummary = formatHeatmapSummary
         self.formatRangeSummary = formatRangeSummary
@@ -1162,78 +1168,6 @@ public struct LumenPieChart: View {
             }
         }
     }
-}
-
-public struct LumenHeatmap: View {
-    @Environment(\.lumenTheme) private var theme
-
-    private let data: [LumenHeatmapDatum]
-    private let label: String
-    private let labels: LumenChartLabels
-    private let showData: Bool
-    private let summary: String
-
-    public init(
-        label: String,
-        data: [LumenHeatmapDatum],
-        summary: String? = nil,
-        labels: LumenChartLabels = .english,
-        showData: Bool = true
-    ) {
-        self.label = label
-        self.labels = labels
-        self.data = data
-        self.summary = summary ?? labels.formatHeatmapSummary(lumenAvailableHeatmapData(data).count)
-        self.showData = showData
-    }
-
-    public var body: some View {
-        let availableData = lumenAvailableHeatmapData(data)
-        let values = availableData.compactMap(\.value)
-        let minimum = values.min() ?? 0
-        let maximum = values.max() ?? 1
-
-        LumenChartFrame(label: label, heading: nil, description: nil, summary: summary) {
-            if availableData.isEmpty {
-                Text(labels.empty)
-                    .foregroundStyle(theme.colors.inkMuted)
-            } else {
-                Chart(availableData) { datum in
-                    RectangleMark(
-                        x: .value("Column", datum.column),
-                        y: .value("Row", datum.row)
-                    )
-                    .foregroundStyle(
-                        theme.chartColors.sequentialHigh.opacity(
-                            lumenHeatmapOpacity(value: datum.value, minimum: minimum, maximum: maximum)
-                        )
-                    )
-                    .accessibilityLabel(datum.label ?? "\(datum.column), \(datum.row)")
-                    .accessibilityValue(datum.value?.formatted() ?? labels.notAvailable)
-                }
-                .frame(minHeight: 220)
-            }
-
-            if showData {
-                LumenStructuredChartDataList(labels: labels, rows: data.map { datum in
-                    let value = datum.value?.isFinite == true
-                        ? datum.value?.formatted() ?? labels.notAvailable
-                        : labels.notAvailable
-
-                    return LumenChartDataRow(
-                        id: datum.id,
-                        label: "\(datum.label ?? "\(datum.column), \(datum.row)"): \(value)"
-                    )
-                })
-            }
-        }
-    }
-}
-
-private func lumenHeatmapOpacity(value: Double?, minimum: Double, maximum: Double) -> Double {
-    guard let value, value.isFinite, maximum > minimum else { return 0.12 }
-
-    return max(0.12, min(1, (value - minimum) / (maximum - minimum)))
 }
 
 public struct LumenComboChart: View {

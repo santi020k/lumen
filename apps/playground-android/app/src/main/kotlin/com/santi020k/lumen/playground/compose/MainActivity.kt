@@ -79,6 +79,8 @@ import com.santi020k.lumen.LumenGraphicSize
 import com.santi020k.lumen.LumenGraphicTone
 import com.santi020k.lumen.LumenGraphicVariant
 import com.santi020k.lumen.LumenHeatmap
+import com.santi020k.lumen.LumenChartLabels
+import com.santi020k.lumen.LumenHeatmapColorScale
 import com.santi020k.lumen.LumenHistogram
 import com.santi020k.lumen.LumenHistogramBin
 import com.santi020k.lumen.LumenWaterfallChart
@@ -1332,13 +1334,17 @@ private fun ChartExample(visibleNames: Set<String>) {
     }
     if ("Heatmap" in visibleNames) {
         LumenHeatmap(
-            label = "Activity by day and period",
-            data = listOf(
-                LumenHeatmapDatum("mon-am", "Mon", "Morning", 18.0),
-                LumenHeatmapDatum("tue-am", "Tue", "Morning", 32.0),
-                LumenHeatmapDatum("mon-pm", "Mon", "Evening", 47.0),
-                LumenHeatmapDatum("tue-pm", "Tue", "Evening", null)
-            )
+            label = "Change in activity by day and hour",
+            heading = "Weekly activity", description = "Change from typical activity · by day and hour",
+            colorScale = LumenHeatmapColorScale.Diverging,
+            labels = LumenChartLabels(formatValue = { it.toInt().toString() }),
+            data = listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun").flatMapIndexed { row, day ->
+                (0..<12).map { column ->
+                    val value = if (row == 4 && column == 6) null else if (row == 0 && column == 0) 0.0 else
+                        kotlin.math.round(kotlin.math.sin((column - 3) / 2.0) * 14 + kotlin.math.cos(row.toDouble()) * 6)
+                    LumenHeatmapDatum("$row-$column", "${column + 8}:00", day, value)
+                }
+            }
         )
     }
     if ("Range chart" in visibleNames) {

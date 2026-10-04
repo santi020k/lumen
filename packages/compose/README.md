@@ -268,6 +268,11 @@ Use `LumenTheme(preset = LumenThemePreset.Studio)` or customize `LumenThemeValue
 
 ## Data visualization
 
+Heatmaps include labeled axes, a numeric color legend, and × markers for missing measurements.
+Use a diverging color scale around a meaningful midpoint for signed data. The plot and expandable
+list preserve zero and use the first measurement at each coordinate. See the
+[native heatmap options](../../docs/data-visualization.md#native-heatmaps) for domain and formatting APIs.
+
 `LumenSparkline`, `LumenLineChart`, `LumenBarChart`, `LumenPieChart`, `LumenScatterChart`,
 `LumenHeatmap`, `LumenRangeChart`, `LumenComboChart`, `LumenWaterfallChart`, and `LumenHistogram` use Compose Canvas with generated chart
 tokens and TalkBack semantics. Data charts include a factual summary and an expandable readable data list.

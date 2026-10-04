@@ -367,8 +367,8 @@ const chartDefinitions: ComponentDefinition[] = [
     'heatmap',
     'data',
     'activityCells',
-    'Encode a two-dimensional matrix with the canonical sequential scale.',
-    'Presents a concise summary while applications retain labels for every cell.'
+    'Encode a matrix with sequential or diverging color scales, labeled axes, and a numeric legend.',
+    'Distinguishes missing cells from zero and provides an expandable list of exact measurements.'
   ),
   chartDefinition(
     'Range chart',

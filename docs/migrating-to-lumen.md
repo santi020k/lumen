@@ -207,3 +207,11 @@ semantics and runtime inside an established visual system. `Sidebar variant="uns
 ## V4 appearance configuration
 
 Named Default, Studio and Glass presets are opt-in; existing calls preserve their color defaults. See [appearance presets](appearance-presets.md). Rebuild Swift and Compose consumers for defaulted initializer changes. React Native numeric theme scales accept custom values without casts. Keep explicit foreground/background pairs readable and retain opaque material fallbacks. No application data migration is involved.
+
+### Native heatmap color scales
+
+Rebuild SwiftUI and Compose consumers for the defaulted `LumenHeatmap` initializer parameters in v4.
+Existing named calls remain valid. Add `colorScale`, `domain`, and `midpoint` to compare signed data;
+use `heading` and `description` for visible context. React Native accepts the equivalent options.
+Heatmaps now keep the first measurement at each coordinate in both the plot and data disclosure.
+Missing measurements remain explicit and finite zero is rendered as data.

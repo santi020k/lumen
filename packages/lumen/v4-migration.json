@@ -50,8 +50,8 @@
     {
       "id": "swift-native-control-polish",
       "kind": "breaking",
-      "currentContract": "Seven v3 Swift initializer signatures do not expose compact chart, chart-data labels and formatting, slider-label, and symbol-selection options. The v3 icon enum lacks four reviewed catalog additions.",
-      "replacement": "Defaulted parameters provide bare chart frames, explicit plot height, localized interval-chart data and formatting, optional slider headings, contextual symbol tint, and selection completion. The icon enum adds bangladeshiTaka, layoutGridCircles, letters, and printer3d.",
+      "currentContract": "Eight v3 Swift initializer signatures do not expose compact chart, heatmap color scales, chart-data labels and formatting, slider-label, and symbol-selection options. The v3 icon enum lacks four reviewed catalog additions.",
+      "replacement": "Defaulted parameters provide bare chart frames, explicit plot height, heatmap color scales and legends, localized interval-chart data and formatting, optional slider headings, contextual symbol tint, and selection completion. The icon enum adds bangladeshiTaka, layoutGridCircles, letters, and printer3d.",
       "migration": "Rebuild consumers against v4. Existing source calls generally retain defaults; method references and binary clients must adopt the new signatures. Exhaustive LumenIconName switches must handle the four new cases or provide an appropriate fallback. See native composition examples and the v4 migration guide.",
       "packages": [
         "LumenUI"
@@ -73,6 +73,7 @@
       "swiftApiBreakages": [
         "constructor LumenBarChart.init(label:series:layout:summary:labels:showData:selection:) has been removed",
         "constructor LumenChartLabels.init(empty:notAvailable:size:viewData:formatHeatmapSummary:formatRangeSummary:formatSummary:) has been removed",
+        "constructor LumenHeatmap.init(label:data:summary:labels:showData:) has been removed",
         "constructor LumenLineChart.init(label:series:heading:description:summary:labels:area:reference:showData:selection:) has been removed",
         "constructor LumenSlider.init(_:value:in:step:valueLabel:) has been removed",
         "constructor LumenSlider.init(_:value:in:step:valueLabel:onEditingChanged:) has been removed",
@@ -88,7 +89,8 @@
         "LumenLineChart",
         "LumenSlider",
         "LumenSymbolPicker",
-        "LumenIconName"
+        "LumenIconName",
+        "LumenHeatmap"
       ]
     },
     {

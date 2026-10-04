@@ -99,7 +99,22 @@ bins. Unequal widths require `frequency="density"`: height is count divided by b
 table retains original counts. Applications own binning, inclusion of interval boundaries, and
 units. Use `formatBoundary` and `formatValue` for those units; Elements exposes `boundaryFormatter`
 and `valueFormatter` properties. Localize messages with `labels` or the documented Elements label
-attributes. The new web chart types do not add native adapter components.
+attributes. Waterfall and histogram components are also available in React Native, SwiftUI, and Compose.
+
+## Native heatmaps
+
+Native heatmaps use the same sequential and diverging color semantics as web charts. They include
+row and column labels, a numeric color legend, explicit missing-value crosses, and an expandable
+list of exact measurements. Dense axes omit overlapping labels without removing observations.
+The first measurement at each coordinate wins in both the plot and the readable list.
+
+Use `colorScale="diverging"` in React Native, `.diverging` in SwiftUI, or
+`LumenHeatmapColorScale.Diverging` in Compose. `midpoint` defaults to zero; an explicit `domain`
+must be finite, increasing, and contain the midpoint for a diverging scale. SwiftUI and Compose
+accept a closed numeric range; React Native accepts `{ min, max }`. Values outside the domain
+use the endpoint color while their exact values remain available in the data disclosure.
+Pass `formatValue` in React Native or `labels.formatValue` in SwiftUI and Compose to format the
+legend and data consistently. `heading` and `description` provide visible chart context.
 
 The [web comparison gallery](https://lumen.santi020k.com/docs/web/data-visualization) renders the same
 synthetic datasets through framework tabs and demonstrates cursor synchronization. Its overview

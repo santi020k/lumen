@@ -338,16 +338,24 @@ export interface LumenHeatmapOptions {
   midpoint?: number
 }
 
-const heatmapDomain = (
-  automatic: LumenChartDomain, midpoint: number, options: LumenHeatmapOptions
-): LumenChartDomain => {
-  if (options.colorScale !== 'diverging') return resolveDomain(automatic, options.domain)
+const heatmapScale = (automatic: LumenChartDomain, options: LumenHeatmapOptions) => {
+  const midpoint = Number.isFinite(options.midpoint) ? options.midpoint ?? 0 : 0
+
+  if (options.colorScale !== 'diverging') return { domain: resolveDomain(automatic, options.domain), midpoint }
 
   const radius = Math.max(Math.abs(automatic.min - midpoint), Math.abs(automatic.max - midpoint), 1)
   const symmetric = { min: midpoint - radius, max: midpoint + radius }
   const requested = resolveDomain(symmetric, options.domain)
+  const finite = (domain: LumenChartDomain) => Number.isFinite(domain.min) && Number.isFinite(domain.max)
 
-  return requested.min < midpoint && requested.max > midpoint ? requested : symmetric
+  if (finite(requested) && requested.min < midpoint && requested.max > midpoint) return { domain: requested, midpoint }
+
+  if (finite(symmetric)) return { domain: symmetric, midpoint }
+
+  // No finite symmetric extent exists around the requested midpoint; use a neutral zero.
+  const fallbackRadius = Math.max(Math.abs(automatic.min), Math.abs(automatic.max), 1)
+
+  return { domain: { min: -fallbackRadius, max: fallbackRadius }, midpoint: 0 }
 }
 
 const heatmapLegendBackground = (colorScale: LumenHeatmapOptions['colorScale'], midpointPercent: number): string => {
@@ -373,11 +381,10 @@ export const createLumenHeatmapModel = (
   })
 
   const base = createLumenHeatmapGeometry(cells, 496, 248)
-  const midpoint = Number.isFinite(options.midpoint) ? options.midpoint ?? 0 : 0
   const values = cells.flatMap(cell => cell.value !== null && Number.isFinite(cell.value) ? [cell.value] : [])
   const automatic = getLumenChartDomain(values, false)
-  const domain = heatmapDomain(automatic, midpoint, options)
-  const midpointPercent = (midpoint - domain.min) / (domain.max - domain.min) * 100
+  const { domain, midpoint } = heatmapScale(automatic, options)
+  const midpointPercent = scaleLumenChartValue(midpoint, domain, 0, 100)
   const labelFor = (axis: 'x' | 'y', value: number | string) => cells.find(cell => cell[axis] === value)?.[axis === 'x' ? 'xLabel' : 'yLabel'] ?? String(value)
 
   const xTicks = getLumenChartCategoryTicks(base.xCategories.map(value => labelFor('x', value)), {
@@ -407,23 +414,42 @@ export const createLumenHeatmapModel = (
   }
 }
 
-export const getLumenHeatmapColor = (
+export interface LumenHeatmapColorMix {
+  base: 'divergingMid' | 'sequentialLow'
+  overlay: 'divergingNegative' | 'divergingPositive' | 'sequentialHigh'
+  ratio: number
+}
+
+/** Platform-neutral color weights; missing measurements have no color weight. */
+export const getLumenHeatmapColorMix = (
   value: number | null, domain: LumenChartDomain, colorScale: 'diverging' | 'sequential' = 'sequential', midpoint = 0
-): string => {
-  if (value === null || !Number.isFinite(value)) return 'hsl(var(--surface-muted))'
+): LumenHeatmapColorMix | null => {
+  if (value === null || !Number.isFinite(value)) return null
 
   const ratio = (start: number, end: number) => {
-    if (end === start) return 50
+    if (end === start) return 0.5
 
-    return Math.max(0, Math.min(100, (value - start) / (end - start) * 100))
+    return Math.max(0, Math.min(1, scaleLumenChartValue(value, { min: start, max: end }, 0, 1)))
   }
 
   if (colorScale === 'diverging') {
     const negative = value < midpoint
-    const amount = negative ? 100 - ratio(domain.min, midpoint) : ratio(midpoint, domain.max)
+    const amount = negative ? 1 - ratio(domain.min, midpoint) : ratio(midpoint, domain.max)
 
-    return `color-mix(in srgb, hsl(var(--chart-diverging-${negative ? 'negative' : 'positive'})) ${amount}%, hsl(var(--chart-diverging-mid)))`
+    return { base: 'divergingMid', overlay: negative ? 'divergingNegative' : 'divergingPositive', ratio: amount }
   }
 
-  return `color-mix(in srgb, hsl(var(--chart-sequential-high)) ${ratio(domain.min, domain.max)}%, hsl(var(--chart-sequential-low)))`
+  return { base: 'sequentialLow', overlay: 'sequentialHigh', ratio: ratio(domain.min, domain.max) }
+}
+
+export const getLumenHeatmapColor = (
+  value: number | null, domain: LumenChartDomain, colorScale: 'diverging' | 'sequential' = 'sequential', midpoint = 0
+): string => {
+  const mix = getLumenHeatmapColorMix(value, domain, colorScale, midpoint)
+
+  if (!mix) return 'hsl(var(--surface-muted))'
+
+  const token = (name: string) => name.replace(/[A-Z]/gu, letter => `-${letter.toLowerCase()}`)
+
+  return `color-mix(in srgb, hsl(var(--chart-${token(mix.overlay)})) ${mix.ratio * 100}%, hsl(var(--chart-${token(mix.base)})))`
 }

@@ -810,13 +810,16 @@ struct ComponentsCatalogView: View {
                 }
                 if isVisible("Heatmap") {
                     LumenHeatmap(
-                        label: "Activity by day and period",
-                        data: [
-                            LumenHeatmapDatum(id: "mon-am", column: "Mon", row: "Morning", value: 18),
-                            LumenHeatmapDatum(id: "tue-am", column: "Tue", row: "Morning", value: 32),
-                            LumenHeatmapDatum(id: "mon-pm", column: "Mon", row: "Evening", value: 47),
-                            LumenHeatmapDatum(id: "tue-pm", column: "Tue", row: "Evening", value: nil)
-                        ]
+                        label: "Change in activity by day and hour",
+                        data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].enumerated().flatMap { row, day in
+                            (0..<12).map { column in
+                                let value = row == 4 && column == 6 ? nil : row == 0 && column == 0 ? 0 :
+                                    (sin(Double(column - 3) / 2) * 14 + cos(Double(row)) * 6).rounded()
+                                return LumenHeatmapDatum(id: "\(row)-\(column)", column: "\(column + 8):00", row: day, value: value)
+                            }
+                        },
+                        heading: "Weekly activity", description: "Change from typical activity · by day and hour",
+                        colorScale: .diverging
                     )
                 }
                 if isVisible("Range chart") {

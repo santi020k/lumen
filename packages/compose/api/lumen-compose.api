@@ -27,7 +27,7 @@ public final class com/santi020k/lumen/AppBarComponentsKt {
 public final class com/santi020k/lumen/ChartComponentsKt {
 	public static final fun LumenBarChart (Ljava/util/List;Ljava/lang/String;Landroidx/compose/ui/Modifier;Lcom/santi020k/lumen/LumenBarChartLayout;Ljava/lang/String;Lcom/santi020k/lumen/LumenChartLabels;ZLcom/santi020k/lumen/LumenChartSelection;Lkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
 	public static final fun LumenComboChart (Ljava/util/List;Ljava/lang/String;Landroidx/compose/ui/Modifier;Ljava/lang/String;Lcom/santi020k/lumen/LumenChartLabels;ZLcom/santi020k/lumen/LumenChartSelection;Lkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
-	public static final fun LumenHeatmap (Ljava/util/List;Ljava/lang/String;Landroidx/compose/ui/Modifier;Ljava/lang/String;Lcom/santi020k/lumen/LumenChartLabels;ZLandroidx/compose/runtime/Composer;II)V
+	public static final fun LumenHeatmap (Ljava/util/List;Ljava/lang/String;Landroidx/compose/ui/Modifier;Ljava/lang/String;Lcom/santi020k/lumen/LumenChartLabels;ZLjava/lang/String;Ljava/lang/String;Lcom/santi020k/lumen/LumenHeatmapColorScale;Lkotlin/ranges/ClosedFloatingPointRange;DLandroidx/compose/runtime/Composer;III)V
 	public static final fun LumenLineChart (Ljava/util/List;Ljava/lang/String;Landroidx/compose/ui/Modifier;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lcom/santi020k/lumen/LumenChartLabels;ZLcom/santi020k/lumen/LumenChartReference;ZLcom/santi020k/lumen/LumenChartSelection;Lkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;III)V
 	public static final fun LumenPieChart (Lcom/santi020k/lumen/LumenChartSeries;Ljava/lang/String;Landroidx/compose/ui/Modifier;Lcom/santi020k/lumen/LumenPieChartVariant;Ljava/lang/String;Lcom/santi020k/lumen/LumenChartLabels;ZLcom/santi020k/lumen/LumenChartSelection;Lkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
 	public static final fun LumenRangeChart (Ljava/util/List;Ljava/lang/String;Landroidx/compose/ui/Modifier;Ljava/lang/String;Lcom/santi020k/lumen/LumenChartLabels;Lcom/santi020k/lumen/LumenChartTone;ZLandroidx/compose/runtime/Composer;II)V
@@ -770,6 +770,14 @@ public final class com/santi020k/lumen/LumenGraphics {
 	public final fun getSmFrameSize-D9Ej5fM ()F
 	public final fun getSmIllustrationSize-D9Ej5fM ()F
 	public final fun getStandardStrokeWidth-D9Ej5fM ()F
+}
+
+public final class com/santi020k/lumen/LumenHeatmapColorScale : java/lang/Enum {
+	public static final field Diverging Lcom/santi020k/lumen/LumenHeatmapColorScale;
+	public static final field Sequential Lcom/santi020k/lumen/LumenHeatmapColorScale;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/santi020k/lumen/LumenHeatmapColorScale;
+	public static fun values ()[Lcom/santi020k/lumen/LumenHeatmapColorScale;
 }
 
 public final class com/santi020k/lumen/LumenHeatmapDatum {

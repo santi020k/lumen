@@ -9,7 +9,7 @@ import { afterEach, describe, expect, test, vi } from 'vitest'
 
 import { LumenButtonGroup, LumenChip, LumenFieldGroup, LumenTextarea, LumenToast } from './additional-components.js'
 import { LumenAutocomplete, LumenInputOTP, LumenNumberField, LumenPasswordField } from './advanced-form-components.js'
-import { LumenHistogram, LumenWaterfallChart } from './chart-components.js'
+import { LumenHeatmap, LumenHistogram, LumenWaterfallChart } from './chart-components.js'
 import { LumenImageComparison } from './comparison-components.js'
 import { LumenDateField, LumenDateRangeField } from './datetime-components.js'
 import { LumenSearchField, LumenToggle } from './form-components.js'
@@ -96,7 +96,7 @@ vi.mock('react-native-svg', async () => {
   ): ReactElement => createElement(name, props)
 
   return Object.fromEntries(
-    ['Circle', 'Ellipse', 'Line', 'Path', 'Polygon', 'Polyline', 'Rect', 'Svg', 'Text']
+    ['Circle', 'Defs', 'Ellipse', 'G', 'Line', 'LinearGradient', 'Path', 'Polygon', 'Polyline', 'Rect', 'Stop', 'Svg', 'Text']
       .map(name => [name, hostComponent(name)])
   )
 })
@@ -1636,6 +1636,34 @@ describe('advanced native inputs', () => {
 })
 
 describe('native chart data inspection', () => {
+  test('renders zero as neutral and missing measurements with a separate marker and exact fallback', async () => {
+    const root = await renderNative(
+      <LumenHeatmap
+        label="Activity"
+        colorScale="diverging"
+        data={[
+          { x: 'Mon', y: 'AM', value: -2 },
+          { x: 'Tue', y: 'AM', value: 0 },
+          { x: 'Wed', y: 'AM', value: null },
+          { x: 'Mon', y: 'AM', value: 40 }
+        ]}
+      />
+    )
+    const neutral = root.container.queryAll(instance => instance.type === 'Rect' && readProp(instance, 'fillOpacity') === 0)
+    expect(neutral).toHaveLength(1)
+    const missing = root.container.queryAll(instance => instance.type === 'Text' && readProp(instance, 'children') === '× Not available')
+    expect(missing).toHaveLength(1)
+    await act(async () => {
+      callAction(readProp(findByAccessibilityRole(root, 'button'), 'onPress'), 'Missing chart disclosure')
+      await Promise.resolve()
+    })
+    const rows = root.container.queryAll(instance => instance.type === 'Text').map(instance => readProp(instance, 'children'))
+    expect(rows).toContain('Wed, AM: Not available')
+    expect(rows).toContain('Tue, AM: 0')
+    expect(rows).toContain('Mon, AM: -2')
+    expect(rows).not.toContain('Mon, AM: 40')
+  })
+
   test('opens and closes exact source values using a labeled disclosure', async () => {
     const root = await renderNative(
       <LumenWaterfallChart

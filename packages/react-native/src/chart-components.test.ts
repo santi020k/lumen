@@ -319,19 +319,22 @@ describe('Lumen React Native chart components', () => {
     expect(dataOutput(range).rows?.[0]?.label).toBe('Monday: Not available to 18')
   })
 
-  test('omits unavailable heatmap cells from native SVG marks', () => {
+  test('preserves missing cells and the first measurement at each coordinate', () => {
     const heatmap = LumenHeatmap({
       data: [
         { value: 8, x: 'Monday', y: 'Morning' },
+        { value: 80, x: 'Monday', y: 'Morning' },
         { value: null, x: 'Tuesday', y: 'Morning' },
         { value: Number.POSITIVE_INFINITY, x: 'Wednesday', y: 'Morning' }
       ],
       label: 'Activity'
     }) as ReactElement<ChartFrameOutputProps>
-    const cells = descendantsOf(heatmap)
-      .filter(element => propsOf(element).fillOpacity !== undefined)
-
-    expect(cells).toHaveLength(1)
+    expect(heatmap.props.summary).toBe('1 available heatmap cell.')
+    expect(dataOutput(heatmap).rows?.map(row => row.label)).toEqual([
+      'Monday, Morning: 8',
+      'Tuesday, Morning: Not available',
+      'Wednesday, Morning: Not available'
+    ])
   })
 
   test('shows the native heatmap empty state when every cell is unavailable', () => {

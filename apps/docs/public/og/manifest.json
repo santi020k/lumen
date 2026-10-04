@@ -867,7 +867,7 @@
     },
     "/docs/react-native/components/heatmap": {
       "alt": "Heatmap — Lumen UI",
-      "description": "Encode a two-dimensional matrix with the canonical sequential scale.",
+      "description": "Encode a matrix with sequential or diverging color scales, labeled axes, and a numeric legend.",
       "images": [
         {
           "format": "webp",
@@ -1891,7 +1891,7 @@
     },
     "/docs/apple/components/heatmap": {
       "alt": "Heatmap — Lumen UI",
-      "description": "Encode a two-dimensional matrix with the canonical sequential scale.",
+      "description": "Encode a matrix with sequential or diverging color scales, labeled axes, and a numeric legend.",
       "images": [
         {
           "format": "webp",
@@ -3091,7 +3091,7 @@
     },
     "/docs/android/components/heatmap": {
       "alt": "Heatmap — Lumen UI",
-      "description": "Encode a two-dimensional matrix with the canonical sequential scale.",
+      "description": "Encode a matrix with sequential or diverging color scales, labeled axes, and a numeric legend.",
       "images": [
         {
           "format": "webp",

@@ -1044,55 +1044,14 @@ fun LumenHeatmap(
     modifier: Modifier = Modifier,
     summary: String? = null,
     labels: LumenChartLabels = LumenChartLabels(),
-    showData: Boolean = true
+    showData: Boolean = true,
+    heading: String? = null,
+    description: String? = null,
+    colorScale: LumenHeatmapColorScale = LumenHeatmapColorScale.Sequential,
+    domain: ClosedFloatingPointRange<Double>? = null,
+    midpoint: Double = 0.0
 ) {
-    val theme = LocalLumenTheme.current
-    val columns = data.map { it.column }.distinct()
-    val rows = data.map { it.row }.distinct()
-    val domain = lumenChartDomain(data.map { it.value })
-    val availableData = lumenAvailableHeatmapData(data)
-
-    val resolvedSummary = summary ?: labels.formatHeatmapSummary(availableData.size)
-
-    LumenChartFrame(label, resolvedSummary, modifier) {
-        if (availableData.isEmpty()) {
-            Text(labels.empty, color = theme.colors.inkMuted)
-        } else Canvas(Modifier.fillMaxWidth().height(240.dp)) {
-            val cellWidth = size.width / max(1, columns.size)
-            val cellHeight = size.height / max(1, rows.size)
-
-            availableData.forEach { datum ->
-                val column = columns.indexOf(datum.column)
-                val row = rows.indexOf(datum.row)
-                val ratio = datum.value?.let {
-                    lumenChartScale(it, domain, 0.12f, 1f)
-                } ?: return@forEach
-
-                if (column >= 0 && row >= 0) {
-                    drawRect(
-                        color = theme.chartColors.sequentialHigh.copy(alpha = ratio),
-                        topLeft = Offset(column * cellWidth + 1, row * cellHeight + 1),
-                        size = Size(max(0f, cellWidth - 2), max(0f, cellHeight - 2))
-                    )
-                }
-            }
-        }
-
-
-        if (showData) {
-            LumenStructuredChartDataList(
-                data.map { datum ->
-                    val value = datum.value?.takeIf(Double::isFinite)?.toString() ?: labels.notAvailable
-
-                    LumenStructuredChartDataRow(
-                        datum.id,
-                        "${datum.label ?: "${datum.column}, ${datum.row}"}: $value"
-                    )
-                },
-                labels
-            )
-        }
-    }
+    LumenHeatmapContent(data, label, modifier, summary, labels, showData, heading, description, colorScale, domain, midpoint)
 }
 
 @Composable
