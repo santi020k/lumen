@@ -5,6 +5,23 @@ Keep these measurements separate and bind runtime evidence to the exact source r
 installed artifact. Emulator results are local regression evidence; they do not qualify hardware
 accessibility, screen readers, or release stability iterations.
 
+## Isolated instrumented Android benchmark
+
+Prefer the [isolated runtime measurement workflow](../apps/playground-android/README.md#isolated-runtime-measurements)
+when preserving an existing installation. The separate benchmark variant inherits release settings
+and uses development signing; it is not debuggable and has a dedicated application ID. The
+instrumentation driver runs five process-cold launches and six actual list scrolls without running
+inside the measured process. It records raw Activity Manager and frame snapshots plus the observed
+record ranges. The selected test class and target package must match.
+
+After pulling the exact sample directory recorded in the test log, run
+`node scripts/report-android-workspace-runtime.mjs --input <directory> --output <report.json>`.
+The reporter uses the same strict parsers as the collector below. Preserve the source and installed
+APK hashes, native test result, raw samples and device settings together. A Measured or Partial
+report is observation data; neither means the candidate passes a performance budget or qualifies
+physical hardware. The collector below installs under the normal app ID; use the isolated workflow
+when that installation must be preserved.
+
 ## Android workspace collector
 
 With a clean committed checkout, JDK 21, the Android SDK, and its standard development keystore:
@@ -86,6 +103,30 @@ These are local Simulator checks. Repeat on representative phone and tablet layo
 the raw samples before selecting regression thresholds or claiming a hardware result.
 
 ## Remaining platform qualification
+
+### React Native live text-layout probe
+
+The diagnostic [TextLayoutProbe](../apps/playground-react-native/src/fixtures/TextLayoutProbe.tsx)
+compares plain React Native `Text` with Lumen foundations inside the same native host. Its static
+paragraphs have no fixed heights, retain normal font scaling, and remain mounted while the size
+changes. A dynamic heading displays `useWindowDimensions().fontScale`; native line callbacks
+display reported counts and widths. The controlled field helps observe whether its initial value
+survives the change, but that alone does not verify retention of a user-edited draft.
+
+Copy the fixture into an ignored, isolated native qualification host and point only that temporary
+host's entrypoint at it. Preserve the original app and entrypoint first; do not replace the public
+playground entrypoint or enable OTA updates. Build Release, capture source and installed artifact
+hashes, compare standard text with a live maximum-size change, and inspect the actual rendering.
+Line callbacks are diagnostic output: measurements that fit the viewport do not prove that all
+text remains visible. Restore the original text size, app and host entrypoint after testing.
+
+The iPhone iOS 27 Simulator probe reproduced clipping in both renderers at live maximum text size.
+Both callbacks reported four lines at standard size and only one after enlargement, despite lost
+paragraph content. This rules out a Lumen-only layout defect in this host; it does not identify the exact native
+cache failure or establish an acceptable workaround. See the [v4 quality record](lumen-4-native-quality.md)
+for the preserved fixture, artifact and screenshots.
+
+### Runtime and hardware measurements
 
 React Native bytecode budgets use `pnpm run check:react-native-imports`, including the static graphic
 fixture. React Native native startup, JavaScript responsiveness and list frame measurements still

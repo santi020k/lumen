@@ -580,3 +580,17 @@ ignorePaths:
   - apps/playground-apple/project.yml
 
 # Standard ARIA attribute suffixes used by virtualized collections.
+
+# Canonical icon identifiers and brand names remain checked against generated catalog vocabulary.
+dictionaryDefinitions:
+  - name: lumen-native-icons
+    path: ./icons/native-icon-words.generated.txt
+    addWords: false
+overrides:
+  - filename:
+      - packages/react-native/src/static-icons/*.generated.tsx
+      - packages/react-native/src/static-icon-exports.generated.ts
+      - registry/native-api-baseline.json
+      - icons/native-icon-words.generated.txt
+    dictionaries:
+      - lumen-native-icons

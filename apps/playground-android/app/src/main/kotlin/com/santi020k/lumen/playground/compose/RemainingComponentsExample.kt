@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -101,7 +102,7 @@ private class ComparisonExamplePainter(private val sky: Color, private val lands
 @Composable
 internal fun ImageComparisonExample() {
     var language by remember { mutableStateOf("en") }
-    var value by remember { mutableStateOf(0.5f) }
+    var value by remember { mutableFloatStateOf(0.5f) }
     val spanish = language == "es"
     val colors = LocalLumenTheme.current.colors
     Column(verticalArrangement = Arrangement.spacedBy(LumenSpacing.Md)) {

@@ -9,7 +9,7 @@ provides filter reset, and shows the workspace release version. See
 
 An Expo reference app for every public component in `@santi020k/lumen-react-native`. It runs on
 web, iOS, and Android with four focused destinations: Home, Examples, Components, and Settings.
-Examples provides Release, Health, and Profile patterns with switchable loading, empty, error, and
+Examples provides Release, Health, Profile, and Workspace patterns with switchable loading, empty, error, and
 success states. Components combines
 search, product-intent categories, and focused component detail views. Settings includes Lumen and
 santi020k theme presets, system/light/dark appearance, live accessibility context, runtime
@@ -37,6 +37,16 @@ The SDK 57 configuration enables iOS scene support through `expo-build-propertie
 builds made with Xcode 27 launch on iOS and iPadOS 27. Keep this opt-in until the Expo SDK upgrade;
 Expo SDK 58 adopts scenes by default. Regenerate the native host after changing the plugin settings.
 See Expo's [scene lifecycle migration](https://github.com/expo/fyi/blob/main/ios-scene-lifecycle.md).
+
+The local Android splash plugin runs after Expo's resource generation. Expo SDK 57's splash plugin
+places `android:windowSplashScreenBehavior` in the base style even though that attribute requires
+API 33. Lumen moves it to a complete `values-v33` splash style while preserving the common items
+for older Android versions. Keep the Android minimum SDK unchanged and regenerate the native host
+after plugin changes. Remove this local plugin once an SDK update generates correctly qualified
+resources, then regenerate a clean Android host to retire its generated file. The plugin leaves
+already-qualified styles intact and remains safe when applied more than once.
+Plugin tests run with the playground tests, and the separate plugin type check uses Node types
+without adding Node globals to the React Native app.
 
 ## Open the published playground
 

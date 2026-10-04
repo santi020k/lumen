@@ -75,14 +75,14 @@ struct PlaygroundWorkspaceView: View {
                 if let record = selectedRecord {
                     VStack(alignment: .leading, spacing: LumenSpacing.lg) {
                         LumenText(LocalizedStringKey(record.name), variant: .title)
-                        LumenText(LocalizedStringKey(record.note))
+                        if saved { LumenText(copy("Changes saved locally", "Cambios guardados localmente"), tone: .success) }
                         LumenButton(copy("Edit record", "Editar registro")) {
                             draftName = record.name
                             draftNote = record.note
                             saved = false
                             editing = true
                         }
-                        if saved { LumenText(copy("Changes saved locally", "Cambios guardados localmente"), tone: .success) }
+                        LumenText(LocalizedStringKey(record.note))
                         if state == "success" {
                             LumenBarChart(
                                 label: spanish ? "Actividad semanal" : "Weekly activity",

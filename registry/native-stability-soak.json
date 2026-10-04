@@ -4,11 +4,11 @@
   "baselines": {
     "reactNative": {
       "path": "registry/native-api-baseline.json",
-      "sha256": "d3efae3929c3b7deab4c72f0a11c752af798b9cccd13c8c4c326368559a36660"
+      "sha256": "fa408dd209e8ee484dac2a8f2bf250ef3b5b8d3f6760786f5ed60d00fc082db0"
     },
     "swiftUI": {
       "path": "registry/swift-api-baseline.json",
-      "sha256": "5f5029f48465bcd57ae3e1217a09e20c22e5d2c577cb4225c8a52ffff5bb0ed4"
+      "sha256": "b3f0fbab08273cc94bd524c5517e6000c37abb2c74ce15395832a8cb90f33b08"
     },
     "swiftWidget": {
       "path": "registry/swift-widget-api-baseline.json",
@@ -16,11 +16,11 @@
     },
     "compose": {
       "path": "packages/compose/api/lumen-compose.api",
-      "sha256": "574cda2f38d7f1c93fba67f54fae08757e0ab0cc09477c68b46fcf248d4446c8"
+      "sha256": "1066b53c391643bb25ba57cc64f68ddb319510f826e9d14792433ad43bde1ff9"
     },
     "composeClassification": {
       "path": "registry/compose-api-classification.json",
-      "sha256": "047fe57c8b466247d9387cec7bd67e0ad6b6d5a2fc5afbbaf3e781c7896ef3a1"
+      "sha256": "db95a34ab1c72c851972474bcc5c17daf98a767e775c4917e14fb08e55f4f83a"
     },
     "wear": {
       "path": "packages/compose/wear/api/wear.api",

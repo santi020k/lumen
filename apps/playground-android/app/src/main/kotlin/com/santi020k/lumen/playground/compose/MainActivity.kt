@@ -26,6 +26,8 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -685,7 +687,7 @@ private fun FormsExample(
 ) {
     var notes by remember { mutableStateOf("Native components now share one documented contract.") }
     var pickerProfile by remember { mutableStateOf("balanced") }
-    var sliderValue by remember { mutableStateOf(72f) }
+    var sliderValue by remember { mutableFloatStateOf(72f) }
     var activeTab by remember { mutableStateOf("overview") }
     var releaseDateMillis by remember { mutableStateOf<Long?>(null) }
     var releaseRange by remember {
@@ -1043,7 +1045,7 @@ private fun NavigationOverlaysExample(initialComponent: String) {
 @Composable
 private fun NavigationExample(initialComponent: String) {
     var destination by remember { mutableStateOf("home") }
-    var reselectionCount by remember { mutableStateOf(0) }
+    var reselectionCount by remember { mutableIntStateOf(0) }
     val scrollState = rememberLumenNavigationBarScrollState()
     val items = remember {
         listOf(

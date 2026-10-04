@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -89,25 +90,25 @@ internal fun V4AdditionsExample(component: String) {
                     selectionLabel = { text("$it selected", "$it seleccionados") }, removeLabel = { text("Remove $it", "Quitar $it") })
             }
             "Range slider" -> {
-                var lower by rememberSaveable { mutableStateOf(20f) }
-                var upper by rememberSaveable { mutableStateOf(80f) }
+                var lower by rememberSaveable { mutableFloatStateOf(20f) }
+                var upper by rememberSaveable { mutableFloatStateOf(80f) }
                 LumenRangeSlider(text("Capacity", "Capacidad"), lower..upper, { lower = it.start; upper = it.endInclusive },
                     valueRange = 0f..100f, steps = 9, enabled = !disabled, readOnly = readOnly,
                     startLabel = text("Minimum", "Mínimo"), endLabel = text("Maximum", "Máximo"), formatValue = { "${it.toInt()}%" })
             }
-            "Adaptive list detail scaffold" -> AdaptiveListDetailExample(spanish, Modifier.fillMaxWidth().height(420.dp))
+            "Adaptive list detail scaffold" -> AdaptiveListDetailExample(modifier = Modifier.fillMaxWidth().height(420.dp), spanish = spanish)
         }
     }
 }
 
 /** Also used as a full-window example from the Examples destination. */
 @Composable
-internal fun AdaptiveListDetailExample(spanish: Boolean = false, modifier: Modifier = Modifier.fillMaxSize()) {
+internal fun AdaptiveListDetailExample(modifier: Modifier = Modifier, spanish: Boolean = false) {
     var selected by rememberSaveable { mutableStateOf<String?>(null) }
     val names = listOf("Studio", "Lumen", "Workspace")
     LumenAdaptiveListDetailScaffold(selected, { selected = null },
         listLabel = if (spanish) "Proyectos" else "Projects", detailLabel = if (spanish) "Detalles del proyecto" else "Project details",
-        modifier = modifier, backLabel = if (spanish) "Volver" else "Back",
+        modifier = modifier.fillMaxSize(), backLabel = if (spanish) "Volver" else "Back",
         listPane = { LazyColumn(Modifier.fillMaxSize()) {
             items(names) { name -> LumenButton(onClick = { selected = name }, intent = LumenButtonIntent.Quiet) { LumenText(name) } }
         } },

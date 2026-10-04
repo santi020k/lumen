@@ -1,5 +1,9 @@
 # Lumen 4 native quality
 
+<!-- cspell:words performancequalification -->
+
+<!-- cspell:words Automator logcat -->
+
 This record tracks the native improvements authorized for the v4 candidate. The implementation
 branch is `feature/native-v4-quality`, originally based on release commit `d0e9eeb5` and reconciled with committed release revisions `28659627`, `5831f8f0` and `04178a3d`. Preserve concurrent v4
 dependency, icon, web, and Compose-field work. Integrate only completed, verified task changes into
@@ -41,7 +45,7 @@ explicit React Native sheet focus targets with a compact-height/large-text scrol
   in the macOS playground and the iPad simulator Xcode build passed; iPad simulator interactions verified search, record selection, initial edit focus, keyboard-visible Save, saved feedback, Spanish chart descriptions, and error/retry recovery. The flow was repeated against reconciled code revision `1d7acc749fbb80e720a70a2e982c7aa0f1dcb095`. At maximum accessibility text size, Spanish sheet actions stacked and Save remained reachable with the keyboard visible. A swipe-dismiss attempt left the protected sheet open. Typed notes persisted. A later Release-mode XCTest run on the iPad Pro 13-inch (M5), iOS 27 Simulator, passed all three workspace tests, including typing and saving a long note through the native keyboard and verifying the exact saved text. Temporary keyboard and saved-note screenshots were inspected. Five responsive-launch samples averaged 4.935 seconds with 21.341% relative standard deviation; five scrolling/deceleration durations averaged 2.553 seconds. The bundle contains duration samples only, without frame or hitch counts. These host-dependent samples do not establish performance budgets. This run used the candidate worktree based on `156dd6e8` plus the new UI-test fixture, before its commit. The final committed fixture at `038e46f4a1dc751a1cea7ca778f631c9794d52b1` then passed all three tests on the iPhone 17 Pro iOS 27 Simulator, including an explicit keyboard-visible assertion. Phone launch samples averaged 5.472 seconds with 23.658% relative standard deviation; scrolling/deceleration duration averaged 2.570 seconds. Its raw result bundle, source/artifact report and inspected screenshots remain local under `.build/native-quality-apple-performance-iphone*`. The phone artifact checksum was captured after testing, but the shared build output was subsequently replaced by the tablet build; the phone report records that limitation. The final keyboard/save fixture also passed on iPad at source revision `5444fada`, with only documentation changing during the run. That built app is preserved with its checksum, result bundle and inspected screenshots under `.build/native-quality-apple-keyboard-ipad-committed*`. XCTest encountered three 60-second animation-idle waits but continued and verified keyboard visibility, reachable Save and the exact saved note; this is behavioral evidence, not a latency pass. Physical-device qualification and frame-smoothness measurements remain pending. Temporary screenshots were inspected and the original simulator text size was restored. API extraction succeeded on all five Apple
   targets; the reconciled source-compatibility gate validated 17 explicitly reviewed v4 diagnostics, including four icon enum additions.
 - Compose: compilation and unit tests passed. The Android adaptive workspace debug APK compiled
-  against the local library; three workspace instrumentation tests passed for saved-state restoration, editing, cancel and retry, including actual Activity recreation with an open draft and a saved record. Parent destination and pattern selection now use saved state. Process-death qualification remains pending. All 19 root instrumentation tests passed on the
+  against the local library; three workspace instrumentation tests passed for saved-state restoration, editing, cancel and retry, including actual Activity recreation with an open draft and a saved record. Parent destination and pattern selection now use saved state. These earlier tests cover Activity recreation; see the separate process-death evidence below. All 19 root instrumentation tests passed on the
   Pixel 10 Pro Android 17 emulator, including translated accessibility descriptions and a long
   form whose pinned Save action remains visible before and after body scrolling. API dumps and
   declaration classifications were regenerated and checked.
@@ -116,6 +120,37 @@ unfinished frames, timestamp precision, duplicate rows, malformed bounds and fut
 
 Run `pnpm run measure:android-workspace --serial <device>` from a clean committed checkout.
 See [runtime performance](native-runtime-performance.md) for setup, raw artifacts and limitations.
+
+### Isolated Android runtime collector
+
+A separate development-signed, non-debuggable `benchmark` variant now uses the
+`.performancequalification` application ID. The separate test driver collects five process-cold
+launches and six cumulative frame snapshots while scrolling the actual Workspace record list.
+Only the test driver uses the UI Automator Shell dependency and its loopback Internet permission;
+the library and playground runtime permissions are unchanged. Three reporter tests cover sample
+completeness, warm-launch rejection, deduplication and future-completion exclusion, alongside the
+six existing parser tests. The canonical validation command includes the reporter tests.
+
+Two local Android 17/API 37 emulator runs at 1280×2856, density 480 and font scale 1.0 produced:
+
+| Run | Cold launch median / p95 | Eligible frames | Frame median / p95 | Missed deadlines |
+| --- | --- | ---: | --- | --- |
+| First | 314 / 337 ms | 151 | 32.0 / 51.3 ms | 29 (19.2%) |
+| Repeat | 301 / 446 ms | 123 | 61.1 / 128.1 ms | 98 (79.7%) |
+
+Both moved visible record IDs from 001–009 to 047–060 and excluded no future completions.
+Each instrumentation test passed; driver lint reported zero errors and warnings. The existing
+process-death restoration test also passed again with the expanded driver. The large scrolling
+variation prevents choosing a regression threshold or claiming an optimization. These runs use a
+different collection workflow from the earlier measurements above and are not directly comparable.
+They establish neither physical-device readiness, full time-to-interactive nor stability iterations.
+
+Both raw runs remain local under `.build/native-quality-android-runtime-benchmark-first` and
+`.build/native-quality-android-runtime-benchmark`. The repeat report records source base `d5ed5305`
+plus the then-uncommitted benchmark/driver changes, source hashes, test results, lint and preserved
+APKs. Runtime input hashes matched after the run; the installed benchmark APK matched preserved
+SHA-256 `8f5e59aa6f749e7114c07cf162c55886267fd6fdaeb9c0257244cf0505516899`.
+See [runtime performance](native-runtime-performance.md) for the isolated workflow.
 
 ### Apple scrolling hitch fixture
 
@@ -267,6 +302,163 @@ Generated-host and dependency warnings include scoped-storage permissions, priva
 resources and unused resources; they also remain reported. Interactive Android qualification
 could not run through the UI tool, which did not recognize the running emulator application.
 
+### Android splash resource qualification
+
+The playground now runs a local Expo finalized mod after resource generation. It removes only
+`android:windowSplashScreenBehavior` from the base splash style and emits the complete splash
+style in `values-v33/lumen-splash-api.xml`. Common attributes and unrelated resources remain
+unchanged. Minimum SDK 24 is retained; no lint suppression or dependency upgrade is introduced.
+Remove the plugin after a compatible Expo upgrade fixes generation, then regenerate a clean host
+to retire the owned qualified resource.
+
+Three plugin tests cover resource preservation, immutable transformation, missing-contract errors
+and repeated application through Expo's actual mod compiler. Together with the six existing
+playground tests, all nine tests pass. Both application and plugin strict type checks and the
+playground's zero-warning JavaScript lint pass. The plugin's Node types are isolated from the
+application's React Native globals. The MCP snapshot remains current.
+
+A freshly generated qualification host retained its isolated Android application ID and disabled
+OTA updates. Its base style excludes the API 33 attribute and its qualified style includes it.
+Applying the final plugin again left both generated files byte-identical. The first corrected
+JDK 21 release assembly and lint run succeeded, reporting zero errors and 59 warnings rather than
+the previous API error. The original failed reports remain preserved. Native dependency and
+generated-host warnings remain open; this is not zero-warning native qualification, physical-device
+evidence or completion of the v4 gate.
+
+The final plugin at `8a960037` passed a second fresh-host JDK 21 release assembly and lint run,
+again with zero errors and 59 warnings. Its preserved APK has SHA-256
+`4892c4825e47920db076aaf278136f6aea973222f6b8c67bd0457755b1f6d35d`; signature verification
+passed. The artifact, seven configuration/plugin input hashes and lint report are under
+`.build/native-quality-react-native-android-splash-runtime`. Minimum SDK 24 was verified in the
+merged manifest. The full JavaScript suite passed 1,189 tests; the final root type and lint checks
+each passed all 23 tasks. The Expo web export passed. These results belong to the pre-reconciliation
+task candidate, rather than the subsequently combined release.
+
+The release advanced to `10d25bd9` and now contains the earlier native-quality work through
+`3cb972ce`, verified by ancestry. The isolated task branch cleanly reconciles that combined release;
+the new splash fix still requires combined validation and local release integration. Historical
+runtime artifacts retain their tested revisions, and do not qualify the combined release.
+
+### Combined candidate verification
+
+The reconciled candidate `ecdcb322` passed 1,313 JavaScript tests in 119 files, all 23 root
+type-check and zero-warning lint tasks, ten playground tests, 69 shared and 23 platform native
+contracts, 305 classified React Native exports, 183 supported Compose declarations, 22 reviewed
+Swift compatibility diagnostics, and the clean packed React Native consumer. The canonical
+`pnpm run validate` passed the monorepo build but stopped at existing web bundle budgets: shared
+CSS was 199.7 KiB raw / 32.4 KiB gzip, React components 168.1 / 34.7 KiB and Elements gzip
+44.4 KiB. The corresponding limits remain 199.2 / 32.2, 167.0 / 34.2 and 43.9 KiB. The splash
+fix changes none of those sources or limits. Checks after that failed step are not implied green;
+the native checks above were run independently.
+
+A fresh combined Android host passed release assembly and lint with zero errors and 59 warnings.
+The artifact is preserved under `.build/native-quality-react-native-android-combined-runtime`
+with SHA-256 `c0895aefe92d0f1dd702fd92c68f58eb6b1815907c17971db767f4f676beecac`.
+All 257 generated-host and compiled library input hashes matched after the final validation build;
+signature verification passed. The preparation report remains preserved separately because Expo
+rewrites the staged Android/iOS development scripts during generation. Dependencies were unchanged,
+and final input capture happened after generation. The isolated app installed on the Android 17
+emulator, and the installed APK hash matched before and after five force-stopped process launches.
+Activity Manager samples were 1,185, 828, 657, 554 and 564 ms: median 657 ms and p95 1,185 ms.
+No application database was cleared. These observations do not establish full time-to-interactive,
+scrolling, hardware qualification or passing regression thresholds.
+
+Three Android Hermes exports per fixture passed the unchanged import budgets: baseline 1,429,229
+bytes, root button 6,253,769, foundations 1,451,478, static graphics 1,634,493 and named root icon
+6,253,837. Repeated iOS exports also passed: baseline 1,424,195 bytes, root button 6,247,982,
+foundations 1,446,438, static graphics 1,629,152 and named root icon 6,248,052. The new splash fix remains on the
+task branch pending a passing combined gate and serialized local release integration. Native
+large-text failures, physical-device and screen-reader checks, and stability iterations remain open.
+
+The combined iOS Release host built at `737838ec`, using the same verified application inputs
+prepared at `ecdcb322`, and launched on the iPhone 17 Pro iOS 27 Simulator. Scene support remained
+enabled and OTA updates disabled. The preserved app contains 76 file hashes; all installed files
+matched after the native flow. Home-to-Examples-to-Workspace navigation and record 002 selection
+worked. Changing text size live from 3 to 11 reproduced clipped detail title, Back/Edit labels
+and chart heading within stale heights, while navigation reflowed. This confirms the large-text
+failure on the combined candidate; it does not identify the exact upstream cause or qualify the
+remaining keyboard, VoiceOver or hardware flows. Standard text size 3 and Device Hub's sidebar
+layout were restored. No draft was opened or record changed. Privacy-safe before/after screenshots,
+the app and input/artifact report are preserved under
+`.build/native-quality-react-native-ios-combined-runtime`. Native dependency warnings remain in
+`.build/native-quality-react-native-ios-combined-build.log`; a successful build is not a
+zero-warning native or accessibility pass.
+
+A temporary Release text-layout probe compared plain React Native `Text` with `LumenText` using
+static paragraphs without fixed heights. Both rendered four lines with a reported widest line
+of 360 at font scale 1.000. A live change to maximum text size produced scale 3.571 and visible
+clipping in both renderers; each callback then reported only one line, widest 362. The initial
+controlled field value remained, but no edited-draft retention was qualified. This reproduces
+the defect outside Lumen's text implementation, rather than proving its exact renderer-cache cause.
+The original probe passed strict TypeScript and the native Release build; all 76 installed app
+file hashes matched after the comparison. Its source, artifact, report and privacy-safe screenshots
+are under `.build/native-quality-text-layout-probe`. A maintained diagnostic fixture now lives in
+`apps/playground-react-native/src/fixtures/TextLayoutProbe.tsx`; its labels use single expressions
+and repository formatting rather than the temporary probe's multi-expression labels.
+The maintained fixture passed repository type checking and zero-warning lint (23 tasks each),
+the ten playground tests, and focused documentation lint and spelling checks. A subsequent
+read-only check confirmed all 76 installed files still match the preserved combined app.
+Standard text size, Device Hub's sidebar, the original host entrypoint and the preserved combined
+qualification app were restored. The public playground entrypoint is unchanged. This remains a
+failed accessibility result; neither font scaling nor application state was disabled to hide it.
+
+### Android long-note keyboard regression
+
+The new Activity test opens the Workspace editor, focuses Notes, enters a 1,160-character note,
+and requires Save to remain displayed while the sheet dialog's actual IME insets report a visible
+keyboard. It then saves, checks visible confirmation, reopens the editor and verifies the exact
+note. The first run exposed a test-harness error: pinned Save has no scroll ancestor. After fixing
+that action while retaining the visibility and keyboard assertions, the test exposed hidden save
+feedback below the long note. The workspace now places confirmation and Edit above the note.
+
+The touched record lists now use immutable values with an explicit Compose list saver, resolving
+the two mutable-collection state warnings while retaining saved-state restoration. All six Android
+playground instrumentation tests passed on the Android 17/API 37 emulator after these changes,
+including Activity recreation, Compose saved-state restoration, keyboard editing and catalog
+search. Compilation and lint completed; lint still reports 26 existing warnings or hints in other
+playground code and assets, so this is not a zero-warning gate.
+
+Testing used an ignored host under `.build/native-quality-android-keyboard-host` with the separate
+application ID recorded in `final-report.json`; the original
+playground installation was preserved. Source and APK hashes, the failing feedback result, and the
+final six-test result are retained there. The full log is
+`.build/native-quality-android-keyboard-final-test.log`. The computer-use tool does not expose the
+Android emulator, so before-and-after visual screenshots remain unverified. This emulator pass
+neither proves process-death restoration nor qualifies physical devices, large text or screen readers.
+
+### React Native and SwiftUI long-note feedback
+
+Both reference workspaces now place save confirmation and Edit above the note, matching the
+Android correction. React Native's phone web preview previously returned focus to Edit below the
+long note and scrolled the title above the viewport (top -344.5); after the change, the title stays
+visible at top 72. Phone 390×844 and desktop 1280×900 before-and-after screenshots were inspected
+with the same record, 1,160-character note and light theme. Reopening the editor preserved the
+exact note on both layouts. The maintained web accessibility canary now repeats that workflow,
+requires focus restoration and fully visible title/confirmation, and verifies exact draft retention.
+It passed in English and Spanish against a fresh production web export. The unsupported web BackHandler warning also
+revealed that the Workspace hook registered on every platform; it now registers only on Android.
+App type checking, zero-warning lint and all ten unit tests passed. These web checks do not prove
+the revised layout in React Native's iOS or Android host. Screenshots, source hashes and the stale
+preview excluded from verification are retained under `.build/native-quality-rn-long-note`.
+
+The SwiftUI Release test was strengthened to enter the same long note through the native keyboard,
+require visible confirmation and Edit after saving, and reopen the editor to compare the exact
+note. The baseline failed its confirmation visibility assertion; the corrected iPhone 17 Pro iOS
+27 Simulator run passed. Before-and-after saved-note screenshots and the keyboard-visible Save
+screenshot were inspected. Both runs used separate task-owned simulators of the same model and OS
+with default text size; the source inputs and twelve-file application manifests are preserved under
+`.build/native-quality-apple-long-note`. The after result bundle is
+`/private/tmp/lumen-native-quality-long-note-after.xcresult`. Baseline result finalization waited on
+Xcode simulator diagnostic collection; its live process was preserved until it ended, and the after
+run used separate simulator and build paths. Build/runtime logs retain SDK metadata and Simulator
+accessibility class warnings. This is one focused native behavioral pass, not a
+performance, physical-device, large-text, screen-reader or stability qualification.
+
+Repository type checking and zero-warning ESLint passed 23 tasks each. A fresh
+`pnpm run check:bundle-size` still failed the unchanged CSS, React and Elements budgets; its exact
+diagnostics are preserved in `.build/native-quality-long-note-bundle-check.log`. No budgets were
+raised. The full release gate and local integration remain incomplete.
+
 ### Outstanding scope and blockers
 
 The complete Required outcomes list remains authoritative. Broader phone/tablet runtime qualification and physical-device keyboard/focus and screen-reader checks,
@@ -303,3 +495,202 @@ actual tested revision; historical records retain their original attribution and
 
 See [runtime performance](native-runtime-performance.md), [native patterns](native-patterns.md), [device validation](native-device-validation.md),
 [consumer qualification](native-consumer-validation.md), and [v4 readiness](lumen-4-readiness.md).
+
+### React Native iOS long-note verification
+
+A fresh iOS Release host built and launched from committed revision `20e9a89b` on the
+task-owned iPhone 17 Pro iOS 27 Simulator. The public playground entrypoint was restored
+from the diagnostic probe; scene support remained enabled and OTA updates disabled.
+Native Home → Examples → Workspace navigation, searching for record 200, editing and
+saving a 1,160-character note succeeded. The saved confirmation and Edit action were
+visibly above the long note. Reopening the editor exposed the exact saved value, verified
+against the synthetic input, before cancelling.
+
+This run used Device Hub keyboard capture. The software keyboard remained hidden, so
+it does not qualify keyboard-visible Save or physical-device focus behavior. Standard
+text size remained 3 and keyboard capture was restored to off. The preserved app's 76
+installed file hashes and all 258 captured host/library input hashes matched after the
+interaction. The app, report and privacy-safe editor/saved screenshots are under
+`.build/native-quality-react-native-ios-long-note-runtime`; the native build log is
+`.build/native-quality-react-native-ios-long-note-build.log`. This closes the native iOS
+long-note persistence and feedback check at default text size, while live large-text
+clipping, software-keyboard qualification, screen readers, hardware, runtime performance,
+stability iterations, the canonical gate and local release integration remain open.
+
+### Reconciled Android long-note restoration
+
+The task branch reconciled release revision `50990a22` without conflicts at `92206288`.
+The Activity recreation test now enters a 1,160-character unsaved note as well as a new
+name, recreates the Activity, verifies the exact draft, saves, recreates again and reopens
+the editor to verify the exact saved note. All six playground instrumentation tests
+passed on the Android 17/API 37 emulator in the isolated qualification host. Native lint
+completed with 26 existing warnings or hints; this remains separate from actual process
+death and physical-device qualification. The passing XML, APKs, source hashes and report
+are preserved under `.build/native-quality-android-long-note-restoration`.
+
+The reconciled shared native contracts, React Native API baseline and Compose API
+classification passed. Root type checking and zero-warning JavaScript lint each passed
+all 23 tasks. Canonical validation first hit sandbox-denied loopback fixture
+servers, then passed that step and the monorepo build with the required access. It still
+failed the unchanged CSS, React and Elements bundle limits recorded above. The fresh
+log is `.build/native-quality-reconciled-final-validate-loopback.log`; later steps are
+not implied green and local release integration remains incomplete.
+
+### Maintained text probe: live scaling versus cold launch
+
+The maintained diagnostic fixture built in the isolated iOS Release host at `a1d5d60f`
+and ran on the task-owned iPhone 17 Pro iOS 27 Simulator. At default scale 1.000,
+plain React Native and Lumen paragraphs each reported four lines, widest 360. The field
+was edited to a synthetic value before changing text size live to 11 (scale 3.571).
+The exact edited draft remained in the native field, while both paragraphs visibly
+clipped and reported one line, widest 362. This verifies edited-draft retention through
+the live change separately from the failed text layout.
+
+Relaunching the unchanged artifact at the same maximum size produced 15 lines, widest
+350, for both paragraphs. Inspected top and lower screenshots showed wrapping and the
+paragraph's final sentence. The probe's in-memory field reset to its initial value on
+relaunch; this is not persisted-draft qualification. Returning to text size 3 restored
+both four-line measurements. All 76 installed probe files and captured input hashes
+matched after testing. The artifact, raw accessibility observations and screenshots
+are under `.build/native-quality-text-layout-probe-maintained`. The original host
+entrypoint and preserved public playground app were restored with matching file hashes;
+keyboard capture remained off and the sidebar was restored.
+
+The matching [upstream issue](https://github.com/react/react-native/issues/57512) remains
+open. The generated host enables React Native's prebuilt core by default, so editing
+installed C++ sources alone would not verify a native fix. The live-versus-cold result
+narrows the investigation to layout invalidation during scaling; it does not prove an
+exact cache cause, qualify large text or justify disabling font scaling or resetting
+application state. No renderer patch or production build configuration changed.
+
+### Compose primitive state and Modifier cleanup
+
+Six private playground numeric states now use Compose's specialized integer or float
+state factories instead of boxed generic state. The adaptive list/detail example now
+places its optional Modifier first, defaults it to `Modifier`, and applies its fill
+behavior internally. The fixed-height catalog call uses named arguments; the full-window
+call retains its existing fill behavior. No public library contract or dependency changed.
+
+All six Android playground instrumentation tests passed again on the Android 17/API 37
+emulator. Native lint completed with 18 remaining launcher-asset/resource findings, down
+from 26; all six numeric-state and both Modifier findings are absent from the new report.
+This is not a zero-warning native gate or a measured startup/scrolling improvement. Root
+type checking and zero-warning JavaScript lint each passed all 23 tasks. The test XML,
+lint report, APKs and source hashes are under `.build/native-quality-android-primitive-state`;
+the build log is `.build/native-quality-android-primitive-state.log`. Actual process death,
+hardware, the renderer fix, stability qualification and local release integration remain
+open, including the existing canonical bundle-budget failure.
+
+### Canonical navigation graphic import comparison
+
+The Hermes benchmark now compares four matching icon-button controls (Home, Search,
+Activity and Settings) through the root catalog and the static graphics entrypoint.
+Both use the same Lumen renderer and canonical generated artwork. The static fixture
+extracts only the selected declarations with the TypeScript syntax tree, replacing the
+previous text-delimiter extraction. Three regression tests cover comment/string
+lookalikes, missing or duplicate declarations and adjacent declarations; they are now
+part of canonical validation. No public icon subpath or production dependency was added.
+
+Three Android exports per fixture passed the unchanged budgets. The four-icon static
+fixture measured 1,636,454 bytes versus 6,254,003 through the root catalog, a reduction
+of 4,617,549 bytes for these matching fixtures. This supports continuing the per-icon
+import investigation; copying fixture declarations is not a public consumer API.
+The platform baseline was 1,429,229 bytes, foundations 1,451,478 and the single static
+search graphic 1,634,493. Native startup and scrolling improvements are not established
+by bytecode size. Full samples are in `.build/native-quality-navigation-imports-android.log`.
+
+Three iOS exports per fixture also passed: the matching static navigation fixture was
+1,631,102 bytes versus 6,248,221 through the root catalog, a reduction of 4,617,119 bytes.
+The iOS baseline was 1,424,196, foundations 1,446,437 and single static
+graphics 1,629,153 bytes. Full iOS samples and a source-hash report are under
+`.build/native-quality-navigation-imports-ios.log` and
+`.build/native-quality-navigation-imports-report.json`. An Android-run formatting change
+added only a blank line; the fixture sources and extracted artwork were unchanged.
+
+Root type checking and zero-warning lint passed all 23 tasks. Canonical validation
+passed the new fixture tests and monorepo build, then failed the unchanged web bundle
+budgets. Its log is `.build/native-quality-navigation-imports-validate.log`; later
+checks and local release integration remain incomplete.
+
+### Canonical React Native icon modules
+
+The candidate adds `@santi020k/lumen-react-native/icons/<name>` for all 2,437 canonical graphics.
+Use these with the existing `graphics` entrypoint; dynamic root lookups remain unchanged. Brand
+paths replace the namespace colon with a hyphen. Both representations are generated from one
+catalog and one rendering function. A prototype that made the root catalog import every separate
+module added 804,689 bytes to Android root navigation and exceeded the unchanged 6 MiB budget.
+The accepted layout retains the single-module root catalog and emits optional per-icon modules.
+
+Three production Hermes exports per fixture passed the existing Android and iOS budgets. The
+four-icon public per-icon navigation fixture measured 1637596 bytes on Android and
+1632243 bytes on iOS, compared with 6254003 and 6248221 bytes respectively for matching
+root navigation. These are bundle-size checks; they do not establish startup latency, native
+scrolling performance, physical-device accessibility or stability-soak qualification.
+
+The new API tests reject unclassified declaration forms, extra directory members, mismatched
+index paths and unreviewed package targets. The baseline checks every member and classifies 2,742
+exports across five entrypoints/families (2,700 unique symbols). Root `pnpm run typecheck` and
+`pnpm run lint` passed all 23 tasks; `pnpm run test` passed all 1,314 tests in 119 files with local
+HTTP test listeners enabled. All 138 React Native tests passed, including matching interface and
+brand geometry and accessible labels. The clean packed package passed installation, peer,
+contents and strict TypeScript consumer checks for both public icon paths. Generated icon checks,
+native contracts and v4 migration checks also passed.
+
+`pnpm run validate` passed its earlier checks and all 14 build tasks, then stopped at the existing
+web bundle overruns: CSS 199.7 KiB raw/32.4 KiB gzip, React components 168.1/34.7 KiB and Elements
+44.4 KiB gzip. Budgets remain unchanged. Later canonical steps are not implied green, and local
+release integration remains incomplete. Logs and source-hashed reports are preserved under
+`.build/native-quality-static-icon-*`; measurements used source base `b5b2a05e` plus this task's
+uncommitted public API, generator and fixture changes, before their focused commit.
+
+The first commit attempt exposed canonical brand-name spell diagnostics. A generated dictionary
+now supplies exact catalog vocabulary only for the per-icon modules, export index and reviewed API
+baseline. Prose remains checked; no ignore path or quality rule was widened. The generator changed
+after the measurements solely to emit this dictionary; every recorded runtime/package input still
+matches its measurement hash. Generated-source validation and the vocabulary check passed.
+
+### Android stopped-process restoration
+
+A separate `restoration-driver` instrumentation application now exercises process death without
+killing its own runner. It edits record 200, retains an exact 1,160-character unsaved note, sends
+the isolated playground to the background and uses `am kill`. The test requires the old PID to
+disappear before resuming the existing task in a new process, then verifies the exact draft. It
+saves the record, kills the background process again, and verifies the restored title, saved
+feedback and exact reopened note. The final Android 17/API 37 emulator run passed one test with
+zero failures and errors; Final PID transitions were `9155 -> 9541 -> 9755` and are retained in the preserved test log. Driver lint passed with zero
+warnings and errors after fixing its backup configuration and missing icon.
+
+The opt-in `lumenQualification=true` debug profile installs only the separate qualification app.
+Generated manifests confirm the normal debug and release package IDs remain unchanged, including
+release with the qualification flag enabled. The driver rejects every target package except that
+isolated installation. Its UI Automator 2.4.0 dependency is test-only and was verified against
+Google Maven and the official stable release notes. It is absent from the phone library and app
+runtime dependencies.
+
+Source base `eb25e894` plus this task's driver, debug profile and documentation changes was used
+before the focused commit. Preserved APKs, exact installed-target checksum, source hashes, passing
+instrumentation XML, logcat, zero-issue driver lint and manifest comparisons live under
+`.build/native-quality-android-process-restoration`. Repository type checking and zero-warning
+lint each passed all 23 tasks. `pnpm run validate` again stopped at the unchanged web CSS, React
+and Elements size overruns after all 14 build tasks passed; release integration remains
+incomplete. Gradle 9.8 also reports `Configuration.setVisible(boolean)` deprecation in the build
+configuration/plugin graph; no repository build script invokes that method. No rule was weakened.
+This evidence covers this emulator workflow and actual stopped-process restoration, not removed
+tasks, app-storage persistence, physical devices, startup/scrolling budgets or stability soak.
+
+### Icon API baseline and qualification ledger
+
+The final qualification audit caught a stale React Native API digest in the stability ledger after
+the additive per-icon API change at `eb25e894`. Comparing the candidate with `b5b2a05e` confirms
+that root, datetime, foundations and graphics contracts are identical; the only baseline addition
+is the reviewed `icons/*` family with 2,437 supported graphics. The ledger now records the current
+reviewed React Native digest. Its iteration list was and remains empty, so no completed evidence
+was removed or fabricated. A regression test requires stale hashes to fail before any soak
+iteration can be accepted. The checker validates all seven baseline hashes and still reports
+`0/2` completed iterations. Five real-consumer records and all 22 physical-device evidence slots
+remain incomplete. Structural checker success does not establish qualification or stable readiness.
+
+All 20 soak-ledger regression tests passed after the digest update, as did repository type checks
+and zero-warning lint (23 tasks each). The canonical validation gate again passed all 14 builds
+before the existing web bundle-size failures. The required-complete soak check still rejects the
+empty iteration list; no release or remote integration was performed.

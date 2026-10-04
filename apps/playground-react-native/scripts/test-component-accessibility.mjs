@@ -207,8 +207,58 @@ try {
       await expect(disclosure).toHaveAttribute('aria-expanded', 'false')
     }
   }
+
+  const longNote = 'A long keyboard-edited note. '.repeat(40)
+
+  for (const viewport of [{ height: 844, width: 390 }, { height: 900, width: 1280 }]) {
+    await page.setViewportSize(viewport)
+
+    for (const labels of [
+      { language: 'English', search: 'Search records', edit: 'Edit record', note: 'Notes', save: 'Save', saved: 'Changes saved locally', cancel: 'Cancel' },
+      { language: 'Español', search: 'Buscar registros', edit: 'Editar registro', note: 'Notas', save: 'Guardar', saved: 'Cambios guardados localmente', cancel: 'Cancelar' }
+    ]) {
+      const workspaceURL = new URL(baseURL)
+
+      workspaceURL.searchParams.set('destination', 'examples')
+
+      workspaceURL.searchParams.set('pattern', 'workspace')
+
+      await page.goto(workspaceURL.href, { waitUntil: 'load' })
+
+      await page.getByRole('radio', { name: labels.language, exact: true }).click()
+
+      await page.getByRole('textbox', { name: labels.search, exact: true }).fill('Lumen 200')
+
+      await page.getByRole('button', { name: 'Lumen 200', exact: true }).click()
+
+      const edit = page.getByRole('button', { name: labels.edit, exact: true })
+      const dialog = page.getByRole('dialog', { name: labels.edit, exact: true })
+
+      await edit.click()
+
+      await dialog.getByRole('textbox', { name: labels.note, exact: true }).fill(longNote)
+
+      await dialog.getByRole('button', { name: labels.save, exact: true }).click()
+
+      await expect(dialog).toBeHidden()
+
+      await expect(edit).toBeFocused()
+
+      await expect(page.getByText('Lumen 200', { exact: true }).last()).toBeInViewport({ ratio: 1 })
+
+      await expect(page.getByText(labels.saved, { exact: true })).toBeInViewport({ ratio: 1 })
+
+      await edit.click()
+
+      await expect(dialog.getByRole('textbox', { name: labels.note, exact: true })).toHaveValue(longNote)
+
+      await dialog.getByRole('button', { name: labels.cancel, exact: true }).click()
+
+      await expect(dialog).toBeHidden()
+    }
+  }
 } finally {
   await browser.close()
 }
 
-console.log('React Native web accessibility canary passed, including heatmaps and target charts at 390px and 1280px in both themes.')
+console.log('React Native web accessibility canary passed, including charts in both themes and English/Spanish long-note editing at phone and desktop sizes.')

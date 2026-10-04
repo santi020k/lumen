@@ -5,7 +5,7 @@ provides filter reset, and shows the workspace release version. See
 [the v4 playground guide](../../docs/playgrounds.md#lumen-4-candidate) for search and capture behavior.
 
 
-<!-- cspell:words screencap -->
+<!-- cspell:words screencap Automator Pandroid keyboardqualification performancequalification -->
 
 A polished Jetpack Compose reference application for `lumen-compose`, plus a focused Wear
 application that compiles the separate `lumen-compose-wear` artifact. The phone experience has four
@@ -51,6 +51,65 @@ consumers to resolve those artifacts instead of the included source build:
   -PlumenComposeRepository=../../packages/compose/build/central-staging \
   assembleDebug :app:verifyLumenArtifactIsolation
 ```
+
+## Process-death restoration test
+
+The `restoration-driver` module runs instrumentation in a separate process so it can terminate the
+playground process without terminating its own assertions. It uses test-only UI Automator 2.4.0.
+The explicit debug qualification profile installs a separate app ID and does not change the
+normal debug or release application. Select one task-owned emulator with `ANDROID_SERIAL`.
+
+```bash
+ANDROID_SERIAL=<emulator-serial> ./packages/compose/gradlew -p apps/playground-android \
+  :app:installDebug -PlumenQualification=true
+ANDROID_SERIAL=<emulator-serial> ./packages/compose/gradlew -p apps/playground-android \
+  :restoration-driver:connectedDebugAndroidTest :restoration-driver:lintDebug \
+  -PlumenQualification=true \
+  -Pandroid.testInstrumentationRunnerArguments.class=com.santi020k.lumen.playground.restoration.WorkspaceProcessDeathTest \
+  -Pandroid.testInstrumentationRunnerArguments.targetPackage=com.santi020k.lumen.playground.compose.keyboardqualification
+```
+
+The target must already be installed. The driver accepts only that isolated qualification package,
+starts a fresh task, edits the last workspace record with a 1,160-character unsaved note, then
+backgrounds the target and uses `am kill`. It requires the old PID to disappear and the restored
+activity to run in a new process before checking the exact draft. It saves the record, repeats the
+process kill, and checks saved feedback and the exact reopened note. It does not clear app storage,
+kill the public installation or use force-stop as restoration evidence. Instrumentation results
+are written beneath `restoration-driver/build/outputs/androidTest-results`. This emulator test
+does not establish physical-device qualification, persistent storage across removed tasks, or
+startup/scrolling performance.
+
+## Isolated runtime measurements
+
+The `benchmark` variant inherits release settings, disables debugging, uses the standard development
+certificate and installs as a separate `.performancequalification` application. The runtime test
+runs in the driver process and only accepts that package. It makes five process-cold launches,
+then collects frame snapshots for six workspace list scrolls and checks that visible records move.
+
+```bash
+ANDROID_SERIAL=<emulator-serial> ./packages/compose/gradlew -p apps/playground-android \
+  :app:installBenchmark
+ANDROID_SERIAL=<emulator-serial> ./packages/compose/gradlew -p apps/playground-android \
+  :restoration-driver:connectedDebugAndroidTest :restoration-driver:lintDebug \
+  -Pandroid.testInstrumentationRunnerArguments.class=com.santi020k.lumen.playground.restoration.WorkspaceRuntimePerformanceTest \
+  -Pandroid.testInstrumentationRunnerArguments.targetPackage=com.santi020k.lumen.playground.compose.performancequalification
+```
+
+Select the test class explicitly: process restoration and runtime measurement use different
+isolated installations. The test log records the exact `/data/local/tmp/lumen-workspace-runtime-*`
+sample directory and before/after record ranges. Pull that directory using the selected emulator:
+
+```bash
+adb -s <emulator-serial> pull <recorded-sample-directory> .build/workspace-runtime-samples
+node scripts/report-android-workspace-runtime.mjs --input .build/workspace-runtime-samples \
+  --output .build/workspace-runtime-report.json
+```
+
+Preserve the benchmark APK, installed checksum, source revision, device settings, instrumentation
+results and raw samples together. The reporter reuses the strict Android timing/frame parsers,
+deduplicates snapshots and marks future completion timestamps as Partial. It does not establish a
+passing budget or hardware qualification. See [runtime performance](../../docs/native-runtime-performance.md)
+for metric definitions and remaining boundaries.
 
 ## Component screenshots
 

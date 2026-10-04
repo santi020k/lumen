@@ -15,10 +15,7 @@ import {
   Svg
 } from 'react-native-svg'
 
-import type {
-  LumenIconGraphic,
-  LumenIconGraphicProps
-} from './primitives.js'
+import type { LumenIconGraphic, LumenIconGraphicProps } from './icon-primitives.js'
 
 const LumenAArrowDownIconGraphic = ({
   color = 'currentColor',

@@ -1,7 +1,15 @@
+// cspell:words keyboardqualification performancequalification
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.plugin.compose")
 }
+
+val qualificationInstall = providers.gradleProperty("lumenQualification")
+    .map { value ->
+        require(value == "true" || value == "false") { "lumenQualification must be true or false." }
+        value == "true"
+    }
+    .orElse(false)
 
 val lumenComposeVersion = providers.gradleProperty("lumenComposeVersion")
 val releaseVersionCode = providers
@@ -59,8 +67,20 @@ android {
     }
 
     buildTypes {
+        getByName("debug") {
+            if (qualificationInstall.get()) {
+                applicationIdSuffix = ".keyboardqualification"
+            }
+        }
         getByName("release") {
             signingConfig = signingConfigs.findByName("release")
+        }
+        create("benchmark") {
+            initWith(getByName("release"))
+            applicationIdSuffix = ".performancequalification"
+            signingConfig = signingConfigs.getByName("debug")
+            isDebuggable = false
+            matchingFallbacks += "release"
         }
     }
 }

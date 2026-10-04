@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -122,7 +123,7 @@ internal fun AdvancedFormsExample(component: String = "") {
 @Composable
 internal fun PullToRefreshExample() {
     var refreshing by remember { mutableStateOf(false) }
-    var refreshCount by remember { mutableStateOf(0) }
+    var refreshCount by remember { mutableIntStateOf(0) }
     var language by remember { mutableStateOf("en") }
     val spanish = language == "es"
     val scope = rememberCoroutineScope()

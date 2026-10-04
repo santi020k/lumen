@@ -452,7 +452,9 @@ import { LumenButton, LumenProvider } from '@santi020k/lumen-react-native/founda
 ```
 
 Run `pnpm run measure:react-native-imports` from the repository to compare production Hermes
-bytecode for a platform baseline, root button, root icon, and foundation button. Build time is a
+bytecode for a platform baseline, root button, root icon, foundation button, and matching
+four-icon navigation fixtures using root or static graphics imports. Both static graphics
+fixtures and the public per-icon fixture use canonical generated artwork and retain the existing overhead budget. Build time is a
 local build measurement; it does not establish native startup latency or scrolling performance.
 
 
@@ -473,6 +475,28 @@ import { SearchGraphic } from './SearchGraphic'
   <LumenIcon icon={SearchGraphic} label="Search records" />
 </LumenProvider>
 ```
+
+### Canonical per-icon imports
+
+Use `@santi020k/lumen-react-native/icons/<name>` for canonical artwork without loading the full
+named catalog. Each module exports one graphic. Pair it with the `graphics` entrypoint:
+
+```tsx
+import { LumenIcon, LumenProvider } from '@santi020k/lumen-react-native/graphics'
+import { LumenSearchIconGraphic } from '@santi020k/lumen-react-native/icons/search'
+
+<LumenProvider>
+  <LumenIcon icon={LumenSearchIconGraphic} label="Search records" />
+</LumenProvider>
+```
+
+Icon paths use the catalog name; replace the brand namespace colon with a hyphen:
+`brand:github` becomes `icons/brand-github`, exporting `LumenBrandGithubIconGraphic`.
+The root `name` lookup remains available for dynamic choices and retains its full catalog.
+The generator emits both representations from the same artwork and rendering function; the root
+keeps its compact single-module layout to avoid thousands of module records in Hermes bundles.
+Labels, decorative treatment, themes and touch targets remain the responsibility of `LumenIcon`
+and `LumenIconButton`. The same `react-native-svg` peer is required.
 
 ## Advanced native inputs
 
