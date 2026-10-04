@@ -971,6 +971,7 @@ behaviorTest(['Mentions'], 'Mentions filters suggestions and inserts the selecte
 
 test('Mentions keeps option buttons out of the tab sequence while keyboard and pointer selection still work', async ({ page }) => {
   await openPreview(page, 'mentions')
+  await page.clock.install()
 
   const root = page.locator('.component-doc-preview [data-ui-mentions]')
   const input = root.locator('[data-ui-mentions-input]')
@@ -999,6 +1000,7 @@ test('Mentions keeps option buttons out of the tab sequence while keyboard and p
   await expect(input).toBeFocused()
 
   await input.fill('Hello @al')
+  await page.clock.runFor(150)
   await expect(list).toBeVisible()
   await input.press('Enter')
   await expect(input).toHaveValue('Hello @alice ')
@@ -1008,6 +1010,11 @@ test('Mentions keeps option buttons out of the tab sequence while keyboard and p
   await expect(list).toBeVisible()
   await aliceOption.click()
   await expect(input).toHaveValue('Hello @alice ')
+  await expect(list).toBeHidden()
+  await input.fill('Hello @al')
+  await expect(list).toBeVisible()
+  await nextField.focus()
+  await page.clock.runFor(150)
   await expect(list).toBeHidden()
 })
 

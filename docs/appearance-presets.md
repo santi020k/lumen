@@ -72,7 +72,8 @@ ThemeBuilder accepts preset buttons with `data-ui-theme-preset="default|studio|g
 `custom` restores hue-generated colors. Use Manual mode for explicit action colors on a preset.
 Number inputs with `data-ui-theme-radius-scale`, `data-ui-theme-spacing-scale` and
 `data-ui-theme-border-width` adjust appearance and export the resulting tokens. Invalid numeric
-values fall back to the preset's unscaled dimensions. The existing CSS and JSON exports include
+values fall back to the preset's unscaled dimensions. Scales that overflow any derived dimension
+also fall back as a group, preserving finite CSS values. The existing CSS and JSON exports include
 appearance tokens; Figma export continues to export colors. The live
 [theme playground](https://lumen.santi020k.com/docs/theme-playground) shows these controls.
 

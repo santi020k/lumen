@@ -43,7 +43,11 @@ const insertRow = (content: HTMLElement, row: HTMLElement, previousRow?: HTMLEle
 }
 
 const restoreFocus = (root: HTMLElement, focused: Element | null, ownedFocus: boolean): void => {
-  if (!ownedFocus || !(focused instanceof HTMLElement) || focused === root.ownerDocument.activeElement) return
+  const elementClass = root.ownerDocument.defaultView?.HTMLElement
+
+  if (!ownedFocus || !elementClass || !(focused instanceof elementClass)) return
+
+  if (focused === root.ownerDocument.activeElement) return
 
   if (root.contains(focused)) focused.focus({ preventScroll: true })
   else root.focus({ preventScroll: true })
@@ -108,7 +112,9 @@ export const createLumenVirtualCollectionController = <T>(
       rows.set(entry.key, rendered)
     } else if (rendered.item !== entry.item || rendered.index !== index) {
       const previous = rendered.row.firstElementChild
-      const element = options.renderItem(entry.item, index, previous instanceof HTMLElement ? previous : undefined)
+      const elementClass = root.ownerDocument.defaultView?.HTMLElement
+      const previousControl = elementClass && previous instanceof elementClass ? previous : undefined
+      const element = options.renderItem(entry.item, index, previousControl)
 
       if (element !== previous) rendered.row.replaceChildren(element)
 

@@ -2,6 +2,8 @@
 
 ## 4.0.0
 
+- Reject overflowing theme dimension scales, preserve iframe virtual-list focus and control reuse, and count only measured days in Swift calendar heatmap summaries.
+
 - Validate decoded chart annotations, restore chart legend inspection state on teardown, refresh external image-comparison reset values, restore iframe dialog focus, and preserve uncontrolled filter disclosure state.
 
 ### Minor Changes

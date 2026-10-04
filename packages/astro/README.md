@@ -133,7 +133,8 @@ disabled controls, including a disabled fieldset. Available controls in a fields
 retain their native keyboard behavior; removing `inert` makes a region available again.
 
 Mentions keeps suggestion navigation on the textarea through `aria-activedescendant`; suggestion
-buttons are excluded from the Tab sequence. Static Toast markup is enhanced again after client
+buttons are excluded from the Tab sequence. Returning focus before the delayed blur dismissal
+preserves reopened suggestions. Static Toast markup is enhanced again after client
 navigation, retaining Escape dismissal without duplicate listeners.
 
 Tabs keep the selected trigger visible when a narrow tab list scrolls horizontally and emit a

@@ -65,4 +65,19 @@ describe('appearance presets', () => {
     expect(result.tokens['ui-border-width']).toBe('0px')
     expect(createThemeBuilderTokens({ preset: 'studio', radiusScale: -1, spacingScale: Infinity }).tokens['ui-radius']).toBe('0.375rem')
   })
+  test.each(['default', 'studio', 'glass'] as const)('rejects overflowing spacing scales for %s', preset => {
+    const baseline = createThemeBuilderTokens({ preset }).tokens
+    const tokens = createThemeBuilderTokens({
+      preset,
+      spacingScale: Number.MAX_VALUE,
+      radiusScale: Number.MAX_VALUE
+    }).tokens
+    for (const name of ['zero', 'xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl']) {
+      expect(tokens[`ui-space-${name}`]).toBe(baseline[`ui-space-${name}`])
+    }
+    for (const name of ['ui-radius-sm', 'ui-radius', 'ui-radius-lg']) {
+      expect(Number.isFinite(Number.parseFloat(tokens[name] ?? ''))).toBe(true)
+    }
+    expect(Object.values(tokens).some(value => value.includes('Infinity') || value.includes('NaN'))).toBe(false)
+  })
 })

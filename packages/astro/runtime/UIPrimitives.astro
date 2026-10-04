@@ -5111,7 +5111,9 @@ const initMentions = (scope: ParentNode): void => {
       }
     })
 
-    input.addEventListener('blur', () => window.setTimeout(close, 120))
+    input.addEventListener('blur', () => window.setTimeout(() => {
+      if (!root.contains(root.ownerDocument.activeElement)) close()
+    }, 120))
 
     for (const option of options) {
       option.addEventListener('mousedown', event => {

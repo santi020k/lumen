@@ -2,6 +2,8 @@
 
 ## 4.0.0
 
+- Keep reopened Mentions suggestions visible when focus returns before a delayed blur dismissal.
+
 - Keep sparkline endpoints circular and line strokes uniform when a chart stretches to fit a wide or shallow container.
 
 ### Major Changes

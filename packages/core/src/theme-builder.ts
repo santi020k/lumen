@@ -33,19 +33,22 @@ const appearanceNumber = (value: number | string | null | undefined, fallback: n
   return Number.isFinite(number) && number >= 0 ? number : fallback
 }
 
+const scaleAppearanceDimensions = (
+  tokens: LumenThemeTokens, names: readonly string[], requested: number | string | null | undefined
+): void => {
+  const scale = appearanceNumber(requested, 1)
+  const dimensions = names.map(name => ({ name, value: Number.parseFloat(tokens[name] ?? '0') }))
+  const safeScale = dimensions.every(({ value }) => Number.isFinite(value * scale)) ? scale : 1
+
+  for (const { name, value } of dimensions) {
+    tokens[name] = `${value * safeScale}rem`
+  }
+}
+
 const customizeAppearance = (tokens: LumenThemeTokens, options: LumenThemeBuilderOptions): void => {
-  const radiusScale = appearanceNumber(options.radiusScale, 1)
-  const spacingScale = appearanceNumber(options.spacingScale, 1)
+  scaleAppearanceDimensions(tokens, ['ui-radius-sm', 'ui-radius', 'ui-radius-lg'], options.radiusScale)
 
-  for (const name of ['ui-radius-sm', 'ui-radius', 'ui-radius-lg']) {
-    tokens[name] = `${Number.parseFloat(tokens[name] ?? '0') * radiusScale}rem`
-  }
-
-  for (const name of ['zero', 'xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl']) {
-    const token = `ui-space-${name}`
-
-    tokens[token] = `${Number.parseFloat(tokens[token] ?? '0') * spacingScale}rem`
-  }
+  scaleAppearanceDimensions(tokens, ['zero', 'xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl'].map(name => `ui-space-${name}`), options.spacingScale)
 
   tokens['ui-border-width'] = `${appearanceNumber(options.borderWidth, 1)}px`
 }

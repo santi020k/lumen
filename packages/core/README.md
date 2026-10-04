@@ -300,6 +300,8 @@ when handling resets.
 
 The mounted VirtualList controller supports roots and rows created in another document, including
 same-origin iframe documents.
+Data-mode collections preserve iframe keyboard focus across distant scrolling and keyed updates,
+and return focus to the list when the focused record is removed.
 
 ## Virtual collections and direction
 

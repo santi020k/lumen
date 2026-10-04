@@ -21,6 +21,46 @@ const createList = () => {
 }
 const records = (count: number) => Array.from({ length: count }, (_, id) => ({ id, label: `Row ${id}` }))
 
+test('iframe collections pin focused rows, reuse realm-owned controls, and restore removed focus to the root', () => {
+  const frame = document.createElement('iframe')
+  document.body.append(frame)
+  const frameDocument = frame.contentDocument
+  if (!frameDocument) throw new Error('Missing iframe document')
+  const root = frameDocument.createElement('div')
+  root.dataset.uiVirtualList = ''
+  root.tabIndex = 0
+  Object.defineProperty(root, 'clientHeight', { configurable: true, value: 80 })
+  frameDocument.body.append(root)
+  const items = records(10)
+  const previousControls: HTMLElement[] = []
+  const controller = createLumenVirtualCollectionController(root, {
+    items,
+    getKey: item => item.id,
+    itemSize: 40,
+    overscan: 0,
+    renderItem: (item, _index, previous) => {
+      if (previous) previousControls.push(previous)
+      const button = previous ?? frameDocument.createElement('button')
+      button.textContent = item.label
+      return button
+    }
+  })
+  const button = root.querySelector('button')
+  if (!button) throw new Error('Missing iframe control')
+  button.focus()
+  root.scrollTop = 320
+  root.dispatchEvent(new Event('scroll'))
+  expect(frameDocument.activeElement).toBe(button)
+  expect(root.querySelector('[data-ui-virtual-list-index="0"]')).not.toBeNull()
+  controller.update([...items].reverse())
+  expect(previousControls).toContain(button)
+  expect(frameDocument.activeElement).toBe(button)
+  controller.update(items.slice(1))
+  expect(frameDocument.activeElement).toBe(root)
+  controller.destroy()
+  frame.remove()
+})
+
 test('mounts a bounded window for 20,000 records and preserves total scroll geometry', () => {
   const root = createList()
   const renderItem = vi.fn((item: { id: number, label: string }) => {
