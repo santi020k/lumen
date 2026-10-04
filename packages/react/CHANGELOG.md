@@ -97,6 +97,8 @@
 
 ### Patch Changes
 
+- Show category labels and value scales in combo and range charts, with visible line markers in combo charts.
+
 - Keep success Alert and Toast text readable on their tinted surfaces by using the semantic
   ink color. Success borders and backgrounds retain their status color across web adapters.
 

@@ -127,6 +127,8 @@
 
 ### Patch Changes
 
+- Fit scatter, combo, and range charts to narrow screens with readable responsive axis labels.
+
 - Keep success Alert and Toast text readable on their tinted surfaces by using the semantic
   ink color. Success borders and backgrounds retain their status color across web adapters.
 

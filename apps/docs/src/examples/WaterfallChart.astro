@@ -3,11 +3,20 @@ import { WaterfallChart } from '@santi020k/lumen-astro'
 
 const data = [
   { id: 'opening', label: 'Opening', kind: 'total' as const, value: 120 },
-  { id: 'sales', label: 'Sales', value: 85 },
+  { id: 'new-sales', label: 'New sales', value: 85 },
+  { id: 'expansion', label: 'Expansion', value: 32 },
   { id: 'refunds', label: 'Refunds', value: -20 },
-  { id: 'expenses', label: 'Expenses', value: -55 },
-  { id: 'closing', label: 'Closing', kind: 'total' as const, value: 130 }
+  { id: 'operating', label: 'Operating', value: -55 },
+  { id: 'fees', label: 'Fees', value: -14 },
+  { id: 'closing', label: 'Closing', kind: 'total' as const, value: 148 }
 ]
 ---
 
-<WaterfallChart aria-label="Illustrative monthly balance changes" heading="From opening to closing balance" caption="Illustrative values. Totals are explicit checkpoints supplied by the application." valueLabel="Amount" {data} />
+<WaterfallChart
+  aria-label="September opening balance, revenue, costs, and closing balance in thousands of US dollars"
+  heading="What moved the balance"
+  description="USD, thousands · September 2026"
+  caption="Revenue added $117k; refunds and costs used $89k. The closing balance increased by $28k. Illustrative data with explicit opening and closing totals."
+  valueLabel="USD, thousands"
+  {data}
+/>

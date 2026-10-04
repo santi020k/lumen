@@ -71,6 +71,8 @@
 
 ### Patch Changes
 
+- Keep complete scatter bubbles inside automatically derived plot bounds for linear, logarithmic, and time scales. Explicit domain limits remain exact.
+
 - Reject sparse calendar heatmap, funnel, box-plot, and comparison datasets instead of silently
   skipping empty array slots. Reject sparse box-plot outliers while preserving explicit missing
   measurements and caller-owned data.

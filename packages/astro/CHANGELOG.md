@@ -88,6 +88,8 @@
 
 ### Patch Changes
 
+- Show category labels and value scales in combo and range charts, with visible line markers in combo charts. Improve seven documentation examples with realistic datasets, clear units, and complete context.
+
 - Copy ordinary Code and CodeTabs snippets from their rendered code content, avoiding a duplicate
   source attribute that can confuse HTML heading audits. Explicit highlighted source remains supported.
 

@@ -218,6 +218,24 @@ test('copied Sparkline preserves the line geometry and accompanying statistic', 
 
   expect(copiedPath).not.toBeNull()
   expect(copiedPath?.getAttribute('d')).toBe(expectedPath?.getAttribute('d'))
-  expect(textAt(copied, '.ui-stat')).toBe(textAt(preview, '.ui-stat'))
+  for (const selector of ['.ui-stat-label', '.ui-stat-value', '.ui-stat-description', '.ui-stat-trend']) {
+    expect(textAt(copied, selector)).toBe(textAt(preview, selector))
+  }
+  document.body.replaceChildren()
+})
+
+test.each([{ name: 'ComboChart', markers: 8 }, { name: 'RangeChart', markers: 0 }])('copied $name shows the same readable axes across adapters', ({ name, markers }) => {
+  const { copied, preview } = renderChartExamples(name)
+
+  for (const selector of ['.ui-chart__grid text', '.ui-chart__axis-labels text']) {
+    const expected = [...preview.querySelectorAll(selector)].map(node => node.textContent)
+
+    expect(expected.length).toBeGreaterThan(2)
+    expect([...copied.querySelectorAll(selector)].map(node => node.textContent)).toEqual(expected)
+  }
+
+  expect(copied.querySelectorAll('.ui-line-chart__point')).toHaveLength(markers)
+  expect(preview.querySelectorAll('.ui-line-chart__point')).toHaveLength(markers)
+
   document.body.replaceChildren()
 })

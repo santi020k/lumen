@@ -4422,7 +4422,7 @@ lumen-dialog-close {
   color: hsl(var(--brand));
 }
 
-:is(.ui-line-chart, .ui-bar-chart, .ui-waterfall-chart, .ui-histogram, .ui-heatmap) .ui-chart__plot > svg {
+:is(.ui-line-chart, .ui-bar-chart, .ui-waterfall-chart, .ui-histogram, .ui-heatmap, .ui-scatter-chart, .ui-combo-chart, .ui-range-chart) .ui-chart__plot > svg {
   min-width: 0;
 }
 
@@ -4915,12 +4915,12 @@ lumen-dialog-close {
     font-size: 0.875rem;
   }
 
-  :is(.ui-line-chart, .ui-waterfall-chart, .ui-histogram, .ui-heatmap)
+  :is(.ui-line-chart, .ui-waterfall-chart, .ui-histogram, .ui-heatmap, .ui-scatter-chart, .ui-combo-chart, .ui-range-chart)
     :is(.ui-chart__grid, .ui-chart__axis-labels, .ui-chart__annotation) text {
     font-size: 1.375rem;
   }
 
-  :is(.ui-line-chart, .ui-waterfall-chart, .ui-histogram, .ui-heatmap) .ui-chart__axis-labels
+  :is(.ui-line-chart, .ui-waterfall-chart, .ui-histogram, .ui-heatmap, .ui-scatter-chart, .ui-combo-chart, .ui-range-chart) .ui-chart__axis-labels
     :is(text:nth-child(even):not(:last-child), text:nth-last-child(2)):not(.ui-heatmap__row-label) {
     visibility: hidden;
   }
