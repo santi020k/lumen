@@ -5933,7 +5933,9 @@ class LumenBarChartBehaviorElement extends LumenDataChartBehaviorElement {
         undefined
 
     const geometry = createLumenBarGeometry(series, {
-      ...(categoryWidth === undefined ? {} : { categoryWidth }),
+      width: 480,
+      height: 240,
+      categoryWidth: categoryWidth ?? 160,
       formatCategory: this.categoryFormatter,
       formatValue: this.valueFormatter,
       layout,
@@ -5951,6 +5953,7 @@ class LumenBarChartBehaviorElement extends LumenDataChartBehaviorElement {
 
     const valueTicks = getLumenChartCategoryTicks(ticks.map(tick => this.valueFormatter(tick)), {
       end: geometry.width - margin.right,
+      minimumGap: 48,
       positions: ticks.map(tick => scaleLumenChartValue(
         tick, geometry.domain, margin.left, geometry.width - margin.right
       )),

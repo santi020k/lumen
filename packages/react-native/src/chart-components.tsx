@@ -51,6 +51,7 @@ import {
   scaleLumenChartValue
 } from '@santi020k/lumen-core'
 
+import { useLumenChartLayout } from './chart-layout.js'
 import { LumenDisclosure } from './content-components.js'
 import { useLumenTheme } from './theme-context.js'
 import { lumenChartOpacities, lumenChartStrokeWidths } from './tokens.generated.js'
@@ -467,10 +468,10 @@ export const LumenLineChart = ({
   ...props
 }: LumenLineChartProps): ReactElement => {
   const theme = useLumenTheme()
+  const chartLayout = useLumenChartLayout()
   const valueFormatter = resolveLumenChartValueFormatter(formatValue)
   const chartLabels = resolveLumenChartLabels(labels)
-  const width = 640
-  const height = 320
+  const { width, height } = chartLayout
   const padding = 44
   const categories = getLumenChartCategories(series)
   const aligned = series.map(item => alignLumenChartSeries(item, categories))
@@ -491,7 +492,7 @@ export const LumenLineChart = ({
     <LumenChartFrame label={label} summary={resolvedSummary} {...props}>
       {hasLumenChartData(series) ?
         (
-          <ScrollView accessibilityLabel={chartLabels.chartData} horizontal>
+          <View accessibilityLabel={chartLabels.chartData} onLayout={chartLayout.onLayout} style={{ alignSelf: 'stretch' }}>
             <Svg height={height} viewBox={`0 0 ${width} ${height}`} width={width}>
               <LumenChartReferenceRule
                 domain={domain}
@@ -517,6 +518,7 @@ export const LumenLineChart = ({
                     />
                     <SvgText
                       fill={theme.colors.inkMuted}
+                      fontFamily={theme.fontFamilies.sans.join(', ')}
                       fontSize={12}
                       textAnchor="end"
                       transform={`translate(${paddingLeft - 8} ${y + 4})`}
@@ -529,6 +531,7 @@ export const LumenLineChart = ({
               {categoryTicks.map(tick => (
                 <SvgText
                   fill={theme.colors.inkMuted}
+                  fontFamily={theme.fontFamilies.sans.join(', ')}
                   fontSize={12}
                   key={tick.index}
                   textAnchor={tick.textAnchor}
@@ -579,7 +582,7 @@ export const LumenLineChart = ({
                 )
               })}
             </Svg>
-          </ScrollView>
+          </View>
         ) :
         <Text style={{ color: theme.colors.inkMuted }}>{chartLabels.empty}</Text>}
       {showData ?
@@ -619,6 +622,7 @@ export const LumenBarChart = ({
   ...props
 }: LumenBarChartProps): ReactElement => {
   const theme = useLumenTheme()
+  const chartLayout = useLumenChartLayout()
   const valueFormatter = resolveLumenChartValueFormatter(formatValue)
   const chartLabels = resolveLumenChartLabels(labels)
   const categories = getLumenChartCategories(series)
@@ -627,7 +631,9 @@ export const LumenBarChart = ({
   const geometry = createLumenBarGeometry(aligned, {
     ...(formatCategory === undefined ? {} : { formatCategory }),
     formatValue: valueFormatter,
-    layout
+    layout,
+    width: chartLayout.width,
+    height: chartLayout.height
   })
 
   const { domain, height, margin, width } = geometry
@@ -635,6 +641,7 @@ export const LumenBarChart = ({
 
   const categoryTicks = getLumenChartCategoryTicks(geometry.categories.map(category => String(category.label)), {
     end: width - margin.right,
+    minimumGap: 4,
     positions: geometry.categories.map(category => category.x),
     start: margin.left
   })
@@ -645,7 +652,7 @@ export const LumenBarChart = ({
     <LumenChartFrame label={label} summary={resolvedSummary} {...props}>
       {hasLumenChartData(series) ?
         (
-          <ScrollView accessibilityLabel={chartLabels.chartData} horizontal>
+          <View accessibilityLabel={chartLabels.chartData} onLayout={chartLayout.onLayout} style={{ alignSelf: 'stretch' }}>
             <Svg
               height={geometry.height}
               viewBox={`0 0 ${geometry.width} ${geometry.height}`}
@@ -667,6 +674,7 @@ export const LumenBarChart = ({
                     />
                     <SvgText
                       fill={theme.colors.inkMuted}
+                      fontFamily={theme.fontFamilies.sans.join(', ')}
                       fontSize={12}
                       textAnchor="end"
                       transform={`translate(${margin.left - 8} ${y + 4})`}
@@ -679,6 +687,7 @@ export const LumenBarChart = ({
               {categoryTicks.map(tick => (
                 <SvgText
                   fill={theme.colors.inkMuted}
+                  fontFamily={theme.fontFamilies.sans.join(', ')}
                   fontSize={12}
                   key={tick.index}
                   textAnchor={tick.textAnchor}
@@ -698,7 +707,7 @@ export const LumenBarChart = ({
                 />
               ))}
             </Svg>
-          </ScrollView>
+          </View>
         ) :
         <Text style={{ color: theme.colors.inkMuted }}>{chartLabels.empty}</Text>}
       {showData ?
@@ -803,9 +812,10 @@ export const LumenScatterChart = ({
   ...props
 }: LumenScatterChartProps): ReactElement => {
   const theme = useLumenTheme()
+  const chartLayout = useLumenChartLayout()
   const valueFormatter = resolveLumenChartValueFormatter(formatValue)
   const chartLabels = resolveLumenChartLabels(labels)
-  const geometry = createLumenScatterGeometry(series)
+  const geometry = createLumenScatterGeometry(series, chartLayout)
 
   const renderedSeries = series.map(item => ({
     ...item,
@@ -824,7 +834,7 @@ export const LumenScatterChart = ({
     <LumenChartFrame label={label} summary={resolvedSummary} {...props}>
       {hasData ?
         (
-          <ScrollView accessibilityLabel={chartLabels.chartData} horizontal>
+          <View accessibilityLabel={chartLabels.chartData} onLayout={chartLayout.onLayout} style={{ alignSelf: 'stretch' }}>
             <Svg height={geometry.height} width={geometry.width}>
               {geometry.points.map((point, pointIndex) => (
                 <Circle
@@ -836,7 +846,7 @@ export const LumenScatterChart = ({
                 />
               ))}
             </Svg>
-          </ScrollView>
+          </View>
         ) :
         <Text style={{ color: theme.colors.inkMuted }}>{chartLabels.empty}</Text>}
       {showData && hasData ?
@@ -1117,7 +1127,8 @@ export const LumenRangeChart = ({
   ...props
 }: LumenRangeChartProps): ReactElement => {
   const theme = useLumenTheme()
-  const geometry = createLumenRangeGeometry(data)
+  const chartLayout = useLumenChartLayout()
+  const geometry = createLumenRangeGeometry(data, chartLayout)
   const hasData = geometry.points.length > 0
   const chartLabels = resolveLumenChartLabels(labels)
   const resolvedSummary = summary ?? chartLabels.formatRangeSummary(geometry.points.length)
@@ -1129,8 +1140,8 @@ export const LumenRangeChart = ({
     <LumenChartFrame label={label} style={style} summary={resolvedSummary} {...props}>
       {hasData ?
         (
-          <ScrollView accessibilityLabel={chartLabels.chartData} horizontal>
-            <Svg height={320} viewBox="0 0 640 320" width={640}>
+          <View accessibilityLabel={chartLabels.chartData} onLayout={chartLayout.onLayout} style={{ alignSelf: 'stretch' }}>
+            <Svg height={chartLayout.height} viewBox={`0 0 ${chartLayout.width} ${chartLayout.height}`} width={chartLayout.width}>
               <Path
                 d={geometry.areaPath}
                 fill={color}
@@ -1139,7 +1150,7 @@ export const LumenRangeChart = ({
                 strokeWidth={lumenChartStrokeWidths.series}
               />
             </Svg>
-          </ScrollView>
+          </View>
         ) :
         <Text style={{ color: theme.colors.inkMuted }}>{chartLabels.empty}</Text>}
       {showData ?
@@ -1183,10 +1194,10 @@ export const LumenComboChart = ({
   ...props
 }: LumenComboChartProps): ReactElement => {
   const theme = useLumenTheme()
+  const chartLayout = useLumenChartLayout()
   const valueFormatter = resolveLumenChartValueFormatter(formatValue)
   const chartLabels = resolveLumenChartLabels(labels)
-  const width = 640
-  const height = 320
+  const { width, height } = chartLayout
   const padding = 44
   const categories = getLumenChartCategories(series)
 
@@ -1239,7 +1250,7 @@ export const LumenComboChart = ({
     <LumenChartFrame label={label} summary={resolvedSummary} {...props}>
       {hasLumenChartData(series) ?
         (
-          <ScrollView accessibilityLabel={chartLabels.chartData} horizontal>
+          <View accessibilityLabel={chartLabels.chartData} onLayout={chartLayout.onLayout} style={{ alignSelf: 'stretch' }}>
             <Svg height={height} viewBox={`0 0 ${width} ${height}`} width={width}>
               {bars.marks.map(mark => (
                 <Rect
@@ -1283,7 +1294,7 @@ export const LumenComboChart = ({
                 )
               })}
             </Svg>
-          </ScrollView>
+          </View>
         ) :
         <Text style={{ color: theme.colors.inkMuted }}>{chartLabels.empty}</Text>}
       {showData ?

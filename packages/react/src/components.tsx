@@ -1013,7 +1013,9 @@ export const BarChart = ({
   const alignedSeries = series.map(item => alignLumenChartSeries(item, categories))
 
   const geometry = createLumenBarGeometry(alignedSeries, {
-    ...(categoryWidth === undefined ? {} : { categoryWidth }),
+    width: 480,
+    height: 240,
+    categoryWidth: categoryWidth ?? 160,
     ...(formatCategory === undefined ? {} : { formatCategory }),
     formatValue,
     layout,
@@ -1032,6 +1034,7 @@ export const BarChart = ({
 
   const valueTicks = getLumenChartCategoryTicks(ticks.map(tick => formatValue(tick)), {
     end: geometry.width - margin.right,
+    minimumGap: 48,
     positions: ticks.map(tick => scaleLumenChartValue(
       tick, geometry.domain, margin.left, geometry.width - margin.right
     )),

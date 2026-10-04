@@ -10,6 +10,21 @@ import {
 } from './chart-models.js'
 
 describe('continuous line chart model', () => {
+  for (const width of [240, 320]) {
+    for (const xScale of ['categorical', 'linear'] as const) {
+      test(`keeps a positive ${xScale} plot at ${width}px with verbose value labels`, () => {
+        const model = createLumenLineChartModel([
+          { id: 'amount', label: 'Amount', data: [{ x: 0, y: 10 }, { x: 10, y: 20 }] }
+        ], { width, xScale, formatValue: value => `$${value.toFixed(2)} Colombian pesos` })
+
+        expect(model.width - model.padding - model.paddingLeft).toBeGreaterThanOrEqual(40)
+        expect(model.positions[1]).toBeGreaterThan(model.positions[0] ?? 0)
+        expect(model.geometries[0]?.points.map(point => point.xCoordinate)).toEqual(model.positions)
+        expect(model.categoryTicks.length).toBeGreaterThan(0)
+      })
+    }
+  }
+
   test('shares the actual elapsed-time domain across sparse series and sorts coordinates', () => {
     const model = createLumenLineChartModel([
       { id: 'a', label: 'A', data: [{ x: 100, y: 8 }, { x: 0, y: 2 }] },

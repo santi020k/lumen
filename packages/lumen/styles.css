@@ -4405,7 +4405,7 @@ lumen-dialog-close {
   color: hsl(var(--brand));
 }
 
-:is(.ui-line-chart, .ui-waterfall-chart, .ui-histogram, .ui-heatmap) .ui-chart__plot > svg {
+:is(.ui-line-chart, .ui-bar-chart, .ui-waterfall-chart, .ui-histogram, .ui-heatmap) .ui-chart__plot > svg {
   min-width: 0;
 }
 
@@ -4887,6 +4887,10 @@ lumen-dialog-close {
 }
 
 @container (width < 480px) {
+  .ui-bar-chart :is(.ui-chart__grid, .ui-chart__axis-labels) text {
+    font-size: 1.125rem;
+  }
+
   .ui-chart__grid text,
   .ui-chart__axis-labels text,
   .ui-chart__annotation text,

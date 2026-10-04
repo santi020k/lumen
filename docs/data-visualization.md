@@ -304,3 +304,13 @@ Use `referenceLabel` and `valueLabel` for the column meanings and `formatValue` 
 `labels.formatValue`) for consistent units. Elements exposes `data` as a typed property or JSON
 attribute, `valueFormatter`, `reference-label`, `value-label`, `domain-min`, and `domain-max`.
 The exact table or native data list stays available through `showTable` or `showData`.
+
+## Compact bar chart layout
+
+Web bar charts fit the available card width across Astro, React, and Web Components, including
+phone layouts. Horizontal charts reserve 160 SVG units for category labels by default; use
+`categoryWidth` to adjust that space for your own labels. The readable data disclosure contains
+every value even when the axis selects fewer labels.
+
+React Native line, bar, scatter, range, and combo charts recompute their geometry when the container
+resizes. This keeps the complete plot visible with fixed-size axis text and a compact phone height.

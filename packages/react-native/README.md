@@ -366,7 +366,9 @@ list preserve zero and use the first measurement at each coordinate. See the
 tokens while rendering with `react-native-svg`. Data charts expose a concise image summary and an
 expandable readable data list; selection remains controlled by the application. Line and bar charts render
 category and value axes even when the readable list is hidden. Dense axes select labels without
-removing data, and narrow plots scroll horizontally.
+removing data. Line, bar, scatter, range, and combo plots recompute geometry at the measured
+container width, keeping the full dataset visible on phones and resizing with split views or
+orientation changes. Axis text retains its size; chart data remains available in the disclosure.
 
 ```tsx
 import { LumenBarChart, type LumenChartSeries } from '@santi020k/lumen-react-native'

@@ -66,7 +66,7 @@ export const createLumenLineChartModel = (
 
   const domain = resolveDomain(automaticDomain, options.domain)
   const ticks = getLumenChartTicks(domain)
-  const paddingLeft = getLumenChartAxisPadding(ticks.map(formatValue)) * 2
+  const paddingLeft = Math.min(width - padding - 40, getLumenChartAxisPadding(ticks.map(formatValue)) * 2)
 
   const numericCategories = categories.flatMap(value => {
     if (xScale === 'categorical') return []
