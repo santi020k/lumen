@@ -615,3 +615,13 @@ Use the `explore-data-label` and `datum-action-prefix` attributes for localized 
 or labels preserves the open disclosure and restores focus to the same available action. Chart
 hosts own their controller lifecycle across disconnect/reconnect; mixed Astro pages leave these
 hosts to Elements. Application code owns navigation, requests, and filtering.
+
+## Dashboard composition
+
+`FilterBar` groups host-owned filtering controls, active criteria, reset actions, and a polite
+result announcement. `ChangeSummary` presents explicit before/after values and application-owned
+changed state. Neither component owns requests, persistence, parsing, or financial policy.
+
+ScatterChart supports independent X/Y formatting, explicit domains, logarithmic positive X values,
+and labeled reference lines/regions. See [consumer UI recipes](../../docs/consumer-ui-recipes.md)
+for dashboard tables, freshness, import review, activity inbox, and persistent Kanban patterns.

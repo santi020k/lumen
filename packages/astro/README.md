@@ -639,3 +639,13 @@ Translate `labels.exploreData` and `labels.formatDatumAction(context)`, and form
 with the chart's existing formatters. Missing observations have no action; pie actions cover only
 positive slices. A line's `markers="none"` hides visible markers while retaining pointer targets
 and native keyboard actions. See [data visualization](../../docs/data-visualization.md#astro-chart-actions).
+
+## Dashboard composition
+
+`FilterBar` groups host-owned filtering controls, active criteria, reset actions, and a polite
+result announcement. `ChangeSummary` presents explicit before/after values and application-owned
+changed state. Neither component owns requests, persistence, parsing, or financial policy.
+
+ScatterChart supports independent X/Y formatting, explicit domains, logarithmic positive X values,
+and labeled reference lines/regions. See [consumer UI recipes](../../docs/consumer-ui-recipes.md)
+for dashboard tables, freshness, import review, activity inbox, and persistent Kanban patterns.

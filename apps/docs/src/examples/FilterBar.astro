@@ -1,0 +1,9 @@
+---
+import { Button, Field, FilterBar, Label, NativeSelect, SearchField } from '@santi020k/lumen-astro'
+---
+<FilterBar label="Filters" resultLabel="12 matching records">
+  <Field><Label for="filter-search">Search</Label><SearchField id="filter-search" placeholder="Search records" /></Field>
+  <Field><Label for="filter-status">Status</Label><NativeSelect id="filter-status"><option>Active</option><option>All</option></NativeSelect></Field>
+  <Button slot="active" variant="outline" size="sm" aria-label="Remove status: Active">Status: Active ×</Button>
+  <Button slot="actions" variant="ghost" size="sm">Reset filters</Button>
+</FilterBar>

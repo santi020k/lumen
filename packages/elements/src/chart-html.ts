@@ -1,6 +1,8 @@
 import {
+  alignLumenChartSeries,
   type createLumenHistogramGeometry,
   type createLumenLineChartModel,
+  createLumenScatterReferences,
   type createLumenWaterfallGeometry,
   formatLumenChartSummary,
   getLumenChartCategoryLabel,
@@ -8,7 +10,13 @@ import {
   type LumenChartAnnotation,
   type LumenChartLabels,
   type LumenChartSeries,
-  lumenChartTones,  type LumenHistogramBin,
+  lumenChartTones,    type LumenHeatmapDatum,
+  type LumenHistogramBin,
+  type LumenRangeDatum,
+  type LumenScatterGeometry,
+  type LumenScatterGeometryPoint,
+  type LumenScatterReference,
+  type LumenScatterScaleType,
   type LumenWaterfallDatum } from '@santi020k/lumen-core'
 
 export const escapeChartHtml = (value: number | string): string => String(value)
@@ -151,4 +159,228 @@ export const intervalChartHtml = (
   const summary = summaryOverride ?? formatLumenChartSummary([{ id: 'values', label: valueLabel, data: model.marks.map(mark => ({ x: mark.key, y: mark.value })) }], formatValue, labels)
 
   return `<p class="ui-sr-only" data-ui-chart-summary>${escapeChartHtml(summary)}</p><p class="ui-chart__axis-title">${escapeChartHtml(valueLabel)}</p><div class="ui-chart__plot" role="region" tabindex="0" aria-label="${escapeChartHtml(labels.chartData)}"><svg aria-hidden="true" viewBox="0 0 ${model.width} ${model.height}"><g class="ui-chart__grid">${grid}</g><g class="ui-chart__axis-labels">${axis}</g>${connectors}<g class="ui-bar-chart__marks">${marks}</g></svg></div>${table}`
+}
+
+export const scatterPlotHtml = (
+  geometry: LumenScatterGeometry, referenceItems: readonly LumenScatterReference[], xScale: LumenScatterScaleType,
+  plotId: string, formatX: (value: number | string) => string,
+  formatY: (value: number) => string, labels: LumenChartLabels, datumMarks?: string
+): string => {
+  const referenceGeometry = createLumenScatterReferences(referenceItems, geometry, xScale)
+
+  const references = referenceGeometry.map(reference => reference.region ?
+    `<rect x="${Math.min(reference.x1, reference.x2)}" y="${Math.min(reference.y1, reference.y2)}" width="${Math.abs(reference.x2 - reference.x1)}" height="${Math.abs(reference.y2 - reference.y1)}"><title>${escapeChartHtml(reference.label)}</title></rect>` :
+    `<line x1="${reference.x1}" x2="${reference.x2}" y1="${reference.y1}" y2="${reference.y2}"><title>${escapeChartHtml(reference.label)}</title></line>`).join('')
+
+  const marks = datumMarks ?? geometry.points.map(point => [
+    `<circle class="ui-chart-tone--${point.tone}" cx="${point.xCoordinate}"`,
+    ` cy="${point.yCoordinate}" r="${point.radius}"><title>`,
+    `${escapeChartHtml(point.xLabel ?? formatX(point.x))} · ${escapeChartHtml(point.seriesLabel)}: `,
+    `${escapeChartHtml(point.label ?? formatY(point.y ?? 0))}</title></circle>`
+  ].join('')).join('')
+
+  return [
+    `<div class="ui-chart__plot" role="region" tabindex="0" aria-label="${escapeChartHtml(labels.chartData)}"><svg aria-hidden="true" viewBox="0 0 ${geometry.width} ${geometry.height}">`,
+    `<defs><clipPath id="${plotId}"><rect x="44" y="44" width="${geometry.width - 88}" height="${geometry.height - 88}"></rect></clipPath></defs>`,
+    `<g class="ui-scatter-chart__references" clip-path="url(#${plotId})">${references}</g><g class="ui-scatter-chart__marks" clip-path="url(#${plotId})">${marks}</g></svg></div>`,
+    `<ul class="ui-scatter-chart__reference-labels">${referenceGeometry.map(item => `<li>${escapeChartHtml(item.label)}</li>`).join('')}</ul>`
+  ].join('')
+}
+
+export const chartDataTableHtml = (
+  categories: readonly (number | string)[],
+  series: readonly LumenChartSeries[],
+  formatCategory: ((category: number | string) => string) | undefined,
+  formatValue: (value: number) => string = String,
+  labels: Readonly<LumenChartLabels>
+): string => {
+  const alignedSeries = series.map(item => alignLumenChartSeries(item, categories))
+
+  const headers = alignedSeries
+    .map(item => `<th scope="col">${escapeChartHtml(item.label)}</th>`)
+    .join('')
+
+  const rows = categories
+    .map(category => {
+      const cells = alignedSeries
+        .map(item => {
+          const datum = item.data.find(candidate => candidate.x === category)
+
+          const value =
+            datum?.label ??
+            (datum?.y === undefined || datum.y === null || !Number.isFinite(datum.y) ?
+              labels.notAvailable :
+              formatValue(datum.y))
+
+          return `<td>${escapeChartHtml(value)}</td>`
+        })
+        .join('')
+
+      const label = getLumenChartCategoryLabel(alignedSeries, category, formatCategory, 'detail')
+
+      return `<tr><th scope="row">${escapeChartHtml(label)}</th>${cells}</tr>`
+    })
+    .join('')
+
+  return [
+    `<details class="ui-chart__data"><summary>${escapeChartHtml(labels.viewData)}</summary>`,
+    `<div><table><thead><tr><th scope="col">${escapeChartHtml(labels.category)}</th>`,
+    `${headers}</tr></thead><tbody>${rows}</tbody></table></div></details>`
+  ].join('')
+}
+
+export const scatterDataTableHtml = (
+  points: readonly LumenScatterGeometryPoint[],
+  formatCategory: (category: number | string) => string = String,
+  formatValue: (value: number) => string = String,
+  labels: Readonly<LumenChartLabels>
+): string => {
+  const rows = points
+    .map(point => [
+      `<tr><th scope="row">${escapeChartHtml(point.xLabel ?? formatCategory(point.x))}</th>`,
+      `<td>${escapeChartHtml(point.seriesLabel)}</td>`,
+      `<td>${escapeChartHtml(point.label ?? formatValue(point.y ?? 0))}</td>`,
+      `<td>${escapeChartHtml(point.size === undefined || point.size === null || !Number.isFinite(point.size) ? labels.notAvailable : formatValue(point.size))}</td></tr>`
+    ].join(''))
+    .join('')
+
+  return [
+    `<details class="ui-chart__data"><summary>${escapeChartHtml(labels.viewData)}</summary>`,
+    `<div><table><thead><tr><th scope="col">${escapeChartHtml(labels.x)}</th>`,
+    `<th scope="col">${escapeChartHtml(labels.series)}</th><th scope="col">${escapeChartHtml(labels.value)}</th>`,
+    `<th scope="col">${escapeChartHtml(labels.size)}</th></tr></thead>`,
+    `<tbody>${rows}</tbody></table></div></details>`
+  ].join('')
+}
+
+export const heatmapDataTableHtml = (
+  data: readonly LumenHeatmapDatum[], labels: Readonly<LumenChartLabels>,
+  formatValue: (value: number) => string = String
+): string => {
+  const rows = data
+    .map(cell => {
+      const value =
+        cell.label ??
+        (cell.value === null || !Number.isFinite(cell.value) ?
+          labels.notAvailable :
+          formatValue(cell.value))
+
+      return [
+        `<tr><th scope="row">${escapeChartHtml(cell.xLabel ?? cell.x)}</th>`,
+        `<td>${escapeChartHtml(cell.yLabel ?? cell.y)}</td>`,
+        `<td>${escapeChartHtml(value)}</td></tr>`
+      ].join('')
+    })
+    .join('')
+
+  return [
+    `<details class="ui-chart__data"><summary>${escapeChartHtml(labels.viewData)}</summary>`,
+    `<div><table><thead><tr><th scope="col">${escapeChartHtml(labels.column)}</th>`,
+    `<th scope="col">${escapeChartHtml(labels.row)}</th><th scope="col">${escapeChartHtml(labels.value)}</th></tr></thead>`,
+    `<tbody>${rows}</tbody></table></div></details>`
+  ].join('')
+}
+
+export const rangeDataTableHtml = (
+  data: readonly LumenRangeDatum[], labels: Readonly<LumenChartLabels>
+): string => {
+  const rows = data
+    .map(item => [
+      `<tr><th scope="row">${escapeChartHtml(item.xLabel ?? item.x)}</th>`,
+      `<td>${escapeChartHtml(item.low ?? labels.notAvailable)}</td>`,
+      `<td>${escapeChartHtml(item.high ?? labels.notAvailable)}</td></tr>`
+    ].join(''))
+    .join('')
+
+  return [
+    `<details class="ui-chart__data"><summary>${escapeChartHtml(labels.viewData)}</summary>`,
+    `<div><table><thead><tr><th scope="col">${escapeChartHtml(labels.category)}</th>`,
+    `<th scope="col">${escapeChartHtml(labels.low)}</th><th scope="col">${escapeChartHtml(labels.high)}</th></tr></thead>`,
+    `<tbody>${rows}</tbody></table></div></details>`
+  ].join('')
+}
+
+export const chartHeaderHtml = (element: HTMLElement): string => {
+  const heading = element.getAttribute('heading')
+  const description = element.getAttribute('description')
+  const value = element.getAttribute('value')
+
+  if (!heading && !description && !value) return ''
+
+  return `<header><div class="ui-chart__heading">${heading ? `<h3>${escapeChartHtml(heading)}</h3>` : ''}${description ? `<p>${escapeChartHtml(description)}</p>` : ''}</div>${value ? `<strong data-ui-chart-value>${escapeChartHtml(value)}</strong>` : ''}</header>`
+}
+
+export const chartCaptionHtml = (element: HTMLElement): string => {
+  const caption = element.getAttribute('caption')
+
+  return caption ? `<figcaption>${escapeChartHtml(caption)}</figcaption>` : ''
+}
+
+const isChartCoordinate = (value: unknown): value is number | string => typeof value === 'string' || typeof value === 'number'
+
+export const parseHeatmapData = (value: string | null): LumenHeatmapDatum[] => {
+  if (!value) return []
+
+  try {
+    const parsed: unknown = JSON.parse(value)
+
+    if (!Array.isArray(parsed)) return []
+
+    return parsed.flatMap(candidate => {
+      const record = chartRecord(candidate)
+
+      if (
+        !isChartCoordinate(record.x) ||
+        !isChartCoordinate(record.y) ||
+        (record.value !== null &&
+          (typeof record.value !== 'number' || !Number.isFinite(record.value)))
+      ) return []
+
+      return [{
+        ...(typeof record.id === 'string' ? { id: record.id } : {}),
+        ...(typeof record.label === 'string' ? { label: record.label } : {}),
+        value: record.value,
+        x: record.x,
+        ...(typeof record.xLabel === 'string' ? { xLabel: record.xLabel } : {}),
+        y: record.y,
+        ...(typeof record.yLabel === 'string' ? { yLabel: record.yLabel } : {})
+      }]
+    })
+  } catch {
+    return []
+  }
+}
+
+export const parseRangeData = (value: string | null): LumenRangeDatum[] => {
+  if (!value) return []
+
+  try {
+    const parsed: unknown = JSON.parse(value)
+
+    if (!Array.isArray(parsed)) return []
+
+    return parsed.flatMap(candidate => {
+      if (typeof candidate !== 'object' || candidate === null) return []
+
+      const record = chartRecord(candidate)
+      const validBound = (bound: unknown): bound is number | null => bound === null || (typeof bound === 'number' && Number.isFinite(bound))
+
+      if (
+        (typeof record.x !== 'string' && typeof record.x !== 'number') ||
+        !validBound(record.low) ||
+        !validBound(record.high)
+      ) return []
+
+      return [{
+        high: record.high,
+        ...(typeof record.id === 'string' ? { id: record.id } : {}),
+        ...(typeof record.label === 'string' ? { label: record.label } : {}),
+        low: record.low,
+        x: record.x,
+        ...(typeof record.xLabel === 'string' ? { xLabel: record.xLabel } : {})
+      }]
+    })
+  } catch {
+    return []
+  }
 }

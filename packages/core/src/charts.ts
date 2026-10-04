@@ -319,6 +319,8 @@ export interface LumenScatterGeometry {
   xDomain: LumenChartDomain
 }
 
+export type LumenScatterScaleType = 'linear' | 'log' | 'time'
+
 export interface LumenScatterGeometryOptions {
   domain?: Partial<LumenChartDomain>
   height?: number
@@ -327,7 +329,7 @@ export interface LumenScatterGeometryOptions {
   padding?: number
   width?: number
   xDomain?: Partial<LumenChartDomain>
-  xScale?: Exclude<LumenChartScaleType, 'categorical'>
+  xScale?: LumenScatterScaleType
 }
 
 export interface LumenHeatmapDatum {
@@ -1600,6 +1602,104 @@ export const appendLumenChartDatum = (
   }
 }
 
+const getLumenScatterNumericX = (value: number | string, scale: LumenScatterScaleType): number | null => {
+  const numeric = getLumenChartNumericX(value, scale === 'log' ? 'linear' : scale)
+
+  return scale === 'log' && numeric !== null && numeric <= 0 ? null : numeric
+}
+
+const validScatterDomain = (domain: LumenChartDomain, scale: LumenScatterScaleType): boolean => {
+  const finite = Number.isFinite(domain.min) && Number.isFinite(domain.max)
+
+  return finite && domain.max > domain.min && (scale !== 'log' || domain.min > 0)
+}
+
+const getLumenScatterXDomain = (
+  data: readonly LumenChartDatum[], scale: LumenScatterScaleType, requested: Partial<LumenChartDomain> | undefined
+): LumenChartDomain => {
+  const values = data.map(datum => getLumenScatterNumericX(datum.x, scale))
+
+  const calculated = scale === 'log' && !values.some(value => value !== null) ?
+    { min: 1, max: 10 } :
+    getLumenChartDomain(values, false)
+
+  const domain = { min: requested?.min ?? calculated.min, max: requested?.max ?? calculated.max }
+
+  if (!validScatterDomain(domain, scale)) throw new RangeError('Scatter x domain must be finite, ordered, and positive for log scales')
+
+  return domain
+}
+
+export const scaleLumenScatterX = (
+  value: number, domain: LumenChartDomain, rangeStart: number, rangeEnd: number, scale: LumenScatterScaleType = 'linear'
+): number => {
+  if (scale !== 'log') return scaleLumenChartValue(value, domain, rangeStart, rangeEnd)
+
+  if (value <= 0 || !Number.isFinite(value)) return Number.NaN
+
+  return scaleLumenChartValue(Math.log10(value),
+    { min: Math.log10(domain.min), max: Math.log10(domain.max) },
+    rangeStart,
+    rangeEnd)
+}
+
+export const getLumenScatterXTicks = (domain: LumenChartDomain, scale: LumenScatterScaleType): number[] => scale === 'log' ?
+  getLumenChartTicks({ min: Math.log10(domain.min), max: Math.log10(domain.max) }).map(value => 10 ** value) :
+  getLumenChartTicks(domain)
+
+export interface LumenScatterReference {
+  id: string
+  label: string
+  x?: number
+  y?: number
+  /** Supplying both ranges creates a reference region. */
+  xEnd?: number
+  yEnd?: number
+}
+
+export interface LumenScatterReferenceGeometry extends LumenScatterReference {
+  x1: number
+  x2: number
+  y1: number
+  y2: number
+  region: boolean
+}
+
+const scatterReferenceCoordinate = (
+  value: number | undefined, fallback: number, project: (value: number) => number
+): number => {
+  if (value === undefined) return fallback
+
+  return project(value)
+}
+
+export const createLumenScatterReferences = (
+  references: readonly LumenScatterReference[], geometry: LumenScatterGeometry,
+  scale: LumenScatterScaleType = 'linear', padding = 44
+): LumenScatterReferenceGeometry[] => {
+  const result: LumenScatterReferenceGeometry[] = []
+  const x = (value: number) => scaleLumenScatterX(value, geometry.xDomain, padding, geometry.width - padding, scale)
+  const y = (value: number) => scaleLumenChartValue(value, geometry.domain, geometry.height - padding, padding)
+
+  for (const reference of references) {
+    const region = reference.xEnd !== undefined && reference.yEnd !== undefined
+    const x1 = scatterReferenceCoordinate(reference.x, padding, x)
+    const y1 = scatterReferenceCoordinate(reference.y, padding, y)
+
+    const x2 = scatterReferenceCoordinate(reference.xEnd,
+      reference.x === undefined ? geometry.width - padding : x1,
+      x)
+
+    const y2 = scatterReferenceCoordinate(reference.yEnd,
+      reference.y === undefined ? geometry.height - padding : y1,
+      y)
+
+    if ([x1, x2, y1, y2].every(Number.isFinite)) result.push({ ...reference, x1, x2, y1, y2, region })
+  }
+
+  return result
+}
+
 interface LumenScatterPointContext {
   domain: LumenChartDomain
   height: number
@@ -1611,7 +1711,7 @@ interface LumenScatterPointContext {
   sizeDomain: LumenChartDomain
   width: number
   xDomain: LumenChartDomain
-  xScale: Exclude<LumenChartScaleType, 'categorical'>
+  xScale: LumenScatterScaleType
 }
 
 interface ResolvedLumenScatterGeometryOptions {
@@ -1622,7 +1722,7 @@ interface ResolvedLumenScatterGeometryOptions {
   requestedDomain: Partial<LumenChartDomain> | undefined
   requestedXDomain: Partial<LumenChartDomain> | undefined
   width: number
-  xScale: Exclude<LumenChartScaleType, 'categorical'>
+  xScale: LumenScatterScaleType
 }
 
 const resolveLumenScatterGeometryOptions = (
@@ -1642,7 +1742,7 @@ const createLumenScatterPoint = (
   datum: LumenChartDatum,
   context: LumenScatterPointContext
 ): LumenScatterGeometryPoint | null => {
-  const numericX = getLumenChartNumericX(datum.x, context.xScale)
+  const numericX = getLumenScatterNumericX(datum.x, context.xScale)
 
   if (numericX === null || !isAvailableLumenChartY(datum.y)) return null
 
@@ -1659,8 +1759,8 @@ const createLumenScatterPoint = (
     seriesId: context.series.id,
     seriesLabel: context.series.label,
     tone: resolveLumenChartTone(datum.tone ?? context.series.tone, context.seriesIndex),
-    xCoordinate: scaleLumenChartValue(
-      numericX, context.xDomain, context.padding, context.width - context.padding
+    xCoordinate: scaleLumenScatterX(
+      numericX, context.xDomain, context.padding, context.width - context.padding, context.xScale
     ),
     yCoordinate: scaleLumenChartValue(
       datum.y, context.domain, context.height - context.padding, context.padding
@@ -1686,14 +1786,16 @@ export const createLumenScatterGeometry = (
   const data = series.flatMap(item => item.data)
 
   const projectedData = data.filter(datum => (
-    getLumenChartNumericX(datum.x, xScale) !== null && isAvailableLumenChartY(datum.y)
+    getLumenScatterNumericX(datum.x, xScale) !== null && isAvailableLumenChartY(datum.y)
   ))
 
   const domain = resolveLumenChartDomain(
     projectedData.map(datum => datum.y), requestedDomain, false
   )
 
-  const xDomain = getLumenChartXDomain(projectedData, xScale, requestedXDomain)
+  if (!validScatterDomain(domain, 'linear')) throw new RangeError('Scatter y domain must be finite and increasing')
+
+  const xDomain = getLumenScatterXDomain(projectedData, xScale, requestedXDomain)
 
   const sizes = projectedData.map(datum => (
     datum.size !== undefined && datum.size !== null && datum.size >= 0 ? datum.size : null

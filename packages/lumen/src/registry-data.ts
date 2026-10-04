@@ -2908,6 +2908,36 @@ export const lumenRegistry = {
         'Chart',
         'styles'
       ]
+    },
+    {
+      name: 'ChangeSummary',
+      type: 'component',
+      category: 'Data display',
+      description: 'Compares explicit current and proposed values with visible changed state.',
+      files: [
+        'packages/astro/components/ChangeSummary.astro',
+        'packages/react/src/change-summary.tsx',
+        'packages/elements/src/components/dashboard.ts',
+        'packages/astro/styles/lumen.css'
+      ],
+      dependencies: [
+        'styles'
+      ]
+    },
+    {
+      name: 'FilterBar',
+      type: 'component',
+      category: 'Data display',
+      description: 'Composes host-owned dashboard filters, active criteria, and result announcements.',
+      files: [
+        'packages/astro/components/FilterBar.astro',
+        'packages/react/src/dashboard.tsx',
+        'packages/elements/src/components/dashboard.ts',
+        'packages/astro/styles/lumen.css'
+      ],
+      dependencies: [
+        'styles'
+      ]
     }
   ]
 } as const satisfies LumenRegistry

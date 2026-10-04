@@ -34,6 +34,7 @@
     "CardTitle": "4000e49112ca64a261844438668af69473518fd77a8aa0a1325efee52aa0c61b",
     "Carousel": "afb46cc03bbfc8b6b0747d940aa9c56ed7ddb3390292cbd3c6bc2fb4174831ff",
     "Cascader": "8384268b48656790631cf755f34a88c63da2d03750d39d55965bb478357ff829",
+    "ChangeSummary": "87258c6e14310a581438398ff4119eb3bf3f6ab06307779046ae75e9ccf868d4",
     "Chart": "7618b9e84910321396ad80d73dffae5abb9e0827d5f974b0801ed26dc14d2535",
     "Checkbox": "94ac393d1a48aa6f46bfe10ccc2b95d7f7e15b0ae3682e64bcfb29b58d0d4ee4",
     "CheckboxGroup": "0d6f4331baf5f1fdfc64b293794ab03c467fc69f550ef4b78b354b349f13573a",
@@ -49,7 +50,7 @@
     "ContextNavigation": "4eb16740a3f91e3abff4e129e52611bdb340448e73bfca5d6241088566f69507",
     "CopyButton": "0fe7348056b39f4559969d2359b6bd1584ee767e8c10da5debca0f1c0e9e11ef",
     "CoverImage": "61ccdfc8d8aa6f4e08e3da355318a180eb3188c0acfed972ce0b3319a7534774",
-    "DataTable": "c84d23aa1ffb5f23562531d1e9eba66e76325b248884c3f0c50863ef00221855",
+    "DataTable": "fbdddf501b20d2a068cce88c351aa3468ed6b9277448d3dde341cb2eba3b5037",
     "DatePicker": "61fa3ea3c0a323f1ed88b03a81a981e7c2b8b710de5629e6a392a6ab1f37426d",
     "DateRangePicker": "d47778b058a1e1c0dd0c840d0f28b2000f615f74a9caf1909ed814481a7c436b",
     "DescriptionDetail": "92d922d65b1466f0dc3f929901424a5224ebeafb47812275a7830ba9a3130ad7",
@@ -72,6 +73,7 @@
     "Field": "5dc7bc82162c3c6beb4218b317bf659e939c85e7be39b443dfe29359ac098e24",
     "FieldError": "6751021ed23cb2cdb5c6515a2d040171c393965fe345ef434cda4e68660072ff",
     "FileUpload": "e1992da3397e6775321d8a70ba624e697036c2311485448783e15be4f4ceabf2",
+    "FilterBar": "9c48092714f267f53f43257189e423d95f0ac1e0f85fccc21749aa5e6398f7d2",
     "FloatingBadge": "231e38e4de7869d20d2fbea7a76a2441f88799edb77417a648aba5a951dd9266",
     "Form": "625907374d500a2e28cd59f8e829b1a22c89a384b91175d1b67a2de31e04d6ca",
     "FormattedDate": "6f0e5bbf3a3cc50656c858f530acee8bd64c758ba1374c0e498d5a5e74672330",
@@ -124,7 +126,7 @@
     "Resizable": "1d6eb8206c428171f86d736c8a8bdf34a2b63734d788b90d49495800b64399bf",
     "RevealGroup": "0d03d141329bbff721c212edc195298cf1ae9cf2b6fbd9e20ded8bd97c0233c6",
     "RichTextEditor": "5301326cbb540a2a1606641a355f95c77cce8aab5dcb8d28ce5ac508974a3cd6",
-    "ScatterChart": "711b2e406fc6b78eeab982515745ac819e06ad30d0494d8b580249d3bcb6620c",
+    "ScatterChart": "8d71151a6da9d63e11fb05aeaf60295c1f8a127d679bfd7d99a12f641b62fc17",
     "Schedule": "f671baf3f9235ccee6e58f125a67231237fe666b937aa7f7637c1ed8ead379cc",
     "ScrollArea": "a5588d5d4796cb5c9a86fce9095b171e8f34a932453f7b77551ad2897ac7bbe9",
     "ScrollProgress": "d8197f0ddb126796e75ceb4c67e50bd6fd275a4793332a8a09950a721b7967ba",
@@ -233,6 +235,7 @@
         "CardTitle",
         "Carousel",
         "Cascader",
+        "ChangeSummary",
         "Chart",
         "Checkbox",
         "CheckboxGroup",
@@ -276,6 +279,7 @@
         "Field",
         "FieldError",
         "FileUpload",
+        "FilterBar",
         "FloatingBadge",
         "Form",
         "FormattedDate",
@@ -587,7 +591,10 @@
       ],
       "experimental": [],
       "deprecated": [],
-      "unclassified": []
+      "unclassified": [
+        "ChangeSummary",
+        "FilterBar"
+      ]
     },
     "core": {
       "entrypoint": "packages/core/src/index.ts",
@@ -653,6 +660,7 @@
       "packageJson": "packages/core/package.json",
       "packageName": "@santi020k/lumen-core",
       "symbols": [
+        "LumenActiveFilter",
         "LumenAstroPropsResult",
         "LumenAttachmentPreviewController",
         "LumenAttachmentPreviewLabels",
@@ -662,6 +670,7 @@
         "LumenBarGeometryCategory",
         "LumenBarGeometryMark",
         "LumenBarGeometryOptions",
+        "LumenChangeSummaryItem",
         "LumenChartActivationController",
         "LumenChartAnnotation",
         "LumenChartAxis",
@@ -775,6 +784,9 @@
         "LumenScatterGeometry",
         "LumenScatterGeometryOptions",
         "LumenScatterGeometryPoint",
+        "LumenScatterReference",
+        "LumenScatterReferenceGeometry",
+        "LumenScatterScaleType",
         "LumenScheduleConflict",
         "LumenScheduleEvent",
         "LumenScheduleKeyValueReader",
@@ -848,6 +860,7 @@
         "createLumenRangeDatumActivation",
         "createLumenRangeGeometry",
         "createLumenScatterGeometry",
+        "createLumenScatterReferences",
         "createLumenVirtualCollectionController",
         "createLumenVirtualListController",
         "createLumenWaterfallGeometry",
@@ -893,6 +906,7 @@
         "getLumenPhoneFlagSource",
         "getLumenPieChartVariantClassName",
         "getLumenRichTextShortcut",
+        "getLumenScatterXTicks",
         "getLumenVirtualWindow",
         "getRegisteredLumenIconNames",
         "getScheduleConflicts",
@@ -984,6 +998,8 @@
         "parseScheduleEvents",
         "parseThemeCss",
         "pinDataViewColumn",
+        "readLumenActiveFilters",
+        "readLumenChangeSummaryItems",
         "registerLumenIconPack",
         "renderLumenCodeHtml",
         "renderLumenIconSvg",
@@ -1003,6 +1019,7 @@
         "saveDataViewState",
         "saveScheduleEvents",
         "scaleLumenChartValue",
+        "scaleLumenScatterX",
         "scheduleEventsOverlap",
         "scoreThemeContrast",
         "scrollLumenTabIntoView",
@@ -1388,7 +1405,18 @@
       ],
       "experimental": [],
       "deprecated": [],
-      "unclassified": []
+      "unclassified": [
+        "LumenActiveFilter",
+        "LumenChangeSummaryItem",
+        "LumenScatterReference",
+        "LumenScatterReferenceGeometry",
+        "LumenScatterScaleType",
+        "createLumenScatterReferences",
+        "getLumenScatterXTicks",
+        "readLumenActiveFilters",
+        "readLumenChangeSummaryItems",
+        "scaleLumenScatterX"
+      ]
     },
     "elements": {
       "entrypoint": "packages/elements/src/index.ts",
@@ -1412,6 +1440,10 @@
         "./components/combobox": {
           "import": "./dist/components/combobox.js",
           "types": "./dist/components/combobox.d.ts"
+        },
+        "./components/dashboard": {
+          "import": "./dist/components/dashboard.js",
+          "types": "./dist/components/dashboard.d.ts"
         },
         "./components/foundations": {
           "import": "./dist/components/foundations.js",
@@ -1467,6 +1499,7 @@
         "LumenCardTitleElement",
         "LumenCarouselElement",
         "LumenCascaderElement",
+        "LumenChangeSummaryElement",
         "LumenChartDatumActionsElement",
         "LumenChartDatumActivationDetail",
         "LumenChartElement",
@@ -1509,6 +1542,7 @@
         "LumenFieldElement",
         "LumenFieldErrorElement",
         "LumenFileUploadElement",
+        "LumenFilterBarElement",
         "LumenFloatingBadgeElement",
         "LumenFormElement",
         "LumenFormattedDateElement",
@@ -1838,7 +1872,10 @@
       ],
       "experimental": [],
       "deprecated": [],
-      "unclassified": []
+      "unclassified": [
+        "LumenChangeSummaryElement",
+        "LumenFilterBarElement"
+      ]
     },
     "iconsBrand": {
       "entrypoint": "packages/icons-brand/src/index.ts",
@@ -2514,6 +2551,8 @@
         "Cascader",
         "CascaderOption",
         "CascaderProps",
+        "ChangeSummary",
+        "ChangeSummaryProps",
         "Chart",
         "ChartInteractionProps",
         "ChartProps",
@@ -2556,6 +2595,8 @@
         "DataTableProps",
         "DataTableRow",
         "DataTableSort",
+        "DataTableSortControls",
+        "DataTableSortControlsProps",
         "DatePicker",
         "DatePickerProps",
         "DateRangeCalendar",
@@ -2620,6 +2661,8 @@
         "FieldProps",
         "FileUpload",
         "FileUploadProps",
+        "FilterBar",
+        "FilterBarProps",
         "FloatingBadge",
         "FloatingBadgeProps",
         "Form",
@@ -3389,7 +3432,14 @@
       ],
       "experimental": [],
       "deprecated": [],
-      "unclassified": []
+      "unclassified": [
+        "ChangeSummary",
+        "ChangeSummaryProps",
+        "DataTableSortControls",
+        "DataTableSortControlsProps",
+        "FilterBar",
+        "FilterBarProps"
+      ]
     },
     "reactHookForm": {
       "entrypoint": "packages/react-hook-form/src/index.ts",

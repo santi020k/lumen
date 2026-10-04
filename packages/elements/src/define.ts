@@ -51,16 +51,14 @@ import {
   type LumenComboSeries,
   type LumenComponentName,
   lumenComponentNames,
-  type LumenHeatmapDatum,
   type LumenHistogramBin,
   type LumenIllustrationName,
   type LumenKanbanMoveDetail,
   type LumenLocaleOption,
   type LumenPieGeometrySlice,
-  type LumenRangeDatum,
   type LumenRichTextChangeDetail,
   type LumenRichTextCommandDetail,
-  type LumenScatterGeometryPoint,
+  type LumenScatterReference,
   type LumenTabsChangeDetail,
   type LumenThemeBuilderExportFormat,
   type LumenThemeBuilderScheme,
@@ -96,6 +94,12 @@ import {
   LumenComboboxElement as GranularLumenComboboxElement,
   lumenComboboxElementConfig
 } from './components/combobox.js'
+import {
+  LumenChangeSummaryElement as GranularLumenChangeSummaryElement,
+  lumenChangeSummaryElementConfig,
+  LumenFilterBarElement as GranularLumenFilterBarElement,
+  lumenFilterBarElementConfig
+} from './components/dashboard.js'
 import {
   LumenCardContentElement as GranularLumenCardContentElement,
   lumenCardContentElementConfig,
@@ -133,7 +137,7 @@ import {
   lumenImageComparisonElementConfig
 } from './components/image-comparison.js'
 import { LumenDatumChartElement } from './chart-activation.js'
-import { chartAnnotationHtml, chartDomainAttributes, chartInspectionHtml, chartNumberAttribute, escapeChartHtml, interactiveChartLegendHtml, intervalChartHtml, parseChartAnnotations, parseHistogramBins, parseWaterfallData } from './chart-html.js'
+import { chartAnnotationHtml, chartCaptionHtml, chartDataTableHtml, chartDomainAttributes, chartHeaderHtml, chartInspectionHtml, chartNumberAttribute, escapeChartHtml, heatmapDataTableHtml, interactiveChartLegendHtml, intervalChartHtml, parseChartAnnotations, parseHeatmapData, parseHistogramBins, parseRangeData, parseWaterfallData, rangeDataTableHtml, scatterDataTableHtml, scatterPlotHtml } from './chart-html.js'
 import {
   createLumenElementClass as createStandaloneLumenElementClass,
   LumenElement,
@@ -694,6 +698,8 @@ const elementConfigs = {
     tagName: 'lumen-icon'
   },
   ImageComparison: lumenImageComparisonElementConfig,
+  ChangeSummary: lumenChangeSummaryElementConfig,
+  FilterBar: lumenFilterBarElementConfig,
   Image: {
     attributeClasses: {
       fit: {
@@ -1458,6 +1464,11 @@ const observedAttributeNames = [
   'autocomplete',
   'border-position',
   'caption',
+  'x-scale',
+  'x-min',
+  'x-max',
+  'domain-min',
+  'domain-max',
   'category-label',
   'center-label',
   'center-value',
@@ -4515,16 +4526,13 @@ const getDataTableRowValue = (
 ): string => row.dataset.value || row.id || String(index)
 
 const getNextDataTableSortDirection = (
-  currentColumn: string | undefined,
-  columnIndex: number,
   currentDirection: string | null
 ): DataTableSortDirection => {
-  if (currentColumn !== String(columnIndex) || currentDirection === 'none')
-    return 'ascending'
-
   if (currentDirection === 'ascending') return 'descending'
 
-  return 'none'
+  if (currentDirection === 'descending') return 'none'
+
+  return 'ascending'
 }
 
 const getControlledPanel = (trigger: HTMLElement): HTMLElement | null => {
@@ -5524,91 +5532,6 @@ const parseComboChartSeries = (value: string | null): LumenComboSeries[] => {
   }
 }
 
-const parseHeatmapData = (value: string | null): LumenHeatmapDatum[] => {
-  if (!value) return []
-
-  try {
-    const parsed: unknown = JSON.parse(value)
-
-    if (!Array.isArray(parsed)) return []
-
-    return parsed.flatMap(candidate => {
-      if (typeof candidate !== 'object' || candidate === null) return []
-
-      const record = candidate as Record<string, unknown>
-
-      if (
-        (typeof record.x !== 'string' && typeof record.x !== 'number') ||
-        (typeof record.y !== 'string' && typeof record.y !== 'number') ||
-        (record.value !== null &&
-          (typeof record.value !== 'number' || !Number.isFinite(record.value)))
-      ) return []
-
-      return [{
-        ...(typeof record.id === 'string' ? { id: record.id } : {}),
-        ...(typeof record.label === 'string' ? { label: record.label } : {}),
-        value: record.value,
-        x: record.x,
-        ...(typeof record.xLabel === 'string' ? { xLabel: record.xLabel } : {}),
-        y: record.y,
-        ...(typeof record.yLabel === 'string' ? { yLabel: record.yLabel } : {})
-      }]
-    })
-  } catch {
-    return []
-  }
-}
-
-const parseRangeData = (value: string | null): LumenRangeDatum[] => {
-  if (!value) return []
-
-  try {
-    const parsed: unknown = JSON.parse(value)
-
-    if (!Array.isArray(parsed)) return []
-
-    return parsed.flatMap(candidate => {
-      if (typeof candidate !== 'object' || candidate === null) return []
-
-      const record = candidate as Record<string, unknown>
-      const validBound = (bound: unknown): bound is number | null => bound === null || (typeof bound === 'number' && Number.isFinite(bound))
-
-      if (
-        (typeof record.x !== 'string' && typeof record.x !== 'number') ||
-        !validBound(record.low) ||
-        !validBound(record.high)
-      ) return []
-
-      return [{
-        high: record.high,
-        ...(typeof record.id === 'string' ? { id: record.id } : {}),
-        ...(typeof record.label === 'string' ? { label: record.label } : {}),
-        low: record.low,
-        x: record.x,
-        ...(typeof record.xLabel === 'string' ? { xLabel: record.xLabel } : {})
-      }]
-    })
-  } catch {
-    return []
-  }
-}
-
-const chartHeaderHtml = (element: HTMLElement): string => {
-  const heading = element.getAttribute('heading')
-  const description = element.getAttribute('description')
-  const value = element.getAttribute('value')
-
-  if (!heading && !description && !value) return ''
-
-  return `<header><div class="ui-chart__heading">${heading ? `<h3>${escapeChartHtml(heading)}</h3>` : ''}${description ? `<p>${escapeChartHtml(description)}</p>` : ''}</div>${value ? `<strong data-ui-chart-value>${escapeChartHtml(value)}</strong>` : ''}</header>`
-}
-
-const chartCaptionHtml = (element: HTMLElement): string => {
-  const caption = element.getAttribute('caption')
-
-  return caption ? `<figcaption>${escapeChartHtml(caption)}</figcaption>` : ''
-}
-
 const chartLabelsFor = (element: HTMLElement): Readonly<LumenChartLabels> => {
   const defaults = resolveLumenChartLabels(undefined)
 
@@ -5651,119 +5574,6 @@ const chartLegendHtml = (
   series: readonly LumenChartSeries[],
   labels: Readonly<LumenChartLabels>
 ): string => `<ul class="ui-chart__legend" aria-label="${escapeChartHtml(labels.chartLegend)}">${series.map((item, index) => `<li class="ui-chart-tone--${resolveLumenChartTone(item.tone, index)}"><span aria-hidden="true"></span>${escapeChartHtml(item.label)}</li>`).join('')}</ul>`
-
-const chartDataTableHtml = (
-  categories: readonly (number | string)[],
-  series: readonly LumenChartSeries[],
-  formatCategory: ((category: number | string) => string) | undefined,
-  formatValue: (value: number) => string = String,
-  labels: Readonly<LumenChartLabels>
-): string => {
-  const alignedSeries = series.map(item => alignLumenChartSeries(item, categories))
-
-  const headers = alignedSeries
-    .map(item => `<th scope="col">${escapeChartHtml(item.label)}</th>`)
-    .join('')
-
-  const rows = categories
-    .map(category => {
-      const cells = alignedSeries
-        .map(item => {
-          const datum = item.data.find(candidate => candidate.x === category)
-
-          const value =
-            datum?.label ??
-            (datum?.y === undefined || datum.y === null || !Number.isFinite(datum.y) ?
-              labels.notAvailable :
-              formatValue(datum.y))
-
-          return `<td>${escapeChartHtml(value)}</td>`
-        })
-        .join('')
-
-      const label = getLumenChartCategoryLabel(alignedSeries, category, formatCategory, 'detail')
-
-      return `<tr><th scope="row">${escapeChartHtml(label)}</th>${cells}</tr>`
-    })
-    .join('')
-
-  return [
-    `<details class="ui-chart__data"><summary>${escapeChartHtml(labels.viewData)}</summary>`,
-    `<div><table><thead><tr><th scope="col">${escapeChartHtml(labels.category)}</th>`,
-    `${headers}</tr></thead><tbody>${rows}</tbody></table></div></details>`
-  ].join('')
-}
-
-const scatterDataTableHtml = (
-  points: readonly LumenScatterGeometryPoint[],
-  formatCategory: (category: number | string) => string = String,
-  formatValue: (value: number) => string = String,
-  labels: Readonly<LumenChartLabels>
-): string => {
-  const rows = points
-    .map(point => [
-      `<tr><th scope="row">${escapeChartHtml(point.xLabel ?? formatCategory(point.x))}</th>`,
-      `<td>${escapeChartHtml(point.seriesLabel)}</td>`,
-      `<td>${escapeChartHtml(point.label ?? formatValue(point.y ?? 0))}</td>`,
-      `<td>${escapeChartHtml(point.size === undefined || point.size === null || !Number.isFinite(point.size) ? labels.notAvailable : formatValue(point.size))}</td></tr>`
-    ].join(''))
-    .join('')
-
-  return [
-    `<details class="ui-chart__data"><summary>${escapeChartHtml(labels.viewData)}</summary>`,
-    `<div><table><thead><tr><th scope="col">${escapeChartHtml(labels.x)}</th>`,
-    `<th scope="col">${escapeChartHtml(labels.series)}</th><th scope="col">${escapeChartHtml(labels.value)}</th>`,
-    `<th scope="col">${escapeChartHtml(labels.size)}</th></tr></thead>`,
-    `<tbody>${rows}</tbody></table></div></details>`
-  ].join('')
-}
-
-const heatmapDataTableHtml = (
-  data: readonly LumenHeatmapDatum[], labels: Readonly<LumenChartLabels>,
-  formatValue: (value: number) => string = String
-): string => {
-  const rows = data
-    .map(cell => {
-      const value =
-        cell.label ??
-        (cell.value === null || !Number.isFinite(cell.value) ?
-          labels.notAvailable :
-          formatValue(cell.value))
-
-      return [
-        `<tr><th scope="row">${escapeChartHtml(cell.xLabel ?? cell.x)}</th>`,
-        `<td>${escapeChartHtml(cell.yLabel ?? cell.y)}</td>`,
-        `<td>${escapeChartHtml(value)}</td></tr>`
-      ].join('')
-    })
-    .join('')
-
-  return [
-    `<details class="ui-chart__data"><summary>${escapeChartHtml(labels.viewData)}</summary>`,
-    `<div><table><thead><tr><th scope="col">${escapeChartHtml(labels.column)}</th>`,
-    `<th scope="col">${escapeChartHtml(labels.row)}</th><th scope="col">${escapeChartHtml(labels.value)}</th></tr></thead>`,
-    `<tbody>${rows}</tbody></table></div></details>`
-  ].join('')
-}
-
-const rangeDataTableHtml = (
-  data: readonly LumenRangeDatum[], labels: Readonly<LumenChartLabels>
-): string => {
-  const rows = data
-    .map(item => [
-      `<tr><th scope="row">${escapeChartHtml(item.xLabel ?? item.x)}</th>`,
-      `<td>${escapeChartHtml(item.low ?? labels.notAvailable)}</td>`,
-      `<td>${escapeChartHtml(item.high ?? labels.notAvailable)}</td></tr>`
-    ].join(''))
-    .join('')
-
-  return [
-    `<details class="ui-chart__data"><summary>${escapeChartHtml(labels.viewData)}</summary>`,
-    `<div><table><thead><tr><th scope="col">${escapeChartHtml(labels.category)}</th>`,
-    `<th scope="col">${escapeChartHtml(labels.low)}</th><th scope="col">${escapeChartHtml(labels.high)}</th></tr></thead>`,
-    `<tbody>${rows}</tbody></table></div></details>`
-  ].join('')
-}
 
 const chartPercentage = (percentage: number): string => new Intl.NumberFormat(undefined, {
   maximumFractionDigits: percentage < 0.01 ? 1 : 0,
@@ -6302,10 +6112,30 @@ class LumenPieChartBehaviorElement extends LumenDataChartBehaviorElement {
 }
 
 class LumenScatterChartBehaviorElement extends LumenDataChartBehaviorElement {
+  private referenceItems: readonly LumenScatterReference[] = []
+
+  get references(): readonly LumenScatterReference[] {
+    return this.referenceItems.map(item => ({ ...item }))
+  }
+
+  set references(value: readonly LumenScatterReference[]) {
+    this.referenceItems = value.map(item => ({ ...item }))
+
+    if (this.isConnected) this.renderChart()
+  }
+
   protected renderChart() {
+    const plotId = createId('scatter-plot')
     const series = this.series
     const chartLabels = chartLabelsFor(this)
-    const geometry = createLumenScatterGeometry(series)
+    const requestedScale = this.getAttribute('x-scale')
+    const xScale = requestedScale === 'log' || requestedScale === 'time' ? requestedScale : 'linear'
+
+    const geometry = createLumenScatterGeometry(series, {
+      xScale,
+      xDomain: chartDomainAttributes(this, 'x-min', 'x-max'),
+      domain: chartDomainAttributes(this)
+    })
 
     const renderedSeries = series.map(item => ({
       ...item,
@@ -6319,14 +6149,14 @@ class LumenScatterChartBehaviorElement extends LumenDataChartBehaviorElement {
     }
 
     const marks = geometry.points.map(point => {
-      const context = `${point.xLabel ?? point.x} · ${point.seriesLabel}: ${point.label ?? this.valueFormatter(point.y ?? 0)}`
+      const context = `${point.xLabel ?? this.categoryFormatter(point.x)} · ${point.seriesLabel}: ${point.label ?? this.valueFormatter(point.y ?? 0)}`
       const attributes = this.datumAttributes(createLumenChartDatumActivation(point.seriesId, point), context)
 
       return [
         attributes ? `<circle class="ui-chart__datum-hit"${attributes} cx="${point.xCoordinate}" cy="${point.yCoordinate}" r="${Math.max(10, point.radius)}"></circle>` : '',
         `<circle class="ui-chart-tone--${point.tone}"${attributes} cx="${point.xCoordinate}"`,
         ` cy="${point.yCoordinate}" r="${point.radius}"><title>`,
-        `${escapeChartHtml(point.xLabel ?? point.x)} · ${escapeChartHtml(point.seriesLabel)}: `,
+        `${escapeChartHtml(point.xLabel ?? this.categoryFormatter(point.x))} · ${escapeChartHtml(point.seriesLabel)}: `,
         `${escapeChartHtml(point.label ?? this.valueFormatter(point.y ?? 0))}</title></circle>`
       ].join('')
     }).join('')
@@ -6335,8 +6165,9 @@ class LumenScatterChartBehaviorElement extends LumenDataChartBehaviorElement {
       chartHeaderHtml(this),
       chartSummaryHtml(this, renderedSeries),
       chartBooleanAttribute(this, 'show-legend', series.length > 1) ? chartLegendHtml(series, chartLabels) : '',
-      `<div class="ui-chart__plot" role="region" tabindex="0" aria-label="${escapeChartHtml(chartLabels.chartData)}"><svg aria-hidden="true" viewBox="0 0 ${geometry.width} ${geometry.height}">`,
-      `<g class="ui-scatter-chart__marks">${marks}</g></svg></div>`,
+      scatterPlotHtml(
+        geometry, this.referenceItems, xScale, plotId, this.categoryFormatter, this.valueFormatter, chartLabels, marks
+      ),
       chartBooleanAttribute(this, 'show-table', true) ?
         scatterDataTableHtml(
           geometry.points, this.categoryFormatter, this.valueFormatter, chartLabels
@@ -6345,6 +6176,10 @@ class LumenScatterChartBehaviorElement extends LumenDataChartBehaviorElement {
       chartCaptionHtml(this)
     ].join(''))
   }
+}
+
+class LumenScatterChartRegisteredElement extends LumenScatterChartBehaviorElement {
+  static override config = { ...elementConfigs.ScatterChart, observedAttributes: observedAttributeNames }
 }
 
 class LumenComboChartBehaviorElement extends LumenDataChartBehaviorElement {
@@ -7809,12 +7644,21 @@ class LumenDataTableBehaviorElement extends LumenElement {
       button.addEventListener(
         'click', () => {
           const nextDirection = getNextDataTableSortDirection(
-            this.dataset.uiDatatableSortColumn, columnIndex, header.getAttribute('aria-sort')
+            header.getAttribute('aria-sort')
           )
 
           this.updateSort(table, header, nextDirection)
 
-          this.sortRows(table, header, columnIndex, nextDirection)
+          if (this.getAttribute('sort-mode') !== 'manual' && this.dataset.uiDatatableSortMode !== 'manual') {
+            this.sortRows(table, header, columnIndex, nextDirection)
+          }
+
+          this.dispatchEvent(new CustomEvent('ui:data-table-sort-change', {
+            bubbles: true,
+            detail: {
+              key: header.dataset.uiDatatableSortKey ?? String(columnIndex), columnIndex, direction: nextDirection
+            }
+          }))
         }, { signal }
       )
     }
@@ -11582,6 +11426,8 @@ export class LumenDialogElement extends LumenDialogBehaviorElement {
 const granularElementClasses: Partial<
   Record<LumenComponentName, LumenElementConstructor>
 > = {
+  ChangeSummary: GranularLumenChangeSummaryElement,
+  FilterBar: GranularLumenFilterBarElement,
   Badge: GranularLumenBadgeElement,
   Button: GranularLumenButtonElement,
   Card: GranularLumenCardElement,
@@ -11595,6 +11441,7 @@ const granularElementClasses: Partial<
   Container: GranularLumenContainerElement,
   Direction: GranularLumenDirectionElement,
   Grid: GranularLumenGridElement,
+  ScatterChart: LumenScatterChartRegisteredElement,
   ImageComparison: GranularLumenImageComparisonElement,
   Label: GranularLumenLabelElement,
   Separator: GranularLumenSeparatorElement,
@@ -11818,7 +11665,7 @@ export const LumenResizableElement = elementClasses.Resizable
 export const LumenRichTextEditorElement = elementClasses.RichTextEditor
 export const LumenScrollAreaElement = elementClasses.ScrollArea
 export const LumenScrollProgressElement = elementClasses.ScrollProgress
-export const LumenScatterChartElement = elementClasses.ScatterChart
+export const LumenScatterChartElement = LumenScatterChartRegisteredElement
 export const LumenScheduleElement = elementClasses.Schedule
 export const LumenSearchFieldElement = elementClasses.SearchField
 export const LumenSelectElement = elementClasses.Select
@@ -11913,3 +11760,5 @@ export const LumenDescriptionDetailElement = elementClasses.DescriptionDetail
 
 export const LumenAttachmentListElement = elementClasses.AttachmentList
 export const LumenAttachmentPreviewElement = elementClasses.AttachmentPreview
+export const LumenChangeSummaryElement = GranularLumenChangeSummaryElement
+export const LumenFilterBarElement = GranularLumenFilterBarElement

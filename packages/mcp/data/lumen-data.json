@@ -41,7 +41,7 @@
       "ContextNavigation": "cb3b2b1ed4fa6e52f30d57b3217da7929ee218f8d00d1c31192d0604fed77e3f",
       "ContextMenu": "8b9b5b009deb7c99fb367bf68216d9fe144163b8cb759c46154e3d0bbaed5048",
       "ColorPicker": "c5c777fd5aa2c9d91d8eff7ef6386af457807ab01a1400cebd7204c40fdedaec",
-      "DataTable": "aec98d27181f58a6c74876d236eb9e59cc1ac3a89afc54b3e03e0cfa492edabe",
+      "DataTable": "7cc500021fbf55686414b5d1c1d57ef84540596e9ab61b301e9569afdb4d471a",
       "DatePicker": "d498cc44fec8439c06f09e803ff12eda66ec0c0ec659f7f48f648c31f9ee45f0",
       "DateRangePicker": "b9ca3d0d56e7a26710bfdedea2ab34d5e334b1bb31a9abbee7478252ba9b8123",
       "Dialog": "e37246c5e4079d0bd0ff0e56fab8829299bbe2bb7fb9be8daf13358b88c3f3ab",
@@ -52,7 +52,7 @@
       "DialogClose": "102edf90ce3db52b71177d09290303edaf7f079ecc61d1e8d8c1a3843dbb4a3a",
       "Direction": "ac13fa49498f18ea7734a565324402953549202080eaa3054c5068f347ec29bf",
       "Drawer": "2f046cdf9f3b860c484b1a2e08000d04338428dd0c92344045b315bf2dadb2ed",
-      "DropdownMenu": "fb3c0a31b91a032b7dbb1d85178b000d49587ce71ac498e247d4ea2bfb8d2802",
+      "DropdownMenu": "63c1de4d9c9c9d84b152cc343496b8149a48c987e2a0830e1675c082e37b54b8",
       "Empty": "c42dd710d9e20761cf7f422d1dbd6ccf95ad1094bd36dbb5ccab910e6002b9a6",
       "ErrorState": "5f9715289c4d92562d71f498df10817e8225d1a4649a5764a7b92ebedbf67673",
       "ErrorSummary": "6a58f69ab4eeefe972c5edcb3874cbf11778392d60203f81276178d7090faff6",
@@ -91,7 +91,7 @@
       "PhoneInput": "1d1f45d24adeb4320fa6ee9ffb055f7c8c9876dfb22e5ff6495c5a0b669f3435",
       "PieChart": "937797713055015cf0debac25dc726432e4ae4e3b66d5ab7bce2011745c6847f",
       "Pill": "a0dffa43c0e089ae68d8dd11df5ccca3b83eb0acb5d777752f29475b0bb064a1",
-      "Popover": "72f6c508c2d9fb0070ae3652fde089a8bab097193e6fb26c57b7dde751eb8ee6",
+      "Popover": "d777a589bdd963db017bf6c4ae326a755dc3095254ab4ccc6356db66f15ada4d",
       "Progress": "cd577f799cf9102eabef5e3b6dd98f1c33df42795f228b84c86a97d7d045233c",
       "Prose": "36e61f7f8b4a6c74a2a716a73dbf22cb4f86fae092b1518aa0a0e68765cea68d",
       "RadioGroup": "10423caa00dba5ef159036ba11d3845371e859656dd7c8cb86490f0e63da821f",
@@ -168,13 +168,15 @@
       "Affix": "554b64a7393d73e9b53ac7bb32793d16e82b609873c4c53a6ad39f844c1dcb23",
       "SpeedDial": "7e8c5ceb0cfd8e941343809ccec8109c5686872c29438686a494c330955804a1",
       "Grid": "e1d0a999e32d123df1d172388a139545cdf7b8e717731b88130457395cf09f2c",
-      "ScatterChart": "1d5861cfce687617ae13d1df1c74182aa8e2f3e6bcf44c24d876612284bd46ea",
+      "ScatterChart": "36d251ec83b3e6e982f2c29a5d0b56982a042ae414e7fdd8f68fe78f409138c1",
       "Heatmap": "bbf028aceacec2b15ccba422eb754b56dc1b074504dce9afb5b87770c7bee90a",
       "RangeChart": "8728c3c510a9b2191a6cbb7db8acf73e9c6f3adbb34ae335d9d69aff0b34bfd9",
       "ComboChart": "f87206896e21cda9860b2df75991657ab903cd465a23295ad1cac30d0b7c7230",
       "VisuallyHidden": "10562829ec1f598aacc2ad819e93c0cd3b257c7eec60818854a08723d9dcc888",
       "Histogram": "5112f4f7ed4023b0e0600359397a9a10bb34749992720b922b3b8136396d671c",
-      "WaterfallChart": "e9e2f3022cee121082fc73bfeb814d7b385791fcf563aa8b27c8f30a61fc92bf"
+      "WaterfallChart": "e9e2f3022cee121082fc73bfeb814d7b385791fcf563aa8b27c8f30a61fc92bf",
+      "ChangeSummary": "31b2138f65c7c57dd21f07986e92c5cc3626a766368fc6e1e46a3590bd2c5829",
+      "FilterBar": "f6d3b922f13bff31dc9970e2429013a5b647467c26a54a42ce69245b14446459"
     },
     "nativeComponents": {
       "Sparkline": "9d2085fbc1153e2650ea380843dfced5abdfd307dc9c97dfeab1fc8122f3bc00",
@@ -9173,6 +9175,36 @@
           "values": "boolean | \"subtle\" | \"strong\""
         },
         {
+          "attribute": "layout",
+          "defaultValue": "\"scroll\"",
+          "description": "Opt-in responsive record labels; rich authored Table children remain available.",
+          "values": "\"records\" | \"scroll\""
+        },
+        {
+          "attribute": "sortMode",
+          "defaultValue": "\"client\"",
+          "description": "Manual mode requests host sorting and preserves supplied server order.",
+          "values": "\"client\" | \"manual\""
+        },
+        {
+          "attribute": "column.render, renderDetails",
+          "defaultValue": "-",
+          "description": "Renders rich cells and stable record details without changing sort values.",
+          "values": "React render callbacks"
+        },
+        {
+          "attribute": "expandedRowIds, onExpandedRowIdsChange",
+          "defaultValue": "-",
+          "description": "Preserves expansion by stable record ID across pages.",
+          "values": "controlled React expansion"
+        },
+        {
+          "attribute": "DataTableSortControls",
+          "defaultValue": "-",
+          "description": "Shares controlled sort state with headers for a visible mobile sort path.",
+          "values": "React component"
+        },
+        {
           "attribute": "columns",
           "defaultValue": "[]",
           "description": "Generates table headers and maps row cells by column key when rows are provided.",
@@ -9209,7 +9241,7 @@
           "values": "HTML attributes"
         }
       ],
-      "astroSource": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ntype DataTableCell =\n  | boolean |\n  null |\n  number |\n  string |\n  undefined |\n  {\n    label?: boolean | null | number | string\n    sortValue?: boolean | null | number | string\n    value?: boolean | null | number | string\n  }\n\ninterface DataTableColumn {\n  header?: string\n  key: string\n  label?: string\n  sort?: 'number' | 'string'\n  sortable?: boolean\n}\n\ntype DataTableRow = Record<string, DataTableCell> & {\n  id?: number | string\n  rowValue?: number | string\n  value?: number | string\n}\n\ninterface Props extends HTMLAttributes<'div'> {\n  class?: string | null\n  className?: string\n  columns?: DataTableColumn[]\n  glass?: boolean | 'subtle' | 'strong'\n  name?: string\n  rows?: DataTableRow[]\n  selectable?: boolean\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  columns = [],\n  glass = false,\n  name,\n  rows = [],\n  selectable = false,\n  ...rest\n} = Astro.props\n\nconst hasData = columns.length > 0\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-data-table',\n  glass && 'ui-data-table--glass',\n  glass === 'subtle' && 'ui-glass-subtle',\n  glass === 'strong' && 'ui-glass-strong'\n], classProp, className)\n\nconst isCellObject = (cell: DataTableCell): cell is Exclude<DataTableCell, boolean | null | number | string | undefined> => typeof cell === 'object' && cell !== null\n\nconst formatCell = (cell: DataTableCell): string => {\n  const value = isCellObject(cell) ? cell.label ?? cell.value : cell\n\n  return value === undefined || value === null ? '' : String(value)\n}\n\nconst getSortValue = (cell: DataTableCell): string | undefined => {\n  if (!isCellObject(cell) || cell.sortValue === undefined || cell.sortValue === null) return undefined\n\n  return String(cell.sortValue)\n}\n\nconst getRowValue = (row: DataTableRow, index: number): string => String(row.rowValue ?? row.value ?? row.id ?? index)\n---\n\n<div\n  class:list={classList}\n  data-ui-datatable\n  data-ui-datatable-name={name}\n  data-ui-datatable-selectable={selectable ? 'true' : undefined}\n  data-ui-glass-track={glass ? true : undefined}\n  {...passthrough}\n>\n  {hasData ?\n    (\n      <table>\n        <thead>\n          <tr>\n            {columns.map(column => (\n              <th\n                data-ui-datatable-sort-type={column.sort}\n                data-ui-datatable-sortable={column.sortable ? 'true' : undefined}\n                scope=\"col\"\n              >\n                {column.header ?? column.label ?? column.key}\n              </th>\n            ))}\n          </tr>\n        </thead>\n        <tbody>\n          {rows.map((row, rowIndex) => (\n            <tr data-ui-datatable-row data-value={getRowValue(row, rowIndex)}>\n              {columns.map(column => {\n                const cell = row[column.key]\n\n                return (\n                  <td data-sort-value={getSortValue(cell)}>\n                    {formatCell(cell)}\n                  </td>\n                )\n              })}\n            </tr>\n          ))}\n        </tbody>\n      </table>\n    ) :\n    (\n      <slot />\n    )}\n</div>\n",
+      "astroSource": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ntype DataTableCell =\n  | boolean |\n  null |\n  number |\n  string |\n  undefined |\n  {\n    label?: boolean | null | number | string\n    sortValue?: boolean | null | number | string\n    value?: boolean | null | number | string\n  }\n\ninterface DataTableColumn {\n  header?: string\n  key: string\n  label?: string\n  sort?: 'number' | 'string'\n  sortable?: boolean\n}\n\ntype DataTableRow = Record<string, DataTableCell> & {\n  id?: number | string\n  rowValue?: number | string\n  value?: number | string\n}\n\ninterface Props extends HTMLAttributes<'div'> {\n  class?: string | null\n  className?: string\n  columns?: DataTableColumn[]\n  layout?: 'records' | 'scroll'\n  sortMode?: 'client' | 'manual'\n  glass?: boolean | 'subtle' | 'strong'\n  name?: string\n  rows?: DataTableRow[]\n  selectable?: boolean\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  columns = [],\n  glass = false,\n  layout = 'scroll',\n  sortMode = 'client',\n  name,\n  rows = [],\n  selectable = false,\n  ...rest\n} = Astro.props\n\nconst hasData = columns.length > 0\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-data-table',\n  glass && 'ui-data-table--glass',\n  glass === 'subtle' && 'ui-glass-subtle',\n  glass === 'strong' && 'ui-glass-strong'\n], classProp, className)\n\nconst isCellObject = (cell: DataTableCell): cell is Exclude<DataTableCell, boolean | null | number | string | undefined> => typeof cell === 'object' && cell !== null\n\nconst formatCell = (cell: DataTableCell): string => {\n  const value = isCellObject(cell) ? cell.label ?? cell.value : cell\n\n  return value === undefined || value === null ? '' : String(value)\n}\n\nconst getSortValue = (cell: DataTableCell): string | undefined => {\n  if (!isCellObject(cell) || cell.sortValue === undefined || cell.sortValue === null) return undefined\n\n  return String(cell.sortValue)\n}\n\nconst getRowValue = (row: DataTableRow, index: number): string => String(row.rowValue ?? row.value ?? row.id ?? index)\n---\n\n<div\n  class:list={classList}\n  data-ui-datatable\n  data-ui-datatable-name={name}\n  data-ui-datatable-sort-mode={sortMode}\n  data-layout={layout}\n  data-ui-datatable-selectable={selectable ? 'true' : undefined}\n  data-ui-glass-track={glass ? true : undefined}\n  {...passthrough}\n>\n  {hasData ?\n    (\n      <table class=\"ui-table\" data-layout={layout} role=\"table\">\n        <thead role=\"rowgroup\">\n          <tr role=\"row\">\n            {columns.map(column => (\n              <th\n                data-ui-datatable-sort-key={column.key}\n                data-ui-datatable-sort-type={column.sort}\n                data-ui-datatable-sortable={column.sortable ? 'true' : undefined}\n                scope=\"col\"\n              >\n                {column.header ?? column.label ?? column.key}\n              </th>\n            ))}\n          </tr>\n        </thead>\n        <tbody role=\"rowgroup\">\n          {rows.map((row, rowIndex) => (\n            <tr role=\"row\" data-ui-datatable-row data-value={getRowValue(row, rowIndex)}>\n              {columns.map(column => {\n                const cell = row[column.key]\n\n                return (\n                  <td role=\"cell\" data-sort-value={getSortValue(cell)}>\n                    {layout === 'records' && <span class=\"ui-table__label\" aria-hidden=\"true\">{column.header ?? column.label ?? column.key}</span>}\n                    <div class=\"ui-table__value\">{formatCell(cell)}</div>\n                  </td>\n                )\n              })}\n            </tr>\n          ))}\n        </tbody>\n      </table>\n    ) :\n    (\n      <slot />\n    )}\n</div>\n",
       "category": "Data display",
       "collections": [
         "Structured data"
@@ -9258,6 +9290,16 @@
               "type": "DataTableColumn[]"
             },
             {
+              "name": "layout",
+              "optional": true,
+              "type": "'records' | 'scroll'"
+            },
+            {
+              "name": "sortMode",
+              "optional": true,
+              "type": "'client' | 'manual'"
+            },
+            {
               "name": "glass",
               "optional": true,
               "type": "boolean | 'subtle' | 'strong'"
@@ -9279,13 +9321,18 @@
             }
           ],
           "propsExtends": "HTMLAttributes<'div'>",
-          "source": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ntype DataTableCell =\n  | boolean |\n  null |\n  number |\n  string |\n  undefined |\n  {\n    label?: boolean | null | number | string\n    sortValue?: boolean | null | number | string\n    value?: boolean | null | number | string\n  }\n\ninterface DataTableColumn {\n  header?: string\n  key: string\n  label?: string\n  sort?: 'number' | 'string'\n  sortable?: boolean\n}\n\ntype DataTableRow = Record<string, DataTableCell> & {\n  id?: number | string\n  rowValue?: number | string\n  value?: number | string\n}\n\ninterface Props extends HTMLAttributes<'div'> {\n  class?: string | null\n  className?: string\n  columns?: DataTableColumn[]\n  glass?: boolean | 'subtle' | 'strong'\n  name?: string\n  rows?: DataTableRow[]\n  selectable?: boolean\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  columns = [],\n  glass = false,\n  name,\n  rows = [],\n  selectable = false,\n  ...rest\n} = Astro.props\n\nconst hasData = columns.length > 0\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-data-table',\n  glass && 'ui-data-table--glass',\n  glass === 'subtle' && 'ui-glass-subtle',\n  glass === 'strong' && 'ui-glass-strong'\n], classProp, className)\n\nconst isCellObject = (cell: DataTableCell): cell is Exclude<DataTableCell, boolean | null | number | string | undefined> => typeof cell === 'object' && cell !== null\n\nconst formatCell = (cell: DataTableCell): string => {\n  const value = isCellObject(cell) ? cell.label ?? cell.value : cell\n\n  return value === undefined || value === null ? '' : String(value)\n}\n\nconst getSortValue = (cell: DataTableCell): string | undefined => {\n  if (!isCellObject(cell) || cell.sortValue === undefined || cell.sortValue === null) return undefined\n\n  return String(cell.sortValue)\n}\n\nconst getRowValue = (row: DataTableRow, index: number): string => String(row.rowValue ?? row.value ?? row.id ?? index)\n---\n\n<div\n  class:list={classList}\n  data-ui-datatable\n  data-ui-datatable-name={name}\n  data-ui-datatable-selectable={selectable ? 'true' : undefined}\n  data-ui-glass-track={glass ? true : undefined}\n  {...passthrough}\n>\n  {hasData ?\n    (\n      <table>\n        <thead>\n          <tr>\n            {columns.map(column => (\n              <th\n                data-ui-datatable-sort-type={column.sort}\n                data-ui-datatable-sortable={column.sortable ? 'true' : undefined}\n                scope=\"col\"\n              >\n                {column.header ?? column.label ?? column.key}\n              </th>\n            ))}\n          </tr>\n        </thead>\n        <tbody>\n          {rows.map((row, rowIndex) => (\n            <tr data-ui-datatable-row data-value={getRowValue(row, rowIndex)}>\n              {columns.map(column => {\n                const cell = row[column.key]\n\n                return (\n                  <td data-sort-value={getSortValue(cell)}>\n                    {formatCell(cell)}\n                  </td>\n                )\n              })}\n            </tr>\n          ))}\n        </tbody>\n      </table>\n    ) :\n    (\n      <slot />\n    )}\n</div>\n",
+          "source": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ntype DataTableCell =\n  | boolean |\n  null |\n  number |\n  string |\n  undefined |\n  {\n    label?: boolean | null | number | string\n    sortValue?: boolean | null | number | string\n    value?: boolean | null | number | string\n  }\n\ninterface DataTableColumn {\n  header?: string\n  key: string\n  label?: string\n  sort?: 'number' | 'string'\n  sortable?: boolean\n}\n\ntype DataTableRow = Record<string, DataTableCell> & {\n  id?: number | string\n  rowValue?: number | string\n  value?: number | string\n}\n\ninterface Props extends HTMLAttributes<'div'> {\n  class?: string | null\n  className?: string\n  columns?: DataTableColumn[]\n  layout?: 'records' | 'scroll'\n  sortMode?: 'client' | 'manual'\n  glass?: boolean | 'subtle' | 'strong'\n  name?: string\n  rows?: DataTableRow[]\n  selectable?: boolean\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  columns = [],\n  glass = false,\n  layout = 'scroll',\n  sortMode = 'client',\n  name,\n  rows = [],\n  selectable = false,\n  ...rest\n} = Astro.props\n\nconst hasData = columns.length > 0\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-data-table',\n  glass && 'ui-data-table--glass',\n  glass === 'subtle' && 'ui-glass-subtle',\n  glass === 'strong' && 'ui-glass-strong'\n], classProp, className)\n\nconst isCellObject = (cell: DataTableCell): cell is Exclude<DataTableCell, boolean | null | number | string | undefined> => typeof cell === 'object' && cell !== null\n\nconst formatCell = (cell: DataTableCell): string => {\n  const value = isCellObject(cell) ? cell.label ?? cell.value : cell\n\n  return value === undefined || value === null ? '' : String(value)\n}\n\nconst getSortValue = (cell: DataTableCell): string | undefined => {\n  if (!isCellObject(cell) || cell.sortValue === undefined || cell.sortValue === null) return undefined\n\n  return String(cell.sortValue)\n}\n\nconst getRowValue = (row: DataTableRow, index: number): string => String(row.rowValue ?? row.value ?? row.id ?? index)\n---\n\n<div\n  class:list={classList}\n  data-ui-datatable\n  data-ui-datatable-name={name}\n  data-ui-datatable-sort-mode={sortMode}\n  data-layout={layout}\n  data-ui-datatable-selectable={selectable ? 'true' : undefined}\n  data-ui-glass-track={glass ? true : undefined}\n  {...passthrough}\n>\n  {hasData ?\n    (\n      <table class=\"ui-table\" data-layout={layout} role=\"table\">\n        <thead role=\"rowgroup\">\n          <tr role=\"row\">\n            {columns.map(column => (\n              <th\n                data-ui-datatable-sort-key={column.key}\n                data-ui-datatable-sort-type={column.sort}\n                data-ui-datatable-sortable={column.sortable ? 'true' : undefined}\n                scope=\"col\"\n              >\n                {column.header ?? column.label ?? column.key}\n              </th>\n            ))}\n          </tr>\n        </thead>\n        <tbody role=\"rowgroup\">\n          {rows.map((row, rowIndex) => (\n            <tr role=\"row\" data-ui-datatable-row data-value={getRowValue(row, rowIndex)}>\n              {columns.map(column => {\n                const cell = row[column.key]\n\n                return (\n                  <td role=\"cell\" data-sort-value={getSortValue(cell)}>\n                    {layout === 'records' && <span class=\"ui-table__label\" aria-hidden=\"true\">{column.header ?? column.label ?? column.key}</span>}\n                    <div class=\"ui-table__value\">{formatCell(cell)}</div>\n                  </td>\n                )\n              })}\n            </tr>\n          ))}\n        </tbody>\n      </table>\n    ) :\n    (\n      <slot />\n    )}\n</div>\n",
           "styleImport": "import '@santi020k/lumen-astro/styles.css'"
         },
         "elements": {
           "attributes": [
             "data-ui-datatable",
             "glass",
+            "layout",
+            "sortMode",
+            "column.render, renderDetails",
+            "expandedRowIds, onExpandedRowIdsChange",
+            "DataTableSortControls",
             "columns",
             "rows",
             "name",
@@ -9364,10 +9411,50 @@
               "name": "selectable",
               "optional": true,
               "type": "boolean"
+            },
+            {
+              "name": "layout",
+              "optional": true,
+              "type": "'records' | 'scroll'"
+            },
+            {
+              "name": "renderDetails",
+              "optional": true,
+              "type": "(row: DataTableRow) => ReactNode"
+            },
+            {
+              "name": "expandedRowIds",
+              "optional": true,
+              "type": "readonly string[]"
+            },
+            {
+              "name": "defaultExpandedRowIds",
+              "optional": true,
+              "type": "readonly string[]"
+            },
+            {
+              "name": "onExpandedRowIdsChange",
+              "optional": true,
+              "type": "(ids: string[]) => void"
+            },
+            {
+              "name": "expandLabel",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "name": "collapseLabel",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "name": "detailsLabel",
+              "optional": true,
+              "type": "string"
             }
           ],
           "propsExtends": "ComponentPropsWithoutRef<'div'>",
-          "source": "export interface DataTableProps extends ComponentPropsWithoutRef<'div'> {\n  columns?: DataTableColumn[]\n  defaultSort?: DataTableSort | null\n  glass?: LumenGlassProp\n  name?: string\n  onSortChange?: (sort: DataTableSort | null) => void\n  rows?: DataTableRow[]\n  sort?: DataTableSort | null\n  sortMode?: 'client' | 'manual'\n  selectable?: boolean\n}\n\nexport const DataTable = ({\n  children,\n  className,\n  columns = emptyDataTableColumns,\n  defaultSort = null,\n  glass = false,\n  name,\n  onSortChange,\n  rows = emptyDataTableRows,\n  sort: controlledSort,\n  sortMode = 'client',\n  selectable = false,\n  ...props\n}: DataTableProps) => {\n  const [uncontrolledSort, setUncontrolledSort] = useState<DataTableSort | null>(defaultSort)\n  const sort = resolveDataTableSort(controlledSort, uncontrolledSort)\n\n  const sortedRows = useMemo(() => {\n    if (sortMode === 'manual' || !sort) return rows\n\n    const column = columns.find(candidate => candidate.key === sort.key)\n\n    if (!column) return rows\n\n    const direction = sort.direction === 'ascending' ? 1 : -1\n\n    return [...rows].sort((left, right) => compareDataTableCells(\n      left[column.key], right[column.key], column.sort\n    ) * direction)\n  }, [columns, rows, sort, sortMode])\n\n  const toggleSort = (column: DataTableColumn): void => {\n    const next: DataTableSort = {\n      direction: sort?.key === column.key && sort.direction === 'ascending' ? 'descending' : 'ascending',\n      key: column.key\n    }\n\n    if (controlledSort === undefined) setUncontrolledSort(next)\n\n    onSortChange?.(next)\n  }\n\n  return (\n    <div\n      className={composeClassName(\n        'ui-data-table', glassClass('ui-data-table', glass), className\n      )}\n      data-ui-datatable\n      data-ui-datatable-name={name}\n      data-ui-datatable-sort-mode={sortMode}\n      data-ui-datatable-selectable={selectable ? 'true' : undefined}\n      data-ui-glass-track={glass ? true : undefined}\n      {...props}\n    >\n      {columns.length > 0 ?\n        (\n          <table>\n            <thead>\n              <tr>\n                {columns.map(column => {\n                  const direction = sort?.key === column.key ?\n                    sort.direction :\n                    undefined\n\n                  const label = column.header ?? column.label ?? column.key\n\n                  return (\n                    <th\n                      aria-sort={direction ?? (column.sortable ? 'none' : undefined)}\n                      data-ui-datatable-sort-bound=\"true\"\n                      data-ui-datatable-sort-type={column.sort}\n                      data-ui-datatable-sortable={\n                        column.sortable ? 'true' : undefined\n                      }\n                      key={column.key}\n                      scope=\"col\"\n                    >\n                      {column.sortable ?\n                        (\n                          <button\n                            className=\"ui-data-table__sort\"\n                            data-ui-datatable-sort\n                            onClick={() => {\n                              toggleSort(column)\n                            }}\n                            type=\"button\"\n                          >\n                            {label}\n                          </button>\n                        ) :\n                        label}\n                    </th>\n                  )\n                })}\n              </tr>\n            </thead>\n            <tbody>\n              {sortedRows.map((row, rowIndex) => (\n                <tr\n                  data-ui-datatable-row\n                  data-value={getDataTableRowValue(row, rowIndex)}\n                  key={getDataTableRowValue(row, rowIndex)}\n                >\n                  {columns.map(column => (\n                    <td\n                      data-sort-value={getDataTableSortValue(row[column.key])}\n                      key={column.key}\n                    >\n                      {formatDataTableCell(row[column.key])}\n                    </td>\n                  ))}\n                </tr>\n              ))}\n            </tbody>\n          </table>\n        ) :\n        children}\n    </div>\n  )\n}",
+          "source": "export interface DataTableProps extends ComponentPropsWithoutRef<'div'> {\n  columns?: DataTableColumn[]\n  defaultSort?: DataTableSort | null\n  glass?: LumenGlassProp\n  name?: string\n  onSortChange?: (sort: DataTableSort | null) => void\n  rows?: DataTableRow[]\n  sort?: DataTableSort | null\n  sortMode?: 'client' | 'manual'\n  selectable?: boolean\n  layout?: 'records' | 'scroll'\n  renderDetails?: (row: DataTableRow) => ReactNode\n  expandedRowIds?: readonly string[]\n  defaultExpandedRowIds?: readonly string[]\n  onExpandedRowIdsChange?: (ids: string[]) => void\n  expandLabel?: string\n  collapseLabel?: string\n  detailsLabel?: string\n}\n\nexport const DataTable = ({\n  children,\n  className,\n  columns = emptyDataTableColumns,\n  defaultSort = null,\n  defaultExpandedRowIds,\n  expandedRowIds,\n  expandLabel,\n  collapseLabel,\n  detailsLabel,\n  glass = false,\n  layout,\n  name,\n  onExpandedRowIdsChange,\n  onSortChange,\n  renderDetails,\n  rows = emptyDataTableRows,\n  sort: controlledSort,\n  sortMode = 'client',\n  selectable = false,\n  ...props\n}: DataTableProps) => {\n  const [uncontrolledSort, setUncontrolledSort] = useState<DataTableSort | null>(defaultSort)\n  const sort = resolveDataTableSort(controlledSort, uncontrolledSort)\n\n  const { expanded, toggleDetails } = useDataTableExpansion({\n    defaultExpandedRowIds, expandedRowIds, onExpandedRowIdsChange\n  })\n\n  const detailsId = useId()\n\n  const sortedRows = useMemo(() => {\n    if (sortMode === 'manual' || !sort) return rows\n\n    const column = columns.find(candidate => candidate.key === sort.key)\n\n    if (!column) return rows\n\n    const direction = sort.direction === 'ascending' ? 1 : -1\n\n    return [...rows].sort((left, right) => compareDataTableCells(\n      left[column.key], right[column.key], column.sort\n    ) * direction)\n  }, [columns, rows, sort, sortMode])\n\n  const toggleSort = (column: DataTableColumn): void => {\n    const next: DataTableSort = {\n      direction: sort?.key === column.key && sort.direction === 'ascending' ? 'descending' : 'ascending',\n      key: column.key\n    }\n\n    if (controlledSort === undefined) setUncontrolledSort(next)\n\n    onSortChange?.(next)\n  }\n\n  return (\n    <div\n      className={dataTableClassName(glass, layout, className)}\n      {...dataTableAttributes(name, sortMode, selectable, glass)}\n      {...props}\n    >\n      {columns.length > 0 ?\n        (\n          <table role=\"table\">\n            <thead role=\"rowgroup\">\n              <tr role=\"row\">\n                {columns.map(column => {\n                  const direction = sort?.key === column.key ?\n                    sort.direction :\n                    undefined\n\n                  const label = column.header ?? column.label ?? column.key\n\n                  return (\n                    <th\n                      aria-sort={direction ?? (column.sortable ? 'none' : undefined)}\n                      data-ui-datatable-sort-bound=\"true\"\n                      data-ui-datatable-sort-type={column.sort}\n                      data-ui-datatable-sortable={\n                        column.sortable ? 'true' : undefined\n                      }\n                      key={column.key}\n                      role=\"columnheader\"\n                      scope=\"col\"\n                    >\n                      {column.sortable ?\n                        (\n                          <button\n                            className=\"ui-data-table__sort\"\n                            data-ui-datatable-sort\n                            onClick={() => {\n                              toggleSort(column)\n                            }}\n                            type=\"button\"\n                          >\n                            {label}\n                          </button>\n                        ) :\n                        label}\n                    </th>\n                  )\n                })}\n              </tr>\n            </thead>\n            <tbody role=\"rowgroup\">\n              {sortedRows.flatMap((row, index) => renderDataTableRecord({\n                row,\n                index,\n                columns,\n                layout,\n                renderDetails,\n                expanded,\n                detailsId,\n                toggleDetails,\n                expandLabel,\n                collapseLabel,\n                detailsLabel\n              }))}\n            </tbody>\n          </table>\n        ) :\n        children}\n    </div>\n  )\n}",
           "styleImport": "import '@santi020k/lumen-react/styles.css'"
         }
       },
@@ -9435,6 +9522,16 @@
           "name": "columns",
           "optional": true,
           "type": "DataTableColumn[]"
+        },
+        {
+          "name": "layout",
+          "optional": true,
+          "type": "'records' | 'scroll'"
+        },
+        {
+          "name": "sortMode",
+          "optional": true,
+          "type": "'client' | 'manual'"
         },
         {
           "name": "glass",
@@ -11747,7 +11844,7 @@
           "packageName": "@santi020k/lumen-react",
           "props": [],
           "propsExtends": "ComponentPropsWithoutRef<'menu'> & SurfaceProps & Omit<DropdownMenuOptions, 'id'>",
-          "source": "export type DropdownMenuProps = ComponentPropsWithoutRef<'menu'> &\n  SurfaceProps &\n  Omit<DropdownMenuOptions, 'id'>\n\nexport const DropdownMenu = ({\n  children,\n  className,\n  defaultOpen,\n  glass = false,\n  onOpenChange,\n  open,\n  ...props\n}: DropdownMenuProps) => {\n  const menu = useDropdownMenu({ defaultOpen, onOpenChange, open })\n\n  return (\n    <DropdownMenuContext.Provider value={menu}>\n      <menu\n        {...menu.rootProps}\n        {...props}\n        className={composeClassName(\n          'ui-menu', glassSurfaceClass('ui-menu', glass), className\n        )}\n        data-surface={resolveSurface(glass)}\n        data-ui-dropdown-menu\n      >\n        {children}\n      </menu>\n    </DropdownMenuContext.Provider>\n  )\n}",
+          "source": "export type DropdownMenuProps = ComponentPropsWithoutRef<'menu'> &\n  SurfaceProps &\n  Omit<DropdownMenuOptions, 'id'>\n\nexport const DropdownMenu = ({\n  children,\n  className,\n  collisionPadding,\n  defaultOpen,\n  glass = false,\n  offset,\n  onOpenChange,\n  open,\n  placement,\n  positioning,\n  ...props\n}: DropdownMenuProps) => {\n  const menu = useDropdownMenu({ collisionPadding, defaultOpen, offset, onOpenChange, open, placement, positioning })\n\n  return (\n    <DropdownMenuContext.Provider value={menu}>\n      <menu\n        {...menu.rootProps}\n        {...props}\n        className={composeClassName(\n          'ui-menu', glassSurfaceClass('ui-menu', glass), className\n        )}\n        data-surface={resolveSurface(glass)}\n        data-ui-dropdown-menu\n      >\n        {children}\n      </menu>\n    </DropdownMenuContext.Provider>\n  )\n}",
           "styleImport": "import '@santi020k/lumen-react/styles.css'"
         }
       },
@@ -20851,7 +20948,7 @@
           "packageName": "@santi020k/lumen-react",
           "props": [],
           "propsExtends": "ComponentPropsWithoutRef<'div'> & SurfaceProps & Omit<PopoverOptions, 'id'>",
-          "source": "export type PopoverProps = ComponentPropsWithoutRef<'div'> &\n  SurfaceProps &\n  Omit<PopoverOptions, 'id'>\n\nexport const Popover = ({\n  children,\n  className,\n  defaultOpen,\n  glass = false,\n  onOpenChange,\n  open,\n  ...props\n}: PopoverProps) => {\n  const popover = usePopover({ defaultOpen, onOpenChange, open })\n\n  return (\n    <PopoverContext.Provider value={popover}>\n      <div\n        {...popover.rootProps}\n        {...props}\n        className={composeClassName(\n          'ui-popover', glassSurfaceClass('ui-popover', glass), className\n        )}\n        data-surface={resolveSurface(glass)}\n        data-ui-popover\n      >\n        {children}\n      </div>\n    </PopoverContext.Provider>\n  )\n}",
+          "source": "export type PopoverProps = ComponentPropsWithoutRef<'div'> &\n  SurfaceProps &\n  Omit<PopoverOptions, 'id'>\n\nexport const Popover = ({\n  children,\n  className,\n  collisionPadding,\n  defaultOpen,\n  glass = false,\n  offset,\n  onOpenChange,\n  open,\n  placement,\n  positioning,\n  ...props\n}: PopoverProps) => {\n  const popover = usePopover({ collisionPadding, defaultOpen, offset, onOpenChange, open, placement, positioning })\n\n  return (\n    <PopoverContext.Provider value={popover}>\n      <div\n        {...popover.rootProps}\n        {...props}\n        className={composeClassName(\n          'ui-popover', glassSurfaceClass('ui-popover', glass), className\n        )}\n        data-surface={resolveSurface(glass)}\n        data-ui-popover\n      >\n        {children}\n      </div>\n    </PopoverContext.Provider>\n  )\n}",
           "styleImport": "import '@santi020k/lumen-react/styles.css'"
         }
       },
@@ -37209,6 +37306,24 @@
           "values": "string, (context: string) => string"
         },
         {
+          "attribute": "formatX, formatY",
+          "defaultValue": "String, formatValue",
+          "description": "Formats independent units without altering numeric geometry.",
+          "values": "formatter callbacks"
+        },
+        {
+          "attribute": "xDomain, domain",
+          "defaultValue": "derived",
+          "description": "Provides explicit X and Y bounds; log X requires positive increasing values.",
+          "values": "Partial<LumenChartDomain>"
+        },
+        {
+          "attribute": "references",
+          "defaultValue": "[]",
+          "description": "Draws labeled reference lines or regions using the same scales as points.",
+          "values": "readonly LumenScatterReference[]"
+        },
+        {
           "attribute": "series",
           "defaultValue": "[]",
           "description": "Provides x/y points with optional labels and bubble sizes.",
@@ -37251,7 +37366,7 @@
           "values": "HTML attributes"
         }
       ],
-      "astroSource": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { createLumenChartDatumActivation,\n  createLumenScatterGeometry,\n  formatLumenChartSummary,\n  getLumenChartTicks,\n  getLumenChartToneClassName,\n  type LumenChartLabels,\n  type LumenChartScaleType,\n  type LumenChartSeries,\n  resolveLumenChartLabels,\n  scaleLumenChartValue } from '@santi020k/lumen-core'\n\nimport { createChartDatumAction } from '../runtime/chart-actions'\n\nimport Chart from './Chart.astro'\nimport ChartDatumActions from './ChartDatumActions.astro'\n\ninterface Props extends HTMLAttributes<'figure'> {\n  caption?: string\n  class?: string | null\n  className?: string\n  description?: string\n  drilldown?: boolean\n  emptyLabel?: string\n  formatValue?: (value: number) => string\n  heading?: string\n  labels?: Partial<LumenChartLabels>\n  series: readonly LumenChartSeries[]\n  showLegend?: boolean\n  showTable?: boolean\n  summary?: string\n  xScale?: Exclude<LumenChartScaleType, 'categorical'>\n}\n\nconst {\n  caption,\n  class: classProp = '',\n  className = '',\n  description,\n  drilldown = false,\n  emptyLabel,\n  formatValue = String,\n  heading,\n  labels,\n  series,\n  showLegend = series.length > 1,\n  showTable = true,\n  summary: summaryProp,\n  xScale = 'linear',\n  ...rest\n} = Astro.props\n\nconst geometry = createLumenScatterGeometry(series, { xScale })\nconst resolvedLabels = resolveLumenChartLabels(labels)\n\nconst projectedSeries = series.map(item => ({\n  ...item,\n  data: geometry.points.filter(point => point.seriesId === item.id)\n})).filter(item => item.data.length > 0)\n\nconst hasData = geometry.points.length > 0\nconst summary = summaryProp ?? formatLumenChartSummary(projectedSeries, formatValue, resolvedLabels)\nconst xTicks = getLumenChartTicks(geometry.xDomain)\nconst yTicks = getLumenChartTicks(geometry.domain)\n\nconst datumActions = drilldown ?\ngeometry.points.map(point => createChartDatumAction(\n  createLumenChartDatumActivation(point.seriesId, point),\n  `${point.xLabel ?? point.x} · ${point.seriesLabel}: ${point.label ?? formatValue(point.y ?? 0)}`,\n  resolvedLabels\n)) :\n[]\n\n---\n\n<Chart class:list={['ui-scatter-chart', classProp, className]} {caption} {description} {heading} {summary} {...rest} data-ui-chart-activation={drilldown || undefined}>\n  {showLegend && hasData && <ul class=\"ui-chart__legend\" aria-label={resolvedLabels.chartLegend}>{series.map((item, index) => <li class={getLumenChartToneClassName(item.tone, index)}><span aria-hidden=\"true\" />{item.label}</li>)}</ul>}\n  {!hasData && <p class=\"ui-chart__empty\" role=\"status\">{emptyLabel ?? resolvedLabels.empty}</p>}\n  <div aria-label={resolvedLabels.chartData} class=\"ui-chart__plot\" role=\"region\" tabindex=\"0\" hidden={!hasData}>\n    <svg aria-hidden=\"true\" viewBox={`0 0 ${geometry.width} ${geometry.height}`}>\n      <g class=\"ui-chart__grid\">{yTicks.map(tick => {\n const y = scaleLumenChartValue(tick, geometry.domain, geometry.height - 44, 44)\n\n return <><line x1=\"44\" x2={geometry.width - 44} y1={y} y2={y}/><text x=\"36\" y={y}>{formatValue(tick)}</text></>\n})}</g>\n      <g class=\"ui-chart__axis-labels\">{xTicks.map(tick => {\n const x = scaleLumenChartValue(tick, geometry.xDomain, 44, geometry.width - 44)\n\n return <text text-anchor=\"middle\" x={x} y={geometry.height - 14}>{formatValue(tick)}</text>\n})}</g>\n      <g class=\"ui-scatter-chart__marks\">{geometry.points.map((point, index) => <circle data-ui-chart-datum={datumActions[index]?.serialized} class={getLumenChartToneClassName(point.tone)} cx={point.xCoordinate} cy={point.yCoordinate} r={point.radius}><title>{`${point.xLabel ?? point.x} · ${point.seriesLabel}: ${point.label ?? formatValue(point.y ?? 0)}`}</title></circle>)}</g>\n      {drilldown && geometry.points.map((point, index) => (\n        <circle\nclass=\"ui-chart__datum-hit\"\ncx={point.xCoordinate}\ncy={point.yCoordinate}\nr={Math.max(10, point.radius)}\n          data-ui-chart-datum={datumActions[index]?.serialized}\n        />\n      ))}\n    </svg>\n  </div>\n  {showTable && hasData && <details class=\"ui-chart__data\"><summary>{resolvedLabels.viewData}</summary><div><table><thead><tr><th scope=\"col\">{resolvedLabels.x}</th><th scope=\"col\">{resolvedLabels.series}</th><th scope=\"col\">{resolvedLabels.value}</th><th scope=\"col\">{resolvedLabels.size}</th></tr></thead><tbody>{geometry.points.map(point => <tr><th scope=\"row\">{point.xLabel ?? point.x}</th><td>{point.seriesLabel}</td><td>{point.label ?? formatValue(point.y ?? 0)}</td><td>{point.size === undefined || point.size === null || !Number.isFinite(point.size) ? resolvedLabels.notAvailable : formatValue(point.size)}</td></tr>)}</tbody></table></div></details>}\n  {drilldown && <ChartDatumActions actions={datumActions} label={resolvedLabels.exploreData} />}\n</Chart>\n",
+      "astroSource": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { createLumenChartDatumActivation,\n  createLumenScatterGeometry,\n  createLumenScatterReferences,\n  formatLumenChartSummary,\n  getLumenChartTicks,\n  getLumenChartToneClassName,\n  getLumenScatterXTicks,\n  type LumenChartDomain,\n  type LumenChartLabels,\n  type LumenChartSeries,\n  type LumenScatterReference,\n  type LumenScatterScaleType,\n  resolveLumenChartLabels,\n  scaleLumenChartValue,  scaleLumenScatterX } from '@santi020k/lumen-core'\n\nimport { createChartDatumAction } from '../runtime/chart-actions'\n\nimport Chart from './Chart.astro'\nimport ChartDatumActions from './ChartDatumActions.astro'\n\ninterface Props extends HTMLAttributes<'figure'> {\n  caption?: string\n  class?: string | null\n  className?: string\n  description?: string\n  drilldown?: boolean\n  emptyLabel?: string\n  formatValue?: (value: number) => string\n  formatX?: (value: number | string) => string\n  formatY?: (value: number) => string\n  xDomain?: Partial<LumenChartDomain>\n  domain?: Partial<LumenChartDomain>\n  references?: readonly LumenScatterReference[]\n  heading?: string\n  labels?: Partial<LumenChartLabels>\n  series: readonly LumenChartSeries[]\n  showLegend?: boolean\n  showTable?: boolean\n  summary?: string\n  xScale?: LumenScatterScaleType\n}\n\nconst {\n  caption,\n  class: classProp = '',\n  className = '',\n  description,\n  drilldown = false,\n  emptyLabel,\n  formatValue = String,\n  formatX = String,\n  formatY = formatValue,\n  xDomain,\n  domain,\n  references = [],\n  heading,\n  labels,\n  series,\n  showLegend = series.length > 1,\n  showTable = true,\n  summary: summaryProp,\n  xScale = 'linear',\n  ...rest\n} = Astro.props\n\nconst plotId = `ui-scatter-${crypto.randomUUID()}`\nconst geometry = createLumenScatterGeometry(series, { xScale, ...(xDomain ? { xDomain } : {}), ...(domain ? { domain } : {}) })\nconst referenceGeometry = createLumenScatterReferences(references, geometry, xScale)\nconst resolvedLabels = resolveLumenChartLabels(labels)\n\nconst projectedSeries = series.map(item => ({\n  ...item,\n  data: geometry.points.filter(point => point.seriesId === item.id)\n})).filter(item => item.data.length > 0)\n\nconst hasData = geometry.points.length > 0\nconst summary = summaryProp ?? formatLumenChartSummary(projectedSeries, formatY, resolvedLabels)\nconst xTicks = getLumenScatterXTicks(geometry.xDomain, xScale)\nconst yTicks = getLumenChartTicks(geometry.domain)\n\nconst datumActions = drilldown ?\ngeometry.points.map(point => createChartDatumAction(\n  createLumenChartDatumActivation(point.seriesId, point),\n  `${point.xLabel ?? formatX(point.x)} · ${point.seriesLabel}: ${point.label ?? formatY(point.y ?? 0)}`,\n  resolvedLabels\n)) :\n[]\n\n---\n\n<Chart class:list={['ui-scatter-chart', classProp, className]} {caption} {description} {heading} {summary} {...rest} data-ui-chart-activation={drilldown || undefined}>\n  {showLegend && hasData && <ul class=\"ui-chart__legend\" aria-label={resolvedLabels.chartLegend}>{series.map((item, index) => <li class={getLumenChartToneClassName(item.tone, index)}><span aria-hidden=\"true\" />{item.label}</li>)}</ul>}\n  {!hasData && <p class=\"ui-chart__empty\" role=\"status\">{emptyLabel ?? resolvedLabels.empty}</p>}\n  <div aria-label={resolvedLabels.chartData} class=\"ui-chart__plot\" role=\"region\" tabindex=\"0\" hidden={!hasData}>\n    <svg aria-hidden=\"true\" viewBox={`0 0 ${geometry.width} ${geometry.height}`}>\n      <defs><clipPath id={plotId}><rect x=\"44\" y=\"44\" width={geometry.width - 88} height={geometry.height - 88} /></clipPath></defs>\n      <g class=\"ui-chart__grid\">{yTicks.map(tick => {\n const y = scaleLumenChartValue(tick, geometry.domain, geometry.height - 44, 44)\n\n return <><line x1=\"44\" x2={geometry.width - 44} y1={y} y2={y}/><text x=\"36\" y={y}>{formatY(tick)}</text></>\n})}</g>\n      <g class=\"ui-chart__axis-labels\">{xTicks.map(tick => {\n const x = scaleLumenScatterX(tick, geometry.xDomain, 44, geometry.width - 44, xScale)\n\n return <text text-anchor=\"middle\" x={x} y={geometry.height - 14}>{formatX(tick)}</text>\n})}</g>\n      <g class=\"ui-scatter-chart__references\" clip-path={`url(#${plotId})`}>{referenceGeometry.map(reference => reference.region ?\n        <rect x={Math.min(reference.x1, reference.x2)} y={Math.min(reference.y1, reference.y2)} width={Math.abs(reference.x2 - reference.x1)} height={Math.abs(reference.y2 - reference.y1)}><title>{reference.label}</title></rect> :\n        <line x1={reference.x1} x2={reference.x2} y1={reference.y1} y2={reference.y2}><title>{reference.label}</title></line>)}</g>\n      <g class=\"ui-scatter-chart__marks\" clip-path={`url(#${plotId})`}>{geometry.points.map((point, index) => <circle data-ui-chart-datum={datumActions[index]?.serialized} class={getLumenChartToneClassName(point.tone)} cx={point.xCoordinate} cy={point.yCoordinate} r={point.radius}><title>{`${point.xLabel ?? formatX(point.x)} · ${point.seriesLabel}: ${point.label ?? formatY(point.y ?? 0)}`}</title></circle>)}</g>\n      <g clip-path={`url(#${plotId})`}>\n      {drilldown && geometry.points.map((point, index) => (\n        <circle\nclass=\"ui-chart__datum-hit\"\ncx={point.xCoordinate}\ncy={point.yCoordinate}\nr={Math.max(10, point.radius)}\n          data-ui-chart-datum={datumActions[index]?.serialized}\n        />\n      ))}\n      </g>\n    </svg>\n  </div>\n  {referenceGeometry.length > 0 && (\n<ul class=\"ui-scatter-chart__reference-labels\">{referenceGeometry.map(reference => <li>{reference.label}</li>)}</ul>\n)}\n  {showTable && hasData && <details class=\"ui-chart__data\"><summary>{resolvedLabels.viewData}</summary><div><table><thead><tr><th scope=\"col\">{resolvedLabels.x}</th><th scope=\"col\">{resolvedLabels.series}</th><th scope=\"col\">{resolvedLabels.value}</th><th scope=\"col\">{resolvedLabels.size}</th></tr></thead><tbody>{geometry.points.map(point => <tr><th scope=\"row\">{point.xLabel ?? formatX(point.x)}</th><td>{point.seriesLabel}</td><td>{point.label ?? formatY(point.y ?? 0)}</td><td>{point.size === undefined || point.size === null || !Number.isFinite(point.size) ? resolvedLabels.notAvailable : formatValue(point.size)}</td></tr>)}</tbody></table></div></details>}\n  {drilldown && <ChartDatumActions actions={datumActions} label={resolvedLabels.exploreData} />}\n</Chart>\n",
       "category": "Data display",
       "collections": [
         "Data visualization"
@@ -37326,6 +37441,31 @@
               "type": "(value: number) => string"
             },
             {
+              "name": "formatX",
+              "optional": true,
+              "type": "(value: number | string) => string"
+            },
+            {
+              "name": "formatY",
+              "optional": true,
+              "type": "(value: number) => string"
+            },
+            {
+              "name": "xDomain",
+              "optional": true,
+              "type": "Partial<LumenChartDomain>"
+            },
+            {
+              "name": "domain",
+              "optional": true,
+              "type": "Partial<LumenChartDomain>"
+            },
+            {
+              "name": "references",
+              "optional": true,
+              "type": "readonly LumenScatterReference[]"
+            },
+            {
               "name": "heading",
               "optional": true,
               "type": "string"
@@ -37358,11 +37498,11 @@
             {
               "name": "xScale",
               "optional": true,
-              "type": "Exclude<LumenChartScaleType, 'categorical'>"
+              "type": "LumenScatterScaleType"
             }
           ],
           "propsExtends": "HTMLAttributes<'figure'>",
-          "source": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { createLumenChartDatumActivation,\n  createLumenScatterGeometry,\n  formatLumenChartSummary,\n  getLumenChartTicks,\n  getLumenChartToneClassName,\n  type LumenChartLabels,\n  type LumenChartScaleType,\n  type LumenChartSeries,\n  resolveLumenChartLabels,\n  scaleLumenChartValue } from '@santi020k/lumen-core'\n\nimport { createChartDatumAction } from '../runtime/chart-actions'\n\nimport Chart from './Chart.astro'\nimport ChartDatumActions from './ChartDatumActions.astro'\n\ninterface Props extends HTMLAttributes<'figure'> {\n  caption?: string\n  class?: string | null\n  className?: string\n  description?: string\n  drilldown?: boolean\n  emptyLabel?: string\n  formatValue?: (value: number) => string\n  heading?: string\n  labels?: Partial<LumenChartLabels>\n  series: readonly LumenChartSeries[]\n  showLegend?: boolean\n  showTable?: boolean\n  summary?: string\n  xScale?: Exclude<LumenChartScaleType, 'categorical'>\n}\n\nconst {\n  caption,\n  class: classProp = '',\n  className = '',\n  description,\n  drilldown = false,\n  emptyLabel,\n  formatValue = String,\n  heading,\n  labels,\n  series,\n  showLegend = series.length > 1,\n  showTable = true,\n  summary: summaryProp,\n  xScale = 'linear',\n  ...rest\n} = Astro.props\n\nconst geometry = createLumenScatterGeometry(series, { xScale })\nconst resolvedLabels = resolveLumenChartLabels(labels)\n\nconst projectedSeries = series.map(item => ({\n  ...item,\n  data: geometry.points.filter(point => point.seriesId === item.id)\n})).filter(item => item.data.length > 0)\n\nconst hasData = geometry.points.length > 0\nconst summary = summaryProp ?? formatLumenChartSummary(projectedSeries, formatValue, resolvedLabels)\nconst xTicks = getLumenChartTicks(geometry.xDomain)\nconst yTicks = getLumenChartTicks(geometry.domain)\n\nconst datumActions = drilldown ?\ngeometry.points.map(point => createChartDatumAction(\n  createLumenChartDatumActivation(point.seriesId, point),\n  `${point.xLabel ?? point.x} · ${point.seriesLabel}: ${point.label ?? formatValue(point.y ?? 0)}`,\n  resolvedLabels\n)) :\n[]\n\n---\n\n<Chart class:list={['ui-scatter-chart', classProp, className]} {caption} {description} {heading} {summary} {...rest} data-ui-chart-activation={drilldown || undefined}>\n  {showLegend && hasData && <ul class=\"ui-chart__legend\" aria-label={resolvedLabels.chartLegend}>{series.map((item, index) => <li class={getLumenChartToneClassName(item.tone, index)}><span aria-hidden=\"true\" />{item.label}</li>)}</ul>}\n  {!hasData && <p class=\"ui-chart__empty\" role=\"status\">{emptyLabel ?? resolvedLabels.empty}</p>}\n  <div aria-label={resolvedLabels.chartData} class=\"ui-chart__plot\" role=\"region\" tabindex=\"0\" hidden={!hasData}>\n    <svg aria-hidden=\"true\" viewBox={`0 0 ${geometry.width} ${geometry.height}`}>\n      <g class=\"ui-chart__grid\">{yTicks.map(tick => {\n const y = scaleLumenChartValue(tick, geometry.domain, geometry.height - 44, 44)\n\n return <><line x1=\"44\" x2={geometry.width - 44} y1={y} y2={y}/><text x=\"36\" y={y}>{formatValue(tick)}</text></>\n})}</g>\n      <g class=\"ui-chart__axis-labels\">{xTicks.map(tick => {\n const x = scaleLumenChartValue(tick, geometry.xDomain, 44, geometry.width - 44)\n\n return <text text-anchor=\"middle\" x={x} y={geometry.height - 14}>{formatValue(tick)}</text>\n})}</g>\n      <g class=\"ui-scatter-chart__marks\">{geometry.points.map((point, index) => <circle data-ui-chart-datum={datumActions[index]?.serialized} class={getLumenChartToneClassName(point.tone)} cx={point.xCoordinate} cy={point.yCoordinate} r={point.radius}><title>{`${point.xLabel ?? point.x} · ${point.seriesLabel}: ${point.label ?? formatValue(point.y ?? 0)}`}</title></circle>)}</g>\n      {drilldown && geometry.points.map((point, index) => (\n        <circle\nclass=\"ui-chart__datum-hit\"\ncx={point.xCoordinate}\ncy={point.yCoordinate}\nr={Math.max(10, point.radius)}\n          data-ui-chart-datum={datumActions[index]?.serialized}\n        />\n      ))}\n    </svg>\n  </div>\n  {showTable && hasData && <details class=\"ui-chart__data\"><summary>{resolvedLabels.viewData}</summary><div><table><thead><tr><th scope=\"col\">{resolvedLabels.x}</th><th scope=\"col\">{resolvedLabels.series}</th><th scope=\"col\">{resolvedLabels.value}</th><th scope=\"col\">{resolvedLabels.size}</th></tr></thead><tbody>{geometry.points.map(point => <tr><th scope=\"row\">{point.xLabel ?? point.x}</th><td>{point.seriesLabel}</td><td>{point.label ?? formatValue(point.y ?? 0)}</td><td>{point.size === undefined || point.size === null || !Number.isFinite(point.size) ? resolvedLabels.notAvailable : formatValue(point.size)}</td></tr>)}</tbody></table></div></details>}\n  {drilldown && <ChartDatumActions actions={datumActions} label={resolvedLabels.exploreData} />}\n</Chart>\n",
+          "source": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { createLumenChartDatumActivation,\n  createLumenScatterGeometry,\n  createLumenScatterReferences,\n  formatLumenChartSummary,\n  getLumenChartTicks,\n  getLumenChartToneClassName,\n  getLumenScatterXTicks,\n  type LumenChartDomain,\n  type LumenChartLabels,\n  type LumenChartSeries,\n  type LumenScatterReference,\n  type LumenScatterScaleType,\n  resolveLumenChartLabels,\n  scaleLumenChartValue,  scaleLumenScatterX } from '@santi020k/lumen-core'\n\nimport { createChartDatumAction } from '../runtime/chart-actions'\n\nimport Chart from './Chart.astro'\nimport ChartDatumActions from './ChartDatumActions.astro'\n\ninterface Props extends HTMLAttributes<'figure'> {\n  caption?: string\n  class?: string | null\n  className?: string\n  description?: string\n  drilldown?: boolean\n  emptyLabel?: string\n  formatValue?: (value: number) => string\n  formatX?: (value: number | string) => string\n  formatY?: (value: number) => string\n  xDomain?: Partial<LumenChartDomain>\n  domain?: Partial<LumenChartDomain>\n  references?: readonly LumenScatterReference[]\n  heading?: string\n  labels?: Partial<LumenChartLabels>\n  series: readonly LumenChartSeries[]\n  showLegend?: boolean\n  showTable?: boolean\n  summary?: string\n  xScale?: LumenScatterScaleType\n}\n\nconst {\n  caption,\n  class: classProp = '',\n  className = '',\n  description,\n  drilldown = false,\n  emptyLabel,\n  formatValue = String,\n  formatX = String,\n  formatY = formatValue,\n  xDomain,\n  domain,\n  references = [],\n  heading,\n  labels,\n  series,\n  showLegend = series.length > 1,\n  showTable = true,\n  summary: summaryProp,\n  xScale = 'linear',\n  ...rest\n} = Astro.props\n\nconst plotId = `ui-scatter-${crypto.randomUUID()}`\nconst geometry = createLumenScatterGeometry(series, { xScale, ...(xDomain ? { xDomain } : {}), ...(domain ? { domain } : {}) })\nconst referenceGeometry = createLumenScatterReferences(references, geometry, xScale)\nconst resolvedLabels = resolveLumenChartLabels(labels)\n\nconst projectedSeries = series.map(item => ({\n  ...item,\n  data: geometry.points.filter(point => point.seriesId === item.id)\n})).filter(item => item.data.length > 0)\n\nconst hasData = geometry.points.length > 0\nconst summary = summaryProp ?? formatLumenChartSummary(projectedSeries, formatY, resolvedLabels)\nconst xTicks = getLumenScatterXTicks(geometry.xDomain, xScale)\nconst yTicks = getLumenChartTicks(geometry.domain)\n\nconst datumActions = drilldown ?\ngeometry.points.map(point => createChartDatumAction(\n  createLumenChartDatumActivation(point.seriesId, point),\n  `${point.xLabel ?? formatX(point.x)} · ${point.seriesLabel}: ${point.label ?? formatY(point.y ?? 0)}`,\n  resolvedLabels\n)) :\n[]\n\n---\n\n<Chart class:list={['ui-scatter-chart', classProp, className]} {caption} {description} {heading} {summary} {...rest} data-ui-chart-activation={drilldown || undefined}>\n  {showLegend && hasData && <ul class=\"ui-chart__legend\" aria-label={resolvedLabels.chartLegend}>{series.map((item, index) => <li class={getLumenChartToneClassName(item.tone, index)}><span aria-hidden=\"true\" />{item.label}</li>)}</ul>}\n  {!hasData && <p class=\"ui-chart__empty\" role=\"status\">{emptyLabel ?? resolvedLabels.empty}</p>}\n  <div aria-label={resolvedLabels.chartData} class=\"ui-chart__plot\" role=\"region\" tabindex=\"0\" hidden={!hasData}>\n    <svg aria-hidden=\"true\" viewBox={`0 0 ${geometry.width} ${geometry.height}`}>\n      <defs><clipPath id={plotId}><rect x=\"44\" y=\"44\" width={geometry.width - 88} height={geometry.height - 88} /></clipPath></defs>\n      <g class=\"ui-chart__grid\">{yTicks.map(tick => {\n const y = scaleLumenChartValue(tick, geometry.domain, geometry.height - 44, 44)\n\n return <><line x1=\"44\" x2={geometry.width - 44} y1={y} y2={y}/><text x=\"36\" y={y}>{formatY(tick)}</text></>\n})}</g>\n      <g class=\"ui-chart__axis-labels\">{xTicks.map(tick => {\n const x = scaleLumenScatterX(tick, geometry.xDomain, 44, geometry.width - 44, xScale)\n\n return <text text-anchor=\"middle\" x={x} y={geometry.height - 14}>{formatX(tick)}</text>\n})}</g>\n      <g class=\"ui-scatter-chart__references\" clip-path={`url(#${plotId})`}>{referenceGeometry.map(reference => reference.region ?\n        <rect x={Math.min(reference.x1, reference.x2)} y={Math.min(reference.y1, reference.y2)} width={Math.abs(reference.x2 - reference.x1)} height={Math.abs(reference.y2 - reference.y1)}><title>{reference.label}</title></rect> :\n        <line x1={reference.x1} x2={reference.x2} y1={reference.y1} y2={reference.y2}><title>{reference.label}</title></line>)}</g>\n      <g class=\"ui-scatter-chart__marks\" clip-path={`url(#${plotId})`}>{geometry.points.map((point, index) => <circle data-ui-chart-datum={datumActions[index]?.serialized} class={getLumenChartToneClassName(point.tone)} cx={point.xCoordinate} cy={point.yCoordinate} r={point.radius}><title>{`${point.xLabel ?? formatX(point.x)} · ${point.seriesLabel}: ${point.label ?? formatY(point.y ?? 0)}`}</title></circle>)}</g>\n      <g clip-path={`url(#${plotId})`}>\n      {drilldown && geometry.points.map((point, index) => (\n        <circle\nclass=\"ui-chart__datum-hit\"\ncx={point.xCoordinate}\ncy={point.yCoordinate}\nr={Math.max(10, point.radius)}\n          data-ui-chart-datum={datumActions[index]?.serialized}\n        />\n      ))}\n      </g>\n    </svg>\n  </div>\n  {referenceGeometry.length > 0 && (\n<ul class=\"ui-scatter-chart__reference-labels\">{referenceGeometry.map(reference => <li>{reference.label}</li>)}</ul>\n)}\n  {showTable && hasData && <details class=\"ui-chart__data\"><summary>{resolvedLabels.viewData}</summary><div><table><thead><tr><th scope=\"col\">{resolvedLabels.x}</th><th scope=\"col\">{resolvedLabels.series}</th><th scope=\"col\">{resolvedLabels.value}</th><th scope=\"col\">{resolvedLabels.size}</th></tr></thead><tbody>{geometry.points.map(point => <tr><th scope=\"row\">{point.xLabel ?? formatX(point.x)}</th><td>{point.seriesLabel}</td><td>{point.label ?? formatY(point.y ?? 0)}</td><td>{point.size === undefined || point.size === null || !Number.isFinite(point.size) ? resolvedLabels.notAvailable : formatValue(point.size)}</td></tr>)}</tbody></table></div></details>}\n  {drilldown && <ChartDatumActions actions={datumActions} label={resolvedLabels.exploreData} />}\n</Chart>\n",
           "styleImport": "import '@santi020k/lumen-astro/styles.css'"
         },
         "elements": {
@@ -37371,6 +37511,9 @@
             "onDatumActivate",
             "explore-data-label, datum-action-prefix, datumActionFormatter",
             "labels.exploreData, labels.formatDatumAction",
+            "formatX, formatY",
+            "xDomain, domain",
+            "references",
             "series",
             "xScale",
             "formatValue",
@@ -37417,6 +37560,31 @@
               "type": "(value: number) => string"
             },
             {
+              "name": "formatX",
+              "optional": true,
+              "type": "(value: number | string) => string"
+            },
+            {
+              "name": "formatY",
+              "optional": true,
+              "type": "(value: number) => string"
+            },
+            {
+              "name": "xDomain",
+              "optional": true,
+              "type": "Partial<LumenChartDomain>"
+            },
+            {
+              "name": "domain",
+              "optional": true,
+              "type": "Partial<LumenChartDomain>"
+            },
+            {
+              "name": "references",
+              "optional": true,
+              "type": "readonly LumenScatterReference[]"
+            },
+            {
               "name": "labels",
               "optional": true,
               "type": "Partial<LumenChartLabels>"
@@ -37439,11 +37607,11 @@
             {
               "name": "xScale",
               "optional": true,
-              "type": "Exclude<LumenChartScaleType, 'categorical'>"
+              "type": "LumenScatterScaleType"
             }
           ],
           "propsExtends": "Omit<ChartProps, 'children'>",
-          "source": "export interface ScatterChartProps extends Omit<ChartProps, 'children'> {\n  onDatumActivate?: (detail: LumenChartDatumActivationDetail) => void\n  formatValue?: (value: number) => string\n  labels?: Partial<LumenChartLabels>\n  series?: readonly LumenChartSeries[]\n  showLegend?: boolean\n  showTable?: boolean\n  xScale?: Exclude<LumenChartScaleType, 'categorical'>\n}\n\nexport const ScatterChart = ({\n  className,\n  onDatumActivate,\n  formatValue = String,\n  labels,\n  series = emptyChartSeries,\n  showLegend = series.length > 1,\n  showTable = true,\n  summary,\n  xScale = 'linear',\n  ...props\n}: ScatterChartProps) => {\n  const resolvedLabels = resolveLumenChartLabels(labels)\n  const geometry = createLumenScatterGeometry(series, { xScale })\n\n  const renderedSeries = series.map(item => ({\n    ...item,\n    data: geometry.points.filter(point => point.seriesId === item.id)\n  })).filter(item => item.data.length > 0)\n\n  const hasData = geometry.points.length > 0\n\n  const datumActions = onDatumActivate ?\n    geometry.points.map(point => createReactChartDatumAction(\n      createLumenChartDatumActivation(point.seriesId, point),\n      `${point.xLabel ?? point.x} · ${point.seriesLabel}: ${point.label ?? formatValue(point.y ?? 0)}`,\n      resolvedLabels\n    )) :\n    []\n\n  return (\n    <DatumChart onDatumActivate={onDatumActivate} className={composeClassName('ui-scatter-chart', className)} summary={summary ?? formatLumenChartSummary(renderedSeries, formatValue, resolvedLabels)} {...props}>\n      {showLegend && hasData && <ChartLegend label={resolvedLabels.chartLegend} series={series} />}\n      {!hasData && <p className=\"ui-chart__empty\" role=\"status\">{resolvedLabels.empty}</p>}\n      <div aria-label={resolvedLabels.chartData} className=\"ui-chart__plot\" role=\"region\" tabIndex={0} hidden={!hasData}>\n        <svg aria-hidden=\"true\" viewBox={`0 0 ${geometry.width} ${geometry.height}`}>\n          <g className=\"ui-scatter-chart__marks\">\n            {geometry.points.map((point, pointIndex) => (\n              <circle data-ui-chart-datum={datumActions[pointIndex]?.serialized} className={getLumenChartToneClassName(point.tone)} cx={point.xCoordinate} cy={point.yCoordinate} key={`${point.seriesId}:${point.id ?? `${getChartCategoryKey(point.x)}:${pointIndex}`}`} r={point.radius}>\n                <title>{`${point.xLabel ?? point.x} · ${point.seriesLabel}: ${point.label ?? formatValue(point.y ?? 0)}`}</title>\n              </circle>\n            ))}\n          </g>\n          {onDatumActivate && geometry.points.map((point, index) => (\n            <circle\n              className=\"ui-chart__datum-hit\"\n              key={`${point.seriesId}:${point.id ?? getChartCategoryKey(point.x)}`}\n              cx={point.xCoordinate}\n              cy={point.yCoordinate}\n              r={Math.max(10, point.radius)}\n              data-ui-chart-datum={datumActions[index]?.serialized}\n            />\n          ))}\n        </svg>\n      </div>\n      {showTable && hasData && (\n        <details className=\"ui-chart__data\">\n          <summary>{resolvedLabels.viewData}</summary>\n          <div>\n            <table>\n              <thead>\n                <tr>\n                  <th scope=\"col\">{resolvedLabels.x}</th>\n                  <th scope=\"col\">{resolvedLabels.series}</th>\n                  <th scope=\"col\">{resolvedLabels.value}</th>\n                  <th scope=\"col\">{resolvedLabels.size}</th>\n                </tr>\n              </thead>\n              <tbody>\n                {geometry.points.map((point, pointIndex) => (\n                  <tr key={`${point.seriesId}:${point.id ?? `${getChartCategoryKey(point.x)}:${pointIndex}`}`}>\n                    <th scope=\"row\">{point.xLabel ?? point.x}</th>\n                    <td>{point.seriesLabel}</td>\n                    <td>{point.label ?? formatValue(point.y ?? 0)}</td>\n                    <td>\n                      {formatReactChartTableValue(point.size, formatValue, resolvedLabels.notAvailable)}\n                    </td>\n                  </tr>\n                ))}\n              </tbody>\n            </table>\n          </div>\n        </details>\n      )}\n      {onDatumActivate && <ChartDatumActions actions={datumActions} label={resolvedLabels.exploreData} />}\n    </DatumChart>\n  )\n}",
+          "source": "export interface ScatterChartProps extends Omit<ChartProps, 'children'> {\n  onDatumActivate?: (detail: LumenChartDatumActivationDetail) => void\n  formatValue?: (value: number) => string\n  formatX?: (value: number | string) => string\n  formatY?: (value: number) => string\n  xDomain?: Partial<LumenChartDomain>\n  domain?: Partial<LumenChartDomain>\n  references?: readonly LumenScatterReference[]\n  labels?: Partial<LumenChartLabels>\n  series?: readonly LumenChartSeries[]\n  showLegend?: boolean\n  showTable?: boolean\n  xScale?: LumenScatterScaleType\n}\n\nexport const ScatterChart = ({\n  className,\n  onDatumActivate,\n  formatValue = String,\n  formatX = String,\n  formatY = formatValue,\n  xDomain,\n  domain,\n  references = emptyScatterReferences,\n  labels,\n  series = emptyChartSeries,\n  showLegend = series.length > 1,\n  showTable = true,\n  summary,\n  xScale = 'linear',\n  ...props\n}: ScatterChartProps) => {\n  const resolvedLabels = resolveLumenChartLabels(labels)\n\n  const geometry = createLumenScatterGeometry(series, {\n    xScale, ...(xDomain ? { xDomain } : {}), ...(domain ? { domain } : {})\n  })\n\n  const referenceGeometry = createLumenScatterReferences(references, geometry, xScale)\n\n  const renderedSeries = series.map(item => ({\n    ...item,\n    data: geometry.points.filter(point => point.seriesId === item.id)\n  })).filter(item => item.data.length > 0)\n\n  const hasData = geometry.points.length > 0\n\n  const datumActions = onDatumActivate ?\n    geometry.points.map(point => createReactChartDatumAction(\n      createLumenChartDatumActivation(point.seriesId, point),\n      `${point.xLabel ?? formatX(point.x)} · ${point.seriesLabel}: ${point.label ?? formatY(point.y ?? 0)}`,\n      resolvedLabels\n    )) :\n    []\n\n  return (\n    <DatumChart onDatumActivate={onDatumActivate} className={composeClassName('ui-scatter-chart', className)} summary={summary ?? formatLumenChartSummary(renderedSeries, formatY, resolvedLabels)} {...props}>\n      {showLegend && hasData && <ChartLegend label={resolvedLabels.chartLegend} series={series} />}\n      {!hasData && <p className=\"ui-chart__empty\" role=\"status\">{resolvedLabels.empty}</p>}\n      <div aria-label={resolvedLabels.chartData} className=\"ui-chart__plot\" role=\"region\" tabIndex={0} hidden={!hasData}>\n        <svg aria-hidden=\"true\" viewBox={`0 0 ${geometry.width} ${geometry.height}`}>\n          <ScatterPlotClip width={geometry.width} height={geometry.height}>\n            <g className=\"ui-scatter-chart__references\">\n              {referenceGeometry.map(reference => reference.region ?\n                (\n                  <rect\n                    key={reference.id}\n                    x={Math.min(reference.x1, reference.x2)}\n                    y={Math.min(reference.y1, reference.y2)}\n                    width={Math.abs(reference.x2 - reference.x1)}\n                    height={Math.abs(reference.y2 - reference.y1)}\n                  >\n                    <title>{reference.label}</title>\n                  </rect>\n                ) :\n                (\n                  <line key={reference.id} x1={reference.x1} x2={reference.x2} y1={reference.y1} y2={reference.y2}>\n                    <title>{reference.label}</title>\n                  </line>\n                ))}\n            </g>\n            <g className=\"ui-scatter-chart__marks\">\n              {geometry.points.map((point, pointIndex) => (\n                <circle data-ui-chart-datum={datumActions[pointIndex]?.serialized} className={getLumenChartToneClassName(point.tone)} cx={point.xCoordinate} cy={point.yCoordinate} key={`${point.seriesId}:${point.id ?? `${getChartCategoryKey(point.x)}:${pointIndex}`}`} r={point.radius}>\n                  <title>{`${point.xLabel ?? formatX(point.x)} · ${point.seriesLabel}: ${point.label ?? formatY(point.y ?? 0)}`}</title>\n                </circle>\n              ))}\n            </g>\n          {onDatumActivate && geometry.points.map((point, index) => (\n            <circle\n              className=\"ui-chart__datum-hit\"\n              key={`${point.seriesId}:${point.id ?? getChartCategoryKey(point.x)}`}\n              cx={point.xCoordinate}\n              cy={point.yCoordinate}\n              r={Math.max(10, point.radius)}\n              data-ui-chart-datum={datumActions[index]?.serialized}\n            />\n          ))}\n          </ScatterPlotClip>\n        </svg>\n      </div>\n      {referenceGeometry.length > 0 && (\n        <ul className=\"ui-scatter-chart__reference-labels\">\n          {referenceGeometry.map(reference => <li key={reference.id}>{reference.label}</li>)}\n        </ul>\n      )}\n      {showTable && hasData && (\n        <details className=\"ui-chart__data\">\n          <summary>{resolvedLabels.viewData}</summary>\n          <div>\n            <table>\n              <thead>\n                <tr>\n                  <th scope=\"col\">{resolvedLabels.x}</th>\n                  <th scope=\"col\">{resolvedLabels.series}</th>\n                  <th scope=\"col\">{resolvedLabels.value}</th>\n                  <th scope=\"col\">{resolvedLabels.size}</th>\n                </tr>\n              </thead>\n              <tbody>\n                {geometry.points.map((point, pointIndex) => (\n                  <tr key={`${point.seriesId}:${point.id ?? `${getChartCategoryKey(point.x)}:${pointIndex}`}`}>\n                    <th scope=\"row\">{point.xLabel ?? formatX(point.x)}</th>\n                    <td>{point.seriesLabel}</td>\n                    <td>{point.label ?? formatY(point.y ?? 0)}</td>\n                    <td>\n                      {formatReactChartTableValue(point.size, formatValue, resolvedLabels.notAvailable)}\n                    </td>\n                  </tr>\n                ))}\n              </tbody>\n            </table>\n          </div>\n        </details>\n      )}\n      {onDatumActivate && <ChartDatumActions actions={datumActions} label={resolvedLabels.exploreData} />}\n    </DatumChart>\n  )\n}",
           "styleImport": "import '@santi020k/lumen-react/styles.css'"
         }
       },
@@ -37536,6 +37704,31 @@
           "type": "(value: number) => string"
         },
         {
+          "name": "formatX",
+          "optional": true,
+          "type": "(value: number | string) => string"
+        },
+        {
+          "name": "formatY",
+          "optional": true,
+          "type": "(value: number) => string"
+        },
+        {
+          "name": "xDomain",
+          "optional": true,
+          "type": "Partial<LumenChartDomain>"
+        },
+        {
+          "name": "domain",
+          "optional": true,
+          "type": "Partial<LumenChartDomain>"
+        },
+        {
+          "name": "references",
+          "optional": true,
+          "type": "readonly LumenScatterReference[]"
+        },
+        {
           "name": "heading",
           "optional": true,
           "type": "string"
@@ -37568,7 +37761,7 @@
         {
           "name": "xScale",
           "optional": true,
-          "type": "Exclude<LumenChartScaleType, 'categorical'>"
+          "type": "LumenScatterScaleType"
         }
       ],
       "propsExtends": "HTMLAttributes<'figure'>",
@@ -39501,6 +39694,522 @@
         }
       ],
       "runtimeEvents": []
+    },
+    {
+      "apiReference": [
+        {
+          "attribute": "items",
+          "defaultValue": "[]",
+          "description": "Explicit IDs, labels, before/after display values, and application-owned changed state.",
+          "values": "readonly LumenChangeSummaryItem[]"
+        },
+        {
+          "attribute": "label, summary",
+          "defaultValue": "Changes, optional",
+          "description": "Names the comparison and supplies localized count text.",
+          "values": "string"
+        },
+        {
+          "attribute": "beforeLabel, afterLabel, changedLabel, unchangedLabel",
+          "defaultValue": "English labels",
+          "description": "Localizes the visible comparison labels.",
+          "values": "string"
+        },
+        {
+          "attribute": "class, className",
+          "defaultValue": "\"\"",
+          "description": "Merges custom classes with the generated ui-* root classes.",
+          "values": "string"
+        },
+        {
+          "attribute": "...native attributes",
+          "defaultValue": "-",
+          "description": "Forwards standard attributes to the root element unless the component consumes them.",
+          "values": "HTML attributes"
+        }
+      ],
+      "astroSource": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { type LumenChangeSummaryItem, resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ninterface Props extends HTMLAttributes<'section'> {\n  items?: readonly LumenChangeSummaryItem[]\n  label?: string\n  beforeLabel?: string\n  afterLabel?: string\n  changedLabel?: string\n  unchangedLabel?: string\n  summary?: string\n  class?: string | null\n  className?: string\n}\n\nconst { items = [], label = 'Changes', beforeLabel = 'Before', afterLabel = 'After', changedLabel = 'Changed',\n  unchangedLabel = 'Unchanged', summary, class: classProp, className, ...rest } = Astro.props\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, ['ui-change-summary'], classProp, className)\n---\n<section class:list={classList} aria-label={label} {...passthrough}>\n  <h3 class=\"ui-change-summary__heading\">{label}</h3>\n  {summary && <p class=\"ui-change-summary__summary\">{summary}</p>}\n  <dl class=\"ui-change-summary__list\">\n    {items.map(item => (\n      <div class=\"ui-change-summary__item\" data-changed={item.changed}>\n        <dt>{item.label}<span class=\"ui-change-summary__state\">{item.changed ? changedLabel : unchangedLabel}</span></dt>\n        <dd><span class=\"ui-change-summary__value-label\">{beforeLabel}</span>{item.before}</dd>\n        <dd><span class=\"ui-change-summary__value-label\">{afterLabel}</span>{item.after}</dd>\n      </div>\n    ))}\n  </dl>\n  <slot />\n</section>\n",
+      "category": "Data display",
+      "collections": [],
+      "contract": null,
+      "dependencies": [
+        "styles"
+      ],
+      "description": "Compares explicit current and proposed values before a user confirms a change.",
+      "behavior": {
+        "astro": "none",
+        "elements": "registered-element",
+        "react": "component"
+      },
+      "files": [
+        "packages/astro/components/ChangeSummary.astro",
+        "packages/react/src/change-summary.tsx",
+        "packages/elements/src/components/dashboard.ts",
+        "packages/astro/styles/lumen.css"
+      ],
+      "frameworkDetails": {
+        "astro": {
+          "available": true,
+          "example": "<ChangeSummary label=\"Review changes\" items={[{ id: \"owner\", label: \"Owner\", before: \"Alice\", after: \"Bob\", changed: true }]} />",
+          "importStatement": "import { ChangeSummary } from '@santi020k/lumen-astro'",
+          "language": "astro",
+          "packageName": "@santi020k/lumen-astro",
+          "props": [
+            {
+              "name": "items",
+              "optional": true,
+              "type": "readonly LumenChangeSummaryItem[]"
+            },
+            {
+              "name": "label",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "name": "beforeLabel",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "name": "afterLabel",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "name": "changedLabel",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "name": "unchangedLabel",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "name": "summary",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "name": "class",
+              "optional": true,
+              "type": "string | null"
+            },
+            {
+              "name": "className",
+              "optional": true,
+              "type": "string"
+            }
+          ],
+          "propsExtends": "HTMLAttributes<'section'>",
+          "source": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { type LumenChangeSummaryItem, resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ninterface Props extends HTMLAttributes<'section'> {\n  items?: readonly LumenChangeSummaryItem[]\n  label?: string\n  beforeLabel?: string\n  afterLabel?: string\n  changedLabel?: string\n  unchangedLabel?: string\n  summary?: string\n  class?: string | null\n  className?: string\n}\n\nconst { items = [], label = 'Changes', beforeLabel = 'Before', afterLabel = 'After', changedLabel = 'Changed',\n  unchangedLabel = 'Unchanged', summary, class: classProp, className, ...rest } = Astro.props\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, ['ui-change-summary'], classProp, className)\n---\n<section class:list={classList} aria-label={label} {...passthrough}>\n  <h3 class=\"ui-change-summary__heading\">{label}</h3>\n  {summary && <p class=\"ui-change-summary__summary\">{summary}</p>}\n  <dl class=\"ui-change-summary__list\">\n    {items.map(item => (\n      <div class=\"ui-change-summary__item\" data-changed={item.changed}>\n        <dt>{item.label}<span class=\"ui-change-summary__state\">{item.changed ? changedLabel : unchangedLabel}</span></dt>\n        <dd><span class=\"ui-change-summary__value-label\">{beforeLabel}</span>{item.before}</dd>\n        <dd><span class=\"ui-change-summary__value-label\">{afterLabel}</span>{item.after}</dd>\n      </div>\n    ))}\n  </dl>\n  <slot />\n</section>\n",
+          "styleImport": "import '@santi020k/lumen-astro/styles.css'"
+        },
+        "elements": {
+          "attributes": [
+            "after-label",
+            "before-label",
+            "changed-label",
+            "label",
+            "summary",
+            "unchanged-label",
+            "items",
+            "label, summary",
+            "beforeLabel, afterLabel, changedLabel, unchangedLabel",
+            "class, className",
+            "...native attributes"
+          ],
+          "available": true,
+          "behavior": {
+            "mode": "registration",
+            "setup": "Call defineLumenElements() once before rendering Lumen custom elements."
+          },
+          "example": "<lumen-change-summary id=\"review\" label=\"Review changes\"></lumen-change-summary>\n<script>\n  import { defineLumenChangeSummary, LumenChangeSummaryElement } from '@santi020k/lumen-elements/components/dashboard'\n  defineLumenChangeSummary()\n  const review = document.getElementById('review')\n  if (review instanceof LumenChangeSummaryElement) {\n    review.items = [\n      { id: 'owner', label: 'Owner', before: 'Alice', after: 'Bob', changed: true }\n    ]\n  }\n</script>",
+          "importStatement": "import { defineLumenElements } from '@santi020k/lumen-elements/define'",
+          "language": "html",
+          "packageName": "@santi020k/lumen-elements",
+          "props": [],
+          "propsExtends": "HTMLElement attributes",
+          "registration": "defineLumenElements()",
+          "source": "lumenChangeSummaryElementConfig = {\n  baseClassName: 'ui-change-summary',\n  observedAttributes: ['label', 'summary', 'before-label', 'after-label', 'changed-label', 'unchanged-label'],\n  role: 'region',\n  tagName: 'lumen-change-summary'\n} as const satisfies LumenElementConfig",
+          "styleImport": "import '@santi020k/lumen-elements/styles.css'",
+          "tagName": "lumen-change-summary"
+        },
+        "react": {
+          "available": true,
+          "example": "<ChangeSummary label=\"Review changes\" items={[{ id: \"owner\", label: \"Owner\", before: \"Alice\", after: \"Bob\", changed: true }]} />",
+          "importStatement": "import { ChangeSummary } from '@santi020k/lumen-react'",
+          "language": "tsx",
+          "packageName": "@santi020k/lumen-react",
+          "props": [
+            {
+              "name": "items",
+              "optional": true,
+              "type": "readonly LumenChangeSummaryItem[]"
+            },
+            {
+              "name": "label",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "name": "beforeLabel",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "name": "afterLabel",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "name": "changedLabel",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "name": "unchangedLabel",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "name": "summary",
+              "optional": true,
+              "type": "string"
+            }
+          ],
+          "propsExtends": "ComponentPropsWithRef<'section'>",
+          "source": "export interface ChangeSummaryProps extends ComponentPropsWithRef<'section'> {\n  items?: readonly LumenChangeSummaryItem[]\n  label?: string\n  beforeLabel?: string\n  afterLabel?: string\n  changedLabel?: string\n  unchangedLabel?: string\n  /** Localized count text, supplied by the host. */\n  summary?: string\n}\n\nexport const ChangeSummary = ({\n  items = noChanges, label = 'Changes', beforeLabel = 'Before', afterLabel = 'After', changedLabel = 'Changed',\n  unchangedLabel = 'Unchanged', summary, className, children, ...props\n}: ChangeSummaryProps) => (\n  <section className={composeClassName('ui-change-summary', className)} aria-label={label} {...props}>\n    <h3 className=\"ui-change-summary__heading\">{label}</h3>\n    {summary && <p className=\"ui-change-summary__summary\">{summary}</p>}\n    <dl className=\"ui-change-summary__list\">\n      {items.map(item => (\n        <div className=\"ui-change-summary__item\" data-changed={item.changed} key={item.id}>\n          <dt>\n            {item.label}\n            <span className=\"ui-change-summary__state\">{item.changed ? changedLabel : unchangedLabel}</span>\n          </dt>\n          <dd>\n            <span className=\"ui-change-summary__value-label\">{beforeLabel}</span>\n            {item.before}\n          </dd>\n          <dd>\n            <span className=\"ui-change-summary__value-label\">{afterLabel}</span>\n            {item.after}\n          </dd>\n        </div>\n      ))}\n    </dl>\n    {children}\n  </section>\n)",
+          "styleImport": "import '@santi020k/lumen-react/styles.css'"
+        }
+      },
+      "frameworks": {
+        "astro": true,
+        "elements": true,
+        "react": true
+      },
+      "guidance": null,
+      "kebab": "change-summary",
+      "keyboardInteractions": [],
+      "keywords": [
+        "and",
+        "before",
+        "change",
+        "changesummary",
+        "compares",
+        "confirms",
+        "current",
+        "data",
+        "display",
+        "explicit",
+        "proposed",
+        "user",
+        "values"
+      ],
+      "name": "ChangeSummary",
+      "props": [
+        {
+          "name": "items",
+          "optional": true,
+          "type": "readonly LumenChangeSummaryItem[]"
+        },
+        {
+          "name": "label",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "beforeLabel",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "afterLabel",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "changedLabel",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "unchangedLabel",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "summary",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "class",
+          "optional": true,
+          "type": "string | null"
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string"
+        }
+      ],
+      "propsExtends": "HTMLAttributes<'section'>",
+      "recipes": [],
+      "runtimeEvents": []
+    },
+    {
+      "apiReference": [
+        {
+          "attribute": "label, resultLabel",
+          "defaultValue": "Filters, optional",
+          "description": "Names filters and announces a complete localized result count.",
+          "values": "string"
+        },
+        {
+          "attribute": "pending, open",
+          "defaultValue": "false, true",
+          "description": "Marks pending results and controls the native disclosure.",
+          "values": "boolean"
+        },
+        {
+          "attribute": "default slot, active slot, actions slot",
+          "defaultValue": "optional",
+          "description": "Composes public search/select controls, removable filters, and reset actions. The application owns requests and persistence.",
+          "values": "content"
+        },
+        {
+          "attribute": "class, className",
+          "defaultValue": "\"\"",
+          "description": "Merges custom classes with the generated ui-* root classes.",
+          "values": "string"
+        },
+        {
+          "attribute": "...native attributes",
+          "defaultValue": "-",
+          "description": "Forwards standard attributes to the root element unless the component consumes them.",
+          "values": "HTML attributes"
+        }
+      ],
+      "astroSource": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ninterface Props extends HTMLAttributes<'section'> {\n  label?: string\n  resultLabel?: string\n  pending?: boolean\n  open?: boolean\n  class?: string | null\n  className?: string\n}\n\nconst { label = 'Filters', resultLabel, pending = false, open = true, class: classProp, className, ...rest } = Astro.props\nconst { classList, passthrough } = resolveLumenAstroProps(rest, ['ui-filter-bar'], classProp, className)\n---\n<section class:list={classList} aria-label={label} aria-busy={pending} {...passthrough}>\n  <details open={open}>\n    <summary>{label}</summary>\n    <div class=\"ui-filter-bar__controls\"><slot /></div>\n  </details>\n  <div class=\"ui-filter-bar__active\"><slot name=\"active\" /><slot name=\"actions\" /></div>\n  <p class=\"ui-filter-bar__results\" role=\"status\" aria-live=\"polite\" aria-atomic=\"true\">{resultLabel}</p>\n</section>\n",
+      "category": "Data display",
+      "collections": [],
+      "contract": null,
+      "dependencies": [
+        "styles"
+      ],
+      "description": "Composes dashboard filtering, active criteria, and result announcements without owning queries.",
+      "behavior": {
+        "astro": "none",
+        "elements": "registered-element",
+        "react": "component"
+      },
+      "files": [
+        "packages/astro/components/FilterBar.astro",
+        "packages/react/src/dashboard.tsx",
+        "packages/elements/src/components/dashboard.ts",
+        "packages/astro/styles/lumen.css"
+      ],
+      "frameworkDetails": {
+        "astro": {
+          "available": true,
+          "example": "<FilterBar label=\"Filters\" resultLabel=\"12 records\"><SearchField aria-label=\"Search records\" /></FilterBar>",
+          "importStatement": "import { FilterBar, SearchField } from '@santi020k/lumen-astro'",
+          "language": "astro",
+          "packageName": "@santi020k/lumen-astro",
+          "props": [
+            {
+              "name": "label",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "name": "resultLabel",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "name": "pending",
+              "optional": true,
+              "type": "boolean"
+            },
+            {
+              "name": "open",
+              "optional": true,
+              "type": "boolean"
+            },
+            {
+              "name": "class",
+              "optional": true,
+              "type": "string | null"
+            },
+            {
+              "name": "className",
+              "optional": true,
+              "type": "string"
+            }
+          ],
+          "propsExtends": "HTMLAttributes<'section'>",
+          "source": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ninterface Props extends HTMLAttributes<'section'> {\n  label?: string\n  resultLabel?: string\n  pending?: boolean\n  open?: boolean\n  class?: string | null\n  className?: string\n}\n\nconst { label = 'Filters', resultLabel, pending = false, open = true, class: classProp, className, ...rest } = Astro.props\nconst { classList, passthrough } = resolveLumenAstroProps(rest, ['ui-filter-bar'], classProp, className)\n---\n<section class:list={classList} aria-label={label} aria-busy={pending} {...passthrough}>\n  <details open={open}>\n    <summary>{label}</summary>\n    <div class=\"ui-filter-bar__controls\"><slot /></div>\n  </details>\n  <div class=\"ui-filter-bar__active\"><slot name=\"active\" /><slot name=\"actions\" /></div>\n  <p class=\"ui-filter-bar__results\" role=\"status\" aria-live=\"polite\" aria-atomic=\"true\">{resultLabel}</p>\n</section>\n",
+          "styleImport": "import '@santi020k/lumen-astro/styles.css'"
+        },
+        "elements": {
+          "attributes": [
+            "label, resultLabel",
+            "pending, open",
+            "default slot, active slot, actions slot",
+            "class, className",
+            "...native attributes"
+          ],
+          "available": true,
+          "behavior": {
+            "mode": "registration",
+            "setup": "Call defineLumenElements() once before rendering Lumen custom elements."
+          },
+          "example": "<lumen-filter-bar aria-label=\"Filters\">\n  <details open><summary>Filters</summary>\n    <div class=\"ui-filter-bar__controls\"><lumen-search-field aria-label=\"Search records\"></lumen-search-field></div>\n  </details>\n  <div class=\"ui-filter-bar__active\"><lumen-button aria-label=\"Remove status: Active\">Status: Active ×</lumen-button></div>\n  <p role=\"status\" aria-live=\"polite\" aria-atomic=\"true\">12 matching records</p>\n</lumen-filter-bar>",
+          "importStatement": "import { defineLumenElements } from '@santi020k/lumen-elements/define'",
+          "language": "html",
+          "packageName": "@santi020k/lumen-elements",
+          "props": [],
+          "propsExtends": "HTMLElement attributes",
+          "registration": "defineLumenElements()",
+          "source": "lumenFilterBarElementConfig = {\n  baseClassName: 'ui-filter-bar',\n  observedAttributes: [],\n  role: 'region',\n  tagName: 'lumen-filter-bar'\n} as const satisfies LumenElementConfig",
+          "styleImport": "import '@santi020k/lumen-elements/styles.css'",
+          "tagName": "lumen-filter-bar"
+        },
+        "react": {
+          "available": true,
+          "example": "<FilterBar label=\"Filters\" resultLabel=\"12 records\"><SearchField aria-label=\"Search records\" /></FilterBar>",
+          "importStatement": "import { FilterBar, SearchField } from '@santi020k/lumen-react'",
+          "language": "tsx",
+          "packageName": "@santi020k/lumen-react",
+          "props": [
+            {
+              "name": "label",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "name": "filters",
+              "optional": true,
+              "type": "readonly LumenActiveFilter[]"
+            },
+            {
+              "name": "onRemoveFilter",
+              "optional": true,
+              "type": "(id: string) => void"
+            },
+            {
+              "name": "onReset",
+              "optional": true,
+              "type": "() => void"
+            },
+            {
+              "name": "resetLabel",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "name": "removeLabel",
+              "optional": true,
+              "type": "(filter: LumenActiveFilter) => string"
+            },
+            {
+              "name": "resultLabel",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "name": "pending",
+              "optional": true,
+              "type": "boolean"
+            },
+            {
+              "name": "open",
+              "optional": true,
+              "type": "boolean"
+            },
+            {
+              "name": "defaultOpen",
+              "optional": true,
+              "type": "boolean"
+            },
+            {
+              "name": "onOpenChange",
+              "optional": true,
+              "type": "(open: boolean) => void"
+            },
+            {
+              "name": "actions",
+              "optional": true,
+              "type": "ReactNode"
+            }
+          ],
+          "propsExtends": "ComponentPropsWithRef<'section'>",
+          "source": "export interface FilterBarProps extends ComponentPropsWithRef<'section'> {\n  label?: string\n  filters?: readonly LumenActiveFilter[]\n  onRemoveFilter?: (id: string) => void\n  onReset?: () => void\n  resetLabel?: string\n  removeLabel?: (filter: LumenActiveFilter) => string\n  /** Pass a complete localized count message; zero and unknown are different. */\n  resultLabel?: string\n  pending?: boolean\n  /** Controlled filters disclosure; omit for native browser ownership. */\n  open?: boolean\n  defaultOpen?: boolean\n  onOpenChange?: (open: boolean) => void\n  actions?: ReactNode\n}\n\nexport const FilterBar = ({\n  label = 'Filters', filters = empty, onRemoveFilter, onReset, resetLabel = 'Reset filters',\n  removeLabel = removeFilterLabel, resultLabel, pending = false, open, defaultOpen = true,\n  onOpenChange, actions, className, children, ...props\n}: FilterBarProps) => (\n  <section className={composeClassName('ui-filter-bar', className)} aria-label={label} aria-busy={pending} {...props}>\n    <details\n      open={open ?? defaultOpen}\n      onToggle={event => {\n        if (open === undefined) onOpenChange?.(event.currentTarget.open)\n      }}\n    >\n      <summary onClick={event => {\n        if (open === undefined) return\n\n        event.preventDefault()\n\n        onOpenChange?.(!open)\n      }}\n      >\n        {label}\n      </summary>\n      <div className=\"ui-filter-bar__controls\">{children}</div>\n    </details>\n    <div className=\"ui-filter-bar__active\">\n      {filters.map(filter => onRemoveFilter ?\n        (\n          <Button\n            key={filter.id}\n            variant=\"outline\"\n            size=\"sm\"\n            disabled={pending}\n            aria-label={removeLabel(filter)}\n            onClick={() => {\n              onRemoveFilter(filter.id)\n            }}\n          >\n            {`${filter.label}: ${filter.value} ×`}\n          </Button>\n        ) :\n        (\n          <span key={filter.id}>\n            {`${filter.label}: ${filter.value}`}\n          </span>\n        ))}\n      {onReset && filters.length > 0 && <Button variant=\"ghost\" size=\"sm\" disabled={pending} onClick={onReset}>{resetLabel}</Button>}\n      {actions}\n    </div>\n    <p className=\"ui-filter-bar__results\" role=\"status\" aria-live=\"polite\" aria-atomic=\"true\">{resultLabel}</p>\n  </section>\n)",
+          "styleImport": "import '@santi020k/lumen-react/styles.css'"
+        }
+      },
+      "frameworks": {
+        "astro": true,
+        "elements": true,
+        "react": true
+      },
+      "guidance": null,
+      "kebab": "filter-bar",
+      "keyboardInteractions": [],
+      "keywords": [
+        "active",
+        "and",
+        "announcements",
+        "composes",
+        "criteria",
+        "dashboard",
+        "data",
+        "display",
+        "filterbar",
+        "filtering",
+        "owning",
+        "queries",
+        "result",
+        "without"
+      ],
+      "name": "FilterBar",
+      "props": [
+        {
+          "name": "label",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "resultLabel",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "pending",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "open",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "class",
+          "optional": true,
+          "type": "string | null"
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string"
+        }
+      ],
+      "propsExtends": "HTMLAttributes<'section'>",
+      "recipes": [],
+      "runtimeEvents": []
     }
   ],
   "docs": {
@@ -39508,8 +40217,8 @@
     "readme": "<p align=\"center\">\n  <a href=\"https://lumen.santi020k.com\">\n    <img src=\"./apps/docs/public/logo.svg\" alt=\"Lumen UI\" width=\"233\" height=\"60\">\n  </a>\n</p>\n\n<h1 align=\"center\">Lumen UI</h1>\n\n<p align=\"center\">\n  A cross-platform UI system with 150+ web primitives and shared native foundations.\n</p>\n\n<p align=\"center\">\n  <a href=\"https://lumen.santi020k.com\">Documentation</a>\n  ·\n  <a href=\"https://lumen.santi020k.com/docs/components\">Components</a>\n  ·\n  <a href=\"https://www.figma.com/community/file/1662337342676541513\">Figma library</a>\n  ·\n  <a href=\"https://apps.apple.com/app/id6805250815\">iPhone and iPad app</a>\n  ·\n  <a href=\"https://play.google.com/store/apps/details?id=com.santi020k.lumen.playground.compose\">Android app</a>\n  ·\n  <a href=\"https://github.com/santi020k/lumen/issues\">Issues</a>\n</p>\n\n<p align=\"center\">\n  <a href=\"https://github.com/santi020k/lumen/actions\"><img alt=\"GitHub Actions\" src=\"https://img.shields.io/github/actions/workflow/status/santi020k/lumen/ci.yml?branch=main&style=flat-square\"></a>\n  <a href=\"https://github.com/santi020k/lumen/actions/workflows/codeql.yml\"><img alt=\"CodeQL\" src=\"https://github.com/santi020k/lumen/actions/workflows/codeql.yml/badge.svg\"></a>\n  <a href=\"https://www.npmjs.com/package/@santi020k/lumen-astro\"><img alt=\"npm version\" src=\"https://img.shields.io/npm/v/@santi020k/lumen-astro?style=flat-square&label=npm\"></a>\n  <a href=\"./LICENSE\"><img alt=\"MIT license\" src=\"https://img.shields.io/badge/license-MIT-111827?style=flat-square\"></a>\n</p>\n\nLumen gives applications a consistent visual language without tying them to one rendering model.\nIts packages share tokens, component contracts, styles, and interaction patterns while keeping each\nframework and platform's native authoring experience.\n\n- **Framework native:** Astro components, React primitives, and standards-based custom elements.\n- **Native foundations:** generated React Native, SwiftUI, and Jetpack Compose tokens plus the\n  complete shared interface and namespaced brand icon catalogs preserve the same semantic roles and\n  artwork without introducing DOM or CSS assumptions.\n- **Accessible by default:** semantic markup, keyboard paths, focus management, and reduced-motion\n  support are built into the primitives.\n- **Standalone CSS:** no Tailwind configuration is required. Tailwind users get an explicit layer\n  integration.\n- **Progressively enhanced:** Astro interactions use a small client runtime instead of requiring an\n  application framework.\n- **Ready for design and AI workflows:** published Figma resources, a portable agent skill, an MCP\n  server, `llms.txt`, a machine-readable registry, and a cross-platform release manifest ship\n  alongside the component system.\n- **Product-ready templates:** five responsive dashboard and application families are available as\n  live previews and installable Astro, React, and Elements recipes.\n\n**Explore:** [Dashboards and templates](#dashboards-and-templates) · [Web quick start](#web-quick-start) · [Native playgrounds](#native-playgrounds) · [Tailwind CSS](#tailwind-css) · [Packages](#packages) · [Community](#community)\n\n## Lumen 4 candidate\n\nThe v4 release branch brings consumer-driven date selection, chart readability, clipboard feedback,\nloading states, native layout improvements and a new ImageComparison primitive. Start with the\n[v3 → v4 migration guide](docs/migrating-v3-to-v4.md), [consumer audit](docs/lumen-4-consumer-audit.md),\nand [local readiness record](docs/lumen-4-readiness.md). The refreshed community gallery includes\npublished consumer screenshots; it does not imply those applications already run this candidate.\n\nFor existing applications, start with [v1 → v2](docs/migrating-v1-to-v2.md) when needed, then\n[v2 → v3](docs/migrating-v2-to-v3.md) before\n[v3 → v4](docs/migrating-v3-to-v4.md). For initial adoption, use\n[Migrating to Lumen](docs/migrating-to-lumen.md).\n\n## Appearance presets\n\nChoose an appearance preset or customize the existing themes with the [appearance guide](docs/appearance-presets.md). The Studio preset uses PostLens as its visual reference.\n\n## Dashboards and templates\n\nExplore the [template gallery](https://lumen.santi020k.com/templates) for complete analytics,\nSaaS admin, commerce, project workspace, and authentication/onboarding experiences. Each family\nuses public Lumen primitives and semantic tokens, includes responsive and accessibility coverage,\nand ships through the CLI for all three framework targets:\n\n```bash\nlumen add analytics-dashboard\nlumen add commerce-dashboard --target react\nlumen add auth-onboarding --target elements\n```\n\n## Web quick start\n\nInstall the package for your framework:\n\n```bash\n# Astro\npnpm add @santi020k/lumen-astro\n\n# React\npnpm add @santi020k/lumen-react\n\n# Web Components\npnpm add @santi020k/lumen-elements\n```\n\n### Astro\n\nImport the stylesheet and mount `UIPrimitives` once in your root layout. The runtime enhances all\ninteractive Lumen markup on the page.\n\n```astro\n---\nimport '@santi020k/lumen-astro/styles.css'\nimport UIPrimitives from '@santi020k/lumen-astro/runtime'\n---\n\n<html lang=\"en\">\n  <body>\n    <slot />\n    <UIPrimitives />\n  </body>\n</html>\n```\n\n```astro\n---\nimport { Button, Card, Input } from '@santi020k/lumen-astro'\n---\n\n<Card>\n  <label for=\"email\">Email</label>\n  <Input id=\"email\" name=\"email\" type=\"email\" placeholder=\"you@example.com\" />\n  <Button>Subscribe</Button>\n</Card>\n```\n\n### React\n\nLoad the stylesheet once from your app entry or global CSS:\n\n```tsx\nimport '@santi020k/lumen-react/styles.css'\nimport { Button, Card, Input } from '@santi020k/lumen-react'\n\nexport function SubscribeForm() {\n  return (\n    <Card>\n      <label htmlFor=\"email\">Email</label>\n      <Input id=\"email\" name=\"email\" type=\"email\" placeholder=\"you@example.com\" />\n      <Button>Subscribe</Button>\n    </Card>\n  )\n}\n```\n\n### Web Components\n\nImport the styles and register the elements once:\n\n```html\n<style>\n  @import \"@santi020k/lumen-elements/styles.css\";\n</style>\n\n<script type=\"module\">\n  import { defineLumenElements } from '@santi020k/lumen-elements/define'\n\n  defineLumenElements()\n</script>\n\n<lumen-card>\n  <label for=\"email\">Email</label>\n  <lumen-input id=\"email\" name=\"email\" type=\"email\" placeholder=\"you@example.com\"></lumen-input>\n  <lumen-button>Subscribe</lumen-button>\n</lumen-card>\n```\n\nSee the [Web documentation](https://lumen.santi020k.com/docs/web) for installation, theming,\ncomponent examples, and API details.\n\nFor failure states, use the [error-handling guide](./docs/error-handling.md) to choose between field\nfeedback, summaries, persistent alerts, transient toasts, and the `ErrorState` recovery surface.\nLumen owns presentation and accessibility; applications retain logging, retry, and exception policy.\n\nFor native applications, choose the [React Native](https://lumen.santi020k.com/docs/react-native),\n[Apple / SwiftUI](https://lumen.santi020k.com/docs/apple), or\n[Android / Compose](https://lumen.santi020k.com/docs/android) guide. The\n[shared foundations](https://lumen.santi020k.com/docs/foundations) explain the cross-platform token\nand component contract; repository contributors can also use the\n[cross-platform architecture](./docs/cross-platform.md) and\n[native component reference](./docs/native-components.md).\n\n> **Native platform status for Lumen 2.** React Native, SwiftUI, Compose, and Wear OS use the frozen\n> supported contract. Package, migration, build, security, artifact, and stability checks gate the\n> initial release. The incomplete external-consumer and physical-device matrices remain published\n> as post-release qualification work; review them before choosing a production adapter.\n\n## Native playgrounds\n\nThe repository includes three searchable, interactive galleries built from the real native\npackages:\n\n- [`apps/playground-react-native`](./apps/playground-react-native) runs through Expo on the web,\n  iOS, and Android and includes EAS profiles for TestFlight, Android App Bundles, and APKs.\n- [`apps/playground-apple`](./apps/playground-apple) is available on the\n  [App Store](https://apps.apple.com/app/id6805250815) for iPhone, iPad, and Mac. It also builds as\n  an iOS Xcode app or macOS Swift Package executable for local exploration.\n- [`apps/playground-android`](./apps/playground-android) builds a native Compose application and a\n  directly installable debug APK. It is also available on\n  [Google Play](https://play.google.com/store/apps/details?id=com.santi020k.lumen.playground.compose)\n  for Android phones and tablets.\n\nSee the [playground workflow](./docs/playgrounds.md) for run, capture, and distribution commands.\n\n## Tailwind CSS\n\nKeep the layer prelude, Tailwind import, and Lumen stylesheet in the same shared CSS entry. Replace\n`lumen-astro` with the package for your framework.\n\n```css\n@import \"@santi020k/lumen-astro/layers.css\";\n@import \"tailwindcss\";\n@import \"@santi020k/lumen-astro/styles.css\";\n```\n\nThis order places Tailwind base styles before Lumen components and Tailwind utilities above Lumen\ncomponent defaults.\n\n## Packages\n\n| Package | Purpose |\n| --- | --- |\n| [`@santi020k/lumen-astro`](./packages/astro) | Reference implementation, Astro components, and progressive-enhancement runtime |\n| [`@santi020k/lumen-react`](./packages/react) | React components and behavior hooks |\n| [`@santi020k/lumen-react-hook-form`](./packages/react-hook-form) | Optional React Hook Form adapters for composite controls |\n| [`@santi020k/lumen-elements`](./packages/elements) | Standards-based Web Components |\n| [`@santi020k/lumen-core`](./packages/core) | Shared tokens, metadata, class helpers, and behavior contracts |\n| [`@santi020k/lumen-tokens`](./packages/tokens) | Canonical platform-neutral design token source |\n| [`@santi020k/lumen-react-native`](./packages/react-native) | React Native foundations and native primitives |\n| [`LumenUI`](./packages/swift) | Swift Package for iOS, iPadOS, macOS, tvOS, visionOS, and watchOS foundations and native primitives |\n| [`LumenWidgetUI`](./packages/swift-widget) | Focused WidgetKit-safe semantic text, icon, badge, and compact-stat foundations |\n| [`lumen-compose`](./packages/compose) | Android library for Jetpack Compose foundations and native primitives |\n| [`lumen-compose-wear`](./packages/compose/wear) | Focused Wear OS primitives for at-a-glance round-screen actions, progress, status, metrics, and rows |\n| [`@santi020k/lumen-icons-brand`](./packages/icons-brand) | Optional namespaced brand icons for web `Icon` adapters  |\n| [`@santi020k/lumen`](./packages/lumen) | Umbrella package, CLI, registry metadata, and public package map |\n| [`@santi020k/lumen-mcp`](./packages/mcp) | MCP server for component discovery and source retrieval |\n\n## AI and design workflows\n\nInstall the portable Lumen skill in Codex, Claude Code, Cursor, Windsurf, and other compatible\ncoding agents:\n\n```bash\nnpx skills add santi020k/lumen --skill lumen-ui\n```\n\nThe skill teaches agents how to select, compose, theme, and verify Lumen primitives. Pair it with\n[`@santi020k/lumen-mcp`](./packages/mcp) when an agent needs to search the live catalog or retrieve\ncurrent source, props, tokens, and usage rules.\n\nFor ChatGPT and Codex, install the published\n[Lumen UI plugin](https://chatgpt.com/plugins/plugin_asdk_app_6a8f6c526c5481918eb8a48806fa112b)\nfrom the Plugins Directory. Select **Install plugin**, then mention **@Lumen UI** in a request such\nas “Find the right Lumen components for an accessible React settings screen.” Version 1.0.0 bundles\nthe skill with the hosted, read-only catalog; no separate Lumen account or local MCP setup is needed.\n\nAdditional machine-readable surfaces include:\n\n- [`llms.txt`](./llms.txt) for a concise project map.\n- [`docs/ai-usage.md`](./docs/ai-usage.md) for downstream generation examples.\n- [`docs/styling-contract.md`](./docs/styling-contract.md) for stable parts and component variables.\n- [`docs/import-and-icon-performance.md`](./docs/import-and-icon-performance.md) for repeatable import and icon evidence.\n- [`docs/graphics.md`](./docs/graphics.md) for portable decorative artwork across web and native platforms.\n- [`docs/consumer-regression-fixtures.md`](./docs/consumer-regression-fixtures.md) for production-shaped local coverage.\n- [`docs/project-adoption.md`](./docs/project-adoption.md) for the sibling-project audit and staged\n  web and native migration strategy.\n- [`registry/lumen.registry.json`](./registry/lumen.registry.json) for recipes and installable file\n  groups.\n- [`docs/figma.md`](./docs/figma.md) for Figma variables and Code Connect workflows.\n- [`plugins/lumen-ui`](./plugins/lumen-ui) for the packaged Codex and ChatGPT plugin, with its\n  [submission and review record](./docs/openai-plugin-submission.md).\n- [`.claude-plugin/marketplace.json`](./.claude-plugin/marketplace.json) for the Claude Code\n  marketplace, with its [installation and submission guide](./docs/claude-code-plugin.md).\n- [`docs/cross-platform.md`](./docs/cross-platform.md) for the native architecture, support tiers,\n  and component-parity policy.\n- [`docs/native-patterns.md`](./docs/native-patterns.md) for developed native compositions and the\n  boundary between Lumen presentation and platform-owned application structure.\n\n## Contributing\n\nLumen is a pnpm workspace. Astro is the reference implementation; shared contracts belong in\n`packages/core`, while framework-specific behavior stays in its adapter package.\n\n```bash\npnpm install\npnpm run dev\npnpm run validate\n```\n\nRead [`CONTRIBUTING.md`](./CONTRIBUTING.md) before opening a pull request. User-visible package\nchanges require a changeset.\n\n## Community\n\n[Feedback & support](https://lumen.santi020k.com/support) connects ideas, questions, bug reports,\nand the [public roadmap](https://lumen.santi020k.com/support#roadmap). Discuss improvements on GitHub\nand follow accepted work through implementation and release.\n\nLumen is free and MIT licensed while the project focuses on adoption, public examples, and\nreal-world feedback.\n\n- Explore task-oriented [guides](https://lumen.santi020k.com/guides).\n- Share a public project in the [community showcase](https://lumen.santi020k.com/community).\n- Evaluate the system with the open [team adoption path](https://lumen.santi020k.com/teams).\n- Tell us what would improve your next build through the\n  [adoption survey](https://github.com/santi020k/lumen/issues/new?template=adoption-feedback.yml).\n\nMaintainers can use the [exposure playbook](./docs/exposure-playbook.md) for publishing cadence,\ncampaign measurement, video scripts, and launch copy, and the\n[marketing package](./docs/marketing/README.md) for execution-ready copy, channel decisions, a\nfour-week calendar, asset briefs, an approval queue, and a community-response library.\n\n## Find your next step\n\n| Resource | Use it for |\n| --- | --- |\n| [Cross-platform architecture](docs/cross-platform.md) | Shared foundations and adapter responsibilities. |\n| [Native compatibility](docs/native-compatibility.md) | Supported toolchains and platform baselines. |\n| [Native release runbook](docs/native-release-runbook.md) | Artifact qualification and distribution gates. |\n\n## License\n\nLumen's original code and artwork are available under the [MIT License](./LICENSE). Generated\ninterface icons retain the Lucide ISC or Feather MIT terms, and generated brand icons retain Font\nAwesome Free's CC BY 4.0 terms. The native packages include the required attribution and license\nnotices; see [`icons/THIRD_PARTY_NOTICES.md`](./icons/THIRD_PARTY_NOTICES.md).\n"
   },
   "meta": {
-    "catalogHash": "ba541d105830709558c15a5e1b4f236576a424b02ad2a89fafe5c88729734cd1",
-    "componentCount": 174,
+    "catalogHash": "946e290afae7ed9f3198574735d9a6f36a63285187409bed5851c0d513daab64",
+    "componentCount": 176,
     "nativeComponentCount": 92,
     "packages": [
       "@santi020k/lumen-astro",

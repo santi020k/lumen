@@ -312,3 +312,15 @@ attribute contains a JSON payload from the builders. Use native buttons with des
 as keyboard equivalents for decorative SVG marks; the controller does not create that UI.
 It emits the bubbling, composed `ui:chart-datum-activate` event and returns `destroy()` for cleanup.
 Applications own navigation, filtering, detail views, and server authorization.
+
+
+## Dashboard contracts
+
+`LumenChangeSummaryItem` carries explicit display values and caller-owned changed state;
+`LumenActiveFilter` identifies an active criterion. `readLumenChangeSummaryItems` and
+`readLumenActiveFilters` validate unknown input, reject duplicate/empty IDs, and copy records.
+
+Scatter geometry supports positive logarithmic X coordinates, explicit domains, and shared
+reference projection. `createLumenScatterReferences`, `scaleLumenScatterX`, and
+`getLumenScatterXTicks` use the same coordinate contract as `createLumenScatterGeometry`.
+See [consumer UI recipes](../../docs/consumer-ui-recipes.md) for application ownership boundaries.

@@ -51,7 +51,11 @@
     "./styles.css": "./styles.css",
     "./styles/critical.css": "./styles/critical.css",
     "./layers.css": "./layers.css",
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./components/dashboard": {
+      "types": "./dist/components/dashboard.d.ts",
+      "import": "./dist/components/dashboard.js"
+    }
   },
   "files": [
     "bin",

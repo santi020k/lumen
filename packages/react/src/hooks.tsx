@@ -46,6 +46,7 @@ import {
 import { isLumenDateBoundsValid as isCalendarBoundsValid, parseLumenDate as parseCalendarDate, resolveLumenDateLabels as resolveDateControlLabels, resolveLumenDateLocale as getCalendarLocale } from '@santi020k/lumen-core'
 
 import { useDialogLifecycle } from './dialog-lifecycle.js'
+import { type FloatingPanelOptions, useFloatingPanel } from './floating-panel.js'
 
 type ChangeHandler<T> = (value: T) => void
 
@@ -156,11 +157,11 @@ export interface DialogController {
   triggerRef: RefObject<HTMLElement | null>
 }
 
-export type PopoverOptions = DisclosureOptions
+export type PopoverOptions = DisclosureOptions & FloatingPanelOptions
 
 export type PopoverController = DisclosureController
 
-export type DropdownMenuOptions = DisclosureOptions
+export type DropdownMenuOptions = DisclosureOptions & FloatingPanelOptions
 
 export type DropdownMenuController = DisclosureController
 
@@ -721,7 +722,7 @@ const useOutsideClose = (
 }
 
 const useDisclosureController = (
-  options: DisclosureOptions,
+  options: DisclosureOptions & FloatingPanelOptions,
   hasPopup: 'listbox' | 'menu'
 ): DisclosureController => {
   const rootRef = useRef<HTMLElement | null>(null)
@@ -744,6 +745,8 @@ const useDisclosureController = (
   }, [setOpen])
 
   useOutsideClose(open, [rootRef, triggerRef, panelRef], close)
+
+  useFloatingPanel(open, triggerRef, panelRef, close, options)
 
   const triggerProps: LumenProps<'button'> = {
     'aria-controls': panelId,

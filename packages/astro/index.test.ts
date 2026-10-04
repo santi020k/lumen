@@ -145,7 +145,7 @@ describe('@santi020k/lumen-astro package surface', () => {
 
     expect(scatter).toContain('const hasData = geometry.points.length > 0')
     expect(scatter).toContain(
-      'formatLumenChartSummary(projectedSeries, formatValue, resolvedLabels)'
+      'formatLumenChartSummary(projectedSeries, formatY, resolvedLabels)'
     )
     expect(scatter).toContain('data: geometry.points.filter(point => point.seriesId === item.id)')
     expect(scatter).toContain('filter(item => item.data.length > 0)')
@@ -1004,10 +1004,11 @@ describe('@santi020k/lumen-astro package surface', () => {
   })
 
   test('ships DataTable as a static table enhanced with sorting and selection', async () => {
-    const [component, runtime, styles] = await Promise.all([
+    const [component, runtime, styles, sorting] = await Promise.all([
       readFile(new URL('./components/DataTable.astro', packageRoot), 'utf8'),
       readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8'),
-      readFile(sharedStylesUrl, 'utf8')
+      readFile(sharedStylesUrl, 'utf8'),
+      readFile(new URL('./runtime/controllers/data-table.ts', packageRoot), 'utf8')
     ])
 
     expect(component).toContain('columns?: DataTableColumn[]')
@@ -1021,7 +1022,7 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(runtime).toContain(
       'const initDataTables = (scope: ParentNode): void =>'
     )
-    expect(runtime).toContain('header.setAttribute(\'aria-sort\', \'none\')')
+    expect(sorting).toContain('header.setAttribute(\'aria-sort\', header.getAttribute(\'aria-sort\') ?? \'none\')')
     expect(runtime).toContain(
       'root.dispatchEvent(new CustomEvent(\'ui:data-table-selection-change\''
     )

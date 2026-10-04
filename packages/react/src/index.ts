@@ -1,8 +1,11 @@
 'use client'
 
 export * from './attachments.js'
+export { ChangeSummary, type ChangeSummaryProps } from './change-summary.js'
 export { type ChartInteractionProps } from './chart-interaction.js'
 export * from './components.js'
+export * from './dashboard.js'
+export * from './data-table.js'
 export * from './date-range-calendar.js'
 export * from './date-range-input.js'
 export * from './hooks.js'
