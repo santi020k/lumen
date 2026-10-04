@@ -1,19 +1,29 @@
 ---
 import { Heatmap } from '@santi020k/lumen-astro'
 
-const data = [
-  { value: 18, x: 'Morning', y: 'Monday' },
-  { value: 42, x: 'Afternoon', y: 'Monday' },
-  { value: 27, x: 'Morning', y: 'Tuesday' },
-  { value: 64, x: 'Afternoon', y: 'Tuesday' },
-  { value: 36, x: 'Morning', y: 'Wednesday' },
-  { value: 78, x: 'Afternoon', y: 'Wednesday' }
+const hours = ['06:00', '08:00', '10:00', '12:00', '14:00', '16:00', '18:00', '20:00']
+
+const activity = [
+  { day: 'Monday', sessions: [8, 32, 78, 56, 84, 62, 28, 12] },
+  { day: 'Tuesday', sessions: [12, 46, 92, 64, 110, 86, 34, 16] },
+  { day: 'Wednesday', sessions: [10, 42, 86, 72, 124, 94, 42, 18] },
+  { day: 'Thursday', sessions: [14, 38, 82, 68, 102, 78, 36, 14] },
+  { day: 'Friday', sessions: [6, 28, 64, 48, 72, 46, 20, 8] },
+  { day: 'Saturday', sessions: [0, 4, 18, 26, 22, 14, 8, 2] },
+  { day: 'Sunday', sessions: [2, 6, 14, 20, 18, 12, 6, null] }
 ]
+
+const data = activity.flatMap(({ day, sessions }) => hours.map((hour, index) => ({
+  x: hour,
+  y: day,
+  value: sessions[index] ?? null
+})))
 ---
 
 <Heatmap
-  aria-label="Workspace activity by weekday and time of day"
-  caption="Darker cells represent more active sessions."
+  aria-label="Active sessions by weekday and time of day"
+  heading="When teams do their best work"
+  description="Active sessions · 21–27 September 2026 · UTC"
+  caption="Activity peaks on Wednesday at 14:00. Darker cells mean more sessions; × marks a missing observation. Illustrative data."
   {data}
-  heading="Workspace activity"
 />

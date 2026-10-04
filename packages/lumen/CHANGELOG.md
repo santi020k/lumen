@@ -120,6 +120,8 @@
 
 ### Patch Changes
 
+- Fit scatter, combo, and range charts to narrow screens with readable responsive axis labels.
+
 - Refine Accordion and Collapsible with aligned container-owned content insets, calmer borders and
   heading weight, and a fixed circular toggle background. Preserve keyboard focus, reduced motion,
   flush styling, and native disclosure behavior without JavaScript across the web adapters.

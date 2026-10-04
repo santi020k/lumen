@@ -655,7 +655,9 @@ result announcement. `ChangeSummary` presents explicit before/after values and a
 changed state. Neither component owns requests, persistence, parsing, or financial policy.
 
 ScatterChart supports independent X/Y formatting, explicit domains, logarithmic positive X values,
-and labeled reference lines/regions. See [consumer UI recipes](../../docs/consumer-ui-recipes.md)
+and labeled reference lines/regions. Automatic domains leave room for complete bubbles; explicit
+domain limits stay exact and can intentionally crop marks. ComboChart and RangeChart include
+category labels and value scales. See [consumer UI recipes](../../docs/consumer-ui-recipes.md)
 for dashboard tables, freshness, import review, activity inbox, and persistent Kanban patterns.
 
 ### Actual-versus-target charts

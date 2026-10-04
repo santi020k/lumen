@@ -7,14 +7,17 @@ createLumenChartDatumActivation,
   createLumenLineGeometry,
   formatLumenChartSummary,
   getLumenChartCategories,
+  getLumenChartCategoryLabel,
+  getLumenChartCategoryTicks,
   getLumenChartDomain,
+  getLumenChartTicks,
   getLumenChartToneClassName,
   hasLumenChartData,
   type LumenChartDatum,
   type LumenChartLabels,
   type LumenComboSeries,
   resolveLumenChartLabels,
-  resolveLumenChartTone } from '@santi020k/lumen-core'
+  resolveLumenChartTone,  scaleLumenChartValue } from '@santi020k/lumen-core'
 
 import { createChartDatumAction } from '../runtime/chart-actions'
 
@@ -89,6 +92,18 @@ const lines = lineSeries.map(item => createLumenLineGeometry(
   lineGeometryOptions
 ))
 
+const plotTop = barSeries.length > 0 ? bars.margin.top : padding
+const plotBottom = height - (barSeries.length > 0 ? bars.margin.bottom : padding)
+const plotLeft = barSeries.length > 0 ? bars.margin.left : padding
+const plotRight = width - (barSeries.length > 0 ? bars.margin.right : padding)
+const ticks = getLumenChartTicks(domain)
+
+const categoryTicks = getLumenChartCategoryTicks(categories.map(category => getLumenChartCategoryLabel(series, category)), {
+  start: plotLeft,
+  end: plotRight,
+  ...(barSeries.length > 0 ? { positions: bars.categories.map(category => category.x) } : {})
+})
+
 const hasData = hasLumenChartData(series)
 
 const barActions = drilldown ?
@@ -132,9 +147,16 @@ const datumActions = [...barActions, ...pointActions.flat()]
   {showLegend && hasData && <ul class="ui-chart__legend" aria-label={resolvedLabels.chartLegend}>{series.map((item, index) => <li class={getLumenChartToneClassName(item.tone, index)}><span aria-hidden="true" />{item.label}</li>)}</ul>}
   {!hasData && <p class="ui-chart__empty" role="status">{resolvedLabels.empty}</p>}
   <div aria-label={resolvedLabels.chartData} class="ui-chart__plot" role="region" tabindex="0" hidden={!hasData}><svg aria-hidden="true" viewBox={`0 0 ${width} ${height}`}><g class="
-    ui-bar-chart__marks
+    ui-chart__grid
   "
-                                                                                                                                                                            >{bars.marks.map((mark, index) => <rect data-ui-chart-datum={barActions[index]?.serialized} class={getLumenChartToneClassName(mark.tone)} height={mark.height} rx="4" width={mark.width} x={mark.x} y={mark.y}><title>{`${mark.seriesLabel}: ${formatValue(mark.value)}`}</title></rect>)}{drilldown && bars.marks.map((mark, index) => (
+                                                                                                                                                                            >{ticks.map(tick => {
+  const y = scaleLumenChartValue(tick, domain, plotBottom, plotTop)
+
+  return <><line x1={plotLeft} x2={plotRight} y1={y} y2={y} /><text x={plotLeft - 8} y={y}>{formatValue(tick)}</text></>
+})}</g><g class="ui-chart__axis-labels">{categoryTicks.map(tick => <text x={tick.position} y={height - 12} text-anchor={tick.textAnchor}>{tick.label}</text>)}</g><g class="
+  ui-bar-chart__marks
+"
+                                                                                                                                                                  >{bars.marks.map((mark, index) => <rect data-ui-chart-datum={barActions[index]?.serialized} class={getLumenChartToneClassName(mark.tone)} height={mark.height} rx="4" width={mark.width} x={mark.x} y={mark.y}><title>{`${mark.seriesLabel}: ${formatValue(mark.value)}`}</title></rect>)}{drilldown && bars.marks.map((mark, index) => (
   <rect
 class="ui-chart__datum-hit"
 width={Math.max(12, mark.width)}
@@ -159,7 +181,7 @@ d={path}
 )) }<path
 class="ui-line-chart__line"
 d={geometry.path}
-    />{drilldown && geometry.points.map((point, pointIndex) => (
+    />{geometry.points.map(point => <circle class="ui-line-chart__point" cx={point.xCoordinate} cy={point.yCoordinate} r="3.5" />)}{drilldown && geometry.points.map((point, pointIndex) => (
       <circle
 class="ui-chart__datum-hit"
 cx={point.xCoordinate}

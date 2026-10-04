@@ -2,17 +2,20 @@
 import { RangeChart } from '@santi020k/lumen-astro'
 
 const data = [
-  { high: 28, low: 17, x: 'Mon' },
-  { high: 31, low: 19, x: 'Tue' },
-  { high: 27, low: 16, x: 'Wed' },
-  { high: 34, low: 21, x: 'Thu' },
-  { high: 30, low: 18, x: 'Fri' }
+  { high: 24, low: 14, x: 'Mon' },
+  { high: 27, low: 16, x: 'Tue' },
+  { high: 31, low: 19, x: 'Wed' },
+  { high: 29, low: 18, x: 'Thu' },
+  { high: 25, low: 15, x: 'Fri' },
+  { high: 22, low: 12, x: 'Sat' },
+  { high: 24, low: 13, x: 'Sun' }
 ]
 ---
 
 <RangeChart
-  aria-label="Daily forecast temperature range"
-  caption="Expected daily low and high temperatures in degrees Celsius."
+  aria-label="Daily low and high forecast temperatures in degrees Celsius"
+  heading="A warm start, a cooler weekend"
+  description="Daily temperature range (°C) · 21–27 September 2026"
+  caption="The band connects each day's low and high. Wednesday peaks at 31°C before temperatures ease into the weekend. Illustrative forecast."
   {data}
-  heading="Weekly forecast"
 />

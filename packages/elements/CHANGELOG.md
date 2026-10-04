@@ -87,6 +87,8 @@
 
 ### Patch Changes
 
+- Show category labels and value scales in combo and range charts, with visible line markers in combo charts.
+
 - Prevent combobox option clicks from submitting forms, preserve application-hidden options during
   filtering, and restore filter-owned visibility on cleanup. Support mounted virtual lists in
   same-origin iframe documents. Respect disabled fieldset ancestors and current form ownership for

@@ -6449,6 +6449,28 @@ class LumenComboChartBehaviorElement extends LumenDataChartBehaviorElement {
         })
     }
 
+    const plotTop = bars.length > 0 ? barGeometry.margin.top : padding
+    const plotBottom = height - (bars.length > 0 ? barGeometry.margin.bottom : padding)
+    const plotLeft = bars.length > 0 ? barGeometry.margin.left : padding
+    const plotRight = width - (bars.length > 0 ? barGeometry.margin.right : padding)
+    const ticks = getLumenChartTicks(domain)
+    const formatCategory = this.categoryFormatter
+    const categoryLabels = categories.map(category => getLumenChartCategoryLabel(series, category, formatCategory))
+
+    const categoryTicks = getLumenChartCategoryTicks(categoryLabels, {
+      start: plotLeft,
+      end: plotRight,
+      ...(bars.length > 0 ? { positions: barGeometry.categories.map(category => category.x) } : {})
+    })
+
+    const grid = ticks.map(tick => {
+      const y = scaleLumenChartValue(tick, domain, plotBottom, plotTop)
+
+      return `<line x1="${plotLeft}" x2="${plotRight}" y1="${y}" y2="${y}"></line><text x="${plotLeft - 8}" y="${y}">${escapeChartHtml(this.valueFormatter(tick))}</text>`
+    }).join('')
+
+    const axis = categoryTicks.map(tick => `<text x="${tick.position}" y="${height - 12}" text-anchor="${tick.textAnchor}">${escapeChartHtml(tick.label)}</text>`).join('')
+
     const barMarks = barGeometry.marks.map(mark => {
       const datum = aligned.find(item => item.id === mark.seriesId)?.data.find(item => item.x === mark.category)
       const context = `${getLumenChartCategoryLabel(series, mark.category, this.detailCategoryFormatter, 'detail')} · ${mark.seriesLabel}: ${this.valueFormatter(mark.value)}`
@@ -6479,6 +6501,8 @@ class LumenComboChartBehaviorElement extends LumenDataChartBehaviorElement {
         ).join('') :
         ''
 
+      const points = geometry.points.map(point => `<circle class="ui-line-chart__point" cx="${point.xCoordinate}" cy="${point.yCoordinate}" r="3.5"></circle>`).join('')
+
       const hits = geometry.points.map(point => {
         const datum = item.data.find(candidate => alignComboLineDatum(candidate).x === point.x)
         const context = `${datum ? getLumenChartCategoryLabel(series, datum.x, this.detailCategoryFormatter, 'detail') : point.x} · ${item.label}: ${this.valueFormatter(point.y ?? 0)}`
@@ -6487,7 +6511,7 @@ class LumenComboChartBehaviorElement extends LumenDataChartBehaviorElement {
         return attributes ? `<circle class="ui-chart__datum-hit"${attributes} cx="${point.xCoordinate}" cy="${point.yCoordinate}" r="10"></circle>` : ''
       }).join('')
 
-      return `<g class="ui-line-chart__series ui-chart-tone--${tone}">${areas}<path class="ui-line-chart__line" d="${geometry.path}"></path>${hits}</g>`
+      return `<g class="ui-line-chart__series ui-chart-tone--${tone}">${areas}<path class="ui-line-chart__line" d="${geometry.path}"></path>${points}${hits}</g>`
     }).join('')
 
     this.renderChartContent([
@@ -6495,7 +6519,7 @@ class LumenComboChartBehaviorElement extends LumenDataChartBehaviorElement {
       chartSummaryHtml(this, series),
       chartBooleanAttribute(this, 'show-legend', true) ? chartLegendHtml(series, chartLabels) : '',
       `<div class="ui-chart__plot" role="region" tabindex="0" aria-label="${escapeChartHtml(chartLabels.chartData)}"><svg aria-hidden="true" viewBox="0 0 ${width} ${height}">`,
-      `<g class="ui-bar-chart__marks">${barMarks}</g>${lineMarks}</svg></div>`,
+      `<g class="ui-chart__grid">${grid}</g><g class="ui-chart__axis-labels">${axis}</g><g class="ui-bar-chart__marks">${barMarks}</g>${lineMarks}</svg></div>`,
       chartBooleanAttribute(this, 'show-table', true) ?
         chartDataTableHtml(categories, series, this.categoryFormatter, this.valueFormatter, chartLabels) :
         '',
@@ -6841,6 +6865,20 @@ class LumenRangeChartBehaviorElement extends LumenStructuredChartBehaviorElement
     const data = parseRangeData(this.getAttribute('data'))
     const geometry = createLumenRangeGeometry(data)
 
+    const categoryTicks = getLumenChartCategoryTicks(geometry.points.map(point => String(point.xLabel ?? point.x)), {
+      start: 44,
+      end: 596,
+      positions: geometry.points.map(point => point.xCoordinate)
+    })
+
+    const grid = getLumenChartTicks(geometry.domain).map(tick => {
+      const y = scaleLumenChartValue(tick, geometry.domain, 276, 44)
+
+      return `<line x1="44" x2="596" y1="${y}" y2="${y}"></line><text x="36" y="${y}">${escapeChartHtml(this.valueFormatter(tick))}</text>`
+    }).join('')
+
+    const axis = categoryTicks.map(tick => `<text x="${tick.position}" y="308" text-anchor="${tick.textAnchor}">${escapeChartHtml(tick.label)}</text>`).join('')
+
     const intervals = geometry.points.map(point => {
       const context = `${point.xLabel ?? point.x}: ${point.label ?? `${point.low ?? 0}–${point.high ?? 0}`}`
       const attributes = this.datumAttributes(createLumenRangeDatumActivation(point), context)
@@ -6858,7 +6896,7 @@ class LumenRangeChartBehaviorElement extends LumenStructuredChartBehaviorElement
 
     const plot = geometry.points.length === 0 ?
       `<p class="ui-chart__empty" role="status">${escapeChartHtml(chartLabels.empty)}</p>` :
-      `<div class="ui-chart__plot" role="region" tabindex="0" aria-label="${escapeChartHtml(chartLabels.chartData)}"><svg aria-hidden="true" viewBox="0 0 640 320"><path class="ui-range-chart__area" d="${geometry.areaPath}"></path>${intervals}</svg></div>`
+      `<div class="ui-chart__plot" role="region" tabindex="0" aria-label="${escapeChartHtml(chartLabels.chartData)}"><svg aria-hidden="true" viewBox="0 0 640 320"><g class="ui-chart__grid">${grid}</g><g class="ui-chart__axis-labels">${axis}</g><path class="ui-range-chart__area" d="${geometry.areaPath}"></path>${intervals}</svg></div>`
 
     const table = chartBooleanAttribute(this, 'show-table', true) ?
       rangeDataTableHtml(data, chartLabels) :

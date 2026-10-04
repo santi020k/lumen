@@ -1,7 +1,7 @@
 ---
 import type { HTMLAttributes } from 'astro/types'
 
-import { createLumenRangeDatumActivation, createLumenRangeGeometry, getLumenChartTicks, getLumenChartToneClassName, type LumenChartLabels, type LumenChartTone, type LumenRangeDatum, resolveLumenChartLabels, scaleLumenChartValue } from '@santi020k/lumen-core'
+import { createLumenRangeDatumActivation, createLumenRangeGeometry, getLumenChartCategoryTicks, getLumenChartTicks, getLumenChartToneClassName, type LumenChartLabels, type LumenChartTone, type LumenRangeDatum, resolveLumenChartLabels, scaleLumenChartValue } from '@santi020k/lumen-core'
 
 import { createChartDatumAction } from '../runtime/chart-actions'
 
@@ -36,6 +36,12 @@ const summary = summaryProp ?? (
     resolvedLabels.formatRangeSummary(geometry.points.length)
 )
 
+const categoryTicks = getLumenChartCategoryTicks(geometry.points.map(point => String(point.xLabel ?? point.x)), {
+  start: padding,
+  end: width - padding,
+  positions: geometry.points.map(point => point.xCoordinate)
+})
+
 const ticks = getLumenChartTicks(geometry.domain)
 
 const datumActions = drilldown ?
@@ -57,10 +63,10 @@ geometry.points.map(point => createChartDatumAction(
  const y = scaleLumenChartValue(tick, geometry.domain, height - padding, padding)
 
  return <><line x1={padding} x2={width - padding} y1={y} y2={y}/><text x={padding - 8} y={y}>{formatValue(tick)}</text></>
-})}</g><path
+})}</g><g class="ui-chart__axis-labels">{categoryTicks.map(tick => <text x={tick.position} y={height - 12} text-anchor={tick.textAnchor}>{tick.label}</text>)}</g><path
 class="ui-range-chart__area"
 d={geometry.areaPath}
-       />{geometry.points.map((point, index) => (
+                                                                                                                                                                  />{geometry.points.map((point, index) => (
 <line
 data-ui-chart-datum={datumActions[index]?.serialized}
 class="ui-range-chart__interval"

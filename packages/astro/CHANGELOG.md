@@ -86,6 +86,8 @@
 
 ### Patch Changes
 
+- Show category labels and value scales in combo and range charts, with visible line markers in combo charts. Improve seven documentation examples with realistic datasets, clear units, and complete context.
+
 - Keep disclosure keyboard navigation on available controls: skip hidden and inert regions,
 CSS-invisible controls, and native disabled controls while preserving enabled legend actions
 and controls restored by removing inert.

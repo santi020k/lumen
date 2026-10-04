@@ -1,12 +1,22 @@
 ---
-import { Sparkline, Stat } from '@santi020k/lumen-astro'
+import { Card, CardContent, Sparkline, Stat, StatDescription, StatLabel, StatTrend, StatValue } from '@santi020k/lumen-astro'
+
+const values = [1820, 2160, 2480, 2240, 2860, 3120, 3740]
 ---
 
-<div style="display: flex; align-items: end; justify-content: space-between; gap: 1rem">
-  <Stat label="Downloads" value="18,420" />
-  <Sparkline
-    area
-    label="Downloads increased from 42 to 91"
-    values={[42, 48, 63, 58, 74, 91]}
-  />
-</div>
+<Card style="width: 100%; max-width: 28rem">
+  <CardContent>
+    <Stat variant="bare">
+      <StatLabel>Weekly downloads</StatLabel>
+      <StatValue>18,420</StatValue>
+      <StatDescription>Illustrative week · 21–27 September 2026</StatDescription>
+      <Sparkline
+        area
+        label="Daily downloads rose from 1,820 on Monday to a weekly peak of 3,740 on Sunday"
+        style="width: 100%; height: 4rem; margin-block: 1rem"
+        {values}
+      />
+      <StatTrend tone="success">3,740 downloads on the strongest day</StatTrend>
+    </Stat>
+  </CardContent>
+</Card>

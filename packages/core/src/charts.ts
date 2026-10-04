@@ -1773,6 +1773,43 @@ const createLumenScatterPoint = (
   }
 }
 
+const finiteLumenScatterBound = (value: number, fallback: number, scale: LumenScatterScaleType): number => (
+  Number.isFinite(value) && (scale !== 'log' || value > 0) ? value : fallback
+)
+
+// Automatic extents leave room for the complete bubble, including its stroke.
+// Explicit bounds remain exact so consumers can intentionally crop a viewport.
+const padLumenScatterDomain = (
+  domain: LumenChartDomain,
+  values: readonly number[],
+  requested: Partial<LumenChartDomain> | undefined,
+  extent: number,
+  radius: number,
+  scale: LumenScatterScaleType = 'linear'
+): LumenChartDomain => {
+  if (values.length === 0 || extent <= 0) return domain
+
+  const project = (value: number) => scale === 'log' ? Math.log10(value) : value
+  const fromScale = (value: number) => scale === 'log' ? 10 ** value : value
+  const min = project(domain.min)
+  const max = project(domain.max)
+  const inset = Math.min(radius + 2, extent / 4)
+  const extra = (max - min) * inset / (extent - 2 * inset)
+  const projected = values.map(project)
+
+  const bounds = projected.reduce((result, value) => ({
+    min: Math.min(result.min, value), max: Math.max(result.max, value)
+  }), { min: Number.POSITIVE_INFINITY, max: Number.NEGATIVE_INFINITY })
+
+  const paddedMin = fromScale(Math.min(min, bounds.min - extra))
+  const paddedMax = fromScale(Math.max(max, bounds.max + extra))
+
+  return {
+    min: requested?.min ?? finiteLumenScatterBound(paddedMin, domain.min, scale),
+    max: requested?.max ?? finiteLumenScatterBound(paddedMax, domain.max, scale)
+  }
+}
+
 export const createLumenScatterGeometry = (
   series: readonly LumenChartSeries[],
   options: LumenScatterGeometryOptions = {}
@@ -1794,13 +1831,15 @@ export const createLumenScatterGeometry = (
     getLumenScatterNumericX(datum.x, xScale) !== null && isAvailableLumenChartY(datum.y)
   ))
 
-  const domain = resolveLumenChartDomain(
+  const calculatedDomain = resolveLumenChartDomain(
     projectedData.map(datum => datum.y), requestedDomain, false
   )
 
-  if (!validScatterDomain(domain, 'linear')) throw new RangeError('Scatter y domain must be finite and increasing')
+  if (!validScatterDomain(calculatedDomain, 'linear')) {
+    throw new RangeError('Scatter y domain must be finite and increasing')
+  }
 
-  const xDomain = getLumenScatterXDomain(projectedData, xScale, requestedXDomain)
+  const calculatedXDomain = getLumenScatterXDomain(projectedData, xScale, requestedXDomain)
 
   const sizes = projectedData.map(datum => (
     datum.size !== undefined && datum.size !== null && datum.size >= 0 ? datum.size : null
@@ -1809,6 +1848,17 @@ export const createLumenScatterGeometry = (
   const sizeDomain = getLumenChartDomain(sizes, false)
   const minimumRadius = Math.max(1, requestedMinimumRadius)
   const maximumRadius = Math.max(minimumRadius, requestedMaximumRadius)
+  const yValues = projectedData.flatMap(datum => datum.y === null ? [] : [datum.y])
+  const domain = padLumenScatterDomain(calculatedDomain, yValues, requestedDomain, height - padding * 2, maximumRadius)
+
+  const xDomain = padLumenScatterDomain(
+    calculatedXDomain, projectedData.flatMap(datum => {
+      const value = getLumenScatterNumericX(datum.x, xScale)
+
+      return value === null ? [] : [value]
+    }), requestedXDomain, width - padding * 2, maximumRadius, xScale
+  )
+
   const points: LumenScatterGeometryPoint[] = []
 
   for (const [seriesIndex, item] of series.entries()) {

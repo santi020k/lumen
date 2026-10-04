@@ -1,13 +1,18 @@
 ---
 import { Histogram } from '@santi020k/lumen-astro'
 
-const bins = [
-  { start: 0, end: 100, count: 8 },
-  { start: 100, end: 200, count: 24 },
-  { start: 200, end: 300, count: 42 },
-  { start: 300, end: 400, count: 18 },
-  { start: 400, end: 500, count: 5 }
-]
+const bins = [18, 96, 218, 302, 244, 146, 82, 42, 21, 11].map((count, index) => ({
+  start: index * 100,
+  end: (index + 1) * 100,
+  count
+}))
 ---
 
-<Histogram aria-label="Illustrative response time distribution" heading="Response time distribution" caption="Illustrative response times in milliseconds. Bins are calculated by the application." {bins} />
+<Histogram
+  aria-label="Request count by response time in milliseconds"
+  heading="Most requests finish in under 500 ms"
+  description="1,180 requests · Response time (ms) · Last 24 hours"
+  caption="Equal 100 ms bins reveal a long tail beyond the 300–400 ms peak. Illustrative data; bin counts are calculated by the application."
+  valueLabel="Requests"
+  {bins}
+/>
