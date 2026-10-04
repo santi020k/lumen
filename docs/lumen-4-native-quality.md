@@ -499,6 +499,11 @@ and physical-device behavior remain unverified. Package documentation, a Changes
 regenerated MCP snapshot describe the correction. Local logs remain under
 `.build/native-quality-toast-timeout-*`.
 
+Three production Hermes exports per fixture also passed every unchanged Android/iOS import budget
+for runtime source `14c0cda1`. The source hashes recorded after export match that committed runtime;
+only qualification documentation changed during measurement. Raw logs and the import report remain
+local. These bytecode-size checks do not establish startup, scrolling, hardware or stability passes.
+
 ### Current completion audit
 
 The audit at `14c0cda1` does not prove completion of the Required outcomes above. Current
