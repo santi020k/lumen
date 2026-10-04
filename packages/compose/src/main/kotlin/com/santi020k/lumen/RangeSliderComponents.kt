@@ -54,7 +54,7 @@ fun LumenRangeSlider(
         LumenText("${formatValue(normalized.start)} – ${formatValue(normalized.endInclusive)}", tone = LumenTextTone.Muted)
         RangeSlider(value = normalized, onValueChange = { if (editable) onValueChange(it) },
             valueRange = valueRange, steps = steps, enabled = editable,
-            onValueChangeFinished = onValueChangeFinished,
+            onValueChangeFinished = onValueChangeFinished?.let { finished -> { if (editable) finished() } },
             startInteractionSource = start, endInteractionSource = end,
             colors = sliderColors,
             startThumb = {

@@ -60,6 +60,8 @@ export const classifyCiPaths = (paths, { releasePullRequest = false } = {}) => {
   ])
 
   const mcp = matchesAny(paths, [
+    /^\.github\/workflows\/deploy-mcp\.yml$/u,
+    /^scripts\/check-hosted-mcp(?:\.test)?\.mjs$/u,
     /^(skills|plugins|\.claude-plugin)\//u,
     /^scripts\/(?:generate-plugin-package|check-plugin-package|plugin-contract\.test|evaluate-ai-agents|generate-v4-migration)\.mjs$/u,
     /^scripts\/(?:lib\/plugin-contract\.mjs|schemas\/agent-[^/]+\.json)$/u,

@@ -68,6 +68,8 @@ consumer workspace, so a transitive installation alone does not guarantee type-a
 
 The Next.js smoke app runs type checking after its own build so the two tasks do not overwrite
 the same generated route types during combined checks.
+Turborepo caches its production build output while excluding `.next/cache` and `.next/dev`;
+those mutable directories must not be restored as production artifacts.
 
 Use `pnpm run validate` for broad cross-package changes, release work, and final confidence before
 publishing. It intentionally remains exhaustive.

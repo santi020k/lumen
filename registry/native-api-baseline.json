@@ -172,6 +172,8 @@
         "LumenRangeChart",
         "LumenRangeChartProps",
         "LumenRangeDatum",
+        "LumenRangeSlider",
+        "LumenRangeSliderProps",
         "LumenRefreshControl",
         "LumenRefreshControlProps",
         "LumenRefreshIndicatorTone",

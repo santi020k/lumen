@@ -163,7 +163,7 @@
     "generate:plugin-package": "node scripts/generate-plugin-package.mjs",
     "generate:v4-migration": "node scripts/generate-v4-migration.mjs",
     "check:v4-migration": "node scripts/generate-v4-migration.mjs --check",
-    "test:plugin-package": "node --test scripts/plugin-contract.test.mjs scripts/package-plugin.test.mjs",
+    "test:plugin-package": "node --test scripts/plugin-contract.test.mjs scripts/package-plugin.test.mjs scripts/check-hosted-mcp.test.mjs",
     "package:plugin": "node scripts/package-plugin.mjs",
     "eval:agents": "node scripts/evaluate-ai-agents.mjs",
     "measure:android-workspace": "node scripts/measure-android-workspace-performance.mjs",

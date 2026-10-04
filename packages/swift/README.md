@@ -603,3 +603,8 @@ states, and expandable exact data. Funnel and box rows require unique IDs and no
 Optional increasing calendar/box domains must include every observed value; omitted domains
 resolve from measurements with finite padding for constant values. No raw-sample aggregation is
 performed. Native fonts, semantic chart colors and adaptive row labels preserve text accessibility.
+
+`LumenRangeSlider` provides a controlled numeric interval with independently named endpoints,
+localized value formatting, and disabled/read-only protection. See the
+[native range-filter contract](../../docs/native-components.md#native-range-filters) for each
+adapter's binding and step conventions.

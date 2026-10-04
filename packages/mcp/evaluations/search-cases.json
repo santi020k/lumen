@@ -129,5 +129,133 @@
       "Toast"
     ],
     "top": 5
+  },
+  {
+    "framework": "react",
+    "query": "signed deltas waterfall balance",
+    "expectedInTop": [
+      "WaterfallChart"
+    ],
+    "top": 5
+  },
+  {
+    "framework": "astro",
+    "query": "daily activity calendar heatmap",
+    "expectedInTop": [
+      "CalendarHeatmap"
+    ],
+    "top": 5
+  },
+  {
+    "framework": "elements",
+    "query": "cohort conversion funnel stages",
+    "expectedInTop": [
+      "FunnelChart"
+    ],
+    "top": 5
+  },
+  {
+    "framework": "react",
+    "query": "distribution quartiles whiskers outliers",
+    "expectedInTop": [
+      "BoxPlot"
+    ],
+    "top": 5
+  },
+  {
+    "framework": "astro",
+    "query": "histogram bins counts density",
+    "expectedInTop": [
+      "Histogram"
+    ],
+    "top": 5
+  },
+  {
+    "framework": "elements",
+    "query": "actual target bullet chart",
+    "expectedInTop": [
+      "BulletChart"
+    ],
+    "top": 5
+  },
+  {
+    "framework": "react",
+    "query": "reference current dumbbell comparison",
+    "expectedInTop": [
+      "DumbbellChart"
+    ],
+    "top": 5
+  },
+  {
+    "framework": "astro",
+    "query": "ranked categories lollipop",
+    "expectedInTop": [
+      "LollipopChart"
+    ],
+    "top": 5
+  },
+  {
+    "framework": "react",
+    "query": "scatter numeric relationships",
+    "expectedInTop": [
+      "ScatterChart"
+    ],
+    "top": 5
+  },
+  {
+    "framework": "elements",
+    "query": "matrix heatmap",
+    "expectedInTop": [
+      "Heatmap"
+    ],
+    "top": 5
+  },
+  {
+    "framework": "astro",
+    "query": "low high range chart",
+    "expectedInTop": [
+      "RangeChart"
+    ],
+    "top": 5
+  },
+  {
+    "framework": "react",
+    "query": "mixed bars lines combo",
+    "expectedInTop": [
+      "ComboChart"
+    ],
+    "top": 5
+  },
+  {
+    "framework": "elements",
+    "query": "compact sparkline trend",
+    "expectedInTop": [
+      "Sparkline"
+    ],
+    "top": 5
+  },
+  {
+    "framework": "react",
+    "query": "before after image comparison",
+    "expectedInTop": [
+      "ImageComparison"
+    ],
+    "top": 5
+  },
+  {
+    "framework": "astro",
+    "query": "filter controls toolbar",
+    "expectedInTop": [
+      "FilterBar"
+    ],
+    "top": 5
+  },
+  {
+    "framework": "react",
+    "query": "review changes before after",
+    "expectedInTop": [
+      "ChangeSummary"
+    ],
+    "top": 5
   }
 ]

@@ -26,7 +26,7 @@ import { LumenProvider } from './provider.js'
 import { LumenCheckbox, LumenTabs } from './selection-components.js'
 import { LumenBanner, LumenErrorState, LumenStatusBar } from './structured-components.js'
 import { LumenTimeField } from './time-components.js'
-import { LumenPicker, LumenSlider } from './value-components.js'
+import { LumenPicker, LumenRangeSlider, LumenSlider } from './value-components.js'
 
 Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true })
 
@@ -314,6 +314,101 @@ describe('Lumen React Native component behavior', () => {
     expect(onValueChange).toHaveBeenLastCalledWith(60)
     expect(readProp(slider, 'accessibilityValue')).toMatchObject({ min: 20, max: 120, now: 70 })
   })
+
+  test('range endpoints stay controlled, independently named and cannot cross', async () => {
+    const onValueChange = vi.fn<(value: readonly [number, number]) => void>()
+    const root = await renderNative(
+      <LumenRangeSlider
+        label="Capacity"
+        startLabel="Lower"
+        endLabel="Upper"
+        value={[20, 60]}
+        min={0}
+        max={100}
+        step={10}
+        onValueChange={onValueChange}
+        formatValue={value => `${value}%`}
+      />
+    )
+    const sliders = root.container.queryAll(instance => readProp(instance, 'accessibilityRole') === 'adjustable')
+    expect(sliders).toHaveLength(2)
+    const [start, end] = sliders
+    if (!start || !end) throw new Error('Missing interval endpoints')
+    expect(readProp(start, 'accessibilityLabel')).toBe('Capacity · Lower')
+    expect(readProp(end, 'accessibilityLabel')).toBe('Capacity · Upper')
+    expect(readProp(start, 'accessibilityValue')).toMatchObject({ now: 20, text: '20%' })
+    expect(readProp(start, 'aria-valuenow')).toBe(20)
+    expect(readProp(start, 'aria-valuetext')).toBe('20%')
+    const move = async (slider: TestInstance, direction: string): Promise<void> => {
+      const handler = readProp(slider, 'onAccessibilityAction')
+      if (typeof handler !== 'function') throw new Error('Missing range adjustment')
+      await act(async () => {
+        Reflect.apply(handler, undefined, [{ nativeEvent: { actionName: direction } }])
+        await Promise.resolve()
+      })
+    }
+    await move(start, 'increment')
+    expect(onValueChange).toHaveBeenLastCalledWith([30, 60])
+    await move(end, 'decrement')
+    expect(onValueChange).toHaveBeenLastCalledWith([20, 50])
+    // The application has not accepted either update; subsequent intent uses its controlled value.
+    await move(start, 'increment')
+    expect(onValueChange).toHaveBeenLastCalledWith([30, 60])
+    await act(async () => {
+      root.render(
+        <LumenProvider>
+          <LumenRangeSlider
+            label="Capacity"
+            value={[60, 60]}
+            min={0}
+            max={100}
+            step={10}
+            onValueChange={onValueChange}
+          />
+        </LumenProvider>
+      )
+      await Promise.resolve()
+    })
+    const next = root.container.queryAll(instance => readProp(instance, 'accessibilityRole') === 'adjustable')
+    if (!next[0] || !next[1]) throw new Error('Missing updated interval endpoints')
+    await move(next[0], 'increment')
+    expect(onValueChange).toHaveBeenLastCalledWith([60, 60])
+    await move(next[1], 'decrement')
+    expect(onValueChange).toHaveBeenLastCalledWith([60, 60])
+  })
+
+  test.each([{ enabled: false, readOnly: false }, { enabled: true, readOnly: true }])(
+    'range endpoints reject touch and accessibility when enabled=$enabled readOnly=$readOnly',
+    async ({ enabled, readOnly }) => {
+      const onValueChange = vi.fn<(value: readonly [number, number]) => void>()
+      const root = await renderNative(
+        <LumenRangeSlider
+          label="Capacity"
+          value={[20, 80]}
+          enabled={enabled}
+          readOnly={readOnly}
+          onValueChange={onValueChange}
+        />
+      )
+      const sliders = root.container.queryAll(instance => readProp(instance, 'accessibilityRole') === 'adjustable')
+      for (const slider of sliders) {
+        expect(readProp(slider, 'accessibilityState')).toEqual({ disabled: true })
+        for (const [event, nativeEvent] of [
+          ['onAccessibilityAction', { actionName: 'increment' }],
+          ['onResponderGrant', { locationX: 100 }],
+          ['onResponderMove', { locationX: 100 }]
+        ] as const) {
+          const handler = readProp(slider, event)
+          if (typeof handler !== 'function') throw new Error(`Missing ${event}`)
+          await act(async () => {
+            Reflect.apply(handler, undefined, [{ nativeEvent }])
+            await Promise.resolve()
+          })
+        }
+      }
+      expect(onValueChange).not.toHaveBeenCalled()
+    }
+  )
 
   test('uses the Android accessibility timeout before dismissing a toast', async () => {
     nativePlatform.OS = 'android'

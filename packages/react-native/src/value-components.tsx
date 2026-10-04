@@ -26,6 +26,7 @@ import {
 } from './structured-recipes.js'
 import { useLumenTheme } from './theme-context.js'
 import {
+  resolveLumenRangeValue,
   resolveLumenSliderPosition,
   resolveLumenSliderValue,
   stepLumenSliderValue
@@ -243,6 +244,11 @@ export const LumenSlider = ({
         accessibilityActions={[{ name: 'decrement' }, { name: 'increment' }]}
         accessibilityLabel={label}
         accessibilityRole="adjustable"
+        aria-disabled={!enabled}
+        aria-valuemax={resolved.max}
+        aria-valuemin={resolved.min}
+        aria-valuenow={resolved.value}
+        aria-valuetext={formattedValue}
         accessibilityState={{ disabled: !enabled }}
         accessibilityValue={{
           max: resolved.max,
@@ -381,6 +387,73 @@ export const LumenGauge = ({
       >
         {label}
       </Text>
+    </View>
+  )
+}
+
+/** Controlled interval with independent, named adjustable endpoints. */
+export interface LumenRangeSliderProps extends Omit<ViewProps, 'children'> {
+  enabled?: boolean
+  endLabel?: string
+  formatValue?: (value: number) => string
+  label: string
+  max?: number
+  min?: number
+  onValueChange: (value: readonly [number, number]) => void
+  readOnly?: boolean
+  ref?: LumenViewRef
+  startLabel?: string
+  step?: number
+  value: readonly [number, number]
+}
+
+export const LumenRangeSlider = ({
+  enabled = true,
+  endLabel = 'Maximum',
+  formatValue = String,
+  label,
+  max = 100,
+  min = 0,
+  onValueChange,
+  readOnly = false,
+  ref,
+  startLabel = 'Minimum',
+  step,
+  style,
+  value,
+  ...props
+}: LumenRangeSliderProps): ReactElement => {
+  const theme = useLumenTheme()
+  const [start, end] = resolveLumenRangeValue(value, min, max, step)
+  const editable = enabled && !readOnly
+  const sliderStep = step === undefined ? {} : { step }
+
+  return (
+    <View ref={ref} {...props} style={[{ gap: theme.spacing.sm }, style]}>
+      <LumenSlider
+        enabled={editable}
+        label={`${label} · ${startLabel}`}
+        max={max}
+        min={min}
+        onValueChange={next => {
+          if (editable) onValueChange([Math.min(next, end), end])
+        }}
+        {...sliderStep}
+        value={start}
+        valueLabel={formatValue(start)}
+      />
+      <LumenSlider
+        enabled={editable}
+        label={`${label} · ${endLabel}`}
+        max={max}
+        min={min}
+        onValueChange={next => {
+          if (editable) onValueChange([start, Math.max(start, next)])
+        }}
+        {...sliderStep}
+        value={end}
+        valueLabel={formatValue(end)}
+      />
     </View>
   )
 }

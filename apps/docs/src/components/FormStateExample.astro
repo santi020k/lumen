@@ -1,0 +1,142 @@
+---
+import { Alert, Badge, Button, Card, Field, FieldError, Form, Input, Label, Stack } from '@santi020k/lumen-astro'
+
+interface Props { idPrefix: string }
+
+const { idPrefix } = Astro.props
+const inputId = `${idPrefix}-demo-email`
+const errorId = `${inputId}-error`
+---
+<section class="docs-section" id="form-states" aria-labelledby={`${idPrefix}-states-title`} data-form-state-example>
+  <div class="docs-section-heading">
+    <p>Try the interaction</p>
+    <h2 id={`${idPrefix}-states-title`}>From validation to feedback</h2>
+    <p>Leave the email blank, try an invalid address, then submit a valid address. Try a failed request and retry.</p>
+  </div>
+  <div class="form-state-layout">
+    <Card>
+      <Badge variant="outline">Local state simulator</Badge>
+      <Form enhance={false} novalidate inert aria-label="Form state demo">
+        <Stack gap="group">
+          <Field>
+            <Label for={inputId}>Demo email</Label>
+            <Input id={inputId} name="email" type="email" required disabled autocomplete="off" aria-describedby={errorId} placeholder="maya@example.com" />
+            <FieldError id={errorId} />
+          </Field>
+          <Stack direction="horizontal" gap="related" wrap>
+            <Button type="submit" data-demo-outcome="success">Try submission</Button>
+            <Button type="submit" variant="outline" data-demo-outcome="failure">Simulate request failure</Button>
+            <Button type="reset" variant="ghost">Reset demo</Button>
+          </Stack>
+        </Stack>
+      </Form>
+      <Alert role="status" aria-live="polite" aria-atomic="true" data-demo-status>Enable JavaScript to try this demo.</Alert>
+    </Card>
+    <Card variant="muted">
+      <Stack gap="group">
+        <h3>What to watch</h3>
+        <ol>
+          <li><strong>Invalid:</strong> the error names the field and focus returns to it.</li>
+          <li><strong>Submitting:</strong> controls lock while the local timer runs.</li>
+          <li><strong>Success:</strong> feedback confirms the simulated result.</li>
+          <li><strong>Failure:</strong> your draft stays available for retry.</li>
+        </ol>
+        <p>No data is sent or stored. This Astro demo illustrates the interaction contract; the integration code below connects your framework and server.</p>
+      </Stack>
+    </Card>
+  </div>
+</section>
+<script>
+  for (const root of document.querySelectorAll<HTMLElement>('[data-form-state-example]')) {
+    const form = root.querySelector('form')
+    const input = root.querySelector('input')
+    const error = root.querySelector<HTMLElement>('[data-ui-field-error]')
+    const status = root.querySelector<HTMLElement>('[data-demo-status]')
+    const buttons = root.querySelectorAll('button')
+
+    if (!form || !input || !error || !status) continue
+
+    const announce = (message: string) => {
+      status.textContent = message
+    }
+
+    const clearError = () => {
+      error.hidden = true
+
+      error.textContent = ''
+
+      input.removeAttribute('aria-invalid')
+    }
+
+    const setPending = (pending: boolean) => {
+      form.setAttribute('aria-busy', String(pending))
+
+      input.disabled = pending
+
+      for (const button of buttons) button.disabled = pending
+    }
+
+    form.inert = false
+
+    setPending(false)
+
+    announce('Ready. Try submitting an empty email first.')
+
+    input.addEventListener('input', clearError)
+
+    form.addEventListener('reset', () => {
+      clearError()
+
+      form.dataset.status = 'idle'
+
+      announce('Demo reset. Ready for another submission.')
+    })
+
+    form.addEventListener('submit', event => {
+      event.preventDefault()
+
+      if (form.dataset.status === 'submitting') return
+
+      clearError()
+
+      if (!input.validity.valid) {
+        error.textContent = input.validity.valueMissing ? 'Enter your email address.' : 'Enter a valid email address.'
+
+        error.hidden = false
+
+        input.setAttribute('aria-invalid', 'true')
+
+        form.dataset.status = 'invalid'
+
+        announce('Check the email field before submitting.')
+
+        input.focus()
+
+        return
+      }
+
+      const outcome = event.submitter instanceof HTMLElement ? event.submitter.dataset.demoOutcome : 'success'
+
+      form.dataset.status = 'submitting'
+
+      setPending(true)
+
+      announce('Submitting… Controls are disabled while the demo request runs.')
+
+      window.setTimeout(() => {
+        const failed = outcome === 'failure'
+
+        form.dataset.status = failed ? 'error' : 'success'
+
+        setPending(false)
+
+        announce(failed ? 'The simulated request failed. Your email is preserved; try submission again.' : 'Success! Your demo submission is complete. No data was sent.')
+      }, 1200)
+    })
+  }
+</script>
+<style>
+  .form-state-layout { display: grid; gap: var(--ui-space-group); min-width: 0; }
+  ol { display: grid; gap: var(--ui-space-related); margin: 0; padding-left: 1.5rem; }
+  @media (min-width: 64rem) { .form-state-layout { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+</style>

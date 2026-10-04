@@ -66,6 +66,7 @@ enum PlaygroundCatalog {
                 "Tabs",
                 "Picker",
                 "Slider",
+                "Range slider",
                 "Time field",
                 "Autocomplete",
                 "Number field",

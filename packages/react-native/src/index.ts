@@ -299,6 +299,8 @@ export {
   LumenPicker,
   type LumenPickerOption,
   type LumenPickerProps,
+  LumenRangeSlider,
+  type LumenRangeSliderProps,
   LumenSlider,
   type LumenSliderProps
 } from './value-components.js'

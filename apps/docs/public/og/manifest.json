@@ -1857,6 +1857,22 @@
       "pathname": "/docs/react-native/components/share-button",
       "title": "Share button"
     },
+    "/docs/react-native/components/range-slider": {
+      "alt": "Range slider — Lumen UI",
+      "description": "Choose bounded numeric intervals with independently adjustable native endpoints.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--range-slider.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--range-slider.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/range-slider",
+      "title": "Range slider"
+    },
     "/docs/apple/components": {
       "alt": "apple components — Lumen UI",
       "description": "Browse Lumen components for apple.",
@@ -3152,6 +3168,22 @@
       ],
       "pathname": "/docs/apple/components/wearable-list-row",
       "title": "Wearable list row"
+    },
+    "/docs/apple/components/range-slider": {
+      "alt": "Range slider — Lumen UI",
+      "description": "Choose bounded numeric intervals with independently adjustable native endpoints.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--range-slider.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--range-slider.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/range-slider",
+      "title": "Range slider"
     },
     "/docs/android/components": {
       "alt": "android components — Lumen UI",
@@ -4547,7 +4579,7 @@
     },
     "/docs/android/components/range-slider": {
       "alt": "Range slider — Lumen UI",
-      "description": "Choose bounded numeric intervals with two native adjustable thumbs.",
+      "description": "Choose bounded numeric intervals with independently adjustable native endpoints.",
       "images": [
         {
           "format": "webp",

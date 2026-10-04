@@ -71,6 +71,10 @@
 
 ### Patch Changes
 
+- Reject sparse calendar heatmap, funnel, box-plot, and comparison datasets instead of silently
+  skipping empty array slots. Reject sparse box-plot outliers while preserving explicit missing
+  measurements and caller-owned data.
+
 - Prevent combobox option clicks from submitting forms, preserve application-hidden options during
   filtering, and restore filter-owned visibility on cleanup. Support mounted virtual lists in
   same-origin iframe documents. Respect disabled fieldset ancestors and current form ownership for

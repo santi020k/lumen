@@ -59,6 +59,7 @@ export const componentCategories: readonly ComponentCategoryDefinition[] = [
       "Tabs",
       "Picker",
       "Slider",
+      "Range slider",
       "Time field",
       "Autocomplete",
       "Number field",
