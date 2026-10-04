@@ -317,7 +317,15 @@ fun <Value> LumenAdaptiveNavigationScaffold(
                         )
                     },
                     enabled = navigationItem.enabled,
-                    label = { Text(navigationItem.label, maxLines = 1) },
+                    label = {
+                        Text(
+                            navigationItem.label,
+                            color = (if (selected) colors.brand else colors.inkMuted).copy(
+                                alpha = if (navigationItem.enabled) 1f else 0.52f
+                            ),
+                            maxLines = 1
+                        )
+                    },
                     badge = navigationItem.badge?.let { badge ->
                         { LumenNavigationBadgeView(badge) }
                     }
