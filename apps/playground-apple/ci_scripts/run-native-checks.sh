@@ -40,7 +40,7 @@ pnpm install --frozen-lockfile
 
 case "$mode" in
     pull-request)
-        swift_compatibility_baseline="v2.1.0"
+        swift_compatibility_baseline="$(node scripts/check-swift-source-compatibility.mjs --print-baseline)"
         if ! git rev-parse --verify --quiet "${swift_compatibility_baseline}^{commit}" >/dev/null; then
             git fetch --no-tags --depth=1 origin \
                 "+refs/tags/${swift_compatibility_baseline}:refs/tags/${swift_compatibility_baseline}"

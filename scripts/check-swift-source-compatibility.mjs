@@ -37,7 +37,7 @@ export const resolveSwiftCompatibilityExpectation = (major, contract) => {
   return { baseline, breakages }
 }
 
-const checkSwiftSourceCompatibility = () => {
+const readSwiftCompatibilityExpectation = () => {
   const manifest = JSON.parse(readFileSync(resolve(repositoryRoot, 'packages/lumen/package.json'), 'utf8'))
   const major = Math.max(3, Number.parseInt(manifest.version, 10))
 
@@ -45,7 +45,11 @@ const checkSwiftSourceCompatibility = () => {
     readFileSync(resolve(repositoryRoot, `registry/lumen-${major}-contract.json`), 'utf8')
   )
 
-  const { baseline, breakages } = resolveSwiftCompatibilityExpectation(major, contract)
+  return resolveSwiftCompatibilityExpectation(major, contract)
+}
+
+const checkSwiftSourceCompatibility = () => {
+  const { baseline, breakages } = readSwiftCompatibilityExpectation()
 
   const result = spawnSync(
     'swift',
@@ -71,5 +75,11 @@ const checkSwiftSourceCompatibility = () => {
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  checkSwiftSourceCompatibility()
+  if (process.argv[2] === '--print-baseline' && process.argv.length === 3) {
+    process.stdout.write(`${readSwiftCompatibilityExpectation().baseline}\n`)
+  } else {
+    assert.equal(process.argv.length, 2, 'Usage: check-swift-source-compatibility.mjs [--print-baseline]')
+
+    checkSwiftSourceCompatibility()
+  }
 }

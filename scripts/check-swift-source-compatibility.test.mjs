@@ -1,4 +1,6 @@
 import assert from 'node:assert/strict'
+import { spawnSync } from 'node:child_process'
+import { readFileSync } from 'node:fs'
 import test from 'node:test'
 
 import {
@@ -6,6 +8,20 @@ import {
   parseSwiftApiBreakages,
   resolveSwiftCompatibilityExpectation
 } from './check-swift-source-compatibility.mjs'
+
+test('prints the current release baseline without running Swift diagnosis', () => {
+  const manifest = JSON.parse(readFileSync(new URL('../packages/lumen/package.json', import.meta.url), 'utf8'))
+  const major = Math.max(3, Number.parseInt(manifest.version, 10))
+  const contract = JSON.parse(readFileSync(new URL(`../registry/lumen-${major}-contract.json`, import.meta.url), 'utf8'))
+
+  const result = spawnSync(process.execPath, [
+    new URL('./check-swift-source-compatibility.mjs', import.meta.url).pathname, '--print-baseline'
+  ], { encoding: 'utf8' })
+
+  assert.equal(result.status, 0, result.stderr)
+
+  assert.equal(result.stdout.trim(), resolveSwiftCompatibilityExpectation(major, contract).baseline)
+})
 
 test('extracts and sorts Swift API diagnostics', () => {
   const output = `

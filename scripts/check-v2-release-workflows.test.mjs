@@ -384,7 +384,7 @@ test("WidgetKit changes select the Swift canary and validate both Swift API base
   );
 
   assert.ok(
-    xcodeCloudChecks.includes('swift_compatibility_baseline="v2.1.0"'),
+    xcodeCloudChecks.includes('swift_compatibility_baseline="$(node scripts/check-swift-source-compatibility.mjs --print-baseline)"'),
     "Xcode Cloud must fetch the Swift source-compatibility baseline used by the checker",
   );
 });

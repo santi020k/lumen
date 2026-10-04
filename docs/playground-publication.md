@@ -202,6 +202,9 @@ Cloud check as a required pull-request status and the published verification bui
 release evidence. Do not add a `runs-on: macos-*` job as a fallback; use Xcode Cloud's rerun controls
 or a manual build of the matching workflow.
 
+The post-clone checks fetch the immutable Swift compatibility tag selected by the current release
+contract before diagnosing API changes, including when Xcode Cloud supplies a shallow checkout.
+
 The app declares that it uses no non-exempt encryption; re-audit that declaration if a future
 dependency adds cryptography. Signing identity and App Store Connect access remain account-owned
 state.
