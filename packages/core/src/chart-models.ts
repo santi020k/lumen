@@ -126,7 +126,17 @@ export const createLumenLineChartModel = (
     { end: width - padding, positions, start: paddingLeft }
   ).filter(tick => tick.position >= paddingLeft && tick.position <= width - padding)
 
-  const validAnnotations = Array.isArray(annotations) ? annotations.filter(isChartAnnotation) : []
+  const annotationIds = new Set<string>()
+
+  const validAnnotations = Array.isArray(annotations) ?
+    annotations.filter((annotation: unknown): annotation is LumenChartAnnotation => {
+      if (!isChartAnnotation(annotation) || annotationIds.has(annotation.id)) return false
+
+      annotationIds.add(annotation.id)
+
+      return true
+    }) :
+    []
 
   const annotationMarks = validAnnotations.flatMap(annotation => {
     const axis = annotation.axis ?? 'y'

@@ -4266,12 +4266,13 @@ const PhoneNumberInput = ({
   />
 )
 
-const PhoneCountryValue = ({ disabled, readOnly, name, value }: {
+const PhoneCountryValue = ({ disabled, readOnly, form, name, value }: {
   disabled: boolean
   readOnly: boolean
+  form?: string | undefined
   name: string
   value: string
-}) => readOnly && !disabled ? <input name={name} type="hidden" value={value} /> : null
+}) => readOnly && !disabled ? <input form={form} name={name} type="hidden" value={value} /> : null
 
 const MetadataPhoneInput = ({
   className,
@@ -4443,6 +4444,7 @@ const MetadataPhoneInput = ({
             aria-label={countryLabel}
             className={composeClassName('ui-select ui-phone-input__country', selectClass)}
             disabled={isDisabled || isReadOnly || metadataCountries.length === 0}
+            form={inputProps.form}
             name={countryName}
             onChange={handleCountryChange}
             ref={selectRef}
@@ -4472,6 +4474,7 @@ const MetadataPhoneInput = ({
         />
         <PhoneCountryValue
           disabled={isDisabled}
+          form={inputProps.form}
           name={countryName}
           readOnly={isReadOnly}
           value={phoneValue.country.regionCode}
@@ -4541,6 +4544,7 @@ const LegacyPhoneInput = ({
           className={composeClassName('ui-select ui-phone-input__country', selectClass)}
           defaultValue={defaultCountryValue}
           disabled={[disabled, readOnly, inputProps.disabled, inputProps.readOnly].some(Boolean)}
+          form={inputProps.form}
           name={countryName}
         >
           {countries.map(normalizeOption).map(option => (

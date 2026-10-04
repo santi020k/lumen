@@ -138,6 +138,7 @@ The package root also exports `createLumenLineChartModel`, `createLumenWaterfall
 validation, ticks, and annotations. The optional `createLumenChartInteractionController` owns only
 DOM listeners and cursor/legend state; call `destroy()` when removing its surface.
 Line chart models ignore malformed annotation entries and containers before reading overlay fields.
+When annotation IDs repeat, the first valid entry wins so overlay identities stay unique.
 Destroying a chart controller restores series marks, inspection values, and legend pressed state
 so rebinding starts with all series visible.
 Waterfall and histogram geometry accept arrays of unknown decoded rows, validate their complete

@@ -256,3 +256,30 @@ test('native and web heatmap weights preserve zero, signs, clamping, and extreme
   const extreme = createLumenHeatmapModel([{ x: 'X', y: 'Y', value: Number.MAX_VALUE }], { colorScale: 'diverging' })
   expect(extreme.midpointPercent).toBe(50)
 })
+
+test('line charts keep the first valid annotation for each ID across updates', () => {
+  const series = [{ id: 'a', label: 'A', data: [{ x: 'A', y: 0 }, { x: 'B', y: 10 }] }]
+  const first = { id: 'target', label: 'First', value: 2 }
+  const duplicate = { id: 'target', label: 'Duplicate', value: 8 }
+  const other = { id: 'other', label: 'Other', value: 5 }
+  for (const [annotations, labels] of [
+    [[first, duplicate, other], ['First', 'Other']],
+    [[other, duplicate, first], ['Other', 'Duplicate']],
+    [[first], ['First']]
+  ] as const) {
+    const model = createLumenLineChartModel(series, { annotations })
+    expect(model.annotationMarks.map(mark => mark.label)).toEqual(labels)
+    expect(new Set(model.annotationMarks.map(mark => mark.id)).size).toBe(model.annotationMarks.length)
+  }
+})
+
+test('heatmaps retain finite sibling cells when measurements are unavailable', () => {
+  const data = [NaN, Infinity, -Infinity, null, 0, 2].map((value, x) => ({ x, y: 'Row', value }))
+  expect(normalizeLumenHeatmapData(data)).toEqual(data)
+  for (const model of [createLumenHeatmapGeometry(data), createLumenHeatmapModel(data)]) {
+    expect(model.cells.map(cell => cell.value)).toEqual([NaN, Infinity, -Infinity, null, 0, 2])
+    expect(model.domain).toEqual({ min: 0, max: 2 })
+    expect(model.cells.map(cell => getLumenHeatmapColorMix(cell.value, model.domain)))
+      .toEqual([null, null, null, null, { base: 'sequentialLow', overlay: 'sequentialHigh', ratio: 0 }, { base: 'sequentialLow', overlay: 'sequentialHigh', ratio: 1 }])
+  }
+})

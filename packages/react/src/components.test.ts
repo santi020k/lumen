@@ -728,7 +728,10 @@ describe('@santi020k/lumen-react components', () => {
       data: [
         { value: 8, x: 'Mon', y: 'Morning' },
         { value: null, x: 'Tue', y: 'Morning' },
-        { value: Number.POSITIVE_INFINITY, x: 'Wed', y: 'Morning' }
+        { value: Number.POSITIVE_INFINITY, x: 'Wed', y: 'Morning' },
+        { value: NaN, x: 'Thu', y: 'Morning' },
+        { value: Number.NEGATIVE_INFINITY, x: 'Fri', y: 'Morning' },
+        { value: 0, x: 'Sat', y: 'Morning' }
       ]
     }) as ReactElement
     const descendants = descendantsOf(heatmap)
@@ -737,9 +740,10 @@ describe('@santi020k/lumen-react components', () => {
       .filter(element => element.type === 'td')
       .map(element => propsOf(element).children)
 
-    expect(cells).toHaveLength(3)
-    expect(descendants.filter(element => propsOf(element).className === 'ui-heatmap__missing')).toHaveLength(2)
-    expect(tableValues.filter(value => value === 'Not available')).toHaveLength(2)
+    expect(cells).toHaveLength(6)
+    expect(descendants.filter(element => propsOf(element).className === 'ui-heatmap__missing')).toHaveLength(4)
+    expect(tableValues.filter(value => value === 'Not available')).toHaveLength(4)
+    expect(tableValues).toContain('0')
   })
 
   test('centers singleton chart labels and keeps full dates in details', () => {

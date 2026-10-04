@@ -1921,6 +1921,7 @@ const isHeatmapDatum = (datum: unknown): datum is LumenHeatmapDatum => {
   if (!isHeatmapRecord(datum)) return false
 
   return isHeatmapCoordinate(datum.x) && isHeatmapCoordinate(datum.y) &&
+    // Non-finite measurements are missing cells; coordinates still require finite numbers.
     (datum.value === null || typeof datum.value === 'number') &&
     [datum.id, datum.label, datum.xLabel, datum.yLabel].every(isOptionalHeatmapLabel) && isHeatmapTone(datum.tone)
 }

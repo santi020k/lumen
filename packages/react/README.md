@@ -572,7 +572,8 @@ Licensed under [MIT](https://github.com/santi020k/lumen/blob/main/LICENSE); thir
 ## Inline date range calendar
 
 `DateRangeCalendar` is a controlled React range editor with two visible calendars,
-inclusive range highlighting, a preset sidebar and the keyboard behavior of `useCalendar`.
+inclusive range highlighting, a preset sidebar and the keyboard behavior of `useCalendar`,
+including inherited RTL arrow navigation in both calendars.
 On narrow screens the presets scroll horizontally and the calendars stack. It uses the shared Lumen stylesheet.
 
 ```tsx
@@ -727,7 +728,9 @@ Astro and React `PhoneInput` accept `disabled`, `readOnly`, `required`, `errorMe
 `showValidationError`, and `inputProps`. Their `id` targets the number input in v4; React also
 accepts `inputRef`. Web Components use `disabled`, `readonly`, `required`, `error-message`,
 `show-validation-error="false"`, and `input-id`, with native input attributes on the host.
-Both controls lock together and validation remains associated with the input.
+Both controls lock together and validation remains associated with the input. React forwards
+`inputProps.form` to the country picker and read-only country value as well as the number input,
+so an external form receives both values.
 
 The `phone-input`, `phone-country`, and `country-flag` styling parts plus `--ui-phone-height`,
 `--ui-phone-padding`, and `--ui-phone-country-gap` replace consumer CSS overlays.
