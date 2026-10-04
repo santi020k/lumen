@@ -4,7 +4,7 @@ import { createRoot, type Root } from 'react-dom/client'
 
 import { afterEach, beforeEach, expect, test, vi } from 'vitest'
 
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, type DropdownMenuProps, DropdownMenuTrigger } from './components.js'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, type DropdownMenuProps, DropdownMenuTrigger, Popover, PopoverPanel, PopoverTrigger } from './components.js'
 
 let container: HTMLDivElement
 let root: Root
@@ -91,6 +91,24 @@ test('opens above a clipped trigger, clamps to the viewport, and restores focus 
   expect(panel.hidden).toBe(true)
   expect(panel.hasAttribute('popover')).toBe(false)
   expect(panel.style.position).toBe('')
+  expect(document.activeElement).toBe(element('#trigger'))
+})
+
+test('pointer-opened popovers keep keyboard dismissal on their trigger', async () => {
+  await run(() => {
+    root.render(createElement('div', {}, createElement('button', { id: 'previous' }, 'Previous control'), createElement(Popover, {}, createElement(PopoverTrigger, { id: 'trigger' }, 'Actions'), createElement(PopoverPanel, { id: 'panel' }, createElement('button', {}, 'Choose record')))))
+  })
+  await run(() => {
+    element('#previous').focus()
+  })
+  // A dispatched click does not move focus, matching Safari's pointer behavior.
+  await click('#trigger')
+  expect(element('#panel').hidden).toBe(false)
+  expect(document.activeElement).toBe(element('#trigger'))
+  await run(() => {
+    document.activeElement?.dispatchEvent(new KeyboardEvent('keydown', { bubbles: true, cancelable: true, key: 'Escape' }))
+  })
+  expect(element('#panel').hidden).toBe(true)
   expect(document.activeElement).toBe(element('#trigger'))
 })
 

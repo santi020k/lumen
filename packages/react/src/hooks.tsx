@@ -747,6 +747,8 @@ const useDisclosureController = (
     'aria-haspopup': hasPopup,
     'data-ui-trigger': true,
     onClick: () => {
+      focusTrigger(triggerRef.current)
+
       toggle()
     },
     onKeyDown: event => {

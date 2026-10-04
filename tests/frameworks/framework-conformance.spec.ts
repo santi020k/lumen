@@ -376,6 +376,7 @@ for (const width of [320, 1440]) {
     await trigger.click();
     const panel = page.getByRole('region', { name: 'Record actions' });
     await expect(panel).toBeVisible();
+    await expect(trigger).toBeFocused();
     const bounds = await panel.boundingBox();
     expect(bounds).not.toBeNull();
     if (!bounds) throw new Error('Expected visible popup bounds');
