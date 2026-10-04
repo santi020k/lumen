@@ -504,6 +504,18 @@ for runtime source `14c0cda1`. The source hashes recorded after export match tha
 only qualification documentation changed during measurement. Raw logs and the import report remain
 local. These bytecode-size checks do not establish startup, scrolling, hardware or stability passes.
 
+### RoadScore v4 compatibility canary
+
+The real RoadScore mobile source at committed revision `487ba102` passed strict type checking,
+zero-warning lint and all 180 tests against packed v4 React Native/core packages. Android and iOS
+Hermes production exports plus the web export passed without application source changes. Ten dirty
+paths in the original checkout were preserved; the canary used committed source in an isolated
+copy. Peer diagnostics failed identically in both the original checkout and candidate, reflecting
+existing lint-tool ranges. The [consumer record](native-consumer-validation.md#lumen-4-local-roadscore-compatibility)
+describes exact inputs, hashes and limitations. This establishes local compatibility, not a
+published, adopted, signed or physical-device-qualified consumer; the qualification ledger remains
+unchanged.
+
 ### Current completion audit
 
 The audit at `14c0cda1` does not prove completion of the Required outcomes above. Current
@@ -771,3 +783,118 @@ All 20 soak-ledger regression tests passed after the digest update, as did repos
 and zero-warning lint (23 tasks each). The canonical validation gate again passed all 14 builds
 before the existing web bundle-size failures. The required-complete soak check still rejects the
 empty iteration list; no release or remote integration was performed.
+
+### Current ContracTrack consumer compatibility
+
+An isolated copy of committed ContracTrack `ddc1687b67e13e968a31cbc9995b7cfee5bd5b7b` built
+against candidate `ed125c78` without application-source changes. Android phone and Wear resolved
+local 4.0.0 Maven artifacts, passed 126 unit tests, reported zero lint issues and produced both
+debug APKs. Unsigned iOS Simulator, macOS and watchOS Simulator application builds passed against
+the local Swift package. The original checkout's revision and clean status were preserved.
+The iOS notification-service extension retained a metadata-extraction warning for its absent
+App Intents dependency; other application targets use App Intents.
+
+The consumer's current Apple source does not import `LumenWidgetUI`, so its widget builds do not
+qualify that adapter. Native source hashes captured after build start still matched at completion;
+logs and artifact hashes remain local. See [consumer validation](native-consumer-validation.md)
+for commands and evidence limits. Physical-device, accessibility, published-artifact upgrade and
+stability requirements remain open; no qualification ledger status changed. Canonical validation
+and local release integration remain incomplete because of the previously recorded web bundle
+budget failures.
+
+### React Native slider direction
+
+The slider previously converted touches from the physical left edge even when the native layout
+was right-to-left. A component regression reproduced a right-edge touch returning the minimum
+value. Touch and drag coordinates now reverse in native RTL mode; the thumb uses logical start
+positioning and margin rather than physical left properties. Screen-reader increment and
+decrement continue to increase and decrease the numeric value in both directions.
+
+Behavioral coverage checks both directions, touch start and movement, range endpoints, out-of-track
+clamping and accessibility actions. This proves the controlled callback boundary, not native
+rendering, screen-reader delivery or physical-device RTL qualification. Runtime screenshots and
+interaction verification remain pending. The API is unchanged; package guidance, a Changeset and
+the generated MCP snapshot describe the fix.
+
+All 1,334 JavaScript tests passed after the regression update. Root strict type checking and
+zero-warning lint passed all 23 tasks each; the unchanged native API baseline, generated MCP
+snapshot and evaluation, and clean packed React Native consumer also passed. Canonical validation
+passed all 14 build tasks and stopped at the same CSS, React and Elements bundle-budget overruns.
+No budget was raised. Logs remain under `.build/native-quality-slider-rtl-*`; local release
+integration and the remaining native qualification requirements are incomplete.
+
+### Native slider accessibility exposure
+
+The isolated iOS Release RTL probe at `adcd19a6` displayed both sliders but exposed neither
+as an adjustable element in Device Hub's native accessibility tree. The slider track now sets
+`accessible`, and the component regressions require that explicit exposure in both native
+directions. Package guidance and a Changeset describe the correction; the API remains unchanged.
+
+The rebuilt probe exposed an enabled Volume slider and a disabled Disabled volume slider,
+including current value and increment/decrement actions. Native increment changed the controlled
+value from 25 to 30; decrement returned it to 25. Attempting increment on the disabled slider
+left it at 25. Clicking the enabled control through its accessibility element selected 50.
+Coordinate endpoint clicks and drags did not change the control through Device Hub, so native
+endpoint/drag verification remains open. This is native accessibility-action evidence, not
+VoiceOver speech, Android, physical-device or stability qualification.
+
+Both artifacts, source hashes, screenshots and the corrected accessibility tree remain local
+under `.build/native-quality-slider-rtl-runtime` and
+`.build/native-quality-slider-accessible-runtime`. All 76 installed corrected application files
+matched the preserved artifact. The corrected probe also changed its diagnostic background to
+light, so these screenshots are not a matched pixel-regression comparison. The in-app restoration
+control cleared the temporary force-RTL preference, verified as false in the qualification app's
+preferences; the original host entrypoint and previously preserved app were restored.
+
+All 1,334 JavaScript tests and all 23 root type-check and zero-warning lint tasks passed. Apple
+build logs retain external React umbrella-header and native dependency warnings without
+suppression. Remaining qualification requirements and local release integration remain open.
+
+The packed React Native consumer, unchanged API classification and regenerated MCP snapshot and
+evaluation passed. Canonical validation again passed all 14 build tasks before the unchanged
+CSS, React and Elements bundle-budget failures. No limits were raised or failed gate bypassed.
+
+### Current committed Hermes import measurements
+
+Candidate `81e096c9`, including slider RTL and native accessibility exposure, passed three
+production Hermes exports for each of eight fixtures on both Android and iOS. All unchanged
+import-size budgets passed. The 2,558 React Native/core source files captured before measurement
+still matched after both platforms completed. Raw samples and reports remain local under
+`.build/native-quality-current-import-*`.
+
+| Import fixture | Android bytes | iOS bytes |
+| --- | ---: | ---: |
+| baseline | 1,429,228 | 1,424,195 |
+| root-no-icon | 6,255,231 | 6,249,033 |
+| foundations | 1,451,478 | 1,446,437 |
+| graphics | 1,634,493 | 1,629,152 |
+| graphics-navigation | 1,636,454 | 1,631,101 |
+| catalog-navigation | 1,637,596 | 1,632,243 |
+| root-navigation | 6,255,464 | 6,249,261 |
+| root-icon | 6,255,296 | 6,249,102 |
+
+These medians measure imported bytecode. Export duration is a build-host observation, not
+application startup or frame smoothness. Physical-device accessibility, real-consumer completion
+and two qualifying stability iterations remain open, as do the previously recorded canonical
+web-size failures and local release integration.
+
+
+### Shared Android adaptive layout
+
+The Workspace example now consumes `LumenAdaptiveListDetailScaffold` instead of its own
+840-dp width branch. The public scaffold uses Material window and hinge adaptation, and limits
+both horizontal and vertical partitions to one at font scales of 2 or larger. Selection,
+search, edited drafts and saved records remain owned by the Workspace’s saved state. The detail
+slot supplies the single-pane system Back behavior; the shared scaffold supplies the visible
+Back button with English and Spanish labels.
+
+The local Android emulator regression covered landscape list/detail display, an edited note,
+a live change from font scale 1 to 2, saving, single-pane Back, and returning to scale 1 with
+the note intact. The two existing restoration/cancellation tests also passed. Compose unit
+tests, lint and binary API checks passed; the Android debug app and test APK compiled, and
+Android app lint reported zero errors and 18 existing launcher-resource warnings (unused vector,
+launcher silhouette, missing monochrome layers and duplicate round-icon assets). These remain
+reported in `apps/playground-android/app/build/reports/lint-results-debug.txt`; the shared Compose
+library lint passed. Logs are preserved under
+`.build/native-quality-adaptive-*`. This local emulator evidence does not qualify real folding
+hardware, spoken TalkBack, physical-device slots or a published stability iteration.
