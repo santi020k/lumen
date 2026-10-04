@@ -113,6 +113,10 @@ produces a development candidate, never a claim of Community readiness.
 
 ## Figma Community publication
 
+The [prepared listing materials](community/LISTING.md) include copy, the icon and cover image,
+data-practice notes, and the remaining verification steps. They are ready for review; registration
+and testing inside Figma desktop are still pending.
+
 **Beta version · Not yet published to Community.** Classic plugins can be published on any Figma
 plan. The earlier account permission denial concerned the connector's generative-plugin tool;
 it does not establish a restriction on publishing this classic plugin.
