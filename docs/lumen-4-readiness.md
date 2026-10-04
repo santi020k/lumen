@@ -454,7 +454,14 @@ the docs check reports zero diagnostics across 357 files. Fifteen combined brows
 datum activation alongside line inspection across all three web adapters, attachment image failure
 and replacement, bilingual headers at 320/1440 pixels and 100/200 percent text, and the existing
 chart inspection and missing-value cases. Mobile and desktop header captures were also inspected.
-Full canonical validation and integration into the actual release branch are still pending;
+The isolated merge is committed as `827923ad`, retaining both `50990a22` and `cedf45a2` as parents.
+On that commit, `pnpm run validate` passes all builds and type checks, 1,375 tests, zero-warning
+lint, spelling, unused-code and registry checks. It stops at `pnpm run check:security`: the registry
+reports three high advisories in existing native-tooling dependencies (`node-forge`,
+`http-cache-semantics`, and `braces`), with no patched versions listed. No advisory is ignored.
+The remaining canonical publish-content, clean web-consumer, React Native package and external
+MCP package checks were run separately and pass, including stdio and Streamable HTTP transport.
+Local release integration is pending while another active task owns the release checkout;
 this preparation record is not release evidence.
 
 ### Measured v4 bundle budgets
