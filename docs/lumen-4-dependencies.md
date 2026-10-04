@@ -2,6 +2,82 @@
 
 The workspace remains on release/v4.0.0. No releases, pushes, deployments, account changes, or consumer repository changes were made. Versions were verified directly against npm, Google Maven, Maven Central, and Gradle metadata. Stable versions less than 24 hours old were held under the existing `minimumReleaseAgeStrict` policy; no exclusions or age bypasses were added.
 
+## Consolidation security investigation
+
+This follow-up was performed in the isolated `chore/v4-consolidation` candidate, after the owner
+approved increasing the stylesheet budget for the combined v4 feature set. The stylesheet now
+has limits of 220,000 bytes raw and 36,000 bytes gzip, approximately 3% above the measured
+213,671 / 34,856 bytes. All measured bundles pass. The security gate remains unchanged.
+
+Registry metadata and installed imports were checked again on October 3 (October 4 UTC).
+All three findings are transitive; none can simply be deleted from Lumen's manifests:
+
+| Dependency | Installed / latest stable | Required consumer | Finding and safe next step |
+| --- | --- | --- | --- |
+| `node-forge` | 1.4.0 / 1.4.0 | Expo CLI certificate parsing and Expo update certificate/signature operations | No fixed stable release. A version-locked local patch can backport the nested ASN.1 element-count check from upstream PR 1152. |
+| `braces` | 3.0.3 / 3.0.3 | `micromatch`, used by Metro file watching and development glob tooling | No fixed stable release. A version-locked local patch can backport bounded brace/parenthesis and AST depth checks from upstream PR 72. |
+| `http-cache-semantics` | 4.2.0 / 4.3.0 | Astro remote-image build caching | Audit metadata lists 4.3.0 outside the affected range, but this is not evidence that the reported stale-cache behavior was fixed. See the maintainer dispute and release-age restriction below. |
+
+Latest stable Astro 7.3.5 and Expo 57.0.26 are already installed. Latest `micromatch` 4.0.8
+still requires `braces`. Updating `@expo/code-signing-certificates` from 0.0.6 to 0.0.7 would
+still require `node-forge` 1.4.0, so it does not resolve that finding. A Metro upgrade alone also
+leaves Expo's own file-map and CLI dependency paths. Removing Expo Updates alone leaves the
+CLI's Forge dependency. Replacing Astro, Expo, or Metro is a larger migration with no demonstrated
+security benefit over a targeted patch. No maintained compatible replacement was established.
+
+### Cache advisory correction
+
+The earlier statement that 4.3.0 is patched came from audit version metadata. Comparing the
+official npm tarballs shows additions to response status and Vary-header matching, but no change
+to the reported `max-stale` logic. Isolated probes reproduce the same shared-cookie and
+`proxy-revalidate` stale reuse in both 4.2.0 and 4.3.0, alongside legitimate ordinary stale reuse.
+This demonstrates the reported behavior; it does not establish an exploitable Lumen application.
+
+The [maintainer's response](https://github.com/kornelski/http-cache-semantics/issues/56#issuecomment-5975759591)
+disputes the advisory's interpretation of HTTP caching and points to `Cache-Control: private`
+for user-private responses. The proposed fixes were closed without merging. Lumen's installed
+Astro consumer calls `storable()` and `timeToLive()` for remote-image build caching; it does not
+call the reported `evaluateRequest()` / `satisfiesWithoutRevalidation()` request-reuse path.
+Do not describe a version-only upgrade as a demonstrated behavior fix or silently suppress the
+advisory based on this limited consumer analysis.
+
+The signed upstream 4.3.0 package was published at `2026-10-04T02:56:05.593Z`. A normal targeted
+update retained 4.2.0. An attempted explicit compatible 4.3.0 floor was rejected by pnpm with
+`ERR_PNPM_NO_MATURE_MATCHING_VERSION`: the release was younger than the configured 24-hour
+minimum. The temporary floor was removed, leaving the manifest, lockfile, and age policy
+unchanged. Without an approved exception, 4.3.0 becomes age-eligible after
+`2026-10-05T02:56:05.593Z` (October 4, 21:56 in Colombia).
+
+### Verified patch options
+
+Both proposed runtime patches apply cleanly to isolated copies of the installed packages:
+
+- [Forge PR 1152](https://github.com/digitalbazaar/forge/pull/1152), exact proposed commit
+  `ceba34402e329f0365134f23fe19898756527d65`: the original release accepts a synthetic signature
+  with an extra nested DigestAlgorithm child; the patched copy rejects it. Valid SHA-1, SHA-256,
+  SHA-384, and SHA-512 signatures, incorrect-digest rejection, and self-signed certificate
+  verification continue to work.
+- [Braces PR 72](https://github.com/micromatch/braces/pull/72), exact proposed commit
+  `28d440b5dd449dbf1fe6f3506cf94ecca4d02660`: original compile/expand overflow on 4,500 nested
+  braces; the patched copy rejects the input with a bounded-depth diagnostic. Depth 100/101,
+  parentheses, ordinary globs/ranges, fractional and excessive limit overrides, and cyclic AST
+  parent chains passed focused checks.
+
+These are proposed upstream patches, not merged or released fixes, and the probes are not a full
+upstream qualification. Adopting them means Lumen temporarily owns their review, compatibility
+tests, exact-version application, and removal after fixed releases arrive. The npm audit still
+identifies the original package versions after local patching. A passing patched-dependency gate
+would therefore need an explicitly approved, tightly scoped audit treatment backed by exact patch
+integrity and behavioral checks; blanket advisory ignores would hide an unpatched installation.
+No patches, audit exceptions, or age exceptions have been applied to the dependency graph.
+
+After the approved stylesheet budget change, `pnpm run validate` passes the bundle limits,
+build, web/native consistency checks, type checking, 1,434 tests, zero-warning lint, spelling,
+Knip, and registry checks before stopping at the same three high audit findings. Focused lint
+and spelling checks also pass for this investigation record. The release branch remains at
+`50990a22`; the completed budget change and investigation are preserved on the consolidation
+branch while the security-policy choices remain open.
+
 ## Updated
 
 | Dependency/tool | Before | Installed/prepared |

@@ -6,9 +6,15 @@ data, deployment, and migration remain owned by those projects.
 
 ## October 3 complete branch consolidation candidate
 
+The owner subsequently approved raising the combined stylesheet budget. The new 220,000-byte
+raw / 36,000-byte gzip limits pass. Dependency investigation, tested patch options, the disputed
+cache advisory, and the release-age blocker are recorded in
+[the dependency review](lumen-4-dependencies.md#consolidation-security-investigation).
+The remaining integration blocker is the security gate; no audit or age exceptions were applied.
+
 The isolated `chore/v4-consolidation` candidate through `fdcfab80` starts from the selected
 `release/v4.0.0` at `50990a22`. The release branch has not advanced: the combined candidate is
-committed and reviewable, but the size and security gates below still fail. Local integration
+committed and reviewable, but the security gate still fails. Local integration
 requires resolving those failures or an explicit owner-approved exception. Nothing was pushed,
 published, or deployed.
 
@@ -45,14 +51,15 @@ candidate; playground and chart pages were inspected at both widths. Native evid
 checks do not establish device or store qualification; the stability ledger still has zero of
 two required iterations.
 
-The final `pnpm run validate` passed its prerequisite checks and build, then stopped at
+Before the approved budget increase, `pnpm run validate` passed its prerequisite checks and build, then stopped at
 `check:bundle-size`: `packages/lumen/styles.css` is 213,671 bytes raw and 34,856 bytes gzip,
 against unchanged combined limits of 208,000 and 34,000. Other measured bundles pass. Running
 `pnpm run check:security` separately still reports three high advisories:
 [node-forge](https://github.com/advisories/GHSA-86w9-cpqp-85rv),
 [http-cache-semantics](https://github.com/advisories/GHSA-ch52-4w7c-c8xp), and
 [braces](https://github.com/advisories/GHSA-vfj7-8cjw-p6xm).
-The latest audit now identifies `http-cache-semantics >=4.3.0` as patched;
+The audit identifies `http-cache-semantics >=4.3.0` as patched, but the subsequent source and
+behavior review above does not support calling this a demonstrated behavior fix;
 the other two have no patched version listed. No budgets, audit exclusions, or dependency
 overrides were weakened to make these gates pass.
 
