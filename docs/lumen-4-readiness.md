@@ -4,6 +4,40 @@ This working record tracks the local `release/v4.0.0` candidate. It is not publi
 production qualification evidence. Consumer audits inspect application source; application
 data, deployment, and migration remain owned by those projects.
 
+
+## Release PR candidate — October 4
+
+The release checkout now contains every local branch tip and all existing remote branch tips.
+Completed comparison charts `a5990fb7`, combined chart integration `84629085`, mobile layout fixes
+`ee8b3236`, and the independently identified narrow line-chart correction `0f42a8d6` are contained
+in `release/v4.0.0`. The source checkouts and historical stashes remain preserved.
+
+Final Changesets were processed through the installed generator in an isolated metadata workspace
+and folded into the existing unpublished `4.0.0` entries in `9697c8e4`. All ten public npm versions
+remain `4.0.0`; a byte comparison confirms previously published changelog history is unchanged.
+No pending Changesets remain. The regenerated MCP snapshot contains 179 web components and 97
+native components.
+
+The integrated `9697c8e4` candidate passes frozen-lockfile installation and canonical
+`pnpm run validate`: builds, strict types, all 1,462 tests in 138 files, zero-warning lint, spelling,
+Knip, registry checks, guarded security checks, all ten publish-content dry runs and clean web,
+Next.js, React Native and MCP package consumers. Packed MCP consumers pass external stdio and
+Streamable HTTP smoke checks. The chart task also passes eight browser accessibility checks,
+React Native accessibility in both themes at phone and desktop sizes, native tests and local
+simulator/emulator previews. These remain local evidence, not physical-device qualification.
+
+The initial independent pre-push review found one issue: verbose value-axis labels could consume
+all narrow line-chart plotting space. The accepted fix in `0f42a8d6` preserves at least 40 plotting
+units, with four categorical/linear regressions at 240 and 320 units. Those regressions fail before
+the fix and pass afterward. The full Core suite, strict types and zero-warning lint also pass.
+A fresh independent review of the complete `9697c8e4` candidate against `main` at `3d8af731`
+reports no actionable findings and independently passes 30 tests across four focused files.
+
+The owner has authorized pushing this release branch, creating its pull request and addressing
+Codex review findings and GitHub Actions failures. Remote merge, publication and deployment are
+outside this request. The draft v4 approval record and incomplete native qualification evidence
+remain protected publication gates; this preparation does not invent approval or qualification.
+
 ## Release preparation checkpoint — October 4
 
 The isolated `chore/v4-release-preparation` branch combines consolidation `79e6b066`, native and
