@@ -8,7 +8,8 @@
     "build": "node scripts/build.mjs",
     "dev": "vite --host 127.0.0.1 --port 4348",
     "lint": "eslint . --no-warn-ignored --max-warnings=0",
-    "test": "vitest run --config ../../vitest.config.ts --project figma-plugin",
+    "package": "node scripts/build.mjs && node scripts/package.mjs",
+    "test": "vitest run --config ../../vitest.config.ts --project figma-plugin && node --test scripts/package.test.mjs",
     "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.plugin.json --noEmit",
     "verify:generated": "node scripts/verify-generated.mjs"
   },

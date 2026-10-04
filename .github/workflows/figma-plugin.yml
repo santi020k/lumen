@@ -1,0 +1,84 @@
+name: Figma plugin candidate
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "apps/figma-plugin/**"
+      - "packages/core/**"
+      - "packages/react/**"
+      - "packages/astro/**"
+      - "registry/figma-design-map.json"
+      - "tests/figma/**"
+      - "playwright.figma.config.ts"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - "pnpm-workspace.yaml"
+      - ".github/workflows/figma-plugin.yml"
+  push:
+    branches: [main]
+    paths:
+      - "apps/figma-plugin/**"
+      - "packages/core/**"
+      - "packages/react/**"
+      - "packages/astro/**"
+      - "registry/figma-design-map.json"
+      - "tests/figma/**"
+      - "playwright.figma.config.ts"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - "pnpm-workspace.yaml"
+      - ".github/workflows/figma-plugin.yml"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: figma-plugin-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  candidate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out candidate
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - name: Set up pnpm workspace
+        uses: santi020k/quality/actions/setup-pnpm@ffa37774f75b2b8e761fe3d71e7046cdb6694a69 # v1
+        with:
+          node-version: 22.x
+
+      - name: Build and validate the plugin
+        run: pnpm exec turbo run build typecheck lint test --filter=@santi020k/lumen-figma-plugin
+
+      - name: Install browser
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Verify exports and generated Astro interactions
+        run: pnpm run test:figma-plugin
+
+      - name: Package candidate with revision and checksums
+        run: pnpm --filter @santi020k/lumen-figma-plugin run package
+
+      - name: Upload candidate for Figma desktop
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: lumen-figma-${{ github.sha }}-${{ github.run_attempt }}
+          path: apps/figma-plugin/dist/artifacts/
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Explain the publishing boundary
+        run: |
+          {
+            echo '### Lumen for Figma — Beta'
+            echo 'Validated candidate only. This workflow has not published to Figma Community.'
+            echo 'Use the artifact from the approved main commit; check release.json and the ZIP checksum.'
+            echo 'Register the plugin ID, verify it in Figma desktop, then submit or update the Community listing.'
+            echo 'Publishing instructions: apps/figma-plugin/README.md#figma-community-publication'
+          } >> "$GITHUB_STEP_SUMMARY"
