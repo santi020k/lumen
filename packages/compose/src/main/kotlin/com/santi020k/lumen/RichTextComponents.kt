@@ -59,6 +59,7 @@ data class LumenRichTextDocument(val text: String = "", val spans: List<LumenRic
         while (oldEnd > start && newEnd > start && text[oldEnd - 1] == value[newEnd - 1]) { oldEnd--; newEnd-- }
         val delta = newEnd - oldEnd
         return LumenRichTextDocument(value, spans.mapNotNull { span ->
+            if (span.start < 0 || span.end <= span.start || span.end > text.length) return@mapNotNull null
             val from = if (span.start < start) span.start else if (span.start >= oldEnd) span.start + delta else start
             val to = if (span.end <= start) span.end else if (span.end >= oldEnd) span.end + delta else newEnd
             if (to > from) span.copy(start = from, end = to) else null

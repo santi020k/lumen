@@ -79,7 +79,7 @@ fun LumenKanbanColumn(
                     LumenCard(padding = LumenSurfacePadding.Md) { cardContent(card) }
                     if (onCardPress != null) LumenButton(enabled = enabled && !column.disabled && !card.disabled,
                         onClick = { if (enabled && !column.disabled && !card.disabled) onCardPress(card.id) }) { LumenText(formatOpen(card.label)) }
-                    listOf(index - 1, index + 1).forEach { position ->
+                    listOf(index - 1, index + 1).filter { it in column.cards.indices }.forEach { position ->
                         LumenButton(enabled = movable && model.moving(card.id, column.id, position) != null,
                             onClick = { if (movable) move(card.id, position) }) { LumenText(formatMove(card.label, position + 1)) }
                     }

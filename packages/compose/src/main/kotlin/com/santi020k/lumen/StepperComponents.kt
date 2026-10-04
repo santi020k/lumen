@@ -31,6 +31,11 @@ fun resolveLumenStepState(index: Int, currentStep: Int, count: Int): LumenStepSt
 @Immutable
 data class LumenStepItem(val id: String, val title: String, val description: String? = null)
 
+internal fun isLumenStepItemsValid(steps: List<LumenStepItem>): Boolean {
+    val ids = mutableSetOf<String>()
+    return steps.all { it.id.isNotBlank() && ids.add(it.id) }
+}
+
 @Composable
 fun LumenStepper(
     label: String,
@@ -38,6 +43,7 @@ fun LumenStepper(
     currentStep: Int,
     modifier: Modifier = Modifier,
     horizontal: Boolean = false,
+    invalidText: String = "Steps unavailable",
     formatState: (LumenStepState) -> String = {
         when (it) {
             LumenStepState.Complete -> "Complete"
@@ -79,7 +85,9 @@ fun LumenStepper(
     }
     Column(modifier, verticalArrangement = Arrangement.spacedBy(LumenSpacing.Sm)) {
         LumenText(label)
-        if (horizontal) {
+        if (!isLumenStepItemsValid(steps)) {
+            LumenText(invalidText)
+        } else if (horizontal) {
             Row(Modifier.horizontalScroll(rememberScrollState()),
                 horizontalArrangement = Arrangement.spacedBy(LumenSpacing.Md)) { content() }
         } else {

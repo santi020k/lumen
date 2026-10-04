@@ -130,6 +130,17 @@ const applePhoneTabletAndMacOnlySlugs = new Set([
   'color-picker',
   'tree-select',
   'transfer',
+  'tooltip',
+  'carousel',
+  'command',
+  'tree-grid',
+  'table',
+  'data-table',
+  'rating',
+  'breadcrumb',
+  'stepper',
+  'timeline',
+  'tour',
   'kanban-board',
   'kanban-column',
   'checkbox',
@@ -154,6 +165,9 @@ const applePhoneTabletAndMacOnlySlugs = new Set([
   'toggle'
 ])
 
+const appleMacOnlySlugs = new Set(['shortcut-recorder', 'symbol-picker'])
+const applePhoneOnlySlugs = new Set(['tab-accessory', 'tab-bar-minimization'])
+
 const appleWidgetSlugs = new Set([
   'widget-badge',
   'widget-compact-stat',
@@ -162,7 +176,11 @@ const appleWidgetSlugs = new Set([
 ])
 
 const getAppleAvailability = (slug: string): AppleEcosystemTarget[] => {
-  if (slug === 'shortcut-recorder' || slug === 'symbol-picker') {
+  if (slug === 'mentions') {
+    return [appleEcosystemTargets.ios, appleEcosystemTargets.ipad, appleEcosystemTargets.visionos]
+  }
+
+  if (appleMacOnlySlugs.has(slug)) {
     return [appleEcosystemTargets.macos]
   }
 
@@ -179,7 +197,7 @@ const getAppleAvailability = (slug: string): AppleEcosystemTarget[] => {
     ]
   }
 
-  if (slug === 'tab-accessory' || slug === 'tab-bar-minimization') {
+  if (applePhoneOnlySlugs.has(slug)) {
     return applePhoneAndTabletTargets
   }
 
@@ -5119,11 +5137,11 @@ const remainingComposeV4Definitions: ComponentDefinition[] = [
   {
     accessibility: 'Keeps the anchor independently named and delegates long-press, pointer, and popup dismissal to Material.',
     category: 'Actions',
-    examples: { android: `LumenTooltip("Save this project") {
+    examples: { apple: 'LumenTooltip("Project help", text: "Save this project", isPresented: $visible)', 'react-native': '<LumenTooltip label="Project help" text="Save this project" visible={visible} onVisibleChange={setVisible} />', android: `LumenTooltip("Save this project") {
     LumenIconButton(LumenIconName.Bookmark, "Save", onClick = ::saveProject, size = LumenControlSize.Lg)
 }` },
-    exports: { android: 'LumenTooltip' },
-    guidance: 'Use brief supplemental help. Essential instructions belong in visible content. Pass LumenTooltipState for explicit show/dismiss controls; disabling dismisses help without removing the anchor.',
+    exports: { android: 'LumenTooltip', apple: 'LumenTooltip', 'react-native': 'LumenTooltip' },
+    guidance: 'Use brief supplemental help. Essential instructions belong in visible content. Pass LumenTooltipState for explicit Compose show/dismiss controls; React Native uses visible/onVisibleChange and SwiftUI uses isPresented binding. Disabling dismisses help without removing the anchor.',
     name: 'Tooltip',
     properties: [
       property('text', 'String', 'Required', 'Provides non-empty translated contextual help.'),
@@ -5305,6 +5323,134 @@ LumenTopAppBar("Projects", scrollBehavior = behavior,
 ]
 
 const catalogParityDefinitions: ComponentDefinition[] = [
+  {
+    accessibility: 'Named multiline input and enabled suggestion actions with controlled selection.',
+    category: 'Forms',
+    examples: { apple: 'LumenMentions("Message", value: $value, options: options)', android: 'LumenMentions("Message", value, onValueChange, options)', 'react-native': '<LumenMentions label="Message" value={value} onValueChange={setValue} options={options} />' },
+    exports: { apple: 'LumenMentions', android: 'LumenMentions', 'react-native': 'LumenMentions' },
+    guidance: 'Hosts control text and UTF-16 selection atomically. Native iOS and Android composition is preserved; React Native hosts supply isComposing when available. ASCII mention values use literal filtering and safe token boundaries.',
+    name: 'Mentions',
+    slug: 'mentions',
+    summary: 'Insert literal mention suggestions into controlled native multiline text.',
+    properties: [property('value / options / trigger', 'Controlled text and selection / stable suggestions / literal trigger', 'Required / required / @', 'Preserves host state and inserts enabled validated suggestions.')]
+  },
+  {
+    accessibility: 'Named native guidance with measured target highlights and always usable dismissal.',
+    category: 'Navigation',
+    examples: { apple: 'LumenTour("Guide", steps: steps, anchors: anchors, open: $open, index: $index, onFinish: finish) { content }', android: 'LumenTour("Guide", steps, anchors, open, onOpenChange, index, onIndexChange, finish) { content() }', 'react-native': '<LumenTour label="Guide" steps={steps} anchors={anchors} open={open} onOpenChange={setOpen} index={index} onIndexChange={setIndex} onFinish={finish}>{content}</LumenTour>' },
+    exports: { apple: 'LumenTour', android: 'LumenTour', 'react-native': 'LumenTour' },
+    guidance: 'Hosts measure targets relative to the native Tour container. Missing or offscreen targets retain dismissible guidance. Controlled indices and host data are never rewritten.',
+    name: 'Tour',
+    slug: 'tour',
+    summary: 'Guide users through controlled steps around measured native targets.',
+    properties: [property('steps / anchors / open / index', 'Stable steps / measured rectangles / controlled state', 'Required', 'Controls guidance around host-native layout targets.')]
+  },
+  {
+    accessibility: 'Host-formatted stable records in phone-friendly labeled cells.',
+    category: 'Data display',
+    examples: { apple: 'LumenTable("Packages", columns: columns, rows: rows)', android: 'LumenTable("Packages", columns, rows)', 'react-native': '<LumenTable label="Packages" columns={columns} rows={rows} />' },
+    exports: { apple: 'LumenTable', android: 'LumenTable', 'react-native': 'LumenTable' },
+    guidance: 'Host-formatted stable records in phone-friendly labeled cells. Hosts own application state and business actions.',
+    name: 'Table',
+    properties: [property('host content and state', 'Adapter-specific public contract', 'Required', 'Keeps application data and behavior in the host.')],
+    slug: 'table',
+    summary: 'Host-formatted stable records in phone-friendly labeled cells.'
+  },
+  {
+    accessibility: 'Controlled sorting and selection retain hidden IDs and respect disabled rows.',
+    category: 'Data display',
+    examples: { apple: 'LumenDataTable("Packages", columns: columns, rows: rows, sort: $sort, selection: $selectedIds)', android: 'LumenDataTable("Packages", columns, rows, sort = sort, onSortChange = onSortChange, selectedIds = selectedIds, onSelectionChange = onSelectionChange)', 'react-native': '<LumenDataTable label="Packages" columns={columns} rows={rows} sort={sort} onSortChange={setSort} selectedIds={selectedIds} onSelectionChange={setSelectedIds} />' },
+    exports: { apple: 'LumenDataTable', android: 'LumenDataTable', 'react-native': 'LumenDataTable' },
+    guidance: 'Controlled sorting and selection retain hidden IDs and respect disabled rows. Hosts own application state and business actions.',
+    name: 'Data table',
+    properties: [property('host content and state', 'Adapter-specific public contract', 'Required', 'Keeps application data and behavior in the host.')],
+    slug: 'data-table',
+    summary: 'Controlled sorting and selection retain hidden IDs and respect disabled rows.'
+  },
+  {
+    accessibility: 'Named whole-number rating options with controlled values and read-only support.',
+    category: 'Forms',
+    examples: { apple: 'LumenRating("Rating", value: $rating)', android: 'LumenRating("Rating", rating, onValueChange)', 'react-native': '<LumenRating label="Rating" value={rating} onValueChange={setRating} />' },
+    exports: { apple: 'LumenRating', android: 'LumenRating', 'react-native': 'LumenRating' },
+    guidance: 'Named whole-number rating options with controlled values and read-only support. Hosts own application state and business actions.',
+    name: 'Rating',
+    properties: [property('host content and state', 'Adapter-specific public contract', 'Required', 'Keeps application data and behavior in the host.')],
+    slug: 'rating',
+    summary: 'Named whole-number rating options with controlled values and read-only support.'
+  },
+  {
+    accessibility: 'Named ancestor navigation with a noninteractive current destination.',
+    category: 'Navigation',
+    examples: { apple: 'LumenBreadcrumb("Path", items: items, onNavigate: navigate)', android: 'LumenBreadcrumb("Path", items, navigate)', 'react-native': '<LumenBreadcrumb label="Path" items={items} onNavigate={navigate} />' },
+    exports: { apple: 'LumenBreadcrumb', android: 'LumenBreadcrumb', 'react-native': 'LumenBreadcrumb' },
+    guidance: 'Named ancestor navigation with a noninteractive current destination. Hosts own application state and business actions.',
+    name: 'Breadcrumb',
+    properties: [property('host content and state', 'Adapter-specific public contract', 'Required', 'Keeps application data and behavior in the host.')],
+    slug: 'breadcrumb',
+    summary: 'Named ancestor navigation with a noninteractive current destination.'
+  },
+  {
+    accessibility: 'Host-owned step progress with localized complete, current and upcoming states.',
+    category: 'Feedback',
+    examples: { apple: 'LumenStepper("Progress", steps: steps, currentStep: currentStep)', android: 'LumenStepper("Progress", steps, currentStep)', 'react-native': '<LumenStepper label="Progress" steps={steps} currentStep={currentStep} />' },
+    exports: { apple: 'LumenStepper', android: 'LumenStepper', 'react-native': 'LumenStepper' },
+    guidance: 'Host-owned step progress with localized complete, current and upcoming states. Hosts own application state and business actions.',
+    name: 'Stepper',
+    properties: [property('host content and state', 'Adapter-specific public contract', 'Required', 'Keeps application data and behavior in the host.')],
+    slug: 'stepper',
+    summary: 'Host-owned step progress with localized complete, current and upcoming states.'
+  },
+  {
+    accessibility: 'Named chronological content retaining host controls and decorative connectors.',
+    category: 'Data display',
+    examples: { apple: 'LumenTimeline("Activity") { LumenTimelineItem { LumenText("Created") } }', android: 'LumenTimeline("Activity") { LumenTimelineItem { LumenText("Created") } }', 'react-native': '<LumenTimeline label="Activity"><LumenTimelineItem><LumenText>Created</LumenText></LumenTimelineItem></LumenTimeline>' },
+    exports: { apple: 'LumenTimeline', android: 'LumenTimeline', 'react-native': 'LumenTimeline' },
+    guidance: 'Named chronological content retaining host controls and decorative connectors. Hosts own application state and business actions.',
+    name: 'Timeline',
+    properties: [property('host content and state', 'Adapter-specific public contract', 'Required', 'Keeps application data and behavior in the host.')],
+    slug: 'timeline',
+    summary: 'Named chronological content retaining host controls and decorative connectors.'
+  },
+  {
+    accessibility: 'Named command search, enabled highlight navigation and a usable close path.',
+    category: 'Actions',
+    examples: { apple: 'LumenCommand("Commands", groups: groups, open: $open, query: $query, activeId: $activeId, onSelect: run)', android: 'LumenCommand("Commands", groups, open, onOpenChange, query, onQueryChange, activeId, onActiveIdChange, run)', 'react-native': '<LumenCommand label="Commands" groups={groups} open={open} query={query} activeId={activeId} onOpenChange={setOpen} onQueryChange={setQuery} onActiveIdChange={setActiveId} onSelect={run} />' },
+    exports: { apple: 'LumenCommand', android: 'LumenCommand', 'react-native': 'LumenCommand' },
+    guidance: 'Hosts own execution and modal presentation. Grouped literal search retains controlled query and highlight; disabled or stale commands cannot execute.',
+    name: 'Command',
+    properties: [property('controlled state', 'Stable records and host state', 'Required', 'Retains host values and emits intentional user changes.')],
+    slug: 'command',
+    summary: 'Named command search, enabled highlight navigation and a usable close path.'
+  },
+  {
+    accessibility: 'Named hierarchical disclosures and labeled cells with inherited disabled state.',
+    category: 'Data display',
+    examples: { apple: 'LumenTreeGrid("Status", columns: columns, records: records, expandedIds: $expandedIds)', android: 'LumenTreeGrid("Status", columns, records, expandedIds, onExpandedChange)', 'react-native': '<LumenTreeGrid label="Status" columns={columns} records={records} expandedIds={expandedIds} onExpandedChange={setExpandedIds} />' },
+    exports: { apple: 'LumenTreeGrid', android: 'LumenTreeGrid', 'react-native': 'LumenTreeGrid' },
+    guidance: 'Hosts format cells and control expansion. Unknown and hidden expansion IDs are retained. Custom interactive cells must honor disabled/read-only context.',
+    name: 'Tree grid',
+    properties: [property('controlled state', 'Stable records and host state', 'Required', 'Retains host values and emits intentional user changes.')],
+    slug: 'tree-grid',
+    summary: 'Named hierarchical disclosures and labeled cells with inherited disabled state.'
+  },
+  {
+    accessibility: 'Localized slide positions, named previous/next and selected indicators with native paging.',
+    category: 'Data display',
+    examples: {
+      apple: 'LumenCarousel("Project slides", slides: slides, index: $index) { slide, _ in LumenText(.verbatim(slide.label)) }',
+      android: 'LumenCarousel("Project slides", slides, index, { index = it }) { slide, _ -> LumenText(slide.label) }',
+      'react-native': '<LumenCarousel label="Project slides" slides={slides} index={index} onIndexChange={setIndex} renderSlide={slide => <LumenText>{slide.label}</LumenText>} />'
+    },
+    exports: { apple: 'LumenCarousel', android: 'LumenCarousel', 'react-native': 'LumenCarousel' },
+    guidance: 'Hosts own stable slide identities and rich content. Native paging requests bounded index changes; there is no autoplay or wrapping. Invalid host indices show recovery without rewriting state.',
+    name: 'Carousel',
+    properties: [
+      property('slides / index', 'Stable LumenCarouselSlide records / controlled integer', 'Required', 'Controls the dataset and current visible page.'),
+      property('height / disabled / status', 'Numeric height / boolean / ready-loading-error', '200 / false / ready', 'Bounds the viewport and guards native paging and result states.')
+    ],
+    slug: 'carousel',
+    summary: 'Page through controlled native slides with accessible navigation.'
+  },
   {
     accessibility: 'Localized selected/checked and disabled controls with guarded native actions and safe status presentation.',
     category: 'Forms',

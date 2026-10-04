@@ -16,6 +16,10 @@ cards/columns, full destination columns and no-op moves are rejected. A full col
 still supports internal reordering.
 
 Every card has named button alternatives for moving between columns and reordering.
+Same-column alternatives include only existing adjacent positions: first cards
+have no move-up action, last cards have no move-down action, and single cards have
+no internal reorder actions. Cross-column actions remain visible and disabled
+when capacity or disabled guards prevent the move.
 `formatMove(cardLabel, columnLabel, oneBasedPosition)` localizes their names. All
 status labels are host-localizable; loading/error/invalid states hide stale controls.
 Read-only and disabled boards retain content and block changes. Buttons use native
@@ -27,6 +31,15 @@ Model tests cover immutable moves, reorders, capacity, identity and disabled sta
 React Native and Compose use long-press drag hit testing against measured column
 and card bounds; drag release proposes a validated move. React Native refreshes
 bounds after scrolling and before drag. SwiftUI uses system drag and drop.
-Physical-device accessibility, nested-scroll responder takeover and rendered drag
-behavior remain release evidence requirements. Drag auto-scrolling is not provided;
+Actual Android emulator gestures verify same-column reorder and visible
+cross-column movement, including capacity and read-only rejection. Physical-device
+accessibility and RN nested-scroll responder takeover remain release evidence
+requirements. Drag auto-scrolling is not provided;
 button alternatives can reach columns outside the currently visible viewport.
+
+The final-position follow-up passed eight focused RN component/model tests, six
+Swift Kanban/Column tests, strict RN types and zero-warning lint. Actual RN
+390px/1280px light/dark checks verified Enter/Space reorder, boundary omissions,
+single-card omission, retained capacity-disabled cross-column actions and read-only
+guards. Android passed three model tests and three actual gesture/button tests,
+instrumentation compilation, library lint and the actual playground compile.

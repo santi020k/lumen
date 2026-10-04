@@ -24,10 +24,14 @@ public enum LumenColor {
         guard input.utf8.count <= 64 else { return nil }
         let text = input.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
         if text.hasPrefix("#") {
-            let digits = Array(text.dropFirst())
-            guard [3, 4, 6, 8].contains(digits.count), digits.allSatisfy({ ("0"..."9").contains($0) || ("a"..."f").contains($0) }) else { return nil }
+            let digits = Array(text.utf8.dropFirst())
+            guard [3, 4, 6, 8].contains(digits.count), digits.allSatisfy({ (48...57).contains($0) || (97...102).contains($0) }) else { return nil }
             let full = digits.count < 5 ? digits.flatMap { [$0, $0] } : digits
-            let bytes = stride(from: 0, to: full.count, by: 2).compactMap { Int(String(full[$0...($0 + 1)]), radix: 16) }
+            let bytes = stride(from: 0, to: full.count, by: 2).map { offset in
+                let high = Int(full[offset]) - (full[offset] <= 57 ? 48 : 87)
+                let low = Int(full[offset + 1]) - (full[offset + 1] <= 57 ? 48 : 87)
+                return high * 16 + low
+            }
             return LumenRGBA(red: bytes[0], green: bytes[1], blue: bytes[2], alpha: bytes.count == 4 ? Double(bytes[3]) / 255 : 1)
         }
         guard text.hasPrefix("rgba("), text.hasSuffix(")") else { return nil }
@@ -66,5 +70,19 @@ public enum LumenColor {
         let sectors = [[c,x,0], [x,c,0], [0,c,x], [0,x,c], [x,0,c], [c,0,x]]
         let channels = sectors[Int(hue)].map { Int((($0 + m) * 255).rounded()) }
         return LumenRGBA(red: channels[0], green: channels[1], blue: channels[2], alpha: color.alpha)
+    }
+}
+
+/// Only displayed entries reserve identity and canonical color; host input stays unchanged.
+func lumenValidColorPalette(_ palette: [LumenColorSwatch], allowAlpha: Bool) -> [LumenColorSwatch] {
+    var ids = Set<String>()
+    var colors = Set<String>()
+    return palette.filter { swatch in
+        guard !swatch.id.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
+              !swatch.label.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
+              let color = LumenColor.parse(swatch.value).flatMap({ LumenColor.format($0, allowAlpha: allowAlpha) }),
+              !ids.contains(swatch.id), !colors.contains(color) else { return false }
+        ids.insert(swatch.id); colors.insert(color)
+        return true
     }
 }

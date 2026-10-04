@@ -15,7 +15,11 @@ class KanbanColumnTest {
         assertEquals("todo", next?.id)
         assertEquals(listOf("second", "todo"), next?.cards?.map { it.id })
         assertEquals(listOf("todo", "second"), column.cards.map { it.id })
+        assertNull(model.moving("todo", column.id, -1))
         assertNull(model.moving("second", column.id, 2))
+        val single = LumenKanbanModel(listOf(LumenKanbanColumnData("single", "Single", listOf(LumenKanbanCard("a", "A")))))
+        assertNull(single.moving("a", "single", -1))
+        assertNull(single.moving("a", "single", 1))
     }
     @Test fun standaloneColumnRejectsDisabledAndInvalidRecords() {
         val card = LumenKanbanCard("a", "A", disabled = true)

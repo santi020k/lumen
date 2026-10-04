@@ -17,6 +17,7 @@ import {
   type ViewProps
 } from 'react-native'
 
+import { LumenControlContentContext, useLumenControlContentColor } from './control-content-context.js'
 import {
   type LumenFieldContextValue,
   useLumenFieldContext
@@ -62,13 +63,14 @@ export const LumenText = ({
   ...props
 }: LumenTextProps): ReactElement => {
   const theme = useLumenTheme()
+  const contentColor = useLumenControlContentColor()
 
   return (
     <Text
       ref={ref}
       {...props}
       style={[
-        { color: resolveLumenTextColor(theme.colors, tone) },
+        { color: tone === 'default' ? contentColor ?? theme.colors.ink : resolveLumenTextColor(theme.colors, tone) },
         resolveLumenTextStyle(theme, variant),
         style
       ]}
@@ -174,7 +176,7 @@ export const LumenButton = ({
           dimensions.label
         ]}
       >
-        {children}
+        <LumenControlContentContext value={colors.color}>{children}</LumenControlContentContext>
       </Text>
     </Pressable>
   )

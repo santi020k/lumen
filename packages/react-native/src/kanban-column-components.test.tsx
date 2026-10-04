@@ -28,12 +28,12 @@ afterEach(() => {
 })
 const render = (props: Partial<LumenKanbanColumnProps> = {}): {
   root: Root
-  change: ReturnType<typeof vi.fn>
+  change: ReturnType<typeof vi.fn<LumenKanbanColumnProps['onColumnChange']>>
   add: ReturnType<typeof vi.fn>
   open: ReturnType<typeof vi.fn>
 } => {
   const root = createRoot()
-  const change = vi.fn()
+  const change = vi.fn<LumenKanbanColumnProps['onColumnChange']>()
   const add = vi.fn()
   const open = vi.fn()
 
@@ -143,4 +143,24 @@ test('status states hide stale controls, empty columns retain host add', () => {
   expect(root.container.queryAll(instance => instance.type === 'Text' && read(instance, 'children') === 'Nothing here')).toHaveLength(1)
   press(button(root, 'Add card'))
   expect(add).toHaveBeenCalledOnce()
+})
+
+test('reorder alternatives expose only reachable neighboring positions, including after host changes', () => {
+  const { root, change } = render({ column: { id: 'todo',
+    label: 'Todo',
+    cards: [
+      { id: 'a', label: 'A' }, { id: 'b', label: 'B' }, { id: 'c', label: 'C' }
+    ] } })
+  const moves = (): unknown[] => root.container.queryAll(instance => instance.type === 'Button' &&
+    typeof read(instance, 'children') === 'string' && String(read(instance, 'children')).startsWith('Move '))
+    .map(instance => read(instance, 'children'))
+
+  expect(moves()).toEqual(['Move A to position 2', 'Move B to position 1', 'Move B to position 3', 'Move C to position 2'])
+  press(button(root, 'Move B to position 3'))
+  expect(change).toHaveBeenCalledOnce()
+  expect(moves()).toEqual(['Move A to position 2', 'Move B to position 1', 'Move B to position 3', 'Move C to position 2'])
+  act(() => {
+    root.render(<LumenKanbanColumn column={{ id: 'todo', label: 'Todo', cards: [{ id: 'b', label: 'B' }] }} onColumnChange={change} />)
+  })
+  expect(moves()).toEqual([])
 })

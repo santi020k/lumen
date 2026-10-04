@@ -1,5 +1,7 @@
 export type LumenRichTextFormat = 'bold' | 'italic' | 'underline'
-export interface LumenRichTextSpan { start: number, end: number, format: LumenRichTextFormat }
+
+interface LumenRichTextSpan { start: number, end: number, format: LumenRichTextFormat }
+
 export interface LumenRichTextDocument { text: string, spans: readonly LumenRichTextSpan[] }
 export interface LumenRichTextSelection { start: number, end: number }
 

@@ -151,17 +151,18 @@ const ColumnCard = ({ props, card, index, layout }: {
       >
         {(props.formatDrag ?? defaultDrag)(card.label)}
       </LumenButton>
-      {[index - 1, index + 1].map(position => (
-        <LumenButton
-          key={position}
-          disabled={disabled || model.moving(card.id, props.column.id, position) === null}
-          onPress={() => {
-            if (!disabled) updateColumn(props, card.id, position)
-          }}
-        >
-          {(props.formatMove ?? defaultMove)(card.label, position + 1)}
-        </LumenButton>
-      ))}
+      {[index - 1, index + 1]
+        .filter(position => position >= 0 && position < props.column.cards.length).map(position => (
+          <LumenButton
+            key={position}
+            disabled={disabled || model.moving(card.id, props.column.id, position) === null}
+            onPress={() => {
+              if (!disabled) updateColumn(props, card.id, position)
+            }}
+          >
+            {(props.formatMove ?? defaultMove)(card.label, position + 1)}
+          </LumenButton>
+        ))}
     </View>
   )
 }

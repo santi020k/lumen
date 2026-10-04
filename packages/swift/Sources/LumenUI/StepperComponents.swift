@@ -23,16 +23,25 @@ public struct LumenStepItem: Identifiable, Equatable, Sendable {
     }
 }
 
+func isLumenStepItemsValid(_ steps: [LumenStepItem]) -> Bool {
+    var ids = Set<String>()
+    for step in steps {
+        if step.id.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || !ids.insert(step.id).inserted { return false }
+    }
+    return true
+}
+
 public struct LumenStepper: View {
     @Environment(\.lumenTheme) private var theme
     private let label: String
     private let steps: [LumenStepItem]
     private let currentStep: Int
+    private let invalidText: String
     private let horizontal: Bool
     private let formatState: (LumenStepState) -> String
 
     public init(_ label: String, steps: [LumenStepItem], currentStep: Int,
-                horizontal: Bool = false,
+                horizontal: Bool = false, invalidText: String = "Steps unavailable",
                 formatState: @escaping (LumenStepState) -> String = {
                     switch $0 {
                     case .complete: "Complete"
@@ -43,13 +52,16 @@ public struct LumenStepper: View {
         self.label = label
         self.steps = steps
         self.currentStep = currentStep
+        self.invalidText = invalidText
         self.horizontal = horizontal
         self.formatState = formatState
     }
 
     public var body: some View {
         Group {
-            if horizontal {
+            if !isLumenStepItemsValid(steps) {
+                Text(invalidText).foregroundStyle(theme.colors.ink)
+            } else if horizontal {
                 ScrollView(.horizontal) {
                     HStack(alignment: .top, spacing: LumenSpacing.md) { content }
                 }

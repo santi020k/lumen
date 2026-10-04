@@ -89,14 +89,13 @@ public struct LumenColorPicker: View {
                     }
                 }
             }
-        }.disabled(!enabled).onChange(of: value) { next in
+        }.disabled(!enabled).lumenOnValueChange(of: value) { next in
             draft = next
             if selectionSource != source { selection = nil; selectionSource = nil }
-        }.onChange(of: allowAlpha) { _ in draft = value; selection = nil; selectionSource = nil }
+        }.lumenOnValueChange(of: allowAlpha) { _ in draft = value; selection = nil; selectionSource = nil }
     }
     private var validPalette: [LumenColorSwatch] {
-        var seen = Set<String>()
-        return palette.filter { LumenColor.parse($0.value).flatMap { LumenColor.format($0, allowAlpha: allowAlpha) } != nil && seen.insert($0.id).inserted }
+        lumenValidColorPalette(palette, allowAlpha: allowAlpha)
     }
 }
 #endif

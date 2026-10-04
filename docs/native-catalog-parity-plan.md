@@ -2,8 +2,9 @@
 
 ## Objective
 
-Close all 24 gaps in the v4 web-to-native audit across React Native, SwiftUI (iOS),
-and Compose (Android). Keep platform conventions and controlled application state.
+Close 23 gaps in the v4 web-to-native audit across React Native, SwiftUI (iOS),
+and Compose (Android), retaining RichTextEditor as explicitly deferred by the user.
+Keep platform conventions and controlled application state.
 A name or registry entry alone does not close a gap: the implementation must provide
 its reference behavior, documented public API, regression tests and rendered interaction evidence.
 
@@ -24,30 +25,30 @@ its reference behavior, documented public API, regression tests and rendered int
 
 | Gap | Implementation status | Verification status |
 | --- | --- | --- |
-| `Agenda` | Implemented in all three adapters | Focused native checks pass; combined API and rendered qualification pending |
-| `Breadcrumb` | Initial implementation in all three adapters | Focused native regression checks; playground/rendered and full API baseline checks pending |
-| `Calendar` | Implemented in all three adapters | Focused native checks pass; combined API and rendered qualification pending |
-| `Carousel` | Pending in all three adapters | Pending |
-| `Command` | Pending in all three adapters | Pending |
-| `ColorPicker` | Implemented in all three adapters | Focused model and controlled interaction checks pass, including Android emulator; combined/rendered qualification pending |
-| `DataTable` | Initial implementation in all three adapters | Sorting, selection, identity and state regressions; playground/rendered and full API baseline checks pending |
-| `KanbanBoard` | Implemented in all three adapters | Focused native checks pass; combined API and rendered qualification pending |
-| `KanbanColumn` | Implemented in all three adapters | Focused native checks pass; combined API and rendered qualification pending |
-| `RichTextEditor` | SwiftUI and Compose in progress; React Native editor deferred by user | User declined a new native dependency; React Native rich editing remains an explicit gap |
-| `Schedule` | Implemented in all three adapters | Focused adapter tests and two Android UI tests pass; rendered qualification and combined gates pending |
-| `Table` | Initial implementation in all three adapters | Sorting, selection, identity and state regressions; playground/rendered and full API baseline checks pending |
-| `Tooltip` | Compose exists; SwiftUI and React Native pending | Pending |
-| `Tree` | Implemented in all three adapters | Focused native tests and React Native strict type/lint checks pass; playground dispatch, rendered checks and combined API gates pending |
-| `TreeGrid` | Pending in all three adapters | Pending |
-| `Rating` | Initial implementation in all three adapters | Swift model/API tests and Compose model test passed; React Native behavior tests and type checking passed; zero-warning React Native lint and API classification passed; rendered checks pending |
-| `Timeline` | Initial implementation in all three adapters | Focused native regression checks; playground/rendered and full API baseline checks pending |
-| `Stepper` | Initial implementation in all three adapters | Focused native regression checks; playground/rendered and full API baseline checks pending |
-| `Tour` | Pending in all three adapters | Pending |
-| `Transfer` | Implemented in all three adapters | Focused adapter tests and two Android UI tests pass; combined/rendered qualification pending |
-| `Cascader` | Implemented in all three adapters | Focused model and interaction tests, native compilation and zero-warning lint pass; rendered and combined API gates pending |
-| `TreeSelect` | Implemented in all three adapters | Focused adapter tests and two Android UI tests pass; combined/rendered qualification pending |
-| `Mentions` | Pending in all three adapters | Pending |
-| `QRCode` | Implemented in all three adapters | Focused encoding/independent decoding and lint pass; React Native narrow/desktop light/dark rendered states pass; iOS simulator and Android emulator rendered states independently decoded; combined gates pending |
+| `Agenda` | Implemented in all three adapters | Dedicated tests and rendered checks pass; combined gate/capture completion tracked below |
+| `Breadcrumb` | Implemented in all three adapters | Dedicated tests and rendered checks pass; combined gate/capture completion tracked below |
+| `Calendar` | Implemented in all three adapters | Finite Android grid sizing passes actual 268/350/390dp geometry and date-selection checks in both themes |
+| `Carousel` | Implemented in all three adapters | Dedicated tests and rendered checks pass; combined gate/capture completion tracked below |
+| `Command` | Implemented in all three adapters | Dedicated tests and rendered checks pass; combined gate/capture completion tracked below |
+| `ColorPicker` | Implemented in all three adapters | Dedicated tests and rendered checks pass; combined gate/capture completion tracked below |
+| `DataTable` | Implemented in all three adapters | Dedicated tests and rendered checks pass; combined gate/capture completion tracked below |
+| `KanbanBoard` | Implemented in all three adapters | Dedicated tests and rendered checks pass; combined gate/capture completion tracked below |
+| `KanbanColumn` | Implemented in all three adapters | Valid move boundaries pass three native UI tests and all four browser viewport/theme cases |
+| `RichTextEditor` | Limited SwiftUI and Compose subset; React Native editor deferred by user | User declined a new native dependency; React Native rich editing remains an explicit gap |
+| `Schedule` | Implemented in all three adapters | Dedicated tests and rendered checks pass; combined gate/capture completion tracked below |
+| `Table` | Implemented in all three adapters | Dedicated tests and rendered checks pass; combined gate/capture completion tracked below |
+| `Tooltip` | Implemented in all three adapters | Dedicated tests and rendered checks pass; combined gate/capture completion tracked below |
+| `Tree` | Implemented in all three adapters | Dedicated tests and rendered checks pass; combined gate/capture completion tracked below |
+| `TreeGrid` | Implemented in all three adapters | Dedicated tests and rendered checks pass; combined gate/capture completion tracked below |
+| `Rating` | Implemented in all three adapters | Dedicated tests and rendered checks pass; combined gate/capture completion tracked below |
+| `Timeline` | Implemented in all three adapters | Dedicated tests and rendered checks pass; combined gate/capture completion tracked below |
+| `Stepper` | Implemented in all three adapters | Dedicated tests and rendered checks pass; combined gate/capture completion tracked below |
+| `Tour` | Implemented in all three adapters | Dedicated tests and rendered checks pass; combined gate/capture completion tracked below |
+| `Transfer` | Implemented in all three adapters | Dedicated tests and rendered checks pass; combined gate/capture completion tracked below |
+| `Cascader` | Implemented in all three adapters | Dedicated tests and rendered checks pass; combined gate/capture completion tracked below |
+| `TreeSelect` | Implemented in all three adapters | Dedicated tests and rendered checks pass; combined gate/capture completion tracked below |
+| `Mentions` | Implemented in all three adapters | Dedicated tests and rendered checks pass; combined gate/capture completion tracked below |
+| `QRCode` | Implemented in all three adapters | Dedicated tests and rendered checks pass; combined gate/capture completion tracked below |
 
 ## Working state
 
@@ -56,8 +57,7 @@ Worktree: `/private/tmp/lumen-native-catalog-parity`.
 Base: local `release/v4.0.0` at `2e860020` after fetching origin.
 Rating uses whole integers, zero for unrated, and a bounded maximum of 1 through 100.
 Hosts localize each option through a formatter; no host value is silently rewritten.
-Remaining Rating work includes disabled behavior coverage, playground examples,
-visual verification, documentation, registry and API baseline updates.
+Rating now passes disabled/read-only, controlled value, keyboard and rendered checks with localized examples.
 
 Table/DataTable use stable identities and host-formatted cells. Manual sorting
 retains server order; explicit client sorting is stable with missing values last.
@@ -72,12 +72,27 @@ queued as each slot becomes available. Component agents own their adapter code,
 focused tests and individual playground examples. The integration owner manages
 shared exports, registries, generators, combined verification and release integration.
 
-Dedicated assignments so far: Tree, QRCode, RichTextEditor, Cascader, Calendar
-and KanbanBoard. Calendar and KanbanBoard implementation and QRCode rendered
-verification remain active. The six checkpoint
-implementations also receive dedicated verification assignments before closure.
-No gap is closed by an assignment or a registry entry alone.
+Dedicated assignments cover Tree, QRCode, RichTextEditor, Cascader, Calendar,
+Agenda, KanbanBoard, KanbanColumn, Schedule, ColorPicker, TreeSelect, Transfer,
+Carousel, Tooltip, Command, TreeGrid, Tour, Mentions, DataTable, Table, Rating,
+Breadcrumb, Timeline and Stepper. Every gap has received its dedicated assignment.
+The integration owner verifies shared gates and full consumer captures.
 
-The user explicitly deferred the React Native RichTextEditor on 2026-10-04 and
-declined an additional native editor dependency. SwiftUI and Compose work continues;
-a plain text field must not be described as rich text parity.
+The user explicitly deferred React Native RichTextEditor on 2026-10-04 and declined
+an additional native editor dependency. The limited SwiftUI/Compose formatting
+subset remains documented; rich editing is pending.
+
+
+## Combined verification progress
+
+All 23 remaining counterparts have completed dedicated source and focused behavior checks.
+The combined React Native suite passed 353 tests after the final palette and boundary follow-ups; canonical
+strict type checking passed. Compose full unit/lint and consumer build passed, including the
+five palette and two malformed-span regression tests. iPhone simulator interaction/capture
+checks passed for the combined catalog, including center tapping quiet Command buttons.
+Rendered capture coverage passes with 305 captures, and native API baselines are regenerated and
+classified. Canonical `pnpm run validate` passes: 1,921 tests, strict types, zero-warning lint,
+spelling, unused-export checks, builds, security checks and packed consumer smoke tests.
+Local release integration remains pending while the release checkout belongs to another active chat.
+Android consumer captures revealed a narrow calendar grid defect; the correction now
+passes actual geometry and date-selection checks at 268/350/390dp in both themes.

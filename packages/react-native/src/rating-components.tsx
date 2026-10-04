@@ -3,6 +3,7 @@ import { Pressable, View, type ViewProps } from 'react-native'
 
 import { LumenStarIconGraphic } from './static-icons/star.generated.js'
 import { LumenText } from './primitives.js'
+import { useLumenRadioKeyboard } from './radio-keyboard.js'
 import { resolveLumenRating } from './rating-recipes.js'
 import { useLumenTheme } from './theme-context.js'
 
@@ -32,6 +33,10 @@ export const LumenRating = ({
   const theme = useLumenTheme()
   const rating = resolveLumenRating(value, max)
 
+  const keyboard = useLumenRadioKeyboard(Array.from({ length: rating.max }, () => disabled || readOnly), index => {
+    if (!disabled && !readOnly) onValueChange(index + 1)
+  })
+
   return (
     <View {...props} style={style}>
       <LumenText>{label}</LumenText>
@@ -43,10 +48,20 @@ export const LumenRating = ({
         {Array.from({ length: rating.max }, (_, index) => index + 1).map(option => (
           <Pressable
             key={option}
+            ref={node => {
+              keyboard.setRef(option - 1, node)
+            }}
             accessibilityRole="radio"
             accessibilityLabel={formatOption(option, rating.max)}
-            accessibilityState={{ disabled: disabled || readOnly, selected: rating.value === option }}
+            aria-checked={rating.value === option}
+            aria-disabled={disabled || readOnly}
+            accessibilityState={{ checked: rating.value === option,
+              disabled: disabled || readOnly,
+              selected: rating.value === option }}
             disabled={disabled || readOnly}
+            onKeyDown={event => {
+              keyboard.onKeyDown(option - 1, event)
+            }}
             onPress={() => {
               if (!disabled && !readOnly) onValueChange(option)
             }}

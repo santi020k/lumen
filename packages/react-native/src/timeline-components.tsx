@@ -4,7 +4,7 @@ import { View, type ViewProps } from 'react-native'
 import { useLumenTheme } from './theme-context.js'
 
 export interface LumenTimelineProps extends ViewProps { label: string }
-export interface LumenTimelineItemProps extends ViewProps { dot?: ReactNode }
+export interface LumenTimelineItemProps extends ViewProps { dot?: ReactNode, isLast?: boolean }
 
 /** Items retain host content and its accessible controls. */
 export const LumenTimeline = ({ label, children, style, ...props }: LumenTimelineProps): ReactElement => {
@@ -13,13 +13,15 @@ export const LumenTimeline = ({ label, children, style, ...props }: LumenTimelin
   return <View {...props} accessibilityLabel={label} style={[{ gap: theme.spacing.md }, style]}>{children}</View>
 }
 
-export const LumenTimelineItem = ({ children, dot, style, ...props }: LumenTimelineItemProps): ReactElement => {
+export const LumenTimelineItem = ({ children, dot, isLast = false, style,
+  ...props }: LumenTimelineItemProps): ReactElement => {
   const theme = useLumenTheme()
 
   return (
     <View {...props} style={[{ flexDirection: 'row', gap: theme.spacing.md }, style]}>
       <View
         accessibilityElementsHidden
+        aria-hidden
         importantForAccessibility="no-hide-descendants"
         style={{ alignItems: 'center', width: 20 }}
       >
@@ -29,10 +31,12 @@ export const LumenTimelineItem = ({ children, dot, style, ...props }: LumenTimel
           }}
           />
         )}
-        <View style={{
-          flex: 1, minHeight: 16, borderLeftWidth: 1, borderColor: theme.colors.line, marginTop: theme.spacing.xs
-        }}
-        />
+        {!isLast && (
+          <View style={{
+            flex: 1, minHeight: 16, borderLeftWidth: 1, borderColor: theme.colors.line, marginTop: theme.spacing.xs
+          }}
+          />
+        )}
       </View>
       <View style={{ flex: 1 }}>{children}</View>
     </View>

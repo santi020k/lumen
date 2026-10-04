@@ -33,6 +33,7 @@ import { resolveLumenStepState } from './stepper-recipes.js'
 import { LumenBanner, LumenErrorState, LumenStatusBar } from './structured-components.js'
 import { LumenDataTable } from './table-components.js'
 import type { LumenTableRow } from './table-recipes.js'
+import { createLumenTheme } from './theme.js'
 import { LumenTimeField } from './time-components.js'
 import { LumenTimeline, LumenTimelineItem } from './timeline-components.js'
 import { LumenPicker, LumenRangeSlider, LumenSlider } from './value-components.js'
@@ -1384,6 +1385,8 @@ describe('Lumen React Native component behavior', () => {
     const onPress = readProp(checkbox, 'onPress')
 
     expect(readProp(checkbox, 'accessibilityLabel')).toBe('Include diagnostics')
+    expect(readProp(checkbox, 'aria-checked')).toBe(false)
+    expect(readProp(checkbox, 'aria-disabled')).toBe(false)
 
     expect(readProp(checkbox, 'accessibilityState')).toEqual({
       checked: false,
@@ -2371,7 +2374,7 @@ describe('rating controlled selection', () => {
       callAction(readProp(option, 'onPress'), 'Missing rating action')
     })
     expect(onValueChange).toHaveBeenCalledWith(4)
-    expect(readProp(option, 'accessibilityState')).toEqual({ disabled: false, selected: false })
+    expect(readProp(option, 'accessibilityState')).toEqual({ checked: false, disabled: false, selected: false })
     act(() => {
       root.render(
         <LumenProvider>
@@ -2465,8 +2468,8 @@ describe('progress and history contracts', () => {
     act(() => {
       callAction(readProp(locked, 'onPress'), 'Missing disabled breadcrumb action')
     })
-    expect(readProp(findByAccessibilityLabel(root, 'Details'), 'onPress')).toBeUndefined()
-    expect(readProp(findByAccessibilityLabel(root, 'Details'), 'accessibilityValue')).toEqual({ text: 'Here' })
+    expect(readProp(findByAccessibilityLabel(root, 'Details, Here'), 'onPress')).toBeUndefined()
+    expect(readProp(findByAccessibilityLabel(root, 'Details, Here'), 'aria-current')).toBe('page')
   })
 })
 
@@ -2556,4 +2559,48 @@ describe('data table controlled interactions', () => {
     expect(onSortChange).not.toHaveBeenCalled()
     expect(onSelectionChange).not.toHaveBeenCalled()
   })
+})
+
+test.each(['light', 'dark'] as const)('nested button content uses its %s foreground without overriding explicit tones', async scheme => {
+  const theme = createLumenTheme(scheme)
+  const root = await renderNative(
+    <LumenProvider theme={theme}>
+      <LumenButton>
+        <LumenText accessibilityLabel="Inherited label">Continue</LumenText>
+        <LumenText accessibilityLabel="Explicit tone" tone="danger">Warning</LumenText>
+        <LumenIcon name="search" label="Inherited icon" />
+      </LumenButton>
+      <LumenText accessibilityLabel="Outside control">Outside</LumenText>
+    </LumenProvider>
+  )
+  expect(readProp(findByAccessibilityLabel(root, 'Inherited label'), 'style')).toEqual(expect.arrayContaining([{ color: theme.colors.onBrand }]))
+  expect(readProp(findByAccessibilityLabel(root, 'Explicit tone'), 'style')).toEqual(expect.arrayContaining([{ color: theme.colors.danger }]))
+  expect(readProp(findByAccessibilityLabel(root, 'Outside control'), 'style')).toEqual(expect.arrayContaining([{ color: theme.colors.ink }]))
+  const svg = findByAccessibilityLabel(root, 'Inherited icon').children[0]
+  if (typeof svg !== 'object') throw new Error('Missing inherited icon content')
+  expect(readProp(svg, 'stroke')).toBe(theme.colors.onBrand)
+})
+
+test.each([false, true])('web checkbox Space toggles once and respects disabled=%s', async disabled => {
+  nativePlatform.OS = 'web'
+  const change = vi.fn<(checked: boolean) => void>()
+  const hostKey = vi.fn()
+  const root = await renderNative(<LumenCheckbox label="Choice" checked disabled={disabled} onCheckedChange={change} onKeyDown={hostKey} />)
+  const handler = readProp(findByAccessibilityRole(root, 'checkbox'), 'onKeyDown')
+  if (typeof handler !== 'function') throw new Error('Missing checkbox keyboard handler')
+  const preventDefault = vi.fn()
+  await act(async () => {
+    Reflect.apply(handler, undefined, [{ nativeEvent: { key: ' ', repeat: false }, defaultPrevented: false, preventDefault }])
+    await Promise.resolve()
+  })
+  expect(hostKey).toHaveBeenCalledOnce()
+  expect(preventDefault).toHaveBeenCalledOnce()
+  expect(change).toHaveBeenCalledTimes(disabled ? 0 : 1)
+  expect(change.mock.calls).toEqual(disabled ? [] : [[false]])
+  await act(async () => {
+    Reflect.apply(handler, undefined, [{ nativeEvent: { key: ' ', repeat: true }, defaultPrevented: false, preventDefault }])
+    Reflect.apply(handler, undefined, [{ nativeEvent: { key: ' ', repeat: false }, defaultPrevented: true, preventDefault }])
+    await Promise.resolve()
+  })
+  expect(change).toHaveBeenCalledTimes(disabled ? 0 : 1)
 })

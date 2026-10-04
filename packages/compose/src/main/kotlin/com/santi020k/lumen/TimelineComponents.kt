@@ -31,11 +31,12 @@ fun LumenTimeline(
 fun LumenTimelineItem(
     modifier: Modifier = Modifier,
     dot: (@Composable () -> Unit)? = null,
+    isLast: Boolean = false,
     content: @Composable ColumnScope.() -> Unit
 ) {
     val colors = LocalLumenTheme.current.colors
     Box(modifier.drawBehind {
-        drawLine(colors.line, Offset(10.dp.toPx(), 12.dp.toPx()),
+        if (!isLast) drawLine(colors.line, Offset(10.dp.toPx(), 12.dp.toPx()),
             Offset(10.dp.toPx(), size.height.coerceAtLeast(28.dp.toPx())), strokeWidth = 1.dp.toPx())
     }) {
         Box(Modifier.padding(start = 6.dp).clearAndSetSemantics {}) {

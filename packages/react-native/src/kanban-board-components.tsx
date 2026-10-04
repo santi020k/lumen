@@ -120,7 +120,9 @@ const BoardCard = ({ card, column, index, props, model, layout, blocked }: {
   })
 
   const actions = props.columns.flatMap(target => {
-    const positions = target.id === column.id ? [index - 1, index + 1] : [target.cards.length]
+    const positions = target.id === column.id ?
+      [index - 1, index + 1].filter(position => position >= 0 && position < column.cards.length) :
+      [target.cards.length]
 
     return positions.map(position => ({ target, position }))
   })

@@ -80,6 +80,37 @@ for (const category of categories) {
 }
 
 const fileFacades = new Set([
+  'AgendaComponentsKt',
+  'AgendaModelsKt',
+  'BreadcrumbComponentsKt',
+  'CalendarComponentsKt',
+  'CarouselComponentsKt',
+  'CarouselModelsKt',
+  'CascaderComponentsKt',
+  'ColorPickerComponentsKt',
+  'ColorPickerModelsKt',
+  'CommandComponentsKt',
+  'CommandModelsKt',
+  'KanbanBoardComponentsKt',
+  'KanbanColumnComponentsKt',
+  'MentionsComponentsKt',
+  'MentionsModelsKt',
+  'QRCodeComponentsKt',
+  'RatingComponentsKt',
+  'RichTextComponentsKt',
+  'ScheduleComponentsKt',
+  'ScheduleModelsKt',
+  'StepperComponentsKt',
+  'TableComponentsKt',
+  'TimelineComponentsKt',
+  'TourComponentsKt',
+  'TourModelsKt',
+  'TransferComponentsKt',
+  'TransferModelsKt',
+  'TreeComponentsKt',
+  'TreeGridComponentsKt',
+  'TreeSelectComponentsKt',
+
   'BulletChartComponentsKt',
   'ExpandedChartComponentsKt',
   'ComparisonChartComponentsKt',
@@ -118,6 +149,9 @@ for (const block of apiBlocks) {
   if (!classMatch) continue
 
   const identifier = classMatch[1]
+
+  // Compose compiler-generated lambda holders are not authored public contracts.
+  if (identifier.startsWith('ComposableSingletons$')) continue
 
   if (fileFacades.has(identifier)) {
     const functions = block.matchAll(

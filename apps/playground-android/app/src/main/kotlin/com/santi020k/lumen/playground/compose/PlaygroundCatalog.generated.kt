@@ -35,8 +35,9 @@ internal val playgroundSections = listOf(
             "Chip",
             "Menu",
             "Share button",
-            "Floating action button",
             "Tooltip",
+            "Command",
+            "Floating action button",
             "Swipe actions"
         )
     ),
@@ -70,7 +71,8 @@ internal val playgroundSections = listOf(
             "Cascader",
             "Color picker",
             "Tree select",
-            "Transfer"
+            "Transfer",
+            "Mentions"
         )
     ),
     PlaygroundSection(
@@ -129,7 +131,9 @@ internal val playgroundSections = listOf(
             "Agenda",
             "Kanban board",
             "Kanban column",
-            "Schedule"
+            "Schedule",
+            "Carousel",
+            "Tree grid"
         )
     ),
     PlaygroundSection(
@@ -140,6 +144,7 @@ internal val playgroundSections = listOf(
             "Sheet",
             "Navigation bar",
             "Breadcrumb",
+            "Tour",
             "Navigation bar scroll behavior",
             "Navigation bar accessory",
             "Adaptive navigation scaffold",

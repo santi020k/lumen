@@ -8,6 +8,7 @@ import {
 } from 'react'
 import {
   type HostInstance,
+  Platform,
   Pressable,
   type PressableProps,
   ScrollView,
@@ -44,6 +45,7 @@ export const LumenCheckbox = ({
   disabled = false,
   label,
   onCheckedChange,
+  onKeyDown,
   ref,
   style,
   ...props
@@ -57,10 +59,25 @@ export const LumenCheckbox = ({
       {...props}
       accessibilityRole="checkbox"
       accessibilityLabel={props.accessibilityLabel ?? label}
+      aria-checked={checked}
+      aria-disabled={disabled}
       accessibilityState={{ checked, disabled }}
       disabled={disabled}
+      onKeyDown={event => {
+        onKeyDown?.(event)
+
+        const key = event.nativeEvent.key || event.nativeEvent.code
+
+        if (Platform.OS !== 'web' || event.defaultPrevented || (key !== ' ' && key !== 'Spacebar')) return
+
+        event.preventDefault()
+
+        const repeated = 'repeat' in event.nativeEvent && event.nativeEvent.repeat === true
+
+        if (!disabled && !repeated) onCheckedChange(!checked)
+      }}
       onPress={() => {
-        onCheckedChange(!checked)
+        if (!disabled) onCheckedChange(!checked)
       }}
       style={pressState => [
         {

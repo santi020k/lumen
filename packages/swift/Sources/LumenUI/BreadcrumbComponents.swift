@@ -13,6 +13,13 @@ public struct LumenBreadcrumbItem: Identifiable, Equatable, Sendable {
     }
 }
 
+func lumenBreadcrumbHasValidIDs(_ items: [LumenBreadcrumbItem]) -> Bool {
+    var ids = Set<String>()
+    return items.allSatisfy { item in
+        !item.id.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && ids.insert(item.id).inserted
+    }
+}
+
 public struct LumenBreadcrumb: View {
     @Environment(\.isEnabled) private var isEnabled
     @Environment(\.lumenTheme) private var theme
@@ -32,7 +39,7 @@ public struct LumenBreadcrumb: View {
     public var body: some View {
         ScrollView(.horizontal) {
             HStack(spacing: LumenSpacing.xs) {
-                ForEach(Array(items.enumerated()), id: \.element.id) { index, item in
+                ForEach(Array((lumenBreadcrumbHasValidIDs(items) ? items : []).enumerated()), id: \.element.id) { index, item in
                     if index > 0 { Text("/").foregroundStyle(theme.colors.inkMuted).accessibilityHidden(true) }
                     if index == items.count - 1 {
                         Text(item.label).foregroundStyle(theme.colors.ink)

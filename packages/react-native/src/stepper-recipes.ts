@@ -8,3 +8,16 @@ export const resolveLumenStepState = (index: number, currentStep: number, count:
 
   return index === current ? 'current' : 'upcoming'
 }
+
+/** Stable IDs must be nonempty and unique within the displayed progression. */
+export const isLumenStepItemsValid = (steps: readonly { readonly id: string }[]): boolean => {
+  const ids = new Set<string>()
+
+  for (const step of steps) {
+    if (!step.id.trim() || ids.has(step.id)) return false
+
+    ids.add(step.id)
+  }
+
+  return true
+}

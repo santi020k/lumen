@@ -52,26 +52,30 @@ fun LumenCalendar(
                 TextButton(onClick = { destination(1)?.let(onVisibleMonthChange) }, enabled = enabled && !readOnly && destination(1) != null,
                     modifier = Modifier.sizeIn(minWidth = 44.dp, minHeight = 44.dp).semantics { contentDescription = nextMonthLabel }) { LumenText("›") }
             }
-            Column(Modifier.horizontalScroll(rememberScrollState()).widthIn(min = 308.dp)) {
-            Row { repeat(7) { index -> Box(Modifier.weight(1f), contentAlignment = Alignment.Center) { LumenText(weekdayLabels[(firstWeekday + index) % 7]) } } }
-            visibleMonth.grid(firstWeekday).chunked(7).forEach { week ->
-                Row {
-                    week.forEach { day ->
-                        if (day == null) Spacer(Modifier.weight(1f).height(44.dp)) else {
-                            val indicators = events.filter { it.contains(day) }
-                            val selected = day == selectedDay
-                            Box(Modifier.weight(1f).heightIn(min = 44.dp)
-                                .background(if (selected) colors.brandSoft else Color.Transparent)
-                                .selectable(selected = selected, enabled = enabled && !readOnly && day.isSelectable(min, max), role = Role.Button,
-                                    onClick = { if (enabled && !readOnly && day.isSelectable(min, max)) onSelectedDayChange(day) })
-                                .semantics { contentDescription = (listOf(formatDay(day)) + (if (day == today) listOf(todayLabel) else emptyList()) + indicators.map { it.label }).joinToString(", ") },
-                                contentAlignment = Alignment.Center) {
-                                Column(horizontalAlignment = Alignment.CenterHorizontally) { LumenText(day.day.toString()); if (indicators.isNotEmpty()) LumenText("•") }
+            BoxWithConstraints(Modifier.fillMaxWidth()) {
+                // Scrolling content is measured unbounded; weighted rows need a finite grid width.
+                val gridWidth = maxWidth.coerceAtLeast(308.dp)
+                Column(Modifier.horizontalScroll(rememberScrollState()).width(gridWidth)) {
+                    Row(Modifier.fillMaxWidth()) { repeat(7) { index -> Box(Modifier.weight(1f), contentAlignment = Alignment.Center) { LumenText(weekdayLabels[(firstWeekday + index) % 7]) } } }
+                    visibleMonth.grid(firstWeekday).chunked(7).forEach { week ->
+                        Row(Modifier.fillMaxWidth()) {
+                            week.forEach { day ->
+                                if (day == null) Spacer(Modifier.weight(1f).height(44.dp)) else {
+                                    val indicators = events.filter { it.contains(day) }
+                                    val selected = day == selectedDay
+                                    Box(Modifier.weight(1f).heightIn(min = 44.dp)
+                                        .background(if (selected) colors.brandSoft else Color.Transparent)
+                                        .selectable(selected = selected, enabled = enabled && !readOnly && day.isSelectable(min, max), role = Role.Button,
+                                            onClick = { if (enabled && !readOnly && day.isSelectable(min, max)) onSelectedDayChange(day) })
+                                        .semantics { contentDescription = (listOf(formatDay(day)) + (if (day == today) listOf(todayLabel) else emptyList()) + indicators.map { it.label }).joinToString(", ") },
+                                        contentAlignment = Alignment.Center) {
+                                        Column(horizontalAlignment = Alignment.CenterHorizontally) { LumenText(day.day.toString()); if (indicators.isNotEmpty()) LumenText("•") }
+                                    }
+                                }
                             }
                         }
                     }
                 }
-            }
             }
         }
     }

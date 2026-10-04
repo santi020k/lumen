@@ -1089,6 +1089,72 @@
         "swiftUI": "LumenTransfer",
         "compose": "LumenTransfer"
       }
+    },
+    {
+      "id": "carousel",
+      "tier": "shared",
+      "contract": "Controlled stable-ID slide paging through native scrolling, indicators and bounded previous/next requests",
+      "accessibility": "Localized slide positions, selected indicators and native status/disabled guards",
+      "symbols": {
+        "reactNative": "LumenCarousel",
+        "swiftUI": "LumenCarousel",
+        "compose": "LumenCarousel"
+      }
+    },
+    {
+      "id": "tooltip",
+      "tier": "shared",
+      "contract": "Native contextual help with explicit visibility or platform tooltip state and trigger/dismiss controls",
+      "accessibility": "Named host anchors, localized brief help, native focus/escape/Back dismissal and disabled guards",
+      "symbols": {
+        "reactNative": "LumenTooltip",
+        "swiftUI": "LumenTooltip",
+        "compose": "LumenTooltip"
+      }
+    },
+    {
+      "id": "command",
+      "tier": "shared",
+      "contract": "Controlled grouped command filtering, active identity and guarded host activation",
+      "accessibility": "Native search and keyboard navigation, localized command names and always-available dismissal",
+      "symbols": {
+        "reactNative": "LumenCommand",
+        "swiftUI": "LumenCommand",
+        "compose": "LumenCommand"
+      }
+    },
+    {
+      "id": "tree-grid",
+      "tier": "shared",
+      "contract": "Controlled hierarchical rows and cells over validated Tree graphs with stable column identities",
+      "accessibility": "Named disclosure and full depth, inherited disabled cells and phone record layouts",
+      "symbols": {
+        "reactNative": "LumenTreeGrid",
+        "swiftUI": "LumenTreeGrid",
+        "compose": "LumenTreeGrid"
+      }
+    },
+    {
+      "id": "tour",
+      "tier": "universal",
+      "contract": "Controlled native guided steps anchored to host-measured targets",
+      "accessibility": "Named modal guidance, guarded navigation and always usable dismissal",
+      "symbols": {
+        "reactNative": "LumenTour",
+        "swiftUI": "LumenTour",
+        "compose": "LumenTour"
+      }
+    },
+    {
+      "id": "mentions",
+      "tier": "universal",
+      "contract": "Controlled multiline mention text and UTF-16 selection with literal suggestions",
+      "accessibility": "Named input and guarded enabled suggestions with native composition preservation",
+      "symbols": {
+        "reactNative": "LumenMentions",
+        "swiftUI": "LumenMentions",
+        "compose": "LumenMentions"
+      }
     }
   ],
   "platformComponents": [
@@ -1274,16 +1340,6 @@
       "contract": "Material refresh gesture with host-owned progress and request lifecycle around existing scrollable content",
       "accessibility": "Adds a named refresh accessibility action, announces progress, and removes refresh actions while disabled or refreshing",
       "symbol": "LumenPullToRefresh"
-    },
-    {
-      "id": "tooltip",
-      "adapter": "compose",
-      "platforms": [
-        "Android"
-      ],
-      "contract": "Material contextual help with long-press, pointer, and explicit visibility",
-      "accessibility": "Preserves a labeled application-owned anchor and native tooltip dismissal",
-      "symbol": "LumenTooltip"
     },
     {
       "id": "top-app-bar",

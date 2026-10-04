@@ -1199,7 +1199,7 @@ to complete, current or upcoming (`LumenStepState`). Negative progress resolves
 to the first step; progress at or beyond the item count means all steps are complete.
 The component does not navigate or advance workflow state. Vertical layout is the
 native default; horizontal layout scrolls to retain large text. `formatState`
-localizes visible and accessible state labels. React Native accepts `orientation`;
+localizes visible and accessible state labels. Duplicate or blank step IDs display the localized `invalidText` without partial steps. React Native accepts `orientation`;
 SwiftUI and Compose use `horizontal`. React Native and Compose expose
 `resolveLumenStepState`; SwiftUI exposes `LumenStepState.resolve`.
 
@@ -1207,7 +1207,7 @@ SwiftUI and Compose use `horizontal`. React Native and Compose expose
 Each item accepts application content and an optional decorative dot. Rich content
 and its actions remain host-owned and independently accessible. SwiftUI uses view
 builder slots and Compose uses a column content slot; React Native uses children.
-Event ordering, date formatting and requests belong to the application.
+Pass `isLast: true` (SwiftUI/Compose) or `isLast={true}` (React Native) on the final item to omit its connector. Event ordering, date formatting and requests belong to the application.
 
 `LumenBreadcrumb` accepts a localized group label and stable `LumenBreadcrumbItem`
 locations. The final location is the current page and cannot navigate. Earlier
@@ -1361,3 +1361,35 @@ caret formatting remain absent. React Native rich editing remains explicitly
 pending: the user declined a native editor dependency. The pure React Native
 span helpers do not supply a rendered editor. See the
 [limited editor contract](native-parity/rich-text-editor.md).
+
+`LumenCarousel` pages controlled stable-ID slides using native scrolling, named
+previous/next controls and selected indicators. Hosts render content; the component
+does not autoplay or wrap. `LumenTooltip` provides localized contextual help through
+controlled visibility on React Native/SwiftUI and native tooltip state on Compose.
+Compose focusable popup dismissal preserves the screen when Back is pressed. See the
+[Carousel](native-parity/carousel.md) and [Tooltip](native-parity/tooltip.md) contracts.
+
+`LumenCommand` supplies controlled grouped search, highlight navigation and activation
+requests. Hosts own execution and modal presentation. `LumenTreeGrid` reuses the Tree
+graph for controlled disclosure and labeled native records; custom interactive cells
+must honor disabled/read-only context. See the [Command](native-parity/command.md)
+and [TreeGrid](native-parity/tree-grid.md) contracts.
+
+`LumenTour` presents controlled native guided steps around host-measured targets.
+Hosts own anchor layout, open state and current index. Missing targets retain
+dismissible guidance; close remains usable during disabled/read-only/status states.
+
+`LumenMentions` controls multiline text and UTF-16 selection atomically with literal
+suggestion insertion. iOS/visionOS and Android preserve native composition. React Native
+hosts provide `isComposing` when available and insertion validates final native editing
+state. ASCII mention values and token boundaries are explicit native constraints.
+
+
+## Catalog parity completion guides
+
+Exact supported APIs and verification are recorded in the [Rating](native-parity/rating.md),
+[Table](native-parity/table.md), [DataTable](native-parity/data-table.md),
+[Breadcrumb](native-parity/breadcrumb.md), [Stepper](native-parity/stepper.md),
+[Timeline](native-parity/timeline.md), [Tour](native-parity/tour.md), and
+[Mentions](native-parity/mentions.md) guides. Native consumer, physical accessibility and release
+qualification are separate from focused local checks.

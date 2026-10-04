@@ -82,8 +82,7 @@ fun LumenColorPicker(
                 valueLabel = "${(hsva.alpha * 100).toInt()}%", enabled = enabled, modifier = Modifier.heightIn(min = 44.dp).semantics { contentDescription = labels.alpha })
         }
         Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(LumenSpacing.Sm)) {
-            palette.filter { swatch -> parseLumenColor(swatch.value)?.let { formatLumenColor(it, allowAlpha) } != null }
-                .distinctBy { it.id }.forEach { swatch ->
+            lumenValidColorPalette(palette, allowAlpha).forEach { swatch ->
                 val swatchColor = parseLumenColor(swatch.value)
                 val encoded = swatchColor?.let { formatLumenColor(it, allowAlpha) }
                 if (swatchColor != null && encoded != null) Box(Modifier.size(44.dp)

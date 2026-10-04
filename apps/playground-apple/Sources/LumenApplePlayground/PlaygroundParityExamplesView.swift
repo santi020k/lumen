@@ -5,6 +5,52 @@ struct PlaygroundParityExamplesView: View {
     let matches: (String) -> Bool
 
     var body: some View {
+        if matches("Timeline") {
+            PlaygroundSection("Timeline", description: "Host-owned chronological content with a terminal connector.") { TimelineParityExample() }
+        }
+        if matches("Table") {
+            PlaygroundSection("Table", description: "Named records with controlled empty and invalid states.") { TableParityExample() }
+        }
+        if matches("Stepper") {
+            PlaygroundSection("Stepper", description: "Controlled progress with localized step states.") { StepperParityExample() }
+        }
+        if matches("Breadcrumb") {
+            PlaygroundSection("Breadcrumb", description: "Named native ancestor navigation and current destination.") { BreadcrumbParityExample() }
+        }
+        #if os(iOS) || os(visionOS)
+        if matches("Mentions") {
+            PlaygroundSection("Mentions", description: "Controlled mention suggestions with native composition guards.") { MentionsParityExample() }
+        }
+        #endif
+        if matches("Rating") {
+            PlaygroundSection("Rating", description: "Controlled whole-number selection with localized labels.") { RatingParityExample() }
+        }
+        if matches("Data table") {
+            PlaygroundSection("Data table", description: "Controlled sorting and retained record selection.") { DataTableParityExample() }
+        }
+        if matches("Tour") {
+            PlaygroundSection("Tour", description: "Controlled guidance anchored to measured native targets.") { TourParityExample() }
+        }
+        if matches("Tree grid") {
+            PlaygroundSection("Tree grid", description: "Controlled native tree grid with retained host state.") {
+                TreeGridParityExample()
+            }
+        }
+        if matches("Command") {
+            PlaygroundSection("Command", description: "Controlled native command with retained host state.") {
+                CommandParityExample()
+            }
+        }
+        if matches("Tooltip") {
+            PlaygroundSection("Tooltip", description: "Native controlled tooltip with accessible interactions.") {
+                TooltipParityExample()
+            }
+        }
+        if matches("Carousel") {
+            PlaygroundSection("Carousel", description: "Native controlled carousel with accessible interactions.") {
+                CarouselParityExample()
+            }
+        }
         if matches("Transfer") {
             PlaygroundSection("Transfer", description: "Controlled native selection with retained host values.") {
                 TransferParityExample()

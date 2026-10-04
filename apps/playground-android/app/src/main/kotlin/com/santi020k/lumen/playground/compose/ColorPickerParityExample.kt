@@ -16,12 +16,12 @@ internal fun ColorPickerParityExample() {
     var readOnly by remember { mutableStateOf(false) }
     var disabled by remember { mutableStateOf(false) }
     Column(verticalArrangement = Arrangement.spacedBy(LumenSpacing.Sm)) {
-        LumenButton("English / Español", onClick = { spanish = !spanish })
-        LumenButton(if (spanish) "Color inválido" else "Invalid color", onClick = { value = "bad" })
-        LumenButton(if (spanish) "Restaurar" else "Restore", onClick = { value = "#3366cc80" })
-        LumenButton(if (spanish) "Transparente" else "Transparent black", onClick = { value = "#00000000" })
-        LumenButton("${if (spanish) "Solo lectura" else "Read only"}: $readOnly", onClick = { readOnly = !readOnly })
-        LumenButton("${if (spanish) "Deshabilitado" else "Disabled"}: $disabled", onClick = { disabled = !disabled })
+        LumenButton(onClick = { spanish = !spanish }) { LumenText("English / Español") }
+        LumenButton(onClick = { value = "bad" }) { LumenText(if (spanish) "Color inválido" else "Invalid color") }
+        LumenButton(onClick = { value = "#3366cc80" }) { LumenText(if (spanish) "Restaurar" else "Restore") }
+        LumenButton(onClick = { value = "#00000000" }) { LumenText(if (spanish) "Transparente" else "Transparent black") }
+        LumenButton(onClick = { readOnly = !readOnly }) { LumenText("${if (spanish) "Solo lectura" else "Read only"}: $readOnly") }
+        LumenButton(onClick = { disabled = !disabled }) { LumenText("${if (spanish) "Deshabilitado" else "Disabled"}: $disabled") }
         LumenColorPicker(if (spanish) "Color de acento" else "Accent color", value, { value = it }, allowAlpha = true,
             disabled = disabled, readOnly = readOnly,
             palette = listOf(LumenColorSwatch("blue", if (spanish) "Azul" else "Blue", "#3366cc80"),

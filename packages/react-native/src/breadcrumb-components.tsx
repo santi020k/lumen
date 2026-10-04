@@ -15,12 +15,21 @@ export interface LumenBreadcrumbProps extends Omit<ViewProps, 'children'> {
 export const LumenBreadcrumb = ({ label, items, onNavigate, currentLabel = 'Current',
   disabled = false, style, ...props }: LumenBreadcrumbProps): ReactElement => {
   const theme = useLumenTheme()
+  const ids = new Set<string>()
+
+  const valid = items.every(item => {
+    if (!item.id.trim() || ids.has(item.id)) return false
+
+    ids.add(item.id)
+
+    return true
+  })
 
   return (
     <View {...props} accessibilityLabel={label} style={style}>
       <ScrollView horizontal>
         <View style={{ alignItems: 'center', flexDirection: 'row', gap: theme.spacing.xs }}>
-          {items.map((item, index) => {
+          {(valid ? items : []).map((item, index) => {
             const current = index === items.length - 1
             const locked = disabled || Boolean(item.disabled)
 
@@ -29,6 +38,7 @@ export const LumenBreadcrumb = ({ label, items, onNavigate, currentLabel = 'Curr
                 {index > 0 ?
                   (
                     <Text
+                      aria-hidden
                       accessibilityElementsHidden
                       importantForAccessibility="no-hide-descendants"
                       style={{ color: theme.colors.inkMuted }}
@@ -41,8 +51,8 @@ export const LumenBreadcrumb = ({ label, items, onNavigate, currentLabel = 'Curr
                   (
                     <Text
                       accessible
-                      accessibilityLabel={item.label}
-                      accessibilityValue={{ text: currentLabel }}
+                      accessibilityLabel={`${item.label}, ${currentLabel}`}
+                      aria-current="page"
                       accessibilityState={{ selected: true }}
                       style={{ color: theme.colors.ink }}
                     >

@@ -46,6 +46,7 @@ test('keeps invalid drafts local, resynchronizes host updates and preserves late
             value = next
           }}
           allowAlpha
+          palette={[{ id: 'gray', label: 'Transparent gray', value: '#80808000' }]}
           labels={{ invalid: 'Color inválido' }}
         />
       )
@@ -79,6 +80,10 @@ test('keeps invalid drafts local, resynchronizes host updates and preserves late
   value = '#80808000'
   await render()
   expect(readProp(field(), 'value')).toBe(value)
+  const selectedSwatch = root.container.queryAll(node => readProp(node, 'accessibilityLabel') === 'Transparent gray')[0]
+  if (!selectedSwatch) throw new Error('Missing selected palette option')
+  expect(readProp(selectedSwatch, 'aria-checked')).toBe(true)
+  expect(readProp(selectedSwatch, 'accessibilityState')).toMatchObject({ checked: true, selected: true })
   await invoke(channel('Hue'), 'onValueChange', 240)
   await render()
   expect(readProp(channel('Hue'), 'value')).toBe(240)
@@ -106,6 +111,77 @@ test('keeps invalid drafts local, resynchronizes host updates and preserves late
   await invoke(channel('Hue'), 'onValueChange', 200)
   expect(emissions).toHaveLength(count)
   expect(readProp(field(), 'editable')).toBe(false)
+  await act(async () => {
+    await Promise.resolve()
+    root.unmount()
+  })
+})
+
+test('palette keeps the first valid canonical color, named stable IDs and controlled single selection', async () => {
+  const root = createRoot()
+  const palette = [
+    { id: ' ', label: 'Missing ID', value: '#f00' },
+    { id: 'unnamed', label: ' \n', value: '#f00' },
+    { id: 'white', label: 'Malformed first entry', value: 'bad' },
+    { id: 'white', label: 'First white', value: '#fff', disabled: true },
+    { id: 'alias', label: 'Equivalent white', value: 'rgba(255,255,255,1)' },
+    { id: 'white', label: 'Duplicate ID', value: '#00f' },
+    { id: 'blue', label: 'Blue', value: '#00f' }
+  ]
+  const emit = vi.fn<(value: string) => void>()
+  await act(async () => {
+    await Promise.resolve()
+    root.render(<LumenColorPicker label="Color" value="#ffffff" palette={palette} onValueChange={emit} />)
+  })
+  const radios = root.container.queryAll(node => node.type === 'Pressable' && readProp(node, 'accessibilityRole') === 'radio')
+  expect(radios.map(node => readProp(node, 'accessibilityLabel'))).toEqual(['First white', 'Blue'])
+  expect(radios.map(node => readProp(node, 'aria-checked'))).toEqual([true, false])
+  const first = radios[0]
+  const blue = radios[1]
+  if (!first || !blue) throw new Error('Missing palette choices')
+  expect(readProp(first, 'disabled')).toBe(true)
+  const firstPress = readProp(first, 'onPress')
+  const bluePress = readProp(blue, 'onPress')
+  if (typeof firstPress !== 'function' || typeof bluePress !== 'function') throw new Error('Missing swatch callbacks')
+  await act(async () => {
+    await Promise.resolve()
+    Reflect.apply(firstPress, undefined, [])
+  })
+  expect(emit).not.toHaveBeenCalled()
+  await act(async () => {
+    await Promise.resolve()
+    Reflect.apply(bluePress, undefined, [])
+  })
+  expect(emit).toHaveBeenCalledExactlyOnceWith('#0000ff')
+  expect(readProp(first, 'aria-checked')).toBe(true)
+  expect(palette).toHaveLength(7)
+  await act(async () => {
+    await Promise.resolve()
+    root.unmount()
+  })
+})
+
+test('equivalent opaque spellings deduplicate with alpha enabled while distinct alpha colors remain', async () => {
+  const root = createRoot()
+  await act(async () => {
+    await Promise.resolve()
+    root.render(
+      <LumenColorPicker
+        label="Color"
+        value="#ffffff00"
+        allowAlpha
+        onValueChange={() => {}}
+        palette={[
+          { id: 'opaque', label: 'Opaque white', value: '#fff' },
+          { id: 'same', label: 'Equivalent opaque white', value: '#ffffffff' },
+          { id: 'transparent', label: 'Transparent white', value: '#ffffff00' }
+        ]}
+      />
+    )
+  })
+  const radios = root.container.queryAll(node => node.type === 'Pressable' && readProp(node, 'accessibilityRole') === 'radio')
+  expect(radios.map(node => readProp(node, 'accessibilityLabel'))).toEqual(['Opaque white', 'Transparent white'])
+  expect(radios.map(node => readProp(node, 'aria-checked'))).toEqual([false, true])
   await act(async () => {
     await Promise.resolve()
     root.unmount()

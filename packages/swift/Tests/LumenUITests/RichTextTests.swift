@@ -13,6 +13,19 @@ final class RichTextTests: XCTestCase {
         ])
         XCTAssertEqual(original.spans.count, 1)
     }
+    func testReplacementRejectsMalformedSpanOffsets() {
+        let original = LumenRichTextDocument(text: "a", spans: [
+            .init(start: Int.max, end: Int.max, format: .bold),
+            .init(start: Int.min, end: 1, format: .italic),
+            .init(start: 0, end: Int.max, format: .underline),
+            .init(start: 1, end: 0, format: .bold),
+            .init(start: 0, end: 1, format: .italic)
+        ])
+        XCTAssertEqual(original.replacing("ab").spans, [.init(start: 0, end: 1, format: .italic)])
+        XCTAssertEqual(original.replacing("").spans, [])
+        XCTAssertEqual(original.spans.count, 5)
+    }
+
     func testEmojiReplacementAndEmptySelection() {
         let original = LumenRichTextDocument(text: "ab😀cd", spans: [.init(start: 2, end: 4, format: .bold)])
         XCTAssertEqual(original.replacing("abcd").spans, [])

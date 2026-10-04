@@ -54,3 +54,13 @@ fun lumenHSVAToRGBA(color: LumenHSVA): LumenRGBA? {
     val channels = sectors[hue.toInt()].map { ((it + m) * 255).roundToInt() }
     return LumenRGBA(channels[0], channels[1], channels[2], color.alpha)
 }
+
+internal fun lumenValidColorPalette(palette: List<LumenColorSwatch>, allowAlpha: Boolean): List<LumenColorSwatch> {
+    val ids = mutableSetOf<String>()
+    val colors = mutableSetOf<String>()
+    return palette.filter { swatch ->
+        val color = parseLumenColor(swatch.value)?.let { formatLumenColor(it, allowAlpha) }
+        if (swatch.id.isBlank() || swatch.label.isBlank() || color == null || swatch.id in ids || color in colors) false
+        else { ids.add(swatch.id); colors.add(color); true }
+    }
+}

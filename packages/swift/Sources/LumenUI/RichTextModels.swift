@@ -47,6 +47,7 @@ public struct LumenRichTextDocument: Equatable, Sendable {
         while oldEnd > start && newEnd > start && old[oldEnd - 1] == new[newEnd - 1] { oldEnd -= 1; newEnd -= 1 }
         let delta = newEnd - oldEnd
         return .init(text: value, spans: spans.compactMap { span in
+            guard span.start >= 0, span.end > span.start, span.end <= old.count else { return nil }
             let from = span.start < start ? span.start : span.start >= oldEnd ? span.start + delta : start
             let to = span.end <= start ? span.end : span.end >= oldEnd ? span.end + delta : newEnd
             return to > from ? .init(start: from, end: to, format: span.format) : nil

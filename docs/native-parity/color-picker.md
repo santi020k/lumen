@@ -32,7 +32,10 @@ React Native uses `label`, `value`, `onValueChange`, `allowAlpha`, `disabled`, `
 `palette` and `labels`. SwiftUI binds `value` and otherwise uses the same option names.
 Compose uses `label`, `value`, `onValueChange` and those options. Palette entries use
 stable unique `id`, accessible `label`, `value` and optional `disabled`. Invalid colors
-and duplicate IDs are omitted. Palette targets and slider tracks are at least 44 points;
+and blank IDs/labels, duplicate IDs and equivalent canonical colors are omitted. The first
+valid named entry for each identity and canonical color wins, including a disabled first entry.
+Different alpha values remain distinct when alpha is enabled. This prevents multiple selected
+radio choices for one controlled color and never rewrites host palette data. Palette targets and slider tracks are at least 44 points;
 SwiftUI/Compose palettes scroll horizontally and React Native wraps. Domain colors are
 intentional swatches; text, borders and controls use the current Lumen theme.
 

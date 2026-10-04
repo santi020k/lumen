@@ -51,6 +51,7 @@ fun LumenTooltip(
         tooltip = { PlainTooltip(containerColor = colors.surface, contentColor = colors.ink) { Text(text) } },
         state = state.nativeState,
         modifier = modifier,
+        focusable = true,
         enableUserInput = enabled,
         content = content
     )

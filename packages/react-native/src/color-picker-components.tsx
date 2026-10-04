@@ -6,6 +6,7 @@ import {
   lumenRGBAToHSVA, parseLumenColor
 } from './color-picker-recipes.js'
 import { LumenText, LumenTextField } from './primitives.js'
+import { useLumenRadioKeyboard } from './radio-keyboard.js'
 import { useLumenTheme } from './theme-context.js'
 import { LumenSlider } from './value-components.js'
 
@@ -209,15 +210,25 @@ const ColorPalette = ({ options, value, enabled, allowAlpha, label, select }: {
 }): ReactElement | null => {
   const theme = useLumenTheme()
   const usedIds = new Set<string>()
+  const usedColors = new Set<string>()
 
   const swatches = options.flatMap(option => {
     const canonical = describeColor(option.value, allowAlpha).source
 
-    if (!canonical || usedIds.has(option.id)) return []
+    if (!canonical || !option.id.trim() || !option.label.trim() ||
+      usedIds.has(option.id) || usedColors.has(canonical)) return []
 
     usedIds.add(option.id)
 
+    usedColors.add(canonical)
+
     return [{ ...option, canonical }]
+  })
+
+  const radioKeys = useLumenRadioKeyboard(swatches.map(option => !enabled || option.disabled === true), index => {
+    const option = swatches[index]
+
+    if (option && enabled && !option.disabled) select(option.canonical)
   })
 
   if (!swatches.length) return null
@@ -228,13 +239,24 @@ const ColorPalette = ({ options, value, enabled, allowAlpha, label, select }: {
       accessibilityLabel={label}
       style={{ flexDirection: 'row', flexWrap: 'wrap', gap: theme.spacing.sm }}
     >
-      {swatches.map(option => (
+      {swatches.map((option, index) => (
         <Pressable
           key={option.id}
+          ref={instance => {
+            radioKeys.setRef(index, instance)
+          }}
+          onKeyDown={event => {
+            radioKeys.onKeyDown(index, event)
+          }}
           accessibilityRole="radio"
           accessibilityLabel={option.label}
           disabled={!enabled || option.disabled}
-          accessibilityState={{ disabled: !enabled || option.disabled, selected: value === option.canonical }}
+          aria-checked={value === option.canonical}
+          aria-selected={value === option.canonical}
+          aria-disabled={!enabled || option.disabled}
+          accessibilityState={{ disabled: !enabled || option.disabled,
+            checked: value === option.canonical,
+            selected: value === option.canonical }}
           onPress={() => {
             if (!option.disabled) select(option.canonical)
           }}

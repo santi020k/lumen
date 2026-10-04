@@ -11,6 +11,7 @@ iOS/visionOS expose the same names with Swift bindings and `NSRange` selection.
 The Swift adapter uses UITextView, keeps native editing/selection and avoids replacing
 marked text during IME composition. Compose uses BasicTextField with AnnotatedString.
 Disabled/read-only editors block document mutation; read-only selection remains usable.
+Replacement rejects malformed or out-of-bounds spans before offset arithmetic.
 Hosts localize the editor label, error and each formatting label.
 
 React Native's installed TextInput only supports attributed children on Android,

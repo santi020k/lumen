@@ -25,7 +25,10 @@ Content wraps at the host's available width.
 SwiftUI uses system drag and drop; React Native and Compose use long-press drag
 with measured card/column bounds. Unknown, out-of-range and disabled-card drops
 are rejected by the existing Kanban model. Named reorder buttons provide
-accessible alternatives. Drag auto-scrolling is not implemented. Physical-device
+accessible alternatives only for neighboring positions within the current column. The first
+card has no previous target, the last has no next target, and a single card has no
+reorder alternatives. Valid targets remain visible but disabled in read-only/disabled
+states. Drag auto-scrolling is not implemented. Physical-device
 scroll-responder takeover, assistive technology and rendered drag remain required
 release evidence.
 

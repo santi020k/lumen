@@ -17,6 +17,30 @@ class ColorPickerTest {
         assertNull(formatLumenColor(LumenRGBA(0, 0, 0, Double.NaN)))
         assertNull(lumenHSVAToRGBA(LumenHSVA(Double.POSITIVE_INFINITY, 1.0, 1.0)))
     }
+    @Test fun paletteFirstValidCanonicalColorAndStableNames() {
+        val palette = listOf(
+            LumenColorSwatch(" ", "Missing ID", "#f00"),
+            LumenColorSwatch("unnamed", " \n", "#f00"),
+            LumenColorSwatch("white", "Malformed first entry", "bad"),
+            LumenColorSwatch("white", "First white", "#fff", disabled = true),
+            LumenColorSwatch("alias", "Equivalent white", "rgba(255,255,255,1)"),
+            LumenColorSwatch("white", "Duplicate ID", "#00f"),
+            LumenColorSwatch("blue", "Blue", "#00f")
+        )
+        val resolved = lumenValidColorPalette(palette, false)
+        assertEquals(listOf("First white", "Blue"), resolved.map { it.label })
+        assertTrue(resolved.first().disabled)
+        assertEquals(7, palette.size)
+    }
+    @Test fun paletteAlphaEquivalence() {
+        val palette = listOf(
+            LumenColorSwatch("opaque", "Opaque white", "#fff"),
+            LumenColorSwatch("same", "Equivalent opaque white", "#ffffffff"),
+            LumenColorSwatch("transparent", "Transparent white", "#ffffff00")
+        )
+        assertEquals(listOf("opaque", "transparent"), lumenValidColorPalette(palette, true).map { it.id })
+        assertEquals(listOf("opaque"), lumenValidColorPalette(palette, false).map { it.id })
+    }
     @Test fun roundTripAndLatentChannels() {
         for (r in listOf(0,51,128,255)) for (g in listOf(0,51,128,255)) for (b in listOf(0,51,128,255)) {
             val color = LumenRGBA(r, g, b, 0.0)

@@ -26,7 +26,9 @@
         "button-group",
         "chip",
         "menu",
-        "share-button"
+        "share-button",
+        "tooltip",
+        "command"
       ]
     },
     {
@@ -60,7 +62,8 @@
         "cascader",
         "color-picker",
         "tree-select",
-        "transfer"
+        "transfer",
+        "mentions"
       ]
     },
     {
@@ -120,7 +123,9 @@
         "agenda",
         "kanban-board",
         "kanban-column",
-        "schedule"
+        "schedule",
+        "carousel",
+        "tree-grid"
       ]
     },
     {
@@ -131,7 +136,8 @@
         "alert-dialog",
         "sheet",
         "navigation-bar",
-        "breadcrumb"
+        "breadcrumb",
+        "tour"
       ]
     }
   ],
@@ -205,11 +211,6 @@
         "id": "pull-to-refresh",
         "label": "Pull to refresh",
         "category": "feedback"
-      },
-      {
-        "id": "tooltip",
-        "label": "Tooltip",
-        "category": "actions"
       },
       {
         "id": "top-app-bar",

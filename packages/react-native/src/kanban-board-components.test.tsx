@@ -98,3 +98,23 @@ test('loading, error, invalid and empty states hide stale movement controls', ()
     expect(change).not.toHaveBeenCalled()
   }
 })
+
+test('only real same-column neighbors appear while full cross-column alternatives remain disabled', () => {
+  const { root } = render({ formatMove: (card, column, position) => `${card}/${column}/${position}`,
+    columns: [
+      { id: 'todo', label: 'Todo', cards: [{ id: 'a', label: 'A' }, { id: 'b', label: 'B' }] },
+      { id: 'done', label: 'Done', cards: [], capacity: 0 }
+    ] })
+  const moves = root.container.queryAll(instance => instance.type === 'Button' &&
+    String(read(instance, 'accessibilityLabel')).includes('/'))
+
+  expect(moves.map(move => read(move, 'accessibilityLabel'))).toEqual(['A/Todo/2', 'A/Done/1', 'B/Todo/1', 'B/Done/1'])
+  expect(moves.filter(move => String(read(move, 'accessibilityLabel')).includes('/Done/'))
+    .every(move => read(move, 'disabled') === true)).toBe(true)
+})
+
+test('single-card columns omit same-column move alternatives', () => {
+  const { root } = render({ columns: [{ id: 'todo', label: 'Todo', cards: [{ id: 'a', label: 'A' }] }] })
+
+  expect(root.container.queryAll(instance => instance.type === 'Button')).toHaveLength(1)
+})

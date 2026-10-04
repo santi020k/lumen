@@ -1,8 +1,8 @@
 import type { ReactElement } from 'react'
-import { ScrollView, Text, View, type ViewProps } from 'react-native'
+import { Platform, ScrollView, Text, View, type ViewProps } from 'react-native'
 
 import { LumenText } from './primitives.js'
-import { type LumenStepState, resolveLumenStepState } from './stepper-recipes.js'
+import { isLumenStepItemsValid, type LumenStepState, resolveLumenStepState } from './stepper-recipes.js'
 import { useLumenTheme } from './theme-context.js'
 
 export interface LumenStepItem {
@@ -16,6 +16,7 @@ export interface LumenStepperProps extends Omit<ViewProps, 'children'> {
   steps: readonly LumenStepItem[]
   currentStep: number
   orientation?: 'horizontal' | 'vertical'
+  invalidText?: string
   formatState?: (state: LumenStepState) => string
 }
 
@@ -24,9 +25,13 @@ const formatStepState = (state: LumenStepState): string => ({
 })[state]
 
 export const LumenStepper = ({ label, steps, currentStep, orientation = 'vertical',
-  formatState = formatStepState, style, ...props }: LumenStepperProps): ReactElement => {
+  formatState = formatStepState, invalidText = 'Steps unavailable', style, ...props }: LumenStepperProps): ReactElement => {
   const theme = useLumenTheme()
   const horizontal = orientation === 'horizontal'
+
+  if (!isLumenStepItemsValid(steps)) {
+    return <View {...props} accessibilityLabel={label} style={style}><LumenText accessibilityRole="alert">{invalidText}</LumenText></View>
+  }
 
   const content = (
     <View style={{ flexDirection: horizontal ? 'row' : 'column', gap: theme.spacing.md }}>
@@ -37,12 +42,15 @@ export const LumenStepper = ({ label, steps, currentStep, orientation = 'vertica
           <View
             key={step.id}
             accessible
-            accessibilityLabel={`${index + 1} / ${steps.length}, ${step.title}${step.description ? `, ${step.description}` : ''}`}
+            role="listitem"
+            accessibilityLabel={`${index + 1} / ${steps.length}, ${step.title}${step.description ? `, ${step.description}` : ''}${Platform.OS === 'web' ? `, ${formatState(state)}` : ''}`}
             accessibilityValue={{ text: formatState(state) }}
+            aria-current={state === 'current' ? 'step' : undefined}
             accessibilityState={{ selected: state === 'current' }}
             style={{ alignItems: 'flex-start', flexDirection: 'row', gap: theme.spacing.sm, width: horizontal ? 220 : undefined }}
           >
             <View
+              aria-hidden
               accessibilityElementsHidden
               importantForAccessibility="no-hide-descendants"
               style={{ alignItems: 'center',
@@ -54,7 +62,7 @@ export const LumenStepper = ({ label, steps, currentStep, orientation = 'vertica
             >
               <Text style={{ color: state === 'upcoming' ? theme.colors.ink : theme.colors.onBrand }}>{index + 1}</Text>
             </View>
-            <View style={{ flex: 1 }}>
+            <View aria-hidden accessibilityElementsHidden importantForAccessibility="no-hide-descendants" style={{ flex: 1 }}>
               <LumenText>{step.title}</LumenText>
               {step.description ? <LumenText>{step.description}</LumenText> : null}
               <LumenText>{formatState(state)}</LumenText>
@@ -66,7 +74,7 @@ export const LumenStepper = ({ label, steps, currentStep, orientation = 'vertica
   )
 
   return (
-    <View {...props} accessibilityLabel={label} style={style}>
+    <View {...props} role="list" accessibilityLabel={label} style={style}>
       {horizontal ? <ScrollView horizontal>{content}</ScrollView> : content}
     </View>
   )

@@ -45,6 +45,8 @@ enum PlaygroundCatalog {
                 "Chip",
                 "Menu",
                 "Share button",
+                "Tooltip",
+                "Command",
                 "Link"
             ]
         ),
@@ -78,6 +80,7 @@ enum PlaygroundCatalog {
                 "Color picker",
                 "Tree select",
                 "Transfer",
+                "Mentions",
                 "Shortcut recorder",
                 "Symbol picker"
             ]
@@ -135,7 +138,9 @@ enum PlaygroundCatalog {
                 "Agenda",
                 "Kanban board",
                 "Kanban column",
-                "Schedule"
+                "Schedule",
+                "Carousel",
+                "Tree grid"
             ]
         ),
         (
@@ -145,6 +150,7 @@ enum PlaygroundCatalog {
                 "Sheet",
                 "Navigation bar",
                 "Breadcrumb",
+                "Tour",
                 "Tab bar minimization",
                 "Tab accessory"
             ]

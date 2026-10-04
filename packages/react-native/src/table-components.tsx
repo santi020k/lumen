@@ -150,8 +150,7 @@ const TableInteractive = (props: LumenDataTableProps): ReactElement => {
   const header = (column: LumenTableColumn): ReactNode => column.sortable && onSortChange ?
     (
       <LumenButton
-        accessibilityLabel={column.label}
-        accessibilityValue={{ text: sort?.key === column.key ? formatSort(sort) : '' }}
+        accessibilityLabel={column.label + (sort?.key === column.key ? `, ${formatSort(sort)}` : '')}
         disabled={locked}
         onPress={() => {
           if (!locked) onSortChange(nextLumenTableSort(sort, column.key))
@@ -229,7 +228,7 @@ const TableError = ({ message, onRetry, disabled, retryLabel }: {
 const DataTableBody = (props: LumenDataTableProps): ReactElement => {
   if (props.loading) return <TableLoading label={props.loadingLabel} />
 
-  if (props.error) return (
+  if (props.error != null) return (
     <TableError
       message={props.error}
       onRetry={props.onRetry}

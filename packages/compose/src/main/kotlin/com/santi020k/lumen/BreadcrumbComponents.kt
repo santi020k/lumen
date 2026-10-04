@@ -25,6 +25,11 @@ import androidx.compose.ui.unit.dp
 @Immutable
 data class LumenBreadcrumbItem(val id: String, val label: String, val enabled: Boolean = true)
 
+internal fun lumenBreadcrumbHasValidIds(items: List<LumenBreadcrumbItem>): Boolean {
+    val ids = mutableSetOf<String>()
+    return items.all { it.id.isNotBlank() && ids.add(it.id) }
+}
+
 @Composable
 fun LumenBreadcrumb(
     label: String,
@@ -37,7 +42,7 @@ fun LumenBreadcrumb(
     val colors = LocalLumenTheme.current.colors
     Row(modifier.horizontalScroll(rememberScrollState()).semantics { contentDescription = label },
         horizontalArrangement = Arrangement.spacedBy(LumenSpacing.Xs), verticalAlignment = Alignment.CenterVertically) {
-        items.forEachIndexed { index, item ->
+        (if (lumenBreadcrumbHasValidIds(items)) items else emptyList()).forEachIndexed { index, item ->
             key(item.id) {
                 if (index > 0) Text("/", modifier = Modifier.clearAndSetSemantics {}, color = colors.inkMuted)
                 if (index == items.lastIndex) {

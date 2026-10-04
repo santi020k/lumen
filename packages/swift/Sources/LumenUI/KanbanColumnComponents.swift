@@ -59,7 +59,7 @@ public struct LumenKanbanColumn<CardContent: View>: View {
                                 if enabled && !column.disabled && !card.disabled { onCardPress(card.id) }
                             }) { Text(formatOpen(card.label)) }
                         }
-                        ForEach([index - 1, index + 1], id: \.self) { position in
+                        ForEach([index - 1, index + 1].filter { column.cards.indices.contains($0) }, id: \.self) { position in
                             LumenButton(disabled: !interactive || model.moving(card.id, toColumnId: column.id, toIndex: position) == nil,
                                         action: { _ = move(card.id, index: position) }) {
                                 Text(formatMove(card.label, position + 1))

@@ -43,6 +43,27 @@ class KanbanColumnAccessibilityTest {
         rule.onNodeWithText("Open A").performScrollTo().performClick()
     }
 
+    @Test fun onlyReachableNeighborTargetsRemainAfterControlledUpdates() {
+        val column = mutableStateOf(LumenKanbanColumnData("c", "Column", listOf(
+            LumenKanbanCard("a", "A"), LumenKanbanCard("b", "B"), LumenKanbanCard("c", "C")
+        )))
+        rule.setContent { LumenTheme {
+            Column(Modifier.verticalScroll(rememberScrollState())) {
+                LumenKanbanColumn(column.value, { column.value = it })
+            }
+        } }
+        rule.onNodeWithText("Move A to position 0").assertDoesNotExist()
+        rule.onNodeWithText("Move C to position 4").assertDoesNotExist()
+        rule.onNodeWithText("Move B to position 1").assertExists()
+        rule.onNodeWithText("Move B to position 3").performScrollTo().performClick()
+        rule.runOnIdle { assertEquals(listOf("a", "c", "b"), column.value.cards.map { it.id }) }
+        rule.onNodeWithText("Move B to position 2").assertExists()
+        rule.onNodeWithText("Move B to position 4").assertDoesNotExist()
+        rule.runOnIdle { column.value = column.value.copy(cards = listOf(LumenKanbanCard("b", "B"))) }
+        rule.onNodeWithText("Move B to position 0").assertDoesNotExist()
+        rule.onNodeWithText("Move B to position 2").assertDoesNotExist()
+    }
+
     @Test fun capacityEmptyAndStatusStatesExposeOnlyCurrentControls() {
         val loading = mutableStateOf(false)
         val column = mutableStateOf(LumenKanbanColumnData("c", "Column", emptyList(), capacity = 0))

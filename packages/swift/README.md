@@ -700,3 +700,28 @@ contracts for localization, state guards and adapter APIs.
 The initial `LumenRichTextEditor` formatting subset supports controlled selection
 and bold/italic/underline spans; full editor parity remains pending. See the
 [limited rich editor contract](../../docs/native-parity/rich-text-editor.md).
+
+`LumenCarousel` provides controlled native slide paging and localized navigation.
+`LumenTooltip` provides contextual help with native dismissal and named anchors.
+See the [Carousel](../../docs/native-parity/carousel.md) and
+[Tooltip](../../docs/native-parity/tooltip.md) contracts for adapter-specific state APIs.
+
+`LumenCommand` provides controlled grouped command search and host activation.
+`LumenTreeGrid` presents controlled hierarchical records with labeled native cells.
+See the [Command](../../docs/native-parity/command.md) and
+[TreeGrid](../../docs/native-parity/tree-grid.md) contracts for state, localization and cell guards.
+
+`LumenTour` provides controlled native guidance around host-measured targets.
+See the [Tour contract](../../docs/native-parity/tour.md) for coordinate ownership,
+missing-target recovery and accessible dismissal.
+
+`LumenMentions` provides controlled multiline text and UTF-16 selection with literal
+suggestions. See the [Mentions contract](../../docs/native-parity/mentions.md)
+for composition, token boundaries and platform availability.
+
+
+See the [Rating](../../docs/native-parity/rating.md), [Table](../../docs/native-parity/table.md),
+[DataTable](../../docs/native-parity/data-table.md), [Breadcrumb](../../docs/native-parity/breadcrumb.md),
+[Stepper](../../docs/native-parity/stepper.md), and [Timeline](../../docs/native-parity/timeline.md)
+contracts for controlled state, localization, native composition and verification. Timeline items
+accept `isLast` to omit the final connector; application content and ordering remain host-owned.

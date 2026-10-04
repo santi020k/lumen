@@ -36,7 +36,9 @@ export const componentCategories: readonly ComponentCategoryDefinition[] = [
       "Button group",
       "Chip",
       "Menu",
-      "Share button"
+      "Share button",
+      "Tooltip",
+      "Command"
     ],
     value: 'actions'
   },
@@ -70,7 +72,8 @@ export const componentCategories: readonly ComponentCategoryDefinition[] = [
       "Cascader",
       "Color picker",
       "Tree select",
-      "Transfer"
+      "Transfer",
+      "Mentions"
     ],
     value: 'forms'
   },
@@ -131,7 +134,9 @@ export const componentCategories: readonly ComponentCategoryDefinition[] = [
       "Agenda",
       "Kanban board",
       "Kanban column",
-      "Schedule"
+      "Schedule",
+      "Carousel",
+      "Tree grid"
     ],
     value: 'data'
   },
@@ -143,6 +148,7 @@ export const componentCategories: readonly ComponentCategoryDefinition[] = [
       "Sheet",
       "Navigation bar",
       "Breadcrumb",
+      "Tour",
       "Navigation accessory",
       "Collapsible navigation bar"
     ],

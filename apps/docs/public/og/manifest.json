@@ -1889,6 +1889,22 @@
       "pathname": "/docs/react-native/components/share-button",
       "title": "Share button"
     },
+    "/docs/react-native/components/tooltip": {
+      "alt": "Tooltip — Lumen UI",
+      "description": "Show native contextual help around an independently accessible anchor.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--tooltip.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--tooltip.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/tooltip",
+      "title": "Tooltip"
+    },
     "/docs/react-native/components/multi-select": {
       "alt": "Multi select — Lumen UI",
       "description": "Select multiple searchable options with controlled values and result states.",
@@ -1920,6 +1936,358 @@
       ],
       "pathname": "/docs/react-native/components/range-slider",
       "title": "Range slider"
+    },
+    "/docs/react-native/components/mentions": {
+      "alt": "Mentions — Lumen UI",
+      "description": "Insert literal mention suggestions into controlled native multiline text.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--mentions.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--mentions.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/mentions",
+      "title": "Mentions"
+    },
+    "/docs/react-native/components/tour": {
+      "alt": "Tour — Lumen UI",
+      "description": "Guide users through controlled steps around measured native targets.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--tour.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--tour.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/tour",
+      "title": "Tour"
+    },
+    "/docs/react-native/components/table": {
+      "alt": "Table — Lumen UI",
+      "description": "Host-formatted stable records in phone-friendly labeled cells.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--table.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--table.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/table",
+      "title": "Table"
+    },
+    "/docs/react-native/components/data-table": {
+      "alt": "Data table — Lumen UI",
+      "description": "Controlled sorting and selection retain hidden IDs and respect disabled rows.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--data-table.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--data-table.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/data-table",
+      "title": "Data table"
+    },
+    "/docs/react-native/components/rating": {
+      "alt": "Rating — Lumen UI",
+      "description": "Named whole-number rating options with controlled values and read-only support.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--rating.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--rating.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/rating",
+      "title": "Rating"
+    },
+    "/docs/react-native/components/breadcrumb": {
+      "alt": "Breadcrumb — Lumen UI",
+      "description": "Named ancestor navigation with a noninteractive current destination.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--breadcrumb.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--breadcrumb.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/breadcrumb",
+      "title": "Breadcrumb"
+    },
+    "/docs/react-native/components/stepper": {
+      "alt": "Stepper — Lumen UI",
+      "description": "Host-owned step progress with localized complete, current and upcoming states.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--stepper.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--stepper.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/stepper",
+      "title": "Stepper"
+    },
+    "/docs/react-native/components/timeline": {
+      "alt": "Timeline — Lumen UI",
+      "description": "Named chronological content retaining host controls and decorative connectors.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--timeline.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--timeline.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/timeline",
+      "title": "Timeline"
+    },
+    "/docs/react-native/components/command": {
+      "alt": "Command — Lumen UI",
+      "description": "Named command search, enabled highlight navigation and a usable close path.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--command.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--command.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/command",
+      "title": "Command"
+    },
+    "/docs/react-native/components/tree-grid": {
+      "alt": "Tree grid — Lumen UI",
+      "description": "Named hierarchical disclosures and labeled cells with inherited disabled state.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--tree-grid.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--tree-grid.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/tree-grid",
+      "title": "Tree grid"
+    },
+    "/docs/react-native/components/carousel": {
+      "alt": "Carousel — Lumen UI",
+      "description": "Page through controlled native slides with accessible navigation.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--carousel.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--carousel.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/carousel",
+      "title": "Carousel"
+    },
+    "/docs/react-native/components/transfer": {
+      "alt": "Transfer — Lumen UI",
+      "description": "Select controlled native transfer values with stable identities.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--transfer.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--transfer.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/transfer",
+      "title": "Transfer"
+    },
+    "/docs/react-native/components/tree-select": {
+      "alt": "Tree select — Lumen UI",
+      "description": "Select controlled native tree select values with stable identities.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--tree-select.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--tree-select.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/tree-select",
+      "title": "Tree select"
+    },
+    "/docs/react-native/components/color-picker": {
+      "alt": "Color picker — Lumen UI",
+      "description": "Edit controlled native colors with validated text, channels and optional alpha.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--color-picker.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--color-picker.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/color-picker",
+      "title": "Color picker"
+    },
+    "/docs/react-native/components/schedule": {
+      "alt": "Schedule — Lumen UI",
+      "description": "Present timed native day columns with all-day bands and overlap lanes.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--schedule.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--schedule.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/schedule",
+      "title": "Schedule"
+    },
+    "/docs/react-native/components/calendar": {
+      "alt": "Calendar — Lumen UI",
+      "description": "Select bounded Gregorian civil dates in a controlled month grid.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--calendar.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--calendar.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/calendar",
+      "title": "Calendar"
+    },
+    "/docs/react-native/components/agenda": {
+      "alt": "Agenda — Lumen UI",
+      "description": "Present chronological timed and all-day events under civil-day headings.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--agenda.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--agenda.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/agenda",
+      "title": "Agenda"
+    },
+    "/docs/react-native/components/kanban-board": {
+      "alt": "Kanban board — Lumen UI",
+      "description": "Move controlled cards between capacity-limited native board columns.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--kanban-board.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--kanban-board.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/kanban-board",
+      "title": "Kanban board"
+    },
+    "/docs/react-native/components/kanban-column": {
+      "alt": "Kanban column — Lumen UI",
+      "description": "Reorder rich native cards within a controlled standalone column.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--kanban-column.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--kanban-column.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/kanban-column",
+      "title": "Kanban column"
+    },
+    "/docs/react-native/components/qr-code": {
+      "alt": "QR code — Lumen UI",
+      "description": "Render accessible offline QR codes from controlled Unicode values.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--qr-code.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--qr-code.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/qr-code",
+      "title": "QR code"
+    },
+    "/docs/react-native/components/tree": {
+      "alt": "Tree — Lumen UI",
+      "description": "Browse hierarchical records with controlled disclosure and selection.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--tree.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--tree.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/tree",
+      "title": "Tree"
+    },
+    "/docs/react-native/components/cascader": {
+      "alt": "Cascader — Lumen UI",
+      "description": "Select a stable leaf path through native branch drill-down.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--cascader.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--cascader.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/cascader",
+      "title": "Cascader"
     },
     "/docs/apple/components": {
       "alt": "apple components — Lumen UI",
@@ -3217,6 +3585,22 @@
       "pathname": "/docs/apple/components/wearable-list-row",
       "title": "Wearable list row"
     },
+    "/docs/apple/components/tooltip": {
+      "alt": "Tooltip — Lumen UI",
+      "description": "Show native contextual help around an independently accessible anchor.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--tooltip.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--tooltip.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/tooltip",
+      "title": "Tooltip"
+    },
     "/docs/apple/components/multi-select": {
       "alt": "Multi select — Lumen UI",
       "description": "Select multiple searchable options with controlled values and result states.",
@@ -3248,6 +3632,358 @@
       ],
       "pathname": "/docs/apple/components/range-slider",
       "title": "Range slider"
+    },
+    "/docs/apple/components/mentions": {
+      "alt": "Mentions — Lumen UI",
+      "description": "Insert literal mention suggestions into controlled native multiline text.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--mentions.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--mentions.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/mentions",
+      "title": "Mentions"
+    },
+    "/docs/apple/components/tour": {
+      "alt": "Tour — Lumen UI",
+      "description": "Guide users through controlled steps around measured native targets.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--tour.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--tour.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/tour",
+      "title": "Tour"
+    },
+    "/docs/apple/components/table": {
+      "alt": "Table — Lumen UI",
+      "description": "Host-formatted stable records in phone-friendly labeled cells.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--table.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--table.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/table",
+      "title": "Table"
+    },
+    "/docs/apple/components/data-table": {
+      "alt": "Data table — Lumen UI",
+      "description": "Controlled sorting and selection retain hidden IDs and respect disabled rows.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--data-table.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--data-table.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/data-table",
+      "title": "Data table"
+    },
+    "/docs/apple/components/rating": {
+      "alt": "Rating — Lumen UI",
+      "description": "Named whole-number rating options with controlled values and read-only support.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--rating.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--rating.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/rating",
+      "title": "Rating"
+    },
+    "/docs/apple/components/breadcrumb": {
+      "alt": "Breadcrumb — Lumen UI",
+      "description": "Named ancestor navigation with a noninteractive current destination.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--breadcrumb.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--breadcrumb.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/breadcrumb",
+      "title": "Breadcrumb"
+    },
+    "/docs/apple/components/stepper": {
+      "alt": "Stepper — Lumen UI",
+      "description": "Host-owned step progress with localized complete, current and upcoming states.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--stepper.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--stepper.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/stepper",
+      "title": "Stepper"
+    },
+    "/docs/apple/components/timeline": {
+      "alt": "Timeline — Lumen UI",
+      "description": "Named chronological content retaining host controls and decorative connectors.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--timeline.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--timeline.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/timeline",
+      "title": "Timeline"
+    },
+    "/docs/apple/components/command": {
+      "alt": "Command — Lumen UI",
+      "description": "Named command search, enabled highlight navigation and a usable close path.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--command.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--command.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/command",
+      "title": "Command"
+    },
+    "/docs/apple/components/tree-grid": {
+      "alt": "Tree grid — Lumen UI",
+      "description": "Named hierarchical disclosures and labeled cells with inherited disabled state.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--tree-grid.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--tree-grid.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/tree-grid",
+      "title": "Tree grid"
+    },
+    "/docs/apple/components/carousel": {
+      "alt": "Carousel — Lumen UI",
+      "description": "Page through controlled native slides with accessible navigation.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--carousel.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--carousel.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/carousel",
+      "title": "Carousel"
+    },
+    "/docs/apple/components/transfer": {
+      "alt": "Transfer — Lumen UI",
+      "description": "Select controlled native transfer values with stable identities.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--transfer.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--transfer.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/transfer",
+      "title": "Transfer"
+    },
+    "/docs/apple/components/tree-select": {
+      "alt": "Tree select — Lumen UI",
+      "description": "Select controlled native tree select values with stable identities.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--tree-select.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--tree-select.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/tree-select",
+      "title": "Tree select"
+    },
+    "/docs/apple/components/color-picker": {
+      "alt": "Color picker — Lumen UI",
+      "description": "Edit controlled native colors with validated text, channels and optional alpha.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--color-picker.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--color-picker.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/color-picker",
+      "title": "Color picker"
+    },
+    "/docs/apple/components/schedule": {
+      "alt": "Schedule — Lumen UI",
+      "description": "Present timed native day columns with all-day bands and overlap lanes.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--schedule.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--schedule.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/schedule",
+      "title": "Schedule"
+    },
+    "/docs/apple/components/calendar": {
+      "alt": "Calendar — Lumen UI",
+      "description": "Select bounded Gregorian civil dates in a controlled month grid.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--calendar.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--calendar.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/calendar",
+      "title": "Calendar"
+    },
+    "/docs/apple/components/agenda": {
+      "alt": "Agenda — Lumen UI",
+      "description": "Present chronological timed and all-day events under civil-day headings.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--agenda.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--agenda.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/agenda",
+      "title": "Agenda"
+    },
+    "/docs/apple/components/kanban-board": {
+      "alt": "Kanban board — Lumen UI",
+      "description": "Move controlled cards between capacity-limited native board columns.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--kanban-board.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--kanban-board.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/kanban-board",
+      "title": "Kanban board"
+    },
+    "/docs/apple/components/kanban-column": {
+      "alt": "Kanban column — Lumen UI",
+      "description": "Reorder rich native cards within a controlled standalone column.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--kanban-column.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--kanban-column.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/kanban-column",
+      "title": "Kanban column"
+    },
+    "/docs/apple/components/qr-code": {
+      "alt": "QR code — Lumen UI",
+      "description": "Render accessible offline QR codes from controlled Unicode values.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--qr-code.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--qr-code.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/qr-code",
+      "title": "QR code"
+    },
+    "/docs/apple/components/tree": {
+      "alt": "Tree — Lumen UI",
+      "description": "Browse hierarchical records with controlled disclosure and selection.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--tree.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--tree.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/tree",
+      "title": "Tree"
+    },
+    "/docs/apple/components/cascader": {
+      "alt": "Cascader — Lumen UI",
+      "description": "Select a stable leaf path through native branch drill-down.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--cascader.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--cascader.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/cascader",
+      "title": "Cascader"
     },
     "/docs/android/components": {
       "alt": "android components — Lumen UI",
@@ -4672,6 +5408,358 @@
       ],
       "pathname": "/docs/android/components/adaptive-list-detail-scaffold",
       "title": "Adaptive list detail scaffold"
+    },
+    "/docs/android/components/mentions": {
+      "alt": "Mentions — Lumen UI",
+      "description": "Insert literal mention suggestions into controlled native multiline text.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--mentions.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--mentions.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/mentions",
+      "title": "Mentions"
+    },
+    "/docs/android/components/tour": {
+      "alt": "Tour — Lumen UI",
+      "description": "Guide users through controlled steps around measured native targets.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--tour.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--tour.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/tour",
+      "title": "Tour"
+    },
+    "/docs/android/components/table": {
+      "alt": "Table — Lumen UI",
+      "description": "Host-formatted stable records in phone-friendly labeled cells.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--table.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--table.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/table",
+      "title": "Table"
+    },
+    "/docs/android/components/data-table": {
+      "alt": "Data table — Lumen UI",
+      "description": "Controlled sorting and selection retain hidden IDs and respect disabled rows.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--data-table.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--data-table.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/data-table",
+      "title": "Data table"
+    },
+    "/docs/android/components/rating": {
+      "alt": "Rating — Lumen UI",
+      "description": "Named whole-number rating options with controlled values and read-only support.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--rating.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--rating.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/rating",
+      "title": "Rating"
+    },
+    "/docs/android/components/breadcrumb": {
+      "alt": "Breadcrumb — Lumen UI",
+      "description": "Named ancestor navigation with a noninteractive current destination.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--breadcrumb.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--breadcrumb.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/breadcrumb",
+      "title": "Breadcrumb"
+    },
+    "/docs/android/components/stepper": {
+      "alt": "Stepper — Lumen UI",
+      "description": "Host-owned step progress with localized complete, current and upcoming states.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--stepper.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--stepper.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/stepper",
+      "title": "Stepper"
+    },
+    "/docs/android/components/timeline": {
+      "alt": "Timeline — Lumen UI",
+      "description": "Named chronological content retaining host controls and decorative connectors.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--timeline.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--timeline.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/timeline",
+      "title": "Timeline"
+    },
+    "/docs/android/components/command": {
+      "alt": "Command — Lumen UI",
+      "description": "Named command search, enabled highlight navigation and a usable close path.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--command.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--command.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/command",
+      "title": "Command"
+    },
+    "/docs/android/components/tree-grid": {
+      "alt": "Tree grid — Lumen UI",
+      "description": "Named hierarchical disclosures and labeled cells with inherited disabled state.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--tree-grid.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--tree-grid.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/tree-grid",
+      "title": "Tree grid"
+    },
+    "/docs/android/components/carousel": {
+      "alt": "Carousel — Lumen UI",
+      "description": "Page through controlled native slides with accessible navigation.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--carousel.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--carousel.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/carousel",
+      "title": "Carousel"
+    },
+    "/docs/android/components/transfer": {
+      "alt": "Transfer — Lumen UI",
+      "description": "Select controlled native transfer values with stable identities.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--transfer.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--transfer.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/transfer",
+      "title": "Transfer"
+    },
+    "/docs/android/components/tree-select": {
+      "alt": "Tree select — Lumen UI",
+      "description": "Select controlled native tree select values with stable identities.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--tree-select.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--tree-select.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/tree-select",
+      "title": "Tree select"
+    },
+    "/docs/android/components/color-picker": {
+      "alt": "Color picker — Lumen UI",
+      "description": "Edit controlled native colors with validated text, channels and optional alpha.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--color-picker.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--color-picker.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/color-picker",
+      "title": "Color picker"
+    },
+    "/docs/android/components/schedule": {
+      "alt": "Schedule — Lumen UI",
+      "description": "Present timed native day columns with all-day bands and overlap lanes.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--schedule.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--schedule.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/schedule",
+      "title": "Schedule"
+    },
+    "/docs/android/components/calendar": {
+      "alt": "Calendar — Lumen UI",
+      "description": "Select bounded Gregorian civil dates in a controlled month grid.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--calendar.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--calendar.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/calendar",
+      "title": "Calendar"
+    },
+    "/docs/android/components/agenda": {
+      "alt": "Agenda — Lumen UI",
+      "description": "Present chronological timed and all-day events under civil-day headings.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--agenda.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--agenda.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/agenda",
+      "title": "Agenda"
+    },
+    "/docs/android/components/kanban-board": {
+      "alt": "Kanban board — Lumen UI",
+      "description": "Move controlled cards between capacity-limited native board columns.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--kanban-board.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--kanban-board.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/kanban-board",
+      "title": "Kanban board"
+    },
+    "/docs/android/components/kanban-column": {
+      "alt": "Kanban column — Lumen UI",
+      "description": "Reorder rich native cards within a controlled standalone column.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--kanban-column.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--kanban-column.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/kanban-column",
+      "title": "Kanban column"
+    },
+    "/docs/android/components/qr-code": {
+      "alt": "QR code — Lumen UI",
+      "description": "Render accessible offline QR codes from controlled Unicode values.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--qr-code.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--qr-code.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/qr-code",
+      "title": "QR code"
+    },
+    "/docs/android/components/tree": {
+      "alt": "Tree — Lumen UI",
+      "description": "Browse hierarchical records with controlled disclosure and selection.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--tree.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--tree.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/tree",
+      "title": "Tree"
+    },
+    "/docs/android/components/cascader": {
+      "alt": "Cascader — Lumen UI",
+      "description": "Select a stable leaf path through native branch drill-down.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--cascader.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--cascader.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/cascader",
+      "title": "Cascader"
     },
     "/docs/web/data-visualization/setup": {
       "alt": "Charts: Setup — Lumen UI",

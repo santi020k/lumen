@@ -82,7 +82,7 @@ fun LumenKanbanBoard(
                         Column(dragModifier, verticalArrangement = Arrangement.spacedBy(LumenSpacing.Xs)) {
                             LumenCard(padding = LumenSurfacePadding.Md) { cardContent(card) }
                             columns.forEach { target ->
-                                val positions = if (target.id == column.id) listOf(index - 1, index + 1) else listOf(target.cards.size)
+                                val positions = if (target.id == column.id) listOf(index - 1, index + 1).filter { it in column.cards.indices } else listOf(target.cards.size)
                                 positions.forEach { position ->
                                     val next = model.moving(card.id, target.id, position)
                                     LumenButton(onClick = { if (interactive && next != null) onColumnsChange(next) }, enabled = interactive && next != null) {

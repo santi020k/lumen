@@ -50,7 +50,7 @@ public struct LumenKanbanBoard<CardContent: View>: View {
                                             LumenCard(padding: .md, radius: .md) { cardContent(card) }.draggable(card.id)
                                         } else { LumenCard(padding: .md, radius: .md) { cardContent(card) } }
                                         ForEach(columns) { target in
-                                            let positions = target.id == column.id ? [index - 1, index + 1] : [target.cards.count]
+                                            let positions = target.id == column.id ? [index - 1, index + 1].filter { column.cards.indices.contains($0) } : [target.cards.count]
                                             ForEach(positions, id: \.self) { position in
                                                 LumenButton(disabled: !interactive || model.moving(card.id, toColumnId: target.id, toIndex: position) == nil,
                                                             action: { _ = move(card.id, to: target.id, index: position) }) {

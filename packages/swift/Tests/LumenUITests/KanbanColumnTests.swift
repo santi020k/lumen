@@ -10,7 +10,11 @@ import SwiftUI
     #expect(next?.id == "todo")
     #expect(next?.cards.map(\.id) == ["second", "todo"])
     #expect(column.cards.map(\.id) == ["todo", "second"])
+    #expect(model.moving("todo", toColumnId: column.id, toIndex: -1) == nil)
     #expect(model.moving("second", toColumnId: column.id, toIndex: 2) == nil)
+    let single = LumenKanbanModel(columns: [.init(id: "single", label: "Single", cards: [.init(id: "a", label: "A")])])
+    #expect(single.moving("a", toColumnId: "single", toIndex: -1) == nil)
+    #expect(single.moving("a", toColumnId: "single", toIndex: 1) == nil)
 }
 @Test func kanbanStandaloneColumnRejectsBlockedAndInvalidData() {
     let card = LumenKanbanCard(id: "a", label: "A", disabled: true)
