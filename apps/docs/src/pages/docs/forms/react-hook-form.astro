@@ -3,6 +3,7 @@ import { Breadcrumb, Card, CodeTabs, Link, Table } from '@santi020k/lumen-astro'
 
 import CodeBlock from '../../../components/CodeBlock.astro'
 import DocsPageHero from '../../../components/DocsPageHero.astro'
+import FormStateExample from '../../../components/FormStateExample.astro'
 import DocsLayout from '../../../layouts/DocsLayout.astro'
 
 const install = 'pnpm add @santi020k/lumen-react @santi020k/lumen-react-hook-form react-hook-form'
@@ -207,6 +208,8 @@ const adapters = [
       ]}
       title="Lumen with React Hook Form"
     />
+
+    <FormStateExample idPrefix="react-hook-form" />
 
     <section class="docs-section space-y-4" aria-labelledby="install-title">
       <h2 class="text-2xl font-bold text-ink" id="install-title">Install</h2>

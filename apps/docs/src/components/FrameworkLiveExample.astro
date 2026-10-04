@@ -1,0 +1,63 @@
+---
+import { Card, Link, Stack } from '@santi020k/lumen-astro'
+
+interface Props { framework: 'react' | 'elements' }
+
+const { framework } = Astro.props
+---
+<section class="docs-section" id="live-example" aria-labelledby="live-example-title" data-framework-example={framework}>
+  <div class="docs-section-heading">
+    <p>Try the adapter</p>
+    <h2 id="live-example-title">A working {framework === 'react' ? 'React' : 'Elements'} example</h2>
+    <p>{framework === 'react' ? 'React state updates the progress and feedback. Try Advance, then switch tabs with the arrow keys.' : 'These are registered custom elements. Focus a tab and use the arrow keys to change its panel.'}</p>
+  </div>
+  {framework === 'react' ?
+(
+    <div data-guide-react-root><Card><p>Loading the React example…</p></Card></div>
+  ) :
+(
+    <lumen-card>
+      <lumen-card-header><lumen-card-title>Workspace activity</lumen-card-title></lumen-card-header>
+      <lumen-card-content>
+        <lumen-tabs>
+          <div role="tablist" aria-label="Elements guide views">
+            <button role="tab" type="button" id="guide-overview-tab" aria-controls="guide-overview" aria-selected="true">Overview</button>
+            <button role="tab" type="button" id="guide-activity-tab" aria-controls="guide-activity" aria-selected="false">Activity</button>
+          </div>
+          <section role="tabpanel" id="guide-overview" aria-labelledby="guide-overview-tab">Your workspace is ready.</section>
+          <section role="tabpanel" id="guide-activity" aria-labelledby="guide-activity-tab" hidden>No new activity today.</section>
+        </lumen-tabs>
+      </lumen-card-content>
+    </lumen-card>
+  )}
+  <noscript><p>Enable JavaScript to try the adapter. Installation and usage examples remain available below.</p></noscript>
+  <Stack direction="horizontal" gap="related" wrap>
+    <Link href="/docs/web/playground">Compare all three web adapters</Link>
+    <Link href="#install-title">Copy the setup</Link>
+  </Stack>
+</section>
+<script>
+  const reactRoot = document.querySelector<HTMLElement>('[data-guide-react-root]')
+
+  if (reactRoot) {
+    try {
+      const { mountReactWebPlayground } = await import('../lib/web-framework-playground')
+
+      mountReactWebPlayground(reactRoot)
+    } catch {
+      reactRoot.textContent = 'The example could not load. Reload to retry, or use the setup below.'
+    }
+  }
+
+  if (document.querySelector('[data-framework-example="elements"]')) {
+    const { defineLumenElements } = await import('@santi020k/lumen-elements/define')
+
+    defineLumenElements(['Card', 'CardHeader', 'CardTitle', 'CardContent', 'Tabs'])
+  }
+</script>
+<style>
+  [data-guide-react-root] { min-width: 0; }
+  :global([data-guide-react-root] .web-framework-preview__surface) { display: grid; gap: var(--ui-space-group); }
+  :global([data-guide-react-root] .web-framework-preview__heading) { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--ui-space-group); }
+  :global([data-guide-react-root] .web-framework-preview__stack) { display: grid; gap: var(--ui-space-related); }
+</style>
