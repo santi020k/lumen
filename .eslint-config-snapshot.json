@@ -950,9 +950,12 @@
         "SpeechGrammar": false,
         "SpeechGrammarList": false,
         "SpeechRecognition": false,
+        "SpeechRecognitionAlternative": false,
         "SpeechRecognitionErrorEvent": false,
         "SpeechRecognitionEvent": false,
         "SpeechRecognitionPhrase": false,
+        "SpeechRecognitionResult": false,
+        "SpeechRecognitionResultList": false,
         "speechSynthesis": false,
         "SpeechSynthesis": false,
         "SpeechSynthesisErrorEvent": false,
@@ -2631,6 +2634,9 @@
           1
         ],
         "@typescript-eslint/no-unsafe-declaration-merging": [
+          2
+        ],
+        "@typescript-eslint/no-unsafe-enum-assignment": [
           2
         ],
         "@typescript-eslint/no-unsafe-enum-comparison": [
