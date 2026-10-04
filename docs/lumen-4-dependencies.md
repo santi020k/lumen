@@ -49,6 +49,14 @@ minimum. The temporary floor was removed, leaving the manifest, lockfile, and ag
 unchanged. Without an approved exception, 4.3.0 becomes age-eligible after
 `2026-10-05T02:56:05.593Z` (October 4, 21:56 in Colombia).
 
+On October 4 the owner approved preparing the local release with the reviewed 4.3.0 version.
+`minimumReleaseAgeExclude` now allows exactly `http-cache-semantics@4.3.0`; the existing global
+hold, strict mode, audit enforcement and other exclusions remain unchanged. A targeted pnpm update
+changes only this package's resolution and integrity in the lockfile. Remove this temporary entry
+after the normal hold expires. This is an approved age-policy exception, not an advisory suppression
+or a claim that the reported cache behavior changed. Final validation is recorded in
+[release readiness](lumen-4-readiness.md).
+
 ### Applied patches and audit verification
 
 Both proposed runtime patches were first reproduced in isolated copies, then applied to the
