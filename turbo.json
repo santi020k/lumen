@@ -6,7 +6,7 @@
     "build": {
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/tsconfig*.json"],
-      "outputs": ["dist/**", ".astro/**", ".next/**"],
+      "outputs": ["dist/**", ".astro/**", ".next/**", "!.next/cache/**", "!.next/dev/**"],
       "outputLogs": "errors-only"
     },
     "dev": {
