@@ -2971,7 +2971,7 @@ lumen-dialog-close {
   border: 0;
   border-radius: var(--ui-radius-sm);
   background: transparent;
-  color: hsl(var(--ink-muted));
+  color: hsl(var(--ink-soft));
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
   font-size: 0.8125rem;
   font-weight: 500;
