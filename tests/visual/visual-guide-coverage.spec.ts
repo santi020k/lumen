@@ -65,7 +65,8 @@ for (const width of [390, 1440]) {
       await expect(page.getByRole('heading', { name: 'Space, type, and surface' })).toBeVisible()
       await page.getByRole('button', { name: 'Replay motion' }).click()
       await expect(page.locator('[data-motion-status]')).toContainText('Reduced motion is enabled')
-      expect(await page.locator('[data-motion-marker]').evaluateAll(markers => markers.every(marker => marker.getAnimations().length === 0))).toBe(true)
+      const markerTransforms = await page.locator('[data-motion-marker]').evaluateAll(markers => markers.map(marker => getComputedStyle(marker).transform))
+      expect(markerTransforms).toEqual(['none', 'none', 'none'])
       await checkOverflow()
 
       await visit('/docs/migrations/v3-to-v4')

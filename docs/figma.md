@@ -10,6 +10,17 @@ For the reverse direction — implementing Figma designs with Lumen components �
 AI agents maintaining the library itself should follow the reusable
 [Figma AI working guide](figma-ai-working-guide.md).
 
+## Figma plugin — Beta
+
+**Lumen for Figma is a beta version.** The development plugin recognizes six canonical Lumen
+components, generates an Astro starter, and prepares a structured AI handoff. It runs locally with
+no network access; AI generation and project validation happen in the user's existing coding agent.
+Generated code, responsive behavior, unsupported layers, and application actions require review.
+
+See the [plugin setup and limitations](../apps/figma-plugin/README.md). The beta is available as a
+repository development build, not a published Figma Community plugin. The existing Community link
+below points to the design library.
+
 ## Figma Library File
 
 The Lumen Figma library lives at
