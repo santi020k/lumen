@@ -24,6 +24,8 @@ import { resolveLumenPhoneInputValue } from './phone-recipes.js'
 import { LumenNavigationBar } from './platform-components.js'
 import { LumenButton, LumenIcon, LumenIconButton, LumenText, LumenTextField } from './primitives.js'
 import { LumenProvider } from './provider.js'
+import { LumenRating } from './rating-components.js'
+import { resolveLumenRating } from './rating-recipes.js'
 import { LumenCheckbox, LumenTabs } from './selection-components.js'
 import { LumenBanner, LumenErrorState, LumenStatusBar } from './structured-components.js'
 import { LumenTimeField } from './time-components.js'
@@ -2328,4 +2330,49 @@ test('multiple selection forwards application safe-area insets to its modal', as
     return typeof style === 'object' && style !== null && 'paddingBottom' in style && style.paddingBottom === 96
   })
   expect(panels.length).toBeGreaterThan(0)
+})
+
+describe('rating controlled selection', () => {
+  test('clamps nonfinite values and limits the rendered option count', () => {
+    expect(resolveLumenRating(Number.NaN, Number.POSITIVE_INFINITY)).toEqual({ max: 5, value: 0 })
+    expect(resolveLumenRating(-5, 0)).toEqual({ max: 1, value: 0 })
+    expect(resolveLumenRating(999, 999)).toEqual({ max: 100, value: 100 })
+    expect(resolveLumenRating(3.9)).toEqual({ max: 5, value: 3 })
+  })
+
+  test('reports selection without mutating controlled value and blocks read-only edits', async () => {
+    const onValueChange = vi.fn<(value: number) => void>()
+    const root = await renderNative(
+      <LumenRating
+        label="Score"
+        value={2}
+        onValueChange={onValueChange}
+        formatOption={(value, max) => `${value} of ${max}`}
+      />
+    )
+    const option = findByAccessibilityLabel(root, '4 of 5')
+    act(() => {
+      callAction(readProp(option, 'onPress'), 'Missing rating action')
+    })
+    expect(onValueChange).toHaveBeenCalledWith(4)
+    expect(readProp(option, 'accessibilityState')).toEqual({ disabled: false, selected: false })
+    act(() => {
+      root.render(
+        <LumenProvider>
+          <LumenRating
+            label="Score"
+            value={2}
+            readOnly
+            onValueChange={onValueChange}
+          />
+        </LumenProvider>
+      )
+    })
+    const locked = findByAccessibilityLabel(root, '4 / 5')
+    act(() => {
+      callAction(readProp(locked, 'onPress'), 'Missing rating action')
+    })
+    expect(onValueChange).toHaveBeenCalledTimes(1)
+    expect(readProp(locked, 'disabled')).toBe(true)
+  })
 })

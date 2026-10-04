@@ -618,3 +618,11 @@ hides stale results; validation uses `errorMessage`, search failure uses `result
 <LumenMultiSelect label="Teams" options={matchingTeams} values={teams} onValuesChange={setTeams}
   query={query} onQueryChange={setQuery} loading={searching} />
 ```
+
+## Rating
+
+`LumenRating` renders controlled whole-star selection. Zero means unrated; the
+maximum is clamped to 1 through 100. Out-of-range display values are clamped without
+rewriting host state. Disabled and read-only controls cannot emit edits. Supply
+`formatOption` to localize accessible option names (the neutral default is `3 / 5`).
+The host owns persistence and may reset the controlled value to zero.

@@ -208,6 +208,8 @@ export {
   type LumenTextVariant
 } from './primitives.js'
 export { LumenProvider, type LumenProviderProps } from './provider.js'
+export { LumenRating, type LumenRatingProps } from './rating-components.js'
+export { resolveLumenRating } from './rating-recipes.js'
 export {
   LumenCheckbox,
   type LumenCheckboxProps,

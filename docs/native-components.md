@@ -1171,3 +1171,18 @@ and disabled states dismiss selection and prevent edits. `errorMessage` is form 
 empty/loading/retry, selection count and chip-removal labels.
 
 See the [complete web-to-native audit](lumen-4-web-native-audit.md) for the remaining catalog gaps.
+
+## Rating
+
+`LumenRating` provides controlled whole-star selection in React Native, SwiftUI and
+Compose. React Native takes `value`, `onValueChange`, `max`, `disabled`, `readOnly`
+and `label`. SwiftUI takes a `Binding<Int>`, `maximum`, `readOnly` and a title,
+using the environment for disabled state. Compose takes `value`, `onValueChange`,
+`maximum`, `enabled`, `readOnly` and `label`. Each adapter accepts `formatOption`
+for localized accessible option names. Zero denotes unrated. The resolved maximum
+is bounded to 1 through 100 and display values are clamped without host mutation.
+React Native's `resolveLumenRating` and native `LumenRatingModel` expose normalization
+for application validation. Only an enabled, editable selection invokes an update.
+
+Catalog integration and playground verification are tracked in
+[native catalog parity completion](native-catalog-parity-plan.md).
