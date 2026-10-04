@@ -1742,6 +1742,32 @@
           "precise": "s:7LumenUI0A11PickerStyleO9segmentedyA2CmF"
         },
         {
+          "declaration": "@MainActor struct LumenRangeSlider",
+          "kind": "swift.struct",
+          "path": [
+            "LumenRangeSlider"
+          ],
+          "precise": "s:7LumenUI0A11RangeSliderV"
+        },
+        {
+          "declaration": "@MainActor init(_ label: LocalizedStringKey, value: Binding<ClosedRange<Double>>, in bounds: ClosedRange<Double> = 0...100, step: Double? = nil, readOnly: Bool = false, startLabel: LocalizedStringKey = \"Minimum\", endLabel: LocalizedStringKey = \"Maximum\", formatValue: @escaping (Double) -> String = { String($0) })",
+          "kind": "swift.init",
+          "path": [
+            "LumenRangeSlider",
+            "init(_:value:in:step:readOnly:startLabel:endLabel:formatValue:)"
+          ],
+          "precise": "s:7LumenUI0A11RangeSliderV_5value2in4step8readOnly10startLabel03endK011formatValueAC05SwiftB018LocalizedStringKeyV_AK7BindingVySNySdGGAPSdSgSbA2MSSSdctcfc"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenRangeSlider",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A11RangeSliderV4bodyQrvp"
+        },
+        {
           "declaration": "@MainActor struct LumenSearchField",
           "kind": "swift.struct",
           "path": [
@@ -31527,6 +31553,32 @@
             "segmented"
           ],
           "precise": "s:7LumenUI0A11PickerStyleO9segmentedyA2CmF"
+        },
+        {
+          "declaration": "@MainActor struct LumenRangeSlider",
+          "kind": "swift.struct",
+          "path": [
+            "LumenRangeSlider"
+          ],
+          "precise": "s:7LumenUI0A11RangeSliderV"
+        },
+        {
+          "declaration": "@MainActor init(_ label: LocalizedStringKey, value: Binding<ClosedRange<Double>>, in bounds: ClosedRange<Double> = 0...100, step: Double? = nil, readOnly: Bool = false, startLabel: LocalizedStringKey = \"Minimum\", endLabel: LocalizedStringKey = \"Maximum\", formatValue: @escaping (Double) -> String = { String($0) })",
+          "kind": "swift.init",
+          "path": [
+            "LumenRangeSlider",
+            "init(_:value:in:step:readOnly:startLabel:endLabel:formatValue:)"
+          ],
+          "precise": "s:7LumenUI0A11RangeSliderV_5value2in4step8readOnly10startLabel03endK011formatValueAC05SwiftB018LocalizedStringKeyV_AK7BindingVySNySdGGAPSdSgSbA2MSSSdctcfc"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenRangeSlider",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A11RangeSliderV4bodyQrvp"
         },
         {
           "declaration": "@MainActor struct LumenSearchField",
@@ -88994,6 +89046,32 @@
             "segmented"
           ],
           "precise": "s:7LumenUI0A11PickerStyleO9segmentedyA2CmF"
+        },
+        {
+          "declaration": "@MainActor struct LumenRangeSlider",
+          "kind": "swift.struct",
+          "path": [
+            "LumenRangeSlider"
+          ],
+          "precise": "s:7LumenUI0A11RangeSliderV"
+        },
+        {
+          "declaration": "@MainActor init(_ label: LocalizedStringKey, value: Binding<ClosedRange<Double>>, in bounds: ClosedRange<Double> = 0...100, step: Double? = nil, readOnly: Bool = false, startLabel: LocalizedStringKey = \"Minimum\", endLabel: LocalizedStringKey = \"Maximum\", formatValue: @escaping (Double) -> String = { String($0) })",
+          "kind": "swift.init",
+          "path": [
+            "LumenRangeSlider",
+            "init(_:value:in:step:readOnly:startLabel:endLabel:formatValue:)"
+          ],
+          "precise": "s:7LumenUI0A11RangeSliderV_5value2in4step8readOnly10startLabel03endK011formatValueAC05SwiftB018LocalizedStringKeyV_AK7BindingVySNySdGGAPSdSgSbA2MSSSdctcfc"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenRangeSlider",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A11RangeSliderV4bodyQrvp"
         },
         {
           "declaration": "@MainActor struct LumenSearchField",

@@ -1332,6 +1332,16 @@
       "width": 900
     },
     {
+      "alt": "Range slider rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "202eed3fc6e90c1c783d32a5f26e2edb1bb5be4efd0270c94b2aa98a0aad9b16",
+      "slug": "range-slider",
+      "src": "/native-components/apple/range-slider.webp",
+      "width": 900
+    },
+    {
       "alt": "Scatter chart rendered in the iPhone simulator Lumen playground",
       "device": "iPhone simulator",
       "height": 1957,
@@ -2100,6 +2110,16 @@
       "slug": "range-chart",
       "src": "/native-components/react-native/range-chart.webp",
       "width": 900
+    },
+    {
+      "alt": "Range slider rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 292,
+      "platform": "react-native",
+      "sha256": "9da0e9085c29e063c7aed0b34217d2d161ba8d79e20b93a61e64e7745ba95d26",
+      "slug": "range-slider",
+      "src": "/native-components/react-native/range-slider.webp",
+      "width": 670
     },
     {
       "alt": "Refresh control rendered in the Expo web renderer Lumen playground",

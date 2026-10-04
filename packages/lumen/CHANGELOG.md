@@ -38,6 +38,9 @@
 
 ### Minor Changes
 
+- Extend native range filters to React Native and SwiftUI with independently named endpoints,
+  localized formatting, controlled domain stepping, and disabled/read-only protection.
+
 - Add CalendarHeatmap, FunnelChart, and BoxPlot across web and native adapters with shared validation,
   semantic chart colors, localized formatting, responsive layouts, and accessible exact data.
   Calendar heatmaps use explicit Gregorian date-only ranges; funnels preserve supplied stage order;

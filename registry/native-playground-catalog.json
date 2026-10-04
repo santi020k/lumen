@@ -49,6 +49,7 @@
         "tabs",
         "picker",
         "slider",
+        "range-slider",
         "time-field",
         "autocomplete",
         "number-field",
@@ -205,11 +206,6 @@
       {
         "id": "multi-select",
         "label": "Multi select",
-        "category": "forms"
-      },
-      {
-        "id": "range-slider",
-        "label": "Range slider",
         "category": "forms"
       },
       {

@@ -1,6 +1,44 @@
+// cspell:words Capacidad
 import XCTest
 
 final class AdvancedInputTests: XCTestCase {
+    @MainActor
+    func testRangeEndpointsAdjustAndReadOnlyValuesRemainAccessible() {
+        let app = XCUIApplication()
+        app.launchArguments = ["--component", "Range slider"]
+        app.launch()
+        XCTAssertTrue(app.staticTexts["Forms"].waitForExistence(timeout: 10))
+        let minimum = app.sliders["Capacity · Minimum"]
+        reveal(minimum, in: app)
+        minimum.adjust(toNormalizedSliderPosition: 0.3)
+        let startText = minimum.value as? String
+        guard let startText, let start = Double(startText.replacingOccurrences(of: "%", with: "")) else {
+            XCTFail("Missing formatted minimum")
+            return
+        }
+        XCTAssertGreaterThan(start, 20)
+        XCTAssertLessThanOrEqual(start, 80)
+        XCTAssertEqual(start.truncatingRemainder(dividingBy: 10), 0)
+        let maximum = app.sliders["Capacity · Maximum"]
+        reveal(maximum, in: app)
+        XCTAssertEqual(maximum.value as? String, "80%")
+        maximum.adjust(toNormalizedSliderPosition: 0.6)
+        guard let endText = maximum.value as? String,
+            let end = Double(endText.replacingOccurrences(of: "%", with: "")) else {
+            XCTFail("Missing formatted maximum")
+            return
+        }
+        XCTAssertLessThan(end, 80)
+        XCTAssertGreaterThanOrEqual(end, start)
+        XCTAssertEqual(end.truncatingRemainder(dividingBy: 10), 0)
+        XCTAssertEqual(minimum.value as? String, startText)
+        let readOnly = app.sliders["Capacidad · Mínimo"]
+        reveal(readOnly, in: app)
+        XCTAssertFalse(readOnly.isEnabled)
+        XCTAssertEqual(readOnly.value as? String, "20 %")
+        capture("Native range endpoints and localized read-only values", app: app)
+    }
+
     @MainActor
     func testPasswordRevealResetsAfterDisabling() {
         let app = open("Password field")

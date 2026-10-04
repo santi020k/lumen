@@ -59,13 +59,13 @@ internal val playgroundSections = listOf(
             "Tabs",
             "Picker",
             "Slider",
+            "Range slider",
             "Time field",
             "Autocomplete",
             "Number field",
             "Password field",
             "Input OTP",
-            "Multi select",
-            "Range slider"
+            "Multi select"
         )
     ),
     PlaygroundSection(

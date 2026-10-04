@@ -595,3 +595,8 @@ Use `LollipopChart` for zero-based rankings and `DumbbellChart` for paired measu
 `LumenLollipopChart` and `LumenDumbbellChart`). Supply ordered comparison data with `id`, `label`,
 nullable `value`, optional nullable `reference`, and optional `tone`. Both charts preserve missing
 values and expose exact data. See the [shared visualization contract](../../docs/data-visualization.md#rankings-and-paired-comparisons).
+
+`LumenRangeSlider` provides a controlled numeric interval with independently named endpoints,
+localized value formatting, and disabled/read-only protection. See the
+[native range-filter contract](../../docs/native-components.md#native-range-filters) for each
+adapter's binding and step conventions.
