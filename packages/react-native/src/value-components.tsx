@@ -5,6 +5,7 @@ import {
 } from 'react'
 import {
   type AccessibilityActionEvent,
+  I18nManager,
   type LayoutChangeEvent,
   type NativeSyntheticEvent,
   type NativeTouchEvent,
@@ -202,7 +203,9 @@ export const LumenSlider = ({
   const updateFromTouch = (event: NativeSyntheticEvent<NativeTouchEvent>): void => {
     if (!enabled) return
 
-    onValueChange(resolveLumenSliderPosition(event.nativeEvent.locationX, trackWidth, resolved))
+    const location = I18nManager.isRTL ? trackWidth - event.nativeEvent.locationX : event.nativeEvent.locationX
+
+    onValueChange(resolveLumenSliderPosition(location, trackWidth, resolved))
   }
 
   const handleAccessibilityAction = (event: AccessibilityActionEvent): void => {
@@ -282,8 +285,8 @@ export const LumenSlider = ({
               borderRadius: 10,
               borderWidth: 2,
               height: 20,
-              left: `${resolved.percentage}%`,
-              marginLeft: -10,
+              marginStart: -10,
+              start: `${resolved.percentage}%`,
               position: 'absolute',
               top: -7,
               width: 20

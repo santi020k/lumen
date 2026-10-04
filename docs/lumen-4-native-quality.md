@@ -801,3 +801,24 @@ for commands and evidence limits. Physical-device, accessibility, published-arti
 stability requirements remain open; no qualification ledger status changed. Canonical validation
 and local release integration remain incomplete because of the previously recorded web bundle
 budget failures.
+
+### React Native slider direction
+
+The slider previously converted touches from the physical left edge even when the native layout
+was right-to-left. A component regression reproduced a right-edge touch returning the minimum
+value. Touch and drag coordinates now reverse in native RTL mode; the thumb uses logical start
+positioning and margin rather than physical left properties. Screen-reader increment and
+decrement continue to increase and decrease the numeric value in both directions.
+
+Behavioral coverage checks both directions, touch start and movement, range endpoints, out-of-track
+clamping and accessibility actions. This proves the controlled callback boundary, not native
+rendering, screen-reader delivery or physical-device RTL qualification. Runtime screenshots and
+interaction verification remain pending. The API is unchanged; package guidance, a Changeset and
+the generated MCP snapshot describe the fix.
+
+All 1,334 JavaScript tests passed after the regression update. Root strict type checking and
+zero-warning lint passed all 23 tasks each; the unchanged native API baseline, generated MCP
+snapshot and evaluation, and clean packed React Native consumer also passed. Canonical validation
+passed all 14 build tasks and stopped at the same CSS, React and Elements bundle-budget overruns.
+No budget was raised. Logs remain under `.build/native-quality-slider-rtl-*`; local release
+integration and the remaining native qualification requirements are incomplete.
