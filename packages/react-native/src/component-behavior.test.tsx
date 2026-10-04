@@ -11,6 +11,7 @@ import { LumenBrandGithubIconGraphic } from './static-icons/brand-github.generat
 import { LumenSearchIconGraphic } from './static-icons/search.generated.js'
 import { LumenButtonGroup, LumenChip, LumenFieldGroup, LumenTextarea, LumenToast } from './additional-components.js'
 import { LumenAutocomplete, LumenInputOTP, LumenNumberField, LumenPasswordField } from './advanced-form-components.js'
+import { LumenBreadcrumb } from './breadcrumb-components.js'
 import { LumenBarChart, LumenComboChart, LumenHeatmap, LumenHistogram, LumenLineChart, LumenRangeChart, LumenScatterChart, LumenWaterfallChart } from './chart-components.js'
 import { LumenImageComparison } from './comparison-components.js'
 import { LumenDateField, LumenDateRangeField } from './datetime-components.js'
@@ -24,9 +25,17 @@ import { resolveLumenPhoneInputValue } from './phone-recipes.js'
 import { LumenNavigationBar } from './platform-components.js'
 import { LumenButton, LumenIcon, LumenIconButton, LumenText, LumenTextField } from './primitives.js'
 import { LumenProvider } from './provider.js'
+import { LumenRating } from './rating-components.js'
+import { resolveLumenRating } from './rating-recipes.js'
 import { LumenCheckbox, LumenTabs } from './selection-components.js'
+import { LumenStepper } from './stepper-components.js'
+import { resolveLumenStepState } from './stepper-recipes.js'
 import { LumenBanner, LumenErrorState, LumenStatusBar } from './structured-components.js'
+import { LumenDataTable } from './table-components.js'
+import type { LumenTableRow } from './table-recipes.js'
+import { createLumenTheme } from './theme.js'
 import { LumenTimeField, type LumenTimeFieldProps } from './time-components.js'
+import { LumenTimeline, LumenTimelineItem } from './timeline-components.js'
 import { LumenPicker, LumenRangeSlider, LumenSlider } from './value-components.js'
 
 Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true })
@@ -1375,6 +1384,10 @@ describe('Lumen React Native component behavior', () => {
     const checkbox = findByAccessibilityRole(root, 'checkbox')
     const onPress = readProp(checkbox, 'onPress')
 
+    expect(readProp(checkbox, 'accessibilityLabel')).toBe('Include diagnostics')
+    expect(readProp(checkbox, 'aria-checked')).toBe(false)
+    expect(readProp(checkbox, 'aria-disabled')).toBe(false)
+
     expect(readProp(checkbox, 'accessibilityState')).toEqual({
       checked: false,
       disabled: false
@@ -1387,6 +1400,14 @@ describe('Lumen React Native component behavior', () => {
     })
 
     expect(onCheckedChange).toHaveBeenCalledExactlyOnceWith(true)
+  })
+
+  test('checkbox preserves a host-provided accessible name', async () => {
+    const root = await renderNative(
+      <LumenCheckbox checked={false} label="Diagnostics" accessibilityLabel="Include diagnostic report" onCheckedChange={() => undefined} />
+    )
+
+    expect(readProp(findByAccessibilityRole(root, 'checkbox'), 'accessibilityLabel')).toBe('Include diagnostic report')
   })
 
   test('toggle makes the full labeled row the single interactive switch', async () => {
@@ -2384,4 +2405,258 @@ test('multiple selection forwards application safe-area insets to its modal', as
     return typeof style === 'object' && style !== null && 'paddingBottom' in style && style.paddingBottom === 96
   })
   expect(panels.length).toBeGreaterThan(0)
+})
+
+describe('rating controlled selection', () => {
+  test('clamps nonfinite values and limits the rendered option count', () => {
+    expect(resolveLumenRating(Number.NaN, Number.POSITIVE_INFINITY)).toEqual({ max: 5, value: 0 })
+    expect(resolveLumenRating(-5, 0)).toEqual({ max: 1, value: 0 })
+    expect(resolveLumenRating(999, 999)).toEqual({ max: 100, value: 100 })
+    expect(resolveLumenRating(3.9)).toEqual({ max: 5, value: 3 })
+  })
+
+  test('reports selection without mutating controlled value and blocks read-only edits', async () => {
+    const onValueChange = vi.fn<(value: number) => void>()
+    const root = await renderNative(
+      <LumenRating
+        label="Score"
+        value={2}
+        onValueChange={onValueChange}
+        formatOption={(value, max) => `${value} of ${max}`}
+      />
+    )
+    const option = findByAccessibilityLabel(root, '4 of 5')
+    act(() => {
+      callAction(readProp(option, 'onPress'), 'Missing rating action')
+    })
+    expect(onValueChange).toHaveBeenCalledWith(4)
+    expect(readProp(option, 'accessibilityState')).toEqual({ checked: false, disabled: false, selected: false })
+    act(() => {
+      root.render(
+        <LumenProvider>
+          <LumenRating
+            label="Score"
+            value={2}
+            readOnly
+            onValueChange={onValueChange}
+          />
+        </LumenProvider>
+      )
+    })
+    const locked = findByAccessibilityLabel(root, '4 / 5')
+    act(() => {
+      callAction(readProp(locked, 'onPress'), 'Missing rating action')
+    })
+    expect(onValueChange).toHaveBeenCalledTimes(1)
+    expect(readProp(locked, 'disabled')).toBe(true)
+  })
+})
+
+describe('progress and history contracts', () => {
+  test('normalizes step progress without changing host state', () => {
+    expect(resolveLumenStepState(0, -1, 3)).toBe('current')
+    expect(resolveLumenStepState(0, Number.NaN, 3)).toBe('current')
+    expect(resolveLumenStepState(1, 1.9, 3)).toBe('current')
+    expect(resolveLumenStepState(2, 99, 3)).toBe('complete')
+    expect(resolveLumenStepState(2, 1, 3)).toBe('upcoming')
+  })
+
+  test('presents localized controlled progression and accepts an empty workflow', async () => {
+    const steps = [{ id: 'prepare', title: 'Prepare' }, { id: 'review', title: 'Review', description: 'Confirm details' }]
+    const root = await renderNative(
+      <LumenStepper
+        label="Workflow"
+        steps={steps}
+        currentStep={1}
+        formatState={state => `Localized ${state}`}
+      />
+    )
+    const review = findByAccessibilityLabel(root, '2 / 2, Review, Confirm details')
+    expect(readProp(review, 'accessibilityValue')).toEqual({ text: 'Localized current' })
+    expect(readProp(review, 'accessibilityState')).toEqual({ selected: true })
+    act(() => {
+      root.render(<LumenProvider><LumenStepper label="Workflow" steps={steps} currentStep={2} /></LumenProvider>)
+    })
+    expect(readProp(findByAccessibilityLabel(root, '2 / 2, Review, Confirm details'), 'accessibilityValue'))
+      .toEqual({ text: 'Complete' })
+    act(() => {
+      root.render(<LumenProvider><LumenStepper label="Workflow" steps={[]} currentStep={0} /></LumenProvider>)
+    })
+    expect(root.container.queryAll(instance => readProp(instance, 'accessible') === true)).toHaveLength(0)
+  })
+
+  test('keeps timeline content actions accessible and host owned', async () => {
+    const onPress = vi.fn()
+    const root = await renderNative(
+      <LumenTimeline label="History">
+        <LumenTimelineItem>
+          <LumenText>Approved</LumenText>
+          <LumenButton onPress={onPress}>View approval</LumenButton>
+        </LumenTimelineItem>
+      </LumenTimeline>
+    )
+    const button = findByAccessibilityRole(root, 'button')
+    act(() => {
+      callAction(readProp(button, 'onPress'), 'Missing timeline action')
+    })
+    expect(onPress).toHaveBeenCalledOnce()
+  })
+
+  test('breadcrumb reports navigation IDs and cannot navigate current or disabled locations', async () => {
+    const onNavigate = vi.fn<(id: string) => void>()
+    const items = [{ id: 'home', label: 'Home' },
+      { id: 'private', label: 'Private', disabled: true },
+      { id: 'current', label: 'Details' }]
+    const root = await renderNative(
+      <LumenBreadcrumb
+        label="Location"
+        items={items}
+        onNavigate={onNavigate}
+        currentLabel="Here"
+      />
+    )
+    const home = findByAccessibilityLabel(root, 'Home')
+    act(() => {
+      callAction(readProp(home, 'onPress'), 'Missing breadcrumb action')
+    })
+    expect(onNavigate).toHaveBeenCalledExactlyOnceWith('home')
+    const locked = findByAccessibilityLabel(root, 'Private')
+    act(() => {
+      callAction(readProp(locked, 'onPress'), 'Missing disabled breadcrumb action')
+    })
+    expect(readProp(findByAccessibilityLabel(root, 'Details, Here'), 'onPress')).toBeUndefined()
+    expect(readProp(findByAccessibilityLabel(root, 'Details, Here'), 'aria-current')).toBe('page')
+  })
+})
+
+describe('data table controlled interactions', () => {
+  const columns = [{ key: 'amount', label: 'Amount', sortable: true }]
+  const rows: readonly LumenTableRow[] = [
+    { id: 'one', label: 'One', cells: { amount: { text: '20', sortValue: 20 } } },
+    { id: 'two', label: 'Two', cells: { amount: { text: '2', sortValue: 2 } }, disabled: true }
+  ]
+  test('emits manual sort requests without reordering and retains hidden selections', async () => {
+    const onSortChange = vi.fn()
+    const onSelectionChange = vi.fn()
+    const root = await renderNative(
+      <LumenDataTable
+        label="Records"
+        columns={columns}
+        rows={rows}
+        onSortChange={onSortChange}
+        onSelectionChange={onSelectionChange}
+        selectedIds={new Set(['hidden'])}
+      />
+    )
+    act(() => {
+      callAction(readProp(findByAccessibilityLabel(root, 'Amount'), 'onPress'), 'Missing sort action')
+    })
+    expect(onSortChange).toHaveBeenCalledWith({ key: 'amount', direction: 'ascending' })
+    act(() => {
+      callAction(readProp(findByAccessibilityLabel(root, 'Select visible'), 'onPress'), 'Missing bulk selection')
+    })
+    expect(onSelectionChange).toHaveBeenCalledWith(new Set(['hidden', 'one']))
+    expect(root.container.queryAll(instance => readProp(instance, 'accessible') === true)
+      .map(instance => readProp(instance, 'accessibilityLabel'))).toEqual(['Amount, 20', 'Amount, 2'])
+  })
+  test('loading and error states hide stale controls; retry remains host owned', async () => {
+    const onRetry = vi.fn()
+    const root = await renderNative(
+      <LumenDataTable
+        label="Records"
+        columns={columns}
+        rows={rows}
+        loading
+        loadingLabel="Fetching"
+        onSortChange={vi.fn()}
+      />
+    )
+    expect(readProp(findByAccessibilityRole(root, 'progressbar'), 'children')).toBe('Fetching')
+    expect(root.container.queryAll(instance => readProp(instance, 'accessibilityRole') === 'button')).toHaveLength(0)
+    act(() => {
+      root.render(
+        <LumenProvider>
+          <LumenDataTable
+            label="Records"
+            columns={columns}
+            rows={rows}
+            error="Try again"
+            onRetry={onRetry}
+            retryLabel="Reload"
+          />
+        </LumenProvider>
+      )
+    })
+    act(() => {
+      callAction(readProp(findByAccessibilityRole(root, 'button'), 'onPress'), 'Missing retry')
+    })
+    expect(onRetry).toHaveBeenCalledOnce()
+    expect(root.container.queryAll(instance => readProp(instance, 'accessibilityRole') === 'checkbox')).toHaveLength(0)
+  })
+  test('read-only tables block both sort and selection callbacks', async () => {
+    const onSortChange = vi.fn()
+    const onSelectionChange = vi.fn()
+    const root = await renderNative(
+      <LumenDataTable
+        label="Records"
+        columns={columns}
+        rows={rows}
+        readOnly
+        onSortChange={onSortChange}
+        onSelectionChange={onSelectionChange}
+      />
+    )
+    act(() => {
+      callAction(readProp(findByAccessibilityLabel(root, 'Amount'), 'onPress'), 'Missing guarded sort')
+    })
+    act(() => {
+      callAction(readProp(findByAccessibilityLabel(root, 'Select visible'), 'onPress'), 'Missing guarded selection')
+    })
+    expect(onSortChange).not.toHaveBeenCalled()
+    expect(onSelectionChange).not.toHaveBeenCalled()
+  })
+})
+
+test.each(['light', 'dark'] as const)('nested button content uses its %s foreground without overriding explicit tones', async scheme => {
+  const theme = createLumenTheme(scheme)
+  const root = await renderNative(
+    <LumenProvider theme={theme}>
+      <LumenButton>
+        <LumenText accessibilityLabel="Inherited label">Continue</LumenText>
+        <LumenText accessibilityLabel="Explicit tone" tone="danger">Warning</LumenText>
+        <LumenIcon name="search" label="Inherited icon" />
+      </LumenButton>
+      <LumenText accessibilityLabel="Outside control">Outside</LumenText>
+    </LumenProvider>
+  )
+  expect(readProp(findByAccessibilityLabel(root, 'Inherited label'), 'style')).toEqual(expect.arrayContaining([{ color: theme.colors.onBrand }]))
+  expect(readProp(findByAccessibilityLabel(root, 'Explicit tone'), 'style')).toEqual(expect.arrayContaining([{ color: theme.colors.danger }]))
+  expect(readProp(findByAccessibilityLabel(root, 'Outside control'), 'style')).toEqual(expect.arrayContaining([{ color: theme.colors.ink }]))
+  const svg = findByAccessibilityLabel(root, 'Inherited icon').children[0]
+  if (typeof svg !== 'object') throw new Error('Missing inherited icon content')
+  expect(readProp(svg, 'stroke')).toBe(theme.colors.onBrand)
+})
+
+test.each([false, true])('web checkbox Space toggles once and respects disabled=%s', async disabled => {
+  nativePlatform.OS = 'web'
+  const change = vi.fn<(checked: boolean) => void>()
+  const hostKey = vi.fn()
+  const root = await renderNative(<LumenCheckbox label="Choice" checked disabled={disabled} onCheckedChange={change} onKeyDown={hostKey} />)
+  const handler = readProp(findByAccessibilityRole(root, 'checkbox'), 'onKeyDown')
+  if (typeof handler !== 'function') throw new Error('Missing checkbox keyboard handler')
+  const preventDefault = vi.fn()
+  await act(async () => {
+    Reflect.apply(handler, undefined, [{ nativeEvent: { key: ' ', repeat: false }, defaultPrevented: false, preventDefault }])
+    await Promise.resolve()
+  })
+  expect(hostKey).toHaveBeenCalledOnce()
+  expect(preventDefault).toHaveBeenCalledOnce()
+  expect(change).toHaveBeenCalledTimes(disabled ? 0 : 1)
+  expect(change.mock.calls).toEqual(disabled ? [] : [[false]])
+  await act(async () => {
+    Reflect.apply(handler, undefined, [{ nativeEvent: { key: ' ', repeat: true }, defaultPrevented: false, preventDefault }])
+    Reflect.apply(handler, undefined, [{ nativeEvent: { key: ' ', repeat: false }, defaultPrevented: true, preventDefault }])
+    await Promise.resolve()
+  })
+  expect(change).toHaveBeenCalledTimes(disabled ? 0 : 1)
 })

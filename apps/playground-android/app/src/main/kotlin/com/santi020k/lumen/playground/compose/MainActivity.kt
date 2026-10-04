@@ -396,7 +396,10 @@ private fun PlaygroundContent(
 
             items(visibleSections, key = { it.title }) { section ->
                 ComponentSection(section) {
-                    if (initialComponent in v4AdditionNames) V4AdditionsExample(initialComponent) else when (section.title) {
+                    CatalogParityExamples(section.names.filter {
+                        it in parityExampleNames && (query.isBlank() || it.contains(query, ignoreCase = true))
+                    })
+                    if (query in parityExampleNames) Unit else if (initialComponent in v4AdditionNames) V4AdditionsExample(initialComponent) else when (section.title) {
                         "Foundations" -> Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                             FoundationsExample()
                             VisualContentExample()

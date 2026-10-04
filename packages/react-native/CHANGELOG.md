@@ -11,6 +11,45 @@
 
 ### Minor Changes
 
+- Add controlled civil-date Calendar and Agenda plus native KanbanBoard and standalone
+  KanbanColumn, with stable identity, localized accessible actions and state guards.
+
+- Add controlled native ColorPicker with bounded hex/rgba parsing, channel editing,
+  optional alpha and palettes, retained invalid drafts and localized accessibility.
+
+- Add controlled grouped Command search and hierarchical TreeGrid records with
+  localized native controls, retained host state and guarded custom cell actions.
+
+- Add Stepper, Timeline and Breadcrumb contracts across native adapters, with localized
+  progress, accessible host content and controlled navigation callbacks.
+
+- Add offline native QRCode encoding and controlled Cascader branch/leaf selection
+  across React Native, SwiftUI and Compose, with localized recovery and accessibility.
+
+- Add controlled whole-star Rating with localized option labels, bounded input,
+  and disabled/read-only protection. SwiftUI and Compose expose the corresponding native control.
+
+- Add controlled native Schedule day/week grids with all-day bands, collision-safe
+  overlap lanes, localized state guards and accessible host rescheduling requests.
+
+- Add native Table and DataTable with controlled manual/client sorting, stable row
+  selection, accessible record/table layouts and explicit status/retry states.
+  Corresponding SwiftUI and Compose contracts share the same ownership boundaries.
+
+- Add controlled native Carousel paging and Tooltip help with localized accessible
+  controls and safe status/disabled guards. Compose tooltip popups now consume Back
+  for dismissal instead of closing the host activity.
+
+- Add controlled Tour guidance anchored to measured native targets and Mentions text
+  input with atomic text/selection updates, guarded literal suggestion insertion and
+  documented native composition boundaries.
+
+- Add controlled native Tree components and graph models for React Native, SwiftUI
+  and Compose, with explicit invalid/status states and inherited disabled branches.
+
+- Add controlled native TreeSelect and Transfer with stable identities, retained unknown
+  values, disabled ancestry/membership guards and localized accessible selection.
+
 - Add controlled native range filters with independently named and formatted endpoints, domain
   stepping, crossing protection, and disabled/read-only behavior. SwiftUI now exposes the same
   semantic range contract; Compose retains native two-thumb rendering.
@@ -65,6 +104,19 @@
   Refine BulletChart with a slimmer track, quieter range bands, and a capped target marker.
 
 ### Patch Changes
+
+- Keep inactive carousel pages out of web focus and accessibility paths, hide decorative breadcrumb separators, and provide explicit final Timeline item connectors. Swift color parsing rejects non-ASCII hexadecimal graphemes; Swift and Compose rich-text replacement reject malformed span offsets before arithmetic. The React Native RichTextEditor remains deferred with no additional native dependency.
+
+- Give native Checkbox an explicit accessible name while preserving host overrides.
+  Native parity integration also fixes React Native Calendar container sizing and
+  Compose Button default text/icon content color inheritance.
+
+  Expose checked and disabled state for native web checkbox and palette/carousel radio
+  controls. Default nested React Native and SwiftUI text and icons inherit their button foreground while
+  explicit tones and colors remain supported. Announce localized DataTable sort direction
+  and hide stale controls for an empty error message.
+
+  Swift quiet buttons now accept taps across their full padded shape, including sparse compound command labels.
 
 - Prevent a shared Combobox observer loop when an open field becomes disabled or read-only. Keep Android TimeField bounds, error labels, and callbacks current while its native dialog is open. Preserve localized negative Swift NumberField drafts and repeated stepping in Arabic and Persian locales.
 

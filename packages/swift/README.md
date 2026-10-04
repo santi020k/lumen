@@ -625,3 +625,104 @@ close the sheet. Localize all action/result labels and count/removal formatters.
 LumenMultiSelect("Teams", values: $teams, query: $query, options: matchingTeams,
                  loading: searching, resultsErrorMessage: searchError, onRetry: retrySearch)
 ```
+
+## Rating
+
+`LumenRating` renders controlled whole-star selection. Zero means unrated; the
+maximum is clamped to 1 through 100. Out-of-range display values are clamped without
+rewriting host state. Disabled and read-only controls cannot emit edits. Supply
+`formatOption` to localize accessible option names (the neutral default is `3 / 5`).
+The host owns persistence and may reset the controlled value to zero.
+
+## Progress, history and location
+
+`LumenStepper` presents controlled complete/current/upcoming steps, stable IDs,
+descriptions and localized state labels. Vertical is the native default; horizontal
+layout scrolls. `LumenTimeline` and `LumenTimelineItem` retain host content and
+actions with optional decorative markers. `LumenBreadcrumb` reports ancestor IDs
+through `onNavigate`; current and disabled locations cannot navigate. The host
+owns routing, event ordering and workflow updates. See the
+[native component contracts](../../docs/native-components.md) for platform parameters.
+
+## Tables
+
+`LumenTable` renders stable, labelled records using host-formatted cells, with a
+horizontal table layout available. `LumenDataTable` adds controlled sorting and
+row selection. Manual sorting preserves server order by default; explicit client
+sorting is stable and keeps missing values last. Selections retain filtered IDs;
+visible bulk actions skip disabled rows. Loading/error states hide stale controls.
+Supply localized labels and `formatSort`; the host owns requests and persistence.
+See the [native contracts](../../docs/native-components.md) for parameter names
+and typed cell/column/row examples.
+
+## Tree
+
+`LumenTree` supports controlled expansion and selection with stable IDs,
+inherited disabled branches and localized status/disclosure labels. Its iterative
+`LumenTreeModel` rejects invalid graphs without changing application state.
+See the [native Tree contract](../../docs/native-parity/tree.md).
+
+## QRCode and Cascader
+
+`LumenQRCode` generates accessible offline QR values with explicit capacity errors,
+quiet zones and scanner-safe contrast. See the [QRCode contract](../../docs/native-parity/qrcode.md).
+The Android adapter uses the Apache-2.0 ZXing core encoder; SwiftUI uses Core Image
+and React Native reuses the web catalog's uqr engine. No runtime request is needed.
+
+`LumenCascader` browses validated tree branches and emits controlled leaf paths,
+with localized navigation and safe loading/error states. See the
+[Cascader contract](../../docs/native-parity/cascader.md).
+
+### Calendar, Agenda and Kanban
+
+The public `LumenCalendar` and `LumenAgenda` provide controlled civil-date selection
+and chronological event presentation. `LumenKanbanBoard` and `LumenKanbanColumn`
+provide stable card identities, native dragging and localized accessible moves.
+Hosts retain dataset and persistence ownership. See the native contracts for
+[Calendar](../../docs/native-parity/calendar.md), [Agenda](../../docs/native-parity/agenda.md),
+[KanbanBoard](../../docs/native-parity/kanban-board.md), and
+[KanbanColumn](../../docs/native-parity/kanban-column.md).
+
+`LumenSchedule` adds a controlled day/week time grid using Agenda events, overlap
+lanes and accessible host move requests. See the [Schedule contract](../../docs/native-parity/schedule.md)
+for bounded ranges, wall-clock conversion ownership and adapter APIs.
+
+`LumenColorPicker` provides validated controlled color text, HSV channels and an
+optional named palette/alpha. Invalid drafts stay local. See the
+[ColorPicker contract](../../docs/native-parity/color-picker.md) for supported strings
+and latent hue behavior at black, grayscale and zero alpha.
+
+`LumenTreeSelect` selects a stable ID through a hierarchical disclosure panel.
+`LumenTransfer` controls source/target membership and staged checks with atomic moves.
+Both retain unknown host values and disabled records. See the
+[TreeSelect](../../docs/native-parity/tree-select.md) and [Transfer](../../docs/native-parity/transfer.md)
+contracts for localization, state guards and adapter APIs.
+
+The initial `LumenRichTextEditor` formatting subset supports controlled selection
+and bold/italic/underline spans; full editor parity remains pending. See the
+[limited rich editor contract](../../docs/native-parity/rich-text-editor.md).
+
+`LumenCarousel` provides controlled native slide paging and localized navigation.
+`LumenTooltip` provides contextual help with native dismissal and named anchors.
+See the [Carousel](../../docs/native-parity/carousel.md) and
+[Tooltip](../../docs/native-parity/tooltip.md) contracts for adapter-specific state APIs.
+
+`LumenCommand` provides controlled grouped command search and host activation.
+`LumenTreeGrid` presents controlled hierarchical records with labeled native cells.
+See the [Command](../../docs/native-parity/command.md) and
+[TreeGrid](../../docs/native-parity/tree-grid.md) contracts for state, localization and cell guards.
+
+`LumenTour` provides controlled native guidance around host-measured targets.
+See the [Tour contract](../../docs/native-parity/tour.md) for coordinate ownership,
+missing-target recovery and accessible dismissal.
+
+`LumenMentions` provides controlled multiline text and UTF-16 selection with literal
+suggestions. See the [Mentions contract](../../docs/native-parity/mentions.md)
+for composition, token boundaries and platform availability.
+
+
+See the [Rating](../../docs/native-parity/rating.md), [Table](../../docs/native-parity/table.md),
+[DataTable](../../docs/native-parity/data-table.md), [Breadcrumb](../../docs/native-parity/breadcrumb.md),
+[Stepper](../../docs/native-parity/stepper.md), and [Timeline](../../docs/native-parity/timeline.md)
+contracts for controlled state, localization, native composition and verification. Timeline items
+accept `isLast` to omit the final connector; application content and ordering remain host-owned.

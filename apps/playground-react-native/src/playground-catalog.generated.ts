@@ -36,7 +36,9 @@ export const componentCategories: readonly ComponentCategoryDefinition[] = [
       "Button group",
       "Chip",
       "Menu",
-      "Share button"
+      "Share button",
+      "Tooltip",
+      "Command"
     ],
     value: 'actions'
   },
@@ -65,7 +67,13 @@ export const componentCategories: readonly ComponentCategoryDefinition[] = [
       "Number field",
       "Password field",
       "Input OTP",
-      "Multi select"
+      "Multi select",
+      "Rating",
+      "Cascader",
+      "Color picker",
+      "Tree select",
+      "Transfer",
+      "Mentions"
     ],
     value: 'forms'
   },
@@ -83,6 +91,8 @@ export const componentCategories: readonly ComponentCategoryDefinition[] = [
       "Empty state",
       "Error state",
       "Banner",
+      "Stepper",
+      "Timeline",
       "Refresh control"
     ],
     value: 'feedback'
@@ -115,7 +125,18 @@ export const componentCategories: readonly ComponentCategoryDefinition[] = [
       "Dumbbell chart",
       "Calendar heatmap",
       "Funnel chart",
-      "Box plot"
+      "Box plot",
+      "Table",
+      "Data table",
+      "Tree",
+      "QR code",
+      "Calendar",
+      "Agenda",
+      "Kanban board",
+      "Kanban column",
+      "Schedule",
+      "Carousel",
+      "Tree grid"
     ],
     value: 'data'
   },
@@ -126,6 +147,8 @@ export const componentCategories: readonly ComponentCategoryDefinition[] = [
       "Alert dialog",
       "Sheet",
       "Navigation bar",
+      "Breadcrumb",
+      "Tour",
       "Navigation accessory",
       "Collapsible navigation bar"
     ],

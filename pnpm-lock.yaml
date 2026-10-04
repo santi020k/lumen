@@ -1018,6 +1018,9 @@ importers:
       '@santi020k/lumen-core':
         specifier: workspace:^
         version: link:../core
+      uqr:
+        specifier: 'catalog:'
+        version: 0.1.3
     devDependencies:
       '@react-native-community/datetimepicker':
         specifier: 'catalog:'

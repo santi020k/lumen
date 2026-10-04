@@ -121,6 +121,28 @@ const applePhoneAndTabletTargets = [
 
 const applePhoneTabletAndMacOnlySlugs = new Set([
   'backdrop',
+  'tree',
+  'cascader',
+  'qr-code',
+  'calendar',
+  'agenda',
+  'schedule',
+  'color-picker',
+  'tree-select',
+  'transfer',
+  'tooltip',
+  'carousel',
+  'command',
+  'tree-grid',
+  'table',
+  'data-table',
+  'rating',
+  'breadcrumb',
+  'stepper',
+  'timeline',
+  'tour',
+  'kanban-board',
+  'kanban-column',
   'checkbox',
   'date-field',
   'date-range-field',
@@ -143,6 +165,9 @@ const applePhoneTabletAndMacOnlySlugs = new Set([
   'toggle'
 ])
 
+const appleMacOnlySlugs = new Set(['shortcut-recorder', 'symbol-picker'])
+const applePhoneOnlySlugs = new Set(['tab-accessory', 'tab-bar-minimization'])
+
 const appleWidgetSlugs = new Set([
   'widget-badge',
   'widget-compact-stat',
@@ -151,7 +176,11 @@ const appleWidgetSlugs = new Set([
 ])
 
 const getAppleAvailability = (slug: string): AppleEcosystemTarget[] => {
-  if (slug === 'shortcut-recorder' || slug === 'symbol-picker') {
+  if (slug === 'mentions') {
+    return [appleEcosystemTargets.ios, appleEcosystemTargets.ipad, appleEcosystemTargets.visionos]
+  }
+
+  if (appleMacOnlySlugs.has(slug)) {
     return [appleEcosystemTargets.macos]
   }
 
@@ -168,7 +197,7 @@ const getAppleAvailability = (slug: string): AppleEcosystemTarget[] => {
     ]
   }
 
-  if (slug === 'tab-accessory' || slug === 'tab-bar-minimization') {
+  if (applePhoneOnlySlugs.has(slug)) {
     return applePhoneAndTabletTargets
   }
 
@@ -5108,11 +5137,11 @@ const remainingComposeV4Definitions: ComponentDefinition[] = [
   {
     accessibility: 'Keeps the anchor independently named and delegates long-press, pointer, and popup dismissal to Material.',
     category: 'Actions',
-    examples: { android: `LumenTooltip("Save this project") {
+    examples: { apple: 'LumenTooltip("Project help", text: "Save this project", isPresented: $visible)', 'react-native': '<LumenTooltip label="Project help" text="Save this project" visible={visible} onVisibleChange={setVisible} />', android: `LumenTooltip("Save this project") {
     LumenIconButton(LumenIconName.Bookmark, "Save", onClick = ::saveProject, size = LumenControlSize.Lg)
 }` },
-    exports: { android: 'LumenTooltip' },
-    guidance: 'Use brief supplemental help. Essential instructions belong in visible content. Pass LumenTooltipState for explicit show/dismiss controls; disabling dismisses help without removing the anchor.',
+    exports: { android: 'LumenTooltip', apple: 'LumenTooltip', 'react-native': 'LumenTooltip' },
+    guidance: 'Use brief supplemental help. Essential instructions belong in visible content. Pass LumenTooltipState for explicit Compose show/dismiss controls; React Native uses visible/onVisibleChange and SwiftUI uses isPresented binding. Disabling dismisses help without removing the anchor.',
     name: 'Tooltip',
     properties: [
       property('text', 'String', 'Required', 'Provides non-empty translated contextual help.'),
@@ -5293,12 +5322,304 @@ LumenTopAppBar("Projects", scrollBehavior = behavior,
   }
 ]
 
+const catalogParityDefinitions: ComponentDefinition[] = [
+  {
+    accessibility: 'Named multiline input and enabled suggestion actions with controlled selection.',
+    category: 'Forms',
+    examples: { apple: 'LumenMentions("Message", value: $value, options: options)', android: 'LumenMentions("Message", value, onValueChange, options)', 'react-native': '<LumenMentions label="Message" value={value} onValueChange={setValue} options={options} />' },
+    exports: { apple: 'LumenMentions', android: 'LumenMentions', 'react-native': 'LumenMentions' },
+    guidance: 'Hosts control text and UTF-16 selection atomically. Native iOS and Android composition is preserved; React Native hosts supply isComposing when available. ASCII mention values use literal filtering and safe token boundaries.',
+    name: 'Mentions',
+    slug: 'mentions',
+    summary: 'Insert literal mention suggestions into controlled native multiline text.',
+    properties: [property('value / options / trigger', 'Controlled text and selection / stable suggestions / literal trigger', 'Required / required / @', 'Preserves host state and inserts enabled validated suggestions.')]
+  },
+  {
+    accessibility: 'Named native guidance with measured target highlights and always usable dismissal.',
+    category: 'Navigation',
+    examples: { apple: 'LumenTour("Guide", steps: steps, anchors: anchors, open: $open, index: $index, onFinish: finish) { content }', android: 'LumenTour("Guide", steps, anchors, open, onOpenChange, index, onIndexChange, finish) { content() }', 'react-native': '<LumenTour label="Guide" steps={steps} anchors={anchors} open={open} onOpenChange={setOpen} index={index} onIndexChange={setIndex} onFinish={finish}>{content}</LumenTour>' },
+    exports: { apple: 'LumenTour', android: 'LumenTour', 'react-native': 'LumenTour' },
+    guidance: 'Hosts measure targets relative to the native Tour container. Missing or offscreen targets retain dismissible guidance. Controlled indices and host data are never rewritten.',
+    name: 'Tour',
+    slug: 'tour',
+    summary: 'Guide users through controlled steps around measured native targets.',
+    properties: [property('steps / anchors / open / index', 'Stable steps / measured rectangles / controlled state', 'Required', 'Controls guidance around host-native layout targets.')]
+  },
+  {
+    accessibility: 'Host-formatted stable records in phone-friendly labeled cells.',
+    category: 'Data display',
+    examples: { apple: 'LumenTable("Packages", columns: columns, rows: rows)', android: 'LumenTable("Packages", columns, rows)', 'react-native': '<LumenTable label="Packages" columns={columns} rows={rows} />' },
+    exports: { apple: 'LumenTable', android: 'LumenTable', 'react-native': 'LumenTable' },
+    guidance: 'Host-formatted stable records in phone-friendly labeled cells. Hosts own application state and business actions.',
+    name: 'Table',
+    properties: [property('host content and state', 'Adapter-specific public contract', 'Required', 'Keeps application data and behavior in the host.')],
+    slug: 'table',
+    summary: 'Host-formatted stable records in phone-friendly labeled cells.'
+  },
+  {
+    accessibility: 'Controlled sorting and selection retain hidden IDs and respect disabled rows.',
+    category: 'Data display',
+    examples: { apple: 'LumenDataTable("Packages", columns: columns, rows: rows, sort: $sort, selection: $selectedIds)', android: 'LumenDataTable("Packages", columns, rows, sort = sort, onSortChange = onSortChange, selectedIds = selectedIds, onSelectionChange = onSelectionChange)', 'react-native': '<LumenDataTable label="Packages" columns={columns} rows={rows} sort={sort} onSortChange={setSort} selectedIds={selectedIds} onSelectionChange={setSelectedIds} />' },
+    exports: { apple: 'LumenDataTable', android: 'LumenDataTable', 'react-native': 'LumenDataTable' },
+    guidance: 'Controlled sorting and selection retain hidden IDs and respect disabled rows. Hosts own application state and business actions.',
+    name: 'Data table',
+    properties: [property('host content and state', 'Adapter-specific public contract', 'Required', 'Keeps application data and behavior in the host.')],
+    slug: 'data-table',
+    summary: 'Controlled sorting and selection retain hidden IDs and respect disabled rows.'
+  },
+  {
+    accessibility: 'Named whole-number rating options with controlled values and read-only support.',
+    category: 'Forms',
+    examples: { apple: 'LumenRating("Rating", value: $rating)', android: 'LumenRating("Rating", rating, onValueChange)', 'react-native': '<LumenRating label="Rating" value={rating} onValueChange={setRating} />' },
+    exports: { apple: 'LumenRating', android: 'LumenRating', 'react-native': 'LumenRating' },
+    guidance: 'Named whole-number rating options with controlled values and read-only support. Hosts own application state and business actions.',
+    name: 'Rating',
+    properties: [property('host content and state', 'Adapter-specific public contract', 'Required', 'Keeps application data and behavior in the host.')],
+    slug: 'rating',
+    summary: 'Named whole-number rating options with controlled values and read-only support.'
+  },
+  {
+    accessibility: 'Named ancestor navigation with a noninteractive current destination.',
+    category: 'Navigation',
+    examples: { apple: 'LumenBreadcrumb("Path", items: items, onNavigate: navigate)', android: 'LumenBreadcrumb("Path", items, navigate)', 'react-native': '<LumenBreadcrumb label="Path" items={items} onNavigate={navigate} />' },
+    exports: { apple: 'LumenBreadcrumb', android: 'LumenBreadcrumb', 'react-native': 'LumenBreadcrumb' },
+    guidance: 'Named ancestor navigation with a noninteractive current destination. Hosts own application state and business actions.',
+    name: 'Breadcrumb',
+    properties: [property('host content and state', 'Adapter-specific public contract', 'Required', 'Keeps application data and behavior in the host.')],
+    slug: 'breadcrumb',
+    summary: 'Named ancestor navigation with a noninteractive current destination.'
+  },
+  {
+    accessibility: 'Host-owned step progress with localized complete, current and upcoming states.',
+    category: 'Feedback',
+    examples: { apple: 'LumenStepper("Progress", steps: steps, currentStep: currentStep)', android: 'LumenStepper("Progress", steps, currentStep)', 'react-native': '<LumenStepper label="Progress" steps={steps} currentStep={currentStep} />' },
+    exports: { apple: 'LumenStepper', android: 'LumenStepper', 'react-native': 'LumenStepper' },
+    guidance: 'Host-owned step progress with localized complete, current and upcoming states. Hosts own application state and business actions.',
+    name: 'Stepper',
+    properties: [property('host content and state', 'Adapter-specific public contract', 'Required', 'Keeps application data and behavior in the host.')],
+    slug: 'stepper',
+    summary: 'Host-owned step progress with localized complete, current and upcoming states.'
+  },
+  {
+    accessibility: 'Named chronological content retaining host controls and decorative connectors.',
+    category: 'Data display',
+    examples: { apple: 'LumenTimeline("Activity") { LumenTimelineItem { LumenText("Created") } }', android: 'LumenTimeline("Activity") { LumenTimelineItem { LumenText("Created") } }', 'react-native': '<LumenTimeline label="Activity"><LumenTimelineItem><LumenText>Created</LumenText></LumenTimelineItem></LumenTimeline>' },
+    exports: { apple: 'LumenTimeline', android: 'LumenTimeline', 'react-native': 'LumenTimeline' },
+    guidance: 'Named chronological content retaining host controls and decorative connectors. Hosts own application state and business actions.',
+    name: 'Timeline',
+    properties: [property('host content and state', 'Adapter-specific public contract', 'Required', 'Keeps application data and behavior in the host.')],
+    slug: 'timeline',
+    summary: 'Named chronological content retaining host controls and decorative connectors.'
+  },
+  {
+    accessibility: 'Named command search, enabled highlight navigation and a usable close path.',
+    category: 'Actions',
+    examples: { apple: 'LumenCommand("Commands", groups: groups, open: $open, query: $query, activeId: $activeId, onSelect: run)', android: 'LumenCommand("Commands", groups, open, onOpenChange, query, onQueryChange, activeId, onActiveIdChange, run)', 'react-native': '<LumenCommand label="Commands" groups={groups} open={open} query={query} activeId={activeId} onOpenChange={setOpen} onQueryChange={setQuery} onActiveIdChange={setActiveId} onSelect={run} />' },
+    exports: { apple: 'LumenCommand', android: 'LumenCommand', 'react-native': 'LumenCommand' },
+    guidance: 'Hosts own execution and modal presentation. Grouped literal search retains controlled query and highlight; disabled or stale commands cannot execute.',
+    name: 'Command',
+    properties: [property('controlled state', 'Stable records and host state', 'Required', 'Retains host values and emits intentional user changes.')],
+    slug: 'command',
+    summary: 'Named command search, enabled highlight navigation and a usable close path.'
+  },
+  {
+    accessibility: 'Named hierarchical disclosures and labeled cells with inherited disabled state.',
+    category: 'Data display',
+    examples: { apple: 'LumenTreeGrid("Status", columns: columns, records: records, expandedIds: $expandedIds)', android: 'LumenTreeGrid("Status", columns, records, expandedIds, onExpandedChange)', 'react-native': '<LumenTreeGrid label="Status" columns={columns} records={records} expandedIds={expandedIds} onExpandedChange={setExpandedIds} />' },
+    exports: { apple: 'LumenTreeGrid', android: 'LumenTreeGrid', 'react-native': 'LumenTreeGrid' },
+    guidance: 'Hosts format cells and control expansion. Unknown and hidden expansion IDs are retained. Custom interactive cells must honor disabled/read-only context.',
+    name: 'Tree grid',
+    properties: [property('controlled state', 'Stable records and host state', 'Required', 'Retains host values and emits intentional user changes.')],
+    slug: 'tree-grid',
+    summary: 'Named hierarchical disclosures and labeled cells with inherited disabled state.'
+  },
+  {
+    accessibility: 'Localized slide positions, named previous/next and selected indicators with native paging.',
+    category: 'Data display',
+    examples: {
+      apple: 'LumenCarousel("Project slides", slides: slides, index: $index) { slide, _ in LumenText(.verbatim(slide.label)) }',
+      android: 'LumenCarousel("Project slides", slides, index, { index = it }) { slide, _ -> LumenText(slide.label) }',
+      'react-native': '<LumenCarousel label="Project slides" slides={slides} index={index} onIndexChange={setIndex} renderSlide={slide => <LumenText>{slide.label}</LumenText>} />'
+    },
+    exports: { apple: 'LumenCarousel', android: 'LumenCarousel', 'react-native': 'LumenCarousel' },
+    guidance: 'Hosts own stable slide identities and rich content. Native paging requests bounded index changes; there is no autoplay or wrapping. Invalid host indices show recovery without rewriting state.',
+    name: 'Carousel',
+    properties: [
+      property('slides / index', 'Stable LumenCarouselSlide records / controlled integer', 'Required', 'Controls the dataset and current visible page.'),
+      property('height / disabled / status', 'Numeric height / boolean / ready-loading-error', '200 / false / ready', 'Bounds the viewport and guards native paging and result states.')
+    ],
+    slug: 'carousel',
+    summary: 'Page through controlled native slides with accessible navigation.'
+  },
+  {
+    accessibility: 'Localized selected/checked and disabled controls with guarded native actions and safe status presentation.',
+    category: 'Forms',
+    examples: { apple: 'LumenTransfer("Project access", items: items, value: $value)', android: 'LumenTransfer("Project access", items, value, { value = it })', 'react-native': '<LumenTransfer label="Project access" items={items} value={value} onValueChange={setValue} />' },
+    exports: { apple: 'LumenTransfer', android: 'LumenTransfer', 'react-native': 'LumenTransfer' },
+    guidance: 'The host controls membership and staged checks atomically. Moves preserve unknown and disabled IDs and clear only moved checks. The reference provides bidirectional selection and moves.',
+    name: 'Transfer',
+    properties: [property('value', 'LumenTransferValue', 'Required controlled value', 'Retains host state and emits intentional user changes.')],
+    slug: 'transfer',
+    summary: 'Select controlled native transfer values with stable identities.'
+  },
+  {
+    accessibility: 'Localized selected/checked and disabled controls with guarded native actions and safe status presentation.',
+    category: 'Forms',
+    examples: { apple: 'LumenTreeSelect("Destination", nodes: nodes, value: $value)', android: 'LumenTreeSelect("Destination", nodes, value, { value = it })', 'react-native': '<LumenTreeSelect label="Destination" nodes={nodes} value={value} onValueChange={setValue} />' },
+    exports: { apple: 'LumenTreeSelect', android: 'LumenTreeSelect', 'react-native': 'LumenTreeSelect' },
+    guidance: 'All hierarchy levels are selectable when enabled. The host retains unknown values; read-only permits browsing. Use the existing validated Tree graph and localize option paths.',
+    name: 'Tree select',
+    properties: [property('value', 'Nullable stable ID', 'Required controlled value', 'Retains host state and emits intentional user changes.')],
+    slug: 'tree-select',
+    summary: 'Select controlled native tree select values with stable identities.'
+  },
+  {
+    accessibility: 'Localized channel and palette names, validation feedback and native disabled/read-only controls.',
+    category: 'Forms',
+    examples: {
+      apple: 'LumenColorPicker("Accent color", value: $color)',
+      android: 'LumenColorPicker("Accent color", color, { color = it })',
+      'react-native': '<LumenColorPicker label="Accent color" value={color} onValueChange={setColor} />'
+    },
+    exports: { apple: 'LumenColorPicker', android: 'LumenColorPicker', 'react-native': 'LumenColorPicker' },
+    guidance: 'Use bounded hex or rgba values; unsupported CSS strings remain visible as invalid drafts. Hosts own the value and optional named palette. Enable alpha explicitly; latent hue survives black or gray channel edits.',
+    name: 'Color picker',
+    properties: [
+      property('value / onValueChange', 'Controlled color text / native binding or callback', 'Required', 'Requests canonical color changes without replacing invalid host input.'),
+      property('allowAlpha / palette / labels', 'Boolean / named swatches / localized labels', 'false / empty / English', 'Controls opacity support and accessible channel names.')
+    ],
+    slug: 'color-picker',
+    summary: 'Edit controlled native colors with validated text, channels and optional alpha.'
+  },
+  {
+    accessibility: 'Localized event day/time names, collision-safe native targets and accessible move controls.',
+    category: 'Data display',
+    examples: {
+      apple: 'LumenSchedule("Project schedule", selectedDay: $day, events: events)',
+      android: 'LumenSchedule("Project schedule", day, { day = it }, events)',
+      'react-native': '<LumenSchedule label="Project schedule" selectedDay={day} onSelectedDayChange={setDay} events={events} />'
+    },
+    exports: { apple: 'LumenSchedule', android: 'LumenSchedule', 'react-native': 'LumenSchedule' },
+    guidance: 'Hosts own civil-day conversion and rescheduling. Timed overlaps occupy lanes with minimum touch rectangles; dense days scroll horizontally. Accessible move requests are available; pointer drag rescheduling is absent.',
+    name: 'Schedule',
+    properties: [
+      property('selectedDay / events', 'Controlled civil day / LumenAgendaEvent records', 'Required', 'Controls the first day and host event dataset.'),
+      property('dayCount / startHour / endHour', 'Bounded integers', '7 / 8 / 18', 'Sets a one-to-seven-day civil wall-clock window.'),
+      property('onEventPress / onEventMove', 'Optional callbacks', 'Static presentation', 'Requests host detail or rescheduling actions without dataset mutation.')
+    ],
+    slug: 'schedule',
+    summary: 'Present timed native day columns with all-day bands and overlap lanes.'
+  },
+  {
+    accessibility: 'Localized labels, native controls, selected or disabled state and safe loading/error/empty presentation.',
+    category: 'Forms',
+    examples: { apple: 'LumenCalendar("Project calendar", visibleMonth: $month, selectedDay: $day)', android: 'LumenCalendar("Project calendar", month, { month = it }, selectedDay = day, onSelectedDayChange = { day = it })', 'react-native': '<LumenCalendar label="Project calendar" visibleMonth={month} onVisibleMonthChange={setMonth} selectedDay={day} onSelectedDayChange={setDay} />' },
+    exports: { apple: 'LumenCalendar', android: 'LumenCalendar', 'react-native': 'LumenCalendar' },
+    guidance: 'Hosts control visibleMonth and selectedDay. Civil date models avoid guessed timezone conversion; localize every date formatter.',
+    name: 'Calendar',
+    properties: [property('visibleMonth / selectedDay', 'Controlled civil day / optional civil day', 'Required', 'Retains host ownership of stable values and callbacks.')],
+    slug: 'calendar',
+    summary: 'Select bounded Gregorian civil dates in a controlled month grid.'
+  },
+  {
+    accessibility: 'Localized labels, native controls, selected or disabled state and safe loading/error/empty presentation.',
+    category: 'Data display',
+    examples: { apple: 'LumenAgenda("Project agenda", selectedDay: $day, events: events)', android: 'LumenAgenda("Project agenda", day, { day = it }, events)', 'react-native': '<LumenAgenda label="Project agenda" selectedDay={day} onSelectedDayChange={setDay} events={events} />' },
+    exports: { apple: 'LumenAgenda', android: 'LumenAgenda', 'react-native': 'LumenAgenda' },
+    guidance: 'Hosts control the first selectedDay, event dataset and timezone conversion. Timed interval ends are exclusive; all-day civil endpoints are inclusive.',
+    name: 'Agenda',
+    properties: [property('selectedDay / events', 'Controlled civil day / LumenAgendaEvent records', 'Required', 'Retains host ownership of stable values and callbacks.')],
+    slug: 'agenda',
+    summary: 'Present chronological timed and all-day events under civil-day headings.'
+  },
+  {
+    accessibility: 'Localized labels, native controls, selected or disabled state and safe loading/error/empty presentation.',
+    category: 'Data display',
+    examples: { apple: 'LumenKanbanBoard("Project board", columns: $columns)', android: 'LumenKanbanBoard("Project board", columns, { columns = it })', 'react-native': '<LumenKanbanBoard label="Project board" columns={columns} onColumnsChange={setColumns} />' },
+    exports: { apple: 'LumenKanbanBoard', android: 'LumenKanbanBoard', 'react-native': 'LumenKanbanBoard' },
+    guidance: 'Hosts own immutable columns and persistence. Invalid IDs and full targets reject moves. Accessible move controls reach columns outside the viewport; drag auto-scrolling is unavailable.',
+    name: 'Kanban board',
+    properties: [property('columns', 'Controlled LumenKanbanColumnData records', 'Required', 'Retains host ownership of stable values and callbacks.')],
+    slug: 'kanban-board',
+    summary: 'Move controlled cards between capacity-limited native board columns.'
+  },
+  {
+    accessibility: 'Localized labels, native controls, selected or disabled state and safe loading/error/empty presentation.',
+    category: 'Data display',
+    examples: { apple: 'LumenKanbanColumn(column: $column)', android: 'LumenKanbanColumn(column, { column = it })', 'react-native': '<LumenKanbanColumn column={column} onColumnChange={setColumn} />' },
+    exports: { apple: 'LumenKanbanColumn', android: 'LumenKanbanColumn', 'react-native': 'LumenKanbanColumn' },
+    guidance: 'Use stable card identities and capacity. Native dragging and localized reorder actions request host state changes. Read-only blocks mutations while allowing details.',
+    name: 'Kanban column',
+    properties: [property('column', 'Controlled LumenKanbanColumnData', 'Required', 'Retains host ownership of stable values and callbacks.')],
+    slug: 'kanban-column',
+    summary: 'Reorder rich native cards within a controlled standalone column.'
+  },
+  {
+    accessibility: 'Named image value, visible caption and localized error recovery with scanner-safe contrast.',
+    category: 'Data display',
+    examples: {
+      apple: 'LumenQRCode("Project link", value: "https://lumen.santi020k.com")',
+      android: 'LumenQRCode(value = "https://lumen.santi020k.com", label = "Project link")',
+      'react-native': '<LumenQRCode label="Project link" value="https://lumen.santi020k.com" />'
+    },
+    exports: { android: 'LumenQRCode', apple: 'LumenQRCode', 'react-native': 'LumenQRCode' },
+    guidance: 'Encoding stays offline. Keep the four-module quiet zone and high contrast; hosts own navigation and scanning. Capacity errors retain the input value. See the native QRCode contract for correction levels and matrix APIs.',
+    name: 'QR code',
+    properties: [
+      property('label / value', 'String / string', 'Required', 'Names and controls the locally encoded value.'),
+      property('size / quietZone', 'Numeric size / integer modules', '160 / 4', 'Keeps a bounded image size and standards-compatible border.'),
+      property('correction / errorLabel / showValue', 'Platform correction enum / text / boolean', 'M / English error / true', 'Controls error correction and accessible recovery.')
+    ],
+    slug: 'qr-code',
+    summary: 'Render accessible offline QR codes from controlled Unicode values.'
+  },
+  {
+    accessibility: 'Localized disclosure and depth with native selection controls and inherited disabled state.',
+    category: 'Data display',
+    examples: {
+      apple: 'LumenTree("Files", nodes: nodes, expandedIds: $expanded, selectedIds: $selected)',
+      android: 'LumenTree("Files", nodes, expanded, { expanded = it }, selectedIds = selected, onSelectionChange = { selected = it })',
+      'react-native': '<LumenTree label="Files" nodes={nodes} expandedIds={expanded} onExpandedChange={setExpanded} selectedIds={selected} onSelectionChange={setSelected} />'
+    },
+    exports: { android: 'LumenTree', apple: 'LumenTree', 'react-native': 'LumenTree' },
+    guidance: 'Use stable flat graph identities. Invalid graphs fail closed; state edits retain unknown host IDs. Read-only selection still permits disclosure. Localize depth and disclosure formatters.',
+    name: 'Tree',
+    properties: [
+      property('nodes', 'LumenTreeNode records', 'Required', 'Defines stable identity, parent, label and disabled/selectable state.'),
+      property('expandedIds / selectedIds', 'Controlled sets', 'Required expansion / optional selection', 'Preserves host state through hidden and unavailable nodes.'),
+      property('loading / error / readOnly', 'Platform state values', 'Ready / no error / editable', 'Hides stale controls during result states and guards mutations.')
+    ],
+    slug: 'tree',
+    summary: 'Browse hierarchical records with controlled disclosure and selection.'
+  },
+  {
+    accessibility: 'Localized branch and back navigation with controlled leaf selection and safe status states.',
+    category: 'Forms',
+    examples: {
+      apple: 'LumenCascader("Destination", nodes: nodes, selectedPath: $path)',
+      android: 'LumenCascader("Destination", nodes, path, { path = it })',
+      'react-native': '<LumenCascader label="Destination" nodes={nodes} selectedPath={path} onSelectionChange={setPath} />'
+    },
+    exports: { android: 'LumenCascader', apple: 'LumenCascader', 'react-native': 'LumenCascader' },
+    guidance: 'Branches browse and enabled selectable leaves emit full canonical paths. Retain unknown paths until the host replaces them. Read-only selection permits browsing; app routing stays in the host.',
+    name: 'Cascader',
+    properties: [
+      property('nodes / selectedPath', 'LumenTreeNode records / controlled ordered IDs', 'Required', 'Controls a canonical path over the validated shared tree model.'),
+      property('readOnly / loading / error', 'Platform state values', 'Editable / ready / no error', 'Guards selection and hides stale result controls.'),
+      property('backLabel / formatDisclosure', 'Localized text / formatter', 'English defaults', 'Names native drill-down navigation.')
+    ],
+    slug: 'cascader',
+    summary: 'Select a stable leaf path through native branch drill-down.'
+  }
+]
+
 export const nativeComponentDocs = [
   ...sharedDefinitions,
   ...additionalDefinitions,
   ...composeV4Definitions,
   ...remainingComposeV4Definitions,
-  ...composeProductDefinitions
+  ...composeProductDefinitions,
+  ...catalogParityDefinitions
 ].map(createComponent)
 
 export const nativeComponentCategories: NativeComponentCategory[] = [

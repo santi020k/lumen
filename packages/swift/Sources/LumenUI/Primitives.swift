@@ -1,5 +1,16 @@
 import SwiftUI
 
+private struct LumenControlContentColorKey: EnvironmentKey {
+    static let defaultValue: Color? = nil
+}
+
+private extension EnvironmentValues {
+    var lumenControlContentColor: Color? {
+        get { self[LumenControlContentColorKey.self] }
+        set { self[LumenControlContentColorKey.self] = newValue }
+    }
+}
+
 public enum LumenTextTone: Sendable {
     case danger
     case `default`
@@ -18,6 +29,7 @@ public enum LumenTextVariant: Sendable {
 
 public struct LumenText: View {
     @Environment(\.lumenTheme) private var theme
+    @Environment(\.lumenControlContentColor) private var contentColor
 
     private let content: LumenTextContent
     private let tone: LumenTextTone
@@ -61,7 +73,7 @@ public struct LumenText: View {
     private var foregroundColor: Color {
         switch tone {
         case .danger: theme.colors.danger
-        case .default: theme.colors.ink
+        case .default: contentColor ?? theme.colors.ink
         case .muted: theme.colors.inkMuted
         case .soft: theme.colors.inkSoft
         case .success: theme.colors.success
@@ -187,6 +199,7 @@ public enum LumenIconSize: Sendable {
 
 public struct LumenIcon: View {
     @Environment(\.lumenTheme) private var theme
+    @Environment(\.lumenControlContentColor) private var contentColor
 
     private let color: Color?
     private let label: LocalizedStringKey?
@@ -222,7 +235,7 @@ public struct LumenIcon: View {
 
     public var body: some View {
         iconImage
-            .foregroundStyle(color ?? theme.colors.ink)
+            .foregroundStyle(color ?? contentColor ?? theme.colors.ink)
             .frame(width: size.dimension, height: size.dimension)
             .accessibilityHidden(label == nil)
             .accessibilityLabel(label ?? "")
@@ -542,10 +555,12 @@ public struct LumenButtonStyle: ButtonStyle {
         let metrics = LumenButtonMetrics.resolve(size, density: density)
 
         configuration.label
+            .environment(\.lumenControlContentColor, foregroundColor)
             .font(size == .lg ? .body.weight(.semibold) : .callout.weight(.semibold))
             .foregroundStyle(foregroundColor)
             .frame(minHeight: metrics.minHeight)
             .padding(.horizontal, metrics.horizontalPadding)
+            .contentShape(RoundedRectangle(cornerRadius: LumenRadius.sm, style: .continuous))
             .background(backgroundColor)
             .overlay {
                 RoundedRectangle(cornerRadius: LumenRadius.sm, style: .continuous)

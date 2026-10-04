@@ -19,12 +19,15 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,6 +43,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+
+private val LocalLumenControlInheritsContentColor = staticCompositionLocalOf { false }
 
 enum class LumenTextTone {
     Danger,
@@ -67,7 +72,7 @@ fun LumenText(
     val theme = LocalLumenTheme.current
     val color = when (tone) {
         LumenTextTone.Danger -> theme.colors.danger
-        LumenTextTone.Default -> theme.colors.ink
+        LumenTextTone.Default -> if (LocalLumenControlInheritsContentColor.current) LocalContentColor.current else theme.colors.ink
         LumenTextTone.Muted -> theme.colors.inkMuted
         LumenTextTone.Soft -> theme.colors.inkSoft
         LumenTextTone.Success -> theme.colors.success
@@ -165,7 +170,7 @@ fun LumenIcon(
     modifier: Modifier = Modifier,
     contentDescription: String? = null,
     size: LumenIconSize = LumenIconSize.Md,
-    tint: Color = LocalLumenTheme.current.colors.ink
+    tint: Color = if (LocalLumenControlInheritsContentColor.current) LocalContentColor.current else LocalLumenTheme.current.colors.ink
 ) {
     Icon(
         imageVector = imageVector,
@@ -181,7 +186,7 @@ fun LumenIcon(
     modifier: Modifier = Modifier,
     contentDescription: String? = null,
     size: LumenIconSize = LumenIconSize.Md,
-    tint: Color = LocalLumenTheme.current.colors.ink
+    tint: Color = if (LocalLumenControlInheritsContentColor.current) LocalContentColor.current else LocalLumenTheme.current.colors.ink
 ) {
     Icon(
         painter = painterResource(name.resourceId),
@@ -363,7 +368,9 @@ fun LumenButton(
                 )
                 Spacer(modifier = Modifier.width(LumenSpacing.Sm))
             }
-            content()
+            CompositionLocalProvider(LocalLumenControlInheritsContentColor provides true) {
+                content()
+            }
         }
     }
 }

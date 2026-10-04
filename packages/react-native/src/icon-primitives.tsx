@@ -1,6 +1,7 @@
 import { type ComponentType, createElement, type ReactElement } from 'react'
 import { type ColorValue, Pressable, type PressableProps, View, type ViewProps } from 'react-native'
 
+import { useLumenControlContentColor } from './control-content-context.js'
 import { type LumenButtonIntent, type LumenControlSize, type LumenIconSize } from './foundation-primitives.js'
 import type { LumenViewRef } from './native-ref-types.js'
 import { resolveLumenButtonColors, resolveLumenButtonOpacity, resolveLumenIconButtonSize, resolveLumenIconSize, resolveLumenPressableStyle } from './recipes.js'
@@ -37,6 +38,7 @@ export const LumenStaticIcon = ({
   ...props
 }: LumenStaticIconProps): ReactElement => {
   const theme = useLumenTheme()
+  const contentColor = useLumenControlContentColor()
   const dimension = resolveLumenIconSize(size)
   const isDecorative = decorative ?? !label
 
@@ -60,7 +62,7 @@ export const LumenStaticIcon = ({
       ]}
     >
       {createElement(icon, {
-        color: color ?? theme.colors.ink,
+        color: color ?? contentColor ?? theme.colors.ink,
         size: dimension,
         strokeWidth
       })}
