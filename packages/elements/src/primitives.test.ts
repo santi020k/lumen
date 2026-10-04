@@ -211,7 +211,7 @@ describe('@santi020k/lumen-elements primitives', () => {
     expect(classesOf(connect('lumen-date-picker', { glass: 'strong' })))
       .toEqual(['ui-date-picker', 'ui-date-picker-field--glass', 'ui-glass-strong', 'ui-input'].sort())
     expect(classesOf(connect('lumen-select', { glass: 'subtle' })))
-      .toEqual(['ui-glass-subtle', 'ui-select', 'ui-select-field--glass'].sort())
+      .toEqual(['ui-glass-subtle', 'ui-select-field', 'ui-select-field--glass'].sort())
   })
 
   test('maps visual size independently from native size', () => {
@@ -221,8 +221,10 @@ describe('@santi020k/lumen-elements primitives', () => {
       .toEqual(['ui-select', 'ui-select--lg'].sort())
     expect(classesOf(connect('lumen-input', { 'visual-size': 'sm' })))
       .toEqual(['ui-input', 'ui-input--sm'].sort())
-    expect(classesOf(connect('lumen-select', { size: 'lg' })))
-      .toEqual(['ui-select', 'ui-select--lg'].sort())
+    const select = connect('lumen-select', { 'visual-size': 'lg' })
+
+    expect(classesOf(select)).toEqual(['ui-select-field'])
+    expect(select.querySelector('[data-ui-select-trigger]')?.classList.contains('ui-select--lg')).toBe(true)
   })
 
   test('reapplies modifier classes when attributes change', () => {

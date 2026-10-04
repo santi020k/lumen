@@ -271,3 +271,15 @@ test('checks referenced files against the supplied repository and rejects missin
     await rm(directory, { recursive: true, force: true })
   }
 })
+
+test('keeps the complete web breaking inventory available to migration tools', () => {
+  for (const id of ['web-content-flow', 'web-control-visual-size', 'web-form-value-ownership',
+    'web-combobox-focus', 'web-phone-input-identity', 'web-virtual-list-ranges',
+    'web-rich-text-command-ownership']) {
+    const draft = createDraft()
+
+    draft.changes = draft.changes.filter(change => change.id !== id)
+
+    assert.ok(validateLumen4Contract(draft).includes(`changes must include ${id}.`))
+  }
+})

@@ -42,6 +42,7 @@ import { isLumenDateBoundsValid as isCalendarBoundsValid, parseLumenDate as pars
 
 import { useDialogLifecycle } from './dialog-lifecycle.js'
 import { type FloatingPanelOptions, useFloatingPanel } from './floating-panel.js'
+import { useSelectFormReset } from './select-form.js'
 
 export { useToast } from './toast-context.js'
 
@@ -634,7 +635,7 @@ const useControllableState = <T extends string | number | boolean | undefined>({
   defaultValue,
   onChange,
   value
-}: ControllableOptions<T>): [T, Dispatch<SetStateAction<T>>] => {
+}: ControllableOptions<T>): [T, Dispatch<SetStateAction<T>>, (value: T) => void] => {
   const [uncontrolledValue, setUncontrolledValue] = useState(defaultValue)
   const pendingValueRef = useRef(defaultValue)
   const currentValue = value ?? uncontrolledValue
@@ -654,7 +655,15 @@ const useControllableState = <T extends string | number | boolean | undefined>({
     }, [currentValue, onChange, value]
   )
 
-  return [currentValue, setValue]
+  const restoreValue = useCallback((next: T) => {
+    if (value !== undefined) return
+
+    pendingValueRef.current = next
+
+    setUncontrolledValue(next)
+  }, [value])
+
+  return [currentValue, setValue, restoreValue]
 }
 
 const focusFirstIn = (root: ParentNode | null): void => {
@@ -1300,7 +1309,7 @@ export const useSelect = ({
 
   const [open, setOpen] = useState(false)
 
-  const [selectedValue, setSelectedValue] = useControllableState({
+  const [selectedValue, setSelectedValue, restoreSelectedValue] = useControllableState({
     defaultValue,
     onChange: onValueChange,
     value
@@ -1322,6 +1331,8 @@ export const useSelect = ({
   const openList = useCallback(() => {
     setOpen(true)
   }, [setOpen])
+
+  useSelectFormReset(rootRef, defaultValue, value, restoreSelectedValue, close)
 
   useOutsideClose(open, [rootRef, triggerRef, listRef], close)
 
@@ -1432,7 +1443,13 @@ export const useSelect = ({
 
       if (!option || option.disabled) return
 
-      setSelectedValue(nextValue)
+      const native = rootRef.current?.querySelector<HTMLSelectElement>('[data-ui-select-native]')
+
+      if (native) {
+        native.value = nextValue
+
+        native.dispatchEvent(new Event('change', { bubbles: true }))
+      } else setSelectedValue(nextValue)
 
       close()
 

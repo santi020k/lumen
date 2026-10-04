@@ -132,6 +132,7 @@ import { addLumenRegistryItem, lumen } from '@santi020k/lumen'
 import { lumenComponentNames, renderLumenIconSvg } from '@santi020k/lumen-core'
 import { registerLumenBrandIcons } from '@santi020k/lumen-icons-brand'
 import { Badge, Card } from '@santi020k/lumen-react'
+import { ImageComparison } from '@santi020k/lumen-react/components/image-comparison'
 import { Icon as StaticIcon, Search } from '@santi020k/lumen-react/icons'
 import { Badge as ServerBadge, Card as ServerCard } from '@santi020k/lumen-react/server'
 import {
@@ -145,6 +146,11 @@ import * as z from 'zod'
 
 assert.equal(lumen.name, 'Lumen')
 assert.ok(lumenComponentNames.includes('Card'))
+assert.match(renderToStaticMarkup(createElement(ImageComparison, { label: 'Compare', before: 'Before', after: 'After' })), /ui-image-comparison/)
+for (const name of ['attachments', 'bullet-chart', 'comparison-chart', 'data-table', 'date-range-calendar', 'date-range-input', 'expanded-charts', 'image-comparison', 'interval-charts', 'virtual-list']) {
+  assert.ok(Object.keys(await import('@santi020k/lumen-react/components/' + name)).length > 0)
+}
+assert.equal(typeof (await import('@santi020k/lumen-react/hooks')).useDialog, 'function')
 
 for (const target of ['astro', 'react', 'elements']) {
   for (const name of ['header', 'settings', 'list', 'actions']) {
@@ -255,8 +261,12 @@ const { defineLumenButton } = await import('@santi020k/lumen-elements/components
 const { defineLumenCard } = await import('@santi020k/lumen-elements/components/card')
 const { defineLumenCombobox } = await import('@santi020k/lumen-elements/components/combobox')
 const { defineLumenFoundations } = await import('@santi020k/lumen-elements/components/foundations')
+const { defineLumenVirtualList } = await import('@santi020k/lumen-elements/components/virtual-list')
 
+defineLumenVirtualList(dom.window.customElements)
+const virtualListConstructor = dom.window.customElements.get('lumen-virtual-list')
 defineLumenElements(dom.window.customElements)
+assert.equal(dom.window.customElements.get('lumen-virtual-list'), virtualListConstructor)
 
 assert.ok(dom.window.customElements.get('lumen-card'))
 assert.ok(dom.window.customElements.get('lumen-dialog'))
@@ -392,6 +402,7 @@ export function ClientPanel() {
     join(consumerDirectory, 'src', 'app', 'page.tsx'),
     `import { Card } from '@santi020k/lumen-react'
 import { Badge, Skeleton } from '@santi020k/lumen-react/server'
+import { ImageComparison } from '@santi020k/lumen-react/components/image-comparison'
 
 import { ClientPanel } from './client-panel'
 
@@ -403,6 +414,7 @@ export default function Page() {
         <p>Packed React package imported by a Server Component.</p>
         <Skeleton aria-label="Server-rendered placeholder" />
         <ClientPanel />
+        <ImageComparison label="Compare packed imports" before="Before" after="After" />
       </Card>
     </main>
   )

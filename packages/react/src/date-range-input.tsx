@@ -1,3 +1,5 @@
+'use client'
+
 import type { ReactNode } from 'react'
 import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState } from 'react'
 

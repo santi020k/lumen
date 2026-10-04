@@ -1,7 +1,7 @@
 ---
 import type { HTMLAttributes } from 'astro/types'
 
-import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+import { type LumenControlVisualSize, resolveLumenAstroProps } from '@santi020k/lumen-core'
 
 interface Option {
   disabled?: boolean
@@ -11,13 +11,13 @@ interface Option {
 
 type SelectOption = Option | string
 
-interface Props extends Omit<HTMLAttributes<'select'>, 'size'> {
+interface Props extends HTMLAttributes<'select'> {
   class?: string | null
   className?: string
   glass?: boolean | 'subtle' | 'strong'
   options?: SelectOption[]
   placeholder?: string
-  size?: 'default' | 'lg' | 'md' | 'sm'
+  visualSize?: LumenControlVisualSize
 }
 
 const {
@@ -30,7 +30,7 @@ const {
   options = [],
   placeholder,
   required = false,
-  size = 'default',
+  visualSize = 'default',
   value,
   ...rest
 } = Astro.props
@@ -63,8 +63,8 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
     class:list={[
       'ui-select',
       'ui-select__native',
-      size === 'sm' && 'ui-select--sm',
-      size === 'lg' && 'ui-select--lg'
+      visualSize === 'sm' && 'ui-select--sm',
+      visualSize === 'lg' && 'ui-select--lg'
     ]}
     data-ui-select-native
     disabled={disabled}
@@ -98,8 +98,8 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
       class:list={[
         'ui-select',
         'ui-select__trigger',
-        size === 'sm' && 'ui-select--sm',
-        size === 'lg' && 'ui-select--lg'
+        visualSize === 'sm' && 'ui-select--sm',
+        visualSize === 'lg' && 'ui-select--lg'
       ]}
       data-ui-select-trigger
       disabled={disabled}

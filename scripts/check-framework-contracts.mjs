@@ -27,7 +27,8 @@ const [
     'combobox',
     'foundations',
     'dashboard',
-    'image-comparison'
+    'image-comparison',
+    'virtual-list'
   ].map(name => readFile(
     new URL(`../packages/elements/src/components/${name}.ts`, import.meta.url),
     'utf8'
