@@ -11,7 +11,7 @@ import { LumenBrandGithubIconGraphic } from './static-icons/brand-github.generat
 import { LumenSearchIconGraphic } from './static-icons/search.generated.js'
 import { LumenButtonGroup, LumenChip, LumenFieldGroup, LumenTextarea, LumenToast } from './additional-components.js'
 import { LumenAutocomplete, LumenInputOTP, LumenNumberField, LumenPasswordField } from './advanced-form-components.js'
-import { LumenHeatmap, LumenHistogram, LumenWaterfallChart } from './chart-components.js'
+import { LumenBarChart, LumenComboChart, LumenHeatmap, LumenHistogram, LumenLineChart, LumenRangeChart, LumenScatterChart, LumenWaterfallChart } from './chart-components.js'
 import { LumenImageComparison } from './comparison-components.js'
 import { LumenDateField, LumenDateRangeField } from './datetime-components.js'
 import { LumenSearchField, LumenToggle } from './form-components.js'
@@ -240,6 +240,48 @@ afterEach(async () => {
 })
 
 describe('Lumen React Native component behavior', () => {
+  test.each(['bar', 'line', 'scatter', 'range', 'combo'] as const)(
+    '%s chart fits its container and resizes without removing data', async kind => {
+      const data = [3, 7, 4, 8, 5].map((y, x) => ({ x, y }))
+      const series = [{ id: 'activity', label: 'Changes', data }]
+      const props = { label: 'Weekly activity', showData: false, series }
+      const charts = {
+        bar: <LumenBarChart {...props} />,
+        line: <LumenLineChart {...props} />,
+        scatter: <LumenScatterChart {...props} />,
+        range: <LumenRangeChart label="Weekly range" showData={false} data={data.map(({ x, y }) => ({ x, low: y, high: y + 2 }))} />,
+        combo: <LumenComboChart {...props} series={[{ id: 'activity', label: 'Changes', data, mark: 'bar' }]} />
+      }
+      const root = await renderNative(charts[kind])
+      const layouts = root.container.queryAll(instance => instance.type === 'View' && typeof readProp(instance, 'onLayout') === 'function')
+      expect(layouts).toHaveLength(1)
+      const layout = layouts[0]
+      if (!layout) throw new Error('Missing chart container')
+      const handler = readProp(layout, 'onLayout')
+      if (typeof handler !== 'function') throw new Error('Missing chart layout handler')
+
+      for (const width of [268, 720, 300, 0, Number.NaN]) {
+        await act(async () => {
+          Reflect.apply(handler, undefined, [{ nativeEvent: { layout: { width } } }])
+          await Promise.resolve()
+        })
+        const expectedWidth = width > 0 && Number.isFinite(width) ? width : 300
+        const svg = findHostComponent(root, 'Svg')
+        expect(readProp(svg, 'width')).toBe(expectedWidth)
+        expect(readProp(svg, 'height')).toBe(Math.min(320, Math.max(220, expectedWidth * 0.75)))
+        expect(root.container.queryAll(instance => instance.type === 'ScrollView')).toHaveLength(0)
+        const bars = root.container.queryAll(instance => instance.type === 'Rect')
+        expect(bars).toHaveLength(['bar', 'combo'].includes(kind) ? 5 : 0)
+        for (const bar of bars) {
+          const coordinates = /translate\(([-\d.]+) ([-\d.]+)\)/u.exec(String(readProp(bar, 'transform')))
+          if (!coordinates?.[1]) throw new Error('Missing bar coordinates')
+          expect(Number(coordinates[1])).toBeGreaterThanOrEqual(0)
+          expect(Number(coordinates[1]) + Number(readProp(bar, 'width'))).toBeLessThanOrEqual(expectedWidth)
+        }
+      }
+    }
+  )
+
   test.each([
     { rtl: false, values: [20, 50, 120, 20, 120] },
     { rtl: true, values: [120, 100, 20, 120, 20] }

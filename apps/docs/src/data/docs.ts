@@ -1309,7 +1309,7 @@ const apiReferenceByComponent = {
       'layout', '"grouped" | "stacked"', '"grouped"', 'Places series beside one another or combines their positive and negative totals.'
     ),
     apiRow(
-      'categoryWidth', 'number', '112', 'Reserves 64–240 SVG units for horizontal category labels.'
+      'categoryWidth', 'number', '160', 'Reserves 64–240 SVG units for horizontal category labels.'
     ),
     apiRow(
       'formatCategory, formatValue', 'formatter functions', 'String', 'Formats axes, SVG titles, and the accessible data table without changing data identity.'

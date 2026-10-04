@@ -38,8 +38,10 @@ const copy = {
     states: 'Example state',
     title: 'Workspace',
     chart: 'Weekly activity',
+    chartDescription: 'Changes per day',
+    chartDays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
     chartSummary: 'Weekly activity, five values.',
-    chartLabels: { chartData: 'Chart data', chartLegend: 'Legend', category: 'Category', series: 'Series', value: 'Value', notAvailable: 'Not available', empty: 'No data available.' },
+    chartLabels: { viewData: 'View chart data', chartData: 'Chart data', chartLegend: 'Legend', category: 'Category', series: 'Series', value: 'Value', notAvailable: 'Not available', empty: 'No data available.' },
     series: 'Changes',
     direction: 'Preview direction',
     stateLabels: { success: 'Ready', loading: 'Loading', empty: 'Empty', error: 'Error' }
@@ -65,8 +67,10 @@ const copy = {
     states: 'Estado del ejemplo',
     title: 'Espacio de trabajo',
     chart: 'Actividad semanal',
+    chartDescription: 'Cambios por día',
+    chartDays: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie'],
     chartSummary: 'Actividad semanal, cinco valores.',
-    chartLabels: { chartData: 'Datos del gráfico', chartLegend: 'Leyenda', category: 'Categoría', series: 'Serie', value: 'Valor', notAvailable: 'No disponible', empty: 'No hay datos disponibles.' },
+    chartLabels: { viewData: 'Ver datos del gráfico', chartData: 'Datos del gráfico', chartLegend: 'Leyenda', category: 'Categoría', series: 'Serie', value: 'Valor', notAvailable: 'No disponible', empty: 'No hay datos disponibles.' },
     series: 'Cambios',
     direction: 'Vista de dirección',
     stateLabels: { success: 'Listo', loading: 'Cargando', empty: 'Vacío', error: 'Error' }
@@ -269,10 +273,11 @@ export const WorkspaceExample = ({ onBack }: { onBack: () => void }): ReactEleme
               (
                 <LumenBarChart
                   heading={text.chart}
+                  description={text.chartDescription}
                   label={text.chart}
                   summary={text.chartSummary}
                   labels={text.chartLabels}
-                  series={[{ id: 'activity', label: text.series, data: [3, 7, 4, 8, 5].map((y, index) => ({ x: String(index + 1), y })) }]}
+                  series={[{ id: 'activity', label: text.series, data: [3, 7, 4, 8, 5].map((y, index) => ({ x: String(index + 1), xLabel: text.chartDays[index] ?? String(index + 1), y })) }]}
                 />
               ) :
               empty}

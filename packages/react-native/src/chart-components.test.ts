@@ -17,6 +17,10 @@ import {
   LumenScatterChart,
   LumenWaterfallChart } from './chart-components.js'
 
+vi.mock('./chart-layout.js', () => ({
+  useLumenChartLayout: () => ({ width: 640, height: 320, onLayout: () => undefined })
+}))
+
 vi.mock('react-native-svg', () => ({
   Circle: () => null,
   Line: () => null,
@@ -61,6 +65,7 @@ vi.mock('./theme-context.js', () => ({
       surfaceMuted: '#f3f4f6',
       warning: '#d97706'
     },
+    fontFamilies: { sans: ['sans-serif'] },
     fontSizes: { lg: 18, sm: 14 },
     radii: { lg: 16, sm: 8 },
     spacing: { lg: 16, md: 12, sm: 8, xs: 4 }

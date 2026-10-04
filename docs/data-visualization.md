@@ -284,3 +284,13 @@ Astro and React accept `formatValue`, `targetLabel`, `valueLabel`, and `labels`.
 `domain-min`/`domain-max`, `target-label`, and a `valueFormatter` property. Removing the Elements
 `value` attribute represents a missing observation. Native adapters use their existing labels and
 number formatter contracts. Keep `showTable` (web) or `showData` (native) enabled for exact values.
+
+### Compact bar chart layout
+
+Web bar charts fit the available card width across Astro, React, and Web Components, including
+phone layouts. Horizontal charts reserve 160 SVG units for category labels by default; use
+`categoryWidth` to adjust that space for your own labels. The readable data disclosure contains
+every value even when the axis selects fewer labels.
+
+React Native line, bar, scatter, range, and combo charts recompute their geometry when the container
+resizes. This keeps the complete plot visible with fixed-size axis text and a compact phone height.

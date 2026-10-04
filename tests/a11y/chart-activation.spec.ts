@@ -118,3 +118,24 @@ for (const width of [320, 1440]) {
     expect(widths.content).toBeLessThanOrEqual(widths.viewport)
   })
 }
+
+for (const width of [390, 1280]) {
+  test(`bar chart plots fit their cards across web adapters at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 900 })
+    await page.goto('/internal/chart-activation')
+    const charts = page.locator('.ui-bar-chart')
+    await expect(charts).toHaveCount(4)
+    for (const chart of await charts.all()) {
+      const plot = chart.locator('.ui-chart__plot')
+      expect(await plot.evaluate(element => element.scrollWidth <= element.clientWidth + 1)).toBe(true)
+      const plotBounds = await plot.boundingBox()
+      if (!plotBounds) throw new Error('Missing chart plot')
+      for (const label of await plot.locator('text').all()) {
+        const bounds = await label.boundingBox()
+        if (!bounds) throw new Error('Missing axis label')
+        expect(bounds.x).toBeGreaterThanOrEqual(plotBounds.x - 1)
+        expect(bounds.x + bounds.width).toBeLessThanOrEqual(plotBounds.x + plotBounds.width + 1)
+      }
+    }
+  })
+}
