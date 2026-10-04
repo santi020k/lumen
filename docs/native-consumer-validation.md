@@ -423,3 +423,33 @@ installation, device accessibility, an adopted consumer upgrade, current active-
 published-artifact qualification or either stability iteration. The historical consumer ledger
 remains unchanged and incomplete. See [v4 native quality](lumen-4-native-quality.md) for the final
 candidate requirements and remaining release gates.
+
+## Lumen 4 local ContracTrack compatibility
+
+Committed ContracTrack source `ddc1687b67e13e968a31cbc9995b7cfee5bd5b7b` was copied into an
+ignored, isolated directory and tested against Lumen candidate `ed125c78`. The original checkout
+was clean and its revision and status remained unchanged. Only the copied dependency metadata
+changed: Compose and Wear resolved local staged Maven 4.0.0 artifacts instead of 2.1.0; Swift
+Package Manager used the local candidate instead of the remote 2.1.0 package. XcodeGen regenerated
+the copied project. No consumer application source changed.
+
+The maintained consumer commands produced:
+
+- exact 4.0.0 dependency resolution for the Android phone and Wear applications;
+- `testDebugUnitTest lint assembleDebug`: 119 phone tests and seven Wear tests, with zero failures,
+  errors or skipped tests, zero lint errors and warnings, and both debug APKs; and
+- unsigned Debug builds of `BetweenContractions`, `BetweenContractionsMac` and
+  `BetweenContractionsWatch` for generic iOS Simulator, macOS and watchOS Simulator destinations.
+
+The iOS build reported `Metadata extraction skipped, no AppIntents.framework dependency found`.
+The warning belongs to `BetweenContractionsNotificationService`, which has no App Intents
+dependency; other application targets do use App Intents. The build succeeded. Android also reported Gradle deprecation notices. These results do not establish a
+warning-free external toolchain. The current Apple source imports `LumenUI`, not `LumenWidgetUI`;
+compiling its widget extensions does not qualify Lumen's WidgetKit adapter.
+
+Source hashes for 8,142 native files were recorded after builds started and matched after all
+builds completed. Logs, APK hashes, Apple artifact file hashes and the original-checkout comparison
+remain local under `.build/native-quality-contractrack-v4-*`. The after-start capture is not
+before-build provenance. These are local compatibility checks, not installed runtime, hardware
+accessibility, production signing, published-artifact adoption or stability-iteration evidence.
+The historical qualification ledger remains unchanged and incomplete.

@@ -783,3 +783,21 @@ All 20 soak-ledger regression tests passed after the digest update, as did repos
 and zero-warning lint (23 tasks each). The canonical validation gate again passed all 14 builds
 before the existing web bundle-size failures. The required-complete soak check still rejects the
 empty iteration list; no release or remote integration was performed.
+
+### Current ContracTrack consumer compatibility
+
+An isolated copy of committed ContracTrack `ddc1687b67e13e968a31cbc9995b7cfee5bd5b7b` built
+against candidate `ed125c78` without application-source changes. Android phone and Wear resolved
+local 4.0.0 Maven artifacts, passed 126 unit tests, reported zero lint issues and produced both
+debug APKs. Unsigned iOS Simulator, macOS and watchOS Simulator application builds passed against
+the local Swift package. The original checkout's revision and clean status were preserved.
+The iOS notification-service extension retained a metadata-extraction warning for its absent
+App Intents dependency; other application targets use App Intents.
+
+The consumer's current Apple source does not import `LumenWidgetUI`, so its widget builds do not
+qualify that adapter. Native source hashes captured after build start still matched at completion;
+logs and artifact hashes remain local. See [consumer validation](native-consumer-validation.md)
+for commands and evidence limits. Physical-device, accessibility, published-artifact upgrade and
+stability requirements remain open; no qualification ledger status changed. Canonical validation
+and local release integration remain incomplete because of the previously recorded web bundle
+budget failures.
