@@ -75,6 +75,8 @@ describe('documentation context navigation', () => {
 describe('current documentation destination', () => {
   test.each([
     ['', 'Overview'],
+    ['#tokens-in-use', 'Color roles'],
+    ['#composition-in-use', 'Composition'],
     ['#installation', 'Use the tokens'],
     ['#components', 'Coverage'],
     ['#component%73', 'Coverage'],
