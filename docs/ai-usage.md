@@ -407,7 +407,13 @@ The shared catalog includes:
   enabled unless the same values are already available in a nearby semantic table. Prefer a bar
   chart when precise slice comparison matters or the pie would exceed roughly seven categories.
   Use `ScatterChart` for numeric relationships, `Heatmap` for a labeled matrix, `RangeChart` for
-  low-to-high intervals, and `ComboChart` only when mixed marks share a meaningful domain. Use
+  low-to-high intervals, and `ComboChart` only when mixed marks share a meaningful domain.
+  Use `WaterfallChart` for signed balance changes, `LollipopChart` for ranking, `DumbbellChart`
+  for reference/current comparison, and `BulletChart` for actual/target comparison. Use `Histogram`
+  for supplied bins, `BoxPlot` for supplied distribution summaries, `CalendarHeatmap` for daily
+  activity, and `FunnelChart` for ordered cohort stages. Retrieve each specialized data contract;
+  these components do not all accept `LumenChartSeries`. Keep statistical and conversion policy
+  in the application, preserve missing days, and use density for unequal histogram bin widths. Use
   `Chart` as the custom SVG/canvas escape hatch. Preserve `null` gaps and the default accessible
   summary and fallback data. See `docs/data-visualization.md` for the full contract.
   Pass `labels` to replace every library-owned visible and assistive phrase. Finite zero is valid

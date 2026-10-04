@@ -225,3 +225,19 @@ test('portable skill and plugin changes select MCP validation', () => {
     assert.equal(classifyCiPaths([path]).mcp, true, path)
   }
 })
+
+test('hosted MCP deployment changes select protocol validation without native platform jobs', () => {
+  for (const path of [
+    '.github/workflows/deploy-mcp.yml',
+    'scripts/check-hosted-mcp.mjs',
+    'scripts/check-hosted-mcp.test.mjs'
+  ]) {
+    const classification = classifyCiPaths([path])
+
+    assert.equal(classification.mcp, true, path)
+
+    assert.equal(classification.apple, false, path)
+
+    assert.equal(classification.android, false, path)
+  }
+})

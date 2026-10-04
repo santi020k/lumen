@@ -66,6 +66,26 @@ build and migration skills remain scoped editing workflows.
 
 ## Release boundaries
 
+### Visualization guidance readiness, October 4, 2026
+
+The canonical build skill now routes analytics tasks to a dedicated selection reference covering
+the existing chart family and the new comparison, histogram, waterfall, calendar heatmap, funnel,
+and box plot components. General selection also covers FilterBar, ChangeSummary, and ImageComparison.
+The review skill checks encoding, installed availability, specialized input shapes, missing values,
+zeros, localization, and accessible exact data. Older installed versions continue to use matching
+contracts rather than inheriting candidate APIs.
+
+Generated Codex and Claude skill copies are synchronized. The current MCP snapshot contains 182 web
+and 100 native entries; all 33 search cases, 546 web usage contracts, and 237 native usage contracts
+pass deterministic end-to-end evaluation. The search cases include older controls and new
+visualizations across Astro, React, and Elements. These checks validate discovery and contracts,
+not authenticated generation of every chart by every model.
+
+The new GitHub MCP rollout and hosted smoke checks are described in the
+[plugin submission guide](openai-plugin-submission.md#automated-catalog-rollout). The v4 approval
+contract remains draft. Publication, deployment, directory review, and installed-plugin updates
+remain separate from this local preparation.
+
 Plugin 1.1.0 is independent of the coordinated Lumen 4.0.0 library version. Both client manifests
 share the plugin version and pin the same v4 MCP package. Publish the package before distributing
 the updated plugin. Hosted MCP deployment and directory approval require separate release evidence.

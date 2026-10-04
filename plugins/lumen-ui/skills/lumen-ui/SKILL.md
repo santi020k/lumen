@@ -33,6 +33,8 @@ Treat Astro as the reference surface, while following the user's existing stack.
 4. Plan the interface as product structure and states, then map each part to the smallest suitable
    Lumen primitive. Read [references/component-selection.md](references/component-selection.md)
    when choosing components or composing a full screen.
+   For charts or analytics, read [references/data-visualization.md](references/data-visualization.md)
+   to choose the encoding and verify its data and accessibility contract.
 5. Read [references/frameworks.md](references/frameworks.md) for setup and runtime rules for the
    selected target.
 6. Implement with Lumen components and platform-native semantics. Import a stylesheet once only for
