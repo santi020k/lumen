@@ -40,8 +40,13 @@ describe('React Native playground model', () => {
       'Button group',
       'Chip',
       'Menu',
-      'Share button'
+      'Share button',
+      'Tooltip',
+      'Command'
     ])
+
+    expect(getVisibleComponentNames('command', 'actions', false)).toEqual(['Command'])
+    expect(getVisibleComponentNames('tooltip', 'actions', false)).toEqual(['Tooltip'])
   })
 
   test('keeps deterministic embeds exact while ordinary search stays flexible', () => {
