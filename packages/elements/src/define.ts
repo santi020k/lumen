@@ -2409,7 +2409,7 @@ const getRichTextCommandValue = (control: HTMLElement): string | undefined => {
 const syncRichTextCommandStates = (root: HTMLElement): void => {
   if (root.dataset.uiEditorNativeState === 'false') return
 
-  const commandDocument = document as unknown as RichTextCommandDocument
+  const commandDocument: RichTextCommandDocument = document
 
   for (const control of root.querySelectorAll<HTMLElement>(
     richTextEditorCommandSelector
@@ -2462,7 +2462,7 @@ const executeRichTextCommand = (
 ): boolean => {
   if (!command) return false
 
-  const commandDocument = document as unknown as RichTextCommandDocument
+  const commandDocument: RichTextCommandDocument = document
 
   const executed = executeLumenRichTextCommand(root, { command, ...(value === undefined ? {} : { value }) }, () => {
     if (typeof commandDocument.execCommand !== 'function') return false
@@ -2717,7 +2717,7 @@ const installScheduleController = (): void => {
 }
 
 /* cspell:ignore valuenow */
-/* eslint-disable @stylistic/padding-line-between-statements -- Resizable mirrors Astro's compact pane sizing runtime. */
+
 const parseResizableNumberList = (
   value: string | undefined,
   count: number,
@@ -2735,11 +2735,13 @@ const parseResizableNumberList = (
 
 const normalizeResizableSizes = (sizes: number[], count: number): number[] => {
   const fallbackSize = 100 / Math.max(1, count)
+
   const usableSizes = Array.from({ length: count }, (_, index) => {
     const size = sizes[index] ?? fallbackSize
 
     return Number.isFinite(size) && size > 0 ? size : fallbackSize
   })
+
   const total = usableSizes.reduce((sum, size) => sum + size, 0)
 
   if (total <= 0) return Array.from({ length: count }, () => fallbackSize)
@@ -2763,6 +2765,7 @@ const applyResizableSizes = (
 ): void => {
   for (const [index, pane] of panes.entries()) {
     pane.dataset.uiResizablePanel = ''
+
     pane.style.setProperty('--ui-resizable-size', `${sizes[index] ?? 0}%`)
   }
 
@@ -2772,9 +2775,11 @@ const applyResizableSizes = (
     handle.setAttribute(
       'aria-valuemin', String(Math.round(minSizes[index] ?? 0))
     )
+
     handle.setAttribute(
       'aria-valuemax', String(Math.round(maxSizes[index] ?? 100))
     )
+
     handle.setAttribute('aria-valuenow', String(Math.round(sizes[index] ?? 0)))
   }
 }
@@ -2788,15 +2793,19 @@ const resizeResizablePair = (
 ): void => {
   const nextIndex = index + 1
   const total = (sizes[index] ?? 0) + (sizes[nextIndex] ?? 0)
+
   const min = Math.max(
     minSizes[index] ?? 0, total - (maxSizes[nextIndex] ?? 100)
   )
+
   const max = Math.min(
     maxSizes[index] ?? 100, total - (minSizes[nextIndex] ?? 0)
   )
+
   const paneSize = Math.min(max, Math.max(min, nextSize))
 
   sizes[index] = paneSize
+
   sizes[nextIndex] = total - paneSize
 }
 
@@ -2808,21 +2817,30 @@ const createResizableHandle = (
   const template = root.querySelector<HTMLTemplateElement>(
     `:scope > ${resizableHandleTemplateSelector}`
   )
+
   const handleFromTemplate = template?.content
     .querySelector<HTMLButtonElement>(resizableHandleSelector)
     ?.cloneNode(true)
+
   const handle =
     handleFromTemplate instanceof HTMLButtonElement ?
       handleFromTemplate :
       document.createElement('button')
 
   handle.type = 'button'
+
   handle.className = 'ui-resizable__handle'
+
   handle.dataset.uiResizableHandle = ''
+
   handle.dataset.index = String(index)
+
   handle.tabIndex = 0
+
   handle.setAttribute('aria-label', `Resize panel ${index + 1}`)
+
   handle.setAttribute('role', 'separator')
+
   handle.setAttribute('aria-orientation', separatorOrientation)
 
   return handle
@@ -2848,28 +2866,36 @@ const initResizableGroups = (scope: ParentNode): void => {
     if (panes.length < 2) continue
 
     root.dataset.uiBound = 'true'
+
     root.dataset.uiResizableEnhanced = 'true'
+
     root.classList.toggle(
       'ui-resizable--vertical', root.dataset.orientation === 'vertical'
     )
 
     const direction =
       root.dataset.orientation === 'vertical' ? 'vertical' : 'horizontal'
+
     const separatorOrientation =
       direction === 'horizontal' ? 'vertical' : 'horizontal'
+
     const axis = direction === 'horizontal' ? 'clientX' : 'clientY'
     const sizeProperty = direction === 'horizontal' ? 'width' : 'height'
+
     const minSizes = parseResizableNumberList(
       root.dataset.uiResizableMinSize, panes.length, 12
     )
+
     const maxSizes = parseResizableNumberList(
       root.dataset.uiResizableMaxSize, panes.length, 88
     )
+
     const initialSizes = normalizeResizableSizes(
       parseResizableNumberList(
         root.dataset.uiResizableDefaultSizes, panes.length, 100 / panes.length
       ), panes.length
     )
+
     let sizes = [...initialSizes]
     const handles: HTMLElement[] = []
 
@@ -2883,6 +2909,7 @@ const initResizableGroups = (scope: ParentNode): void => {
         pane.nextElementSibling.matches(resizableHandleSelector) ?
           (pane.nextElementSibling as HTMLButtonElement) :
           null
+
       const handle =
         existingHandle ??
         createResizableHandle(root, index, separatorOrientation)
@@ -2903,6 +2930,7 @@ const initResizableGroups = (scope: ParentNode): void => {
 
       const resizePair = (nextSize: number): void => {
         resizeResizablePair(sizes, minSizes, maxSizes, index, nextSize)
+
         applySizes()
       }
 
@@ -2912,10 +2940,15 @@ const initResizableGroups = (scope: ParentNode): void => {
         event.preventDefault()
 
         startPosition = event[axis]
+
         startSize = sizes[index] ?? 0
+
         containerSize = Math.max(1, root.getBoundingClientRect()[sizeProperty])
+
         root.dataset.resizing = 'true'
+
         handle.dataset.active = 'true'
+
         handle.setPointerCapture(event.pointerId)
       })
 
@@ -2923,7 +2956,6 @@ const initResizableGroups = (scope: ParentNode): void => {
         if (handle.dataset.active !== 'true') return
 
         const delta = ((event[axis] - startPosition) / containerSize) * 100
-
         const multiplier = direction === 'horizontal' && getLumenDirectionalKey(handle, 'ArrowRight') === 'ArrowLeft' ? -1 : 1
 
         resizePair(startSize + delta * multiplier)
@@ -2933,23 +2965,29 @@ const initResizableGroups = (scope: ParentNode): void => {
         if (handle.dataset.active !== 'true') return
 
         delete handle.dataset.active
+
         delete root.dataset.resizing
+
         if (handle.hasPointerCapture(event.pointerId)) handle.releasePointerCapture(event.pointerId)
       }
 
       handle.addEventListener('pointerup', finishResize)
+
       handle.addEventListener('pointercancel', finishResize)
+
       handle.addEventListener('lostpointercapture', finishResize)
 
       handle.addEventListener('dblclick', () => {
         if (root.dataset.uiResizableReset !== 'true') return
 
         sizes = [...initialSizes]
+
         applySizes()
       })
 
       handle.addEventListener('keydown', event => {
         const step = event.shiftKey ? 10 : 2
+
         const keyDeltas: Record<string, number> =
           direction === 'horizontal' ?
             { ArrowLeft: -step, ArrowRight: step } :
@@ -3017,7 +3055,6 @@ const installResizableController = (): void => {
     subtree: true
   })
 }
-/* eslint-enable @stylistic/padding-line-between-statements */
 
 const getLoopedIndex = (
   key: string,
@@ -3141,10 +3178,8 @@ const installDateRangePickerController = (): void => {
   })
 }
 
-/* eslint-disable @stylistic/padding-line-between-statements -- InputOTP mirrors Astro's compact DOM synchronization runtime. */
 const defaultInputOtpLength = 6
 const defaultInputOtpPattern = '[0-9]*'
-
 const normalizeInputOtpLength = (value: string | null | undefined): number => Math.max(1, Number.parseInt(value ?? '', 10) || defaultInputOtpLength)
 
 const getInputOtpLength = (root: HTMLElement): number => normalizeInputOtpLength(
@@ -3161,6 +3196,7 @@ const sanitizeInputOtpValue = (
   const numericOnly =
     input.inputMode === 'numeric' ||
     input.getAttribute('pattern') === defaultInputOtpPattern
+
   const normalized = numericOnly ?
     value.replaceAll(/\D/g, '') :
     value.replaceAll(/\s/g, '')
@@ -3173,13 +3209,19 @@ const createInputOtpSegment = (index: number): HTMLButtonElement => {
   const char = document.createElement('span')
 
   segment.ariaHidden = 'true'
+
   segment.className = 'ui-input-otp__segment'
+
   segment.dataset.index = String(index)
+
   segment.dataset.uiInputOtpSegment = ''
+
   segment.tabIndex = -1
+
   segment.type = 'button'
 
   char.dataset.uiInputOtpChar = ''
+
   char.textContent = '\u00a0'
 
   segment.append(char)
@@ -3211,6 +3253,7 @@ const ensureInputOtpNativeInput = (
   }
 
   input.classList.add('ui-input-otp', 'ui-input-otp__native')
+
   input.dataset.uiInputOtpNative = ''
 
   if (!input.hasAttribute('autocomplete')) {
@@ -3253,6 +3296,7 @@ const ensureInputOtpNativeInput = (
   }
 
   input.disabled = root.hasAttribute('disabled') || input.disabled
+
   input.required = root.hasAttribute('required') || input.required
 
   if (
@@ -3281,6 +3325,7 @@ const ensureInputOtpSegmentsRoot = (root: HTMLElement): HTMLElement => {
   }
 
   segmentsRoot.classList.add('ui-input-otp__segments')
+
   segmentsRoot.dataset.uiInputOtpSegments = ''
 
   return segmentsRoot
@@ -3310,10 +3355,15 @@ const ensureInputOtpSegments = (
 
   for (const [index, segment] of segments.entries()) {
     segment.classList.add('ui-input-otp__segment')
+
     segment.dataset.index = String(index)
+
     segment.dataset.uiInputOtpSegment = ''
+
     segment.setAttribute('aria-hidden', 'true')
+
     segment.tabIndex = -1
+
     segment.type = 'button'
 
     if (!segment.querySelector('[data-ui-input-otp-char]')) {
@@ -3345,6 +3395,7 @@ const syncInputOtpSegments = (
   )
 
   root.dataset.disabled = input.disabled ? 'true' : 'false'
+
   root.dataset.invalid =
     input.getAttribute('aria-invalid') === 'true' ? 'true' : 'false'
 
@@ -3352,6 +3403,7 @@ const syncInputOtpSegments = (
     const char = segment.querySelector<HTMLElement>('[data-ui-input-otp-char]')
 
     segment.disabled = input.disabled
+
     segment.dataset.active = String(
       document.activeElement === input && index === activeIndex
     )
@@ -3379,8 +3431,11 @@ const initInputOtpFields = (scope: ParentNode): void => {
     const segments = ensureInputOtpSegments(segmentsRoot, length)
 
     root.dataset.uiBound = 'true'
+
     root.dataset.uiInputOtpLength = String(length)
+
     input.dataset.uiEnhanced = 'true'
+
     segmentsRoot.hidden = false
 
     const syncSegments = (): void => {
@@ -3403,6 +3458,7 @@ const initInputOtpFields = (scope: ParentNode): void => {
       input.setSelectionRange(input.value.length, input.value.length)
 
       input.dispatchEvent(new Event('input', { bubbles: true }))
+
       input.dispatchEvent(new Event('change', { bubbles: true }))
 
       syncSegments()
@@ -3411,11 +3467,17 @@ const initInputOtpFields = (scope: ParentNode): void => {
     syncSegments()
 
     input.addEventListener('input', syncSegments)
+
     input.addEventListener('change', syncSegments)
+
     input.addEventListener('focus', syncSegments)
+
     input.addEventListener('blur', syncSegments)
+
     input.addEventListener('click', syncSegments)
+
     input.addEventListener('keyup', syncSegments)
+
     input.addEventListener('keydown', event => {
       if (event.key === 'ArrowLeft') {
         event.preventDefault()
@@ -3447,6 +3509,7 @@ const initInputOtpFields = (scope: ParentNode): void => {
         setSelection(input.value.length)
       }
     })
+
     input.addEventListener('paste', event => {
       const pasted = event.clipboardData?.getData('text') ?? ''
 
@@ -3456,6 +3519,7 @@ const initInputOtpFields = (scope: ParentNode): void => {
 
       setValue(pasted)
     })
+
     input.form?.addEventListener('reset', () => {
       globalThis.setTimeout(syncSegments)
     })
@@ -3500,10 +3564,9 @@ const installInputOtpController = (): void => {
     subtree: true
   })
 }
-/* eslint-enable @stylistic/padding-line-between-statements */
 
 /* cspell:ignore lsaquo rsaquo */
-/* eslint-disable @stylistic/padding-line-between-statements -- Calendar mirrors Astro's UTC date grid runtime. */
+
 const createCalendarDate = (year: number, month: number, day: number): Date => {
   const date = new Date(0)
 
@@ -3511,15 +3574,19 @@ const createCalendarDate = (year: number, month: number, day: number): Date => {
 
   return date
 }
+
 const parseCalendarMonth = (value: string | null | undefined): Date | null => value ? parseCalendarDate(`${value}-01`) : null
 const formatCalendarDate = (date: Date): string => date.toISOString().split('T')[0] ?? ''
 const formatCalendarMonth = (date: Date): string => formatCalendarDate(date).slice(0, -3)
+
 const addCalendarDays = (date: Date, days: number): Date => createCalendarDate(
   date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate() + days
 )
+
 const getCalendarDaysInMonth = (date: Date): number => createCalendarDate(
   date.getUTCFullYear(), date.getUTCMonth() + 1, 0
 ).getUTCDate()
+
 const addCalendarMonths = (date: Date, months: number): Date => {
   const target = createCalendarDate(date.getUTCFullYear(), date.getUTCMonth() + months, 1)
 
@@ -3527,19 +3594,23 @@ const addCalendarMonths = (date: Date, months: number): Date => {
     target.getUTCFullYear(), target.getUTCMonth(), Math.min(date.getUTCDate(), getCalendarDaysInMonth(target))
   )
 }
+
 const compareCalendarDates = (date: Date, other: Date | null): number => (
   other ? Math.sign(date.getTime() - other.getTime()) : 0
 )
+
 const getCalendarLocale = (root: HTMLElement): string => resolveLumenDateLocale(root.getAttribute('locale') || root.dataset.locale || root.closest('[lang]')?.getAttribute('lang') || undefined)
 const getCalendarMin = (root: HTMLElement): Date | null => parseCalendarDate(root.getAttribute('min') ?? root.dataset.uiCalendarMin ?? '0001-01-01')
 const getCalendarMax = (root: HTMLElement): Date | null => parseCalendarDate(root.getAttribute('max') ?? root.dataset.uiCalendarMax ?? '9999-12-31')
 const isCalendarDisabled = (root: HTMLElement): boolean => root.hasAttribute('disabled') || root.dataset.disabled === 'true' || !isLumenDateBoundsValid(root.getAttribute('min') ?? root.dataset.uiCalendarMin, root.getAttribute('max') ?? root.dataset.uiCalendarMax)
 const isCalendarReadOnly = (root: HTMLElement): boolean => root.hasAttribute('readonly') || root.dataset.readonly === 'true'
+
 const getCalendarToday = (): Date => {
   const today = new Date()
 
   return createCalendarDate(today.getFullYear(), today.getMonth(), today.getDate())
 }
+
 const getCalendarGridStart = (month: Date): Date => addCalendarDays(month, -((month.getUTCDay() + 6) % 7))
 
 const isCalendarDateDisabled = (
@@ -3557,6 +3628,7 @@ const clampCalendarDate = (
   max: Date | null
 ): Date => {
   if (min && compareCalendarDates(date, min) < 0) return min
+
   if (max && compareCalendarDates(date, max) > 0) return max
 
   return date
@@ -3596,9 +3668,11 @@ const ensureCalendarStructure = (root: HTMLElement): void => {
   root.id ||= createId('ui-calendar')
 
   const labelId = `${root.id}-label`
+
   const selectedDate = parseCalendarDate(
     root.getAttribute('value') ?? root.dataset.uiCalendarValue
   )
+
   const monthDate =
     parseCalendarMonth(
       root.getAttribute('month') ?? root.dataset.uiCalendarMonth
@@ -3611,22 +3685,29 @@ const ensureCalendarStructure = (root: HTMLElement): void => {
       createCalendarDate(
         getCalendarToday().getUTCFullYear(), getCalendarToday().getUTCMonth(), 1
       )
+
   let input = root.querySelector<HTMLInputElement>(calendarInputSelector)
 
   root.dataset.uiCalendarInitialMonth ??= formatCalendarMonth(monthDate)
+
   root.dataset.uiCalendarMonth ||= formatCalendarMonth(monthDate)
 
   root.dataset.uiCalendarValue = selectedDate ? formatCalendarDate(selectedDate) : ''
 
   if (!input) {
     input = document.createElement('input')
+
     input.type = 'hidden'
+
     input.dataset.uiCalendarInput = ''
+
     root.prepend(input)
   }
 
   input.disabled = isCalendarDisabled(root)
+
   input.value = root.dataset.uiCalendarValue
+
   input.defaultValue = input.value
 
   if (root.hasAttribute('name') && !input.name) {
@@ -3640,20 +3721,35 @@ const ensureCalendarStructure = (root: HTMLElement): void => {
     const next = document.createElement('button')
 
     header.className = 'ui-calendar__header'
+
     previous.type = 'button'
+
     previous.className = 'ui-calendar__nav'
+
     previous.dataset.uiCalendarPrev = ''
+
     previous.setAttribute('aria-label', 'Previous month')
+
     previous.innerHTML = '<span aria-hidden="true">&lsaquo;</span>'
+
     label.className = 'ui-calendar__label'
+
     label.dataset.uiCalendarLabel = ''
+
     label.id = labelId
+
     next.type = 'button'
+
     next.className = 'ui-calendar__nav'
+
     next.dataset.uiCalendarNext = ''
+
     next.setAttribute('aria-label', 'Next month')
+
     next.innerHTML = '<span aria-hidden="true">&rsaquo;</span>'
+
     header.append(previous, label, next)
+
     input.after(header)
   }
 
@@ -3667,9 +3763,13 @@ const ensureCalendarStructure = (root: HTMLElement): void => {
     const table = document.createElement('table')
 
     table.className = 'ui-calendar__grid'
+
     table.dataset.uiCalendarGrid = ''
+
     table.role = 'grid'
+
     table.setAttribute('aria-labelledby', label?.id ?? labelId)
+
     root.append(table)
   }
 }
@@ -3683,6 +3783,7 @@ const syncCalendarNavigation = (
   const previous = root.querySelector<HTMLButtonElement>(
     '[data-ui-calendar-prev]'
   )
+
   const next = root.querySelector<HTMLButtonElement>('[data-ui-calendar-next]')
   const disabled = isCalendarDisabled(root)
   const previousMonthLastDay = addCalendarDays(month, -1)
@@ -3691,6 +3792,7 @@ const syncCalendarNavigation = (
   if (previous)
     previous.disabled =
       disabled || compareCalendarDates(previousMonthLastDay, min) < 0
+
   if (next)
     next.disabled =
       disabled || compareCalendarDates(nextMonthFirstDay, max) > 0
@@ -3711,15 +3813,20 @@ const renderCalendar = (
   const input = root.querySelector<HTMLInputElement>('[data-ui-calendar-input]')
 
   if (input) input.disabled = isCalendarDisabled(root)
+
   root.setAttribute('aria-disabled', String(isCalendarDisabled(root)))
 
   grid.setAttribute('aria-readonly', String(isCalendarReadOnly(root)))
+
   root.querySelector('[data-ui-calendar-prev]')?.setAttribute('aria-label', root.dataset.previousMonthLabel || labels.previousMonth)
+
   root.querySelector('[data-ui-calendar-next]')?.setAttribute('aria-label', root.dataset.nextMonthLabel || labels.nextMonth)
+
   const min = getCalendarMin(root)
   const max = getCalendarMax(root)
   const selectedDate = parseCalendarDate(root.dataset.uiCalendarValue)
   const todayIso = formatCalendarDate(getCalendarToday())
+
   const month =
     parseCalendarMonth(root.dataset.uiCalendarMonth) ??
     (selectedDate ?
@@ -3728,17 +3835,22 @@ const renderCalendar = (
       ) :
       null) ??
       getCalendarToday()
+
   const visibleMonth = createCalendarDate(month.getUTCFullYear(), month.getUTCMonth(), 1)
+
   const focusDate = getCalendarFocusDate(
     root, visibleMonth, min, max, requestedFocusDate
   )
+
   const focusIso = formatCalendarDate(focusDate)
   const selectedIso = selectedDate ? formatCalendarDate(selectedDate) : ''
+
   const monthLabel = new Intl.DateTimeFormat(locale, {
     month: 'long',
     timeZone: 'UTC',
     year: 'numeric'
   }).format(visibleMonth)
+
   const dayLabel = new Intl.DateTimeFormat(locale, {
     day: 'numeric',
     month: 'long',
@@ -3746,28 +3858,36 @@ const renderCalendar = (
     weekday: 'long',
     year: 'numeric'
   })
+
   const weekdayLabel = new Intl.DateTimeFormat(locale, {
     timeZone: 'UTC',
     weekday: 'short'
   })
+
   const header = document.createElement('thead')
   const headerRow = document.createElement('tr')
   const body = document.createElement('tbody')
   const firstCell = getCalendarGridStart(visibleMonth)
 
   root.dataset.uiCalendarMonth = formatCalendarMonth(visibleMonth)
+
   label.textContent = monthLabel
+
   syncCalendarNavigation(root, visibleMonth, min, max)
+
   headerRow.role = 'row'
 
   for (let index = 0; index < 7; index += 1) {
     const cell = document.createElement('th')
 
     cell.scope = 'col'
+
     cell.role = 'columnheader'
+
     cell.textContent = weekdayLabel.format(
       createCalendarDate(2026, 0, 5 + index)
     )
+
     headerRow.append(cell)
   }
 
@@ -3785,17 +3905,26 @@ const renderCalendar = (
       const unavailable = isCalendarDateDisabled(root, date, min, max)
 
       cell.role = 'gridcell'
+
       cell.tabIndex = !unavailable && dateIso === focusIso ? 0 : -1
+
       cell.textContent = String(date.getUTCDate())
+
       cell.dataset.date = dateIso
+
       cell.dataset.uiCalendarDay = ''
+
       cell.setAttribute('aria-label', dayLabel.format(date))
+
       cell.setAttribute('aria-selected', String(selectedIso === dateIso))
 
       if (unavailable) cell.setAttribute('aria-disabled', 'true')
+
       if (formatCalendarMonth(date) !== formatCalendarMonth(visibleMonth))
         cell.dataset.outside = 'true'
+
       if (dateIso === todayIso) cell.dataset.today = 'true'
+
       if (selectedIso === dateIso) cell.dataset.selected = 'true'
 
       row.append(cell)
@@ -3827,11 +3956,15 @@ const selectCalendarDate = (root: HTMLElement, date: Date): void => {
   if (isCalendarDateDisabled(root, nextDate, min, max)) return
 
   input.value = formatCalendarDate(nextDate)
+
   root.dataset.uiCalendarValue = input.value
+
   root.dataset.uiCalendarMonth = formatCalendarMonth(nextDate)
+
   renderCalendar(root, nextDate, true)
 
   input.dispatchEvent(new Event('input', { bubbles: true }))
+
   input.dispatchEvent(new Event('change', { bubbles: true }))
 }
 
@@ -3841,6 +3974,7 @@ const focusCalendarDate = (root: HTMLElement, date: Date): void => {
   const nextDate = clampCalendarDate(date, min, max)
 
   root.dataset.uiCalendarMonth = formatCalendarMonth(nextDate)
+
   renderCalendar(root, nextDate, true)
 }
 
@@ -3850,6 +3984,7 @@ const moveCalendarFocus = (
   key: string
 ): void => {
   const column = (currentDate.getUTCDay() + 6) % 7
+
   const keyOffsets: Record<string, number> = {
     ArrowDown: 7,
     ArrowLeft: -1,
@@ -3894,7 +4029,9 @@ const initCalendars = (scope: ParentNode): void => {
     const initialValue = input.value
 
     root.dataset.uiBound = 'true'
+
     renderCalendar(root)
+
     root
       .querySelector<HTMLButtonElement>('[data-ui-calendar-prev]')
       ?.addEventListener('click', () => {
@@ -3907,8 +4044,10 @@ const initCalendars = (scope: ParentNode): void => {
         if (compareCalendarDates(addCalendarDays(month, -1), getCalendarMin(root)) < 0) return
 
         root.dataset.uiCalendarMonth = formatCalendarMonth(nextMonth)
+
         renderCalendar(root, nextMonth, true)
       })
+
     root
       .querySelector<HTMLButtonElement>('[data-ui-calendar-next]')
       ?.addEventListener('click', () => {
@@ -3921,8 +4060,10 @@ const initCalendars = (scope: ParentNode): void => {
         if (compareCalendarDates(nextMonth, getCalendarMax(root)) > 0) return
 
         root.dataset.uiCalendarMonth = formatCalendarMonth(nextMonth)
+
         renderCalendar(root, nextMonth, true)
       })
+
     root.addEventListener('click', event => {
       const target = event.target
 
@@ -3941,6 +4082,7 @@ const initCalendars = (scope: ParentNode): void => {
 
       if (date) selectCalendarDate(root, date)
     })
+
     root.addEventListener('keydown', event => {
       const target = event.target
 
@@ -3956,6 +4098,7 @@ const initCalendars = (scope: ParentNode): void => {
 
       if (event.key === 'Enter' || event.key === ' ') {
         event.preventDefault()
+
         selectCalendarDate(root, date)
 
         return
@@ -3975,18 +4118,23 @@ const initCalendars = (scope: ParentNode): void => {
       }
 
       event.preventDefault()
+
       moveCalendarFocus(root, date, event.key)
     })
+
     const observer = new MutationObserver(mutations => {
       for (const mutation of mutations) {
         if (mutation.attributeName === 'value') {
           root.dataset.uiCalendarValue = parseCalendarDate(root.getAttribute('value')) ? root.getAttribute('value') ?? '' : ''
+
           input.value = root.dataset.uiCalendarValue
         }
+
         if (mutation.attributeName === 'month') {
           root.dataset.uiCalendarMonth = root.getAttribute('month') ?? root.dataset.uiCalendarInitialMonth ?? ''
         }
       }
+
       const focusedDay = root.contains(document.activeElement) && document.activeElement instanceof HTMLElement ?
         parseCalendarDate(document.activeElement.dataset.date) :
         null
@@ -3995,6 +4143,7 @@ const initCalendars = (scope: ParentNode): void => {
     })
 
     observer.observe(root, { attributes: true, attributeFilter: ['disabled', 'readonly', 'min', 'max', 'value', 'month', 'locale', 'lang', 'data-disabled', 'data-readonly', 'data-locale', 'data-ui-calendar-min', 'data-ui-calendar-max', 'data-previous-month-label', 'data-next-month-label'] })
+
     input.form?.addEventListener('reset', event => {
       globalThis.setTimeout(() => {
         if (event.defaultPrevented || !root.isConnected) return
@@ -4002,8 +4151,10 @@ const initCalendars = (scope: ParentNode): void => {
         root.dataset.uiCalendarValue = initialValue
 
         input.value = initialValue
+
         root.dataset.uiCalendarMonth =
           root.dataset.uiCalendarInitialMonth ?? root.dataset.uiCalendarMonth
+
         renderCalendar(root)
       })
     })
@@ -4022,6 +4173,7 @@ const installCalendarController = (): void => {
     return
 
   document.documentElement.dataset.uiElementsCalendarsBound = 'true'
+
   enhanceLumenCalendars(document)
 
   if (typeof MutationObserver === 'undefined') return
@@ -4041,7 +4193,6 @@ const installCalendarController = (): void => {
     subtree: true
   })
 }
-/* eslint-enable @stylistic/padding-line-between-statements */
 
 const initDatePickers = (scope: ParentNode): void => {
   const closestRoot = getClosestScopedElement(scope, datePickerSelector)

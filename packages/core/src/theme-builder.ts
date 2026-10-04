@@ -1,4 +1,3 @@
-/* eslint-disable complexity */
 import { exportThemeDesignTokens, exportThemeFigmaVariables } from './figma.js'
 import {
   createThemeFromHue,
@@ -142,6 +141,24 @@ export const themeBuilderHexToHsl = (
   }
 }
 
+const getManualColors = (options: LumenThemeBuilderOptions) => ({
+  primary: options.primaryColor ? themeBuilderHexToHsl(options.primaryColor) : null,
+  secondary: options.secondaryColor ? themeBuilderHexToHsl(options.secondaryColor) : null
+})
+
+const applyManualColors = (
+  tokens: LumenThemeTokens,
+  { primary, secondary }: ReturnType<typeof getManualColors>
+): void => {
+  if (primary) {
+    tokens.brand = primary.value
+
+    tokens['brand-solid'] = primary.value
+  }
+
+  if (secondary) tokens.accent = secondary.value
+}
+
 export const createThemeBuilderTokens = (
   options: LumenThemeBuilderOptions = {}
 ): LumenThemeBuilderResult => {
@@ -153,19 +170,9 @@ export const createThemeBuilderTokens = (
 
   const mode = coerceThemeBuilderMode(options.mode)
   const scheme = coerceThemeBuilderScheme(options.scheme)
-
-  const primary = options.primaryColor ?
-    themeBuilderHexToHsl(options.primaryColor) :
-    null
-
-  const secondary = options.secondaryColor ?
-    themeBuilderHexToHsl(options.secondaryColor) :
-    null
-
-  const baseHue = mode === 'manual' ? (primary?.hue ?? hue) : hue
-
-  const baseAccentHue =
-    mode === 'manual' ? (secondary?.hue ?? accentHue) : accentHue
+  const colors = getManualColors(mode === 'manual' ? options : {})
+  const baseHue = colors.primary?.hue ?? hue
+  const baseAccentHue = colors.secondary?.hue ?? accentHue
 
   const tokens = options.preset ?
     createThemePreset(coerceThemePreset(options.preset), { scheme }) :
@@ -174,17 +181,7 @@ export const createThemeBuilderTokens = (
       scheme
     })
 
-  if (mode === 'manual') {
-    if (primary) {
-      tokens.brand = primary.value
-
-      tokens['brand-solid'] = primary.value
-    }
-
-    if (secondary) {
-      tokens.accent = secondary.value
-    }
-  }
+  applyManualColors(tokens, colors)
 
   customizeAppearance(tokens, options)
 

@@ -2353,7 +2353,6 @@ const initInputOtpFields = (scope: ParentNode): void => {
 }
 
 /* cspell:ignore Datatable datatable */
-/* eslint-disable @stylistic/padding-line-between-statements */
 const getDataTableRows = (table: HTMLTableElement): HTMLTableRowElement[] => [
   ...(table.tBodies[0]?.rows ?? [])
 ]
@@ -2380,6 +2379,7 @@ const syncDataTableSelection = (
 
     if (selected) {
       row.dataset.state = 'selected'
+
       selectedValues.push(getDataTableRowValue(row, index))
     } else {
       delete row.dataset.state
@@ -2387,6 +2387,7 @@ const syncDataTableSelection = (
   })
 
   selectAll.checked = rows.length > 0 && selectedValues.length === rows.length
+
   selectAll.indeterminate = selectedValues.length > 0 && selectedValues.length < rows.length
 
   const name = root.dataset.uiDatatableName
@@ -2395,8 +2396,11 @@ const syncDataTableSelection = (
   if (name) {
     if (!inputs) {
       inputs = document.createElement('div')
+
       inputs.hidden = true
+
       inputs.dataset.uiDatatableInputs = ''
+
       root.append(inputs)
     }
 
@@ -2404,7 +2408,9 @@ const syncDataTableSelection = (
       const input = document.createElement('input')
 
       input.type = 'hidden'
+
       input.name = name
+
       input.value = value
 
       return input
@@ -2434,16 +2440,24 @@ const initDataTableSelection = (root: HTMLElement, table: HTMLTableElement): voi
   const selectAll = document.createElement('input')
 
   headerCell.className = 'ui-data-table__selection'
+
   headerCell.scope = 'col'
+
   selectAll.type = 'checkbox'
+
   selectAll.className = 'ui-data-table__checkbox'
+
   selectAll.dataset.uiDatatableSelectAll = ''
+
   selectAll.setAttribute('aria-label', 'Select all rows')
+
   headerCell.append(selectAll)
+
   headRow.prepend(headerCell)
 
   getDataTableRows(table).forEach((row, index) => {
     row.dataset.uiDatatableRow = ''
+
     row.dataset.value = getDataTableRowValue(row, index)
 
     const cell = document.createElement('td')
@@ -2451,15 +2465,23 @@ const initDataTableSelection = (root: HTMLElement, table: HTMLTableElement): voi
     const selected = row.dataset.state === 'selected' || row.getAttribute('aria-selected') === 'true'
 
     cell.className = 'ui-data-table__selection'
+
     checkbox.type = 'checkbox'
+
     checkbox.className = 'ui-data-table__checkbox'
+
     checkbox.dataset.uiDatatableRowSelect = ''
+
     checkbox.checked = selected
+
     checkbox.defaultChecked = selected
+
     checkbox.setAttribute('aria-label', `Select row ${index + 1}`)
+
     checkbox.addEventListener('change', () => syncDataTableSelection(root, table, selectAll, true))
 
     cell.append(checkbox)
+
     row.prepend(cell)
   })
 
@@ -2489,10 +2511,10 @@ const initDataTables = (scope: ParentNode): void => {
     root.dataset.uiBound = 'true'
 
     initDataTableSelection(root, table)
+
     initDataTableSorting(root, table)
   }
 }
-/* eslint-enable @stylistic/padding-line-between-statements */
 
 const createCalendarDate = (year: number, month: number, day: number): Date => {
   const date = new Date(0)
@@ -3608,7 +3630,7 @@ const getRichTextCommandValue = (control: HTMLElement): string | undefined => {
 const syncRichTextCommandStates = (root: HTMLElement): void => {
   if (root.dataset.uiEditorNativeState === 'false') return
 
-  const commandDocument = document as unknown as RichTextCommandDocument
+  const commandDocument: RichTextCommandDocument = document
 
   for (const control of root.querySelectorAll<HTMLElement>('[data-ui-editor-command]')) {
     const command = control.dataset.uiEditorCommand ?? ''
@@ -3654,7 +3676,7 @@ const executeRichTextCommand = (
 ): boolean => {
   if (!command) return false
 
-  const commandDocument = document as unknown as RichTextCommandDocument
+  const commandDocument: RichTextCommandDocument = document
 
   const executed = executeLumenRichTextCommand(root, { command, ...(value === undefined ? {} : { value }) }, () => {
     if (typeof commandDocument.execCommand !== 'function') return false

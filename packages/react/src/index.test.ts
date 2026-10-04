@@ -70,12 +70,6 @@ import {
   Watermark
 } from './index.js'
 
-interface ReactInternals {
-  __CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE: {
-    H: unknown
-  }
-}
-
 const renderComponent = (
   component: unknown,
   props: Record<string, unknown> = {},
@@ -86,8 +80,16 @@ const renderComponent = (
 })
 
 const withHookDispatcher = <Value>(callback: () => Value): Value => {
-  const internals = (React as unknown as ReactInternals)
-    .__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE
+  if (!('__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE' in React)) {
+    throw new Error('The React hook dispatcher is unavailable')
+  }
+
+  const internals = React.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE
+
+  if (!internals || typeof internals !== 'object' || !('H' in internals)) {
+    throw new Error('The React hook dispatcher has an unexpected shape')
+  }
+
   const previousDispatcher = internals.H
   const states: unknown[] = []
   const refs: { current: unknown }[] = []
@@ -97,6 +99,7 @@ const withHookDispatcher = <Value>(callback: () => Value): Value => {
 
   internals.H = {
     useCallback: (value: unknown) => value,
+    use: (context: { _currentValue?: unknown }) => context._currentValue,
     useContext: (context: { _currentValue?: unknown }) => context._currentValue,
     useEffect: () => null,
     useId: () => `test-${++idIndex}`,
