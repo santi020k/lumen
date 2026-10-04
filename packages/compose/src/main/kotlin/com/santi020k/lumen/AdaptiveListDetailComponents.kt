@@ -14,12 +14,14 @@ import androidx.compose.material3.adaptive.layout.calculatePaneScaffoldDirective
 import androidx.compose.material3.adaptive.layout.calculateThreePaneScaffoldValue
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.paneTitle
 import androidx.compose.ui.semantics.semantics
 
 /**
  * Full-window Material list/detail layout, respecting window size and separating hinges.
+ * At accessibility font scales of 2 or larger, shows one pane to retain readable content width.
  * Selection, back handling, data loading, and scroll containers belong to the host. The detail slot
  * receives whether its pane is alone, so the host can enable its system BackHandler consistently.
  */
@@ -36,7 +38,10 @@ fun LumenAdaptiveListDetailScaffold(
     emptyDetail: @Composable () -> Unit,
     detailPane: @Composable (String, Boolean) -> Unit
 ) {
-    val directive = calculatePaneScaffoldDirective(currentWindowAdaptiveInfoV2())
+    val windowDirective = calculatePaneScaffoldDirective(currentWindowAdaptiveInfoV2())
+    val directive = if (LocalDensity.current.fontScale >= 2f) {
+        windowDirective.copy(maxHorizontalPartitions = 1, maxVerticalPartitions = 1)
+    } else windowDirective
     val role = if (selectedKey == null) ListDetailPaneScaffoldRole.List else ListDetailPaneScaffoldRole.Detail
     val value = calculateThreePaneScaffoldValue(directive.maxHorizontalPartitions,
         ListDetailPaneScaffoldDefaults.adaptStrategies(), ThreePaneScaffoldDestinationItem(role, selectedKey),

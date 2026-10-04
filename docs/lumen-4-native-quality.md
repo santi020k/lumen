@@ -877,3 +877,24 @@ These medians measure imported bytecode. Export duration is a build-host observa
 application startup or frame smoothness. Physical-device accessibility, real-consumer completion
 and two qualifying stability iterations remain open, as do the previously recorded canonical
 web-size failures and local release integration.
+
+
+### Shared Android adaptive layout
+
+The Workspace example now consumes `LumenAdaptiveListDetailScaffold` instead of its own
+840-dp width branch. The public scaffold uses Material window and hinge adaptation, and limits
+both horizontal and vertical partitions to one at font scales of 2 or larger. Selection,
+search, edited drafts and saved records remain owned by the Workspace’s saved state. The detail
+slot supplies the single-pane system Back behavior; the shared scaffold supplies the visible
+Back button with English and Spanish labels.
+
+The local Android emulator regression covered landscape list/detail display, an edited note,
+a live change from font scale 1 to 2, saving, single-pane Back, and returning to scale 1 with
+the note intact. The two existing restoration/cancellation tests also passed. Compose unit
+tests, lint and binary API checks passed; the Android debug app and test APK compiled, and
+Android app lint reported zero errors and 18 existing launcher-resource warnings (unused vector,
+launcher silhouette, missing monochrome layers and duplicate round-icon assets). These remain
+reported in `apps/playground-android/app/build/reports/lint-results-debug.txt`; the shared Compose
+library lint passed. Logs are preserved under
+`.build/native-quality-adaptive-*`. This local emulator evidence does not qualify real folding
+hardware, spoken TalkBack, physical-device slots or a published stability iteration.
