@@ -1,6 +1,6 @@
-export type ChartGuideCategory = 'Activity' | 'Comparison' | 'Composition' | 'Distribution' | 'Relationship' | 'Trend'
+type ChartGuideCategory = 'Activity' | 'Comparison' | 'Composition' | 'Distribution' | 'Relationship' | 'Trend'
 
-export type ChartGuideName =
+type ChartGuideName =
   | 'BarChart' | 'BoxPlot' | 'BulletChart' | 'CalendarHeatmap' | 'ComboChart' | 'DumbbellChart' |
   'FunnelChart' | 'Heatmap' | 'Histogram' | 'LineChart' | 'LollipopChart' | 'PieChart' |
   'RangeChart' | 'ScatterChart' | 'Sparkline' | 'WaterfallChart'
