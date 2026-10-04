@@ -4,6 +4,7 @@ import type { HTMLAttributes } from 'astro/types'
 import {
   getLumenPhoneCountries,
   getLumenPhoneCountry,
+  type LumenControlVisualSize,
   type LumenPhoneCountry,
   type LumenPhoneCountryOptions,
   type LumenPhoneNumber,
@@ -25,7 +26,7 @@ interface NormalizedCountryOption extends CountryOption {
   regionCode?: string
 }
 
-interface Props extends Omit<HTMLAttributes<'div'>, 'size'> {
+interface Props extends HTMLAttributes<'div'> {
   class?: string | null
   className?: string
   countries?: Country[]
@@ -38,12 +39,12 @@ interface Props extends Omit<HTMLAttributes<'div'>, 'size'> {
   required?: boolean
   errorMessage?: string
   showValidationError?: boolean
-  inputProps?: Omit<HTMLAttributes<'input'>, 'value' | 'name' | 'size' | 'type'>
+  inputProps?: Omit<HTMLAttributes<'input'>, 'value' | 'name' | 'type'>
   invalidNumberMessage?: string
   locale?: LumenPhoneCountryOptions['locale']
   name?: string
   placeholder?: string
-  size?: 'default' | 'lg' | 'sm'
+  visualSize?: LumenControlVisualSize
   value?: string
 }
 
@@ -66,7 +67,7 @@ const {
   locale,
   name = 'phone',
   placeholder = 'Phone number',
-  size = 'default',
+  visualSize = 'default',
   value,
   ...rest
 } = Astro.props
@@ -126,7 +127,7 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
   class:list={classList}
   data-disabled={isDisabled || undefined}
   data-readonly={isReadOnly || undefined}
-  data-size={size}
+  data-size={visualSize}
   data-slot="phone-input"
   data-error-message={errorMessage}
   data-error-id={errorId}
@@ -151,8 +152,8 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
     class:list={[
       'ui-select',
       'ui-phone-input__country',
-      size === 'sm' && 'ui-select--sm',
-      size === 'lg' && 'ui-select--lg'
+      visualSize === 'sm' && 'ui-select--sm',
+      visualSize === 'lg' && 'ui-select--lg'
     ]}
     disabled={isDisabled || isReadOnly || normalizedCountries.length === 0}
     name={countryName}
@@ -181,8 +182,8 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
     class:list={[
       'ui-input',
       'ui-phone-input__number',
-      size === 'sm' && 'ui-input--sm',
-      size === 'lg' && 'ui-input--lg'
+      visualSize === 'sm' && 'ui-input--sm',
+      visualSize === 'lg' && 'ui-input--lg'
     ]}
     inputmode="tel"
     name={name}

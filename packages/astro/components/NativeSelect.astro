@@ -1,7 +1,7 @@
 ---
 import type { HTMLAttributes } from 'astro/types'
 
-import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+import { type LumenControlVisualSize, resolveLumenAstroProps } from '@santi020k/lumen-core'
 
 interface Option {
   disabled?: boolean
@@ -17,7 +17,7 @@ interface Props extends Omit<HTMLAttributes<'select'>, 'size'> {
   size?: HTMLAttributes<'select'>['size']
   options?: SelectOption[]
   placeholder?: string
-  visualSize?: 'default' | 'lg' | 'sm'
+  visualSize?: LumenControlVisualSize
 }
 
 const {

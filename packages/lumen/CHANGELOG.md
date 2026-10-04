@@ -9,6 +9,8 @@
 
 ### Major Changes
 
+- Finalize web form visual sizing with visualSize/visual-size on Select, PhoneInput and Segmented, preserving native numeric size. Add conservative literal migration previews and a complete machine-readable v4 breaking inventory. Fix controlled Segmented ownership, Select accessibility/callback/reset behavior, Elements scalar reconnection and reset defaults, and multiple-select submission. Add selective React component and Elements VirtualList imports with measured bundle and packed-consumer checks. Existing root imports remain supported.
+
 - Refine v4 reading rhythm and responsive page gutters, allow interactive Card content to overflow,
   and wrap long actions in wrapping Stacks. Move media clipping into AspectRatio when upgrading.
   Container gutters now grow from 16px to 32px; override --ui-container-gutter to preserve fixed

@@ -1,12 +1,14 @@
+'use client'
+
 import type { ComponentPropsWithoutRef, CSSProperties, ReactNode } from 'react'
 import { useEffect, useRef, useState } from 'react'
 
 import {
-  composeClassName,
   formatLumenImageComparisonValue,
   normalizeLumenImageComparisonRatio,
   normalizeLumenImageComparisonValue
-} from '@santi020k/lumen-core'
+} from '@santi020k/lumen-core/image-comparison'
+import { composeClassName } from '@santi020k/lumen-core/tokens'
 
 export interface ImageComparisonProps extends ComponentPropsWithoutRef<'figure'> {
   after: ReactNode

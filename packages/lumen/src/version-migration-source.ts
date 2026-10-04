@@ -22,7 +22,12 @@ const reviewComponents = new Map([
   ['LineChart', 'Review stable unique X identities, label formatting and application-owned chart patches.']
 ])
 
+const visualSizeComponents = new Set(['Select', 'PhoneInput', 'Segmented'])
+
 const elementNames = new Map([
+  ['lumen-select', 'Select'],
+  ['lumen-phone-input', 'PhoneInput'],
+  ['lumen-segmented', 'Segmented'],
   ['lumen-stack', 'Stack'],
   ['lumen-grid', 'Grid'],
   ...[...reviewComponents.keys()].map(name => [
@@ -182,6 +187,63 @@ const inspectGap = (context: SourceContext, tag: Tag): void => {
   context.changes.push(context.finding(gap.start, 'layout-gap', `${tag.name}: preserve v3 gap ${value} with ${replacement}.`))
 }
 
+type MarkupAttribute = ReturnType<typeof parseMarkupAttributes>[number]
+
+const visualSizes = new Set(['default', 'lg', 'sm'])
+
+const isNumericSize = (attribute: MarkupAttribute): boolean => {
+  const value = attribute.valueKind === 'expression' ? attribute.value : literalValue(attribute)
+
+  return /^\d+$/u.test(value ?? '')
+}
+
+const isKnownVisualSize = (value: string | undefined, component: string): value is 'default' | 'lg' | 'md' | 'sm' => value !== undefined && (visualSizes.has(value) || (component === 'Select' && value === 'md'))
+
+const reportVisualSizeReview = (context: SourceContext, tag: Tag, name: string, offset = tag.start): void => {
+  context.manualReview.push(context.finding(offset, 'control-size', `${tag.name}: review dynamic, duplicated or spread size props; visual sizing uses ${name}, and native Select size remains numeric.`))
+}
+
+const isAmbiguousVisualSize = (
+  attributes: MarkupAttribute[], count: number, name: string, spread: boolean
+): boolean => spread || count !== 1 || attributes.some(attribute => attribute.name === name)
+
+const isNativeSelectSize = (component: string, size: MarkupAttribute, ambiguous: boolean): boolean => component === 'Select' && isNumericSize(size) && !ambiguous
+
+const inspectVisualSize = (context: SourceContext, tag: Tag, component: string): void => {
+  const attributes = parseMarkupAttributes(context.source, tag.nameEnd, tag.end)
+  const sizes = attributes.filter(attribute => attribute.name === 'size')
+  const size = sizes[0]
+  const spread = context.source.slice(tag.nameEnd, tag.end).includes('...')
+  const visualName = tag.name.startsWith('lumen-') ? 'visual-size' : 'visualSize'
+
+  if (!size) {
+    if (spread) reportVisualSizeReview(context, tag, visualName)
+
+    return
+  }
+
+  const ambiguous = isAmbiguousVisualSize(attributes, sizes.length, visualName, spread)
+  const value = literalValue(size)
+
+  if (isNativeSelectSize(component, size, ambiguous)) return
+
+  if (ambiguous || !isKnownVisualSize(value, component)) {
+    reportVisualSizeReview(context, tag, visualName, size.start)
+
+    return
+  }
+
+  context.edits.push({ start: size.start, end: size.start + 'size'.length, replacement: visualName })
+
+  if (value === 'md') {
+    const offset = context.source.slice(size.start, size.end).lastIndexOf(value)
+
+    context.edits.push({ start: size.start + offset, end: size.start + offset + value.length, replacement: 'default' })
+  }
+
+  context.changes.push(context.finding(size.start, 'control-size', `${tag.name}: move visual size ${value} to ${visualName}.`))
+}
+
 const inspectTag = (context: SourceContext, tag: Tag): void => {
   const component = context.components.get(tag.name) ?? elementNames.get(tag.name)
 
@@ -192,6 +254,8 @@ const inspectTag = (context: SourceContext, tag: Tag): void => {
   if (message) context.manualReview.push(context.finding(tag.start, 'component-review', `${tag.name}: ${message}`))
 
   if (component === 'Stack' || component === 'Grid') inspectGap(context, tag)
+
+  if (visualSizeComponents.has(component)) inspectVisualSize(context, tag, component)
 }
 
 const markupSkipper = (

@@ -68,7 +68,7 @@
       "Image": "c1ee057e6ea96bddd70f95794649b30b5f4b1ff426d8051983d0b299fe4a74a0",
       "ImageComparison": "a6298f46960ecb828786d24beac41fb99c9ae1c3030b49d870654e980c99b824",
       "Illustration": "1db8d922e5a2490948bb7298d25ca50e10cf44eb297856548a5d2842be1bcfca",
-      "Input": "80eb75bfd43b6c01680127b5c7d229620b0e4896602589170c9b3412d3a50556",
+      "Input": "d172fa3732d1ffdd15bcf33144b05a9bd212ef05070874bd6448c347201bfb6b",
       "InputGroup": "324a79647cc9b2027eadc5692e1d87b8d684b80fd79e1845f347867dc7fce180",
       "InputOTP": "9b25c36dc95482cffa4bde82fedcfbbb551ad61f3108ed0731f3d3afb5e94d62",
       "Item": "498e6555ef5f2d4c889ceb5305da4b4a00da5b5b389f88ab13ea451b71dc4d5c",
@@ -83,12 +83,12 @@
       "Menubar": "ceaa113420c1a99cc1d7e856c04b5a75d8569473ebd8a24a83c947ec3b6608e5",
       "Message": "26c4a46c2090e9834c52dc56bfd2d84f7d70d9fcff6885270df9839eb895ab8e",
       "MessageScroller": "584c58496143fd83a441393133c1cfaa9898472e212d63c6aa93c5cfb55640d7",
-      "NativeSelect": "3f728ed2ee1fd793079a44bf68019b8b5f78b2619791b7afc3989144e80a659f",
+      "NativeSelect": "419d7e692d59d9dcce5f87b2f151861bbd9ef38554a055eb2059c0831c046e31",
       "NavigationMenu": "fc5494bfec5341fb5bcb0cca5fb451b12feade75b2a90b49088221021c4faaf0",
       "NumberField": "26d8eff3b5d7eeab400b77e787585865af9f5c395f6f83d30d52cffc2c9c2a50",
       "Pagination": "1e85cbdac6aa9a6417ce9cc7e015f2dfceecba126803529c88d8fe228e2d50a9",
       "PasswordField": "784fb8457944c5d6879a3ed1db154de8e14cae7eec3ec3ef38c3b174dd1222b2",
-      "PhoneInput": "1d1f45d24adeb4320fa6ee9ffb055f7c8c9876dfb22e5ff6495c5a0b669f3435",
+      "PhoneInput": "48a24d21924bb71887c6af0c7faa74743de2c6527cdeb4afd3bd0d31cdf7a25b",
       "PieChart": "27ae45992174becb95be0c7bf9a6b5d9b445f0dd82f916ee8beb1f453538ce05",
       "Pill": "a0dffa43c0e089ae68d8dd11df5ccca3b83eb0acb5d777752f29475b0bb064a1",
       "Popover": "91a1fc3fdc5b14b7c01fa5c9393d2b2257ed6da9b97977089f01e8643c0c1080",
@@ -101,7 +101,7 @@
       "ScrollProgress": "f2b2fcb0234a7eaf1488381037ecc69e93ec55989b1ae6f55d3b8749f5ba93a4",
       "Schedule": "20cad55139cfc812c3bb221cd17d22fd9ce36af7dfde1c6af444bead018b0d63",
       "SearchField": "1addd653896a728c84bfa9d39a7a05a01de8a9e7da56ef550c7594de72587a8f",
-      "Select": "b579471fbbe14519d63e0d2e908d8e89104d9867b14781fa8494773b10922992",
+      "Select": "75fdef4ff1f2fd25143128af42ddfcb4a80060ddf5513ab67667659941f74a5a",
       "Separator": "552aaaa93c8b96569f471c6f5de52e9951cfa3660f36c8b19202ffd36c009c0b",
       "Sheet": "1745ea3173d28c270ff9f882e019b162457a31d732e452055d082a5442bc84ea",
       "Sidebar": "48e299d7419f0172470bf4f12bbe83a191bb6af736478486882850d3bccf0c13",
@@ -126,7 +126,7 @@
       "Tree": "82fec780732d44258a1870898c9df666c5982433ce625ca3b8bf8d62d0dacd3c",
       "TreeGrid": "50577908772c53c08d336747253ca7c4527145d94caac2e268e6148cb21255a5",
       "Typography": "1bec826bd3983022428d7941b99d42f022cb76610763728972b9a75fdaa89453",
-      "VirtualList": "746f50272beb2cfc70c741922eccb963795de887ed6f639eed89c11ca43025e0",
+      "VirtualList": "1b3cd9ccef388a165049bd24c3a22b06db6ed3fd2d61fc81c7bc0956843cb9b4",
       "LanguageToggle": "ff65170382ae5b1241ce142b670a32bb708e92fbfbeeac6a285bd39b13c612b6",
       "Particles": "74334a8aa6578b86f01da2ab63a96ce6c8d888e99f3bcc3ab9845667eb97d27e",
       "AnimatedNumber": "78cebe9ac425f1f2ab81c336ccaa166ff2007d1814398f451ca67702742aaa5a",
@@ -152,7 +152,7 @@
       "FileUpload": "2cee57b792f16f0496d95a98255d102eb7c10822b5a87110774d3b2b70b8fa28",
       "Tour": "80e8e76b43dd906ea5d6eb1e2fd39f17b65f53c7c280a6916fa1b22adccf9137",
       "Anchor": "40cbb0e2b2b0d1df99241d41e350ee68431b70e25abe3e4139ffda25f7cdbbae",
-      "Segmented": "b16527cf40f8c16082850895d2e199696c821792520d33766b5478d91c865d5e",
+      "Segmented": "59f98029399c5e3381d6f7d919237a140257e01cc1157259d8bef7ca58072aca",
       "Toolbar": "51a37716b40423443e0dfd8d772152005844cd3a94319285a3ab859acd183144",
       "Descriptions": "b4df2c68aa2165fed37b36b930fdf088c481362ae560206a35bd3a6e38fc1e7c",
       "DescriptionItem": "068aa76c935061bb708d4ce38c165f769c872670241c303592eb60c251deda04",
@@ -15332,7 +15332,7 @@
           "values": "HTML attributes"
         }
       ],
-      "astroSource": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ninterface Props extends Omit<HTMLAttributes<'input'>, 'size'> {\n  class?: string | null\n  className?: string\n  size?: HTMLAttributes<'input'>['size']\n  visualSize?: 'default' | 'lg' | 'sm'\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  size,\n  type = 'text',\n  visualSize,\n  ...rest\n} = Astro.props\n\nconst resolvedVisualSize = visualSize ?? 'default'\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-input',\n  resolvedVisualSize === 'sm' && 'ui-input--sm',\n  resolvedVisualSize === 'lg' && 'ui-input--lg'\n], classProp, className)\n---\n\n<input\n  class:list={classList}\n  size={size}\n  type={type}\n  {...passthrough}\n/>\n",
+      "astroSource": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { type LumenControlVisualSize, resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ninterface Props extends Omit<HTMLAttributes<'input'>, 'size'> {\n  class?: string | null\n  className?: string\n  size?: HTMLAttributes<'input'>['size']\n  visualSize?: LumenControlVisualSize\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  size,\n  type = 'text',\n  visualSize,\n  ...rest\n} = Astro.props\n\nconst resolvedVisualSize = visualSize ?? 'default'\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-input',\n  resolvedVisualSize === 'sm' && 'ui-input--sm',\n  resolvedVisualSize === 'lg' && 'ui-input--lg'\n], classProp, className)\n---\n\n<input\n  class:list={classList}\n  size={size}\n  type={type}\n  {...passthrough}\n/>\n",
       "category": "Forms",
       "collections": [
         "Text entry"
@@ -15377,11 +15377,11 @@
             {
               "name": "visualSize",
               "optional": true,
-              "type": "'default' | 'lg' | 'sm'"
+              "type": "LumenControlVisualSize"
             }
           ],
           "propsExtends": "Omit<HTMLAttributes<'input'>, 'size'>",
-          "source": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ninterface Props extends Omit<HTMLAttributes<'input'>, 'size'> {\n  class?: string | null\n  className?: string\n  size?: HTMLAttributes<'input'>['size']\n  visualSize?: 'default' | 'lg' | 'sm'\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  size,\n  type = 'text',\n  visualSize,\n  ...rest\n} = Astro.props\n\nconst resolvedVisualSize = visualSize ?? 'default'\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-input',\n  resolvedVisualSize === 'sm' && 'ui-input--sm',\n  resolvedVisualSize === 'lg' && 'ui-input--lg'\n], classProp, className)\n---\n\n<input\n  class:list={classList}\n  size={size}\n  type={type}\n  {...passthrough}\n/>\n",
+          "source": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { type LumenControlVisualSize, resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ninterface Props extends Omit<HTMLAttributes<'input'>, 'size'> {\n  class?: string | null\n  className?: string\n  size?: HTMLAttributes<'input'>['size']\n  visualSize?: LumenControlVisualSize\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  size,\n  type = 'text',\n  visualSize,\n  ...rest\n} = Astro.props\n\nconst resolvedVisualSize = visualSize ?? 'default'\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-input',\n  resolvedVisualSize === 'sm' && 'ui-input--sm',\n  resolvedVisualSize === 'lg' && 'ui-input--lg'\n], classProp, className)\n---\n\n<input\n  class:list={classList}\n  size={size}\n  type={type}\n  {...passthrough}\n/>\n",
           "styleImport": "import '@santi020k/lumen-astro/styles.css'"
         },
         "elements": {
@@ -15419,11 +15419,11 @@
             {
               "name": "visualSize",
               "optional": true,
-              "type": "'default' | 'lg' | 'sm'"
+              "type": "LumenControlVisualSize"
             }
           ],
           "propsExtends": "ComponentPropsWithRef<'input'>",
-          "source": "export interface InputProps extends ComponentPropsWithRef<'input'> {\n  visualSize?: 'default' | 'lg' | 'sm'\n}\n\nexport const Input = ({\n  className,\n  ref,\n  type = 'text',\n  visualSize = 'default',\n  ...props\n}: InputProps) => (\n  <input\n    className={composeClassName(\n      'ui-input',\n      visualSize === 'sm' && 'ui-input--sm',\n      visualSize === 'lg' && 'ui-input--lg',\n      className\n    )}\n    ref={ref}\n    type={type}\n    {...props}\n  />\n)",
+          "source": "export interface InputProps extends ComponentPropsWithRef<'input'> {\n  visualSize?: LumenControlVisualSize\n}\n\nexport const Input = ({\n  className,\n  ref,\n  type = 'text',\n  visualSize = 'default',\n  ...props\n}: InputProps) => (\n  <input\n    className={composeClassName(\n      'ui-input',\n      visualSize === 'sm' && 'ui-input--sm',\n      visualSize === 'lg' && 'ui-input--lg',\n      className\n    )}\n    ref={ref}\n    type={type}\n    {...props}\n  />\n)",
           "styleImport": "import '@santi020k/lumen-react/styles.css'"
         }
       },
@@ -15497,7 +15497,7 @@
         {
           "name": "visualSize",
           "optional": true,
-          "type": "'default' | 'lg' | 'sm'"
+          "type": "LumenControlVisualSize"
         }
       ],
       "propsExtends": "Omit<HTMLAttributes<'input'>, 'size'>",
@@ -18566,7 +18566,7 @@
           "values": "HTML attributes"
         }
       ],
-      "astroSource": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ninterface Option {\n  disabled?: boolean\n  label: string\n  value: string\n}\n\ntype SelectOption = Option | string\n\ninterface Props extends Omit<HTMLAttributes<'select'>, 'size'> {\n  class?: string | null\n  className?: string\n  size?: HTMLAttributes<'select'>['size']\n  options?: SelectOption[]\n  placeholder?: string\n  visualSize?: 'default' | 'lg' | 'sm'\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  options = [],\n  placeholder,\n  size,\n  visualSize,\n  ...rest\n} = Astro.props\n\nconst hasValue = Object.hasOwn(rest, 'value')\nconst normalizedOptions = options.map(option => typeof option === 'string' ? { label: option, value: option } : option)\nconst resolvedVisualSize = visualSize ?? 'default'\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, ['ui-select', resolvedVisualSize === 'sm' && 'ui-select--sm', resolvedVisualSize === 'lg' && 'ui-select--lg'\n], classProp, className)\n---\n\n<select class:list={classList} size={size} {...passthrough}>\n  {placeholder && <option disabled selected={!hasValue} value=\"\">{placeholder}</option>}\n  <slot />\n  {normalizedOptions.map(option => (\n    <option disabled={option.disabled} value={option.value}>{option.label}</option>\n  ))}\n</select>\n",
+      "astroSource": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { type LumenControlVisualSize, resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ninterface Option {\n  disabled?: boolean\n  label: string\n  value: string\n}\n\ntype SelectOption = Option | string\n\ninterface Props extends Omit<HTMLAttributes<'select'>, 'size'> {\n  class?: string | null\n  className?: string\n  size?: HTMLAttributes<'select'>['size']\n  options?: SelectOption[]\n  placeholder?: string\n  visualSize?: LumenControlVisualSize\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  options = [],\n  placeholder,\n  size,\n  visualSize,\n  ...rest\n} = Astro.props\n\nconst hasValue = Object.hasOwn(rest, 'value')\nconst normalizedOptions = options.map(option => typeof option === 'string' ? { label: option, value: option } : option)\nconst resolvedVisualSize = visualSize ?? 'default'\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, ['ui-select', resolvedVisualSize === 'sm' && 'ui-select--sm', resolvedVisualSize === 'lg' && 'ui-select--lg'\n], classProp, className)\n---\n\n<select class:list={classList} size={size} {...passthrough}>\n  {placeholder && <option disabled selected={!hasValue} value=\"\">{placeholder}</option>}\n  <slot />\n  {normalizedOptions.map(option => (\n    <option disabled={option.disabled} value={option.value}>{option.label}</option>\n  ))}\n</select>\n",
       "category": "Forms",
       "collections": [
         "Selection controls"
@@ -18621,11 +18621,11 @@
             {
               "name": "visualSize",
               "optional": true,
-              "type": "'default' | 'lg' | 'sm'"
+              "type": "LumenControlVisualSize"
             }
           ],
           "propsExtends": "Omit<HTMLAttributes<'select'>, 'size'>",
-          "source": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ninterface Option {\n  disabled?: boolean\n  label: string\n  value: string\n}\n\ntype SelectOption = Option | string\n\ninterface Props extends Omit<HTMLAttributes<'select'>, 'size'> {\n  class?: string | null\n  className?: string\n  size?: HTMLAttributes<'select'>['size']\n  options?: SelectOption[]\n  placeholder?: string\n  visualSize?: 'default' | 'lg' | 'sm'\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  options = [],\n  placeholder,\n  size,\n  visualSize,\n  ...rest\n} = Astro.props\n\nconst hasValue = Object.hasOwn(rest, 'value')\nconst normalizedOptions = options.map(option => typeof option === 'string' ? { label: option, value: option } : option)\nconst resolvedVisualSize = visualSize ?? 'default'\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, ['ui-select', resolvedVisualSize === 'sm' && 'ui-select--sm', resolvedVisualSize === 'lg' && 'ui-select--lg'\n], classProp, className)\n---\n\n<select class:list={classList} size={size} {...passthrough}>\n  {placeholder && <option disabled selected={!hasValue} value=\"\">{placeholder}</option>}\n  <slot />\n  {normalizedOptions.map(option => (\n    <option disabled={option.disabled} value={option.value}>{option.label}</option>\n  ))}\n</select>\n",
+          "source": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { type LumenControlVisualSize, resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ninterface Option {\n  disabled?: boolean\n  label: string\n  value: string\n}\n\ntype SelectOption = Option | string\n\ninterface Props extends Omit<HTMLAttributes<'select'>, 'size'> {\n  class?: string | null\n  className?: string\n  size?: HTMLAttributes<'select'>['size']\n  options?: SelectOption[]\n  placeholder?: string\n  visualSize?: LumenControlVisualSize\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  options = [],\n  placeholder,\n  size,\n  visualSize,\n  ...rest\n} = Astro.props\n\nconst hasValue = Object.hasOwn(rest, 'value')\nconst normalizedOptions = options.map(option => typeof option === 'string' ? { label: option, value: option } : option)\nconst resolvedVisualSize = visualSize ?? 'default'\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, ['ui-select', resolvedVisualSize === 'sm' && 'ui-select--sm', resolvedVisualSize === 'lg' && 'ui-select--lg'\n], classProp, className)\n---\n\n<select class:list={classList} size={size} {...passthrough}>\n  {placeholder && <option disabled selected={!hasValue} value=\"\">{placeholder}</option>}\n  <slot />\n  {normalizedOptions.map(option => (\n    <option disabled={option.disabled} value={option.value}>{option.label}</option>\n  ))}\n</select>\n",
           "styleImport": "import '@santi020k/lumen-astro/styles.css'"
         },
         "elements": {
@@ -18674,11 +18674,11 @@
             {
               "name": "visualSize",
               "optional": true,
-              "type": "'default' | 'lg' | 'sm'"
+              "type": "LumenControlVisualSize"
             }
           ],
           "propsExtends": "ComponentPropsWithRef<'select'>",
-          "source": "export interface NativeSelectProps extends ComponentPropsWithRef<'select'> {\n  options?: SelectOption[]\n  placeholder?: string\n  visualSize?: 'default' | 'lg' | 'sm'\n}\n\nexport const NativeSelect = ({\n  children,\n  className,\n  defaultValue,\n  options = emptyOptions,\n  placeholder,\n  ref,\n  value,\n  visualSize = 'default',\n  ...props\n}: NativeSelectProps) => {\n  const placeholderDefaultValue =\n    placeholder && value === undefined && defaultValue === undefined ?\n      '' :\n      undefined\n\n  return (\n    <select\n      className={composeClassName(\n        'ui-select', visualSize === 'sm' && 'ui-select--sm', visualSize === 'lg' && 'ui-select--lg', className\n      )}\n      defaultValue={defaultValue ?? placeholderDefaultValue}\n      ref={ref}\n      value={value}\n      {...props}\n    >\n      {placeholder && (\n        <option disabled value=\"\">\n          {placeholder}\n        </option>\n      )}\n      {children}\n      {options.map(normalizeOption).map(option => (\n        <option\n          disabled={option.disabled}\n          key={option.value}\n          value={option.value}\n        >\n          {option.label}\n        </option>\n      ))}\n    </select>\n  )\n}",
+          "source": "export interface NativeSelectProps extends ComponentPropsWithRef<'select'> {\n  options?: SelectOption[]\n  placeholder?: string\n  visualSize?: LumenControlVisualSize\n}\n\nexport const NativeSelect = ({\n  children,\n  className,\n  defaultValue,\n  options = emptyOptions,\n  placeholder,\n  ref,\n  value,\n  visualSize = 'default',\n  ...props\n}: NativeSelectProps) => {\n  const placeholderDefaultValue =\n    placeholder && value === undefined && defaultValue === undefined ?\n      '' :\n      undefined\n\n  return (\n    <select\n      className={composeClassName(\n        'ui-select', visualSize === 'sm' && 'ui-select--sm', visualSize === 'lg' && 'ui-select--lg', className\n      )}\n      defaultValue={defaultValue ?? placeholderDefaultValue}\n      ref={ref}\n      value={value}\n      {...props}\n    >\n      {placeholder && (\n        <option disabled value=\"\">\n          {placeholder}\n        </option>\n      )}\n      {children}\n      {options.map(normalizeOption).map(option => (\n        <option\n          disabled={option.disabled}\n          key={option.value}\n          value={option.value}\n        >\n          {option.label}\n        </option>\n      ))}\n    </select>\n  )\n}",
           "styleImport": "import '@santi020k/lumen-react/styles.css'"
         }
       },
@@ -18761,7 +18761,7 @@
         {
           "name": "visualSize",
           "optional": true,
-          "type": "'default' | 'lg' | 'sm'"
+          "type": "LumenControlVisualSize"
         }
       ],
       "propsExtends": "Omit<HTMLAttributes<'select'>, 'size'>",
@@ -19634,7 +19634,7 @@
           "values": "HTML attributes"
         }
       ],
-      "astroSource": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport {\n  getLumenPhoneCountries,\n  getLumenPhoneCountry,\n  type LumenPhoneCountry,\n  type LumenPhoneCountryOptions,\n  type LumenPhoneNumber,\n  resolveLumenAstroProps,\n  resolveLumenPhoneNumber\n} from '@santi020k/lumen-core'\n\nimport CountryFlag from './CountryFlag.astro'\n\ninterface CountryOption {\n  disabled?: boolean\n  label: string\n  value: string\n}\n\ntype Country = CountryOption | string\n\ninterface NormalizedCountryOption extends CountryOption {\n  regionCode?: string\n}\n\ninterface Props extends Omit<HTMLAttributes<'div'>, 'size'> {\n  class?: string | null\n  className?: string\n  countries?: Country[]\n  countryOptions?: readonly LumenPhoneCountry[]\n  countryLabel?: string\n  countryName?: string\n  countryValue?: string\n  disabled?: boolean\n  readOnly?: boolean\n  required?: boolean\n  errorMessage?: string\n  showValidationError?: boolean\n  inputProps?: Omit<HTMLAttributes<'input'>, 'value' | 'name' | 'size' | 'type'>\n  invalidNumberMessage?: string\n  locale?: LumenPhoneCountryOptions['locale']\n  name?: string\n  placeholder?: string\n  size?: 'default' | 'lg' | 'sm'\n  value?: string\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  id,\n  disabled = false,\n  readOnly = false,\n  required = false,\n  errorMessage,\n  showValidationError = true,\n  inputProps = {},\n  countries = [],\n  countryOptions,\n  countryLabel = 'Country code',\n  countryName = 'country',\n  countryValue = 'US',\n  invalidNumberMessage = 'Enter a complete phone number.',\n  locale,\n  name = 'phone',\n  placeholder = 'Phone number',\n  size = 'default',\n  value,\n  ...rest\n} = Astro.props\n\nconst isDisabled = disabled || Boolean(inputProps.disabled)\nconst isReadOnly = readOnly || Boolean(inputProps.readonly)\nconst phoneOptions = locale === undefined ? {} : { locale }\nconst metadataCountries = countryOptions ?? getLumenPhoneCountries(phoneOptions)\nconst usesMetadata = countries.length === 0\n\nconst normalizedCountries: NormalizedCountryOption[] = usesMetadata ?\n  metadataCountries.map(country => ({\n  label: `${country.displayName} (${country.callingCode})`,\n  regionCode: country.regionCode,\n  value: country.regionCode\n  })) :\n  countries.map(country => typeof country === 'string' ? { label: country, value: country } : country)\n\nconst selectedCountry = metadataCountries.find(country => (\n  country.regionCode === countryValue || country.callingCode === countryValue\n)) ?? metadataCountries[0] ?? getLumenPhoneCountry('US', phoneOptions)\n\nconst detectedPhoneValue = selectedCountry && value ?\n  resolveLumenPhoneNumber(selectedCountry, value, phoneOptions) :\n  null\n\nconst normalizePhoneValue = (detectedValue: LumenPhoneNumber | null): LumenPhoneNumber | null => {\n  if (!detectedValue || !selectedCountry) return detectedValue\n\n  const detectedCountryIsAllowed = metadataCountries.some(country => (\n    country.regionCode === detectedValue.country.regionCode\n  ))\n\n  if (detectedCountryIsAllowed) return detectedValue\n\n  const allowedCountryValue = detectedValue.nationalNumber.startsWith('+') ?\n    detectedValue.nationalNumber.slice(1) :\n    detectedValue.nationalNumber\n\n  return resolveLumenPhoneNumber(selectedCountry, allowedCountryValue, phoneOptions)\n}\n\nconst phoneValue = normalizePhoneValue(detectedPhoneValue)\nconst selectedCountryValue = usesMetadata ? phoneValue?.country.regionCode ?? selectedCountry?.regionCode : countryValue\nconst renderedValue = usesMetadata ? phoneValue?.nationalNumber ?? value : value\nconst inputId = id ?? inputProps.id ?? `phone-${crypto.randomUUID()}`\nconst errorId = `phone-error-${crypto.randomUUID()}`\nconst effectiveError = errorMessage || (showValidationError && phoneValue && phoneValue.nationalNumber.length > 0 && !phoneValue.isValid ? invalidNumberMessage : '')\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-phone-input',\n  'ui-input-group'\n], classProp, className)\n---\n\n<div\n  class:list={classList}\n  data-disabled={isDisabled || undefined}\n  data-readonly={isReadOnly || undefined}\n  data-size={size}\n  data-slot=\"phone-input\"\n  data-error-message={errorMessage}\n  data-error-id={errorId}\n  data-show-validation-error={String(showValidationError)}\n  data-invalid={effectiveError ? 'true' : undefined}\n  data-e164={phoneValue?.e164}\n  data-invalid-number-message={invalidNumberMessage}\n  data-ui-phone-input={usesMetadata ? '' : undefined}\n  data-valid={phoneValue ? String(phoneValue.isValid) : undefined}\n  {...passthrough}\n>\n  <span class=\"ui-phone-input__picker\" data-slot=\"phone-country\">\n    {usesMetadata && (\n<span aria-hidden=\"true\" class=\"ui-phone-input__selection\">\n      <CountryFlag decorative regionCode={phoneValue?.country.regionCode ?? selectedCountry?.regionCode ?? countryValue} />\n      <span data-ui-phone-code>{phoneValue?.country.callingCode ?? selectedCountry?.callingCode}</span>\n      <span class=\"ui-phone-input__chevron\" />\n    </span>\n)}\n  <select\n    aria-label={countryLabel}\n    class:list={[\n      'ui-select',\n      'ui-phone-input__country',\n      size === 'sm' && 'ui-select--sm',\n      size === 'lg' && 'ui-select--lg'\n    ]}\n    disabled={isDisabled || isReadOnly || normalizedCountries.length === 0}\n    name={countryName}\n  >\n    {normalizedCountries.map(country => (\n      <option\n        disabled={country.disabled}\n        data-region={country.regionCode}\n        selected={country.value === selectedCountryValue}\n        value={country.value}\n      >{country.label}\n      </option>\n    ))}\n  </select>\n  </span>\n  <input\n    {...inputProps}\n    id={inputId}\n    autocomplete={inputProps.autocomplete ?? 'tel-national'}\n    disabled={disabled || inputProps.disabled}\n    readonly={readOnly || inputProps.readonly}\n    required={required || inputProps.required}\n    aria-invalid={effectiveError ? 'true' : inputProps['aria-invalid']}\n    aria-errormessage={effectiveError ? errorId : inputProps['aria-errormessage']}\n    aria-describedby={[inputProps['aria-describedby'], effectiveError ? errorId : undefined].filter(Boolean).join(' ') || undefined}\n    class:list={[\n      'ui-input',\n      'ui-phone-input__number',\n      size === 'sm' && 'ui-input--sm',\n      size === 'lg' && 'ui-input--lg'\n    ]}\n    inputmode=\"tel\"\n    name={name}\n    placeholder={placeholder}\n    type=\"tel\"\n    value={renderedValue}\n  />\n  {isReadOnly && !isDisabled && <input name={countryName} type=\"hidden\" value={selectedCountryValue} />}\n</div>\n\n<span class=\"ui-phone-input__error\" id={errorId} role=\"alert\" hidden={!effectiveError}>{effectiveError}</span>\n",
+      "astroSource": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport {\n  getLumenPhoneCountries,\n  getLumenPhoneCountry,\n  type LumenControlVisualSize,\n  type LumenPhoneCountry,\n  type LumenPhoneCountryOptions,\n  type LumenPhoneNumber,\n  resolveLumenAstroProps,\n  resolveLumenPhoneNumber\n} from '@santi020k/lumen-core'\n\nimport CountryFlag from './CountryFlag.astro'\n\ninterface CountryOption {\n  disabled?: boolean\n  label: string\n  value: string\n}\n\ntype Country = CountryOption | string\n\ninterface NormalizedCountryOption extends CountryOption {\n  regionCode?: string\n}\n\ninterface Props extends HTMLAttributes<'div'> {\n  class?: string | null\n  className?: string\n  countries?: Country[]\n  countryOptions?: readonly LumenPhoneCountry[]\n  countryLabel?: string\n  countryName?: string\n  countryValue?: string\n  disabled?: boolean\n  readOnly?: boolean\n  required?: boolean\n  errorMessage?: string\n  showValidationError?: boolean\n  inputProps?: Omit<HTMLAttributes<'input'>, 'value' | 'name' | 'type'>\n  invalidNumberMessage?: string\n  locale?: LumenPhoneCountryOptions['locale']\n  name?: string\n  placeholder?: string\n  visualSize?: LumenControlVisualSize\n  value?: string\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  id,\n  disabled = false,\n  readOnly = false,\n  required = false,\n  errorMessage,\n  showValidationError = true,\n  inputProps = {},\n  countries = [],\n  countryOptions,\n  countryLabel = 'Country code',\n  countryName = 'country',\n  countryValue = 'US',\n  invalidNumberMessage = 'Enter a complete phone number.',\n  locale,\n  name = 'phone',\n  placeholder = 'Phone number',\n  visualSize = 'default',\n  value,\n  ...rest\n} = Astro.props\n\nconst isDisabled = disabled || Boolean(inputProps.disabled)\nconst isReadOnly = readOnly || Boolean(inputProps.readonly)\nconst phoneOptions = locale === undefined ? {} : { locale }\nconst metadataCountries = countryOptions ?? getLumenPhoneCountries(phoneOptions)\nconst usesMetadata = countries.length === 0\n\nconst normalizedCountries: NormalizedCountryOption[] = usesMetadata ?\n  metadataCountries.map(country => ({\n  label: `${country.displayName} (${country.callingCode})`,\n  regionCode: country.regionCode,\n  value: country.regionCode\n  })) :\n  countries.map(country => typeof country === 'string' ? { label: country, value: country } : country)\n\nconst selectedCountry = metadataCountries.find(country => (\n  country.regionCode === countryValue || country.callingCode === countryValue\n)) ?? metadataCountries[0] ?? getLumenPhoneCountry('US', phoneOptions)\n\nconst detectedPhoneValue = selectedCountry && value ?\n  resolveLumenPhoneNumber(selectedCountry, value, phoneOptions) :\n  null\n\nconst normalizePhoneValue = (detectedValue: LumenPhoneNumber | null): LumenPhoneNumber | null => {\n  if (!detectedValue || !selectedCountry) return detectedValue\n\n  const detectedCountryIsAllowed = metadataCountries.some(country => (\n    country.regionCode === detectedValue.country.regionCode\n  ))\n\n  if (detectedCountryIsAllowed) return detectedValue\n\n  const allowedCountryValue = detectedValue.nationalNumber.startsWith('+') ?\n    detectedValue.nationalNumber.slice(1) :\n    detectedValue.nationalNumber\n\n  return resolveLumenPhoneNumber(selectedCountry, allowedCountryValue, phoneOptions)\n}\n\nconst phoneValue = normalizePhoneValue(detectedPhoneValue)\nconst selectedCountryValue = usesMetadata ? phoneValue?.country.regionCode ?? selectedCountry?.regionCode : countryValue\nconst renderedValue = usesMetadata ? phoneValue?.nationalNumber ?? value : value\nconst inputId = id ?? inputProps.id ?? `phone-${crypto.randomUUID()}`\nconst errorId = `phone-error-${crypto.randomUUID()}`\nconst effectiveError = errorMessage || (showValidationError && phoneValue && phoneValue.nationalNumber.length > 0 && !phoneValue.isValid ? invalidNumberMessage : '')\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-phone-input',\n  'ui-input-group'\n], classProp, className)\n---\n\n<div\n  class:list={classList}\n  data-disabled={isDisabled || undefined}\n  data-readonly={isReadOnly || undefined}\n  data-size={visualSize}\n  data-slot=\"phone-input\"\n  data-error-message={errorMessage}\n  data-error-id={errorId}\n  data-show-validation-error={String(showValidationError)}\n  data-invalid={effectiveError ? 'true' : undefined}\n  data-e164={phoneValue?.e164}\n  data-invalid-number-message={invalidNumberMessage}\n  data-ui-phone-input={usesMetadata ? '' : undefined}\n  data-valid={phoneValue ? String(phoneValue.isValid) : undefined}\n  {...passthrough}\n>\n  <span class=\"ui-phone-input__picker\" data-slot=\"phone-country\">\n    {usesMetadata && (\n<span aria-hidden=\"true\" class=\"ui-phone-input__selection\">\n      <CountryFlag decorative regionCode={phoneValue?.country.regionCode ?? selectedCountry?.regionCode ?? countryValue} />\n      <span data-ui-phone-code>{phoneValue?.country.callingCode ?? selectedCountry?.callingCode}</span>\n      <span class=\"ui-phone-input__chevron\" />\n    </span>\n)}\n  <select\n    aria-label={countryLabel}\n    class:list={[\n      'ui-select',\n      'ui-phone-input__country',\n      visualSize === 'sm' && 'ui-select--sm',\n      visualSize === 'lg' && 'ui-select--lg'\n    ]}\n    disabled={isDisabled || isReadOnly || normalizedCountries.length === 0}\n    name={countryName}\n  >\n    {normalizedCountries.map(country => (\n      <option\n        disabled={country.disabled}\n        data-region={country.regionCode}\n        selected={country.value === selectedCountryValue}\n        value={country.value}\n      >{country.label}\n      </option>\n    ))}\n  </select>\n  </span>\n  <input\n    {...inputProps}\n    id={inputId}\n    autocomplete={inputProps.autocomplete ?? 'tel-national'}\n    disabled={disabled || inputProps.disabled}\n    readonly={readOnly || inputProps.readonly}\n    required={required || inputProps.required}\n    aria-invalid={effectiveError ? 'true' : inputProps['aria-invalid']}\n    aria-errormessage={effectiveError ? errorId : inputProps['aria-errormessage']}\n    aria-describedby={[inputProps['aria-describedby'], effectiveError ? errorId : undefined].filter(Boolean).join(' ') || undefined}\n    class:list={[\n      'ui-input',\n      'ui-phone-input__number',\n      visualSize === 'sm' && 'ui-input--sm',\n      visualSize === 'lg' && 'ui-input--lg'\n    ]}\n    inputmode=\"tel\"\n    name={name}\n    placeholder={placeholder}\n    type=\"tel\"\n    value={renderedValue}\n  />\n  {isReadOnly && !isDisabled && <input name={countryName} type=\"hidden\" value={selectedCountryValue} />}\n</div>\n\n<span class=\"ui-phone-input__error\" id={errorId} role=\"alert\" hidden={!effectiveError}>{effectiveError}</span>\n",
       "category": "Forms",
       "collections": [
         "Text entry"
@@ -19733,7 +19733,7 @@
             {
               "name": "inputProps",
               "optional": true,
-              "type": "Omit<HTMLAttributes<'input'>, 'value' | 'name' | 'size' | 'type'>"
+              "type": "Omit<HTMLAttributes<'input'>, 'value' | 'name' | 'type'>"
             },
             {
               "name": "invalidNumberMessage",
@@ -19756,9 +19756,9 @@
               "type": "string"
             },
             {
-              "name": "size",
+              "name": "visualSize",
               "optional": true,
-              "type": "'default' | 'lg' | 'sm'"
+              "type": "LumenControlVisualSize"
             },
             {
               "name": "value",
@@ -19766,8 +19766,8 @@
               "type": "string"
             }
           ],
-          "propsExtends": "Omit<HTMLAttributes<'div'>, 'size'>",
-          "source": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport {\n  getLumenPhoneCountries,\n  getLumenPhoneCountry,\n  type LumenPhoneCountry,\n  type LumenPhoneCountryOptions,\n  type LumenPhoneNumber,\n  resolveLumenAstroProps,\n  resolveLumenPhoneNumber\n} from '@santi020k/lumen-core'\n\nimport CountryFlag from './CountryFlag.astro'\n\ninterface CountryOption {\n  disabled?: boolean\n  label: string\n  value: string\n}\n\ntype Country = CountryOption | string\n\ninterface NormalizedCountryOption extends CountryOption {\n  regionCode?: string\n}\n\ninterface Props extends Omit<HTMLAttributes<'div'>, 'size'> {\n  class?: string | null\n  className?: string\n  countries?: Country[]\n  countryOptions?: readonly LumenPhoneCountry[]\n  countryLabel?: string\n  countryName?: string\n  countryValue?: string\n  disabled?: boolean\n  readOnly?: boolean\n  required?: boolean\n  errorMessage?: string\n  showValidationError?: boolean\n  inputProps?: Omit<HTMLAttributes<'input'>, 'value' | 'name' | 'size' | 'type'>\n  invalidNumberMessage?: string\n  locale?: LumenPhoneCountryOptions['locale']\n  name?: string\n  placeholder?: string\n  size?: 'default' | 'lg' | 'sm'\n  value?: string\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  id,\n  disabled = false,\n  readOnly = false,\n  required = false,\n  errorMessage,\n  showValidationError = true,\n  inputProps = {},\n  countries = [],\n  countryOptions,\n  countryLabel = 'Country code',\n  countryName = 'country',\n  countryValue = 'US',\n  invalidNumberMessage = 'Enter a complete phone number.',\n  locale,\n  name = 'phone',\n  placeholder = 'Phone number',\n  size = 'default',\n  value,\n  ...rest\n} = Astro.props\n\nconst isDisabled = disabled || Boolean(inputProps.disabled)\nconst isReadOnly = readOnly || Boolean(inputProps.readonly)\nconst phoneOptions = locale === undefined ? {} : { locale }\nconst metadataCountries = countryOptions ?? getLumenPhoneCountries(phoneOptions)\nconst usesMetadata = countries.length === 0\n\nconst normalizedCountries: NormalizedCountryOption[] = usesMetadata ?\n  metadataCountries.map(country => ({\n  label: `${country.displayName} (${country.callingCode})`,\n  regionCode: country.regionCode,\n  value: country.regionCode\n  })) :\n  countries.map(country => typeof country === 'string' ? { label: country, value: country } : country)\n\nconst selectedCountry = metadataCountries.find(country => (\n  country.regionCode === countryValue || country.callingCode === countryValue\n)) ?? metadataCountries[0] ?? getLumenPhoneCountry('US', phoneOptions)\n\nconst detectedPhoneValue = selectedCountry && value ?\n  resolveLumenPhoneNumber(selectedCountry, value, phoneOptions) :\n  null\n\nconst normalizePhoneValue = (detectedValue: LumenPhoneNumber | null): LumenPhoneNumber | null => {\n  if (!detectedValue || !selectedCountry) return detectedValue\n\n  const detectedCountryIsAllowed = metadataCountries.some(country => (\n    country.regionCode === detectedValue.country.regionCode\n  ))\n\n  if (detectedCountryIsAllowed) return detectedValue\n\n  const allowedCountryValue = detectedValue.nationalNumber.startsWith('+') ?\n    detectedValue.nationalNumber.slice(1) :\n    detectedValue.nationalNumber\n\n  return resolveLumenPhoneNumber(selectedCountry, allowedCountryValue, phoneOptions)\n}\n\nconst phoneValue = normalizePhoneValue(detectedPhoneValue)\nconst selectedCountryValue = usesMetadata ? phoneValue?.country.regionCode ?? selectedCountry?.regionCode : countryValue\nconst renderedValue = usesMetadata ? phoneValue?.nationalNumber ?? value : value\nconst inputId = id ?? inputProps.id ?? `phone-${crypto.randomUUID()}`\nconst errorId = `phone-error-${crypto.randomUUID()}`\nconst effectiveError = errorMessage || (showValidationError && phoneValue && phoneValue.nationalNumber.length > 0 && !phoneValue.isValid ? invalidNumberMessage : '')\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-phone-input',\n  'ui-input-group'\n], classProp, className)\n---\n\n<div\n  class:list={classList}\n  data-disabled={isDisabled || undefined}\n  data-readonly={isReadOnly || undefined}\n  data-size={size}\n  data-slot=\"phone-input\"\n  data-error-message={errorMessage}\n  data-error-id={errorId}\n  data-show-validation-error={String(showValidationError)}\n  data-invalid={effectiveError ? 'true' : undefined}\n  data-e164={phoneValue?.e164}\n  data-invalid-number-message={invalidNumberMessage}\n  data-ui-phone-input={usesMetadata ? '' : undefined}\n  data-valid={phoneValue ? String(phoneValue.isValid) : undefined}\n  {...passthrough}\n>\n  <span class=\"ui-phone-input__picker\" data-slot=\"phone-country\">\n    {usesMetadata && (\n<span aria-hidden=\"true\" class=\"ui-phone-input__selection\">\n      <CountryFlag decorative regionCode={phoneValue?.country.regionCode ?? selectedCountry?.regionCode ?? countryValue} />\n      <span data-ui-phone-code>{phoneValue?.country.callingCode ?? selectedCountry?.callingCode}</span>\n      <span class=\"ui-phone-input__chevron\" />\n    </span>\n)}\n  <select\n    aria-label={countryLabel}\n    class:list={[\n      'ui-select',\n      'ui-phone-input__country',\n      size === 'sm' && 'ui-select--sm',\n      size === 'lg' && 'ui-select--lg'\n    ]}\n    disabled={isDisabled || isReadOnly || normalizedCountries.length === 0}\n    name={countryName}\n  >\n    {normalizedCountries.map(country => (\n      <option\n        disabled={country.disabled}\n        data-region={country.regionCode}\n        selected={country.value === selectedCountryValue}\n        value={country.value}\n      >{country.label}\n      </option>\n    ))}\n  </select>\n  </span>\n  <input\n    {...inputProps}\n    id={inputId}\n    autocomplete={inputProps.autocomplete ?? 'tel-national'}\n    disabled={disabled || inputProps.disabled}\n    readonly={readOnly || inputProps.readonly}\n    required={required || inputProps.required}\n    aria-invalid={effectiveError ? 'true' : inputProps['aria-invalid']}\n    aria-errormessage={effectiveError ? errorId : inputProps['aria-errormessage']}\n    aria-describedby={[inputProps['aria-describedby'], effectiveError ? errorId : undefined].filter(Boolean).join(' ') || undefined}\n    class:list={[\n      'ui-input',\n      'ui-phone-input__number',\n      size === 'sm' && 'ui-input--sm',\n      size === 'lg' && 'ui-input--lg'\n    ]}\n    inputmode=\"tel\"\n    name={name}\n    placeholder={placeholder}\n    type=\"tel\"\n    value={renderedValue}\n  />\n  {isReadOnly && !isDisabled && <input name={countryName} type=\"hidden\" value={selectedCountryValue} />}\n</div>\n\n<span class=\"ui-phone-input__error\" id={errorId} role=\"alert\" hidden={!effectiveError}>{effectiveError}</span>\n",
+          "propsExtends": "HTMLAttributes<'div'>",
+          "source": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport {\n  getLumenPhoneCountries,\n  getLumenPhoneCountry,\n  type LumenControlVisualSize,\n  type LumenPhoneCountry,\n  type LumenPhoneCountryOptions,\n  type LumenPhoneNumber,\n  resolveLumenAstroProps,\n  resolveLumenPhoneNumber\n} from '@santi020k/lumen-core'\n\nimport CountryFlag from './CountryFlag.astro'\n\ninterface CountryOption {\n  disabled?: boolean\n  label: string\n  value: string\n}\n\ntype Country = CountryOption | string\n\ninterface NormalizedCountryOption extends CountryOption {\n  regionCode?: string\n}\n\ninterface Props extends HTMLAttributes<'div'> {\n  class?: string | null\n  className?: string\n  countries?: Country[]\n  countryOptions?: readonly LumenPhoneCountry[]\n  countryLabel?: string\n  countryName?: string\n  countryValue?: string\n  disabled?: boolean\n  readOnly?: boolean\n  required?: boolean\n  errorMessage?: string\n  showValidationError?: boolean\n  inputProps?: Omit<HTMLAttributes<'input'>, 'value' | 'name' | 'type'>\n  invalidNumberMessage?: string\n  locale?: LumenPhoneCountryOptions['locale']\n  name?: string\n  placeholder?: string\n  visualSize?: LumenControlVisualSize\n  value?: string\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  id,\n  disabled = false,\n  readOnly = false,\n  required = false,\n  errorMessage,\n  showValidationError = true,\n  inputProps = {},\n  countries = [],\n  countryOptions,\n  countryLabel = 'Country code',\n  countryName = 'country',\n  countryValue = 'US',\n  invalidNumberMessage = 'Enter a complete phone number.',\n  locale,\n  name = 'phone',\n  placeholder = 'Phone number',\n  visualSize = 'default',\n  value,\n  ...rest\n} = Astro.props\n\nconst isDisabled = disabled || Boolean(inputProps.disabled)\nconst isReadOnly = readOnly || Boolean(inputProps.readonly)\nconst phoneOptions = locale === undefined ? {} : { locale }\nconst metadataCountries = countryOptions ?? getLumenPhoneCountries(phoneOptions)\nconst usesMetadata = countries.length === 0\n\nconst normalizedCountries: NormalizedCountryOption[] = usesMetadata ?\n  metadataCountries.map(country => ({\n  label: `${country.displayName} (${country.callingCode})`,\n  regionCode: country.regionCode,\n  value: country.regionCode\n  })) :\n  countries.map(country => typeof country === 'string' ? { label: country, value: country } : country)\n\nconst selectedCountry = metadataCountries.find(country => (\n  country.regionCode === countryValue || country.callingCode === countryValue\n)) ?? metadataCountries[0] ?? getLumenPhoneCountry('US', phoneOptions)\n\nconst detectedPhoneValue = selectedCountry && value ?\n  resolveLumenPhoneNumber(selectedCountry, value, phoneOptions) :\n  null\n\nconst normalizePhoneValue = (detectedValue: LumenPhoneNumber | null): LumenPhoneNumber | null => {\n  if (!detectedValue || !selectedCountry) return detectedValue\n\n  const detectedCountryIsAllowed = metadataCountries.some(country => (\n    country.regionCode === detectedValue.country.regionCode\n  ))\n\n  if (detectedCountryIsAllowed) return detectedValue\n\n  const allowedCountryValue = detectedValue.nationalNumber.startsWith('+') ?\n    detectedValue.nationalNumber.slice(1) :\n    detectedValue.nationalNumber\n\n  return resolveLumenPhoneNumber(selectedCountry, allowedCountryValue, phoneOptions)\n}\n\nconst phoneValue = normalizePhoneValue(detectedPhoneValue)\nconst selectedCountryValue = usesMetadata ? phoneValue?.country.regionCode ?? selectedCountry?.regionCode : countryValue\nconst renderedValue = usesMetadata ? phoneValue?.nationalNumber ?? value : value\nconst inputId = id ?? inputProps.id ?? `phone-${crypto.randomUUID()}`\nconst errorId = `phone-error-${crypto.randomUUID()}`\nconst effectiveError = errorMessage || (showValidationError && phoneValue && phoneValue.nationalNumber.length > 0 && !phoneValue.isValid ? invalidNumberMessage : '')\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-phone-input',\n  'ui-input-group'\n], classProp, className)\n---\n\n<div\n  class:list={classList}\n  data-disabled={isDisabled || undefined}\n  data-readonly={isReadOnly || undefined}\n  data-size={visualSize}\n  data-slot=\"phone-input\"\n  data-error-message={errorMessage}\n  data-error-id={errorId}\n  data-show-validation-error={String(showValidationError)}\n  data-invalid={effectiveError ? 'true' : undefined}\n  data-e164={phoneValue?.e164}\n  data-invalid-number-message={invalidNumberMessage}\n  data-ui-phone-input={usesMetadata ? '' : undefined}\n  data-valid={phoneValue ? String(phoneValue.isValid) : undefined}\n  {...passthrough}\n>\n  <span class=\"ui-phone-input__picker\" data-slot=\"phone-country\">\n    {usesMetadata && (\n<span aria-hidden=\"true\" class=\"ui-phone-input__selection\">\n      <CountryFlag decorative regionCode={phoneValue?.country.regionCode ?? selectedCountry?.regionCode ?? countryValue} />\n      <span data-ui-phone-code>{phoneValue?.country.callingCode ?? selectedCountry?.callingCode}</span>\n      <span class=\"ui-phone-input__chevron\" />\n    </span>\n)}\n  <select\n    aria-label={countryLabel}\n    class:list={[\n      'ui-select',\n      'ui-phone-input__country',\n      visualSize === 'sm' && 'ui-select--sm',\n      visualSize === 'lg' && 'ui-select--lg'\n    ]}\n    disabled={isDisabled || isReadOnly || normalizedCountries.length === 0}\n    name={countryName}\n  >\n    {normalizedCountries.map(country => (\n      <option\n        disabled={country.disabled}\n        data-region={country.regionCode}\n        selected={country.value === selectedCountryValue}\n        value={country.value}\n      >{country.label}\n      </option>\n    ))}\n  </select>\n  </span>\n  <input\n    {...inputProps}\n    id={inputId}\n    autocomplete={inputProps.autocomplete ?? 'tel-national'}\n    disabled={disabled || inputProps.disabled}\n    readonly={readOnly || inputProps.readonly}\n    required={required || inputProps.required}\n    aria-invalid={effectiveError ? 'true' : inputProps['aria-invalid']}\n    aria-errormessage={effectiveError ? errorId : inputProps['aria-errormessage']}\n    aria-describedby={[inputProps['aria-describedby'], effectiveError ? errorId : undefined].filter(Boolean).join(' ') || undefined}\n    class:list={[\n      'ui-input',\n      'ui-phone-input__number',\n      visualSize === 'sm' && 'ui-input--sm',\n      visualSize === 'lg' && 'ui-input--lg'\n    ]}\n    inputmode=\"tel\"\n    name={name}\n    placeholder={placeholder}\n    type=\"tel\"\n    value={renderedValue}\n  />\n  {isReadOnly && !isDisabled && <input name={countryName} type=\"hidden\" value={selectedCountryValue} />}\n</div>\n\n<span class=\"ui-phone-input__error\" id={errorId} role=\"alert\" hidden={!effectiveError}>{effectiveError}</span>\n",
           "styleImport": "import '@santi020k/lumen-astro/styles.css'"
         },
         "elements": {
@@ -19849,7 +19849,7 @@
             {
               "name": "inputProps",
               "optional": true,
-              "type": "Omit<ComponentPropsWithoutRef<'input'>, 'value' | 'defaultValue' | 'onChange' | 'name' | 'size' | 'type'>"
+              "type": "Omit<ComponentPropsWithoutRef<'input'>, 'value' | 'defaultValue' | 'onChange' | 'name' | 'type'>"
             },
             {
               "name": "inputRef",
@@ -19907,9 +19907,9 @@
               "type": "boolean"
             },
             {
-              "name": "size",
+              "name": "visualSize",
               "optional": true,
-              "type": "'default' | 'lg' | 'sm'"
+              "type": "LumenControlVisualSize"
             },
             {
               "name": "value",
@@ -19918,7 +19918,7 @@
             }
           ],
           "propsExtends": "Omit<\n  ComponentPropsWithoutRef<'div'>,\n  'defaultValue'\n>",
-          "source": "export interface PhoneInputProps extends Omit<\n  ComponentPropsWithoutRef<'div'>,\n  'defaultValue'\n> {\n  countries?: SelectOption[]\n  countryOptions?: readonly LumenPhoneCountry[]\n  disabled?: boolean\n  readOnly?: boolean\n  required?: boolean\n  errorMessage?: string\n  inputProps?: Omit<ComponentPropsWithoutRef<'input'>, 'value' | 'defaultValue' | 'onChange' | 'name' | 'size' | 'type'>\n  inputRef?: Ref<HTMLInputElement>\n  countryLabel?: string\n  countryName?: string\n  defaultCountryValue?: string\n  defaultValue?: string\n  invalidNumberMessage?: string\n  locale?: LumenPhoneCountryOptions['locale']\n  name?: string\n  onValueChange?: (value: LumenPhoneNumber) => void\n  placeholder?: string\n  showValidationError?: boolean\n  size?: 'default' | 'lg' | 'sm'\n  value?: LumenPhoneNumber\n}\n\nexport const PhoneInput = (props: PhoneInputProps) => {\n  if (props.countries) {\n    return <LegacyPhoneInput {...props} countries={props.countries} />\n  }\n\n  return (\n    <MetadataPhoneInput\n      {...props}\n      countryLabel={props.countryLabel ?? 'Country code'}\n      countryName={props.countryName ?? 'country'}\n      defaultCountryValue={props.defaultCountryValue ?? 'US'}\n      invalidNumberMessage={props.invalidNumberMessage ?? 'Enter a complete phone number.'}\n      name={props.name ?? 'phone'}\n      placeholder={props.placeholder ?? 'Phone number'}\n      showValidationError={props.showValidationError ?? true}\n      size={props.size ?? 'default'}\n    />\n  )\n}",
+          "source": "export interface PhoneInputProps extends Omit<\n  ComponentPropsWithoutRef<'div'>,\n  'defaultValue'\n> {\n  countries?: SelectOption[]\n  countryOptions?: readonly LumenPhoneCountry[]\n  disabled?: boolean\n  readOnly?: boolean\n  required?: boolean\n  errorMessage?: string\n  inputProps?: Omit<ComponentPropsWithoutRef<'input'>, 'value' | 'defaultValue' | 'onChange' | 'name' | 'type'>\n  inputRef?: Ref<HTMLInputElement>\n  countryLabel?: string\n  countryName?: string\n  defaultCountryValue?: string\n  defaultValue?: string\n  invalidNumberMessage?: string\n  locale?: LumenPhoneCountryOptions['locale']\n  name?: string\n  onValueChange?: (value: LumenPhoneNumber) => void\n  placeholder?: string\n  showValidationError?: boolean\n  visualSize?: LumenControlVisualSize\n  value?: LumenPhoneNumber\n}\n\nexport const PhoneInput = (props: PhoneInputProps) => {\n  if (props.countries) {\n    return <LegacyPhoneInput {...props} countries={props.countries} />\n  }\n\n  return (\n    <MetadataPhoneInput\n      {...props}\n      countryLabel={props.countryLabel ?? 'Country code'}\n      countryName={props.countryName ?? 'country'}\n      defaultCountryValue={props.defaultCountryValue ?? 'US'}\n      invalidNumberMessage={props.invalidNumberMessage ?? 'Enter a complete phone number.'}\n      name={props.name ?? 'phone'}\n      placeholder={props.placeholder ?? 'Phone number'}\n      showValidationError={props.showValidationError ?? true}\n      visualSize={props.visualSize ?? 'default'}\n    />\n  )\n}",
           "styleImport": "import '@santi020k/lumen-react/styles.css'"
         }
       },
@@ -20025,7 +20025,7 @@
         {
           "name": "inputProps",
           "optional": true,
-          "type": "Omit<HTMLAttributes<'input'>, 'value' | 'name' | 'size' | 'type'>"
+          "type": "Omit<HTMLAttributes<'input'>, 'value' | 'name' | 'type'>"
         },
         {
           "name": "invalidNumberMessage",
@@ -20048,9 +20048,9 @@
           "type": "string"
         },
         {
-          "name": "size",
+          "name": "visualSize",
           "optional": true,
-          "type": "'default' | 'lg' | 'sm'"
+          "type": "LumenControlVisualSize"
         },
         {
           "name": "value",
@@ -20058,7 +20058,7 @@
           "type": "string"
         }
       ],
-      "propsExtends": "Omit<HTMLAttributes<'div'>, 'size'>",
+      "propsExtends": "HTMLAttributes<'div'>",
       "recipes": [],
       "runtimeEvents": []
     },
@@ -23045,7 +23045,7 @@
           "values": "HTML attributes"
         }
       ],
-      "astroSource": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ninterface Option {\n  disabled?: boolean\n  label: string\n  value: string\n}\n\ntype SelectOption = Option | string\n\ninterface Props extends Omit<HTMLAttributes<'select'>, 'size'> {\n  class?: string | null\n  className?: string\n  glass?: boolean | 'subtle' | 'strong'\n  options?: SelectOption[]\n  placeholder?: string\n  size?: 'default' | 'lg' | 'md' | 'sm'\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  disabled = false,\n  glass = false,\n  id,\n  name,\n  options = [],\n  placeholder,\n  required = false,\n  size = 'default',\n  value,\n  ...rest\n} = Astro.props\n\nconst normalizedOptions = options.map(option => typeof option === 'string' ? { label: option, value: option } : option)\nconst selectedValue = value ?? undefined\nconst hasSelectedValue = selectedValue !== undefined && selectedValue !== ''\nconst selectedOption = normalizedOptions.find(option => option.value === selectedValue)\nconst selectId = id ?? `ui-select-${Math.random().toString(36).slice(2)}`\nconst triggerId = `${selectId}-trigger`\nconst listId = `${selectId}-listbox`\nconst placeholderText = placeholder ?? 'Select an option'\nconst triggerText = hasSelectedValue ? selectedOption?.label ?? placeholderText : placeholderText\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-select-field',\n  glass && 'ui-select-field--glass',\n  glass === 'subtle' && 'ui-glass-subtle',\n  glass === 'strong' && 'ui-glass-strong'\n], classProp, className)\n---\n\n<div\n  class:list={classList}\n  data-placeholder={hasSelectedValue ? 'false' : 'true'}\n  data-ui-glass-track={glass ? true : undefined}\n  data-ui-select\n>\n  <select\n    class:list={[\n      'ui-select',\n      'ui-select__native',\n      size === 'sm' && 'ui-select--sm',\n      size === 'lg' && 'ui-select--lg'\n    ]}\n    data-ui-select-native\n    disabled={disabled}\n    id={selectId}\n    name={name}\n    required={required}\n    {...passthrough}\n  >\n    {placeholder && (\n      <option data-ui-select-placeholder disabled selected={!hasSelectedValue} value=\"\">\n        {placeholder}\n      </option>\n    )}\n    <slot />\n    {normalizedOptions.map(option => (\n      <option\n        disabled={option.disabled}\n        selected={selectedValue === option.value}\n        value={option.value}\n      >\n        {option.label}\n      </option>\n    ))}\n  </select>\n\n  <div class=\"ui-select__control\" data-ui-select-control hidden>\n    <button\n      aria-controls={listId}\n      aria-expanded=\"false\"\n      aria-haspopup=\"listbox\"\n      class:list={[\n        'ui-select',\n        'ui-select__trigger',\n        size === 'sm' && 'ui-select--sm',\n        size === 'lg' && 'ui-select--lg'\n      ]}\n      data-ui-select-trigger\n      disabled={disabled}\n      id={triggerId}\n      role=\"combobox\"\n      type=\"button\"\n    >\n      <span data-ui-select-value>{triggerText}</span>\n    </button>\n\n    <div class=\"ui-select__list\" data-state=\"closed\" data-ui-select-list hidden id={listId} role=\"listbox\">\n      {normalizedOptions.map(option => (\n        <button\n          aria-disabled={option.disabled ? 'true' : undefined}\n          aria-selected={selectedValue === option.value ? 'true' : 'false'}\n          data-ui-select-option\n          data-value={option.value}\n          disabled={option.disabled}\n          role=\"option\"\n          type=\"button\"\n        >\n          {option.label}\n        </button>\n      ))}\n    </div>\n  </div>\n</div>\n",
+      "astroSource": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { type LumenControlVisualSize, resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ninterface Option {\n  disabled?: boolean\n  label: string\n  value: string\n}\n\ntype SelectOption = Option | string\n\ninterface Props extends HTMLAttributes<'select'> {\n  class?: string | null\n  className?: string\n  glass?: boolean | 'subtle' | 'strong'\n  options?: SelectOption[]\n  placeholder?: string\n  visualSize?: LumenControlVisualSize\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  disabled = false,\n  glass = false,\n  id,\n  name,\n  options = [],\n  placeholder,\n  required = false,\n  visualSize = 'default',\n  value,\n  ...rest\n} = Astro.props\n\nconst normalizedOptions = options.map(option => typeof option === 'string' ? { label: option, value: option } : option)\nconst selectedValue = value ?? undefined\nconst hasSelectedValue = selectedValue !== undefined && selectedValue !== ''\nconst selectedOption = normalizedOptions.find(option => option.value === selectedValue)\nconst selectId = id ?? `ui-select-${Math.random().toString(36).slice(2)}`\nconst triggerId = `${selectId}-trigger`\nconst listId = `${selectId}-listbox`\nconst placeholderText = placeholder ?? 'Select an option'\nconst triggerText = hasSelectedValue ? selectedOption?.label ?? placeholderText : placeholderText\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-select-field',\n  glass && 'ui-select-field--glass',\n  glass === 'subtle' && 'ui-glass-subtle',\n  glass === 'strong' && 'ui-glass-strong'\n], classProp, className)\n---\n\n<div\n  class:list={classList}\n  data-placeholder={hasSelectedValue ? 'false' : 'true'}\n  data-ui-glass-track={glass ? true : undefined}\n  data-ui-select\n>\n  <select\n    class:list={[\n      'ui-select',\n      'ui-select__native',\n      visualSize === 'sm' && 'ui-select--sm',\n      visualSize === 'lg' && 'ui-select--lg'\n    ]}\n    data-ui-select-native\n    disabled={disabled}\n    id={selectId}\n    name={name}\n    required={required}\n    {...passthrough}\n  >\n    {placeholder && (\n      <option data-ui-select-placeholder disabled selected={!hasSelectedValue} value=\"\">\n        {placeholder}\n      </option>\n    )}\n    <slot />\n    {normalizedOptions.map(option => (\n      <option\n        disabled={option.disabled}\n        selected={selectedValue === option.value}\n        value={option.value}\n      >\n        {option.label}\n      </option>\n    ))}\n  </select>\n\n  <div class=\"ui-select__control\" data-ui-select-control hidden>\n    <button\n      aria-controls={listId}\n      aria-expanded=\"false\"\n      aria-haspopup=\"listbox\"\n      class:list={[\n        'ui-select',\n        'ui-select__trigger',\n        visualSize === 'sm' && 'ui-select--sm',\n        visualSize === 'lg' && 'ui-select--lg'\n      ]}\n      data-ui-select-trigger\n      disabled={disabled}\n      id={triggerId}\n      role=\"combobox\"\n      type=\"button\"\n    >\n      <span data-ui-select-value>{triggerText}</span>\n    </button>\n\n    <div class=\"ui-select__list\" data-state=\"closed\" data-ui-select-list hidden id={listId} role=\"listbox\">\n      {normalizedOptions.map(option => (\n        <button\n          aria-disabled={option.disabled ? 'true' : undefined}\n          aria-selected={selectedValue === option.value ? 'true' : 'false'}\n          data-ui-select-option\n          data-value={option.value}\n          disabled={option.disabled}\n          role=\"option\"\n          type=\"button\"\n        >\n          {option.label}\n        </button>\n      ))}\n    </div>\n  </div>\n</div>\n",
       "category": "Forms",
       "collections": [
         "Selection controls"
@@ -23104,19 +23104,20 @@
               "type": "string"
             },
             {
-              "name": "size",
+              "name": "visualSize",
               "optional": true,
-              "type": "'default' | 'lg' | 'md' | 'sm'"
+              "type": "LumenControlVisualSize"
             }
           ],
-          "propsExtends": "Omit<HTMLAttributes<'select'>, 'size'>",
-          "source": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ninterface Option {\n  disabled?: boolean\n  label: string\n  value: string\n}\n\ntype SelectOption = Option | string\n\ninterface Props extends Omit<HTMLAttributes<'select'>, 'size'> {\n  class?: string | null\n  className?: string\n  glass?: boolean | 'subtle' | 'strong'\n  options?: SelectOption[]\n  placeholder?: string\n  size?: 'default' | 'lg' | 'md' | 'sm'\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  disabled = false,\n  glass = false,\n  id,\n  name,\n  options = [],\n  placeholder,\n  required = false,\n  size = 'default',\n  value,\n  ...rest\n} = Astro.props\n\nconst normalizedOptions = options.map(option => typeof option === 'string' ? { label: option, value: option } : option)\nconst selectedValue = value ?? undefined\nconst hasSelectedValue = selectedValue !== undefined && selectedValue !== ''\nconst selectedOption = normalizedOptions.find(option => option.value === selectedValue)\nconst selectId = id ?? `ui-select-${Math.random().toString(36).slice(2)}`\nconst triggerId = `${selectId}-trigger`\nconst listId = `${selectId}-listbox`\nconst placeholderText = placeholder ?? 'Select an option'\nconst triggerText = hasSelectedValue ? selectedOption?.label ?? placeholderText : placeholderText\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-select-field',\n  glass && 'ui-select-field--glass',\n  glass === 'subtle' && 'ui-glass-subtle',\n  glass === 'strong' && 'ui-glass-strong'\n], classProp, className)\n---\n\n<div\n  class:list={classList}\n  data-placeholder={hasSelectedValue ? 'false' : 'true'}\n  data-ui-glass-track={glass ? true : undefined}\n  data-ui-select\n>\n  <select\n    class:list={[\n      'ui-select',\n      'ui-select__native',\n      size === 'sm' && 'ui-select--sm',\n      size === 'lg' && 'ui-select--lg'\n    ]}\n    data-ui-select-native\n    disabled={disabled}\n    id={selectId}\n    name={name}\n    required={required}\n    {...passthrough}\n  >\n    {placeholder && (\n      <option data-ui-select-placeholder disabled selected={!hasSelectedValue} value=\"\">\n        {placeholder}\n      </option>\n    )}\n    <slot />\n    {normalizedOptions.map(option => (\n      <option\n        disabled={option.disabled}\n        selected={selectedValue === option.value}\n        value={option.value}\n      >\n        {option.label}\n      </option>\n    ))}\n  </select>\n\n  <div class=\"ui-select__control\" data-ui-select-control hidden>\n    <button\n      aria-controls={listId}\n      aria-expanded=\"false\"\n      aria-haspopup=\"listbox\"\n      class:list={[\n        'ui-select',\n        'ui-select__trigger',\n        size === 'sm' && 'ui-select--sm',\n        size === 'lg' && 'ui-select--lg'\n      ]}\n      data-ui-select-trigger\n      disabled={disabled}\n      id={triggerId}\n      role=\"combobox\"\n      type=\"button\"\n    >\n      <span data-ui-select-value>{triggerText}</span>\n    </button>\n\n    <div class=\"ui-select__list\" data-state=\"closed\" data-ui-select-list hidden id={listId} role=\"listbox\">\n      {normalizedOptions.map(option => (\n        <button\n          aria-disabled={option.disabled ? 'true' : undefined}\n          aria-selected={selectedValue === option.value ? 'true' : 'false'}\n          data-ui-select-option\n          data-value={option.value}\n          disabled={option.disabled}\n          role=\"option\"\n          type=\"button\"\n        >\n          {option.label}\n        </button>\n      ))}\n    </div>\n  </div>\n</div>\n",
+          "propsExtends": "HTMLAttributes<'select'>",
+          "source": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { type LumenControlVisualSize, resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ninterface Option {\n  disabled?: boolean\n  label: string\n  value: string\n}\n\ntype SelectOption = Option | string\n\ninterface Props extends HTMLAttributes<'select'> {\n  class?: string | null\n  className?: string\n  glass?: boolean | 'subtle' | 'strong'\n  options?: SelectOption[]\n  placeholder?: string\n  visualSize?: LumenControlVisualSize\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  disabled = false,\n  glass = false,\n  id,\n  name,\n  options = [],\n  placeholder,\n  required = false,\n  visualSize = 'default',\n  value,\n  ...rest\n} = Astro.props\n\nconst normalizedOptions = options.map(option => typeof option === 'string' ? { label: option, value: option } : option)\nconst selectedValue = value ?? undefined\nconst hasSelectedValue = selectedValue !== undefined && selectedValue !== ''\nconst selectedOption = normalizedOptions.find(option => option.value === selectedValue)\nconst selectId = id ?? `ui-select-${Math.random().toString(36).slice(2)}`\nconst triggerId = `${selectId}-trigger`\nconst listId = `${selectId}-listbox`\nconst placeholderText = placeholder ?? 'Select an option'\nconst triggerText = hasSelectedValue ? selectedOption?.label ?? placeholderText : placeholderText\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-select-field',\n  glass && 'ui-select-field--glass',\n  glass === 'subtle' && 'ui-glass-subtle',\n  glass === 'strong' && 'ui-glass-strong'\n], classProp, className)\n---\n\n<div\n  class:list={classList}\n  data-placeholder={hasSelectedValue ? 'false' : 'true'}\n  data-ui-glass-track={glass ? true : undefined}\n  data-ui-select\n>\n  <select\n    class:list={[\n      'ui-select',\n      'ui-select__native',\n      visualSize === 'sm' && 'ui-select--sm',\n      visualSize === 'lg' && 'ui-select--lg'\n    ]}\n    data-ui-select-native\n    disabled={disabled}\n    id={selectId}\n    name={name}\n    required={required}\n    {...passthrough}\n  >\n    {placeholder && (\n      <option data-ui-select-placeholder disabled selected={!hasSelectedValue} value=\"\">\n        {placeholder}\n      </option>\n    )}\n    <slot />\n    {normalizedOptions.map(option => (\n      <option\n        disabled={option.disabled}\n        selected={selectedValue === option.value}\n        value={option.value}\n      >\n        {option.label}\n      </option>\n    ))}\n  </select>\n\n  <div class=\"ui-select__control\" data-ui-select-control hidden>\n    <button\n      aria-controls={listId}\n      aria-expanded=\"false\"\n      aria-haspopup=\"listbox\"\n      class:list={[\n        'ui-select',\n        'ui-select__trigger',\n        visualSize === 'sm' && 'ui-select--sm',\n        visualSize === 'lg' && 'ui-select--lg'\n      ]}\n      data-ui-select-trigger\n      disabled={disabled}\n      id={triggerId}\n      role=\"combobox\"\n      type=\"button\"\n    >\n      <span data-ui-select-value>{triggerText}</span>\n    </button>\n\n    <div class=\"ui-select__list\" data-state=\"closed\" data-ui-select-list hidden id={listId} role=\"listbox\">\n      {normalizedOptions.map(option => (\n        <button\n          aria-disabled={option.disabled ? 'true' : undefined}\n          aria-selected={selectedValue === option.value ? 'true' : 'false'}\n          data-ui-select-option\n          data-value={option.value}\n          disabled={option.disabled}\n          role=\"option\"\n          type=\"button\"\n        >\n          {option.label}\n        </button>\n      ))}\n    </div>\n  </div>\n</div>\n",
           "styleImport": "import '@santi020k/lumen-astro/styles.css'"
         },
         "elements": {
           "attributes": [
-            "size",
             "glass",
+            "size",
+            "visual-size",
             "options",
             "placeholder",
             "disabled",
@@ -23137,7 +23138,7 @@
           "props": [],
           "propsExtends": "HTMLElement attributes",
           "registration": "defineLumenElements()",
-          "source": "Select: {\n    attributeClasses: {\n      ...glassAttributeClasses('ui-select-field--glass'),\n      size: { lg: 'ui-select--lg', sm: 'ui-select--sm' }\n    },\n    baseClassName: 'ui-select',\n    tagName: 'lumen-select'\n  }",
+          "source": "Select: {\n    attributeClasses: glassAttributeClasses('ui-select-field--glass'),\n    observedAttributes: ['glass', 'size', 'visual-size'],\n    baseClassName: 'ui-select-field',\n    tagName: 'lumen-select'\n  }",
           "styleImport": "import '@santi020k/lumen-elements/styles.css'",
           "tagName": "lumen-select"
         },
@@ -23306,13 +23307,13 @@
               "type": "ComponentPropsWithoutRef<'select'>['onChange']"
             },
             {
-              "name": "size",
+              "name": "visualSize",
               "optional": true,
-              "type": "'default' | 'lg' | 'md' | 'sm'"
+              "type": "LumenControlVisualSize"
             }
           ],
-          "propsExtends": "Omit<\n    NativeSelectProps,\n    | 'defaultValue' |\n    'disabled' |\n    'id' |\n    'name' |\n    'onChange' |\n    'options' |\n    'placeholder' |\n    'required' |\n    'size' |\n    'value'\n  >, SelectOptions",
-          "source": "export interface SelectProps\n  extends\n  Omit<\n    NativeSelectProps,\n    | 'defaultValue' |\n    'disabled' |\n    'id' |\n    'name' |\n    'onChange' |\n    'options' |\n    'placeholder' |\n    'required' |\n    'size' |\n    'value'\n  >,\n  SelectOptions {\n  glass?: LumenGlassProp\n  inputRef?: Ref<HTMLSelectElement>\n  onChange?: ComponentPropsWithoutRef<'select'>['onChange']\n  size?: 'default' | 'lg' | 'md' | 'sm'\n}\n\nexport const Select = ({\n  children,\n  className,\n  defaultValue,\n  disabled = false,\n  glass = false,\n  id,\n  inputRef,\n  name,\n  onChange,\n  onValueChange,\n  options = emptyOptions,\n  placeholder,\n  required = false,\n  size = 'default',\n  value,\n  ...props\n}: SelectProps) => {\n  const select = useSelect({\n    defaultValue,\n    disabled,\n    id,\n    name,\n    onValueChange,\n    options,\n    placeholder,\n    required,\n    value\n  })\n\n  const sizeClass = getSelectSizeClass(size)\n\n  return (\n    <div\n      {...select.rootProps}\n      className={composeClassName(\n        'ui-select-field', glassClass('ui-select-field', glass), className\n      )}\n      data-ui-glass-track={glass ? true : undefined}\n    >\n      <select\n        {...select.nativeSelectProps}\n        {...props}\n        className={composeClassName('ui-select ui-select__native', sizeClass)}\n        onChange={composeHandlers(onChange, select.nativeSelectProps.onChange)}\n        ref={inputRef}\n      >\n        {placeholder && (\n          <option data-ui-select-placeholder disabled value=\"\">\n            {placeholder}\n          </option>\n        )}\n        {children}\n        {select.options.map(option => (\n          <option\n            disabled={option.disabled}\n            key={option.value}\n            value={option.value}\n          >\n            {option.label}\n          </option>\n        ))}\n      </select>\n\n      <div {...select.controlProps} className=\"ui-select__control\">\n        <button\n          {...select.triggerProps}\n          className={composeClassName(\n            'ui-select ui-select__trigger', sizeClass\n          )}\n          type={select.triggerProps.type ?? 'button'}\n        >\n          <span data-ui-select-value>{select.triggerText}</span>\n        </button>\n\n        <div {...select.listProps} className=\"ui-select__list\">\n          {select.options.map(option => {\n            const optionProps = select.getOptionProps(option)\n\n            return (\n              <button\n                key={option.value}\n                {...optionProps}\n                type={optionProps.type ?? 'button'}\n              >\n                {option.label}\n              </button>\n            )\n          })}\n        </div>\n      </div>\n    </div>\n  )\n}",
+          "propsExtends": "Omit<\n    NativeSelectProps,\n    | 'defaultValue' |\n    'disabled' |\n    'id' |\n    'name' |\n    'onChange' |\n    'options' |\n    'placeholder' |\n    'required' |\n    'value'\n  >, SelectOptions",
+          "source": "export interface SelectProps\n  extends\n  Omit<\n    NativeSelectProps,\n    | 'defaultValue' |\n    'disabled' |\n    'id' |\n    'name' |\n    'onChange' |\n    'options' |\n    'placeholder' |\n    'required' |\n    'value'\n  >,\n  SelectOptions {\n  glass?: LumenGlassProp\n  inputRef?: Ref<HTMLSelectElement>\n  onChange?: ComponentPropsWithoutRef<'select'>['onChange']\n  visualSize?: LumenControlVisualSize\n}\n\nexport const Select = ({\n  children,\n  className,\n  defaultValue,\n  disabled = false,\n  glass = false,\n  id,\n  inputRef,\n  name,\n  onChange,\n  onValueChange,\n  options = emptyOptions,\n  placeholder,\n  required = false,\n  visualSize = 'default',\n  value,\n  ...props\n}: SelectProps) => {\n  const select = useSelect({\n    defaultValue,\n    disabled,\n    id,\n    name,\n    onValueChange,\n    options,\n    placeholder,\n    required,\n    value\n  })\n\n  const sizeClass = getSelectSizeClass(visualSize)\n\n  return (\n    <div\n      {...select.rootProps}\n      className={composeClassName(\n        'ui-select-field', glassClass('ui-select-field', glass), className\n      )}\n      data-ui-glass-track={glass ? true : undefined}\n    >\n      <select\n        {...select.nativeSelectProps}\n        {...props}\n        className={composeClassName('ui-select ui-select__native', sizeClass)}\n        onChange={composeHandlers(onChange, select.nativeSelectProps.onChange)}\n        ref={inputRef}\n      >\n        {placeholder && (\n          <option data-ui-select-placeholder disabled value=\"\">\n            {placeholder}\n          </option>\n        )}\n        {children}\n        {select.options.map(option => (\n          <option\n            disabled={option.disabled}\n            key={option.value}\n            value={option.value}\n          >\n            {option.label}\n          </option>\n        ))}\n      </select>\n\n      <div {...select.controlProps} className=\"ui-select__control\">\n        <button\n          {...select.triggerProps}\n          aria-label={props['aria-label']}\n          aria-labelledby={props['aria-labelledby']}\n          aria-describedby={props['aria-describedby']}\n          aria-invalid={props['aria-invalid']}\n          aria-errormessage={props['aria-errormessage']}\n          className={composeClassName(\n            'ui-select ui-select__trigger', sizeClass\n          )}\n          type={select.triggerProps.type ?? 'button'}\n        >\n          <span data-ui-select-value>{select.triggerText}</span>\n        </button>\n\n        <div {...select.listProps} className=\"ui-select__list\">\n          {select.options.map(option => {\n            const optionProps = select.getOptionProps(option)\n\n            return (\n              <button\n                key={option.value}\n                {...optionProps}\n                type={optionProps.type ?? 'button'}\n              >\n                {option.label}\n              </button>\n            )\n          })}\n        </div>\n      </div>\n    </div>\n  )\n}",
           "styleImport": "import '@santi020k/lumen-react/styles.css'"
         }
       },
@@ -23429,12 +23430,12 @@
           "type": "string"
         },
         {
-          "name": "size",
+          "name": "visualSize",
           "optional": true,
-          "type": "'default' | 'lg' | 'md' | 'sm'"
+          "type": "LumenControlVisualSize"
         }
       ],
-      "propsExtends": "Omit<HTMLAttributes<'select'>, 'size'>",
+      "propsExtends": "HTMLAttributes<'select'>",
       "recipes": [],
       "runtimeEvents": []
     },
@@ -28533,8 +28534,8 @@
         "elements": {
           "attributes": [
             "data-ui-virtual-list",
-            "tabindex",
             "glass",
+            "tabindex",
             "mode",
             "items",
             "getKey",
@@ -28556,7 +28557,7 @@
           "props": [],
           "propsExtends": "HTMLElement attributes",
           "registration": "defineLumenElements()",
-          "source": "VirtualList: {\n    attributeClasses: glassAttributeClasses('ui-virtual-list--glass'),\n    baseClassName: 'ui-virtual-list',\n    defaults: { 'data-ui-virtual-list': '', tabindex: '0' },\n    tagName: 'lumen-virtual-list'\n  }",
+          "source": "lumenVirtualListElementConfig = {\n  attributeClasses: {\n    glass: {\n      true: 'ui-virtual-list--glass',\n      subtle: 'ui-virtual-list--glass ui-glass-subtle',\n      strong: 'ui-virtual-list--glass ui-glass-strong'\n    }\n  },\n  baseClassName: 'ui-virtual-list',\n  defaults: { 'data-ui-virtual-list': '', tabindex: '0' },\n  tagName: 'lumen-virtual-list'\n} as const satisfies LumenElementConfig",
           "styleImport": "import '@santi020k/lumen-elements/styles.css'",
           "tagName": "lumen-virtual-list"
         },
@@ -34046,7 +34047,7 @@
           "values": "HTML attributes"
         }
       ],
-      "astroSource": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ntype SegmentedOption = string | { disabled?: boolean, label: string, value: string }\n\ninterface Props extends HTMLAttributes<'div'> {\n  class?: string | null\n  className?: string\n  defaultValue?: string\n  name?: string\n  options?: SegmentedOption[]\n  size?: 'default' | 'sm' | 'lg'\n  value?: string\n}\n\nconst {\n  'aria-label': ariaLabel,\n  class: classProp = '',\n  className = '',\n  defaultValue,\n  name = 'segmented',\n  options = [],\n  size = 'default',\n  value = defaultValue,\n  ...rest\n} = Astro.props\n\nconst normalized = options.map(option => typeof option === 'string' ? { disabled: false, label: option, value: option } : option)\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-segmented',\n  size === 'sm' && 'ui-segmented--sm',\n  size === 'lg' && 'ui-segmented--lg'\n], classProp, className)\n---\n\n<div aria-label={ariaLabel} class:list={classList} role=\"group\" {...passthrough}>\n  {normalized.map(option => (\n    <label class=\"ui-segmented__option\">\n      <input\n        checked={value === option.value}\n        class=\"ui-segmented__input\"\n        disabled={option.disabled}\n        name={name}\n        type=\"radio\"\n        value={option.value}\n      />\n      <span class=\"ui-segmented__label\">{option.label}</span>\n    </label>\n  ))}\n  <slot />\n</div>\n",
+      "astroSource": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { type LumenControlVisualSize, resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ntype SegmentedOption = string | { disabled?: boolean, label: string, value: string }\n\ninterface Props extends HTMLAttributes<'div'> {\n  class?: string | null\n  className?: string\n  defaultValue?: string\n  name?: string\n  options?: SegmentedOption[]\n  visualSize?: LumenControlVisualSize\n  value?: string\n}\n\nconst {\n  'aria-label': ariaLabel,\n  class: classProp = '',\n  className = '',\n  defaultValue,\n  name = 'segmented',\n  options = [],\n  visualSize = 'default',\n  value = defaultValue,\n  ...rest\n} = Astro.props\n\nconst normalized = options.map(option => typeof option === 'string' ? { disabled: false, label: option, value: option } : option)\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-segmented',\n  visualSize === 'sm' && 'ui-segmented--sm',\n  visualSize === 'lg' && 'ui-segmented--lg'\n], classProp, className)\n---\n\n<div aria-label={ariaLabel} class:list={classList} role=\"group\" {...passthrough}>\n  {normalized.map(option => (\n    <label class=\"ui-segmented__option\">\n      <input\n        checked={value === option.value}\n        class=\"ui-segmented__input\"\n        disabled={option.disabled}\n        name={name}\n        type=\"radio\"\n        value={option.value}\n      />\n      <span class=\"ui-segmented__label\">{option.label}</span>\n    </label>\n  ))}\n  <slot />\n</div>\n",
       "category": "Forms",
       "collections": [
         "Selection controls"
@@ -34097,9 +34098,9 @@
               "type": "SegmentedOption[]"
             },
             {
-              "name": "size",
+              "name": "visualSize",
               "optional": true,
-              "type": "'default' | 'sm' | 'lg'"
+              "type": "LumenControlVisualSize"
             },
             {
               "name": "value",
@@ -34108,16 +34109,17 @@
             }
           ],
           "propsExtends": "HTMLAttributes<'div'>",
-          "source": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ntype SegmentedOption = string | { disabled?: boolean, label: string, value: string }\n\ninterface Props extends HTMLAttributes<'div'> {\n  class?: string | null\n  className?: string\n  defaultValue?: string\n  name?: string\n  options?: SegmentedOption[]\n  size?: 'default' | 'sm' | 'lg'\n  value?: string\n}\n\nconst {\n  'aria-label': ariaLabel,\n  class: classProp = '',\n  className = '',\n  defaultValue,\n  name = 'segmented',\n  options = [],\n  size = 'default',\n  value = defaultValue,\n  ...rest\n} = Astro.props\n\nconst normalized = options.map(option => typeof option === 'string' ? { disabled: false, label: option, value: option } : option)\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-segmented',\n  size === 'sm' && 'ui-segmented--sm',\n  size === 'lg' && 'ui-segmented--lg'\n], classProp, className)\n---\n\n<div aria-label={ariaLabel} class:list={classList} role=\"group\" {...passthrough}>\n  {normalized.map(option => (\n    <label class=\"ui-segmented__option\">\n      <input\n        checked={value === option.value}\n        class=\"ui-segmented__input\"\n        disabled={option.disabled}\n        name={name}\n        type=\"radio\"\n        value={option.value}\n      />\n      <span class=\"ui-segmented__label\">{option.label}</span>\n    </label>\n  ))}\n  <slot />\n</div>\n",
+          "source": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport { type LumenControlVisualSize, resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ntype SegmentedOption = string | { disabled?: boolean, label: string, value: string }\n\ninterface Props extends HTMLAttributes<'div'> {\n  class?: string | null\n  className?: string\n  defaultValue?: string\n  name?: string\n  options?: SegmentedOption[]\n  visualSize?: LumenControlVisualSize\n  value?: string\n}\n\nconst {\n  'aria-label': ariaLabel,\n  class: classProp = '',\n  className = '',\n  defaultValue,\n  name = 'segmented',\n  options = [],\n  visualSize = 'default',\n  value = defaultValue,\n  ...rest\n} = Astro.props\n\nconst normalized = options.map(option => typeof option === 'string' ? { disabled: false, label: option, value: option } : option)\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-segmented',\n  visualSize === 'sm' && 'ui-segmented--sm',\n  visualSize === 'lg' && 'ui-segmented--lg'\n], classProp, className)\n---\n\n<div aria-label={ariaLabel} class:list={classList} role=\"group\" {...passthrough}>\n  {normalized.map(option => (\n    <label class=\"ui-segmented__option\">\n      <input\n        checked={value === option.value}\n        class=\"ui-segmented__input\"\n        disabled={option.disabled}\n        name={name}\n        type=\"radio\"\n        value={option.value}\n      />\n      <span class=\"ui-segmented__label\">{option.label}</span>\n    </label>\n  ))}\n  <slot />\n</div>\n",
           "styleImport": "import '@santi020k/lumen-astro/styles.css'"
         },
         "elements": {
           "attributes": [
             "role",
-            "size",
+            "visual-size",
             "options",
             "value, defaultValue",
             "name",
+            "size",
             "class, className",
             "...native attributes"
           ],
@@ -34133,7 +34135,7 @@
           "props": [],
           "propsExtends": "HTMLElement attributes",
           "registration": "defineLumenElements()",
-          "source": "Segmented: {\n    attributeClasses: {\n      size: { lg: 'ui-segmented--lg', sm: 'ui-segmented--sm' }\n    },\n    baseClassName: 'ui-segmented',\n    defaults: { role: 'group' },\n    tagName: 'lumen-segmented'\n  }",
+          "source": "Segmented: {\n    attributeClasses: {\n      'visual-size': { lg: 'ui-segmented--lg', sm: 'ui-segmented--sm' }\n    },\n    baseClassName: 'ui-segmented',\n    defaults: { role: 'group' },\n    tagName: 'lumen-segmented'\n  }",
           "styleImport": "import '@santi020k/lumen-elements/styles.css'",
           "tagName": "lumen-segmented"
         },
@@ -34165,9 +34167,9 @@
               "type": "SelectOption[]"
             },
             {
-              "name": "size",
+              "name": "visualSize",
               "optional": true,
-              "type": "'default' | 'lg' | 'sm'"
+              "type": "LumenControlVisualSize"
             },
             {
               "name": "value",
@@ -34176,7 +34178,7 @@
             }
           ],
           "propsExtends": "Omit<\n  ComponentPropsWithoutRef<'div'>,\n  'onChange'\n>",
-          "source": "export interface SegmentedProps extends Omit<\n  ComponentPropsWithoutRef<'div'>,\n  'onChange'\n> {\n  defaultValue?: string\n  name?: string\n  onValueChange?: (value: string) => void\n  options?: SelectOption[]\n  size?: 'default' | 'lg' | 'sm'\n  value?: string\n}\n\nexport const Segmented = ({\n  children,\n  className,\n  defaultValue,\n  name = 'segmented',\n  onValueChange,\n  options = emptyOptions,\n  size = 'default',\n  value = defaultValue,\n  ...props\n}: SegmentedProps) => (\n  <div\n    className={composeClassName(\n      'ui-segmented', size === 'sm' && 'ui-segmented--sm', size === 'lg' && 'ui-segmented--lg', className\n    )}\n    role=\"group\"\n    {...props}\n  >\n    {options.map(normalizeOption).map(option => (\n      <label className=\"ui-segmented__option\" key={option.value}>\n        <input\n          defaultChecked={value === option.value}\n          className=\"ui-segmented__input\"\n          disabled={option.disabled}\n          name={name}\n          type=\"radio\"\n          value={option.value}\n          onChange={() => onValueChange?.(option.value)}\n        />\n        <span className=\"ui-segmented__label\">{option.label}</span>\n      </label>\n    ))}\n    {children}\n  </div>\n)",
+          "source": "export interface SegmentedProps extends Omit<\n  ComponentPropsWithoutRef<'div'>,\n  'onChange'\n> {\n  defaultValue?: string\n  name?: string\n  onValueChange?: (value: string) => void\n  options?: SelectOption[]\n  visualSize?: LumenControlVisualSize\n  value?: string\n}\n\nexport const Segmented = ({\n  children,\n  className,\n  defaultValue,\n  name = 'segmented',\n  onValueChange,\n  options = emptyOptions,\n  visualSize = 'default',\n  value,\n  ...props\n}: SegmentedProps) => (\n  <div\n    className={composeClassName(\n      'ui-segmented', visualSize === 'sm' && 'ui-segmented--sm', visualSize === 'lg' && 'ui-segmented--lg', className\n    )}\n    role=\"group\"\n    {...props}\n  >\n    {options.map(normalizeOption).map(option => (\n      <label className=\"ui-segmented__option\" key={option.value}>\n        <input\n          checked={value === undefined ? undefined : value === option.value}\n          defaultChecked={value === undefined ? defaultValue === option.value : undefined}\n          className=\"ui-segmented__input\"\n          disabled={option.disabled}\n          name={name}\n          type=\"radio\"\n          value={option.value}\n          onChange={() => onValueChange?.(option.value)}\n        />\n        <span className=\"ui-segmented__label\">{option.label}</span>\n      </label>\n    ))}\n    {children}\n  </div>\n)",
           "styleImport": "import '@santi020k/lumen-react/styles.css'"
         }
       },
@@ -34260,9 +34262,9 @@
           "type": "SegmentedOption[]"
         },
         {
-          "name": "size",
+          "name": "visualSize",
           "optional": true,
-          "type": "'default' | 'sm' | 'lg'"
+          "type": "LumenControlVisualSize"
         },
         {
           "name": "value",
@@ -42024,7 +42026,7 @@
     "readme": "<p align=\"center\">\n  <a href=\"https://lumen.santi020k.com\">\n    <img src=\"./apps/docs/public/logo.svg\" alt=\"Lumen UI\" width=\"233\" height=\"60\">\n  </a>\n</p>\n\n<h1 align=\"center\">Lumen UI</h1>\n\n<p align=\"center\">\n  A cross-platform UI system with 150+ web primitives and shared native foundations.\n</p>\n\n<p align=\"center\">\n  <a href=\"https://lumen.santi020k.com\">Documentation</a>\n  ·\n  <a href=\"https://lumen.santi020k.com/docs/components\">Components</a>\n  ·\n  <a href=\"https://lumen.santi020k.com/#playgrounds\">Try the playgrounds</a>\n  ·\n  <a href=\"https://www.figma.com/community/file/1662337342676541513\">Figma library</a>\n  ·\n  <a href=\"https://apps.apple.com/app/id6805250815\">iPhone and iPad app</a>\n  ·\n  <a href=\"https://play.google.com/store/apps/details?id=com.santi020k.lumen.playground.compose\">Android app</a>\n  ·\n  <a href=\"https://github.com/santi020k/lumen/issues\">Issues</a>\n</p>\n\n<p align=\"center\">\n  <a href=\"https://github.com/santi020k/lumen/actions\"><img alt=\"GitHub Actions\" src=\"https://img.shields.io/github/actions/workflow/status/santi020k/lumen/ci.yml?branch=main&style=flat-square\"></a>\n  <a href=\"https://github.com/santi020k/lumen/actions/workflows/codeql.yml\"><img alt=\"CodeQL\" src=\"https://github.com/santi020k/lumen/actions/workflows/codeql.yml/badge.svg\"></a>\n  <a href=\"https://www.npmjs.com/package/@santi020k/lumen-astro\"><img alt=\"npm version\" src=\"https://img.shields.io/npm/v/@santi020k/lumen-astro?style=flat-square&label=npm\"></a>\n  <a href=\"./LICENSE\"><img alt=\"MIT license\" src=\"https://img.shields.io/badge/license-MIT-111827?style=flat-square\"></a>\n</p>\n\nLumen gives applications a consistent visual language without tying them to one rendering model.\nIts packages share tokens, component contracts, styles, and interaction patterns while keeping each\nframework and platform's native authoring experience.\n\n- **Framework native:** Astro components, React primitives, and standards-based custom elements.\n- **Native foundations:** generated React Native, SwiftUI, and Jetpack Compose tokens plus the\n  complete shared interface and namespaced brand icon catalogs preserve the same semantic roles and\n  artwork without introducing DOM or CSS assumptions.\n- **Accessible by default:** semantic markup, keyboard paths, focus management, and reduced-motion\n  support are built into the primitives.\n- **Standalone CSS:** no Tailwind configuration is required. Tailwind users get an explicit layer\n  integration.\n- **Progressively enhanced:** Astro interactions use a small client runtime instead of requiring an\n  application framework.\n- **Ready for design and AI workflows:** published Figma resources, a portable agent skill, an MCP\n  server, `llms.txt`, a machine-readable registry, and a cross-platform release manifest ship\n  alongside the component system.\n- **Product-ready templates:** five responsive dashboard and application families are available as\n  live previews and installable Astro, React, and Elements recipes.\n\n**Explore:** [Dashboards and templates](#dashboards-and-templates) · [Web quick start](#web-quick-start) · [Native playgrounds](#native-playgrounds) · [Tailwind CSS](#tailwind-css) · [Packages](#packages) · [Community](#community)\n\n## Lumen 4 candidate\n\nThe v4 release branch brings consumer-driven date selection, chart readability, clipboard feedback,\nloading states, native layout improvements and a new ImageComparison primitive. Start with the\n[v3 → v4 migration guide](docs/migrating-v3-to-v4.md), [consumer audit](docs/lumen-4-consumer-audit.md),\nand [local readiness record](docs/lumen-4-readiness.md). The refreshed community gallery includes\npublished consumer screenshots; it does not imply those applications already run this candidate.\n\nFor existing applications, start with [v1 → v2](docs/migrating-v1-to-v2.md) when needed, then\n[v2 → v3](docs/migrating-v2-to-v3.md) before\n[v3 → v4](docs/migrating-v3-to-v4.md). For initial adoption, use\n[Migrating to Lumen](docs/migrating-to-lumen.md).\n\n## Appearance presets\n\nChoose an appearance preset or customize the existing themes with the [appearance guide](docs/appearance-presets.md). The Studio preset uses PostLens as its visual reference.\n\n## Dashboards and templates\n\nExplore the [template gallery](https://lumen.santi020k.com/templates) for complete analytics,\nSaaS admin, commerce, project workspace, and authentication/onboarding experiences. Each family\nuses public Lumen primitives and semantic tokens, includes responsive and accessibility coverage,\nand ships through the CLI for all three framework targets:\n\n```bash\nlumen add analytics-dashboard\nlumen add commerce-dashboard --target react\nlumen add auth-onboarding --target elements\n```\n\n## Web quick start\n\nInstall the package for your framework:\n\n```bash\n# Astro\npnpm add @santi020k/lumen-astro\n\n# React\npnpm add @santi020k/lumen-react\n\n# Web Components\npnpm add @santi020k/lumen-elements\n```\n\n### Astro\n\nImport the stylesheet and mount `UIPrimitives` once in your root layout. The runtime enhances all\ninteractive Lumen markup on the page.\n\n```astro\n---\nimport '@santi020k/lumen-astro/styles.css'\nimport UIPrimitives from '@santi020k/lumen-astro/runtime'\n---\n\n<html lang=\"en\">\n  <body>\n    <slot />\n    <UIPrimitives />\n  </body>\n</html>\n```\n\n```astro\n---\nimport { Button, Card, Input } from '@santi020k/lumen-astro'\n---\n\n<Card>\n  <label for=\"email\">Email</label>\n  <Input id=\"email\" name=\"email\" type=\"email\" placeholder=\"you@example.com\" />\n  <Button>Subscribe</Button>\n</Card>\n```\n\n### React\n\nLoad the stylesheet once from your app entry or global CSS:\n\n```tsx\nimport '@santi020k/lumen-react/styles.css'\nimport { Button, Card, Input } from '@santi020k/lumen-react'\n\nexport function SubscribeForm() {\n  return (\n    <Card>\n      <label htmlFor=\"email\">Email</label>\n      <Input id=\"email\" name=\"email\" type=\"email\" placeholder=\"you@example.com\" />\n      <Button>Subscribe</Button>\n    </Card>\n  )\n}\n```\n\n### Web Components\n\nImport the styles and register the elements once:\n\n```html\n<style>\n  @import \"@santi020k/lumen-elements/styles.css\";\n</style>\n\n<script type=\"module\">\n  import { defineLumenElements } from '@santi020k/lumen-elements/define'\n\n  defineLumenElements()\n</script>\n\n<lumen-card>\n  <label for=\"email\">Email</label>\n  <lumen-input id=\"email\" name=\"email\" type=\"email\" placeholder=\"you@example.com\"></lumen-input>\n  <lumen-button>Subscribe</lumen-button>\n</lumen-card>\n```\n\nSee the [Web documentation](https://lumen.santi020k.com/docs/web) for installation, theming,\ncomponent examples, and API details.\n\nFor failure states, use the [error-handling guide](./docs/error-handling.md) to choose between field\nfeedback, summaries, persistent alerts, transient toasts, and the `ErrorState` recovery surface.\nLumen owns presentation and accessibility; applications retain logging, retry, and exception policy.\n\nFor native applications, choose the [React Native](https://lumen.santi020k.com/docs/react-native),\n[Apple / SwiftUI](https://lumen.santi020k.com/docs/apple), or\n[Android / Compose](https://lumen.santi020k.com/docs/android) guide. The\n[shared foundations](https://lumen.santi020k.com/docs/foundations) explain the cross-platform token\nand component contract; repository contributors can also use the\n[cross-platform architecture](./docs/cross-platform.md) and\n[native component reference](./docs/native-components.md).\n\n> **Native platform status for Lumen 2.** React Native, SwiftUI, Compose, and Wear OS use the frozen\n> supported contract. Package, migration, build, security, artifact, and stability checks gate the\n> initial release. The incomplete external-consumer and physical-device matrices remain published\n> as post-release qualification work; review them before choosing a production adapter.\n\n## Native playgrounds\n\nTry Lumen before adding it to your project. The [playground section](https://lumen.santi020k.com/#playgrounds)\nbrings together the browser demos and native apps. Explore component states and themes, then use\nthe open-source apps as implementation references. Start with the\n[web playground](https://lumen.santi020k.com/docs/web/playground) for Astro, React, and Web Components,\nor choose a native gallery:\n\n- [`apps/playground-react-native`](./apps/playground-react-native) runs through Expo on the web,\n  iOS, and Android. [Try the browser preview](https://lumen.santi020k.com/docs/react-native/playground#preview)\n  or use the local setup guide for native evaluation. EAS profiles cover TestFlight, Android App\n  Bundles, and APKs; this gallery has no separate public store listing.\n- [`apps/playground-apple`](./apps/playground-apple) is available on the\n  [App Store](https://apps.apple.com/app/id6805250815) for iPhone, iPad, and Mac. It also builds as\n  an iOS Xcode app or macOS Swift Package executable for local exploration.\n- [`apps/playground-android`](./apps/playground-android) builds a native Compose application and a\n  directly installable debug APK. It is also available on\n  [Google Play](https://play.google.com/store/apps/details?id=com.santi020k.lumen.playground.compose)\n  for Android phones and tablets.\n\nSee the [playground workflow](./docs/playgrounds.md) for a platform chooser, reference-app source,\nand run, capture, and distribution commands. Store builds follow their own release schedule and\nmay differ from the current repository candidate.\n\n## Tailwind CSS\n\nKeep the layer prelude, Tailwind import, and Lumen stylesheet in the same shared CSS entry. Replace\n`lumen-astro` with the package for your framework.\n\n```css\n@import \"@santi020k/lumen-astro/layers.css\";\n@import \"tailwindcss\";\n@import \"@santi020k/lumen-astro/styles.css\";\n```\n\nThis order places Tailwind base styles before Lumen components and Tailwind utilities above Lumen\ncomponent defaults.\n\n## Packages\n\n| Package | Purpose |\n| --- | --- |\n| [`@santi020k/lumen-astro`](./packages/astro) | Reference implementation, Astro components, and progressive-enhancement runtime |\n| [`@santi020k/lumen-react`](./packages/react) | React components and behavior hooks |\n| [`@santi020k/lumen-react-hook-form`](./packages/react-hook-form) | Optional React Hook Form adapters for composite controls |\n| [`@santi020k/lumen-elements`](./packages/elements) | Standards-based Web Components |\n| [`@santi020k/lumen-core`](./packages/core) | Shared tokens, metadata, class helpers, and behavior contracts |\n| [`@santi020k/lumen-tokens`](./packages/tokens) | Canonical platform-neutral design token source |\n| [`@santi020k/lumen-react-native`](./packages/react-native) | React Native foundations and native primitives |\n| [`LumenUI`](./packages/swift) | Swift Package for iOS, iPadOS, macOS, tvOS, visionOS, and watchOS foundations and native primitives |\n| [`LumenWidgetUI`](./packages/swift-widget) | Focused WidgetKit-safe semantic text, icon, badge, and compact-stat foundations |\n| [`lumen-compose`](./packages/compose) | Android library for Jetpack Compose foundations and native primitives |\n| [`lumen-compose-wear`](./packages/compose/wear) | Focused Wear OS primitives for at-a-glance round-screen actions, progress, status, metrics, and rows |\n| [`@santi020k/lumen-icons-brand`](./packages/icons-brand) | Optional namespaced brand icons for web `Icon` adapters  |\n| [`@santi020k/lumen`](./packages/lumen) | Umbrella package, CLI, registry metadata, and public package map |\n| [`@santi020k/lumen-mcp`](./packages/mcp) | MCP server for component discovery and source retrieval |\n\n## AI and design workflows\n\nInstall the portable Lumen skill in Codex, Claude Code, Cursor, Windsurf, and other compatible\ncoding agents:\n\n```bash\nnpx skills add santi020k/lumen --skill lumen-ui\n```\n\nThe skill teaches agents how to select, compose, theme, and verify Lumen primitives. Pair it with\n[`@santi020k/lumen-mcp`](./packages/mcp) when an agent needs to search the live catalog or retrieve\ncurrent source, props, tokens, and usage rules.\n\nFor ChatGPT and Codex, install the published\n[Lumen UI plugin](https://chatgpt.com/plugins/plugin_asdk_app_6a8f6c526c5481918eb8a48806fa112b)\nfrom the Plugins Directory. Select **Install plugin**, then mention **@Lumen UI** in a request such\nas “Find the right Lumen components for an accessible React settings screen.” Version 1.0.0 bundles\nthe skill with the hosted, read-only catalog; no separate Lumen account or local MCP setup is needed.\n\nAdditional machine-readable surfaces include:\n\n- [`llms.txt`](./llms.txt) for a concise project map.\n- [`docs/ai-usage.md`](./docs/ai-usage.md) for downstream generation examples.\n- [`docs/styling-contract.md`](./docs/styling-contract.md) for stable parts and component variables.\n- [`docs/import-and-icon-performance.md`](./docs/import-and-icon-performance.md) for repeatable import and icon evidence.\n- [`docs/graphics.md`](./docs/graphics.md) for portable decorative artwork across web and native platforms.\n- [`docs/consumer-regression-fixtures.md`](./docs/consumer-regression-fixtures.md) for production-shaped local coverage.\n- [`docs/project-adoption.md`](./docs/project-adoption.md) for the sibling-project audit and staged\n  web and native migration strategy.\n- [`registry/lumen.registry.json`](./registry/lumen.registry.json) for recipes and installable file\n  groups.\n- [`docs/figma.md`](./docs/figma.md) for Figma variables and Code Connect workflows.\n- [`apps/figma-plugin/README.md`](./apps/figma-plugin/README.md) for the **beta** Figma plugin,\n  Astro starters, and AI handoff.\n- [`plugins/lumen-ui`](./plugins/lumen-ui) for the packaged Codex and ChatGPT plugin, with its\n  [submission and review record](./docs/openai-plugin-submission.md).\n- [`.claude-plugin/marketplace.json`](./.claude-plugin/marketplace.json) for the Claude Code\n  marketplace, with its [installation and submission guide](./docs/claude-code-plugin.md).\n- [`docs/cross-platform.md`](./docs/cross-platform.md) for the native architecture, support tiers,\n  and component-parity policy.\n- [`docs/native-patterns.md`](./docs/native-patterns.md) for developed native compositions and the\n  boundary between Lumen presentation and platform-owned application structure.\n\n## Contributing\n\nLumen is a pnpm workspace. Astro is the reference implementation; shared contracts belong in\n`packages/core`, while framework-specific behavior stays in its adapter package.\n\n```bash\npnpm install\npnpm run dev\npnpm run validate\n```\n\nRead [`CONTRIBUTING.md`](./CONTRIBUTING.md) before opening a pull request. User-visible package\nchanges require a changeset.\n\n## Community\n\n[Feedback & support](https://lumen.santi020k.com/support) connects ideas, questions, bug reports,\nand the [public roadmap](https://lumen.santi020k.com/support#roadmap). Discuss improvements on GitHub\nand follow accepted work through implementation and release.\n\nLumen is free and MIT licensed while the project focuses on adoption, public examples, and\nreal-world feedback.\n\n- Explore task-oriented [guides](https://lumen.santi020k.com/guides).\n- Share a public project in the [community showcase](https://lumen.santi020k.com/community).\n- Evaluate the system with the open [team adoption path](https://lumen.santi020k.com/teams).\n- Tell us what would improve your next build through the\n  [adoption survey](https://github.com/santi020k/lumen/issues/new?template=adoption-feedback.yml).\n\nMaintainers can use the [exposure playbook](./docs/exposure-playbook.md) for publishing cadence,\ncampaign measurement, video scripts, and launch copy, and the\n[marketing package](./docs/marketing/README.md) for execution-ready copy, channel decisions, a\nfour-week calendar, asset briefs, an approval queue, and a community-response library.\n\n## Find your next step\n\n| Resource | Use it for |\n| --- | --- |\n| [Cross-platform architecture](docs/cross-platform.md) | Shared foundations and adapter responsibilities. |\n| [Native compatibility](docs/native-compatibility.md) | Supported toolchains and platform baselines. |\n| [Native release runbook](docs/native-release-runbook.md) | Artifact qualification and distribution gates. |\n\n## License\n\nLumen's original code and artwork are available under the [MIT License](./LICENSE). Generated\ninterface icons retain the Lucide ISC or Feather MIT terms, and generated brand icons retain Font\nAwesome Free's CC BY 4.0 terms. The native packages include the required attribution and license\nnotices; see [`icons/THIRD_PARTY_NOTICES.md`](./icons/THIRD_PARTY_NOTICES.md).\n"
   },
   "meta": {
-    "catalogHash": "92e6a51493ca432785db9d894ff594ed46a5d0b873f018c960742ba8b17f0329",
+    "catalogHash": "ae9cb4730823c05a6dcc5bad8cf441dc35934a43c1c56aa334d7dc637b899dae",
     "componentCount": 182,
     "nativeComponentCount": 100,
     "packages": [
@@ -42279,6 +42281,213 @@
         ],
         "signals": [
           "LumenPhoneInput"
+        ]
+      },
+      {
+        "id": "web-content-flow",
+        "kind": "breaking",
+        "currentContract": "Explicit v3 Stack/Grid gaps use a separate scale; cards and reading blocks rely on child margins and clipped overflow.",
+        "replacement": "Canonical web gaps, parent-owned spacing, Card density and visible overflow, responsive Container gutters and trimmed reading-block margins.",
+        "migration": "Map literal web gaps md/lg/xl to group/xl/2xl with lumen migrate v4. Review Card density, compensating margins and clipping; put media clipping in AspectRatio. Native spacing is unchanged.",
+        "packages": [
+          "@santi020k/lumen-core",
+          "@santi020k/lumen-astro",
+          "@santi020k/lumen-react",
+          "@santi020k/lumen-elements"
+        ],
+        "evidence": [
+          "docs/content-flow.md"
+        ],
+        "docs": [
+          "docs/migrating-v3-to-v4.md",
+          "docs/content-flow.md"
+        ],
+        "tests": [
+          "pnpm run test",
+          "pnpm run test:framework-conformance"
+        ],
+        "signals": [
+          "Stack",
+          "Grid",
+          "Card",
+          "Container",
+          "Prose",
+          "Typography"
+        ]
+      },
+      {
+        "id": "web-control-visual-size",
+        "kind": "breaking",
+        "currentContract": "Select, PhoneInput and Segmented use size for visual density; Select also accepts the visual md alias.",
+        "replacement": "visualSize in Astro/React and visual-size in Elements use default, sm or lg. Native input/select size remains numeric. Elements Select uses ui-select-field for its frame and ui-select for its native input and trigger.",
+        "migration": "Run lumen migrate v4 for recognized literals. Change wrapper, spread and dynamic visual size props manually; map Select md to default. Keep numeric size; PhoneInput forwards it through inputProps.size. Button, icon, container and native-platform sizes are unchanged. Update Elements Select host CSS selectors from ui-select to ui-select-field.",
+        "packages": [
+          "@santi020k/lumen-core",
+          "@santi020k/lumen-astro",
+          "@santi020k/lumen-react",
+          "@santi020k/lumen-elements"
+        ],
+        "evidence": [
+          "docs/form-controls.md"
+        ],
+        "docs": [
+          "docs/migrating-v3-to-v4.md",
+          "docs/form-controls.md"
+        ],
+        "tests": [
+          "pnpm run test",
+          "pnpm run test:framework-conformance"
+        ],
+        "signals": [
+          "Select",
+          "PhoneInput",
+          "Segmented",
+          "visualSize",
+          "visual-size"
+        ]
+      },
+      {
+        "id": "web-form-value-ownership",
+        "kind": "breaking",
+        "currentContract": "React Segmented does not retain controlled owner state; React Select popup interactions and resets can diverge from native submission. Elements scalar reconnection, checked defaults and multiple selections can diverge from native forms.",
+        "replacement": "Controlled values remain owner-held; accepted resets restore defaults silently and cancelled resets retain drafts. Each documented user callback fires once. Elements retain listeners and reset defaults after relocation and submit every enabled selected option.",
+        "migration": "Use value/onValueChange or defaultValue deliberately. Listen on Elements hosts and use checked for current state, defaultChecked for the reset baseline. Remove compensating reset or duplicate event handlers after verifying native and external form submission.",
+        "packages": [
+          "@santi020k/lumen-core",
+          "@santi020k/lumen-astro",
+          "@santi020k/lumen-react",
+          "@santi020k/lumen-elements"
+        ],
+        "evidence": [
+          "docs/form-controls.md"
+        ],
+        "docs": [
+          "docs/form-controls.md",
+          "docs/migrating-v3-to-v4.md"
+        ],
+        "tests": [
+          "pnpm run test",
+          "pnpm run test:framework-conformance"
+        ],
+        "signals": [
+          "Segmented",
+          "Select",
+          "NativeSelect",
+          "checked",
+          "defaultChecked",
+          "form.reset"
+        ]
+      },
+      {
+        "id": "web-combobox-focus",
+        "kind": "breaking",
+        "currentContract": "Editable Combobox consumers may assume option buttons receive focus and parent Escape handlers always dismiss.",
+        "replacement": "Input focus remains stable with aria-activedescendant; nested controls consume their own Escape.",
+        "migration": "Update focus assertions and option styling to active-descendant/selected state. Parent handlers must honor defaultPrevented; Enter without an active option retains native form behavior.",
+        "packages": [
+          "@santi020k/lumen-core",
+          "@santi020k/lumen-astro",
+          "@santi020k/lumen-react",
+          "@santi020k/lumen-elements"
+        ],
+        "evidence": [
+          "docs/migrating-v3-to-v4.md"
+        ],
+        "docs": [
+          "docs/migrating-v3-to-v4.md"
+        ],
+        "tests": [
+          "pnpm run test",
+          "pnpm run test:framework-conformance"
+        ],
+        "signals": [
+          "Combobox",
+          "aria-activedescendant",
+          "Escape"
+        ]
+      },
+      {
+        "id": "web-phone-input-identity",
+        "kind": "breaking",
+        "currentContract": "Web PhoneInput id may be treated as a frame identifier.",
+        "replacement": "Astro/React id identifies the number input that receives focus; Elements retains host id and uses input-id for its input.",
+        "migration": "Update labels and DOM queries; use Elements input-id for the input that receives focus. Native phone contracts are covered separately.",
+        "packages": [
+          "@santi020k/lumen-core",
+          "@santi020k/lumen-astro",
+          "@santi020k/lumen-react",
+          "@santi020k/lumen-elements"
+        ],
+        "evidence": [
+          "docs/migrating-v3-to-v4.md"
+        ],
+        "docs": [
+          "docs/migrating-v3-to-v4.md"
+        ],
+        "tests": [
+          "pnpm run test",
+          "pnpm run test:framework-conformance"
+        ],
+        "signals": [
+          "PhoneInput",
+          "input-id"
+        ]
+      },
+      {
+        "id": "web-virtual-list-ranges",
+        "kind": "breaking",
+        "currentContract": "Consumers may interpret virtual-list range endpoints as exclusive.",
+        "replacement": "Fixed-height windows report inclusive endpoints and endIndex -1 for empty lists. Mounted DOM remains the default; opt-in data rendering mounts visible rows and focused neighbors.",
+        "migration": "Update exclusive-end calculations and empty handling. Use stable unique keys and external state for opt-in data rendering; variable-height lists need a different strategy. Existing root imports remain supported; selective component imports are additive.",
+        "packages": [
+          "@santi020k/lumen-core",
+          "@santi020k/lumen-astro",
+          "@santi020k/lumen-react",
+          "@santi020k/lumen-elements"
+        ],
+        "evidence": [
+          "docs/virtual-list-data.md"
+        ],
+        "docs": [
+          "docs/migrating-v3-to-v4.md",
+          "docs/virtual-list-data.md"
+        ],
+        "tests": [
+          "pnpm run test",
+          "pnpm run test:framework-conformance"
+        ],
+        "signals": [
+          "VirtualList",
+          "endIndex"
+        ]
+      },
+      {
+        "id": "web-rich-text-command-ownership",
+        "kind": "breaking",
+        "currentContract": "External editor integrations may execute commands during completion events or fall back to browser commands after failure.",
+        "replacement": "Cancelable ui:editor-command-request owns execution; ui:editor-command reports completion without execution.",
+        "migration": "External engines must preventDefault on the request and set detail.executed synchronously; React can supply commandHandler. Remove completion handlers that execute commands again. Failed external commands do not fall back.",
+        "packages": [
+          "@santi020k/lumen-core",
+          "@santi020k/lumen-astro",
+          "@santi020k/lumen-react",
+          "@santi020k/lumen-elements"
+        ],
+        "evidence": [
+          "docs/migrating-v3-to-v4.md"
+        ],
+        "docs": [
+          "docs/migrating-v3-to-v4.md",
+          "docs/ai-usage.md"
+        ],
+        "tests": [
+          "pnpm run test",
+          "pnpm run test:framework-conformance"
+        ],
+        "signals": [
+          "ui:editor-command-request",
+          "ui:editor-command",
+          "commandHandler"
         ]
       }
     ],
