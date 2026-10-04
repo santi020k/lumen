@@ -837,3 +837,9 @@ Use `LollipopChart` for zero-based rankings and `DumbbellChart` for paired measu
 `LumenLollipopChart` and `LumenDumbbellChart`). Supply ordered comparison data with `id`, `label`,
 nullable `value`, optional nullable `reference`, and optional `tone`. Both charts preserve missing
 values and expose exact data. See the [shared visualization contract](../../docs/data-visualization.md#rankings-and-paired-comparisons).
+
+## Hook state updates
+
+Public hook setters accept React functional updates. In uncontrolled mode, consecutive calls in
+one event compose against the latest pending value. Change callbacks run once per setter call,
+including under Strict Mode. Controlled values remain owned by the application.

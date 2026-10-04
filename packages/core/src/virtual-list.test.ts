@@ -161,3 +161,43 @@ test('disconnects observers and restores original hidden state and row styles', 
   expect(second.style.blockSize).toBe('50px')
   expect(root.dataset.uiRangeStart).toBeUndefined()
 })
+
+test('windows rows created in a different document', () => {
+  const frame = document.createElement('iframe')
+
+  document.body.append(frame)
+  const frameDocument = frame.contentDocument
+
+  if (!frameDocument) throw new Error('Expected iframe document')
+
+  const root = frameDocument.createElement('div')
+
+  root.dataset.uiItemSize = '40'
+  root.dataset.uiOverscan = '0'
+  Object.defineProperty(root, 'clientHeight', { configurable: true, value: 80 })
+  const rows = Array.from({ length: 20 }, () => frameDocument.createElement('div'))
+
+  root.append(...rows)
+  frameDocument.body.append(root)
+  bind(root)
+  expect(rows.filter(row => !row.hidden)).toHaveLength(2)
+  root.scrollTop = 720
+  root.dispatchEvent(new Event('scroll'))
+  expect(rows[0]?.hidden).toBe(true)
+  expect(rows.at(-1)?.hidden).toBe(false)
+})
+
+test('windows parent-created rows adopted into another document', () => {
+  const frame = document.createElement('iframe')
+
+  document.body.append(frame)
+  const frameDocument = frame.contentDocument
+
+  if (!frameDocument) throw new Error('Expected iframe document')
+
+  const { root, rows } = fixture()
+
+  frameDocument.body.append(root)
+  bind(root)
+  expect(rows.filter(row => !row.hidden)).toHaveLength(2)
+})

@@ -11,15 +11,38 @@ const ignoresKeyboard = (
 ): boolean => event.defaultPrevented || event.isComposing || composing ||
   event.altKey || event.ctrlKey || event.metaKey
 
-const filterOption = (item: HTMLElement, query: string): void => {
+const filterOption = (
+  item: HTMLElement, query: string, filterHidden: Set<HTMLElement>,
+  writeHidden: (item: HTMLElement, hidden: boolean) => void
+): void => {
   const label = item.textContent.trim().toLowerCase()
   const value = item.dataset.value?.toLowerCase() ?? ''
   const hidden = Boolean(query) && !label.includes(query) && !value.includes(query)
 
-  if (item.hidden !== hidden) item.hidden = hidden
+  if (hidden && !item.hidden) {
+    writeHidden(item, true)
+  } else if (!hidden && filterHidden.has(item)) {
+    writeHidden(item, false)
+  }
 }
 
-/** Editable listbox navigation keeps DOM focus and text editing in the input. */
+const preserveVisibility = (
+  records: MutationRecord[], filterHidden: Set<HTMLElement>, list: HTMLElement
+): void => {
+  for (const record of records) {
+    if (record.attributeName === 'hidden' && record.target instanceof HTMLElement) filterHidden.delete(record.target)
+  }
+
+  for (const option of filterHidden) {
+    if (!list.contains(option)) {
+      option.hidden = false
+
+      filterHidden.delete(option)
+    }
+  }
+}
+
+/** Enhance editable comboboxes. */
 export const createLumenComboboxController = (root: HTMLElement): LumenComboboxController => {
   const input = root.querySelector<HTMLInputElement>('input[role="combobox"]')
   const list = root.querySelector<HTMLElement>('[role="listbox"]')
@@ -33,7 +56,10 @@ export const createLumenComboboxController = (root: HTMLElement): LumenComboboxC
   let composing = false
   let filtering = false
   let destroyed = false
+  const filterHidden = new Set<HTMLElement>()
   let resetTimer: ReturnType<typeof globalThis.setTimeout> | undefined
+  const eventRoot = root.getRootNode()
+  const observerRef: { current?: MutationObserver } = {}
 
   if (!list.id) list.id = `ui-combobox-list-${++nextId}`
 
@@ -42,7 +68,7 @@ export const createLumenComboboxController = (root: HTMLElement): LumenComboboxC
   input.setAttribute('aria-autocomplete', 'list')
 
   const items = (): HTMLElement[] => [...list.querySelectorAll<HTMLElement>('[role="option"]')]
-  const editable = (): boolean => !input.disabled && !input.readOnly
+  const editable = (): boolean => !input.matches(':disabled') && !input.readOnly
 
   const available = (item: HTMLElement): boolean => !item.hidden &&
     !item.hasAttribute('disabled') && item.getAttribute('aria-disabled') !== 'true'
@@ -73,7 +99,25 @@ export const createLumenComboboxController = (root: HTMLElement): LumenComboboxC
     activate()
   }
 
+  const flushVisibility = (): void => {
+    preserveVisibility(observerRef.current?.takeRecords() ?? [], filterHidden, list)
+  }
+
+  const writeHidden = (item: HTMLElement, hidden: boolean): void => {
+    flushVisibility()
+
+    if (hidden) filterHidden.add(item)
+    else filterHidden.delete(item)
+
+    item.hidden = hidden
+
+    // Keep application changes after our write.
+    preserveVisibility(observerRef.current?.takeRecords().slice(1) ?? [], filterHidden, list)
+  }
+
   const refresh = (): void => {
+    flushVisibility()
+
     const query = input.value.trim().toLowerCase()
 
     for (const item of items()) {
@@ -81,7 +125,7 @@ export const createLumenComboboxController = (root: HTMLElement): LumenComboboxC
 
       if (!item.id) item.id = `ui-combobox-option-${++nextId}`
 
-      if (filtering) filterOption(item, query)
+      if (filtering) filterOption(item, query, filterHidden, writeHidden)
     }
 
     if (active && (!list.contains(active) || !available(active))) activate()
@@ -134,6 +178,14 @@ export const createLumenComboboxController = (root: HTMLElement): LumenComboboxC
   const keydown = (event: KeyboardEvent): void => {
     if (ignoresKeyboard(event, composing) || !editable()) return
 
+    if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+      event.preventDefault()
+
+      navigate(event.key)
+
+      return
+    }
+
     switch (event.key) {
       case 'Escape':
         if (list.hidden) return
@@ -141,20 +193,6 @@ export const createLumenComboboxController = (root: HTMLElement): LumenComboboxC
         event.preventDefault()
 
         close()
-
-        break
-
-      case 'ArrowDown':
-        event.preventDefault()
-
-        navigate(event.key)
-
-        break
-
-      case 'ArrowUp':
-        event.preventDefault()
-
-        navigate(event.key)
 
         break
 
@@ -208,7 +246,9 @@ export const createLumenComboboxController = (root: HTMLElement): LumenComboboxC
 
   input.addEventListener('keydown', keydown, { signal })
 
-  input.form?.addEventListener('reset', event => {
+  eventRoot.addEventListener('reset', event => {
+    if (event.target !== input.form) return
+
     globalThis.clearTimeout(resetTimer)
 
     resetTimer = globalThis.setTimeout(() => {
@@ -222,7 +262,7 @@ export const createLumenComboboxController = (root: HTMLElement): LumenComboboxC
 
       refresh()
     })
-  }, { signal })
+  }, { capture: true, signal })
 
   list.addEventListener('pointerdown', event => {
     if (optionFromEvent(event)) event.preventDefault()
@@ -233,7 +273,11 @@ export const createLumenComboboxController = (root: HTMLElement): LumenComboboxC
 
     const option = optionFromEvent(event)
 
-    if (option) select(option)
+    if (option) {
+      event.preventDefault()
+
+      select(option)
+    }
   }, { signal })
 
   root.addEventListener('focusout', event => {
@@ -246,9 +290,13 @@ export const createLumenComboboxController = (root: HTMLElement): LumenComboboxC
     if (target instanceof Node && !root.contains(target)) close()
   }, { signal })
 
-  const observer = new MutationObserver(() => {
+  const observer = new MutationObserver(records => {
+    preserveVisibility(records, filterHidden, list)
+
     if (!destroyed) refresh()
   })
+
+  observerRef.current = observer
 
   observer.observe(list, {
     attributeFilter: ['disabled', 'aria-disabled', 'data-value', 'hidden'],
@@ -257,6 +305,12 @@ export const createLumenComboboxController = (root: HTMLElement): LumenComboboxC
     childList: true,
     subtree: true
   })
+
+  const disabledObserver = new MutationObserver(records => {
+    if (records.some(record => record.target.nodeName === 'FIELDSET' && record.target.contains(input))) refresh()
+  })
+
+  disabledObserver.observe(eventRoot, { attributeFilter: ['disabled'], attributes: true, subtree: true })
 
   observer.observe(input, { attributeFilter: ['disabled', 'readonly'], attributes: true })
 
@@ -269,7 +323,15 @@ export const createLumenComboboxController = (root: HTMLElement): LumenComboboxC
 
       abort.abort()
 
+      flushVisibility()
+
       observer.disconnect()
+
+      disabledObserver.disconnect()
+
+      for (const option of filterHidden) option.hidden = false
+
+      filterHidden.clear()
 
       close()
     }

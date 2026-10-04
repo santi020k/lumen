@@ -626,22 +626,23 @@ const useSafeId = (prefix: string, id?: string): string => {
   return id ?? `${prefix}-${reactId}`
 }
 
-const useControllableState = <T,>({
+const useControllableState = <T extends string | number | boolean | undefined>({
   defaultValue,
   onChange,
   value
 }: ControllableOptions<T>): [T, Dispatch<SetStateAction<T>>] => {
   const [uncontrolledValue, setUncontrolledValue] = useState(defaultValue)
+  const pendingValueRef = useRef(defaultValue)
   const currentValue = value ?? uncontrolledValue
 
   const setValue = useCallback<Dispatch<SetStateAction<T>>>(
     next => {
-      const resolvedValue =
-        typeof next === 'function' ?
-          (next as (previous: T) => T)(currentValue) :
-          next
+      const previousValue = value === undefined ? pendingValueRef.current : currentValue
+      const resolvedValue = typeof next === 'function' ? next(previousValue) : next
 
       if (value === undefined) {
+        pendingValueRef.current = resolvedValue
+
         setUncontrolledValue(resolvedValue)
       }
 
