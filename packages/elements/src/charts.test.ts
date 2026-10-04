@@ -92,6 +92,26 @@ test('comparison charts retain paired values, zero, missing observations and saf
   expect(element.querySelector('table')).toBeNull()
 })
 
+test.each(['lumen-lollipop-chart', 'lumen-dumbbell-chart'])('%s honors escaped labels and summaries across updates', name => {
+  const element = chart(name, { data: JSON.stringify([{ id: 'a', label: 'A', value: 20, reference: 10 }]) })
+  expect(element.querySelector('.ui-comparison-chart__legend')?.textContent).toContain('Value')
+  for (const label of ['Revenue', '<img src=x>']) {
+    element.setAttribute('value-label', label)
+    element.setAttribute('summary', `${label} interpretation`)
+    expect(element.querySelector('.ui-comparison-chart__legend')?.textContent).toContain(label)
+    expect(element.querySelector('thead th:last-child')?.textContent).toBe(label)
+    expect(element.querySelector('[data-ui-chart-summary]')?.textContent).toBe(`${label} interpretation`)
+    expect(element.querySelector('img')).toBeNull()
+  }
+  element.setAttribute('show-table', 'false')
+  expect(element.querySelector('table')).toBeNull()
+  expect(element.querySelector('[data-ui-chart-summary]')?.textContent).toBe('<img src=x> interpretation')
+  element.removeAttribute('value-label')
+  element.removeAttribute('summary')
+  expect(element.querySelector('.ui-comparison-chart__legend')?.textContent).toContain('Value')
+  expect(element.querySelector('[data-ui-chart-summary]')?.textContent).not.toContain('interpretation')
+})
+
 test('calendar custom element exposes UTC dates, zero, localized weekdays and missing measurements', () => {
   const element = chart('lumen-calendar-heatmap', {
     'start-date': '2026-01-04',

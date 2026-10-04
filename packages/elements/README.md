@@ -675,7 +675,9 @@ for the input, localization, and domain contracts.
 Use `LollipopChart` for zero-based rankings and `DumbbellChart` for paired measurements (native
 `LumenLollipopChart` and `LumenDumbbellChart`). Supply ordered comparison data with `id`, `label`,
 nullable `value`, optional nullable `reference`, and optional `tone`. Both charts preserve missing
-values and expose exact data. See the [shared visualization contract](../../docs/data-visualization.md#rankings-and-paired-comparisons).
+values and expose exact data. Set `value-label` to name the current measurement and `reference-label`
+to name the paired measurement; `summary` supplies an escaped accessible interpretation that remains
+available when `show-table="false"`. See the [shared visualization contract](../../docs/data-visualization.md#rankings-and-paired-comparisons).
 
 
 ### Calendar activity, ordered stages and distributions

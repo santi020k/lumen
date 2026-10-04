@@ -2,6 +2,8 @@
 
 ## 4.0.0
 
+- Honor comparison chart value labels and escaped accessible summaries in Web Components. Reset iOS and web time-picker drafts when controlled values or bounds change, preserving current Android bounds and callback handling.
+
 - Keep sparkline endpoints circular and line strokes uniform when a chart stretches to fit a wide or shallow container.
 
 ### Major Changes

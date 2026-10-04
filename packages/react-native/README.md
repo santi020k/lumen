@@ -530,7 +530,9 @@ and `LumenIconButton`. The same `react-native-svg` peer is required.
 `LumenNumberField`, `LumenAutocomplete`, `LumenPasswordField`, `LumenInputOTP` and
 `LumenImageComparison` are root exports. Image comparison percentage labels fall back to English formatting when a locale is malformed. `LumenTimeField` and `LumenTimeSelection` live in
 `@santi020k/lumen-react-native/datetime`, alongside the optional native picker integration. Time display falls back to English for malformed
-locale tags while preserving the requested 12-hour or 24-hour format.
+locale tags while preserving the requested 12-hour or 24-hour format. On iOS and web, changing the
+controlled value or time bounds dismisses an open sheet and resets its draft; reopen to edit the
+updated value. Android validates an open native picker against the latest bounds and callback.
 
 ```tsx
 <LumenNumberField

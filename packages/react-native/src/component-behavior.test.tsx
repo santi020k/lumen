@@ -26,7 +26,7 @@ import { LumenButton, LumenIcon, LumenIconButton, LumenText, LumenTextField } fr
 import { LumenProvider } from './provider.js'
 import { LumenCheckbox, LumenTabs } from './selection-components.js'
 import { LumenBanner, LumenErrorState, LumenStatusBar } from './structured-components.js'
-import { LumenTimeField } from './time-components.js'
+import { LumenTimeField, type LumenTimeFieldProps } from './time-components.js'
 import { LumenPicker, LumenRangeSlider, LumenSlider } from './value-components.js'
 
 Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true })
@@ -2075,6 +2075,62 @@ describe('advanced native inputs', () => {
       callAction(readProp(findByAccessibilityLabel(root, 'Confirm'), 'onPress'), 'Missing confirm')
     })
     expect(onValueChange).toHaveBeenCalledExactlyOnceWith({ hour: 9, minute: 30 })
+  })
+
+  test.each(['ios', 'web'])('time sheet resets controlled changes without discarding equivalent inputs on %s', async platform => {
+    nativePlatform.OS = platform
+    const updates = [
+      { value: { hour: 11, minute: 15 }, expected: { hour: 11, minute: 15 } },
+      { minTime: { hour: 10, minute: 0 }, expected: { hour: 10, minute: 0 } },
+      { maxTime: { hour: 9, minute: 15 }, expected: { hour: 9, minute: 0 } }
+    ]
+    for (const { expected, ...update } of updates) {
+      const onValueChange = vi.fn()
+      const props: LumenTimeFieldProps = { label: 'Time',
+        value: { hour: 9, minute: 30 },
+        locale: 'en-US',
+        is24Hour: true,
+        minTime: { hour: 9, minute: 0 },
+        maxTime: { hour: 17, minute: 0 },
+        onValueChange }
+      const root = await renderNative(<LumenTimeField {...props} />)
+      await runNativeAction(() => {
+        callAction(readProp(findByAccessibilityLabel(root, 'Time, 09:30'), 'onPress'), 'Missing time trigger')
+      })
+      await runNativeAction(() => {
+        const picker = findHostComponent(root, platform === 'web' ? 'input' : 'NativeDatePicker')
+        const change = readProp(picker, 'onChange')
+        if (typeof change !== 'function') throw new Error('Missing time change')
+        Reflect.apply(change, undefined, platform === 'web' ? [{ currentTarget: { value: '10:45' } }] : [{ type: 'set' }, new Date(2000, 0, 1, 10, 45)])
+      })
+      await runNativeAction(() => {
+        root.render(
+          <LumenProvider>
+            <LumenTimeField
+              {...props}
+              value={{ hour: 9, minute: 30 }}
+              minTime={{ hour: 9, minute: 0 }}
+              maxTime={{ hour: 17, minute: 0 }}
+            />
+          </LumenProvider>
+        )
+      })
+      expect(readProp(findHostComponent(root, 'Modal'), 'visible')).toBe(true)
+      const draft = readProp(findHostComponent(root, platform === 'web' ? 'input' : 'NativeDatePicker'), 'value')
+      expect(draft).toEqual(platform === 'web' ? '10:45' : new Date(2000, 0, 1, 10, 45))
+      await runNativeAction(() => {
+        root.render(<LumenProvider><LumenTimeField {...props} {...update} /></LumenProvider>)
+      })
+      expect(readProp(findHostComponent(root, 'Modal'), 'visible')).toBe(false)
+      expect(onValueChange).not.toHaveBeenCalled()
+      await runNativeAction(() => {
+        callAction(readProp(findByAccessibilityLabel(root, `Time, ${update.value ? '11:15' : '09:30'}`), 'onPress'), 'Missing updated time trigger')
+      })
+      await runNativeAction(() => {
+        callAction(readProp(findByAccessibilityLabel(root, 'Confirm'), 'onPress'), 'Missing time confirm')
+      })
+      expect(onValueChange).toHaveBeenCalledExactlyOnceWith(expected)
+    }
   })
 
   test('Android time rejects out-of-range selection and stale callbacks after disabling', async () => {
