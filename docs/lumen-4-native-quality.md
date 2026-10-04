@@ -367,6 +367,30 @@ Standard text size, Device Hub's sidebar, the original host entrypoint and the p
 qualification app were restored. The public playground entrypoint is unchanged. This remains a
 failed accessibility result; neither font scaling nor application state was disabled to hide it.
 
+### Android long-note keyboard regression
+
+The new Activity test opens the Workspace editor, focuses Notes, enters a 1,120-character note,
+and requires Save to remain displayed while the sheet dialog's actual IME insets report a visible
+keyboard. It then saves, checks visible confirmation, reopens the editor and verifies the exact
+note. The first run exposed a test-harness error: pinned Save has no scroll ancestor. After fixing
+that action while retaining the visibility and keyboard assertions, the test exposed hidden save
+feedback below the long note. The workspace now places confirmation and Edit above the note.
+
+The touched record lists now use immutable values with an explicit Compose list saver, resolving
+the two mutable-collection state warnings while retaining saved-state restoration. All six Android
+playground instrumentation tests passed on the Android 17/API 37 emulator after these changes,
+including Activity recreation, Compose saved-state restoration, keyboard editing and catalog
+search. Compilation and lint completed; lint still reports 26 existing warnings or hints in other
+playground code and assets, so this is not a zero-warning gate.
+
+Testing used an ignored host under `.build/native-quality-android-keyboard-host` with the separate
+application ID recorded in `final-report.json`; the original
+playground installation was preserved. Source and APK hashes, the failing feedback result, and the
+final six-test result are retained there. The full log is
+`.build/native-quality-android-keyboard-final-test.log`. The computer-use tool does not expose the
+Android emulator, so before-and-after visual screenshots remain unverified. This emulator pass
+neither proves process-death restoration nor qualifies physical devices, large text or screen readers.
+
 ### Outstanding scope and blockers
 
 The complete Required outcomes list remains authoritative. Broader phone/tablet runtime qualification and physical-device keyboard/focus and screen-reader checks,

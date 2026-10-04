@@ -17,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -38,11 +39,16 @@ import com.santi020k.lumen.LumenText
 import com.santi020k.lumen.LumenTextarea
 import com.santi020k.lumen.LumenTextField
 
+private val workspaceTextListSaver = listSaver<List<String>, String>(
+    save = { it },
+    restore = { it.toList() }
+)
+
 /** App-owned bounded navigation and saved form state survive resizing and Activity recreation. */
 @Composable
 internal fun WorkspaceExample(onBack: () -> Unit) {
-    var names by rememberSaveable { mutableStateOf(ArrayList((1..200).map { "Lumen ${it.toString().padStart(3, '0')}" })) }
-    var notes by rememberSaveable { mutableStateOf(ArrayList(List(200) { "" })) }
+    var names by rememberSaveable(stateSaver = workspaceTextListSaver) { mutableStateOf(List(200) { "Lumen ${(it + 1).toString().padStart(3, '0')}" }) }
+    var notes by rememberSaveable(stateSaver = workspaceTextListSaver) { mutableStateOf(List(200) { "" }) }
     var query by rememberSaveable { mutableStateOf("") }
     var selected by rememberSaveable { mutableStateOf<Int?>(null) }
     var editing by rememberSaveable { mutableStateOf(false) }
@@ -83,9 +89,9 @@ internal fun WorkspaceExample(onBack: () -> Unit) {
                 Column(Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(LumenSpacing.Md), verticalArrangement = Arrangement.spacedBy(LumenSpacing.Lg)) {
                     if (!wide) LumenButton(onClick = { selected = null }, intent = LumenButtonIntent.Quiet) { Text(text("Back", "Volver")) }
                     LumenText(names[index])
-                    LumenText(notes[index])
-                    LumenButton(onClick = { draftName = names[index]; draftNote = notes[index]; saved = false; editing = true }) { Text(text("Edit record", "Editar registro")) }
                     if (saved) LumenText(text("Changes saved locally", "Cambios guardados localmente"))
+                    LumenButton(onClick = { draftName = names[index]; draftNote = notes[index]; saved = false; editing = true }) { Text(text("Edit record", "Editar registro")) }
+                    LumenText(notes[index])
                     if (state == "success") {
                         val chartData = listOf(3, 7, 4, 8, 5).mapIndexed { day, count ->
                             LumenChartDatum(day.toString(), LumenChartX.Category((day + 1).toString()), count.toDouble())
@@ -108,8 +114,8 @@ internal fun WorkspaceExample(onBack: () -> Unit) {
             LumenButton(onClick = { editing = false }, intent = LumenButtonIntent.Quiet) { Text(text("Cancel", "Cancelar")) }
             LumenButton(enabled = draftName.trim().isNotEmpty(), onClick = {
                 selected?.let { index ->
-                    names = ArrayList(names).apply { set(index, draftName.trim()) }
-                    notes = ArrayList(notes).apply { set(index, draftNote) }
+                    names = names.mapIndexed { record, name -> if (record == index) draftName.trim() else name }
+                    notes = notes.mapIndexed { record, note -> if (record == index) draftNote else note }
                     saved = true
                     editing = false
                 }
