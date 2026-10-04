@@ -93,6 +93,9 @@ External registry manifests are treated as untrusted input. Inline recipe files 
 relative forward-slash paths and cannot traverse outside the selected `--cwd` or write through a
 symbolic-link path segment. `loadLumenRegistry` bounds local and remote manifests to 5 MiB by
 default; programmatic consumers can set `maxBytes` and `timeoutMs` for tighter deployment limits.
+Component wrapper names must be ASCII identifiers containing letters, digits, or underscores,
+starting with a letter or underscore, and cannot be reserved module keywords. Invalid names are
+rejected before generating or writing any wrapper; recipe names retain their existing format.
 
 Run `lumen doctor` to check adapter/style agreement, duplicate stylesheet entrypoints, Tailwind
 layer order, Astro runtime mounts, and fragile internal selector dependencies. In a workspace,

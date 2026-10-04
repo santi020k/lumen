@@ -81,6 +81,13 @@
 
 ### Patch Changes
 
+- Keep disclosure keyboard navigation on available controls: skip hidden and inert regions,
+CSS-invisible controls, and native disabled controls while preserving enabled legend actions
+and controls restored by removing inert.
+- Keep Mentions suggestion buttons out of the form's Tab sequence while retaining keyboard and
+pointer selection. Rebind static Astro toast markup after client navigation without duplicating
+Escape dismissal or the document toast API.
+
 - Reject malformed Astro action errors and inherited icon names, preserve plain markup prose without syntax highlighting, and normalize form-error records whose field is named `fields`, exclude blank numeric chart coordinates, preserve literal slash-star text during markup migrations, and detect existing recipe conflicts before writing files.
 
   Validate externally associated native form controls on submission in Astro and Web Components.

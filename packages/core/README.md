@@ -64,6 +64,19 @@ the last value. `createDataViewRequestUrl` and `createDataViewServerRequest` app
 an endpoint's query before its fragment, preserving existing query parameters and fragment text.
 Import these helpers from the root or `@santi020k/lumen-core/data`.
 
+## Schedule helpers
+
+`canPlaceScheduleEvent` rejects malformed or reversed candidate intervals, including in an empty
+schedule. `scheduleEventsOverlap` conservatively treats an invalid interval as a conflict with
+a different event sharing its resource; distinct resources and identical event IDs retain their
+existing behavior. Adjacent valid intervals remain available.
+
+`resizeScheduleEvent` and `expandRecurringScheduleEvent` reject invalid date-times with `TypeError`.
+Invalid bounds, non-finite snapping/recurrence options, unsupported resulting date-times, and
+non-integer or negative recurrence counts produce `RangeError`. Applications own validation and
+recovery feedback. `parseScheduleEvents` preserves structurally valid records with malformed
+date-times so applications can repair the original data; these helpers do not rewrite storage.
+
 ## Appearance presets
 
 Use `createThemePreset('studio', { scheme: 'dark', overrides: { 'ui-radius': '0.75rem' } })` for a named starting point. Default, Studio and Glass share the [appearance contract](../../docs/appearance-presets.md).

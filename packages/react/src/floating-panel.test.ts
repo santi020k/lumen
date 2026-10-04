@@ -76,6 +76,28 @@ afterEach(async () => {
   vi.unstubAllGlobals()
 })
 
+test.each([
+  '<div inert><button>Unavailable</button></div>',
+  '<fieldset disabled><button tabindex="0">Unavailable</button></fieldset>',
+  '<div hidden><button>Unavailable</button></div>',
+  '<div style="visibility: hidden"><button>Unavailable</button></div>',
+  '<button disabled tabindex="0">Unavailable</button>'
+])('menu navigation skips unavailable controls: %s', async markup => {
+  await render({ defaultOpen: true })
+  const panel = element('#panel')
+  panel.insertAdjacentHTML('afterbegin', markup)
+  const unavailable = element('#panel button')
+  const focus = vi.spyOn(unavailable, 'focus')
+  vi.spyOn(HTMLElement.prototype, 'offsetParent', 'get').mockReturnValue(container)
+  const available = element('[role="menuitem"]')
+  await run(() => {
+    available.focus()
+    available.dispatchEvent(new KeyboardEvent('keydown', { bubbles: true, cancelable: true, key: 'Home' }))
+  })
+  expect(focus).not.toHaveBeenCalled()
+  expect(document.activeElement).toBe(available)
+})
+
 test('opens above a clipped trigger, clamps to the viewport, and restores focus and styles', async () => {
   await render()
   await click('#trigger')

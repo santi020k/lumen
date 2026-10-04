@@ -118,12 +118,20 @@ let uiAnchorCount = 0
 let uiTabsCount = 0
 const nextAnchorName = (): string => `--ui-anchor-${++uiAnchorCount}`
 
-const isElementVisible = (element: HTMLElement): boolean => typeof element.checkVisibility === 'function' ?
-  element.checkVisibility() :
-  element.offsetParent !== null
+const isElementVisible = (element: HTMLElement): boolean => {
+  if (typeof element.checkVisibility === 'function') {
+    return element.checkVisibility({ visibilityProperty: true })
+  }
+
+  const visibility = getComputedStyle(element).visibility
+
+  if (visibility === 'hidden' || visibility === 'collapse') return false
+
+  return element.offsetParent !== null || element.getClientRects().length > 0
+}
 
 const getFocusable = (root: ParentNode): HTMLElement[] => [...root.querySelectorAll<HTMLElement>(focusableSelector)]
-  .filter(element => !element.hasAttribute('hidden') && isElementVisible(element))
+  .filter(element => !element.matches(':disabled') && !element.closest('[hidden], [inert]') && isElementVisible(element))
 
 const getPanel = (trigger: HTMLElement): HTMLElement | null => {
   const controls = trigger.getAttribute('aria-controls')
@@ -4647,11 +4655,7 @@ const setToastContent = (toast: HTMLElement, detail: ToastDetail): void => {
   toast.append(dismiss)
 }
 
-const initToasts = (): void => {
-  if (document.documentElement.dataset.uiToastsBound === 'true') return
-
-  document.documentElement.dataset.uiToastsBound = 'true'
-
+const bindToastDocumentApi = (): void => {
   const createToast = (detail: ToastDetail): string => {
     const viewport = getToastViewport(detail.placement)
     const id = detail.id ?? nextRuntimeId('ui-toast')
@@ -4676,6 +4680,8 @@ const initToasts = (): void => {
     toast.id = id
 
     toast.dataset.uiToast = ''
+
+    toast.dataset.uiBound = 'true'
 
     toast.dataset.state = 'open'
 
@@ -4734,26 +4740,6 @@ const initToasts = (): void => {
 
     ;(window as Window & { LumenToast?: ToastApi }).LumenToast = api
 
-  for (const viewport of document.querySelectorAll<HTMLElement>('[data-ui-toast-viewport]')) {
-    viewport.dataset.placement = getToastPlacement(viewport.dataset.placement)
-
-    viewport.setAttribute('aria-live', viewport.getAttribute('aria-live') ?? 'polite')
-
-    viewport.setAttribute('aria-atomic', viewport.getAttribute('aria-atomic') ?? 'false')
-  }
-
-  for (const toast of document.querySelectorAll<HTMLElement>('[data-ui-toast], .ui-toast')) {
-    toast.addEventListener('keydown', event => {
-      if (event.defaultPrevented || event.isComposing) return
-
-      if (event.key !== 'Escape') return
-
-      event.preventDefault()
-
-      dismissToast(toast)
-    })
-  }
-
   document.addEventListener('ui:toast', event => {
     createToast(event instanceof CustomEvent ? event.detail as ToastDetail : {})
   })
@@ -4769,6 +4755,38 @@ const initToasts = (): void => {
 
     dismissToastById(detail.id)
   })
+}
+
+const initToasts = (scope: ParentNode): void => {
+  if (document.documentElement.dataset.uiToastsBound !== 'true') {
+    document.documentElement.dataset.uiToastsBound = 'true'
+
+    bindToastDocumentApi()
+  }
+
+  for (const viewport of scope.querySelectorAll<HTMLElement>('[data-ui-toast-viewport]')) {
+    viewport.dataset.placement = getToastPlacement(viewport.dataset.placement)
+
+    viewport.setAttribute('aria-live', viewport.getAttribute('aria-live') ?? 'polite')
+
+    viewport.setAttribute('aria-atomic', viewport.getAttribute('aria-atomic') ?? 'false')
+  }
+
+  for (const toast of scope.querySelectorAll<HTMLElement>('[data-ui-toast], .ui-toast')) {
+    if (toast.dataset.uiBound === 'true') continue
+
+    toast.dataset.uiBound = 'true'
+
+    toast.addEventListener('keydown', event => {
+      if (event.defaultPrevented || event.isComposing) return
+
+      if (event.key !== 'Escape') return
+
+      event.preventDefault()
+
+      dismissToast(toast)
+    })
+  }
 }
 
 const initFileUploads = (scope: ParentNode): void => {
@@ -4994,6 +5012,10 @@ const initMentions = (scope: ParentNode): void => {
     const escapedTrigger = trigger.replaceAll(/[.*+?^${}()|[\]\\]/g, '\\$&')
     const options = [...list.querySelectorAll<HTMLButtonElement>('[data-ui-mentions-option]')]
     let activeIndex = -1
+
+    for (const option of options) {
+      option.tabIndex = -1
+    }
 
     const setActive = (index: number): void => {
       const visibleOptions = options.filter(option => !option.hidden)
@@ -5501,7 +5523,7 @@ const initUiPrimitives = (scope: ParentNode = document): void => {
 
   initOptionalControllers(scope)
 
-  initToasts()
+  initToasts(scope)
 }
 
 const lumenWindow = window as Window & { LumenInitUiPrimitives?: (scope?: ParentNode) => void }

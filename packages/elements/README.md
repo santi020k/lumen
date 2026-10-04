@@ -326,6 +326,13 @@ document-level toast controller events.
 
 ## Interactive behavior
 
+Disclosure keyboard navigation skips hidden or inert regions, invisible controls, and native
+disabled controls, including a disabled fieldset. Available controls in a fieldset's first legend
+retain their native keyboard behavior; removing `inert` makes a region available again.
+
+Mentions keeps suggestion navigation on the textarea through `aria-activedescendant`; suggestion
+buttons are excluded from the Tab sequence while Enter and pointer selection still insert a mention.
+
 Registering the elements wires behavior-heavy primitives without a framework runtime. DataTable,
 Dialog, Popover, DropdownMenu, ContextMenu, Tabs, Select, ThemeBuilder, Toast, Tooltip, forms,
 Calendar, InputOTP, DateRangePicker, RichTextEditor, Schedule, Resizable, and VirtualList track the

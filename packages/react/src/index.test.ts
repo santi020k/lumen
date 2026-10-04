@@ -102,6 +102,7 @@ const withHookDispatcher = <Value>(callback: () => Value): Value => {
     use: (context: { _currentValue?: unknown }) => context._currentValue,
     useContext: (context: { _currentValue?: unknown }) => context._currentValue,
     useEffect: () => null,
+    useLayoutEffect: () => null,
     useId: () => `test-${++idIndex}`,
     useMemo: (factory: () => unknown) => factory(),
     useRef: (initialValue: unknown) => {
