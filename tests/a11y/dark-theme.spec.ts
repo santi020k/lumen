@@ -17,7 +17,8 @@ const checkedPaths = [
   '/docs/components/select',
   '/docs/components/theme-builder',
   '/docs/components/theme-toggle',
-  '/docs/theme-playground'
+  '/docs/theme-playground',
+  '/docs/web/playground'
 ]
 
 const openDocsPage = async (page: Page, path: string, theme: DarkTheme) => {
@@ -29,6 +30,7 @@ const openDocsPage = async (page: Page, path: string, theme: DarkTheme) => {
   await page.goto(path)
   await expect(page.locator('main')).toBeVisible()
   await expect(page.locator('html')).toHaveAttribute('data-theme', theme)
+  await page.keyboard.press('Tab')
 
   if (path === '/docs/theme-playground') {
     const playground = page.locator('.theme-playground')

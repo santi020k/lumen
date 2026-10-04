@@ -15,6 +15,8 @@
   ·
   <a href="https://lumen.santi020k.com/docs/components">Components</a>
   ·
+  <a href="https://lumen.santi020k.com/#playgrounds">Try the playgrounds</a>
+  ·
   <a href="https://www.figma.com/community/file/1662337342676541513">Figma library</a>
   ·
   <a href="https://apps.apple.com/app/id6805250815">iPhone and iPad app</a>
@@ -192,11 +194,16 @@ and component contract; repository contributors can also use the
 
 ## Native playgrounds
 
-The repository includes three searchable, interactive galleries built from the real native
-packages:
+Try Lumen before adding it to your project. The [playground section](https://lumen.santi020k.com/#playgrounds)
+brings together the browser demos and native apps. Explore component states and themes, then use
+the open-source apps as implementation references. Start with the
+[web playground](https://lumen.santi020k.com/docs/web/playground) for Astro, React, and Web Components,
+or choose a native gallery:
 
 - [`apps/playground-react-native`](./apps/playground-react-native) runs through Expo on the web,
-  iOS, and Android and includes EAS profiles for TestFlight, Android App Bundles, and APKs.
+  iOS, and Android. [Try the browser preview](https://lumen.santi020k.com/docs/react-native/playground#preview)
+  or use the local setup guide for native evaluation. EAS profiles cover TestFlight, Android App
+  Bundles, and APKs; this gallery has no separate public store listing.
 - [`apps/playground-apple`](./apps/playground-apple) is available on the
   [App Store](https://apps.apple.com/app/id6805250815) for iPhone, iPad, and Mac. It also builds as
   an iOS Xcode app or macOS Swift Package executable for local exploration.
@@ -205,7 +212,9 @@ packages:
   [Google Play](https://play.google.com/store/apps/details?id=com.santi020k.lumen.playground.compose)
   for Android phones and tablets.
 
-See the [playground workflow](./docs/playgrounds.md) for run, capture, and distribution commands.
+See the [playground workflow](./docs/playgrounds.md) for a platform chooser, reference-app source,
+and run, capture, and distribution commands. Store builds follow their own release schedule and
+may differ from the current repository candidate.
 
 ## Tailwind CSS
 
