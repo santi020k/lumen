@@ -1,7 +1,9 @@
+// cspell:words Limpiar seleccionadas Quitar
 import { type ReactElement, useState } from 'react'
+import { View } from 'react-native'
 
 import {
-  LumenAutocomplete, LumenButton, LumenImageComparison, LumenInputOTP, LumenNumberField,
+  LumenAutocomplete, LumenButton, LumenImageComparison, LumenInputOTP,   LumenMultiSelect, LumenNumberField,
   LumenPasswordField, LumenSegmentedControl, LumenText, LumenToggle
 } from '@santi020k/lumen-react-native'
 import { LumenTimeField, type LumenTimeSelection } from '@santi020k/lumen-react-native/datetime'
@@ -82,6 +84,56 @@ const cityResults = (state: string, query: string) => {
   return state === 'empty' ? [] : cities.filter(option => option.label.toLowerCase().includes(query.toLowerCase()))
 }
 
+const MultiSelectExample = ({ spanish, readOnly, visible }: {
+  spanish: boolean
+  readOnly: boolean
+  visible: boolean
+}): ReactElement | null => {
+  const [values, setValues] = useState<ReadonlySet<string>>(() => new Set(['bogota', 'retained-city']))
+  const [query, setQuery] = useState('')
+  const [state, setState] = useState('ready')
+  const copy = copies[spanish ? 'es' : 'en']
+
+  if (!visible) return null
+
+  return (
+    <View testID="component-multi-select">
+      <LumenSegmentedControl
+        label={copy.state}
+        value={state}
+        options={[{ label: copy.ready, value: 'ready' },
+          { label: copy.pending, value: 'loading' },
+          { label: copy.noResults, value: 'empty' },
+          { label: 'Error', value: 'error' }]}
+        onValueChange={setState}
+      />
+      <LumenMultiSelect
+        label={copy.city}
+        values={values}
+        onValuesChange={setValues}
+        query={query}
+        onQueryChange={setQuery}
+        options={cityResults(state, query)}
+        loading={state === 'loading'}
+        {...(state === 'error' ? { resultsErrorMessage: copy.error } : {})}
+        onRetry={() => {
+          setState('ready')
+        }}
+        readOnly={readOnly}
+        chooseLabel={spanish ? 'Elegir ciudades' : 'Choose cities'}
+        searchLabel={spanish ? 'Buscar ciudades' : 'Search cities'}
+        clearSearchLabel={spanish ? 'Limpiar búsqueda' : 'Clear search'}
+        doneLabel={spanish ? 'Listo' : 'Done'}
+        selectionLabel={count => spanish ? `${count} seleccionadas` : `${count} selected`}
+        removeLabel={label => spanish ? `Quitar ${label}` : `Remove ${label}`}
+        emptyLabel={copy.empty}
+        loadingLabel={copy.loading}
+        retryLabel={copy.retry}
+      />
+    </View>
+  )
+}
+
 export const AdvancedInputExamples = ({ isVisible }: { isVisible: (name: string) => boolean }): ReactElement => {
   const [spanish, setSpanish] = useState(false)
   const [readOnly, setReadOnly] = useState(false)
@@ -114,6 +166,7 @@ export const AdvancedInputExamples = ({ isVisible }: { isVisible: (name: string)
       {isVisible('Password field') ? <LumenPasswordField label={copy.password} value={password} onValueChange={setPassword} showLabel={copy.show} hideLabel={copy.hide} newPassword readOnly={readOnly} /> : null}
       {isVisible('Input OTP') ? <LumenInputOTP label={copy.code} value={code} onValueChange={setCode} readOnly={readOnly} /> : null}
       {isVisible('Time field') ? <LumenTimeField label={copy.time} value={time} onValueChange={setTime} locale={locale} minTime={{ hour: 9, minute: 0 }} maxTime={{ hour: 17, minute: 0 }} placeholder={copy.choose} confirmLabel={copy.confirm} dismissLabel={copy.cancel} rangeErrorLabel={copy.timeRange} readOnly={readOnly} /> : null}
+      <MultiSelectExample spanish={spanish} readOnly={readOnly} visible={isVisible('Multi select')} />
       {isVisible('Autocomplete') ?
         (
           <>

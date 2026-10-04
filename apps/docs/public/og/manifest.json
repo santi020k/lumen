@@ -1857,6 +1857,22 @@
       "pathname": "/docs/react-native/components/share-button",
       "title": "Share button"
     },
+    "/docs/react-native/components/multi-select": {
+      "alt": "Multi select — Lumen UI",
+      "description": "Select multiple searchable options with controlled values and result states.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--multi-select.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--multi-select.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/multi-select",
+      "title": "Multi select"
+    },
     "/docs/react-native/components/range-slider": {
       "alt": "Range slider — Lumen UI",
       "description": "Choose bounded numeric intervals with independently adjustable native endpoints.",
@@ -3168,6 +3184,22 @@
       ],
       "pathname": "/docs/apple/components/wearable-list-row",
       "title": "Wearable list row"
+    },
+    "/docs/apple/components/multi-select": {
+      "alt": "Multi select — Lumen UI",
+      "description": "Select multiple searchable options with controlled values and result states.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--multi-select.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--multi-select.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/multi-select",
+      "title": "Multi select"
     },
     "/docs/apple/components/range-slider": {
       "alt": "Range slider — Lumen UI",
@@ -4563,7 +4595,7 @@
     },
     "/docs/android/components/multi-select": {
       "alt": "Multi select — Lumen UI",
-      "description": "Select multiple searchable options with controlled chips and result states.",
+      "description": "Select multiple searchable options with controlled values and result states.",
       "images": [
         {
           "format": "webp",

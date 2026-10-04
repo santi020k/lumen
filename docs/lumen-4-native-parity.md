@@ -39,12 +39,27 @@ preview evidence, not a new Android or React Native device run.
 Swift API extraction builds all five Apple targets. The range control is exposed on iOS, macOS and
 visionOS, matching the existing editable slider; tvOS and watchOS inventories remain unchanged.
 
-## Remaining useful gaps
+## Multiple selection follow-up
 
-`LumenMultiSelect` is currently Compose-only. Extending its existing controlled selection contract
-with application-owned search, retained unavailable selections, loading and retry is the next clear
-cross-adapter form gap. Android app bars, swipe actions and adaptive list/detail scaffolds remain
-platform-specific; other adapters should use their native navigation and gesture conventions.
+`LumenMultiSelect` now shares controlled string-set selection across React Native, SwiftUI and
+Compose. The host owns search and results; missing selections retain their value, loading/errors
+hide stale results, and disabled/read-only states block changes and close the presentation. Swift
+search also accepts a localized clear label. Native conventions remain: SwiftUI bindings and
+sheets, React Native callbacks and a virtualized modal list, and Compose Material dialogs.
 
-This pass does not claim that the complete web catalog has been ported. Native support continues
-to require implementation, public contracts, behavioral tests and documented usage per adapter.
+The [complete web-to-native audit](lumen-4-web-native-audit.md) records every one of the 182 web
+entries: 70 semantic counterparts, 61 native compositions, 27 platform/host responsibilities and
+24 actual gaps. The native contract check rejects missing web entries or nonexistent mapped native
+contracts. A counterpart is semantic coverage, not identical markup, props or platform availability.
+
+Rating, step progression, timeline, table and hierarchical selection are useful pending candidates.
+Calendar/scheduling, command search, rich-text/mention editing and board interactions need dedicated
+consumer-driven contracts. Compose tooltip coverage remains asymmetric. Physical-device assistive
+technology and consumer qualification are still separate evidence gates.
+
+The follow-up passes 202 React Native behavioral/model tests and 86 Swift tests. The iPhone Release
+UI test verifies immediate selection, retained filtered values, named removal and read-only rejection.
+The Expo web preview checks phone and desktop widths, loading/empty/retry, Spanish labels and
+read-only behavior. Both native documentation captures use the repository screenshot synchronization
+workflow. Swift extraction builds all five targets, and source compatibility retains the same 24
+reviewed v4 diagnostics. No Android instrumentation or React Native device run was added in this pass.

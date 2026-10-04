@@ -300,9 +300,15 @@ public struct LumenSearchField: View {
     @Environment(\.lumenTheme) private var theme
 
     private let prompt: String
+    private let clearLabel: String
 
     public init(_ prompt: String = "Search", text: Binding<String>) {
+        self.init(prompt, text: text, clearLabel: "Clear search")
+    }
+
+    public init(_ prompt: String = "Search", text: Binding<String>, clearLabel: String) {
         self.prompt = prompt
+        self.clearLabel = clearLabel
         _text = text
     }
 
@@ -317,7 +323,7 @@ public struct LumenSearchField: View {
             if !text.isEmpty {
                 LumenIconButton(
                     systemName: "xmark.circle.fill",
-                    label: "Clear search",
+                    label: LocalizedStringKey(clearLabel),
                     size: .sm
                 ) {
                     text = ""

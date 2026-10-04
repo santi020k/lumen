@@ -64,7 +64,8 @@ export const componentCategories: readonly ComponentCategoryDefinition[] = [
       "Autocomplete",
       "Number field",
       "Password field",
-      "Input OTP"
+      "Input OTP",
+      "Multi select"
     ],
     value: 'forms'
   },

@@ -137,6 +137,7 @@ const applePhoneTabletAndMacOnlySlugs = new Set([
   'skeleton',
   'slider',
   'range-slider',
+  'multi-select',
   'tabs',
   'textarea',
   'toggle'
@@ -5193,28 +5194,32 @@ LumenTopAppBar("Projects", scrollBehavior = behavior,
   {
     accessibility: 'Uses a native dialog with named checkbox options, removal actions, validation, and read-only or disabled behavior.',
     category: 'Forms',
-    examples: { android: `LumenMultiSelect(
+    examples: {
+      apple: 'LumenMultiSelect("Teams", values: $teams, query: $query, options: matchingTeams)',
+      'react-native': `<LumenMultiSelect label="Teams" values={teams} onValuesChange={setTeams}
+  query={query} onQueryChange={setQuery} options={matchingTeams} />`,
+      android: `LumenMultiSelect(
     label = "Teams", options = matchingTeams, values = selectedTeams,
     onValuesChange = { selectedTeams = it }, query = query, onQueryChange = { query = it },
     loading = searching, resultsErrorMessage = searchError, onRetry = ::retrySearch
 )` },
-    exports: { android: 'LumenMultiSelect' },
+    exports: { android: 'LumenMultiSelect', apple: 'LumenMultiSelect', 'react-native': 'LumenMultiSelect' },
     guidance: 'Selection applies immediately. The host owns search, asynchronous results, cancellation, and persistence. Missing selected options retain their raw value as a chip label. Localize every string and count/removal formatter.',
     name: 'Multi select',
     properties: [
-      property('label / options', 'String / List<LumenSelectionOption>', 'Required', 'Names the field and supplies uniquely identified, readable results.'),
-      property('values / onValuesChange', 'Set<String> / (Set<String>) -> Unit', 'Required', 'Controls selection independently from visible results.'),
-      property('query / onQueryChange', 'String / (String) -> Unit', 'Required', 'Controls caller-owned search.'),
-      property('loading / resultsErrorMessage / onRetry', 'Boolean / String? / (() -> Unit)?', 'false / null / null', 'Provides loading, safe error, and recovery states.'),
-      property('description / errorMessage', 'String?', 'null', 'Provides help and separate form validation.'),
-      property('enabled / readOnly', 'Boolean', 'true / false', 'Blocks editing and dismisses selection.'),
-      property('chooseLabel / searchLabel / clearSearchLabel / doneLabel', 'String', 'English defaults', 'Localizes selection and dialog actions.'),
-      property('emptyLabel / loadingLabel / retryLabel', 'String', 'English defaults', 'Localizes result states.'),
-      property('selectionLabel / removeLabel', '(Int) -> String / (String) -> String', 'English formatters', 'Localizes counts and chip removal.'),
-      property('modifier', 'Modifier', 'Modifier', 'Applies field layout.')
+      property('label / options', { android: 'String / List<LumenSelectionOption>', apple: 'String / [LumenAutocompleteOption<String>]', 'react-native': 'string / readonly LumenAutocompleteOption[]' }, 'Required', 'Names the field and supplies uniquely identified, readable results.'),
+      property({ android: 'values / onValuesChange', apple: 'values', 'react-native': 'values / onValuesChange' }, { android: 'Set<String> / (Set<String>) -> Unit', apple: 'Binding<Set<String>>', 'react-native': 'ReadonlySet<string> / (values: Set<string>) => void' }, 'Required', 'Controls selection independently from visible results.'),
+      property({ android: 'query / onQueryChange', apple: 'query', 'react-native': 'query / onQueryChange' }, { android: 'String / (String) -> Unit', apple: 'Binding<String>', 'react-native': 'string / callback' }, 'Required', 'Controls caller-owned search.'),
+      property('loading / resultsErrorMessage / onRetry', { android: 'Boolean / String? / (() -> Unit)?', apple: 'Bool / String? / (() -> Void)?', 'react-native': 'boolean / string / callback' }, 'false / null / null', 'Provides loading, safe error, and recovery states.'),
+      property('description / errorMessage', { android: 'String?', apple: 'String?', 'react-native': 'string' }, 'None', 'Provides help and separate form validation.'),
+      property({ android: 'enabled / readOnly', apple: 'disabled / readOnly', 'react-native': 'enabled / readOnly' }, { android: 'Boolean', apple: 'Bool', 'react-native': 'boolean' }, 'true / false', 'Blocks editing and dismisses selection.'),
+      property('chooseLabel / searchLabel / clearSearchLabel / doneLabel', { android: 'String', apple: 'String', 'react-native': 'string' }, 'English defaults', 'Localizes selection and dialog actions.'),
+      property('emptyLabel / loadingLabel / retryLabel', { android: 'String', apple: 'String', 'react-native': 'string' }, 'English defaults', 'Localizes result states.'),
+      property('selectionLabel / removeLabel', { android: '(Int) -> String / (String) -> String', apple: '(Int) -> String / (String) -> String', 'react-native': '(count: number) => string / (label: string) => string' }, 'English formatters', 'Localizes counts and chip removal.'),
+      property({ android: 'modifier' }, { android: 'Modifier' }, { android: 'Modifier' }, 'Applies field layout.')
     ],
     slug: 'multi-select',
-    summary: 'Select multiple searchable options with controlled chips and result states.'
+    summary: 'Select multiple searchable options with controlled values and result states.'
   },
   {
     accessibility: 'Exposes separately named lower and upper native thumbs with formatted spoken values and keyboard adjustment.',

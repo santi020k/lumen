@@ -3,6 +3,33 @@ import XCTest
 
 final class AdvancedInputTests: XCTestCase {
     @MainActor
+    func testMultiSelectRetainsFilteredValuesAndAppliesImmediately() {
+        let app = open("Multi select")
+        let choose = app.buttons["Choose cities · 2 selected"]
+        reveal(choose, in: app)
+        choose.tap()
+        let option = app.buttons["Medellín"]
+        XCTAssertTrue(option.waitForExistence(timeout: 5))
+        option.tap()
+        let search = app.textFields["Search cities"]
+        search.tap()
+        search.typeText("Bog")
+        XCTAssertFalse(app.buttons["Medellín"].exists)
+        app.buttons["Done"].tap()
+        XCTAssertTrue(app.buttons["Choose cities · 3 selected"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["Remove retained-city"].exists)
+        let remove = app.buttons["Remove medellin"]
+        reveal(remove, in: app)
+        remove.tap()
+        XCTAssertTrue(app.buttons["Choose cities · 2 selected"].exists)
+        let readOnly = app.switches["Read-only examples"]
+        reveal(readOnly, in: app)
+        tapSwitch(readOnly)
+        XCTAssertFalse(app.buttons["Choose cities · 2 selected"].isEnabled)
+        capture("Native MultiSelect retained selections and read-only controls", app: app)
+    }
+
+    @MainActor
     func testRangeEndpointsAdjustAndReadOnlyValuesRemainAccessible() {
         let app = XCUIApplication()
         app.launchArguments = ["--component", "Range slider"]

@@ -17,6 +17,7 @@ import { LumenDateField, LumenDateRangeField } from './datetime-components.js'
 import { LumenSearchField, LumenToggle } from './form-components.js'
 import { LumenIcon as GraphicIcon, LumenIconButton as GraphicIconButton, type LumenIconGraphicProps } from './graphics.js'
 import { type LumenToastHookController, type LumenToastHookOptions, useToast } from './hooks.js'
+import { LumenMultiSelect } from './multi-select-components.js'
 import { LumenAlertDialog, LumenMenu, LumenSheet } from './overlay-components.js'
 import { LumenPhoneInput } from './phone-components.js'
 import { resolveLumenPhoneInputValue } from './phone-recipes.js'
@@ -46,7 +47,7 @@ const safeAreaInsets = vi.hoisted(() => ({
 }))
 
 vi.mock('react-native', async () => {
-  const { createElement, useImperativeHandle } = await import('react')
+  const { createElement, isValidElement, useImperativeHandle } = await import('react')
   const hostComponent = (name: string) => (
     props: Record<string, unknown>
   ): ReactElement => createElement(name, props)
@@ -68,7 +69,19 @@ vi.mock('react-native', async () => {
       sendAccessibilityEvent: accessibilityFocus
     },
     ActivityIndicator: hostComponent('ActivityIndicator'),
-    FlatList: hostComponent('FlatList'),
+    FlatList: (props: Record<string, unknown>): ReactElement => {
+      const renderItem = props.renderItem
+      const data: readonly unknown[] = Array.isArray(props.data) ? props.data : []
+      const children = data.map((item, index) => {
+        if (typeof renderItem !== 'function') return null
+
+        const rendered: unknown = Reflect.apply(renderItem, undefined, [{ item, index }])
+
+        return isValidElement(rendered) ? rendered : null
+      })
+
+      return createElement('FlatList', props, children)
+    },
     I18nManager: nativeDirection,
     Image: hostComponent('Image'),
     KeyboardAvoidingView: hostComponent('KeyboardAvoidingView'),
@@ -2219,5 +2232,90 @@ describe('native chart data inspection', () => {
     expect(readProp(findByAccessibilityRole(root, 'alert'), 'children')).toBe('Check the bins')
     expect(root.container.queryAll(instance => instance.type === 'Svg')).toHaveLength(0)
     expect(root.container.queryAll(instance => readProp(instance, 'accessibilityRole') === 'button')).toHaveLength(0)
+  })
+})
+
+describe('controlled multiple selection', () => {
+  test('removal retains unavailable values and never mutates the controlled set', async () => {
+    const values = new Set(['one', 'missing'])
+    const onValuesChange = vi.fn<(values: ReadonlySet<string>) => void>()
+    const root = await renderNative(<LumenMultiSelect label="Teams" values={values} onValuesChange={onValuesChange} query="" onQueryChange={() => undefined} options={[{ label: 'One', value: 'one' }]} />)
+    const remove = root.container.queryAll(instance => readProp(instance, 'accessibilityLabel') === 'Remove One').find(instance => typeof readProp(instance, 'onPress') === 'function')
+    if (!remove) throw new Error('Missing selected removal')
+    const handler = readProp(remove, 'onPress')
+    if (typeof handler !== 'function') throw new Error('Missing removal handler')
+    await act(async () => {
+      Reflect.apply(handler, undefined, [])
+      await Promise.resolve()
+    })
+    expect(onValuesChange).toHaveBeenLastCalledWith(new Set(['missing']))
+    expect(values).toEqual(new Set(['one', 'missing']))
+    expect(root.container.queryAll(instance => readProp(instance, 'accessibilityLabel') === 'Remove missing').length).toBeGreaterThan(0)
+  })
+
+  test.each([{ readOnly: true }, { enabled: false }])('blocked controls reject removal: %o', async blocked => {
+    const onValuesChange = vi.fn<(values: ReadonlySet<string>) => void>()
+    const root = await renderNative(<LumenMultiSelect {...blocked} label="Teams" values={new Set(['one'])} onValuesChange={onValuesChange} query="" onQueryChange={() => undefined} options={[{ label: 'One', value: 'one' }]} />)
+    const remove = root.container.queryAll(instance => readProp(instance, 'accessibilityLabel') === 'Remove One').find(instance => typeof readProp(instance, 'onPress') === 'function')
+    if (!remove) throw new Error('Missing removal')
+    const handler = readProp(remove, 'onPress')
+    if (typeof handler !== 'function') throw new Error('Missing removal handler')
+    await act(async () => {
+      Reflect.apply(handler, undefined, [])
+      await Promise.resolve()
+    })
+    expect(onValuesChange).not.toHaveBeenCalled()
+    expect(readProp(remove, 'disabled')).toBe(true)
+  })
+
+  test('disabled selected results cannot be removed', async () => {
+    const root = await renderNative(
+      <LumenMultiSelect
+        label="Teams"
+        values={new Set(['one'])}
+        onValuesChange={() => {
+          throw new Error('Disabled callback')
+        }}
+        query=""
+        onQueryChange={() => undefined}
+        options={[{ label: 'One', value: 'one', disabled: true }]}
+      />
+    )
+    const remove = root.container.queryAll(instance => readProp(instance, 'accessibilityLabel') === 'Remove One').find(instance => typeof readProp(instance, 'onPress') === 'function')
+    if (!remove) throw new Error('Missing removal')
+    expect(readProp(remove, 'disabled')).toBe(true)
+  })
+})
+
+describe('multiple selection results', () => {
+  test('checkbox intent retains values outside the result list', async () => {
+    const onValuesChange = vi.fn<(values: ReadonlySet<string>) => void>()
+    const values = new Set(['missing'])
+    const root = await renderNative(<LumenMultiSelect label="Teams" values={values} onValuesChange={onValuesChange} query="" onQueryChange={() => undefined} options={[{ label: 'One', value: 'one' }]} />)
+    const option = root.container.queryAll(instance => readProp(instance, 'accessibilityRole') === 'checkbox').find(instance => typeof readProp(instance, 'onPress') === 'function')
+    if (!option) throw new Error('Missing option')
+    const handler = readProp(option, 'onPress')
+    if (typeof handler !== 'function') throw new Error('Missing checkbox handler')
+    await act(async () => {
+      Reflect.apply(handler, undefined, [])
+      await Promise.resolve()
+    })
+    expect(onValuesChange).toHaveBeenLastCalledWith(new Set(['missing', 'one']))
+    expect(values).toEqual(new Set(['missing']))
+  })
+
+  test.each([{ loading: true }, { resultsErrorMessage: 'Search failed' }])('stale results are unavailable: %o', async state => {
+    const root = await renderNative(<LumenMultiSelect {...state} label="Teams" values={new Set<string>()} onValuesChange={() => undefined} query="" onQueryChange={() => undefined} options={[{ label: 'One', value: 'one' }]} />)
+    expect(root.container.queryAll(instance => readProp(instance, 'accessibilityRole') === 'checkbox')).toHaveLength(0)
+  })
+})
+
+describe('multiple selection option identity', () => {
+  test.each([
+    { options: [{ label: 'One', value: '' }] },
+    { options: [{ label: ' ', value: 'one' }] },
+    { options: [{ label: 'One', value: 'one' }, { label: 'Duplicate', value: 'one' }] }
+  ])('rejects invalid option identities: %o', async ({ options }) => {
+    await expect(renderNative(<LumenMultiSelect label="Teams" values={new Set<string>()} onValuesChange={() => undefined} query="" onQueryChange={() => undefined} options={options} />)).rejects.toThrow('MultiSelect options require')
   })
 })

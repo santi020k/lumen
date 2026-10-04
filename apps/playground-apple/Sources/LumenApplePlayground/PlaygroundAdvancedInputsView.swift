@@ -1,3 +1,4 @@
+// cspell:words Limpiar seleccionadas Quitar
 import LumenUI
 import SwiftUI
 
@@ -10,11 +11,12 @@ struct PlaygroundAdvancedInputsView: View {
     @State private var code = ""
     @State private var query = ""
     @State private var city: String?
+    @State private var selectedCities: Set<String> = ["bogota", "retained-city"]
     @State private var resultState = "ready"
     @State private var time: LumenTimeSelection? = LumenTimeSelection(hour: 9, minute: 30)
     @State private var comparison = 0.5
 
-    private let names = ["Number field", "Time field", "Autocomplete", "Password field", "Input OTP", "Image comparison"]
+    private let names = ["Number field", "Time field", "Autocomplete", "Multi select", "Password field", "Input OTP", "Image comparison"]
     private func copy(_ english: String, _ spanishCopy: String) -> String { spanish ? spanishCopy : english }
     private var cities: [LumenAutocompleteOption<String>] {
         if resultState == "empty" { return [] }
@@ -44,6 +46,18 @@ struct PlaygroundAdvancedInputsView: View {
                                        dismissLabel: copy("Cancel", "Cancelar"), rangeErrorLabel: copy("Choose a time between 09:00 and 17:00", "Elige una hora entre las 09:00 y las 17:00"), readOnly: readOnly)
                     }
                     if matches("Autocomplete") { autocomplete }
+                    if matches("Multi select") {
+                        resultStatePicker
+                        LumenMultiSelect(copy("City", "Ciudad"), values: $selectedCities, query: $query, options: cities,
+                                         loading: resultState == "loading",
+                                         resultsErrorMessage: resultState == "error" ? copy("Could not load cities", "No se pudieron cargar las ciudades") : nil,
+                                         onRetry: { resultState = "ready" }, readOnly: readOnly, chooseLabel: copy("Choose cities", "Elegir ciudades"),
+                                         searchLabel: copy("Search cities", "Buscar ciudades"), clearSearchLabel: copy("Clear search", "Limpiar búsqueda"),
+                                         doneLabel: copy("Done", "Listo"), emptyLabel: copy("No results", "Sin resultados"),
+                                         loadingLabel: copy("Loading results", "Cargando resultados"), retryLabel: copy("Retry", "Reintentar"),
+                                         selectionLabel: { "\($0) " + copy("selected", "seleccionadas") },
+                                         removeLabel: { copy("Remove", "Quitar") + " " + $0 })
+                    }
                     if matches("Image comparison") {
                         LumenImageComparison(copy("Compare images", "Comparar imágenes"), value: $comparison,
                                              beforeLabel: copy("Before", "Antes"), afterLabel: copy("After", "Después")) {
@@ -67,14 +81,18 @@ struct PlaygroundAdvancedInputsView: View {
                          incrementLabel: copy("Increase value", "Aumentar valor"), decrementLabel: copy("Decrease value", "Disminuir valor"), readOnly: readOnly)
     }
 
-    private var autocomplete: some View {
-        VStack(alignment: .leading, spacing: LumenSpacing.md) {
-            LumenSegmentedControl(copy("Result state", "Estado de resultados"), selection: $resultState, options: [
+    private var resultStatePicker: some View {
+        LumenSegmentedControl(copy("Result state", "Estado de resultados"), selection: $resultState, options: [
                 LumenSelectionOption(copy("Ready", "Listo"), value: "ready"),
                 LumenSelectionOption(copy("Loading", "Cargando"), value: "loading"),
                 LumenSelectionOption(copy("Empty", "Vacío"), value: "empty"),
                 LumenSelectionOption(copy("Error", "Error"), value: "error")
             ])
+    }
+
+    private var autocomplete: some View {
+        VStack(alignment: .leading, spacing: LumenSpacing.md) {
+            resultStatePicker
             LumenAutocomplete(copy("City", "Ciudad"), query: $query, selection: $city, options: cities,
                               loading: resultState == "loading", resultsErrorMessage: resultState == "error" ? copy("Could not load cities", "No se pudieron cargar las ciudades") : nil,
                               onRetry: { resultState = "ready" }, loadingLabel: copy("Loading results", "Cargando resultados"), emptyLabel: copy("No results", "Sin resultados"),

@@ -2,6 +2,10 @@
 
 ## 4.0.0
 
+- Add controlled MultiSelect to React Native and SwiftUI alongside Compose, retaining selections
+  outside filtered results, blocking disabled/read-only edits, and exposing loading/retry and localized
+  action labels. Add a complete, checked web-to-native catalog audit for the remaining v4 gaps.
+
 ### Major Changes
 
 - Refine v4 reading rhythm and responsive page gutters, allow interactive Card content to overflow,
