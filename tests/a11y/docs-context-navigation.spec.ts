@@ -66,12 +66,12 @@ test('shared Select keeps internal focus movement open and clears search for key
 test('documentation scope uses the shared keyboard picker and remembers navigation', async ({ page }) => {
   await page.goto('/docs/web')
 
-  const trigger = page.getByRole('combobox', { name: 'Choose documentation scope' })
+  const trigger = page.getByRole('combobox', { name: 'Browse documentation' })
 
   await expect(trigger).toHaveJSProperty('tagName', 'BUTTON')
   await expect(trigger).toHaveText('Web')
   await expect(trigger).not.toHaveCSS('background-image', 'none')
-  await page.getByText('Documentation scope', { exact: true }).click()
+  await page.locator('[data-docs-platform-selector]').getByText('Browse', { exact: true }).click()
   await expect(trigger).toBeFocused()
   await page.keyboard.press('Space')
   await expect(page.getByRole('option', { name: 'Web', exact: true })).toBeFocused()
@@ -80,7 +80,7 @@ test('documentation scope uses the shared keyboard picker and remembers navigati
   await expect(trigger).toHaveAttribute('aria-expanded', 'false')
 
   await trigger.click()
-  await expect(page.getByRole('listbox', { name: 'Choose documentation scope' })).toBeVisible()
+  await expect(page.getByRole('listbox', { name: 'Browse documentation' })).toBeVisible()
   await page.getByRole('option', { name: 'Apple', exact: true }).focus()
   await page.keyboard.press('Space')
   await expect(page).toHaveURL(/\/docs\/apple$/u)
@@ -95,7 +95,7 @@ test('documentation scope uses the shared keyboard picker and remembers navigati
 
 test('documentation scope typeahead supports option names containing spaces', async ({ page }) => {
   await page.goto('/docs/web')
-  await page.getByRole('combobox', { name: 'Choose documentation scope' }).focus()
+  await page.getByRole('combobox', { name: 'Browse documentation' }).focus()
   await page.keyboard.type('React Native')
   await expect(page.getByRole('option', { name: 'React Native', exact: true })).toBeFocused()
   await page.keyboard.press('Escape')
@@ -113,12 +113,12 @@ test('documentation scope still navigates when browser storage is unavailable', 
     Storage.prototype.removeItem = () => { throw new DOMException('Storage unavailable', 'SecurityError') }
   })
   await page.goto('/docs/web')
-  await expect(page.getByRole('combobox', { name: 'Choose documentation scope' })).toHaveText('Web')
-  await page.getByRole('combobox', { name: 'Choose documentation scope' }).click()
+  await expect(page.getByRole('combobox', { name: 'Browse documentation' })).toHaveText('Web')
+  await page.getByRole('combobox', { name: 'Browse documentation' }).click()
   await page.getByRole('option', { name: 'Apple', exact: true }).click()
   await expect(page).toHaveURL(/\/docs\/apple$/u)
-  await expect(page.getByRole('combobox', { name: 'Choose documentation scope' })).toHaveText('Apple')
-  await page.getByRole('combobox', { name: 'Choose documentation scope' }).click()
+  await expect(page.getByRole('combobox', { name: 'Browse documentation' })).toHaveText('Apple')
+  await page.getByRole('combobox', { name: 'Browse documentation' }).click()
   await page.getByRole('option', { name: 'Project overview', exact: true }).click()
   await expect(page).toHaveURL(/\/docs$/u)
 })
@@ -131,7 +131,7 @@ test('documentation scope keeps its native fallback and direct links without Jav
 
     await page.goto('/docs/web')
 
-    const native = page.getByRole('combobox', { name: 'Choose documentation scope' })
+    const native = page.getByRole('combobox', { name: 'Browse documentation' })
 
     await expect(native).toHaveJSProperty('tagName', 'SELECT')
     await expect(native).toBeVisible()
@@ -152,7 +152,7 @@ for (const width of [320, 390, 896, 1440]) {
       await page.emulateMedia({ reducedMotion: 'reduce' })
       await page.goto('/docs/foundations')
 
-      const trigger = page.getByRole('combobox', { name: 'Choose documentation scope' })
+      const trigger = page.getByRole('combobox', { name: 'Browse documentation' })
       const label = trigger.locator('[data-ui-select-value]')
 
       await expect(trigger).toHaveJSProperty('tagName', 'BUTTON')
@@ -219,8 +219,8 @@ test('documentation scope scrolls within short windows and keeps keyboard option
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.goto('/docs/foundations')
 
-  const trigger = page.getByRole('combobox', { name: 'Choose documentation scope' })
-  const list = page.getByRole('listbox', { name: 'Choose documentation scope' })
+  const trigger = page.getByRole('combobox', { name: 'Browse documentation' })
+  const list = page.getByRole('listbox', { name: 'Browse documentation' })
 
   await trigger.press('End')
   await expect(list).toHaveCSS('transform', 'none')

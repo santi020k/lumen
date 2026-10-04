@@ -880,3 +880,13 @@ configured generator in a scratch metadata workspace and folded into the existin
 Rendered verification covers desktop/mobile Chromium and WebKit, with synthetic density screenshots,
 and the five affected Astro form pages at 390 and 1440 pixels. The reset helper uses the React
 package's existing production minification; its bytes remain included in the unchanged hook budget.
+
+The combined candidate `84118159` passes the canonical `pnpm run validate`: 15 builds, 25 strict
+build/type tasks, 1,756 tests in 160 files, zero-warning lint, spelling, unused-code analysis without
+configuration hints, registry/API checks, guarded dependency security, publish-content dry runs,
+and clean web, Next.js, React Native and MCP consumers. Both external MCP transports pass.
+All 164 canonical framework conformance checks pass across desktop/mobile Chromium and WebKit;
+the ten affected Astro form-page checks pass at 390 and 1440 pixels. Synthetic mobile and desktop
+captures were inspected. Later documentation-only release commits are preserved before local
+integration and receive the completion gate again. This is local library/consumer evidence;
+publication approval and remote release orchestration remain separate.
