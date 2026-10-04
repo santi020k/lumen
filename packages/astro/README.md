@@ -608,3 +608,16 @@ than nesting controls inside a linked Attachment. The application retains file v
 authorization, persistence, and object URL cleanup. See the
 [attachment composition recipe](../../docs/consumer-ui-recipes.md#attachment-previews-and-file-lists)
 for adapter props, slots, child contracts, retry identity, and safe state events.
+
+## Chart datum actions
+
+Set `drilldown` on BarChart, LineChart, PieChart, ScatterChart, ComboChart, Heatmap, or RangeChart
+and mount `UIPrimitives` once. Each available plotted datum has a corresponding native button in
+the actions disclosure, including when `showTable={false}`. Marks remain decorative to assistive
+technology. The figure emits `ui:chart-datum-activate` with a validated
+`LumenChartDatumActivationDetail`; apps decide whether to navigate, filter, or open a detail view.
+
+Translate `labels.exploreData` and `labels.formatDatumAction(context)`, and format visible values
+with the chart's existing formatters. Missing observations have no action; pie actions cover only
+positive slices. A line's `markers="none"` hides visible markers while retaining pointer targets
+and native keyboard actions. See [data visualization](../../docs/data-visualization.md#astro-chart-actions).

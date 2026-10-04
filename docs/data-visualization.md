@@ -89,6 +89,33 @@ The DOM controller described in the [core README](../packages/core/README.md#cha
 provides a common event path for custom marks and native buttons. It handles no fetching or
 navigation. An activation payload is UI context, never proof that an operation is authorized.
 
+## Astro chart actions
+
+Astro's seven data charts accept `drilldown`. Mount `UIPrimitives` once in the page layout and
+listen for `ui:chart-datum-activate` on the chart figure or a containing application surface.
+The event uses the validated payload documented above, preserving the original X value even
+when combo geometry transforms it for plotting.
+
+```astro
+<BarChart
+  id="collection-chart"
+  aria-label="Collections by month"
+  drilldown
+  series={collectionSeries}
+  showTable={false}
+  labels={{
+    exploreData: 'Explorar datos del gráfico',
+    formatDatumAction: context => `Abrir detalles: ${context}`
+  }}
+/>
+```
+
+The action disclosure remains available when the table is hidden. Its native buttons support
+Enter, Space, and ordinary Tab order without making SVG marks part of the accessibility tree.
+Line and combo point targets retain their actions when visible markers are omitted. Static
+charts keep their existing output unless drilldown is enabled. Use chart formatters and the
+remaining label overrides to keep the entire chart in the application's language.
+
 ## Accessibility
 
 Every data chart needs a useful accessible name. Lumen adds a factual generated summary describing

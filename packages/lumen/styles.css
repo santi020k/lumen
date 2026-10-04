@@ -4449,6 +4449,46 @@ lumen-dialog-close {
   stroke-width: 1.5;
 }
 
+/* Datum marks remain decorative; the actions disclosure supplies native keyboard controls. */
+.ui-chart [data-ui-chart-datum] {
+  cursor: pointer;
+}
+
+.ui-chart svg .ui-chart__datum-hit {
+  fill: transparent;
+  stroke: none;
+  pointer-events: all;
+}
+
+
+.ui-chart__actions {
+  min-width: 0;
+}
+
+.ui-chart__actions summary {
+  cursor: pointer;
+}
+
+.ui-chart__actions ul {
+  display: grid;
+  gap: var(--ui-space-related);
+  padding: 0;
+  list-style: none;
+}
+
+.ui-chart__actions .ui-button {
+  height: auto;
+  min-height: 44px;
+  max-width: 100%;
+  white-space: normal;
+  text-align: start;
+}
+
+.ui-chart__actions .ui-button__content {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
 .ui-chart__data {
   border-top: var(--ui-border-width, 1px) solid hsl(var(--line));
   color: hsl(var(--ink-soft));

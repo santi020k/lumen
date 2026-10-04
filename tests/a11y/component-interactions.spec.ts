@@ -2,6 +2,7 @@ import { expect, type Page, test } from '@playwright/test'
 
 import type { LumenComponentName } from '../../packages/core/src/components.js'
 
+import { verifyAstroChartActivation } from './chart-activation.js'
 import { runtimeBehaviorComponentNames } from './component-coverage.js'
 
 const openPreview = async (page: Page, slug: string) => {
@@ -976,6 +977,12 @@ test('runtime behavior registry is completely represented', () => {
   expect([...registeredBehaviorComponents].sort())
     .toEqual([...runtimeBehaviorComponentNames].sort())
 })
+
+behaviorTest(
+  ['BarChart', 'LineChart', 'PieChart', 'ScatterChart', 'ComboChart', 'Heatmap', 'RangeChart'],
+  'Chart datum actions preserve identity across pointer and keyboard activation',
+  async ({ page }) => { await verifyAstroChartActivation(page) }
+)
 
 behaviorTest(
   ['DialogClose'],

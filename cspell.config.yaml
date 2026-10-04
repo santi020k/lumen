@@ -1,6 +1,18 @@
 version: "0.2"
 language: en
 words:
+  - drilldown
+  - Columna
+  - Explorar
+  - detalles
+  - intervalos
+  - observaciones
+  - Máximo
+  - Mínimo
+  - Evolución
+  - Distribución
+  - Relación
+  - proyección
   - Operaciones
   - seguimiento
   - pendientes

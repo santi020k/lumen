@@ -1,0 +1,103 @@
+---
+import '@santi020k/lumen/styles.css'
+
+import { BarChart, ComboChart, Container, Heatmap, LineChart, PieChart, RangeChart, ScatterChart, Stack, Typography } from '@santi020k/lumen-astro'
+import UIPrimitives from '@santi020k/lumen-astro/runtime'
+import type { LumenChartLabels, LumenChartSeries } from '@santi020k/lumen-core'
+
+const series: readonly LumenChartSeries[] = [{
+  id: 'received',
+label: 'Payments',
+data: [
+    { id: 'zero', x: '2026-10-01', xLabel: 'Oct 1', y: 0 },
+    { id: 'positive', x: '2026-10-02', xLabel: 'Oct 2', y: 20 },
+    { id: 'missing', x: '2026-10-03', y: null }
+  ]
+}]
+
+const scatter = [{ ...series[0],
+id: 'received',
+label: 'Payments',
+data: [
+  { id: 'zero', x: 1, y: 0 }, { id: 'positive', x: 2, y: 20 }, { id: 'missing', x: 3, y: null }
+] }]
+
+const combo = [{ ...series[0], id: 'received', label: 'Payments', data: series[0]?.data ?? [], mark: 'bar' as const }, {
+  id: 'forecast',
+label: 'Forecast',
+mark: 'line' as const,
+data: [
+    { id: 'forecast-zero', x: '2026-10-01', y: 0 }, { id: 'forecast-positive', x: '2026-10-02', y: 10 }
+  ]
+}]
+
+const heatmap = [{ id: 'zero', value: 0, x: 'October', y: 'Monday' }, { id: 'positive', value: 20, x: 'October', y: 'Tuesday' }, { id: 'missing', value: null, x: 'October', y: 'Wednesday' }]
+const ranges = [{ id: 'zero', low: 0, high: 0, x: '2026-10-01' }, { id: 'positive', low: 10, high: 20, x: '2026-10-02' }, { id: 'missing', low: null, high: null, x: '2026-10-03' }]
+const pie = series[0]
+
+const labels: Partial<LumenChartLabels> = {
+  category: 'Categoría',
+chartData: 'Datos del gráfico',
+chartLegend: 'Leyenda',
+column: 'Columna',
+  empty: 'No hay datos disponibles.',
+exploreData: 'Explorar datos del gráfico',
+  formatDatumAction: context => `Abrir detalles: ${context}`,
+  formatHeatmapSummary: count => `${count} celdas disponibles.`,
+  formatRangeSummary: count => `${count} intervalos disponibles.`,
+  formatSummary: summary => `${summary.availablePointCount} observaciones disponibles.`,
+  high: 'Máximo',
+low: 'Mínimo',
+notAvailable: 'No disponible',
+row: 'Fila',
+series: 'Serie',
+size: 'Tamaño',
+  value: 'Valor',
+viewData: 'Ver datos del gráfico',
+x: 'X'
+}
+---
+
+<!doctype html>
+<html lang="es" data-theme="light">
+  <head><meta charset="utf-8" /><meta name="viewport" content="width=device-width" /><meta name="robots" content="noindex, nofollow" /><title>Chart datum activation</title></head>
+  <body>
+    <Container as="main" size="lg">
+      <Stack gap="section">
+        <Typography><h1>Explorar datos del gráfico</h1></Typography>
+        <p role="status" aria-live="polite" data-activation-result style="overflow-wrap: anywhere; min-width: 0">Sin selección</p>
+        <BarChart data-chart-example="bar" aria-label="Bar" heading="Cobros por día" drilldown {labels} {series} showTable={false} />
+        <LineChart data-chart-example="line" aria-label="Line" heading="Evolución de cobros" drilldown {labels} {series} markers="none" showTable={false} />
+        {pie && <PieChart data-chart-example="pie" aria-label="Pie" heading="Distribución de cobros" drilldown {labels} series={pie} showTable={false} />}
+        <ScatterChart data-chart-example="scatter" aria-label="Scatter" heading="Relación de cobros" drilldown {labels} series={scatter} showTable={false} />
+        <ComboChart data-chart-example="combo" aria-label="Combo" heading="Cobros y proyección" drilldown {labels} series={combo} showTable={false} />
+        <Heatmap data-chart-example="heatmap" aria-label="Heatmap" heading="Cobros por actividad" drilldown {labels} data={heatmap} showTable={false} />
+        <RangeChart data-chart-example="range" aria-label="Range" heading="Intervalos de cobros" drilldown {labels} data={ranges} showTable={false} />
+        <BarChart data-chart-example="static" aria-label="Static" {labels} {series} />
+        <Heatmap data-chart-example="empty" aria-label="Empty" drilldown {labels} data={[]} showTable={false} />
+      </Stack>
+    </Container>
+    <UIPrimitives />
+    <script>
+      import { parseLumenChartDatumActivation } from '@santi020k/lumen-core'
+
+      const result = document.querySelector<HTMLElement>('[data-activation-result]')
+      let count = 0
+
+      document.addEventListener('ui:chart-datum-activate', event => {
+        if (!(event instanceof CustomEvent) || !result) return
+
+        const input: unknown = event.detail
+        const detail = parseLumenChartDatumActivation(input)
+
+        if (!detail) return
+
+        count += 1
+
+        result.dataset.count = String(count)
+
+        result.textContent = JSON.stringify(detail)
+      })
+    </script>
+  </body>
+</html>
