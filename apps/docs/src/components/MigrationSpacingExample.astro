@@ -1,0 +1,41 @@
+---
+import { Badge, Card, CodeTabs, Stack } from '@santi020k/lumen-astro'
+
+const layouts = [
+  { label: 'V3 baseline', gap: 'xl', note: 'gap="lg" was 24px', code: '<Stack gap="lg">' },
+  { label: 'V4 without migration', gap: 'lg', note: 'gap="lg" is now 16px', code: '<Stack gap="lg">' },
+  { label: 'V4 preserving the layout', gap: 'xl', note: 'gap="xl" keeps 24px', code: '<Stack gap="xl">' }
+] as const
+
+const code = [
+  { value: 'before', label: 'Before · v3', language: 'astro', code: '<Stack gap="lg">\n  <Card>Workspace</Card>\n  <Card>Activity</Card>\n</Stack>' },
+  { value: 'after', label: 'After · v4', language: 'astro', code: '<Stack gap="xl">\n  <Card>Workspace</Card>\n  <Card>Activity</Card>\n</Stack>' }
+] as const
+---
+<section class="docs-section" id="migration-spacing" aria-labelledby="migration-spacing-title" data-migration-spacing>
+  <div class="docs-section-heading">
+    <p>Compare before upgrading</p>
+    <h2 id="migration-spacing-title">Preserve the space between groups</h2>
+    <p>The same prop name can have a different size. Migrate the explicit gap to retain the original rhythm.</p>
+  </div>
+  <div class="migration-comparison">
+    {layouts.map(layout => (
+<Card variant="muted">
+      <Badge variant="outline">{layout.label}</Badge>
+      <code>{layout.code}</code>
+      <Stack gap={layout.gap} data-spacing-sample>
+        <Card density="compact"><strong>Workspace</strong><p>Your team settings.</p></Card>
+        <Card density="compact"><strong>Activity</strong><p>Recent changes.</p></Card>
+      </Stack>
+      <p>{layout.note}</p>
+    </Card>
+))}
+  </div>
+  <p class="migration-caption">The v3 column reconstructs its documented 24px gap using the current renderer. All three columns use current Card styling; this compares spacing, not a historical package build. Pixel equivalents assume a 16px root.</p>
+  <CodeTabs items={code} ariaLabel="Spacing migration source" />
+</section>
+<style>
+  .migration-comparison { display: grid; gap: var(--ui-space-group); min-width: 0; }
+  .migration-caption { color: hsl(var(--ink-soft)); font-size: 0.875rem; }
+  @media (min-width: 64rem) { .migration-comparison { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+</style>
