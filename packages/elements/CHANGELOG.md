@@ -2,6 +2,10 @@
 
 ## 4.0.0
 
+- Allow assigning the native input type property before and after connection. React custom-element property updates no longer fail when mounting a Lumen input; validation updates without clearing its value.
+
+  Custom-element buttons now activate with Enter and Space, respect canceled/repeated/composing keys, and block disabled/loading direct activation. Reconnection preserves one listener set.
+
 ### Patch Changes
 
 - Enter ContextMenu items from container focus with ArrowUp selecting the last item and ArrowDown selecting the first.

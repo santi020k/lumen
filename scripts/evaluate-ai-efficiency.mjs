@@ -7,6 +7,7 @@ import { isAbsolute, join, relative, resolve } from 'node:path'
 import { parseArgs } from 'node:util'
 
 import { hasComponentLookup, readCodexUsage, summarizeEfficiency } from './lib/ai-efficiency-metrics.mjs'
+import { efficiencyScenarios } from './lib/ai-efficiency-scenarios.mjs'
 import { verifyEfficiencyScreen } from './lib/verify-ai-efficiency-screen.mjs'
 
 const root = resolve(import.meta.dirname, '..')
@@ -24,18 +25,7 @@ const relativeOutput = relative(root, output)
 assert.ok(relativeOutput === '..' || relativeOutput.startsWith('../') || isAbsolute(relativeOutput), 'Keep synthetic fixtures and transcripts outside the repository.')
 
 const modes = ['scratch', 'docs', 'skill-mcp']
-
-const scenarios = [
-  {
-    id: 'profile-dialog', heading: 'Profile',
-    prompt: 'Build a profile settings screen with the main h1 Profile. The Edit profile button opens a modal dialog named Profile settings. Its Display name text field initially contains Ada and receives focus on opening. Editing the field persists across closing and reopening. Escape and the Cancel button both close the dialog and return focus to Edit profile. Trap keyboard focus while the modal is open.'
-  },
-  {
-    id: 'notification-settings', heading: 'Notification settings',
-    prompt: 'Build a settings screen with the main h1 Notification settings. The Email address field initially contains ada@example.com. Show delivery details toggles the initially hidden text Weekly summaries arrive on Monday. without clearing edited input. Save preferences displays a status region containing Preferences saved for <email>. using the current field value. This is an in-memory demo, with no network or persistence across page reloads.'
-  }
-]
-
+const scenarios = efficiencyScenarios
 const hash = text => createHash('sha256').update(text).digest('hex')
 
 const protectedHash = async directory => {
@@ -44,6 +34,7 @@ const protectedHash = async directory => {
 
   for (const entry of entries.sort((left, right) => left.name.localeCompare(right.name))) {
     if (['Screen.tsx', 'Screen.css', 'evidence', 'entry.tsx', 'app.js', 'app.css', 'index.html',
+      '390-filtered.png', '1440-filtered.png',
       '390-initial.png', '390-open.png', '390-details.png', '390-saved.png',
       '1440-initial.png', '1440-open.png', '1440-details.png', '1440-saved.png'].includes(entry.name)) continue
 
@@ -91,7 +82,7 @@ const invoke = (args, directory, attempt) => new Promise((resolve, reject) => {
   })
 })
 
-const setup = async (directory, mode) => {
+const setup = async (directory, mode, framework) => {
   await mkdir(join(directory, 'evidence'), { recursive: true })
 
   await writeFile(join(directory, 'Screen.tsx'), 'export default function Screen() { return null }\n')
@@ -100,35 +91,49 @@ const setup = async (directory, mode) => {
 
   await writeFile(join(directory, 'fixture-env.d.ts'), "declare module '*.css' { const stylesheet: string; export default stylesheet }\n")
 
-  await writeFile(join(directory, 'package.json'), JSON.stringify({ private: true, type: 'module', dependencies: { react: '19.2.3', ...(mode === 'scratch' ? {} : { '@santi020k/lumen-react': '4.0.0' }) } }, null, 2))
+  const adapter = framework === 'elements' ? 'elements' : 'react'
+
+  await writeFile(join(directory, 'package.json'), JSON.stringify({ private: true, type: 'module', dependencies: { react: '19.2.3', ...(mode === 'scratch' ? {} : { [`@santi020k/lumen-${adapter}`]: '4.0.0' }) } }, null, 2))
 
   await writeFile(join(directory, 'AGENTS.md'), 'Synthetic local UI evaluation. Edit only Screen.tsx and Screen.css. Read only this fixture and the connected Lumen MCP tools when available. Do not access other folders, external services, user configuration, or other skills. Do not install dependencies, run commands outside this folder, commit, or modify harness files. Use accurate types without any, unsafe casts, non-null assertions, or suppressions. The host will compile and verify the output.\n')
 
   if (mode !== 'scratch') {
-    const target = join(directory, 'node_modules/@santi020k/lumen-react')
+    const target = join(directory, `node_modules/@santi020k/lumen-${adapter}`)
 
     await mkdir(target, { recursive: true })
 
-    for (const name of ['README.md', 'package.json']) await cp(join(root, 'packages/react', name), join(target, name))
+    for (const name of ['README.md', 'package.json']) await cp(join(root, `packages/${adapter}`, name), join(target, name))
 
-    await cp(join(root, 'packages/react/dist'), join(target, 'dist'), { recursive: true, filter: path => !path.endsWith('.js') && !path.endsWith('.map') })
+    await cp(join(root, `packages/${adapter}/dist`), join(target, 'dist'), { recursive: true, filter: path => !path.endsWith('.js') && !path.endsWith('.map') })
   }
 
   if (mode === 'skill-mcp') await cp(join(root, 'skills/lumen-ui'), join(directory, '.agents/skills/lumen-ui'), { recursive: true })
 }
 
-const approachFor = mode => mode === 'scratch' ? 'Use native HTML controls and your own CSS in React. No component library is available.' :
-    `Use public Lumen React primitives and the existing stylesheet, which the host loads once. ${mode === 'docs' ? 'Read the installed package README and declaration files. No MCP or agent skill is available.' : 'Read .agents/skills/lumen-ui/SKILL.md and use the local Lumen MCP catalog for the relevant React usage contracts.'}`
+const approachFor = (mode, framework) => {
+  if (mode === 'scratch') return 'Use native HTML controls and your own CSS in React. No component library is available.'
+
+  const target = framework === 'elements' ? 'Elements' : 'React'
+  const adapter = framework === 'elements' ? 'Elements custom elements in the provided React host' : 'React primitives'
+
+  const discovery = mode === 'docs' ? 'Read the installed package README and declaration files. No MCP or agent skill is available.' :
+    `Read .agents/skills/lumen-ui/SKILL.md and use the local Lumen MCP catalog for the relevant ${target} usage contracts.`
+
+  const setup = framework === 'elements' ? ' Create lumen-input and lumen-button with React.createElement. The host registers those elements once; preserve native labels and bubbling input events.' : ''
+
+  return `Use public Lumen ${adapter} and the existing stylesheet, which the host loads once. ${discovery}${setup}`
+}
 
 const configurationFor = mode => mode === 'skill-mcp' ? ['-c', `mcp_servers.lumen.command=${JSON.stringify(process.execPath)}`, '-c', `mcp_servers.lumen.args=${JSON.stringify([join(root, 'packages/mcp/bin/lumen-mcp.mjs')])}`] : []
+const frameworkFor = scenario => scenario.framework ?? 'react'
 
 const evaluateRun = async (scenario, mode, repetition) => {
   const directory = join(output, `${scenario.id}-${mode}-${repetition}`)
 
-  await setup(directory, mode)
+  await setup(directory, mode, frameworkFor(scenario))
 
   const protectedBefore = await protectedHash(directory)
-  const approach = approachFor(mode)
+  const approach = approachFor(mode, frameworkFor(scenario))
   const basePrompt = `${scenario.prompt}\n${approach}\nExport a default React component from Screen.tsx; put extra CSS in Screen.css. Use a readable light interface, a centered content area no wider than 48rem, sufficient spacing and contrast, visible keyboard focus, meaningful labels, and no horizontal overflow at 390px and 1440px. Use only synthetic data. The host supplies React, bundles the screen and checks types, keyboard behavior, state preservation, runtime errors and WCAG axe checks. Edit only these two files. Do not run the host checks or inspect other folders.\n`
   const run = { case: scenario.id, mode, repetition, status: 'failed', durationMs: 0, usage: null, attempts: [] }
   let feedback = ''
@@ -203,16 +208,18 @@ if (values['verify-only']) {
   assert.deepEqual(await readdir(output), [], 'Use a fresh output directory; never overwrite earlier runs.')
 
   const report = {
-    schemaVersion: 1, createdAt: new Date().toISOString(),
+    schemaVersion: 2, createdAt: new Date().toISOString(),
     revision: execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim(),
     cli: execFileSync('codex', ['--version'], { encoding: 'utf8' }).trim(),
     model: values.model, effort: values.effort, repetitions, maxAttempts: 2,
     hashes: {
+      scenarios: hash(await readFile(join(root, 'scripts/lib/ai-efficiency-scenarios.mjs'))),
+      elements: await protectedHash(join(root, 'packages/elements/dist')),
       harness: hash(await readFile(import.meta.filename)),
       verifier: hash(await readFile(join(root, 'scripts/lib/verify-ai-efficiency-screen.mjs'))),
       metrics: hash(await readFile(join(root, 'scripts/lib/ai-efficiency-metrics.mjs'))),
       stylesheet: hash(await readFile(join(root, 'packages/lumen/styles.css'))),
-      react: hash(await readFile(join(root, 'packages/react/dist/index.js'))),
+      react: await protectedHash(join(root, 'packages/react/dist')),
       catalog: hash(await readFile(join(root, 'packages/mcp/data/lumen-data.json'))),
       skill: await protectedHash(join(root, 'skills/lumen-ui'))
     },
@@ -221,7 +228,7 @@ if (values['verify-only']) {
 
   await mkdir(join(output, 'harness'))
 
-  for (const file of ['scripts/evaluate-ai-efficiency.mjs', 'scripts/lib/verify-ai-efficiency-screen.mjs', 'scripts/lib/ai-efficiency-metrics.mjs', 'packages/lumen/styles.css']) {
+  for (const file of ['scripts/evaluate-ai-efficiency.mjs', 'scripts/lib/verify-ai-efficiency-screen.mjs', 'scripts/lib/ai-efficiency-metrics.mjs', 'scripts/lib/ai-efficiency-scenarios.mjs', 'packages/lumen/styles.css']) {
     await cp(join(root, file), join(output, 'harness', file.split('/').at(-1)))
   }
 

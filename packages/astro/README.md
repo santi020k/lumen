@@ -686,3 +686,6 @@ Use `CalendarHeatmap` for daily date-only observations with an explicit start/en
 `FunnelChart` for ordered nonnegative stages, and `BoxPlot` for precomputed quartiles, whiskers,
 and outliers. All retain missing values and expose exact data. See the
 [data visualization guide](../../docs/data-visualization.md#calendars-funnels-and-box-plots).
+
+Media controllers for ImageComparison and FileUpload load only when matching components are present.
+Keep mounting `UIPrimitives` once; no additional consumer setup is required.

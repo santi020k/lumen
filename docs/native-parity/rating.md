@@ -1,5 +1,9 @@
 # Native Rating
 
+Release requirements follow the [current native release policy](../native-release-runbook.md#current-release-policy).
+The implementation verification below is historical evidence; physical-device and stability
+completion statements do not define current launch gates.
+
 The three existing native `LumenRating` controls implement Astro's whole-star rating behavior.
 React Native and Compose use controlled values/change callbacks; SwiftUI uses a binding. Selecting
 an option requests that value; the host owns state and any submission or persistence. Zero means

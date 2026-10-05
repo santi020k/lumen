@@ -436,6 +436,23 @@ describe('getRecipe', () => {
 })
 
 describe('search', () => {
+  test('filters kinds before limiting and reports the filtered total', () => {
+    const complete = search({ query: 'button', limit: 100 })
+    const expected = complete.data.results.filter(result => result.kind === 'component')
+    const focused = search({ query: 'button', kind: 'component', framework: 'react', limit: 1 })
+    expect(focused.data.results).toHaveLength(1)
+    expect(focused.data.results[0]).toMatchObject({ kind: 'component', name: 'Button' })
+    expect(focused.data.total).toBeGreaterThan(1)
+    const all = search({ query: 'button', kind: 'component', limit: 100 })
+    expect(all.data.results).toEqual(expected)
+    expect(all.data.total).toBe(expected.length)
+  })
+
+  test.each(['native-component', 'recipe', 'rule', 'token'] as const)('keeps %s searches isolated', kind => {
+    const result = search({ query: 'theme', kind })
+    expect(result.data.results.every(match => match.kind === kind)).toBe(true)
+  })
+
   test('finds components by keyword', () => {
     const result = search({ query: 'button' })
 

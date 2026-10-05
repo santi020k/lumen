@@ -1065,6 +1065,20 @@ describe('@santi020k/lumen-elements', () => {
     expect(updates.checked).toBe(true)
   })
 
+  test('input type property can be assigned before connection and updated afterward', () => {
+    const input = document.createElement('lumen-input')
+    expect(Reflect.set(input, 'type', 'email')).toBe(true)
+    input.setAttribute('value', 'invalid-email')
+    document.body.append(input)
+    const control = requireValue(input.querySelector('input'))
+    expect(control.type).toBe('email')
+    expect(control.validity.typeMismatch).toBe(true)
+    expect(Reflect.set(input, 'type', 'text')).toBe(true)
+    expect(control.type).toBe('text')
+    expect(control.value).toBe('invalid-email')
+    expect(control.validity.typeMismatch).toBe(false)
+  })
+
   test('scalar custom controls expose native validity and focus', () => {
     document.body.innerHTML = `
       <form>

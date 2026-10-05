@@ -294,6 +294,8 @@ export const createLumenServer = (): McpServer => {
         framework: z.enum(['astro', 'react', 'elements'])
           .optional()
           .meta({ description: 'Only search framework-specific component contracts for this target.' }),
+        kind: z.enum(['component', 'native-component', 'recipe', 'rule', 'token']).optional()
+          .meta({ description: 'Return only this kind of match; combine with limit for focused discovery.' }),
         limit: z.int().min(1).max(100)
           .optional()
           .meta({ description: 'Maximum results to return (1-100, default 20).' }),

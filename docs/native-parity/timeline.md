@@ -1,5 +1,9 @@
 # Timeline native parity
 
+Release requirements follow the [current native release policy](../native-release-runbook.md#current-release-policy).
+The implementation verification below is historical evidence; physical-device and stability
+completion statements do not define current launch gates.
+
 Astro's Timeline is a compound chronological list. Hosts supply ordered item content and optional
 decorative markers; the reference hides the final item's connector. Native adapters retain the same
 composition boundary without adding date formatting, event data, sorting, status or network behavior.

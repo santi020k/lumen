@@ -17,7 +17,14 @@ qualification-blocker statements in this working record. See the
 The v4 contract still requires explicit approval of the final reviewed revision. Automated release
 checks, package-consumer canaries, compatibility, security, and provenance remain required.
 
-## Release PR candidate — October 4
+## Historical preparation checkpoints
+
+Everything below records earlier candidate revisions and the policy in force when each check ran.
+Historical candidate passes/failures, qualification tables and next actions do not establish the
+current revision's checks or blockers. Use the current release policy above, current branch and CI
+state, and approval bound to the final reviewed revision for present-day release decisions.
+
+## Historical release PR candidate — October 4
 
 The release checkout now contains every local branch tip and all existing remote branch tips.
 Completed comparison charts `a5990fb7`, combined chart integration `84629085`, mobile layout fixes
@@ -87,7 +94,7 @@ source-build and simulator evidence remains in [native quality](lumen-4-native-q
 this preparation run does not relabel it as physical-device qualification. The React and Elements
 bundles retain their public contracts after artifact reductions.
 
-### Current verification and remaining gates
+### Checkpoint verification and then-required gates
 
 Canonical `pnpm run validate` passes on `d91c9c98`: all 14 build tasks, 24 strict type/build tasks,
 1,445 tests in 137 files, 23 zero-warning lint/build tasks, spelling, Knip, registry checks, nine

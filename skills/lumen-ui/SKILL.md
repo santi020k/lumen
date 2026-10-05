@@ -20,6 +20,12 @@ Treat Astro as the reference surface, while following the user's existing stack.
    - SwiftUI or Apple platforms: `LumenUI`
    - Jetpack Compose or Android: `lumen-compose`
 3. Retrieve current contracts before guessing:
+   - Start discovery with `limit: 5` and the requested `framework` or native `platform`. Add
+     `kind: "component"` or `kind: "native-component"` when choosing primitives; use
+     `kind: "recipe"` for a complete composition. Widen the search only when those results do not
+     cover the requirement. Read `detail: "usage"` for the selected contracts; request source only
+     to resolve a specific missing detail. Reuse retrieved contracts within the same matching
+     catalog version instead of listing the full catalog for every component.
    - For Astro, React, and Elements, when Lumen MCP is connected, read snapshot metadata and diagnostics, read agent rules,
      compare resolved installed versions with `lumen_check_compatibility`, search with the target framework, then read the selected component's usage contract and tokens.
      Retain the catalog manifest when the client supports caching so a later catalog diff identifies
