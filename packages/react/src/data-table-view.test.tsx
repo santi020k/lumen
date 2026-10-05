@@ -84,6 +84,7 @@ afterEach(async () => {
 
 test('paginates immutable records, changes page size and resets filters to the first page', async () => {
   await render()
+  expect(get('section').getAttribute('role')).toBe('group')
   expect(ids()).toHaveLength(25)
   await click('Next page')
   expect(ids()).toEqual(['25', '26', '27', '28', '29', '30'])

@@ -251,7 +251,7 @@ export const DataTableView = <T extends { id: string },>(props: DataTableViewPro
   const text = { ...english, ...labels }
 
   return (
-    <section className="ui-data-table-view" data-density={state.density} aria-label={label}>
+    <section role="group" className="ui-data-table-view" data-density={state.density} aria-label={label}>
       <div className="ui-data-table-view__toolbar">
         {searchable && (
           <Field controlId={`${id}-search`}>
