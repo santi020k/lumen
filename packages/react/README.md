@@ -476,7 +476,8 @@ toast controller semantics for React applications.
 Toast timeouts pause while hovered or focused and resume only after both interactions end;
 moving focus between a toast's controls preserves its remaining duration. Updating a closing toast
 reopens it with a fresh lifetime using its current duration.
-`useRichTextEditor` also provides `getEditableProps`, value-bearing commands, common formatting
+`useRichTextEditor` honors consumer event cancellation before toolbar and shortcut commands.
+It also provides `getEditableProps`, value-bearing commands, common formatting
 shortcuts, active toolbar state, and `{ html, text }` change details.
 `DataTable` can render structured `columns` and `rows`; sortable columns use native header buttons,
 update `aria-sort`, and order string or numeric values without mutating the supplied rows. The
@@ -601,7 +602,8 @@ Apply/Cancel actions and domain limits such as maximum report duration. Labels a
 
 ## Input-attached date range selection
 
-`DateRangeInput` wraps `DateRangeCalendar` in an anchored, non-modal popover. Outside-focus dismissal
+`DateRangeInput` wraps `DateRangeCalendar` in an anchored, non-modal popover.
+It measures and observes its owning viewport, including iframe documents. Outside-focus dismissal
 follows the owning document, including same-origin iframe and portal rendering. Use it
 when the range should be edited directly from an input-like control. It keeps draft
 changes internal and calls `onValueChange` only when the user chooses Apply.

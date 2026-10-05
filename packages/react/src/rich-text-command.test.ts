@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { act, createElement } from 'react'
+import { act, createElement, type SyntheticEvent } from 'react'
 import { createPortal } from 'react-dom'
 import { createRoot, type Root } from 'react-dom/client'
 
@@ -12,10 +12,13 @@ let root: Root
 const fallback = vi.fn(() => true)
 const completion = vi.fn()
 const handler = vi.fn(() => false)
-const Editor = ({ external = false }: { external?: boolean }) => {
+const cancelEvent = (event: SyntheticEvent): void => {
+  event.preventDefault()
+}
+const Editor = ({ external = false, cancel = false }: { external?: boolean, cancel?: boolean }) => {
   const editor = useRichTextEditor({ ...(external ? { commandHandler: handler } : {}), onCommand: completion })
 
-  return createElement('section', { ...editor.rootProps }, createElement('button', { ...editor.getCommandProps('bold') }, 'Bold'), createElement('div', { ...editor.getEditableProps() }, 'Draft'))
+  return createElement('section', { ...editor.rootProps }, createElement('button', { ...editor.getCommandProps('bold', cancel ? { onClick: cancelEvent } : {}) }, 'Bold'), createElement('div', { ...editor.getEditableProps(cancel ? { onKeyDown: cancelEvent } : {}) }, 'Draft'))
 }
 
 beforeEach(() => {
@@ -128,4 +131,20 @@ test('leaves initial toolbar state owned by an external engine', () => {
   expect(query).not.toHaveBeenCalled()
   expect(container.querySelector('button')?.hasAttribute('aria-pressed')).toBe(false)
   expect(container.querySelector('button')?.dataset.state).toBeUndefined()
+})
+
+test.each([false, true])('consumer cancellation vetoes toolbar and shortcut commands (external=%s)', external => {
+  act(() => {
+    root.render(createElement(Editor, { external, cancel: true }))
+  })
+  const button = container.querySelector('button')
+  const editable = container.querySelector<HTMLElement>('[contenteditable]')
+
+  if (!button || !editable) throw new Error('Missing editor controls')
+
+  button.click()
+  editable.dispatchEvent(new KeyboardEvent('keydown', { key: 'b', ctrlKey: true, bubbles: true, cancelable: true }))
+  expect(handler).not.toHaveBeenCalled()
+  expect(fallback).not.toHaveBeenCalled()
+  expect(completion).not.toHaveBeenCalled()
 })

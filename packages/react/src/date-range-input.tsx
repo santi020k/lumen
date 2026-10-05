@@ -10,19 +10,19 @@ import type { CalendarRange, DateRangeCalendarProps } from './date-range-calenda
 import { DateRangeCalendar } from './date-range-calendar.js'
 import { usePopover } from './hooks.js'
 
-const viewportBounds = () => {
-  const viewport = window.visualViewport
+const viewportBounds = (view: Window) => {
+  const viewport = view.visualViewport
   const left = (viewport?.offsetLeft ?? 0) + 8
   const top = (viewport?.offsetTop ?? 0) + 8
 
   return { left,
     top,
-    right: left + (viewport?.width ?? window.innerWidth) - 16,
-    bottom: top + (viewport?.height ?? window.innerHeight) - 16 }
+    right: left + (viewport?.width ?? view.innerWidth) - 16,
+    bottom: top + (viewport?.height ?? view.innerHeight) - 16 }
 }
 
-const positionPanel = (panel: HTMLElement, control: HTMLElement) => {
-  const { left, top, right, bottom } = viewportBounds()
+const positionPanel = (panel: HTMLElement, control: HTMLElement, view: Window) => {
+  const { left, top, right, bottom } = viewportBounds(view)
   const anchor = control.getBoundingClientRect()
 
   panel.style.width = `${Math.max(0, Math.min(816, right - left))}px`
@@ -67,11 +67,13 @@ const resolveRangeInputForm = (root: HTMLElement | null, formId: string | undefi
   return root.closest('form')
 }
 
-const observePanelPosition = (panel: HTMLElement, control: HTMLElement, position: () => void) => {
-  const viewport = window.visualViewport
+const observePanelPosition = (panel: HTMLElement, control: HTMLElement, view: Window, position: () => void) => {
+  const owner = panel.ownerDocument
+  const NodeType = owner.defaultView?.Node
+  const viewport = view.visualViewport
 
   const onScroll = (event: Event) => {
-    if (event.target instanceof Node && panel.contains(event.target)) return
+    if (NodeType && event.target instanceof NodeType && panel.contains(event.target)) return
 
     position()
   }
@@ -82,9 +84,9 @@ const observePanelPosition = (panel: HTMLElement, control: HTMLElement, position
 
   observer.observe(panel)
 
-  document.addEventListener('scroll', onScroll, true)
+  owner.addEventListener('scroll', onScroll, true)
 
-  window.addEventListener('resize', position)
+  view.addEventListener('resize', position)
 
   viewport?.addEventListener('resize', position)
 
@@ -93,13 +95,19 @@ const observePanelPosition = (panel: HTMLElement, control: HTMLElement, position
   return () => {
     observer.disconnect()
 
-    document.removeEventListener('scroll', onScroll, true)
+    owner.removeEventListener('scroll', onScroll, true)
 
-    window.removeEventListener('resize', position)
+    view.removeEventListener('resize', position)
 
     viewport?.removeEventListener('resize', position)
 
     viewport?.removeEventListener('scroll', position)
+  }
+}
+
+const scrollSmallViewport = (control: HTMLElement, view: Window): void => {
+  if ((view.visualViewport?.width ?? view.innerWidth) <= 640) {
+    control.scrollIntoView({ block: 'start', behavior: 'instant' })
   }
 }
 
@@ -119,17 +127,16 @@ const RangePopover = ({ open, onOpenChange, label, trigger, children, disabled, 
 
     const panel = panelRef.current
     const control = triggerRef.current
+    const view = panel?.ownerDocument.defaultView
 
-    if (!panel || !control) return
+    if (!panel || !control || !view) return
 
-    if ((window.visualViewport?.width ?? window.innerWidth) <= 640) {
-      control.scrollIntoView({ block: 'start', behavior: 'instant' })
-    }
+    scrollSmallViewport(control, view)
 
     showPanel(panel)
 
     const position = () => {
-      positionPanel(panel, control)
+      positionPanel(panel, control, view)
     }
 
     position()
@@ -148,7 +155,7 @@ const RangePopover = ({ open, onOpenChange, label, trigger, children, disabled, 
 
     owner.addEventListener('focusin', closeOnFocusOutside)
 
-    const stopObserving = observePanelPosition(panel, control, position)
+    const stopObserving = observePanelPosition(panel, control, view, position)
 
     return () => {
       stopObserving()

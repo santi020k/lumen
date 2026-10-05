@@ -45,13 +45,13 @@ export interface RichTextEditorController {
 }
 
 const composeHandlers =
-  <Event,>(
+  <Event extends { defaultPrevented: boolean },>(
     userHandler: ((event: Event) => void) | undefined,
     lumenHandler: (event: Event) => void
   ) => (event: Event) => {
     userHandler?.(event)
 
-    lumenHandler(event)
+    if (!event.defaultPrevented) lumenHandler(event)
   }
 
 const getCommandState = (control: HTMLElement, commandDocument: RichTextCommandDocument): boolean => {

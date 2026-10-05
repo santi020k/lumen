@@ -90,7 +90,12 @@ test('dismisses an iframe popover when focus leaves its owning document panel', 
   document.body.append(iframe)
   const owner = iframe.contentDocument
 
-  if (!owner) throw new Error('Missing iframe document')
+  if (!owner?.defaultView) throw new Error('Missing iframe document')
+
+  const view = owner.defaultView
+
+  Object.defineProperty(view, 'innerWidth', { configurable: true, value: 320 })
+  Object.defineProperty(view, 'innerHeight', { configurable: true, value: 480 })
 
   const container = owner.createElement('div')
   const outside = owner.createElement('button')
@@ -108,11 +113,32 @@ test('dismisses an iframe popover when focus leaves its owning document panel', 
 
     if (!trigger) throw new Error('Missing range trigger')
 
+    const scrollIntoView = vi.fn()
+
+    trigger.scrollIntoView = scrollIntoView
+
     await act(async () => {
       await Promise.resolve()
       trigger.click()
     })
     expect(trigger.getAttribute('aria-expanded')).toBe('true')
+    const panel = container.querySelector<HTMLElement>('[role="dialog"]')
+
+    if (!panel) throw new Error('Missing range panel')
+
+    expect(panel.style.width).toBe('304px')
+    expect(scrollIntoView).toHaveBeenCalledExactlyOnceWith({ block: 'start', behavior: 'instant' })
+    Object.defineProperty(view, 'innerWidth', { configurable: true, value: 480 })
+    view.dispatchEvent(new Event('resize'))
+    expect(panel.style.width).toBe('464px')
+    Object.defineProperty(view, 'innerWidth', { configurable: true, value: 400 })
+    panel.dispatchEvent(new Event('scroll', { bubbles: true }))
+    expect(panel.style.width).toBe('464px')
+    owner.dispatchEvent(new Event('scroll'))
+    expect(panel.style.width).toBe('384px')
+    Object.defineProperty(view, 'innerWidth', { configurable: true, value: 600 })
+    window.dispatchEvent(new Event('resize'))
+    expect(panel.style.width).toBe('384px')
     await act(async () => {
       await Promise.resolve()
       outside.focus()

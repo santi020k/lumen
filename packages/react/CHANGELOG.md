@@ -4,6 +4,8 @@
 
 ### Patch Changes
 
+- Position date-range popovers using their owning viewport and honor canceled consumer rich-text commands.
+
 - Dismiss context menus and tooltips on outside interactions, preserve fallback table identities across sorting, restore iframe panel focus, and restart reopened toast lifetimes. Optimize shipped controller modules with the established React build minification.
 
 - Reject duplicate table identities, respect sortable columns, and dismiss date-range popovers when focus leaves their owning document.
