@@ -111,6 +111,11 @@ describe('Lumen integration diagnostics', () => {
     '{/* <Runtime /> */ null}',
     '{// <Runtime />\n null}',
     '{/<Runtime>/.test("x")}',
+    '{(() => { return /<Runtime\\s*\\/>/ })()}',
+    '{(() => { throw /<Runtime\\s*\\/>/ })()}',
+    '{(() => { switch (value) { case /<Runtime\\s*\\/>/: break } })()}',
+    '{(function* () { yield /<Runtime\\s*\\/>/ })()}',
+    '{(()=>{returnValue / 2; return /<Runtime\\s*\\/>/})()}',
     '{/[<Runtime>\\/]/.test("x")}'
   ])('ignores runtime examples in raw text and expressions: %s', async example => {
     const root = await mkdtemp(join(tmpdir(), 'lumen-doctor-runtime-example-'))
@@ -134,6 +139,9 @@ describe('Lumen integration diagnostics', () => {
     ['Runtime', `<script>const text = "${'\u0130'.repeat(20)}";</script><Runtime />`, true],
     ['Runtime', '{1 < 2 && <Runtime />}', true],
     ['Runtime', '{a<b && <Runtime />}', true],
+    ['Runtime', '{object.return / 2 && <Runtime />}', true],
+    ['Runtime', `{${String.fromCodePoint(0x03c0)}return / 2 && <Runtime />}`, true],
+    ['Runtime', `{${String.fromCodePoint(0x10400)}return / 2 && <Runtime />}`, true],
     ['Runtime', '{a < b && <Runtime />}', true],
     ['Script', '<Script /><Script />', false],
     ['Style', '<Style /><Style />', false]

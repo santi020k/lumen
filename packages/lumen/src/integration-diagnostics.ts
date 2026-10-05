@@ -626,13 +626,41 @@ const skipRuntimeQuotedText = (source: string, start: number): number => {
 }
 
 const runtimeRegexPrefixes = new Set(['{', '(', '[', '=', ':', ',', ';', '!', '?', '&', '|', '+', '*', '%', '~', '^', '<', '>', '-'])
+const runtimeRegexKeywords = new Set(['return', 'throw', 'case', 'yield', 'typeof', 'void', 'delete', 'instanceof', 'in', 'of', 'await', 'else', 'do'])
+
+const runtimeCodePointStart = (source: string, index: number): number => {
+  const current = source.charCodeAt(index)
+  const previous = source.charCodeAt(index - 1)
+
+  return current >= 0xdc00 && current <= 0xdfff && previous >= 0xd800 && previous <= 0xdbff ? index - 1 : index
+}
+
+const previousRuntimeCharacter = (source: string, start: number, pattern: RegExp): number => {
+  let previous = start
+
+  while (previous >= 0) {
+    const pointStart = runtimeCodePointStart(source, previous)
+
+    if (!pattern.test(source.slice(pointStart, previous + 1))) break
+
+    previous = pointStart - 1
+  }
+
+  return previous
+}
 
 const isRuntimeRegexStart = (source: string, start: number): boolean => {
-  let previous = start - 1
+  const previous = previousRuntimeCharacter(source, start - 1, /\s/u)
 
-  while (previous >= 0 && /\s/u.test(source[previous] ?? '')) previous -= 1
+  if (previous < 0 || runtimeRegexPrefixes.has(source[previous] ?? '')) return true
 
-  return runtimeRegexPrefixes.has(source[previous] ?? '')
+  const wordEnd = previous + 1
+  const wordStart = previousRuntimeCharacter(source, previous, /[$\u200c\u200d\p{ID_Continue}]/u) + 1
+  const keyword = source.slice(wordStart, wordEnd)
+
+  if (!runtimeRegexKeywords.has(keyword)) return false
+
+  return source[previousRuntimeCharacter(source, wordStart - 1, /\s/u)] !== '.'
 }
 
 const skipRuntimeRegex = (source: string, start: number): number => {

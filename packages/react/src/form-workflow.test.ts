@@ -7,7 +7,7 @@ import { renderToString } from 'react-dom/server'
 import { afterEach, expect, test, vi } from 'vitest'
 
 import type { LumenFormWorkflow } from './form-workflow.js'
-import { useLumenAsyncCheck, useLumenBeforeUnload, useLumenFieldArray, useLumenFormSteps, useLumenFormWorkflow } from './form-workflow.js'
+import { isLumenFormControl, useLumenAsyncCheck, useLumenBeforeUnload, useLumenFieldArray, useLumenFormSteps, useLumenFormWorkflow } from './form-workflow.js'
 
 Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true })
 const containers: HTMLElement[] = []
@@ -331,4 +331,70 @@ test('field row labels retain their server-rendered identities during hydration'
   expect(new Set(Array.from(container.querySelectorAll('input'), input => input.id)).size).toBe(3)
   expect(recover).not.toHaveBeenCalled()
   expect(errors).not.toHaveBeenCalled()
+})
+
+test('validates and tracks iframe controls using their own realm', async () => {
+  const frame = document.createElement('iframe')
+  document.body.append(frame)
+  containers.push(frame)
+  const doc = frame.contentDocument
+  const view = doc?.defaultView
+  if (!doc || !view) throw new Error('Missing iframe fixture')
+  const container = doc.createElement('div')
+  doc.body.append(container)
+  const root = createRoot(container)
+  roots.push(root)
+  let current: LumenFormWorkflow | undefined
+  const Fixture = () => {
+    current = useLumenFormWorkflow()
+    return createElement('form', current.formProps, createElement('input', { id: 'required', name: 'required', required: true }), createElement('input', { id: 'check', name: 'check', type: 'checkbox', defaultChecked: false }), createElement('select', { id: 'select', name: 'select', multiple: true, defaultValue: ['one'] }, createElement('option', { value: 'one' }, 'One'), createElement('option', { value: 'two' }, 'Two')))
+  }
+  await act(async () => {
+    root.render(createElement(Fixture))
+    await Promise.resolve()
+  })
+  const get = () => {
+    if (!current) throw new Error('Missing iframe workflow')
+    return current
+  }
+  const required = doc.getElementById('required')
+  const checkbox = doc.getElementById('check')
+  const select = doc.getElementById('select')
+  if (!(required instanceof view.HTMLInputElement) || !(checkbox instanceof view.HTMLInputElement) || !(select instanceof view.HTMLSelectElement)) throw new Error('Missing iframe controls')
+  expect(isLumenFormControl(required)).toBe(true)
+  expect(isLumenFormControl(new EventTarget())).toBe(false)
+  expect(isLumenFormControl(document.implementation.createHTMLDocument('Detached').createElement('input'))).toBe(true)
+  await act(async () => {
+    expect(get().validate()).toBe(false)
+    await Promise.resolve()
+  })
+  expect(get().errors.map(issue => issue.name)).toEqual(['required'])
+  await act(async () => {
+    required.value = 'valid'
+    required.dispatchEvent(new view.Event('input', { bubbles: true }))
+    await Promise.resolve()
+  })
+  expect(get().dirty).toBe(true)
+  await act(async () => {
+    expect(get().validate()).toBe(true)
+    get().markSaved()
+    await Promise.resolve()
+  })
+  expect(get().dirty).toBe(false)
+  await act(async () => {
+    checkbox.checked = true
+    get().refresh()
+    await Promise.resolve()
+  })
+  expect(get().dirty).toBe(true)
+  await act(async () => {
+    get().markSaved()
+    await Promise.resolve()
+  })
+  await act(async () => {
+    for (const option of select.options) option.selected = option.value === 'two'
+    get().refresh()
+    await Promise.resolve()
+  })
+  expect(get().dirty).toBe(true)
 })

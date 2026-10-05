@@ -2,6 +2,8 @@
 
 ## 4.0.0
 
+- Reject malformed decoded calendar days before reading fields or rendering calendar grids.
+
 - Honor comparison chart value labels and escaped accessible summaries in Web Components. Reset iOS and web time-picker drafts when controlled values or bounds change, preserving current Android bounds and callback handling.
 
 - Add controlled MultiSelect to React Native and SwiftUI alongside Compose, retaining selections

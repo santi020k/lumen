@@ -2,6 +2,8 @@
 
 ## 4.0.0
 
+- Recognize regex literals after expression keywords when diagnosing Astro runtime mounts without confusing property access with keywords.
+
 - Reopen SwiftUI and Compose Mentions suggestions when focus returns after Escape.
 
 ### Minor Changes

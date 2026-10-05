@@ -2,6 +2,8 @@
 
 ## 4.0.0
 
+- Reject malformed decoded heatmap containers before geometry calculation.
+
 - Reject non-array comparison and interval chart datasets before iteration. Reject fractional group separators in strict localized amount pastes.
 
 ### Minor Changes

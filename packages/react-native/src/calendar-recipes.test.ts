@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest'
 
-import { addLumenCalendarDays, addLumenCalendarMonths, isLumenCalendarSelectable, lumenCalendarDayKey, lumenCalendarEventsForDay, lumenCalendarGrid, parseLumenCalendarDay } from './calendar-recipes.js'
+import { addLumenCalendarDays, addLumenCalendarMonths, isLumenCalendarDay, isLumenCalendarSelectable, lumenCalendarDayKey, lumenCalendarEventsForDay, lumenCalendarGrid, parseLumenCalendarDay } from './calendar-recipes.js'
 const march = { year: 2026, month: 3, day: 8 }
 describe('civil calendar', () => {
   test('rejects invalid and adversarial day keys', () => {
@@ -27,4 +27,9 @@ describe('civil calendar', () => {
     expect(lumenCalendarEventsForDay(events, { ...march, day: 10 }).map(event => event.id)).toEqual(['work'])
     expect(lumenCalendarEventsForDay(events, { ...march, day: 11 })).toEqual([])
   })
+})
+
+test.each([null, undefined, 42, '2026-03-08', [], {}, { year: '2026', month: 3, day: 8 }, { year: 2026, month: null, day: 8 }, { year: 2026, month: 3, day: undefined }])('rejects malformed decoded calendar days: %s', value => {
+  expect(isLumenCalendarDay(value)).toBe(false)
+  expect(Reflect.apply(lumenCalendarGrid, undefined, [value])).toEqual([])
 })

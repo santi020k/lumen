@@ -12,24 +12,46 @@ export interface LumenFormIssue {
   label?: string
 }
 
-export const isLumenFormControl = (element: EventTarget): element is LumenFormControl => (
-  element instanceof HTMLInputElement || element instanceof HTMLSelectElement || element instanceof HTMLTextAreaElement
-)
+export const isLumenFormControl = (element: EventTarget): element is LumenFormControl => {
+  if (!('ownerDocument' in element)) return false
+
+  const owner = element.ownerDocument
+
+  if (typeof owner !== 'object' || owner === null || !('defaultView' in owner)) return false
+
+  const view = owner.defaultView ?? globalThis
+
+  if (typeof view !== 'object') return false
+
+  return ['HTMLInputElement', 'HTMLSelectElement', 'HTMLTextAreaElement'].some(name => {
+    const Constructor: unknown = Reflect.get(view, name)
+
+    return typeof Constructor === 'function' && element instanceof Constructor
+  })
+}
 
 const controlsOf = (form: HTMLFormElement): LumenFormControl[] => Array.from(form.elements).filter(isLumenFormControl)
 
-const fingerprintControl = (control: LumenFormControl): unknown[] => {
-  if (control instanceof HTMLInputElement) {
-    if (['submit', 'button', 'reset'].includes(control.type)) return []
+const fingerprintInput = (control: HTMLInputElement): unknown[] => {
+  if (['submit', 'button', 'reset'].includes(control.type)) return []
 
-    if (control.type === 'file') {
-      return [control.name, Array.from(control.files ?? [], file => [file.name, file.size, file.lastModified])]
-    }
-
-    if (['checkbox', 'radio'].includes(control.type)) return [control.name, control.value, control.checked]
+  if (control.type === 'file') {
+    return [control.name, Array.from(control.files ?? [], file => [file.name, file.size, file.lastModified])]
   }
 
-  if (control instanceof HTMLSelectElement && control.multiple) {
+  if (['checkbox', 'radio'].includes(control.type)) return [control.name, control.value, control.checked]
+
+  return [control.name, control.value]
+}
+
+const fingerprintControl = (control: LumenFormControl): unknown[] => {
+  const view = control.ownerDocument.defaultView
+  const Input = view?.HTMLInputElement
+  const Select = view?.HTMLSelectElement
+
+  if (Input && control instanceof Input) return fingerprintInput(control)
+
+  if (Select && control instanceof Select && control.multiple) {
     return [control.name, Array.from(control.selectedOptions, option => option.value)]
   }
 

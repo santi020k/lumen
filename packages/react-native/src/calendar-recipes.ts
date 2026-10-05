@@ -12,12 +12,22 @@ export const lumenCalendarDaysInMonth = (year: number, month: number): number =>
 
   return [4, 6, 9, 11].includes(month) ? 30 : 31
 }
-export const isLumenCalendarDay = (
-  value: LumenCalendarDay
-): boolean => Number.isInteger(value.year) && value.year >= 1 && value.year <= 9999 &&
-  Number.isInteger(value.month) && value.month >= 1 && value.month <= 12 &&
-  Number.isInteger(value.day) && value.day >= 1 &&
-  value.day <= lumenCalendarDaysInMonth(value.year, value.month)
+
+const isCalendarRecord = (value: unknown): value is Record<'year' | 'month' | 'day', unknown> => (
+  typeof value === 'object' && value !== null && !Array.isArray(value) &&
+  'year' in value && 'month' in value && 'day' in value
+)
+
+const isCalendarInteger = (value: unknown, minimum: number, maximum: number): value is number => (
+  typeof value === 'number' && Number.isInteger(value) && value >= minimum && value <= maximum
+)
+
+export const isLumenCalendarDay = (value: unknown): value is LumenCalendarDay => {
+  if (!isCalendarRecord(value)) return false
+
+  return isCalendarInteger(value.year, 1, 9999) && isCalendarInteger(value.month, 1, 12) &&
+    isCalendarInteger(value.day, 1, lumenCalendarDaysInMonth(value.year, value.month))
+}
 export const lumenCalendarDayKey = (day: LumenCalendarDay): string => `${String(day.year).padStart(4, '0')}-${String(day.month).padStart(2, '0')}-${String(day.day).padStart(2, '0')}`
 export const parseLumenCalendarDay = (key: string): LumenCalendarDay | null => {
   if (key.length !== 10 || !/^\d{4}-\d{2}-\d{2}$/u.test(key)) return null

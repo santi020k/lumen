@@ -1928,6 +1928,8 @@ const isHeatmapDatum = (datum: unknown): datum is LumenHeatmapDatum => {
 
 /** Reject the whole decoded collection before adapters read or format cell fields. */
 export const normalizeLumenHeatmapData = (data: readonly unknown[]): LumenHeatmapDatum[] => {
+  if (!Array.isArray(data)) return []
+
   const rows = Array.from(data)
 
   return rows.every(isHeatmapDatum) ? rows : []

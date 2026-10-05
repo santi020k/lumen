@@ -21,6 +21,7 @@ import {
   getLumenChartTicks,
   hasLumenChartData,
   hasLumenPieData,
+  normalizeLumenHeatmapData,
   resolveLumenChartTone,
   scaleLumenChartValue,
   validateLumenChartSeries
@@ -549,4 +550,9 @@ describe('Lumen chart helpers', () => {
     expect(range.points[0]?.highCoordinate).toBe(0)
     expect(range.points[0]?.lowCoordinate).toBe(100)
   })
+})
+
+test.each([null, undefined, {}, 'invalid', 42])('rejects malformed heatmap collections: %s', data => {
+  expect(Reflect.apply(normalizeLumenHeatmapData, undefined, [data])).toEqual([])
+  expect(Reflect.apply(createLumenHeatmapGeometry, undefined, [data])).toMatchObject({ cells: [] })
 })
