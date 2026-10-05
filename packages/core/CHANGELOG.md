@@ -2,6 +2,14 @@
 
 ## 4.0.0
 
+- Reject non-array comparison and interval chart datasets before iteration. Reject fractional group separators in strict localized amount pastes.
+
+### Minor Changes
+
+- Add exact localized AmountField drafts across web adapters and a React Hook Form controller.
+  Add opt-in MessageScroller following and reader-anchor preservation. Introduce consumer upgrade
+  review signals, semantic theme diagnostics, and installable React form and operational-record recipes.
+
 - Reject non-array decoded calendar heatmap, funnel, and box-plot collections before iteration.
 
 - Fail closed on malformed decoded line-chart series and datum collections before deriving categories or geometry.

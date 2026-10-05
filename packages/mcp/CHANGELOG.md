@@ -2,6 +2,12 @@
 
 ## 4.0.0
 
+### Patch Changes
+
+- Add exact localized AmountField drafts across web adapters and a React Hook Form controller.
+  Add opt-in MessageScroller following and reader-anchor preservation. Introduce consumer upgrade
+  review signals, semantic theme diagnostics, and installable React form and operational-record recipes.
+
 - Add an optional search kind filter so agents can retrieve only components, native components, recipes, tokens or rules before applying the result limit. Existing searches retain their default behavior.
 
 ### Minor Changes

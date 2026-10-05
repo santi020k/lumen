@@ -2,6 +2,24 @@
 
 ## 4.0.0
 
+- Mark the optional form workflow hooks as a React client boundary and keep initial field-row identities stable through server rendering and hydration.
+
+### Minor Changes
+
+- Add exact localized AmountField drafts across web adapters and a React Hook Form controller.
+  Add opt-in MessageScroller following and reader-anchor preservation. Introduce consumer upgrade
+  review signals, semantic theme diagnostics, and installable React form and operational-record recipes.
+
+- Add opt-in TanStack-powered React table views with typed record accessors, search, column filters,
+  visibility, density, pagination, controlled state and sorting priorities. Preserve application-owned
+  cells, actions and server ordering, with an opt-in stylesheet for sticky headers and responsive table-view styling.
+
+### Patch Changes
+
+- Updated dependencies [`6cfcdf7`, `70519e6`]:
+  - @santi020k/lumen-core@4.1.0
+  - @santi020k/lumen@4.1.0
+
 - Add optional React form workflows for dependent validation, unsaved edits, stable repeatable rows,
   step navigation, and cancellation-safe asynchronous checks. Schemas and persistence remain owned
   by the application.

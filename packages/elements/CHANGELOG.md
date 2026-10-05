@@ -2,6 +2,18 @@
 
 ## 4.0.0
 
+### Minor Changes
+
+- Add exact localized AmountField drafts across web adapters and a React Hook Form controller.
+  Add opt-in MessageScroller following and reader-anchor preservation. Introduce consumer upgrade
+  review signals, semantic theme diagnostics, and installable React form and operational-record recipes.
+
+### Patch Changes
+
+- Updated dependencies [`6cfcdf7`, `70519e6`]:
+  - @santi020k/lumen-core@4.1.0
+  - @santi020k/lumen@4.1.0
+
 - Check keyboard activation cancellation after native event dispatch completes, preserving ancestor handlers and documented Space scroll prevention.
 
 - Allow assigning the native input type property before and after connection. React custom-element property updates no longer fail when mounting a Lumen input; validation updates without clearing its value.

@@ -2,6 +2,22 @@
 
 ## 4.0.0
 
+- Reopen SwiftUI and Compose Mentions suggestions when focus returns after Escape.
+
+### Minor Changes
+
+- Add exact localized AmountField drafts across web adapters and a React Hook Form controller.
+  Add opt-in MessageScroller following and reader-anchor preservation. Introduce consumer upgrade
+  review signals, semantic theme diagnostics, and installable React form and operational-record recipes.
+
+### Patch Changes
+
+- Add visual email-code sign-in, verification, and passkey recovery examples to the
+  Astro, React, and Elements auth-onboarding recipes. Auth integration remains an
+  optional application concern; preview controls do not authenticate or send email.
+- Updated dependencies [`6cfcdf7`]:
+  - @santi020k/lumen-core@4.1.0
+
 - Recognize Astro runtime import aliases when diagnosing missing or duplicate mounts, excluding type-only imports and example markup.
 
 - Preserve application-resolved Swift MultiSelect sheet headings and SectionHeader counts as verbatim text.

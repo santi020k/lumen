@@ -2,6 +2,12 @@
 
 ## 4.0.0
 
+### Minor Changes
+
+- Add exact localized AmountField drafts across web adapters and a React Hook Form controller.
+  Add opt-in MessageScroller following and reader-anchor preservation. Introduce consumer upgrade
+  review signals, semantic theme diagnostics, and installable React form and operational-record recipes.
+
 ### Patch Changes
 
 - Updated dependencies [`cc91b3e`, `c71c50a`, `ef5187d`, `788125f`, `55a1032`, `19964b1`, `20aa235`, `85f332c`, `0ea4a4e`, `79d9b0a`, `4e80faa`, `bd11bc0`, `bd11bc0`, `1639935`, `059aae9`, `177aedf`, `aba0839`]:
