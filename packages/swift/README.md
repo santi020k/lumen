@@ -261,6 +261,8 @@ ListRow, Stat, Gauge, SectionHeader, StatusBar, and Avatar. macOS additionally i
 ShortcutRecorder and searchable SF Symbols picker.
 Native presentation is available through `.lumenAlertDialog`, `.lumenSheet`, `LumenMenu`, and
 `LumenShareButton`; the application continues to own presentation state and shared content.
+Application-resolved MultiSelect labels and SectionHeader count strings remain verbatim, including
+Markdown characters and strings that also occur in a localization catalog.
 Sheets scroll their content by default and keep actions outside the ordinary scrolling body.
 At accessibility text sizes or compact iPhone heights, the complete sheet scrolls so headings and
 actions remain reachable. Set `scrollable: false` when the content already owns a native `List` or
