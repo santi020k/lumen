@@ -43,6 +43,8 @@ jobs:
         with:
           node-version: 22.x
           registry-url: https://registry.npmjs.org
+          task-cache-path: .turbo/cache
+          task-cache-key: npm-release
 
       - name: Resolve packages pending publication
         id: scope
@@ -73,13 +75,16 @@ jobs:
           pnpm run test:react-native-peer-docs &&
           pnpm run check:swift-version
 
+      - name: Check dependency security before release builds
+        if: steps.scope.outputs.has-packages == 'true'
+        run: pnpm run check:security
+
       - name: Build and inspect packages pending publication
         if: steps.scope.outputs.has-packages == 'true'
         env:
           LUMEN_RELEASE_PACKAGES: ${{ steps.scope.outputs.packages }}
         run: >-
           pnpm run build:release-scope &&
-          pnpm run check:security &&
           pnpm run check:publish-dry-run
 
       - name: Validate MCP release contracts

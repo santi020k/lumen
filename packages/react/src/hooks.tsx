@@ -700,6 +700,18 @@ const getContextMenuPosition = (
   }
 }
 
+const isDisclosureEditableTarget = (target: EventTarget | null, panel: HTMLElement): boolean => {
+  const ElementType = panel.ownerDocument.defaultView?.Element
+
+  if (!ElementType || !(target instanceof ElementType)) return false
+
+  if (target.closest('input, textarea')) return true
+
+  const editable = target.closest('[contenteditable]')?.getAttribute('contenteditable')?.toLowerCase()
+
+  return editable === '' || editable === 'true' || editable === 'plaintext-only'
+}
+
 const useOutsideClose = (
   open: boolean,
   refs: RefObject<HTMLElement | null>[],
@@ -809,7 +821,7 @@ const useDisclosureController = (
         return
       }
 
-      if (event.target instanceof Element && event.target.matches('input, textarea, [contenteditable="true"]')) return
+      if (isDisclosureEditableTarget(event.target, event.currentTarget)) return
 
       const keys = ['ArrowDown', 'ArrowUp', 'Home', 'End']
 

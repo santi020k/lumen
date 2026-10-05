@@ -1393,3 +1393,9 @@ Exact supported APIs and verification are recorded in the [Rating](native-parity
 [Timeline](native-parity/timeline.md), [Tour](native-parity/tour.md), and
 [Mentions](native-parity/mentions.md) guides. Native consumer, physical accessibility and release
 qualification are separate from focused local checks.
+
+## Progression compositions
+
+For accessible rating, step progression and chronological content, use the
+[native progression recipes](native-progression-recipes.md). They reuse the public Rating, Stepper and Timeline APIs with application-owned state, localization
+and content ordering.

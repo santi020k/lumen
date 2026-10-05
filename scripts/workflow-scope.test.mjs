@@ -304,3 +304,100 @@ test('MCP deployment skips unpublished and stale-tag revisions before production
     }
   }
 })
+
+
+test('early failures block every expensive CI and release canary lane', () => {
+  const expensiveJobs = {
+    ci: ['native-android', 'browser-contracts', 'react-native-captures', 'mcp-node-20'],
+    canary: ['web', 'compose', 'react-native-android', 'browser']
+  }
+
+  for (const [name, source] of [['ci', ci], ['canary', canary]]) {
+    for (const job of expensiveJobs[name]) {
+      const section = source.split(`  ${job}:\n`)[1]?.split(/\n {2}[a-z][a-z-]*:\n/u)[0]
+
+      assert.ok(section, `${name} must preserve ${job}`)
+
+      assert.match(section, /needs: \[classify, preflight\]/u)
+
+      assert.doesNotMatch(section, /^ {4}if:.*always\(\)/mu)
+    }
+  }
+
+  assert.match(ci, /quality\/\.github\/workflows\/reusable-pnpm-ci\.yml@[a-f0-9]{40}/u)
+
+  assert.match(canary, /Check repository and dependency security before builds/u)
+})
+
+test('release preflight fetches the history required by graduated release checks', () => {
+  const preflight = canary.split('  preflight:\n')[1]?.split('  web:\n')[0]
+
+  assert.ok(preflight)
+
+  assert.match(preflight, /actions\/checkout@[a-f0-9]{40}[^\n]*\n\s+with:\n\s+fetch-depth: 0/u)
+
+  assert.match(preflight, /pnpm run check:graduated-release-revision/u)
+})
+
+test('browser sharding covers the entire suite and native consumers run independently', () => {
+  const browser = canary.split('  browser:\n')[1]
+
+  assert.match(browser, /fail-fast: true/u)
+
+  assert.match(browser, /shard: \[1, 2\]/u)
+
+  assert.match(browser, /test:a11y --shard=\$\{\{ matrix\.shard \}\}\/2 --max-failures=1/u)
+
+  assert.match(browser, /if: matrix\.shard == 1/u)
+
+  assert.match(browser, /pnpm run test:framework-conformance/u)
+
+  const compose = canary.split('  compose:\n')[1].split('  react-native-android:\n')[0]
+
+  assert.match(compose, /gradlew test lint apiCheck verifyMavenPublication/u)
+
+  assert.doesNotMatch(compose, /check:react-native-native-package:android/u)
+
+  assert.match(canary.split('  react-native-android:\n')[1], /check:react-native-native-package:android/u)
+})
+
+test('browser cache hits retain operating-system prerequisites', async () => {
+  const action = await readRepositoryFile('.github/actions/setup-playwright/action.yml')
+
+  assert.match(action, /hashFiles\('pnpm-lock\.yaml'\)/u)
+
+  assert.match(action, /pnpm exec playwright install-deps "\$\{browsers\[@\]\}"/u)
+
+  assert.match(action, /pnpm exec playwright install --with-deps "\$\{browsers\[@\]\}"/u)
+
+  for (const source of [ci, canary]) {
+    assert.match(source, /task-cache-path: \.turbo\/cache/u)
+
+    assert.match(source, /cache: gradle/u)
+  }
+})
+
+
+test('the required build context fails instead of skipping after failed preflight', () => {
+  const build = ci.split('  build:\n')[1]
+
+  assert.match(build, /if: always\(\)/u)
+
+  const assertion = build.split('        run: |\n')[1]?.split('\n\n')[0]
+    .replace(/^ {10}/gmu, '')
+
+  assert.ok(assertion)
+
+  for (const classification of ['success', 'failure', 'cancelled', 'skipped']) {
+    for (const preflight of ['success', 'failure', 'cancelled', 'skipped']) {
+      const result = spawnSync('bash', ['-euo', 'pipefail', '-c', assertion], {
+        encoding: 'utf8',
+        env: { ...process.env, CLASSIFICATION_RESULT: classification, PREFLIGHT_RESULT: preflight }
+      })
+
+      assert.equal(result.status, classification === 'success' && preflight === 'success' ? 0 : 1)
+    }
+  }
+
+  assert.ok(build.indexOf('Require successful preflight') < build.indexOf('actions/checkout@'))
+})

@@ -17,7 +17,14 @@ qualification-blocker statements in this working record. See the
 The v4 contract still requires explicit approval of the final reviewed revision. Automated release
 checks, package-consumer canaries, compatibility, security, and provenance remain required.
 
-## Release PR candidate — October 4
+## Historical preparation checkpoints
+
+Everything below records earlier candidate revisions and the policy in force when each check ran.
+Historical candidate passes/failures, qualification tables and next actions do not establish the
+current revision's checks or blockers. Use the current release policy above, current branch and CI
+state, and approval bound to the final reviewed revision for present-day release decisions.
+
+## Historical release PR candidate — October 4
 
 The release checkout now contains every local branch tip and all existing remote branch tips.
 Completed comparison charts `a5990fb7`, combined chart integration `84629085`, mobile layout fixes
@@ -87,14 +94,14 @@ source-build and simulator evidence remains in [native quality](lumen-4-native-q
 this preparation run does not relabel it as physical-device qualification. The React and Elements
 bundles retain their public contracts after artifact reductions.
 
-### Current verification and remaining gates
+### Checkpoint verification and then-required gates
 
 Canonical `pnpm run validate` passes on `d91c9c98`: all 14 build tasks, 24 strict type/build tasks,
 1,445 tests in 137 files, 23 zero-warning lint/build tasks, spelling, Knip, registry checks, nine
 security guard tests, package-content dry runs and clean consumers. The owner authorized the exact
 `http-cache-semantics@4.3.0` release-age exception in `b9845f03`; frozen installation and guarded
-security checks pass. Keep the 24-hour policy for every other package and remove this temporary
-exception after October 5, 02:56 UTC. See the [dependency review](lumen-4-dependencies.md#cache-advisory-correction)
+security checks pass. The exception was removed after its 24-hour hold expired on October 5,
+02:56:06 UTC; the fixed version remains locked and the normal 24-hour policy applies. See the [dependency review](lumen-4-dependencies.md#cache-advisory-correction)
 for the distinction between audit metadata and a demonstrated cache behavior fix.
 
 The final code passes all 136 desktop/mobile Chromium and WebKit conformance checks. The prior
@@ -130,7 +137,7 @@ approval.
 
 | Gate | Current evidence | Required next action |
 | --- | --- | --- |
-| Security | Guarded production check passes with verified Forge/Braces patches and the approved exact cache version | Remove only the temporary age exception after its hold expires; retain the patch guards and normal release-age policy. |
+| Security | Guarded production check passes with verified Forge/Braces patches and the approved exact cache version | The temporary age exception is retired; retain the fixed cache version, patch guards and normal 24-hour release-age policy. |
 | Native stability | Zero of two iterations; seven current baseline hashes | Align the old pre-2.0-only checker with the approved v4 qualification policy, then collect two distinct iterations with immutable artifact and consumer evidence. Local checks do not count automatically. |
 | Real native consumers | All five adapter records remain incomplete | Verify the final candidate in React Native, SwiftUI, Compose, WidgetKit and Wear consumers and record exact revisions and permanent proof. |
 | Physical devices | All 22 minimum/current slots remain incomplete | Complete the documented interaction, accessibility, text-scale and state checks on the required hardware. |

@@ -2,7 +2,11 @@
 
 ## 4.0.0
 
+- Fail closed on malformed decoded line-chart series and datum collections before deriving categories or geometry.
+
 ### Patch Changes
+
+- Preserve focused controls and reusable keyed content in data-mode virtual collections inside same-origin iframes, including adopted elements. Use the root document for range events and resize observation.
 
 - Safely validate unknown decoded time selections before checking time bounds.
 

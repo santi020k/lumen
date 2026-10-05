@@ -2,6 +2,12 @@
 
 ## 4.0.0
 
+- Recognize Astro runtime import aliases when diagnosing missing or duplicate mounts, excluding type-only imports and example markup.
+
+- Preserve application-resolved Swift MultiSelect sheet headings and SectionHeader counts as verbatim text.
+
+- Preserve source edits made during migration ledger writes, clear unapplied fingerprints, and allow a safe retry.
+
 - Map Compose Material surface containers and navigation selection colors to Lumen semantic tokens, removing fallback purple from adaptive bottom bars and rails.
 
 - Keep sparkline endpoints circular and line strokes uniform when a chart stretches to fit a wide or shallow container.

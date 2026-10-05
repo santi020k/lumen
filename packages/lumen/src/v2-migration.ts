@@ -506,7 +506,20 @@ const advanceQuotedSource = (
   skip: character === '\\'
 })
 
-export const findMarkupTagEnd = (source: string, start: number): number => {
+const getMarkupBoundary = (
+  character: string | undefined,
+  braceDepth: number,
+  rejectNestedTags: boolean,
+  index: number
+): number | undefined => {
+  if (braceDepth !== 0) return undefined
+
+  if (character === '>') return index
+
+  return character === '<' && rejectNestedTags ? -1 : undefined
+}
+
+export const findMarkupTagEnd = (source: string, start: number, rejectNestedTags = false): number => {
   let braceDepth = 0
   let quote: '\'' | '"' | '`' | undefined
 
@@ -526,7 +539,11 @@ export const findMarkupTagEnd = (source: string, start: number): number => {
     if (isMarkupQuoteStart(character, braceDepth)) quote = character
     else if (character === '{') braceDepth += 1
     else if (character === '}') braceDepth = Math.max(0, braceDepth - 1)
-    else if (character === '>' && braceDepth === 0) return index
+    else {
+      const boundary = getMarkupBoundary(character, braceDepth, rejectNestedTags, index)
+
+      if (boundary !== undefined) return boundary
+    }
   }
 
   return source.length

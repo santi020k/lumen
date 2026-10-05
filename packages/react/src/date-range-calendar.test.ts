@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { act, createElement, useState } from 'react'
+import { act, createElement, isValidElement, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 
 import { expect, test } from 'vitest'
@@ -164,3 +164,35 @@ test.each(['single', 'range'])('moves successive calendar keys in an iframe: %s'
     frame.remove()
   }
 })
+
+test.each([null, 1, 'presets', {}, [null], [{ label: 1, value: { start: '2026-09-01', end: '2026-09-30' } }], [{ label: 'Invalid', value: null }], [{ label: 'Invalid', value: { start: 1, end: '2026-09-30' } }], new Array(2)])(
+  'fails closed on malformed decoded presets: %j', async presets => {
+    const container = document.createElement('div')
+
+    document.body.append(container)
+    const root = createRoot(container)
+
+    try {
+      await act(async () => {
+        await Promise.resolve()
+        const view: unknown = Reflect.apply(createElement, undefined, [DateRangeCalendar, {
+          presets,
+          value: { start: '2026-09-01', end: '2026-09-30' },
+          onValueChange: () => undefined,
+          labels: { start: 'From', end: 'To', presets: 'Ranges' }
+        }])
+
+        if (!isValidElement(view)) throw new Error('Expected calendar')
+
+        root.render(view)
+      })
+      expect(container.querySelector('nav')).toBeNull()
+      expect(container.querySelectorAll('[role="grid"]')).toHaveLength(2)
+    } finally {
+      act(() => {
+        root.unmount()
+      })
+      container.remove()
+    }
+  }
+)

@@ -152,6 +152,10 @@ LumenButton(
 translation dictionaries, and persistence remain application-owned; changing the SwiftUI locale
 environment or application copy state updates mounted views normally.
 
+Selection controls also use native localization keys for their accessibility state values.
+Translate `Checked` and `Not checked` for Checkbox, and `Selected` and `Not selected` for
+RadioGroup, SegmentedControl, and Tabs in the consuming application's string catalog.
+
 Rich native form composition remains controlled by the application:
 
 ```swift
@@ -257,6 +261,8 @@ ListRow, Stat, Gauge, SectionHeader, StatusBar, and Avatar. macOS additionally i
 ShortcutRecorder and searchable SF Symbols picker.
 Native presentation is available through `.lumenAlertDialog`, `.lumenSheet`, `LumenMenu`, and
 `LumenShareButton`; the application continues to own presentation state and shared content.
+Application-resolved MultiSelect labels and SectionHeader count strings remain verbatim, including
+Markdown characters and strings that also occur in a localization catalog.
 Sheets scroll their content by default and keep actions outside the ordinary scrolling body.
 At accessibility text sizes or compact iPhone heights, the complete sheet scrolls so headings and
 actions remain reachable. Set `scrollable: false` when the content already owns a native `List` or
@@ -621,6 +627,9 @@ Loading or search failure hides stale results; `errorMessage` is form validation
 `resultsErrorMessage` and `onRetry` describe search recovery. Read-only and `.disabled(true)` states
 close the sheet. Localize all action/result labels and count/removal formatters.
 `LumenSearchField` also accepts `clearLabel` to localize its clear action.
+
+Removal actions are sorted by their selected string values for deterministic presentation.
+The `Set<String>` binding represents membership and does not preserve selection chronology.
 
 ```swift
 LumenMultiSelect("Teams", values: $teams, query: $query, options: matchingTeams,

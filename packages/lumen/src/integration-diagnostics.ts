@@ -10,6 +10,9 @@ import {
   type LumenStylingContract,
   lumenStylingContracts
 } from '@santi020k/lumen-core'
+import { createSourceFile, type ImportDeclaration, type ImportSpecifier, isImportDeclaration, isNamedImports, isStringLiteral, ScriptKind, ScriptTarget, type Statement, SyntaxKind } from 'typescript'
+
+import { findMarkupTagEnd, getMarkupStart } from './v2-migration.js'
 
 export type LumenDiagnosticSeverity = 'advisory' | 'error'
 
@@ -564,6 +567,196 @@ const getGlobalRuntimeBehaviors = (sources: SourceEntry[]): string[] => lumenGlo
   }))
   .map(behavior => behavior.name)
 
+const isRuntimeImport = (statement: Statement): statement is ImportDeclaration => (
+  isImportDeclaration(statement) && isStringLiteral(statement.moduleSpecifier) &&
+  statement.moduleSpecifier.text === '@santi020k/lumen-astro/runtime'
+)
+
+const getDefaultRuntimeName = (binding: ImportSpecifier): string[] => !binding.isTypeOnly && (binding.propertyName?.text ?? binding.name.text) === 'default' ? [binding.name.text] : []
+
+const getImportRuntimeNames = (statement: ImportDeclaration): string[] => {
+  const clause = statement.importClause
+
+  if (!clause || clause.phaseModifier === SyntaxKind.TypeKeyword) return []
+
+  const names = clause.name ? [clause.name.text] : []
+  const bindings = clause.namedBindings
+
+  if (!bindings || !isNamedImports(bindings)) return names
+
+  return [...names, ...bindings.elements.flatMap(getDefaultRuntimeName)]
+}
+
+const getRuntimeBindingNames = ({ file, source }: SourceEntry): Set<string> => {
+  if (!source.includes('@santi020k/lumen-astro/runtime')) return new Set(['UIPrimitives'])
+
+  try {
+    const parsed = createSourceFile(file, source, ScriptTarget.Latest, false, ScriptKind.TS)
+    const imports = parsed.statements.filter(isRuntimeImport)
+
+    // Preserve canonical-name detection for legacy imports and wrapper components.
+    return imports.length > 0 ? new Set(imports.flatMap(getImportRuntimeNames)) : new Set(['UIPrimitives'])
+  } catch (error: unknown) {
+    if (!(error instanceof RangeError)) throw error
+
+    return new Set()
+  }
+}
+
+const runtimeTagDelimiter = /[\s/>]/u
+
+const getMarkupNameEnd = (source: string, start: number): number => {
+  let end = start + 1
+
+  while (end < source.length && source[end] !== '<' && !runtimeTagDelimiter.test(source[end] ?? '')) end += 1
+
+  return end
+}
+
+const skipRuntimeQuotedText = (source: string, start: number): number => {
+  let end = start + 1
+
+  while (end < source.length) {
+    if (source[end] === '\\') end += 2
+    else if (source[end] === source[start]) return end + 1
+    else end += 1
+  }
+
+  return source.length
+}
+
+const runtimeRegexPrefixes = new Set(['{', '(', '[', '=', ':', ',', ';', '!', '?', '&', '|', '+', '*', '%', '~', '^', '<', '>', '-'])
+
+const isRuntimeRegexStart = (source: string, start: number): boolean => {
+  let previous = start - 1
+
+  while (previous >= 0 && /\s/u.test(source[previous] ?? '')) previous -= 1
+
+  return runtimeRegexPrefixes.has(source[previous] ?? '')
+}
+
+const skipRuntimeRegex = (source: string, start: number): number => {
+  let cursor = start + 1
+  let inClass = false
+
+  while (cursor < source.length) {
+    const character = source[cursor]
+
+    if (character === '\\') cursor += 2
+    else {
+      if (character === '[') inClass = true
+      else if (character === ']') inClass = false
+      else if (character === '/' && !inClass) return cursor + 1
+
+      cursor += 1
+    }
+  }
+
+  return source.length
+}
+
+const skipRuntimeExpressionTrivia = (source: string, start: number, depth: number): number => {
+  if (depth === 0) return start
+
+  if (/['"`]/u.test(source[start] ?? '')) return skipRuntimeQuotedText(source, start)
+
+  if (source.startsWith('/*', start)) {
+    const end = source.indexOf('*/', start + 2)
+
+    return end < 0 ? source.length : end + 2
+  }
+
+  if (source.startsWith('//', start)) {
+    const end = source.indexOf('\n', start + 2)
+
+    return end < 0 ? source.length : end + 1
+  }
+
+  if (source[start] === '/' && isRuntimeRegexStart(source, start)) return skipRuntimeRegex(source, start)
+
+  return start
+}
+
+const skipRuntimeRawText = (lowerSource: string, name: string, start: number): number => {
+  if (name !== 'script' && name !== 'style') return start
+
+  let closing = lowerSource.indexOf(`</${name}`, start)
+
+  while (closing >= 0 && !runtimeTagDelimiter.test(lowerSource[closing + name.length + 2] ?? '')) {
+    closing = lowerSource.indexOf(`</${name}`, closing + name.length + 2)
+  }
+
+  return closing < 0 ? lowerSource.length : closing
+}
+
+const getRuntimeExpressionDepth = (character: string | undefined, depth: number): number => {
+  if (character === '{') return depth + 1
+
+  return character === '}' ? Math.max(0, depth - 1) : depth
+}
+
+const skipRuntimeMarkupTrivia = (source: string, start: number): number => {
+  if (source.startsWith('<!--', start)) {
+    const end = source.indexOf('-->', start + 4)
+
+    return end < 0 ? source.length : end + 3
+  }
+
+  return /[A-Za-z_$/]/u.test(source[start + 1] ?? '') ? start : start + 1
+}
+
+const countRuntimeMounts = (entry: SourceEntry): number => {
+  const names = getRuntimeBindingNames(entry)
+  let count = 0
+  let depth = 0
+  let start = getMarkupStart(entry.source, entry.file)
+  const lowerSource = entry.source.replace(/[A-Z]/gu, character => character.toLowerCase())
+
+  while (start < entry.source.length) {
+    const skipped = skipRuntimeExpressionTrivia(entry.source, start, depth)
+
+    if (skipped !== start) {
+      start = skipped
+
+      continue
+    }
+
+    const character = entry.source[start]
+
+    depth = getRuntimeExpressionDepth(character, depth)
+
+    if (character !== '<') {
+      start += 1
+
+      continue
+    }
+
+    const markupStart = skipRuntimeMarkupTrivia(entry.source, start)
+
+    if (markupStart !== start) {
+      start = markupStart
+
+      continue
+    }
+
+    const end = getMarkupNameEnd(entry.source, start)
+    const name = entry.source.slice(start + 1, end)
+    const tagEnd = findMarkupTagEnd(entry.source, end, true)
+
+    if (tagEnd < 0) {
+      start += 1
+
+      continue
+    }
+
+    if (names.has(name) && runtimeTagDelimiter.test(entry.source[end] ?? '')) count += 1
+
+    start = skipRuntimeRawText(lowerSource, name, tagEnd + 1)
+  }
+
+  return count
+}
+
 const collectRuntimeFindings = (
   repositoryRoot: string,
   boundary: ApplicationBoundary
@@ -577,7 +770,10 @@ const collectRuntimeFindings = (
     ])
   ]
 
-  const mountSources = boundary.sources.filter(item => /<UIPrimitives(?:\s|\/|>)/u.test(item.source))
+  const mountSources = boundary.sources
+    .map(item => ({ ...item, mountCount: countRuntimeMounts(item) }))
+    .filter(item => item.mountCount > 0)
+
   const findings: LumenDiagnosticFinding[] = []
 
   if (runtimeComponents.length > 0 && mountSources.length === 0) {
@@ -592,9 +788,7 @@ const collectRuntimeFindings = (
   }
 
   for (const mount of mountSources) {
-    const mountCount = [...mount.source.matchAll(/<UIPrimitives(?:\s|\/|>)/g)].length
-
-    if (mountCount > 1) {
+    if (mount.mountCount > 1) {
       findings.push(finding(
         relative(repositoryRoot, mount.file), 'astro-runtime-duplicate', 'UIPrimitives is mounted more than once in this file.', 'Keep one mount in the application root layout.'
       ))

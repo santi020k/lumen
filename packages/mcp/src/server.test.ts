@@ -173,7 +173,21 @@ describe('Lumen MCP protocol server', () => {
     })
   })
 
+  test('filters search kind over the MCP input/output boundary', async () => {
+    await withClient(async client => {
+      const result = await client.callTool({ name: 'lumen_search', arguments: { query: 'button', kind: 'component', framework: 'react', limit: 1 } })
+      expect(result.isError).not.toBe(true)
+      const structured = resultStructuredContent(result)
+      expect(structured.results).toEqual([expect.objectContaining({ kind: 'component', name: 'Button' })])
+      expect(structured.total).toBeGreaterThan(1)
+    })
+  })
+
   test.each([
+    {
+      arguments: { kind: 'everything', query: 'button' },
+      name: 'lumen_search'
+    },
     {
       arguments: { name: 'Button', platform: 'ios' },
       name: 'lumen_get_native_component'

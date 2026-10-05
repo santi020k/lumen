@@ -106,7 +106,21 @@ export class LumenAmountFieldElement extends LumenElement {
   }
 }
 
+const lumenMessageScrollerElementConfig = {
+  attributeClasses: {
+    glass: {
+      strong: 'ui-message-scroller--glass ui-glass-strong',
+      subtle: 'ui-message-scroller--glass ui-glass-subtle',
+      true: 'ui-message-scroller--glass'
+    }
+  },
+  baseClassName: 'ui-message-scroller',
+  tagName: 'lumen-message-scroller'
+}
+
 export class MessageElement extends LumenElement {
+  static override config = lumenMessageScrollerElementConfig
+
   static override get observedAttributes() {
     return [...super.observedAttributes, 'auto-scroll', 'scroll-threshold']
   }

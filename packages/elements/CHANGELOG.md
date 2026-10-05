@@ -2,7 +2,17 @@
 
 ## 4.0.0
 
+- Check keyboard activation cancellation after native event dispatch completes, preserving ancestor handlers and documented Space scroll prevention.
+
+- Allow assigning the native input type property before and after connection. React custom-element property updates no longer fail when mounting a Lumen input; validation updates without clearing its value.
+
+  Custom-element buttons now activate with Enter and Space, respect canceled/repeated/composing keys, and block disabled/loading direct activation. Reconnection preserves one listener set.
+
 ### Patch Changes
+
+- Enter ContextMenu items from container focus with ArrowUp selecting the last item and ArrowDown selecting the first.
+
+- Reject invalid supplied histogram labels and waterfall tones instead of discarding malformed chart fields.
 
 - Preserve iframe calendar focus, newest-only toast dismissal, explicit table record identities, legacy read-only phone country submission, and valid decoded annotation axes.
 

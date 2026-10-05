@@ -1,5 +1,9 @@
 # Native Stepper
 
+Release requirements follow the [current native release policy](../native-release-runbook.md#current-release-policy).
+The implementation verification below is historical evidence; physical-device and stability
+completion statements do not define current launch gates.
+
 The native `LumenStepper` adapters present Astro's ordered complete/current/upcoming progression.
 Steps are display items; navigation, validation, persistence and routing remain host responsibilities.
 The three no-prop `StepperParityExample` fragments provide separate host Back/Next/reset controls,

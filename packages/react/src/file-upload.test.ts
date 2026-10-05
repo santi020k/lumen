@@ -5,9 +5,22 @@ import { createRoot, type Root } from 'react-dom/client'
 
 import { afterEach, beforeEach, expect, test, vi } from 'vitest'
 
-import { FileUpload } from './components.js'
+import { FileUpload, type FileUploadProps } from './components.js'
 
 let root: Root | undefined
+
+const acceptsValueProp: 'value' extends keyof FileUploadProps ? true : false = false
+const acceptsDefaultValueProp: 'defaultValue' extends keyof FileUploadProps ? true : false = false
+
+test('excludes controlled file values and ignores decoded value props', async () => {
+  expect(acceptsValueProp).toBe(false)
+  expect(acceptsDefaultValueProp).toBe(false)
+  const decoded = { value: '/private/report.csv', defaultValue: '/private/report.csv', multiple: true }
+  const { input } = await mount(decoded)
+
+  expect(input.value).toBe('')
+  expect(input.multiple).toBe(true)
+})
 
 beforeEach(() => {
   vi.stubGlobal('IS_REACT_ACT_ENVIRONMENT', true)

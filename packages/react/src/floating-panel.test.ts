@@ -272,3 +272,60 @@ test('iframe menus dismiss on outside focus and restore owned focus on close', a
     iframe.remove()
   }
 })
+
+test('callback-only rerenders preserve the current menu focus and use the newest dismissal handler', async () => {
+  const first = vi.fn()
+  const latest = vi.fn()
+  const show = vi.spyOn(HTMLElement.prototype, 'showPopover')
+  const hide = vi.spyOn(HTMLElement.prototype, 'hidePopover')
+  const view = (onOpenChange: (open: boolean) => void) => createElement(DropdownMenu, { open: true, onOpenChange }, createElement(DropdownMenuTrigger, { id: 'trigger' }, 'Actions'), createElement(DropdownMenuContent, { id: 'panel' }, createElement(DropdownMenuItem, {}, 'First'), createElement(DropdownMenuItem, { id: 'later' }, 'Later')))
+
+  await run(() => {
+    root.render(view(first))
+  })
+  await run(() => {
+    element('#later').focus()
+  })
+  await run(() => {
+    root.render(view(latest))
+  })
+  expect(document.activeElement).toBe(element('#later'))
+  expect(show).toHaveBeenCalledOnce()
+  expect(hide).not.toHaveBeenCalled()
+  const outside = document.createElement('button')
+
+  document.body.append(outside)
+  await run(() => {
+    outside.focus()
+  })
+  expect(latest).toHaveBeenCalledWith(false)
+  expect(first).not.toHaveBeenCalled()
+  outside.remove()
+})
+
+test('preserves menu focus on callback rerenders and calls the current close callback', async () => {
+  const first = vi.fn()
+  const current = vi.fn()
+  const content = (onOpenChange: (open: boolean) => void) => createElement(DropdownMenu, { open: true, onOpenChange }, createElement(DropdownMenuTrigger, { id: 'trigger' }, 'Actions'), createElement(DropdownMenuContent, { id: 'panel', 'aria-label': 'Actions' }, createElement(DropdownMenuItem, { id: 'first' }, 'First'), createElement(DropdownMenuItem, { id: 'second' }, 'Second')))
+
+  await run(() => {
+    root.render(content(first))
+  })
+  await run(() => {
+    element('#second').focus()
+  })
+  expect(document.activeElement).toBe(element('#second'))
+  await run(() => {
+    root.render(content(current))
+  })
+  expect(document.activeElement).toBe(element('#second'))
+  expect(element('#panel').dataset.nativeOpen).toBe('true')
+  const outside = document.createElement('button')
+
+  container.append(outside)
+  await run(() => {
+    outside.focus()
+  })
+  expect(first).not.toHaveBeenCalled()
+  expect(current).toHaveBeenCalledExactlyOnceWith(false)
+})

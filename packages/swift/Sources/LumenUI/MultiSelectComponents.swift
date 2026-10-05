@@ -81,7 +81,7 @@ public struct LumenMultiSelect: View {
             }
         }
         .task(id: editable) { if !editable { open = false } }
-        .lumenSheet(isPresented: presentation, title: LocalizedStringKey(label), scrollable: false, actions: {
+        .lumenSheetContent(isPresented: presentation, title: .verbatim(label), scrollable: false, actions: {
             LumenButton(.verbatim(doneLabel)) { open = false }
         }) {
             VStack(alignment: .leading, spacing: LumenSpacing.md) {

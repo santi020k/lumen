@@ -77,6 +77,7 @@ export const classifyCiPaths = (paths, { releasePullRequest = false } = {}) => {
   ])
 
   const playwright = matchesAny(paths, [
+    /^\.github\/actions\/setup-playwright\//u,
     /^apps\/(docs|figma-plugin|templates)\//u,
     /^packages\/(astro|core|elements|icons-brand|lumen|react|react-hook-form|templates)\//u,
     /^tests\/(a11y|figma|visual)\//u,
@@ -181,6 +182,7 @@ export const classifyCanaryPaths = (paths, { manual = false } = {}) => {
   }
 
   const web = matchesAny(paths, [
+    /^\.github\/actions\/setup-playwright\//u,
     /^packages\/(astro|core|elements|icons-brand|lumen|mcp|react|react-hook-form|react-native|templates|tokens)\//u,
     /^apps\/(docs|next-smoke|playground-react-native|templates)\//u,
     /^docs\/(native-compatibility|native-device-validation|playgrounds|web-consumer-validation)\.md$/u,
@@ -216,6 +218,8 @@ export const classifyCanaryPaths = (paths, { manual = false } = {}) => {
   ])
 
   const browser = matchesAny(paths, [
+    /^\.github\/workflows\/release-canary\.yml$/u,
+    /^\.github\/actions\/setup-playwright\//u,
     /^apps\/(docs|templates)\//u,
     /^packages\/(astro|core|elements|icons-brand|lumen|react|react-hook-form|templates|tokens)\//u,
     /^tests\/(a11y|visual)\//u,

@@ -1065,6 +1065,20 @@ describe('@santi020k/lumen-elements', () => {
     expect(updates.checked).toBe(true)
   })
 
+  test('input type property can be assigned before connection and updated afterward', () => {
+    const input = document.createElement('lumen-input')
+    expect(Reflect.set(input, 'type', 'email')).toBe(true)
+    input.setAttribute('value', 'invalid-email')
+    document.body.append(input)
+    const control = requireValue(input.querySelector('input'))
+    expect(control.type).toBe('email')
+    expect(control.validity.typeMismatch).toBe(true)
+    expect(Reflect.set(input, 'type', 'text')).toBe(true)
+    expect(control.type).toBe('text')
+    expect(control.value).toBe('invalid-email')
+    expect(control.validity.typeMismatch).toBe(false)
+  })
+
   test('scalar custom controls expose native validity and focus', () => {
     document.body.innerHTML = `
       <form>
@@ -1778,6 +1792,28 @@ describe('@santi020k/lumen-elements', () => {
     document.body.dispatchEvent(new Event('pointerdown', { bubbles: true }))
 
     expect(menu.hidden).toBe(true)
+  })
+
+  test.each([
+    ['ArrowUp', 'Delete'], ['ArrowDown', 'Duplicate'], ['Home', 'Duplicate'], ['End', 'Delete']
+  ])('context menu %s enters the expected item from its container', (key, label) => {
+    document.body.innerHTML = `
+      <button data-ui-context-menu-trigger="project-menu" id="project-trigger">Project</button>
+      <lumen-context-menu id="project-menu" tabindex="-1">
+        <button role="menuitem" type="button">Duplicate</button>
+        <button role="menuitem" type="button">Delete</button>
+      </lumen-context-menu>
+    `
+    enhanceLumenContextMenus(document)
+    const trigger = requireValue(document.querySelector<HTMLButtonElement>('#project-trigger'))
+    const menu = requireValue(document.querySelector<HTMLElement>('#project-menu'))
+
+    press(trigger, 'F10', { shiftKey: true })
+    menu.focus()
+    expect(document.activeElement).toBe(menu)
+    press(menu, key)
+    expect(document.activeElement?.textContent).toBe(label)
+    expect(menu.hidden).toBe(false)
   })
 
   test('tooltip wires aria-describedby and dismisses with Escape', () => {

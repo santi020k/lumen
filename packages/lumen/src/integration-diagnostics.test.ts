@@ -38,6 +38,141 @@ describe('Lumen integration diagnostics', () => {
     }
   })
 
+  test.each([
+    ['import Runtime from', 'Runtime'],
+    ['import { default as Runtime } from', 'Runtime'],
+    ['import $Runtime from', '$Runtime']
+  ])('recognizes Astro runtime bindings using %s', async (clause, local) => {
+    const root = await mkdtemp(join(tmpdir(), 'lumen-doctor-alias-'))
+
+    try {
+      await mkdir(join(root, 'src'), { recursive: true })
+      await writeFile(join(root, 'src', 'global.css'), '@import "@santi020k/lumen-astro/styles.css";\n')
+      const file = join(root, 'src', 'page.astro')
+      const header = `---\nimport { Dialog } from '@santi020k/lumen-astro'\n${clause} '@santi020k/lumen-astro/runtime'\n---\n`
+
+      await writeFile(file, `${header}<Dialog /><${local} />\n`)
+      await expect(inspectLumenIntegration(root)).resolves.toMatchObject({ healthy: true })
+      await writeFile(file, `${header}<Dialog /><${local} /><${local} />\n`)
+      const report = await inspectLumenIntegration(root)
+
+      expect(report.healthy).toBe(false)
+      expect(report.findings).toContainEqual(expect.objectContaining({ rule: 'astro-runtime-duplicate' }))
+      expect(report.findings).not.toContainEqual(expect.objectContaining({ rule: 'astro-runtime-missing' }))
+    } finally {
+      await rm(root, { force: true, recursive: true })
+    }
+  })
+
+  test('does not count type-only runtime bindings or similarly prefixed tags', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'lumen-doctor-alias-boundary-'))
+
+    try {
+      await mkdir(join(root, 'src'), { recursive: true })
+      await writeFile(join(root, 'src', 'global.css'), '@import "@santi020k/lumen-astro/styles.css";\n')
+      const file = join(root, 'src', 'page.astro')
+      const componentImport = 'import { Dialog } from \'@santi020k/lumen-astro\'\n'
+
+      for (const local of ['Runtime', 'UIPrimitives']) {
+        await writeFile(file, `---\n${componentImport}import type ${local} from '@santi020k/lumen-astro/runtime'\n---\n<Dialog /><${local} />`)
+        expect((await inspectLumenIntegration(root)).findings).toContainEqual(expect.objectContaining({ rule: 'astro-runtime-missing' }))
+      }
+      await writeFile(file, `---\n${componentImport}import Runtime from '@santi020k/lumen-astro/runtime'\n---\n<Dialog />${'<RuntimeExtra />'.repeat(20_000)}`)
+      expect((await inspectLumenIntegration(root)).findings).toContainEqual(expect.objectContaining({ rule: 'astro-runtime-missing' }))
+    } finally {
+      await rm(root, { force: true, recursive: true })
+    }
+  })
+
+  test('does not treat Astro frontmatter strings, comments, or attribute examples as runtime mounts', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'lumen-doctor-alias-comments-'))
+
+    try {
+      await mkdir(join(root, 'src'), { recursive: true })
+      await writeFile(join(root, 'src', 'global.css'), '@import "@santi020k/lumen-astro/styles.css";\n')
+      const file = join(root, 'src', 'page.astro')
+      const source = '---\nimport { Dialog } from \'@santi020k/lumen-astro\'\nimport Runtime from \'@santi020k/lumen-astro/runtime\'\nconst example = \'<Runtime />\'\n---\n<Dialog /><!-- <Runtime /> --><pre data-example="<Runtime />" />'
+
+      await writeFile(file, source)
+      expect((await inspectLumenIntegration(root)).findings).toContainEqual(expect.objectContaining({ rule: 'astro-runtime-missing' }))
+      await writeFile(file, `${source}<Runtime />`)
+      await expect(inspectLumenIntegration(root)).resolves.toMatchObject({ healthy: true })
+    } finally {
+      await rm(root, { force: true, recursive: true })
+    }
+  })
+
+  test.each([
+    '<script>const example = "<Runtime />";</script>',
+    '<style>.example::after { content: "<Runtime />"; }</style>',
+    '{"<Runtime />"}',
+    '{\'<Runtime />\'}',
+    '{`<Runtime />`}',
+    '{/* <Runtime /> */ null}',
+    '{// <Runtime />\n null}',
+    '{/<Runtime>/.test("x")}',
+    '{/[<Runtime>\\/]/.test("x")}'
+  ])('ignores runtime examples in raw text and expressions: %s', async example => {
+    const root = await mkdtemp(join(tmpdir(), 'lumen-doctor-runtime-example-'))
+
+    try {
+      await mkdir(join(root, 'src'), { recursive: true })
+      await writeFile(join(root, 'src', 'global.css'), '@import "@santi020k/lumen-astro/styles.css";\n')
+      const file = join(root, 'src', 'page.astro')
+      const header = '---\nimport { Dialog } from \'@santi020k/lumen-astro\'\nimport Runtime from \'@santi020k/lumen-astro/runtime\'\n---\n'
+
+      await writeFile(file, `${header}<Dialog />${example}`)
+      expect((await inspectLumenIntegration(root)).findings).toContainEqual(expect.objectContaining({ rule: 'astro-runtime-missing' }))
+      await writeFile(file, `${header}<Dialog />${example}{true && <Runtime />}`)
+      await expect(inspectLumenIntegration(root)).resolves.toMatchObject({ healthy: true })
+    } finally {
+      await rm(root, { force: true, recursive: true })
+    }
+  })
+
+  test.each([
+    ['Runtime', `<script>const text = "${'\u0130'.repeat(20)}";</script><Runtime />`, true],
+    ['Runtime', '{1 < 2 && <Runtime />}', true],
+    ['Runtime', '{a<b && <Runtime />}', true],
+    ['Runtime', '{a < b && <Runtime />}', true],
+    ['Script', '<Script /><Script />', false],
+    ['Style', '<Style /><Style />', false]
+  ])('preserves real mounts with %s and %s', async (local, markup, healthy) => {
+    const root = await mkdtemp(join(tmpdir(), 'lumen-doctor-runtime-boundary-'))
+
+    try {
+      await mkdir(join(root, 'src'), { recursive: true })
+      await writeFile(join(root, 'src', 'global.css'), '@import "@santi020k/lumen-astro/styles.css";\n')
+      await writeFile(join(root, 'src', 'page.astro'), `---\nimport { Dialog } from '@santi020k/lumen-astro'\nimport ${local} from '@santi020k/lumen-astro/runtime'\n---\n<Dialog />${markup}`)
+      const report = await inspectLumenIntegration(root)
+
+      expect(report.healthy).toBe(healthy)
+      expect(report.findings).not.toContainEqual(expect.objectContaining({ rule: 'astro-runtime-missing' }))
+
+      expect(report.findings.some(item => item.rule === 'astro-runtime-duplicate')).toBe(!healthy)
+    } finally {
+      await rm(root, { force: true, recursive: true })
+    }
+  })
+
+  test('detects aliased runtime mounts shared between a layout and a route', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'lumen-doctor-alias-layout-'))
+
+    try {
+      await mkdir(join(root, 'src', 'layouts'), { recursive: true })
+      await mkdir(join(root, 'src', 'pages'), { recursive: true })
+      await writeFile(join(root, 'src', 'global.css'), '@import "@santi020k/lumen-astro/styles.css";\n')
+      await writeFile(join(root, 'src', 'layouts', 'Base.astro'), '---\nimport Runtime from \'@santi020k/lumen-astro/runtime\'\n---\n<Runtime /><slot />')
+      await writeFile(join(root, 'src', 'pages', 'index.astro'), '---\nimport { Dialog } from \'@santi020k/lumen-astro\'\nimport AppRuntime from \'@santi020k/lumen-astro/runtime\'\n---\n<Dialog /><AppRuntime />')
+      const report = await inspectLumenIntegration(root)
+
+      expect(report.findings).toContainEqual(expect.objectContaining({ file: 'src/pages/index.astro', rule: 'astro-runtime-duplicate' }))
+      expect(report.findings).not.toContainEqual(expect.objectContaining({ rule: 'astro-runtime-missing' }))
+    } finally {
+      await rm(root, { force: true, recursive: true })
+    }
+  })
+
   test('scopes styles and runtime mounts to workspace application boundaries', async () => {
     const root = await mkdtemp(join(tmpdir(), 'lumen-doctor-workspace-'))
 

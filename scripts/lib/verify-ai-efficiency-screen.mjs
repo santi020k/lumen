@@ -10,13 +10,54 @@ import ts from 'typescript'
 const root = new URL('../../', import.meta.url).pathname
 const { build } = createRequire(new URL('../../packages/elements/package.json', import.meta.url))('esbuild')
 
-export const verifyEfficiencyScreen = async (directory, scenario, mode) => {
+const verifyWorkspaceFilters = async (page, email, capture) => {
+          const members = page.getByRole('list', { name: 'Team members', exact: true })
+          const search = page.getByRole('textbox', { name: 'Search members', exact: true })
+          const role = page.getByRole('combobox', { name: 'Role filter', exact: true })
+
+          await expect(members.getByRole('listitem')).toHaveCount(3)
+
+          await search.fill('GRACE')
+
+          await expect(members.getByRole('listitem')).toHaveCount(1)
+
+          await expect(members).toContainText('Grace')
+
+          await role.selectOption({ label: 'Owner' })
+
+          await expect(members.getByRole('listitem')).toHaveCount(0)
+
+          await expect(page.getByText('No results', { exact: true })).toBeVisible()
+
+          await search.fill('')
+
+          await expect(members.getByRole('listitem')).toHaveCount(1)
+
+          await expect(members).toContainText('Ada')
+
+          await role.selectOption({ label: 'All' })
+
+          await expect(members.getByRole('listitem')).toHaveCount(3)
+
+          await expect(email).toHaveValue('grace@example.com')
+
+          await expect(page.getByRole('status')).toHaveText('Preferences saved for grace@example.com.')
+
+          await capture('filtered')
+}
+
+const verifyFixtureSource = async (directory, mode, elements) => {
+  const allowedImports = ['react', './Screen.css']
+
+  if (mode !== 'scratch') allowedImports.push(elements ? '@santi020k/lumen-elements/define' : '@santi020k/lumen-react')
+
   const source = join(directory, 'Screen.tsx')
 
   const program = ts.createProgram([source, join(directory, 'fixture-env.d.ts')], {
     jsx: ts.JsxEmit.ReactJSX, module: ts.ModuleKind.NodeNext, moduleResolution: ts.ModuleResolutionKind.NodeNext,
     noEmit: true, strict: true, skipLibCheck: true, target: ts.ScriptTarget.ES2022,
     paths: {
+      '@santi020k/lumen-elements/define': [join(root, 'packages/elements/dist/define.d.ts')],
       ...(mode === 'scratch' ? {} : { '@santi020k/lumen-react': [join(root, 'packages/react/dist/index.d.ts')] }),
       react: [join(root, 'packages/react/node_modules/@types/react/index.d.ts')],
       'react/*': [join(root, 'packages/react/node_modules/@types/react/*.d.ts')]
@@ -33,7 +74,7 @@ export const verifyEfficiencyScreen = async (directory, scenario, mode) => {
     assert.notEqual(node.kind, ts.SyntaxKind.AnyKeyword, 'Use precise types; any is not allowed.')
 
     if (ts.isImportDeclaration(node) && ts.isStringLiteral(node.moduleSpecifier)) {
-      assert.ok(['react', './Screen.css', ...(mode === 'scratch' ? [] : ['@santi020k/lumen-react'])].includes(node.moduleSpecifier.text), 'Unexpected import outside the fixture contract.')
+      assert.ok(allowedImports.includes(node.moduleSpecifier.text), 'Unexpected import outside the fixture contract.')
     }
 
     ts.forEachChild(node, inspect)
@@ -41,20 +82,33 @@ export const verifyEfficiencyScreen = async (directory, scenario, mode) => {
 
   inspect(parsed)
 
-  await writeFile(join(directory, 'entry.tsx'), `import React from 'react'; import { createRoot } from 'react-dom/client'; import Screen from './Screen'; import './Screen.css'; ${mode === 'scratch' ? '' : `import ${JSON.stringify(join(root, 'packages/astro/styles/lumen.css'))};`} createRoot(document.getElementById('app')).render(<Screen />);`)
+}
+
+const bundleFixture = async (directory, mode, elements) => {
+  await writeFile(join(directory, 'entry.tsx'), `import React from 'react'; import { createRoot } from 'react-dom/client'; import Screen from './Screen'; import './Screen.css'; ${mode === 'scratch' ? '' : `import ${JSON.stringify(join(root, 'packages/astro/styles/lumen.css'))};`} ${elements ? "import { defineLumenElements } from '@santi020k/lumen-elements/define'; defineLumenElements(['Input', 'Button']);" : ''} createRoot(document.getElementById('app')).render(<Screen />);`)
 
   const bundle = await build({
     entryPoints: [join(directory, 'entry.tsx')], outfile: join(directory, 'app.js'), bundle: true,
     format: 'esm', jsx: 'automatic', metafile: true,
     alias: {
+      '@santi020k/lumen-elements/define': join(root, 'packages/elements/dist/define.js'),
       '@santi020k/lumen-react': join(root, 'packages/react/dist/index.js'),
       react: join(root, 'node_modules/react'), 'react-dom': join(root, 'packages/react/node_modules/react-dom')
     }
   })
 
-  assert.equal(Object.keys(bundle.metafile.inputs).some(path => path.includes('packages/react/dist/')), mode !== 'scratch', 'The implementation must use the assigned UI approach.')
+  if (!elements) assert.equal(Object.keys(bundle.metafile.inputs).some(path => path.includes('packages/react/dist/')), mode !== 'scratch', 'The implementation must use the assigned UI approach.')
 
   await writeFile(join(directory, 'index.html'), '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>UI efficiency fixture</title><link rel="stylesheet" href="/app.css"><style>body{margin:0;font-family:system-ui,sans-serif}*{box-sizing:border-box}</style></head><body><div id="app"></div><script type="module" src="/app.js"></script></body></html>')
+
+}
+
+export const verifyEfficiencyScreen = async (directory, scenario, mode) => {
+  const elements = scenario.framework === 'elements' && mode !== 'scratch'
+
+  await verifyFixtureSource(directory, mode, elements)
+
+  await bundleFixture(directory, mode, elements)
 
   const server = createServer(async (request, response) => {
     const routes = { '/': ['index.html', 'text/html'], '/app.js': ['app.js', 'text/javascript'], '/app.css': ['app.css', 'text/css'] }
@@ -93,6 +147,29 @@ export const verifyEfficiencyScreen = async (directory, scenario, mode) => {
       page.on('pageerror', error => errors.push(error.message))
 
       await page.goto(`http://127.0.0.1:${address.port}`)
+
+      assert.deepEqual(errors, [], 'Browser runtime errors during initialization.')
+
+      if (elements) {
+        await expect(page.getByRole('heading', { level: 1, name: scenario.heading })).toBeVisible()
+
+        await expect(page.locator('lumen-input input')).toHaveCount(1)
+
+        await expect(page.locator('lumen-button')).toHaveCount(2)
+
+        for (const [role, name, host] of [
+          ['textbox', 'Email address', 'lumen-input'],
+          ['button', 'Show delivery details', 'lumen-button'],
+          ['button', 'Save preferences', 'lumen-button']
+        ]) {
+          const control = page.getByRole(role, { name, exact: true })
+
+          await expect(control).toBeVisible()
+
+          assert.equal(await control.evaluate((element, tag) => element.closest(tag) !== null, host), true,
+            `${name} must use a visible ${host} control.`)
+        }
+      }
 
       await expect(page.getByRole('heading', { level: 1, name: scenario.heading })).toBeVisible()
 
@@ -185,6 +262,8 @@ export const verifyEfficiencyScreen = async (directory, scenario, mode) => {
         await page.getByRole('button', { name: 'Save preferences', exact: true }).click()
 
         await expect(page.getByRole('status')).toHaveText('Preferences saved for grace@example.com.')
+
+        if (scenario.id === 'workspace-settings') await verifyWorkspaceFilters(page, email, capture)
 
         await capture('saved')
       }

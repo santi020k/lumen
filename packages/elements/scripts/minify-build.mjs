@@ -2,7 +2,7 @@ import { readFile, writeFile } from 'node:fs/promises'
 
 import { transform } from 'esbuild'
 
-for (const file of ['define.js', 'consumer-behaviors.js']) {
+for (const file of ['define.js', 'chart-html.js', 'consumer-behaviors.js']) {
   const outputUrl = new URL(`../dist/${file}`, import.meta.url)
   const source = await readFile(outputUrl, 'utf8')
 
