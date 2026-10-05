@@ -30,7 +30,9 @@ export const readReactChartDatumActivation = (
   root: HTMLElement,
   target: EventTarget | null
 ): LumenChartDatumActivationDetail | null => {
-  if (!root.isConnected || !(target instanceof Element)) return null
+  const ElementType = root.ownerDocument.defaultView?.Element
+
+  if (!root.isConnected || !ElementType || !(target instanceof ElementType)) return null
 
   const element = target.closest('[data-ui-chart-datum]')
 

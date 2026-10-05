@@ -58,6 +58,27 @@ const isRow = (value: unknown): value is DataTableRow => (
   Object.values(value).every(isCell)
 )
 
+const optionalString = (value: unknown): boolean => value === undefined || typeof value === 'string'
+const optionalBoolean = (value: unknown): boolean => value === undefined || typeof value === 'boolean'
+
+const isColumn = (value: unknown): value is DataTableColumn => (
+  isRecord(value) && typeof value.key === 'string' && value.key.length > 0 &&
+  [value.header, value.label].every(optionalString) &&
+  [value.sortable, value.wide].every(optionalBoolean) &&
+  (value.sort === undefined || value.sort === 'number' || value.sort === 'string') &&
+  (value.render === undefined || typeof value.render === 'function')
+)
+
+const validColumns = (value: unknown): DataTableColumn[] => {
+  if (!Array.isArray(value)) return noColumns
+
+  const columns: unknown[] = Array.from(value)
+
+  if (!columns.every(isColumn)) return noColumns
+
+  return new Set(columns.map(column => column.key)).size === columns.length ? columns : noColumns
+}
+
 const rowValue = (
   row: DataTableRow,
   index: number
@@ -254,7 +275,7 @@ const attrs = (name: string | undefined, sortMode: 'client' | 'manual',
 export const DataTable = ({
   children,
   className,
-  columns = noColumns,
+  columns: rawColumns = noColumns,
   defaultSort = null,
   defaultExpandedRowIds,
   expandedRowIds,
@@ -273,6 +294,7 @@ export const DataTable = ({
   selectable = false,
   ...props
 }: DataTableProps) => {
+  const columns = validColumns(rawColumns)
   const rows = isRows(rawRows) ? rawRows : noRows
   const [uncontrolledSort, setUncontrolledSort] = useState<DataTableSort | null>(defaultSort)
   const sort = controlledSort === undefined ? uncontrolledSort : controlledSort
@@ -407,9 +429,10 @@ const sortLabels = (labels: { label: DataTableSortControlsProps['label']
 
 /** A named mobile/toolbar path to the same controlled server sort as table headers. */
 export const DataTableSortControls = ({
-  columns, sort, onSortChange, disabled = false, label, directionLabel,
+  columns: rawColumns, sort, onSortChange, disabled = false, label, directionLabel,
   ascendingLabel, descendingLabel, placeholder, className, ...props
 }: DataTableSortControlsProps) => {
+  const columns = validColumns(rawColumns)
   const text = sortLabels({ label, directionLabel, ascendingLabel, descendingLabel, placeholder })
   const id = useId()
   const sortable = columns.filter(column => column.sortable)

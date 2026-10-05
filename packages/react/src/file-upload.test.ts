@@ -92,3 +92,40 @@ test('retains native disabled, accept, multiple and field associations', async (
   expect(input.labels?.[0]?.htmlFor).toBe('upload-reports')
   expect(input.getAttribute('aria-describedby')).toBe('upload-help')
 })
+
+test('follows replaced external forms and ignores unrelated or canceled resets', async () => {
+  const original = document.createElement('form')
+
+  original.id = 'external-upload'
+  document.body.append(original)
+  const { input, select, summary } = await mount({ form: original.id })
+
+  await select(['report.csv'])
+  const current = document.createElement('form')
+
+  current.id = original.id
+  original.replaceWith(current)
+  expect(input.form).toBe(current)
+  const unrelated = document.createElement('form')
+
+  document.body.append(unrelated)
+  await act(async () => {
+    unrelated.reset()
+    await Promise.resolve()
+  })
+  expect(summary.textContent).toBe('report.csv')
+  current.addEventListener('reset', event => {
+    event.preventDefault()
+  }, { once: true })
+  await act(async () => {
+    current.reset()
+    await Promise.resolve()
+  })
+  expect(summary.textContent).toBe('report.csv')
+  await act(async () => {
+    current.reset()
+    await Promise.resolve()
+  })
+  expect(summary.textContent).toBe('')
+  expect(summary.closest('label')?.dataset.state).toBe('idle')
+})

@@ -216,3 +216,19 @@ test('keeps expanded implicit records attached to their original rows across sor
   expect(element('[data-value="0"] button').getAttribute('aria-expanded')).toBe('true')
   expect(element('[data-value="1"] button').getAttribute('aria-expanded')).toBe('false')
 })
+
+test.each([null, 1, 'columns', {}, [null], [{ key: 1 }], [{ key: '' }], [{ key: 'name', label: {} }], [{ key: 'name', sortable: 'yes' }], [{ key: 'name', render: 'html' }], [{ key: 'name', sort: 'other' }], [{ key: 'name' }, { key: 'name' }], new Array(2)])(
+  'fails closed before rendering decoded table columns and sort controls: %j', async columns => {
+    for (const component of [DataTable, DataTableSortControls]) {
+      await run(() => {
+        const view: unknown = Reflect.apply(createElement, undefined, [component, { columns, rows, sort: { key: 'name', direction: 'ascending' }, onSortChange: vi.fn() }])
+
+        if (!isValidElement(view)) throw new Error('Expected table control')
+
+        root.render(view)
+      })
+      expect(container.querySelectorAll('th')).toHaveLength(0)
+      expect(container.querySelectorAll('option[value="name"]')).toHaveLength(0)
+    }
+  }
+)

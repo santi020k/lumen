@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { act, createElement } from 'react'
+import { act, createElement, useState } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 
 import { afterEach, beforeEach, expect, test, vi } from 'vitest'
@@ -144,4 +144,84 @@ test('a late clipboard result cannot replace feedback from the latest attempt', 
   })
   expect(button().dataset.state).toBe('error')
   expect(button().getAttribute('aria-label')).toBe('Copy manually')
+})
+
+test('highlighted code removes only generated region attributes and updates labels on the same pre', () => {
+  const children = createElement('pre', {}, createElement('code', {}, 'let x = 1'))
+  const render = (wrap: boolean, codeLabel: string) => {
+    act(() => {
+      root.render(createElement(Code, { variant: 'block', highlighted: true, wrap, codeLabel }, children))
+    })
+  }
+
+  render(false, 'First label')
+  const pre = container.querySelector('pre')
+
+  if (!pre) throw new Error('Missing highlighted code')
+
+  expect(pre.getAttribute('aria-label')).toBe('First label')
+  render(false, 'Second label')
+  expect(container.querySelector('pre')).toBe(pre)
+  expect(pre.getAttribute('aria-label')).toBe('Second label')
+  render(true, 'Second label')
+  expect(pre.hasAttribute('tabindex')).toBe(false)
+  expect(pre.hasAttribute('role')).toBe(false)
+  expect(pre.hasAttribute('aria-label')).toBe(false)
+  render(false, 'Generated')
+  pre.setAttribute('role', 'group')
+  pre.setAttribute('aria-label', 'Consumer label')
+  render(true, 'Generated')
+  expect(pre.getAttribute('role')).toBe('group')
+  expect(pre.getAttribute('aria-label')).toBe('Consumer label')
+  expect(pre.hasAttribute('tabindex')).toBe(false)
+})
+
+test('highlighted code preserves newly adopted equal-valued consumer region attributes', () => {
+  act(() => {
+    root.render(createElement(Code, { variant: 'block', highlighted: true, codeLabel: 'Example' }, createElement('pre', {}, 'Code')))
+  })
+  const pre = container.querySelector('pre')
+
+  if (!pre) throw new Error('Missing highlighted code')
+
+  act(() => {
+    root.render(createElement(Code, { variant: 'block', highlighted: true, wrap: true, codeLabel: 'Example' }, createElement('pre', { tabIndex: 0, role: 'region', 'aria-label': 'Example' }, 'Code')))
+  })
+  expect(container.querySelector('pre')).toBe(pre)
+  expect(pre.getAttribute('tabindex')).toBe('0')
+  expect(pre.getAttribute('role')).toBe('region')
+  expect(pre.getAttribute('aria-label')).toBe('Example')
+})
+
+const AdoptingCodeChild = () => {
+  const [adopted, setAdopted] = useState(false)
+
+  return createElement('div', {}, createElement('button', { onClick: () => {
+    setAdopted(true)
+  } }, 'Adopt'), createElement('pre', adopted ? { tabIndex: 0, role: 'region', 'aria-label': 'Example' } : {}, 'Code'))
+}
+
+test('highlighted code preserves attributes adopted by an independently updating child', async () => {
+  const children = createElement(AdoptingCodeChild)
+
+  act(() => {
+    root.render(createElement(Code, { variant: 'block', highlighted: true, codeLabel: 'Example' }, children))
+  })
+  const pre = container.querySelector('pre')
+  const adopt = container.querySelector('button')
+
+  if (!pre || !adopt) throw new Error('Missing adopting fixture')
+
+  act(() => {
+    adopt.click()
+  })
+  // Parent cleanup must see queued ownership changes even before the observer callback.
+  act(() => {
+    root.render(createElement(Code, { variant: 'block', highlighted: true, wrap: true, codeLabel: 'Example' }, children))
+  })
+  await Promise.resolve()
+  expect(container.querySelector('pre')).toBe(pre)
+  expect(pre.getAttribute('tabindex')).toBe('0')
+  expect(pre.getAttribute('role')).toBe('region')
+  expect(pre.getAttribute('aria-label')).toBe('Example')
 })

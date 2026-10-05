@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 
 import type { ComponentPropsWithoutRef } from 'react'
-import { act, createElement, useState } from 'react'
+import { act, createElement, isValidElement, useState } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 
 import { afterEach, describe, expect, test, vi } from 'vitest'
@@ -396,3 +396,19 @@ test('rebinds the reset listener when the combobox is given a different explicit
   await flushReset(formB)
   expect(input.value).toBe('React')
 })
+
+test.each([null, 1, 'options', {}, ['Astro', null], ['Astro', 42], ['Astro', {}], new Array(2)])(
+  'fails closed on malformed decoded options: %j', options => {
+    const { root, container, input } = renderCombobox()
+
+    act(() => {
+      const view: unknown = Reflect.apply(createElement, undefined, [Combobox, { list: 'framework-options', options, value: 'a' }])
+
+      if (!isValidElement(view)) throw new Error('Expected combobox')
+
+      root.render(view)
+    })
+    expect(container.querySelectorAll('[role="option"]')).toHaveLength(0)
+    expect(input.value).toBe('a')
+  }
+)

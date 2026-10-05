@@ -603,7 +603,8 @@ Apply/Cancel actions and domain limits such as maximum report duration. Labels a
 ## Input-attached date range selection
 
 `DateRangeInput` wraps `DateRangeCalendar` in an anchored, non-modal popover.
-It measures and observes its owning viewport, including iframe documents. Outside-focus dismissal
+It measures and observes its owning viewport, including iframe documents. Apply and Cancel restore
+trigger focus, and native reset follows the current associated form. Outside-focus dismissal
 follows the owning document, including same-origin iframe and portal rendering. Use it
 when the range should be edited directly from an input-like control. It keeps draft
 changes internal and calls `onValueChange` only when the user chooses Apply.
@@ -747,6 +748,7 @@ Artwork attribution is shipped with the core package in `PHONE_FLAG_LICENSE.txt`
 
 ## Combobox keyboard behavior
 
+Decoded Combobox options must be a dense string collection; invalid collections expose no options.
 In v4, Combobox retains input focus and exposes its active option through `aria-activedescendant`.
 Enter commits an active option; text editing and composition remain native. Escape dismisses one
 nested control at a time. See the [shared keyboard contract](../../docs/ai-usage.md#combobox-keyboard-behavior-in-v4)
@@ -805,6 +807,7 @@ The four static structural parts are also exported from `@santi020k/lumen-react/
 ```
 
 `FileUpload selectedFilesLabel` accepts localized text containing `{count}`.
+Reset feedback follows the current native form owner, including replaced external forms.
 Accepted native form resets clear selected-file feedback; cancelled resets preserve it.
 
 ### Rich description rows
@@ -845,6 +848,7 @@ with `showTable={false}` or hidden line markers. Translate `labels.exploreData` 
 `labels.formatDatumAction(context)` alongside the chart's existing labels and value formatters.
 Missing observations have no action and never reach datum-action value formatters; pie actions cover only positive slices. Updated values and
 callbacks take effect on rerender, while stable datum identities retain focused action buttons.
+Chart activation uses the owning document, including iframe rendering.
 The chart's native `onClick` can cancel activation with `event.preventDefault()`.
 
 ## Dashboard composition
@@ -863,7 +867,7 @@ React DataTable adds `layout="records"`, rich `column.render`, and expandable `r
 Use stable record IDs and controlled `expandedRowIds` across pages. Row identity uses `rowValue`,
 then `id`, then a legacy `value` fallback; ordinary value cells do not override explicit IDs.
 Rows without an explicit identity keep their original input index across client sorting.
-Decoded row collections are validated before sorting or rendering. Invalid rows, identities,
+Decoded row and column collections are validated before sorting or rendering. Invalid rows, columns, identities,
 cell shapes, empty identities, and duplicate resolved identities fail closed to an empty table while
 the column headers remain available. Client sorting only applies to columns marked `sortable`.
 `DataTableSortControls` shares
@@ -930,3 +934,6 @@ one event compose against the latest pending value. Change callbacks run once pe
 including under Strict Mode. Controlled values remain owned by the application.
 
 `useToast().dismiss()` closes only the newest open toast. Pass an ID to dismiss a specific toast.
+
+Highlighted Code updates generated region labels and removes its generated focus attributes when
+wrapping is enabled, while preserving consumer-owned accessibility attributes.

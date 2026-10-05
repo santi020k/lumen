@@ -6,11 +6,12 @@ import { expect, test, vi } from 'vitest'
 
 import { DateRangeInput } from './date-range-input.js'
 
-const Harness = () => {
+const Harness = ({ form }: { form?: string }) => {
   const [value, setValue] = useState({ start: '2026-09-01', end: '2026-09-30' })
 
   return createElement(DateRangeInput, {
     value,
+    ...(form ? { form } : {}),
     onValueChange: setValue,
     label: 'Period',
     labels: { start: 'From', end: 'To', presets: 'Ranges', apply: 'Apply', cancel: 'Cancel' },
@@ -99,6 +100,10 @@ test('dismisses an iframe popover when focus leaves its owning document panel', 
 
   const container = owner.createElement('div')
   const outside = owner.createElement('button')
+  const form = owner.createElement('form')
+
+  form.id = 'iframe-range'
+  owner.body.append(form)
 
   outside.textContent = 'Outside'
   owner.body.append(container, outside)
@@ -107,7 +112,7 @@ test('dismisses an iframe popover when focus leaves its owning document panel', 
   try {
     await act(async () => {
       await Promise.resolve()
-      root.render(createElement(Harness))
+      root.render(createElement(Harness, { form: form.id }))
     })
     const trigger = container.querySelector<HTMLButtonElement>('[aria-haspopup="dialog"]')
 
@@ -145,6 +150,32 @@ test('dismisses an iframe popover when focus leaves its owning document panel', 
     })
     expect(trigger.getAttribute('aria-expanded')).toBe('false')
     expect(owner.activeElement).toBe(outside)
+    for (const selection of ['first-child', 'last-child']) {
+      act(() => {
+        trigger.click()
+      })
+      const action = container.querySelector<HTMLButtonElement>(`.ui-range-input__actions button:${selection}`)
+
+      if (!action) throw new Error('Missing range action')
+
+      act(() => {
+        action.click()
+      })
+      expect(trigger.getAttribute('aria-expanded')).toBe('false')
+      expect(owner.activeElement).toBe(trigger)
+    }
+    act(() => {
+      trigger.click()
+    })
+    const replacement = owner.createElement('form')
+
+    replacement.id = form.id
+    form.replaceWith(replacement)
+    await act(async () => {
+      replacement.reset()
+      await new Promise(resolve => setTimeout(resolve, 0))
+    })
+    expect(trigger.getAttribute('aria-expanded')).toBe('false')
   } finally {
     await act(async () => {
       await Promise.resolve()

@@ -2368,22 +2368,58 @@ const codeRegionProps = (wrap: boolean, codeLabel: string) => wrap ?
     tabIndex: 0
   }
 
-const HighlightedCode = ({ children, codeLabel, wrap }: { children: ReactNode, codeLabel: string, wrap: boolean }) => (
-  <div ref={container => {
-    if (!container || wrap) return
+const decorateCodeRegion = (pre: HTMLPreElement, codeLabel: string): (() => void) => {
+  const generated = new Map<string, string>()
+  const attributes: Record<string, string> = { tabindex: '0', role: 'region' }
 
-    for (const pre of container.querySelectorAll('pre')) {
-      if (!pre.hasAttribute('tabindex')) pre.tabIndex = 0
+  if (!pre.hasAttribute('aria-labelledby')) attributes['aria-label'] = codeLabel
 
-      if (!pre.hasAttribute('role')) pre.setAttribute('role', 'region')
+  for (const [name, value] of Object.entries(attributes)) {
+    if (pre.hasAttribute(name)) continue
 
-      if (!pre.hasAttribute('aria-label') && !pre.hasAttribute('aria-labelledby')) pre.setAttribute('aria-label', codeLabel)
+    pre.setAttribute(name, value)
+
+    generated.set(name, value)
+  }
+
+  const releaseOwnership = (records: readonly MutationRecord[]): void => {
+    for (const record of records) {
+      if (record.attributeName) generated.delete(record.attributeName)
     }
-  }}
-  >
-    {children}
-  </div>
-)
+  }
+
+  const Observer = pre.ownerDocument.defaultView?.MutationObserver
+  const observer = Observer ? new Observer(releaseOwnership) : undefined
+
+  observer?.observe(pre, { attributes: true, attributeFilter: [...generated.keys()] })
+
+  return () => {
+    // Drain pending consumer writes before deciding which attributes are still ours.
+    releaseOwnership(observer?.takeRecords() ?? [])
+
+    observer?.disconnect()
+
+    for (const [name, value] of generated) {
+      if (pre.getAttribute(name) === value) pre.removeAttribute(name)
+    }
+  }
+}
+
+const HighlightedCode = ({ children, codeLabel, wrap }: { children: ReactNode, codeLabel: string, wrap: boolean }) => {
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  useLayoutEffect(() => {
+    if (wrap || !containerRef.current) return
+
+    const restore = [...containerRef.current.querySelectorAll('pre')].map(pre => decorateCodeRegion(pre, codeLabel))
+
+    return () => {
+      for (const cleanup of restore) cleanup()
+    }
+  }, [children, codeLabel, wrap])
+
+  return <div ref={containerRef}>{children}</div>
+}
 
 const resolveCodeLabels = ({ codeLabel, copyLabel, copiedLabel, errorLabel }: Record<'codeLabel' | 'copyLabel' | 'copiedLabel' | 'errorLabel', string | undefined>) => ({
   codeLabel: codeLabel ?? 'Code example',
@@ -7183,21 +7219,23 @@ export const FileUpload = ({
   const inputRef = useRef<HTMLInputElement | null>(null)
 
   useEffect(() => {
-    const form = inputRef.current?.form
+    const owner = inputRef.current?.ownerDocument
     let active = true
 
     const reset = (event: Event): void => {
+      if (event.target !== inputRef.current?.form) return
+
       queueMicrotask(() => {
         if (active && !event.defaultPrevented) setSelectedFiles([])
       })
     }
 
-    form?.addEventListener('reset', reset)
+    owner?.addEventListener('reset', reset)
 
     return () => {
       active = false
 
-      form?.removeEventListener('reset', reset)
+      owner?.removeEventListener('reset', reset)
     }
   }, [props.form])
 

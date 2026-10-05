@@ -6,6 +6,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { composeClassName } from '@santi020k/lumen-core'
 
 const emptyOptions: string[] = []
+const isOptions = (value: unknown): value is string[] => Array.isArray(value) && Array.from(value).every(option => typeof option === 'string')
 
 const ignoresComboboxKeyboard = (
   event: KeyboardEvent,
@@ -45,12 +46,13 @@ export const Combobox = ({
   onChange,
   onFocus,
   onKeyDown,
-  options = emptyOptions,
+  options: rawOptions = emptyOptions,
   type = 'text',
   value: valueProp,
   wrapperClassName,
   ...props
 }: ComboboxProps) => {
+  const options = isOptions(rawOptions) ? rawOptions : emptyOptions
   const inputId = id ?? `${list}-input`
   const rootRef = useRef<HTMLDivElement>(null)
   const [open, setOpen] = useState(false)

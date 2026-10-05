@@ -60,8 +60,9 @@ const resolveRangeInputForm = (root: HTMLElement | null, formId: string | undefi
 
   if (formId !== undefined) {
     const owner = root.ownerDocument.getElementById(formId)
+    const FormType = root.ownerDocument.defaultView?.HTMLFormElement
 
-    return owner instanceof HTMLFormElement ? owner : null
+    return FormType && owner instanceof FormType ? owner : null
   }
 
   return root.closest('form')
@@ -189,7 +190,9 @@ const RangePopover = ({ open, onOpenChange, label, trigger, children, disabled, 
           }
         }}
         onClick={event => {
-          if (event.target instanceof Element && event.target.closest('[data-range-close]')) {
+          const ElementType = event.currentTarget.ownerDocument.defaultView?.Element
+
+          if (ElementType && event.target instanceof ElementType && event.target.closest('[data-range-close]')) {
             triggerRef.current?.focus({ preventScroll: true })
           }
         }}
@@ -269,11 +272,13 @@ export const DateRangeInput = ({
   const error = rangeError(draft, { ...calendarProps, labels, validate })
 
   useEffect(() => {
-    const owner = resolveRangeInputForm(wrapperRef.current, form)
+    const owner = wrapperRef.current?.ownerDocument
     let active = true
     let resetTimer: ReturnType<typeof globalThis.setTimeout> | undefined
 
     const reset = (event: Event) => {
+      if (event.target !== resolveRangeInputForm(wrapperRef.current, form)) return
+
       globalThis.clearTimeout(resetTimer)
 
       resetTimer = globalThis.setTimeout(() => {

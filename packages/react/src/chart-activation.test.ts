@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 import type { ReactNode } from 'react'
 import { act, createElement } from 'react'
+import { createPortal } from 'react-dom'
 import { createRoot, type Root } from 'react-dom/client'
 
 import type { LumenChartDatumActivationDetail, LumenChartSeries } from '@santi020k/lumen-core'
@@ -224,4 +225,30 @@ test('does not format unavailable heatmap measurements for datum actions', () =>
     button().click()
   })
   expect(activate).toHaveBeenCalledWith(expect.objectContaining({ x: 'D', value: 0 }))
+})
+
+test.each(factories)('$name activates plotted and keyboard actions in an iframe', scenario => {
+  const iframe = document.createElement('iframe')
+
+  container.append(iframe)
+  const owner = iframe.contentDocument
+
+  if (!owner) throw new Error('Missing iframe document')
+
+  const events: LumenChartDatumActivationDetail[] = []
+
+  render(createPortal(scenario.render(detail => {
+    events.push(detail)
+  }), owner.body))
+  const action = owner.querySelector<HTMLButtonElement>('button[data-ui-chart-datum]')
+  const plotted = owner.querySelector('svg [data-ui-chart-datum]')
+
+  if (!action || !plotted) throw new Error('Missing chart actions')
+
+  act(() => {
+    action.click()
+    plotted.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+  })
+  expect(events).toHaveLength(2)
+  expect(events[0]).toEqual(events[1])
 })
