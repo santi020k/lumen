@@ -1,0 +1,67 @@
+name: Apple native checks
+# cspell:words simctl
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: apple-native-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    name: Apple ${{ matrix.check }}
+    if: github.event.repository.private == false
+    runs-on: macos-26
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        check: [swift, react-native, captures, visual, framework-visual]
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_26.5.app/Contents/Developer
+      LUMEN_NATIVE_SETUP_READY: '1'
+      LUMEN_PLAYWRIGHT_READY: '1'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+      - name: Verify stable Apple toolchain
+        run: apps/playground-apple/scripts/check-app-store-toolchain.sh
+      - uses: santi020k/quality/actions/setup-pnpm@ffa37774f75b2b8e761fe3d71e7046cdb6694a69 # v1
+        with:
+          node-version: 22.x
+      - name: Restore Swift build cache
+        if: matrix.check == 'swift'
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: .build
+          key: swift-${{ runner.os }}-${{ runner.arch }}-26.5-${{ hashFiles('Package.swift', 'Package.resolved') }}-${{ github.sha }}
+          restore-keys: swift-${{ runner.os }}-${{ runner.arch }}-26.5-${{ hashFiles('Package.swift', 'Package.resolved') }}-
+      - name: Set up cached browsers
+        if: matrix.check == 'visual' || matrix.check == 'framework-visual'
+        uses: ./.github/actions/setup-playwright
+        with:
+          browsers: chromium
+      - name: Select native screenshot device
+        if: matrix.check == 'captures'
+        run: |
+          device_id="$(xcrun simctl create 'Lumen CI' com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro-Max com.apple.CoreSimulator.SimRuntime.iOS-26-5)"
+          echo "LUMEN_SIMULATOR_UDID=$device_id" >> "$GITHUB_ENV"
+      - name: Run equivalent Apple gate
+        run: apps/playground-apple/ci_scripts/run-native-checks.sh "${{ matrix.check }}"
+      - name: Keep failure evidence
+        if: failure()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: apple-${{ matrix.check }}-failure
+          path: |
+            test-results
+            apps/docs/test-results
+            apps/playground-apple/Screenshots
+          retention-days: 3

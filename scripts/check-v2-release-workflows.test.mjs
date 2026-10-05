@@ -5,7 +5,7 @@ import test from "node:test";
 
 import { classifyCanaryPaths } from "./classify-workflow-paths.mjs";
 
-// cspell:words mktemp
+// cspell:words mktemp xlarge
 
 const repositoryRoot = resolve(import.meta.dirname, "..");
 const workflowDirectory = resolve(repositoryRoot, ".github", "workflows");
@@ -85,11 +85,6 @@ const turboConfiguration = JSON.parse(
 
 const composeBuildSource = await readFile(
   resolve(repositoryRoot, "packages", "compose", "build.gradle.kts"),
-  "utf8",
-);
-
-const applePlaygroundPackage = await readFile(
-  resolve(repositoryRoot, "apps", "playground-apple", "Package.swift"),
   "utf8",
 );
 
@@ -219,25 +214,29 @@ test("the React Native package smoke builds its package outside the release scop
   ]);
 });
 
-test("Apple checks run in Xcode Cloud and GitHub uses no macOS runners", () => {
-  for (const workflow of allWorkflowSources) {
-    assert.doesNotMatch(workflow, /runs-on: macos-/u);
-  }
+test("public Apple checks use free standard GitHub runners and preserve every gate", async () => {
+  const appleWorkflow = await readWorkflow("apple-native.yml");
 
-  assert.doesNotMatch(ciWorkflow, /native-apple:/u);
+  assert.match(appleWorkflow, /runs-on: macos-26/u);
 
-  assert.doesNotMatch(ciWorkflow, /visual-regression:/u);
+  assert.match(appleWorkflow, /github.event.repository.private == false/u);
 
-  assert.doesNotMatch(canaryWorkflow, /^ {2}swift:/mu);
+  assert.match(appleWorkflow, /check: \[swift, react-native, captures, visual, framework-visual\]/u);
 
-  assert.match(
-    applePlaygroundPackage,
-    /\.package\(name: "lumen", path: "\.\.\/\.\."\)/u,
-  );
+  assert.match(appleWorkflow, /cancel-in-progress: true/u);
 
-  assertOrderedCommands(xcodeCloudChecks, "Xcode Cloud pull-request checks", [
-    "corepack_command\" enable --install-directory",
-    "export PATH=\"$corepack_bin:$PATH\"",
+  assert.match(appleWorkflow, /fail-fast: false/u);
+
+  assert.doesNotMatch(appleWorkflow, /id-token: write|secrets-action/u);
+
+  for (const workflow of allWorkflowSources)
+    assert.doesNotMatch(workflow, /runs-on: macos-.*(?:large|xlarge)/u);
+
+  assert.match(playgroundAppleWorkflow, /public-release:[\s\S]*private == false[\s\S]*apple-store-release.yml/u);
+
+  assert.match(playgroundMacWorkflow, /public-release:[\s\S]*private == false[\s\S]*apple-store-release.yml/u);
+
+  assertOrderedCommands(xcodeCloudChecks, "equivalent Apple checks", [
     "git fetch --no-tags --depth=1 origin",
     "pnpm run check:swift-assets",
     "pnpm run check:swift-version",
@@ -249,10 +248,9 @@ test("Apple checks run in Xcode Cloud and GitHub uses no macOS runners", () => {
     "pnpm run check:swift-package-candidate",
     "pnpm run check:react-native-native-package:ios",
     "capture-component-screenshots.sh",
-    "pnpm exec playwright install chromium",
-    "pnpm run test:visual",
-    "pnpm run test:framework-visual",
   ]);
+
+  assert.match(xcodeCloudChecks, /pnpm run "test:\$mode"/u);
 });
 
 test("iOS version bumps do not implicitly launch a macOS store upload", () => {
@@ -619,13 +617,13 @@ test("published React Native consumers bind signed npm provenance to the release
   assert.match(
     publishedNativeWorkflow,
     /apple-cloud:[\s\S]*?runs-on: ubuntu-latest[\s\S]*?xcode-native-verify-rn-/u,
-    "published Apple verification must launch Xcode Cloud from Linux",
+    "private Apple verification retains its Cloud launcher",
   );
 
   assert.match(
     publishedNativeWorkflow,
     /monitor-apple-cloud:[\s\S]*?XCODE_CLOUD_WORKFLOW_NAME: Published Native Release Checks[\s\S]*?monitor-xcode-cloud\.mjs/u,
-    "published Apple verification must wait for the matching Xcode Cloud build",
+    "private Apple verification retains its Cloud monitor",
   );
 
   assert.ok(
@@ -633,7 +631,9 @@ test("published React Native consumers bind signed npm provenance to the release
     "the Xcode Cloud monitor must fail closed on unsuccessful builds",
   );
 
-  assertOrderedCommands(xcodeCloudChecks, "published Xcode Cloud checks", [
+  assert.match(publishedNativeWorkflow, /apple-public:[\s\S]*private == false[\s\S]*runs-on: macos-26/u);
+
+  assertOrderedCommands(xcodeCloudChecks, "published Apple checks", [
     "check:react-native-native-release:ios",
     "smoke-swift-package-candidate.mjs",
   ]);

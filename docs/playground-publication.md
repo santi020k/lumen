@@ -127,17 +127,18 @@ the shorter `playground:android:bundle` command intentionally remains available 
 release checks only.
 
 For Apple distribution, update `apps/playground-apple/release.json` and every `MARKETING_VERSION`
-in `apps/playground-apple/project.yml`, then run `pnpm playground:apple:release-preflight`. Xcode
-Cloud stamps the checked-in project with the version from the immutable release tag. Merging that
+in `apps/playground-apple/project.yml`, then run `pnpm playground:apple:release-preflight`. The public GitHub
+workflow stamps the project with the synchronized version and live next build number. Merging that
 synchronized version change to `main` automatically launches the iOS workflow. The macOS workflow
 is dispatch-only so an iOS version bump cannot start an unintended Mac App Store upload. Either
 workflow can be dispatched manually from `main` to create another immutable candidate for the
 committed version:
 
-- **Launch Apple playground release** creates `playground-ios-v<version>-r<run>` for iOS.
-- **Launch Mac playground release** creates `playground-macos-v<version>-r<run>` for macOS.
+- **Launch Apple playground release** uploads iOS and records `playground-ios-v<version>-gh<run>-<attempt>`.
+- **Launch Mac playground release** uploads Mac and records `playground-macos-v<version>-gh<run>-<attempt>`.
 
-Repeated attempts for the same marketing version receive distinct tags, while Xcode Cloud supplies
+Private repository launchers retain `playground-*-v<version>-r<run>` tags. Repeated attempts for the
+same marketing version receive distinct tags, while Xcode Cloud supplies
 the monotonically increasing `CI_BUILD_NUMBER`. Each launcher monitors the matching Xcode Cloud
 workflow through completion, and the standalone **Check Apple playground release status** and
 **Check Mac playground release status** workflows can resume monitoring for an existing tag.
@@ -145,7 +146,7 @@ Because App Store Connect already received iOS build
 `1` of version `1.0.0` before Xcode Cloud was enabled, the cloud script offsets only the iOS counter
 by one. The macOS workflow uses its own Xcode Cloud build counter directly.
 
-Create an Xcode Cloud workflow named **App Store Release** for
+For private repositories only, create an Xcode Cloud workflow named **App Store Release** for
 `apps/playground-apple/LumenApplePlayground.xcodeproj` and the shared
 `LumenApplePlayground` scheme with these settings:
 
@@ -159,7 +160,7 @@ Create an Xcode Cloud workflow named **App Store Release** for
 - Post-actions: none. TestFlight groups, App Review submission, and customer release remain explicit
   App Store Connect steps.
 
-Create a second Xcode Cloud workflow named **Mac App Store Release** for the same project and the
+For private repositories, create a second Xcode Cloud workflow named **Mac App Store Release** for the same project and the
 shared `LumenMacPlayground` scheme:
 
 - Start condition: tag changes matching `playground-macos-v*`.
@@ -183,29 +184,42 @@ non-beta macOS image. Other Xcode Cloud workflows retain the committed developme
 holds no Apple certificates, provisioning profiles, or App Store Connect keys; the `app-store`
 GitHub environment is only an approval boundary for creating the tag.
 
-Apple-native validation also runs in Xcode Cloud so GitHub Actions never allocates a macOS runner.
-Keep these additional workflows attached to the same project:
+Public open-source repositories run Apple validation and delivery on standard GitHub-hosted
+`macos-26` runners; private repositories retain Xcode Cloud. Standard runners are free for public
+repositories; larger runners are excluded. The selected stable Xcode 26.5 and iOS 26.5 simulator
+match the native capture environment. The toolchain guard rejects prerelease tools.
 
-- **Pull Request Native Checks** starts for pull requests targeting `main` when Apple sources,
-  native contracts, generated assets, or Apple CI scripts change. Use the latest stable Xcode and
-  macOS environment, cancel superseded builds, and add a required iOS Simulator build action for
-  `LumenApplePlayground`. The post-clone script runs the Swift package, API, clean-consumer, React
-  Native iOS, component-capture, and browser visual-regression checks before Xcode builds the app.
-- **Published Native Release Checks** starts for tags matching `xcode-native-verify-rn-*`. Use the
-  same stable environment and an iOS Simulator build action for `LumenApplePlayground`. The
-  `verify-native-release.yml` dispatcher creates that tag only after the public version and
-  revision metadata pass; the post-clone script then builds the exact public React Native iOS and
-  Swift artifacts.
+`apple-native.yml` runs five independent jobs: Swift tests/API/clean consumers, React Native iOS
+packed consumer, all 100 native component captures, docs visual regressions, and framework visual
+regressions. Dependency/browser caches and Swift incremental builds avoid repeat setup; concurrency
+cancels superseded runs. Tests, baseline images, tolerances, and release approval are unchanged.
+No signing secrets are available to pull-request jobs. Deactivate Lumen's old Cloud PR and published
+verification workflows to avoid duplicate compute; use `verify-native-release.yml` for exact public
+Apple consumers on GitHub. Private copies retain the matching Cloud launcher and monitor.
+
+For public store delivery, `release-playground-apple.yml` and `release-playground-macos.yml` call
+`apple-store-release.yml` from merged main, in the protected `app-store` environment. They resolve
+build numbers from live App Store records, archive/sign/upload on the standard runner, and create
+an immutable source tag only after upload succeeds. The runtime signing script uses a temporary
+keychain and removes certificates, private key files, and archives on exit. The delivery identity
+must support existing app and extension bundle IDs. iOS version changes do not implicitly upload Mac.
+
+Infisical `prod:/playground/apple` must supply `APPLE_DISTRIBUTION_P12_BASE64` and
+`APPLE_DISTRIBUTION_P12_PASSWORD`, plus the existing App Store Connect issuer/key IDs and P8 key.
+The P12 bundle contains the distribution identities and private keys required for iOS and Mac App
+Store signing, including the Mac installer identity. Cloud-managed private keys are not exportable;
+if no usable existing identity is available, a human must authorize signing credential bootstrap.
+Never commit or log these values. The existing Infisical OIDC identity must retain access to this
+path. Do not create new credentials or mutate shared secrets without authorization.
+
+Keep Lumen's old Cloud store-release workflows deactivated after migration. Private repositories
+may keep them active. Re-enable a previous provider only with an explicit decision and deactivate
+its replacement first. Successful upload is not store review or customer release: verify App Store
+processing, select the matching signed build, submit for review, and keep manual rollout held.
 
 The Tour component capture replays its native XCTest interaction to open step one and reveal the
-target, matching the committed documentation image. Missing test attachments fail the capture;
-the visual comparison retains its existing tolerance.
-
-The browser visual-regression suite uses its existing macOS baselines inside **Pull Request Native
-Checks**, avoiding a duplicate GitHub runner and platform-specific baseline set. Treat the Xcode
-Cloud check as a required pull-request status and the published verification build as part of the
-release evidence. Do not add a `runs-on: macos-*` job as a fallback; use Xcode Cloud's rerun controls
-or a manual build of the matching workflow.
+target, matching the committed documentation image. Missing attachments fail the gate; comparison
+retains its existing tolerance. All five Apple jobs must pass before merging the release.
 
 The post-clone checks fetch the immutable Swift compatibility tag selected by the current release
 contract before diagnosing API changes, including when Xcode Cloud supplies a shallow checkout.
@@ -247,7 +261,7 @@ trial, certification, or guarantee of application suitability.
 ## V4 mobile preparation — October 5, 2026
 
 App Store Connect records iOS 1.0.2 (53) and public macOS 1.0, with macOS 1.0.1 already uploaded.
-The next shared Apple marketing version is 1.0.3; Xcode Cloud supplies each platform's next build
+The next shared Apple marketing version is 1.0.3; live App Store records resolve each platform's next build
 counter. Google Play's latest upload is 1.0.2 (3); the next Android candidate is 1.0.3 (4).
 These are preparation records, not publication or review-submission evidence. Keep Apple manual
 release and Google Play managed publishing enabled so approved updates remain held for rollout.
@@ -257,4 +271,4 @@ Apple now accepts the stable Xcode 27 SDKs for submissions; see
 [the September 14 release record](https://developer.apple.com/news/releases/).
 The toolchain guard admits verified Xcode 27 build 27A266a and keeps prerelease rejection.
 The phone component capture list is generated from the canonical catalog, with Mac-only controls
-excluded, so Xcode Cloud compares all current iPhone component captures.
+excluded, so the native capture gate compares all current iPhone components.

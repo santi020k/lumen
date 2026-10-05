@@ -12,6 +12,7 @@ permissions:
 
 jobs:
   launch:
+    if: github.event.repository.private == true
     name: Create Xcode Cloud macOS release tag
     runs-on: ubuntu-24.04
     timeout-minutes: 10
@@ -77,6 +78,7 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
 
   monitor:
+    if: github.event.repository.private == true
     name: Monitor Xcode Cloud macOS release
     needs: launch
     runs-on: ubuntu-24.04
@@ -107,3 +109,14 @@ jobs:
           SOURCE_COMMIT_SHA: ${{ github.sha }}
           RELEASE_TAG: ${{ needs.launch.outputs.release_tag }}
         run: APP_STORE_CONNECT_PRIVATE_KEY="$APP_STORE_CONNECT_API_KEY_P8" node .github/scripts/monitor-xcode-cloud.mjs
+
+  public-release:
+    if: github.event.repository.private == false
+    uses: ./.github/workflows/apple-store-release.yml
+    with:
+      platform: macOS
+    permissions:
+      contents: write
+      id-token: write
+      checks: read
+      pull-requests: read

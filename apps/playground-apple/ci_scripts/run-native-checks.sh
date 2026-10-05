@@ -11,35 +11,38 @@ if [[ ! -f "$repository_root/pnpm-lock.yaml" ]]; then
     exit 1
 fi
 
-if ! command -v node >/dev/null 2>&1; then
-    brew install node@22
-    export PATH="$(brew --prefix node@22)/bin:$PATH"
+if [[ "${LUMEN_NATIVE_SETUP_READY:-}" != "1" ]]; then
+    if ! command -v node >/dev/null 2>&1; then
+        brew install node@22
+        export PATH="$(brew --prefix node@22)/bin:$PATH"
+    fi
+    corepack_command="$(command -v corepack || true)"
+    if [[ -z "$corepack_command" ]]; then
+        corepack_root="${TMPDIR:-/tmp}/lumen-corepack-${CI_BUILD_NUMBER:-local}"
+        mkdir -p "$corepack_root"
+        npm install --prefix "$corepack_root" corepack@0.34.6
+        corepack_command="$corepack_root/node_modules/.bin/corepack"
+    fi
+    corepack_bin="${TMPDIR:-/tmp}/lumen-corepack-bin-${CI_BUILD_NUMBER:-local}"
+    mkdir -p "$corepack_bin"
+    "$corepack_command" enable --install-directory "$corepack_bin"
+    export PATH="$corepack_bin:$PATH"
+    pnpm() { "$corepack_command" pnpm "$@"; }
+    cd "$repository_root"
+    pnpm install --frozen-lockfile
 fi
-
-corepack_command="$(command -v corepack || true)"
-if [[ -z "$corepack_command" ]]; then
-    corepack_root="${TMPDIR:-/tmp}/lumen-corepack-${CI_BUILD_NUMBER:-local}"
-    mkdir -p "$corepack_root"
-    npm install --prefix "$corepack_root" corepack@0.34.6
-    corepack_command="$corepack_root/node_modules/.bin/corepack"
-fi
-
-corepack_bin="${TMPDIR:-/tmp}/lumen-corepack-bin-${CI_BUILD_NUMBER:-local}"
-mkdir -p "$corepack_bin"
-"$corepack_command" enable --install-directory "$corepack_bin"
-export PATH="$corepack_bin:$PATH"
-
-pnpm() {
-    "$corepack_command" pnpm "$@"
-}
-
-pnpm --version
-
 cd "$repository_root"
-pnpm install --frozen-lockfile
+[[ "$(pnpm --version)" == "$(node -p "JSON.parse(require('fs').readFileSync('package.json')).packageManager.split('@')[1]")" ]]
+
+if [[ "$mode" == "pull-request" ]]; then
+    for check in swift react-native captures visual framework-visual; do
+        LUMEN_NATIVE_SETUP_READY=1 "$0" "$check"
+    done
+    exit 0
+fi
 
 case "$mode" in
-    pull-request)
+    swift)
         swift_compatibility_baseline="$(node scripts/check-swift-source-compatibility.mjs --print-baseline)"
         if ! git rev-parse --verify --quiet "${swift_compatibility_baseline}^{commit}" >/dev/null; then
             git fetch --no-tags --depth=1 origin \
@@ -54,14 +57,21 @@ case "$mode" in
         pnpm run check:swift-api-baseline
         swift build --package-path apps/playground-apple
         pnpm run check:swift-package-candidate
+        ;;
+    react-native)
         pnpm run check:react-native-native-package:ios
+        ;;
+    captures)
         CI_XCODE_CLOUD=1 apps/playground-apple/scripts/capture-component-screenshots.sh
         pnpm --filter @santi020k/lumen-docs exec node --experimental-strip-types \
             scripts/sync-native-component-captures.mjs \
             --compare --platform=apple --source=default --tolerance=0.12
-        pnpm exec playwright install chromium
-        pnpm run test:visual
-        pnpm run test:framework-visual
+        ;;
+    visual|framework-visual)
+        if [[ "${LUMEN_PLAYWRIGHT_READY:-}" != "1" ]]; then
+            pnpm exec playwright install chromium
+        fi
+        pnpm run "test:$mode"
         ;;
     published)
         react_native_version="${2:-}"

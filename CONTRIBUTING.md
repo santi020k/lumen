@@ -164,7 +164,7 @@ Prepare every non-initial release in `release/v<semver>` and open its pull reque
    required checks and reviews pass. The workflow detects package manifest and release manifest
    changes as well as pending Changesets, so a prepared release starts publication automatically.
 5. GitHub Actions publishes packages and creates immutable release tags and GitHub releases from the
-   merged commit. Apple builds and distribution run in Xcode Cloud. Verify provenance, published
+   merged commit. Public Apple builds and distribution run on standard GitHub macOS runners; private repositories use Xcode Cloud. Verify provenance, published
    consumers and deployed smoke checks before retiring the release branch.
 
 The Changesets action can still create or update its version-preparation pull request when pending

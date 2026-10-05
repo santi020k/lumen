@@ -156,3 +156,11 @@ level-one heading that violates this repository's Markdown rules. Maintain this 
   `pnpm run generate:v4-migration` and regenerate the MCP snapshot after changing it.
 - Actual authenticated agent benchmarks are opt-in; see `docs/lumen-4-ai.md`. They are separate from
   deterministic CI and public publication evidence.
+
+## Apple CI and delivery policy
+
+Public open-source repositories use standard GitHub-hosted macOS runners for Apple checks,
+archive, signing, and App Store uploads. Private repositories use Xcode Cloud. Do not use larger
+paid runners or run duplicate pipelines. Keep signing credentials in Infisical and restrict their
+injection to protected releases from merged main. Preserve all existing validation and exact-revision
+release approval gates when changing providers.

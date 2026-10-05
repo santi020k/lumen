@@ -1,0 +1,70 @@
+name: Public Apple store delivery
+
+on:
+  workflow_call:
+    inputs:
+      platform:
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  deliver:
+    name: Archive and upload ${{ inputs.platform }}
+    if: github.event.repository.private == false
+    runs-on: macos-26
+    timeout-minutes: 45
+    environment:
+      name: app-store
+      url: https://appstoreconnect.apple.com/apps/6805250815
+    permissions:
+      contents: write
+      id-token: write
+      checks: read
+      pull-requests: read
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_26.5.app/Contents/Developer
+      APPLE_RELEASE_PLATFORM: ${{ inputs.platform }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: 22.x
+      - name: Require merged main and synchronized release metadata
+        run: |
+          [[ "$GITHUB_REF" == refs/heads/main ]]
+          node scripts/check-playground-apple-release.mjs
+          node scripts/check-approved-release-revision.mjs
+          apps/playground-apple/scripts/check-app-store-toolchain.sh
+      - name: Require green checks from the merged pull request
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          source_sha="$(gh api "repos/$GITHUB_REPOSITORY/commits/$GITHUB_SHA/pulls" --jq '.[] | select(.merged_at != null) | .head.sha')"
+          [[ "$source_sha" =~ ^[0-9a-f]{40}$ ]]
+          gh api "repos/$GITHUB_REPOSITORY/commits/$source_sha/check-runs?per_page=100" > "$RUNNER_TEMP/apple-checks.json"
+          node .github/scripts/check-apple-release-checks.mjs "$RUNNER_TEMP/apple-checks.json"
+      - name: Inject Apple signing and delivery credentials
+        uses: Infisical/secrets-action@d2e351f16c6ca20d17c85e6c992e04bdeb64e87d # v1.0.18
+        with:
+          method: oidc
+          identity-id: ${{ vars.INFISICAL_IDENTITY_ID }}
+          project-slug: ${{ vars.INFISICAL_PROJECT_SLUG }}
+          env-slug: prod
+          secret-path: /playground/apple
+      - name: Resolve live build number, archive, sign and upload
+        run: apps/playground-apple/scripts/deliver-app-store.sh "$APPLE_RELEASE_PLATFORM"
+      - name: Record immutable delivered source tag
+        run: |
+          version="$(node -p "require('./apps/playground-apple/release.json').version")"
+          if [[ "$APPLE_RELEASE_PLATFORM" == iOS ]]; then platform=ios; else platform=macos; fi
+          tag="playground-${platform}-v${version}-gh${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git tag -a "$tag" "$GITHUB_SHA" -m "Uploaded Apple $platform $version from $GITHUB_SHA"
+          git push origin "refs/tags/$tag"
+          echo "Uploaded $platform $version from $GITHUB_SHA; tag $tag. Store review and customer rollout remain held." >> "$GITHUB_STEP_SUMMARY"
