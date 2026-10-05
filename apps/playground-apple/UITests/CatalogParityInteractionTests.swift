@@ -122,6 +122,20 @@ final class CatalogParityInteractionTests: XCTestCase {
         }
     }
 
+    @MainActor
+    func testTourCaptureMatchesDocumentation() {
+        let app = launch("Tour", dark: false)
+        let start = app.buttons["Start tour"]
+        reveal(start, app: app)
+        start.tap()
+        XCTAssertTrue(app.staticTexts["Step 1 of 3"].waitForExistence(timeout: 5))
+        capture(app, name: "tour-light-ready")
+        app.buttons["Next"].tap()
+        XCTAssertTrue(app.staticTexts["Step 2 of 3"].waitForExistence(timeout: 5))
+        app.buttons["Close tour"].tap()
+        app.terminate()
+    }
+
     @MainActor private func launch(_ component: String, dark: Bool) -> XCUIApplication {
         let app = XCUIApplication()
         app.launchArguments = ["--component", component] + (dark ? ["--dark"] : [])

@@ -197,6 +197,10 @@ Keep these additional workflows attached to the same project:
   revision metadata pass; the post-clone script then builds the exact public React Native iOS and
   Swift artifacts.
 
+The Tour component capture replays its native XCTest interaction to open step one and reveal the
+target, matching the committed documentation image. Missing test attachments fail the capture;
+the visual comparison retains its existing tolerance.
+
 The browser visual-regression suite uses its existing macOS baselines inside **Pull Request Native
 Checks**, avoiding a duplicate GitHub runner and platform-specific baseline set. Treat the Xcode
 Cloud check as a required pull-request status and the published verification build as part of the
