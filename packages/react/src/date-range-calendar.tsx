@@ -121,13 +121,34 @@ const RangeMonth = ({ part, value, onValueChange, locale, min, max, label, label
 }
 
 const emptyPresets: NonNullable<DateRangeCalendarProps['presets']> = []
+
+type RangePreset = NonNullable<DateRangeCalendarProps['presets']>[number]
+
+const isPresetRecord = (value: unknown): value is Record<string, unknown> => (
+  typeof value === 'object' && value !== null && !Array.isArray(value)
+)
+
+const isPreset = (value: unknown): value is RangePreset => (
+  isPresetRecord(value) && typeof value.label === 'string' && isPresetRecord(value.value) &&
+  typeof value.value.start === 'string' && typeof value.value.end === 'string'
+)
+
+const validPresets = (value: unknown): NonNullable<DateRangeCalendarProps['presets']> => {
+  if (!Array.isArray(value)) return emptyPresets
+
+  const presets: unknown[] = Array.from(value)
+
+  return presets.every(isPreset) ? presets : emptyPresets
+}
+
 const isoDate = (value: string): string => value
 
 /** Inline range editor. Consumers own draft state and Apply/Cancel actions. */
 export const DateRangeCalendar = ({
-  value, onValueChange, locale, min, max, labels, presets = emptyPresets,
+  value, onValueChange, locale, min, max, labels, presets: rawPresets = emptyPresets,
   disabled = false, readOnly = false, formatDate = isoDate, className, ...props
 }: DateRangeCalendarProps) => {
+  const presets = validPresets(rawPresets)
   const [selectedPreset, setSelectedPreset] = useState<string>()
 
   const matchesRange = (preset: { value: CalendarRange }): boolean => (

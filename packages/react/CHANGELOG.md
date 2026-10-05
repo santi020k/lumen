@@ -4,6 +4,8 @@
 
 ### Patch Changes
 
+- Validate decoded calendar presets and preserve popup focus across callback-only rerenders while using the latest dismissal handler.
+
 - Validate decoded Combobox options and DataTable columns, preserve iframe chart and date-range interactions, clean up owned highlighted-code attributes, and follow current external form owners on reset.
 
 - Position date-range popovers using their owning viewport and honor canceled consumer rich-text commands.

@@ -1,10 +1,17 @@
+import type * as Fs from 'node:fs/promises'
 import { mkdir, mkdtemp, readFile, rm, symlink, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 
-import { describe, expect, test } from 'vitest'
+import { describe, expect, test, vi } from 'vitest'
 
 import { formatLumenVersionMigration, migrateLumenVersion, migrateLumenVersionSource } from './version-migration.js'
+
+vi.mock('node:fs/promises', async original => {
+  const actual = await original<typeof Fs>()
+
+  return { ...actual, writeFile: vi.fn(actual.writeFile) }
+})
 
 describe('versioned source migrations', () => {
   test.each(['page.astro', 'page.html'])('preserves slash-star text while migrating %s markup', file => {
@@ -306,4 +313,26 @@ const example = "import { Stack } from '@santi020k/lumen-react'";
 
     expect(migrateLumenVersionSource(source, 'example.tsx', 'v4').changes).toEqual([])
   })
+})
+
+test('aborts apply when a source edit occurs during the ledger write', async () => {
+  const root = await mkdtemp(join(tmpdir(), 'lumen-migration-race-'))
+  const path = join(root, 'View.tsx')
+  const source = 'import { Stack } from "@santi020k/lumen-react"; const View = <Stack gap="md" />'
+  const newer = `${source}\n// User edit during migration`
+  const actual = await vi.importActual<typeof Fs>('node:fs/promises')
+
+  try {
+    await actual.writeFile(path, source)
+    vi.mocked(writeFile).mockImplementationOnce(async (...args) => {
+      await actual.writeFile(...args)
+      await actual.writeFile(path, newer)
+    })
+    await expect(migrateLumenVersion({ cwd: root, version: 'v4', apply: true })).rejects.toThrow('Source changed during migration: View.tsx')
+    expect(await readFile(path, 'utf8')).toBe(newer)
+  } finally {
+    vi.mocked(writeFile).mockReset()
+    vi.mocked(writeFile).mockImplementation(actual.writeFile)
+    await rm(root, { recursive: true, force: true })
+  }
 })
