@@ -1780,6 +1780,28 @@ describe('@santi020k/lumen-elements', () => {
     expect(menu.hidden).toBe(true)
   })
 
+  test.each([
+    ['ArrowUp', 'Delete'], ['ArrowDown', 'Duplicate'], ['Home', 'Duplicate'], ['End', 'Delete']
+  ])('context menu %s enters the expected item from its container', (key, label) => {
+    document.body.innerHTML = `
+      <button data-ui-context-menu-trigger="project-menu" id="project-trigger">Project</button>
+      <lumen-context-menu id="project-menu" tabindex="-1">
+        <button role="menuitem" type="button">Duplicate</button>
+        <button role="menuitem" type="button">Delete</button>
+      </lumen-context-menu>
+    `
+    enhanceLumenContextMenus(document)
+    const trigger = requireValue(document.querySelector<HTMLButtonElement>('#project-trigger'))
+    const menu = requireValue(document.querySelector<HTMLElement>('#project-menu'))
+
+    press(trigger, 'F10', { shiftKey: true })
+    menu.focus()
+    expect(document.activeElement).toBe(menu)
+    press(menu, key)
+    expect(document.activeElement?.textContent).toBe(label)
+    expect(menu.hidden).toBe(false)
+  })
+
   test('tooltip wires aria-describedby and dismisses with Escape', () => {
     vi.useFakeTimers()
 
