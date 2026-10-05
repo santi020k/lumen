@@ -90,9 +90,10 @@ dependencies. Cache hits accelerate work but never replace the required checks o
 Run `pnpm run ci:preflight` locally for the same early feedback; `pnpm run validate` remains the
 complete release gate.
 
-Dependency age exceptions must identify the exact reviewed package version. The temporary
-`http-cache-semantics@4.3.0` security-fix exception permits frozen installs before its 24-hour
-hold expires; remove it after 2026-10-05 02:56:06 UTC. Keep the age policy for other dependencies.
+Dependency age exceptions must identify the exact reviewed package version. Use a temporary exact-version exception for an approved security fix that cannot wait for
+the normal 24-hour hold, then remove it once that hold expires. The
+`http-cache-semantics@4.3.0` exception was retired after 2026-10-05 02:56:06 UTC; its fixed
+version remains in the lockfile. Keep the age policy for other dependencies.
 
 
 ## Release Notes

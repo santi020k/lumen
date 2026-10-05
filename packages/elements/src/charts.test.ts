@@ -215,3 +215,21 @@ test('rejects supplied invalid annotation axes before defaulting omitted axes', 
   expect(element.textContent).toContain('Default')
   expect(element.textContent).not.toContain('Malformed')
 })
+
+test.each([null, 1, {}, []])('rejects malformed supplied histogram labels and waterfall tones: %j', invalid => {
+  const histogram = chart('lumen-histogram', { bins: JSON.stringify([{ start: 0, end: 10, count: 2, label: invalid }]) })
+  const waterfall = chart('lumen-waterfall-chart', { data: JSON.stringify([{ id: 'row', label: 'Row', value: 2, tone: invalid }]) })
+
+  expect(histogram.querySelector('[role="status"]')?.textContent).toContain('invalid')
+  expect(waterfall.querySelector('[role="status"]')?.textContent).toContain('invalid')
+  histogram.setAttribute('bins', JSON.stringify([{ start: 0, end: 10, count: 2 }]))
+  waterfall.setAttribute('data', JSON.stringify([{ id: 'row', label: 'Row', value: 2 }]))
+  expect(histogram.querySelector('[role="status"]')).toBeNull()
+  expect(waterfall.querySelector('[role="status"]')).toBeNull()
+})
+
+test('rejects unsupported waterfall tone strings', () => {
+  const waterfall = chart('lumen-waterfall-chart', { data: JSON.stringify([{ id: 'row', label: 'Row', value: 2, tone: 'unsupported' }]) })
+
+  expect(waterfall.querySelector('[role="status"]')?.textContent).toContain('invalid')
+})
