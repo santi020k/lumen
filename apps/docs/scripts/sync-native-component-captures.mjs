@@ -24,9 +24,7 @@ const visualTolerance = toleranceArgument ? Number(toleranceArgument.slice('--to
 const knownPlatforms = ['react-native', 'apple', 'android']
 
 const getComponentsWithCapturesForPlatform = platform => (
-  getNativeComponentsForPlatform(platform).filter(component => (
-    component.implementations[platform]?.packageName !== 'LumenWidgetUI'
-  ))
+  getNativeComponentsForPlatform(platform)
 )
 
 const chartSlugs = new Set([
@@ -107,6 +105,10 @@ const platformSources = {
     default: join(repositoryRoot, 'apps/playground-apple/Screenshots'),
     device: 'iPhone simulator',
     mappings: {
+      'widget-text': ['widgets', 'widget-text.png', 'macOS SwiftUI preview (WidgetKit primitives)'],
+      'widget-icon': ['widgets', 'widget-icon.png', 'macOS SwiftUI preview (WidgetKit primitives)'],
+      'widget-badge': ['widgets', 'widget-badge.png', 'macOS SwiftUI preview (WidgetKit primitives)'],
+      'widget-compact-stat': ['widgets', 'widget-compact-stat.png', 'macOS SwiftUI preview (WidgetKit primitives)'],
       'shortcut-recorder': ['macos', 'shortcut-recorder.png', 'macOS'],
       'symbol-picker': ['macos', 'symbol-picker.png', 'macOS'],
       'wearable-action': ['watchos', 'wearable-action.png', 'watchOS simulator'],
@@ -116,6 +118,7 @@ const platformSources = {
       'wearable-status': ['watchos', 'wearable-status.png', 'watchOS simulator']
     },
     variants: {
+      widgets: join(repositoryRoot, 'apps/playground-apple/Screenshots/widgets'),
       macos: join(repositoryRoot, 'apps/playground-apple/Screenshots/macOS'),
       watchos: join(repositoryRoot, 'apps/playground-apple/Screenshots/watchOS')
     }

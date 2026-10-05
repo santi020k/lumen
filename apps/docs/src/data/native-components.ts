@@ -73,6 +73,7 @@ interface ComponentDefinition {
   maturity?: Partial<Record<NativePlatformId, 'Experimental' | 'Supported'>>
   name: string
   properties: ComponentProperty[]
+  platformProperties?: Partial<Record<NativePlatformId, ComponentProperty[]>>
   slug: string
   summary: string
 }
@@ -160,6 +161,12 @@ const applePhoneTabletAndMacOnlySlugs = new Set([
   'slider',
   'range-slider',
   'multi-select',
+  'time-field',
+  'autocomplete',
+  'number-field',
+  'password-field',
+  'input-otp',
+  'image-comparison',
   'tabs',
   'textarea',
   'toggle'
@@ -262,7 +269,7 @@ const createComponent = (
     }
 
     implementations[platform] = {
-      api: definition.properties.map(item => ({
+      api: (definition.platformProperties?.[platform] ?? definition.properties).map(item => ({
         defaultValue: platformValue(item.defaultValue, platform),
         description: item.description,
         name: platformValue(item.name, platform),
@@ -4969,20 +4976,62 @@ fun TimerHistoryRow() {
   }
 ]
 
-const composeV4Definitions: ComponentDefinition[] = [
+const advancedInputDefinitions: ComponentDefinition[] = [
   {
     accessibility: 'Names the selected time and native dialog actions; confirmation publishes the draft, cancellation preserves the value, and disabled or read-only fields cannot open selection.',
     category: 'Forms',
-    examples: { android: `LumenTimeField(
+    examples: {
+      'react-native': `import { useState } from 'react'
+import { LumenTimeField, type LumenTimeSelection } from '@santi020k/lumen-react-native/datetime'
+
+export function MeetingTime() {
+  const [time, setTime] = useState<LumenTimeSelection | null>(null)
+  return <LumenTimeField label="Meeting time" value={time} onValueChange={setTime}
+    minTime={{ hour: 8, minute: 30 }} maxTime={{ hour: 17, minute: 0 }}
+    confirmLabel="Confirm" dismissLabel="Cancel" />
+}`,
+      apple: `import LumenUI
+import SwiftUI
+
+struct MeetingTime: View {
+    @State private var time: LumenTimeSelection? = nil
+    var body: some View {
+        LumenTimeField("Meeting time", selection: $time,
+            minTime: LumenTimeSelection(hour: 8, minute: 30),
+            maxTime: LumenTimeSelection(hour: 17, minute: 0))
+    }
+}`,
+      android: `LumenTimeField(
     label = "Meeting time",
     value = meetingTime,
     onValueChange = { meetingTime = it },
     minTime = LumenTimeSelection(8, 30),
     maxTime = LumenTimeSelection(17, 0)
 )` },
-    exports: { android: 'LumenTimeField' },
+    exports: { android: 'LumenTimeField', apple: 'LumenTimeField', 'react-native': 'LumenTimeField' },
     guidance: 'Use a local wall-clock value rather than an epoch timestamp. Keep dates, time zones, overnight scheduling, and translated labels in the application.',
     name: 'Time field',
+    platformProperties: {
+      'react-native': [
+        property('label', 'string', 'Required', 'Names the time field.'),
+        property('value / onValueChange', 'LumenTimeSelection | null / (LumenTimeSelection) => void', 'Required', 'Controls confirmed local hour and minute.'),
+        property('minTime / maxTime', 'LumenTimeSelection', 'undefined', 'Inclusive same-day bounds; minimum must not exceed maximum.'),
+        property('is24Hour / locale', 'boolean / string', 'System preference / undefined', 'Formats the selected time.'),
+        property('placeholder / confirmLabel / dismissLabel / rangeErrorLabel', 'string', 'Choose a time / Confirm / Cancel / Choose a time within the allowed range', 'Localizes empty, confirmation, cancellation and validation copy.'),
+        property('safeAreaInsets', 'LumenSafeAreaInsets', 'Zero insets', 'Supplies application safe-area insets for the iOS sheet.'),
+        property('description / errorMessage', 'string', 'undefined', 'Provides localized supporting copy or host validation.'),
+        property('enabled / readOnly', 'boolean', 'true / false', 'Blocks changes without clearing controlled state.')
+      ],
+      apple: [
+        property('_ label', 'String', 'Required', 'Names the time field.'),
+        property('selection', 'Binding<LumenTimeSelection?>', 'Required', 'Controls confirmed hour and minute.'),
+        property('minTime / maxTime', 'LumenTimeSelection?', 'nil', 'Inclusive same-day bounds; minimum must not exceed maximum.'),
+        property('placeholder / confirmLabel / dismissLabel / rangeErrorLabel', 'String', 'Choose a time / Confirm / Cancel / Choose a time within the allowed range', 'Localizes empty, confirmation, cancellation and validation copy.'),
+        property('.environment(\\.locale, ...)', 'Locale', 'Environment', 'Formats the selected time with the native locale.'),
+        property('description / errorMessage', 'String?', 'nil', 'Provides localized supporting copy or host validation.'),
+        property('readOnly / .disabled(...)', 'Bool', 'false', 'Blocks editing; disabled state comes from the SwiftUI environment.')
+      ]
+    },
     properties: [
       property('label', 'String', 'Required', 'Names the field and selection dialog.'),
       property('value / onValueChange', 'LumenTimeSelection? / (LumenTimeSelection) -> Unit', 'Required', 'Controls the confirmed local hour and minute.'),
@@ -5002,7 +5051,35 @@ const composeV4Definitions: ComponentDefinition[] = [
   {
     accessibility: 'Preserves native editable dropdown focus, selected and disabled option semantics, and announced loading, empty, and recovery states.',
     category: 'Forms',
-    examples: { android: `LumenAutocomplete(
+    examples: {
+      'react-native': `import { useState } from 'react'
+import { LumenAutocomplete } from '@santi020k/lumen-react-native'
+
+const projects = [{ value: 'lumen', label: 'Lumen' }, { value: 'studio', label: 'Studio' }]
+export function ProjectSearch() {
+  const [query, setQuery] = useState('')
+  const [selected, setSelected] = useState<string>()
+  const matches = projects.filter(option => option.label.toLowerCase().includes(query.toLowerCase()))
+  return <LumenAutocomplete label="Project" query={query}
+    onQueryChange={next => { setQuery(next); setSelected(undefined) }}
+    options={matches} value={selected} onValueChange={setSelected}
+    emptyLabel="No projects" dismissLabel="Close results" />
+}`,
+      apple: `import LumenUI
+import SwiftUI
+
+struct ProjectSearch: View {
+    @State private var query = ""
+    @State private var selected: String? = nil
+    private let projects = [LumenAutocompleteOption(value: "lumen", label: "Lumen"),
+                            LumenAutocompleteOption(value: "studio", label: "Studio")]
+    var body: some View {
+        LumenAutocomplete("Project", query: $query, selection: $selected,
+            options: projects.filter { query.isEmpty || $0.label.localizedCaseInsensitiveContains(query) },
+            emptyLabel: "No projects", dismissLabel: "Close results")
+    }
+}`,
+      android: `LumenAutocomplete(
     label = "Project",
     query = query,
     onQueryChange = { query = it; selectedProject = null },
@@ -5013,9 +5090,31 @@ const composeV4Definitions: ComponentDefinition[] = [
     resultsErrorMessage = searchError,
     onRetry = ::retrySearch
 )` },
-    exports: { android: 'LumenAutocomplete' },
-    guidance: 'The application supplies filtered results with unique non-null values, owns request cancellation, and clears stale selection after query edits. Selection emits the option label before the selected value.',
+    exports: { android: 'LumenAutocomplete', apple: 'LumenAutocomplete', 'react-native': 'LumenAutocomplete' },
+    guidance: 'The application supplies filtered results with unique non-null values, owns request cancellation, and clears stale selection after query edits. React Native and Compose selection emit the option label before the selected value; SwiftUI updates bindings directly.',
     name: 'Autocomplete',
+    platformProperties: {
+      'react-native': [
+        property('label', 'string', 'Required', 'Names the search field.'),
+        property('query / onQueryChange', 'string / (string) => void', 'Required', 'Controls query text; the host filters results.'),
+        property('value / onValueChange', 'string | undefined / (string) => void', 'undefined / Required', 'Controls selection; clear stale selection in the query handler.'),
+        property('options', 'readonly LumenAutocompleteOption[]', 'Required', 'Unique string values with label, description and disabled state.'),
+        property('loading / resultsErrorMessage / onRetry', 'boolean / string / () => void', 'false / undefined / undefined', 'Hides stale results and offers application-owned recovery.'),
+        property('loadingLabel / emptyLabel / retryLabel / dismissLabel', 'string', 'Loading results / No results / Retry / Close results', 'Localizes status and result dismissal.'),
+        property('ref / TextInput props', 'LumenTextInputRef / TextInputProps', 'undefined', 'Forwards native input focus and supported input options.'),
+        property('description / errorMessage', 'string', 'undefined', 'Provides localized supporting copy or host validation.'),
+        property('enabled / readOnly', 'boolean', 'true / false', 'Blocks changes without clearing controlled state.')
+      ],
+      apple: [
+        property('_ label', 'String', 'Required', 'Names the editable search field.'),
+        property('query / selection', 'Binding<String> / Binding<Value?>', 'Required', 'Controls query and selected identity; the component clears selection on query edits.'),
+        property('options', '[LumenAutocompleteOption<Value>]', 'Required', 'Unique Hashable values with label, description and disabled state.'),
+        property('loading / resultsErrorMessage / onRetry', 'Bool / String? / (() -> Void)?', 'false / nil / nil', 'Hides stale results and offers application-owned recovery.'),
+        property('loadingLabel / emptyLabel / retryLabel / dismissLabel', 'String', 'Loading results / No results / Retry / Close results', 'Localizes status and result dismissal.'),
+        property('description / errorMessage', 'String?', 'nil', 'Provides localized supporting copy or host validation.'),
+        property('readOnly / .disabled(...)', 'Bool', 'false', 'Blocks editing; disabled state comes from the SwiftUI environment.')
+      ]
+    },
     properties: [
       property('label', 'String', 'Required', 'Names the editable field.'),
       property('query / onQueryChange', 'String / (String) -> Unit', 'Required', 'Controls the editable search text.'),
@@ -5034,7 +5133,28 @@ const composeV4Definitions: ComponentDefinition[] = [
   {
     accessibility: 'Labels the editable numeric draft and step actions, exposes invalid or out-of-range context, and disables unavailable or read-only steps.',
     category: 'Forms',
-    examples: { android: `LumenNumberField(
+    examples: {
+      'react-native': `import { useState } from 'react'
+import { LumenNumberField } from '@santi020k/lumen-react-native'
+
+export function Quantity() {
+  const [draft, setDraft] = useState('1')
+  return <LumenNumberField label="Quantity" value={draft} onValueChange={setDraft}
+    min="0" max="10" step="0.5" locale="en-US"
+    incrementLabel="Increase quantity" decrementLabel="Decrease quantity" />
+}`,
+      apple: `import LumenUI
+import SwiftUI
+
+struct Quantity: View {
+    @State private var draft = "1"
+    var body: some View {
+        LumenNumberField("Quantity", text: $draft, min: "0", max: "10", step: "0.5",
+            incrementLabel: "Increase quantity", decrementLabel: "Decrease quantity")
+            .environment(\\.locale, Locale(identifier: "en_US"))
+    }
+}`,
+      android: `LumenNumberField(
     label = "Quantity",
     value = quantityDraft,
     onValueChange = { quantityDraft = it },
@@ -5042,9 +5162,34 @@ const composeV4Definitions: ComponentDefinition[] = [
     max = java.math.BigDecimal.TEN,
     step = java.math.BigDecimal("0.5")
 )` },
-    exports: { android: 'LumenNumberField' },
+    exports: { android: 'LumenNumberField', apple: 'LumenNumberField', 'react-native': 'LumenNumberField' },
     guidance: 'Preserve the raw localized String draft, including unfinished sign or decimal input. Grouping and exponent notation are unsupported. Keep currency, units, required validation, and submission parsing application-owned.',
     name: 'Number field',
+    platformProperties: {
+      'react-native': [
+        property('label', 'string', 'Required', 'Names the numeric field.'),
+        property('value / onValueChange', 'string / (string) => void', 'Required', 'Retains raw localized drafts; invalid drafts remain editable.'),
+        property('min / max / step', 'string', 'undefined / undefined / 1', 'Uses exact decimal strings for inclusive bounds and positive steps.'),
+        property('locale', 'string', 'undefined', 'Selects accepted decimal separator and digits.'),
+        property('incrementLabel / decrementLabel', 'string', 'Increase value / Decrease value', 'Names step actions.'),
+        property('invalidNumberLabel / outOfRangeLabel', 'string', 'Enter a valid number / Enter a number within the allowed range', 'Localizes draft validation.'),
+        property('showStepper', 'boolean', 'true', 'Shows step actions.'),
+        property('ref / TextInput props', 'LumenTextInputRef / TextInputProps', 'undefined', 'Forwards input focus and supported native options.'),
+        property('description / errorMessage', 'string', 'undefined', 'Provides localized supporting copy or host validation.'),
+        property('enabled / readOnly', 'boolean', 'true / false', 'Blocks changes without clearing controlled state.')
+      ],
+      apple: [
+        property('_ label / text', 'String / Binding<String>', 'Required', 'Names the field and retains raw localized drafts.'),
+        property('min / max / step', 'String? / String? / String', 'nil / nil / 1', 'Uses exact decimal strings; the application owns units and submission parsing.'),
+        property('incrementLabel / decrementLabel', 'String', 'Increase value / Decrease value', 'Names step actions.'),
+        property('invalidNumberLabel / outOfRangeLabel', 'String', 'Enter a valid number / Enter a number within the allowed range', 'Localizes draft validation.'),
+        property('showStepper', 'Bool', 'true', 'Shows step actions.'),
+        property('focused', 'FocusState<Bool>.Binding?', 'nil', 'Connects application-owned input focus.'),
+        property('.environment(\\.locale, ...)', 'Locale', 'Environment', 'Selects decimal separator and displayed digits.'),
+        property('description / errorMessage', 'String?', 'nil', 'Provides localized supporting copy or host validation.'),
+        property('readOnly / .disabled(...)', 'Bool', 'false', 'Blocks editing; disabled state comes from the SwiftUI environment.')
+      ]
+    },
     properties: [
       property('label', 'String', 'Required', 'Names the numeric field.'),
       property('value / onValueChange', 'String / (String) -> Unit', 'Required', 'Controls raw localized ungrouped input; drafts beyond 128 characters are invalid.'),
@@ -5087,18 +5232,54 @@ const composeV4Definitions: ComponentDefinition[] = [
   }
 ]
 
-const remainingComposeV4Definitions: ComponentDefinition[] = [
+const authenticationAndMediaDefinitions: ComponentDefinition[] = [
   {
     accessibility: 'Preserves password semantics and native autofill hints; labels visibility actions and hides on blur or disabled state.',
     category: 'Forms',
-    examples: { android: `LumenPasswordField(
+    examples: {
+      'react-native': `import { useState } from 'react'
+import { LumenPasswordField } from '@santi020k/lumen-react-native'
+
+export function RegistrationPassword() {
+  const [password, setPassword] = useState('')
+  return <LumenPasswordField label="Password" value={password} onValueChange={setPassword}
+    newPassword showLabel="Show password" hideLabel="Hide password" />
+}`,
+      apple: `import LumenUI
+import SwiftUI
+
+struct RegistrationPassword: View {
+    @State private var password = ""
+    var body: some View {
+        LumenPasswordField("Password", text: $password,
+            showLabel: "Show password", hideLabel: "Hide password", newPassword: true)
+    }
+}`,
+      android: `LumenPasswordField(
     label = "Password", value = password,
     onValueChange = { password = it },
     showLabel = "Show password", hideLabel = "Hide password"
 )` },
-    exports: { android: 'LumenPasswordField' },
+    exports: { android: 'LumenPasswordField', apple: 'LumenPasswordField', 'react-native': 'LumenPasswordField' },
     guidance: 'Keep authentication and credential lifecycle in the application. Visibility is transient and never saved. Use newPassword for registration; provider autofill needs device configuration.',
     name: 'Password field',
+    platformProperties: {
+      'react-native': [
+        property('label / value / onValueChange', 'string / string / (string) => void', 'Required', 'Names and controls secure entry.'),
+        property('showLabel / hideLabel', 'string', 'Show password / Hide password', 'Names transient visibility actions.'),
+        property('newPassword', 'boolean', 'false', 'Selects registration autofill hints.'),
+        property('ref / onSubmitEditing / TextInput props', 'LumenTextInputRef / TextInputProps', 'undefined', 'Forwards input focus and native submission events; the host authenticates.'),
+        property('description / errorMessage', 'string', 'undefined', 'Provides localized supporting copy or host validation.'),
+        property('enabled / readOnly', 'boolean', 'true / false', 'Blocks changes without clearing controlled state.')
+      ],
+      apple: [
+        property('_ label / text', 'String / Binding<String>', 'Required', 'Names and controls secure entry.'),
+        property('showLabel / hideLabel', 'String', 'Show password / Hide password', 'Names visibility actions; visibility clears on blur or editing becoming unavailable.'),
+        property('newPassword', 'Bool', 'false', 'Selects native registration autofill hints where supported.'),
+        property('description / errorMessage', 'String?', 'nil', 'Provides localized supporting copy or host validation.'),
+        property('readOnly / .disabled(...)', 'Bool', 'false', 'Blocks editing; disabled state comes from the SwiftUI environment.')
+      ]
+    },
     properties: [
       property('label / value / onValueChange', 'String / String / (String) -> Unit', 'Required', 'Names the native field and controls its value.'),
       property('modifier', 'Modifier', 'Modifier', 'Applies layout and semantics.'),
@@ -5114,14 +5295,52 @@ const remainingComposeV4Definitions: ComponentDefinition[] = [
   {
     accessibility: 'Uses one native input for paste, selection, deletion, and SMS code autofill; supports errors and optional masking.',
     category: 'Forms',
-    examples: { android: `LumenInputOTP(
+    examples: {
+      'react-native': `import { useState } from 'react'
+import { LumenInputOTP } from '@santi020k/lumen-react-native'
+
+export function VerificationCode() {
+  const [code, setCode] = useState('')
+  return <LumenInputOTP label="Verification code" value={code} onValueChange={setCode}
+    length={6} description="Enter or paste six digits" />
+}`,
+      apple: `import LumenUI
+import SwiftUI
+
+struct VerificationCode: View {
+    @State private var code = ""
+    var body: some View {
+        LumenInputOTP("Verification code", text: $code, length: 6,
+            description: "Enter or paste six digits")
+    }
+}`,
+      android: `LumenInputOTP(
     label = "Verification code", value = code,
     onValueChange = { code = it }, length = 6,
     description = "Enter or paste six digits"
 )` },
-    exports: { android: 'LumenInputOTP' },
+    exports: { android: 'LumenInputOTP', apple: 'LumenInputOTP', 'react-native': 'LumenInputOTP' },
     guidance: 'The application verifies codes and owns submission. Normalize localized digit input into ASCII; reject invalid or excess input without truncating. Never send or persist credentials from the component.',
     name: 'Input OTP',
+    platformProperties: {
+      'react-native': [
+        property('label / value / onValueChange', 'string / string / (string) => void', 'Required', 'Controls at most length ASCII digits; localized edits normalize to ASCII.'),
+        property('length', 'number', '6', 'Accepts code lengths from one through twelve.'),
+        property('masked', 'boolean', 'false', 'Hides displayed digits.'),
+        property('onComplete', '(string) => void', 'undefined', 'Reports a newly completed edit; the host verifies and submits.'),
+        property('ref / TextInput props', 'LumenTextInputRef / TextInputProps', 'undefined', 'Preserves native paste, selection and focus.'),
+        property('description / errorMessage', 'string', 'undefined', 'Provides localized supporting copy or host validation.'),
+        property('enabled / readOnly', 'boolean', 'true / false', 'Blocks changes without clearing controlled state.')
+      ],
+      apple: [
+        property('_ label / text', 'String / Binding<String>', 'Required', 'Controls at most length ASCII digits; localized edits normalize to ASCII.'),
+        property('length', 'Int', '6', 'Accepts code lengths from one through twelve.'),
+        property('masked', 'Bool', 'false', 'Hides displayed digits.'),
+        property('onComplete', '(String) -> Void', 'Empty closure', 'Reports a newly completed edit; the host verifies and submits.'),
+        property('description / errorMessage', 'String?', 'nil', 'Provides localized supporting copy or host validation.'),
+        property('readOnly / .disabled(...)', 'Bool', 'false', 'Blocks editing; disabled state comes from the SwiftUI environment.')
+      ]
+    },
     properties: [
       property('label / value / onValueChange', 'String / String / (String) -> Unit', 'Required', 'Names the field and controls an ASCII digit value.'),
       property('modifier', 'Modifier', 'Modifier', 'Applies layout and semantics.'),
@@ -5156,14 +5375,61 @@ const remainingComposeV4Definitions: ComponentDefinition[] = [
   {
     accessibility: 'Exposes a named native slider with localized percentage state for touch, keyboard, and screen-reader adjustment.',
     category: 'Data display',
-    examples: { android: `LumenImageComparison(
+    examples: {
+      'react-native': `import { useState } from 'react'
+import { LumenImageComparison } from '@santi020k/lumen-react-native'
+
+export function CompareEdits() {
+  const [position, setPosition] = useState(0.5)
+  return <LumenImageComparison label="Compare edits"
+    before={require('./before.png')} after={require('./after.png')}
+    value={position} onValueChange={setPosition}
+    beforeLabel="Before" afterLabel="After" />
+}`,
+      apple: `import LumenUI
+import SwiftUI
+
+struct CompareEdits: View {
+    @State private var position = 0.5
+    var body: some View {
+        LumenImageComparison("Compare edits", value: $position,
+            beforeLabel: "Before", afterLabel: "After") {
+            Image("before").resizable().scaledToFill()
+        } after: {
+            Image("after").resizable().scaledToFill()
+        }
+    }
+}`,
+      android: `LumenImageComparison(
     label = "Compare edits", before = beforePainter, after = afterPainter,
     value = position, onValueChange = { position = it },
     beforeLabel = "Before", afterLabel = "After"
 )` },
-    exports: { android: 'LumenImageComparison' },
-    guidance: 'The value is the visible after fraction, clamped to zero through one; nonfinite input falls back to one half. The application owns painter loading, errors, cache, and image descriptions.',
+    exports: { android: 'LumenImageComparison', apple: 'LumenImageComparison', 'react-native': 'LumenImageComparison' },
+    guidance: 'The value is the visible after fraction, clamped to zero through one; nonfinite input falls back to one half. The application owns image loading, errors, cache, fit and descriptions; provide React Native sources, SwiftUI content builders or Compose painters.',
     name: 'Image comparison',
+    platformProperties: {
+      'react-native': [
+        property('label', 'string', 'Required', 'Names the adjustable reveal.'),
+        property('before / after', 'ImageSourcePropType', 'Required', 'Application-owned sources; provide assets and loading policy.'),
+        property('value / onValueChange', 'number / (number) => void', 'Required', 'Controls the visible after fraction, zero through one.'),
+        property('beforeLabel / afterLabel', 'string', 'Before / After', 'Localizes image labels and adjustment state.'),
+        property('aspectRatio', 'number', '16 / 9', 'Accepts 0.1 through 10; otherwise uses 16:9.'),
+        property('fit', 'LumenImageFit', 'cover', 'Chooses cover or contain image behavior.'),
+        property('locale', 'string', 'undefined', 'Formats the percentage.'),
+        property('enabled', 'boolean', 'true', 'Disables adjustment while preserving images.'),
+        property('style / View props', 'ViewProps', 'undefined', 'Applies native layout and accessibility props.')
+      ],
+      apple: [
+        property('_ label', 'String', 'Required', 'Names the adjustable reveal.'),
+        property('value', 'Binding<Double>', 'Required', 'Controls the visible after fraction, zero through one.'),
+        property('before / after', '@ViewBuilder closures', 'Required', 'Provides application-owned SwiftUI image content and image fit modifiers.'),
+        property('beforeLabel / afterLabel', 'String', 'Before / After', 'Localizes image labels and adjustment state.'),
+        property('aspectRatio', 'CGFloat', '16 / 9', 'Accepts 0.1 through 10; otherwise uses 16:9.'),
+        property('.environment(\\.locale, ...)', 'Locale', 'Environment', 'Formats the percentage.'),
+        property('.disabled(...)', 'Bool', 'false', 'Disables the native slider while preserving images.')
+      ]
+    },
     properties: [
       property('label', 'String', 'Required', 'Names the comparison adjustment.'),
       property('before / after', 'Painter', 'Required', 'Provides native images with application-owned loading.'),
@@ -5616,8 +5882,8 @@ const catalogParityDefinitions: ComponentDefinition[] = [
 export const nativeComponentDocs = [
   ...sharedDefinitions,
   ...additionalDefinitions,
-  ...composeV4Definitions,
-  ...remainingComposeV4Definitions,
+  ...advancedInputDefinitions,
+  ...authenticationAndMediaDefinitions,
   ...composeProductDefinitions,
   ...catalogParityDefinitions
 ].map(createComponent)

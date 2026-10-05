@@ -85,6 +85,21 @@ xcodebuild -project apps/playground-apple/LumenApplePlayground.xcodeproj \
 Simulator results complement the unit tests and do not replace physical-device autofill,
 VoiceOver, TalkBack or minimum-operating-system qualification.
 
+## Widget component previews
+
+Generate the four WidgetKit primitive examples with the actual `LumenWidgetUI` views:
+
+```bash
+swift run --package-path apps/playground-apple LumenWidgetCaptures apps/playground-apple/Screenshots/widgets
+pnpm run sync:native-captures -- --platform=apple --components=widget-text,widget-icon,widget-badge,widget-compact-stat
+```
+
+These are light-mode macOS SwiftUI renders, labeled as previews in the documentation. They show
+text, icon, badge and compact-stat styling; they do not verify WidgetKit timelines, extension
+rendering modes, App Intents or device behavior. Run the Swift command on macOS from the repository
+root. The generated PNG files remain local; the capture synchronization script publishes the WebP
+examples and their digest manifest.
+
 ## Component screenshots
 
 Every catalog entry accepts a launch filter so visual evidence is deterministic. In Xcode, add
@@ -103,7 +118,7 @@ apps/playground-apple/scripts/capture-component-screenshots.sh
 Screenshots are written to `apps/playground-apple/Screenshots` and remain local verification
 artifacts. Pass a destination directory as the first argument when preparing release evidence. Set
 `LUMEN_SIMULATOR_UDID` to capture with a specific available simulator. Set
-`LUMEN_CAPTURE_SETTLE_SECONDS=5` if the first chart capture needs longer to finish its initial layout. The script uses the checked-in
+`LUMEN_CAPTURE_SETTLE_SECONDS=10` if a cold launch needs longer than the default six seconds to finish its initial layout. The script uses the checked-in
 Xcode project, disables code signing for the simulator build, and waits for each filtered gallery
 state before capture.
 

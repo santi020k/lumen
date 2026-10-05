@@ -1132,6 +1132,16 @@
       "width": 900
     },
     {
+      "alt": "Autocomplete rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "e294cc8736127f4a3bda3e403c917ff2172f4fad9d800b2da5b06bd361076c6c",
+      "slug": "autocomplete",
+      "src": "/native-components/apple/autocomplete.webp",
+      "width": 900
+    },
+    {
       "alt": "Avatar rendered in the iPhone simulator Lumen playground",
       "device": "iPhone simulator",
       "height": 1957,
@@ -1512,6 +1522,26 @@
       "width": 900
     },
     {
+      "alt": "Image comparison rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "8f697d642a3feebe806f37150add1c589c52228bd99bf83ff70be7adda4d2cb8",
+      "slug": "image-comparison",
+      "src": "/native-components/apple/image-comparison.webp",
+      "width": 900
+    },
+    {
+      "alt": "Input OTP rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "f64e114bc710b26f24f53d07395410468ea22615f1f74b4cb78e899e01389194",
+      "slug": "input-otp",
+      "src": "/native-components/apple/input-otp.webp",
+      "width": 900
+    },
+    {
       "alt": "Kanban board rendered in the iPhone simulator Lumen playground",
       "device": "iPhone simulator",
       "height": 1957,
@@ -1609,6 +1639,26 @@
       "sha256": "b633fa6f3b2e22db93eb56c4695347e00d8a8356eaf6a7e4caadac90873defb9",
       "slug": "navigation-bar",
       "src": "/native-components/apple/navigation-bar.webp",
+      "width": 900
+    },
+    {
+      "alt": "Number field rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "b7c56fa946336eeaeb3ec3cf2263cbb63eb9af433344c0b2819919db4c1ba208",
+      "slug": "number-field",
+      "src": "/native-components/apple/number-field.webp",
+      "width": 900
+    },
+    {
+      "alt": "Password field rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "8d28eb7078071fcfe959a1ef82aab6f67baa8ac440e2e0bcf158ab238e5dbe0f",
+      "slug": "password-field",
+      "src": "/native-components/apple/password-field.webp",
       "width": 900
     },
     {
@@ -1962,6 +2012,16 @@
       "width": 900
     },
     {
+      "alt": "Time field rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "7f60156906910190903aa6fce2fc6d5d42ea1f645434d261614ef86f36aa9693",
+      "slug": "time-field",
+      "src": "/native-components/apple/time-field.webp",
+      "width": 900
+    },
+    {
       "alt": "Timeline rendered in the iPhone simulator Lumen playground",
       "device": "iPhone simulator",
       "height": 1957,
@@ -2112,6 +2172,46 @@
       "width": 416
     },
     {
+      "alt": "Widget badge rendered in the macOS SwiftUI preview (WidgetKit primitives) Lumen playground",
+      "device": "macOS SwiftUI preview (WidgetKit primitives)",
+      "height": 360,
+      "platform": "apple",
+      "sha256": "ace73bcba0a2f24fb60115e3d4dfb895b0ea7333464b69e9141b0073162996ac",
+      "slug": "widget-badge",
+      "src": "/native-components/apple/widget-badge.webp",
+      "width": 720
+    },
+    {
+      "alt": "Widget compact stat rendered in the macOS SwiftUI preview (WidgetKit primitives) Lumen playground",
+      "device": "macOS SwiftUI preview (WidgetKit primitives)",
+      "height": 360,
+      "platform": "apple",
+      "sha256": "d7914060e1a0324a38bbe1ea276870ca9462f18b18807d881b0278aefa490059",
+      "slug": "widget-compact-stat",
+      "src": "/native-components/apple/widget-compact-stat.webp",
+      "width": 720
+    },
+    {
+      "alt": "Widget icon rendered in the macOS SwiftUI preview (WidgetKit primitives) Lumen playground",
+      "device": "macOS SwiftUI preview (WidgetKit primitives)",
+      "height": 360,
+      "platform": "apple",
+      "sha256": "5fa0664c1704e7bb4bb7082e9b7cca9607b66b202d667c6ceb2da393849936bb",
+      "slug": "widget-icon",
+      "src": "/native-components/apple/widget-icon.webp",
+      "width": 720
+    },
+    {
+      "alt": "Widget text rendered in the macOS SwiftUI preview (WidgetKit primitives) Lumen playground",
+      "device": "macOS SwiftUI preview (WidgetKit primitives)",
+      "height": 360,
+      "platform": "apple",
+      "sha256": "6fda5489d7e27d37f97731981d4d4c595b0b3b2afe75cc2e24db59385e9a9ef5",
+      "slug": "widget-text",
+      "src": "/native-components/apple/widget-text.webp",
+      "width": 720
+    },
+    {
       "alt": "Agenda rendered in the Expo web renderer Lumen playground",
       "device": "Expo web renderer",
       "height": 847,
@@ -2140,6 +2240,16 @@
       "slug": "alert-dialog",
       "src": "/native-components/react-native/alert-dialog.webp",
       "width": 900
+    },
+    {
+      "alt": "Autocomplete rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 69,
+      "platform": "react-native",
+      "sha256": "286dcfe17d79465a76b1cd35978d7a86803e39e28a6c83b2c63a4f7806b27581",
+      "slug": "autocomplete",
+      "src": "/native-components/react-native/autocomplete.webp",
+      "width": 670
     },
     {
       "alt": "Avatar rendered in the Expo web renderer Lumen playground",
@@ -2532,6 +2642,26 @@
       "width": 900
     },
     {
+      "alt": "Image comparison rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 486,
+      "platform": "react-native",
+      "sha256": "ae7be2ff9675a0b21155dc5abd7da6e2a9498843a7e59b52bd1311cb53787e7e",
+      "slug": "image-comparison",
+      "src": "/native-components/react-native/image-comparison.webp",
+      "width": 670
+    },
+    {
+      "alt": "Input OTP rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 69,
+      "platform": "react-native",
+      "sha256": "6eaee5301c0de245e5a366a45247bfece07352494b76764bd6d4b5491e090043",
+      "slug": "input-otp",
+      "src": "/native-components/react-native/input-otp.webp",
+      "width": 670
+    },
+    {
       "alt": "Kanban board rendered in the Expo web renderer Lumen playground",
       "device": "Expo web renderer",
       "height": 900,
@@ -2630,6 +2760,26 @@
       "slug": "navigation-bar",
       "src": "/native-components/react-native/navigation-bar.webp",
       "width": 900
+    },
+    {
+      "alt": "Number field rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 121,
+      "platform": "react-native",
+      "sha256": "6677b0fe32d1fca8036f413cb66e5dc64fbdb5625c795f15db8ad3076db27862",
+      "slug": "number-field",
+      "src": "/native-components/react-native/number-field.webp",
+      "width": 670
+    },
+    {
+      "alt": "Password field rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 121,
+      "platform": "react-native",
+      "sha256": "e692b3a964210eed59530e67d850779160a333eaa064a4cb99f7fdcc670aaf82",
+      "slug": "password-field",
+      "src": "/native-components/react-native/password-field.webp",
+      "width": 670
     },
     {
       "alt": "Phone input rendered in the Expo web renderer Lumen playground",
@@ -2950,6 +3100,16 @@
       "slug": "theme",
       "src": "/native-components/react-native/theme.webp",
       "width": 900
+    },
+    {
+      "alt": "Time field rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 69,
+      "platform": "react-native",
+      "sha256": "9e1b1152a2e51c022cb3985bf298a6ced8efe785fd0053e1a46a07e5145397b5",
+      "slug": "time-field",
+      "src": "/native-components/react-native/time-field.webp",
+      "width": 670
     },
     {
       "alt": "Timeline rendered in the Expo web renderer Lumen playground",

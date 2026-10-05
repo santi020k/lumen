@@ -9,7 +9,7 @@ import {
   Pagination
 } from '@santi020k/lumen-astro'
 
-import { findNativeComponentCapture } from '../data/native-component-captures'
+import { getNativeComponentCapture } from '../data/native-component-captures'
 import {
   getNativeComponentsForPlatform,
   type NativeComponentDoc,
@@ -29,7 +29,11 @@ interface Props {
 
 const { component, guide } = Astro.props
 const implementation = component.implementations[guide.id]
-const capture = findNativeComponentCapture(guide.id, component.slug)
+const capture = getNativeComponentCapture(guide.id, component.slug)
+
+const captureClass = capture.width >= capture.height ?
+  'native-detail-capture native-detail-capture--compact' :
+  'native-detail-capture'
 
 if (!implementation) {
   throw new Error(`${component.name} is not available for ${guide.label}`)
@@ -152,10 +156,9 @@ const appleAvailability = implementation.appleAvailability
       {hasLivePreview && (
         <div class="native-detail-live-preview">
           <NativeLivePreview component={component} guide={guide} />
-          {capture && (
-            <details class="native-detail-capture-evidence">
-              <summary>View verified {guide.shortLabel} runtime capture</summary>
-              <figure class="native-detail-capture">
+          <details class="native-detail-capture-evidence">
+              <summary>View captured {guide.shortLabel} example</summary>
+              <figure class={captureClass}>
                 <div class="native-detail-capture__viewport">
                   <img
                     alt={capture.alt}
@@ -167,16 +170,15 @@ const appleAvailability = implementation.appleAvailability
                   />
                 </div>
                 <figcaption>
-                  <span><Icon decorative name="monitor" size="sm" /> Verified runtime capture</span>
+                  <span><Icon decorative name="monitor" size="sm" /> Captured example</span>
                   <small>{capture.device}</small>
                 </figcaption>
               </figure>
             </details>
-          )}
         </div>
       )}
-      {!hasLivePreview && capture && (
-        <figure class="native-detail-capture">
+      {!hasLivePreview && (
+        <figure class={captureClass}>
           <div class="native-detail-capture__viewport">
             <img
               alt={capture.alt}
@@ -188,22 +190,10 @@ const appleAvailability = implementation.appleAvailability
             />
           </div>
           <figcaption>
-            <span><Icon decorative name="monitor" size="sm" /> Verified runtime capture</span>
+            <span><Icon decorative name="monitor" size="sm" /> Captured example</span>
             <small>{capture.device}</small>
           </figcaption>
         </figure>
-      )}
-      {!hasLivePreview && !capture && (
-        <Card class="native-detail-capture-pending" variant="muted">
-          <Icon decorative name="monitor" size="sm" />
-          <div>
-            <strong>Focused package reference</strong>
-            <p>
-              This API ships in <code>{implementation.packageName}</code>. No application-playground
-              capture is published for this extension-only product yet.
-            </p>
-          </div>
-        </Card>
       )}
       <CodeTabs
         ariaLabel={`${component.name} ${guide.shortLabel} example`}
@@ -481,27 +471,6 @@ const appleAvailability = implementation.appleAvailability
     background: hsl(var(--surface));
   }
 
-  :global(.native-detail-capture-pending) {
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
-    gap: 1rem;
-    padding: 1.25rem;
-    color: hsl(var(--ink-soft));
-  }
-
-  .native-detail-capture-pending > :global(svg) {
-    color: hsl(var(--brand));
-  }
-
-  .native-detail-capture-pending strong {
-    color: hsl(var(--ink));
-  }
-
-  .native-detail-capture-pending p {
-    margin-top: 0.35rem;
-    line-height: 1.6;
-  }
-
   .native-detail-live-preview {
     min-width: 0;
   }
@@ -534,6 +503,14 @@ const appleAvailability = implementation.appleAvailability
     background:
       radial-gradient(circle at 50% 20%, hsl(var(--brand) / 0.12), transparent 48%),
       hsl(var(--surface-muted));
+  }
+
+  .native-detail-capture--compact .native-detail-capture__viewport {
+    min-height: 0;
+  }
+
+  .native-detail-capture--compact img {
+    width: 100%;
   }
 
   .native-detail-capture img {
