@@ -219,8 +219,8 @@ Infisical and is injected only for the monitor job.
 ## Release gates
 
 1. Run the repository's native build, typecheck, lint, test, API, and release-candidate checks.
-2. Complete the relevant physical-device accessibility matrix in `docs/native-device-validation.md`
-   for minimum and current supported devices. Resolve blocking findings before public release.
+2. Follow the [current native release policy](native-release-runbook.md#current-release-policy).
+   Automated accessibility, compatibility, security, and package-consumer checks remain required.
 3. Capture current phone, tablet, and Mac screenshots from the exact release candidate in both light
    and dark appearances. Use `pnpm playground:apple:capture-store` for the ordered 6.9-inch iPhone
    and 13-inch iPad sets, and `pnpm playground:android:capture-store` for the 9:16 phone set. Export

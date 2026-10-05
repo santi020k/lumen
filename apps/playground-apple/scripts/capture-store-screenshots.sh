@@ -29,10 +29,10 @@ strip_alpha() {
 
 cleanup() {
   local device_id
-  for device_id in "${status_bar_device_ids[@]}"; do
+  for device_id in ${status_bar_device_ids[@]+"${status_bar_device_ids[@]}"}; do
     xcrun simctl status_bar "${device_id}" clear 2>/dev/null || true
   done
-  for device_id in "${started_device_ids[@]}"; do
+  for device_id in ${started_device_ids[@]+"${started_device_ids[@]}"}; do
     xcrun simctl shutdown "${device_id}" 2>/dev/null || true
   done
   rm -rf "${capture_dir}"
