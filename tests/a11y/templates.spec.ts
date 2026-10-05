@@ -130,7 +130,7 @@ for (const slug of ['analytics-dashboard', 'saas-admin', 'commerce-dashboard']) 
 
 for (const width of [390, 1440]) {
   for (const theme of ['light', 'dark']) {
-    test(`login examples are clearly visual and fit ${width}px in ${theme}`, async ({ page }) => {
+    test(`login examples are clearly visual and fit ${width}px in ${theme}`, async ({ page }, testInfo) => {
       await page.setViewportSize({ width, height: 1000 })
       await page.goto('/templates/auth-onboarding')
       await page.locator('html').evaluate((html, value) => {
@@ -162,7 +162,7 @@ for (const width of [390, 1440]) {
       await expect(examples.getByRole('tabpanel')).toContainText('signInWithPasskey')
       await examples.getByRole('tab', { name: 'Set up', exact: true }).click()
       await page.locator('body').click({ position: { x: 1, y: 1 } })
-      await examples.screenshot({ style: '.docs-site-header, .docs-skip-link { visibility: hidden; }', path: `/private/tmp/lumen-login-${width}-${theme}.png` })
+      await examples.screenshot({ style: '.docs-site-header, .docs-skip-link { visibility: hidden; }', path: testInfo.outputPath(`lumen-login-${width}-${theme}.png`) })
     })
   }
 }
