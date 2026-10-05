@@ -1,0 +1,107 @@
+---
+import { Alert, Button, Card, CodeTabs, Field, Grid, Input, Label, Link } from '@santi020k/lumen-astro'
+
+const authExamples = [
+  {
+    label: 'Set up',
+    value: 'setup',
+    language: 'ts',
+    code: `import { createSantiAuthHelpers } from '@santi020k/auth-client'
+
+// Use your application's configured auth origin and route.
+export const auth = createSantiAuthHelpers({
+  baseURL: 'https://app.example.com',
+  basePath: '/api/auth'
+})`
+  },
+  {
+    label: 'Email code',
+    value: 'email',
+    language: 'ts',
+    code: `import { auth } from './auth'
+
+export async function requestCode(email: string) {
+  const result = await auth.requestEmailOtp(email)
+  return result.ok
+    ? { ok: true, message: 'If this address can sign in, a code will arrive shortly.' }
+    : { ok: false, message: result.error.message }
+}
+
+export async function verifyCode(email: string, code: string) {
+  return auth.signInWithEmailOtp(email, code)
+}`
+  },
+  {
+    label: 'Passkey',
+    value: 'passkey',
+    language: 'ts',
+    code: `import { auth } from './auth'
+
+export async function signInWithPasskey() {
+  const result = await auth.signInWithPasskey()
+  // Show only the safe message; keep the email fallback available.
+  return result.ok
+    ? { ok: true, message: 'Signed in.' }
+    : { ok: false, message: result.error.message }
+}`
+  }
+] as const
+---
+
+<section class="lumen-login-examples" aria-labelledby="login-examples-title">
+  <header>
+    <p>Returning members</p>
+    <h2 id="login-examples-title">A familiar way back in.</h2>
+    <p>Email codes and passkeys, composed with Lumen. These visual examples do not send codes or sign you in.</p>
+  </header>
+  <Grid class="lumen-login-examples__grid" minItemWidth="18rem">
+    <Card class="lumen-login-examples__card">
+      <h3>Welcome back</h3>
+      <p>Use a saved passkey or receive a code by email.</p>
+      <Button disabled type="button">Sign in with a passkey</Button>
+      <Field>
+        <Label for="login-email">Email address</Label>
+        <Input autocomplete="email" id="login-email" name="login-email" readonly type="email" value="member@example.com" />
+      </Field>
+      <Button disabled type="button">Send sign-in code</Button>
+      <p>No password to remember.</p>
+    </Card>
+    <Card class="lumen-login-examples__card">
+      <h3>Check your inbox</h3>
+      <p>If this address can sign in, a code will arrive shortly.</p>
+      <Field>
+        <Label for="login-code">Email code</Label>
+        <Input aria-describedby="login-code-hint" autocomplete="one-time-code" id="login-code" inputmode="numeric" name="login-code" placeholder="Enter your code" readonly />
+        <p id="login-code-hint">Paste the complete code from your email.</p>
+      </Field>
+      <Button disabled type="button">Verify and continue</Button>
+      <Button disabled type="button" variant="outline">Resend code</Button>
+      <p>Entered the wrong address? Return to email sign-in.</p>
+    </Card>
+    <Card class="lumen-login-examples__card">
+      <h3>Try another way</h3>
+      <Alert variant="destructive">Passkey sign-in was canceled. You can try again or request a code by email.</Alert>
+      <p>You can still use email when your passkey is unavailable.</p>
+      <Button disabled type="button">Try passkey again</Button>
+      <Button disabled type="button" variant="outline">Use an email code</Button>
+      <p>Your existing account and workspace stay the same.</p>
+    </Card>
+  </Grid>
+  <div class="lumen-login-examples__integration">
+    <h3>Connect the UI to Auth</h3>
+    <p>
+      For applications with access to the private Auth workspace, connect <code>@santi020k/auth-client</code> alongside your Lumen adapter.
+      Lumen supplies the fields, buttons, and feedback; Auth supplies email-code and passkey operations.
+      These snippets are optional integration references and do not run in this preview.
+    </p>
+    <CodeTabs ariaLabel="Auth integration examples" items={authExamples} />
+    <p>
+      Handle loading and duplicate submissions in your UI. Advance only after an <code>ok</code> result,
+      and render <code>error.message</code> on failure. Keep diagnostics and credentials out of the UI.
+      Your application owns the auth server, email delivery, code expiry and resend limits, route guards,
+      session checks, and the destination after sign-in. Passkeys require a secure origin and a registered credential.
+      See the <Link href="https://github.com/santi020k/auth/tree/main/packages/auth-client">Auth client contract</Link>{' '}
+      and <Link href="https://github.com/santi020k/auth/blob/main/docs/consumer-integration.md">server integration checklist</Link>.
+    </p>
+  </div>
+</section>

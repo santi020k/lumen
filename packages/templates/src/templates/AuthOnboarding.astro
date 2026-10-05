@@ -13,6 +13,8 @@ import {
   Progress,
   Stepper
 } from '@santi020k/lumen-astro'
+
+import LoginExamples from '../components/LoginExamples.astro'
 ---
 
 <main class="template-onboarding">
@@ -113,8 +115,9 @@ import {
       </form>
 
       <p class="template-onboarding__signin">
-        Explore another flow in the <Link href="/templates">template gallery</Link>.
+        <Link href="#login-examples-title">Explore login examples</Link> or visit the <Link href="/templates">template gallery</Link>.
       </p>
     </Card>
   </section>
+  <LoginExamples />
 </main>

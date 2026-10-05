@@ -335,6 +335,16 @@ describe('@santi020k/lumen umbrella package', () => {
             `src/lumen/${templateName}.${extension}`
           ].sort())
           expect(source).toContain(sourceMarkers[templateName])
+          const loginMarkers = templateName === 'auth-onboarding' ?
+            ['Welcome back',
+              'Check your inbox',
+              'Try another way',
+              'These visual examples do not send codes or sign you in.'] :
+            []
+          for (const marker of loginMarkers) {
+            expect(source).toContain(marker)
+          }
+          expect(stylesheet).toContain('.lumen-login-examples__grid')
           expect(stylesheet).toContain('.lumen-template__shell')
 
           const frameworkMarkers = {

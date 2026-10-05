@@ -49,6 +49,51 @@ and authentication/onboarding. Preview them in the gallery before choosing a rec
 Dashboard metric cards own their frame and spacing. Their public `Stat` uses the bare
 variant, and change badges wrap below the value when a narrow card needs more room.
 
+
+## Login examples and Auth
+
+The `auth-onboarding` template includes three visual login states: email-code request,
+code verification, and passkey cancellation with an email fallback. The preview actions are
+intentionally disabled and inputs are read-only; they do not send email, invoke WebAuthn,
+or establish a session. The same states ship in the Astro, React, and Elements CLI recipes.
+
+For an application with access to the private Auth workspace, Lumen owns presentation and accessibility while
+[`@santi020k/auth-client`](https://github.com/santi020k/auth/tree/main/packages/auth-client)
+owns the authentication protocol. Auth is an optional consumer dependency, not a dependency of
+Lumen. The live preview includes copyable examples using the verified helper facade:
+
+```ts
+import { createSantiAuthHelpers } from '@santi020k/auth-client'
+
+const auth = createSantiAuthHelpers({
+  baseURL: 'https://app.example.com',
+  basePath: '/api/auth'
+})
+
+export async function requestCode(email: string) {
+  return auth.requestEmailOtp(email)
+}
+
+export async function verifyCode(email: string, code: string) {
+  return auth.signInWithEmailOtp(email, code)
+}
+
+export async function signInWithPasskey() {
+  return auth.signInWithPasskey()
+}
+```
+
+Handle each result's `ok` discriminator before advancing. Render only `error.message` on failure;
+never render `diagnostic` or credentials. Disable actions while pending and keep the email fallback
+available after passkey cancellation. Use neutral email-request confirmation copy that does not
+reveal whether an account exists. Keep code length, expiry, resend limits, and access policy aligned
+with your configured auth server rather than hardcoding them from a visual example.
+
+The application owns the server, email delivery, session validation, route protection, and sign-in
+destination. Passkeys need a secure origin and a credential registered for that relying party.
+Follow Auth's [consumer integration checklist](https://github.com/santi020k/auth/blob/main/docs/consumer-integration.md)
+before enabling the template controls. The browser helpers work with all three Lumen web adapters.
+
 ## Workspace API
 
 Within this repository, declare the dependency with `workspace:*`. The root entry exports the

@@ -9155,7 +9155,7 @@
     },
     "/templates/auth-onboarding": {
       "alt": "Authentication and onboarding — Templates social preview from Lumen UI",
-      "description": "A calm sign-in and guided setup flow with useful validation and progress states.",
+      "description": "Email-code login, passkey recovery, and guided setup with useful validation and progress states.",
       "images": [
         {
           "format": "webp",

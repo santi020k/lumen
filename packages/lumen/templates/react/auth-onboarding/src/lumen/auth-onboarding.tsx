@@ -6,6 +6,7 @@ import {
   Card,
   Checkbox,
   Field,
+  Grid,
   Input,
   Label,
   Progress,
@@ -84,5 +85,45 @@ export const AuthOnboardingTemplate = () => (
         </div>
       </form>
     </Card>
+    <section className="lumen-login-examples" aria-labelledby="login-examples-title">
+      <header>
+        <p>Returning members</p>
+        <h2 id="login-examples-title">A familiar way back in.</h2>
+        <p>Email codes and passkeys, composed with Lumen. These visual examples do not send codes or sign you in.</p>
+      </header>
+      <Grid className="lumen-login-examples__grid" minItemWidth="18rem">
+        <Card className="lumen-login-examples__card">
+          <h3>Welcome back</h3>
+          <p>Use a saved passkey or receive a code by email.</p>
+          <Button disabled type="button">Sign in with a passkey</Button>
+          <Field>
+            <Label htmlFor="login-email">Email address</Label>
+            <Input autoComplete="email" id="login-email" name="login-email" readOnly type="email" value="member@example.com" />
+          </Field>
+          <Button disabled type="button">Send sign-in code</Button>
+          <p>No password to remember.</p>
+        </Card>
+        <Card className="lumen-login-examples__card">
+          <h3>Check your inbox</h3>
+          <p>If this address can sign in, a code will arrive shortly.</p>
+          <Field>
+            <Label htmlFor="login-code">Email code</Label>
+            <Input aria-describedby="login-code-hint" autoComplete="one-time-code" id="login-code" inputMode="numeric" name="login-code" placeholder="Enter your code" readOnly />
+            <p id="login-code-hint">Paste the complete code from your email.</p>
+          </Field>
+          <Button disabled type="button">Verify and continue</Button>
+          <Button disabled type="button" variant="outline">Resend code</Button>
+          <p>Entered the wrong address? Return to email sign-in.</p>
+        </Card>
+        <Card className="lumen-login-examples__card">
+          <h3>Try another way</h3>
+          <Alert variant="destructive">Passkey sign-in was canceled. You can try again or request a code by email.</Alert>
+          <p>You can still use email when your passkey is unavailable.</p>
+          <Button disabled type="button">Try passkey again</Button>
+          <Button disabled type="button" variant="outline">Use an email code</Button>
+          <p>Your existing account and workspace stay the same.</p>
+        </Card>
+      </Grid>
+    </section>
   </main>
 )
