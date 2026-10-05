@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# cspell:words bootstatus simctl udid UDID pathlib shutil startswith copyfile
+# cspell:words bootstatus simctl udid UDID pathlib shutil startswith copyfile xctestrun
 
 set -euo pipefail
 
@@ -32,15 +32,20 @@ fi
 xcrun simctl bootstatus "${device_id}" -b
 xcrun simctl ui "${device_id}" appearance light
 
-xcodebuild \
-  -project "${playground_dir}/LumenApplePlayground.xcodeproj" \
-  -scheme LumenApplePlayground \
-  -destination "platform=iOS Simulator,id=${device_id}" \
-  -derivedDataPath "${derived_data}" \
-  CODE_SIGNING_ALLOWED=NO \
-  build
+if [[ -n "${LUMEN_CAPTURE_PRODUCTS:-}" ]]; then
+  node "${playground_dir}/../../.github/scripts/apple-capture-products.mjs" verify "$LUMEN_CAPTURE_PRODUCTS"
+  app_path="$LUMEN_CAPTURE_PRODUCTS/Debug-iphonesimulator/LumenApplePlayground.app"
+else
+  xcodebuild \
+    -project "${playground_dir}/LumenApplePlayground.xcodeproj" \
+    -scheme LumenApplePlayground \
+    -destination "platform=iOS Simulator,id=${device_id}" \
+    -derivedDataPath "${derived_data}" \
+    CODE_SIGNING_ALLOWED=NO \
+    build
 
-app_path="${derived_data}/Build/Products/Debug-iphonesimulator/LumenApplePlayground.app"
+  app_path="${derived_data}/Build/Products/Debug-iphonesimulator/LumenApplePlayground.app"
+fi
 xcrun simctl install "${device_id}" "${app_path}"
 
 for component in "${components[@]}"; do
@@ -56,17 +61,27 @@ if [[ " ${components[*]} " == *" Tour "* ]]; then
   # The documentation baseline shows step one open after its trigger is revealed.
   # Reproduce that interaction instead of comparing an unrelated closed launch state.
   interaction_dir="$(mktemp -d "${derived_data}/tour-capture.XXXXXX")"
-  xcodebuild \
-    -project "${playground_dir}/LumenApplePlayground.xcodeproj" \
-    -scheme LumenApplePlaygroundPerformance \
-    -configuration Debug \
-    -destination "platform=iOS Simulator,id=${device_id}" \
-    -derivedDataPath "${derived_data}" \
-    -resultBundlePath "${interaction_dir}/tour.xcresult" \
-    -parallel-testing-enabled NO \
-    -only-testing:LumenApplePlaygroundUITests/CatalogParityInteractionTests/testTourCaptureMatchesDocumentation \
-    CODE_SIGNING_ALLOWED=NO \
-    test
+  if [[ -n "${LUMEN_CAPTURE_PRODUCTS:-}" ]]; then
+    test_run=("$LUMEN_CAPTURE_PRODUCTS"/*.xctestrun)
+    xcodebuild -xctestrun "${test_run[0]}" \
+      -destination "platform=iOS Simulator,id=${device_id}" \
+      -resultBundlePath "${interaction_dir}/tour.xcresult" \
+      -parallel-testing-enabled NO \
+      -only-testing:LumenApplePlaygroundUITests/CatalogParityInteractionTests/testTourCaptureMatchesDocumentation \
+      test-without-building
+  else
+    xcodebuild \
+      -project "${playground_dir}/LumenApplePlayground.xcodeproj" \
+      -scheme LumenApplePlaygroundPerformance \
+      -configuration Debug \
+      -destination "platform=iOS Simulator,id=${device_id}" \
+      -derivedDataPath "${derived_data}" \
+      -resultBundlePath "${interaction_dir}/tour.xcresult" \
+      -parallel-testing-enabled NO \
+      -only-testing:LumenApplePlaygroundUITests/CatalogParityInteractionTests/testTourCaptureMatchesDocumentation \
+      CODE_SIGNING_ALLOWED=NO \
+      test
+  fi
   xcrun xcresulttool export attachments \
     --path "${interaction_dir}/tour.xcresult" \
     --output-path "${interaction_dir}/attachments"

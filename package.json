@@ -63,7 +63,7 @@
     "test:native-playground-structure": "node --test scripts/check-native-playground-structure.test.mjs",
     "check:playground-store-readiness": "node scripts/check-playground-store-readiness.mjs",
     "check:playground-apple-release": "node scripts/check-playground-apple-release.mjs",
-    "test:playground-apple-release": "node --test scripts/check-playground-apple-release.test.mjs .github/scripts/monitor-xcode-cloud.test.mjs scripts/apple-store-delivery.test.mjs .github/scripts/apple-store-build-number.test.mjs .github/scripts/check-apple-release-checks.test.mjs .github/scripts/apple-capture-shard.test.mjs",
+    "test:playground-apple-release": "node --test scripts/check-playground-apple-release.test.mjs .github/scripts/monitor-xcode-cloud.test.mjs scripts/apple-store-delivery.test.mjs .github/scripts/apple-store-build-number.test.mjs .github/scripts/check-apple-release-checks.test.mjs .github/scripts/apple-capture-shard.test.mjs .github/scripts/apple-capture-products.test.mjs",
     "check:playground-eas-version": "node scripts/check-playground-eas-version.mjs",
     "test:playground-eas-version": "node --test scripts/check-playground-eas-version.test.mjs",
     "sync:compose-version": "node scripts/sync-compose-version.mjs",

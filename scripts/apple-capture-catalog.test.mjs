@@ -1,3 +1,5 @@
+// cspell:words xctestrun
+
 import assert from 'node:assert/strict'
 import { spawnSync } from 'node:child_process'
 import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
@@ -42,7 +44,7 @@ fi
 
     const buildLog = join(directory, 'build.log')
 
-    const capture = async (components, missingAttachment = false) => {
+    const capture = async (components, missingAttachment = false, products = undefined) => {
       await writeFile(log, '')
 
       await writeFile(buildLog, '')
@@ -52,6 +54,7 @@ fi
         env: {
           ...process.env,
           CI: 'true',
+          ...(products ? { LUMEN_CAPTURE_PRODUCTS: products } : {}),
           LUMEN_SIMULATOR_UDID: 'fixture-device',
           LUMEN_CAPTURE_TEST_LOG: log,
           LUMEN_CAPTURE_TEST_BUILD_LOG: buildLog,
@@ -107,6 +110,28 @@ fi
     assert.deepEqual(await capture(['Tour']), ['Tour'])
 
     await capture(['Tour'], true)
+
+    const products = join(directory, 'products')
+
+    await mkdir(join(products, 'Debug-iphonesimulator', 'LumenApplePlayground.app'), { recursive: true })
+
+    await mkdir(join(products, 'Debug-iphonesimulator', 'LumenApplePlaygroundUITests-Runner.app'))
+
+    await writeFile(join(products, 'capture.xctestrun'), '')
+
+    const revision = spawnSync('git', ['rev-parse', 'HEAD'], { cwd: repositoryRoot, encoding: 'utf8' }).stdout.trim()
+
+    await writeFile(join(products, 'lumen-capture-build.json'), JSON.stringify({ revision, toolchain: '' }))
+
+    assert.deepEqual(await capture(['Tour'], false, products), ['Tour'])
+
+    const sharedBuildLog = await readFile(buildLog, 'utf8')
+
+    assert.match(sharedBuildLog, /test-without-building/)
+
+    assert.doesNotMatch(sharedBuildLog, /-project|-scheme/)
+
+    assert.equal(await readFile(join(output, 'tour.png'), 'utf8'), 'verified tour')
   } finally {
     await rm(directory, { recursive: true, force: true })
   }

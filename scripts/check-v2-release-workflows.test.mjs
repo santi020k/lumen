@@ -227,6 +227,14 @@ test("public Apple checks use free standard GitHub runners and preserve every ga
 
   assert.match(appleWorkflow, /shard: \[0, 1, 2, 3\]/u);
 
+  assert.match(appleWorkflow, /capture-shards:[\s\S]*needs: capture-build/u);
+
+  assert.match(appleWorkflow, /CODE_SIGNING_ALLOWED=NO build-for-testing/u);
+
+  assert.match(appleWorkflow, /name: apple-capture-products/u);
+
+  assert.match(appleWorkflow, /apple-capture-products\.mjs verify/u);
+
   assert.match(appleWorkflow, /test "\$CAPTURE_RESULT" = success/u);
 
   assert.match(appleWorkflow, /--compare --platform=apple --source=default --tolerance=0\.12/u);

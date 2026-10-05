@@ -193,12 +193,15 @@ match the native capture environment. The toolchain guard rejects prerelease too
 packed consumer, all native component captures, docs visual regressions, and framework visual
 regressions. Native captures are split into four disjoint groups from the generated catalog; the
 required `Apple captures` check fails unless every group succeeds and the complete catalog passes
-the original PNG comparison. Only that platform-neutral comparison runs on Linux. Each native group
-builds and captures on macOS, keeping the six-second settle time and native Tour interaction.
+the original PNG comparison. Only that platform-neutral comparison runs on Linux. One macOS job builds the app and Tour test runner once with `build-for-testing`; capture groups
+consume that same-run artifact, verify its revision and Xcode version, and run the native Tour test
+with `test-without-building`. A tar archive preserves executable permissions and bundle links.
+Every group captures on macOS, keeping the six-second settle time and native Tour interaction.
 
 Shallow checkouts avoid downloading unrelated history; Swift compatibility fetches its immutable
 baseline tag explicitly. Dependency/browser caches and incremental library/playground Swift builds
-avoid repeat setup. The disposable package consumer still builds clean, without restored artifacts.
+avoid repeat setup. The disposable package consumer still builds clean, without restored artifacts. Swift phases and
+Compose instrumentation, consumer install, and capture phases report separate durations in CI.
 GitHub's standard macOS concurrency limit may queue groups; splitting does not guarantee four-way
 execution on every account. Concurrency cancels superseded runs. Tests, baseline images, tolerances,
 and release approval are unchanged.

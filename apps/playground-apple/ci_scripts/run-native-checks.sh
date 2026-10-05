@@ -1,5 +1,7 @@
 #!/bin/zsh
 
+# cspell:words endgroup
+
 set -euo pipefail
 
 mode="${1:-}"
@@ -41,6 +43,16 @@ if [[ "$mode" == "pull-request" ]]; then
     exit 0
 fi
 
+timed() {
+    local label="$1"
+    shift
+    local started=$SECONDS
+    print "::group::$label"
+    "$@"
+    print "$label completed in $(( SECONDS - started )) seconds"
+    print "::endgroup::"
+}
+
 case "$mode" in
     swift)
         swift_compatibility_baseline="$(node scripts/check-swift-source-compatibility.mjs --print-baseline)"
@@ -52,11 +64,11 @@ case "$mode" in
         pnpm run check:swift-assets
         pnpm run check:swift-version
         pnpm run test:swift-version
-        swift test
-        pnpm run check:swift-source-compatibility
-        pnpm run check:swift-api-baseline
-        swift build --package-path apps/playground-apple
-        pnpm run check:swift-package-candidate
+        timed "swift test" swift test
+        timed "pnpm run check:swift-source-compatibility" pnpm run check:swift-source-compatibility
+        timed "pnpm run check:swift-api-baseline" pnpm run check:swift-api-baseline
+        timed "swift build --package-path apps/playground-apple" swift build --package-path apps/playground-apple
+        timed "pnpm run check:swift-package-candidate" pnpm run check:swift-package-candidate
         ;;
     react-native)
         pnpm run check:react-native-native-package:ios

@@ -1,5 +1,5 @@
 name: Apple native checks
-# cspell:words simctl
+# cspell:words simctl ARCHS
 
 on:
   pull_request:
@@ -68,7 +68,42 @@ jobs:
             apps/playground-apple/Screenshots
           retention-days: 3
 
+  capture-build:
+    name: Build native capture products
+    if: github.event.repository.private == false
+    runs-on: macos-26
+    timeout-minutes: 30
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_26.5.app/Contents/Developer
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 1
+      - name: Verify stable Apple toolchain
+        run: apps/playground-apple/scripts/check-app-store-toolchain.sh
+      - uses: santi020k/quality/actions/setup-pnpm@ffa37774f75b2b8e761fe3d71e7046cdb6694a69 # v1
+        with:
+          node-version: 22.x
+      - name: Build app and native Tour test bundle once
+        run: |
+          xcodebuild -project apps/playground-apple/LumenApplePlayground.xcodeproj \
+            -scheme LumenApplePlaygroundPerformance -configuration Debug \
+            -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath "$RUNNER_TEMP/capture-build" \
+            ARCHS="$(uname -m)" ONLY_ACTIVE_ARCH=YES \
+            CODE_SIGNING_ALLOWED=NO build-for-testing
+          node .github/scripts/apple-capture-products.mjs record "$RUNNER_TEMP/capture-build/Build/Products"
+          tar -czf "$RUNNER_TEMP/capture-products.tar.gz" -C "$RUNNER_TEMP/capture-build/Build/Products" .
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: apple-capture-products
+          path: ${{ runner.temp }}/capture-products.tar.gz
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 1
+
   capture-shards:
+    needs: capture-build
     name: Apple capture group ${{ matrix.shard }}
     if: github.event.repository.private == false
     runs-on: macos-26
@@ -88,6 +123,16 @@ jobs:
       - uses: santi020k/quality/actions/setup-pnpm@ffa37774f75b2b8e761fe3d71e7046cdb6694a69 # v1
         with:
           node-version: 22.x
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: apple-capture-products
+          path: ${{ runner.temp }}/capture-download
+      - name: Verify shared native products
+        run: |
+          mkdir -p "$RUNNER_TEMP/capture-products"
+          tar -xzf "$RUNNER_TEMP/capture-download/capture-products.tar.gz" -C "$RUNNER_TEMP/capture-products"
+          node .github/scripts/apple-capture-products.mjs verify "$RUNNER_TEMP/capture-products"
+          echo "LUMEN_CAPTURE_PRODUCTS=$RUNNER_TEMP/capture-products" >> "$GITHUB_ENV"
       - name: Select native screenshot device
         run: |
           device_id="$(xcrun simctl create 'Lumen CI' com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro-Max com.apple.CoreSimulator.SimRuntime.iOS-26-5)"
