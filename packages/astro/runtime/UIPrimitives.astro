@@ -296,7 +296,21 @@ const initDisclosures = (scope: ParentNode): void => {
     if (root.hasAttribute('data-ui-hover-card')) {
       root.addEventListener('mouseenter', () => setOpen(trigger, panel, true))
 
-      root.addEventListener('mouseleave', () => setOpen(trigger, panel, false))
+      root.addEventListener('mouseleave', () => {
+        if (!root.contains(root.ownerDocument.activeElement)) setOpen(trigger, panel, false)
+      })
+
+      root.addEventListener('focusin', event => {
+        if (event.relatedTarget instanceof Node && root.contains(event.relatedTarget)) return
+
+        setOpen(trigger, panel, true)
+      })
+
+      root.addEventListener('focusout', event => {
+        if (event.relatedTarget instanceof Node && root.contains(event.relatedTarget)) return
+
+        setOpen(trigger, panel, false)
+      })
     }
   }
 }

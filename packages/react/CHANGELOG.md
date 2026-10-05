@@ -2,6 +2,8 @@
 
 ## 4.0.0
 
+- Assign stable field identities before the first blur validation of unnamed controls.
+
 - Validate and fingerprint form controls in their owning browser realm, including same-origin iframe forms.
 
 - Mark the optional form workflow hooks as a React client boundary and keep initial field-row identities stable through server rendering and hydration.

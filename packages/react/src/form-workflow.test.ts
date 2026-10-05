@@ -50,6 +50,34 @@ const input = async (element: HTMLInputElement, value: string) => {
   })
 }
 
+test('validates an unnamed required control on its first blur', async () => {
+  let current: LumenFormWorkflow | undefined
+  const { container } = await mount(() => {
+    current = useLumenFormWorkflow()
+
+    return createElement('form', current.formProps, createElement('input', { required: true, 'aria-label': 'Unnamed field' }))
+  })
+  const field = control(container, 'input')
+
+  expect(field.id).toBe('')
+
+  await act(async () => {
+    field.focus()
+
+    field.blur()
+
+    await Promise.resolve()
+  })
+
+  if (!current) throw new Error('Missing workflow')
+
+  expect(field.id).toMatch(/^lumen-field-/u)
+  expect(current.errors).toEqual([expect.objectContaining({ name: field.id, controlId: field.id, label: 'Unnamed field' })])
+
+  await input(field, 'valid')
+  expect(current.errors).toEqual([])
+})
+
 test('tracks saved values, revalidates dependent fields and drops removed or disabled errors', async () => {
   let current: LumenFormWorkflow | undefined
   const { container, root } = await mount(() => {

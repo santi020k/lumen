@@ -2,6 +2,8 @@
 
 ## 4.0.0
 
+- Open HoverCard content on keyboard focus, keep it visible while focus remains inside, and close it after focus leaves or Escape is pressed.
+
 ### Minor Changes
 
 - Add exact localized AmountField drafts across web adapters and a React Hook Form controller.

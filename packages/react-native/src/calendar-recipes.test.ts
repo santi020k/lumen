@@ -2,6 +2,27 @@ import { describe, expect, test } from 'vitest'
 
 import { addLumenCalendarDays, addLumenCalendarMonths, isLumenCalendarDay, isLumenCalendarSelectable, lumenCalendarDayKey, lumenCalendarEventsForDay, lumenCalendarGrid, parseLumenCalendarDay } from './calendar-recipes.js'
 const march = { year: 2026, month: 3, day: 8 }
+test('ignores malformed decoded event rows and collections', () => {
+  const valid = { id: 'work', label: 'Work', startDay: march }
+  const malformed: unknown[] = [null,
+    undefined,
+    42,
+    'event',
+    [],
+    {},
+    { ...valid, id: null },
+    { ...valid, label: null },
+    { ...valid, startDay: null },
+    { ...valid, endDay: null },
+    { ...valid, detail: 42 },
+    { ...valid, disabled: 'false' }]
+
+  expect(Reflect.apply(lumenCalendarEventsForDay, undefined, [[...malformed, valid], march])).toEqual([valid])
+
+  for (const events of [null, undefined, {}, 'events']) {
+    expect(Reflect.apply(lumenCalendarEventsForDay, undefined, [events, march])).toEqual([])
+  }
+})
 describe('civil calendar', () => {
   test('rejects invalid and adversarial day keys', () => {
     for (const key of ['2026-02-29', '1900-02-29', '0000-01-01', '2026-13-01', '2026-01-00', '9'.repeat(100000)]) expect(parseLumenCalendarDay(key)).toBeNull()

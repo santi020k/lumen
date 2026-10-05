@@ -2,6 +2,8 @@
 
 ## 4.0.0
 
+- Distinguish contextual for-of operators from identifiers and skip regex literals after new in Astro runtime diagnostics.
+
 - Recognize regex literals after expression keywords when diagnosing Astro runtime mounts without confusing property access with keywords.
 
 - Reopen SwiftUI and Compose Mentions suggestions when focus returns after Escape.

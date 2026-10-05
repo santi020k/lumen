@@ -108,10 +108,36 @@ export const isLumenCalendarSelectable = (
 
   return true
 }
+
+const hasCalendarEventFields = (event: unknown): event is Record<'id' | 'label' | 'startDay', unknown> => (
+  typeof event === 'object' && event !== null && !Array.isArray(event) &&
+  'id' in event && 'label' in event && 'startDay' in event
+)
+
+const optionalCalendarEventFieldsValid = (event: Record<'id' | 'label' | 'startDay', unknown>): boolean => {
+  if ('detail' in event && event.detail !== undefined && typeof event.detail !== 'string') return false
+
+  return !('disabled' in event) || event.disabled === undefined || typeof event.disabled === 'boolean'
+}
+
+const isCalendarEvent = (event: unknown): event is LumenCalendarEvent => {
+  if (!hasCalendarEventFields(event)) return false
+
+  if (typeof event.id !== 'string' || event.id.length === 0 || typeof event.label !== 'string') return false
+
+  if (!isLumenCalendarDay(event.startDay) || !optionalCalendarEventFieldsValid(event)) return false
+
+  return !('endDay' in event) || event.endDay === undefined || isLumenCalendarDay(event.endDay)
+}
+
 export const lumenCalendarEventsForDay = (
   events: readonly LumenCalendarEvent[], day: LumenCalendarDay
-): readonly LumenCalendarEvent[] => events.filter(event => {
-  const end = event.endDay ?? event.startDay
+): readonly LumenCalendarEvent[] => {
+  if (!Array.isArray(events) || !isLumenCalendarDay(day)) return []
 
-  return event.id.length > 0 && isLumenCalendarSelectable(day, event.startDay, end)
-})
+  return events.filter((event: unknown): event is LumenCalendarEvent => {
+    if (!isCalendarEvent(event)) return false
+
+    return isLumenCalendarSelectable(day, event.startDay, event.endDay ?? event.startDay)
+  })
+}

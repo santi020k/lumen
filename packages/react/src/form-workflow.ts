@@ -63,6 +63,10 @@ const fingerprint = (form: HTMLFormElement): string => JSON.stringify(controlsOf
 const nativeMessage = (control: LumenFormControl): string => control.validity.valid ? '' : control.validationMessage
 const defaultControlName = (control: LumenFormControl): string => control.name || control.id
 
+const ensureControlId = (control: LumenFormControl): void => {
+  if (!control.id) control.id = `lumen-field-${crypto.randomUUID()}`
+}
+
 const appendValueIssues = (
   controls: readonly LumenFormControl[], issues: LumenFormIssue[], additional: readonly LumenFormIssue[],
   getName: (control: LumenFormControl) => string
@@ -93,7 +97,7 @@ const collectIssues = (form: HTMLFormElement, options: LumenFormWorkflowOptions)
   const issues: LumenFormIssue[] = []
 
   for (const control of controls) {
-    if (!control.id) control.id = `lumen-field-${crypto.randomUUID()}`
+    ensureControlId(control)
 
     const message = getMessage(control)
 
@@ -252,6 +256,8 @@ export const useLumenFormWorkflow = ({
       onChange: update,
       onBlur: event => {
         if (isLumenFormControl(event.target) && event.target.form === event.currentTarget) {
+          ensureControlId(event.target)
+
           validate(event.currentTarget, [getControlName(event.target)])
         }
       },

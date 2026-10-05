@@ -10,7 +10,7 @@ import {
   type LumenStylingContract,
   lumenStylingContracts
 } from '@santi020k/lumen-core'
-import { createSourceFile, type ImportDeclaration, type ImportSpecifier, isImportDeclaration, isNamedImports, isStringLiteral, ScriptKind, ScriptTarget, type Statement, SyntaxKind } from 'typescript'
+import { createSourceFile, forEachChild, type ImportDeclaration, type ImportSpecifier, isForOfStatement, isImportDeclaration, isNamedImports, isStringLiteral, type Node, ScriptKind, ScriptTarget, type Statement, SyntaxKind } from 'typescript'
 
 import { findMarkupTagEnd, getMarkupStart } from './v2-migration.js'
 
@@ -626,7 +626,32 @@ const skipRuntimeQuotedText = (source: string, start: number): number => {
 }
 
 const runtimeRegexPrefixes = new Set(['{', '(', '[', '=', ':', ',', ';', '!', '?', '&', '|', '+', '*', '%', '~', '^', '<', '>', '-'])
-const runtimeRegexKeywords = new Set(['return', 'throw', 'case', 'yield', 'typeof', 'void', 'delete', 'instanceof', 'in', 'of', 'await', 'else', 'do'])
+const runtimeRegexKeywords = new Set(['return', 'throw', 'case', 'yield', 'typeof', 'void', 'delete', 'instanceof', 'in', 'new', 'await', 'else', 'do'])
+
+const getForOfRegexStarts = (source: string): Set<number> => {
+  const starts = new Set<number>()
+
+  try {
+    const parsed = createSourceFile('runtime.tsx', source, ScriptTarget.Latest, true, ScriptKind.TSX)
+    const pending: Node[] = [parsed]
+
+    while (pending.length > 0) {
+      const node = pending.pop()
+
+      if (!node) continue
+
+      if (isForOfStatement(node)) starts.add(node.expression.getStart(parsed))
+
+      forEachChild(node, child => {
+        pending.push(child)
+      })
+    }
+  } catch (error: unknown) {
+    if (!(error instanceof RangeError)) throw error
+  }
+
+  return starts
+}
 
 const runtimeCodePointStart = (source: string, index: number): number => {
   const current = source.charCodeAt(index)
@@ -649,7 +674,9 @@ const previousRuntimeCharacter = (source: string, start: number, pattern: RegExp
   return previous
 }
 
-const isRuntimeRegexStart = (source: string, start: number): boolean => {
+const isRuntimeRegexStart = (source: string, start: number, forOfStarts: ReadonlySet<number>): boolean => {
+  if (forOfStarts.has(start)) return true
+
   const previous = previousRuntimeCharacter(source, start - 1, /\s/u)
 
   if (previous < 0 || runtimeRegexPrefixes.has(source[previous] ?? '')) return true
@@ -683,7 +710,9 @@ const skipRuntimeRegex = (source: string, start: number): number => {
   return source.length
 }
 
-const skipRuntimeExpressionTrivia = (source: string, start: number, depth: number): number => {
+const skipRuntimeExpressionTrivia = (
+  source: string, start: number, depth: number, forOfStarts: ReadonlySet<number>
+): number => {
   if (depth === 0) return start
 
   if (/['"`]/u.test(source[start] ?? '')) return skipRuntimeQuotedText(source, start)
@@ -700,7 +729,7 @@ const skipRuntimeExpressionTrivia = (source: string, start: number, depth: numbe
     return end < 0 ? source.length : end + 1
   }
 
-  if (source[start] === '/' && isRuntimeRegexStart(source, start)) return skipRuntimeRegex(source, start)
+  if (source[start] === '/' && isRuntimeRegexStart(source, start, forOfStarts)) return skipRuntimeRegex(source, start)
 
   return start
 }
@@ -738,10 +767,11 @@ const countRuntimeMounts = (entry: SourceEntry): number => {
   let count = 0
   let depth = 0
   let start = getMarkupStart(entry.source, entry.file)
+  const forOfStarts = new Set([...getForOfRegexStarts(entry.source.slice(start))].map(position => position + start))
   const lowerSource = entry.source.replace(/[A-Z]/gu, character => character.toLowerCase())
 
   while (start < entry.source.length) {
-    const skipped = skipRuntimeExpressionTrivia(entry.source, start, depth)
+    const skipped = skipRuntimeExpressionTrivia(entry.source, start, depth, forOfStarts)
 
     if (skipped !== start) {
       start = skipped
