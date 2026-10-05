@@ -48,8 +48,10 @@ const useChartInteraction = (
 
     if (!root || !onCursorChange) return
 
+    const CustomEventType = root.ownerDocument.defaultView?.CustomEvent
+
     const listener = (event: Event) => {
-      if (!(event instanceof CustomEvent)) return
+      if (!CustomEventType || !(event instanceof CustomEventType)) return
 
       const detail: unknown = event.detail
 

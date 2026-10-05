@@ -12,6 +12,16 @@ const sparseRows = <T>(row: T, populatedIndex: number | null): T[] => {
   return rows
 }
 
+test.each([null, {}, 'rows', 1, { length: 0 }, new Set()])('extended charts reject non-array decoded collections: %j', data => {
+  const calendar: unknown = Reflect.apply(createLumenCalendarHeatmapGeometry, undefined, [data, { startDate: '2024-01-01', endDate: '2024-01-02' }])
+  const funnel: unknown = Reflect.apply(createLumenFunnelGeometry, undefined, [data])
+  const boxPlot: unknown = Reflect.apply(createLumenBoxPlotGeometry, undefined, [data])
+
+  expect(calendar).toMatchObject({ valid: false, cells: [], weekCount: 0 })
+  expect(funnel).toMatchObject({ valid: false, max: 0, rows: [] })
+  expect(boxPlot).toMatchObject({ valid: false, rows: [] })
+})
+
 describe('calendar heatmap', () => {
   test.each([null, 0, 1])('rejects sparse observations with populated index %s', populatedIndex => {
     const data = sparseRows<LumenCalendarHeatmapDatum>({ date: '2024-01-01', value: 0 }, populatedIndex)

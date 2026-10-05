@@ -242,9 +242,7 @@ export const ToastProvider = ({
       const stackMax = detail.max ?? maxCount
 
       setToasts(current => {
-        const next = current.some(toast => toast.id === record.id) ?
-          current.map(toast => (toast.id === record.id ? record : toast)) :
-          [...current, record]
+        const next = [...current.filter(toast => toast.id !== record.id), record]
 
         const samePlacement = next.filter(
           toast => toast.placement === record.placement
