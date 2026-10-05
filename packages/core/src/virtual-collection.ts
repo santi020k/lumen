@@ -14,6 +14,8 @@ export interface LumenVirtualCollectionController<T> {
 
 interface CollectionEntry<T> { index: number, item: T, key: string | number }
 
+const isHtmlElement = (element: Element | null): element is HTMLElement => element?.namespaceURI === 'http://www.w3.org/1999/xhtml'
+
 const positionRow = (root: HTMLElement, row: HTMLElement, index: number, count: number, itemSize: number): void => {
   if (root.getAttribute('role') === 'list') {
     row.setAttribute('role', 'listitem')
@@ -43,11 +45,8 @@ const insertRow = (content: HTMLElement, row: HTMLElement, previousRow?: HTMLEle
 }
 
 const restoreFocus = (root: HTMLElement, focused: Element | null, ownedFocus: boolean): void => {
-  const elementClass = root.ownerDocument.defaultView?.HTMLElement
-
-  if (!ownedFocus || !elementClass || !(focused instanceof elementClass)) return
-
-  if (focused === root.ownerDocument.activeElement) return
+  // Adopted controls retain their original realm's prototype; their HTML namespace stays stable.
+  if (!ownedFocus || !isHtmlElement(focused) || focused === root.ownerDocument.activeElement) return
 
   if (root.contains(focused)) focused.focus({ preventScroll: true })
   else root.focus({ preventScroll: true })
@@ -112,9 +111,7 @@ export const createLumenVirtualCollectionController = <T>(
       rows.set(entry.key, rendered)
     } else if (rendered.item !== entry.item || rendered.index !== index) {
       const previous = rendered.row.firstElementChild
-      const elementClass = root.ownerDocument.defaultView?.HTMLElement
-      const previousControl = elementClass && previous instanceof elementClass ? previous : undefined
-      const element = options.renderItem(entry.item, index, previousControl)
+      const element = options.renderItem(entry.item, index, isHtmlElement(previous) ? previous : undefined)
 
       if (element !== previous) rendered.row.replaceChildren(element)
 

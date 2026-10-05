@@ -192,3 +192,62 @@ test('normalizes malformed geometry and keeps only a small disjoint focus window
   expect(window.indexes).toEqual([0, 1, 10_000, 10_001])
   expect(window.totalSize).toBe(800_000)
 })
+
+test.each(['iframe-created', 'adopted'] as const)('preserves focused controls and keyed identity for %s content', origin => {
+  const frame = document.createElement('iframe')
+
+  document.body.append(frame)
+  const frameDocument = frame.contentDocument
+
+  if (!frameDocument) throw new Error('Expected iframe document')
+
+  const sourceDocument = origin === 'adopted' ? document : frameDocument
+  const root = sourceDocument.createElement('div')
+
+  root.dataset.uiVirtualList = ''
+  root.tabIndex = 0
+  Object.defineProperty(root, 'clientHeight', { configurable: true, value: 80 })
+  frameDocument.body.append(root)
+  const rangeEvents: Event[] = []
+
+  root.addEventListener('ui:virtual-list-range', event => rangeEvents.push(event))
+  const items = records(100)
+  const controller = createLumenVirtualCollectionController(root, {
+    items,
+    getKey: item => item.id,
+    itemSize: 40,
+    overscan: 0,
+    renderItem: (item, _index, previous) => {
+      const button = previous ?? sourceDocument.createElement('button')
+
+      button.textContent = item.label
+
+      return button
+    }
+  })
+  const button = root.querySelector('button')
+
+  if (!button) throw new Error('Expected focused control')
+
+  try {
+    button.focus()
+    root.scrollTop = 3920
+    root.dispatchEvent(new Event('scroll'))
+    expect(frameDocument.activeElement).toBe(button)
+    expect(root.querySelectorAll('button')).toHaveLength(4)
+    controller.update([{ id: 0, label: 'Updated' }, ...items.slice(1)])
+    expect(root.querySelector('[data-ui-virtual-list-index="0"] button')).toBe(button)
+    expect(button.textContent).toBe('Updated')
+    expect(frameDocument.activeElement).toBe(button)
+    controller.update([])
+    expect(frameDocument.activeElement).toBe(root)
+    const FrameRangeEvent = frameDocument.defaultView?.CustomEvent
+
+    if (!FrameRangeEvent) throw new Error('Expected iframe event constructor')
+
+    expect(rangeEvents.length).toBeGreaterThan(0)
+    expect(rangeEvents.every(event => event instanceof FrameRangeEvent)).toBe(true)
+  } finally {
+    controller.destroy()
+  }
+})
