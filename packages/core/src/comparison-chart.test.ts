@@ -3,6 +3,11 @@ import { describe, expect, test } from 'vitest'
 import { createLumenComparisonGeometry, type LumenComparisonDatum } from './comparison-chart.js'
 
 describe('comparison chart geometry', () => {
+  test.each([null, undefined, {}, 'data', 42])('rejects non-array comparisons %s', data => {
+    const result: unknown = Reflect.apply(createLumenComparisonGeometry, undefined, [data])
+
+    expect(result).toMatchObject({ valid: false, rows: [], domain: { min: 0, max: 1 } })
+  })
   test.each([null, 0, 1])('rejects sparse comparisons with populated index %s', populatedIndex => {
     const data = Array<LumenComparisonDatum>(2)
 

@@ -44,11 +44,12 @@ export const isLumenComparisonDatum = (value: unknown): value is LumenComparison
 export const createLumenComparisonGeometry = (
   data: readonly LumenComparisonDatum[], options: LumenComparisonOptions = {}
 ) => {
+  const entries: readonly LumenComparisonDatum[] = data
   const ids = new Set<string>()
   let min = 0
   let max = 0
 
-  const validData = Array.from(data).every(item => {
+  const validData = Array.isArray(data) && Array.from(entries).every(item => {
     if (!isLumenComparisonDatum(item) || ids.has(item.id)) return false
 
     ids.add(item.id)
@@ -74,7 +75,7 @@ export const createLumenComparisonGeometry = (
     domain,
     ticks: [domain.min, domain.min / 2 + domain.max / 2, domain.max],
     rows: valid ?
-      data.map(item => {
+      entries.map(item => {
         const reference = options.paired ? item.reference ?? null : 0
         const valuePosition = item.value === null ? null : position(item.value)
         const referencePosition = reference === null ? null : position(reference)

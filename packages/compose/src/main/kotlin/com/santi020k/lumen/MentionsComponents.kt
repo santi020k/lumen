@@ -88,7 +88,10 @@ fun LumenMentions(
                 .background(MaterialTheme.colorScheme.surface).padding(12.dp)
                 .semantics { contentDescription = if (readOnly) "$label, ${labels.readOnly}" else label
                     if (!valid) error(labels.invalid) }
-                .onFocusChanged { focused = it.isFocused }
+                .onFocusChanged {
+                    if (it.isFocused && !focused) dismissed = null
+                    focused = it.isFocused
+                }
                 .onPreviewKeyEvent { event ->
                     if (event.type != KeyEventType.KeyDown || query == null) false
                     else when (event.key) {

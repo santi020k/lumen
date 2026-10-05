@@ -8,6 +8,8 @@ import kotlinx.coroutines.awaitCancellation
 import androidx.activity.ComponentActivity
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.layout.Column
 import androidx.compose.ui.test.junit4.v2.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
@@ -45,6 +47,25 @@ class MentionsInteractionTest {
         rule.onNodeWithText("Invalid text selection").assertIsDisplayed()
         rule.runOnIdle { assertEquals(-1, value.value.selection.start); readOnly.value = true }
         rule.onNodeWithText("Alice option").assertDoesNotExist()
+    }
+    @Test fun focusReturnReopensDismissedSuggestionsWithoutEditing() {
+        val value = mutableStateOf(LumenMentionsValue("@al", LumenMentionsSelection(3, 3)))
+        val other = mutableStateOf("Other field")
+        val interceptor = PlatformTextInputInterceptor { _, _ -> awaitCancellation() }
+        rule.setContent { InterceptPlatformTextInput(interceptor) {
+            LumenTheme { Column {
+                LumenMentions("Message", value.value, { value.value = it }, options)
+                BasicTextField(other.value, { other.value = it })
+            } }
+        } }
+        rule.onNodeWithContentDescription("Message").performClick().performTextInputSelection(TextRange(3))
+        rule.onNodeWithText("Alice option").assertIsDisplayed()
+        rule.onNodeWithContentDescription("Message").performKeyInput { pressKey(Key.Escape) }
+        rule.onNodeWithText("Alice option").assertDoesNotExist()
+        rule.onNodeWithText("Other field").performClick()
+        rule.onNodeWithContentDescription("Message").performClick()
+        rule.onNodeWithText("Alice option").assertIsDisplayed()
+        rule.runOnIdle { assertEquals("@al", value.value.text) }
     }
     @Test fun nativeComposingTextIsNotReplacedByExternalHostValue() {
         val value = mutableStateOf(LumenMentionsValue("", LumenMentionsSelection(0, 0)))

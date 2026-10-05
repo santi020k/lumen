@@ -1,7 +1,8 @@
 // @vitest-environment jsdom
 import type { SyntheticEvent } from 'react'
 import { act, createElement, StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
+import { createRoot, hydrateRoot } from 'react-dom/client'
+import { renderToString } from 'react-dom/server'
 
 import { afterEach, expect, test, vi } from 'vitest'
 
@@ -303,4 +304,31 @@ test('reload protection only runs while edits are dirty and cleans up', async ()
   const next = new Event('beforeunload', { cancelable: true })
   window.dispatchEvent(next)
   expect(next.defaultPrevented).toBe(false)
+})
+
+test('field row labels retain their server-rendered identities during hydration', async () => {
+  const Fixture = () => {
+    const first = useLumenFieldArray(['First', 'Second'])
+    const second = useLumenFieldArray(['Third'])
+
+    return createElement('div', {}, [...first.items, ...second.items].map(item => createElement('div', { key: item.id }, createElement('label', { htmlFor: item.id }, item.value), createElement('input', { id: item.id, defaultValue: item.value }))))
+  }
+  const container = document.createElement('div')
+  container.innerHTML = renderToString(createElement(Fixture))
+  document.body.append(container)
+  containers.push(container)
+  const markup = container.innerHTML
+  const errors = vi.spyOn(console, 'error').mockImplementation(() => undefined)
+  const recover = vi.fn<(error: unknown) => void>()
+
+  await act(async () => {
+    await Promise.resolve()
+
+    roots.push(hydrateRoot(container, createElement(Fixture), { onRecoverableError: recover }))
+  })
+
+  expect(container.innerHTML).toBe(markup)
+  expect(new Set(Array.from(container.querySelectorAll('input'), input => input.id)).size).toBe(3)
+  expect(recover).not.toHaveBeenCalled()
+  expect(errors).not.toHaveBeenCalled()
 })

@@ -33,6 +33,12 @@ describe('exact amount presentation', () => {
     expect(parseLumenAmountDraft(source)).toBeUndefined()
   })
 
+  test.each([
+    ['en-US', '1.2,3'], ['en-US', '1.2,,3'], ['es-CO', '1,2.3'], ['es-CO', '1,2..3']
+  ])('rejects fractional group separators in %s paste %s', (locale, source) => {
+    expect(parseLumenAmountDraft(source, { locale })).toBeUndefined()
+  })
+
   test('permits temporary group disruption while editing and never truncates precision', () => {
     expect(parseLumenAmountDraft('1,23', {}, false)).toBe('123')
     expect(parseLumenAmountDraft('1.2', { fractionDigits: 0 })).toBeUndefined()

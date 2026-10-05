@@ -308,3 +308,11 @@ test('heatmaps retain finite sibling cells when measurements are unavailable', (
       .toEqual([null, null, null, null, { base: 'sequentialLow', overlay: 'sequentialHigh', ratio: 0 }, { base: 'sequentialLow', overlay: 'sequentialHigh', ratio: 1 }])
   }
 })
+
+test.each([null, undefined, {}, 42, 'bins'])('interval charts reject non-array data %s', data => {
+  const waterfall: unknown = Reflect.apply(createLumenWaterfallGeometry, undefined, [data])
+  const histogram: unknown = Reflect.apply(createLumenHistogramGeometry, undefined, [data])
+
+  expect(waterfall).toMatchObject({ valid: false, marks: [] })
+  expect(histogram).toMatchObject({ valid: false, marks: [] })
+})

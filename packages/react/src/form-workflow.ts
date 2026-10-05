@@ -1,5 +1,7 @@
+'use client'
+
 import type { RefObject, SyntheticEvent } from 'react'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useId, useRef, useState } from 'react'
 
 export type LumenFormControl = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
 
@@ -257,8 +259,10 @@ export interface LumenFieldArrayItem<Value> { id: string, value: Value }
 
 /** Stable row identity survives insertions, removals and reordering. */
 export const useLumenFieldArray = <Value>(initialValues: readonly Value[] = []) => {
+  const prefixId = useId()
+
   const [items, setItems] = useState<LumenFieldArrayItem<Value>[]>(
-    () => initialValues.map(value => ({ id: crypto.randomUUID(), value }))
+    () => initialValues.map((value, index) => ({ id: `${prefixId}-${index}`, value }))
   )
 
   const append = (value: Value): string => {

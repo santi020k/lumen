@@ -286,8 +286,8 @@ export const createLumenWaterfallGeometry = (
 ) => {
   const ids = new Set<string>()
   let balance = 0
-  const entries = Array.from(data)
-  const rows = entries.every(isWaterfallDatum) ? entries : null
+  const entries = Array.isArray(data) ? Array.from(data) : null
+  const rows = entries?.every(isWaterfallDatum) ? entries : null
 
   const steps = (rows ?? []).map(datum => {
     const start = datum.kind === 'total' ? 0 : balance
@@ -384,6 +384,8 @@ const isHistogramBin = (bin: unknown): bin is LumenHistogramBin => {
 }
 
 const normalizeHistogramBins = (data: readonly unknown[], frequency: 'count' | 'density') => {
+  if (!Array.isArray(data)) return { bins: [], valid: false }
+
   const entries = Array.from(data)
 
   if (!entries.every(isHistogramBin)) return { bins: [], valid: false }

@@ -116,7 +116,9 @@ const validGrouping = (source: string, draft: string, options: LumenAmountOption
 
   if (!group || !source.includes(group)) return true
 
-  return source.trim().split(decimal)[0] === formatLumenAmountDraft(draft, options).split(decimal)[0]
+  const [integer, fraction = ''] = source.trim().split(decimal)
+
+  return !fraction.includes(group) && integer === formatLumenAmountDraft(draft, options).split(decimal)[0]
 }
 
 export const parseLumenAmountDraft = (

@@ -42,7 +42,10 @@ public struct LumenMentions: View {
     public var body: some View {
         VStack(alignment: .leading, spacing: LumenSpacing.sm) {
             Text(label)
-            NativeMentions(value: $value, composing: $composing, focused: $focused,
+            NativeMentions(value: $value, composing: $composing, focused: Binding(get: { focused }, set: { isFocused in
+                if isFocused && !focused { dismissed = nil }
+                focused = isFocused
+            }),
                 editable: editable, enabled: isEnabled && !disabled, bridge: bridge,
                 label: readOnly ? "\(label), \(labels.readOnly)" : label,
                 color: UIColor(theme.colors.ink), tint: UIColor(theme.colors.brandSolid),
