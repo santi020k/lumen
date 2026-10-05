@@ -1,5 +1,5 @@
 import type { RefObject } from 'react'
-import { useEffect } from 'react'
+import { useEffect, useLayoutEffect, useRef } from 'react'
 
 export interface FloatingPanelOptions {
   /** Logical alignment follows the trigger's inherited text direction. */
@@ -223,6 +223,12 @@ export const useFloatingPanel = (
   close: () => void,
   { placement = 'bottom-start', offset, collisionPadding, positioning = 'anchored' }: FloatingPanelOptions
 ): void => {
+  const closeRef = useRef(close)
+
+  useLayoutEffect(() => {
+    closeRef.current = close
+  }, [close])
+
   useEffect(() => {
     const panel = panelRef.current
     const trigger = triggerRef.current
@@ -240,6 +246,8 @@ export const useFloatingPanel = (
       placement,
       gap: finiteDistance(offset, 6),
       padding: finiteDistance(collisionPadding, 8)
-    }, close)
-  }, [open, positioning, placement, offset, collisionPadding, triggerRef, panelRef, close])
+    }, () => {
+      closeRef.current()
+    })
+  }, [open, positioning, placement, offset, collisionPadding, triggerRef, panelRef])
 }

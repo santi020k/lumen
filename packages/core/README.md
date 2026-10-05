@@ -315,6 +315,9 @@ setup, state ownership and lifecycle examples.
 `getLumenVirtualWindow` calculates a fixed-height window with optional disjoint focus retention.
 `observeLumenVirtualWindow` observes scroll, resize and focus; its handle provides `update()` and
 `destroy()`. Applications using these lower-level helpers own row rendering and cleanup.
+Data-mode controllers also preserve focus and reusable keyed content in same-origin iframe
+documents, including elements adopted from another document. Range events and resize observation
+use the root's document.
 
 `getLumenDirectionalKey(element, key)` resolves the element's current inherited CSS direction and
 swaps horizontal arrows in RTL. Other keys are unchanged. Web adapters use it for visual keyboard

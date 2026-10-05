@@ -42,7 +42,8 @@ export const parseHistogramBins = (value: string | null): LumenHistogramBin[] =>
   for (const raw of entries ?? [null]) {
     const entry = chartRecord(raw)
 
-    if (typeof entry.start !== 'number' || typeof entry.end !== 'number' || typeof entry.count !== 'number') {
+    if (typeof entry.start !== 'number' || typeof entry.end !== 'number' || typeof entry.count !== 'number' ||
+      (entry.label !== undefined && typeof entry.label !== 'string')) {
       return [{ start: NaN, end: NaN, count: NaN }]
     }
 
@@ -57,6 +58,13 @@ export const parseHistogramBins = (value: string | null): LumenHistogramBin[] =>
 
 const chartTone = (value: unknown) => lumenChartTones.find(tone => tone === value)
 
+type WaterfallRecord = Record<string, unknown> & Pick<LumenWaterfallDatum, 'id' | 'label' | 'value'>
+
+const validWaterfallEntry = (entry: Record<string, unknown>): entry is WaterfallRecord => (
+  typeof entry.id === 'string' && typeof entry.label === 'string' && typeof entry.value === 'number' &&
+  new Set<unknown>([undefined, 'delta', 'total']).has(entry.kind)
+)
+
 export const parseWaterfallData = (value: string | null): LumenWaterfallDatum[] => {
   const entries = jsonArray(value)
   const result: LumenWaterfallDatum[] = []
@@ -64,13 +72,19 @@ export const parseWaterfallData = (value: string | null): LumenWaterfallDatum[] 
   for (const raw of entries ?? [null]) {
     const entry = chartRecord(raw)
 
-    if (typeof entry.id !== 'string' || typeof entry.label !== 'string' || typeof entry.value !== 'number' ||
-      !new Set<unknown>([undefined, 'delta', 'total']).has(entry.kind)) return [{ id: 'invalid', label: '', value: NaN }]
+    if (!validWaterfallEntry(entry)) return [{ id: 'invalid', label: '', value: NaN }]
 
     const tone = chartTone(entry.tone)
+
+    if (entry.tone !== undefined && !tone) return [{ id: 'invalid', label: '', value: NaN }]
+
     const kind = entry.kind === 'total' ? 'total' : 'delta'
 
-    result.push({ id: entry.id, label: entry.label, value: entry.value, kind, ...(tone ? { tone } : {}) })
+    result.push({ id: entry.id,
+      label: entry.label,
+      value: entry.value,
+      kind,
+      ...(tone ? { tone } : {}) })
   }
 
   return result

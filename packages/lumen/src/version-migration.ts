@@ -78,6 +78,41 @@ const readLedger = async (path: string): Promise<Record<string, string>> => {
   return Object.fromEntries(entries.map(([file, hash]) => [file, String(hash)]))
 }
 
+const writeMigratedSource = async (
+  absoluteFile: string,
+  source: string,
+  nextSource: string,
+  { report, ledger, ledgerPath, file }: {
+    report: LumenVersionMigrationReport
+    ledger: Record<string, string>
+    ledgerPath: string
+    file: string
+  }
+): Promise<void> => {
+  if (await readFile(absoluteFile, 'utf8') !== source) throw new Error(`Source changed during migration: ${file}`)
+
+  if (report.version === 'v4') {
+    // Write the intended fingerprint first so an interrupted apply cannot double-rewrite gaps.
+    await mkdir(resolve(report.root, '.lumen'), { recursive: true })
+
+    ledger[file] = fingerprint(nextSource)
+
+    await writeFile(ledgerPath, `${JSON.stringify(ledger, undefined, 2)}\n`, 'utf8')
+  }
+
+  if (await readFile(absoluteFile, 'utf8') !== source) {
+    if (report.version === 'v4') {
+      Reflect.deleteProperty(ledger, file)
+
+      await writeFile(ledgerPath, `${JSON.stringify(ledger, undefined, 2)}\n`, 'utf8')
+    }
+
+    throw new Error(`Source changed during migration: ${file}`)
+  }
+
+  await writeFile(absoluteFile, nextSource, 'utf8')
+}
+
 const migrateFile = async (
   absoluteFile: string,
   report: LumenVersionMigrationReport,
@@ -109,14 +144,7 @@ const migrateFile = async (
 
   if (!report.applied) return
 
-  // Write the intended fingerprint first so an interrupted apply cannot double-rewrite gaps.
-  await mkdir(resolve(report.root, '.lumen'), { recursive: true })
-
-  ledger[file] = fingerprint(migration.source)
-
-  await writeFile(ledgerPath, `${JSON.stringify(ledger, undefined, 2)}\n`, 'utf8')
-
-  await writeFile(absoluteFile, migration.source, 'utf8')
+  await writeMigratedSource(absoluteFile, source, migration.source, { report, ledger, ledgerPath, file })
 }
 
 const createReport = (

@@ -80,6 +80,22 @@ budgets run only when their owning sources or shared foundations changed. The re
 the same package boundaries; dispatch it manually when an explicit full web, Swift, and Compose
 qualification run is required.
 
+CI runs repository lint, workflow contracts, and dependency security before expensive builds.
+Release canaries also check version, API, and coordinated release contracts in that preflight.
+Failures stop downstream jobs; browser shards cancel their sibling on failure and stop at the
+first failed test. All accessibility tests remain covered across two shards. Packed npm, browser,
+Compose, and packed React Native Android checks run in separate lanes after preflight.
+Quality's pinned pnpm setup action restores Turbo task outputs, while Java setup caches Gradle
+dependencies. Cache hits accelerate work but never replace the required checks or release approval.
+Run `pnpm run ci:preflight` locally for the same early feedback; `pnpm run validate` remains the
+complete release gate.
+
+Dependency age exceptions must identify the exact reviewed package version. Use a temporary exact-version exception for an approved security fix that cannot wait for
+the normal 24-hour hold, then remove it once that hold expires. The
+`http-cache-semantics@4.3.0` exception was retired after 2026-10-05 02:56:06 UTC; its fixed
+version remains in the lockfile. Keep the age policy for other dependencies.
+
+
 ## Release Notes
 
 Add a changeset when a package consumer can observe the change: new components, changed props,

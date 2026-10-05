@@ -253,3 +253,20 @@ test('hosted MCP deployment changes select protocol validation without native pl
     assert.equal(classification.android, false, path)
   }
 })
+
+
+test('browser setup action changes select browser CI and canaries', () => {
+  const paths = ['.github/actions/setup-playwright/action.yml']
+
+  assert.equal(classifyCiPaths(paths).playwright, true)
+
+  assert.equal(classifyCanaryPaths(paths).browser, true)
+
+  assert.equal(classifyCanaryPaths(paths).web, true)
+
+  assert.equal(classifyCanaryPaths(paths).compose, false)
+})
+
+test('canary scheduling changes exercise browser shards', () => {
+  assert.equal(classifyCanaryPaths(['.github/workflows/release-canary.yml']).browser, true)
+})
