@@ -152,6 +152,10 @@ LumenButton(
 translation dictionaries, and persistence remain application-owned; changing the SwiftUI locale
 environment or application copy state updates mounted views normally.
 
+Selection controls also use native localization keys for their accessibility state values.
+Translate `Checked` and `Not checked` for Checkbox, and `Selected` and `Not selected` for
+RadioGroup, SegmentedControl, and Tabs in the consuming application's string catalog.
+
 Rich native form composition remains controlled by the application:
 
 ```swift
@@ -619,6 +623,9 @@ Loading or search failure hides stale results; `errorMessage` is form validation
 `resultsErrorMessage` and `onRetry` describe search recovery. Read-only and `.disabled(true)` states
 close the sheet. Localize all action/result labels and count/removal formatters.
 `LumenSearchField` also accepts `clearLabel` to localize its clear action.
+
+Removal actions are sorted by their selected string values for deterministic presentation.
+The `Set<String>` binding represents membership and does not preserve selection chronology.
 
 ```swift
 LumenMultiSelect("Teams", values: $teams, query: $query, options: matchingTeams,
