@@ -7194,7 +7194,7 @@ export const Stepper = ({
 
 export interface FileUploadProps extends Omit<
   ComponentPropsWithRef<'input'>,
-  'type' | 'size'
+  'type' | 'size' | 'value' | 'defaultValue'
 > {
   hint?: ReactNode
   inputClassName?: string
@@ -7271,6 +7271,8 @@ export const FileUpload = ({
         }}
         type="file"
         {...props}
+        defaultValue={undefined}
+        value={undefined}
       />
       <svg
         aria-hidden="true"

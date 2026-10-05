@@ -10,6 +10,25 @@ import {
 } from './chart-models.js'
 import { createLumenHeatmapGeometry, normalizeLumenHeatmapData } from './charts.js'
 
+test.each([
+  null,
+  {},
+  1,
+  [null],
+  [undefined],
+  new Array<unknown>(1),
+  [{ id: 'a', label: 'A', data: [null] }],
+  [{ id: 'a', label: 'A', data: new Array<unknown>(1) }],
+  [{ id: 'a', label: 'A', data: [{ x: 'A', y: '1' }] }],
+  [{ id: 'a', label: 'A', data: [{ x: 'A', y: Infinity }] }],
+  [{ id: 'a', label: 'A', data: [{ x: 'A', y: 1, label: null }] }],
+  [{ id: 'a', label: 'A', data: [{ x: 'A', y: 1 }], tone: 'invalid' }]
+])('line chart models fail closed before reading malformed decoded series: %j', input => {
+  const model: unknown = Reflect.apply(createLumenLineChartModel, undefined, [input])
+
+  expect(model).toMatchObject({ categories: [], series: [], geometries: [] })
+})
+
 test.each([null,
   1,
   'annotation',

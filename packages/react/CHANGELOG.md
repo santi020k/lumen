@@ -2,6 +2,8 @@
 
 ## 4.0.0
 
+- Preserve caret navigation within nested editable popup content, and keep FileUpload values uncontrolled for typed and decoded consumers.
+
 ### Patch Changes
 
 - Verify that fallback DataTable row identities retain expanded details, local edits, and disclosure accessibility references across client sorting.

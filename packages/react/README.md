@@ -807,6 +807,7 @@ The four static structural parts are also exported from `@santi020k/lumen-react/
 ```
 
 `FileUpload selectedFilesLabel` accepts localized text containing `{count}`.
+FileUpload keeps its native file input uncontrolled: `value` and `defaultValue` are excluded from its props and ignored in decoded JavaScript input.
 Reset feedback follows the current native form owner, including replaced external forms.
 Accepted native form resets clear selected-file feedback; cancelled resets preserve it.
 

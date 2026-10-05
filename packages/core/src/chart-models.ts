@@ -10,6 +10,7 @@ import {
   getLumenChartNumericX,
   getLumenChartTicks,
   type LumenChartAnnotation,
+  type LumenChartDatum,
   type LumenChartDomain,
   type LumenChartScaleType,
   type LumenChartSeries,
@@ -65,6 +66,29 @@ const resolveDomain = (automatic: LumenChartDomain, requested?: Partial<LumenCha
   return min < max ? { max, min } : automatic
 }
 
+const isOptionalChartText = (value: unknown): boolean => value === undefined || typeof value === 'string'
+const isNullableChartNumber = (value: unknown): boolean => value === null || (typeof value === 'number' && Number.isFinite(value))
+
+const isLineDatum = (value: unknown): value is LumenChartDatum => (
+  isAnnotationRecord(value) && isAnnotationValue(value.x) && isNullableChartNumber(value.y) &&
+  ['id', 'label', 'toneLabel', 'xLabel'].every(key => isOptionalChartText(value[key])) &&
+  isAnnotationTone(value.tone) && (value.size === undefined || isNullableChartNumber(value.size))
+)
+
+const isLineSeries = (value: unknown): value is LumenChartSeries => (
+  isAnnotationRecord(value) && typeof value.id === 'string' && typeof value.label === 'string' &&
+  Array.isArray(value.data) && Array.from(value.data).every((datum: unknown) => isLineDatum(datum)) &&
+  isAnnotationTone(value.tone) && (value.dash === undefined || ['dashed', 'dotted', 'solid'].some(dash => dash === value.dash))
+)
+
+const normalizeLineSeries = (input: unknown): readonly LumenChartSeries[] => {
+  if (!Array.isArray(input)) return []
+
+  const rows: unknown[] = Array.from(input)
+
+  return rows.every(isLineSeries) ? rows : []
+}
+
 /** Preserves category identity; continuous axes align every series against the same domain. */
 export const createLumenLineChartModel = (
   input: readonly LumenChartSeries[],
@@ -74,11 +98,12 @@ export const createLumenLineChartModel = (
   const width = chartSize(options.width, 640)
   const height = chartSize(options.height, 240)
   const padding = 44
-  const categories = getLumenChartCategories(input).filter(value => xScale === 'categorical' || getLumenChartNumericX(value, xScale) !== null)
+  const validInput = normalizeLineSeries(input)
+  const categories = getLumenChartCategories(validInput).filter(value => xScale === 'categorical' || getLumenChartNumericX(value, xScale) !== null)
 
   if (xScale !== 'categorical') categories.sort((a, b) => (getLumenChartNumericX(a, xScale) ?? 0) - (getLumenChartNumericX(b, xScale) ?? 0))
 
-  const series = input.map(item => alignLumenChartSeries(item, categories))
+  const series = validInput.map(item => alignLumenChartSeries(item, categories))
 
   const automaticDomain = getLumenChartDomain([
     ...series.flatMap(item => item.data.map(datum => datum.y)), options.referenceValue ?? null
