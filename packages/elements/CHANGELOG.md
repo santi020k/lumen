@@ -8,6 +8,8 @@
 
 ### Patch Changes
 
+- Reject invalid supplied histogram labels and waterfall tones instead of discarding malformed chart fields.
+
 - Preserve iframe calendar focus, newest-only toast dismissal, explicit table record identities, legacy read-only phone country submission, and valid decoded annotation axes.
 
 - Validate decoded chart annotations, restore chart legend inspection state on teardown, refresh external image-comparison reset values, restore iframe dialog focus, and preserve uncontrolled filter disclosure state.

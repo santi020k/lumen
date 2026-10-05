@@ -2,6 +2,8 @@
 
 ## 4.0.0
 
+- Preserve source edits made during migration ledger writes, clear unapplied fingerprints, and allow a safe retry.
+
 - Map Compose Material surface containers and navigation selection colors to Lumen semantic tokens, removing fallback purple from adaptive bottom bars and rails.
 
 - Keep sparkline endpoints circular and line strokes uniform when a chart stretches to fit a wide or shallow container.
