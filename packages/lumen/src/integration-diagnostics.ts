@@ -625,7 +625,9 @@ const skipRuntimeQuotedText = (source: string, start: number): number => {
   return source.length
 }
 
-const skipRuntimeExpressionTrivia = (source: string, start: number): number => {
+const skipRuntimeExpressionTrivia = (source: string, start: number, depth: number): number => {
+  if (depth === 0) return start
+
   if (/['"`]/u.test(source[start] ?? '')) return skipRuntimeQuotedText(source, start)
 
   if (source.startsWith('/*', start)) {
@@ -661,15 +663,25 @@ const getRuntimeExpressionDepth = (character: string | undefined, depth: number)
   return character === '}' ? Math.max(0, depth - 1) : depth
 }
 
+const skipRuntimeMarkupTrivia = (source: string, start: number): number => {
+  if (source.startsWith('<!--', start)) {
+    const end = source.indexOf('-->', start + 4)
+
+    return end < 0 ? source.length : end + 3
+  }
+
+  return /[A-Za-z_$/]/u.test(source[start + 1] ?? '') ? start : start + 1
+}
+
 const countRuntimeMounts = (entry: SourceEntry): number => {
   const names = getRuntimeBindingNames(entry)
   let count = 0
   let depth = 0
   let start = getMarkupStart(entry.source, entry.file)
-  const lowerSource = entry.source.toLowerCase()
+  const lowerSource = entry.source.replace(/[A-Z]/gu, character => character.toLowerCase())
 
   while (start < entry.source.length) {
-    const skipped = depth > 0 ? skipRuntimeExpressionTrivia(entry.source, start) : start
+    const skipped = skipRuntimeExpressionTrivia(entry.source, start, depth)
 
     if (skipped !== start) {
       start = skipped
@@ -687,12 +699,10 @@ const countRuntimeMounts = (entry: SourceEntry): number => {
       continue
     }
 
-    if (entry.source.startsWith('<!--', start)) {
-      const commentEnd = entry.source.indexOf('-->', start + 4)
+    const markupStart = skipRuntimeMarkupTrivia(entry.source, start)
 
-      if (commentEnd < 0) break
-
-      start = commentEnd + 3
+    if (markupStart !== start) {
+      start = markupStart
 
       continue
     }
@@ -702,7 +712,7 @@ const countRuntimeMounts = (entry: SourceEntry): number => {
 
     if (names.has(name) && runtimeTagDelimiter.test(entry.source[end] ?? '')) count += 1
 
-    start = skipRuntimeRawText(lowerSource, name.toLowerCase(), findMarkupTagEnd(entry.source, end) + 1)
+    start = skipRuntimeRawText(lowerSource, name, findMarkupTagEnd(entry.source, end) + 1)
   }
 
   return count

@@ -128,6 +128,29 @@ describe('Lumen integration diagnostics', () => {
     }
   })
 
+  test.each([
+    ['Runtime', `<script>const text = "${'\u0130'.repeat(20)}";</script><Runtime />`, true],
+    ['Runtime', '{1 < 2 && <Runtime />}', true],
+    ['Script', '<Script /><Script />', false],
+    ['Style', '<Style /><Style />', false]
+  ])('preserves real mounts with %s and %s', async (local, markup, healthy) => {
+    const root = await mkdtemp(join(tmpdir(), 'lumen-doctor-runtime-boundary-'))
+
+    try {
+      await mkdir(join(root, 'src'), { recursive: true })
+      await writeFile(join(root, 'src', 'global.css'), '@import "@santi020k/lumen-astro/styles.css";\n')
+      await writeFile(join(root, 'src', 'page.astro'), `---\nimport { Dialog } from '@santi020k/lumen-astro'\nimport ${local} from '@santi020k/lumen-astro/runtime'\n---\n<Dialog />${markup}`)
+      const report = await inspectLumenIntegration(root)
+
+      expect(report.healthy).toBe(healthy)
+      expect(report.findings).not.toContainEqual(expect.objectContaining({ rule: 'astro-runtime-missing' }))
+
+      expect(report.findings.some(item => item.rule === 'astro-runtime-duplicate')).toBe(!healthy)
+    } finally {
+      await rm(root, { force: true, recursive: true })
+    }
+  })
+
   test('detects aliased runtime mounts shared between a layout and a route', async () => {
     const root = await mkdtemp(join(tmpdir(), 'lumen-doctor-alias-layout-'))
 
