@@ -22,11 +22,22 @@ private enum TimelineRenderError: Error { case image, context, color }
         context.draw(image, in: CGRect(x: 0, y: 0, width: image.width, height: image.height))
     }
     let rgb = [target.redComponent, target.greenComponent, target.blueComponent].map { Int(($0 * 255).rounded()) }
-    return stride(from: 0, to: pixels.count, by: 4).filter { offset in
+    var matchingPixels = 0
+    for offset in stride(from: 0, to: pixels.count, by: 4) {
         // The marker rail is the leftmost 20 logical points; text cannot contribute matches.
-        (offset / 4) % image.width < 40 && pixels[offset + 3] > 240 &&
-            (0..<3).allSatisfy { abs(Int(pixels[offset + $0]) - rgb[$0]) <= 3 }
-    }.count
+        let column = (offset / 4) % image.width
+        guard column < 40, pixels[offset + 3] > 240 else { continue }
+        var matchesColor = true
+        for channel in 0..<3 {
+            let difference = abs(Int(pixels[offset + channel]) - rgb[channel])
+            if difference > 3 {
+                matchesColor = false
+                break
+            }
+        }
+        if matchesColor { matchingPixels += 1 }
+    }
+    return matchingPixels
 }
 @Test @MainActor func timelineTerminalConnectorMatchesReferenceInBothThemes() throws {
     for theme in [LumenTheme.light, LumenTheme.dark] {

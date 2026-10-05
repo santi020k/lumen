@@ -180,9 +180,9 @@ tags, the script derives `MARKETING_VERSION` from the tag and uses Xcode Cloud's
 `CI_BUILD_NUMBER` plus the documented one-build migration offset for `CURRENT_PROJECT_VERSION`.
 Before changing versions, it verifies a supported stable Xcode 26/iOS 26 or the verified
 Xcode 27 (27A266a)/iOS 27.0 toolchain and a
-non-beta macOS image. Other Xcode Cloud workflows retain the committed development versions. GitHub
-holds no Apple certificates, provisioning profiles, or App Store Connect keys; the `app-store`
-GitHub environment is only an approval boundary for creating the tag.
+non-beta macOS image. Other private Xcode Cloud workflows retain the committed development versions.
+For that private-repository flow, GitHub holds no Apple certificates, provisioning profiles, or
+App Store Connect keys; the `app-store` environment is an approval boundary for creating the tag.
 
 Public open-source repositories run Apple validation and delivery on standard GitHub-hosted
 `macos-26` runners; private repositories retain Xcode Cloud. Standard runners are free for public
