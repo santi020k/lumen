@@ -3,6 +3,7 @@ import { lstat, mkdir, readFile, writeFile } from 'node:fs/promises'
 import { relative, resolve } from 'node:path'
 
 import { formatConsumerRollout, inspectLumenConsumer } from './consumer-rollout.js'
+import { formatLumenConsumerUpgradeAudit, inspectLumenConsumerUpgrade, type LumenConsumerUpgradeAudit } from './consumer-upgrade-audit.js'
 import { discoverSourceFiles } from './v2-migration.js'
 import { migrateLumenV4 } from './v4-migration.js'
 import {
@@ -31,6 +32,7 @@ export interface LumenVersionMigrationOptions extends LumenMigrationDependencyOp
   version: LumenMigrationVersion
 }
 export interface LumenVersionMigrationReport extends Omit<LumenVersionSourceMigration, 'source'> {
+  consumerAudit?: LumenConsumerUpgradeAudit
   applied: boolean
   changedFiles: string[]
   dependencies?: Awaited<ReturnType<typeof applyLumenVersionMigrationDependencies>>
@@ -146,6 +148,18 @@ const refreshDependencyReport = async (report: LumenVersionMigrationReport): Pro
   }
 }
 
+const optionalConsumerAudit = async (root: string, version: string): Promise<LumenConsumerUpgradeAudit | undefined> => {
+  try {
+    await readFile(resolve(root, 'package.json'), 'utf8')
+  } catch (error) {
+    if (error instanceof Error && 'code' in error && error.code === 'ENOENT') return undefined
+
+    throw error
+  }
+
+  return inspectLumenConsumerUpgrade(root, version)
+}
+
 export const migrateLumenVersion = async (
   options: LumenVersionMigrationOptions
 ): Promise<LumenVersionMigrationReport> => {
@@ -186,6 +200,10 @@ export const migrateLumenVersion = async (
 
   await refreshDependencyReport(report)
 
+  const consumerAudit = await optionalConsumerAudit(root, report.dependencyVersion)
+
+  if (consumerAudit) report.consumerAudit = consumerAudit
+
   return report
 }
 
@@ -195,6 +213,7 @@ export const formatLumenVersionMigration = (report: LumenVersionMigrationReport)
   ...report.changes.map(item => `${item.file}:${item.line}:${item.column} [${item.kind}] ${item.message}`),
   ...report.manualReview.map(item => `${item.file}:${item.line}:${item.column} [manual review] ${item.message}`),
   ...(report.dependencies ? [formatConsumerRollout(report.dependencies)] : []),
+  ...(report.consumerAudit ? [formatLumenConsumerUpgradeAudit(report.consumerAudit)] : []),
   report.version === 'v3' ?
     'V3 requires coordinated package versions and a native rebuild, with no web source rewrites. Review exhaustive Swift LumenIconName switches for added cases.' :
     'Review product CSS, pending dialogs, chart identity, native initializers, exhaustive Swift icon switches and embedded MCP SDK v2 integrations. Source changes do not qualify the application for release.',

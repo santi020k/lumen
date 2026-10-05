@@ -3,3 +3,6 @@
  * New applications should import "@santi020k/lumen/styles.css".
  */
 @import "@santi020k/lumen/styles.css";
+
+/* Exact amount controls keep their visible input inside the available width. */
+[data-ui-amount-field], lumen-amount-field { display: inline-block; min-width: 0; max-width: 100%; }

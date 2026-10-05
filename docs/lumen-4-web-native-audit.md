@@ -119,6 +119,7 @@ or store update is implied by this audit.
 | `MessageScroller` | Platform / host | Native scrolling/lazy-list containers with stable record identities. |
 | `NativeSelect` | Counterpart | `picker` |
 | `NavigationMenu` | Composition | `navigation-bar` plus host slots/state; no matching standalone export. |
+| `AmountField` | Platform / host | Native text fields retain application-owned exact decimal or minor-unit draft contracts. The web formatter does not establish native parity. |
 | `NumberField` | Counterpart | `number-field` |
 | `Pagination` | Platform / host | Application paging/request state with named LumenButton actions. |
 | `PasswordField` | Counterpart | `password-field` |

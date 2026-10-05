@@ -561,6 +561,7 @@ const toReactExample = example => example
   .replaceAll(/style="([^"]*)"/g, (_, value) => reactStyleValue(value))
 
 const reactExampleOverrides = {
+  AmountField: '<AmountField name="amount" locale="es-CO" defaultValue="1234.50" aria-label="Amount COP" />',
   AttachmentPreview: '<AttachmentPreview src="/logo.svg" contentType="image/svg+xml" alt="Lumen logo" caption="Logo attachment" actions={<Button type="button">Replace</Button>} />',
   AnimatedPortrait:
     '<AnimatedPortrait><img src="/portrait.jpg" alt="Portrait of Ana" /></AnimatedPortrait>',
@@ -621,6 +622,7 @@ const reactHookByComponent = {
 }
 
 const elementsExampleOverrides = {
+  AmountField: '<lumen-amount-field name="amount" locale="es-CO" default-value="1234.50" aria-label="Amount COP"></lumen-amount-field>',
   ChangeSummary: `<lumen-change-summary id="review" label="Review changes"></lumen-change-summary>
 <script>
   import { defineLumenChangeSummary, LumenChangeSummaryElement } from '@santi020k/lumen-elements/components/dashboard'
@@ -901,6 +903,7 @@ const loadWorkspaceFiles = async p => ({
   nativeDocsSource: await readIfExists(p('apps/docs/src/data/native-components.ts')),
   elementsSource: [
     await readIfExists(p('packages/elements/src/define.ts')),
+    await readIfExists(p('packages/elements/src/consumer-behaviors.ts')),
     await readIfExists(p('packages/elements/src/components/foundations.ts')),
     await readIfExists(p('packages/elements/src/components/badge.ts')),
     await readIfExists(p('packages/elements/src/components/button.ts')),
@@ -912,6 +915,7 @@ const loadWorkspaceFiles = async p => ({
   ].join('\n'),
   reactSource: [
     await readIfExists(p('packages/react/src/attachments.tsx')),
+    await readIfExists(p('packages/react/src/amount-field.tsx')),
     await readIfExists(p('packages/react/src/components.tsx')),
     await readIfExists(p('packages/react/src/interval-charts.tsx')),
     await readIfExists(p('packages/react/src/bullet-chart.tsx')),

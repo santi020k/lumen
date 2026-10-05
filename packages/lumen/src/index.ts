@@ -201,6 +201,7 @@ export const lumen = {
   scope: '@santi020k'
 } as const
 
+export { formatLumenConsumerUpgradeAudit, inspectLumenConsumerUpgrade, type LumenConsumerUpgradeAudit } from './consumer-upgrade-audit.js'
 export {
   createLumenSetup,
   formatLumenDiagnostics,

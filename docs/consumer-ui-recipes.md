@@ -140,6 +140,68 @@ Keep crop geometry, undo history, photo rendering, draft ownership, and export c
 application. Do not copy fixed preview sizes between products. Verify minimum-height windows,
 landscape, split view, large text, and long localized action labels in the consuming editor.
 
+## Executable consumer workflows
+
+The [consumer workflows preview](https://lumen.santi020k.com/docs/web/consumer-workflows) uses
+synthetic records and editable forms. Install the React sources with:
+
+```bash
+lumen add validated-form --target react
+lumen add operational-records --target react
+```
+
+`ValidatedFormRecipe` combines native validity with the host's `validate` callback. Return field
+errors with `controlId` matching the visible control. Submission errors retain drafts; duplicate
+submit events are guarded while the request is pending. The host owns requests, server validation,
+authorization, cancellation and idempotency. The recipe focuses the first invalid control, links
+the summary to controls, refreshes errors after an attempted submission, and clears feedback on
+reset. All feedback strings are supplied by the consumer. Browser-native validation messages use
+the browser's language; use host validation when every message needs an application-selected locale.
+
+`OperationalRecordsRecipe` composes DataTable records layouts, expansion, anchored DropdownMenu
+actions and Dialog. Supply stable row IDs, localized labels and controlled manual sorting. The
+application owns server pagination and the resulting row order. Test menu-to-dialog focus inside
+the real scrolling boundary before replacing a consumer's custom menu.
+Sorting actions live outside the table so the records layout's visually hidden header contains no
+hidden interactive controls on narrow screens.
+
+### Exact formatted amount drafts
+
+```tsx
+<AmountField id="amount" name="amount" locale="es-CO" defaultValue="1234.50"
+  fractionDigits={2} invalidMessage="Escribe un monto completo." required />
+```
+
+Use public Field/Label/FieldError around the field. `value`, `defaultValue` and `onValueChange` use
+ASCII decimal strings. Display uses the requested locale; hidden native submission uses a complete
+decimal string without grouping. Empty and trailing-decimal drafts have no complete value.
+`ui:amount-change` carries `{ draft, value }`, where `value` is undefined until complete. No
+floating-point conversion or rounding occurs. Fraction precision is explicit (0–20); the field
+rejects unsupported characters, malformed paste grouping and excess precision. Editing can
+temporarily disturb existing group separators. Rejected input preserves the previous value and
+sets native custom validity until the user edits a valid value. Inputs are bounded to 1024
+characters. Native required, disabled, read-only and form reset behavior remain available.
+
+Astro requires UIPrimitives. Elements uses `<lumen-amount-field name="amount" locale="es-CO"
+default-value="1234.50" aria-label="Amount COP"></lumen-amount-field>`. A host ID `amount` gives the
+visible input ID `amount-input` for labels. React Hook Form uses `LumenAmountFieldController`,
+`getLumenManagedFieldState` and host rules; do not register the formatted visible input as an amount.
+
+Currencies, units, limits, rounding policy and conversion to minor units belong in the application.
+KinJar's explicit minor-unit fields should retain that contract rather than adopting decimal major
+units implicitly. The earlier whole-unit money recipe remains useful for that separate contract.
+
+### Reader-owned activity feeds
+
+MessageScroller remains passive by default. `autoScroll` (Elements: `auto-scroll`) enables following
+when within `scrollThreshold` pixels of the end (default 32). Give stable keyed rows
+`data-ui-message-item` for anchor preservation when prepending history. A public Button with
+`data-ui-message-jump` jumps to the end and hides there. `ui:message-scroll-state` reports `{ atEnd }`.
+The host owns message IDs, fetching, unread counts and concise status announcements. Do not put an
+entire token-streaming feed in an aria-live region. The controller disables browser scroll anchoring while active and restores the previous style on
+disposal. Automatic following and anchor correction use instant scrolling, restoring the host's
+previous scroll behavior when disposed.
+
 ## Asynchronous actions and recovery
 
 Use controlled state and the existing Button, Alert/ErrorState, Progress, and status surfaces:

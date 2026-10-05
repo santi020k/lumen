@@ -3777,6 +3777,22 @@
       "pathname": "/docs/components/alert",
       "title": "Alert - Lumen UI"
     },
+    "/docs/components/amount-field": {
+      "alt": "AmountField — Web components social preview from Lumen UI",
+      "description": "AmountField: Formats localized amounts while preserving exact decimal drafts. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--amount-field.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--amount-field.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/amount-field",
+      "title": "AmountField - Lumen UI"
+    },
     "/docs/components/anchor": {
       "alt": "Anchor — Web components social preview from Lumen UI",
       "description": "Anchor: Links to sections within a long page and exposes the page’s local structure. Usage examples for Astro, React, and Elements.",
@@ -8865,6 +8881,22 @@
       "pathname": "/docs/theme-playground",
       "title": "Theme playground - Lumen UI"
     },
+    "/docs/web/consumer-workflows": {
+      "alt": "Consumer workflows — Documentation social preview from Lumen UI",
+      "description": "Compose editable forms, exact amount inputs, responsive record actions and activity feeds using public Lumen components.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--web--consumer-workflows.webp",
+          "primary": true,
+          "url": "/og/pages/docs--web--consumer-workflows.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/web/consumer-workflows",
+      "title": "Consumer workflows — Lumen UI"
+    },
     "/docs/web/data-visualization/accessibility": {
       "alt": "Accessible chart design — Documentation social preview from Lumen UI",
       "description": "Make chart labels, exact values, keyboard interaction, and themes readable for everyone.",
@@ -9075,7 +9107,7 @@
     },
     "/": {
       "alt": "Lumen UI — Accessible Components for AI Coding Agents — Lumen UI social preview from Lumen UI",
-      "description": "Build with AI using 182 accessible primitives, agent skills, and focused MCP context. One UI library for web and native apps.",
+      "description": "Build with AI using 183 accessible primitives, agent skills, and focused MCP context. One UI library for web and native apps.",
       "images": [
         {
           "format": "webp",

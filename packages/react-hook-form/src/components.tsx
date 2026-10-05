@@ -8,17 +8,45 @@ import type {
 import { useController } from 'react-hook-form'
 
 import type {
+  AmountFieldProps,
   DatePickerProps,
   InputOTPProps,
   ListBoxProps,
   SelectProps
 } from '@santi020k/lumen-react'
 import {
+  AmountField,
   DatePicker,
   InputOTP,
   ListBox,
   Select
 } from '@santi020k/lumen-react'
+
+export type LumenAmountFieldControllerProps<
+  Values extends FieldValues, Name extends FieldPath<Values>
+> = UseControllerProps<Values, Name> & Omit<
+  AmountFieldProps, 'defaultValue' | 'disabled' | 'name' | 'onValueChange' | 'value' | 'ref'
+>
+
+export const LumenAmountFieldController = <Values extends FieldValues, Name extends FieldPath<Values>>({
+  control, defaultValue, disabled, name, rules, shouldUnregister, ...props
+}: LumenAmountFieldControllerProps<Values, Name>) => {
+  const { field } = useController({
+    name,
+    ...(control ? { control } : {}),
+    ...(defaultValue === undefined ? {} : { defaultValue }),
+    ...(disabled === undefined ? {} : { disabled }),
+    ...(rules ? { rules } : {}),
+    ...(shouldUnregister === undefined ? {} : { shouldUnregister })
+  })
+
+  const {
+    ref: fieldRef, disabled: fieldDisabled, name: fieldName,
+    onBlur: fieldOnBlur, onChange: fieldOnChange, value: fieldValue
+  } = field
+
+  return <AmountField {...props} ref={fieldRef} disabled={fieldDisabled} name={fieldName} onBlur={fieldOnBlur} onValueChange={fieldOnChange} value={typeof fieldValue === 'string' ? fieldValue : ''} />
+}
 
 type ControllerOptions<
   Values extends FieldValues,

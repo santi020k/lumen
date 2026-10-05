@@ -156,6 +156,14 @@ const recipeItems: DocsSearchItem[] = [
     category: 'Forms',
     description:
       'Build accessible native-first forms with shared fields, errors, summaries, and submission states.',
+    href: '/docs/web/consumer-workflows',
+    keywords: normalizeKeywords('consumer workflows exact amounts formatted money validation server errors records row actions dialog focus activity feed'),
+    title: 'Consumer workflows',
+    type: 'Recipe'
+  },
+  {
+    category: 'Forms',
+    description: 'Build accessible native-first forms with shared fields, errors, summaries, and submission states.',
     href: '/docs/forms',
     keywords: normalizeKeywords(
       'forms field label error summary validation submission native FormData accessibility'

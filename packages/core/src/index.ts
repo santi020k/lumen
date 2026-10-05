@@ -1,3 +1,4 @@
+export { createLumenAmountFieldController, formatLumenAmountDraft, getLumenAmountValue, type LumenAmountChangeDetail, type LumenAmountFieldController, type LumenAmountOptions, parseLumenAmountDraft } from './amount-field.js'
 export {
   createLumenAttachmentPreviewController,
   type LumenAttachmentPreviewController,
@@ -235,6 +236,7 @@ export {
   type LumenLocaleOption,
   normalizeLumenLocales
 } from './language.js'
+export { createLumenMessageScrollerController, type LumenMessageScrollerController, type LumenMessageScrollerOptions, type LumenMessageScrollState } from './message-scroller.js'
 export {
   isLumenDecimalInBounds,
   isLumenTimeInBounds,
@@ -344,6 +346,7 @@ export {
   tuneThemeContrast
 } from './theme.js'
 export { createThemePreset, type LumenSurfaceMaterial, type LumenThemePreset, lumenThemePresetDefinitions, type LumenThemePresetOptions } from './theme.js'
+export { auditLumenTheme, inspectLumenTheme, type LumenThemeAudit, type LumenThemeAuditFinding } from './theme-audit.js'
 export { coerceThemePreset } from './theme-builder.js'
 export {
   coerceThemeBuilderExportFormat,

@@ -205,6 +205,28 @@ root, removes obsolete Lumen release-age exceptions, verifies the unified resolv
 runs available framework checks, builds, and browser scripts. It refuses dirty repositories,
 missing exact pnpm declarations, and unsupported Node runtimes unless `--allow-dirty` is explicit.
 
+## Consumer upgrade and theme audits
+
+```bash
+lumen audit-consumer ../my-app --json
+lumen audit-theme ./semantic-theme-scopes.json --json
+lumen add validated-form --target react
+lumen add operational-records --target react
+```
+
+The consumer audit reports declared and resolved versions, patch configuration and `ui-*` CSS
+review signals without rewriting files. Selectors are advisory customization review signals.
+Version migration previews include the same audit when the consumer has a manifest.
+
+The theme file maps scope names to complete semantic-token objects, such as
+`{ "light": { "canvas": "0 0% 100%", "ink": "0 0% 0%", ... } }`. Supply every semantic color
+mapping with resolved opaque HSL channels. Missing or unresolved values and failing normal-text
+contrast produce findings and a failing theme-audit exit status. Inspect computed mappings with
+`inspectLumenTheme` from core for CSS variable resolution in actual light, dark and nested scopes.
+
+See [consumer workflows](../../docs/consumer-ui-recipes.md#executable-consumer-workflows) for
+the installable React form and operational-record recipes.
+
 ## Resources
 
 | Guide | What you will find |

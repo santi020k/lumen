@@ -558,6 +558,20 @@ The existing root `Icon name="search"` remains supported for runtime-selected na
 `Table layout="records"` opts into the responsive record recipe; its semantic child markup and
 shared mobile labels are documented in the consumer recipe linked above.
 
+## Exact amount fields
+
+`AmountField` accepts editable ASCII decimal strings, formats a requested locale, and submits a
+complete decimal string through its named hidden input. Use `defaultValue` for an uncontrolled
+field or `value` with `onValueChange` for application-owned drafts. It preserves precision and
+never rounds through a JavaScript number. Currency rules and limits remain application-owned.
+
+```tsx
+<AmountField name="amount" locale="es-CO" defaultValue="1234.50" aria-label="Amount COP" />
+```
+
+See [consumer workflows](../../docs/consumer-ui-recipes.md#executable-consumer-workflows) for
+validation, reset, operational-record actions and opt-in MessageScroller following.
+
 ## Resources
 
 | Guide | What you will find |

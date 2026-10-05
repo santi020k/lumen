@@ -147,6 +147,21 @@ Read errors from `form.formState.errors` and pass them through `getLumenManagedF
 the adapter example above. React Hook Form remains the only validation owner; do not also mount
 Lumen's `useFormValidation` on the same form.
 
+## Exact amount drafts
+
+`LumenAmountFieldController` keeps React Hook Form's value as an ASCII decimal string while the
+visible field formats its locale. Use `getLumenManagedFieldState` to link host errors and supply
+host rules for required values, complete drafts and domain limits. Do not register the formatted
+visible input separately. React Hook Form remains the validation owner.
+
+```tsx
+<LumenAmountFieldController control={form.control} name="amount" locale="es-CO"
+  aria-label="Amount COP" rules={{ required: 'Enter an amount' }} />
+```
+
+Initialize `amount` to a string such as `"1234.50"`; `form.reset()` restores the managed draft.
+See [consumer workflows](../../docs/consumer-ui-recipes.md#executable-consumer-workflows).
+
 ## Resources
 
 | Guide | What you will find |

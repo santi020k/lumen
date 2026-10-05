@@ -34,8 +34,10 @@ import {
   normalizeLumenLocales,
   scrollLumenTabIntoView } from '@santi020k/lumen-core'
 
+import { initAmountFields } from './controllers/amount-field'
 import { initDataTableSorting } from './controllers/data-table'
 import { initImageComparisonControllers } from './controllers/image-comparison'
+import { initMessageFeeds } from './controllers/message-scroller'
 
 /* eslint-disable complexity */
 /* Stateful DOM handlers stay local so Astro consumers do not need a framework runtime. */
@@ -5477,6 +5479,10 @@ const initUiPrimitives = (scope: ParentNode = document): void => {
   initDatePickers(scope)
 
   initImageComparisonControllers(scope)
+
+  initAmountFields(scope)
+
+  initMessageFeeds(scope)
 
   initCodeRegions(scope)
 

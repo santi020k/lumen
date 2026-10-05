@@ -19,7 +19,7 @@ const [
   reactHooksSource,
   reactServerComponentsSource
 ] = await Promise.all([
-  readFile(new URL('../packages/elements/src/define.ts', import.meta.url), 'utf8'),
+  Promise.all(['define', 'consumer-behaviors'].map(name => readFile(new URL(`../packages/elements/src/${name}.ts`, import.meta.url), 'utf8'))).then(sources => sources.join('\n')),
   Promise.all([
     'badge',
     'button',
@@ -33,7 +33,7 @@ const [
     new URL(`../packages/elements/src/components/${name}.ts`, import.meta.url),
     'utf8'
   ))).then(sources => sources.join('\n')),
-  Promise.all(['attachments', 'bullet-chart', 'comparison-chart', 'combobox', 'components', 'data-table', 'expanded-charts', 'dashboard', 'change-summary', 'image-comparison', 'interval-charts', 'virtual-list'].map(name => readFile(
+  Promise.all(['amount-field', 'attachments', 'bullet-chart', 'comparison-chart', 'combobox', 'components', 'data-table', 'expanded-charts', 'dashboard', 'change-summary', 'image-comparison', 'interval-charts', 'virtual-list'].map(name => readFile(
     new URL(`../packages/react/src/${name}.tsx`, import.meta.url), 'utf8'
   ))).then(sources => sources.join('\n')),
   Promise.all(['hooks', 'rich-text-editor'].map(name => readFile(

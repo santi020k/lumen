@@ -151,6 +151,7 @@ import { bulletChartHtml, bulletNumberAttribute, parseBulletRanges } from './bul
 import { LumenDatumChartElement } from './chart-activation.js'
 import { chartAnnotationHtml, chartAxesHtml, chartCaptionHtml, chartDataTableHtml, chartHeaderHtml, chartInspectionHtml, chartLabelsFor, chartLegendHtml, chartNumberAttribute, escapeChartHtml, heatmapDataTableHtml, intervalChartHtml, parseChartAnnotations, parseHeatmapData, parseHistogramBins, parseRangeData, parseWaterfallData, rangeDataTableHtml, scatterDataTableHtml, scatterPlotHtml } from './chart-html.js'
 import { comparisonChartHtml, parseComparisonData } from './comparison-chart-html.js'
+import { LumenAmountFieldElement as AmountElement, MessageElement } from './consumer-behaviors.js'
 import {
   createLumenElementClass as createStandaloneLumenElementClass,
   LumenElement,
@@ -159,6 +160,7 @@ import {
 } from './element-base.js'
 import { boxPlotHtml, calendarHeatmapHtml, funnelChartHtml, parseBoxPlotData, parseCalendarHeatmapData, parseFunnelData } from './expanded-chart-html.js'
 
+export { LumenAmountFieldElement } from './consumer-behaviors.js'
 export { LumenElement } from './element-base.js'
 
 type ToastPlacement =
@@ -360,6 +362,7 @@ const elementConfigs = {
     defaults: { role: 'figure', 'data-ui-attachment-preview': '' },
     tagName: 'lumen-attachment-preview'
   },
+  AmountField: AmountElement.config,
   Autocomplete: {
     baseClassName: 'ui-input ui-autocomplete',
     defaults: { role: 'combobox', type: 'search' },
@@ -11889,6 +11892,7 @@ const createLumenBehaviorElementClass = (
 const behaviorElementClasses: Partial<
   Record<LumenComponentName, typeof LumenElement>
 > = {
+  MessageScroller: MessageElement,
   AlertDialog: LumenDialogBehaviorElement,
   AttachmentPreview: LumenAttachmentPreviewBehaviorElement,
   Anchor: LumenAnchorBehaviorElement,
@@ -11960,6 +11964,7 @@ export class LumenDialogElement extends LumenDialogBehaviorElement {
 const granularElementClasses: Partial<
   Record<LumenComponentName, LumenElementConstructor>
 > = {
+  AmountField: AmountElement,
   ChangeSummary: GranularLumenChangeSummaryElement,
   FilterBar: GranularLumenFilterBarElement,
   Badge: GranularLumenBadgeElement,
