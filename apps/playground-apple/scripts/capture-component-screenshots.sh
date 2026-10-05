@@ -57,17 +57,27 @@ for component in "${components[@]}"; do
   xcrun simctl io "${device_id}" screenshot "${output_dir}/${slug}.png"
 done
 
-if [[ " ${components[*]} " == *" Tour "* ]]; then
-  # The documentation baseline shows step one open after its trigger is revealed.
-  # Reproduce that interaction instead of comparing an unrelated closed launch state.
-  interaction_dir="$(mktemp -d "${derived_data}/tour-capture.XXXXXX")"
+for interaction in "Tour" "Kanban column"; do
+  if [[ " ${components[*]} " != *" ${interaction} "* ]]; then continue; fi
+  # These documentation baselines include the native XCTest scroll/interaction state.
+  # Reproduce it instead of comparing the default launch viewport.
+  if [[ "$interaction" == "Tour" ]]; then
+    test_method="testTourCaptureMatchesDocumentation"
+    attachment_prefix="tour-light-ready_"
+    interaction_slug="tour"
+  else
+    test_method="testKanbanColumnCaptureMatchesDocumentation"
+    attachment_prefix="kanban-column-light-ready_"
+    interaction_slug="kanban-column"
+  fi
+  interaction_dir="$(mktemp -d "${derived_data}/${interaction_slug}-capture.XXXXXX")"
   if [[ -n "${LUMEN_CAPTURE_PRODUCTS:-}" ]]; then
     test_run=("$LUMEN_CAPTURE_PRODUCTS"/*.xctestrun)
     xcodebuild -xctestrun "${test_run[0]}" \
       -destination "platform=iOS Simulator,id=${device_id}" \
       -resultBundlePath "${interaction_dir}/tour.xcresult" \
       -parallel-testing-enabled NO \
-      -only-testing:LumenApplePlaygroundUITests/CatalogParityInteractionTests/testTourCaptureMatchesDocumentation \
+      "-only-testing:LumenApplePlaygroundUITests/CatalogParityInteractionTests/${test_method}" \
       test-without-building
   else
     xcodebuild \
@@ -78,14 +88,14 @@ if [[ " ${components[*]} " == *" Tour "* ]]; then
       -derivedDataPath "${derived_data}" \
       -resultBundlePath "${interaction_dir}/tour.xcresult" \
       -parallel-testing-enabled NO \
-      -only-testing:LumenApplePlaygroundUITests/CatalogParityInteractionTests/testTourCaptureMatchesDocumentation \
+      "-only-testing:LumenApplePlaygroundUITests/CatalogParityInteractionTests/${test_method}" \
       CODE_SIGNING_ALLOWED=NO \
       test
   fi
   xcrun xcresulttool export attachments \
     --path "${interaction_dir}/tour.xcresult" \
     --output-path "${interaction_dir}/attachments"
-  /usr/bin/python3 - "${interaction_dir}/attachments" "${output_dir}/tour.png" <<'PY'
+  /usr/bin/python3 - "${interaction_dir}/attachments" "${output_dir}/${interaction_slug}.png" "$attachment_prefix" <<'PY'
 import json
 import shutil
 import sys
@@ -97,15 +107,15 @@ matches = [
     attachment
     for test in manifest
     for attachment in test["attachments"]
-    if attachment["suggestedHumanReadableName"].startswith("tour-light-ready_")
+    if attachment["suggestedHumanReadableName"].startswith(sys.argv[3])
 ]
 if len(matches) != 1:
-    raise SystemExit("Expected exactly one verified Tour step-one screenshot")
+    raise SystemExit("Expected exactly one verified native interaction screenshot")
 source = (root / matches[0]["exportedFileName"]).resolve()
 if source.parent != root or source.suffix != ".png" or not source.is_file():
-    raise SystemExit("Invalid exported Tour screenshot")
+    raise SystemExit("Invalid exported native interaction screenshot")
 shutil.copyfile(source, sys.argv[2])
 PY
-fi
+done
 
 printf 'Captured %s component screenshots in %s\n' "${#components[@]}" "${output_dir}"

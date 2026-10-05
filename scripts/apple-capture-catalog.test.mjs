@@ -36,8 +36,9 @@ if [[ "$1 $2 $3" == "xcresulttool export attachments" ]]; then
   if [[ "$LUMEN_CAPTURE_TEST_MISSING_ATTACHMENT" == "true" ]]; then
     printf '[]' > "$directory/manifest.json"
   else
-    printf '[{"attachments":[{"suggestedHumanReadableName":"tour-light-ready_0_fixture.png","exportedFileName":"tour-attachment.png"}]}]' > "$directory/manifest.json"
+    printf '[{"attachments":[{"suggestedHumanReadableName":"tour-light-ready_0_fixture.png","exportedFileName":"tour-attachment.png"},{"suggestedHumanReadableName":"kanban-column-light-ready_0_fixture.png","exportedFileName":"kanban-attachment.png"}]}]' > "$directory/manifest.json"
     printf 'verified tour' > "$directory/tour-attachment.png"
+    printf 'verified kanban' > "$directory/kanban-attachment.png"
   fi
 fi
 `, { mode: 0o755 })
@@ -67,7 +68,7 @@ fi
       if (missingAttachment) {
         assert.notEqual(result.status, 0)
 
-        assert.match(result.stderr, /Expected exactly one verified Tour/)
+        assert.match(result.stderr, /Expected exactly one verified native interaction screenshot/)
 
         return []
       }
@@ -84,6 +85,10 @@ fi
     assert.match(await readFile(buildLog, 'utf8'), /testTourCaptureMatchesDocumentation/)
 
     assert.equal(await readFile(join(output, 'tour.png'), 'utf8'), 'verified tour')
+
+    assert.match(await readFile(buildLog, 'utf8'), /testKanbanColumnCaptureMatchesDocumentation/)
+
+    assert.equal(await readFile(join(output, 'kanban-column.png'), 'utf8'), 'verified kanban')
 
     const manifest = JSON.parse(await readFile(join(repositoryRoot, 'apps/docs/src/data/native-component-captures.json'), 'utf8'))
 
@@ -111,6 +116,12 @@ fi
 
     await capture(['Tour'], true)
 
+    assert.deepEqual(await capture(['Kanban column']), ['Kanban column'])
+
+    assert.doesNotMatch(await readFile(buildLog, 'utf8'), /testTourCaptureMatchesDocumentation/)
+
+    await capture(['Kanban column'], true)
+
     const products = join(directory, 'products')
 
     await mkdir(join(products, 'Debug-iphonesimulator', 'LumenApplePlayground.app'), { recursive: true })
@@ -123,7 +134,7 @@ fi
 
     await writeFile(join(products, 'lumen-capture-build.json'), JSON.stringify({ revision, toolchain: '' }))
 
-    assert.deepEqual(await capture(['Tour'], false, products), ['Tour'])
+    assert.deepEqual(await capture(['Tour', 'Kanban column'], false, products), ['Tour', 'Kanban column'])
 
     const sharedBuildLog = await readFile(buildLog, 'utf8')
 
@@ -132,6 +143,8 @@ fi
     assert.doesNotMatch(sharedBuildLog, /-project|-scheme/)
 
     assert.equal(await readFile(join(output, 'tour.png'), 'utf8'), 'verified tour')
+
+    assert.equal(await readFile(join(output, 'kanban-column.png'), 'utf8'), 'verified kanban')
   } finally {
     await rm(directory, { recursive: true, force: true })
   }

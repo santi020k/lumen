@@ -123,6 +123,15 @@ final class CatalogParityInteractionTests: XCTestCase {
     }
 
     @MainActor
+    func testKanbanColumnCaptureMatchesDocumentation() {
+        let app = launch("Kanban column", dark: false)
+        let column = app.staticTexts["To do"].firstMatch
+        reveal(column, app: app)
+        capture(app, name: "kanban-column-light-ready")
+        app.terminate()
+    }
+
+    @MainActor
     func testTourCaptureMatchesDocumentation() {
         let app = launch("Tour", dark: false)
         let start = app.buttons["Start tour"]

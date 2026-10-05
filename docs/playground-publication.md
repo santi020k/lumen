@@ -196,7 +196,9 @@ required `Apple captures` check fails unless every group succeeds and the comple
 the original PNG comparison. Only that platform-neutral comparison runs on Linux. One macOS job builds the app and Tour test runner once with `build-for-testing`; capture groups
 consume that same-run artifact, verify its revision and Xcode version, and run the native Tour test
 with `test-without-building`. A tar archive preserves executable permissions and bundle links.
-Every group captures on macOS, keeping the six-second settle time and native Tour interaction.
+Every group captures on macOS, keeping the six-second settle time. Tour and Kanban Column replay
+their native XCTest interaction and scroll state before exporting a verified attachment, matching
+the documentation baselines without changing images or comparison tolerances.
 
 Shallow checkouts avoid downloading unrelated history; Swift compatibility fetches its immutable
 baseline tag explicitly. Dependency/browser caches and incremental library/playground Swift builds
