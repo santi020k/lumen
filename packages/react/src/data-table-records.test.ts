@@ -82,6 +82,39 @@ test('controlled expansion waits for the application and survives page refreshes
   expect(onExpandedRowIdsChange).toHaveBeenCalledTimes(1)
 })
 
+test('index-backed details and edits follow their original record through client sorting', async () => {
+  const anonymousRows = [{ name: 'Beta', count: 2 }, { name: 'Alpha', count: 10 }]
+
+  await render({
+    rows: anonymousRows,
+    renderDetails: row => {
+      const name = typeof row.name === 'string' ? row.name : ''
+
+      return createElement('label', {}, `Notes for ${name}`, createElement('input', { defaultValue: name }))
+    }
+  })
+  await click('[data-value="0"] button')
+  const disclosure = element('[data-value="0"] button')
+  const input = container.querySelector('input')
+
+  if (!input) throw new Error('Missing details editor')
+
+  input.value = 'Edited Beta'
+  await click('thead th:first-child button')
+  expect(element('tbody tr:first-child').textContent).toContain('Alpha')
+  expect(element('[data-ui-datatable-detail]').textContent).toBe('Notes for Beta')
+  expect(container.querySelector('input')).toBe(input)
+  expect(input.value).toBe('Edited Beta')
+  expect(element('[data-value="0"] button')).toBe(disclosure)
+  expect(element('[data-ui-datatable-detail] section').id).toBe(disclosure.getAttribute('aria-controls'))
+  await click('thead th:first-child button')
+  expect(element('tbody tr:first-child').textContent).toContain('Beta')
+  expect(container.querySelector('input')).toBe(input)
+  expect(anonymousRows.map(row => row.name)).toEqual(['Beta', 'Alpha'])
+  await click('[data-value="0"] button')
+  expect(container.querySelector('[data-ui-datatable-detail]')).toBeNull()
+})
+
 test('toolbar sort requests the same server ordering without reordering a supplied page', async () => {
   const requests = vi.fn()
   const Example = () => {

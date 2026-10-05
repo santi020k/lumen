@@ -265,16 +265,18 @@ export const DataTable = ({
   const detailsId = useId()
 
   const sortedRows = useMemo(() => {
-    if (sortMode === 'manual' || !sort) return rows
+    const indexed = rows.map((row, index) => ({ row, index }))
+
+    if (sortMode === 'manual' || !sort) return indexed
 
     const column = columns.find(candidate => candidate.key === sort.key)
 
-    if (!column) return rows
+    if (!column) return indexed
 
     const direction = sort.direction === 'ascending' ? 1 : -1
 
-    return [...rows].sort((left, right) => compareDataTableCells(
-      left[column.key], right[column.key], column.sort
+    return indexed.sort((left, right) => compareDataTableCells(
+      left.row[column.key], right.row[column.key], column.sort
     ) * direction)
   }, [columns, rows, sort, sortMode])
 
@@ -339,7 +341,7 @@ export const DataTable = ({
               </tr>
             </thead>
             <tbody role="rowgroup">
-              {sortedRows.flatMap((row, index) => renderDataTableRecord({
+              {sortedRows.flatMap(({ row, index }) => renderDataTableRecord({
                 row,
                 index,
                 columns,

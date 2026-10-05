@@ -851,6 +851,9 @@ for dashboard tables, freshness, import review, activity inbox, and persistent K
 React DataTable adds `layout="records"`, rich `column.render`, and expandable `renderDetails`.
 Use stable record IDs and controlled `expandedRowIds` across pages. `DataTableSortControls` shares
 `sort`/`onSortChange` with table headers; manual sorting preserves server page order.
+Rows without an explicit `rowValue`, `value`, or `id` use their original input index as identity
+during client sorting, preserving expanded details and local edits. Supply stable IDs when replacing,
+filtering, or paginating the input rows.
 
 Popover and DropdownMenu support anchored top-layer placement, viewport collision handling, logical
 start/end alignment, and focus handoff. Set `positioning="none"` for application-owned placement.
