@@ -102,6 +102,32 @@ describe('Lumen integration diagnostics', () => {
     }
   })
 
+  test.each([
+    '<script>const example = "<Runtime />";</script>',
+    '<style>.example::after { content: "<Runtime />"; }</style>',
+    '{"<Runtime />"}',
+    '{\'<Runtime />\'}',
+    '{`<Runtime />`}',
+    '{/* <Runtime /> */ null}',
+    '{// <Runtime />\n null}'
+  ])('ignores runtime examples in raw text and expressions: %s', async example => {
+    const root = await mkdtemp(join(tmpdir(), 'lumen-doctor-runtime-example-'))
+
+    try {
+      await mkdir(join(root, 'src'), { recursive: true })
+      await writeFile(join(root, 'src', 'global.css'), '@import "@santi020k/lumen-astro/styles.css";\n')
+      const file = join(root, 'src', 'page.astro')
+      const header = '---\nimport { Dialog } from \'@santi020k/lumen-astro\'\nimport Runtime from \'@santi020k/lumen-astro/runtime\'\n---\n'
+
+      await writeFile(file, `${header}<Dialog />${example}`)
+      expect((await inspectLumenIntegration(root)).findings).toContainEqual(expect.objectContaining({ rule: 'astro-runtime-missing' }))
+      await writeFile(file, `${header}<Dialog />${example}{true && <Runtime />}`)
+      await expect(inspectLumenIntegration(root)).resolves.toMatchObject({ healthy: true })
+    } finally {
+      await rm(root, { force: true, recursive: true })
+    }
+  })
+
   test('detects aliased runtime mounts shared between a layout and a route', async () => {
     const root = await mkdtemp(join(tmpdir(), 'lumen-doctor-alias-layout-'))
 

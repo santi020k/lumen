@@ -613,27 +613,96 @@ const getMarkupNameEnd = (source: string, start: number): number => {
   return end
 }
 
+const skipRuntimeQuotedText = (source: string, start: number): number => {
+  let end = start + 1
+
+  while (end < source.length) {
+    if (source[end] === '\\') end += 2
+    else if (source[end] === source[start]) return end + 1
+    else end += 1
+  }
+
+  return source.length
+}
+
+const skipRuntimeExpressionTrivia = (source: string, start: number): number => {
+  if (/['"`]/u.test(source[start] ?? '')) return skipRuntimeQuotedText(source, start)
+
+  if (source.startsWith('/*', start)) {
+    const end = source.indexOf('*/', start + 2)
+
+    return end < 0 ? source.length : end + 2
+  }
+
+  if (source.startsWith('//', start)) {
+    const end = source.indexOf('\n', start + 2)
+
+    return end < 0 ? source.length : end + 1
+  }
+
+  return start
+}
+
+const skipRuntimeRawText = (lowerSource: string, name: string, start: number): number => {
+  if (name !== 'script' && name !== 'style') return start
+
+  let closing = lowerSource.indexOf(`</${name}`, start)
+
+  while (closing >= 0 && !runtimeTagDelimiter.test(lowerSource[closing + name.length + 2] ?? '')) {
+    closing = lowerSource.indexOf(`</${name}`, closing + name.length + 2)
+  }
+
+  return closing < 0 ? lowerSource.length : closing
+}
+
+const getRuntimeExpressionDepth = (character: string | undefined, depth: number): number => {
+  if (character === '{') return depth + 1
+
+  return character === '}' ? Math.max(0, depth - 1) : depth
+}
+
 const countRuntimeMounts = (entry: SourceEntry): number => {
   const names = getRuntimeBindingNames(entry)
   let count = 0
-  let start = entry.source.indexOf('<', getMarkupStart(entry.source, entry.file))
+  let depth = 0
+  let start = getMarkupStart(entry.source, entry.file)
+  const lowerSource = entry.source.toLowerCase()
 
-  while (start >= 0) {
+  while (start < entry.source.length) {
+    const skipped = depth > 0 ? skipRuntimeExpressionTrivia(entry.source, start) : start
+
+    if (skipped !== start) {
+      start = skipped
+
+      continue
+    }
+
+    const character = entry.source[start]
+
+    depth = getRuntimeExpressionDepth(character, depth)
+
+    if (character !== '<') {
+      start += 1
+
+      continue
+    }
+
     if (entry.source.startsWith('<!--', start)) {
       const commentEnd = entry.source.indexOf('-->', start + 4)
 
       if (commentEnd < 0) break
 
-      start = entry.source.indexOf('<', commentEnd + 3)
+      start = commentEnd + 3
 
       continue
     }
 
     const end = getMarkupNameEnd(entry.source, start)
+    const name = entry.source.slice(start + 1, end)
 
-    if (names.has(entry.source.slice(start + 1, end)) && runtimeTagDelimiter.test(entry.source[end] ?? '')) count += 1
+    if (names.has(name) && runtimeTagDelimiter.test(entry.source[end] ?? '')) count += 1
 
-    start = entry.source.indexOf('<', findMarkupTagEnd(entry.source, end) + 1)
+    start = skipRuntimeRawText(lowerSource, name.toLowerCase(), findMarkupTagEnd(entry.source, end) + 1)
   }
 
   return count
