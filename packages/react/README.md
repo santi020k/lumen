@@ -872,6 +872,9 @@ cell shapes, empty identities, and duplicate resolved identities fail closed to 
 the column headers remain available. Client sorting only applies to columns marked `sortable`.
 `DataTableSortControls` shares
 `sort`/`onSortChange` with table headers; manual sorting preserves server page order.
+Rows without an explicit `rowValue`, `value`, or `id` use their original input index as identity
+during client sorting, preserving expanded details and local edits. Supply stable IDs when replacing,
+filtering, or paginating the input rows.
 
 Popover and DropdownMenu support anchored top-layer placement, viewport collision handling, logical
 start/end alignment, and focus handoff in their owning document, including iframes.
