@@ -428,6 +428,10 @@ LumenImageComparison(
 )
 ```
 
+Comparison artwork is decorative; visible before/after labels and the adjustable slider carry the
+accessible description, without duplicate image nodes.
+
+
 Password visibility is temporary, resets on focus loss or disabled/read-only state, and is never
 saved. `newPassword` selects the native new-password autofill hint. `onSubmit` handles the IME Done
 action; the application owns authentication and credential lifecycle.

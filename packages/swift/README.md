@@ -530,7 +530,8 @@ LumenNumberField(
 
 Numbers retain raw drafts and use exact bounded decimal arithmetic. Configuration uses ASCII
 strings; display uses locale-specific digits and separators. Do not convert money to Double to
-consume a field. `LumenTimeField` uses `Binding<LumenTimeSelection?>`, same-day bounds and an explicit
+consume a field. Host selection changes dismiss an open time editor and prevent stale draft confirmation.
+`LumenTimeField` uses `Binding<LumenTimeSelection?>`, same-day bounds and an explicit
 Confirm/Cancel draft. The operating system owns clock presentation and time-format preference.
 
 Autocomplete takes `Binding<String>` for its query, `Binding<Value?>` for selection and

@@ -139,18 +139,21 @@ const RangePopover = ({ open, onOpenChange, label, trigger, children, disabled, 
 
     initialFocus?.focus({ preventScroll: true })
 
+    const owner = panel.ownerDocument
+    const NodeType = owner.defaultView?.Node
+
     const closeOnFocusOutside = (event: FocusEvent) => {
-      if (event.target instanceof Node && !rootRef.current?.contains(event.target)) onOpenChange(false)
+      if (NodeType && event.target instanceof NodeType && !rootRef.current?.contains(event.target)) onOpenChange(false)
     }
 
-    document.addEventListener('focusin', closeOnFocusOutside)
+    owner.addEventListener('focusin', closeOnFocusOutside)
 
     const stopObserving = observePanelPosition(panel, control, position)
 
     return () => {
       stopObserving()
 
-      document.removeEventListener('focusin', closeOnFocusOutside)
+      owner.removeEventListener('focusin', closeOnFocusOutside)
 
       hidePanel(panel)
     }

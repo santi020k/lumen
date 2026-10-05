@@ -79,3 +79,52 @@ test('confirms drafts, discards cancellation, validates and restores keyboard fo
     vi.unstubAllGlobals()
   }
 })
+
+test('dismisses an iframe popover when focus leaves its owning document panel', async () => {
+  vi.stubGlobal('ResizeObserver', class {
+    observe() { /* No layout in jsdom. */ }
+    disconnect() { /* No layout in jsdom. */ }
+  })
+  const iframe = document.createElement('iframe')
+
+  document.body.append(iframe)
+  const owner = iframe.contentDocument
+
+  if (!owner) throw new Error('Missing iframe document')
+
+  const container = owner.createElement('div')
+  const outside = owner.createElement('button')
+
+  outside.textContent = 'Outside'
+  owner.body.append(container, outside)
+  const root = createRoot(container)
+
+  try {
+    await act(async () => {
+      await Promise.resolve()
+      root.render(createElement(Harness))
+    })
+    const trigger = container.querySelector<HTMLButtonElement>('[aria-haspopup="dialog"]')
+
+    if (!trigger) throw new Error('Missing range trigger')
+
+    await act(async () => {
+      await Promise.resolve()
+      trigger.click()
+    })
+    expect(trigger.getAttribute('aria-expanded')).toBe('true')
+    await act(async () => {
+      await Promise.resolve()
+      outside.focus()
+    })
+    expect(trigger.getAttribute('aria-expanded')).toBe('false')
+    expect(owner.activeElement).toBe(outside)
+  } finally {
+    await act(async () => {
+      await Promise.resolve()
+      root.unmount()
+    })
+    iframe.remove()
+    vi.unstubAllGlobals()
+  }
+})

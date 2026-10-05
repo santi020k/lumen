@@ -4,6 +4,8 @@
 
 ### Patch Changes
 
+- Reject duplicate table identities, respect sortable columns, and dismiss date-range popovers when focus leaves their owning document.
+
 - Reject malformed decoded table rows, cells, identities, and sparse collections before sorting or rendering.
 
 - Preserve iframe calendar focus, newest-only toast dismissal, explicit table record identities, legacy read-only phone country submission, and valid decoded annotation axes.

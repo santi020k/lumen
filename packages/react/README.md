@@ -600,7 +600,8 @@ Apply/Cancel actions and domain limits such as maximum report duration. Labels a
 
 ## Input-attached date range selection
 
-`DateRangeInput` wraps `DateRangeCalendar` in an anchored, non-modal popover. Use it
+`DateRangeInput` wraps `DateRangeCalendar` in an anchored, non-modal popover. Outside-focus dismissal
+follows the owning document, including same-origin iframe and portal rendering. Use it
 when the range should be edited directly from an input-like control. It keeps draft
 changes internal and calls `onValueChange` only when the user chooses Apply.
 The existing `DateRangePicker` and inline `DateRangeCalendar` remain available.
@@ -859,7 +860,8 @@ React DataTable adds `layout="records"`, rich `column.render`, and expandable `r
 Use stable record IDs and controlled `expandedRowIds` across pages. Row identity uses `rowValue`,
 then `id`, then a legacy `value` fallback; ordinary value cells do not override explicit IDs.
 Decoded row collections are validated before sorting or rendering. Invalid rows, identities,
-or cell shapes fail closed to an empty table while the column headers remain available. `DataTableSortControls` shares
+or cell shapes, empty identities, and duplicate resolved identities fail closed to an empty table while
+the column headers remain available. Client sorting only applies to columns marked `sortable`. `DataTableSortControls` shares
 `sort`/`onSortChange` with table headers; manual sorting preserves server page order.
 
 Popover and DropdownMenu support anchored top-layer placement, viewport collision handling, logical

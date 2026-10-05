@@ -29,7 +29,11 @@ class MentionsInteractionTest {
     @Test fun insertionPreservesSuffixAndInvalidHostRange() {
         val value = mutableStateOf(LumenMentionsValue("😀 @al!", LumenMentionsSelection(6, 6)))
         val readOnly = mutableStateOf(false)
-        rule.setContent { LumenTheme { LumenMentions("Message", value.value, { value.value = it }, options, readOnly = readOnly.value) } }
+        // Drive selection through semantics without asynchronous system-keyboard cursor updates.
+        val interceptor = PlatformTextInputInterceptor { _, _ -> awaitCancellation() }
+        rule.setContent { InterceptPlatformTextInput(interceptor) {
+            LumenTheme { LumenMentions("Message", value.value, { value.value = it }, options, readOnly = readOnly.value) }
+        } }
         rule.onNodeWithContentDescription("Message").performClick().performTextInputSelection(TextRange(6))
         rule.onNodeWithText("Archived option").performClick()
         rule.runOnIdle { assertEquals("😀 @al!", value.value.text) }

@@ -177,6 +177,10 @@ class RemainingComponentsAccessibilityTest {
                     value.value, { value.value = it }, enabled = enabled.value)
             }
         }
+        composeRule.onNodeWithContentDescription("Before", useUnmergedTree = true).assertDoesNotExist()
+        composeRule.onNodeWithContentDescription("After", useUnmergedTree = true).assertDoesNotExist()
+        composeRule.onNodeWithText("Before").assertExists()
+        composeRule.onNodeWithText("After").assertExists()
         composeRule.onNodeWithContentDescription("Compare").performSemanticsAction(SemanticsActions.SetProgress) { assertTrue(it(0.75f)) }
         composeRule.runOnIdle { assertEquals(0.75f, value.value); enabled.value = false }
         composeRule.onNodeWithContentDescription("Compare").assertIsNotEnabled()

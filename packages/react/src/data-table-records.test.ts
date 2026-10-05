@@ -177,3 +177,32 @@ test('fails closed before client sorting a sparse row collection', async () => {
   })
   expect(container.querySelectorAll('tbody tr')).toHaveLength(0)
 })
+
+test.each([
+  [{ id: 'same', name: 'One' }, { id: 'same', name: 'Two' }],
+  [{ rowValue: 'same', id: 'one' }, { rowValue: 'same', id: 'two' }],
+  [{ value: 1 }, { value: '1' }],
+  [{ id: '' }],
+  [{ id: '1' }, { name: 'Index collision' }]
+].map(records => ({ records })))('rejects empty or duplicate resolved record identities: %j', async ({ records }) => {
+  await render({ rows: records, expandedRowIds: ['same'], defaultSort: { key: 'name', direction: 'ascending' } })
+  expect(container.querySelectorAll('tbody tr')).toHaveLength(0)
+  expect(container.querySelectorAll('[data-ui-datatable-detail]')).toHaveLength(0)
+})
+
+test('ignores default and controlled sorting on a non-sortable column', async () => {
+  const sort = { key: 'name', direction: 'ascending' } as const
+  const fixedColumns = [{ key: 'name', sortable: false }]
+
+  for (const configuration of [{ defaultSort: sort }, { sort }]) {
+    await render({ columns: fixedColumns, ...configuration })
+    expect([...container.querySelectorAll('[data-ui-datatable-row]')].map(row => row.getAttribute('data-value'))).toEqual(['beta', 'alpha'])
+    expect(container.querySelector('thead button')).toBeNull()
+  }
+})
+
+test('rejects identities that collide after client sorting index fallback rows', async () => {
+  await render({ rows: [{ name: 'Z' }, { id: '1', name: 'A' }], defaultSort: { key: 'name', direction: 'ascending' } })
+  expect(container.querySelectorAll('tbody tr')).toHaveLength(0)
+  expect(container.querySelectorAll('[data-ui-datatable-detail]')).toHaveLength(0)
+})

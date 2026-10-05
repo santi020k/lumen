@@ -329,6 +329,7 @@ public struct LumenTimeField: View {
     @Environment(\.isEnabled) private var isEnabled
     @Environment(\.locale) private var locale
     @State private var presented = false
+    @State private var draftSource: LumenTimeSelection?
     @State private var draft = LumenTimeSelection(hour: 0, minute: 0)
     private let label: String
     private let minTime: LumenTimeSelection?
@@ -359,7 +360,7 @@ public struct LumenTimeField: View {
         self.readOnly = readOnly
     }
     private var editable: Bool { isEnabled && !readOnly }
-    private var valid: Bool { draft.isInBounds(min: minTime, max: maxTime) }
+    private var valid: Bool { selection == draftSource && draft.isInBounds(min: minTime, max: maxTime) }
     private var display: String {
         guard let selection else { return placeholder }
         let formatter = DateFormatter()
@@ -373,6 +374,7 @@ public struct LumenTimeField: View {
     public var body: some View {
         LumenFieldGroup(.verbatim(label), description: description.map(LumenTextContent.verbatim), errorMessage: errorMessage.map(LumenTextContent.verbatim)) {
             LumenButton(.verbatim(display), intent: .secondary, disabled: !editable) {
+                draftSource = selection
                 draft = selection.flatMap { $0.isInBounds(min: minTime, max: maxTime) ? $0 : nil } ?? minTime ?? LumenTimeSelection(hour: 0, minute: 0)
                 presented = true
             }
@@ -391,6 +393,7 @@ public struct LumenTimeField: View {
                 .disabled(!editable)
             if !valid { LumenText(.verbatim(rangeErrorLabel), tone: .danger) }
         }
+        .task(id: selection) { presented = false }
         .task(id: editable) { if !editable { presented = false } }
     }
 }

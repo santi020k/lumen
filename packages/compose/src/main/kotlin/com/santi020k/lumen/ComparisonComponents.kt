@@ -54,14 +54,14 @@ fun LumenImageComparison(
     val rtl = LocalLayoutDirection.current == LayoutDirection.Rtl
     Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(LumenSpacing.Sm)) {
         Box(modifier = Modifier.fillMaxWidth().aspectRatio(ratio).clip(RoundedCornerShape(LumenRadius.Lg))) {
-            LumenImage(before, label = beforeLabel, modifier = Modifier.fillMaxSize(), fit = fit, radius = LumenImageRadius.None)
+            LumenImage(before, label = null, modifier = Modifier.fillMaxSize(), fit = fit, radius = LumenImageRadius.None)
             Box(modifier = Modifier.fillMaxSize().drawWithContent {
                 clipRect(
                     left = if (rtl) size.width * (1f - position) else 0f,
                     right = if (rtl) size.width else size.width * position
                 ) { this@drawWithContent.drawContent() }
             }) {
-                LumenImage(after, label = afterLabel, modifier = Modifier.fillMaxSize(), fit = fit, radius = LumenImageRadius.None)
+                LumenImage(after, label = null, modifier = Modifier.fillMaxSize(), fit = fit, radius = LumenImageRadius.None)
             }
             Canvas(modifier = Modifier.fillMaxSize()) {
                 val x = size.width * (if (rtl) 1f - position else position)

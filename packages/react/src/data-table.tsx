@@ -36,21 +36,21 @@ export type DataTableRow = Record<string, DataTableCell> & {
   value?: number | string
 }
 
-const emptyColumns: DataTableColumn[] = []
-const emptyRows: DataTableRow[] = []
+const noColumns: DataTableColumn[] = []
+const noRows: DataTableRow[] = []
 
 const isRecord = (value: unknown): value is Record<string, unknown> => (
   typeof value === 'object' && value !== null && !Array.isArray(value)
 )
 
-const isPrimitive = (value: unknown): value is boolean | null | number | string | undefined => (
+const primitive = (value: unknown): value is boolean | null | number | string | undefined => (
   value === null || value === undefined || typeof value === 'boolean' ||
   typeof value === 'number' || typeof value === 'string'
 )
 
 const isCell = (value: unknown): value is DataTableCell => (
-  isPrimitive(value) || (isRecord(value) &&
-    [value.label, value.sortValue, value.value].every(isPrimitive))
+  primitive(value) || (isRecord(value) &&
+    [value.label, value.sortValue, value.value].every(primitive))
 )
 
 const isRow = (value: unknown): value is DataTableRow => (
@@ -58,13 +58,22 @@ const isRow = (value: unknown): value is DataTableRow => (
   Object.values(value).every(isCell)
 )
 
-const isRows = (value: unknown): value is DataTableRow[] => (
-  Array.isArray(value) && Array.from(value).every(isRow)
-)
+const rowValue = (
+  row: DataTableRow,
+  index: number
+): string => String(row.rowValue ?? row.id ?? row.value ?? index)
 
-const tableClassName = (glass: LumenGlassProp, layout: DataTableProps['layout'], className?: string): string => composeClassName('ui-data-table', glass && 'ui-data-table--glass', glass === 'subtle' && 'ui-glass-subtle', glass === 'strong' && 'ui-glass-strong', layout === 'records' && 'ui-table-wrap--records', className)
+const isRows = (value: unknown): value is DataTableRow[] => {
+  if (!Array.isArray(value) || !Array.from(value).every(isRow)) return false
 
-const isCellObject = (
+  const ids = value.map(rowValue)
+
+  return !ids.includes('') && new Set(ids).size === ids.length
+}
+
+const classes = (glass: LumenGlassProp, layout: DataTableProps['layout'], className?: string): string => composeClassName('ui-data-table', glass && 'ui-data-table--glass', glass === 'subtle' && 'ui-glass-subtle', glass === 'strong' && 'ui-glass-strong', layout === 'records' && 'ui-table-wrap--records', className)
+
+const isObject = (
   cell: DataTableCell
 ): cell is Exclude<
   DataTableCell,
@@ -72,18 +81,18 @@ const isCellObject = (
 > => typeof cell === 'object' && cell !== null
 
 const formatCell = (cell: DataTableCell): string => {
-  const value = isCellObject(cell) ? (cell.label ?? cell.value) : cell
+  const value = isObject(cell) ? (cell.label ?? cell.value) : cell
 
-  return value === undefined || value === null ? '' : String(value)
+  return String(value ?? '')
 }
 
 const sortValue = (cell: DataTableCell): string | undefined => (
-  isCellObject(cell) && cell.sortValue !== undefined && cell.sortValue !== null ?
+  isObject(cell) && cell.sortValue !== undefined && cell.sortValue !== null ?
     String(cell.sortValue) :
     undefined
 )
 
-const compareCells = (
+const compare = (
   left: DataTableCell,
   right: DataTableCell,
   sortType: DataTableColumn['sort']
@@ -101,11 +110,6 @@ const compareCells = (
     sensitivity: 'base'
   })
 }
-
-const rowValue = (
-  row: DataTableRow,
-  index: number
-): string => String(row.rowValue ?? row.id ?? row.value ?? index)
 
 export interface DataTableSort {
   direction: 'ascending' | 'descending'
@@ -167,11 +171,11 @@ interface DataTableRecordContext {
   toggleDetails: (id: string) => void
 }
 
-const columnLabel = (column: DataTableColumn): string => column.header ?? column.label ?? column.key
+const columnTitle = (column: DataTableColumn): string => column.header ?? column.label ?? column.key
 
-const renderToggle = (context: DataTableRecordContext, column: DataTableColumn,
+const renderToggle = (ctx: DataTableRecordContext, column: DataTableColumn,
   rowId: string, open: boolean, id: string) => {
-  const { row, toggleDetails, expandLabel, collapseLabel } = context
+  const { row, toggleDetails, expandLabel, collapseLabel } = ctx
   const label = open ? collapseLabel ?? 'Collapse record' : expandLabel ?? 'Expand record'
 
   return (
@@ -191,10 +195,10 @@ const renderToggle = (context: DataTableRecordContext, column: DataTableColumn,
 }
 
 const renderCell = (
-  context: DataTableRecordContext, column: DataTableColumn,
+  ctx: DataTableRecordContext, column: DataTableColumn,
   columnIndex: number, rowId: string, open: boolean, id: string
 ) => {
-  const { row, layout, renderDetails } = context
+  const { row, layout, renderDetails } = ctx
   const disclosure = columnIndex === 0 && Boolean(renderDetails)
 
   return (
@@ -204,24 +208,24 @@ const renderCell = (
       key={column.key}
       role="cell"
     >
-      {layout === 'records' && <span className="ui-table__label" aria-hidden="true">{columnLabel(column)}</span>}
+      {layout === 'records' && <span className="ui-table__label" aria-hidden="true">{columnTitle(column)}</span>}
       <div className="ui-table__value">
-        {disclosure && renderToggle(context, column, rowId, open, id)}
+        {disclosure && renderToggle(ctx, column, rowId, open, id)}
         {column.render ? column.render(row[column.key], row) : formatCell(row[column.key])}
       </div>
     </td>
   )
 }
 
-const renderRow = (context: DataTableRecordContext) => {
-  const { row, index, columns, expanded, detailsId, renderDetails } = context
+const renderRow = (ctx: DataTableRecordContext) => {
+  const { row, index, columns, expanded, detailsId, renderDetails } = ctx
   const rowId = rowValue(row, index)
   const open = expanded.includes(rowId)
   const id = `${detailsId}-${encodeURIComponent(rowId)}`
 
   const record = (
     <tr data-ui-datatable-row data-value={rowId} key={rowId} role="row">
-      {columns.map((column, columnIndex) => renderCell(context, column, columnIndex, rowId, open, id))}
+      {columns.map((column, columnIndex) => renderCell(ctx, column, columnIndex, rowId, open, id))}
     </tr>
   )
 
@@ -230,7 +234,7 @@ const renderRow = (context: DataTableRecordContext) => {
   const detail = (
     <tr key={`${rowId}-details`} role="row" data-ui-datatable-detail>
       <td colSpan={columns.length} role="cell" className="ui-table__cell--wide">
-        <section id={id} aria-label={`${context.detailsLabel ?? 'Record details'}: ${rowId}`}>{renderDetails(row)}</section>
+        <section id={id} aria-label={`${ctx.detailsLabel ?? 'Record details'}: ${rowId}`}>{renderDetails(row)}</section>
       </td>
     </tr>
   )
@@ -238,7 +242,7 @@ const renderRow = (context: DataTableRecordContext) => {
   return [record, detail]
 }
 
-const attributes = (name: string | undefined, sortMode: 'client' | 'manual',
+const attrs = (name: string | undefined, sortMode: 'client' | 'manual',
   selectable: boolean, glass: LumenGlassProp) => ({
   'data-ui-datatable': true,
   'data-ui-datatable-name': name,
@@ -250,7 +254,7 @@ const attributes = (name: string | undefined, sortMode: 'client' | 'manual',
 export const DataTable = ({
   children,
   className,
-  columns = emptyColumns,
+  columns = noColumns,
   defaultSort = null,
   defaultExpandedRowIds,
   expandedRowIds,
@@ -263,13 +267,13 @@ export const DataTable = ({
   onExpandedRowIdsChange,
   onSortChange,
   renderDetails,
-  rows: rawRows = emptyRows,
+  rows: rawRows = noRows,
   sort: controlledSort,
   sortMode = 'client',
   selectable = false,
   ...props
 }: DataTableProps) => {
-  const rows = isRows(rawRows) ? rawRows : emptyRows
+  const rows = isRows(rawRows) ? rawRows : noRows
   const [uncontrolledSort, setUncontrolledSort] = useState<DataTableSort | null>(defaultSort)
   const sort = controlledSort === undefined ? uncontrolledSort : controlledSort
 
@@ -282,15 +286,17 @@ export const DataTable = ({
   const sortedRows = useMemo(() => {
     if (sortMode === 'manual' || !sort) return rows
 
-    const column = columns.find(candidate => candidate.key === sort.key)
+    const column = columns.find(candidate => candidate.sortable && candidate.key === sort.key)
 
     if (!column) return rows
 
     const direction = sort.direction === 'ascending' ? 1 : -1
 
-    return [...rows].sort((left, right) => compareCells(
+    const ordered = [...rows].sort((left, right) => compare(
       left[column.key], right[column.key], column.sort
     ) * direction)
+
+    return isRows(ordered) ? ordered : noRows
   }, [columns, rows, sort, sortMode])
 
   const toggleSort = (column: DataTableColumn): void => {
@@ -306,8 +312,8 @@ export const DataTable = ({
 
   return (
     <div
-      className={tableClassName(glass, layout, className)}
-      {...attributes(name, sortMode, selectable, glass)}
+      className={classes(glass, layout, className)}
+      {...attrs(name, sortMode, selectable, glass)}
       {...props}
     >
       {columns.length > 0 ?
@@ -320,7 +326,7 @@ export const DataTable = ({
                     sort.direction :
                     undefined
 
-                  const label = column.header ?? column.label ?? column.key
+                  const label = columnTitle(column)
 
                   return (
                     <th
@@ -387,7 +393,7 @@ export interface DataTableSortControlsProps extends ComponentPropsWithoutRef<'di
   placeholder?: string
 }
 
-const resolveSortLabels = (labels: { label: DataTableSortControlsProps['label']
+const sortLabels = (labels: { label: DataTableSortControlsProps['label']
   directionLabel: DataTableSortControlsProps['directionLabel']
   ascendingLabel: DataTableSortControlsProps['ascendingLabel']
   descendingLabel: DataTableSortControlsProps['descendingLabel']
@@ -404,7 +410,7 @@ export const DataTableSortControls = ({
   columns, sort, onSortChange, disabled = false, label, directionLabel,
   ascendingLabel, descendingLabel, placeholder, className, ...props
 }: DataTableSortControlsProps) => {
-  const text = resolveSortLabels({ label, directionLabel, ascendingLabel, descendingLabel, placeholder })
+  const text = sortLabels({ label, directionLabel, ascendingLabel, descendingLabel, placeholder })
   const id = useId()
   const sortable = columns.filter(column => column.sortable)
   const selected = sortable.find(column => column.key === sort?.key)
@@ -427,7 +433,7 @@ export const DataTableSortControls = ({
         >
           <option value="">{text.placeholder}</option>
           {sortable.map(column => (
-            <option value={column.key} key={column.key}>{column.header ?? column.label ?? column.key}</option>
+            <option value={column.key} key={column.key}>{columnTitle(column)}</option>
           ))}
         </NativeSelect>
       </Field>
