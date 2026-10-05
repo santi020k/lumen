@@ -221,7 +221,17 @@ test("public Apple checks use free standard GitHub runners and preserve every ga
 
   assert.match(appleWorkflow, /github.event.repository.private == false/u);
 
-  assert.match(appleWorkflow, /check: \[swift, react-native, captures, visual, framework-visual\]/u);
+  assert.match(appleWorkflow, /check: \[swift, react-native, visual, framework-visual\]/u);
+
+  assert.match(appleWorkflow, /name: Apple captures[\s\S]*needs: capture-shards[\s\S]*if: always\(\)/u);
+
+  assert.match(appleWorkflow, /shard: \[0, 1, 2, 3\]/u);
+
+  assert.match(appleWorkflow, /test "\$CAPTURE_RESULT" = success/u);
+
+  assert.match(appleWorkflow, /--compare --platform=apple --source=default --tolerance=0\.12/u);
+
+  assert.doesNotMatch(appleWorkflow, /fetch-depth: 0|LUMEN_CAPTURE_SETTLE_SECONDS/u);
 
   assert.match(appleWorkflow, /cancel-in-progress: true/u);
 

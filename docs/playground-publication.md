@@ -189,10 +189,19 @@ Public open-source repositories run Apple validation and delivery on standard Gi
 repositories; larger runners are excluded. The selected stable Xcode 26.5 and iOS 26.5 simulator
 match the native capture environment. The toolchain guard rejects prerelease tools.
 
-`apple-native.yml` runs five independent jobs: Swift tests/API/clean consumers, React Native iOS
-packed consumer, all 100 native component captures, docs visual regressions, and framework visual
-regressions. Dependency/browser caches and Swift incremental builds avoid repeat setup; concurrency
-cancels superseded runs. Tests, baseline images, tolerances, and release approval are unchanged.
+`apple-native.yml` preserves five required checks: Swift tests/API/clean consumers, React Native iOS
+packed consumer, all native component captures, docs visual regressions, and framework visual
+regressions. Native captures are split into four disjoint groups from the generated catalog; the
+required `Apple captures` check fails unless every group succeeds and the complete catalog passes
+the original PNG comparison. Only that platform-neutral comparison runs on Linux. Each native group
+builds and captures on macOS, keeping the six-second settle time and native Tour interaction.
+
+Shallow checkouts avoid downloading unrelated history; Swift compatibility fetches its immutable
+baseline tag explicitly. Dependency/browser caches and incremental library/playground Swift builds
+avoid repeat setup. The disposable package consumer still builds clean, without restored artifacts.
+GitHub's standard macOS concurrency limit may queue groups; splitting does not guarantee four-way
+execution on every account. Concurrency cancels superseded runs. Tests, baseline images, tolerances,
+and release approval are unchanged.
 No signing secrets are available to pull-request jobs. Deactivate Lumen's old Cloud PR and published
 verification workflows to avoid duplicate compute; use `verify-native-release.yml` for exact public
 Apple consumers on GitHub. Private copies retain the matching Cloud launcher and monitor.

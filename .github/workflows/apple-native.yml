@@ -22,7 +22,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        check: [swift, react-native, captures, visual, framework-visual]
+        check: [swift, react-native, visual, framework-visual]
     env:
       DEVELOPER_DIR: /Applications/Xcode_26.5.app/Contents/Developer
       LUMEN_NATIVE_SETUP_READY: '1'
@@ -30,7 +30,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
-          fetch-depth: 0
+          fetch-depth: 1
       - name: Verify stable Apple toolchain
         run: apps/playground-apple/scripts/check-app-store-toolchain.sh
       - uses: santi020k/quality/actions/setup-pnpm@ffa37774f75b2b8e761fe3d71e7046cdb6694a69 # v1
@@ -40,19 +40,16 @@ jobs:
         if: matrix.check == 'swift'
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
-          path: .build
-          key: swift-${{ runner.os }}-${{ runner.arch }}-26.5-${{ hashFiles('Package.swift', 'Package.resolved') }}-${{ github.sha }}
-          restore-keys: swift-${{ runner.os }}-${{ runner.arch }}-26.5-${{ hashFiles('Package.swift', 'Package.resolved') }}-
+          path: |
+            .build
+            apps/playground-apple/.build
+          key: swift-${{ runner.os }}-${{ runner.arch }}-26.5-${{ hashFiles('Package.swift', 'Package.resolved', 'apps/playground-apple/Package.swift', 'apps/playground-apple/Package.resolved') }}-${{ github.sha }}
+          restore-keys: swift-${{ runner.os }}-${{ runner.arch }}-26.5-${{ hashFiles('Package.swift', 'Package.resolved', 'apps/playground-apple/Package.swift', 'apps/playground-apple/Package.resolved') }}-
       - name: Set up cached browsers
         if: matrix.check == 'visual' || matrix.check == 'framework-visual'
         uses: ./.github/actions/setup-playwright
         with:
           browsers: chromium
-      - name: Select native screenshot device
-        if: matrix.check == 'captures'
-        run: |
-          device_id="$(xcrun simctl create 'Lumen CI' com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro-Max com.apple.CoreSimulator.SimRuntime.iOS-26-5)"
-          echo "LUMEN_SIMULATOR_UDID=$device_id" >> "$GITHUB_ENV"
       - name: Run equivalent Apple gate
         run: apps/playground-apple/ci_scripts/run-native-checks.sh "${{ matrix.check }}"
       - name: Keep failure evidence
@@ -65,3 +62,84 @@ jobs:
             apps/docs/test-results
             apps/playground-apple/Screenshots
           retention-days: 3
+
+  capture-shards:
+    name: Apple capture group ${{ matrix.shard }}
+    if: github.event.repository.private == false
+    runs-on: macos-26
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3]
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_26.5.app/Contents/Developer
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 1
+      - name: Verify stable Apple toolchain
+        run: apps/playground-apple/scripts/check-app-store-toolchain.sh
+      - uses: santi020k/quality/actions/setup-pnpm@ffa37774f75b2b8e761fe3d71e7046cdb6694a69 # v1
+        with:
+          node-version: 22.x
+      - name: Select native screenshot device
+        run: |
+          device_id="$(xcrun simctl create 'Lumen CI' com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro-Max com.apple.CoreSimulator.SimRuntime.iOS-26-5)"
+          echo "LUMEN_SIMULATOR_UDID=$device_id" >> "$GITHUB_ENV"
+      - name: Capture assigned native components
+        env:
+          CAPTURE_SHARD: ${{ matrix.shard }}
+        run: |
+          node .github/scripts/apple-capture-shard.mjs "$CAPTURE_SHARD" 4 > "$RUNNER_TEMP/components.txt"
+          components=()
+          while IFS= read -r component; do
+            components+=("$component")
+          done < "$RUNNER_TEMP/components.txt"
+          CI_XCODE_CLOUD=1 apps/playground-apple/scripts/capture-component-screenshots.sh \
+            apps/playground-apple/Screenshots "${components[@]}"
+      - name: Upload native captures
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: apple-captures-${{ matrix.shard }}
+          path: apps/playground-apple/Screenshots/*.png
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 1
+
+      - name: Keep native capture failure evidence
+        if: failure()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: apple-capture-failure-${{ matrix.shard }}
+          path: apps/playground-apple/Screenshots
+          retention-days: 1
+
+  captures:
+    name: Apple captures
+    needs: capture-shards
+    if: always() && github.event.repository.private == false
+    # Only PNG comparison runs here; all native builds and captures run on macOS.
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Require every native capture group
+        env:
+          CAPTURE_RESULT: ${{ needs.capture-shards.result }}
+        run: test "$CAPTURE_RESULT" = success
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 1
+      - uses: santi020k/quality/actions/setup-pnpm@ffa37774f75b2b8e761fe3d71e7046cdb6694a69 # v1
+        with:
+          node-version: 22.x
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          pattern: apple-captures-*
+          merge-multiple: true
+          path: apps/playground-apple/Screenshots
+      - name: Compare the complete native catalog
+        run: |
+          pnpm --filter @santi020k/lumen-docs exec node --experimental-strip-types \
+            scripts/sync-native-component-captures.mjs \
+            --compare --platform=apple --source=default --tolerance=0.12
