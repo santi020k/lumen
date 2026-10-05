@@ -4590,11 +4590,13 @@ const initContextMenus = (scope: ParentNode): void => {
 
       event.preventDefault()
 
-      const currentIndex = items.indexOf(document.activeElement as HTMLElement)
+      const currentIndex = items.findIndex(item => item === menu.ownerDocument.activeElement)
 
-      items[
+      const nextIndex = currentIndex < 0 && event.key === 'ArrowUp' ?
+        items.length - 1 :
         getLoopedIndex(event.key, currentIndex, items.length, ['ArrowDown'])
-      ]?.focus()
+
+      items[nextIndex]?.focus()
     })
 
     menu.addEventListener('click', event => {

@@ -26,6 +26,30 @@ const adapters = [
   { label: "Elements", path: "/visual/elements" },
 ] as const;
 
+test('Elements ContextMenu enters the last or first item from container focus', async ({ page }) => {
+  await page.goto('/visual/elements');
+  await page.evaluate(async () => {
+    await customElements.whenDefined('lumen-context-menu');
+    const fixture = document.createElement('div');
+    fixture.innerHTML = '<button data-ui-context-menu-trigger="container-focus-menu">Open actions</button><lumen-context-menu id="container-focus-menu" tabindex="-1"><button role="menuitem" type="button">First action</button><button role="menuitem" type="button">Last action</button></lumen-context-menu>';
+    document.body.prepend(fixture);
+  });
+  const trigger = page.getByRole('button', { name: 'Open actions', exact: true });
+  const menu = page.locator('#container-focus-menu');
+  await trigger.focus();
+  await trigger.press('Shift+F10');
+  await expect(menu).toBeVisible();
+  await menu.focus();
+  await menu.press('ArrowUp');
+  await expect(menu.getByRole('menuitem', { name: 'Last action', exact: true })).toBeFocused();
+  await menu.focus();
+  await menu.press('ArrowDown');
+  await expect(menu.getByRole('menuitem', { name: 'First action', exact: true })).toBeFocused();
+  await page.keyboard.press('Escape');
+  await expect(menu).toBeHidden();
+  await expect(trigger).toBeFocused();
+});
+
 for (const framework of ['React', 'Elements']) {
   test(`${framework} Mentions keeps suggestions out of the Tab sequence without losing selection`, async ({ page }) => {
     await page.goto('/visual/mentions');
