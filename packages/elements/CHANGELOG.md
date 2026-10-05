@@ -4,6 +4,8 @@
 
 ### Patch Changes
 
+- Enter ContextMenu items from container focus with ArrowUp selecting the last item and ArrowDown selecting the first.
+
 - Reject invalid supplied histogram labels and waterfall tones instead of discarding malformed chart fields.
 
 - Preserve iframe calendar focus, newest-only toast dismissal, explicit table record identities, legacy read-only phone country submission, and valid decoded annotation axes.

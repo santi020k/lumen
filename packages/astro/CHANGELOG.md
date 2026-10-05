@@ -2,6 +2,8 @@
 
 ## 4.0.0
 
+- Enter ContextMenu items from container focus with ArrowUp selecting the last item and ArrowDown selecting the first.
+
 - Keep reopened Mentions suggestions visible when focus returns before a delayed blur dismissal.
 
 - Keep sparkline endpoints circular and line strokes uniform when a chart stretches to fit a wide or shallow container.
