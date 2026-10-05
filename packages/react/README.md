@@ -941,3 +941,10 @@ including under Strict Mode. Controlled values remain owned by the application.
 
 Highlighted Code updates generated region labels and removes its generated focus attributes when
 wrapping is enabled, while preserving consumer-owned accessibility attributes.
+
+## Advanced form workflows
+
+Use the optional `@santi020k/lumen-react/forms` entry point for validation, dependent fields,
+unsaved edit tracking, step navigation, stable repeatable rows, and cancelable asynchronous checks.
+See [composable form workflows](../../docs/powerful-forms.md). Applications retain schemas, financial
+rules, requests, draft storage, and authorization. Do not combine validation owners on one form.

@@ -74,6 +74,10 @@
     "./hooks": {
       "types": "./dist/hooks.d.ts",
       "import": "./dist/hooks.js"
+    },
+    "./forms": {
+      "types": "./dist/form-workflow.d.ts",
+      "import": "./dist/form-workflow.js"
     }
   },
   "files": [

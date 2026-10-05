@@ -76,3 +76,5 @@ Before using MCP contracts, call lumen_check_compatibility with resolved install
 If versions differ, use installed public types and package README or a matching MCP package.
 Never silently upgrade an application. For an explicit v4 upgrade, read lumen_get_migration and
 preview lumen migrate v4 --dry-run --json; review dependency updates and application workarounds.
+
+- [React form workflows](docs/powerful-forms.md): optional dependent validation, edit tracking, steps, repeatable rows, and async checks.

@@ -745,3 +745,10 @@ so its apply ledger fingerprints the final source and repeat runs do not rewrite
 SDK import edits remain limited to `.ts`, `.js`, and `.mjs`; this restriction does not disable the
 separate documented JSX/Astro spacing migration. The JSON report includes installed package
 versions and explicit SDK dependency-review findings.
+
+## Complex React forms
+
+Use the optional `@santi020k/lumen-react/forms` hooks with public form primitives for dependent
+validation, unsaved edits, stable repeatable rows, step navigation, and cancellation-safe checks.
+Read [composable form workflows](powerful-forms.md) before implementation. Choose one validation
+owner; keep schemas, financial policy, requests, authorization, and draft storage in the consumer.

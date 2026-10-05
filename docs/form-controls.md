@@ -73,3 +73,5 @@ reset cleanup, date validity, phone values, Combobox state, and callback counts.
 
 Use `pnpm run test` for the package suites and `pnpm run test:framework-conformance` for browser
 coverage. jsdom alone cannot verify ElementInternals submission and browser reset callbacks.
+
+React consumers can compose more complex flows with the optional [form workflow hooks](powerful-forms.md).
