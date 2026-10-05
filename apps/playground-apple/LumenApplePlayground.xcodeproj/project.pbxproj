@@ -121,6 +121,7 @@
 
 /* Begin PBXFileReference section */
 		0BB0D085D401FD296278ADC6 /* WorkspacePerformanceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspacePerformanceTests.swift; sourceTree = "<group>"; };
+		1334BAFC4ABFABFA53C35C55 /* lumen-v4-finish */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "lumen-v4-finish"; path = ../..; sourceTree = SOURCE_ROOT; };
 		1346B8612A775BBDCF663C53 /* MentionsParityExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MentionsParityExample.swift; sourceTree = "<group>"; };
 		1D1D222933113F56FAA76A80 /* QRCodeParityExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRCodeParityExample.swift; sourceTree = "<group>"; };
 		1DDD459A59B4A5E78B40659F /* CatalogParityInteractionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogParityInteractionTests.swift; sourceTree = "<group>"; };
@@ -129,7 +130,6 @@
 		239C19188D453017567CDF10 /* TableParityExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableParityExample.swift; sourceTree = "<group>"; };
 		2B137475D2B5E5290E2B7A32 /* TreeSelectParityExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TreeSelectParityExample.swift; sourceTree = "<group>"; };
 		2EF89347B50B6EABEC242B28 /* ScheduleParityExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleParityExample.swift; sourceTree = "<group>"; };
-		329F417F8A698774E953B4DC /* lumen-native-catalog-parity */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "lumen-native-catalog-parity"; path = ../..; sourceTree = SOURCE_ROOT; };
 		33722FDCBB7E6F155C53D08D /* KanbanBoardParityExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KanbanBoardParityExample.swift; sourceTree = "<group>"; };
 		33D07C5D814B076CDF538E41 /* CascaderParityExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CascaderParityExample.swift; sourceTree = "<group>"; };
 		3873A95F16EFE199CF8DE7CC /* TreeGridParityExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TreeGridParityExample.swift; sourceTree = "<group>"; };
@@ -269,7 +269,7 @@
 		DE258D8D5B5E09B006098DED /* Packages */ = {
 			isa = PBXGroup;
 			children = (
-				329F417F8A698774E953B4DC /* lumen-native-catalog-parity */,
+				1334BAFC4ABFABFA53C35C55 /* lumen-v4-finish */,
 			);
 			name = Packages;
 			sourceTree = "<group>";
@@ -689,7 +689,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0.2;
+				MARKETING_VERSION = 1.0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.santi020k.lumen.playground.apple.widget;
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 6.0;
@@ -710,7 +710,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.2;
+				MARKETING_VERSION = 1.0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.santi020k.lumen.playground.apple;
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 6.0;
@@ -749,7 +749,7 @@
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_WKApplication = YES;
 				INFOPLIST_KEY_WKWatchOnly = YES;
-				MARKETING_VERSION = 1.0.2;
+				MARKETING_VERSION = 1.0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.santi020k.lumen.playground.watch;
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
@@ -772,7 +772,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.2;
+				MARKETING_VERSION = 1.0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.santi020k.lumen.playground.apple;
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 6.0;
@@ -816,7 +816,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.0.2;
+				MARKETING_VERSION = 1.0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.santi020k.lumen.playground.apple;
 				PRODUCT_NAME = "Lumen Playground";
 				SDKROOT = macosx;
@@ -841,7 +841,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.0.2;
+				MARKETING_VERSION = 1.0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.santi020k.lumen.playground.apple;
 				PRODUCT_NAME = "Lumen Playground";
 				SDKROOT = macosx;
@@ -919,7 +919,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0.2;
+				MARKETING_VERSION = 1.0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.santi020k.lumen.playground.apple.widget;
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 6.0;
@@ -938,7 +938,7 @@
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_WKApplication = YES;
 				INFOPLIST_KEY_WKWatchOnly = YES;
-				MARKETING_VERSION = 1.0.2;
+				MARKETING_VERSION = 1.0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.santi020k.lumen.playground.watch;
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;

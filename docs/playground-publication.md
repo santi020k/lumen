@@ -150,7 +150,7 @@ Create an Xcode Cloud workflow named **App Store Release** for
 `LumenApplePlayground` scheme with these settings:
 
 - Start condition: tag changes matching `playground-ios-v*`.
-- Environment: stable Xcode 26 with the iOS 26 SDK and a stable compatible macOS image. Do not use
+- Environment: stable Xcode 27 (27A266a) with the iOS 27.0 SDK and a stable compatible macOS image. Do not use
   a beta macOS or future Xcode beta: App Store Connect rejects binaries produced with unsupported
   build provenance. Update the repository toolchain check and workflow together when Apple moves
   submissions to a newer SDK.
@@ -177,7 +177,8 @@ Mac application record.
 Xcode Cloud automatically runs `apps/playground-apple/ci_scripts/ci_post_clone.sh`. For release
 tags, the script derives `MARKETING_VERSION` from the tag and uses Xcode Cloud's positive integer
 `CI_BUILD_NUMBER` plus the documented one-build migration offset for `CURRENT_PROJECT_VERSION`.
-Before changing versions, it verifies that the build uses stable Xcode 26, the iOS 26 SDK, and a
+Before changing versions, it verifies a supported stable Xcode 26/iOS 26 or the verified
+Xcode 27 (27A266a)/iOS 27.0 toolchain and a
 non-beta macOS image. Other Xcode Cloud workflows retain the committed development versions. GitHub
 holds no Apple certificates, provisioning profiles, or App Store Connect keys; the `app-store`
 GitHub environment is only an approval boundary for creating the tag.
@@ -237,3 +238,19 @@ Infisical and is injected only for the monitor job.
 The supported Lumen 2 contract and remaining release-evidence gates must stay visible in documentation
 and release notes. The store application itself should be described as a reference catalog,
 trial, certification, or guarantee of application suitability.
+
+
+## V4 mobile preparation — October 5, 2026
+
+App Store Connect records iOS 1.0.2 (53) and public macOS 1.0, with macOS 1.0.1 already uploaded.
+The next shared Apple marketing version is 1.0.3; Xcode Cloud supplies each platform's next build
+counter. Google Play's latest upload is 1.0.2 (3); the next Android candidate is 1.0.3 (4).
+These are preparation records, not publication or review-submission evidence. Keep Apple manual
+release and Google Play managed publishing enabled so approved updates remain held for rollout.
+
+Apple now accepts the stable Xcode 27 SDKs for submissions; see
+[Apple submission guidance](https://developer.apple.com/app-store/submitting/) and
+[the September 14 release record](https://developer.apple.com/news/releases/).
+The toolchain guard admits verified Xcode 27 build 27A266a and keeps prerelease rejection.
+The phone component capture list is generated from the canonical catalog, with Mac-only controls
+excluded, so Xcode Cloud compares all current iPhone component captures.
