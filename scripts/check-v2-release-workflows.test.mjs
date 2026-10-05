@@ -205,7 +205,7 @@ test("the web canary executes every v2 release gate", () => {
     "pnpm run test:npm-release-provenance",
     "pnpm run test:published-package-family",
     "pnpm run test:v2-release-workflows",
-    "pnpm exec playwright install --with-deps chromium",
+    "uses: ./.github/actions/setup-playwright",
     "pnpm run test:a11y",
     "LUMEN_FRAMEWORK_CONFORMANCE_PROJECTS: chromium",
     "pnpm run test:framework-conformance",
