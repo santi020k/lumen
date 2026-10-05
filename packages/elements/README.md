@@ -722,7 +722,10 @@ React hosts can assign `type` on scalar input elements before or after connectio
 reflects that property to its native control without clearing the value. Register elements once
 at the app boundary and handle their bubbling native input events.
 
-`lumen-button` activates with Enter or a Space release. It honors canceled keys and blocks
+`lumen-button` activates with Enter or a Space release. Canceled Enter events, canceled Space
+keydown events before the host handles them, and canceled Space releases suppress activation. The
+host consumes Space keydown to prevent scrolling; cancel its key release or click to suppress activation
+from an ancestor after that keydown has been consumed. It blocks
 disabled/loading activation, including direct clicks. Blocking flags expose `aria-disabled`;
 removing them restores any prior application-supplied ARIA value. Native nested controls retain
 their own keyboard path.
