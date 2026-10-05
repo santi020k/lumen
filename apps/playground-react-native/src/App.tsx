@@ -1176,20 +1176,22 @@ const ChartExamples = ({
     )}
     <IntervalChartExamples isVisible={isVisible} />
     {isVisible('Heatmap') && (
-      <LumenHeatmap
-        colorScale="diverging"
-        heading="Weekly activity"
-        description="Change from typical activity · by day and hour"
-        data={['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].flatMap((day, row) => (
-          Array.from({ length: 12 }, (_, column) => {
-            const typical = Math.round(Math.sin((column - 3) / 2) * 14 + Math.cos(row) * 6)
-            const value = row === 0 && column === 0 ? 0 : typical
+      <View testID="component-heatmap">
+        <LumenHeatmap
+          colorScale="diverging"
+          heading="Weekly activity"
+          description="Change from typical activity · by day and hour"
+          data={['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].flatMap((day, row) => (
+            Array.from({ length: 12 }, (_, column) => {
+              const typical = Math.round(Math.sin((column - 3) / 2) * 14 + Math.cos(row) * 6)
+              const value = row === 0 && column === 0 ? 0 : typical
 
-            return { value: row === 4 && column === 6 ? null : value, x: `${column + 8}:00`, y: day }
-          })
-        ))}
-        label="Change in activity by day and hour"
-      />
+              return { value: row === 4 && column === 6 ? null : value, x: `${column + 8}:00`, y: day }
+            })
+          ))}
+          label="Change in activity by day and hour"
+        />
+      </View>
     )}
     {isVisible('Range chart') && (
       <LumenRangeChart
@@ -1629,162 +1631,167 @@ const Playground = ({
         >
           <ComponentSection description="Edit controls to exercise native focus, switch, and clear behavior." title="Forms">
             <AdvancedInputExamples isVisible={isVisible} />
-            <LumenTextField
-              accessibilityLabel="Email address"
-              autoCapitalize="none"
-              keyboardType="email-address"
-              onChangeText={setEmail}
-              value={email}
-            />
-            <LumenTextField
-              accessibilityLabel="Invalid project slug"
-              error
-              placeholder="Invalid value"
-              value="lumen playground"
-            />
-            <LumenTextarea
-              description="Summarize the native release."
-              label="Release notes"
-              onChangeText={setNotes}
-              value={notes}
-            />
-            <LumenDateField
-              description="Choose the planned native release date."
-              label="Release date"
-              minimumDate={new Date(2026, 8, 1)}
-              onValueChange={setReleaseDate}
-              value={releaseDate}
-            />
-            <LumenDateRangeField
-              description="The end date cannot precede the start date."
-              label="Reporting period"
-              minimumDate={new Date(2026, 8, 1)}
-              onValueChange={setReportingRange}
-              value={reportingRange}
-            />
-            <LumenPhoneInput
-              description={phoneNumber.e164 ?? 'Add the full hospital or OB number.'}
-              label="Hospital or OB phone number"
-              locale="en-US"
-              onValueChange={setPhoneNumber}
-              value={phoneNumber}
-            />
-            <View testID="component-picker">
-              <LumenPicker
-                label="Deployment region"
-                onValueChange={setRegion}
-                options={[
-                  { label: 'Americas', value: 'americas' },
-                  { label: 'Europe', value: 'europe' },
-                  { disabled: true, label: 'Asia Pacific (coming soon)', value: 'asia-pacific' }
-                ]}
-                value={region}
-              />
-            </View>
-            <View testID="component-slider">
-              <LumenSlider
-                label="Minimum speed"
-                max={5_000}
-                min={1_000}
-                onValueChange={setMinimumSpeed}
-                step={100}
-                value={minimumSpeed}
-                valueLabel={`${minimumSpeed} RPM`}
-              />
-            </View>
-            <View testID="component-range-slider">
-              <LumenRangeSlider
-                label="Speed range"
-                value={speedRange}
-                onValueChange={setSpeedRange}
-                min={1_000}
-                max={5_000}
-                step={100}
-                formatValue={value => `${value} RPM`}
-              />
-              <LumenRangeSlider
-                label="Capacidad"
-                value={[20, 80]}
-                onValueChange={() => undefined}
-                readOnly
-                startLabel="Mínimo"
-                endLabel="Máximo"
-                formatValue={value => `${value} %`}
-              />
-            </View>
-            <LumenFieldGroup
-              description="These controls retain independent focus and labels."
-              label="Publication checks"
-              required
+            <Visibility visible={isAnyVisible(
+              'Text field', 'Textarea', 'Field group', 'Toggle', 'Settings row', 'Search field', 'Date field', 'Date range field', 'Phone input', 'Picker', 'Slider', 'Range slider', 'Checkbox', 'Radio group', 'Segmented control', 'Tabs'
+            )}
             >
+              <LumenTextField
+                accessibilityLabel="Email address"
+                autoCapitalize="none"
+                keyboardType="email-address"
+                onChangeText={setEmail}
+                value={email}
+              />
+              <LumenTextField
+                accessibilityLabel="Invalid project slug"
+                error
+                placeholder="Invalid value"
+                value="lumen playground"
+              />
+              <LumenTextarea
+                description="Summarize the native release."
+                label="Release notes"
+                onChangeText={setNotes}
+                value={notes}
+              />
+              <LumenDateField
+                description="Choose the planned native release date."
+                label="Release date"
+                minimumDate={new Date(2026, 8, 1)}
+                onValueChange={setReleaseDate}
+                value={releaseDate}
+              />
+              <LumenDateRangeField
+                description="The end date cannot precede the start date."
+                label="Reporting period"
+                minimumDate={new Date(2026, 8, 1)}
+                onValueChange={setReportingRange}
+                value={reportingRange}
+              />
+              <LumenPhoneInput
+                description={phoneNumber.e164 ?? 'Add the full hospital or OB number.'}
+                label="Hospital or OB phone number"
+                locale="en-US"
+                onValueChange={setPhoneNumber}
+                value={phoneNumber}
+              />
+              <View testID="component-picker">
+                <LumenPicker
+                  label="Deployment region"
+                  onValueChange={setRegion}
+                  options={[
+                    { label: 'Americas', value: 'americas' },
+                    { label: 'Europe', value: 'europe' },
+                    { disabled: true, label: 'Asia Pacific (coming soon)', value: 'asia-pacific' }
+                  ]}
+                  value={region}
+                />
+              </View>
+              <View testID="component-slider">
+                <LumenSlider
+                  label="Minimum speed"
+                  max={5_000}
+                  min={1_000}
+                  onValueChange={setMinimumSpeed}
+                  step={100}
+                  value={minimumSpeed}
+                  valueLabel={`${minimumSpeed} RPM`}
+                />
+              </View>
+              <View testID="component-range-slider">
+                <LumenRangeSlider
+                  label="Speed range"
+                  value={speedRange}
+                  onValueChange={setSpeedRange}
+                  min={1_000}
+                  max={5_000}
+                  step={100}
+                  formatValue={value => `${value} RPM`}
+                />
+                <LumenRangeSlider
+                  label="Capacidad"
+                  value={[20, 80]}
+                  onValueChange={() => undefined}
+                  readOnly
+                  startLabel="Mínimo"
+                  endLabel="Máximo"
+                  formatValue={value => `${value} %`}
+                />
+              </View>
+              <LumenFieldGroup
+                description="These controls retain independent focus and labels."
+                label="Publication checks"
+                required
+              >
+                <LumenCheckbox
+                  checked={termsAccepted}
+                  label="Confirm accessibility review"
+                  onCheckedChange={setTermsAccepted}
+                />
+              </LumenFieldGroup>
+              <LumenToggle
+                description="Example state only. The playground does not register for notifications."
+                label="Demo notification preference"
+                onValueChange={setNotificationsEnabled}
+                value={notificationsEnabled}
+              />
+              <LumenSettingsRow
+                control={(
+                  <LumenToggle
+                    label="Demo automatic updates"
+                    onValueChange={setNotificationsEnabled}
+                    showLabel={false}
+                    value={notificationsEnabled}
+                  />
+                )}
+                description="Example state only. The playground does not download updates."
+                graphic={<LumenIcon decorative name="check" size="sm" />}
+                title="Demo automatic updates"
+              />
               <LumenCheckbox
                 checked={termsAccepted}
+                description="Required before publishing this native component set."
                 label="Confirm accessibility review"
                 onCheckedChange={setTermsAccepted}
               />
-            </LumenFieldGroup>
-            <LumenToggle
-              description="Example state only. The playground does not register for notifications."
-              label="Demo notification preference"
-              onValueChange={setNotificationsEnabled}
-              value={notificationsEnabled}
-            />
-            <LumenSettingsRow
-              control={(
-                <LumenToggle
-                  label="Demo automatic updates"
-                  onValueChange={setNotificationsEnabled}
-                  showLabel={false}
-                  value={notificationsEnabled}
-                />
-              )}
-              description="Example state only. The playground does not download updates."
-              graphic={<LumenIcon decorative name="check" size="sm" />}
-              title="Demo automatic updates"
-            />
-            <LumenCheckbox
-              checked={termsAccepted}
-              description="Required before publishing this native component set."
-              label="Confirm accessibility review"
-              onCheckedChange={setTermsAccepted}
-            />
-            <LumenRadioGroup
-              label="Performance profile"
-              onValueChange={setProfile}
-              options={[
-                { description: 'Reduce background activity.', label: 'Quiet', value: 'quiet' },
-                { description: 'Recommended for most projects.', label: 'Balanced', value: 'balanced' },
-                { description: 'Prioritize responsiveness.', label: 'Performance', value: 'performance' }
-              ]}
-              value={profile}
-            />
-            <LumenSegmentedControl
-              label="Control density"
-              onValueChange={setDensity}
-              options={[
-                { label: 'Compact', value: 'compact' },
-                { label: 'Comfortable', value: 'comfortable' },
-                { disabled: true, label: 'Spacious', value: 'spacious' }
-              ]}
-              value={density}
-            />
-            <Visibility visible={isVisible('Tabs')}>
-              <LumenTabs
-                label="Workspace views"
-                onValueChange={setActiveTab}
+              <LumenRadioGroup
+                label="Performance profile"
+                onValueChange={setProfile}
                 options={[
-                  { label: 'Overview', value: 'overview' },
-                  { label: 'Activity', value: 'activity' },
-                  { disabled: true, label: 'Billing', value: 'billing' }
+                  { description: 'Reduce background activity.', label: 'Quiet', value: 'quiet' },
+                  { description: 'Recommended for most projects.', label: 'Balanced', value: 'balanced' },
+                  { description: 'Prioritize responsiveness.', label: 'Performance', value: 'performance' }
                 ]}
-                value={activeTab}
-              >
-                <LumenSurface padding="md" tone="muted">
-                  <LumenText variant="label">
-                    {activeTab === 'overview' ? 'Workspace health is ready.' : 'Three components updated today.'}
-                  </LumenText>
-                </LumenSurface>
-              </LumenTabs>
+                value={profile}
+              />
+              <LumenSegmentedControl
+                label="Control density"
+                onValueChange={setDensity}
+                options={[
+                  { label: 'Compact', value: 'compact' },
+                  { label: 'Comfortable', value: 'comfortable' },
+                  { disabled: true, label: 'Spacious', value: 'spacious' }
+                ]}
+                value={density}
+              />
+              <Visibility visible={isVisible('Tabs')}>
+                <LumenTabs
+                  label="Workspace views"
+                  onValueChange={setActiveTab}
+                  options={[
+                    { label: 'Overview', value: 'overview' },
+                    { label: 'Activity', value: 'activity' },
+                    { disabled: true, label: 'Billing', value: 'billing' }
+                  ]}
+                  value={activeTab}
+                >
+                  <LumenSurface padding="md" tone="muted">
+                    <LumenText variant="label">
+                      {activeTab === 'overview' ? 'Workspace health is ready.' : 'Three components updated today.'}
+                    </LumenText>
+                  </LumenSurface>
+                </LumenTabs>
+              </Visibility>
             </Visibility>
           </ComponentSection>
         </Visibility>

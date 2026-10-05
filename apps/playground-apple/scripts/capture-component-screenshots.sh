@@ -57,7 +57,7 @@ for component in "${components[@]}"; do
   xcrun simctl terminate "${device_id}" "${bundle_id}" 2>/dev/null || true
   xcrun simctl launch "${device_id}" "${bundle_id}" --component "${component}"
   # Allow SwiftUI layout and the generated icon asset catalog to settle before capture.
-  sleep "${LUMEN_CAPTURE_SETTLE_SECONDS:-2}"
+  sleep "${LUMEN_CAPTURE_SETTLE_SECONDS:-6}"
   xcrun simctl io "${device_id}" screenshot "${output_dir}/${slug}.png"
 done
 

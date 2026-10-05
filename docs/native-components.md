@@ -1002,6 +1002,19 @@ keyboard, text scaling, contrast, and reduced-motion verification on representat
 
 ## Shared v4 advanced controls
 
+Each advanced control has a dedicated React Native, Apple and Android component page with its
+adapter-specific usage, API types and captured example. Start with the
+[React Native catalog](https://lumen.santi020k.com/docs/react-native/components),
+[Apple catalog](https://lumen.santi020k.com/docs/apple/components) or
+[Android catalog](https://lumen.santi020k.com/docs/android/components).
+React Native interactive previews and captures use Expo web; Apple phone captures use the iPhone
+simulator and Android captures use emulators. The four WidgetKit examples are explicitly labeled
+macOS SwiftUI previews, not extension or physical-device qualification.
+
+The documentation coverage test compares both shared and platform-specific contracts against the
+native registry. The capture check then requires an image for every documented adapter component,
+including WidgetKit, and verifies file digests and dimensions.
+
 React Native, SwiftUI and Compose provide `LumenNumberField`, `LumenTimeField`,
 `LumenAutocomplete`, `LumenPasswordField`, `LumenInputOTP` and `LumenImageComparison`.
 React Native time selection is exported from the optional `/datetime` entrypoint.

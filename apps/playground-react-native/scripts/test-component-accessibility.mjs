@@ -116,7 +116,7 @@ try {
 
     await page.goto(url.href, { waitUntil: 'load' })
 
-    const disclosure = page.getByRole('button', { name: /View chart data/ })
+    const disclosure = page.getByTestId('component-heatmap').getByRole('button', { name: /View chart data/ })
 
     await expect(page.getByText('Weekly activity', { exact: true })).toBeVisible()
 
@@ -284,6 +284,27 @@ try {
 
       assert.ok(bounds && bounds.x >= 0 && bounds.x + bounds.width <= width)
     }
+  }
+
+  for (const [name, slug] of [
+    ['Number field', 'number-field'],
+    ['Time field', 'time-field'],
+    ['Autocomplete', 'autocomplete'],
+    ['Password field', 'password-field'],
+    ['Input OTP', 'input-otp'],
+    ['Image comparison', 'image-comparison']
+  ]) {
+    url.searchParams.set('component', name)
+
+    url.searchParams.set('embed', 'true')
+
+    await page.goto(url.href, { waitUntil: 'load' })
+
+    await expect(page.getByTestId(`component-${slug}`)).toBeVisible()
+
+    await expect(page.getByLabel('Email address', { exact: true })).toHaveCount(0)
+
+    await expect(page.getByLabel('Invalid project slug', { exact: true })).toHaveCount(0)
   }
 } finally {
   await browser.close()

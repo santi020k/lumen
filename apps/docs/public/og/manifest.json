@@ -1969,6 +1969,22 @@
       "pathname": "/docs/apple/components/alert",
       "title": "Alert for Apple - Lumen UI"
     },
+    "/docs/apple/components/autocomplete": {
+      "alt": "Autocomplete for Apple — SwiftUI social preview from Lumen UI",
+      "description": "Autocomplete for Apple / SwiftUI: native usage, API reference, and accessibility guidance.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--autocomplete.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--autocomplete.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/autocomplete",
+      "title": "Autocomplete for Apple - Lumen UI"
+    },
     "/docs/apple/components/avatar": {
       "alt": "Avatar for Apple — SwiftUI social preview from Lumen UI",
       "description": "Avatar for Apple / SwiftUI: native usage, API reference, and accessibility guidance.",
@@ -2561,6 +2577,22 @@
       "pathname": "/docs/apple/components/illustration",
       "title": "Illustration for Apple - Lumen UI"
     },
+    "/docs/apple/components/image-comparison": {
+      "alt": "Image comparison for Apple — SwiftUI social preview from Lumen UI",
+      "description": "Image comparison for Apple / SwiftUI: native usage, API reference, and accessibility guidance.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--image-comparison.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--image-comparison.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/image-comparison",
+      "title": "Image comparison for Apple - Lumen UI"
+    },
     "/docs/apple/components/image": {
       "alt": "Image for Apple — SwiftUI social preview from Lumen UI",
       "description": "Image for Apple / SwiftUI: native usage, API reference, and accessibility guidance.",
@@ -2592,6 +2624,22 @@
       ],
       "pathname": "/docs/apple/components",
       "title": "Apple / SwiftUI components - Lumen UI"
+    },
+    "/docs/apple/components/input-otp": {
+      "alt": "Input OTP for Apple — SwiftUI social preview from Lumen UI",
+      "description": "Input OTP for Apple / SwiftUI: native usage, API reference, and accessibility guidance.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--input-otp.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--input-otp.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/input-otp",
+      "title": "Input OTP for Apple - Lumen UI"
     },
     "/docs/apple/components/kanban-board": {
       "alt": "Kanban board for Apple — SwiftUI social preview from Lumen UI",
@@ -2752,6 +2800,38 @@
       ],
       "pathname": "/docs/apple/components/navigation-bar",
       "title": "Navigation bar for Apple - Lumen UI"
+    },
+    "/docs/apple/components/number-field": {
+      "alt": "Number field for Apple — SwiftUI social preview from Lumen UI",
+      "description": "Number field for Apple / SwiftUI: native usage, API reference, and accessibility guidance.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--number-field.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--number-field.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/number-field",
+      "title": "Number field for Apple - Lumen UI"
+    },
+    "/docs/apple/components/password-field": {
+      "alt": "Password field for Apple — SwiftUI social preview from Lumen UI",
+      "description": "Password field for Apple / SwiftUI: native usage, API reference, and accessibility guidance.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--password-field.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--password-field.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/password-field",
+      "title": "Password field for Apple - Lumen UI"
     },
     "/docs/apple/components/phone-input": {
       "alt": "Phone input for Apple — SwiftUI social preview from Lumen UI",
@@ -3312,6 +3392,22 @@
       ],
       "pathname": "/docs/apple/components/theme",
       "title": "Theme for Apple - Lumen UI"
+    },
+    "/docs/apple/components/time-field": {
+      "alt": "Time field for Apple — SwiftUI social preview from Lumen UI",
+      "description": "Time field for Apple / SwiftUI: native usage, API reference, and accessibility guidance.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--time-field.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--time-field.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/time-field",
+      "title": "Time field for Apple - Lumen UI"
     },
     "/docs/apple/components/timeline": {
       "alt": "Timeline for Apple — SwiftUI social preview from Lumen UI",
@@ -7313,6 +7409,22 @@
       "pathname": "/docs/react-native/components/alert",
       "title": "Alert for React Native - Lumen UI"
     },
+    "/docs/react-native/components/autocomplete": {
+      "alt": "Autocomplete for React Native — React Native social preview from Lumen UI",
+      "description": "Autocomplete for React Native: native usage, API reference, and accessibility guidance.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--autocomplete.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--autocomplete.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/autocomplete",
+      "title": "Autocomplete for React Native - Lumen UI"
+    },
     "/docs/react-native/components/avatar": {
       "alt": "Avatar for React Native — React Native social preview from Lumen UI",
       "description": "Avatar for React Native: native usage, API reference, and accessibility guidance.",
@@ -7921,6 +8033,22 @@
       "pathname": "/docs/react-native/components/illustration",
       "title": "Illustration for React Native - Lumen UI"
     },
+    "/docs/react-native/components/image-comparison": {
+      "alt": "Image comparison for React Native — React Native social preview from Lumen UI",
+      "description": "Image comparison for React Native: native usage, API reference, and accessibility guidance.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--image-comparison.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--image-comparison.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/image-comparison",
+      "title": "Image comparison for React Native - Lumen UI"
+    },
     "/docs/react-native/components/image": {
       "alt": "Image for React Native — React Native social preview from Lumen UI",
       "description": "Image for React Native: native usage, API reference, and accessibility guidance.",
@@ -7952,6 +8080,22 @@
       ],
       "pathname": "/docs/react-native/components",
       "title": "React Native components - Lumen UI"
+    },
+    "/docs/react-native/components/input-otp": {
+      "alt": "Input OTP for React Native — React Native social preview from Lumen UI",
+      "description": "Input OTP for React Native: native usage, API reference, and accessibility guidance.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--input-otp.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--input-otp.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/input-otp",
+      "title": "Input OTP for React Native - Lumen UI"
     },
     "/docs/react-native/components/kanban-board": {
       "alt": "Kanban board for React Native — React Native social preview from Lumen UI",
@@ -8112,6 +8256,38 @@
       ],
       "pathname": "/docs/react-native/components/navigation-bar",
       "title": "Navigation bar for React Native - Lumen UI"
+    },
+    "/docs/react-native/components/number-field": {
+      "alt": "Number field for React Native — React Native social preview from Lumen UI",
+      "description": "Number field for React Native: native usage, API reference, and accessibility guidance.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--number-field.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--number-field.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/number-field",
+      "title": "Number field for React Native - Lumen UI"
+    },
+    "/docs/react-native/components/password-field": {
+      "alt": "Password field for React Native — React Native social preview from Lumen UI",
+      "description": "Password field for React Native: native usage, API reference, and accessibility guidance.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--password-field.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--password-field.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/password-field",
+      "title": "Password field for React Native - Lumen UI"
     },
     "/docs/react-native/components/phone-input": {
       "alt": "Phone input for React Native — React Native social preview from Lumen UI",
@@ -8624,6 +8800,22 @@
       ],
       "pathname": "/docs/react-native/components/theme",
       "title": "Theme for React Native - Lumen UI"
+    },
+    "/docs/react-native/components/time-field": {
+      "alt": "Time field for React Native — React Native social preview from Lumen UI",
+      "description": "Time field for React Native: native usage, API reference, and accessibility guidance.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--time-field.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--time-field.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/time-field",
+      "title": "Time field for React Native - Lumen UI"
     },
     "/docs/react-native/components/timeline": {
       "alt": "Timeline for React Native — React Native social preview from Lumen UI",

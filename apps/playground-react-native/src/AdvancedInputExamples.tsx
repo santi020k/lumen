@@ -165,37 +165,39 @@ export const AdvancedInputExamples = ({ isVisible }: { isVisible: (name: string)
         }}
       />
       <LumenToggle label={copy.readOnly} value={readOnly} onValueChange={setReadOnly} />
-      {isVisible('Number field') ? <LumenNumberField label={copy.amount} value={amount} onValueChange={setAmount} locale={locale} min="0" max="100" step="0.1" incrementLabel={copy.increase} decrementLabel={copy.decrease} invalidNumberLabel={copy.invalid} outOfRangeLabel={copy.range} readOnly={readOnly} /> : null}
-      {isVisible('Password field') ? <LumenPasswordField label={copy.password} value={password} onValueChange={setPassword} showLabel={copy.show} hideLabel={copy.hide} newPassword readOnly={readOnly} /> : null}
-      {isVisible('Input OTP') ? <LumenInputOTP label={copy.code} value={code} onValueChange={setCode} readOnly={readOnly} /> : null}
-      {isVisible('Time field') ? <LumenTimeField label={copy.time} value={time} onValueChange={setTime} locale={locale} minTime={{ hour: 9, minute: 0 }} maxTime={{ hour: 17, minute: 0 }} placeholder={copy.choose} confirmLabel={copy.confirm} dismissLabel={copy.cancel} rangeErrorLabel={copy.timeRange} readOnly={readOnly} /> : null}
+      {isVisible('Number field') ? <View testID="component-number-field"><LumenNumberField label={copy.amount} value={amount} onValueChange={setAmount} locale={locale} min="0" max="100" step="0.1" incrementLabel={copy.increase} decrementLabel={copy.decrease} invalidNumberLabel={copy.invalid} outOfRangeLabel={copy.range} readOnly={readOnly} /></View> : null}
+      {isVisible('Password field') ? <View testID="component-password-field"><LumenPasswordField label={copy.password} value={password} onValueChange={setPassword} showLabel={copy.show} hideLabel={copy.hide} newPassword readOnly={readOnly} /></View> : null}
+      {isVisible('Input OTP') ? <View testID="component-input-otp"><LumenInputOTP label={copy.code} value={code} onValueChange={setCode} readOnly={readOnly} /></View> : null}
+      {isVisible('Time field') ? <View testID="component-time-field"><LumenTimeField label={copy.time} value={time} onValueChange={setTime} locale={locale} minTime={{ hour: 9, minute: 0 }} maxTime={{ hour: 17, minute: 0 }} placeholder={copy.choose} confirmLabel={copy.confirm} dismissLabel={copy.cancel} rangeErrorLabel={copy.timeRange} readOnly={readOnly} /></View> : null}
       <MultiSelectExample spanish={spanish} readOnly={readOnly} visible={isVisible('Multi select')} />
       {isVisible('Autocomplete') ?
         (
           <>
             <LumenSegmentedControl label={copy.state} value={state} options={[{ label: copy.ready, value: 'ready' }, { label: copy.pending, value: 'loading' }, { label: copy.noResults, value: 'empty' }, { label: 'Error', value: 'error' }]} onValueChange={setState} />
-            <LumenAutocomplete
-              label={copy.city}
-              query={query}
-              onQueryChange={value => {
-                setQuery(value)
+            <View testID="component-autocomplete">
+              <LumenAutocomplete
+                label={copy.city}
+                query={query}
+                onQueryChange={value => {
+                  setQuery(value)
 
-                setCity('')
-              }}
-              value={city}
-              onValueChange={setCity}
-              options={results}
-              loading={state === 'loading'}
-              {...(state === 'error' ? { resultsErrorMessage: copy.error } : {})}
-              onRetry={() => {
-                setState('ready')
-              }}
-              loadingLabel={copy.loading}
-              emptyLabel={copy.empty}
-              retryLabel={copy.retry}
-              dismissLabel={copy.close}
-              readOnly={readOnly}
-            />
+                  setCity('')
+                }}
+                value={city}
+                onValueChange={setCity}
+                options={results}
+                loading={state === 'loading'}
+                {...(state === 'error' ? { resultsErrorMessage: copy.error } : {})}
+                onRetry={() => {
+                  setState('ready')
+                }}
+                loadingLabel={copy.loading}
+                emptyLabel={copy.empty}
+                retryLabel={copy.retry}
+                dismissLabel={copy.close}
+                readOnly={readOnly}
+              />
+            </View>
             <LumenButton
               intent="quiet"
               onPress={() => {
@@ -208,7 +210,7 @@ export const AdvancedInputExamples = ({ isVisible }: { isVisible: (name: string)
           </>
         ) :
         null}
-      {isVisible('Image comparison') ? <LumenImageComparison label={copy.compare} before={beforeImage} after={afterImage} value={comparison} onValueChange={setComparison} beforeLabel={copy.before} afterLabel={copy.after} locale={locale} enabled={!readOnly} /> : null}
+      {isVisible('Image comparison') ? <View testID="component-image-comparison"><LumenImageComparison label={copy.compare} before={beforeImage} after={afterImage} value={comparison} onValueChange={setComparison} beforeLabel={copy.before} afterLabel={copy.after} locale={locale} enabled={!readOnly} /></View> : null}
     </>
   )
 }

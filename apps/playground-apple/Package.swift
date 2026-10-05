@@ -14,6 +14,11 @@ let package = Package(
                 .product(name: "LumenUI", package: "lumen")
             ]
         ),
+        .executableTarget(
+            name: "LumenWidgetCaptures",
+            dependencies: [.product(name: "LumenWidgetUI", package: "lumen")],
+            path: "Sources/LumenWidgetCaptures"
+        ),
         .testTarget(
             name: "LumenApplePlaygroundTests",
             dependencies: ["LumenApplePlayground"]
