@@ -90,6 +90,10 @@ dependencies. Cache hits accelerate work but never replace the required checks o
 Run `pnpm run ci:preflight` locally for the same early feedback; `pnpm run validate` remains the
 complete release gate.
 
+The Swift API baseline builds only arm64 because its symbol extraction targets arm64 on every
+Apple SDK. It still checks all supported platforms and both public modules against the unchanged
+classified baselines. This avoids compiling architectures the API checker does not consume.
+
 Dependency age exceptions must identify the exact reviewed package version. Use a temporary exact-version exception for an approved security fix that cannot wait for
 the normal 24-hour hold, then remove it once that hold expires. The
 `http-cache-semantics@4.3.0` exception was retired after 2026-10-05 02:56:06 UTC; its fixed

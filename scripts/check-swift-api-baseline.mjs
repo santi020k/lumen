@@ -1,3 +1,5 @@
+// cspell:words ARCHS
+
 import assert from 'node:assert/strict'
 import { execFileSync } from 'node:child_process'
 import {
@@ -130,6 +132,9 @@ const extractPlatformSymbols = (platform, temporaryRoot) => {
     platform.destination,
     '-derivedDataPath',
     derivedData,
+    // Symbol graphs below target arm64 on every SDK; other architectures are not consumed.
+    'ARCHS=arm64',
+    'ONLY_ACTIVE_ARCH=YES',
     'CODE_SIGNING_ALLOWED=NO',
     'build'
   ])
