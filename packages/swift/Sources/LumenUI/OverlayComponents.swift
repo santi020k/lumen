@@ -101,12 +101,12 @@ private struct LumenSheetModifier<SheetContent: View, Actions: View>: ViewModifi
     @Binding var isPresented: Bool
 
     let actions: Actions
-    let description: LocalizedStringKey?
+    let description: LumenTextContent?
     let dismissible: Bool
     let onDismiss: () -> Void
     let sheetContent: SheetContent
     let scrollable: Bool
-    let title: LocalizedStringKey?
+    let title: LumenTextContent?
 
     func body(content: Content) -> some View {
         content.sheet(isPresented: $isPresented, onDismiss: onDismiss) {
@@ -129,8 +129,8 @@ struct LumenSheetLayout<SheetContent: View, Actions: View>: View {
     @Environment(\.verticalSizeClass) private var verticalSizeClass
 #endif
 
-    let title: LocalizedStringKey?
-    let description: LocalizedStringKey?
+    let title: LumenTextContent?
+    let description: LumenTextContent?
     let scrollable: Bool
     let sheetContent: SheetContent
     let actions: Actions
@@ -139,12 +139,12 @@ struct LumenSheetLayout<SheetContent: View, Actions: View>: View {
         if title != nil || description != nil {
             VStack(alignment: .leading, spacing: LumenSpacing.sm) {
                 if let title {
-                    Text(title)
+                    title.text
                         .font(.title2.weight(.semibold))
                         .accessibilityAddTraits(.isHeader)
                 }
                 if let description {
-                    Text(description).font(.callout).foregroundStyle(.secondary)
+                    description.text.font(.callout).foregroundStyle(.secondary)
                 }
             }
         }
@@ -198,6 +198,28 @@ public extension View {
         isPresented: Binding<Bool>,
         title: LocalizedStringKey? = nil,
         description: LocalizedStringKey? = nil,
+        dismissible: Bool = true,
+        scrollable: Bool = true,
+        onDismiss: @escaping () -> Void = {},
+        @ViewBuilder actions: () -> Actions,
+        @ViewBuilder content: () -> SheetContent
+    ) -> some View {
+        lumenSheetContent(
+            isPresented: isPresented,
+            title: title.map(LumenTextContent.localized),
+            description: description.map(LumenTextContent.localized),
+            dismissible: dismissible,
+            scrollable: scrollable,
+            onDismiss: onDismiss,
+            actions: actions,
+            content: content
+        )
+    }
+
+    internal func lumenSheetContent<SheetContent: View, Actions: View>(
+        isPresented: Binding<Bool>,
+        title: LumenTextContent? = nil,
+        description: LumenTextContent? = nil,
         dismissible: Bool = true,
         scrollable: Bool = true,
         onDismiss: @escaping () -> Void = {},

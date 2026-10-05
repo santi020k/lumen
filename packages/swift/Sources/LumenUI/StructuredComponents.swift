@@ -633,7 +633,7 @@ public struct LumenSectionHeader<Actions: View>: View {
                         .foregroundStyle(theme.colors.ink)
 
                     if let count {
-                        LumenBadge(LocalizedStringKey(count), tone: .neutral)
+                        LumenBadge(.verbatim(count), tone: .neutral)
                             .monospacedDigit()
                     }
                 }

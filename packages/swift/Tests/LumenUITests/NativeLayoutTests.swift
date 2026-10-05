@@ -62,8 +62,8 @@ private func measuredSize<Content: View>(of content: Content) -> CGSize {
 
     for textSize: DynamicTypeSize in [.large, .accessibility5] {
         let layout = LumenSheetLayout(
-            title: "Edit workspace",
-            description: "Long content remains scrollable",
+            title: .localizedKey("Edit workspace"),
+            description: .localizedKey("Long content remains scrollable"),
             scrollable: true,
             sheetContent: VStack { ForEach(0..<20) { Text("Field \($0)") } },
             actions: LumenButton("Save changes", action: {})
@@ -72,6 +72,28 @@ private func measuredSize<Content: View>(of content: Content) -> CGSize {
         #expect(size.width == 320)
         #expect(size.height == 300)
     }
+}
+
+@MainActor
+@Test func sectionCountsPreserveApplicationResolvedMarkdownCharacters() {
+    let literal = measuredSize(of: LumenSectionHeader("Items", count: "**3**") { EmptyView() })
+    let plain = measuredSize(of: LumenSectionHeader("Items", count: "3") { EmptyView() })
+
+    #expect(literal.width > plain.width)
+}
+
+@MainActor
+@Test func sheetHeadingsPreserveApplicationResolvedMarkdownCharacters() {
+    let literal = measuredSize(of: LumenSheetLayout(
+        title: .verbatim("**Status**"), description: nil, scrollable: false,
+        sheetContent: EmptyView(), actions: EmptyView()
+    ))
+    let plain = measuredSize(of: LumenSheetLayout(
+        title: .verbatim("Status"), description: nil, scrollable: false,
+        sheetContent: EmptyView(), actions: EmptyView()
+    ))
+
+    #expect(literal.width > plain.width)
 }
 
 @MainActor
