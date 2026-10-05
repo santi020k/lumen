@@ -40,11 +40,16 @@ jobs:
         if: matrix.check == 'swift'
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
-          path: |
-            .build
-            apps/playground-apple/.build
-          key: swift-${{ runner.os }}-${{ runner.arch }}-26.5-${{ hashFiles('Package.swift', 'Package.resolved', 'apps/playground-apple/Package.swift', 'apps/playground-apple/Package.resolved') }}-${{ github.sha }}
-          restore-keys: swift-${{ runner.os }}-${{ runner.arch }}-26.5-${{ hashFiles('Package.swift', 'Package.resolved', 'apps/playground-apple/Package.swift', 'apps/playground-apple/Package.resolved') }}-
+          path: .build
+          key: swift-${{ runner.os }}-${{ runner.arch }}-26.5-${{ hashFiles('Package.swift', 'Package.resolved') }}-${{ github.sha }}
+          restore-keys: swift-${{ runner.os }}-${{ runner.arch }}-26.5-${{ hashFiles('Package.swift', 'Package.resolved') }}-
+      - name: Restore playground Swift build cache
+        if: matrix.check == 'swift'
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: apps/playground-apple/.build
+          key: swift-playground-${{ runner.os }}-${{ runner.arch }}-26.5-${{ hashFiles('Package.swift', 'Package.resolved', 'apps/playground-apple/Package.swift', 'apps/playground-apple/Package.resolved') }}-${{ github.sha }}
+          restore-keys: swift-playground-${{ runner.os }}-${{ runner.arch }}-26.5-${{ hashFiles('Package.swift', 'Package.resolved', 'apps/playground-apple/Package.swift', 'apps/playground-apple/Package.resolved') }}-
       - name: Set up cached browsers
         if: matrix.check == 'visual' || matrix.check == 'framework-visual'
         uses: ./.github/actions/setup-playwright
