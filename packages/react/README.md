@@ -941,3 +941,15 @@ including under Strict Mode. Controlled values remain owned by the application.
 
 Highlighted Code updates generated region labels and removes its generated focus attributes when
 wrapping is enabled, while preserving consumer-owned accessibility attributes.
+
+## Advanced table views
+
+`DataTableView` is an opt-in TanStack Table companion for application-owned record tables. It adds
+search, exact column filters, column visibility, density, pagination and controlled sorting state
+while preserving your cells, details, actions and query ownership. Import it from
+`@santi020k/lumen-react/components/data-table-view` or the package root. Load
+`@santi020k/lumen-react/styles/data-table-view.css` after the base stylesheet. See the
+[composition and server-mode guide](../../docs/data-table-views.md).
+
+Existing `Table` and `DataTable` APIs remain available. This integration is React-specific and does
+not change the Astro or Elements runtime.

@@ -2568,6 +2568,10 @@
           "import": "./dist/data-table.js",
           "types": "./dist/data-table.d.ts"
         },
+        "./components/data-table-view": {
+          "import": "./dist/data-table-view.js",
+          "types": "./dist/data-table-view.d.ts"
+        },
         "./components/date-range-calendar": {
           "import": "./dist/date-range-calendar.js",
           "types": "./dist/date-range-calendar.d.ts"
@@ -2607,7 +2611,8 @@
           "types": "./dist/server.d.ts"
         },
         "./styles.css": "./styles.css",
-        "./styles/critical.css": "./styles/critical.css"
+        "./styles/critical.css": "./styles/critical.css",
+        "./styles/data-table-view.css": "./styles/data-table-view.css"
       },
       "packageJson": "packages/react/package.json",
       "packageName": "@santi020k/lumen-react",
@@ -2740,6 +2745,12 @@
         "DataTableSort",
         "DataTableSortControls",
         "DataTableSortControlsProps",
+        "DataTableView",
+        "DataTableViewColumn",
+        "DataTableViewLabels",
+        "DataTableViewProps",
+        "DataTableViewResult",
+        "DataTableViewState",
         "DatePicker",
         "DatePickerProps",
         "DateRangeCalendar",
@@ -3232,6 +3243,12 @@
         "DataTableSort",
         "DataTableSortControls",
         "DataTableSortControlsProps",
+        "DataTableView",
+        "DataTableViewColumn",
+        "DataTableViewLabels",
+        "DataTableViewProps",
+        "DataTableViewResult",
+        "DataTableViewState",
         "DatePicker",
         "DatePickerProps",
         "DateRangeCalendar",

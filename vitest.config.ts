@@ -66,7 +66,7 @@ export default defineConfig({
       project('core', 'packages/core'),
       project('lumen', 'packages/lumen'),
       project('mcp', 'packages/mcp'),
-      project('react', 'packages/react'),
+      project('react', 'packages/react', { include: ['src/**/*.test.ts', 'src/**/*.test.tsx'] }),
       project('react-native', 'packages/react-native', {
         include: ['src/**/*.test.ts', 'src/**/*.test.tsx']
       }),
