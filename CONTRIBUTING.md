@@ -94,6 +94,11 @@ The Swift API baseline builds only arm64 because its symbol extraction targets a
 Apple SDK. It still checks all supported platforms and both public modules against the unchanged
 classified baselines. This avoids compiling architectures the API checker does not consume.
 
+Run `pnpm run test:visual` for documentation screenshots. It builds the dependencies and docs through
+`prepare:visual` before starting Playwright, so the server-start budget covers only the preview
+server. `test:visual:update` uses the same preparation. Direct `pnpm exec playwright test` requires
+`pnpm run prepare:visual` first. Screenshot assertions and server-start limits remain unchanged.
+
 Dependency age exceptions must identify the exact reviewed package version. Use a temporary exact-version exception for an approved security fix that cannot wait for
 the normal 24-hour hold, then remove it once that hold expires. The
 `http-cache-semantics@4.3.0` exception was retired after 2026-10-05 02:56:06 UTC; its fixed
