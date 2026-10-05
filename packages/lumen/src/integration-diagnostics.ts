@@ -625,6 +625,36 @@ const skipRuntimeQuotedText = (source: string, start: number): number => {
   return source.length
 }
 
+const runtimeRegexPrefixes = new Set(['{', '(', '[', '=', ':', ',', ';', '!', '?', '&', '|', '+', '*', '%', '~', '^', '<', '>', '-'])
+
+const isRuntimeRegexStart = (source: string, start: number): boolean => {
+  let previous = start - 1
+
+  while (previous >= 0 && /\s/u.test(source[previous] ?? '')) previous -= 1
+
+  return runtimeRegexPrefixes.has(source[previous] ?? '')
+}
+
+const skipRuntimeRegex = (source: string, start: number): number => {
+  let cursor = start + 1
+  let inClass = false
+
+  while (cursor < source.length) {
+    const character = source[cursor]
+
+    if (character === '\\') cursor += 2
+    else {
+      if (character === '[') inClass = true
+      else if (character === ']') inClass = false
+      else if (character === '/' && !inClass) return cursor + 1
+
+      cursor += 1
+    }
+  }
+
+  return source.length
+}
+
 const skipRuntimeExpressionTrivia = (source: string, start: number, depth: number): number => {
   if (depth === 0) return start
 
@@ -641,6 +671,8 @@ const skipRuntimeExpressionTrivia = (source: string, start: number, depth: numbe
 
     return end < 0 ? source.length : end + 1
   }
+
+  if (source[start] === '/' && isRuntimeRegexStart(source, start)) return skipRuntimeRegex(source, start)
 
   return start
 }
@@ -709,10 +741,17 @@ const countRuntimeMounts = (entry: SourceEntry): number => {
 
     const end = getMarkupNameEnd(entry.source, start)
     const name = entry.source.slice(start + 1, end)
+    const tagEnd = findMarkupTagEnd(entry.source, end, true)
+
+    if (tagEnd < 0) {
+      start += 1
+
+      continue
+    }
 
     if (names.has(name) && runtimeTagDelimiter.test(entry.source[end] ?? '')) count += 1
 
-    start = skipRuntimeRawText(lowerSource, name, findMarkupTagEnd(entry.source, end) + 1)
+    start = skipRuntimeRawText(lowerSource, name, tagEnd + 1)
   }
 
   return count

@@ -109,7 +109,9 @@ describe('Lumen integration diagnostics', () => {
     '{\'<Runtime />\'}',
     '{`<Runtime />`}',
     '{/* <Runtime /> */ null}',
-    '{// <Runtime />\n null}'
+    '{// <Runtime />\n null}',
+    '{/<Runtime>/.test("x")}',
+    '{/[<Runtime>\\/]/.test("x")}'
   ])('ignores runtime examples in raw text and expressions: %s', async example => {
     const root = await mkdtemp(join(tmpdir(), 'lumen-doctor-runtime-example-'))
 
@@ -131,6 +133,8 @@ describe('Lumen integration diagnostics', () => {
   test.each([
     ['Runtime', `<script>const text = "${'\u0130'.repeat(20)}";</script><Runtime />`, true],
     ['Runtime', '{1 < 2 && <Runtime />}', true],
+    ['Runtime', '{a<b && <Runtime />}', true],
+    ['Runtime', '{a < b && <Runtime />}', true],
     ['Script', '<Script /><Script />', false],
     ['Style', '<Style /><Style />', false]
   ])('preserves real mounts with %s and %s', async (local, markup, healthy) => {
