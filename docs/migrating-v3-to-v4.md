@@ -133,6 +133,124 @@ clipping. Wrapping Stack actions now allow long labels to wrap inside their avai
 Before publication, rollback is reverting this candidate commit or continuing to use released v3
 packages. After publication, use a new version for corrections; do not move published tags.
 
+## Before/after consumer examples
+
+### Card spacing and media overflow
+
+A common v3 workaround added margins between parts and clipped the whole Card. V4 owns that
+spacing and allows menus/focus rings to extend beyond the Card. Remove only the compensating CSS
+for these same relationships after verifying the consumer; retain unrelated product styling.
+
+```astro
+<!-- Before: report-card CSS supplied child margins and overflow: hidden. -->
+<Card class="report-card">
+  <CardHeader><CardTitle>Report</CardTitle></CardHeader>
+  <CardContent><slot /></CardContent>
+</Card>
+
+<!-- After: public density owns padding; the media frame owns clipping. -->
+<Card density="compact">
+  <CardHeader><CardTitle>Report</CardTitle></CardHeader>
+  <CardContent>
+    <Stack gap="group">
+      <AspectRatio ratio="16 / 9" class="report-media">
+        <Image src="/report-cover.webp" width={640} height={360} alt="Report cover" radius="none" />
+      </AspectRatio>
+      <slot />
+    </Stack>
+  </CardContent>
+</Card>
+```
+
+```css
+/* Before: remove these relationship-specific compensations. */
+.report-card { overflow: hidden; }
+.report-card > * + * { margin-top: 1rem; }
+
+/* After: clip only the image frame, using the existing radius token. */
+.report-media { border-radius: var(--ui-radius-lg); overflow: hidden; }
+```
+
+Verify a Card with content alone, hidden header/footer parts, long wrapping actions and a focused
+control or floating menu near its edge. Spacing and clipping are separate checks.
+
+### Controlled selection and reset ownership
+
+A supplied `value` is now a controlled contract. Accept the callback into application state when
+selection is allowed; leaving the callback absent keeps the displayed selection unchanged.
+
+```tsx
+// Before: a value prop without accepting change intent.
+<Segmented value={period} options={periods} />
+
+// After: the application owns accepted changes and explicit resets.
+<Segmented value={period} onValueChange={setPeriod} options={periods} />
+<Button type="button" onClick={() => setPeriod('week')}>Reset period</Button>
+```
+
+Here `period` is a string from application state and `periods` is the existing option array. Use
+`defaultValue` instead when native uncontrolled selection is intended. Do not introduce both
+controlled and default values or write DOM state around the component. Native form reset restores
+uncontrolled defaults silently; reset controlled state explicitly in the application's accepted
+reset handler. Test canceled reset, repeated selection and form submission before removing an
+old event bridge. See [form controls](form-controls.md).
+
+### Stable chart identities and full localized detail
+
+Repeated display labels are not data identities. Keep stable X values, provide abbreviated
+`xLabel` values for the axis, and use `formatCategory` for full detail/table labels.
+
+```tsx
+// Before: two different days collapsed onto the same localized identity.
+const before = [{ x: 'Mon', y: 12 }, { x: 'Mon', y: 18 }]
+
+// After: application-owned date-only identities and separate display labels.
+const data = [
+  { x: '2026-09-28', xLabel: 'Mon', y: 12 },
+  { x: '2026-10-05', xLabel: 'Mon', y: 18 }
+]
+const dates: Record<string, string> = {
+  '2026-09-28': 'Monday, September 28, 2026',
+  '2026-10-05': 'Monday, October 5, 2026'
+}
+<LineChart
+  series={[{ id: 'reports', label: 'Reports', data }]}
+  formatCategory={value => dates[String(value)] ?? String(value)}
+  formatValue={value => String(value)}
+  showTable
+/>
+```
+
+Resolve localized detail strings in the application. Do not parse these date-only keys through a
+UTC timestamp merely to format them. Check empty, singleton, duplicate-identity and long-label
+cases at phone and desktop widths before deleting old axis or chart-margin CSS. A repeated `xLabel`
+is valid; a repeated X identity is a validation issue. Plot and table must retain the same records.
+
+### Native initializer references and final timeline items
+
+Rebuild native consumers; defaulted new parameters can preserve ordinary calls while changing a
+stored initializer's function type. Prefer a small closure that calls the current public initializer
+with explicit application choices instead of retaining a v3 initializer reference.
+
+```swift
+// Before: ordinary calls used the default trailing connector.
+LumenTimelineItem { LumenText("Report created") }
+
+// After: the final visible item ends the connector; re-evaluate after filtering/reordering.
+LumenTimelineItem(isLast: true) { LumenText("Report created") }
+
+// A named factory makes the current initializer choices explicit.
+let makeFinalItem = {
+    LumenTimelineItem(isLast: true) { LumenText("Report created") }
+}
+```
+
+For a native sheet containing a lazy list, set the current `scrollable` option to false and let that
+list own scrolling. Bind `dismissible` to the app's pending-save policy rather than swallowing
+platform dismissal outside Lumen. See [native sheet composition](native-components.md)
+and the [native progression recipes](native-progression-recipes.md). No persisted data is rewritten
+by these source/API migrations.
+
 ## Component behavior checklist
 
 Lumen 4 consolidates fixes from twenty consumer audits. Upgrade the adapter and its companion

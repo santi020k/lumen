@@ -2,6 +2,8 @@
 
 ## 4.0.0
 
+- Add an optional search kind filter so agents can retrieve only components, native components, recipes, tokens or rules before applying the result limit. Existing searches retain their default behavior.
+
 ### Minor Changes
 
 - Add CalendarHeatmap, FunnelChart, and BoxPlot across web and native adapters with shared validation,

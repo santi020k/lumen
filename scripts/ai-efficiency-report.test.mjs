@@ -50,3 +50,39 @@ test('rejects missing runs, duplicate repetitions, and incorrect usage accountin
 
   assert.throws(() => createPublicEfficiencyReport(invalid), /Token total/)
 })
+
+test('exports the complete expanded matrix without pooling it with the original experiment', () => {
+  const report = fixture()
+
+  report.schemaVersion = 2
+
+  const cases = ['profile-dialog', 'notification-settings', 'workspace-settings', 'elements-notification-settings']
+
+  report.hashes.scenarios = 'c'.repeat(64)
+
+  report.hashes.elements = 'd'.repeat(64)
+
+  report.scenarios = cases.map(id => ({ id, framework: id.startsWith('elements-') ? 'elements' : 'react', prompt: 'A synthetic test prompt.' }))
+
+  report.runs = cases.flatMap(id => fixture().runs.filter(run => run.case === 'profile-dialog').map(run => ({ ...run, case: id })))
+
+  const result = createPublicEfficiencyReport(report)
+
+  assert.equal(result.schemaVersion, 2)
+
+  assert.equal(result.runs.length, 36)
+
+  assert.equal(result.scenarios.at(-1).framework, 'elements')
+
+  report.runs.pop()
+
+  assert.throws(() => createPublicEfficiencyReport(report), /complete matrix/)
+})
+
+test('rejects expanded evidence without hashes for its scenario definitions and Elements adapter', () => {
+  const report = fixture()
+
+  report.schemaVersion = 2
+
+  assert.throws(() => createPublicEfficiencyReport(report), /string/)
+})

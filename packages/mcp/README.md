@@ -46,7 +46,7 @@ not need a checkout of the Lumen repository.
 | `lumen_list_native_components` | List native components and filter them by `react-native`, `swiftui`, or `compose`. |
 | `lumen_get_native_component` | Get native installation, setup, import, API, example, accessibility guidance, and optional adapter source for one platform. |
 | `lumen_get_recipe` | Get a recipe or component set with its purpose, components, files, categories, and framework-specific install command. |
-| `lumen_search` | Rank natural-language matches across web contracts, recipes, tokens, and agent rules. Supply `platform` to search native contracts; optionally filter web results by `framework`. |
+| `lumen_search` | Rank natural-language matches across web contracts, recipes, tokens, and agent rules. Supply `platform` to search native contracts; optionally filter web results by `framework` and matches by `kind`. |
 | `lumen_get_meta` | Return deterministic snapshot provenance, package versions, schema version, component count, and catalog hash. |
 | `lumen_get_catalog_manifest` | Return stable web component, native component, and recipe fingerprints that clients can retain between upgrades. |
 | `lumen_diff_catalog` | Compare a retained manifest with the current snapshot and report added, changed, removed, and unchanged entries. |
@@ -204,7 +204,7 @@ Claude Code uses the package's stdio configuration and the repository marketplac
 
 1. Read `lumen://meta` and call `lumen_diagnose` to identify and verify the bundled snapshot.
 2. Call `lumen_check_compatibility` with exact installed versions (not manifest ranges). Use matching installed types and README when any version differs. Read `lumen://rules`.
-3. Call `lumen_search` with the requested use case and target framework or platform.
+3. Call `lumen_search` with the requested use case, target framework or platform, `limit: 5`, and a focused `kind` when appropriate. Widen discovery only when needed.
 4. For web, call `lumen_get_component`; for native, call `lumen_get_native_component` with `detail: "usage"`.
 5. Follow the returned framework behavior section: mount Astro `UIPrimitives` once, use the named React hook/controller, or register custom elements once.
 6. Inspect a related recipe with `lumen_get_recipe` when the UI needs multiple primitives.

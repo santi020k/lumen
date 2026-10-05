@@ -99,7 +99,7 @@ Migration defaults to preview. Only four recognized static SDK paths in `.ts`, `
 are rewritten by `--apply`; dependency manifests, JSX, Astro, and native code require review.
 Reported source signals are review triggers, not proof that an application workaround is obsolete.
 
-## Local verification, October 3, 2026
+## Historical verification, October 3, 2026
 
 The selected final runs passed all four cases in both clients: Codex CLI 0.159.0-alpha.12.1
 (the existing installed client) and Claude Code 2.1.274. Codex's React run used MCP compatibility
@@ -139,7 +139,7 @@ SDK import edits remain limited to `.ts`, `.js`, and `.mjs`; this restriction do
 separate documented JSX/Astro spacing migration. The JSON report includes installed package
 versions and explicit SDK dependency-review findings.
 
-## Plugin distribution follow-up, October 3, 2026
+## Historical plugin distribution follow-up, October 3, 2026
 
 `pnpm run package:plugin` creates a hosted Codex upload and a Claude archive with the exact npm
 catalog pin. Six deterministic plugin tests check schemas, matching skills, distribution transport,
@@ -168,7 +168,7 @@ Build, type checking, zero-warning lint, spelling, unused-code checks, clean pac
 and packed MCP stdio/HTTP smoke tests passed. The canonical repository gate still fails at the
 security audit described below.
 
-The public health endpoint returned `ok`, but MCP initialization still reports server 1.6.0 with
+At that historical checkpoint, the public health endpoint returned `ok`, but MCP initialization still reports server 1.6.0 with
 twelve tools, without compatibility or migration discovery. The npm registry returned 404 for
 MCP 4.0.0. Release approval remains `draft`, and the repository security audit still reports three
 high advisories with no patched versions. Deploy and publish through the approved release workflow

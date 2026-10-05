@@ -6,12 +6,15 @@ from [agent contract-conformance evaluations](lumen-4-ai.md).
 
 ## Scope and controls
 
-`scripts/evaluate-ai-efficiency.mjs` compares two React tasks: a profile dialog and notification
-preferences. Each has three approaches:
+`scripts/evaluate-ai-efficiency.mjs` now compares four tasks: the original React profile dialog and
+notification preferences, a larger React workspace settings screen with combined member filters,
+and notification preferences using actual Lumen Elements inside the same React host. The Elements
+trial measures that adapter integration; it is not an Astro, native, or framework-free application
+benchmark. Each task has three approaches:
 
 1. `scratch`: React, native HTML controls, and agent-written CSS.
 2. `docs`: public Lumen React components, installed declarations, and the package README.
-3. `skill-mcp`: the same library and documentation plus the portable skill and local MCP catalog.
+3. `skill-mcp`: the same target adapter and documentation plus the portable skill and local MCP catalog.
 
 The product requirements, synthetic data, React runtime, viewport sizes, verification, and repair
 allowance stay the same. Styles for the Lumen approaches come from the library; scratch supplies its
@@ -21,7 +24,7 @@ write only `Screen.tsx` and `Screen.css`; the host provides typed CSS imports an
 Pin model and reasoning effort explicitly. The report records CLI version, Git revision, and hashes
 of the harness, verifier, catalog, and skill. Each run starts in a fresh directory and CLI session.
 Rotate the approach order across repetitions and tasks. The default is three repetitions per task
-and approach: 18 runs. Each allows an initial attempt and at most one repair in a fresh session with
+and approach: 36 runs. Each allows an initial attempt and at most one repair in a fresh session with
 the failed output and verifier feedback. Both attempts count toward usage and time.
 
 The Git revision identifies the checkout base. A local candidate can include uncommitted changes;
@@ -36,12 +39,13 @@ describe these runs as a bare-model API benchmark or a universal cold-cache comp
 ## Run locally
 
 Follow [contributor setup](../CONTRIBUTING.md), install Chromium for Playwright if absent, and build
-the local React and MCP packages. This is opt-in work that consumes account usage; do not add live
+the local React , Elements and MCP packages. This is opt-in work that consumes account usage; do not add live
 agent invocations to ordinary CI.
 
 ```bash
 pnpm install --frozen-lockfile
 pnpm --filter @santi020k/lumen-react... run build
+pnpm --filter @santi020k/lumen-elements... run build
 pnpm --filter @santi020k/lumen-mcp run build
 pnpm exec playwright install chromium
 pnpm run test:ai-efficiency
@@ -99,7 +103,7 @@ generation. The browser regression also verifies the actual public React guide e
 import, so a missing harness declaration cannot masquerade as an agent failure.
 
 These checks do not establish comprehensive accessibility, visual design quality, performance, or
-production readiness. Keep human visual and assistive-technology review separate. The initial sample
+production readiness. Keep human visual and assistive-technology review separate. The published October 4 sample
 is small and covers two React tasks, one client/model per run, and local candidate packages; it cannot
 establish every framework, native adapter, competitor, or production workflow.
 
@@ -127,3 +131,19 @@ A measured result must identify the compared approach and task. If the skill/MCP
 more context on a small task, state that result. Changes in source length are not token savings.
 Follow [marketing claim C-15 and C-16](marketing/STRATEGY.md); the landing page does not promise a
 percentage, a lower bill, or fewer corrections without evidence for that exact claim.
+
+## Expanded evaluation provenance
+
+New runs use report schema 2 and a four-task matrix. Scenario definitions are centralized in
+`scripts/lib/ai-efficiency-scenarios.mjs` and hashed alongside the harness/verifier. Both adapter
+distribution trees are hashed, including imported modules. The public exporter retains schema 1
+support for the original two-task reports and rejects missing/duplicate runs in either matrix.
+Do not pool the expanded protocol with the published October 4 experiment or overwrite its report
+and source archive. No new token-saving result follows merely from adding these fixtures.
+
+The workspace verifier checks case-insensitive search combined with role filtering, empty/recovery
+states and retained preference edits. The Elements verifier requires real upgraded custom controls
+for the field and both named actions; native-only substitutes fail. Browser regressions include
+working implementations and deliberately broken combined filters or adapter substitutions.
+The host registers Input and Button once for the Elements trial. Scratch still receives native
+HTML/React instructions and no component package; the shared product requirements remain equal.

@@ -717,3 +717,12 @@ connection or be replaced by an application renderer. Disconnecting the host rel
 and observers; reconnecting binds the current children.
 
 Decoded chart annotations ignore invalid supplied axes; omitted axes use the shared `y` default.
+
+React hosts can assign `type` on scalar input elements before or after connection. The input
+reflects that property to its native control without clearing the value. Register elements once
+at the app boundary and handle their bubbling native input events.
+
+`lumen-button` activates with Enter or a Space release. It honors canceled keys and blocks
+disabled/loading activation, including direct clicks. Blocking flags expose `aria-disabled`;
+removing them restores any prior application-supplied ARIA value. Native nested controls retain
+their own keyboard path.

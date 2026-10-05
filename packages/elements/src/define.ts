@@ -5321,6 +5321,12 @@ class LumenScalarFormControlElement extends LumenElement {
     return 'textarea'
   }
 
+  set type(type: string) {
+    const Constructor = this.constructor as typeof LumenScalarFormControlElement
+
+    if (Constructor.nativeTagName === 'input') this.setAttribute('type', type)
+  }
+
   get validationMessage(): string {
     return (
       this.internals?.validationMessage ?? this.control?.validationMessage ?? ''

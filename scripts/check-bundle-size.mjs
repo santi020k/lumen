@@ -27,6 +27,8 @@ const allBudgets = [
   { file: 'packages/astro/runtime/controllers/motion.ts', gzip: 1_500, packageName: '@santi020k/lumen-astro', raw: 5_000 },
   { file: 'packages/astro/runtime/controllers/dialogs.ts', gzip: 2_000, packageName: '@santi020k/lumen-astro', raw: 6_000 },
   { file: 'packages/astro/runtime/controllers/document-navigation.ts', gzip: 1_500, packageName: '@santi020k/lumen-astro', raw: 5_000 },
+  { file: 'packages/astro/runtime/controllers/file-upload.ts', gzip: 1_100, packageName: '@santi020k/lumen-astro', raw: 3_000 },
+  { file: 'packages/astro/runtime/controllers/optional-media.ts', gzip: 500, packageName: '@santi020k/lumen-astro', raw: 1_000 },
   { file: 'packages/astro/runtime/controllers/image-comparison.ts', gzip: 900, packageName: '@santi020k/lumen-astro', raw: 2_000 },
   // Combined v4 features measure 213,671 bytes raw / 34,856 gzip; allow about 3% headroom.
   { file: 'packages/lumen/styles.css', gzip: 36_000, packageName: '@santi020k/lumen', raw: 220_000 },

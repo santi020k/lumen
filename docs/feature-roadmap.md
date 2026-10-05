@@ -84,8 +84,10 @@ Editor layouts, whole-unit amount fields, and asynchronous workflows remain cons
 
 ## Lumen 4 release priorities
 
-- Complete the [v4 readiness plan](lumen-4-readiness.md), including the security gate, exact-revision
-  approval, native consumer/device evidence, and two native stability iterations.
+- Complete the [v4 readiness plan](lumen-4-readiness.md), including automated checks, package-consumer
+  canaries, compatibility, security, provenance and exact-revision approval. The
+  [current release policy](native-release-runbook.md#current-release-policy) supersedes historical
+  native consumer/device and stability completion requirements.
 - Versioned migration previews cover v2, v3 and v4. V3 coordinates package updates without
   inventing web source rewrites; v4 preserves explicit layout gaps and flags application-owned CSS,
   chart, dialog and native contracts for review.

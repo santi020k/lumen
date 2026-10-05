@@ -22,6 +22,11 @@ contracts, controlled examples and focused behavior checks. Full catalog capture
 validation are tracked in [the completion plan](native-catalog-parity-plan.md); this source audit
 alone does not qualify a release. MultiSelect and RangeSlider remain additional shared contracts.
 
+For controlled Rating, Stepper and Timeline compositions, start with the
+[native progression recipes](native-progression-recipes.md), which link the complete examples in
+all three adapters. Table and hierarchical selection now also have public counterparts; remaining
+product-specific behavior belongs in consumers.
+
 ## Verification boundaries
 
 Native contracts share semantic roles and controlled ownership, with exact platform APIs documented

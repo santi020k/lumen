@@ -1021,6 +1021,7 @@ export const getRecipe = (
 export const search = (
   args: {
     framework?: FrameworkFilter | undefined
+    kind?: SearchResult['kind'] | undefined
     limit?: number | undefined
     platform?: NativePlatformFilter | undefined
     query: string
@@ -1045,7 +1046,7 @@ export const search = (
 
   const results = collectSearchResults(
     query, meaningfulSearchTerms(query), data, args.framework, args.platform
-  )
+  ).filter(result => !args.kind || result.kind === args.kind)
 
   const kindPriority: Record<SearchResult['kind'], number> = {
     component: 0,

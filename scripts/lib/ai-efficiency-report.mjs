@@ -1,11 +1,11 @@
 import assert from 'node:assert/strict'
 
 import { summarizeEfficiency } from './ai-efficiency-metrics.mjs'
+import { efficiencyCaseIds, efficiencyScenarios } from './ai-efficiency-scenarios.mjs'
 
 const record = value => value !== null && typeof value === 'object' && !Array.isArray(value)
 const count = value => Number.isSafeInteger(value) && value >= 0
 const modes = ['scratch', 'docs', 'skill-mcp']
-const cases = ['profile-dialog', 'notification-settings']
 const fields = ['inputTokens', 'cachedInputTokens', 'outputTokens', 'totalTokens', 'toolCalls']
 
 const usageFor = value => {
@@ -20,7 +20,7 @@ const usageFor = value => {
   return Object.fromEntries(fields.map(key => [key, value[key]]))
 }
 
-const publicRun = (run, repetitions) => {
+const publicRun = (run, repetitions, cases) => {
   assert.ok(record(run) && cases.includes(run.case) && modes.includes(run.mode), 'Unknown experiment group.')
 
   assert.ok(count(run.repetition) && run.repetition >= 1 && run.repetition <= repetitions, 'Invalid repetition.')
@@ -52,7 +52,9 @@ const publicRun = (run, repetitions) => {
 
 /** Strip local diagnostic/transcript data; reject partial or selectively filtered matrices. */
 export const createPublicEfficiencyReport = report => {
-  assert.ok(record(report) && report.schemaVersion === 1, 'Unsupported report.')
+  assert.ok(record(report) && [1, 2].includes(report.schemaVersion), 'Unsupported report.')
+
+  const cases = efficiencyCaseIds(report.schemaVersion)
 
   assert.ok(Number.isSafeInteger(report.repetitions) && report.repetitions >= 3 && report.repetitions <= 10, 'Publish at least three repetitions.')
 
@@ -68,7 +70,7 @@ export const createPublicEfficiencyReport = report => {
 
   const hashes = {}
 
-  for (const key of ['harness', 'verifier', 'metrics', 'stylesheet', 'react', 'catalog', 'skill']) {
+  for (const key of ['harness', 'verifier', 'metrics', 'stylesheet', 'react', 'catalog', 'skill', ...(report.schemaVersion === 2 ? ['scenarios', 'elements'] : [])]) {
     assert.match(report.hashes[key], /^[a-f0-9]{64}$/u)
 
     hashes[key] = report.hashes[key]
@@ -78,7 +80,7 @@ export const createPublicEfficiencyReport = report => {
 
   assert.equal(report.runs.length, cases.length * modes.length * report.repetitions, 'Publish the complete matrix, including failures.')
 
-  const runs = report.runs.map(run => publicRun(run, report.repetitions))
+  const runs = report.runs.map(run => publicRun(run, report.repetitions, cases))
 
   assert.equal(new Set(runs.map(run => `${run.case}/${run.mode}/${run.repetition}`)).size, runs.length, 'Duplicate runs are not repetitions.')
 
@@ -87,14 +89,16 @@ export const createPublicEfficiencyReport = report => {
   const scenarios = report.scenarios.map(scenario => {
     assert.ok(record(scenario) && cases.includes(scenario.id) && typeof scenario.prompt === 'string', 'Invalid scenario.')
 
-    return { id: scenario.id, prompt: scenario.prompt }
+    if (report.schemaVersion === 2) assert.equal(scenario.framework ?? 'react', efficiencyScenarios.find(item => item.id === scenario.id)?.framework ?? 'react', 'Scenario framework does not match its assigned adapter.')
+
+    return { id: scenario.id, prompt: scenario.prompt, ...(report.schemaVersion === 2 ? { framework: scenario.framework ?? 'react' } : {}) }
   })
 
   assert.equal(new Set(scenarios.map(scenario => scenario.id)).size, cases.length)
 
   return {
     generatedBy: 'pnpm run report:ai-efficiency', evidence: 'local candidate experiment',
-    schemaVersion: 1, createdAt: report.createdAt, model: report.model, effort: report.effort,
+    schemaVersion: report.schemaVersion, createdAt: report.createdAt, model: report.model, effort: report.effort,
     cli: report.cli, revision: report.revision, revisionRole: 'checkout-base', hashes, repetitions: report.repetitions,
     maxAttempts: report.maxAttempts, scenarios, runs, summary: summarizeEfficiency(runs)
   }
