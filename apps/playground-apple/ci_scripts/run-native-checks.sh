@@ -71,6 +71,9 @@ case "$mode" in
         if [[ "${LUMEN_PLAYWRIGHT_READY:-}" != "1" ]]; then
             pnpm exec playwright install chromium
         fi
+        if [[ "$mode" == "framework-visual" ]]; then
+            pnpm --filter '@santi020k/lumen-react^...' run build
+        fi
         pnpm run "test:$mode"
         ;;
     published)
