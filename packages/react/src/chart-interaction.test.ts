@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 import { act, createElement } from 'react'
+import { createPortal } from 'react-dom'
 import { createRoot, type Root } from 'react-dom/client'
 
 import { afterEach, beforeEach, expect, test, vi } from 'vitest'
@@ -48,6 +49,42 @@ test('keeps a controlled cursor until its owner accepts the requested identity',
   })
   expect(container.querySelector('[data-ui-chart-point="10"]')?.hasAttribute('hidden')).toBe(false)
   expect(toggle?.getAttribute('aria-pressed')).toBe('false')
+})
+
+test('forwards cursor requests from the chart owner realm and rejects malformed details', () => {
+  const frame = document.createElement('iframe')
+
+  container.append(frame)
+  const owner = frame.contentDocument
+  const view = owner?.defaultView
+
+  if (!owner || !view) throw new Error('Missing iframe chart realm')
+
+  const onCursorChange = vi.fn()
+  const props = { interactive: true, series, cursor: 0, onCursorChange }
+
+  act(() => {
+    root.render(createPortal(createElement(LineChart, props), owner.body))
+  })
+  const plot = owner.querySelector<HTMLElement>('[data-ui-chart-interaction-plot]')
+  const chart = owner.querySelector<HTMLElement>('.ui-chart__content')
+
+  if (!plot || !chart) throw new Error('Missing interactive iframe chart')
+
+  act(() => {
+    plot.dispatchEvent(new view.KeyboardEvent('keydown', { key: 'End', bubbles: true }))
+  })
+  expect(onCursorChange).toHaveBeenCalledWith({ x: 10 })
+  expect(owner.querySelector('[data-ui-chart-point="0"]')?.hasAttribute('hidden')).toBe(false)
+  onCursorChange.mockClear()
+  act(() => {
+    chart.dispatchEvent(new view.CustomEvent('ui:chart-cursor-change', { detail: { x: {} } }))
+  })
+  expect(onCursorChange).not.toHaveBeenCalled()
+  act(() => {
+    root.render(createPortal(createElement(LineChart, { ...props, cursor: 10 }), owner.body))
+  })
+  expect(owner.querySelector('[data-ui-chart-point="10"]')?.hasAttribute('hidden')).toBe(false)
 })
 
 test('renders histogram counts and waterfall balances in semantic tables', () => {

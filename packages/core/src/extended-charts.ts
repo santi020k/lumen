@@ -170,10 +170,12 @@ const calendarObservationInRange = (date: string, start: number, end: number): b
   return timestamp !== null && inRange(timestamp, start, end)
 }
 
+const isArrayCollection = (value: unknown): boolean => Array.isArray(value)
+
 const calendarDates = (data: readonly LumenCalendarHeatmapDatum[], start: number, end: number) => {
   const dates = new Map<string, number | null>()
 
-  const valid = Array.from(data).every(item => {
+  const valid = isArrayCollection(data) && Array.from(data).every(item => {
     if (!isLumenCalendarHeatmapDatum(item) || dates.has(item.date)) return false
 
     if (!calendarObservationInRange(item.date, start, end)) return false
@@ -218,7 +220,7 @@ export const createLumenFunnelGeometry = (data: readonly LumenFunnelDatum[]) => 
   const ids = new Set<string>()
   let max = 0
 
-  const valid = Array.from(data).every(item => {
+  const valid = isArrayCollection(data) && Array.from(data).every(item => {
     if (!isLumenFunnelDatum(item) || ids.has(item.id)) return false
 
     ids.add(item.id)
@@ -240,7 +242,7 @@ export const createLumenFunnelGeometry = (data: readonly LumenFunnelDatum[]) => 
 export const createLumenBoxPlotGeometry = (data: readonly LumenBoxPlotDatum[], options: LumenBoxPlotOptions = {}) => {
   const ids = new Set<string>()
 
-  const validData = Array.from(data).every(item => {
+  const validData = isArrayCollection(data) && Array.from(data).every(item => {
     if (!isLumenBoxPlotDatum(item) || ids.has(item.id)) return false
 
     ids.add(item.id)

@@ -103,6 +103,19 @@ test('enforces the viewport limit and expires timed notifications', async () => 
   expect(container.querySelectorAll('[data-ui-toast]')).toHaveLength(0)
 })
 
+test('recreating a closing toast makes it the newest record without a stale removal', async () => {
+  await clickButton('Save')
+  await clickButton('Timed')
+  expect(container.querySelector('#save')?.getAttribute('data-state')).toBe('closed')
+  await clickButton('Save')
+  expect(container.querySelector('#save')?.getAttribute('data-state')).toBe('open')
+  expect(container.querySelector('#timed')?.getAttribute('data-state')).toBe('closed')
+  expect(container.querySelector('[data-ui-toast]:last-child')?.id).toBe('save')
+  await act(() => vi.advanceTimersByTimeAsync(240))
+  expect(container.querySelector('#save')?.getAttribute('data-state')).toBe('open')
+  expect(container.querySelector('#timed')).toBeNull()
+})
+
 test('resumes after keyboard focus leaves without subtracting time for internal focus changes', async () => {
   await clickButton('Timed')
   const toast = container.querySelector<HTMLElement>('#timed')

@@ -2,6 +2,8 @@
 
 ## 4.0.0
 
+- Reject non-array decoded calendar heatmap, funnel, and box-plot collections before iteration.
+
 - Fail closed on malformed decoded line-chart series and datum collections before deriving categories or geometry.
 
 ### Patch Changes

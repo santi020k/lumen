@@ -2,6 +2,8 @@
 
 ## 4.0.0
 
+- Accept chart cursor events from their owning iframe realm and move recreated toast records to the newest stack position.
+
 - Preserve caret navigation within nested editable popup content, and keep FileUpload values uncontrolled for typed and decoded consumers.
 
 ### Patch Changes
