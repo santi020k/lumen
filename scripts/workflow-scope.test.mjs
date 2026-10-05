@@ -329,6 +329,16 @@ test('early failures block every expensive CI and release canary lane', () => {
   assert.match(canary, /Check repository and dependency security before builds/u)
 })
 
+test('release preflight fetches the history required by graduated release checks', () => {
+  const preflight = canary.split('  preflight:\n')[1]?.split('  web:\n')[0]
+
+  assert.ok(preflight)
+
+  assert.match(preflight, /actions\/checkout@[a-f0-9]{40}[^\n]*\n\s+with:\n\s+fetch-depth: 0/u)
+
+  assert.match(preflight, /pnpm run check:graduated-release-revision/u)
+})
+
 test('browser sharding covers the entire suite and native consumers run independently', () => {
   const browser = canary.split('  browser:\n')[1]
 
