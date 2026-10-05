@@ -12,6 +12,7 @@ const { version: lumenVersion } = JSON.parse(
 const checkOnly = process.argv.includes('--check')
 
 const outputPaths = {
+  swiftCaptures: join(repositoryRoot, 'apps/playground-apple/scripts/component-capture-catalog.generated.txt'),
   composeCaptures: join(repositoryRoot, 'apps/playground-android/scripts/component-capture-catalog.generated.txt'),
   compose: join(
     repositoryRoot,
@@ -142,7 +143,13 @@ const readCatalog = async () => {
     })
   )
 
-  return { categories, platforms }
+  const nonPhoneSwiftIds = requiredArray(nativeRegistry.platformComponents, 'native registry.platformComponents')
+    .map((value, index) => requiredRecord(value, `native registry.platformComponents.${index}`))
+    .filter(component => component.adapter === 'swiftUI'
+      && !requiredArray(component.platforms, `platform component ${String(component.id)}.platforms`).includes('iOS'))
+    .map(component => requiredString(component.id, 'platform component.id'))
+
+  return { categories, platforms, nonPhoneSwiftIds }
 }
 
 const entriesForPlatform = (catalog, platform) => catalog.categories.map(category => ({
@@ -297,6 +304,13 @@ const writeOrCheck = async (path, content) => {
 const catalog = await readCatalog()
 
 await Promise.all([
+  writeOrCheck(outputPaths.swiftCaptures, `${entriesForPlatform({
+    ...catalog,
+    platforms: {
+      ...catalog.platforms,
+      swiftUI: catalog.platforms.swiftUI.filter(component => !catalog.nonPhoneSwiftIds.includes(component.id))
+    }
+  }, 'swiftUI').flatMap(category => category.names).join('\n')}\n`),
   writeOrCheck(outputPaths.reactNative, generateReactNative(catalog)),
   writeOrCheck(outputPaths.swiftUI, generateSwift(catalog)),
   writeOrCheck(outputPaths.compose, generateCompose(catalog)),

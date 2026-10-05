@@ -9,19 +9,10 @@ output_dir="${1:-${playground_dir}/Screenshots}"
 derived_data="${playground_dir}/.build/screenshots"
 bundle_id="com.santi020k.lumen.playground.apple"
 
-components=(
-  "Theme" "Text" "Surface" "Icon" "Icon button" "Button" "Button group"
-  "Text field" "Textarea" "Field group" "Phone input" "Toggle" "Settings row" "Checkbox"
-  "Radio group" "Segmented control" "Picker" "Slider" "Range slider" "Date field" "Date range field" "Search field"
-  "Number field" "Time field" "Autocomplete" "Multi select" "Password field" "Input OTP" "Image comparison"
-  "Tabs"
-  "Chip" "Badge" "Link" "Divider" "Spinner" "Card" "Alert" "Alert dialog"
-  "Toast" "Banner" "Progress" "Skeleton" "Graphic" "Backdrop" "Illustration" "Image"
-  "Sparkline" "Line chart" "Bar chart" "Pie chart" "Scatter chart" "Waterfall chart" "Lollipop chart" "Dumbbell chart" "Calendar heatmap" "Funnel chart" "Box plot" "Bullet chart" "Histogram" "Heatmap" "Range chart" "Combo chart"
-  "Disclosure" "Avatar" "Empty state" "Error state" "List row" "Stat" "Gauge" "Section header"
-  "Status bar" "Navigation bar" "Sheet" "Menu" "Share button" "Tab bar minimization"
-  "Tab accessory"
-)
+components=()
+while IFS= read -r component; do
+  components+=("$component")
+done < "${playground_dir}/scripts/component-capture-catalog.generated.txt"
 
 if (( $# > 1 )); then
   components=("${@:2}")
