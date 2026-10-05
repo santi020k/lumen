@@ -63,9 +63,9 @@ const getViewport = (root: HTMLElement): number => {
 
 const getFocusedIndex = (root: HTMLElement): number => {
   const active = root.ownerDocument.activeElement
-  const row = active instanceof HTMLElement ? active.closest<HTMLElement>('[data-ui-virtual-list-index]') : null
+  const row = active?.closest('[data-ui-virtual-list-index]')
 
-  return row?.closest('[data-ui-virtual-list]') === root ? Number(row.dataset.uiVirtualListIndex) : -1
+  return row?.closest('[data-ui-virtual-list]') === root ? Number(row.getAttribute('data-ui-virtual-list-index')) : -1
 }
 
 export const observeLumenVirtualWindow = (
@@ -98,14 +98,17 @@ export const observeLumenVirtualWindow = (
 
     options.onChange(window)
 
-    root.dispatchEvent(new CustomEvent('ui:virtual-list-range', { bubbles: true, detail: { startIndex: window.startIndex, endIndex: window.endIndex } }))
+    const RangeEvent = view?.CustomEvent ?? CustomEvent
+
+    root.dispatchEvent(new RangeEvent('ui:virtual-list-range', { bubbles: true, detail: { startIndex: window.startIndex, endIndex: window.endIndex } }))
   }
 
   const onFocusOut = (): void => {
     queueMicrotask(update)
   }
 
-  const resize = typeof ResizeObserver === 'undefined' ? undefined : new ResizeObserver(update)
+  const ViewResizeObserver = view?.ResizeObserver ?? (typeof ResizeObserver === 'undefined' ? undefined : ResizeObserver)
+  const resize = ViewResizeObserver ? new ViewResizeObserver(update) : undefined
 
   root.addEventListener('scroll', update, { passive: true })
 
