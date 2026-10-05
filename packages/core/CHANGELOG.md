@@ -4,6 +4,8 @@
 
 ### Patch Changes
 
+- Preserve focused controls and reusable keyed content in data-mode virtual collections inside same-origin iframes, including adopted elements. Use the root document for range events and resize observation.
+
 - Safely validate unknown decoded time selections before checking time bounds.
 
 - Keep chart annotation IDs unique, preserve RTL range calendar navigation, and associate phone country values with explicit external forms.
