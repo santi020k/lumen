@@ -967,3 +967,9 @@ while preserving your cells, details, actions and query ownership. Import it fro
 
 Existing `Table` and `DataTable` APIs remain available. This integration is React-specific and does
 not change the Astro or Elements runtime.
+## Advanced form workflows
+
+Use the optional `@santi020k/lumen-react/forms` entry point for validation, dependent fields,
+unsaved edit tracking, step navigation, stable repeatable rows, and cancelable asynchronous checks.
+See [composable form workflows](../../docs/powerful-forms.md). Applications retain schemas, financial
+rules, requests, draft storage, and authorization. Do not combine validation owners on one form.

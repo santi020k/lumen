@@ -80,7 +80,11 @@
       "types": "./dist/data-table-view.d.ts",
       "import": "./dist/data-table-view.js"
     },
-    "./styles/data-table-view.css": "./styles/data-table-view.css"
+    "./styles/data-table-view.css": "./styles/data-table-view.css",
+    "./forms": {
+      "types": "./dist/form-workflow.d.ts",
+      "import": "./dist/form-workflow.js"
+    }
   },
   "files": [
     "bin",

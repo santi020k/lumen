@@ -756,3 +756,9 @@ recovery states in Astro, React, or Elements. The preview controls are disabled 
 Lumen supplies the UI; the optional `@santi020k/auth-client` supplies protocol operations.
 See the [login integration reference](../packages/templates/README.md#login-examples-and-auth)
 for helper calls, safe result handling, and the application-owned server and session requirements.
+## Complex React forms
+
+Use the optional `@santi020k/lumen-react/forms` hooks with public form primitives for dependent
+validation, unsaved edits, stable repeatable rows, step navigation, and cancellation-safe checks.
+Read [composable form workflows](powerful-forms.md) before implementation. Choose one validation
+owner; keep schemas, financial policy, requests, authorization, and draft storage in the consumer.
