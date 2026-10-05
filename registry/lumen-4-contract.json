@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "status": "draft",
+  "status": "approved",
   "targetVersion": "4.0.0",
   "policy": {
     "compatibility": "Lumen 4 may deliberately replace v3 component and binary contracts. Consumer data, privacy, and release approval remain protected. Migration guidance documents externally visible changes.",
@@ -433,5 +433,15 @@
       ]
     }
   ],
-  "swiftApiBaseline": "v3.0.1"
+  "swiftApiBaseline": "v3.0.1",
+  "approval": {
+    "approver": "Santiago Molina (santi020k)",
+    "date": "2026-10-05",
+    "decision": "Approve publication of Lumen 4.0.0 from the final reviewed revision after all required checks and reviews passed. Santiago\u2019s decision is recorded at https://github.com/santi020k/lumen/pull/95#issuecomment-6005635761.",
+    "reviewedRevision": "fbcbd93fe723ca838af4c284b27b969e8fae980b",
+    "evidence": [
+      "https://github.com/santi020k/lumen/commit/fbcbd93fe723ca838af4c284b27b969e8fae980b",
+      "https://github.com/santi020k/lumen/pull/95"
+    ]
+  }
 }
