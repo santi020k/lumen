@@ -1,5 +1,6 @@
 'use client'
 
+export * from './amount-field.js'
 export * from './attachments.js'
 export * from './bullet-chart.js'
 export { ChangeSummary, type ChangeSummaryProps } from './change-summary.js'

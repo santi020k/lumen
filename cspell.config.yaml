@@ -2,6 +2,31 @@ version: "0.2"
 language: en
 words:
   - tanstack
+  - Desactivar
+  - Detalle
+  - Monto
+  - Ningún
+  - Restablecer
+  - Simular
+  - caracteres
+  - decimales
+  - detalle
+  - estas
+  - estos
+  - filas
+  - financieras
+  - financiero
+  - guardado
+  - inténtalo
+  - límites
+  - menos
+  - monto
+  - otro
+  - reglas
+  - servidor
+  - solicita
+  - solicitud
+  - unidades
   - ENDSWITH
   - Acción
   - Aprobación

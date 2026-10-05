@@ -480,6 +480,20 @@ record tables, keyboard-aware native sheets, whole-unit amount fields, adaptive 
 asynchronous action states. Each recipe identifies the public primitives and the behavior that
 remains owned by the application.
 
+## Exact amount fields
+
+`lumen-amount-field` creates a visible localized input and a named hidden input containing the
+complete ASCII decimal string. `ui:amount-change` reports `{ draft, value }`; incomplete drafts
+have an undefined value. A host ID `amount` gives its visible input ID `amount-input` for labels.
+
+```html
+<lumen-amount-field name="amount" locale="es-CO" default-value="1234.50"
+  aria-label="Amount COP"></lumen-amount-field>
+```
+
+See [consumer workflows](../../docs/consumer-ui-recipes.md#executable-consumer-workflows) for
+validation, reset and `auto-scroll` activity feeds.
+
 ## Resources
 
 | Guide | What you will find |

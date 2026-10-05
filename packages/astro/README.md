@@ -493,6 +493,19 @@ record tables, keyboard-aware native sheets, whole-unit amount fields, adaptive 
 asynchronous action states. Each recipe identifies the public primitives and the behavior that
 remains owned by the application.
 
+## Exact amount fields
+
+`AmountField` formats an ASCII decimal-string `value` in the requested locale and submits a
+complete ungrouped value through its named hidden input. Include `UIPrimitives` for editing,
+validity and reset behavior. Domain validation and monetary units remain application-owned.
+
+```astro
+<AmountField name="amount" locale="es-CO" value="1234.50" aria-label="Amount COP" />
+<UIPrimitives />
+```
+
+See [consumer workflows](../../docs/consumer-ui-recipes.md#executable-consumer-workflows).
+
 ## Resources
 
 | Guide | What you will find |

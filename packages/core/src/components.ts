@@ -86,6 +86,7 @@ export const lumenComponentNames = [
   'MessageScroller',
   'NativeSelect',
   'NavigationMenu',
+  'AmountField',
   'NumberField',
   'Pagination',
   'PasswordField',
@@ -196,6 +197,7 @@ export interface LumenComponentBehavior {
 }
 
 export const lumenComponentBehavior = {
+  AmountField: { astro: 'ui-primitives', elements: 'registered-element', react: 'component' },
   Accordion: { astro: 'none', elements: 'registered-element', react: 'component' },
   Affix: { astro: 'none', elements: 'registered-element', react: 'component' },
   Agenda: { astro: 'none', elements: 'registered-element', react: 'component' },
@@ -304,7 +306,7 @@ export const lumenComponentBehavior = {
   Mentions: { astro: 'ui-primitives', elements: 'registered-element', react: 'component' },
   Menubar: { astro: 'ui-primitives', elements: 'registered-element', react: 'hook' },
   Message: { astro: 'none', elements: 'registered-element', react: 'component' },
-  MessageScroller: { astro: 'none', elements: 'registered-element', react: 'component' },
+  MessageScroller: { astro: 'ui-primitives', elements: 'registered-element', react: 'component' },
   Meter: { astro: 'none', elements: 'registered-element', react: 'component' },
   NativeSelect: { astro: 'none', elements: 'registered-element', react: 'component' },
   NavigationMenu: { astro: 'ui-primitives', elements: 'registered-element', react: 'hook' },

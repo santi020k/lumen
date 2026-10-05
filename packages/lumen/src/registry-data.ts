@@ -336,7 +336,26 @@ export const lumenRegistry = {
         'Input',
         'NativeSelect',
         'Textarea',
+        'Button',
+        'ErrorSummary',
+        'AmountField',
+        'Alert'
+      ],
+      files: [
+        'docs/consumer-ui-recipes.md'
+      ]
+    },
+    {
+      name: 'operational-records',
+      type: 'recipe',
+      components: [
+        'DataTable',
+        'DropdownMenu',
+        'Dialog',
         'Button'
+      ],
+      files: [
+        'docs/consumer-ui-recipes.md'
       ]
     },
     {
@@ -1611,6 +1630,21 @@ export const lumenRegistry = {
       category: 'Navigation',
       files: [
         'packages/astro/components/NavigationMenu.astro',
+        'packages/astro/styles/lumen.css',
+        'packages/astro/runtime/UIPrimitives.astro'
+      ],
+      dependencies: [
+        'styles',
+        'runtime'
+      ]
+    },
+    {
+      name: 'AmountField',
+      type: 'component',
+      description: 'Formats localized decimal drafts without losing integer or fraction precision.',
+      category: 'Forms',
+      files: [
+        'packages/astro/components/AmountField.astro',
         'packages/astro/styles/lumen.css',
         'packages/astro/runtime/UIPrimitives.astro'
       ],

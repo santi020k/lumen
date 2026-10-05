@@ -34,7 +34,9 @@ import {
   normalizeLumenLocales,
   scrollLumenTabIntoView } from '@santi020k/lumen-core'
 
+import { initAmountFields } from './controllers/amount-field'
 import { initDataTableSorting } from './controllers/data-table'
+import { initMessageFeeds } from './controllers/message-scroller'
 import { initOptionalMediaControllers } from './controllers/optional-media'
 
 /* eslint-disable complexity */
@@ -5415,6 +5417,10 @@ const initUiPrimitives = (scope: ParentNode = document): void => {
   initCalendars(scope)
 
   initDatePickers(scope)
+
+  initAmountFields(scope)
+
+  initMessageFeeds(scope)
 
   initCodeRegions(scope)
 

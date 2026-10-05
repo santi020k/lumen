@@ -490,6 +490,7 @@ export const componentCollections: ComponentCollection[] = [
       'Textarea',
       'SearchField',
       'NumberField',
+      'AmountField',
       'PhoneInput',
       'InputOTP',
       'Mentions'
@@ -2081,6 +2082,8 @@ const apiReferenceByComponent = {
     )
   ],
   MessageScroller: [
+    apiRow('autoScroll / auto-scroll', 'boolean', 'false', 'Follows new messages only while the reader is at the end; keyed data-ui-message-item rows preserve position on prepend.'),
+    apiRow('scrollThreshold / scroll-threshold', 'number', '32', 'Distance in pixels considered near the end.'),
     apiRow(
       'children', 'Message elements or activity rows', 'required', 'Provides the ordered feed inside the scrollable region.'
     )
@@ -2109,6 +2112,15 @@ const apiReferenceByComponent = {
     apiRow(
       'variant', '"default" | "unstyled"', '"default"', 'Keeps navigation semantics and roving focus while removing Lumen container and child presentation.'
     )
+  ],
+  AmountField: [
+    apiRow('value / defaultValue', 'string', 'empty', 'ASCII decimal drafts; values remain exact strings, never floating-point amounts.'),
+    apiRow('locale', 'string', 'en-US', 'Controls display separators and localized digits; paste uses this locale.'),
+    apiRow('fractionDigits / fraction-digits', 'integer 0–20', '2', 'Rejects excess precision without rounding.'),
+    apiRow('allowNegative / allow-negative', 'boolean', 'false', 'Allows negative drafts when enabled.'),
+    apiRow('name', 'string', 'undefined', 'Submits complete ASCII decimal strings through the hidden native input.'),
+    apiRow('onValueChange / ui:amount-change', 'draft, { draft, value }', 'undefined', 'Returns editable drafts and a complete value when available.'),
+    apiRow('invalidMessage / invalid-message', 'string', 'English', 'Localizes incomplete or rejected input validation.')
   ],
   NumberField: [
     apiRow(
@@ -3879,6 +3891,12 @@ export const componentDocs: ComponentDoc[] = (
       'Navigation',
       'Builds grouped top-level navigation.',
       '<NavigationMenu><a href="/docs">Docs</a><a href="/docs/components">Components</a></NavigationMenu>'
+    ],
+    [
+      'AmountField',
+      'Forms',
+      'Formats localized amounts while preserving exact decimal drafts.',
+      '<AmountField name="amount" locale="es-CO" defaultValue="1234.50" aria-label="Amount COP" />'
     ],
     [
       'NumberField',

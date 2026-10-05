@@ -151,6 +151,7 @@ import { bulletChartHtml, bulletNumberAttribute, parseBulletRanges } from './bul
 import { LumenDatumChartElement } from './chart-activation.js'
 import { chartAnnotationHtml, chartAxesHtml, chartCaptionHtml, chartDataTableHtml, chartHeaderHtml, chartInspectionHtml, chartLabelsFor, chartLegendHtml, chartNumberAttribute, escapeChartHtml, heatmapDataTableHtml, intervalChartHtml, parseChartAnnotations, parseHeatmapData, parseHistogramBins, parseRangeData, parseWaterfallData, rangeDataTableHtml, scatterDataTableHtml, scatterPlotHtml } from './chart-html.js'
 import { comparisonChartHtml, parseComparisonData } from './comparison-chart-html.js'
+import { LumenAmountFieldElement, MessageElement } from './consumer-behaviors.js'
 import {
   createLumenElementClass as createStandaloneLumenElementClass,
   LumenElement,
@@ -159,6 +160,7 @@ import {
 } from './element-base.js'
 import { boxPlotHtml, calendarHeatmapHtml, funnelChartHtml, parseBoxPlotData, parseCalendarHeatmapData, parseFunnelData } from './expanded-chart-html.js'
 
+export { LumenAmountFieldElement }
 export { LumenElement } from './element-base.js'
 
 type ToastPlacement =
@@ -360,6 +362,7 @@ const elementConfigs = {
     defaults: { role: 'figure', 'data-ui-attachment-preview': '' },
     tagName: 'lumen-attachment-preview'
   },
+  AmountField: LumenAmountFieldElement.config,
   Autocomplete: {
     baseClassName: 'ui-input ui-autocomplete',
     defaults: { role: 'combobox', type: 'search' },
@@ -847,11 +850,7 @@ const elementConfigs = {
     defaults: { from: 'assistant' },
     tagName: 'lumen-message'
   },
-  MessageScroller: {
-    attributeClasses: glassAttributeClasses('ui-message-scroller--glass'),
-    baseClassName: 'ui-message-scroller',
-    tagName: 'lumen-message-scroller'
-  },
+  MessageScroller: MessageElement.config,
   NativeSelect: {
     attributeClasses: {
       'visual-size': { lg: 'ui-select--lg', sm: 'ui-select--sm' }
@@ -11929,6 +11928,7 @@ const behaviorElementClasses: Partial<
   LineChart: LumenLineChartBehaviorElement,
   ListBox: LumenListBoxBehaviorElement,
   Mentions: LumenMentionsBehaviorElement,
+  MessageScroller: MessageElement,
   NativeSelect: LumenNativeSelectFormControlElement,
   NumberField: LumenScalarFormControlElement,
   Particles: LumenParticlesBehaviorElement,
@@ -11968,6 +11968,7 @@ export class LumenDialogElement extends LumenDialogBehaviorElement {
 const granularElementClasses: Partial<
   Record<LumenComponentName, LumenElementConstructor>
 > = {
+  AmountField: LumenAmountFieldElement,
   ChangeSummary: GranularLumenChangeSummaryElement,
   FilterBar: GranularLumenFilterBarElement,
   Badge: GranularLumenBadgeElement,

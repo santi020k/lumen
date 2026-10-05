@@ -16,8 +16,8 @@ supported Apple form factors. Wear and WidgetKit intentionally use separate, sma
   editing remains deferred by the user; its plain model and limited SwiftUI/Compose subset do not
   close that gap.
 
-Reviewed 182 web entries: 93 counterparts, 61 compositions,
-27 platform/host boundaries and 1 deferred gap. The 23 new counterparts have dedicated native
+Reviewed 183 web entries: 93 counterparts, 61 compositions,
+28 platform/host boundaries and 1 deferred gap. The 23 new counterparts have dedicated native
 contracts, controlled examples and focused behavior checks. Full catalog captures and combined
 validation are tracked in [the completion plan](native-catalog-parity-plan.md); this source audit
 alone does not qualify a release. MultiSelect and RangeSlider remain additional shared contracts.
@@ -124,6 +124,7 @@ or store update is implied by this audit.
 | `MessageScroller` | Platform / host | Native scrolling/lazy-list containers with stable record identities. |
 | `NativeSelect` | Counterpart | `picker` |
 | `NavigationMenu` | Composition | `navigation-bar` plus host slots/state; no matching standalone export. |
+| `AmountField` | Platform / host | Native text fields retain application-owned exact decimal or minor-unit draft contracts. The web formatter does not establish native parity. |
 | `NumberField` | Counterpart | `number-field` |
 | `Pagination` | Platform / host | Application paging/request state with named LumenButton actions. |
 | `PasswordField` | Counterpart | `password-field` |

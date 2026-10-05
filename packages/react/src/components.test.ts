@@ -446,8 +446,8 @@ describe('@santi020k/lumen-react components', () => {
     expect(propsOf(Empty({ glass: true }) as ReactElement).className).toBe('ui-empty ui-empty--glass')
     expect(propsOf(Item({ glass: 'strong' }) as ReactElement).className).toBe('ui-item ui-item--glass ui-glass-strong')
     expect(propsOf(ScrollArea({}) as ReactElement).className).toBe('ui-scroll-area')
-    expect(propsOf(MessageScroller({ glass: 'subtle' }) as ReactElement).className)
-      .toBe('ui-message-scroller ui-message-scroller--glass ui-glass-subtle')
+    expect(renderToStaticMarkup(createElement(MessageScroller, { glass: 'subtle' })))
+      .toContain('class="ui-message-scroller ui-message-scroller--glass ui-glass-subtle"')
   })
 
   test('renders a labelled recovery state with explicit announcement policy', () => {

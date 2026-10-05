@@ -1,0 +1,21 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+import { formatLumenAmountDraft, getLumenAmountValue, type LumenAmountOptions, resolveLumenAstroProps } from '@santi020k/lumen-core'
+
+interface Props extends Omit<HTMLAttributes<'input'>, 'value' | 'type' | 'min' | 'max' | 'step'>, LumenAmountOptions {
+  value?: string
+  defaultValue?: string
+  invalidMessage?: string
+  className?: string
+}
+
+const { value, defaultValue, locale = 'en-US', fractionDigits = 2, allowNegative = false, invalidMessage, name, form, disabled, class: classProp = '', className = '', ...rest } = Astro.props
+const initial = value ?? defaultValue ?? ''
+const { classList, passthrough } = resolveLumenAstroProps(rest, ['ui-input', 'ui-amount-field'], classProp, className)
+---
+
+<span data-ui-amount-field locale={locale} fraction-digits={fractionDigits} allow-negative={allowNegative ? '' : undefined} value={value} default-value={defaultValue ?? initial} invalid-message={invalidMessage}>
+  <input {...passthrough} class:list={classList} data-ui-amount-input type="text" inputmode="decimal" value={formatLumenAmountDraft(initial, { locale, fractionDigits, allowNegative })} form={form} disabled={disabled} />
+  <input data-ui-amount-value type="hidden" name={name} form={form} disabled={disabled} value={getLumenAmountValue(initial) ?? ''} />
+</span>

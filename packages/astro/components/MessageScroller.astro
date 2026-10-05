@@ -7,12 +7,16 @@ interface Props extends HTMLAttributes<'div'> {
   class?: string | null
   className?: string
   glass?: boolean | 'subtle' | 'strong'
+  autoScroll?: boolean
+  scrollThreshold?: number
 }
 
 const {
   class: classProp = '',
   className = '',
   glass = false,
+  autoScroll = false,
+  scrollThreshold = 32,
   ...rest
 } = Astro.props
 
@@ -25,6 +29,8 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
 ---
 
 <div
+  data-ui-message-scroller={autoScroll ? '' : undefined}
+  scroll-threshold={scrollThreshold}
   class:list={classList}
   {...passthrough}
 >

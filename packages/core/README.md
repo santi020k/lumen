@@ -272,6 +272,17 @@ remain supported through the original API. The interface selection in `icons/lum
 controls the generated exports; run `pnpm run generate:platform-icons` after catalog changes.
 See [consumer UI recipes](../../docs/consumer-ui-recipes.md#static-react-icons).
 
+## Consumer diagnostics and exact amounts
+
+`auditLumenTheme` requires every semantic color mapping and checks normal-text contrast for
+resolved opaque HSL channels. `inspectLumenTheme(element)` reads computed mappings in each
+representative light, dark and nested scope. Unsupported color syntax produces a finding rather
+than an assumed pass; these checks supplement rendered accessibility verification.
+
+`formatLumenAmountDraft`, `parseLumenAmountDraft` and `getLumenAmountValue` preserve exact ASCII
+decimal strings across localized display and editing. The shared amount and message-scroller DOM
+controllers power the web adapters. Currency policy and message state remain consumer-owned.
+
 ## Resources
 
 | Guide | What you will find |

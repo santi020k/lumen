@@ -707,6 +707,9 @@ export function Example() {
 `
 
 const reactOverrides: Record<string, string> = {
+  AmountField: `import { AmountField } from '@santi020k/lumen-react'
+
+<AmountField name="amount" locale="es-CO" defaultValue="1234.50" aria-label="Amount COP" />`,
   AttachmentPreview: `import { AttachmentPreview, Button } from '@santi020k/lumen-react'
 
 <AttachmentPreview src="/logo.svg" contentType="image/svg+xml" alt="Lumen logo"
@@ -1004,6 +1007,8 @@ const compoundDescriptionsElementsExample = `${elementsHeader}
 `
 
 const elementsOverrides: Record<string, string> = {
+  AmountField: `<lumen-amount-field name="amount" locale="es-CO" default-value="1234.50"
+  aria-label="Amount COP"></lumen-amount-field>`,
   FunnelChart: `<lumen-funnel-chart
   id="example-funnel-chart"
   aria-label="Activation funnel"

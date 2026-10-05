@@ -39,6 +39,7 @@ import {
   createLumenHeatmapModel,
   createLumenLineChartModel,
   createLumenLineGeometry,
+  createLumenMessageScrollerController,
   createLumenPieGeometry,
   createLumenRangeDatumActivation,
   createLumenRangeGeometry,
@@ -4082,19 +4083,38 @@ export const Message = ({
 
 export interface MessageScrollerProps extends ComponentPropsWithoutRef<'div'> {
   glass?: LumenGlassProp
+  autoScroll?: boolean
+  scrollThreshold?: number
 }
 export const MessageScroller = ({
   className,
   glass = false,
+  autoScroll = false,
+  scrollThreshold = 32,
   ...props
-}: MessageScrollerProps) => (
-  <div
-    className={composeClassName(
-      'ui-message-scroller', glassClass('ui-message-scroller', glass), className
-    )}
-    {...props}
-  />
-)
+}: MessageScrollerProps) => {
+  const rootRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const root = rootRef.current
+
+    if (!root || !autoScroll) return
+
+    const controller = createLumenMessageScrollerController(root, { threshold: scrollThreshold })
+
+    return controller.destroy
+  }, [autoScroll, scrollThreshold])
+
+  return (
+    <div
+      ref={rootRef}
+      className={composeClassName(
+        'ui-message-scroller', glassClass('ui-message-scroller', glass), className
+      )}
+      {...props}
+    />
+  )
+}
 
 export interface NativeSelectProps extends ComponentPropsWithRef<'select'> {
   options?: SelectOption[]
