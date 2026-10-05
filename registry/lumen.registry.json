@@ -275,7 +275,8 @@
         "Alert",
         "Checkbox",
         "Progress",
-        "Button"
+        "Button",
+        "Grid"
       ]
     },
     {

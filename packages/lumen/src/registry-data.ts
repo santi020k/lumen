@@ -277,7 +277,8 @@ export const lumenRegistry = {
         'Alert',
         'Checkbox',
         'Progress',
-        'Button'
+        'Button',
+        'Grid'
       ]
     },
     {

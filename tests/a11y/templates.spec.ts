@@ -127,3 +127,42 @@ for (const slug of ['analytics-dashboard', 'saas-admin', 'commerce-dashboard']) 
     })
   }
 }
+
+for (const width of [390, 1440]) {
+  for (const theme of ['light', 'dark']) {
+    test(`login examples are clearly visual and fit ${width}px in ${theme}`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 1000 })
+      await page.goto('/templates/auth-onboarding')
+      await page.locator('html').evaluate((html, value) => {
+        html.dataset.theme = value
+      }, theme)
+      const examples = page.getByRole('region', { name: 'A familiar way back in.' })
+      await expect(examples).toBeVisible()
+      await expect(examples).toContainText('These visual examples do not send codes or sign you in.')
+      for (const name of ['Welcome back', 'Check your inbox', 'Try another way']) {
+        await expect(examples.getByRole('heading', { name, exact: true })).toBeVisible()
+      }
+      for (const button of await examples.locator('.lumen-login-examples__card button').all()) {
+        await expect(button).toBeDisabled()
+      }
+      await expect(examples.getByLabel('Email address')).toHaveAttribute('readonly', '')
+      await expect(examples.getByRole('textbox', { name: 'Email code', exact: true })).toHaveAttribute('autocomplete', 'one-time-code')
+      const overflows = await examples.evaluate(element => {
+        const viewport = document.documentElement.clientWidth
+        return [...element.querySelectorAll<HTMLElement>('.lumen-login-examples__card')]
+          .filter(card => card.getBoundingClientRect().right > viewport || card.scrollWidth > card.clientWidth)
+          .length
+      })
+      expect(overflows).toBe(0)
+      await examples.getByRole('tab', { name: 'Email code', exact: true }).click()
+      await expect(examples.getByRole('tabpanel')).toContainText('requestEmailOtp')
+      await expect(examples.getByRole('tabpanel')).toContainText('signInWithEmailOtp')
+      await examples.getByRole('tab', { name: 'Passkey', exact: true }).focus()
+      await page.keyboard.press('Enter')
+      await expect(examples.getByRole('tabpanel')).toContainText('signInWithPasskey')
+      await examples.getByRole('tab', { name: 'Set up', exact: true }).click()
+      await page.locator('body').click({ position: { x: 1, y: 1 } })
+      await examples.screenshot({ style: '.docs-site-header, .docs-skip-link { visibility: hidden; }', path: `/private/tmp/lumen-login-${width}-${theme}.png` })
+    })
+  }
+}

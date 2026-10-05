@@ -745,3 +745,12 @@ so its apply ledger fingerprints the final source and repeat runs do not rewrite
 SDK import edits remain limited to `.ts`, `.js`, and `.mjs`; this restriction does not disable the
 separate documented JSX/Astro spacing migration. The JSON report includes installed package
 versions and explicit SDK dependency-review findings.
+
+
+## Login examples and Auth
+
+Use the `auth-onboarding` recipe for visual email-code sign-in, code verification, and passkey
+recovery states in Astro, React, or Elements. The preview controls are disabled and do not authenticate.
+Lumen supplies the UI; the optional `@santi020k/auth-client` supplies protocol operations.
+See the [login integration reference](../packages/templates/README.md#login-examples-and-auth)
+for helper calls, safe result handling, and the application-owned server and session requirements.
