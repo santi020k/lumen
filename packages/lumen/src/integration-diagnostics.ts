@@ -10,6 +10,9 @@ import {
   type LumenStylingContract,
   lumenStylingContracts
 } from '@santi020k/lumen-core'
+import { createSourceFile, type ImportDeclaration, type ImportSpecifier, isImportDeclaration, isNamedImports, isStringLiteral, ScriptKind, ScriptTarget, type Statement, SyntaxKind } from 'typescript'
+
+import { findMarkupTagEnd, getMarkupStart } from './v2-migration.js'
 
 export type LumenDiagnosticSeverity = 'advisory' | 'error'
 
@@ -564,6 +567,78 @@ const getGlobalRuntimeBehaviors = (sources: SourceEntry[]): string[] => lumenGlo
   }))
   .map(behavior => behavior.name)
 
+const isRuntimeImport = (statement: Statement): statement is ImportDeclaration => (
+  isImportDeclaration(statement) && isStringLiteral(statement.moduleSpecifier) &&
+  statement.moduleSpecifier.text === '@santi020k/lumen-astro/runtime'
+)
+
+const getDefaultRuntimeName = (binding: ImportSpecifier): string[] => !binding.isTypeOnly && (binding.propertyName?.text ?? binding.name.text) === 'default' ? [binding.name.text] : []
+
+const getImportRuntimeNames = (statement: ImportDeclaration): string[] => {
+  const clause = statement.importClause
+
+  if (!clause || clause.phaseModifier === SyntaxKind.TypeKeyword) return []
+
+  const names = clause.name ? [clause.name.text] : []
+  const bindings = clause.namedBindings
+
+  if (!bindings || !isNamedImports(bindings)) return names
+
+  return [...names, ...bindings.elements.flatMap(getDefaultRuntimeName)]
+}
+
+const getRuntimeBindingNames = ({ file, source }: SourceEntry): Set<string> => {
+  if (!source.includes('@santi020k/lumen-astro/runtime')) return new Set(['UIPrimitives'])
+
+  try {
+    const parsed = createSourceFile(file, source, ScriptTarget.Latest, false, ScriptKind.TS)
+    const imports = parsed.statements.filter(isRuntimeImport)
+
+    // Preserve canonical-name detection for legacy imports and wrapper components.
+    return imports.length > 0 ? new Set(imports.flatMap(getImportRuntimeNames)) : new Set(['UIPrimitives'])
+  } catch (error: unknown) {
+    if (!(error instanceof RangeError)) throw error
+
+    return new Set()
+  }
+}
+
+const runtimeTagDelimiter = /[\s/>]/u
+
+const getMarkupNameEnd = (source: string, start: number): number => {
+  let end = start + 1
+
+  while (end < source.length && source[end] !== '<' && !runtimeTagDelimiter.test(source[end] ?? '')) end += 1
+
+  return end
+}
+
+const countRuntimeMounts = (entry: SourceEntry): number => {
+  const names = getRuntimeBindingNames(entry)
+  let count = 0
+  let start = entry.source.indexOf('<', getMarkupStart(entry.source, entry.file))
+
+  while (start >= 0) {
+    if (entry.source.startsWith('<!--', start)) {
+      const commentEnd = entry.source.indexOf('-->', start + 4)
+
+      if (commentEnd < 0) break
+
+      start = entry.source.indexOf('<', commentEnd + 3)
+
+      continue
+    }
+
+    const end = getMarkupNameEnd(entry.source, start)
+
+    if (names.has(entry.source.slice(start + 1, end)) && runtimeTagDelimiter.test(entry.source[end] ?? '')) count += 1
+
+    start = entry.source.indexOf('<', findMarkupTagEnd(entry.source, end) + 1)
+  }
+
+  return count
+}
+
 const collectRuntimeFindings = (
   repositoryRoot: string,
   boundary: ApplicationBoundary
@@ -577,7 +652,10 @@ const collectRuntimeFindings = (
     ])
   ]
 
-  const mountSources = boundary.sources.filter(item => /<UIPrimitives(?:\s|\/|>)/u.test(item.source))
+  const mountSources = boundary.sources
+    .map(item => ({ ...item, mountCount: countRuntimeMounts(item) }))
+    .filter(item => item.mountCount > 0)
+
   const findings: LumenDiagnosticFinding[] = []
 
   if (runtimeComponents.length > 0 && mountSources.length === 0) {
@@ -592,9 +670,7 @@ const collectRuntimeFindings = (
   }
 
   for (const mount of mountSources) {
-    const mountCount = [...mount.source.matchAll(/<UIPrimitives(?:\s|\/|>)/g)].length
-
-    if (mountCount > 1) {
+    if (mount.mountCount > 1) {
       findings.push(finding(
         relative(repositoryRoot, mount.file), 'astro-runtime-duplicate', 'UIPrimitives is mounted more than once in this file.', 'Keep one mount in the application root layout.'
       ))

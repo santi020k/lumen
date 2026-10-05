@@ -103,6 +103,8 @@ diagnostics are scoped to the nearest package boundary, generated build trees ar
 application-controlled Astro `Toggle` instances do not require the shared runtime. It also suggests
 matching Lumen primitives for likely hand-built dropdown, theme, dialog-focus, and keyboard-menu
 behavior. These suggestions stay advisory because product-specific composition can be intentional.
+Astro runtime mount detection follows default-import aliases, including `default as` imports.
+Type-only imports, front matter example strings, and HTML comments do not establish a runtime mount.
 Publishable shared UI libraries are not required to load global styles. Private wrapper packages
 can declare `"lumen": { "styleOwnership": "consumer" }` when their applications own adapter CSS,
 or `"application"` when the package itself owns setup.
