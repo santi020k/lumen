@@ -34,8 +34,12 @@ inspected. Elements keyboard and React property regressions are included in the 
 Package notes were generated with Changesets and folded into the existing unpublished 4.0.0 entries.
 Public versions and published changelog history were preserved.
 
-Canonical `pnpm run validate` passed: 2077 unit tests in 206 files, builds, strict type checks,
+Task candidate `pnpm run validate` passed: 2077 unit tests in 206 files, builds, strict type checks,
 zero-warning lint, spelling, Knip, security, publish-content checks and packed consumer smoke tests.
+
+After syncing the release baseline at `2d0316d7`, canonical `pnpm run validate` also passed on
+`9bb076b7`: 2099 tests in 208 files, builds, type checks, zero-warning lint, security and all packed
+consumer smoke tests. The task implementation commit is `0f6d0520`.
 
 ## Integration
 
