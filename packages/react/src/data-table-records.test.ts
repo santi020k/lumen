@@ -201,8 +201,18 @@ test('ignores default and controlled sorting on a non-sortable column', async ()
   }
 })
 
-test('rejects identities that collide after client sorting index fallback rows', async () => {
-  await render({ rows: [{ name: 'Z' }, { id: '1', name: 'A' }], defaultSort: { key: 'name', direction: 'ascending' } })
-  expect(container.querySelectorAll('tbody tr')).toHaveLength(0)
-  expect(container.querySelectorAll('[data-ui-datatable-detail]')).toHaveLength(0)
+test('preserves index fallback identities when client sorting mixes explicit IDs', async () => {
+  await render({ rows: [{ name: 'Z' }, { id: '1', name: 'A' }], defaultSort: { key: 'name', direction: 'ascending' }, expandedRowIds: ['0'] })
+  expect([...container.querySelectorAll('[data-ui-datatable-row]')].map(row => row.getAttribute('data-value'))).toEqual(['1', '0'])
+  expect(element('[data-ui-datatable-detail]').textContent).toBe('Notes for Z')
+})
+
+test('keeps expanded implicit records attached to their original rows across sorting', async () => {
+  await render({ rows: [{ name: 'Z' }, { name: 'A' }] })
+  await click('[data-value="0"] button')
+  await click('thead th:first-child button')
+  expect([...container.querySelectorAll('[data-ui-datatable-row]')].map(row => row.getAttribute('data-value'))).toEqual(['1', '0'])
+  expect(element('[data-ui-datatable-detail]').textContent).toBe('Notes for Z')
+  expect(element('[data-value="0"] button').getAttribute('aria-expanded')).toBe('true')
+  expect(element('[data-value="1"] button').getAttribute('aria-expanded')).toBe('false')
 })

@@ -22,16 +22,6 @@ const createToastId = (): string => {
   return `ui-toast-${Math.random().toString(36).slice(2)}`
 }
 
-const getToastVariantClass = (variant: ToastRecord['variant']): string | false => {
-  if (variant === 'success') return 'ui-toast--success'
-
-  if (variant === 'warning') return 'ui-toast--warning'
-
-  if (variant === 'destructive') return 'ui-toast--destructive'
-
-  return false
-}
-
 const createToastRecord = (
   detail: ToastDetail,
   placement: ToastPlacement
@@ -58,11 +48,9 @@ const ToastItem = ({ onDismiss, toast }: ToastItemProps) => {
   const dismiss = useToast().dismiss
 
   const clearTimer = useCallback(() => {
-    if (timerRef.current) {
-      clearTimeout(timerRef.current)
+    clearTimeout(timerRef.current)
 
-      timerRef.current = undefined
-    }
+    timerRef.current = undefined
   }, [])
 
   const startTimer = useCallback(() => {
@@ -102,10 +90,10 @@ const ToastItem = ({ onDismiss, toast }: ToastItemProps) => {
   useEffect(() => {
     remainingRef.current = toast.duration ?? defaultToastDuration
 
-    startTimer()
+    if (toast.open) startTimer()
 
     return clearTimer
-  }, [clearTimer, startTimer, toast.duration])
+  }, [clearTimer, startTimer, toast.duration, toast.open])
 
   useEffect(() => {
     if (!toast.open) {
@@ -119,7 +107,7 @@ const ToastItem = ({ onDismiss, toast }: ToastItemProps) => {
 
   const action = toast.action
   const description = toast.description ?? ''
-  const variantClass = getToastVariantClass(toast.variant)
+  const variantClass = ['success', 'warning', 'destructive'].includes(toast.variant) && `ui-toast--${toast.variant}`
 
   return (
     <aside

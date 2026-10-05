@@ -284,19 +284,19 @@ export const DataTable = ({
   const detailsId = useId()
 
   const sortedRows = useMemo(() => {
-    if (sortMode === 'manual' || !sort) return rows
+    const entries = rows.map((row, index) => ({ row, index }))
+
+    if (sortMode === 'manual' || !sort) return entries
 
     const column = columns.find(candidate => candidate.sortable && candidate.key === sort.key)
 
-    if (!column) return rows
+    if (!column) return entries
 
     const direction = sort.direction === 'ascending' ? 1 : -1
 
-    const ordered = [...rows].sort((left, right) => compare(
-      left[column.key], right[column.key], column.sort
+    return entries.sort((left, right) => compare(
+      left.row[column.key], right.row[column.key], column.sort
     ) * direction)
-
-    return isRows(ordered) ? ordered : noRows
   }, [columns, rows, sort, sortMode])
 
   const toggleSort = (column: DataTableColumn): void => {
@@ -360,7 +360,7 @@ export const DataTable = ({
               </tr>
             </thead>
             <tbody role="rowgroup">
-              {sortedRows.flatMap((row, index) => renderRow({
+              {sortedRows.flatMap(({ row, index }) => renderRow({
                 row,
                 index,
                 columns,

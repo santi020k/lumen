@@ -623,8 +623,6 @@ const getLoopedIndex = (
   return (currentIndex - 1 + itemCount) % itemCount
 }
 
-const getOwnedTarget = (event: Event): Node | null => event.target instanceof Node ? event.target : null
-
 const useSafeId = (prefix: string, id?: string): string => {
   const reactId = useId().replaceAll(':', '')
 
@@ -708,22 +706,21 @@ const useOutsideClose = (
   onClose: () => void
 ): void => {
   useEffect(() => {
-    if (!open || typeof document === 'undefined') return
+    const owner = refs.find(ref => ref.current)?.current?.ownerDocument
+    const NodeType = owner?.defaultView?.Node
 
-    const handlePointerDown = (event: globalThis.PointerEvent): void => {
-      const target = getOwnedTarget(event)
+    if (!open || !owner || !NodeType) return
 
-      if (!target) return
+    const pointerDown = (event: globalThis.PointerEvent): void => {
+      const target = event.target
 
-      const isInside = refs.some(ref => ref.current?.contains(target))
-
-      if (!isInside) onClose()
+      if (target instanceof NodeType && !refs.some(ref => ref.current?.contains(target))) onClose()
     }
 
-    document.addEventListener('pointerdown', handlePointerDown)
+    owner.addEventListener('pointerdown', pointerDown)
 
     return () => {
-      document.removeEventListener('pointerdown', handlePointerDown)
+      owner.removeEventListener('pointerdown', pointerDown)
     }
   }, [onClose, open, refs])
 }
@@ -1046,6 +1043,8 @@ export const useContextMenu = ({
   const close = useCallback(() => {
     setOpen(false)
   }, [setOpen])
+
+  useOutsideClose(open, [triggerRef, menuRef], close)
 
   const openAt = useCallback<ContextMenuController['openAt']>(
     (x, y) => {
@@ -3776,18 +3775,14 @@ export const useTooltip = ({
   })
 
   const close = useCallback(() => {
-    if (timerRef.current) {
-      clearTimeout(timerRef.current)
-    }
+    clearTimeout(timerRef.current)
 
     setIsOpen(false)
   }, [setIsOpen])
 
   const scheduleOpen = useCallback(
     (nextDelay: number) => {
-      if (timerRef.current) {
-        clearTimeout(timerRef.current)
-      }
+      clearTimeout(timerRef.current)
 
       timerRef.current = setTimeout(() => {
         setIsOpen(true)
@@ -3797,9 +3792,7 @@ export const useTooltip = ({
 
   useEffect(
     () => () => {
-      if (timerRef.current) {
-        clearTimeout(timerRef.current)
-      }
+      clearTimeout(timerRef.current)
     }, []
   )
 
@@ -3809,6 +3802,9 @@ export const useTooltip = ({
     rootProps: {
       'aria-describedby': isOpen ? tooltipId : undefined,
       'data-ui-tooltip': true,
+      onBlur: event => {
+        if (!event.currentTarget.contains(event.relatedTarget)) close()
+      },
       onFocus: () => {
         scheduleOpen(0)
       },

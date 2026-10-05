@@ -226,3 +226,49 @@ test('a canceled popover click preserves focus and closed state', async () => {
   expect(element('#panel').hidden).toBe(true)
   expect(document.activeElement).toBe(element('#editor'))
 })
+
+test('iframe menus dismiss on outside focus and restore owned focus on close', async () => {
+  const iframe = document.createElement('iframe')
+
+  document.body.append(iframe)
+  const owner = iframe.contentDocument
+
+  if (!owner) throw new Error('Missing iframe document')
+
+  const host = owner.createElement('div')
+  const outside = owner.createElement('button')
+
+  outside.textContent = 'Outside'
+  owner.body.append(host, outside)
+  const iframeRoot = createRoot(host)
+
+  try {
+    await run(() => {
+      iframeRoot.render(menu({ defaultOpen: true }))
+    })
+    const trigger = host.querySelector<HTMLButtonElement>('#trigger')
+    const item = host.querySelector<HTMLButtonElement>('[role="menuitem"]')
+
+    if (!trigger || !item) throw new Error('Missing iframe menu controls')
+
+    expect(owner.activeElement).toBe(item)
+    await run(() => {
+      outside.focus()
+    })
+    expect(trigger.getAttribute('aria-expanded')).toBe('false')
+    expect(owner.activeElement).toBe(outside)
+    await run(() => {
+      trigger.click()
+    })
+    expect(owner.activeElement).toBe(item)
+    await run(() => {
+      iframeRoot.render(menu({ open: false }))
+    })
+    expect(owner.activeElement).toBe(trigger)
+  } finally {
+    await run(() => {
+      iframeRoot.unmount()
+    })
+    iframe.remove()
+  }
+})

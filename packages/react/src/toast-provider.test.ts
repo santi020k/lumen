@@ -28,7 +28,11 @@ const ToastActions = () => {
     onClick: () => {
       toast.dismiss('save')
     }
-  }, 'Dismiss save'))
+  }, 'Dismiss save'), createElement('button', {
+    onClick: () => {
+      toast.update('timed', { title: 'Reopened' })
+    }
+  }, 'Reopen timed'))
 }
 
 const clickButton = async (label: string) => {
@@ -176,4 +180,19 @@ test('explicit dismissal preserves the newer open toast', async () => {
   await clickButton('Dismiss save')
   expect(container.querySelector('#save')?.getAttribute('data-state')).toBe('closed')
   expect(container.querySelector('#timed')?.getAttribute('data-state')).toBe('open')
+})
+
+test('restarts the timeout when an update reopens a closing toast', async () => {
+  await clickButton('Timed')
+  await act(() => vi.advanceTimersByTimeAsync(1000))
+  expect(container.querySelector('#timed')?.getAttribute('data-state')).toBe('closed')
+  await act(() => vi.advanceTimersByTimeAsync(100))
+  await clickButton('Reopen timed')
+  expect(container.querySelector('#timed')?.getAttribute('data-state')).toBe('open')
+  await act(() => vi.advanceTimersByTimeAsync(999))
+  expect(container.querySelector('#timed')?.getAttribute('data-state')).toBe('open')
+  await act(() => vi.advanceTimersByTimeAsync(1))
+  expect(container.querySelector('#timed')?.getAttribute('data-state')).toBe('closed')
+  await act(() => vi.advanceTimersByTimeAsync(240))
+  expect(container.querySelector('#timed')).toBeNull()
 })

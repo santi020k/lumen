@@ -474,7 +474,8 @@ validation, calendar grids, OTP segmentation, date range syncing, rich text comm
 drag/drop, controlled Kanban move requests, theme export and switching, resizable pane sizing, and
 toast controller semantics for React applications.
 Toast timeouts pause while hovered or focused and resume only after both interactions end;
-moving focus between a toast's controls preserves its remaining duration.
+moving focus between a toast's controls preserves its remaining duration. Updating a closing toast
+reopens it with a fresh lifetime using its current duration.
 `useRichTextEditor` also provides `getEditableProps`, value-bearing commands, common formatting
 shortcuts, active toolbar state, and `{ html, text }` change details.
 `DataTable` can render structured `columns` and `rows`; sortable columns use native header buttons,
@@ -859,13 +860,17 @@ for dashboard tables, freshness, import review, activity inbox, and persistent K
 React DataTable adds `layout="records"`, rich `column.render`, and expandable `renderDetails`.
 Use stable record IDs and controlled `expandedRowIds` across pages. Row identity uses `rowValue`,
 then `id`, then a legacy `value` fallback; ordinary value cells do not override explicit IDs.
+Rows without an explicit identity keep their original input index across client sorting.
 Decoded row collections are validated before sorting or rendering. Invalid rows, identities,
-or cell shapes, empty identities, and duplicate resolved identities fail closed to an empty table while
-the column headers remain available. Client sorting only applies to columns marked `sortable`. `DataTableSortControls` shares
+cell shapes, empty identities, and duplicate resolved identities fail closed to an empty table while
+the column headers remain available. Client sorting only applies to columns marked `sortable`.
+`DataTableSortControls` shares
 `sort`/`onSortChange` with table headers; manual sorting preserves server page order.
 
 Popover and DropdownMenu support anchored top-layer placement, viewport collision handling, logical
-start/end alignment, and focus handoff. Set `positioning="none"` for application-owned placement.
+start/end alignment, and focus handoff in their owning document, including iframes.
+Set `positioning="none"` for application-owned placement. Context menus dismiss outside pointer
+presses; tooltips close when focus leaves their owner and cancel pending opening timers.
 
 ### Actual-versus-target charts
 

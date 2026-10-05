@@ -58,7 +58,7 @@
     "test:spacing-tokens": "node --test scripts/spacing-tokens.test.mjs scripts/theme-presets.test.mjs",
     "check:platform-tokens": "node scripts/generate-platform-tokens.mjs --check",
     "generate:native-playground-catalogs": "node scripts/generate-native-playground-catalogs.mjs",
-    "check:native-playground-catalogs": "node scripts/generate-native-playground-catalogs.mjs --check",
+    "check:native-playground-catalogs": "node scripts/generate-native-playground-catalogs.mjs --check && node --test scripts/android-capture-catalog.test.mjs",
     "check:native-playground-structure": "node scripts/check-native-playground-structure.mjs",
     "test:native-playground-structure": "node --test scripts/check-native-playground-structure.test.mjs",
     "check:playground-store-readiness": "node scripts/check-playground-store-readiness.mjs",

@@ -102,17 +102,19 @@ const positionPanel = (context: FloatingContext): void => {
 const observePosition = (context: FloatingContext, close: () => void): (() => void) => {
   const { panel, trigger, view } = context
   const document = panel.ownerDocument
+  const NodeType = document.defaultView?.Node
 
   const position = () => {
     positionPanel(context)
   }
 
   const focusOutside = (event: FocusEvent) => {
-    if (event.target instanceof Node && !panel.contains(event.target) && !trigger.contains(event.target)) close()
+    if (NodeType && event.target instanceof NodeType &&
+      !panel.contains(event.target) && !trigger.contains(event.target)) close()
   }
 
   const scroll = (event: Event) => {
-    if (!(event.target instanceof Node) || !panel.contains(event.target)) position()
+    if (!(NodeType && event.target instanceof NodeType) || !panel.contains(event.target)) position()
   }
 
   const observer = typeof ResizeObserver === 'function' ? new ResizeObserver(position) : undefined
@@ -146,19 +148,25 @@ const observePosition = (context: FloatingContext, close: () => void): (() => vo
   }
 }
 
+const restoreExternalFocus = (owner: Document, focused: Element | null): void => {
+  const ElementType = owner.defaultView?.HTMLElement
+
+  if (ElementType && focused instanceof ElementType && focused.isConnected && owner.activeElement !== focused) {
+    focused.focus({ preventScroll: true })
+  }
+}
+
 const restoreFocus = (panel: HTMLElement, trigger: HTMLElement, topLayer: boolean): void => {
   const document = panel.ownerDocument
   const focused = document.activeElement
-  const ownedFocus = focused instanceof Node && panel.contains(focused)
+  const ownedFocus = focused !== null && panel.contains(focused)
 
   if (topLayer && panel.matches(':popover-open')) panel.hidePopover()
 
   if (ownedFocus && trigger.isConnected) trigger.focus({ preventScroll: true })
 
   // Closing a menu must not steal focus from a dialog opened by its action.
-  if (!ownedFocus && focused instanceof HTMLElement && focused.isConnected && document.activeElement !== focused) {
-    focused.focus({ preventScroll: true })
-  }
+  if (!ownedFocus) restoreExternalFocus(document, focused)
 }
 
 const restoreAttribute = (panel: HTMLElement, name: string, value: string | null): void => {

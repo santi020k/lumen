@@ -12,6 +12,7 @@ const { version: lumenVersion } = JSON.parse(
 const checkOnly = process.argv.includes('--check')
 
 const outputPaths = {
+  composeCaptures: join(repositoryRoot, 'apps/playground-android/scripts/component-capture-catalog.generated.txt'),
   compose: join(
     repositoryRoot,
     'apps/playground-android/app/src/main/kotlin/com/santi020k/lumen/playground/compose/PlaygroundCatalog.generated.kt'
@@ -298,7 +299,8 @@ const catalog = await readCatalog()
 await Promise.all([
   writeOrCheck(outputPaths.reactNative, generateReactNative(catalog)),
   writeOrCheck(outputPaths.swiftUI, generateSwift(catalog)),
-  writeOrCheck(outputPaths.compose, generateCompose(catalog))
+  writeOrCheck(outputPaths.compose, generateCompose(catalog)),
+  writeOrCheck(outputPaths.composeCaptures, `${entriesForPlatform(catalog, 'compose').flatMap(category => category.names).join('\n')}\n`)
 ])
 
 process.stdout.write(
