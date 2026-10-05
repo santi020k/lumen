@@ -70,7 +70,7 @@ const isOptionalChartText = (value: unknown): boolean => value === undefined || 
 const isNullableChartNumber = (value: unknown): boolean => value === null || (typeof value === 'number' && Number.isFinite(value))
 
 const isLineDatum = (value: unknown): value is LumenChartDatum => (
-  isAnnotationRecord(value) && isAnnotationValue(value.x) && isNullableChartNumber(value.y) &&
+  isAnnotationRecord(value) && isAnnotationValue(value.x) && (value.y === null || typeof value.y === 'number') &&
   ['id', 'label', 'toneLabel', 'xLabel'].every(key => isOptionalChartText(value[key])) &&
   isAnnotationTone(value.tone) && (value.size === undefined || isNullableChartNumber(value.size))
 )

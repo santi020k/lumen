@@ -20,13 +20,19 @@ test.each([
   [{ id: 'a', label: 'A', data: [null] }],
   [{ id: 'a', label: 'A', data: new Array<unknown>(1) }],
   [{ id: 'a', label: 'A', data: [{ x: 'A', y: '1' }] }],
-  [{ id: 'a', label: 'A', data: [{ x: 'A', y: Infinity }] }],
   [{ id: 'a', label: 'A', data: [{ x: 'A', y: 1, label: null }] }],
   [{ id: 'a', label: 'A', data: [{ x: 'A', y: 1 }], tone: 'invalid' }]
 ])('line chart models fail closed before reading malformed decoded series: %j', input => {
   const model: unknown = Reflect.apply(createLumenLineChartModel, undefined, [input])
 
   expect(model).toMatchObject({ categories: [], series: [], geometries: [] })
+})
+
+test('line series preserve non-finite numeric gaps alongside usable data', () => {
+  const model = createLumenLineChartModel([{ id: 'a', label: 'A', data: [{ x: 'A', y: 1 }, { x: 'B', y: Infinity }] }])
+
+  expect(model.categories).toEqual(['A', 'B'])
+  expect(model.series).toHaveLength(1)
 })
 
 test.each([null,

@@ -66,9 +66,9 @@ export class LumenButtonElement extends LumenElement {
   }
 
   private activateAfterDispatch(event: KeyboardEvent): void {
-    queueMicrotask(() => {
+    setTimeout(() => {
       if (this.isConnected && !event.defaultPrevented && !this.isBlocked()) this.click()
-    })
+    }, 0)
   }
 
   private onKeyDown = (event: KeyboardEvent): void => {

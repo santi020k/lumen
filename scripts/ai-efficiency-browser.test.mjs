@@ -65,6 +65,7 @@ test('verifies workspace filters without losing preference edits and rejects bro
     await writeFile(join(directory, 'Screen.tsx'), source.replace("role === 'All' || member.role === role", "true"))
 
     await assert.rejects(verifyEfficiencyScreen(directory, scenario, 'docs'), /count|Count|expect/)
+
   } finally { await rm(directory, { recursive: true, force: true }) }
 })
 
@@ -96,5 +97,12 @@ test('verifies actual Elements controls in the React host and rejects native-onl
     await writeFile(join(directory, 'Screen.tsx'), source.replaceAll("'lumen-input'", "'input'").replaceAll("'lumen-button'", "'button'"))
 
     await assert.rejects(verifyEfficiencyScreen(directory, scenario, 'docs'), /count|Count|expect/)
+
+    const nativeWithDecoys = source.replaceAll("'lumen-input'", "'input'").replaceAll("'lumen-button'", "'button'")
+      .replace('<main>', `<main><div hidden>{createElement('lumen-input')}{createElement('lumen-button', null, 'Unused one')}{createElement('lumen-button', null, 'Unused two')}</div>`)
+
+    await writeFile(join(directory, 'Screen.tsx'), nativeWithDecoys)
+
+    await assert.rejects(verifyEfficiencyScreen(directory, scenario, 'docs'), /must use a visible lumen-input control/u)
   } finally { await rm(directory, { recursive: true, force: true }) }
 })

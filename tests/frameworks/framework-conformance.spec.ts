@@ -26,6 +26,37 @@ const adapters = [
   { label: "Elements", path: "/visual/elements" },
 ] as const;
 
+test('Elements buttons honor ancestor cancellation after native keyboard dispatch', async ({ page }) => {
+  await page.goto('/visual/elements');
+  await page.evaluate(async () => {
+    await customElements.whenDefined('lumen-button');
+    const fixture = document.createElement('div');
+    fixture.id = 'keyboard-button-fixture';
+    fixture.dataset.clicks = '0';
+    fixture.innerHTML = '<lumen-button>Keyboard action</lumen-button>';
+    fixture.addEventListener('click', () => { fixture.dataset.clicks = String(Number(fixture.dataset.clicks) + 1); });
+    fixture.addEventListener('keydown', event => { if (fixture.dataset.cancel === 'Enter' && event.key === 'Enter') event.preventDefault(); });
+    fixture.addEventListener('keyup', event => { if (fixture.dataset.cancel === 'Space' && event.key === ' ') event.preventDefault(); });
+    document.body.prepend(fixture);
+  });
+  const fixture = page.locator('#keyboard-button-fixture');
+  const button = fixture.getByRole('button', { name: 'Keyboard action', exact: true });
+  await button.focus();
+  await fixture.evaluate(element => { element.setAttribute('data-cancel', 'Enter'); });
+  await page.keyboard.press('Enter');
+  await page.evaluate(() => new Promise<void>(resolve => setTimeout(resolve, 0)));
+  await expect(fixture).toHaveAttribute('data-clicks', '0');
+  await fixture.evaluate(element => { element.setAttribute('data-cancel', 'Space'); });
+  await page.keyboard.press('Space');
+  await page.evaluate(() => new Promise<void>(resolve => setTimeout(resolve, 0)));
+  await expect(fixture).toHaveAttribute('data-clicks', '0');
+  await fixture.evaluate(element => { element.removeAttribute('data-cancel'); });
+  await page.keyboard.press('Enter');
+  await expect(fixture).toHaveAttribute('data-clicks', '1');
+  await page.keyboard.press('Space');
+  await expect(fixture).toHaveAttribute('data-clicks', '2');
+});
+
 test('Elements ContextMenu enters the last or first item from container focus', async ({ page }) => {
   await page.goto('/visual/elements');
   await page.evaluate(async () => {

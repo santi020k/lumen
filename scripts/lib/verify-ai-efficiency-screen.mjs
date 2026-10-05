@@ -156,6 +156,19 @@ export const verifyEfficiencyScreen = async (directory, scenario, mode) => {
         await expect(page.locator('lumen-input input')).toHaveCount(1)
 
         await expect(page.locator('lumen-button')).toHaveCount(2)
+
+        for (const [role, name, host] of [
+          ['textbox', 'Email address', 'lumen-input'],
+          ['button', 'Show delivery details', 'lumen-button'],
+          ['button', 'Save preferences', 'lumen-button']
+        ]) {
+          const control = page.getByRole(role, { name, exact: true })
+
+          await expect(control).toBeVisible()
+
+          assert.equal(await control.evaluate((element, tag) => element.closest(tag) !== null, host), true,
+            `${name} must use a visible ${host} control.`)
+        }
       }
 
       await expect(page.getByRole('heading', { level: 1, name: scenario.heading })).toBeVisible()
