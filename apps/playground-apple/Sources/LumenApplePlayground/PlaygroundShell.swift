@@ -1,12 +1,23 @@
 import Foundation
 import LumenUI
 import SwiftUI
+#if os(macOS)
+import AppKit
+#endif
 
 let playgroundBottomScrollClearance: CGFloat = {
     #if os(iOS)
     LumenSpacing.size3xl
     #else
     0
+    #endif
+}()
+
+let playgroundPageMaximumWidth: CGFloat = {
+    #if os(macOS)
+    1280
+    #else
+    1040
     #endif
 }()
 
@@ -50,6 +61,14 @@ enum PlaygroundThemePreference: String, CaseIterable, Identifiable {
 
     var title: String {
         rawValue.capitalized
+    }
+
+    func resolvedScheme(systemScheme: ColorScheme) -> LumenColorScheme {
+        switch self {
+        case .system: systemScheme == .dark ? .dark : .light
+        case .light: .light
+        case .dark: .dark
+        }
     }
 }
 
@@ -156,7 +175,11 @@ struct PlaygroundLaunchConfiguration: Equatable {
 }
 
 struct PlaygroundRootView: View {
+    #if os(macOS)
+    @State private var systemColorScheme = PlaygroundMacAppearance.scheme(for: NSApplication.shared.effectiveAppearance)
+    #else
     @Environment(\.colorScheme) private var colorScheme
+    #endif
     @State private var destination: PlaygroundDestination
     @State private var themePreference: PlaygroundThemePreference
     @State private var themePreset = PlaygroundThemePreset.lumen
@@ -182,7 +205,14 @@ struct PlaygroundRootView: View {
                 applicationShell
             }
         }
-        .lumenTheme(activeTheme, enforceColorScheme: themePreference != .system)
+        // On Mac, resolve System independently of the window preference. Clearing the
+        // preference to nil can leave the window environment on its previous scheme.
+        .lumenTheme(activeTheme, enforceColorScheme: enforcesWindowAppearance)
+        #if os(macOS)
+        .onReceive(NSApplication.shared.publisher(for: \.effectiveAppearance)) { appearance in
+            systemColorScheme = PlaygroundMacAppearance.scheme(for: appearance)
+        }
+        #endif
         .tint(activeTheme.colors.brandSolid)
     }
 
@@ -318,18 +348,30 @@ struct PlaygroundRootView: View {
     }
     #endif
 
+    private var enforcesWindowAppearance: Bool {
+        #if os(macOS)
+        true
+        #else
+        themePreference != .system
+        #endif
+    }
+
     private var activeTheme: LumenTheme {
-        let scheme: LumenColorScheme = switch themePreference {
-        case .system:
-            colorScheme == .dark ? .dark : .light
-        case .light:
-            .light
-        case .dark:
-            .dark
-        }
-        return themePreset.theme(for: scheme)
+        #if os(macOS)
+        themePreset.theme(for: themePreference.resolvedScheme(systemScheme: systemColorScheme))
+        #else
+        themePreset.theme(for: themePreference.resolvedScheme(systemScheme: colorScheme))
+        #endif
     }
 }
+
+#if os(macOS)
+enum PlaygroundMacAppearance {
+    static func scheme(for appearance: NSAppearance) -> ColorScheme {
+        appearance.bestMatch(from: [.aqua, .darkAqua]) == .darkAqua ? .dark : .light
+    }
+}
+#endif
 
 struct PlaygroundPage<Content: View>: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
@@ -351,14 +393,18 @@ struct PlaygroundPage<Content: View>: View {
         LumenSurface(tone: .canvas, padding: .none, radius: .none) {
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: LumenSpacing.md) {
+                    #if os(macOS)
+                    PlaygroundPageHeading(title, subtitle: subtitle)
+                    #else
                     VStack(alignment: .leading, spacing: LumenSpacing.sm) {
                         LumenText(title, variant: .title)
                         LumenText(subtitle, tone: .soft)
                     }
+                    #endif
                     content
                     LumenStatusBar("Built with LumenUI", tone: .success)
                 }
-                .frame(maxWidth: 1040)
+                .frame(maxWidth: playgroundPageMaximumWidth)
                 .padding(.horizontal, horizontalSizeClass == .compact ? LumenSpacing.lg : LumenSpacing.xl)
                 .padding(.vertical, LumenSpacing.lg)
                 .padding(.bottom, playgroundBottomScrollClearance)
@@ -381,6 +427,12 @@ struct AdaptiveColumns<Primary: View, Secondary: View>: View {
     }
 
     var body: some View {
+        #if os(macOS)
+        PlaygroundColumnLayout {
+            primary
+            secondary
+        }
+        #else
         ViewThatFits(in: .horizontal) {
             HStack(alignment: .top, spacing: LumenSpacing.md) {
                 primary.frame(minWidth: 340, maxWidth: .infinity, alignment: .topLeading)
@@ -391,8 +443,45 @@ struct AdaptiveColumns<Primary: View, Secondary: View>: View {
                 secondary
             }
         }
+        #endif
     }
 }
+
+#if os(macOS)
+/// Measure wrapped content at its column width instead of testing its unwrapped ideal width.
+private struct PlaygroundColumnLayout: Layout {
+    private let gap = LumenSpacing.md
+    private let minimumColumnWidth: CGFloat = 360
+
+    private func columnWidth(for width: CGFloat) -> CGFloat {
+        width >= minimumColumnWidth * 2 + gap ? (width - gap) / 2 : width
+    }
+
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
+        let width = proposal.width ?? minimumColumnWidth
+        let column = columnWidth(for: width)
+        let heights = subviews.map { $0.sizeThatFits(ProposedViewSize(width: column, height: nil)).height }
+        let height = column < width
+            ? heights.max() ?? 0
+            : heights.reduce(0, +) + gap * CGFloat(max(0, heights.count - 1))
+        return CGSize(width: width, height: height)
+    }
+
+    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
+        let column = columnWidth(for: bounds.width)
+        var origin = bounds.origin
+        for child in subviews {
+            let size = child.sizeThatFits(ProposedViewSize(width: column, height: nil))
+            child.place(at: origin, anchor: .topLeading, proposal: ProposedViewSize(width: column, height: size.height))
+            if column < bounds.width {
+                origin.x += column + gap
+            } else {
+                origin.y += size.height + gap
+            }
+        }
+    }
+}
+#endif
 
 /// Search accepts displayed labels and copyable component IDs such as `date-range-field`.
 enum PlaygroundComponentSearch {
@@ -406,3 +495,35 @@ enum PlaygroundComponentSearch {
         return needle.isEmpty || (exact ? label == needle : label.contains(needle))
     }
 }
+
+#if os(macOS)
+/// Shared desktop introduction keeps secondary destinations in the home's visual language.
+struct PlaygroundPageHeading: View {
+    let title: LocalizedStringKey
+    let subtitle: LocalizedStringKey
+
+    init(_ title: LocalizedStringKey, subtitle: LocalizedStringKey) {
+        self.title = title
+        self.subtitle = subtitle
+    }
+
+    var body: some View {
+        LumenCard(padding: .none, radius: .lg) {
+            LumenBackdrop(intensity: .subtle, variant: .aurora) {
+                VStack(alignment: .leading, spacing: LumenSpacing.md) {
+                    FlowLayout {
+                        LumenBadge("APPLE PLAYGROUND", tone: .accent)
+                        LumenBadge("SwiftUI · macOS", tone: .neutral)
+                    }
+                    LumenText(title, variant: .title)
+                        .accessibilityAddTraits(.isHeader)
+                    LumenText(subtitle, tone: .soft)
+                        .frame(maxWidth: 640, alignment: .leading)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(LumenSpacing.xl)
+            }
+        }
+    }
+}
+#endif

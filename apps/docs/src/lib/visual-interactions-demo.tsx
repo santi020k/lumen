@@ -39,6 +39,19 @@ const EffectsWorkbench = () => {
   const [variant, setVariant] = useState<LumenVisualEffectVariant>('mesh')
   const [intensity, setIntensity] = useState(0.5)
   const [animated, setAnimated] = useState(false)
+  const canAnimate = variant === 'aurora' || variant === 'draw' || variant === 'depth'
+  const animationLabel = animated ? 'Pause animation' : 'Enable animation'
+  const staticHint = 'This treatment is static. Adjust its intensity or select aurora, draw, or depth to explore motion.'
+
+  const effectHints: Record<LumenVisualEffectVariant, string> = {
+    mesh: staticHint,
+    spotlight: staticHint,
+    grain: staticHint,
+    border: staticHint,
+    depth: 'Enable animation, then scroll to see the depth treatment in browsers that support scroll timelines.',
+    draw: 'Enable animation to draw the path. Pause and enable again to replay it.',
+    aurora: 'Enable animation to see the aurora move.'
+  }
 
   return (
     <Stack gap="group">
@@ -50,15 +63,20 @@ const EffectsWorkbench = () => {
           className="visual-controls"
         >
           <Field>
-            <Label htmlFor="visual-effect">Effect</Label>
+            <Label id="visual-effect-label" htmlFor="visual-effect">Effect</Label>
             <Select
               id="visual-effect"
+              aria-labelledby="visual-effect-label"
               value={variant}
               options={[...lumenVisualEffectVariants]}
               onChange={event => {
                 const next = lumenVisualEffectVariants.find(item => item === event.currentTarget.value)
 
-                if (next) setVariant(next)
+                if (next) {
+                  setVariant(next)
+
+                  setAnimated(false)
+                }
               }}
             />
           </Field>
@@ -79,15 +97,17 @@ const EffectsWorkbench = () => {
           </Field>
           <Button
             aria-pressed={animated}
+            disabled={!canAnimate}
             onClick={() => {
               setAnimated(!animated)
             }}
             variant="secondary"
           >
-            {animated ? 'Pause animation' : 'Enable animation'}
+            {canAnimate ? animationLabel : 'Static effect'}
           </Button>
         </Stack>
       </Card>
+      <Typography><p role="status" className="visual-feedback">{effectHints[variant]}</p></Typography>
       <div className="visual-demo-grid">
         {[false, true].map(reduced => (
           <VisualEffect key={String(reduced)} data-ui-motion={reduced ? 'reduce' : undefined} variant={variant} intensity={intensity} animated={animated}>
@@ -164,9 +184,11 @@ const MotionWorkbench = () => {
             />
           </Field>
           <Stack direction="horizontal" gap="related" wrap>
-            <Button onClick={() => {
-              setItems(current => [...current].reverse())
-            }}
+            <Button
+              disabled={items.length < 2}
+              onClick={() => {
+                setItems(current => [...current].reverse())
+              }}
             >
               Reverse order
             </Button>
@@ -195,7 +217,8 @@ const MotionWorkbench = () => {
           <Card variant="muted" className="visual-comparison" key={String(reduced)} data-ui-motion={reduced ? 'reduce' : undefined}>
             <Typography><h3>{reduced ? 'Reduced motion' : 'Your system preference'}</h3></Typography>
             <p>{reduced ? 'The same updates, with immediate transitions.' : 'Reorder the tasks to follow their movement.'}</p>
-            <MotionGroup className="visual-motion-list">{items.map(item => <Card key={item} data-ui-motion-key={item}><Button variant="ghost">{item}</Button></Card>)}</MotionGroup>
+            <MotionGroup className="visual-motion-list" role="list" aria-label={reduced ? 'Tasks with reduced motion' : 'Animated tasks'}>{items.map(item => <Card key={item} data-ui-motion-key={item} role="listitem"><Typography>{item}</Typography></Card>)}</MotionGroup>
+            {items.length === 0 && <Typography><p role="status">No tasks. Add an item to restart the comparison.</p></Typography>}
           </Card>
         ))}
       </div>
@@ -267,9 +290,11 @@ const ChartWorkbench = () => {
       </Typography>
       <Card variant="muted" className="visual-control-panel">
         <Stack direction="horizontal" gap="related" wrap>
-          <Button onClick={() => {
-            setValues(current => current.map((value, index) => value + (index % 2 === 0 ? 3 : -2)))
-          }}
+          <Button
+            disabled={values.length === 0}
+            onClick={() => {
+              setValues(current => current.map((value, index) => value + (index % 2 === 0 ? 3 : -2)))
+            }}
           >
             Update values
           </Button>
@@ -291,6 +316,7 @@ const ChartWorkbench = () => {
           </Button>
           <Button
             variant="secondary"
+            disabled={values.length === 0}
             onClick={() => {
               setValues([])
             }}
@@ -301,6 +327,8 @@ const ChartWorkbench = () => {
             variant="secondary"
             onClick={() => {
               setValues([12, 18, 16, 24])
+
+              setLoading(false)
             }}
           >
             Reset
@@ -318,7 +346,7 @@ const ChartWorkbench = () => {
             {loading ? 'Loading the demonstration data…' : 'Demonstration data ready.'}
           </span>
         </MotionGroup>
-        <div className="visual-demo-grid">{['Progress', 'Compared progress'].map(heading => <ChartMotion key={heading}><LineChart series={series} heading={heading} interactive syncGroup="visual-demo" markers="all" domain={{ min: 0, max: 60 }} /></ChartMotion>)}</div>
+        <div className="visual-demo-grid">{['Progress', 'Compared progress'].map(heading => <ChartMotion key={heading}><LineChart series={series} heading={heading} interactive syncGroup="visual-demo" markers="all" /></ChartMotion>)}</div>
       </div>
     </Stack>
   )
@@ -381,6 +409,7 @@ const AiWorkbench = () => {
       </ApprovalCard>
       <Button
         variant="secondary"
+        disabled={decision === 'pending'}
         onClick={() => {
           setDecision('pending')
         }}

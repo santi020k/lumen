@@ -81,6 +81,12 @@ struct ComponentsCatalogView: View {
                     LumenSearchField("Search components", text: $query)
                     catalogCountRow
                 } else {
+                    #if os(macOS)
+                    PlaygroundPageHeading(
+                        "Find your next building block.",
+                        subtitle: "Explore real SwiftUI controls, compare their states, and compose them into your next Mac app."
+                    )
+                    #endif
                     catalogHeader
                 }
 
@@ -138,7 +144,7 @@ struct ComponentsCatalogView: View {
                     LumenText("\(componentNames.count) components", variant: .caption, tone: .muted)
                 }
             }
-                .frame(maxWidth: 1040)
+                .frame(maxWidth: playgroundPageMaximumWidth)
                 .padding(isDeterministicFilter ? LumenSpacing.xl : LumenSpacing.lg)
                 .padding(.bottom, playgroundBottomScrollClearance)
                 .frame(maxWidth: .infinity)

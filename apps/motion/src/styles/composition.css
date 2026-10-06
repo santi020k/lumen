@@ -96,15 +96,13 @@ html, body { margin: 0; width: 100%; height: 100%; }
 
 /* A real 390 × 844 CSS-pixel mobile layout, scaled only at the device boundary. */
  .scene .viewport .desktop-device, .scene .viewport .phone-device { position: absolute; left: 50%; top: 50%; margin: 0; transform: translate(-50%, -50%); transform-origin: center; }
-.scene .viewport .desktop-device { width: 1140px; max-width: none; }
+.scene .viewport .desktop-device { width: 1040px; max-width: none; }
 .scene .viewport .phone-device { width: 416px; max-width: none; opacity: 0; }
-.scene .viewport .phone-device .ui-device-frame__shell { padding: 12px; }
-.scene .viewport .phone-device .ui-device-frame__screen { width: 390px; height: 844px; }
+.scene .viewport .phone-device .ui-device-frame__screen { width: 390px; height: 844px; margin-inline: auto; }
 .phone-screen { width: 390px; height: 844px; position: relative; overflow: hidden; background: hsl(var(--canvas)); color: hsl(var(--ink)); }
 .phone-status { position: relative; height: 58px; padding: 19px 27px 0; display: flex; justify-content: space-between; font-size: 14px; font-weight: 650; }
 .phone-status-icons { display: flex; gap: 6px; }
 .phone-status-icons .ui-icon { width: 18px; height: 18px; }
-.phone-home { position: absolute; bottom: 9px; left: 50%; transform: translateX(-50%); height: 5px; width: 134px; border-radius: 8px; background: hsl(var(--ink)); }
 .scene .phone-screen .workspace { display: flex; flex-direction: column; min-height: 756px; padding: 22px; background: hsl(var(--canvas)); border: 0; }
 .scene .phone-screen .workspace-heading { flex-direction: column; align-items: flex-start; gap: 10px; }
 .scene .phone-screen .eyebrow { font-size: 11px; }
@@ -133,16 +131,16 @@ html, body { margin: 0; width: 100%; height: 100%; }
 /* Desktop content keeps desktop typography even inside a portrait video canvas. */
 .scene .desktop-content .workspace { padding: 18px; }
 .scene .desktop-content .workspace-heading, .scene .desktop-content .workspace-footer { flex-direction: row; align-items: center; gap: 16px; }
-.scene .desktop-content .workspace h2 { font-size: 28px; margin: 6px 0; }
-.scene .desktop-content .workspace h3 { font-size: 21px; }
-.scene .desktop-content .workspace h4 { font-size: 18px; }
+.scene .desktop-content .workspace h2 { font-size: 38px; margin: 6px 0; }
+.scene .desktop-content .workspace h3 { font-size: 26px; }
+.scene .desktop-content .workspace h4 { font-size: 26px; }
 .scene .desktop-content .eyebrow { font-size: 15px; }
-.scene .desktop-content .workspace .muted { font-size: 16px; }
-.scene .desktop-content .workspace .ui-badge { font-size: 14px; }
+.scene .desktop-content .workspace .muted { font-size: 20px; }
+.scene .desktop-content .workspace .ui-badge { font-size: 16px; }
 .scene .desktop-content .stats { margin: 14px 0; }
-.scene .desktop-content .workspace .ui-stat-label { font-size: 14px; }
-.scene .desktop-content .workspace .ui-stat-value { font-size: 34px; }
-.scene .desktop-content .workspace .ui-button { font-size: 16px; min-height: 44px; }
+.scene .desktop-content .workspace .ui-stat-label { font-size: 18px; }
+.scene .desktop-content .workspace .ui-stat-value { font-size: 48px; }
+.scene .desktop-content .workspace .ui-button { font-size: 20px; min-height: 48px; }
 .scene .desktop-content .viewport-bar { font-size: 14px; padding: 12px 24px; }
 
 /* Editorial project previews add hierarchy without inventing another UI primitive. */
@@ -179,7 +177,25 @@ html, body { margin: 0; width: 100%; height: 100%; }
 .scene .desktop-content .ui-stat { padding: 12px; }
 .scene .desktop-content .projects { gap: 12px; margin-top: 12px; }
 .scene .desktop-content .project { padding: 12px; }
-.scene .desktop-content .project-art { height: 52px; margin-bottom: 12px; padding: 10px 14px; }
+.scene .desktop-content .project-art { height: 64px; margin-bottom: 12px; padding: 10px 14px; }
 .scene .desktop-content .project p { margin: 8px 0 10px; }
 .scene .desktop-content .workspace-footer { padding-top: 12px; }
 [data-lumen-preset="glass"] .desktop-content .ui-stat { background: hsl(var(--surface) / 0.45); backdrop-filter: blur(var(--glass-blur)); border: 1px solid hsl(var(--surface) / 0.8); }
+
+/* Desktop scenes prioritize the few details that survive a social-feed preview. */
+.scene .desktop-content .workspace-heading .eyebrow,
+.scene .desktop-content .workspace-heading > .ui-badge,
+.scene .desktop-content .project-line .ui-badge,
+.scene .desktop-content .project p,
+.scene .desktop-content .workspace-footer .muted { display: none; }
+.scene .desktop-content .project .ui-progress { margin-top: 14px; }
+.scene .desktop-content .workspace-footer { justify-content: flex-end; }
+[data-format="landscape"] .scene { display: grid; grid-template-columns: 480px minmax(0, 1fr); grid-template-rows: auto 1fr auto auto; grid-template-areas: "header stage" "intro stage" "theme stage" "footer stage"; gap: 36px 32px; padding: 80px 64px 80px 80px; }
+[data-format="landscape"] .composition-header { grid-area: header; }
+[data-format="landscape"] .edition { display: none; }
+[data-format="landscape"] .intro { grid-area: intro; align-self: center; margin: 0; }
+[data-format="landscape"] .intro .eyebrow { max-width: 370px; line-height: 1.6; }
+[data-format="landscape"] .intro h1 { font-size: 80px; margin-top: 24px; }
+[data-format="landscape"] .theme-label { grid-area: theme; margin-bottom: 0; padding-bottom: 28px; border-bottom: 1px solid hsl(var(--line)); }
+[data-format="landscape"] .composition-stage { grid-area: stage; min-width: 0; }
+[data-format="landscape"] .composition-footer { grid-area: footer; flex-direction: column; gap: 12px; margin: 0; font-size: 22px; }
