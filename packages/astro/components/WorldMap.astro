@@ -19,6 +19,7 @@ import { type LumenWorldMapZoomLabels, lumenWorldMapZoomLabels } from '@santi020
 import Button from './Button.astro'
 
 interface Props extends HTMLAttributes<'figure'> {
+  initialView?: 'world' | 'highlighted'
   zoomable?: boolean
   zoomLabels?: Partial<LumenWorldMapZoomLabels>
   animated?: boolean
@@ -54,6 +55,7 @@ const {
   markers,
   selectedCountry,
   variant = 'dotted',
+  initialView = 'world',
   zoomable = true,
   zoomLabels,
   ...rest
@@ -77,6 +79,7 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, ['ui-world-map']
   data-animated={String(animated)}
   data-interactive={String(interactive)}
   data-ui-world-map
+  data-initial-view={initialView}
   data-variant={variant}
   id={instanceId}
   {...passthrough}
@@ -94,6 +97,7 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, ['ui-world-map']
       <Button aria-label={zoomText.zoomOut} data-ui-world-map-zoom="out" disabled size="icon" variant="outline">−</Button>
       <output aria-label={zoomText.level} aria-live="polite" data-ui-world-map-zoom-status>100%</output>
       <Button aria-label={zoomText.zoomIn} data-ui-world-map-zoom="in" disabled size="icon" variant="outline">+</Button>
+      <Button data-ui-world-map-zoom="fit" disabled size="sm" variant="outline">{zoomText.fit}</Button>
       <Button data-ui-world-map-zoom="reset" disabled size="sm" variant="outline">{zoomText.reset}</Button>
     </div>
   )}

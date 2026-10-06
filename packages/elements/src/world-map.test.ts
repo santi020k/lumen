@@ -123,3 +123,14 @@ test('zoom controls work independently of country selection and can be disabled'
   map.setAttribute('zoomable', 'false')
   expect(map.querySelector('[data-ui-world-map-zoom]')).toBeNull()
 })
+
+test('the fit control uses reflected highlighted countries without changing selection', () => {
+  const map = fixture()
+  const country = map.querySelector<SVGPathElement>('[data-country="CO"]')
+  if (!country) throw new Error('Expected country geometry')
+  country.getBBox = () => new DOMRect(100, 100, 10, 10)
+  map.selectedCountry = 'JP'
+  map.querySelector<HTMLButtonElement>('[data-ui-world-map-zoom="fit"]')?.click()
+  expect(map.querySelector('output')?.textContent).toBe('800%')
+  expect(map.selectedCountry).toBe('JP')
+})

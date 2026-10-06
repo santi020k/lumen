@@ -1800,8 +1800,9 @@ const apiReferenceByComponent = {
     )
   ],
   WorldMap: [
-    apiRow('zoomable', 'boolean', 'true', 'Shows zoom in, zoom out, and reset controls. Zoom ranges from 100% to 800% in 50% steps; scroll the viewport to explore.'),
-    apiRow('zoomLabels', 'Partial<LumenWorldMapZoomLabels>', 'English labels', 'Localizes zoomIn, zoomOut, reset, level and viewport. Elements accepts zoom-labels JSON.'),
+    apiRow('initialView', '"world" | "highlighted"', '"world"', 'Fits highlighted country geometry on enhancement. The Fit highlighted countries button repeats the fit; reset restores the world. Elements uses initial-view.'),
+    apiRow('zoomable', 'boolean', 'true', 'Shows zoom, fit, and reset controls. Buttons use 50% steps from 100% to 800%. Ctrl/Cmd-scroll zooms toward the cursor; drag or scroll to explore.'),
+    apiRow('zoomLabels', 'Partial<LumenWorldMapZoomLabels>', 'English labels', 'Localizes zoomIn, zoomOut, reset, level, fit and viewport. Elements accepts zoom-labels JSON.'),
     apiRow('countries', 'readonly LumenWorldMapCountryGeometry[]', 'required', 'Import lumenWorldMapCountries explicitly from @santi020k/lumen-core/world-map-data. Custom geometry uses the fixed 1000 × 400 projection.'),
     apiRow('label', 'string', 'required', 'Provides the accessible name for the map image.'),
     apiRow('highlightedCountries', 'readonly string[]', '[]', 'Country codes to highlight; unknown codes and duplicates are dropped. Elements also accepts highlighted-countries as JSON.'),

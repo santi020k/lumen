@@ -15,7 +15,7 @@ import { defineLumenElement, type LumenCustomElementRegistry, LumenElement, type
 
 export const lumenWorldMapElementConfig = {
   baseClassName: 'ui-world-map',
-  observedAttributes: ['animated', 'countries', 'highlighted-countries', 'interactive', 'label', 'labels', 'list-label', 'markers', 'selected-country', 'variant', 'zoomable', 'zoom-labels'],
+  observedAttributes: ['animated', 'countries', 'highlighted-countries', 'interactive', 'label', 'labels', 'list-label', 'markers', 'selected-country', 'variant', 'zoomable', 'zoom-labels', 'initial-view'],
   tagName: 'lumen-world-map'
 } as const satisfies LumenElementConfig
 
@@ -250,6 +250,8 @@ export class LumenWorldMapElement extends LumenElement {
   }
 
   private appendZoomControls(): void {
+    this.dataset.initialView = this.getAttribute('initial-view') ?? 'world'
+
     if (this.getAttribute('zoomable') === 'false') return
 
     const controls = this.ownerDocument.createElement('div')
@@ -266,7 +268,7 @@ export class LumenWorldMapElement extends LumenElement {
 
     status.value = '100%'
 
-    for (const [action, text, label] of [['out', '−', labels.zoomOut], ['in', '+', labels.zoomIn], ['reset', labels.reset, labels.reset]]) {
+    for (const [action, text, label] of [['out', '−', labels.zoomOut], ['in', '+', labels.zoomIn], ['fit', labels.fit, labels.fit], ['reset', labels.reset, labels.reset]]) {
       const button = this.ownerDocument.createElement('button')
 
       button.type = 'button'

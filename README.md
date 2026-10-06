@@ -181,6 +181,9 @@ Import the styles and register the elements once:
 See the [Web documentation](https://lumen.santi020k.com/docs/web) for installation, theming,
 component examples, and API details.
 
+Browse the [package directory](https://lumen.santi020k.com/docs/packages) for framework adapters,
+shared foundations, and optional integrations, with links to focused examples and usage guides.
+
 For failure states, use the [error-handling guide](./docs/error-handling.md) to choose between field
 feedback, summaries, persistent alerts, transient toasts, and the `ErrorState` recovery surface.
 Lumen owns presentation and accessibility; applications retain logging, retry, and exception policy.

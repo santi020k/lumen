@@ -31,6 +31,7 @@ const ZoomControls = ({ enabled, labels }: { enabled: boolean, labels: LumenWorl
     <Button aria-label={labels.zoomOut} data-ui-world-map-zoom="out" disabled size="icon" variant="outline">−</Button>
     <output aria-label={labels.level} aria-live="polite" data-ui-world-map-zoom-status>100%</output>
     <Button aria-label={labels.zoomIn} data-ui-world-map-zoom="in" disabled size="icon" variant="outline">+</Button>
+    <Button data-ui-world-map-zoom="fit" disabled size="sm" variant="outline">{labels.fit}</Button>
     <Button data-ui-world-map-zoom="reset" disabled size="sm" variant="outline">{labels.reset}</Button>
   </div>
 )
@@ -204,6 +205,7 @@ const isCurrentCountry = (
 ): boolean => country?.id === id
 
 export interface WorldMapProps extends Omit<ComponentPropsWithoutRef<'figure'>, 'label'> {
+  initialView?: 'world' | 'highlighted'
   zoomable?: boolean
   zoomLabels?: Partial<LumenWorldMapZoomLabels>
   animated?: boolean
@@ -240,6 +242,7 @@ export const WorldMap = ({
   onCountrySelect,
   selectedCountry,
   variant = 'dotted',
+  initialView,
   zoomable: zoomEnabled,
   zoomLabels,
   ...props
@@ -257,7 +260,7 @@ export const WorldMap = ({
     return () => {
       abort.abort()
     }
-  }, [zoomable])
+  }, [zoomable, initialView])
 
   const countries = useMemo(() => normalizeLumenWorldMapCountries(inputCountries), [inputCountries])
   const instanceId = useId().replaceAll(':', '')
@@ -273,6 +276,17 @@ export const WorldMap = ({
   )
 
   const highlightedSet = useMemo(() => new Set(highlightedIds), [highlightedIds])
+
+  useEffect(() => {
+    const button = rootRef.current?.querySelector<HTMLButtonElement>('[data-ui-world-map-zoom="fit"]')
+
+    if (!button) return
+
+    button.disabled = highlightedIds.length === 0
+
+    button.classList.toggle('ui-button--disabled', button.disabled)
+  }, [highlightedIds, zoomable])
+
   const normalizedMarkers = useMemo(() => normalizeLumenWorldMapMarkers(markers), [markers])
   const activeId = hoveredId ?? selectedId
   const activeCountry = findLumenWorldMapCountry(countries, activeId)
@@ -293,6 +307,7 @@ export const WorldMap = ({
       {...props}
       ref={rootRef}
       className={composeClassName('ui-world-map', className)}
+      data-initial-view={initialView}
       data-animated={animated}
       data-interactive={interactive}
       data-variant={variant}

@@ -1,0 +1,33 @@
+---
+import { Card, Link, WorldMap } from '@santi020k/lumen-astro'
+import { lumenWorldMapCountries } from '@santi020k/lumen-core/world-map-data'
+
+import CodeBlock from '../../../../components/CodeBlock.astro'
+import DocsGuideContent from '../../../../components/DocsGuideContent.astro'
+import DocsPageHero from '../../../../components/DocsPageHero.astro'
+import { worldMapTopics } from '../../../../data/package-guides'
+import DocsLayout from '../../../../layouts/DocsLayout.astro'
+---
+<DocsLayout title="WorldMap guide — Lumen UI" description="Build reusable destination and coverage maps with country highlights, cursor-centered zoom, drag panning, and regional views.">
+  <DocsGuideContent>
+  <DocsPageHero compact eyebrow="WorldMap guide" title="Give your destinations a place." description="Use the same map for travel, coverage, or regional storytelling. Your application owns destinations and country details; Lumen handles rendering and navigation." />
+  <WorldMap countries={lumenWorldMapCountries} label="European destination map" highlightedCountries={['PT', 'ES', 'CH', 'DE', 'IT']} initialView="highlighted" caption="Starts fitted to the highlighted countries. Reset returns to the world." />
+  <section aria-labelledby="map-navigation">
+    <h2 id="map-navigation">Navigate naturally.</h2>
+    <p>Zoom from 100% to 800% with the buttons. Hold Ctrl or Cmd while scrolling over the map to zoom toward the cursor. Trackpad pinch events use the same anchor when the browser reports them as modified wheel gestures.</p>
+    <p>Drag an enlarged map with a mouse or pen. Touch scrolling and arrow-key scrolling in the focused viewport remain available. A drag does not select a country.</p>
+    <p>Fit highlighted countries centers the visible regions with padding. Reset restores the whole world. Choose small countries with the native chooser.</p>
+    <p>Fitting includes each country’s complete geometry, including overseas territories. Those regions can widen the fitted view.</p>
+  </section>
+  <section aria-labelledby="map-guides">
+    <h2 id="map-guides">Choose a usage.</h2>
+    <div class="docs-resource-grid">{worldMapTopics.slice(1).map(topic => <Card variant="muted"><h3><Link href={topic.href}>{topic.label}</Link></h3><p>{topic.description}</p></Card>)}</div>
+  </section>
+  <section aria-labelledby="map-packages">
+    <h2 id="map-packages">Install for your framework.</h2>
+    <p>WorldMap is included in the Astro, React, and Elements adapters. Import the optional geography from <code>@santi020k/lumen-core/world-map-data</code>. Browse the <Link href="/docs/packages">package directory</Link> for framework setup and optional integrations.</p>
+    <CodeBlock title="Astro map installation" lang="bash" code="pnpm add @santi020k/lumen-astro @santi020k/lumen-core" />
+    <p>For React or Elements, replace the Astro adapter with your framework package. Add Core directly when importing its country dataset.</p>
+  </section>
+  </DocsGuideContent>
+</DocsLayout>

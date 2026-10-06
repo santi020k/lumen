@@ -1,7 +1,9 @@
+import { fitHighlightedMap, initMapWheelZoom, type WorldMapZoomAnchor } from './world-map-navigation.js'
 import { initLumenWorldMapPan } from './world-map-pan.js'
 
 /** Shared DOM enhancement for the web map's native zoom controls and scrollable viewport. */
 export interface LumenWorldMapZoomLabels {
+  fit: string
   level: string
   reset: string
   viewport: string
@@ -10,12 +12,18 @@ export interface LumenWorldMapZoomLabels {
 }
 
 export const lumenWorldMapZoomLabels: Readonly<LumenWorldMapZoomLabels> = Object.freeze({
-  level: 'Zoom level', reset: 'Reset zoom', viewport: 'Map viewport', zoomIn: 'Zoom in', zoomOut: 'Zoom out'
+  fit: 'Fit highlighted countries', level: 'Zoom level', reset: 'Reset zoom', viewport: 'Map viewport', zoomIn: 'Zoom in', zoomOut: 'Zoom out'
 })
 
 export const normalizeLumenWorldMapZoom = (value: number): number => Number.isFinite(value) ?
   Math.min(8, Math.max(1, value)) :
   1
+
+const isZoomControlDisabled = (root: HTMLElement, action: string | undefined, zoom: number): boolean => {
+  if (action === 'fit') return !root.querySelector('.ui-world-map__country--highlighted')
+
+  return action === 'in' ? zoom === 8 : zoom === 1
+}
 
 export const initLumenWorldMapZoom = (root: HTMLElement, signal: AbortSignal): void => {
   const viewport = root.querySelector<HTMLElement>('[data-ui-world-map-viewport]')
@@ -38,11 +46,13 @@ export const initLumenWorldMapZoom = (root: HTMLElement, signal: AbortSignal): v
 
   let zoom = 1
 
-  const update = (value: number): void => {
+  const update = (
+    value: number, anchor: WorldMapZoomAnchor = { x: viewport.clientWidth / 2, y: viewport.clientHeight / 2 }
+  ): void => {
     const next = normalizeLumenWorldMapZoom(value)
     const ratio = next / zoom
-    const x = (viewport.scrollLeft + viewport.clientWidth / 2) * ratio - viewport.clientWidth / 2
-    const y = (viewport.scrollTop + viewport.clientHeight / 2) * ratio - viewport.clientHeight / 2
+    const x = (viewport.scrollLeft + anchor.x) * ratio - anchor.x
+    const y = (viewport.scrollTop + anchor.y) * ratio - anchor.y
 
     zoom = next
 
@@ -59,7 +69,7 @@ export const initLumenWorldMapZoom = (root: HTMLElement, signal: AbortSignal): v
     for (const button of controls) {
       const action = button.dataset.uiWorldMapZoom
 
-      button.disabled = action === 'in' ? zoom === 8 : zoom === 1
+      button.disabled = isZoomControlDisabled(root, action, zoom)
 
       button.classList.toggle('ui-button--disabled', button.disabled)
     }
@@ -68,6 +78,13 @@ export const initLumenWorldMapZoom = (root: HTMLElement, signal: AbortSignal): v
   for (const button of controls) {
     button.addEventListener('click', () => {
       const action = button.dataset.uiWorldMapZoom
+
+      if (action === 'fit') {
+        fitHighlightedMap(root, viewport, update)
+
+        return
+      }
+
       const next = action === 'reset' ? 1 : zoom + (action === 'in' ? 0.5 : -0.5)
 
       update(next)
@@ -75,4 +92,8 @@ export const initLumenWorldMapZoom = (root: HTMLElement, signal: AbortSignal): v
   }
 
   update(1)
+
+  initMapWheelZoom(viewport, () => zoom, update, signal)
+
+  if (root.dataset.initialView === 'highlighted') fitHighlightedMap(root, viewport, update)
 }

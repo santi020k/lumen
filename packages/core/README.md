@@ -461,7 +461,9 @@ When using Tailwind, import Lumen's layer order before either stylesheet:
 ## World map
 
 WorldMap supports highlighted countries, location markers, dotted or solid styles, country selection,
-and theme customization. Import geography explicitly from
+and theme customization. Use `initialView="highlighted"` (Elements: `initial-view`) to start with a
+regional view. Zoom toward the cursor with Ctrl/Cmd-scroll, or fit highlighted countries using the
+map controls. Import geography explicitly from
 `@santi020k/lumen-core/world-map-data`; it is excluded from root exports. See the
 [WorldMap usage guide](../../docs/world-map.md) for adapter examples, events, localization,
 accessibility, and customization.

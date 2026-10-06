@@ -207,6 +207,7 @@ undefined}
       </div>
     </header>
 
+    {component.name === 'WorldMap' && <p>Explore <Link href="/docs/web/world-map">navigation guidance</Link> and <Link href="/docs/web/world-map/destinations">regional destination examples</Link>.</p>}
     {component.guidance && !chartGuide && (
       <aside class="component-doc-guidance" aria-label={`${component.name} usage guidance`}>
         <div>
