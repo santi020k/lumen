@@ -138,6 +138,12 @@ export const LumenMediaViewport = ({
       return
     }
 
+    if (start.distance !== undefined) {
+      startGesture(event)
+
+      return
+    }
+
     onValueChange(panLumenMediaViewport(
       start.value,
       event.nativeEvent.pageX - start.x,

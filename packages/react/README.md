@@ -1047,6 +1047,10 @@ map controls. Import geography explicitly from
 [WorldMap usage guide](../../docs/world-map.md) for adapter examples, events, localization,
 accessibility, and customization.
 
+For controlled selection, pair `selectedCountry` with `onSelectedCountryChange(countryId)` and
+store the requested value in application state. An empty string clears the selection while keeping
+the map controlled. `onCountrySelect(detail)` remains the country-detail callback for nonempty selections.
+
 ## Operational workflows
 
 Extend `DataTableView` with inclusive numeric/date ranges and explicit page-scoped selection.

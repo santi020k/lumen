@@ -69,6 +69,11 @@ React uses the same props, plus `onCountrySelect(detail)` and controlled `select
 uncontrolled `defaultSelectedCountry`. Import `WorldMap` from `@santi020k/lumen-react` or its granular
 `components/world-map` export. Import the dataset separately from core as above.
 
+Use `onSelectedCountryChange(countryId)` for controlled selection requests, including clearing.
+Store the requested ID in `selectedCountry`; use `''` for a controlled empty selection.
+The map retains the host's value until it accepts a request. `onCountrySelect(detail)` continues
+to report only nonempty country selections, so existing detail callbacks keep their contract.
+
 Astro and Elements emit a bubbling `ui:world-map-select` event when a different country is selected:
 `{ countryId, highlighted, label }`. The consumer decides whether to open a travel entry or update
 other UI. Hover labels are decorative; the labeled native select provides the keyboard path.

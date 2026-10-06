@@ -20,6 +20,8 @@ on:
       - "docs/playgrounds.md"
       - "docs/web-consumer-validation.md"
       - "packages/**"
+      - "tests/motion/**"
+      - "playwright.motion.config.ts"
       - "registry/native-api-baseline.json"
       - "registry/compose-api-classification.json"
       - "registry/lumen-2-contract.json"
@@ -321,7 +323,7 @@ jobs:
         if: needs.classify.outputs.browser == 'true'
         uses: ./.github/actions/setup-playwright
         with:
-          browsers: chromium
+          browsers: chromium webkit
       - name: Verify release-candidate accessibility
         if: needs.classify.outputs.browser == 'true'
         run: pnpm run test:a11y --shard=${{ matrix.shard }}/2 --max-failures=1
@@ -330,6 +332,9 @@ jobs:
         env:
           LUMEN_FRAMEWORK_CONFORMANCE_PROJECTS: chromium
         run: pnpm run test:framework-conformance
+      - name: Verify release-candidate primitive motion
+        if: matrix.shard == 1
+        run: pnpm run test:motion
       - name: Preserve browser failure diagnostics
         if: failure()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1

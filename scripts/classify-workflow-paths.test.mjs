@@ -29,6 +29,21 @@ test('motion source changes select browser coverage without native jobs', () => 
   assert.equal(classification.android, false)
 })
 
+test('primitive motion regressions select CI and release browser coverage', () => {
+  for (const path of ['tests/motion/playground.spec.ts', 'playwright.motion.config.ts']) {
+    const ci = classifyCiPaths([path])
+    const canary = classifyCanaryPaths([path])
+
+    assert.equal(ci.playwright, true, path)
+
+    assert.equal(canary.browser, true, path)
+
+    assert.equal(ci.apple, false, path)
+
+    assert.equal(ci.android, false, path)
+  }
+})
+
 test('a web package change skips every native platform job', () => {
   const classification = classifyCiPaths(['packages/react/src/Button.tsx'])
 

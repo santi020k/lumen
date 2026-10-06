@@ -7,6 +7,7 @@ const axePath = createRequire(new URL('../../packages/elements/package.json', im
 
 test('presets animate real components and lists retain focus and state', async ({ page }) => {
   await page.goto(route)
+  await expect(page.locator('[data-motion-playground]')).toHaveAttribute('data-ui-motion', /^(system|reduce)$/)
   await page.getByLabel('Presence preset').selectOption('slide-up')
   await page.getByLabel('Duration', { exact: true }).selectOption('slow')
   await page.getByRole('button', { name: 'Replay entrance' }).click()

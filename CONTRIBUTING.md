@@ -85,6 +85,8 @@ Release canaries also check version, API, and coordinated release contracts in t
 Failures stop downstream jobs; browser shards cancel their sibling on failure and stop at the
 first failed test. All accessibility tests remain covered across two shards. Packed npm, browser,
 Compose, and packed React Native Android checks run in separate lanes after preflight.
+The dedicated `pnpm run test:motion` suite also runs for ordinary and release pull requests,
+covering primitive motion and reduced-motion behavior in Chromium, WebKit, and mobile Chromium.
 Quality's pinned pnpm setup action restores Turbo task outputs, while Java setup caches Gradle
 dependencies. Cache hits accelerate work but never replace the required checks or release approval.
 Run `pnpm run ci:preflight` locally for the same early feedback; `pnpm run validate` remains the
