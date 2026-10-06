@@ -26,6 +26,10 @@ for (const width of [390, 1440]) {
 
     await expect(page.frameLocator('#composition').locator('.scene').nth(1)).toHaveCSS('opacity', '1')
 
+    await page.getByRole('button', { name: 'Glass', exact: true }).click()
+
+    await expect(page.getByRole('status')).toHaveText('Paused · Glass')
+
     await page.getByRole('button', { name: 'Studio', exact: true }).click()
 
     await expect(page.getByRole('status')).toHaveText('Paused · Studio')
@@ -34,13 +38,13 @@ for (const width of [390, 1440]) {
 
     await expect(page.locator('#composition')).toHaveAttribute('src', '/landscape/')
 
-    await expect(page.frameLocator('#composition').locator('.scene').nth(2)).toHaveCSS('opacity', '1')
+    await expect(page.frameLocator('#composition').locator('.scene').nth(3)).toHaveCSS('opacity', '1')
 
     await page.getByRole('button', { name: 'Square', exact: true }).click()
 
     await expect(page.locator('#composition')).toHaveAttribute('src', '/square/')
 
-    await expect(page.frameLocator('#composition').locator('.scene').nth(2)).toHaveCSS('opacity', '1')
+    await expect(page.frameLocator('#composition').locator('.scene').nth(3)).toHaveCSS('opacity', '1')
 
     await page.getByRole('button', { name: 'Play animation' }).click()
 
@@ -92,7 +96,7 @@ test('all compositions fit their canvases and can seek backwards deterministical
 
     const light = await page.screenshot()
 
-    await seek(14)
+    await seek(12)
 
     expect(await page.screenshot()).not.toEqual(light)
 
@@ -104,18 +108,38 @@ test('all compositions fit their canvases and can seek backwards deterministical
 
     expect(overflow).toBe(false)
 
-    const viewport = page.locator('.scene').first().locator('.viewport')
-    const wideWidth = await viewport.evaluate(element => element.getBoundingClientRect().width)
+    const lightScene = page.locator('.scene').first()
 
-    await seek(5)
+    await expect(lightScene.locator('.desktop-device')).toHaveAttribute('data-device', 'laptop')
 
-    const compactWidth = await viewport.evaluate(element => element.getBoundingClientRect().width)
+    for (const time of [2, 6, 9, 12]) {
+      await seek(time)
 
-    expect(compactWidth).toBeLessThan(wideWidth)
+      const index = [5, 8, 11].filter(start => time >= start).length
+      const screen = page.locator('.scene').nth(index).locator('.desktop-content .workspace')
 
-    const phone = page.locator('.scene').first().locator('.phone-screen')
+      expect(await screen.evaluate(element => element.scrollHeight <= element.clientHeight)).toBe(true)
+    }
 
-    await expect(phone).toHaveCSS('opacity', '1')
+    await seek(9)
+
+    const glassScene = page.locator('.scene').nth(2)
+
+    await expect(glassScene).toHaveCSS('opacity', '1')
+
+    await expect(glassScene.locator('.workspace').first()).toHaveClass(/ui-card--glass/)
+
+    await expect(glassScene.locator('.workspace').first()).toHaveCSS('backdrop-filter', /blur/)
+
+    await seek(16)
+
+    const studioScene = page.locator('.scene').nth(3)
+    const phone = studioScene.locator('.phone-screen')
+    const device = studioScene.locator('.phone-device')
+
+    await expect(device).toHaveCSS('opacity', '1')
+
+    await expect(device).toHaveAttribute('data-device', 'iphone')
 
     expect(await phone.evaluate(screen => screen.clientWidth)).toBe(390)
 
@@ -129,13 +153,13 @@ test('all compositions fit their canvases and can seek backwards deterministical
 
     expect(secondY).toBeGreaterThan(firstY)
 
-    const centerY = await viewport.evaluate(element => {
+    const centerY = await device.evaluate(element => {
       const box = element.getBoundingClientRect()
 
       return box.y + box.height / 2
     })
 
-    const stageCenterY = await page.locator('.scene').first().locator('.composition-stage').evaluate(element => {
+    const stageCenterY = await studioScene.locator('.composition-stage').evaluate(element => {
       const box = element.getBoundingClientRect()
 
       return box.y + box.height / 2
@@ -145,7 +169,17 @@ test('all compositions fit their canvases and can seek backwards deterministical
 
     await seek(17)
 
-    expect(await page.locator('.scene').nth(2).locator('.composition-footer').evaluate(footer => footer.getBoundingClientRect().bottom <= window.innerHeight - 30)).toBe(true)
+    expect(await page.locator('.scene').nth(3).locator('.composition-footer').evaluate(footer => footer.getBoundingClientRect().bottom <= window.innerHeight - 30)).toBe(true)
+
+    await seek(19.5)
+
+    await expect(page.locator('.end-card')).toHaveCSS('opacity', '1')
+
+    await expect(studioScene).toHaveCSS('opacity', '0')
+
+    await seek(0)
+
+    await expect(lightScene.locator('.desktop-device')).toHaveCSS('opacity', '0')
 
     await seek(2)
 

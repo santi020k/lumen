@@ -1,8 +1,12 @@
 ---
 import { Badge, Button, Card, Progress, Stat } from '@santi020k/lumen-astro'
+
+interface Props { glass?: boolean }
+
+const { glass = false } = Astro.props
 ---
 
-<Card class="workspace" as="section" aria-label="Sample project workspace">
+<Card glass={glass} class="workspace" as="section" aria-label="Sample project workspace">
   <div class="workspace-heading">
     <div>
       <p class="eyebrow">YOUR WORKSPACE</p>
@@ -21,12 +25,12 @@ import { Badge, Button, Card, Progress, Stat } from '@santi020k/lumen-astro'
     <Badge variant="outline">Sample data</Badge>
   </div>
   <div class="projects">
-    <Card class="project" variant="muted">
+    <Card class="project" glass={glass ? 'subtle' : false} variant={glass ? 'default' : 'muted'}>
       <div class="project-line"><h4>Design foundations</h4><Badge variant="success">Ready</Badge></div>
       <p class="muted">Tokens, typography, and a shared language.</p>
       <Progress value={100} aria-label="Design foundations: complete" />
     </Card>
-    <Card class="project" variant="muted">
+    <Card class="project" glass={glass ? 'subtle' : false} variant={glass ? 'default' : 'muted'}>
       <div class="project-line"><h4>Product workspace</h4><Badge variant="secondary">In progress</Badge></div>
       <p class="muted">One set of components. Your own expression.</p>
       <Progress value={68} aria-label="Product workspace: 68 percent complete" />

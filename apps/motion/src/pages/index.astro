@@ -11,20 +11,20 @@ import { Badge, Button, Image, Link } from '@santi020k/lumen-astro'
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="robots" content="noindex" />
-    <title>Lumen motion studio — One interface, three themes</title>
+    <title>Lumen motion studio — One interface, four appearances</title>
     <meta name="description" content="Preview a locally rendered Lumen UI composition in vertical, square, and landscape formats." />
   </head>
   <body>
     <main class="preview-shell">
       <header class="preview-header">
         <Image src="/assets/logo.svg" alt="Lumen UI" width={194} height={50} loading="eager" />
-        <Badge variant="outline">Local pilot · 18 seconds</Badge>
+        <Badge variant="outline">Local pilot · 20 seconds</Badge>
       </header>
       <div class="preview-layout">
         <section class="preview-copy" aria-labelledby="preview-title">
           <p class="preview-eyebrow">LUMEN MOTION STUDIO</p>
-          <h1 id="preview-title">One interface.<br />Three themes.</h1>
-          <p>Watch the same interface build, change appearance, and adapt from a desktop workspace to an iPhone-style mobile screen.</p>
+          <h1 id="preview-title">One interface.<br />Four appearances.</h1>
+          <p>Watch the same interface build, change appearance, and adapt from a laptop workspace to an iPhone-style mobile screen.</p>
           <div class="controls" role="group" aria-label="Video format">
             <Button data-format="portrait" aria-pressed="true">Vertical</Button>
             <Button data-format="square" variant="outline" aria-pressed="false">Square</Button>
@@ -32,8 +32,9 @@ import { Badge, Button, Image, Link } from '@santi020k/lumen-astro'
           </div>
           <div class="controls" role="group" aria-label="Choose appearance">
             <Button data-time="2" variant="outline" aria-pressed="true">Light</Button>
-            <Button data-time="8" variant="outline" aria-pressed="false">Dark</Button>
-            <Button data-time="14" variant="outline" aria-pressed="false">Studio</Button>
+            <Button data-time="6" variant="outline" aria-pressed="false">Dark</Button>
+            <Button data-time="9" variant="outline" aria-pressed="false">Glass</Button>
+            <Button data-time="12" variant="outline" aria-pressed="false">Studio</Button>
           </div>
           <div class="controls" role="group" aria-label="Playback">
             <Button id="play">Play animation</Button>

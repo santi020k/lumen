@@ -1,7 +1,7 @@
 # Lumen motion studio
 
 A private workspace for reusable Lumen product animations. The first pilot, **One interface,
-three themes**, shows the same sample workspace in Lumen Light, Lumen Dark, and Studio. Studio is
+four appearances**, shows the same sample workspace in Lumen Light, Lumen Dark, Glass, and Studio. Studio is
 an appearance preset; light/dark are color schemes. It uses public Astro components, existing logo
 artwork, and the documentation site's locally shipped Montserrat font.
 
@@ -15,7 +15,7 @@ pnpm --filter @santi020k/lumen-motion dev
 ```
 
 Open `http://127.0.0.1:4341/`. Choose Vertical, Square, or Landscape, select an appearance, or play/pause
-the 18-second composition. Playback starts only on request. Reduced-motion preferences disable
+the 20-second composition. Playback starts only on request. Reduced-motion preferences disable
 playback and retain the still-frame appearance controls. Neither preference nor controls mutate
 the documentation site's theme or persistent application data.
 
@@ -70,18 +70,21 @@ preview and composition assets are self-contained and make no remote asset reque
 
 ## Motion and responsive composition
 
-The opening builds the workspace with short staggered entrances and fills its progress bars.
-Three six-second chapters alternate desktop and iPhone-style mobile layouts while changing
-appearances. Both views reuse `Workspace.astro`; the phone renders at 390 × 844 CSS pixels with
-mobile typography, stacked project cards, and a full-width action. A rounded device shell, island,
-status bar, and home indicator make the mobile state recognizable. This is a generic iPhone-style
-presentation, not a claim about a specific hardware model or a native application.
+The opening starts with an empty canvas and assembles the heading, laptop frame, cards, and
+progress bars in two seconds. Light, Dark, Glass, and Studio follow at 0, 5, 8, and 11 seconds.
+The same laptop layout remains steady during appearance changes. Glass uses the public Card
+material over a semantic-color gradient; Studio uses its monochrome actions and restrained radii.
 
-The presentation area centers the interface vertically between the headline and footer. Phone
-scale is calculated from the space available in each export; content remains at its actual mobile
-layout size and scales only at the device boundary. Matching device states keep theme changes
-continuous. CustomEase uses Lumen's public emphasized easing token, and the paused GSAP timeline
-owns all timing for deterministic export seeking.
+At 14 seconds, the laptop yields to an iPhone-style mobile layout. Both devices use the public
+Astro `DeviceFrame` already integrated into local `release/v4.0.0`; no published version is needed.
+The frame also supports real viewport scaling for iframes. This composition uses slotted HTML
+so the single GSAP timeline controls component entrances and exports deterministically.
+`Workspace.astro` is shared by both devices; the phone content remains at 390 × 844 CSS pixels
+with stacked cards and a full-width action. Hardware silhouettes are illustrative.
+
+Devices fit and center within the space between headline and footer. At 18 seconds, a short lift
+and scale reveals the existing path-based Lumen logo, tagline, and website for the closing card.
+CustomEase uses the public emphasized easing token. The full composition lasts 20 seconds.
 
 Portrait, square, and landscape share the message and components, with format-specific typography
 and spacing. Square simplifies secondary descriptions in the desktop view to retain readable feed
@@ -96,11 +99,11 @@ direction remains in [the brand guide](../../docs/brand-guidelines.md).
 ## Draft social copy
 
 **Caption:** One interface. Three appearances. The same public Lumen UI components in Light,
-Dark, and Studio, adapting from desktop to an iPhone-style mobile screen. Explore the theme playground: https://lumen.santi020k.com/docs/theme-playground
+Dark, Glass, and Studio, adapting from laptop to an iPhone-style mobile screen. Explore the theme playground: https://lumen.santi020k.com/docs/theme-playground
 
 **Visual description:** A sample project workspace stays in the same layout while its colors and
-surface styling change from Lumen Light to Lumen Dark to Studio. The interface assembles in sequence,
-then alternates a desktop workspace with an iPhone-style screen containing a real mobile layout. Project counts are illustrative
+surface styling change from Lumen Light to Lumen Dark to Glass to Studio. The interface assembles in sequence,
+then alternates a laptop workspace with an iPhone-style screen containing a real mobile layout. Project counts are illustrative
 sample data. The final line points to lumen.santi020k.com.
 
 This is a draft asset and caption. Publication remains subject to the
