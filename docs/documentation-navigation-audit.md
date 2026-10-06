@@ -29,6 +29,8 @@ Keep live examples visible and place detailed code next to the example it explai
   IDs, include only sections present on that page, and respect the measured sticky header height.
   Keep its popup aligned beneath the trigger in a compact single-column list, with full-height
   keyboard and touch targets at mobile and desktop widths.
+  Keep the sticky section bar one rem below the site header. On mobile, extend its blurred backdrop
+  across the viewport while aligning its controls with the content gutter.
 - Give focused guides visible paths in both desktop navigation and the mobile documentation menu.
   Native hooks and the chart directory were missing from the relevant sidebar sections.
 - Keep shared Figma, AI, MCP, and migration guidance discoverable when browsing a platform. The

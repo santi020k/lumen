@@ -92,8 +92,24 @@ for (const theme of ['lumen-light', 'lumen-dark']) {
 
         const gap = navigation.getBoundingClientRect().top - header.getBoundingClientRect().bottom
 
-        return Math.abs(gap - (window.innerWidth < 1024 ? 0 : 16))
+        return Math.abs(gap - 16)
       }), `Sticky navigation spacing at ${width}px`).toBeLessThanOrEqual(1)
+
+      const pageBar = page.locator('.docs-mobile-navigation-bar')
+
+      if (await pageBar.isVisible()) {
+        const bounds = await pageBar.boundingBox()
+        const headerBounds = await page.locator('.docs-site-header').boundingBox()
+
+        if (!bounds || !headerBounds) throw new Error('Missing sticky page bar bounds')
+
+        expect(Math.abs(bounds.y - headerBounds.y - headerBounds.height - 16)).toBeLessThanOrEqual(1)
+
+        if (width < 1024) {
+          expect(Math.abs(bounds.x)).toBeLessThanOrEqual(1)
+          expect(Math.abs(bounds.width - width)).toBeLessThanOrEqual(1)
+        }
+      }
 
       const layout = await page.evaluate(() => {
         const lastSection = document.querySelector('.docs-content > :last-child')
