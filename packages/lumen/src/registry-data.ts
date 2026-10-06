@@ -3257,6 +3257,21 @@ export const lumenRegistry = {
       dependencies: [
         'styles'
       ]
+    },
+    {
+      name: 'WorldMap',
+      type: 'component',
+      description: 'An interactive dotted or solid world map with highlighted countries and location markers.',
+      category: 'Data display',
+      files: [
+        'packages/astro/components/WorldMap.astro',
+        'packages/astro/runtime/controllers/world-map.ts',
+        'packages/astro/styles/lumen.css'
+      ],
+      dependencies: [
+        'styles',
+        'runtime'
+      ]
     }
   ]
 } as const satisfies LumenRegistry
