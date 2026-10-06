@@ -4419,6 +4419,9 @@ type ToastApi = {
 const defaultToastDuration = 5000
 const defaultToastMax = 5
 const noop = (): void => undefined
+// Tracks the Document the toast API is bound to, since Astro's HTML swap resets any
+// documentElement dataset flag on navigation even though these document listeners persist.
+let toastDocumentApiDocument: Document | null = null
 
 const toastTimers = new WeakMap<HTMLElement, {
   cleanup: () => void
@@ -4756,8 +4759,8 @@ const bindToastDocumentApi = (): void => {
 }
 
 const initToasts = (scope: ParentNode): void => {
-  if (document.documentElement.dataset.uiToastsBound !== 'true') {
-    document.documentElement.dataset.uiToastsBound = 'true'
+  if (toastDocumentApiDocument !== document) {
+    toastDocumentApiDocument = document
 
     bindToastDocumentApi()
   }
