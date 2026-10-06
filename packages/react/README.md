@@ -563,7 +563,8 @@ shared mobile labels are documented in the consumer recipe linked above.
 `AmountField` accepts editable ASCII decimal strings, formats a requested locale, and submits a
 complete decimal string through its named hidden input. Use `defaultValue` for an uncontrolled
 field or `value` with `onValueChange` for application-owned drafts. It preserves precision and
-never rounds through a JavaScript number. Currency rules and limits remain application-owned.
+never rounds through a JavaScript number. Updating `defaultValue` changes the next reset baseline
+without replacing the active draft. Currency rules and limits remain application-owned.
 
 ```tsx
 <AmountField name="amount" locale="es-CO" defaultValue="1234.50" aria-label="Amount COP" />
@@ -962,7 +963,8 @@ wrapping is enabled, while preserving consumer-owned accessibility attributes.
 
 `DataTableView` is an opt-in TanStack Table companion for application-owned record tables. It adds
 search, exact column filters, column visibility, density, pagination and controlled sorting state
-while preserving your cells, details, actions and query ownership. Import it from
+while preserving your cells, details, actions and query ownership. Column keys must be nonempty
+and unique; malformed arrays or ambiguous keys are rejected before controls are constructed. Import it from
 `@santi020k/lumen-react/components/data-table-view` or the package root. Load
 `@santi020k/lumen-react/styles/data-table-view.css` after the base stylesheet. See the
 [composition and server-mode guide](../../docs/data-table-views.md).

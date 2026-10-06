@@ -54,7 +54,9 @@ const click = (text: string) => run(() => {
   button.click()
 })
 const changeSelect = (suffix: string, value: string) => run(() => {
-  const select = get(`select[id$="-${suffix}"]`)
+  const labelText = suffix === 'size' ? 'Rows per page' : columns.find(column => column.key === suffix)?.label
+  const label = [...container.querySelectorAll('label')].find(element => element.textContent === labelText)
+  const select = label?.control
   if (!(select instanceof HTMLSelectElement)) throw new Error('Expected select')
   select.value = value
   select.dispatchEvent(new Event('change', { bubbles: true }))
@@ -214,4 +216,37 @@ test.each([0, -1, 1.5, Number.POSITIVE_INFINITY])('rejects invalid restored page
 test('rejects duplicate record identities before table processing', async () => {
   await expect(render({ rows: [{ id: 'same', name: 'First', amount: 1, status: 'due' },
     { id: 'same', name: 'Second', amount: 2, status: 'due' }] })).rejects.toThrow('unique, nonempty row IDs')
+})
+
+test.each([
+  { columns: [{ key: 'same', label: 'First' }, { key: 'same', label: 'Second' }] },
+  { columns: [{ key: '', label: 'Empty' }] },
+  { columns: [{ key: '   ', label: 'Whitespace' }] },
+  { columns: new Array<DataTableViewColumn<RecordFixture>>(1) }
+])('rejects ambiguous column keys before constructing controls', async ({ columns: invalidColumns }) => {
+  await expect(render({ columns: invalidColumns })).rejects.toThrow('unique, nonempty column keys')
+})
+
+test('rejects a decoded non-array column configuration', async () => {
+  await expect(Reflect.apply(render, undefined, [{ columns: {} }])).rejects.toThrow('array of columns')
+})
+
+test('column filter identities stay disjoint from toolbar controls and arbitrary column keys', async () => {
+  const keys = ['search', 'density', 'size', 'custom value', '\uD800']
+
+  await render({ columns: keys.map(key => ({ key,
+    label: `Filter ${key}`,
+    value: row => row.status,
+    filterOptions: [{ value: 'due', label: 'Due' }] })) })
+
+  const identities = [...container.querySelectorAll('[id]')].map(element => element.id)
+
+  expect(new Set(identities).size).toBe(identities.length)
+  expect(identities.every(id => !/\s/u.test(id))).toBe(true)
+
+  for (const key of keys) {
+    const label = [...container.querySelectorAll('label')].find(element => element.textContent === `Filter ${key}`)
+
+    expect(label?.control).toBeInstanceOf(HTMLSelectElement)
+  }
 })

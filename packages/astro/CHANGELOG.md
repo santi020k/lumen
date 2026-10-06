@@ -2,6 +2,8 @@
 
 ## 4.0.0
 
+- Respect inherited upload disability and follow the current file input form owner when reset.
+
 - Open HoverCard content on keyboard focus, keep it visible while focus remains inside, and close it after focus leaves or Escape is pressed.
 
 ### Minor Changes

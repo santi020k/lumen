@@ -1,3 +1,28 @@
+const renderers = new WeakMap<HTMLInputElement, () => void>()
+const resetRoots = new WeakSet<Node>()
+
+const isQueryRoot = (root: Node): root is Document | DocumentFragment | Element => (
+  'querySelectorAll' in root && typeof root.querySelectorAll === 'function'
+)
+
+const bindResets = (input: HTMLInputElement): void => {
+  const scope = input.getRootNode()
+
+  if (!isQueryRoot(scope) || resetRoots.has(scope)) return
+
+  resetRoots.add(scope)
+
+  scope.addEventListener('reset', event => {
+    queueMicrotask(() => {
+      if (event.defaultPrevented) return
+
+      for (const current of scope.querySelectorAll<HTMLInputElement>('[data-ui-file-upload-input]')) {
+        if (current.isConnected && current.form === event.target) renderers.get(current)?.()
+      }
+    })
+  }, { capture: true })
+}
+
 export const initFileUploadControllers = (scope: ParentNode): void => {
   for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-file-upload]')) {
     if (root.dataset.uiBound === 'true') continue
@@ -28,14 +53,12 @@ export const initFileUploadControllers = (scope: ParentNode): void => {
 
     input.addEventListener('change', renderFiles)
 
-    input.form?.addEventListener('reset', event => {
-      queueMicrotask(() => {
-        if (root.isConnected && !event.defaultPrevented) renderFiles()
-      })
-    })
+    renderers.set(input, renderFiles)
+
+    bindResets(input)
 
     root.addEventListener('dragover', event => {
-      if (input.disabled) return
+      if (input.matches(':disabled')) return
 
       event.preventDefault()
 
@@ -49,7 +72,7 @@ export const initFileUploadControllers = (scope: ParentNode): void => {
     })
 
     root.addEventListener('drop', event => {
-      if (input.disabled) return
+      if (input.matches(':disabled')) return
 
       event.preventDefault()
 

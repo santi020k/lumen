@@ -236,7 +236,7 @@ export const createLumenAmountFieldController = (
     resetTimer = setTimeout(() => {
       if (destroyed || event.defaultPrevented || event.target !== input.form) return
 
-      draft = initial
+      draft = root.getAttribute('default-value') ?? initial
 
       sync()
 

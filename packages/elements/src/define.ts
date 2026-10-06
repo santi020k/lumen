@@ -2424,11 +2424,7 @@ const getRichTextCommandValue = (control: HTMLElement): string | undefined => {
   if (control.dataset.uiEditorValue !== undefined)
     return control.dataset.uiEditorValue
 
-  if (
-    control instanceof HTMLInputElement ||
-    control instanceof HTMLSelectElement ||
-    control instanceof HTMLTextAreaElement
-  )
+  if (isNativeFormControl(control))
     return control.value
 
   return undefined
@@ -5593,11 +5589,7 @@ class LumenScalarFormControlElement extends LumenElement {
 
     if (!control) return
 
-    const checkedControl =
-      control instanceof HTMLInputElement &&
-      ['checkbox', 'radio'].includes(control.type)
-
-    const submittedValue = this.#submittedValue(control, checkedControl)
+    const submittedValue = this.#submittedValue(control)
 
     if (this.internals) {
       const state = control instanceof HTMLSelectElement && control.multiple ? submittedValue : control.value
@@ -5621,10 +5613,9 @@ class LumenScalarFormControlElement extends LumenElement {
   }
 
   #submittedValue(
-    control: LumenScalarNativeControl,
-    checkedControl: boolean
+    control: LumenScalarNativeControl
   ): FormData | string | null {
-    if (control.disabled || (checkedControl && control instanceof HTMLInputElement && !control.checked)) return null
+    if (control.disabled || (control instanceof HTMLInputElement && ['checkbox', 'radio'].includes(control.type) && !control.checked)) return null
 
     if (control instanceof HTMLSelectElement && control.multiple) {
       if (!this.name) return null
@@ -5895,7 +5886,7 @@ class LumenSparklineBehaviorElement extends LumenElement {
 
       if (Array.isArray(parsed))
         return parsed.filter(
-          (value): value is number => typeof value === 'number' && Number.isFinite(value)
+          (value): value is number => Number.isFinite(value)
         )
     } catch {
       return source
@@ -9101,44 +9092,37 @@ class LumenFileUploadBehaviorElement extends LumenElement {
 
     this.abortController?.abort()
 
-    this.abortController = new AbortController()
-
     const input = this.querySelector<HTMLInputElement>(
       '[data-ui-file-upload-input]'
     )
 
     if (!input) return
 
-    const files = this.querySelector<HTMLElement>(
-      '[data-ui-file-upload-files]'
-    )
+    this.abortController = new AbortController()
+
+    const files = this.querySelector<HTMLElement>('[data-ui-file-upload-files]')
 
     const renderFiles = (): void => {
-      const selectedFiles = input.files ? [...input.files] : []
+      const count = input.files?.length ?? 0
 
-      this.dataset.state = selectedFiles.length > 0 ? 'selected' : 'idle'
+      this.dataset.state = count ? 'selected' : 'idle'
 
       if (!files) return
 
-      if (selectedFiles.length === 1) {
-        files.textContent = selectedFiles[0]?.name ?? ''
-      } else {
-        files.textContent =
-          selectedFiles.length > 1 ?
-            (this.getAttribute('selected-files-label') ?? '{count} files selected').replaceAll('{count}', String(selectedFiles.length)) :
-            ''
-      }
+      files.textContent = count > 1 ?
+        this.getAttribute('selected-files-label')?.replaceAll('{count}', String(count)) ?? `${count} files selected` :
+        input.files?.[0]?.name ?? ''
     }
 
     input.addEventListener('change', renderFiles, {
       signal: this.abortController.signal
     })
 
-    input.form?.addEventListener('reset', event => {
+    this.getRootNode().addEventListener('reset', event => {
       queueMicrotask(() => {
-        if (this.isConnected && !event.defaultPrevented) renderFiles()
+        if (this.isConnected && event.target === input.form && !event.defaultPrevented) renderFiles()
       })
-    }, { signal: this.abortController.signal })
+    }, { capture: true, signal: this.abortController.signal })
 
     this.addEventListener(
       'dragover', event => {

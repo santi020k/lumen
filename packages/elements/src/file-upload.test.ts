@@ -94,3 +94,29 @@ test.each([false, true])('file drops respect disabled fieldset state and first l
 
   expect(summary.textContent).toBe(legend ? 'selected.txt' : '')
 })
+
+test('upload reset follows reassigned form owner without refreshing for other forms', async () => {
+  const { form, input, select, summary, upload } = mount()
+  form.id = 'initial-upload-owner'
+  const owner = document.createElement('form')
+  owner.id = 'current-upload-owner'
+  document.body.append(owner)
+  select(['one.txt'])
+  input.setAttribute('form', owner.id)
+  Object.defineProperty(input, 'files', { configurable: true, value: [] })
+  form.reset()
+  await Promise.resolve()
+  expect(summary.textContent).toBe('one.txt')
+  const cancel = (event: Event) => {
+    event.preventDefault()
+  }
+  owner.addEventListener('reset', cancel)
+  owner.reset()
+  await Promise.resolve()
+  expect(summary.textContent).toBe('one.txt')
+  owner.removeEventListener('reset', cancel)
+  owner.reset()
+  await Promise.resolve()
+  expect(summary.textContent).toBe('')
+  expect(upload.getAttribute('data-state')).toBe('idle')
+})

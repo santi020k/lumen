@@ -2,6 +2,8 @@
 
 ## 4.0.0
 
+- Reject ambiguous table-view column identities, keep filter IDs distinct from toolbar controls and reset uncontrolled amounts to updated defaults without discarding active drafts.
+
 - Validate externally associated required controls and fingerprint adopted checkbox, selection and file state. Preserve collision-safe record details for all string IDs and dismiss date pickers in their owning document.
 
 - Reject malformed table expansion/sort state and handle each owned native form edit once, including portal controls.

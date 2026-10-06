@@ -138,6 +138,17 @@ const stableRows = <T extends { id: string },>(rows: readonly T[], getRowId: (ro
   return data
 }
 
+const assertColumns = <T,>(columns: readonly DataTableViewColumn<T>[]): void => {
+  if (!Array.isArray(columns)) throw new TypeError('DataTableView requires an array of columns.')
+
+  const keys = Array.from(columns, (column: unknown) => (
+    typeof column === 'object' && column !== null && 'key' in column ? column.key : undefined
+  ))
+
+  if (keys.some(key => typeof key !== 'string' || key.trim().length === 0) || new Set(keys).size !== keys.length)
+    throw new TypeError('DataTableView requires unique, nonempty column keys.')
+}
+
 const useViewState = (
   controlled: DataTableViewState | undefined,
   initial: Partial<DataTableViewState> | undefined,
@@ -174,6 +185,8 @@ const useViewModel = <T extends { id: string },>({
   rows, columns, getRowId, state: controlled,
   defaultState, onStateChange, mode = 'client', rowCount, manualSorting = false
 }: DataTableViewProps<T>) => {
+  assertColumns(columns)
+
   const { state, update } = useViewState(controlled, defaultState, onStateChange)
   const features = useMemo(createFeatures, [])
 
@@ -267,11 +280,11 @@ export const DataTableView = <T extends { id: string },>(props: DataTableViewPro
             />
           </Field>
         )}
-        {columns.filter(column => column.filterOptions).map(column => (
-          <Field key={column.key} controlId={`${id}-${column.key}`}>
-            <Label htmlFor={`${id}-${column.key}`}>{column.label}</Label>
+        {columns.filter(column => column.filterOptions).map((column, index) => (
+          <Field key={column.key} controlId={`${id}-column-${index}`}>
+            <Label htmlFor={`${id}-column-${index}`}>{column.label}</Label>
             <NativeSelect
-              id={`${id}-${column.key}`}
+              id={`${id}-column-${index}`}
               value={matching(column.key)}
               disabled={disabled}
               onChange={event => {

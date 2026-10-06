@@ -2,6 +2,8 @@
 
 ## 4.0.0
 
+- Reset amount drafts to the current default without replacing active edits when that default changes.
+
 - Follow the current amount form owner on reset, respect inherited disabled state, and preserve adopted attachment previews.
 
 - Exclude effectively disabled combobox options from keyboard selection.

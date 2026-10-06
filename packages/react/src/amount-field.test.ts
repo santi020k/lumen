@@ -108,3 +108,40 @@ test('uncontrolled amount survives parent loading renders and resets its submitt
     })
   }
 })
+
+test('updated uncontrolled default changes reset baseline without discarding the current draft', async () => {
+  const container = document.createElement('div')
+  document.body.append(container)
+  const root = createRoot(container)
+  const render = (defaultValue: string) => {
+    act(() => {
+      root.render(createElement('form', {}, createElement(AmountField, { defaultValue, name: 'amount' })))
+    })
+  }
+  try {
+    render('1.50')
+    const input = container.querySelector<HTMLInputElement>('[data-ui-amount-input]')
+    const form = container.querySelector('form')
+    if (!input || !form) throw new Error('Missing amount default fixture')
+    act(() => {
+      input.value = '9.25'
+      input.dispatchEvent(new InputEvent('input', { bubbles: true }))
+    })
+    render('2.75')
+    expect(input.value).toBe('9.25')
+    expect(new FormData(form).get('amount')).toBe('9.25')
+    await act(async () => {
+      form.reset()
+      await new Promise<void>(resolve => {
+        setTimeout(resolve, 0)
+      })
+    })
+    expect(input.value).toBe('2.75')
+    expect(new FormData(form).get('amount')).toBe('2.75')
+  } finally {
+    act(() => {
+      root.unmount()
+    })
+    container.remove()
+  }
+})
