@@ -125,3 +125,23 @@ test.each(['attribute', 'property', 'removed'])('reset uses the latest external 
   expect(input.value).toBe(mode === 'removed' ? '50' : '40')
   expect(new FormData(form).get('reveal')).toBe(input.value)
 })
+
+test('switches display modes without replacing slotted media or changing the reveal', () => {
+  const { element, input, before, after } = fixture(75)
+
+  for (const mode of ['side-by-side', 'before', 'after', 'reveal']) {
+    element.setAttribute('mode', mode)
+    expect(element.dataset.mode).toBe(mode)
+    expect(input.disabled).toBe(mode !== 'reveal')
+    expect(input.closest('label')?.hidden).toBe(mode !== 'reveal')
+    expect(element.querySelector<HTMLElement>('.ui-image-comparison__before')?.hidden).toBe(mode === 'after')
+    expect(element.querySelector<HTMLElement>('.ui-image-comparison__after')?.hidden).toBe(mode === 'before')
+    expect(element.querySelector('[slot="before"]')).toBe(before)
+    expect(element.querySelector('[slot="after"]')).toBe(after)
+    expect(element.value).toBe(75)
+  }
+  element.setAttribute('mode', 'unknown')
+  expect(element.dataset.mode).toBe('reveal')
+  element.setAttribute('disabled', '')
+  expect(input.disabled).toBe(true)
+})

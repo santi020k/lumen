@@ -1,0 +1,89 @@
+---
+import { Badge, Button, Field, Label, Slider, Stack } from '@santi020k/lumen-astro'
+
+interface Props {
+  adjustmentId: string
+  label: string
+  value: number
+  defaultValue: number
+  min: number
+  max: number
+  step: number
+  unit?: string
+  locale?: string
+  disabled?: boolean
+  modifiedLabel: string
+  resetLabel: string
+}
+
+declare const Astro: Readonly<{ props: Props, slots: { has: (name: string) => boolean } }>
+
+const { adjustmentId, label, value, defaultValue, min, max, step, unit = '', locale = 'en', disabled = false, modifiedLabel, resetLabel } = Astro.props
+const id = `adjustment-${crypto.randomUUID()}`
+let formatter: Intl.NumberFormat
+
+try {
+  formatter = new Intl.NumberFormat(locale, { maximumFractionDigits: 3 })
+} catch {
+  formatter = new Intl.NumberFormat('en', { maximumFractionDigits: 3 })
+}
+
+const format = (amount: number) => `${formatter.format(amount)}${unit}`
+---
+
+<Field data-media-adjustment={adjustmentId} data-default-value={defaultValue} data-unit={unit} data-locale={locale}>
+  <Stack direction="horizontal" align="center" justify="between" wrap>
+    <Label for={id}>{label}</Label><output id={`${id}-output`} for={id}>{format(value)}</output>
+    <Badge variant="secondary" hidden={value === defaultValue} data-adjustment-modified>{modifiedLabel}</Badge>
+  </Stack>
+  <Slider id={id} aria-describedby={`${id}-output`} aria-valuetext={format(value)} min={min} max={max} step={step} value={value} disabled={disabled} />
+  <Button variant="ghost" disabled={disabled || value === defaultValue} data-adjustment-reset>{resetLabel}</Button>
+</Field>
+
+<script>
+  for (const field of document.querySelectorAll<HTMLElement>('[data-media-adjustment]')) {
+    const slider = field.querySelector<HTMLInputElement>('input[type="range"]')
+    const output = field.querySelector('output')
+    const reset = field.querySelector<HTMLButtonElement>('button[data-adjustment-reset]')
+    const badge = field.querySelector<HTMLElement>('[data-adjustment-modified]')
+
+    if (!slider || !output || !reset || !badge) continue
+
+    let formatter: Intl.NumberFormat
+
+    try {
+ formatter = new Intl.NumberFormat(field.dataset.locale, { maximumFractionDigits: 3 })
+} catch {
+ formatter = new Intl.NumberFormat('en', { maximumFractionDigits: 3 })
+}
+
+    const update = () => {
+      const value = slider.valueAsNumber
+      const formatted = `${formatter.format(value)}${field.dataset.unit ?? ''}`
+
+      output.textContent = formatted
+
+      slider.ariaValueText = formatted
+
+      badge.hidden = value === Number(field.dataset.defaultValue)
+
+      reset.disabled = slider.disabled || badge.hidden
+
+      field.dispatchEvent(new CustomEvent('ui:adjustment-change', { bubbles: true, detail: { id: field.dataset.mediaAdjustment, value } }))
+    }
+
+    slider.addEventListener('input', () => {
+ if (!slider.disabled) update()
+})
+
+    reset.addEventListener('click', () => {
+      if (reset.disabled || slider.disabled) return
+
+      slider.value = field.dataset.defaultValue ?? '0'
+
+      update()
+
+      slider.focus()
+    })
+  }
+</script>

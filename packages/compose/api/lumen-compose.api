@@ -99,7 +99,7 @@ public final class com/santi020k/lumen/ComparisonChartComponentsKt {
 }
 
 public final class com/santi020k/lumen/ComparisonComponentsKt {
-	public static final fun LumenImageComparison (Ljava/lang/String;Landroidx/compose/ui/graphics/painter/Painter;Landroidx/compose/ui/graphics/painter/Painter;FLkotlin/jvm/functions/Function1;Landroidx/compose/ui/Modifier;Ljava/lang/String;Ljava/lang/String;FLcom/santi020k/lumen/LumenImageFit;Ljava/util/Locale;ZLandroidx/compose/runtime/Composer;III)V
+	public static final fun LumenImageComparison (Ljava/lang/String;Landroidx/compose/ui/graphics/painter/Painter;Landroidx/compose/ui/graphics/painter/Painter;FLkotlin/jvm/functions/Function1;Landroidx/compose/ui/Modifier;Ljava/lang/String;Ljava/lang/String;FLcom/santi020k/lumen/LumenImageFit;Ljava/util/Locale;ZLcom/santi020k/lumen/LumenImageComparisonMode;Landroidx/compose/runtime/Composer;III)V
 }
 
 public final class com/santi020k/lumen/ComposableSingletons$CalendarComponentsKt {
@@ -3888,6 +3888,16 @@ public final class com/santi020k/lumen/LumenIllustrationVariant : java/lang/Enum
 	public static fun values ()[Lcom/santi020k/lumen/LumenIllustrationVariant;
 }
 
+public final class com/santi020k/lumen/LumenImageComparisonMode : java/lang/Enum {
+	public static final field After Lcom/santi020k/lumen/LumenImageComparisonMode;
+	public static final field Before Lcom/santi020k/lumen/LumenImageComparisonMode;
+	public static final field Reveal Lcom/santi020k/lumen/LumenImageComparisonMode;
+	public static final field SideBySide Lcom/santi020k/lumen/LumenImageComparisonMode;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/santi020k/lumen/LumenImageComparisonMode;
+	public static fun values ()[Lcom/santi020k/lumen/LumenImageComparisonMode;
+}
+
 public final class com/santi020k/lumen/LumenImageFit : java/lang/Enum {
 	public static final field Contain Lcom/santi020k/lumen/LumenImageFit;
 	public static final field Cover Lcom/santi020k/lumen/LumenImageFit;
@@ -3970,6 +3980,79 @@ public final class com/santi020k/lumen/LumenMaterialColorOverrides {
 	public final fun getSuccess-QN2ZGVo ()Landroidx/compose/ui/graphics/Color;
 	public final fun getWarning-QN2ZGVo ()Landroidx/compose/ui/graphics/Color;
 	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/santi020k/lumen/LumenMediaThumbnailState : java/lang/Enum {
+	public static final field Error Lcom/santi020k/lumen/LumenMediaThumbnailState;
+	public static final field Loading Lcom/santi020k/lumen/LumenMediaThumbnailState;
+	public static final field Ready Lcom/santi020k/lumen/LumenMediaThumbnailState;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/santi020k/lumen/LumenMediaThumbnailState;
+	public static fun values ()[Lcom/santi020k/lumen/LumenMediaThumbnailState;
+}
+
+public final class com/santi020k/lumen/LumenMediaViewportAction : java/lang/Enum {
+	public static final field Down Lcom/santi020k/lumen/LumenMediaViewportAction;
+	public static final field Fit Lcom/santi020k/lumen/LumenMediaViewportAction;
+	public static final field Left Lcom/santi020k/lumen/LumenMediaViewportAction;
+	public static final field Right Lcom/santi020k/lumen/LumenMediaViewportAction;
+	public static final field Up Lcom/santi020k/lumen/LumenMediaViewportAction;
+	public static final field ZoomIn Lcom/santi020k/lumen/LumenMediaViewportAction;
+	public static final field ZoomOut Lcom/santi020k/lumen/LumenMediaViewportAction;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/santi020k/lumen/LumenMediaViewportAction;
+	public static fun values ()[Lcom/santi020k/lumen/LumenMediaViewportAction;
+}
+
+public final class com/santi020k/lumen/LumenMediaViewportLabels {
+	public static final field $stable I
+	public fun <init> ()V
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Ljava/lang/String;
+	public final fun component6 ()Ljava/lang/String;
+	public final fun component7 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lcom/santi020k/lumen/LumenMediaViewportLabels;
+	public static synthetic fun copy$default (Lcom/santi020k/lumen/LumenMediaViewportLabels;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lcom/santi020k/lumen/LumenMediaViewportLabels;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDown ()Ljava/lang/String;
+	public final fun getFit ()Ljava/lang/String;
+	public final fun getLeft ()Ljava/lang/String;
+	public final fun getRight ()Ljava/lang/String;
+	public final fun getUp ()Ljava/lang/String;
+	public final fun getZoomIn ()Ljava/lang/String;
+	public final fun getZoomOut ()Ljava/lang/String;
+	public fun hashCode ()I
+	public final fun label (Lcom/santi020k/lumen/LumenMediaViewportAction;)Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/santi020k/lumen/LumenMediaViewportValue {
+	public static final field $stable I
+	public fun <init> ()V
+	public fun <init> (FFF)V
+	public synthetic fun <init> (FFFILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun applying (Lcom/santi020k/lumen/LumenMediaViewportAction;F)Lcom/santi020k/lumen/LumenMediaViewportValue;
+	public static synthetic fun applying$default (Lcom/santi020k/lumen/LumenMediaViewportValue;Lcom/santi020k/lumen/LumenMediaViewportAction;FILjava/lang/Object;)Lcom/santi020k/lumen/LumenMediaViewportValue;
+	public final fun component1 ()F
+	public final fun component2 ()F
+	public final fun component3 ()F
+	public final fun copy (FFF)Lcom/santi020k/lumen/LumenMediaViewportValue;
+	public static synthetic fun copy$default (Lcom/santi020k/lumen/LumenMediaViewportValue;FFFILjava/lang/Object;)Lcom/santi020k/lumen/LumenMediaViewportValue;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getX ()F
+	public final fun getY ()F
+	public final fun getZoom ()F
+	public fun hashCode ()I
+	public final fun normalized (F)Lcom/santi020k/lumen/LumenMediaViewportValue;
+	public static synthetic fun normalized$default (Lcom/santi020k/lumen/LumenMediaViewportValue;FILjava/lang/Object;)Lcom/santi020k/lumen/LumenMediaViewportValue;
+	public final fun panning (FFFFF)Lcom/santi020k/lumen/LumenMediaViewportValue;
+	public static synthetic fun panning$default (Lcom/santi020k/lumen/LumenMediaViewportValue;FFFFFILjava/lang/Object;)Lcom/santi020k/lumen/LumenMediaViewportValue;
 	public fun toString ()Ljava/lang/String;
 }
 
@@ -5155,6 +5238,12 @@ public final class com/santi020k/lumen/LumenWaterfallKind : java/lang/Enum {
 
 public final class com/santi020k/lumen/MediaComponentsKt {
 	public static final fun LumenImage (Landroidx/compose/ui/graphics/painter/Painter;Ljava/lang/String;Landroidx/compose/ui/Modifier;Ljava/lang/Float;Lcom/santi020k/lumen/LumenImageFit;Lcom/santi020k/lumen/LumenImageRadius;Landroidx/compose/runtime/Composer;II)V
+}
+
+public final class com/santi020k/lumen/MediaWorkspaceComponentsKt {
+	public static final fun LumenMediaFilmstrip (Ljava/lang/String;Ljava/lang/String;Landroidx/compose/ui/Modifier;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
+	public static final fun LumenMediaThumbnail (Ljava/lang/String;ZLkotlin/jvm/functions/Function1;Landroidx/compose/ui/Modifier;Ljava/lang/Integer;ZLcom/santi020k/lumen/LumenMediaThumbnailState;Ljava/lang/String;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
+	public static final fun LumenMediaViewport (Ljava/lang/String;Lcom/santi020k/lumen/LumenMediaViewportValue;Lkotlin/jvm/functions/Function1;Landroidx/compose/ui/Modifier;FFZLcom/santi020k/lumen/LumenMediaViewportLabels;Ljava/util/Locale;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
 }
 
 public final class com/santi020k/lumen/MentionsComponentsKt {

@@ -167,6 +167,9 @@ const applePhoneTabletAndMacOnlySlugs = new Set([
   'password-field',
   'input-otp',
   'image-comparison',
+  'media-viewport',
+  'media-thumbnail',
+  'media-filmstrip',
   'tabs',
   'textarea',
   'toggle'
@@ -5443,6 +5446,39 @@ struct CompareEdits: View {
     ],
     slug: 'image-comparison',
     summary: 'Compare two images with a controlled reveal and native adjustable slider.'
+  },
+  {
+    accessibility: 'Localized zoom and visible actions complement native gestures.',
+    category: 'Data display',
+    examples: { 'react-native': '<LumenMediaViewport label="Inspect photo" value={viewport} onValueChange={setViewport}><Image source={photo} /></LumenMediaViewport>', apple: 'LumenMediaViewport("Inspect photo", value: $viewport) { Image("photo").resizable().scaledToFill() }', android: 'LumenMediaViewport("Inspect photo", value = viewport, onValueChange = { viewport = it }) { Image(painter = photo, contentDescription = "Photo") }' },
+    exports: { android: 'LumenMediaViewport', apple: 'LumenMediaViewport', 'react-native': 'LumenMediaViewport' },
+    guidance: 'Applications own media loading, edits, selection, persistence and task lifetimes. Compose localized LumenButton move actions beside thumbnails. See the Studio media workspace guide for exact adapter contracts and supported Apple form factors.',
+    name: 'Media viewport',
+    properties: [property('label / content', 'String / native content', 'Required', 'Names the media surface and provides application-owned content.')],
+    slug: 'media-viewport',
+    summary: 'Inspect media with controlled bounded zoom, pan and fit.'
+  },
+  {
+    accessibility: 'Selected and disabled state accompanies a visible media label.',
+    category: 'Data display',
+    examples: { 'react-native': '<LumenMediaThumbnail label="Landscape" selected={selected} onSelectionChange={setSelected}><Image source={photo} /></LumenMediaThumbnail>', apple: 'LumenMediaThumbnail("Landscape", selected: selected, onSelectionChange: { selected = $0 }) { Image("photo").resizable().scaledToFit() }', android: 'LumenMediaThumbnail("Landscape", selected = selected, onSelectionChange = { selected = it }) { Image(painter = photo, contentDescription = null) }' },
+    exports: { android: 'LumenMediaThumbnail', apple: 'LumenMediaThumbnail', 'react-native': 'LumenMediaThumbnail' },
+    guidance: 'Applications own media loading, edits, selection, persistence and task lifetimes. Compose localized LumenButton move actions beside thumbnails. See the Studio media workspace guide for exact adapter contracts and supported Apple form factors.',
+    name: 'Media thumbnail',
+    properties: [property('label / content', 'String / native content', 'Required', 'Names the media surface and provides application-owned content.')],
+    slug: 'media-thumbnail',
+    summary: 'Select media with a named button, order and explicit loading/error state.'
+  },
+  {
+    accessibility: 'The collection label and selection status describe host-controlled media.',
+    category: 'Data display',
+    examples: { 'react-native': '<LumenMediaFilmstrip label="Photos" selectionLabel="1 photo selected">{thumbnails}</LumenMediaFilmstrip>', apple: 'LumenMediaFilmstrip("Photos", selectionLabel: "1 photo selected") { thumbnails }', android: 'LumenMediaFilmstrip("Photos", selectionLabel = "1 photo selected") { thumbnails() }' },
+    exports: { android: 'LumenMediaFilmstrip', apple: 'LumenMediaFilmstrip', 'react-native': 'LumenMediaFilmstrip' },
+    guidance: 'Applications own media loading, edits, selection, persistence and task lifetimes. Compose localized LumenButton move actions beside thumbnails. See the Studio media workspace guide for exact adapter contracts and supported Apple form factors.',
+    name: 'Media filmstrip',
+    properties: [property('label / content', 'String / native content', 'Required', 'Names the media surface and provides application-owned content.')],
+    slug: 'media-filmstrip',
+    summary: 'Browse ordered media with host-formatted selected count and sibling move actions.'
   }
 ]
 

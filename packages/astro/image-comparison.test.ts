@@ -112,3 +112,34 @@ test('waits for the native reset default action after an event-listener microtas
   expect(frame.style.getPropertyValue('--ui-image-comparison-position')).toBe('50%')
   expect(input.ariaValueText).toContain('50')
 })
+
+test('updates mode and disabled attributes while retaining the reveal value', async () => {
+  const { root, input } = fixture()
+  const before = document.createElement('div')
+  const after = document.createElement('div')
+
+  before.className = 'ui-image-comparison__before'
+  after.className = 'ui-image-comparison__after'
+  input.closest('label')?.classList.add('ui-image-comparison__control')
+  root.append(before, after)
+  initImageComparisonControllers(document)
+  input.value = '75'
+  input.dispatchEvent(new Event('input', { bubbles: true }))
+
+  for (const mode of ['side-by-side', 'before', 'after', 'reveal']) {
+    root.dataset.mode = mode
+    await Promise.resolve()
+    expect(before.hidden).toBe(mode === 'after')
+    expect(after.hidden).toBe(mode === 'before')
+    expect(input.closest('label')?.hidden).toBe(mode !== 'reveal')
+    expect(input.disabled).toBe(mode !== 'reveal')
+    expect(input.value).toBe('75')
+  }
+  root.dataset.disabled = 'true'
+  await Promise.resolve()
+  expect(input.disabled).toBe(true)
+  root.dataset.mode = 'unknown'
+  await Promise.resolve()
+  expect(root.dataset.mode).toBe('reveal')
+  expect(input.disabled).toBe(true)
+})

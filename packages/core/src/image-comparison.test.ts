@@ -2,6 +2,7 @@ import { expect, test } from 'vitest'
 
 import {
   formatLumenImageComparisonValue,
+  normalizeLumenImageComparisonMode,
   normalizeLumenImageComparisonRatio,
   normalizeLumenImageComparisonValue
 } from './image-comparison.js'
@@ -35,4 +36,12 @@ test('formats caller-provided labels and falls back for malformed locales', () =
   expect(formatLumenImageComparisonValue(50, 'Edited', 'en')).toBe('50% Edited')
   expect(formatLumenImageComparisonValue(100, 'Edited', 'es')).toContain('Edited')
   expect(formatLumenImageComparisonValue(150, 'Edited', '_')).toBe('100% Edited')
+})
+
+test.each(['reveal', 'side-by-side', 'before', 'after'] as const)('retains the supported %s mode', mode => {
+  expect(normalizeLumenImageComparisonMode(mode)).toBe(mode)
+})
+
+test.each([undefined, null, '', 'invalid', {}, 0])('falls back to reveal for an unknown mode', mode => {
+  expect(normalizeLumenImageComparisonMode(mode)).toBe('reveal')
 })

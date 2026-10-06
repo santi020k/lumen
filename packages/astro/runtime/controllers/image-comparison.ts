@@ -1,26 +1,8 @@
-import { formatLumenImageComparisonValue, normalizeLumenImageComparisonValue } from '@santi020k/lumen-core'
+import { formatLumenImageComparisonValue, normalizeLumenImageComparisonMode, normalizeLumenImageComparisonValue, syncLumenImageComparisonMode } from '@santi020k/lumen-core'
+
+import { bindComparisonReset } from './comparison-reset.js'
 
 const syncs = new WeakMap<HTMLInputElement, () => number>()
-const roots = new WeakSet<Node>()
-const isRoot = (node: Node): node is ParentNode => 'querySelectorAll' in node
-
-const bindReset = (node: Node) => {
-  const scope = node.getRootNode()
-
-  if (!isRoot(scope) || roots.has(scope)) return
-
-  roots.add(scope)
-
-  scope.addEventListener('reset', event => {
-    setTimeout(() => {
-      if (event.defaultPrevented) return
-
-      for (const input of scope.querySelectorAll<HTMLInputElement>('[data-ui-image-comparison-input]')) {
-        if (input.isConnected && input.form === event.target) syncs.get(input)?.()
-      }
-    })
-  }, true)
-}
 
 export const initImageComparisonControllers = (scope: ParentNode): void => {
   for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-image-comparison]')) {
@@ -29,13 +11,15 @@ export const initImageComparisonControllers = (scope: ParentNode): void => {
 
     if (!input || !frame) continue
 
-    bindReset(input)
+    bindComparisonReset(input, syncs)
 
     if (syncs.has(input)) continue
 
-    input.disabled = root.dataset.disabled === 'true'
-
     const update = () => {
+      syncLumenImageComparisonMode(root, normalizeLumenImageComparisonMode(root.dataset.mode))
+
+      input.disabled = root.dataset.disabled === 'true' || root.dataset.mode !== 'reveal'
+
       const value = normalizeLumenImageComparisonValue(input.valueAsNumber)
 
       input.value = `${value}`
@@ -57,6 +41,10 @@ export const initImageComparisonControllers = (scope: ParentNode): void => {
     })
 
     input.addEventListener('change', update)
+
+    const observer = new MutationObserver(update)
+
+    observer.observe(root, { attributes: true, attributeFilter: ['data-mode', 'data-disabled'] })
 
     syncs.set(input, update)
 

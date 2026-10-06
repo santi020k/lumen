@@ -1056,3 +1056,9 @@ See [table views](../../docs/data-table-views.md) for server pagination and sele
 duplicate submission and uncertain outcomes. Compose it with the installable React
 `review-workflow`, `import-review` and `record-workspace` recipes.
 See [operational recipes](../../docs/consumer-ui-recipes.md#installable-operational-workflows).
+
+## Studio media workspace
+
+Compose MediaViewport, MediaThumbnail, MediaFilmstrip and ImageComparison modes with the
+[Studio media workspace recipes](../../docs/studio-media-workspaces.md). Applications retain
+media loading, selection, adjustment algorithms, processing, export and persistence.

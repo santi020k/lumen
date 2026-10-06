@@ -110,6 +110,7 @@ import { StatusBar as ExpoStatusBar } from 'expo-status-bar'
 
 import { AdvancedInputExamples } from './AdvancedInputExamples'
 import { CatalogParityExamples } from './CatalogParityExamples'
+import { MediaWorkspaceExamples } from './MediaWorkspaceExamples'
 import { MotionExample } from './MotionExample'
 import {
   type AppDestination,
@@ -1616,6 +1617,9 @@ const Playground = ({
             'Password field',
             'Input OTP',
             'Image comparison',
+            'Media viewport',
+            'Media thumbnail',
+            'Media filmstrip',
             'Textarea',
             'Field group',
             'Toggle',
@@ -1635,6 +1639,7 @@ const Playground = ({
         >
           <ComponentSection description="Edit controls to exercise native focus, switch, and clear behavior." title="Forms">
             <AdvancedInputExamples isVisible={isVisible} />
+            <MediaWorkspaceExamples isVisible={isVisible} />
             <Visibility visible={isAnyVisible(
               'Text field', 'Textarea', 'Field group', 'Toggle', 'Settings row', 'Search field', 'Date field', 'Date range field', 'Phone input', 'Picker', 'Slider', 'Range slider', 'Checkbox', 'Radio group', 'Segmented control', 'Tabs'
             )}

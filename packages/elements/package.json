@@ -67,6 +67,14 @@
     "./components/world-map": {
       "types": "./dist/components/world-map.d.ts",
       "import": "./dist/components/world-map.js"
+    },
+    "./components/media-viewport": {
+      "types": "./dist/components/media-viewport.d.ts",
+      "import": "./dist/components/media-viewport.js"
+    },
+    "./components/media-selection": {
+      "types": "./dist/components/media-selection.d.ts",
+      "import": "./dist/components/media-selection.js"
     }
   },
   "files": [

@@ -477,6 +477,29 @@
       "files": [
         "docs/visual-interactions.md"
       ]
+    },
+    {
+      "name": "media-workspace",
+      "type": "recipe",
+      "components": [
+        "MediaThumbnail",
+        "MediaFilmstrip",
+        "MediaViewport",
+        "ImageComparison",
+        "Toolbar",
+        "Card",
+        "Field",
+        "Label",
+        "Slider",
+        "Badge",
+        "Button",
+        "Progress",
+        "ErrorState",
+        "Stack"
+      ],
+      "files": [
+        "docs/studio-media-workspaces.md"
+      ]
     }
   ],
   "components": [
@@ -1485,6 +1508,53 @@
       "category": "Data display",
       "files": [
         "packages/astro/components/ImageComparison.astro",
+        "packages/astro/styles/lumen.css"
+      ],
+      "dependencies": [
+        "styles"
+      ]
+    },
+    {
+      "name": "MediaViewport",
+      "type": "component",
+      "description": "Inspects application-owned media with bounded zoom, pan and keyboard alternatives.",
+      "category": "Data display",
+      "files": [
+        "packages/astro/components/MediaViewport.astro",
+        "packages/astro/components/Button.astro",
+        "packages/astro/styles/lumen.css",
+        "packages/astro/runtime/UIPrimitives.astro"
+      ],
+      "dependencies": [
+        "Button",
+        "styles",
+        "runtime"
+      ]
+    },
+    {
+      "name": "MediaThumbnail",
+      "type": "component",
+      "description": "Selects application-owned media with visible labels and pressed selection.",
+      "category": "Data display",
+      "files": [
+        "packages/astro/components/MediaThumbnail.astro",
+        "packages/astro/styles/lumen.css",
+        "packages/astro/components/Button.astro",
+        "packages/astro/runtime/UIPrimitives.astro"
+      ],
+      "dependencies": [
+        "styles",
+        "Button",
+        "runtime"
+      ]
+    },
+    {
+      "name": "MediaFilmstrip",
+      "type": "component",
+      "description": "Groups ordered media thumbnails and a localized selection summary.",
+      "category": "Data display",
+      "files": [
+        "packages/astro/components/MediaFilmstrip.astro",
         "packages/astro/styles/lumen.css"
       ],
       "dependencies": [

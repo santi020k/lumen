@@ -1412,3 +1412,23 @@ qualification are separate from focused local checks.
 For accessible rating, step progression and chronological content, use the
 [native progression recipes](native-progression-recipes.md). They reuse the public Rating, Stepper and Timeline APIs with application-owned state, localization
 and content ordering.
+
+## Studio media workspace
+
+`LumenMediaViewport`, `LumenMediaThumbnail` and `LumenMediaFilmstrip` provide reusable media
+interaction in React Native, SwiftUI and Compose. See [Studio media workspaces](studio-media-workspaces.md)
+for composition, host ownership and verification boundaries. The viewport supports iOS, macOS
+and visionOS in SwiftUI; watchOS and tvOS hosts compose platform inspection controls.
+
+Viewport values use `zoom` from one through the configured maximum (one through sixteen),
+and normalized `x`/`y` from minus one through one. Fit clears pan. Nonfinite input normalizes
+to fit. Actions and gestures emit controlled values; the host owns image loading and edits.
+Pass translated `LumenMediaViewportLabels` and locale/environment formatting.
+
+Thumbnails take a visible label, controlled selected state, optional positive order and ready,
+loading or error state. Loading/error and disabled thumbnails cannot request selection. Supply
+localized state labels. Filmstrips take a collection label, a host-formatted selection label and
+native child content; compose named sibling LumenButton actions for reorder.
+
+`LumenImageComparisonMode` adds reveal, side-by-side, before and after modes. Mode changes
+retain the host-controlled reveal value. Only reveal mode exposes an adjustable slider.

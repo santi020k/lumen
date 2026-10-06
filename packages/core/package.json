@@ -95,6 +95,14 @@
     "./world-map-zoom": {
       "types": "./dist/world-map-zoom.d.ts",
       "import": "./dist/world-map-zoom.js"
+    },
+    "./media-workspace": {
+      "types": "./dist/media-workspace.d.ts",
+      "import": "./dist/media-workspace.js"
+    },
+    "./media-viewport": {
+      "types": "./dist/media-viewport.d.ts",
+      "import": "./dist/media-viewport.js"
     }
   },
   "files": [

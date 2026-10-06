@@ -522,6 +522,36 @@
       "width": 900
     },
     {
+      "alt": "Media filmstrip rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2008,
+      "platform": "android",
+      "sha256": "b05e8fa13e6e9133f5f3a0376e8f052eba7405d5d9b09e135a505e3a097b4632",
+      "slug": "media-filmstrip",
+      "src": "/native-components/android/media-filmstrip.webp",
+      "width": 900
+    },
+    {
+      "alt": "Media thumbnail rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2008,
+      "platform": "android",
+      "sha256": "be3d38971e21974574a53d8a520f7bcdd22b74ec94385350ce1d0dd7cc9c762b",
+      "slug": "media-thumbnail",
+      "src": "/native-components/android/media-thumbnail.webp",
+      "width": 900
+    },
+    {
+      "alt": "Media viewport rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2008,
+      "platform": "android",
+      "sha256": "1634f77ebbf81305f4972b2448048ac2a38207e0bbc6fc3f866b40bdffc0dbd5",
+      "slug": "media-viewport",
+      "src": "/native-components/android/media-viewport.webp",
+      "width": 900
+    },
+    {
       "alt": "Mentions rendered in the Android phone emulator Lumen playground",
       "device": "Android phone emulator",
       "height": 2000,
@@ -1599,6 +1629,36 @@
       "sha256": "a535882abb96d82eecfba61a0c204cfd76917f7d0f66ed21e0e631113b2cbd7c",
       "slug": "lollipop-chart",
       "src": "/native-components/apple/lollipop-chart.webp",
+      "width": 900
+    },
+    {
+      "alt": "Media filmstrip rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "e001db6eafb97beda12ccfde4de63b188f565dfc9058bb0fdc2d669c13a01421",
+      "slug": "media-filmstrip",
+      "src": "/native-components/apple/media-filmstrip.webp",
+      "width": 900
+    },
+    {
+      "alt": "Media thumbnail rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "7cfed9883d40fd8e7eaed8d8e47cf9b2601ac96a240e945b443aab31d255e606",
+      "slug": "media-thumbnail",
+      "src": "/native-components/apple/media-thumbnail.webp",
+      "width": 900
+    },
+    {
+      "alt": "Media viewport rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "6250b4953fbcb780d97de624ddf69020bc53d78c9e6a6b8aab688c0337ee1daa",
+      "slug": "media-viewport",
+      "src": "/native-components/apple/media-viewport.webp",
       "width": 900
     },
     {
@@ -2710,6 +2770,36 @@
       "slug": "lollipop-chart",
       "src": "/native-components/react-native/lollipop-chart.webp",
       "width": 900
+    },
+    {
+      "alt": "Media filmstrip rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 348,
+      "platform": "react-native",
+      "sha256": "67adac25d72911f468964ebab6af240c484e19a1ec785d227852b80c1175cfec",
+      "slug": "media-filmstrip",
+      "src": "/native-components/react-native/media-filmstrip.webp",
+      "width": 670
+    },
+    {
+      "alt": "Media thumbnail rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 161,
+      "platform": "react-native",
+      "sha256": "6b6262e1bd9840e99311581a0a20554ad8ce4d988c4f4480da167126a891996e",
+      "slug": "media-thumbnail",
+      "src": "/native-components/react-native/media-thumbnail.webp",
+      "width": 160
+    },
+    {
+      "alt": "Media viewport rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 545,
+      "platform": "react-native",
+      "sha256": "1b9399c9038d2a52cd0de2c60e2016a1536d55c431601e7c38bf022e47c4d2f3",
+      "slug": "media-viewport",
+      "src": "/native-components/react-native/media-viewport.webp",
+      "width": 670
     },
     {
       "alt": "Mentions rendered in the Expo web renderer Lumen playground",

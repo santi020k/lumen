@@ -23,6 +23,8 @@
 
 ### Minor Changes
 
+- Add controlled media viewport, thumbnail and filmstrip primitives, persistent comparison modes, and installable Studio workspace, adjustment and processing recipes. Keep media services and export host-owned. Include interactive qualification examples and native adapter contracts.
+
 - Add controlled civil-date Calendar and Agenda plus native KanbanBoard and standalone
   KanbanColumn, with stable identity, localized accessible actions and state guards.
 

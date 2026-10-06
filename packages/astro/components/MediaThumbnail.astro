@@ -1,0 +1,29 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
+import Button from './Button.astro'
+
+interface Props extends HTMLAttributes<'button'> {
+  className?: string
+  label: string
+  mediaId: string
+  order?: number
+  selected?: boolean
+  state?: 'ready' | 'loading' | 'error'
+  stateLabel?: string
+}
+
+const { class: classProp, className, disabled, label, mediaId, order, selected = false, state = 'ready', stateLabel, ...rest } = Astro.props
+const position = order !== undefined && Number.isSafeInteger(order) && order > 0 ? order : undefined
+const status = stateLabel ?? (state === 'loading' ? 'Loading' : 'Unavailable')
+const { classList, passthrough } = resolveLumenAstroProps(rest, ['ui-media-thumbnail'], classProp, className)
+---
+
+<Button {...passthrough} class:list={classList} variant="outline" data-ui-media-thumbnail data-media-id={mediaId} aria-busy={state === 'loading' || undefined} aria-pressed={selected} disabled={Boolean(disabled) || state !== 'ready'} data-state={state}>
+  <span class="ui-media-thumbnail__media" aria-hidden="true"><slot /></span>
+  <span class="ui-media-thumbnail__label">{label}</span>
+  {position !== undefined && <span class="ui-media-thumbnail__order">{position}</span>}
+  {state !== 'ready' && <span class="ui-media-thumbnail__state">{status}</span>}
+</Button>

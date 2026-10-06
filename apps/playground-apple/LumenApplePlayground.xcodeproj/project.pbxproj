@@ -32,6 +32,7 @@
 		4C9A4892BC1BFDCB83E13957 /* PlaygroundMacCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = 589EA975D33D82FDDB65885C /* PlaygroundMacCommands.swift */; };
 		4CDA689407D8CD8FC7256454 /* CommandParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75CE65254E96890A73A14FCB /* CommandParityExample.swift */; };
 		4DABABE223E01D04ABDC04F0 /* BreadcrumbParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B5F44834DDC6CFA03FE0F30 /* BreadcrumbParityExample.swift */; };
+		50973772004FC8B2ED994C03 /* PlaygroundMediaWorkspaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C951AD2FE174282B2B72440D /* PlaygroundMediaWorkspaceView.swift */; };
 		538B3830DF6A8BDB14F42BB1 /* CarouselParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD50AF3AC7403C3CAC165F51 /* CarouselParityExample.swift */; };
 		577B1907638AAABD1C41F229 /* CascaderParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33D07C5D814B076CDF538E41 /* CascaderParityExample.swift */; };
 		59CD3BCA61AEB946FF7A2882 /* PlaygroundExamplesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A61F6D18637F340320DB6A5D /* PlaygroundExamplesView.swift */; };
@@ -74,6 +75,7 @@
 		D5FE907ED1443A88D0EB4E8F /* MentionsParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1346B8612A775BBDCF663C53 /* MentionsParityExample.swift */; };
 		DA79C0B99783F2C92D9CC68A /* TimelineParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AFA861238EAAF380F337102 /* TimelineParityExample.swift */; };
 		DB50ECBEE184BDB2D1838CE8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 63BB1942FA8B6D286F1A9EBE /* Assets.xcassets */; };
+		DBB7FFC94622EB5056EB6377 /* PlaygroundMediaWorkspaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C951AD2FE174282B2B72440D /* PlaygroundMediaWorkspaceView.swift */; };
 		E04C7AB2BD18952D8710CCB0 /* PlaygroundSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB065D953EB7775096F372DB /* PlaygroundSettingsView.swift */; };
 		E2FF39D41C63B87410755362 /* DataTableParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B29A8B858A3D7AC3B468CF /* DataTableParityExample.swift */; };
 		E37A78B6EEFB51FBC4BCDEFC /* KanbanBoardParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33722FDCBB7E6F155C53D08D /* KanbanBoardParityExample.swift */; };
@@ -139,7 +141,6 @@
 		48D0AE883A9D2E8CA87E712A /* PlaygroundAdvancedInputsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaygroundAdvancedInputsView.swift; sourceTree = "<group>"; };
 		498DE581FB012C81BFFD8BE6 /* PlaygroundParityExamplesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaygroundParityExamplesView.swift; sourceTree = "<group>"; };
 		4C6713B0CADD67BC29E2E936 /* CalendarParityExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarParityExample.swift; sourceTree = "<group>"; };
-		5128309A5EE62A8C5B16E7CD /* lumen */ = {isa = PBXFileReference; lastKnownFileType = folder; name = lumen; path = ../..; sourceTree = SOURCE_ROOT; };
 		581FE601DC8DCCAACDE42246 /* PlaygroundShell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaygroundShell.swift; sourceTree = "<group>"; };
 		589EA975D33D82FDDB65885C /* PlaygroundMacCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaygroundMacCommands.swift; sourceTree = "<group>"; };
 		5DB685E8C1D6ED87B7329F1E /* LumenWatchPlaygroundApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LumenWatchPlaygroundApp.swift; sourceTree = "<group>"; };
@@ -163,6 +164,8 @@
 		B19CC216C8A44A82EF86293B /* PlaygroundHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaygroundHomeView.swift; sourceTree = "<group>"; };
 		BD50AF3AC7403C3CAC165F51 /* CarouselParityExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarouselParityExample.swift; sourceTree = "<group>"; };
 		C071B6F5EF2E4F4825BC28DC /* TransferParityExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransferParityExample.swift; sourceTree = "<group>"; };
+		C5DA55DE8BF4B4194947AAF6 /* lumen-release-consolidation */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "lumen-release-consolidation"; path = ../..; sourceTree = SOURCE_ROOT; };
+		C951AD2FE174282B2B72440D /* PlaygroundMediaWorkspaceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaygroundMediaWorkspaceView.swift; sourceTree = "<group>"; };
 		D0B29A8B858A3D7AC3B468CF /* DataTableParityExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataTableParityExample.swift; sourceTree = "<group>"; };
 		D98080257A4C04BB0ACA9566 /* LumenWidgetPlayground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LumenWidgetPlayground.swift; sourceTree = "<group>"; };
 		EE69F938031E87BABC3FCC66 /* LumenApplePlaygroundApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LumenApplePlaygroundApp.swift; sourceTree = "<group>"; };
@@ -272,7 +275,7 @@
 		DE258D8D5B5E09B006098DED /* Packages */ = {
 			isa = PBXGroup;
 			children = (
-				5128309A5EE62A8C5B16E7CD /* lumen */,
+				C5DA55DE8BF4B4194947AAF6 /* lumen-release-consolidation */,
 			);
 			name = Packages;
 			sourceTree = "<group>";
@@ -297,6 +300,7 @@
 				A61F6D18637F340320DB6A5D /* PlaygroundExamplesView.swift */,
 				B19CC216C8A44A82EF86293B /* PlaygroundHomeView.swift */,
 				589EA975D33D82FDDB65885C /* PlaygroundMacCommands.swift */,
+				C951AD2FE174282B2B72440D /* PlaygroundMediaWorkspaceView.swift */,
 				498DE581FB012C81BFFD8BE6 /* PlaygroundParityExamplesView.swift */,
 				AB065D953EB7775096F372DB /* PlaygroundSettingsView.swift */,
 				581FE601DC8DCCAACDE42246 /* PlaygroundShell.swift */,
@@ -523,6 +527,7 @@
 				59CD3BCA61AEB946FF7A2882 /* PlaygroundExamplesView.swift in Sources */,
 				3720CAC58F48F17F4380823C /* PlaygroundHomeView.swift in Sources */,
 				A257CD4E73D4ECCC34DE5A9D /* PlaygroundMacCommands.swift in Sources */,
+				50973772004FC8B2ED994C03 /* PlaygroundMediaWorkspaceView.swift in Sources */,
 				3223BAB34D21B5B139504B85 /* PlaygroundParityExamplesView.swift in Sources */,
 				A0279D955040FE673FB268D5 /* PlaygroundSettingsView.swift in Sources */,
 				014EFFAD9348FEA0E0277DA9 /* PlaygroundShell.swift in Sources */,
@@ -564,6 +569,7 @@
 				3F78C1BF0A31445B3A1BC333 /* PlaygroundExamplesView.swift in Sources */,
 				C6CEF83F16EE8556EC3DBD9E /* PlaygroundHomeView.swift in Sources */,
 				4C9A4892BC1BFDCB83E13957 /* PlaygroundMacCommands.swift in Sources */,
+				DBB7FFC94622EB5056EB6377 /* PlaygroundMediaWorkspaceView.swift in Sources */,
 				8B9E817F2C9ACF09C187BC6E /* PlaygroundParityExamplesView.swift in Sources */,
 				E04C7AB2BD18952D8710CCB0 /* PlaygroundSettingsView.swift in Sources */,
 				F8E4ABC1A336A6607D841E29 /* PlaygroundShell.swift in Sources */,

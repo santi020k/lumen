@@ -849,6 +849,39 @@
       }
     },
     {
+      "id": "media-viewport",
+      "tier": "shared",
+      "contract": "Bounded controlled zoom, pan and fit with native gestures and visible actions",
+      "accessibility": "Named zoom state and localized actions remain operable without gestures",
+      "symbols": {
+        "reactNative": "LumenMediaViewport",
+        "swiftUI": "LumenMediaViewport",
+        "compose": "LumenMediaViewport"
+      }
+    },
+    {
+      "id": "media-thumbnail",
+      "tier": "shared",
+      "contract": "Host-controlled media selection with order and loading/error presentation",
+      "accessibility": "Named selected button with disabled and busy semantics",
+      "symbols": {
+        "reactNative": "LumenMediaThumbnail",
+        "swiftUI": "LumenMediaThumbnail",
+        "compose": "LumenMediaThumbnail"
+      }
+    },
+    {
+      "id": "media-filmstrip",
+      "tier": "shared",
+      "contract": "Ordered horizontally scrolling media collection with host-formatted selected count",
+      "accessibility": "Collection label and selection status; host supplies sibling reorder actions",
+      "symbols": {
+        "reactNative": "LumenMediaFilmstrip",
+        "swiftUI": "LumenMediaFilmstrip",
+        "compose": "LumenMediaFilmstrip"
+      }
+    },
+    {
       "id": "calendar-heatmap",
       "tier": "shared",
       "contract": "Shows daily activity on a date-only calendar with explicit missing observations.",

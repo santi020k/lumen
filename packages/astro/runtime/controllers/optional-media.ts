@@ -1,29 +1,29 @@
-const loadComparison = async (scope: ParentNode): Promise<void> => {
-  const { initImageComparisonControllers } = await import('./image-comparison.js')
-
-  initImageComparisonControllers(scope)
-}
-
-const loadUpload = async (scope: ParentNode): Promise<void> => {
-  const { initFileUploadControllers } = await import('./file-upload.js')
-
-  initFileUploadControllers(scope)
-}
-
-const loadWorldMap = async (scope: ParentNode): Promise<void> => {
-  const { initWorldMapControllers } = await import('./world-map.js')
-
-  initWorldMapControllers(scope)
-}
-
 export const initOptionalMediaControllers = async (scope: ParentNode): Promise<void> => {
   const pending: Promise<void>[] = []
 
-  if (scope.querySelector('[data-ui-image-comparison]')) pending.push(loadComparison(scope))
+  if (scope.querySelector('[data-ui-media-thumbnail], [data-ui-media-viewport]')) pending.push(import('./media-workspace.js').then(module => {
+    module.initMediaWorkspaceControllers(scope)
 
-  if (scope.querySelector('[data-ui-file-upload]')) pending.push(loadUpload(scope))
+    return undefined
+  }))
 
-  if (scope.querySelector('[data-ui-world-map]')) pending.push(loadWorldMap(scope))
+  if (scope.querySelector('[data-ui-image-comparison]')) pending.push(import('./image-comparison.js').then(module => {
+    module.initImageComparisonControllers(scope)
+
+    return undefined
+  }))
+
+  if (scope.querySelector('[data-ui-file-upload]')) pending.push(import('./file-upload.js').then(module => {
+    module.initFileUploadControllers(scope)
+
+    return undefined
+  }))
+
+  if (scope.querySelector('[data-ui-world-map]')) pending.push(import('./world-map.js').then(module => {
+    module.initWorldMapControllers(scope)
+
+    return undefined
+  }))
 
   await Promise.all(pending)
 }

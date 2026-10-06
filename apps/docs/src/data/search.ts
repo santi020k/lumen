@@ -225,6 +225,14 @@ const recipeItems: DocsSearchItem[] = [
     type: 'Recipe'
   },
   {
+    category: 'Media',
+    description: 'Try selection, reorder, comparison, inspection, adjustments and cancellable preparation in Studio.',
+    href: '/docs/studio-media-workspaces',
+    keywords: normalizeKeywords('studio media photo editor selection filmstrip comparison viewport zoom pan export processing retry'),
+    title: 'Studio media workspaces',
+    type: 'Recipe'
+  },
+  {
     category: 'Themes',
     description:
       'Generate theme tokens from a hue, preview Lumen components, and copy CSS.',

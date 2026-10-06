@@ -4894,6 +4894,32 @@
           "precise": "s:7LumenUI0A13LollipopChartV4data5label6domain7heading11description6labels10valueLabel8showDataACSayAA0A15ComparisonDatumVG_SSSNySdGSgSSSgAqA0aD6LabelsVAQSbtcfc"
         },
         {
+          "declaration": "@MainActor struct LumenMediaViewport<Content> where Content : View",
+          "kind": "swift.struct",
+          "path": [
+            "LumenMediaViewport"
+          ],
+          "precise": "s:7LumenUI0A13MediaViewportV"
+        },
+        {
+          "declaration": "@MainActor init(_ label: String, value: Binding<LumenMediaViewportValue>, maxZoom: Double = 4, aspectRatio: CGFloat = 16 / 9, disabled: Bool = false, labels: LumenMediaViewportLabels = .init(), @ViewBuilder content: () -> Content)",
+          "kind": "swift.init",
+          "path": [
+            "LumenMediaViewport",
+            "init(_:value:maxZoom:aspectRatio:disabled:labels:content:)"
+          ],
+          "precise": "s:7LumenUI0A13MediaViewportV_5value7maxZoom11aspectRatio8disabled6labels7contentACyxGSS_05SwiftB07BindingVyAA0acD5ValueVGSd14CoreFoundation7CGFloatVSbAA0acD6LabelsVxyXEtcfc"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenMediaViewport",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A13MediaViewportV4bodyQrvp"
+        },
+        {
           "declaration": "enum LumenMentionEngine",
           "kind": "swift.enum",
           "path": [
@@ -5876,6 +5902,58 @@
           "precise": "s:7LumenUI0A14GraphicVariantO5orbityA2CmF"
         },
         {
+          "declaration": "@MainActor struct LumenMediaFilmstrip<Content> where Content : View",
+          "kind": "swift.struct",
+          "path": [
+            "LumenMediaFilmstrip"
+          ],
+          "precise": "s:7LumenUI0A14MediaFilmstripV"
+        },
+        {
+          "declaration": "@MainActor init(_ label: String, selectionLabel: String, @ViewBuilder content: () -> Content)",
+          "kind": "swift.init",
+          "path": [
+            "LumenMediaFilmstrip",
+            "init(_:selectionLabel:content:)"
+          ],
+          "precise": "s:7LumenUI0A14MediaFilmstripV_14selectionLabel7contentACyxGSS_SSxyXEtcfc"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenMediaFilmstrip",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A14MediaFilmstripV4bodyQrvp"
+        },
+        {
+          "declaration": "@MainActor struct LumenMediaThumbnail<Content> where Content : View",
+          "kind": "swift.struct",
+          "path": [
+            "LumenMediaThumbnail"
+          ],
+          "precise": "s:7LumenUI0A14MediaThumbnailV"
+        },
+        {
+          "declaration": "@MainActor init(_ label: String, selected: Bool, order: Int? = nil, state: LumenMediaThumbnailState = .ready, stateLabel: String = \"\", disabled: Bool = false, onSelectionChange: @escaping (Bool) -> Void, @ViewBuilder content: () -> Content)",
+          "kind": "swift.init",
+          "path": [
+            "LumenMediaThumbnail",
+            "init(_:selected:order:state:stateLabel:disabled:onSelectionChange:content:)"
+          ],
+          "precise": "s:7LumenUI0A14MediaThumbnailV_8selected5order5state0G5Label8disabled17onSelectionChange7contentACyxGSS_SbSiSgAA0acD5StateOSSSbySbcxyXEtcfc"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenMediaThumbnail",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A14MediaThumbnailV4bodyQrvp"
+        },
+        {
           "declaration": "struct LumenNavigationItem<Value> where Value : Hashable",
           "kind": "swift.struct",
           "path": [
@@ -6518,13 +6596,13 @@
           "precise": "s:7LumenUI0A15ImageComparisonV"
         },
         {
-          "declaration": "@MainActor init(_ label: String, value: Binding<Double>, beforeLabel: String = \"Before\", afterLabel: String = \"After\", aspectRatio: CGFloat = 16 / 9, @ViewBuilder before: () -> Before, @ViewBuilder after: () -> After)",
+          "declaration": "@MainActor init(_ label: String, value: Binding<Double>, beforeLabel: String = \"Before\", afterLabel: String = \"After\", aspectRatio: CGFloat = 16 / 9, mode: LumenImageComparisonMode = .reveal, @ViewBuilder before: () -> Before, @ViewBuilder after: () -> After)",
           "kind": "swift.init",
           "path": [
             "LumenImageComparison",
-            "init(_:value:beforeLabel:afterLabel:aspectRatio:before:after:)"
+            "init(_:value:beforeLabel:afterLabel:aspectRatio:mode:before:after:)"
           ],
-          "precise": "s:7LumenUI0A15ImageComparisonV_5value11beforeLabel05afterG011aspectRatio0F00H0ACyxq_GSS_05SwiftB07BindingVySdGS2S14CoreFoundation7CGFloatVxyXEq_yXEtcfc"
+          "precise": "s:7LumenUI0A15ImageComparisonV_5value11beforeLabel05afterG011aspectRatio4mode0F00H0ACyxq_GSS_05SwiftB07BindingVySdGS2S14CoreFoundation7CGFloatVAA0acD4ModeOxyXEq_yXEtcfc"
         },
         {
           "declaration": "@MainActor var body: some View { get }",
@@ -7762,6 +7840,77 @@
           "precise": "s:7LumenUI0A18HistogramFrequencyO8rawValueACSgSS_tcfc"
         },
         {
+          "declaration": "struct LumenMediaViewportValue",
+          "kind": "swift.struct",
+          "path": [
+            "LumenMediaViewportValue"
+          ],
+          "precise": "s:7LumenUI0A18MediaViewportValueV"
+        },
+        {
+          "declaration": "func normalized(maxZoom: Double = 4) -> LumenMediaViewportValue",
+          "kind": "swift.method",
+          "path": [
+            "LumenMediaViewportValue",
+            "normalized(maxZoom:)"
+          ],
+          "precise": "s:7LumenUI0A18MediaViewportValueV10normalized7maxZoomACSd_tF"
+        },
+        {
+          "declaration": "var x: Double",
+          "kind": "swift.property",
+          "path": [
+            "LumenMediaViewportValue",
+            "x"
+          ],
+          "precise": "s:7LumenUI0A18MediaViewportValueV1xSdvp"
+        },
+        {
+          "declaration": "var y: Double",
+          "kind": "swift.property",
+          "path": [
+            "LumenMediaViewportValue",
+            "y"
+          ],
+          "precise": "s:7LumenUI0A18MediaViewportValueV1ySdvp"
+        },
+        {
+          "declaration": "init(zoom: Double = 1, x: Double = 0, y: Double = 0)",
+          "kind": "swift.init",
+          "path": [
+            "LumenMediaViewportValue",
+            "init(zoom:x:y:)"
+          ],
+          "precise": "s:7LumenUI0A18MediaViewportValueV4zoom1x1yACSd_S2dtcfc"
+        },
+        {
+          "declaration": "var zoom: Double",
+          "kind": "swift.property",
+          "path": [
+            "LumenMediaViewportValue",
+            "zoom"
+          ],
+          "precise": "s:7LumenUI0A18MediaViewportValueV4zoomSdvp"
+        },
+        {
+          "declaration": "func panning(dx: Double, dy: Double, width: Double, height: Double, maxZoom: Double = 4) -> LumenMediaViewportValue",
+          "kind": "swift.method",
+          "path": [
+            "LumenMediaViewportValue",
+            "panning(dx:dy:width:height:maxZoom:)"
+          ],
+          "precise": "s:7LumenUI0A18MediaViewportValueV7panning2dx2dy5width6height7maxZoomACSd_S4dtF"
+        },
+        {
+          "declaration": "func applying(_ action: LumenMediaViewportAction, maxZoom: Double = 4) -> LumenMediaViewportValue",
+          "kind": "swift.method",
+          "path": [
+            "LumenMediaViewportValue",
+            "applying(_:maxZoom:)"
+          ],
+          "precise": "s:7LumenUI0A18MediaViewportValueV8applying_7maxZoomAcA0acD6ActionO_SdtF"
+        },
+        {
           "declaration": "@MainActor struct LumenSymbolPickerButton",
           "kind": "swift.struct",
           "path": [
@@ -7979,6 +8128,263 @@
             "success"
           ],
           "precise": "s:7LumenUI0A19IllustrationVariantO7successyA2CmF"
+        },
+        {
+          "declaration": "enum LumenImageComparisonMode",
+          "kind": "swift.enum",
+          "path": [
+            "LumenImageComparisonMode"
+          ],
+          "precise": "s:7LumenUI0A19ImageComparisonModeO"
+        },
+        {
+          "declaration": "case sideBySide",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenImageComparisonMode",
+            "sideBySide"
+          ],
+          "precise": "s:7LumenUI0A19ImageComparisonModeO10sideBySideyA2CmF"
+        },
+        {
+          "declaration": "case after",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenImageComparisonMode",
+            "after"
+          ],
+          "precise": "s:7LumenUI0A19ImageComparisonModeO5afteryA2CmF"
+        },
+        {
+          "declaration": "case before",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenImageComparisonMode",
+            "before"
+          ],
+          "precise": "s:7LumenUI0A19ImageComparisonModeO6beforeyA2CmF"
+        },
+        {
+          "declaration": "case reveal",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenImageComparisonMode",
+            "reveal"
+          ],
+          "precise": "s:7LumenUI0A19ImageComparisonModeO6revealyA2CmF"
+        },
+        {
+          "declaration": "init?(rawValue: String)",
+          "kind": "swift.init",
+          "path": [
+            "LumenImageComparisonMode",
+            "init(rawValue:)"
+          ],
+          "precise": "s:7LumenUI0A19ImageComparisonModeO8rawValueACSgSS_tcfc"
+        },
+        {
+          "declaration": "enum LumenMediaThumbnailState",
+          "kind": "swift.enum",
+          "path": [
+            "LumenMediaThumbnailState"
+          ],
+          "precise": "s:7LumenUI0A19MediaThumbnailStateO"
+        },
+        {
+          "declaration": "case error",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenMediaThumbnailState",
+            "error"
+          ],
+          "precise": "s:7LumenUI0A19MediaThumbnailStateO5erroryA2CmF"
+        },
+        {
+          "declaration": "case ready",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenMediaThumbnailState",
+            "ready"
+          ],
+          "precise": "s:7LumenUI0A19MediaThumbnailStateO5readyyA2CmF"
+        },
+        {
+          "declaration": "case loading",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenMediaThumbnailState",
+            "loading"
+          ],
+          "precise": "s:7LumenUI0A19MediaThumbnailStateO7loadingyA2CmF"
+        },
+        {
+          "declaration": "enum LumenMediaViewportAction",
+          "kind": "swift.enum",
+          "path": [
+            "LumenMediaViewportAction"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportActionO"
+        },
+        {
+          "declaration": "case up",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenMediaViewportAction",
+            "up"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportActionO2upyA2CmF"
+        },
+        {
+          "declaration": "case fit",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenMediaViewportAction",
+            "fit"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportActionO3fityA2CmF"
+        },
+        {
+          "declaration": "case down",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenMediaViewportAction",
+            "down"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportActionO4downyA2CmF"
+        },
+        {
+          "declaration": "case left",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenMediaViewportAction",
+            "left"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportActionO4leftyA2CmF"
+        },
+        {
+          "declaration": "case right",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenMediaViewportAction",
+            "right"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportActionO5rightyA2CmF"
+        },
+        {
+          "declaration": "case zoomIn",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenMediaViewportAction",
+            "zoomIn"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportActionO6zoomInyA2CmF"
+        },
+        {
+          "declaration": "case zoomOut",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenMediaViewportAction",
+            "zoomOut"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportActionO7zoomOutyA2CmF"
+        },
+        {
+          "declaration": "init?(rawValue: String)",
+          "kind": "swift.init",
+          "path": [
+            "LumenMediaViewportAction",
+            "init(rawValue:)"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportActionO8rawValueACSgSS_tcfc"
+        },
+        {
+          "declaration": "struct LumenMediaViewportLabels",
+          "kind": "swift.struct",
+          "path": [
+            "LumenMediaViewportLabels"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportLabelsV"
+        },
+        {
+          "declaration": "var up: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenMediaViewportLabels",
+            "up"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportLabelsV2upSSvp"
+        },
+        {
+          "declaration": "var fit: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenMediaViewportLabels",
+            "fit"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportLabelsV3fitSSvp"
+        },
+        {
+          "declaration": "var down: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenMediaViewportLabels",
+            "down"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportLabelsV4downSSvp"
+        },
+        {
+          "declaration": "var left: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenMediaViewportLabels",
+            "left"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportLabelsV4leftSSvp"
+        },
+        {
+          "declaration": "func label(for action: LumenMediaViewportAction) -> String",
+          "kind": "swift.method",
+          "path": [
+            "LumenMediaViewportLabels",
+            "label(for:)"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportLabelsV5label3forSSAA0acD6ActionO_tF"
+        },
+        {
+          "declaration": "var right: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenMediaViewportLabels",
+            "right"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportLabelsV5rightSSvp"
+        },
+        {
+          "declaration": "init(zoomIn: String = \"Zoom in\", zoomOut: String = \"Zoom out\", fit: String = \"Fit to view\", left: String = \"Pan left\", right: String = \"Pan right\", up: String = \"Pan up\", down: String = \"Pan down\")",
+          "kind": "swift.init",
+          "path": [
+            "LumenMediaViewportLabels",
+            "init(zoomIn:zoomOut:fit:left:right:up:down:)"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportLabelsV6zoomIn0F3Out3fit4left5right2up4downACSS_S6Stcfc"
+        },
+        {
+          "declaration": "var zoomIn: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenMediaViewportLabels",
+            "zoomIn"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportLabelsV6zoomInSSvp"
+        },
+        {
+          "declaration": "var zoomOut: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenMediaViewportLabels",
+            "zoomOut"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportLabelsV7zoomOutSSvp"
         },
         {
           "declaration": "struct LumenSliderConfiguration",
@@ -38494,6 +38900,32 @@
           "precise": "s:7LumenUI0A13LollipopChartV4data5label6domain7heading11description6labels10valueLabel8showDataACSayAA0A15ComparisonDatumVG_SSSNySdGSgSSSgAqA0aD6LabelsVAQSbtcfc"
         },
         {
+          "declaration": "@MainActor struct LumenMediaViewport<Content> where Content : View",
+          "kind": "swift.struct",
+          "path": [
+            "LumenMediaViewport"
+          ],
+          "precise": "s:7LumenUI0A13MediaViewportV"
+        },
+        {
+          "declaration": "@MainActor init(_ label: String, value: Binding<LumenMediaViewportValue>, maxZoom: Double = 4, aspectRatio: CGFloat = 16 / 9, disabled: Bool = false, labels: LumenMediaViewportLabels = .init(), @ViewBuilder content: () -> Content)",
+          "kind": "swift.init",
+          "path": [
+            "LumenMediaViewport",
+            "init(_:value:maxZoom:aspectRatio:disabled:labels:content:)"
+          ],
+          "precise": "s:7LumenUI0A13MediaViewportV_5value7maxZoom11aspectRatio8disabled6labels7contentACyxGSS_05SwiftB07BindingVyAA0acD5ValueVGSd14CoreFoundation7CGFloatVSbAA0acD6LabelsVxyXEtcfc"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenMediaViewport",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A13MediaViewportV4bodyQrvp"
+        },
+        {
           "declaration": "enum LumenMentionEngine",
           "kind": "swift.enum",
           "path": [
@@ -39476,6 +39908,58 @@
           "precise": "s:7LumenUI0A14GraphicVariantO5orbityA2CmF"
         },
         {
+          "declaration": "@MainActor struct LumenMediaFilmstrip<Content> where Content : View",
+          "kind": "swift.struct",
+          "path": [
+            "LumenMediaFilmstrip"
+          ],
+          "precise": "s:7LumenUI0A14MediaFilmstripV"
+        },
+        {
+          "declaration": "@MainActor init(_ label: String, selectionLabel: String, @ViewBuilder content: () -> Content)",
+          "kind": "swift.init",
+          "path": [
+            "LumenMediaFilmstrip",
+            "init(_:selectionLabel:content:)"
+          ],
+          "precise": "s:7LumenUI0A14MediaFilmstripV_14selectionLabel7contentACyxGSS_SSxyXEtcfc"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenMediaFilmstrip",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A14MediaFilmstripV4bodyQrvp"
+        },
+        {
+          "declaration": "@MainActor struct LumenMediaThumbnail<Content> where Content : View",
+          "kind": "swift.struct",
+          "path": [
+            "LumenMediaThumbnail"
+          ],
+          "precise": "s:7LumenUI0A14MediaThumbnailV"
+        },
+        {
+          "declaration": "@MainActor init(_ label: String, selected: Bool, order: Int? = nil, state: LumenMediaThumbnailState = .ready, stateLabel: String = \"\", disabled: Bool = false, onSelectionChange: @escaping (Bool) -> Void, @ViewBuilder content: () -> Content)",
+          "kind": "swift.init",
+          "path": [
+            "LumenMediaThumbnail",
+            "init(_:selected:order:state:stateLabel:disabled:onSelectionChange:content:)"
+          ],
+          "precise": "s:7LumenUI0A14MediaThumbnailV_8selected5order5state0G5Label8disabled17onSelectionChange7contentACyxGSS_SbSiSgAA0acD5StateOSSSbySbcxyXEtcfc"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenMediaThumbnail",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A14MediaThumbnailV4bodyQrvp"
+        },
+        {
           "declaration": "struct LumenMentionsLabels",
           "kind": "swift.struct",
           "path": [
@@ -40250,13 +40734,13 @@
           "precise": "s:7LumenUI0A15ImageComparisonV"
         },
         {
-          "declaration": "@MainActor init(_ label: String, value: Binding<Double>, beforeLabel: String = \"Before\", afterLabel: String = \"After\", aspectRatio: CGFloat = 16 / 9, @ViewBuilder before: () -> Before, @ViewBuilder after: () -> After)",
+          "declaration": "@MainActor init(_ label: String, value: Binding<Double>, beforeLabel: String = \"Before\", afterLabel: String = \"After\", aspectRatio: CGFloat = 16 / 9, mode: LumenImageComparisonMode = .reveal, @ViewBuilder before: () -> Before, @ViewBuilder after: () -> After)",
           "kind": "swift.init",
           "path": [
             "LumenImageComparison",
-            "init(_:value:beforeLabel:afterLabel:aspectRatio:before:after:)"
+            "init(_:value:beforeLabel:afterLabel:aspectRatio:mode:before:after:)"
           ],
-          "precise": "s:7LumenUI0A15ImageComparisonV_5value11beforeLabel05afterG011aspectRatio0F00H0ACyxq_GSS_05SwiftB07BindingVySdGS2S14CoreFoundation7CGFloatVxyXEq_yXEtcfc"
+          "precise": "s:7LumenUI0A15ImageComparisonV_5value11beforeLabel05afterG011aspectRatio4mode0F00H0ACyxq_GSS_05SwiftB07BindingVySdGS2S14CoreFoundation7CGFloatVAA0acD4ModeOxyXEq_yXEtcfc"
         },
         {
           "declaration": "@MainActor var body: some View { get }",
@@ -41468,6 +41952,77 @@
           "precise": "s:7LumenUI0A18HistogramFrequencyO8rawValueACSgSS_tcfc"
         },
         {
+          "declaration": "struct LumenMediaViewportValue",
+          "kind": "swift.struct",
+          "path": [
+            "LumenMediaViewportValue"
+          ],
+          "precise": "s:7LumenUI0A18MediaViewportValueV"
+        },
+        {
+          "declaration": "func normalized(maxZoom: Double = 4) -> LumenMediaViewportValue",
+          "kind": "swift.method",
+          "path": [
+            "LumenMediaViewportValue",
+            "normalized(maxZoom:)"
+          ],
+          "precise": "s:7LumenUI0A18MediaViewportValueV10normalized7maxZoomACSd_tF"
+        },
+        {
+          "declaration": "var x: Double",
+          "kind": "swift.property",
+          "path": [
+            "LumenMediaViewportValue",
+            "x"
+          ],
+          "precise": "s:7LumenUI0A18MediaViewportValueV1xSdvp"
+        },
+        {
+          "declaration": "var y: Double",
+          "kind": "swift.property",
+          "path": [
+            "LumenMediaViewportValue",
+            "y"
+          ],
+          "precise": "s:7LumenUI0A18MediaViewportValueV1ySdvp"
+        },
+        {
+          "declaration": "init(zoom: Double = 1, x: Double = 0, y: Double = 0)",
+          "kind": "swift.init",
+          "path": [
+            "LumenMediaViewportValue",
+            "init(zoom:x:y:)"
+          ],
+          "precise": "s:7LumenUI0A18MediaViewportValueV4zoom1x1yACSd_S2dtcfc"
+        },
+        {
+          "declaration": "var zoom: Double",
+          "kind": "swift.property",
+          "path": [
+            "LumenMediaViewportValue",
+            "zoom"
+          ],
+          "precise": "s:7LumenUI0A18MediaViewportValueV4zoomSdvp"
+        },
+        {
+          "declaration": "func panning(dx: Double, dy: Double, width: Double, height: Double, maxZoom: Double = 4) -> LumenMediaViewportValue",
+          "kind": "swift.method",
+          "path": [
+            "LumenMediaViewportValue",
+            "panning(dx:dy:width:height:maxZoom:)"
+          ],
+          "precise": "s:7LumenUI0A18MediaViewportValueV7panning2dx2dy5width6height7maxZoomACSd_S4dtF"
+        },
+        {
+          "declaration": "func applying(_ action: LumenMediaViewportAction, maxZoom: Double = 4) -> LumenMediaViewportValue",
+          "kind": "swift.method",
+          "path": [
+            "LumenMediaViewportValue",
+            "applying(_:maxZoom:)"
+          ],
+          "precise": "s:7LumenUI0A18MediaViewportValueV8applying_7maxZoomAcA0acD6ActionO_SdtF"
+        },
+        {
           "declaration": "enum LumenTableSortDirection",
           "kind": "swift.enum",
           "path": [
@@ -41659,6 +42214,263 @@
             "success"
           ],
           "precise": "s:7LumenUI0A19IllustrationVariantO7successyA2CmF"
+        },
+        {
+          "declaration": "enum LumenImageComparisonMode",
+          "kind": "swift.enum",
+          "path": [
+            "LumenImageComparisonMode"
+          ],
+          "precise": "s:7LumenUI0A19ImageComparisonModeO"
+        },
+        {
+          "declaration": "case sideBySide",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenImageComparisonMode",
+            "sideBySide"
+          ],
+          "precise": "s:7LumenUI0A19ImageComparisonModeO10sideBySideyA2CmF"
+        },
+        {
+          "declaration": "case after",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenImageComparisonMode",
+            "after"
+          ],
+          "precise": "s:7LumenUI0A19ImageComparisonModeO5afteryA2CmF"
+        },
+        {
+          "declaration": "case before",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenImageComparisonMode",
+            "before"
+          ],
+          "precise": "s:7LumenUI0A19ImageComparisonModeO6beforeyA2CmF"
+        },
+        {
+          "declaration": "case reveal",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenImageComparisonMode",
+            "reveal"
+          ],
+          "precise": "s:7LumenUI0A19ImageComparisonModeO6revealyA2CmF"
+        },
+        {
+          "declaration": "init?(rawValue: String)",
+          "kind": "swift.init",
+          "path": [
+            "LumenImageComparisonMode",
+            "init(rawValue:)"
+          ],
+          "precise": "s:7LumenUI0A19ImageComparisonModeO8rawValueACSgSS_tcfc"
+        },
+        {
+          "declaration": "enum LumenMediaThumbnailState",
+          "kind": "swift.enum",
+          "path": [
+            "LumenMediaThumbnailState"
+          ],
+          "precise": "s:7LumenUI0A19MediaThumbnailStateO"
+        },
+        {
+          "declaration": "case error",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenMediaThumbnailState",
+            "error"
+          ],
+          "precise": "s:7LumenUI0A19MediaThumbnailStateO5erroryA2CmF"
+        },
+        {
+          "declaration": "case ready",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenMediaThumbnailState",
+            "ready"
+          ],
+          "precise": "s:7LumenUI0A19MediaThumbnailStateO5readyyA2CmF"
+        },
+        {
+          "declaration": "case loading",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenMediaThumbnailState",
+            "loading"
+          ],
+          "precise": "s:7LumenUI0A19MediaThumbnailStateO7loadingyA2CmF"
+        },
+        {
+          "declaration": "enum LumenMediaViewportAction",
+          "kind": "swift.enum",
+          "path": [
+            "LumenMediaViewportAction"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportActionO"
+        },
+        {
+          "declaration": "case up",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenMediaViewportAction",
+            "up"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportActionO2upyA2CmF"
+        },
+        {
+          "declaration": "case fit",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenMediaViewportAction",
+            "fit"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportActionO3fityA2CmF"
+        },
+        {
+          "declaration": "case down",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenMediaViewportAction",
+            "down"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportActionO4downyA2CmF"
+        },
+        {
+          "declaration": "case left",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenMediaViewportAction",
+            "left"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportActionO4leftyA2CmF"
+        },
+        {
+          "declaration": "case right",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenMediaViewportAction",
+            "right"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportActionO5rightyA2CmF"
+        },
+        {
+          "declaration": "case zoomIn",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenMediaViewportAction",
+            "zoomIn"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportActionO6zoomInyA2CmF"
+        },
+        {
+          "declaration": "case zoomOut",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenMediaViewportAction",
+            "zoomOut"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportActionO7zoomOutyA2CmF"
+        },
+        {
+          "declaration": "init?(rawValue: String)",
+          "kind": "swift.init",
+          "path": [
+            "LumenMediaViewportAction",
+            "init(rawValue:)"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportActionO8rawValueACSgSS_tcfc"
+        },
+        {
+          "declaration": "struct LumenMediaViewportLabels",
+          "kind": "swift.struct",
+          "path": [
+            "LumenMediaViewportLabels"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportLabelsV"
+        },
+        {
+          "declaration": "var up: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenMediaViewportLabels",
+            "up"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportLabelsV2upSSvp"
+        },
+        {
+          "declaration": "var fit: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenMediaViewportLabels",
+            "fit"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportLabelsV3fitSSvp"
+        },
+        {
+          "declaration": "var down: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenMediaViewportLabels",
+            "down"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportLabelsV4downSSvp"
+        },
+        {
+          "declaration": "var left: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenMediaViewportLabels",
+            "left"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportLabelsV4leftSSvp"
+        },
+        {
+          "declaration": "func label(for action: LumenMediaViewportAction) -> String",
+          "kind": "swift.method",
+          "path": [
+            "LumenMediaViewportLabels",
+            "label(for:)"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportLabelsV5label3forSSAA0acD6ActionO_tF"
+        },
+        {
+          "declaration": "var right: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenMediaViewportLabels",
+            "right"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportLabelsV5rightSSvp"
+        },
+        {
+          "declaration": "init(zoomIn: String = \"Zoom in\", zoomOut: String = \"Zoom out\", fit: String = \"Fit to view\", left: String = \"Pan left\", right: String = \"Pan right\", up: String = \"Pan up\", down: String = \"Pan down\")",
+          "kind": "swift.init",
+          "path": [
+            "LumenMediaViewportLabels",
+            "init(zoomIn:zoomOut:fit:left:right:up:down:)"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportLabelsV6zoomIn0F3Out3fit4left5right2up4downACSS_S6Stcfc"
+        },
+        {
+          "declaration": "var zoomIn: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenMediaViewportLabels",
+            "zoomIn"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportLabelsV6zoomInSSvp"
+        },
+        {
+          "declaration": "var zoomOut: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenMediaViewportLabels",
+            "zoomOut"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportLabelsV7zoomOutSSvp"
         },
         {
           "declaration": "struct LumenSliderConfiguration",
@@ -71741,6 +72553,58 @@
           "precise": "s:7LumenUI0A14ErrorStateKindO7offlineyA2CmF"
         },
         {
+          "declaration": "@MainActor struct LumenMediaFilmstrip<Content> where Content : View",
+          "kind": "swift.struct",
+          "path": [
+            "LumenMediaFilmstrip"
+          ],
+          "precise": "s:7LumenUI0A14MediaFilmstripV"
+        },
+        {
+          "declaration": "@MainActor init(_ label: String, selectionLabel: String, @ViewBuilder content: () -> Content)",
+          "kind": "swift.init",
+          "path": [
+            "LumenMediaFilmstrip",
+            "init(_:selectionLabel:content:)"
+          ],
+          "precise": "s:7LumenUI0A14MediaFilmstripV_14selectionLabel7contentACyxGSS_SSxyXEtcfc"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenMediaFilmstrip",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A14MediaFilmstripV4bodyQrvp"
+        },
+        {
+          "declaration": "@MainActor struct LumenMediaThumbnail<Content> where Content : View",
+          "kind": "swift.struct",
+          "path": [
+            "LumenMediaThumbnail"
+          ],
+          "precise": "s:7LumenUI0A14MediaThumbnailV"
+        },
+        {
+          "declaration": "@MainActor init(_ label: String, selected: Bool, order: Int? = nil, state: LumenMediaThumbnailState = .ready, stateLabel: String = \"\", disabled: Bool = false, onSelectionChange: @escaping (Bool) -> Void, @ViewBuilder content: () -> Content)",
+          "kind": "swift.init",
+          "path": [
+            "LumenMediaThumbnail",
+            "init(_:selected:order:state:stateLabel:disabled:onSelectionChange:content:)"
+          ],
+          "precise": "s:7LumenUI0A14MediaThumbnailV_8selected5order5state0G5Label8disabled17onSelectionChange7contentACyxGSS_SbSiSgAA0acD5StateOSSSbySbcxyXEtcfc"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenMediaThumbnail",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A14MediaThumbnailV4bodyQrvp"
+        },
+        {
           "declaration": "struct LumenNavigationItem<Value> where Value : Hashable",
           "kind": "swift.struct",
           "path": [
@@ -72906,6 +73770,77 @@
           "precise": "s:7LumenUI0A18HistogramFrequencyO8rawValueACSgSS_tcfc"
         },
         {
+          "declaration": "struct LumenMediaViewportValue",
+          "kind": "swift.struct",
+          "path": [
+            "LumenMediaViewportValue"
+          ],
+          "precise": "s:7LumenUI0A18MediaViewportValueV"
+        },
+        {
+          "declaration": "func normalized(maxZoom: Double = 4) -> LumenMediaViewportValue",
+          "kind": "swift.method",
+          "path": [
+            "LumenMediaViewportValue",
+            "normalized(maxZoom:)"
+          ],
+          "precise": "s:7LumenUI0A18MediaViewportValueV10normalized7maxZoomACSd_tF"
+        },
+        {
+          "declaration": "var x: Double",
+          "kind": "swift.property",
+          "path": [
+            "LumenMediaViewportValue",
+            "x"
+          ],
+          "precise": "s:7LumenUI0A18MediaViewportValueV1xSdvp"
+        },
+        {
+          "declaration": "var y: Double",
+          "kind": "swift.property",
+          "path": [
+            "LumenMediaViewportValue",
+            "y"
+          ],
+          "precise": "s:7LumenUI0A18MediaViewportValueV1ySdvp"
+        },
+        {
+          "declaration": "init(zoom: Double = 1, x: Double = 0, y: Double = 0)",
+          "kind": "swift.init",
+          "path": [
+            "LumenMediaViewportValue",
+            "init(zoom:x:y:)"
+          ],
+          "precise": "s:7LumenUI0A18MediaViewportValueV4zoom1x1yACSd_S2dtcfc"
+        },
+        {
+          "declaration": "var zoom: Double",
+          "kind": "swift.property",
+          "path": [
+            "LumenMediaViewportValue",
+            "zoom"
+          ],
+          "precise": "s:7LumenUI0A18MediaViewportValueV4zoomSdvp"
+        },
+        {
+          "declaration": "func panning(dx: Double, dy: Double, width: Double, height: Double, maxZoom: Double = 4) -> LumenMediaViewportValue",
+          "kind": "swift.method",
+          "path": [
+            "LumenMediaViewportValue",
+            "panning(dx:dy:width:height:maxZoom:)"
+          ],
+          "precise": "s:7LumenUI0A18MediaViewportValueV7panning2dx2dy5width6height7maxZoomACSd_S4dtF"
+        },
+        {
+          "declaration": "func applying(_ action: LumenMediaViewportAction, maxZoom: Double = 4) -> LumenMediaViewportValue",
+          "kind": "swift.method",
+          "path": [
+            "LumenMediaViewportValue",
+            "applying(_:maxZoom:)"
+          ],
+          "precise": "s:7LumenUI0A18MediaViewportValueV8applying_7maxZoomAcA0acD6ActionO_SdtF"
+        },
+        {
           "declaration": "struct LumenWatchActionMetrics",
           "kind": "swift.struct",
           "path": [
@@ -72983,6 +73918,210 @@
             "fraction"
           ],
           "precise": "s:7LumenUI0A18WatchProgressValueV8fractionSdvp"
+        },
+        {
+          "declaration": "enum LumenMediaThumbnailState",
+          "kind": "swift.enum",
+          "path": [
+            "LumenMediaThumbnailState"
+          ],
+          "precise": "s:7LumenUI0A19MediaThumbnailStateO"
+        },
+        {
+          "declaration": "case error",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenMediaThumbnailState",
+            "error"
+          ],
+          "precise": "s:7LumenUI0A19MediaThumbnailStateO5erroryA2CmF"
+        },
+        {
+          "declaration": "case ready",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenMediaThumbnailState",
+            "ready"
+          ],
+          "precise": "s:7LumenUI0A19MediaThumbnailStateO5readyyA2CmF"
+        },
+        {
+          "declaration": "case loading",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenMediaThumbnailState",
+            "loading"
+          ],
+          "precise": "s:7LumenUI0A19MediaThumbnailStateO7loadingyA2CmF"
+        },
+        {
+          "declaration": "enum LumenMediaViewportAction",
+          "kind": "swift.enum",
+          "path": [
+            "LumenMediaViewportAction"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportActionO"
+        },
+        {
+          "declaration": "case up",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenMediaViewportAction",
+            "up"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportActionO2upyA2CmF"
+        },
+        {
+          "declaration": "case fit",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenMediaViewportAction",
+            "fit"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportActionO3fityA2CmF"
+        },
+        {
+          "declaration": "case down",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenMediaViewportAction",
+            "down"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportActionO4downyA2CmF"
+        },
+        {
+          "declaration": "case left",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenMediaViewportAction",
+            "left"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportActionO4leftyA2CmF"
+        },
+        {
+          "declaration": "case right",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenMediaViewportAction",
+            "right"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportActionO5rightyA2CmF"
+        },
+        {
+          "declaration": "case zoomIn",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenMediaViewportAction",
+            "zoomIn"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportActionO6zoomInyA2CmF"
+        },
+        {
+          "declaration": "case zoomOut",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenMediaViewportAction",
+            "zoomOut"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportActionO7zoomOutyA2CmF"
+        },
+        {
+          "declaration": "init?(rawValue: String)",
+          "kind": "swift.init",
+          "path": [
+            "LumenMediaViewportAction",
+            "init(rawValue:)"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportActionO8rawValueACSgSS_tcfc"
+        },
+        {
+          "declaration": "struct LumenMediaViewportLabels",
+          "kind": "swift.struct",
+          "path": [
+            "LumenMediaViewportLabels"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportLabelsV"
+        },
+        {
+          "declaration": "var up: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenMediaViewportLabels",
+            "up"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportLabelsV2upSSvp"
+        },
+        {
+          "declaration": "var fit: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenMediaViewportLabels",
+            "fit"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportLabelsV3fitSSvp"
+        },
+        {
+          "declaration": "var down: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenMediaViewportLabels",
+            "down"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportLabelsV4downSSvp"
+        },
+        {
+          "declaration": "var left: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenMediaViewportLabels",
+            "left"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportLabelsV4leftSSvp"
+        },
+        {
+          "declaration": "func label(for action: LumenMediaViewportAction) -> String",
+          "kind": "swift.method",
+          "path": [
+            "LumenMediaViewportLabels",
+            "label(for:)"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportLabelsV5label3forSSAA0acD6ActionO_tF"
+        },
+        {
+          "declaration": "var right: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenMediaViewportLabels",
+            "right"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportLabelsV5rightSSvp"
+        },
+        {
+          "declaration": "init(zoomIn: String = \"Zoom in\", zoomOut: String = \"Zoom out\", fit: String = \"Fit to view\", left: String = \"Pan left\", right: String = \"Pan right\", up: String = \"Pan up\", down: String = \"Pan down\")",
+          "kind": "swift.init",
+          "path": [
+            "LumenMediaViewportLabels",
+            "init(zoomIn:zoomOut:fit:left:right:up:down:)"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportLabelsV6zoomIn0F3Out3fit4left5right2up4downACSS_S6Stcfc"
+        },
+        {
+          "declaration": "var zoomIn: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenMediaViewportLabels",
+            "zoomIn"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportLabelsV6zoomInSSvp"
+        },
+        {
+          "declaration": "var zoomOut: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenMediaViewportLabels",
+            "zoomOut"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportLabelsV7zoomOutSSvp"
         },
         {
           "declaration": "struct LumenCalendarHeatmapDatum",
@@ -102355,6 +103494,32 @@
           "precise": "s:7LumenUI0A13LollipopChartV4data5label6domain7heading11description6labels10valueLabel8showDataACSayAA0A15ComparisonDatumVG_SSSNySdGSgSSSgAqA0aD6LabelsVAQSbtcfc"
         },
         {
+          "declaration": "@MainActor struct LumenMediaViewport<Content> where Content : View",
+          "kind": "swift.struct",
+          "path": [
+            "LumenMediaViewport"
+          ],
+          "precise": "s:7LumenUI0A13MediaViewportV"
+        },
+        {
+          "declaration": "@MainActor init(_ label: String, value: Binding<LumenMediaViewportValue>, maxZoom: Double = 4, aspectRatio: CGFloat = 16 / 9, disabled: Bool = false, labels: LumenMediaViewportLabels = .init(), @ViewBuilder content: () -> Content)",
+          "kind": "swift.init",
+          "path": [
+            "LumenMediaViewport",
+            "init(_:value:maxZoom:aspectRatio:disabled:labels:content:)"
+          ],
+          "precise": "s:7LumenUI0A13MediaViewportV_5value7maxZoom11aspectRatio8disabled6labels7contentACyxGSS_05SwiftB07BindingVyAA0acD5ValueVGSd14CoreFoundation7CGFloatVSbAA0acD6LabelsVxyXEtcfc"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenMediaViewport",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A13MediaViewportV4bodyQrvp"
+        },
+        {
           "declaration": "enum LumenMentionEngine",
           "kind": "swift.enum",
           "path": [
@@ -103337,6 +104502,58 @@
           "precise": "s:7LumenUI0A14GraphicVariantO5orbityA2CmF"
         },
         {
+          "declaration": "@MainActor struct LumenMediaFilmstrip<Content> where Content : View",
+          "kind": "swift.struct",
+          "path": [
+            "LumenMediaFilmstrip"
+          ],
+          "precise": "s:7LumenUI0A14MediaFilmstripV"
+        },
+        {
+          "declaration": "@MainActor init(_ label: String, selectionLabel: String, @ViewBuilder content: () -> Content)",
+          "kind": "swift.init",
+          "path": [
+            "LumenMediaFilmstrip",
+            "init(_:selectionLabel:content:)"
+          ],
+          "precise": "s:7LumenUI0A14MediaFilmstripV_14selectionLabel7contentACyxGSS_SSxyXEtcfc"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenMediaFilmstrip",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A14MediaFilmstripV4bodyQrvp"
+        },
+        {
+          "declaration": "@MainActor struct LumenMediaThumbnail<Content> where Content : View",
+          "kind": "swift.struct",
+          "path": [
+            "LumenMediaThumbnail"
+          ],
+          "precise": "s:7LumenUI0A14MediaThumbnailV"
+        },
+        {
+          "declaration": "@MainActor init(_ label: String, selected: Bool, order: Int? = nil, state: LumenMediaThumbnailState = .ready, stateLabel: String = \"\", disabled: Bool = false, onSelectionChange: @escaping (Bool) -> Void, @ViewBuilder content: () -> Content)",
+          "kind": "swift.init",
+          "path": [
+            "LumenMediaThumbnail",
+            "init(_:selected:order:state:stateLabel:disabled:onSelectionChange:content:)"
+          ],
+          "precise": "s:7LumenUI0A14MediaThumbnailV_8selected5order5state0G5Label8disabled17onSelectionChange7contentACyxGSS_SbSiSgAA0acD5StateOSSSbySbcxyXEtcfc"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenMediaThumbnail",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A14MediaThumbnailV4bodyQrvp"
+        },
+        {
           "declaration": "struct LumenMentionsLabels",
           "kind": "swift.struct",
           "path": [
@@ -104111,13 +105328,13 @@
           "precise": "s:7LumenUI0A15ImageComparisonV"
         },
         {
-          "declaration": "@MainActor init(_ label: String, value: Binding<Double>, beforeLabel: String = \"Before\", afterLabel: String = \"After\", aspectRatio: CGFloat = 16 / 9, @ViewBuilder before: () -> Before, @ViewBuilder after: () -> After)",
+          "declaration": "@MainActor init(_ label: String, value: Binding<Double>, beforeLabel: String = \"Before\", afterLabel: String = \"After\", aspectRatio: CGFloat = 16 / 9, mode: LumenImageComparisonMode = .reveal, @ViewBuilder before: () -> Before, @ViewBuilder after: () -> After)",
           "kind": "swift.init",
           "path": [
             "LumenImageComparison",
-            "init(_:value:beforeLabel:afterLabel:aspectRatio:before:after:)"
+            "init(_:value:beforeLabel:afterLabel:aspectRatio:mode:before:after:)"
           ],
-          "precise": "s:7LumenUI0A15ImageComparisonV_5value11beforeLabel05afterG011aspectRatio0F00H0ACyxq_GSS_05SwiftB07BindingVySdGS2S14CoreFoundation7CGFloatVxyXEq_yXEtcfc"
+          "precise": "s:7LumenUI0A15ImageComparisonV_5value11beforeLabel05afterG011aspectRatio4mode0F00H0ACyxq_GSS_05SwiftB07BindingVySdGS2S14CoreFoundation7CGFloatVAA0acD4ModeOxyXEq_yXEtcfc"
         },
         {
           "declaration": "@MainActor var body: some View { get }",
@@ -105329,6 +106546,77 @@
           "precise": "s:7LumenUI0A18HistogramFrequencyO8rawValueACSgSS_tcfc"
         },
         {
+          "declaration": "struct LumenMediaViewportValue",
+          "kind": "swift.struct",
+          "path": [
+            "LumenMediaViewportValue"
+          ],
+          "precise": "s:7LumenUI0A18MediaViewportValueV"
+        },
+        {
+          "declaration": "func normalized(maxZoom: Double = 4) -> LumenMediaViewportValue",
+          "kind": "swift.method",
+          "path": [
+            "LumenMediaViewportValue",
+            "normalized(maxZoom:)"
+          ],
+          "precise": "s:7LumenUI0A18MediaViewportValueV10normalized7maxZoomACSd_tF"
+        },
+        {
+          "declaration": "var x: Double",
+          "kind": "swift.property",
+          "path": [
+            "LumenMediaViewportValue",
+            "x"
+          ],
+          "precise": "s:7LumenUI0A18MediaViewportValueV1xSdvp"
+        },
+        {
+          "declaration": "var y: Double",
+          "kind": "swift.property",
+          "path": [
+            "LumenMediaViewportValue",
+            "y"
+          ],
+          "precise": "s:7LumenUI0A18MediaViewportValueV1ySdvp"
+        },
+        {
+          "declaration": "init(zoom: Double = 1, x: Double = 0, y: Double = 0)",
+          "kind": "swift.init",
+          "path": [
+            "LumenMediaViewportValue",
+            "init(zoom:x:y:)"
+          ],
+          "precise": "s:7LumenUI0A18MediaViewportValueV4zoom1x1yACSd_S2dtcfc"
+        },
+        {
+          "declaration": "var zoom: Double",
+          "kind": "swift.property",
+          "path": [
+            "LumenMediaViewportValue",
+            "zoom"
+          ],
+          "precise": "s:7LumenUI0A18MediaViewportValueV4zoomSdvp"
+        },
+        {
+          "declaration": "func panning(dx: Double, dy: Double, width: Double, height: Double, maxZoom: Double = 4) -> LumenMediaViewportValue",
+          "kind": "swift.method",
+          "path": [
+            "LumenMediaViewportValue",
+            "panning(dx:dy:width:height:maxZoom:)"
+          ],
+          "precise": "s:7LumenUI0A18MediaViewportValueV7panning2dx2dy5width6height7maxZoomACSd_S4dtF"
+        },
+        {
+          "declaration": "func applying(_ action: LumenMediaViewportAction, maxZoom: Double = 4) -> LumenMediaViewportValue",
+          "kind": "swift.method",
+          "path": [
+            "LumenMediaViewportValue",
+            "applying(_:maxZoom:)"
+          ],
+          "precise": "s:7LumenUI0A18MediaViewportValueV8applying_7maxZoomAcA0acD6ActionO_SdtF"
+        },
+        {
           "declaration": "enum LumenTableSortDirection",
           "kind": "swift.enum",
           "path": [
@@ -105520,6 +106808,263 @@
             "success"
           ],
           "precise": "s:7LumenUI0A19IllustrationVariantO7successyA2CmF"
+        },
+        {
+          "declaration": "enum LumenImageComparisonMode",
+          "kind": "swift.enum",
+          "path": [
+            "LumenImageComparisonMode"
+          ],
+          "precise": "s:7LumenUI0A19ImageComparisonModeO"
+        },
+        {
+          "declaration": "case sideBySide",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenImageComparisonMode",
+            "sideBySide"
+          ],
+          "precise": "s:7LumenUI0A19ImageComparisonModeO10sideBySideyA2CmF"
+        },
+        {
+          "declaration": "case after",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenImageComparisonMode",
+            "after"
+          ],
+          "precise": "s:7LumenUI0A19ImageComparisonModeO5afteryA2CmF"
+        },
+        {
+          "declaration": "case before",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenImageComparisonMode",
+            "before"
+          ],
+          "precise": "s:7LumenUI0A19ImageComparisonModeO6beforeyA2CmF"
+        },
+        {
+          "declaration": "case reveal",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenImageComparisonMode",
+            "reveal"
+          ],
+          "precise": "s:7LumenUI0A19ImageComparisonModeO6revealyA2CmF"
+        },
+        {
+          "declaration": "init?(rawValue: String)",
+          "kind": "swift.init",
+          "path": [
+            "LumenImageComparisonMode",
+            "init(rawValue:)"
+          ],
+          "precise": "s:7LumenUI0A19ImageComparisonModeO8rawValueACSgSS_tcfc"
+        },
+        {
+          "declaration": "enum LumenMediaThumbnailState",
+          "kind": "swift.enum",
+          "path": [
+            "LumenMediaThumbnailState"
+          ],
+          "precise": "s:7LumenUI0A19MediaThumbnailStateO"
+        },
+        {
+          "declaration": "case error",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenMediaThumbnailState",
+            "error"
+          ],
+          "precise": "s:7LumenUI0A19MediaThumbnailStateO5erroryA2CmF"
+        },
+        {
+          "declaration": "case ready",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenMediaThumbnailState",
+            "ready"
+          ],
+          "precise": "s:7LumenUI0A19MediaThumbnailStateO5readyyA2CmF"
+        },
+        {
+          "declaration": "case loading",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenMediaThumbnailState",
+            "loading"
+          ],
+          "precise": "s:7LumenUI0A19MediaThumbnailStateO7loadingyA2CmF"
+        },
+        {
+          "declaration": "enum LumenMediaViewportAction",
+          "kind": "swift.enum",
+          "path": [
+            "LumenMediaViewportAction"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportActionO"
+        },
+        {
+          "declaration": "case up",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenMediaViewportAction",
+            "up"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportActionO2upyA2CmF"
+        },
+        {
+          "declaration": "case fit",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenMediaViewportAction",
+            "fit"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportActionO3fityA2CmF"
+        },
+        {
+          "declaration": "case down",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenMediaViewportAction",
+            "down"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportActionO4downyA2CmF"
+        },
+        {
+          "declaration": "case left",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenMediaViewportAction",
+            "left"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportActionO4leftyA2CmF"
+        },
+        {
+          "declaration": "case right",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenMediaViewportAction",
+            "right"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportActionO5rightyA2CmF"
+        },
+        {
+          "declaration": "case zoomIn",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenMediaViewportAction",
+            "zoomIn"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportActionO6zoomInyA2CmF"
+        },
+        {
+          "declaration": "case zoomOut",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenMediaViewportAction",
+            "zoomOut"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportActionO7zoomOutyA2CmF"
+        },
+        {
+          "declaration": "init?(rawValue: String)",
+          "kind": "swift.init",
+          "path": [
+            "LumenMediaViewportAction",
+            "init(rawValue:)"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportActionO8rawValueACSgSS_tcfc"
+        },
+        {
+          "declaration": "struct LumenMediaViewportLabels",
+          "kind": "swift.struct",
+          "path": [
+            "LumenMediaViewportLabels"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportLabelsV"
+        },
+        {
+          "declaration": "var up: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenMediaViewportLabels",
+            "up"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportLabelsV2upSSvp"
+        },
+        {
+          "declaration": "var fit: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenMediaViewportLabels",
+            "fit"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportLabelsV3fitSSvp"
+        },
+        {
+          "declaration": "var down: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenMediaViewportLabels",
+            "down"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportLabelsV4downSSvp"
+        },
+        {
+          "declaration": "var left: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenMediaViewportLabels",
+            "left"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportLabelsV4leftSSvp"
+        },
+        {
+          "declaration": "func label(for action: LumenMediaViewportAction) -> String",
+          "kind": "swift.method",
+          "path": [
+            "LumenMediaViewportLabels",
+            "label(for:)"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportLabelsV5label3forSSAA0acD6ActionO_tF"
+        },
+        {
+          "declaration": "var right: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenMediaViewportLabels",
+            "right"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportLabelsV5rightSSvp"
+        },
+        {
+          "declaration": "init(zoomIn: String = \"Zoom in\", zoomOut: String = \"Zoom out\", fit: String = \"Fit to view\", left: String = \"Pan left\", right: String = \"Pan right\", up: String = \"Pan up\", down: String = \"Pan down\")",
+          "kind": "swift.init",
+          "path": [
+            "LumenMediaViewportLabels",
+            "init(zoomIn:zoomOut:fit:left:right:up:down:)"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportLabelsV6zoomIn0F3Out3fit4left5right2up4downACSS_S6Stcfc"
+        },
+        {
+          "declaration": "var zoomIn: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenMediaViewportLabels",
+            "zoomIn"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportLabelsV6zoomInSSvp"
+        },
+        {
+          "declaration": "var zoomOut: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenMediaViewportLabels",
+            "zoomOut"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportLabelsV7zoomOutSSvp"
         },
         {
           "declaration": "struct LumenSliderConfiguration",
@@ -135757,6 +137302,58 @@
           "precise": "s:7LumenUI0A14ErrorStateKindO7offlineyA2CmF"
         },
         {
+          "declaration": "@MainActor struct LumenMediaFilmstrip<Content> where Content : View",
+          "kind": "swift.struct",
+          "path": [
+            "LumenMediaFilmstrip"
+          ],
+          "precise": "s:7LumenUI0A14MediaFilmstripV"
+        },
+        {
+          "declaration": "@MainActor init(_ label: String, selectionLabel: String, @ViewBuilder content: () -> Content)",
+          "kind": "swift.init",
+          "path": [
+            "LumenMediaFilmstrip",
+            "init(_:selectionLabel:content:)"
+          ],
+          "precise": "s:7LumenUI0A14MediaFilmstripV_14selectionLabel7contentACyxGSS_SSxyXEtcfc"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenMediaFilmstrip",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A14MediaFilmstripV4bodyQrvp"
+        },
+        {
+          "declaration": "@MainActor struct LumenMediaThumbnail<Content> where Content : View",
+          "kind": "swift.struct",
+          "path": [
+            "LumenMediaThumbnail"
+          ],
+          "precise": "s:7LumenUI0A14MediaThumbnailV"
+        },
+        {
+          "declaration": "@MainActor init(_ label: String, selected: Bool, order: Int? = nil, state: LumenMediaThumbnailState = .ready, stateLabel: String = \"\", disabled: Bool = false, onSelectionChange: @escaping (Bool) -> Void, @ViewBuilder content: () -> Content)",
+          "kind": "swift.init",
+          "path": [
+            "LumenMediaThumbnail",
+            "init(_:selected:order:state:stateLabel:disabled:onSelectionChange:content:)"
+          ],
+          "precise": "s:7LumenUI0A14MediaThumbnailV_8selected5order5state0G5Label8disabled17onSelectionChange7contentACyxGSS_SbSiSgAA0acD5StateOSSSbySbcxyXEtcfc"
+        },
+        {
+          "declaration": "@MainActor var body: some View { get }",
+          "kind": "swift.property",
+          "path": [
+            "LumenMediaThumbnail",
+            "body"
+          ],
+          "precise": "s:7LumenUI0A14MediaThumbnailV4bodyQrvp"
+        },
+        {
           "declaration": "struct LumenNavigationItem<Value> where Value : Hashable",
           "kind": "swift.struct",
           "path": [
@@ -136974,6 +138571,77 @@
           "precise": "s:7LumenUI0A18HistogramFrequencyO8rawValueACSgSS_tcfc"
         },
         {
+          "declaration": "struct LumenMediaViewportValue",
+          "kind": "swift.struct",
+          "path": [
+            "LumenMediaViewportValue"
+          ],
+          "precise": "s:7LumenUI0A18MediaViewportValueV"
+        },
+        {
+          "declaration": "func normalized(maxZoom: Double = 4) -> LumenMediaViewportValue",
+          "kind": "swift.method",
+          "path": [
+            "LumenMediaViewportValue",
+            "normalized(maxZoom:)"
+          ],
+          "precise": "s:7LumenUI0A18MediaViewportValueV10normalized7maxZoomACSd_tF"
+        },
+        {
+          "declaration": "var x: Double",
+          "kind": "swift.property",
+          "path": [
+            "LumenMediaViewportValue",
+            "x"
+          ],
+          "precise": "s:7LumenUI0A18MediaViewportValueV1xSdvp"
+        },
+        {
+          "declaration": "var y: Double",
+          "kind": "swift.property",
+          "path": [
+            "LumenMediaViewportValue",
+            "y"
+          ],
+          "precise": "s:7LumenUI0A18MediaViewportValueV1ySdvp"
+        },
+        {
+          "declaration": "init(zoom: Double = 1, x: Double = 0, y: Double = 0)",
+          "kind": "swift.init",
+          "path": [
+            "LumenMediaViewportValue",
+            "init(zoom:x:y:)"
+          ],
+          "precise": "s:7LumenUI0A18MediaViewportValueV4zoom1x1yACSd_S2dtcfc"
+        },
+        {
+          "declaration": "var zoom: Double",
+          "kind": "swift.property",
+          "path": [
+            "LumenMediaViewportValue",
+            "zoom"
+          ],
+          "precise": "s:7LumenUI0A18MediaViewportValueV4zoomSdvp"
+        },
+        {
+          "declaration": "func panning(dx: Double, dy: Double, width: Double, height: Double, maxZoom: Double = 4) -> LumenMediaViewportValue",
+          "kind": "swift.method",
+          "path": [
+            "LumenMediaViewportValue",
+            "panning(dx:dy:width:height:maxZoom:)"
+          ],
+          "precise": "s:7LumenUI0A18MediaViewportValueV7panning2dx2dy5width6height7maxZoomACSd_S4dtF"
+        },
+        {
+          "declaration": "func applying(_ action: LumenMediaViewportAction, maxZoom: Double = 4) -> LumenMediaViewportValue",
+          "kind": "swift.method",
+          "path": [
+            "LumenMediaViewportValue",
+            "applying(_:maxZoom:)"
+          ],
+          "precise": "s:7LumenUI0A18MediaViewportValueV8applying_7maxZoomAcA0acD6ActionO_SdtF"
+        },
+        {
           "declaration": "struct LumenWatchActionMetrics",
           "kind": "swift.struct",
           "path": [
@@ -137051,6 +138719,210 @@
             "fraction"
           ],
           "precise": "s:7LumenUI0A18WatchProgressValueV8fractionSdvp"
+        },
+        {
+          "declaration": "enum LumenMediaThumbnailState",
+          "kind": "swift.enum",
+          "path": [
+            "LumenMediaThumbnailState"
+          ],
+          "precise": "s:7LumenUI0A19MediaThumbnailStateO"
+        },
+        {
+          "declaration": "case error",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenMediaThumbnailState",
+            "error"
+          ],
+          "precise": "s:7LumenUI0A19MediaThumbnailStateO5erroryA2CmF"
+        },
+        {
+          "declaration": "case ready",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenMediaThumbnailState",
+            "ready"
+          ],
+          "precise": "s:7LumenUI0A19MediaThumbnailStateO5readyyA2CmF"
+        },
+        {
+          "declaration": "case loading",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenMediaThumbnailState",
+            "loading"
+          ],
+          "precise": "s:7LumenUI0A19MediaThumbnailStateO7loadingyA2CmF"
+        },
+        {
+          "declaration": "enum LumenMediaViewportAction",
+          "kind": "swift.enum",
+          "path": [
+            "LumenMediaViewportAction"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportActionO"
+        },
+        {
+          "declaration": "case up",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenMediaViewportAction",
+            "up"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportActionO2upyA2CmF"
+        },
+        {
+          "declaration": "case fit",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenMediaViewportAction",
+            "fit"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportActionO3fityA2CmF"
+        },
+        {
+          "declaration": "case down",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenMediaViewportAction",
+            "down"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportActionO4downyA2CmF"
+        },
+        {
+          "declaration": "case left",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenMediaViewportAction",
+            "left"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportActionO4leftyA2CmF"
+        },
+        {
+          "declaration": "case right",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenMediaViewportAction",
+            "right"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportActionO5rightyA2CmF"
+        },
+        {
+          "declaration": "case zoomIn",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenMediaViewportAction",
+            "zoomIn"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportActionO6zoomInyA2CmF"
+        },
+        {
+          "declaration": "case zoomOut",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenMediaViewportAction",
+            "zoomOut"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportActionO7zoomOutyA2CmF"
+        },
+        {
+          "declaration": "init?(rawValue: String)",
+          "kind": "swift.init",
+          "path": [
+            "LumenMediaViewportAction",
+            "init(rawValue:)"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportActionO8rawValueACSgSS_tcfc"
+        },
+        {
+          "declaration": "struct LumenMediaViewportLabels",
+          "kind": "swift.struct",
+          "path": [
+            "LumenMediaViewportLabels"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportLabelsV"
+        },
+        {
+          "declaration": "var up: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenMediaViewportLabels",
+            "up"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportLabelsV2upSSvp"
+        },
+        {
+          "declaration": "var fit: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenMediaViewportLabels",
+            "fit"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportLabelsV3fitSSvp"
+        },
+        {
+          "declaration": "var down: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenMediaViewportLabels",
+            "down"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportLabelsV4downSSvp"
+        },
+        {
+          "declaration": "var left: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenMediaViewportLabels",
+            "left"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportLabelsV4leftSSvp"
+        },
+        {
+          "declaration": "func label(for action: LumenMediaViewportAction) -> String",
+          "kind": "swift.method",
+          "path": [
+            "LumenMediaViewportLabels",
+            "label(for:)"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportLabelsV5label3forSSAA0acD6ActionO_tF"
+        },
+        {
+          "declaration": "var right: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenMediaViewportLabels",
+            "right"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportLabelsV5rightSSvp"
+        },
+        {
+          "declaration": "init(zoomIn: String = \"Zoom in\", zoomOut: String = \"Zoom out\", fit: String = \"Fit to view\", left: String = \"Pan left\", right: String = \"Pan right\", up: String = \"Pan up\", down: String = \"Pan down\")",
+          "kind": "swift.init",
+          "path": [
+            "LumenMediaViewportLabels",
+            "init(zoomIn:zoomOut:fit:left:right:up:down:)"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportLabelsV6zoomIn0F3Out3fit4left5right2up4downACSS_S6Stcfc"
+        },
+        {
+          "declaration": "var zoomIn: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenMediaViewportLabels",
+            "zoomIn"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportLabelsV6zoomInSSvp"
+        },
+        {
+          "declaration": "var zoomOut: String",
+          "kind": "swift.property",
+          "path": [
+            "LumenMediaViewportLabels",
+            "zoomOut"
+          ],
+          "precise": "s:7LumenUI0A19MediaViewportLabelsV7zoomOutSSvp"
         },
         {
           "declaration": "struct LumenCalendarHeatmapDatum",

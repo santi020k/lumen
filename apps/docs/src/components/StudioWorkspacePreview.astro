@@ -1,0 +1,42 @@
+---
+interface Props { showTitle?: boolean }
+
+const { showTitle = true } = Astro.props
+---
+<div data-studio-workspace-demo data-show-title={showTitle}><p>Loading the interactive Studio workspace…</p></div>
+<script>
+  import { createElement } from 'react'
+import { createRoot, type Root } from 'react-dom/client'
+
+import { StudioWorkspaceDemo } from '../lib/studio-workspace-demo'
+
+  const roots = new Map<HTMLElement, Root>()
+
+  const mount = () => {
+    for (const container of document.querySelectorAll<HTMLElement>('[data-studio-workspace-demo]')) {
+      if (roots.has(container)) continue
+
+      const root = createRoot(container)
+
+      roots.set(container, root)
+
+      root.render(createElement(StudioWorkspaceDemo, { showTitle: container.dataset.showTitle !== 'false' }))
+    }
+  }
+
+  mount()
+
+  document.addEventListener('astro:page-load', mount)
+
+  document.addEventListener('astro:before-swap', () => {
+    for (const root of roots.values()) root.unmount()
+
+    roots.clear()
+  })
+</script>
+<style is:global>
+  [data-studio-workspace-demo] :is(button, input, [tabindex]) {
+    scroll-margin-block-start: calc(var(--docs-sticky-header-height, 10rem) + var(--docs-sticky-navigation-height, 4rem) + 1rem);
+    scroll-margin-block-end: 3rem;
+  }
+</style>

@@ -223,9 +223,11 @@ export {
   formatLumenImageComparisonValue,
   type LumenImageComparisonChangeDetail,
   type LumenImageComparisonChangeEvent,
+  type LumenImageComparisonMode,
+  normalizeLumenImageComparisonMode,
   normalizeLumenImageComparisonRatio,
-  normalizeLumenImageComparisonValue
-} from './image-comparison.js'
+  normalizeLumenImageComparisonValue,
+  syncLumenImageComparisonMode } from './image-comparison.js'
 export {
   createLumenKanbanMoveDetail,
   getAdjacentKanbanColumn,
@@ -239,6 +241,27 @@ export {
   type LumenLocaleOption,
   normalizeLumenLocales
 } from './language.js'
+export {
+  bindLumenMediaViewport,
+  formatLumenMediaZoom,
+  isLumenMediaViewportAction,
+  lumenMediaViewportActions,
+  type LumenMediaViewportLabels,
+  lumenMediaViewportLabels,
+  syncLumenMediaViewport
+} from './media-viewport.js'
+export {
+  applyLumenMediaViewportAction,
+  type LumenMediaIdentity,
+  type LumenMediaViewportAction,
+  type LumenMediaViewportValue,
+  moveLumenMediaItem,
+  normalizeLumenMediaViewport,
+  panLumenMediaViewport,
+  resolveLumenMediaMaxZoom,
+  resolveLumenMediaSelection,
+  toggleLumenMediaSelection
+} from './media-workspace.js'
 export { createLumenMessageScrollerController, type LumenMessageScrollerController, type LumenMessageScrollerOptions, type LumenMessageScrollState } from './message-scroller.js'
 export { animateLumenPresence, type LumenMotionDuration, type LumenMotionPreset, type LumenMotionResult, type LumenPresenceOptions } from './motion.js'
 export * from './motion-workflows.js'

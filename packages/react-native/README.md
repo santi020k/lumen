@@ -727,3 +727,9 @@ See the [Rating](../../docs/native-parity/rating.md), [Table](../../docs/native-
 [Stepper](../../docs/native-parity/stepper.md), and [Timeline](../../docs/native-parity/timeline.md)
 contracts for controlled state, localization, native composition and verification. Timeline items
 accept `isLast` to omit the final connector; application content and ordering remain host-owned.
+
+## Studio media workspace
+
+Compose MediaViewport, MediaThumbnail, MediaFilmstrip and ImageComparison modes with the
+[Studio media workspace recipes](../../docs/studio-media-workspaces.md). Applications retain
+media loading, selection, adjustment algorithms, processing, export and persistence.

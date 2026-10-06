@@ -128,6 +128,7 @@ const fileFacades = new Set([
   'FormComponentsKt',
   'LumenThemeKt',
   'MediaComponentsKt',
+  'MediaWorkspaceComponentsKt',
   'OverlayComponentsKt',
   'PhoneComponentsKt',
   'PlatformComponentsKt',

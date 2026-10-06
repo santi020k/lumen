@@ -100,6 +100,14 @@
     "./components/data-table-saved-views": {
       "types": "./dist/data-table-saved-views.d.ts",
       "import": "./dist/data-table-saved-views.js"
+    },
+    "./components/media-viewport": {
+      "types": "./dist/media-viewport.d.ts",
+      "import": "./dist/media-viewport.js"
+    },
+    "./components/media-selection": {
+      "types": "./dist/media-selection.d.ts",
+      "import": "./dist/media-selection.js"
     }
   },
   "files": [

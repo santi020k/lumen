@@ -1,0 +1,9 @@
+---
+import { Image, MediaThumbnail, Stack } from '@santi020k/lumen-astro'
+---
+
+<Stack direction="horizontal" wrap>
+  <MediaThumbnail label="Lake landscape" mediaId="lake" selected order={1}><Image alt="" src="/comparison-after.svg" width={960} height={600} /></MediaThumbnail>
+  <MediaThumbnail label="Original landscape" mediaId="original"><Image alt="" src="/comparison-before.svg" width={960} height={600} /></MediaThumbnail>
+  <MediaThumbnail label="Unavailable photo" mediaId="unavailable" state="error" stateLabel="Preview unavailable"><Image alt="" src="/comparison-before.svg" width={960} height={600} /></MediaThumbnail>
+</Stack>

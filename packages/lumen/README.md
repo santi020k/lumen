@@ -318,3 +318,9 @@ Import `@santi020k/lumen/styles/motion.css` alongside the base stylesheet to opt
 disclosure height transitions and the CSS reduction scope. This small optional stylesheet works
 with Astro, React, and Elements and keeps those effects out of the default stylesheet. The presence
 helper's system and local reduced-motion checks work without this CSS import.
+
+## Studio media workspace
+
+Compose MediaViewport, MediaThumbnail, MediaFilmstrip and ImageComparison modes with the
+[Studio media workspace recipes](../../docs/studio-media-workspaces.md). Applications retain
+media loading, selection, adjustment algorithms, processing, export and persistence.
