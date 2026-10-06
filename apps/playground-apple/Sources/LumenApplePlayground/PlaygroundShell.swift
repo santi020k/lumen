@@ -255,6 +255,7 @@ struct PlaygroundRootView: View {
                 }
         }
         .navigationSplitViewStyle(.balanced)
+        .focusedSceneValue(\.playgroundDestination, $destination)
         #else
         TabView(selection: $destination) {
             ForEach(PlaygroundDestination.allCases) { item in

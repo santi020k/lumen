@@ -29,6 +29,7 @@
 		3720CAC58F48F17F4380823C /* PlaygroundHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19CC216C8A44A82EF86293B /* PlaygroundHomeView.swift */; };
 		3B161D679836623944870272 /* LumenWidgetPlayground.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 399D6F6E9C693782368B32EC /* LumenWidgetPlayground.appex */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		3F78C1BF0A31445B3A1BC333 /* PlaygroundExamplesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A61F6D18637F340320DB6A5D /* PlaygroundExamplesView.swift */; };
+		4C9A4892BC1BFDCB83E13957 /* PlaygroundMacCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = 589EA975D33D82FDDB65885C /* PlaygroundMacCommands.swift */; };
 		4CDA689407D8CD8FC7256454 /* CommandParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75CE65254E96890A73A14FCB /* CommandParityExample.swift */; };
 		4DABABE223E01D04ABDC04F0 /* BreadcrumbParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B5F44834DDC6CFA03FE0F30 /* BreadcrumbParityExample.swift */; };
 		538B3830DF6A8BDB14F42BB1 /* CarouselParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD50AF3AC7403C3CAC165F51 /* CarouselParityExample.swift */; };
@@ -53,6 +54,7 @@
 		9C0AADAE80963A40CF3F9D3D /* TreeGridParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3873A95F16EFE199CF8DE7CC /* TreeGridParityExample.swift */; };
 		A0279D955040FE673FB268D5 /* PlaygroundSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB065D953EB7775096F372DB /* PlaygroundSettingsView.swift */; };
 		A14CCFACB71C261EC821F449 /* StepperParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86F9CA8AF2936CE6EF5B7FEC /* StepperParityExample.swift */; };
+		A257CD4E73D4ECCC34DE5A9D /* PlaygroundMacCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = 589EA975D33D82FDDB65885C /* PlaygroundMacCommands.swift */; };
 		A274D3205D7F8E1D119AA734 /* CalendarParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C6713B0CADD67BC29E2E936 /* CalendarParityExample.swift */; };
 		A27610862D252E7C15973614 /* LumenUI in Frameworks */ = {isa = PBXBuildFile; productRef = 35416C9E579CDA363A493B7B /* LumenUI */; };
 		A3CA82E708CAD60F5C073498 /* TransferParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = C071B6F5EF2E4F4825BC28DC /* TransferParityExample.swift */; };
@@ -121,7 +123,6 @@
 
 /* Begin PBXFileReference section */
 		0BB0D085D401FD296278ADC6 /* WorkspacePerformanceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspacePerformanceTests.swift; sourceTree = "<group>"; };
-		1334BAFC4ABFABFA53C35C55 /* lumen-v4-finish */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "lumen-v4-finish"; path = ../..; sourceTree = SOURCE_ROOT; };
 		1346B8612A775BBDCF663C53 /* MentionsParityExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MentionsParityExample.swift; sourceTree = "<group>"; };
 		1D1D222933113F56FAA76A80 /* QRCodeParityExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRCodeParityExample.swift; sourceTree = "<group>"; };
 		1DDD459A59B4A5E78B40659F /* CatalogParityInteractionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogParityInteractionTests.swift; sourceTree = "<group>"; };
@@ -138,7 +139,9 @@
 		48D0AE883A9D2E8CA87E712A /* PlaygroundAdvancedInputsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaygroundAdvancedInputsView.swift; sourceTree = "<group>"; };
 		498DE581FB012C81BFFD8BE6 /* PlaygroundParityExamplesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaygroundParityExamplesView.swift; sourceTree = "<group>"; };
 		4C6713B0CADD67BC29E2E936 /* CalendarParityExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarParityExample.swift; sourceTree = "<group>"; };
+		5128309A5EE62A8C5B16E7CD /* lumen */ = {isa = PBXFileReference; lastKnownFileType = folder; name = lumen; path = ../..; sourceTree = SOURCE_ROOT; };
 		581FE601DC8DCCAACDE42246 /* PlaygroundShell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaygroundShell.swift; sourceTree = "<group>"; };
+		589EA975D33D82FDDB65885C /* PlaygroundMacCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaygroundMacCommands.swift; sourceTree = "<group>"; };
 		5DB685E8C1D6ED87B7329F1E /* LumenWatchPlaygroundApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LumenWatchPlaygroundApp.swift; sourceTree = "<group>"; };
 		63BB1942FA8B6D286F1A9EBE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		665A7EE097F09530030DCF0D /* PlaygroundCatalog.generated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaygroundCatalog.generated.swift; sourceTree = "<group>"; };
@@ -269,7 +272,7 @@
 		DE258D8D5B5E09B006098DED /* Packages */ = {
 			isa = PBXGroup;
 			children = (
-				1334BAFC4ABFABFA53C35C55 /* lumen-v4-finish */,
+				5128309A5EE62A8C5B16E7CD /* lumen */,
 			);
 			name = Packages;
 			sourceTree = "<group>";
@@ -293,6 +296,7 @@
 				665A7EE097F09530030DCF0D /* PlaygroundCatalog.generated.swift */,
 				A61F6D18637F340320DB6A5D /* PlaygroundExamplesView.swift */,
 				B19CC216C8A44A82EF86293B /* PlaygroundHomeView.swift */,
+				589EA975D33D82FDDB65885C /* PlaygroundMacCommands.swift */,
 				498DE581FB012C81BFFD8BE6 /* PlaygroundParityExamplesView.swift */,
 				AB065D953EB7775096F372DB /* PlaygroundSettingsView.swift */,
 				581FE601DC8DCCAACDE42246 /* PlaygroundShell.swift */,
@@ -518,6 +522,7 @@
 				EA8330549EDCCDB72343C25B /* PlaygroundCatalog.generated.swift in Sources */,
 				59CD3BCA61AEB946FF7A2882 /* PlaygroundExamplesView.swift in Sources */,
 				3720CAC58F48F17F4380823C /* PlaygroundHomeView.swift in Sources */,
+				A257CD4E73D4ECCC34DE5A9D /* PlaygroundMacCommands.swift in Sources */,
 				3223BAB34D21B5B139504B85 /* PlaygroundParityExamplesView.swift in Sources */,
 				A0279D955040FE673FB268D5 /* PlaygroundSettingsView.swift in Sources */,
 				014EFFAD9348FEA0E0277DA9 /* PlaygroundShell.swift in Sources */,
@@ -558,6 +563,7 @@
 				5A3B1829F40443C5D5FA6EC2 /* PlaygroundCatalog.generated.swift in Sources */,
 				3F78C1BF0A31445B3A1BC333 /* PlaygroundExamplesView.swift in Sources */,
 				C6CEF83F16EE8556EC3DBD9E /* PlaygroundHomeView.swift in Sources */,
+				4C9A4892BC1BFDCB83E13957 /* PlaygroundMacCommands.swift in Sources */,
 				8B9E817F2C9ACF09C187BC6E /* PlaygroundParityExamplesView.swift in Sources */,
 				E04C7AB2BD18952D8710CCB0 /* PlaygroundSettingsView.swift in Sources */,
 				F8E4ABC1A336A6607D841E29 /* PlaygroundShell.swift in Sources */,

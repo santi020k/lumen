@@ -6,7 +6,7 @@ import SwiftUI
 @main
 struct LumenApplePlaygroundApp: App {
     var body: some Scene {
-        WindowGroup {
+        WindowGroup("Lumen Playground", id: "playground") {
             PlaygroundRootView()
                 #if os(macOS)
                 .frame(minWidth: 760, minHeight: 620)
@@ -16,6 +16,10 @@ struct LumenApplePlaygroundApp: App {
         }
         #if os(macOS)
         .defaultSize(width: 1240, height: 860)
+        .commands {
+            SidebarCommands()
+            PlaygroundMacCommands()
+        }
         #endif
     }
 }

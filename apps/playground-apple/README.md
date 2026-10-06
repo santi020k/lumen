@@ -49,6 +49,25 @@ window toolbar. The home composition stacks in narrower windows; the iPhone and 
 and deterministic `--component` captures keep their existing layout. The preview is local and
 in-memory: Create confirms the entered project name without creating a persisted project.
 
+For a local Mac app with the Lumen icon, application name, About metadata, and native menus:
+
+```bash
+pnpm playground:mac:app
+open "apps/playground-apple/.build/mac-app/Build/Products/Debug/Lumen Playground.app"
+```
+
+This command uses the existing Xcode target and icon catalog, then signs the local Debug bundle
+ad hoc without requiring a development team. The local bundle identifier is separate from the
+App Store app, so development builds do not replace it. Set `LUMEN_MAC_BUILD_PATH` to use a different
+build directory. A raw `swift run` executable remains useful for development but does not include
+application-bundle metadata or the Dock icon.
+
+The Navigate menu supports **Command-1** through **Command-4** for Home, Examples, Components, and
+Settings. **Command-comma** opens Settings in the active playground window. The View menu provides
+the native sidebar toggle, and Help links to the playground guide and component documentation.
+Navigation commands are disabled in deterministic component captures and when no gallery window
+is active. Each window keeps its own destination and theme controls.
+
 For the distributable macOS application, open `LumenApplePlayground.xcodeproj`, select the shared
 `LumenMacPlayground` scheme, and run on **My Mac**. The target reuses the same gallery sources while
 adding the App Sandbox, hardened runtime, application metadata, and complete Mac icon set required
