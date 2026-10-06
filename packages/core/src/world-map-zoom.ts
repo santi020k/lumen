@@ -1,0 +1,70 @@
+/** Shared DOM enhancement for the web map's native zoom controls and scrollable viewport. */
+export interface LumenWorldMapZoomLabels {
+  level: string
+  reset: string
+  viewport: string
+  zoomIn: string
+  zoomOut: string
+}
+
+export const lumenWorldMapZoomLabels: Readonly<LumenWorldMapZoomLabels> = Object.freeze({
+  level: 'Zoom level', reset: 'Reset zoom', viewport: 'Map viewport', zoomIn: 'Zoom in', zoomOut: 'Zoom out'
+})
+
+export const normalizeLumenWorldMapZoom = (value: number): number => Number.isFinite(value) ?
+  Math.min(4, Math.max(1, value)) :
+  1
+
+export const initLumenWorldMapZoom = (root: HTMLElement, signal: AbortSignal): void => {
+  const viewport = root.querySelector<HTMLElement>('[data-ui-world-map-viewport]')
+  const controls = [...root.querySelectorAll<HTMLButtonElement>('[data-ui-world-map-zoom]')]
+  const status = root.querySelector<HTMLOutputElement>('[data-ui-world-map-zoom-status]')
+
+  if (!viewport) return
+
+  viewport.style.setProperty('--ui-world-map-zoom', '1')
+
+  viewport.scrollLeft = 0
+
+  viewport.scrollTop = 0
+
+  if (controls.length === 0) return
+
+  let zoom = 1
+
+  const update = (value: number): void => {
+    const next = normalizeLumenWorldMapZoom(value)
+    const ratio = next / zoom
+    const x = (viewport.scrollLeft + viewport.clientWidth / 2) * ratio - viewport.clientWidth / 2
+    const y = (viewport.scrollTop + viewport.clientHeight / 2) * ratio - viewport.clientHeight / 2
+
+    zoom = next
+
+    viewport.style.setProperty('--ui-world-map-zoom', String(zoom))
+
+    viewport.scrollLeft = Math.max(0, x)
+
+    viewport.scrollTop = Math.max(0, y)
+
+    if (status) status.value = `${Math.round(zoom * 100)}%`
+
+    for (const button of controls) {
+      const action = button.dataset.uiWorldMapZoom
+
+      button.disabled = action === 'in' ? zoom === 4 : zoom === 1
+
+      button.classList.toggle('ui-button--disabled', button.disabled)
+    }
+  }
+
+  for (const button of controls) {
+    button.addEventListener('click', () => {
+      const action = button.dataset.uiWorldMapZoom
+      const next = action === 'reset' ? 1 : zoom + (action === 'in' ? 0.5 : -0.5)
+
+      update(next)
+    }, { signal })
+  }
+
+  update(1)
+}

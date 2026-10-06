@@ -104,5 +104,60 @@ test('multiple map instances isolate patterns, localized labels and selections',
   expect(new Set(ids).size).toBe(ids.length)
   const path = maps.nth(1).locator('[data-ui-world-map-country="CO"]')
 
-  await expect(path).toHaveCSS('fill', 'rgb(23, 130, 104)')
+  const accent = await path.evaluate(element => {
+    const probe = document.createElement('span')
+    probe.style.color = 'hsl(var(--accent))'
+    element.closest('figure')?.append(probe)
+    const color = getComputedStyle(probe).color
+    probe.remove()
+    return color
+  })
+
+  await expect(path).toHaveCSS('fill', accent)
+})
+
+
+test('zoom preserves the viewport center, respects limits and resets without affecting selection', async ({ page }) => {
+  await page.goto('/docs/components/world-map')
+  const map = page.locator('[data-ui-world-map]').first()
+  const viewport = map.locator('[data-ui-world-map-viewport]')
+  const plot = map.locator('svg')
+  const zoomIn = map.getByRole('button', { name: 'Zoom in', exact: true })
+  const zoomOut = map.getByRole('button', { name: 'Zoom out', exact: true })
+  const reset = map.getByRole('button', { name: 'Reset zoom', exact: true })
+
+  await expect(zoomIn).toBeEnabled()
+  await expect(zoomOut).toBeDisabled()
+  const initial = await plot.boundingBox()
+  if (!initial) throw new Error('Expected map bounds')
+  await zoomIn.focus()
+  await page.keyboard.press('Enter')
+  await expect(map.locator('output')).toHaveText('150%')
+  const enlarged = await plot.boundingBox()
+  expect(enlarged?.width).toBeCloseTo(initial.width * 1.5, 1)
+  const offset = await viewport.evaluate(element => ({ x: element.scrollLeft, width: element.clientWidth }))
+  expect(Math.abs(offset.x - offset.width / 4)).toBeLessThanOrEqual(1)
+  await map.getByRole('combobox').selectOption('JP')
+  await expect(map.locator('output')).toHaveText('150%')
+  for (let index = 0; index < 5; index++) await zoomIn.click()
+  await expect(zoomIn).toBeDisabled()
+  await expect(map.locator('output')).toHaveText('400%')
+  await viewport.focus()
+  await page.keyboard.press('ArrowRight')
+  await reset.click()
+  await expect(map.locator('output')).toHaveText('100%')
+  await expect(zoomOut).toBeDisabled()
+  await expect(map.getByRole('combobox')).toHaveValue('JP')
+  const after = await plot.boundingBox()
+  expect(after?.width).toBeCloseTo(initial.width, 1)
+})
+
+test('each usage has an independent code panel and Lumen token styling', async ({ page }) => {
+  await page.goto('/docs/components/world-map')
+  const dotted = page.locator('[data-framework-example="code-world-map"]')
+  const solid = page.locator('[data-framework-example="code-world-map-solid"]')
+  await expect(dotted.locator('[data-ui-world-map]')).toHaveCount(1)
+  await expect(solid.locator('[data-ui-world-map]')).toHaveCount(1)
+  await expect(solid).toContainText('hsl(var(--accent))')
+  await expect(solid).toContainText('variant="solid"')
 })

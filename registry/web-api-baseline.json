@@ -183,7 +183,7 @@
     "VisuallyHidden": "ea4ee41c8142ce7b450516f43b6380cf84d3d915186564d6149c8a6ffd40b291",
     "WaterfallChart": "d36a92e0820a913f426749c20bffcc9e2856f1b47f6be4ca2691e6edc562f0c2",
     "Watermark": "d992ac14611a040fb4a423d60078cfb262b69e394774258f714a3ad8de421b1e",
-    "WorldMap": "e8fbca27a52f3274410a6258e80aa8e1b1ea58ad66d928f70661d0e89a548aca"
+    "WorldMap": "5256d9868e3444058df1c5d9dd416c5038ecddce61adfae8316a28ae3031e4c0"
   },
   "schemaVersion": 2,
   "packages": {
@@ -698,6 +698,10 @@
         "./world-map-data": {
           "import": "./dist/world-map-data.generated.js",
           "types": "./dist/world-map-data.generated.d.ts"
+        },
+        "./world-map-zoom": {
+          "import": "./dist/world-map-zoom.js",
+          "types": "./dist/world-map-zoom.d.ts"
         }
       },
       "packageJson": "packages/core/package.json",

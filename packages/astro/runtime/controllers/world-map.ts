@@ -1,4 +1,5 @@
 import type { LumenWorldMapSelectDetail } from '@santi020k/lumen-core'
+import { initLumenWorldMapZoom } from '@santi020k/lumen-core/world-map-zoom'
 
 interface WorldMapBinding {
   abort: AbortController
@@ -55,6 +56,8 @@ export const initWorldMapControllers = (scope: ParentNode): void => {
 
     const abort = new AbortController()
     const { signal } = abort
+
+    initLumenWorldMapZoom(root, signal)
 
     boundWorldMaps.set(root, { abort, group, select })
 

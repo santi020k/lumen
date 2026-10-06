@@ -145,3 +145,26 @@ test('normalizes selected country codes and clears stale selection after geometr
   expect(container.querySelector('.ui-world-map__country--selected')).toBeNull()
   expect(container.querySelector('select')?.value).toBe('')
 })
+
+test('enhances zoom controls and keeps zoom through country selection', () => {
+  act(() => {
+    root.render(createElement(WorldMap, { countries, label: 'Map' }))
+  })
+  const zoomIn = container.querySelector<HTMLButtonElement>('[data-ui-world-map-zoom="in"]')
+
+  if (!zoomIn) throw new Error('Expected zoom control')
+
+  act(() => {
+    zoomIn.click()
+  })
+  expect(container.querySelector('output')?.value).toBe('150%')
+  act(() => {
+    path('CO').dispatchEvent(new MouseEvent('click', { bubbles: true }))
+  })
+  expect(container.querySelector('output')?.value).toBe('150%')
+  act(() => {
+    root.render(createElement(WorldMap, { countries, label: 'Map', zoomable: false }))
+  })
+  expect(container.querySelector('[data-ui-world-map-zoom]')).toBeNull()
+  expect(container.querySelector<HTMLElement>('[data-ui-world-map-viewport]')?.style.getPropertyValue('--ui-world-map-zoom')).toBe('1')
+})

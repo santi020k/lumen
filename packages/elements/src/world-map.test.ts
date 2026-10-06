@@ -111,3 +111,14 @@ test('noninteractive solid maps retain highlights and suppress country selection
   expect(map.selectedCountry).toBe('')
   expect(map.querySelector('.ui-world-map__highlights')?.textContent).toBe('Colombia')
 })
+
+test('zoom controls work independently of country selection and can be disabled', () => {
+  const map = fixture()
+
+  map.querySelector<HTMLButtonElement>('[data-ui-world-map-zoom="in"]')?.click()
+  expect(map.querySelector('output')?.value).toBe('150%')
+  map.selectedCountry = 'JP'
+  expect(map.querySelector('output')?.value).toBe('150%')
+  map.setAttribute('zoomable', 'false')
+  expect(map.querySelector('[data-ui-world-map-zoom]')).toBeNull()
+})

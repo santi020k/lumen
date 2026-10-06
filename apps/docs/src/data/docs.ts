@@ -1159,7 +1159,8 @@ const runtimeEventsByComponent: Partial<
   Heatmap: runtimeEvents.filter(event => event.name === 'ui:chart-datum-activate'),
   RangeChart: runtimeEvents.filter(event => event.name === 'ui:chart-datum-activate'),
   AttachmentPreview: runtimeEvents.filter(event => event.name === 'ui:attachment-preview-change'),
-  WorldMap: [{ name: 'ui:world-map-select', target: 'WorldMap root', detail: '{ countryId: string, highlighted: boolean, label: string }', when: 'A different country is selected by pointer or native chooser.' }],
+  WorldMap: [
+    { name: 'ui:world-map-select', target: 'WorldMap root', detail: '{ countryId: string, highlighted: boolean, label: string }', when: 'A different country is selected by pointer or native chooser.' }],
   ImageComparison: runtimeEvents.filter(event => event.name === 'ui:image-comparison-change'),
   CopyButton: runtimeEvents.filter(event => event.name.startsWith('ui:copy-')),
   DataTable: runtimeEvents.filter(
@@ -1799,6 +1800,8 @@ const apiReferenceByComponent = {
     )
   ],
   WorldMap: [
+    apiRow('zoomable', 'boolean', 'true', 'Shows zoom in, zoom out, and reset controls. Zoom ranges from 100% to 400% in 50% steps; scroll the viewport to explore.'),
+    apiRow('zoomLabels', 'Partial<LumenWorldMapZoomLabels>', 'English labels', 'Localizes zoomIn, zoomOut, reset, level and viewport. Elements accepts zoom-labels JSON.'),
     apiRow('countries', 'readonly LumenWorldMapCountryGeometry[]', 'required', 'Import lumenWorldMapCountries explicitly from @santi020k/lumen-core/world-map-data. Custom geometry uses the fixed 1000 × 400 projection.'),
     apiRow('label', 'string', 'required', 'Provides the accessible name for the map image.'),
     apiRow('highlightedCountries', 'readonly string[]', '[]', 'Country codes to highlight; unknown codes and duplicates are dropped. Elements also accepts highlighted-countries as JSON.'),

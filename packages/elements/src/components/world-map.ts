@@ -9,12 +9,13 @@ import {
   projectLumenWorldMapCoordinate,
   resolveLumenWorldMapCountryLabel
 } from '@santi020k/lumen-core/world-map'
+import { initLumenWorldMapZoom, lumenWorldMapZoomLabels } from '@santi020k/lumen-core/world-map-zoom'
 
 import { defineLumenElement, type LumenCustomElementRegistry, LumenElement, type LumenElementConfig } from '../element-base.js'
 
 export const lumenWorldMapElementConfig = {
   baseClassName: 'ui-world-map',
-  observedAttributes: ['animated', 'countries', 'highlighted-countries', 'interactive', 'label', 'labels', 'list-label', 'markers', 'selected-country', 'variant'],
+  observedAttributes: ['animated', 'countries', 'highlighted-countries', 'interactive', 'label', 'labels', 'list-label', 'markers', 'selected-country', 'variant', 'zoomable', 'zoom-labels'],
   tagName: 'lumen-world-map'
 } as const satisfies LumenElementConfig
 
@@ -199,6 +200,18 @@ export class LumenWorldMapElement extends LumenElement {
 
     frame.className = 'ui-world-map__frame'
 
+    const viewport = this.ownerDocument.createElement('div')
+
+    viewport.className = 'ui-world-map__viewport'
+
+    viewport.dataset.uiWorldMapViewport = ''
+
+    viewport.setAttribute('role', 'region')
+
+    viewport.ariaLabel = `${this.zoomText.viewport}: ${this.getAttribute('label') || 'World map'}`
+
+    if (this.getAttribute('zoomable') !== 'false') viewport.tabIndex = 0
+
     if (this.dataset.variant === 'dotted') appendPatterns(plot, this.instanceId)
 
     for (const country of this.countries) group.append(this.countryPath(country))
@@ -210,13 +223,61 @@ export class LumenWorldMapElement extends LumenElement {
 
     inspection.className = 'ui-world-map__inspection'
 
-    frame.append(plot, inspection, markerList)
+    viewport.append(plot)
+
+    frame.append(viewport, inspection, markerList)
 
     this.replaceChildren(frame, this.highlightList())
 
     this.bindPointer(group, inspection)
 
     if (this.dataset.interactive === 'true') this.appendChooser()
+
+    this.appendZoomControls()
+
+    initLumenWorldMapZoom(this, this.abortController.signal)
+  }
+
+  private get zoomText() {
+    return { ...lumenWorldMapZoomLabels, ...parseLabels(readJson(this.getAttribute('zoom-labels'))) }
+  }
+
+  private appendZoomControls(): void {
+    if (this.getAttribute('zoomable') === 'false') return
+
+    const controls = this.ownerDocument.createElement('div')
+    const status = this.ownerDocument.createElement('output')
+    const labels = this.zoomText
+
+    controls.className = 'ui-world-map__zoom-controls'
+
+    status.dataset.uiWorldMapZoomStatus = ''
+
+    status.ariaLabel = labels.level
+
+    status.setAttribute('aria-live', 'polite')
+
+    status.value = '100%'
+
+    for (const [action, text, label] of [['out', '−', labels.zoomOut], ['in', '+', labels.zoomIn], ['reset', labels.reset, labels.reset]]) {
+      const button = this.ownerDocument.createElement('button')
+
+      button.type = 'button'
+
+      button.className = 'ui-button ui-button--outline ui-world-map__zoom-button'
+
+      button.dataset.uiWorldMapZoom = action
+
+      button.textContent = text ?? ''
+
+      button.ariaLabel = label ?? ''
+
+      controls.append(button)
+
+      if (action === 'out') controls.append(status)
+    }
+
+    this.prepend(controls)
   }
 
   private countryPath(country: LumenWorldMapCountryGeometry): SVGPathElement {

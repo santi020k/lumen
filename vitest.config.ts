@@ -11,6 +11,7 @@ const alias = {
   '@santi020k/lumen-core/virtual-list': fileURLToPath(new URL('./packages/core/src/virtual-list.ts', import.meta.url)),
   '@santi020k/lumen-core/virtual-window': fileURLToPath(new URL('./packages/core/src/virtual-window.ts', import.meta.url)),
   '@santi020k/lumen-core/icon-data': fileURLToPath(new URL('./packages/core/src/icon-data.generated.ts', import.meta.url)),
+  '@santi020k/lumen-core/world-map-zoom': fileURLToPath(new URL('./packages/core/src/world-map-zoom.ts', import.meta.url)),
   '@santi020k/lumen-core/world-map-data': fileURLToPath(new URL('./packages/core/src/world-map-data.generated.ts', import.meta.url)),
   '@santi020k/lumen-core/world-map': fileURLToPath(new URL('./packages/core/src/world-map.ts', import.meta.url)),
   '@santi020k/lumen': fileURLToPath(new URL('./packages/lumen/src/index.ts', import.meta.url)),

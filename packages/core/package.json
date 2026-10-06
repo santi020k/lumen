@@ -87,6 +87,10 @@
     "./world-map-data": {
       "types": "./dist/world-map-data.generated.d.ts",
       "import": "./dist/world-map-data.generated.js"
+    },
+    "./world-map-zoom": {
+      "types": "./dist/world-map-zoom.d.ts",
+      "import": "./dist/world-map-zoom.js"
     }
   },
   "files": [
