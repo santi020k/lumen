@@ -1,9 +1,8 @@
-import { readFile } from 'node:fs/promises'
-import { gzipSync } from 'node:zlib'
+import { checkBundleSize } from './lib/bundle-size.mjs'
 
-// V4 budgets cover the measured combined surface; see docs/lumen-4-readiness.md.
-// New chart helper entries have independent limits to keep extraction measurable.
-const allBudgets = [
+// Catalog sizes are reported as the component surface grows. Focused modules and
+// selective consumer bundles retain enforced limits; see CONTRIBUTING.md.
+const measurements = [
   { file: 'packages/core/dist/motion.js', gzip: 1_500, packageName: '@santi020k/lumen-core', raw: 4_500 },
   { file: 'packages/lumen/styles/motion.css', gzip: 650, packageName: '@santi020k/lumen', raw: 2_500 },
   { file: 'packages/elements/dist/consumer-behaviors.js', gzip: 1_000, packageName: '@santi020k/lumen-elements', raw: 3_000 },
@@ -26,68 +25,38 @@ const allBudgets = [
   { file: 'packages/react/dist/change-summary.js', gzip: 550, packageName: '@santi020k/lumen-react', raw: 1_500 },
   { file: 'packages/elements/dist/chart-html.js', gzip: 4_300, packageName: '@santi020k/lumen-elements', raw: 20_000 },
   { file: 'packages/astro/runtime/controllers/data-table.ts', gzip: 1_450, packageName: '@santi020k/lumen-astro', raw: 4_500 },
-  { file: 'packages/astro/runtime/UIPrimitives.astro', gzip: 33_500, packageName: '@santi020k/lumen-astro', raw: 167_000 },
+  { file: 'packages/astro/runtime/UIPrimitives.astro', kind: 'catalog', packageName: '@santi020k/lumen-astro' },
   { file: 'packages/astro/runtime/controllers/motion.ts', gzip: 1_500, packageName: '@santi020k/lumen-astro', raw: 5_000 },
   { file: 'packages/astro/runtime/controllers/dialogs.ts', gzip: 2_000, packageName: '@santi020k/lumen-astro', raw: 6_000 },
   { file: 'packages/astro/runtime/controllers/document-navigation.ts', gzip: 1_500, packageName: '@santi020k/lumen-astro', raw: 5_000 },
   { file: 'packages/astro/runtime/controllers/file-upload.ts', gzip: 1_100, packageName: '@santi020k/lumen-astro', raw: 3_000 },
   { file: 'packages/astro/runtime/controllers/optional-media.ts', gzip: 500, packageName: '@santi020k/lumen-astro', raw: 1_000 },
   { file: 'packages/astro/runtime/controllers/image-comparison.ts', gzip: 900, packageName: '@santi020k/lumen-astro', raw: 2_000 },
-  // Combined v4 features measure 213,671 bytes raw / 34,856 gzip; allow about 3% headroom.
-  { file: 'packages/lumen/styles.css', gzip: 36_000, packageName: '@santi020k/lumen', raw: 220_000 },
-  { file: 'packages/react/dist/components.js', gzip: 37_000, packageName: '@santi020k/lumen-react', raw: 183_000 },
+  { file: 'packages/lumen/styles.css', kind: 'catalog', packageName: '@santi020k/lumen' },
+  { file: 'packages/react/dist/components.js', kind: 'catalog', packageName: '@santi020k/lumen-react' },
   {
     file: 'packages/react/dist/hooks.js',
-    gzip: 20_000,
+    kind: 'catalog',
     packageName: '@santi020k/lumen-react',
-    raw: 100_000,
     relatedFiles: ['packages/react/dist/toast-context.js', 'packages/react/dist/toast-provider.js', 'packages/react/dist/select-form.js']
   },
-  { file: 'packages/elements/dist/define.js', gzip: 47_000, packageName: '@santi020k/lumen-elements', raw: 261_000 }
+  { file: 'packages/elements/dist/define.js', kind: 'catalog', packageName: '@santi020k/lumen-elements' },
+  {
+    label: 'React ImageComparison consumer',
+    contents: "export { ImageComparison } from '@santi020k/lumen-react/components/image-comparison'",
+    resolveDirectory: 'packages/react',
+    packageName: '@santi020k/lumen-react',
+    raw: 5_500,
+    gzip: 2_500
+  },
+  {
+    label: 'Elements VirtualList consumer',
+    contents: "import { defineLumenVirtualList } from '@santi020k/lumen-elements/components/virtual-list'; defineLumenVirtualList()",
+    resolveDirectory: 'packages/elements',
+    packageName: '@santi020k/lumen-elements',
+    raw: 9_000,
+    gzip: 3_500
+  }
 ]
 
-const requestedPackagesSource = process.env.LUMEN_RELEASE_PACKAGES
-const requestedPackages = requestedPackagesSource ? JSON.parse(requestedPackagesSource) : undefined
-
-if (requestedPackages && (!Array.isArray(requestedPackages) || requestedPackages.some(name => typeof name !== 'string'))) {
-  throw new TypeError('LUMEN_RELEASE_PACKAGES must be a JSON array of package names')
-}
-
-const budgetPackages = new Set(requestedPackages ?? allBudgets.map(budget => budget.packageName))
-
-if (budgetPackages.has('@santi020k/lumen-core')) {
-  for (const budget of allBudgets) budgetPackages.add(budget.packageName)
-}
-
-const budgets = allBudgets.filter(budget => budgetPackages.has(budget.packageName))
-const formatBytes = (bytes) => `${(bytes / 1024).toFixed(1)} KiB`
-const failures = []
-
-for (const budget of budgets) {
-  // Keep extracted modules within their original budget instead of dropping their bytes.
-  const files = [budget.file, ...(budget.relatedFiles ?? [])]
-
-  const source = Buffer.concat(await Promise.all(files.map(file => (
-    readFile(new URL(`../${file}`, import.meta.url))
-  ))))
-
-  const raw = source.byteLength
-  const gzip = gzipSync(source, { level: 9 }).byteLength
-  const label = files.join(' + ')
-
-  process.stdout.write(
-    `${label}: ${formatBytes(raw)} raw, ${formatBytes(gzip)} gzip\n`
-  )
-
-  if (raw > budget.raw) {
-    failures.push(`${label} raw size ${formatBytes(raw)} exceeds ${formatBytes(budget.raw)}`)
-  }
-
-  if (gzip > budget.gzip) {
-    failures.push(`${label} gzip size ${formatBytes(gzip)} exceeds ${formatBytes(budget.gzip)}`)
-  }
-}
-
-if (failures.length) {
-  throw new Error(`Bundle size budget exceeded:\n${failures.join('\n')}`)
-}
+await checkBundleSize(measurements)

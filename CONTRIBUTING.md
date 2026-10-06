@@ -109,6 +109,25 @@ the normal 24-hour hold, then remove it once that hold expires. The
 version remains in the lockfile. Keep the age policy for other dependencies.
 
 
+## Bundle size policy
+
+`pnpm run check:bundle-size` reports raw and level-9 gzip bytes after a build. The complete
+stylesheet, Astro runtime source, React component and hook catalogs, and Elements definition
+catalog are informational measurements. They may grow as components are added and do not block
+validation. They measure shipped entries, not the bytes every application downloads.
+
+Focused modules and optional controllers retain their enforced raw/gzip budgets. Extracted related
+files remain included in their owning measurement. Two minified browser consumer fixtures also
+have enforced budgets: selective React ImageComparison (5,500 raw / 2,500 gzip bytes) and granular
+Elements VirtualList registration (9,000 raw / 3,500 gzip bytes). React is external in these
+fixtures; CSS and application framework code are excluded. These limits allow headroom above the
+existing fixtures while catching accidental inclusion of unrelated catalog code.
+
+New components can expand the catalog without raising a global ceiling. Review deliberate growth
+in focused modules or consumer fixtures and update their budgets with measured evidence when
+needed. Missing measured artifacts and failed consumer builds still fail the check. Release-scoped
+checks honor `LUMEN_RELEASE_PACKAGES`; core changes measure all adapters.
+
 ## Release Notes
 
 Add a changeset when a package consumer can observe the change: new components, changed props,
