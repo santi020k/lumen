@@ -8,7 +8,24 @@
 
 <main class="lumen-template lumen-template__form-shell">
   <lumen-card class="lumen-template__form">
-    <lumen-stepper current-step="1"></lumen-stepper>
+    <lumen-stepper role="list" aria-label="Setup steps">
+      <div class="ui-stepper__step" data-state="complete" role="listitem">
+        <span class="ui-stepper__marker">1</span>
+        <span class="ui-stepper__content"><span class="ui-stepper__title">Account</span></span>
+      </div>
+      <div aria-current="step" class="ui-stepper__step" data-state="current" role="listitem">
+        <span class="ui-stepper__marker">2</span>
+        <span class="ui-stepper__content"><span class="ui-stepper__title">Workspace</span></span>
+      </div>
+      <div class="ui-stepper__step" data-state="upcoming" role="listitem">
+        <span class="ui-stepper__marker">3</span>
+        <span class="ui-stepper__content"><span class="ui-stepper__title">Preferences</span></span>
+      </div>
+      <div class="ui-stepper__step" data-state="upcoming" role="listitem">
+        <span class="ui-stepper__marker">4</span>
+        <span class="ui-stepper__content"><span class="ui-stepper__title">Invite</span></span>
+      </div>
+    </lumen-stepper>
     <header><p class="lumen-template__muted">Step 2 of 4</p><h1>Create your workspace</h1><p class="lumen-template__muted">We’ll prepare the right starting point.</p></header>
     <form class="lumen-template__form">
       <lumen-field class="lumen-template__field"><label for="workspace-name">Workspace name</label><lumen-input id="workspace-name" name="workspace" placeholder="Northstar Labs" required></lumen-input></lumen-field>

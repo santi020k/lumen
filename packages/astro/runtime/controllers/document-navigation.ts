@@ -7,19 +7,57 @@ const decodeFragment = (fragment: string): string => {
   }
 }
 
+interface AnchorDispatcher {
+  callbacks: WeakMap<HTMLElement, () => void>
+  frame: number
+}
+
+const anchorDispatchers = new WeakMap<Document, AnchorDispatcher>()
+
+const getAnchorDispatcher = (ownerDocument: Document): AnchorDispatcher => {
+  const existing = anchorDispatchers.get(ownerDocument)
+
+  if (existing) return existing
+
+  const dispatcher: AnchorDispatcher = { callbacks: new WeakMap(), frame: 0 }
+
+  const runUpdates = (): void => {
+    dispatcher.frame = 0
+
+    for (const root of ownerDocument.querySelectorAll<HTMLElement>('[data-ui-anchor]')) {
+      dispatcher.callbacks.get(root)?.()
+    }
+  }
+
+  const requestUpdates = (): void => {
+    if (dispatcher.frame) return
+
+    dispatcher.frame = requestAnimationFrame(runUpdates)
+  }
+
+  ownerDocument.defaultView?.addEventListener('resize', requestUpdates, { passive: true })
+
+  ownerDocument.defaultView?.addEventListener('scroll', requestUpdates, { passive: true })
+
+  anchorDispatchers.set(ownerDocument, dispatcher)
+
+  return dispatcher
+}
+
 const initAnchors = (scope: ParentNode): void => {
   for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-anchor]')) {
     if (root.dataset.uiBound === 'true') continue
 
     root.dataset.uiBound = 'true'
 
+    const ownerDocument = root.ownerDocument
     const links = [...root.querySelectorAll<HTMLAnchorElement>('a[href^="#"]')]
     const targets: { link: HTMLAnchorElement, target: HTMLElement }[] = []
 
     for (const link of links) {
       const fragment = link.getAttribute('href')?.slice(1) ?? ''
       const id = decodeFragment(fragment)
-      const target = id ? document.getElementById(id) : null
+      const target = id ? ownerDocument.getElementById(id) : null
 
       if (target) {
         targets.push({ link, target })
@@ -43,7 +81,7 @@ const initAnchors = (scope: ParentNode): void => {
     }
 
     const update = (): void => {
-      const scrollingElement = document.scrollingElement ?? document.documentElement
+      const scrollingElement = ownerDocument.scrollingElement ?? ownerDocument.documentElement
       const maximum = scrollingElement.scrollHeight - scrollingElement.clientHeight
       const atEnd = maximum > 0 && scrollingElement.scrollTop >= maximum - 1
       const offset = Number(root.dataset.uiAnchorOffset) || 0
@@ -62,27 +100,13 @@ const initAnchors = (scope: ParentNode): void => {
       if (active) setActive(active)
     }
 
-    let frame = 0
-
-    const requestUpdate = (): void => {
-      if (frame) return
-
-      frame = requestAnimationFrame(() => {
-        frame = 0
-
-        update()
-      })
-    }
-
     for (const { link } of targets) {
       link.addEventListener('click', () => {
         setActive(link)
       })
     }
 
-    window.addEventListener('resize', requestUpdate, { passive: true })
-
-    window.addEventListener('scroll', requestUpdate, { passive: true })
+    getAnchorDispatcher(ownerDocument).callbacks.set(root, update)
 
     update()
   }

@@ -633,6 +633,10 @@ submit actions target a form inside the body with the native `form` attribute.
 Mount `UIPrimitives` once and open the dialog with a button carrying
 `data-ui-dialog-trigger="record-dialog"`. Set `selectedFilesLabel="{count} files selected"`
 on `FileUpload` to supply localized multiple-file feedback; the single-file label is its filename.
+A trigger ignores its own click when that click arrives canceled (`event.preventDefault()`) or
+when the trigger matches `:disabled` or `[aria-disabled="true"]`, matching close control behavior.
+Register cancellation listeners before the runtime binds the trigger. Activating a trigger for an
+already open dialog preserves its mode and original focus-return target.
 
 ### Rich description rows
 

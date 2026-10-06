@@ -369,6 +369,30 @@ describe('@santi020k/lumen umbrella package', () => {
     }
   })
 
+  test('installs an auth-onboarding Elements stepper with complete light-DOM steps', async () => {
+    const cwd = await mkdtemp(join(tmpdir(), 'lumen-auth-onboarding-stepper-'))
+
+    try {
+      await addLumenRegistryItem('auth-onboarding', { cwd, target: 'elements' })
+      const source = await readFile(join(cwd, 'src/lumen/auth-onboarding.html'), 'utf8')
+      const listItems = [...source.matchAll(/<div[^>]*role="listitem"[^>]*>/g)]
+
+      expect(listItems).toHaveLength(4)
+      for (const title of ['Account', 'Workspace', 'Preferences', 'Invite']) {
+        expect(source).toContain(title)
+      }
+
+      const ariaCurrentSteps = [...source.matchAll(/aria-current="step"/g)]
+      const currentStep = /<div[^>]*aria-current="step"[^>]*>([\s\S]*?)<\/div>/.exec(source)?.[1]
+
+      expect(ariaCurrentSteps).toHaveLength(1)
+      expect(currentStep).toContain('<span class="ui-stepper__marker">2</span>')
+      expect(currentStep).toContain('<span class="ui-stepper__title">Workspace</span>')
+    } finally {
+      await rm(cwd, { force: true, recursive: true })
+    }
+  })
+
   test('rejects unknown install items', async () => {
     await expect(addLumenRegistryItem('missing')).rejects.toThrow('Unknown Lumen registry item')
   })
