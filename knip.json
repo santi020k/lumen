@@ -1,6 +1,10 @@
 {
   "$schema": "https://unpkg.com/knip@6/schema.json",
   "workspaces": {
+    "apps/motion": {
+      "entry": ["src/pages/**/*.astro", "src/scripts/timeline.ts", "scripts/*.mjs"],
+      "project": ["src/**/*.{astro,ts}", "scripts/*.mjs"]
+    },
     "apps/figma-plugin": {
       "entry": ["src/plugin.ts", "src/ui.tsx"],
       "project": ["src/**/*.{ts,tsx}", "scripts/*.mjs"]

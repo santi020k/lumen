@@ -1,0 +1,66 @@
+@font-face {
+  font-family: "Montserrat";
+  src: url("/assets/Montserrat-Variable.ttf") format("truetype");
+  font-weight: 100 900;
+  font-display: block;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; width: 100%; height: 100%; }
+#theme-pilot { width: 100%; height: 100%; position: relative; overflow: hidden; }
+.scene { position: absolute; inset: 0; padding: 60px 96px; background: hsl(var(--canvas)); color: hsl(var(--ink)); --ui-font: "Montserrat", sans-serif; font-family: var(--ui-font); }
+.scene:not(:first-child) { opacity: 0; }
+.scene h1, .scene h2, .scene h3, .scene h4, .scene p { margin: 0; }
+.composition-header, .theme-label, .project-line, .workspace-heading, .workspace-footer, .project-heading { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+.composition-header img { width: 233px; height: 60px; }
+.composition-header .lumen-logo { display: inline-flex; align-items: center; gap: 12px; --lumen-logo-mark: var(--surface-strong); --lumen-logo-on-mark: var(--ink); --lumen-logo-dot: var(--warning); }
+.pilot-logo-mark { width: 60px; height: 60px; }
+.lumen-logo__wordmark { width: 180px; height: 44px; }
+.edition, .eyebrow { font-size: 17px; font-weight: 600; letter-spacing: 0.13em; color: hsl(var(--ink-soft)); }
+.intro { margin: 32px 0 24px; }
+.intro h1 { margin-top: 16px; font-size: 76px; line-height: 1.08; letter-spacing: -0.055em; font-weight: 650; }
+.intro h1 br { display: none; }
+.theme-label { margin-bottom: 24px; font-size: 24px; color: hsl(var(--ink-soft)); }
+.theme-label strong { color: hsl(var(--brand-solid)); }
+.workspace { padding: 26px; gap: 0; border-radius: var(--ui-radius-lg); }
+.workspace h2 { font-size: 32px; margin: 12px 0; letter-spacing: -0.035em; }
+.workspace h3 { font-size: 22px; }
+.workspace h4 { font-size: 20px; }
+.workspace .muted { color: hsl(var(--ink-soft)); font-size: 17px; line-height: 1.6; }
+.workspace .ui-badge { font-size: 15px; padding: 7px 12px; }
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin: 20px 0; }
+.workspace .ui-stat { padding: 20px; }
+.workspace .ui-stat-label { font-size: 16px; }
+.workspace .ui-stat-label, .workspace .ui-badge[data-variant="success"] { color: hsl(var(--ink-soft)); }
+.workspace .ui-stat-value { font-size: 38px; }
+.projects { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 18px; }
+.project { padding: 18px; gap: 0; }
+.project p { margin: 12px 0 16px; }
+.workspace-footer { margin-top: 20px; }
+.workspace .ui-button { font-size: 17px; min-height: 48px; pointer-events: none; }
+.composition-footer { display: flex; justify-content: space-between; margin-top: 28px; font-size: 20px; color: hsl(var(--ink-soft)); }
+.composition-footer strong { color: hsl(var(--ink)); }
+
+[data-format="portrait"] .scene { padding: 130px 80px 210px; }
+[data-format="portrait"] .edition { display: none; }
+[data-format="portrait"] .intro { margin: 60px 0 40px; }
+[data-format="portrait"] .intro h1 { font-size: 92px; margin-top: 24px; }
+[data-format="portrait"] .intro h1 br { display: block; }
+[data-format="portrait"] .eyebrow { font-size: 20px; }
+[data-format="portrait"] .theme-label { font-size: 30px; margin-bottom: 32px; }
+[data-format="portrait"] .workspace { padding: 30px; }
+[data-format="portrait"] .workspace-heading { align-items: flex-start; flex-direction: column; gap: 16px; }
+[data-format="portrait"] .workspace h2 { font-size: 38px; }
+[data-format="portrait"] .workspace h3 { font-size: 28px; }
+[data-format="portrait"] .workspace h4 { font-size: 25px; }
+[data-format="portrait"] .workspace .muted { font-size: 20px; }
+[data-format="portrait"] .workspace .ui-badge { font-size: 20px; }
+[data-format="portrait"] .stats { gap: 16px; margin: 24px 0; }
+[data-format="portrait"] .workspace .ui-stat { padding: 20px 16px; }
+[data-format="portrait"] .workspace .ui-stat-label { font-size: 18px; line-height: 1.5; }
+[data-format="portrait"] .workspace .ui-stat-value { font-size: 48px; }
+[data-format="portrait"] .projects { grid-template-columns: 1fr; gap: 20px; }
+[data-format="portrait"] .project { padding: 22px; }
+[data-format="portrait"] .workspace-footer { align-items: flex-start; flex-direction: column; gap: 18px; }
+[data-format="portrait"] .workspace .ui-button { font-size: 22px; min-height: 58px; }
+[data-format="portrait"] .composition-footer { flex-direction: column; gap: 12px; font-size: 28px; margin-top: 42px; }
