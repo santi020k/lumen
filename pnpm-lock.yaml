@@ -672,6 +672,9 @@ importers:
       '@santi020k/lumen-astro':
         specifier: workspace:^
         version: link:../../packages/astro
+      '@santi020k/lumen-core':
+        specifier: workspace:^
+        version: link:../../packages/core
       astro:
         specifier: 'catalog:'
         version: 7.3.5(@types/node@26.6.4)(jiti@2.7.0)(terser@5.51.2)(yaml@2.8.3)
