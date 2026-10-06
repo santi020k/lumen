@@ -2,6 +2,8 @@
   .ui-world-map { display: grid; gap: .75rem; color: hsl(var(--ink)); }
   .ui-world-map__frame { position: relative; overflow: hidden; border-radius: var(--ui-radius-lg); background: var(--ui-world-map-surface, hsl(var(--surface-muted))); }
   .ui-world-map__viewport { overflow: auto; aspect-ratio: 2.5; }
+  .ui-world-map__viewport[data-pan-enabled="true"], .ui-world-map__viewport[data-pan-enabled="true"] .ui-world-map__country { cursor: grab; user-select: none; }
+  .ui-world-map__viewport[data-panning], .ui-world-map__viewport[data-panning] .ui-world-map__country { cursor: grabbing; }
   .ui-world-map__viewport:focus-visible { outline: 2px solid hsl(var(--brand)); outline-offset: -2px; }
   .ui-world-map__plot { display: block; width: calc(100% * var(--ui-world-map-zoom, 1)); max-width: none; height: auto; }
   .ui-world-map__zoom-controls { display: flex; align-items: center; justify-content: end; flex-wrap: wrap; gap: .5rem; }
@@ -14,7 +16,7 @@
   .ui-world-map__country { stroke: hsl(var(--surface-muted)); stroke-width: .5; vector-effect: non-scaling-stroke; pointer-events: all; transition: opacity var(--ui-duration); }
   .ui-world-map[data-interactive="true"] .ui-world-map__country { cursor: pointer; }
   .ui-world-map[data-interactive="true"] .ui-world-map__country:hover { opacity: .65; }
-  .ui-world-map__country--selected { stroke: hsl(var(--accent)); stroke-width: 2; }
+  .ui-world-map__selection { fill: none; stroke: hsl(var(--accent)); stroke-width: 2; stroke-linejoin: round; vector-effect: non-scaling-stroke; pointer-events: none; }
   .ui-world-map__marker { fill: hsl(var(--on-brand)); stroke: var(--ui-world-map-marker, hsl(var(--brand))); }
   .ui-world-map__inspection { position: absolute; inset: .75rem auto auto .75rem; padding: .25rem .5rem; background: hsl(var(--surface)); border-radius: var(--ui-radius-md); font-size: .875rem; pointer-events: none; }
   .ui-world-map__highlights { display: flex; flex-wrap: wrap; gap: .75rem; padding: 0; margin: 0; list-style: none; font-size: .8125rem; }
@@ -24,5 +26,5 @@
   @keyframes ui-map-enter { from { opacity: 0; } }
   @keyframes ui-map-pulse { 50% { transform: scale(1.25); } }
   @media (prefers-reduced-motion: reduce) { .ui-world-map[data-animated="true"] :is(.ui-world-map__countries, .ui-world-map__marker) { animation: none; transition: none; } }
-  @media (forced-colors: active) { .ui-world-map__country { stroke: CanvasText; } .ui-world-map__country--selected { stroke: Highlight; } }
+  @media (forced-colors: active) { .ui-world-map__country { stroke: CanvasText; } .ui-world-map__selection { stroke: Highlight; } }
 }

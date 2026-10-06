@@ -1800,7 +1800,7 @@ const apiReferenceByComponent = {
     )
   ],
   WorldMap: [
-    apiRow('zoomable', 'boolean', 'true', 'Shows zoom in, zoom out, and reset controls. Zoom ranges from 100% to 400% in 50% steps; scroll the viewport to explore.'),
+    apiRow('zoomable', 'boolean', 'true', 'Shows zoom in, zoom out, and reset controls. Zoom ranges from 100% to 800% in 50% steps; scroll the viewport to explore.'),
     apiRow('zoomLabels', 'Partial<LumenWorldMapZoomLabels>', 'English labels', 'Localizes zoomIn, zoomOut, reset, level and viewport. Elements accepts zoom-labels JSON.'),
     apiRow('countries', 'readonly LumenWorldMapCountryGeometry[]', 'required', 'Import lumenWorldMapCountries explicitly from @santi020k/lumen-core/world-map-data. Custom geometry uses the fixed 1000 × 400 projection.'),
     apiRow('label', 'string', 'required', 'Provides the accessible name for the map image.'),

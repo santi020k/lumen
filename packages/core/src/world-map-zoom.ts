@@ -1,3 +1,5 @@
+import { initLumenWorldMapPan } from './world-map-pan.js'
+
 /** Shared DOM enhancement for the web map's native zoom controls and scrollable viewport. */
 export interface LumenWorldMapZoomLabels {
   level: string
@@ -12,7 +14,7 @@ export const lumenWorldMapZoomLabels: Readonly<LumenWorldMapZoomLabels> = Object
 })
 
 export const normalizeLumenWorldMapZoom = (value: number): number => Number.isFinite(value) ?
-  Math.min(4, Math.max(1, value)) :
+  Math.min(8, Math.max(1, value)) :
   1
 
 export const initLumenWorldMapZoom = (root: HTMLElement, signal: AbortSignal): void => {
@@ -24,11 +26,15 @@ export const initLumenWorldMapZoom = (root: HTMLElement, signal: AbortSignal): v
 
   viewport.style.setProperty('--ui-world-map-zoom', '1')
 
+  viewport.dataset.panEnabled = 'false'
+
   viewport.scrollLeft = 0
 
   viewport.scrollTop = 0
 
   if (controls.length === 0) return
+
+  initLumenWorldMapPan(viewport, signal)
 
   let zoom = 1
 
@@ -39,6 +45,8 @@ export const initLumenWorldMapZoom = (root: HTMLElement, signal: AbortSignal): v
     const y = (viewport.scrollTop + viewport.clientHeight / 2) * ratio - viewport.clientHeight / 2
 
     zoom = next
+
+    viewport.dataset.panEnabled = String(zoom > 1)
 
     viewport.style.setProperty('--ui-world-map-zoom', String(zoom))
 
@@ -51,7 +59,7 @@ export const initLumenWorldMapZoom = (root: HTMLElement, signal: AbortSignal): v
     for (const button of controls) {
       const action = button.dataset.uiWorldMapZoom
 
-      button.disabled = action === 'in' ? zoom === 4 : zoom === 1
+      button.disabled = action === 'in' ? zoom === 8 : zoom === 1
 
       button.classList.toggle('ui-button--disabled', button.disabled)
     }

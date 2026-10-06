@@ -41,6 +41,10 @@ const MapViewport = ({ children, label, zoomable }: { children: ReactNode, label
   </div>
 )
 
+const SelectionOutline = ({ country }: { country: LumenWorldMapCountryGeometry | undefined }) => (
+  <path aria-hidden="true" className="ui-world-map__selection" d={country?.path ?? ''} />
+)
+
 interface CountryPathProps {
   country: LumenWorldMapCountryGeometry
   highlightPatternId: string
@@ -325,6 +329,7 @@ export const WorldMap = ({
             </g>
             <MarkerLayer markers={normalizedMarkers} />
 
+            <SelectionOutline country={findLumenWorldMapCountry(countries, selectedId)} />
           </svg>
         </MapViewport>
         <Inspection country={activeCountry} labels={labels} />

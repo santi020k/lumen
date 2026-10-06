@@ -50,6 +50,7 @@ test('country clicks and the keyboard chooser share the reflected selection even
   select.focus()
   select.value = 'JP'
   select.dispatchEvent(new Event('change'))
+  expect(map.querySelector('.ui-world-map__selection')?.getAttribute('d')).toBe(map.querySelector('[data-country="JP"]')?.getAttribute('d'))
   expect(map.selectedCountry).toBe('JP')
   expect(document.activeElement).toBe(select)
   expect(listener).toHaveBeenCalledTimes(2)

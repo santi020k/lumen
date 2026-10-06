@@ -50,6 +50,7 @@ test('clicking an uncontrolled map selects the country and fires a typed callbac
   })
 
   expect(path('CO').classList.contains('ui-world-map__country--selected')).toBe(true)
+  expect(container.querySelector('.ui-world-map__selection')?.getAttribute('d')).toBe(path('CO').getAttribute('d'))
   expect(onCountrySelect).toHaveBeenCalledWith({ countryId: 'CO', highlighted: false, label: 'Colombia' })
   expect(container.querySelector('.ui-world-map__inspection')?.textContent).toBe('Colombia')
 })

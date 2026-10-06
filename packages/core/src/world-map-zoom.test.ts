@@ -7,7 +7,7 @@ afterEach(() => {
   document.body.replaceChildren()
 })
 
-test.each([[0, 1], [1.5, 1.5], [10, 4], [NaN, 1], [Infinity, 1]])('clamps zoom %s to %s', (value, expected) => {
+test.each([[0, 1], [1.5, 1.5], [10, 8], [NaN, 1], [Infinity, 1]])('clamps zoom %s to %s', (value, expected) => {
   expect(normalizeLumenWorldMapZoom(value)).toBe(expected)
 })
 
@@ -35,12 +35,12 @@ test('zoom buttons preserve the center, clamp limits, reset and clean up listene
   expect(status.value).toBe('150%')
   expect(viewport.scrollLeft).toBe(200)
   expect(viewport.scrollTop).toBe(80)
-  for (let index = 0; index < 12; index++) zoomIn.click()
-  expect(status.value).toBe('400%')
+  for (let index = 0; index < 20; index++) zoomIn.click()
+  expect(status.value).toBe('800%')
   expect(zoomIn.disabled).toBe(true)
   expect(zoomIn.classList.contains('ui-button--disabled')).toBe(true)
   zoomOut.click()
-  expect(status.value).toBe('350%')
+  expect(status.value).toBe('750%')
   reset.click()
   expect(status.value).toBe('100%')
   expect(viewport.scrollLeft).toBe(0)

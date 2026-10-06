@@ -11,10 +11,11 @@ const fixture = (interactive = true) => {
   document.body.innerHTML = `<figure data-ui-world-map data-interactive="${interactive}">
     <svg class="ui-world-map__plot">
       <g class="ui-world-map__countries">
-        <path class="ui-world-map__country ui-world-map__country--highlighted" data-ui-world-map-country="CO" data-label="Colombia" data-label-x="300" data-label-y="220"></path>
-        <path class="ui-world-map__country" data-ui-world-map-country="JP" data-label="Japan" data-label-x="820" data-label-y="140"></path>
+        <path class="ui-world-map__country ui-world-map__country--highlighted" data-ui-world-map-country="CO" data-label="Colombia" d="M0 0L10 0L10 10Z" data-label-x="300" data-label-y="220"></path>
+        <path class="ui-world-map__country" data-ui-world-map-country="JP" data-label="Japan" d="M20 0L30 0L30 10Z" data-label-x="820" data-label-y="140"></path>
       </g>
 
+      <path class="ui-world-map__selection"></path>
     </svg>
     <span data-ui-world-map-inspection hidden></span>
     <select data-ui-world-map-select disabled>
@@ -46,6 +47,7 @@ test('enables the native select and clicking a country dispatches a typed select
   colombia.dispatchEvent(new MouseEvent('click', { bubbles: true }))
 
   expect(colombia.classList.contains('ui-world-map__country--selected')).toBe(true)
+  expect(root.querySelector('.ui-world-map__selection')?.getAttribute('d')).toBe(colombia.getAttribute('d'))
   expect(select.value).toBe('CO')
   expect(label.textContent).toBe('Colombia')
   expect(label.hidden).toBe(false)

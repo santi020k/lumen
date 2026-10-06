@@ -164,6 +164,8 @@ export class LumenWorldMapElement extends LumenElement {
     const select = this.querySelector('select')
     const inspection = this.querySelector<HTMLElement>('.ui-world-map__inspection')
 
+    this.querySelector('.ui-world-map__selection')?.setAttribute('d', country?.path ?? '')
+
     if (select) select.value = id
 
     if (inspection) {
@@ -219,6 +221,9 @@ export class LumenWorldMapElement extends LumenElement {
     plot.append(group)
 
     const markerList = this.appendMarkers(plot)
+
+    plot.append(svgNode(this.ownerDocument, 'path', { 'aria-hidden': 'true', class: 'ui-world-map__selection', d: '' }))
+
     const inspection = this.ownerDocument.createElement('span')
 
     inspection.className = 'ui-world-map__inspection'
@@ -236,6 +241,8 @@ export class LumenWorldMapElement extends LumenElement {
     this.appendZoomControls()
 
     initLumenWorldMapZoom(this, this.abortController.signal)
+
+    this.updateSelection()
   }
 
   private get zoomText() {

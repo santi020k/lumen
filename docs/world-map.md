@@ -26,7 +26,8 @@ equirectangular projection. See [map data provenance](../maps/README.md) for the
 coordinate bounds, generator, and territory conventions. Small countries remain selectable through
 the native chooser even when their shapes are too small to tap comfortably.
 
-Zoom controls are enabled by default: zoom from 100% to 400% in 50% steps, zoom out, or reset.
+Zoom controls are enabled by default: zoom from 100% to 800% in 50% steps, zoom out, or reset.
+Drag an enlarged map with a mouse or pen to pan without changing the country selection.
 The focused viewport supports native keyboard scrolling; touch and trackpad scrolling also let you
 explore an enlarged map. Controls preserve the center while changing scale and stop at both limits.
 Set `zoomable={false}` (Elements: `zoomable="false"`) to hide the controls. Localize their accessible

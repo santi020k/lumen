@@ -169,6 +169,7 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, ['ui-world-map']
             </g>
           )
         }
+        <path aria-hidden="true" class="ui-world-map__selection" d={selected?.path ?? ''} />
       </svg>
     </div>
     <span class="ui-world-map__inspection" data-ui-world-map-inspection hidden />
