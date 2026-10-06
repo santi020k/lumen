@@ -62,7 +62,11 @@ if (root?.dataset.compositionId) {
 
     if (command.type === 'lumen-motion-play') timeline.restart()
 
-    if (command.type === 'lumen-motion-pause') timeline.pause()
+    if (command.type === 'lumen-motion-pause') {
+      timeline.pause()
+
+      publishState()
+    }
 
     if (command.type !== 'lumen-motion-seek') return
 
