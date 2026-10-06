@@ -14,6 +14,8 @@
 
 ### Patch Changes
 
+- Keep warning alert and toast text readable against tinted surfaces, including import findings and uncertain-save guidance. Preserve warning borders and backgrounds.
+
 - Give DeviceFrame matte white and charcoal finishes with layered rims, recessed cameras, a sculpted iPhone notch, and softly shaded bases. Add a responsive grouped showcase while preserving HTML and fixed iframe viewports.
 
 - Keep consistent header padding and space between the hover background and body in bordered Accordion, Collapsible, and ToolActivity components. Preserve compact flush accordion spacing.
