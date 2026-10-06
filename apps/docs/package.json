@@ -9,7 +9,7 @@
     "dev": "astro dev",
     "prebuild": "pnpm run prepare:native-live-previews",
     "build": "astro build && pnpm run generate:og",
-    "postbuild": "santi-og audit",
+    "postbuild": "santi-og audit && node scripts/prepare-cloudflare-pages.mjs",
     "generate:og": "santi-og generate --config scripts/generate-og-images.mjs && node scripts/sync-og-images.mjs",
     "generate:og:force": "santi-og generate --config scripts/generate-og-images.mjs --force && node scripts/sync-og-images.mjs",
     "prepare:native-live-previews": "node scripts/prepare-native-live-previews.mjs",
@@ -24,7 +24,7 @@
     "test:coverage": "vitest run --config ../../vitest.config.ts --project docs --coverage --passWithNoTests",
     "lint": "eslint . --no-warn-ignored --max-warnings=0",
     "lint:fix": "eslint . --fix --no-warn-ignored --max-warnings=0",
-    "clean": "rm -rf dist .astro coverage"
+    "clean": "rm -rf dist cloudflare/dist .astro coverage"
   },
   "dependencies": {
     "@astrojs/sitemap": "catalog:",

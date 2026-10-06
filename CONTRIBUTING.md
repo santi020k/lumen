@@ -185,6 +185,11 @@ so they are excluded from site-navigation validation. Run
 `pnpm --filter @santi020k/lumen-docs run audit:seo` against the current build when changing navigation
 or search data. The same audit checks sitemap coverage and excludes internal/noindex pages.
 
+Keep docs routes without a file extension or trailing slash (except `/`). The docs post-build step
+packages validated Astro output from `dist` into `cloudflare/dist`, using flat HTML files so
+Cloudflare Pages serves canonical URLs directly. Deploy that artifact; raw directory output redirects
+to trailing-slash URLs. Keep navigation, sitemap, structured data, and RSS links consistent.
+
 Do not publish generic announcements as guides. A guide should leave a developer able to build or
 verify something they could not confidently complete before reading it.
 

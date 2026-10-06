@@ -32,7 +32,7 @@ concurrency:
 env:
   CLOUDFLARE_PAGES_PROJECT_NAME: ${{ vars.CLOUDFLARE_PAGES_PROJECT_NAME || 'lumen' }}
   CLOUDFLARE_PAGES_PRODUCTION_BRANCH: ${{ vars.CLOUDFLARE_PAGES_PRODUCTION_BRANCH || 'main' }}
-  DOCS_DIST_DIR: apps/docs/dist
+  DOCS_DIST_DIR: apps/docs/cloudflare/dist
   NODE_VERSION: 22.x
   PUBLIC_SITE_URL: ${{ vars.PUBLIC_SITE_URL || 'https://lumen.santi020k.com' }}
 

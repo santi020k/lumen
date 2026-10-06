@@ -7506,7 +7506,7 @@
       "title": "React - Lumen UI"
     },
     "/docs/icons": {
-      "alt": "Icons — Documentation social preview from Lumen UI",
+      "alt": "Lucide icon library for web and native — Documentation social preview from Lumen UI",
       "description": "Browse the 1858 Lucide icons available through the Lumen Icon component across web, React Native, SwiftUI, and Compose.",
       "images": [
         {
@@ -7519,7 +7519,7 @@
         }
       ],
       "pathname": "/docs/icons",
-      "title": "Icons - Lumen UI"
+      "title": "Lucide icon library for web and native - Lumen UI"
     },
     "/docs": {
       "alt": "Documentation — Documentation social preview from Lumen UI",

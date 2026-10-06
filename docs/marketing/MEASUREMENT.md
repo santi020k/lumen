@@ -55,6 +55,31 @@ search demand or conversion gains.
 
 ## Review log
 
+### Search Console baseline: October 6, 2026
+
+Read from the authenticated `lumen.santi020k.com` domain property. The selected three-month
+performance report displayed July 26–October 4, 2026: 20 clicks, approximately 2,000 impressions,
+1% CTR, and average position 26.7. These are the report's displayed totals; anonymized queries mean
+visible query rows do not sum to them.
+
+The icons landing page had 317 impressions, one click, 0.3% CTR, and average position 7.3. Its
+generic `Icons` title is being replaced with an accurate Lucide/web/native title. The visible query
+sample is too small to justify a broader keyword strategy or predict a CTR improvement. Compare
+matched 28-day periods after deployment, keeping the deployment date separate from this local review.
+
+The indexing report was last updated September 20: 597 indexed URLs and 288 excluded URLs
+(171 redirects, 77 noindex, 36 alternate canonicals, one 404, and three crawled URLs not indexed).
+These are known URLs, including historical variants, rather than a count of current sitemap pages.
+The 404 example was `/cdn-cgi/l/email-protection`. The three crawled URLs not indexed were
+two parameterized embedded React Native previews and `/guides/rss.xml`; they do not need search
+listings. Explicit noindex headers reinforce the preview's existing HTML policy and exclude the feed.
+
+Priorities: deploy the canonical-aligned Cloudflare artifact through the existing release workflow,
+verify the live sitemap and representative canonical URLs return 200 without redirects, then compare
+search performance for icons, AI skill, and framework guides. New AI guides are present locally but
+were absent from production during this review. Do not interpret local audits as indexing or deployment
+evidence, remove intended noindex exclusions, or request validation before the fix is deployed.
+
 | Month | Reviewer | Key numbers | Decision |
 | --- | --- | --- | --- |
 | _(none yet — no cycle has been approved or published)_ | — | — | — |

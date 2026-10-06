@@ -15,3 +15,9 @@
 
 /native-previews/react-native-live/_expo/*
   Cache-Control: public, max-age=31536000, immutable
+
+/native-previews/react-native-live/*
+  X-Robots-Tag: noindex
+
+/guides/rss.xml
+  X-Robots-Tag: noindex
