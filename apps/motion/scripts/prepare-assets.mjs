@@ -8,6 +8,7 @@ await mkdir(destination, { recursive: true })
 
 await Promise.all([
   copyFile(require.resolve('gsap/dist/gsap.min.js'), new URL('gsap.min.js', destination)),
+  copyFile(require.resolve('gsap/dist/CustomEase.min.js'), new URL('CustomEase.min.js', destination)),
   ...['logo.svg', 'fonts/Montserrat-Variable.ttf', 'fonts/OFL.txt'].map(async source => {
     const filename = source.split('/').at(-1)
 

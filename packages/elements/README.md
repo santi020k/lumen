@@ -362,6 +362,7 @@ Astro runtime's data event, validation, calendar grids, OTP segmentation, date r
 text command, context menu, schedule drag/drop, resizable pane sizing, theme export, ARIA,
 keyboard, Escape, dismissal, and toast controller semantics while keeping markup declarative and
 Declarative-Shadow-DOM friendly.
+Calendar attribute updates preserve the focused day in the owning document after iframe adoption.
 Calendar form resets restore the latest configured `value` attribute; interactive date selections
 do not replace that reset baseline. Form error summaries can focus associated native controls
 outside the form subtree when their `form` attribute names that form.

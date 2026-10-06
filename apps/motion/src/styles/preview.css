@@ -20,6 +20,7 @@ body { margin: 0; background: hsl(var(--canvas)); color: hsl(var(--ink)); font-f
 .preview-stage { padding: 16px; background: hsl(var(--surface-muted)); border: 1px solid hsl(var(--line)); border-radius: var(--ui-radius-lg); }
 .frame-container { position: relative; width: 100%; max-width: 380px; aspect-ratio: 9 / 16; margin: auto; overflow: hidden; }
 .frame-container[data-preview-format="landscape"] { max-width: none; aspect-ratio: 16 / 9; }
+.frame-container[data-preview-format="square"] { max-width: none; aspect-ratio: 1; }
 .frame-container iframe { position: absolute; inset: 0; border: 0; transform-origin: top left; pointer-events: none; }
 .preview-footer { justify-content: flex-start; font-size: 12px; color: hsl(var(--ink-soft)); flex-wrap: wrap; }
 @media (max-width: 760px) {

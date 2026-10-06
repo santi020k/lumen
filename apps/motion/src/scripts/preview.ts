@@ -4,11 +4,11 @@ const play = document.querySelector<HTMLButtonElement>('#play')
 const playbackStatus = document.querySelector<HTMLElement>('#playback-status')
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
 const themeButtons = document.querySelectorAll<HTMLButtonElement>('[data-time]')
-let selectedTime = 1
+let selectedTime = 2
 let playing = false
 
 const isPlaybackTime = (time: unknown): time is number => (
-  typeof time === 'number' && Number.isFinite(time) && time >= 0 && time <= 12
+  typeof time === 'number' && Number.isFinite(time) && time >= 0 && time <= 18
 )
 
 const isPlaybackState = (state: unknown): state is { type: string, time: number, playing: boolean } => {
@@ -28,7 +28,7 @@ const send = (type: string, time?: number) => {
 const updateState = (time: number, active: boolean) => {
   playing = active
 
-  const index = Math.min(2, Math.floor(time / 4))
+  const index = Math.min(2, Math.floor(time / 6))
 
   themeButtons.forEach((button, buttonIndex) => {
     button.setAttribute('aria-pressed', String(buttonIndex === index))
@@ -42,9 +42,9 @@ const updateState = (time: number, active: boolean) => {
 const resize = () => {
   if (!frame || !container) return
 
-  const portrait = container.dataset.previewFormat === 'portrait'
-  const width = portrait ? 1080 : 1920
-  const height = portrait ? 1920 : 1080
+  const format = container.dataset.previewFormat
+  const width = format === 'landscape' ? 1920 : 1080
+  const height = format === 'portrait' ? 1920 : 1080
 
   frame.style.width = `${width}px`
 
@@ -67,7 +67,7 @@ document.querySelectorAll<HTMLButtonElement>('[data-format]').forEach(button => 
   button.addEventListener('click', () => {
     const format = button.dataset.format
 
-    if (!frame || !container || (format !== 'portrait' && format !== 'landscape')) return
+    if (!frame || !container || (format !== 'portrait' && format !== 'square' && format !== 'landscape')) return
 
     container.dataset.previewFormat = format
 

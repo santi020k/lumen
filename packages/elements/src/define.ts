@@ -4163,8 +4163,10 @@ const initCalendars = (scope: ParentNode): void => {
         }
       }
 
-      const focusedDay = root.contains(document.activeElement) && document.activeElement instanceof HTMLElement ?
-        parseCalendarDate(document.activeElement.dataset.date) :
+      const activeElement = root.ownerDocument.activeElement
+
+      const focusedDay = activeElement && root.contains(activeElement) ?
+        parseCalendarDate(activeElement.getAttribute('data-date')) :
         null
 
       renderCalendar(root, focusedDay, focusedDay !== null)

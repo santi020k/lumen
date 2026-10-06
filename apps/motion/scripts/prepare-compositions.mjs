@@ -6,7 +6,7 @@ import postcss from 'postcss'
 import { compositionMatchingSelector } from './composition-selectors.mjs'
 
 // Each format is also a self-contained HyperFrames project for check and snapshot.
-for (const format of ['portrait', 'landscape']) {
+for (const format of ['portrait', 'square', 'landscape']) {
   const html = new URL(`../dist/${format}/index.html`, import.meta.url)
   const dom = new JSDOM(await readFile(html, 'utf8'))
   const { document } = dom.window

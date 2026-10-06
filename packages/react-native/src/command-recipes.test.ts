@@ -64,3 +64,11 @@ test('rejects decoded groups, nested items and searchable fields without throwin
     expect(Reflect.apply(lumenCommandGroups, undefined, [input, 'a'])).toBeNull()
   }
 })
+
+test('rejects decoded non-string queries throughout filtering and keyboard helpers', () => {
+  for (const query of [null, {}, 7, ['docs']]) {
+    expect(Reflect.apply(lumenCommandGroups, undefined, [groups, query])).toBeNull()
+    expect(Reflect.apply(resolveLumenCommandActive, undefined, [groups, query, 'docs'])).toBeNull()
+    expect(Reflect.apply(moveLumenCommandActive, undefined, [groups, query, 'docs', 'next'])).toBeNull()
+  }
+})

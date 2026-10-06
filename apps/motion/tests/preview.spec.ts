@@ -36,6 +36,12 @@ for (const width of [390, 1440]) {
 
     await expect(page.frameLocator('#composition').locator('.scene').nth(2)).toHaveCSS('opacity', '1')
 
+    await page.getByRole('button', { name: 'Square', exact: true }).click()
+
+    await expect(page.locator('#composition')).toHaveAttribute('src', '/square/')
+
+    await expect(page.frameLocator('#composition').locator('.scene').nth(2)).toHaveCSS('opacity', '1')
+
     await page.getByRole('button', { name: 'Play animation' }).click()
 
     await expect(page.getByRole('status')).toHaveText('Playing · Lumen Light')
@@ -64,9 +70,9 @@ test('reduced motion presents still themes and disables playback', async ({ page
   await expect(page.getByRole('status')).toHaveText('Paused · Studio')
 })
 
-test('both compositions fit their canvases and can seek backwards deterministically', async ({ page }) => {
-  for (const format of ['portrait', 'landscape']) {
-    await page.setViewportSize(format === 'portrait' ? { width: 1080, height: 1920 } : { width: 1920, height: 1080 })
+test('all compositions fit their canvases and can seek backwards deterministically', async ({ page }) => {
+  for (const format of ['portrait', 'square', 'landscape']) {
+    await page.setViewportSize({ width: format === 'landscape' ? 1920 : 1080, height: format === 'portrait' ? 1920 : 1080 })
 
     await page.goto(`/${format}/`)
 
@@ -82,21 +88,41 @@ test('both compositions fit their canvases and can seek backwards deterministica
       }, time)
     }
 
-    await seek(1)
+    await seek(2)
 
     const light = await page.screenshot()
 
-    await seek(9)
+    await seek(14)
 
     expect(await page.screenshot()).not.toEqual(light)
 
-    await seek(1)
+    await seek(2)
 
     expect(await page.screenshot()).toEqual(light)
 
     const overflow = await page.locator('.scene').evaluateAll(scenes => scenes.some(scene => scene.scrollHeight > scene.clientHeight))
 
     expect(overflow).toBe(false)
+
+    const wide = await page.locator('.scene').first().locator('.viewport').boundingBox()
+
+    await seek(5)
+
+    const compact = await page.locator('.scene').first().locator('.viewport').boundingBox()
+
+    expect(compact?.width).toBeLessThan(wide?.width ?? 0)
+
+    const projects = page.locator('.scene').first().locator('.project')
+    const first = await projects.nth(0).boundingBox()
+    const second = await projects.nth(1).boundingBox()
+
+    expect(second?.y).toBeGreaterThan(first?.y ?? 0)
+
+    await seek(17)
+
+    expect(await page.locator('.scene').nth(2).locator('.composition-footer').evaluate(footer => footer.getBoundingClientRect().bottom <= window.innerHeight - 30)).toBe(true)
+
+    await seek(2)
 
     expect(await page.locator('.scene').first().locator('.composition-footer').evaluate(footer => footer.getBoundingClientRect().bottom <= window.innerHeight - 60)).toBe(true)
   }

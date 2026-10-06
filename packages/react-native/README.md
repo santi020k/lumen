@@ -635,7 +635,8 @@ The host owns persistence and may reset the controlled value to zero.
 descriptions and localized state labels. Vertical is the native default; horizontal
 layout scrolls. `LumenTimeline` and `LumenTimelineItem` retain host content and
 actions with optional decorative markers. `LumenBreadcrumb` reports ancestor IDs
-through `onNavigate`; current and disabled locations cannot navigate. The host
+through `onNavigate`; current and disabled locations cannot navigate. Malformed decoded breadcrumb
+entries hide navigation while preserving the labeled container. The host
 owns routing, event ordering and workflow updates. See the
 [native component contracts](../../docs/native-components.md) for platform parameters.
 
@@ -664,7 +665,7 @@ quiet zones and scanner-safe contrast. See the [QRCode contract](../../docs/nati
 The Android adapter uses the Apache-2.0 ZXing core encoder; SwiftUI uses Core Image
 and React Native reuses the web catalog's uqr engine. No runtime request is needed.
 
-`LumenCascader` browses validated tree branches and emits controlled leaf paths,
+`LumenCascader` treats malformed decoded paths as unavailable selections, browses validated tree branches and emits controlled leaf paths,
 with localized navigation and safe loading/error states. See the
 [Cascader contract](../../docs/native-parity/cascader.md).
 
@@ -699,6 +700,8 @@ Malformed decoded slide collections, IDs or labels resolve to the existing inval
 identity and keyboard state derivation. Decoded tree, table, command, transfer, kanban, tour, stepper
 and mentions collections are validated before models, hooks or renderers access their fields.
 Non-string QR values use the encoding-error state instead of rendering untrusted values.
+Command queries must be strings and calendar weekday labels must contain exactly seven strings.
+Malformed optional color swatches are ignored without disabling the editable color field.
 `LumenTooltip` provides contextual help with native dismissal and named anchors.
 See the [Carousel](../../docs/native-parity/carousel.md) and
 [Tooltip](../../docs/native-parity/tooltip.md) contracts for adapter-specific state APIs.

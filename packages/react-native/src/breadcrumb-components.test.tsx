@@ -97,3 +97,13 @@ test('long paths keep every stable ancestor ID within a horizontal scroller', ()
   if (!scroll) throw new Error('Missing horizontal scroller')
   expect(read(scroll, 'horizontal')).toBe(true)
 })
+
+test('hides malformed decoded navigation while preserving its labeled container', () => {
+  for (const value of [null, {}, [null], [1], [{ id: 7, label: 'Bad' }], [{ id: 'a', label: {} }], [{ id: 'a', label: 'A', disabled: 'yes' }], Array(1)]) {
+    const props: Partial<LumenBreadcrumbProps> = {}
+    Object.defineProperty(props, 'items', { value, enumerable: true })
+    const { root } = render(props)
+    expect(root.container.queryAll(node => node.type === 'View' && read(node, 'accessibilityLabel') === 'Location')).toHaveLength(1)
+    expect(root.container.queryAll(node => node.type === 'Pressable' || node.type === 'Text')).toHaveLength(0)
+  }
+})

@@ -2,15 +2,18 @@
 import '../styles/composition.css'
 import '@santi020k/lumen-astro/styles.css'
 
+import { lumenEasings } from '@santi020k/lumen-core'
 import { transformSync } from 'esbuild'
 
 import LumenLogo from '../../../docs/src/components/LumenLogo.astro'
 import Workspace from '../components/Workspace.astro'
 import timelineSource from '../scripts/timeline.ts?raw'
 
-export const getStaticPaths = () => [{ params: { format: 'portrait' } }, { params: { format: 'landscape' } }]
+export const getStaticPaths = () => ['portrait', 'square', 'landscape'].map(format => ({ params: { format } }))
 
-const portrait = Astro.params.format === 'portrait'
+const format = Astro.params.format
+const width = format === 'landscape' ? 1920 : 1080
+const height = format === 'portrait' ? 1920 : 1080
 const timeline = transformSync(timelineSource, { loader: 'ts', format: 'iife' }).code
 
 const themes = [
@@ -28,14 +31,16 @@ const themes = [
     <meta name="robots" content="noindex" />
     <title>One interface, three themes — Lumen UI</title>
     <script is:inline src="/assets/gsap.min.js"></script>
+    <script is:inline src="/assets/CustomEase.min.js"></script>
   </head>
   <body>
     <main
       id="theme-pilot"
       data-composition-id="theme-pilot"
-      data-width={portrait ? 1080 : 1920}
-      data-height={portrait ? 1920 : 1080}
-      data-duration="12"
+      data-width={width}
+      data-height={height}
+      data-duration="18"
+      data-ease={lumenEasings.emphasized.join(',')}
       data-format={Astro.params.format}
     >
       {themes.map(theme => (
@@ -49,8 +54,15 @@ const themes = [
             <h1>One interface.<br />Three themes.</h1>
           </div>
           <div class="theme-label"><span>{theme.number} / 03</span><strong>{theme.name}</strong></div>
-          <Workspace />
-          <div class="composition-footer"><span>Explore Lumen UI</span><strong>lumen.santi020k.com</strong></div>
+          <div class="viewport">
+            <div class="viewport-bar">
+              <span class="viewport-title">Adaptive workspace</span>
+              <span class="layout-wide">Wide layout</span>
+              <span class="layout-compact">Compact layout</span>
+            </div>
+            <Workspace />
+          </div>
+          <div class="composition-footer"><span>Same components. Every size.</span><strong>lumen.santi020k.com</strong></div>
         </section>
       ))}
     </main>

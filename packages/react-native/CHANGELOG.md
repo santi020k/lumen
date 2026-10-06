@@ -2,6 +2,8 @@
 
 ## 4.0.0
 
+- Reject malformed breadcrumb entries, cascader paths, command queries and weekday labels; ignore malformed palette swatches while preserving the color field.
+
 - Validate decoded tree, table, command, transfer, kanban, tour, stepper, mentions and QR inputs before model or hook access; invalid carousel slides also stop before identity derivation.
 
 - Reject malformed decoded Agenda event collections, fields and timing, and Carousel slide collections, IDs and labels before rendering or navigation.
