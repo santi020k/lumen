@@ -80,10 +80,12 @@ progress bars. Light, Dark, Glass, and Studio follow at 0, 2.6, 5, and 8 seconds
 gets a short headline reveal and component entrance. The sample layout remains consistent so the
 material changes are easy to compare. Glass uses public Card and Stat surfaces, translucent layers,
 fine highlights, and moving cyan, teal, and warm light behind the interface. All movement belongs
-to the paused GSAP timeline, including the background, so seeking remains deterministic.
+to the paused GSAP timeline, including the background, so seeking remains deterministic. Inactive
+scenes are hidden after fading out so their glass layers do not interfere with exported frames.
 
-At 9.7 seconds, the laptop yields to an iPhone-style mobile layout. Both devices use the public
-Astro `DeviceFrame` already integrated into local `release/v4.0.0`; no published version is needed.
+At 9.7 seconds, the laptop yields to an iPhone-style mobile layout. Both devices use the refined public
+Astro `DeviceFrame` (`macbook-pro` and `iphone`) integrated into local `release/v4.0.0`; no published
+version is needed.
 The frame also supports real viewport scaling for iframes. This composition uses slotted HTML
 so the single GSAP timeline controls component entrances and exports deterministically.
 `Workspace.astro` is shared by both devices; the phone content remains at 390 × 844 CSS pixels
@@ -109,9 +111,12 @@ register a paused HyperFrames timeline; the preview's **Brand ending** button sh
 social edits, or reuse the source for a sharper export at a different resolution.
 
 Portrait, square, and landscape share the message and components, with format-specific typography
-and spacing. Square simplifies secondary descriptions in the desktop view to retain readable feed
-text. The browser preview scales the canvas to its container and keeps the selected appearance
-when formats change.
+and spacing. Desktop workspaces use larger headings, figures, and project titles, with secondary
+badges and descriptions removed so the interface remains readable at feed size. Landscape places the message
+beside the MacBook to give the screen more canvas space. The phone keeps its original content and
+typography; its hardware chrome, including the home indicator, comes from the public frame.
+The browser preview scales the canvas to its container and keeps the selected appearance when
+formats change.
 Static appearance buttons seek to a fully assembled frame; reduced motion retains those controls.
 
 Future pilots can reuse this structure for component spotlights and release highlights. Use
