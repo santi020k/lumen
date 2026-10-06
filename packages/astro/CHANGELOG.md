@@ -2,6 +2,8 @@
 
 ## 4.0.0
 
+- Rebind adopted combobox controllers and associate every phone control with an external form owner.
+
 - Rebind adopted amount controls on repeated initialization without losing drafts or duplicating edit listeners.
 
 - Rebind file-upload reset delegation after adoption into a new document while retaining idempotent control listeners.

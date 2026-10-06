@@ -12,7 +12,6 @@
 import { isLumenDateBoundsValid, parseLumenDate as parseCalendarDate, resolveLumenDateLabels, resolveLumenDateLocale } from '@santi020k/lumen-core'
 import {
   coerceThemePreset,
-  createLumenComboboxController,
   createLumenKanbanMoveDetail,
   createLumenVirtualListController,
   createThemeBuilderTokens,
@@ -35,6 +34,7 @@ import {
   scrollLumenTabIntoView } from '@santi020k/lumen-core'
 
 import { initAmountFields } from './controllers/amount-field'
+import { clearComboboxes, closeCombobox, initComboboxes } from './controllers/combobox'
 import { initDataTableSorting } from './controllers/data-table'
 import { initMessageFeeds } from './controllers/message-scroller'
 import { initOptionalMediaControllers } from './controllers/optional-media'
@@ -1404,12 +1404,6 @@ const initLanguageToggles = (scope: ParentNode): void => {
   }
 }
 
-const comboboxControllers = new Map<HTMLElement, ReturnType<typeof createLumenComboboxController>>()
-
-const closeCombobox = (root: HTMLElement): void => {
-  comboboxControllers.get(root)?.close()
-}
-
 let codeCopyLiveRegion: HTMLElement | undefined
 
 const getCodeCopyLiveRegion = (): HTMLElement => {
@@ -1792,27 +1786,7 @@ const initCommand = (scope: ParentNode): void => {
   }
 }
 
-const initComboboxes = (scope: ParentNode): void => {
-  for (const [root, controller] of comboboxControllers) {
-    if (!root.isConnected) {
-      controller.destroy()
-
-      comboboxControllers.delete(root)
-    }
-  }
-
-  for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-combobox]')) {
-    if (!comboboxControllers.has(root)) {
-      comboboxControllers.set(root, createLumenComboboxController(root))
-    }
-  }
-}
-
-document.addEventListener('astro:before-swap', () => {
-  for (const controller of comboboxControllers.values()) controller.destroy()
-
-  comboboxControllers.clear()
-})
+document.addEventListener('astro:before-swap', clearComboboxes)
 
 const initSelects = (scope: ParentNode): void => {
   for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-select]')) {

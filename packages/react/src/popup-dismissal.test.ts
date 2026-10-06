@@ -65,6 +65,54 @@ for (const framed of [false, true]) {
   })
 }
 
+test.each([false, true])('context menu activation and keyboard focus use the owning iframe document (adopted item: %s)', async adopted => {
+  const frame = document.createElement('iframe')
+
+  document.body.append(frame)
+  const owner = frame.contentDocument
+
+  if (!owner?.defaultView) throw new Error('Missing iframe document')
+
+  const host = owner.createElement('div')
+  const MouseEventType = owner.defaultView.MouseEvent
+  const KeyboardEventType = owner.defaultView.KeyboardEvent
+
+  owner.body.append(host)
+  const root = createRoot(host)
+  const Actions = () => {
+    const menu = useContextMenu({ defaultOpen: true })
+
+    return createElement('div', menu.menuProps, createElement('button', { role: 'menuitem', id: 'first-action' }, createElement('span', null, 'First')), createElement('button', { role: 'menuitem', id: 'second-action' }, 'Second'))
+  }
+
+  try {
+    await run(() => {
+      root.render(createElement(Actions))
+    })
+    const menu = host.querySelector<HTMLElement>('[role="menu"]')
+    const first = host.querySelector<HTMLButtonElement>('#first-action')
+    const second = host.querySelector<HTMLButtonElement>('#second-action')
+    const label = adopted ? document.createElement('span') : first?.querySelector('span')
+
+    if (!menu || !first || !second || !label) throw new Error('Missing menu items')
+
+    if (adopted) first.replaceChildren(owner.adoptNode(label))
+
+    Object.defineProperty(first, 'checkVisibility', { value: () => true })
+    Object.defineProperty(second, 'checkVisibility', { value: () => true })
+    first.focus()
+    await run(() => first.dispatchEvent(new KeyboardEventType('keydown', { key: 'ArrowDown', bubbles: true, cancelable: true })))
+    expect(owner.activeElement).toBe(second)
+    await run(() => label.dispatchEvent(new MouseEventType('click', { bubbles: true })))
+    expect(menu.hidden).toBe(true)
+  } finally {
+    await run(() => {
+      root.unmount()
+    })
+    frame.remove()
+  }
+})
+
 for (const opened of [false, true]) {
   test(`tooltip focus leave ${opened ? 'closes the visible tooltip' : 'cancels pending opening'}`, async () => {
     vi.useFakeTimers()

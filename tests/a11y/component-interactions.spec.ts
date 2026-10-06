@@ -1337,3 +1337,30 @@ behaviorTest(['AttachmentPreview'], 'Attachment previews retain actions through 
   await expect(preview).toHaveAttribute('data-state', 'ready')
   await expect(preview.getByRole('status')).toBeHidden()
 })
+
+test('PhoneInput keeps external editable and readonly form submission and reset complete', async ({ page }) => {
+  await page.goto('/internal/interaction-regressions')
+  const country = page.locator('#external-phone').locator('..').locator('select')
+  const readonlyCountry = page.locator('#readonly-external-phone').locator('..').locator('select')
+  await expect(country).toHaveAttribute('form', 'phone-owner')
+  await expect(readonlyCountry).toHaveAttribute('form', 'readonly-phone-owner')
+  await country.selectOption('CO')
+  await page.locator('#external-phone').fill('999')
+  const submitted = await page.evaluate(() => {
+    const owner = document.getElementById('phone-owner')
+    const readonlyOwner = document.getElementById('readonly-phone-owner')
+    if (!(owner instanceof HTMLFormElement) || !(readonlyOwner instanceof HTMLFormElement))
+      throw new Error('Expected external phone forms')
+    return {
+      editable: Object.fromEntries(new FormData(owner)),
+      readonly: Object.fromEntries(new FormData(readonlyOwner))
+    }
+  })
+  expect(submitted).toEqual({
+    editable: { 'phone-country': 'CO', 'external-phone': '999' },
+    readonly: { 'readonly-country': 'US', 'readonly-phone': '5550123' }
+  })
+  await page.getByRole('button', { name: 'Reset external phone' }).click()
+  await expect(country).toHaveValue('US')
+  await expect(page.locator('#external-phone')).toHaveValue('5550123')
+})

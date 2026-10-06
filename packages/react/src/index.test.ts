@@ -746,6 +746,7 @@ describe('@santi020k/lumen-react', () => {
 
     expect(end.min).toBe('2026-07-10')
     expect(end.value).toBe('2026-07-10')
+    expect(start.max).toBe('2026-07-10')
     expect(changes.at(-1)).toEqual({ end: '2026-07-10', start: '2026-07-10' })
   })
 
@@ -1061,6 +1062,22 @@ describe('@santi020k/lumen-react', () => {
     expect(firstHandle?.props.role).toBe('separator')
     expect(firstHandle?.props['aria-orientation']).toBe('vertical')
   })
+
+  test.each([Infinity, -Infinity, NaN, 1001, Number.MAX_SAFE_INTEGER])(
+    'rejects unsafe resizable panel counts before allocation (%s)', panelCount => {
+      expect(() => withHookDispatcher(() => useResizable({ panelCount }))).toThrow(RangeError)
+    }
+  )
+
+  test.each([[1000, 1000], [2.9, 2], [-1, 0], [0, 0]])(
+    'retains bounded resizable panel count normalization (%s)', (panelCount, expected) => {
+      const resizable = withHookDispatcher(() => useResizable({ panelCount }))
+
+      expect(resizable.panelIndexes).toHaveLength(expected)
+      expect(resizable.handleIndexes).toHaveLength(Math.max(0, expected - 1))
+      expect(resizable.sizes).toHaveLength(expected)
+    }
+  )
 
   test('exposes resizable keyboard sizing props', () => {
     const changes: number[][] = []

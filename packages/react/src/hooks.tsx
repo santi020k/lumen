@@ -1103,12 +1103,19 @@ export const useContextMenu = ({
     hidden: !open,
     id: menuId,
     onClick: event => {
-      if (
-        event.target instanceof HTMLElement &&
-        event.target.closest('[role="menuitem"]')
-      ) {
-        close()
+      const ElementType = event.currentTarget.ownerDocument.defaultView?.Element
+
+      if (!ElementType) return
+
+      let item: Element | null
+
+      try {
+        item = ElementType.prototype.closest.call(event.target, '[role="menuitem"]')
+      } catch {
+        return
       }
+
+      if (item) close()
     },
     onKeyDown: event => {
       if (event.defaultPrevented || event.nativeEvent.isComposing) return
@@ -1131,13 +1138,8 @@ export const useContextMenu = ({
 
       event.preventDefault()
 
-      const activeElement =
-        typeof document === 'undefined' ? null : document.activeElement
-
-      const currentIndex =
-        activeElement instanceof HTMLElement ?
-          items.indexOf(activeElement) :
-          -1
+      const activeElement = event.currentTarget.ownerDocument.activeElement
+      const currentIndex = items.findIndex(item => item === activeElement)
 
       items[
         getLoopedIndex(getLumenDirectionalKey(event.currentTarget, event.key), currentIndex, items.length, ['ArrowDown'])
@@ -2735,13 +2737,13 @@ const syncDateRangeInputs = (
 ): DateRangePickerChangeDetail => {
   if (!start || !end || start === end) return {}
 
-  syncDateInputConstraint(end, 'min', start.value)
-
-  syncDateInputConstraint(start, 'max', end.value)
-
   if (start.value && end.value && end.value < start.value) {
     end.value = start.value
   }
+
+  syncDateInputConstraint(end, 'min', start.value)
+
+  syncDateInputConstraint(start, 'max', end.value)
 
   return {
     ...(end.value ? { end: end.value } : {}),
@@ -3266,6 +3268,10 @@ export const useResizable = ({
   panelCount: panelCountOption = 2,
   resetOnDoubleClick = true
 }: ResizableOptions = {}): ResizableController => {
+  if (!Number.isFinite(panelCountOption) || panelCountOption > 1000) {
+    throw new RangeError('Resizable panelCount must be finite and at most 1000')
+  }
+
   const panelCount = Math.max(0, Math.floor(panelCountOption))
   const rootRef = useRef<HTMLDivElement | null>(null)
 

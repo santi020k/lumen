@@ -986,3 +986,8 @@ Adopted native controls retain checkbox, multiple-selection and file details in 
 
 See [composable form workflows](../../docs/powerful-forms.md). Applications retain schemas, financial
 rules, requests, draft storage, and authorization. Do not combine validation owners on one form.
+
+`useResizable` accepts finite `panelCount` values up to 1,000. Fractions round down and negative values
+normalize to zero; non-finite or larger counts throw `RangeError` before allocating panel state.
+Context-menu item activation and keyboard focus follow the menu's owning document, including iframe
+portals. Date-range synchronization clamps an earlier end date before updating both input constraints.

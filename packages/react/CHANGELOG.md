@@ -2,6 +2,8 @@
 
 ## 4.0.0
 
+- Preserve iframe context-menu activation and focus, update date constraints after end-date clamping, and reject non-finite or excessive resizable panel counts before allocating state.
+
 - Validate complete table column and restored state shapes before model or control construction.
 
 - Reject ambiguous table-view column identities, keep filter IDs distinct from toolbar controls and reset uncontrolled amounts to updated defaults without discarding active drafts.

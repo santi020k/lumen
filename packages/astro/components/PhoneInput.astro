@@ -157,6 +157,7 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
     ]}
     disabled={isDisabled || isReadOnly || normalizedCountries.length === 0}
     name={countryName}
+    form={inputProps.form}
   >
     {normalizedCountries.map(country => (
       <option
@@ -191,7 +192,7 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
     type="tel"
     value={renderedValue}
   />
-  {isReadOnly && !isDisabled && <input name={countryName} type="hidden" value={selectedCountryValue} />}
+  {isReadOnly && !isDisabled && <input name={countryName} form={inputProps.form} type="hidden" value={selectedCountryValue} />}
 </div>
 
 <span class="ui-phone-input__error" id={errorId} role="alert" hidden={!effectiveError}>{effectiveError}</span>

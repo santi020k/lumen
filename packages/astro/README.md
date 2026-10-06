@@ -559,7 +559,9 @@ Astro and React `PhoneInput` accept `disabled`, `readOnly`, `required`, `errorMe
 `showValidationError`, and `inputProps`. Their `id` targets the number input in v4; React also
 accepts `inputRef`. Web Components use `disabled`, `readonly`, `required`, `error-message`,
 `show-validation-error="false"`, and `input-id`, with native input attributes on the host.
-Both controls lock together and validation remains associated with the input.
+Both controls lock together and validation remains associated with the input. Astro forwards
+`inputProps.form` to the number input, country picker and read-only country fallback so external
+form submission and reset include every part.
 
 The `phone-input`, `phone-country`, and `country-flag` styling parts plus `--ui-phone-height`,
 `--ui-phone-padding`, and `--ui-phone-country-gap` replace consumer CSS overlays.
