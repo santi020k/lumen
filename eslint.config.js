@@ -5,6 +5,14 @@ import typescriptParser from '@typescript-eslint/parser'
 export default defineConfig({
   ignores: ['**/.build/**', '**/.swiftpm/**'],
   projects: {
+    'apps/motion': {
+      frameworks: {
+        astro: true
+      },
+      tailwind: {
+        noUnknownClasses: false
+      }
+    },
     'apps/docs': {
       frameworks: {
         astro: true
