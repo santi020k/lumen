@@ -1,5 +1,45 @@
 import { expect, test } from '@playwright/test'
 
+for (const width of [320, 390, 768, 1440]) {
+  test(`page menu stays compact and aligned with its trigger at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 900 })
+    await page.goto('/docs/visual-playground/motion')
+
+    const summary = page.locator('.docs-page-navigation summary')
+    const menu = page.getByRole('navigation', { name: 'On this page', exact: true })
+
+    await summary.press('Enter')
+    await expect(menu).toBeVisible()
+
+    const triggerBounds = await summary.boundingBox()
+    const menuBounds = await menu.boundingBox()
+    const links = await menu.getByRole('link').all()
+    const linkBounds = await Promise.all(links.map(link => link.boundingBox()))
+
+    if (!triggerBounds || !menuBounds) throw new Error('Missing page menu bounds')
+
+    expect(menuBounds.width).toBeLessThanOrEqual(352)
+    expect(Math.abs(menuBounds.x - triggerBounds.x)).toBeLessThanOrEqual(1)
+    expect(menuBounds.y - triggerBounds.y - triggerBounds.height).toBeGreaterThanOrEqual(4)
+    expect(menuBounds.x + menuBounds.width).toBeLessThanOrEqual(width)
+
+    let previousBottom = 0
+
+    for (const bounds of linkBounds) {
+      if (!bounds) throw new Error('Missing page menu link bounds')
+
+      expect(bounds.height).toBeGreaterThanOrEqual(44)
+      expect(bounds.y).toBeGreaterThanOrEqual(previousBottom)
+
+      previousBottom = bounds.y + bounds.height
+    }
+
+    await links[0]?.press('Escape')
+    await expect(menu).toBeHidden()
+    await expect(summary).toBeFocused()
+  })
+}
+
 for (const width of [390, 1440]) {
   test(`homepage final section meets the footer at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 })
