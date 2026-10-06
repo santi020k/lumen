@@ -4,11 +4,12 @@ const play = document.querySelector<HTMLButtonElement>('#play')
 const playbackStatus = document.querySelector<HTMLElement>('#playback-status')
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
 const themeButtons = document.querySelectorAll<HTMLButtonElement>('[data-time]')
+const duration = Number(frame?.dataset.duration)
 let selectedTime = 2
 let playing = false
 
 const isPlaybackTime = (time: unknown): time is number => (
-  typeof time === 'number' && Number.isFinite(time) && time >= 0 && time <= 20
+  typeof time === 'number' && Number.isFinite(time) && time >= 0 && time <= duration
 )
 
 const isPlaybackState = (state: unknown): state is { type: string, time: number, playing: boolean } => {
@@ -28,13 +29,13 @@ const send = (type: string, time?: number) => {
 const updateState = (time: number, active: boolean) => {
   playing = active
 
-  const index = [5, 8, 11].filter(start => time >= start).length
+  const index = [...themeButtons].filter(button => time >= Number(button.dataset.start)).length - 1
 
   themeButtons.forEach((button, buttonIndex) => {
     button.setAttribute('aria-pressed', String(buttonIndex === index))
   })
 
-  const themeName = ['Lumen Light', 'Lumen Dark', 'Glass', 'Studio'][index] ?? 'Lumen Light'
+  const themeName = themeButtons[index]?.dataset.name ?? 'Lumen Light'
 
   if (playbackStatus) playbackStatus.textContent = `${active ? 'Playing' : 'Paused'} · ${themeName}`
 }

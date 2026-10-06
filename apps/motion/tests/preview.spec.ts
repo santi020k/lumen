@@ -96,7 +96,7 @@ test('all compositions fit their canvases and can seek backwards deterministical
 
     const light = await page.screenshot()
 
-    await seek(12)
+    await seek(9)
 
     expect(await page.screenshot()).not.toEqual(light)
 
@@ -112,16 +112,16 @@ test('all compositions fit their canvases and can seek backwards deterministical
 
     await expect(lightScene.locator('.desktop-device')).toHaveAttribute('data-device', 'laptop')
 
-    for (const time of [2, 6, 9, 12]) {
+    for (const time of [2, 3.8, 6.6, 9]) {
       await seek(time)
 
-      const index = [5, 8, 11].filter(start => time >= start).length
+      const index = [2.6, 5, 8].filter(start => time >= start).length
       const screen = page.locator('.scene').nth(index).locator('.desktop-content .workspace')
 
       expect(await screen.evaluate(element => element.scrollHeight <= element.clientHeight)).toBe(true)
     }
 
-    await seek(9)
+    await seek(6.6)
 
     const glassScene = page.locator('.scene').nth(2)
 
@@ -131,7 +131,7 @@ test('all compositions fit their canvases and can seek backwards deterministical
 
     await expect(glassScene.locator('.workspace').first()).toHaveCSS('backdrop-filter', /blur/)
 
-    await seek(16)
+    await seek(11.2)
 
     const studioScene = page.locator('.scene').nth(3)
     const phone = studioScene.locator('.phone-screen')
@@ -167,11 +167,11 @@ test('all compositions fit their canvases and can seek backwards deterministical
 
     expect(Math.abs(centerY - stageCenterY)).toBeLessThan(2)
 
-    await seek(17)
+    await seek(11.2)
 
     expect(await page.locator('.scene').nth(3).locator('.composition-footer').evaluate(footer => footer.getBoundingClientRect().bottom <= window.innerHeight - 30)).toBe(true)
 
-    await seek(19.5)
+    await seek(14.5)
 
     await expect(page.locator('.end-card')).toHaveCSS('opacity', '1')
 
@@ -184,5 +184,39 @@ test('all compositions fit their canvases and can seek backwards deterministical
     await seek(2)
 
     expect(await page.locator('.scene').first().locator('.composition-footer').evaluate(footer => footer.getBoundingClientRect().bottom <= window.innerHeight - 60)).toBe(true)
+  }
+})
+
+test('standalone brand endings match the film and stop at their declared duration', async ({ page }) => {
+  for (const format of ['portrait', 'square', 'landscape']) {
+    await page.setViewportSize({ width: format === 'landscape' ? 1920 : 1080, height: format === 'portrait' ? 1920 : 1080 })
+
+    await page.goto(`/${format}/`)
+
+    await page.evaluate(() => document.fonts.ready)
+
+    await page.evaluate(() => {
+      window.__timelines?.['theme-pilot']?.pause().seek(14.5)
+    })
+
+    const ending = await page.screenshot()
+
+    await page.goto(`/outro/${format}/`)
+
+    await page.evaluate(() => document.fonts.ready)
+
+    await page.evaluate(() => {
+      window.__timelines?.['brand-outro']?.pause().seek(3)
+    })
+
+    expect(await page.screenshot()).toEqual(ending)
+
+    expect(await page.evaluate(() => window.__timelines?.['brand-outro']?.duration())).toBe(3.5)
+
+    await page.evaluate(() => {
+      window.postMessage({ type: 'lumen-motion-seek', time: 100 }, window.location.origin)
+    })
+
+    await expect.poll(() => page.evaluate(() => window.__timelines?.['brand-outro']?.time())).toBe(3.5)
   }
 })
