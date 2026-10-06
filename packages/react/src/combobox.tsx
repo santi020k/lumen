@@ -159,6 +159,37 @@ export const Combobox = ({
     if (typeof option?.scrollIntoView === 'function') option.scrollIntoView({ block: 'nearest' })
   }, [activeId])
 
+  useEffect(() => {
+    const input = rootRef.current?.querySelector('input')
+    const owner = input?.form
+    let active = true
+    let resetTimer: ReturnType<typeof globalThis.setTimeout> | undefined
+
+    const reset = (event: Event) => {
+      globalThis.clearTimeout(resetTimer)
+
+      resetTimer = globalThis.setTimeout(() => {
+        if (!active || event.defaultPrevented || !input?.isConnected) return
+
+        if (valueProp === undefined) setValue(String(defaultValue ?? ''))
+
+        setOpen(false)
+
+        setActiveValue(undefined)
+      })
+    }
+
+    owner?.addEventListener('reset', reset)
+
+    return () => {
+      active = false
+
+      globalThis.clearTimeout(resetTimer)
+
+      owner?.removeEventListener('reset', reset)
+    }
+  }, [defaultValue, valueProp])
+
   return (
     <div
       className={composeClassName('ui-combobox', wrapperClassName)}

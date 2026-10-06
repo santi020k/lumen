@@ -157,6 +157,13 @@ and Spanish defaults when `locales` is omitted.
 accessibility contract without replacing form state. Native-backed controls forward refs to their
 submitted DOM controls and work directly with React Hook Form's `register()`.
 
+Native form resets defer past the browser's default action and honor a cancelled `reset` event:
+`DatePicker`, `DateRangeInput`, `PhoneInput`, and `Combobox` only restore uncontrolled defaults when
+the reset is not prevented, and leave a controlled `value` untouched. `DatePicker` calendar
+selection fires the native `onChange` exactly once, matching typed input. `DateRangeInput` attaches
+its reset listener even without `name`, honoring an explicit `form` id as well as the nearest
+ancestor form.
+
 For controlled composites, install the optional adapter:
 
 ```bash
@@ -652,6 +659,10 @@ execution and use `ui:editor-command` only for completion notifications. React a
 `useRichTextEditor({ commandHandler })`. Disable native toolbar state syncing when the external
 engine owns it. See the [editor guidance](../../docs/ai-usage.md).
 
+With native state enabled, `useRichTextEditor` initializes toolbar toggle states on mount,
+including `aria-pressed`, before the first editing interaction. External command handlers
+disable this synchronization by default so the application can own toolbar state.
+
 ## Phone presentation in v4
 
 Phone inputs bundle the same offline flag artwork on every platform. The selected country shows
@@ -678,6 +689,10 @@ In v4, Combobox retains input focus and exposes its active option through `aria-
 Enter commits an active option; text editing and composition remain native. Escape dismisses one
 nested control at a time. See the [shared keyboard contract](../../docs/ai-usage.md#combobox-keyboard-behavior-in-v4)
 for dynamic options, controlled inputs and migration guidance.
+
+Combobox also supports native form reset: resetting the owning form restores an uncontrolled
+`defaultValue`, closes the open option list, and clears the active selection without emitting
+`onChange`. A controlled `value` is left unchanged.
 
 ## Content flow
 

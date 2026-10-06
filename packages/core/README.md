@@ -56,6 +56,14 @@ pnpm add @santi020k/lumen-core
 Core provides data and helpers; it does not register elements, render components, or load CSS.
 Use documented subpath exports such as `/charts`, `/phone`, and `/icon-data` for focused imports.
 
+## Data view state
+
+`serializeDataViewState` and `parseDataViewState` preserve named filters, including names that
+match built-in object properties, as ordinary own properties. Repeated filter parameters use
+the last value. `createDataViewRequestUrl` and `createDataViewServerRequest` append state to
+an endpoint's query before its fragment, preserving existing query parameters and fragment text.
+Import these helpers from the root or `@santi020k/lumen-core/data`.
+
 ## Appearance presets
 
 Use `createThemePreset('studio', { scheme: 'dark', overrides: { 'ui-radius': '0.75rem' } })` for a named starting point. Default, Studio and Glass share the [appearance contract](../../docs/appearance-presets.md).

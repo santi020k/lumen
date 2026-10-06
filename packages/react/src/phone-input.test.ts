@@ -97,9 +97,127 @@ test('restores the initial country and number on form reset', async () => {
   await act(async () => {
     await Promise.resolve()
     container.querySelector('form')?.reset()
+    await new Promise(resolve => setTimeout(resolve, 0))
   })
   expect(select.value).toBe('CO')
   expect(input.value).toBe('(601) 5550123')
+})
+
+test('honors a cancelled reset and keeps the edited uncontrolled phone number', async () => {
+  const container = document.createElement('div')
+
+  document.body.append(container)
+  const localRoot = createRoot(container)
+  const cancelReset = (event: Event) => {
+    event.preventDefault()
+  }
+
+  await act(async () => {
+    await Promise.resolve()
+    localRoot.render(createElement('form', { onReset: cancelReset }, createElement(PhoneInput, { defaultCountryValue: 'CO', defaultValue: '6015550123' })))
+  })
+  const form = container.querySelector('form')
+  const select = container.querySelector('select')
+
+  if (!form || !select) throw new Error('Missing phone controls')
+  await act(async () => {
+    await Promise.resolve()
+    select.value = 'US'
+    select.dispatchEvent(new Event('change', { bubbles: true }))
+  })
+  expect(select.value).toBe('US')
+  await act(async () => {
+    await Promise.resolve()
+    form.reset()
+    await new Promise(resolve => setTimeout(resolve, 0))
+  })
+  expect(select.value).toBe('US')
+  await act(async () => {
+    await Promise.resolve()
+    localRoot.unmount()
+  })
+  container.remove()
+})
+
+test('preserves a controlled phone value and skips onValueChange when the form resets', async () => {
+  const container = document.createElement('div')
+
+  document.body.append(container)
+  const localRoot = createRoot(container)
+  const controlledValue = { country, e164: '+576015550123', isValid: true, nationalNumber: '(601) 5550123' }
+  const onValueChange = vi.fn()
+
+  await act(async () => {
+    await Promise.resolve()
+    localRoot.render(createElement('form', null, createElement(PhoneInput, { value: controlledValue, onValueChange })))
+  })
+  const form = container.querySelector('form')
+  const input = container.querySelector('input')
+
+  if (!form || !input) throw new Error('Missing phone controls')
+  await act(async () => {
+    await Promise.resolve()
+    form.reset()
+    await new Promise(resolve => setTimeout(resolve, 0))
+  })
+  expect(input.value).toBe('(601) 5550123')
+  expect(onValueChange).not.toHaveBeenCalled()
+  await act(async () => {
+    await Promise.resolve()
+    localRoot.unmount()
+  })
+  container.remove()
+})
+
+test('ignores a pending reset once the number control disconnects before the timer fires', async () => {
+  const { container, select, input } = await mount({ defaultCountryValue: 'CO', defaultValue: '6015550123' })
+  await act(async () => {
+    await Promise.resolve()
+    select.value = 'US'
+    select.dispatchEvent(new Event('change', { bubbles: true }))
+  })
+  expect(select.value).toBe('US')
+  let valueAfterNativeReset = select.value
+  await act(async () => {
+    await Promise.resolve()
+    container.querySelector('form')?.reset()
+    valueAfterNativeReset = select.value
+    input.remove()
+    await new Promise(resolve => setTimeout(resolve, 0))
+  })
+  expect(select.value).toBe(valueAfterNativeReset)
+})
+
+test('a reset scheduled before unmount never applies against the unmounted control', async () => {
+  const container = document.createElement('div')
+
+  document.body.append(container)
+  const localRoot = createRoot(container)
+
+  await act(async () => {
+    await Promise.resolve()
+    localRoot.render(createElement('form', null, createElement(PhoneInput, { defaultCountryValue: 'CO', defaultValue: '6015550123' })))
+  })
+  const form = container.querySelector('form')
+  const select = container.querySelector('select')
+
+  if (!form || !select) throw new Error('Missing phone controls')
+  await act(async () => {
+    await Promise.resolve()
+    select.value = 'US'
+    select.dispatchEvent(new Event('change', { bubbles: true }))
+  })
+  const writes = vi.spyOn(select, 'value', 'set')
+  await act(async () => {
+    await Promise.resolve()
+    form.reset()
+    writes.mockClear()
+    localRoot.unmount()
+    await new Promise(resolve => setTimeout(resolve, 0))
+  })
+  expect(writes).not.toHaveBeenCalled()
+  writes.mockRestore()
+  container.remove()
 })
 
 test('only valid read-only numbers become telephone links', async () => {

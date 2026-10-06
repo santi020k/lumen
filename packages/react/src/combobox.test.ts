@@ -3,7 +3,7 @@
 import { act, createElement, useState } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 
-import { afterEach, describe, expect, test } from 'vitest'
+import { afterEach, describe, expect, test, vi } from 'vitest'
 
 import { Combobox, type ComboboxProps, usePopover } from './index.js'
 
@@ -63,6 +63,48 @@ const renderCombobox = (props: Partial<ComboboxProps> = {}) => {
   const options = [...container.querySelectorAll<HTMLButtonElement>('[role="option"]')]
 
   return { container, root, input, listbox, options }
+}
+
+const setInputValue = (input: HTMLInputElement, value: string): void => {
+  const descriptor = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')
+
+  if (!descriptor?.set) throw new Error('Expected native input value setter')
+
+  descriptor.set.call(input, value)
+  input.dispatchEvent(new Event('input', { bubbles: true }))
+}
+
+const renderComboboxForm = (formProps: Record<string, unknown>, props: Partial<ComboboxProps> = {}) => {
+  const container = document.createElement('div')
+  const root = createRoot(container)
+
+  document.body.append(container)
+
+  mounted.push({ container, root })
+
+  act(() => {
+    root.render(createElement('form', formProps, createElement(Combobox, {
+      label: 'Framework',
+      list: 'framework-options',
+      options: ['Astro', 'React', 'Web Components'],
+      ...props
+    })))
+  })
+
+  const input = requireInput(container)
+  const listbox = requireListbox(container)
+  const form = container.querySelector('form')
+
+  if (!(form instanceof HTMLFormElement)) throw new Error('Expected form')
+
+  return { container, root, input, listbox, form }
+}
+
+const flushReset = async (form: HTMLFormElement): Promise<void> => {
+  await act(async () => {
+    form.reset()
+    await new Promise(resolve => setTimeout(resolve, 0))
+  })
 }
 
 afterEach(() => {
@@ -248,4 +290,62 @@ test('nested popovers leave handled Escape and text editing to the inner control
   expect(document.activeElement).toBe(innerTrigger)
   await press(innerTrigger, 'Escape')
   expect(triggers.map(trigger => trigger.getAttribute('aria-expanded'))).toEqual(['false', 'false'])
+})
+
+test('restores the default value and closes options on an uncontrolled form reset', async () => {
+  const { input, listbox, form } = renderComboboxForm({}, { defaultValue: 'React' })
+
+  act(() => {
+    input.focus()
+  })
+  await press(input, 'ArrowDown')
+  act(() => {
+    setInputValue(input, 'Web')
+  })
+  expect(input.value).toBe('Web')
+  expect(listbox.hidden).toBe(false)
+  await flushReset(form)
+  expect(input.value).toBe('React')
+  expect(listbox.hidden).toBe(true)
+  expect(input.hasAttribute('aria-activedescendant')).toBe(false)
+})
+
+test('honors a cancelled reset and keeps the edited uncontrolled value', async () => {
+  const cancelReset = (event: Event) => {
+    event.preventDefault()
+  }
+  const { input, form } = renderComboboxForm({ onReset: cancelReset }, { defaultValue: 'React' })
+
+  act(() => {
+    setInputValue(input, 'Web Components')
+  })
+  expect(input.value).toBe('Web Components')
+  await flushReset(form)
+  expect(input.value).toBe('Web Components')
+})
+
+test('preserves a controlled value and does not emit onChange when the form resets', async () => {
+  const onChange = vi.fn()
+  const { input, form, listbox } = renderComboboxForm({}, { value: 'React', onChange })
+
+  act(() => {
+    input.focus()
+  })
+  await press(input, 'ArrowDown')
+  expect(listbox.hidden).toBe(false)
+  await flushReset(form)
+  expect(input.value).toBe('React')
+  expect(onChange).not.toHaveBeenCalled()
+  expect(listbox.hidden).toBe(true)
+})
+
+test('ignores a reset scheduled before the combobox unmounts', async () => {
+  const { form, root, container } = renderComboboxForm({}, { defaultValue: 'React' })
+
+  await act(async () => {
+    form.reset()
+    root.unmount()
+    await new Promise(resolve => setTimeout(resolve, 0))
+  })
+  expect(container.childNodes).toHaveLength(0)
 })

@@ -1,5 +1,5 @@
 import type { ComponentPropsWithRef, JSX, RefObject } from 'react'
-import { useCallback, useRef } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 
 import {
   executeLumenRichTextCommand,
@@ -126,6 +126,10 @@ export const useRichTextEditor = ({
   onCommand
 }: RichTextEditorOptions = {}): RichTextEditorController => {
   const rootRef = useRef<HTMLElement | null>(null)
+
+  useEffect(() => {
+    syncRichTextCommandStates(rootRef.current)
+  }, [nativeState])
 
   const emitChange = useCallback(
     (root: HTMLElement | null) => {

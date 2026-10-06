@@ -2751,7 +2751,10 @@ export const DatePicker = ({
     onValueChange?.(nextValue)
 
     if (nativeInputRef.current) {
-      nativeInputRef.current.value = nextValue
+      // Use the native setter so React's change event observes the selected value.
+      const descriptor = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')
+
+      descriptor?.set?.call(nativeInputRef.current, nextValue)
 
       nativeInputRef.current.dispatchEvent(
         new Event('input', { bubbles: true })
@@ -4347,19 +4350,29 @@ const MetadataPhoneInput = ({
 
   useEffect(() => {
     const form = numberRef.current?.form
+    let active = true
+    let resetTimer: ReturnType<typeof globalThis.setTimeout> | undefined
 
-    if (!form || value !== undefined) return
+    const reset = (event: Event): void => {
+      globalThis.clearTimeout(resetTimer)
 
-    const reset = (): void => {
-      const country = resolveReactPhoneInputCountry(metadataCountries, defaultCountryValue, locale, undefined)
+      resetTimer = globalThis.setTimeout(() => {
+        if (!active || event.defaultPrevented || !numberRef.current?.isConnected || value !== undefined) return
 
-      setInternalValue(resolveReactPhoneInputValue(metadataCountries, country, defaultValue ?? '', phoneOptions))
+        const country = resolveReactPhoneInputCountry(metadataCountries, defaultCountryValue, locale, undefined)
+
+        setInternalValue(resolveReactPhoneInputValue(metadataCountries, country, defaultValue ?? '', phoneOptions))
+      })
     }
 
-    form.addEventListener('reset', reset)
+    form?.addEventListener('reset', reset)
 
     return () => {
-      form.removeEventListener('reset', reset)
+      active = false
+
+      globalThis.clearTimeout(resetTimer)
+
+      form?.removeEventListener('reset', reset)
     }
   }, [defaultCountryValue, defaultValue, locale, metadataCountries, phoneOptions, value])
 
