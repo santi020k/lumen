@@ -243,6 +243,9 @@ jobs:
       - name: Check local motion previews
         run: pnpm --filter @santi020k/lumen-motion build && pnpm --filter @santi020k/lumen-motion test
 
+      - name: Verify primitive motion and reduced-motion behavior
+        run: pnpm run test:motion
+
       - name: Enforce web unit coverage
         run: pnpm run test:web-coverage
 

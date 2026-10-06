@@ -4,6 +4,7 @@ import type { View } from 'react-native'
 
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker'
 import { getLumenPhoneCountry } from '@santi020k/lumen-core'
+import type { LumenMediaViewportValue } from '@santi020k/lumen-core/media-workspace'
 import { createRoot, type Root, type TestInstance } from 'test-renderer'
 import { afterEach, describe, expect, test, vi } from 'vitest'
 
@@ -2713,4 +2714,43 @@ test('native media inspection actions request bounded values and respect disable
     const state = readProp(instance, 'accessibilityState')
     return typeof state === 'object' && state !== null && 'disabled' in state && state.disabled === true
   })).toBe(true)
+})
+
+test.each([true, false])('media pinch-to-pan preserves the host-accepted zoom (accept=%s)', async accept => {
+  const change = vi.fn<(value: LumenMediaViewportValue) => void>()
+  const Harness = () => {
+    const [value, setValue] = useState<LumenMediaViewportValue>({ zoom: 2, x: 0, y: 0 })
+
+    return (
+      <LumenMediaViewport
+        label="Inspect gesture"
+        value={value}
+        onValueChange={next => {
+          change(next)
+          if (accept) setValue(next)
+        }}
+      >
+        <LumenText>Photo</LumenText>
+      </LumenMediaViewport>
+    )
+  }
+  const root = await renderNative(<Harness />)
+  const dispatch = async (property: string, nativeEvent: unknown): Promise<void> => {
+    const handler = readProp(findByAccessibilityLabel(root, 'Inspect gesture'), property)
+    if (typeof handler !== 'function') throw new Error(`Missing media ${property} callback`)
+    await runNativeAction(() => {
+      Reflect.apply(handler, undefined, [{ nativeEvent }])
+    })
+  }
+  const touch = (pageX: number, pageY: number) => ({ pageX, pageY })
+
+  await dispatch('onLayout', { layout: { width: 200, height: 100 } })
+  await dispatch('onResponderGrant', { pageX: 50, pageY: 50, touches: [touch(50, 50), touch(100, 50)] })
+  await dispatch('onResponderMove', { pageX: 50, pageY: 50, touches: [touch(50, 50), touch(150, 50)] })
+  expect(change).toHaveBeenLastCalledWith({ zoom: 4, x: 0, y: 0 })
+  change.mockClear()
+  await dispatch('onResponderMove', { pageX: 150, pageY: 50, touches: [touch(150, 50)] })
+  expect(change).not.toHaveBeenCalled()
+  await dispatch('onResponderMove', { pageX: 175, pageY: 50, touches: [touch(175, 50)] })
+  expect(change).toHaveBeenLastCalledWith({ zoom: accept ? 4 : 2, x: accept ? 1 / 12 : 0.25, y: 0 })
 })

@@ -101,6 +101,59 @@ test('a controlled selection persists through re-render and source updates', () 
   expect(path('CO').classList.contains('ui-world-map__country--selected')).toBe(false)
 })
 
+test('controlled country clearing requests an empty value and waits for the host', () => {
+  const onCountrySelect = vi.fn()
+  const onSelectedCountryChange = vi.fn<(countryId: string) => void>()
+  const props = { countries, label: 'World map', onCountrySelect, onSelectedCountryChange }
+
+  act(() => {
+    root.render(createElement(WorldMap, { ...props, selectedCountry: 'CO' }))
+  })
+  const select = container.querySelector('select')
+  if (!select) throw new Error('Expected a select control')
+
+  act(() => {
+    select.value = ''
+    select.dispatchEvent(new Event('change', { bubbles: true }))
+  })
+  expect(onSelectedCountryChange).toHaveBeenCalledExactlyOnceWith('')
+  expect(onCountrySelect).not.toHaveBeenCalled()
+  expect(select.value).toBe('CO')
+  expect(path('CO').classList.contains('ui-world-map__country--selected')).toBe(true)
+
+  act(() => {
+    root.render(createElement(WorldMap, { ...props, selectedCountry: '' }))
+  })
+  expect(select.value).toBe('')
+  expect(container.querySelector('.ui-world-map__selection')?.getAttribute('d')).toBe('')
+  expect(container.querySelector('.ui-world-map__country--selected')).toBeNull()
+
+  act(() => {
+    path('JP').dispatchEvent(new MouseEvent('click', { bubbles: true }))
+  })
+  expect(onSelectedCountryChange).toHaveBeenLastCalledWith('JP')
+  expect(onCountrySelect).toHaveBeenCalledExactlyOnceWith({ countryId: 'JP', highlighted: false, label: 'Japan' })
+  expect(select.value).toBe('')
+})
+
+test('uncontrolled clearing notifies the host and removes the selected country', () => {
+  const onSelectedCountryChange = vi.fn<(countryId: string) => void>()
+
+  act(() => {
+    root.render(createElement(WorldMap, { countries, label: 'Map', defaultSelectedCountry: 'CO', onSelectedCountryChange }))
+  })
+  const select = container.querySelector('select')
+  if (!select) throw new Error('Expected a select control')
+
+  act(() => {
+    select.value = ''
+    select.dispatchEvent(new Event('change', { bubbles: true }))
+  })
+  expect(onSelectedCountryChange).toHaveBeenCalledExactlyOnceWith('')
+  expect(select.value).toBe('')
+  expect(container.querySelector('.ui-world-map__country--selected')).toBeNull()
+})
+
 test('marks highlighted countries, separate from selection, and lists their names', () => {
   act(() => {
     root.render(createElement(WorldMap, { countries, highlightedCountries: ['co'], label: 'World map' }))

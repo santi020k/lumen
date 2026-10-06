@@ -18,6 +18,24 @@ const [ci, canary, release, docsManifestSource, versionPackages] = await Promise
   readRepositoryFile('scripts/version-packages.mjs')
 ])
 
+test('primitive motion has browser coverage for ordinary and release pull requests', () => {
+  const ciBrowser = ci.slice(ci.indexOf('\n  browser-contracts:\n'), ci.indexOf('\n  react-native-captures:\n'))
+  const releaseBrowser = canary.slice(canary.indexOf('\n  browser:\n'))
+  const trigger = canary.slice(canary.indexOf('  pull_request:'), canary.indexOf('  workflow_dispatch:'))
+
+  assert.match(ciBrowser, /run: pnpm run test:motion/u)
+
+  assert.match(ciBrowser, /browsers: chromium firefox webkit/u)
+
+  assert.match(releaseBrowser, /browsers: chromium webkit/u)
+
+  assert.match(releaseBrowser, /if: matrix\.shard == 1\n\s+run: pnpm run test:motion/u)
+
+  assert.match(trigger, /- "tests\/motion\/\*\*"/u)
+
+  assert.match(trigger, /- "playwright\.motion\.config\.ts"/u)
+})
+
 test('prepared package versions trigger publication without pending Changesets', async () => {
   const pushConfiguration = release.slice(release.indexOf('  push:'), release.indexOf('  workflow_dispatch:'))
 

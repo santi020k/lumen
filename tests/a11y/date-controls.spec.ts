@@ -202,14 +202,14 @@ test('ImageComparison follows reassigned and adopted form resets without canceli
     input.value = '80'
     input.dispatchEvent(new Event('input', { bubbles: true }))
     form.reset()
-    await Promise.resolve()
+    await new Promise(resolve => setTimeout(resolve, 0))
     const reset = frame.style.getPropertyValue('--ui-image-comparison-position')
 
     input.value = '80'
     input.dispatchEvent(new Event('input', { bubbles: true }))
     form.addEventListener('reset', event => { event.preventDefault() }, { once: true })
     form.reset()
-    await Promise.resolve()
+    await new Promise(resolve => setTimeout(resolve, 0))
     const canceled = frame.style.getPropertyValue('--ui-image-comparison-position')
     const iframe = document.createElement('iframe')
 
@@ -236,7 +236,7 @@ test('ImageComparison follows reassigned and adopted form resets without canceli
     if (!form) throw new Error('Missing adopted form')
 
     form.reset()
-    await Promise.resolve()
+    await new Promise(resolve => setTimeout(resolve, 0))
 
     return form.querySelector<HTMLElement>('.ui-image-comparison__frame')?.style.getPropertyValue('--ui-image-comparison-position')
   })).toBe('25%')

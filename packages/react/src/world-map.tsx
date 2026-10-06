@@ -221,6 +221,7 @@ export interface WorldMapProps extends Omit<ComponentPropsWithoutRef<'figure'>, 
   listLabel?: string
   markers?: readonly LumenWorldMapMarker[]
   onCountrySelect?: (detail: LumenWorldMapSelectDetail) => void
+  onSelectedCountryChange?: (countryId: string) => void
   selectedCountry?: string
   variant?: LumenWorldMapVariant
 }
@@ -240,6 +241,7 @@ export const WorldMap = ({
   listLabel = 'Choose a country',
   markers,
   onCountrySelect,
+  onSelectedCountryChange,
   selectedCountry,
   variant = 'dotted',
   initialView,
@@ -298,6 +300,8 @@ export const WorldMap = ({
     if (isCurrentCountry(country, selectedId)) return
 
     if (selectedCountry === undefined) setInternalSelectedId(country?.id)
+
+    onSelectedCountryChange?.(country?.id ?? '')
 
     if (country) onCountrySelect?.(createLumenWorldMapSelectDetail(country, highlightedSet, labels))
   }
