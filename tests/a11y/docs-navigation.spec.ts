@@ -26,17 +26,19 @@ for (const width of [390, 1024, 1440]) {
         await expect(disclosure).toHaveJSProperty('open', open)
         await expect.poll(async () => summary.evaluate(element => {
           const background = getComputedStyle(element, '::before')
-          const arrow = getComputedStyle(element, '::after')
+          const arrow = element.querySelector('.docs-page-navigation__chevron')
           const bounds = element.getBoundingClientRect()
           const current = element.querySelector('[data-docs-page-current]')
-          if (!current) throw new Error('Missing current section label')
-          const gap = bounds.right - current.getBoundingClientRect().right
+          if (!current || !arrow) throw new Error('Missing section label or arrow')
+          const arrowBounds = arrow.getBoundingClientRect()
+          const gap = arrowBounds.left - current.getBoundingClientRect().right
           return {
-            backgroundHidden: background.display === 'none',
-            arrowFollowsLabel: arrow.position === 'static' && gap >= 12 && gap <= 40,
+            backgroundHidden: background.content === 'none',
+            arrowFollowsLabel: gap >= 8 && gap <= 12,
+            arrowCentered: Math.abs(arrowBounds.y + arrowBounds.height / 2 - bounds.y - bounds.height / 2) < 1,
             touchTarget: bounds.height >= 44
           }
-        })).toEqual({ backgroundHidden: true, arrowFollowsLabel: true, touchTarget: true })
+        })).toEqual({ backgroundHidden: true, arrowFollowsLabel: true, arrowCentered: true, touchTarget: true })
       }
       await summary.press('Escape')
       await expect(disclosure).toHaveJSProperty('open', false)
