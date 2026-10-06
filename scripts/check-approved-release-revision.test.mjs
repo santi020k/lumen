@@ -640,3 +640,40 @@ test("rejects an unrelated reviewed revision with different content", async () =
     await rm(directory, { force: true, recursive: true });
   }
 });
+
+test('v4 approval validates a large bundled snapshot and still rejects payload tampering', async () => {
+  const { directory } = await mirrorCandidate();
+
+  try {
+    const path = resolve(directory, 'packages/mcp/data/lumen-data.json');
+    const data = JSON.parse(await readFile(path, 'utf8'));
+
+    data.documentation = 'reviewed content '.repeat(150_000);
+
+    await writeFile(path, JSON.stringify(data));
+
+    const reviewedRevision = commit(directory, 'test: include production-sized bundled documentation');
+
+    await approveCandidate(directory, reviewedRevision, 4);
+
+    const approved = runChecker(directory, [], 4);
+
+    assert.equal(approved.status, 0, approved.stderr);
+
+    const changed = JSON.parse(await readFile(path, 'utf8'));
+
+    changed.documentation += 'unreviewed content';
+
+    await writeFile(path, JSON.stringify(changed));
+
+    commit(directory, 'test: tamper with large bundled documentation');
+
+    const rejected = runChecker(directory, [], 4);
+
+    assert.notEqual(rejected.status, 0);
+
+    assert.match(rejected.stderr, /Only approval metadata may change/);
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});

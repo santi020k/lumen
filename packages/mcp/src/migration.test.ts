@@ -1,5 +1,6 @@
 import { describe, expect, test } from 'vitest'
 
+import { loadLumenData } from './data.js'
 import { getMigration } from './migration.js'
 
 const webChanges = [
@@ -18,9 +19,19 @@ describe('v4 migration inventory', () => {
       const result = getMigration({ packageName })
 
       expect(result.data.changes.map(change => change.id)).toEqual(expect.arrayContaining(webChanges))
-      expect(result.data.status).toBe('draft')
+      expect(result.data.status).toBe(loadLumenData().migration.status)
       expect(result.text).toContain('visualSize')
     }
+  })
+
+  test.each(['draft', 'approved'])('preserves the %s publication status without changing inventory', status => {
+    const data = loadLumenData()
+    const fixture = { ...data, migration: { ...data.migration, status } }
+    const result = getMigration({}, fixture)
+
+    expect(result.data.status).toBe(status)
+    expect(result.text).toContain(`migration (${status})`)
+    expect(result.data.changes).toHaveLength(data.migration.changes.length)
   })
 
   test('keeps web-only renames out of Swift migration results', () => {

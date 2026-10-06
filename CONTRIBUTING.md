@@ -168,6 +168,8 @@ The revision gate permits only contract status/approval metadata and those two g
 mirrors to change. Both mirrors must match the approved contract; all migration rules and the rest
 of the MCP snapshot must remain identical to the reviewed revision. Commit the approval and mirrors
 together, then run `node scripts/check-approved-release-revision.mjs` from the clean committed tree.
+The integrity check reads each generated mirror with a bounded 16 MiB subprocess buffer, including
+the full MCP snapshot; oversized or unreadable mirrors fail publication.
 
 1. Each user-visible change includes a Changeset. Use the installed generator to prepare package
    versions and changelogs, including any generated `changeset-release/main` work in the selected

@@ -108,6 +108,7 @@ const runGit = (arguments_, label) => {
   const result = spawnSync("git", arguments_, {
     cwd: repository,
     encoding: "utf8",
+    maxBuffer: 16 * 1024 * 1024,
   });
 
   assert.equal(result.status, 0, label);
