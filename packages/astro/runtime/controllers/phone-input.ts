@@ -22,7 +22,8 @@ const bindPhoneResets = (input: HTMLInputElement): void => {
   resetRoots.add(scope)
 
   scope.addEventListener('reset', event => {
-    queueMicrotask(() => {
+    // Wait for the native reset default action.
+    setTimeout(() => {
       if (event.defaultPrevented) return
 
       for (const current of scope.querySelectorAll<HTMLInputElement>('.ui-phone-input__number')) {

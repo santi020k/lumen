@@ -12,7 +12,7 @@ const bindReset = (node: Node) => {
   roots.add(scope)
 
   scope.addEventListener('reset', event => {
-    queueMicrotask(() => {
+    setTimeout(() => {
       if (event.defaultPrevented) return
 
       for (const input of scope.querySelectorAll<HTMLInputElement>('[data-ui-image-comparison-input]')) {

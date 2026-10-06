@@ -954,6 +954,25 @@ behaviorTest(['FileUpload'], 'FileUpload reports selected files and updates its 
 
   await expect(root).toHaveAttribute('data-state', 'selected')
   await expect(root.locator('[data-ui-file-upload-files]')).toHaveText('avatar.png')
+  await root.evaluate(element => {
+    const form = document.createElement('form')
+    const reset = document.createElement('button')
+
+    element.before(form)
+    form.append(element)
+    reset.type = 'reset'
+    reset.textContent = 'Reset upload'
+    form.append(reset)
+    form.addEventListener('reset', event => { event.preventDefault() }, { once: true })
+  })
+  const reset = page.getByRole('button', { name: 'Reset upload' })
+
+  await reset.click()
+  await expect(root.locator('[data-ui-file-upload-files]')).toHaveText('avatar.png')
+  await reset.click()
+  await expect(root).toHaveAttribute('data-state', 'idle')
+  await expect(root.locator('[data-ui-file-upload-files]')).toBeEmpty()
+  expect(await input.evaluate(element => element instanceof HTMLInputElement && element.files?.length)).toBe(0)
 })
 
 behaviorTest(['Anchor'], 'Anchor initializes section tracking for in-page links', async ({ page }) => {
@@ -1363,4 +1382,37 @@ test('PhoneInput keeps external editable and readonly form submission and reset 
   await page.getByRole('button', { name: 'Reset external phone' }).click()
   await expect(country).toHaveValue('US')
   await expect(page.locator('#external-phone')).toHaveValue('5550123')
+})
+
+test('PhoneInput synchronizes enhanced metadata after a real reset-button click', async ({ page }) => {
+  await openPreview(page, 'phone-input')
+  const root = page.locator('#ex-phone').locator('..')
+  const input = root.locator('.ui-phone-input__number')
+  const country = root.locator('select')
+  const code = root.locator('[data-ui-phone-code]')
+
+  await expect(code).toHaveText('+57')
+  await root.evaluate(element => {
+    const form = document.createElement('form')
+    const reset = document.createElement('button')
+
+    element.before(form)
+    form.append(element)
+    reset.type = 'reset'
+    reset.textContent = 'Reset enhanced phone'
+    form.append(reset)
+    form.addEventListener('reset', event => { event.preventDefault() }, { once: true })
+  })
+  await input.fill('+1 212 555 0123')
+  await expect(country).toHaveValue('US')
+  await expect(code).toHaveText('+1')
+  const reset = page.getByRole('button', { name: 'Reset enhanced phone' })
+
+  await reset.click()
+  await expect(code).toHaveText('+1')
+  await reset.click()
+  await expect(country).toHaveValue('CO')
+  await expect(code).toHaveText('+57')
+  await expect(input).toHaveValue('')
+  await expect(root).toHaveAttribute('data-e164', '')
 })
