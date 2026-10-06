@@ -73,14 +73,20 @@ export const resolveLumenMediaMaxZoom = (maxZoom = 4): number => (
 )
 
 const panFraction = (value = 0): number => Number.isFinite(value) ? Math.max(-1, Math.min(1, value)) : 0
+const viewportNumber = (value: unknown, fallback = 0): number => typeof value === 'number' && Number.isFinite(value) ? value : fallback
+const isViewportRecord = (value: unknown): value is Record<string, unknown> => typeof value === 'object' && value !== null && !Array.isArray(value)
 
 export const normalizeLumenMediaViewport = (
-  value: Partial<LumenMediaViewportValue> = {}, maxZoom = 4
+  value: unknown = {}, maxZoom = 4
 ): LumenMediaViewportValue => {
-  const limit = resolveLumenMediaMaxZoom(maxZoom)
-  const zoom = value.zoom !== undefined && Number.isFinite(value.zoom) ? Math.min(limit, Math.max(1, value.zoom)) : 1
+  if (!isViewportRecord(value)) return { x: 0, y: 0, zoom: 1 }
 
-  return { x: zoom === 1 ? 0 : panFraction(value.x), y: zoom === 1 ? 0 : panFraction(value.y), zoom }
+  const limit = resolveLumenMediaMaxZoom(maxZoom)
+  const zoom = Math.min(limit, Math.max(1, viewportNumber(value.zoom, 1)))
+  const x = panFraction(viewportNumber(value.x))
+  const y = panFraction(viewportNumber(value.y))
+
+  return { x: zoom === 1 ? 0 : x, y: zoom === 1 ? 0 : y, zoom }
 }
 
 export const applyLumenMediaViewportAction = (

@@ -1,7 +1,7 @@
 'use client'
 
 import type { ReactNode } from 'react'
-import { useId, useMemo, useState } from 'react'
+import { useEffect, useId, useMemo, useRef, useState } from 'react'
 
 import type { ColumnDef, ReactTable } from '@tanstack/react-table'
 import {
@@ -291,6 +291,23 @@ const useViewModel = <T extends { id: string },>({
   const count = matchingCount(table, mode, rowCount)
   const pages = Math.max(1, Math.ceil(count / state.pagination.pageSize))
   const pageIndex = Math.min(state.pagination.pageIndex, pages - 1)
+  const lastPageRequestRef = useRef<string | undefined>(undefined)
+
+  useEffect(() => {
+    if (mode !== 'server' || pageIndex === state.pagination.pageIndex) {
+      lastPageRequestRef.current = undefined
+
+      return
+    }
+
+    const request = `${state.pagination.pageIndex}:${pageIndex}:${state.pagination.pageSize}`
+
+    if (lastPageRequestRef.current === request) return
+
+    lastPageRequestRef.current = request
+
+    update({ pagination: { ...state.pagination, pageIndex } })
+  }, [mode, pageIndex, state.pagination, update])
 
   // Clamp the rendered client page after deletion/filter refresh without dispatching during render.
   const visibleRows = mode === 'server' ?

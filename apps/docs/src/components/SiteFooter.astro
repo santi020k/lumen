@@ -1,116 +1,58 @@
 ---
 import {
-  Badge,
   ButtonLink,
-  CodeTabs,
   Icon,
   Link,
-  Marker,
   Separator
 } from '@santi020k/lumen-astro'
-
-import type { DocsPlatformId } from '../data/platforms'
-import { platformGuides } from '../data/platforms'
-import { documentedComponentCount } from '../data/site-metadata'
 
 import GitHubIcon from './GitHubIcon.astro'
 import LumenLogo from './LumenLogo.astro'
 
 const footerGroups = [
   {
+    title: 'Get started',
     links: [
-      { href: '/docs', label: 'Getting started' },
-      { href: '/guides', label: 'Guides' },
+      { href: '/docs', label: 'Introduction' },
       { href: '/docs/components', label: 'Components' },
       { href: '/templates', label: 'Templates' },
-      { href: '/community', label: 'Community' },
-      { href: '/teams', label: 'For teams' },
-      { href: '/docs/icons', label: 'Icons' }
-    ],
-    title: 'Explore'
+      { href: '/docs/foundations', label: 'Foundations' }
+    ]
   },
   {
+    title: 'Platforms',
     links: [
-      { href: '/docs/web', label: 'Web' },
       { href: '/docs/frameworks/astro', label: 'Astro' },
       { href: '/docs/frameworks/react', label: 'React' },
       { href: '/docs/frameworks/elements', label: 'Web Components' },
       { href: '/docs/react-native', label: 'React Native' },
-      { href: '/docs/apple', label: 'Apple / SwiftUI' },
-      { href: '/docs/android', label: 'Android / Compose' },
-      { href: '/docs/foundations', label: 'Foundations' }
-    ],
-    title: 'Platforms'
+      { href: '/docs/apple', label: 'SwiftUI' },
+      { href: '/docs/android', label: 'Compose' }
+    ]
   },
   {
+    title: 'Resources',
     links: [
+      { href: '/guides', label: 'Guides' },
       { href: '/docs/figma', label: 'Figma' },
       { href: '/docs/ai-skill', label: 'AI skill' },
       { href: '/docs/mcp', label: 'MCP server' },
-      { href: '/docs/brand-icons', label: 'Brand icons' },
-      { href: '/docs/theme-playground', label: 'Theme playground' }
-    ],
-    title: 'Tooling'
+      { href: '/changelog', label: 'Changelog' }
+    ]
   },
   {
+    title: 'Community',
     links: [
       { href: 'https://github.com/santi020k/lumen', label: 'GitHub' },
-      { href: 'https://www.npmjs.com/package/@santi020k/lumen', label: 'npm' },
-      { href: '/changelog', label: 'Changelog' },
+      { href: '/community', label: 'Community' },
       { href: '/support', label: 'Feedback & support' },
       { href: '/support#roadmap', label: 'Roadmap' },
-      { href: '/privacy', label: 'Privacy' },
-      { href: '/terms', label: 'Terms' },
-      { href: '/guides/rss.xml', label: 'Guides RSS' },
-      {
-        href: 'https://www.figma.com/community/file/1662337342676541513',
-        label: 'Figma Community'
-      },
-      { href: 'https://santi020k.com', label: 'Santi020k' }
-    ],
-    title: 'Resources'
+      { href: '/teams', label: 'For teams' }
+    ]
   }
 ] as const
 
 const currentYear = new Date().getFullYear()
-const componentCount = documentedComponentCount
-
-const webInstallers = [
-  {
-    command: 'pnpm add @santi020k/lumen-astro',
-    label: 'Astro'
-  },
-  {
-    command: 'pnpm add @santi020k/lumen-react',
-    label: 'React'
-  },
-  {
-    command: 'pnpm add @santi020k/lumen-elements',
-    label: 'Elements'
-  }
-] as const
-
-const installTabs = webInstallers.map(framework => ({
-  code: framework.command,
-  label: framework.label,
-  language: 'bash',
-  value: framework.label.toLowerCase()
-}))
-
-const platformPresentation = {
-  android: { icon: 'bot', runtime: 'Jetpack Compose' },
-  apple: { icon: 'apple', runtime: 'SwiftUI' },
-  foundations: { icon: 'layers-3', runtime: 'Shared tokens' },
-  'react-native': { icon: 'smartphone', runtime: 'React Native' },
-  web: { icon: 'panels-top-left', runtime: 'Astro · React · Elements' }
-} satisfies Record<DocsPlatformId, { icon: string, runtime: string }>
-
-const footerPlatforms = platformGuides.map(guide => ({
-  ...guide,
-  ...platformPresentation[guide.id]
-}))
-
-const productPlatformCount = platformGuides.filter(guide => guide.id !== 'foundations').length
 ---
 
 <footer class="docs-site-footer">
@@ -124,20 +66,10 @@ const productPlatformCount = platformGuides.filter(guide => guide.id !== 'founda
       class="docs-site-footer__statement"
     >
       <div class="docs-site-footer__statement-copy">
-        <div class="docs-site-footer__eyebrow">
-          <span class="docs-site-footer__kicker">
-            <Icon name="sparkles" size="sm" />
-            Build with Lumen
-          </span>
-          <Badge variant="outline">{componentCount} primitives</Badge>
-        </div>
-        <h2 id="docs-site-footer-title">
-          Pick your platform.<br /><em>Keep your system.</em>
-        </h2>
-        <p>
-          Build for the web, React Native, Apple platforms, or Android with one
-          semantic design language and native behavior in every environment.
-        </p>
+        <span class="docs-site-footer__kicker">Your next interface starts here</span>
+        <h2 id="docs-site-footer-title">A shared language. Every platform.</h2>
+        <p>Accessible primitives, thoughtful defaults, and room to make it yours.</p>
+      </div>
         <div class="docs-site-footer__actions">
           <ButtonLink href="/docs" showArrow variant="primary">
             Read the docs
@@ -151,54 +83,6 @@ const productPlatformCount = platformGuides.filter(guide => guide.id !== 'founda
             View on GitHub
           </ButtonLink>
         </div>
-      </div>
-
-      <div class="docs-site-footer__launchpad">
-        <div class="docs-site-footer__launchpad-heading">
-          <div>
-            <span>Choose a platform</span>
-            <p>Native behavior, one semantic foundation.</p>
-          </div>
-          <Badge variant="outline">{productPlatformCount} platforms + foundations</Badge>
-        </div>
-
-        <div class="docs-site-footer__platforms">
-          {footerPlatforms.map(platform => (
-            <Link
-              aria-label={`${platform.label} platform guide`}
-              class:list={[
-                'docs-site-footer__platform',
-                platform.id === 'web' && 'docs-site-footer__platform--web'
-              ]}
-              href={platform.href}
-            >
-              <Icon decorative name={platform.icon} size="sm" />
-              <span>
-                <strong>{platform.label}</strong>
-                <span class="docs-site-footer__platform-meta">
-                  <small>{platform.runtime}</small>
-                  <span class="docs-site-footer__platform-status">
-                    {platform.status}
-                  </span>
-                </span>
-              </span>
-              <Icon decorative name="arrow-right" size="sm" />
-            </Link>
-          ))}
-        </div>
-
-        <div class="docs-site-footer__quickstart">
-          <div class="docs-site-footer__quickstart-heading">
-            <span>Web quick start</span>
-            <Marker variant="success">3 packages</Marker>
-          </div>
-          <CodeTabs
-            ariaLabel="Choose a web framework package"
-            items={installTabs}
-            storageKey="lumen-footer-framework"
-          />
-        </div>
-      </div>
     </section>
 
     <Separator />
@@ -209,7 +93,7 @@ const productPlatformCount = platformGuides.filter(guide => guide.id !== 'founda
           <LumenLogo markClass="size-9" />
         </Link>
         <p>
-          Calm, accessible primitives for web and native platforms.
+          One design language. Native to every platform.
         </p>
         <span class="docs-site-footer__signature">
           <Icon name="heart" size="sm" />
@@ -252,10 +136,11 @@ const productPlatformCount = platformGuides.filter(guide => guide.id !== 'founda
           <Icon name="arrow-up-right" size="sm" />
         </Link>.
       </p>
-      <p class="docs-site-footer__status">
-        <Marker variant="success">Web + native platforms</Marker>
-        Accessible by default
-      </p>
+      <div class="docs-site-footer__status">
+        <Link href="/privacy">Privacy</Link>
+        <Link href="/terms">Terms</Link>
+        <span>Accessible by default</span>
+      </div>
     </div>
   </div>
 </footer>

@@ -51,6 +51,14 @@ test('normalizes invalid viewport values, bounded zoom and pan', () => {
   expect(normalizeLumenMediaViewport({ zoom: 100 }, 100).zoom).toBe(16)
 })
 
+test('malformed decoded viewport containers and members fall back safely', () => {
+  for (const value of [null, undefined, 1, 'zoom', [], true]) {
+    expect(normalizeLumenMediaViewport(value)).toEqual({ zoom: 1, x: 0, y: 0 })
+  }
+  expect(normalizeLumenMediaViewport({ zoom: '2', x: {}, y: null })).toEqual({ zoom: 1, x: 0, y: 0 })
+  expect(normalizeLumenMediaViewport({ zoom: 2, x: '1', y: 0.5 })).toEqual({ zoom: 2, x: 0, y: 0.5 })
+})
+
 test('provides gesture alternatives and returns to the fit origin', () => {
   const origin = normalizeLumenMediaViewport()
   const zoomed = applyLumenMediaViewportAction(origin, 'zoom-in')

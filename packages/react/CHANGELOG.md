@@ -2,6 +2,8 @@
 
 ## 4.0.0
 
+- Request a valid server page when matching results shrink, preserving controlled view preferences and avoiding duplicate requests.
+
 - Animate bar geometry and filled line-chart areas inside ChartMotion using stable decorative identities, while keeping accessible chart data immediate.
 
 - Add mouse and pen drag panning and extend WorldMap zoom to 800%. Render the selection outline above all country fills with rounded joins so neighboring regions cannot clip it or produce spikes at high zoom.

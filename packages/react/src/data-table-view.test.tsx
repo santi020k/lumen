@@ -141,6 +141,40 @@ test('server mode preserves supplied rows while requesting state', async () => {
   expect(ids()).toEqual(rows.map(row => row.id))
 })
 
+test('server result shrink requests the clamped controlled page once and preserves preferences', async () => {
+  const changes = vi.fn()
+  const state: DataTableViewState = {
+    search: 'client',
+    filters: [],
+    visibility: { amount: false },
+    pagination: { pageIndex: 9, pageSize: 25 },
+    sorting: [],
+    density: 'compact'
+  }
+
+  await render({ mode: 'server', rowCount: 300, state, onStateChange: changes })
+  expect(changes).not.toHaveBeenCalled()
+  await render({ mode: 'server', rowCount: 50, state, onStateChange: changes })
+  expect(changes).toHaveBeenCalledExactlyOnceWith({ ...state, pagination: { pageIndex: 1, pageSize: 25 } })
+  await render({ mode: 'server', rowCount: 50, state, onStateChange: changes })
+  expect(changes).toHaveBeenCalledTimes(1)
+  const accepted = { ...state, pagination: { pageIndex: 1, pageSize: 25 } }
+
+  await render({ mode: 'server', rowCount: 50, state: accepted, onStateChange: changes })
+  expect(get('section').dataset.density).toBe('compact')
+  await click('Previous page')
+  expect(changes).toHaveBeenLastCalledWith({ ...accepted, pagination: { pageIndex: 0, pageSize: 25 } })
+})
+
+test('empty server results request the first page and uncontrolled pagination accepts the correction', async () => {
+  const changes = vi.fn()
+
+  await render({ mode: 'server', rowCount: 0, rows: [], defaultState: { pagination: { pageIndex: 9, pageSize: 25 } }, onStateChange: changes })
+  expect(changes).toHaveBeenCalledTimes(1)
+  expect(changes).toHaveBeenLastCalledWith(expect.objectContaining({ pagination: { pageIndex: 0, pageSize: 25 } }))
+  expect(container.textContent).toContain('Page 1 of 1 · 0 records')
+})
+
 test('controlled state waits for the application and supports snapshot restoration', async () => {
   const changes = vi.fn()
   const state: DataTableViewState = {

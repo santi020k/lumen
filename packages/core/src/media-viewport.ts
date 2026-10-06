@@ -40,6 +40,14 @@ export const formatLumenMediaZoom = (zoom: number, locale?: string): string => {
   }
 }
 
+const closestViewportElement = (target: EventTarget | null, selector: string): Element | null => {
+  try {
+    return Element.prototype.closest.call(target, selector)
+  } catch {
+    return null
+  }
+}
+
 /** Shared pointer/keyboard interaction; the consumer decides whether to accept each requested value. */
 export const bindLumenMediaViewport = (
   root: HTMLElement,
@@ -66,14 +74,10 @@ export const bindLumenMediaViewport = (
   }
 
   root.addEventListener('click', event => {
-    const target = event.target
+    const button = closestViewportElement(event.target, 'button[data-ui-media-viewport-action]')
+    const action = button?.getAttribute('data-ui-media-viewport-action')
 
-    if (!view || !(target instanceof view.Element)) return
-
-    const button = target.closest<HTMLButtonElement>('button[data-ui-media-viewport-action]')
-    const action = button?.dataset.uiMediaViewportAction
-
-    if (!button || button.disabled || !root.contains(button) || !isLumenMediaViewportAction(action)) return
+    if (!button || button.hasAttribute('disabled') || !root.contains(button) || !isLumenMediaViewportAction(action)) return
 
     act(action)
   }, { signal })
@@ -97,9 +101,7 @@ export const bindLumenMediaViewport = (
   stage.addEventListener('pointerdown', event => {
     if (options.disabled() || drag || event.button !== 0 || options.getValue().zoom <= 1) return
 
-    const target = event.target
-
-    if (view && target instanceof view.Element && target.closest('button, input, a, select, textarea, [contenteditable]')) return
+    if (closestViewportElement(event.target, 'button, input, a, select, textarea, [contenteditable]')) return
 
     drag = { id: event.pointerId, x: event.clientX, y: event.clientY, value: options.getValue() }
 

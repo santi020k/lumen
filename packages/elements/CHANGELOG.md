@@ -2,6 +2,8 @@
 
 ## 4.0.0
 
+- Preserve chart action focus through repeated adopted-document updates and keep retained MediaViewport controls interactive.
+
 - Preserve WorldMap inspection and selection after document adoption, and synchronize FileUpload feedback after native form reset while respecting canceled resets.
 
 - Animate bar geometry and filled line-chart areas inside ChartMotion using stable decorative identities, while keeping accessible chart data immediate.

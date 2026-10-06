@@ -1,5 +1,61 @@
 import { expect, test } from '@playwright/test'
 
+test('adopted chart updates preserve action focus and retained viewport buttons remain usable', async ({ page }) => {
+  await page.goto('/internal/elements-boundaries')
+  await page.evaluate(() => Promise.all(['lumen-bar-chart', 'lumen-media-viewport'].map(name => customElements.whenDefined(name))))
+  const result = await page.evaluate(() => {
+    const required = <T,>(value: T | null, label: string): T => {
+      if (value === null) throw new Error(`Missing ${label}`)
+
+      return value
+    }
+    const chart = required(document.querySelector('lumen-bar-chart'), 'chart')
+    const viewport = required(document.querySelector('lumen-media-viewport'), 'viewport')
+    const iframe = document.createElement('iframe')
+
+    iframe.title = 'Adopted controls'
+    document.body.append(iframe)
+    const destination = required(iframe.contentDocument, 'destination document')
+
+    destination.body.append(destination.adoptNode(chart), destination.adoptNode(viewport))
+    chart.setAttribute('datum-action-prefix', 'Open: ')
+    const action = required(chart.querySelector('button'), 'chart action')
+    const disclosure = required(chart.querySelector<HTMLDetailsElement>('[data-ui-chart-actions]'), 'action disclosure')
+
+    disclosure.open = true
+    action.focus()
+    const initialFocusKey = destination.activeElement?.getAttribute('data-ui-chart-action-key')
+    const key = action.getAttribute('data-ui-chart-action-key')
+
+    chart.setAttribute('datum-action-prefix', 'Details: ')
+    const focused = destination.activeElement
+    const zoom = required(viewport.querySelector<HTMLButtonElement>('[data-ui-media-viewport-action="zoom-in"]'), 'zoom button')
+    const fit = required(viewport.querySelector<HTMLButtonElement>('[data-ui-media-viewport-action="fit"]'), 'fit button')
+
+    const retainedSourceWrapper = zoom instanceof Element
+
+    zoom.click()
+    const firstZoom = viewport.getAttribute('zoom')
+    const child = destination.createElement('span')
+
+    zoom.append(child)
+    child.click()
+    const secondZoom = viewport.getAttribute('zoom')
+
+    fit.click()
+
+    return {
+      initialFocusKey, focusKey: focused?.getAttribute('data-ui-chart-action-key'), key,
+      focusLabel: focused?.textContent, destinationCreated: !(focused instanceof Element),
+      retainedSourceWrapper, firstZoom, secondZoom, fitZoom: viewport.getAttribute('zoom')
+    }
+  })
+
+  expect(result.initialFocusKey).toBe(result.key)
+  expect(result.focusKey).toBe(result.key)
+  expect(result).toMatchObject({ focusLabel: expect.stringContaining('Details: '), destinationCreated: true, retainedSourceWrapper: true, firstZoom: '1.25', secondZoom: '1.5', fitZoom: '1' })
+})
+
 test('a real Elements upload reset clears native files and live feedback while cancellation preserves both', async ({ page }) => {
   await page.goto('/internal/elements-boundaries')
   await page.evaluate(() => customElements.whenDefined('lumen-file-upload'))

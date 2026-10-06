@@ -53,6 +53,68 @@ test('formats zoom safely even for malformed locale identifiers', () => {
   expect(formatLumenMediaZoom(2, 'invalid_tag')).toBe('200%')
 })
 
+test('adopted content controls keep their pointer interaction instead of starting a pan', () => {
+  const { root, stage, content } = fixture()
+  const capture = vi.spyOn(stage, 'setPointerCapture')
+  const control = document.createElement('button')
+  const child = document.createElement('span')
+
+  control.append(child)
+  content.append(control)
+  const iframe = document.createElement('iframe')
+
+  document.body.append(iframe)
+  const destination = iframe.contentDocument
+
+  if (!destination) throw new Error('Missing destination document')
+
+  destination.body.append(destination.adoptNode(root))
+  cleanups.push(bindLumenMediaViewport(root, {
+    disabled: () => false, getValue: () => ({ zoom: 2, x: 0, y: 0 }), maxZoom: () => 4, onValueChange: vi.fn()
+  }))
+  for (const target of [control, child]) {
+    const event = new MouseEvent('pointerdown', { button: 0, bubbles: true, cancelable: true })
+
+    target.dispatchEvent(event)
+    expect(event.defaultPrevented).toBe(false)
+  }
+  expect(capture).not.toHaveBeenCalled()
+})
+
+test('adopted original-realm buttons and destination-created descendants remain interactive', () => {
+  const { root } = fixture()
+  const iframe = document.createElement('iframe')
+
+  document.body.append(iframe)
+  const destination = iframe.contentDocument
+
+  if (!destination) throw new Error('Missing destination document')
+
+  destination.body.append(destination.adoptNode(root))
+  let value: LumenMediaViewportValue = { zoom: 1, x: 0, y: 0 }
+
+  cleanups.push(bindLumenMediaViewport(root, {
+    disabled: () => false,
+    getValue: () => value,
+    maxZoom: () => 4,
+    onValueChange: next => {
+      value = next
+    }
+  }))
+  const zoom = button(root, 'zoom-in')
+
+  zoom.click()
+  expect(value.zoom).toBe(1.25)
+  const child = destination.createElement('span')
+
+  zoom.append(child)
+  child.click()
+  expect(value.zoom).toBe(1.5)
+  zoom.disabled = true
+  child.click()
+  expect(value.zoom).toBe(1.5)
+})
+
 test('supports keyboard and visible actions, enforces bounds and resets to fit', () => {
   const { root, stage, content } = fixture()
   let value: LumenMediaViewportValue = { zoom: 1, x: 0, y: 0 }

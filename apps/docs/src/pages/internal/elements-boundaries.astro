@@ -29,12 +29,14 @@ const countries = [
           <Button type="reset">Reset upload</Button>
         </Form>
         <lumen-world-map countries={JSON.stringify(countries)} interactive="true" label="Destinations"></lumen-world-map>
+        <lumen-bar-chart drilldown series={JSON.stringify([{ id: 'sales', label: 'Sales', data: [{ id: 'first', x: 'October', y: 20 }] }])}></lumen-bar-chart>
+        <lumen-media-viewport label="Media preview"><span>Preview content</span></lumen-media-viewport>
       </Stack>
     </main>
     <script>
       import { defineLumenElements } from '@santi020k/lumen-elements'
 
-      defineLumenElements(['FileUpload', 'WorldMap'])
+      defineLumenElements(['FileUpload', 'WorldMap', 'BarChart', 'MediaViewport'])
     </script>
   </body>
 </html>

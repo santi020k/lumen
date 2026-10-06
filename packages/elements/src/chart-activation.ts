@@ -62,7 +62,7 @@ export abstract class LumenDatumChartElement extends LumenElement {
   protected renderChartContent(html: string): void {
     const enabled = this.hasAttribute('drilldown') && this.getAttribute('drilldown') !== 'false'
     const focused = this.ownerDocument.activeElement
-    const focusedKey = focused instanceof Element && this.contains(focused) ? focused.getAttribute('data-ui-chart-action-key') : null
+    const focusedKey = focused && this.contains(focused) ? focused.getAttribute('data-ui-chart-action-key') : null
     const wasOpen = this.querySelector('[data-ui-chart-actions]')?.hasAttribute('open') ?? false
 
     this.toggleAttribute('data-ui-chart-activation', enabled)

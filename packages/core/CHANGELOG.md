@@ -2,6 +2,8 @@
 
 ## 4.0.0
 
+- Normalize malformed decoded MediaViewport values safely and preserve media action buttons across document adoption.
+
 - Add mouse and pen drag panning and extend WorldMap zoom to 800%. Render the selection outline above all country fills with rounded joins so neighboring regions cannot clip it or produce spikes at high zoom.
 
 - Rebuild DeviceFrame hardware with tapered laptop decks, curved desktop stands, rounded phone glass, separate side rails and controls, and tablet home recesses. Support white, black, and custom hex finishes through the color prop or attribute while preserving screen content and iframe viewports.

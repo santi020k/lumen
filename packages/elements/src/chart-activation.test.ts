@@ -83,6 +83,37 @@ for (const fixture of fixtures) {
   })
 }
 
+test('preserves destination-realm action focus through repeated adopted chart updates', () => {
+  const fixture = fixtures[0]
+
+  if (!fixture) throw new Error('Missing chart fixture')
+
+  const chart = mount(fixture)
+  const iframe = document.createElement('iframe')
+
+  document.body.append(iframe)
+  const destination = iframe.contentDocument
+
+  if (!destination) throw new Error('Missing destination document')
+
+  destination.body.append(destination.adoptNode(chart))
+  chart.setAttribute('series', JSON.stringify(series))
+  const disclosure = chart.querySelector<HTMLDetailsElement>('[data-ui-chart-actions]')
+  const action = chart.querySelector('button')
+
+  if (!disclosure || !action) throw new Error('Missing chart actions')
+
+  disclosure.open = true
+  action.focus()
+  expect(destination.activeElement).toBe(action)
+  const key = action.getAttribute('data-ui-chart-action-key')
+
+  chart.setAttribute('datum-action-prefix', 'Details: ')
+  expect(destination.activeElement?.getAttribute('data-ui-chart-action-key')).toBe(key)
+  expect(destination.activeElement?.textContent).toContain('Details: ')
+  expect(chart.querySelector<HTMLDetailsElement>('[data-ui-chart-actions]')?.open).toBe(true)
+})
+
 test('keeps action focus, open disclosure, current values and single dispatch across updates and reconnection', () => {
   const fixture = fixtures[0]
   if (!fixture) throw new Error('Missing bar fixture')
