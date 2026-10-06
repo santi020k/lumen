@@ -15,6 +15,28 @@ describe('native input contracts', () => {
     }
     expect(stepLumenDecimalDraft('12.', 1)).toBeNull()
   })
+  test('parses locale digits outside the Unicode decimal number category', () => {
+    const locale = 'en-US-u-nu-hanidec'
+    const formatter = new Intl.NumberFormat(locale, { useGrouping: false })
+    const draft = formatter.format(12.3)
+
+    expect(parseLumenDecimalDraft(draft, locale)).toEqual({ coefficient: 123n, kind: 'valid', scale: 1 })
+    for (let digit = 0; digit < 10; digit += 1) {
+      expect(parseLumenDecimalDraft(formatter.format(digit), locale)).toEqual({ coefficient: BigInt(digit), kind: 'valid', scale: 0 })
+    }
+    expect(parseLumenDecimalDraft('Ⅻ', locale).kind).toBe('invalid')
+    expect(normalizeLumenNumericOTP(formatter.format(123))).toBeNull()
+    expect(isLumenDecimalInBounds(draft, { locale, min: '12', max: '13' })).toBe(true)
+    expect(stepLumenDecimalDraft(draft, 1, { locale, step: '0.2' })).toBe(formatter.format(12.5))
+    expect(parseLumenDecimalDraft(draft, 'en-US').kind).toBe('invalid')
+
+    const firstStep = stepLumenDecimalDraft('', 1, { locale })
+
+    expect(firstStep).toBe(formatter.format(1))
+    if (firstStep === null) throw new Error('Expected a localized decimal step')
+    expect(stepLumenDecimalDraft(firstStep, 1, { locale })).toBe(formatter.format(2))
+    expect(stepLumenDecimalDraft(`-${draft}`, -1, { locale, step: '0.2' })).toBe(`-${formatter.format(12.5)}`)
+  })
   test('steps exactly beyond floating point precision and clamps inclusive bounds', () => {
     expect(stepLumenDecimalDraft('9007199254740993.1', 1, { step: '0.2' }))
       .toBe('9007199254740993.3')

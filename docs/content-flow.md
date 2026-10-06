@@ -125,6 +125,8 @@ long labels. Accordion retains its disclosure clipping, with controls inset insi
 Accordion and Collapsible own their horizontal content padding on the disclosure container, so
 paragraph margin resets cannot remove the inset. Their summaries share that text alignment while
 keeping the full header clickable; the chevron rotates inside a fixed circular background.
+Bordered disclosures keep an inset between the header background and the body, including on hover.
+Flush accordions retain their compact list spacing.
 These overflow rules serve different purposes; do not replace them with one global overflow rule.
 The regression fixture checks disclosure controls, menu escape and focus restoration, dialog
 scrolling, tab empty states and field errors at normal and enlarged text sizes.

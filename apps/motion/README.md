@@ -33,7 +33,10 @@ pnpm --filter @santi020k/lumen-motion render:landscape
 pnpm --filter @santi020k/lumen-motion render:outro
 ```
 
-Tests require the repository's Playwright Chromium installation. HyperFrames needs a compatible
+Tests start their own preview of this worktree's build and require the repository's Playwright
+Chromium installation. If port 4341 is occupied, select a free test port with
+`LUMEN_MOTION_PORT=4379 pnpm --filter @santi020k/lumen-motion test`.
+HyperFrames needs a compatible
 local Chrome and FFmpeg; its `doctor` command describes missing dependencies. The render scripts
 export at 30 fps to:
 
