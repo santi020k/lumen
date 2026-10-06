@@ -56,6 +56,7 @@ import DocsLayout from '../../layouts/DocsLayout.astro'
   .visual-workbench section + section { border-top: 1px solid hsl(var(--line)); padding-top: var(--ui-space-section); }
   .visual-section-heading { margin-bottom: var(--ui-space-group); }
   .visual-section-heading h2 { margin: var(--ui-space-related) 0; font-size: clamp(1.5rem, 2.5vw, 1.875rem); font-weight: 650; line-height: 1.25; }
+  .docs-shell .visual-section-heading h2[id] { scroll-margin-top: calc(var(--docs-sticky-header-height, 10rem) + var(--docs-sticky-navigation-height, var(--docs-anchor-navigation-fallback)) + 3rem); }
   .visual-section-heading p { max-width: 44rem; margin: 0; color: hsl(var(--ink-soft)); font-size: .9375rem; line-height: 1.7; }
   .visual-control-panel { padding: var(--ui-space-group); }
   .visual-controls { align-items: end; }
@@ -68,7 +69,7 @@ import DocsLayout from '../../layouts/DocsLayout.astro'
   .visual-comparison > p { margin: 0; color: hsl(var(--ink-muted)); font-size: .8125rem; line-height: 1.6; }
   .visual-motion-list { display: grid; gap: var(--ui-space-related); }
   .visual-motion-list > .ui-card { padding: var(--ui-space-related); box-shadow: none; }
-  .visual-motion-list .ui-button { width: 100%; justify-content: start; }
+  .visual-motion-list .ui-typography { padding: var(--ui-space-related); font-size: .875rem; }
   .visual-example-grid > .ui-card { padding: var(--ui-space-group); }
   .visual-example-grid h3 { margin: 0; font-size: 1rem; line-height: 1.5; }
   .visual-example-grid p { margin: 0; font-size: .875rem; line-height: 1.7; color: hsl(var(--ink-soft)); }
