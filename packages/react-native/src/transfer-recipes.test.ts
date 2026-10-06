@@ -37,3 +37,32 @@ test('duplicates and blank stable IDs fail closed; adversarial IDs use linear sc
   }
   expect(isLumenTransferItemsValid([{ id: 'x'.repeat(100000), label: 'Long ID' }])).toBe(true)
 })
+
+test('rejects decoded transfer collections and selected or checked identities', () => {
+  for (const input of [null,
+    42,
+    {},
+    'items',
+    [null],
+    [42],
+    [{}],
+    [{ id: null, label: '' }],
+    [{ id: 'a', label: 42 }],
+    [{ id: 'a', label: '', detail: {} }],
+    new Array<unknown>(1)]) {
+    expect(Reflect.apply(isLumenTransferItemsValid, undefined, [input])).toBe(false)
+    expect(Reflect.apply(lumenTransferLists, undefined, [input, value])).toBeNull()
+  }
+  for (const input of [null,
+    {},
+    [],
+    42,
+    { selectedIds: null, checkedIds: [] },
+    { selectedIds: [], checkedIds: {} },
+    { selectedIds: [42], checkedIds: [] },
+    { selectedIds: [], checkedIds: [null] },
+    { selectedIds: new Array<unknown>(1), checkedIds: [] }]) {
+    expect(Reflect.apply(isLumenTransferValueValid, undefined, [input])).toBe(false)
+    expect(Reflect.apply(lumenTransferLists, undefined, [items, input])).toBeNull()
+  }
+})

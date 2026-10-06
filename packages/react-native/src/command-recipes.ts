@@ -8,23 +8,55 @@ export interface LumenCommandItem {
 }
 export interface LumenCommandGroup { id: string, label: string, items: readonly LumenCommandItem[] }
 export type LumenCommandNavigation = 'next' | 'previous' | 'first' | 'last'
+
+const isRecord = (value: unknown): value is Record<string, unknown> => typeof value === 'object' && value !== null && !Array.isArray(value)
+const optionalBoolean = (value: unknown): boolean => value === undefined || typeof value === 'boolean'
+const optionalString = (value: unknown): boolean => value === undefined || typeof value === 'string'
+
+const validKeywords = (value: unknown): boolean => {
+  if (value === undefined) return true
+
+  if (!Array.isArray(value)) return false
+
+  for (const keyword of value as readonly unknown[]) if (typeof keyword !== 'string') return false
+
+  return true
+}
+
+const validCommand = (value: unknown): value is LumenCommandItem => {
+  if (!isRecord(value) || typeof value.id !== 'string' || typeof value.label !== 'string') return false
+
+  return optionalString(value.detail) && optionalString(value.shortcut) &&
+    optionalBoolean(value.disabled) && validKeywords(value.keywords)
+}
+
+const validGroup = (value: unknown): value is LumenCommandGroup => {
+  if (!isRecord(value) || typeof value.id !== 'string' || typeof value.label !== 'string' || !Array.isArray(value.items)) return false
+
+  for (const item of value.items as readonly unknown[]) if (!validCommand(item)) return false
+
+  return true
+}
+
 export const isLumenCommandGroupsValid = (groups: readonly LumenCommandGroup[]): boolean => {
+  if (!Array.isArray(groups)) return false
+
   const groupIds = new Set<string>()
   const itemIds = new Set<string>()
 
-  return groups.every(group => {
-    if (group.id.trim().length === 0 || groupIds.has(group.id)) return false
+  for (const group of groups as readonly unknown[]) {
+    if (!validGroup(group) || group.id.trim().length === 0 || groupIds.has(group.id)) return false
 
     groupIds.add(group.id)
 
-    return group.items.every(item => {
+    for (const item of group.items) {
       if (item.id.trim().length === 0 || itemIds.has(item.id)) return false
 
       itemIds.add(item.id)
+    }
+  }
 
-      return true
-    })
-  })
+  return true
 }
 
 const commandMatches = (item: LumenCommandItem, query: string): boolean => [item.label || item.id, item.detail ?? '', item.shortcut ?? '', ...(item.keywords ?? [])]

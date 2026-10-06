@@ -2,6 +2,8 @@
 
 ## 4.0.0
 
+- Follow the current phone form on reset, honor canceled resets, and preserve adopted calendar focus and owning-document generated ID uniqueness.
+
 - Rebind adopted chart cursor synchronization and resolve phone validation messages and inherited locale in the owning document.
 
 - Rebind adopted combobox controllers and associate every phone control with an external form owner.

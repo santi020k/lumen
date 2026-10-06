@@ -39,8 +39,34 @@ describe('tree hierarchy', () => {
     expect(new LumenTreeModel(wide).visibleRows(new Set(['r']))).toHaveLength(150001)
     const model = new LumenTreeModel(deep)
 
+    if (!(model instanceof LumenTreeModel)) throw new Error('Unexpected model')
+
     expect(model.valid).toBe(true)
     expect(model.path('149999')).toHaveLength(150000)
     expect(model.visibleRows(new Set(deep.map(node => node.id)))).toHaveLength(150000)
   })
+})
+
+test('rejects malformed decoded tree collections and nodes before traversal', () => {
+  const malformed: unknown[] = [null,
+    undefined,
+    42,
+    'node',
+    [],
+    {},
+    { id: 42, label: 'Node' },
+    { id: 'a', label: null },
+    { id: 'a', label: '', parentId: 42 },
+    { id: 'a', label: '', disabled: 'false' },
+    { id: 'a', label: '', selectable: 0 }]
+
+  for (const input of [...malformed.map(node => [node]), null, {}, 42, 'nodes', new Array<unknown>(1)]) {
+    const model: unknown = Reflect.construct(LumenTreeModel, [input])
+
+    if (!(model instanceof LumenTreeModel)) throw new Error('Unexpected model')
+
+    expect(model.valid).toBe(false)
+    expect(model.visibleRows(new Set())).toEqual([])
+    expect(model.path('a')).toEqual([])
+  }
 })

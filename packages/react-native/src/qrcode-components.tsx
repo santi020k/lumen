@@ -37,7 +37,7 @@ export const LumenQRCode = ({ value, label, size = 160, quietZone = 4, correctio
           </View>
         ) :
         <LumenText accessibilityRole="alert">{errorLabel}</LumenText>}
-      {showValue && <LumenText>{value}</LumenText>}
+      {showValue && typeof value === 'string' && <LumenText>{value}</LumenText>}
     </View>
   )
 }

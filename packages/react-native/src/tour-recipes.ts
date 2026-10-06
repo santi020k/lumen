@@ -1,16 +1,29 @@
 export interface LumenTourStep { id: string, targetId: string, title: string, content: string, disabled?: boolean }
 export interface LumenTourRect { x: number, y: number, width: number, height: number }
 export interface LumenTourLayout { highlight: LumenTourRect | null, panel: LumenTourRect }
+
+const isTourStep = (input: unknown): input is LumenTourStep => {
+  if (typeof input !== 'object' || input === null || Array.isArray(input)) return false
+
+  const strings = ['id', 'targetId', 'title', 'content'] as const
+
+  return strings.every(key => key in input && typeof Reflect.get(input, key) === 'string') &&
+    (!('disabled' in input) || input.disabled === undefined || typeof input.disabled === 'boolean')
+}
+
 export const isLumenTourStepsValid = (steps: readonly LumenTourStep[]): boolean => {
+  if (!Array.isArray(steps)) return false
+
   const ids = new Set<string>()
+  const inputs: readonly unknown[] = steps
 
-  return steps.every(step => {
-    if (!step.id.trim() || !step.targetId.trim() || ids.has(step.id)) return false
+  for (const input of inputs) {
+    if (!isTourStep(input) || !input.id.trim() || !input.targetId.trim() || ids.has(input.id)) return false
 
-    ids.add(step.id)
+    ids.add(input.id)
+  }
 
-    return true
-  })
+  return true
 }
 export const resolveLumenTourStep = (steps: readonly LumenTourStep[], index: number): LumenTourStep | null => {
   if (!isLumenTourStepsValid(steps) || !Number.isInteger(index)) return null

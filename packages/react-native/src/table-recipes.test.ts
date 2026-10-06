@@ -50,3 +50,33 @@ describe('native table models', () => {
       .map(item => item.id)).toEqual(['three', 'ten', 'false', 'true', 'text'])
   })
 })
+
+test('rejects decoded table collections, identities and nested cells before rendering', () => {
+  const validRow = row('a', 1)
+  const malformed: unknown[] = [null,
+    42,
+    [],
+    {},
+    { ...validRow, id: 1 },
+    { ...validRow, label: null },
+    { ...validRow, cells: null },
+    { ...validRow, cells: [] },
+    { ...validRow, cells: { amount: null } },
+    { ...validRow, cells: { amount: { text: 42 } } },
+    { ...validRow, cells: { amount: { text: '', sortValue: {} } } }]
+
+  for (const input of [...malformed.map(item => [item]), null, {}, 'rows', new Array<unknown>(1)]) {
+    expect(Reflect.apply(validateLumenTable, undefined, [columns, input])).toBe(false)
+  }
+  for (const input of [null,
+    {},
+    'columns',
+    [null],
+    [42],
+    [{ key: 42, label: '' }],
+    [{ key: 'a', label: null }],
+    [{ key: 'a', label: '', sortable: 'false' }],
+    new Array<unknown>(1)]) {
+    expect(Reflect.apply(validateLumenTable, undefined, [input, [validRow]])).toBe(false)
+  }
+})

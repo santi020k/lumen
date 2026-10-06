@@ -17,6 +17,36 @@ const validCells = (cells: unknown): boolean => {
     'text' in cell && Object.hasOwn(cell, 'text') && typeof cell.text === 'string')
 }
 
+const isRecord = function (value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value)
+}
+
+const validColumn = function (value: unknown): value is LumenTreeGridColumn {
+  return isRecord(value) && hasText(value.key) && hasText(value.label)
+}
+
+const validRecord = (value: unknown): value is LumenTreeGridRecord => {
+  if (!isRecord(value) || !isRecord(value.node)) return false
+
+  return hasText(value.node.id) && hasText(value.node.label) && validCells(value.cells)
+}
+
+const validColumns = (value: unknown): value is readonly LumenTreeGridColumn[] => {
+  if (!Array.isArray(value)) return false
+
+  for (const column of value as readonly unknown[]) if (!validColumn(column)) return false
+
+  return true
+}
+
+const validRecords = (value: unknown): value is readonly LumenTreeGridRecord[] => {
+  if (!Array.isArray(value)) return false
+
+  for (const record of value as readonly unknown[]) if (!validRecord(record)) return false
+
+  return true
+}
+
 /** Joins host cells to the existing validated flat tree without changing host state. */
 export class LumenTreeGridModel {
   readonly valid: boolean
@@ -24,14 +54,21 @@ export class LumenTreeGridModel {
   readonly #records: ReadonlyMap<string, LumenTreeGridRecord>
 
   constructor(columns: readonly LumenTreeGridColumn[], records: readonly LumenTreeGridRecord[]) {
+    this.#tree = new LumenTreeModel([])
+
+    this.#records = new Map()
+
+    this.valid = false
+
+    if (!validColumns(columns) || !validRecords(records)) return
+
     this.#tree = new LumenTreeModel(records.map(record => record.node))
 
     this.#records = new Map(records.map(record => [record.node.id, record]))
 
-    this.valid = this.#tree.valid && columns.length > 0 &&
-      columns.every(column => hasText(column.key) && hasText(column.label)) &&
-      records.every(record => hasText(record.node.id) && hasText(record.node.label) && validCells(record.cells)) &&
-      validateLumenTable(columns, records.map(record => ({ ...record.node, cells: record.cells })))
+    const rows = records.map(record => ({ ...record.node, cells: record.cells }))
+
+    this.valid = this.#tree.valid && columns.length > 0 && validateLumenTable(columns, rows)
   }
 
   visibleRows(expandedIds: ReadonlySet<string>): readonly LumenTreeGridRow[] {

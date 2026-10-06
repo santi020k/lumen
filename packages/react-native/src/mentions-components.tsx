@@ -244,8 +244,8 @@ const displayText = (value: LumenMentionsValue, state: MentionsState, composing:
   composing || state.waitingSelection ? state.nativeText : value.text
 )
 
-const selectionProps = (value: LumenMentionsValue, composing: boolean, waiting: boolean) => (
-  isLumenMentionsSelectionValid(value) && !composing && !waiting ? { selection: value.selection } : {}
+const selectionProps = (value: LumenMentionsValue, composing: boolean, waiting: boolean, valid = true) => (
+  valid && isLumenMentionsSelectionValid(value) && !composing && !waiting ? { selection: value.selection } : {}
 )
 
 const MentionsSuggestions = ({ state, label }: { state: MentionsState, label: string }): ReactElement | null => {
@@ -295,22 +295,31 @@ const MentionsMessages = ({ valid, status, state, labels }: {
   </>
 )
 
+const mentionsText = (input: unknown): string => (
+  typeof input === 'object' && input !== null && 'text' in input && typeof input.text === 'string' ? input.text : ''
+)
+
+const safeMentionsValue = (value: LumenMentionsValue, valid: boolean): LumenMentionsValue => (
+  valid ? value : { text: mentionsText(value), selection: { start: 0, end: 0 } }
+)
+
 export const LumenMentions = ({ label, value, onValueChange, options, trigger = '@', disabled = false,
   readOnly = false, isComposing = false, status = 'ready', placeholder, labels, style, ...props }: LumenMentionsProps): ReactElement => {
   const theme = useLumenTheme()
   const text = { ...defaults, ...labels }
-  const editable = !disabled && !readOnly
-  const inputRef = useRef<TextInput>(null)
-  const state = useMentionsInput(value, onValueChange, options, trigger, editable, isComposing, status === 'ready', inputRef)
   const valid = isLumenMentionsSelectionValid(value)
+  const safeValue = safeMentionsValue(value, valid)
+  const editable = valid && !disabled && !readOnly
+  const inputRef = useRef<TextInput>(null)
+  const state = useMentionsInput(safeValue, onValueChange, options, trigger, editable, isComposing, status === 'ready', inputRef)
 
   return (
     <View {...props} style={[{ gap: theme.spacing.sm }, style]}>
       <LumenText>{label}</LumenText>
       <LumenTextField
         ref={inputRef}
-        value={displayText(value, state, isComposing)}
-        {...selectionProps(value, isComposing, state.waitingSelection)}
+        value={displayText(safeValue, state, isComposing)}
+        {...selectionProps(safeValue, isComposing, state.waitingSelection, valid)}
         accessibilityLabel={label}
         accessibilityRole="combobox"
         accessibilityState={{ disabled, expanded: state.matches.length > 0, busy: status === 'loading' }}

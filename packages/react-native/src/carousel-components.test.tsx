@@ -4,7 +4,9 @@ import { View } from 'react-native'
 import { createRoot, type TestInstance } from 'test-renderer'
 import { expect, test, vi } from 'vitest'
 
-import { LumenCarousel } from './carousel-components.js'
+import { LumenCarousel, type LumenCarouselProps } from './carousel-components.js'
+import { LumenQRCode, type LumenQRCodeProps } from './qrcode-components.js'
+import { LumenStepper, type LumenStepperProps } from './stepper-components.js'
 
 const scrollFixture = vi.hoisted(() => ({ scrollTo: vi.fn() }))
 
@@ -105,6 +107,54 @@ test('controls navigation, reconciles swipes and guards disabled and status stat
   index = 99
   await render()
   expect(root.container.queryAll(node => node.type === 'Text' && readProp(node, 'children') === 'Invalid fixture')).toHaveLength(1)
+  await act(async () => {
+    await Promise.resolve()
+    root.unmount()
+  })
+})
+
+test('malformed decoded carousel slides render invalid status without slide callbacks', async () => {
+  const root = createRoot()
+  const renderSlide = vi.fn(() => null)
+  for (const raw of ['null', '{}', '[null]', '[1]', '[{}]', '[{"id":"a","label":{}}]']) {
+    const decoded: unknown = JSON.parse(raw)
+    const props: LumenCarouselProps = { label: 'Slides', slides: [], index: 0, onIndexChange: vi.fn(), renderSlide }
+    Object.defineProperty(props, 'slides', { value: decoded })
+    await act(async () => {
+      await Promise.resolve()
+      root.render(<LumenCarousel {...props} />)
+    })
+    expect(root.container.queryAll(node => node.type === 'Text' && readProp(node, 'children') === 'Invalid carousel selection')).toHaveLength(1)
+  }
+  expect(renderSlide).not.toHaveBeenCalled()
+  await act(async () => {
+    await Promise.resolve()
+    root.unmount()
+  })
+})
+
+test('decoded QR values and stepper rows reach their visible error states', async () => {
+  const root = createRoot()
+  for (const raw of ['null', '{}', '42', '[null]']) {
+    const decoded: unknown = JSON.parse(raw)
+    const props: LumenQRCodeProps = { label: 'Code', value: '' }
+    Object.defineProperty(props, 'value', { value: decoded })
+    await act(async () => {
+      await Promise.resolve()
+      root.render(<LumenQRCode {...props} />)
+    })
+    expect(root.container.queryAll(node => node.type === 'Text' && readProp(node, 'children') === 'Unable to generate QR code')).toHaveLength(1)
+  }
+  for (const raw of ['null', '{}', '[null]', '[1]', '[{"id":5}]', '[{"id":"a","title":{}}]', '[{"id":"a","title":"A","description":{}}]']) {
+    const decoded: unknown = JSON.parse(raw)
+    const props: LumenStepperProps = { label: 'Steps', steps: [], currentStep: 0 }
+    Object.defineProperty(props, 'steps', { value: decoded })
+    await act(async () => {
+      await Promise.resolve()
+      root.render(<LumenStepper {...props} />)
+    })
+    expect(root.container.queryAll(node => node.type === 'Text' && readProp(node, 'children') === 'Steps unavailable')).toHaveLength(1)
+  }
   await act(async () => {
     await Promise.resolve()
     root.unmount()

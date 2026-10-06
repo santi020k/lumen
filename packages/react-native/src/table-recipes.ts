@@ -10,12 +10,50 @@ export interface LumenTableRow {
 export interface LumenTableSort { key: string, direction: 'ascending' | 'descending' }
 export type LumenTableSortMode = 'client' | 'manual'
 
-export const validateLumenTable = (columns: readonly LumenTableColumn[], rows: readonly LumenTableRow[]): boolean => {
-  const columnKeys = new Set(columns.map(column => column.key))
-  const rowIds = new Set(rows.map(row => row.id))
+const isRecord = (value: unknown): value is Record<string, unknown> => typeof value === 'object' && value !== null && !Array.isArray(value)
 
-  return columnKeys.size === columns.length && rowIds.size === rows.length &&
-    columns.every(column => column.key.length > 0) && rows.every(row => row.id.length > 0)
+const validSortValue = (value: unknown): boolean => value === undefined || value === null ||
+  typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean'
+
+const validCell = (value: unknown): value is LumenTableCell => isRecord(value) && typeof value.text === 'string' && validSortValue(value.sortValue)
+
+const validColumn = (value: unknown): value is LumenTableColumn => {
+  if (!isRecord(value) || typeof value.key !== 'string' || typeof value.label !== 'string') return false
+
+  return value.sortable === undefined || typeof value.sortable === 'boolean'
+}
+
+const optionalBoolean = (value: unknown): boolean => value === undefined || typeof value === 'boolean'
+
+const validRow = (value: unknown): value is LumenTableRow => {
+  if (!isRecord(value) || typeof value.id !== 'string' || typeof value.label !== 'string' || !isRecord(value.cells)) return false
+
+  if (!optionalBoolean(value.disabled)) return false
+
+  return Object.values(value.cells).every(validCell)
+}
+
+const uniqueIdentity = (value: string, seen: ReadonlySet<string>): boolean => value.length > 0 && !seen.has(value)
+
+export const validateLumenTable = (columns: readonly LumenTableColumn[], rows: readonly LumenTableRow[]): boolean => {
+  if (!Array.isArray(columns) || !Array.isArray(rows)) return false
+
+  const columnKeys = new Set<string>()
+  const rowIds = new Set<string>()
+
+  for (const column of columns as readonly unknown[]) {
+    if (!validColumn(column) || !uniqueIdentity(column.key, columnKeys)) return false
+
+    columnKeys.add(column.key)
+  }
+
+  for (const row of rows as readonly unknown[]) {
+    if (!validRow(row) || !uniqueIdentity(row.id, rowIds)) return false
+
+    rowIds.add(row.id)
+  }
+
+  return true
 }
 
 export const nextLumenTableSort = (sort: LumenTableSort | null, key: string): LumenTableSort | null => {

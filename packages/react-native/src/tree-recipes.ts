@@ -12,6 +12,24 @@ export interface LumenTreeRow {
   disabled: boolean
 }
 
+const isRecord = (value: unknown): value is Record<string, unknown> => typeof value === 'object' && value !== null && !Array.isArray(value)
+const optionalBoolean = (value: unknown): boolean => value === undefined || typeof value === 'boolean'
+
+const isTreeNode = (value: unknown): value is LumenTreeNode => {
+  if (!isRecord(value) || typeof value.id !== 'string' || typeof value.label !== 'string') return false
+
+  return (value.parentId == null || typeof value.parentId === 'string') &&
+    optionalBoolean(value.disabled) && optionalBoolean(value.selectable)
+}
+
+const validNodes = (value: unknown): value is readonly LumenTreeNode[] => {
+  if (!Array.isArray(value)) return false
+
+  for (const node of value as readonly unknown[]) if (!isTreeNode(node)) return false
+
+  return true
+}
+
 /** A flat, single-parent hierarchy with iterative validation and traversal. */
 export class LumenTreeModel {
   readonly valid: boolean
@@ -20,6 +38,12 @@ export class LumenTreeModel {
   readonly #disabled = new Set<string>()
 
   constructor(nodes: readonly LumenTreeNode[]) {
+    if (!validNodes(nodes)) {
+      this.valid = false
+
+      return
+    }
+
     let valid = true
 
     for (const node of nodes) {
@@ -35,11 +59,11 @@ export class LumenTreeModel {
       this.#children.set(parentId, siblings)
     }
 
-    for (const node of nodes) {
-      if (node.parentId != null && !this.#byId.has(node.parentId)) valid = false
-    }
+    this.valid = valid && this.#validateParents(nodes) && this.#validateReachability(nodes.length)
+  }
 
-    this.valid = valid && this.#validateReachability(nodes.length)
+  #validateParents(nodes: readonly LumenTreeNode[]): boolean {
+    return nodes.every(node => node.parentId == null || this.#byId.has(node.parentId))
   }
 
   #validateReachability(count: number): boolean {

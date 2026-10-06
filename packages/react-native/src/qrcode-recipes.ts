@@ -5,9 +5,15 @@ export type LumenQRCodeResult =
   | { status: 'ready', modules: readonly (readonly boolean[])[], dimension: number } |
   { status: 'error', reason: 'empty' | 'capacity' | 'options' }
 
+const validQRCodeOptions = (correction: LumenQRCodeCorrection, quietZone: number): boolean => (
+  Number.isInteger(quietZone) && quietZone >= 4 && quietZone <= 32 && ['L', 'M', 'Q', 'H'].includes(correction)
+)
+
 /** Offline UTF-8 QR encoding. Quiet zone is measured in modules, not pixels. */
 export const encodeLumenQRCode = (value: string, correction: LumenQRCodeCorrection = 'M', quietZone = 4): LumenQRCodeResult => {
-  if (!Number.isInteger(quietZone) || quietZone < 4 || quietZone > 32 || !['L', 'M', 'Q', 'H'].includes(correction)) return { status: 'error', reason: 'options' }
+  if (!validQRCodeOptions(correction, quietZone)) return { status: 'error', reason: 'options' }
+
+  if (typeof value !== 'string') return { status: 'error', reason: 'options' }
 
   if (!value.length) return { status: 'error', reason: 'empty' }
 

@@ -695,7 +695,10 @@ Both retain unknown host values and disabled records. See the
 contracts for localization, state guards and adapter APIs.
 
 `LumenCarousel` provides controlled native slide paging and localized navigation.
-Malformed decoded slide collections, IDs or labels resolve to the existing invalid state.
+Malformed decoded slide collections, IDs or labels resolve to the existing invalid state before
+identity and keyboard state derivation. Decoded tree, table, command, transfer, kanban, tour, stepper
+and mentions collections are validated before models, hooks or renderers access their fields.
+Non-string QR values use the encoding-error state instead of rendering untrusted values.
 `LumenTooltip` provides contextual help with native dismissal and named anchors.
 See the [Carousel](../../docs/native-parity/carousel.md) and
 [Tooltip](../../docs/native-parity/tooltip.md) contracts for adapter-specific state APIs.

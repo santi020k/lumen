@@ -177,13 +177,22 @@ const columnStatus = (props: LumenKanbanColumnProps, valid: boolean): string | n
   return null
 }
 
+const columnFull = function (column: LumenKanbanColumnData): boolean {
+  return column.capacity !== undefined && column.cards.length >= column.capacity
+}
+
 export const LumenKanbanColumn = (props: LumenKanbanColumnProps): ReactElement => {
   const theme = useLumenTheme()
   const ref = useRef<View>(null)
   const [layout] = useState<ColumnLayout>(() => ({ bounds: new Map(), measure: new Map() }))
   const model = new LumenKanbanModel([props.column])
   const status = columnStatus(props, model.valid)
-  const full = props.column.capacity !== undefined && props.column.cards.length >= props.column.capacity
+
+  if (!model.valid) return (
+    <LumenText accessibilityLiveRegion="polite">{status}</LumenText>
+  )
+
+  const full = columnFull(props.column)
   const addDisabled = blockedColumn(props) || full
 
   const countLabel = status === null ?

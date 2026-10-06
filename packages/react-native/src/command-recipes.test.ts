@@ -38,3 +38,29 @@ test('identity is validated before filtering and handles large literal queries w
   expect(lumenCommandGroups(groups, '('.repeat(100000))).toEqual([])
   expect(lumenCommandGroups([], '')).toEqual([])
 })
+
+test('rejects decoded groups, nested items and searchable fields without throwing', () => {
+  const malformed: unknown[] = [null,
+    42,
+    [],
+    {},
+    { id: null, label: '', items: [] },
+    { id: 'g', label: null, items: [] },
+    { id: 'g', label: '', items: null },
+    ...[null,
+      42,
+      {},
+      { id: null, label: '' },
+      { id: 'a', label: 42 },
+      { id: 'a', label: '', detail: 42 },
+      { id: 'a', label: '', shortcut: {} },
+      { id: 'a', label: '', keywords: 'word' },
+      { id: 'a', label: '', keywords: [null] },
+      { id: 'a', label: '', keywords: new Array<unknown>(1) }]
+      .map(item => ({ id: 'g', label: '', items: [item] }))]
+
+  for (const input of [...malformed.map(group => [group]), null, {}, 'groups', new Array<unknown>(1)]) {
+    expect(Reflect.apply(isLumenCommandGroupsValid, undefined, [input])).toBe(false)
+    expect(Reflect.apply(lumenCommandGroups, undefined, [input, 'a'])).toBeNull()
+  }
+})

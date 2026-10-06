@@ -46,7 +46,8 @@ export const LumenCarousel = ({ label, slides, index, onIndexChange, renderSlide
   const [width, setWidth] = useState(0)
   const [settled, setSettled] = useState(0)
   const viewportRef = useRef<ScrollView>(null)
-  const ids = JSON.stringify(slides.map(slide => slide.id))
+  const validSlides = state.status === 'ready' ? slides : []
+  const ids = JSON.stringify(validSlides.map(slide => slide.id))
   const validHeight = Number.isFinite(height) && height > 0 && height <= 4096
 
   useEffect(() => {
@@ -84,7 +85,7 @@ export const LumenCarousel = ({ label, slides, index, onIndexChange, renderSlide
   }
 
   const announcement = message()
-  const radioKeys = useLumenRadioKeyboard(slides.map(() => disabled), navigate)
+  const radioKeys = useLumenRadioKeyboard(validSlides.map(() => disabled), navigate)
 
   return (
     <View {...props} style={[{ gap: theme.spacing.sm }, style]} accessibilityLabel={label}>

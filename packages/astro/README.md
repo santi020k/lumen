@@ -110,7 +110,9 @@ import { Button, Card, Input } from '@santi020k/lumen-astro'
 `countries` are not provided. Mount `UIPrimitives` once to enable as-you-type formatting,
 metadata-backed validation, automatic country detection for pasted international numbers, and the
 `ui:phone-change` event with a `LumenPhoneNumber` detail. Validation messages and inherited locale
-resolve in the phone control's owning document, including after iframe adoption.
+resolve in the phone control's owning document, including after iframe adoption. Repeated runtime
+initialization binds adopted phone controls to their current reset root; reset synchronization follows
+the current form owner and honors cancellation without duplicating edit listeners.
 
 The phone metadata and normalization controller are selector-loaded only when a rendered page
 contains `PhoneInput`; pages without the component do not evaluate or download that controller.

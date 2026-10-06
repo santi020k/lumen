@@ -843,7 +843,7 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(runtime).toContain(
       `trigger.setAttribute('aria-${'described' + 'by'}'`
     )
-    expect(runtime).toContain('tip.id = nextRuntimeId(\'ui-tooltip\')')
+    expect(runtime).toContain('tip.id = nextRuntimeId(\'ui-tooltip\', tip.ownerDocument)')
     expect(runtime).toContain('item.getAttribute(\'aria-disabled\') !== \'true\'')
   })
 

@@ -50,3 +50,14 @@ test('filters host options with deterministic identity, guards disabled/stale in
   expect(filterLumenMentionOptions(options, null)).toEqual([])
   expect(resolveLumenMentionQuery(value('a'.repeat(1_000_000)))).toBeNull()
 })
+
+test('rejects malformed decoded mention options without exposing suggestions or insertion', () => {
+  const query = resolveLumenMentionQuery(value('@al'))
+  for (const input of [null, 1, [], {}, { id: 'a', label: {}, value: 'alice' }, { id: 'a', label: 'A', value: null }, { id: 'a', label: 'A', value: 'alice', disabled: 'false' }]) {
+    expect(Reflect.apply(filterLumenMentionOptions, undefined, [[input], query])).toEqual([])
+    expect(Reflect.apply(insertLumenMention, undefined, [value('@al'), input])).toBeNull()
+  }
+  for (const input of [null, {}, 1]) {
+    expect(Reflect.apply(filterLumenMentionOptions, undefined, [input, query])).toEqual([])
+  }
+})

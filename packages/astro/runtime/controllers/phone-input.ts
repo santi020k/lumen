@@ -7,6 +7,32 @@ import {
 } from '@santi020k/lumen-core'
 
 const phoneInputSelector = '[data-ui-phone-input]'
+const phoneCommits = new WeakMap<HTMLInputElement, () => void>()
+const resetRoots = new WeakSet<Node>()
+
+const isQueryRoot = (root: Node): root is Document | DocumentFragment | Element => (
+  'querySelectorAll' in root && typeof root.querySelectorAll === 'function'
+)
+
+const bindPhoneResets = (input: HTMLInputElement): void => {
+  const scope = input.getRootNode()
+
+  if (!isQueryRoot(scope) || resetRoots.has(scope)) return
+
+  resetRoots.add(scope)
+
+  scope.addEventListener('reset', event => {
+    queueMicrotask(() => {
+      if (event.defaultPrevented) return
+
+      for (const current of scope.querySelectorAll<HTMLInputElement>('.ui-phone-input__number')) {
+        if (current.isConnected && current.getRootNode() === scope && current.form === event.target) {
+          phoneCommits.get(current)?.()
+        }
+      }
+    })
+  }, { capture: true })
+}
 
 const getPhoneOptions = (root: HTMLElement): LumenPhoneCountryOptions => {
   const locale = root.lang || root.ownerDocument.documentElement.lang || undefined
@@ -94,12 +120,14 @@ const syncPhoneCountry = (root: HTMLElement, phoneNumber: LumenPhoneNumber): voi
 
 export const initPhoneInputControllers = (scope: ParentNode): void => {
   for (const root of scope.querySelectorAll<HTMLElement>(phoneInputSelector)) {
-    if (root.dataset.uiPhoneBound === 'true') continue
-
     const countrySelect = root.querySelector<HTMLSelectElement>('.ui-phone-input__country')
     const numberInput = root.querySelector<HTMLInputElement>('.ui-phone-input__number')
 
     if (!countrySelect || !numberInput) continue
+
+    bindPhoneResets(numberInput)
+
+    if (root.dataset.uiPhoneBound === 'true') continue
 
     root.dataset.uiPhoneBound = 'true'
 
@@ -135,9 +163,7 @@ export const initPhoneInputControllers = (scope: ParentNode): void => {
 
     numberInput.addEventListener('input', commit)
 
-    numberInput.form?.addEventListener('reset', () => {
-      queueMicrotask(commit)
-    })
+    phoneCommits.set(numberInput, commit)
 
     commit()
   }

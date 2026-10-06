@@ -2,6 +2,8 @@
 
 ## 4.0.0
 
+- Validate decoded tree, table, command, transfer, kanban, tour, stepper, mentions and QR inputs before model or hook access; invalid carousel slides also stop before identity derivation.
+
 - Reject malformed decoded Agenda event collections, fields and timing, and Carousel slide collections, IDs and labels before rendering or navigation.
 
 - Reject malformed decoded event collections, rows, and date bounds before displaying calendar indicators.

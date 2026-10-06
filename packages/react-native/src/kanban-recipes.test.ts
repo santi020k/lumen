@@ -42,3 +42,30 @@ test('disabled cards and full targets block moves while full source reorders', (
   expect(model.moving('one', 'a', 1)?.[0]?.cards.map(card => card.id)).toEqual(['two', 'one'])
   expect(model.moving('one', 'unknown', 0)).toBeNull()
 })
+
+test('rejects decoded columns and cards before constructing or moving', () => {
+  const malformed: unknown[] = [null,
+    42,
+    [],
+    {},
+    { id: 42, label: '', cards: [] },
+    { id: 'a', label: null, cards: [] },
+    { id: 'a', label: '', cards: null },
+    { id: 'a', label: '', cards: [], capacity: '1' },
+    ...[null,
+      42,
+      [],
+      {},
+      { id: null, label: '' },
+      { id: 'c', label: 42 },
+      { id: 'c', label: '', disabled: 'false' }].map(card => ({ id: 'a', label: '', cards: [card] }))]
+
+  for (const input of [...malformed.map(column => [column]), null, {}, 'columns', new Array<unknown>(1)]) {
+    const model: unknown = Reflect.construct(LumenKanbanModel, [input])
+
+    if (!(model instanceof LumenKanbanModel)) throw new Error('Unexpected model')
+
+    expect(model.valid).toBe(false)
+    expect(model.moving('a', 'b', 0)).toBeNull()
+  }
+})

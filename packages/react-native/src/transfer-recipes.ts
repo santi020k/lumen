@@ -6,29 +6,49 @@ export interface LumenTransferLists {
   target: readonly LumenTransferItem[]
 }
 
+const isRecord = (value: unknown): value is Record<string, unknown> => typeof value === 'object' && value !== null && !Array.isArray(value)
+const optionalBoolean = (value: unknown): boolean => value === undefined || typeof value === 'boolean'
+const optionalString = (value: unknown): boolean => value === undefined || typeof value === 'string'
+
+const validItem = (value: unknown): value is LumenTransferItem => {
+  if (!isRecord(value) || typeof value.id !== 'string' || typeof value.label !== 'string') return false
+
+  return optionalString(value.detail) && optionalBoolean(value.disabled)
+}
+
 const validIds = (ids: readonly string[]): boolean => {
+  if (!Array.isArray(ids)) return false
+
   const seen = new Set<string>()
 
-  return ids.every(id => {
-    if (id.trim().length === 0 || seen.has(id)) return false
+  for (const id of ids as readonly unknown[]) {
+    if (typeof id !== 'string' || id.trim().length === 0 || seen.has(id)) return false
 
     seen.add(id)
+  }
 
-    return true
-  })
+  return true
 }
 
 export const isLumenTransferItemsValid = (items: readonly LumenTransferItem[]): boolean => {
-  const ids = items.map(item => item.id)
+  if (!Array.isArray(items)) return false
+
+  const ids: string[] = []
+
+  for (const item of items as readonly unknown[]) {
+    if (!validItem(item)) return false
+
+    ids.push(item.id)
+  }
 
   return validIds(ids)
 }
 export const isLumenTransferValueValid = (value: LumenTransferValue): boolean => {
-  const selected = validIds(value.selectedIds)
-  const checked = validIds(value.checkedIds)
+  if (!isRecord(value)) return false
 
-  return selected && checked
+  return validIds(value.selectedIds) && validIds(value.checkedIds)
 }
+
 export const lumenTransferLists = (
   items: readonly LumenTransferItem[], value: LumenTransferValue
 ): LumenTransferLists | null => {

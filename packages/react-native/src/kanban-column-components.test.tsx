@@ -1,4 +1,4 @@
-import { act, createElement, type ReactElement } from 'react'
+import { act, createElement, isValidElement, type ReactElement } from 'react'
 
 import { createRoot, type Root, type TestInstance } from 'test-renderer'
 import { afterEach, expect, test, vi } from 'vitest'
@@ -163,4 +163,22 @@ test('reorder alternatives expose only reachable neighboring positions, includin
     root.render(<LumenKanbanColumn column={{ id: 'todo', label: 'Todo', cards: [{ id: 'b', label: 'B' }] }} onColumnChange={change} />)
   })
   expect(moves()).toEqual([])
+})
+
+test('renders invalid status for decoded columns before reading their fields', () => {
+  for (const column of [null, 42, {}, { id: 'todo', label: 'Todo', cards: null }]) {
+    const root = createRoot()
+
+    roots.push(root)
+    act(() => {
+      const element: unknown = Reflect.apply(createElement, undefined, [LumenKanbanColumn,
+        { column, invalidLabel: 'Decoded column is invalid', onColumnChange: vi.fn() }])
+
+      if (!isValidElement(element)) throw new Error('Unexpected element')
+
+      root.render(element)
+    })
+    expect(root.container.queryAll(instance => instance.type === 'Text' &&
+      read(instance, 'children') === 'Decoded column is invalid')).toHaveLength(1)
+  }
 })

@@ -3,7 +3,7 @@ import { act, createElement, type ReactElement, type Ref, useImperativeHandle } 
 import { createRoot, type TestInstance } from 'test-renderer'
 import { expect, test, vi } from 'vitest'
 
-import { LumenMentions } from './mentions-components.js'
+import { LumenMentions, type LumenMentionsProps } from './mentions-components.js'
 import type { LumenMentionOption, LumenMentionsValue } from './mentions-recipes.js'
 
 const native = vi.hoisted(() => ({ focus: vi.fn(), blur: vi.fn() }))
@@ -202,4 +202,27 @@ test('RN Web validates final native blur text because it has no end-editing even
       root.unmount()
     })
   }
+})
+
+test('malformed decoded mention values render invalid selection before hook state derivation', async () => {
+  const root = createRoot()
+  const emit = vi.fn()
+  for (const raw of ['null', '1', '{}', '{"text":"@a"}', '{"text":"@a","selection":null}', '{"text":{},"selection":{"start":0,"end":0}}']) {
+    const decoded: unknown = JSON.parse(raw)
+    const props: LumenMentionsProps = { label: 'Message', value: { text: '', selection: { start: 0, end: 0 } }, onValueChange: emit, options: [] }
+    Object.defineProperty(props, 'value', { value: decoded })
+    await act(async () => {
+      await Promise.resolve()
+      root.render(<LumenMentions {...props} />)
+    })
+    expect(root.container.queryAll(node => node.type === 'Text' && prop(node, 'children') === 'Invalid text selection')).toHaveLength(1)
+    const input = root.container.queryAll(node => node.type === 'TextInput')[0]
+    if (!input) throw new Error('Missing text input')
+    expect(prop(input, 'editable')).toBe(false)
+  }
+  expect(emit).not.toHaveBeenCalled()
+  await act(async () => {
+    await Promise.resolve()
+    root.unmount()
+  })
 })

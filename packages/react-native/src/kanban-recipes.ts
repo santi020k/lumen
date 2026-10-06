@@ -12,12 +12,47 @@ export interface LumenKanbanColumnData {
   disabled?: boolean | undefined
 }
 
+const isRecord = (value: unknown): value is Record<string, unknown> => typeof value === 'object' && value !== null && !Array.isArray(value)
+const optionalBoolean = (value: unknown): boolean => value === undefined || typeof value === 'boolean'
+
+const validCard = (value: unknown): value is LumenKanbanCard => {
+  if (!isRecord(value) || typeof value.id !== 'string' || typeof value.label !== 'string') return false
+
+  return optionalBoolean(value.disabled)
+}
+
+const validColumn = (value: unknown): value is LumenKanbanColumnData => {
+  if (!isRecord(value) || typeof value.id !== 'string' || typeof value.label !== 'string' || !Array.isArray(value.cards)) return false
+
+  if (!optionalBoolean(value.disabled) || (value.capacity !== undefined && typeof value.capacity !== 'number')) return false
+
+  for (const card of value.cards as readonly unknown[]) if (!validCard(card)) return false
+
+  return true
+}
+
+const validColumns = (value: unknown): value is readonly LumenKanbanColumnData[] => {
+  if (!Array.isArray(value)) return false
+
+  for (const column of value as readonly unknown[]) if (!validColumn(column)) return false
+
+  return true
+}
+
 /** Insertion indices refer to the destination after removal of the moving card. */
 export class LumenKanbanModel {
   readonly valid: boolean
   readonly columns: readonly LumenKanbanColumnData[]
 
   constructor(columns: readonly LumenKanbanColumnData[]) {
+    this.columns = []
+
+    if (!validColumns(columns)) {
+      this.valid = false
+
+      return
+    }
+
     this.columns = columns
 
     const columnIds = new Set<string>()
@@ -32,7 +67,7 @@ export class LumenKanbanModel {
         if (!Number.isSafeInteger(column.capacity) || column.capacity < column.cards.length) return false
       }
 
-      return column.cards.every(card => {
+      return column.cards.every((card: LumenKanbanCard) => {
         if (!card.id.trim() || cardIds.has(card.id)) return false
 
         cardIds.add(card.id)

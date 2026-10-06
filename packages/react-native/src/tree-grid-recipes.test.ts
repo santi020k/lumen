@@ -47,6 +47,8 @@ test('invalid columns, duplicate or blank IDs and malformed graphs hide all reco
   ]) {
     const model = new LumenTreeGridModel(columns, badRecords)
 
+    if (!(model instanceof LumenTreeGridModel)) throw new Error('Unexpected model')
+
     expect(model.valid).toBe(false)
     expect(model.visibleRows(new Set(['cycle']))).toEqual([])
     expect(model.togglingExpansion('cycle', new Set(['unknown']))).toEqual(new Set(['unknown']))
@@ -84,4 +86,30 @@ test('deep records use the iterative graph and keep uncapped semantic depth', ()
   const model = new LumenTreeGridModel(columns, deep)
 
   expect(model.visibleRows(new Set(deep.map(record => record.node.id))).at(-1)?.tree.depth).toBe(999)
+})
+
+test('rejects malformed decoded grid records before extracting nested tree nodes', () => {
+  for (const records of [null,
+    {},
+    'records',
+    [null],
+    [42],
+    [{}],
+    [{ node: null, cells: {} }],
+    [{ node: { id: 42, label: 'Node' }, cells: {} }],
+    new Array<unknown>(1)]) {
+    const model: unknown = Reflect.construct(LumenTreeGridModel, [columns, records])
+
+    if (!(model instanceof LumenTreeGridModel)) throw new Error('Unexpected model')
+
+    expect(model.valid).toBe(false)
+    expect(model.visibleRows(new Set())).toEqual([])
+  }
+  for (const columns of [null, {}, [null], [42], [{ key: null, label: 'Column' }], new Array<unknown>(1)]) {
+    const model: unknown = Reflect.construct(LumenTreeGridModel, [columns, records])
+
+    if (!(model instanceof LumenTreeGridModel)) throw new Error('Unexpected model')
+
+    expect(model.valid).toBe(false)
+  }
 })

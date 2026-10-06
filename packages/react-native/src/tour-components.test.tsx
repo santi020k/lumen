@@ -123,3 +123,14 @@ test('closed retains host content without overlay; inherited anchor entries neve
   invoke(modalView, 'onLayout', [{ nativeEvent: { layout: { width: 390, height: 640 } } }])
   expect(root.container.queryAll(instance => read(instance, 'testID') === 'tour-highlight')).toHaveLength(0)
 })
+
+test('decoded invalid tour collections and step fields render invalid status', () => {
+  for (const raw of ['null', '{}', '[null]', '[5]', '[{"id":3}]', '[{"id":"a","targetId":"b","title":{},"content":"C"}]', '[{"id":"a","targetId":"b","title":"A","content":null}]', '[{"id":"a","targetId":"b","title":"A","content":"C","disabled":"false"}]']) {
+    const decoded: unknown = JSON.parse(raw)
+    const input = props()
+    Object.defineProperty(input, 'steps', { value: decoded })
+    const root = render(input)
+    expect(root.container.queryAll(node => node.type === 'Text' && read(node, 'children') === 'Invalid tour step')).toHaveLength(1)
+    expect(buttons(root)).toHaveLength(1)
+  }
+})

@@ -108,3 +108,55 @@ test('a real reset-button click synchronizes ImageComparison value, frame and ac
   await expect(frame).toHaveCSS('--ui-image-comparison-position', '25%')
   expect(await form.evaluate(element => element instanceof HTMLFormElement && new FormData(element).get('reveal'))).toBe('25')
 })
+
+test('Calendar navigates after adoption while attribute updates preserve focused day', async ({ page }) => {
+  await page.goto('/internal/date-controls')
+  await expect(page.locator('#astro-calendar')).toHaveAttribute('data-ui-bound', 'true')
+  const result = await page.evaluate(async () => {
+    const root = document.querySelector<HTMLElement>('#astro-calendar')
+    const iframe = document.createElement('iframe')
+    document.body.append(iframe)
+    const destination = iframe.contentDocument
+    if (!root || !destination) throw new Error('Missing adoption fixture')
+    destination.body.append(destination.adoptNode(root))
+    const day = root.querySelector<HTMLElement>('[data-date="2026-07-23"]')
+    if (!day) throw new Error('Missing calendar day')
+    day.focus()
+    root.setAttribute('lang', 'en')
+    await new Promise(resolve => setTimeout(resolve, 0))
+    return destination.activeElement?.getAttribute('data-date')
+  })
+  expect(result).toBe('2026-07-23')
+})
+
+test('Tooltip opens with generated IDs unique in its owning iframe document', async ({ page }) => {
+  await page.goto('/internal/date-controls')
+  const result = await page.evaluate(() => {
+    const iframe = document.createElement('iframe')
+    document.body.append(iframe)
+    const destination = iframe.contentDocument
+    if (!destination) throw new Error('Missing destination document')
+    // Occupy the next generated IDs in the destination, including IDs absent from the source.
+    for (let index = 1; index < 2000; index++) {
+      const node = destination.createElement('span')
+      node.id = 'ui-tooltip-' + String(index)
+      destination.body.append(node)
+    }
+    const root = destination.createElement('div')
+    root.dataset.uiTooltip = ''
+    root.innerHTML = '<button type="button">Help</button><span role="tooltip">Explanation</span>'
+    destination.body.append(root)
+    const initialize: unknown = Reflect.get(window, 'LumenInitUiPrimitives')
+    const isInitializer = (value: unknown): value is (scope: ParentNode) => void => typeof value === 'function'
+    if (!isInitializer(initialize)) throw new Error('Missing public runtime initialization')
+    initialize(destination)
+    const tooltip = root.querySelector('[role="tooltip"]')
+    const id = tooltip?.id
+    if (!id) throw new Error('Missing generated tooltip ID')
+    return {
+      unique: destination.querySelectorAll('[id="' + id + '"]').length === 1,
+      linked: root.querySelector('button')?.getAttribute('aria-describedby') === id
+    }
+  })
+  expect(result).toEqual({ unique: true, linked: true })
+})
