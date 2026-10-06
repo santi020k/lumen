@@ -2,6 +2,8 @@
 
 ## 4.0.0
 
+- Clear generated amount input identifiers when host IDs are removed while restoring authored input IDs.
+
 ### Minor Changes
 
 - Add exact localized AmountField drafts across web adapters and a React Hook Form controller.

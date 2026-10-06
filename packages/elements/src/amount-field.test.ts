@@ -55,3 +55,63 @@ test('amount element forwards naming, form and disabled state and supports chang
     form.remove()
   }
 })
+
+test('amount element clears and updates its generated ID when the host ID changes', () => {
+  defineLumenElements()
+
+  const field = document.createElement('lumen-amount-field')
+
+  field.id = 'amount'
+
+  document.body.append(field)
+
+  try {
+    const input = field.querySelector<HTMLInputElement>('[data-ui-amount-input]')
+
+    if (!input) throw new Error('Missing amount input')
+
+    expect(input.id).toBe('amount-input')
+
+    field.removeAttribute('id')
+
+    expect(input.hasAttribute('id')).toBe(false)
+
+    field.id = 'replacement'
+
+    expect(input.id).toBe('replacement-input')
+
+    field.id = ''
+
+    expect(input.hasAttribute('id')).toBe(false)
+  } finally {
+    field.remove()
+  }
+})
+
+test('amount element restores a supplied input ID after removing the host ID', () => {
+  defineLumenElements()
+
+  const field = document.createElement('lumen-amount-field')
+
+  field.innerHTML = '<input data-ui-amount-input id="authored-amount">'
+
+  document.body.append(field)
+
+  try {
+    const input = field.querySelector('input')
+
+    if (!input) throw new Error('Missing authored amount input')
+
+    expect(input.id).toBe('authored-amount')
+
+    field.id = 'owner'
+
+    expect(input.id).toBe('owner-input')
+
+    field.removeAttribute('id')
+
+    expect(input.id).toBe('authored-amount')
+  } finally {
+    field.remove()
+  }
+})

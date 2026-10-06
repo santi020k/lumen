@@ -16,6 +16,7 @@ export class LumenAmountFieldElement extends LumenElement {
   }
 
   #amountController: LumenAmountFieldController | undefined
+  #originalInputId: string | undefined
 
   get value(): string {
     return this.getAttribute('value') ?? ''
@@ -37,30 +38,14 @@ export class LumenAmountFieldElement extends LumenElement {
     if (!this.#amountController || !this.isConnected || oldValue === newValue) return
 
     if (name === 'value') this.#amountController.setValue(newValue ?? '')
-    else if (['locale', 'fraction-digits', 'allow-negative', 'default-value', 'invalid-message', 'name', 'form', 'disabled', 'readonly', 'required', 'id', 'aria-label', 'aria-labelledby', 'aria-describedby', 'placeholder'].includes(name)) this.#mountAmount()
+    else this.#mountAmount()
   }
 
   #mountAmount() {
     this.#amountController?.destroy()
 
-    let input = this.querySelector<HTMLInputElement>('[data-ui-amount-input]')
-    let submission = this.querySelector<HTMLInputElement>('[data-ui-amount-value]')
-
-    if (!input) {
-      input = this.ownerDocument.createElement('input')
-
-      input.setAttribute('data-ui-amount-input', '')
-
-      this.append(input)
-    }
-
-    if (!submission) {
-      submission = this.ownerDocument.createElement('input')
-
-      submission.setAttribute('data-ui-amount-value', '')
-
-      this.append(submission)
-    }
+    const input = this.#input('data-ui-amount-input')
+    const submission = this.#input('data-ui-amount-value')
 
     input.type = 'text'
 
@@ -84,7 +69,12 @@ export class LumenAmountFieldElement extends LumenElement {
       else input.removeAttribute(name)
     }
 
-    if (this.id) input.id = `${this.id}-input`
+    this.#originalInputId ??= input.id
+
+    const id = this.id ? `${this.id}-input` : this.#originalInputId
+
+    if (id) input.id = id
+    else input.removeAttribute('id')
 
     input.disabled = this.hasAttribute('disabled')
 
@@ -97,6 +87,20 @@ export class LumenAmountFieldElement extends LumenElement {
     this.#amountController = createLumenAmountFieldController(this, detail => {
       this.setAttribute('value', detail.draft)
     })
+  }
+
+  #input(attribute: string): HTMLInputElement {
+    const existing = this.querySelector<HTMLInputElement>(`[${attribute}]`)
+
+    if (existing) return existing
+
+    const input = this.ownerDocument.createElement('input')
+
+    input.setAttribute(attribute, '')
+
+    this.append(input)
+
+    return input
   }
 
   override disconnectedCallback() {

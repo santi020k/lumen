@@ -2,6 +2,8 @@
 
 ## 4.0.0
 
+- Validate decoded scatter annotations and use the owning document for combobox events and lifecycle resources.
+
 - Reject malformed decoded heatmap containers before geometry calculation.
 
 - Reject non-array comparison and interval chart datasets before iteration. Reject fractional group separators in strict localized amount pastes.

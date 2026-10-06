@@ -2693,7 +2693,7 @@ const formatDatePickerDisplayValue = (
 
   if (formatDate) return formatDate(value)
 
-  return new Intl.DateTimeFormat(getCalendarLocale(locale), {
+  return new Intl.DateTimeFormat(getCalendarLocale(locale || 'en'), {
     day: 'numeric',
     month: 'short',
     timeZone: 'UTC',
@@ -2753,7 +2753,7 @@ export const DatePicker = ({
   const { open: isOpen, setOpen } = useDatePickerDisclosure(disabled === true || readOnly === true)
   const selectedValue = value ?? internalValue
   const hasSelectedValue = selectedValue !== ''
-  const dateLabels = { ...resolveDateControlLabels(locale), ...labels }
+  const dateLabels = { ...resolveDateControlLabels(locale || 'en'), ...labels }
   const placeholderText = placeholder ?? dateLabels.chooseDate
   const maxStr = stringifyDatePickerConstraint(max)
   const minStr = stringifyDatePickerConstraint(min)

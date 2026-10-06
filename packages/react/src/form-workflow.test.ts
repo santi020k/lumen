@@ -416,6 +416,8 @@ test('validates and tracks iframe controls using their own realm', async () => {
   })
   expect(get().dirty).toBe(true)
   await act(async () => {
+    await Promise.resolve()
+
     get().markSaved()
     await Promise.resolve()
   })
@@ -425,4 +427,80 @@ test('validates and tracks iframe controls using their own realm', async () => {
     await Promise.resolve()
   })
   expect(get().dirty).toBe(true)
+})
+
+test('external edits, dependency errors and blur follow form ownership without duplicate listeners', async () => {
+  let current: LumenFormWorkflow | undefined
+  const validateControl = vi.fn((field: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement) => field.value ? '' : 'Required')
+  const { container, root } = await mount(() => {
+    current = useLumenFormWorkflow({ validateControl, dependencies: { external: ['dependent'] } })
+
+    return createElement('div', {}, createElement('form', { ...current.formProps, id: 'external-owner' }, createElement('input', { name: 'dependent', required: true })), createElement('input', { id: 'owned-external', form: 'external-owner', name: 'external', required: true }), createElement('input', { id: 'unowned-external', name: 'unowned' }))
+  })
+  const get = () => {
+    if (!current) throw new Error('Missing external workflow')
+
+    return current
+  }
+  const owned = control(container, '#owned-external')
+
+  await input(owned, 'saved')
+
+  expect(get().dirty).toBe(true)
+
+  expect(get().errors.map(issue => issue.name)).toEqual(['dependent'])
+
+  await act(async () => {
+    await Promise.resolve()
+
+    get().markSaved()
+  })
+
+  await input(control(container, '#unowned-external'), 'unrelated')
+
+  expect(get().dirty).toBe(false)
+
+  await input(owned, '')
+
+  expect(get().dirty).toBe(true)
+
+  await act(async () => {
+    await Promise.resolve()
+
+    owned.dispatchEvent(new FocusEvent('focusout', { bubbles: true }))
+  })
+
+  expect(get().errors.map(issue => issue.name)).toContain('external')
+
+  await input(owned, 'restored')
+
+  expect(get().errors.map(issue => issue.name)).not.toContain('external')
+
+  validateControl.mockClear()
+
+  await act(async () => {
+    owned.dispatchEvent(new Event('change', { bubbles: true }))
+
+    await Promise.resolve()
+  })
+
+  expect(validateControl).toHaveBeenCalledTimes(2)
+
+  await act(async () => {
+    await Promise.resolve()
+
+    root.unmount()
+  })
+
+  validateControl.mockClear()
+
+  document.body.append(owned)
+
+  owned.dispatchEvent(new Event('input', { bubbles: true }))
+
+  await Promise.resolve()
+
+  expect(validateControl).not.toHaveBeenCalled()
+
+  owned.remove()
 })

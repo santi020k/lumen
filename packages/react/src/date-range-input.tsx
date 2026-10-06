@@ -250,7 +250,7 @@ const rangeError = (
   props: Pick<DateRangeInputProps, 'min' | 'max' | 'locale' | 'labels'> & { validate: DateRangeInputProps['validate'] }
 ) => {
   if (!isCalendarRangeValid(draft, props.min, props.max)) {
-    return props.labels.invalidRange ?? resolveDateControlLabels(props.locale).invalidRange
+    return props.labels.invalidRange ?? resolveDateControlLabels(props.locale || 'en').invalidRange
   }
 
   return props.validate?.(draft)

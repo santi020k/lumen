@@ -612,7 +612,9 @@ Presets outside `min`/`max` or in descending order are disabled. Only one matchi
 preset is highlighted, including when multiple presets resolve to the same range. `formatDate` can customize
 the endpoint summaries without changing ISO values. The consumer owns draft state,
 Apply/Cancel actions and domain limits such as maximum report duration. Labels are required;
-`locale` controls month, weekday, navigation and day announcements.
+`locale` controls month, weekday, navigation and day announcements. React date controls default
+to English on both the server and browser; pass the application locale explicitly for localized
+SSR and hydration.
 
 ## Input-attached date range selection
 
@@ -971,5 +973,8 @@ not change the Astro or Elements runtime.
 
 Use the optional `@santi020k/lumen-react/forms` entry point for validation, dependent fields,
 unsaved edit tracking, step navigation, stable repeatable rows, and cancelable asynchronous checks.
+Controls associated from outside the form through `form="id"` participate in edit tracking,
+blur validation and dependent-field validation. Events from controls owned by another form are ignored.
+
 See [composable form workflows](../../docs/powerful-forms.md). Applications retain schemas, financial
 rules, requests, draft storage, and authorization. Do not combine validation owners on one form.

@@ -217,6 +217,56 @@ export const useLumenFormWorkflow = ({
     setErrors(all.filter(issue => attemptedRef.current || names.has(issue.name)))
   }, [collect, dependencies])
 
+  useEffect(() => {
+    const form = formRef.current
+
+    if (!form) return
+
+    const owner = form.ownerDocument
+
+    const externalControl = (event: Event): LumenFormControl | undefined => {
+      const target = event.target
+
+      return target && isLumenFormControl(target) && target.form === form && !form.contains(target) ? target : undefined
+    }
+
+    const updateExternal = (event: Event): void => {
+      const control = externalControl(event)
+
+      if (!control) return
+
+      const name = getControlName(control)
+
+      queueMicrotask(() => {
+        refresh(form, name)
+      })
+    }
+
+    const blurExternal = (event: Event): void => {
+      const control = externalControl(event)
+
+      if (!control) return
+
+      ensureControlId(control)
+
+      validate(form, [getControlName(control)])
+    }
+
+    owner.addEventListener('input', updateExternal)
+
+    owner.addEventListener('change', updateExternal)
+
+    owner.addEventListener('focusout', blurExternal)
+
+    return () => {
+      owner.removeEventListener('input', updateExternal)
+
+      owner.removeEventListener('change', updateExternal)
+
+      owner.removeEventListener('focusout', blurExternal)
+    }
+  })
+
   const markSaved = useCallback(() => {
     if (formRef.current) baselineRef.current = fingerprint(formRef.current)
 

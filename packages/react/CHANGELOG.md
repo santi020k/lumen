@@ -2,6 +2,8 @@
 
 ## 4.0.0
 
+- Observe externally associated form controls and keep omitted date locales deterministic across server rendering and hydration.
+
 - Assign stable field identities before the first blur validation of unnamed controls.
 
 - Validate and fingerprint form controls in their owning browser realm, including same-origin iframe forms.

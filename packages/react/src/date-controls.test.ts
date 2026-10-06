@@ -3,7 +3,8 @@
 import type { ReactNode, SyntheticEvent } from 'react'
 import { act, createElement } from 'react'
 import type { Root } from 'react-dom/client'
-import { createRoot } from 'react-dom/client'
+import { createRoot, hydrateRoot } from 'react-dom/client'
+import { renderToString } from 'react-dom/server'
 
 import { isLumenDateRangeValid as isCalendarRangeValid, parseLumenDate as parseCalendarDate } from '@santi020k/lumen-core'
 import { afterEach, beforeEach, expect, test, vi } from 'vitest'
@@ -359,4 +360,55 @@ test('DatePicker does not normalize impossible dates or call a formatter with in
   await render(createElement(DatePicker, { value: '2026-02-30', formatDate, placeholder: 'Select date' }))
   expect(element('[data-ui-date-picker-value]').textContent).toBe('Select date')
   expect(formatDate).not.toHaveBeenCalled()
+})
+
+test('date controls hydrate deterministically in a localized document without an explicit locale', async () => {
+  const originalLanguage = document.documentElement.lang
+  const owner = document
+  const Fixture = () => createElement('div', {}, createElement(Calendar, { defaultValue: '2026-09-10' }), createElement(DatePicker, { defaultValue: '2026-09-10' }))
+  let markup: string
+
+  try {
+    vi.stubGlobal('document', undefined)
+
+    vi.stubGlobal('navigator', undefined)
+
+    markup = renderToString(createElement(Fixture))
+  } finally {
+    vi.stubGlobal('document', owner)
+
+    vi.stubGlobal('navigator', owner.defaultView?.navigator)
+  }
+
+  document.documentElement.lang = 'es-CO'
+
+  try {
+    const recover = vi.fn()
+    const hydrated = document.createElement('div')
+
+    hydrated.innerHTML = markup
+
+    document.body.append(hydrated)
+
+    const serverText = hydrated.textContent
+    let hydratedRoot: Root | undefined
+
+    await run(() => {
+      hydratedRoot = hydrateRoot(hydrated, createElement(Fixture), { onRecoverableError: recover })
+    })
+
+    expect(recover).not.toHaveBeenCalled()
+
+    expect(hydrated.textContent).toBe(serverText)
+
+    expect(hydrated.textContent).toContain('September')
+
+    await run(() => {
+      hydratedRoot?.unmount()
+    })
+
+    hydrated.remove()
+  } finally {
+    document.documentElement.lang = originalLanguage
+  }
 })

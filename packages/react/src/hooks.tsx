@@ -2104,7 +2104,7 @@ export const useCalendar = ({
   }, [focusIso])
 
   const selectedIso = selectedDate ? formatCalendarDate(selectedDate) : ''
-  const currentLocale = getCalendarLocale(locale)
+  const currentLocale = getCalendarLocale(locale || 'en')
   const navigationLabels = { ...resolveDateControlLabels(currentLocale), ...labels }
 
   const monthFormatter = useMemo(

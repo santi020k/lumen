@@ -1678,15 +1678,32 @@ const scatterReferenceCoordinate = (
   return project(value)
 }
 
+const isLumenScatterReference = (value: unknown): value is LumenScatterReference => {
+  if (typeof value !== 'object' || value === null || !('id' in value) || !('label' in value)) return false
+
+  if (typeof value.id !== 'string' || typeof value.label !== 'string') return false
+
+  return ['x', 'y', 'xEnd', 'yEnd'].every(key => {
+    const coordinate: unknown = Reflect.get(value, key)
+
+    return coordinate === undefined || (typeof coordinate === 'number' && Number.isFinite(coordinate))
+  })
+}
+
 export const createLumenScatterReferences = (
   references: readonly LumenScatterReference[], geometry: LumenScatterGeometry,
   scale: LumenScatterScaleType = 'linear', padding = 44
 ): LumenScatterReferenceGeometry[] => {
   const result: LumenScatterReferenceGeometry[] = []
+
+  if (!Array.isArray(references)) return result
+
   const x = (value: number) => scaleLumenScatterX(value, geometry.xDomain, padding, geometry.width - padding, scale)
   const y = (value: number) => scaleLumenChartValue(value, geometry.domain, geometry.height - padding, padding)
 
   for (const reference of references) {
+    if (!isLumenScatterReference(reference)) continue
+
     const region = reference.xEnd !== undefined && reference.yEnd !== undefined
     const x1 = scatterReferenceCoordinate(reference.x, padding, x)
     const y1 = scatterReferenceCoordinate(reference.y, padding, y)

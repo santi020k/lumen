@@ -78,3 +78,22 @@ describe('automatic scatter bounds', () => {
     expect(geometry.points[0]).toMatchObject({ xCoordinate: 320, yCoordinate: 160 })
   })
 })
+
+// Exercise decoded JavaScript at the typed public boundary.
+test.each(['null', '{}', '42', '"references"', '[null]', '[{}]', '[{"id":"a","label":"A","x":"1"}]'])('scatter references reject malformed decoded input (%s)', encoded => {
+  const value: unknown = JSON.parse(encoded)
+  const geometry = createLumenScatterGeometry(series)
+  const result: unknown = Reflect.apply(createLumenScatterReferences, undefined, [value, geometry])
+
+  expect(result).toEqual([])
+})
+
+test('scatter references omit invalid annotations while retaining valid ones', () => {
+  const value: unknown = JSON.parse(
+    '[null,{"id":"target","label":"Target","x":10,"y":5},{"id":3,"label":"I"}]'
+  )
+  const geometry = createLumenScatterGeometry(series)
+  const result: unknown = Reflect.apply(createLumenScatterReferences, undefined, [value, geometry])
+
+  expect(result).toEqual([expect.objectContaining({ id: 'target', label: 'Target', region: false })])
+})

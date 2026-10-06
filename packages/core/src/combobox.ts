@@ -26,40 +26,39 @@ const filterOption = (
   }
 }
 
-const preserveVisibility = (
-  records: MutationRecord[], filterHidden: Set<HTMLElement>, list: HTMLElement
-): void => {
-  for (const record of records) {
-    if (record.attributeName === 'hidden' && record.target instanceof HTMLElement) filterHidden.delete(record.target)
-  }
-
-  for (const option of filterHidden) {
-    if (!list.contains(option)) {
-      option.hidden = false
-
-      filterHidden.delete(option)
-    }
-  }
-}
-
 /** Enhance editable comboboxes. */
 export const createLumenComboboxController = (root: HTMLElement): LumenComboboxController => {
   const input = root.querySelector<HTMLInputElement>('input[role="combobox"]')
   const list = root.querySelector<HTMLElement>('[role="listbox"]')
-
-  if (!input || !list) return { close: () => undefined, destroy: () => undefined }
-
   const document = root.ownerDocument
-  const abort = new AbortController()
+  const view = document.defaultView
+
+  if (!input || !list || !view) return { close: () => undefined, destroy: () => undefined }
+
+  const abort = new view.AbortController()
   const { signal } = abort
   let active: HTMLElement | undefined
   let composing = false
   let filtering = false
   let destroyed = false
   const filterHidden = new Set<HTMLElement>()
-  let resetTimer: ReturnType<typeof globalThis.setTimeout> | undefined
+  let resetTimer: ReturnType<typeof view.setTimeout> | undefined
   const eventRoot = root.getRootNode()
   const observerRef: { current?: MutationObserver } = {}
+
+  const preserveVisibility = (records: MutationRecord[]): void => {
+    for (const record of records) {
+      if (record.attributeName === 'hidden' && record.target instanceof view.HTMLElement) filterHidden.delete(record.target)
+    }
+
+    for (const option of filterHidden) {
+      if (!list.contains(option)) {
+        option.hidden = false
+
+        filterHidden.delete(option)
+      }
+    }
+  }
 
   if (!list.id) list.id = `ui-combobox-list-${++nextId}`
 
@@ -72,8 +71,6 @@ export const createLumenComboboxController = (root: HTMLElement): LumenComboboxC
 
   const available = (item: HTMLElement): boolean => !item.hidden &&
     !item.hasAttribute('disabled') && item.getAttribute('aria-disabled') !== 'true'
-
-  const visible = (): HTMLElement[] => items().filter(available)
 
   const activate = (item?: HTMLElement): void => {
     active = item
@@ -100,7 +97,7 @@ export const createLumenComboboxController = (root: HTMLElement): LumenComboboxC
   }
 
   const flushVisibility = (): void => {
-    preserveVisibility(observerRef.current?.takeRecords() ?? [], filterHidden, list)
+    preserveVisibility(observerRef.current?.takeRecords() ?? [])
   }
 
   const writeHidden = (item: HTMLElement, hidden: boolean): void => {
@@ -112,7 +109,7 @@ export const createLumenComboboxController = (root: HTMLElement): LumenComboboxC
     item.hidden = hidden
 
     // Keep application changes after our write.
-    preserveVisibility(observerRef.current?.takeRecords().slice(1) ?? [], filterHidden, list)
+    preserveVisibility(observerRef.current?.takeRecords().slice(1) ?? [])
   }
 
   const refresh = (): void => {
@@ -150,9 +147,9 @@ export const createLumenComboboxController = (root: HTMLElement): LumenComboboxC
 
     input.value = item.dataset.value ?? item.textContent.trim()
 
-    input.dispatchEvent(new Event('input', { bubbles: true }))
+    input.dispatchEvent(new view.Event('input', { bubbles: true }))
 
-    input.dispatchEvent(new Event('change', { bubbles: true }))
+    input.dispatchEvent(new view.Event('change', { bubbles: true }))
 
     input.focus({ preventScroll: true })
 
@@ -162,7 +159,7 @@ export const createLumenComboboxController = (root: HTMLElement): LumenComboboxC
   const navigate = (key: string): void => {
     open()
 
-    const options = visible()
+    const options = items().filter(available)
     const index = active ? options.indexOf(active) : -1
     let next = (index + 1) % options.length
 
@@ -209,7 +206,7 @@ export const createLumenComboboxController = (root: HTMLElement): LumenComboboxC
 
   const optionFromEvent = (event: Event): HTMLElement | undefined => {
     const target = event.composedPath()[0]
-    const option = target instanceof Element ? target.closest<HTMLElement>('[role="option"]') : null
+    const option = target instanceof view.Element ? target.closest<HTMLElement>('[role="option"]') : null
 
     return option && list.contains(option) ? option : undefined
   }
@@ -249,9 +246,9 @@ export const createLumenComboboxController = (root: HTMLElement): LumenComboboxC
   eventRoot.addEventListener('reset', event => {
     if (event.target !== input.form) return
 
-    globalThis.clearTimeout(resetTimer)
+    view.clearTimeout(resetTimer)
 
-    resetTimer = globalThis.setTimeout(() => {
+    resetTimer = view.setTimeout(() => {
       if (destroyed || event.defaultPrevented || !input.isConnected) return
 
       composing = false
@@ -281,17 +278,17 @@ export const createLumenComboboxController = (root: HTMLElement): LumenComboboxC
   }, { signal })
 
   root.addEventListener('focusout', event => {
-    if (!(event.relatedTarget instanceof Node) || !root.contains(event.relatedTarget)) close()
+    if (!(event.relatedTarget instanceof view.Node) || !root.contains(event.relatedTarget)) close()
   }, { signal })
 
   document.addEventListener('pointerdown', event => {
     const target = event.composedPath()[0]
 
-    if (target instanceof Node && !root.contains(target)) close()
+    if (target instanceof view.Node && !root.contains(target)) close()
   }, { signal })
 
-  const observer = new MutationObserver(records => {
-    preserveVisibility(records, filterHidden, list)
+  const observer = new view.MutationObserver(records => {
+    preserveVisibility(records)
 
     if (!destroyed) refresh()
   })
@@ -306,7 +303,7 @@ export const createLumenComboboxController = (root: HTMLElement): LumenComboboxC
     subtree: true
   })
 
-  const disabledObserver = new MutationObserver(records => {
+  const disabledObserver = new view.MutationObserver(records => {
     if (records.some(record => record.target.nodeName === 'FIELDSET' && record.target.contains(input))) refresh()
   })
 
@@ -319,7 +316,7 @@ export const createLumenComboboxController = (root: HTMLElement): LumenComboboxC
     destroy: () => {
       destroyed = true
 
-      globalThis.clearTimeout(resetTimer)
+      view.clearTimeout(resetTimer)
 
       abort.abort()
 
