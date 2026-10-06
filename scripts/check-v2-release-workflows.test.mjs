@@ -270,6 +270,24 @@ test("public Apple checks use free standard GitHub runners and preserve every ga
   assert.match(xcodeCloudChecks, /pnpm run "test:\$mode"/u);
 });
 
+test("Apple delivery callers allow canonical workflow checks before credentials", async () => {
+  const delivery = await readWorkflow("apple-store-release.yml");
+
+  for (const caller of [playgroundAppleWorkflow, playgroundMacWorkflow])
+    assert.match(caller.slice(caller.indexOf("  public-release:")), /permissions:[\s\S]*actions: read/u);
+
+  assert.match(delivery, /permissions:[\s\S]*actions: read/u);
+
+  assertOrderedCommands(delivery, "canonical workflow identity", [
+    "actions/workflows/ci.yml",
+    "actions/workflows/apple-native.yml",
+    "node .github/scripts/check-apple-release-checks.mjs",
+    "name: Inject Apple signing and delivery credentials",
+  ]);
+
+  assert.ok(delivery.includes('"$source_sha" "$RUNNER_TEMP/apple-ci-workflow.json" "$RUNNER_TEMP/apple-native-workflow.json"'));
+});
+
 test("iOS version bumps do not implicitly launch a macOS store upload", () => {
   assert.match(
     playgroundAppleWorkflow,
