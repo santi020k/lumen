@@ -43,13 +43,16 @@ const numericDigit = (character: string): number | null => {
   return (code - start) % 10
 }
 
-const scanDecimalDigits = (value: string, separator: string): { digits: string, scale: number } | null => {
+const scanDecimalDigits = (
+  value: string, separator: string, localizedDigits: readonly string[]
+): { digits: string, scale: number } | null => {
   let digits = ''
   let decimalSeen = false
   let scale = 0
 
   for (const character of value) {
-    const digit = numericDigit(character)
+    const localizedDigit = localizedDigits.indexOf(character)
+    const digit = localizedDigit < 0 ? numericDigit(character) : localizedDigit
 
     if (digit !== null) {
       digits += String(digit)
@@ -71,7 +74,7 @@ export const parseLumenDecimalDraft = (value: string, locale?: string): LumenDec
   const negative = value.startsWith(symbols.minus) || value.startsWith('-')
   const signLength = value.startsWith(symbols.minus) ? symbols.minus.length : 1
   const unsigned = negative ? value.slice(signLength) : value
-  const scanned = scanDecimalDigits(unsigned, symbols.decimal)
+  const scanned = scanDecimalDigits(unsigned, symbols.decimal, symbols.digits)
 
   if (!scanned) return { kind: 'invalid' }
 

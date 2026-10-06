@@ -353,7 +353,9 @@ navigation; native range inputs retain browser-owned behavior.
 input. `isLumenDecimalInBounds(value, { locale, min, max, step })` validates complete values;
 `stepLumenDecimalDraft(value, direction, options)` performs exact steps and inclusive clamping without
 floating-point conversion. Bounds and steps use ASCII decimal strings; drafts use localized decimal
-separators and Unicode decimal digits. Grouping, exponents, whitespace and inputs exceeding 128
+separators, the locale's numbering-system digits, and Unicode decimal digits. This includes Chinese
+decimal numerals (`hanidec`), so formatted steps remain editable on subsequent steps.
+Grouping, exponents, whitespace and inputs exceeding 128
 characters are rejected. Empty drafts stay distinct from zero; unfinished drafts cannot step.
 Malformed locale tags safely use English decimal symbols.
 Applications own units, currency policy, required validation and submission serialization.
