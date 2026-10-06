@@ -2,6 +2,14 @@
 
 ## 4.0.0
 
+### Patch Changes
+
+- Preserve reserved filter names when parsing data view state and append server request parameters before endpoint fragments.
+
+- [#95](https://github.com/santi020k/lumen/pull/95) [`c8d7a4b`](https://github.com/santi020k/lumen/commit/c8d7a4b7a529d6f7a06209103c0ee9790a040ca2) Thanks [@santi020k](https://github.com/santi020k)! - Preserve focused controls and reusable keyed content in data-mode virtual collections inside
+  same-origin iframes, including adopted elements. Use the root document for range events and
+  resize observation.
+
 - Add DeviceFrame for laptop, desktop, iPhone-style, Android-style, and tablet demonstrations with
   slotted HTML, images, fixed iframe viewports, orientation, shell tones, and configurable screen sizes.
 

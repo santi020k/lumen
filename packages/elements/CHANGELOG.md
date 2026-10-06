@@ -2,6 +2,16 @@
 
 ## 4.0.0
 
+### Patch Changes
+
+- [#95](https://github.com/santi020k/lumen/pull/95) [`5d5ef9f`](https://github.com/santi020k/lumen/commit/5d5ef9f91680bc15f7077850eaa7a6c489c9f5a6) Thanks [@santi020k](https://github.com/santi020k)! - Correct ContextMenu keyboard entry when focus starts on its container: ArrowUp selects the last
+  available item, and ArrowDown selects the first. Preserve normal wrapping, Home, End and Escape.
+
+- Respect system reduced motion on overlay backdrops as well as panels. Preserve drawer centering inside Stack and Grid instead of resetting overlay margins. Add drawer and sheet previews alongside the dialog in the motion playground, with keyboard, interrupted-close, layout, and system/local preference coverage.
+- Updated dependencies [[`b5cff90`](https://github.com/santi020k/lumen/commit/b5cff90c682a36b7cc5d51b7f9bc06c34dab2a37), `aca1577`, `647314a`, `71e96d2`, `f112720`, [`6fdb48b`](https://github.com/santi020k/lumen/commit/6fdb48bc21aec3c3c34500d8cb9f5ad1b3b4b566), [`c8d7a4b`](https://github.com/santi020k/lumen/commit/c8d7a4b7a529d6f7a06209103c0ee9790a040ca2)]:
+  - @santi020k/lumen@4.0.1
+  - @santi020k/lumen-core@4.0.1
+
 - Add DeviceFrame for laptop, desktop, iPhone-style, Android-style, and tablet demonstrations with
   slotted HTML, images, fixed iframe viewports, orientation, shell tones, and configurable screen sizes.
 

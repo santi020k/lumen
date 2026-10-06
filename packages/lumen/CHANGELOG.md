@@ -2,6 +2,24 @@
 
 ## 4.0.0
 
+### Patch Changes
+
+- [#95](https://github.com/santi020k/lumen/pull/95) [`b5cff90`](https://github.com/santi020k/lumen/commit/b5cff90c682a36b7cc5d51b7f9bc06c34dab2a37) Thanks [@santi020k](https://github.com/santi020k)! - Recognize Astro runtime import aliases when checking missing or duplicate mounts. Ignore type-only
+  runtime imports, front matter example strings and HTML comments, and scan tag boundaries linearly.
+
+- Keep Compose sheets mounted through their native exit animation, allow interrupted dismissal to
+  reopen safely, and preserve programmatic closure of non-dismissible sheets. Add native playground
+  Motion examples for expansion, simulated save feedback, reduced effects, and sheet presentation.
+
+- Respect system reduced motion on overlay backdrops as well as panels. Preserve drawer centering inside Stack and Grid instead of resetting overlay margins. Add drawer and sheet previews alongside the dialog in the motion playground, with keyboard, interrupted-close, layout, and system/local preference coverage.
+
+- Render all four accessible setup steps in the Elements onboarding recipe, including the current Workspace step.
+  Keep login examples within their container by including padding in their declared width.
+
+- [#95](https://github.com/santi020k/lumen/pull/95) [`6fdb48b`](https://github.com/santi020k/lumen/commit/6fdb48bc21aec3c3c34500d8cb9f5ad1b3b4b566) Thanks [@santi020k](https://github.com/santi020k)! - Preserve application-resolved MultiSelect sheet headings and SectionHeader counts as verbatim text.
+- Updated dependencies [`aca1577`, [`c8d7a4b`](https://github.com/santi020k/lumen/commit/c8d7a4b7a529d6f7a06209103c0ee9790a040ca2)]:
+  - @santi020k/lumen-core@4.0.1
+
 - Add DeviceFrame for laptop, desktop, iPhone-style, Android-style, and tablet demonstrations with
   slotted HTML, images, fixed iframe viewports, orientation, shell tones, and configurable screen sizes.
 
