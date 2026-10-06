@@ -8,6 +8,7 @@ createLumenChartDatumActivation,
   getLumenChartCategories,
   getLumenChartCategoryLabel,
   getLumenChartCategoryTicks,
+  getLumenChartMotionKey,
   getLumenChartTicks,
   getLumenChartToneClassName,
   hasLumenChartData,
@@ -71,6 +72,11 @@ const {
 const resolvedLabels = resolveLumenChartLabels(labels)
 const categories = getLumenChartCategories(series)
 const alignedSeries = series.map(item => alignLumenChartSeries(item, categories))
+
+const motionKeys = new Map(alignedSeries.flatMap(item => item.data.map(point => [
+  JSON.stringify([item.id, point.x]), getLumenChartMotionKey(item.id, point)
+] as const)))
+
 const summary = summaryProp ?? formatLumenChartSummary(alignedSeries, formatValue, resolvedLabels)
 
 const geometry = createLumenBarGeometry(alignedSeries, {
@@ -219,6 +225,7 @@ categoryTicks.map(tick => (
           geometry.marks.map((mark, index) => (
             <rect
               class={getLumenChartToneClassName(mark.tone)}
+              data-ui-chart-motion-key={motionKeys.get(JSON.stringify([mark.seriesId, mark.category]))}
               height={mark.height}
               data-ui-chart-datum={datumActions[index]?.serialized}
               rx="4"

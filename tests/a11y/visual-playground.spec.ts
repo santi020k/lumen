@@ -138,7 +138,7 @@ for (const width of [390, 1280]) {
       await section.getByRole('button', { name: 'Update values' }).click()
       await section.getByRole('button', { name: 'Append point' }).click()
       await section.getByText('View chart data', { exact: true }).first().click()
-      await expect(section.getByRole('table').first()).toContainText('15')
+      await expect(section.getByRole('table').first()).toContainText('40')
       await expect(section.getByRole('table').first().getByRole('row')).toHaveCount(6)
       await section.getByRole('button', { name: 'Empty', exact: true }).click()
       await expect(section.getByRole('button', { name: 'Update values' })).toBeDisabled()
@@ -231,3 +231,115 @@ for (const width of [390, 1280]) {
     })
   })
 }
+
+
+test('aurora visibly moves, pauses in place, resumes and replays', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'no-preference' })
+  await page.goto('/docs/visual-playground#effects-workbench')
+  const section = page.getByRole('region', { name: 'Visual effects', exact: true })
+  const previews = section.locator('[data-ui-visual-effect]')
+  const transform = () => previews.first().evaluate(element => getComputedStyle(element, '::before').transform)
+
+  await section.getByRole('button', { name: 'Enable animation' }).click()
+  await expect(section.getByRole('status', { name: 'Effect playback' })).toContainText('Playing aurora')
+  const first = await transform()
+
+  await expect.poll(transform).not.toBe(first)
+  expect(await previews.last().evaluate(element => getComputedStyle(element, '::before').animationName)).toBe('none')
+  await section.getByRole('button', { name: 'Pause animation' }).click()
+  const paused = await transform()
+
+  await page.waitForTimeout(250) // Sample elapsed motion, not page readiness.
+  expect(await transform()).toBe(paused)
+  await section.getByRole('button', { name: 'Enable animation' }).click()
+  await expect.poll(transform).not.toBe(paused)
+  await section.getByRole('button', { name: 'Replay effect' }).click()
+  await expect(section.getByRole('button', { name: 'Pause animation' })).toHaveAttribute('aria-pressed', 'true')
+})
+
+test('line, area and bar geometry interpolate while the comparison and table update immediately', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'no-preference' })
+  await page.goto('/docs/visual-playground#chart-workbench')
+  const section = page.getByRole('region', { name: 'Live chart continuity', exact: true })
+
+  await section.getByLabel('Transition · milliseconds').fill('2000')
+  await section.getByText('View chart data', { exact: true }).first().click()
+  const shapes = section.locator('[data-ui-chart-motion-key]')
+
+  await section.getByRole('button', { name: 'Update values' }).click()
+  await expect(section.getByRole('table').first()).toContainText('40')
+  for (const selector of ['.ui-line-chart__line', '.ui-line-chart__area', '.ui-bar-chart__marks rect']) {
+    const mark = section.locator(selector).last()
+
+    await expect.poll(() => mark.evaluate(element => element.getAnimations().some(animation => animation.playState === 'running'))).toBe(true)
+    const property = selector.includes('rect') ? 'height' : 'd'
+    const read = () => mark.evaluate((element, name) => getComputedStyle(element).getPropertyValue(name), property)
+    const initial = await read()
+
+    await expect.poll(read).not.toBe(initial)
+  }
+  expect(await shapes.count()).toBeGreaterThan(12)
+  const comparison = section.locator('[data-ui-chart-motion][data-ui-motion="reduce"]')
+
+  expect(await comparison.locator('[data-ui-chart-motion-key]').evaluateAll(elements => elements.every(element => element.getAnimations().length === 0))).toBe(true)
+  await section.getByRole('button', { name: 'Play charts', exact: true }).click()
+  await expect(section.getByRole('button', { name: 'Pause charts', exact: true })).toHaveAttribute('aria-pressed', 'true')
+  const playingValues = await section.getByRole('table').first().innerText()
+
+  await expect.poll(() => section.getByRole('table').first().innerText()).not.toBe(playingValues)
+  await section.getByRole('button', { name: 'Pause charts', exact: true }).click()
+  const values = await section.getByRole('table').first().innerText()
+
+  await page.waitForTimeout(3200) // Longer than the playback interval proves timer cleanup.
+  expect(await section.getByRole('table').first().innerText()).toBe(values)
+})
+
+test('system reduced motion suppresses effects and every chart animation', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.goto('/docs/visual-playground')
+  const effects = page.getByRole('region', { name: 'Visual effects', exact: true })
+
+  await effects.getByRole('button', { name: 'Enable animation' }).click()
+  await expect(effects.getByRole('status', { name: 'Effect playback' })).toContainText('Your system requests reduced motion')
+  expect(await effects.locator('[data-ui-visual-effect]').evaluateAll(elements => elements.every(element => getComputedStyle(element, '::before').animationName === 'none'))).toBe(true)
+  const charts = page.getByRole('region', { name: 'Live chart continuity', exact: true })
+
+  await expect(charts.getByRole('button', { name: 'Play charts' })).toBeDisabled()
+  await charts.getByRole('button', { name: 'Update values' }).click()
+  // The shared reduced-motion reset uses a 1 ms CSS transition to retain transitionend
+  // contracts. ChartMotion must never introduce its normal 900 ms geometry animation.
+  expect(await charts.locator('[data-ui-chart-motion-key]').evaluateAll(elements => elements.every(element =>
+    element.getAnimations().every(animation => {
+      const duration = animation.effect?.getComputedTiming().duration ?? 0
+
+      return typeof duration === 'number' && duration <= 1
+    })
+  ))).toBe(true)
+})
+
+
+test('SVG drawing advances, pauses and replays after finishing', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'no-preference' })
+  await page.goto('/docs/visual-playground#effects-workbench')
+  const section = page.getByRole('region', { name: 'Visual effects', exact: true })
+
+  await section.getByRole('combobox', { name: 'Effect', exact: true }).click()
+  await page.getByRole('option', { name: 'draw', exact: true }).click()
+  await section.getByLabel('Cycle · seconds').fill('2')
+  await section.getByRole('button', { name: 'Replay effect' }).click()
+  const path = section.locator('[data-ui-visual-effect]').first().locator('path')
+  const offset = () => path.evaluate(element => Number.parseFloat(getComputedStyle(element).strokeDashoffset))
+  const start = await offset()
+
+  expect(start).toBeGreaterThan(0)
+  await expect.poll(offset).toBeLessThan(start)
+  await section.getByRole('button', { name: 'Pause animation' }).click()
+  const paused = await offset()
+
+  await page.waitForTimeout(150) // Paused decorative geometry must stay in place.
+  expect(await offset()).toBe(paused)
+  await section.getByRole('button', { name: 'Enable animation' }).click()
+  await expect.poll(offset).toBe(0)
+  await section.getByRole('button', { name: 'Replay effect' }).click()
+  expect(await offset()).toBeGreaterThan(0)
+})

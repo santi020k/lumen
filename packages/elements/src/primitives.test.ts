@@ -590,3 +590,16 @@ describe('@santi020k/lumen-elements primitives', () => {
     expect(range.querySelector('.ui-chart__data')).toBeNull()
   })
 })
+
+test('bar and area motion identities follow stable data across rerenders', () => {
+  for (const tag of ['lumen-bar-chart', 'lumen-line-chart']) {
+    const chart = connect(tag, { area: '', series: JSON.stringify([{ id: 'tasks', label: 'Tasks', data: [{ id: 'stable', x: 'Monday', y: 10 }] }]) })
+    const selector = tag === 'lumen-bar-chart' ? '.ui-bar-chart__marks rect' : '.ui-line-chart__area'
+    const key = requiredElement(chart.querySelector(selector)).getAttribute('data-ui-chart-motion-key')
+
+    expect(key).toBeTruthy()
+    chart.setAttribute('series', JSON.stringify([{ id: 'tasks', label: 'Tasks', data: [{ id: 'stable', x: 'Tuesday', y: 30 }] }]))
+    expect(requiredElement(chart.querySelector(selector)).getAttribute('data-ui-chart-motion-key')).toBe(key)
+    expect(chart.textContent).toContain('30')
+  }
+})
