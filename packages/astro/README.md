@@ -109,7 +109,8 @@ import { Button, Card, Input } from '@santi020k/lumen-astro'
 `PhoneInput` generates localized country names, supplementary flags, and calling codes when custom
 `countries` are not provided. Mount `UIPrimitives` once to enable as-you-type formatting,
 metadata-backed validation, automatic country detection for pasted international numbers, and the
-`ui:phone-change` event with a `LumenPhoneNumber` detail.
+`ui:phone-change` event with a `LumenPhoneNumber` detail. Validation messages and inherited locale
+resolve in the phone control's owning document, including after iframe adoption.
 
 The phone metadata and normalization controller are selector-loaded only when a rendered page
 contains `PhoneInput`; pages without the component do not evaluate or download that controller.
@@ -326,7 +327,8 @@ See the [visualization contracts](../../docs/data-visualization.md) and
 [interactive web example](https://lumen.santi020k.com/docs/web/data-visualization).
 
 Set `interactive` on `LineChart` and mount `UIPrimitives` to enable inspection and legend buttons.
-Static charts continue to render without client JavaScript.
+Static charts continue to render without client JavaScript. After moving an enhanced chart into another
+document, rerun `UIPrimitives` initialization so cursor synchronization follows that document's peers.
 
 
 Use `Sparkline` beside a metric, `BarChart` for categorical comparison, `LineChart` for ordered

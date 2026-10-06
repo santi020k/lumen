@@ -27,30 +27,60 @@ const validTiming = (start: number | undefined, end: number | undefined, span: n
   return span > 0 || end > start
 }
 
-const validEvent = ({ event, startMinute, endMinute }: LumenAgendaEvent): boolean => {
-  const end = event.endDay ?? event.startDay
+const hasEventFields = (value: unknown): value is Record<'id' | 'label' | 'startDay', unknown> => (
+  typeof value === 'object' && value !== null && !Array.isArray(value) &&
+  'id' in value && 'label' in value && 'startDay' in value
+)
 
-  if (!isLumenCalendarDay(event.startDay) || !isLumenCalendarDay(end)) return false
+const optionalCalendarFieldsValid = (value: Record<'id' | 'label' | 'startDay', unknown>): boolean => {
+  if ('endDay' in value && value.endDay !== undefined && !isLumenCalendarDay(value.endDay)) return false
 
-  const span = lumenCalendarOrdinal(end) - lumenCalendarOrdinal(event.startDay)
+  if ('detail' in value && value.detail !== undefined && typeof value.detail !== 'string') return false
 
-  if (span < 0) return false
+  return !('disabled' in value) || value.disabled === undefined || typeof value.disabled === 'boolean'
+}
 
-  return validTiming(startMinute, endMinute, span)
+const validCalendarEvent = (value: unknown): value is LumenCalendarEvent => {
+  if (!hasEventFields(value) || typeof value.id !== 'string' || value.id.trim().length === 0 ||
+    typeof value.label !== 'string' || !isLumenCalendarDay(value.startDay)) return false
+
+  return optionalCalendarFieldsValid(value)
+}
+
+const hasAgendaFields = (value: unknown): value is Record<'event', unknown> => (
+  typeof value === 'object' && value !== null && !Array.isArray(value) && 'event' in value
+)
+
+const isOptionalMinute = (value: unknown): value is number | undefined => (
+  value === undefined || typeof value === 'number'
+)
+
+const validEvent = (value: unknown): value is LumenAgendaEvent => {
+  if (!hasAgendaFields(value) || !validCalendarEvent(value.event)) return false
+
+  const startMinute = 'startMinute' in value ? value.startMinute : undefined
+  const endMinute = 'endMinute' in value ? value.endMinute : undefined
+
+  if (!isOptionalMinute(startMinute) || !isOptionalMinute(endMinute)) return false
+
+  const end = value.event.endDay ?? value.event.startDay
+  const span = lumenCalendarOrdinal(end) - lumenCalendarOrdinal(value.event.startDay)
+
+  return span >= 0 && validTiming(startMinute, endMinute, span)
 }
 
 export const isLumenAgendaEventsValid = (events: readonly LumenAgendaEvent[]): boolean => {
+  if (!Array.isArray(events)) return false
+
   const ids = new Set<string>()
 
-  return events.every(input => {
-    const id = input.event.id
+  for (const input of events) {
+    if (!validEvent(input) || ids.has(input.event.id)) return false
 
-    if (id.trim().length === 0 || ids.has(id)) return false
+    ids.add(input.event.id)
+  }
 
-    ids.add(id)
-
-    return validEvent(input)
-  })
+  return true
 }
 
 const clipMinute = (minute: number | undefined, boundary: boolean, fallback: number): number | null => {

@@ -9,7 +9,7 @@ import {
 const phoneInputSelector = '[data-ui-phone-input]'
 
 const getPhoneOptions = (root: HTMLElement): LumenPhoneCountryOptions => {
-  const locale = root.lang || document.documentElement.lang || undefined
+  const locale = root.lang || root.ownerDocument.documentElement.lang || undefined
 
   return locale ? { locale } : {}
 }
@@ -59,7 +59,7 @@ const syncPhoneValidation = (
   descriptions: string[]
 ): void => {
   const errorMessage = getPhoneErrorMessage(root, phoneNumber)
-  const error = document.getElementById(root.dataset.errorId ?? '')
+  const error = root.ownerDocument.getElementById(root.dataset.errorId ?? '')
   const describedBy = [...descriptions, ...(errorMessage && error ? [error.id] : [])].join(' ')
 
   if (describedBy) numberInput.setAttribute('aria-describedby', describedBy)
@@ -105,12 +105,11 @@ export const initPhoneInputControllers = (scope: ParentNode): void => {
 
     root.dataset.phoneEnhanced = 'true'
 
-    const phoneOptions = getPhoneOptions(root)
     const errorId = root.dataset.errorId ?? ''
     const descriptions = (numberInput.getAttribute('aria-describedby') ?? '').split(' ').filter(id => id && id !== errorId)
 
     const commit = (): void => {
-      const phoneNumber = resolvePhoneInput(countrySelect, numberInput, phoneOptions)
+      const phoneNumber = resolvePhoneInput(countrySelect, numberInput, getPhoneOptions(root))
 
       if (!phoneNumber) return
 

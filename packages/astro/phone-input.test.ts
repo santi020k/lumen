@@ -54,3 +54,67 @@ test('clears stale error references when the error element is removed', () => {
   expect(input.validity.customError).toBe(true)
   expect(input.getAttribute('aria-describedby')).toBeNull()
 })
+
+test('updates only the adopted phone error in its owning iframe document', () => {
+  const { input, root } = fixture()
+  const sourceError = document.getElementById('phone-error')
+  if (!sourceError) throw new Error('Missing source error')
+  const iframe = document.createElement('iframe')
+  document.body.append(iframe)
+  const destination = iframe.contentDocument
+  if (!destination) throw new Error('Missing iframe document')
+  const destinationError = destination.createElement('span')
+  destinationError.id = 'phone-error'
+  destinationError.hidden = true
+  destination.body.append(destination.adoptNode(root), destinationError)
+  sourceError.textContent = 'Source error stays untouched'
+  input.value = '3'
+  input.dispatchEvent(new Event('input'))
+  expect(destinationError.hidden).toBe(false)
+  expect(destinationError.textContent).toBe('Enter a complete phone number.')
+  expect(input.getAttribute('aria-errormessage')).toBe(destinationError.id)
+  expect(input.getAttribute('aria-describedby')).toBe(destinationError.id)
+  expect(sourceError.textContent).toBe('Source error stays untouched')
+  input.value = '+1 212 555 0123'
+  input.dispatchEvent(new Event('input'))
+  expect(destinationError.hidden).toBe(true)
+  expect(input.getAttribute('aria-errormessage')).toBeNull()
+})
+
+test('inherits phone locale from the owning iframe document', () => {
+  const iframe = document.createElement('iframe')
+  document.body.append(iframe)
+  const destination = iframe.contentDocument
+  if (!destination) throw new Error('Missing iframe document')
+  destination.documentElement.lang = 'es'
+  destination.body.innerHTML = '<div data-ui-phone-input><select class="ui-phone-input__country"><option value="US">US</option></select><input class="ui-phone-input__number" value="3"></div>'
+  const root = destination.querySelector<HTMLElement>('[data-ui-phone-input]')
+  const input = destination.querySelector('input')
+  if (!root || !input) throw new Error('Missing phone input')
+  let phoneDetail: unknown
+  root.addEventListener('ui:phone-change', event => {
+    if (event instanceof CustomEvent) phoneDetail = event.detail
+  })
+  initPhoneInputControllers(destination)
+  expect(phoneDetail).toMatchObject({ country: { displayName: new Intl.DisplayNames('es', { type: 'region' }).of('US') } })
+})
+
+test('refreshes inherited locale after an initialized phone is adopted', () => {
+  const { input, root } = fixture()
+  const iframe = document.createElement('iframe')
+  document.body.append(iframe)
+  const destination = iframe.contentDocument
+  if (!destination) throw new Error('Missing iframe document')
+  destination.documentElement.lang = 'es'
+  destination.body.append(destination.adoptNode(root))
+  let phoneDetail: unknown
+  root.addEventListener('ui:phone-change', event => {
+    if (event instanceof CustomEvent) phoneDetail = event.detail
+  })
+  initPhoneInputControllers(destination)
+  input.value = '+1 212 555 0123'
+  input.dispatchEvent(new Event('input'))
+  expect(phoneDetail).toMatchObject({
+    country: { displayName: new Intl.DisplayNames('es', { type: 'region' }).of('US') }
+  })
+})

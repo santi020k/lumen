@@ -33,3 +33,33 @@ test('rejects duplicate/blank IDs, inverted dates, partial times and invalid min
   expect(lumenAgendaGroups([], { year: 9999, month: 12, day: 31 }, 2)).toEqual([])
   expect(lumenAgendaGroups([], day, 1)[0]?.segments).toEqual([])
 })
+
+test('rejects malformed decoded agenda collections and event fields without grouping', () => {
+  const malformed: unknown[] = [null,
+    undefined,
+    42,
+    'event',
+    [],
+    {},
+    { event: null },
+    { event: 42 },
+    { event: [] },
+    { event: { ...event.event, id: null } },
+    { event: { ...event.event, label: 42 } },
+    { event: { ...event.event, startDay: null } },
+    { event: { ...event.event, endDay: null } },
+    { event: { ...event.event, detail: 42 } },
+    { event: { ...event.event, disabled: 'false' } },
+    { ...event, startMinute: '600' },
+    { ...event, endMinute: null }]
+
+  for (const input of malformed) {
+    expect(Reflect.apply(isLumenAgendaEventsValid, undefined, [[input]])).toBe(false)
+    expect(Reflect.apply(lumenAgendaGroups, undefined, [[input], day])).toEqual([])
+  }
+  for (const collection of [null, undefined, 42, 'events', {}, new Array<unknown>(1)]) {
+    expect(Reflect.apply(isLumenAgendaEventsValid, undefined, [collection])).toBe(false)
+    expect(Reflect.apply(lumenAgendaGroups, undefined, [collection, day])).toEqual([])
+  }
+  expect(isLumenAgendaEventsValid([{ ...event, event: { ...event.event, detail: '', disabled: false } }])).toBe(true)
+})

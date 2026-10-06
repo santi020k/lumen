@@ -3,15 +3,27 @@ export type LumenCarouselState =
   | { status: 'ready', count: number, index: number, previous: number | null, next: number | null } |
   { status: 'empty' | 'invalid' }
 
+const isCarouselSlide = (value: unknown): value is LumenCarouselSlide => (
+  typeof value === 'object' && value !== null && !Array.isArray(value) &&
+  'id' in value && typeof value.id === 'string' && value.id.length > 0 &&
+  'label' in value && typeof value.label === 'string'
+)
+
+const validIndex = (index: number, count: number): boolean => (
+  Number.isInteger(index) && index >= 0 && index < count
+)
+
 export const resolveLumenCarousel = (slides: readonly LumenCarouselSlide[], index: number): LumenCarouselState => {
+  if (!Array.isArray(slides)) return { status: 'invalid' }
+
   if (!slides.length) return { status: 'empty' }
 
-  if (!Number.isInteger(index) || index < 0 || index >= slides.length) return { status: 'invalid' }
+  if (!validIndex(index, slides.length)) return { status: 'invalid' }
 
   const used = new Set<string>()
 
   for (const slide of slides) {
-    if (!slide.id.length || used.has(slide.id)) return { status: 'invalid' }
+    if (!isCarouselSlide(slide) || used.has(slide.id)) return { status: 'invalid' }
 
     used.add(slide.id)
   }

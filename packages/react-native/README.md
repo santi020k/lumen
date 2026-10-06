@@ -671,7 +671,8 @@ with localized navigation and safe loading/error states. See the
 ### Calendar, Agenda and Kanban
 
 The public `LumenCalendar` and `LumenAgenda` provide controlled civil-date selection
-and chronological event presentation. `LumenKanbanBoard` and `LumenKanbanColumn`
+and chronological event presentation. Malformed decoded Agenda collections, event fields
+or timing values return an invalid dataset without rendering groups. `LumenKanbanBoard` and `LumenKanbanColumn`
 provide stable card identities, native dragging and localized accessible moves.
 Hosts retain dataset and persistence ownership. See the native contracts for
 [Calendar](../../docs/native-parity/calendar.md), [Agenda](../../docs/native-parity/agenda.md),
@@ -694,6 +695,7 @@ Both retain unknown host values and disabled records. See the
 contracts for localization, state guards and adapter APIs.
 
 `LumenCarousel` provides controlled native slide paging and localized navigation.
+Malformed decoded slide collections, IDs or labels resolve to the existing invalid state.
 `LumenTooltip` provides contextual help with native dismissal and named anchors.
 See the [Carousel](../../docs/native-parity/carousel.md) and
 [Tooltip](../../docs/native-parity/tooltip.md) contracts for adapter-specific state APIs.

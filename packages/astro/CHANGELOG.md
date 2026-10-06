@@ -2,6 +2,8 @@
 
 ## 4.0.0
 
+- Rebind adopted chart cursor synchronization and resolve phone validation messages and inherited locale in the owning document.
+
 - Rebind adopted combobox controllers and associate every phone control with an external form owner.
 
 - Rebind adopted amount controls on repeated initialization without losing drafts or duplicating edit listeners.

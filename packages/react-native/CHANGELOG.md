@@ -2,6 +2,8 @@
 
 ## 4.0.0
 
+- Reject malformed decoded Agenda event collections, fields and timing, and Carousel slide collections, IDs and labels before rendering or navigation.
+
 - Reject malformed decoded event collections, rows, and date bounds before displaying calendar indicators.
 
 - Reject malformed decoded calendar days before reading fields or rendering calendar grids.
