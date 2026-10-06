@@ -4,7 +4,7 @@ for (const width of [390, 1280]) {
   for (const theme of ['light', 'dark']) {
     test(`visual playground keeps styled controls and responsive comparisons at ${width}px in ${theme}`, async ({ page }) => {
       await page.setViewportSize({ width, height: 900 })
-      await page.goto('/docs/visual-playground')
+      await page.goto('/docs/visual-playground/motion')
       await page.evaluate(value => { document.documentElement.dataset.theme = value }, theme)
       const reverse = page.getByRole('button', { name: 'Reverse order', exact: true })
 
@@ -45,7 +45,7 @@ for (const width of [390, 1280]) {
 
 test('visual playground remains usable with reduced motion', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' })
-  await page.goto('/docs/visual-playground')
+  await page.goto('/docs/visual-playground/motion')
   await page.getByRole('button', { name: 'Reverse order', exact: true }).press('Enter')
   const list = page.locator('.visual-motion-list').first()
 
@@ -60,10 +60,10 @@ for (const width of [390, 1280]) {
   test.describe(`playground interactions at ${width}px`, () => {
     test.beforeEach(async ({ page }) => {
       await page.setViewportSize({ width, height: 900 })
-      await page.goto('/docs/visual-playground')
     })
 
     test('motion controls, tabs, disclosure and feedback', async ({ page }) => {
+      await page.goto('/docs/visual-playground/motion')
       const section = page.getByRole('region', { name: 'Coordinated motion', exact: true })
       const items = section.getByRole('list', { name: 'Animated tasks' }).getByRole('listitem')
 
@@ -95,6 +95,7 @@ for (const width of [390, 1280]) {
     })
 
     test('all effects, intensity, animation and framework examples', async ({ page, context }) => {
+      await page.goto('/docs/visual-playground/effects')
       await context.grantPermissions(['clipboard-read', 'clipboard-write'])
       const section = page.getByRole('region', { name: 'Visual effects', exact: true })
 
@@ -122,6 +123,7 @@ for (const width of [390, 1280]) {
     })
 
     test('charts update, recover from empty and reset loading', async ({ page }) => {
+      await page.goto('/docs/visual-playground/charts')
       const section = page.getByRole('region', { name: 'Live chart continuity', exact: true })
 
       const plots = section.locator('[data-ui-chart-interaction-plot]')
@@ -156,6 +158,7 @@ for (const width of [390, 1280]) {
     })
 
     test('AI send, stop, retry, disclosure and approvals', async ({ page }) => {
+      await page.goto('/docs/visual-playground/ai')
       const section = page.getByRole('region', { name: 'AI surfaces', exact: true })
 
       await expect(section.getByRole('button', { name: 'Reset proposal' })).toBeDisabled()
@@ -179,6 +182,7 @@ for (const width of [390, 1280]) {
     })
 
     test('all recipes with keyboard commands and editable onboarding', async ({ page }) => {
+      await page.goto('/docs/visual-playground/recipes')
       const section = page.getByRole('region', { name: 'Installable product blocks', exact: true })
 
       await section.getByRole('button', { name: 'Annual', exact: true }).click()
@@ -235,7 +239,7 @@ for (const width of [390, 1280]) {
 
 test('aurora visibly moves, pauses in place, resumes and replays', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'no-preference' })
-  await page.goto('/docs/visual-playground#effects-workbench')
+  await page.goto('/docs/visual-playground/effects')
   const section = page.getByRole('region', { name: 'Visual effects', exact: true })
   const previews = section.locator('[data-ui-visual-effect]')
   const transform = () => previews.first().evaluate(element => getComputedStyle(element, '::before').transform)
@@ -263,7 +267,7 @@ test('aurora visibly moves, pauses in place, resumes and replays', async ({ page
 
 test('line, area and bar geometry interpolate while the comparison and table update immediately', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'no-preference' })
-  await page.goto('/docs/visual-playground#chart-workbench')
+  await page.goto('/docs/visual-playground/charts')
   const section = page.getByRole('region', { name: 'Live chart continuity', exact: true })
 
   await section.getByLabel('Transition · milliseconds').fill('2000')
@@ -300,12 +304,13 @@ test('line, area and bar geometry interpolate while the comparison and table upd
 
 test('system reduced motion suppresses effects and every chart animation', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' })
-  await page.goto('/docs/visual-playground')
+  await page.goto('/docs/visual-playground/effects')
   const effects = page.getByRole('region', { name: 'Visual effects', exact: true })
 
   await effects.getByRole('button', { name: 'Enable animation' }).click()
   await expect(effects.getByRole('status', { name: 'Effect playback' })).toContainText('Your system requests reduced motion')
   expect(await effects.locator('[data-ui-visual-effect]').evaluateAll(elements => elements.every(element => getComputedStyle(element, '::before').animationName === 'none'))).toBe(true)
+  await page.goto('/docs/visual-playground/charts')
   const charts = page.getByRole('region', { name: 'Live chart continuity', exact: true })
 
   await expect(charts.getByRole('button', { name: 'Play charts' })).toBeDisabled()
@@ -324,7 +329,7 @@ test('system reduced motion suppresses effects and every chart animation', async
 
 test('SVG drawing advances, pauses and replays after finishing', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'no-preference' })
-  await page.goto('/docs/visual-playground#effects-workbench')
+  await page.goto('/docs/visual-playground/effects')
   const section = page.getByRole('region', { name: 'Visual effects', exact: true })
 
   await section.getByRole('combobox', { name: 'Effect', exact: true }).click()

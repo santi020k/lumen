@@ -11,8 +11,9 @@ component API links:
 - [AI interfaces](https://lumen.santi020k.com/docs/visual-playground/ai)
 - [Product recipes](https://lumen.santi020k.com/docs/visual-playground/recipes)
 
-The [visual playground](https://lumen.santi020k.com/docs/visual-playground) keeps the combined workbench
-and its original section anchors available for comparisons.
+The [visual guides overview](https://lumen.santi020k.com/docs/visual-playground) is a directory of these
+five topics. Demos and code live on the individual guides; original workbench section links open the
+corresponding guide.
 
 ## Setup and motion
 
