@@ -642,6 +642,7 @@ const elementsExampleOverrides = {
   <div class="ui-filter-bar__active"><lumen-button aria-label="Remove status: Active">Status: Active ×</lumen-button></div>
   <p role="status" aria-live="polite" aria-atomic="true">12 matching records</p>
 </lumen-filter-bar>`,
+  DeviceFrame: '<lumen-device-frame device="iphone"><iframe src="/demo" title="Mobile application demo" loading="lazy"></iframe></lumen-device-frame>',
   ImageComparison: `<lumen-image-comparison label="Compare the landscape treatment" before-label="Original" after-label="Color adjusted" ratio="1.6" value="50">
   <img slot="before" alt="Original landscape illustration" src="/comparison-before.svg" width="960" height="600" />
   <img slot="after" alt="Color-adjusted landscape illustration" src="/comparison-after.svg" width="960" height="600" />
@@ -910,6 +911,7 @@ const loadWorkspaceFiles = async p => ({
     await readIfExists(p('packages/elements/src/components/button.ts')),
     await readIfExists(p('packages/elements/src/components/card.ts')),
     await readIfExists(p('packages/elements/src/components/combobox.ts')),
+    await readIfExists(p('packages/elements/src/components/device-frame.ts')),
     await readIfExists(p('packages/elements/src/components/image-comparison.ts')),
     await readIfExists(p('packages/elements/src/components/virtual-list.ts')),
     await readIfExists(p('packages/elements/src/components/dashboard.ts'))
@@ -925,6 +927,7 @@ const loadWorkspaceFiles = async p => ({
     await readIfExists(p('packages/react/src/chart-interaction.tsx')),
     await readIfExists(p('packages/react/src/data-table.tsx')),
     await readIfExists(p('packages/react/src/server-components.tsx')),
+    await readIfExists(p('packages/react/src/device-frame.tsx')),
     await readIfExists(p('packages/react/src/image-comparison.tsx')),
     await readIfExists(p('packages/react/src/virtual-list.tsx')),
     await readIfExists(p('packages/react/src/virtual-list-data.tsx')),

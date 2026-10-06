@@ -59,6 +59,10 @@
     "./components/virtual-list": {
       "types": "./dist/components/virtual-list.d.ts",
       "import": "./dist/components/virtual-list.js"
+    },
+    "./components/device-frame": {
+      "types": "./dist/components/device-frame.d.ts",
+      "import": "./dist/components/device-frame.js"
     }
   },
   "files": [

@@ -724,3 +724,30 @@ Import `@santi020k/lumen/styles/motion.css` alongside the base stylesheet to opt
 disclosure height transitions and the CSS reduction scope. This small optional stylesheet works
 with Astro, React, and Elements and keeps those effects out of the default stylesheet. The presence
 helper's system and local reduced-motion checks work without this CSS import.
+
+## Device demonstrations
+
+`DeviceFrame` presents slotted HTML, an image, or a titled iframe inside laptop, desktop,
+iPhone-style, Android-style, and tablet silhouettes. Shells are decorative, use Lumen tokens,
+and do not emulate device hardware. `orientation` selects portrait or landscape; `tone` selects
+light or dark chrome independently of the screen content.
+
+Iframe layouts use the preset screen viewport and scale to the available width. Override
+`screenWidth` and `screenHeight` for a custom viewport (1–16384 CSS pixels). Slotted HTML shares
+the host viewport; container queries can adapt it to the screen. Images preserve their proportions.
+`scroll={false}` clips HTML overflow; an iframe manages its own scrolling.
+
+Supply image alternative text and iframe titles. Consumers own iframe `sandbox`, `allow`,
+loading, and referrer policies. Remote sites can refuse embedding through their response headers.
+The decorative shell does not alter focus or intercept interactions.
+
+```astro
+---
+import { DeviceFrame } from '@santi020k/lumen-astro'
+---
+<DeviceFrame device="iphone">
+  <iframe src="/demo" title="Mobile application demo" loading="lazy"></iframe>
+</DeviceFrame>
+```
+
+The component bundles its resize behavior; `UIPrimitives` is not required for this frame.

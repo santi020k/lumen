@@ -1,0 +1,42 @@
+---
+import { Badge, Button, Card, DeviceFrame, Image, Stack, Typography } from '@santi020k/lumen-astro'
+---
+
+<Typography><Stack gap="lg">
+  <h3>Live page inside a laptop</h3>
+  <DeviceFrame device="laptop">
+    <iframe loading="lazy" sandbox="" src="/device-frame-demo" title="Responsive Lumen demonstration"></iframe>
+  </DeviceFrame>
+  <p>The iframe keeps a 1280 × 800 layout viewport as the laptop scales.</p>
+  <div class="device-frame-demo-grid">
+    <Stack gap="md">
+      <h3>iPhone · image</h3>
+      <DeviceFrame device="iphone" scroll={false}>
+        <Image alt="Lumen gallery running in a native Android application, shown in a stylized phone frame" height={1920} radius="none" src="/native-previews/android-compose.png" width={1080} />
+      </DeviceFrame>
+    </Stack>
+    <Stack gap="md">
+      <h3>Android · HTML</h3>
+      <DeviceFrame device="android" tone="light">
+        <Stack class="device-frame-demo-content" gap="md">
+          <Badge>Component demo</Badge>
+          <h4>Your next project</h4>
+          <p>Compose real Lumen components inside the screen.</p>
+          <Card><p>HTML keeps the surrounding page’s viewport. Use an iframe for isolated responsive layouts.</p></Card>
+          <Button>Start a project</Button>
+        </Stack>
+      </DeviceFrame>
+    </Stack>
+  </div>
+  <h3>Desktop and landscape tablet</h3>
+  <div class="device-frame-demo-grid">
+    <DeviceFrame device="desktop" tone="light"><Image alt="Illustrated mountain landscape" height={600} radius="none" src="/comparison-after.svg" width={960} /></DeviceFrame>
+    <DeviceFrame device="tablet" orientation="landscape"><Image alt="Illustrated mountain landscape before color adjustment" height={600} radius="none" src="/comparison-before.svg" width={960} /></DeviceFrame>
+  </div>
+</Stack></Typography>
+
+<style>
+  .device-frame-demo-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2rem; align-items: start; padding-inline: 0.75rem; }
+  .device-frame-demo-content { padding: 1rem; }
+  @media (max-width: 40rem) { .device-frame-demo-grid { grid-template-columns: minmax(0, 1fr); } }
+</style>

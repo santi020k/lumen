@@ -4769,6 +4769,22 @@
       "pathname": "/docs/components/descriptions",
       "title": "Descriptions - Lumen UI"
     },
+    "/docs/components/device-frame": {
+      "alt": "DeviceFrame — Web components social preview from Lumen UI",
+      "description": "DeviceFrame: Presents HTML, images, and live iframe demos in responsive device silhouettes. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--device-frame.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--device-frame.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/device-frame",
+      "title": "DeviceFrame - Lumen UI"
+    },
     "/docs/components/dialog-body": {
       "alt": "DialogBody — Web components social preview from Lumen UI",
       "description": "DialogBody: Scrolls long task content while keeping actions visible. Usage examples for Astro, React, and Elements.",
@@ -9315,7 +9331,7 @@
     },
     "/": {
       "alt": "Lumen UI — Accessible Components for AI Coding Agents — Lumen UI social preview from Lumen UI",
-      "description": "Build with AI using 183 accessible primitives, agent skills, and focused MCP context. One UI library for web and native apps.",
+      "description": "Build with AI using 184 accessible primitives, agent skills, and focused MCP context. One UI library for web and native apps.",
       "images": [
         {
           "format": "webp",

@@ -151,6 +151,7 @@ export {
   resolveLumenDateLabels,
   resolveLumenDateLocale
 } from './dates.js'
+export { type LumenDeviceFrameDevice, type LumenDeviceFrameOrientation, lumenDeviceFrameSizes, type LumenDeviceFrameTone, observeLumenDeviceFrame, resolveLumenDeviceFrame } from './device-frame.js'
 export { getLumenDirectionalKey } from './direction.js'
 export {
   type LumenErrorStateAnnouncement,

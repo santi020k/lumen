@@ -744,3 +744,30 @@ from an ancestor after that keydown has been consumed. It blocks
 disabled/loading activation, including direct clicks. Blocking flags expose `aria-disabled`;
 removing them restores any prior application-supplied ARIA value. Native nested controls retain
 their own keyboard path.
+
+## Device demonstrations
+
+`DeviceFrame` presents slotted HTML, an image, or a titled iframe inside laptop, desktop,
+iPhone-style, Android-style, and tablet silhouettes. Shells are decorative, use Lumen tokens,
+and do not emulate device hardware. `orientation` selects portrait or landscape; `tone` selects
+light or dark chrome independently of the screen content.
+
+Iframe layouts use the preset screen viewport and scale to the available width. Override
+`screenWidth` and `screenHeight` for a custom viewport (1–16384 CSS pixels). Slotted HTML shares
+the host viewport; container queries can adapt it to the screen. Images preserve their proportions.
+`scroll={false}` clips HTML overflow; an iframe manages its own scrolling.
+
+Supply image alternative text and iframe titles. Consumers own iframe `sandbox`, `allow`,
+loading, and referrer policies. Remote sites can refuse embedding through their response headers.
+The decorative shell does not alter focus or intercept interactions.
+
+```html
+<lumen-device-frame device="android" tone="light">
+  <iframe src="/demo" title="Mobile application demo" loading="lazy"></iframe>
+</lumen-device-frame>
+```
+
+Register with `defineLumenElements(['DeviceFrame'])` or `defineLumenDeviceFrame()` from
+`@santi020k/lumen-elements/components/device-frame`. Use `screen-width`, `screen-height`, and
+`scroll="false"` attributes. The element preserves the initial child nodes inside its screen;
+append later content to `.ui-device-frame__screen`.

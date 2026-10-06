@@ -84,6 +84,10 @@
     "./forms": {
       "types": "./dist/form-workflow.d.ts",
       "import": "./dist/form-workflow.js"
+    },
+    "./components/device-frame": {
+      "types": "./dist/device-frame.d.ts",
+      "import": "./dist/device-frame.js"
     }
   },
   "files": [
