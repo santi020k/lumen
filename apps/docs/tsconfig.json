@@ -17,6 +17,7 @@
     "**/*"
   ],
   "exclude": [
+    "cloudflare/dist",
     "dist",
     "node_modules"
   ]
