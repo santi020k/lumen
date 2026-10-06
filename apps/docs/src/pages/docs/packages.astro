@@ -1,0 +1,36 @@
+---
+import { Card, Link } from '@santi020k/lumen-astro'
+
+import CodeBlock from '../../components/CodeBlock.astro'
+import DocsGuideContent from '../../components/DocsGuideContent.astro'
+import DocsPageHero from '../../components/DocsPageHero.astro'
+import { packageGroups, packageGuides, worldMapTopics } from '../../data/package-guides'
+import DocsLayout from '../../layouts/DocsLayout.astro'
+---
+<DocsLayout title="Packages — Lumen UI" description="Find Lumen npm packages by purpose, with installation commands and focused usage guides.">
+  <DocsGuideContent>
+  <DocsPageHero compact eyebrow="Package directory" title="Choose what your project needs." description="Framework adapters, shared foundations, and optional integrations. Each package links to its installation and usage guide." />
+  {packageGroups.map(group => (
+    <section aria-labelledby={`packages-${group.id}`}>
+      <h2 id={`packages-${group.id}`}>{group.title}</h2>
+      <p>{group.description}</p>
+      <div class="docs-resource-grid">
+        {packageGuides.filter(pkg => pkg.group === group.id).map(pkg => (
+          <Card id={pkg.slug} variant="muted">
+            <h3><Link href={pkg.href}>{pkg.name}</Link></h3>
+            <p><code>{pkg.packageName}</code></p>
+            <CodeBlock code={`pnpm add ${pkg.packageName}`} lang="bash" title={pkg.packageName} />
+            <Link href={`https://www.npmjs.com/package/${pkg.packageName}`}>View {pkg.name} on npm</Link>
+          </Card>
+        ))}
+      </div>
+    </section>
+  ))}
+  <section aria-labelledby="package-usage-guides">
+    <h2 id="package-usage-guides">Explore focused usage guides.</h2>
+    <p>A package can power several components and use cases. Guides combine live examples with copyable code.</p>
+    <div class="docs-resource-grid">{worldMapTopics.map(topic => <Card variant="muted"><h3><Link href={topic.href}>{topic.label}</Link></h3><p>{topic.description}</p></Card>)}</div>
+    <p>Apple and Android use their native package managers. See <Link href="/docs/apple/installation">Swift installation</Link> and <Link href="/docs/android/installation">Compose installation</Link>.</p>
+  </section>
+  </DocsGuideContent>
+</DocsLayout>

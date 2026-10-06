@@ -1,0 +1,14 @@
+---
+import { WorldMap } from '@santi020k/lumen-astro'
+import { lumenWorldMapCountries } from '@santi020k/lumen-core/world-map-data'
+---
+<WorldMap
+  countries={lumenWorldMapCountries}
+  label="Sample European destinations"
+  highlightedCountries={['PT', 'ES', 'CH', 'DE', 'IT']}
+  initialView="highlighted"
+  variant="solid"
+  animated={false}
+  style="--ui-world-map-highlight: hsl(var(--accent));"
+  caption="Regional highlights fitted on load. Country data belongs to your application."
+/>

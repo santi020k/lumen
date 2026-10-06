@@ -7521,6 +7521,22 @@
       "pathname": "/docs/motion-playground",
       "title": "Motion playground - Lumen UI"
     },
+    "/docs/packages": {
+      "alt": "Packages — Documentation social preview from Lumen UI",
+      "description": "Find Lumen npm packages by purpose, with installation commands and focused usage guides.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--packages.webp",
+          "primary": true,
+          "url": "/og/pages/docs--packages.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/packages",
+      "title": "Packages — Lumen UI"
+    },
     "/docs/react-native/ai": {
       "alt": "React Native Build with AI — React Native social preview from Lumen UI",
       "description": "Give your coding agent platform-specific prompts, package context, and accessibility requirements. Learn how with Lumen for React Native.",
@@ -9424,6 +9440,38 @@
       ],
       "pathname": "/docs/web/reporting",
       "title": "Date ranges and reporting — Lumen UI"
+    },
+    "/docs/web/world-map/destinations": {
+      "alt": "WorldMap destination examples — Documentation social preview from Lumen UI",
+      "description": "Copy regional WorldMap examples for Astro, React, and Web Components, and customize country highlights, labels, and colors.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--web--world-map--destinations.webp",
+          "primary": true,
+          "url": "/og/pages/docs--web--world-map--destinations.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/web/world-map/destinations",
+      "title": "WorldMap destination examples — Lumen UI"
+    },
+    "/docs/web/world-map": {
+      "alt": "WorldMap guide — Documentation social preview from Lumen UI",
+      "description": "Build reusable destination and coverage maps with country highlights, cursor-centered zoom, drag panning, and regional views.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--web--world-map.webp",
+          "primary": true,
+          "url": "/og/pages/docs--web--world-map.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/web/world-map",
+      "title": "WorldMap guide — Lumen UI"
     },
     "/guides/build-ui-with-ai": {
       "alt": "Build accessible UI with AI in Astro and React — Product guides social preview from Lumen UI",

@@ -1,4 +1,5 @@
 import type { LumenWorldMapSelectDetail } from '@santi020k/lumen-core'
+import { initLumenWorldMapZoom } from '@santi020k/lumen-core/world-map-zoom'
 
 interface WorldMapBinding {
   abort: AbortController
@@ -33,6 +34,10 @@ const matchesBinding = (
   return binding.group === group && binding.select === select
 }
 
+const updateSelectionOutline = (root: HTMLElement, path: SVGPathElement | null): void => {
+  root.querySelector('.ui-world-map__selection')?.setAttribute('d', path?.getAttribute('d') ?? '')
+}
+
 export const initWorldMapControllers = (scope: ParentNode): void => {
   const roots = [...scope.querySelectorAll<HTMLElement>('[data-ui-world-map]')]
 
@@ -55,6 +60,8 @@ export const initWorldMapControllers = (scope: ParentNode): void => {
 
     const abort = new AbortController()
     const { signal } = abort
+
+    initLumenWorldMapZoom(root, signal)
 
     boundWorldMaps.set(root, { abort, group, select })
 
@@ -81,6 +88,8 @@ export const initWorldMapControllers = (scope: ParentNode): void => {
       next?.classList.add('ui-world-map__country--selected')
 
       if (select) select.value = next ? countryId : ''
+
+      updateSelectionOutline(root, next)
 
       showLabel(next)
 

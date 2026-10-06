@@ -38,6 +38,25 @@ const path = (id: string): SVGPathElement => {
   return match
 }
 
+test('fit controls follow asynchronously updated highlights without resetting zoom', () => {
+  act(() => {
+    root.render(createElement(WorldMap, { countries, label: 'World map', highlightedCountries: [] }))
+  })
+  const fit = container.querySelector<HTMLButtonElement>('[data-ui-world-map-zoom="fit"]')
+  expect(fit?.disabled).toBe(true)
+  act(() => container.querySelector<HTMLButtonElement>('[data-ui-world-map-zoom="in"]')?.click())
+  act(() => {
+    root.render(createElement(WorldMap, { countries, label: 'World map', highlightedCountries: ['CO'] }))
+  })
+  expect(fit?.disabled).toBe(false)
+  expect(container.querySelector('output')?.value).toBe('150%')
+  act(() => {
+    root.render(createElement(WorldMap, { countries, label: 'World map', highlightedCountries: [] }))
+  })
+  expect(fit?.disabled).toBe(true)
+  expect(container.querySelector('output')?.value).toBe('150%')
+})
+
 test('clicking an uncontrolled map selects the country and fires a typed callback', () => {
   const onCountrySelect = vi.fn()
 
@@ -50,6 +69,7 @@ test('clicking an uncontrolled map selects the country and fires a typed callbac
   })
 
   expect(path('CO').classList.contains('ui-world-map__country--selected')).toBe(true)
+  expect(container.querySelector('.ui-world-map__selection')?.getAttribute('d')).toBe(path('CO').getAttribute('d'))
   expect(onCountrySelect).toHaveBeenCalledWith({ countryId: 'CO', highlighted: false, label: 'Colombia' })
   expect(container.querySelector('.ui-world-map__inspection')?.textContent).toBe('Colombia')
 })
@@ -144,4 +164,43 @@ test('normalizes selected country codes and clears stale selection after geometr
   })
   expect(container.querySelector('.ui-world-map__country--selected')).toBeNull()
   expect(container.querySelector('select')?.value).toBe('')
+})
+
+test('enhances zoom controls and keeps zoom through country selection', () => {
+  act(() => {
+    root.render(createElement(WorldMap, { countries, label: 'Map' }))
+  })
+  const zoomIn = container.querySelector<HTMLButtonElement>('[data-ui-world-map-zoom="in"]')
+
+  if (!zoomIn) throw new Error('Expected zoom control')
+
+  act(() => {
+    zoomIn.click()
+  })
+  expect(container.querySelector('output')?.value).toBe('150%')
+  act(() => {
+    path('CO').dispatchEvent(new MouseEvent('click', { bubbles: true }))
+  })
+  expect(container.querySelector('output')?.value).toBe('150%')
+  act(() => {
+    root.render(createElement(WorldMap, { countries, label: 'Map', zoomable: false }))
+  })
+  expect(container.querySelector('[data-ui-world-map-zoom]')).toBeNull()
+  expect(container.querySelector<HTMLElement>('[data-ui-world-map-viewport]')?.style.getPropertyValue('--ui-world-map-zoom')).toBe('1')
+})
+
+test('regional initial view fits highlighted geometry when navigation is enabled', () => {
+  act(() => {
+    root.render(createElement(WorldMap, { countries, label: 'Region', highlightedCountries: ['CO'], initialView: 'highlighted', zoomable: false }))
+  })
+  path('CO').getBBox = () => new DOMRect(100, 100, 10, 10)
+  act(() => {
+    root.render(createElement(WorldMap, { countries, label: 'Region', highlightedCountries: ['CO'], initialView: 'highlighted' }))
+  })
+  expect(container.querySelector('output')?.textContent).toBe('800%')
+  const reset = container.querySelector<HTMLButtonElement>('[data-ui-world-map-zoom="reset"]')
+  act(() => {
+    reset?.click()
+  })
+  expect(container.querySelector('output')?.textContent).toBe('100%')
 })

@@ -1159,7 +1159,8 @@ const runtimeEventsByComponent: Partial<
   Heatmap: runtimeEvents.filter(event => event.name === 'ui:chart-datum-activate'),
   RangeChart: runtimeEvents.filter(event => event.name === 'ui:chart-datum-activate'),
   AttachmentPreview: runtimeEvents.filter(event => event.name === 'ui:attachment-preview-change'),
-  WorldMap: [{ name: 'ui:world-map-select', target: 'WorldMap root', detail: '{ countryId: string, highlighted: boolean, label: string }', when: 'A different country is selected by pointer or native chooser.' }],
+  WorldMap: [
+    { name: 'ui:world-map-select', target: 'WorldMap root', detail: '{ countryId: string, highlighted: boolean, label: string }', when: 'A different country is selected by pointer or native chooser.' }],
   ImageComparison: runtimeEvents.filter(event => event.name === 'ui:image-comparison-change'),
   CopyButton: runtimeEvents.filter(event => event.name.startsWith('ui:copy-')),
   DataTable: runtimeEvents.filter(
@@ -1807,6 +1808,9 @@ const apiReferenceByComponent = {
     )
   ],
   WorldMap: [
+    apiRow('initialView', '"world" | "highlighted"', '"world"', 'Fits highlighted country geometry on enhancement. The Fit highlighted countries button repeats the fit; reset restores the world. Elements uses initial-view.'),
+    apiRow('zoomable', 'boolean', 'true', 'Shows zoom, fit, and reset controls. Buttons use 50% steps from 100% to 800%. Ctrl/Cmd-scroll zooms toward the cursor; drag or scroll to explore.'),
+    apiRow('zoomLabels', 'Partial<LumenWorldMapZoomLabels>', 'English labels', 'Localizes zoomIn, zoomOut, reset, level, fit and viewport. Elements accepts zoom-labels JSON.'),
     apiRow('countries', 'readonly LumenWorldMapCountryGeometry[]', 'required', 'Import lumenWorldMapCountries explicitly from @santi020k/lumen-core/world-map-data. Custom geometry uses the fixed 1000 × 400 projection.'),
     apiRow('label', 'string', 'required', 'Provides the accessible name for the map image.'),
     apiRow('highlightedCountries', 'readonly string[]', '[]', 'Country codes to highlight; unknown codes and duplicates are dropped. Elements also accepts highlighted-countries as JSON.'),

@@ -20,6 +20,7 @@ import { publishedGuides } from './guides'
 import { mcpGuideTopics } from './mcp-guides'
 import { getNativeComponentsForPlatform } from './native-components'
 import { nativeGuidePlatforms, nativeGuideTopics } from './native-guide-topics'
+import { packageGuides, worldMapTopics } from './package-guides'
 import { platformGuides } from './platforms'
 import { reactHookGuides } from './react-hooks'
 
@@ -95,6 +96,9 @@ const eventItems: DocsSearchItem[] = runtimeEvents.map(event => {
 })
 
 const recipeItems: DocsSearchItem[] = [
+  { category: 'Packages', description: 'Browse published npm packages by purpose.', href: '/docs/packages', keywords: 'npm install packages adapters foundations integrations', title: 'Package directory', type: 'Recipe' },
+  ...packageGuides.map(pkg => ({ category: 'Packages', description: pkg.packageName, href: `/docs/packages#${pkg.slug}`, keywords: normalizeKeywords(pkg.name, pkg.packageName, pkg.group), title: pkg.name, type: 'Recipe' as const })),
+  ...worldMapTopics.slice(0, 2).map(topic => ({ category: 'WorldMap guides', description: topic.description, href: topic.href, keywords: normalizeKeywords(topic.label, topic.description, 'zoom drag fit visited countries'), title: topic.label, type: 'Recipe' as const })),
   ...chartTopics.map(topic => ({
     category: 'Data visualization',
     description: topic.description,

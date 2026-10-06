@@ -1,7 +1,7 @@
 'use client'
 
-import type { ComponentPropsWithoutRef } from 'react'
-import { useId, useMemo, useState } from 'react'
+import type { ComponentPropsWithoutRef, ReactNode } from 'react'
+import { useEffect, useId, useMemo, useRef, useState } from 'react'
 
 import { composeClassName } from '@santi020k/lumen-core/tokens'
 import {
@@ -18,6 +18,33 @@ import {
   projectLumenWorldMapCoordinate,
   resolveLumenWorldMapCountryLabel
 } from '@santi020k/lumen-core/world-map'
+import {
+  initLumenWorldMapZoom,
+  type LumenWorldMapZoomLabels,
+  lumenWorldMapZoomLabels
+} from '@santi020k/lumen-core/world-map-zoom'
+
+import { Button } from './components.js'
+
+const ZoomControls = ({ enabled, labels }: { enabled: boolean, labels: LumenWorldMapZoomLabels }) => enabled && (
+  <div className="ui-world-map__zoom-controls">
+    <Button aria-label={labels.zoomOut} data-ui-world-map-zoom="out" disabled size="icon" variant="outline">−</Button>
+    <output aria-label={labels.level} aria-live="polite" data-ui-world-map-zoom-status>100%</output>
+    <Button aria-label={labels.zoomIn} data-ui-world-map-zoom="in" disabled size="icon" variant="outline">+</Button>
+    <Button data-ui-world-map-zoom="fit" disabled size="sm" variant="outline">{labels.fit}</Button>
+    <Button data-ui-world-map-zoom="reset" disabled size="sm" variant="outline">{labels.reset}</Button>
+  </div>
+)
+
+const MapViewport = ({ children, label, zoomable }: { children: ReactNode, label: string, zoomable: boolean }) => (
+  <div aria-label={label} className="ui-world-map__viewport" data-ui-world-map-viewport role="region" tabIndex={zoomable ? 0 : undefined}>
+    {children}
+  </div>
+)
+
+const SelectionOutline = ({ country }: { country: LumenWorldMapCountryGeometry | undefined }) => (
+  <path aria-hidden="true" className="ui-world-map__selection" d={country?.path ?? ''} />
+)
 
 interface CountryPathProps {
   country: LumenWorldMapCountryGeometry
@@ -178,6 +205,9 @@ const isCurrentCountry = (
 ): boolean => country?.id === id
 
 export interface WorldMapProps extends Omit<ComponentPropsWithoutRef<'figure'>, 'label'> {
+  initialView?: 'world' | 'highlighted'
+  zoomable?: boolean
+  zoomLabels?: Partial<LumenWorldMapZoomLabels>
   animated?: boolean
   caption?: string
   countries: readonly LumenWorldMapCountryGeometry[]
@@ -212,8 +242,26 @@ export const WorldMap = ({
   onCountrySelect,
   selectedCountry,
   variant = 'dotted',
+  initialView,
+  zoomable: zoomEnabled,
+  zoomLabels,
   ...props
 }: WorldMapProps) => {
+  const zoomable = zoomEnabled !== false
+  const rootRef = useRef<HTMLElement>(null)
+  const zoomText = { ...lumenWorldMapZoomLabels, ...zoomLabels }
+
+  useEffect(() => {
+    const root = rootRef.current
+    const abort = new AbortController()
+
+    if (root) initLumenWorldMapZoom(root, abort.signal)
+
+    return () => {
+      abort.abort()
+    }
+  }, [zoomable, initialView])
+
   const countries = useMemo(() => normalizeLumenWorldMapCountries(inputCountries), [inputCountries])
   const instanceId = useId().replaceAll(':', '')
   const neutralPatternId = `${instanceId}-dot-neutral`
@@ -228,6 +276,17 @@ export const WorldMap = ({
   )
 
   const highlightedSet = useMemo(() => new Set(highlightedIds), [highlightedIds])
+
+  useEffect(() => {
+    const button = rootRef.current?.querySelector<HTMLButtonElement>('[data-ui-world-map-zoom="fit"]')
+
+    if (!button) return
+
+    button.disabled = highlightedIds.length === 0
+
+    button.classList.toggle('ui-button--disabled', button.disabled)
+  }, [highlightedIds, zoomable])
+
   const normalizedMarkers = useMemo(() => normalizeLumenWorldMapMarkers(markers), [markers])
   const activeId = hoveredId ?? selectedId
   const activeCountry = findLumenWorldMapCountry(countries, activeId)
@@ -246,42 +305,48 @@ export const WorldMap = ({
   return (
     <figure
       {...props}
+      ref={rootRef}
       className={composeClassName('ui-world-map', className)}
+      data-initial-view={initialView}
       data-animated={animated}
       data-interactive={interactive}
       data-variant={variant}
     >
       <MapHeading description={description} heading={heading} />
+      <ZoomControls enabled={zoomable} labels={zoomText} />
       <div className="ui-world-map__frame">
-        <svg
-          aria-label={label}
-          className="ui-world-map__plot"
-          role="img"
-          viewBox={`0 0 ${viewBoxWidth} ${viewBoxHeight}`}
-        >
-          {variant === 'dotted' && (
-            <DotPatterns highlightPatternId={highlightPatternId} neutralPatternId={neutralPatternId} />
-          )}
-          <g aria-hidden="true" className="ui-world-map__countries">
-            {countries.map(country => (
-              <CountryPath
-                key={country.id}
-                country={country}
-                highlightPatternId={highlightPatternId}
-                interactive={interactive}
-                isHighlighted={highlightedSet.has(country.id)}
-                isSelected={selectedId === country.id}
-                label={resolveLumenWorldMapCountryLabel(country, labels)}
-                neutralPatternId={neutralPatternId}
-                onHoverChange={setHoveredId}
-                onSelect={selectCountry}
-                variant={variant}
-              />
-            ))}
-          </g>
-          <MarkerLayer markers={normalizedMarkers} />
+        <MapViewport label={`${zoomText.viewport}: ${label}`} zoomable={zoomable}>
+          <svg
+            aria-label={label}
+            className="ui-world-map__plot"
+            role="img"
+            viewBox={`0 0 ${viewBoxWidth} ${viewBoxHeight}`}
+          >
+            {variant === 'dotted' && (
+              <DotPatterns highlightPatternId={highlightPatternId} neutralPatternId={neutralPatternId} />
+            )}
+            <g aria-hidden="true" className="ui-world-map__countries">
+              {countries.map(country => (
+                <CountryPath
+                  key={country.id}
+                  country={country}
+                  highlightPatternId={highlightPatternId}
+                  interactive={interactive}
+                  isHighlighted={highlightedSet.has(country.id)}
+                  isSelected={selectedId === country.id}
+                  label={resolveLumenWorldMapCountryLabel(country, labels)}
+                  neutralPatternId={neutralPatternId}
+                  onHoverChange={setHoveredId}
+                  onSelect={selectCountry}
+                  variant={variant}
+                />
+              ))}
+            </g>
+            <MarkerLayer markers={normalizedMarkers} />
 
-        </svg>
+            <SelectionOutline country={findLumenWorldMapCountry(countries, selectedId)} />
+          </svg>
+        </MapViewport>
         <Inspection country={activeCountry} labels={labels} />
       </div>
       {interactive && (

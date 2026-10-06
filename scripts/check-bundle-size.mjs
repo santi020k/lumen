@@ -3,7 +3,10 @@ import { checkBundleSize } from './lib/bundle-size.mjs'
 // Catalog sizes are reported as the component surface grows. Focused modules and
 // selective consumer bundles retain enforced limits; see CONTRIBUTING.md.
 const measurements = [
-  { file: 'packages/lumen/styles/world-map.css', gzip: 1_000, packageName: '@santi020k/lumen', raw: 3_000 },
+  { file: 'packages/lumen/styles/world-map.css', gzip: 1_200, packageName: '@santi020k/lumen', raw: 4_000 },
+  { file: 'packages/core/dist/world-map-pan.js', gzip: 1_000, packageName: '@santi020k/lumen-core', raw: 3_000 },
+  { file: 'packages/core/dist/world-map-navigation.js', gzip: 1_000, packageName: '@santi020k/lumen-core', raw: 3_000 },
+  { file: 'packages/core/dist/world-map-zoom.js', gzip: 1_000, packageName: '@santi020k/lumen-core', raw: 3_000 },
   { file: 'packages/core/dist/world-map-data.generated.js', gzip: 85_000, packageName: '@santi020k/lumen-core', raw: 225_000 },
   { file: 'packages/elements/dist/components/world-map.js', gzip: 3_500, packageName: '@santi020k/lumen-elements', raw: 14_000 },
   { file: 'packages/core/dist/motion.js', gzip: 1_500, packageName: '@santi020k/lumen-core', raw: 4_500 },

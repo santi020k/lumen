@@ -707,6 +707,30 @@ export function Example() {
 `
 
 const reactOverrides: Record<string, string> = {
+  WorldMapRegions: `import type { CSSProperties } from 'react'
+import { WorldMap } from '@santi020k/lumen-react'
+import { lumenWorldMapCountries } from '@santi020k/lumen-core/world-map-data'
+
+const style: CSSProperties & { '--ui-world-map-highlight': string } = {
+  '--ui-world-map-highlight': 'hsl(var(--accent))'
+}
+
+const Example = () => <WorldMap countries={lumenWorldMapCountries}
+  label="Sample European destinations" highlightedCountries={['PT', 'ES', 'CH', 'DE', 'IT']}
+  initialView="highlighted" variant="solid" animated={false} style={style} />`,
+  WorldMapSolid: `import type { CSSProperties } from 'react'
+import { WorldMap } from '@santi020k/lumen-react'
+import { lumenWorldMapCountries } from '@santi020k/lumen-core/world-map-data'
+
+const style: CSSProperties & { '--ui-world-map-highlight': string } = {
+  '--ui-world-map-highlight': 'hsl(var(--accent))'
+}
+
+const Example = () => (
+  <WorldMap countries={lumenWorldMapCountries} label="Sample destinations with a solid map style"
+    highlightedCountries={['CO', 'JP', 'PT']} variant="solid" animated={false}
+    labels={{ CO: 'Colombia', JP: '日本', PT: 'Portugal' }} listLabel="Explore a country" style={style} />
+)`,
   WorldMap: `import { WorldMap } from '@santi020k/lumen-react'
 import { lumenWorldMapCountries } from '@santi020k/lumen-core/world-map-data'
 
@@ -1357,6 +1381,18 @@ const getReactHookExample = (name: string): string | undefined => {
 
   return code ? `'use client'\n\n${code}\n` : undefined
 }
+
+elementsOverrides.WorldMapSolid = (elementsOverrides.WorldMap ?? '').replaceAll(
+  '<lumen-world-map label="Sample destinations"',
+  '<lumen-world-map variant="solid" animated="false" labels=\'{"JP":"日本"}\' list-label="Explore a country" style="--ui-world-map-highlight: hsl(var(--accent))" label="Sample destinations with a solid map style"'
+)
+
+elementsOverrides.WorldMapRegions = elementsOverrides.WorldMapSolid.replaceAll(
+  'variant="solid" animated="false" labels=\'{"JP":"日本"}\' list-label="Explore a country"',
+  'initial-view="highlighted" variant="solid" animated="false"'
+).replaceAll('["CO", "JP", "PT"]', '["PT", "ES", "CH", "DE", "IT"]').replaceAll(
+  'Sample destinations with a solid map style', 'Sample European destinations'
+)
 
 export const buildSnippets = (
   name: string,

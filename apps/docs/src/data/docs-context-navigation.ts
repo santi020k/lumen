@@ -9,6 +9,7 @@ export interface DocsContextLink {
 export const sharedDocumentationLinks = [
   { href: '/docs', label: 'Project overview' },
   { href: '/docs/foundations', label: 'Shared foundations' },
+  { href: '/docs/packages', label: 'Packages' },
   { href: '/docs/figma', label: 'Figma' },
   { href: '/docs/ai-skill', label: 'AI skill' },
   { href: '/docs/mcp', label: 'MCP server' },
@@ -35,6 +36,7 @@ const contextLinks: Record<DocsPlatformId | 'all', DocsContextLink[]> = {
   all: [
     { href: '/docs', label: 'Project overview', match: 'exact' },
     { href: '/docs/foundations', label: 'Foundations', match: 'prefix' },
+    { href: '/docs/packages', label: 'Packages', match: 'prefix' },
     { href: '/docs/figma', label: 'Figma', match: 'prefix' },
     { href: '/docs/ai-skill', label: 'AI skill', match: 'prefix' },
     { href: '/docs/mcp', label: 'MCP server', match: 'prefix' },
@@ -64,7 +66,8 @@ const contextLinks: Record<DocsPlatformId | 'all', DocsContextLink[]> = {
     { href: '/docs/frameworks/elements', label: 'Elements', match: 'prefix' },
     { href: '/docs/forms', label: 'Forms', match: 'prefix' },
     { href: '/docs/web/consumer-workflows', label: 'Consumer workflows' },
-    { href: '/docs/icons', label: 'Icons', match: 'prefix' }
+    { href: '/docs/icons', label: 'Icons', match: 'prefix' },
+    { href: '/docs/web/world-map', label: 'WorldMap guides', match: 'prefix' }
   ]
 }
 

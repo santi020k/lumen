@@ -55,7 +55,7 @@ describe('component docs snippets', () => {
   })
 
   test('include a live example file for every documented component', () => {
-    expect(sortByName(exampleFileNames)).toEqual(sortByName(documentedComponentNames))
+    expect(sortByName(exampleFileNames)).toEqual(sortByName([...documentedComponentNames, 'WorldMapSolid', 'WorldMapRegions']))
   })
 
   test('distinguish commonly confused component families', () => {

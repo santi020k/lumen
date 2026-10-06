@@ -41,6 +41,9 @@ const { component } = Astro.props
 const { component: Example, source } = getExample(component.name)
 const componentSlug = toSlug(component.name)
 const chartGuide = getChartGuide(component.name)
+const solidMapExample = component.name === 'WorldMap' ? getExample('WorldMapSolid') : undefined
+const SolidMapExample = solidMapExample?.component
+const solidMapSnippets = solidMapExample ? buildSnippets('WorldMapSolid', solidMapExample.source) : undefined
 const snippets = buildSnippets(component.name, source)
 const registryCommand = `lumen add ${component.name}`
 
@@ -204,6 +207,7 @@ undefined}
       </div>
     </header>
 
+    {component.name === 'WorldMap' && <p>Explore <Link href="/docs/web/world-map">navigation guidance</Link> and <Link href="/docs/web/world-map/destinations">regional destination examples</Link>.</p>}
     {component.guidance && !chartGuide && (
       <aside class="component-doc-guidance" aria-label={`${component.name} usage guidance`}>
         <div>
@@ -254,6 +258,7 @@ undefined}
           'Explore the live chart, then open its code for Astro, React, or Elements.' :
           'Choose Astro, React, or Elements to compare native usage against the shared visual output. Each example assumes the framework-level setup is already complete.'}
       </p>
+      {component.name === 'WorldMap' && <h3>Dotted destinations</h3>}
       <FrameworkExample
         componentName={component.name}
         codeCollapsed={Boolean(chartGuide)}
@@ -262,6 +267,15 @@ undefined}
       >
         <Example />
       </FrameworkExample>
+      {SolidMapExample && solidMapSnippets && (
+        <>
+          <h3>Solid regions</h3>
+          <p>Use Lumen accent colors and country labels to match your product.</p>
+          <FrameworkExample componentName="WorldMap" examplePath="apps/docs/src/examples/WorldMapSolid.astro" groupId="code-world-map-solid" snippets={solidMapSnippets}>
+            <SolidMapExample />
+          </FrameworkExample>
+        </>
+      )}
       {component.adapterNotes && (
         <Note label="Framework differences">
           {component.adapterNotes.map(note => (

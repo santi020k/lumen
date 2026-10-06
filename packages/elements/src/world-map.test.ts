@@ -50,6 +50,7 @@ test('country clicks and the keyboard chooser share the reflected selection even
   select.focus()
   select.value = 'JP'
   select.dispatchEvent(new Event('change'))
+  expect(map.querySelector('.ui-world-map__selection')?.getAttribute('d')).toBe(map.querySelector('[data-country="JP"]')?.getAttribute('d'))
   expect(map.selectedCountry).toBe('JP')
   expect(document.activeElement).toBe(select)
   expect(listener).toHaveBeenCalledTimes(2)
@@ -110,4 +111,26 @@ test('noninteractive solid maps retain highlights and suppress country selection
   map.querySelector('[data-country="JP"]')?.dispatchEvent(new MouseEvent('click', { bubbles: true }))
   expect(map.selectedCountry).toBe('')
   expect(map.querySelector('.ui-world-map__highlights')?.textContent).toBe('Colombia')
+})
+
+test('zoom controls work independently of country selection and can be disabled', () => {
+  const map = fixture()
+
+  map.querySelector<HTMLButtonElement>('[data-ui-world-map-zoom="in"]')?.click()
+  expect(map.querySelector('output')?.value).toBe('150%')
+  map.selectedCountry = 'JP'
+  expect(map.querySelector('output')?.value).toBe('150%')
+  map.setAttribute('zoomable', 'false')
+  expect(map.querySelector('[data-ui-world-map-zoom]')).toBeNull()
+})
+
+test('the fit control uses reflected highlighted countries without changing selection', () => {
+  const map = fixture()
+  const country = map.querySelector<SVGPathElement>('[data-country="CO"]')
+  if (!country) throw new Error('Expected country geometry')
+  country.getBBox = () => new DOMRect(100, 100, 10, 10)
+  map.selectedCountry = 'JP'
+  map.querySelector<HTMLButtonElement>('[data-ui-world-map-zoom="fit"]')?.click()
+  expect(map.querySelector('output')?.textContent).toBe('800%')
+  expect(map.selectedCountry).toBe('JP')
 })

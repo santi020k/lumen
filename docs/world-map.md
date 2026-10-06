@@ -26,6 +26,21 @@ equirectangular projection. See [map data provenance](../maps/README.md) for the
 coordinate bounds, generator, and territory conventions. Small countries remain selectable through
 the native chooser even when their shapes are too small to tap comfortably.
 
+Use `initialView="highlighted"` (Elements: `initial-view="highlighted"`) to start fitted to the
+highlighted country geometry. The Fit highlighted countries button repeats the fit; an empty set
+leaves the full world visible. Add a localized `fit` label through `zoomLabels`.
+
+Hold Ctrl or Cmd while scrolling over the map to zoom toward the cursor. Ordinary scrolling remains
+available for navigation. Browsers that report trackpad pinch as Ctrl-wheel use the same behavior.
+
+Zoom controls are enabled by default: zoom from 100% to 800% in 50% steps, zoom out, or reset.
+Drag an enlarged map with a mouse or pen to pan without changing the country selection.
+The focused viewport supports native keyboard scrolling; touch and trackpad scrolling also let you
+explore an enlarged map. Controls preserve the center while changing scale and stop at both limits.
+Set `zoomable={false}` (Elements: `zoomable="false"`) to hide the controls. Localize their accessible
+names with `zoomLabels={{ zoomIn: 'Acercar', zoomOut: 'Alejar', reset: 'Restablecer', level: 'Zoom',
+viewport: 'Mapa' }}` or Elements `zoom-labels` JSON. Country selection remains independent of zoom.
+
 Use `variant="solid"` for filled country silhouettes; `dotted` is the default. Set `interactive={false}`
 for a display-only map, and `animated={false}` to stop entrance and marker animations. Reduced-motion
 preferences always disable animation. Highlighted country names remain visible without JavaScript
@@ -86,3 +101,6 @@ geometry. Use `selectedCountry` or `selected-country`, `list-label`, `variant`, 
 and `animated="false"`. Malformed JSON becomes an empty collection. Assign properties after
 registration. Content inside the element is replaced by its renderer; put headings and captions
 outside it and provide an authored fallback for JavaScript-disabled pages.
+
+See the [navigation guide](https://lumen.santi020k.com/docs/web/world-map) and
+[destination examples](https://lumen.santi020k.com/docs/web/world-map/destinations) for live regional usage.

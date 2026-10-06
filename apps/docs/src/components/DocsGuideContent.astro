@@ -1,0 +1,47 @@
+<div class="docs-guide-content"><slot /></div>
+
+<style>
+  .docs-guide-content {
+    display: grid;
+    gap: 2.5rem;
+    min-width: 0;
+  }
+
+  .docs-guide-content :global(section) {
+    display: grid;
+    gap: 1rem;
+    min-width: 0;
+  }
+
+  .docs-guide-content :global(h2) {
+    color: hsl(var(--ink));
+    font-size: clamp(1.4rem, 3vw, 2rem);
+    font-weight: 850;
+    letter-spacing: -0.025em;
+    line-height: 1.25;
+  }
+
+  .docs-guide-content :global(p) {
+    color: hsl(var(--ink-soft));
+    line-height: 1.65;
+  }
+
+  .docs-guide-content :global(.docs-resource-grid) {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+    gap: 1rem;
+  }
+
+  .docs-guide-content :global(.docs-resource-grid > .ui-card) {
+    display: grid;
+    align-content: start;
+    gap: 1rem;
+    min-width: 0;
+  }
+
+  .docs-guide-content :global(.docs-resource-grid h3) {
+    font-size: 1.125rem;
+    font-weight: 800;
+    line-height: 1.4;
+  }
+</style>
