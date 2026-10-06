@@ -134,3 +134,15 @@ test('decoded invalid tour collections and step fields render invalid status', (
     expect(buttons(root)).toHaveLength(1)
   }
 })
+
+test('treats malformed decoded anchor collections as unavailable targets', () => {
+  for (const anchors of [null, undefined, [], 'invalid', 7]) {
+    const input = props()
+
+    Object.defineProperty(input, 'anchors', { value: anchors, enumerable: true })
+    const root = render(input)
+
+    expect(root.container.queryAll(instance => read(instance, 'testID') === 'tour-highlight')).toHaveLength(0)
+    expect(root.container.queryAll(instance => instance.type === 'Text' && read(instance, 'children') === 'Target unavailable')).toHaveLength(1)
+  }
+})

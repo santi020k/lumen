@@ -99,3 +99,43 @@ test('external editor handles a toolbar request once and suppresses browser form
   await expect(root).toHaveAttribute('data-command-result', 'true')
   expect(await editor.innerHTML()).toBe(original)
 })
+
+test('adopted mounted virtual list retains focused destination controls after initialization', async ({ page }) => {
+  await page.goto('/docs/components/virtual-list')
+  const list = page.locator('.component-doc-preview [data-ui-virtual-list-mode="mounted"]')
+
+  await expect(list).toHaveAttribute('data-ui-range-start', '0')
+  const result = await list.evaluate(async element => {
+    const iframe = document.createElement('iframe')
+
+    document.body.append(iframe)
+    const destination = iframe.contentDocument
+
+    if (!destination) throw new Error('Missing destination document')
+
+    destination.body.append(destination.adoptNode(element))
+    const initialize = (window as Window & { LumenInitUiPrimitives?: (scope: ParentNode) => void }).LumenInitUiPrimitives
+
+    if (!initialize) throw new Error('Missing initializer')
+
+    initialize(destination)
+    initialize(destination)
+    const row = element.querySelector<HTMLElement>(':scope > :not([data-ui-virtual-list-spacer])')
+
+    if (!row) throw new Error('Missing mounted row')
+
+    const button = destination.createElement('button')
+
+    button.textContent = 'Retained focus'
+    row.append(button)
+    button.focus()
+    element.scrollTop = element.scrollHeight
+    element.dispatchEvent(new Event('scroll'))
+    await new Promise(resolve => setTimeout(resolve, 0))
+
+    return { focused: destination.activeElement === button, hidden: row.hidden,
+      spacers: element.querySelectorAll('[data-ui-virtual-list-spacer]').length }
+  })
+
+  expect(result).toEqual({ focused: true, hidden: false, spacers: 2 })
+})

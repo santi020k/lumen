@@ -106,3 +106,16 @@ test('missing values use localized fallback and global disabled prevents proposa
   expect(change).not.toHaveBeenCalled()
   expect(root.container.queryAll(item => item.type === 'Text' && read(item, 'children') === 'Unavailable')).toHaveLength(1)
 })
+
+test('invalid controlled expansion state uses the existing invalid label without records', () => {
+  for (const value of [null, undefined, [], {}, new Set([7])]) {
+    const input: Partial<LumenTreeGridProps> = { invalidLabel: 'Invalid expansion' }
+
+    Object.defineProperty(input, 'expandedIds', { value, enumerable: true })
+    const { root, change } = render(input)
+
+    expect(root.container.queryAll(item => item.type === 'Button')).toHaveLength(0)
+    expect(root.container.queryAll(item => item.type === 'Text' && read(item, 'children') === 'Invalid expansion')).toHaveLength(1)
+    expect(change).not.toHaveBeenCalled()
+  }
+})

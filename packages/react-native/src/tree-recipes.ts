@@ -30,6 +30,18 @@ const validNodes = (value: unknown): value is readonly LumenTreeNode[] => {
   return true
 }
 
+const isExpansionSet = (value: unknown): value is ReadonlySet<string> => {
+  try {
+    const values: IterableIterator<unknown> = Set.prototype.values.call(value)
+
+    for (const id of values) if (typeof id !== 'string') return false
+
+    return true
+  } catch {
+    return false
+  }
+}
+
 /** A flat, single-parent hierarchy with iterative validation and traversal. */
 export class LumenTreeModel {
   readonly valid: boolean
@@ -113,7 +125,7 @@ export class LumenTreeModel {
   }
 
   visibleRows(expandedIds: ReadonlySet<string>): readonly LumenTreeRow[] {
-    if (!this.valid) return []
+    if (!this.valid || !isExpansionSet(expandedIds)) return []
 
     const result: LumenTreeRow[] = []
     const stack = this.childrenOf(null).map(node => ({ node, depth: 0 })).reverse()
@@ -127,7 +139,7 @@ export class LumenTreeModel {
 
       result.push({ ...entry, hasChildren: children.length > 0, disabled: this.isDisabled(entry.node.id) })
 
-      if (expandedIds.has(entry.node.id)) {
+      if (Set.prototype.has.call(expandedIds, entry.node.id)) {
         for (let index = children.length - 1; index >= 0; index -= 1) {
           const node = children[index]
 
@@ -140,7 +152,9 @@ export class LumenTreeModel {
   }
 
   togglingExpansion(id: string, expandedIds: ReadonlySet<string>): Set<string> {
-    const next = new Set(expandedIds)
+    if (!isExpansionSet(expandedIds)) return new Set()
+
+    const next = new Set<string>(Set.prototype.values.call(expandedIds))
 
     if (!this.valid || this.isDisabled(id) || this.childrenOf(id).length === 0) return next
 

@@ -98,9 +98,13 @@ const TreeContent = (props: LumenTreeProps): ReactElement => {
 
   if (props.nodes.length === 0) return <LumenText>{props.emptyLabel ?? 'No items'}</LumenText>
 
+  const rows = model.visibleRows(props.expandedIds)
+
+  if (rows.length === 0) return <LumenText accessibilityRole="alert">{props.invalidLabel ?? 'Invalid tree data'}</LumenText>
+
   return (
     <View style={{ gap: theme.spacing.md }}>
-      {model.visibleRows(props.expandedIds).map(row => (
+      {rows.map(row => (
         <TreeRow key={row.node.id} row={row} model={model} props={props} />
       ))}
     </View>

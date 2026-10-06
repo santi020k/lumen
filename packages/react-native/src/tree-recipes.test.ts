@@ -70,3 +70,15 @@ test('rejects malformed decoded tree collections and nodes before traversal', ()
     expect(model.path('a')).toEqual([])
   }
 })
+
+test('rejects decoded expansion collections before traversal and toggling', () => {
+  const model = new LumenTreeModel([{ id: 'r', label: 'Root' }, { id: 'c', parentId: 'r', label: 'Child' }])
+
+  for (const value of [null, undefined, [], {}, new Set([7])]) {
+    const input = { expanded: new Set<string>() }
+
+    Object.defineProperty(input, 'expanded', { value, enumerable: true })
+    expect(model.visibleRows(input.expanded)).toEqual([])
+    expect(model.togglingExpansion('r', input.expanded)).toEqual(new Set())
+  }
+})
