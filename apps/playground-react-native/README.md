@@ -10,7 +10,9 @@ provides filter reset, and shows the workspace release version. See
 An Expo reference app for every public component in `@santi020k/lumen-react-native`. It runs on
 web, iOS, and Android with four focused destinations: Home, Examples, Components, and Settings.
 Examples provides Release, Health, Profile, and Workspace patterns with switchable loading, empty, error, and
-success states. Components combines
+success states. The Motion pattern demonstrates expandable content, simulated save feedback, and
+a native sheet. Demo effects respect the system motion preference and a local reduction toggle;
+sheet presentation follows the operating system. Components combines
 search, product-intent categories, and focused component detail views. Settings includes Lumen and
 santi020k theme presets, system/light/dark appearance, live accessibility context, runtime
 localization, app details, privacy, and resources.
@@ -94,7 +96,7 @@ same names as the public API matrix and keeps every example interactive.
 
 On web, add `?component=<name>` to open a screenshot-ready focused view. Use `category=<name>` for
 category discovery, `destination=home|examples|components|settings` to open an application
-destination, `pattern=release|health|profile` to select an Examples pattern, and
+destination, `pattern=release|health|profile|workspace|motion` to select an Examples pattern, and
 `state=loading|empty|error|success` to prepare its state lab. For example:
 
 ```text

@@ -462,6 +462,17 @@ content readable without JavaScript and honor reduced-motion preferences.
 <AnimatedNumber decimals={1} suffix="%" value={99.8} />
 ```
 
+With the optional motion stylesheet, native `Collapsible` and `Accordion` content smoothly expands and collapses in browsers supporting
+`::details-content` and `interpolate-size`. Other browsers retain the immediate native toggle.
+Dialogs, drawers, sheets, menus, and toasts retain their existing shared-token transitions.
+
+For optional insertion, removal, or state feedback, use
+[`animateLumenPresence`](../core/README.md#presence-motion) on a DOM reference. Applications keep
+ownership of state, focus, and DOM removal. Set `data-ui-motion="reduce"` on a container for a local
+reduced-motion preference; the system preference is always respected.
+Try dialogs, bottom drawers, and side sheets in the [motion playground](https://lumen.santi020k.com/docs/motion-playground).
+System reduced motion shortens both panel and backdrop transitions.
+
 ## Glass surfaces
 
 Lumen includes glassmorphism tokens and reusable classes in the shared stylesheet. Cards use a
@@ -713,3 +724,7 @@ Keep mounting `UIPrimitives` once; no additional consumer setup is required.
 
 See [visual interactions](../../docs/visual-interactions.md) for keyed motion, semantic effects,
 chart continuity, AI surfaces, optional SDK integrations, and the four installable product recipes.
+Import `@santi020k/lumen/styles/motion.css` alongside the base stylesheet to opt into native
+disclosure height transitions and the CSS reduction scope. This small optional stylesheet works
+with Astro, React, and Elements and keeps those effects out of the default stylesheet. The presence
+helper's system and local reduced-motion checks work without this CSS import.

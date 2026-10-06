@@ -195,8 +195,10 @@ const sections = normalizePageNavigation(items === false ? [] : items ?? [])
   .docs-page-navigation { flex: 1; min-width: 0; }
   .docs-page-navigation[hidden] { display: none; }
   .docs-page-navigation :global(.docs-page-navigation__disclosure) { position: static; overflow: visible; padding: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
-  .docs-page-navigation :global(.docs-page-navigation__disclosure > summary) { position: relative; display: flex; align-items: center; gap: 0.75rem; min-height: 2.5rem; margin: 0; padding: 0.5rem 1.9rem 0.5rem 0.5rem; border: 0; border-radius: 0.5rem; background: transparent; font-size: 0.75rem; }
-  .docs-page-navigation :global(.docs-page-navigation__disclosure > summary::after) { position: absolute; right: 0.5rem; }
+  .docs-page-navigation :global(.docs-page-navigation__disclosure > summary) { position: relative; display: inline-flex; align-items: center; gap: 0.75rem; width: fit-content; max-width: 100%; min-height: 2.75rem; margin: 0; padding: 0.5rem; border: 0; border-radius: 0.5rem; background: transparent; font-size: 0.75rem; }
+  .docs-page-navigation :global(.docs-page-navigation__disclosure > summary:hover) { background: hsl(var(--surface-muted)); }
+  .docs-page-navigation :global(.docs-page-navigation__disclosure > summary::before) { display: none; }
+  .docs-page-navigation :global(.docs-page-navigation__disclosure > summary::after) { position: static; flex-shrink: 0; margin-inline: 0.125rem; }
   .docs-page-navigation__label { flex-shrink: 0; color: hsl(var(--ink)); font-weight: 800; }
   .docs-page-navigation__current { overflow: hidden; color: hsl(var(--ink-soft)); font-weight: 500; text-overflow: ellipsis; white-space: nowrap; }
   .docs-page-navigation :global(.docs-page-navigation__panel) { position: absolute; z-index: 30; top: calc(100% + 0.25rem); right: 0; left: 0; overflow: auto; max-height: min(55dvh, 26rem); margin: 0; padding: 0.75rem; border: 1px solid hsl(var(--line)); border-radius: 0.8rem; background: hsl(var(--surface)); box-shadow: 0 12px 32px hsl(var(--ink) / 0.12); overscroll-behavior: contain; }

@@ -2,6 +2,8 @@
 
 ## 4.0.0
 
+- Add dependency-free presence motion with shared timing, fade/slide/scale presets, abortable enter/exit effects, and reduced-motion support. Smooth native disclosure transitions progressively enhance supporting browsers while retaining immediate native toggles elsewhere. Add a local reduced-motion scope and an interactive motion playground for component entrances, dialogs, feedback, and list changes.
+
 - Preserve iframe context-menu activation and focus, update date constraints after end-date clamping, and reject non-finite or excessive resizable panel counts before allocating state.
 
 - Validate complete table column and restored state shapes before model or control construction.

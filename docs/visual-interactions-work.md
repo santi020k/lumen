@@ -46,13 +46,14 @@ uncommitted work from them.
   `data_bind_runtime_test.riv`, updated its `outer` string binding, paused for local reduced motion,
   rejected updates after disposal, and surfaced a missing-asset error. Motion keyboard activation
   preserved native button semantics.
-- `pnpm run build` passed. `pnpm run typecheck` passed all 25 tasks. The full Vitest suite passed
-  2,448 tests across 234 files, including Astro swap cleanup and hostile citation input.
+- `pnpm run build` passed. `pnpm run typecheck` passed all 26 tasks. The full Vitest suite passed
+  2,471 tests across 235 files, including Astro swap cleanup and hostile citation input.
 - Canonical lint, spelling, unused-code, registry, framework/native contract, MCP evaluation, and
   production dependency security checks passed in the validation sequence.
 - Browser checks at 1280×900 and 390×844 showed no horizontal overflow. Verified local reduced
   motion, immediate chart table values, pricing selections, onboarding focus/completion, command
-  activation, approvals, and stream stop/retry. Temporary screenshots are in
+  activation, approvals, stream stop/retry, coordinated keyboard chart inspection, and loading/empty
+  chart states. The route selects the Web documentation context. Temporary screenshots are in
   `/tmp/lumen-visual-evidence/`.
 - The original catalog-size gate failed at CSS 36.0 KiB gzip and Elements registration 46.4 KiB.
   Release policy revision `eaf4bcdc` now reports complete catalog sizes and enforces focused module

@@ -2,6 +2,8 @@
 
 ## 4.0.0
 
+- Add dependency-free presence motion with shared timing, fade/slide/scale presets, abortable enter/exit effects, and reduced-motion support. Smooth native disclosure transitions progressively enhance supporting browsers while retaining immediate native toggles elsewhere. Add a local reduced-motion scope and an interactive motion playground for component entrances, dialogs, feedback, and list changes.
+
 - Follow the current phone form on reset, honor canceled resets, and preserve adopted calendar focus and owning-document generated ID uniqueness.
 
 - Rebind adopted chart cursor synchronization and resolve phone validation messages and inherited locale in the owning document.

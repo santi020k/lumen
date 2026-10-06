@@ -90,3 +90,12 @@ test('container measurement fits the seven-day grid and retains minimum touch wi
     expect(onLayout).toHaveBeenLastCalledWith(event)
   }
 })
+
+test('rejects decoded weekday labels unless exactly seven strings are supplied', () => {
+  for (const value of [null, {}, Array(7), [1, 2, 3, 4, 5, 6, 7], ['Mon'], ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', {}]]) {
+    const input = props()
+    Object.defineProperty(input, 'weekdayLabels', { value, enumerable: true })
+    const root = render(input)
+    expect(root.container.queryAll(node => node.type === 'Text' && read(node, 'children') === 'Invalid calendar')).toHaveLength(1)
+  }
+})

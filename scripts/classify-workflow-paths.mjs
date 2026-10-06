@@ -29,7 +29,8 @@ export const classifyChangedNpmPackages = paths => {
     /^package\.json$/u,
     /^pnpm-workspace\.yaml$/u,
     /^turbo\.json$/u,
-    /^scripts\/(check-bundle-size|smoke-consumer-packages)\.mjs$/u,
+    /^scripts\/(check-bundle-size(?:\.test)?|smoke-consumer-packages)\.mjs$/u,
+    /^scripts\/lib\/bundle-size\.mjs$/u,
     /^scripts\/(check-publish-dry-run|sync-registry|validate-registry)\.mjs$/u,
     /^\.github\/workflows\/ci\.yml$/u
   ])
@@ -51,7 +52,8 @@ export const classifyCiPaths = (paths, { releasePullRequest = false } = {}) => {
     /^apps\/(next-smoke|templates)\//u,
     /^packages\/(astro|core|elements|icons-brand|lumen|mcp|react|react-hook-form|templates|tokens)\//u,
     /^registry\//u,
-    /^scripts\/(check-bundle-size|check-framework-contracts|check-publish-dry-run|smoke-consumer-packages|sync-registry|validate-registry)\.mjs$/u,
+    /^scripts\/lib\/bundle-size\.mjs$/u,
+    /^scripts\/(check-bundle-size(?:\.test)?|check-framework-contracts|check-publish-dry-run|smoke-consumer-packages|sync-registry|validate-registry)\.mjs$/u,
     /^eslint\.config\.js$/u,
     /^tsconfig[^/]*\.json$/u,
     /^vitest\.config\.ts$/u,
@@ -78,7 +80,7 @@ export const classifyCiPaths = (paths, { releasePullRequest = false } = {}) => {
 
   const playwright = matchesAny(paths, [
     /^\.github\/actions\/setup-playwright\//u,
-    /^apps\/(docs|figma-plugin|templates)\//u,
+    /^apps\/(docs|figma-plugin|motion|templates)\//u,
     /^packages\/(astro|core|elements|icons-brand|lumen|react|react-hook-form|templates)\//u,
     /^tests\/(a11y|figma|visual)\//u,
     /^playwright(?:\.[^/]*)?\.config\.ts$/u,
@@ -134,7 +136,8 @@ export const classifyCiPaths = (paths, { releasePullRequest = false } = {}) => {
 
   const bundleSize = matchesAny(paths, [
     /^packages\/(astro|core|elements|lumen|react)\//u,
-    /^scripts\/check-bundle-size\.mjs$/u,
+    /^scripts\/check-bundle-size(?:\.test)?\.mjs$/u,
+    /^scripts\/lib\/bundle-size\.mjs$/u,
     sharedConfiguration
   ])
 

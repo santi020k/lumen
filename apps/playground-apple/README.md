@@ -19,6 +19,8 @@ primary destinations are Home, Examples, Components, and Settings:
   workflows, and category distribution.
 - Examples provides interactive release, catalog-health, and contributor-profile patterns,
   including loading, empty, error, success, disabled, validation, and destructive states.
+  The Motion pattern adds expandable content, simulated save feedback, and a native sheet. Demo
+  effects respect Reduce Motion and a local reduction toggle; sheet presentation follows the system.
 - Components adds the shared six-category discovery structure to the searchable catalog while preserving the
   deterministic launch filters used by screenshot automation.
 - Settings offers Normal, Studio, Glass and santi020k themes alongside light/dark appearance,

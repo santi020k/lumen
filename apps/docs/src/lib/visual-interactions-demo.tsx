@@ -280,7 +280,9 @@ const ChartWorkbench = () => {
         </Button>
       </Stack>
       <div aria-busy={loading}>
-        <span role="status">{loading ? 'Loading the demonstration data…' : 'Demonstration data ready.'}</span>
+        <MotionGroup>
+          <span key={loading ? 'loading' : 'ready'} data-ui-motion-key={loading ? 'loading' : 'ready'} role="status">{loading ? 'Loading the demonstration data…' : 'Demonstration data ready.'}</span>
+        </MotionGroup>
         <div className="visual-demo-grid">{['Progress', 'Compared progress'].map(heading => <ChartMotion key={heading}><LineChart series={series} heading={heading} interactive syncGroup="visual-demo" markers="all" domain={{ min: 0, max: 60 }} /></ChartMotion>)}</div>
       </div>
     </Stack>

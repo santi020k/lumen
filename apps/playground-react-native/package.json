@@ -17,6 +17,7 @@
     "publish:expo-go": "pnpm dlx eas-cli@24.8.0 update --branch expo-go --environment production --platform all",
     "test": "vitest run --config vitest.config.mts",
     "test:appearance:web": "node scripts/test-appearance.mjs",
+    "test:motion:web": "node scripts/test-motion.mjs",
     "test:a11y:web": "node scripts/test-component-accessibility.mjs",
     "typecheck": "tsc --noEmit && tsc --project plugins/tsconfig.json --noEmit",
     "web": "expo start --web"

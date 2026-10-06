@@ -2,6 +2,8 @@
 
 ## 4.0.0
 
+- Add dependency-free presence motion with shared timing, fade/slide/scale presets, abortable enter/exit effects, and reduced-motion support. Smooth native disclosure transitions progressively enhance supporting browsers while retaining immediate native toggles elsewhere. Add a local reduced-motion scope and an interactive motion playground for component entrances, dialogs, feedback, and list changes.
+
 - Keep recurring schedule instants stable across host time zones and daylight-saving transitions. Refresh amount reset roots after document adoption and fall back to deterministic English number formatting for invalid locale identifiers.
 
 - Reset amount drafts to the current default without replacing active edits when that default changes.

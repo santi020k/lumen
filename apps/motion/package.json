@@ -1,0 +1,38 @@
+{
+  "name": "@santi020k/lumen-motion",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Local Lumen product animations and social video compositions.",
+  "type": "module",
+  "scripts": {
+    "prepare:assets": "node scripts/prepare-assets.mjs",
+    "dev": "pnpm run prepare:assets && astro dev --host 127.0.0.1 --port 4341",
+    "build": "pnpm run prepare:assets && astro build && node scripts/prepare-compositions.mjs",
+    "preview": "astro preview --ignore-lock --host 127.0.0.1 --port 4341",
+    "typecheck": "astro check",
+    "lint": "eslint . --no-warn-ignored --max-warnings=0",
+    "test": "node --test scripts/composition-selectors.test.mjs && playwright test",
+    "check:composition": "HYPERFRAMES_NO_TELEMETRY=1 hyperframes check dist/portrait --strict && HYPERFRAMES_NO_TELEMETRY=1 hyperframes check dist/square --strict && HYPERFRAMES_NO_TELEMETRY=1 hyperframes check dist/landscape --strict",
+    "render:portrait": "HYPERFRAMES_NO_TELEMETRY=1 hyperframes render dist --composition portrait/index.html --output renders/one-interface-three-themes-vertical.mp4 --fps 30 --quality delivery",
+    "render:square": "HYPERFRAMES_NO_TELEMETRY=1 hyperframes render dist --composition square/index.html --output renders/one-interface-three-themes-square.mp4 --fps 30 --quality delivery",
+    "render:landscape": "HYPERFRAMES_NO_TELEMETRY=1 hyperframes render dist --composition landscape/index.html --output renders/one-interface-three-themes.mp4 --fps 30 --quality delivery"
+  },
+  "dependencies": {
+    "@santi020k/lumen-astro": "workspace:^",
+    "@santi020k/lumen-core": "workspace:^",
+    "astro": "catalog:",
+    "gsap": "catalog:"
+  },
+  "devDependencies": {
+    "@astrojs/check": "catalog:",
+    "@playwright/test": "catalog:",
+    "esbuild": "catalog:",
+    "hyperframes": "catalog:",
+    "jsdom": "catalog:",
+    "postcss": "catalog:",
+    "postcss-selector-parser": "catalog:",
+    "typescript": "catalog:"
+  },
+  "engines": { "node": ">=22.18.0" },
+  "packageManager": "pnpm@12.8.1"
+}

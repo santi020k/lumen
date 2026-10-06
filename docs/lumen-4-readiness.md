@@ -835,6 +835,10 @@ this preparation record is not release evidence.
 
 ### Measured v4 bundle budgets
 
+The following table records the historical v4 baseline. The current
+[bundle size policy](../CONTRIBUTING.md#bundle-size-policy) reports complete catalog sizes without
+ceilings and enforces focused module and selective consumer budgets instead.
+
 Fresh locked builds compare the release snapshot above with the combined implementation. These
 are complete shipped entries, not an application bundle or a claim of runtime download cost.
 Gzip measurements use Node's level-9 gzip, matching the canonical checker.

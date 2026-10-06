@@ -1,0 +1,85 @@
+---
+import '../styles/composition.css'
+import '@santi020k/lumen-astro/styles.css'
+
+import { Icon } from '@santi020k/lumen-astro'
+import { lumenEasings } from '@santi020k/lumen-core'
+import { transformSync } from 'esbuild'
+
+import LumenLogo from '../../../docs/src/components/LumenLogo.astro'
+import Workspace from '../components/Workspace.astro'
+import timelineSource from '../scripts/timeline.ts?raw'
+
+export const getStaticPaths = () => ['portrait', 'square', 'landscape'].map(format => ({ params: { format } }))
+
+const format = Astro.params.format
+const width = format === 'landscape' ? 1920 : 1080
+const height = format === 'portrait' ? 1920 : 1080
+const timeline = transformSync(timelineSource, { loader: 'ts', format: 'iife' }).code
+
+const themes = [
+  { name: 'Lumen Light', scheme: 'light', preset: 'default', theme: 'lumen-light', number: '01' },
+  { name: 'Lumen Dark', scheme: 'dark', preset: 'default', theme: 'lumen-dark', number: '02' },
+  { name: 'Studio', scheme: 'light', preset: 'studio', theme: 'lumen-light', number: '03' }
+]
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>One interface, three themes — Lumen UI</title>
+    <script is:inline src="/assets/gsap.min.js"></script>
+    <script is:inline src="/assets/CustomEase.min.js"></script>
+  </head>
+  <body>
+    <main
+      id="theme-pilot"
+      data-composition-id="theme-pilot"
+      data-width={width}
+      data-height={height}
+      data-duration="18"
+      data-ease={lumenEasings.emphasized.join(',')}
+      data-format={Astro.params.format}
+    >
+      {themes.map(theme => (
+        <section class="scene" data-theme={theme.theme} data-lumen-preset={theme.preset} data-lumen-scheme={theme.scheme}>
+          <div class="composition-header">
+            <LumenLogo markClass="pilot-logo-mark" />
+            <p class="edition">A SHARED VISUAL LANGUAGE</p>
+          </div>
+          <div class="intro">
+            <p class="eyebrow">SAME COMPONENTS. YOUR EXPRESSION.</p>
+            <h1>One interface.<br />Three themes.</h1>
+          </div>
+          <div class="theme-label"><span>{theme.number} / 03</span><strong>{theme.name}</strong></div>
+          <div class="composition-stage">
+            <div class="viewport">
+              <div class="desktop-content">
+                <div class="viewport-bar">
+                  <span class="viewport-title">Adaptive workspace</span>
+                  <span>Desktop layout</span>
+                </div>
+                <Workspace />
+              </div>
+              <div class="phone-hardware" data-theme="lumen-dark" aria-hidden="true"></div>
+              <div class="phone-screen" data-device-width="390" data-device-height="844" aria-label="iPhone-style mobile workspace">
+                <div class="phone-status" aria-hidden="true">
+                  <span>9:41</span>
+                  <span class="phone-island" data-theme="lumen-dark"></span>
+                  <div class="phone-status-icons"><Icon name="wifi" /><Icon name="battery-full" /></div>
+                </div>
+                <Workspace />
+                <div class="phone-home" aria-hidden="true"></div>
+              </div>
+            </div>
+          </div>
+          <div class="composition-footer"><span>Same components. Every size.</span><strong>lumen.santi020k.com</strong></div>
+        </section>
+      ))}
+    </main>
+    <script is:inline set:html={timeline}></script>
+  </body>
+</html>

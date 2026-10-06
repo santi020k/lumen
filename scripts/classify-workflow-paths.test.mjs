@@ -19,6 +19,16 @@ test('Figma plugin sources and browser regressions select browser coverage', () 
   }
 })
 
+test('motion source changes select browser coverage without native jobs', () => {
+  const classification = classifyCiPaths(['apps/motion/src/scripts/timeline.ts'])
+
+  assert.equal(classification.playwright, true)
+
+  assert.equal(classification.apple, false)
+
+  assert.equal(classification.android, false)
+})
+
 test('a web package change skips every native platform job', () => {
   const classification = classifyCiPaths(['packages/react/src/Button.tsx'])
 
@@ -197,6 +207,8 @@ test('publish dry runs target only changed packages unless shared tooling change
 
   for (const path of [
     'scripts/check-bundle-size.mjs',
+    'scripts/check-bundle-size.test.mjs',
+    'scripts/lib/bundle-size.mjs',
     'scripts/smoke-consumer-packages.mjs',
     'scripts/classify-workflow-paths.mjs'
   ]) {
@@ -269,4 +281,14 @@ test('browser setup action changes select browser CI and canaries', () => {
 
 test('canary scheduling changes exercise browser shards', () => {
   assert.equal(classifyCanaryPaths(['.github/workflows/release-canary.yml']).browser, true)
+})
+
+test('bundle policy helpers and regression tests select builds and size checks', () => {
+  for (const path of ['scripts/lib/bundle-size.mjs', 'scripts/check-bundle-size.test.mjs']) {
+    const classification = classifyCiPaths([path])
+
+    assert.equal(classification['bundle-size'], true, path)
+
+    assert.equal(classification.compatibility, true, path)
+  }
 })

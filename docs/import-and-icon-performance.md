@@ -38,8 +38,8 @@ The 397-byte Astro output delta is the rendered icon SVG, not a server-side Luci
 The Next.js client fixture produced the same 1,301,831-byte complete `.next/static` directory with
 and without `Icon`. Median builds were 5.70 s with Icon and 4.81 s without it in this three-sample
 run; the time difference is too noisy to justify generated subsets, while identical client output
-shows no measurable emitted-directory cost in this fixture. Continue enforcing the existing React
-bundle budget and rerun the benchmark after icon-registry changes.
+shows no measurable emitted-directory cost in this fixture. Rerun the benchmark after icon-registry
+changes; current size enforcement follows the [bundle size policy](../CONTRIBUTING.md#bundle-size-policy).
 
 These are local regression measurements, not universal performance claims. Keep the JSON output in
 release evidence when an import or icon change is proposed.

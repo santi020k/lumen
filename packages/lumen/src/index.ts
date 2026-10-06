@@ -233,3 +233,4 @@ export {
   type LumenVersionSourceMigration,
   migrateLumenVersion,
   migrateLumenVersionSource } from './version-migration.js'
+export { animateLumenPresence, type LumenMotionDuration, type LumenMotionPreset, type LumenMotionResult, type LumenPresenceOptions } from '@santi020k/lumen-core'

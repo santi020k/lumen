@@ -15,7 +15,9 @@ Install the phone gallery from
 or build it locally using the instructions below.
 Home presents the checked-in component and category totals as a release workspace. Examples includes
 interactive release-readiness, catalog-health, and profile patterns with representative product
-states. Normal Components launches add category discovery, while Settings demonstrates
+states. The Motion pattern demonstrates expandable content, simulated save feedback, and a native
+sheet. Its local reduction toggle disables demo effects; native sheet motion follows Android's
+animation scale. Normal Components launches add category discovery, while Settings demonstrates
 Normal, Studio, Glass and santi020k themes, light and dark appearance, and groups accessibility, platform,
 privacy, and support information. Wide windows use paired panes alongside
 the adaptive navigation rail instead of stretching the phone layout.

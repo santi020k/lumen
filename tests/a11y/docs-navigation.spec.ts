@@ -13,7 +13,38 @@ const expectNoOverflow = async (page: Page): Promise<void> => {
   expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)).toBe(false)
 }
 
-for (const width of [390, 1440]) {
+for (const width of [390, 1024, 1440]) {
+  for (const theme of ['lumen-light', 'lumen-dark']) {
+    test(`section navigation groups its arrow with the section label at ${width}px in ${theme}`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 1000 })
+      await page.addInitScript(value => { localStorage.setItem('lumen-theme', value); }, theme)
+      await page.goto('/docs/components/box-plot')
+      const summary = page.locator('[data-docs-page-navigation] summary')
+      const disclosure = page.locator('[data-docs-page-navigation] details')
+      for (const open of [false, true]) {
+        if (open) await summary.press('Enter')
+        await expect(disclosure).toHaveJSProperty('open', open)
+        await expect.poll(async () => summary.evaluate(element => {
+          const background = getComputedStyle(element, '::before')
+          const arrow = getComputedStyle(element, '::after')
+          const bounds = element.getBoundingClientRect()
+          const current = element.querySelector('[data-docs-page-current]')
+          if (!current) throw new Error('Missing current section label')
+          const gap = bounds.right - current.getBoundingClientRect().right
+          return {
+            backgroundHidden: background.display === 'none',
+            arrowFollowsLabel: arrow.position === 'static' && gap >= 12 && gap <= 40,
+            touchTarget: bounds.height >= 44
+          }
+        })).toEqual({ backgroundHidden: true, arrowFollowsLabel: true, touchTarget: true })
+      }
+      await summary.press('Escape')
+      await expect(disclosure).toHaveJSProperty('open', false)
+      await expect(summary).toBeFocused()
+      await expectNoOverflow(page)
+    })
+  }
+
   test(`visual chart directory supports discovery at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 1000 })
     await page.goto('/docs/web/data-visualization')

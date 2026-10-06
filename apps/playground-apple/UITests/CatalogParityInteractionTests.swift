@@ -2,6 +2,41 @@ import XCTest
 
 final class CatalogParityInteractionTests: XCTestCase {
     @MainActor
+    func testMotionExampleExpansionFeedbackAndSheet() {
+        let app = XCUIApplication()
+        app.launchArguments = ["--destination", "examples"]
+        app.launch()
+        let motion = app.buttons["Motion"]
+        reveal(motion, app: app)
+        motion.tap()
+        XCTAssertTrue(app.staticTexts["Motion playground"].waitForExistence(timeout: 5))
+        let reduce = app.switches["Reduce demo effects"]
+        reveal(reduce, app: app)
+        // SwiftUI exposes the label row; target the native switch at its trailing edge.
+        reduce.coordinate(withNormalizedOffset: CGVector(dx: 0.95, dy: 0.5)).tap()
+        XCTAssertEqual(reduce.value as? String, "1")
+        XCTAssertTrue(app.staticTexts["Demo effects are immediate."].waitForExistence(timeout: 5))
+        let expand = app.buttons["Expandable details"]
+        reveal(expand, app: app)
+        expand.tap()
+        XCTAssertTrue(app.staticTexts["Content stays readable while its surrounding layout changes."].exists)
+        let save = app.buttons["Simulate save"]
+        reveal(save, app: app)
+        save.tap()
+        XCTAssertTrue(app.staticTexts["Demonstration saved."].waitForExistence(timeout: 5))
+        capture(app, name: "native-motion-feedback")
+        let open = app.buttons["Open sheet"]
+        reveal(open, app: app)
+        open.tap()
+        let close = app.buttons["Close sheet"]
+        XCTAssertTrue(close.waitForExistence(timeout: 5))
+        capture(app, name: "native-motion-sheet")
+        close.tap()
+        XCTAssertTrue(open.waitForExistence(timeout: 5))
+        app.terminate()
+    }
+
+    @MainActor
     func testCalendarControlledSelectionAndBoundsInBothSchemes() {
         for dark in [false, true] {
             let app = launch("Calendar", dark: dark)

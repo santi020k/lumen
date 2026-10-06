@@ -4,7 +4,7 @@ import { act, createElement, type ReactElement } from 'react'
 import { createRoot, type TestInstance } from 'test-renderer'
 import { expect, test, vi } from 'vitest'
 
-import { LumenColorPicker } from './color-picker-components.js'
+import { LumenColorPicker, type LumenColorPickerProps } from './color-picker-components.js'
 
 Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true })
 
@@ -182,6 +182,24 @@ test('equivalent opaque spellings deduplicate with alpha enabled while distinct 
   const radios = root.container.queryAll(node => node.type === 'Pressable' && readProp(node, 'accessibilityRole') === 'radio')
   expect(radios.map(node => readProp(node, 'accessibilityLabel'))).toEqual(['Opaque white', 'Transparent white'])
   expect(radios.map(node => readProp(node, 'aria-checked'))).toEqual([false, true])
+  await act(async () => {
+    await Promise.resolve()
+    root.unmount()
+  })
+})
+
+test('ignores malformed decoded swatches and keeps the color field usable', async () => {
+  const root = createRoot()
+  for (const value of [null, {}, [null], [7], [{ id: 7, label: 'Bad', value: '#fff' }], [{ id: 'a', label: {}, value: '#fff' }], [{ id: 'a', label: 'A', value: {} }], Array(1)]) {
+    const props: LumenColorPickerProps = { label: 'Color', value: '#336699', onValueChange: vi.fn() }
+    Object.defineProperty(props, 'palette', { value, enumerable: true })
+    await act(async () => {
+      await Promise.resolve()
+      root.render(<LumenColorPicker {...props} />)
+    })
+    expect(root.container.queryAll(node => node.type === 'TextInput')).toHaveLength(1)
+    expect(root.container.queryAll(node => readProp(node, 'accessibilityRole') === 'radiogroup')).toHaveLength(0)
+  }
   await act(async () => {
     await Promise.resolve()
     root.unmount()

@@ -29,7 +29,7 @@
     "check:publish-dry-run": "node scripts/check-publish-dry-run.mjs",
     "test:published-package-family": "node --test scripts/check-published-package-family.test.mjs",
     "check:security": "pnpm run test:security-patches && node scripts/check-security.mjs",
-    "check:bundle-size": "node scripts/check-bundle-size.mjs",
+    "check:bundle-size": "node --test scripts/check-bundle-size.test.mjs && node scripts/check-bundle-size.mjs",
     "check:web-api-baseline": "node scripts/check-web-api-baseline.mjs",
     "test:web-api-baseline": "node --test scripts/check-web-api-baseline.test.mjs",
     "check:web-consumer-evidence": "node scripts/check-web-consumer-evidence.mjs",
@@ -100,7 +100,7 @@
     "test:maven-release-artifacts": "node --test scripts/check-maven-pom-metadata.test.mjs scripts/check-maven-release-artifacts.test.mjs",
     "check:npm-release-provenance": "node scripts/check-npm-release-provenance.mjs",
     "test:npm-release-provenance": "node --test scripts/check-npm-release-provenance.test.mjs",
-    "test:v2-release-workflows": "node --test scripts/check-v2-release-workflows.test.mjs scripts/classify-workflow-paths.test.mjs scripts/release-scope.test.mjs scripts/workflow-scope.test.mjs .github/scripts/monitor-xcode-cloud.test.mjs",
+    "test:v2-release-workflows": "node --test scripts/swift-api-products.test.mjs scripts/check-v2-release-workflows.test.mjs scripts/classify-workflow-paths.test.mjs scripts/release-scope.test.mjs scripts/workflow-scope.test.mjs .github/scripts/monitor-xcode-cloud.test.mjs",
     "test:platform-identifiers": "node --test scripts/platform-identifiers.test.mjs",
     "generate:swift-api-baseline": "node scripts/check-swift-api-baseline.mjs --update && node scripts/check-swift-api-baseline.mjs --module LumenWidgetUI --update",
     "check:swift-api-baseline": "node scripts/check-swift-api-baseline.mjs && node scripts/check-swift-api-baseline.mjs --module LumenWidgetUI",
@@ -180,7 +180,8 @@
     "test:security-patches": "node --test scripts/security-patches.test.mjs",
     "measure:selective-imports": "pnpm --filter @santi020k/lumen-react run measure:selective-imports",
     "test:figma-plugin": "playwright test -c playwright.figma.config.ts",
-    "ci:preflight": "pnpm run lint:repo && node --test scripts/classify-workflow-paths.test.mjs scripts/workflow-scope.test.mjs scripts/check-v2-release-workflows.test.mjs && pnpm run check:security"
+    "ci:preflight": "pnpm run lint:repo && node --test scripts/classify-workflow-paths.test.mjs scripts/workflow-scope.test.mjs scripts/check-v2-release-workflows.test.mjs && pnpm run check:security",
+    "test:motion": "playwright test -c playwright.motion.config.ts"
   },
   "devDependencies": {
     "@changesets/changelog-github": "catalog:",

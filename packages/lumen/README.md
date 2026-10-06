@@ -306,3 +306,15 @@ its authentication service. See the [login and Auth integration reference](https
 
 See [visual interactions](../../docs/visual-interactions.md) for keyed motion, semantic effects,
 chart continuity, AI surfaces, optional SDK integrations, and the four installable product recipes.
+## Presence motion
+
+`animateLumenPresence` is available from the umbrella package or `@santi020k/lumen-core` for
+optional browser-based enter/exit effects. See the [core motion contract](../core/README.md#presence-motion)
+for presets, semantic timing, cancellation, reduced motion, and consumer-owned DOM/focus behavior.
+The optional motion stylesheet progressively enhances native disclosures with natural-height transitions;
+unsupported browsers keep native immediate toggles.
+
+Import `@santi020k/lumen/styles/motion.css` alongside the base stylesheet to opt into native
+disclosure height transitions and the CSS reduction scope. This small optional stylesheet works
+with Astro, React, and Elements and keeps those effects out of the default stylesheet. The presence
+helper's system and local reduced-motion checks work without this CSS import.

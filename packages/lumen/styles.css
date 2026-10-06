@@ -5918,7 +5918,8 @@ lumen-dialog-close {
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
-  *::after {
+  *::after,
+  *::backdrop {
     animation-duration: 1ms !important;
     animation-iteration-count: 1 !important;
     scroll-behavior: auto !important;
@@ -7890,7 +7891,7 @@ a.ui-pill:focus-visible {
   .ui-stack--gap-related,.ui-grid--gap-related{--ui-stack-gap:var(--ui-space-related);--ui-grid-gap:var(--ui-space-related);}
   .ui-stack--gap-group,.ui-grid--gap-group{--ui-stack-gap:var(--ui-space-group);--ui-grid-gap:var(--ui-space-group);}
   .ui-stack--gap-section,.ui-grid--gap-section{--ui-stack-gap:var(--ui-space-section);--ui-grid-gap:var(--ui-space-section);}
-  .ui-stack >:where(*),.ui-grid >:where(*){min-width:0;margin:0;}
+  .ui-stack >:where(:not(dialog,.ui-drawer,.ui-sheet)),.ui-grid >:where(:not(dialog,.ui-drawer,.ui-sheet)){min-width:0;margin:0;}
   .ui-stack--align-start{align-items:flex-start;}
   .ui-stack--align-center{align-items:center;}
   .ui-stack--align-end{align-items:flex-end;}
@@ -8515,20 +8516,15 @@ a.ui-pill:focus-visible {
   @supports (animation-timeline: view()) {
     [data-ui-visual-effect="depth"][data-ui-effect-animated="true"]::before { background: radial-gradient(ellipse at 30% 40%, hsl(var(--brand)), transparent 65%); animation: ui-effect-depth linear both; animation-timeline: view(); }
   }
-  @supports (interpolate-size: allow-keywords) {
-    .ui-collapsible { interpolate-size: allow-keywords; }
-    .ui-collapsible::details-content { block-size: 0; overflow: clip; transition: block-size var(--ui-duration) var(--ui-ease), content-visibility var(--ui-duration) allow-discrete; }
-    .ui-collapsible[open]::details-content { block-size: auto; }
-  }
   @keyframes ui-aurora { to { transform: translate(4%, -4%) rotate(8deg); } }
   @keyframes ui-path-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
   @keyframes ui-effect-depth { from { transform: translateY(-5%); opacity: 0; } to { transform: translateY(5%); } }
   @keyframes ui-chart-state { from { opacity: 0; } to { opacity: 1; } }
   @media (prefers-reduced-motion: reduce) {
     .ui-visual-effect::before, .ui-visual-effect :where(path, line, polyline), [data-ui-chart-motion] .ui-chart__empty { animation: none !important; }
-    .ui-collapsible::details-content, .ui-tabs__moving-indicator { transition: none !important; }
+    .ui-tabs__moving-indicator { transition: none !important; }
   }
   :is([data-ui-motion="reduce"].ui-visual-effect, [data-ui-motion="reduce"] .ui-visual-effect)::before, :is([data-ui-motion="reduce"].ui-visual-effect, [data-ui-motion="reduce"] .ui-visual-effect) :where(path, line, polyline), [data-ui-motion="reduce"] .ui-chart__empty { animation: none !important; }
-   :is([data-ui-motion="reduce"].ui-collapsible, [data-ui-motion="reduce"] .ui-collapsible)::details-content, [data-ui-motion="reduce"] .ui-tabs__moving-indicator { transition: none !important; }
+  [data-ui-motion="reduce"] .ui-tabs__moving-indicator { transition: none !important; }
   @media (forced-colors: active) { .ui-visual-effect::before { display: none; } }
 }

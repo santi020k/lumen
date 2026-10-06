@@ -65,7 +65,7 @@ const commandMatches = (item: LumenCommandItem, query: string): boolean => [item
 export const lumenCommandGroups = (
   groups: readonly LumenCommandGroup[], query: string
 ): readonly LumenCommandGroup[] | null => {
-  if (!isLumenCommandGroupsValid(groups)) return null
+  if (typeof query !== 'string' || !isLumenCommandGroupsValid(groups)) return null
 
   const search = query.trim().toLowerCase()
 

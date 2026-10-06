@@ -314,6 +314,10 @@ changes require a changeset.
 
 ## Community
 
+Create reusable product animations and social videos locally with the
+[Lumen motion studio](./apps/motion/README.md). Its first pilot previews one interface in three
+appearances and exports portrait, square, and landscape MP4s through HyperFrames.
+
 [Feedback & support](https://lumen.santi020k.com/support) connects ideas, questions, bug reports,
 and the [public roadmap](https://lumen.santi020k.com/support#roadmap). Discuss improvements on GitHub
 and follow accepted work through implementation and release.

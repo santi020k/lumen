@@ -25,7 +25,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
@@ -91,14 +96,28 @@ fun LumenSheet(
     actions: @Composable () -> Unit = {},
     content: @Composable () -> Unit
 ) {
-    if (!visible) return
-
+    var mounted by remember { mutableStateOf(visible) }
+    val currentVisible = rememberUpdatedState(visible)
     val currentDismissible = rememberUpdatedState(dismissible)
     val sheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = true,
-        confirmValueChange = { target -> currentDismissible.value || target != SheetValue.Hidden }
+        confirmValueChange = {
+            target -> !currentVisible.value || currentDismissible.value || target != SheetValue.Hidden
+        }
     )
-    val dismiss = { if (dismissible) onDismiss() }
+    // Changing the controlled value cancels the previous effect, including an unfinished hide.
+    LaunchedEffect(visible, sheetState.hasExpandedState) {
+        if (visible) {
+            mounted = true
+            if (sheetState.hasExpandedState) sheetState.show()
+        } else if (mounted) {
+            sheetState.hide()
+            mounted = false
+        }
+    }
+    if (!mounted) return
+
+    val dismiss = { if (currentVisible.value && currentDismissible.value) onDismiss() }
 
     ModalBottomSheet(onDismissRequest = dismiss, sheetState = sheetState, modifier = modifier) {
         BoxWithConstraints(modifier = Modifier.fillMaxWidth().imePadding()) {

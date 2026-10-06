@@ -181,3 +181,18 @@ test('picker applies valid bounded selections, dispatches both native events, an
   expect(native.value).toBe('2026-07-23')
   expect(node('[data-ui-date-picker-value]').textContent).toContain('23')
 })
+
+test('preserves a focused calendar day after cross-document adoption and attribute changes', async () => {
+  document.body.innerHTML = '<lumen-calendar month="2026-07" value="2026-07-23"></lumen-calendar><iframe></iframe>'
+  enhanceLumenCalendars(document)
+  const root = node('lumen-calendar')
+  const destination = document.querySelector('iframe')?.contentDocument
+  if (!destination) throw new Error('Missing destination document')
+  destination.body.append(destination.adoptNode(root))
+  const day = root.querySelector<HTMLElement>('[data-date="2026-07-23"]')
+  if (!day) throw new Error('Missing calendar day')
+  day.focus()
+  root.setAttribute('lang', 'en')
+  await tick()
+  expect(destination.activeElement?.getAttribute('data-date')).toBe('2026-07-23')
+})

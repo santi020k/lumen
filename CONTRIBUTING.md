@@ -93,6 +93,10 @@ complete release gate.
 The Swift API baseline builds only arm64 because its symbol extraction targets arm64 on every
 Apple SDK. It still checks all supported platforms and both public modules against the unchanged
 classified baselines. This avoids compiling architectures the API checker does not consume.
+Apple CI runs `pnpm run check:swift-package-candidate --check-api-baseline` to check those same
+baselines from the clean tagged consumer's compiled modules, avoiding duplicate library builds.
+Use `pnpm run check:swift-api-baseline` for a standalone source check; baseline updates always
+build repository sources. No compiled consumer products are restored from cache.
 
 Run `pnpm run test:visual` for documentation screenshots. It builds the dependencies and docs through
 `prepare:visual` before starting Playwright, so the server-start budget covers only the preview
@@ -104,6 +108,25 @@ the normal 24-hour hold, then remove it once that hold expires. The
 `http-cache-semantics@4.3.0` exception was retired after 2026-10-05 02:56:06 UTC; its fixed
 version remains in the lockfile. Keep the age policy for other dependencies.
 
+
+## Bundle size policy
+
+`pnpm run check:bundle-size` reports raw and level-9 gzip bytes after a build. The complete
+stylesheet, Astro runtime source, React component and hook catalogs, and Elements definition
+catalog are informational measurements. They may grow as components are added and do not block
+validation. They measure shipped entries, not the bytes every application downloads.
+
+Focused modules and optional controllers retain their enforced raw/gzip budgets. Extracted related
+files remain included in their owning measurement. Two minified browser consumer fixtures also
+have enforced budgets: selective React ImageComparison (5,500 raw / 2,500 gzip bytes) and granular
+Elements VirtualList registration (9,000 raw / 3,500 gzip bytes). React is external in these
+fixtures; CSS and application framework code are excluded. These limits allow headroom above the
+existing fixtures while catching accidental inclusion of unrelated catalog code.
+
+New components can expand the catalog without raising a global ceiling. Review deliberate growth
+in focused modules or consumer fixtures and update their budgets with measured evidence when
+needed. Missing measured artifacts and failed consumer builds still fail the check. Release-scoped
+checks honor `LUMEN_RELEASE_PACKAGES`; core changes measure all adapters.
 
 ## Release Notes
 

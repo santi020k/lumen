@@ -35,6 +35,14 @@ export interface LumenCalendarProps extends Pick<ViewProps, 'style' | 'testID' |
 const defaultEvents: readonly LumenCalendarEvent[] = []
 const defaultWeekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
+const validWeekdays = (value: unknown): value is readonly string[] => {
+  if (!Array.isArray(value) || value.length !== 7) return false
+
+  for (const label of value as readonly unknown[]) if (typeof label !== 'string') return false
+
+  return true
+}
+
 const calendarLocked = (
   disabled = false, readOnly = false, status: string | null
 ): boolean => disabled || readOnly || status !== null
@@ -74,7 +82,7 @@ export const LumenCalendar = (input: LumenCalendarProps): ReactElement => {
   const theme = useLumenTheme()
   const cells = lumenCalendarGrid(visibleMonth, firstWeekday)
   const boundsValid = isLumenCalendarSelectable(min ?? max ?? visibleMonth, min, max)
-  const status = statusMessage(input, cells.length === 0 || !boundsValid || weekdayLabels.length !== 7)
+  const status = statusMessage(input, cells.length === 0 || !boundsValid || !validWeekdays(weekdayLabels))
   const locked = calendarLocked(disabled, readOnly, status)
 
   const navigate = (amount: number): LumenCalendarDay | null => {

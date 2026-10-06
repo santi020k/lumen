@@ -28,7 +28,8 @@ Do not reuse one name on multiple simultaneous surfaces. Application exceptions 
 Set `indicator` on `Tabs` to add a moving decorative selection underline while retaining the existing
 keyboard and focus behavior. Manual integrations can use `bindLumenTabIndicator` and its cleanup.
 
-Native disclosure resizing uses `interpolate-size` when available; unsupported browsers open
+Import `@santi020k/lumen/styles/motion.css` to opt into native disclosure resizing. It uses
+`interpolate-size` when available; unsupported browsers open
 immediately. Existing button loading and status compositions provide pending/success feedback.
 All animation respects the system reduced-motion preference. A subtree with `data-ui-motion="reduce"`
 provides an additional static preview; it never overrides a system preference to enable motion.
@@ -56,7 +57,9 @@ Path interpolation requires browser support; point geometry and immediate fallba
 Keep data transport in the application. Use the chart's existing `interactive` and `syncGroup` props
 (`sync-group` in Elements) for coordinated inspection. Show loading status with `aria-busy` and a
 concise status message; keep the previous data while refreshing when appropriate. Empty series use
-the chart's existing empty state. Destroy manual `bindLumenChartMotion` bindings on view removal.
+the chart's existing empty state. Compose loading and ready status messages in a keyed `MotionGroup`
+and set `aria-busy` on the chart region while a request is pending, as the playground demonstrates.
+Destroy manual `bindLumenChartMotion` bindings on view removal.
 
 ## AI surfaces
 
