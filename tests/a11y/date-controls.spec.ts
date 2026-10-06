@@ -183,3 +183,61 @@ test('Calendar navigates Elements attribute updates after cross-document adoptio
   })
   expect(result).toBe('2026-07-23')
 })
+
+test('ImageComparison follows reassigned and adopted form resets without canceling drafts', async ({ page }) => {
+  await page.goto('/internal/date-controls')
+  const comparison = page.locator('[data-ui-image-comparison]')
+
+  await expect(comparison.locator('input[type="range"]')).toBeEnabled()
+  const result = await comparison.evaluate(async root => {
+    const form = document.createElement('form')
+
+    document.body.append(form)
+    form.append(root)
+    const input = root.querySelector<HTMLInputElement>('input[type="range"]')
+    const frame = root.querySelector<HTMLElement>('.ui-image-comparison__frame')
+
+    if (!input || !frame) throw new Error('Missing comparison controls')
+
+    input.value = '80'
+    input.dispatchEvent(new Event('input', { bubbles: true }))
+    form.reset()
+    await Promise.resolve()
+    const reset = frame.style.getPropertyValue('--ui-image-comparison-position')
+
+    input.value = '80'
+    input.dispatchEvent(new Event('input', { bubbles: true }))
+    form.addEventListener('reset', event => { event.preventDefault() }, { once: true })
+    form.reset()
+    await Promise.resolve()
+    const canceled = frame.style.getPropertyValue('--ui-image-comparison-position')
+    const iframe = document.createElement('iframe')
+
+    document.body.append(iframe)
+    const destination = iframe.contentDocument
+
+    if (!destination) throw new Error('Missing destination document')
+
+    destination.body.append(destination.adoptNode(form))
+    const initialize = (window as Window & { LumenInitUiPrimitives?: (scope: ParentNode) => void }).LumenInitUiPrimitives
+
+    if (!initialize) throw new Error('Missing initializer')
+
+    initialize(destination)
+    await new Promise(resolve => setTimeout(resolve, 0))
+    return { reset, canceled }
+  })
+
+  expect(result).toEqual({ reset: '25%', canceled: '80%' })
+  // Optional media initialization imports asynchronously in the destination scope.
+  await expect.poll(() => page.evaluate(async () => {
+    const form = document.querySelector('iframe')?.contentDocument?.querySelector('form')
+
+    if (!form) throw new Error('Missing adopted form')
+
+    form.reset()
+    await Promise.resolve()
+
+    return form.querySelector<HTMLElement>('.ui-image-comparison__frame')?.style.getPropertyValue('--ui-image-comparison-position')
+  })).toBe('25%')
+})

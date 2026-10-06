@@ -2,6 +2,8 @@
 
 ## 4.0.0
 
+- Treat malformed tour anchor collections as unavailable targets and validate tree expansion Sets before traversal or proposals.
+
 - Reject malformed breadcrumb entries, cascader paths, command queries and weekday labels; ignore malformed palette swatches while preserving the color field.
 
 - Validate decoded tree, table, command, transfer, kanban, tour, stepper, mentions and QR inputs before model or hook access; invalid carousel slides also stop before identity derivation.

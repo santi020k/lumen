@@ -11,7 +11,7 @@
 ### Patch Changes
 
 - Updated dependencies []:
-  - @santi020k/lumen-core@4.1.0
+  - @santi020k/lumen-core@4.0.0
 
 ### Patch Changes
 
@@ -29,7 +29,7 @@
 
 - [#95](https://github.com/santi020k/lumen/pull/95) [`6fdb48b`](https://github.com/santi020k/lumen/commit/6fdb48bc21aec3c3c34500d8cb9f5ad1b3b4b566) Thanks [@santi020k](https://github.com/santi020k)! - Preserve application-resolved MultiSelect sheet headings and SectionHeader counts as verbatim text.
 - Updated dependencies [`aca1577`, [`c8d7a4b`](https://github.com/santi020k/lumen/commit/c8d7a4b7a529d6f7a06209103c0ee9790a040ca2)]:
-  - @santi020k/lumen-core@4.0.1
+  - @santi020k/lumen-core@4.0.0
 
 - Add DeviceFrame for laptop, desktop, iPhone-style, Android-style, and tablet demonstrations with
   slotted HTML, images, fixed iframe viewports, orientation, shell tones, and configurable screen sizes.
@@ -54,7 +54,7 @@
   Astro, React, and Elements auth-onboarding recipes. Auth integration remains an
   optional application concern; preview controls do not authenticate or send email.
 - Updated dependencies [`6cfcdf7`]:
-  - @santi020k/lumen-core@4.1.0
+  - @santi020k/lumen-core@4.0.0
 
 - Recognize Astro runtime import aliases when diagnosing missing or duplicate mounts, excluding type-only imports and example markup.
 
