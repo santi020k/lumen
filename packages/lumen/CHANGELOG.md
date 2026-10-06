@@ -10,6 +10,8 @@
 
 ### Patch Changes
 
+- Refine DeviceFrame proportions with slimmer consistent phone bezels, smaller hardware details, a thinner MacBook base, and a shaped iMac stand. Give the demonstration gallery more space while preserving camera clearance and fixed iframe viewports.
+
 - Refine DeviceFrame with MacBook Pro, iMac, and Pixel presets, minimalist matte frames, camera details, side buttons, and simple bases. Reserve hardware space for live HTML and iframe content, and let phone images fill the glass. Refresh the interactive gallery and retain all generic device presets.
 
 
