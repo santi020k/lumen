@@ -39,7 +39,7 @@ jobs:
         run: |
           [[ "$GITHUB_REF" == refs/heads/main ]]
           node scripts/check-playground-apple-release.mjs
-          node scripts/check-approved-release-revision.mjs
+          node scripts/check-approved-release-revision.mjs --require-current-approval
           apps/playground-apple/scripts/check-app-store-toolchain.sh
       - name: Require green checks from the merged pull request
         env:

@@ -14,6 +14,13 @@ evidence records remain preserved and do not define current launch requirements.
 Builds, automated tests, accessibility checks, package-consumer canaries, compatibility and migration
 checks, security checks, provenance, and explicit release approval remain required where configured.
 
+Android and public Apple store delivery run `check-approved-release-revision.mjs
+--require-current-approval` before production credentials are fetched. This mode always validates
+the matching approval contract and reviewed source, including after a library tag exists; ordinary
+publication shortcuts do not authorize later store uploads. Any source change requires refreshed
+exact-source approval before delivery. For patch and minor versions, retain the major milestone
+contract's target version and refresh its reviewed revision to cover the current source.
+
 ## Historical Lumen 2 release plan
 
 The sections below preserve the original Lumen 2 qualification plan. Its evidence-completion

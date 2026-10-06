@@ -278,6 +278,8 @@ test("Apple delivery callers allow canonical workflow checks before credentials"
 
   assert.match(delivery, /permissions:[\s\S]*actions: read/u);
 
+  assert.ok(delivery.includes("node scripts/check-approved-release-revision.mjs --require-current-approval"));
+
   assertOrderedCommands(delivery, "canonical workflow identity", [
     "actions/workflows/ci.yml",
     "actions/workflows/apple-native.yml",
@@ -330,6 +332,8 @@ test("Android signing requires approved main before fetching production credenti
   assert.ok(playgroundAndroidWorkflow.includes("fetch-depth: 0"));
 
   assert.ok(playgroundAndroidWorkflow.includes("node-version: 22.x"));
+
+  assert.ok(playgroundAndroidWorkflow.includes("node scripts/check-approved-release-revision.mjs --require-current-approval"));
 
   const approval = playgroundAndroidWorkflow.indexOf("node scripts/check-approved-release-revision.mjs");
   const credentials = playgroundAndroidWorkflow.indexOf("name: Fetch Android release secrets from Infisical");

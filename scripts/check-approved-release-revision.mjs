@@ -21,6 +21,7 @@ const readArgument = (name) => {
 
 const repository = resolve(readArgument("--repository") ?? repositoryRoot);
 const versionArgument = readArgument("--version");
+const requireCurrentApproval = process.argv.includes("--require-current-approval");
 
 const version =
   versionArgument ??
@@ -36,8 +37,9 @@ assert.match(
 
 const major = Number.parseInt(version.split(".")[0], 10);
 const initialMajorVersion = `${major}.0.0`;
+const approvalVersion = requireCurrentApproval ? initialMajorVersion : version;
 
-if (major < 2 || version !== initialMajorVersion) {
+if (!requireCurrentApproval && (major < 2 || version !== initialMajorVersion)) {
   process.stdout.write(
     `Approved release revision integrity is not required for ${version}.\n`,
   );
@@ -51,7 +53,7 @@ const publishedTag = spawnSync(
   { cwd: repository, encoding: "utf8" },
 );
 
-if (publishedTag.status === 0) {
+if (publishedTag.status === 0 && !requireCurrentApproval) {
   process.stdout.write(
     `Approved release revision integrity was already enforced before v${version} was published.\n`,
   );
@@ -79,8 +81,8 @@ assert.ok(
 
 assert.equal(
   contract.targetVersion,
-  version,
-  `${releaseLabel} contract must target ${version}`,
+  approvalVersion,
+  `${releaseLabel} contract must target ${approvalVersion}`,
 );
 
 assert.equal(

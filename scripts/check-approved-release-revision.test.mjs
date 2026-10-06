@@ -380,6 +380,63 @@ test("does not re-enforce an initial-major approval after its tag exists", async
   }
 });
 
+test("store delivery enforces approved source even after the library tag exists", async () => {
+  const { directory, reviewedRevision } = await createCandidate(3);
+
+  try {
+    await approveCandidate(directory, reviewedRevision, 3);
+
+    assert.equal(run("git", ["tag", "v3.0.0"], directory).status, 0);
+
+    const approved = runChecker(directory, ["--require-current-approval"], 3);
+
+    assert.equal(approved.status, 0, approved.stderr);
+
+    await writeFile(resolve(directory, "source.txt"), "unapproved store delivery source\n");
+
+    commit(directory, "fix: change store delivery source after publication");
+
+    const changed = runChecker(directory, ["--require-current-approval"], 3);
+
+    assert.notEqual(changed.status, 0);
+
+    assert.match(changed.stderr, /Only the contract approval record may change/);
+  } finally {
+    await rm(directory, { force: true, recursive: true });
+  }
+});
+
+test("store delivery validates fresh 4.x patch source approval without changing the major contract", async () => {
+  const { directory } = await createCandidate(4);
+
+  try {
+    await writeFile(resolve(directory, "packages/lumen/package.json"), JSON.stringify({ version: "4.0.1" }));
+
+    const reviewedRevision = commit(directory, "fix: prepare reviewed patch source");
+
+    await approveCandidate(directory, reviewedRevision, 4);
+
+    assert.equal(run("git", ["tag", "v4.0.1"], directory).status, 0);
+
+    const arguments_ = [checkerPath, "--repository", directory, "--require-current-approval"];
+    const approved = run(process.execPath, arguments_, directory);
+
+    assert.equal(approved.status, 0, approved.stderr);
+
+    await writeFile(resolve(directory, "source.txt"), "unapproved patch delivery source\n");
+
+    commit(directory, "fix: alter patch source after approval");
+
+    const changed = run(process.execPath, arguments_, directory);
+
+    assert.notEqual(changed.status, 0);
+
+    assert.match(changed.stderr, /Only the contract approval record may change/);
+  } finally {
+    await rm(directory, { force: true, recursive: true });
+  }
+});
+
 test("accepts a publish commit whose only delta is the approval record", async () => {
   const { directory, reviewedRevision } = await createCandidate();
 
