@@ -119,6 +119,10 @@ test('all compositions fit their canvases and can seek backwards deterministical
       const screen = page.locator('.scene').nth(index).locator('.desktop-content .workspace')
 
       expect(await screen.evaluate(element => element.scrollHeight <= element.clientHeight)).toBe(true)
+
+      for (let other = 0; other < 4; other++) {
+        if (other !== index) await expect(page.locator('.scene').nth(other)).toHaveCSS('visibility', 'hidden')
+      }
     }
 
     await seek(6.6)

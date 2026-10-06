@@ -77,7 +77,8 @@ progress bars. Light, Dark, Glass, and Studio follow at 0, 2.6, 5, and 8 seconds
 gets a short headline reveal and component entrance. The sample layout remains consistent so the
 material changes are easy to compare. Glass uses public Card and Stat surfaces, translucent layers,
 fine highlights, and moving cyan, teal, and warm light behind the interface. All movement belongs
-to the paused GSAP timeline, including the background, so seeking remains deterministic.
+to the paused GSAP timeline, including the background, so seeking remains deterministic. Inactive
+scenes are hidden after fading out so their glass layers do not interfere with exported frames.
 
 At 9.7 seconds, the laptop yields to an iPhone-style mobile layout. Both devices use the refined public
 Astro `DeviceFrame` (`macbook-pro` and `iphone`) integrated into local `release/v4.0.0`; no published

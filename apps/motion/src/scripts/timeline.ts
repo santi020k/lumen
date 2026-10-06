@@ -37,7 +37,7 @@ if (root?.dataset.compositionId) {
   const timeline = gsap.timeline({ paused: true })
   const scenes = root.querySelectorAll<HTMLElement>('.scene')
 
-  if (scenes.length) gsap.set(scenes, { opacity: 0 })
+  if (scenes.length) gsap.set(scenes, { autoAlpha: 0 })
 
   const ease = CustomEase.create('lumen-emphasized', root.dataset.ease ?? '')
   const duration = Number(root.dataset.duration)
@@ -49,11 +49,11 @@ if (root?.dataset.compositionId) {
 
     fitDevices(scene)
 
-    timeline.to(scene, { opacity: 1, duration: index === 0 ? 0 : 0.4, ease: 'power2.inOut' }, start)
+    timeline.to(scene, { autoAlpha: 1, duration: index === 0 ? 0 : 0.4, ease: 'power2.inOut' }, start)
 
     const previous = scenes[index - 1]
 
-    if (previous) timeline.to(previous, { opacity: 0, duration: 0.4, ease: 'power2.inOut' }, start)
+    if (previous) timeline.to(previous, { autoAlpha: 0, duration: 0.4, ease: 'power2.inOut' }, start)
 
     timeline.fromTo(scene.querySelectorAll('.intro, .theme-label'), { y: 16, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, stagger: 0.05, ease }, start + 0.08)
 
@@ -88,7 +88,7 @@ if (root?.dataset.compositionId) {
 
       timeline.fromTo(scene.querySelectorAll('.phone-screen [data-slot="progress-indicator"]'), { scaleX: 0.1, transformOrigin: 'left' }, { scaleX: 1, duration: 0.65, stagger: 0.1, ease }, 10.45)
 
-      timeline.to(scene, { opacity: 0, duration: 0.4 }, outroStart)
+      timeline.to(scene, { autoAlpha: 0, duration: 0.4 }, outroStart)
     }
   })
 
