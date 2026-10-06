@@ -1,9 +1,15 @@
 // @vitest-environment jsdom
-import { afterEach, expect, test } from 'vitest'
+import { afterEach, beforeEach, expect, test, vi } from 'vitest'
 
 import { initPhoneInputControllers } from './runtime/controllers/phone-input.js'
 
+beforeEach(() => {
+  vi.useFakeTimers()
+})
+
 afterEach(() => {
+  vi.runOnlyPendingTimers()
+  vi.useRealTimers()
   document.body.replaceChildren()
 })
 
@@ -37,7 +43,7 @@ test('restores the flag and calling code after a form reset', async () => {
   input.value = '+1 212 555 0123'
   input.dispatchEvent(new Event('input'))
   document.querySelector('form')?.reset()
-  await Promise.resolve()
+  await vi.runAllTimersAsync()
   expect(root.querySelector('[data-ui-phone-code]')?.textContent).toBe('+57')
 })
 
@@ -130,18 +136,18 @@ test('resets the current form after reassignment and ignores canceled resets', a
   input.value = '+1 212 555 0123'
   input.dispatchEvent(new Event('input'))
   oldForm?.reset()
-  await Promise.resolve()
+  await vi.runAllTimersAsync()
   expect(root.dataset.e164).toBe('+12125550123')
   const cancel = (event: Event) => {
     event.preventDefault()
   }
   currentForm.addEventListener('reset', cancel)
   currentForm.reset()
-  await Promise.resolve()
+  await vi.runAllTimersAsync()
   expect(root.dataset.e164).toBe('+12125550123')
   currentForm.removeEventListener('reset', cancel)
   currentForm.reset()
-  await Promise.resolve()
+  await vi.runAllTimersAsync()
   expect(root.querySelector('[data-ui-phone-code]')?.textContent).toBe('+57')
   expect(root.dataset.valid).toBe('false')
   expect(input.validity.customError).toBe(true)
@@ -164,7 +170,7 @@ test('rebinds reset enhancement after an initialized phone is adopted', async ()
   let commits = 0
   root.addEventListener('ui:phone-change', () => commits++)
   form.reset()
-  await Promise.resolve()
+  await vi.runAllTimersAsync()
   expect(commits).toBe(1)
   expect(root.querySelector('[data-ui-phone-code]')?.textContent).toBe('+57')
   expect(root.dataset.valid).toBe('false')

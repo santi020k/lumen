@@ -1,9 +1,15 @@
 // @vitest-environment jsdom
-import { afterEach, expect, test, vi } from 'vitest'
+import { afterEach, beforeEach, expect, test, vi } from 'vitest'
 
 import { initImageComparisonControllers } from './runtime/controllers/image-comparison.js'
 
+beforeEach(() => {
+  vi.useFakeTimers()
+})
+
 afterEach(() => {
+  vi.runOnlyPendingTimers()
+  vi.useRealTimers()
   document.body.replaceChildren()
 })
 
@@ -64,7 +70,7 @@ test('resets the current form after reassignment and adoption, preserving cancel
   input.value = '80'
   input.dispatchEvent(new Event('input', { bubbles: true }))
   destination.reset()
-  await Promise.resolve()
+  await vi.runAllTimersAsync()
   expect(frame.style.getPropertyValue('--ui-image-comparison-position')).toBe('50%')
   expect(input.ariaValueText).toContain('50')
   input.value = '80'
@@ -73,7 +79,7 @@ test('resets the current form after reassignment and adoption, preserving cancel
     event.preventDefault()
   }, { once: true })
   destination.reset()
-  await Promise.resolve()
+  await vi.runAllTimersAsync()
   expect(frame.style.getPropertyValue('--ui-image-comparison-position')).toBe('80%')
   const iframe = document.createElement('iframe')
 
@@ -85,6 +91,24 @@ test('resets the current form after reassignment and adoption, preserving cancel
   target.body.append(target.adoptNode(destination))
   initImageComparisonControllers(target)
   destination.reset()
-  await Promise.resolve()
+  await vi.runAllTimersAsync()
   expect(frame.style.getPropertyValue('--ui-image-comparison-position')).toBe('50%')
+})
+
+test('waits for the native reset default action after an event-listener microtask checkpoint', async () => {
+  const { root, input, frame } = fixture()
+  const form = document.createElement('form')
+
+  document.body.append(form)
+  form.append(root)
+  initImageComparisonControllers(document)
+  input.value = '80'
+  input.dispatchEvent(new Event('input', { bubbles: true }))
+  // A native click can run microtasks between reset listeners and the default action.
+  form.dispatchEvent(new Event('reset', { bubbles: true, cancelable: true }))
+  await Promise.resolve()
+  input.value = input.defaultValue
+  await vi.runAllTimersAsync()
+  expect(frame.style.getPropertyValue('--ui-image-comparison-position')).toBe('50%')
+  expect(input.ariaValueText).toContain('50')
 })

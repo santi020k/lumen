@@ -1,10 +1,16 @@
 // cspell:words archivos
 // @vitest-environment jsdom
-import { afterEach, expect, test, vi } from 'vitest'
+import { afterEach, beforeEach, expect, test, vi } from 'vitest'
 
 import { initFileUploadControllers } from './runtime/controllers/file-upload.js'
 
+beforeEach(() => {
+  vi.useFakeTimers()
+})
+
 afterEach(() => {
+  vi.runOnlyPendingTimers()
+  vi.useRealTimers()
   document.body.replaceChildren()
 })
 
@@ -56,12 +62,12 @@ test('accepted resets clear display, canceled resets preserve it', async () => {
   }
   form.addEventListener('reset', cancel)
   form.reset()
-  await Promise.resolve()
+  await vi.runAllTimersAsync()
   expect(files.textContent).toBe('one.txt')
   form.removeEventListener('reset', cancel)
   Object.defineProperty(input, 'files', { configurable: true, value: [] })
   form.reset()
-  await Promise.resolve()
+  await vi.runAllTimersAsync()
   expect(files.textContent).toBe('')
   expect(root.dataset.state).toBe('idle')
 })
@@ -104,18 +110,18 @@ test('upload resets follow current form ownership and retain canceled selections
   input.setAttribute('form', owner.id)
   Object.defineProperty(input, 'files', { configurable: true, value: [] })
   form.reset()
-  await Promise.resolve()
+  await vi.runAllTimersAsync()
   expect(files.textContent).toBe('one.txt')
   const cancel = (event: Event) => {
     event.preventDefault()
   }
   owner.addEventListener('reset', cancel)
   owner.reset()
-  await Promise.resolve()
+  await vi.runAllTimersAsync()
   expect(files.textContent).toBe('one.txt')
   owner.removeEventListener('reset', cancel)
   owner.reset()
-  await Promise.resolve()
+  await vi.runAllTimersAsync()
   expect(files.textContent).toBe('')
   expect(root.dataset.state).toBe('idle')
 })
@@ -141,7 +147,7 @@ test('upload transitions reuse one reset delegate without retaining removed cont
   const current = load()
   expect(listeners.mock.calls.filter(([type]) => type === 'reset')).toHaveLength(1)
   current.form.reset()
-  await Promise.resolve()
+  await vi.runAllTimersAsync()
   expect(staleFiles).not.toHaveBeenCalled()
   expect(current.root.dataset.state).toBe('idle')
   frame.remove()
@@ -170,11 +176,11 @@ test('adopted uploads rebind reset delegation without duplicating change listene
   }
   owner.addEventListener('reset', cancel)
   owner.reset()
-  await Promise.resolve()
+  await vi.runAllTimersAsync()
   expect(files.textContent).toBe('one.txt')
   owner.removeEventListener('reset', cancel)
   owner.reset()
-  await Promise.resolve()
+  await vi.runAllTimersAsync()
   expect(files.textContent).toBe('')
   expect(root.dataset.state).toBe('idle')
   frame.remove()
