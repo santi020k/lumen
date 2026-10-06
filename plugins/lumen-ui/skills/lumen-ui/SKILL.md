@@ -1,6 +1,6 @@
 ---
 name: lumen-ui
-description: Build, restyle, review, or migrate product interfaces with Lumen UI for Astro, React, Web Components, React Native, SwiftUI, or Jetpack Compose. Use when a request mentions Lumen UI, Lumen packages or tokens, or asks an AI agent to create an accessible interface that should use Lumen instead of inventing primitives.
+description: Build or restyle product interfaces with Lumen UI for Astro, React, Web Components, React Native, SwiftUI, or Jetpack Compose. Use for implementation requests using Lumen packages, components, or tokens, including accessible interfaces composed from Lumen primitives. Use lumen-review for requested audits and lumen-migrate for version upgrades.
 ---
 
 # Lumen UI
@@ -41,15 +41,19 @@ Treat Astro as the reference surface, while following the user's existing stack.
    when choosing components or composing a full screen.
    For charts or analytics, read [references/data-visualization.md](references/data-visualization.md)
    to choose the encoding and verify its data and accessibility contract.
-5. Read [references/frameworks.md](references/frameworks.md) for setup and runtime rules for the
-   selected target.
+5. Read only the matching setup and runtime reference:
+   [Astro](references/astro.md), [React](references/react.md),
+   [Elements](references/elements.md), [React Native / Expo](references/react-native.md),
+   [SwiftUI](references/swiftui.md), or [Compose](references/compose.md).
+   Keep Tailwind optional, use public named imports, and retain state in the host application.
 6. Implement with Lumen components and platform-native semantics. Import a stylesheet once only for
    web targets. Preserve the app's state, navigation, data, and domain logic.
 7. Customize through Lumen tokens and public props. Read
    [references/design-system.md](references/design-system.md) when theming, polishing, or reviewing
    visual quality.
-8. Verify the edited surface with the narrowest relevant typecheck, test, lint, and visual or
-   browser check available in the project.
+8. Verify the edited surface with the project's relevant typecheck, tests, zero-warning lint,
+   and build. Read [references/verification.md](references/verification.md) for interaction
+   and rendered checks; apply only the checks relevant to the changed behavior.
 
 ## Non-negotiable Rules
 
