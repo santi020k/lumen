@@ -27,6 +27,8 @@ Keep live examples visible and place detailed code next to the example it explai
 
 - Provide an “On this page” navigation for long guides and reference pages. Match existing heading
   IDs, include only sections present on that page, and respect the measured sticky header height.
+  Keep its popup aligned beneath the trigger in a compact single-column list, with full-height
+  keyboard and touch targets at mobile and desktop widths.
 - Give focused guides visible paths in both desktop navigation and the mobile documentation menu.
   Native hooks and the chart directory were missing from the relevant sidebar sections.
 - Keep shared Figma, AI, MCP, and migration guidance discoverable when browsing a platform. The

@@ -1,24 +1,17 @@
 ---
-import { Badge, Button, ButtonLink, Card, Carousel, Code, DeviceFrame, Field, Icon, Image, Input, Label, Stack } from '@santi020k/lumen-astro'
+import { Badge, Button, Carousel, Code, DeviceFrame, Field, Icon, Input, Label, Stack } from '@santi020k/lumen-astro'
 
 import { deviceExamples } from '../data/device-frame'
 
-const contentLabels = { iframe: 'Live iframe', image: 'Image', html: 'Live HTML' }
-
 const snippet = (device: typeof deviceExamples[number]): string => {
   const orientation = device.device === 'ipad-pro' ? ' orientation="landscape"' : ''
-
-  const content = device.content === 'image' ?
-    '  <Image src="/device-frame-wallpaper.svg" alt="Lumen UI: small details, better interfaces" />' :
-    '  <iframe src="/device-frame-demo" title="Lumen component workspace" loading="lazy" sandbox=""></iframe>'
-
-  if (device.content === 'html') return '<DeviceFrame device="pixel" color="white">\n  <Card><h2>Built with Lumen</h2><p>Your components go here.</p></Card>\n</DeviceFrame>'
+  const content = '  <iframe src="/device-frame-demo" title="Lumen component workspace" loading="lazy" sandbox=""></iframe>'
 
   return `<DeviceFrame device="${device.device}" color="white"${orientation}>\n${content}\n</DeviceFrame>`
 }
 ---
 <Stack gap="lg" data-device-gallery>
-  <div class="device-gallery-heading"><p>THE DEVICE COLLECTION</p><h3>A better frame for your next idea.</h3><p>Six familiar forms. Real Lumen content. Pick a device and make it yours.</p></div>
+  <div class="device-gallery-heading"><p>THE DEVICE COLLECTION</p><h3>A better frame for your next idea.</h3><p>One Lumen workspace. Six familiar forms. Pick a device and compare.</p></div>
   <Stack class="device-gallery-picker" direction="horizontal" gap="sm" wrap role="group" aria-label="Choose a device">
     {deviceExamples.map((device, index) => <Button variant="ghost" size="sm" data-device-select={index} aria-pressed={index === 0 ? 'true' : 'false'}>{device.label}</Button>)}
   </Stack>
@@ -33,38 +26,10 @@ const snippet = (device: typeof deviceExamples[number]): string => {
     <div class="device-gallery-viewport" data-ui-carousel-viewport tabindex="0" aria-label="Device slides. Use the arrow keys to browse.">
       {deviceExamples.map((device, index) => (
         <article data-device-slide data-device-name={device.label} aria-label={`${index + 1} of ${deviceExamples.length}: ${device.label}`} aria-roledescription="slide" role="group" inert={index !== 0} aria-hidden={index === 0 ? undefined : 'true'}>
-          <header class="device-slide-heading"><div><span>0{index + 1} / 0{deviceExamples.length}</span><h3>{device.label}</h3><p>{device.detail}</p></div><Badge variant="outline">{contentLabels[device.content]}</Badge></header>
+          <header class="device-slide-heading"><div><span>0{index + 1} / 0{deviceExamples.length}</span><h3>{device.label}</h3><p>{device.detail}</p></div><Badge variant="outline">Live iframe</Badge></header>
           <div class="device-gallery-stage">
-            <DeviceFrame device={device.device} color="white" {...('orientation' in device ? { orientation: device.orientation } : {})} scroll={device.content !== 'image'}>
-              {device.content === 'iframe' && <iframe loading={index === 0 ? 'eager' : 'lazy'} sandbox="" src="/device-frame-demo" title={`${device.label} Lumen workspace`}></iframe>}
-              {device.content === 'image' && <Image src="/device-frame-wallpaper.svg" alt="Lumen UI: small details, better interfaces" width={390} height={844} radius="none" />}
-              {device.content === 'html' && (
-                <Stack class="device-pixel-content" gap="lg">
-                  <Image
-src="/logo.svg"
-width={140}
-height={36}
-alt="Lumen UI"
-radius="none"
-class="device-pixel-logo"
-                  />
-                <div><Badge variant="outline">Made to compose</Badge><h4>Small pieces.<br />Big possibilities.</h4><p>Build a place for your next idea.</p></div>
-                <Card class="device-pixel-card">
-                  <Stack gap="md">
-                    <Icon name="layers" size="lg" />
-                    <h5>A shared foundation</h5>
-                    <p>Color, space, and type.<br />Thoughtful by default.</p>
-                    <Stack direction="horizontal" gap="sm" aria-label="Lumen semantic colors">
-                      <span class="device-swatch device-swatch--brand"></span>
-                      <span class="device-swatch device-swatch--accent"></span>
-                      <span class="device-swatch device-swatch--ink"></span>
-                    </Stack>
-                  </Stack>
-                </Card>
-                <ButtonLink href="/docs/components">Explore components <Icon name="arrow-up-right" /></ButtonLink>
-                <p class="device-pixel-footnote">Astro · React · Web Components</p>
-              </Stack>
-)}
+            <DeviceFrame device={device.device} color="white" {...('orientation' in device ? { orientation: device.orientation } : {})}>
+              <iframe loading={index === 0 ? 'eager' : 'lazy'} sandbox="" src="/device-frame-demo" title={`${device.label} Lumen workspace`}></iframe>
             </DeviceFrame>
           </div>
           <div class="device-slide-meta"><span>{device.viewport} <span aria-hidden="true">·</span> Demo viewport</span><span>Responsive frame</span></div>
@@ -104,19 +69,6 @@ class="device-pixel-logo"
   .device-gallery-finishes :global([aria-pressed="true"]) { outline: 2px solid hsl(var(--ink)); outline-offset: 2px; }
   .device-gallery-color { display: flex; align-items: center; gap: 0.75rem; }
   .device-gallery-color :global(input) { width: 2.75rem; height: 2.5rem; padding: 0.2rem; cursor: pointer; }
-  :global(.device-pixel-content) { min-height: 100%; padding: 9% 8%; background: hsl(var(--canvas)); container-type: inline-size; }
-  :global(.device-pixel-logo) { width: 55%; height: auto; }
-  .device-pixel-content :global(.ui-badge) { font-size: clamp(0.5rem, 5cqi, 0.7rem); padding-inline: 0.5em; max-width: 100%; white-space: normal; }
-  .device-pixel-content :global(.ui-button) { font-size: clamp(0.6rem, 5.5cqi, 0.75rem); padding-inline: 0.5em; min-width: 0; white-space: normal; }
-  .device-pixel-content h4 { font-size: 11cqi; line-height: 1.08; letter-spacing: -0.055em; margin: 0.8rem 0; font-weight: 550; }
-  .device-pixel-content h5 { font-size: 7cqi; margin: 0; }
-  .device-pixel-content p { font-size: max(10px, 5.5cqi); line-height: 1.5; color: hsl(var(--ink-soft)); margin: 0; }
-  :global(.device-pixel-card) { padding: 10%; box-shadow: none; background: hsl(var(--surface)); }
-  .device-swatch { width: 1.5rem; height: 1.5rem; border-radius: 50%; }
-  .device-swatch--brand { background: hsl(var(--brand)); }
-  .device-swatch--accent { background: hsl(var(--accent)); }
-  .device-swatch--ink { background: hsl(var(--ink)); }
-  .device-pixel-footnote { text-align: center; margin-top: auto; }
   @media (max-width: 40rem) { .device-gallery-stage:has([data-device="macbook-pro"]), .device-gallery-stage:has([data-device="macbook-air"]), .device-gallery-stage:has([data-device="imac"]), .device-gallery-stage:has([data-device="ipad-pro"]) { height: auto; padding-block: 2rem; } .device-slide-heading { padding: 1rem 0.75rem 0; } .device-slide-heading p { font-size: 0.75rem; } .device-slide-heading :global(.ui-badge) { display: none; } .device-gallery-stage { padding: 1.5rem 0.65rem; } .device-slide-meta { padding: 0.75rem; flex-wrap: wrap; } .device-slide-meta > span:last-child { display: none; } }
 </style>
 <script>

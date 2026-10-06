@@ -1,11 +1,11 @@
 import { expect, test } from '@playwright/test'
 
-test('white, black and custom finishes preserve the screen artwork and dimensions', async ({ page }) => {
+test('white, black and custom finishes preserve the screen content and dimensions', async ({ page }) => {
   await page.goto('/docs/components/device-frame')
   const frames = page.locator('[data-device-gallery] .ui-device-frame')
   const screens = frames.locator('.ui-device-frame__screen')
   const original = await screens.evaluateAll(elements => elements.map(element => ({
-    image: element.querySelector('img')?.getAttribute('src'),
+    source: element.querySelector('iframe')?.getAttribute('src'),
     width: element.clientWidth,
     height: element.clientHeight,
     background: getComputedStyle(element).backgroundColor
@@ -19,7 +19,7 @@ test('white, black and custom finishes preserve the screen artwork and dimension
   await expect(page.getByRole('button', { name: 'Custom', exact: true })).toHaveAttribute('aria-pressed', 'true')
   for (const frame of await frames.all()) await expect(frame).toHaveCSS('--ui-device-color', '#89a7b8')
   expect(await screens.evaluateAll(elements => elements.map(element => ({
-    image: element.querySelector('img')?.getAttribute('src'),
+    source: element.querySelector('iframe')?.getAttribute('src'),
     width: element.clientWidth,
     height: element.clientHeight,
     background: getComputedStyle(element).backgroundColor
@@ -42,6 +42,7 @@ for (const width of [320, 1440]) {
       const frames = page.locator('[data-device-gallery] .ui-device-frame')
 
       await expect(frames).toHaveCount(6)
+      await expect(frames.locator('iframe')).toHaveCount(6)
       await page.emulateMedia({ reducedMotion: 'reduce' })
       for (const name of ['MacBook Pro', 'MacBook Air', 'iMac', 'iPhone', 'Google Pixel', 'iPad Pro']) {
         await page.getByRole('button', { name, exact: true }).click()
@@ -56,6 +57,14 @@ for (const width of [320, 1440]) {
         expect(frame.y).toBeGreaterThanOrEqual(stage.y - 1)
         expect(frame.x + frame.width).toBeLessThanOrEqual(stage.x + stage.width + 1)
         expect(frame.y + frame.height).toBeLessThanOrEqual(stage.y + stage.height + 1)
+        const preview = slide.locator('iframe')
+
+        await expect(preview).toHaveAttribute('src', '/device-frame-demo')
+        await preview.scrollIntoViewIfNeeded()
+        const content = slide.frameLocator('iframe')
+
+        await expect(content.getByRole('heading', { name: /A thoughtful start/ })).toBeVisible()
+        expect(await content.locator('body').evaluate(body => body.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(1)
       }
       const dimensions = await page.locator('[data-device-gallery] .ui-device-frame__screen').evaluateAll(screens => screens.map(screen => {
         const bounds = screen.getBoundingClientRect()
@@ -80,13 +89,10 @@ for (const width of [320, 1440]) {
       if (!content) throw new Error('Expected loaded demo iframe')
       expect(await content.evaluate(() => window.innerWidth)).toBe(1280)
       await expect(content.getByRole('heading', { name: /A thoughtful start/ })).toBeVisible()
-      await expect.poll(() => frames.locator('img').evaluateAll(images => images.every(
-        image => image instanceof HTMLImageElement && image.complete && image.naturalWidth > 0
-      ))).toBe(true)
       await expect(frames.locator('.ui-device-frame__camera[aria-hidden="true"], .ui-device-frame__base[aria-hidden="true"]')).toHaveCount(12)
       await page.getByRole('button', { name: 'Google Pixel', exact: true }).click()
-      await page.getByRole('link', { name: 'Explore components', exact: true }).focus()
-      await expect(page.getByRole('link', { name: 'Explore components', exact: true })).toBeFocused()
+      await page.frameLocator('iframe[title="Google Pixel Lumen workspace"]').getByRole('link', { name: 'Explore the library', exact: true }).focus()
+      await expect(page.frameLocator('iframe[title="Google Pixel Lumen workspace"]').getByRole('link', { name: 'Explore the library', exact: true })).toBeFocused()
       expect(errors).toEqual([])
       await page.locator('[data-device-slide][data-device-name="Google Pixel"] .device-gallery-stage').screenshot({ path: testInfo.outputPath('pixel-frame.png') })
       await page.getByRole('button', { name: 'MacBook Pro', exact: true }).click()
@@ -140,7 +146,7 @@ test('Astro screen cleans up on removal and initializes when reconnected', async
 test('hardware details leave live content and its first controls unobstructed', async ({ page }) => {
   await page.goto('/docs/components/device-frame')
   await page.emulateMedia({ reducedMotion: 'reduce' })
-  for (const [device, label] of [['macbook-pro', 'MacBook Pro'], ['macbook-air', 'MacBook Air'], ['imac', 'iMac'], ['pixel', 'Google Pixel'], ['ipad-pro', 'iPad Pro']] as const) {
+  for (const [device, label] of [['macbook-pro', 'MacBook Pro'], ['macbook-air', 'MacBook Air'], ['imac', 'iMac'], ['iphone', 'iPhone'], ['pixel', 'Google Pixel'], ['ipad-pro', 'iPad Pro']] as const) {
     await page.getByRole('button', { name: label, exact: true }).click()
     const frame = page.locator(`[data-device-gallery] .ui-device-frame[data-device="${device}"]`)
 
@@ -152,8 +158,8 @@ test('hardware details leave live content and its first controls unobstructed', 
     expect(camera.y + camera.height).toBeLessThanOrEqual(screen.y + 1)
   }
   await page.getByRole('button', { name: 'Google Pixel', exact: true }).click()
-  await page.getByRole('link', { name: 'Explore components', exact: true }).focus()
-  await expect(page.getByRole('link', { name: 'Explore components', exact: true })).toBeFocused()
+  await page.frameLocator('iframe[title="Google Pixel Lumen workspace"]').getByRole('link', { name: 'Explore the library', exact: true }).focus()
+  await expect(page.frameLocator('iframe[title="Google Pixel Lumen workspace"]').getByRole('link', { name: 'Explore the library', exact: true })).toBeFocused()
 })
 
 
@@ -188,7 +194,7 @@ test('device gallery selects one accessible slide and supports keyboard and butt
   await page.keyboard.press('Home')
   await expect(page.getByRole('button', { name: 'MacBook Pro', exact: true })).toHaveAttribute('aria-pressed', 'true')
   await page.getByRole('button', { name: 'Google Pixel', exact: true }).click()
-  await expect(page.getByRole('link', { name: 'Explore components', exact: true })).toBeVisible()
+  await expect(page.frameLocator('iframe[title="Google Pixel Lumen workspace"]').getByRole('link', { name: 'Explore the library', exact: true })).toBeVisible()
   await expect(page.getByRole('heading', { name: 'Choose what goes on screen', exact: true })).toBeVisible()
 })
 
