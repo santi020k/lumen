@@ -4,7 +4,7 @@ import { createRoot } from 'react-dom/client'
 
 import { expect, test, vi } from 'vitest'
 
-import { CommandCenterRecipe } from '../../lumen/templates/react/command-center/src/lumen/command-center.js'
+import { CommandCenterRecipe } from '../../../../packages/lumen/templates/react/command-center/src/lumen/command-center.js'
 
 test('command recipe filters and navigates without a document enhancement runtime', async () => {
   vi.stubGlobal('IS_REACT_ACT_ENVIRONMENT', true)
