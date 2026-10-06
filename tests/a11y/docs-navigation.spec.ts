@@ -99,6 +99,32 @@ for (const width of [390, 1024, 1440]) {
   })
 }
 
+for (const width of [320, 390, 626, 1440]) {
+  test(`section navigation aligns its chevron and truncates long labels at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 1000 })
+    await page.goto('/docs/components/box-plot')
+    const summary = page.locator('[data-docs-page-navigation] summary')
+    const current = page.locator('[data-docs-page-current]')
+    // Exercise a long heading without depending on the page's current scroll position.
+    await current.evaluate(element => { element.textContent = 'Help improve DeviceFrame and its responsive previews' })
+    const chevron = summary.locator('.docs-page-navigation__chevron')
+    const summaryBounds = await summary.boundingBox()
+    const chevronBounds = await chevron.boundingBox()
+    const currentBounds = await current.boundingBox()
+    if (!summaryBounds || !chevronBounds || !currentBounds) throw new Error('Missing section navigation layout')
+    expect(summaryBounds.height).toBeGreaterThanOrEqual(44)
+    expect(Math.abs(chevronBounds.y + chevronBounds.height / 2 - summaryBounds.y - summaryBounds.height / 2)).toBeLessThan(1)
+    expect(chevronBounds.x - currentBounds.x - currentBounds.width).toBeGreaterThanOrEqual(8)
+    await expectNoOverflow(page)
+    await summary.press('Enter')
+    const navigation = page.getByRole('navigation', { name: 'On this page', exact: true })
+    await expect(navigation).toBeVisible()
+    await navigation.getByRole('link').last().press('Escape')
+    await expect(navigation).toBeHidden()
+    await expect(summary).toBeFocused()
+  })
+}
+
 for (const guide of chartGuides) {
   test(`${guide.name} has a live example, collapsed copyable code, data guidance, and API`, async ({ page }) => {
     await page.goto(`/docs/components/${guide.slug}`)
