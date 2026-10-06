@@ -109,6 +109,23 @@ rendering modes, App Intents or device behavior. Run the Swift command on macOS 
 root. The generated PNG files remain local; the capture synchronization script publishes the WebP
 examples and their digest manifest.
 
+## Mac appearance and secondary views
+
+The Mac shell resolves System from the application's effective appearance, independently of the
+window override. Switching Dark → System or Light → System updates native window chrome and Lumen
+surfaces together, and System follows subsequent macOS appearance changes. Theme changes preserve
+mounted controls and example state.
+
+Examples, Components, and Settings share the home's semantic backdrop and desktop heading style.
+Settings places appearance controls beside a live surface preview when space permits, then groups
+accessibility, build details, localization, and resources in responsive cards. Narrow windows stack
+those groups. Component launch filters retain the compact deterministic capture layout.
+
+For regression verification, switch Dark → System → Light → System on Settings and through the
+toolbar on Examples and Components. Confirm selected menu values remain visible, entered demo
+values survive appearance changes, and light/dark chrome matches the preview. Inspect both the
+1240 × 860 default window and the 760 × 620 minimum window.
+
 ## Component screenshots
 
 Every catalog entry accepts a launch filter so visual evidence is deterministic. In Xcode, add

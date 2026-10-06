@@ -1,6 +1,10 @@
 @testable import LumenApplePlayground
 import LumenUI
 import Testing
+import SwiftUI
+#if os(macOS)
+import AppKit
+#endif
 
 @Test("theme presets preserve brand and appearance choices")
 func themePresets() {
@@ -127,3 +131,65 @@ func sharedAppearancePresets() {
         #expect(glass.appearance.material == .glass)
     }
 }
+
+@Suite("Appearance transitions")
+struct PlaygroundAppearanceTests {
+    @Test("returning to System uses the system scheme after either explicit override")
+    func returnToSystem() {
+        for systemScheme in [ColorScheme.light, .dark] {
+            var preference = PlaygroundThemePreference.dark
+            #expect(preference.resolvedScheme(systemScheme: systemScheme) == .dark)
+            preference = .system
+            #expect(preference.resolvedScheme(systemScheme: systemScheme) == (systemScheme == .dark ? .dark : .light))
+            preference = .light
+            #expect(preference.resolvedScheme(systemScheme: systemScheme) == .light)
+            preference = .system
+            #expect(preference.resolvedScheme(systemScheme: systemScheme) == (systemScheme == .dark ? .dark : .light))
+        }
+    }
+
+    @Test("system changes affect System and preserve explicit overrides for every preset")
+    func systemChanges() {
+        for preset in PlaygroundThemePreset.allCases {
+            for preference in PlaygroundThemePreference.allCases {
+                let light = preset.theme(for: preference.resolvedScheme(systemScheme: .light))
+                let dark = preset.theme(for: preference.resolvedScheme(systemScheme: .dark))
+                if preference == .system {
+                    #expect(light.scheme == .light)
+                    #expect(dark.scheme == .dark)
+                } else {
+                    #expect(light.scheme == dark.scheme)
+                }
+            }
+        }
+    }
+
+    #if os(macOS)
+    @Test("AppKit matching handles standard and increased-contrast appearances")
+    func nativeAppearances() throws {
+        for name in [NSAppearance.Name.aqua, .accessibilityHighContrastAqua] {
+            let appearance = try #require(NSAppearance(named: name))
+            #expect(PlaygroundMacAppearance.scheme(for: appearance) == .light)
+        }
+        for name in [NSAppearance.Name.darkAqua, .accessibilityHighContrastDarkAqua] {
+            let appearance = try #require(NSAppearance(named: name))
+            #expect(PlaygroundMacAppearance.scheme(for: appearance) == .dark)
+        }
+    }
+    #endif
+}
+
+#if os(macOS)
+@MainActor
+@Test("Desktop columns use available width and stack in narrow windows")
+func desktopColumnLayout() {
+    for (width, expectedHeight) in [(500.0, 120.0 + LumenSpacing.md), (900.0, 80.0)] {
+        let view = AdaptiveColumns {
+            Color.clear.frame(height: 40)
+        } secondary: {
+            Color.clear.frame(height: 80)
+        }.frame(width: width)
+        #expect(abs(NSHostingView(rootView: view).fittingSize.height - expectedHeight) < 1)
+    }
+}
+#endif

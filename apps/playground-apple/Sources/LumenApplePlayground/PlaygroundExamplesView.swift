@@ -42,7 +42,7 @@ struct PlaygroundExamplesView: View {
         } else {
             PlaygroundPage(
                 "Examples",
-                subtitle: "Switch among complete product patterns and exercise their real interaction states."
+                subtitle: "Try complete product flows, from a release checklist to an editable workspace. Every control is live."
             ) {
                 patternGallery
             }
