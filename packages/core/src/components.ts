@@ -193,7 +193,8 @@ export const lumenComponentNames = [
   'PromptComposer',
   'SourceCitation',
   'StreamMessage',
-  'ToolActivity'
+  'ToolActivity',
+  'WorldMap'
 ] as const
 
 export type LumenComponentName = typeof lumenComponentNames[number]
@@ -305,6 +306,7 @@ export const lumenComponentBehavior = {
   HoverCard: { astro: 'ui-primitives', elements: 'registered-element', react: 'hook' },
   Icon: { astro: 'none', elements: 'registered-element', react: 'component' },
   DeviceFrame: { astro: 'none', elements: 'registered-element', react: 'component' },
+  WorldMap: { astro: 'ui-primitives', astroRuntimeBypass: 'Static map and highlighted country list remain visible without JavaScript.', elements: 'registered-element', react: 'component' },
   ImageComparison: { astro: 'ui-primitives', elements: 'registered-element', react: 'component' },
   Image: { astro: 'none', elements: 'registered-element', react: 'component' },
   Illustration: { astro: 'none', elements: 'registered-element', react: 'component' },

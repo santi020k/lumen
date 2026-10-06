@@ -2,6 +2,18 @@
 
 ## 4.0.0
 
+### Minor Changes
+
+- Add coordinated keyed motion, optional semantic visual effects, chart continuity, and application-owned AI surfaces across web adapters. Include installable product blocks, an interactive visual playground, and optional Motion and Rive integration entry points.
+
+- Add WorldMap for Astro, React, and Web Components with dotted and solid styles, highlighted countries, labeled markers, country selection, theme customization, and reduced motion. Ship public-domain country geometry behind an explicit core subpath, with no runtime requests or new dependencies.
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @santi020k/lumen-core@4.1.0
+  - @santi020k/lumen@4.1.0
+
 ### Patch Changes
 
 - [#95](https://github.com/santi020k/lumen/pull/95) [`5d5ef9f`](https://github.com/santi020k/lumen/commit/5d5ef9f91680bc15f7077850eaa7a6c489c9f5a6) Thanks [@santi020k](https://github.com/santi020k)! - Correct ContextMenu keyboard entry when focus starts on its container: ArrowUp selects the last

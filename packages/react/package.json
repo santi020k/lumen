@@ -72,6 +72,10 @@
       "types": "./dist/virtual-list.d.ts",
       "import": "./dist/virtual-list.js"
     },
+    "./components/world-map": {
+      "types": "./dist/world-map.d.ts",
+      "import": "./dist/world-map.js"
+    },
     "./hooks": {
       "types": "./dist/hooks.d.ts",
       "import": "./dist/hooks.js"

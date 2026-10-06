@@ -512,3 +512,8 @@ whisker, quartile, median and outlier names; SwiftUI uses `LumenBoxPlotLabels`.
 
 Applications own sample selection, quartile algorithms, whisker policy and outlier detection.
 Lumen renders the supplied summaries without changing their statistical meaning.
+
+## Geographic stories
+
+Use [WorldMap](world-map.md) for highlighted countries and location markers with dotted or solid
+styles. Geometry is an explicit import; application travel records and navigation stay consumer-owned.

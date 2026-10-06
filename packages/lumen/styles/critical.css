@@ -331,7 +331,8 @@
   .ui-tree,
   .ui-tree-grid,
   .ui-typography,
-  .ui-virtual-list
+  .ui-virtual-list,
+  .ui-world-map
 ) {
   box-sizing: border-box;
   font-family: var(--ui-font);

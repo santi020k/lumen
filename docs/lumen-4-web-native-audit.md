@@ -16,8 +16,8 @@ supported Apple form factors. Wear and WidgetKit intentionally use separate, sma
   editing remains deferred by the user; its plain model and limited SwiftUI/Compose subset do not
   close that gap.
 
-Reviewed 192 web entries: 93 counterparts, 65 compositions,
-33 platform/host boundaries and 1 deferred gap. The 23 new counterparts have dedicated native
+Reviewed 193 web entries: 93 counterparts, 65 compositions,
+33 platform/host boundaries and 2 gaps. The 23 new counterparts have dedicated native
 contracts, controlled examples and focused behavior checks. Full catalog captures and combined
 validation are tracked in [the completion plan](native-catalog-parity-plan.md); this source audit
 alone does not qualify a release. MultiSelect and RangeSlider remain additional shared contracts.
@@ -232,3 +232,4 @@ or store update is implied by this audit.
 | `SourceCitation` | Platform / host | Named native links and OS URL opening plus consumer-owned citation metadata. |
 | `StreamMessage` | Composition | `surface` plus consumer-owned streamed content and accessible status. |
 | `ToolActivity` | Composition | `surface` plus consumer-owned disclosure and tool status. |
+| `WorldMap` | Gap | Web-only SVG visualization; native map renderers are not implemented. Consumers own travel data and routing. |

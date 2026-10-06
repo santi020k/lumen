@@ -6,6 +6,7 @@
 /* Cascade layers: consumer (unlayered) CSS always wins over Lumen styles.
  * Layer order also guarantees glass variants beat component base styles. */
 @layer lumen.tokens, lumen.base, lumen.components, lumen.glass;
+@import "./styles/world-map.css";
 
 @layer lumen.tokens {
 :root,
@@ -337,7 +338,8 @@
   .ui-tree,
   .ui-tree-grid,
   .ui-typography,
-  .ui-virtual-list
+  .ui-virtual-list,
+  .ui-world-map
 ) {
   box-sizing: border-box;
   font-family: var(--ui-font);
@@ -8491,6 +8493,7 @@ a.ui-pill:focus-visible {
     .ui-funnel-chart__bar, .ui-box-plot__whisker, .ui-box-plot__cap, .ui-box-plot__median { background: CanvasText; }
     .ui-box-plot__box, .ui-box-plot__outlier { border-color: CanvasText; background: Canvas; }
   }
+
 }
 
 /* Device silhouettes are decorative; screen children retain their native semantics. */

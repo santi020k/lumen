@@ -2,6 +2,12 @@
 
 ## 4.0.0
 
+### Minor Changes
+
+- Add coordinated keyed motion, optional semantic visual effects, chart continuity, and application-owned AI surfaces across web adapters. Include installable product blocks, an interactive visual playground, and optional Motion and Rive integration entry points.
+
+- Add WorldMap for Astro, React, and Web Components with dotted and solid styles, highlighted countries, labeled markers, country selection, theme customization, and reduced motion. Ship public-domain country geometry behind an explicit core subpath, with no runtime requests or new dependencies.
+
 ### Patch Changes
 
 - Preserve reserved filter names when parsing data view state and append server request parameters before endpoint fragments.

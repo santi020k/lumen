@@ -10,7 +10,8 @@
     "./layers.css",
     "./styles.css",
     "./styles/critical.css",
-    "./styles/motion.css"
+    "./styles/motion.css",
+    "./styles/world-map.css"
   ],
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -30,7 +31,8 @@
     "./styles/critical.css": "./styles/critical.css",
     "./layers.css": "./layers.css",
     "./package.json": "./package.json",
-    "./styles/motion.css": "./styles/motion.css"
+    "./styles/motion.css": "./styles/motion.css",
+    "./styles/world-map.css": "./styles/world-map.css"
   },
   "files": [
     "bin",

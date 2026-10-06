@@ -707,6 +707,14 @@ export function Example() {
 `
 
 const reactOverrides: Record<string, string> = {
+  WorldMap: `import { WorldMap } from '@santi020k/lumen-react'
+import { lumenWorldMapCountries } from '@santi020k/lumen-core/world-map-data'
+
+const Example = () => (
+  <WorldMap countries={lumenWorldMapCountries} label="Sample destinations"
+    highlightedCountries={['CO', 'JP', 'PT']} variant="dotted"
+    markers={[{ id: 'bogota', label: 'Bogotá', latitude: 4.71, longitude: -74.07 }]} />
+)`,
   AmountField: `import { AmountField } from '@santi020k/lumen-react'
 
 <AmountField name="amount" locale="es-CO" defaultValue="1234.50" aria-label="Amount COP" />`,
@@ -1007,6 +1015,17 @@ const compoundDescriptionsElementsExample = `${elementsHeader}
 `
 
 const elementsOverrides: Record<string, string> = {
+  WorldMap: `<script type="module">
+  import { defineLumenWorldMap, LumenWorldMapElement } from '@santi020k/lumen-elements/components/world-map'
+  import { lumenWorldMapCountries } from '@santi020k/lumen-core/world-map-data'
+  import '@santi020k/lumen-elements/styles.css'
+
+  defineLumenWorldMap()
+  const map = document.querySelector('lumen-world-map')
+  if (map instanceof LumenWorldMapElement) map.countries = lumenWorldMapCountries
+</script>
+
+<lumen-world-map label="Sample destinations" highlighted-countries='["CO", "JP", "PT"]'></lumen-world-map>`,
   AmountField: `<lumen-amount-field name="amount" locale="es-CO" default-value="1234.50"
   aria-label="Amount COP"></lumen-amount-field>`,
   FunnelChart: `<lumen-funnel-chart

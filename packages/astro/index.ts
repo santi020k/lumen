@@ -203,6 +203,7 @@ export { default as VisualEffect } from './components/VisualEffect.astro'
 export { default as VisuallyHidden } from './components/VisuallyHidden.astro'
 export { default as WaterfallChart } from './components/WaterfallChart.astro'
 export { default as Watermark } from './components/Watermark.astro'
+export { default as WorldMap } from './components/WorldMap.astro'
 export {
   type AstroActionErrorLike,
   type LumenControlIdMap,

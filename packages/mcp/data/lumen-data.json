@@ -192,7 +192,8 @@
       "PromptComposer": "32075ff8059485972858e8faa5e75bdca7ecfaeac15c3daf196de87f1d407e9f",
       "SourceCitation": "07799bb00bf251ca0fa3d6663a7212bb9f07dacdc027e1bd01309a86b2dddb76",
       "StreamMessage": "c3753a27af188ef2aa3cb4e0e475a788c805a9326f4e010a365d7996d534f550",
-      "ToolActivity": "4501917aa7b7ffe929bde82114d13ab5caf4a9f5ad17fa3a1f806bbe461a52d9"
+      "ToolActivity": "4501917aa7b7ffe929bde82114d13ab5caf4a9f5ad17fa3a1f806bbe461a52d9",
+      "WorldMap": "568af8462c63ca3040b542279551bc9242d98247067d0686488d37716137eca2"
     },
     "nativeComponents": {
       "Sparkline": "bf7707572d45de0978788f7825831fcb3d89e390b5a474ff8aaf518d412738c6",
@@ -44374,6 +44375,445 @@
       "propsExtends": null,
       "recipes": [],
       "runtimeEvents": []
+    },
+    {
+      "apiReference": [
+        {
+          "attribute": "countries",
+          "defaultValue": "required",
+          "description": "Import lumenWorldMapCountries explicitly from @santi020k/lumen-core/world-map-data. Custom geometry uses the fixed 1000 × 400 projection.",
+          "values": "readonly LumenWorldMapCountryGeometry[]"
+        },
+        {
+          "attribute": "label",
+          "defaultValue": "required",
+          "description": "Provides the accessible name for the map image.",
+          "values": "string"
+        },
+        {
+          "attribute": "highlightedCountries",
+          "defaultValue": "[]",
+          "description": "Country codes to highlight; unknown codes and duplicates are dropped. Elements also accepts highlighted-countries as JSON.",
+          "values": "readonly string[]"
+        },
+        {
+          "attribute": "variant",
+          "defaultValue": "\"dotted\"",
+          "description": "Chooses the map appearance.",
+          "values": "\"dotted\" | \"solid\""
+        },
+        {
+          "attribute": "markers",
+          "defaultValue": "[]",
+          "description": "Labeled points with id, latitude and longitude. Invalid or off-map points are dropped.",
+          "values": "readonly LumenWorldMapMarker[]"
+        },
+        {
+          "attribute": "labels / listLabel",
+          "defaultValue": "country names / \"Choose a country\"",
+          "description": "Localizes country names and the native chooser. Elements uses labels JSON and list-label.",
+          "values": "Record<string, string> / string"
+        },
+        {
+          "attribute": "selectedCountry",
+          "defaultValue": "-",
+          "description": "Initial selection in Astro, reflected selected-country in Elements, controlled selection in React; React also supports defaultSelectedCountry.",
+          "values": "string"
+        },
+        {
+          "attribute": "interactive / animated",
+          "defaultValue": "true",
+          "description": "Enable country selection and motion separately. Reduced motion disables animation automatically.",
+          "values": "boolean"
+        },
+        {
+          "attribute": "onCountrySelect",
+          "defaultValue": "-",
+          "description": "React callback; Astro and Elements emit ui:world-map-select with countryId, highlighted and label.",
+          "values": "(detail: LumenWorldMapSelectDetail) => void"
+        },
+        {
+          "attribute": "heading / description / caption",
+          "defaultValue": "-",
+          "description": "Optional Astro and React figure content. Elements supports authored content outside the map.",
+          "values": "string"
+        },
+        {
+          "attribute": "CSS variables",
+          "defaultValue": "semantic tokens",
+          "description": "Accept any CSS color to customize the map while preserving theme defaults.",
+          "values": "--ui-world-map-land / --ui-world-map-highlight / --ui-world-map-marker / --ui-world-map-surface"
+        },
+        {
+          "attribute": "class, className",
+          "defaultValue": "\"\"",
+          "description": "Merges custom classes with the generated ui-* root classes.",
+          "values": "string"
+        },
+        {
+          "attribute": "...native attributes",
+          "defaultValue": "-",
+          "description": "Forwards standard attributes to the root element unless the component consumes them.",
+          "values": "HTML attributes"
+        }
+      ],
+      "astroSource": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport {\n  findLumenWorldMapCountry,\n  LUMEN_WORLD_MAP_VIEW_BOX,\n  type LumenWorldMapCountryGeometry,\n  type LumenWorldMapMarker,\n  type LumenWorldMapVariant,\n  normalizeLumenWorldMapCountries,\n  normalizeLumenWorldMapHighlightedCountries,\n  normalizeLumenWorldMapMarkers,\n  projectLumenWorldMapCoordinate,\n  resolveLumenAstroProps,\n  resolveLumenWorldMapCountryLabel\n} from '@santi020k/lumen-core'\n\ninterface Props extends HTMLAttributes<'figure'> {\n  animated?: boolean\n  caption?: string\n  class?: string | null\n  className?: string\n  countries: readonly LumenWorldMapCountryGeometry[]\n  description?: string\n  heading?: string\n  highlightedCountries?: readonly string[]\n  interactive?: boolean\n  label: string\n  labels?: Readonly<Record<string, string>>\n  listLabel?: string\n  markers?: readonly LumenWorldMapMarker[]\n  selectedCountry?: string\n  variant?: LumenWorldMapVariant\n}\n\nconst {\n  animated = true,\n  caption,\n  class: classProp = '',\n  className = '',\n  countries: inputCountries,\n  description,\n  heading,\n  highlightedCountries,\n  interactive = true,\n  label,\n  labels,\n  listLabel = 'Choose a country',\n  markers,\n  selectedCountry,\n  variant = 'dotted',\n  ...rest\n} = Astro.props\n\nconst countries = normalizeLumenWorldMapCountries(inputCountries)\nconst highlightedIds = normalizeLumenWorldMapHighlightedCountries(highlightedCountries, countries)\nconst highlightedSet = new Set(highlightedIds)\nconst normalizedMarkers = normalizeLumenWorldMapMarkers(markers)\nconst selected = findLumenWorldMapCountry(countries, selectedCountry)\nconst instanceId = `ui-world-map-${crypto.randomUUID()}`\nconst neutralPatternId = `${instanceId}-dot-neutral`\nconst highlightPatternId = `${instanceId}-dot-highlight`\nconst { height: viewBoxHeight, width: viewBoxWidth } = LUMEN_WORLD_MAP_VIEW_BOX\nconst { classList, passthrough } = resolveLumenAstroProps(rest, ['ui-world-map'], classProp, className)\n---\n\n<figure\n  class:list={classList}\n  data-animated={String(animated)}\n  data-interactive={String(interactive)}\n  data-ui-world-map\n  data-variant={variant}\n  id={instanceId}\n  {...passthrough}\n>\n  {\n    (heading || description) && (\n      <header class=\"ui-world-map__heading\">\n        {heading && <h3>{heading}</h3>}\n        {description && <p>{description}</p>}\n      </header>\n    )\n  }\n  <div class=\"ui-world-map__frame\">\n    <svg\n      aria-label={label}\n      class=\"ui-world-map__plot\"\n      role=\"img\"\n      viewBox={`0 0 ${viewBoxWidth} ${viewBoxHeight}`}\n      xmlns=\"http://www.w3.org/2000/svg\"\n    >\n      {\n        variant === 'dotted' && (\n          <defs>\n            <pattern height=\"4\" id={neutralPatternId} patternUnits=\"userSpaceOnUse\" width=\"4\">\n              <circle class=\"ui-world-map__dot ui-world-map__dot--neutral\" cx=\"2\" cy=\"2\" r=\"1.1\" />\n            </pattern>\n            <pattern height=\"4\" id={highlightPatternId} patternUnits=\"userSpaceOnUse\" width=\"4\">\n              <circle class=\"ui-world-map__dot ui-world-map__dot--highlight\" cx=\"2\" cy=\"2\" r=\"1.1\" />\n            </pattern>\n          </defs>\n        )\n      }\n      <g aria-hidden=\"true\" class=\"ui-world-map__countries\">\n        {countries.map(country => {\n          const isHighlighted = highlightedSet.has(country.id)\n          const isSelected = selected?.id === country.id\n          const countryLabel = resolveLumenWorldMapCountryLabel(country, labels)\n\n          return (\n            <path\n              class:list={[\n                'ui-world-map__country',\n                isHighlighted && 'ui-world-map__country--highlighted',\n                isSelected && 'ui-world-map__country--selected'\n              ]}\n              d={country.path}\n              data-label={countryLabel}\n              data-label-x={country.labelX}\n              data-label-y={country.labelY}\n              data-ui-world-map-country={country.id}\n              fill={\n                variant === 'dotted' ?\n                  `url(#${isHighlighted ? highlightPatternId : neutralPatternId})` :\n                  undefined\n              }\n              fill-rule=\"evenodd\"\n            >\n              <title>{countryLabel}</title>\n            </path>\n          )\n        })}\n      </g>\n      {\n        normalizedMarkers.length > 0 && (\n          <g aria-hidden=\"true\" class=\"ui-world-map__markers\">\n            {normalizedMarkers.map(marker => {\n              const { x, y } = projectLumenWorldMapCoordinate(marker.longitude, marker.latitude)\n\n              return (\n                <circle class=\"ui-world-map__marker\" cx={x} cy={y} r=\"4\">\n                  <title>{marker.label}</title>\n                </circle>\n              )\n            })}\n          </g>\n        )\n      }\n    </svg>\n    <span class=\"ui-world-map__inspection\" data-ui-world-map-inspection hidden />\n  </div>\n  {\n    interactive && (\n      <label class=\"ui-world-map__select-label\">\n        <span>{listLabel}</span>\n        <select class=\"ui-select ui-world-map__select\" data-ui-world-map-select disabled>\n          <option value=\"\">{listLabel}</option>\n          {countries.map(country => (\n            <option selected={selected?.id === country.id} value={country.id}>\n              {resolveLumenWorldMapCountryLabel(country, labels)}\n            </option>\n          ))}\n        </select>\n      </label>\n    )\n  }\n  {\n    highlightedIds.length > 0 && (\n      <ul aria-label=\"Highlighted countries\" class=\"ui-world-map__highlights\" data-ui-world-map-highlights>\n        {highlightedIds.map(id => {\n          const country = findLumenWorldMapCountry(countries, id)\n\n          return country && <li>{resolveLumenWorldMapCountryLabel(country, labels)}</li>\n        })}\n      </ul>\n    )\n  }\n  {normalizedMarkers.length > 0 && (\n    <ul aria-label=\"Map markers\" class=\"ui-sr-only\">\n      {normalizedMarkers.map(marker => <li>{marker.label}</li>)}\n    </ul>\n  )}\n  {caption && <figcaption>{caption}</figcaption>}\n</figure>\n",
+      "category": "Data display",
+      "collections": [],
+      "contract": null,
+      "dependencies": [],
+      "description": "Highlights countries and labeled locations on a reusable animated dotted or solid world map.",
+      "behavior": {
+        "astro": "ui-primitives",
+        "astroRuntimeBypass": "Static map and highlighted country list remain visible without JavaScript.",
+        "elements": "registered-element",
+        "react": "component"
+      },
+      "files": [],
+      "frameworkDetails": {
+        "astro": {
+          "available": true,
+          "behavior": {
+            "runtimeBypass": "Static map and highlighted country list remain visible without JavaScript.",
+            "mode": "runtime",
+            "setup": "Mount UIPrimitives once in the application's root layout; do not mount it beside each component. Set Static map and highlighted country list remain visible without JavaScript. when application code owns the complete interaction behavior."
+          },
+          "example": "<WorldMap countries={lumenWorldMapCountries} label=\"Sample destinations\" highlightedCountries={[\"CO\", \"JP\"]} />",
+          "importStatement": "import { WorldMap } from '@santi020k/lumen-astro'\nimport { lumenWorldMapCountries } from '@santi020k/lumen-core/world-map-data'",
+          "language": "astro",
+          "packageName": "@santi020k/lumen-astro",
+          "props": [
+            {
+              "name": "animated",
+              "optional": true,
+              "type": "boolean"
+            },
+            {
+              "name": "caption",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "name": "class",
+              "optional": true,
+              "type": "string | null"
+            },
+            {
+              "name": "className",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "name": "countries",
+              "optional": false,
+              "type": "readonly LumenWorldMapCountryGeometry[]"
+            },
+            {
+              "name": "description",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "name": "heading",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "name": "highlightedCountries",
+              "optional": true,
+              "type": "readonly string[]"
+            },
+            {
+              "name": "interactive",
+              "optional": true,
+              "type": "boolean"
+            },
+            {
+              "name": "label",
+              "optional": false,
+              "type": "string"
+            },
+            {
+              "name": "labels",
+              "optional": true,
+              "type": "Readonly<Record<string, string>>"
+            },
+            {
+              "name": "listLabel",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "name": "markers",
+              "optional": true,
+              "type": "readonly LumenWorldMapMarker[]"
+            },
+            {
+              "name": "selectedCountry",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "name": "variant",
+              "optional": true,
+              "type": "LumenWorldMapVariant"
+            }
+          ],
+          "propsExtends": "HTMLAttributes<'figure'>",
+          "source": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport {\n  findLumenWorldMapCountry,\n  LUMEN_WORLD_MAP_VIEW_BOX,\n  type LumenWorldMapCountryGeometry,\n  type LumenWorldMapMarker,\n  type LumenWorldMapVariant,\n  normalizeLumenWorldMapCountries,\n  normalizeLumenWorldMapHighlightedCountries,\n  normalizeLumenWorldMapMarkers,\n  projectLumenWorldMapCoordinate,\n  resolveLumenAstroProps,\n  resolveLumenWorldMapCountryLabel\n} from '@santi020k/lumen-core'\n\ninterface Props extends HTMLAttributes<'figure'> {\n  animated?: boolean\n  caption?: string\n  class?: string | null\n  className?: string\n  countries: readonly LumenWorldMapCountryGeometry[]\n  description?: string\n  heading?: string\n  highlightedCountries?: readonly string[]\n  interactive?: boolean\n  label: string\n  labels?: Readonly<Record<string, string>>\n  listLabel?: string\n  markers?: readonly LumenWorldMapMarker[]\n  selectedCountry?: string\n  variant?: LumenWorldMapVariant\n}\n\nconst {\n  animated = true,\n  caption,\n  class: classProp = '',\n  className = '',\n  countries: inputCountries,\n  description,\n  heading,\n  highlightedCountries,\n  interactive = true,\n  label,\n  labels,\n  listLabel = 'Choose a country',\n  markers,\n  selectedCountry,\n  variant = 'dotted',\n  ...rest\n} = Astro.props\n\nconst countries = normalizeLumenWorldMapCountries(inputCountries)\nconst highlightedIds = normalizeLumenWorldMapHighlightedCountries(highlightedCountries, countries)\nconst highlightedSet = new Set(highlightedIds)\nconst normalizedMarkers = normalizeLumenWorldMapMarkers(markers)\nconst selected = findLumenWorldMapCountry(countries, selectedCountry)\nconst instanceId = `ui-world-map-${crypto.randomUUID()}`\nconst neutralPatternId = `${instanceId}-dot-neutral`\nconst highlightPatternId = `${instanceId}-dot-highlight`\nconst { height: viewBoxHeight, width: viewBoxWidth } = LUMEN_WORLD_MAP_VIEW_BOX\nconst { classList, passthrough } = resolveLumenAstroProps(rest, ['ui-world-map'], classProp, className)\n---\n\n<figure\n  class:list={classList}\n  data-animated={String(animated)}\n  data-interactive={String(interactive)}\n  data-ui-world-map\n  data-variant={variant}\n  id={instanceId}\n  {...passthrough}\n>\n  {\n    (heading || description) && (\n      <header class=\"ui-world-map__heading\">\n        {heading && <h3>{heading}</h3>}\n        {description && <p>{description}</p>}\n      </header>\n    )\n  }\n  <div class=\"ui-world-map__frame\">\n    <svg\n      aria-label={label}\n      class=\"ui-world-map__plot\"\n      role=\"img\"\n      viewBox={`0 0 ${viewBoxWidth} ${viewBoxHeight}`}\n      xmlns=\"http://www.w3.org/2000/svg\"\n    >\n      {\n        variant === 'dotted' && (\n          <defs>\n            <pattern height=\"4\" id={neutralPatternId} patternUnits=\"userSpaceOnUse\" width=\"4\">\n              <circle class=\"ui-world-map__dot ui-world-map__dot--neutral\" cx=\"2\" cy=\"2\" r=\"1.1\" />\n            </pattern>\n            <pattern height=\"4\" id={highlightPatternId} patternUnits=\"userSpaceOnUse\" width=\"4\">\n              <circle class=\"ui-world-map__dot ui-world-map__dot--highlight\" cx=\"2\" cy=\"2\" r=\"1.1\" />\n            </pattern>\n          </defs>\n        )\n      }\n      <g aria-hidden=\"true\" class=\"ui-world-map__countries\">\n        {countries.map(country => {\n          const isHighlighted = highlightedSet.has(country.id)\n          const isSelected = selected?.id === country.id\n          const countryLabel = resolveLumenWorldMapCountryLabel(country, labels)\n\n          return (\n            <path\n              class:list={[\n                'ui-world-map__country',\n                isHighlighted && 'ui-world-map__country--highlighted',\n                isSelected && 'ui-world-map__country--selected'\n              ]}\n              d={country.path}\n              data-label={countryLabel}\n              data-label-x={country.labelX}\n              data-label-y={country.labelY}\n              data-ui-world-map-country={country.id}\n              fill={\n                variant === 'dotted' ?\n                  `url(#${isHighlighted ? highlightPatternId : neutralPatternId})` :\n                  undefined\n              }\n              fill-rule=\"evenodd\"\n            >\n              <title>{countryLabel}</title>\n            </path>\n          )\n        })}\n      </g>\n      {\n        normalizedMarkers.length > 0 && (\n          <g aria-hidden=\"true\" class=\"ui-world-map__markers\">\n            {normalizedMarkers.map(marker => {\n              const { x, y } = projectLumenWorldMapCoordinate(marker.longitude, marker.latitude)\n\n              return (\n                <circle class=\"ui-world-map__marker\" cx={x} cy={y} r=\"4\">\n                  <title>{marker.label}</title>\n                </circle>\n              )\n            })}\n          </g>\n        )\n      }\n    </svg>\n    <span class=\"ui-world-map__inspection\" data-ui-world-map-inspection hidden />\n  </div>\n  {\n    interactive && (\n      <label class=\"ui-world-map__select-label\">\n        <span>{listLabel}</span>\n        <select class=\"ui-select ui-world-map__select\" data-ui-world-map-select disabled>\n          <option value=\"\">{listLabel}</option>\n          {countries.map(country => (\n            <option selected={selected?.id === country.id} value={country.id}>\n              {resolveLumenWorldMapCountryLabel(country, labels)}\n            </option>\n          ))}\n        </select>\n      </label>\n    )\n  }\n  {\n    highlightedIds.length > 0 && (\n      <ul aria-label=\"Highlighted countries\" class=\"ui-world-map__highlights\" data-ui-world-map-highlights>\n        {highlightedIds.map(id => {\n          const country = findLumenWorldMapCountry(countries, id)\n\n          return country && <li>{resolveLumenWorldMapCountryLabel(country, labels)}</li>\n        })}\n      </ul>\n    )\n  }\n  {normalizedMarkers.length > 0 && (\n    <ul aria-label=\"Map markers\" class=\"ui-sr-only\">\n      {normalizedMarkers.map(marker => <li>{marker.label}</li>)}\n    </ul>\n  )}\n  {caption && <figcaption>{caption}</figcaption>}\n</figure>\n",
+          "styleImport": "import '@santi020k/lumen-astro/styles.css'"
+        },
+        "elements": {
+          "attributes": [
+            "animated",
+            "countries",
+            "highlighted-countries",
+            "interactive",
+            "label",
+            "labels",
+            "list-label",
+            "markers",
+            "selected-country",
+            "variant",
+            "highlightedCountries",
+            "labels / listLabel",
+            "selectedCountry",
+            "interactive / animated",
+            "onCountrySelect",
+            "heading / description / caption",
+            "CSS variables",
+            "class, className",
+            "...native attributes"
+          ],
+          "available": true,
+          "behavior": {
+            "mode": "registration",
+            "setup": "Call defineLumenElements() once before rendering Lumen custom elements. Registration includes this component’s interactive behavior."
+          },
+          "example": "<lumen-world-map label=\"Sample destinations\" highlighted-countries='[\"CO\", \"JP\"]'></lumen-world-map>",
+          "importStatement": "import { defineLumenElements } from '@santi020k/lumen-elements/define'",
+          "language": "html",
+          "packageName": "@santi020k/lumen-elements",
+          "props": [],
+          "propsExtends": "HTMLElement attributes",
+          "registration": "defineLumenElements()",
+          "source": "lumenWorldMapElementConfig = {\n  baseClassName: 'ui-world-map',\n  observedAttributes: ['animated', 'countries', 'highlighted-countries', 'interactive', 'label', 'labels', 'list-label', 'markers', 'selected-country', 'variant'],\n  tagName: 'lumen-world-map'\n} as const satisfies LumenElementConfig",
+          "styleImport": "import '@santi020k/lumen-elements/styles.css'",
+          "tagName": "lumen-world-map"
+        },
+        "react": {
+          "available": true,
+          "behavior": {
+            "mode": "built-in",
+            "setup": "Interactive behavior is implemented by the React component; do not mount Astro UIPrimitives."
+          },
+          "example": "<WorldMap countries={lumenWorldMapCountries} label=\"Sample destinations\" highlightedCountries={[\"CO\", \"JP\"]} />",
+          "importStatement": "import { WorldMap } from '@santi020k/lumen-react'\nimport { lumenWorldMapCountries } from '@santi020k/lumen-core/world-map-data'",
+          "language": "tsx",
+          "packageName": "@santi020k/lumen-react",
+          "props": [
+            {
+              "name": "animated",
+              "optional": true,
+              "type": "boolean"
+            },
+            {
+              "name": "caption",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "name": "countries",
+              "optional": false,
+              "type": "readonly LumenWorldMapCountryGeometry[]"
+            },
+            {
+              "name": "defaultSelectedCountry",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "name": "description",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "name": "heading",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "name": "highlightedCountries",
+              "optional": true,
+              "type": "readonly string[]"
+            },
+            {
+              "name": "interactive",
+              "optional": true,
+              "type": "boolean"
+            },
+            {
+              "name": "label",
+              "optional": false,
+              "type": "string"
+            },
+            {
+              "name": "labels",
+              "optional": true,
+              "type": "Readonly<Record<string, string>>"
+            },
+            {
+              "name": "listLabel",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "name": "markers",
+              "optional": true,
+              "type": "readonly LumenWorldMapMarker[]"
+            },
+            {
+              "name": "onCountrySelect",
+              "optional": true,
+              "type": "(detail: LumenWorldMapSelectDetail) => void"
+            },
+            {
+              "name": "selectedCountry",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "name": "variant",
+              "optional": true,
+              "type": "LumenWorldMapVariant"
+            }
+          ],
+          "propsExtends": "Omit<ComponentPropsWithoutRef<'figure'>, 'label'>",
+          "source": "export interface WorldMapProps extends Omit<ComponentPropsWithoutRef<'figure'>, 'label'> {\n  animated?: boolean\n  caption?: string\n  countries: readonly LumenWorldMapCountryGeometry[]\n  defaultSelectedCountry?: string\n  description?: string\n  heading?: string\n  highlightedCountries?: readonly string[]\n  interactive?: boolean\n  label: string\n  labels?: Readonly<Record<string, string>>\n  listLabel?: string\n  markers?: readonly LumenWorldMapMarker[]\n  onCountrySelect?: (detail: LumenWorldMapSelectDetail) => void\n  selectedCountry?: string\n  variant?: LumenWorldMapVariant\n}\n\nexport const WorldMap = ({\n  animated = true,\n  caption,\n  className,\n  countries: inputCountries,\n  defaultSelectedCountry,\n  description,\n  heading,\n  highlightedCountries,\n  interactive = true,\n  label,\n  labels,\n  listLabel = 'Choose a country',\n  markers,\n  onCountrySelect,\n  selectedCountry,\n  variant = 'dotted',\n  ...props\n}: WorldMapProps) => {\n  const countries = useMemo(() => normalizeLumenWorldMapCountries(inputCountries), [inputCountries])\n  const instanceId = useId().replaceAll(':', '')\n  const neutralPatternId = `${instanceId}-dot-neutral`\n  const highlightPatternId = `${instanceId}-dot-highlight`\n  const [internalSelectedId, setInternalSelectedId] = useState(defaultSelectedCountry)\n  const [hoveredId, setHoveredId] = useState<string | undefined>(undefined)\n  const selectedId = findLumenWorldMapCountry(countries, selectedCountry ?? internalSelectedId)?.id\n\n  const highlightedIds = useMemo(\n    () => normalizeLumenWorldMapHighlightedCountries(highlightedCountries, countries),\n    [highlightedCountries, countries]\n  )\n\n  const highlightedSet = useMemo(() => new Set(highlightedIds), [highlightedIds])\n  const normalizedMarkers = useMemo(() => normalizeLumenWorldMapMarkers(markers), [markers])\n  const activeId = hoveredId ?? selectedId\n  const activeCountry = findLumenWorldMapCountry(countries, activeId)\n  const { height: viewBoxHeight, width: viewBoxWidth } = LUMEN_WORLD_MAP_VIEW_BOX\n\n  const selectCountry = (countryId: string): void => {\n    const country = findLumenWorldMapCountry(countries, countryId)\n\n    if (isCurrentCountry(country, selectedId)) return\n\n    if (selectedCountry === undefined) setInternalSelectedId(country?.id)\n\n    if (country) onCountrySelect?.(createLumenWorldMapSelectDetail(country, highlightedSet, labels))\n  }\n\n  return (\n    <figure\n      {...props}\n      className={composeClassName('ui-world-map', className)}\n      data-animated={animated}\n      data-interactive={interactive}\n      data-variant={variant}\n    >\n      <MapHeading description={description} heading={heading} />\n      <div className=\"ui-world-map__frame\">\n        <svg\n          aria-label={label}\n          className=\"ui-world-map__plot\"\n          role=\"img\"\n          viewBox={`0 0 ${viewBoxWidth} ${viewBoxHeight}`}\n        >\n          {variant === 'dotted' && (\n            <DotPatterns highlightPatternId={highlightPatternId} neutralPatternId={neutralPatternId} />\n          )}\n          <g aria-hidden=\"true\" className=\"ui-world-map__countries\">\n            {countries.map(country => (\n              <CountryPath\n                key={country.id}\n                country={country}\n                highlightPatternId={highlightPatternId}\n                interactive={interactive}\n                isHighlighted={highlightedSet.has(country.id)}\n                isSelected={selectedId === country.id}\n                label={resolveLumenWorldMapCountryLabel(country, labels)}\n                neutralPatternId={neutralPatternId}\n                onHoverChange={setHoveredId}\n                onSelect={selectCountry}\n                variant={variant}\n              />\n            ))}\n          </g>\n          <MarkerLayer markers={normalizedMarkers} />\n\n        </svg>\n        <Inspection country={activeCountry} labels={labels} />\n      </div>\n      {interactive && (\n        <SelectControl\n          countries={countries}\n          labelOverrides={labels}\n          listLabel={listLabel}\n          onSelect={selectCountry}\n          selectedId={selectedId}\n        />\n      )}\n      <HighlightedList countries={countries} highlightedIds={highlightedIds} labelOverrides={labels} />\n      <MarkerList markers={normalizedMarkers} />\n      <MapCaption caption={caption} />\n    </figure>\n  )\n}",
+          "styleImport": "import '@santi020k/lumen-react/styles.css'"
+        }
+      },
+      "frameworks": {
+        "astro": true,
+        "elements": true,
+        "react": true
+      },
+      "guidance": null,
+      "kebab": "world-map",
+      "keyboardInteractions": [
+        {
+          "action": "Focus the native country chooser.",
+          "key": "Tab"
+        },
+        {
+          "action": "Choose a country using the native select.",
+          "key": "Arrow keys"
+        }
+      ],
+      "keywords": [
+        "and",
+        "animated",
+        "countries",
+        "data",
+        "display",
+        "dotted",
+        "highlights",
+        "labeled",
+        "locations",
+        "map",
+        "reusable",
+        "solid",
+        "world",
+        "worldmap"
+      ],
+      "name": "WorldMap",
+      "props": [
+        {
+          "name": "animated",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "caption",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "class",
+          "optional": true,
+          "type": "string | null"
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "countries",
+          "optional": false,
+          "type": "readonly LumenWorldMapCountryGeometry[]"
+        },
+        {
+          "name": "description",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "heading",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "highlightedCountries",
+          "optional": true,
+          "type": "readonly string[]"
+        },
+        {
+          "name": "interactive",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "label",
+          "optional": false,
+          "type": "string"
+        },
+        {
+          "name": "labels",
+          "optional": true,
+          "type": "Readonly<Record<string, string>>"
+        },
+        {
+          "name": "listLabel",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "markers",
+          "optional": true,
+          "type": "readonly LumenWorldMapMarker[]"
+        },
+        {
+          "name": "selectedCountry",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "variant",
+          "optional": true,
+          "type": "LumenWorldMapVariant"
+        }
+      ],
+      "propsExtends": "HTMLAttributes<'figure'>",
+      "recipes": [],
+      "runtimeEvents": [
+        {
+          "name": "ui:world-map-select",
+          "target": "WorldMap root",
+          "detail": "{ countryId: string, highlighted: boolean, label: string }",
+          "when": "A different country is selected by pointer or native chooser."
+        }
+      ]
     }
   ],
   "docs": {
@@ -44381,8 +44821,8 @@
     "readme": "<p align=\"center\">\n  <a href=\"https://lumen.santi020k.com\">\n    <img src=\"./apps/docs/public/logo.svg\" alt=\"Lumen UI\" width=\"233\" height=\"60\">\n  </a>\n</p>\n\n<h1 align=\"center\">Lumen UI</h1>\n\n<p align=\"center\">\n  An open-source UI library built for AI-assisted development, with 150+ accessible web primitives and shared native foundations.\n</p>\n\n<p align=\"center\">\n  <a href=\"https://lumen.santi020k.com\">Documentation</a>\n  ·\n  <a href=\"https://lumen.santi020k.com/docs/components\">Components</a>\n  ·\n  <a href=\"https://lumen.santi020k.com/#playgrounds\">Try the playgrounds</a>\n  ·\n  <a href=\"https://www.figma.com/community/file/1662337342676541513\">Figma library</a>\n  ·\n  <a href=\"https://apps.apple.com/app/id6805250815\">iPhone and iPad app</a>\n  ·\n  <a href=\"https://play.google.com/store/apps/details?id=com.santi020k.lumen.playground.compose\">Android app</a>\n  ·\n  <a href=\"https://github.com/santi020k/lumen/issues\">Issues</a>\n</p>\n\n<p align=\"center\">\n  <a href=\"https://github.com/santi020k/lumen/actions\"><img alt=\"GitHub Actions\" src=\"https://img.shields.io/github/actions/workflow/status/santi020k/lumen/ci.yml?branch=main&style=flat-square\"></a>\n  <a href=\"https://github.com/santi020k/lumen/actions/workflows/codeql.yml\"><img alt=\"CodeQL\" src=\"https://github.com/santi020k/lumen/actions/workflows/codeql.yml/badge.svg\"></a>\n  <a href=\"https://www.npmjs.com/package/@santi020k/lumen-astro\"><img alt=\"npm version\" src=\"https://img.shields.io/npm/v/@santi020k/lumen-astro?style=flat-square&label=npm\"></a>\n  <a href=\"./LICENSE\"><img alt=\"MIT license\" src=\"https://img.shields.io/badge/license-MIT-111827?style=flat-square\"></a>\n</p>\n\nLumen gives applications a consistent visual language without tying them to one rendering model.\nIts packages share tokens, component contracts, styles, and interaction patterns while keeping each\nframework and platform's native authoring experience.\n\nGive your coding agent reusable components, a portable skill, and focused MCP context. Lumen is\ndesigned to reduce repetitive UI code and unnecessary AI context. Actual token usage depends on the\nmodel, task, discovery, and corrections; it is not a guaranteed saving. Start with the\n[AI build guide](https://lumen.santi020k.com/guides/build-ui-with-ai) and\n[efficiency measurement method](docs/ai-efficiency.md).\n\n- **Framework native:** Astro components, React primitives, and standards-based custom elements.\n- **Native foundations:** generated React Native, SwiftUI, and Jetpack Compose tokens plus the\n  complete shared interface and namespaced brand icon catalogs preserve the same semantic roles and\n  artwork without introducing DOM or CSS assumptions.\n- **Accessible by default:** semantic markup, keyboard paths, focus management, and reduced-motion\n  support are built into the primitives.\n- **Standalone CSS:** no Tailwind configuration is required. Tailwind users get an explicit layer\n  integration.\n- **Progressively enhanced:** Astro interactions use a small client runtime instead of requiring an\n  application framework.\n- **Ready for design and AI workflows:** published Figma resources, a portable agent skill, an MCP\n  server, `llms.txt`, a machine-readable registry, and a cross-platform release manifest ship\n  alongside the component system.\n- **Product-ready templates:** five responsive dashboard and application families are available as\n  live previews and installable Astro, React, and Elements recipes.\n\n**Explore:** [Dashboards and templates](#dashboards-and-templates) · [Web quick start](#web-quick-start) · [Native playgrounds](#native-playgrounds) · [Tailwind CSS](#tailwind-css) · [Packages](#packages) · [Community](#community)\n\n## Lumen 4 candidate\n\nThe v4 release branch brings consumer-driven date selection, chart readability, clipboard feedback,\nloading states, native layout improvements and a new ImageComparison primitive. Start with the\n[v3 → v4 migration guide](docs/migrating-v3-to-v4.md), [consumer audit](docs/lumen-4-consumer-audit.md),\nand [local readiness record](docs/lumen-4-readiness.md). The refreshed community gallery includes\npublished consumer screenshots; it does not imply those applications already run this candidate.\n\nFor existing applications, start with [v1 → v2](docs/migrating-v1-to-v2.md) when needed, then\n[v2 → v3](docs/migrating-v2-to-v3.md) before\n[v3 → v4](docs/migrating-v3-to-v4.md). For initial adoption, use\n[Migrating to Lumen](docs/migrating-to-lumen.md).\n\n## Appearance presets\n\nChoose an appearance preset or customize the existing themes with the [appearance guide](docs/appearance-presets.md). The Studio preset uses PostLens as its visual reference.\n\n## Dashboards and templates\n\nExplore the [template gallery](https://lumen.santi020k.com/templates) for complete analytics,\nSaaS admin, commerce, project workspace, and authentication/onboarding experiences. Each family\nuses public Lumen primitives and semantic tokens, includes responsive and accessibility coverage,\nand ships through the CLI for all three framework targets:\n\n```bash\nlumen add analytics-dashboard\nlumen add commerce-dashboard --target react\nlumen add auth-onboarding --target elements\n```\n\n## Web quick start\n\nInstall the package for your framework:\n\n```bash\n# Astro\npnpm add @santi020k/lumen-astro\n\n# React\npnpm add @santi020k/lumen-react\n\n# Web Components\npnpm add @santi020k/lumen-elements\n```\n\n### Astro\n\nImport the stylesheet and mount `UIPrimitives` once in your root layout. The runtime enhances all\ninteractive Lumen markup on the page.\n\n```astro\n---\nimport '@santi020k/lumen-astro/styles.css'\nimport UIPrimitives from '@santi020k/lumen-astro/runtime'\n---\n\n<html lang=\"en\">\n  <body>\n    <slot />\n    <UIPrimitives />\n  </body>\n</html>\n```\n\n```astro\n---\nimport { Button, Card, Input } from '@santi020k/lumen-astro'\n---\n\n<Card>\n  <label for=\"email\">Email</label>\n  <Input id=\"email\" name=\"email\" type=\"email\" placeholder=\"you@example.com\" />\n  <Button>Subscribe</Button>\n</Card>\n```\n\n### React\n\nLoad the stylesheet once from your app entry or global CSS:\n\n```tsx\nimport '@santi020k/lumen-react/styles.css'\nimport { Button, Card, Input } from '@santi020k/lumen-react'\n\nexport function SubscribeForm() {\n  return (\n    <Card>\n      <label htmlFor=\"email\">Email</label>\n      <Input id=\"email\" name=\"email\" type=\"email\" placeholder=\"you@example.com\" />\n      <Button>Subscribe</Button>\n    </Card>\n  )\n}\n```\n\n### Web Components\n\nImport the styles and register the elements once:\n\n```html\n<style>\n  @import \"@santi020k/lumen-elements/styles.css\";\n</style>\n\n<script type=\"module\">\n  import { defineLumenElements } from '@santi020k/lumen-elements/define'\n\n  defineLumenElements()\n</script>\n\n<lumen-card>\n  <label for=\"email\">Email</label>\n  <lumen-input id=\"email\" name=\"email\" type=\"email\" placeholder=\"you@example.com\"></lumen-input>\n  <lumen-button>Subscribe</lumen-button>\n</lumen-card>\n```\n\nSee the [Web documentation](https://lumen.santi020k.com/docs/web) for installation, theming,\ncomponent examples, and API details.\n\nFor failure states, use the [error-handling guide](./docs/error-handling.md) to choose between field\nfeedback, summaries, persistent alerts, transient toasts, and the `ErrorState` recovery surface.\nLumen owns presentation and accessibility; applications retain logging, retry, and exception policy.\n\nFor native applications, choose the [React Native](https://lumen.santi020k.com/docs/react-native),\n[Apple / SwiftUI](https://lumen.santi020k.com/docs/apple), or\n[Android / Compose](https://lumen.santi020k.com/docs/android) guide. The\n[shared foundations](https://lumen.santi020k.com/docs/foundations) explain the cross-platform token\nand component contract; repository contributors can also use the\n[cross-platform architecture](./docs/cross-platform.md) and\n[native component reference](./docs/native-components.md).\n\n> **Native platform status for Lumen 2.** React Native, SwiftUI, Compose, and Wear OS use the frozen\n> supported contract. Package, migration, build, security, artifact, and stability checks gate the\n> initial release. The incomplete external-consumer and physical-device matrices remain published\n> as post-release qualification work; review them before choosing a production adapter.\n\n## Native playgrounds\n\nTry Lumen before adding it to your project. The [playground section](https://lumen.santi020k.com/#playgrounds)\nbrings together the browser demos and native apps. Explore component states and themes, then use\nthe open-source apps as implementation references. Start with the\n[web playground](https://lumen.santi020k.com/docs/web/playground) for Astro, React, and Web Components,\nor choose a native gallery:\n\n- [`apps/playground-react-native`](./apps/playground-react-native) runs through Expo on the web,\n  iOS, and Android. [Try the browser preview](https://lumen.santi020k.com/docs/react-native/playground#preview)\n  or use the local setup guide for native evaluation. EAS profiles cover TestFlight, Android App\n  Bundles, and APKs; this gallery has no separate public store listing.\n- [`apps/playground-apple`](./apps/playground-apple) is available on the\n  [App Store](https://apps.apple.com/app/id6805250815) for iPhone, iPad, and Mac. It also builds as\n  an iOS Xcode app or macOS Swift Package executable for local exploration.\n- [`apps/playground-android`](./apps/playground-android) builds a native Compose application and a\n  directly installable debug APK. It is also available on\n  [Google Play](https://play.google.com/store/apps/details?id=com.santi020k.lumen.playground.compose)\n  for Android phones and tablets.\n\nSee the [playground workflow](./docs/playgrounds.md) for a platform chooser, reference-app source,\nand run, capture, and distribution commands. Store builds follow their own release schedule and\nmay differ from the current repository candidate.\n\n## Tailwind CSS\n\nKeep the layer prelude, Tailwind import, and Lumen stylesheet in the same shared CSS entry. Replace\n`lumen-astro` with the package for your framework.\n\n```css\n@import \"@santi020k/lumen-astro/layers.css\";\n@import \"tailwindcss\";\n@import \"@santi020k/lumen-astro/styles.css\";\n```\n\nThis order places Tailwind base styles before Lumen components and Tailwind utilities above Lumen\ncomponent defaults.\n\n## Packages\n\n| Package | Purpose |\n| --- | --- |\n| [`@santi020k/lumen-astro`](./packages/astro) | Reference implementation, Astro components, and progressive-enhancement runtime |\n| [`@santi020k/lumen-react`](./packages/react) | React components and behavior hooks |\n| [`@santi020k/lumen-react-hook-form`](./packages/react-hook-form) | Optional React Hook Form adapters for composite controls |\n| [`@santi020k/lumen-elements`](./packages/elements) | Standards-based Web Components |\n| [`@santi020k/lumen-core`](./packages/core) | Shared tokens, metadata, class helpers, and behavior contracts |\n| [`@santi020k/lumen-tokens`](./packages/tokens) | Canonical platform-neutral design token source |\n| [`@santi020k/lumen-react-native`](./packages/react-native) | React Native foundations and native primitives |\n| [`LumenUI`](./packages/swift) | Swift Package for iOS, iPadOS, macOS, tvOS, visionOS, and watchOS foundations and native primitives |\n| [`LumenWidgetUI`](./packages/swift-widget) | Focused WidgetKit-safe semantic text, icon, badge, and compact-stat foundations |\n| [`lumen-compose`](./packages/compose) | Android library for Jetpack Compose foundations and native primitives |\n| [`lumen-compose-wear`](./packages/compose/wear) | Focused Wear OS primitives for at-a-glance round-screen actions, progress, status, metrics, and rows |\n| [`@santi020k/lumen-icons-brand`](./packages/icons-brand) | Optional namespaced brand icons for web `Icon` adapters  |\n| [`@santi020k/lumen`](./packages/lumen) | Umbrella package, CLI, registry metadata, and public package map |\n| [`@santi020k/lumen-mcp`](./packages/mcp) | MCP server for component discovery and source retrieval |\n\n## AI and design workflows\n\nInstall the portable Lumen skill in Codex, Claude Code, Cursor, Windsurf, and other compatible\ncoding agents:\n\n```bash\nnpx skills add santi020k/lumen --skill lumen-ui\n```\n\nThe skill teaches agents how to select, compose, theme, and verify Lumen primitives. Pair it with\n[`@santi020k/lumen-mcp`](./packages/mcp) when an agent needs to search the live catalog or retrieve\ncurrent source, props, tokens, and usage rules.\n\nFor ChatGPT and Codex, install the published\n[Lumen UI plugin](https://chatgpt.com/plugins/plugin_asdk_app_6a8f6c526c5481918eb8a48806fa112b)\nfrom the Plugins Directory. Select **Install plugin**, then mention **@Lumen UI** in a request such\nas “Find the right Lumen components for an accessible React settings screen.” Version 1.0.0 bundles\nthe skill with the hosted, read-only catalog; no separate Lumen account or local MCP setup is needed.\n\nAdditional machine-readable surfaces include:\n\n- [`llms.txt`](./llms.txt) for a concise project map.\n- [`docs/ai-usage.md`](./docs/ai-usage.md) for downstream generation examples.\n- [`docs/styling-contract.md`](./docs/styling-contract.md) for stable parts and component variables.\n- [`docs/import-and-icon-performance.md`](./docs/import-and-icon-performance.md) for repeatable import and icon evidence.\n- [`docs/graphics.md`](./docs/graphics.md) for portable decorative artwork across web and native platforms.\n- [`docs/consumer-regression-fixtures.md`](./docs/consumer-regression-fixtures.md) for production-shaped local coverage.\n- [`docs/project-adoption.md`](./docs/project-adoption.md) for the sibling-project audit and staged\n  web and native migration strategy.\n- [`registry/lumen.registry.json`](./registry/lumen.registry.json) for recipes and installable file\n  groups.\n- [`docs/figma.md`](./docs/figma.md) for Figma variables and Code Connect workflows.\n- [`apps/figma-plugin/README.md`](./apps/figma-plugin/README.md) for the **beta** Figma plugin,\n  Astro starters, and AI handoff.\n- [`plugins/lumen-ui`](./plugins/lumen-ui) for the packaged Codex and ChatGPT plugin, with its\n  [submission and review record](./docs/openai-plugin-submission.md).\n- [`.claude-plugin/marketplace.json`](./.claude-plugin/marketplace.json) for the Claude Code\n  marketplace, with its [installation and submission guide](./docs/claude-code-plugin.md).\n- [`docs/cross-platform.md`](./docs/cross-platform.md) for the native architecture, support tiers,\n  and component-parity policy.\n- [`docs/native-patterns.md`](./docs/native-patterns.md) for developed native compositions and the\n  boundary between Lumen presentation and platform-owned application structure.\n\n## Contributing\n\nLumen is a pnpm workspace. Astro is the reference implementation; shared contracts belong in\n`packages/core`, while framework-specific behavior stays in its adapter package.\n\n```bash\npnpm install\npnpm run dev\npnpm run validate\n```\n\nRead [`CONTRIBUTING.md`](./CONTRIBUTING.md) before opening a pull request. User-visible package\nchanges require a changeset.\n\n## Community\n\nCreate reusable product animations and social videos locally with the\n[Lumen motion studio](./apps/motion/README.md). Its first pilot previews one interface in three\nappearances and exports portrait, square, and landscape MP4s through HyperFrames.\n\n[Feedback & support](https://lumen.santi020k.com/support) connects ideas, questions, bug reports,\nand the [public roadmap](https://lumen.santi020k.com/support#roadmap). Discuss improvements on GitHub\nand follow accepted work through implementation and release.\n\nLumen is free and MIT licensed while the project focuses on adoption, public examples, and\nreal-world feedback.\n\n- Explore task-oriented [guides](https://lumen.santi020k.com/guides).\n- Share a public project in the [community showcase](https://lumen.santi020k.com/community).\n- Evaluate the system with the open [team adoption path](https://lumen.santi020k.com/teams).\n- Tell us what would improve your next build through the\n  [adoption survey](https://github.com/santi020k/lumen/issues/new?template=adoption-feedback.yml).\n\nMaintainers can use the [exposure playbook](./docs/exposure-playbook.md) for publishing cadence,\ncampaign measurement, video scripts, and launch copy, and the\n[marketing package](./docs/marketing/README.md) for execution-ready copy, channel decisions, a\nfour-week calendar, asset briefs, an approval queue, and a community-response library.\n\n## Find your next step\n\n| Resource | Use it for |\n| --- | --- |\n| [Cross-platform architecture](docs/cross-platform.md) | Shared foundations and adapter responsibilities. |\n| [Native compatibility](docs/native-compatibility.md) | Supported toolchains and platform baselines. |\n| [Native release runbook](docs/native-release-runbook.md) | Artifact qualification and distribution gates. |\n\n## License\n\nLumen's original code and artwork are available under the [MIT License](./LICENSE). Generated\ninterface icons retain the Lucide ISC or Feather MIT terms, and generated brand icons retain Font\nAwesome Free's CC BY 4.0 terms. The native packages include the required attribution and license\nnotices; see [`icons/THIRD_PARTY_NOTICES.md`](./icons/THIRD_PARTY_NOTICES.md).\n"
   },
   "meta": {
-    "catalogHash": "6f10857a778456455f40104e24370987df069b5f014abd2cbbea4978f43d44b6",
-    "componentCount": 192,
+    "catalogHash": "0ad601d1e6daafb13ce9a7593d583ff47d231011ba7286c4c148d0df0d7a8fd4",
+    "componentCount": 193,
     "nativeComponentCount": 122,
     "packages": [
       "@santi020k/lumen-astro",
@@ -59593,7 +60033,7 @@
       }
     }
   },
-  "rules": "# Lumen UI\n\nLumen is a multi-framework primitive UI system with Astro as the reference implementation.\n\nUse these files first when generating, reviewing, or migrating apps that use Lumen:\n\n- README.md: public overview and package strategy.\n- docs/ai-usage.md: AI-focused setup, package selection, and component selection.\n- https://lumen.santi020k.com/guides/build-ui-with-ai: tested Astro and React adoption example with a reusable prompt.\n- docs/ai-efficiency.md: reproducible AI token measurement, quality checks, and limits on efficiency claims.\n- skills/lumen-ui/SKILL.md: portable Agent Skill for building, reviewing, and theming Lumen interfaces.\n- docs/feature-roadmap.md: competitor-informed gaps and implementation priorities.\n- registry/lumen.registry.json: installable component, recipe, and documentation manifest.\n- packages/core/src/components.ts: authoritative shared component catalog.\n- packages/astro/components: reference component markup and prop shapes.\n- packages/astro/styles/lumen.css: standalone CSS contract for all frameworks.\n- @santi020k/lumen-mcp: Model Context Protocol server exposing snapshot provenance, structured component discovery, framework-aware usage/source, recipes, tolerant search, tokens, rules, and lumen:// resources for AI agents.\n\nInstall the portable Lumen Agent Skill:\n\n```bash\nnpx skills add santi020k/lumen --skill lumen-ui\n```\n\nDefault usage:\n\n```astro\n---\nimport { Button, Card, Input, Label } from '@santi020k/lumen-astro'\nimport UIPrimitives from '@santi020k/lumen-astro/runtime'\nimport '@santi020k/lumen-astro/styles.css'\n---\n\n<UIPrimitives />\n<Card>\n  <Label for=\"email\">Email</Label>\n  <Input id=\"email\" type=\"email\" />\n  <Button>Subscribe</Button>\n</Card>\n```\n\nRules for agents:\n\n- When Lumen MCP is connected, read `lumen://meta`, `lumen://diagnostics`, and `lumen://rules`, pass the target framework to `lumen_search`, and follow the framework behavior returned by `lumen_get_component`. Retain `lumen://catalog-manifest` and use `lumen_diff_catalog` after upgrades when the client supports cached context.\n- Prefer Astro unless the user explicitly targets React or Web Components.\n- In React, use the visual components with behavior hooks for Dialog, Popover, DropdownMenu, Tabs, Select, Toast, and Tooltip instead of mounting the Astro runtime.\n- In Web Components, registered `lumen-*` elements include behavior parity for Dialog, Popover, DropdownMenu, Tabs, Select, Toast, and Tooltip, including ARIA state, keyboard paths, Escape/outside dismissal, focus handling, native select form participation, and the shared toast controller.\n- For React report filters, use `DateRangeInput` (`value`, `onValueChange`, localized `labels`, bounds and presets) or inline `DateRangeCalendar`. These React-specific compositions are documented in packages/react/README.md and the reporting example at /docs/web/reporting.\n- React record tables can opt into DataTableView from @santi020k/lumen-react/components/data-table-view for search, filters, visibility, density, pagination and controlled sorting. Read docs/data-table-views.md; applications retain cells, data fetching and domain actions.\n- Keep server-paginated DataTable rows in server order with `sortMode=\"manual\"`, controlled `sort` and `onSortChange`. Apply sorting before pagination in the application backend. Use Dialog dismissal policies for pending workflows.\n- Chart X identities must be unique. Use `xLabel` for abbreviated axes, `formatCategory` for full details, and explicit null gaps for missing observations. Read docs/data-visualization.md.\n- Use ImageComparison for before/after media with matching dimensions, alternative text and a visible localized control label. See docs/image-comparison.md for adapter contracts.\n- Read docs/migrating-to-lumen.md before upgrading to v4, especially date-trigger IDs, loading buttons, hidden semantics, copy feedback and native initializer changes.\n- Do not require Tailwind configuration for Lumen components.\n- Give each outer edge one border and radius owner. Flush images inside rounded frames use Image radius=\"none\"; Image defaults to radius=\"lg\". Use one divider at shared edges, account for padding on inset curves, and check phone/desktop corners and keyboard focus in both themes. Keep artwork clipping scoped so it does not cut off focus rings or overlays. See docs/ai-usage.md for styling rules.\n- Use public tokens: canvas, surface, surface-muted, surface-strong, line, ink, ink-soft, ink-muted, brand, brand-solid, brand-soft, on-brand, accent, success, warning, danger, on-danger.\n- Mount `UIPrimitives` once for interactive Astro primitives.\n- Use `glass` for glass surfaces. The obsolete overlay `surface=\"glass\"` alias is removed.\n- Treat schedule, data collection, rich text, theme builder, and advanced fields as supported surfaces with progressively enhanced behavior.\n- Use `lumen list`, `lumen show <component>`, and `lumen add <component>` for individually addressable registry components; component names also resolve from kebab-case aliases such as `data-table`.\n- Runtime CustomEvents used by `UIPrimitives`: `ui:data-table-selection-change` from `[data-ui-datatable]` with `{ values }`; `ui:schedule-change` from `[data-ui-schedule]` with `{ eventId, slot }`; `ui:virtual-list-range` from `[data-ui-virtual-list]` with `{ startIndex, endIndex }`; `ui:tag-remove` from tag groups with `{ value }`; `ui:editor-command` from rich text editors with `{ command }`; `ui:theme-change` from theme builders with `{ hue, tokens }`; `ui:theme-export` from theme builders with `{ css }`; `ui:validate`, `ui:invalid`, and `ui:valid` from `[data-ui-form]` for native Constraint Validation API enhancement; document-level `ui:toast`, `ui:toast-update`, and `ui:toast-dismiss` for runtime toasts; `ui:toast-action` from `[data-ui-toast]` when an action button is pressed.\n- Add `data-ui-form` to forms that should reflect `required`, `pattern`, `min`, `max`, `type`, and custom `setCustomValidity()` state into Field error slots on blur and submit. Use `data-error-required`, `data-error-pattern`, `data-error-min`, `data-error-max`, or `data-error-custom` to override browser validation messages.\n- Toasts use `ToastViewport` for explicit `placement` and `maxCount` configuration. With `UIPrimitives` or registered Web Components, use `window.LumenToast.create(detail)`, `.update(id, detail)`, and `.dismiss(id?)`, import `LumenToast` from `@santi020k/lumen-elements`, or dispatch the matching document events. Runtime toast `detail` supports `title`, `description`, `variant`, `duration`, `placement`, `max`, and `action`.\n\n## Content flow\n\n- Reuse content-flow-header, content-flow-settings, content-flow-list and content-flow-actions recipes; lumen_get_recipe returns complete framework source.\n- Container gutters grow from group to section spacing. Override --ui-container-gutter at the product boundary instead of adding nested page padding.\n- Prose and Typography trim their outer child margins and separate headings from preceding text. Card allows interactive overflow; AspectRatio owns media clipping.\n\n- Read docs/content-flow.md. Stack/Grid own sibling gaps; surfaces own padding; Field owns control feedback spacing. Do not add child margins for a relationship already controlled by a parent gap.\n- Use Stack/Grid gap=\"related\" (8px), \"group\" (16px, default), or \"section\" (32px). Size gaps match the canonical scale: xs=4, sm=8, md=12, lg=16, xl=24, 2xl=32, 3xl=48. CSS variables use rem. Retrieve spacing and spacingRoles through lumen_get_tokens.\n- Use CardHeader, CardContent and CardFooter. Card owns their gap; missing, hidden and empty parts leave no spacing. Use a nested Stack inside the body and allow footer actions to wrap. Card density is compact, comfortable (default), or spacious; it does not reduce control touch targets.\n- Keep Prose/Typography text rhythm separate from sibling gaps. Check long translated text, enlarged text, validation, optional parts and phone/desktop wrapping in both themes. Use one outer Container for page gutters and one border owner per visible edge.\n\nBefore using MCP contracts, call lumen_check_compatibility with resolved installed Lumen versions.\nIf versions differ, use installed public types and package README or a matching MCP package.\nNever silently upgrade an application. For an explicit v4 upgrade, read lumen_get_migration and\npreview lumen migrate v4 --dry-run --json; review dependency updates and application workarounds.\n\n- [React form workflows](docs/powerful-forms.md): optional dependent validation, edit tracking, steps, repeatable rows, and async checks.\n",
+  "rules": "# Lumen UI\n\nLumen is a multi-framework primitive UI system with Astro as the reference implementation.\n\nUse these files first when generating, reviewing, or migrating apps that use Lumen:\n\n- README.md: public overview and package strategy.\n- docs/ai-usage.md: AI-focused setup, package selection, and component selection.\n- https://lumen.santi020k.com/guides/build-ui-with-ai: tested Astro and React adoption example with a reusable prompt.\n- docs/ai-efficiency.md: reproducible AI token measurement, quality checks, and limits on efficiency claims.\n- skills/lumen-ui/SKILL.md: portable Agent Skill for building, reviewing, and theming Lumen interfaces.\n- docs/feature-roadmap.md: competitor-informed gaps and implementation priorities.\n- registry/lumen.registry.json: installable component, recipe, and documentation manifest.\n- packages/core/src/components.ts: authoritative shared component catalog.\n- packages/astro/components: reference component markup and prop shapes.\n- packages/astro/styles/lumen.css: standalone CSS contract for all frameworks.\n- @santi020k/lumen-mcp: Model Context Protocol server exposing snapshot provenance, structured component discovery, framework-aware usage/source, recipes, tolerant search, tokens, rules, and lumen:// resources for AI agents.\n\nInstall the portable Lumen Agent Skill:\n\n```bash\nnpx skills add santi020k/lumen --skill lumen-ui\n```\n\nDefault usage:\n\n```astro\n---\nimport { Button, Card, Input, Label } from '@santi020k/lumen-astro'\nimport UIPrimitives from '@santi020k/lumen-astro/runtime'\nimport '@santi020k/lumen-astro/styles.css'\n---\n\n<UIPrimitives />\n<Card>\n  <Label for=\"email\">Email</Label>\n  <Input id=\"email\" type=\"email\" />\n  <Button>Subscribe</Button>\n</Card>\n```\n\nRules for agents:\n\n- When Lumen MCP is connected, read `lumen://meta`, `lumen://diagnostics`, and `lumen://rules`, pass the target framework to `lumen_search`, and follow the framework behavior returned by `lumen_get_component`. Retain `lumen://catalog-manifest` and use `lumen_diff_catalog` after upgrades when the client supports cached context.\n- Prefer Astro unless the user explicitly targets React or Web Components.\n- In React, use the visual components with behavior hooks for Dialog, Popover, DropdownMenu, Tabs, Select, Toast, and Tooltip instead of mounting the Astro runtime.\n- In Web Components, registered `lumen-*` elements include behavior parity for Dialog, Popover, DropdownMenu, Tabs, Select, Toast, and Tooltip, including ARIA state, keyboard paths, Escape/outside dismissal, focus handling, native select form participation, and the shared toast controller.\n- For React report filters, use `DateRangeInput` (`value`, `onValueChange`, localized `labels`, bounds and presets) or inline `DateRangeCalendar`. These React-specific compositions are documented in packages/react/README.md and the reporting example at /docs/web/reporting.\n- React record tables can opt into DataTableView from @santi020k/lumen-react/components/data-table-view for search, filters, visibility, density, pagination and controlled sorting. Read docs/data-table-views.md; applications retain cells, data fetching and domain actions.\n- Keep server-paginated DataTable rows in server order with `sortMode=\"manual\"`, controlled `sort` and `onSortChange`. Apply sorting before pagination in the application backend. Use Dialog dismissal policies for pending workflows.\n- Chart X identities must be unique. Use `xLabel` for abbreviated axes, `formatCategory` for full details, and explicit null gaps for missing observations. Read docs/data-visualization.md.\n- Use ImageComparison for before/after media with matching dimensions, alternative text and a visible localized control label. See docs/image-comparison.md for adapter contracts.\n- Read docs/migrating-to-lumen.md before upgrading to v4, especially date-trigger IDs, loading buttons, hidden semantics, copy feedback and native initializer changes.\n- Do not require Tailwind configuration for Lumen components.\n- Give each outer edge one border and radius owner. Flush images inside rounded frames use Image radius=\"none\"; Image defaults to radius=\"lg\". Use one divider at shared edges, account for padding on inset curves, and check phone/desktop corners and keyboard focus in both themes. Keep artwork clipping scoped so it does not cut off focus rings or overlays. See docs/ai-usage.md for styling rules.\n- Use public tokens: canvas, surface, surface-muted, surface-strong, line, ink, ink-soft, ink-muted, brand, brand-solid, brand-soft, on-brand, accent, success, warning, danger, on-danger.\n- Mount `UIPrimitives` once for interactive Astro primitives.\n- Use `glass` for glass surfaces. The obsolete overlay `surface=\"glass\"` alias is removed.\n- Treat schedule, data collection, rich text, theme builder, and advanced fields as supported surfaces with progressively enhanced behavior.\n- Use `lumen list`, `lumen show <component>`, and `lumen add <component>` for individually addressable registry components; component names also resolve from kebab-case aliases such as `data-table`.\n- Runtime CustomEvents used by `UIPrimitives`: `ui:data-table-selection-change` from `[data-ui-datatable]` with `{ values }`; `ui:schedule-change` from `[data-ui-schedule]` with `{ eventId, slot }`; `ui:virtual-list-range` from `[data-ui-virtual-list]` with `{ startIndex, endIndex }`; `ui:tag-remove` from tag groups with `{ value }`; `ui:editor-command` from rich text editors with `{ command }`; `ui:theme-change` from theme builders with `{ hue, tokens }`; `ui:theme-export` from theme builders with `{ css }`; `ui:validate`, `ui:invalid`, and `ui:valid` from `[data-ui-form]` for native Constraint Validation API enhancement; document-level `ui:toast`, `ui:toast-update`, and `ui:toast-dismiss` for runtime toasts; `ui:toast-action` from `[data-ui-toast]` when an action button is pressed.\n- Add `data-ui-form` to forms that should reflect `required`, `pattern`, `min`, `max`, `type`, and custom `setCustomValidity()` state into Field error slots on blur and submit. Use `data-error-required`, `data-error-pattern`, `data-error-min`, `data-error-max`, or `data-error-custom` to override browser validation messages.\n- Toasts use `ToastViewport` for explicit `placement` and `maxCount` configuration. With `UIPrimitives` or registered Web Components, use `window.LumenToast.create(detail)`, `.update(id, detail)`, and `.dismiss(id?)`, import `LumenToast` from `@santi020k/lumen-elements`, or dispatch the matching document events. Runtime toast `detail` supports `title`, `description`, `variant`, `duration`, `placement`, `max`, and `action`.\n\n## Content flow\n\n- Reuse content-flow-header, content-flow-settings, content-flow-list and content-flow-actions recipes; lumen_get_recipe returns complete framework source.\n- Container gutters grow from group to section spacing. Override --ui-container-gutter at the product boundary instead of adding nested page padding.\n- Prose and Typography trim their outer child margins and separate headings from preceding text. Card allows interactive overflow; AspectRatio owns media clipping.\n\n- Read docs/content-flow.md. Stack/Grid own sibling gaps; surfaces own padding; Field owns control feedback spacing. Do not add child margins for a relationship already controlled by a parent gap.\n- Use Stack/Grid gap=\"related\" (8px), \"group\" (16px, default), or \"section\" (32px). Size gaps match the canonical scale: xs=4, sm=8, md=12, lg=16, xl=24, 2xl=32, 3xl=48. CSS variables use rem. Retrieve spacing and spacingRoles through lumen_get_tokens.\n- Use CardHeader, CardContent and CardFooter. Card owns their gap; missing, hidden and empty parts leave no spacing. Use a nested Stack inside the body and allow footer actions to wrap. Card density is compact, comfortable (default), or spacious; it does not reduce control touch targets.\n- Keep Prose/Typography text rhythm separate from sibling gaps. Check long translated text, enlarged text, validation, optional parts and phone/desktop wrapping in both themes. Use one outer Container for page gutters and one border owner per visible edge.\n\nBefore using MCP contracts, call lumen_check_compatibility with resolved installed Lumen versions.\nIf versions differ, use installed public types and package README or a matching MCP package.\nNever silently upgrade an application. For an explicit v4 upgrade, read lumen_get_migration and\npreview lumen migrate v4 --dry-run --json; review dependency updates and application workarounds.\n\n- [React form workflows](docs/powerful-forms.md): optional dependent validation, edit tracking, steps, repeatable rows, and async checks.\n\n- WorldMap: reusable dotted/solid SVG map in Astro, React and Elements. Import country geometry explicitly from @santi020k/lumen-core/world-map-data; see docs/world-map.md.\n",
   "tokens": {
     "presets": {
       "attribute": "data-lumen-preset",
