@@ -81,7 +81,7 @@ jobs:
           fetch-depth: 1
       - name: Verify stable Apple toolchain
         run: apps/playground-apple/scripts/check-app-store-toolchain.sh
-      - uses: santi020k/quality/actions/setup-pnpm@ffa37774f75b2b8e761fe3d71e7046cdb6694a69 # v1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6.2.0
         with:
           node-version: 22.x
       - name: Build app and native Tour test bundle once
@@ -120,7 +120,7 @@ jobs:
           fetch-depth: 1
       - name: Verify stable Apple toolchain
         run: apps/playground-apple/scripts/check-app-store-toolchain.sh
-      - uses: santi020k/quality/actions/setup-pnpm@ffa37774f75b2b8e761fe3d71e7046cdb6694a69 # v1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6.2.0
         with:
           node-version: 22.x
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1

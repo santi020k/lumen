@@ -66,9 +66,8 @@ case "$mode" in
         pnpm run test:swift-version
         timed "swift test" swift test
         timed "pnpm run check:swift-source-compatibility" pnpm run check:swift-source-compatibility
-        timed "pnpm run check:swift-api-baseline" pnpm run check:swift-api-baseline
         timed "swift build --package-path apps/playground-apple" swift build --package-path apps/playground-apple
-        timed "pnpm run check:swift-package-candidate" pnpm run check:swift-package-candidate
+        timed "Clean Swift consumer and API baselines" pnpm run check:swift-package-candidate --check-api-baseline
         ;;
     react-native)
         pnpm run check:react-native-native-package:ios

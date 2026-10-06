@@ -202,8 +202,17 @@ the documentation baselines without changing images or comparison tolerances.
 
 Shallow checkouts avoid downloading unrelated history; Swift compatibility fetches its immutable
 baseline tag explicitly. Dependency/browser caches and incremental library/playground Swift builds
-avoid repeat setup. The disposable package consumer still builds clean, without restored artifacts. Swift phases and
-Compose instrumentation, consumer install, and capture phases report separate durations in CI.
+avoid repeat setup. Capture build and capture groups install only Node; their native scripts do not
+need the pnpm workspace. PNG comparison still installs its JavaScript dependencies on Linux.
+
+The disposable Swift package consumer builds clean, without restored artifacts. Its
+`--check-api-baseline` option extracts and compares public symbols from those same-run products,
+covering LumenUI on all five Apple platforms and LumenWidgetUI on macOS, iOS, and watchOS. This removes
+eight duplicate API-only builds while retaining the exact version/revision, resource, notice,
+consumer build, and classified API checks. Missing or ambiguous modules and incomplete platform maps
+fail the gate. Standalone API checks and baseline updates still build repository sources.
+Swift phases and Compose instrumentation, consumer install, and capture phases report separate
+durations in CI.
 GitHub's standard macOS concurrency limit may queue groups; splitting does not guarantee four-way
 execution on every account. Concurrency cancels superseded runs. Tests, baseline images, tolerances,
 and release approval are unchanged.
