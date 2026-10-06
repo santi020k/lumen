@@ -1,6 +1,9 @@
 <p align="center">
   <a href="https://lumen.santi020k.com">
-    <img src="https://raw.githubusercontent.com/santi020k/lumen/main/apps/docs/public/logo.svg" alt="Lumen UI" width="233" height="60">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/santi020k/lumen/main/docs/assets/readme/package-dark.svg">
+      <img src="https://raw.githubusercontent.com/santi020k/lumen/main/docs/assets/readme/package-light.svg" alt="Lumen UI — Web. Native. Thoughtfully connected." width="1200" height="184">
+    </picture>
   </a>
 </p>
 
@@ -25,11 +28,31 @@
 
 **Package:** `@santi020k/lumen`
 
-**On this page:** [Typography](#typography) · [Version migration previews](#version-migration-previews) · [Coordinated consumer rollout](#coordinated-consumer-rollout) · [Resources](#resources)
+**On this page:** [Install](#install) · [Commands](#commands) · [Appearance presets](#appearance-presets) · [Resources](#resources)
 
----
+<details>
+<summary>Browse all sections</summary>
+
+- [Install](#install)
+- [Typography](#typography)
+- [Commands](#commands)
+- [Version migration previews](#version-migration-previews)
+- [Coordinated consumer rollout](#coordinated-consumer-rollout)
+- [Consumer upgrade and theme audits](#consumer-upgrade-and-theme-audits)
+- [Content flow](#content-flow)
+- [Appearance presets](#appearance-presets)
+- [Preview a v4 migration](#preview-a-v4-migration)
+- [Dashboard header recipes](#dashboard-header-recipes)
+- [Visual interactions and product blocks](#visual-interactions-and-product-blocks)
+- [Presence motion](#presence-motion)
+- [Studio media workspace](#studio-media-workspace)
+- [Resources](#resources)
+
+</details>
 
 Shared foundation and umbrella package for Lumen UI.
+
+## Install
 
 Install the framework package directly:
 
@@ -56,6 +79,8 @@ Lumen defaults `--ui-font` to the canonical Santi020k Montserrat family stack:
 The package declares the family but does not bundle or load font files. Applications should load
 Montserrat once through their preferred delivery path, or override `--ui-font` when using another
 typeface.
+
+## Commands
 
 The umbrella package also exposes typed registry metadata and the `lumen` CLI:
 
@@ -226,21 +251,8 @@ mapping with resolved opaque HSL channels. Missing or unresolved values and fail
 contrast produce findings and a failing theme-audit exit status. Inspect computed mappings with
 `inspectLumenTheme` from core for CSS variable resolution in actual light, dark and nested scopes.
 
-See [consumer workflows](../../docs/consumer-ui-recipes.md#executable-consumer-workflows) for
+See [consumer workflows](https://github.com/santi020k/lumen/blob/main/docs/consumer-ui-recipes.md#executable-consumer-workflows) for
 the installable React form and operational-record recipes.
-
-## Resources
-
-| Guide | What you will find |
-| --- | --- |
-| [AI usage examples](https://github.com/santi020k/lumen/blob/main/docs/ai-usage.md) | Reference for aI usage examples. |
-| [Consumer adoption](https://github.com/santi020k/lumen/blob/main/docs/project-adoption.md) | Reference for consumer adoption. |
-| [MCP server](https://github.com/santi020k/lumen/blob/main/packages/mcp/README.md) | Reference for mCP server. |
-| [Contributing](https://github.com/santi020k/lumen/blob/main/CONTRIBUTING.md) | Setup, checks, and contribution workflow. |
-| [Release history](https://github.com/santi020k/lumen/releases) | Published releases and version notes. |
-
-Part of [Lumen UI](https://lumen.santi020k.com), created by [Santiago Molina](https://santi020k.com).
-Licensed under [MIT](https://github.com/santi020k/lumen/blob/main/LICENSE); third-party artwork retains its own notices.
 
 ## Content flow
 
@@ -248,9 +260,8 @@ Stack and Grid own sibling spacing. Their gap accepts `related`, `group` (defaul
 or canonical `none`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl` sizes. Card owns the inset and gap
 between its visible parts; use `density="compact"`, `"comfortable"` (default) or `"spacious"`.
 Elements uses the same names as attributes. Use a nested Stack for CardContent groups and Field
-for label/control/feedback. See [content flow](../../docs/content-flow.md) and the
-[v4 migration guide](../../docs/migrating-to-lumen.md) for ownership and changed explicit gaps.
-
+for label/control/feedback. See [content flow](https://github.com/santi020k/lumen/blob/main/docs/content-flow.md) and the
+[v4 migration guide](https://github.com/santi020k/lumen/blob/main/docs/migrating-to-lumen.md) for ownership and changed explicit gaps.
 
 ### Reading and complete compositions
 
@@ -260,7 +271,7 @@ when a product needs fixed gutters. Card allows interactive overflow; use Aspect
 Install `content-flow-header`, `content-flow-settings`, `content-flow-list` or `content-flow-actions`
 with `lumen add <recipe> --target astro|react|elements`. MCP returns the same complete examples.
 Connect application actions and replace sample IDs before reuse. See
-[content flow](../../docs/content-flow.md) for composition and migration guidance.
+[content flow](https://github.com/santi020k/lumen/blob/main/docs/content-flow.md) for composition and migration guidance.
 
 React is an optional peer for the published React starter templates. Astro and Elements consumers
 do not need it; React consumers should follow the React adapter's existing installation contract.
@@ -268,7 +279,7 @@ do not need it; React consumers should follow the React adapter's existing insta
 ## Appearance presets
 
 Choose Default, Studio or Glass with `data-lumen-preset` on a scoped web container.
-Use the [appearance guide](../../docs/appearance-presets.md) for semantic overrides,
+Use the [appearance guide](https://github.com/santi020k/lumen/blob/main/docs/appearance-presets.md) for semantic overrides,
 ThemeBuilder controls and native fallbacks. The Studio preset uses PostLens as its visual reference.
 
 ## Preview a v4 migration
@@ -296,7 +307,7 @@ versions and explicit SDK dependency-review findings.
 Install `page-header` and `section-header` with `lumen add <recipe> --target astro|react|elements`.
 These compositions provide page identity, optional breadcrumbs and metadata, translated action-group
 labels, and responsive action wrapping using the existing primitives. The application owns its
-routes and action handlers. See the [header recipe guide](../../docs/consumer-ui-recipes.md#page-and-section-headers).
+routes and action handlers. See the [header recipe guide](https://github.com/santi020k/lumen/blob/main/docs/consumer-ui-recipes.md#page-and-section-headers).
 
 The `auth-onboarding` recipe includes visual email-code sign-in, code verification, and passkey
 recovery examples for Astro, React, and Elements. Controls stay disabled until the consumer connects
@@ -304,12 +315,12 @@ its authentication service. See the [login and Auth integration reference](https
 
 ## Visual interactions and product blocks
 
-See [visual interactions](../../docs/visual-interactions.md) for keyed motion, semantic effects,
+See [visual interactions](https://github.com/santi020k/lumen/blob/main/docs/visual-interactions.md) for keyed motion, semantic effects,
 chart continuity, AI surfaces, optional SDK integrations, and the four installable product recipes.
 ## Presence motion
 
 `animateLumenPresence` is available from the umbrella package or `@santi020k/lumen-core` for
-optional browser-based enter/exit effects. See the [core motion contract](../core/README.md#presence-motion)
+optional browser-based enter/exit effects. See the [core motion contract](https://github.com/santi020k/lumen/blob/main/packages/core/README.md#presence-motion)
 for presets, semantic timing, cancellation, reduced motion, and consumer-owned DOM/focus behavior.
 The optional motion stylesheet progressively enhances native disclosures with natural-height transitions;
 unsupported browsers keep native immediate toggles.
@@ -322,5 +333,18 @@ helper's system and local reduced-motion checks work without this CSS import.
 ## Studio media workspace
 
 Compose MediaViewport, MediaThumbnail, MediaFilmstrip and ImageComparison modes with the
-[Studio media workspace recipes](../../docs/studio-media-workspaces.md). Applications retain
+[Studio media workspace recipes](https://github.com/santi020k/lumen/blob/main/docs/studio-media-workspaces.md). Applications retain
 media loading, selection, adjustment algorithms, processing, export and persistence.
+
+## Resources
+
+| Guide | What you will find |
+| --- | --- |
+| [AI usage examples](https://github.com/santi020k/lumen/blob/main/docs/ai-usage.md) | Setup and composition contracts for coding agents. |
+| [Consumer adoption](https://github.com/santi020k/lumen/blob/main/docs/project-adoption.md) | Adoption boundaries and staged migration guidance. |
+| [MCP server](https://github.com/santi020k/lumen/blob/main/packages/mcp/README.md) | Catalog discovery, transport setup, and agent workflows. |
+| [Contributing](https://github.com/santi020k/lumen/blob/main/CONTRIBUTING.md) | Setup, checks, and contribution workflow. |
+| [Release history](https://github.com/santi020k/lumen/releases) | Published releases and version notes. |
+
+Part of [Lumen UI](https://lumen.santi020k.com), created by [Santiago Molina](https://santi020k.com).
+Licensed under [MIT](https://github.com/santi020k/lumen/blob/main/LICENSE); third-party artwork retains its own notices.

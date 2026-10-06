@@ -1,9 +1,27 @@
-# Lumen React Native Playground
+<p align="center">
+  <a href="https://lumen.santi020k.com">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="../../docs/assets/readme/package-dark.svg">
+      <img src="../../docs/assets/readme/package-light.svg" alt="Lumen UI — Web. Native. Thoughtfully connected." width="1200" height="184">
+    </picture>
+  </a>
+</p>
 
-This candidate uses the local Lumen 4 adapter. Catalog discovery accepts component IDs,
-provides filter reset, and shows the workspace release version. See
-[the v4 playground guide](../../docs/playgrounds.md#lumen-4-candidate) for search and capture behavior.
+<h1 align="center">Lumen React Native Playground</h1>
 
+<p align="center">Expo · iOS, Android, and browser previews</p>
+
+<p align="center"><a href="https://lumen.santi020k.com/docs/react-native/playground#preview">Browser preview</a> · <a href="../../docs/playgrounds.md">Setup guide</a> · <a href="../../packages/react-native/README.md">React Native package</a></p>
+
+**On this page:** [Overview](#overview) · [Run locally](#run-locally) · [Native host configuration](#native-host-configuration) · [Open the published playground](#open-the-published-playground) · [App branding](#app-branding) · [Resources](#resources)
+
+<p align="center">
+  <img src="../docs/src/assets/platforms/react-native.webp" alt="Lumen react-native playground showing a contributor profile example" width="220">
+</p>
+
+<p align="center"><em>Expo browser preview; native rendering is verified separately.</em></p>
+
+## Overview
 
 <!-- cspell:words screencap simctl -->
 
@@ -17,11 +35,16 @@ search, product-intent categories, and focused component detail views. Settings 
 santi020k theme presets, system/light/dark appearance, live accessibility context, runtime
 localization, app details, privacy, and resources.
 
+> **Local candidate:** This checkout uses the Lumen 4 adapter. Search accepts component IDs and
+> supports filter reset. See the [v4 playground guide](../../docs/playgrounds.md#lumen-4-candidate)
+> for release-version display and capture behavior.
+
+## Run locally
+
 Install the repository dependencies once from the repository root:
 
 ```bash
-corepack enable
-pnpm install
+pnpm install --frozen-lockfile
 ```
 
 Then start Expo:
@@ -34,6 +57,8 @@ pnpm playground:react-native:web
 Scan the Expo QR code, or press `i`, `a`, or `w` to choose iOS, Android, or web. See
 [`docs/playgrounds.md`](../../docs/playgrounds.md) for prerequisites, EAS setup, APK generation, and
 store distribution profiles.
+
+## Native host configuration
 
 The SDK 57 configuration enables iOS scene support through `expo-build-properties` so native
 builds made with Xcode 27 launch on iOS and iPadOS 27. Keep this opt-in until the Expo SDK upgrade;
@@ -61,9 +86,9 @@ exp://u.expo.dev/669035f0-04c0-41cd-9ca6-73d99bdb7dce/branch/01a03c76-64c5-7c07-
 ```
 
 The current app targets Expo SDK 57 and therefore requires an Expo Go client that supports SDK 57.
-As of August 2026, the public App Store and Google Play Expo Go client targets SDK 54. Do not present
-this link as a general-public installation path until Expo Go supports SDK 57 or Lumen intentionally
-maintains a separately tested SDK 54 compatibility build.
+Check the installed Expo Go client's supported SDK before opening the link. If it does not
+support SDK 57, use the local native development build described in the playground guide.
+The browser preview remains available without an Expo Go installation.
 
 Publish a new version from an authenticated Expo session with:
 
@@ -161,3 +186,12 @@ upgrading. Native iOS source compilation takes longer than using the prebuilt re
 is local application configuration, not a fix automatically installed by the published Lumen
 package. Downstream apps affected by this version must apply the patch and rebuild their native
 iOS renderer themselves. Android source builds and physical-device behavior need separate checks.
+
+## Resources
+
+- [Repository overview](../../README.md) — framework packages, demos, and the project map.
+- [Contributing](../../CONTRIBUTING.md) — workspace setup, validation, and release workflow.
+- [Feedback and support](https://lumen.santi020k.com/support) — questions, ideas, and bug reports.
+
+Part of [Lumen UI](https://lumen.santi020k.com), created by [Santiago Molina](https://santi020k.com).
+Licensed under [MIT](../../LICENSE); third-party artwork retains its own notices.

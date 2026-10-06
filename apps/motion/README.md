@@ -1,4 +1,19 @@
-# Lumen motion studio
+<p align="center">
+  <a href="https://lumen.santi020k.com">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="../../docs/assets/readme/package-dark.svg">
+      <img src="../../docs/assets/readme/package-light.svg" alt="Lumen UI — Web. Native. Thoughtfully connected." width="1200" height="184">
+    </picture>
+  </a>
+</p>
+
+<h1 align="center">Lumen Motion Studio</h1>
+
+<p align="center">Product films · Four appearances · Three export formats</p>
+
+<p align="center"><a href="../../docs/brand-guidelines.md">Brand guide</a> · <a href="src">Composition source</a> · <a href="../../docs/marketing/PUBLISHING_QUEUE.md">Publishing queue</a></p>
+
+**On this page:** [Run locally](#run-locally) · [Build, verify, and render](#build-verify-and-render) · [Source and reuse](#source-and-reuse) · [Motion and responsive composition](#motion-and-responsive-composition) · [Draft social copy](#draft-social-copy) · [Resources](#resources)
 
 A private workspace for reusable Lumen product animations. The first pilot, **One interface,
 four appearances**, shows the same sample workspace in Lumen Light, Lumen Dark, Glass, and Studio. Studio is
@@ -136,3 +151,12 @@ sample data. The final line points to lumen.santi020k.com.
 This is a draft asset and caption. Publication remains subject to the
 [publishing queue](../../docs/marketing/PUBLISHING_QUEUE.md); generating a file grants no posting
 or deployment authorization.
+
+## Resources
+
+- [Repository overview](../../README.md) — framework packages, demos, and the project map.
+- [Contributing](../../CONTRIBUTING.md) — workspace setup, validation, and release workflow.
+- [Feedback and support](https://lumen.santi020k.com/support) — questions, ideas, and bug reports.
+
+Part of [Lumen UI](https://lumen.santi020k.com), created by [Santiago Molina](https://santi020k.com).
+Licensed under [MIT](../../LICENSE); third-party artwork retains its own notices.

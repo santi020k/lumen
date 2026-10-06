@@ -1,6 +1,9 @@
 <p align="center">
   <a href="https://lumen.santi020k.com">
-    <img src="https://raw.githubusercontent.com/santi020k/lumen/main/apps/docs/public/logo.svg" alt="Lumen UI" width="233" height="60">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/santi020k/lumen/main/docs/assets/readme/package-dark.svg">
+      <img src="https://raw.githubusercontent.com/santi020k/lumen/main/docs/assets/readme/package-light.svg" alt="Lumen UI — Web. Native. Thoughtfully connected." width="1200" height="184">
+    </picture>
   </a>
 </p>
 
@@ -25,24 +28,59 @@
 
 **Package:** `@santi020k/lumen-react`
 
-Production builds compact component JavaScript without renaming identifiers or changing the
-ES2022 target. Declaration files and public imports retain their existing contracts.
+**On this page:** [Install](#install) · [Usage](#usage) · [Appearance presets](#appearance-presets) · [Resources](#resources)
 
-**On this page:** [Install](#install) · [Usage](#usage) · [Dropdown menus](#dropdown-menus) · [Language selection](#language-selection) · [Forms](#forms) · [Resources](#resources)
+<details>
+<summary>Browse all sections</summary>
 
----
+- [Install](#install)
+- [Selective imports](#selective-imports)
+- [Appearance presets](#appearance-presets)
+- [Usage](#usage)
+- [Dropdown menus](#dropdown-menus)
+- [Language selection](#language-selection)
+- [Forms](#forms)
+- [Error states](#error-states)
+- [Data visualization](#data-visualization)
+- [Next.js and server components](#nextjs-and-server-components)
+- [Compatibility wrappers](#compatibility-wrappers)
+- [Context navigation](#context-navigation)
+- [Optimized images](#optimized-images)
+- [Kanban boards](#kanban-boards)
+- [Motion](#motion)
+- [Glass surfaces](#glass-surfaces)
+- [Semantic stat roots](#semantic-stat-roots)
+- [Consumer composition recipes](#consumer-composition-recipes)
+- [Exact amount fields](#exact-amount-fields)
+- [Inline date range calendar](#inline-date-range-calendar)
+- [Input-attached date range selection](#input-attached-date-range-selection)
+- [Phone presentation in v4](#phone-presentation-in-v4)
+- [Combobox keyboard behavior](#combobox-keyboard-behavior)
+- [Content flow](#content-flow)
+- [Attachment composition](#attachment-composition)
+- [Chart datum actions](#chart-datum-actions)
+- [Dashboard composition](#dashboard-composition)
+- [Hook state updates](#hook-state-updates)
+- [Advanced table views](#advanced-table-views)
+- [Advanced form workflows](#advanced-form-workflows)
+- [Device demonstrations](#device-demonstrations)
+- [Visual interactions](#visual-interactions)
+- [World map](#world-map)
+- [Operational workflows](#operational-workflows)
+- [Studio media workspace](#studio-media-workspace)
+- [Resources](#resources)
 
-React primitives for Lumen UI.
+</details>
 
-This package provides React components for the shared Lumen primitive catalog using the standalone
-Lumen stylesheet.
+React components and behavior hooks for Lumen UI, using the shared standalone stylesheet.
+Start with one CSS import, then compose public primitives in your existing React application.
 
-See the [shared web form contracts](../../docs/form-controls.md) for value ownership, reset,
+See the [shared web form contracts](https://github.com/santi020k/lumen/blob/main/docs/form-controls.md) for value ownership, reset,
 submission, disabled state, and event behavior.
 
 Form controls use `visualSize` (`visual-size` in Elements) with `default`, `sm` and `lg`.
 Select, PhoneInput and Segmented follow Input and NativeSelect; numeric input/select `size` keeps
-its native meaning. See the [v4 migration guide](../../docs/migrating-v3-to-v4.md#form-control-visual-sizing).
+its native meaning. See the [v4 migration guide](https://github.com/santi020k/lumen/blob/main/docs/migrating-v3-to-v4.md#form-control-visual-sizing).
 
 ## Install
 
@@ -75,6 +113,9 @@ your preferred delivery path, or override `--ui-font` in application CSS.
 
 ## Selective imports
 
+Production builds compact component JavaScript without renaming identifiers or changing the
+ES2022 target. Declaration files and public imports retain their existing contracts.
+
 Root imports remain supported. Standalone component entrypoints include `/components/attachments`,
 `/components/bullet-chart`, `/components/comparison-chart`, `/components/data-table`,
 `/components/date-range-calendar`, `/components/date-range-input`, `/components/expanded-charts`,
@@ -94,17 +135,17 @@ smaller final bundle: a bundler can already remove unused root exports. Run the 
 
 ## Appearance presets
 
-Use a scoped `data-lumen-preset="studio"` container, or select a preset with `useThemeBuilder`. See [appearance presets](../../docs/appearance-presets.md) for theme overrides and explicit glass surfaces.
+Use a scoped `data-lumen-preset="studio"` container, or select a preset with `useThemeBuilder`. See [appearance presets](https://github.com/santi020k/lumen/blob/main/docs/appearance-presets.md) for theme overrides and explicit glass surfaces.
 
 ## Usage
 
 ```tsx
-import { Button, Card, Input } from "@santi020k/lumen-react";
+import { Button, Card, Input, Label } from "@santi020k/lumen-react";
 
 export function SubscribeForm() {
   return (
     <Card>
-      <label htmlFor="email">Email</label>
+      <Label htmlFor="email">Email</Label>
       <Input id="email" type="email" placeholder="you@example.com" />
       <Button>Subscribe</Button>
     </Card>
@@ -230,7 +271,7 @@ diagnostics, or decide whether retrying is safe.
 />
 ```
 
-See the repository [React error-handling guide](../../docs/error-handling.md#react) for the complete
+See the repository [React error-handling guide](https://github.com/santi020k/lumen/blob/main/docs/error-handling.md#react) for the complete
 example, error-boundary ownership, announcement behavior, and verification guidance.
 
 For long articles, `Anchor` accepts optional `depth`, `index`, and `description` metadata plus an
@@ -272,12 +313,11 @@ The web visualization milestone adds `WaterfallChart` for signed changes and exp
 `Histogram` for precomputed numeric bins (`frequency="density"` for unequal widths). Line charts
 support explicit continuous axes, annotations, optional keyboard/pointer/touch inspection, and
 synchronized cursors. Heatmaps show labeled axes, a color legend, and explicit missing cells.
-See the [visualization contracts](../../docs/data-visualization.md) and
+See the [visualization contracts](https://github.com/santi020k/lumen/blob/main/docs/data-visualization.md) and
 [interactive web example](https://lumen.santi020k.com/docs/web/data-visualization).
 
 Use `interactive`, `syncGroup`, and optional `cursor`/`onCursorChange` on `LineChart`. A supplied
 `cursor` is controlled; the owner must accept requests before the selection changes.
-
 
 `Sparkline`, `BarChart`, `LineChart`, `PieChart`, `ScatterChart`, `Heatmap`, `RangeChart`, and
 `ComboChart` use the shared chart contracts and
@@ -285,7 +325,7 @@ render without an external charting dependency. Data charts expose a revealable 
 default. `PieChart` accepts one series and defaults to a donut presentation.
 
 Every chart includes a factual screen-reader summary by default and accepts `summary` for more
-useful domain context. See [data visualization](../../docs/data-visualization.md) for selection,
+useful domain context. See [data visualization](https://github.com/santi020k/lumen/blob/main/docs/data-visualization.md) for selection,
 missing-data, live-data, and accessibility guidance.
 
 ```tsx
@@ -541,7 +581,7 @@ or `variant="glass"` for selective translucency.
 
 ## Consumer composition recipes
 
-See [consumer UI recipes](../../docs/consumer-ui-recipes.md) for static React icons, responsive
+See [consumer UI recipes](https://github.com/santi020k/lumen/blob/main/docs/consumer-ui-recipes.md) for static React icons, responsive
 record tables, keyboard-aware native sheets, whole-unit amount fields, adaptive editors, and
 asynchronous action states. Each recipe identifies the public primitives and the behavior that
 remains owned by the application.
@@ -570,21 +610,8 @@ without replacing the active draft. Currency rules and limits remain application
 <AmountField name="amount" locale="es-CO" defaultValue="1234.50" aria-label="Amount COP" />
 ```
 
-See [consumer workflows](../../docs/consumer-ui-recipes.md#executable-consumer-workflows) for
+See [consumer workflows](https://github.com/santi020k/lumen/blob/main/docs/consumer-ui-recipes.md#executable-consumer-workflows) for
 validation, reset, operational-record actions and opt-in MessageScroller following.
-
-## Resources
-
-| Guide | What you will find |
-| --- | --- |
-| [Consumer UI recipes](https://github.com/santi020k/lumen/blob/main/docs/consumer-ui-recipes.md) | Reference for consumer UI recipes. |
-| [React Hook Form adapters](https://github.com/santi020k/lumen/blob/main/packages/react-hook-form/README.md) | Reference for react Hook Form adapters. |
-| [Import and icon performance](https://github.com/santi020k/lumen/blob/main/docs/import-and-icon-performance.md) | Reference for import and icon performance. |
-| [Contributing](https://github.com/santi020k/lumen/blob/main/CONTRIBUTING.md) | Setup, checks, and contribution workflow. |
-| [Release history](https://github.com/santi020k/lumen/releases) | Published releases and version notes. |
-
-Part of [Lumen UI](https://lumen.santi020k.com), created by [Santiago Molina](https://santi020k.com).
-Licensed under [MIT](https://github.com/santi020k/lumen/blob/main/LICENSE); third-party artwork retains its own notices.
 
 ## Inline date range calendar
 
@@ -727,12 +754,12 @@ focus; native `autoFocus` can select the initial control.
 `VirtualList` displays fixed-height rows with inert spacers that retain the full scroll extent.
 Rows stay mounted; use pagination when the initial DOM cost matters. Scrolling, resizing, sizing
 changes and direct row changes refresh the window. Focused rows remain available. See the
-[fixed-height list contract](../../docs/ai-usage.md#fixed-height-virtual-lists).
+[fixed-height list contract](https://github.com/santi020k/lumen/blob/main/docs/ai-usage.md#fixed-height-virtual-lists).
 
 External rich-text engines should handle the cancelable `ui:editor-command-request` event before
 execution and use `ui:editor-command` only for completion notifications. React also supports
 `useRichTextEditor({ commandHandler })`. Disable native toolbar state syncing when the external
-engine owns it. See the [editor guidance](../../docs/ai-usage.md).
+engine owns it. See the [editor guidance](https://github.com/santi020k/lumen/blob/main/docs/ai-usage.md).
 
 With native state enabled, `useRichTextEditor` initializes toolbar toggle states on mount,
 including `aria-pressed`, before the first editing interaction. External command handlers
@@ -768,7 +795,7 @@ Artwork attribution is shipped with the core package in `PHONE_FLAG_LICENSE.txt`
 Decoded Combobox options must be a dense string collection; invalid collections expose no options.
 In v4, Combobox retains input focus and exposes its active option through `aria-activedescendant`.
 Enter commits an active option; text editing and composition remain native. Escape dismisses one
-nested control at a time. See the [shared keyboard contract](../../docs/ai-usage.md#combobox-keyboard-behavior-in-v4)
+nested control at a time. See the [shared keyboard contract](https://github.com/santi020k/lumen/blob/main/docs/ai-usage.md#combobox-keyboard-behavior-in-v4)
 for dynamic options, controlled inputs and migration guidance.
 
 Combobox also supports native form reset: resetting the owning form restores an uncontrolled
@@ -781,9 +808,8 @@ Stack and Grid own sibling spacing. Their gap accepts `related`, `group` (defaul
 or canonical `none`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl` sizes. Card owns the inset and gap
 between its visible parts; use `density="compact"`, `"comfortable"` (default) or `"spacious"`.
 Elements uses the same names as attributes. Use a nested Stack for CardContent groups and Field
-for label/control/feedback. See [content flow](../../docs/content-flow.md) and the
-[v4 migration guide](../../docs/migrating-to-lumen.md) for ownership and changed explicit gaps.
-
+for label/control/feedback. See [content flow](https://github.com/santi020k/lumen/blob/main/docs/content-flow.md) and the
+[v4 migration guide](https://github.com/santi020k/lumen/blob/main/docs/migrating-to-lumen.md) for ownership and changed explicit gaps.
 
 ### Reading and complete compositions
 
@@ -793,13 +819,13 @@ when a product needs fixed gutters. Card allows interactive overflow; use Aspect
 Install `content-flow-header`, `content-flow-settings`, `content-flow-list` or `content-flow-actions`
 with `lumen add <recipe> --target astro|react|elements`. MCP returns the same complete examples.
 Connect application actions and replace sample IDs before reuse. See
-[content flow](../../docs/content-flow.md) for composition and migration guidance.
+[content flow](https://github.com/santi020k/lumen/blob/main/docs/content-flow.md) for composition and migration guidance.
 
 ### Large fixed-height collections
 
 React `VirtualList` accepts typed `items`, `getKey` and `renderItem` for data mode.
 Only the visible window, overscan and focused neighbors mount. Stable keys retain row identity;
-applications own offscreen editing state. See [data rendering](../../docs/virtual-list-data.md) for
+applications own offscreen editing state. See [data rendering](https://github.com/santi020k/lumen/blob/main/docs/virtual-list-data.md) for
 setup, lifecycle, accessibility and the mounted-mode tradeoff.
 
 ### Compound dialog tasks
@@ -850,7 +876,7 @@ Use `AttachmentList` to group native `li` children and `AttachmentPreview` for b
 with localized loading, error, and unsupported-file states. Compose independent actions rather
 than nesting controls inside a linked Attachment. The application retains file validation,
 authorization, persistence, and object URL cleanup. See the
-[attachment composition recipe](../../docs/consumer-ui-recipes.md#attachment-previews-and-file-lists)
+[attachment composition recipe](https://github.com/santi020k/lumen/blob/main/docs/consumer-ui-recipes.md#attachment-previews-and-file-lists)
 for adapter props, slots, child contracts, retry identity, and safe state events.
 
 ## Chart datum actions
@@ -878,7 +904,7 @@ Omit `FilterBar.open` for native disclosure ownership. Unrelated rerenders prese
 when `defaultOpen` is unchanged. Pass `open` and `onOpenChange` for application-controlled disclosure.
 
 ScatterChart supports independent X/Y formatting, explicit domains, logarithmic positive X values,
-and labeled reference lines/regions. See [consumer UI recipes](../../docs/consumer-ui-recipes.md)
+and labeled reference lines/regions. See [consumer UI recipes](https://github.com/santi020k/lumen/blob/main/docs/consumer-ui-recipes.md)
 for dashboard tables, freshness, import review, activity inbox, and persistent Kanban patterns.
 
 React DataTable adds `layout="records"`, rich `column.render`, and expandable `renderDetails`.
@@ -905,7 +931,7 @@ presses; tooltips close when focus leaves their owner and cancel pending opening
 labeled `ranges`. A strong actual bar, target marker, readable value labels, and expandable exact
 data work together. Domains include zero and all measurements; invalid inputs fail closed.
 Invalid measurements do not reach `formatValue`.
-Null values stay distinct from zero. See the [chart guide](../../docs/data-visualization.md#actual-values-and-targets)
+Null values stay distinct from zero. See the [chart guide](https://github.com/santi020k/lumen/blob/main/docs/data-visualization.md#actual-values-and-targets)
 for the input, localization, and domain contracts.
 
 ### Rankings and paired comparisons
@@ -913,8 +939,7 @@ for the input, localization, and domain contracts.
 Use `LollipopChart` for zero-based rankings and `DumbbellChart` for paired measurements (native
 `LumenLollipopChart` and `LumenDumbbellChart`). Supply ordered comparison data with `id`, `label`,
 nullable `value`, optional nullable `reference`, and optional `tone`. Both charts preserve missing
-values and expose exact data. See the [shared visualization contract](../../docs/data-visualization.md#rankings-and-paired-comparisons).
-
+values and expose exact data. See the [shared visualization contract](https://github.com/santi020k/lumen/blob/main/docs/data-visualization.md#rankings-and-paired-comparisons).
 
 ### Calendar activity, ordered stages and distributions
 
@@ -970,7 +995,7 @@ boolean visibility/sort directions, valid density and integer pagination; malfor
 before table processing. Import it from
 `@santi020k/lumen-react/components/data-table-view` or the package root. Load
 `@santi020k/lumen-react/styles/data-table-view.css` after the base stylesheet. See the
-[composition and server-mode guide](../../docs/data-table-views.md).
+[composition and server-mode guide](https://github.com/santi020k/lumen/blob/main/docs/data-table-views.md).
 
 Existing `Table` and `DataTable` APIs remain available. This integration is React-specific and does
 not change the Astro or Elements runtime.
@@ -984,7 +1009,7 @@ repeating validation through native document listeners. Each native edit is proc
 controls associated with another form are ignored even when React bubbles their portal events.
 Adopted native controls retain checkbox, multiple-selection and file details in dirty-state tracking.
 
-See [composable form workflows](../../docs/powerful-forms.md). Applications retain schemas, financial
+See [composable form workflows](https://github.com/santi020k/lumen/blob/main/docs/powerful-forms.md). Applications retain schemas, financial
 rules, requests, draft storage, and authorization. Do not combine validation owners on one form.
 
 `useResizable` accepts finite `panelCount` values up to 1,000. Fractions round down and negative values
@@ -1033,7 +1058,7 @@ This component uses a client effect to maintain the scaled iframe viewport.
 
 `MotionGroup`, `ChartMotion`, `VisualEffect`, `PromptComposer`, `StreamMessage`, `SourceCitation`,
 `ToolActivity`, and `ApprovalCard` are exported by the main package. `Tabs` accepts `indicator` for
-an optional moving selection underline. See [visual interactions](../../docs/visual-interactions.md).
+an optional moving selection underline. See [visual interactions](https://github.com/santi020k/lumen/blob/main/docs/visual-interactions.md).
 Install `motion@^14.0.0` only when using `@santi020k/lumen-react/motion`; its Motion wrappers remain
 separate from normal imports.
 
@@ -1044,7 +1069,7 @@ and theme customization. Use `initialView="highlighted"` (Elements: `initial-vie
 regional view. Zoom toward the cursor with Ctrl/Cmd-scroll, or fit highlighted countries using the
 map controls. Import geography explicitly from
 `@santi020k/lumen-core/world-map-data`; it is excluded from root exports. See the
-[WorldMap usage guide](../../docs/world-map.md) for adapter examples, events, localization,
+[WorldMap usage guide](https://github.com/santi020k/lumen/blob/main/docs/world-map.md) for adapter examples, events, localization,
 accessibility, and customization.
 
 For controlled selection, pair `selectedCountry` with `onSelectedCountryChange(countryId)` and
@@ -1056,15 +1081,28 @@ the map controlled. `onCountrySelect(detail)` remains the country-detail callbac
 Extend `DataTableView` with inclusive numeric/date ranges and explicit page-scoped selection.
 Use `DataTableSavedViews` for named preferences through application-owned persistence callbacks;
 `parseDataTableViewState` validates external preferences without retaining records or selection.
-See [table views](../../docs/data-table-views.md) for server pagination and selection boundaries.
+See [table views](https://github.com/santi020k/lumen/blob/main/docs/data-table-views.md) for server pagination and selection boundaries.
 
 `useLumenReviewWorkflow` from the root or `/forms` guards review, confirmation, stale revisions,
 duplicate submission and uncertain outcomes. Compose it with the installable React
 `review-workflow`, `import-review` and `record-workspace` recipes.
-See [operational recipes](../../docs/consumer-ui-recipes.md#installable-operational-workflows).
+See [operational recipes](https://github.com/santi020k/lumen/blob/main/docs/consumer-ui-recipes.md#installable-operational-workflows).
 
 ## Studio media workspace
 
 Compose MediaViewport, MediaThumbnail, MediaFilmstrip and ImageComparison modes with the
-[Studio media workspace recipes](../../docs/studio-media-workspaces.md). Applications retain
+[Studio media workspace recipes](https://github.com/santi020k/lumen/blob/main/docs/studio-media-workspaces.md). Applications retain
 media loading, selection, adjustment algorithms, processing, export and persistence.
+
+## Resources
+
+| Guide | What you will find |
+| --- | --- |
+| [Consumer UI recipes](https://github.com/santi020k/lumen/blob/main/docs/consumer-ui-recipes.md) | Complete product compositions and application-owned behavior. |
+| [React Hook Form adapters](https://github.com/santi020k/lumen/blob/main/packages/react-hook-form/README.md) | Managed fields, composite controls, and schema validation. |
+| [Import and icon performance](https://github.com/santi020k/lumen/blob/main/docs/import-and-icon-performance.md) | Selective imports and reproducible bundle measurements. |
+| [Contributing](https://github.com/santi020k/lumen/blob/main/CONTRIBUTING.md) | Setup, checks, and contribution workflow. |
+| [Release history](https://github.com/santi020k/lumen/releases) | Published releases and version notes. |
+
+Part of [Lumen UI](https://lumen.santi020k.com), created by [Santiago Molina](https://santi020k.com).
+Licensed under [MIT](https://github.com/santi020k/lumen/blob/main/LICENSE); third-party artwork retains its own notices.

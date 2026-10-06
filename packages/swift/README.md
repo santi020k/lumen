@@ -1,6 +1,9 @@
 <p align="center">
   <a href="https://lumen.santi020k.com">
-    <img src="https://raw.githubusercontent.com/santi020k/lumen/main/apps/docs/public/logo.svg" alt="Lumen UI" width="233" height="60">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/santi020k/lumen/main/docs/assets/readme/package-dark.svg">
+      <img src="https://raw.githubusercontent.com/santi020k/lumen/main/docs/assets/readme/package-light.svg" alt="Lumen UI — Web. Native. Thoughtfully connected." width="1200" height="184">
+    </picture>
   </a>
 </p>
 
@@ -23,12 +26,30 @@
 
 **Package:** `LumenUI for SwiftUI`
 
-**On this page:** [Runtime and localized text](#runtime-and-localized-text) · [Data visualization](#data-visualization) · [Resources](#resources)
+**On this page:** [Install](#install) · [Usage](#usage) · [Appearance presets](#appearance-presets) · [Resources](#resources)
 
----
+<details>
+<summary>Browse all sections</summary>
+
+- [Install](#install)
+- [Usage](#usage)
+- [Runtime and localized text](#runtime-and-localized-text)
+- [Appearance presets](#appearance-presets)
+- [Data visualization](#data-visualization)
+- [Advanced native inputs](#advanced-native-inputs)
+- [Multiple selection](#multiple-selection)
+- [Rating](#rating)
+- [Progress, history and location](#progress-history-and-location)
+- [Tables](#tables)
+- [Tree](#tree)
+- [QRCode and Cascader](#qrcode-and-cascader)
+- [Maintainer checks](#maintainer-checks)
+- [Resources](#resources)
+
+</details>
 
 > **Lumen 4 candidate:** This branch prepares the next major adapter contract. See the
-> [migration guide](../../docs/migrating-to-lumen.md) before upgrading. Local checks do not replace
+> [migration guide](https://github.com/santi020k/lumen/blob/main/docs/migrating-to-lumen.md) before upgrading. Local checks do not replace
 > publication, physical-device accessibility, or consumer-soak qualification.
 
 `LumenUI` is Lumen's native SwiftUI package. Its foundations are generated from the same canonical
@@ -45,19 +66,11 @@ that resource with `pnpm run generate:swift-phone-metadata` when the workspace p
 updated.
 
 Widget extensions that only need semantic presentation should link the separate `LumenWidgetUI`
-product documented in [`packages/swift-widget`](../swift-widget). It avoids linking the complete
+product documented in [`packages/swift-widget`](https://github.com/santi020k/lumen/tree/main/packages/swift-widget). It avoids linking the complete
 application component catalog and keeps timelines, App Intents, deep links, and backgrounds owned
 by the widget target.
 
-Maintainers can prove semantic-tag resolution, clean consumer builds for every declared Apple
-platform, resource availability, and license-notice presence from a disposable candidate repository
-with `pnpm run check:swift-package-candidate` at the repository root. A public release still requires
-rerunning the same consumer proof against the final immutable repository tag with
-`pnpm run check:swift-package-release -- --version <version>`.
-
-The Swift release version follows the umbrella version in `registry/release-manifest.json`.
-`pnpm run sync:swift-version` updates every public Swift installation example, and
-`pnpm run check:swift-version` prevents release validation from passing with a stale tag or pin.
+## Install
 
 In Xcode, choose **File → Add Package Dependencies**, paste
 `https://github.com/santi020k/lumen`, and use **Exact Version** `4.0.0` for a reproducible production
@@ -92,6 +105,8 @@ applications, generated Xcode projects, and CI builds, then verify its `version`
 `project.yml` with `version: 4.0.0` for compatible updates or `exactVersion: 4.0.0` for an exact
 pin. Deterministic project generators should declare the requirement in their checked-in source
 and regenerate the project instead of patching the generated `.xcodeproj`.
+
+## Usage
 
 After Xcode resolves the package, import `LumenUI` in the SwiftUI view that owns the application
 surface and apply one theme near the root:
@@ -418,31 +433,31 @@ Set `dismissOnSelection: false` to keep the popover open. Embedded `LumenSymbolP
 `tint` and `onSelection` without owning presentation. Catalog contents, persistence, and workspace
 color selection remain application-owned.
 
-See the [native component reference](../../docs/native-components.md) for the complete API matrix,
+See the [native component reference](https://github.com/santi020k/lumen/blob/main/docs/native-components.md) for the complete API matrix,
 state contracts, native image mapping, and accessibility requirements.
-Use the shared [SwiftUI error-handling guide](../../docs/error-handling.md#swiftui) when integrating
+Use the shared [SwiftUI error-handling guide](https://github.com/santi020k/lumen/blob/main/docs/error-handling.md#swiftui) when integrating
 `LumenErrorState`; it covers error/offline classification, layouts, safe references, retry
 ownership, and SwiftUI's application-owned announcement policy.
-See the [native compatibility matrix](../../docs/native-compatibility.md) for supported Apple OS,
+See the [native compatibility matrix](https://github.com/santi020k/lumen/blob/main/docs/native-compatibility.md) for supported Apple OS,
 Swift, and Xcode baselines, and use the
-[native device validation matrix](../../docs/native-device-validation.md) for VoiceOver evidence.
+[native device validation matrix](https://github.com/santi020k/lumen/blob/main/docs/native-device-validation.md) for VoiceOver evidence.
 
 ## Appearance presets
 
-Start with `LumenTheme(preset: .studio, scheme: .light)`. Surface and Card accept explicit `.glass` materials with accessibility fallbacks. See [appearance presets](../../docs/appearance-presets.md) for surface dimensions and text styles.
+Start with `LumenTheme(preset: .studio, scheme: .light)`. Surface and Card accept explicit `.glass` materials with accessibility fallbacks. See [appearance presets](https://github.com/santi020k/lumen/blob/main/docs/appearance-presets.md) for surface dimensions and text styles.
 
 ## Data visualization
 
 Heatmaps include labeled axes, a numeric color legend, and × markers for missing measurements.
 Use a diverging color scale around a meaningful midpoint for signed data. The plot and expandable
 list preserve zero and use the first measurement at each coordinate. See the
-[native heatmap options](../../docs/data-visualization.md#native-heatmaps) for domain and formatting APIs.
+[native heatmap options](https://github.com/santi020k/lumen/blob/main/docs/data-visualization.md#native-heatmaps) for domain and formatting APIs.
 
 `LumenSparkline`, `LumenLineChart`, `LumenBarChart`, `LumenPieChart`, `LumenScatterChart`,
 `LumenHeatmap`, `LumenRangeChart`, `LumenComboChart`, `LumenWaterfallChart`, and `LumenHistogram` use Swift Charts or a tokenized Canvas while
 preserving the iOS 16 baseline. Data charts provide native mark accessibility, a factual summary,
 and a readable disclosure list. See the shared
-[data-visualization guide](../../docs/data-visualization.md).
+[data-visualization guide](https://github.com/santi020k/lumen/blob/main/docs/data-visualization.md).
 
 Pass `labels` for localized support copy. A finite zero remains valid data. Line charts also accept
 `reference: LumenChartReference(...)`; set a datum's `tone` and `toneLabel` together so an
@@ -500,26 +515,13 @@ For v4, `LumenChartLabels` adds defaulted interval labels and `formatValue`. Ord
 calls retain their defaults; stored initializer references must adopt the new signature, and
 binary consumers must rebuild.
 
-## Resources
-
-| Guide | What you will find |
-| --- | --- |
-| [Native component reference](https://github.com/santi020k/lumen/blob/main/docs/native-components.md) | Reference for native component reference. |
-| [Native compatibility](https://github.com/santi020k/lumen/blob/main/docs/native-compatibility.md) | Reference for native compatibility. |
-| [WidgetKit package](https://github.com/santi020k/lumen/blob/main/packages/swift-widget/README.md) | Reference for widgetKit package. |
-| [Contributing](https://github.com/santi020k/lumen/blob/main/CONTRIBUTING.md) | Setup, checks, and contribution workflow. |
-| [Release history](https://github.com/santi020k/lumen/releases) | Published releases and version notes. |
-
-Part of [Lumen UI](https://lumen.santi020k.com), created by [Santiago Molina](https://santi020k.com).
-Licensed under [MIT](https://github.com/santi020k/lumen/blob/main/LICENSE); third-party artwork retains its own notices.
-
 ### Phone presentation in v4
 
 `LumenPhoneInput` uses bundled flag artwork and a continuous control frame, and accepts `readOnly`
 in addition to `enabled`. Read-only fields also lock country selection. `LumenCountryFlag` and
 `LumenPhoneNumberView` expose the same artwork and normalized read-only phone presentation.
 Country names and calling codes remain the accessible selector label. The flag source and license
-are documented in [flags/README.md](../../flags/README.md); no external flag request is made.
+are documented in [flags/README.md](https://github.com/santi020k/lumen/blob/main/flags/README.md); no external flag request is made.
 
 ## Advanced native inputs
 
@@ -556,15 +558,15 @@ Image comparison accepts before/after view builders and a `Binding<Double>` for 
 fraction from zero to one. The native slider supplies accessible adjustment and localized percentage;
 image content, loading and analysis remain application-owned.
 
-See the [shared advanced contracts](../../docs/native-components.md#shared-v4-advanced-controls)
-and the [native form-error recipe](../../docs/native-patterns.md#pattern-form-submission-errors).
+See the [shared advanced contracts](https://github.com/santi020k/lumen/blob/main/docs/native-components.md#shared-v4-advanced-controls)
+and the [native form-error recipe](https://github.com/santi020k/lumen/blob/main/docs/native-patterns.md#pattern-form-submission-errors).
 
 ### Actual-versus-target charts
 
 `LumenBulletChart` compares a nullable actual `value` with a finite `target` and optional
 labeled `ranges`. A strong actual bar, target marker, readable value labels, and expandable exact
 data work together. Domains include zero and all measurements; invalid inputs fail closed.
-Null values stay distinct from zero. See the [chart guide](../../docs/data-visualization.md#actual-values-and-targets)
+Null values stay distinct from zero. See the [chart guide](https://github.com/santi020k/lumen/blob/main/docs/data-visualization.md#actual-values-and-targets)
 for the input, localization, and domain contracts.
 
 ### Rankings and paired comparisons
@@ -572,8 +574,7 @@ for the input, localization, and domain contracts.
 Use `LollipopChart` for zero-based rankings and `DumbbellChart` for paired measurements (native
 `LumenLollipopChart` and `LumenDumbbellChart`). Supply ordered comparison data with `id`, `label`,
 nullable `value`, optional nullable `reference`, and optional `tone`. Both charts preserve missing
-values and expose exact data. See the [shared visualization contract](../../docs/data-visualization.md#rankings-and-paired-comparisons).
-
+values and expose exact data. See the [shared visualization contract](https://github.com/santi020k/lumen/blob/main/docs/data-visualization.md#rankings-and-paired-comparisons).
 
 ### Calendar activity, funnels, and distributions
 
@@ -617,7 +618,7 @@ performed. Native fonts, semantic chart colors and adaptive row labels preserve 
 
 `LumenRangeSlider` provides a controlled numeric interval with independently named endpoints,
 localized value formatting, and disabled/read-only protection. See the
-[native range-filter contract](../../docs/native-components.md#native-range-filters) for each
+[native range-filter contract](https://github.com/santi020k/lumen/blob/main/docs/native-components.md#native-range-filters) for each
 adapter's binding and step conventions.
 
 ## Multiple selection
@@ -655,7 +656,7 @@ layout scrolls. `LumenTimeline` and `LumenTimelineItem` retain host content and
 actions with optional decorative markers. `LumenBreadcrumb` reports ancestor IDs
 through `onNavigate`; current and disabled locations cannot navigate. The host
 owns routing, event ordering and workflow updates. See the
-[native component contracts](../../docs/native-components.md) for platform parameters.
+[native component contracts](https://github.com/santi020k/lumen/blob/main/docs/native-components.md) for platform parameters.
 
 ## Tables
 
@@ -665,7 +666,7 @@ row selection. Manual sorting preserves server order by default; explicit client
 sorting is stable and keeps missing values last. Selections retain filtered IDs;
 visible bulk actions skip disabled rows. Loading/error states hide stale controls.
 Supply localized labels and `formatSort`; the host owns requests and persistence.
-See the [native contracts](../../docs/native-components.md) for parameter names
+See the [native contracts](https://github.com/santi020k/lumen/blob/main/docs/native-components.md) for parameter names
 and typed cell/column/row examples.
 
 ## Tree
@@ -673,18 +674,18 @@ and typed cell/column/row examples.
 `LumenTree` supports controlled expansion and selection with stable IDs,
 inherited disabled branches and localized status/disclosure labels. Its iterative
 `LumenTreeModel` rejects invalid graphs without changing application state.
-See the [native Tree contract](../../docs/native-parity/tree.md).
+See the [native Tree contract](https://github.com/santi020k/lumen/blob/main/docs/native-parity/tree.md).
 
 ## QRCode and Cascader
 
 `LumenQRCode` generates accessible offline QR values with explicit capacity errors,
-quiet zones and scanner-safe contrast. See the [QRCode contract](../../docs/native-parity/qrcode.md).
+quiet zones and scanner-safe contrast. See the [QRCode contract](https://github.com/santi020k/lumen/blob/main/docs/native-parity/qrcode.md).
 The Android adapter uses the Apache-2.0 ZXing core encoder; SwiftUI uses Core Image
 and React Native reuses the web catalog's uqr engine. No runtime request is needed.
 
 `LumenCascader` browses validated tree branches and emits controlled leaf paths,
 with localized navigation and safe loading/error states. See the
-[Cascader contract](../../docs/native-parity/cascader.md).
+[Cascader contract](https://github.com/santi020k/lumen/blob/main/docs/native-parity/cascader.md).
 
 ### Calendar, Agenda and Kanban
 
@@ -692,50 +693,74 @@ The public `LumenCalendar` and `LumenAgenda` provide controlled civil-date selec
 and chronological event presentation. `LumenKanbanBoard` and `LumenKanbanColumn`
 provide stable card identities, native dragging and localized accessible moves.
 Hosts retain dataset and persistence ownership. See the native contracts for
-[Calendar](../../docs/native-parity/calendar.md), [Agenda](../../docs/native-parity/agenda.md),
-[KanbanBoard](../../docs/native-parity/kanban-board.md), and
-[KanbanColumn](../../docs/native-parity/kanban-column.md).
+[Calendar](https://github.com/santi020k/lumen/blob/main/docs/native-parity/calendar.md), [Agenda](https://github.com/santi020k/lumen/blob/main/docs/native-parity/agenda.md),
+[KanbanBoard](https://github.com/santi020k/lumen/blob/main/docs/native-parity/kanban-board.md), and
+[KanbanColumn](https://github.com/santi020k/lumen/blob/main/docs/native-parity/kanban-column.md).
 
 `LumenSchedule` adds a controlled day/week time grid using Agenda events, overlap
-lanes and accessible host move requests. See the [Schedule contract](../../docs/native-parity/schedule.md)
+lanes and accessible host move requests. See the [Schedule contract](https://github.com/santi020k/lumen/blob/main/docs/native-parity/schedule.md)
 for bounded ranges, wall-clock conversion ownership and adapter APIs.
 
 `LumenColorPicker` provides validated controlled color text, HSV channels and an
 optional named palette/alpha. Invalid drafts stay local. See the
-[ColorPicker contract](../../docs/native-parity/color-picker.md) for supported strings
+[ColorPicker contract](https://github.com/santi020k/lumen/blob/main/docs/native-parity/color-picker.md) for supported strings
 and latent hue behavior at black, grayscale and zero alpha.
 
 `LumenTreeSelect` selects a stable ID through a hierarchical disclosure panel.
 `LumenTransfer` controls source/target membership and staged checks with atomic moves.
 Both retain unknown host values and disabled records. See the
-[TreeSelect](../../docs/native-parity/tree-select.md) and [Transfer](../../docs/native-parity/transfer.md)
+[TreeSelect](https://github.com/santi020k/lumen/blob/main/docs/native-parity/tree-select.md) and [Transfer](https://github.com/santi020k/lumen/blob/main/docs/native-parity/transfer.md)
 contracts for localization, state guards and adapter APIs.
 
 The initial `LumenRichTextEditor` formatting subset supports controlled selection
 and bold/italic/underline spans; full editor parity remains pending. See the
-[limited rich editor contract](../../docs/native-parity/rich-text-editor.md).
+[limited rich editor contract](https://github.com/santi020k/lumen/blob/main/docs/native-parity/rich-text-editor.md).
 
 `LumenCarousel` provides controlled native slide paging and localized navigation.
 `LumenTooltip` provides contextual help with native dismissal and named anchors.
-See the [Carousel](../../docs/native-parity/carousel.md) and
-[Tooltip](../../docs/native-parity/tooltip.md) contracts for adapter-specific state APIs.
+See the [Carousel](https://github.com/santi020k/lumen/blob/main/docs/native-parity/carousel.md) and
+[Tooltip](https://github.com/santi020k/lumen/blob/main/docs/native-parity/tooltip.md) contracts for adapter-specific state APIs.
 
 `LumenCommand` provides controlled grouped command search and host activation.
 `LumenTreeGrid` presents controlled hierarchical records with labeled native cells.
-See the [Command](../../docs/native-parity/command.md) and
-[TreeGrid](../../docs/native-parity/tree-grid.md) contracts for state, localization and cell guards.
+See the [Command](https://github.com/santi020k/lumen/blob/main/docs/native-parity/command.md) and
+[TreeGrid](https://github.com/santi020k/lumen/blob/main/docs/native-parity/tree-grid.md) contracts for state, localization and cell guards.
 
 `LumenTour` provides controlled native guidance around host-measured targets.
-See the [Tour contract](../../docs/native-parity/tour.md) for coordinate ownership,
+See the [Tour contract](https://github.com/santi020k/lumen/blob/main/docs/native-parity/tour.md) for coordinate ownership,
 missing-target recovery and accessible dismissal.
 
 `LumenMentions` provides controlled multiline text and UTF-16 selection with literal
-suggestions. See the [Mentions contract](../../docs/native-parity/mentions.md)
+suggestions. See the [Mentions contract](https://github.com/santi020k/lumen/blob/main/docs/native-parity/mentions.md)
 for composition, token boundaries and platform availability.
 
-
-See the [Rating](../../docs/native-parity/rating.md), [Table](../../docs/native-parity/table.md),
-[DataTable](../../docs/native-parity/data-table.md), [Breadcrumb](../../docs/native-parity/breadcrumb.md),
-[Stepper](../../docs/native-parity/stepper.md), and [Timeline](../../docs/native-parity/timeline.md)
+See the [Rating](https://github.com/santi020k/lumen/blob/main/docs/native-parity/rating.md), [Table](https://github.com/santi020k/lumen/blob/main/docs/native-parity/table.md),
+[DataTable](https://github.com/santi020k/lumen/blob/main/docs/native-parity/data-table.md), [Breadcrumb](https://github.com/santi020k/lumen/blob/main/docs/native-parity/breadcrumb.md),
+[Stepper](https://github.com/santi020k/lumen/blob/main/docs/native-parity/stepper.md), and [Timeline](https://github.com/santi020k/lumen/blob/main/docs/native-parity/timeline.md)
 contracts for controlled state, localization, native composition and verification. Timeline items
 accept `isLast` to omit the final connector; application content and ordering remain host-owned.
+
+## Maintainer checks
+
+Maintainers can prove semantic-tag resolution, clean consumer builds for every declared Apple
+platform, resource availability, and license-notice presence from a disposable candidate repository
+with `pnpm run check:swift-package-candidate` at the repository root. A public release still requires
+rerunning the same consumer proof against the final immutable repository tag with
+`pnpm run check:swift-package-release -- --version <version>`.
+
+The Swift release version follows the umbrella version in `registry/release-manifest.json`.
+`pnpm run sync:swift-version` updates every public Swift installation example, and
+`pnpm run check:swift-version` prevents release validation from passing with a stale tag or pin.
+
+## Resources
+
+| Guide | What you will find |
+| --- | --- |
+| [Native component reference](https://github.com/santi020k/lumen/blob/main/docs/native-components.md) | Component coverage and native API responsibilities. |
+| [Native compatibility](https://github.com/santi020k/lumen/blob/main/docs/native-compatibility.md) | Supported operating systems, peers, and toolchains. |
+| [WidgetKit package](https://github.com/santi020k/lumen/blob/main/packages/swift-widget/README.md) | WidgetKit package guidance and examples. |
+| [Contributing](https://github.com/santi020k/lumen/blob/main/CONTRIBUTING.md) | Setup, checks, and contribution workflow. |
+| [Release history](https://github.com/santi020k/lumen/releases) | Published releases and version notes. |
+
+Part of [Lumen UI](https://lumen.santi020k.com), created by [Santiago Molina](https://santi020k.com).
+Licensed under [MIT](https://github.com/santi020k/lumen/blob/main/LICENSE); third-party artwork retains its own notices.

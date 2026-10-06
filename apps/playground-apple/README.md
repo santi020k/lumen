@@ -1,9 +1,27 @@
-# Lumen Apple Playground
+<p align="center">
+  <a href="https://lumen.santi020k.com">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="../../docs/assets/readme/package-dark.svg">
+      <img src="../../docs/assets/readme/package-light.svg" alt="Lumen UI — Web. Native. Thoughtfully connected." width="1200" height="184">
+    </picture>
+  </a>
+</p>
 
-This candidate uses the local Lumen 4 adapter. Catalog discovery accepts component IDs,
-provides filter reset, and shows the workspace release version. See
-[the v4 playground guide](../../docs/playgrounds.md#lumen-4-candidate) for search and capture behavior.
+<h1 align="center">Lumen Apple Playground</h1>
 
+<p align="center">SwiftUI · iPhone, iPad, Mac, and Apple Watch</p>
+
+<p align="center"><a href="https://apps.apple.com/app/id6805250815">App Store</a> · <a href="https://lumen.santi020k.com/docs/apple/playground">Playground guide</a> · <a href="../../packages/swift/README.md">SwiftUI package</a></p>
+
+**On this page:** [Overview](#overview) · [Run locally](#run-locally) · [Distribution](#distribution) · [Workspace runtime tests](#workspace-runtime-tests) · [Widget component previews](#widget-component-previews) · [Resources](#resources)
+
+<p align="center">
+  <img src="../docs/src/assets/platforms/apple.webp" alt="Lumen SwiftUI playground showing a release checklist example" width="220">
+</p>
+
+<p align="center"><em>Native playground capture. Store builds follow their own release schedule.</em></p>
+
+## Overview
 
 <!-- cspell:words screencapture simctl UDID -->
 
@@ -26,6 +44,14 @@ primary destinations are Home, Examples, Components, and Settings:
 - Settings offers Normal, Studio, Glass and santi020k themes alongside light/dark appearance,
   Accessibility, Runtime localization, App and platform, and Privacy
   and resources using native SwiftUI behavior.
+
+> **Local candidate:** This checkout uses the Lumen 4 adapter. Search accepts component IDs and
+> supports filter reset. See the [v4 playground guide](../../docs/playgrounds.md#lumen-4-candidate)
+> for release-version display and capture behavior.
+
+## Run locally
+
+Use the [declared Apple toolchain](../../docs/native-compatibility.md) and open this app directory.
 
 To run on iOS, open `LumenApplePlayground.xcodeproj`, select an iPhone simulator, and press
 `Command-R`. Simulator builds do not require an Apple Developer account. The iOS application embeds
@@ -77,13 +103,17 @@ Select a development team in Signing & Capabilities only when installing on a ph
 archiving for TestFlight. Update `project.yml` and regenerate the Xcode project with XcodeGen when
 project structure changes.
 
-App Store archives for iOS and macOS are built and signed by Xcode Cloud. Run the local preflight with
-`pnpm playground:apple:release-preflight`; it checks the release metadata, runs the playground's
-Swift tests, and produces an unsigned iOS Simulator build plus a universal macOS archive. Then launch a
-build from **Launch Apple playground release** or **Launch Mac playground release** in GitHub
-Actions. The workflows create platform-specific immutable tags; each tag starts its matching Xcode
-Cloud workflow, which assigns the build number and uploads the archive to App Store Connect without
-exposing Apple signing credentials to GitHub.
+## Distribution
+
+Run the local preflight from the repository root with
+`pnpm playground:apple:release-preflight`. It checks release metadata, runs Swift tests, and builds
+unsigned iOS Simulator and macOS archive candidates.
+
+For this public repository, **Launch Apple playground release** and **Launch Mac playground release**
+route delivery through the [Public Apple store delivery workflow](../../.github/workflows/apple-store-release.yml)
+on standard GitHub-hosted macOS runners. It requires approved, merged `main`, passing checks, and
+protected Infisical signing credentials. Private repository deployments use Xcode Cloud through
+the workflows' visibility gates. Store review and customer rollout remain separate from upload.
 
 See [`docs/playgrounds.md`](../../docs/playgrounds.md) for prerequisites and the complete Xcode,
 device, signing, and TestFlight workflow.
@@ -208,3 +238,12 @@ pnpm playground:apple:capture-store
 
 The command produces six 1320×2868 iPhone screenshots and six 2064×2752 iPad screenshots across
 Home, Examples, Components, and Settings, including light and dark appearances.
+
+## Resources
+
+- [Repository overview](../../README.md) — framework packages, demos, and the project map.
+- [Contributing](../../CONTRIBUTING.md) — workspace setup, validation, and release workflow.
+- [Feedback and support](https://lumen.santi020k.com/support) — questions, ideas, and bug reports.
+
+Part of [Lumen UI](https://lumen.santi020k.com), created by [Santiago Molina](https://santi020k.com).
+Licensed under [MIT](../../LICENSE); third-party artwork retains its own notices.

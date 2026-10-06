@@ -1,6 +1,9 @@
 <p align="center">
   <a href="https://lumen.santi020k.com">
-    <img src="https://raw.githubusercontent.com/santi020k/lumen/main/apps/docs/public/logo.svg" alt="Lumen UI" width="233" height="60">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/santi020k/lumen/main/docs/assets/readme/package-dark.svg">
+      <img src="https://raw.githubusercontent.com/santi020k/lumen/main/docs/assets/readme/package-light.svg" alt="Lumen UI — Web. Native. Thoughtfully connected." width="1200" height="184">
+    </picture>
   </a>
 </p>
 
@@ -23,12 +26,12 @@
 
 **Package:** `Lumen UI for Wear OS`
 
-**On this page:** [Resources](#resources)
-
----
+**On this page:** [Install](#install) · [Usage](#usage) · [Resources](#resources)
 
 > The complete Wear theme, tone, action, progress, status, metric, and list-row surface is Supported
 > for Lumen 2. Publication and physical-watch evidence remain release gates.
+
+## Install
 
 Install the dedicated artifact alongside the Wear Compose version selected by the application:
 
@@ -41,6 +44,8 @@ dependencies {
 `lumen-compose-wear` depends on Lumen's Compose foundations and provides wearable-specific
 composition without forcing an application to migrate between Wear Compose Material 2.5 and Wear
 Material 3.
+
+## Usage
 
 ```kotlin
 LumenWearTheme {
@@ -64,6 +69,8 @@ The host application owns round-screen navigation, rotary input, haptics, tiles,
 data synchronization, background work, and domain behavior. Use Lumen for semantic presentation,
 not for watch lifecycle or health and safety policy.
 
+## Validation and playground
+
 The reviewed ABI inventory lives in `api/wear.api`, and the Supported and Internal
 decisions live in `registry/wear-api-classification.json` at the repository root. Run
 `./gradlew apiCheck` from the parent `packages/compose` directory to check both artifacts, then run
@@ -84,8 +91,8 @@ list-row states separately beneath `apps/playground-android/build/screenshots/we
 
 | Guide | What you will find |
 | --- | --- |
-| [Compose installation](https://github.com/santi020k/lumen/blob/main/packages/compose/README.md) | Reference for compose installation. |
-| [Device validation evidence](https://github.com/santi020k/lumen/blob/main/docs/native-device-validation.md) | Reference for device validation evidence. |
+| [Compose installation](https://github.com/santi020k/lumen/blob/main/packages/compose/README.md) | Maven coordinates and application theme setup. |
+| [Device validation evidence](https://github.com/santi020k/lumen/blob/main/docs/native-device-validation.md) | Physical-device checks and outstanding qualification. |
 | [Contributing](https://github.com/santi020k/lumen/blob/main/CONTRIBUTING.md) | Setup, checks, and contribution workflow. |
 | [Release history](https://github.com/santi020k/lumen/releases) | Published releases and version notes. |
 

@@ -1,5 +1,9 @@
 # Homepage platform previews
 
+[Documentation app](../../../README.md) · [Root preview gallery](../../../../../README.md#see-lumen-in-action)
+
+## Capture sources
+
 These WebP images show real Lumen interfaces. Keep each capture at its original aspect ratio;
 the homepage displays the complete image without a cover crop or a fading overlay.
 
@@ -13,8 +17,13 @@ the homepage displays the complete image without a cover crop or a fading overla
 - `android.webp`: `apps/playground-android/Store/Screenshots/phone-02-examples-light.png`, resized
   to 720 px wide.
 
+## Provenance and refresh
+
 The web and React Native screenshots were captured from the local v4 candidate on October 3, 2026.
 The native images reuse the committed store captures; they do not establish v4 device qualification.
 All images use WebP quality 88, generated with the docs app's existing Sharp dependency. Refresh
 them from these sources when the showcased compositions change. Do not recreate native controls
 in HTML or generate illustrative replacements for product screenshots.
+
+The root README and playground app READMEs reuse these same assets. Keep their captions aligned
+with the capture platform and refresh the image in one place when the reference changes.

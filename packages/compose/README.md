@@ -1,6 +1,9 @@
 <p align="center">
   <a href="https://lumen.santi020k.com">
-    <img src="https://raw.githubusercontent.com/santi020k/lumen/main/apps/docs/public/logo.svg" alt="Lumen UI" width="233" height="60">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/santi020k/lumen/main/docs/assets/readme/package-dark.svg">
+      <img src="https://raw.githubusercontent.com/santi020k/lumen/main/docs/assets/readme/package-light.svg" alt="Lumen UI — Web. Native. Thoughtfully connected." width="1200" height="184">
+    </picture>
   </a>
 </p>
 
@@ -23,14 +26,34 @@
 
 **Package:** `Lumen UI for Jetpack Compose`
 
-**On this page:** [Complete gallery and screenshots](#complete-gallery-and-screenshots) · [Data visualization](#data-visualization) · [Resources](#resources)
+**On this page:** [Install](#install) · [Usage](#usage) · [Appearance presets](#appearance-presets) · [Resources](#resources)
 
----
+<details>
+<summary>Browse all sections</summary>
+
+- [Install](#install)
+- [Usage](#usage)
+- [Custom themes](#custom-themes)
+- [Component catalog](#component-catalog)
+- [Complete gallery and screenshots](#complete-gallery-and-screenshots)
+- [Appearance presets](#appearance-presets)
+- [Data visualization](#data-visualization)
+- [Advanced form and refresh examples](#advanced-form-and-refresh-examples)
+- [V4 product controls](#v4-product-controls)
+- [Rating](#rating)
+- [Progress, history and location](#progress-history-and-location)
+- [Tables](#tables)
+- [Tree](#tree)
+- [QRCode and Cascader](#qrcode-and-cascader)
+- [Maintainer checks](#maintainer-checks)
+- [Resources](#resources)
+
+</details>
 
 <!-- cspell:words screencap -->
 
 > **Lumen 4 candidate:** This branch prepares the next major adapter contract. See the
-> [migration guide](../../docs/migrating-to-lumen.md) before upgrading. Local checks do not replace
+> [migration guide](https://github.com/santi020k/lumen/blob/main/docs/migrating-to-lumen.md) before upgrading. Local checks do not replace
 > publication, physical-device accessibility, or consumer-soak qualification.
 
 This Android library provides native Compose foundations and primitives generated from Lumen's
@@ -40,6 +63,8 @@ motion vocabulary as the web, React Native, and SwiftUI adapters.
 `LumenSheet` keeps its content mounted until the native hide animation finishes when `visible`
 becomes false. Reopening during dismissal cancels the exit. Programmatic closure also works with
 `dismissible = false`; `onDismiss` reports user dismissal requests, not controlled state changes.
+
+## Install
 
 Add Maven Central to the application's repositories, then add Lumen to `app/build.gradle.kts`:
 
@@ -53,42 +78,7 @@ dependencies {
 }
 ```
 
-The version in `packages/compose/gradle.properties` is canonical. `pnpm sync:compose-version`
-updates every public installation example, and `pnpm check:compose-version` prevents release or
-documentation checks from passing with stale coordinates.
-
-The reviewed binary API baselines live in `api/lumen-compose.api` and `wear/api/wear.api`. Run the
-local release gate for both artifacts before opening a change:
-
-```bash
-./gradlew test lint apiCheck assembleDebugAndroidTest verifyMavenPublication
-```
-
-`assembleDebugAndroidTest` compiles the phone and Wear accessibility suites without claiming device
-evidence. Run `./gradlew connectedDebugAndroidTest` only with suitable Android and Wear OS targets
-connected; record physical-device results through the repository's native validation process.
-
-Run `./gradlew apiDump` only after reviewing an intentional public API change and updating its
-documentation, tests, classification, and migration notes. The root tasks include the separate Wear
-artifact automatically.
-
-CI also publishes both candidate artifacts to the build-local Maven staging repository and builds
-the phone and Wear playground APKs from those coordinates. The phone consumer verifies that its
-runtime graph does not include `lumen-compose-wear`.
-
-A maintainer can build a signed Central Portal bundle with:
-
-```bash
-MAVEN_SIGNING_KEY="..." \
-MAVEN_SIGNING_PASSWORD="..." \
-./gradlew centralPortalBundle
-```
-
-Pushing a `compose-v<version>` tag builds, tests, signs, and automatically publishes the version
-declared in `gradle.properties`. The workflow rejects a tag whose version does not match that file.
-It requires `MAVEN_CENTRAL_USERNAME`, `MAVEN_CENTRAL_PASSWORD`, `MAVEN_SIGNING_KEY`, and
-`MAVEN_SIGNING_PASSWORD` as GitHub Actions repository secrets. A manual workflow run remains
-available for recovery or a user-managed Central deployment.
+## Usage
 
 Sync Gradle and wrap the application content in `LumenTheme`:
 
@@ -111,6 +101,8 @@ LumenTheme {
     }
 }
 ```
+
+## Custom themes
 
 If the application already owns a Material 3 theme, pass its values through the single Lumen
 provider instead of nesting another `MaterialTheme` or overriding `LocalLumenTheme` manually:
@@ -138,6 +130,8 @@ bottom bars and rails follow the selected preset in both light and dark appearan
 explicit overrides preserve product semantics that Material does not model directly or that must
 remain distinct from its primary and secondary colors. Applications with complete Lumen palettes
 can pass `LumenThemeValues` instead.
+
+## Component catalog
 
 The native set includes Text, Icon, IconButton, Surface, Button, ButtonGroup, TextField, Textarea,
 FieldGroup, Toggle, SettingsRow, SearchField, DateField, DateRangeField, TimeField, Autocomplete,
@@ -260,17 +254,17 @@ or Wear component on the currently connected target. The generated PNGs live ben
 playground's ignored `build/screenshots` directory and are verification evidence, not package
 assets.
 
-See the [native component reference](../../docs/native-components.md) for installation, the complete
+See the [native component reference](https://github.com/santi020k/lumen/blob/main/docs/native-components.md) for installation, the complete
 API matrix, native image mapping, and accessibility requirements.
-Use the shared [Compose error-handling guide](../../docs/error-handling.md#jetpack-compose) when
+Use the shared [Compose error-handling guide](https://github.com/santi020k/lumen/blob/main/docs/error-handling.md#jetpack-compose) when
 integrating `LumenErrorState`; it covers error/offline classification, layouts, announcements, safe
 references, and loading-safe retries.
-Use the [native device validation matrix](../../docs/native-device-validation.md) when verifying
+Use the [native device validation matrix](https://github.com/santi020k/lumen/blob/main/docs/native-device-validation.md) when verifying
 TalkBack, font scaling, contrast, focus order, and reduced motion on hardware.
 
 ## Appearance presets
 
-Use `LumenTheme(preset = LumenThemePreset.Studio)` or customize `LumenThemeValues.preset(...)`. See [appearance presets](../../docs/appearance-presets.md) for dimensions, precedence and the solid material fallback.
+Use `LumenTheme(preset = LumenThemePreset.Studio)` or customize `LumenThemeValues.preset(...)`. See [appearance presets](https://github.com/santi020k/lumen/blob/main/docs/appearance-presets.md) for dimensions, precedence and the solid material fallback.
 
 ## Data visualization
 
@@ -283,11 +277,10 @@ Missing measurements use × marks; exact values remain available through the exp
 Invalid input produces the invalid-data state before application formatters run. Pass translated
 chart labels, date/value formatters, and box-plot statistic labels for localized output.
 
-
 Heatmaps include labeled axes, a numeric color legend, and × markers for missing measurements.
 Use a diverging color scale around a meaningful midpoint for signed data. The plot and expandable
 list preserve zero and use the first measurement at each coordinate. See the
-[native heatmap options](../../docs/data-visualization.md#native-heatmaps) for domain and formatting APIs.
+[native heatmap options](https://github.com/santi020k/lumen/blob/main/docs/data-visualization.md#native-heatmaps) for domain and formatting APIs.
 
 `LumenSparkline`, `LumenLineChart`, `LumenBarChart`, `LumenPieChart`, `LumenScatterChart`,
 `LumenHeatmap`, `LumenRangeChart`, `LumenComboChart`, `LumenWaterfallChart`, and `LumenHistogram` use Compose Canvas with generated chart
@@ -325,16 +318,15 @@ For localized summary sentences, provide `formatSummary` or an explicit chart `s
 Keep `showData` enabled unless equivalent accessible values appear nearby. Swift's `bare` and
 `height` options are not Compose parameters.
 
-See the shared [data-visualization guide](../../docs/data-visualization.md).
-See the [native compatibility matrix](../../docs/native-compatibility.md) for supported Android,
+See the shared [data-visualization guide](https://github.com/santi020k/lumen/blob/main/docs/data-visualization.md).
+See the [native compatibility matrix](https://github.com/santi020k/lumen/blob/main/docs/native-compatibility.md) for supported Android,
 JDK, Gradle, Kotlin, and Compose baselines.
 
 Wear OS applications should use the sibling
-[`lumen-compose-wear`](./wear) artifact (`com.santi020k:lumen-compose-wear:4.0.0`). It provides a
+[`lumen-compose-wear`](https://github.com/santi020k/lumen/tree/main/packages/compose/wear) artifact (`com.santi020k:lumen-compose-wear:4.0.0`). It provides a
 deliberately small round-screen tier without
 forcing phone applications to acquire wearable contracts or requiring consumers to migrate their
 selected Wear Material version.
-
 
 `LumenWaterfallChart` draws signed changes with explicit total resets and connectors. Invalid
 steps reject the complete plot so later balances cannot become misleading. `LumenHistogram`
@@ -353,19 +345,6 @@ LumenHistogram(label = "Response time", frequency = LumenHistogramFrequency.Dens
 ))
 ```
 
-## Resources
-
-| Guide | What you will find |
-| --- | --- |
-| [Native component reference](https://github.com/santi020k/lumen/blob/main/docs/native-components.md) | Reference for native component reference. |
-| [Native compatibility](https://github.com/santi020k/lumen/blob/main/docs/native-compatibility.md) | Reference for native compatibility. |
-| [Wear OS package](https://github.com/santi020k/lumen/blob/main/packages/compose/wear/README.md) | Reference for wear OS package. |
-| [Contributing](https://github.com/santi020k/lumen/blob/main/CONTRIBUTING.md) | Setup, checks, and contribution workflow. |
-| [Release history](https://github.com/santi020k/lumen/releases) | Published releases and version notes. |
-
-Part of [Lumen UI](https://lumen.santi020k.com), created by [Santiago Molina](https://santi020k.com).
-Licensed under [MIT](https://github.com/santi020k/lumen/blob/main/LICENSE); third-party artwork retains its own notices.
-
 ### Phone presentation in v4
 
 `LumenPhoneInput` uses bundled flag artwork and a continuous control frame, and accepts `readOnly`
@@ -374,7 +353,7 @@ in addition to `enabled`. Read-only fields also lock country selection. `LumenCo
 Unsupported flag codes retain the same `contentDescription` semantics in their text fallback:
 `null` is decorative, and a custom description replaces the visible region code for accessibility.
 Country names and calling codes remain the accessible selector label. The flag source and license
-are documented in [flags/README.md](../../flags/README.md); no external flag request is made.
+are documented in [flags/README.md](https://github.com/santi020k/lumen/blob/main/flags/README.md); no external flag request is made.
 
 ## Advanced form and refresh examples
 
@@ -416,7 +395,7 @@ LumenPullToRefresh(isRefreshing = refreshing, onRefresh = ::refreshProjects) {
 Time values are local wall-clock values, and number drafts remain ungrouped localized text.
 Applications own search results, selected values, refresh work, units, and submission rules.
 Translate every visible label and validation message through the public string parameters.
-See [advanced control contracts](../../docs/native-components.md#compose-v4-advanced-controls).
+See [advanced control contracts](https://github.com/santi020k/lumen/blob/main/docs/native-components.md#shared-v4-advanced-controls).
 
 ### Passwords, codes, contextual help, and image comparison
 
@@ -434,7 +413,6 @@ LumenImageComparison(
 
 Comparison artwork is decorative; visible before/after labels and the adjustable slider carry the
 accessible description, without duplicate image nodes.
-
 
 Password visibility is temporary, resets on focus loss or disabled/read-only state, and is never
 saved. `newPassword` selects the native new-password autofill hint. `onSubmit` handles the IME Done
@@ -526,14 +504,14 @@ Adaptive list/detail is a full-window layout using the stable Material Adaptive 
 1.3.0 for window and hinge handling. It adds no routing or data owner. Preserve selection and pane
 state in the host; wire system back through the supplied `detailOnly` flag. The full-window Android
 List/detail example demonstrates the integration, while component gallery examples are bounded
-previews. See [complete contracts](../../docs/native-components.md#compose-v4-product-controls).
+previews. See [complete contracts](https://github.com/santi020k/lumen/blob/main/docs/native-components.md#compose-v4-product-controls).
 
 ### Actual-versus-target charts
 
 `LumenBulletChart` compares a nullable actual `value` with a finite `target` and optional
 labeled `ranges`. A strong actual bar, target marker, readable value labels, and expandable exact
 data work together. Domains include zero and all measurements; invalid inputs fail closed.
-Null values stay distinct from zero. See the [chart guide](../../docs/data-visualization.md#actual-values-and-targets)
+Null values stay distinct from zero. See the [chart guide](https://github.com/santi020k/lumen/blob/main/docs/data-visualization.md#actual-values-and-targets)
 for the input, localization, and domain contracts.
 
 ### Rankings and paired comparisons
@@ -541,11 +519,11 @@ for the input, localization, and domain contracts.
 Use `LollipopChart` for zero-based rankings and `DumbbellChart` for paired measurements (native
 `LumenLollipopChart` and `LumenDumbbellChart`). Supply ordered comparison data with `id`, `label`,
 nullable `value`, optional nullable `reference`, and optional `tone`. Both charts preserve missing
-values and expose exact data. See the [shared visualization contract](../../docs/data-visualization.md#rankings-and-paired-comparisons).
+values and expose exact data. See the [shared visualization contract](https://github.com/santi020k/lumen/blob/main/docs/data-visualization.md#rankings-and-paired-comparisons).
 
 `LumenRangeSlider` provides a controlled numeric interval with independently named endpoints,
 localized value formatting, and disabled/read-only protection. See the
-[native range-filter contract](../../docs/native-components.md#native-range-filters) for each
+[native range-filter contract](https://github.com/santi020k/lumen/blob/main/docs/native-components.md#native-range-filters) for each
 adapter's binding and step conventions.
 
 ## Rating
@@ -564,7 +542,7 @@ layout scrolls. `LumenTimeline` and `LumenTimelineItem` retain host content and
 actions with optional decorative markers. `LumenBreadcrumb` reports ancestor IDs
 through `onNavigate`; current and disabled locations cannot navigate. The host
 owns routing, event ordering and workflow updates. See the
-[native component contracts](../../docs/native-components.md) for platform parameters.
+[native component contracts](https://github.com/santi020k/lumen/blob/main/docs/native-components.md) for platform parameters.
 
 ## Tables
 
@@ -574,7 +552,7 @@ row selection. Manual sorting preserves server order by default; explicit client
 sorting is stable and keeps missing values last. Selections retain filtered IDs;
 visible bulk actions skip disabled rows. Loading/error states hide stale controls.
 Supply localized labels and `formatSort`; the host owns requests and persistence.
-See the [native contracts](../../docs/native-components.md) for parameter names
+See the [native contracts](https://github.com/santi020k/lumen/blob/main/docs/native-components.md) for parameter names
 and typed cell/column/row examples.
 
 ## Tree
@@ -582,18 +560,18 @@ and typed cell/column/row examples.
 `LumenTree` supports controlled expansion and selection with stable IDs,
 inherited disabled branches and localized status/disclosure labels. Its iterative
 `LumenTreeModel` rejects invalid graphs without changing application state.
-See the [native Tree contract](../../docs/native-parity/tree.md).
+See the [native Tree contract](https://github.com/santi020k/lumen/blob/main/docs/native-parity/tree.md).
 
 ## QRCode and Cascader
 
 `LumenQRCode` generates accessible offline QR values with explicit capacity errors,
-quiet zones and scanner-safe contrast. See the [QRCode contract](../../docs/native-parity/qrcode.md).
+quiet zones and scanner-safe contrast. See the [QRCode contract](https://github.com/santi020k/lumen/blob/main/docs/native-parity/qrcode.md).
 The Android adapter uses the Apache-2.0 ZXing core encoder; SwiftUI uses Core Image
 and React Native reuses the web catalog's uqr engine. No runtime request is needed.
 
 `LumenCascader` browses validated tree branches and emits controlled leaf paths,
 with localized navigation and safe loading/error states. See the
-[Cascader contract](../../docs/native-parity/cascader.md).
+[Cascader contract](https://github.com/santi020k/lumen/blob/main/docs/native-parity/cascader.md).
 
 ### Calendar, Agenda and Kanban
 
@@ -601,50 +579,93 @@ The public `LumenCalendar` and `LumenAgenda` provide controlled civil-date selec
 and chronological event presentation. `LumenKanbanBoard` and `LumenKanbanColumn`
 provide stable card identities, native dragging and localized accessible moves.
 Hosts retain dataset and persistence ownership. See the native contracts for
-[Calendar](../../docs/native-parity/calendar.md), [Agenda](../../docs/native-parity/agenda.md),
-[KanbanBoard](../../docs/native-parity/kanban-board.md), and
-[KanbanColumn](../../docs/native-parity/kanban-column.md).
+[Calendar](https://github.com/santi020k/lumen/blob/main/docs/native-parity/calendar.md), [Agenda](https://github.com/santi020k/lumen/blob/main/docs/native-parity/agenda.md),
+[KanbanBoard](https://github.com/santi020k/lumen/blob/main/docs/native-parity/kanban-board.md), and
+[KanbanColumn](https://github.com/santi020k/lumen/blob/main/docs/native-parity/kanban-column.md).
 
 `LumenSchedule` adds a controlled day/week time grid using Agenda events, overlap
-lanes and accessible host move requests. See the [Schedule contract](../../docs/native-parity/schedule.md)
+lanes and accessible host move requests. See the [Schedule contract](https://github.com/santi020k/lumen/blob/main/docs/native-parity/schedule.md)
 for bounded ranges, wall-clock conversion ownership and adapter APIs.
 
 `LumenColorPicker` provides validated controlled color text, HSV channels and an
 optional named palette/alpha. Invalid drafts stay local. See the
-[ColorPicker contract](../../docs/native-parity/color-picker.md) for supported strings
+[ColorPicker contract](https://github.com/santi020k/lumen/blob/main/docs/native-parity/color-picker.md) for supported strings
 and latent hue behavior at black, grayscale and zero alpha.
 
 `LumenTreeSelect` selects a stable ID through a hierarchical disclosure panel.
 `LumenTransfer` controls source/target membership and staged checks with atomic moves.
 Both retain unknown host values and disabled records. See the
-[TreeSelect](../../docs/native-parity/tree-select.md) and [Transfer](../../docs/native-parity/transfer.md)
+[TreeSelect](https://github.com/santi020k/lumen/blob/main/docs/native-parity/tree-select.md) and [Transfer](https://github.com/santi020k/lumen/blob/main/docs/native-parity/transfer.md)
 contracts for localization, state guards and adapter APIs.
 
 The initial `LumenRichTextEditor` formatting subset supports controlled selection
 and bold/italic/underline spans; full editor parity remains pending. See the
-[limited rich editor contract](../../docs/native-parity/rich-text-editor.md).
+[limited rich editor contract](https://github.com/santi020k/lumen/blob/main/docs/native-parity/rich-text-editor.md).
 
 `LumenCarousel` provides controlled native slide paging and localized navigation.
 `LumenTooltip` provides contextual help with native dismissal and named anchors.
-See the [Carousel](../../docs/native-parity/carousel.md) and
-[Tooltip](../../docs/native-parity/tooltip.md) contracts for adapter-specific state APIs.
+See the [Carousel](https://github.com/santi020k/lumen/blob/main/docs/native-parity/carousel.md) and
+[Tooltip](https://github.com/santi020k/lumen/blob/main/docs/native-parity/tooltip.md) contracts for adapter-specific state APIs.
 
 `LumenCommand` provides controlled grouped command search and host activation.
 `LumenTreeGrid` presents controlled hierarchical records with labeled native cells.
-See the [Command](../../docs/native-parity/command.md) and
-[TreeGrid](../../docs/native-parity/tree-grid.md) contracts for state, localization and cell guards.
+See the [Command](https://github.com/santi020k/lumen/blob/main/docs/native-parity/command.md) and
+[TreeGrid](https://github.com/santi020k/lumen/blob/main/docs/native-parity/tree-grid.md) contracts for state, localization and cell guards.
 
 `LumenTour` provides controlled native guidance around host-measured targets.
-See the [Tour contract](../../docs/native-parity/tour.md) for coordinate ownership,
+See the [Tour contract](https://github.com/santi020k/lumen/blob/main/docs/native-parity/tour.md) for coordinate ownership,
 missing-target recovery and accessible dismissal.
 
 `LumenMentions` provides controlled multiline text and UTF-16 selection with literal
-suggestions. See the [Mentions contract](../../docs/native-parity/mentions.md)
+suggestions. See the [Mentions contract](https://github.com/santi020k/lumen/blob/main/docs/native-parity/mentions.md)
 for composition, token boundaries and platform availability.
 
-
-See the [Rating](../../docs/native-parity/rating.md), [Table](../../docs/native-parity/table.md),
-[DataTable](../../docs/native-parity/data-table.md), [Breadcrumb](../../docs/native-parity/breadcrumb.md),
-[Stepper](../../docs/native-parity/stepper.md), and [Timeline](../../docs/native-parity/timeline.md)
+See the [Rating](https://github.com/santi020k/lumen/blob/main/docs/native-parity/rating.md), [Table](https://github.com/santi020k/lumen/blob/main/docs/native-parity/table.md),
+[DataTable](https://github.com/santi020k/lumen/blob/main/docs/native-parity/data-table.md), [Breadcrumb](https://github.com/santi020k/lumen/blob/main/docs/native-parity/breadcrumb.md),
+[Stepper](https://github.com/santi020k/lumen/blob/main/docs/native-parity/stepper.md), and [Timeline](https://github.com/santi020k/lumen/blob/main/docs/native-parity/timeline.md)
 contracts for controlled state, localization, native composition and verification. Timeline items
 accept `isLast` to omit the final connector; application content and ordering remain host-owned.
+
+## Maintainer checks
+
+The version in `packages/compose/gradle.properties` is canonical. `pnpm sync:compose-version`
+updates every public installation example, and `pnpm check:compose-version` prevents release or
+documentation checks from passing with stale coordinates.
+
+The reviewed binary API baselines live in `api/lumen-compose.api` and `wear/api/wear.api`. Run the
+local release gate for both artifacts before opening a change:
+
+```bash
+./gradlew test lint apiCheck assembleDebugAndroidTest verifyMavenPublication
+```
+
+`assembleDebugAndroidTest` compiles the phone and Wear accessibility suites without claiming device
+evidence. Run `./gradlew connectedDebugAndroidTest` only with suitable Android and Wear OS targets
+connected; record physical-device results through the repository's native validation process.
+
+Run `./gradlew apiDump` only after reviewing an intentional public API change and updating its
+documentation, tests, classification, and migration notes. The root tasks include the separate Wear
+artifact automatically.
+
+CI also publishes both candidate artifacts to the build-local Maven staging repository and builds
+the phone and Wear playground APKs from those coordinates. The phone consumer verifies that its
+runtime graph does not include `lumen-compose-wear`.
+
+Publication follows the [reviewed release workflow](https://github.com/santi020k/lumen/blob/main/CONTRIBUTING.md#publishing) and
+[native release runbook](https://github.com/santi020k/lumen/blob/main/docs/native-release-runbook.md). The
+[Compose publication workflow](https://github.com/santi020k/lumen/blob/main/.github/workflows/publish-compose.yml) validates the declared
+Maven version and artifact metadata before distribution. Signing and publication belong to the
+approved GitHub workflow; local verification does not publish an artifact.
+
+## Resources
+
+| Guide | What you will find |
+| --- | --- |
+| [Native component reference](https://github.com/santi020k/lumen/blob/main/docs/native-components.md) | Component coverage and native API responsibilities. |
+| [Native compatibility](https://github.com/santi020k/lumen/blob/main/docs/native-compatibility.md) | Supported operating systems, peers, and toolchains. |
+| [Wear OS package](https://github.com/santi020k/lumen/blob/main/packages/compose/wear/README.md) | Wear OS package guidance and examples. |
+| [Contributing](https://github.com/santi020k/lumen/blob/main/CONTRIBUTING.md) | Setup, checks, and contribution workflow. |
+| [Release history](https://github.com/santi020k/lumen/releases) | Published releases and version notes. |
+
+Part of [Lumen UI](https://lumen.santi020k.com), created by [Santiago Molina](https://santi020k.com).
+Licensed under [MIT](https://github.com/santi020k/lumen/blob/main/LICENSE); third-party artwork retains its own notices.

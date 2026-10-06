@@ -1,7 +1,13 @@
 # Native documentation previews
 
+[Documentation app](../README.md) · [Interactive playgrounds](../../../docs/playgrounds.md)
+
+## Purpose
+
 These native hosts generate the screenshots used by the platform documentation. They import
 Lumen's real platform packages; they do not recreate the components with HTML or CSS.
+
+## Hosts
 
 - `apple` renders the local `LumenUI` Swift package with SwiftUI's `ImageRenderer`.
 - `android-compose` runs the local `lumen-compose` module in an Android application.
@@ -14,3 +20,13 @@ repeatable documentation image generation.
 
 The committed images live in `apps/docs/public/native-previews` so documentation builds do not need
 Xcode or the Android SDK.
+
+## Updating captures
+
+Use the [playground capture guide](../../../docs/playgrounds.md) for interactive component states
+and the [capture synchronization workflow](../../../CONTRIBUTING.md#documentation-and-guides) for
+optimized documentation assets. Keep host builds and temporary screenshots out of commits.
+
+These small hosts produce rendering references; they do not prove device interaction,
+accessibility, App Store delivery, or production qualification. See the
+[native device matrix](../../../docs/native-device-validation.md) for that evidence.

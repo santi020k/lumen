@@ -1,99 +1,65 @@
 <p align="center">
   <a href="https://lumen.santi020k.com">
-    <img src="./apps/docs/public/logo.svg" alt="Lumen UI" width="233" height="60">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="./docs/assets/readme/hero-dark.svg">
+      <img src="./docs/assets/readme/hero-light.svg" alt="Lumen UI — A shared language. Every interface." width="1200" height="340">
+    </picture>
   </a>
 </p>
 
 <h1 align="center">Lumen UI</h1>
 
 <p align="center">
-  An open-source UI library built for AI-assisted development, with 150+ accessible web primitives and shared native foundations.
+  <strong>Accessible primitives. Native authoring. Shared foundations.</strong><br>
+  An open-source UI system for Astro, React, Web Components, React Native, SwiftUI, and Jetpack Compose.
 </p>
 
 <p align="center">
-  <a href="https://lumen.santi020k.com">Documentation</a>
-  ·
-  <a href="https://lumen.santi020k.com/docs/components">Components</a>
-  ·
-  <a href="https://lumen.santi020k.com/#playgrounds">Try the playgrounds</a>
-  ·
-  <a href="https://www.figma.com/community/file/1662337342676541513">Figma library</a>
-  ·
-  <a href="https://apps.apple.com/app/id6805250815">iPhone and iPad app</a>
-  ·
-  <a href="https://play.google.com/store/apps/details?id=com.santi020k.lumen.playground.compose">Android app</a>
-  ·
-  <a href="https://github.com/santi020k/lumen/issues">Issues</a>
+  <a href="https://lumen.santi020k.com">Documentation</a> ·
+  <a href="https://lumen.santi020k.com/docs/components">Components</a> ·
+  <a href="https://lumen.santi020k.com/#playgrounds">Playgrounds</a> ·
+  <a href="https://www.figma.com/community/file/1662337342676541513">Figma library</a> ·
+  <a href="https://lumen.santi020k.com/support">Support</a>
 </p>
 
 <p align="center">
-  <a href="https://github.com/santi020k/lumen/actions"><img alt="GitHub Actions" src="https://img.shields.io/github/actions/workflow/status/santi020k/lumen/ci.yml?branch=main&style=flat-square"></a>
-  <a href="https://github.com/santi020k/lumen/actions/workflows/codeql.yml"><img alt="CodeQL" src="https://github.com/santi020k/lumen/actions/workflows/codeql.yml/badge.svg"></a>
-  <a href="https://www.npmjs.com/package/@santi020k/lumen-astro"><img alt="npm version" src="https://img.shields.io/npm/v/@santi020k/lumen-astro?style=flat-square&label=npm"></a>
-  <a href="./LICENSE"><img alt="MIT license" src="https://img.shields.io/badge/license-MIT-111827?style=flat-square"></a>
+  <a href="https://github.com/santi020k/lumen/actions/workflows/ci.yml"><img alt="CI status on main" src="https://img.shields.io/github/actions/workflow/status/santi020k/lumen/ci.yml?branch=main&amp;style=flat-square&amp;label=CI"></a>
+  <a href="https://github.com/santi020k/lumen/actions/workflows/codeql.yml"><img alt="CodeQL status" src="https://github.com/santi020k/lumen/actions/workflows/codeql.yml/badge.svg"></a>
+  <a href="https://www.npmjs.com/package/@santi020k/lumen-astro"><img alt="Published Astro package version" src="https://img.shields.io/npm/v/@santi020k/lumen-astro?style=flat-square&amp;label=npm"></a>
+  <a href="./LICENSE"><img alt="MIT license" src="https://img.shields.io/badge/license-MIT-036b8c?style=flat-square"></a>
 </p>
 
-Lumen gives applications a consistent visual language without tying them to one rendering model.
-Its packages share tokens, component contracts, styles, and interaction patterns while keeping each
-framework and platform's native authoring experience.
+Lumen gives your product a consistent visual language while preserving each framework's native
+way of building. Compose accessible controls, forms, charts, and complete product layouts from
+shared tokens and explicit component contracts.
 
-Give your coding agent reusable components, a portable skill, and focused MCP context. Lumen is
-designed to reduce repetitive UI code and unnecessary AI context. Actual token usage depends on the
-model, task, discovery, and corrections; it is not a guaranteed saving. Start with the
-[AI build guide](https://lumen.santi020k.com/guides/build-ui-with-ai) and
-[efficiency measurement method](docs/ai-efficiency.md).
+**Explore:** [Quick start](#web-quick-start) · [Native apps](#native-playgrounds) · [Templates](#dashboards-and-templates) · [AI and Figma](#ai-and-design-workflows) · [Packages](#packages) · [Repository apps](#repository-apps) · [Contributing](#contributing)
 
-- **Framework native:** Astro components, React primitives, and standards-based custom elements.
-- **Native foundations:** generated React Native, SwiftUI, and Jetpack Compose tokens plus the
-  complete shared interface and namespaced brand icon catalogs preserve the same semantic roles and
-  artwork without introducing DOM or CSS assumptions.
-- **Accessible by default:** semantic markup, keyboard paths, focus management, and reduced-motion
-  support are built into the primitives.
-- **Standalone CSS:** no Tailwind configuration is required. Tailwind users get an explicit layer
-  integration.
-- **Progressively enhanced:** Astro interactions use a small client runtime instead of requiring an
-  application framework.
-- **Ready for design and AI workflows:** published Figma resources, a portable agent skill, an MCP
-  server, `llms.txt`, a machine-readable registry, and a cross-platform release manifest ship
-  alongside the component system.
-- **Product-ready templates:** five responsive dashboard and application families are available as
-  live previews and installable Astro, React, and Elements recipes.
+> **Lumen 4 candidate:** This branch documents the upcoming major version. The npm badge reports
+> the published version; local examples and store builds may differ. See the
+> [migration and readiness notes](#lumen-4-candidate) before upgrading.
 
-**Explore:** [Dashboards and templates](#dashboards-and-templates) · [Web quick start](#web-quick-start) · [Native playgrounds](#native-playgrounds) · [Tailwind CSS](#tailwind-css) · [Packages](#packages) · [Community](#community)
+## See Lumen in action
 
-## Lumen 4 candidate
+<p>
+  <a href="https://lumen.santi020k.com/docs/web/playground">
+    <img src="./apps/docs/src/assets/platforms/web.webp" alt="A Lumen web workspace with navigation, metric cards, an interactive chart, and a task form" width="1184" height="802">
+  </a>
+</p>
 
-The v4 release branch brings consumer-driven date selection, chart readability, clipboard feedback,
-loading states, native layout improvements and a new ImageComparison primitive. Start with the
-[v3 → v4 migration guide](docs/migrating-v3-to-v4.md), [consumer audit](docs/lumen-4-consumer-audit.md),
-and [local readiness record](docs/lumen-4-readiness.md). The refreshed community gallery includes
-published consumer screenshots; it does not imply those applications already run this candidate.
+*Real Lumen components with illustrative data. [Open the web playground →](https://lumen.santi020k.com/docs/web/playground)*
 
-For existing applications, start with [v1 → v2](docs/migrating-v1-to-v2.md) when needed, then
-[v2 → v3](docs/migrating-v2-to-v3.md) before
-[v3 → v4](docs/migrating-v3-to-v4.md). For initial adoption, use
-[Migrating to Lumen](docs/migrating-to-lumen.md).
-
-## Appearance presets
-
-Choose an appearance preset or customize the existing themes with the [appearance guide](docs/appearance-presets.md). The Studio preset uses PostLens as its visual reference.
-
-## Dashboards and templates
-
-Explore the [template gallery](https://lumen.santi020k.com/templates) for complete analytics,
-SaaS admin, commerce, project workspace, and authentication/onboarding experiences. Each family
-uses public Lumen primitives and semantic tokens, includes responsive and accessibility coverage,
-and ships through the CLI for all three framework targets:
-
-```bash
-lumen add analytics-dashboard
-lumen add commerce-dashboard --target react
-lumen add auth-onboarding --target elements
-```
+| Built for | What you get |
+| --- | --- |
+| **Web products** | Astro, React, and custom elements with standalone CSS and optional Tailwind integration. |
+| **Native interfaces** | React Native, SwiftUI, Compose, WidgetKit, and Wear OS foundations with platform conventions. |
+| **Accessible interaction** | Semantic structure, keyboard paths, focus management, and reduced-motion support. |
+| **Design and AI workflows** | Figma resources, a portable agent skill, MCP discovery, and machine-readable contracts. |
 
 ## Web quick start
 
-Install the package for your framework:
+Choose one adapter. Astro requires Astro 5+, React requires React 19+, and the web packages
+require Node.js 22.12+ for their tooling. Install in your existing application:
 
 ```bash
 # Astro
@@ -127,11 +93,11 @@ import UIPrimitives from '@santi020k/lumen-astro/runtime'
 
 ```astro
 ---
-import { Button, Card, Input } from '@santi020k/lumen-astro'
+import { Button, Card, Input, Label } from '@santi020k/lumen-astro'
 ---
 
 <Card>
-  <label for="email">Email</label>
+  <Label for="email">Email</Label>
   <Input id="email" name="email" type="email" placeholder="you@example.com" />
   <Button>Subscribe</Button>
 </Card>
@@ -143,12 +109,12 @@ Load the stylesheet once from your app entry or global CSS:
 
 ```tsx
 import '@santi020k/lumen-react/styles.css'
-import { Button, Card, Input } from '@santi020k/lumen-react'
+import { Button, Card, Input, Label } from '@santi020k/lumen-react'
 
 export function SubscribeForm() {
   return (
     <Card>
-      <label htmlFor="email">Email</label>
+      <Label htmlFor="email">Email</Label>
       <Input id="email" name="email" type="email" placeholder="you@example.com" />
       <Button>Subscribe</Button>
     </Card>
@@ -172,8 +138,8 @@ Import the styles and register the elements once:
 </script>
 
 <lumen-card>
-  <label for="email">Email</label>
-  <lumen-input id="email" name="email" type="email" placeholder="you@example.com"></lumen-input>
+  <lumen-label id="email-label">Email</lumen-label>
+  <lumen-input aria-labelledby="email-label" id="email" name="email" type="email" placeholder="you@example.com"></lumen-input>
   <lumen-button>Subscribe</lumen-button>
 </lumen-card>
 ```
@@ -196,12 +162,45 @@ and component contract; repository contributors can also use the
 [cross-platform architecture](./docs/cross-platform.md) and
 [native component reference](./docs/native-components.md).
 
-> **Native platform status for Lumen 2.** React Native, SwiftUI, Compose, and Wear OS use the frozen
-> supported contract. Package, migration, build, security, artifact, and stability checks gate the
-> initial release. The incomplete external-consumer and physical-device matrices remain published
-> as post-release qualification work; review them before choosing a production adapter.
+> **Native qualification:** Check the [compatibility matrix](docs/native-compatibility.md) and
+> [device evidence](docs/native-device-validation.md) for your target. Local builds, published
+> artifacts, and physical-device accessibility are distinct verification steps.
+
+## Tailwind CSS
+
+Keep the layer prelude, Tailwind import, and Lumen stylesheet in the same shared CSS entry. Replace
+`lumen-astro` with the package for your framework.
+
+```css
+@import "@santi020k/lumen-astro/layers.css";
+@import "tailwindcss";
+@import "@santi020k/lumen-astro/styles.css";
+```
+
+This order places Tailwind base styles before Lumen components and Tailwind utilities above Lumen
+component defaults.
 
 ## Native playgrounds
+
+<table>
+  <tr>
+    <th>SwiftUI</th>
+    <th>Jetpack Compose</th>
+    <th>React Native</th>
+  </tr>
+  <tr>
+    <td><a href="https://lumen.santi020k.com/docs/apple/playground"><img src="./apps/docs/src/assets/platforms/apple.webp" alt="Native SwiftUI release checklist example" width="220"></a></td>
+    <td><a href="https://lumen.santi020k.com/docs/android/playground"><img src="./apps/docs/src/assets/platforms/android.webp" alt="Native Compose release checklist example" width="220"></a></td>
+    <td><a href="https://lumen.santi020k.com/docs/react-native/playground"><img src="./apps/docs/src/assets/platforms/react-native.webp" alt="Expo browser preview of the contributor profile example" width="220"></a></td>
+  </tr>
+  <tr>
+    <td>Native app capture</td>
+    <td>Native app capture</td>
+    <td>Expo browser preview</td>
+  </tr>
+</table>
+
+See [capture provenance](apps/docs/src/assets/platforms/README.md) for sources and verification scope.
 
 Try Lumen before adding it to your project. The [playground section](https://lumen.santi020k.com/#playgrounds)
 brings together the browser demos and native apps. Explore component states and themes, then use
@@ -225,38 +224,22 @@ See the [playground workflow](./docs/playgrounds.md) for a platform chooser, ref
 and run, capture, and distribution commands. Store builds follow their own release schedule and
 may differ from the current repository candidate.
 
-## Tailwind CSS
+## Appearance presets
 
-Keep the layer prelude, Tailwind import, and Lumen stylesheet in the same shared CSS entry. Replace
-`lumen-astro` with the package for your framework.
+Choose an appearance preset or customize the existing themes with the [appearance guide](docs/appearance-presets.md). The Studio preset uses PostLens as its visual reference.
 
-```css
-@import "@santi020k/lumen-astro/layers.css";
-@import "tailwindcss";
-@import "@santi020k/lumen-astro/styles.css";
+## Dashboards and templates
+
+Explore the [template gallery](https://lumen.santi020k.com/templates) for complete analytics,
+SaaS admin, commerce, project workspace, and authentication/onboarding experiences. Each family
+uses public Lumen primitives and semantic tokens, includes responsive and accessibility coverage,
+and ships through the CLI for all three framework targets:
+
+```bash
+lumen add analytics-dashboard
+lumen add commerce-dashboard --target react
+lumen add auth-onboarding --target elements
 ```
-
-This order places Tailwind base styles before Lumen components and Tailwind utilities above Lumen
-component defaults.
-
-## Packages
-
-| Package | Purpose |
-| --- | --- |
-| [`@santi020k/lumen-astro`](./packages/astro) | Reference implementation, Astro components, and progressive-enhancement runtime |
-| [`@santi020k/lumen-react`](./packages/react) | React components and behavior hooks |
-| [`@santi020k/lumen-react-hook-form`](./packages/react-hook-form) | Optional React Hook Form adapters for composite controls |
-| [`@santi020k/lumen-elements`](./packages/elements) | Standards-based Web Components |
-| [`@santi020k/lumen-core`](./packages/core) | Shared tokens, metadata, class helpers, and behavior contracts |
-| [`@santi020k/lumen-tokens`](./packages/tokens) | Canonical platform-neutral design token source |
-| [`@santi020k/lumen-react-native`](./packages/react-native) | React Native foundations and native primitives |
-| [`LumenUI`](./packages/swift) | Swift Package for iOS, iPadOS, macOS, tvOS, visionOS, and watchOS foundations and native primitives |
-| [`LumenWidgetUI`](./packages/swift-widget) | Focused WidgetKit-safe semantic text, icon, badge, and compact-stat foundations |
-| [`lumen-compose`](./packages/compose) | Android library for Jetpack Compose foundations and native primitives |
-| [`lumen-compose-wear`](./packages/compose/wear) | Focused Wear OS primitives for at-a-glance round-screen actions, progress, status, metrics, and rows |
-| [`@santi020k/lumen-icons-brand`](./packages/icons-brand) | Optional namespaced brand icons for web `Icon` adapters  |
-| [`@santi020k/lumen`](./packages/lumen) | Umbrella package, CLI, registry metadata, and public package map |
-| [`@santi020k/lumen-mcp`](./packages/mcp) | MCP server for component discovery and source retrieval |
 
 ## AI and design workflows
 
@@ -274,8 +257,14 @@ current source, props, tokens, and usage rules.
 For ChatGPT and Codex, install the published
 [Lumen UI plugin](https://chatgpt.com/plugins/plugin_asdk_app_6a8f6c526c5481918eb8a48806fa112b)
 from the Plugins Directory. Select **Install plugin**, then mention **@Lumen UI** in a request such
-as “Find the right Lumen components for an accessible React settings screen.” Version 1.0.0 bundles
+as “Find the right Lumen components for an accessible React settings screen.” The plugin bundles
 the skill with the hosted, read-only catalog; no separate Lumen account or local MCP setup is needed.
+
+Lumen is designed to reduce repetitive UI code and unnecessary agent context. Actual token usage
+depends on the model, task, and corrections; see the [measurement method](docs/ai-efficiency.md).
+
+<details>
+<summary>Guides, registries, and integration references</summary>
 
 Additional machine-readable surfaces include:
 
@@ -301,13 +290,68 @@ Additional machine-readable surfaces include:
 - [`docs/native-patterns.md`](./docs/native-patterns.md) for developed native compositions and the
   boundary between Lumen presentation and platform-owned application structure.
 
+</details>
+
+## Packages
+
+| Package | Purpose |
+| --- | --- |
+| [`@santi020k/lumen-astro`](./packages/astro) | Reference implementation, Astro components, and progressive-enhancement runtime |
+| [`@santi020k/lumen-react`](./packages/react) | React components and behavior hooks |
+| [`@santi020k/lumen-react-hook-form`](./packages/react-hook-form) | Optional React Hook Form adapters for composite controls |
+| [`@santi020k/lumen-elements`](./packages/elements) | Standards-based Web Components |
+| [`@santi020k/lumen-core`](./packages/core) | Shared tokens, metadata, class helpers, and behavior contracts |
+| [`@santi020k/lumen-tokens`](./packages/tokens) | Canonical platform-neutral design token source |
+| [`@santi020k/lumen-react-native`](./packages/react-native) | React Native foundations and native primitives |
+| [`LumenUI`](./packages/swift) | Swift Package for iOS, iPadOS, macOS, tvOS, visionOS, and watchOS foundations and native primitives |
+| [`LumenWidgetUI`](./packages/swift-widget) | Focused WidgetKit-safe semantic text, icon, badge, and compact-stat foundations |
+| [`lumen-compose`](./packages/compose) | Android library for Jetpack Compose foundations and native primitives |
+| [`lumen-compose-wear`](./packages/compose/wear) | Focused Wear OS primitives for at-a-glance round-screen actions, progress, status, metrics, and rows |
+| [`@santi020k/lumen-icons-brand`](./packages/icons-brand) | Optional namespaced brand icons for web `Icon` adapters  |
+| [`@santi020k/lumen`](./packages/lumen) | Umbrella package, CLI, registry metadata, and public package map |
+| [`@santi020k/lumen-mcp`](./packages/mcp) | MCP server for component discovery and source retrieval |
+
+The private [`@santi020k/lumen-templates`](packages/templates/README.md) workspace supplies the
+gallery and preview renderer. Consumer recipes are installed through the public Lumen CLI.
+
+## Repository apps
+
+Each app has its own setup, source map, and verification guidance:
+
+| App | Purpose |
+| --- | --- |
+| [Documentation](apps/docs/README.md) | Public documentation, live examples, search, and native previews |
+| [Template showcase](apps/templates/README.md) | Standalone gallery of five product-template families |
+| [Next.js smoke app](apps/next-smoke/README.md) | Server/client boundaries and rendered consumer regression fixtures |
+| [Apple playground](apps/playground-apple/README.md) | iPhone, iPad, Mac, watchOS, and WidgetKit reference hosts |
+| [Android playground](apps/playground-android/README.md) | Compose phone/tablet app and separate Wear OS host |
+| [React Native playground](apps/playground-react-native/README.md) | Expo reference app and embedded browser gallery |
+| [Figma plugin](apps/figma-plugin/README.md) | Development beta for Astro starters and structured agent handoff |
+| [Motion studio](apps/motion/README.md) | Reusable product films and local video exports |
+| [Store artwork](apps/store-assets/README.md) | Canonical SVG sources for the playground app icons |
+
+## Lumen 4 candidate
+
+The v4 release branch brings consumer-driven date selection, chart readability, clipboard feedback,
+loading states, native layout improvements and a new ImageComparison primitive. Start with the
+[v3 → v4 migration guide](docs/migrating-v3-to-v4.md), [consumer audit](docs/lumen-4-consumer-audit.md),
+and [local readiness record](docs/lumen-4-readiness.md). The refreshed community gallery includes
+published consumer screenshots; it does not imply those applications already run this candidate.
+
+For existing applications, start with [v1 → v2](docs/migrating-v1-to-v2.md) when needed, then
+[v2 → v3](docs/migrating-v2-to-v3.md) before
+[v3 → v4](docs/migrating-v3-to-v4.md). For initial adoption, use
+[Migrating to Lumen](docs/migrating-to-lumen.md).
+
 ## Contributing
 
 Lumen is a pnpm workspace. Astro is the reference implementation; shared contracts belong in
 `packages/core`, while framework-specific behavior stays in its adapter package.
 
+Use Node.js 22.22.2+, 24.15.0+, or 26+ and pnpm 12.8.1, as declared in the root manifest.
+
 ```bash
-pnpm install
+pnpm install --frozen-lockfile
 pnpm run dev
 pnpm run validate
 ```
@@ -318,7 +362,7 @@ changes require a changeset.
 ## Community
 
 Create reusable product animations and social videos locally with the
-[Lumen motion studio](./apps/motion/README.md). Its first pilot previews one interface in three
+[Lumen motion studio](./apps/motion/README.md). Its first pilot previews one interface in four
 appearances and exports portrait, square, and landscape MP4s through HyperFrames.
 
 [Feedback & support](https://lumen.santi020k.com/support) connects ideas, questions, bug reports,
@@ -353,3 +397,5 @@ Lumen's original code and artwork are available under the [MIT License](./LICENS
 interface icons retain the Lucide ISC or Feather MIT terms, and generated brand icons retain Font
 Awesome Free's CC BY 4.0 terms. The native packages include the required attribution and license
 notices; see [`icons/THIRD_PARTY_NOTICES.md`](./icons/THIRD_PARTY_NOTICES.md).
+
+Created and maintained by [Santiago Molina](https://santi020k.com).

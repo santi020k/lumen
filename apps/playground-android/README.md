@@ -1,9 +1,27 @@
-# Lumen Android Playground
+<p align="center">
+  <a href="https://lumen.santi020k.com">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="../../docs/assets/readme/package-dark.svg">
+      <img src="../../docs/assets/readme/package-light.svg" alt="Lumen UI — Web. Native. Thoughtfully connected." width="1200" height="184">
+    </picture>
+  </a>
+</p>
 
-This candidate uses the local Lumen 4 adapter. Catalog discovery accepts component IDs,
-provides filter reset, and shows the workspace release version. See
-[the v4 playground guide](../../docs/playgrounds.md#lumen-4-candidate) for search and capture behavior.
+<h1 align="center">Lumen Android Playground</h1>
 
+<p align="center">Jetpack Compose · Phones, tablets, and Wear OS</p>
+
+<p align="center"><a href="https://play.google.com/store/apps/details?id=com.santi020k.lumen.playground.compose">Google Play</a> · <a href="https://lumen.santi020k.com/docs/android/playground">Playground guide</a> · <a href="../../packages/compose/README.md">Compose package</a></p>
+
+**On this page:** [Overview](#overview) · [Run locally](#run-locally) · [Candidate artifact checks](#candidate-artifact-checks) · [Process-death restoration test](#process-death-restoration-test) · [Isolated runtime measurements](#isolated-runtime-measurements) · [Resources](#resources)
+
+<p align="center">
+  <img src="../docs/src/assets/platforms/android.webp" alt="Lumen Compose playground showing a release checklist example" width="220">
+</p>
+
+<p align="center"><em>Native playground capture. Store builds follow their own release schedule.</em></p>
+
+## Overview
 
 <!-- cspell:words screencap Automator Pandroid keyboardqualification performancequalification -->
 
@@ -29,8 +47,14 @@ used by the other phone playgrounds. The Wear gallery renders every API
 in its intentionally smaller package, including the supported metric and list-row
 compositions.
 
+> **Local candidate:** This checkout uses the Lumen 4 adapter. Search accepts component IDs and
+> supports filter reset. See the [v4 playground guide](../../docs/playgrounds.md#lumen-4-candidate)
+> for release-version display and capture behavior.
+
+## Run locally
+
 Open this directory, not the repository root, in Android Studio. Wait for Gradle sync, select an
-emulator or connected device, and run the `app` configuration. Android SDK 37 and JDK 17 or newer
+emulator or connected device, and run the `app` configuration. Android SDK 37 and JDK 21
 are required.
 
 Alternatively, build an installable debug APK from the repository root:
@@ -43,6 +67,8 @@ The phone and watch APKs are written beneath `app/build/outputs/apk/debug` and
 `wear/build/outputs/apk/debug`. See
 [`docs/playgrounds.md`](../../docs/playgrounds.md) for prerequisites, device installation, signing,
 and Google Play distribution.
+
+## Candidate artifact checks
 
 Release canaries first publish the candidate AARs to the local staging repository, then force both
 consumers to resolve those artifacts instead of the included source build:
@@ -162,3 +188,12 @@ pnpm playground:android:capture-store
 
 The command temporarily configures a 2160×3840 9:16 viewport, captures six native Home, Examples,
 Components, and Settings screens in light and dark appearances, and restores the emulator display.
+
+## Resources
+
+- [Repository overview](../../README.md) — framework packages, demos, and the project map.
+- [Contributing](../../CONTRIBUTING.md) — workspace setup, validation, and release workflow.
+- [Feedback and support](https://lumen.santi020k.com/support) — questions, ideas, and bug reports.
+
+Part of [Lumen UI](https://lumen.santi020k.com), created by [Santiago Molina](https://santi020k.com).
+Licensed under [MIT](../../LICENSE); third-party artwork retains its own notices.

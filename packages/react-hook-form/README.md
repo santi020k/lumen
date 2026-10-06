@@ -1,6 +1,9 @@
 <p align="center">
   <a href="https://lumen.santi020k.com">
-    <img src="https://raw.githubusercontent.com/santi020k/lumen/main/apps/docs/public/logo.svg" alt="Lumen UI" width="233" height="60">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/santi020k/lumen/main/docs/assets/readme/package-dark.svg">
+      <img src="https://raw.githubusercontent.com/santi020k/lumen/main/docs/assets/readme/package-light.svg" alt="Lumen UI — Web. Native. Thoughtfully connected." width="1200" height="184">
+    </picture>
   </a>
 </p>
 
@@ -25,9 +28,7 @@
 
 **Package:** `@santi020k/lumen-react-hook-form`
 
-**On this page:** [Install](#install) · [Zod and Yup](#zod-and-yup) · [Resources](#resources)
-
----
+**On this page:** [Install](#install) · [Usage](#usage) · [Resources](#resources)
 
 Optional React Hook Form adapters for Lumen composite controls.
 
@@ -45,6 +46,8 @@ this adapter does not load global styles for you.
 ```bash
 pnpm add @santi020k/lumen-react @santi020k/lumen-react-hook-form react-hook-form
 ```
+
+## Usage
 
 ```tsx
 import { Button, Field, FieldError, Form, Label } from '@santi020k/lumen-react'
@@ -160,14 +163,14 @@ visible input separately. React Hook Form remains the validation owner.
 ```
 
 Initialize `amount` to a string such as `"1234.50"`; `form.reset()` restores the managed draft.
-See [consumer workflows](../../docs/consumer-ui-recipes.md#executable-consumer-workflows).
+See [consumer workflows](https://github.com/santi020k/lumen/blob/main/docs/consumer-ui-recipes.md#executable-consumer-workflows).
 
 ## Resources
 
 | Guide | What you will find |
 | --- | --- |
-| [React setup](https://github.com/santi020k/lumen/blob/main/packages/react/README.md) | Reference for react setup. |
-| [Error handling](https://github.com/santi020k/lumen/blob/main/docs/error-handling.md) | Reference for error handling. |
+| [React setup](https://github.com/santi020k/lumen/blob/main/packages/react/README.md) | React setup guidance and examples. |
+| [Error handling](https://github.com/santi020k/lumen/blob/main/docs/error-handling.md) | Field feedback, summaries, alerts, and recovery surfaces. |
 | [Contributing](https://github.com/santi020k/lumen/blob/main/CONTRIBUTING.md) | Setup, checks, and contribution workflow. |
 | [Release history](https://github.com/santi020k/lumen/releases) | Published releases and version notes. |
 

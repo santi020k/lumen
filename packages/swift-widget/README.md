@@ -1,6 +1,9 @@
 <p align="center">
   <a href="https://lumen.santi020k.com">
-    <img src="https://raw.githubusercontent.com/santi020k/lumen/main/apps/docs/public/logo.svg" alt="Lumen UI" width="233" height="60">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/santi020k/lumen/main/docs/assets/readme/package-dark.svg">
+      <img src="https://raw.githubusercontent.com/santi020k/lumen/main/docs/assets/readme/package-light.svg" alt="Lumen UI — Web. Native. Thoughtfully connected." width="1200" height="184">
+    </picture>
   </a>
 </p>
 
@@ -24,8 +27,6 @@
 **Package:** `LumenWidgetUI for WidgetKit`
 
 **On this page:** [Install](#install) · [Usage](#usage) · [Resources](#resources)
-
----
 
 `LumenWidgetUI` is a focused Swift Package product for WidgetKit presentation. It contains generated
 semantic colors, spacing, and radii plus text, SF Symbol, badge, and compact-stat treatments. It does
@@ -84,8 +85,8 @@ separate repository change and is not required merely to use Lumen elsewhere in 
 
 | Guide | What you will find |
 | --- | --- |
-| [Swift package installation](https://github.com/santi020k/lumen/blob/main/packages/swift/README.md) | Reference for swift package installation. |
-| [Native compatibility](https://github.com/santi020k/lumen/blob/main/docs/native-compatibility.md) | Reference for native compatibility. |
+| [Swift package installation](https://github.com/santi020k/lumen/blob/main/packages/swift/README.md) | Xcode and Swift Package Manager setup. |
+| [Native compatibility](https://github.com/santi020k/lumen/blob/main/docs/native-compatibility.md) | Supported operating systems, peers, and toolchains. |
 | [Contributing](https://github.com/santi020k/lumen/blob/main/CONTRIBUTING.md) | Setup, checks, and contribution workflow. |
 | [Release history](https://github.com/santi020k/lumen/releases) | Published releases and version notes. |
 

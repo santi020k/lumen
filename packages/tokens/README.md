@@ -1,6 +1,9 @@
 <p align="center">
   <a href="https://lumen.santi020k.com">
-    <img src="https://raw.githubusercontent.com/santi020k/lumen/main/apps/docs/public/logo.svg" alt="Lumen UI" width="233" height="60">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/santi020k/lumen/main/docs/assets/readme/package-dark.svg">
+      <img src="https://raw.githubusercontent.com/santi020k/lumen/main/docs/assets/readme/package-light.svg" alt="Lumen UI — Web. Native. Thoughtfully connected." width="1200" height="184">
+    </picture>
   </a>
 </p>
 
@@ -25,9 +28,7 @@
 
 **Package:** `@santi020k/lumen-tokens`
 
-**On this page:** [Install](#install) · [Read the token document](#read-the-token-document) · [Resources](#resources)
-
----
+**On this page:** [Install](#install) · [Resources](#resources)
 
 The canonical, platform-neutral foundations for Lumen UI. `lumen.tokens.json` uses Design Tokens
 Community Group token types and carries the semantic light and dark colors, spacing, radii,
@@ -65,8 +66,8 @@ Platform packages expose native generated values, so most application code shoul
 
 | Guide | What you will find |
 | --- | --- |
-| [Cross-platform architecture](https://github.com/santi020k/lumen/blob/main/docs/cross-platform.md) | Reference for cross-platform architecture. |
-| [Figma token export](https://github.com/santi020k/lumen/blob/main/docs/figma.md) | Reference for figma token export. |
+| [Cross-platform architecture](https://github.com/santi020k/lumen/blob/main/docs/cross-platform.md) | Shared foundations, adapter boundaries, and support tiers. |
+| [Figma token export](https://github.com/santi020k/lumen/blob/main/docs/figma.md) | Variables, token export, and Code Connect workflows. |
 | [Contributing](https://github.com/santi020k/lumen/blob/main/CONTRIBUTING.md) | Setup, checks, and contribution workflow. |
 | [Release history](https://github.com/santi020k/lumen/releases) | Published releases and version notes. |
 

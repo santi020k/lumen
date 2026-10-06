@@ -1,4 +1,19 @@
-# Lumen for Figma — Beta
+<p align="center">
+  <a href="https://lumen.santi020k.com">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="../../docs/assets/readme/package-dark.svg">
+      <img src="../../docs/assets/readme/package-light.svg" alt="Lumen UI — Web. Native. Thoughtfully connected." width="1200" height="184">
+    </picture>
+  </a>
+</p>
+
+<h1 align="center">Lumen for Figma · Beta</h1>
+
+<p align="center">Astro starters · Structured handoff · Local development plugin</p>
+
+<p align="center"><a href="../../docs/figma.md">Figma integration</a> · <a href="community/LISTING.md">Listing materials</a> · <a href="../../packages/astro/README.md">Astro package</a></p>
+
+**On this page:** [Build and try](#build-and-try) · [Supported conversion](#supported-conversion) · [Local preview and validation](#local-preview-and-validation) · [Maintenance](#maintenance) · [Automated candidates](#automated-candidates) · [Resources](#resources)
 
 **Beta version · Astro only · Development plugin.** This MVP inspects one selection, recognizes
 instances from the canonical Lumen Figma library, produces an Astro component starter, and exports
@@ -200,3 +215,12 @@ from an unmerged local checkout. No GitHub secret, remote JavaScript loader, or 
 For recovery, republish the last verified bundle through Figma desktop, retaining its source
 revision and recording the rollback in the listing's version notes. Figma distributes updates to
 all users and does not let them select an older version; see [plugin version management](https://developers.figma.com/docs/plugins/#plugin-management).
+
+## Resources
+
+- [Repository overview](../../README.md) — framework packages, demos, and the project map.
+- [Contributing](../../CONTRIBUTING.md) — workspace setup, validation, and release workflow.
+- [Feedback and support](https://lumen.santi020k.com/support) — questions, ideas, and bug reports.
+
+Part of [Lumen UI](https://lumen.santi020k.com), created by [Santiago Molina](https://santi020k.com).
+Licensed under [MIT](../../LICENSE); third-party artwork retains its own notices.

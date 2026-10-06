@@ -1,6 +1,9 @@
 <p align="center">
   <a href="https://lumen.santi020k.com">
-    <img src="https://raw.githubusercontent.com/santi020k/lumen/main/apps/docs/public/logo.svg" alt="Lumen UI" width="233" height="60">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/santi020k/lumen/main/docs/assets/readme/package-dark.svg">
+      <img src="https://raw.githubusercontent.com/santi020k/lumen/main/docs/assets/readme/package-light.svg" alt="Lumen UI — Web. Native. Thoughtfully connected." width="1200" height="184">
+    </picture>
   </a>
 </p>
 
@@ -23,9 +26,7 @@
 
 **Package:** `@santi020k/lumen-templates`
 
-**On this page:** [Use templates in an application](#use-templates-in-an-application) · [Workspace API](#workspace-api) · [Development](#development) · [Resources](#resources)
-
----
+**On this page:** [Use templates in an application](#use-templates-in-an-application) · [Resources](#resources)
 
 Private workspace package for Lumen's product template metadata, Astro gallery, and preview
 renderer. It powers the documentation and template showcase; it is not published to npm.
@@ -48,7 +49,6 @@ and authentication/onboarding. Preview them in the gallery before choosing a rec
 
 Dashboard metric cards own their frame and spacing. Their public `Stat` uses the bare
 variant, and change badges wrap below the value when a narrow card needs more room.
-
 
 ## Login examples and Auth
 
@@ -147,8 +147,8 @@ preview routes, and CLI recipes aligned when changing a family.
 
 | Guide | What you will find |
 | --- | --- |
-| [Astro setup](https://github.com/santi020k/lumen/blob/main/packages/astro/README.md) | Reference for astro setup. |
-| [CLI and recipe installation](https://github.com/santi020k/lumen/blob/main/packages/lumen/README.md) | Reference for cLI and recipe installation. |
+| [Astro setup](https://github.com/santi020k/lumen/blob/main/packages/astro/README.md) | Stylesheet and progressive-enhancement runtime setup. |
+| [CLI and recipe installation](https://github.com/santi020k/lumen/blob/main/packages/lumen/README.md) | Discover components, add recipes, and audit integration. |
 | [Contributing](https://github.com/santi020k/lumen/blob/main/CONTRIBUTING.md) | Setup, checks, and contribution workflow. |
 
 Part of [Lumen UI](https://lumen.santi020k.com), created by [Santiago Molina](https://santi020k.com).

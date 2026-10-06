@@ -1,6 +1,9 @@
 <p align="center">
   <a href="https://lumen.santi020k.com">
-    <img src="https://raw.githubusercontent.com/santi020k/lumen/main/apps/docs/public/logo.svg" alt="Lumen UI" width="233" height="60">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/santi020k/lumen/main/docs/assets/readme/package-dark.svg">
+      <img src="https://raw.githubusercontent.com/santi020k/lumen/main/docs/assets/readme/package-light.svg" alt="Lumen UI — Web. Native. Thoughtfully connected." width="1200" height="184">
+    </picture>
   </a>
 </p>
 
@@ -25,9 +28,7 @@
 
 **Package:** `@santi020k/lumen-icons-brand`
 
-**On this page:** [Install](#install) · [Resources](#resources)
-
----
+**On this page:** [Install](#install) · [Usage](#usage) · [Resources](#resources)
 
 Optional brand icons for Lumen UI. The pack keeps company marks separate from Lumen's default
 Lucide catalog and renders them through the same `Icon` component in Astro, React, and Web
@@ -38,6 +39,8 @@ Components.
 ```bash
 pnpm add @santi020k/lumen-icons-brand
 ```
+
+## Usage
 
 Register the pack once before rendering brand icons:
 
@@ -78,8 +81,8 @@ CC BY 4.0. Read each brand's usage guidelines before publishing brand marks.
 
 | Guide | What you will find |
 | --- | --- |
-| [Icon licenses and trademark guidance](https://github.com/santi020k/lumen/blob/main/icons/THIRD_PARTY_NOTICES.md) | Reference for icon licenses and trademark guidance. |
-| [Import and icon performance](https://github.com/santi020k/lumen/blob/main/docs/import-and-icon-performance.md) | Reference for import and icon performance. |
+| [Icon licenses and trademark guidance](https://github.com/santi020k/lumen/blob/main/icons/THIRD_PARTY_NOTICES.md) | Artwork attribution, licenses, and brand usage boundaries. |
+| [Import and icon performance](https://github.com/santi020k/lumen/blob/main/docs/import-and-icon-performance.md) | Selective imports and reproducible bundle measurements. |
 | [Contributing](https://github.com/santi020k/lumen/blob/main/CONTRIBUTING.md) | Setup, checks, and contribution workflow. |
 | [Release history](https://github.com/santi020k/lumen/releases) | Published releases and version notes. |
 
