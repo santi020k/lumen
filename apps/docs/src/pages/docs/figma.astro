@@ -50,7 +50,7 @@ const workflow = [
       stats={[
         { label: 'Plugin stage', value: 'Beta' },
         { label: 'Mapped components', value: 6 },
-        { label: 'Plugin target', value: 'Astro' }
+        { label: 'Plugin target', value: 'Astro v4' }
       ]}
       title="One system from canvas to code."
     >
@@ -96,7 +96,7 @@ const workflow = [
     <Card as="section" class="figma-plugin-card" aria-labelledby="plugin-title" id="plugin-beta">
       <div class="figma-plugin-card__title">
         <h2 id="plugin-title">Lumen for Figma</h2>
-        <Badge variant="outline">Beta version</Badge>
+        <Badge variant="outline">Development beta</Badge>
       </div>
       <p>
         Select a design built with Lumen, inspect its components, and take an Astro starter into
@@ -108,14 +108,30 @@ const workflow = [
         no AI calls. Your coding agent handles application integration and validation. Generated
         code, responsive layouts, custom layers, and action behavior still need review.
       </p>
+      <p>
+        Exports target <code>@santi020k/lumen-astro</code> v4. Compare the exact version in the
+        handoff with your installed package before integrating the starter. Load the Astro
+        stylesheet and <code>UIPrimitives</code> once at the application boundary.
+      </p>
       <CodeTabs
         ariaLabel="Build the beta Figma plugin"
         items={[{ value: 'setup', label: 'Build the development plugin', language: 'bash', code: pluginSetup }]}
       />
       <p>
-        In Figma desktop, choose <strong>Plugins → Development → Import plugin from manifest</strong>
-        and select <code>apps/figma-plugin/dist/manifest.json</code>. This is a development beta;
-        the Community listing below contains the design library.
+        In Figma desktop, choose <strong>Plugins → Development → Import plugin from manifest</strong>{' '}
+        and select <code>apps/figma-plugin/dist/manifest.json</code>. Run these build commands from
+        the Lumen repository root. The plugin is not yet published to Figma Community; the separate
+        Community link on this page opens the design library.
+      </p>
+      <p>
+        Select one frame or component instance, choose <strong>Inspect selection</strong>, and
+        review the findings. Copy or save the <strong>Astro starter</strong> or <strong>AI handoff</strong> for your project.
+        Exports include the selected design's visible
+        text and component data, so review them before sharing with your coding agent.
+      </p>
+      <p>
+        Community publication follows the Lumen v4 package and documentation release. An install
+        link will appear here after Figma approval and verified public installation.
       </p>
       <DocsActionLink
         href="https://github.com/santi020k/lumen/blob/main/apps/figma-plugin/README.md"

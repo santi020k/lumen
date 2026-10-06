@@ -96,6 +96,10 @@ preview selects a workflow stage; onboarding preserves an editable workspace dra
 filters and activates keyboard-accessible commands. React callbacks and bubbling DOM events keep
 checkout, persistence, navigation, and authorization application-owned.
 
+The React command-center recipe handles search locally. Arrow Down moves from search to the
+first result; arrow keys, Home, and End navigate results; Enter selects the focused command;
+Escape returns to search. An empty result explains how to recover.
+
 Astro recipe scripts initialize on `astro:page-load` and release their listeners before a view swap.
 Elements recipes require a module bundler to compile the installed `product-blocks.ts` module and
 resolve package imports. Native form/label children follow Elements' documented form contract.

@@ -152,13 +152,14 @@ public struct LumenPicker<SelectionValue: Hashable, Content: View>: View {
 
     @ViewBuilder
     private var picker: some View {
-        if #available(iOS 18, macOS 15, tvOS 18, watchOS 11, visionOS 2, *) {
+        if #available(iOS 18, macOS 15, tvOS 18, watchOS 11, visionOS 2, *),
+           let currentValueLabel {
             let picker = Picker(selection: $selection) {
                 content
             } label: {
                 if let richLabel { richLabel } else { Text(title) }
             } currentValueLabel: {
-                if let currentValueLabel { currentValueLabel }
+                currentValueLabel
             }
 
             if showsLabel { picker } else { picker.labelsHidden() }

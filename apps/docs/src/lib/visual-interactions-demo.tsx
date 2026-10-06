@@ -2,7 +2,7 @@ import type { CSSProperties } from 'react'
 import { useEffect, useRef, useState } from 'react'
 
 import { type LumenApprovalStatus, type LumenStreamStatus, type LumenVisualEffectVariant, lumenVisualEffectVariants, runLumenViewTransition } from '@santi020k/lumen-core'
-import { ApprovalCard, Button, Card, ChartMotion, CodeTabs, Collapsible, Label, LineChart, MotionGroup, NumberField, PromptComposer, Select, SourceCitation, Stack, StreamMessage, Tabs, TabsList, TabsPanel, TabsTrigger, ToolActivity, Typography, VisualEffect } from '@santi020k/lumen-react'
+import { ApprovalCard, Badge, Button, Card, ChartMotion, CodeTabs, Collapsible, Field, Label, LineChart, MotionGroup, NumberField, PromptComposer, Select, SourceCitation, Stack, StreamMessage, Tabs, TabsList, TabsPanel, TabsTrigger, ToolActivity, Typography, VisualEffect } from '@santi020k/lumen-react'
 
 import { CommandCenterRecipe } from '../../../../packages/lumen/templates/react/command-center/src/lumen/command-center'
 import { FeaturePreviewRecipe } from '../../../../packages/lumen/templates/react/feature-preview/src/lumen/feature-preview'
@@ -39,48 +39,75 @@ const EffectsWorkbench = () => {
   const [variant, setVariant] = useState<LumenVisualEffectVariant>('mesh')
   const [intensity, setIntensity] = useState(0.5)
   const [animated, setAnimated] = useState(false)
+  const canAnimate = variant === 'aurora' || variant === 'draw' || variant === 'depth'
+  const animationLabel = animated ? 'Pause animation' : 'Enable animation'
+  const staticHint = 'This treatment is static. Adjust its intensity or select aurora, draw, or depth to explore motion.'
+
+  const effectHints: Record<LumenVisualEffectVariant, string> = {
+    mesh: staticHint,
+    spotlight: staticHint,
+    grain: staticHint,
+    border: staticHint,
+    depth: 'Enable animation, then scroll to see the depth treatment in browsers that support scroll timelines.',
+    draw: 'Enable animation to draw the path. Pause and enable again to replay it.',
+    aurora: 'Enable animation to see the aurora move.'
+  }
 
   return (
     <Stack gap="group">
-      <Stack direction="horizontal" gap="group" wrap>
-        <Stack gap="related">
-          <Label htmlFor="visual-effect">Effect</Label>
-          <Select
-            id="visual-effect"
-            value={variant}
-            options={[...lumenVisualEffectVariants]}
-            onChange={event => {
-              const next = lumenVisualEffectVariants.find(item => item === event.currentTarget.value)
-
-              if (next) setVariant(next)
-            }}
-          />
-        </Stack>
-        <Stack gap="related">
-          <Label htmlFor="effect-intensity">Intensity</Label>
-          <NumberField
-            id="effect-intensity"
-            min={0}
-            max={1}
-            step={0.05}
-            value={intensity}
-            onChange={event => {
-              const next = event.currentTarget.valueAsNumber
-
-              if (Number.isFinite(next)) setIntensity(Math.max(0, Math.min(1, next)))
-            }}
-          />
-        </Stack>
-        <Button
-          aria-pressed={animated}
-          onClick={() => {
-            setAnimated(!animated)
-          }}
-          variant="secondary"
+      <Card variant="muted" className="visual-control-panel">
+        <Stack
+          direction="horizontal"
+          gap="group"
+          wrap
+          className="visual-controls"
         >
-          {animated ? 'Pause animation' : 'Enable animation'}
-        </Button>
-      </Stack>
+          <Field>
+            <Label id="visual-effect-label" htmlFor="visual-effect">Effect</Label>
+            <Select
+              id="visual-effect"
+              aria-labelledby="visual-effect-label"
+              value={variant}
+              options={[...lumenVisualEffectVariants]}
+              onChange={event => {
+                const next = lumenVisualEffectVariants.find(item => item === event.currentTarget.value)
+
+                if (next) {
+                  setVariant(next)
+
+                  setAnimated(false)
+                }
+              }}
+            />
+          </Field>
+          <Field>
+            <Label htmlFor="effect-intensity">Intensity</Label>
+            <NumberField
+              id="effect-intensity"
+              min={0}
+              max={1}
+              step={0.05}
+              value={intensity}
+              onChange={event => {
+                const next = event.currentTarget.valueAsNumber
+
+                if (Number.isFinite(next)) setIntensity(Math.max(0, Math.min(1, next)))
+              }}
+            />
+          </Field>
+          <Button
+            aria-pressed={animated}
+            disabled={!canAnimate}
+            onClick={() => {
+              setAnimated(!animated)
+            }}
+            variant="secondary"
+          >
+            {canAnimate ? animationLabel : 'Static effect'}
+          </Button>
+        </Stack>
+      </Card>
+      <Typography><p role="status" className="visual-feedback">{effectHints[variant]}</p></Typography>
       <div className="visual-demo-grid">
         {[false, true].map(reduced => (
           <VisualEffect key={String(reduced)} data-ui-motion={reduced ? 'reduce' : undefined} variant={variant} intensity={intensity} animated={animated}>
@@ -134,96 +161,116 @@ const MotionWorkbench = () => {
 
   return (
     <Stack gap="group" style={style}>
-      <Label htmlFor="motion-duration">Duration in milliseconds</Label>
-      <NumberField
-        id="motion-duration"
-        min={0}
-        max={1000}
-        step={40}
-        value={duration}
-        onChange={event => {
-          const next = event.currentTarget.valueAsNumber
+      <Card variant="muted" className="visual-control-panel">
+        <Stack
+          direction="horizontal"
+          gap="group"
+          wrap
+          className="visual-controls"
+        >
+          <Field>
+            <Label htmlFor="motion-duration">Duration · milliseconds</Label>
+            <NumberField
+              id="motion-duration"
+              min={0}
+              max={1000}
+              step={40}
+              value={duration}
+              onChange={event => {
+                const next = event.currentTarget.valueAsNumber
 
-          if (Number.isFinite(next)) setDuration(Math.max(0, Math.min(1000, next)))
-        }}
-      />
-      <Stack direction="horizontal" gap="related" wrap>
-        <Button onClick={() => {
-          setItems(current => [...current].reverse())
-        }}
-        >
-          Reverse order
-        </Button>
-        <Button
-          onClick={() => {
-            setItems(current => [...current, `New task ${nextIdRef.current++}`])
-          }}
-          variant="secondary"
-        >
-          Add item
-        </Button>
-        <Button
-          onClick={() => {
-            setItems(current => current.slice(0, -1))
-          }}
-          disabled={items.length === 0}
-          variant="secondary"
-        >
-          Remove last
-        </Button>
-      </Stack>
+                if (Number.isFinite(next)) setDuration(Math.max(0, Math.min(1000, next)))
+              }}
+            />
+          </Field>
+          <Stack direction="horizontal" gap="related" wrap>
+            <Button
+              disabled={items.length < 2}
+              onClick={() => {
+                setItems(current => [...current].reverse())
+              }}
+            >
+              Reverse order
+            </Button>
+            <Button
+              onClick={() => {
+                setItems(current => [...current, `New task ${nextIdRef.current++}`])
+              }}
+              variant="secondary"
+            >
+              Add item
+            </Button>
+            <Button
+              onClick={() => {
+                setItems(current => current.slice(0, -1))
+              }}
+              disabled={items.length === 0}
+              variant="secondary"
+            >
+              Remove last
+            </Button>
+          </Stack>
+        </Stack>
+      </Card>
       <div className="visual-demo-grid">
         {[false, true].map(reduced => (
-          <Stack key={String(reduced)} data-ui-motion={reduced ? 'reduce' : undefined} gap="related">
+          <Card variant="muted" className="visual-comparison" key={String(reduced)} data-ui-motion={reduced ? 'reduce' : undefined}>
             <Typography><h3>{reduced ? 'Reduced motion' : 'Your system preference'}</h3></Typography>
-            <MotionGroup>{items.map(item => <Card key={item} data-ui-motion-key={item}><Button variant="ghost">{item}</Button></Card>)}</MotionGroup>
-          </Stack>
+            <p>{reduced ? 'The same updates, with immediate transitions.' : 'Reorder the tasks to follow their movement.'}</p>
+            <MotionGroup className="visual-motion-list" role="list" aria-label={reduced ? 'Tasks with reduced motion' : 'Animated tasks'}>{items.map(item => <Card key={item} data-ui-motion-key={item} role="listitem"><Typography>{item}</Typography></Card>)}</MotionGroup>
+            {items.length === 0 && <Typography><p role="status">No tasks. Add an item to restart the comparison.</p></Typography>}
+          </Card>
         ))}
       </div>
-      <Card style={{ viewTransitionName: 'lumen-workspace-preview' }}>
-        <Typography>
-          <h3>{expanded ? 'Workspace details' : 'Workspace overview'}</h3>
-          <p>{expanded ? 'The same named surface stays recognizable across the update.' : 'Open the details to try a native View Transition.'}</p>
-        </Typography>
-        <Button onClick={() => {
-          void runLumenViewTransition(document, () => new Promise<void>(resolve => {
-            committedRef.current.push(resolve)
+      <div className="visual-example-grid">
+        <Card style={{ viewTransitionName: 'lumen-workspace-preview' }}>
+          <Typography>
+            <h3>{expanded ? 'Workspace details' : 'Workspace overview'}</h3>
+            <p>{expanded ? 'The same named surface stays recognizable across the update.' : 'Open the details to try a native View Transition.'}</p>
+          </Typography>
+          <Button onClick={() => {
+            void runLumenViewTransition(document, () => new Promise<void>(resolve => {
+              committedRef.current.push(resolve)
 
-            setExpanded(current => !current)
-          }))
-        }}
-        >
-          Change view
-        </Button>
-      </Card>
-      <Tabs indicator defaultValue="overview">
-        <TabsList aria-label="Workspace sections">
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="activity">Activity</TabsTrigger>
-        </TabsList>
-        <TabsPanel value="overview"><Typography>Your project summary.</Typography></TabsPanel>
-        <TabsPanel value="activity"><Typography>Your recent changes.</Typography></TabsPanel>
-      </Tabs>
-      <Collapsible>
-        <summary>Disclosure resizing</summary>
-        <Typography>
-          Browsers that support interpolate-size animate the content height.
-          Other browsers open it immediately.
-        </Typography>
-      </Collapsible>
-      <Stack direction="horizontal" gap="related" wrap>
-        <Button
-          loading={saving}
-          onClick={() => {
-            setSaved(false)
-
-            setSaving(true)
+              setExpanded(current => !current)
+            }))
           }}
-        >
-          Save demonstration
-        </Button>
-        <span role="status">{saved ? 'Saved for this demonstration.' : saveStatus}</span>
-      </Stack>
+          >
+            Change view
+          </Button>
+        </Card>
+        <Card>
+          <Typography><h3>Selection and feedback</h3></Typography>
+          <Tabs indicator defaultValue="overview">
+            <TabsList aria-label="Workspace sections">
+              <TabsTrigger value="overview">Overview</TabsTrigger>
+              <TabsTrigger value="activity">Activity</TabsTrigger>
+            </TabsList>
+            <TabsPanel value="overview"><Typography>Your project summary.</Typography></TabsPanel>
+            <TabsPanel value="activity"><Typography>Your recent changes.</Typography></TabsPanel>
+          </Tabs>
+          <Collapsible>
+            <summary>Disclosure resizing</summary>
+            <Typography>
+              Browsers that support interpolate-size animate the content height.
+              Other browsers open it immediately.
+            </Typography>
+          </Collapsible>
+          <Stack direction="horizontal" gap="related" wrap>
+            <Button
+              loading={saving}
+              onClick={() => {
+                setSaved(false)
+
+                setSaving(true)
+              }}
+            >
+              Save demonstration
+            </Button>
+            <span role="status" className="visual-feedback">{saved ? 'Saved for this demonstration.' : saveStatus}</span>
+          </Stack>
+        </Card>
+      </div>
     </Stack>
   )
 }
@@ -241,49 +288,65 @@ const ChartWorkbench = () => {
           SVG marks move between their stable identities.
         </p>
       </Typography>
-      <Stack direction="horizontal" gap="related" wrap>
-        <Button onClick={() => {
-          setValues(current => current.map((value, index) => value + (index % 2 === 0 ? 3 : -2)))
-        }}
-        >
-          Update values
-        </Button>
-        <Button onClick={() => {
-          setValues(current => [...current, 20 + current.length])
-        }}
-        >
-          Append point
-        </Button>
-        <Button
-          variant="secondary"
-          onClick={() => {
-            setLoading(!loading)
-          }}
-        >
-          {loading ? 'Finish loading' : 'Show loading'}
-        </Button>
-        <Button
-          variant="secondary"
-          onClick={() => {
-            setValues([])
-          }}
-        >
-          Empty
-        </Button>
-        <Button
-          variant="secondary"
-          onClick={() => {
-            setValues([12, 18, 16, 24])
-          }}
-        >
-          Reset
-        </Button>
-      </Stack>
+      <Card variant="muted" className="visual-control-panel">
+        <Stack direction="horizontal" gap="related" wrap>
+          <Button
+            disabled={values.length === 0}
+            onClick={() => {
+              setValues(current => current.map((value, index) => value + (index % 2 === 0 ? 3 : -2)))
+            }}
+          >
+            Update values
+          </Button>
+          <Button
+            variant="secondary"
+            onClick={() => {
+              setValues(current => [...current, 20 + current.length])
+            }}
+          >
+            Append point
+          </Button>
+          <Button
+            variant="secondary"
+            onClick={() => {
+              setLoading(!loading)
+            }}
+          >
+            {loading ? 'Finish loading' : 'Show loading'}
+          </Button>
+          <Button
+            variant="secondary"
+            disabled={values.length === 0}
+            onClick={() => {
+              setValues([])
+            }}
+          >
+            Empty
+          </Button>
+          <Button
+            variant="secondary"
+            onClick={() => {
+              setValues([12, 18, 16, 24])
+
+              setLoading(false)
+            }}
+          >
+            Reset
+          </Button>
+        </Stack>
+      </Card>
       <div aria-busy={loading}>
         <MotionGroup>
-          <span key={loading ? 'loading' : 'ready'} data-ui-motion-key={loading ? 'loading' : 'ready'} role="status">{loading ? 'Loading the demonstration data…' : 'Demonstration data ready.'}</span>
+          <span
+            key={loading ? 'loading' : 'ready'}
+            data-ui-motion-key={loading ? 'loading' : 'ready'}
+            role="status"
+            className="visual-feedback"
+          >
+            {loading ? 'Loading the demonstration data…' : 'Demonstration data ready.'}
+          </span>
         </MotionGroup>
-        <div className="visual-demo-grid">{['Progress', 'Compared progress'].map(heading => <ChartMotion key={heading}><LineChart series={series} heading={heading} interactive syncGroup="visual-demo" markers="all" domain={{ min: 0, max: 60 }} /></ChartMotion>)}</div>
+        <div className="visual-demo-grid">{['Progress', 'Compared progress'].map(heading => <ChartMotion key={heading}><LineChart series={series} heading={heading} interactive syncGroup="visual-demo" markers="all" /></ChartMotion>)}</div>
       </div>
     </Stack>
   )
@@ -346,6 +409,7 @@ const AiWorkbench = () => {
       </ApprovalCard>
       <Button
         variant="secondary"
+        disabled={decision === 'pending'}
         onClick={() => {
           setDecision('pending')
         }}
@@ -359,23 +423,56 @@ const AiWorkbench = () => {
 export const VisualInteractionsDemo = () => (
   <Stack gap="section" className="visual-workbench">
     <section aria-labelledby="motion-workbench">
-      <h2 id="motion-workbench">Coordinated motion</h2>
+      <header className="visual-section-heading">
+        <Badge variant="outline">01 · Motion</Badge>
+        <Typography>
+          <h2 id="motion-workbench">Coordinated motion</h2>
+          <p>
+            Reorder, add, or remove a task. Compare the animation with an immediate update,
+            then try transitions and feedback.
+          </p>
+        </Typography>
+      </header>
       <MotionWorkbench />
     </section>
     <section aria-labelledby="effects-workbench">
-      <h2 id="effects-workbench">Visual effects</h2>
+      <header className="visual-section-heading">
+        <Badge variant="outline">02 · Effects</Badge>
+        <Typography>
+          <h2 id="effects-workbench">Visual effects</h2>
+          <p>Choose a treatment and adjust its intensity. Animation starts only when you enable it.</p>
+        </Typography>
+      </header>
       <EffectsWorkbench />
     </section>
     <section aria-labelledby="chart-workbench">
-      <h2 id="chart-workbench">Live chart continuity</h2>
+      <header className="visual-section-heading">
+        <Badge variant="outline">03 · Data</Badge>
+        <Typography>
+          <h2 id="chart-workbench">Live chart continuity</h2>
+          <p>Update values without losing your place. Both charts share an inspection cursor.</p>
+        </Typography>
+      </header>
       <ChartWorkbench />
     </section>
     <section aria-labelledby="ai-workbench">
-      <h2 id="ai-workbench">AI surfaces</h2>
+      <header className="visual-section-heading">
+        <Badge variant="outline">04 · AI</Badge>
+        <Typography>
+          <h2 id="ai-workbench">AI surfaces</h2>
+          <p>Try a prompt, streaming response, and approval flow. This simulation stays in your browser.</p>
+        </Typography>
+      </header>
       <AiWorkbench />
     </section>
     <section aria-labelledby="product-blocks-workbench">
-      <h2 id="product-blocks-workbench">Installable product blocks</h2>
+      <header className="visual-section-heading">
+        <Badge variant="outline">05 · Recipes</Badge>
+        <Typography>
+          <h2 id="product-blocks-workbench">Installable product blocks</h2>
+          <p>Explore complete interactions built from public Lumen components, ready to adapt to your project.</p>
+        </Typography>
+      </header>
       <Stack gap="section">
         <InteractivePricingRecipe />
         <FeaturePreviewRecipe />

@@ -740,7 +740,7 @@ helper's system and local reduced-motion checks work without this CSS import.
 
 `DeviceFrame` presents slotted HTML, an image, or a titled iframe inside `macbook-pro`, `imac`,
 `iphone`, and `pixel` frames, with generic `laptop`, `desktop`, `android`, and `tablet` options.
-Hardware details include camera islands, notches, side buttons, thin matte rims, and simple stands.
+Matte white and charcoal shells use layered rims, recessed camera details, side buttons, and sculpted stands.
 Shells are decorative, use Lumen tokens, and do not emulate device hardware. `orientation` selects portrait or landscape; `tone` selects
 light or dark chrome independently of the screen content.
 

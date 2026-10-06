@@ -7,22 +7,18 @@ import { lumenEasings } from '@santi020k/lumen-core'
 import { transformSync } from 'esbuild'
 
 import LumenLogo from '../../../docs/src/components/LumenLogo.astro'
+import BrandOutro from '../components/BrandOutro.astro'
 import Workspace from '../components/Workspace.astro'
+import { appearances, duration, formats, outroStart } from '../composition'
 import timelineSource from '../scripts/timeline.ts?raw'
 
-export const getStaticPaths = () => ['portrait', 'square', 'landscape'].map(format => ({ params: { format } }))
+export const getStaticPaths = () => formats.map(format => ({ params: { format } }))
 
 const format = Astro.params.format
 const width = format === 'landscape' ? 1920 : 1080
 const height = format === 'portrait' ? 1920 : 1080
 const timeline = transformSync(timelineSource, { loader: 'ts', format: 'iife' }).code
 
-const themes = [
-  { name: 'Lumen Light', scheme: 'light', preset: 'default', theme: 'lumen-light', number: '01' },
-  { name: 'Lumen Dark', scheme: 'dark', preset: 'default', theme: 'lumen-dark', number: '02' },
-  { name: 'Glass', scheme: 'light', preset: 'glass', theme: 'lumen-light', number: '03' },
-  { name: 'Studio', scheme: 'light', preset: 'studio', theme: 'lumen-light', number: '04' }
-]
 ---
 
 <!doctype html>
@@ -41,27 +37,31 @@ const themes = [
       data-composition-id="theme-pilot"
       data-width={width}
       data-height={height}
-      data-duration="20"
+      data-duration={duration}
+      data-outro-start={outroStart}
       data-ease={lumenEasings.emphasized.join(',')}
       data-format={Astro.params.format}
     >
-      {themes.map(theme => (
-        <section class="scene" data-theme={theme.theme} data-lumen-preset={theme.preset} data-lumen-scheme={theme.scheme}>
+      {appearances.map((theme, index) => (
+        <section class="scene" data-scene-start={theme.start} data-theme={theme.theme} data-lumen-preset={theme.preset} data-lumen-scheme={theme.scheme}>
           <div class="composition-header">
             <LumenLogo markClass="pilot-logo-mark" />
             <p class="edition">A SHARED VISUAL LANGUAGE</p>
           </div>
           <div class="intro">
-            <p class="eyebrow">SAME COMPONENTS. YOUR EXPRESSION.</p>
-            <h1>One interface. <br />Four appearances.</h1>
+            <p class="eyebrow">ONE INTERFACE. FOUR APPEARANCES.</p>
+            <h1>{theme.headline}</h1>
           </div>
-          <div class="theme-label"><span>{theme.number} / 04</span><strong>{theme.name}</strong></div>
+          <div class="theme-label"><span>{String(index + 1).padStart(2, '0')} / 04</span><strong>{theme.name}</strong></div>
           <div class="composition-stage">
             <div class="viewport">
-              <DeviceFrame device="laptop" class="desktop-device" screenWidth={1100} screenHeight={650} scroll={false}>
+              <DeviceFrame device="macbook-pro" class="desktop-device" screenWidth={1000} screenHeight={650} scroll={false}>
                 <div class="desktop-content">
                   <div class="viewport-bar"><span>Adaptive workspace</span><span>Laptop layout</span></div>
-                  <div class="workspace-backdrop"><Workspace glass={theme.preset === 'glass'} /></div>
+                  <div class="workspace-backdrop">
+                    {theme.preset === 'glass' && <div class="glass-light-field" aria-hidden="true"><span></span><span></span><span></span></div>}
+                    <Workspace glass={theme.preset === 'glass'} />
+                  </div>
                 </div>
               </DeviceFrame>
               <DeviceFrame device="iphone" class="phone-device" screenWidth={390} screenHeight={844} scroll={false}>
@@ -71,7 +71,6 @@ const themes = [
                     <div class="phone-status-icons"><Icon name="wifi" /><Icon name="battery-full" /></div>
                   </div>
                   <Workspace glass={theme.preset === 'glass'} />
-                  <div class="phone-home" aria-hidden="true"></div>
                 </div>
               </DeviceFrame>
             </div>
@@ -79,11 +78,7 @@ const themes = [
           <div class="composition-footer"><span>Same components. Every size.</span><strong>lumen.santi020k.com</strong></div>
         </section>
       ))}
-      <section class="end-card" data-theme="lumen-light" aria-label="Lumen UI closing card">
-        <LumenLogo markClass="end-logo-mark" />
-        <p>Same components. Your expression.</p>
-        <strong>lumen.santi020k.com</strong>
-      </section>
+      <BrandOutro />
     </main>
     <script is:inline set:html={timeline}></script>
   </body>

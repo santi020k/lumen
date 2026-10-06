@@ -156,6 +156,9 @@ Selection controls also use native localization keys for their accessibility sta
 Translate `Checked` and `Not checked` for Checkbox, and `Selected` and `Not selected` for
 RadioGroup, SegmentedControl, and Tabs in the consuming application's string catalog.
 
+`LumenPicker("Theme", selection: ...)` displays the selected option using the native picker label.
+Use `currentValueLabel` only when supplying a custom selected-value presentation.
+
 Rich native form composition remains controlled by the application:
 
 ```swift

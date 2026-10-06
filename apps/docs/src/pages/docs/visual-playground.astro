@@ -1,4 +1,5 @@
 ---
+import '@santi020k/lumen/layers.css'
 import '@santi020k/lumen/styles/motion.css'
 
 import { Code, Link, Typography } from '@santi020k/lumen-astro'
@@ -43,19 +44,44 @@ import DocsLayout from '../../layouts/DocsLayout.astro'
   document.addEventListener('astro:page-load', mount)
 
   document.addEventListener('astro:before-swap', () => {
- root?.unmount()
+    root?.unmount()
 
- root = undefined
-})
+    root = undefined
+  })
 </script>
 
 <style is:global>
-  .visual-workbench { margin-block: var(--ui-space-xl); }
-  .visual-demo-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--ui-space-lg); }
-  .visual-workbench .ui-card { padding: var(--ui-space-lg); }
-  .visual-workbench .ui-visual-effect { min-height: 12rem; }
-  .visual-workbench h2 { font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 650; line-height: 1.2; margin-block: 0 var(--ui-space-lg); }
-  .visual-workbench h3 { font-size: 1.125rem; font-weight: 650; margin-block: 0 var(--ui-space-sm); }
-  .visual-workbench svg { max-height: 8rem; width: 100%; }
-  @media (max-width: 640px) { .visual-demo-grid { grid-template-columns: minmax(0, 1fr); } }
+  .visual-workbench { margin-block: var(--ui-space-section); }
+  .visual-workbench section { min-width: 0; }
+  .visual-workbench section + section { border-top: 1px solid hsl(var(--line)); padding-top: var(--ui-space-section); }
+  .visual-section-heading { margin-bottom: var(--ui-space-group); }
+  .visual-section-heading h2 { margin: var(--ui-space-related) 0; font-size: clamp(1.5rem, 2.5vw, 1.875rem); font-weight: 650; line-height: 1.25; }
+  .docs-shell .visual-section-heading h2[id] { scroll-margin-top: calc(var(--docs-sticky-header-height, 10rem) + var(--docs-sticky-navigation-height, var(--docs-anchor-navigation-fallback)) + 3rem); }
+  .visual-section-heading p { max-width: 44rem; margin: 0; color: hsl(var(--ink-soft)); font-size: .9375rem; line-height: 1.7; }
+  .visual-control-panel { padding: var(--ui-space-group); }
+  .visual-controls { align-items: end; }
+  .visual-controls .ui-field { flex: 0 1 12rem; }
+  .visual-controls .ui-label { font-size: .8125rem; }
+  .visual-controls .ui-button { flex-shrink: 0; }
+  .visual-demo-grid, .visual-example-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--ui-space-group); }
+  .visual-comparison { padding: var(--ui-space-group); }
+  .visual-comparison h3 { margin: 0; font-size: .9375rem; font-weight: 650; line-height: 1.5; }
+  .visual-comparison > p { margin: 0; color: hsl(var(--ink-muted)); font-size: .8125rem; line-height: 1.6; }
+  .visual-motion-list { display: grid; gap: var(--ui-space-related); }
+  .visual-motion-list > .ui-card { padding: var(--ui-space-related); box-shadow: none; }
+  .visual-motion-list .ui-typography { padding: var(--ui-space-related); font-size: .875rem; }
+  .visual-example-grid > .ui-card { padding: var(--ui-space-group); }
+  .visual-example-grid h3 { margin: 0; font-size: 1rem; line-height: 1.5; }
+  .visual-example-grid p { margin: 0; font-size: .875rem; line-height: 1.7; color: hsl(var(--ink-soft)); }
+  .visual-workbench .ui-visual-effect { min-height: 16rem; padding: var(--ui-space-group); display: grid; align-content: center; }
+  .visual-workbench .ui-visual-effect h3 { font-size: 1rem; margin-bottom: var(--ui-space-related); }
+  .visual-workbench .ui-visual-effect p { font-size: .875rem; line-height: 1.7; }
+  .visual-workbench .ui-visual-effect svg { max-height: 8rem; width: 100%; }
+  .visual-feedback { color: hsl(var(--ink-soft)); font-size: .8125rem; line-height: 1.6; }
+  @media (max-width: 720px) {
+    .visual-demo-grid, .visual-example-grid { grid-template-columns: minmax(0, 1fr); }
+    .visual-controls .ui-field { flex-basis: 100%; }
+    .visual-controls .ui-input { max-width: 100%; }
+    .visual-controls .ui-stack--horizontal { width: 100%; }
+  }
 </style>

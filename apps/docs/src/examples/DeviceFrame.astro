@@ -3,25 +3,32 @@ import { Badge, Button, Card, DeviceFrame, Icon, Image, Stack, Typography } from
 ---
 
 <Typography><Stack gap="lg">
-  <div class="device-demo-caption"><h3>MacBook Pro</h3><span>Graphite · live iframe</span></div>
+  <div class="device-demo-composition" role="img" aria-label="Matte white iMac, MacBook Pro, and iPhone arranged together">
+    <div class="device-demo-composition__desktop" aria-hidden="true"><DeviceFrame device="imac" tone="light" scroll={false}><Image alt="" src="/device-frame-placeholder-desktop.svg" width={1440} height={810} radius="none" /></DeviceFrame></div>
+    <div class="device-demo-composition__laptop" aria-hidden="true"><DeviceFrame device="macbook-pro" tone="light" scroll={false}><Image alt="" src="/device-frame-placeholder.svg" width={1440} height={900} radius="none" /></DeviceFrame></div>
+    <div class="device-demo-composition__phone" aria-hidden="true"><DeviceFrame device="iphone" tone="light" scroll={false}><Image alt="" src="/device-frame-placeholder-phone.svg" width={390} height={844} radius="none" /></DeviceFrame></div>
+  </div>
+  <div class="device-demo-intro"><h3>Your work, in good company.</h3><p>Softly sculpted frames. White or charcoal. Ready for your next demonstration.</p></div>
+  <Stack class="device-demo-examples" gap="lg">
+  <div class="device-demo-caption"><h3>MacBook Pro</h3><span>Matte white · live iframe</span></div>
   <div class="device-demo-stage device-demo-stage--computer">
-    <DeviceFrame device="macbook-pro">
+    <DeviceFrame device="macbook-pro" tone="light">
       <iframe loading="lazy" sandbox="" src="/device-frame-demo" title="Responsive Lumen demonstration"></iframe>
     </DeviceFrame>
   </div>
   <div class="device-frame-demo-grid">
     <Stack gap="md">
-      <div class="device-demo-caption"><h3>iPhone</h3><span>Camera island · image</span></div>
+      <div class="device-demo-caption"><h3>iPhone</h3><span>Matte white · image</span></div>
       <div class="device-demo-stage device-demo-stage--phone">
-        <DeviceFrame device="iphone" scroll={false}>
+        <DeviceFrame device="iphone" tone="light" scroll={false}>
           <Image alt="Minimal geometric poster reading Make room for good ideas" height={844} radius="none" src="/device-frame-wallpaper.svg" width={390} />
         </DeviceFrame>
       </div>
     </Stack>
     <Stack gap="md">
-      <div class="device-demo-caption"><h3>Google Pixel</h3><span>Porcelain · live HTML</span></div>
+      <div class="device-demo-caption"><h3>Google Pixel</h3><span>Charcoal · live HTML</span></div>
       <div class="device-demo-stage device-demo-stage--phone">
-        <DeviceFrame device="pixel" tone="light">
+        <DeviceFrame device="pixel" tone="dark">
           <Stack class="device-demo-pixel" gap="lg">
             <div class="device-demo-clock"><p>Tuesday, October 6</p><span>09<span>:</span>41</span><p><Icon name="sun" /> 24° · A little room to explore</p></div>
             <Card class="device-demo-note"><Stack gap="md"><Badge>Today, at your pace</Badge><h4>Make space<br />for a new idea.</h4><p>A fresh canvas. A clear mind.<br />Something worth making.</p><Button>Start a project <Icon name="arrow-up-right" /></Button></Stack></Card>
@@ -31,7 +38,7 @@ import { Badge, Button, Card, DeviceFrame, Icon, Image, Stack, Typography } from
       </div>
     </Stack>
   </div>
-  <div class="device-demo-caption"><h3>iMac</h3><span>Silver · live iframe</span></div>
+  <div class="device-demo-caption"><h3>iMac</h3><span>Matte white · live iframe</span></div>
   <div class="device-demo-stage device-demo-stage--computer">
     <DeviceFrame device="imac" tone="light">
       <iframe loading="lazy" sandbox="" src="/device-frame-demo" title="Desktop Lumen demonstration"></iframe>
@@ -39,19 +46,29 @@ import { Badge, Button, Card, DeviceFrame, Icon, Image, Stack, Typography } from
   </div>
   <div class="device-demo-caption"><h3>Landscape tablet</h3><span>Image · custom orientation</span></div>
   <div class="device-demo-stage device-demo-stage--computer">
-    <DeviceFrame device="tablet" orientation="landscape"><Image alt="Illustrated mountain landscape" height={600} radius="none" src="/comparison-after.svg" width={960} /></DeviceFrame>
+    <DeviceFrame device="tablet" orientation="landscape" tone="light"><Image alt="Illustrated mountain landscape" height={600} radius="none" src="/comparison-after.svg" width={960} /></DeviceFrame>
   </div>
   <p>Frames scale to their container. Live HTML and iframe screens reserve space for camera details. Phone images fill the glass beneath the decorative hardware. Generic <code>laptop</code>, <code>desktop</code>, and <code>android</code> presets are also available.</p>
+</Stack>
 </Stack></Typography>
 
 <style>
+  .device-demo-composition { position: relative; isolation: isolate; aspect-ratio: 1.65; overflow: hidden; border-radius: 0.8rem; background: color-mix(in srgb, hsl(var(--surface-muted)) 80%, hsl(var(--line))); }
+  .device-demo-composition > div { position: absolute; bottom: 12%; }
+  .device-demo-composition__desktop { left: 5%; width: 62%; }
+  .device-demo-composition__laptop { left: 42%; width: 50%; z-index: 1; }
+  .device-demo-composition__phone { right: 4.5%; width: 10.5%; z-index: 2; }
+  .device-demo-intro { padding-block: 0.75rem 2rem; text-align: center; }
+  .device-demo-intro h3 { margin: 0 0 0.5rem; font-size: 1.3rem; font-weight: 500; letter-spacing: -0.03em; }
+  .device-demo-intro p { margin: 0; color: hsl(var(--ink-soft)); font-size: 0.875rem; }
   .device-demo-caption { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 0.5rem 1rem; }
   .device-demo-caption h3 { margin: 0; font-size: 1.1rem; }
   .device-demo-caption > span { color: hsl(var(--ink-muted)); font-size: 0.8rem; }
-  .device-demo-stage { padding: 2rem 1.5rem; background: hsl(var(--surface-muted) / 0.55); border-radius: 0.75rem; }
+  .device-demo-stage { padding: 2rem 1.5rem; }
   .device-demo-stage--computer { padding: 3rem 1.5rem 2rem; }
-  .device-demo-stage--phone { padding: 2rem 1.2rem; }
-  .device-frame-demo-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem; align-items: start; }
+  .device-demo-stage--phone { display: flex; align-items: flex-end; flex: 1; padding: 2rem 1.2rem; }
+  .device-demo-stage--phone :global(.ui-device-frame) { max-width: 21rem; }
+  .device-frame-demo-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem; align-items: stretch; }
   .device-demo-pixel { position: relative; min-height: 100%; padding: 8% 6% 6%; background: hsl(var(--canvas)); }
   .device-demo-clock { padding-block: 10%; text-align: center; }
   .device-demo-clock > span { display: block; color: hsl(var(--ink)); font-size: clamp(2rem, 18cqi, 5rem); font-weight: 300; letter-spacing: -0.08em; line-height: 1.1; }
