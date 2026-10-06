@@ -44,6 +44,8 @@ product teams evaluating Lumen.
    comments, issues, and community threads, kept consistent with the claim ledger.
 12. [`MEASUREMENT.md`](MEASUREMENT.md) — the metrics this package tracks and the monthly review
    routine, reusing the categories already defined in the exposure playbook.
+13. [`Lumen motion studio`](../../apps/motion/README.md) — local HyperFrames compositions, browser
+    previews, and repeatable portrait/landscape MP4 rendering without hosted generation services.
 
 ## Readiness gates
 

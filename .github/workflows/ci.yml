@@ -240,6 +240,9 @@ jobs:
       - name: Run cross-browser interaction contracts
         run: pnpm run test:interactions && pnpm run test:framework-conformance && pnpm run test:figma-plugin
 
+      - name: Check local motion previews
+        run: pnpm --filter @santi020k/lumen-motion build && pnpm --filter @santi020k/lumen-motion test
+
       - name: Enforce web unit coverage
         run: pnpm run test:web-coverage
 

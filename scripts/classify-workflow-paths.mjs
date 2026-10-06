@@ -78,7 +78,7 @@ export const classifyCiPaths = (paths, { releasePullRequest = false } = {}) => {
 
   const playwright = matchesAny(paths, [
     /^\.github\/actions\/setup-playwright\//u,
-    /^apps\/(docs|figma-plugin|templates)\//u,
+    /^apps\/(docs|figma-plugin|motion|templates)\//u,
     /^packages\/(astro|core|elements|icons-brand|lumen|react|react-hook-form|templates)\//u,
     /^tests\/(a11y|figma|visual)\//u,
     /^playwright(?:\.[^/]*)?\.config\.ts$/u,

@@ -93,6 +93,10 @@ complete release gate.
 The Swift API baseline builds only arm64 because its symbol extraction targets arm64 on every
 Apple SDK. It still checks all supported platforms and both public modules against the unchanged
 classified baselines. This avoids compiling architectures the API checker does not consume.
+Apple CI runs `pnpm run check:swift-package-candidate --check-api-baseline` to check those same
+baselines from the clean tagged consumer's compiled modules, avoiding duplicate library builds.
+Use `pnpm run check:swift-api-baseline` for a standalone source check; baseline updates always
+build repository sources. No compiled consumer products are restored from cache.
 
 Run `pnpm run test:visual` for documentation screenshots. It builds the dependencies and docs through
 `prepare:visual` before starting Playwright, so the server-start budget covers only the preview

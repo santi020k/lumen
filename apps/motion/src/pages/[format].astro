@@ -1,0 +1,59 @@
+---
+import '../styles/composition.css'
+import '@santi020k/lumen-astro/styles.css'
+
+import { transformSync } from 'esbuild'
+
+import LumenLogo from '../../../docs/src/components/LumenLogo.astro'
+import Workspace from '../components/Workspace.astro'
+import timelineSource from '../scripts/timeline.ts?raw'
+
+export const getStaticPaths = () => [{ params: { format: 'portrait' } }, { params: { format: 'landscape' } }]
+
+const portrait = Astro.params.format === 'portrait'
+const timeline = transformSync(timelineSource, { loader: 'ts', format: 'iife' }).code
+
+const themes = [
+  { name: 'Lumen Light', scheme: 'light', preset: 'default', theme: 'lumen-light', number: '01' },
+  { name: 'Lumen Dark', scheme: 'dark', preset: 'default', theme: 'lumen-dark', number: '02' },
+  { name: 'Studio', scheme: 'light', preset: 'studio', theme: 'lumen-light', number: '03' }
+]
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>One interface, three themes — Lumen UI</title>
+    <script is:inline src="/assets/gsap.min.js"></script>
+  </head>
+  <body>
+    <main
+      id="theme-pilot"
+      data-composition-id="theme-pilot"
+      data-width={portrait ? 1080 : 1920}
+      data-height={portrait ? 1920 : 1080}
+      data-duration="12"
+      data-format={Astro.params.format}
+    >
+      {themes.map(theme => (
+        <section class="scene" data-theme={theme.theme} data-lumen-preset={theme.preset} data-lumen-scheme={theme.scheme}>
+          <div class="composition-header">
+            <LumenLogo markClass="pilot-logo-mark" />
+            <p class="edition">A SHARED VISUAL LANGUAGE</p>
+          </div>
+          <div class="intro">
+            <p class="eyebrow">SAME COMPONENTS. YOUR EXPRESSION.</p>
+            <h1>One interface.<br />Three themes.</h1>
+          </div>
+          <div class="theme-label"><span>{theme.number} / 03</span><strong>{theme.name}</strong></div>
+          <Workspace />
+          <div class="composition-footer"><span>Explore Lumen UI</span><strong>lumen.santi020k.com</strong></div>
+        </section>
+      ))}
+    </main>
+    <script is:inline set:html={timeline}></script>
+  </body>
+</html>

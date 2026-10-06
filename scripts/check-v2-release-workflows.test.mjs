@@ -261,9 +261,8 @@ test("public Apple checks use free standard GitHub runners and preserve every ga
     "pnpm run test:swift-version",
     "swift test",
     "pnpm run check:swift-source-compatibility",
-    "pnpm run check:swift-api-baseline",
     "swift build --package-path apps/playground-apple",
-    "pnpm run check:swift-package-candidate",
+    "pnpm run check:swift-package-candidate --check-api-baseline",
     "pnpm run check:react-native-native-package:ios",
     "capture-component-screenshots.sh",
   ]);
@@ -280,6 +279,31 @@ test("iOS version bumps do not implicitly launch a macOS store upload", () => {
   assert.doesNotMatch(playgroundMacWorkflow, /push:/u);
 
   assert.match(playgroundMacWorkflow, /workflow_dispatch:/u);
+});
+
+test("native capture jobs need Node and Xcode without installing the web workspace", async () => {
+  const workflow = await readWorkflow("apple-native.yml");
+  const captureJobs = workflow.slice(workflow.indexOf("  capture-build:"), workflow.indexOf("  captures:"));
+
+  assert.equal(captureJobs.match(/uses: actions\/setup-node@/gu)?.length, 2);
+
+  assert.doesNotMatch(captureJobs, /setup-pnpm|pnpm install/u);
+
+  assert.match(workflow.slice(workflow.indexOf("  captures:")), /setup-pnpm/u);
+});
+
+test("the combined Swift gate checks both API baselines from disposable consumer builds", async () => {
+  const consumer = await readFile(resolve(repositoryRoot, "scripts/smoke-swift-package-candidate.mjs"), "utf8");
+
+  assertOrderedCommands(consumer, "clean Swift consumer API coverage", [
+    "run('swift', ['build'], consumerDirectory)",
+    "if (checkApiBaseline)",
+    "for (const moduleName of ['LumenUI', 'LumenWidgetUI'])",
+    "scripts/check-swift-api-baseline.mjs",
+    "'--products-manifest', productsManifest",
+  ]);
+
+  assert.doesNotMatch(xcodeCloudChecks, /pnpm run check:swift-api-baseline/u);
 });
 
 test("Android uploads leave review submission explicit in Play Console", () => {
@@ -377,7 +401,7 @@ test("WidgetKit changes select the Swift canary and validate both Swift API base
   );
 
   assert.ok(
-    xcodeCloudChecks.includes("pnpm run check:swift-api-baseline"),
+    xcodeCloudChecks.includes("pnpm run check:swift-package-candidate --check-api-baseline"),
     "Xcode Cloud must validate both Swift package products",
   );
 

@@ -8,11 +8,12 @@ import {
   readdirSync,
   readFileSync,
   rmSync,
-  statSync,
   writeFileSync
 } from 'node:fs'
 import { tmpdir } from 'node:os'
-import { dirname, join, resolve } from 'node:path'
+import { join, resolve } from 'node:path'
+
+import { findSwiftModuleSearchPath, readSwiftApiProducts } from './swift-api-products.mjs'
 
 const repositoryRoot = resolve(import.meta.dirname, '..')
 const moduleIndex = process.argv.indexOf('--module')
@@ -79,27 +80,31 @@ const activePlatforms = moduleName === 'LumenWidgetUI' ?
   platforms.filter(platform => platform.key !== 'tvOS' && platform.key !== 'visionOS') :
   platforms
 
+// The clean consumer can supply its same-run products, avoiding a second build of every SDK.
+// Standalone invocations still build from the repository as before.
+const productsIndex = process.argv.indexOf('--products-manifest')
+let suppliedProducts
+
+if (productsIndex >= 0) {
+  const manifestPath = process.argv[productsIndex + 1]
+
+  assert.ok(manifestPath && !manifestPath.startsWith('--'), '--products-manifest requires a path')
+
+  assert.ok(!shouldUpdate, 'Baseline updates must build the repository sources')
+
+  suppliedProducts = readSwiftApiProducts(
+    JSON.parse(readFileSync(manifestPath, 'utf8')),
+    moduleName,
+    activePlatforms.map(platform => platform.key)
+  )
+}
+
 const execute = (command, arguments_, options = {}) =>
   execFileSync(command, arguments_, {
     cwd: repositoryRoot,
     encoding: 'utf8',
     stdio: options.capture ? ['ignore', 'pipe', 'inherit'] : 'inherit'
   })
-
-const findDirectories = (root, name) => {
-  const matches = []
-
-  for (const entry of readdirSync(root)) {
-    const path = join(root, entry)
-
-    if (!statSync(path).isDirectory()) continue
-
-    if (entry === name) matches.push(path)
-    else matches.push(...findDirectories(path, name))
-  }
-
-  return matches
-}
 
 const getSdkValue = (sdk, flag) => execute('xcrun', ['--sdk', sdk, flag], { capture: true }).trim()
 
@@ -122,9 +127,9 @@ const extractPlatformSymbols = (platform, temporaryRoot) => {
 
   mkdirSync(outputDirectory)
 
-  process.stdout.write(`Building and extracting ${platform.key} public API...\n`)
+  process.stdout.write(`${suppliedProducts ? 'Extracting consumer' : 'Building and extracting'} ${platform.key} public API...\n`)
 
-  execute('xcodebuild', [
+  if (!suppliedProducts) execute('xcodebuild', [
     '-quiet',
     '-scheme',
     moduleName,
@@ -139,11 +144,8 @@ const extractPlatformSymbols = (platform, temporaryRoot) => {
     'build'
   ])
 
-  const productsDirectory = join(derivedData, 'Build/Products')
-  const moduleDirectories = findDirectories(productsDirectory, `${moduleName}.swiftmodule`)
-
-  assert.equal(moduleDirectories.length, 1, `Expected one ${platform.key} ${moduleName}.swiftmodule`)
-
+  const productsDirectory = suppliedProducts?.[platform.key] ?? join(derivedData, 'Build/Products')
+  const moduleSearchPath = findSwiftModuleSearchPath(productsDirectory, moduleName)
   const sdkPath = getSdkValue(platform.sdk, '--show-sdk-path')
   const sdkVersion = getSdkValue(platform.sdk, '--show-sdk-version')
   const simulatorSuffix = platform.sdk === 'macosx' ? '' : '-simulator'
@@ -154,7 +156,7 @@ const extractPlatformSymbols = (platform, temporaryRoot) => {
     '-module-name',
     moduleName,
     '-I',
-    dirname(moduleDirectories[0]),
+    moduleSearchPath,
     '-target',
     target,
     '-sdk',

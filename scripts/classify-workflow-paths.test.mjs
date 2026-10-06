@@ -19,6 +19,16 @@ test('Figma plugin sources and browser regressions select browser coverage', () 
   }
 })
 
+test('motion source changes select browser coverage without native jobs', () => {
+  const classification = classifyCiPaths(['apps/motion/src/scripts/timeline.ts'])
+
+  assert.equal(classification.playwright, true)
+
+  assert.equal(classification.apple, false)
+
+  assert.equal(classification.android, false)
+})
+
 test('a web package change skips every native platform job', () => {
   const classification = classifyCiPaths(['packages/react/src/Button.tsx'])
 
