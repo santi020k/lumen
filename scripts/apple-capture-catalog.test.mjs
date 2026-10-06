@@ -14,7 +14,7 @@ const scriptPath = join(repositoryRoot, 'apps/playground-apple/scripts/capture-c
 const catalogPath = join(repositoryRoot, 'apps/playground-apple/scripts/component-capture-catalog.generated.txt')
 
 test('Apple default captures cover phone components and focused arguments override them', async () => {
-  const directory = await mkdtemp(join(tmpdir(), 'lumen-apple-capture-catalog-'))
+  const directory = await mkdtemp(join(tmpdir(), 'lumen-apple-capture-catalog-project-'))
   const bin = join(directory, 'bin')
   const log = join(directory, 'components.log')
   const output = join(directory, 'screenshots')
@@ -140,7 +140,7 @@ fi
 
     assert.match(sharedBuildLog, /test-without-building/)
 
-    assert.doesNotMatch(sharedBuildLog, /-project|-scheme/)
+    assert.doesNotMatch(sharedBuildLog, /(?:^|\s)-(?:project|scheme)(?:\s|$)/u)
 
     assert.equal(await readFile(join(output, 'tour.png'), 'utf8'), 'verified tour')
 

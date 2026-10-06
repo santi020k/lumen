@@ -9,7 +9,7 @@ import { toSlug } from '../lib/routes'
 
 import { chartGuides } from './chart-guides'
 import { chartTopics } from './chart-topics'
-import { componentDocs } from './docs'
+import { componentDocs, runtimeEvents } from './docs'
 import { getCurrentDocsContextLink, getDocsContextLinks } from './docs-context-navigation'
 import { guideDestinations } from './guides'
 import { mcpGuideTopics } from './mcp-guides'
@@ -169,5 +169,85 @@ describe('documentation discovery', () => {
       expect(href, 'Focused guide destinations should be pages').not.toContain('#')
       expect(routes.has(href), `Guide destination does not have a generated page: ${href}`).toBe(true)
     }
+  })
+
+  test('routes every runtime event to the component that documents its exact name and target', () => {
+    expect(runtimeEvents.length).toBeGreaterThan(0)
+
+    for (const event of runtimeEvents) {
+      const owner = componentDocs.find(component => component.runtimeEvents?.some(
+        item => item.name === event.name && item.target === event.target
+      ))
+
+      if (!owner) throw new Error(`${event.name} targeting ${event.target} is not documented on any component`)
+
+      const pageHref = `/docs/components/${toSlug(owner.name)}`
+      const href = `${pageHref}#runtime-events-title`
+      const matches = docsSearchIndex.filter(item => item.type === 'Event' &&
+        item.title === event.name && item.category === owner.name)
+
+      expect(matches, `Expected exactly one search result for ${event.name} on ${owner.name}`).toHaveLength(1)
+      expect(matches[0]?.href).toBe(href)
+      expect(routes.has(pageHref), `Missing component page: ${pageHref}`).toBe(true)
+    }
+  })
+
+  test('never falls back to the generic docs landing page for a runtime event search result', () => {
+    const missingDestinations = docsSearchIndex.filter(item => item.type === 'Event' && (item.href === '/docs' || item.category === 'Runtime'))
+
+    expect(missingDestinations).toEqual([])
+  })
+
+  test('keeps shared chart runtime events documented by every chart primitive that fires them', () => {
+    const chartOwners = componentDocs
+      .filter(component => component.runtimeEvents?.some(event => event.name === 'ui:chart-datum-activate'))
+      .map(component => component.name)
+      .sort((a, b) => a.localeCompare(b))
+
+    expect(chartOwners).toEqual(
+      ['BarChart', 'ComboChart', 'Heatmap', 'LineChart', 'PieChart', 'RangeChart', 'ScatterChart'].sort((a, b) => a.localeCompare(b))
+    )
+  })
+
+  test('documents Transfer, Cascader, and TreeSelect runtime events on their own component pages', () => {
+    const ownEvents: readonly (readonly [string, string])[] = [
+      ['Transfer', 'ui:transfer-change'],
+      ['Cascader', 'ui:cascader-change'],
+      ['TreeSelect', 'ui:tree-select-change']
+    ]
+
+    for (const [name, eventName] of ownEvents) {
+      const component = componentDocs.find(entry => entry.name === name)
+
+      expect(component?.runtimeEvents?.map(event => event.name)).toEqual([eventName])
+      expect(searchDestinations(eventName)).toContain(`/docs/components/${toSlug(name)}#runtime-events-title`)
+    }
+  })
+
+  test('separates the ThemeToggle and ThemeBuilder ui:theme-change events by their real target', () => {
+    const themeToggle = componentDocs.find(component => component.name === 'ThemeToggle')
+    const themeBuilder = componentDocs.find(component => component.name === 'ThemeBuilder')
+
+    expect(themeToggle?.runtimeEvents?.map(event => event.name)).toEqual(['ui:theme-change'])
+    expect(themeToggle?.runtimeEvents?.every(event => event.target.startsWith('ThemeToggle'))).toBe(true)
+
+    expect(themeBuilder?.runtimeEvents?.map(event => event.name)).toEqual(['ui:theme-change', 'ui:theme-export'])
+    expect(themeBuilder?.runtimeEvents?.every(event => !event.target.startsWith('ThemeToggle'))).toBe(true)
+
+    const themeToggleHref = `/docs/components/${toSlug('ThemeToggle')}#runtime-events-title`
+    const themeBuilderHref = `/docs/components/${toSlug('ThemeBuilder')}#runtime-events-title`
+
+    const matches = docsSearchIndex.filter(item => item.type === 'Event' && item.title === 'ui:theme-change')
+
+    expect(matches.map(item => item.href).sort()).toEqual([themeBuilderHref, themeToggleHref].sort())
+    expect(matches.map(item => item.category).sort()).toEqual(['ThemeBuilder', 'ThemeToggle'])
+    expect(searchDestinations('ui:theme-change')).toEqual(expect.arrayContaining([themeToggleHref, themeBuilderHref]))
+  })
+
+  test('documents the Tabs ui:tabs-change runtime event on its own component page', () => {
+    const tabs = componentDocs.find(component => component.name === 'Tabs')
+
+    expect(tabs?.runtimeEvents?.map(event => event.name)).toEqual(['ui:tabs-change'])
+    expect(searchDestinations('ui:tabs-change')).toContain(`/docs/components/${toSlug('Tabs')}#runtime-events-title`)
   })
 })

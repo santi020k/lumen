@@ -1167,6 +1167,7 @@ const runtimeEventsByComponent: Partial<
   MediaViewport: runtimeEvents.filter(event => event.name === 'ui:media-viewport-change'),
   MediaThumbnail: runtimeEvents.filter(event => event.name === 'ui:media-selection-request'),
   ImageComparison: runtimeEvents.filter(event => event.name === 'ui:image-comparison-change'),
+  Cascader: runtimeEvents.filter(event => event.name === 'ui:cascader-change'),
   CopyButton: runtimeEvents.filter(event => event.name.startsWith('ui:copy-')),
   DataTable: runtimeEvents.filter(
     event => event.name === 'ui:data-table-selection-change'
@@ -1181,9 +1182,16 @@ const runtimeEventsByComponent: Partial<
     event => event.name === 'ui:schedule-change'
   ),
   TagGroup: runtimeEvents.filter(event => event.name === 'ui:tag-remove'),
+  Tabs: runtimeEvents.filter(event => event.name === 'ui:tabs-change'),
   ThemeBuilder: runtimeEvents.filter(
-    event => event.name === 'ui:theme-change' || event.name === 'ui:theme-export'
+    event => (event.name === 'ui:theme-change' && event.target.startsWith('ThemeBuilder')) ||
+      event.name === 'ui:theme-export'
   ),
+  ThemeToggle: runtimeEvents.filter(
+    event => event.name === 'ui:theme-change' && event.target.startsWith('ThemeToggle')
+  ),
+  Transfer: runtimeEvents.filter(event => event.name === 'ui:transfer-change'),
+  TreeSelect: runtimeEvents.filter(event => event.name === 'ui:tree-select-change'),
   Toast: runtimeEvents.filter(
     event => event.name === 'ui:toast' ||
       event.name === 'ui:toast-update' ||
