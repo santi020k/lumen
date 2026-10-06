@@ -994,10 +994,11 @@ portals. Date-range synchronization clamps an earlier end date before updating b
 
 ## Device demonstrations
 
-`DeviceFrame` presents slotted HTML, an image, or a titled iframe inside `macbook-pro`, `imac`,
-`iphone`, and `pixel` frames, with generic `laptop`, `desktop`, `android`, and `tablet` options.
-Device-specific enclosures include a tapered laptop deck, curved iMac stand and chin, rounded phone
-glass with separate metal rails and buttons, and a tablet home recess.
+`DeviceFrame` presents slotted HTML, an image, or a titled iframe inside `macbook-pro`, `macbook-air`, `imac`,
+`iphone`, `pixel`, and `ipad-pro` frames, with generic `laptop`, `desktop`, `android`, and `tablet` options.
+Device-specific enclosures include a MacBook Pro display notch and full front edge, a tapered MacBook Air deck, curved iMac
+stand and chin, rounded phone glass with separate rails and buttons, and an iPad Pro with even
+bezels and no Home button. The generic `tablet` retains its classic enclosure.
 Shells are decorative and do not emulate device hardware. `orientation` selects portrait or landscape; `tone` selects
 light or dark chrome independently of the screen content. Use `color="white"`,
 `color="black"`, or a 3-, 4-, 6-, or 8-digit hex color such as `color="#a9b8ac"` for
@@ -1015,8 +1016,9 @@ loading, and referrer policies. Remote sites can refuse embedding through their 
 The decorative shell does not alter focus or intercept interactions. Camera and home-indicator
 details occupy separate chrome outside live HTML and iframe viewports. Direct phone images extend
 under the decorative camera and home indicator for a full-bleed presentation.
-Screen presets are 1280 × 800 for MacBook Pro, 1440 × 810 for iMac, 390 × 844 for iPhone, and
-412 × 915 for Pixel. These are demonstration viewports, not physical display specifications.
+Screen presets are 1280 × 800 for MacBook Pro and MacBook Air, 1440 × 810 for iMac, 390 × 844 for iPhone,
+412 × 915 for Pixel, and 834 × 1194 for iPad Pro (1194 × 834 in landscape). These are demonstration
+viewports, not physical display specifications.
 
 ```tsx
 import { DeviceFrame } from '@santi020k/lumen-react/components/device-frame'

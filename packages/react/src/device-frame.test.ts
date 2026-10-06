@@ -64,8 +64,10 @@ test('updates and removes custom hardware colors without changing content or con
 
 test.each([
   ['macbook-pro', '1280 / 800'],
+  ['macbook-air', '1280 / 800'],
   ['imac', '1440 / 810'],
-  ['pixel', '412 / 915']
+  ['pixel', '412 / 915'],
+  ['ipad-pro', '834 / 1194']
 ] as const)('renders the %s viewport with separate decorative chrome', (device, ratio) => {
   vi.stubGlobal('IS_REACT_ACT_ENVIRONMENT', true)
   const container = document.createElement('div')

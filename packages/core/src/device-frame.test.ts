@@ -56,8 +56,10 @@ test('observes the owning window and disconnects on removal', () => {
 
 test.each([
   ['macbook-pro', 1280, 800],
+  ['macbook-air', 1280, 800],
   ['imac', 1440, 810],
-  ['pixel', 412, 915]
+  ['pixel', 412, 915],
+  ['ipad-pro', 834, 1194]
 ] as const)('resolves the %s demonstration viewport in both orientations', (device, width, height) => {
   expect(resolveLumenDeviceFrame(device)).toEqual({ height, width })
   expect(resolveLumenDeviceFrame(device, 'landscape')).toEqual({ height: Math.min(width, height), width: Math.max(width, height) })

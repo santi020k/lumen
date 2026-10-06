@@ -1,131 +1,144 @@
 ---
-import { Badge, Button, Card, DeviceFrame, Field, Icon, Image, Input, Label, Stack, Typography } from '@santi020k/lumen-astro'
+import { Badge, Button, ButtonLink, Card, Carousel, Code, DeviceFrame, Field, Icon, Image, Input, Label, Stack } from '@santi020k/lumen-astro'
+
+import { deviceExamples } from '../data/device-frame'
+
+const contentLabels = { iframe: 'Live iframe', image: 'Image', html: 'Live HTML' }
+
+const snippet = (device: typeof deviceExamples[number]): string => {
+  const orientation = device.device === 'ipad-pro' ? ' orientation="landscape"' : ''
+
+  const content = device.content === 'image' ?
+    '  <Image src="/device-frame-wallpaper.svg" alt="Lumen UI: small details, better interfaces" />' :
+    '  <iframe src="/device-frame-demo" title="Lumen component workspace" loading="lazy" sandbox=""></iframe>'
+
+  if (device.content === 'html') return '<DeviceFrame device="pixel" color="white">\n  <Card><h2>Built with Lumen</h2><p>Your components go here.</p></Card>\n</DeviceFrame>'
+
+  return `<DeviceFrame device="${device.device}" color="white"${orientation}>\n${content}\n</DeviceFrame>`
+}
 ---
-
-<Typography><Stack gap="lg" data-device-finish-demo>
-  <div class="device-demo-composition" role="img" aria-label="Matte white iMac, MacBook Pro, and iPhone arranged together">
-    <div class="device-demo-composition__desktop" aria-hidden="true"><DeviceFrame device="imac" color="white" scroll={false}><Image alt="" src="/device-frame-placeholder-desktop.svg" width={1440} height={810} radius="none" /></DeviceFrame></div>
-    <div class="device-demo-composition__laptop" aria-hidden="true"><DeviceFrame device="macbook-pro" color="white" scroll={false}><Image alt="" src="/device-frame-placeholder.svg" width={1440} height={900} radius="none" /></DeviceFrame></div>
-    <div class="device-demo-composition__phone" aria-hidden="true"><DeviceFrame device="iphone" color="white" scroll={false}><Image alt="" src="/device-frame-placeholder-phone.svg" width={390} height={844} radius="none" /></DeviceFrame></div>
-  </div>
-  <div class="device-demo-intro"><h3>Considered from every edge.</h3><p>Curved stands. Tapered enclosures. Rounded glass and finely machined rails.</p></div>
-  <Stack direction="horizontal" gap="md" wrap class="device-demo-finishes">
-    <Stack direction="horizontal" gap="sm" role="group" aria-label="Device finish">
-      <Button variant="secondary" data-device-finish="white" aria-pressed="true">White</Button>
-      <Button variant="secondary" data-device-finish="black" aria-pressed="false">Black</Button>
-      <Button variant="secondary" data-device-finish="custom" aria-pressed="false">Custom</Button>
-    </Stack>
-    <Field class="device-demo-color-field"><Label for="device-demo-color">Custom color</Label><Input id="device-demo-color" type="color" value="#a9b8ac" /></Field>
+<Stack gap="lg" data-device-gallery>
+  <div class="device-gallery-heading"><p>THE DEVICE COLLECTION</p><h3>A better frame for your next idea.</h3><p>Six familiar forms. Real Lumen content. Pick a device and make it yours.</p></div>
+  <Stack class="device-gallery-picker" direction="horizontal" gap="sm" wrap role="group" aria-label="Choose a device">
+    {deviceExamples.map((device, index) => <Button variant="ghost" size="sm" data-device-select={index} aria-pressed={index === 0 ? 'true' : 'false'}>{device.label}</Button>)}
   </Stack>
-  <div class="device-demo-detail" role="img" aria-label="Close-up of black and white iPhone hardware, rounded glass, speakers, and side buttons">
-    <div class="device-demo-detail__black" aria-hidden="true"><DeviceFrame device="iphone" color="black" scroll={false}><Image alt="" src="/device-frame-placeholder-phone.svg" width={390} height={844} radius="none" /></DeviceFrame></div>
-    <div class="device-demo-detail__white" aria-hidden="true"><DeviceFrame device="iphone" color="white" scroll={false}><Image alt="" src="/device-frame-placeholder-phone.svg" width={390} height={844} radius="none" /></DeviceFrame></div>
-  </div>
-  <Stack class="device-demo-examples" gap="lg">
-  <div class="device-demo-caption"><h3>MacBook Pro</h3><span>Matte white · live iframe</span></div>
-  <div class="device-demo-stage device-demo-stage--computer">
-    <DeviceFrame device="macbook-pro" tone="light">
-      <iframe loading="lazy" sandbox="" src="/device-frame-demo" title="Responsive Lumen demonstration"></iframe>
-    </DeviceFrame>
-  </div>
-  <div class="device-frame-demo-grid">
-    <Stack gap="md">
-      <div class="device-demo-caption"><h3>iPhone</h3><span>Matte white · image</span></div>
-      <div class="device-demo-stage device-demo-stage--phone">
-        <DeviceFrame device="iphone" tone="light" scroll={false}>
-          <Image alt="Minimal geometric poster reading Make room for good ideas" height={844} radius="none" src="/device-frame-wallpaper.svg" width={390} />
-        </DeviceFrame>
-      </div>
-    </Stack>
-    <Stack gap="md">
-      <div class="device-demo-caption"><h3>Google Pixel</h3><span>Charcoal · live HTML</span></div>
-      <div class="device-demo-stage device-demo-stage--phone">
-        <DeviceFrame device="pixel" tone="dark">
-          <Stack class="device-demo-pixel" gap="lg">
-            <div class="device-demo-clock"><p>Tuesday, October 6</p><span>09<span>:</span>41</span><p><Icon name="sun" /> 24° · A little room to explore</p></div>
-            <Card class="device-demo-note"><Stack gap="md"><Badge>Today, at your pace</Badge><h4>Make space<br />for a new idea.</h4><p>A fresh canvas. A clear mind.<br />Something worth making.</p><Button>Start a project <Icon name="arrow-up-right" /></Button></Stack></Card>
-            <p class="device-demo-hint">Built with real Lumen components</p>
-          </Stack>
-        </DeviceFrame>
-      </div>
-    </Stack>
-  </div>
-  <div class="device-demo-caption"><h3>iMac</h3><span>Matte white · live iframe</span></div>
-  <div class="device-demo-stage device-demo-stage--computer">
-    <DeviceFrame device="imac" tone="light">
-      <iframe loading="lazy" sandbox="" src="/device-frame-demo" title="Desktop Lumen demonstration"></iframe>
-    </DeviceFrame>
-  </div>
-  <div class="device-demo-caption"><h3>Landscape tablet</h3><span>Image · custom orientation</span></div>
-  <div class="device-demo-stage device-demo-stage--computer">
-    <DeviceFrame device="tablet" orientation="landscape" tone="light"><Image alt="Illustrated mountain landscape" height={600} radius="none" src="/comparison-after.svg" width={960} /></DeviceFrame>
-  </div>
-  <p>Use <code>color="white"</code>, <code>color="black"</code>, or a hex color such as <code>color="#a9b8ac"</code>. The finish changes the hardware without recoloring your content. Frames scale to their container; live HTML and iframe screens reserve space for camera details. Generic <code>laptop</code>, <code>desktop</code>, and <code>android</code> presets are also available.</p>
+  <Stack class="device-gallery-finishes" direction="horizontal" justify="between" align="center" gap="md" wrap>
+    <Stack direction="horizontal" gap="sm" align="center" wrap><span class="
+      device-gallery-label
+    "
+                                                               >Hardware finish</span><Stack direction="horizontal" gap="sm" role="group" aria-label="Device finish"><Button variant="secondary" size="sm" data-device-finish="white" aria-pressed="true">White</Button><Button variant="secondary" size="sm" data-device-finish="black" aria-pressed="false">Black</Button><Button variant="secondary" size="sm" data-device-finish="custom" aria-pressed="false">Custom</Button></Stack></Stack>
+    <Field class="device-gallery-color"><Label for="device-gallery-color">Custom color</Label><Input id="device-gallery-color" type="color" value="#a9b8ac" /></Field>
+  </Stack>
+  <Carousel class="device-gallery" aria-label="Device examples" aria-roledescription="carousel">
+    <div class="device-gallery-viewport" data-ui-carousel-viewport tabindex="0" aria-label="Device slides. Use the arrow keys to browse.">
+      {deviceExamples.map((device, index) => (
+        <article data-device-slide data-device-name={device.label} aria-label={`${index + 1} of ${deviceExamples.length}: ${device.label}`} aria-roledescription="slide" role="group" inert={index !== 0} aria-hidden={index === 0 ? undefined : 'true'}>
+          <header class="device-slide-heading"><div><span>0{index + 1} / 0{deviceExamples.length}</span><h3>{device.label}</h3><p>{device.detail}</p></div><Badge variant="outline">{contentLabels[device.content]}</Badge></header>
+          <div class="device-gallery-stage">
+            <DeviceFrame device={device.device} color="white" {...('orientation' in device ? { orientation: device.orientation } : {})} scroll={device.content !== 'image'}>
+              {device.content === 'iframe' && <iframe loading={index === 0 ? 'eager' : 'lazy'} sandbox="" src="/device-frame-demo" title={`${device.label} Lumen workspace`}></iframe>}
+              {device.content === 'image' && <Image src="/device-frame-wallpaper.svg" alt="Lumen UI: small details, better interfaces" width={390} height={844} radius="none" />}
+              {device.content === 'html' && (
+                <Stack class="device-pixel-content" gap="lg">
+                  <Image
+src="/logo.svg"
+width={140}
+height={36}
+alt="Lumen UI"
+radius="none"
+class="device-pixel-logo"
+                  />
+                <div><Badge variant="outline">Made to compose</Badge><h4>Small pieces.<br />Big possibilities.</h4><p>Build a place for your next idea.</p></div>
+                <Card class="device-pixel-card">
+                  <Stack gap="md">
+                    <Icon name="layers" size="lg" />
+                    <h5>A shared foundation</h5>
+                    <p>Color, space, and type.<br />Thoughtful by default.</p>
+                    <Stack direction="horizontal" gap="sm" aria-label="Lumen semantic colors">
+                      <span class="device-swatch device-swatch--brand"></span>
+                      <span class="device-swatch device-swatch--accent"></span>
+                      <span class="device-swatch device-swatch--ink"></span>
+                    </Stack>
+                  </Stack>
+                </Card>
+                <ButtonLink href="/docs/components">Explore components <Icon name="arrow-up-right" /></ButtonLink>
+                <p class="device-pixel-footnote">Astro · React · Web Components</p>
+              </Stack>
+)}
+            </DeviceFrame>
+          </div>
+          <div class="device-slide-meta"><span>{device.viewport} <span aria-hidden="true">·</span> Demo viewport</span><span>Responsive frame</span></div>
+          <Code code={snippet(device)} language="astro" variant="block" codeLabel={`${device.label} usage`} copy wrap />
+        </article>
+      ))}
+    </div>
+    <footer class="device-gallery-navigation"><Button variant="outline" size="sm" data-device-prev disabled aria-label="Previous device"><Icon name="arrow-left" /> Previous</Button><span data-device-position aria-live="polite" aria-atomic="true">MacBook Pro · 1 of {deviceExamples.length}</span><Button variant="outline" size="sm" data-device-next aria-label="Next device">Next <Icon name="arrow-right" /></Button></footer>
+  </Carousel>
+
 </Stack>
-</Stack></Typography>
-
 <style>
-  .device-demo-composition { position: relative; isolation: isolate; aspect-ratio: 1.65; overflow: hidden; border-radius: 0.8rem; background: color-mix(in srgb, hsl(var(--surface-muted)) 80%, hsl(var(--line))); }
-  .device-demo-composition > div { position: absolute; bottom: 12%; }
-  .device-demo-composition__desktop { left: 5%; width: 62%; }
-  .device-demo-composition__laptop { left: 42%; width: 50%; z-index: 1; }
-  .device-demo-composition__phone { right: 4.5%; width: 10.5%; z-index: 2; }
-  .device-demo-intro { padding-block: 0.75rem 0; text-align: center; }
-  .device-demo-intro h3 { margin: 0 0 0.5rem; font-size: 1.3rem; font-weight: 500; letter-spacing: -0.03em; }
-  .device-demo-intro p { margin: 0; color: hsl(var(--ink-soft)); font-size: 0.875rem; }
-  .device-demo-finishes { justify-content: center; align-items: center; padding-bottom: 1.5rem; }
-  .device-demo-color-field { display: flex; align-items: center; gap: 0.75rem; }
-  .device-demo-color-field :global(input) { width: 3rem; height: 2.75rem; padding: 0.2rem; cursor: pointer; }
-  .device-demo-finishes :global([aria-pressed="true"]) { outline: 2px solid hsl(var(--ink)); outline-offset: 2px; }
-  .device-demo-detail { position: relative; isolation: isolate; aspect-ratio: 1.65; overflow: hidden; border-radius: 0.8rem; background: color-mix(in srgb, hsl(var(--surface-muted)) 80%, hsl(var(--line))); }
-  .device-demo-detail > div { position: absolute; width: 36%; }
-  .device-demo-detail :global(.ui-device-frame) { max-width: none; }
-  .device-demo-detail__black { left: 10%; bottom: 17%; }
-  .device-demo-detail__white { right: 10%; top: 20%; }
-  .device-demo-detail__black :global(.ui-device-frame__screen img) { filter: invert(0.9); }
-  .device-demo-caption { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 0.5rem 1rem; }
-  .device-demo-caption h3 { margin: 0; font-size: 1.1rem; }
-  .device-demo-caption > span { color: hsl(var(--ink-muted)); font-size: 0.8rem; }
-  .device-demo-stage { padding: 2rem 1.5rem; }
-  .device-demo-stage--computer { padding: 3rem 1.5rem 2rem; }
-  .device-demo-stage--phone { display: flex; align-items: flex-end; flex: 1; padding: 2rem 1.2rem; }
-  .device-demo-stage--phone :global(.ui-device-frame) { max-width: 21rem; }
-  .device-frame-demo-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem; align-items: stretch; }
-  .device-demo-pixel { position: relative; min-height: 100%; padding: 8% 6% 6%; background: hsl(var(--canvas)); }
-  .device-demo-clock { padding-block: 10%; text-align: center; }
-  .device-demo-clock > span { display: block; color: hsl(var(--ink)); font-size: clamp(2rem, 18cqi, 5rem); font-weight: 300; letter-spacing: -0.08em; line-height: 1.1; }
-  .device-demo-clock > span > span { color: hsl(var(--brand)); }
-  .device-demo-clock p { display: flex; justify-content: center; align-items: center; gap: 0.3rem; margin-block: 1rem; font-size: clamp(0.6rem, 3cqi, 0.8rem); }
-  .device-demo-note { border-radius: 0.75rem; background: hsl(var(--surface)); box-shadow: none; }
-  .device-demo-note h4 { margin: 0; font-size: clamp(1.2rem, 7cqi, 2rem); letter-spacing: -0.04em; line-height: 1.1; }
-  .device-demo-note p, .device-demo-hint { font-size: 0.8rem; }
-  .device-demo-hint { margin-top: auto; text-align: center; color: hsl(var(--ink-soft)); }
-  @media (max-width: 40rem) { .device-frame-demo-grid { grid-template-columns: minmax(0, 1fr); } .device-demo-stage { padding: 1.5rem 0.7rem; } }
+  .device-gallery-heading { padding-block: 0.75rem 0.25rem; text-align: center; }
+  .device-gallery-heading > p:first-child { color: hsl(var(--ink-muted)); font-size: 0.65rem; font-weight: 650; letter-spacing: 0.17em; }
+  .device-gallery-heading h3 { margin: 0.65rem 0; font-size: clamp(1.5rem, 3vw, 2rem); line-height: 1.15; font-weight: 500; letter-spacing: -0.04em; }
+  .device-gallery-heading > p:last-child { color: hsl(var(--ink-soft)); font-size: 0.875rem; }
+  .device-gallery-picker { justify-content: center; }
+  .device-gallery-picker :global([aria-pressed="true"]) { background: hsl(var(--ink)); color: hsl(var(--canvas)); }
+  :global(.device-gallery) { padding: 0; border: 0; background: transparent; overflow: visible; }
+  :global(.device-gallery) .device-gallery-viewport { gap: 0; align-items: flex-start; scrollbar-width: none; border-radius: 1rem; }
+  .device-gallery-viewport:focus-visible { outline: 2px solid hsl(var(--brand)); outline-offset: 4px; }
+  :global(.device-gallery) .device-gallery-viewport > article { flex: 0 0 100%; min-width: 0; padding: 0; border: 0; border-radius: 0; background: transparent; scroll-snap-stop: always; }
+  .device-slide-heading { display: flex; align-items: start; justify-content: space-between; gap: 1rem; padding: 1.5rem 1.5rem 0; background: hsl(var(--surface-muted)); }
+  .device-slide-heading span { color: hsl(var(--ink-muted)); font-size: 0.65rem; letter-spacing: 0.08em; }
+  .device-slide-heading h3 { margin: 0.35rem 0; font-size: 1.25rem; letter-spacing: -0.03em; }
+  .device-slide-heading p { margin: 0; max-width: 32rem; color: hsl(var(--ink-soft)); font-size: 0.8rem; line-height: 1.5; }
+  .device-gallery-stage { --device-stage-height: clamp(27rem, 50vw, 36rem); height: var(--device-stage-height); display: flex; align-items: center; justify-content: center; padding: 2rem 1.5rem; background: hsl(var(--surface-muted)); }
+  .device-gallery-stage :global(.ui-device-frame) { max-width: 46rem; }
+  .device-gallery-stage :global([data-device="imac"]) { max-width: 43rem; }
+  .device-gallery-stage :global([data-device="ipad-pro"]) { max-width: 41rem; }
+  .device-gallery-stage :global([data-device="iphone"]), .device-gallery-stage :global([data-device="pixel"]) { width: min(15rem, calc(var(--device-stage-height) * 0.39)); }
+  .device-slide-meta { display: flex; justify-content: space-between; gap: 0.5rem; padding: 1rem 1.5rem; font-size: 0.72rem; color: hsl(var(--ink-muted)); background: hsl(var(--surface-muted)); border-radius: 0 0 1rem 1rem; margin-bottom: 1rem; }
+  :global(.device-gallery) .device-gallery-navigation { justify-content: space-between; align-items: center; }
+  .device-gallery-navigation > span { color: hsl(var(--ink-soft)); font-size: 0.75rem; text-align: center; }
+  .device-gallery-finishes { border-top: 1px solid hsl(var(--line)); padding-top: 1rem; }
+  .device-gallery-label { color: hsl(var(--ink-soft)); font-size: 0.75rem; margin-right: 0.5rem; }
+  .device-gallery-finishes :global([aria-pressed="true"]) { outline: 2px solid hsl(var(--ink)); outline-offset: 2px; }
+  .device-gallery-color { display: flex; align-items: center; gap: 0.75rem; }
+  .device-gallery-color :global(input) { width: 2.75rem; height: 2.5rem; padding: 0.2rem; cursor: pointer; }
+  :global(.device-pixel-content) { min-height: 100%; padding: 9% 8%; background: hsl(var(--canvas)); container-type: inline-size; }
+  :global(.device-pixel-logo) { width: 55%; height: auto; }
+  .device-pixel-content :global(.ui-badge) { font-size: clamp(0.5rem, 5cqi, 0.7rem); padding-inline: 0.5em; max-width: 100%; white-space: normal; }
+  .device-pixel-content :global(.ui-button) { font-size: clamp(0.6rem, 5.5cqi, 0.75rem); padding-inline: 0.5em; min-width: 0; white-space: normal; }
+  .device-pixel-content h4 { font-size: 11cqi; line-height: 1.08; letter-spacing: -0.055em; margin: 0.8rem 0; font-weight: 550; }
+  .device-pixel-content h5 { font-size: 7cqi; margin: 0; }
+  .device-pixel-content p { font-size: max(10px, 5.5cqi); line-height: 1.5; color: hsl(var(--ink-soft)); margin: 0; }
+  :global(.device-pixel-card) { padding: 10%; box-shadow: none; background: hsl(var(--surface)); }
+  .device-swatch { width: 1.5rem; height: 1.5rem; border-radius: 50%; }
+  .device-swatch--brand { background: hsl(var(--brand)); }
+  .device-swatch--accent { background: hsl(var(--accent)); }
+  .device-swatch--ink { background: hsl(var(--ink)); }
+  .device-pixel-footnote { text-align: center; margin-top: auto; }
+  @media (max-width: 40rem) { .device-gallery-stage:has([data-device="macbook-pro"]), .device-gallery-stage:has([data-device="macbook-air"]), .device-gallery-stage:has([data-device="imac"]), .device-gallery-stage:has([data-device="ipad-pro"]) { height: auto; padding-block: 2rem; } .device-slide-heading { padding: 1rem 0.75rem 0; } .device-slide-heading p { font-size: 0.75rem; } .device-slide-heading :global(.ui-badge) { display: none; } .device-gallery-stage { padding: 1.5rem 0.65rem; } .device-slide-meta { padding: 0.75rem; flex-wrap: wrap; } .device-slide-meta > span:last-child { display: none; } }
 </style>
-
 <script>
-  for (const demo of document.querySelectorAll<HTMLElement>('[data-device-finish-demo]')) {
-    const input = demo.querySelector<HTMLInputElement>('input[type="color"]')
-    const composition = demo.querySelector<HTMLElement>('.device-demo-composition')
-    const buttons = demo.querySelectorAll<HTMLButtonElement>('[data-device-finish]')
-    const frames = composition?.querySelectorAll<HTMLElement>('.ui-device-frame')
+  import { initDeviceGallery } from '../lib/device-frame-gallery'
 
-    const select = (finish: string): void => {
-      const color = finish === 'custom' ? input?.value : finish
+  let cleanups: (() => void)[] = []
 
-      if (!color) return
+  const destroy = (): void => {
+    for (const cleanup of cleanups) cleanup()
 
-      for (const frame of frames ?? []) frame.style.setProperty('--ui-device-color', color)
-
-      for (const button of buttons) button.setAttribute('aria-pressed', String(button.dataset.deviceFinish === finish))
-
-      const name = finish === 'custom' ? 'Custom color' : `Matte ${finish}`
-
-      composition?.setAttribute('aria-label', `${name} iMac, MacBook Pro, and iPhone arranged together`)
-    }
-
-    for (const button of buttons) button.addEventListener('click', () => select(button.dataset.deviceFinish ?? 'white'))
-
-    input?.addEventListener('input', () => select('custom'))
+    cleanups = []
   }
+
+  const initialize = (): void => {
+    destroy()
+
+    cleanups = [...document.querySelectorAll<HTMLElement>('[data-device-gallery]')].map(initDeviceGallery)
+  }
+
+  initialize()
+
+  document.addEventListener('astro:page-load', initialize)
+
+  document.addEventListener('astro:before-swap', destroy)
 </script>

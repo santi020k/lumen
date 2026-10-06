@@ -1197,7 +1197,7 @@ const runtimeEventsByComponent: Partial<
 
 const apiReferenceByComponent = {
   DeviceFrame: [
-    apiRow('device', '"macbook-pro" | "imac" | "iphone" | "pixel" | "laptop" | "desktop" | "android" | "tablet"', '"laptop"', 'Selects a decorative device silhouette and default screen dimensions.'),
+    apiRow('device', '"macbook-pro" | "macbook-air" | "imac" | "iphone" | "pixel" | "ipad-pro" | "laptop" | "desktop" | "android" | "tablet"', '"laptop"', 'Selects a decorative device silhouette and default screen dimensions.'),
     apiRow('orientation', '"portrait" | "landscape"', 'device default', 'Orders the screen dimensions for the requested orientation.'),
     apiRow('tone', '"light" | "dark"', '"dark"', 'Sets the shell tone independently of the content theme.'),
     apiRow('color', '"white" | "black" | hex color', 'tone', 'Overrides the hardware finish. Accepts 3-, 4-, 6-, or 8-digit hex colors. Content keeps its own theme; invalid colors fall back to tone. CSS can override --ui-device-color.'),
