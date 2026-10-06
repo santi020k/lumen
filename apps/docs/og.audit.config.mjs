@@ -1,6 +1,7 @@
 import { defineAuditConfig } from '@santi020k/og/audit/config'
 import { standardAuditRules } from '@santi020k/og/audit/rules'
 
+import { auditNavigationDestinations } from './scripts/navigation-rules.mjs'
 import { auditSocialCardMetadata } from './scripts/seo-rules.mjs'
 
 const standards = standardAuditRules({ sitemap: { reportOrphans: true } })
@@ -10,5 +11,5 @@ export default defineAuditConfig({
   exclude: ['internal/**'],
   manifest: 'public/og/manifest.json',
   siteUrl: 'https://lumen.santi020k.com',
-  siteRules: [...standards.siteRules, auditSocialCardMetadata]
+  siteRules: [...standards.siteRules, auditSocialCardMetadata, auditNavigationDestinations]
 })
