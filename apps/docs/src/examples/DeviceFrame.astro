@@ -1,42 +1,65 @@
 ---
-import { Badge, Button, Card, DeviceFrame, Image, Stack, Typography } from '@santi020k/lumen-astro'
+import { Badge, Button, Card, DeviceFrame, Icon, Image, Stack, Typography } from '@santi020k/lumen-astro'
 ---
 
 <Typography><Stack gap="lg">
-  <h3>Live page inside a laptop</h3>
-  <DeviceFrame device="laptop">
-    <iframe loading="lazy" sandbox="" src="/device-frame-demo" title="Responsive Lumen demonstration"></iframe>
-  </DeviceFrame>
-  <p>The iframe keeps a 1280 × 800 layout viewport as the laptop scales.</p>
+  <div class="device-demo-caption"><h3>MacBook Pro</h3><span>Graphite · live iframe</span></div>
+  <div class="device-demo-stage device-demo-stage--computer">
+    <DeviceFrame device="macbook-pro">
+      <iframe loading="lazy" sandbox="" src="/device-frame-demo" title="Responsive Lumen demonstration"></iframe>
+    </DeviceFrame>
+  </div>
   <div class="device-frame-demo-grid">
     <Stack gap="md">
-      <h3>iPhone · image</h3>
-      <DeviceFrame device="iphone" scroll={false}>
-        <Image alt="Lumen gallery running in a native Android application, shown in a stylized phone frame" height={1920} radius="none" src="/native-previews/android-compose.png" width={1080} />
-      </DeviceFrame>
+      <div class="device-demo-caption"><h3>iPhone</h3><span>Camera island · image</span></div>
+      <div class="device-demo-stage device-demo-stage--phone">
+        <DeviceFrame device="iphone" scroll={false}>
+          <Image alt="Minimal geometric poster reading Make room for good ideas" height={844} radius="none" src="/device-frame-wallpaper.svg" width={390} />
+        </DeviceFrame>
+      </div>
     </Stack>
     <Stack gap="md">
-      <h3>Android · HTML</h3>
-      <DeviceFrame device="android" tone="light">
-        <Stack class="device-frame-demo-content" gap="md">
-          <Badge>Component demo</Badge>
-          <h4>Your next project</h4>
-          <p>Compose real Lumen components inside the screen.</p>
-          <Card><p>HTML keeps the surrounding page’s viewport. Use an iframe for isolated responsive layouts.</p></Card>
-          <Button>Start a project</Button>
-        </Stack>
-      </DeviceFrame>
+      <div class="device-demo-caption"><h3>Google Pixel</h3><span>Porcelain · live HTML</span></div>
+      <div class="device-demo-stage device-demo-stage--phone">
+        <DeviceFrame device="pixel" tone="light">
+          <Stack class="device-demo-pixel" gap="lg">
+            <div class="device-demo-clock"><p>Tuesday, October 6</p><span>09<span>:</span>41</span><p><Icon name="sun" /> 24° · A little room to explore</p></div>
+            <Card class="device-demo-note"><Stack gap="md"><Badge>Today, at your pace</Badge><h4>Make space<br />for a new idea.</h4><p>A fresh canvas. A clear mind.<br />Something worth making.</p><Button>Start a project <Icon name="arrow-up-right" /></Button></Stack></Card>
+            <p class="device-demo-hint">Built with real Lumen components</p>
+          </Stack>
+        </DeviceFrame>
+      </div>
     </Stack>
   </div>
-  <h3>Desktop and landscape tablet</h3>
-  <div class="device-frame-demo-grid">
-    <DeviceFrame device="desktop" tone="light"><Image alt="Illustrated mountain landscape" height={600} radius="none" src="/comparison-after.svg" width={960} /></DeviceFrame>
-    <DeviceFrame device="tablet" orientation="landscape"><Image alt="Illustrated mountain landscape before color adjustment" height={600} radius="none" src="/comparison-before.svg" width={960} /></DeviceFrame>
+  <div class="device-demo-caption"><h3>iMac</h3><span>Silver · live iframe</span></div>
+  <div class="device-demo-stage device-demo-stage--computer">
+    <DeviceFrame device="imac" tone="light">
+      <iframe loading="lazy" sandbox="" src="/device-frame-demo" title="Desktop Lumen demonstration"></iframe>
+    </DeviceFrame>
   </div>
+  <div class="device-demo-caption"><h3>Landscape tablet</h3><span>Image · custom orientation</span></div>
+  <div class="device-demo-stage device-demo-stage--computer">
+    <DeviceFrame device="tablet" orientation="landscape"><Image alt="Illustrated mountain landscape" height={600} radius="none" src="/comparison-after.svg" width={960} /></DeviceFrame>
+  </div>
+  <p>Frames scale to their container. Live HTML and iframe screens reserve space for camera details. Phone images fill the glass beneath the decorative hardware. Generic <code>laptop</code>, <code>desktop</code>, and <code>android</code> presets are also available.</p>
 </Stack></Typography>
 
 <style>
-  .device-frame-demo-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2rem; align-items: start; padding-inline: 0.75rem; }
-  .device-frame-demo-content { padding: 1rem; }
-  @media (max-width: 40rem) { .device-frame-demo-grid { grid-template-columns: minmax(0, 1fr); } }
+  .device-demo-caption { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 0.5rem 1rem; }
+  .device-demo-caption h3 { margin: 0; font-size: 1.1rem; }
+  .device-demo-caption > span { color: hsl(var(--ink-muted)); font-size: 0.8rem; }
+  .device-demo-stage { padding: 2rem 1.5rem; background: hsl(var(--surface-muted) / 0.55); border-radius: 0.75rem; }
+  .device-demo-stage--computer { padding: 3rem 1.5rem 2rem; }
+  .device-demo-stage--phone { padding: 2rem 1.2rem; }
+  .device-frame-demo-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem; align-items: start; }
+  .device-demo-pixel { position: relative; min-height: 100%; padding: 8% 6% 6%; background: hsl(var(--canvas)); }
+  .device-demo-clock { padding-block: 10%; text-align: center; }
+  .device-demo-clock > span { display: block; color: hsl(var(--ink)); font-size: clamp(2rem, 18cqi, 5rem); font-weight: 300; letter-spacing: -0.08em; line-height: 1.1; }
+  .device-demo-clock > span > span { color: hsl(var(--brand)); }
+  .device-demo-clock p { display: flex; justify-content: center; align-items: center; gap: 0.3rem; margin-block: 1rem; font-size: clamp(0.6rem, 3cqi, 0.8rem); }
+  .device-demo-note { border-radius: 0.75rem; background: hsl(var(--surface)); box-shadow: none; }
+  .device-demo-note h4 { margin: 0; font-size: clamp(1.2rem, 7cqi, 2rem); letter-spacing: -0.04em; line-height: 1.1; }
+  .device-demo-note p, .device-demo-hint { font-size: 0.8rem; }
+  .device-demo-hint { margin-top: auto; text-align: center; color: hsl(var(--ink-soft)); }
+  @media (max-width: 40rem) { .device-frame-demo-grid { grid-template-columns: minmax(0, 1fr); } .device-demo-stage { padding: 1.5rem 0.7rem; } }
 </style>

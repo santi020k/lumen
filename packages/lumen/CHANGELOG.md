@@ -10,6 +10,11 @@
 
 ### Patch Changes
 
+- Refine DeviceFrame with MacBook Pro, iMac, and Pixel presets, minimalist matte frames, camera details, side buttons, and simple bases. Reserve hardware space for live HTML and iframe content, and let phone images fill the glass. Refresh the interactive gallery and retain all generic device presets.
+- Updated dependencies []:
+  - @santi020k/lumen-core@4.0.1
+
+
 - Updated dependencies []:
   - @santi020k/lumen-core@4.1.0
 

@@ -771,9 +771,10 @@ their own keyboard path.
 
 ## Device demonstrations
 
-`DeviceFrame` presents slotted HTML, an image, or a titled iframe inside laptop, desktop,
-iPhone-style, Android-style, and tablet silhouettes. Shells are decorative, use Lumen tokens,
-and do not emulate device hardware. `orientation` selects portrait or landscape; `tone` selects
+`DeviceFrame` presents slotted HTML, an image, or a titled iframe inside `macbook-pro`, `imac`,
+`iphone`, and `pixel` frames, with generic `laptop`, `desktop`, `android`, and `tablet` options.
+Hardware details include camera islands, notches, side buttons, thin matte rims, and simple stands.
+Shells are decorative, use Lumen tokens, and do not emulate device hardware. `orientation` selects portrait or landscape; `tone` selects
 light or dark chrome independently of the screen content.
 
 Iframe layouts use the preset screen viewport and scale to the available width. Override
@@ -783,7 +784,11 @@ the host viewport; container queries can adapt it to the screen. Images preserve
 
 Supply image alternative text and iframe titles. Consumers own iframe `sandbox`, `allow`,
 loading, and referrer policies. Remote sites can refuse embedding through their response headers.
-The decorative shell does not alter focus or intercept interactions.
+The decorative shell does not alter focus or intercept interactions. Camera and home-indicator
+details occupy separate chrome outside live HTML and iframe viewports. Direct phone images extend
+under the decorative camera and home indicator for a full-bleed presentation.
+Screen presets are 1280 × 800 for MacBook Pro, 1440 × 810 for iMac, 390 × 844 for iPhone, and
+412 × 915 for Pixel. These are demonstration viewports, not physical display specifications.
 
 ```html
 <lumen-device-frame device="android" tone="light">

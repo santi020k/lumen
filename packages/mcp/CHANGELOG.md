@@ -11,6 +11,9 @@
 
 ### Patch Changes
 
+- Refine DeviceFrame with MacBook Pro, iMac, and Pixel presets, minimalist matte frames, camera details, side buttons, and simple bases. Reserve hardware space for live HTML and iframe content, and let phone images fill the glass. Refresh the interactive gallery and retain all generic device presets.
+
+
 - Add exact localized AmountField drafts across web adapters and a React Hook Form controller.
   Add opt-in MessageScroller following and reader-anchor preservation. Introduce consumer upgrade
   review signals, semantic theme diagnostics, and installable React form and operational-record recipes.

@@ -1420,7 +1420,7 @@
     {
       "name": "DeviceFrame",
       "type": "component",
-      "description": "Frames images, HTML, and fixed-viewport iframe demos in decorative device silhouettes.",
+      "description": "Frames images, HTML, and fixed-viewport iframe demos in detailed iPhone, Pixel, iMac, MacBook Pro, and generic device silhouettes.",
       "category": "Data display",
       "files": [
         "packages/astro/components/DeviceFrame.astro",

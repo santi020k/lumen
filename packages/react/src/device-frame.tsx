@@ -34,8 +34,10 @@ export const DeviceFrame = ({ device = 'laptop', orientation, tone = 'dark', scr
   return (
     <div className={composeClassName('ui-device-frame', className)} data-device={device} data-tone={tone} {...props}>
       <div className="ui-device-frame__shell">
-        <span aria-hidden="true" className="ui-device-frame__camera" />
-        <div className="ui-device-frame__screen" data-scroll={String(scroll)} ref={screenRef} style={style}>{children}</div>
+        <div className="ui-device-frame__glass">
+          <span aria-hidden="true" className="ui-device-frame__camera" />
+          <div className="ui-device-frame__screen" data-scroll={String(scroll)} ref={screenRef} style={style}>{children}</div>
+        </div>
       </div>
       <span aria-hidden="true" className="ui-device-frame__base" />
     </div>

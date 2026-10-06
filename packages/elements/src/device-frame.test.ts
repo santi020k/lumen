@@ -49,3 +49,21 @@ test('falls back for invalid attributes and honors custom sizes', () => {
   frame.setAttribute('screen-height', '768')
   expect(screen?.style.aspectRatio).toBe('1024 / 768')
 })
+
+test.each([
+  ['macbook-pro', '1280 / 800'],
+  ['imac', '1440 / 810'],
+  ['pixel', '412 / 915']
+])('switches to %s while preserving the interactive screen', (device, ratio) => {
+  const frame = new LumenDeviceFrameElement()
+  const button = document.createElement('button')
+
+  button.textContent = 'Keep editing'
+  frame.append(button)
+  document.body.append(frame)
+  frame.setAttribute('device', device)
+  expect(frame.dataset.device).toBe(device)
+  expect(frame.querySelector<HTMLElement>('.ui-device-frame__screen')?.style.aspectRatio).toBe(ratio)
+  expect(frame.querySelector('.ui-device-frame__screen')?.firstElementChild).toBe(button)
+  expect(frame.querySelectorAll('.ui-device-frame__glass')).toHaveLength(1)
+})

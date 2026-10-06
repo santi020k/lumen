@@ -29,7 +29,7 @@ for (const width of [320, 1440]) {
         expect(size.width / size.height).toBeCloseTo(size.ratio, 2)
         expect(size.overflow).toBeLessThanOrEqual(1)
       }
-      const iframe = page.locator('.ui-device-frame iframe')
+      const iframe = page.locator('.ui-device-frame iframe').first()
 
       await iframe.scrollIntoViewIfNeeded()
       await expect(iframe).toHaveAttribute('title', 'Responsive Lumen demonstration')
@@ -39,11 +39,11 @@ for (const width of [320, 1440]) {
 
       if (!content) throw new Error('Expected loaded demo iframe')
       expect(await content.evaluate(() => window.innerWidth)).toBe(1280)
-      await expect(content.getByRole('heading', { name: 'A workspace that fits your screen' })).toBeVisible()
+      await expect(content.getByRole('heading', { name: /A little space/ })).toBeVisible()
       await expect.poll(() => frames.locator('img').evaluateAll(images => images.every(
         image => image instanceof HTMLImageElement && image.complete && image.naturalWidth > 0
       ))).toBe(true)
-      await expect(frames.locator('[aria-hidden="true"]')).toHaveCount(10)
+      await expect(frames.locator('.ui-device-frame__camera[aria-hidden="true"], .ui-device-frame__base[aria-hidden="true"]')).toHaveCount(10)
       await page.getByRole('button', { name: 'Start a project', exact: true }).focus()
       await expect(page.getByRole('button', { name: 'Start a project', exact: true })).toBeFocused()
       expect(errors).toEqual([])
@@ -94,4 +94,20 @@ test('Astro screen cleans up on removal and initializes when reconnected', async
   expect(result.detachedScale).toBe('')
   expect(result.sameIframe).toBe(true)
   expect(result.connectedScale).not.toBe('')
+})
+
+test('hardware details leave live content and its first controls unobstructed', async ({ page }) => {
+  await page.goto('/docs/components/device-frame')
+  for (const device of ['macbook-pro', 'imac', 'pixel']) {
+    const frame = page.locator(`.ui-device-frame[data-device="${device}"]`)
+
+    await frame.scrollIntoViewIfNeeded()
+    const camera = await frame.locator('.ui-device-frame__camera').boundingBox()
+    const screen = await frame.locator('.ui-device-frame__screen').boundingBox()
+
+    if (!camera || !screen) throw new Error(`Expected visible ${device} hardware`)
+    expect(camera.y + camera.height).toBeLessThanOrEqual(screen.y + 1)
+  }
+  await page.getByRole('button', { name: 'Start a project', exact: true }).focus()
+  await expect(page.getByRole('button', { name: 'Start a project', exact: true })).toBeFocused()
 })

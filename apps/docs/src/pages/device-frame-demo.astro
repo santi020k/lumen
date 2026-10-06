@@ -1,30 +1,115 @@
 ---
 import '@santi020k/lumen-astro/styles.css'
 
-import { Badge, Card, Stack, Typography } from '@santi020k/lumen-astro'
+import { Badge, Card, Icon, Stack } from '@santi020k/lumen-astro'
+
+const projects = [
+  { name: 'A quieter kind of digital.', category: 'Brand direction', className: 'project project--brand', number: '01' },
+  { name: 'Objects with a point of view.', category: 'Product collection', className: 'project project--accent', number: '02' },
+  { name: 'Room for the unexpected.', category: 'Visual exploration', className: 'project project--ink', number: '03' }
+]
 ---
 <!doctype html>
 <html lang="en">
-  <head><meta charset="utf-8" /><meta name="viewport" content="width=device-width" /><meta name="description" content="A responsive Lumen application example embedded in device demonstrations." /><link rel="canonical" href="https://lumen.santi020k.com/device-frame-demo/" /><meta name="robots" content="noindex" /><title>Lumen responsive device demo</title></head>
+  <head><meta charset="utf-8" /><meta name="viewport" content="width=device-width" /><meta name="description" content="A responsive Lumen creative workspace embedded in device demonstrations." /><link rel="canonical" href="https://lumen.santi020k.com/device-frame-demo/" /><meta name="robots" content="noindex" /><title>Lumen creative workspace demo</title></head>
   <body>
-    <main>
-      <Typography><Stack gap="lg">
-        <Badge>Live responsive page</Badge>
-        <h1>A workspace that fits your screen</h1>
-        <p>Resize the frame around this page. Its layout viewport stays at the device’s screen size.</p>
-        <div class="demo-grid">
-          {['Plan your work', 'Build with Lumen', 'Share your progress'].map(title => <Card><h2>{title}</h2><p>Reusable components, consistent foundations.</p></Card>)}
+    <header>
+      <a class="wordmark" href="#overview"><Icon name="layers" /> atelier<span>workspace</span></a>
+      <span class="demo-label">Illustrative workspace</span>
+      <Badge>Personal space</Badge>
+    </header>
+    <div class="workspace">
+      <aside>
+        <span class="nav-label">WORKSPACE</span>
+        <nav aria-label="Workspace">
+          <a href="#overview"><Icon name="layout-dashboard" /> Overview</a>
+          <a href="#projects"><Icon name="folder" /> Projects <span>03</span></a>
+          <a href="#notes"><Icon name="file-text" /> Studio notes</a>
+        </nav>
+        <div class="sidebar-footer">
+          <Icon name="sparkles" />
+          <p>Good things<br />start with space.</p>
+          <a href="https://santi020k.com" target="_blank" rel="noopener noreferrer">Built by santi020k <Icon name="arrow-up-right" /></a>
         </div>
-        <a href="https://santi020k.com" target="_blank" rel="noopener noreferrer">Built by santi020k</a>
-      </Stack></Typography>
-    </main>
+      </aside>
+      <main id="overview">
+        <div class="greeting">
+          <div>
+            <p class="eyebrow">YOUR CREATIVE HOME</p>
+            <h1>A little space.<br />A lot of possibility.</h1>
+            <p>Pick up an idea. Make something that matters.</p>
+          </div>
+          <a class="project-link" href="#projects">Explore your projects <Icon name="arrow-up-right" /></a>
+        </div>
+        <section aria-labelledby="projects">
+          <div class="section-heading"><h2 id="projects">On your desk</h2><span>3 ongoing projects</span></div>
+          <div class="project-grid">
+            {projects.map(project => (
+              <Card class={project.className}>
+                <div aria-hidden="true" class="project-art"><span>{project.number}</span><div></div></div>
+                <Stack class="project-description" gap="sm">
+                  <p>{project.category}</p>
+                  <h3>{project.name}</h3>
+                  <span>Updated today <Icon name="arrow-up-right" /></span>
+                </Stack>
+              </Card>
+            ))}
+          </div>
+        </section>
+        <section aria-labelledby="notes" class="studio-note">
+          <div>
+            <p class="eyebrow">A NOTE TO YOUR FUTURE SELF</p>
+            <h2 id="notes">The best idea is the one you make.</h2>
+          </div>
+          <Icon name="sparkles" size="xl" />
+        </section>
+      </main>
+    </div>
   </body>
 </html>
 <style>
-  body { margin: 0; background: hsl(var(--canvas)); color: hsl(var(--ink)); font-family: system-ui, sans-serif; }
-  main { padding: clamp(1rem, 4vw, 3rem); }
-  .demo-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
-  a { color: hsl(var(--brand)); }
-  a:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }
-  @media (max-width: 40rem) { .demo-grid { grid-template-columns: minmax(0, 1fr); } }
+  body { margin: 0; background: hsl(var(--canvas)); color: hsl(var(--ink)); font-family: system-ui, sans-serif; font-size: 14px; }
+  * { box-sizing: border-box; }
+  a { color: inherit; text-decoration: none; }
+  a:focus-visible { outline: 2px solid hsl(var(--brand)); outline-offset: 4px; }
+  header { height: 72px; display: flex; align-items: center; justify-content: space-between; gap: 2rem; padding: 0 32px; border-bottom: 1px solid hsl(var(--line)); background: hsl(var(--surface)); }
+  .wordmark { display: flex; align-items: center; gap: 10px; font-size: 23px; font-weight: 650; letter-spacing: -1px; }
+  .wordmark > span:last-child { margin-left: 16px; border-left: 1px solid hsl(var(--line)); padding-left: 22px; font-size: 12px; letter-spacing: 0; font-weight: 400; color: hsl(var(--ink-muted)); }
+  .demo-label { color: hsl(var(--ink-muted)); font-size: 11px; }
+  .workspace { display: grid; grid-template-columns: 196px minmax(0, 1fr); min-height: calc(100vh - 72px); }
+  aside { display: flex; flex-direction: column; border-right: 1px solid hsl(var(--line)); padding: 32px 20px; background: hsl(var(--surface)); }
+  .nav-label, .eyebrow { font-size: 10px; font-weight: 600; letter-spacing: 0.14em; color: hsl(var(--ink-muted)); }
+  .nav-label { padding: 0 12px 16px; }
+  nav { display: grid; gap: 8px; }
+  nav a { display: flex; gap: 10px; align-items: center; padding: 11px 12px; border-radius: 7px; font-size: 12px; color: hsl(var(--ink-soft)); }
+  nav a:first-child { background: hsl(var(--brand-soft)); color: hsl(var(--brand)); }
+  nav a > span:last-child { margin-left: auto; }
+  .sidebar-footer { margin-top: auto; padding: 40px 12px 0; }
+  .sidebar-footer p { font-family: Georgia, serif; font-size: 22px; line-height: 1.2; }
+  .sidebar-footer a { display: flex; align-items: center; gap: 4px; font-size: 10px; color: hsl(var(--ink-muted)); }
+  main { padding: 42px; }
+  .greeting { display: flex; justify-content: space-between; align-items: end; gap: 24px; margin-bottom: 36px; }
+  h1 { margin: 16px 0; font-family: Georgia, serif; font-size: clamp(32px, 4vw, 54px); font-weight: 400; line-height: 1.04; letter-spacing: -0.045em; }
+  .greeting p:last-child { color: hsl(var(--ink-soft)); font-size: 12px; }
+  .project-link { display: inline-flex; align-items: center; gap: 10px; padding-bottom: 6px; border-bottom: 1px solid hsl(var(--line)); font-size: 11px; white-space: nowrap; }
+  .section-heading { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .section-heading h2 { margin: 0; font-size: 14px; font-weight: 550; }
+  .section-heading span { color: hsl(var(--ink-muted)); font-size: 10px; }
+  .project-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+  .project { padding: 0; overflow: hidden; border-radius: 10px; box-shadow: none; }
+  .project-art { position: relative; height: 175px; overflow: hidden; background: hsl(var(--brand-soft)); }
+  .project-art > span { position: absolute; top: 16px; left: 16px; color: hsl(var(--ink-soft)); font-size: 10px; }
+  .project-art > div { position: absolute; height: 220px; width: 120px; left: 50%; top: -25px; border-radius: 50%; transform: rotate(35deg); background: linear-gradient(90deg, hsl(var(--brand)), hsl(var(--brand-soft))); box-shadow: -34px 20px 0 hsl(var(--brand) / 0.3), -68px 40px 0 hsl(var(--brand) / 0.15); }
+  .project--accent .project-art { background: hsl(var(--accent) / 0.15); }
+  .project--accent .project-art > div { height: 120px; width: 120px; top: 35px; left: 30%; border-radius: 28px; transform: rotate(-25deg); background: linear-gradient(135deg, hsl(var(--surface)), hsl(var(--accent))); box-shadow: 22px 20px 0 hsl(var(--accent) / 0.25); }
+  .project--ink .project-art { background: hsl(var(--surface-strong)); }
+  .project--ink .project-art > div { width: 180px; height: 180px; left: 30%; top: 35px; border-radius: 50%; background: repeating-radial-gradient(circle, hsl(var(--ink-soft)) 0 1px, transparent 2px 12px); box-shadow: none; }
+  .project-description { padding: 18px; }
+  .project-description p { margin: 0; font-size: 9px; color: hsl(var(--ink-muted)); text-transform: uppercase; letter-spacing: 0.1em; }
+  .project-description h3 { font-size: 14px; line-height: 1.4; margin: 0; font-weight: 550; }
+  .project-description > span { display: flex; align-items: center; justify-content: space-between; font-size: 9px; margin-top: 10px; color: hsl(var(--ink-muted)); }
+  .studio-note { display: flex; justify-content: space-between; align-items: center; padding: 24px 28px; margin-top: 24px; border: 1px solid hsl(var(--line)); border-radius: 10px; background: hsl(var(--surface)); }
+  .studio-note h2 { font-family: Georgia, serif; font-size: 24px; font-weight: 400; margin: 8px 0 0; letter-spacing: -0.03em; }
+  .studio-note .eyebrow { margin: 0; }
+  @media (max-width: 700px) { header { padding: 0 20px; } .wordmark > span:last-child, .demo-label, aside { display: none; } .workspace { grid-template-columns: 1fr; } main { padding: 28px 20px; } .greeting { display: block; } .project-link { margin-top: 12px; } .project-grid { grid-template-columns: 1fr; } .project-art { height: 180px; } }
 </style>

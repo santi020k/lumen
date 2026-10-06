@@ -31,3 +31,25 @@ test('renders accessible children, updates orientation, and retains consumer ifr
   })
   vi.unstubAllGlobals()
 })
+
+test.each([
+  ['macbook-pro', '1280 / 800'],
+  ['imac', '1440 / 810'],
+  ['pixel', '412 / 915']
+] as const)('renders the %s viewport with separate decorative chrome', (device, ratio) => {
+  vi.stubGlobal('IS_REACT_ACT_ENVIRONMENT', true)
+  const container = document.createElement('div')
+  const root = createRoot(container)
+
+  act(() => {
+    root.render(createElement(DeviceFrame, { device }, createElement('button', {}, 'Open demo')))
+  })
+  expect(container.querySelector<HTMLElement>('.ui-device-frame')?.dataset.device).toBe(device)
+  expect(container.querySelector<HTMLElement>('.ui-device-frame__screen')?.style.aspectRatio).toBe(ratio)
+  expect(container.querySelector('.ui-device-frame__screen')?.textContent).toBe('Open demo')
+  expect(container.querySelector('.ui-device-frame__screen .ui-device-frame__camera')).toBeNull()
+  act(() => {
+    root.unmount()
+  })
+  vi.unstubAllGlobals()
+})

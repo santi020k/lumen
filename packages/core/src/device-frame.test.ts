@@ -45,3 +45,12 @@ test('observes the owning window and disconnects on removal', () => {
   expect(disconnect).toHaveBeenCalledOnce()
   vi.unstubAllGlobals()
 })
+
+test.each([
+  ['macbook-pro', 1280, 800],
+  ['imac', 1440, 810],
+  ['pixel', 412, 915]
+] as const)('resolves the %s demonstration viewport in both orientations', (device, width, height) => {
+  expect(resolveLumenDeviceFrame(device)).toEqual({ height, width })
+  expect(resolveLumenDeviceFrame(device, 'landscape')).toEqual({ height: Math.min(width, height), width: Math.max(width, height) })
+})

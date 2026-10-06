@@ -25,6 +25,7 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, ['ui-device-fram
 
 <div class:list={classList} data-device={device} data-tone={tone} {...passthrough}>
   <div class="ui-device-frame__shell">
+    <div class="ui-device-frame__glass">
     <span aria-hidden="true" class="ui-device-frame__camera"></span>
     <lumen-device-screen
 class="ui-device-frame__screen"
@@ -35,6 +36,7 @@ data-ui-device-screen
     >
       <slot />
     </lumen-device-screen>
+    </div>
   </div>
   <span aria-hidden="true" class="ui-device-frame__base"></span>
 </div>

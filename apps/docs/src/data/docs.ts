@@ -1191,7 +1191,7 @@ const runtimeEventsByComponent: Partial<
 
 const apiReferenceByComponent = {
   DeviceFrame: [
-    apiRow('device', '"laptop" | "desktop" | "iphone" | "android" | "tablet"', '"laptop"', 'Selects a decorative device silhouette and default screen dimensions.'),
+    apiRow('device', '"macbook-pro" | "imac" | "iphone" | "pixel" | "laptop" | "desktop" | "android" | "tablet"', '"laptop"', 'Selects a decorative device silhouette and default screen dimensions.'),
     apiRow('orientation', '"portrait" | "landscape"', 'device default', 'Orders the screen dimensions for the requested orientation.'),
     apiRow('tone', '"light" | "dark"', '"dark"', 'Sets the shell tone independently of the content theme.'),
     apiRow('screenWidth / screenHeight', 'number', 'device preset', 'Sets the iframe layout viewport in CSS pixels; scales it to the available frame width. Elements uses screen-width and screen-height.'),

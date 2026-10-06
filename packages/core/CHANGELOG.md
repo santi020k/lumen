@@ -10,6 +10,9 @@
 
 ### Patch Changes
 
+- Refine DeviceFrame with MacBook Pro, iMac, and Pixel presets, minimalist matte frames, camera details, side buttons, and simple bases. Reserve hardware space for live HTML and iframe content, and let phone images fill the glass. Refresh the interactive gallery and retain all generic device presets.
+
+
 - Preserve reserved filter names when parsing data view state and append server request parameters before endpoint fragments.
 
 - [#95](https://github.com/santi020k/lumen/pull/95) [`c8d7a4b`](https://github.com/santi020k/lumen/commit/c8d7a4b7a529d6f7a06209103c0ee9790a040ca2) Thanks [@santi020k](https://github.com/santi020k)! - Preserve focused controls and reusable keyed content in data-mode virtual collections inside
