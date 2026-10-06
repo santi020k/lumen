@@ -106,7 +106,7 @@ test('all compositions fit their canvases and can seek backwards deterministical
 
     const overflow = await page.locator('.scene').evaluateAll(scenes => scenes.some(scene => scene.scrollHeight > scene.clientHeight))
 
-    expect(overflow).toBe(false)
+    expect(overflow, `${format} scenes stay inside their canvas`).toBe(false)
 
     const lightScene = page.locator('.scene').first()
 
@@ -118,7 +118,7 @@ test('all compositions fit their canvases and can seek backwards deterministical
       const index = [2.6, 5, 8].filter(start => time >= start).length
       const screen = page.locator('.scene').nth(index).locator('.desktop-content .workspace')
 
-      expect(await screen.evaluate(element => element.scrollHeight <= element.clientHeight)).toBe(true)
+      expect(await screen.evaluate(element => element.scrollHeight <= element.clientHeight), `${format} workspace fits at ${time}s`).toBe(true)
 
       for (let other = 0; other < 4; other++) {
         if (other !== index) await expect(page.locator('.scene').nth(other)).toHaveCSS('visibility', 'hidden')
