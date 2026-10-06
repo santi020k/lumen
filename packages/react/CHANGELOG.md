@@ -2,6 +2,26 @@
 
 ## 4.0.0
 
+### Patch Changes
+
+- [#95](https://github.com/santi020k/lumen/pull/95) [`569dd56`](https://github.com/santi020k/lumen/commit/569dd564a6bd3a857b2d42c610f59735e3785c42) Thanks [@santi020k](https://github.com/santi020k)! - Preserve fallback row identity during client-side DataTable sorting so expanded details, local
+  edits, and disclosure accessibility references remain attached to the original record.
+
+- Respect system reduced motion on overlay backdrops as well as panels. Preserve drawer centering inside Stack and Grid instead of resetting overlay margins. Add drawer and sheet previews alongside the dialog in the motion playground, with keyboard, interrupted-close, layout, and system/local preference coverage.
+
+- Initialize native rich-text toolbar toggle states on mount so assistive technology can read their pressed state before the first editing interaction. Preserve external engine ownership of toolbar state.
+
+- Fix four React form correctness issues: `DatePicker` calendar selection now sets the native input
+  value through React's value setter so `onChange` fires exactly once; `PhoneInput` defers its form
+  reset past the default action and honors a cancelled reset, a disconnected or unmounted control,
+  and a controlled value; `DateRangeInput` attaches its reset listener even without `name`, using an
+  always-present wrapper ref that respects an explicit `form` id as well as the nearest ancestor
+  form; and `Combobox` now supports native form reset, restoring an uncontrolled `defaultValue`,
+  preserving a controlled value, and closing options without emitting `onChange`.
+- Updated dependencies [[`b5cff90`](https://github.com/santi020k/lumen/commit/b5cff90c682a36b7cc5d51b7f9bc06c34dab2a37), `aca1577`, `647314a`, `71e96d2`, `f112720`, [`6fdb48b`](https://github.com/santi020k/lumen/commit/6fdb48bc21aec3c3c34500d8cb9f5ad1b3b4b566), [`c8d7a4b`](https://github.com/santi020k/lumen/commit/c8d7a4b7a529d6f7a06209103c0ee9790a040ca2)]:
+  - @santi020k/lumen@4.0.1
+  - @santi020k/lumen-core@4.0.1
+
 - Add DeviceFrame for laptop, desktop, iPhone-style, Android-style, and tablet demonstrations with
   slotted HTML, images, fixed iframe viewports, orientation, shell tones, and configurable screen sizes.
 
