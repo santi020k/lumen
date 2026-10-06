@@ -1362,6 +1362,21 @@ export const lumenRegistry = {
       ]
     },
     {
+      name: 'DeviceFrame',
+      type: 'component',
+      description: 'Frames images, HTML, and fixed-viewport iframe demos in decorative device silhouettes.',
+      category: 'Data display',
+      files: [
+        'packages/astro/components/DeviceFrame.astro',
+        'packages/astro/styles/lumen.css',
+        'packages/react/src/device-frame.tsx',
+        'packages/elements/src/components/device-frame.ts'
+      ],
+      dependencies: [
+        'styles'
+      ]
+    },
+    {
       name: 'ImageComparison',
       type: 'component',
       description: 'Compares two media treatments with an accessible reveal control.',

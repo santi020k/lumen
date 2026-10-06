@@ -2,6 +2,9 @@
 
 ## 4.0.0
 
+- Add DeviceFrame for laptop, desktop, iPhone-style, Android-style, and tablet demonstrations with
+  slotted HTML, images, fixed iframe viewports, orientation, shell tones, and configurable screen sizes.
+
 ### Patch Changes
 
 - Add exact localized AmountField drafts across web adapters and a React Hook Form controller.

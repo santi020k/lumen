@@ -1,0 +1,62 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+import {
+  type LumenDeviceFrameDevice, type LumenDeviceFrameOrientation, type LumenDeviceFrameTone,
+  resolveLumenAstroProps, resolveLumenDeviceFrame
+} from '@santi020k/lumen-core'
+
+interface Props extends HTMLAttributes<'div'> {
+  device?: LumenDeviceFrameDevice
+  orientation?: LumenDeviceFrameOrientation
+  tone?: LumenDeviceFrameTone
+  screenWidth?: number
+  screenHeight?: number
+  scroll?: boolean
+  className?: string
+}
+
+const { device = 'laptop', orientation, tone = 'dark', screenWidth, screenHeight, scroll = true,
+  class: classProp, className, ...rest } = Astro.props
+
+const size = resolveLumenDeviceFrame(device, orientation, screenWidth, screenHeight)
+const { classList, passthrough } = resolveLumenAstroProps(rest, ['ui-device-frame'], classProp, className)
+---
+
+<div class:list={classList} data-device={device} data-tone={tone} {...passthrough}>
+  <div class="ui-device-frame__shell">
+    <span aria-hidden="true" class="ui-device-frame__camera"></span>
+    <lumen-device-screen
+class="ui-device-frame__screen"
+data-scroll={String(scroll)}
+data-ui-device-screen
+      data-screen-width={size.width}
+      style={`--ui-device-frame-width: ${size.width}px; --ui-device-frame-height: ${size.height}px; aspect-ratio: ${size.width} / ${size.height}`}
+    >
+      <slot />
+    </lumen-device-screen>
+  </div>
+  <span aria-hidden="true" class="ui-device-frame__base"></span>
+</div>
+
+<script>
+  import { observeLumenDeviceFrame } from '@santi020k/lumen-core'
+
+  class LumenDeviceScreen extends HTMLElement {
+    private cleanup: (() => void) | undefined
+
+    connectedCallback(): void {
+      this.cleanup?.()
+
+      this.cleanup = observeLumenDeviceFrame(this, Number(this.dataset.screenWidth))
+    }
+
+    disconnectedCallback(): void {
+      this.cleanup?.()
+
+      this.cleanup = undefined
+    }
+  }
+
+  if (!customElements.get('lumen-device-screen')) customElements.define('lumen-device-screen', LumenDeviceScreen)
+</script>

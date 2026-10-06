@@ -107,6 +107,7 @@ import {
   LumenFilterBarElement as GranularLumenFilterBarElement,
   lumenFilterBarElementConfig
 } from './components/dashboard.js'
+import { LumenDeviceFrameElement as GranularLumenDeviceFrameElement, lumenDeviceFrameElementConfig } from './components/device-frame.js'
 import {
   LumenCardContentElement as GranularLumenCardContentElement,
   lumenCardContentElementConfig,
@@ -720,6 +721,7 @@ const elementConfigs = {
     defaults: { size: 'default' },
     tagName: 'lumen-icon'
   },
+  DeviceFrame: lumenDeviceFrameElementConfig,
   ImageComparison: lumenImageComparisonElementConfig,
   ChangeSummary: lumenChangeSummaryElementConfig,
   FilterBar: lumenFilterBarElementConfig,
@@ -11977,6 +11979,7 @@ const granularElementClasses: Partial<
   Direction: GranularLumenDirectionElement,
   Grid: GranularLumenGridElement,
   ScatterChart: LumenScatterChartRegisteredElement,
+  DeviceFrame: GranularLumenDeviceFrameElement,
   ImageComparison: GranularLumenImageComparisonElement,
   Label: GranularLumenLabelElement,
   Separator: GranularLumenSeparatorElement,
@@ -12298,3 +12301,5 @@ export const LumenAttachmentListElement = elementClasses.AttachmentList
 export const LumenAttachmentPreviewElement = elementClasses.AttachmentPreview
 export const LumenChangeSummaryElement = GranularLumenChangeSummaryElement
 export const LumenFilterBarElement = GranularLumenFilterBarElement
+
+export const LumenDeviceFrameElement = elementClasses.DeviceFrame

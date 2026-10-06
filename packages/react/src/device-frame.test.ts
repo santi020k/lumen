@@ -1,0 +1,33 @@
+// @vitest-environment jsdom
+import { act, createElement } from 'react'
+import { createRoot } from 'react-dom/client'
+
+import { expect, test, vi } from 'vitest'
+
+import { DeviceFrame } from './device-frame.js'
+
+test('renders accessible children, updates orientation, and retains consumer iframe controls', () => {
+  vi.stubGlobal('IS_REACT_ACT_ENVIRONMENT', true)
+  const container = document.createElement('div')
+  const root = createRoot(container)
+  const child = createElement('iframe', { sandbox: '', title: 'Mobile demo' })
+
+  act(() => {
+    root.render(createElement(DeviceFrame, { device: 'android' }, child))
+  })
+  const screen = container.querySelector<HTMLElement>('.ui-device-frame__screen')
+
+  expect(screen?.style.aspectRatio).toBe('412 / 915')
+  expect(container.querySelector('iframe')?.title).toBe('Mobile demo')
+  expect(container.querySelector('iframe')?.getAttribute('sandbox')).toBe('')
+  act(() => {
+    root.render(createElement(DeviceFrame, { device: 'android', orientation: 'landscape', scroll: false }, child))
+  })
+  expect(screen?.style.aspectRatio).toBe('915 / 412')
+  expect(screen?.dataset.scroll).toBe('false')
+  expect(container.querySelectorAll('[aria-hidden="true"]')).toHaveLength(2)
+  act(() => {
+    root.unmount()
+  })
+  vi.unstubAllGlobals()
+})

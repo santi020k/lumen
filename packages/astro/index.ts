@@ -60,6 +60,7 @@ export { default as DescriptionDetail } from './components/DescriptionDetail.ast
 export { default as DescriptionItem } from './components/DescriptionItem.astro'
 export { default as Descriptions } from './components/Descriptions.astro'
 export { default as DescriptionTerm } from './components/DescriptionTerm.astro'
+export { default as DeviceFrame } from './components/DeviceFrame.astro'
 export { default as Dialog } from './components/Dialog.astro'
 export { default as DialogBody } from './components/DialogBody.astro'
 export { default as DialogClose } from './components/DialogClose.astro'

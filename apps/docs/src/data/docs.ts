@@ -1188,6 +1188,14 @@ const runtimeEventsByComponent: Partial<
 }
 
 const apiReferenceByComponent = {
+  DeviceFrame: [
+    apiRow('device', '"laptop" | "desktop" | "iphone" | "android" | "tablet"', '"laptop"', 'Selects a decorative device silhouette and default screen dimensions.'),
+    apiRow('orientation', '"portrait" | "landscape"', 'device default', 'Orders the screen dimensions for the requested orientation.'),
+    apiRow('tone', '"light" | "dark"', '"dark"', 'Sets the shell tone independently of the content theme.'),
+    apiRow('screenWidth / screenHeight', 'number', 'device preset', 'Sets the iframe layout viewport in CSS pixels; scales it to the available frame width. Elements uses screen-width and screen-height.'),
+    apiRow('scroll', 'boolean', 'true', 'Allows screen HTML to scroll. An iframe owns its own scrolling.'),
+    apiRow('children', 'Astro slot | ReactNode | child nodes', 'required', 'Provide an Image, titled iframe, or HTML. HTML shares the host viewport; iframe media queries use the screen viewport.')
+  ],
   Accordion: [
     apiRow(
       'variant', '"default" | "flush"', '"default"', 'Uses bordered cards by default or a compact, divider-led list with flush.'
@@ -3777,6 +3785,12 @@ export const componentDocs: ComponentDoc[] = (
       'Data display',
       'Styles accessible images while preserving Astro, Next.js, and browser-native optimization.',
       '<Image alt="Lumen UI logo" layout="fixed" src="/logo.svg" />'
+    ],
+    [
+      'DeviceFrame',
+      'Data display',
+      'Presents HTML, images, and live iframe demos in responsive device silhouettes.',
+      '<DeviceFrame device="iphone"><iframe src="/demos/mobile" title="Mobile application demo" loading="lazy"></iframe></DeviceFrame>'
     ],
     [
       'ImageComparison',

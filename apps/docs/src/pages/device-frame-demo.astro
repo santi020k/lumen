@@ -1,0 +1,30 @@
+---
+import '@santi020k/lumen-astro/styles.css'
+
+import { Badge, Card, Stack, Typography } from '@santi020k/lumen-astro'
+---
+<!doctype html>
+<html lang="en">
+  <head><meta charset="utf-8" /><meta name="viewport" content="width=device-width" /><meta name="description" content="A responsive Lumen application example embedded in device demonstrations." /><link rel="canonical" href="https://lumen.santi020k.com/device-frame-demo/" /><meta name="robots" content="noindex" /><title>Lumen responsive device demo</title></head>
+  <body>
+    <main>
+      <Typography><Stack gap="lg">
+        <Badge>Live responsive page</Badge>
+        <h1>A workspace that fits your screen</h1>
+        <p>Resize the frame around this page. Its layout viewport stays at the device’s screen size.</p>
+        <div class="demo-grid">
+          {['Plan your work', 'Build with Lumen', 'Share your progress'].map(title => <Card><h2>{title}</h2><p>Reusable components, consistent foundations.</p></Card>)}
+        </div>
+        <a href="https://santi020k.com" target="_blank" rel="noopener noreferrer">Built by santi020k</a>
+      </Stack></Typography>
+    </main>
+  </body>
+</html>
+<style>
+  body { margin: 0; background: hsl(var(--canvas)); color: hsl(var(--ink)); font-family: system-ui, sans-serif; }
+  main { padding: clamp(1rem, 4vw, 3rem); }
+  .demo-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+  a { color: hsl(var(--brand)); }
+  a:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }
+  @media (max-width: 40rem) { .demo-grid { grid-template-columns: minmax(0, 1fr); } }
+</style>

@@ -991,3 +991,29 @@ rules, requests, draft storage, and authorization. Do not combine validation own
 normalize to zero; non-finite or larger counts throw `RangeError` before allocating panel state.
 Context-menu item activation and keyboard focus follow the menu's owning document, including iframe
 portals. Date-range synchronization clamps an earlier end date before updating both input constraints.
+
+## Device demonstrations
+
+`DeviceFrame` presents slotted HTML, an image, or a titled iframe inside laptop, desktop,
+iPhone-style, Android-style, and tablet silhouettes. Shells are decorative, use Lumen tokens,
+and do not emulate device hardware. `orientation` selects portrait or landscape; `tone` selects
+light or dark chrome independently of the screen content.
+
+Iframe layouts use the preset screen viewport and scale to the available width. Override
+`screenWidth` and `screenHeight` for a custom viewport (1–16384 CSS pixels). Slotted HTML shares
+the host viewport; container queries can adapt it to the screen. Images preserve their proportions.
+`scroll={false}` clips HTML overflow; an iframe manages its own scrolling.
+
+Supply image alternative text and iframe titles. Consumers own iframe `sandbox`, `allow`,
+loading, and referrer policies. Remote sites can refuse embedding through their response headers.
+The decorative shell does not alter focus or intercept interactions.
+
+```tsx
+import { DeviceFrame } from '@santi020k/lumen-react/components/device-frame'
+
+<DeviceFrame device="laptop" screenWidth={1440} screenHeight={900}>
+  <iframe src="/demo" title="Application demo" loading="lazy" />
+</DeviceFrame>
+```
+
+This component uses a client effect to maintain the scaled iframe viewport.
