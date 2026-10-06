@@ -849,6 +849,8 @@ const keyboardInteractionsByComponent: Partial<
   Heatmap: keyboardRows(['Tab', 'Focus the actions disclosure and its native buttons in document order.'], ['Enter, Space', 'Toggle the disclosure or activate the focused datum button. Actions remain available when the data table is hidden.']),
   RangeChart: keyboardRows(['Tab', 'Focus the actions disclosure and its native buttons in document order.'], ['Enter, Space', 'Toggle the disclosure or activate the focused datum button. Actions remain available when the data table is hidden.']),
   WorldMap: keyboardRows(['Tab', 'Focus the native country chooser.'], ['Arrow keys', 'Choose a country using the native select.']),
+  MediaViewport: keyboardRows(['+ / -', 'Zoom in or out while the viewport is focused.'], ['Arrow keys', 'Pan the zoomed media.'], ['Home', 'Fit the media and reset pan.']),
+  MediaThumbnail: keyboardRows(['Enter / Space', 'Request selection using the named native button.']),
   ImageComparison: keyboardRows(['Arrow keys', 'Adjust the reveal using the native range control; horizontal direction follows writing direction.'], ['Home / End', 'Reveal the full before / after image.']),
   Calendar: keyboardRows(
     [
@@ -1000,6 +1002,8 @@ export const runtimeEvents: RuntimeEventRow[] = [
   { name: 'ui:chart-cursor-change', target: 'LineChart', when: 'An interactive chart cursor changes through keyboard, pointer, or touch.', detail: '{ x: number | string | null }' },
   { detail: 'LumenChartDatumActivationDetail: series { seriesId, x, y, datumId? }, heatmap { x, y, value, datumId? }, range { x, low, high, datumId? }', name: 'ui:chart-datum-activate', target: 'Astro chart figure or Elements data chart host', when: 'Fires once after a plotted datum or its native action button is activated. Requires drilldown. Astro uses UIPrimitives, Elements owns its lifecycle, and React uses onDatumActivate instead.' },
   { detail: '{ state: "error" | "loading" | "ready" | "unavailable" }', name: 'ui:attachment-preview-change', target: 'AttachmentPreview root', when: 'Fires after a preview state changes. The event never includes the file URL.' },
+  { detail: '{ zoom: number, x: number, y: number }', name: 'ui:media-viewport-change', target: 'MediaViewport root', when: 'Reports an accepted zoom, pan or fit interaction.' },
+  { detail: '{ id: string, selected: boolean }', name: 'ui:media-selection-request', target: 'MediaThumbnail root', when: 'Requests host-owned selection; the host reflects accepted state.' },
   { detail: '{ value: number }', name: 'ui:image-comparison-change', target: 'ImageComparison root', when: 'Fires as the native range changes the percentage of the after image revealed.' },
   {
     detail: '{ value: string }',
@@ -1160,6 +1164,8 @@ const runtimeEventsByComponent: Partial<
   RangeChart: runtimeEvents.filter(event => event.name === 'ui:chart-datum-activate'),
   AttachmentPreview: runtimeEvents.filter(event => event.name === 'ui:attachment-preview-change'),
   WorldMap: [{ name: 'ui:world-map-select', target: 'WorldMap root', detail: '{ countryId: string, highlighted: boolean, label: string }', when: 'A different country is selected by pointer or native chooser.' }],
+  MediaViewport: runtimeEvents.filter(event => event.name === 'ui:media-viewport-change'),
+  MediaThumbnail: runtimeEvents.filter(event => event.name === 'ui:media-selection-request'),
   ImageComparison: runtimeEvents.filter(event => event.name === 'ui:image-comparison-change'),
   CopyButton: runtimeEvents.filter(event => event.name.startsWith('ui:copy-')),
   DataTable: runtimeEvents.filter(
@@ -1819,6 +1825,24 @@ const apiReferenceByComponent = {
     apiRow('heading / description / caption', 'string', '-', 'Optional Astro and React figure content. Elements supports authored content outside the map.'),
     apiRow('CSS variables', '--ui-world-map-land / --ui-world-map-highlight / --ui-world-map-marker / --ui-world-map-surface', 'semantic tokens', 'Accept any CSS color to customize the map while preserving theme defaults.')
   ],
+  MediaThumbnail: [
+    apiRow('label / children', 'string / media content', 'required', 'Supplies a visible, accessible name and decorative media. Do not nest interactive controls in the thumbnail button.'),
+    apiRow('selected / order', 'boolean / positive integer', 'false / omitted', 'Shows pressed selection and an optional visible ordinal. Selection stays application-owned.'),
+    apiRow('mediaId', 'string', 'required in Astro / media-id in Elements', 'Identifies ui:media-selection-request detail { id, selected }. React uses the existing onClick callback.'),
+    apiRow('state / stateLabel / disabled', '"ready" | "loading" | "error" / string / boolean', '"ready" / English fallback / false', 'Loading and failed media retain framing and disable selection. Localize stateLabel for non-ready items.')
+  ],
+  MediaFilmstrip: [
+    apiRow('label / selectionLabel', 'string', 'required', 'Names the ordered collection and exposes a localized selection count or summary in a status region. Elements uses selection-label.'),
+    apiRow('children', 'native li elements', 'required', 'Each list item contains MediaThumbnail plus optional sibling move buttons. Never nest move buttons inside the thumbnail. Use moveLumenMediaItem and stable IDs to accept reorder requests.')
+  ],
+  MediaViewport: [
+    apiRow('label / labels', 'string / Partial<LumenMediaViewportLabels>', 'required / English action labels', 'Names the preview and localizes visible actions. Elements exposes a labels property.'),
+    apiRow('value / defaultValue', 'LumenMediaViewportValue / Partial<LumenMediaViewportValue>', 'fit at zoom 1', 'Zoom is relative to fit; x and y are bounded fractions (-1 to 1) of the pan extent. React value is controlled; defaultValue initializes local state. Astro value initializes data-zoom, data-pan-x and data-pan-y. Elements value is a reflected property.'),
+    apiRow('maxZoom / ratio', 'number', '4 / 16:9', 'Zoom limits normalize into 1–16. Preview ratio accepts 0.1–10; invalid ratios fall back to 16:9. Elements uses max-zoom.'),
+    apiRow('onValueChange', '(value: LumenMediaViewportValue) => void', '-', 'React callback; Astro and Elements emit ui:media-viewport-change with { zoom, x, y }.'),
+    apiRow('disabled / locale', 'boolean / string', 'false / environment locale', 'Disables gestures and actions; formats visible zoom percentage. Astro actions stay disabled until enhancement.'),
+    apiRow('children', 'media content', 'required', 'Supplies an image or noninteractive media view with meaningful alternative text. Loading, caching, retries and editing remain consumer-owned.')
+  ],
   ImageComparison: [
     apiRow('label', 'string', 'required', 'Provides the visible label for the native comparison range control.'),
     apiRow('before / after', 'named Astro slots | ReactNode props | slotted child nodes', 'required', 'Supplies media with matching framing and meaningful alternative text. Media is clipped, never resized as the range moves.'),
@@ -1828,7 +1852,8 @@ const apiReferenceByComponent = {
     apiRow('ratio', 'number', '16 / 9', 'Sets a shared positive finite aspect ratio. Invalid values fall back to 16 / 9.'),
     apiRow('fit', '"cover" | "contain"', '"cover"', 'Applies the same media fit to both layers.'),
     apiRow('disabled', 'boolean', 'false', 'Disables the native range without hiding either image. Astro keeps the range disabled until UIPrimitives enhances the static comparison.'),
-    apiRow('locale', 'string', 'environment locale', 'Formats the accessible percentage. Localize label, beforeLabel, and afterLabel separately.')
+    apiRow('locale', 'string', 'environment locale', 'Formats the accessible percentage. Localize label, beforeLabel, and afterLabel separately.'),
+    apiRow('mode', '"reveal" | "side-by-side" | "before" | "after"', '"reveal"', 'Changes the view without replacing media or resetting the reveal. Alternate views hide and disable the range. Change data-mode in enhanced Astro, mode in Elements, or the React prop.')
   ],
   Image: [
     apiRow(
@@ -3865,6 +3890,24 @@ export const componentDocs: ComponentDoc[] = (
       'Data display',
       'Compares aligned before and after media with an accessible reveal control.',
       '<ImageComparison label="Compare edits"><Image slot="before" src="/comparison-before.svg" alt="Original landscape illustration" width={960} height={600} /><Image slot="after" src="/comparison-after.svg" alt="Color-adjusted landscape illustration" width={960} height={600} /></ImageComparison>'
+    ],
+    [
+      'MediaViewport',
+      'Data display',
+      'Inspects application-owned media with bounded zoom, pan, fit and keyboard alternatives.',
+      '<MediaViewport label="Inspect the landscape"><Image src="/comparison-after.svg" alt="Illustrative landscape" width={960} height={600} /></MediaViewport>'
+    ],
+    [
+      'MediaThumbnail',
+      'Data display',
+      'Selects application-owned media with a visible label, pressed state and optional order.',
+      '<MediaThumbnail label="Lake landscape" mediaId="lake" selected order={1}><Image src="/comparison-after.svg" alt="" width={960} height={600} /></MediaThumbnail>'
+    ],
+    [
+      'MediaFilmstrip',
+      'Data display',
+      'Groups ordered media thumbnails and a localized selection summary.',
+      '<MediaFilmstrip label="Selected photos" selectionLabel="1 photo selected"><li><MediaThumbnail label="Lake landscape" mediaId="lake" selected order={1}><Image src="/comparison-after.svg" alt="" width={960} height={600} /></MediaThumbnail></li></MediaFilmstrip>'
     ],
     [
       'Illustration',

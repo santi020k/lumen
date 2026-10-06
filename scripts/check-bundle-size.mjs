@@ -34,6 +34,7 @@ const measurements = [
   { file: 'packages/astro/runtime/controllers/document-navigation.ts', gzip: 1_500, packageName: '@santi020k/lumen-astro', raw: 5_000 },
   { file: 'packages/astro/runtime/controllers/file-upload.ts', gzip: 1_100, packageName: '@santi020k/lumen-astro', raw: 3_000 },
   { file: 'packages/astro/runtime/controllers/optional-media.ts', gzip: 500, packageName: '@santi020k/lumen-astro', raw: 1_000 },
+  { file: 'packages/astro/runtime/controllers/comparison-reset.ts', gzip: 400, packageName: '@santi020k/lumen-astro', raw: 800 },
   { file: 'packages/astro/runtime/controllers/image-comparison.ts', gzip: 900, packageName: '@santi020k/lumen-astro', raw: 2_000 },
   { file: 'packages/lumen/styles.css', kind: 'catalog', packageName: '@santi020k/lumen' },
   { file: 'packages/react/dist/components.js', kind: 'catalog', packageName: '@santi020k/lumen-react' },

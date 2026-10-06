@@ -1,8 +1,9 @@
 import {
   formatLumenImageComparisonValue,
   type LumenImageComparisonChangeDetail,
+  normalizeLumenImageComparisonMode,
   normalizeLumenImageComparisonRatio,
-  normalizeLumenImageComparisonValue } from '@santi020k/lumen-core'
+  normalizeLumenImageComparisonValue,  syncLumenImageComparisonMode } from '@santi020k/lumen-core'
 
 import {
   defineLumenElement,
@@ -13,7 +14,7 @@ import {
 
 export const lumenImageComparisonElementConfig = {
   baseClassName: 'ui-image-comparison',
-  observedAttributes: ['after-label', 'before-label', 'disabled', 'fit', 'label', 'lang', 'locale', 'name', 'ratio', 'value'],
+  observedAttributes: ['after-label', 'before-label', 'disabled', 'fit', 'label', 'lang', 'locale', 'mode', 'name', 'ratio', 'value'],
   tagName: 'lumen-image-comparison'
 } as const satisfies LumenElementConfig
 
@@ -178,8 +179,16 @@ export class LumenImageComparisonElement extends LumenElement {
     return this.getAttribute('locale') || this.closest('[lang]')?.getAttribute('lang') || undefined
   }
 
+  private disabledForMode(mode: string): boolean {
+    return this.hasAttribute('disabled') || mode !== 'reveal'
+  }
+
   private update(): void {
     if (!this.range || !this.frame || !this.beforeLabel || !this.afterLabel || !this.controlLabel) return
+
+    const mode = normalizeLumenImageComparisonMode(this.getAttribute('mode'))
+
+    syncLumenImageComparisonMode(this, mode)
 
     const afterLabel = this.afterText
     const locale = this.locale
@@ -198,7 +207,7 @@ export class LumenImageComparisonElement extends LumenElement {
 
     this.range.value = String(this.value)
 
-    this.range.disabled = this.hasAttribute('disabled')
+    this.range.disabled = this.disabledForMode(mode)
 
     this.range.name = this.getAttribute('name') ?? ''
 

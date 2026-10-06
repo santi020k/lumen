@@ -96,6 +96,14 @@
     "./motion": {
       "types": "./dist/motion.d.ts",
       "import": "./dist/motion.js"
+    },
+    "./components/media-viewport": {
+      "types": "./dist/media-viewport.d.ts",
+      "import": "./dist/media-viewport.js"
+    },
+    "./components/media-selection": {
+      "types": "./dist/media-selection.d.ts",
+      "import": "./dist/media-selection.js"
     }
   },
   "files": [

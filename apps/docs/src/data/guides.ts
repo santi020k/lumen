@@ -43,6 +43,15 @@ export const guideDestinations = [
   ...publishedGuides,
   {
     author: 'Lumen UI',
+    description: 'Compose a responsive media editor with selection, inspection, adjustments and host-owned processing states.',
+    href: '/docs/studio-media-workspaces',
+    icon: 'image',
+    publishedAt: '2026-10-06',
+    readingTime: 'Interactive recipe',
+    title: 'Build a Studio media workspace'
+  },
+  {
+    author: 'Lumen UI',
     description: 'Choose the right form integration for Astro Actions, React Hook Form, or standards-based custom elements.',
     href: '/docs/forms',
     icon: 'list-checks',

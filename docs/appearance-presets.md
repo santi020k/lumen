@@ -144,3 +144,5 @@ Use the same representative controls to check every preset in light and dark, at
 desktop widths, with keyboard focus and state feedback. Glass needs a legible fallback when blur
 is unavailable or transparency is reduced. Web and native materials intentionally use their
 platform conventions; shared names do not promise identical pixels or Apple Liquid Glass effects.
+
+For an interactive editor composition, use the [Studio media workspace recipes](studio-media-workspaces.md).

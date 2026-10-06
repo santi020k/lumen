@@ -5,6 +5,8 @@ import { useEffect, useRef, useState } from 'react'
 
 import {
   formatLumenImageComparisonValue,
+  type LumenImageComparisonMode,
+  normalizeLumenImageComparisonMode,
   normalizeLumenImageComparisonRatio,
   normalizeLumenImageComparisonValue
 } from '@santi020k/lumen-core/image-comparison'
@@ -20,6 +22,7 @@ export interface ImageComparisonProps extends ComponentPropsWithoutRef<'figure'>
   fit?: 'contain' | 'cover'
   label: string
   locale?: string
+  mode?: LumenImageComparisonMode
   name?: string
   onValueChange?: (value: number) => void
   ratio?: number
@@ -34,9 +37,10 @@ type ComparisonStyle = CSSProperties & {
 export const ImageComparison = ({
   after, afterLabel = 'After', before, beforeLabel = 'Before', children, className,
   defaultValue = 50, disabled = false, fit = 'cover', label, locale, name,
-  onValueChange, ratio = 16 / 9, value, ...props
+  mode: requestedMode = 'reveal', onValueChange, ratio = 16 / 9, value, ...props
 }: ImageComparisonProps) => {
   const [internalValue, setInternalValue] = useState(() => normalizeLumenImageComparisonValue(defaultValue))
+  const mode = normalizeLumenImageComparisonMode(requestedMode)
   const inputRef = useRef<HTMLInputElement>(null)
   const position = normalizeLumenImageComparisonValue(value ?? internalValue)
 
@@ -89,29 +93,29 @@ export const ImageComparison = ({
   }
 
   return (
-    <figure {...props} className={composeClassName('ui-image-comparison', className)} data-fit={fit}>
+    <figure {...props} className={composeClassName('ui-image-comparison', className)} data-fit={fit} data-mode={mode}>
       <div className="ui-image-comparison__frame" style={frameStyle}>
-        <div className="ui-image-comparison__before">{before}</div>
-        <div className="ui-image-comparison__after">{after}</div>
+        <div className="ui-image-comparison__before" hidden={mode === 'after'}>{before}</div>
+        <div className="ui-image-comparison__after" hidden={mode === 'before'}>{after}</div>
         <div aria-hidden="true" className="ui-image-comparison__divider" />
       </div>
       <div aria-hidden="true" className="ui-image-comparison__labels">
-        <span>{beforeLabel}</span>
-        <span>{afterLabel}</span>
+        <span hidden={mode === 'after'}>{beforeLabel}</span>
+        <span hidden={mode === 'before'}>{afterLabel}</span>
       </div>
       <figcaption className="ui-image-comparison__caption">
-        <label className="ui-image-comparison__control">
+        <label className="ui-image-comparison__control" hidden={mode !== 'reveal'}>
           <span>{label}</span>
           <input
             ref={inputRef}
             aria-valuetext={formatLumenImageComparisonValue(position, afterLabel, locale)}
             className="ui-slider ui-image-comparison__range"
-            disabled={disabled}
+            disabled={disabled || mode !== 'reveal'}
             max={100}
             min={0}
             name={name}
             onChange={event => {
-              if (disabled) return
+              if (disabled || mode !== 'reveal') return
 
               const next = normalizeLumenImageComparisonValue(event.currentTarget.valueAsNumber)
 

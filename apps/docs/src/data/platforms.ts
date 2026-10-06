@@ -764,6 +764,7 @@ const docsPlatformPrefixes: readonly (readonly [string, DocsPlatformId])[] = [
   ['/docs/icons', 'web'],
   ['/docs/brand-icons', 'web'],
   ['/docs/theme-playground', 'web'],
+  ['/docs/studio-media-workspaces', 'web'],
   ['/docs/motion-playground', 'web'],
   ['/docs/visual-playground', 'web']
 ]

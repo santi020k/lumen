@@ -91,6 +91,14 @@
     "./world-map-data": {
       "types": "./dist/world-map-data.generated.d.ts",
       "import": "./dist/world-map-data.generated.js"
+    },
+    "./media-workspace": {
+      "types": "./dist/media-workspace.d.ts",
+      "import": "./dist/media-workspace.js"
+    },
+    "./media-viewport": {
+      "types": "./dist/media-viewport.d.ts",
+      "import": "./dist/media-viewport.js"
     }
   },
   "files": [

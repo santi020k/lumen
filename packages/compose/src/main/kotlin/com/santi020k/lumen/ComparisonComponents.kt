@@ -31,6 +31,8 @@ internal fun normalizeLumenComparisonValue(value: Float): Float =
 internal fun normalizeLumenComparisonRatio(value: Float): Float =
     value.takeIf { it.isFinite() && it in 0.1f..10f } ?: 16f / 9f
 
+enum class LumenImageComparisonMode { Reveal, SideBySide, Before, After }
+
 /** Painter-owned images and a native adjustable slider; value is the visible after fraction. */
 @Composable
 fun LumenImageComparison(
@@ -45,7 +47,8 @@ fun LumenImageComparison(
     aspectRatio: Float = 16f / 9f,
     fit: LumenImageFit = LumenImageFit.Cover,
     locale: Locale = Locale.getDefault(),
-    enabled: Boolean = true
+    enabled: Boolean = true,
+    mode: LumenImageComparisonMode = LumenImageComparisonMode.Reveal
 ) {
     val position = normalizeLumenComparisonValue(value)
     val ratio = normalizeLumenComparisonRatio(aspectRatio)
@@ -53,34 +56,57 @@ fun LumenImageComparison(
     val colors = LocalLumenTheme.current.colors
     val rtl = LocalLayoutDirection.current == LayoutDirection.Rtl
     Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(LumenSpacing.Sm)) {
-        Box(modifier = Modifier.fillMaxWidth().aspectRatio(ratio).clip(RoundedCornerShape(LumenRadius.Lg))) {
-            LumenImage(before, label = null, modifier = Modifier.fillMaxSize(), fit = fit, radius = LumenImageRadius.None)
-            Box(modifier = Modifier.fillMaxSize().drawWithContent {
-                clipRect(
-                    left = if (rtl) size.width * (1f - position) else 0f,
-                    right = if (rtl) size.width else size.width * position
-                ) { this@drawWithContent.drawContent() }
-            }) {
-                LumenImage(after, label = null, modifier = Modifier.fillMaxSize(), fit = fit, radius = LumenImageRadius.None)
+        if (mode == LumenImageComparisonMode.Reveal) {
+            Box(modifier = Modifier.fillMaxWidth().aspectRatio(ratio).clip(RoundedCornerShape(LumenRadius.Lg))) {
+                LumenImage(before, label = null, modifier = Modifier.fillMaxSize(), fit = fit, radius = LumenImageRadius.None)
+                Box(modifier = Modifier.fillMaxSize().drawWithContent {
+                    clipRect(
+                        left = if (rtl) size.width * (1f - position) else 0f,
+                        right = if (rtl) size.width else size.width * position
+                    ) { this@drawWithContent.drawContent() }
+                }) {
+                    LumenImage(after, label = null, modifier = Modifier.fillMaxSize(), fit = fit, radius = LumenImageRadius.None)
+                }
+                Canvas(modifier = Modifier.fillMaxSize()) {
+                    val x = size.width * (if (rtl) 1f - position else position)
+                    drawLine(colors.ink, androidx.compose.ui.geometry.Offset(x, 0f), androidx.compose.ui.geometry.Offset(x, size.height), strokeWidth = LumenSpacing.Xs.toPx())
+                }
             }
-            Canvas(modifier = Modifier.fillMaxSize()) {
-                val x = size.width * (if (rtl) 1f - position else position)
-                drawLine(colors.ink, androidx.compose.ui.geometry.Offset(x, 0f), androidx.compose.ui.geometry.Offset(x, size.height), strokeWidth = LumenSpacing.Xs.toPx())
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                Text(afterLabel)
+                Text(beforeLabel)
+            }
+            Text(label)
+            Slider(
+                value = position,
+                onValueChange = { if (enabled) onValueChange(normalizeLumenComparisonValue(it)) },
+                enabled = enabled,
+                modifier = Modifier.fillMaxWidth().semantics {
+                    contentDescription = label
+                    stateDescription = "$afterLabel $percentage"
+                }
+            )
+        } else {
+            Text(label)
+            if (mode == LumenImageComparisonMode.SideBySide) {
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(LumenSpacing.Sm)) {
+                    LumenComparisonPreview(before, beforeLabel, ratio, fit, Modifier.weight(1f))
+                    LumenComparisonPreview(after, afterLabel, ratio, fit, Modifier.weight(1f))
+                }
+            } else if (mode == LumenImageComparisonMode.Before) {
+                LumenComparisonPreview(before, beforeLabel, ratio, fit, Modifier.fillMaxWidth())
+            } else {
+                LumenComparisonPreview(after, afterLabel, ratio, fit, Modifier.fillMaxWidth())
             }
         }
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-            Text(afterLabel)
-            Text(beforeLabel)
-        }
+
+    }
+}
+
+@Composable
+private fun LumenComparisonPreview(painter: Painter, label: String, ratio: Float, fit: LumenImageFit, modifier: Modifier) {
+    Column(modifier, verticalArrangement = Arrangement.spacedBy(LumenSpacing.Xs)) {
+        LumenImage(painter, label = null, modifier = Modifier.fillMaxWidth().aspectRatio(ratio), fit = fit)
         Text(label)
-        Slider(
-            value = position,
-            onValueChange = { if (enabled) onValueChange(normalizeLumenComparisonValue(it)) },
-            enabled = enabled,
-            modifier = Modifier.fillMaxWidth().semantics {
-                contentDescription = label
-                stateDescription = "$afterLabel $percentage"
-            }
-        )
     }
 }

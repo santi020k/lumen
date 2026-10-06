@@ -198,3 +198,39 @@ test('unmount cancels pending reset work before the timer runs', () => {
   })
   expect(vi.getTimerCount()).toBe(initialTimers)
 })
+
+test('switches modes without replacing images or losing a local reveal value', () => {
+  act(() => {
+    root.render(createElement(ImageComparison, media))
+  })
+  setRange('75')
+  const images = Array.from(container.querySelectorAll('img'))
+
+  for (const mode of ['side-by-side', 'before', 'after', 'reveal'] as const) {
+    act(() => {
+      root.render(createElement(ImageComparison, { ...media, mode }))
+    })
+    expect(container.querySelector('figure')?.dataset.mode).toBe(mode)
+    expect(range().disabled).toBe(mode !== 'reveal')
+    expect(range().closest('label')?.hidden).toBe(mode !== 'reveal')
+    expect(container.querySelector<HTMLElement>('.ui-image-comparison__before')?.hidden).toBe(mode === 'after')
+    expect(container.querySelector<HTMLElement>('.ui-image-comparison__after')?.hidden).toBe(mode === 'before')
+    expect(Array.from(container.querySelectorAll('img'))).toEqual(images)
+    expect(range().value).toBe('75')
+  }
+})
+
+test('alternate views exclude the reveal from form submission and ignore synthetic input', () => {
+  const onValueChange = vi.fn()
+
+  act(() => {
+    root.render(createElement('form', {}, createElement(ImageComparison, { ...media, mode: 'before', name: 'reveal', onValueChange })))
+  })
+  setRange('90')
+  const form = container.querySelector('form')
+
+  if (!form) throw new Error('Expected form')
+
+  expect(new FormData(form).has('reveal')).toBe(false)
+  expect(onValueChange).not.toHaveBeenCalled()
+})

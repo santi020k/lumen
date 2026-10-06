@@ -762,3 +762,7 @@ Use the optional `@santi020k/lumen-react/forms` hooks with public form primitive
 validation, unsaved edits, stable repeatable rows, step navigation, and cancellation-safe checks.
 Read [composable form workflows](powerful-forms.md) before implementation. Choose one validation
 owner; keep schemas, financial policy, requests, authorization, and draft storage in the consumer.
+
+For photo and media editors, install the `media-workspace` recipe and follow
+[Studio media workspaces](studio-media-workspaces.md). Reuse public media controls; keep
+image processing, storage and export in the consumer application.

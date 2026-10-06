@@ -913,6 +913,54 @@
       "pathname": "/docs/android/components/lollipop-chart",
       "title": "Lollipop chart for Android - Lumen UI"
     },
+    "/docs/android/components/media-filmstrip": {
+      "alt": "Media filmstrip for Android — Android / Compose social preview from Lumen UI",
+      "description": "Media filmstrip for Android / Compose: native usage, API reference, and accessibility guidance.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--media-filmstrip.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--media-filmstrip.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/media-filmstrip",
+      "title": "Media filmstrip for Android - Lumen UI"
+    },
+    "/docs/android/components/media-thumbnail": {
+      "alt": "Media thumbnail for Android — Android / Compose social preview from Lumen UI",
+      "description": "Media thumbnail for Android / Compose: native usage, API reference, and accessibility guidance.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--media-thumbnail.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--media-thumbnail.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/media-thumbnail",
+      "title": "Media thumbnail for Android - Lumen UI"
+    },
+    "/docs/android/components/media-viewport": {
+      "alt": "Media viewport for Android — Android / Compose social preview from Lumen UI",
+      "description": "Media viewport for Android / Compose: native usage, API reference, and accessibility guidance.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--android--components--media-viewport.webp",
+          "primary": true,
+          "url": "/og/pages/docs--android--components--media-viewport.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/android/components/media-viewport",
+      "title": "Media viewport for Android - Lumen UI"
+    },
     "/docs/android/components/mentions": {
       "alt": "Mentions for Android — Android / Compose social preview from Lumen UI",
       "description": "Mentions for Android / Compose: native usage, API reference, and accessibility guidance.",
@@ -2736,6 +2784,54 @@
       ],
       "pathname": "/docs/apple/components/lollipop-chart",
       "title": "Lollipop chart for Apple - Lumen UI"
+    },
+    "/docs/apple/components/media-filmstrip": {
+      "alt": "Media filmstrip for Apple — SwiftUI social preview from Lumen UI",
+      "description": "Media filmstrip for Apple / SwiftUI: native usage, API reference, and accessibility guidance.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--media-filmstrip.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--media-filmstrip.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/media-filmstrip",
+      "title": "Media filmstrip for Apple - Lumen UI"
+    },
+    "/docs/apple/components/media-thumbnail": {
+      "alt": "Media thumbnail for Apple — SwiftUI social preview from Lumen UI",
+      "description": "Media thumbnail for Apple / SwiftUI: native usage, API reference, and accessibility guidance.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--media-thumbnail.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--media-thumbnail.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/media-thumbnail",
+      "title": "Media thumbnail for Apple - Lumen UI"
+    },
+    "/docs/apple/components/media-viewport": {
+      "alt": "Media viewport for Apple — SwiftUI social preview from Lumen UI",
+      "description": "Media viewport for Apple / SwiftUI: native usage, API reference, and accessibility guidance.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--apple--components--media-viewport.webp",
+          "primary": true,
+          "url": "/og/pages/docs--apple--components--media-viewport.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/apple/components/media-viewport",
+      "title": "Media viewport for Apple - Lumen UI"
     },
     "/docs/apple/components/mentions": {
       "alt": "Mentions for Apple — SwiftUI social preview from Lumen UI",
@@ -5569,6 +5665,54 @@
       "pathname": "/docs/components/marker",
       "title": "Marker - Lumen UI"
     },
+    "/docs/components/media-filmstrip": {
+      "alt": "MediaFilmstrip — Web components social preview from Lumen UI",
+      "description": "MediaFilmstrip: Groups ordered media thumbnails and a localized selection summary. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--media-filmstrip.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--media-filmstrip.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/media-filmstrip",
+      "title": "MediaFilmstrip - Lumen UI"
+    },
+    "/docs/components/media-thumbnail": {
+      "alt": "MediaThumbnail — Web components social preview from Lumen UI",
+      "description": "MediaThumbnail: Selects application-owned media with a visible label, pressed state and optional order. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--media-thumbnail.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--media-thumbnail.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/media-thumbnail",
+      "title": "MediaThumbnail - Lumen UI"
+    },
+    "/docs/components/media-viewport": {
+      "alt": "MediaViewport — Web components social preview from Lumen UI",
+      "description": "MediaViewport: Inspects application-owned media with bounded zoom, pan, fit and keyboard alternatives. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--media-viewport.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--media-viewport.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/media-viewport",
+      "title": "MediaViewport - Lumen UI"
+    },
     "/docs/components/mentions": {
       "alt": "Mentions — Web components social preview from Lumen UI",
       "description": "Mentions: Captures multi-line text with suggestions triggered by @ mentions. Usage examples for Astro, React, and Elements.",
@@ -8353,6 +8497,54 @@
       "pathname": "/docs/react-native/components/lollipop-chart",
       "title": "Lollipop chart for React Native - Lumen UI"
     },
+    "/docs/react-native/components/media-filmstrip": {
+      "alt": "Media filmstrip for React Native — React Native social preview from Lumen UI",
+      "description": "Media filmstrip for React Native: native usage, API reference, and accessibility guidance.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--media-filmstrip.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--media-filmstrip.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/media-filmstrip",
+      "title": "Media filmstrip for React Native - Lumen UI"
+    },
+    "/docs/react-native/components/media-thumbnail": {
+      "alt": "Media thumbnail for React Native — React Native social preview from Lumen UI",
+      "description": "Media thumbnail for React Native: native usage, API reference, and accessibility guidance.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--media-thumbnail.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--media-thumbnail.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/media-thumbnail",
+      "title": "Media thumbnail for React Native - Lumen UI"
+    },
+    "/docs/react-native/components/media-viewport": {
+      "alt": "Media viewport for React Native — React Native social preview from Lumen UI",
+      "description": "Media viewport for React Native: native usage, API reference, and accessibility guidance.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--react-native--components--media-viewport.webp",
+          "primary": true,
+          "url": "/og/pages/docs--react-native--components--media-viewport.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/react-native/components/media-viewport",
+      "title": "Media viewport for React Native - Lumen UI"
+    },
     "/docs/react-native/components/mentions": {
       "alt": "Mentions for React Native — React Native social preview from Lumen UI",
       "description": "Mentions for React Native: native usage, API reference, and accessibility guidance.",
@@ -9233,6 +9425,22 @@
       "pathname": "/docs/react-native/theming",
       "title": "React Native Theming - Lumen UI"
     },
+    "/docs/studio-media-workspaces": {
+      "alt": "Studio media workspaces — Documentation social preview from Lumen UI",
+      "description": "Compose an accessible media workspace with reusable Lumen controls and host-owned processing.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--studio-media-workspaces.webp",
+          "primary": true,
+          "url": "/og/pages/docs--studio-media-workspaces.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/studio-media-workspaces",
+      "title": "Studio media workspaces - Lumen UI"
+    },
     "/docs/theme-playground": {
       "alt": "Theme playground — Documentation social preview from Lumen UI",
       "description": "Generate Lumen theme tokens from a brand hue, preview representative primitives, and copy a CSS theme.",
@@ -9491,7 +9699,7 @@
     },
     "/": {
       "alt": "Lumen UI — Accessible Components for AI Coding Agents — Lumen UI social preview from Lumen UI",
-      "description": "Build with AI using 193 accessible primitives, agent skills, and focused MCP context. One UI library for web and native apps.",
+      "description": "Build with AI using 196 accessible primitives, agent skills, and focused MCP context. One UI library for web and native apps.",
       "images": [
         {
           "format": "webp",

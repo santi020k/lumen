@@ -89,6 +89,7 @@ struct ComponentsCatalogView: View {
                 } secondary: {
                     visualSection
                 }
+                PlaygroundMediaWorkspaceView(matches: { matches($0) })
                 PlaygroundAdvancedInputsView(matches: { matches($0) })
                 PlaygroundParityExamplesView(matches: { matches($0) })
                 AdaptiveColumns {

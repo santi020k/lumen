@@ -18,6 +18,7 @@ import { LumenDateField, LumenDateRangeField } from './datetime-components.js'
 import { LumenSearchField, LumenToggle } from './form-components.js'
 import { LumenIcon as GraphicIcon, LumenIconButton as GraphicIconButton, type LumenIconGraphicProps } from './graphics.js'
 import { type LumenToastHookController, type LumenToastHookOptions, useToast } from './hooks.js'
+import { LumenMediaThumbnail, LumenMediaViewport } from './media-workspace-components.js'
 import { LumenMultiSelect } from './multi-select-components.js'
 import { LumenAlertDialog, LumenMenu, LumenSheet } from './overlay-components.js'
 import { LumenPhoneInput } from './phone-components.js'
@@ -2231,6 +2232,13 @@ describe('advanced native inputs', () => {
     expect(readProp(control, 'accessibilityValue')).toMatchObject({ text: 'After 25%' })
   })
 
+  test.each(['side-by-side', 'before', 'after'] as const)('image comparison %s mode presents labels without an adjustable control', async mode => {
+    const root = await renderNative(<LumenImageComparison label="Comparison" before={{ uri: 'fixture:before' }} after={{ uri: 'fixture:after' }} value={0.25} mode={mode} onValueChange={() => {}} />)
+    expect(root.container.queryAll(instance => readProp(instance, 'accessibilityRole') === 'adjustable')).toHaveLength(0)
+    expect(root.container.queryAll(instance => readProp(instance, 'children') === 'Before').length > 0).toBe(mode !== 'after')
+    expect(root.container.queryAll(instance => readProp(instance, 'children') === 'After').length > 0).toBe(mode !== 'before')
+  })
+
   test('image comparison exposes one adjustable control and localized after percentage', async () => {
     const root = await renderNative(<LumenImageComparison label="Comparison" before={{ uri: 'fixture:before' }} after={{ uri: 'fixture:after' }} value={0.25} locale="es-CO" onValueChange={() => {}} />)
     const control = findByAccessibilityRole(root, 'adjustable')
@@ -2659,4 +2667,50 @@ test.each([false, true])('web checkbox Space toggles once and respects disabled=
     await Promise.resolve()
   })
   expect(change).toHaveBeenCalledTimes(disabled ? 0 : 1)
+})
+
+test('media thumbnail keeps controlled selection and blocks loading requests', async () => {
+  const onSelectionChange = vi.fn()
+  const props = { label: 'Landscape', selected: true, onSelectionChange }
+  const root = await renderNative(<LumenMediaThumbnail {...props}><LumenText>Photo</LumenText></LumenMediaThumbnail>)
+  const button = findByAccessibilityLabel(root, 'Landscape')
+  expect(readProp(button, 'accessibilityState')).toMatchObject({ selected: true })
+  await runNativeAction(() => {
+    callAction(readProp(button, 'onPress'), 'Missing thumbnail action')
+  })
+  expect(onSelectionChange).toHaveBeenCalledWith(false)
+  await runNativeAction(() => {
+    root.render(<LumenProvider><LumenMediaThumbnail {...props} state="loading"><LumenText>Photo</LumenText></LumenMediaThumbnail></LumenProvider>)
+  })
+  const loading = findByAccessibilityLabel(root, 'Landscape')
+  expect(readProp(loading, 'accessibilityState')).toMatchObject({ busy: true, disabled: true })
+  await runNativeAction(() => {
+    callAction(readProp(loading, 'onPress'), 'Missing loading action')
+  })
+  expect(onSelectionChange).toHaveBeenCalledTimes(1)
+})
+
+test('native media inspection actions request bounded values and respect disabled state', async () => {
+  const onValueChange = vi.fn()
+  const props = { label: 'Inspect', value: { zoom: 2, x: 1, y: 0 }, onValueChange }
+  const root = await renderNative(<LumenMediaViewport {...props}><LumenText>Photo</LumenText></LumenMediaViewport>)
+  const right = root.container.queryAll(instance => readProp(instance, 'accessibilityRole') === 'button')
+  expect(right).toHaveLength(7)
+  const fit = right[2]
+  if (!fit) throw new Error('Missing fit action')
+  await runNativeAction(() => {
+    callAction(readProp(fit, 'onPress'), 'Missing fit handler')
+  })
+  expect(onValueChange).toHaveBeenCalledWith({ zoom: 1, x: 0, y: 0 })
+  await runNativeAction(() => {
+    root.render(
+      <LumenProvider>
+        <LumenMediaViewport {...props} disabled><LumenText>Photo</LumenText></LumenMediaViewport>
+      </LumenProvider>
+    )
+  })
+  expect(root.container.queryAll(instance => readProp(instance, 'accessibilityRole') === 'button').every(instance => {
+    const state = readProp(instance, 'accessibilityState')
+    return typeof state === 'object' && state !== null && 'disabled' in state && state.disabled === true
+  })).toBe(true)
 })

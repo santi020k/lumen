@@ -2,6 +2,9 @@ package com.santi020k.lumen.playground.compose
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.width
+import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -123,4 +126,38 @@ internal fun ImageComparisonExample() {
 private fun LanguagePicker(value: String, onValueChange: (String) -> Unit) {
     LumenSegmentedControl(label = "Language / Idioma", value = value, onValueChange = onValueChange,
         options = listOf(LumenSelectionOption("en", "English"), LumenSelectionOption("es", "Español")))
+}
+
+@Composable
+internal fun MediaWorkspaceExample(component: String) {
+    var viewport by remember { mutableStateOf(com.santi020k.lumen.LumenMediaViewportValue()) }
+    var selected by remember { mutableStateOf(true) }
+    val colors = LocalLumenTheme.current.colors
+    val painter = ComparisonExamplePainter(colors.brandSoft, colors.brand)
+    val thumbnail: @Composable () -> Unit = {
+        com.santi020k.lumen.LumenMediaThumbnail("Landscape", selected = selected, order = 1,
+            onSelectionChange = { selected = it }, modifier = Modifier.width(160.dp)) {
+            androidx.compose.foundation.Image(painter = painter, contentDescription = null, modifier = Modifier.fillMaxWidth())
+        }
+    }
+    Column(verticalArrangement = Arrangement.spacedBy(LumenSpacing.Md)) {
+        when (component) {
+            "Media viewport" -> com.santi020k.lumen.LumenMediaViewport("Inspect landscape", value = viewport,
+                onValueChange = { viewport = it }, aspectRatio = 1.6f) {
+                androidx.compose.foundation.Image(painter = painter, contentDescription = "Illustrative landscape",
+                    modifier = Modifier.fillMaxSize(), contentScale = androidx.compose.ui.layout.ContentScale.FillBounds)
+            }
+            "Media thumbnail" -> thumbnail()
+            "Media filmstrip" -> com.santi020k.lumen.LumenMediaFilmstrip("Photos", "${if (selected) 1 else 0} selected") {
+                Column { thumbnail(); LumenButton(onClick = {}, enabled = false) { LumenText("Move earlier") } }
+                Column(Modifier.width(160.dp)) {
+                    com.santi020k.lumen.LumenMediaThumbnail("Unavailable photo", selected = false, onSelectionChange = {},
+                        state = com.santi020k.lumen.LumenMediaThumbnailState.Error, stateLabel = "Could not load preview") {
+                        androidx.compose.foundation.Image(painter = painter, contentDescription = null)
+                    }
+                    LumenButton(onClick = {}, enabled = false) { LumenText("Move later") }
+                }
+            }
+        }
+    }
 }

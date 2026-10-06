@@ -3,6 +3,8 @@ import type { HTMLAttributes } from 'astro/types'
 
 import {
   formatLumenImageComparisonValue,
+  type LumenImageComparisonMode,
+  normalizeLumenImageComparisonMode,
   normalizeLumenImageComparisonRatio,
   normalizeLumenImageComparisonValue,
   resolveLumenAstroProps
@@ -17,6 +19,7 @@ interface Props extends HTMLAttributes<'figure'> {
   fit?: 'contain' | 'cover'
   label: string
   locale?: string
+  mode?: LumenImageComparisonMode
   name?: string
   ratio?: number
   value?: number
@@ -24,10 +27,11 @@ interface Props extends HTMLAttributes<'figure'> {
 
 const {
   afterLabel = 'After', beforeLabel = 'Before', class: classProp = '', className = '',
-  disabled = false, fit = 'cover', label, locale, name, ratio = 16 / 9, value = 50,
+  disabled = false, fit = 'cover', label, locale, mode: requestedMode = 'reveal', name, ratio = 16 / 9, value = 50,
   ...rest
 } = Astro.props
 
+const mode = normalizeLumenImageComparisonMode(requestedMode)
 const position = normalizeLumenImageComparisonValue(value)
 const aspectRatio = normalizeLumenImageComparisonRatio(ratio)
 const { classList, passthrough } = resolveLumenAstroProps(rest, ['ui-image-comparison'], classProp, className)
@@ -39,17 +43,18 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, ['ui-image-compa
   data-after-label={afterLabel}
   data-disabled={disabled ? 'true' : undefined}
   data-fit={fit}
+  data-mode={mode}
   data-locale={locale}
   {...passthrough}
 >
   <div class="ui-image-comparison__frame" style={`--ui-image-comparison-position: ${position}%; --ui-image-comparison-ratio: ${aspectRatio}`}>
-    <div class="ui-image-comparison__before"><slot name="before" /></div>
-    <div class="ui-image-comparison__after"><slot name="after" /></div>
+    <div class="ui-image-comparison__before" hidden={mode === 'after'}><slot name="before" /></div>
+    <div class="ui-image-comparison__after" hidden={mode === 'before'}><slot name="after" /></div>
     <div aria-hidden="true" class="ui-image-comparison__divider"></div>
   </div>
-  <div aria-hidden="true" class="ui-image-comparison__labels"><span>{beforeLabel}</span><span>{afterLabel}</span></div>
+  <div aria-hidden="true" class="ui-image-comparison__labels"><span hidden={mode === 'after'}>{beforeLabel}</span><span hidden={mode === 'before'}>{afterLabel}</span></div>
   <figcaption class="ui-image-comparison__caption">
-    <label class="ui-image-comparison__control">
+    <label class="ui-image-comparison__control" hidden={mode !== 'reveal'}>
       <span>{label}</span>
       <input
         aria-valuetext={formatLumenImageComparisonValue(position, afterLabel, locale)}

@@ -1,5 +1,4 @@
 /* eslint-disable complexity */
-
 import {
   alignLumenChartSeries,
   bindLumenTabIndicator,
@@ -158,6 +157,8 @@ import {
   LumenImageComparisonElement as GranularLumenImageComparisonElement,
   lumenImageComparisonElementConfig
 } from './components/image-comparison.js'
+import { LumenMediaFilmstripElement as GranularLumenMediaFilmstripElement, lumenMediaFilmstripElementConfig, LumenMediaThumbnailElement as GranularLumenMediaThumbnailElement, lumenMediaThumbnailElementConfig } from './components/media-selection.js'
+import { LumenMediaViewportElement as GranularLumenMediaViewportElement, lumenMediaViewportElementConfig } from './components/media-viewport.js'
 import {
   LumenVirtualListElement as GranularLumenVirtualListElement,
   lumenVirtualListElementConfig
@@ -759,6 +760,9 @@ const elementConfigs = {
 
   WorldMap: lumenWorldMapElementConfig,
   ImageComparison: lumenImageComparisonElementConfig,
+  MediaViewport: lumenMediaViewportElementConfig,
+  MediaThumbnail: lumenMediaThumbnailElementConfig,
+  MediaFilmstrip: lumenMediaFilmstripElementConfig,
   ChangeSummary: lumenChangeSummaryElementConfig,
   FilterBar: lumenFilterBarElementConfig,
   Image: {
@@ -12043,6 +12047,9 @@ const granularElementClasses: Partial<
 
   WorldMap: GranularLumenWorldMapElement,
   ImageComparison: GranularLumenImageComparisonElement,
+  MediaViewport: GranularLumenMediaViewportElement,
+  MediaThumbnail: GranularLumenMediaThumbnailElement,
+  MediaFilmstrip: GranularLumenMediaFilmstripElement,
   Label: GranularLumenLabelElement,
   Separator: GranularLumenSeparatorElement,
   Skeleton: GranularLumenSkeletonElement,
@@ -12384,3 +12391,8 @@ export const LumenToolActivityElement = GranularLumenToolActivityElement
 export const LumenChartMotionElement = GranularLumenChartMotionElement
 
 export const LumenWorldMapElement = elementClasses.WorldMap
+
+export const LumenMediaViewportElement = elementClasses.MediaViewport
+
+export const LumenMediaThumbnailElement = elementClasses.MediaThumbnail
+export const LumenMediaFilmstripElement = elementClasses.MediaFilmstrip

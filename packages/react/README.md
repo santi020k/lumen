@@ -1037,3 +1037,9 @@ and theme customization. Import geography explicitly from
 `@santi020k/lumen-core/world-map-data`; it is excluded from root exports. See the
 [WorldMap usage guide](../../docs/world-map.md) for adapter examples, events, localization,
 accessibility, and customization.
+
+## Studio media workspace
+
+Compose MediaViewport, MediaThumbnail, MediaFilmstrip and ImageComparison modes with the
+[Studio media workspace recipes](../../docs/studio-media-workspaces.md). Applications retain
+media loading, selection, adjustment algorithms, processing, export and persistence.

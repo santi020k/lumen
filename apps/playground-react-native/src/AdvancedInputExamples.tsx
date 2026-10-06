@@ -4,7 +4,7 @@ import { View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import {
-  LumenAutocomplete, LumenButton, LumenImageComparison, LumenInputOTP,   LumenMultiSelect, LumenNumberField,
+  LumenAutocomplete, LumenButton, LumenImageComparison, LumenInputOTP, LumenMultiSelect, LumenNumberField,
   LumenPasswordField, LumenSegmentedControl, LumenText, LumenToggle
 } from '@santi020k/lumen-react-native'
 import { LumenTimeField, type LumenTimeSelection } from '@santi020k/lumen-react-native/datetime'

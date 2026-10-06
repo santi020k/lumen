@@ -1132,6 +1132,14 @@
 .ui-image-comparison__range { width: 100%; min-width: 0; min-height: 2.75rem; margin: 0; }
 .ui-image-comparison:focus-within .ui-image-comparison__frame { outline: 2px solid hsl(var(--brand)); outline-offset: 3px; }
 
+/* Alternate views retain image framing and the current reveal value. */
+.ui-image-comparison[data-mode="side-by-side"] .ui-image-comparison__frame { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); aspect-ratio: calc(var(--ui-image-comparison-ratio, 1.77778) * 2); }
+.ui-image-comparison[data-mode="side-by-side"] :is(.ui-image-comparison__before, .ui-image-comparison__after) { position: relative; min-width: 0; }
+.ui-image-comparison:not([data-mode="reveal"])[data-mode] .ui-image-comparison__after { clip-path: none; }
+.ui-image-comparison:not([data-mode="reveal"])[data-mode] .ui-image-comparison__divider { display: none; }
+.ui-image-comparison[data-mode="side-by-side"] .ui-image-comparison__labels { flex-direction: row; }
+.ui-image-comparison [hidden] { display: none !important; }
+
 .ui-skip-link {
   position: fixed;
   z-index: 100000;
@@ -8578,3 +8586,30 @@ a.ui-pill:focus-visible {
   [data-ui-motion="reduce"] .ui-tabs__moving-indicator { transition: none !important; }
   @media (forced-colors: active) { .ui-visual-effect::before { display: none; } }
 }
+
+
+.ui-media-viewport { display: grid; min-width: 0; gap: var(--ui-space-sm); margin: 0; }
+.ui-media-viewport__stage { position: relative; width: 100%; overflow: hidden; border: var(--ui-border-width, 1px) solid hsl(var(--line)); border-radius: var(--ui-radius); background: hsl(var(--surface-muted)); }
+.ui-media-viewport__stage:focus-visible { outline: 2px solid hsl(var(--brand)); outline-offset: 3px; }
+.ui-media-viewport__content { position: absolute; inset: 0; transform-origin: center; }
+.ui-media-viewport__content :where(img, video, picture, .ui-image) { display: block; width: 100%; height: 100%; max-width: none; object-fit: contain; border-radius: 0; user-select: none; }
+.ui-media-viewport :is(figcaption, .ui-media-viewport__caption) { display: grid; gap: var(--ui-space-sm); }
+.ui-media-viewport__actions { display: flex; flex-wrap: wrap; gap: var(--ui-space-sm); }
+
+
+.ui-media-thumbnail { position: relative; display: block; min-width: 0; height: auto; padding: var(--ui-space-sm); white-space: normal; text-align: start; }
+.ui-media-thumbnail .ui-button__content { display: grid; min-width: 0; width: 100%; gap: var(--ui-space-xs); }
+.ui-media-thumbnail__media { display: block; width: 100%; aspect-ratio: 1; overflow: hidden; border-radius: var(--ui-radius-sm); background: hsl(var(--surface-muted)); }
+.ui-media-thumbnail__media :where(img, picture, .ui-image) { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: 0; }
+.ui-media-thumbnail__label, .ui-media-thumbnail__state { overflow-wrap: anywhere; }
+.ui-media-thumbnail__order { position: absolute; top: var(--ui-space-sm); inset-inline-end: var(--ui-space-sm); display: grid; place-items: center; min-width: 1.75rem; min-height: 1.75rem; padding-inline: var(--ui-space-xs); border-radius: var(--ui-radius-sm); color: hsl(var(--ink)); background: hsl(var(--surface)); }
+.ui-media-thumbnail[aria-pressed="true"] { border-color: hsl(var(--brand)); box-shadow: inset 0 0 0 1px hsl(var(--brand)); background: hsl(var(--brand-soft)); }
+.ui-media-thumbnail[aria-pressed="true"] .ui-media-thumbnail__label::before { content: '✓ '; }
+.ui-media-filmstrip { display: grid; min-width: 0; gap: var(--ui-space-sm); }
+.ui-media-filmstrip__heading { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--ui-space-sm); }
+.ui-media-filmstrip__items { display: flex; gap: var(--ui-space-sm); min-width: 0; margin: 0; padding: var(--ui-space-xs); overflow-x: auto; list-style: none; }
+.ui-media-filmstrip__items > li { flex: 0 0 9rem; min-width: 0; display: grid; align-content: start; gap: var(--ui-space-xs); }
+.ui-media-filmstrip__items .ui-media-thumbnail { width: 100%; }
+
+lumen-media-thumbnail.ui-media-thumbnail { padding: 0; }
+lumen-media-thumbnail > .ui-media-thumbnail { width: 100%; }

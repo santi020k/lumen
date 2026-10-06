@@ -1,0 +1,57 @@
+<!-- Load @santi020k/lumen-elements/styles.css, register its elements, and import media-workspace.css once. -->
+<section class="lumen-media-workspace" data-media-workspace data-lumen-preset="studio" aria-label="Photo workspace">
+  <h2>Photo workspace</h2>
+  <div class="lumen-media-workspace__layout">
+    <div class="lumen-media-workspace__preview" role="group" aria-label="Image preview">
+      <lumen-image-comparison label="Compare the treatment" before-label="Original" after-label="Adjusted" mode="reveal" ratio="1.6">
+        <img slot="before" src="/original.jpg" alt="Original photo" width="960" height="600">
+        <img slot="after" src="/adjusted.jpg" alt="Adjusted photo" width="960" height="600">
+      </lumen-image-comparison>
+      <lumen-media-viewport label="Inspect the photo" ratio="1.6" hidden>
+        <img src="/adjusted.jpg" alt="Adjusted photo" width="960" height="600">
+      </lumen-media-viewport>
+    </div>
+    <lumen-card class="lumen-media-workspace__inspector" aria-label="Image adjustments">
+      <lumen-field data-media-adjustment="exposure" data-default-value="0">
+        <lumen-label for="media-exposure">Exposure</lumen-label>
+        <output id="media-exposure-output" for="media-exposure">0 EV</output>
+        <lumen-badge data-adjustment-modified hidden>Modified</lumen-badge>
+        <lumen-slider id="media-exposure" aria-label="Exposure" aria-describedby="media-exposure-output" aria-valuetext="0 EV" min="-1" max="1" step="0.1" value="0"></lumen-slider>
+        <lumen-button variant="ghost" data-adjustment-reset disabled>Reset exposure</lumen-button>
+      </lumen-field>
+    </lumen-card>
+  </div>
+  <lumen-card glass="subtle" class="lumen-media-workspace__tools">
+    <lumen-toolbar aria-label="Preview tools">
+      <lumen-button variant="outline" data-comparison-mode="reveal" aria-pressed="true">Reveal</lumen-button>
+      <lumen-button variant="outline" data-comparison-mode="side-by-side" aria-pressed="false">Side by side</lumen-button>
+      <lumen-button variant="outline" data-comparison-mode="before" aria-pressed="false">Original</lumen-button>
+      <lumen-button variant="outline" data-comparison-mode="after" aria-pressed="false">Adjusted</lumen-button>
+      <lumen-button variant="outline" data-inspect aria-pressed="false">Inspect details</lumen-button>
+    </lumen-toolbar>
+  </lumen-card>
+  <lumen-media-filmstrip label="Photo collection" selection-label="1 photo selected">
+    <li data-media-item="photo-1">
+      <lumen-media-thumbnail label="Landscape" media-id="photo-1" selected order="1"><img src="/adjusted.jpg" alt="" width="960" height="600"></lumen-media-thumbnail>
+      <lumen-button variant="outline" data-media-move="earlier" data-media-id="photo-1" disabled>Move earlier</lumen-button>
+      <lumen-button variant="outline" data-media-move="later" data-media-id="photo-1">Move later</lumen-button>
+    </li>
+    <li data-media-item="photo-2">
+      <lumen-media-thumbnail label="Original landscape" media-id="photo-2" order="2"><img src="/original.jpg" alt="" width="960" height="600"></lumen-media-thumbnail>
+      <lumen-button variant="outline" data-media-move="earlier" data-media-id="photo-2">Move earlier</lumen-button>
+      <lumen-button variant="outline" data-media-move="later" data-media-id="photo-2" disabled>Move later</lumen-button>
+    </li>
+  </lumen-media-filmstrip>
+  <lumen-card class="lumen-media-workspace__bottom" data-media-processing>
+    <p role="status" data-processing-message>Ready to prepare a preview.</p>
+    <lumen-progress data-processing-progress aria-label="Preview progress" hidden></lumen-progress>
+    <lumen-error-state data-processing-error role="status" aria-live="polite" hidden>
+      <h3 data-processing-error-title></h3>
+      <p data-processing-recovery></p>
+    </lumen-error-state>
+    <lumen-button data-media-processing-action="start">Prepare preview</lumen-button>
+    <lumen-button data-media-processing-action="cancel" variant="outline" hidden>Cancel preparation</lumen-button>
+    <lumen-button data-media-processing-action="retry" hidden>Try again</lumen-button>
+  </lumen-card>
+</section>
+<script type="module" src="./media-workspace.js"></script>

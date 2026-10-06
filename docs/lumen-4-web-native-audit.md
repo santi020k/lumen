@@ -16,7 +16,7 @@ supported Apple form factors. Wear and WidgetKit intentionally use separate, sma
   editing remains deferred by the user; its plain model and limited SwiftUI/Compose subset do not
   close that gap.
 
-Reviewed 193 web entries: 93 counterparts, 65 compositions,
+Reviewed 196 web entries: 96 counterparts, 65 compositions,
 33 platform/host boundaries and 2 gaps. The 23 new counterparts have dedicated native
 contracts, controlled examples and focused behavior checks. Full catalog captures and combined
 validation are tracked in [the completion plan](native-catalog-parity-plan.md); this source audit
@@ -107,6 +107,9 @@ or store update is implied by this audit.
 | `Image` | Counterpart | `image` |
 | `DeviceFrame` | Platform / host | Web device demonstration shell; native hosts own preview containers and embedded content. |
 | `ImageComparison` | Counterpart | `image-comparison` |
+| `MediaViewport` | Counterpart | `media-viewport`; Bounded controlled zoom, pan and fit with native gestures and visible actions. |
+| `MediaThumbnail` | Counterpart | `media-thumbnail`; Host-controlled media selection with order and loading/error presentation. |
+| `MediaFilmstrip` | Counterpart | `media-filmstrip`; Ordered horizontally scrolling media collection with host-formatted selected count. |
 | `Illustration` | Counterpart | `illustration` |
 | `Input` | Counterpart | `text-field` |
 | `InputGroup` | Composition | `field-group` plus host slots/state; no matching standalone export. |

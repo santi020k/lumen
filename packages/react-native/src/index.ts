@@ -150,6 +150,8 @@ export {
   type LumenImageProps,
   type LumenImageRadius
 } from './media-components.js'
+export type { LumenMediaFilmstripProps, LumenMediaThumbnailProps, LumenMediaViewportProps } from './media-workspace-components.js'
+export { LumenMediaFilmstrip, LumenMediaThumbnail, LumenMediaViewport } from './media-workspace-components.js'
 export { LumenMentions, type LumenMentionsLabels, type LumenMentionsProps } from './mentions-components.js'
 export { filterLumenMentionOptions, insertLumenMention, isLumenMentionsSelectionValid, type LumenMentionOption, type LumenMentionQuery, type LumenMentionsSelection, type LumenMentionsValue, resolveLumenMentionQuery } from './mentions-recipes.js'
 export { LumenMultiSelect, type LumenMultiSelectProps } from './multi-select-components.js'
@@ -365,3 +367,4 @@ export {
   type LumenPhoneNumber,
   resolveLumenPhoneNumber
 } from '@santi020k/lumen-core'
+export { type LumenMediaViewportValue } from '@santi020k/lumen-core/media-workspace'

@@ -1,0 +1,18 @@
+---
+import { Card, Stack } from '@santi020k/lumen-astro'
+
+import DocsActionLink from '../../components/DocsActionLink.astro'
+import DocsPageHero from '../../components/DocsPageHero.astro'
+import StudioWorkspacePreview from '../../components/StudioWorkspacePreview.astro'
+import DocsLayout from '../../layouts/DocsLayout.astro'
+---
+<DocsLayout title="Studio media workspaces - Lumen UI" description="Compose an accessible media workspace with reusable Lumen controls and host-owned processing.">
+  <Stack gap="section">
+    <DocsPageHero eyebrow="Studio recipe" title="Build a media workspace" description="Try selection, reorder actions, comparison modes, image inspection and adjustment resets. The media and preparation task are illustrative; your application owns editing and export.">
+      <Fragment slot="actions"><DocsActionLink href="https://github.com/santi020k/lumen/blob/main/docs/studio-media-workspaces.md">Read the integration guide</DocsActionLink></Fragment>
+    </DocsPageHero>
+    <Card data-lumen-preset="studio"><StudioWorkspacePreview /></Card>
+    <Card><h2>Install the recipe</h2><pre><code>pnpm exec lumen add media-workspace --target react</code></pre><p>Astro and Elements starters use the same component contracts. Import the installed media-workspace.css once and supply translated labels, state and callbacks.</p></Card>
+    <Card><h2>Keep the host in control</h2><p>Selection and ordering use stable media IDs. Loading, processing, cancellation, retries, export and persistence belong to your application. A completed job requires confirmation from that job.</p><p>Qualify Studio in both themes at phone, tablet and desktop widths, with long labels, large text and keyboard navigation. Use glass selectively on supporting controls.</p></Card>
+  </Stack>
+</DocsLayout>

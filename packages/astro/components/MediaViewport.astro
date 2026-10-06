@@ -1,0 +1,38 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+import { formatLumenMediaZoom, lumenMediaViewportActions, type LumenMediaViewportLabels, lumenMediaViewportLabels, type LumenMediaViewportValue, normalizeLumenMediaViewport, resolveLumenAstroProps } from '@santi020k/lumen-core'
+
+import Button from './Button.astro'
+
+interface Props extends HTMLAttributes<'figure'> {
+  className?: string
+  disabled?: boolean
+  label: string
+  labels?: Partial<LumenMediaViewportLabels>
+  locale?: string
+  maxZoom?: number
+  ratio?: number
+  value?: Partial<LumenMediaViewportValue>
+}
+
+const { class: classProp, className, disabled = false, label, labels, locale, maxZoom = 4, ratio = 16 / 9, value, ...rest } = Astro.props
+const current = normalizeLumenMediaViewport(value, maxZoom)
+const copy = { ...lumenMediaViewportLabels, ...labels }
+const safeRatio = Number.isFinite(ratio) && ratio >= 0.1 && ratio <= 10 ? ratio : 16 / 9
+const statusId = `media-viewport-${crypto.randomUUID()}`
+const { classList, passthrough } = resolveLumenAstroProps(rest, ['ui-media-viewport'], classProp, className)
+---
+
+<figure class:list={classList} {...passthrough} data-ui-media-viewport data-disabled={String(disabled)} data-max-zoom={maxZoom} data-zoom={current.zoom} data-pan-x={current.x} data-pan-y={current.y} data-locale={locale}>
+  <div class="ui-media-viewport__stage" data-ui-media-viewport-stage role="group" aria-label={label} aria-disabled={disabled} aria-describedby={statusId} tabindex="0" style={`aspect-ratio: ${safeRatio}`}>
+    <div class="ui-media-viewport__content" data-ui-media-viewport-content style={`transform: translate(${current.x * (current.zoom - 1) * 50}%, ${current.y * (current.zoom - 1) * 50}%) scale(${current.zoom})`}><slot /></div>
+  </div>
+  <figcaption>
+    <span>{label}</span>
+    <span id={statusId} role="status" aria-live="polite" data-ui-media-viewport-status>{formatLumenMediaZoom(current.zoom, locale)}</span>
+    <div class="ui-media-viewport__actions" role="group" aria-label={label}>
+      {lumenMediaViewportActions.map(action => <Button variant="outline" data-ui-media-viewport-action={action} disabled>{copy[action]}</Button>)}
+    </div>
+  </figcaption>
+</figure>

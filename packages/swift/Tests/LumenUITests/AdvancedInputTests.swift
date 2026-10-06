@@ -83,6 +83,8 @@ import SwiftUI
     _ = LumenInputOTP("Código", text: .constant("123"), masked: true, readOnly: true).body
     _ = LumenAutocomplete("Ciudad", query: .constant(""), selection: .constant(nil as String?), options: [LumenAutocompleteOption(value: "bogota", label: "Bogotá")], readOnly: true).body
     _ = LumenTimeField("Hora", selection: .constant(nil), readOnly: true).body
-    _ = LumenImageComparison("Comparación", value: .constant(.nan)) { Color.gray } after: { Color.blue }.body
+    for mode in LumenImageComparisonMode.allCases {
+        _ = LumenImageComparison("Comparación", value: .constant(.nan), mode: mode) { Color.gray } after: { Color.blue }.body
+    }
 }
 #endif

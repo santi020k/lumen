@@ -439,7 +439,7 @@ private fun PlaygroundContent(
                             FeedbackStatesExample()
                             PullToRefreshExample()
                         }
-                        "Data" -> if (initialComponent in setOf("Calendar heatmap", "Funnel chart", "Box plot")) { ChartExample(setOf(initialComponent)) } else if (initialComponent == "Image comparison") { ImageComparisonExample() } else Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                        "Data" -> if (initialComponent in setOf("Media viewport", "Media thumbnail", "Media filmstrip")) { MediaWorkspaceExample(initialComponent) } else if (initialComponent in setOf("Calendar heatmap", "Funnel chart", "Box plot")) { ChartExample(setOf(initialComponent)) } else if (initialComponent == "Image comparison") { ImageComparisonExample() } else Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                             ImageComparisonExample()
                             DataExample(saved = saved, onToggleSaved = { saved = !saved })
                             DisclosureExample(

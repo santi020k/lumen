@@ -6,6 +6,8 @@ import { defineConfig } from 'vitest/config'
 const root = fileURLToPath(new URL('.', import.meta.url))
 
 const alias = {
+  '@santi020k/lumen-core/media-workspace': fileURLToPath(new URL('./packages/core/src/media-workspace.ts', import.meta.url)),
+  '@santi020k/lumen-core/media-viewport': fileURLToPath(new URL('./packages/core/src/media-viewport.ts', import.meta.url)),
   '@santi020k/lumen-core/image-comparison': fileURLToPath(new URL('./packages/core/src/image-comparison.ts', import.meta.url)),
   '@santi020k/lumen-core/tokens': fileURLToPath(new URL('./packages/core/src/tokens.ts', import.meta.url)),
   '@santi020k/lumen-core/virtual-list': fileURLToPath(new URL('./packages/core/src/virtual-list.ts', import.meta.url)),
