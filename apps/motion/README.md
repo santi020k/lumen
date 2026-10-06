@@ -71,15 +71,22 @@ preview and composition assets are self-contained and make no remote asset reque
 ## Motion and responsive composition
 
 The opening builds the workspace with short staggered entrances and fills its progress bars.
-Three six-second chapters alternate wide and compact layouts while changing appearances; matching
-frame widths keep the theme transitions continuous. CSS container queries stack the project cards at the compact
-width; this is live reflow, not a cropped desktop recording. CustomEase uses Lumen's public
-emphasized easing token. The paused GSAP timeline owns all timing so exports can seek backwards
-without relying on autoplay or browser-clock CSS transitions.
+Three six-second chapters alternate desktop and iPhone-style mobile layouts while changing
+appearances. Both views reuse `Workspace.astro`; the phone renders at 390 × 844 CSS pixels with
+mobile typography, stacked project cards, and a full-width action. A rounded device shell, island,
+status bar, and home indicator make the mobile state recognizable. This is a generic iPhone-style
+presentation, not a claim about a specific hardware model or a native application.
+
+The presentation area centers the interface vertically between the headline and footer. Phone
+scale is calculated from the space available in each export; content remains at its actual mobile
+layout size and scales only at the device boundary. Matching device states keep theme changes
+continuous. CustomEase uses Lumen's public emphasized easing token, and the paused GSAP timeline
+owns all timing for deterministic export seeking.
 
 Portrait, square, and landscape share the message and components, with format-specific typography
-and spacing. Square simplifies secondary descriptions to retain readable feed text. The browser
-preview scales the canvas to its container and keeps the selected appearance when formats change.
+and spacing. Square simplifies secondary descriptions in the desktop view to retain readable feed
+text. The browser preview scales the canvas to its container and keeps the selected appearance
+when formats change.
 Static appearance buttons seek to a fully assembled frame; reduced motion retains those controls.
 
 Future pilots can reuse this structure for component spotlights and release highlights. Use
@@ -89,11 +96,11 @@ direction remains in [the brand guide](../../docs/brand-guidelines.md).
 ## Draft social copy
 
 **Caption:** One interface. Three appearances. The same public Lumen UI components in Light,
-Dark, and Studio, adapting from a wide workspace to a compact layout. Explore the theme playground: https://lumen.santi020k.com/docs/theme-playground
+Dark, and Studio, adapting from desktop to an iPhone-style mobile screen. Explore the theme playground: https://lumen.santi020k.com/docs/theme-playground
 
 **Visual description:** A sample project workspace stays in the same layout while its colors and
 surface styling change from Lumen Light to Lumen Dark to Studio. The interface assembles in sequence,
-then alternates wide and compact layouts, stacking project cards when the workspace narrows. Project counts are illustrative
+then alternates a desktop workspace with an iPhone-style screen containing a real mobile layout. Project counts are illustrative
 sample data. The final line points to lumen.santi020k.com.
 
 This is a draft asset and caption. Publication remains subject to the

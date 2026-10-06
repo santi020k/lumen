@@ -2,6 +2,7 @@
 import '../styles/composition.css'
 import '@santi020k/lumen-astro/styles.css'
 
+import { Icon } from '@santi020k/lumen-astro'
 import { lumenEasings } from '@santi020k/lumen-core'
 import { transformSync } from 'esbuild'
 
@@ -54,13 +55,26 @@ const themes = [
             <h1>One interface.<br />Three themes.</h1>
           </div>
           <div class="theme-label"><span>{theme.number} / 03</span><strong>{theme.name}</strong></div>
-          <div class="viewport">
-            <div class="viewport-bar">
-              <span class="viewport-title">Adaptive workspace</span>
-              <span class="layout-wide">Wide layout</span>
-              <span class="layout-compact">Compact layout</span>
+          <div class="composition-stage">
+            <div class="viewport">
+              <div class="desktop-content">
+                <div class="viewport-bar">
+                  <span class="viewport-title">Adaptive workspace</span>
+                  <span>Desktop layout</span>
+                </div>
+                <Workspace />
+              </div>
+              <div class="phone-hardware" data-theme="lumen-dark" aria-hidden="true"></div>
+              <div class="phone-screen" data-device-width="390" data-device-height="844" aria-label="iPhone-style mobile workspace">
+                <div class="phone-status" aria-hidden="true">
+                  <span>9:41</span>
+                  <span class="phone-island" data-theme="lumen-dark"></span>
+                  <div class="phone-status-icons"><Icon name="wifi" /><Icon name="battery-full" /></div>
+                </div>
+                <Workspace />
+                <div class="phone-home" aria-hidden="true"></div>
+              </div>
             </div>
-            <Workspace />
           </div>
           <div class="composition-footer"><span>Same components. Every size.</span><strong>lumen.santi020k.com</strong></div>
         </section>
