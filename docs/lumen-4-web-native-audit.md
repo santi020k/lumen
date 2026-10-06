@@ -16,8 +16,8 @@ supported Apple form factors. Wear and WidgetKit intentionally use separate, sma
   editing remains deferred by the user; its plain model and limited SwiftUI/Compose subset do not
   close that gap.
 
-Reviewed 183 web entries: 93 counterparts, 61 compositions,
-28 platform/host boundaries and 1 deferred gap. The 23 new counterparts have dedicated native
+Reviewed 184 web entries: 93 counterparts, 61 compositions,
+29 platform/host boundaries and 1 deferred gap. The 23 new counterparts have dedicated native
 contracts, controlled examples and focused behavior checks. Full catalog captures and combined
 validation are tracked in [the completion plan](native-catalog-parity-plan.md); this source audit
 alone does not qualify a release. MultiSelect and RangeSlider remain additional shared contracts.
@@ -105,6 +105,7 @@ or store update is implied by this audit.
 | `HoverCard` | Composition | `sheet` plus host slots/state; no matching standalone export. |
 | `Icon` | Counterpart | `icon` |
 | `Image` | Counterpart | `image` |
+| `DeviceFrame` | Platform / host | Web device demonstration shell; native hosts own preview containers and embedded content. |
 | `ImageComparison` | Counterpart | `image-comparison` |
 | `Illustration` | Counterpart | `illustration` |
 | `Input` | Counterpart | `text-field` |
