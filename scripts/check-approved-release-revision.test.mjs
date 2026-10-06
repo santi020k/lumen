@@ -138,6 +138,100 @@ const runChecker = (directory, arguments_ = [], major = 2) =>
     directory,
   );
 
+const mirrorCandidate = async () => {
+  const candidate = await createCandidate(4);
+  const contract = JSON.parse(await readFile(resolve(candidate.directory, 'registry/lumen-4-contract.json'), 'utf8'));
+
+  await mkdir(resolve(candidate.directory, 'packages/lumen'), { recursive: true });
+
+  await mkdir(resolve(candidate.directory, 'packages/mcp/data'), { recursive: true });
+
+  await writeFile(resolve(candidate.directory, 'packages/lumen/v4-migration.json'), JSON.stringify(contract));
+
+  await writeFile(resolve(candidate.directory, 'packages/mcp/data/lumen-data.json'), JSON.stringify({ migration: contract, components: ['reviewed component'] }));
+
+  candidate.reviewedRevision = commit(candidate.directory, 'test: review generated migration mirrors');
+
+  return candidate;
+};
+
+const regenerateApprovalMirrors = async directory => {
+  const contract = JSON.parse(await readFile(resolve(directory, 'registry/lumen-4-contract.json'), 'utf8'));
+
+  await writeFile(resolve(directory, 'packages/lumen/v4-migration.json'), JSON.stringify(contract));
+
+  await writeFile(resolve(directory, 'packages/mcp/data/lumen-data.json'), JSON.stringify({ migration: contract, components: ['reviewed component'] }));
+
+  commit(directory, 'test: regenerate approval metadata mirrors');
+};
+
+test('v4 approval permits synchronized generated metadata but rejects unrelated MCP changes', async () => {
+  const { directory, reviewedRevision } = await mirrorCandidate();
+
+  try {
+    await approveCandidate(directory, reviewedRevision, 4);
+
+    const stale = runChecker(directory, [], 4);
+
+    assert.notEqual(stale.status, 0);
+
+    assert.match(stale.stderr, /Candidate migration mirrors must match/);
+
+    await regenerateApprovalMirrors(directory);
+
+    const approved = runChecker(directory, [], 4);
+
+    assert.equal(approved.status, 0, approved.stderr);
+
+    const path = resolve(directory, 'packages/mcp/data/lumen-data.json');
+    const data = JSON.parse(await readFile(path, 'utf8'));
+
+    data.components.push('unreviewed component');
+
+    await writeFile(path, JSON.stringify(data));
+
+    commit(directory, 'test: alter bundled component after approval');
+
+    const changed = runChecker(directory, [], 4);
+
+    assert.notEqual(changed.status, 0);
+
+    assert.match(changed.stderr, /Only approval metadata may change in generated migration mirrors/);
+  } finally {
+    await rm(directory, { force: true, recursive: true });
+  }
+});
+
+for (const path of ['packages/lumen/v4-migration.json', 'packages/mcp/data/lumen-data.json']) {
+  test(`v4 approval rejects altered migration rules in ${path}`, async () => {
+    const { directory, reviewedRevision } = await mirrorCandidate();
+
+    try {
+      await approveCandidate(directory, reviewedRevision, 4);
+
+      await regenerateApprovalMirrors(directory);
+
+      const target = resolve(directory, path);
+      const data = JSON.parse(await readFile(target, 'utf8'));
+      const migration = path.includes('/mcp/') ? data.migration : data;
+
+      migration.changes[0].migration = 'Unreviewed migration instruction';
+
+      await writeFile(target, JSON.stringify(data));
+
+      commit(directory, 'test: alter mirrored migration instructions');
+
+      const changed = runChecker(directory, [], 4);
+
+      assert.notEqual(changed.status, 0);
+
+      assert.match(changed.stderr, /Candidate migration mirrors must match/);
+    } finally {
+      await rm(directory, { force: true, recursive: true });
+    }
+  });
+}
+
 for (const major of [4, 5]) {
   test(`major ${major} requires explicit approval of the exact reviewed candidate`, async () => {
     const { directory, reviewedRevision } = await createCandidate(major);

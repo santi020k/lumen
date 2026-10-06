@@ -179,9 +179,15 @@ const changedFiles = runGit(
   .filter(Boolean)
   .sort();
 
-assert.deepEqual(
-  changedFiles,
-  [contractRelativePath],
+const migrationMirrors = major === 4 ? [
+  { path: "packages/lumen/v4-migration.json", bundled: false },
+  { path: "packages/mcp/data/lumen-data.json", bundled: true },
+] : [];
+
+const allowedFiles = new Set([contractRelativePath, ...migrationMirrors.map(mirror => mirror.path)]);
+
+assert.ok(
+  changedFiles.includes(contractRelativePath) && changedFiles.every(path => allowedFiles.has(path)),
   `Only the contract approval record may change after the reviewed ${releaseLabel} candidate revision`,
 );
 
@@ -216,6 +222,36 @@ assert.deepEqual(
   `Only status and approval metadata may change inside the ${releaseLabel} contract after review`,
 );
 
+for (const mirror of migrationMirrors) {
+  const exists = spawnSync("git", ["cat-file", "-e", `${reviewedRevision}:${mirror.path}`], { cwd: repository });
+
+  if (exists.status !== 0) {
+    assert.ok(!changedFiles.includes(mirror.path), "Approval cannot introduce a migration mirror absent from review");
+
+    continue;
+  }
+
+  const reviewed = JSON.parse(runGit(["show", `${reviewedRevision}:${mirror.path}`], "Could not read reviewed migration mirror"));
+  const candidate = JSON.parse(runGit(["show", `${candidateRevision}:${mirror.path}`], "Could not read candidate migration mirror"));
+
+  assert.deepEqual(mirror.bundled ? reviewed.migration : reviewed, reviewedContract,
+    "Reviewed migration mirrors must match the reviewed contract");
+
+  assert.deepEqual(mirror.bundled ? candidate.migration : candidate, contract,
+    "Candidate migration mirrors must match the approved contract");
+
+  const neutral = structuredClone(candidate);
+
+  if (mirror.bundled) neutral.migration = approvalNeutralContract;
+  else {
+    neutral.status = "draft";
+
+    delete neutral.approval;
+  }
+
+  assert.deepEqual(neutral, reviewed, "Only approval metadata may change in generated migration mirrors");
+}
+
 process.stdout.write(
-  `Approved ${releaseLabel} candidate ${reviewedRevision} has only the ${contractRelativePath} approval delta.\n`,
+  `Approved ${releaseLabel} candidate ${reviewedRevision} has only the ${contractRelativePath} approval delta and verified generated mirrors.\n`,
 );

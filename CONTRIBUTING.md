@@ -162,6 +162,13 @@ verify something they could not confidently complete before reading it.
 
 Prepare every non-initial release in `release/v<semver>` and open its pull request into `main`.
 
+For the initial v4 publication, approval identifies the exact reviewed draft revision. After recording
+approval, run `pnpm run generate:v4-migration` and `pnpm --filter @santi020k/lumen-mcp run generate`.
+The revision gate permits only contract status/approval metadata and those two generated migration
+mirrors to change. Both mirrors must match the approved contract; all migration rules and the rest
+of the MCP snapshot must remain identical to the reviewed revision. Commit the approval and mirrors
+together, then run `node scripts/check-approved-release-revision.mjs` from the clean committed tree.
+
 1. Each user-visible change includes a Changeset. Use the installed generator to prepare package
    versions and changelogs, including any generated `changeset-release/main` work in the selected
    release branch.
