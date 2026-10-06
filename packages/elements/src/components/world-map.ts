@@ -45,6 +45,14 @@ const svgNode = <K extends keyof SVGElementTagNameMap>(
   return node
 }
 
+const readCountry = (target: EventTarget | null): string | undefined => {
+  try {
+    return Element.prototype.closest.call(target, '[data-country]')?.getAttribute('data-country') ?? undefined
+  } catch {
+    return undefined
+  }
+}
+
 const appendPatterns = (plot: SVGSVGElement, instanceId: string): void => {
   const defs = svgNode(plot.ownerDocument, 'defs', {})
 
@@ -369,10 +377,6 @@ export class LumenWorldMapElement extends LumenElement {
 
       inspection.hidden = !country
     }
-
-    const readCountry = (target: EventTarget | null): string | undefined => target instanceof Element ?
-      target.closest<SVGPathElement>('[data-country]')?.dataset.country :
-      undefined
 
     const signal = this.abortController?.signal
 

@@ -167,7 +167,7 @@ export class LumenTreeModel {
   togglingSelection(id: string, selectedIds: ReadonlySet<string>): Set<string> {
     if (!isLumenTreeIdSet(selectedIds)) return new Set()
 
-    const next = new Set(selectedIds)
+    const next = new Set<string>(Set.prototype.values.call(selectedIds))
     const node = this.node(id)
 
     if (!this.valid || !node || this.isDisabled(id) || node.selectable === false) return next

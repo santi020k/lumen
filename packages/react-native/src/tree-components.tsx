@@ -46,7 +46,7 @@ const TreeSelection = ({ row, model, props, selectedIds, disabled }: {
     <LumenCheckbox
       accessibilityLabel={row.node.label}
       label={row.node.label}
-      checked={selectedIds.has(row.node.id)}
+      checked={Set.prototype.has.call(selectedIds, row.node.id)}
       disabled={disabled || Boolean(props.readOnly)}
       onCheckedChange={() => {
         if (!disabled && !props.readOnly) props.onSelectionChange?.(model.togglingSelection(row.node.id, selectedIds))
@@ -63,7 +63,7 @@ const TreeRow = ({ row, model, props }: {
   const theme = useLumenTheme()
   const selectedIds = props.selectedIds ?? emptyTreeSelection
   const disabled = Boolean(props.disabled) || row.disabled
-  const expanded = props.expandedIds.has(row.node.id)
+  const expanded = Set.prototype.has.call(props.expandedIds, row.node.id)
   const formatDisclosure = props.formatDisclosure ?? formatTreeDisclosure
   const formatLevel = props.formatLevel ?? formatTreeLevel
 

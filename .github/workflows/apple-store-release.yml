@@ -46,8 +46,9 @@ jobs:
         run: |
           source_sha="$(gh api "repos/$GITHUB_REPOSITORY/commits/$GITHUB_SHA/pulls" --jq '.[] | select(.merged_at != null) | .head.sha')"
           [[ "$source_sha" =~ ^[0-9a-f]{40}$ ]]
-          gh api "repos/$GITHUB_REPOSITORY/commits/$source_sha/check-runs?per_page=100" > "$RUNNER_TEMP/apple-checks.json"
-          node .github/scripts/check-apple-release-checks.mjs "$RUNNER_TEMP/apple-checks.json"
+          gh api "repos/$GITHUB_REPOSITORY/commits/$source_sha/check-runs?filter=all&per_page=100" --paginate --slurp > "$RUNNER_TEMP/apple-checks.json"
+          gh api "repos/$GITHUB_REPOSITORY/actions/runs?head_sha=$source_sha&event=pull_request&per_page=100" --paginate --slurp > "$RUNNER_TEMP/apple-workflows.json"
+          node .github/scripts/check-apple-release-checks.mjs "$RUNNER_TEMP/apple-checks.json" "$RUNNER_TEMP/apple-workflows.json" "$source_sha"
       - name: Inject Apple signing and delivery credentials
         uses: Infisical/secrets-action@d2e351f16c6ca20d17c85e6c992e04bdeb64e87d # v1.0.18
         with:

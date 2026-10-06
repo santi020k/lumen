@@ -159,3 +159,36 @@ test('invalid controlled selections hide navigation instead of rendering malform
     expect(root.container.queryAll(instance => instance.type === 'Text' && read(instance, 'children') === 'Invalid selection')).toHaveLength(1)
   }
 })
+
+test('native Set contents drive rendering and callbacks despite overridden instance methods', () => {
+  for (const has of [null, () => {
+    throw new Error('Untrusted has')
+  }]) {
+    const expandedIds = new Set(['r'])
+    const selectedIds = new Set(['r'])
+    const expansion = vi.fn()
+    const selection = vi.fn()
+
+    for (const ids of [expandedIds, selectedIds]) {
+      Object.defineProperty(ids, 'has', { value: has })
+      Object.defineProperty(ids, Symbol.iterator, { value: () => {
+        throw new Error('Untrusted iterator')
+      } })
+    }
+
+    const root = render(<LumenTree label="Files" nodes={nodes} expandedIds={expandedIds} selectedIds={selectedIds} onExpandedChange={expansion} onSelectionChange={selection} />)
+    const button = find(root, 'Button')
+    const checkbox = find(root, 'Checkbox')
+
+    expect(read(button, 'accessibilityLabel')).toBe('Collapse Root')
+    expect(read(checkbox, 'checked')).toBe(true)
+    act(() => {
+      invoke(button, 'onPress')
+    })
+    act(() => {
+      invoke(checkbox, 'onCheckedChange')
+    })
+    expect(expansion).toHaveBeenCalledWith(new Set())
+    expect(selection).toHaveBeenCalledWith(new Set())
+  }
+})

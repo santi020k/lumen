@@ -9183,9 +9183,9 @@ class LumenFileUploadBehaviorElement extends LumenElement {
     })
 
     this.getRootNode().addEventListener('reset', event => {
-      queueMicrotask(() => {
+      setTimeout(() => {
         if (this.isConnected && event.target === input.form && !event.defaultPrevented) renderFiles()
-      })
+      }, 0)
     }, { capture: true, signal: this.abortController.signal })
 
     this.addEventListener(

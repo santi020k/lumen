@@ -2,6 +2,8 @@
 
 ## 4.0.0
 
+- Read controlled Tree selection and expansion through native Set operations so overridden instance methods cannot crash rendering or proposals.
+
 - Validate controlled Tree selection Sets and require own string titles for decoded Stepper rows, preserving existing invalid-state accessibility.
 
 - Treat malformed tour anchor collections as unavailable targets and validate tree expansion Sets before traversal or proposals.

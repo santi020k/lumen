@@ -34,7 +34,9 @@ test('announces localized counts and clears accepted resets', async () => {
     select([])
   })
   form.reset()
-  await Promise.resolve()
+  await new Promise(resolve => {
+    setTimeout(resolve, 0)
+  })
   expect(summary.textContent).toBe('')
 })
 
@@ -45,7 +47,9 @@ test('preserves cancelled resets and ignores disabled drops', async () => {
     event.preventDefault()
   })
   form.reset()
-  await Promise.resolve()
+  await new Promise(resolve => {
+    setTimeout(resolve, 0)
+  })
   expect(summary.textContent).toBe('uno.txt')
   input.disabled = true
   const drop = new Event('drop', { bubbles: true, cancelable: true })
@@ -105,18 +109,24 @@ test('upload reset follows reassigned form owner without refreshing for other fo
   input.setAttribute('form', owner.id)
   Object.defineProperty(input, 'files', { configurable: true, value: [] })
   form.reset()
-  await Promise.resolve()
+  await new Promise(resolve => {
+    setTimeout(resolve, 0)
+  })
   expect(summary.textContent).toBe('one.txt')
   const cancel = (event: Event) => {
     event.preventDefault()
   }
   owner.addEventListener('reset', cancel)
   owner.reset()
-  await Promise.resolve()
+  await new Promise(resolve => {
+    setTimeout(resolve, 0)
+  })
   expect(summary.textContent).toBe('one.txt')
   owner.removeEventListener('reset', cancel)
   owner.reset()
-  await Promise.resolve()
+  await new Promise(resolve => {
+    setTimeout(resolve, 0)
+  })
   expect(summary.textContent).toBe('')
   expect(upload.getAttribute('data-state')).toBe('idle')
 })

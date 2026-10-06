@@ -2,6 +2,8 @@
 
 ## 4.0.0
 
+- Preserve WorldMap inspection and selection after document adoption, and synchronize FileUpload feedback after native form reset while respecting canceled resets.
+
 - Animate bar geometry and filled line-chart areas inside ChartMotion using stable decorative identities, while keeping accessible chart data immediate.
 
 - Add mouse and pen drag panning and extend WorldMap zoom to 800%. Render the selection outline above all country fills with rounded joins so neighboring regions cannot clip it or produce spikes at high zoom.
