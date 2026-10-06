@@ -4,7 +4,6 @@
 // component files, design tokens, registry manifest, and llms.txt agent rules)
 // and writes a single self-contained JSON payload the published server reads at
 // runtime. This keeps @santi020k/lumen-mcp installable without the whole repo.
-
 import { createHash, randomUUID } from 'node:crypto'
 import { access, mkdir, readdir, readFile, rename, unlink, writeFile } from 'node:fs/promises'
 import { dirname, join, relative, resolve } from 'node:path'
@@ -13,6 +12,8 @@ import { fileURLToPath } from 'node:url'
 import ts from 'typescript'
 
 import { parseSpacingTokens } from '../../../scripts/lib/spacing-tokens.mjs'
+
+import { createCatalogHash } from './catalog-hash.mjs'
 
 const scriptDir = dirname(fileURLToPath(import.meta.url))
 
@@ -1405,21 +1406,17 @@ const main = async () => {
 
   packageVersions['com.santi020k:lumen-compose-wear'] = releaseManifest.release.compose.version
 
-  const catalogHash = createHash('sha256')
-    .update(
-      JSON.stringify({
-        components,
-        docs,
-        migration,
-        nativeComponents,
-        nativeSources,
-        recipes,
-        releaseManifest,
-        rules,
-        tokens
-      })
-    )
-    .digest('hex')
+  const catalogHash = createCatalogHash({
+    components,
+    docs,
+    migration,
+    nativeComponents,
+    nativeSources,
+    recipes,
+    releaseManifest,
+    rules,
+    tokens
+  })
 
   const catalogManifest = {
     components: Object.fromEntries(

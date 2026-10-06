@@ -6,6 +6,8 @@ import { tmpdir } from "node:os";
 import { resolve } from "node:path";
 import test from "node:test";
 
+import { createCatalogHash } from '../packages/mcp/scripts/catalog-hash.mjs';
+
 const repositoryRoot = resolve(import.meta.dirname, "..");
 const lumen4Contract = JSON.parse(await readFile(resolve(repositoryRoot, "registry/lumen-4-contract.json"), "utf8"));
 
@@ -673,6 +675,64 @@ test('v4 approval validates a large bundled snapshot and still rejects payload t
     assert.notEqual(rejected.status, 0);
 
     assert.match(rejected.stderr, /Only approval metadata may change/);
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
+test('real generated MCP catalog hash ignores only approval metadata', async () => {
+  const reviewed = JSON.parse(await readFile(resolve(repositoryRoot, 'packages/mcp/data/lumen-data.json'), 'utf8'));
+
+  const payload = {
+    components: reviewed.components,
+    docs: reviewed.docs,
+    migration: reviewed.migration,
+    nativeComponents: reviewed.nativeComponents,
+    nativeSources: reviewed.nativeSources,
+    recipes: reviewed.recipes,
+    releaseManifest: reviewed.releaseManifest,
+    rules: reviewed.rules,
+    tokens: reviewed.tokens,
+  };
+
+  const draftHash = createCatalogHash(payload);
+
+  assert.equal(draftHash, reviewed.meta.catalogHash);
+
+  const approved = structuredClone(payload);
+
+  approved.migration.status = 'approved';
+
+  approved.migration.approval = { approver: 'Test release owner', reviewedRevision: 'a'.repeat(40) };
+
+  assert.equal(createCatalogHash(approved), draftHash);
+
+  approved.migration.changes[0].migration += ' altered migration';
+
+  assert.notEqual(createCatalogHash(approved), draftHash);
+
+  const changed = structuredClone(payload);
+
+  changed.rules += ' changed instructions';
+
+  assert.notEqual(createCatalogHash(changed), draftHash);
+});
+
+test('v4 approval validates the complete production MCP snapshot', async () => {
+  const { directory } = await mirrorCandidate();
+
+  try {
+    const snapshot = await readFile(resolve(repositoryRoot, 'packages/mcp/data/lumen-data.json'), 'utf8');
+
+    await writeFile(resolve(directory, 'packages/mcp/data/lumen-data.json'), snapshot);
+
+    const reviewedRevision = commit(directory, 'test: review full production snapshot');
+
+    await approveCandidate(directory, reviewedRevision, 4);
+
+    const result = runChecker(directory, [], 4);
+
+    assert.equal(result.status, 0, result.stderr);
   } finally {
     await rm(directory, { recursive: true, force: true });
   }
