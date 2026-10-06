@@ -2,6 +2,8 @@
 
 ## 4.0.0
 
+- Validate controlled Tree selection Sets and require own string titles for decoded Stepper rows, preserving existing invalid-state accessibility.
+
 - Treat malformed tour anchor collections as unavailable targets and validate tree expansion Sets before traversal or proposals.
 
 - Reject malformed breadcrumb entries, cascader paths, command queries and weekday labels; ignore malformed palette swatches while preserving the color field.

@@ -294,6 +294,14 @@ const initDisclosures = (scope: ParentNode): void => {
     }
 
     if (root.hasAttribute('data-ui-hover-card')) {
+      const containsFocusTarget = (target: EventTarget | null): boolean => {
+        try {
+          return Reflect.apply(root.contains, root, [target]) === true
+        } catch {
+          return false
+        }
+      }
+
       root.addEventListener('mouseenter', () => setOpen(trigger, panel, true))
 
       root.addEventListener('mouseleave', () => {
@@ -301,13 +309,13 @@ const initDisclosures = (scope: ParentNode): void => {
       })
 
       root.addEventListener('focusin', event => {
-        if (event.relatedTarget instanceof Node && root.contains(event.relatedTarget)) return
+        if (containsFocusTarget(event.relatedTarget)) return
 
         setOpen(trigger, panel, true)
       })
 
       root.addEventListener('focusout', event => {
-        if (event.relatedTarget instanceof Node && root.contains(event.relatedTarget)) return
+        if (containsFocusTarget(event.relatedTarget)) return
 
         setOpen(trigger, panel, false)
       })

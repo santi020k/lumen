@@ -673,6 +673,36 @@ behaviorTest(['HoverCard'], 'HoverCard opens for keyboard focus and closes on Es
   await expect(panel).toBeHidden()
 })
 
+test('HoverCard retains keyboard focus when adopted into another document', async ({ page }) => {
+  await openPreview(page, 'hover-card')
+  const root = page.locator('.component-doc-preview [data-ui-hover-card]')
+
+  await expect(root.getByRole('button', { name: 'Preview maintainer' })).toHaveAttribute('data-ui-bound', 'true')
+  const result = await root.evaluate(element => {
+    const iframe = document.createElement('iframe')
+    document.body.append(iframe)
+    const destination = iframe.contentDocument
+    if (!destination) throw new Error('Missing destination document')
+    const trigger = element.querySelector<HTMLButtonElement>('button')
+    const panel = element.querySelector<HTMLElement>(':scope > div:last-child')
+    if (!trigger || !panel) throw new Error('Missing HoverCard controls')
+    const originalAction = document.createElement('button')
+    originalAction.textContent = 'Original action'
+    panel.append(originalAction)
+    destination.body.append(destination.adoptNode(element))
+    const action = destination.createElement('button')
+    action.textContent = 'Destination action'
+    panel.append(action)
+    trigger.focus()
+    originalAction.focus()
+    action.focus()
+    originalAction.focus()
+    return { hidden: panel.hidden, focused: destination.activeElement === originalAction }
+  })
+
+  expect(result).toEqual({ hidden: false, focused: true })
+})
+
 behaviorTest(['Tooltip'], 'Tooltip opens for keyboard focus and closes on Escape', async ({ page }) => {
   await openPreview(page, 'tooltip')
 

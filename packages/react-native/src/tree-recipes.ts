@@ -30,7 +30,7 @@ const validNodes = (value: unknown): value is readonly LumenTreeNode[] => {
   return true
 }
 
-const isExpansionSet = (value: unknown): value is ReadonlySet<string> => {
+export const isLumenTreeIdSet = (value: unknown): value is ReadonlySet<string> => {
   try {
     const values: IterableIterator<unknown> = Set.prototype.values.call(value)
 
@@ -125,7 +125,7 @@ export class LumenTreeModel {
   }
 
   visibleRows(expandedIds: ReadonlySet<string>): readonly LumenTreeRow[] {
-    if (!this.valid || !isExpansionSet(expandedIds)) return []
+    if (!this.valid || !isLumenTreeIdSet(expandedIds)) return []
 
     const result: LumenTreeRow[] = []
     const stack = this.childrenOf(null).map(node => ({ node, depth: 0 })).reverse()
@@ -152,7 +152,7 @@ export class LumenTreeModel {
   }
 
   togglingExpansion(id: string, expandedIds: ReadonlySet<string>): Set<string> {
-    if (!isExpansionSet(expandedIds)) return new Set()
+    if (!isLumenTreeIdSet(expandedIds)) return new Set()
 
     const next = new Set<string>(Set.prototype.values.call(expandedIds))
 
@@ -165,6 +165,8 @@ export class LumenTreeModel {
   }
 
   togglingSelection(id: string, selectedIds: ReadonlySet<string>): Set<string> {
+    if (!isLumenTreeIdSet(selectedIds)) return new Set()
+
     const next = new Set(selectedIds)
     const node = this.node(id)
 

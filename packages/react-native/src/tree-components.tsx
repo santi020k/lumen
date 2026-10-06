@@ -4,7 +4,7 @@ import { View, type ViewProps } from 'react-native'
 import { LumenButton, LumenText } from './primitives.js'
 import { LumenCheckbox } from './selection-components.js'
 import { useLumenTheme } from './theme-context.js'
-import { LumenTreeModel, type LumenTreeNode, type LumenTreeRow } from './tree-recipes.js'
+import { isLumenTreeIdSet, LumenTreeModel, type LumenTreeNode, type LumenTreeRow } from './tree-recipes.js'
 
 export interface LumenTreeProps extends Omit<ViewProps, 'children'> {
   label: string
@@ -25,6 +25,11 @@ export interface LumenTreeProps extends Omit<ViewProps, 'children'> {
 }
 
 const emptyTreeSelection: ReadonlySet<string> = new Set()
+
+const validTreeContent = function (model: LumenTreeModel, selection: unknown): boolean {
+  return model.valid && (selection === undefined || isLumenTreeIdSet(selection))
+}
+
 const formatTreeDisclosure = (label: string, expanded: boolean): string => `${expanded ? 'Collapse' : 'Expand'} ${label}`
 const formatTreeLevel = (depth: number): string => `Level ${depth + 1}`
 
@@ -92,7 +97,7 @@ const TreeContent = (props: LumenTreeProps): ReactElement => {
 
   if (props.error) return <LumenText accessibilityRole="alert">{props.error}</LumenText>
 
-  if (!model.valid) {
+  if (!validTreeContent(model, props.selectedIds)) {
     return <LumenText accessibilityRole="alert">{props.invalidLabel ?? 'Invalid tree data'}</LumenText>
   }
 

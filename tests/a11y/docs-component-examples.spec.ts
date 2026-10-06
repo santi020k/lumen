@@ -1,10 +1,8 @@
-import { readdirSync } from 'node:fs'
-
 import { expect, test } from '@playwright/test'
 
-const examples = readdirSync(new URL('../../apps/docs/src/examples/', import.meta.url))
-  .filter(name => name.endsWith('.astro'))
-  .map(name => name.slice(0, -6))
+import { lumenComponentNames } from '../../packages/core/src/components.js'
+
+const examples = lumenComponentNames
 
 for (const width of [390, 1440]) {
   test.describe(`component docs at ${width}px`, () => {

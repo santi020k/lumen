@@ -56,7 +56,9 @@ test('stable IDs reject duplicates and blank keys, while empty progression is va
   expect(isLumenStepItemsValid([])).toBe(true)
   expect(isLumenStepItemsValid([{ id: ' ' }])).toBe(false)
   expect(isLumenStepItemsValid([{ id: 'same' }, { id: 'same' }])).toBe(false)
-  expect(isLumenStepItemsValid([{ id: '__proto__' }, { id: 'constructor' }])).toBe(true)
+  const reservedIdSteps = [{ id: '__proto__', title: 'Prototype' }, { id: 'constructor', title: 'Constructor' }]
+
+  expect(isLumenStepItemsValid(reservedIdSteps)).toBe(true)
   const root = render({ label: 'Progreso', steps: [steps[0] ?? { id: 'choose', title: 'Choose' }, { id: 'choose', title: 'Duplicate' }], currentStep: 1, invalidText: 'Pasos no disponibles' })
   expect(root.container.queryAll(instance => instance.props.accessible === true)).toHaveLength(0)
   expect(root.container.queryAll(instance => instance.props.accessibilityRole === 'alert')).toHaveLength(1)
@@ -91,4 +93,23 @@ test('horizontal layout scrolls and vertical layout preserves long text; empty r
     root.render(<LumenStepper label="Progress" steps={[]} currentStep={0} />)
   })
   expect(root.container.queryAll(instance => instance.props.accessible === true)).toHaveLength(0)
+})
+
+test('decoded steps require their own string title before rendering accessible rows', () => {
+  const malformed: readonly unknown[] = [
+    { id: 'review' },
+    { id: 'review', title: undefined },
+    { id: 'review', title: 7 },
+    Object.create({ id: 'review', title: 'Inherited' })
+  ]
+
+  for (const step of malformed) {
+    const props: LumenStepperProps = { label: 'Progress', steps: [], currentStep: 0, invalidText: 'Steps unavailable' }
+
+    Object.defineProperty(props, 'steps', { value: [step], enumerable: true })
+    const root = render(props)
+
+    expect(root.container.queryAll(instance => instance.props.accessible === true)).toHaveLength(0)
+    expect(root.container.queryAll(instance => instance.props.accessibilityRole === 'alert')).toHaveLength(1)
+  }
 })

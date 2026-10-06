@@ -12,8 +12,10 @@ export const resolveLumenStepState = (index: number, currentStep: number, count:
 const isStepItem = (input: unknown): input is { readonly id: string } => {
   if (typeof input !== 'object' || input === null || Array.isArray(input)) return false
 
+  if (!Object.hasOwn(input, 'title') || typeof Reflect.get(input, 'title') !== 'string') return false
+
   return 'id' in input && typeof input.id === 'string' &&
-    ['title', 'description'].every(key => !(key in input) || Reflect.get(input, key) === undefined || typeof Reflect.get(input, key) === 'string')
+    (!('description' in input) || input.description === undefined || typeof input.description === 'string')
 }
 
 /** Stable IDs must be nonempty and unique within the displayed progression. */

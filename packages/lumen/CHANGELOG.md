@@ -2,6 +2,18 @@
 
 ## 4.0.0
 
+- Add mouse and pen drag panning and extend WorldMap zoom to 800%. Render the selection outline above all country fills with rounded joins so neighboring regions cannot clip it or produce spikes at high zoom.
+
+- Rebuild DeviceFrame hardware with tapered laptop decks, curved desktop stands, rounded phone glass, separate side rails and controls, and tablet home recesses. Support white, black, and custom hex finishes through the color prop or attribute while preserving screen content and iframe viewports.
+
+- Add separate MacBook Air and iPad Pro device presets with a tapered deck and even tablet bezels, and refine MacBook Pro hardware with a display notch and full front edge. Improve DeviceFrame documentation with individual device slides, Lumen content, finish controls, and copyable image, HTML, and iframe examples.
+
+- Add accessible WorldMap zoom in, zoom out, and reset controls across web adapters, with center-preserving scaling, native viewport scrolling, bounded zoom, and localized control labels. Split the dotted and solid documentation examples into independent framework code panels using Lumen semantic colors.
+
+- Restore the native selected-value label for SwiftUI pickers that do not provide a custom label, including theme menus on macOS.
+
+- Make the React command-center recipe filter results with local state, show an empty search result, and support arrow keys, Home, End, and Escape without an Astro runtime.
+
 ### Minor Changes
 
 - Add saved table views, inclusive amount/date ranges, controlled page selection and guarded review workflows. Ship installable React review, import reconciliation and record workspace recipes with synthetic interactive examples. Applications retain persistence, authorization, financial rules and command reconciliation.

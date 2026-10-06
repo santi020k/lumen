@@ -146,3 +146,16 @@ test('invalid controlled expansion state uses the existing invalid label without
     expect(root.container.queryAll(instance => instance.type === 'Text' && read(instance, 'children') === 'Invalid expansion')).toHaveLength(1)
   }
 })
+
+test('invalid controlled selections hide navigation instead of rendering malformed IDs', () => {
+  for (const value of [null, [], {}, new Set([7])]) {
+    const input = { selectedIds: new Set<string>() }
+
+    Object.defineProperty(input, 'selectedIds', { value, enumerable: true })
+    const root = render(<LumenTree label="Files" nodes={nodes} expandedIds={new Set(['r'])} onExpandedChange={vi.fn()} onSelectionChange={vi.fn()} invalidLabel="Invalid selection" {...input} />)
+
+    expect(root.container.queryAll(instance => instance.type === 'Checkbox')).toHaveLength(0)
+    expect(root.container.queryAll(instance => instance.type === 'Button')).toHaveLength(0)
+    expect(root.container.queryAll(instance => instance.type === 'Text' && read(instance, 'children') === 'Invalid selection')).toHaveLength(1)
+  }
+})
