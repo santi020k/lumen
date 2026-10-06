@@ -72,6 +72,10 @@
       "types": "./dist/virtual-list.d.ts",
       "import": "./dist/virtual-list.js"
     },
+    "./components/world-map": {
+      "types": "./dist/world-map.d.ts",
+      "import": "./dist/world-map.js"
+    },
     "./hooks": {
       "types": "./dist/hooks.d.ts",
       "import": "./dist/hooks.js"
@@ -88,6 +92,10 @@
     "./components/device-frame": {
       "types": "./dist/device-frame.d.ts",
       "import": "./dist/device-frame.js"
+    },
+    "./motion": {
+      "types": "./dist/motion.d.ts",
+      "import": "./dist/motion.js"
     }
   },
   "files": [
@@ -125,13 +133,20 @@
     "@vitest/coverage-v8": "catalog:",
     "esbuild": "catalog:",
     "jsdom": "catalog:",
+    "motion": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:"
   },
   "peerDependencies": {
-    "react": ">=19"
+    "react": ">=19",
+    "motion": "^14.0.0"
+  },
+  "peerDependenciesMeta": {
+    "motion": {
+      "optional": true
+    }
   },
   "engines": {
     "node": ">=22.12.0"

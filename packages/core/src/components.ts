@@ -185,7 +185,16 @@ export const lumenComponentNames = [
   'Histogram',
   'WaterfallChart',
   'ChangeSummary',
-  'FilterBar'
+  'FilterBar',
+  'ChartMotion',
+  'MotionGroup',
+  'VisualEffect',
+  'ApprovalCard',
+  'PromptComposer',
+  'SourceCitation',
+  'StreamMessage',
+  'ToolActivity',
+  'WorldMap'
 ] as const
 
 export type LumenComponentName = typeof lumenComponentNames[number]
@@ -198,6 +207,14 @@ export interface LumenComponentBehavior {
 }
 
 export const lumenComponentBehavior = {
+  ApprovalCard: { astro: 'ui-primitives', elements: 'registered-element', react: 'component' },
+  PromptComposer: { astro: 'ui-primitives', elements: 'registered-element', react: 'component' },
+  SourceCitation: { astro: 'none', elements: 'registered-element', react: 'component' },
+  StreamMessage: { astro: 'none', elements: 'registered-element', react: 'component' },
+  ToolActivity: { astro: 'none', elements: 'registered-element', react: 'component' },
+  ChartMotion: { astro: 'ui-primitives', elements: 'registered-element', react: 'component' },
+  MotionGroup: { astro: 'ui-primitives', elements: 'registered-element', react: 'component' },
+  VisualEffect: { astro: 'ui-primitives', elements: 'registered-element', react: 'component' },
   AmountField: { astro: 'ui-primitives', elements: 'registered-element', react: 'component' },
   Accordion: { astro: 'none', elements: 'registered-element', react: 'component' },
   Affix: { astro: 'none', elements: 'registered-element', react: 'component' },
@@ -289,6 +306,7 @@ export const lumenComponentBehavior = {
   HoverCard: { astro: 'ui-primitives', elements: 'registered-element', react: 'hook' },
   Icon: { astro: 'none', elements: 'registered-element', react: 'component' },
   DeviceFrame: { astro: 'none', elements: 'registered-element', react: 'component' },
+  WorldMap: { astro: 'ui-primitives', astroRuntimeBypass: 'Static map and highlighted country list remain visible without JavaScript.', elements: 'registered-element', react: 'component' },
   ImageComparison: { astro: 'ui-primitives', elements: 'registered-element', react: 'component' },
   Image: { astro: 'none', elements: 'registered-element', react: 'component' },
   Illustration: { astro: 'none', elements: 'registered-element', react: 'component' },

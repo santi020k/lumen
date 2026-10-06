@@ -2,6 +2,10 @@
 
 ## 4.0.0
 
+### Minor Changes
+
+- Add WorldMap for Astro, React, and Web Components with dotted and solid styles, highlighted countries, labeled markers, country selection, theme customization, and reduced motion. Ship public-domain country geometry behind an explicit core subpath, with no runtime requests or new dependencies.
+
 - Add DeviceFrame for laptop, desktop, iPhone-style, Android-style, and tablet demonstrations with
   slotted HTML, images, fixed iframe viewports, orientation, shell tones, and configurable screen sizes.
 

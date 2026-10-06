@@ -1,0 +1,6 @@
+---
+import { ChartMotion, LineChart } from '@santi020k/lumen-astro'
+
+const series = [{ id: 'completed', label: 'Completed tasks', data: [{ id: 'mon', x: 'Mon', y: 12 }, { id: 'tue', x: 'Tue', y: 18 }, { id: 'wed', x: 'Wed', y: 16 }] }]
+---
+<ChartMotion><LineChart series={series} heading="Weekly progress" /></ChartMotion>

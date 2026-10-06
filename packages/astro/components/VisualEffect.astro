@@ -1,0 +1,21 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+import { type LumenVisualEffectVariant, normalizeLumenEffectIntensity, resolveLumenAstroProps } from '@santi020k/lumen-core'
+
+interface Props extends HTMLAttributes<'div'> {
+  animated?: boolean
+  class?: string | null
+  className?: string
+  intensity?: number
+  variant?: LumenVisualEffectVariant
+}
+
+const { animated = false, class: classProp, className, intensity = 0.5, style, variant = 'mesh', ...rest } = Astro.props
+const { classList, passthrough } = resolveLumenAstroProps(rest, ['ui-visual-effect'], classProp, className)
+const effectStyle = `${typeof style === 'string' ? style : ''};--ui-effect-intensity:${normalizeLumenEffectIntensity(intensity)}`
+---
+
+<div class:list={classList} data-ui-visual-effect={variant} data-ui-effect-animated={String(animated)} style={effectStyle} {...passthrough}>
+  <slot />
+</div>

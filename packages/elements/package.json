@@ -63,6 +63,10 @@
     "./components/device-frame": {
       "types": "./dist/components/device-frame.d.ts",
       "import": "./dist/components/device-frame.js"
+    },
+    "./components/world-map": {
+      "types": "./dist/components/world-map.d.ts",
+      "import": "./dist/components/world-map.js"
     }
   },
   "files": [

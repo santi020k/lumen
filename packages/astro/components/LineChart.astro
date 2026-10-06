@@ -6,6 +6,7 @@ import {
   createLumenLineChartModel,
   formatLumenChartSummary,
   getLumenChartCategoryLabel,
+  getLumenChartMotionKey,
   getLumenChartToneClassName,
   hasLumenChartData,
   type LumenChartLabels,
@@ -226,11 +227,16 @@ class:list={['ui-line-chart__series', getLumenChartToneClassName(tone)]}
                 geometry.areaPaths.map(path => (
                   <path class="ui-line-chart__area" d={path} />
                 ))}
-              <path class="ui-line-chart__line" d={geometry.path} />
+              <path
+data-ui-chart-motion-key={JSON.stringify(['path', item.id])}
+class="ui-line-chart__line"
+d={geometry.path}
+              />
               {Number.isFinite(markerStep) &&
                 geometry.points.map((point, pointIndex) => pointIndex % markerStep === 0 && (
                   <circle
                     data-ui-chart-datum={pointActions[index]?.[pointIndex]?.serialized}
+                    data-ui-chart-motion-key={getLumenChartMotionKey(item.id, point)}
                     class="ui-line-chart__point"
                     cx={point.xCoordinate}
                     cy={point.yCoordinate}

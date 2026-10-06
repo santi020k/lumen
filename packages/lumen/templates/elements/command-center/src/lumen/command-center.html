@@ -1,0 +1,15 @@
+<section data-product-block="command" aria-label="Workspace commands">
+  <lumen-typography><h2>What would you like to do?</h2><p>Search with the keyboard, then choose a command.</p></lumen-typography>
+  <lumen-command><lumen-input type="search" aria-label="Search workspace commands" placeholder="Search commands…" ></lumen-input>
+    <button data-ui-command-item data-workspace-command="search" type="button">Search project documentation</button>
+    <button data-ui-command-item data-workspace-command="create" type="button">Create a task draft</button>
+    <button data-ui-command-item data-workspace-command="review" type="button">Review pending proposals</button>
+  </lumen-command><p role="status" data-block-status>Choose a command.</p>
+</section>
+<script type="module">
+  import { defineLumenElements } from '@santi020k/lumen-elements'
+  import { mountProductBlocks } from './product-blocks.js'
+  defineLumenElements()
+  const cleanup = mountProductBlocks(document)
+  window.addEventListener('pagehide', cleanup, { once: true })
+</script>

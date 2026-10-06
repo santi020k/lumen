@@ -196,6 +196,7 @@ describe('platform documentation', () => {
 
   test('maps new and legacy web routes to the correct contextual navigation', () => {
     expect(getDocsPlatform('/docs/web')).toBe('web')
+    expect(getDocsPlatform('/docs/visual-playground')).toBe('web')
     expect(getDocsPlatform('/docs/components/button')).toBe('web')
     expect(getDocsPlatform('/docs/frameworks/react')).toBe('web')
     expect(getDocsPlatform('/docs/react-native')).toBe('react-native')

@@ -6,6 +6,7 @@
 /* Cascade layers: consumer (unlayered) CSS always wins over Lumen styles.
  * Layer order also guarantees glass variants beat component base styles. */
 @layer lumen.tokens, lumen.base, lumen.components, lumen.glass;
+@import "./styles/world-map.css";
 
 @layer lumen.tokens {
 :root,
@@ -337,7 +338,8 @@
   .ui-tree,
   .ui-tree-grid,
   .ui-typography,
-  .ui-virtual-list
+  .ui-virtual-list,
+  .ui-world-map
 ) {
   box-sizing: border-box;
   font-family: var(--ui-font);
@@ -8491,6 +8493,7 @@ a.ui-pill:focus-visible {
     .ui-funnel-chart__bar, .ui-box-plot__whisker, .ui-box-plot__cap, .ui-box-plot__median { background: CanvasText; }
     .ui-box-plot__box, .ui-box-plot__outlier { border-color: CanvasText; background: Canvas; }
   }
+
 }
 
 /* Device silhouettes are decorative; screen children retain their native semantics. */
@@ -8515,3 +8518,38 @@ a.ui-pill:focus-visible {
 .ui-device-frame[data-device="tablet"] { max-width: 40rem; }
 
 .ui-device-frame__screen:has(> iframe) { overflow: hidden; }
+@layer lumen.components {
+  .ui-motion-group { position: relative; display: grid; gap: var(--ui-space-lg); }
+  .ui-visual-effect { display: block; position: relative; isolation: isolate; overflow: clip; border-radius: var(--ui-radius-lg); background: hsl(var(--surface)); color: hsl(var(--ink)); padding: var(--ui-space-xl); }
+  .ui-visual-effect::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; opacity: calc(var(--ui-effect-intensity, .5) * .4); }
+  [data-ui-visual-effect="mesh"]::before { background: radial-gradient(ellipse at 15% 20%, hsl(var(--brand)) 0, transparent 65%), radial-gradient(ellipse at 85% 80%, hsl(var(--accent)) 0, transparent 65%); }
+  [data-ui-visual-effect="aurora"]::before { inset: -35%; background: radial-gradient(ellipse at 25% 60%, hsl(var(--brand)) 0, transparent 55%), radial-gradient(ellipse at 75% 40%, hsl(var(--accent)) 0, transparent 55%); }
+  [data-ui-visual-effect="aurora"][data-ui-effect-animated="true"]::before { animation: ui-aurora 12s ease-in-out infinite alternate; }
+  [data-ui-visual-effect="spotlight"]::before { background: radial-gradient(circle at var(--ui-spotlight-x, 50%) var(--ui-spotlight-y, 50%), hsl(var(--brand)) 0, transparent 65%); }
+  [data-ui-visual-effect="grain"]::before { background: repeating-radial-gradient(circle at 23% 47%, hsl(var(--ink)) 0 1px, transparent 1px 3px); background-size: 7px 7px; opacity: calc(var(--ui-effect-intensity, .5) * .08); }
+  [data-ui-visual-effect="border"] { border: var(--ui-border-width) solid hsl(var(--line)); }
+  [data-ui-visual-effect="border"]::before { padding: 1px; border-radius: inherit; background: conic-gradient(from 45deg, hsl(var(--brand)), hsl(var(--accent)), hsl(var(--brand))); mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); mask-composite: exclude; }
+  [data-ui-visual-effect="draw"][data-ui-effect-animated="true"] :where(path, line, polyline)[pathLength="1"] { stroke-dasharray: 1; animation: ui-path-draw var(--ui-duration-slow, 240ms) var(--ui-ease, ease-out) both; }
+  .ui-prompt-composer { display: grid; gap: var(--ui-space-md); min-width: 0; }
+  .ui-prompt-composer__actions, .ui-stream-message__actions, .ui-approval-card__actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--ui-space-sm); }
+  .ui-stream-message { display: grid; gap: var(--ui-space-md); }
+  .ui-chart-motion, .ui-tool-activity { display: block; }
+  .ui-source-citation { overflow-wrap: anywhere; }
+  .ui-approval-card { display: grid; gap: var(--ui-space-lg); }
+  .ui-tabs__moving-indicator { position: absolute; left: 0; bottom: 0; height: 2px; background: hsl(var(--brand)); pointer-events: none; }
+  [data-ui-chart-motion] .ui-chart__empty { animation: ui-chart-state var(--ui-duration, 160ms) ease-out; }
+  @supports (animation-timeline: view()) {
+    [data-ui-visual-effect="depth"][data-ui-effect-animated="true"]::before { background: radial-gradient(ellipse at 30% 40%, hsl(var(--brand)), transparent 65%); animation: ui-effect-depth linear both; animation-timeline: view(); }
+  }
+  @keyframes ui-aurora { to { transform: translate(4%, -4%) rotate(8deg); } }
+  @keyframes ui-path-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+  @keyframes ui-effect-depth { from { transform: translateY(-5%); opacity: 0; } to { transform: translateY(5%); } }
+  @keyframes ui-chart-state { from { opacity: 0; } to { opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) {
+    .ui-visual-effect::before, .ui-visual-effect :where(path, line, polyline), [data-ui-chart-motion] .ui-chart__empty { animation: none !important; }
+    .ui-tabs__moving-indicator { transition: none !important; }
+  }
+  :is([data-ui-motion="reduce"].ui-visual-effect, [data-ui-motion="reduce"] .ui-visual-effect)::before, :is([data-ui-motion="reduce"].ui-visual-effect, [data-ui-motion="reduce"] .ui-visual-effect) :where(path, line, polyline), [data-ui-motion="reduce"] .ui-chart__empty { animation: none !important; }
+  [data-ui-motion="reduce"] .ui-tabs__moving-indicator { transition: none !important; }
+  @media (forced-colors: active) { .ui-visual-effect::before { display: none; } }
+}

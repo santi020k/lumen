@@ -1017,3 +1017,18 @@ import { DeviceFrame } from '@santi020k/lumen-react/components/device-frame'
 ```
 
 This component uses a client effect to maintain the scaled iframe viewport.
+## Visual interactions
+
+`MotionGroup`, `ChartMotion`, `VisualEffect`, `PromptComposer`, `StreamMessage`, `SourceCitation`,
+`ToolActivity`, and `ApprovalCard` are exported by the main package. `Tabs` accepts `indicator` for
+an optional moving selection underline. See [visual interactions](../../docs/visual-interactions.md).
+Install `motion@^14.0.0` only when using `@santi020k/lumen-react/motion`; its Motion wrappers remain
+separate from normal imports.
+
+## World map
+
+WorldMap supports highlighted countries, location markers, dotted or solid styles, country selection,
+and theme customization. Import geography explicitly from
+`@santi020k/lumen-core/world-map-data`; it is excluded from root exports. See the
+[WorldMap usage guide](../../docs/world-map.md) for adapter examples, events, localization,
+accessibility, and customization.

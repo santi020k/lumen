@@ -848,6 +848,7 @@ const keyboardInteractionsByComponent: Partial<
   ComboChart: keyboardRows(['Tab', 'Focus the actions disclosure and its native buttons in document order.'], ['Enter, Space', 'Toggle the disclosure or activate the focused datum button. Actions remain available when the data table is hidden.']),
   Heatmap: keyboardRows(['Tab', 'Focus the actions disclosure and its native buttons in document order.'], ['Enter, Space', 'Toggle the disclosure or activate the focused datum button. Actions remain available when the data table is hidden.']),
   RangeChart: keyboardRows(['Tab', 'Focus the actions disclosure and its native buttons in document order.'], ['Enter, Space', 'Toggle the disclosure or activate the focused datum button. Actions remain available when the data table is hidden.']),
+  WorldMap: keyboardRows(['Tab', 'Focus the native country chooser.'], ['Arrow keys', 'Choose a country using the native select.']),
   ImageComparison: keyboardRows(['Arrow keys', 'Adjust the reveal using the native range control; horizontal direction follows writing direction.'], ['Home / End', 'Reveal the full before / after image.']),
   Calendar: keyboardRows(
     [
@@ -1158,6 +1159,7 @@ const runtimeEventsByComponent: Partial<
   Heatmap: runtimeEvents.filter(event => event.name === 'ui:chart-datum-activate'),
   RangeChart: runtimeEvents.filter(event => event.name === 'ui:chart-datum-activate'),
   AttachmentPreview: runtimeEvents.filter(event => event.name === 'ui:attachment-preview-change'),
+  WorldMap: [{ name: 'ui:world-map-select', target: 'WorldMap root', detail: '{ countryId: string, highlighted: boolean, label: string }', when: 'A different country is selected by pointer or native chooser.' }],
   ImageComparison: runtimeEvents.filter(event => event.name === 'ui:image-comparison-change'),
   CopyButton: runtimeEvents.filter(event => event.name.startsWith('ui:copy-')),
   DataTable: runtimeEvents.filter(
@@ -1804,6 +1806,19 @@ const apiReferenceByComponent = {
       'size', '"default" | "sm" | "lg" | "xl"', '"default"', 'Controls the icon box size.'
     )
   ],
+  WorldMap: [
+    apiRow('countries', 'readonly LumenWorldMapCountryGeometry[]', 'required', 'Import lumenWorldMapCountries explicitly from @santi020k/lumen-core/world-map-data. Custom geometry uses the fixed 1000 × 400 projection.'),
+    apiRow('label', 'string', 'required', 'Provides the accessible name for the map image.'),
+    apiRow('highlightedCountries', 'readonly string[]', '[]', 'Country codes to highlight; unknown codes and duplicates are dropped. Elements also accepts highlighted-countries as JSON.'),
+    apiRow('variant', '"dotted" | "solid"', '"dotted"', 'Chooses the map appearance.'),
+    apiRow('markers', 'readonly LumenWorldMapMarker[]', '[]', 'Labeled points with id, latitude and longitude. Invalid or off-map points are dropped.'),
+    apiRow('labels / listLabel', 'Record<string, string> / string', 'country names / "Choose a country"', 'Localizes country names and the native chooser. Elements uses labels JSON and list-label.'),
+    apiRow('selectedCountry', 'string', '-', 'Initial selection in Astro, reflected selected-country in Elements, controlled selection in React; React also supports defaultSelectedCountry.'),
+    apiRow('interactive / animated', 'boolean', 'true', 'Enable country selection and motion separately. Reduced motion disables animation automatically.'),
+    apiRow('onCountrySelect', '(detail: LumenWorldMapSelectDetail) => void', '-', 'React callback; Astro and Elements emit ui:world-map-select with countryId, highlighted and label.'),
+    apiRow('heading / description / caption', 'string', '-', 'Optional Astro and React figure content. Elements supports authored content outside the map.'),
+    apiRow('CSS variables', '--ui-world-map-land / --ui-world-map-highlight / --ui-world-map-marker / --ui-world-map-surface', 'semantic tokens', 'Accept any CSS color to customize the map while preserving theme defaults.')
+  ],
   ImageComparison: [
     apiRow('label', 'string', 'required', 'Provides the visible label for the native comparison range control.'),
     apiRow('before / after', 'named Astro slots | ReactNode props | slotted child nodes', 'required', 'Supplies media with matching framing and meaningful alternative text. Media is clipped, never resized as the range moves.'),
@@ -2447,6 +2462,7 @@ const apiReferenceByComponent = {
     )
   ],
   Tabs: [
+    apiRow('indicator', 'boolean', 'false', 'Adds a decorative moving marker to the selected tab. System and local reduced motion keep selection immediate.'),
     apiRow(
       '[role="tablist"]', 'child container', 'required', 'Groups the tab controls.'
     ),
@@ -2969,6 +2985,57 @@ const apiReferenceByComponent = {
     apiRow('label, resultLabel', 'string', 'Filters, optional', 'Names filters and announces a complete localized result count.'),
     apiRow('pending, open', 'boolean', 'false, true', 'Marks pending results and controls the native disclosure.'),
     apiRow('default slot, active slot, actions slot', 'content', 'optional', 'Composes public search/select controls, removable filters, and reset actions. The application owns requests and persistence.')
+  ],
+  ChartMotion: [
+    apiRow('duration', '\'fast\' | \'standard\' | \'slow\'', 'standard', 'Shared timing for decorative SVG updates. Accessible data updates immediately.')
+  ],
+  MotionGroup: [
+    apiRow('duration', '"fast" | "standard" | "slow"', '"standard"', 'Uses the shared duration and easing tokens for keyed layout updates.'),
+    apiRow('enterExit', 'boolean', 'true', 'Adds finite entrance and exit fades. Elements uses enter-exit="false" to disable them.'),
+    apiRow('data-ui-motion-key', 'unique string on each direct child', 'required for animated items', 'Preserves identity while applications add, remove, or reorder direct children. Duplicate identities skip ambiguous animation.'),
+    apiRow('UIPrimitives / reduced motion', 'Astro runtime / system preference', '-', 'Astro loads the controller only when the group exists. React and Elements own their lifecycle. Reduced motion keeps immediate DOM changes.')
+  ],
+  VisualEffect: [
+    apiRow('variant', '"mesh" | "aurora" | "spotlight" | "grain" | "border" | "draw" | "depth"', '"mesh"', 'Selects a token-based decorative treatment behind ordinary readable content.'),
+    apiRow('intensity', 'number (0–1)', '0.5', 'Bounds effect strength; nonfinite values use the default.'),
+    apiRow('animated', 'boolean', 'false', 'Opts into aurora movement, SVG path drawing, or scroll-linked depth. System and local reduced motion disable animation.'),
+    apiRow('draw children', 'SVG paths with pathLength="1"', '-', 'Normalizes drawing lengths without measuring or rewriting application-owned SVG paths.'),
+    apiRow('UIPrimitives', 'Astro runtime', 'spotlight only', 'Enhances pointer tracking. Other variants retain CSS or static fallbacks without a runtime.')
+  ],
+  ApprovalCard: [
+    apiRow('requestId', 'string', 'required', 'Identifies the application-owned proposal. Elements uses request-id.'),
+    apiRow('label, statusLabel', 'string', 'required', 'Names the proposal and gives localized, visible decision status.'),
+    apiRow('status', '"pending" | "approved" | "rejected"', '"pending"', 'Application-controlled decision state; completed proposals disable their actions.'),
+    apiRow('disabled', 'boolean', 'false', 'Disables both decision controls.'),
+    apiRow('approveLabel, rejectLabel', 'string', 'Approve, Reject', 'Localizes action labels.'),
+    apiRow('onResponse / ui:approval-response', '{ requestId: string; response: "approve" | "reject" }', '-', 'React callback or cancelable Astro/Elements runtime event. A decision event never authorizes or executes the actual operation.')
+  ],
+  PromptComposer: [
+    apiRow('label, sendLabel, stopLabel', 'string', 'Message, Send, Stop', 'Localizes the textarea and actions.'),
+    apiRow('value / defaultValue', 'string', 'empty', 'React supports controlled value and initial defaultValue. Astro value initializes the native textarea; Elements exposes a mutable value property.'),
+    apiRow('maxLength', 'positive integer', '4000', 'Bounds submission and the native textarea. Elements uses max-length. Blank or over-limit messages cannot submit.'),
+    apiRow('pending, disabled', 'boolean', 'false', 'Pending prevents another submission and reveals Stop. Disabled also prevents editing and stopping.'),
+    apiRow('submitOnEnter', 'boolean', 'false', 'Opts into Enter submission. Shift, other modifiers, composition, and canceled keys preserve normal textarea behavior.'),
+    apiRow('onPromptSubmit / ui:prompt-submit', '{ text: string }', '-', 'React callback or cancelable runtime event carrying trimmed text. Applications own transport and validation.'),
+    apiRow('onStop / ui:prompt-stop', 'callback / event', '-', 'Requests application-owned cancellation; the library does not abort a network request itself.'),
+    apiRow('action', 'native form destination', '-', 'An explicit action retains native POST submission. Without an action, UIPrimitives prevents navigation and emits the event bridge.')
+  ],
+  SourceCitation: [
+    apiRow('href, label', 'string', 'required', 'Provides a meaningful source link. Unsafe destinations render a text label without a link.'),
+    apiRow('destination policy', 'HTTP(S) URL or local absolute path', '-', 'Rejects executable schemes, credentials, protocol-relative paths, control characters, and backslashes.'),
+    apiRow('target', 'native anchor target', 'same context', 'External new-tab links carry noopener noreferrer.')
+  ],
+  StreamMessage: [
+    apiRow('label', 'string', 'Assistant', 'Names the message article.'),
+    apiRow('status', '"idle" | "streaming" | "complete" | "error" | "canceled"', '"idle"', 'Marks the content busy during streaming without announcing every token.'),
+    apiRow('statusLabel', 'string', 'required', 'Announces a localized state change separately from streamed content.'),
+    apiRow('content / text', 'children / Elements text property', '-', 'Applications render or append safely parsed content. Elements text replaces the content with plain text; the library never parses provider HTML.'),
+    apiRow('actions, sources', 'named Astro/Elements slots or ReactNode props', '-', 'Composes retry, stop, copy, and source citation controls owned by the application.')
+  ],
+  ToolActivity: [
+    apiRow('label, statusLabel', 'string', 'required', 'Names the actual application tool step and its localized status.'),
+    apiRow('status', '"queued" | "running" | "success" | "error" | "canceled"', '"queued"', 'Application-owned execution state.'),
+    apiRow('open', 'boolean', 'false', 'Controls a native keyboard-operable disclosure. Children describe observable tool results.')
   ],
   VisuallyHidden: [
     apiRow(
@@ -3786,6 +3853,7 @@ export const componentDocs: ComponentDoc[] = (
       'Styles accessible images while preserving Astro, Next.js, and browser-native optimization.',
       '<Image alt="Lumen UI logo" layout="fixed" src="/logo.svg" />'
     ],
+
     [
       'DeviceFrame',
       'Data display',
@@ -4499,6 +4567,20 @@ export const componentDocs: ComponentDoc[] = (
       'Data display',
       'Composes dashboard filtering, active criteria, and result announcements without owning queries.',
       '<FilterBar label="Filters" resultLabel="12 records"><SearchField aria-label="Search records" /></FilterBar>'
+    ],
+    ['ChartMotion', 'Data display', 'Animates stable SVG marks without delaying accessible chart values.', '<ChartMotion><LineChart heading="Weekly progress" series={[{ id: "completed", label: "Completed tasks", data: [{ id: "mon", x: "Mon", y: 12 }, { id: "tue", x: "Tue", y: 18 }] }]} /></ChartMotion>'],
+    ['MotionGroup', 'Layout', 'Coordinates keyed list entrances, exits, and changes in position.', '<MotionGroup><Card data-ui-motion-key="overview">Overview</Card><Card data-ui-motion-key="activity">Activity</Card></MotionGroup>'],
+    ['VisualEffect', 'Brand', 'Adds optional token-based backgrounds, highlights, and drawing effects.', '<VisualEffect variant="mesh"><Typography>Build a calmer workspace.</Typography></VisualEffect>'],
+    ['ApprovalCard', 'Feedback', 'Presents an application-owned proposal and explicit decision controls.', '<ApprovalCard label="Review proposal" requestId="demo-proposal" statusLabel="Awaiting your decision"><p>Apply this change to the demonstration project.</p></ApprovalCard>'],
+    ['PromptComposer', 'Forms', 'Composes prompts with explicit submission and cancellation events.', '<PromptComposer label="Ask about your project" />'],
+    ['SourceCitation', 'Data display', 'Links to a safely validated source with a meaningful label.', '<SourceCitation href="https://lumen.santi020k.com/docs" label="Lumen documentation" />'],
+    ['StreamMessage', 'Data display', 'Separates streamed content from accessible state announcements.', '<StreamMessage status="complete" statusLabel="Response complete"><p>Your release preview is ready.</p></StreamMessage>'],
+    ['ToolActivity', 'Feedback', 'Discloses observable tool activity and application-owned results.', '<ToolActivity label="Read project documentation" status="success" statusLabel="Documentation retrieved"><p>Two relevant guides are available.</p></ToolActivity>'],
+    [
+      'WorldMap',
+      'Data display',
+      'Highlights countries and labeled locations on a reusable animated dotted or solid world map.',
+      '<WorldMap countries={lumenWorldMapCountries} label="Sample destinations" highlightedCountries={["CO", "JP"]} />'
     ]
   ] as const satisfies readonly ComponentDocTuple[]
 ).map(([name, category, summary, example]) => ({

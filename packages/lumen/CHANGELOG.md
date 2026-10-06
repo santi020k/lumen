@@ -2,6 +2,17 @@
 
 ## 4.0.0
 
+### Minor Changes
+
+- Add coordinated keyed motion, optional semantic visual effects, chart continuity, and application-owned AI surfaces across web adapters. Include installable product blocks, an interactive visual playground, and optional Motion and Rive integration entry points.
+
+- Add WorldMap for Astro, React, and Web Components with dotted and solid styles, highlighted countries, labeled markers, country selection, theme customization, and reduced motion. Ship public-domain country geometry behind an explicit core subpath, with no runtime requests or new dependencies.
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @santi020k/lumen-core@4.1.0
+
 ### Patch Changes
 
 - [#95](https://github.com/santi020k/lumen/pull/95) [`b5cff90`](https://github.com/santi020k/lumen/commit/b5cff90c682a36b7cc5d51b7f9bc06c34dab2a37) Thanks [@santi020k](https://github.com/santi020k)! - Recognize Astro runtime import aliases when checking missing or duplicate mounts. Ignore type-only

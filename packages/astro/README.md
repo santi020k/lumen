@@ -724,6 +724,10 @@ and outliers. All retain missing values and expose exact data. See the
 Media controllers for ImageComparison and FileUpload load only when matching components are present.
 Keep mounting `UIPrimitives` once; no additional consumer setup is required.
 
+## Visual interactions and product blocks
+
+See [visual interactions](../../docs/visual-interactions.md) for keyed motion, semantic effects,
+chart continuity, AI surfaces, optional SDK integrations, and the four installable product recipes.
 Import `@santi020k/lumen/styles/motion.css` alongside the base stylesheet to opt into native
 disclosure height transitions and the CSS reduction scope. This small optional stylesheet works
 with Astro, React, and Elements and keeps those effects out of the default stylesheet. The presence
@@ -755,3 +759,11 @@ import { DeviceFrame } from '@santi020k/lumen-astro'
 ```
 
 The component bundles its resize behavior; `UIPrimitives` is not required for this frame.
+
+## World map
+
+WorldMap supports highlighted countries, location markers, dotted or solid styles, country selection,
+and theme customization. Import geography explicitly from
+`@santi020k/lumen-core/world-map-data`; it is excluded from root exports. See the
+[WorldMap usage guide](../../docs/world-map.md) for adapter examples, events, localization,
+accessibility, and customization.

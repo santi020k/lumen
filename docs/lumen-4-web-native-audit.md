@@ -16,8 +16,8 @@ supported Apple form factors. Wear and WidgetKit intentionally use separate, sma
   editing remains deferred by the user; its plain model and limited SwiftUI/Compose subset do not
   close that gap.
 
-Reviewed 184 web entries: 93 counterparts, 61 compositions,
-29 platform/host boundaries and 1 deferred gap. The 23 new counterparts have dedicated native
+Reviewed 193 web entries: 93 counterparts, 65 compositions,
+33 platform/host boundaries and 2 gaps. The 23 new counterparts have dedicated native
 contracts, controlled examples and focused behavior checks. Full catalog captures and combined
 validation are tracked in [the completion plan](native-catalog-parity-plan.md); this source audit
 alone does not qualify a release. MultiSelect and RangeSlider remain additional shared contracts.
@@ -224,3 +224,12 @@ or store update is implied by this audit.
 | `WaterfallChart` | Counterpart | `waterfall-chart` |
 | `ChangeSummary` | Composition | `list-row` plus host slots/state; no matching standalone export. |
 | `FilterBar` | Composition | `search-field` plus host slots/state; no matching standalone export. |
+| `ChartMotion` | Platform / host | Web SVG interpolation; native chart animation remains adapter-owned. |
+| `MotionGroup` | Platform / host | Web keyed DOM geometry; native layout transitions remain adapter-owned. |
+| `VisualEffect` | Platform / host | Web CSS and pointer effects; native rendering uses platform drawing APIs. |
+| `ApprovalCard` | Composition | `surface` plus consumer-owned approval state and native actions. |
+| `PromptComposer` | Composition | `text-field` plus consumer-owned submission, stop and transport state. |
+| `SourceCitation` | Platform / host | Named native links and OS URL opening plus consumer-owned citation metadata. |
+| `StreamMessage` | Composition | `surface` plus consumer-owned streamed content and accessible status. |
+| `ToolActivity` | Composition | `surface` plus consumer-owned disclosure and tool status. |
+| `WorldMap` | Gap | Web-only SVG visualization; native map renderers are not implemented. Consumers own travel data and routing. |

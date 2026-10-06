@@ -21,6 +21,7 @@ const [
 ] = await Promise.all([
   Promise.all(['define', 'consumer-behaviors'].map(name => readFile(new URL(`../packages/elements/src/${name}.ts`, import.meta.url), 'utf8'))).then(sources => sources.join('\n')),
   Promise.all([
+    'ai-surfaces',
     'badge',
     'button',
     'card',
@@ -29,12 +30,14 @@ const [
     'dashboard',
     'device-frame',
     'image-comparison',
-    'virtual-list'
+    'world-map',
+    'virtual-list',
+    'visual-interactions'
   ].map(name => readFile(
     new URL(`../packages/elements/src/components/${name}.ts`, import.meta.url),
     'utf8'
   ))).then(sources => sources.join('\n')),
-  Promise.all(['device-frame', 'amount-field', 'attachments', 'bullet-chart', 'comparison-chart', 'combobox', 'components', 'data-table', 'expanded-charts', 'dashboard', 'change-summary', 'image-comparison', 'interval-charts', 'virtual-list'].map(name => readFile(
+  Promise.all(['ai-surfaces', 'device-frame', 'amount-field', 'attachments', 'bullet-chart', 'comparison-chart', 'combobox', 'components', 'data-table', 'expanded-charts', 'dashboard', 'change-summary', 'image-comparison', 'world-map', 'interval-charts', 'virtual-list', 'visual-interactions'].map(name => readFile(
     new URL(`../packages/react/src/${name}.tsx`, import.meta.url), 'utf8'
   ))).then(sources => sources.join('\n')),
   Promise.all(['hooks', 'rich-text-editor'].map(name => readFile(
