@@ -92,7 +92,9 @@ The gallery includes every primary public React Native component: foundations, i
 selection, feedback, structured content, visual treatments, controlled overlays, operating-system
 sharing, pull-to-refresh, and static or collapsible bottom navigation. Composite contracts such as
 `LumenAlertTitle` and `LumenAlertDescription` appear inside their parent example. Search uses the
-same names as the public API matrix and keeps every example interactive.
+same names as the public API matrix and keeps every example interactive. The Empty state example
+owns a small `hasProject` toggle: pressing Create project swaps the initial `LumenEmptyState` for a
+`LumenCard` showing a sample project, and Reset example restores the initial empty view.
 
 On web, add `?component=<name>` to open a screenshot-ready focused view. Use `category=<name>` for
 category discovery, `destination=home|examples|components|settings` to open an application
@@ -101,6 +103,7 @@ destination, `pattern=release|health|profile|workspace|motion` to select an Exam
 
 ```text
 http://localhost:8081/?component=Alert%20dialog
+http://localhost:8081/?component=Empty%20state
 http://localhost:8081/?component=Illustration
 http://localhost:8081/?component=Navigation%20bar
 http://localhost:8081/?destination=examples&state=error

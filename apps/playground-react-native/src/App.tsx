@@ -1230,6 +1230,46 @@ const ChartExamples = ({
   </>
 )
 
+const EmptyStateExample = (): ReactElement => {
+  const [hasProject, setHasProject] = useState(false)
+
+  if (hasProject) {
+    return (
+      <LumenCard style={styles.stack} testID="component-empty-state">
+        <LumenText variant="label">My first project</LumenText>
+        <LumenText tone="muted">Projects you create will show their latest activity here.</LumenText>
+        <LumenButton
+          intent="secondary"
+          onPress={() => {
+            setHasProject(false)
+          }}
+        >
+          Reset example
+        </LumenButton>
+      </LumenCard>
+    )
+  }
+
+  return (
+    <LumenEmptyState
+      actions={(
+        <LumenButton
+          intent="primary"
+          onPress={() => {
+            setHasProject(true)
+          }}
+        >
+          Create project
+        </LumenButton>
+      )}
+      description="Projects you create will appear here with their latest activity."
+      graphic={<LumenIcon decorative name="folder-plus" size="lg" />}
+      testID="component-empty-state"
+      title="No projects yet"
+    />
+  )
+}
+
 interface CatalogFocusPanelProps {
   focusedComponent: string | undefined
   onClear: () => void
@@ -1925,6 +1965,15 @@ const Playground = ({
               reference="REQ-4F82"
               title="Could not load projects"
             />
+          </ComponentSection>
+        </Visibility>
+
+        <Visibility visible={isVisible('Empty state')}>
+          <ComponentSection
+            description="A recoverable empty collection that fills with a sample result and resets on demand."
+            title="Empty state"
+          >
+            <EmptyStateExample />
           </ComponentSection>
         </Visibility>
 
