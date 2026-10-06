@@ -9,6 +9,7 @@ import { afterEach, expect, test, vi } from 'vitest'
 
 import type { LumenFormWorkflow } from './form-workflow.js'
 import { isLumenFormControl, useLumenAsyncCheck, useLumenBeforeUnload, useLumenFieldArray, useLumenFormSteps, useLumenFormWorkflow } from './form-workflow.js'
+import { useFormValidation } from './hooks.js'
 
 Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true })
 const containers: HTMLElement[] = []
@@ -534,4 +535,204 @@ test('portaled associated controls validate once per native event', async () => 
 
     expect(validateControl).toHaveBeenCalledTimes(1)
   }
+})
+
+test.each([false, true])('a real text edit validates once with portal=%s', async portalMode => {
+  const portal = document.createElement('div')
+
+  document.body.append(portal)
+
+  containers.push(portal)
+
+  const validateControl = vi.fn(() => '')
+  const { container } = await mount(() => {
+    const workflow = useLumenFormWorkflow({ validateControl })
+    const field = createElement('input', { name: 'edited', form: 'real-edit-owner' })
+
+    return createElement('form', { ...workflow.formProps, id: 'real-edit-owner' }, portalMode ? createPortal(field, portal) : field)
+  })
+  const field = control(portalMode ? portal : container, 'input')
+  const descriptor = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')
+
+  if (!descriptor?.set) throw new Error('Missing native value setter')
+
+  validateControl.mockClear()
+
+  await act(async () => {
+    descriptor.set?.call(field, 'real edit')
+
+    field.dispatchEvent(new Event('input', { bubbles: true }))
+
+    await Promise.resolve()
+  })
+
+  expect(validateControl).toHaveBeenCalledTimes(1)
+})
+
+test('portaled edits belonging to another form do not expose dependency errors', async () => {
+  const portal = document.createElement('div')
+
+  document.body.append(portal)
+
+  containers.push(portal)
+
+  let current: LumenFormWorkflow | undefined
+  const validateControl = vi.fn(() => 'Required')
+  const { container } = await mount(() => {
+    current = useLumenFormWorkflow({ validateControl, dependencies: { changed: ['dependent'] } })
+
+    return createElement('div', {}, createElement('form', { id: 'other-owner' }), createElement('form', { ...current.formProps, id: 'logical-owner' }, createElement('input', { name: 'dependent', required: true }), createPortal(createElement('input', { name: 'changed', form: 'other-owner' }), portal)))
+  })
+
+  for (const type of ['input', 'change']) {
+    validateControl.mockClear()
+
+    await act(async () => {
+      control(portal, 'input').dispatchEvent(new Event(type, { bubbles: true }))
+
+      await Promise.resolve()
+    })
+
+    if (!current) throw new Error('Missing owner workflow')
+
+    expect(current.errors).toEqual([])
+
+    expect(validateControl).not.toHaveBeenCalled()
+  }
+
+  expect(control(container, '[name="dependent"]').form?.id).toBe('logical-owner')
+})
+
+test('legacy validation includes owned external required fields before submitting', async () => {
+  let current: ReturnType<typeof useFormValidation> | undefined
+  const { container } = await mount(() => {
+    current = useFormValidation()
+
+    return createElement('div', {}, createElement('form', { ...current.formProps, id: 'validation-owner' }), createElement('input', { name: 'required', required: true, form: 'validation-owner' }), createElement('fieldset', { disabled: true }, createElement('input', { name: 'disabled', required: true, form: 'validation-owner' })))
+  })
+  const form = container.querySelector('form')
+
+  if (!form || !current) throw new Error('Missing validation fixture')
+
+  expect(form.noValidate).toBe(true)
+
+  expect(current.getControls().map(field => field.name)).toEqual(['required'])
+
+  const submit = new Event('submit', { bubbles: true, cancelable: true })
+
+  await act(async () => {
+    form.dispatchEvent(submit)
+
+    await Promise.resolve()
+  })
+
+  expect(submit.defaultPrevented).toBe(true)
+
+  expect(document.activeElement).toBe(control(container, '[name="required"]'))
+})
+
+test('form control guards accept adopted nodes and reject non-DOM lookalikes', () => {
+  const frame = document.createElement('iframe')
+
+  document.body.append(frame)
+
+  try {
+    const owner = frame.contentDocument
+
+    if (!owner) throw new Error('Missing adopted form document')
+
+    const field = document.createElement('input')
+
+    owner.body.append(field)
+
+    expect(isLumenFormControl(field)).toBe(true)
+
+    const fake = new EventTarget()
+
+    Object.assign(fake, { namespaceURI: 'http://www.w3.org/1999/xhtml', localName: 'input' })
+
+    expect(isLumenFormControl(fake)).toBe(false)
+  } finally {
+    frame.remove()
+  }
+})
+
+test('dirty state preserves adopted checkbox, multiple select and file details', async () => {
+  const frame = document.createElement('iframe')
+  document.body.append(frame)
+  containers.push(frame)
+  const doc = frame.contentDocument
+  if (!doc) throw new Error('Missing adopted workflow document')
+  const container = doc.createElement('div')
+  doc.body.append(container)
+  const root = createRoot(container)
+  roots.push(root)
+  let current: LumenFormWorkflow | undefined
+  const Fixture = () => {
+    current = useLumenFormWorkflow()
+    return createElement('form', { ...current.formProps, id: 'adopted-owner' })
+  }
+  await act(async () => {
+    root.render(createElement(Fixture))
+    await Promise.resolve()
+  })
+  const get = () => {
+    if (!current) throw new Error('Missing adopted workflow')
+    return current
+  }
+  const checkbox = document.createElement('input')
+  checkbox.type = 'checkbox'
+  checkbox.name = 'check'
+  const select = document.createElement('select')
+  select.name = 'choices'
+  select.multiple = true
+  for (const value of ['one', 'two']) {
+    const option = document.createElement('option')
+    option.value = value
+    option.selected = value === 'one'
+    select.append(option)
+  }
+  const file = document.createElement('input')
+  file.type = 'file'
+  file.name = 'upload'
+  let files: File[] = []
+  Object.defineProperty(file, 'files', { get: () => files })
+  for (const control of [checkbox, select, file]) {
+    control.setAttribute('form', 'adopted-owner')
+    doc.body.append(doc.adoptNode(control))
+  }
+  await act(async () => {
+    get().markSaved()
+    await Promise.resolve()
+  })
+  expect(get().dirty).toBe(false)
+  await act(async () => {
+    checkbox.checked = true
+    get().refresh()
+    await Promise.resolve()
+  })
+  expect(get().dirty).toBe(true)
+  await act(async () => {
+    get().markSaved()
+    await Promise.resolve()
+  })
+  const second = select.options.item(1)
+  if (!second) throw new Error('Missing second adopted option')
+  await act(async () => {
+    second.selected = true
+    get().refresh()
+    await Promise.resolve()
+  })
+  expect(select.value).toBe('one')
+  expect(get().dirty).toBe(true)
+  await act(async () => {
+    get().markSaved()
+    await Promise.resolve()
+  })
+  await act(async () => {
+    files = [new File(['content'], 'example.txt', { lastModified: 123 })]
+    get().refresh()
+    await Promise.resolve()
+  })
+  expect(get().dirty).toBe(true)
 })

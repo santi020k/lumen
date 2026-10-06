@@ -265,3 +265,77 @@ test.each([null, 1, 'columns', {}, [null], [{ key: 1 }], [{ key: '' }], [{ key: 
     }
   }
 )
+
+test.each([{}, 'beta', 3, null, ['beta', 3], new Array<string>(1)])('malformed expansion state is safely collapsed: %j', async state => {
+  for (const prop of ['expandedRowIds', 'defaultExpandedRowIds']) {
+    await run(() => {
+      const view: unknown = Reflect.apply(createElement, undefined, [DataTable, {
+        key: prop, columns, rows, layout: 'records', renderDetails: () => 'Details', [prop]: state
+      }])
+
+      if (!isValidElement(view)) throw new Error('Expected table element')
+
+      root.render(view)
+    })
+
+    expect(container.querySelector('[data-ui-datatable-detail]')).toBeNull()
+
+    expect(element('[data-value="beta"] button').getAttribute('aria-expanded')).toBe('false')
+
+    await click('[data-value="beta"] button')
+
+    expect(Boolean(container.querySelector('[data-ui-datatable-detail]'))).toBe(prop === 'defaultExpandedRowIds')
+  }
+})
+
+test.each([{}, 'sort', 3, { key: 'count', direction: 'sideways' }, { key: 3, direction: 'ascending' }])(
+  'malformed sort state preserves order and aria: %j', async state => {
+    for (const prop of ['sort', 'defaultSort']) {
+      await run(() => {
+        const view: unknown = Reflect.apply(createElement, undefined, [DataTable, {
+          key: prop, columns, rows, [prop]: state
+        }])
+
+        if (!isValidElement(view)) throw new Error('Expected table element')
+
+        root.render(view)
+      })
+
+      expect([...container.querySelectorAll('tbody tr')].map(row => row.getAttribute('data-value'))).toEqual(['beta', 'alpha'])
+
+      expect(element('th:nth-child(2)').getAttribute('aria-sort')).toBe('none')
+    }
+  }
+)
+
+test('record and detail keys remain distinct through expansion and sorting', async () => {
+  const errors = vi.spyOn(console, 'error').mockImplementation(() => undefined)
+
+  try {
+    await render({ rows: [{ id: 'a', name: 'Alpha' }, { id: 'a-details', name: 'Beta' }], defaultExpandedRowIds: ['a'] })
+
+    await click('thead th:first-child button')
+
+    expect(container.querySelectorAll('[data-ui-datatable-row]')).toHaveLength(2)
+
+    expect(container.querySelectorAll('[data-ui-datatable-detail]')).toHaveLength(1)
+
+    expect(errors).not.toHaveBeenCalled()
+  } finally {
+    errors.mockRestore()
+  }
+})
+
+test('detail identifiers safely encode lone Unicode surrogates without collisions', async () => {
+  await render({ rows: [{ id: '\ud800', name: 'Surrogate' }, { id: 'd800', name: 'Hex' }], defaultExpandedRowIds: ['\ud800', 'd800'] })
+
+  const ids = [...container.querySelectorAll('[data-ui-datatable-detail] section')].map(section => section.id)
+
+  expect(ids).toHaveLength(2)
+
+  expect(new Set(ids).size).toBe(2)
+
+  for (const button of container.querySelectorAll('[aria-expanded="true"]')) {
+    expect(ids).toContain(button.getAttribute('aria-controls'))
+  }
+})

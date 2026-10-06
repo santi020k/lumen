@@ -9142,7 +9142,7 @@ class LumenFileUploadBehaviorElement extends LumenElement {
 
     this.addEventListener(
       'dragover', event => {
-        if (input.disabled) return
+        if (input.matches(':disabled')) return
 
         event.preventDefault()
 
@@ -9164,7 +9164,7 @@ class LumenFileUploadBehaviorElement extends LumenElement {
 
     this.addEventListener(
       'drop', event => {
-        if (input.disabled) return
+        if (input.matches(':disabled')) return
 
         event.preventDefault()
 

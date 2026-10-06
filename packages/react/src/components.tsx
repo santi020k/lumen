@@ -2790,20 +2790,22 @@ export const DatePicker = ({
   useEffect(() => {
     if (!isOpen) return
 
+    const root = rootRef.current
+
+    if (!root) return
+
+    const owner = root.ownerDocument
+
     const handlePointerDown = (event: MouseEvent) => {
-      if (
-        event.target instanceof Node &&
-        !rootRef.current?.contains(event.target)
-      )
-        setOpen(false)
+      if (!event.composedPath().includes(root)) setOpen(false)
     }
 
-    document.addEventListener('mousedown', handlePointerDown)
+    owner.addEventListener('mousedown', handlePointerDown)
 
     rootRef.current?.querySelector<HTMLElement>('[role="gridcell"][tabindex="0"]')?.focus({ preventScroll: true })
 
     return () => {
-      document.removeEventListener('mousedown', handlePointerDown)
+      owner.removeEventListener('mousedown', handlePointerDown)
     }
   }, [isOpen, setOpen])
 

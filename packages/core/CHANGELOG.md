@@ -2,6 +2,10 @@
 
 ## 4.0.0
 
+- Follow the current amount form owner on reset, respect inherited disabled state, and preserve adopted attachment previews.
+
+- Exclude effectively disabled combobox options from keyboard selection.
+
 - Preserve combobox pointer selection, focus and visibility for nodes adopted into a different document.
 
 - Validate decoded scatter annotations and use the owning document for combobox events and lifecycle resources.

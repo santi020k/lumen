@@ -2,6 +2,8 @@
 
 ## 4.0.0
 
+- Ignore file drops while a fieldset disables the upload control, preserving the first-legend exception.
+
 - Preserve amount input identifiers authored after mount and track replacement children across reconnects.
 
 - Clear generated amount input identifiers when host IDs are removed while restoring authored input IDs.

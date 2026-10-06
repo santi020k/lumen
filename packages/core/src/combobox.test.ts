@@ -545,3 +545,28 @@ test('combobox handles parent-created controls adopted into an iframe', async ()
 
   await Promise.resolve()
 })
+
+test('combobox keyboard selection skips effectively disabled fieldset options', () => {
+  const { root, input, list } = fixture()
+  const option = list.querySelector('button')
+
+  if (!option) throw new Error('Missing fieldset option')
+
+  const fieldset = document.createElement('fieldset')
+
+  fieldset.disabled = true
+
+  option.replaceWith(fieldset)
+
+  fieldset.append(option)
+
+  expect(option.hasAttribute('disabled')).toBe(false)
+
+  press(input, 'ArrowDown')
+
+  press(input, 'Enter')
+
+  expect(input.value).toBe('react')
+
+  expect(root.querySelector('[aria-selected="true"]')).toBeNull()
+})

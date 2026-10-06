@@ -99,3 +99,59 @@ test('recognizes cached failures and leaves no listeners or observers after dest
   await Promise.resolve()
   expect(root.dataset.state).toBe('error')
 })
+
+test('adopted attachment images remain usable through replacement, error and load', async () => {
+  const frame = document.createElement('iframe')
+
+  document.body.append(frame)
+
+  const owner = frame.contentDocument
+
+  if (!owner) throw new Error('Missing attachment iframe')
+
+  const root = document.createElement('div')
+
+  root.setAttribute('data-ui-attachment-preview', '')
+
+  root.innerHTML = '<img data-ui-attachment-preview-image src="/loaded.png">'
+
+  const image = root.querySelector('img')
+
+  if (!image) throw new Error('Missing adopted image')
+
+  Object.defineProperties(image, { complete: { value: true }, naturalWidth: { value: 64 } })
+
+  owner.body.append(root)
+
+  const controller = createLumenAttachmentPreviewController(root)
+
+  try {
+    expect(root.dataset.state).toBe('ready')
+
+    const replacement = owner.createElement('img')
+
+    replacement.setAttribute('data-ui-attachment-preview-image', '')
+
+    replacement.src = '/replacement.png'
+
+    Object.defineProperties(replacement, { complete: { value: true }, naturalWidth: { value: 64 } })
+
+    image.replaceWith(replacement)
+
+    await Promise.resolve()
+
+    expect(root.dataset.state).toBe('ready')
+
+    replacement.dispatchEvent(new Event('error'))
+
+    expect(root.dataset.state).toBe('error')
+
+    replacement.dispatchEvent(new Event('load'))
+
+    expect(root.dataset.state).toBe('ready')
+  } finally {
+    controller.destroy()
+
+    frame.remove()
+  }
+})

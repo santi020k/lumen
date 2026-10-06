@@ -38,9 +38,9 @@ export const createLumenAttachmentPreviewController = (root: HTMLElement): Lumen
 
   const currentImage = (): HTMLImageElement | undefined => {
     const candidate = owned('[data-ui-attachment-preview-image]')
-    const ImageConstructor = root.ownerDocument.defaultView?.HTMLImageElement
+    const isImage = (element: HTMLElement | undefined): element is HTMLImageElement => element?.namespaceURI === 'http://www.w3.org/1999/xhtml' && element.localName === 'img'
 
-    return ImageConstructor && candidate instanceof ImageConstructor ? candidate : undefined
+    return isImage(candidate) ? candidate : undefined
   }
 
   let image = currentImage()

@@ -13,21 +13,12 @@ export interface LumenFormIssue {
 }
 
 export const isLumenFormControl = (element: EventTarget): element is LumenFormControl => {
-  if (!('ownerDocument' in element)) return false
-
-  const owner = element.ownerDocument
-
-  if (typeof owner !== 'object' || owner === null || !('defaultView' in owner)) return false
-
-  const view = owner.defaultView ?? globalThis
-
-  if (typeof view !== 'object') return false
-
-  return ['HTMLInputElement', 'HTMLSelectElement', 'HTMLTextAreaElement'].some(name => {
-    const Constructor: unknown = Reflect.get(view, name)
-
-    return typeof Constructor === 'function' && element instanceof Constructor
-  })
+  try {
+    return 'namespaceURI' in element && element.namespaceURI === 'http://www.w3.org/1999/xhtml' &&
+      Element.prototype.matches.call(element, 'input, select, textarea')
+  } catch {
+    return false
+  }
 }
 
 const controlsOf = (form: HTMLFormElement): LumenFormControl[] => Array.from(form.elements).filter(isLumenFormControl)
@@ -44,14 +35,13 @@ const fingerprintInput = (control: HTMLInputElement): unknown[] => {
   return [control.name, control.value]
 }
 
+const isInputControl = (control: LumenFormControl): control is HTMLInputElement => control.localName === 'input'
+const isSelectControl = (control: LumenFormControl): control is HTMLSelectElement => control.localName === 'select'
+
 const fingerprintControl = (control: LumenFormControl): unknown[] => {
-  const view = control.ownerDocument.defaultView
-  const Input = view?.HTMLInputElement
-  const Select = view?.HTMLSelectElement
+  if (isInputControl(control)) return fingerprintInput(control)
 
-  if (Input && control instanceof Input) return fingerprintInput(control)
-
-  if (Select && control instanceof Select && control.multiple) {
+  if (isSelectControl(control) && control.multiple) {
     return [control.name, Array.from(control.selectedOptions, option => option.value)]
   }
 
@@ -287,9 +277,14 @@ export const useLumenFormWorkflow = ({
   }, [])
 
   const update = (event: SyntheticEvent<HTMLFormElement>) => {
+    if (handledEventsRef.current.has(event.nativeEvent)) return
+
     handledEventsRef.current.add(event.nativeEvent)
 
     const form = event.currentTarget
+
+    if (isLumenFormControl(event.target) && event.target.form !== form) return
+
     const name = isLumenFormControl(event.target) ? getControlName(event.target) : undefined
 
     queueMicrotask(() => {

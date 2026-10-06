@@ -412,3 +412,54 @@ test('date controls hydrate deterministically in a localized document without an
     document.documentElement.lang = originalLanguage
   }
 })
+
+test('iframe DatePicker dismisses on owning-document outside presses and cleans up', async () => {
+  const frame = document.createElement('iframe')
+
+  document.body.append(frame)
+
+  const owner = frame.contentDocument
+  const view = owner?.defaultView
+
+  if (!owner || !view) throw new Error('Missing picker iframe')
+
+  const target = owner.createElement('div')
+
+  owner.body.append(target)
+
+  const iframeRoot = createRoot(target)
+
+  try {
+    await run(() => {
+      iframeRoot.render(createElement(DatePicker, { defaultValue: '2026-09-10' }))
+    })
+
+    const trigger = target.querySelector<HTMLButtonElement>('[data-ui-date-picker-trigger]')
+
+    if (!trigger) throw new Error('Missing iframe trigger')
+
+    await run(() => {
+      trigger.click()
+    })
+
+    expect(trigger.getAttribute('aria-expanded')).toBe('true')
+
+    await run(() => owner.body.dispatchEvent(new view.MouseEvent('mousedown', { bubbles: true })))
+
+    expect(trigger.getAttribute('aria-expanded')).toBe('false')
+
+    await run(() => {
+      iframeRoot.unmount()
+    })
+
+    owner.body.dispatchEvent(new view.MouseEvent('mousedown', { bubbles: true }))
+
+    expect(target.childElementCount).toBe(0)
+  } finally {
+    await run(() => {
+      iframeRoot.unmount()
+    })
+
+    frame.remove()
+  }
+})

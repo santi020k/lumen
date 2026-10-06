@@ -42,6 +42,7 @@ import { isLumenDateBoundsValid as isCalendarBoundsValid, parseLumenDate as pars
 
 import { useDialogLifecycle } from './dialog-lifecycle.js'
 import { type FloatingPanelOptions, useFloatingPanel } from './floating-panel.js'
+import { isLumenFormControl } from './form-workflow.js'
 import { useSelectFormReset } from './select-form.js'
 
 export { useToast } from './toast-context.js'
@@ -1658,9 +1659,7 @@ const validityMessageAttributes = [
 
 const isNativeFormControl = (
   element: EventTarget | null
-): element is NativeFormControl => element instanceof HTMLInputElement ||
-  element instanceof HTMLSelectElement ||
-  element instanceof HTMLTextAreaElement
+): element is NativeFormControl => element !== null && isLumenFormControl(element)
 
 const getFieldRoot = (control: HTMLElement): HTMLElement | null => control.closest<HTMLElement>('.ui-field, [data-ui-field]')
 
@@ -1761,8 +1760,9 @@ export const useFormValidation = ({
       if (!form) return []
 
       return [
-        ...form.querySelectorAll<NativeFormControl>(formControlSelector)
-      ].filter(control => control.form === form && !control.disabled)
+        ...form.elements
+      ].filter(isNativeFormControl).filter(control => control.matches(formControlSelector) &&
+        control.form === form && !control.matches(':disabled'))
     }, []
   )
 

@@ -196,7 +196,7 @@ export const createLumenAmountFieldController = (
   }
 
   const update = (event: Event) => {
-    if (composing || input.disabled || input.readOnly) return
+    if (composing || input.matches(':disabled') || input.readOnly) return
 
     const logical = logicalCount(input.value.slice(0, input.selectionStart ?? input.value.length))
     const parsed = parseLumenAmountDraft(input.value, options, 'inputType' in event && event.inputType === 'insertFromPaste')
@@ -229,10 +229,12 @@ export const createLumenAmountFieldController = (
   }
 
   const reset = (event: Event) => {
+    if (event.target !== input.form) return
+
     clearTimeout(resetTimer)
 
     resetTimer = setTimeout(() => {
-      if (destroyed || event.defaultPrevented) return
+      if (destroyed || event.defaultPrevented || event.target !== input.form) return
 
       draft = initial
 
@@ -250,9 +252,9 @@ export const createLumenAmountFieldController = (
 
   input.addEventListener('compositionend', endComposition)
 
-  const form = input.form
+  const eventRoot = input.getRootNode()
 
-  form?.addEventListener('reset', reset)
+  eventRoot.addEventListener('reset', reset, { capture: true })
 
   return {
     setValue: value => {
@@ -271,7 +273,7 @@ export const createLumenAmountFieldController = (
 
       input.removeEventListener('compositionend', endComposition)
 
-      form?.removeEventListener('reset', reset)
+      eventRoot.removeEventListener('reset', reset, { capture: true })
     }
   }
 }

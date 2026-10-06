@@ -159,13 +159,24 @@ export interface DataTableProps extends ComponentPropsWithoutRef<'div'> {
 
 const emptyIds: readonly string[] = []
 
+const validIds = (value: unknown): readonly string[] => (
+  Array.isArray(value) && Array.from(value).every(id => typeof id === 'string') ? value : emptyIds
+)
+
+const validSort = (value: unknown): DataTableSort | null => (
+  isRecord(value) && typeof value.key === 'string' &&
+  (value.direction === 'ascending' || value.direction === 'descending') ?
+    { key: value.key, direction: value.direction } :
+    null
+)
+
 const useExpansion = ({
   defaultExpandedRowIds, expandedRowIds, onExpandedRowIdsChange
 }: { defaultExpandedRowIds: DataTableProps['defaultExpandedRowIds']
   expandedRowIds: DataTableProps['expandedRowIds']
   onExpandedRowIdsChange: DataTableProps['onExpandedRowIdsChange'] }) => {
-  const [uncontrolled, setUncontrolled] = useState(defaultExpandedRowIds ?? emptyIds)
-  const expanded = expandedRowIds ?? uncontrolled
+  const [uncontrolled, setUncontrolled] = useState(() => validIds(defaultExpandedRowIds))
+  const expanded = expandedRowIds === undefined ? uncontrolled : validIds(expandedRowIds)
 
   const toggleDetails = (id: string) => {
     const next = expanded.includes(id) ? expanded.filter(value => value !== id) : [...expanded, id]
@@ -242,10 +253,10 @@ const renderRow = (ctx: DataTableRecordContext) => {
   const { row, index, columns, expanded, detailsId, renderDetails } = ctx
   const rowId = rowValue(row, index)
   const open = expanded.includes(rowId)
-  const id = `${detailsId}-${encodeURIComponent(rowId)}`
+  const id = `${detailsId}-${Array.from(rowId, character => character.codePointAt(0)?.toString(16)).join('-')}`
 
   const record = (
-    <tr data-ui-datatable-row data-value={rowId} key={rowId} role="row">
+    <tr data-ui-datatable-row data-value={rowId} key={`record:${rowId}`} role="row">
       {columns.map((column, columnIndex) => renderCell(ctx, column, columnIndex, rowId, open, id))}
     </tr>
   )
@@ -253,7 +264,7 @@ const renderRow = (ctx: DataTableRecordContext) => {
   if (!open || !renderDetails) return [record]
 
   const detail = (
-    <tr key={`${rowId}-details`} role="row" data-ui-datatable-detail>
+    <tr key={`detail:${rowId}`} role="row" data-ui-datatable-detail>
       <td colSpan={columns.length} role="cell" className="ui-table__cell--wide">
         <section id={id} aria-label={`${ctx.detailsLabel ?? 'Record details'}: ${rowId}`}>{renderDetails(row)}</section>
       </td>
@@ -296,8 +307,8 @@ export const DataTable = ({
 }: DataTableProps) => {
   const columns = validColumns(rawColumns)
   const rows = isRows(rawRows) ? rawRows : noRows
-  const [uncontrolledSort, setUncontrolledSort] = useState<DataTableSort | null>(defaultSort)
-  const sort = controlledSort === undefined ? uncontrolledSort : controlledSort
+  const [uncontrolledSort, setUncontrolledSort] = useState<DataTableSort | null>(() => validSort(defaultSort))
+  const sort = validSort(controlledSort === undefined ? uncontrolledSort : controlledSort)
 
   const { expanded, toggleDetails } = useExpansion({
     defaultExpandedRowIds, expandedRowIds, onExpandedRowIdsChange

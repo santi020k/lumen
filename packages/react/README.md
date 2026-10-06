@@ -975,7 +975,9 @@ Use the optional `@santi020k/lumen-react/forms` entry point for validation, depe
 unsaved edit tracking, step navigation, stable repeatable rows, and cancelable asynchronous checks.
 Controls associated from outside the form through `form="id"` participate in edit tracking,
 blur validation and dependent-field validation. Portaled controls use React form callbacks without
-repeating validation through native document listeners. Events from controls owned by another form are ignored.
+repeating validation through native document listeners. Each native edit is processed once, and
+controls associated with another form are ignored even when React bubbles their portal events.
+Adopted native controls retain checkbox, multiple-selection and file details in dirty-state tracking.
 
 See [composable form workflows](../../docs/powerful-forms.md). Applications retain schemas, financial
 rules, requests, draft storage, and authorization. Do not combine validation owners on one form.

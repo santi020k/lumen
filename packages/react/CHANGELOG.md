@@ -2,6 +2,10 @@
 
 ## 4.0.0
 
+- Validate externally associated required controls and fingerprint adopted checkbox, selection and file state. Preserve collision-safe record details for all string IDs and dismiss date pickers in their owning document.
+
+- Reject malformed table expansion/sort state and handle each owned native form edit once, including portal controls.
+
 - Deduplicate React portal form events against external native listeners.
 
 - Observe externally associated form controls and keep omitted date locales deterministic across server rendering and hydration.

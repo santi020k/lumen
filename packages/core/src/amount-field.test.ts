@@ -124,3 +124,106 @@ describe('exact amount presentation', () => {
     form.remove()
   })
 })
+
+test('amount resets follow current external form ownership and respect cancellation and disposal', async () => {
+  const container = document.createElement('div')
+
+  container.innerHTML = '<form id="amount-a"></form><form id="amount-b"></form><span default-value="1"><input data-ui-amount-input form="amount-a"><input data-ui-amount-value type="hidden" form="amount-a"></span>'
+
+  document.body.append(container)
+
+  const root = container.querySelector('span')
+  const input = container.querySelector('input')
+  const submission = container.querySelector<HTMLInputElement>('[data-ui-amount-value]')
+  const a = container.querySelector<HTMLFormElement>('#amount-a')
+  const b = container.querySelector<HTMLFormElement>('#amount-b')
+
+  if (!root || !input || !submission || !a || !b) throw new Error('Missing amount ownership fixture')
+
+  const controller = createLumenAmountFieldController(root)
+  const settle = () => new Promise<void>(resolve => setTimeout(resolve, 0))
+
+  try {
+    input.setAttribute('form', 'amount-b')
+
+    submission.setAttribute('form', 'amount-b')
+
+    controller.setValue('9')
+
+    a.reset()
+
+    await settle()
+
+    expect(submission.value).toBe('9')
+
+    b.reset()
+
+    await settle()
+
+    expect(input.value).toBe('1')
+
+    expect(submission.value).toBe('1')
+
+    controller.setValue('7')
+
+    b.addEventListener('reset', event => {
+      event.preventDefault()
+    }, { once: true })
+
+    b.reset()
+
+    await settle()
+
+    expect(submission.value).toBe('7')
+
+    controller.setValue('8')
+
+    b.reset()
+
+    controller.destroy()
+
+    await settle()
+
+    expect(submission.value).toBe('8')
+  } finally {
+    controller.destroy()
+
+    container.remove()
+  }
+})
+
+test.each([false, true])('amount edits honor disabled fieldset state and first legend=%s', legend => {
+  const fieldset = document.createElement('fieldset')
+
+  fieldset.disabled = true
+
+  fieldset.innerHTML = '<legend></legend><span default-value="1"><input data-ui-amount-input><input data-ui-amount-value type="hidden"></span>'
+
+  const root = fieldset.querySelector('span')
+  const input = fieldset.querySelector('input')
+  const submission = fieldset.querySelector<HTMLInputElement>('[data-ui-amount-value]')
+  const firstLegend = fieldset.querySelector('legend')
+
+  if (!root || !input || !submission || !firstLegend) throw new Error('Missing disabled amount fixture')
+
+  if (legend) firstLegend.append(root)
+
+  document.body.append(fieldset)
+
+  const changes: string[] = []
+  const controller = createLumenAmountFieldController(root, detail => changes.push(detail.draft))
+
+  try {
+    input.value = '3'
+
+    input.dispatchEvent(new Event('input'))
+
+    expect(submission.value).toBe(legend ? '3' : '1')
+
+    expect(changes).toEqual(legend ? ['3'] : [])
+  } finally {
+    controller.destroy()
+
+    fieldset.remove()
+  }
+})

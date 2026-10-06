@@ -54,3 +54,43 @@ test('preserves cancelled resets and ignores disabled drops', async () => {
   expect(drop.defaultPrevented).toBe(false)
   expect(summary.textContent).toBe('uno.txt')
 })
+
+test.each([false, true])('file drops respect disabled fieldset state and first legend=%s', legend => {
+  const { form, input, upload, summary } = mount()
+  const fieldset = document.createElement('fieldset')
+  const firstLegend = document.createElement('legend')
+
+  fieldset.disabled = true
+
+  fieldset.append(firstLegend)
+
+  form.append(fieldset)
+
+  if (legend) firstLegend.append(upload)
+  else fieldset.append(upload)
+
+  let files: File[] = []
+
+  Object.defineProperty(input, 'files', {
+    configurable: true,
+    get: () => files,
+    set: (value: File[]) => {
+      files = value
+    }
+  })
+
+  const drag = new Event('dragover', { bubbles: true, cancelable: true })
+  const drop = new Event('drop', { bubbles: true, cancelable: true })
+
+  Object.defineProperty(drop, 'dataTransfer', { value: { files: [new File(['example'], 'selected.txt')] } })
+
+  upload.dispatchEvent(drag)
+
+  upload.dispatchEvent(drop)
+
+  expect(drag.defaultPrevented).toBe(legend)
+
+  expect(drop.defaultPrevented).toBe(legend)
+
+  expect(summary.textContent).toBe(legend ? 'selected.txt' : '')
+})

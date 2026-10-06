@@ -72,7 +72,7 @@ export const createLumenComboboxController = (root: HTMLElement): LumenComboboxC
   const editable = (): boolean => !input.matches(':disabled') && !input.readOnly
 
   const available = (item: HTMLElement): boolean => !item.hidden &&
-    !item.hasAttribute('disabled') && item.getAttribute('aria-disabled') !== 'true'
+    !item.matches(':disabled, [disabled]') && item.getAttribute('aria-disabled') !== 'true'
 
   const activate = (item?: HTMLElement): void => {
     active = item
