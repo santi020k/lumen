@@ -4,18 +4,17 @@ interface DeviceExample {
   device: LumenDeviceFrameDevice
   label: string
   detail: string
-  content: 'iframe' | 'image' | 'html'
   viewport: string
   orientation?: LumenDeviceFrameOrientation
 }
 
 export const deviceExamples = [
-  { device: 'macbook-pro', label: 'MacBook Pro', detail: 'A notched display, rounded lid, and substantial front edge.', content: 'iframe', viewport: '1280 × 800' },
-  { device: 'macbook-air', label: 'MacBook Air', detail: 'A slim lid, tapered deck, and recessed center grip.', content: 'iframe', viewport: '1280 × 800' },
-  { device: 'imac', label: 'iMac', detail: 'A wide canvas, sculpted chin, and curved aluminum stand.', content: 'iframe', viewport: '1440 × 810' },
-  { device: 'iphone', label: 'iPhone', detail: 'Inset glass, shaped notch, and individually modeled side controls.', content: 'image', viewport: '390 × 844' },
-  { device: 'pixel', label: 'Google Pixel', detail: 'A punch-hole camera, soft corners, and a clean side rail.', content: 'html', viewport: '412 × 915' },
-  { device: 'ipad-pro', label: 'iPad Pro', detail: 'Flat edges, even bezels, and a landscape camera. No Home button.', content: 'iframe', viewport: '1194 × 834', orientation: 'landscape' }
+  { device: 'macbook-pro', label: 'MacBook Pro', detail: 'A notched display, rounded lid, and substantial front edge.', viewport: '1280 × 800' },
+  { device: 'macbook-air', label: 'MacBook Air', detail: 'A slim lid, tapered deck, and recessed center grip.', viewport: '1280 × 800' },
+  { device: 'imac', label: 'iMac', detail: 'A wide canvas, sculpted chin, and curved aluminum stand.', viewport: '1440 × 810' },
+  { device: 'iphone', label: 'iPhone', detail: 'Inset glass, shaped notch, and individually modeled side controls.', viewport: '390 × 844' },
+  { device: 'pixel', label: 'Google Pixel', detail: 'A punch-hole camera, soft corners, and a clean side rail.', viewport: '412 × 915' },
+  { device: 'ipad-pro', label: 'iPad Pro', detail: 'Flat edges, even bezels, and a landscape camera. No Home button.', viewport: '1194 × 834', orientation: 'landscape' }
 ] as const satisfies readonly DeviceExample[]
 
 export const deviceFrameQuickStart = `---
