@@ -11,6 +11,7 @@ import {
 } from '../data/native-components'
 import type { DocsPlatformId } from '../data/platforms'
 import { getPlatformGuide, productPlatformGuides } from '../data/platforms'
+import { visualGuideHref, visualGuides } from '../data/visual-guides'
 import { toSlug } from '../lib/routes'
 
 interface Props {
@@ -43,7 +44,8 @@ const webFoundationLinks = [
   ['Icons', '/docs/icons'],
   ['Brand icons', '/docs/brand-icons'],
   ['Theme playground', '/docs/theme-playground'],
-  ['Visual playground', '/docs/visual-playground'],
+  ['Visual guides & playground', '/docs/visual-playground'],
+  ...visualGuides.map(guide => [guide.label, visualGuideHref(guide.id)] as const),
   ['Motion playground', '/docs/motion-playground']
 ] as const
 

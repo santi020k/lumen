@@ -1,0 +1,43 @@
+---
+import '@santi020k/lumen/layers.css'
+import '@santi020k/lumen/styles/motion.css'
+import '../styles/visual-guides.css'
+
+import type { VisualGuideId } from '../data/visual-guide-sections'
+
+interface Props { section?: VisualGuideId }
+
+const { section } = Astro.props
+---
+<div data-visual-interactions-demo data-section={section}><p>Loading the interactive workbench…</p></div>
+<script>
+  import { createElement } from 'react'
+  import { createRoot, type Root } from 'react-dom/client'
+
+  import { isVisualGuideId } from '../data/visual-guide-sections'
+  import { VisualInteractionsDemo } from '../lib/visual-interactions-demo'
+
+  let root: Root | undefined
+
+  const mount = () => {
+    const container = document.querySelector<HTMLElement>('[data-visual-interactions-demo]')
+
+    if (!container || root) return
+
+    const section = container.dataset.section
+
+    root = createRoot(container)
+
+    root.render(createElement(VisualInteractionsDemo, isVisualGuideId(section) ? { section } : {}))
+  }
+
+  mount()
+
+  document.addEventListener('astro:page-load', mount)
+
+  document.addEventListener('astro:before-swap', () => {
+    root?.unmount()
+
+    root = undefined
+  })
+</script>

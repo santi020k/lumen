@@ -1,10 +1,10 @@
 ---
-import '@santi020k/lumen/layers.css'
-import '@santi020k/lumen/styles/motion.css'
-
 import { Code, Link, Typography } from '@santi020k/lumen-astro'
 
 import DocsPageHero from '../../components/DocsPageHero.astro'
+import VisualGuideDirectory from '../../components/VisualGuideDirectory.astro'
+import VisualGuideNavigation from '../../components/VisualGuideNavigation.astro'
+import VisualWorkbench from '../../components/VisualWorkbench.astro'
 import DocsLayout from '../../layouts/DocsLayout.astro'
 ---
 
@@ -13,93 +13,12 @@ import DocsLayout from '../../layouts/DocsLayout.astro'
     compact
     eyebrow="Interactive web workbench"
     title="Make interfaces feel connected."
-    description="Try motion, effects, and AI states on real Lumen components. Compare reduced motion and copy framework examples."
+    description="Start with a focused guide, copy a working example, then explore the full workbench below."
     stats={[{ label: 'New primitives', value: 8 }, { label: 'Visual effects', value: 7 }, { label: 'Product recipes', value: 4 }]}
   />
-  <div data-visual-interactions-demo><p>Loading the interactive workbench…</p></div>
+  <VisualGuideNavigation />
+  <VisualGuideDirectory />
+  <VisualWorkbench />
   <Typography><h2>Install only what you use</h2><p>MotionGroup uses browser animation APIs. VisualEffect defaults to a static treatment. Mount <Link href="/docs/frameworks/astro">UIPrimitives</Link> once in Astro; register custom elements once in Elements.</p></Typography>
   <Code variant="block" language="bash" copy code="lumen add MotionGroup --target astro\nlumen add VisualEffect --target react\nlumen add PromptComposer --target elements" />
 </DocsLayout>
-
-<script>
-  import { createElement } from 'react'
-  import { createRoot, type Root } from 'react-dom/client'
-
-  import { VisualInteractionsDemo } from '../../lib/visual-interactions-demo'
-
-  let root: Root | undefined
-
-  const mount = () => {
-    const container = document.querySelector<HTMLElement>('[data-visual-interactions-demo]')
-
-    if (!container || root) return
-
-    root = createRoot(container)
-
-    root.render(createElement(VisualInteractionsDemo))
-  }
-
-  mount()
-
-  document.addEventListener('astro:page-load', mount)
-
-  document.addEventListener('astro:before-swap', () => {
-    root?.unmount()
-
-    root = undefined
-  })
-</script>
-
-<style is:global>
-  .visual-workbench { margin-block: var(--ui-space-section); }
-  .visual-workbench section { min-width: 0; }
-  .visual-workbench section + section { border-top: 1px solid hsl(var(--line)); padding-top: var(--ui-space-section); }
-  .visual-section-heading { margin-bottom: var(--ui-space-group); }
-  .visual-section-heading h2 { margin: var(--ui-space-related) 0; font-size: clamp(1.5rem, 2.5vw, 1.875rem); font-weight: 650; line-height: 1.25; }
-  .docs-shell .visual-section-heading h2[id] { scroll-margin-top: calc(var(--docs-sticky-header-height, 10rem) + var(--docs-sticky-navigation-height, var(--docs-anchor-navigation-fallback)) + 3rem); }
-  .visual-section-heading p { max-width: 44rem; margin: 0; color: hsl(var(--ink-soft)); font-size: .9375rem; line-height: 1.7; }
-  .visual-control-panel { padding: var(--ui-space-group); }
-  .visual-controls { align-items: end; }
-  .visual-controls .ui-field { flex: 0 1 12rem; }
-  .visual-effects-controls .ui-field { flex: 1 1 8rem; min-width: 0; }
-  .visual-controls .ui-label { font-size: .8125rem; }
-  .visual-controls .ui-button { flex-shrink: 0; }
-  .visual-demo-grid, .visual-example-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--ui-space-group); }
-  .visual-comparison { padding: var(--ui-space-group); }
-  .visual-comparison h3 { margin: 0; font-size: .9375rem; font-weight: 650; line-height: 1.5; }
-  .visual-comparison > p { margin: 0; color: hsl(var(--ink-muted)); font-size: .8125rem; line-height: 1.6; }
-  .visual-motion-list { display: grid; gap: var(--ui-space-related); }
-  .visual-motion-list > .ui-card { padding: var(--ui-space-related); box-shadow: none; }
-  .visual-motion-list .ui-typography { padding: var(--ui-space-related); font-size: .875rem; }
-  .visual-example-grid > .ui-card { padding: var(--ui-space-group); }
-  .visual-example-grid h3 { margin: 0; font-size: 1rem; line-height: 1.5; }
-  .visual-example-grid p { margin: 0; font-size: .875rem; line-height: 1.7; color: hsl(var(--ink-soft)); }
-  .visual-workbench .ui-visual-effect { min-height: 16rem; padding: var(--ui-space-group); display: grid; align-content: center; }
-  .visual-workbench .ui-visual-effect h3 { font-size: 1rem; margin-bottom: var(--ui-space-related); }
-  .visual-workbench .ui-visual-effect p { font-size: .875rem; line-height: 1.7; }
-  .visual-workbench .ui-visual-effect svg { max-height: 8rem; width: 100%; }
-  /* Amplify the workbench preview without changing the library's calm defaults. */
-  .visual-effect-preview[data-ui-visual-effect="aurora"]::before {
-    opacity: calc(var(--ui-effect-intensity, .8) * .75);
-    background: radial-gradient(ellipse at 20% 70%, hsl(var(--brand) / .8), transparent 50%), radial-gradient(ellipse at 80% 30%, hsl(var(--accent) / .8), transparent 50%);
-  }
-  .visual-effect-preview[data-ui-visual-effect="aurora"][data-ui-effect-animated="true"]::before {
-    animation: visual-aurora var(--visual-effect-duration, 4s) ease-in-out infinite alternate;
-    animation-play-state: var(--visual-effect-play-state, paused);
-  }
-  .visual-effect-preview[data-ui-effect-animated="true"]::before,
-  .visual-effect-preview[data-ui-effect-animated="true"] path[pathLength="1"] {
-    animation-play-state: var(--visual-effect-play-state, paused);
-  }
-  @keyframes visual-aurora {
-    from { transform: translate(-12%, 8%) rotate(-12deg) scale(.9); }
-    to { transform: translate(12%, -8%) rotate(12deg) scale(1.1); }
-  }
-  .visual-feedback { color: hsl(var(--ink-soft)); font-size: .8125rem; line-height: 1.6; }
-  @media (max-width: 720px) {
-    .visual-demo-grid, .visual-example-grid { grid-template-columns: minmax(0, 1fr); }
-    .visual-controls .ui-field { flex-basis: 100%; }
-    .visual-controls .ui-input { max-width: 100%; }
-    .visual-controls .ui-stack--horizontal { width: 100%; }
-  }
-</style>

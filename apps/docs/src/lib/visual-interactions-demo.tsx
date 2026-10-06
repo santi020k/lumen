@@ -8,6 +8,7 @@ import { CommandCenterRecipe } from '../../../../packages/lumen/templates/react/
 import { FeaturePreviewRecipe } from '../../../../packages/lumen/templates/react/feature-preview/src/lumen/feature-preview'
 import { GuidedOnboardingRecipe } from '../../../../packages/lumen/templates/react/guided-onboarding/src/lumen/guided-onboarding'
 import { InteractivePricingRecipe } from '../../../../packages/lumen/templates/react/interactive-pricing/src/lumen/interactive-pricing'
+import type { VisualGuideId } from '../data/visual-guide-sections'
 
 const initialItems = ['Research', 'Prototype', 'Review']
 const reply = 'This is a local demonstration. Your application controls the model, requests, streaming, and authorization.'
@@ -579,65 +580,77 @@ const AiWorkbench = () => {
   )
 }
 
-export const VisualInteractionsDemo = () => (
+const showVisualGuide = (section: VisualGuideId | undefined, id: VisualGuideId) => !section || section === id
+
+export const VisualInteractionsDemo = ({ section }: { section?: VisualGuideId }) => (
   <Stack gap="section" className="visual-workbench">
-    <section aria-labelledby="motion-workbench">
-      <header className="visual-section-heading">
-        <Badge variant="outline">01 · Motion</Badge>
-        <Typography>
-          <h2 id="motion-workbench">Coordinated motion</h2>
-          <p>
-            Reorder, add, or remove a task. Compare the animation with an immediate update,
-            then try transitions and feedback.
-          </p>
-        </Typography>
-      </header>
-      <MotionWorkbench />
-    </section>
-    <section aria-labelledby="effects-workbench">
-      <header className="visual-section-heading">
-        <Badge variant="outline">02 · Effects</Badge>
-        <Typography>
-          <h2 id="effects-workbench">Visual effects</h2>
-          <p>Choose a treatment and adjust its intensity. Animation starts only when you enable it.</p>
-        </Typography>
-      </header>
-      <EffectsWorkbench />
-    </section>
-    <section aria-labelledby="chart-workbench">
-      <header className="visual-section-heading">
-        <Badge variant="outline">03 · Data</Badge>
-        <Typography>
-          <h2 id="chart-workbench">Live chart continuity</h2>
-          <p>Play line, area, and bar transitions. Compare an animated update with a still preview.</p>
-        </Typography>
-      </header>
-      <ChartWorkbench />
-    </section>
-    <section aria-labelledby="ai-workbench">
-      <header className="visual-section-heading">
-        <Badge variant="outline">04 · AI</Badge>
-        <Typography>
-          <h2 id="ai-workbench">AI surfaces</h2>
-          <p>Try a prompt, streaming response, and approval flow. This simulation stays in your browser.</p>
-        </Typography>
-      </header>
-      <AiWorkbench />
-    </section>
-    <section aria-labelledby="product-blocks-workbench">
-      <header className="visual-section-heading">
-        <Badge variant="outline">05 · Recipes</Badge>
-        <Typography>
-          <h2 id="product-blocks-workbench">Installable product blocks</h2>
-          <p>Explore complete interactions built from public Lumen components, ready to adapt to your project.</p>
-        </Typography>
-      </header>
-      <Stack gap="section">
-        <InteractivePricingRecipe />
-        <FeaturePreviewRecipe />
-        <GuidedOnboardingRecipe />
-        <CommandCenterRecipe />
-      </Stack>
-    </section>
+    {showVisualGuide(section, 'motion') && (
+      <section aria-labelledby="motion-workbench">
+        <header className="visual-section-heading">
+          <Badge variant="outline">01 · Motion</Badge>
+          <Typography>
+            <h2 id="motion-workbench">Coordinated motion</h2>
+            <p>
+              Reorder, add, or remove a task. Compare the animation with an immediate update,
+              then try transitions and feedback.
+            </p>
+          </Typography>
+        </header>
+        <MotionWorkbench />
+      </section>
+    )}
+    {showVisualGuide(section, 'effects') && (
+      <section aria-labelledby="effects-workbench">
+        <header className="visual-section-heading">
+          <Badge variant="outline">02 · Effects</Badge>
+          <Typography>
+            <h2 id="effects-workbench">Visual effects</h2>
+            <p>Choose a treatment and adjust its intensity. Animation starts only when you enable it.</p>
+          </Typography>
+        </header>
+        <EffectsWorkbench />
+      </section>
+    )}
+    {showVisualGuide(section, 'charts') && (
+      <section aria-labelledby="chart-workbench">
+        <header className="visual-section-heading">
+          <Badge variant="outline">03 · Data</Badge>
+          <Typography>
+            <h2 id="chart-workbench">Live chart continuity</h2>
+            <p>Play line, area, and bar transitions. Compare an animated update with a still preview.</p>
+          </Typography>
+        </header>
+        <ChartWorkbench />
+      </section>
+    )}
+    {showVisualGuide(section, 'ai') && (
+      <section aria-labelledby="ai-workbench">
+        <header className="visual-section-heading">
+          <Badge variant="outline">04 · AI</Badge>
+          <Typography>
+            <h2 id="ai-workbench">AI surfaces</h2>
+            <p>Try a prompt, streaming response, and approval flow. This simulation stays in your browser.</p>
+          </Typography>
+        </header>
+        <AiWorkbench />
+      </section>
+    )}
+    {showVisualGuide(section, 'recipes') && (
+      <section aria-labelledby="product-blocks-workbench">
+        <header className="visual-section-heading">
+          <Badge variant="outline">05 · Recipes</Badge>
+          <Typography>
+            <h2 id="product-blocks-workbench">Installable product blocks</h2>
+            <p>Explore complete interactions built from public Lumen components, ready to adapt to your project.</p>
+          </Typography>
+        </header>
+        <Stack gap="section">
+          <InteractivePricingRecipe />
+          <FeaturePreviewRecipe />
+          <GuidedOnboardingRecipe />
+          <CommandCenterRecipe />
+        </Stack>
+      </section>
+    )}
   </Stack>
 )

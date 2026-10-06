@@ -2,7 +2,17 @@
 
 Lumen's web adapters share coordinated motion, optional semantic effects, and AI-facing surfaces.
 Astro is the reference implementation. Native adapters retain their existing platform motion APIs.
-Try the [visual playground](https://lumen.santi020k.com/docs/visual-playground) in the documentation.
+Start with a focused guide for a live preview, copyable setup and starter code, usage notes, and
+component API links:
+
+- [Motion](https://lumen.santi020k.com/docs/visual-playground/motion)
+- [Effects](https://lumen.santi020k.com/docs/visual-playground/effects)
+- [Chart animation](https://lumen.santi020k.com/docs/visual-playground/charts)
+- [AI interfaces](https://lumen.santi020k.com/docs/visual-playground/ai)
+- [Product recipes](https://lumen.santi020k.com/docs/visual-playground/recipes)
+
+The [visual playground](https://lumen.santi020k.com/docs/visual-playground) keeps the combined workbench
+and its original section anchors available for comparisons.
 
 ## Setup and motion
 

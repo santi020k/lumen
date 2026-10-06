@@ -9473,6 +9473,54 @@
       "pathname": "/docs/theme-playground",
       "title": "Theme playground - Lumen UI"
     },
+    "/docs/visual-playground/ai": {
+      "alt": "AI interfaces guide — Documentation social preview from Lumen UI",
+      "description": "Compose prompts, response status, citations, tool activity, and decisions. Try the complete local simulation.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--visual-playground--ai.webp",
+          "primary": true,
+          "url": "/og/pages/docs--visual-playground--ai.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/visual-playground/ai",
+      "title": "AI interfaces guide — Lumen UI"
+    },
+    "/docs/visual-playground/charts": {
+      "alt": "Chart animation guide — Documentation social preview from Lumen UI",
+      "description": "Animate line, area, and bar updates. Inspect linked charts and try loading, empty, and reduced-motion states.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--visual-playground--charts.webp",
+          "primary": true,
+          "url": "/og/pages/docs--visual-playground--charts.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/visual-playground/charts",
+      "title": "Chart animation guide — Lumen UI"
+    },
+    "/docs/visual-playground/effects": {
+      "alt": "Effects guide — Documentation social preview from Lumen UI",
+      "description": "Explore seven token-based treatments, tune their intensity, and compare animated and reduced-motion previews.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--visual-playground--effects.webp",
+          "primary": true,
+          "url": "/og/pages/docs--visual-playground--effects.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/visual-playground/effects",
+      "title": "Effects guide — Lumen UI"
+    },
     "/docs/visual-playground": {
       "alt": "Visual playground — Documentation social preview from Lumen UI",
       "description": "Explore coordinated motion, semantic visual effects, and application-owned AI surfaces with reduced-motion comparisons.",
@@ -9488,6 +9536,38 @@
       ],
       "pathname": "/docs/visual-playground",
       "title": "Visual playground — Lumen UI"
+    },
+    "/docs/visual-playground/motion": {
+      "alt": "Motion guide — Documentation social preview from Lumen UI",
+      "description": "Animate list changes, transitions, and feedback while preserving focus and stable item identities.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--visual-playground--motion.webp",
+          "primary": true,
+          "url": "/og/pages/docs--visual-playground--motion.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/visual-playground/motion",
+      "title": "Motion guide — Lumen UI"
+    },
+    "/docs/visual-playground/recipes": {
+      "alt": "Product recipes guide — Documentation social preview from Lumen UI",
+      "description": "Install pricing, feature previews, onboarding, or command search. Adapt their state and callbacks to your product.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--visual-playground--recipes.webp",
+          "primary": true,
+          "url": "/og/pages/docs--visual-playground--recipes.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/visual-playground/recipes",
+      "title": "Product recipes guide — Lumen UI"
     },
     "/docs/web/consumer-workflows": {
       "alt": "Consumer workflows — Documentation social preview from Lumen UI",

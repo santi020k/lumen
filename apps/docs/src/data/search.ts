@@ -23,6 +23,7 @@ import { nativeGuidePlatforms, nativeGuideTopics } from './native-guide-topics'
 import { packageGuides, worldMapTopics } from './package-guides'
 import { platformGuides } from './platforms'
 import { reactHookGuides } from './react-hooks'
+import { visualGuideHref, visualGuides } from './visual-guides'
 
 const canonicalComponentNames = new Set<string>(lumenComponentNames)
 
@@ -213,9 +214,10 @@ const recipeItems: DocsSearchItem[] = [
     type: 'Recipe',
     href: '/docs/visual-playground',
     keywords: 'motion animation effects aurora mesh spotlight reduced motion AI prompt streaming approval',
-    title: 'Visual playground',
+    title: 'Visual guides & playground',
     description: 'Explore coordinated motion, visual effects and AI surfaces.'
   },
+  ...visualGuides.map(guide => ({ category: 'Interaction', type: 'Recipe' as const, href: visualGuideHref(guide.id), keywords: normalizeKeywords(guide.label, ...guide.components), title: `${guide.label} guide`, description: guide.description })),
   {
     category: 'Motion',
     description: 'Preview presence presets, disclosure transitions, feedback, and list changes with reduced motion.',
