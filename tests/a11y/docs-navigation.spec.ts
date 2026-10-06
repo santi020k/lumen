@@ -14,6 +14,41 @@ const expectNoOverflow = async (page: Page): Promise<void> => {
 }
 
 for (const width of [390, 1440]) {
+  for (const theme of ['lumen-light', 'lumen-dark']) {
+    test(`section navigation centers its arrow background at ${width}px in ${theme}`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 1000 })
+      await page.addInitScript(value => { localStorage.setItem('lumen-theme', value); }, theme)
+      await page.goto('/docs/components/box-plot')
+      const summary = page.locator('[data-docs-page-navigation] summary')
+      const disclosure = page.locator('[data-docs-page-navigation] details')
+      for (const open of [false, true]) {
+        if (open) await summary.press('Enter')
+        await expect(disclosure).toHaveJSProperty('open', open)
+        await expect.poll(async () => summary.evaluate(element => {
+          const background = getComputedStyle(element, '::before')
+          const arrow = getComputedStyle(element, '::after')
+          const bounds = element.getBoundingClientRect()
+          const backgroundCenterX = Number.parseFloat(background.right) + Number.parseFloat(background.width) / 2
+          const arrowCenterX = Number.parseFloat(arrow.right) + Number.parseFloat(arrow.width) / 2
+          const backgroundCenterY = Number.parseFloat(background.top) + Number.parseFloat(background.height) / 2
+          const arrowCenterY = Number.parseFloat(arrow.top) + Number.parseFloat(arrow.height) / 2
+          const current = element.querySelector('[data-docs-page-current]')
+          if (!current) throw new Error('Missing current section label')
+          return Math.max(
+            Math.abs(backgroundCenterX - arrowCenterX),
+            Math.abs(backgroundCenterY - bounds.height / 2),
+            Math.max(0, Math.abs(backgroundCenterY - arrowCenterY) - 1),
+            Math.max(0, current.getBoundingClientRect().right - (bounds.right - Number.parseFloat(background.right) - Number.parseFloat(background.width)))
+          )
+        })).toBeLessThanOrEqual(1)
+      }
+      await summary.press('Escape')
+      await expect(disclosure).toHaveJSProperty('open', false)
+      await expect(summary).toBeFocused()
+      await expectNoOverflow(page)
+    })
+  }
+
   test(`visual chart directory supports discovery at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 1000 })
     await page.goto('/docs/web/data-visualization')
