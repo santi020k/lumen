@@ -1,7 +1,7 @@
 # Figma Integration
 
-Lumen can meet Figma at two levels: semantic theme tokens for design variables, and Code Connect for
-published component libraries.
+Lumen connects Figma and code through semantic theme tokens, Code Connect mappings, and a beta
+plugin for inspecting a selection and preparing an Astro handoff.
 
 For the reverse direction — implementing Figma designs with Lumen components — see
 [figma-design-to-code.md](figma-design-to-code.md) and the machine-readable mapping in
@@ -17,6 +17,16 @@ components, generates an Astro starter, and prepares a structured AI handoff. It
 no network access; AI generation and project validation happen in the user's existing coding agent.
 Generated code, responsive behavior, unsupported layers, and application actions require review.
 
+The beta supports Button, Input, Field, Card, Tabs, and Dialog. Its generated starter targets
+`@santi020k/lumen-astro` v4; compare the exact version in the handoff with the installed package
+before integrating it. The plugin's own beta version is separate from Lumen's package version.
+
+Select one frame or component instance from the canonical library, choose **Inspect selection**,
+review the findings, and copy or save the **Astro starter** or **AI handoff**. Load the Astro
+stylesheet and `UIPrimitives` once at the application boundary, then connect application behavior
+and verify keyboard interaction and responsive layouts. Exports contain the selected design's
+visible text and component data; review them before sharing with an external coding agent.
+
 See the [plugin setup and limitations](../apps/figma-plugin/README.md). The beta is available as a
 repository development build, not a published Figma Community plugin. The existing Community link
 below points to the design library.
@@ -24,6 +34,11 @@ below points to the design library.
 GitHub Actions prepares tested beta ZIPs with source revisions and checksums. See the
 [Community publishing guide](../apps/figma-plugin/README.md#figma-community-publication) for the
 remaining Figma desktop registration, host verification, and submission steps.
+
+The v4 packages and public documentation must be live and verified before the plugin is submitted
+to Figma Community. Figma review is separate from the Lumen release. After approval and a verified
+public install, the documentation will link to the actual plugin listing while retaining its Beta
+label and supported-component limits.
 
 ## Figma Library File
 
