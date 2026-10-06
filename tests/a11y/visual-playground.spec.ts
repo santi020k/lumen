@@ -247,6 +247,10 @@ test('aurora visibly moves, pauses in place, resumes and replays', async ({ page
   await expect.poll(transform).not.toBe(first)
   expect(await previews.last().evaluate(element => getComputedStyle(element, '::before').animationName)).toBe('none')
   await section.getByRole('button', { name: 'Pause animation' }).click()
+  await expect.poll(() => previews.first().evaluate(element => getComputedStyle(element, '::before').animationPlayState)).toBe('paused')
+  await previews.first().evaluate(async element => {
+    await Promise.all(element.getAnimations({ subtree: true }).map(animation => animation.ready))
+  })
   const paused = await transform()
 
   await page.waitForTimeout(250) // Sample elapsed motion, not page readiness.
@@ -334,6 +338,10 @@ test('SVG drawing advances, pauses and replays after finishing', async ({ page }
   expect(start).toBeGreaterThan(0)
   await expect.poll(offset).toBeLessThan(start)
   await section.getByRole('button', { name: 'Pause animation' }).click()
+  await expect.poll(() => path.evaluate(element => getComputedStyle(element).animationPlayState)).toBe('paused')
+  await path.evaluate(async element => {
+    await Promise.all(element.getAnimations().map(animation => animation.ready))
+  })
   const paused = await offset()
 
   await page.waitForTimeout(150) // Paused decorative geometry must stay in place.
