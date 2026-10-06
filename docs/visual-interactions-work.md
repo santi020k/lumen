@@ -42,7 +42,10 @@ uncommitted work from them.
 - Implemented eight web primitives, seven effects, shared tab/disclosure/chart motion, four
   interactive product recipes per web target, and the visual playground.
 - Optional Motion 14 and Rive 2.44 adapters compile against their installed SDK contracts. Rive
-  lifecycle tests inject a typed runtime; an actual `.riv` animation has not been rendered here.
+  lifecycle tests inject a typed runtime. A temporary browser fixture also loaded Rive’s official
+  `data_bind_runtime_test.riv`, updated its `outer` string binding, paused for local reduced motion,
+  rejected updates after disposal, and surfaced a missing-asset error. Motion keyboard activation
+  preserved native button semantics.
 - `pnpm run build` passed. `pnpm run typecheck` passed all 25 tasks. The full Vitest suite passed
   2,448 tests across 234 files, including Astro swap cleanup and hostile citation input.
 - Canonical lint, spelling, unused-code, registry, framework/native contract, MCP evaluation, and
@@ -51,9 +54,13 @@ uncommitted work from them.
   motion, immediate chart table values, pricing selections, onboarding focus/completion, command
   activation, approvals, and stream stop/retry. Temporary screenshots are in
   `/tmp/lumen-visual-evidence/`.
-- `pnpm run validate` remains incomplete: CSS measures 36.0 KiB gzip versus its 35.2 KiB limit;
-  Elements registration measures 46.4 KiB versus its 45.9 KiB limit. A packaging decision is pending
-  between optional new entry points and an approved documented budget increase.
+- The original catalog-size gate failed at CSS 36.0 KiB gzip and Elements registration 46.4 KiB.
+  Release policy revision `eaf4bcdc` now reports complete catalog sizes and enforces focused module
+  and selective consumer limits. Revalidate against that policy before integration.
+- Generated Astro and Elements recipes were exercised in temporary browser fixtures: annual
+  pricing, feature selection, accessible onboarding focus/completion, and keyboard commands.
+  Fixed Astro disabled-class synchronization and Elements input labeling found by these checks.
+  Temporary smoke pages, installed recipe copies, and SDK assets were removed afterward.
 - Packed package consumers, React Native peer/type checks, and external MCP stdio/HTTP smoke tests
   passed. Local release integration remains pending. No remote action or publication is established
   by this evidence.

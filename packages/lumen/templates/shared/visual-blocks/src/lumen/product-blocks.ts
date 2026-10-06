@@ -81,8 +81,11 @@ export const bindOnboardingBlock = (root: HTMLElement): (() => void) => {
 
   const updateValidity = (): void => {
     const next = root.querySelector<HTMLElement>('[data-onboarding-next]')
+    const disabled = !input.value.trim()
 
-    next?.toggleAttribute('disabled', !input.value.trim())
+    next?.toggleAttribute('disabled', disabled)
+
+    next?.classList.toggle('ui-button--disabled', disabled)
   }
 
   input.addEventListener('input', updateValidity)

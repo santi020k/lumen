@@ -1,7 +1,7 @@
 <section data-product-block="onboarding" aria-label="Workspace setup">
   <lumen-card><lumen-stack gap="group"><lumen-typography><h2>Prepare your workspace</h2><p>This draft stays local until your application handles completion.</p></lumen-typography>
   <form method="post"><lumen-stack gap="group">
-    <section data-onboarding-step="0"><lumen-typography><h3 tabindex="-1">Workspace</h3></lumen-typography><lumen-label for="workspace-draft-name">Workspace name</lumen-label><lumen-input id="workspace-draft-name" data-workspace-name required maxlength="80" ></lumen-input></section>
+    <section data-onboarding-step="0"><lumen-typography><h3 tabindex="-1">Workspace</h3></lumen-typography><lumen-label id="workspace-draft-name-label">Workspace name</lumen-label><lumen-input id="workspace-draft-name" aria-labelledby="workspace-draft-name-label" name="workspace" data-workspace-name required maxlength="80" ></lumen-input></section>
     <section data-onboarding-step="1" hidden><lumen-typography><h3 tabindex="-1">Review your draft</h3><p>Workspace: <span data-workspace-review></span></p></lumen-typography></section>
     <section data-onboarding-step="2" hidden><lumen-typography><h3 tabindex="-1">Ready</h3><p>Workspace draft completed.</p></lumen-typography><lumen-button data-onboarding-edit type="button">Edit draft</lumen-button></section>
     <lumen-stack direction="horizontal" gap="related"><lumen-button data-onboarding-back type="button" hidden variant="secondary">Back</lumen-button><lumen-button data-onboarding-next disabled type="submit">Continue</lumen-button></lumen-stack>
