@@ -95,7 +95,15 @@ const platforms = [
         </div>
         <figure class="platform-showcase__preview">
           <div class="platform-showcase__frame">
-            <Image alt={platform.imageAlt} fit="contain" radius="none" src={platform.image} />
+            <Image
+alt={platform.imageAlt}
+fit="contain"
+radius="none"
+src={platform.image}
+                  widths={platform.id === 'web' ? [480, 800, 1200] : [224, 448]}
+                  sizes={platform.id === 'web' ? '(max-width: 760px) calc(100vw - 64px), (max-width: 1200px) 50vw, 660px' : '224px'}
+                  format="webp"
+            />
           </div>
           <figcaption>
             <span>{platform.caption}</span>

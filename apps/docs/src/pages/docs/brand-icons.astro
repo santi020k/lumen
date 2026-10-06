@@ -2,7 +2,6 @@
 import { CodeTabs, Link } from '@santi020k/lumen-astro'
 import { renderLumenIconSvg } from '@santi020k/lumen-core'
 import {
-  lumenBrandIconNames,
   registerLumenBrandIcons
 } from '@santi020k/lumen-icons-brand'
 
@@ -10,19 +9,10 @@ import DocsActionLink from '../../components/DocsActionLink.astro'
 import DocsPageHero from '../../components/DocsPageHero.astro'
 import IconCatalog from '../../components/IconCatalog.astro'
 import IconHeroGrid from '../../components/IconHeroGrid.astro'
+import { brandCatalog, brandEntries } from '../../data/icon-catalogs'
 import DocsLayout from '../../layouts/DocsLayout.astro'
 
 registerLumenBrandIcons()
-
-const brandEntries = lumenBrandIconNames.map(name => {
-  const componentName = `brand:${name}`
-
-  return {
-    name: componentName,
-    svg: renderLumenIconSvg(componentName),
-    terms: `${name} ${componentName}`
-  }
-})
 
 const brandCount = brandEntries.length
 
@@ -141,6 +131,7 @@ LumenIcon(
       description="Search the complete free brand catalog, then select a tile to copy its namespaced Lumen icon name."
       emptyMessage="No brand icons match your search."
       entries={brandEntries}
+      source={brandCatalog.url}
       eyebrow="Optional catalog"
       id="brand-icon-catalog"
       searchLabel="Search the brand icon library"

@@ -1,18 +1,11 @@
 @import "tailwindcss";
+@import "./fonts.css";
 @import "@santi020k/lumen/styles.css";
 @import "@santi020k/theme/typography.css";
 
 @source "../../../../packages/astro/components";
 @source "../../../../packages/react/src";
 @source "../../../../packages/elements/src";
-
-@font-face {
-  font-family: "Montserrat";
-  font-style: normal;
-  font-weight: 100 900;
-  font-display: swap;
-  src: url("/fonts/Montserrat-Variable.ttf") format("truetype-variations");
-}
 
 :root {
   --app-font-sans: var(--santi020k-font-sans, "Montserrat", "Avenir Next", "Segoe UI", sans-serif);
@@ -89,6 +82,7 @@
   --app-font-sans: var(--santi020k-font-sans, "Montserrat", "Avenir Next", "Segoe UI", sans-serif);
   --app-font-display: var(--santi020k-font-display, "Montserrat", "Avenir Next", sans-serif);
   --theme-bg: var(--canvas);
+  --ink-muted: 215 14% 35%;
   --glow: 38 92% 50%;
 }
 
@@ -97,6 +91,7 @@
   --app-font-sans: var(--santi020k-font-sans, "Montserrat", "Avenir Next", "Segoe UI", sans-serif);
   --app-font-display: var(--santi020k-font-display, "Montserrat", "Avenir Next", sans-serif);
   --theme-bg: var(--canvas);
+  --ink-muted: 216 10% 72%;
   --glow: 199 91% 56%;
 }
 

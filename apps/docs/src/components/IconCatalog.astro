@@ -1,11 +1,7 @@
 ---
-import { Button, Input, Label } from '@santi020k/lumen-astro'
+import { Button, Collapsible, Input, Label } from '@santi020k/lumen-astro'
 
-interface IconEntry {
-  name: string
-  svg: string
-  terms: string
-}
+import { type IconEntry, iconPageSize } from '../lib/icon-catalog'
 
 interface Props {
   description: string
@@ -14,6 +10,7 @@ interface Props {
   eyebrow?: string
   id: string
   searchLabel: string
+  source: string
   title: string
 }
 
@@ -24,6 +21,7 @@ const {
   eyebrow = 'Complete set',
   id,
   searchLabel,
+  source,
   title
 } = Astro.props
 
@@ -32,6 +30,7 @@ const searchId = `${id}-search`
 
 <section
   data-icon-catalog
+  data-icon-source={source}
   id={id}
   aria-labelledby={`${id}-title`}
 >
@@ -48,13 +47,14 @@ const searchId = `${id}-search`
     <Input
       autocomplete="off"
       data-icon-search
+      disabled
       id={searchId}
       placeholder={`Search ${entries.length} icons by name...`}
       spellcheck="false"
       type="search"
     />
-    <p data-icon-status>
-      Showing <span data-icon-visible-count>{entries.length}</span> of {entries.length} icons
+    <p data-icon-status aria-live="polite" aria-atomic="true">
+      Showing <span data-icon-visible-count>{Math.min(iconPageSize, entries.length)}</span> of {entries.length} icons
     </p>
   </div>
 
@@ -63,7 +63,7 @@ const searchId = `${id}-search`
   </p>
 
   <div data-icon-grid>
-    {entries.map(entry => (
+    {entries.slice(0, iconPageSize).map(entry => (
       <Button
         data-icon-name={entry.name}
         data-icon-terms={entry.terms}
@@ -71,86 +71,27 @@ const searchId = `${id}-search`
         title={`Copy "${entry.name}"`}
       >
         <span class="ui-icon ui-icon--xl" aria-hidden="true" set:html={entry.svg} />
-        <span>{entry.name}</span>
+        <span data-icon-label>{entry.name}</span>
       </Button>
     ))}
   </div>
+
+  <template data-icon-template>
+    <Button variant="ghost">
+      <span class="ui-icon ui-icon--xl" aria-hidden="true" data-icon-art />
+      <span data-icon-label />
+    </Button>
+  </template>
+  <Button data-icon-more hidden variant="outline">Show more icons</Button>
+  <Collapsible>
+    <summary>All icon names</summary>
+    <p data-icon-names>{entries.map(entry => entry.name).join(', ')}</p>
+  </Collapsible>
+  <noscript><p>Use your browser’s Find command to search all icon names below.</p></noscript>
 </section>
 
 <script>
-  const filterIconCells = (
-    cells: HTMLButtonElement[],
-    empty: HTMLElement | null,
-    visibleCount: HTMLElement | null,
-    raw: string
-  ) => {
-    const query = raw.trim().toLowerCase()
-    let visible = 0
-
-    for (const cell of cells) {
-      const terms = cell.dataset.iconTerms ?? ''
-      const match = query === '' || terms.includes(query)
-
-      cell.hidden = !match
-
-      if (match) visible += 1
-    }
-
-    if (visibleCount) visibleCount.textContent = String(visible)
-
-    if (empty) empty.hidden = visible !== 0
-  }
-
-  const flashCopiedIcon = (cell: HTMLButtonElement) => {
-    const label = cell.querySelector('span:last-child')
-
-    if (!label) return
-
-    const original = label.textContent
-
-    label.textContent = 'Copied!'
-
-    window.setTimeout(() => {
-      label.textContent = original
-    }, 1000)
-  }
-
-  const setupIconCatalogs = () => {
-    const catalogs = document.querySelectorAll<HTMLElement>('[data-icon-catalog]')
-
-    for (const catalog of catalogs) {
-      if (catalog.dataset.iconCatalogReady === 'true') continue
-
-      const grid = catalog.querySelector<HTMLElement>('[data-icon-grid]')
-      const search = catalog.querySelector<HTMLInputElement>('[data-icon-search]')
-      const empty = catalog.querySelector<HTMLElement>('[data-icon-empty]')
-      const visibleCount = catalog.querySelector<HTMLElement>('[data-icon-visible-count]')
-
-      if (!grid || !search) continue
-
-      catalog.dataset.iconCatalogReady = 'true'
-
-      const cells = [...grid.querySelectorAll<HTMLButtonElement>('[data-icon-name]')]
-
-      search.addEventListener('input', event => {
-        filterIconCells(cells, empty, visibleCount, (event.target as HTMLInputElement).value)
-      })
-
-      grid.addEventListener('click', async event => {
-        const cell = (event.target as HTMLElement).closest<HTMLButtonElement>('[data-icon-name]')
-
-        if (!cell) return
-
-        try {
-          await navigator.clipboard.writeText(cell.dataset.iconName ?? '')
-
-          flashCopiedIcon(cell)
-        } catch {
-          // Clipboard access can be blocked; leave the catalog usable without copy feedback.
-        }
-      })
-    }
-  }
+  import { setupIconCatalogs } from '../lib/icon-catalog-client'
 
   setupIconCatalogs()
 
@@ -213,7 +154,7 @@ const searchId = `${id}-search`
   }
 
   [data-icon-catalog-search] p {
-    color: hsl(var(--ink-muted));
+    color: hsl(var(--ink-soft));
     font-size: 0.8rem;
   }
 
@@ -253,6 +194,22 @@ const searchId = `${id}-search`
       transform 150ms ease;
   }
 
+  [data-icon-grid] .ui-button__content {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.65rem;
+  }
+
+  [data-icon-names] {
+    margin-top: 1rem;
+    color: hsl(var(--ink-soft));
+    font-size: 0.8rem;
+    line-height: 1.8;
+    overflow-wrap: anywhere;
+  }
+
   [data-icon-grid] button:hover {
     border-color: hsl(var(--brand));
     background: hsl(var(--brand-soft));
@@ -260,10 +217,10 @@ const searchId = `${id}-search`
     transform: translateY(-2px);
   }
 
-  [data-icon-grid] button > span:last-child {
+  [data-icon-grid] [data-icon-label] {
     overflow: hidden;
     width: 100%;
-    color: hsl(var(--ink-muted));
+    color: hsl(var(--ink-soft));
     font-size: 0.63rem;
     line-height: 1.2;
     text-align: center;

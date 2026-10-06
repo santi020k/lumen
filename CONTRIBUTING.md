@@ -193,6 +193,30 @@ to trailing-slash URLs. Keep navigation, sitemap, structured data, and RSS links
 Do not publish generic announcements as guides. A guide should leave a developer able to build or
 verify something they could not confidently complete before reading it.
 
+<!-- cspell:words fonttools -->
+
+## Docs performance
+
+After building docs, run `pnpm run check:docs-performance` with Playwright Chromium installed
+(`pnpm exec playwright install chromium`). The dedicated Docs Performance workflow measures
+mobile Lighthouse on the homepage, icons, Button documentation, and AI guide, and retains JSON
+reports. Budgets require performance at least 90, accessibility and SEO at 100, LCP at most
+3.5 seconds, TBT at most 200 ms, and CLS at most 0.1. The LCP ceiling accommodates CI variation;
+the user-experience target remains 2.5 seconds. These lab checks do not establish field Core Web
+Vitals. Reports are generated under `apps/docs/.astro/lighthouse` and stay out of commits.
+
+Keep the icon catalogs progressive: render 48 previews initially, fetch fingerprinted JSON only
+on search or Show more, and retain all names in the server-rendered collapsible fallback. Generate
+new catalog URLs from their contents so immutable caching cannot serve stale names after release.
+Use responsive widths and accurate `sizes` on homepage screenshots with Astro's image optimizer.
+
+Web fonts are generated from the licensed variable TTF in `apps/docs/public/fonts`; the TTFs also
+remain available to the social-image generator. To regenerate WOFF2 subsets, install
+`fonttools[woff]==4.60.2` and `brotli==1.2.0` in a temporary Python environment, then run
+`python apps/docs/scripts/generate-web-fonts.py`. Commit the generated WOFF2 files and
+`apps/docs/src/styles/fonts.css` and `apps/docs/src/data/web-font.ts`. The two disjoint Unicode ranges preserve extended characters
+without downloading the extended subset for Latin-only pages. Keep `OFL.txt` alongside the fonts.
+
 ## Publishing
 
 Prepare every non-initial release in `release/v<semver>` and open its pull request into `main`.
