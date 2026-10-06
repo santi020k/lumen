@@ -26,17 +26,19 @@ for (const width of [390, 1024, 1440]) {
         await expect(disclosure).toHaveJSProperty('open', open)
         await expect.poll(async () => summary.evaluate(element => {
           const background = getComputedStyle(element, '::before')
-          const arrow = getComputedStyle(element, '::after')
+          const arrow = element.querySelector('.docs-page-navigation__chevron')
           const bounds = element.getBoundingClientRect()
           const current = element.querySelector('[data-docs-page-current]')
-          if (!current) throw new Error('Missing current section label')
-          const gap = bounds.right - current.getBoundingClientRect().right
+          if (!current || !arrow) throw new Error('Missing section label or arrow')
+          const arrowBounds = arrow.getBoundingClientRect()
+          const gap = arrowBounds.left - current.getBoundingClientRect().right
           return {
-            backgroundHidden: background.display === 'none',
-            arrowFollowsLabel: arrow.position === 'static' && gap >= 12 && gap <= 40,
+            backgroundHidden: background.content === 'none',
+            arrowFollowsLabel: gap >= 8 && gap <= 12,
+            arrowCentered: Math.abs(arrowBounds.y + arrowBounds.height / 2 - bounds.y - bounds.height / 2) < 1,
             touchTarget: bounds.height >= 44
           }
-        })).toEqual({ backgroundHidden: true, arrowFollowsLabel: true, touchTarget: true })
+        })).toEqual({ backgroundHidden: true, arrowFollowsLabel: true, arrowCentered: true, touchTarget: true })
       }
       await summary.press('Escape')
       await expect(disclosure).toHaveJSProperty('open', false)
@@ -96,6 +98,32 @@ for (const width of [390, 1024, 1440]) {
       })).toBe(true)
       await expectNoOverflow(page)
     }
+  })
+}
+
+for (const width of [320, 390, 626, 1440]) {
+  test(`section navigation aligns its chevron and truncates long labels at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 1000 })
+    await page.goto('/docs/components/box-plot')
+    const summary = page.locator('[data-docs-page-navigation] summary')
+    const current = page.locator('[data-docs-page-current]')
+    // Exercise a long heading without depending on the page's current scroll position.
+    await current.evaluate(element => { element.textContent = 'Help improve DeviceFrame and its responsive previews' })
+    const chevron = summary.locator('.docs-page-navigation__chevron')
+    const summaryBounds = await summary.boundingBox()
+    const chevronBounds = await chevron.boundingBox()
+    const currentBounds = await current.boundingBox()
+    if (!summaryBounds || !chevronBounds || !currentBounds) throw new Error('Missing section navigation layout')
+    expect(summaryBounds.height).toBeGreaterThanOrEqual(44)
+    expect(Math.abs(chevronBounds.y + chevronBounds.height / 2 - summaryBounds.y - summaryBounds.height / 2)).toBeLessThan(1)
+    expect(chevronBounds.x - currentBounds.x - currentBounds.width).toBeGreaterThanOrEqual(8)
+    await expectNoOverflow(page)
+    await summary.press('Enter')
+    const navigation = page.getByRole('navigation', { name: 'On this page', exact: true })
+    await expect(navigation).toBeVisible()
+    await navigation.getByRole('link').last().press('Escape')
+    await expect(navigation).toBeHidden()
+    await expect(summary).toBeFocused()
   })
 }
 
