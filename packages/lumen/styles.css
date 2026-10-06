@@ -2270,7 +2270,7 @@
 
 .ui-accordion details[open] > summary,
 .ui-collapsible[open] > summary {
-  padding-block-end: var(--ui-space-md);
+  margin-block-end: var(--ui-space-lg);
 }
 
 .ui-accordion details[open],
@@ -2359,6 +2359,8 @@
 }
 
 .ui-accordion--flush details[open] > summary {
+  margin-block-end: 0;
+  padding-block-end: var(--ui-space-md);
   color: hsl(var(--ink));
 }
 
