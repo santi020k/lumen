@@ -14,7 +14,7 @@ const fixture = (interactive = true) => {
         <path class="ui-world-map__country ui-world-map__country--highlighted" data-ui-world-map-country="CO" data-label="Colombia" data-label-x="300" data-label-y="220"></path>
         <path class="ui-world-map__country" data-ui-world-map-country="JP" data-label="Japan" data-label-x="820" data-label-y="140"></path>
       </g>
-      
+
     </svg>
     <span data-ui-world-map-inspection hidden></span>
     <select data-ui-world-map-select disabled>
