@@ -15,6 +15,20 @@
 .ui-data-table-view .ui-table-wrap thead th { position: sticky; top: 0; z-index: 1; background: hsl(var(--surface)); }
 .ui-data-table-view [hidden] { display: none; }
 .ui-data-table-view[data-density="compact"] .ui-table-wrap { --ui-table-cell-padding: 0.5rem 0.75rem; }
+.ui-data-table-view__saved, .ui-data-table-view__selection {
+  display: flex; flex-wrap: wrap; gap: var(--ui-space-related, 0.75rem); align-items: end;
+  min-width: 0;
+}
+.ui-data-table-view__saved > .ui-field { flex: 1 1 12rem; min-width: 0; }
+.ui-data-table-view__selection { align-items: center; }
+.ui-data-table-view__selection .ui-label { display: flex; gap: 0.5rem; align-items: center; min-height: 2.75rem; }
+.ui-data-table-view__range {
+  display: flex; flex-wrap: wrap; gap: var(--ui-space-related, 0.75rem); margin: 0;
+  padding: 0.5rem; min-width: 0; flex: 1 1 18rem;
+  border: var(--ui-border-width, 1px) solid hsl(var(--line)); border-radius: var(--ui-radius);
+}
+.ui-data-table-view__range > .ui-field { flex: 1 1 8rem; min-width: 0; }
+.ui-data-table-view__range .ui-input { min-width: 0; width: 100%; }
 @media (max-width: 48rem) {
   .ui-data-table-view .ui-table-wrap--records { max-height: none; }
   .ui-data-table-view .ui-table-wrap--records thead th { position: static; }

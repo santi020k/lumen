@@ -10,6 +10,8 @@ export { type ComparisonChartProps, DumbbellChart, LollipopChart } from './compa
 export * from './components.js'
 export * from './dashboard.js'
 export * from './data-table.js'
+export * from './data-table-saved-views.js'
+export { parseDataTableViewState } from './data-table-state.js'
 export * from './data-table-view.js'
 export * from './date-range-calendar.js'
 export * from './date-range-input.js'

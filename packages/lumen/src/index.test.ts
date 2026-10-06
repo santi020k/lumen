@@ -112,6 +112,9 @@ describe('@santi020k/lumen umbrella package', () => {
       'dashboard-shell',
       'validated-form',
       'operational-records',
+      'review-workflow',
+      'import-review',
+      'record-workspace',
       'ai-docs',
       'figma-design-to-code',
       'interactive-pricing',
@@ -254,7 +257,7 @@ describe('@santi020k/lumen umbrella package', () => {
       expect(elementsSource).toContain('<lumen-theme-builder')
       expect(elementsSource).toContain('data-lumen-theme-builder-recipe')
 
-      for (const name of ['validated-form', 'operational-records']) {
+      for (const name of ['validated-form', 'operational-records', 'review-workflow', 'import-review', 'record-workspace']) {
         const recipe = await addLumenRegistryItem(name, { cwd, target: 'react' })
 
         expect(recipe.added).toEqual([`src/lumen/${name}.tsx`])

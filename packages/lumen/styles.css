@@ -7141,7 +7141,7 @@ a.ui-pill:focus-visible {
 .ui-descriptions__term {
   display: block;
   font-size: 0.8125rem;
-  color: hsl(var(--ink-muted));
+  color: hsl(var(--ink-soft));
 }
 .ui-descriptions__detail {
   display: block;

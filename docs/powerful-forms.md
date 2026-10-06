@@ -71,3 +71,26 @@ editing retains values in memory. Browser prompt wording is controlled by the br
 Lumen never persists a draft or logs form snapshots. A host that needs recovery after reload must
 choose authenticated storage, schema versioning, retention, expiry, and account-bound cleanup.
 Do not persist credentials, borrower details, or uploaded documents in browser storage by default.
+
+## Review and commit a proposal
+
+`useLumenReviewWorkflow<T>` receives a monotonic draft/server `revision`, an application `submit`
+callback and a localized `uncertainMessage`. Call `review(proposal)` only after validation, with a
+new immutable, explicitly allowlisted command. Render its `proposal` for the user; `confirm()`
+submits that exact reviewed object. `edit()` discards the review, and a changed revision prevents
+confirmation of stale values. Disable editing and dismissal while pending. The helper blocks
+concurrent confirmations synchronously and does not store or log proposals.
+
+The submit callback returns `{ status: 'success' }`, `{ status: 'failure', message }` for a confirmed
+rejection, or `{ status: 'uncertain', message }` when acknowledgement is missing. Messages must be
+safe for end users. A thrown exception becomes uncertain with the configured fallback message;
+raw exceptions never become product copy. Confirmed failures retain the same proposal for explicit
+retry. Uncertain results prevent edits and resubmission until the application checks the durable
+command outcome and calls `reconcile({ status: 'success' })` or a confirmed failure result. Status
+checks must not reissue the mutation. A changed revision is never marked saved by an older result.
+
+The installable `review-workflow` React recipe composes these helpers with `Form`, `ErrorSummary`
+and `ChangeSummary`. Its `prepare(FormData)` callback chooses the command and visible changes;
+exclude passwords, hidden security values, files and unrelated fields. The recipe retains drafts,
+invalidates review on edits and supports a caller-provided reconciliation action. An API must still
+validate, authorize and enforce idempotency. Do not use a status-only UI as evidence of persistence.

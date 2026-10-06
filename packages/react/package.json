@@ -96,6 +96,10 @@
     "./motion": {
       "types": "./dist/motion.d.ts",
       "import": "./dist/motion.js"
+    },
+    "./components/data-table-saved-views": {
+      "types": "./dist/data-table-saved-views.d.ts",
+      "import": "./dist/data-table-saved-views.js"
     }
   },
   "files": [

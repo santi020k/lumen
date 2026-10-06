@@ -6,6 +6,7 @@ import { OperationalRecordsRecipe } from '../../../../packages/lumen/templates/r
 import { ValidatedFormRecipe } from '../../../../packages/lumen/templates/react/validated-form/src/lumen/validated-form'
 
 import { ConsumerThemeAuditDemo } from './consumer-theme-audit-demo'
+import { OperationalWorkflowsDemo } from './operational-workflows-demo'
 
 const records = [
   { id: 'sample-2', name: 'Registro de ejemplo B', amount: '1.234,50 COP', detail: 'Datos sintéticos. Ningún registro financiero real.' },
@@ -21,6 +22,7 @@ export const ConsumerWorkflowsDemo = () => {
   return (
     <Stack gap="section" className="consumer-workflows">
       <ConsumerThemeAuditDemo />
+      <OperationalWorkflowsDemo />
       <Card>
         <h2>Formulario editable</h2>
         <ValidatedFormRecipe

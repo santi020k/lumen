@@ -1037,3 +1037,15 @@ and theme customization. Import geography explicitly from
 `@santi020k/lumen-core/world-map-data`; it is excluded from root exports. See the
 [WorldMap usage guide](../../docs/world-map.md) for adapter examples, events, localization,
 accessibility, and customization.
+
+## Operational workflows
+
+Extend `DataTableView` with inclusive numeric/date ranges and explicit page-scoped selection.
+Use `DataTableSavedViews` for named preferences through application-owned persistence callbacks;
+`parseDataTableViewState` validates external preferences without retaining records or selection.
+See [table views](../../docs/data-table-views.md) for server pagination and selection boundaries.
+
+`useLumenReviewWorkflow` from the root or `/forms` guards review, confirmation, stale revisions,
+duplicate submission and uncertain outcomes. Compose it with the installable React
+`review-workflow`, `import-review` and `record-workspace` recipes.
+See [operational recipes](../../docs/consumer-ui-recipes.md#installable-operational-workflows).

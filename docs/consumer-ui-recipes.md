@@ -455,3 +455,36 @@ normalization, and quadrant classification in the host. Astro has the same props
 `x-scale`, `x-min`, `x-max`, `domain-min`, and `domain-max`; set `.references`, `.categoryFormatter`,
 and `.valueFormatter` for reference geometry and independent axis presentation. No application
 business formula belongs in the chart component.
+
+## Installable operational workflows
+
+The React consumer-workflows preview now includes saved views, inclusive numeric/date ranges,
+page-scoped selection, exact whole-unit entry, review-before-confirm, import reconciliation and
+record history. All examples use synthetic data and explicit application callbacks.
+
+```bash
+lumen add review-workflow --target react
+lumen add import-review --target react
+lumen add record-workspace --target react
+```
+
+`ReviewWorkflowRecipe` uses the [form review lifecycle](powerful-forms.md#review-and-commit-a-proposal).
+Supply localized labels, validation, an allowlisted proposal builder and submission/reconciliation
+callbacks. Uncertain results require checking the original command before another attempt.
+
+`ImportReviewRecipe` receives a localized summary, stable issue/record IDs and proposed field
+changes. It exposes source locations, distinguishes blocking findings from warnings, navigates one
+record at a time and prevents confirmation while blocking findings remain, while pending, or when
+there are no records. `onIssue` optionally moves to the application's source location. `onConfirm`
+requests the host's confirmation/commit flow; the host owns file parsing, matching, proposal
+revisions, full-batch review policy, idempotency and durable success. Do not mark a file safe simply
+because its displayed issue list is empty. Supply a separate result state after a confirmed import.
+
+`RecordWorkspaceRecipe` composes responsive facts and an event timeline. Supply already formatted
+values, event order, timestamps, state labels and links/actions connecting corrections to original
+events. `historyFeedback` replaces history with application-owned loading/error feedback when it is
+unavailable; an empty event list alone means confirmed empty history. Permissions, balances,
+financial calculations and the ledger remain outside the recipe.
+
+These operational recipes are React-specific. Their component foundations remain available to
+Astro and Elements; no React controller or TanStack dependency is introduced into those adapters.

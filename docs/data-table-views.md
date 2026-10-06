@@ -103,14 +103,58 @@ The scroll region has sticky headers, and the density control changes the shared
 variable. Applications with custom cell padding should consume that variable. Mobile record
 layouts retain labeled cells and avoid freezing headers inside their card layout.
 
-## Cartera adoption
+## Cartera adoption boundary
 
-Cartera's loans retain the existing portfolio search, status filter, server sorting and financial
-calculations. Payments add table search and a received/reversed filter. Both receive column
-visibility, density and local pagination without changing records, permissions or ledger facts.
-Payment details span only visible columns and keep their application-owned disclosure state.
+A future Cartera integration should retain the existing portfolio search, status filter, server
+sorting and financial calculations. Payments can add table search and a received/reversed filter.
+Column visibility, density and pagination must preserve records, permissions and ledger facts.
+Payment details should span only visible columns and keep their application-owned disclosure state.
+These library capabilities and recipes do not deliver that application integration.
 
 Lumen 4 publication is a prerequisite for a reproducible Cartera dependency upgrade from 2.1.0.
 Local packed-package checks are consumer evidence, not a published package or production release.
-Column resizing/reordering/pinning, selection/bulk actions, grouping and virtualization remain
-follow-up capabilities. They are not enabled by this first composition.
+Column resizing/reordering/pinning, grouping and virtualization remain follow-up capabilities.
+Page-scoped selection and batch-action presentation are now opt-in, as described below.
+
+## Saved operational views
+
+`DataTableSavedViews` provides naming, selection, update, removal and reset controls. Import it
+from the React root or `/components/data-table-saved-views`. Supply `views`, the current `state`,
+`resetState` and explicit `onApply`, `onSave`, `onUpdate` and `onRemove` callbacks. The component
+requests changes; the host owns the view list, active ID, persistence, account scoping and errors.
+Use `disabled` while persisting and localize the `labels` object.
+
+Saved and restored preferences start at page one. `parseDataTableViewState(unknown)` validates
+external preferences and returns a detached copy containing only supported view fields. It throws
+on malformed structures. Selection and row data are excluded. Filter/search text can still contain
+private information: choose storage and retention deliberately rather than saving it automatically.
+
+## Inclusive amount and date ranges
+
+Set a column's `rangeFilter` to `number` or `date`. Its accessor returns the raw numeric value or a
+valid `YYYY-MM-DD` date-only string. This is mutually exclusive with `filterOptions`. The optional
+`state.ranges` array contains `{ id, from, to }` string bounds; empty bounds are open. Criteria reset
+pagination and combine with search and other column filters. Both bounds are inclusive. Missing,
+nonfinite and invalid date values do not match an active range. Reversed bounds match no records.
+In server mode, forward the ranges to the backend: Lumen does not filter the supplied page.
+Localize the `rangeFrom(column)` and `rangeTo(column)` label callbacks.
+
+## Selection and batch-action presentation
+
+Pass `selection={{ selectedIds, onChange, unavailableReason, actions }}` to opt in. The IDs are
+controlled by the application and remain separate from view preferences. `unavailableReason(row)`
+returns a localized reason for excluding a record, or `undefined` when eligible. Render that reason
+beside the row control. Use the render callback's `selection.isSelected(row)` and `selection.toggle(row)`
+for row checkboxes. All library selection actions and sorting requests honor `disabled`.
+
+The built-in select-all checkbox explicitly selects eligible records **on this page**. It shows a
+mixed state for partial selection. Paging and filtering retain other selected IDs; clearing selection
+is explicit. `selectedRows` contains only supplied records, which may be incomplete under server
+pagination. Never derive a full-portfolio amount, permission decision or batch payload from that
+partial list. The application must resolve and authorize every selected ID before executing a
+command, recheck eligibility against current data, and review consequential changes first.
+
+`actions(selection)` renders application-owned buttons. The library performs no export, messaging,
+payment, record mutation or network request. The live consumer-workflows example previews an export
+selection with fictional records. All-matching server selection, resizing, pinning, grouping and
+virtualization remain separate follow-up capabilities.

@@ -11,6 +11,14 @@ import {
 } from '@tanstack/react-table'
 
 import { Button, Checkbox, Field, Input, Label, NativeSelect } from './components.js'
+import { DataTableRangeControls } from './data-table-range.js'
+import { type DataTableViewRange, matchesDataTableRange } from './data-table-range-model.js'
+import { DataTableSelectionControls } from './data-table-selection.js'
+import { createDataTableSelection, type DataTableViewSelection, type DataTableViewSelectionResult } from './data-table-selection-model.js'
+import { assertViewState, isRecord } from './data-table-state.js'
+
+export type { DataTableViewRange } from './data-table-range-model.js'
+export type { DataTableViewSelection, DataTableViewSelectionResult } from './data-table-selection-model.js'
 
 const createFeatures = () => tableFeatures({
   columnFilteringFeature,
@@ -32,12 +40,14 @@ export interface DataTableViewColumn<T> {
   canHide?: boolean
   sortable?: boolean
   filterOptions?: readonly { value: string, label: string }[]
+  rangeFilter?: 'number' | 'date'
 }
 
 /** Serializable view state; record objects remain outside this state. */
 export interface DataTableViewState {
   search: string
   filters: { id: string, value: string }[]
+  ranges?: DataTableViewRange[]
   visibility: Record<string, boolean>
   pagination: { pageIndex: number, pageSize: number }
   sorting: { id: string, desc: boolean }[]
@@ -51,6 +61,7 @@ export interface DataTableViewResult<T> {
   filteredCount: number
   state: DataTableViewState
   toggleSort: (key: string, multiple?: boolean) => void
+  selection: DataTableViewSelectionResult<T> | undefined
 }
 
 export interface DataTableViewLabels {
@@ -64,6 +75,11 @@ export interface DataTableViewLabels {
   previous: string
   next: string
   empty: string
+  rangeFrom: (column: string) => string
+  rangeTo: (column: string) => string
+  selectPage: string
+  clearSelection: string
+  selected: (count: number) => string
   /** Receives one-based page and at least one page, including empty results. */
   page: (page: number, pages: number, matchingRows: number) => string
 }
@@ -79,6 +95,11 @@ const english: DataTableViewLabels = {
   previous: 'Previous page',
   next: 'Next page',
   empty: 'No matching records',
+  rangeFrom: column => `${column}: from`,
+  rangeTo: column => `${column}: to`,
+  selectPage: 'Select eligible records on this page',
+  clearSelection: 'Clear selection',
+  selected: count => `${count} selected records`,
   page: (page, pages, count) => `Page ${page} of ${pages} · ${count} records`
 }
 
@@ -100,11 +121,8 @@ export interface DataTableViewProps<T> {
   disabled?: boolean
   toolbar?: ReactNode
   searchable?: boolean
+  selection?: DataTableViewSelection<T>
 }
-
-const isRecord = (value: unknown): value is Record<string, unknown> => (
-  typeof value === 'object' && value !== null && !Array.isArray(value)
-)
 
 const defaultView = (initial: Partial<DataTableViewState> = {}): DataTableViewState => ({
   search: '',
@@ -119,34 +137,6 @@ const defaultView = (initial: Partial<DataTableViewState> = {}): DataTableViewSt
 const textValue = (value: unknown): string => (
   typeof value === 'string' || typeof value === 'number' ? String(value) : ''
 )
-
-const assertPagination = (pagination: unknown) => {
-  if (!isRecord(pagination) || !Number.isSafeInteger(pagination.pageSize) ||
-    typeof pagination.pageSize !== 'number' || pagination.pageSize <= 0 ||
-    !Number.isSafeInteger(pagination.pageIndex) || typeof pagination.pageIndex !== 'number' || pagination.pageIndex < 0)
-    throw new RangeError('DataTableView requires a positive integer page size and a nonnegative integer page index.')
-}
-
-const isFilter = (filter: unknown): boolean => (
-  isRecord(filter) && typeof filter.id === 'string' && typeof filter.value === 'string'
-)
-
-const isSort = (sort: unknown): boolean => (
-  isRecord(sort) && typeof sort.id === 'string' && typeof sort.desc === 'boolean'
-)
-
-const isDensity = (density: unknown): boolean => density === 'comfortable' || density === 'compact'
-
-const assertViewState = (state: unknown): void => {
-  if (!isRecord(state) || typeof state.search !== 'string' ||
-    !isRecord(state.visibility) || !Object.values(state.visibility).every(value => typeof value === 'boolean') ||
-    !Array.isArray(state.filters) || !Array.from(state.filters).every(isFilter) ||
-    !Array.isArray(state.sorting) || !Array.from(state.sorting).every(isSort) ||
-    !isDensity(state.density))
-    throw new TypeError('DataTableView requires valid search, filters, visibility, sorting and density state.')
-
-  assertPagination(state.pagination)
-}
 
 const stableRows = <T extends { id: string },>(rows: readonly T[], getRowId: (row: T) => string): T[] => {
   const data = Array.from(rows)
@@ -170,12 +160,18 @@ const isFilterOptions = (options: unknown): boolean => (
   )))
 )
 
+const isColumnFiltering = (column: Record<string, unknown>): boolean => (
+  isFilterOptions(column.filterOptions) &&
+  (column.rangeFilter === undefined || column.rangeFilter === 'number' || column.rangeFilter === 'date') &&
+  !(column.rangeFilter && column.filterOptions)
+)
+
 const isColumnConfiguration = (column: Record<string, unknown>): boolean => (
   typeof column.label === 'string' &&
   (column.value === undefined || typeof column.value === 'function') &&
   (column.canHide === undefined || typeof column.canHide === 'boolean') &&
   (column.sortable === undefined || typeof column.sortable === 'boolean') &&
-  isFilterOptions(column.filterOptions)
+  isColumnFiltering(column)
 )
 
 const assertColumns = <T,>(columns: readonly DataTableViewColumn<T>[]): void => {
@@ -251,7 +247,9 @@ const useViewModel = <T extends { id: string },>({
     enableHiding: column.canHide !== false,
     enableSorting: column.sortable === true,
     enableGlobalFilter: Boolean(column.value),
-    filterFn: (row, key, value: unknown) => textValue(row.getValue(key)) === textValue(value),
+    filterFn: (row, key, value: unknown) => column.rangeFilter ?
+      matchesDataTableRange(row.getValue(key), value, column.rangeFilter) :
+      textValue(row.getValue(key)) === textValue(value),
     sortFn: (left, right, key) => {
       const a: unknown = left.getValue(key)
       const b: unknown = right.getValue(key)
@@ -271,7 +269,11 @@ const useViewModel = <T extends { id: string },>({
     getRowId,
     state: {
       globalFilter: state.search,
-      columnFilters: state.filters,
+      columnFilters: [
+        ...state.filters.filter(filter => !columns.some(column => column.key === filter.id && column.rangeFilter)),
+        ...(state.ranges ?? []).filter(range => columns.some(column => column.key === range.id && column.rangeFilter))
+          .map(range => ({ id: range.id, value: range }))
+      ],
       columnVisibility: state.visibility,
       pagination: state.pagination,
       sorting: state.sorting
@@ -315,6 +317,7 @@ export const DataTableView = <T extends { id: string },>(props: DataTableViewPro
   const { state, update, visibleRows, count, pages, pageIndex, visible, matching, changeQuery } = useViewModel(props)
   const id = useId()
   const text = { ...english, ...labels }
+  const selection = createDataTableSelection(props.rows, visibleRows, props.getRowId, props.selection, disabled)
 
   return (
     <section role="group" className="ui-data-table-view" data-density={state.density} aria-label={label}>
@@ -354,6 +357,17 @@ export const DataTableView = <T extends { id: string },>(props: DataTableViewPro
             </NativeSelect>
           </Field>
         ))}
+        <DataTableRangeControls
+          columns={columns}
+          ranges={state.ranges ?? []}
+          id={id}
+          disabled={disabled}
+          fromLabel={text.rangeFrom}
+          toLabel={text.rangeTo}
+          onChange={ranges => {
+            changeQuery({ ranges })
+          }}
+        />
         <Field controlId={`${id}-density`}>
           <Label htmlFor={`${id}-density`}>{text.density}</Label>
           <NativeSelect
@@ -385,14 +399,23 @@ export const DataTableView = <T extends { id: string },>(props: DataTableViewPro
           </Label>
         ))}
       </fieldset>
+      <DataTableSelectionControls
+        selection={selection}
+        disabled={disabled}
+        selectPageLabel={text.selectPage}
+        clearLabel={text.clearSelection}
+        countLabel={text.selected}
+        actions={props.selection?.actions}
+      />
       {children({
+        selection,
         rows: visibleRows,
         isColumnVisible: visible,
         visibleColumnCount: columns.filter(column => visible(column.key)).length,
         filteredCount: count,
         state,
         toggleSort: (key, multiple = false) => {
-          if (!columns.some(column => column.key === key && column.sortable)) return
+          if (disabled || !columns.some(column => column.key === key && column.sortable)) return
 
           const active = state.sorting.find(sort => sort.id === key)
           const sorting = multiple ? state.sorting.filter(sort => sort.id !== key) : []

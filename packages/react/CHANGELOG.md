@@ -4,6 +4,10 @@
 
 ### Minor Changes
 
+- Add saved table views, inclusive amount/date ranges, controlled page selection and guarded review workflows. Ship installable React review, import reconciliation and record workspace recipes with synthetic interactive examples. Applications retain persistence, authorization, financial rules and command reconciliation.
+
+  Use the readable secondary text token for description labels on light surfaces.
+
 - Add coordinated keyed motion, optional semantic visual effects, chart continuity, and application-owned AI surfaces across web adapters. Include installable product blocks, an interactive visual playground, and optional Motion and Rive integration entry points.
 
 - Add WorldMap for Astro, React, and Web Components with dotted and solid styles, highlighted countries, labeled markers, country selection, theme customization, and reduced motion. Ship public-domain country geometry behind an explicit core subpath, with no runtime requests or new dependencies.

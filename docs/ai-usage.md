@@ -455,7 +455,10 @@ The shared catalog includes:
   status names, and APIs. Use compact `Empty` states inside columns, preserve every column with
   `Skeleton` blocks while loading, and paginate large columns. See [Kanban composition and movement](kanban.md).
 - React applications can compose [TanStack-powered table views](data-table-views.md) through
-  `DataTableView`, preserving application-owned cells and server queries.
+  `DataTableView`, preserving application-owned cells and server queries. Numeric/date ranges and
+  page-scoped selection are opt-in. Use `DataTableSavedViews` for explicit host-owned preference
+  persistence, and `useLumenReviewWorkflow` for reviewed commands with stale-revision and unknown-outcome
+  guards. Install `review-workflow`, `import-review` or `record-workspace` for executable React compositions.
 - Use `DataTable`, `Tree`, `TreeGrid`, `VirtualList`, `Pagination`, and `Command` for dense data
   collection workflows. Astro and Elements wire selectable/sortable `DataTable` behavior and
   `VirtualList` range events; React also provides built-in fixed-height list windowing. `Tree`

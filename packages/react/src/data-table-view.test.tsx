@@ -342,3 +342,75 @@ test('column filter identities stay disjoint from toolbar controls and arbitrary
     expect(label?.control).toBeInstanceOf(HTMLSelectElement)
   }
 })
+
+test('range filters are inclusive, compose with search, and reset pagination', async () => {
+  await render({ columns: columns.map(column => column.key === 'amount' ? { ...column, rangeFilter: 'number' } : column) })
+  await click('Next page')
+  await run(() => {
+    const input = [...container.querySelectorAll('input')].find(element => element.type === 'number')
+    if (!input) throw new Error('Missing numeric range')
+    Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')?.set?.call(input, '28')
+    input.dispatchEvent(new Event('input', { bubbles: true }))
+  })
+  expect(ids()).toEqual(['28', '29', '30'])
+  await changeSearch('Client 29')
+  expect(ids()).toEqual(['29'])
+})
+
+test('server ranges are query state and never filter the supplied page', async () => {
+  await render({ mode: 'server', rowCount: 300, columns: columns.map(column => column.key === 'amount' ? { ...column, rangeFilter: 'number' } : column), defaultState: { ranges: [{ id: 'amount', from: '100', to: '200' }] } })
+  expect(ids()).toEqual(rows.map(row => row.id))
+})
+
+test('selection preserves off-page identities and skips ineligible rows', async () => {
+  const Harness = () => {
+    const [selectedIds, setSelectedIds] = useState<string[]>(['remote-row'])
+    return (
+      <DataTableView rows={rows} columns={columns} getRowId={row => row.id} label="Selectable records" defaultState={{ pagination: { pageIndex: 0, pageSize: 10 } }} selection={{ selectedIds, onChange: setSelectedIds, unavailableReason: row => row.id === '0' ? 'Unavailable' : undefined }}>
+        {view => <output>{view.selection?.selectedIds.join(',')}</output>}
+      </DataTableView>
+    )
+  }
+  await run(() => {
+    root.render(<Harness />)
+  })
+  const selectPage = () => run(() => {
+    const input = container.querySelector<HTMLInputElement>('.ui-data-table-view__selection input')
+    if (!input) throw new Error('Missing page selection')
+    input.click()
+  })
+  await selectPage()
+  expect(container.querySelector('output')?.textContent).toBe('remote-row,1,2,3,4,5,6,7,8,9')
+  await click('Next page')
+  await selectPage()
+  expect(container.querySelector('output')?.textContent).toContain('remote-row,1,2,3,4,5,6,7,8,9,10,11')
+  await selectPage()
+  expect(container.querySelector('output')?.textContent).toBe('remote-row,1,2,3,4,5,6,7,8,9')
+  await click('Clear selection')
+  expect(container.querySelector('output')?.textContent).toBe('')
+})
+
+test('disabled table callbacks cannot change sorting or selection', async () => {
+  const changed = vi.fn()
+  await run(() => {
+    root.render(
+      <DataTableView rows={rows} columns={columns} getRowId={row => row.id} label="Pending records" disabled onStateChange={changed} selection={{ selectedIds: [], onChange: changed }}>
+        {view => (
+          <button
+            type="button"
+            onClick={() => {
+              view.toggleSort('amount')
+              view.selection?.togglePage()
+              view.selection?.clear()
+              if (rows[0]) view.selection?.toggle(rows[0])
+            }}
+          >
+            Invoke disabled actions
+          </button>
+        )}
+      </DataTableView>
+    )
+  })
+  await click('Invoke disabled actions')
+  expect(changed).not.toHaveBeenCalled()
+})

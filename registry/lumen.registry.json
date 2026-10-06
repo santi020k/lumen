@@ -357,6 +357,52 @@
       ]
     },
     {
+      "name": "review-workflow",
+      "type": "recipe",
+      "components": [
+        "Form",
+        "Field",
+        "ErrorSummary",
+        "ChangeSummary",
+        "Button",
+        "Alert"
+      ],
+      "files": [
+        "docs/consumer-ui-recipes.md"
+      ]
+    },
+    {
+      "name": "import-review",
+      "type": "recipe",
+      "components": [
+        "Alert",
+        "Badge",
+        "Button",
+        "Card",
+        "ChangeSummary",
+        "Stack"
+      ],
+      "files": [
+        "docs/consumer-ui-recipes.md"
+      ]
+    },
+    {
+      "name": "record-workspace",
+      "type": "recipe",
+      "components": [
+        "Badge",
+        "Card",
+        "Descriptions",
+        "FormattedDate",
+        "Grid",
+        "Stack",
+        "Timeline"
+      ],
+      "files": [
+        "docs/consumer-ui-recipes.md"
+      ]
+    },
+    {
       "name": "ai-docs",
       "type": "documentation",
       "files": [

@@ -41,3 +41,10 @@ cover amount precision, locale parsing, controlled drafts, React Hook Form reset
 behavior. These fixtures supplement the existing reporting route's synthetic Observatory-shaped
 chart coverage. Native settings fixtures live beside the Swift adapter tests and are compilation
 evidence only; hardware, assistive-technology and store qualification remain separate.
+
+`operational-workflows.spec.ts` adds saved-view restoration, inclusive amount/date filters, selection
+that survives view changes, disabled-record explanations, whole-COP/date review, edit invalidation,
+confirmed failures, uncertain-result reconciliation, import findings and record history. It checks
+390px and 1440px layouts with keyboard focus, overflow and WCAG accessibility assertions, and writes
+temporary screenshots beside its test results. The fixtures stay entirely inside Lumen; they do not
+edit, connect to or certify a deployed Cartera application.
