@@ -91,7 +91,7 @@ try {
 
     const args = ['--filter', '@santi020k/lumen-docs', 'run', 'audit:lighthouse', `http://127.0.0.1:${address.port}${route}`,
       `--chrome-path=${process.env.CHROME_PATH ?? chromium.executablePath()}`, '--chrome-flags=--headless --no-sandbox',
-      '--only-categories=performance,accessibility,best-practices,seo', '--output=json', `--output-path=${reportPath}`, '--quiet']
+      '--only-categories=performance,accessibility,best-practices,seo', '--output=json', `--output-path=${reportPath}`, '--save-assets', '--quiet']
 
     const exitCode = await new Promise((resolve, reject) => {
       const child = spawn('pnpm', args, { cwd: root, stdio: 'inherit' })

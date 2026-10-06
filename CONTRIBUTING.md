@@ -205,7 +205,9 @@ mobile Lighthouse on the homepage, icons, Button documentation, and AI guide, an
 reports. Budgets require performance at least 90, accessibility and SEO at 100, LCP at most
 3.5 seconds, TBT at most 200 ms, and CLS at most 0.1. The LCP ceiling accommodates CI variation;
 the user-experience target remains 2.5 seconds. These lab checks do not establish field Core Web
-Vitals. Reports are generated under `apps/docs/.astro/lighthouse` and stay out of commits.
+Vitals. Reports, browser traces, and DevTools logs are generated under
+`apps/docs/.astro/lighthouse` and stay out of commits. The Docs Performance workflow uploads them
+for diagnosing slow hosted runs without changing the budgets.
 
 Keep the icon catalogs progressive: render 48 previews initially, fetch fingerprinted JSON only
 on search or Show more, and retain all names in the server-rendered collapsible fallback. Generate
