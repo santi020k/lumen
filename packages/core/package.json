@@ -79,6 +79,10 @@
     "./virtual-window": {
       "types": "./dist/virtual-window.d.ts",
       "import": "./dist/virtual-window.js"
+    },
+    "./rive": {
+      "types": "./dist/rive.d.ts",
+      "import": "./dist/rive.js"
     }
   },
   "files": [
@@ -103,10 +107,19 @@
     "libphonenumber-js": "catalog:"
   },
   "devDependencies": {
+    "@rive-app/canvas": "catalog:",
     "@vitest/coverage-v8": "catalog:",
     "jsdom": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:"
+  },
+  "peerDependencies": {
+    "@rive-app/canvas": "^2.44.0"
+  },
+  "peerDependenciesMeta": {
+    "@rive-app/canvas": {
+      "optional": true
+    }
   },
   "engines": {
     "node": ">=22.12.0"

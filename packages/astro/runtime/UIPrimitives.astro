@@ -5324,6 +5324,12 @@ const initOptionalControllers = (scope: ParentNode): void => {
 
   initOptionalMediaControllers(scope).catch(reportError)
 
+  if (scope.querySelector('[data-ui-tab-indicator], [data-ui-chart-motion], [data-ui-motion-group], [data-ui-visual-effect="spotlight"], [data-ui-prompt-composer], [data-ui-approval-card]')) {
+    import('./controllers/visual-interactions.js')
+      .then(({ initVisualInteractionControllers }) => initVisualInteractionControllers(scope))
+      .catch(reportError)
+  }
+
   if (scope.querySelector('[data-ui-chart-interactive]')) {
     import('./controllers/charts.js').then(({ initChartControllers }) => initChartControllers(scope)).catch(reportError)
   }

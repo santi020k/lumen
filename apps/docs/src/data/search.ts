@@ -205,6 +205,14 @@ const recipeItems: DocsSearchItem[] = [
     type: 'Recipe'
   },
   {
+    category: 'Interaction',
+    type: 'Recipe',
+    href: '/docs/visual-playground',
+    keywords: 'motion animation effects aurora mesh spotlight reduced motion AI prompt streaming approval',
+    title: 'Visual playground',
+    description: 'Explore coordinated motion, visual effects and AI surfaces.'
+  },
+  {
     category: 'Themes',
     description:
       'Generate theme tokens from a hue, preview Lumen components, and copy CSS.',

@@ -743,3 +743,8 @@ from an ancestor after that keydown has been consumed. It blocks
 disabled/loading activation, including direct clicks. Blocking flags expose `aria-disabled`;
 removing them restores any prior application-supplied ARIA value. Native nested controls retain
 their own keyboard path.
+
+## Visual interactions and product blocks
+
+See [visual interactions](../../docs/visual-interactions.md) for keyed motion, semantic effects,
+chart continuity, AI surfaces, optional SDK integrations, and the four installable product recipes.

@@ -400,3 +400,10 @@ stages, precomputed quartiles, missing values, and domain rules.
 
 `isLumenTimeSelection` narrows unknown decoded values to valid same-day wall-clock selections.
 `isLumenTimeInBounds` returns false for malformed selections and preserves explicit bounds validation.
+
+## Optional visual integrations
+
+Coordinated DOM motion, chart continuity, safe citation URLs, and prompt/approval controllers are
+exported from the main package without an animation SDK. See [visual interactions](../../docs/visual-interactions.md).
+The optional `@santi020k/lumen-core/rive` entry requires the optional peer `@rive-app/canvas@^2.44.0`.
+It owns playback, data bindings, reduced motion, visibility, and cleanup for a consumer-owned asset.

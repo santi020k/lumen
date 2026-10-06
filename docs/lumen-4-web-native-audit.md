@@ -223,3 +223,11 @@ or store update is implied by this audit.
 | `WaterfallChart` | Counterpart | `waterfall-chart` |
 | `ChangeSummary` | Composition | `list-row` plus host slots/state; no matching standalone export. |
 | `FilterBar` | Composition | `search-field` plus host slots/state; no matching standalone export. |
+| `ChartMotion` | Platform / host | Web SVG interpolation; native chart animation remains adapter-owned. |
+| `MotionGroup` | Platform / host | Web keyed DOM geometry; native layout transitions remain adapter-owned. |
+| `VisualEffect` | Platform / host | Web CSS and pointer effects; native rendering uses platform drawing APIs. |
+| `ApprovalCard` | Composition | `surface` plus consumer-owned approval state and native actions. |
+| `PromptComposer` | Composition | `text-field` plus consumer-owned submission, stop and transport state. |
+| `SourceCitation` | Platform / host | Named native links and OS URL opening plus consumer-owned citation metadata. |
+| `StreamMessage` | Composition | `surface` plus consumer-owned streamed content and accessible status. |
+| `ToolActivity` | Composition | `surface` plus consumer-owned disclosure and tool status. |

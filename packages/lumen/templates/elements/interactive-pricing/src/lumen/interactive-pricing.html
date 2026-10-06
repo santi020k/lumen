@@ -1,0 +1,13 @@
+<section data-product-block="pricing" aria-label="Example pricing">
+  <lumen-typography><h2>A plan for your next project</h2><p>Illustrative prices. Connect selections to your own checkout.</p></lumen-typography>
+  <lumen-stack direction="horizontal" gap="related" role="group" aria-label="Billing period"><lumen-button data-billing="monthly" aria-pressed="true">Monthly</lumen-button><lumen-button data-billing="annual" aria-pressed="false">Annual</lumen-button></lumen-stack>
+  <lumen-grid columns="auto"><lumen-card><lumen-visual-effect variant="border"><lumen-typography><h3>Starter</h3><p data-monthly="10" data-annual="96">$10 / month</p></lumen-typography><lumen-button data-plan="starter">Choose starter</lumen-button></lumen-visual-effect></lumen-card><lumen-card><lumen-visual-effect variant="mesh"><lumen-typography><h3>Team</h3><p data-monthly="24" data-annual="240">$24 / month</p></lumen-typography><lumen-button data-plan="team">Choose team</lumen-button></lumen-visual-effect></lumen-card></lumen-grid>
+  <p role="status" data-block-status>Select a plan to compare billing.</p>
+</section>
+<script type="module">
+  import { defineLumenElements } from '@santi020k/lumen-elements'
+  import { mountProductBlocks } from './product-blocks.js'
+  defineLumenElements()
+  const cleanup = mountProductBlocks(document)
+  window.addEventListener('pagehide', cleanup, { once: true })
+</script>

@@ -375,6 +375,64 @@ export const lumenRegistry = {
         'docs/figma-design-to-code.md',
         'docs/figma.md'
       ]
+    },
+    {
+      name: 'interactive-pricing',
+      type: 'recipe',
+      components: [
+        'Button',
+        'Card',
+        'Grid',
+        'Stack',
+        'Typography',
+        'VisualEffect'
+      ],
+      files: [
+        'docs/visual-interactions.md'
+      ]
+    },
+    {
+      name: 'feature-preview',
+      type: 'recipe',
+      components: [
+        'Button',
+        'Card',
+        'MotionGroup',
+        'Stack',
+        'Typography',
+        'VisualEffect'
+      ],
+      files: [
+        'docs/visual-interactions.md'
+      ]
+    },
+    {
+      name: 'guided-onboarding',
+      type: 'recipe',
+      components: [
+        'Button',
+        'Card',
+        'Form',
+        'Input',
+        'Label',
+        'Stack',
+        'Typography'
+      ],
+      files: [
+        'docs/visual-interactions.md'
+      ]
+    },
+    {
+      name: 'command-center',
+      type: 'recipe',
+      components: [
+        'Command',
+        'Input',
+        'Typography'
+      ],
+      files: [
+        'docs/visual-interactions.md'
+      ]
     }
   ],
   components: [
@@ -3060,6 +3118,125 @@ export const lumenRegistry = {
         'packages/astro/components/FilterBar.astro',
         'packages/react/src/dashboard.tsx',
         'packages/elements/src/components/dashboard.ts',
+        'packages/astro/styles/lumen.css'
+      ],
+      dependencies: [
+        'styles'
+      ]
+    },
+    {
+      name: 'ChartMotion',
+      type: 'component',
+      category: 'Data display',
+      description: 'Animates decorative stable SVG marks while accessible data updates immediately.',
+      files: [
+        'packages/astro/components/ChartMotion.astro',
+        'packages/react/src/visual-interactions.tsx',
+        'packages/elements/src/components/visual-interactions.ts'
+      ],
+      dependencies: [
+        'styles'
+      ]
+    },
+    {
+      name: 'MotionGroup',
+      type: 'component',
+      category: 'Interaction',
+      description: 'Animates stable keyed children while preserving application ownership of order.',
+      files: [
+        'packages/astro/components/MotionGroup.astro',
+        'packages/react/src/visual-interactions.tsx',
+        'packages/elements/src/components/visual-interactions.ts',
+        'packages/astro/styles/lumen.css'
+      ],
+      dependencies: [
+        'styles'
+      ]
+    },
+    {
+      name: 'VisualEffect',
+      type: 'component',
+      category: 'Layout',
+      description: 'Optional semantic mesh, aurora, spotlight, grain, border, draw, and depth effects.',
+      files: [
+        'packages/astro/components/VisualEffect.astro',
+        'packages/react/src/visual-interactions.tsx',
+        'packages/elements/src/components/visual-interactions.ts',
+        'packages/astro/styles/lumen.css'
+      ],
+      dependencies: [
+        'styles'
+      ]
+    },
+    {
+      name: 'ApprovalCard',
+      type: 'component',
+      category: 'AI',
+      description: 'Collects an explicit decision for an application-owned pending request.',
+      files: [
+        'packages/astro/components/ApprovalCard.astro',
+        'packages/react/src/ai-surfaces.tsx',
+        'packages/elements/src/components/ai-surfaces.ts',
+        'packages/astro/styles/lumen.css'
+      ],
+      dependencies: [
+        'styles'
+      ]
+    },
+    {
+      name: 'PromptComposer',
+      type: 'component',
+      category: 'AI',
+      description: 'Accessible prompt input with submit and stop requests.',
+      files: [
+        'packages/astro/components/PromptComposer.astro',
+        'packages/react/src/ai-surfaces.tsx',
+        'packages/elements/src/components/ai-surfaces.ts',
+        'packages/astro/styles/lumen.css'
+      ],
+      dependencies: [
+        'styles'
+      ]
+    },
+    {
+      name: 'SourceCitation',
+      type: 'component',
+      category: 'AI',
+      description: 'Named source link restricted to safe web URLs and local paths.',
+      files: [
+        'packages/astro/components/SourceCitation.astro',
+        'packages/react/src/ai-surfaces.tsx',
+        'packages/elements/src/components/ai-surfaces.ts',
+        'packages/astro/styles/lumen.css'
+      ],
+      dependencies: [
+        'styles'
+      ]
+    },
+    {
+      name: 'StreamMessage',
+      type: 'component',
+      category: 'AI',
+      description: 'Separates streaming content from concise status announcements.',
+      files: [
+        'packages/astro/components/StreamMessage.astro',
+        'packages/react/src/ai-surfaces.tsx',
+        'packages/elements/src/components/ai-surfaces.ts',
+        'packages/astro/styles/lumen.css'
+      ],
+      dependencies: [
+        'styles'
+      ]
+    },
+    {
+      name: 'ToolActivity',
+      type: 'component',
+      category: 'AI',
+      description: 'Discloses application-owned tool progress and results.',
+      files: [
+        'packages/astro/components/ToolActivity.astro',
+        'packages/react/src/ai-surfaces.tsx',
+        'packages/elements/src/components/ai-surfaces.ts',
         'packages/astro/styles/lumen.css'
       ],
       dependencies: [

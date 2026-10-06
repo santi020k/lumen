@@ -1,0 +1,34 @@
+---
+import { Command, Input, Typography } from '@santi020k/lumen-astro'
+---
+
+<section data-product-block="command" aria-label="Workspace commands">
+  <Typography><h2>What would you like to do?</h2><p>Search with the keyboard, then choose a command.</p></Typography>
+  <Command><Input type="search" aria-label="Search workspace commands" placeholder="Search commands…" />
+    <button data-ui-command-item data-workspace-command="search" type="button">Search project documentation</button>
+    <button data-ui-command-item data-workspace-command="create" type="button">Create a task draft</button>
+    <button data-ui-command-item data-workspace-command="review" type="button">Review pending proposals</button>
+  </Command><p role="status" data-block-status>Choose a command.</p>
+</section>
+
+<script>
+  import { mountProductBlocks } from './product-blocks'
+
+  let cleanup: (() => void) | undefined
+
+  const mount = () => {
+ cleanup?.()
+
+ cleanup = mountProductBlocks(document)
+}
+
+  mount()
+
+  document.addEventListener('astro:page-load', mount)
+
+  document.addEventListener('astro:before-swap', () => {
+ cleanup?.()
+
+ cleanup = undefined
+})
+</script>

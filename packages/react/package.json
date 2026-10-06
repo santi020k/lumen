@@ -84,6 +84,10 @@
     "./forms": {
       "types": "./dist/form-workflow.d.ts",
       "import": "./dist/form-workflow.js"
+    },
+    "./motion": {
+      "types": "./dist/motion.d.ts",
+      "import": "./dist/motion.js"
     }
   },
   "files": [
@@ -121,13 +125,20 @@
     "@vitest/coverage-v8": "catalog:",
     "esbuild": "catalog:",
     "jsdom": "catalog:",
+    "motion": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:"
   },
   "peerDependencies": {
-    "react": ">=19"
+    "react": ">=19",
+    "motion": "^14.0.0"
+  },
+  "peerDependenciesMeta": {
+    "motion": {
+      "optional": true
+    }
   },
   "engines": {
     "node": ">=22.12.0"

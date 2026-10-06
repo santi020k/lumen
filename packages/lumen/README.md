@@ -301,3 +301,8 @@ routes and action handlers. See the [header recipe guide](../../docs/consumer-ui
 The `auth-onboarding` recipe includes visual email-code sign-in, code verification, and passkey
 recovery examples for Astro, React, and Elements. Controls stay disabled until the consumer connects
 its authentication service. See the [login and Auth integration reference](https://lumen.santi020k.com/templates/auth-onboarding#login-examples-title).
+
+## Visual interactions and product blocks
+
+See [visual interactions](../../docs/visual-interactions.md) for keyed motion, semantic effects,
+chart continuity, AI surfaces, optional SDK integrations, and the four installable product recipes.

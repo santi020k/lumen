@@ -184,7 +184,15 @@ export const lumenComponentNames = [
   'Histogram',
   'WaterfallChart',
   'ChangeSummary',
-  'FilterBar'
+  'FilterBar',
+  'ChartMotion',
+  'MotionGroup',
+  'VisualEffect',
+  'ApprovalCard',
+  'PromptComposer',
+  'SourceCitation',
+  'StreamMessage',
+  'ToolActivity'
 ] as const
 
 export type LumenComponentName = typeof lumenComponentNames[number]
@@ -197,6 +205,14 @@ export interface LumenComponentBehavior {
 }
 
 export const lumenComponentBehavior = {
+  ApprovalCard: { astro: 'ui-primitives', elements: 'registered-element', react: 'component' },
+  PromptComposer: { astro: 'ui-primitives', elements: 'registered-element', react: 'component' },
+  SourceCitation: { astro: 'none', elements: 'registered-element', react: 'component' },
+  StreamMessage: { astro: 'none', elements: 'registered-element', react: 'component' },
+  ToolActivity: { astro: 'none', elements: 'registered-element', react: 'component' },
+  ChartMotion: { astro: 'ui-primitives', elements: 'registered-element', react: 'component' },
+  MotionGroup: { astro: 'ui-primitives', elements: 'registered-element', react: 'component' },
+  VisualEffect: { astro: 'ui-primitives', elements: 'registered-element', react: 'component' },
   AmountField: { astro: 'ui-primitives', elements: 'registered-element', react: 'component' },
   Accordion: { astro: 'none', elements: 'registered-element', react: 'component' },
   Affix: { astro: 'none', elements: 'registered-element', react: 'component' },

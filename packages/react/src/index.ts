@@ -1,5 +1,6 @@
 'use client'
 
+export * from './ai-surfaces.js'
 export * from './amount-field.js'
 export * from './attachments.js'
 export * from './bullet-chart.js'
@@ -18,6 +19,7 @@ export * from './hooks.js'
 export * from './image-comparison.js'
 export * from './interval-charts.js'
 export { ToastProvider } from './toast-provider.js'
+export * from './visual-interactions.js'
 export {
   type LumenChartDatumActivationDetail,
   type LumenComponentName,

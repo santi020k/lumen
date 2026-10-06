@@ -2667,3 +2667,13 @@ lumen-dialog.ui-dialog:not([hidden]):has(> [data-slot="dialog-body"]) {
 .ui-calendar-heatmap__missing, .ui-calendar-heatmap__weekday { fill: CanvasText; }
 }
 }
+
+@layer lumen.components {
+.ui-tabs__moving-indicator { position: absolute; left: 0; bottom: 0; height: 2px; background: hsl(var(--brand)); pointer-events: none; }
+
+@media (prefers-reduced-motion: reduce) {
+.ui-collapsible::details-content, .ui-tabs__moving-indicator { transition: none !important; }
+}
+
+:is([data-ui-motion="reduce"].ui-collapsible, [data-ui-motion="reduce"] .ui-collapsible)::details-content, [data-ui-motion="reduce"] .ui-tabs__moving-indicator { transition: none !important; }
+}

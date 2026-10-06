@@ -1,3 +1,4 @@
+export * from './ai-surfaces.js'
 export { createLumenAmountFieldController, formatLumenAmountDraft, getLumenAmountValue, type LumenAmountChangeDetail, type LumenAmountFieldController, type LumenAmountOptions, parseLumenAmountDraft } from './amount-field.js'
 export {
   createLumenAttachmentPreviewController,
@@ -10,6 +11,7 @@ export {
 export { createLumenBulletGeometry, type LumenBulletOptions, type LumenBulletRange } from './bullet-chart.js'
 export * from './chart-interaction.js'
 export * from './chart-models.js'
+export * from './chart-motion.js'
 export {
   alignLumenChartSeries,
   appendLumenChartDatum,
@@ -237,6 +239,7 @@ export {
   normalizeLumenLocales
 } from './language.js'
 export { createLumenMessageScrollerController, type LumenMessageScrollerController, type LumenMessageScrollerOptions, type LumenMessageScrollState } from './message-scroller.js'
+export * from './motion-workflows.js'
 export {
   isLumenDecimalInBounds,
   isLumenTimeInBounds,
@@ -303,6 +306,7 @@ export {
   saveScheduleEvents,
   scheduleEventsOverlap,
   serializeScheduleEvents } from './schedule.js'
+export * from './tab-indicator.js'
 export {
   type LumenTabsChangeDetail,
   type LumenTabsChangeEvent,
@@ -397,3 +401,4 @@ export {
 export { createLumenVirtualCollectionController, type LumenVirtualCollectionController, type LumenVirtualCollectionOptions } from './virtual-collection.js'
 export { createLumenVirtualListController, type LumenVirtualListController } from './virtual-list.js'
 export { getLumenVirtualWindow, type LumenVirtualWindow, type LumenVirtualWindowOptions, observeLumenVirtualWindow } from './virtual-window.js'
+export * from './visual-effects.js'

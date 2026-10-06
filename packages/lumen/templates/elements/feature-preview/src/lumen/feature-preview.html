@@ -1,0 +1,13 @@
+<section data-product-block="feature" aria-label="Feature preview">
+  <lumen-typography><h2>From idea to delivery</h2></lumen-typography>
+  <lumen-stack direction="horizontal" gap="related" role="group" aria-label="Preview a workflow stage"><lumen-button data-feature="plan" aria-pressed="true">Plan</lumen-button><lumen-button data-feature="review" aria-pressed="false">Review</lumen-button><lumen-button data-feature="ship" aria-pressed="false">Ship</lumen-button></lumen-stack>
+  <lumen-motion-group><lumen-card data-ui-motion-key="plan" data-feature-panel="plan"><lumen-visual-effect variant="mesh"><lumen-typography><h3>Plan</h3><p>Bring the next three tasks into focus.</p></lumen-typography></lumen-visual-effect></lumen-card><lumen-card hidden data-ui-motion-key="review" data-feature-panel="review"><lumen-visual-effect variant="mesh"><lumen-typography><h3>Review</h3><p>Compare a proposal before deciding.</p></lumen-typography></lumen-visual-effect></lumen-card><lumen-card hidden data-ui-motion-key="ship" data-feature-panel="ship"><lumen-visual-effect variant="mesh"><lumen-typography><h3>Ship</h3><p>Check the release evidence before publishing.</p></lumen-typography></lumen-visual-effect></lumen-card></lumen-motion-group>
+  <p role="status" data-block-status>Previewing plan.</p>
+</section>
+<script type="module">
+  import { defineLumenElements } from '@santi020k/lumen-elements'
+  import { mountProductBlocks } from './product-blocks.js'
+  defineLumenElements()
+  const cleanup = mountProductBlocks(document)
+  window.addEventListener('pagehide', cleanup, { once: true })
+</script>

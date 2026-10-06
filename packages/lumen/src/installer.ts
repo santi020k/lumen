@@ -44,6 +44,7 @@ export interface LumenAddResult {
 }
 
 const templatesRoot = fileURLToPath(new URL('../templates/', import.meta.url))
+const visualProductBlocks = new Set(['interactive-pricing', 'feature-preview', 'guided-onboarding', 'command-center'])
 
 const productTemplateRecipes = new Set([
   'analytics-dashboard',
@@ -82,6 +83,7 @@ const loadRecipeTemplateFiles = async (
 ): Promise<LumenRecipeFile[] | undefined> => {
   const templateDirectories = [
     ...(productTemplateRecipes.has(itemName) ? [join(templatesRoot, 'shared', 'common')] : []),
+    ...(target !== 'react' && visualProductBlocks.has(itemName) ? [join(templatesRoot, 'shared', 'visual-blocks')] : []),
     join(templatesRoot, 'shared', itemName),
     join(templatesRoot, target, itemName)
   ]

@@ -991,3 +991,11 @@ rules, requests, draft storage, and authorization. Do not combine validation own
 normalize to zero; non-finite or larger counts throw `RangeError` before allocating panel state.
 Context-menu item activation and keyboard focus follow the menu's owning document, including iframe
 portals. Date-range synchronization clamps an earlier end date before updating both input constraints.
+
+## Visual interactions
+
+`MotionGroup`, `ChartMotion`, `VisualEffect`, `PromptComposer`, `StreamMessage`, `SourceCitation`,
+`ToolActivity`, and `ApprovalCard` are exported by the main package. `Tabs` accepts `indicator` for
+an optional moving selection underline. See [visual interactions](../../docs/visual-interactions.md).
+Install `motion@^14.0.0` only when using `@santi020k/lumen-react/motion`; its Motion wrappers remain
+separate from normal imports.
