@@ -148,6 +148,7 @@ export const useLumenFormWorkflow = ({
   const formRef = useRef<HTMLFormElement | null>(null)
   const baselineRef = useRef<string | null>(null)
   const mountedRef = useRef(false)
+  const handledEventsRef = useRef(new WeakSet<Event>())
   const attemptedRef = useRef(false)
   const touchedRef = useRef(new Set<string>())
   const [errors, setErrors] = useState<readonly LumenFormIssue[]>([])
@@ -238,7 +239,7 @@ export const useLumenFormWorkflow = ({
       const name = getControlName(control)
 
       queueMicrotask(() => {
-        refresh(form, name)
+        if (!handledEventsRef.current.has(event)) refresh(form, name)
       })
     }
 
@@ -247,9 +248,13 @@ export const useLumenFormWorkflow = ({
 
       if (!control) return
 
-      ensureControlId(control)
+      queueMicrotask(() => {
+        if (handledEventsRef.current.has(event) || !mountedRef.current) return
 
-      validate(form, [getControlName(control)])
+        ensureControlId(control)
+
+        validate(form, [getControlName(control)])
+      })
     }
 
     owner.addEventListener('input', updateExternal)
@@ -282,6 +287,8 @@ export const useLumenFormWorkflow = ({
   }, [])
 
   const update = (event: SyntheticEvent<HTMLFormElement>) => {
+    handledEventsRef.current.add(event.nativeEvent)
+
     const form = event.currentTarget
     const name = isLumenFormControl(event.target) ? getControlName(event.target) : undefined
 
@@ -305,6 +312,8 @@ export const useLumenFormWorkflow = ({
       onInput: update,
       onChange: update,
       onBlur: event => {
+        handledEventsRef.current.add(event.nativeEvent)
+
         if (isLumenFormControl(event.target) && event.target.form === event.currentTarget) {
           ensureControlId(event.target)
 

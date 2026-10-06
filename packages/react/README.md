@@ -974,7 +974,8 @@ not change the Astro or Elements runtime.
 Use the optional `@santi020k/lumen-react/forms` entry point for validation, dependent fields,
 unsaved edit tracking, step navigation, stable repeatable rows, and cancelable asynchronous checks.
 Controls associated from outside the form through `form="id"` participate in edit tracking,
-blur validation and dependent-field validation. Events from controls owned by another form are ignored.
+blur validation and dependent-field validation. Portaled controls use React form callbacks without
+repeating validation through native document listeners. Events from controls owned by another form are ignored.
 
 See [composable form workflows](../../docs/powerful-forms.md). Applications retain schemas, financial
 rules, requests, draft storage, and authorization. Do not combine validation owners on one form.

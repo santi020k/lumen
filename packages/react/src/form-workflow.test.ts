@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 import type { SyntheticEvent } from 'react'
 import { act, createElement, StrictMode } from 'react'
+import { createPortal } from 'react-dom'
 import { createRoot, hydrateRoot } from 'react-dom/client'
 import { renderToString } from 'react-dom/server'
 
@@ -503,4 +504,34 @@ test('external edits, dependency errors and blur follow form ownership without d
   expect(validateControl).not.toHaveBeenCalled()
 
   owned.remove()
+})
+
+test('portaled associated controls validate once per native event', async () => {
+  const portal = document.createElement('div')
+
+  document.body.append(portal)
+
+  containers.push(portal)
+
+  const validateControl = vi.fn(() => '')
+
+  await mount(() => {
+    const workflow = useLumenFormWorkflow({ validateControl })
+
+    return createElement('form', { ...workflow.formProps, id: 'portal-owner' }, createPortal(createElement('input', { form: 'portal-owner', name: 'portaled' }), portal))
+  })
+
+  const field = control(portal, 'input')
+
+  for (const type of ['input', 'change', 'focusout']) {
+    validateControl.mockClear()
+
+    await act(async () => {
+      field.dispatchEvent(new Event(type, { bubbles: true }))
+
+      await Promise.resolve()
+    })
+
+    expect(validateControl).toHaveBeenCalledTimes(1)
+  }
 })

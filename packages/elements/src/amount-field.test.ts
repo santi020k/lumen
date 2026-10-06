@@ -115,3 +115,81 @@ test('amount element restores a supplied input ID after removing the host ID', (
     field.remove()
   }
 })
+
+test('amount element preserves input IDs authored after mount and while generated', () => {
+  defineLumenElements()
+
+  const field = document.createElement('lumen-amount-field')
+
+  document.body.append(field)
+
+  try {
+    const input = field.querySelector('input')
+
+    if (!input) throw new Error('Missing amount input')
+
+    input.id = 'late-authored'
+
+    field.setAttribute('required', '')
+
+    expect(input.id).toBe('late-authored')
+
+    input.id = 'changed-authored'
+
+    field.setAttribute('locale', 'en')
+
+    expect(input.id).toBe('changed-authored')
+
+    field.id = 'host'
+
+    input.id = 'edited-generated'
+
+    field.setAttribute('name', 'amount')
+
+    expect(input.id).toBe('host-input')
+
+    field.removeAttribute('id')
+
+    expect(input.id).toBe('edited-generated')
+
+    input.removeAttribute('id')
+
+    field.removeAttribute('required')
+
+    expect(input.hasAttribute('id')).toBe(false)
+  } finally {
+    field.remove()
+  }
+})
+
+test('amount element tracks a replacement child identity across reconnects', () => {
+  defineLumenElements()
+
+  const field = document.createElement('lumen-amount-field')
+
+  field.innerHTML = '<input data-ui-amount-input id="original-child">'
+
+  document.body.append(field)
+
+  field.remove()
+
+  field.innerHTML = '<input data-ui-amount-input id="replacement-child">'
+
+  document.body.append(field)
+
+  try {
+    const input = field.querySelector('input')
+
+    if (!input) throw new Error('Missing replacement input')
+
+    expect(input.id).toBe('replacement-child')
+
+    field.id = 'host'
+
+    field.removeAttribute('id')
+
+    expect(input.id).toBe('replacement-child')
+  } finally {
+    field.remove()
+  }
+})

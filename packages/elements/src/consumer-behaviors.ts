@@ -16,7 +16,7 @@ export class LumenAmountFieldElement extends LumenElement {
   }
 
   #amountController: LumenAmountFieldController | undefined
-  #originalInputId: string | undefined
+  #inputIdentity: [HTMLInputElement, string, string] | undefined
 
   get value(): string {
     return this.getAttribute('value') ?? ''
@@ -33,7 +33,7 @@ export class LumenAmountFieldElement extends LumenElement {
   }
 
   override attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null) {
-    super.attributeChangedCallback(name, oldValue, newValue)
+    super.attributeChangedCallback()
 
     if (!this.#amountController || !this.isConnected || oldValue === newValue) return
 
@@ -55,38 +55,35 @@ export class LumenAmountFieldElement extends LumenElement {
 
     submission.type = 'hidden'
 
-    for (const name of ['name', 'form']) {
-      const value = this.getAttribute(name)
+    this.#forward(submission, ['name', 'form'])
 
-      if (value === null) submission.removeAttribute(name)
-      else submission.setAttribute(name, value)
-    }
+    this.#forward(input, [
+      'form', 'aria-label', 'aria-labelledby', 'aria-describedby', 'placeholder', 'disabled', 'readonly', 'required'
+    ])
 
-    for (const name of ['form', 'aria-label', 'aria-labelledby', 'aria-describedby', 'placeholder']) {
-      const value = this.getAttribute(name)
+    const previous = this.#inputIdentity
+    const authored = previous?.[0] === input && previous[2] === input.id ? previous[1] : input.id
+    const id = this.id ? `${this.id}-input` : authored
 
-      if (value !== null) input.setAttribute(name, value)
-      else input.removeAttribute(name)
-    }
-
-    this.#originalInputId ??= input.id
-
-    const id = this.id ? `${this.id}-input` : this.#originalInputId
+    this.#inputIdentity = [input, authored, id]
 
     if (id) input.id = id
     else input.removeAttribute('id')
 
-    input.disabled = this.hasAttribute('disabled')
-
     submission.disabled = input.disabled
 
-    input.readOnly = this.hasAttribute('readonly')
-
-    input.required = this.hasAttribute('required')
-
     this.#amountController = createLumenAmountFieldController(this, detail => {
-      this.setAttribute('value', detail.draft)
+      this.value = detail.draft
     })
+  }
+
+  #forward(input: HTMLInputElement, names: readonly string[]) {
+    for (const name of names) {
+      const value = this.getAttribute(name)
+
+      if (value === null) input.removeAttribute(name)
+      else input.setAttribute(name, value)
+    }
   }
 
   #input(attribute: string): HTMLInputElement {

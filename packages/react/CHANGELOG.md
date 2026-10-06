@@ -2,6 +2,8 @@
 
 ## 4.0.0
 
+- Deduplicate React portal form events against external native listeners.
+
 - Observe externally associated form controls and keep omitted date locales deterministic across server rendering and hydration.
 
 - Assign stable field identities before the first blur validation of unnamed controls.

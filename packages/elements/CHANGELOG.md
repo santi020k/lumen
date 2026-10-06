@@ -2,6 +2,8 @@
 
 ## 4.0.0
 
+- Preserve amount input identifiers authored after mount and track replacement children across reconnects.
+
 - Clear generated amount input identifiers when host IDs are removed while restoring authored input IDs.
 
 ### Minor Changes

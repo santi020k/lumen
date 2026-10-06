@@ -466,3 +466,82 @@ test('combobox uses its iframe realm for selection, focus and outside presses', 
 
   await Promise.resolve()
 })
+
+test('combobox handles parent-created controls adopted into an iframe', async () => {
+  const frame = document.createElement('iframe')
+
+  document.body.append(frame)
+
+  const owner = frame.contentDocument
+  if (!owner) throw new Error('Missing iframe document')
+
+  const root = document.createElement('div')
+
+  root.innerHTML = '<input role="combobox"><div role="listbox"><button role="option" data-value="astro">Astro</button><button role="option" data-value="react">React</button></div>'
+
+  owner.body.append(root)
+
+  const input = root.querySelector('input')
+  const list = root.querySelector<HTMLElement>('[role="listbox"]')
+  const option = list?.querySelector('button')
+  const Event = owner.defaultView?.Event
+  const FocusEvent = owner.defaultView?.FocusEvent
+
+  if (!input || !list || !option || !Event || !FocusEvent) throw new Error('Missing iframe controls')
+
+  const controller = createLumenComboboxController(root)
+
+  cleanups.push(controller.destroy)
+
+  input.focus()
+
+  const down = new Event('pointerdown', { bubbles: true, cancelable: true })
+
+  option.dispatchEvent(down)
+
+  expect(down.defaultPrevented).toBe(true)
+
+  input.dispatchEvent(new FocusEvent('focusout', { bubbles: true, relatedTarget: option }))
+
+  expect(list.hidden).toBe(false)
+
+  input.value = 'react'
+
+  input.dispatchEvent(new Event('input', { bubbles: true }))
+
+  expect(option.hidden).toBe(true)
+
+  option.hidden = false
+
+  await Promise.resolve()
+
+  input.dispatchEvent(new Event('input', { bubbles: true }))
+
+  expect(option.hidden).toBe(true)
+
+  input.value = ''
+
+  input.dispatchEvent(new Event('input', { bubbles: true }))
+
+  option.click()
+
+  expect(input.value).toBe('astro')
+
+  expect(list.hidden).toBe(true)
+
+  input.focus()
+
+  input.dispatchEvent(new Event('focus'))
+
+  owner.body.dispatchEvent(new Event('pointerdown', { bubbles: true }))
+
+  expect(list.hidden).toBe(true)
+
+  controller.destroy()
+
+  option.click()
+
+  expect(input.value).toBe('astro')
+
+  await Promise.resolve()
+})

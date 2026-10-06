@@ -2,6 +2,8 @@
 
 ## 4.0.0
 
+- Preserve combobox pointer selection, focus and visibility for nodes adopted into a different document.
+
 - Validate decoded scatter annotations and use the owning document for combobox events and lifecycle resources.
 
 - Reject malformed decoded heatmap containers before geometry calculation.

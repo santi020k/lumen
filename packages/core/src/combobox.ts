@@ -26,7 +26,7 @@ const filterOption = (
   }
 }
 
-/** Enhance editable comboboxes. */
+/** Editable combobox. */
 export const createLumenComboboxController = (root: HTMLElement): LumenComboboxController => {
   const input = root.querySelector<HTMLInputElement>('input[role="combobox"]')
   const list = root.querySelector<HTMLElement>('[role="listbox"]')
@@ -48,7 +48,9 @@ export const createLumenComboboxController = (root: HTMLElement): LumenComboboxC
 
   const preserveVisibility = (records: MutationRecord[]): void => {
     for (const record of records) {
-      if (record.attributeName === 'hidden' && record.target instanceof view.HTMLElement) filterHidden.delete(record.target)
+      if (record.attributeName === 'hidden') {
+        for (const option of filterHidden) if (option === record.target) filterHidden.delete(option)
+      }
     }
 
     for (const option of filterHidden) {
@@ -108,7 +110,6 @@ export const createLumenComboboxController = (root: HTMLElement): LumenComboboxC
 
     item.hidden = hidden
 
-    // Keep application changes after our write.
     preserveVisibility(observerRef.current?.takeRecords().slice(1) ?? [])
   }
 
@@ -204,12 +205,9 @@ export const createLumenComboboxController = (root: HTMLElement): LumenComboboxC
     }
   }
 
-  const optionFromEvent = (event: Event): HTMLElement | undefined => {
-    const target = event.composedPath()[0]
-    const option = target instanceof view.Element ? target.closest<HTMLElement>('[role="option"]') : null
-
-    return option && list.contains(option) ? option : undefined
-  }
+  const optionFromEvent = (event: Event): HTMLElement | undefined => (
+    items().find(option => event.composedPath().includes(option))
+  )
 
   refresh()
 
@@ -277,14 +275,22 @@ export const createLumenComboboxController = (root: HTMLElement): LumenComboboxC
     }
   }, { signal })
 
+  const isNode = (target: EventTarget): target is Node => {
+    try {
+      view.Node.prototype.contains.call(target, null)
+
+      return true
+    } catch {
+      return false
+    }
+  }
+
   root.addEventListener('focusout', event => {
-    if (!(event.relatedTarget instanceof view.Node) || !root.contains(event.relatedTarget)) close()
+    if (!event.relatedTarget || !isNode(event.relatedTarget) || !root.contains(event.relatedTarget)) close()
   }, { signal })
 
   document.addEventListener('pointerdown', event => {
-    const target = event.composedPath()[0]
-
-    if (target instanceof view.Node && !root.contains(target)) close()
+    if (!event.composedPath().includes(root)) close()
   }, { signal })
 
   const observer = new view.MutationObserver(records => {
