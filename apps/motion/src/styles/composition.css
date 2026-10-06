@@ -160,7 +160,7 @@ html, body { margin: 0; width: 100%; height: 100%; }
 .scene .phone-screen .project-art { display: none; }
 .scene .desktop-content .workspace { position: relative; z-index: 1; }
 .scene .workspace-backdrop { position: relative; isolation: isolate; overflow: hidden; }
-[data-lumen-preset="glass"] .workspace-backdrop { background: hsl(var(--brand-soft)); padding: 22px; }
+[data-lumen-preset="glass"] .workspace-backdrop { background: hsl(var(--brand-soft)); padding: 16px; }
 .glass-light-field { position: absolute; inset: 0; z-index: 0; overflow: hidden; background: linear-gradient(130deg, hsl(var(--brand) / 0.5), hsl(var(--canvas)) 48%, hsl(var(--accent) / 0.5)); }
 .glass-light-field span { position: absolute; width: 58%; height: 85%; border-radius: 45%; background: hsl(var(--brand) / 0.48); filter: blur(28px); left: -12%; top: -10%; }
 .glass-light-field span:nth-child(2) { background: hsl(var(--accent) / 0.5); left: 53%; top: 35%; }

@@ -28,7 +28,8 @@ const fitDevices = (scene: HTMLElement) => {
       (stage.clientWidth - 24) / device.offsetWidth, (stage.clientHeight - 24) / device.offsetHeight
     )
 
-    gsap.set(device, { scale })
+    // Fractional frame dimensions must not change how GSAP resolves percentage centering.
+    gsap.set(device, { scale, x: 0, y: 0, xPercent: -50, yPercent: -50 })
   })
 }
 
