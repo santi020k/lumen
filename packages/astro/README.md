@@ -470,7 +470,8 @@ For optional insertion, removal, or state feedback, use
 [`animateLumenPresence`](../core/README.md#presence-motion) on a DOM reference. Applications keep
 ownership of state, focus, and DOM removal. Set `data-ui-motion="reduce"` on a container for a local
 reduced-motion preference; the system preference is always respected.
-Try the [motion playground](https://lumen.santi020k.com/docs/motion-playground).
+Try dialogs, bottom drawers, and side sheets in the [motion playground](https://lumen.santi020k.com/docs/motion-playground).
+System reduced motion shortens both panel and backdrop transitions.
 
 ## Glass surfaces
 

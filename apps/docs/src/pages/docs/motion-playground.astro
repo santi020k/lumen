@@ -3,8 +3,8 @@ import '@santi020k/lumen/layers.css'
 import '@santi020k/lumen/styles/motion.css'
 
 import {
-  Alert, Badge, Button, Card, CodeTabs, Collapsible, Dialog, Field,
-  Grid, Item, Label, Link, NativeSelect, Spinner, Stack
+  Alert, Badge, Button, Card, CodeTabs, Collapsible, Dialog,   Drawer, Field,
+Grid, Item, Label, Link, NativeSelect, Sheet, Spinner, Stack
 } from '@santi020k/lumen-astro'
 
 import DocsPageHero from '../../components/DocsPageHero.astro'
@@ -110,13 +110,27 @@ options={[
       <Card>
         <Stack gap="lg">
           <div><Badge>Overlay</Badge><h2>Open a focused task</h2></div>
-          <p>Existing dialog transitions share Lumen timing and easing. Escape closes the dialog and returns focus to its trigger.</p>
-          <Button data-ui-dialog-trigger="motion-dialog">Open dialog</Button>
+          <p>Dialogs fade and scale. Drawers rise from the bottom; sheets enter from the side. All share Lumen timing, a fading backdrop, and Escape with focus restoration.</p>
+          <Stack direction="horizontal" gap="sm" wrap>
+            <Button data-ui-dialog-trigger="motion-dialog">Open dialog</Button>
+            <Button variant="outline" data-ui-drawer-trigger="motion-drawer">Open drawer</Button>
+            <Button variant="outline" data-ui-sheet-trigger="motion-sheet">Open sheet</Button>
+          </Stack>
           <Dialog id="motion-dialog" aria-labelledby="motion-dialog-title">
             <h2 id="motion-dialog-title">Review the transition</h2>
             <p>The dialog owns its focus and keyboard behavior; CSS owns the visual transition.</p>
             <Button data-ui-dialog-close>Close dialog</Button>
           </Dialog>
+          <Drawer id="motion-drawer" aria-labelledby="motion-drawer-title">
+            <h2 id="motion-drawer-title">Review the drawer</h2>
+            <p>A bottom drawer keeps the task close to its context. Motion is optional; keyboard behavior stays native.</p>
+            <Button data-ui-drawer-close>Close drawer</Button>
+          </Drawer>
+          <Sheet id="motion-sheet" aria-labelledby="motion-sheet-title">
+            <h2 id="motion-sheet-title">Review the sheet</h2>
+            <p>A side sheet gives a longer task its own space. Escape returns you to the trigger.</p>
+            <Button data-ui-sheet-close>Close sheet</Button>
+          </Sheet>
         </Stack>
       </Card>
       <Card>

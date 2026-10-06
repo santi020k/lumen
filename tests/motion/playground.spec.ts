@@ -77,6 +77,77 @@ test('system and local reduced motion skip presence and disclosure animation', a
   expect(await page.locator('[data-motion-sample]').evaluate(element => element.getAnimations().length)).toBe(0)
 })
 
+test('overlay panels and backdrops respect system and local reduced motion', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.goto(route)
+  const root = page.locator('[data-motion-playground]')
+  // Isolate the base stylesheet's system preference from the optional local reduction scope.
+  await root.evaluate(element => { element.removeAttribute('data-ui-motion'); })
+  for (const kind of ['dialog', 'drawer', 'sheet']) {
+    const trigger = page.getByRole('button', { name: `Open ${kind}`, exact: true })
+    const panel = page.locator(`#motion-${kind}`)
+    await trigger.click()
+    await expect(panel).toBeVisible()
+    const durations = await panel.evaluate(element => [
+      getComputedStyle(element).transitionDuration,
+      getComputedStyle(element, '::backdrop').transitionDuration
+    ].flatMap(value => value.split(',').map(duration => Number.parseFloat(duration))))
+    expect(Math.max(...durations)).toBeLessThanOrEqual(0.001)
+    await page.keyboard.press('Escape')
+    await expect(panel).not.toBeVisible()
+    await expect(trigger).toBeFocused()
+  }
+  await page.emulateMedia({ reducedMotion: 'no-preference' })
+  await page.getByLabel('Motion preference').selectOption('reduce')
+  await page.getByRole('button', { name: 'Open drawer', exact: true }).click()
+  const local = await page.locator('#motion-drawer').evaluate(element => [
+    getComputedStyle(element).transitionDuration,
+    getComputedStyle(element, '::backdrop').transitionDuration
+  ])
+  expect(local).toEqual(['0s', '0s'])
+})
+
+test('drawers and sheets retain focus and close during an entrance', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'no-preference' })
+  await page.goto(route)
+  for (const kind of ['drawer', 'sheet']) {
+    const trigger = page.getByRole('button', { name: `Open ${kind}`, exact: true })
+    const panel = page.locator(`#motion-${kind}`)
+    await trigger.click()
+    await expect(panel).toBeVisible()
+    await expect(panel.getByRole('button', { name: `Close ${kind}` })).toBeFocused()
+    if (kind === 'drawer') {
+      const centered = await panel.evaluate(element => {
+        const bounds = element.getBoundingClientRect()
+        return Math.abs(bounds.left - (innerWidth - bounds.width) / 2) < 1
+      })
+      expect(centered).toBe(true)
+    }
+    await page.keyboard.press('Escape')
+    await expect(panel).not.toBeVisible()
+    await expect(trigger).toBeFocused()
+    await trigger.click()
+    await panel.getByRole('button', { name: `Close ${kind}` }).click()
+    await expect(panel).not.toBeVisible()
+    await expect(trigger).toBeFocused()
+  }
+})
+
+test('grid layout preserves a drawer centered in the viewport', async ({ page }) => {
+  await page.goto(route)
+  const drawer = page.locator('#motion-drawer')
+  await drawer.evaluate(element => {
+    const grid = document.querySelector('[data-motion-playground] .ui-grid')
+    grid?.append(element)
+  })
+  await page.getByRole('button', { name: 'Open drawer', exact: true }).click()
+  const centered = await drawer.evaluate(element => {
+    const bounds = element.getBoundingClientRect()
+    return Math.abs(bounds.left - (innerWidth - bounds.width) / 2) < 1
+  })
+  expect(centered).toBe(true)
+})
+
 test('native disclosure content remains usable without JavaScript', async ({ browser }) => {
   const context = await browser.newContext({ javaScriptEnabled: false })
   const page = await context.newPage()

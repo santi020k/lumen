@@ -2,7 +2,8 @@ import { cp, readFile, writeFile } from 'node:fs/promises'
 
 import { JSDOM } from 'jsdom'
 import postcss from 'postcss'
-import selectorParser from 'postcss-selector-parser'
+
+import { compositionMatchingSelector } from './composition-selectors.mjs'
 
 // Each format is also a self-contained HyperFrames project for check and snapshot.
 for (const format of ['portrait', 'landscape']) {
@@ -25,11 +26,7 @@ for (const format of ['portrait', 'landscape']) {
 
     css.walkRules(rule => {
       const matching = rule.selectors.filter(selector => {
-        const matchingSelector = selectorParser(selectors => {
-          selectors.walkPseudos(pseudo => {
-            if (pseudo.value.startsWith('::')) pseudo.remove()
-          })
-        }).processSync(selector)
+        const matchingSelector = compositionMatchingSelector(selector)
 
         try {
           return document.querySelector(matchingSelector) !== null

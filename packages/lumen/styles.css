@@ -5918,7 +5918,8 @@ lumen-dialog-close {
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
-  *::after {
+  *::after,
+  *::backdrop {
     animation-duration: 1ms !important;
     animation-iteration-count: 1 !important;
     scroll-behavior: auto !important;
@@ -7890,7 +7891,7 @@ a.ui-pill:focus-visible {
   .ui-stack--gap-related,.ui-grid--gap-related{--ui-stack-gap:var(--ui-space-related);--ui-grid-gap:var(--ui-space-related);}
   .ui-stack--gap-group,.ui-grid--gap-group{--ui-stack-gap:var(--ui-space-group);--ui-grid-gap:var(--ui-space-group);}
   .ui-stack--gap-section,.ui-grid--gap-section{--ui-stack-gap:var(--ui-space-section);--ui-grid-gap:var(--ui-space-section);}
-  .ui-stack >:where(*),.ui-grid >:where(*){min-width:0;margin:0;}
+  .ui-stack >:where(:not(dialog,.ui-drawer,.ui-sheet)),.ui-grid >:where(:not(dialog,.ui-drawer,.ui-sheet)){min-width:0;margin:0;}
   .ui-stack--align-start{align-items:flex-start;}
   .ui-stack--align-center{align-items:center;}
   .ui-stack--align-end{align-items:flex-end;}

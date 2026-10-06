@@ -11,7 +11,7 @@
     "preview": "astro preview --ignore-lock --host 127.0.0.1 --port 4341",
     "typecheck": "astro check",
     "lint": "eslint . --no-warn-ignored --max-warnings=0",
-    "test": "playwright test",
+    "test": "node --test scripts/composition-selectors.test.mjs && playwright test",
     "check:composition": "HYPERFRAMES_NO_TELEMETRY=1 hyperframes check dist/portrait --strict && HYPERFRAMES_NO_TELEMETRY=1 hyperframes check dist/landscape --strict",
     "render:portrait": "HYPERFRAMES_NO_TELEMETRY=1 hyperframes render dist --composition portrait/index.html --output renders/one-interface-three-themes-vertical.mp4 --fps 30 --quality delivery",
     "render:landscape": "HYPERFRAMES_NO_TELEMETRY=1 hyperframes render dist --composition landscape/index.html --output renders/one-interface-three-themes.mp4 --fps 30 --quality delivery"
