@@ -72,3 +72,23 @@ The repository Markdown pass checked 673 relative file links with no missing fil
 complete rendered-site pass covered 640 HTML pages and 240,007 internal page-and-fragment links
 without missing fragment targets outside live examples. These checks cover local output; they do
 not establish deployment or external-link availability.
+
+## Search and client-navigation lifecycle
+
+Search must share successful index requests while allowing retries after HTTP, network, JSON, or
+payload-validation failures. A loading failure needs recovery guidance rather than a misleading
+empty-results message. Keyboard defaults must be handled synchronously, and pending responses
+must respect dismissal, clearing, and page changes. Document listeners must follow the lifetime
+of the Document: Astro replaces HTML attributes during client navigation, so those attributes
+cannot guard persistent search shortcuts or the public Toast event API.
+
+Runtime-event destinations resolve by event name and target. Tabs, Transfer, Cascader, TreeSelect,
+ThemeToggle, and ThemeBuilder now expose the appropriate event sections, while chart components
+retain their intentionally shared events. The component metadata also generates the MCP snapshot;
+regenerate it when changing these references.
+
+The focused browser regressions run with
+`pnpm exec playwright test -c playwright.a11y.config.ts tests/a11y/docs-search.spec.ts tests/a11y/toast-navigation.spec.ts`.
+They cover recovery, pending-response dismissal, keyboard shortcuts after client navigation, and
+the public Toast create, update, and dismiss events. Keep preview checks valid for every live
+example on a component page, including pages with multiple examples.

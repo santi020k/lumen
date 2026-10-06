@@ -39,7 +39,7 @@ is managed through `Controller`.
 ## Install
 
 Requires React 19 or newer, React Hook Form 7.76 or newer within major 7, and a compatible
-Lumen React 3 release. Load `@santi020k/lumen-react/styles.css` once in the application entry;
+Lumen React 4 release. Load `@santi020k/lumen-react/styles.css` once in the application entry;
 this adapter does not load global styles for you.
 
 ```bash

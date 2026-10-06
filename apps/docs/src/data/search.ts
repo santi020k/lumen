@@ -80,7 +80,9 @@ const keyboardItemsFor = (
 const keyboardItems: DocsSearchItem[] = componentDocs.flatMap(keyboardItemsFor)
 
 const eventItems: DocsSearchItem[] = runtimeEvents.map(event => {
-  const owner = componentDocs.find(component => component.runtimeEvents?.some(item => item.name === event.name))
+  const owner = componentDocs.find(component => component.runtimeEvents?.some(
+    item => item.name === event.name && item.target === event.target
+  ))
 
   return {
     category: owner?.name ?? 'Runtime',
