@@ -2,6 +2,8 @@
 
 ## 4.0.0
 
+- Keep recurring schedule instants stable across host time zones and daylight-saving transitions. Refresh amount reset roots after document adoption and fall back to deterministic English number formatting for invalid locale identifiers.
+
 - Reset amount drafts to the current default without replacing active edits when that default changes.
 
 - Follow the current amount form owner on reset, respect inherited disabled state, and preserve adopted attachment previews.

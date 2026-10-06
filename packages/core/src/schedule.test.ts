@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest'
+import { expect, test, vi } from 'vitest'
 
 import {
   canPlaceScheduleEvent, expandRecurringScheduleEvent, getScheduleConflicts,
@@ -61,4 +61,30 @@ test('recurrence rejects invalid numeric inputs and date overflow without partia
   }
   expect(() => expandRecurringScheduleEvent(event, 2, Number.MAX_VALUE)).toThrow('supported date-time range')
   expect(expandRecurringScheduleEvent(event, 0)).toEqual([])
+})
+
+test.each([['UTC', 0], ['America/New_York', 300], ['Europe/Berlin', -60]] as const)('recurrence preserves UTC instants across DST in %s', (timezone, offset) => {
+  vi.stubEnv('TZ', timezone)
+  try {
+    expect(new Date('2026-03-01T10:00:00.000Z').getTimezoneOffset()).toBe(offset)
+    const spring = { id: 'spring', title: 'Spring', start: '2026-03-01T10:00:00.000Z', end: '2026-03-01T11:00:00.000Z' }
+    const fall = { id: 'fall', title: 'Fall', start: '2026-10-25T10:00:00.000Z', end: '2026-10-25T11:00:00.000Z' }
+    const decoded = [expandRecurringScheduleEvent(spring, 5), expandRecurringScheduleEvent(fall, 3)]
+    expect(decoded).toEqual([
+      [1, 8, 15, 22, 29].map((day, index) => ({
+        id: index ? `spring-${index + 1}` : 'spring',
+        title: 'Spring',
+        start: `2026-03-${String(day).padStart(2, '0')}T10:00:00.000Z`,
+        end: `2026-03-${String(day).padStart(2, '0')}T11:00:00.000Z`
+      })),
+      ['2026-10-25', '2026-11-01', '2026-11-08'].map((day, index) => ({
+        id: index ? `fall-${index + 1}` : 'fall',
+        title: 'Fall',
+        start: `${day}T10:00:00.000Z`,
+        end: `${day}T11:00:00.000Z`
+      }))
+    ])
+  } finally {
+    vi.unstubAllEnvs()
+  }
 })

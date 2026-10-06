@@ -74,6 +74,8 @@ a different event sharing its resource; distinct resources and identical event I
 existing behavior. Adjacent valid intervals remain available.
 
 `resizeScheduleEvent` and `expandRecurringScheduleEvent` reject invalid date-times with `TypeError`.
+Recurrence advances UTC calendar days and preserves UTC time-of-day independently of the host time zone. Applications own civil-time recurrence policies and DST conversion.
+
 Invalid bounds, non-finite snapping/recurrence options, unsupported resulting date-times, and
 non-integer or negative recurrence counts produce `RangeError`. Applications own validation and
 recovery feedback. `parseScheduleEvents` preserves structurally valid records with malformed
@@ -280,8 +282,11 @@ representative light, dark and nested scope. Unsupported color syntax produces a
 than an assumed pass; these checks supplement rendered accessibility verification.
 
 `formatLumenAmountDraft`, `parseLumenAmountDraft` and `getLumenAmountValue` preserve exact ASCII
-decimal strings across localized display and editing. The shared amount and message-scroller DOM
-controllers power the web adapters. Currency policy and message state remain consumer-owned.
+decimal strings across localized display and editing. Invalid locale tags fall back to `en-US`
+consistently in server rendering, parsing and browser controllers. Call the amount controller’s
+`refresh()` after moving it to a different document or shadow root; this rebinds native form resets
+without replacing its draft. The shared amount and message-scroller DOM controllers power the web
+adapters. Currency policy and message state remain consumer-owned.
 
 ## Resources
 

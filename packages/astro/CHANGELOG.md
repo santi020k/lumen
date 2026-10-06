@@ -2,6 +2,8 @@
 
 ## 4.0.0
 
+- Rebind adopted amount controls on repeated initialization without losing drafts or duplicating edit listeners.
+
 - Rebind file-upload reset delegation after adoption into a new document while retaining idempotent control listeners.
 
 - Respect inherited upload disability and follow the current file input form owner when reset.

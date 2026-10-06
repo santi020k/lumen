@@ -227,3 +227,86 @@ test.each([false, true])('amount edits honor disabled fieldset state and first l
     fieldset.remove()
   }
 })
+
+test('invalid locale tags use deterministic English amount presentation and parsing', () => {
+  const options = { locale: 'en_US' }
+
+  expect(formatLumenAmountDraft('1234.50', options)).toBe('1,234.50')
+
+  expect(parseLumenAmountDraft('1,234.50', options)).toBe('1234.50')
+
+  const root = document.createElement('span')
+
+  root.setAttribute('locale', 'en_US')
+
+  root.setAttribute('default-value', '1234.50')
+
+  root.innerHTML = '<input data-ui-amount-input><input data-ui-amount-value type="hidden">'
+
+  const controller = createLumenAmountFieldController(root)
+
+  try {
+    expect(root.querySelector('input')?.value).toBe('1,234.50')
+  } finally {
+    controller.destroy()
+  }
+})
+
+test('amount refresh moves reset ownership and cannot resurrect a destroyed controller', async () => {
+  const frame = document.createElement('iframe')
+  const form = document.createElement('form')
+
+  form.innerHTML = '<span default-value="1"><input data-ui-amount-input><input data-ui-amount-value type="hidden"></span>'
+
+  document.body.append(form, frame)
+
+  const destination = frame.contentDocument
+  const root = form.querySelector('span')
+  const input = form.querySelector('input')
+  const submission = form.querySelector<HTMLInputElement>('[data-ui-amount-value]')
+
+  if (!destination || !root || !input || !submission) throw new Error('Missing amount refresh fixture')
+
+  const controller = createLumenAmountFieldController(root)
+  const settle = () => new Promise<void>(resolve => setTimeout(resolve, 0))
+
+  try {
+    controller.setValue('9.')
+
+    form.reset()
+
+    destination.body.append(destination.adoptNode(form))
+
+    controller.refresh()
+
+    await settle()
+
+    expect(submission.value).toBe('')
+
+    controller.setValue('8')
+
+    form.reset()
+
+    await settle()
+
+    expect(submission.value).toBe('1')
+
+    controller.setValue('7')
+
+    controller.destroy()
+
+    controller.refresh()
+
+    form.reset()
+
+    await settle()
+
+    expect(submission.value).toBe('7')
+  } finally {
+    controller.destroy()
+
+    form.remove()
+
+    frame.remove()
+  }
+})

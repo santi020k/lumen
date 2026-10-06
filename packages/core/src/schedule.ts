@@ -111,9 +111,9 @@ export const expandRecurringScheduleEvent = (
     const start = new Date(range.start)
     const end = new Date(range.end)
 
-    start.setDate(start.getDate() + index * intervalDays)
+    start.setUTCDate(start.getUTCDate() + index * intervalDays)
 
-    end.setDate(end.getDate() + index * intervalDays)
+    end.setUTCDate(end.getUTCDate() + index * intervalDays)
 
     if (!Number.isFinite(start.getTime()) || !Number.isFinite(end.getTime())) {
       throw new RangeError('Schedule recurrence exceeds the supported date-time range.')

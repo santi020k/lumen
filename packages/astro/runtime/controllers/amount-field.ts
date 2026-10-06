@@ -1,13 +1,12 @@
-import { createLumenAmountFieldController } from '@santi020k/lumen-core'
+import { createLumenAmountFieldController, type LumenAmountFieldController } from '@santi020k/lumen-core'
 
-const enhanced = new WeakSet<HTMLElement>()
+const enhanced = new WeakMap<HTMLElement, LumenAmountFieldController>()
 
 export const initAmountFields = (scope: ParentNode): void => {
   for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-amount-field]')) {
-    if (enhanced.has(root)) continue
+    const controller = enhanced.get(root)
 
-    createLumenAmountFieldController(root)
-
-    enhanced.add(root)
+    if (controller) controller.refresh()
+    else enhanced.set(root, createLumenAmountFieldController(root))
   }
 }

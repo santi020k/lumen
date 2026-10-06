@@ -21,11 +21,20 @@ const validateFractionDigits = (digits: number): void => {
 
 const amountFormat = (options: LumenAmountOptions) => {
   const fractionDigits = options.fractionDigits ?? 2
-  const locale = options.locale ?? 'en-US'
+  let locale = options.locale ?? 'en-US'
 
   validateFractionDigits(fractionDigits)
 
-  const formatter = new Intl.NumberFormat(locale, { useGrouping: true, maximumFractionDigits: 0 })
+  let formatter: Intl.NumberFormat
+
+  try {
+    formatter = new Intl.NumberFormat(locale, { useGrouping: true, maximumFractionDigits: 0 })
+  } catch {
+    locale = 'en-US'
+
+    formatter = new Intl.NumberFormat(locale, { useGrouping: true, maximumFractionDigits: 0 })
+  }
+
   const decimal = new Intl.NumberFormat(locale).formatToParts(1.1).find(part => part.type === 'decimal')?.value ?? '.'
   const group = formatter.formatToParts(1000000).find(part => part.type === 'group')?.value
   const minus = formatter.formatToParts(-1).find(part => part.type === 'minusSign')?.value ?? '-'
@@ -139,6 +148,8 @@ export const parseLumenAmountDraft = (
 
 export interface LumenAmountFieldController {
   destroy: () => void
+  /** Rebind reset handling after moving the existing control to another document or shadow root. */
+  refresh: () => void
   setValue: (draft: string) => void
 }
 
@@ -252,11 +263,26 @@ export const createLumenAmountFieldController = (
 
   input.addEventListener('compositionend', endComposition)
 
-  const eventRoot = input.getRootNode()
+  let eventRoot: Node | undefined
 
-  eventRoot.addEventListener('reset', reset, { capture: true })
+  const refresh = () => {
+    const current = input.getRootNode()
+
+    if (destroyed || current === eventRoot) return
+
+    clearTimeout(resetTimer)
+
+    eventRoot?.removeEventListener('reset', reset, { capture: true })
+
+    eventRoot = current
+
+    eventRoot.addEventListener('reset', reset, { capture: true })
+  }
+
+  refresh()
 
   return {
+    refresh,
     setValue: value => {
       draft = value
 
@@ -273,7 +299,7 @@ export const createLumenAmountFieldController = (
 
       input.removeEventListener('compositionend', endComposition)
 
-      eventRoot.removeEventListener('reset', reset, { capture: true })
+      eventRoot?.removeEventListener('reset', reset, { capture: true })
     }
   }
 }
