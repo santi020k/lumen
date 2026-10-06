@@ -964,7 +964,10 @@ wrapping is enabled, while preserving consumer-owned accessibility attributes.
 `DataTableView` is an opt-in TanStack Table companion for application-owned record tables. It adds
 search, exact column filters, column visibility, density, pagination and controlled sorting state
 while preserving your cells, details, actions and query ownership. Column keys must be nonempty
-and unique; malformed arrays or ambiguous keys are rejected before controls are constructed. Import it from
+and unique; column labels, accessors, boolean flags and dense filter-option arrays are validated before
+controls are constructed. Restored controlled and default snapshots require string search/filter values,
+boolean visibility/sort directions, valid density and integer pagination; malformed state is rejected
+before table processing. Import it from
 `@santi020k/lumen-react/components/data-table-view` or the package root. Load
 `@santi020k/lumen-react/styles/data-table-view.css` after the base stylesheet. See the
 [composition and server-mode guide](../../docs/data-table-views.md).

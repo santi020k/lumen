@@ -102,6 +102,10 @@ export interface DataTableViewProps<T> {
   searchable?: boolean
 }
 
+const isRecord = (value: unknown): value is Record<string, unknown> => (
+  typeof value === 'object' && value !== null && !Array.isArray(value)
+)
+
 const defaultView = (initial: Partial<DataTableViewState> = {}): DataTableViewState => ({
   search: '',
   filters: [],
@@ -116,10 +120,32 @@ const textValue = (value: unknown): string => (
   typeof value === 'string' || typeof value === 'number' ? String(value) : ''
 )
 
-const assertPagination = (pagination: DataTableViewState['pagination']) => {
-  if (!Number.isSafeInteger(pagination.pageSize) || pagination.pageSize <= 0 ||
-    !Number.isSafeInteger(pagination.pageIndex) || pagination.pageIndex < 0)
+const assertPagination = (pagination: unknown) => {
+  if (!isRecord(pagination) || !Number.isSafeInteger(pagination.pageSize) ||
+    typeof pagination.pageSize !== 'number' || pagination.pageSize <= 0 ||
+    !Number.isSafeInteger(pagination.pageIndex) || typeof pagination.pageIndex !== 'number' || pagination.pageIndex < 0)
     throw new RangeError('DataTableView requires a positive integer page size and a nonnegative integer page index.')
+}
+
+const isFilter = (filter: unknown): boolean => (
+  isRecord(filter) && typeof filter.id === 'string' && typeof filter.value === 'string'
+)
+
+const isSort = (sort: unknown): boolean => (
+  isRecord(sort) && typeof sort.id === 'string' && typeof sort.desc === 'boolean'
+)
+
+const isDensity = (density: unknown): boolean => density === 'comfortable' || density === 'compact'
+
+const assertViewState = (state: unknown): void => {
+  if (!isRecord(state) || typeof state.search !== 'string' ||
+    !isRecord(state.visibility) || !Object.values(state.visibility).every(value => typeof value === 'boolean') ||
+    !Array.isArray(state.filters) || !Array.from(state.filters).every(isFilter) ||
+    !Array.isArray(state.sorting) || !Array.from(state.sorting).every(isSort) ||
+    !isDensity(state.density))
+    throw new TypeError('DataTableView requires valid search, filters, visibility, sorting and density state.')
+
+  assertPagination(state.pagination)
 }
 
 const stableRows = <T extends { id: string },>(rows: readonly T[], getRowId: (row: T) => string): T[] => {
@@ -138,14 +164,34 @@ const stableRows = <T extends { id: string },>(rows: readonly T[], getRowId: (ro
   return data
 }
 
+const isFilterOptions = (options: unknown): boolean => (
+  options === undefined || (Array.isArray(options) && Array.from(options).every((option: unknown) => (
+    isRecord(option) && typeof option.value === 'string' && typeof option.label === 'string'
+  )))
+)
+
+const isColumnConfiguration = (column: Record<string, unknown>): boolean => (
+  typeof column.label === 'string' &&
+  (column.value === undefined || typeof column.value === 'function') &&
+  (column.canHide === undefined || typeof column.canHide === 'boolean') &&
+  (column.sortable === undefined || typeof column.sortable === 'boolean') &&
+  isFilterOptions(column.filterOptions)
+)
+
 const assertColumns = <T,>(columns: readonly DataTableViewColumn<T>[]): void => {
   if (!Array.isArray(columns)) throw new TypeError('DataTableView requires an array of columns.')
 
-  const keys = Array.from(columns, (column: unknown) => (
-    typeof column === 'object' && column !== null && 'key' in column ? column.key : undefined
-  ))
+  const keys = Array.from(columns, (column: unknown) => {
+    if (!isRecord(column) || typeof column.key !== 'string' || column.key.trim().length === 0)
+      throw new TypeError('DataTableView requires unique, nonempty column keys.')
 
-  if (keys.some(key => typeof key !== 'string' || key.trim().length === 0) || new Set(keys).size !== keys.length)
+    if (!isColumnConfiguration(column))
+      throw new TypeError('DataTableView requires valid column labels, accessors, flags and filter options.')
+
+    return column.key
+  })
+
+  if (new Set(keys).size !== keys.length)
     throw new TypeError('DataTableView requires unique, nonempty column keys.')
 }
 
@@ -154,7 +200,16 @@ const useViewState = (
   initial: Partial<DataTableViewState> | undefined,
   onChange: DataTableViewProps<{ id: string }>['onStateChange']
 ) => {
-  const [local, setLocal] = useState(() => defaultView(initial))
+  if (initial !== undefined && !isRecord(initial))
+    throw new TypeError('DataTableView requires an object for default state.')
+
+  const initialView = defaultView(initial)
+
+  assertViewState(initialView)
+
+  if (controlled !== undefined) assertViewState(controlled)
+
+  const [local, setLocal] = useState(() => initialView)
   const state = controlled ?? local
 
   const update = (patch: Partial<DataTableViewState>) => {
@@ -206,8 +261,6 @@ const useViewModel = <T extends { id: string },>({
       return textValue(a).localeCompare(textValue(b), undefined, { numeric: true, sensitivity: 'base' })
     }
   })), [columns])
-
-  assertPagination(state.pagination)
 
   const data = useMemo(() => stableRows(rows, getRowId), [rows, getRowId])
 

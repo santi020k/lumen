@@ -2,6 +2,8 @@
 
 ## 4.0.0
 
+- Validate complete table column and restored state shapes before model or control construction.
+
 - Reject ambiguous table-view column identities, keep filter IDs distinct from toolbar controls and reset uncontrolled amounts to updated defaults without discarding active drafts.
 
 - Validate externally associated required controls and fingerprint adopted checkbox, selection and file state. Preserve collision-safe record details for all string IDs and dismiss date pickers in their owning document.

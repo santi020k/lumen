@@ -25,11 +25,13 @@ const bindResets = (input: HTMLInputElement): void => {
 
 export const initFileUploadControllers = (scope: ParentNode): void => {
   for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-file-upload]')) {
-    if (root.dataset.uiBound === 'true') continue
-
     const input = root.querySelector<HTMLInputElement>('[data-ui-file-upload-input]')
 
     if (!input) continue
+
+    bindResets(input)
+
+    if (root.dataset.uiBound === 'true') continue
 
     root.dataset.uiBound = 'true'
 
@@ -54,8 +56,6 @@ export const initFileUploadControllers = (scope: ParentNode): void => {
     input.addEventListener('change', renderFiles)
 
     renderers.set(input, renderFiles)
-
-    bindResets(input)
 
     root.addEventListener('dragover', event => {
       if (input.matches(':disabled')) return

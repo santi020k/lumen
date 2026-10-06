@@ -231,6 +231,98 @@ test('rejects a decoded non-array column configuration', async () => {
   await expect(Reflect.apply(render, undefined, [{ columns: {} }])).rejects.toThrow('array of columns')
 })
 
+test.each([
+  { label: null },
+  { label: 3 },
+  { value: 'name' },
+  { value: null },
+  { canHide: 'false' },
+  { sortable: 1 },
+  { filterOptions: {} },
+  { filterOptions: null },
+  { filterOptions: [null] },
+  { filterOptions: [{ value: 'due' }] },
+  { filterOptions: [{ value: 3, label: 'Due' }] },
+  { filterOptions: [{ value: 'due', label: {} }] }
+])('rejects malformed decoded column members before table processing: %j', async patch => {
+  const decoded: unknown = JSON.parse(JSON.stringify({ columns: [{ key: 'status', label: 'Status', ...patch }] }))
+  await expect(Reflect.apply(render, undefined, [decoded])).rejects.toThrow('valid column labels, accessors, flags and filter options')
+})
+
+test('rejects sparse filter options before constructing controls', async () => {
+  await expect(render({ columns: [{ key: 'status', label: 'Status', filterOptions: new Array<{ value: string, label: string }>(1) }] }))
+    .rejects.toThrow('valid column labels, accessors, flags and filter options')
+})
+
+const restoredView = {
+  search: '',
+  filters: [],
+  visibility: {},
+  sorting: [],
+  density: 'comfortable',
+  pagination: { pageIndex: 0, pageSize: 25 }
+}
+
+test.each([
+  { search: null },
+  { search: 3 },
+  { filters: null },
+  { filters: {} },
+  { filters: [null] },
+  { filters: [{ id: 'status', value: 3 }] },
+  { filters: [{ id: 3, value: 'due' }] },
+  { visibility: null },
+  { visibility: [] },
+  { visibility: { amount: 'false' } },
+  { sorting: null },
+  { sorting: {} },
+  { sorting: [null] },
+  { sorting: [{ id: 'amount', desc: 'false' }] },
+  { sorting: [{ id: 3, desc: false }] },
+  { density: 'dense' },
+  { density: ['compact'] }
+])('rejects malformed controlled and default snapshots before table processing: %j', async patch => {
+  for (const property of ['state', 'defaultState']) {
+    const decoded: unknown = JSON.parse(JSON.stringify({ [property]: { ...restoredView, ...patch } }))
+    await expect(Reflect.apply(render, undefined, [decoded])).rejects.toThrow('valid search, filters, visibility, sorting and density state')
+  }
+})
+
+test.each([null, [], 'saved'])('rejects non-object controlled and default snapshots: %j', async snapshot => {
+  for (const property of ['state', 'defaultState']) {
+    const decoded: unknown = JSON.parse(JSON.stringify({ [property]: snapshot }))
+    await expect(Reflect.apply(render, undefined, [decoded])).rejects.toThrow('DataTableView requires')
+  }
+})
+
+test.each([null, {}, { pageIndex: '0', pageSize: 25 }, { pageIndex: 0, pageSize: '25' }])(
+  'rejects malformed pagination objects in restored snapshots: %j', async pagination => {
+    for (const property of ['state', 'defaultState']) {
+      const decoded: unknown = JSON.parse(JSON.stringify({ [property]: { ...restoredView, pagination } }))
+      await expect(Reflect.apply(render, undefined, [decoded])).rejects.toThrow('positive integer page size')
+    }
+  }
+)
+
+test('accepts a decoded valid snapshot', async () => {
+  const decoded: unknown = JSON.parse(JSON.stringify({ state: { ...restoredView, visibility: { amount: false }, filters: [{ id: 'status', value: 'due' }], sorting: [{ id: 'amount', desc: true }] } }))
+  await Reflect.apply(render, undefined, [decoded])
+  expect(ids()[0]).toBe('30')
+  expect(get('tbody td:nth-child(2)').hidden).toBe(true)
+})
+
+test('accepts partial defaults and empty optional filters without altering accessor functions', async () => {
+  await render({ defaultState: { search: 'client 30' }, columns: [{ key: 'name', label: 'Client', value: row => row.name, filterOptions: [] }] })
+  expect(ids()).toEqual(['30'])
+})
+
+test('rejects sparse restored filter and sort arrays', async () => {
+  for (const property of ['filters', 'sorting']) {
+    const decoded: unknown = { state: { ...restoredView, [property]: new Array<unknown>(1) } }
+    await expect(Reflect.apply(render, undefined, [decoded])).rejects.toThrow('valid search, filters, visibility, sorting and density state')
+  }
+})
+
 test('column filter identities stay disjoint from toolbar controls and arbitrary column keys', async () => {
   const keys = ['search', 'density', 'size', 'custom value', '\uD800']
 

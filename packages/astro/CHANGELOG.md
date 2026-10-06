@@ -2,6 +2,8 @@
 
 ## 4.0.0
 
+- Rebind file-upload reset delegation after adoption into a new document while retaining idempotent control listeners.
+
 - Respect inherited upload disability and follow the current file input form owner when reset.
 
 - Open HoverCard content on keyboard focus, keep it visible while focus remains inside, and close it after focus leaves or Escape is pressed.
