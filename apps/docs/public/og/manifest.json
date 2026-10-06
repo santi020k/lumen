@@ -9522,8 +9522,8 @@
       "title": "Effects guide — Lumen UI"
     },
     "/docs/visual-playground": {
-      "alt": "Visual playground — Documentation social preview from Lumen UI",
-      "description": "Explore coordinated motion, semantic visual effects, and application-owned AI surfaces with reduced-motion comparisons.",
+      "alt": "Visual guides — Documentation social preview from Lumen UI",
+      "description": "Choose a guide to motion, visual effects, chart animation, AI interfaces, or product recipes. Each guide includes a live preview and copyable code.",
       "images": [
         {
           "format": "webp",
@@ -9535,7 +9535,7 @@
         }
       ],
       "pathname": "/docs/visual-playground",
-      "title": "Visual playground — Lumen UI"
+      "title": "Visual guides — Lumen UI"
     },
     "/docs/visual-playground/motion": {
       "alt": "Motion guide — Documentation social preview from Lumen UI",

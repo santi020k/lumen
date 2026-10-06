@@ -50,9 +50,32 @@
     .visual-controls .ui-stack--horizontal { width: 100%; }
   }
 
-.visual-guide-nav { display: flex; flex-wrap: wrap; gap: var(--ui-space-related); padding-block: var(--ui-space-group); border-block: 1px solid hsl(var(--line)); }
-.visual-guide-nav a { padding: .65rem .8rem; border-radius: var(--ui-radius-md); font-size: .8125rem; }
-.visual-guide-nav a[aria-current] { background: hsl(var(--brand-soft)); color: hsl(var(--brand)); }
+/* Give the guide navigation its own space and use the shared radius tokens. */
+.visual-guide-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ui-space-related);
+  margin-block: var(--ui-space-group) var(--ui-space-section);
+  padding: var(--ui-space-related);
+  border: 1px solid hsl(var(--line));
+  border-radius: var(--ui-radius-lg);
+  background: hsl(var(--surface));
+}
+.visual-guide-nav a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.75rem;
+  padding: var(--ui-space-related) var(--ui-space-group);
+  border-radius: var(--ui-radius);
+  color: hsl(var(--ink-soft));
+  font-size: .8125rem;
+  line-height: 1.4;
+  text-decoration: none;
+}
+.visual-guide-nav a:hover { background: hsl(var(--surface-muted)); color: hsl(var(--ink)); }
+.visual-guide-nav a[aria-current] { background: hsl(var(--brand-soft)); color: hsl(var(--brand)); font-weight: 650; }
+.visual-guide-nav a:focus-visible { outline: 2px solid hsl(var(--brand)); outline-offset: 2px; }
 .visual-guide-directory { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--ui-space-group); margin-block: var(--ui-space-section); }
 .visual-guide-tile { padding: var(--ui-space-group); display: grid; gap: var(--ui-space-related); }
 .visual-guide-tile h2 { font-size: 1.125rem; margin: 0; }

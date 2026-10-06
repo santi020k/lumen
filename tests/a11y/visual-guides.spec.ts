@@ -43,7 +43,7 @@ test('guide navigation replaces the demo and retains working controls on mobile'
   await page.goto('/docs/visual-playground')
   const navigation = page.getByRole('navigation', { name: 'Visual guides', exact: true })
 
-  await navigation.getByRole('link', { name: 'Motion', exact: true }).click()
+  await page.getByRole('region', { name: 'Choose a visual guide', exact: true }).getByRole('link', { name: 'Keep changes easy to follow.' }).click()
   await expect(page).toHaveURL(/\/visual-playground\/motion\/?$/)
   await page.getByRole('button', { name: 'Reverse order', exact: true }).click()
   await expect(page.locator('.visual-motion-list').first().getByRole('listitem').first()).toHaveText('Review')
@@ -55,5 +55,47 @@ test('guide navigation replaces the demo and retains working controls on mobile'
     .toBeLessThanOrEqual(1)
   await navigation.getByRole('link', { name: 'Overview', exact: true }).click()
   await expect(page.getByRole('region', { name: 'Choose a visual guide', exact: true }).getByRole('link')).toHaveCount(5)
-  await expect(page.locator('.visual-workbench > section')).toHaveCount(5)
+  await expect(page.locator('[data-visual-interactions-demo]')).toHaveCount(0)
+  await expect(navigation).toHaveCount(0)
 })
+
+for (const width of [390, 1280]) {
+  test(`guide navigation has rounded targets and breathing room at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 900 })
+    await page.goto('/docs/visual-playground/motion')
+    const navigation = page.getByRole('navigation', { name: 'Visual guides', exact: true })
+    const active = navigation.getByRole('link', { name: 'Motion', exact: true })
+    const presentation = await active.evaluate(element => ({
+      height: element.getBoundingClientRect().height,
+      radius: Number.parseFloat(getComputedStyle(element).borderRadius)
+    }))
+
+    expect(presentation.height).toBeGreaterThanOrEqual(44)
+    expect(presentation.radius).toBeGreaterThan(0)
+    const spacing = await navigation.evaluate(element => ({
+      before: Number.parseFloat(getComputedStyle(element).marginBlockStart),
+      after: Number.parseFloat(getComputedStyle(element).marginBlockEnd)
+    }))
+
+    expect(spacing.before).toBeGreaterThan(0)
+    expect(spacing.after).toBeGreaterThan(0)
+    await active.focus()
+    await active.press('Tab')
+    await expect(navigation.getByRole('link', { name: 'Effects', exact: true })).toBeFocused()
+    await page.keyboard.press('Enter')
+    await expect(page).toHaveURL(/\/visual-playground\/effects\/?$/)
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth))
+      .toBeLessThanOrEqual(1)
+  })
+}
+
+for (const [anchor, topic] of [
+  ['motion-workbench', 'motion'], ['effects-workbench', 'effects'], ['chart-workbench', 'charts'],
+  ['ai-workbench', 'ai'], ['product-blocks-workbench', 'recipes']
+] as const) {
+  test(`old ${anchor} links open the focused guide`, async ({ page }) => {
+    await page.goto(`/docs/visual-playground#${anchor}`)
+    await expect(page).toHaveURL(new RegExp(`/docs/visual-playground/${topic}/?$`))
+    await expect(page.locator('.visual-workbench > section')).toHaveCount(1)
+  })
+}

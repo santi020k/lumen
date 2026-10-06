@@ -214,7 +214,7 @@ const recipeItems: DocsSearchItem[] = [
     type: 'Recipe',
     href: '/docs/visual-playground',
     keywords: 'motion animation effects aurora mesh spotlight reduced motion AI prompt streaming approval',
-    title: 'Visual guides & playground',
+    title: 'Visual guides',
     description: 'Explore coordinated motion, visual effects and AI surfaces.'
   },
   ...visualGuides.map(guide => ({ category: 'Interaction', type: 'Recipe' as const, href: visualGuideHref(guide.id), keywords: normalizeKeywords(guide.label, ...guide.components), title: `${guide.label} guide`, description: guide.description })),

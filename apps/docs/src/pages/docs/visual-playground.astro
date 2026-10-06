@@ -1,24 +1,44 @@
 ---
-import { Code, Link, Typography } from '@santi020k/lumen-astro'
+import '../../styles/visual-guides.css'
 
 import DocsPageHero from '../../components/DocsPageHero.astro'
 import VisualGuideDirectory from '../../components/VisualGuideDirectory.astro'
-import VisualGuideNavigation from '../../components/VisualGuideNavigation.astro'
-import VisualWorkbench from '../../components/VisualWorkbench.astro'
 import DocsLayout from '../../layouts/DocsLayout.astro'
 ---
 
-<DocsLayout title="Visual playground — Lumen UI" description="Explore coordinated motion, semantic visual effects, and application-owned AI surfaces with reduced-motion comparisons.">
-  <DocsPageHero
-    compact
-    eyebrow="Interactive web workbench"
-    title="Make interfaces feel connected."
-    description="Start with a focused guide, copy a working example, then explore the full workbench below."
-    stats={[{ label: 'New primitives', value: 8 }, { label: 'Visual effects', value: 7 }, { label: 'Product recipes', value: 4 }]}
-  />
-  <VisualGuideNavigation />
-  <VisualGuideDirectory />
-  <VisualWorkbench />
-  <Typography><h2>Install only what you use</h2><p>MotionGroup uses browser animation APIs. VisualEffect defaults to a static treatment. Mount <Link href="/docs/frameworks/astro">UIPrimitives</Link> once in Astro; register custom elements once in Elements.</p></Typography>
-  <Code variant="block" language="bash" copy code="lumen add MotionGroup --target astro\nlumen add VisualEffect --target react\nlumen add PromptComposer --target elements" />
+<DocsLayout title="Visual guides — Lumen UI" description="Choose a guide to motion, visual effects, chart animation, AI interfaces, or product recipes. Each guide includes a live preview and copyable code.">
+  <div data-visual-guide-overview>
+    <DocsPageHero
+      compact
+      eyebrow="Visual guides"
+      title="Bring your interface to life."
+      description="Choose what you want to build. Each guide pairs an interactive preview with framework examples and practical usage notes."
+      stats={[{ label: 'Focused guides', value: 5 }, { label: 'Web frameworks', value: 3 }, { label: 'Product recipes', value: 4 }]}
+    />
+    <VisualGuideDirectory />
+  </div>
 </DocsLayout>
+
+<script>
+  const legacyGuides = new Map([
+    ['motion-workbench', 'motion'],
+    ['effects-workbench', 'effects'],
+    ['chart-workbench', 'charts'],
+    ['ai-workbench', 'ai'],
+    ['product-blocks-workbench', 'recipes']
+  ])
+
+  const openLegacyGuide = () => {
+    if (!document.querySelector('[data-visual-guide-overview]')) return
+
+    const guide = legacyGuides.get(window.location.hash.slice(1))
+
+    if (guide) window.location.replace(`/docs/visual-playground/${guide}`)
+  }
+
+  openLegacyGuide()
+
+  document.addEventListener('astro:page-load', openLegacyGuide)
+
+  window.addEventListener('hashchange', openLegacyGuide)
+</script>
