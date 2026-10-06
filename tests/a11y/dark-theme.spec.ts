@@ -76,8 +76,6 @@ const getDarkThemeAccessibilityReport = async (page: Page) => page.evaluate(() =
     '.sr-only',
     '[data-ui-code-line-numbers]',
     '[data-ui-swatch]',
-    '.docs-home-title span',
-    '.docs-site-footer__statement h2 em',
     '.home-hero h1 em'
   ]
 
