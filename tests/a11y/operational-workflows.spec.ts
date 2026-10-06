@@ -1,8 +1,13 @@
 import { createRequire } from 'node:module'
 
-import { expect, test } from '@playwright/test'
+import { expect, type Page, test } from '@playwright/test'
 
 const axePath = createRequire(new URL('../../packages/elements/package.json', import.meta.url)).resolve('axe-core/axe.min.js')
+
+const expectAccessible = async (page: Page) => {
+  const violations: unknown = await page.evaluate('axe.run(".consumer-workflows", { runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"] } }).then(result => result.violations)')
+  expect(violations).toEqual([])
+}
 
 for (const width of [390, 1440]) {
   test(`operational views, selection and reviewed changes at ${width}px`, async ({ page }, testInfo) => {
@@ -10,6 +15,8 @@ for (const width of [390, 1440]) {
     await page.goto('/docs/web/consumer-workflows')
     const table = page.getByRole('region', { name: 'Operational example records', exact: true }).getByRole('table')
     await expect(table).toContainText('Example record C')
+    await page.addScriptTag({ path: axePath })
+    await expectAccessible(page)
     await page.getByLabel('Saved view', { exact: true }).selectOption('due')
     await expect(table).not.toContainText('Example record C')
     await page.getByLabel('Amount COP: from', { exact: true }).fill('200000')
@@ -58,9 +65,7 @@ for (const width of [390, 1440]) {
     await expect(page.getByRole('region', { name: 'Example record workspace', exact: true })).toContainText('Original event: EXAMPLE-EVENT-001')
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true)
 
-    await page.addScriptTag({ path: axePath })
-    const violations: unknown = await page.evaluate('axe.run(".consumer-workflows", { runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"] } }).then(result => result.violations)')
-    expect(violations).toEqual([])
+    await expectAccessible(page)
     await page.screenshot({ path: testInfo.outputPath(`operational-workflows-after-${width}.png`), fullPage: true })
     await form.screenshot({ path: testInfo.outputPath(`review-workflow-${width}.png`) })
   })
@@ -75,10 +80,13 @@ test('failed and uncertain commands retain exact inputs and require explicit rec
   await form.getByRole('button', { name: 'Review proposed change', exact: true }).click()
   await form.getByRole('button', { name: 'Confirm reviewed change', exact: true }).click()
   await expect(form.getByRole('alert')).toContainText('Your input is retained.')
+  await page.addScriptTag({ path: axePath })
+  await expectAccessible(page)
   await expect(amount).toHaveValue('200.000')
   await page.getByLabel('Simulated save result', { exact: true }).selectOption('uncertain')
   await form.getByRole('button', { name: 'Confirm reviewed change', exact: true }).click()
   await expect(form.getByRole('alert')).toContainText('The result is unknown.')
+  await expectAccessible(page)
   await expect(amount).toBeDisabled()
   await expect(form.getByRole('button', { name: 'Confirm reviewed change', exact: true })).toHaveCount(0)
   await form.getByRole('button', { name: 'Check saved result', exact: true }).click()
