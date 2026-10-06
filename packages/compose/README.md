@@ -37,6 +37,10 @@ This Android library provides native Compose foundations and primitives generate
 canonical design tokens. It follows the same semantic color roles, spacing, radii, typography, and
 motion vocabulary as the web, React Native, and SwiftUI adapters.
 
+`LumenSheet` keeps its content mounted until the native hide animation finishes when `visible`
+becomes false. Reopening during dismissal cancels the exit. Programmatic closure also works with
+`dismissible = false`; `onDismiss` reports user dismissal requests, not controlled state changes.
+
 Add Maven Central to the application's repositories, then add Lumen to `app/build.gradle.kts`:
 
 ```kotlin

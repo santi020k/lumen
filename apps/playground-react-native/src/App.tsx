@@ -110,6 +110,7 @@ import { StatusBar as ExpoStatusBar } from 'expo-status-bar'
 
 import { AdvancedInputExamples } from './AdvancedInputExamples'
 import { CatalogParityExamples } from './CatalogParityExamples'
+import { MotionExample } from './MotionExample'
 import {
   type AppDestination,
   componentCategories,
@@ -380,7 +381,7 @@ const isColorScheme = (value: string): value is ColorScheme => (
 
 type ExampleState = 'empty' | 'error' | 'loading' | 'success'
 
-type ExamplePattern = 'health' | 'profile' | 'release' | 'workspace'
+type ExamplePattern = 'health' | 'motion' | 'profile' | 'release' | 'workspace'
 
 type PlaygroundLocale = 'en' | 'es'
 
@@ -420,13 +421,13 @@ const isExampleState = (value: string): value is ExampleState => (
 )
 
 const isExamplePattern = (value: string): value is ExamplePattern => (
-  value === 'health' || value === 'profile' || value === 'release' || value === 'workspace'
+  value === 'health' || value === 'motion' || value === 'profile' || value === 'release' || value === 'workspace'
 )
 
 const useAccessibilitySnapshot = (): AccessibilitySnapshot => {
   const [snapshot, setSnapshot] = useState<AccessibilitySnapshot>({
     fontScale: PixelRatio.getFontScale(),
-    reduceMotion: false,
+    reduceMotion: true,
     screenReader: false
   })
 
@@ -647,6 +648,7 @@ const ExampleStatePreview = ({
 )
 
 const ExamplesScreen = (): ReactElement => {
+  const accessibility = useAccessibilitySnapshot()
   const initialState = getWebQueryParameter('state')
   const initialPattern = getWebQueryParameter('pattern')
 
@@ -705,10 +707,12 @@ const ExamplesScreen = (): ReactElement => {
             { label: 'Release', value: 'release' },
             { label: 'Health', value: 'health' },
             { label: 'Profile', value: 'profile' },
-            { label: 'Workspace', value: 'workspace' }
+            { label: 'Workspace', value: 'workspace' },
+            { label: 'Motion', value: 'motion' }
           ]}
           value={pattern}
         >
+          {pattern === 'motion' && <MotionExample reducedMotion={accessibility.reduceMotion} />}
           {pattern === 'release' && (
             <View style={styles.stack}>
               <LumenCard style={styles.section}>

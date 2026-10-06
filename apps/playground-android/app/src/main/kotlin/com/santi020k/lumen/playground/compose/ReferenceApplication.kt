@@ -99,7 +99,7 @@ internal enum class PlaygroundDestination {
             entries.firstOrNull { it.name.equals(value, ignoreCase = true) } ?: Home
     }
 }
-private enum class ExamplePattern(val label: String) { Release("Release"), Health("Health"), Profile("Profile"), Workspace("Workspace"), ListDetail("List/detail") }
+private enum class ExamplePattern(val label: String) { Release("Release"), Health("Health"), Profile("Profile"), Workspace("Workspace"), ListDetail("List/detail"), Motion("Motion") }
 private enum class ExampleState { Loading, Empty, Error, Success }
 private enum class PlaygroundLocale(val label: String) { English("English"), Spanish("Español") }
 
@@ -350,7 +350,7 @@ private fun ExamplesScreen(catalog: List<CatalogCategorySummary>) {
         ResponsiveScreen { wide ->
             item {
                 DestinationHeader(
-                    "5 patterns",
+                    "6 patterns",
                     "Examples",
                     "Switch tasks, change state, and inspect complete product compositions."
                 )
@@ -380,6 +380,7 @@ private fun ExamplesScreen(catalog: List<CatalogCategorySummary>) {
                         { showResetDialog = true }
                     )
                     ExamplePattern.Workspace, ExamplePattern.ListDetail -> Unit
+                    ExamplePattern.Motion -> MotionExample()
                     ExamplePattern.Health -> HealthPattern(catalog, releaseState) { releaseState = it }
                     ExamplePattern.Profile -> ProfilePattern(
                         wide,

@@ -6,6 +6,7 @@ private enum ExamplePattern: String, CaseIterable, Identifiable {
     case health
     case profile
     case workspace
+    case motion
 
     var id: String { rawValue }
     var title: String { rawValue.capitalized }
@@ -90,6 +91,8 @@ struct PlaygroundExamplesView: View {
             profilePattern
         case .workspace:
             EmptyView()
+        case .motion:
+            PlaygroundMotionExample()
         }
     }
 
@@ -393,6 +396,7 @@ struct PlaygroundExamplesView: View {
         case .health: "chart.xyaxis.line"
         case .profile: "person.crop.circle"
         case .workspace: "rectangle.split.2x1"
+        case .motion: "sparkles"
         }
     }
 
@@ -406,6 +410,63 @@ struct PlaygroundExamplesView: View {
             "Complete contributor onboarding and verify saved preference feedback."
         case .workspace:
             "Search records, edit a protected form, and inspect activity across adaptive panes."
+        case .motion:
+            "Explore expandable content, state feedback, and native sheets with optional motion."
+        }
+    }
+}
+
+private struct PlaygroundMotionExample: View {
+    @Environment(\.accessibilityReduceMotion) private var systemReducedMotion
+    @State private var reduceDemo = false
+    @State private var expanded = false
+    @State private var saving = false
+    @State private var saved = false
+    @State private var sheet = false
+
+    private var reduced: Bool { systemReducedMotion || reduceDemo }
+    private var animation: Animation? {
+        reduced ? nil : .timingCurve(0.22, 1, 0.36, 1, duration: LumenMotion.standardDuration)
+    }
+
+    var body: some View {
+        LumenCard {
+            VStack(alignment: .leading, spacing: LumenSpacing.lg) {
+                LumenText("Motion playground", variant: .title)
+                LumenText("Brief, optional transitions. This save is simulated; no data is sent.", tone: .muted)
+                LumenToggle("Reduce demo effects", isOn: $reduceDemo)
+                LumenText(reduced ? "Demo effects are immediate." : "Demo effects follow the system preference.")
+                LumenDisclosure("Expandable details", isExpanded: $expanded) {
+                    LumenText("Content stays readable while its surrounding layout changes.")
+                }
+                .animation(animation, value: expanded)
+                if saving { LumenSpinner("Saving demonstration") }
+                if !saved { LumenText(saving ? "Saving demonstration…" : "Ready to preview.") }
+                if saved {
+                    LumenStatusBar("Demonstration saved.", tone: .success) { EmptyView() }
+                        .transition(.opacity)
+                }
+                LumenButton("Simulate save", disabled: saving) { saved = false; saving = true }
+                LumenButton("Open sheet") { sheet = true }
+                LumenText("Native sheet motion follows the operating system.", tone: .muted)
+            }
+            .animation(animation, value: saved)
+            .transaction { transaction in
+                if reduced { transaction.animation = nil; transaction.disablesAnimations = true }
+            }
+        }
+        .task(id: saving) {
+            guard saving else { return }
+            do { try await Task.sleep(nanoseconds: 700_000_000) }
+            catch { return }
+            guard !Task.isCancelled else { return }
+            saving = false
+            saved = true
+        }
+        .lumenSheet(isPresented: $sheet, title: "Native sheet motion", actions: {
+            LumenButton("Close sheet") { sheet = false }
+        }) {
+            LumenText("Open, close, and reopen. The application owns state; the platform owns presentation.")
         }
     }
 }
