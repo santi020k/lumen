@@ -1,0 +1,23 @@
+---
+import '../styles/brand-outro.css'
+
+import LumenLogo from '../../../docs/src/components/LumenLogo.astro'
+
+interface Props {
+  tagline?: string
+  website?: string
+}
+
+const { tagline = 'Same components. Your expression.', website = 'lumen.santi020k.com' } = Astro.props
+---
+
+<section class="end-card" data-theme="lumen-light" aria-label="Lumen UI closing card">
+  <div class="brand-light" aria-hidden="true"></div>
+  <div class="brand-orbit" aria-hidden="true"></div>
+  <div class="brand-orbit brand-orbit-outer" aria-hidden="true"></div>
+  <div class="brand-lockup">
+    <LumenLogo markClass="end-logo-mark" />
+    <p>{tagline}</p>
+    <strong>{website}</strong>
+  </div>
+</section>

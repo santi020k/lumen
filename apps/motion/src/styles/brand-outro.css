@@ -1,0 +1,15 @@
+.end-card { position: absolute; inset: 0; display: grid; place-items: center; overflow: hidden; background: hsl(var(--canvas)); color: hsl(var(--ink)); font-family: "Montserrat", sans-serif; opacity: 0; }
+.brand-lockup { position: relative; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 32px; padding: 60px; }
+.end-card .lumen-logo { display: flex; align-items: center; gap: 28px; --lumen-logo-mark: var(--surface-strong); --lumen-logo-on-mark: var(--ink); --lumen-logo-dot: var(--warning); }
+.end-logo-mark { width: 160px; height: 160px; filter: drop-shadow(0 16px 28px hsl(var(--brand) / 0.12)); }
+.end-card .lumen-logo__wordmark { width: 380px; height: 94px; }
+.end-card p { font-size: 28px; color: hsl(var(--ink-soft)); margin: 8px 0 0; }
+.end-card strong { font-size: 28px; letter-spacing: -0.025em; }
+.brand-light { position: absolute; width: 740px; height: 740px; border-radius: 50%; background: radial-gradient(ellipse at 32% 30%, hsl(var(--brand) / 0.18), transparent 58%), radial-gradient(ellipse at 70% 68%, hsl(var(--accent) / 0.2), transparent 58%); filter: blur(24px); }
+.brand-orbit { position: absolute; width: 760px; height: 760px; border: 1px solid hsl(var(--brand) / 0.12); border-radius: 50%; }
+.brand-orbit-outer { width: 1020px; height: 1020px; border-color: hsl(var(--brand) / 0.07); }
+[data-format="portrait"] .end-card .lumen-logo { flex-direction: column; gap: 38px; }
+[data-format="portrait"] .end-logo-mark { width: 200px; height: 200px; }
+[data-format="portrait"] .brand-lockup { gap: 40px; }
+[data-format="portrait"] .end-card p { max-width: 600px; font-size: 36px; line-height: 1.4; }
+[data-format="portrait"] .end-card strong { font-size: 32px; }
