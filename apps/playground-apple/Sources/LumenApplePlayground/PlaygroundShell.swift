@@ -22,6 +22,15 @@ enum PlaygroundDestination: String, CaseIterable, Identifiable {
         rawValue.capitalized
     }
 
+    var sidebarDetail: LocalizedStringKey {
+        switch self {
+        case .home: "The system at a glance"
+        case .examples: "Composed product flows"
+        case .components: "Every primitive, live"
+        case .settings: "Make it your own"
+        }
+    }
+
     var systemName: String {
         switch self {
         case .home: "house"
@@ -151,6 +160,7 @@ struct PlaygroundRootView: View {
     @State private var destination: PlaygroundDestination
     @State private var themePreference: PlaygroundThemePreference
     @State private var themePreset = PlaygroundThemePreset.lumen
+    @State private var catalogCategory = PlaygroundComponentCategory.all
 
     private let launchConfiguration: PlaygroundLaunchConfiguration
 
@@ -180,14 +190,41 @@ struct PlaygroundRootView: View {
     private var applicationShell: some View {
         #if os(macOS)
         NavigationSplitView {
-            List(PlaygroundDestination.allCases, selection: $destination) { item in
-                Label(item.title, systemImage: item.systemName)
-                    .tag(item)
-            }
-            .navigationTitle("Lumen Playground")
+            macSidebar
+                .navigationSplitViewColumnWidth(min: 220, ideal: 240, max: 280)
         } detail: {
             destinationView(destination)
+                .navigationTitle(destination.title)
+                .toolbar {
+                    ToolbarItemGroup(placement: .automatic) {
+                        LumenPicker(selection: $themePreset, style: .menu) {
+                            Text("Theme")
+                        } currentValueLabel: {
+                            Text(themePreset.title)
+                        } content: {
+                            ForEach(PlaygroundThemePreset.allCases) { preset in
+                                Text(preset.title).tag(preset)
+                            }
+                        }
+                        .frame(width: 150)
+                        .accessibilityLabel("Theme")
+                        .help("Choose the playground theme")
+                        LumenPicker(selection: $themePreference, style: .menu) {
+                            Text("Appearance")
+                        } currentValueLabel: {
+                            Text(themePreference.title)
+                        } content: {
+                            ForEach(PlaygroundThemePreference.allCases) { preference in
+                                Text(preference.title).tag(preference)
+                            }
+                        }
+                        .frame(width: 155)
+                        .accessibilityLabel("Appearance")
+                        .help("Choose light, dark, or system appearance")
+                    }
+                }
         }
+        .navigationSplitViewStyle(.balanced)
         #else
         TabView(selection: $destination) {
             ForEach(PlaygroundDestination.allCases) { item in
@@ -207,15 +244,79 @@ struct PlaygroundRootView: View {
     private func destinationView(_ item: PlaygroundDestination) -> some View {
         switch item {
         case .home:
+            #if os(macOS)
+            PlaygroundMacHomeView(
+                openDestination: { destination = $0 },
+                openCategory: { category in
+                    catalogCategory = category
+                    destination = .components
+                }
+            )
+            #else
             PlaygroundHomeView(openDestination: { destination = $0 })
+            #endif
         case .examples:
             PlaygroundExamplesView()
         case .components:
-            ComponentsCatalogView(themePreference: $themePreference)
+            ComponentsCatalogView(themePreference: $themePreference, initialCategory: catalogCategory)
+                .id(catalogCategory)
         case .settings:
             PlaygroundSettingsView(themePreference: $themePreference, themePreset: $themePreset)
         }
     }
+
+    #if os(macOS)
+    private var macSidebar: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            HStack(spacing: LumenSpacing.sm) {
+                LumenSurface(tone: .surface, padding: .sm) {
+                    LumenIcon(name: .sparkles, size: .lg)
+                }
+                VStack(alignment: .leading, spacing: LumenSpacing.xs) {
+                    LumenText("Lumen UI", variant: .title)
+                    LumenText("APPLE PLAYGROUND", variant: .caption, tone: .muted)
+                }
+            }
+            .padding(LumenSpacing.lg)
+
+            List(selection: $destination) {
+                Section("Explore") {
+                    ForEach(PlaygroundDestination.allCases) { item in
+                        HStack(spacing: LumenSpacing.sm) {
+                            LumenIcon(systemName: item.systemName, size: .sm)
+                                .frame(width: 20)
+                            VStack(alignment: .leading, spacing: LumenSpacing.xs) {
+                                LumenText(LocalizedStringKey(item.title), variant: .label)
+                                LumenText(item.sidebarDetail, variant: .caption, tone: .soft)
+                            }
+                            .padding(.vertical, LumenSpacing.xs)
+                        }
+                        .tag(item)
+                    }
+                }
+            }
+            .listStyle(.sidebar)
+
+            LumenCard(variant: .muted, padding: .md, radius: .lg) {
+                VStack(alignment: .leading, spacing: LumenSpacing.sm) {
+                    LumenBadge("Lumen \(PlaygroundCatalog.lumenVersion)", tone: .accent)
+                    LumenText("One system. Native possibilities.", variant: .label)
+                    LumenText("Explore real controls, charts, and complete product flows.", variant: .caption, tone: .soft)
+                }
+            }
+            .padding(.horizontal, LumenSpacing.md)
+            .padding(.bottom, LumenSpacing.md)
+
+            if let authorURL = URL(string: "https://santi020k.com") {
+                LumenLink("Made by santi020k", destination: authorURL, showsExternalIndicator: true)
+                    .font(.caption)
+                    .padding(.horizontal, LumenSpacing.lg)
+                    .padding(.bottom, LumenSpacing.lg)
+            }
+        }
+        .background(activeTheme.colors.surfaceMuted)
+    }
+    #endif
 
     private var activeTheme: LumenTheme {
         let scheme: LumenColorScheme = switch themePreference {
