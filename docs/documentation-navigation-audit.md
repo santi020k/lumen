@@ -1,6 +1,6 @@
 # Documentation navigation audit
 
-Audited the documentation source on 2026-10-04. Size alone is not a reason to split a page:
+Audited the documentation source on 2026-10-04 and the built navigation on 2026-10-06. Size alone is not a reason to split a page:
 catalogs and interactive tools need browse controls, while independent tasks need their own URLs.
 Keep live examples visible and place detailed code next to the example it explains.
 
@@ -53,3 +53,18 @@ placement below sticky navigation, search discovery, old fragment links, live ex
 code, and absence of page overflow. Validate generated routes and links against the built site;
 check each new page's unique title, canonical, description, and breadcrumbs. A source-file line count
 does not prove that the rendered documentation is short or easy to navigate.
+
+## Automated destination checks
+
+The docs post-build audit now checks header, sidebar, section, and footer links against the built
+HTML and static files. It also checks all search-index destinations, including encoded fragment
+IDs. Broken routes, missing targets, and malformed destinations fail the existing SEO audit.
+Illustrative navigation inside live examples is excluded, and noindex pages are not audit sources.
+Sitemap coverage, orphan entries, canonical URLs, and social metadata continue through the existing
+SEO rules. Run `pnpm run docs:build` for the complete build and post-build audit, or
+`pnpm --filter @santi020k/lumen-docs run audit:seo` to inspect an existing current build.
+
+The repository Markdown pass checked 673 relative file links with no missing files. The initial
+complete rendered-site pass covered 640 HTML pages and 240,007 internal page-and-fragment links
+without missing fragment targets outside live examples. These checks cover local output; they do
+not establish deployment or external-link availability.

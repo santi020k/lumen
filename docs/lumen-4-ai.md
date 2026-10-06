@@ -24,6 +24,19 @@ claude plugin validate plugins/lumen-ui --strict
 claude plugin validate . --strict
 ```
 
+## Portable skill routing and verification
+
+Use `lumen-ui` for building and restyling, `lumen-review` for read-only audits, and
+`lumen-migrate` for explicitly requested upgrades. The build skill loads only the matching
+framework setup reference. SwiftUI guidance preserves existing pins and verifies published tags
+before initial adoption; branch tracking is reserved for requested development evaluation.
+
+Build, review, and migration workflows share a scoped interaction and rendered-evidence checklist.
+It covers overlay focus and dismissal, form state and recovery, keyboard selection, async states,
+and chart data. Material visual changes use matched captures when the consumer can run locally.
+Migration-specific candidate details live in a conditional v4 reference rather than the reusable
+workflow. Regenerate client copies and run the plugin gates after editing canonical skills.
+
 ## Actual agent benchmarks
 
 For the matched scratch/documentation/skill-and-MCP token comparison, use

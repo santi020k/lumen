@@ -16,13 +16,17 @@ Without MCP, use installed types, package READMEs, and `lumen show <component>`.
 
 Inspect public component imports and props, theme/style ownership, and the framework's setup:
 Astro runtime once, React hooks/controllers, Elements registration, or native providers/themes.
+Read only the matching setup reference from
+[framework contracts](../lumen-ui/references/frameworks.md) when checking adapter-specific details.
 Look for duplicate primitive implementations, incorrect compound children, raw palettes,
 application CSS that breaks public slots, and unsupported adapter APIs.
 
 Review actual interactions and states: keyboard/focus and dismissal, accessible names, validation,
 loading/error/empty feedback, touch targets, reduced motion, and phone/desktop layout. Use existing
 project checks and rendered evidence when permitted; distinguish source findings from verified
-behavior. Native reviews use platform semantics and supported target availability.
+behavior. Native reviews use platform semantics and supported target availability. Use
+[the interaction checklist](../lumen-ui/references/verification.md) for the reviewed behavior;
+report unavailable checks without treating source inspection as rendered verification.
 
 For visualization, check that the encoding answers the product question, the selected chart exists
 in the installed adapter, and its data shape preserves unique identities, missing values, and real
