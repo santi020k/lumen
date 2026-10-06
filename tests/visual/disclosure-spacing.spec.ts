@@ -7,7 +7,7 @@ for (const width of [390, 1440]) {
       await page.emulateMedia({ reducedMotion: 'reduce' })
 
       for (const { route, selector } of [
-        { route: '/docs/visual-playground', selector: '.ui-tool-activity' },
+        { route: '/docs/visual-playground/ai', selector: '.ui-tool-activity' },
         { route: '/docs/components/accordion', selector: '.ui-accordion details' },
         { route: '/docs/components/collapsible', selector: '.ui-collapsible:has(> summary:text-is("Advanced filters"))' }
       ]) {

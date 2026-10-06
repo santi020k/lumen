@@ -722,9 +722,13 @@ test('v4 approval validates the complete production MCP snapshot', async () => {
   const { directory } = await mirrorCandidate();
 
   try {
-    const snapshot = await readFile(resolve(repositoryRoot, 'packages/mcp/data/lumen-data.json'), 'utf8');
+    const snapshot = JSON.parse(await readFile(resolve(repositoryRoot, 'packages/mcp/data/lumen-data.json'), 'utf8'));
 
-    await writeFile(resolve(directory, 'packages/mcp/data/lumen-data.json'), snapshot);
+    snapshot.migration.status = 'draft';
+
+    delete snapshot.migration.approval;
+
+    await writeFile(resolve(directory, 'packages/mcp/data/lumen-data.json'), JSON.stringify(snapshot));
 
     const reviewedRevision = commit(directory, 'test: review full production snapshot');
 

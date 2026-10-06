@@ -108,3 +108,29 @@ test('homepage chart exposes its illustrative data to keyboard users', async ({ 
   await page.keyboard.press('Enter')
   await expect(chart.getByRole('table')).toBeHidden()
 })
+
+for (const width of [390, 1440]) {
+  test(`homepage sections support direct links and keyboard access at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 844 })
+    await page.emulateMedia({ reducedMotion: 'reduce' })
+
+    for (const id of ['ai-native', 'playgrounds']) {
+      await page.goto(`/#${id}`)
+      const section = page.locator(`#${id}`)
+      const heading = section.getByRole('heading', { level: 2 })
+
+      await expect(heading).toBeInViewport()
+      await expect(heading).toBeVisible()
+
+      const link = section.getByRole('link').first()
+
+      await link.focus()
+      await expect(link).toBeFocused()
+      await expect(link).toBeInViewport()
+    }
+
+    await page.locator('.home-use-cases').scrollIntoViewIfNeeded()
+    await expect(page.locator('.home-use-cases').getByRole('heading', { level: 2 })).toBeVisible()
+    expect(await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth)).toBe(false)
+  })
+}

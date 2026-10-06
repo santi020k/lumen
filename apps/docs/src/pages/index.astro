@@ -769,6 +769,13 @@ const useCases: readonly UseCase[] = featuredProjects.flatMap(name => {
     padding-top: var(--home-section-space);
   }
 
+  @media screen {
+    .home-section {
+      content-visibility: auto;
+      contain-intrinsic-block-size: auto 60rem;
+    }
+  }
+
   .home-section__head {
     display: grid;
     gap: .75rem;
