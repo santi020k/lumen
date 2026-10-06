@@ -1,6 +1,16 @@
 export type LumenDeviceFrameDevice = 'laptop' | 'desktop' | 'iphone' | 'android' | 'tablet' | 'macbook-pro' | 'imac' | 'pixel'
 export type LumenDeviceFrameOrientation = 'portrait' | 'landscape'
 export type LumenDeviceFrameTone = 'light' | 'dark'
+export type LumenDeviceFrameColor = 'white' | 'black' | `#${string}`
+
+/** Named finishes and bounded hex colors are safe to serialize into an inline declaration. */
+export const resolveLumenDeviceFrameColor = (color: unknown): string | undefined => {
+  if (color === 'white' || color === 'black') return color
+
+  if (typeof color !== 'string' || ![4, 5, 7, 9].includes(color.length)) return undefined
+
+  return /^#[\da-f]+$/iu.test(color) ? color : undefined
+}
 
 export const lumenDeviceFrameSizes = {
   android: [412, 915],

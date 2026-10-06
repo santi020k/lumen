@@ -996,9 +996,14 @@ portals. Date-range synchronization clamps an earlier end date before updating b
 
 `DeviceFrame` presents slotted HTML, an image, or a titled iframe inside `macbook-pro`, `imac`,
 `iphone`, and `pixel` frames, with generic `laptop`, `desktop`, `android`, and `tablet` options.
-Matte white and charcoal shells use layered rims, recessed camera details, side buttons, and sculpted stands.
-Shells are decorative, use Lumen tokens, and do not emulate device hardware. `orientation` selects portrait or landscape; `tone` selects
-light or dark chrome independently of the screen content.
+Device-specific enclosures include a tapered laptop deck, curved iMac stand and chin, rounded phone
+glass with separate metal rails and buttons, and a tablet home recess.
+Shells are decorative and do not emulate device hardware. `orientation` selects portrait or landscape; `tone` selects
+light or dark chrome independently of the screen content. Use `color="white"`,
+`color="black"`, or a 3-, 4-, 6-, or 8-digit hex color such as `color="#a9b8ac"` for
+a custom hardware finish. `color` takes precedence over `tone`; invalid values fall back to the
+tone. The finish stays independent of the content theme. For CSS-driven updates, set
+`--ui-device-color` to a CSS color on the frame.
 
 Iframe layouts use the preset screen viewport and scale to the available width. Override
 `screenWidth` and `screenHeight` for a custom viewport (1–16384 CSS pixels). Slotted HTML shares

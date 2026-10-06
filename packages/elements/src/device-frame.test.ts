@@ -50,6 +50,41 @@ test('falls back for invalid attributes and honors custom sizes', () => {
   expect(screen?.style.aspectRatio).toBe('1024 / 768')
 })
 
+test('changes shell colors independently of content and clears invalid or removed finishes', () => {
+  const frame = new LumenDeviceFrameElement()
+  const input = document.createElement('input')
+
+  input.value = 'Keep this draft'
+  frame.setAttribute('color', 'white')
+  frame.append(input)
+  document.body.append(frame)
+  expect(frame.style.getPropertyValue('--ui-device-color')).toBe('white')
+  frame.setAttribute('color', '#a9b8ac')
+  expect(frame.style.getPropertyValue('--ui-device-color')).toBe('#a9b8ac')
+  frame.setAttribute('color', '#fff;color:red')
+  expect(frame.style.getPropertyValue('--ui-device-color')).toBe('')
+  frame.setAttribute('color', 'black')
+  expect(frame.style.getPropertyValue('--ui-device-color')).toBe('black')
+  frame.removeAttribute('color')
+  expect(frame.style.getPropertyValue('--ui-device-color')).toBe('')
+  expect(frame.querySelector('input')).toBe(input)
+  expect(input.value).toBe('Keep this draft')
+})
+
+test('preserves consumer CSS colors across orientation and temporary color attributes', () => {
+  const frame = new LumenDeviceFrameElement()
+
+  frame.style.setProperty('--ui-device-color', '#abc', 'important')
+  document.body.append(frame)
+  frame.setAttribute('orientation', 'landscape')
+  expect(frame.style.getPropertyValue('--ui-device-color')).toBe('#abc')
+  frame.setAttribute('color', 'white')
+  expect(frame.style.getPropertyValue('--ui-device-color')).toBe('white')
+  frame.removeAttribute('color')
+  expect(frame.style.getPropertyValue('--ui-device-color')).toBe('#abc')
+  expect(frame.style.getPropertyPriority('--ui-device-color')).toBe('important')
+})
+
 test.each([
   ['macbook-pro', '1280 / 800'],
   ['imac', '1440 / 810'],

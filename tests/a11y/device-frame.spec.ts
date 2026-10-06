@@ -1,5 +1,33 @@
 import { expect, test } from '@playwright/test'
 
+test('white, black and custom finishes preserve the screen artwork and dimensions', async ({ page }) => {
+  await page.goto('/docs/components/device-frame')
+  const frames = page.locator('.device-demo-composition .ui-device-frame')
+  const screens = frames.locator('.ui-device-frame__screen')
+  const original = await screens.evaluateAll(elements => elements.map(element => ({
+    image: element.querySelector('img')?.getAttribute('src'),
+    width: element.clientWidth,
+    height: element.clientHeight,
+    background: getComputedStyle(element).backgroundColor
+  })))
+
+  await page.getByRole('button', { name: 'Black', exact: true }).focus()
+  await page.keyboard.press('Enter')
+  await expect(page.getByRole('button', { name: 'Black', exact: true })).toHaveAttribute('aria-pressed', 'true')
+  for (const frame of await frames.all()) await expect(frame).toHaveCSS('--ui-device-color', 'black')
+  await page.getByLabel('Custom color', { exact: true }).fill('#89a7b8')
+  await expect(page.getByRole('button', { name: 'Custom', exact: true })).toHaveAttribute('aria-pressed', 'true')
+  for (const frame of await frames.all()) await expect(frame).toHaveCSS('--ui-device-color', '#89a7b8')
+  expect(await screens.evaluateAll(elements => elements.map(element => ({
+    image: element.querySelector('img')?.getAttribute('src'),
+    width: element.clientWidth,
+    height: element.clientHeight,
+    background: getComputedStyle(element).backgroundColor
+  })))).toEqual(original)
+  await page.getByRole('button', { name: 'White', exact: true }).click()
+  for (const frame of await frames.all()) await expect(frame).toHaveCSS('--ui-device-color', 'white')
+})
+
 for (const width of [320, 1440]) {
   for (const theme of ['light', 'dark']) {
     test(`device frames preserve screen proportions and iframe viewport at ${width}px in ${theme}`, async ({ page }, testInfo) => {

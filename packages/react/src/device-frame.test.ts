@@ -25,7 +25,37 @@ test('renders accessible children, updates orientation, and retains consumer ifr
   })
   expect(screen?.style.aspectRatio).toBe('915 / 412')
   expect(screen?.dataset.scroll).toBe('false')
-  expect(container.querySelectorAll('[aria-hidden="true"]')).toHaveLength(2)
+  expect(container.querySelectorAll('[aria-hidden="true"]')).toHaveLength(3)
+  act(() => {
+    root.unmount()
+  })
+  vi.unstubAllGlobals()
+})
+
+test('updates and removes custom hardware colors without changing content or consumer styles', () => {
+  vi.stubGlobal('IS_REACT_ACT_ENVIRONMENT', true)
+  const container = document.createElement('div')
+  const root = createRoot(container)
+  const child = createElement('input', { defaultValue: 'Keep this draft' })
+
+  act(() => {
+    root.render(createElement(DeviceFrame, { color: '#a9b8ac', style: { marginTop: 12 } }, child))
+  })
+  const frame = container.querySelector<HTMLElement>('.ui-device-frame')
+  const input = container.querySelector('input')
+
+  expect(frame?.style.getPropertyValue('--ui-device-color')).toBe('#a9b8ac')
+  expect(frame?.style.marginTop).toBe('12px')
+  act(() => {
+    root.render(createElement(DeviceFrame, { color: 'black', style: { marginTop: 12 } }, child))
+  })
+  expect(frame?.style.getPropertyValue('--ui-device-color')).toBe('black')
+  expect(container.querySelector('input')).toBe(input)
+  act(() => {
+    root.render(createElement(DeviceFrame, { style: { marginTop: 12 } }, child))
+  })
+  expect(frame?.style.getPropertyValue('--ui-device-color')).toBe('')
+  expect(input?.value).toBe('Keep this draft')
   act(() => {
     root.unmount()
   })

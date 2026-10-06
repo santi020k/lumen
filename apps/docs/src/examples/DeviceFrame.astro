@@ -1,14 +1,26 @@
 ---
-import { Badge, Button, Card, DeviceFrame, Icon, Image, Stack, Typography } from '@santi020k/lumen-astro'
+import { Badge, Button, Card, DeviceFrame, Field, Icon, Image, Input, Label, Stack, Typography } from '@santi020k/lumen-astro'
 ---
 
-<Typography><Stack gap="lg">
+<Typography><Stack gap="lg" data-device-finish-demo>
   <div class="device-demo-composition" role="img" aria-label="Matte white iMac, MacBook Pro, and iPhone arranged together">
-    <div class="device-demo-composition__desktop" aria-hidden="true"><DeviceFrame device="imac" tone="light" scroll={false}><Image alt="" src="/device-frame-placeholder-desktop.svg" width={1440} height={810} radius="none" /></DeviceFrame></div>
-    <div class="device-demo-composition__laptop" aria-hidden="true"><DeviceFrame device="macbook-pro" tone="light" scroll={false}><Image alt="" src="/device-frame-placeholder.svg" width={1440} height={900} radius="none" /></DeviceFrame></div>
-    <div class="device-demo-composition__phone" aria-hidden="true"><DeviceFrame device="iphone" tone="light" scroll={false}><Image alt="" src="/device-frame-placeholder-phone.svg" width={390} height={844} radius="none" /></DeviceFrame></div>
+    <div class="device-demo-composition__desktop" aria-hidden="true"><DeviceFrame device="imac" color="white" scroll={false}><Image alt="" src="/device-frame-placeholder-desktop.svg" width={1440} height={810} radius="none" /></DeviceFrame></div>
+    <div class="device-demo-composition__laptop" aria-hidden="true"><DeviceFrame device="macbook-pro" color="white" scroll={false}><Image alt="" src="/device-frame-placeholder.svg" width={1440} height={900} radius="none" /></DeviceFrame></div>
+    <div class="device-demo-composition__phone" aria-hidden="true"><DeviceFrame device="iphone" color="white" scroll={false}><Image alt="" src="/device-frame-placeholder-phone.svg" width={390} height={844} radius="none" /></DeviceFrame></div>
   </div>
-  <div class="device-demo-intro"><h3>Your work, in good company.</h3><p>Softly sculpted frames. White or charcoal. Ready for your next demonstration.</p></div>
+  <div class="device-demo-intro"><h3>Considered from every edge.</h3><p>Curved stands. Tapered enclosures. Rounded glass and finely machined rails.</p></div>
+  <Stack direction="horizontal" gap="md" wrap class="device-demo-finishes">
+    <Stack direction="horizontal" gap="sm" role="group" aria-label="Device finish">
+      <Button variant="secondary" data-device-finish="white" aria-pressed="true">White</Button>
+      <Button variant="secondary" data-device-finish="black" aria-pressed="false">Black</Button>
+      <Button variant="secondary" data-device-finish="custom" aria-pressed="false">Custom</Button>
+    </Stack>
+    <Field class="device-demo-color-field"><Label for="device-demo-color">Custom color</Label><Input id="device-demo-color" type="color" value="#a9b8ac" /></Field>
+  </Stack>
+  <div class="device-demo-detail" role="img" aria-label="Close-up of black and white iPhone hardware, rounded glass, speakers, and side buttons">
+    <div class="device-demo-detail__black" aria-hidden="true"><DeviceFrame device="iphone" color="black" scroll={false}><Image alt="" src="/device-frame-placeholder-phone.svg" width={390} height={844} radius="none" /></DeviceFrame></div>
+    <div class="device-demo-detail__white" aria-hidden="true"><DeviceFrame device="iphone" color="white" scroll={false}><Image alt="" src="/device-frame-placeholder-phone.svg" width={390} height={844} radius="none" /></DeviceFrame></div>
+  </div>
   <Stack class="device-demo-examples" gap="lg">
   <div class="device-demo-caption"><h3>MacBook Pro</h3><span>Matte white · live iframe</span></div>
   <div class="device-demo-stage device-demo-stage--computer">
@@ -48,7 +60,7 @@ import { Badge, Button, Card, DeviceFrame, Icon, Image, Stack, Typography } from
   <div class="device-demo-stage device-demo-stage--computer">
     <DeviceFrame device="tablet" orientation="landscape" tone="light"><Image alt="Illustrated mountain landscape" height={600} radius="none" src="/comparison-after.svg" width={960} /></DeviceFrame>
   </div>
-  <p>Frames scale to their container. Live HTML and iframe screens reserve space for camera details. Phone images fill the glass beneath the decorative hardware. Generic <code>laptop</code>, <code>desktop</code>, and <code>android</code> presets are also available.</p>
+  <p>Use <code>color="white"</code>, <code>color="black"</code>, or a hex color such as <code>color="#a9b8ac"</code>. The finish changes the hardware without recoloring your content. Frames scale to their container; live HTML and iframe screens reserve space for camera details. Generic <code>laptop</code>, <code>desktop</code>, and <code>android</code> presets are also available.</p>
 </Stack>
 </Stack></Typography>
 
@@ -58,9 +70,19 @@ import { Badge, Button, Card, DeviceFrame, Icon, Image, Stack, Typography } from
   .device-demo-composition__desktop { left: 5%; width: 62%; }
   .device-demo-composition__laptop { left: 42%; width: 50%; z-index: 1; }
   .device-demo-composition__phone { right: 4.5%; width: 10.5%; z-index: 2; }
-  .device-demo-intro { padding-block: 0.75rem 2rem; text-align: center; }
+  .device-demo-intro { padding-block: 0.75rem 0; text-align: center; }
   .device-demo-intro h3 { margin: 0 0 0.5rem; font-size: 1.3rem; font-weight: 500; letter-spacing: -0.03em; }
   .device-demo-intro p { margin: 0; color: hsl(var(--ink-soft)); font-size: 0.875rem; }
+  .device-demo-finishes { justify-content: center; align-items: center; padding-bottom: 1.5rem; }
+  .device-demo-color-field { display: flex; align-items: center; gap: 0.75rem; }
+  .device-demo-color-field :global(input) { width: 3rem; height: 2.75rem; padding: 0.2rem; cursor: pointer; }
+  .device-demo-finishes :global([aria-pressed="true"]) { outline: 2px solid hsl(var(--ink)); outline-offset: 2px; }
+  .device-demo-detail { position: relative; isolation: isolate; aspect-ratio: 1.65; overflow: hidden; border-radius: 0.8rem; background: color-mix(in srgb, hsl(var(--surface-muted)) 80%, hsl(var(--line))); }
+  .device-demo-detail > div { position: absolute; width: 36%; }
+  .device-demo-detail :global(.ui-device-frame) { max-width: none; }
+  .device-demo-detail__black { left: 10%; bottom: 17%; }
+  .device-demo-detail__white { right: 10%; top: 20%; }
+  .device-demo-detail__black :global(.ui-device-frame__screen img) { filter: invert(0.9); }
   .device-demo-caption { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 0.5rem 1rem; }
   .device-demo-caption h3 { margin: 0; font-size: 1.1rem; }
   .device-demo-caption > span { color: hsl(var(--ink-muted)); font-size: 0.8rem; }
@@ -80,3 +102,30 @@ import { Badge, Button, Card, DeviceFrame, Icon, Image, Stack, Typography } from
   .device-demo-hint { margin-top: auto; text-align: center; color: hsl(var(--ink-soft)); }
   @media (max-width: 40rem) { .device-frame-demo-grid { grid-template-columns: minmax(0, 1fr); } .device-demo-stage { padding: 1.5rem 0.7rem; } }
 </style>
+
+<script>
+  for (const demo of document.querySelectorAll<HTMLElement>('[data-device-finish-demo]')) {
+    const input = demo.querySelector<HTMLInputElement>('input[type="color"]')
+    const composition = demo.querySelector<HTMLElement>('.device-demo-composition')
+    const buttons = demo.querySelectorAll<HTMLButtonElement>('[data-device-finish]')
+    const frames = composition?.querySelectorAll<HTMLElement>('.ui-device-frame')
+
+    const select = (finish: string): void => {
+      const color = finish === 'custom' ? input?.value : finish
+
+      if (!color) return
+
+      for (const frame of frames ?? []) frame.style.setProperty('--ui-device-color', color)
+
+      for (const button of buttons) button.setAttribute('aria-pressed', String(button.dataset.deviceFinish === finish))
+
+      const name = finish === 'custom' ? 'Custom color' : `Matte ${finish}`
+
+      composition?.setAttribute('aria-label', `${name} iMac, MacBook Pro, and iPhone arranged together`)
+    }
+
+    for (const button of buttons) button.addEventListener('click', () => select(button.dataset.deviceFinish ?? 'white'))
+
+    input?.addEventListener('input', () => select('custom'))
+  }
+</script>

@@ -1,7 +1,15 @@
 // @vitest-environment jsdom
 import { expect, test, vi } from 'vitest'
 
-import { observeLumenDeviceFrame, resolveLumenDeviceFrame } from './device-frame.js'
+import { observeLumenDeviceFrame, resolveLumenDeviceFrame, resolveLumenDeviceFrameColor } from './device-frame.js'
+
+test.each(['white', 'black', '#abc', '#abcd', '#A1b2C3', '#a1b2c3dd'])('accepts the %s hardware finish', color => {
+  expect(resolveLumenDeviceFrameColor(color)).toBe(color)
+})
+
+test.each([undefined, null, 12, '', 'red', '#12', '#12345', '#1234567', '#gggggg', '#fff;background:red', '#'.repeat(100_000)])('rejects unsupported hardware colors without creating CSS declarations', color => {
+  expect(resolveLumenDeviceFrameColor(color)).toBeUndefined()
+})
 
 test('uses each screen preset and orders custom dimensions for orientation', () => {
   expect(resolveLumenDeviceFrame('iphone')).toEqual({ height: 844, width: 390 })

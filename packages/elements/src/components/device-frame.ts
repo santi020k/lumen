@@ -1,4 +1,4 @@
-import { type LumenDeviceFrameDevice as Device, lumenDeviceFrameSizes, observeLumenDeviceFrame, resolveLumenDeviceFrame } from '@santi020k/lumen-core'
+import { type LumenDeviceFrameDevice as Device, lumenDeviceFrameSizes, observeLumenDeviceFrame, resolveLumenDeviceFrame, resolveLumenDeviceFrameColor } from '@santi020k/lumen-core'
 
 import { defineLumenElement, type LumenCustomElementRegistry, LumenElement, type LumenElementConfig } from '../element-base.js'
 
@@ -7,7 +7,7 @@ const isDevice = (name: string | null): name is Device => name !== null && Objec
 export const lumenDeviceFrameElementConfig = {
   baseClassName: 'ui-device-frame',
   defaults: { 'data-device': 'laptop', 'data-tone': 'dark' },
-  observedAttributes: ['device', 'orientation', 'tone', 'screen-width', 'screen-height', 'scroll'],
+  observedAttributes: ['device', 'orientation', 'tone', 'color', 'screen-width', 'screen-height', 'scroll'],
   tagName: 'lumen-device-frame'
 } as const satisfies LumenElementConfig
 
@@ -15,6 +15,7 @@ export class LumenDeviceFrameElement extends LumenElement {
   static override config = lumenDeviceFrameElementConfig
   private screen: HTMLDivElement | undefined
   private cleanup: (() => void) | undefined
+  private colorOverride: { value: string, priority: string } | undefined
 
   override connectedCallback(): void {
     super.connectedCallback()
@@ -25,6 +26,19 @@ export class LumenDeviceFrameElement extends LumenElement {
       const camera = this.ownerDocument.createElement('span')
       const screen = this.ownerDocument.createElement('div')
       const base = this.ownerDocument.createElement('span')
+      const hardware = this.ownerDocument.createElement('span')
+
+      hardware.className = 'ui-device-frame__hardware'
+
+      hardware.setAttribute('aria-hidden', 'true')
+
+      for (const part of ['action', 'volume-up', 'volume-down', 'power', 'rail-left', 'rail-right']) {
+        const detail = this.ownerDocument.createElement('span')
+
+        detail.className = `ui-device-frame__${part}`
+
+        hardware.append(detail)
+      }
 
       shell.className = 'ui-device-frame__shell'
 
@@ -44,7 +58,7 @@ export class LumenDeviceFrameElement extends LumenElement {
 
       glass.append(camera, screen)
 
-      shell.append(glass)
+      shell.append(hardware, glass)
 
       this.append(shell, base)
 
@@ -81,6 +95,11 @@ export class LumenDeviceFrameElement extends LumenElement {
 
     this.dataset.tone = this.getAttribute('tone') === 'light' ? 'light' : 'dark'
 
+    if (orientation) this.dataset.orientation = orientation
+    else delete this.dataset.orientation
+
+    this.updateColor()
+
     screen.dataset.scroll = String(this.getAttribute('scroll') !== 'false')
 
     screen.style.aspectRatio = `${size.width} / ${size.height}`
@@ -92,6 +111,23 @@ export class LumenDeviceFrameElement extends LumenElement {
     this.cleanup?.()
 
     this.cleanup = observeLumenDeviceFrame(screen, size.width)
+  }
+
+  private updateColor(): void {
+    const color = resolveLumenDeviceFrameColor(this.getAttribute('color'))
+
+    if (color) {
+      this.colorOverride ??= {
+        value: this.style.getPropertyValue('--ui-device-color'),
+        priority: this.style.getPropertyPriority('--ui-device-color')
+      }
+
+      this.style.setProperty('--ui-device-color', color)
+    } else if (this.colorOverride) {
+      this.style.setProperty('--ui-device-color', this.colorOverride.value, this.colorOverride.priority)
+
+      this.colorOverride = undefined
+    }
   }
 }
 

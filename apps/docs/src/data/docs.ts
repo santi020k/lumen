@@ -1194,6 +1194,7 @@ const apiReferenceByComponent = {
     apiRow('device', '"macbook-pro" | "imac" | "iphone" | "pixel" | "laptop" | "desktop" | "android" | "tablet"', '"laptop"', 'Selects a decorative device silhouette and default screen dimensions.'),
     apiRow('orientation', '"portrait" | "landscape"', 'device default', 'Orders the screen dimensions for the requested orientation.'),
     apiRow('tone', '"light" | "dark"', '"dark"', 'Sets the shell tone independently of the content theme.'),
+    apiRow('color', '"white" | "black" | hex color', 'tone', 'Overrides the hardware finish. Accepts 3-, 4-, 6-, or 8-digit hex colors. Content keeps its own theme; invalid colors fall back to tone. CSS can override --ui-device-color.'),
     apiRow('screenWidth / screenHeight', 'number', 'device preset', 'Sets the iframe layout viewport in CSS pixels; scales it to the available frame width. Elements uses screen-width and screen-height.'),
     apiRow('scroll', 'boolean', 'true', 'Allows screen HTML to scroll. An iframe owns its own scrolling.'),
     apiRow('children', 'Astro slot | ReactNode | child nodes', 'required', 'Provide an Image, titled iframe, or HTML. HTML shares the host viewport; iframe media queries use the screen viewport.')
