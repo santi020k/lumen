@@ -42,6 +42,13 @@ pnpm playground:apple:build
 swift run --package-path apps/playground-apple LumenApplePlayground
 ```
 
+The Mac home screen presents a live editable project preview, catalog metrics, and category cards
+that open the corresponding component filter. Its desktop sidebar includes destination descriptions,
+the adapter version, and author attribution. Theme and appearance pickers stay available in the
+window toolbar. The home composition stacks in narrower windows; the iPhone and iPad home screen
+and deterministic `--component` captures keep their existing layout. The preview is local and
+in-memory: Create confirms the entered project name without creating a persisted project.
+
 For the distributable macOS application, open `LumenApplePlayground.xcodeproj`, select the shared
 `LumenMacPlayground` scheme, and run on **My Mac**. The target reuses the same gallery sources while
 adding the App Sandbox, hardened runtime, application metadata, and complete Mac icon set required

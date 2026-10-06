@@ -655,7 +655,9 @@ and typed cell/column/row examples.
 
 `LumenTree` supports controlled expansion and selection with stable IDs,
 inherited disabled branches and localized status/disclosure labels. Its iterative
-`LumenTreeModel` rejects invalid graphs without changing application state.
+`LumenTreeModel` rejects invalid graphs without changing application state. Controlled expansion
+requires a native Set of string IDs; malformed decoded expansion uses the existing invalid state.
+Malformed tour anchor collections are treated as unavailable targets.
 See the [native Tree contract](../../docs/native-parity/tree.md).
 
 ## QRCode and Cascader

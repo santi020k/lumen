@@ -11,14 +11,11 @@
 ### Patch Changes
 
 - Refine DeviceFrame with MacBook Pro, iMac, and Pixel presets, minimalist matte frames, camera details, side buttons, and simple bases. Reserve hardware space for live HTML and iframe content, and let phone images fill the glass. Refresh the interactive gallery and retain all generic device presets.
-- Updated dependencies []:
-  - @santi020k/lumen@4.0.1
-  - @santi020k/lumen-core@4.0.1
 
 
 - Updated dependencies []:
-  - @santi020k/lumen-core@4.1.0
-  - @santi020k/lumen@4.1.0
+  - @santi020k/lumen-core@4.0.0
+  - @santi020k/lumen@4.0.0
 
 ### Patch Changes
 
@@ -27,8 +24,8 @@
 
 - Respect system reduced motion on overlay backdrops as well as panels. Preserve drawer centering inside Stack and Grid instead of resetting overlay margins. Add drawer and sheet previews alongside the dialog in the motion playground, with keyboard, interrupted-close, layout, and system/local preference coverage.
 - Updated dependencies [[`b5cff90`](https://github.com/santi020k/lumen/commit/b5cff90c682a36b7cc5d51b7f9bc06c34dab2a37), `aca1577`, `647314a`, `71e96d2`, `f112720`, [`6fdb48b`](https://github.com/santi020k/lumen/commit/6fdb48bc21aec3c3c34500d8cb9f5ad1b3b4b566), [`c8d7a4b`](https://github.com/santi020k/lumen/commit/c8d7a4b7a529d6f7a06209103c0ee9790a040ca2)]:
-  - @santi020k/lumen@4.0.1
-  - @santi020k/lumen-core@4.0.1
+  - @santi020k/lumen@4.0.0
+  - @santi020k/lumen-core@4.0.0
 
 - Add DeviceFrame for laptop, desktop, iPhone-style, Android-style, and tablet demonstrations with
   slotted HTML, images, fixed iframe viewports, orientation, shell tones, and configurable screen sizes.
@@ -54,8 +51,8 @@
 ### Patch Changes
 
 - Updated dependencies [`6cfcdf7`, `70519e6`]:
-  - @santi020k/lumen-core@4.1.0
-  - @santi020k/lumen@4.1.0
+  - @santi020k/lumen-core@4.0.0
+  - @santi020k/lumen@4.0.0
 
 - Check keyboard activation cancellation after native event dispatch completes, preserving ancestor handlers and documented Space scroll prevention.
 

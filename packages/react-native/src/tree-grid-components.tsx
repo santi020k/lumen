@@ -80,6 +80,12 @@ const GridRecord = ({ row, model, props }: { row: LumenTreeGridRow
   )
 }
 
+const invalidGridRows = (
+  props: LumenTreeGridProps, model: LumenTreeGridModel, rows: readonly LumenTreeGridRow[]
+): boolean => (
+  !model.valid || props.label.trim().length === 0 || (props.records.length > 0 && rows.length === 0)
+)
+
 const GridContent = (props: LumenTreeGridProps): ReactElement => {
   const model = new LumenTreeGridModel(props.columns, props.records)
 
@@ -87,7 +93,9 @@ const GridContent = (props: LumenTreeGridProps): ReactElement => {
 
   if (props.error != null) return <LumenText accessibilityRole="alert">{props.error}</LumenText>
 
-  if (!model.valid || props.label.trim().length === 0) {
+  const rows = model.visibleRows(props.expandedIds)
+
+  if (invalidGridRows(props, model, rows)) {
     return <LumenText accessibilityRole="alert">{props.invalidLabel ?? 'Invalid tree grid data'}</LumenText>
   }
 
@@ -95,7 +103,7 @@ const GridContent = (props: LumenTreeGridProps): ReactElement => {
 
   return (
     <FlatList
-      data={model.visibleRows(props.expandedIds)}
+      data={rows}
       keyExtractor={row => row.tree.node.id}
       style={{ maxHeight: 480 }}
       renderItem={({ item }) => <GridRecord row={item} model={model} props={props} />}

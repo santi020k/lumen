@@ -2,6 +2,8 @@
 
 ## 4.0.0
 
+- Rebind adopted virtual lists to the destination document and image-comparison resets to the current native form owner, preserving canceled resets.
+
 ### Minor Changes
 
 - Add coordinated keyed motion, optional semantic visual effects, chart continuity, and application-owned AI surfaces across web adapters. Include installable product blocks, an interactive visual playground, and optional Motion and Rive integration entry points.
@@ -11,14 +13,11 @@
 ### Patch Changes
 
 - Refine DeviceFrame with MacBook Pro, iMac, and Pixel presets, minimalist matte frames, camera details, side buttons, and simple bases. Reserve hardware space for live HTML and iframe content, and let phone images fill the glass. Refresh the interactive gallery and retain all generic device presets.
-- Updated dependencies []:
-  - @santi020k/lumen@4.0.1
-  - @santi020k/lumen-core@4.0.1
 
 
 - Updated dependencies []:
-  - @santi020k/lumen-core@4.1.0
-  - @santi020k/lumen@4.1.0
+  - @santi020k/lumen-core@4.0.0
+  - @santi020k/lumen@4.0.0
 
 ### Patch Changes
 
@@ -32,8 +31,8 @@
 
 - Share anchor navigation scroll and resize listeners so client navigation does not retain removed tables of contents.
 - Updated dependencies [[`b5cff90`](https://github.com/santi020k/lumen/commit/b5cff90c682a36b7cc5d51b7f9bc06c34dab2a37), `aca1577`, `647314a`, `71e96d2`, `f112720`, [`6fdb48b`](https://github.com/santi020k/lumen/commit/6fdb48bc21aec3c3c34500d8cb9f5ad1b3b4b566), [`c8d7a4b`](https://github.com/santi020k/lumen/commit/c8d7a4b7a529d6f7a06209103c0ee9790a040ca2)]:
-  - @santi020k/lumen@4.0.1
-  - @santi020k/lumen-core@4.0.1
+  - @santi020k/lumen@4.0.0
+  - @santi020k/lumen-core@4.0.0
 
 - Add DeviceFrame for laptop, desktop, iPhone-style, Android-style, and tablet demonstrations with
   slotted HTML, images, fixed iframe viewports, orientation, shell tones, and configurable screen sizes.
@@ -63,8 +62,8 @@
 ### Patch Changes
 
 - Updated dependencies [`6cfcdf7`, `70519e6`]:
-  - @santi020k/lumen-core@4.1.0
-  - @santi020k/lumen@4.1.0
+  - @santi020k/lumen-core@4.0.0
+  - @santi020k/lumen@4.0.0
 
 - Enter ContextMenu items from container focus with ArrowUp selecting the last item and ArrowDown selecting the first.
 

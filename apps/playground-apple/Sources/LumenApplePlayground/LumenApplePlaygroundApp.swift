@@ -8,8 +8,15 @@ struct LumenApplePlaygroundApp: App {
     var body: some Scene {
         WindowGroup {
             PlaygroundRootView()
+                #if os(macOS)
+                .frame(minWidth: 760, minHeight: 620)
+                #else
                 .frame(minWidth: 420, minHeight: 620)
+                #endif
         }
+        #if os(macOS)
+        .defaultSize(width: 1240, height: 860)
+        #endif
     }
 }
 
@@ -52,8 +59,13 @@ struct ComponentsCatalogView: View {
     private let isDeterministicFilter: Bool
     private let componentNames = PlaygroundCatalog.componentNames
 
-    init(themePreference: Binding<PlaygroundThemePreference>, componentFilter: String? = nil) {
+    init(
+        themePreference: Binding<PlaygroundThemePreference>,
+        componentFilter: String? = nil,
+        initialCategory: PlaygroundComponentCategory = .all
+    ) {
         _themePreference = themePreference
+        _selectedCategory = State(initialValue: componentFilter == nil ? initialCategory : .all)
         _query = State(initialValue: componentFilter ?? "")
         _showAlertDialog = State(initialValue: componentFilter == "Alert dialog")
         _showSheet = State(initialValue: componentFilter == "Sheet")
