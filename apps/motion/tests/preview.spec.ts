@@ -110,7 +110,7 @@ test('all compositions fit their canvases and can seek backwards deterministical
 
     const lightScene = page.locator('.scene').first()
 
-    await expect(lightScene.locator('.desktop-device')).toHaveAttribute('data-device', 'laptop')
+    await expect(lightScene.locator('.desktop-device')).toHaveAttribute('data-device', 'macbook-pro')
 
     for (const time of [2, 3.8, 6.6, 9]) {
       await seek(time)
@@ -146,6 +146,15 @@ test('all compositions fit their canvases and can seek backwards deterministical
     expect(await phone.evaluate(screen => screen.clientHeight)).toBe(844)
 
     expect(await phone.evaluate(screen => screen.scrollHeight <= screen.clientHeight)).toBe(true)
+
+    const contentBounds = await phone.boundingBox()
+    const screenBounds = await device.locator('[data-ui-device-screen]').boundingBox()
+
+    if (!contentBounds || !screenBounds) throw new Error('Phone content and screen must be measurable')
+
+    expect(contentBounds.x).toBeGreaterThanOrEqual(screenBounds.x - 1)
+
+    expect(contentBounds.x + contentBounds.width).toBeLessThanOrEqual(screenBounds.x + screenBounds.width + 1)
 
     const projects = phone.locator('.project')
     const firstY = await projects.nth(0).evaluate(element => element.getBoundingClientRect().y)

@@ -55,7 +55,7 @@ const timeline = transformSync(timelineSource, { loader: 'ts', format: 'iife' })
           <div class="theme-label"><span>{String(index + 1).padStart(2, '0')} / 04</span><strong>{theme.name}</strong></div>
           <div class="composition-stage">
             <div class="viewport">
-              <DeviceFrame device="laptop" class="desktop-device" screenWidth={1100} screenHeight={650} scroll={false}>
+              <DeviceFrame device="macbook-pro" class="desktop-device" screenWidth={1000} screenHeight={650} scroll={false}>
                 <div class="desktop-content">
                   <div class="viewport-bar"><span>Adaptive workspace</span><span>Laptop layout</span></div>
                   <div class="workspace-backdrop">
@@ -71,7 +71,6 @@ const timeline = transformSync(timelineSource, { loader: 'ts', format: 'iife' })
                     <div class="phone-status-icons"><Icon name="wifi" /><Icon name="battery-full" /></div>
                   </div>
                   <Workspace glass={theme.preset === 'glass'} />
-                  <div class="phone-home" aria-hidden="true"></div>
                 </div>
               </DeviceFrame>
             </div>
