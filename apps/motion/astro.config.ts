@@ -7,9 +7,10 @@ export default defineConfig({
   trailingSlash: 'always',
   vite: {
     resolve: {
-      alias: {
-        '@santi020k/lumen-core': fileURLToPath(new URL('../../packages/core/src/index.ts', import.meta.url))
-      }
+      alias: [{
+        find: /^@santi020k\/lumen-core$/,
+        replacement: fileURLToPath(new URL('../../packages/core/src/index.ts', import.meta.url))
+      }]
     }
   }
 })
