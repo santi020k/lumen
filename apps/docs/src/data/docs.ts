@@ -848,6 +848,7 @@ const keyboardInteractionsByComponent: Partial<
   ComboChart: keyboardRows(['Tab', 'Focus the actions disclosure and its native buttons in document order.'], ['Enter, Space', 'Toggle the disclosure or activate the focused datum button. Actions remain available when the data table is hidden.']),
   Heatmap: keyboardRows(['Tab', 'Focus the actions disclosure and its native buttons in document order.'], ['Enter, Space', 'Toggle the disclosure or activate the focused datum button. Actions remain available when the data table is hidden.']),
   RangeChart: keyboardRows(['Tab', 'Focus the actions disclosure and its native buttons in document order.'], ['Enter, Space', 'Toggle the disclosure or activate the focused datum button. Actions remain available when the data table is hidden.']),
+  WorldMap: keyboardRows(['Tab', 'Focus the native country chooser.'], ['Arrow keys', 'Choose a country using the native select.']),
   ImageComparison: keyboardRows(['Arrow keys', 'Adjust the reveal using the native range control; horizontal direction follows writing direction.'], ['Home / End', 'Reveal the full before / after image.']),
   Calendar: keyboardRows(
     [
@@ -1158,6 +1159,7 @@ const runtimeEventsByComponent: Partial<
   Heatmap: runtimeEvents.filter(event => event.name === 'ui:chart-datum-activate'),
   RangeChart: runtimeEvents.filter(event => event.name === 'ui:chart-datum-activate'),
   AttachmentPreview: runtimeEvents.filter(event => event.name === 'ui:attachment-preview-change'),
+  WorldMap: [{ name: 'ui:world-map-select', target: 'WorldMap root', detail: '{ countryId: string, highlighted: boolean, label: string }', when: 'A different country is selected by pointer or native chooser.' }],
   ImageComparison: runtimeEvents.filter(event => event.name === 'ui:image-comparison-change'),
   CopyButton: runtimeEvents.filter(event => event.name.startsWith('ui:copy-')),
   DataTable: runtimeEvents.filter(
@@ -1795,6 +1797,19 @@ const apiReferenceByComponent = {
     apiRow(
       'size', '"default" | "sm" | "lg" | "xl"', '"default"', 'Controls the icon box size.'
     )
+  ],
+  WorldMap: [
+    apiRow('countries', 'readonly LumenWorldMapCountryGeometry[]', 'required', 'Import lumenWorldMapCountries explicitly from @santi020k/lumen-core/world-map-data. Custom geometry uses the fixed 1000 × 400 projection.'),
+    apiRow('label', 'string', 'required', 'Provides the accessible name for the map image.'),
+    apiRow('highlightedCountries', 'readonly string[]', '[]', 'Country codes to highlight; unknown codes and duplicates are dropped. Elements also accepts highlighted-countries as JSON.'),
+    apiRow('variant', '"dotted" | "solid"', '"dotted"', 'Chooses the map appearance.'),
+    apiRow('markers', 'readonly LumenWorldMapMarker[]', '[]', 'Labeled points with id, latitude and longitude. Invalid or off-map points are dropped.'),
+    apiRow('labels / listLabel', 'Record<string, string> / string', 'country names / "Choose a country"', 'Localizes country names and the native chooser. Elements uses labels JSON and list-label.'),
+    apiRow('selectedCountry', 'string', '-', 'Initial selection in Astro, reflected selected-country in Elements, controlled selection in React; React also supports defaultSelectedCountry.'),
+    apiRow('interactive / animated', 'boolean', 'true', 'Enable country selection and motion separately. Reduced motion disables animation automatically.'),
+    apiRow('onCountrySelect', '(detail: LumenWorldMapSelectDetail) => void', '-', 'React callback; Astro and Elements emit ui:world-map-select with countryId, highlighted and label.'),
+    apiRow('heading / description / caption', 'string', '-', 'Optional Astro and React figure content. Elements supports authored content outside the map.'),
+    apiRow('CSS variables', '--ui-world-map-land / --ui-world-map-highlight / --ui-world-map-marker / --ui-world-map-surface', 'semantic tokens', 'Accept any CSS color to customize the map while preserving theme defaults.')
   ],
   ImageComparison: [
     apiRow('label', 'string', 'required', 'Provides the visible label for the native comparison range control.'),
@@ -3778,6 +3793,7 @@ export const componentDocs: ComponentDoc[] = (
       'Styles accessible images while preserving Astro, Next.js, and browser-native optimization.',
       '<Image alt="Lumen UI logo" layout="fixed" src="/logo.svg" />'
     ],
+
     [
       'ImageComparison',
       'Data display',
@@ -4485,6 +4501,12 @@ export const componentDocs: ComponentDoc[] = (
       'Data display',
       'Composes dashboard filtering, active criteria, and result announcements without owning queries.',
       '<FilterBar label="Filters" resultLabel="12 records"><SearchField aria-label="Search records" /></FilterBar>'
+    ],
+    [
+      'WorldMap',
+      'Data display',
+      'Highlights countries and labeled locations on a reusable animated dotted or solid world map.',
+      '<WorldMap countries={lumenWorldMapCountries} label="Sample destinations" highlightedCountries={["CO", "JP"]} />'
     ]
   ] as const satisfies readonly ComponentDocTuple[]
 ).map(([name, category, summary, example]) => ({

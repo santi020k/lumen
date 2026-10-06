@@ -182,7 +182,8 @@
     "VirtualList": "94bc882292a2abe9aeaf25e99d99373c42a2f0f5151e40257f5d1800df5e766a",
     "VisuallyHidden": "ea4ee41c8142ce7b450516f43b6380cf84d3d915186564d6149c8a6ffd40b291",
     "WaterfallChart": "d36a92e0820a913f426749c20bffcc9e2856f1b47f6be4ca2691e6edc562f0c2",
-    "Watermark": "d992ac14611a040fb4a423d60078cfb262b69e394774258f714a3ad8de421b1e"
+    "Watermark": "d992ac14611a040fb4a423d60078cfb262b69e394774258f714a3ad8de421b1e",
+    "WorldMap": "e8fbca27a52f3274410a6258e80aa8e1b1ea58ad66d928f70661d0e89a548aca"
   },
   "schemaVersion": 2,
   "packages": {
@@ -407,6 +408,7 @@
         "VisuallyHidden",
         "WaterfallChart",
         "Watermark",
+        "WorldMap",
         "normalizeAstroActionErrors"
       ],
       "supported": [
@@ -610,6 +612,7 @@
         "VisuallyHidden",
         "WaterfallChart",
         "Watermark",
+        "WorldMap",
         "normalizeAstroActionErrors"
       ],
       "experimental": [],
@@ -687,11 +690,21 @@
         "./virtual-window": {
           "import": "./dist/virtual-window.js",
           "types": "./dist/virtual-window.d.ts"
+        },
+        "./world-map": {
+          "import": "./dist/world-map.js",
+          "types": "./dist/world-map.d.ts"
+        },
+        "./world-map-data": {
+          "import": "./dist/world-map-data.generated.js",
+          "types": "./dist/world-map-data.generated.d.ts"
         }
       },
       "packageJson": "packages/core/package.json",
       "packageName": "@santi020k/lumen-core",
       "symbols": [
+        "LUMEN_WORLD_MAP_LATITUDE_BOUNDS",
+        "LUMEN_WORLD_MAP_VIEW_BOX",
         "LumenActiveFilter",
         "LumenAmountChangeDetail",
         "LumenAmountFieldController",
@@ -881,6 +894,12 @@
         "LumenVirtualWindow",
         "LumenVirtualWindowOptions",
         "LumenWaterfallDatum",
+        "LumenWorldMapCountryGeometry",
+        "LumenWorldMapMarker",
+        "LumenWorldMapPoint",
+        "LumenWorldMapSelectDetail",
+        "LumenWorldMapVariant",
+        "LumenWorldMapViewBox",
         "alignLumenChartSeries",
         "animateLumenPresence",
         "appendLumenChartDatum",
@@ -929,6 +948,7 @@
         "createLumenVirtualCollectionController",
         "createLumenVirtualListController",
         "createLumenWaterfallGeometry",
+        "createLumenWorldMapSelectDetail",
         "createScheduleSlots",
         "createScheduleStorageKey",
         "createThemeBuilderTokens",
@@ -944,6 +964,7 @@
         "exportThemeDesignTokens",
         "exportThemeFigmaVariables",
         "filterDataRecords",
+        "findLumenWorldMapCountry",
         "formatLumenAmountDraft",
         "formatLumenChartSummary",
         "formatLumenImageComparisonValue",
@@ -1061,6 +1082,9 @@
         "normalizeLumenImageComparisonValue",
         "normalizeLumenLocales",
         "normalizeLumenNumericOTP",
+        "normalizeLumenWorldMapCountries",
+        "normalizeLumenWorldMapHighlightedCountries",
+        "normalizeLumenWorldMapMarkers",
         "normalizeThemeBuilderHex",
         "normalizeThemeBuilderHue",
         "observeLumenVirtualWindow",
@@ -1074,6 +1098,7 @@
         "parseScheduleEvents",
         "parseThemeCss",
         "pinDataViewColumn",
+        "projectLumenWorldMapCoordinate",
         "readLumenActiveFilters",
         "readLumenChangeSummaryItems",
         "registerLumenIconPack",
@@ -1091,6 +1116,7 @@
         "resolveLumenGlass",
         "resolveLumenIconName",
         "resolveLumenPhoneNumber",
+        "resolveLumenWorldMapCountryLabel",
         "sanitizeLumenPhoneInput",
         "saveDataViewState",
         "saveScheduleEvents",
@@ -1113,6 +1139,8 @@
         "validateLumenChartSeries"
       ],
       "supported": [
+        "LUMEN_WORLD_MAP_LATITUDE_BOUNDS",
+        "LUMEN_WORLD_MAP_VIEW_BOX",
         "LumenActiveFilter",
         "LumenAmountChangeDetail",
         "LumenAmountFieldController",
@@ -1302,6 +1330,12 @@
         "LumenVirtualWindow",
         "LumenVirtualWindowOptions",
         "LumenWaterfallDatum",
+        "LumenWorldMapCountryGeometry",
+        "LumenWorldMapMarker",
+        "LumenWorldMapPoint",
+        "LumenWorldMapSelectDetail",
+        "LumenWorldMapVariant",
+        "LumenWorldMapViewBox",
         "alignLumenChartSeries",
         "animateLumenPresence",
         "appendLumenChartDatum",
@@ -1350,6 +1384,7 @@
         "createLumenVirtualCollectionController",
         "createLumenVirtualListController",
         "createLumenWaterfallGeometry",
+        "createLumenWorldMapSelectDetail",
         "createScheduleSlots",
         "createScheduleStorageKey",
         "createThemeBuilderTokens",
@@ -1365,6 +1400,7 @@
         "exportThemeDesignTokens",
         "exportThemeFigmaVariables",
         "filterDataRecords",
+        "findLumenWorldMapCountry",
         "formatLumenAmountDraft",
         "formatLumenChartSummary",
         "formatLumenImageComparisonValue",
@@ -1482,6 +1518,9 @@
         "normalizeLumenImageComparisonValue",
         "normalizeLumenLocales",
         "normalizeLumenNumericOTP",
+        "normalizeLumenWorldMapCountries",
+        "normalizeLumenWorldMapHighlightedCountries",
+        "normalizeLumenWorldMapMarkers",
         "normalizeThemeBuilderHex",
         "normalizeThemeBuilderHue",
         "observeLumenVirtualWindow",
@@ -1495,6 +1534,7 @@
         "parseScheduleEvents",
         "parseThemeCss",
         "pinDataViewColumn",
+        "projectLumenWorldMapCoordinate",
         "readLumenActiveFilters",
         "readLumenChangeSummaryItems",
         "registerLumenIconPack",
@@ -1512,6 +1552,7 @@
         "resolveLumenGlass",
         "resolveLumenIconName",
         "resolveLumenPhoneNumber",
+        "resolveLumenWorldMapCountryLabel",
         "sanitizeLumenPhoneInput",
         "saveDataViewState",
         "saveScheduleEvents",
@@ -1575,6 +1616,10 @@
         "./components/virtual-list": {
           "import": "./dist/components/virtual-list.js",
           "types": "./dist/components/virtual-list.d.ts"
+        },
+        "./components/world-map": {
+          "import": "./dist/components/world-map.js",
+          "types": "./dist/components/world-map.d.ts"
         },
         "./define": {
           "import": "./dist/define.js",
@@ -1779,6 +1824,7 @@
         "LumenVisuallyHiddenElement",
         "LumenWaterfallChartElement",
         "LumenWatermarkElement",
+        "LumenWorldMapElement",
         "ToastAction",
         "ToastApi",
         "ToastDetail",
@@ -1990,6 +2036,7 @@
         "LumenVisuallyHiddenElement",
         "LumenWaterfallChartElement",
         "LumenWatermarkElement",
+        "LumenWorldMapElement",
         "ToastAction",
         "ToastApi",
         "ToastDetail",
@@ -2059,7 +2106,8 @@
         "./release-manifest.json": "./release-manifest.json",
         "./styles.css": "./styles.css",
         "./styles/critical.css": "./styles/critical.css",
-        "./styles/motion.css": "./styles/motion.css"
+        "./styles/motion.css": "./styles/motion.css",
+        "./styles/world-map.css": "./styles/world-map.css"
       },
       "packageJson": "packages/lumen/package.json",
       "packageName": "@santi020k/lumen",
@@ -2658,6 +2706,10 @@
           "import": "./dist/virtual-list.js",
           "types": "./dist/virtual-list.d.ts"
         },
+        "./components/world-map": {
+          "import": "./dist/world-map.js",
+          "types": "./dist/world-map.d.ts"
+        },
         "./forms": {
           "import": "./dist/form-workflow.js",
           "types": "./dist/form-workflow.d.ts"
@@ -3166,6 +3218,8 @@
         "WaterfallChartProps",
         "Watermark",
         "WatermarkProps",
+        "WorldMap",
+        "WorldMapProps",
         "isLumenFormControl",
         "lumenComponentNames",
         "useCalendar",
@@ -3677,6 +3731,8 @@
         "WaterfallChartProps",
         "Watermark",
         "WatermarkProps",
+        "WorldMap",
+        "WorldMapProps",
         "isLumenFormControl",
         "lumenComponentNames",
         "useCalendar",

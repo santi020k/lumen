@@ -1,7 +1,21 @@
 # Third-Party Notices
 
-`@santi020k/lumen-core` uses libphonenumber-js and the Lucide icon library. The following notices
-are reproduced from their licenses.
+`@santi020k/lumen-core` uses libphonenumber-js, the Lucide icon library, and Natural Earth map data.
+The following notices are reproduced from their licenses.
+
+## Natural Earth
+
+The `@santi020k/lumen-core/world-map-data` country geometry is generated from
+[Natural Earth](https://www.naturalearthdata.com/) 1:50m Cultural Vectors, Admin 0 Countries.
+
+Per Natural Earth's [terms of use](https://www.naturalearthdata.com/about/terms-of-use/):
+
+Natural Earth map data is public domain and may be modified and redistributed without permission
+or required attribution.
+
+See [`maps/README.md`](../../maps/README.md) for the exact source release, checksum, retrieval
+date, projection, and precision notes, and `scripts/import-natural-earth-world-map.mjs` for the
+reproducible import step.
 
 ## libphonenumber-js
 

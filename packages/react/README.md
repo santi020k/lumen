@@ -991,3 +991,11 @@ rules, requests, draft storage, and authorization. Do not combine validation own
 normalize to zero; non-finite or larger counts throw `RangeError` before allocating panel state.
 Context-menu item activation and keyboard focus follow the menu's owning document, including iframe
 portals. Date-range synchronization clamps an earlier end date before updating both input constraints.
+
+## World map
+
+WorldMap supports highlighted countries, location markers, dotted or solid styles, country selection,
+and theme customization. Import geography explicitly from
+`@santi020k/lumen-core/world-map-data`; it is excluded from root exports. See the
+[WorldMap usage guide](../../docs/world-map.md) for adapter examples, events, localization,
+accessibility, and customization.

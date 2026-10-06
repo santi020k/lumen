@@ -6737,6 +6737,22 @@
       "pathname": "/docs/components/watermark",
       "title": "Watermark - Lumen UI"
     },
+    "/docs/components/world-map": {
+      "alt": "WorldMap — Web components social preview from Lumen UI",
+      "description": "WorldMap: Highlights countries and labeled locations on a reusable animated dotted or solid world map. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--world-map.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--world-map.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/world-map",
+      "title": "WorldMap - Lumen UI"
+    },
     "/docs/figma": {
       "alt": "Figma library — Documentation social preview from Lumen UI",
       "description": "Open the Lumen Figma library and learn how variables, pages, and component variants map back to code.",
@@ -9315,7 +9331,7 @@
     },
     "/": {
       "alt": "Lumen UI — Accessible Components for AI Coding Agents — Lumen UI social preview from Lumen UI",
-      "description": "Build with AI using 183 accessible primitives, agent skills, and focused MCP context. One UI library for web and native apps.",
+      "description": "Build with AI using 184 accessible primitives, agent skills, and focused MCP context. One UI library for web and native apps.",
       "images": [
         {
           "format": "webp",

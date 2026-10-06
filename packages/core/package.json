@@ -79,6 +79,14 @@
     "./virtual-window": {
       "types": "./dist/virtual-window.d.ts",
       "import": "./dist/virtual-window.js"
+    },
+    "./world-map": {
+      "types": "./dist/world-map.d.ts",
+      "import": "./dist/world-map.js"
+    },
+    "./world-map-data": {
+      "types": "./dist/world-map-data.generated.d.ts",
+      "import": "./dist/world-map-data.generated.js"
     }
   },
   "files": [

@@ -398,3 +398,20 @@ export {
 export { createLumenVirtualCollectionController, type LumenVirtualCollectionController, type LumenVirtualCollectionOptions } from './virtual-collection.js'
 export { createLumenVirtualListController, type LumenVirtualListController } from './virtual-list.js'
 export { getLumenVirtualWindow, type LumenVirtualWindow, type LumenVirtualWindowOptions, observeLumenVirtualWindow } from './virtual-window.js'
+export {
+  createLumenWorldMapSelectDetail,
+  findLumenWorldMapCountry,
+  LUMEN_WORLD_MAP_LATITUDE_BOUNDS,
+  LUMEN_WORLD_MAP_VIEW_BOX,
+  type LumenWorldMapCountryGeometry,
+  type LumenWorldMapMarker,
+  type LumenWorldMapPoint,
+  type LumenWorldMapSelectDetail,
+  type LumenWorldMapVariant,
+  type LumenWorldMapViewBox,
+  normalizeLumenWorldMapCountries,
+  normalizeLumenWorldMapHighlightedCountries,
+  normalizeLumenWorldMapMarkers,
+  projectLumenWorldMapCoordinate,
+  resolveLumenWorldMapCountryLabel
+} from './world-map.js'

@@ -1,9 +1,30 @@
 version: "0.2"
 language: en
 words:
+  - Ashmore
+  - Barthélemy
+  - Burkina
+  - Cabo
+  - Caicos
+  - Côte
+  - Faso
+  - Futuna
+  - Kitts
+  - Leste
+  - Maarten
+  - Marino
+  - Rica
+  - Siachen
+  - Sint
+  - Swatini
+  - Tomé
+  - d'Ivoire
+  - Åland
   - gsap
   - hyperframes
   - tanstack
+  - equirectangular
+  - Peucker
   - Desactivar
   - Detalle
   - Monto

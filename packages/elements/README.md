@@ -744,3 +744,11 @@ from an ancestor after that keydown has been consumed. It blocks
 disabled/loading activation, including direct clicks. Blocking flags expose `aria-disabled`;
 removing them restores any prior application-supplied ARIA value. Native nested controls retain
 their own keyboard path.
+
+## World map
+
+WorldMap supports highlighted countries, location markers, dotted or solid styles, country selection,
+and theme customization. Import geography explicitly from
+`@santi020k/lumen-core/world-map-data`; it is excluded from root exports. See the
+[WorldMap usage guide](../../docs/world-map.md) for adapter examples, events, localization,
+accessibility, and customization.

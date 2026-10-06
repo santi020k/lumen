@@ -147,6 +147,10 @@ import {
   LumenVirtualListElement as GranularLumenVirtualListElement,
   lumenVirtualListElementConfig
 } from './components/virtual-list.js'
+import {
+  LumenWorldMapElement as GranularLumenWorldMapElement,
+  lumenWorldMapElementConfig
+} from './components/world-map.js'
 import { bulletChartHtml, bulletNumberAttribute, parseBulletRanges } from './bullet-chart-html.js'
 import { LumenDatumChartElement } from './chart-activation.js'
 import { chartAnnotationHtml, chartAxesHtml, chartCaptionHtml, chartDataTableHtml, chartHeaderHtml, chartInspectionHtml, chartLabelsFor, chartLegendHtml, chartNumberAttribute, escapeChartHtml, heatmapDataTableHtml, intervalChartHtml, parseChartAnnotations, parseHeatmapData, parseHistogramBins, parseRangeData, parseWaterfallData, rangeDataTableHtml, scatterDataTableHtml, scatterPlotHtml } from './chart-html.js'
@@ -720,6 +724,7 @@ const elementConfigs = {
     defaults: { size: 'default' },
     tagName: 'lumen-icon'
   },
+  WorldMap: lumenWorldMapElementConfig,
   ImageComparison: lumenImageComparisonElementConfig,
   ChangeSummary: lumenChangeSummaryElementConfig,
   FilterBar: lumenFilterBarElementConfig,
@@ -11977,6 +11982,7 @@ const granularElementClasses: Partial<
   Direction: GranularLumenDirectionElement,
   Grid: GranularLumenGridElement,
   ScatterChart: LumenScatterChartRegisteredElement,
+  WorldMap: GranularLumenWorldMapElement,
   ImageComparison: GranularLumenImageComparisonElement,
   Label: GranularLumenLabelElement,
   Separator: GranularLumenSeparatorElement,
@@ -12298,3 +12304,5 @@ export const LumenAttachmentListElement = elementClasses.AttachmentList
 export const LumenAttachmentPreviewElement = elementClasses.AttachmentPreview
 export const LumenChangeSummaryElement = GranularLumenChangeSummaryElement
 export const LumenFilterBarElement = GranularLumenFilterBarElement
+
+export const LumenWorldMapElement = elementClasses.WorldMap

@@ -723,3 +723,11 @@ Import `@santi020k/lumen/styles/motion.css` alongside the base stylesheet to opt
 disclosure height transitions and the CSS reduction scope. This small optional stylesheet works
 with Astro, React, and Elements and keeps those effects out of the default stylesheet. The presence
 helper's system and local reduced-motion checks work without this CSS import.
+
+## World map
+
+WorldMap supports highlighted countries, location markers, dotted or solid styles, country selection,
+and theme customization. Import geography explicitly from
+`@santi020k/lumen-core/world-map-data`; it is excluded from root exports. See the
+[WorldMap usage guide](../../docs/world-map.md) for adapter examples, events, localization,
+accessibility, and customization.

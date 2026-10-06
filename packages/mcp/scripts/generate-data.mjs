@@ -575,6 +575,7 @@ const reactExampleOverrides = {
   ErrorState:
     '<ErrorState actions={<><Button size="sm">Try again</Button><ButtonLink href="/docs" variant="secondary">Open help</ButtonLink></>} description="Check your connection and try again." id="projects-error" reference="REQ-4F82" title="Could not load projects" />',
   Image: '<Image alt="Lumen UI logo" invertOnDark src="/logo.svg" />',
+  WorldMap: '<WorldMap countries={lumenWorldMapCountries} label="Sample destinations" highlightedCountries={["CO", "JP"]} />',
   ImageComparison: '<ImageComparison label="Compare the landscape treatment" beforeLabel="Original" afterLabel="Color adjusted" ratio={1.6} defaultValue={50} before={<Image alt="Original landscape illustration" src="/comparison-before.svg" />} after={<Image alt="Color-adjusted landscape illustration" src="/comparison-after.svg" />} />',
   PhoneInput:
     '<PhoneInput name="phone" defaultCountryValue="+1" countries={[{ label: "+1", value: "+1" }, { label: "+44", value: "+44" }]} placeholder="(555) 000-0000" />',
@@ -642,6 +643,7 @@ const elementsExampleOverrides = {
   <div class="ui-filter-bar__active"><lumen-button aria-label="Remove status: Active">Status: Active ×</lumen-button></div>
   <p role="status" aria-live="polite" aria-atomic="true">12 matching records</p>
 </lumen-filter-bar>`,
+  WorldMap: '<lumen-world-map label="Sample destinations" highlighted-countries=\'["CO", "JP"]\'></lumen-world-map>',
   ImageComparison: `<lumen-image-comparison label="Compare the landscape treatment" before-label="Original" after-label="Color adjusted" ratio="1.6" value="50">
   <img slot="before" alt="Original landscape illustration" src="/comparison-before.svg" width="960" height="600" />
   <img slot="after" alt="Color-adjusted landscape illustration" src="/comparison-after.svg" width="960" height="600" />
@@ -771,6 +773,10 @@ const getReactBehavior = (hook, reactSource, runtimeRequired) => {
   }
 }
 
+const worldMapImport = name => name === 'WorldMap' ?
+  '\nimport { lumenWorldMapCountries } from \'@santi020k/lumen-core/world-map-data\'' :
+  ''
+
 const frameworkBehavior = ({ framework, hook, reactSource, runtimeBypass, runtimeRequired }) => {
   if (framework === 'astro') return getAstroBehavior(runtimeRequired, runtimeBypass)
 
@@ -821,6 +827,7 @@ const buildFrameworkDetails = ({
   const astroImports = withFallback(astroExampleNames, name)
   const reactExampleNames = componentNamesFromExample(reactExample)
   const reactImportsList = withFallback(reactExampleNames, name)
+  const geometryImport = worldMapImport(name)
 
   const reactImports = hook ?
     (reactExample.match(/^import .+$/gm)?.join('\n') ??
@@ -836,7 +843,7 @@ const buildFrameworkDetails = ({
         runtimeRequired
       }),
       example: doc.example,
-      importStatement: `import { ${astroImports.join(', ')} } from '@santi020k/lumen-astro'`,
+      importStatement: `import { ${astroImports.join(', ')} } from '@santi020k/lumen-astro'${geometryImport}`,
       language: 'astro',
       packageName: '@santi020k/lumen-astro',
       props: parsedAstro.props,
@@ -870,7 +877,7 @@ const buildFrameworkDetails = ({
         runtimeRequired
       }),
       example: reactExample,
-      importStatement: reactImports,
+      importStatement: reactImports + geometryImport,
       language: 'tsx',
       packageName: '@santi020k/lumen-react',
       props: react.props.props,
@@ -911,6 +918,7 @@ const loadWorkspaceFiles = async p => ({
     await readIfExists(p('packages/elements/src/components/card.ts')),
     await readIfExists(p('packages/elements/src/components/combobox.ts')),
     await readIfExists(p('packages/elements/src/components/image-comparison.ts')),
+    await readIfExists(p('packages/elements/src/components/world-map.ts')),
     await readIfExists(p('packages/elements/src/components/virtual-list.ts')),
     await readIfExists(p('packages/elements/src/components/dashboard.ts'))
   ].join('\n'),
@@ -926,6 +934,7 @@ const loadWorkspaceFiles = async p => ({
     await readIfExists(p('packages/react/src/data-table.tsx')),
     await readIfExists(p('packages/react/src/server-components.tsx')),
     await readIfExists(p('packages/react/src/image-comparison.tsx')),
+    await readIfExists(p('packages/react/src/world-map.tsx')),
     await readIfExists(p('packages/react/src/virtual-list.tsx')),
     await readIfExists(p('packages/react/src/virtual-list-data.tsx')),
     await readIfExists(p('packages/react/src/combobox.tsx')),

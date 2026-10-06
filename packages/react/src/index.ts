@@ -18,6 +18,7 @@ export * from './hooks.js'
 export * from './image-comparison.js'
 export * from './interval-charts.js'
 export { ToastProvider } from './toast-provider.js'
+export * from './world-map.js'
 export {
   type LumenChartDatumActivationDetail,
   type LumenComponentName,
