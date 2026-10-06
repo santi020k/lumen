@@ -3568,11 +3568,11 @@ const initTreeCollections = (scope: ParentNode): void => {
   }
 }
 
-const virtualListControllers = new Map<HTMLElement, { destroy: () => void }>()
+const virtualListControllers = new Map<HTMLElement, { destroy: () => void, ownerDocument: Document }>()
 
 const initVirtualLists = (scope: ParentNode): void => {
   for (const [root, controller] of virtualListControllers) {
-    if (!root.isConnected) {
+    if (!root.isConnected || root.ownerDocument !== controller.ownerDocument) {
       controller.destroy()
 
       virtualListControllers.delete(root)
@@ -3580,7 +3580,9 @@ const initVirtualLists = (scope: ParentNode): void => {
   }
 
   for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-virtual-list]')) {
-    if (!virtualListControllers.has(root)) virtualListControllers.set(root, createLumenVirtualListController(root))
+    if (!virtualListControllers.has(root)) virtualListControllers.set(root, {
+      ...createLumenVirtualListController(root), ownerDocument: root.ownerDocument
+    })
   }
 }
 

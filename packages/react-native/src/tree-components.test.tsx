@@ -134,3 +134,15 @@ test('disabled branches block callbacks, loading and error hide stale controls',
   })
   expect(root.container.queryAll(instance => instance.type === 'Checkbox')).toHaveLength(0)
 })
+
+test('invalid controlled expansion state uses the existing invalid label without navigation', () => {
+  for (const value of [null, undefined, [], {}, new Set([7])]) {
+    const input = { expandedIds: new Set<string>() }
+
+    Object.defineProperty(input, 'expandedIds', { value, enumerable: true })
+    const root = render(<LumenTree label="Files" nodes={nodes} onExpandedChange={vi.fn()} invalidLabel="Invalid expansion" {...input} />)
+
+    expect(root.container.queryAll(instance => instance.type === 'Button')).toHaveLength(0)
+    expect(root.container.queryAll(instance => instance.type === 'Text' && read(instance, 'children') === 'Invalid expansion')).toHaveLength(1)
+  }
+})

@@ -545,7 +545,8 @@ initialization and leaves persistence and theme changes to its owner.
 
 `VirtualList` displays fixed-height rows with inert spacers that retain the full scroll extent.
 Rows stay mounted; use pagination when the initial DOM cost matters. Scrolling, resizing, sizing
-changes and direct row changes refresh the window. Focused rows remain available. See the
+changes and direct row changes refresh the window. Focused rows remain available. After document
+adoption, rerun the standard initializer to rebind the controller to the destination document. See the
 [fixed-height list contract](../../docs/ai-usage.md#fixed-height-virtual-lists).
 
 External rich-text engines should handle the cancelable `ui:editor-command-request` event before
@@ -707,4 +708,6 @@ and outliers. All retain missing values and expose exact data. See the
 [data visualization guide](../../docs/data-visualization.md#calendars-funnels-and-box-plots).
 
 Media controllers for ImageComparison and FileUpload load only when matching components are present.
-Keep mounting `UIPrimitives` once; no additional consumer setup is required.
+Keep mounting `UIPrimitives` once; no additional consumer setup is required. Image comparisons
+follow their current native form owner for reset and honor canceled resets. Reinitialize after
+document adoption to register destination reset delegation without duplicate input listeners.

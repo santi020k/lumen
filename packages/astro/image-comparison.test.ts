@@ -51,3 +51,40 @@ test('keeps explicitly disabled comparisons inert', () => {
   input.dispatchEvent(new Event('input', { bubbles: true }))
   expect(frame.style.getPropertyValue('--ui-image-comparison-position')).toBe('50%')
 })
+
+test('resets the current form after reassignment and adoption, preserving canceled resets', async () => {
+  const { root, input, frame } = fixture()
+  const original = document.createElement('form')
+  const destination = document.createElement('form')
+
+  document.body.append(original, destination)
+  original.append(root)
+  initImageComparisonControllers(document)
+  destination.append(root)
+  input.value = '80'
+  input.dispatchEvent(new Event('input', { bubbles: true }))
+  destination.reset()
+  await Promise.resolve()
+  expect(frame.style.getPropertyValue('--ui-image-comparison-position')).toBe('50%')
+  expect(input.ariaValueText).toContain('50')
+  input.value = '80'
+  input.dispatchEvent(new Event('input', { bubbles: true }))
+  destination.addEventListener('reset', event => {
+    event.preventDefault()
+  }, { once: true })
+  destination.reset()
+  await Promise.resolve()
+  expect(frame.style.getPropertyValue('--ui-image-comparison-position')).toBe('80%')
+  const iframe = document.createElement('iframe')
+
+  document.body.append(iframe)
+  const target = iframe.contentDocument
+
+  if (!target) throw new Error('Missing destination document')
+
+  target.body.append(target.adoptNode(destination))
+  initImageComparisonControllers(target)
+  destination.reset()
+  await Promise.resolve()
+  expect(frame.style.getPropertyValue('--ui-image-comparison-position')).toBe('50%')
+})

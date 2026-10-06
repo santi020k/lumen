@@ -75,8 +75,12 @@ const tourStatus = (props: LumenTourProps, step: LumenTourStep | null): string |
 
 interface TourOrigin { x: number, y: number }
 
+const isAnchorCollection = (value: unknown): value is Readonly<Record<string, LumenTourRect>> => (
+  typeof value === 'object' && value !== null && !Array.isArray(value)
+)
+
 const tourAnchor = (props: LumenTourProps, step: LumenTourStep | null): LumenTourRect | null => {
-  if (!step || !Object.hasOwn(props.anchors, step.targetId)) return null
+  if (!step || !isAnchorCollection(props.anchors) || !Object.hasOwn(props.anchors, step.targetId)) return null
 
   return props.anchors[step.targetId] ?? null
 }
