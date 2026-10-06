@@ -1016,6 +1016,10 @@ export const BarChart = ({
   const categories = getLumenChartCategories(series)
   const alignedSeries = series.map(item => alignLumenChartSeries(item, categories))
 
+  const motionKeys = new Map(alignedSeries.flatMap(item => item.data.map(point => [
+    JSON.stringify([item.id, point.x]), getLumenChartMotionKey(item.id, point)
+  ] as const)))
+
   const geometry = createLumenBarGeometry(alignedSeries, {
     width: 480,
     height: 240,
@@ -1140,6 +1144,7 @@ export const BarChart = ({
             {geometry.marks.map((mark, index) => (
               <rect
                 className={getLumenChartToneClassName(mark.tone)}
+                data-ui-chart-motion-key={motionKeys.get(JSON.stringify([mark.seriesId, mark.category]))}
                 data-ui-chart-datum={datumActions[index]?.serialized}
                 height={mark.height}
                 key={`${mark.seriesId}:${getChartCategoryKey(mark.category)}`}
@@ -1374,10 +1379,13 @@ export const LineChart = ({
                     key={item.id}
                     data-ui-chart-series={item.id}
                   >
-                    {area &&
-                      geometry.areaPaths.map(path => (
-                        <path className="ui-line-chart__area" d={path} key={path} />
-                      ))}
+                    {area && geometry.areaPaths.length > 0 && (
+                      <path
+                        data-ui-chart-motion-key={JSON.stringify(['area', item.id])}
+                        className="ui-line-chart__area"
+                        d={geometry.areaPaths.join(' ')}
+                      />
+                    )}
                     <path
                       data-ui-chart-motion-key={JSON.stringify(['path', item.id])}
                       className="ui-line-chart__line"

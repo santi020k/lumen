@@ -6099,7 +6099,7 @@ class LumenBarChartBehaviorElement extends LumenDataChartBehaviorElement {
         const hit = attributes ? `<rect class="ui-chart__datum-hit"${attributes} x="${mark.x}" y="${mark.y - (orientation === 'vertical' && mark.height === 0 ? 6 : 0)}" width="${Math.max(12, mark.width)}" height="${Math.max(12, mark.height)}"></rect>` : ''
 
         return [
-          `<rect class="ui-chart-tone--${mark.tone}"${attributes} height="${mark.height}"`,
+          `<rect data-ui-chart-motion-key="${escapeChartHtml(getLumenChartMotionKey(mark.seriesId, datum ?? { x: mark.category }))}" class="ui-chart-tone--${mark.tone}"${attributes} height="${mark.height}"`,
           ` rx="4" width="${mark.width}" x="${mark.x}" y="${mark.y}">`,
           `<title>${escapeChartHtml(title)}</title></rect>${hit}`
         ].join('')
@@ -6191,12 +6191,8 @@ class LumenLineChartBehaviorElement extends LumenDataChartBehaviorElement {
 
         const tone = resolveLumenChartTone(item.tone, index)
 
-        const areaPaths = area ?
-          geometry.areaPaths
-            .map(
-              path => `<path class="ui-line-chart__area" d="${path}"></path>`
-            )
-            .join('') :
+        const areaPaths = area && geometry.areaPaths.length > 0 ?
+          `<path data-ui-chart-motion-key="${escapeChartHtml(JSON.stringify(['area', item.id]))}" class="ui-line-chart__area" d="${geometry.areaPaths.join(' ')}"></path>` :
           ''
 
         const points = Number.isFinite(markerStep) ?

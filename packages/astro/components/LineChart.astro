@@ -223,10 +223,13 @@ height={height - 2 * padding}
 data-ui-chart-series={item.id}
 class:list={['ui-line-chart__series', getLumenChartToneClassName(tone)]}
             >
-              {area &&
-                geometry.areaPaths.map(path => (
-                  <path class="ui-line-chart__area" d={path} />
-                ))}
+              {area && geometry.areaPaths.length > 0 && (
+                <path
+                  data-ui-chart-motion-key={JSON.stringify(['area', item.id])}
+                  class="ui-line-chart__area"
+                  d={geometry.areaPaths.join(' ')}
+                />
+              )}
               <path
 data-ui-chart-motion-key={JSON.stringify(['path', item.id])}
 class="ui-line-chart__line"

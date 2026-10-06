@@ -48,7 +48,7 @@ and resets on pointer leave. Forced colors hide decoration while retaining the c
 
 ## Charts
 
-Wrap `LineChart` in `ChartMotion` to animate stable SVG marks during value changes or appended points.
+Wrap `LineChart` (including its filled area) or `BarChart` in `ChartMotion` to animate stable SVG marks during value changes or appended points.
 Series IDs and datum IDs identify marks. When an ID is absent, a typed category key supplies identity;
 explicit IDs are preferable when categories can change. Duplicate keys skip ambiguous animation.
 The SVG transition does not delay tables, summaries, activation payloads, or inspection values.
@@ -60,6 +60,13 @@ concise status message; keep the previous data while refreshing when appropriate
 the chart's existing empty state. Compose loading and ready status messages in a keyed `MotionGroup`
 and set `aria-busy` on the chart region while a request is pending, as the playground demonstrates.
 Destroy manual `bindLumenChartMotion` bindings on view removal.
+
+The playground uses a stable line-chart domain and a 900 ms `--ui-duration` override so changes
+are easy to follow. It includes line, area, and bar examples, live playback, and an immediate
+reduced-motion comparison. Playback pauses while the page is hidden or data is loading and is
+disabled when the system requests reduced motion. Accessible data updates without waiting for
+animation. The effects preview amplifies the aurora locally, exposes cycle timing, and supports
+pause/resume and replay without changing the library's default treatment.
 
 ## AI surfaces
 

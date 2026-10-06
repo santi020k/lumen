@@ -1,8 +1,8 @@
 import type { CSSProperties } from 'react'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
 
 import { type LumenApprovalStatus, type LumenStreamStatus, type LumenVisualEffectVariant, lumenVisualEffectVariants, runLumenViewTransition } from '@santi020k/lumen-core'
-import { ApprovalCard, Badge, Button, Card, ChartMotion, CodeTabs, Collapsible, Field, Label, LineChart, MotionGroup, NumberField, PromptComposer, Select, SourceCitation, Stack, StreamMessage, Tabs, TabsList, TabsPanel, TabsTrigger, ToolActivity, Typography, VisualEffect } from '@santi020k/lumen-react'
+import { ApprovalCard, Badge, BarChart, Button, Card, ChartMotion, CodeTabs, Collapsible, Field, Label, LineChart, MotionGroup, NumberField, PromptComposer, Select, SourceCitation, Stack, StreamMessage, Tabs, TabsList, TabsPanel, TabsTrigger, ToolActivity, Typography, VisualEffect } from '@santi020k/lumen-react'
 
 import { CommandCenterRecipe } from '../../../../packages/lumen/templates/react/command-center/src/lumen/command-center'
 import { FeaturePreviewRecipe } from '../../../../packages/lumen/templates/react/feature-preview/src/lumen/feature-preview'
@@ -35,22 +35,70 @@ const effectCode = (variant: LumenVisualEffectVariant, intensity: number, animat
   }
 ]
 
+const subscribeMotionPreference = (notify: () => void) => {
+  const preference = window.matchMedia('(prefers-reduced-motion: reduce)')
+
+  preference.addEventListener('change', notify)
+
+  return () => {
+    preference.removeEventListener('change', notify)
+  }
+}
+
+const readMotionPreference = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches
+const useReducedMotion = () => useSyncExternalStore(subscribeMotionPreference, readMotionPreference, () => false)
+
 const EffectsWorkbench = () => {
-  const [variant, setVariant] = useState<LumenVisualEffectVariant>('mesh')
-  const [intensity, setIntensity] = useState(0.5)
+  const [variant, setVariant] = useState<LumenVisualEffectVariant>('aurora')
+  const [intensity, setIntensity] = useState(0.8)
   const [animated, setAnimated] = useState(false)
+  const [started, setStarted] = useState(false)
+  const [replay, setReplay] = useState(0)
+  const [speed, setSpeed] = useState(4)
+  const reducedMotion = useReducedMotion()
+
+  const effectStyle: CSSProperties & { '--visual-effect-duration': string, '--visual-effect-play-state': string, '--ui-duration-slow': string } = {
+    '--visual-effect-duration': `${speed}s`,
+    '--visual-effect-play-state': animated ? 'running' : 'paused',
+    '--ui-duration-slow': `${speed}s`
+  }
+
   const canAnimate = variant === 'aurora' || variant === 'draw' || variant === 'depth'
   const animationLabel = animated ? 'Pause animation' : 'Enable animation'
   const staticHint = 'This treatment is static. Adjust its intensity or select aurora, draw, or depth to explore motion.'
 
   const effectHints: Record<LumenVisualEffectVariant, string> = {
     mesh: staticHint,
-    spotlight: staticHint,
+    spotlight: 'Move your pointer across the preview to move the light. Touch and reduced motion keep it static.',
     grain: staticHint,
     border: staticHint,
     depth: 'Enable animation, then scroll to see the depth treatment in browsers that support scroll timelines.',
-    draw: 'Enable animation to draw the path. Pause and enable again to replay it.',
+    draw: 'Enable animation to draw the path. Use Replay effect to draw it again.',
     aurora: 'Enable animation to see the aurora move.'
+  }
+
+  const playbackHint = () => {
+    if (reducedMotion) return 'Your system requests reduced motion. Both previews stay still; pointer tracking is also disabled.'
+
+    if (!canAnimate || !started) return effectHints[variant]
+
+    if (!animated) return 'Motion is paused. Enable to continue, or replay to start again.'
+
+    if (variant === 'depth') return 'Scroll to move the depth effect. The comparison stays still.'
+
+    return `Playing ${variant} · ${speed} second ${variant === 'draw' ? 'drawing. Replay to draw again.' : 'cycle. The comparison stays still.'}`
+  }
+
+  const previewHint = () => {
+    if (!canAnimate) return effectHints[variant]
+
+    if (reducedMotion) return 'Your system preference keeps this preview still.'
+
+    if (animated) return 'Motion is playing. Pause to hold this frame.'
+
+    if (started) return 'Motion is paused. Enable to continue from here.'
+
+    return 'Enable or replay the effect to see it move.'
   }
 
   return (
@@ -60,7 +108,7 @@ const EffectsWorkbench = () => {
           direction="horizontal"
           gap="group"
           wrap
-          className="visual-controls"
+          className="visual-controls visual-effects-controls"
         >
           <Field>
             <Label id="visual-effect-label" htmlFor="visual-effect">Effect</Label>
@@ -76,6 +124,8 @@ const EffectsWorkbench = () => {
                   setVariant(next)
 
                   setAnimated(false)
+
+                  setStarted(false)
                 }
               }}
             />
@@ -95,25 +145,72 @@ const EffectsWorkbench = () => {
               }}
             />
           </Field>
+          <Field>
+            <Label htmlFor="effect-speed">Cycle · seconds</Label>
+            <NumberField
+              id="effect-speed"
+              min={2}
+              max={12}
+              step={1}
+              value={speed}
+              disabled={!canAnimate || variant === 'depth'}
+              onChange={event => {
+                const next = event.currentTarget.valueAsNumber
+
+                if (Number.isFinite(next)) setSpeed(Math.max(2, Math.min(12, next)))
+              }}
+            />
+          </Field>
           <Button
             aria-pressed={animated}
             disabled={!canAnimate}
             onClick={() => {
+              setStarted(true)
+
               setAnimated(!animated)
             }}
             variant="secondary"
           >
             {canAnimate ? animationLabel : 'Static effect'}
           </Button>
+          <Button
+            variant="secondary"
+            disabled={!canAnimate || variant === 'depth'}
+            onClick={() => {
+              setStarted(true)
+
+              setAnimated(true)
+
+              setReplay(current => current + 1)
+            }}
+          >
+            Replay effect
+          </Button>
         </Stack>
       </Card>
-      <Typography><p role="status" className="visual-feedback">{effectHints[variant]}</p></Typography>
+      <Typography>
+        <p
+          role="status"
+          aria-label="Effect playback"
+          className="visual-feedback"
+        >
+          {playbackHint()}
+        </p>
+      </Typography>
       <div className="visual-demo-grid">
         {[false, true].map(reduced => (
-          <VisualEffect key={String(reduced)} data-ui-motion={reduced ? 'reduce' : undefined} variant={variant} intensity={intensity} animated={animated}>
+          <VisualEffect
+            key={`${reduced}-${replay}`}
+            className="visual-effect-preview"
+            style={effectStyle}
+            data-ui-motion={reduced ? 'reduce' : undefined}
+            variant={variant}
+            intensity={intensity}
+            animated={started}
+          >
             <Typography>
               <h3>{reduced ? 'Reduced motion' : 'Your system preference'}</h3>
-              <p>Semantic colors keep the content readable.</p>
+              <p>{reduced ? 'A still comparison of the same treatment.' : previewHint()}</p>
             </Typography>
             {variant === 'draw' && <svg aria-hidden="true" viewBox="0 0 100 40"><path d="M5 30L30 10L55 25L95 5" fill="none" pathLength="1" stroke="currentColor" strokeWidth="2" /></svg>}
           </VisualEffect>
@@ -278,22 +375,73 @@ const MotionWorkbench = () => {
 const ChartWorkbench = () => {
   const [values, setValues] = useState([12, 18, 16, 24])
   const [loading, setLoading] = useState(false)
+  const [playing, setPlaying] = useState(false)
+  const [duration, setDuration] = useState(900)
+  const reducedMotion = useReducedMotion()
+  const style: TimingStyle = { '--ui-duration': `${duration}ms` }
+
+  useEffect(() => {
+    if (!playing || reducedMotion || loading) return
+
+    const update = () => {
+      if (!document.hidden) setValues(current => current.map(value => 52 - value))
+    }
+
+    const timer = window.setInterval(update, duration + 1000)
+
+    return () => {
+      window.clearInterval(timer)
+    }
+  }, [playing, duration, reducedMotion, loading])
+
   const series = [{ id: 'tasks', label: 'Completed tasks', data: values.map((y, x) => ({ id: `day-${x}`, x, y })) }]
 
   return (
     <Stack gap="group">
       <Typography>
         <p>
-          Both charts share a cursor. Values in the data table update immediately;
-          SVG marks move between their stable identities.
+          Lines, filled areas, and bars animate when values change. The still comparison
+          shows the destination immediately. Line charts share an inspection cursor.
         </p>
       </Typography>
       <Card variant="muted" className="visual-control-panel">
-        <Stack direction="horizontal" gap="related" wrap>
+        <Stack
+          direction="horizontal"
+          gap="related"
+          wrap
+          className="visual-controls"
+        >
+          <Field>
+            <Label htmlFor="chart-duration">Transition · milliseconds</Label>
+            <NumberField
+              id="chart-duration"
+              min={0}
+              max={2000}
+              step={100}
+              value={duration}
+              onChange={event => {
+                const next = event.currentTarget.valueAsNumber
+
+                if (Number.isFinite(next)) setDuration(Math.max(0, Math.min(2000, next)))
+              }}
+            />
+          </Field>
+          <Button
+            variant="secondary"
+            aria-pressed={playing}
+            disabled={values.length === 0 || (reducedMotion && !playing)}
+            onClick={() => {
+              if (!playing) setValues(current => current.map(value => 52 - value))
+
+              setPlaying(current => !current)
+            }}
+          >
+            {playing ? 'Pause charts' : 'Play charts'}
+          </Button>
           <Button
             disabled={values.length === 0}
             onClick={() => {
-              setValues(current => current.map((value, index) => value + (index % 2 === 0 ? 3 : -2)))
+              setValues(current => current.map(value => 52 - value))
             }}
           >
             Update values
@@ -301,7 +449,7 @@ const ChartWorkbench = () => {
           <Button
             variant="secondary"
             onClick={() => {
-              setValues(current => [...current, 20 + current.length])
+              setValues(current => [...current, 12 + (current.length * 7) % 34])
             }}
           >
             Append point
@@ -318,6 +466,8 @@ const ChartWorkbench = () => {
             variant="secondary"
             disabled={values.length === 0}
             onClick={() => {
+              setPlaying(false)
+
               setValues([])
             }}
           >
@@ -326,6 +476,8 @@ const ChartWorkbench = () => {
           <Button
             variant="secondary"
             onClick={() => {
+              setPlaying(false)
+
               setValues([12, 18, 16, 24])
 
               setLoading(false)
@@ -346,7 +498,14 @@ const ChartWorkbench = () => {
             {loading ? 'Loading the demonstration data…' : 'Demonstration data ready.'}
           </span>
         </MotionGroup>
-        <div className="visual-demo-grid">{['Progress', 'Compared progress'].map(heading => <ChartMotion key={heading}><LineChart series={series} heading={heading} interactive syncGroup="visual-demo" markers="all" /></ChartMotion>)}</div>
+        <Typography><p className="visual-feedback">{reducedMotion ? 'Your system requests reduced motion. Charts update immediately.' : `Transitions take ${duration} ms. ${playing ? 'Live playback is running.' : 'Update values or play the charts to see movement.'}`}</p></Typography>
+        <div className="visual-demo-grid" style={style}>
+          <ChartMotion><LineChart series={series} domain={{ min: 0, max: 52 }} heading="Progress" caption="Animated line · move the cursor or use arrow keys." interactive syncGroup="visual-demo" markers="all" /></ChartMotion>
+          <ChartMotion data-ui-motion="reduce"><LineChart series={series} domain={{ min: 0, max: 52 }} heading="Compared progress" caption="Reduced motion · the same values update immediately." interactive syncGroup="visual-demo" markers="all" /></ChartMotion>
+          <ChartMotion><LineChart series={series} domain={{ min: 0, max: 52 }} area heading="Area growth" caption="The filled area and line move together." interactive syncGroup="visual-demo" markers="all" /></ChartMotion>
+          <ChartMotion><BarChart series={series} heading="Task distribution" caption="Bars resize smoothly as the values change." /></ChartMotion>
+        </div>
+        <CodeTabs ariaLabel="Chart animation usage" items={[{ value: 'react', label: 'React', language: 'tsx', code: `import type { CSSProperties } from 'react'\nimport { ChartMotion, LineChart, BarChart } from '@santi020k/lumen-react'\n\nconst timing: CSSProperties & { '--ui-duration': string } = { '--ui-duration': '${duration}ms' }\n\n<ChartMotion style={timing}>\n  <LineChart series={series} markers="all" />\n</ChartMotion>\n<ChartMotion style={timing}>\n  <BarChart series={series} />\n</ChartMotion>` }]} />
       </div>
     </Stack>
   )
@@ -450,7 +609,7 @@ export const VisualInteractionsDemo = () => (
         <Badge variant="outline">03 · Data</Badge>
         <Typography>
           <h2 id="chart-workbench">Live chart continuity</h2>
-          <p>Update values without losing your place. Both charts share an inspection cursor.</p>
+          <p>Play line, area, and bar transitions. Compare an animated update with a still preview.</p>
         </Typography>
       </header>
       <ChartWorkbench />
