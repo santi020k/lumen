@@ -12,18 +12,34 @@ export interface LumenBreadcrumbProps extends Omit<ViewProps, 'children'> {
   disabled?: boolean
 }
 
+const isRecord = (value: unknown): value is Record<string, unknown> => (
+  typeof value === 'object' && value !== null && !Array.isArray(value)
+)
+
+const validBreadcrumbItem = (item: unknown): item is LumenBreadcrumbItem => {
+  if (!isRecord(item) || typeof item.id !== 'string' || !item.id.trim() || typeof item.label !== 'string') return false
+
+  return item.disabled === undefined || typeof item.disabled === 'boolean'
+}
+
+const validBreadcrumbItems = (value: unknown): value is readonly LumenBreadcrumbItem[] => {
+  if (!Array.isArray(value)) return false
+
+  const ids = new Set<string>()
+
+  for (const item of value as readonly unknown[]) {
+    if (!validBreadcrumbItem(item) || ids.has(item.id)) return false
+
+    ids.add(item.id)
+  }
+
+  return true
+}
+
 export const LumenBreadcrumb = ({ label, items, onNavigate, currentLabel = 'Current',
   disabled = false, style, ...props }: LumenBreadcrumbProps): ReactElement => {
   const theme = useLumenTheme()
-  const ids = new Set<string>()
-
-  const valid = items.every(item => {
-    if (!item.id.trim() || ids.has(item.id)) return false
-
-    ids.add(item.id)
-
-    return true
-  })
+  const valid = validBreadcrumbItems(items)
 
   return (
     <View {...props} accessibilityLabel={label} style={style}>

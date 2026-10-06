@@ -200,6 +200,17 @@ const ColorPreview = ({ color, value, label }: { color: LumenRGBA | null, value:
   )
 }
 
+const isSwatchRecord = (value: unknown): value is Record<string, unknown> => (
+  typeof value === 'object' && value !== null && !Array.isArray(value)
+)
+
+const isColorSwatch = (value: unknown): value is LumenColorSwatch => {
+  if (!isSwatchRecord(value) || typeof value.id !== 'string' ||
+    typeof value.label !== 'string' || typeof value.value !== 'string') return false
+
+  return value.disabled === undefined || typeof value.disabled === 'boolean'
+}
+
 const ColorPalette = ({ options, value, enabled, allowAlpha, label, select }: {
   options: readonly LumenColorSwatch[]
   value: string | null
@@ -211,8 +222,11 @@ const ColorPalette = ({ options, value, enabled, allowAlpha, label, select }: {
   const theme = useLumenTheme()
   const usedIds = new Set<string>()
   const usedColors = new Set<string>()
+  const candidates: readonly unknown[] = Array.isArray(options) ? options : []
 
-  const swatches = options.flatMap(option => {
+  const swatches = candidates.flatMap(option => {
+    if (!isColorSwatch(option)) return []
+
     const canonical = describeColor(option.value, allowAlpha).source
 
     if (!canonical || !option.id.trim() || !option.label.trim() ||

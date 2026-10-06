@@ -2,6 +2,8 @@
 
 ## 4.0.0
 
+- Preserve calendar day focus during observed attribute updates after document adoption.
+
 - Refresh file summaries only for accepted resets from the current input form owner.
 
 - Ignore file drops while a fieldset disables the upload control, preserving the first-legend exception.
