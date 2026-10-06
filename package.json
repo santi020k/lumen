@@ -29,6 +29,7 @@
     "check:publish-dry-run": "node scripts/check-publish-dry-run.mjs",
     "test:published-package-family": "node --test scripts/check-published-package-family.test.mjs",
     "check:security": "pnpm run test:security-patches && node scripts/check-security.mjs",
+    "check:docs-performance": "node scripts/check-docs-performance.mjs",
     "check:bundle-size": "node --test scripts/check-bundle-size.test.mjs && node scripts/check-bundle-size.mjs",
     "check:web-api-baseline": "node scripts/check-web-api-baseline.mjs",
     "test:web-api-baseline": "node --test scripts/check-web-api-baseline.test.mjs",

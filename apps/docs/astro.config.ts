@@ -3,15 +3,12 @@ import { fileURLToPath } from 'node:url'
 import { satteri } from '@astrojs/markdown-satteri'
 import sitemap from '@astrojs/sitemap'
 import tailwindcss from '@tailwindcss/vite'
-import { defineConfig, passthroughImageService } from 'astro/config'
+import { defineConfig } from 'astro/config'
 
 import { migrationMarkdownLinks } from './src/lib/migration-markdown'
 
 export default defineConfig({
   markdown: { processor: satteri({ mdastPlugins: [migrationMarkdownLinks] }) },
-  image: {
-    service: passthroughImageService()
-  },
   integrations: [sitemap({
     filter: page => {
       const { pathname } = new URL(page)
@@ -25,6 +22,7 @@ export default defineConfig({
   site: process.env.PUBLIC_SITE_URL ?? 'https://lumen.santi020k.com',
   trailingSlash: 'never',
   vite: {
+    build: { assetsInlineLimit: 8192 },
     resolve: {
       alias: [
         {

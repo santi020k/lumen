@@ -288,6 +288,9 @@ const useCases: readonly UseCase[] = featuredProjects.flatMap(name => {
               alt="Lumen Playground on Android, showing the component catalog in dark mode"
               radius="none"
               src={androidPlaygroundPreview}
+              widths={[320, 640]}
+              sizes="(max-width: 760px) 160px, 220px"
+              format="webp"
             />
           </div>
           <div class="home-playgrounds__phone home-playgrounds__phone--apple">
@@ -295,6 +298,9 @@ const useCases: readonly UseCase[] = featuredProjects.flatMap(name => {
               alt="Lumen Playground on iPhone, showing an interactive release form in light mode"
               radius="none"
               src={applePlaygroundPreview}
+              widths={[320, 640]}
+              sizes="(max-width: 760px) 160px, 220px"
+              format="webp"
             />
           </div>
           <Badge class="home-playgrounds__caption" variant="secondary">
