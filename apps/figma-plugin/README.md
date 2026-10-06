@@ -4,6 +4,10 @@
 instances from the canonical Lumen Figma library, produces an Astro component starter, and exports
 a structured handoff for an existing coding agent. Generated output requires review.
 
+Exports target `@santi020k/lumen-astro` v4. The handoff records the exact version used to build the
+plugin; check it against the receiving project's installed version before using the starter.
+The plugin is distributed through Figma, not npm, and has its own beta version.
+
 The beta runs locally with no network access, API keys, accounts, telemetry, or inference charges.
 It does not call an AI model itself. The user chooses whether to share the exported handoff with
 their coding agent. That handoff contains the selected design's visible text and component data.
@@ -127,21 +131,66 @@ requires the desktop app. No supported unattended Community publishing API or CL
 GitHub Actions automates candidate preparation; submitting and updating the listing is the remaining
 manual boundary. A successful workflow does not establish Figma host compatibility or publication.
 
+### Prepare before Lumen v4 launches
+
+Keep this guide, the [public Figma page](../docs/src/pages/docs/figma.astro), and the
+[Figma integration notes](../../docs/figma.md) labeled as a development beta until public installation
+has been verified. The Figma Community design-library URL is not a plugin installation URL.
+
 1. Create the development plugin in Figma desktop using the intended Community publisher account.
    Enable two-factor authentication and retain the plugin ID assigned by Figma. Add that ID to the
    source `manifest.json` through the normal reviewed release branch; do not invent an ID or edit
    only the generated manifest. See [Figma's manifest reference](https://developers.figma.com/docs/plugins/manifest/).
-2. Download the candidate from the approved `main` commit, verify its checksum, and extract it.
-   Import its `manifest.json` in Figma desktop. Confirm the full revision, version, registered ID,
-   and `dirty: false` in `release.json`.
-3. Verify real Lumen selections, empty/multiple selections, selection changes, clipboard, and
-   downloads in Figma. The browser tests do not replace this host check.
-4. In **Plugins → Manage plugins**, publish **Lumen for Figma · Beta**. Prepare an icon, thumbnail,
+2. Build the development plugin with [Build and try](#build-and-try). Verify each of the six
+   supported components using real instances from the canonical library. Also check empty/multiple
+   selections, detached instances, unsupported layers, selection changes, clipboard, and downloads.
+   Record the source revision, Figma desktop version, results, and any unresolved findings in the
+   release PR. Browser tests do not replace this host check.
+3. Review the [listing copy, images, and data practices](community/LISTING.md). Resolve any host
+   failures in the release branch before submission; do not claim that these checks passed merely
+   because the listing materials or ZIP are prepared.
+
+### Submit after Lumen v4 launches
+
+Lumen v4 packages and documentation ship first. Figma's initial review is a separate publication
+step and does not block the Lumen release. Before submitting the plugin:
+
+- Verify the stable v4 [GitHub release](https://github.com/santi020k/lumen/releases), successful
+  release workflow, and installed package smoke checks from [Publishing](../../CONTRIBUTING.md#publishing).
+  Local version numbers or a successful plugin candidate build are not public-release evidence.
+- Confirm the exported target version is available from the official npm registry, then open
+  <https://lumen.santi020k.com/docs/figma> and the linked Astro setup and component documentation.
+  Do not submit while the generated starter depends on unpublished packages or unavailable docs.
+- Download the plugin candidate from the approved, merged `main` commit. Verify its ZIP checksum
+  against the adjacent `.sha256` file, extract it, and confirm the source revision, beta version,
+  registered plugin ID, and `dirty: false` in `release.json`.
+- Import that exact candidate's `manifest.json` in Figma desktop and repeat the host checks above.
+  Preserve the candidate ZIP, checksum, Actions run URL, and results with the publication record.
+
+1. In **Plugins → Manage plugins**, publish **Lumen for Figma · Beta**. Prepare an icon, thumbnail,
    description, and support link. Use the existing [Lumen support page](https://lumen.santi020k.com/support).
    Describe the six supported components, Astro starter, and AI handoff accurately: the beta does
    not run an AI model or send design data to a server. Retain the Beta label in the listing and docs.
-5. Submit for Figma's initial review. After approval, verify the public install/run flow and record
-   the listing URL in this guide and the docs page. Until then, keep the development-only status.
+2. Submit for Figma's initial review. Record the submission date and status in the release PR.
+   An **In review** badge is not approval or proof that users can install the plugin. Keep the
+   development-only status until public installation has been verified.
+
+### Complete publication after approval
+
+- Install the approved plugin from its public Community listing and run it on a real Lumen
+  selection. Verify the Astro starter and AI handoff with the published v4 package, including
+  stylesheet/runtime setup, labels, tab navigation, and dialog focus and Escape behavior.
+- Record the real Community plugin URL, approved beta version, source revision, Actions run,
+  checksum, and installation/export results in the release PR. Keep unresolved checks explicit.
+- Make the small documentation follow-up through the normal reviewed GitHub deployment flow:
+  update this guide and [Figma integration notes](../../docs/figma.md) with the verified plugin URL;
+  add an install action and Community installation instructions to the
+  [public Figma page](../docs/src/pages/docs/figma.astro). Retain the development-build instructions
+  for contributors, the Beta label, supported-component limits, and the separate design-library link.
+- Check the deployed docs link opens the plugin listing and the support link works. Do not use a
+  placeholder plugin URL or describe the beta as a complete design-to-code converter.
+
+### Updates and recovery
 
 For subsequent updates, increment this app's version, describe changes in the reviewed release PR,
 and repeat the automated candidate and desktop publishing steps. Preserve the approved ZIP and

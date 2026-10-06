@@ -93,12 +93,13 @@ at submission time rather than treating this as a completed or approved disclosu
 
 ## Remaining publication steps
 
-- Register the classic plugin and commit its Figma-assigned ID.
-- Test real component instances, error states, selection changes, clipboard, and downloads in Figma
-  desktop. This was deferred while an editable Figma file was unavailable.
-- Confirm account prerequisites, including two-factor authentication, in Figma's publishing flow.
-- After v4 is public and verified, use the candidate from the approved merged commit, paste this
-  listing copy, attach the images, and submit for review.
-- After approval, verify public installation and execution, then add the real listing URL to the docs.
+Follow the [publication checklist](../README.md#figma-community-publication) in order. The checklist
+covers registration and real Figma testing before launch, the public v4 package/documentation gate,
+submission of the approved candidate, and verification and documentation updates after approval.
+
+The current materials do not establish a registered plugin ID, completed host verification, a
+submitted review, or an approved Community listing. Record those outcomes with the exact candidate
+revision and checksum in the release PR as they happen. Figma review does not block the Lumen v4
+package release; keep the plugin's development-beta status until public installation is verified.
 
 Figma's requirements are documented in its [classic plugin publication guide](https://help.figma.com/hc/en-us/articles/360042293394-Publish-classic-plugins-to-the-Figma-Community).
