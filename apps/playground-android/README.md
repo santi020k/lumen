@@ -171,6 +171,12 @@ adb exec-out screencap -p > adaptive-navigation-scaffold.png
 ```
 
 Add `--ez darkTheme true` to the activity launch command for a deterministic dark appearance.
+
+Production delivery uses the **Release Android playground beta** GitHub workflow from merged
+`main`. It verifies the approved Lumen source before loading signing credentials from Infisical;
+dispatches from other branches are skipped. Local signed builds are development preflight only.
+Google Play review submission remains an explicit Play Console step after the automated upload.
+
 Public Google Play copy, the data-safety declaration, feature graphic, icon, and phone screenshot
 candidates live in `Store`; regenerate raster assets from the shared Lumen mark with
 `scripts/generate-app-icons.sh`. Follow

@@ -24,6 +24,7 @@ permissions:
 
 jobs:
   closed-beta:
+    if: github.ref == 'refs/heads/main'
     name: Build and publish closed beta
     runs-on: ubuntu-24.04
     timeout-minutes: 45
@@ -33,6 +34,15 @@ jobs:
     steps:
       - name: Check out source
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: 22.x
+
+      - name: Require approved merged release source
+        run: node scripts/check-approved-release-revision.mjs
 
       - name: Fetch Android release secrets from Infisical
         uses: Infisical/secrets-action@d2e351f16c6ca20d17c85e6c992e04bdeb64e87d # v1.0.18

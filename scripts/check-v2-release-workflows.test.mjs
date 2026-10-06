@@ -306,6 +306,19 @@ test("the combined Swift gate checks both API baselines from disposable consumer
   assert.doesNotMatch(xcodeCloudChecks, /pnpm run check:swift-api-baseline/u);
 });
 
+test("Android signing requires approved main before fetching production credentials", () => {
+  assert.ok(playgroundAndroidWorkflow.includes("if: github.ref == 'refs/heads/main'"));
+
+  assert.ok(playgroundAndroidWorkflow.includes("fetch-depth: 0"));
+
+  assert.ok(playgroundAndroidWorkflow.includes("node-version: 22.x"));
+
+  const approval = playgroundAndroidWorkflow.indexOf("node scripts/check-approved-release-revision.mjs");
+  const credentials = playgroundAndroidWorkflow.indexOf("name: Fetch Android release secrets from Infisical");
+
+  assert.ok(approval >= 0 && credentials > approval, "validate approved source before injecting signing credentials");
+});
+
 test("Android uploads leave review submission explicit in Play Console", () => {
   assert.match(
     playgroundAndroidWorkflow,
