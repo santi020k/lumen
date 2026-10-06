@@ -91,3 +91,91 @@ test('opens and restores an anonymous trigger when randomUUID is unavailable', (
   dialog.querySelector('button')?.click()
   expect(document.activeElement).toBe(trigger)
 })
+
+test.each(['dialog', 'alert-dialog', 'drawer', 'sheet'])('%s respects canceled trigger activation', kind => {
+  const { dialog, trigger } = fixture(kind)
+  const showModal = vi.spyOn(dialog, 'showModal')
+  trigger.addEventListener('click', event => {
+    event.preventDefault()
+  })
+  initDialogControllers(document)
+  trigger.click()
+  expect(dialog.open).toBe(false)
+  expect(showModal).not.toHaveBeenCalled()
+})
+
+test.each(['dialog', 'alert-dialog', 'drawer', 'sheet'])('%s respects aria-disabled trigger activation', kind => {
+  const { dialog, trigger } = fixture(kind)
+  const showModal = vi.spyOn(dialog, 'showModal')
+  trigger.setAttribute('aria-disabled', 'true')
+  initDialogControllers(document)
+  trigger.click()
+  expect(dialog.open).toBe(false)
+  expect(showModal).not.toHaveBeenCalled()
+  trigger.removeAttribute('aria-disabled')
+  trigger.click()
+  expect(dialog.open).toBe(true)
+})
+
+test.each([false, true])('dialog trigger respects a disabled fieldset and first legend=%s', legend => {
+  const { dialog, trigger } = fixture()
+  const fieldset = document.createElement('fieldset')
+  const firstLegend = document.createElement('legend')
+  fieldset.disabled = true
+  fieldset.append(firstLegend)
+  document.body.append(fieldset)
+  if (legend) firstLegend.append(trigger)
+  else fieldset.append(trigger)
+  initDialogControllers(document)
+  trigger.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
+  expect(dialog.open).toBe(legend)
+})
+
+test.each(['dialog', 'alert-dialog', 'drawer', 'sheet'])('%s respects canceled close activation', kind => {
+  const { dialog, trigger } = fixture(kind)
+  const closeButton = dialog.querySelector('button')
+  if (!closeButton) throw new Error('Expected close button')
+  closeButton.addEventListener('click', event => {
+    event.preventDefault()
+  })
+  initDialogControllers(document)
+  trigger.click()
+  closeButton.click()
+  expect(dialog.open).toBe(true)
+})
+
+test.each(['dialog', 'alert-dialog', 'drawer', 'sheet'])('%s respects disabled close activation', kind => {
+  const { dialog, trigger } = fixture(kind)
+  const closeButton = dialog.querySelector('button')
+  if (!closeButton) throw new Error('Expected close button')
+  closeButton.setAttribute('aria-disabled', 'true')
+  initDialogControllers(document)
+  trigger.click()
+  closeButton.click()
+  expect(dialog.open).toBe(true)
+  closeButton.removeAttribute('aria-disabled')
+  closeButton.click()
+  expect(dialog.open).toBe(false)
+})
+
+test('repeated activation preserves the original dialog opener', () => {
+  const { dialog, trigger } = fixture()
+  const secondTrigger = document.createElement('button')
+  secondTrigger.dataset.uiDialogTrigger = dialog.id
+  document.body.append(secondTrigger)
+  initDialogControllers(document)
+  trigger.click()
+  secondTrigger.click()
+  dialog.querySelector('button')?.click()
+  expect(document.activeElement).toBe(trigger)
+})
+
+test('preserves the mode of an already open dialog', () => {
+  const { dialog, trigger } = fixture()
+  const showModal = vi.spyOn(dialog, 'showModal')
+  dialog.open = true
+  initDialogControllers(document)
+  trigger.click()
+  expect(showModal).not.toHaveBeenCalled()
+  expect(dialog.open).toBe(true)
+})

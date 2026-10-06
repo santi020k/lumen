@@ -641,6 +641,30 @@ These custom hosts provide ARIA semantics; they are not native `dl`, `dt`, or `d
 For native definition-list markup, place a complete native `dl` with `div`, `dt`,
 and `dd` children inside `lumen-descriptions` instead of nesting custom hosts inside the `dl`.
 
+### Stepper progress
+
+`lumen-stepper` is a generic element: it applies the shared `ui-stepper` presentation class and
+`ui-stepper--vertical` for `orientation="vertical"`, but owns no step generation or current-step
+behavior. Provide the complete step markup as light-DOM children:
+
+```html
+<lumen-stepper role="list" aria-label="Setup steps">
+  <div class="ui-stepper__step" data-state="complete" role="listitem">
+    <span class="ui-stepper__marker">1</span>
+    <span class="ui-stepper__content"><span class="ui-stepper__title">Account</span></span>
+  </div>
+  <div aria-current="step" class="ui-stepper__step" data-state="current" role="listitem">
+    <span class="ui-stepper__marker">2</span>
+    <span class="ui-stepper__content"><span class="ui-stepper__title">Workspace</span></span>
+  </div>
+</lumen-stepper>
+```
+
+Each step is a native `div` with `role="listitem"`, `class="ui-stepper__step"`, and
+`data-state="complete" | "current" | "upcoming"`. Give the current step `aria-current="step"`. Each
+step holds a `ui-stepper__marker` span and a `ui-stepper__content` span containing a
+`ui-stepper__title` span and an optional `ui-stepper__description` span.
+
 ## Attachment composition
 
 Use `AttachmentList` to group native `li` children and `AttachmentPreview` for browser-owned images

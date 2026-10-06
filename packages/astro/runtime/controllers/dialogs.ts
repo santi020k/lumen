@@ -64,7 +64,9 @@ export const initDialogControllers = (scope: ParentNode): void => {
 
     trigger.setAttribute('aria-haspopup', 'dialog')
 
-    trigger.addEventListener('click', () => {
+    trigger.addEventListener('click', event => {
+      if (event.defaultPrevented || trigger.matches(':disabled, [aria-disabled="true"]')) return
+
       const targetId =
         trigger.dataset.uiDialogTrigger ??
         trigger.dataset.uiAlertDialogTrigger ??
@@ -75,11 +77,11 @@ export const initDialogControllers = (scope: ParentNode): void => {
 
       const dialog = document.getElementById(targetId)
 
-      if (!(dialog instanceof HTMLDialogElement)) return
-
-      dialogTriggers.set(dialog, trigger)
+      if (!(dialog instanceof HTMLDialogElement) || dialog.open) return
 
       dialog.showModal()
+
+      if (dialog.hasAttribute('open')) dialogTriggers.set(dialog, trigger)
     })
   }
 
