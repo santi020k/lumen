@@ -9,7 +9,8 @@
   "sideEffects": [
     "./layers.css",
     "./styles.css",
-    "./styles/critical.css"
+    "./styles/critical.css",
+    "./styles/motion.css"
   ],
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -28,7 +29,8 @@
     "./styles.css": "./styles.css",
     "./styles/critical.css": "./styles/critical.css",
     "./layers.css": "./layers.css",
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./styles/motion.css": "./styles/motion.css"
   },
   "files": [
     "bin",

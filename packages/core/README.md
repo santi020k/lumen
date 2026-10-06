@@ -400,3 +400,60 @@ stages, precomputed quartiles, missing values, and domain rules.
 
 `isLumenTimeSelection` narrows unknown decoded values to valid same-day wall-clock selections.
 `isLumenTimeInBounds` returns false for malformed selections and preserves explicit bounds validation.
+
+## Presence motion
+
+`animateLumenPresence(element, options)` animates a mounted DOM reference using the browser's Web
+Animations API. It is also exported from `@santi020k/lumen`. No animation dependency is required.
+
+```ts
+import { animateLumenPresence } from '@santi020k/lumen-core'
+
+const controller = new AbortController()
+await animateLumenPresence(element, {
+  duration: 'standard',
+  preset: 'slide-up',
+  signal: controller.signal
+})
+
+// Before exiting, move focus out of the item and prevent further interaction.
+element.inert = true
+const result = await animateLumenPresence(element, {
+  phase: 'exit',
+  preset: 'fade',
+  signal: controller.signal
+})
+if (result !== 'cancelled') element.remove()
+else element.inert = false
+```
+
+Presets are `fade`, `slide-up`, and `scale`. Durations are `fast`, `standard`, and `slow`; the helper
+reads the matching `--ui-duration-fast`, `--ui-duration`, or `--ui-duration-slow` and
+`--ui-ease-emphasized` CSS tokens, with shared-token fallbacks. Existing transforms and opacity are
+preserved. Use a wrapper when another animation already owns those properties.
+
+The promise resolves to `finished`, `cancelled`, or `skipped`. Reduced motion, zero duration,
+detached elements, and missing browser animation support skip the effect. Abort on unmount or when
+an operation becomes stale. A new presence request cancels the previous one on the same element.
+System reduced-motion changes cancel a running effect and resolve it as `skipped`. DOM removal,
+framework state, focus restoration, inertness, and announcements belong to the consumer; an exit
+animation does not hide or remove the element itself. Unexpected animation failures reject the
+promise and should use the application's error handling.
+
+Use `data-ui-motion="reduce"` on a container to skip new presence requests and, with the optional
+stylesheet, disable descendant CSS motion. Abort existing requests when changing this local preference. An application must never
+override the user's system reduced-motion preference to force animations.
+
+Import `@santi020k/lumen/styles/motion.css` alongside the base stylesheet to opt into native
+disclosure height transitions and the CSS reduction scope. This small optional stylesheet works
+with Astro, React, and Elements and keeps those effects out of the default stylesheet. The presence
+helper's system and local reduced-motion checks work without this CSS import.
+
+When using Tailwind, import Lumen's layer order before either stylesheet:
+
+```css
+@import "@santi020k/lumen/layers.css";
+@import "tailwindcss";
+@import "@santi020k/lumen/styles.css";
+@import "@santi020k/lumen/styles/motion.css";
+```

@@ -1,0 +1,350 @@
+---
+import '@santi020k/lumen/layers.css'
+import '@santi020k/lumen/styles/motion.css'
+
+import {
+  Alert, Badge, Button, Card, CodeTabs, Collapsible, Dialog, Field,
+  Grid, Item, Label, Link, NativeSelect, Spinner, Stack
+} from '@santi020k/lumen-astro'
+
+import DocsPageHero from '../../components/DocsPageHero.astro'
+import DocsLayout from '../../layouts/DocsLayout.astro'
+
+const examples = [{
+  value: 'presence',
+label: 'Enter / exit',
+language: 'typescript',
+  code: `import { animateLumenPresence } from '@santi020k/lumen-core'
+
+// Mount with your framework first, then animate its DOM ref.
+await animateLumenPresence(element, { preset: 'slide-up' })
+
+// Move focus out before disabling interaction and exiting.
+element.inert = true
+const result = await animateLumenPresence(element, { phase: 'exit' })
+if (result !== 'cancelled') element.remove()
+else element.inert = false`
+}, {
+  value: 'astro',
+label: 'Astro entrances',
+language: 'astro',
+  code: `<ScrollReveal animation="slide-up" duration="slow">
+  <Card>A single entrance</Card>
+</ScrollReveal>
+
+<RevealGroup stagger={80}>
+  <Card>Plan</Card>
+  <Card>Build</Card>
+  <Card>Ship</Card>
+</RevealGroup>`
+}]
+---
+
+<DocsLayout title="Motion playground - Lumen UI" description="Explore Lumen motion presets, native disclosures, dialog transitions, feedback, and list changes with reduced-motion support.">
+  <Stack gap="xl" data-motion-playground>
+    <DocsPageHero
+      eyebrow="Motion playground"
+      title="Make a change easier to follow."
+      description="Try real component transitions. Keep motion brief, purposeful, and optional. All examples use local browser animation with no external service."
+    />
+
+    <Card variant="muted">
+      <Grid minItemWidth="12rem" gap="lg">
+        <Field>
+          <Label for="motion-preset">Presence preset</Label>
+          <NativeSelect
+id="motion-preset"
+options={[
+            { value: 'fade', label: 'Fade' },
+            { value: 'slide-up', label: 'Slide up' },
+            { value: 'scale', label: 'Scale' }
+          ]}
+          />
+        </Field>
+        <Field>
+          <Label for="motion-duration">Duration</Label>
+          <NativeSelect
+id="motion-duration"
+options={[
+            { value: 'standard', label: 'Standard · 160 ms' },
+            { value: 'fast', label: 'Fast · 120 ms' },
+            { value: 'slow', label: 'Slow · 300 ms' }
+          ]}
+          />
+        </Field>
+        <Field>
+          <Label for="motion-preference">Motion preference</Label>
+          <NativeSelect
+id="motion-preference"
+options={[
+            { value: 'system', label: 'Follow system' },
+            { value: 'reduce', label: 'Reduce motion' }
+          ]}
+          />
+        </Field>
+      </Grid>
+      <p data-motion-preference-status role="status">System preference is respected automatically.</p>
+    </Card>
+
+    <Grid minItemWidth="24rem" gap="lg">
+      <Card>
+        <Stack gap="lg">
+          <div><Badge>Presence</Badge><h2>Introduce a component</h2></div>
+          <Card variant="muted" data-motion-sample>
+            <strong>A clear next step</strong>
+            <p>Fade or move a component into place without changing its meaning.</p>
+          </Card>
+          <Button data-motion-replay>Replay entrance</Button>
+        </Stack>
+      </Card>
+      <Card>
+        <Stack gap="lg">
+          <div><Badge>Disclosure</Badge><h2>Expand the details</h2></div>
+          <Collapsible>
+            <summary>What happens in older browsers?</summary>
+            <p>The content opens immediately. Supporting browsers smoothly animate its natural height. Native keyboard and screen-reader behavior stay intact.</p>
+          </Collapsible>
+          <p>Use the same transition with Accordion. No extra runtime is needed.</p>
+        </Stack>
+      </Card>
+      <Card>
+        <Stack gap="lg">
+          <div><Badge>Overlay</Badge><h2>Open a focused task</h2></div>
+          <p>Existing dialog transitions share Lumen timing and easing. Escape closes the dialog and returns focus to its trigger.</p>
+          <Button data-ui-dialog-trigger="motion-dialog">Open dialog</Button>
+          <Dialog id="motion-dialog" aria-labelledby="motion-dialog-title">
+            <h2 id="motion-dialog-title">Review the transition</h2>
+            <p>The dialog owns its focus and keyboard behavior; CSS owns the visual transition.</p>
+            <Button data-ui-dialog-close>Close dialog</Button>
+          </Dialog>
+        </Stack>
+      </Card>
+      <Card>
+        <Stack gap="lg">
+          <div><Badge>Feedback</Badge><h2>Loading to success</h2></div>
+          <p>This is a simulated save. No data is sent.</p>
+          <Stack direction="horizontal" gap="sm" align="center">
+            <Spinner hidden data-motion-spinner aria-hidden="true" />
+            <p role="status" data-motion-feedback>Ready to preview.</p>
+          </Stack>
+          <Alert variant="success" hidden data-motion-success>Changes saved in this demonstration.</Alert>
+          <Button data-motion-save>Simulate save</Button>
+        </Stack>
+      </Card>
+    </Grid>
+
+    <Card>
+      <Stack gap="lg">
+        <div><Badge>Collection</Badge><h2>Follow an item entering or leaving</h2></div>
+        <p>Insertion and removal are optional. The application owns the list and moves focus before an item exits.</p>
+        <Stack direction="horizontal" gap="sm" wrap>
+          <Button data-motion-add>Add item</Button>
+          <Button variant="outline" data-motion-remove>Remove last item</Button>
+        </Stack>
+        <Stack role="list" gap="sm" data-motion-list aria-label="Example items">
+          <Item role="listitem">Example item 1</Item>
+        </Stack>
+        <p role="status" data-motion-list-status>1 example item.</p>
+        <template data-motion-item-template><Item role="listitem"><span data-motion-item-label></span></Item></template>
+      </Stack>
+    </Card>
+
+    <section>
+      <h2>Use the shared foundation</h2>
+      <p>Presence animates a mounted DOM reference in Astro, React, or Web Components. Keep it on a wrapper when a component already owns its transform or animation. Abort stale requests on unmount; cancelled exits must not remove a newly reopened item.</p>
+      <CodeTabs ariaLabel="Motion examples" items={examples} />
+      <p><Link href="/docs/components/scroll-reveal">ScrollReveal</Link> · <Link href="/docs/components/reveal-group">RevealGroup</Link> · <Link href="/docs/components/animated-number">AnimatedNumber</Link></p>
+    </section>
+  </Stack>
+</DocsLayout>
+
+<script>
+  import type { LumenMotionDuration, LumenMotionPreset } from '@santi020k/lumen-core'
+import { animateLumenPresence, lumenDurations } from '@santi020k/lumen-core'
+
+  const initialized = new WeakSet<HTMLElement>()
+
+  const initializePlayground = () => {
+  const root = document.querySelector<HTMLElement>('[data-motion-playground]')
+
+  if (root && !initialized.has(root)) {
+    initialized.add(root)
+
+    const presetControl = root.querySelector<HTMLSelectElement>('#motion-preset')
+    const durationControl = root.querySelector<HTMLSelectElement>('#motion-duration')
+    const preferenceControl = root.querySelector<HTMLSelectElement>('#motion-preference')
+    const preferenceStatus = root.querySelector<HTMLElement>('[data-motion-preference-status]')
+    const sample = root.querySelector<HTMLElement>('[data-motion-sample]')
+    const saveButton = root.querySelector<HTMLButtonElement>('[data-motion-save]')
+    const feedback = root.querySelector<HTMLElement>('[data-motion-feedback]')
+    const spinner = root.querySelector<HTMLElement>('[data-motion-spinner]')
+    const success = root.querySelector<HTMLElement>('[data-motion-success]')
+    const list = root.querySelector<HTMLElement>('[data-motion-list]')
+    const listStatus = root.querySelector<HTMLElement>('[data-motion-list-status]')
+    const template = root.querySelector<HTMLTemplateElement>('[data-motion-item-template]')
+    const addButton = root.querySelector<HTMLButtonElement>('[data-motion-add]')
+    const removeButton = root.querySelector<HTMLButtonElement>('[data-motion-remove]')
+    let controller = new AbortController()
+    let sequence = 1
+    let removing = false
+    const preference = window.matchMedia('(prefers-reduced-motion: reduce)')
+
+    const options = () => {
+      let preset: LumenMotionPreset = 'fade'
+
+      if (presetControl?.value === 'scale') preset = 'scale'
+
+      if (presetControl?.value === 'slide-up') preset = 'slide-up'
+
+      let duration: LumenMotionDuration = 'standard'
+
+      if (durationControl?.value === 'fast') duration = 'fast'
+
+      if (durationControl?.value === 'slow') duration = 'slow'
+
+      return { duration, preset, signal: controller.signal }
+    }
+
+    const updatePreference = () => {
+      controller.abort()
+
+      controller = new AbortController()
+
+      const reduced = preferenceControl?.value === 'reduce' || preference.matches
+
+      root.dataset.uiMotion = reduced ? 'reduce' : 'system'
+
+      const timing = `${lumenDurations[options().duration]}ms`
+
+      root.style.setProperty('--ui-duration', timing)
+
+      root.style.setProperty('--ui-duration-slow', timing)
+
+      if (preferenceStatus) preferenceStatus.textContent = reduced ?
+        'Reduced motion: transitions are immediate.' :
+'Motion follows your system preference.'
+    }
+
+    const updateList = () => {
+      const count = list?.children.length ?? 0
+
+      if (listStatus) listStatus.textContent = `${count} example ${count === 1 ? 'item' : 'items'}.`
+
+      if (removeButton) removeButton.disabled = count === 0 || removing
+    }
+
+    const showError = (_error: unknown) => {
+      if (preferenceStatus) preferenceStatus.textContent = 'Animation could not play. Content remains available.'
+    }
+
+    root.querySelector('[data-motion-replay]')?.addEventListener('click', () => {
+      if (sample) void animateLumenPresence(sample, options()).catch(showError)
+    })
+
+    saveButton?.addEventListener('click', async () => {
+      if (!feedback || !spinner || !success || saveButton.getAttribute('aria-busy') === 'true') return
+
+      saveButton.setAttribute('aria-disabled', 'true')
+
+      saveButton.setAttribute('aria-busy', 'true')
+
+      success.hidden = true
+
+      spinner.hidden = false
+
+      feedback.textContent = 'Saving demonstration…'
+
+      await new Promise<void>(resolve => window.setTimeout(resolve, 700))
+
+      spinner.hidden = true
+
+      feedback.textContent = 'Demonstration saved.'
+
+      success.hidden = false
+
+      try {
+ await animateLumenPresence(success, options())
+} catch (error: unknown) {
+ showError(error)
+}
+
+      saveButton.removeAttribute('aria-disabled')
+
+      saveButton.removeAttribute('aria-busy')
+    })
+
+    addButton?.addEventListener('click', () => {
+      if (!list || !template) return
+
+      const fragment = template.content.cloneNode(true)
+
+      if (!(fragment instanceof DocumentFragment)) return
+
+      const item = fragment.querySelector<HTMLElement>('[role="listitem"]')
+      const label = fragment.querySelector('[data-motion-item-label]')
+
+      if (!item || !label) return
+
+      label.textContent = `Example item ${++sequence}`
+
+      list.append(fragment)
+
+      updateList()
+
+      void animateLumenPresence(item, options()).catch(showError)
+    })
+
+    removeButton?.addEventListener('click', async () => {
+      const item = list?.lastElementChild
+
+      if (!(item instanceof HTMLElement) || removing) return
+
+      // Focus must leave exiting content before animation; this demo has no item actions.
+      addButton?.focus()
+
+      removing = true
+
+      updateList()
+
+      try {
+        const result = await animateLumenPresence(item, { ...options(), phase: 'exit' })
+
+        if (result !== 'cancelled') item.remove()
+      } catch (error: unknown) {
+ showError(error)
+}
+
+      removing = false
+
+      updateList()
+    })
+
+    preferenceControl?.addEventListener('change', updatePreference)
+
+    durationControl?.addEventListener('change', updatePreference)
+
+    preference.addEventListener('change', updatePreference)
+
+    document.addEventListener('astro:before-swap', () => {
+      controller.abort()
+
+      preference.removeEventListener('change', updatePreference)
+    }, { once: true })
+
+    updatePreference()
+
+    updateList()
+  }
+  }
+
+  initializePlayground()
+
+  document.addEventListener('astro:page-load', initializePlayground)
+</script>
+
+<style>
+  [data-motion-playground] { max-width: 70rem; margin-inline: auto; }
+  h2 { font-size: 1.25rem; line-height: 1.4; }
+  p { color: hsl(var(--ink-soft)); }
+  [data-motion-list] { list-style: none; padding: 0; margin: 0; }
+</style>

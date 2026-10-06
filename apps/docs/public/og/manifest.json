@@ -7345,6 +7345,22 @@
       "pathname": "/docs/migrations/v3-to-v4",
       "title": "Lumen 3 to Lumen 4 migration - Lumen UI"
     },
+    "/docs/motion-playground": {
+      "alt": "Motion playground — Documentation social preview from Lumen UI",
+      "description": "Explore Lumen motion presets, native disclosures, dialog transitions, feedback, and list changes with reduced-motion support.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--motion-playground.webp",
+          "primary": true,
+          "url": "/og/pages/docs--motion-playground.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/motion-playground",
+      "title": "Motion playground - Lumen UI"
+    },
     "/docs/react-native/ai": {
       "alt": "React Native Build with AI — React Native social preview from Lumen UI",
       "description": "Give your coding agent platform-specific prompts, package context, and accessibility requirements. Learn how with Lumen for React Native.",

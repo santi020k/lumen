@@ -237,6 +237,7 @@ export {
   normalizeLumenLocales
 } from './language.js'
 export { createLumenMessageScrollerController, type LumenMessageScrollerController, type LumenMessageScrollerOptions, type LumenMessageScrollState } from './message-scroller.js'
+export { animateLumenPresence, type LumenMotionDuration, type LumenMotionPreset, type LumenMotionResult, type LumenPresenceOptions } from './motion.js'
 export {
   isLumenDecimalInBounds,
   isLumenTimeInBounds,

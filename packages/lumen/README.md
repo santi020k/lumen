@@ -301,3 +301,16 @@ routes and action handlers. See the [header recipe guide](../../docs/consumer-ui
 The `auth-onboarding` recipe includes visual email-code sign-in, code verification, and passkey
 recovery examples for Astro, React, and Elements. Controls stay disabled until the consumer connects
 its authentication service. See the [login and Auth integration reference](https://lumen.santi020k.com/templates/auth-onboarding#login-examples-title).
+
+## Presence motion
+
+`animateLumenPresence` is available from the umbrella package or `@santi020k/lumen-core` for
+optional browser-based enter/exit effects. See the [core motion contract](../core/README.md#presence-motion)
+for presets, semantic timing, cancellation, reduced motion, and consumer-owned DOM/focus behavior.
+The optional motion stylesheet progressively enhances native disclosures with natural-height transitions;
+unsupported browsers keep native immediate toggles.
+
+Import `@santi020k/lumen/styles/motion.css` alongside the base stylesheet to opt into native
+disclosure height transitions and the CSS reduction scope. This small optional stylesheet works
+with Astro, React, and Elements and keeps those effects out of the default stylesheet. The presence
+helper's system and local reduced-motion checks work without this CSS import.

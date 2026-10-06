@@ -763,7 +763,8 @@ const docsPlatformPrefixes: readonly (readonly [string, DocsPlatformId])[] = [
   ['/docs/forms', 'web'],
   ['/docs/icons', 'web'],
   ['/docs/brand-icons', 'web'],
-  ['/docs/theme-playground', 'web']
+  ['/docs/theme-playground', 'web'],
+  ['/docs/motion-playground', 'web']
 ]
 
 export const getDocsPlatform = (pathname: string): DocsPlatformId | undefined => docsPlatformPrefixes.find(

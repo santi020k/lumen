@@ -4,6 +4,8 @@ import { gzipSync } from 'node:zlib'
 // V4 budgets cover the measured combined surface; see docs/lumen-4-readiness.md.
 // New chart helper entries have independent limits to keep extraction measurable.
 const allBudgets = [
+  { file: 'packages/core/dist/motion.js', gzip: 1_500, packageName: '@santi020k/lumen-core', raw: 4_500 },
+  { file: 'packages/lumen/styles/motion.css', gzip: 650, packageName: '@santi020k/lumen', raw: 2_500 },
   { file: 'packages/elements/dist/consumer-behaviors.js', gzip: 1_000, packageName: '@santi020k/lumen-elements', raw: 3_000 },
   { file: 'packages/core/dist/chart-activation.js', gzip: 1_300, packageName: '@santi020k/lumen-core', raw: 4_500 },
   { file: 'packages/react/dist/chart-recipes.js', gzip: 700, packageName: '@santi020k/lumen-react', raw: 1_800 },

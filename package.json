@@ -180,7 +180,8 @@
     "test:security-patches": "node --test scripts/security-patches.test.mjs",
     "measure:selective-imports": "pnpm --filter @santi020k/lumen-react run measure:selective-imports",
     "test:figma-plugin": "playwright test -c playwright.figma.config.ts",
-    "ci:preflight": "pnpm run lint:repo && node --test scripts/classify-workflow-paths.test.mjs scripts/workflow-scope.test.mjs scripts/check-v2-release-workflows.test.mjs && pnpm run check:security"
+    "ci:preflight": "pnpm run lint:repo && node --test scripts/classify-workflow-paths.test.mjs scripts/workflow-scope.test.mjs scripts/check-v2-release-workflows.test.mjs && pnpm run check:security",
+    "test:motion": "playwright test -c playwright.motion.config.ts"
   },
   "devDependencies": {
     "@changesets/changelog-github": "catalog:",

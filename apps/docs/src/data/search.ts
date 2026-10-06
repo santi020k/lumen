@@ -205,6 +205,14 @@ const recipeItems: DocsSearchItem[] = [
     type: 'Recipe'
   },
   {
+    category: 'Motion',
+    description: 'Preview presence presets, disclosure transitions, feedback, and list changes with reduced motion.',
+    href: '/docs/motion-playground',
+    keywords: normalizeKeywords('motion animation presence enter exit fade scale slide reduced disclosure list'),
+    title: 'Motion playground',
+    type: 'Recipe'
+  },
+  {
     category: 'Themes',
     description:
       'Generate theme tokens from a hue, preview Lumen components, and copy CSS.',

@@ -2,6 +2,8 @@
 
 ## 4.0.0
 
+- Add dependency-free presence motion with shared timing, fade/slide/scale presets, abortable enter/exit effects, and reduced-motion support. Smooth native disclosure transitions progressively enhance supporting browsers while retaining immediate native toggles elsewhere. Add a local reduced-motion scope and an interactive motion playground for component entrances, dialogs, feedback, and list changes.
+
 - Refresh file summaries only for accepted resets from the current input form owner.
 
 - Ignore file drops while a fieldset disables the upload control, preserving the first-legend exception.
