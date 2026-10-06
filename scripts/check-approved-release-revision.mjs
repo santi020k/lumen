@@ -225,11 +225,7 @@ assert.deepEqual(
 for (const mirror of migrationMirrors) {
   const exists = spawnSync("git", ["cat-file", "-e", `${reviewedRevision}:${mirror.path}`], { cwd: repository });
 
-  if (exists.status !== 0) {
-    assert.ok(!changedFiles.includes(mirror.path), "Approval cannot introduce a migration mirror absent from review");
-
-    continue;
-  }
+  assert.equal(exists.status, 0, `Required migration mirror is missing from the reviewed revision: ${mirror.path}`);
 
   const reviewed = JSON.parse(runGit(["show", `${reviewedRevision}:${mirror.path}`], "Could not read reviewed migration mirror"));
   const candidate = JSON.parse(runGit(["show", `${candidateRevision}:${mirror.path}`], "Could not read candidate migration mirror"));

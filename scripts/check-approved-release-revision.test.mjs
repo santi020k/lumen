@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
+import { existsSync } from "node:fs";
 import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { resolve } from "node:path";
@@ -90,6 +91,16 @@ const createCandidate = async (major = 2) => {
     writeFile(resolve(directory, "source.txt"), "reviewed source\n"),
   ]);
 
+  if (major === 4) {
+    await mkdir(resolve(directory, 'packages/lumen'), { recursive: true });
+
+    await mkdir(resolve(directory, 'packages/mcp/data'), { recursive: true });
+
+    await writeFile(resolve(directory, 'packages/lumen/v4-migration.json'), JSON.stringify(draft));
+
+    await writeFile(resolve(directory, 'packages/mcp/data/lumen-data.json'), JSON.stringify({ migration: draft, components: ['reviewed component'] }));
+  }
+
   const reviewedRevision = commit(
     directory,
     "test: create reviewed release candidate",
@@ -98,7 +109,7 @@ const createCandidate = async (major = 2) => {
   return { directory, major, reviewedRevision };
 };
 
-const approveCandidate = async (directory, reviewedRevision, major = 2) => {
+const approveCandidate = async (directory, reviewedRevision, major = 2, syncMirrors = true) => {
   const draft = JSON.parse(
     await readFile(
       resolve(directory, "registry", `lumen-${major}-contract.json`),
@@ -121,6 +132,22 @@ const approveCandidate = async (directory, reviewedRevision, major = 2) => {
     status: "approved",
   }, major);
 
+  if (major === 4 && syncMirrors) {
+    const contract = JSON.parse(await readFile(resolve(directory, 'registry/lumen-4-contract.json'), 'utf8'));
+
+    for (const path of ['packages/lumen/v4-migration.json', 'packages/mcp/data/lumen-data.json']) {
+      const target = resolve(directory, path);
+
+      if (!existsSync(target)) continue;
+
+      const data = JSON.parse(await readFile(target, 'utf8'));
+
+      if (path.includes('/mcp/')) data.migration = contract;
+
+      await writeFile(target, JSON.stringify(path.includes('/mcp/') ? data : contract));
+    }
+  }
+
   commit(directory, `chore(release): approve Lumen ${major} candidate`);
 };
 
@@ -138,22 +165,7 @@ const runChecker = (directory, arguments_ = [], major = 2) =>
     directory,
   );
 
-const mirrorCandidate = async () => {
-  const candidate = await createCandidate(4);
-  const contract = JSON.parse(await readFile(resolve(candidate.directory, 'registry/lumen-4-contract.json'), 'utf8'));
-
-  await mkdir(resolve(candidate.directory, 'packages/lumen'), { recursive: true });
-
-  await mkdir(resolve(candidate.directory, 'packages/mcp/data'), { recursive: true });
-
-  await writeFile(resolve(candidate.directory, 'packages/lumen/v4-migration.json'), JSON.stringify(contract));
-
-  await writeFile(resolve(candidate.directory, 'packages/mcp/data/lumen-data.json'), JSON.stringify({ migration: contract, components: ['reviewed component'] }));
-
-  candidate.reviewedRevision = commit(candidate.directory, 'test: review generated migration mirrors');
-
-  return candidate;
-};
+const mirrorCandidate = () => createCandidate(4);
 
 const regenerateApprovalMirrors = async directory => {
   const contract = JSON.parse(await readFile(resolve(directory, 'registry/lumen-4-contract.json'), 'utf8'));
@@ -169,7 +181,7 @@ test('v4 approval permits synchronized generated metadata but rejects unrelated 
   const { directory, reviewedRevision } = await mirrorCandidate();
 
   try {
-    await approveCandidate(directory, reviewedRevision, 4);
+    await approveCandidate(directory, reviewedRevision, 4, false);
 
     const stale = runChecker(directory, [], 4);
 
@@ -203,13 +215,33 @@ test('v4 approval permits synchronized generated metadata but rejects unrelated 
 });
 
 for (const path of ['packages/lumen/v4-migration.json', 'packages/mcp/data/lumen-data.json']) {
+  test(`v4 approval rejects missing required reviewed mirror ${path}`, async () => {
+    const { directory } = await createCandidate(4);
+
+    try {
+      await rm(resolve(directory, path));
+
+      const reviewedRevision = commit(directory, 'test: omit required reviewed migration mirror');
+
+      await approveCandidate(directory, reviewedRevision, 4);
+
+      const missing = runChecker(directory, [], 4);
+
+      assert.notEqual(missing.status, 0);
+
+      assert.match(missing.stderr, /Required migration mirror is missing from the reviewed revision/);
+    } finally {
+      await rm(directory, { force: true, recursive: true });
+    }
+  });
+}
+
+for (const path of ['packages/lumen/v4-migration.json', 'packages/mcp/data/lumen-data.json']) {
   test(`v4 approval rejects altered migration rules in ${path}`, async () => {
     const { directory, reviewedRevision } = await mirrorCandidate();
 
     try {
       await approveCandidate(directory, reviewedRevision, 4);
-
-      await regenerateApprovalMirrors(directory);
 
       const target = resolve(directory, path);
       const data = JSON.parse(await readFile(target, 'utf8'));
