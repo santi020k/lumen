@@ -12,7 +12,13 @@ export default defineConfig({
   image: {
     service: passthroughImageService()
   },
-  integrations: [sitemap({ filter: page => !new URL(page).pathname.startsWith('/internal/') })],
+  integrations: [sitemap({
+    filter: page => {
+      const { pathname } = new URL(page)
+
+      return !pathname.startsWith('/internal/') && pathname !== '/device-frame-demo'
+    }
+  })],
   ...(process.env.LUMEN_DOCS_OUT_DIR ?
     { outDir: process.env.LUMEN_DOCS_OUT_DIR } :
     {}),

@@ -48,10 +48,11 @@ import { Badge, Button, Card, DeviceFrame, Icon, Image, Stack, Typography } from
   .device-demo-caption { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 0.5rem 1rem; }
   .device-demo-caption h3 { margin: 0; font-size: 1.1rem; }
   .device-demo-caption > span { color: hsl(var(--ink-muted)); font-size: 0.8rem; }
-  .device-demo-stage { padding: 2rem 1.5rem; background: hsl(var(--surface-muted) / 0.55); border-radius: 0.75rem; }
+  .device-demo-stage { padding: 2rem 1.5rem; }
   .device-demo-stage--computer { padding: 3rem 1.5rem 2rem; }
-  .device-demo-stage--phone { padding: 2rem 1.2rem; }
-  .device-frame-demo-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem; align-items: start; }
+  .device-demo-stage--phone { display: flex; align-items: flex-end; flex: 1; padding: 2rem 1.2rem; }
+  .device-demo-stage--phone :global(.ui-device-frame) { max-width: 21rem; }
+  .device-frame-demo-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem; align-items: stretch; }
   .device-demo-pixel { position: relative; min-height: 100%; padding: 8% 6% 6%; background: hsl(var(--canvas)); }
   .device-demo-clock { padding-block: 10%; text-align: center; }
   .device-demo-clock > span { display: block; color: hsl(var(--ink)); font-size: clamp(2rem, 18cqi, 5rem); font-weight: 300; letter-spacing: -0.08em; line-height: 1.1; }
