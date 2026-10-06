@@ -104,19 +104,44 @@ test('all compositions fit their canvases and can seek backwards deterministical
 
     expect(overflow).toBe(false)
 
-    const wide = await page.locator('.scene').first().locator('.viewport').boundingBox()
+    const viewport = page.locator('.scene').first().locator('.viewport')
+    const wideWidth = await viewport.evaluate(element => element.getBoundingClientRect().width)
 
     await seek(5)
 
-    const compact = await page.locator('.scene').first().locator('.viewport').boundingBox()
+    const compactWidth = await viewport.evaluate(element => element.getBoundingClientRect().width)
 
-    expect(compact?.width).toBeLessThan(wide?.width ?? 0)
+    expect(compactWidth).toBeLessThan(wideWidth)
 
-    const projects = page.locator('.scene').first().locator('.project')
-    const first = await projects.nth(0).boundingBox()
-    const second = await projects.nth(1).boundingBox()
+    const phone = page.locator('.scene').first().locator('.phone-screen')
 
-    expect(second?.y).toBeGreaterThan(first?.y ?? 0)
+    await expect(phone).toHaveCSS('opacity', '1')
+
+    expect(await phone.evaluate(screen => screen.clientWidth)).toBe(390)
+
+    expect(await phone.evaluate(screen => screen.clientHeight)).toBe(844)
+
+    expect(await phone.evaluate(screen => screen.scrollHeight <= screen.clientHeight)).toBe(true)
+
+    const projects = phone.locator('.project')
+    const firstY = await projects.nth(0).evaluate(element => element.getBoundingClientRect().y)
+    const secondY = await projects.nth(1).evaluate(element => element.getBoundingClientRect().y)
+
+    expect(secondY).toBeGreaterThan(firstY)
+
+    const centerY = await viewport.evaluate(element => {
+      const box = element.getBoundingClientRect()
+
+      return box.y + box.height / 2
+    })
+
+    const stageCenterY = await page.locator('.scene').first().locator('.composition-stage').evaluate(element => {
+      const box = element.getBoundingClientRect()
+
+      return box.y + box.height / 2
+    })
+
+    expect(Math.abs(centerY - stageCenterY)).toBeLessThan(2)
 
     await seek(17)
 
