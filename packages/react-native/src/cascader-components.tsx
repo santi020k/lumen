@@ -27,9 +27,9 @@ export interface LumenCascaderProps extends Omit<ViewProps, 'children'> {
 const defaultDisclosure = (name: string): string => `Open ${name}`
 
 const selectionLabel = (props: LumenCascaderProps, model: LumenCascaderModel): string => {
-  if (props.selectedPath.length === 0) return props.placeholder ?? 'Select…'
-
   if (!model.isPathValid(props.selectedPath)) return props.unknownSelectionLabel ?? 'Unavailable selection'
+
+  if (props.selectedPath.length === 0) return props.placeholder ?? 'Select…'
 
   return props.selectedPath.map(id => model.tree.node(id)?.label ?? id).join(' / ')
 }
@@ -49,7 +49,10 @@ const CascaderOption = ({ node, model, props, browse }: {
     <LumenButton
       disabled={blocked}
       accessibilityLabel={branch ? disclosure(node.label) : node.label}
-      accessibilityState={{ selected: !branch && props.selectedPath.at(-1) === node.id, disabled: blocked }}
+      accessibilityState={{
+        selected: !branch && model.isPathValid(props.selectedPath) && props.selectedPath.at(-1) === node.id,
+        disabled: blocked
+      }}
       onPress={() => {
         if (blocked) return
 

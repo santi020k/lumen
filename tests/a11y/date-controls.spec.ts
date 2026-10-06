@@ -160,3 +160,26 @@ test('Tooltip opens with generated IDs unique in its owning iframe document', as
   })
   expect(result).toEqual({ unique: true, linked: true })
 })
+
+test('Calendar navigates Elements attribute updates after cross-document adoption', async ({ page }) => {
+  await page.goto('/internal/date-controls')
+  await expect(page.locator('lumen-date-picker lumen-calendar')).toHaveAttribute('data-ui-bound', 'true')
+  await page.locator('#elements-form [data-ui-date-picker-trigger]').click()
+  await expect(page.locator('lumen-date-picker lumen-calendar [data-date="2026-07-23"]')).toBeVisible()
+  const result = await page.evaluate(async () => {
+    const root = document.querySelector<HTMLElement>('lumen-date-picker lumen-calendar')
+    if (!root) throw new Error('Missing Elements calendar fixture')
+    const iframe = document.createElement('iframe')
+    document.body.append(iframe)
+    const destination = iframe.contentDocument
+    if (!destination) throw new Error('Missing destination document')
+    destination.body.append(destination.adoptNode(root))
+    const day = root.querySelector<HTMLElement>('[data-date="2026-07-23"]')
+    if (!day) throw new Error('Missing calendar day')
+    day.focus()
+    root.setAttribute('lang', 'en')
+    await new Promise(resolve => setTimeout(resolve, 0))
+    return destination.activeElement?.getAttribute('data-date')
+  })
+  expect(result).toBe('2026-07-23')
+})

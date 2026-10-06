@@ -1,5 +1,13 @@
 import { LumenTreeModel, type LumenTreeNode } from './tree-recipes.js'
 
+const isPath = (value: unknown): value is readonly string[] => {
+  if (!Array.isArray(value)) return false
+
+  for (const id of value as readonly unknown[]) if (typeof id !== 'string') return false
+
+  return true
+}
+
 /** Leaf-only selection over the shared validated tree graph. */
 export class LumenCascaderModel {
   readonly tree: LumenTreeModel
@@ -15,6 +23,8 @@ export class LumenCascaderModel {
   }
 
   isPathValid(path: readonly string[]): boolean {
+    if (!isPath(path)) return false
+
     const last = path.at(-1)
 
     if (!last) return path.length === 0 && this.tree.valid

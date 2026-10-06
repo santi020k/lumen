@@ -3,7 +3,7 @@ import { act, createElement, type ReactElement } from 'react'
 import { createRoot, type Root, type TestInstance } from 'test-renderer'
 import { afterEach, expect, test, vi } from 'vitest'
 
-import { LumenCascader } from './cascader-components.js'
+import { LumenCascader, type LumenCascaderProps } from './cascader-components.js'
 
 Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true })
 vi.mock('react-native', () => ({ View: (props: Record<string, unknown>): ReactElement => createElement('View', props) }))
@@ -87,4 +87,15 @@ test('disabled and status surfaces hide or block controls', () => {
   }
 
   expect(selection).not.toHaveBeenCalled()
+})
+
+test('treats malformed decoded controlled paths as unavailable in every content state', () => {
+  for (const value of [null, {}, [null], [7], Array(1)]) {
+    for (const extra of [{}, { loading: true }, { nodes: [{ id: 'bad', label: 'Bad', parentId: 'missing' }] }]) {
+      const props: LumenCascaderProps = { label: 'Category', nodes, selectedPath: [], onSelectionChange: vi.fn(), ...extra }
+      Object.defineProperty(props, 'selectedPath', { value, enumerable: true })
+      const root = render(<LumenCascader {...props} />)
+      expect(root.container.queryAll(node => node.type === 'Text' && read(node, 'children') === 'Unavailable selection')).toHaveLength(1)
+    }
+  }
 })
