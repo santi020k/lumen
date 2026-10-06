@@ -32,6 +32,7 @@ import {
 
 import {
   alignLumenChartSeries,
+  bindLumenTabIndicator,
   composeClassName,
   createLumenBarGeometry,
   createLumenChartDatumActivation,
@@ -52,6 +53,7 @@ import {
   getLumenChartCategoryLabel,
   getLumenChartCategoryTicks,
   getLumenChartDomain,
+  getLumenChartMotionKey,
   getLumenChartTicks,
   getLumenChartToneClassName,
   getLumenHeatmapColor,
@@ -1376,16 +1378,21 @@ export const LineChart = ({
                       geometry.areaPaths.map(path => (
                         <path className="ui-line-chart__area" d={path} key={path} />
                       ))}
-                    <path className="ui-line-chart__line" d={geometry.path} />
+                    <path
+                      data-ui-chart-motion-key={JSON.stringify(['path', item.id])}
+                      className="ui-line-chart__line"
+                      d={geometry.path}
+                    />
                     {Number.isFinite(markerStep) &&
                       geometry.points.map(
                         (point, pointIndex) => pointIndex % markerStep === 0 && (
                           <circle
                             data-ui-chart-datum={pointActions[index]?.[pointIndex]?.serialized}
+                            data-ui-chart-motion-key={getLumenChartMotionKey(item.id, point)}
                             className="ui-line-chart__point"
                             cx={point.xCoordinate}
                             cy={point.yCoordinate}
-                            key={getChartCategoryKey(point.x)}
+                            key={point.id ?? getChartCategoryKey(point.x)}
                             r="3"
                           >
                             <title>
@@ -5769,6 +5776,7 @@ export interface TabsProps
   extends
   Omit<ComponentPropsWithoutRef<'div'>, 'defaultValue' | 'id' | 'onChange'>,
   Omit<TabsOptions, 'id'> {
+  indicator?: boolean
   glass?: LumenGlassProp
 }
 export const Tabs = ({
@@ -5776,16 +5784,23 @@ export const Tabs = ({
   className,
   defaultValue,
   glass = false,
+  indicator = false,
   onValueChange,
   orientation,
   value,
   ...props
 }: TabsProps) => {
   const tabs = useTabs({ defaultValue, onValueChange, orientation, value })
+  const indicatorRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (indicator && indicatorRef.current) return bindLumenTabIndicator(indicatorRef.current)
+  }, [indicator])
 
   return (
     <TabsContext value={tabs}>
       <div
+        ref={indicatorRef}
         {...tabs.rootProps}
         {...props}
         className={composeClassName(

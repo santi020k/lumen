@@ -1,0 +1,30 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+import type { LumenApprovalStatus } from '@santi020k/lumen-core'
+
+import Button from './Button.astro'
+import Card from './Card.astro'
+import Stack from './Stack.astro'
+
+interface Props extends HTMLAttributes<'div'> {
+  approveLabel?: string
+  disabled?: boolean
+  label: string
+  rejectLabel?: string
+  requestId: string
+  status?: LumenApprovalStatus
+  statusLabel: string
+}
+
+const { approveLabel = 'Approve', class: className, disabled = false, label, rejectLabel = 'Reject', requestId, status = 'pending', statusLabel, ...rest } = Astro.props
+---
+
+<Card {...rest} aria-label={label} class:list={['ui-approval-card', className]} data-disabled={String(disabled)} data-ui-approval-card data-request-id={requestId} data-status={status}>
+  <Stack gap="group"><strong>{label}</strong><slot /><span role="status">{statusLabel}</span>
+    <Stack direction="horizontal" gap="related" wrap>
+      <Button data-ui-approval-response="approve" disabled={disabled || status !== 'pending'} type="button">{approveLabel}</Button>
+      <Button data-ui-approval-response="reject" disabled={disabled || status !== 'pending'} type="button" variant="secondary">{rejectLabel}</Button>
+    </Stack>
+  </Stack>
+</Card>

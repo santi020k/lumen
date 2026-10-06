@@ -724,6 +724,10 @@ and outliers. All retain missing values and expose exact data. See the
 Media controllers for ImageComparison and FileUpload load only when matching components are present.
 Keep mounting `UIPrimitives` once; no additional consumer setup is required.
 
+## Visual interactions and product blocks
+
+See [visual interactions](../../docs/visual-interactions.md) for keyed motion, semantic effects,
+chart continuity, AI surfaces, optional SDK integrations, and the four installable product recipes.
 Import `@santi020k/lumen/styles/motion.css` alongside the base stylesheet to opt into native
 disclosure height transitions and the CSS reduction scope. This small optional stylesheet works
 with Astro, React, and Elements and keeps those effects out of the default stylesheet. The presence

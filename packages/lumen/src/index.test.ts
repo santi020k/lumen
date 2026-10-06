@@ -113,7 +113,11 @@ describe('@santi020k/lumen umbrella package', () => {
       'validated-form',
       'operational-records',
       'ai-docs',
-      'figma-design-to-code'
+      'figma-design-to-code',
+      'interactive-pricing',
+      'feature-preview',
+      'guided-onboarding',
+      'command-center'
     ])
 
     expect(getLumenRegistryItem('scheduler')).toMatchObject({

@@ -1,0 +1,11 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+import { type LumenWorkflowDuration, resolveLumenAstroProps } from '@santi020k/lumen-core'
+
+interface Props extends HTMLAttributes<'div'> { duration?: LumenWorkflowDuration, className?: string }
+
+const { duration = 'standard', class: classProp = '', className = '', ...rest } = Astro.props
+const { classList, passthrough } = resolveLumenAstroProps(rest, [], classProp, className)
+---
+<div class:list={classList} data-ui-chart-motion data-ui-motion-duration={duration} {...passthrough}><slot /></div>

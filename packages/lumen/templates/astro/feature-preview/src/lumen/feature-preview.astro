@@ -1,0 +1,32 @@
+---
+import { Button, Card, MotionGroup, Stack, Typography, VisualEffect } from '@santi020k/lumen-astro'
+---
+
+<section data-product-block="feature" aria-label="Feature preview">
+  <Typography><h2>From idea to delivery</h2></Typography>
+  <Stack direction="horizontal" gap="related" role="group" aria-label="Preview a workflow stage"><Button data-feature="plan" aria-pressed="true">Plan</Button><Button data-feature="review" aria-pressed="false">Review</Button><Button data-feature="ship" aria-pressed="false">Ship</Button></Stack>
+  <MotionGroup><Card data-ui-motion-key="plan" data-feature-panel="plan"><VisualEffect variant="mesh"><Typography><h3>Plan</h3><p>Bring the next three tasks into focus.</p></Typography></VisualEffect></Card><Card hidden data-ui-motion-key="review" data-feature-panel="review"><VisualEffect variant="mesh"><Typography><h3>Review</h3><p>Compare a proposal before deciding.</p></Typography></VisualEffect></Card><Card hidden data-ui-motion-key="ship" data-feature-panel="ship"><VisualEffect variant="mesh"><Typography><h3>Ship</h3><p>Check the release evidence before publishing.</p></Typography></VisualEffect></Card></MotionGroup>
+  <p role="status" data-block-status>Previewing plan.</p>
+</section>
+
+<script>
+  import { mountProductBlocks } from './product-blocks'
+
+  let cleanup: (() => void) | undefined
+
+  const mount = () => {
+ cleanup?.()
+
+ cleanup = mountProductBlocks(document)
+}
+
+  mount()
+
+  document.addEventListener('astro:page-load', mount)
+
+  document.addEventListener('astro:before-swap', () => {
+ cleanup?.()
+
+ cleanup = undefined
+})
+</script>

@@ -26,6 +26,7 @@ catalog:
   "@modelcontextprotocol/server": ^2.2.0
   "@playwright/test": 1.63.0
   "@react-native-community/datetimepicker": 9.1.0
+  "@rive-app/canvas": 2.44.0
   "@santi020k/commitprompt": ^1.1.0
   "@santi020k/eslint-config-astro": ^3.1.4
   "@santi020k/eslint-config-basic": ^3.5.4
@@ -68,6 +69,7 @@ catalog:
   knip: ^6.39.0
   libphonenumber-js: ^1.13.14
   lint-staged: ^17.6.0
+  motion: 14.0.0
   next: ^16.3.8
   oxlint: ^1.86.0
   postcss: 8.5.23

@@ -795,3 +795,7 @@ Register with `defineLumenElements(['DeviceFrame'])` or `defineLumenDeviceFrame(
 `@santi020k/lumen-elements/components/device-frame`. Use `screen-width`, `screen-height`, and
 `scroll="false"` attributes. The element preserves the initial child nodes inside its screen;
 append later content to `.ui-device-frame__screen`.
+## Visual interactions and product blocks
+
+See [visual interactions](../../docs/visual-interactions.md) for keyed motion, semantic effects,
+chart continuity, AI surfaces, optional SDK integrations, and the four installable product recipes.

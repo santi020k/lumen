@@ -914,9 +914,13 @@ const loadWorkspaceFiles = async p => ({
     await readIfExists(p('packages/elements/src/components/device-frame.ts')),
     await readIfExists(p('packages/elements/src/components/image-comparison.ts')),
     await readIfExists(p('packages/elements/src/components/virtual-list.ts')),
-    await readIfExists(p('packages/elements/src/components/dashboard.ts'))
+    await readIfExists(p('packages/elements/src/components/dashboard.ts')),
+    await readIfExists(p('packages/elements/src/components/ai-surfaces.ts')),
+    await readIfExists(p('packages/elements/src/components/visual-interactions.ts'))
   ].join('\n'),
   reactSource: [
+    await readIfExists(p('packages/react/src/ai-surfaces.tsx')),
+    await readIfExists(p('packages/react/src/visual-interactions.tsx')),
     await readIfExists(p('packages/react/src/attachments.tsx')),
     await readIfExists(p('packages/react/src/amount-field.tsx')),
     await readIfExists(p('packages/react/src/components.tsx')),

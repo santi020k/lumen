@@ -205,6 +205,14 @@ const recipeItems: DocsSearchItem[] = [
     type: 'Recipe'
   },
   {
+    category: 'Interaction',
+    type: 'Recipe',
+    href: '/docs/visual-playground',
+    keywords: 'motion animation effects aurora mesh spotlight reduced motion AI prompt streaming approval',
+    title: 'Visual playground',
+    description: 'Explore coordinated motion, visual effects and AI surfaces.'
+  },
+  {
     category: 'Motion',
     description: 'Preview presence presets, disclosure transitions, feedback, and list changes with reduced motion.',
     href: '/docs/motion-playground',

@@ -1,0 +1,36 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+import { canSubmitLumenPrompt, normalizeLumenPromptLimit } from '@santi020k/lumen-core'
+
+import Button from './Button.astro'
+import Form from './Form.astro'
+import Label from './Label.astro'
+import Stack from './Stack.astro'
+import Textarea from './Textarea.astro'
+
+interface Props extends HTMLAttributes<'form'> {
+  disabled?: boolean
+  label?: string
+  maxLength?: number
+  pending?: boolean
+  sendLabel?: string
+  stopLabel?: string
+  submitOnEnter?: boolean
+  value?: string
+}
+
+const { class: className, disabled = false, id = `prompt-${crypto.randomUUID()}`, label = 'Message', maxLength = 4000, pending = false, sendLabel = 'Send', stopLabel = 'Stop', submitOnEnter = false, value = '', ...rest } = Astro.props
+const limit = normalizeLumenPromptLimit(maxLength)
+---
+
+<Form {...rest} class:list={['ui-prompt-composer', className]} data-ui-prompt-composer data-disabled={String(disabled)} data-pending={String(pending)} data-submit-on-enter={String(submitOnEnter)} enhance={false} method="post" status={pending ? 'submitting' : 'idle'}>
+  <Label for={id}>{label}</Label>
+  <Textarea id={id} data-ui-prompt-input disabled={disabled} maxlength={limit} name="prompt" required rows={3}>{value}</Textarea>
+  <Stack direction="horizontal" gap="related" wrap>
+    <slot name="actions" />
+    <Button data-ui-prompt-send disabled={disabled || pending || (!rest.action && !canSubmitLumenPrompt(value, limit))} type="submit">{sendLabel}</Button>
+    <Button data-ui-prompt-stop disabled={disabled} hidden={!pending} type="button" variant="secondary">{stopLabel}</Button>
+  </Stack>
+  <slot />
+</Form>

@@ -1,0 +1,26 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+import type { LumenStreamStatus } from '@santi020k/lumen-core'
+
+import Message from './Message.astro'
+import Prose from './Prose.astro'
+import Stack from './Stack.astro'
+
+interface Props extends HTMLAttributes<'article'> {
+  label?: string
+  status?: LumenStreamStatus
+  statusLabel: string
+}
+
+const { class: className, label = 'Assistant', status = 'idle', statusLabel, ...rest } = Astro.props
+---
+
+<Message {...rest} aria-label={label} class:list={['ui-stream-message', className]} data-status={status} from="assistant">
+  <Prose aria-busy={status === 'streaming'} aria-live="off" data-ui-stream-content><slot /></Prose>
+  <Stack direction="horizontal" gap="related" wrap>
+    <span aria-live="polite" role="status">{statusLabel}</span>
+    <slot name="actions" />
+  </Stack>
+  <slot name="sources" />
+</Message>

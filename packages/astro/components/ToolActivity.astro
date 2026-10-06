@@ -1,0 +1,17 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+import type { LumenToolStatus } from '@santi020k/lumen-core'
+
+import Collapsible from './Collapsible.astro'
+import Stack from './Stack.astro'
+
+interface Props extends HTMLAttributes<'details'> { label: string, status?: LumenToolStatus, statusLabel: string }
+
+const { class: className, label, status = 'queued', statusLabel, ...rest } = Astro.props
+---
+
+<Collapsible {...rest} class:list={['ui-tool-activity', className]} data-status={status}>
+  <summary>{label}</summary>
+  <Stack gap="related"><span role="status">{statusLabel}</span><slot /></Stack>
+</Collapsible>

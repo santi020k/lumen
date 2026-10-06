@@ -3953,6 +3953,22 @@
       "pathname": "/docs/components/animated-portrait",
       "title": "AnimatedPortrait - Lumen UI"
     },
+    "/docs/components/approval-card": {
+      "alt": "ApprovalCard — Web components social preview from Lumen UI",
+      "description": "ApprovalCard: Presents an application-owned proposal and explicit decision controls. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--approval-card.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--approval-card.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/approval-card",
+      "title": "ApprovalCard - Lumen UI"
+    },
     "/docs/components/aspect-ratio": {
       "alt": "AspectRatio — Web components social preview from Lumen UI",
       "description": "AspectRatio: Keeps media and embeds in a predictable ratio. Usage examples for Astro, React, and Elements.",
@@ -4416,6 +4432,22 @@
       ],
       "pathname": "/docs/components/change-summary",
       "title": "ChangeSummary - Lumen UI"
+    },
+    "/docs/components/chart-motion": {
+      "alt": "ChartMotion — Web components social preview from Lumen UI",
+      "description": "ChartMotion: Animates stable SVG marks without delaying accessible chart values. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--chart-motion.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--chart-motion.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/chart-motion",
+      "title": "ChartMotion - Lumen UI"
     },
     "/docs/components/chart": {
       "alt": "Chart — Web components social preview from Lumen UI",
@@ -5617,6 +5649,22 @@
       "pathname": "/docs/components/meter",
       "title": "Meter - Lumen UI"
     },
+    "/docs/components/motion-group": {
+      "alt": "MotionGroup — Web components social preview from Lumen UI",
+      "description": "MotionGroup: Coordinates keyed list entrances, exits, and changes in position. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--motion-group.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--motion-group.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/motion-group",
+      "title": "MotionGroup - Lumen UI"
+    },
     "/docs/components/native-select": {
       "alt": "NativeSelect — Web components social preview from Lumen UI",
       "description": "NativeSelect: Styles the browser-native select element. Usage examples for Astro, React, and Elements.",
@@ -5824,6 +5872,22 @@
       ],
       "pathname": "/docs/components/progress",
       "title": "Progress - Lumen UI"
+    },
+    "/docs/components/prompt-composer": {
+      "alt": "PromptComposer — Web components social preview from Lumen UI",
+      "description": "PromptComposer: Composes prompts with explicit submission and cancellation events. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--prompt-composer.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--prompt-composer.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/prompt-composer",
+      "title": "PromptComposer - Lumen UI"
     },
     "/docs/components/prose": {
       "alt": "Prose — Web components social preview from Lumen UI",
@@ -6177,6 +6241,22 @@
       "pathname": "/docs/components/slider",
       "title": "Slider - Lumen UI"
     },
+    "/docs/components/source-citation": {
+      "alt": "SourceCitation — Web components social preview from Lumen UI",
+      "description": "SourceCitation: Links to a safely validated source with a meaningful label. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--source-citation.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--source-citation.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/source-citation",
+      "title": "SourceCitation - Lumen UI"
+    },
     "/docs/components/sparkline": {
       "alt": "Sparkline — Web components social preview from Lumen UI",
       "description": "Add a compact trend beside a prominent value without turning a metric card into a full chart. Live examples, data shapes, and code for Astro, React, and Web Components.",
@@ -6352,6 +6432,22 @@
       ],
       "pathname": "/docs/components/stepper",
       "title": "Stepper - Lumen UI"
+    },
+    "/docs/components/stream-message": {
+      "alt": "StreamMessage — Web components social preview from Lumen UI",
+      "description": "StreamMessage: Separates streamed content from accessible state announcements. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--stream-message.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--stream-message.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/stream-message",
+      "title": "StreamMessage - Lumen UI"
     },
     "/docs/components/switch": {
       "alt": "Switch — Web components social preview from Lumen UI",
@@ -6561,6 +6657,22 @@
       "pathname": "/docs/components/toggle",
       "title": "Toggle - Lumen UI"
     },
+    "/docs/components/tool-activity": {
+      "alt": "ToolActivity — Web components social preview from Lumen UI",
+      "description": "ToolActivity: Discloses observable tool activity and application-owned results. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--tool-activity.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--tool-activity.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/tool-activity",
+      "title": "ToolActivity - Lumen UI"
+    },
     "/docs/components/toolbar": {
       "alt": "Toolbar — Web components social preview from Lumen UI",
       "description": "Toolbar: Groups frequently used controls into one compact action row. Usage examples for Astro, React, and Elements.",
@@ -6704,6 +6816,22 @@
       ],
       "pathname": "/docs/components/virtual-list",
       "title": "VirtualList - Lumen UI"
+    },
+    "/docs/components/visual-effect": {
+      "alt": "VisualEffect — Web components social preview from Lumen UI",
+      "description": "VisualEffect: Adds optional token-based backgrounds, highlights, and drawing effects. Usage examples for Astro, React, and Elements.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--components--visual-effect.webp",
+          "primary": true,
+          "url": "/og/pages/docs--components--visual-effect.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/components/visual-effect",
+      "title": "VisualEffect - Lumen UI"
     },
     "/docs/components/visually-hidden": {
       "alt": "VisuallyHidden — Web components social preview from Lumen UI",
@@ -9105,6 +9233,22 @@
       "pathname": "/docs/theme-playground",
       "title": "Theme playground - Lumen UI"
     },
+    "/docs/visual-playground": {
+      "alt": "Visual playground — Documentation social preview from Lumen UI",
+      "description": "Explore coordinated motion, semantic visual effects, and application-owned AI surfaces with reduced-motion comparisons.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--visual-playground.webp",
+          "primary": true,
+          "url": "/og/pages/docs--visual-playground.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/visual-playground",
+      "title": "Visual playground — Lumen UI"
+    },
     "/docs/web/consumer-workflows": {
       "alt": "Consumer workflows — Documentation social preview from Lumen UI",
       "description": "Compose editable forms, exact amount inputs, responsive record actions and activity feeds using public Lumen components.",
@@ -9331,7 +9475,7 @@
     },
     "/": {
       "alt": "Lumen UI — Accessible Components for AI Coding Agents — Lumen UI social preview from Lumen UI",
-      "description": "Build with AI using 184 accessible primitives, agent skills, and focused MCP context. One UI library for web and native apps.",
+      "description": "Build with AI using 192 accessible primitives, agent skills, and focused MCP context. One UI library for web and native apps.",
       "images": [
         {
           "format": "webp",

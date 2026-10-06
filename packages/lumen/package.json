@@ -70,7 +70,8 @@
     "@vitest/coverage-v8": "catalog:",
     "react": "catalog:",
     "tailwindcss": "catalog:",
-    "vitest": "catalog:"
+    "vitest": "catalog:",
+    "jsdom": "catalog:"
   },
   "peerDependencies": {
     "react": ">=19"

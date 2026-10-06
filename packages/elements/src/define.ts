@@ -2,6 +2,7 @@
 
 import {
   alignLumenChartSeries,
+  bindLumenTabIndicator,
   coerceThemeBuilderExportFormat,
   coerceThemeBuilderMode,
   coerceThemeBuilderScheme,
@@ -30,6 +31,7 @@ import {
   getLumenChartCategoryLabel,
   getLumenChartCategoryTicks,
   getLumenChartDomain,
+  getLumenChartMotionKey,
   getLumenChartTicks,
   getLumenDirectionalKey,
   getLumenHeatmapColor,
@@ -85,6 +87,18 @@ import {
   tuneThemeContrast
 } from '@santi020k/lumen-core'
 
+import {
+  LumenApprovalCardElement as GranularLumenApprovalCardElement,
+  lumenApprovalCardElementConfig,
+  LumenPromptComposerElement as GranularLumenPromptComposerElement,
+  lumenPromptComposerElementConfig,
+  LumenSourceCitationElement as GranularLumenSourceCitationElement,
+  lumenSourceCitationElementConfig,
+  LumenStreamMessageElement as GranularLumenStreamMessageElement,
+  lumenStreamMessageElementConfig,
+  LumenToolActivityElement as GranularLumenToolActivityElement,
+  lumenToolActivityElementConfig
+} from './components/ai-surfaces.js'
 import {
   LumenBadgeElement as GranularLumenBadgeElement,
   lumenBadgeElementConfig
@@ -148,6 +162,14 @@ import {
   LumenVirtualListElement as GranularLumenVirtualListElement,
   lumenVirtualListElementConfig
 } from './components/virtual-list.js'
+import {
+  LumenChartMotionElement as GranularLumenChartMotionElement,
+  lumenChartMotionElementConfig,
+  LumenMotionGroupElement as GranularLumenMotionGroupElement,
+  lumenMotionGroupElementConfig,
+  LumenVisualEffectElement as GranularLumenVisualEffectElement,
+  lumenVisualEffectElementConfig
+} from './components/visual-interactions.js'
 import { bulletChartHtml, bulletNumberAttribute, parseBulletRanges } from './bullet-chart-html.js'
 import { LumenDatumChartElement } from './chart-activation.js'
 import { chartAnnotationHtml, chartAxesHtml, chartCaptionHtml, chartDataTableHtml, chartHeaderHtml, chartInspectionHtml, chartLabelsFor, chartLegendHtml, chartNumberAttribute, escapeChartHtml, heatmapDataTableHtml, intervalChartHtml, parseChartAnnotations, parseHeatmapData, parseHistogramBins, parseRangeData, parseWaterfallData, rangeDataTableHtml, scatterDataTableHtml, scatterPlotHtml } from './chart-html.js'
@@ -302,6 +324,14 @@ const glassAttributeClasses = (className: string) => ({
 })
 
 const elementConfigs = {
+  ApprovalCard: lumenApprovalCardElementConfig,
+  PromptComposer: lumenPromptComposerElementConfig,
+  SourceCitation: lumenSourceCitationElementConfig,
+  StreamMessage: lumenStreamMessageElementConfig,
+  ToolActivity: lumenToolActivityElementConfig,
+  ChartMotion: lumenChartMotionElementConfig,
+  MotionGroup: lumenMotionGroupElementConfig,
+  VisualEffect: lumenVisualEffectElementConfig,
   Accordion: {
     attributeClasses: {
       variant: { flush: 'ui-accordion--flush' }
@@ -1046,6 +1076,7 @@ const elementConfigs = {
     attributeClasses: glassAttributeClasses('ui-tabs--glass'),
     baseClassName: 'ui-tabs',
     defaults: { 'data-ui-tabs': '' },
+    observedAttributes: ['glass', 'indicator'],
     tagName: 'lumen-tabs'
   },
   TagGroup: {
@@ -6171,7 +6202,7 @@ class LumenLineChartBehaviorElement extends LumenDataChartBehaviorElement {
               const title = `${label} · ${item.label}: ${this.valueFormatter(point.y ?? 0)}`
 
               return [
-                `<circle class="ui-line-chart__point" cx="${point.xCoordinate}"`,
+                `<circle data-ui-chart-motion-key="${escapeChartHtml(getLumenChartMotionKey(item.id, point))}" class="ui-line-chart__point" cx="${point.xCoordinate}"`,
                 ` cy="${point.yCoordinate}" r="3">`,
                 `<title>${escapeChartHtml(title)}</title></circle>`
               ].join('')
@@ -6188,7 +6219,7 @@ class LumenLineChartBehaviorElement extends LumenDataChartBehaviorElement {
 
         return [
           `<g data-ui-chart-series="${escapeChartHtml(item.id)}" class="ui-line-chart__series ui-chart-tone--${tone}">${areaPaths}`,
-          `<path class="ui-line-chart__line" d="${geometry.path}"></path>`,
+          `<path data-ui-chart-motion-key="${escapeChartHtml(JSON.stringify(['path', item.id]))}" class="ui-line-chart__line" d="${geometry.path}"></path>`,
           `${points}${hits}</g>`
         ].join('')
       })
@@ -7405,6 +7436,7 @@ class LumenDisclosureBehaviorElement extends LumenElement {
 }
 
 class LumenTabsBehaviorElement extends LumenElement {
+  private indicatorCleanup: (() => void) | undefined
   private abortController: AbortController | undefined
 
   override connectedCallback() {
@@ -7417,12 +7449,34 @@ class LumenTabsBehaviorElement extends LumenElement {
     this.abortController = new AbortController()
 
     this.#setupTabs(this.abortController.signal)
+
+    this.updateIndicator()
   }
 
   override disconnectedCallback() {
     this.abortController?.abort()
 
     this.abortController = undefined
+
+    this.indicatorCleanup?.()
+
+    this.indicatorCleanup = undefined
+  }
+
+  override attributeChangedCallback(): void {
+    super.attributeChangedCallback()
+
+    if (this.isConnected) this.updateIndicator()
+  }
+
+  private updateIndicator(): void {
+    this.indicatorCleanup?.()
+
+    this.indicatorCleanup = undefined
+
+    if (this.hasAttribute('indicator') && this.getAttribute('indicator') !== 'false') {
+      this.indicatorCleanup = bindLumenTabIndicator(this)
+    }
   }
 
   #setupTabs(signal: AbortSignal): void {
@@ -11988,7 +12042,15 @@ const granularElementClasses: Partial<
   Stack: GranularLumenStackElement,
   Typography: GranularLumenTypographyElement,
   VisuallyHidden: GranularLumenVisuallyHiddenElement,
-  VirtualList: GranularLumenVirtualListElement
+  VirtualList: GranularLumenVirtualListElement,
+  ChartMotion: GranularLumenChartMotionElement,
+  MotionGroup: GranularLumenMotionGroupElement,
+  VisualEffect: GranularLumenVisualEffectElement,
+  ApprovalCard: GranularLumenApprovalCardElement,
+  PromptComposer: GranularLumenPromptComposerElement,
+  SourceCitation: GranularLumenSourceCitationElement,
+  StreamMessage: GranularLumenStreamMessageElement,
+  ToolActivity: GranularLumenToolActivityElement
 }
 
 const elementClasses = Object.fromEntries(
@@ -12303,3 +12365,12 @@ export const LumenChangeSummaryElement = GranularLumenChangeSummaryElement
 export const LumenFilterBarElement = GranularLumenFilterBarElement
 
 export const LumenDeviceFrameElement = elementClasses.DeviceFrame
+export const LumenMotionGroupElement = GranularLumenMotionGroupElement
+export const LumenVisualEffectElement = GranularLumenVisualEffectElement
+export const LumenApprovalCardElement = GranularLumenApprovalCardElement
+export const LumenPromptComposerElement = GranularLumenPromptComposerElement
+export const LumenSourceCitationElement = GranularLumenSourceCitationElement
+export const LumenStreamMessageElement = GranularLumenStreamMessageElement
+export const LumenToolActivityElement = GranularLumenToolActivityElement
+
+export const LumenChartMotionElement = GranularLumenChartMotionElement
