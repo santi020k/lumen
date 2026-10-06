@@ -87,8 +87,10 @@ test('preserves consumer CSS colors across orientation and temporary color attri
 
 test.each([
   ['macbook-pro', '1280 / 800'],
+  ['macbook-air', '1280 / 800'],
   ['imac', '1440 / 810'],
-  ['pixel', '412 / 915']
+  ['pixel', '412 / 915'],
+  ['ipad-pro', '834 / 1194']
 ])('switches to %s while preserving the interactive screen', (device, ratio) => {
   const frame = new LumenDeviceFrameElement()
   const button = document.createElement('button')

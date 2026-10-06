@@ -1,0 +1,41 @@
+---
+import { CodeTabs, Link, Stack } from '@santi020k/lumen-astro'
+
+const items = [
+  { value: 'image', label: 'Image', language: 'astro', code: `<DeviceFrame device="iphone" color="black" scroll={false}>
+  <Image src="/screens/mobile.png" alt="Your app's home screen" />
+</DeviceFrame>` },
+  { value: 'html', label: 'HTML', language: 'astro', code: `<DeviceFrame device="pixel" color="#a9b8ac">
+  <Card>
+    <h2>Welcome to your workspace</h2>
+    <Button>Start a project</Button>
+  </Card>
+</DeviceFrame>` },
+  { value: 'iframe', label: 'Iframe', language: 'astro', code: `<DeviceFrame device="ipad-pro" orientation="landscape" color="white">
+  <iframe
+    src="/demo"
+    title="Interactive application demo"
+    loading="lazy"
+    sandbox=""
+  ></iframe>
+</DeviceFrame>` }
+]
+---
+<Stack gap="lg" class="device-usage">
+  <section aria-labelledby="device-content-title">
+    <h2 id="device-content-title">Choose what goes on screen</h2>
+    <div class="device-content-types"><div><h3>Image</h3><p>For screenshots and product artwork. Give the image meaningful alt text and match its aspect ratio to the frame.</p></div><div><h3>HTML</h3><p>For real components and interactive controls. Content shares the page viewport; use container queries to adapt to the frame.</p></div><div><h3>Iframe</h3><p>For a complete responsive app. The page inside gets the device viewport, then scales to fit the available space.</p></div></div>
+    <p>Import <code>DeviceFrame</code> and the components in your example from <code>@santi020k/lumen-astro</code>. The framework example above includes React and Elements usage.</p>
+    <CodeTabs items={items} ariaLabel="Device screen content examples" copy wrap />
+  </section>
+  <section aria-labelledby="device-sizing-title"><h2 id="device-sizing-title">Size the frame, keep the viewport</h2><p>The frame fills its parent up to a device-specific maximum. Set the parent width to size the mockup. For an iframe, <code>screenWidth</code> and <code>screenHeight</code> set its internal layout viewport; shrinking the frame does not change its media queries. Preset sizes are demo viewports, not hardware specifications.</p><p>Choose <code>device="macbook-pro"</code> for the notched, fuller enclosure or <code>device="macbook-air"</code> for the slim, tapered design. Use <code>orientation="landscape"</code> for iPad Pro. Use <code>color="white"</code>, <code>color="black"</code>, or a hex color for the hardware; your content keeps its own theme. <code>{'scroll={false}'}</code> clips HTML overflow, while an iframe manages its own scrolling.</p></section>
+  <section aria-labelledby="device-embedding-title"><h2 id="device-embedding-title">Embed with intent</h2><p>Always title an iframe. The examples use <code>sandbox=""</code> for a static demo; enable only the permissions your embedded app needs. Some sites block embedding, so use an embeddable route you control. Camera details stay outside live content and never capture pointer input.</p><p><Link href="/docs/components/image">Image options</Link> · <Link href="/docs/frameworks/astro">Astro setup</Link> · <Link href="/docs/frameworks/react">React setup</Link> · <Link href="/docs/frameworks/elements">Elements setup</Link></p></section>
+</Stack>
+<style>
+  .device-usage { margin-block: 2rem; }
+  .device-usage h2 { margin: 0 0 1rem; font-size: 1.35rem; letter-spacing: -0.025em; }
+  .device-usage h3 { font-size: 1rem; margin: 0 0 0.5rem; }
+  .device-usage p { color: hsl(var(--ink-soft)); font-size: 0.875rem; line-height: 1.8; }
+  .device-content-types { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.5rem; }
+  @media (max-width: 40rem) { .device-content-types { grid-template-columns: 1fr; gap: 0.5rem; } }
+</style>

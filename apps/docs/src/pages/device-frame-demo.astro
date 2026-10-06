@@ -1,48 +1,48 @@
 ---
 import '@santi020k/lumen-astro/styles.css'
 
-import { Badge, Card, Icon, Stack } from '@santi020k/lumen-astro'
+import { Badge, Card, Icon, Image, Link, Stack } from '@santi020k/lumen-astro'
 
 const projects = [
-  { name: 'A quieter kind of digital.', category: 'Brand direction', className: 'project project--brand', number: '01' },
-  { name: 'Objects with a point of view.', category: 'Product collection', className: 'project project--accent', number: '02' },
-  { name: 'Room for the unexpected.', category: 'Visual exploration', className: 'project project--ink', number: '03' }
+  { name: 'A shared visual language.', category: 'Lumen foundations', className: 'project project--brand', number: '01' },
+  { name: 'Small pieces. Better interfaces.', category: 'Lumen components', className: 'project project--accent', number: '02' },
+  { name: 'A strong place to start.', category: 'Lumen templates', className: 'project project--ink', number: '03' }
 ]
 ---
 <!doctype html>
-<html lang="en">
-  <head><meta charset="utf-8" /><meta name="viewport" content="width=device-width" /><meta name="description" content="A responsive Lumen creative workspace embedded in device demonstrations." /><link rel="canonical" href="https://lumen.santi020k.com/device-frame-demo/" /><meta name="robots" content="noindex" /><title>Lumen creative workspace demo</title></head>
+<html lang="en" data-theme="light" style="color-scheme: light">
+  <head><meta charset="utf-8" /><meta name="viewport" content="width=device-width" /><meta name="description" content="A responsive Lumen component workspace embedded in device demonstrations." /><link rel="canonical" href="https://lumen.santi020k.com/device-frame-demo/" /><meta name="robots" content="noindex" /><title>Lumen component workspace demo</title></head>
   <body>
     <header>
-      <a class="wordmark" href="#overview"><Icon name="layers" /> atelier<span>workspace</span></a>
-      <span class="demo-label">Illustrative workspace</span>
-      <Badge>Personal space</Badge>
+      <Link class="wordmark" href="#overview"><Image src="/logo.svg" alt="Lumen UI" width={155} height={40} radius="none" /><span>component workspace</span></Link>
+      <span class="demo-label">Built with Lumen</span>
+      <Badge>Your design system</Badge>
     </header>
     <div class="workspace">
       <aside>
-        <span class="nav-label">WORKSPACE</span>
+        <span class="nav-label">LUMEN LIBRARY</span>
         <nav aria-label="Workspace">
-          <a href="#overview"><Icon name="layout-dashboard" /> Overview</a>
-          <a href="#projects"><Icon name="folder" /> Projects <span>03</span></a>
-          <a href="#notes"><Icon name="file-text" /> Studio notes</a>
+          <Link href="#overview"><Icon name="layout-dashboard" /> Overview</Link>
+          <Link href="#projects"><Icon name="folder" /> Components <span>03</span></Link>
+          <Link href="#notes"><Icon name="file-text" /> Design notes</Link>
         </nav>
         <div class="sidebar-footer">
           <Icon name="sparkles" />
-          <p>Good things<br />start with space.</p>
-          <a href="https://santi020k.com" target="_blank" rel="noopener noreferrer">Built by santi020k <Icon name="arrow-up-right" /></a>
+          <p>Thoughtful by default.</p>
+          <Link href="https://santi020k.com" target="_blank" rel="noopener noreferrer">Built by santi020k <Icon name="arrow-up-right" /></Link>
         </div>
       </aside>
       <main id="overview">
         <div class="greeting">
           <div>
-            <p class="eyebrow">YOUR CREATIVE HOME</p>
-            <h1>A little space.<br />A lot of possibility.</h1>
-            <p>Pick up an idea. Make something that matters.</p>
+            <p class="eyebrow">BUILD WITH LUMEN</p>
+            <h1>A thoughtful start.<br />A better interface.</h1>
+            <p>Accessible primitives. Shared foundations. Your next idea.</p>
           </div>
-          <a class="project-link" href="#projects">Explore your projects <Icon name="arrow-up-right" /></a>
+          <Link class="project-link" href="#projects">Explore the library <Icon name="arrow-up-right" /></Link>
         </div>
         <section aria-labelledby="projects">
-          <div class="section-heading"><h2 id="projects">On your desk</h2><span>3 ongoing projects</span></div>
+          <div class="section-heading"><h2 id="projects">The building blocks</h2><span>Three ways to get started</span></div>
           <div class="project-grid">
             {projects.map(project => (
               <Card class={project.className}>
@@ -50,7 +50,7 @@ const projects = [
                 <Stack class="project-description" gap="sm">
                   <p>{project.category}</p>
                   <h3>{project.name}</h3>
-                  <span>Updated today <Icon name="arrow-up-right" /></span>
+                  <span>Explore collection <Icon name="arrow-up-right" /></span>
                 </Stack>
               </Card>
             ))}
@@ -58,8 +58,8 @@ const projects = [
         </section>
         <section aria-labelledby="notes" class="studio-note">
           <div>
-            <p class="eyebrow">A NOTE TO YOUR FUTURE SELF</p>
-            <h2 id="notes">The best idea is the one you make.</h2>
+            <p class="eyebrow">MADE TO WORK TOGETHER</p>
+            <h2 id="notes">One design language. Your choice of framework.</h2>
           </div>
           <Icon name="sparkles" size="xl" />
         </section>
@@ -74,6 +74,7 @@ const projects = [
   a:focus-visible { outline: 2px solid hsl(var(--brand)); outline-offset: 4px; }
   header { height: 72px; display: flex; align-items: center; justify-content: space-between; gap: 2rem; padding: 0 32px; border-bottom: 1px solid hsl(var(--line)); background: hsl(var(--surface)); }
   .wordmark { display: flex; align-items: center; gap: 10px; font-size: 23px; font-weight: 650; letter-spacing: -1px; }
+  .wordmark :global(img) { display: block; width: 155px; height: auto; }
   .wordmark > span:last-child { margin-left: 16px; border-left: 1px solid hsl(var(--line)); padding-left: 22px; font-size: 12px; letter-spacing: 0; font-weight: 400; color: hsl(var(--ink-muted)); }
   .demo-label { color: hsl(var(--ink-muted)); font-size: 11px; }
   .workspace { display: grid; grid-template-columns: 196px minmax(0, 1fr); min-height: calc(100vh - 72px); }

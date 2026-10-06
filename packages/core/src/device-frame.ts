@@ -1,4 +1,4 @@
-export type LumenDeviceFrameDevice = 'laptop' | 'desktop' | 'iphone' | 'android' | 'tablet' | 'macbook-pro' | 'imac' | 'pixel'
+export type LumenDeviceFrameDevice = 'laptop' | 'desktop' | 'iphone' | 'android' | 'tablet' | 'macbook-pro' | 'macbook-air' | 'imac' | 'pixel' | 'ipad-pro'
 export type LumenDeviceFrameOrientation = 'portrait' | 'landscape'
 export type LumenDeviceFrameTone = 'light' | 'dark'
 export type LumenDeviceFrameColor = 'white' | 'black' | `#${string}`
@@ -17,8 +17,10 @@ export const lumenDeviceFrameSizes = {
   desktop: [1440, 900],
   imac: [1440, 810],
   iphone: [390, 844],
+  'ipad-pro': [834, 1194],
   laptop: [1280, 800],
   'macbook-pro': [1280, 800],
+  'macbook-air': [1280, 800],
   pixel: [412, 915],
   tablet: [820, 1180]
 } as const

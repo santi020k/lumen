@@ -15,10 +15,12 @@ import {
 import ChartUsageDetails from '../../../components/ChartUsageDetails.astro'
 import CodeBlock from '../../../components/CodeBlock.astro'
 import CommunityFeedback from '../../../components/CommunityFeedback.astro'
+import DeviceFrameUsage from '../../../components/DeviceFrameUsage.astro'
 import DocsActionLink from '../../../components/DocsActionLink.astro'
 import DocsReferenceTable from '../../../components/DocsReferenceTable.astro'
 import FrameworkExample from '../../../components/FrameworkExample.astro'
 import { chartGuides, getChartGuide } from '../../../data/chart-guides'
+import { deviceFrameQuickStart } from '../../../data/device-frame'
 import {
   componentCollections,
   componentDocs,
@@ -44,7 +46,7 @@ const chartGuide = getChartGuide(component.name)
 const solidMapExample = component.name === 'WorldMap' ? getExample('WorldMapSolid') : undefined
 const SolidMapExample = solidMapExample?.component
 const solidMapSnippets = solidMapExample ? buildSnippets('WorldMapSolid', solidMapExample.source) : undefined
-const snippets = buildSnippets(component.name, source)
+const snippets = buildSnippets(component.name, component.name === 'DeviceFrame' ? deviceFrameQuickStart : source)
 const registryCommand = `lumen add ${component.name}`
 
 const packageInstallSetups = frameworkSetups.map(setup => ({
@@ -261,12 +263,13 @@ undefined}
       {component.name === 'WorldMap' && <h3>Dotted destinations</h3>}
       <FrameworkExample
         componentName={component.name}
-        codeCollapsed={Boolean(chartGuide)}
+        codeCollapsed={Boolean(chartGuide) || component.name === 'DeviceFrame'}
         groupId={`code-${componentSlug}`}
         snippets={snippets}
       >
         <Example />
       </FrameworkExample>
+      {component.name === 'DeviceFrame' && <DeviceFrameUsage />}
       {SolidMapExample && solidMapSnippets && (
         <>
           <h3>Solid regions</h3>
