@@ -45909,7 +45909,7 @@
   },
   "migration": {
     "schemaVersion": 1,
-    "status": "draft",
+    "status": "approved",
     "targetVersion": "4.0.0",
     "policy": {
       "compatibility": "Lumen 4 may deliberately replace v3 component and binary contracts. Consumer data, privacy, and release approval remain protected. Migration guidance documents externally visible changes.",
@@ -46342,7 +46342,18 @@
         ]
       }
     ],
-    "swiftApiBaseline": "v3.0.1"
+    "swiftApiBaseline": "v3.0.1",
+    "approval": {
+      "approver": "Santiago Molina (santi020k)",
+      "date": "2026-10-07",
+      "decision": "Approve the independently reviewed macOS installer signing correction under the standing authorization recorded by santi020k in PR #95 comment 6027959606. Publication or delivery remains conditional on all required hosted checks and current Codex review passing before merge. Preserve published v4.0.0 tags and artifacts and existing iOS and Android review submissions; deliver the corrected macOS build from protected merged main.",
+      "reviewedRevision": "64a68668ad7dfcae545be4a678fc6b1b4793d271",
+      "evidence": [
+        "https://github.com/santi020k/lumen/commit/64a68668ad7dfcae545be4a678fc6b1b4793d271",
+        "https://github.com/santi020k/lumen/pull/95",
+        "https://github.com/santi020k/lumen/pull/98"
+      ]
+    }
   },
   "nativeComponents": [
     {
