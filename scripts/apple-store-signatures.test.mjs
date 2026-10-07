@@ -23,7 +23,7 @@ test('signature guard rejects nested certificate mismatch even when structural v
     await symlink(bundle, join(app, 'Alias.bundle'));
 
     for (const name of ['distribution', 'development']) {
-      const result = spawnSync('openssl', ['req', '-x509', '-newkey', 'rsa:2048', '-nodes', '-keyout', join(directory, `${name}.key`), '-out', join(directory, `${name}.pem`), '-days', '1', '-subj', `/CN=Lumen Synthetic ${name}`]);
+      const result = spawnSync('/usr/bin/openssl', ['req', '-x509', '-newkey', 'rsa:2048', '-nodes', '-keyout', join(directory, `${name}.key`), '-out', join(directory, `${name}.pem`), '-days', '1', '-subj', `/CN=Lumen Synthetic ${name}`]);
 
       assert.equal(result.status, 0);
     }
