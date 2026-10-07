@@ -41,6 +41,7 @@ html, body { margin: 0; width: 100%; height: 100%; }
 .project p { margin: 10px 0 14px; }
 .workspace-footer { margin-top: 18px; }
 .workspace .ui-button { font-size: 16px; min-height: 44px; pointer-events: none; }
+.workspace .ui-button[aria-disabled="true"] { opacity: 1; }
 .composition-footer { display: flex; justify-content: space-between; margin-top: 24px; font-size: 20px; color: hsl(var(--ink-soft)); }
 .composition-footer strong { color: hsl(var(--ink)); }
 

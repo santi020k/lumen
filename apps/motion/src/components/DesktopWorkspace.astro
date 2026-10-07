@@ -18,7 +18,7 @@ const { glass = false } = Astro.props
       <h2>Good work, in focus.</h2>
       <p>Your projects. A little more clarity.</p>
     </div>
-    <Button tabindex="-1"><Icon name="plus" /> New project</Button>
+    <Button aria-disabled="true" tabindex="-1"><Icon name="plus" /> New project</Button>
   </div>
   <div class="desktop-stats">
     <Stat variant={glass ? 'glass' : 'default'} label="Active projects" value="12" data-desktop-reveal>

@@ -16,6 +16,16 @@ const expectDesktopCardsToFit = async (screen: Locator, context: string) => {
   }
 }
 
+const expectDesktopStill = async (screen: Locator) => {
+  await expect(screen.locator('.completion-trend')).toHaveCSS('clip-path', 'inset(0px 0% 0px 0px)')
+
+  for (const indicator of await screen.locator('[data-slot="progress-indicator"]').all()) {
+    expect(await indicator.evaluate(element => new DOMMatrix(getComputedStyle(element).transform).a)).toBe(1)
+  }
+
+  await expect(screen.getByRole('button', { name: 'New project' })).toBeDisabled()
+}
+
 for (const width of [390, 1440]) {
   test(`theme controls and playback work at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 1000 })
@@ -42,6 +52,8 @@ for (const width of [390, 1440]) {
 
     await expect(page.frameLocator('#composition').locator('.scene').nth(1)).toHaveCSS('opacity', '1')
 
+    await expectDesktopStill(page.frameLocator('#composition').locator('.scene').nth(1).locator('.desktop-workspace'))
+
     await page.getByRole('button', { name: 'Glass', exact: true }).click()
 
     await expect(page.getByRole('status')).toHaveText('Paused · Glass')
@@ -49,6 +61,8 @@ for (const width of [390, 1440]) {
     await page.getByRole('button', { name: 'Studio', exact: true }).click()
 
     await expect(page.getByRole('status')).toHaveText('Paused · Studio')
+
+    await expectDesktopStill(page.frameLocator('#composition').locator('.scene').nth(3).locator('.desktop-workspace'))
 
     await page.getByRole('button', { name: 'Landscape', exact: true }).click()
 
@@ -88,6 +102,8 @@ test('reduced motion presents still themes and disables playback', async ({ page
   await page.getByRole('button', { name: 'Studio', exact: true }).click()
 
   await expect(page.getByRole('status')).toHaveText('Paused · Studio')
+
+  await expectDesktopStill(page.frameLocator('#composition').locator('.scene').nth(3).locator('.desktop-workspace'))
 })
 
 test('all compositions fit their canvases and can seek backwards deterministically', async ({ page }) => {
@@ -153,6 +169,8 @@ test('all compositions fit their canvases and can seek backwards deterministical
 
       await expectDesktopCardsToFit(screen, `${format} at ${time}s`)
 
+      await expectDesktopStill(screen)
+
       await expect(screen.getByRole('progressbar', { name: 'Design foundations: complete' })).toHaveAttribute('aria-valuenow', '100')
 
       await expect(screen.getByRole('progressbar', { name: 'Product workspace: 68 percent complete' })).toHaveAttribute('aria-valuenow', '68')
@@ -181,6 +199,8 @@ test('all compositions fit their canvases and can seek backwards deterministical
     const device = studioScene.locator('.phone-device')
 
     await expect(device).toHaveCSS('opacity', '1')
+
+    await expect(phone.getByRole('button', { name: 'Open workspace' })).toBeDisabled()
 
     await expect(device).toHaveAttribute('data-device', 'iphone')
 

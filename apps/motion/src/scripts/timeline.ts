@@ -64,9 +64,10 @@ if (root?.dataset.compositionId) {
 
     const indicators = scene.querySelectorAll('.desktop-content [data-slot="progress-indicator"]')
 
-    timeline.fromTo(indicators, { scaleX: 0.15, transformOrigin: 'left' }, { scaleX: 1, duration: 0.9, stagger: 0.12, ease }, start + 0.7)
+    // Complete desktop data reveals before the earliest appearance still (start + 1s).
+    timeline.fromTo(indicators, { scaleX: 0.15, transformOrigin: 'left' }, { scaleX: 1, duration: 0.6, stagger: 0.1, ease }, start + 0.2)
 
-    timeline.fromTo(scene.querySelectorAll('.completion-trend'), { clipPath: 'inset(0 100% 0 0)' }, { clipPath: 'inset(0 0% 0 0)', duration: 1.1, ease }, start + 0.55)
+    timeline.fromTo(scene.querySelectorAll('.completion-trend'), { clipPath: 'inset(0 100% 0 0)' }, { clipPath: 'inset(0 0% 0 0)', duration: 0.7, ease }, start + 0.2)
 
     if (index === 0) {
       timeline.fromTo(scene.querySelectorAll('.composition-header, .composition-footer'), { y: 12, opacity: 0 }, { y: 0, opacity: 1, duration: 0.55, ease }, 0.1)

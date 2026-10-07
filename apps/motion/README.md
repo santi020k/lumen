@@ -92,8 +92,11 @@ preview and composition assets are self-contained and make no remote asset reque
 
 ## Motion and responsive composition
 
-The opening assembles the headline, laptop, and cards in under one second, then fills the project
-progress bars. Light, Dark, Glass, and Studio follow at 0, 2.6, 5, and 8 seconds. Each appearance
+The opening assembles the headline, laptop, and cards in under one second. Desktop project bars
+and the chart complete their reveals before each configured appearance still, including reduced
+motion previews. Sample desktop and phone actions expose an unavailable state while keeping their
+text at full opacity for film readability. Light, Dark, Glass,
+and Studio follow at 0, 2.6, 5, and 8 seconds. Each appearance
 gets a short headline reveal and component entrance. The sample layout remains consistent so the
 material changes are easy to compare. Glass uses public Card and Stat surfaces, translucent layers,
 fine highlights, and moving cyan, teal, and warm light behind the interface. All movement belongs

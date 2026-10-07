@@ -7,6 +7,7 @@
 .desktop-heading h2 { font-size: 36px; line-height: 1.15; letter-spacing: -0.045em; }
 .desktop-heading p { margin-top: 7px; color: hsl(var(--ink-soft)); font-size: 17px; }
 .desktop-workspace .ui-button { font-size: 17px; min-height: 44px; pointer-events: none; }
+.desktop-workspace .ui-button[aria-disabled="true"] { opacity: 1; }
 .desktop-workspace .ui-button .ui-icon { width: 18px; height: 18px; }
 .desktop-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
 .desktop-stats .ui-stat { position: relative; padding: 16px 18px; }
